@@ -327,7 +327,7 @@ namespace CLAM
 			case(EInterpolation::ePolynomialn):/*nth order polynomial interpolation where n is number
 				of points in the BPF-1. Must be less than 10*/
 			{
-				if(Size()>10) throw Err("BPF::SetIntpType:Cannot ser more than 10th order interpolation");
+				CLAM_ASSERT(Size()<11,"BPF::SetIntpType:Cannot ser more than 10th order interpolation");
 				mOrder=Size()-1;
 				mc.Resize(mOrder+1);
 				mc.SetSize(mOrder+1);
