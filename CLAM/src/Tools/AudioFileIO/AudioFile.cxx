@@ -53,39 +53,56 @@ namespace CLAM
 	AudioFile::~AudioFile()
 	{
 	}
+	void AudioFile::ResolveCodec()
+	{
+		mActiveCodec = NULL;
+
+		if ( AudioCodecs::Codec::FileExists( mLocation ) )
+		{		
+			if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( mLocation ) )
+			{
+				SetKind( EAudioFileKind::ePCM );
+				mActiveCodec = & AudioCodecs::PCMCodec::Instantiate();
+			}
+			else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( mLocation ) )
+			{
+				SetKind( EAudioFileKind::eOggVorbis );
+				mActiveCodec = & AudioCodecs::OggVorbisCodec::Instantiate();		
+				
+			}
+			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( mLocation ) )
+			{
+				SetKind( EAudioFileKind::eMpeg );
+				mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
+			}
+			else
+				SetKind( EAudioFileKind::eUnknown );		
+		}
+		else
+			SetKind( EAudioFileKind::eUnknown );
+	}
 
 	void AudioFile::SetLocation( std::string uri )
 	{
 		mLocation = uri;
+		ResolveCodec();			
 		
-		if ( AudioCodecs::Codec::FileExists( uri ) )
-		{		
-			if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( uri ) )
+		if ( mActiveCodec != NULL )
+		{
+			mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
+			
+			if ( GetKind() == EAudioFileKind::eOggVorbis ||
+			     GetKind() == EAudioFileKind::eMpeg )
 			{
-				SetKind( EAudioFileKind::ePCM );
-				mActiveCodec = & AudioCodecs::PCMCodec::Instantiate();
-				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
+				mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );				
 			}
-			else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( uri ) )
-			{
-				SetKind( EAudioFileKind::eOggVorbis );
-				mActiveCodec = & AudioCodecs::OggVorbisCodec::Instantiate();
-				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
-				mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );
-			}
-			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( uri ) )
-			{
-				SetKind( EAudioFileKind::eMpeg );
-				mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
-				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
-				mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );
-			}
-		
-			return; // things went smooth...
 		}
-
-		mHeaderData.RemoveAll();
-		mHeaderData.UpdateData();
+		
+		if ( GetKind() == EAudioFileKind::eUnknown )
+		{
+			mHeaderData.RemoveAll();
+			mHeaderData.UpdateData();
+		}
 
 	}
 
@@ -203,10 +220,33 @@ namespace CLAM
 
 	void AudioFile::LoadFrom( Storage& storage )
 	{
+
+		CLAM::XMLAdapter< std::string > xmlLocation( mLocation, "URI", true );
+		storage.Load( xmlLocation );
+
+		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
+		storage.Load( xmlHeader );
+
+
+		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
+		storage.Load( xmlTxtDescriptors );
+
+		
 	}
 
 	void AudioFile::StoreOn( Storage& storage ) const
 	{
+		CLAM::XMLAdapter< std::string > xmlLocation( mLocation, "URI", true );
+		storage.Store( xmlLocation );
+
+		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
+		storage.Store( xmlHeader );
+		
+
+		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
+		storage.Store( xmlTxtDescriptors );
+
+
 	}
 
 }

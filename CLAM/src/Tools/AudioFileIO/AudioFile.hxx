@@ -72,6 +72,7 @@ namespace CLAM
 		const char*            GetClassName() const;
 
 	protected:
+		void                   ResolveCodec();
 		void                   SetKind( EAudioFileKind newKind );
 
 	protected:
