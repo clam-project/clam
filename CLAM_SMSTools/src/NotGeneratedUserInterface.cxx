@@ -23,6 +23,7 @@
 #include "NotGeneratedUserInterface.hxx"
 #include "SMSTransformPanel.hxx"
 #include "SMSTools.hxx"
+#include "SMSAppState.hxx"
 #include <FL/fl_file_chooser.H>
 #include <FL/Fl.H>
 #include "FLTKConfigurator.hxx"
@@ -44,13 +45,13 @@ void UserInterface::EditConfiguration(void)
 
 void UserInterface::Update()
 {
-	mSMS->SetHaveConfig(true);
+	mSMS->GetState().DefaultInit();
+	mSMS->GetState().SetHasConfig(true);
  	mSMS->InitConfigs();
 	// check if LoadSound operation could be carried
 	if ( !LoadSound() )
 		return;
-	ApplyInitialState();
-	ApplyReadyToAnalyzeState();
+	UpdateState();
 	mSMS->SegmentExplorer().CloseAll();
 	mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
 					      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
@@ -68,10 +69,12 @@ void UserInterface::LoadConfiguration(void)
 		mSMS->LoadConfig(inputXMLFileName);
 		if (! LoadSound() )
 			return;	
-		ApplyReadyToAnalyzeState();
+		UpdateState();
 	
-		if (mSMS->mHaveAnalysis &&	mSMS->mHaveConfig)
-			ApplyAnalysisAvailableState();
+		if (mSMS->GetState().GetHasAnalysis() &&	mSMS->GetState().GetHasConfig())
+		{
+			InitCounter();
+		}
 
 		mSMS->SegmentExplorer().CloseAll();
 		mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
@@ -84,7 +87,7 @@ void UserInterface::LoadConfiguration(void)
 bool UserInterface::LoadSound(void)
 {
 	mSMS->LoadInputSound();
-	if ( !mSMS->mHaveAudioIn )
+	if ( !mSMS->GetState().GetHasAudioIn() )
 	{
 		ApplyInitialState();
 		return false;
@@ -113,8 +116,8 @@ void UserInterface::LoadTransformation(void)
 		//mTransformationFileText->value(str);
 		std::string inputXMLFileName(str);
 		mSMS->LoadTransformationScore(inputXMLFileName);
-		mSMS->mHaveTransformationScore=true;
-		ApplyTransformationReadyState();
+		mSMS->GetState().SetHasTransformationScore(true);
+		UpdateState();
 		mWindow->redraw();
 	}
 }
@@ -141,10 +144,11 @@ void UserInterface::LoadAnalysisData(void)
 
 	if ( !mSMS->DoLoadAnalysis(  ) )
 		return;
-	mSMS->mHaveAnalysis = true;
+	mSMS->GetState().SetHasAnalysis (true);
 	// @todo: Check this is true...
-	mSMS->mHaveConfig = false;
-	ApplyAnalysisAvailableState();
+	mSMS->GetState().SetHasConfig (false);
+	UpdateState();
+	InitCounter();
 	DeactivateFrameDataMenuItems();
 	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
 	// @todo: determine what has to do the UserInterface for obtaining frame data when it is being loaded
@@ -162,11 +166,10 @@ bool UserInterface::FrameDataAvailable()
 void UserInterface::Analyze(void)
 {
 	mSMS->Analyze();
-	if (mSMS->mHaveAnalysis)
+	if (mSMS->GetState().GetHasAnalysis())
 	{
-		ApplyInitialState();
-		ApplyReadyToAnalyzeState();
-		ApplyAnalysisAvailableState();
+		UpdateState();
+		InitCounter();
 		mFrameDataAvailable = true;
 		mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
 		mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
@@ -178,9 +181,9 @@ void UserInterface::Analyze(void)
 void UserInterface::Synthesize(void)
 {
 	mSMS->Synthesize();
-	if (mSMS->mHaveAudioOut)
+	if (mSMS->GetState().GetHasAudioOut())
 	{
-		ApplySynthesisAvailableState();
+		UpdateState();
 	}
 	mSMS->SegmentExplorer().NewSynthesizedAudio(mSMS->mAudioOut);
 	mSMS->SegmentExplorer().NewSynthesizedSinusoidal(mSMS->mAudioOutSin);
@@ -218,7 +221,7 @@ void UserInterface::StoreOutputSoundSinusoidal(void)
 void UserInterface::AnalyzeMelody(void)
 {
 	mSMS->ExecuteMelodyAnalysis();
-	ApplyMelodyAvailableState();
+	UpdateState();
 }
 
 void UserInterface::StoreMelody(void)
@@ -230,7 +233,7 @@ void UserInterface::Transform(void)
 {
 
 	mSMS->Transform();
-	ApplyTransformationPerformedState();
+	UpdateState();
 	mSMS->SegmentExplorer().CloseAll();
 	mSMS->SegmentExplorer().NewSegment( mSMS->mTransformedSegment );
 	mSMS->SegmentExplorer().NewFrame( mSMS->mTransformedSegment.GetFramesArray()[0],
@@ -241,10 +244,9 @@ void UserInterface::Transform(void)
 
 void UserInterface::UndoTransform()
 {
-	mSMS->mHaveTransformation = false;
-	ApplyInitialState();
-	ApplyReadyToAnalyzeState();
-	ApplyAnalysisAvailableState();
+	mSMS->GetState().SetHasTransformation (false);
+	UpdateState();
+	InitCounter();
 	mFrameDataAvailable = true;
 	
 	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
@@ -260,7 +262,7 @@ void UserInterface::ChangeFrame()
 
 	if ( mFrameDataAvailable )
 	{
-		if(mSMS->mHaveTransformation)
+		if(mSMS->GetState().GetHasTransformation())
 			mSMS->SegmentExplorer().NewFrame( mSMS->mTransformedSegment.GetFramesArray()[nframe],
 													   FrameDataAvailable() );
 		else
@@ -391,52 +393,12 @@ void UserInterface::ApplyInitialState()
 	mWindow->redraw();
 }
 
-void UserInterface::ApplyReadyToAnalyzeState()
+void UserInterface::InitCounter()
 {
-	mEditCfgMenuItem->activate();
-	mStoreCfgMenuItem->activate();
-	mDoSMSAnalysisMenuItem->activate();
-	mShowOriginalAudioMenuItem->activate();
-	mStoreAnalysisMenuItem->deactivate();
-	mDoSMSSynthesisMenuItem->deactivate();
-	mWindow->redraw();
-}
-
-void UserInterface::ApplyAnalysisAvailableState()
-{
-	ApplyReadyToAnalyzeState();
 	mCounter->activate();
 	mCounter->range( 0, mSMS->mOriginalSegment.GetnFrames() );
 	mCounter->step( 1 );
 	mCounter->lstep( mSMS->mOriginalSegment.GetnFrames()/10 );
-
-	mStoreAnalysisMenuItem->activate();
-
-	if(mSMS->mHaveConfig)
-	{
-		mMelodyExtractionMenuItem->activate();	
-		mDoSMSSynthesisMenuItem->activate();
-		
-		if ( mSMS->mHaveTransformationScore )
-			mDoSMSTransMenuItem->activate();
-		else
-			mDoSMSTransMenuItem->deactivate();	
-	}
-	else
-	{
-		mMelodyExtractionMenuItem->deactivate();	
-		mDoSMSSynthesisMenuItem->deactivate();
-		mDoSMSTransMenuItem->deactivate();	
-	}
-
-	mShowAnalysisResultsMenuItem->activate();
-	mShowSinTracksMenuItem->activate();
-	mShowFundFreqMenuItem->activate();
-	mViewFrameDataMenuItem->activate();
-	mShowSpectrumAndPeaksMenuItem->activate();
-	mShowResidualSpectrumMenuItem->activate();
-
-	mWindow->redraw();
 }
 
 void UserInterface::DeactivateFrameDataMenuItems()
@@ -447,37 +409,6 @@ void UserInterface::DeactivateFrameDataMenuItems()
 	mWindow->redraw();
 }
 
-void UserInterface::ApplyMelodyAvailableState()
-{
-	mStoreMelodyMenuItem->activate();
-	mWindow->redraw();
-}
-
-void UserInterface::ApplyTransformationReadyState()
-{
-	if ( mSMS->mHaveAnalysis )
-		mDoSMSTransMenuItem->activate();
-	mWindow->redraw();
-}
-
-void UserInterface::ApplySynthesisAvailableState()
-{
-	mStoreSMSSynthSoundMenuItem->activate();
-	mStoreSMSSynthSinusoidalMenuItem->activate();
-	mStoreSMSSynthResidualMenuItem->activate();
-
-	mViewSynthesisResultsMenuItem->activate();
-	mShowSynthesizedAudioMenuItem->activate();
-	mShowSynthesizedSinusoidalMenuItem->activate();
-	mShowSynthesizedResidualMenuItem->activate();
-	mWindow->redraw();
-}
-
-void UserInterface::ApplyTransformationPerformedState()
-{
-	mUndoTransMenuItem->activate();
-	mWindow->redraw();
-}
 
 /*This will evolve towards something more sophisticated*/
 void composeFilename( const std::string& key, std::string& filename )
@@ -499,4 +430,56 @@ void UserInterface::DisplayLicense()
 	helpViewer->load( urlToLoad.c_str() );
 	helpViewer->show();
 	
+}
+
+void UserInterface::UpdateState()
+{
+	mSMS->SegmentExplorer().CloseAll();
+	
+	SMSAppState appState=mSMS->GetState();
+
+	ApplyInitialState();
+
+	if(appState.GetHasConfig())
+	{
+		if(appState.GetHasAudioIn())
+		{
+			mDoSMSAnalysisMenuItem->activate();
+			mShowOriginalAudioMenuItem->activate();
+		}
+		if(appState.GetHasAnalysis())
+			mDoSMSSynthesisMenuItem->activate();
+	}
+	if(appState.GetHasAnalysis())
+	{
+		mStoreAnalysisMenuItem->activate();
+		mShowAnalysisResultsMenuItem->activate();
+		mShowSinTracksMenuItem->activate();
+		mShowFundFreqMenuItem->activate();
+		mViewFrameDataMenuItem->activate();
+		mShowSinusoidalSpectrumMenuItem->activate();
+		mShowSpectrumAndPeaksMenuItem->activate();
+		mShowResidualSpectrumMenuItem->activate();
+		mMelodyExtractionMenuItem->activate();
+		if(appState.GetHasTransformationScore())
+			mDoSMSTransMenuItem->activate();
+	}
+	if(appState.GetHasMelody())
+		mStoreMelodyMenuItem->activate();
+	if(appState.GetHasAudioOut())
+	{
+		mViewSynthesisResultsMenuItem->activate();
+		mStoreSMSSynthSoundMenuItem->activate();
+		mStoreSMSSynthSinusoidalMenuItem->activate();
+		mStoreSMSSynthResidualMenuItem->activate();
+		mShowSynthesizedAudioMenuItem->activate();
+		mShowSynthesizedSinusoidalMenuItem->activate();
+		mShowSynthesizedResidualMenuItem->activate();
+	
+	}
+	
+	if(appState.GetHasTransformation())
+		mUndoTransMenuItem->activate();
+		
+	mWindow->redraw();
 }
