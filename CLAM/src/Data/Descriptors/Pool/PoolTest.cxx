@@ -28,6 +28,7 @@ class PoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testComposingWithApplyOperator );
 	CPPUNIT_TEST( testComposingWithApplyOperatorInverted );
 	CPPUNIT_TEST( testComposingCompositions );
+	CPPUNIT_TEST( testPows );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -105,13 +106,38 @@ private:
 
 	void testComposingCompositions()
 	{
-		/*
 		CLAM::neg myNeg;
 		CLAM::abs myAbs;
+		CLAM::cubed myCubed;
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(2, myNeg(myNeg(myAbs))(-2.0),.0001);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(2, myNeg(myNeg(myAbs))(2.0),.0001);
-		*/
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(-8, myCubed(myNeg(myAbs))(-2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(-8, myCubed(myNeg(myAbs))(2.0),.0001);
+	}
+
+	void testPows()
+	{
+		CLAM::pow<0> pow0;
+		CLAM::pow<1> identity;
+		CLAM::pow<2> squared;
+		CLAM::pow<3> cubed;
+		CLAM::pow<4> pow4;
+		CLAM::pow<5> pow5;
+		CLAM::pow<6> pow6;
+		CLAM::pow<7> pow7;
+		CLAM::pow<8> pow8;
+		CLAM::pow<9> pow9;
+		CLAM::pow<37> pow37;
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(  1, pow0(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(  2, identity(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(  4, squared(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(  8, cubed(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( 16, pow4(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( 32, pow5(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( 64, pow6(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(128, pow7(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(256, pow8(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(512, pow9(2.0),.0001);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(137438953472., pow37(2.0),.0001);
 	}
 
 	void testCalculationCalculed()
