@@ -447,8 +447,8 @@ parse_include_filename:
 		ptr = strptr_copy_nonspaces(ptr,key,256);
 		
 		c = hash_value(cur_defines,key)!=0;
-		conditions_push(c);
 		if (verbose) fprintf(stderr,"ifdef %s = %d\n",key,c);
+		conditions_push(c);
 		return ptr;
 	}
 	if (strncmp(ptr,"ifndef",6)==0)
@@ -460,13 +460,14 @@ parse_include_filename:
 		ptr = strptr_copy_nonspaces(ptr,key,256);
 
 		c = hash_value(cur_defines,key)==0;
-		conditions_push(c);
 		if (verbose) fprintf(stderr,"ifndef %s = %d\n",key,c);
+		conditions_push(c);
 		return ptr;
 	}
 	if (strncmp(ptr,"if",2)==0)
 	{
 		ptr+=2;
+		if (verbose) fprintf(stderr,"if\n");
 do_if:
 		/* TODO! We should parse the #if preprop.directive as well */
 		conditions_push(0);
@@ -474,6 +475,7 @@ do_if:
 	if (strncmp(ptr,"elif",4)==0)
 	{
 		ptr+=4;
+		if (verbose) fprintf(stderr,"elif\n");
 		conditions_pop();
 		goto do_if;
 	}
