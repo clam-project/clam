@@ -289,7 +289,7 @@ public:
 
 	/** 
 	 * Stores component's subitems on the given Storage
-	 * @param store The given storage where the subitem will be stored
+	 * @param storage The given storage where the subitem will be stored
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
@@ -298,7 +298,7 @@ public:
 
 	/** 
 	 * Loads component's subitems from the given Storage
-	 * @param store The given storage where the subitem will be stored
+	 * @param storage The given storage where the subitem will be stored
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
