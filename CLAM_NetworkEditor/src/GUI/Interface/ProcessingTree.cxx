@@ -55,7 +55,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
 	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
 	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
-
+	ProcessingItem * mixer = new ProcessingItem( controls, "AudioMixer" );
+	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
 	ProcessingItem * monoaudiofilereader = new ProcessingItem( inputoutput, "MonoAudioFileReader" );
