@@ -16,6 +16,22 @@ namespace CLAM
 	class InControl;
 	class OutControl;
 
+/**
+ * This class is a helper provided to know which plugins are located inside a shared object.
+ */
+class LadspaPluginExaminer
+{
+public:
+	typedef std::list< std::string > NamesList;
+
+	LadspaPluginExaminer( const std::string & library );
+	NamesList::iterator BeginDescriptors(){return mDescriptorsList.begin();}
+	NamesList::iterator EndDescriptors(){return mDescriptorsList.end();}
+	int GetIndex( const std::string & descriptor );
+private:
+	NamesList mDescriptorsList;
+};
+
 class LadspaLoaderConfig : public ProcessingConfig
 {
 public:
@@ -53,6 +69,7 @@ class LadspaLoader : public Processing
 	std::vector< LADSPA_Data > mOutputControlValues;
 
 	void ConfigurePortsAndControls();
+	void RemovePortsAndControls();
 	void UpdatePointers();
 	
 public:

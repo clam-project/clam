@@ -6,9 +6,42 @@
 #include "OutControl.hxx"
 #include "Audio.hxx"
 
+#include <iostream> // TODO: remove
+
+
 namespace CLAM
 {
+
+LadspaPluginExaminer::LadspaPluginExaminer( const std::string & library )
+{
+	void * sharedObject = dlopen( library.c_str(), RTLD_LAZY );	
+	if(!sharedObject) return;
 	
+	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(sharedObject, "ladspa_descriptor");
+	if(!function)
+		return;
+	
+	int i = 0;
+	const LADSPA_Descriptor * descriptor = function(i);
+	
+	while(descriptor)
+	{
+		mDescriptorsList.push_back( std::string(descriptor->Name) );
+		i++;
+		descriptor = function(i);
+	}
+}
+
+int LadspaPluginExaminer::GetIndex( const std::string & descriptor )
+{
+	int i = 0;
+	NamesList::iterator it;
+	for( it=mDescriptorsList.begin(); it!=mDescriptorsList.end(); it++, i++ )
+		if( (*it) == descriptor ) return i;
+	CLAM_ASSERT( false, "Wrong ladspa descriptor name" );
+	return -1;
+}
+
 LadspaLoader::LadspaLoader()
 	:mInstance(0),
 	mDescriptor(0),
@@ -27,11 +60,12 @@ LadspaLoader::LadspaLoader( const LadspaLoaderConfig & cfg)
 LadspaLoader::~LadspaLoader()
 {
 	mDescriptor = 0;
-	// TODO:cleanup
 	if(mSharedObject)				
 		dlclose(mSharedObject);
-		if(mInstance && mDescriptor)
+	if(mInstance && mDescriptor)
 		mDescriptor->cleanup(mInstance);
+
+	RemovePortsAndControls();
 }
 void LadspaLoader::UpdatePointers()
 {
@@ -82,8 +116,8 @@ bool LadspaLoader::ConcreteStart()
 		mDescriptor->activate(mInstance);
 	return true;
 }
-	
-bool LadspaLoader::ConcreteConfigure( const ProcessingConfig & cfg)
+
+void LadspaLoader::RemovePortsAndControls()
 {
 	std::vector< AudioInPort* >::iterator itInPort;
 	for(itInPort=mInputPorts.begin(); itInPort!=mInputPorts.end(); itInPort++)
@@ -112,27 +146,30 @@ bool LadspaLoader::ConcreteConfigure( const ProcessingConfig & cfg)
 	GetOutPorts().Clear();
 	GetInControls().Clear();
 	GetOutControls().Clear();
+}
+
+	
+bool LadspaLoader::ConcreteConfigure( const ProcessingConfig & cfg)
+{
+	RemovePortsAndControls();
+
 	CopyAsConcreteConfig(mConfig, cfg);
 
 	mSharedObject = dlopen(mConfig.GetSharedObjectName().c_str(), RTLD_LAZY);
+	CLAM_ASSERT( mSharedObject, dlerror() );
 	
-	if(!mSharedObject)
-		throw Err(dlerror());
-
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(mSharedObject, "ladspa_descriptor");
-	if(!function)
-		throw Err(dlerror());
-		
+	CLAM_ASSERT( function, dlerror() );
+
 	mDescriptor = function(mConfig.GetIndex());
-	if(!mDescriptor)
-		throw Err("Couldn't load ladspa descriptor");
+	CLAM_ASSERT( mDescriptor, "Couldn't load ladspa descriptor" );
 
 	mInstance = mDescriptor->instantiate(mDescriptor, mConfig.GetSampleRate());
-	if(!mInstance)
-		throw Err("Couldn't create an instance of the plugin");
-		
+	CLAM_ASSERT( mInstance, "Couldn't create an instance of the plugin" );
+	
 	ConfigurePortsAndControls();
-		return true;
+	
+	return true;
 }
 
 void LadspaLoader::ConfigurePortsAndControls()
