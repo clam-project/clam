@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#if  !defined(CLAM_DOUBLE) && !defined(__GNUC__)
+#if  !defined(CLAM_DOUBLE) && !defined(__GNUC__) && (_MSC_VER<1310)
 
 inline long  abs(long _X)
         {return (labs(_X)); }
