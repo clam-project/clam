@@ -4,6 +4,8 @@ INSTALL=@INSTALL@
 LDDCONF=@LDDCONFIG@
 PREFIX=@prefix@
 MODNAME=$(subst .so,,$(subst libCLAM,,$(PROGRAM)))
+PCNAME=$(subst .so,.pc,$(subst lib,,$(PROGRAM)))
+PKGCONFIG_DB_DIR=@PKGCONFIG_DB_DIR@
 
 SRCDEPS=$(CLAM_PATH)/build/srcdeps/srcdeps
 
@@ -23,6 +25,8 @@ install: $(PROGRAMPATH)$(PROGRAM)
 	$(INSTALL) -m u+rw,go+r include/CLAM/$(MODNAME)/* $(PREFIX)/include/CLAM/$(MODNAME)
 	$(INSTALL) -m 755 $(PROGRAM) $(PREFIX)/lib
 	$(LDDCONF) -n $(PROGRAM) 
+	$(INSTALL) -d -m u+rw,go+rx $(PKGCONFIG_DB_DIR)
+	$(INSTALL) -m u+rw,go+r $(PCNAME) $(PKGCONFIG_DB_DIR)
 
 
 depend: $(SRCDEPS) .FORCE
@@ -63,7 +67,7 @@ $(PROGRAM).app/Contents/Resources/CLAM.icns: $(CLAM_PATH)/build/macosx-utils/CLA
 
 $(PROGRAM).app/Contents/Info.plist:
 	$(CLAM_PATH)/build/macosx-utils/create_Info_plist.sh $(PROGRAM).app/Contents/Info.plist $(PROGRAM)
-
+b
 endif
 
 program: $(PROGRAMPATH)$(PROGRAM)
