@@ -17,8 +17,12 @@ class StatsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( StatsTest );
 	CPPUNIT_TEST( testCentroid );
 	CPPUNIT_TEST( testCentroid_withSingleDelta );
+	CPPUNIT_TEST( testCentroid_withSingleDeltaAtTheFirstBin );
 	CPPUNIT_TEST( testCentroid_withDeltasAtExtremes );
-	CPPUNIT_TEST( testCentroid_withZeros );
+	CPPUNIT_TEST( testCentroid_withEvenZeros );
+	CPPUNIT_TEST( testCentroid_withOddZeros );
+	CPPUNIT_TEST( testCentroid_withEvenConstant );
+	CPPUNIT_TEST( testCentroid_withOddConstant );
 	CPPUNIT_TEST( testMoment1 );
 	CPPUNIT_TEST( testMoment2 );
 	CPPUNIT_TEST( testMoment3 );
@@ -116,6 +120,13 @@ private:
 				_array.AddElem(CLAM::TData(0));
 		}
 	}
+	void fillWith(unsigned int size, CLAM::TData value)
+	{
+		for (unsigned i=0; i<size; i++)
+		{
+				_array.AddElem(value);
+		}
+	}
 
 	CLAM::Array<CLAM::TData> _array;
 
@@ -126,6 +137,7 @@ private:
 		CLAM::Stats stats(&_array);
 		assertDoublesEqual( CLAM::TData(2.09091), stats.GetCentroid(), 0.000001);
 	}
+
 	void testCentroid_withSingleDelta()
 	{
 		fillZeros(50);
@@ -134,16 +146,47 @@ private:
 		assertDoublesEqual( CLAM::TData(40.0), stats.GetCentroid(), 0.000001);
 	}
 	
+	void testCentroid_withSingleDeltaAtTheFirstBin()
+	{
+		fillZeros(50);
+		_array[0]=CLAM::TData(1.0);
+		CLAM::Stats stats(&_array);
+		assertDoublesEqual( CLAM::TData(0.0), stats.GetCentroid(), 0.000001);
+	}
+	
 
-	void testCentroid_withZeros()
+	void testCentroid_withEvenZeros()
 	{
 		fillZeros(50);
 		CLAM::Stats stats(&_array);
 		CLAM::TData value = stats.GetCentroid();
 
+		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
+	}
 
+	void testCentroid_withOddZeros()
+	{
+		fillZeros(51);
+		CLAM::Stats stats(&_array);
+		CLAM::TData value = stats.GetCentroid();
 
-		CPPUNIT_ASSERT( !std::isnan(value) && !std::isinf(value) );
+		assertDoublesEqual( CLAM::TData(25.0), stats.GetCentroid(), 0.000001);
+	}
+
+	void testCentroid_withEvenConstant()
+	{
+		fillWith(50,2.0);
+		CLAM::Stats stats(&_array);
+		CLAM::TData value = stats.GetCentroid();
+
+		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
+	}
+
+	void testCentroid_withOddConstant()
+	{
+		fillWith(51,2.0);
+		CLAM::Stats stats(&_array);
+		CLAM::TData value = stats.GetCentroid();
 
 		assertDoublesEqual( CLAM::TData(25.0), stats.GetCentroid(), 0.000001);
 	}
