@@ -1,3 +1,4 @@
+#define SALTO_CONSOLE
 #ifndef SALTO_CONSOLE
 #include "SALTOApplication.hxx"
 using SALTO::Application;
