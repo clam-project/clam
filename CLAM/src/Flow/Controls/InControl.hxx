@@ -38,7 +38,7 @@ typedef float TControlData;
 * \brief Processing in control class.
 * 
 */
-class InControl : public ControlLinker
+class InControl
 {
 // Attributes:
 private:
@@ -55,9 +55,6 @@ public:
 	TControlData GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
 
-//Redefined Methods
-	OutControlIterator GetOutControls() const;  //Iterators types defined at ControlLinker.hxx
-	InControlIterator GetInControls() const;
 //Constructor/Destructor
 	/**
 	 * \todo constructor rework. 

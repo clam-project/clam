@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-class OutControl : public ControlLinker
+class OutControl
 {
 //Attributes
 private:
@@ -67,10 +67,6 @@ public:
 	{
 		return SendControl( booleanValue ? TControlData(1) : TControlData(-1) );
 	}
-
-//Redefined Methods
-	OutControlIterator GetOutControls() const;
-	InControlIterator GetInControls() const;
 
 	const std::string& GetName(void) const { return mName; }
 };
