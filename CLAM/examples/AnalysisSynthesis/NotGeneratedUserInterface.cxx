@@ -1,4 +1,4 @@
-#include "UserInterface.hxx"
+ #include "UserInterface.hxx"
 #include "AnalysisSynthesisExampleGUI.hxx"
 #include <FL/fl_file_chooser.H>
 #include <FL/Fl.H>
@@ -48,6 +48,8 @@ void UserInterface::LoadConfiguration(void)
 						mAttachedPresentations[i]->GetWindow()->hide();
 				}
 			}
+			mSynthesize->deactivate();
+			mOutputSM->deactivate();
 		}
 		
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
@@ -146,10 +148,13 @@ void UserInterface::DisplayInputSound(void)
 		//MRJ: Don't forget to always refresh associated views!
 		mAttachedViews[0]->Refresh();
 		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[0]->GetWindow());
 			mAttachedPresentations[0]->GetWindow()->hide();
 		}
 		else {
 			mAttachedPresentations[0]->GetWindow()->show();
+			mSmartTile->add(mAttachedPresentations[0]->GetWindow());
+			mSmartTile->equalize();
 		}
  	}
 	Fl::redraw();
@@ -181,10 +186,13 @@ void UserInterface::DisplayOutputSound(void)
 	else{
 		mAttachedViews[1]->Refresh();
 		if( mAttachedPresentations[1]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[1]->GetWindow());
 			mAttachedPresentations[1]->GetWindow()->hide();
 		}
 		else {
 			mAttachedPresentations[1]->GetWindow()->show();
+			mSmartTile->add(mAttachedPresentations[1]->GetWindow());
+			mSmartTile->equalize();
 		}
 	}
 	Fl::redraw();
@@ -198,10 +206,13 @@ void UserInterface::DisplayOutputSoundResidual(void)
 	else{
 		mAttachedViews[2]->Refresh();
 		if( mAttachedPresentations[2]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[2]->GetWindow());
 			mAttachedPresentations[2]->GetWindow()->hide();
 		}
 		else {
 			mAttachedPresentations[2]->GetWindow()->show();
+			mSmartTile->add(mAttachedPresentations[2]->GetWindow());
+			mSmartTile->equalize();
 		}
 	}
 	Fl::redraw();
@@ -215,10 +226,13 @@ void UserInterface::DisplayOutputSoundSinusoidal(void)
 	else{
 		mAttachedViews[3]->Refresh();
 		if( mAttachedPresentations[3]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[3]->GetWindow());
 			mAttachedPresentations[3]->GetWindow()->hide();
 		}
 		else {
 			mAttachedPresentations[3]->GetWindow()->show();
+			mSmartTile->add(mAttachedPresentations[3]->GetWindow());
+			mSmartTile->equalize();
 		}
 	}
 	Fl::redraw();
@@ -297,6 +311,5 @@ void UserInterface::Attach(int i, Audio* obj)
 	
 	mAttachedPresentations[i]->Show();
 	mAttachedViews[i]->Refresh();
+	Fl::redraw();
 }
-
-
