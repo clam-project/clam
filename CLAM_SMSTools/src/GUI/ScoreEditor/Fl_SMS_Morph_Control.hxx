@@ -4,6 +4,10 @@
 #include <FL/Fl_Group.H>
 #include <string>
 #include <map>
+#include "BPF.hxx"
+#include "Signalv0.hxx"
+#include "Signalv1.hxx"
+#include "Slotv0.hxx"
 
 class  Fl_Choice;
 class  Fl_Check_Button;
@@ -24,11 +28,50 @@ namespace CLAMVM
 
 		virtual int handle( int event );
 
+		SigSlot::Signalv0        GlobalEnvelopeChanged;
+		SigSlot::Signalv0        SinAmpEnvelopeChanged;
+		SigSlot::Signalv0        PitchHybEnvelopeChanged;
+		SigSlot::Signalv0        SinFreqEnvelopeChanged;
+		SigSlot::Signalv0        ResAmpEnvelopeChanged;
+		SigSlot::Signalv1<bool>  FrameInterpolationChanged;   
+
+		void RetrieveGlobalEnvelope( CLAM::BPF& );
+		void SetGlobalEnvelope( const CLAM::BPF& );
+
+		void RetrieveSinAmpEnvelope( CLAM::BPF& );
+		void SetSinAmpEnvelope( const CLAM::BPF& );
+
+		void RetrievePitchHybEnvelope( CLAM::BPF& );
+		void SetPitchHybEnvelope( const CLAM::BPF& );
+
+		void RetrieveSinFreqEnvelope( CLAM::BPF & );
+		void SetSinFreqEnvelope( const CLAM::BPF& );
+
+		void RetrieveResAmpEnvelope( CLAM::BPF& );
+		void SetResAmpEnvelope( const CLAM::BPF& );
+
+		void ActivateFrameInterpolation();
+		void DeactivateFrameInterpolation();
+
 	protected:
+
+		
+		SigSlot::Slotv0       GlobalEnvelopeEdited;
+		SigSlot::Slotv0       SinAmpEnvelopeEdited;
+		SigSlot::Slotv0       PitchHybEnvelopeEdited;
+		SigSlot::Slotv0       SinFreqEnvelopeEdited;
+		SigSlot::Slotv0       ResAmpEnvelopeEdited;
+
+		void OnGlobalEnvelopeEdition();
+		void OnSinAmpEnvelopeEdition();
+		void OnPitchHybEnvelopeEdition();
+		void OnSinFreqEnvelopeEdition();
+		void OnResAmpEnvelopeEdition();
 
 		void InitEnvelopeSelectorContents();
 
 		static void sMenuItemSelectedCb( Fl_Choice*, Fl_SMS_Morph_Control* );
+		static void sFrameInterpolationCb( Fl_Check_Button*, Fl_SMS_Morph_Control* );
 
 		void CreateEnvelopeEditors();
 		
@@ -36,6 +79,9 @@ namespace CLAMVM
 		
 		void ShowEnvelopeEditorFor( const char* name );
 		
+		void FrameInterpolationActivated( );
+		
+		void FrameInterpolationDeactivated();
 
 		void DestroyEnvelopeEditors();
 

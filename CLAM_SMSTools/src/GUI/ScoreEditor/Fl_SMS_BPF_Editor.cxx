@@ -5,6 +5,7 @@
 #include "CLAM_Math.hxx"
 #include "BPF.hxx"
 #include "Assert.hxx"
+#include "SMS_ScoreEditor_Helper.hxx"
 
 namespace CLAMVM
 {
@@ -134,10 +135,7 @@ namespace CLAMVM
 	void Fl_SMS_BPF_Editor::InsertPointsIntoBPF( CLAM::BPF& editedBPF )
 	{
 
-		
-		while( editedBPF.Size() )
-			editedBPF.DeleteIndex(0);
-		
+		clearBPF( editedBPF );
 		
 		int i = 0;
 

@@ -8,20 +8,95 @@ namespace CLAMVM
 {
 	const char* SMSMorphConfigurator::mHelpText = "<html><body><h2>Morph</h2><p><strong>Usage:</strong> Morphing between two different sounds. Introduce interpolation value, 0 meaning original sound and 1 sound to morph (X axis = time). Note: More parameters can be controlled from the xml score. You must have a morph file specified in your configuration file in order to use this transformation.</p><p><strong>Explanation:</strong> All frames of the sound (sinusoidal and residual components plus pitch) are interpolated in the frequency domain.</p></body></html>";
 
+	SMSMorphConfigurator::UserDefinedParams::UserDefinedParams(  )
+		: mUserActivatedFrameInterpolation ( false ),
+		  mUserDefinedGlobalEnvelope( false ),
+		  mUserDefinedSinAmpEnvelope( false ),
+		  mUserDefinedSinFreqEnvelope( false ),
+		  mUserDefinedResAmpEnvelope( false ),
+		  mUserDefinedPitchHybEnvelope( false )
+	{
+		FrameInterpolationListener.Wrap( this, 
+						 &SMSMorphConfigurator::UserDefinedParams::OnFrameInterpolationChanged );
+		GlobalEnvelopeListener.Wrap( this,
+					     &SMSMorphConfigurator::UserDefinedParams::OnGlobalEnvelopeChanged );
+		PitchHybEnvelopeListener.Wrap( this,
+					       &SMSMorphConfigurator::UserDefinedParams::OnPitchHybEnvelopeChanged );
+		SinAmpEnvelopeListener.Wrap( this,
+					     &SMSMorphConfigurator::UserDefinedParams::OnSinAmpEnvelopeChanged );
+		SinFreqEnvelopeListener.Wrap( this,
+					      &SMSMorphConfigurator::UserDefinedParams::OnSinFreqEnvelopeChanged );
+		ResAmpEnvelopeListener.Wrap( this,
+					     &SMSMorphConfigurator::UserDefinedParams::OnResAmpEnvelopeChanged );
+	}
+
+	SMSMorphConfigurator::UserDefinedParams::~UserDefinedParams()
+	{
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnFrameInterpolationChanged( bool newState )
+	{
+		mUserActivatedFrameInterpolation = newState;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnGlobalEnvelopeChanged()
+	{
+		mUserDefinedGlobalEnvelope = true;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnPitchHybEnvelopeChanged()
+	{
+		mUserDefinedPitchHybEnvelope = true;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnSinAmpEnvelopeChanged()
+	{
+		mUserDefinedSinAmpEnvelope = true;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnSinFreqEnvelopeChanged()
+	{
+		mUserDefinedSinFreqEnvelope = true;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnResAmpEnvelopeChanged()
+	{
+		mUserDefinedResAmpEnvelope = true;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::Reset()
+	{
+		mUserActivatedFrameInterpolation = false;
+		mUserDefinedGlobalEnvelope = false;
+		mUserDefinedSinAmpEnvelope = false;
+		mUserDefinedSinFreqEnvelope = false;
+		mUserDefinedResAmpEnvelope = false;
+		mUserDefinedPitchHybEnvelope = false;
+	}
+
 	SMSMorphConfigurator::SMSMorphConfigurator()
 	{
 		mHelpWidget = new Fl_Help_View( 0, 0, 100, 100 );
 		mHelpWidget->textsize( 12 );
 
 		mpMorphEditor = new Fl_SMS_Morph_Control( 0, 0, 100, 100 );
-		
+	
 		SetHelpWidgetText();
-		mConfig.AddHybBPF();
-		mConfig.UpdateData();
-		
-		mConfig.GetHybBPF().Insert( 0.0, 0.0 );
-		mConfig.GetHybBPF().Insert( 1.0, 1.0 );
 
+		UserListener().UserHasActed.Connect( UserEditedParameters );
+
+		mpMorphEditor->FrameInterpolationChanged.Connect( UserListener().FrameInterpolationListener );
+		mpMorphEditor->GlobalEnvelopeChanged.Connect( UserListener().GlobalEnvelopeListener );
+		mpMorphEditor->PitchHybEnvelopeChanged.Connect( UserListener().PitchHybEnvelopeListener );
+		mpMorphEditor->SinAmpEnvelopeChanged.Connect( UserListener().SinAmpEnvelopeListener );
+		mpMorphEditor->SinFreqEnvelopeChanged.Connect( UserListener().SinFreqEnvelopeListener );
+		mpMorphEditor->ResAmpEnvelopeChanged.Connect( UserListener().ResAmpEnvelopeListener );
 	
 	}
 
@@ -54,8 +129,8 @@ namespace CLAMVM
 		}
 		conCfg.AddHybBPF();
 		conCfg.UpdateData();
-		conCfg.GetHybBPF().Insert( 0.0, 0.0 );
-		conCfg.GetHybBPF().Insert( 1.0, 1.0 );
+		conCfg.GetHybBPF().Insert( 0.0, 0.5 );
+		conCfg.GetHybBPF().Insert( 1.0, 0.5 );
 				
 	}
 
@@ -63,65 +138,44 @@ namespace CLAMVM
 	{
 		mConfig = static_cast<const CLAM::SMSMorphConfig& >(cfg);
 
-		if ( !mConfig.HasHybBPF() )
-		{
-			mConfig.AddHybBPF();
-			mConfig.UpdateData();
-			mConfig.GetHybBPF().Insert( 0.0, 0.0 );
-			mConfig.GetHybBPF().Insert( 1.0, 1.0 );
+		if ( mConfig.GetInterpolateFrame() ) 
+			mpMorphEditor->ActivateFrameInterpolation();
+		else 
+			mpMorphEditor->DeactivateFrameInterpolation();
 
-		}
+		mpMorphEditor->SetGlobalEnvelope( mConfig.GetHybBPF() );
+
+		mpMorphEditor->SetSinAmpEnvelope( mConfig.GetHybSinAmp() );
+
+		mpMorphEditor->SetSinFreqEnvelope( mConfig.GetHybSinFreq() );
+
+		mpMorphEditor->SetPitchHybEnvelope( mConfig.GetHybPitch() );
+
+		mpMorphEditor->SetResAmpEnvelope( mConfig.GetHybResAmp() );
 
 	}
 	
 	void SMSMorphConfigurator::SetupConfigObject()
 	{
+		mConfig.SetInterpolateFrame( UserListener().UserActivatedFrameInterpolation() );
 
-		if ( !mConfig.HasInterpolateFrame() )
-		{
-			mConfig.AddInterpolateFrame();
-			mConfig.UpdateData();
-		}
-		
-		mConfig.SetInterpolateFrame( false );
+		// HybBPF ( Global envelope ) sync
+		mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybBPF() );
 
-		if ( !mConfig.HasHybSinFreq() )
-		{
-			mConfig.AddHybSinFreq();
-			mConfig.UpdateData();
-		}
-		mConfig.SetHybSinFreq( mConfig.GetHybBPF() );
+		mpMorphEditor->RetrieveSinFreqEnvelope( mConfig.GetHybSinFreq() );
 
-		if ( !mConfig.HasHybSinAmp() )
-		{
-			mConfig.AddHybSinAmp();
-			mConfig.UpdateData();			
-		}
-		mConfig.SetHybSinAmp( mConfig.GetHybBPF() );
+		mpMorphEditor->RetrieveSinAmpEnvelope( mConfig.GetHybSinAmp() );
 
-		if ( !mConfig.HasHybPitch() )
-		{
-			mConfig.AddHybPitch();
-			mConfig.UpdateData();
-		}
+		// Pitch hybridization control envelope sync
 
-		mConfig.SetHybPitch( mConfig.GetHybBPF() );
+		mpMorphEditor->RetrievePitchHybEnvelope( mConfig.GetHybPitch() );
 
-		if ( !mConfig.HasHybResAmp() )
-		{
-			mConfig.AddHybResAmp();
-			mConfig.UpdateData();
-		}
+		// Residual amplitude blending envelope sync
 
-		mConfig.SetHybResAmp( mConfig.GetHybBPF() );
+		mpMorphEditor->RetrieveResAmpEnvelope( mConfig.GetHybResAmp() );
 
-		if ( !mConfig.HasSynchronizeTime() )
-		{
-			mConfig.AddSynchronizeTime();
-			mConfig.UpdateData();			
-		}
 
-		CLAM::BPF tmpBPF(2);
+		CLAM::BPF tmpBPF;
 		tmpBPF.Insert( 0, 0 );
 		tmpBPF.Insert( 1, 1 );
 		mConfig.SetSynchronizeTime( tmpBPF );
@@ -131,6 +185,7 @@ namespace CLAMVM
 	const CLAM::ProcessingConfig& SMSMorphConfigurator::GetConfig()
 	{
 		SetupConfigObject();
+		UserListener().Reset();
 		return mConfig;
 	}
 

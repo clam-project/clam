@@ -91,6 +91,7 @@ inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 		return;
 	
 	mHighlightedConfig = b->value();
+	
 	b->select( mHighlightedConfig );
 	
 	ClearTransformationWidgets();
@@ -292,6 +293,14 @@ SMSScoreEditor::SMSScoreEditor()
 	ResetChangedStatus();
 }
 
+void SMSScoreEditor::RemoveAllConfiguratorsFromScoreBox()
+{
+	while( mScoreContentsBox->size() )
+	{
+		RemoveConfiguratorFromScoreBox( 1 );
+	}
+}
+
 void SMSScoreEditor::OnScoreChanged( )
 {
 	mUserChangedSomething = true;
@@ -347,7 +356,7 @@ void SMSScoreEditor::ShowFactoryProductsOnBrowser()
 
 void SMSScoreEditor::ShowScoreOnBrowser(  const CLAM::SMSTransformationChainConfig& cfg )
 {
-	mScoreContentsBox->clear();
+	RemoveAllConfiguratorsFromScoreBox();
 	CLAM::SMSTransformationChainConfig::const_iterator i = cfg.ConfigList_begin_const();
 
 	i++;

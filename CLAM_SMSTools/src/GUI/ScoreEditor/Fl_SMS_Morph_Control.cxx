@@ -22,7 +22,10 @@ namespace CLAMVM
 		mpFrameInterpSelector->labelsize( 12 );
 		mpFrameInterpSelector->tooltip( "Enable for allow interpolation of frames "
 						"while morphing sounds of different lenghts" );
+		mpFrameInterpSelector->when( FL_WHEN_CHANGED );
+		mpFrameInterpSelector->callback( (Fl_Callback*)sFrameInterpolationCb, this );
 		mpFrameInterpSelector->down_box(FL_DOWN_BOX);
+		mpFrameInterpSelector->value(0);
   		
 		mpEnvelopeSelector = new Fl_Choice( X+5, Y+45, 150, 20, "Sound hybridization controls"  );
 		mpEnvelopeSelector->labelsize( 12 );
@@ -37,8 +40,15 @@ namespace CLAMVM
 		
 		end();
 
+		GlobalEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnGlobalEnvelopeEdition );
+		SinAmpEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnSinAmpEnvelopeEdition );
+		PitchHybEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnPitchHybEnvelopeEdition );
+		SinFreqEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnSinFreqEnvelopeEdition );
+		ResAmpEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResAmpEnvelopeEdition );
+
 		InitEnvelopeSelectorContents();
 		CreateEnvelopeEditors();
+
 	}
 
 	void Fl_SMS_Morph_Control::CreateEnvelopeEditors()
@@ -61,6 +71,119 @@ namespace CLAMVM
 		}
 	}
 
+	void Fl_SMS_Morph_Control::ActivateFrameInterpolation()
+	{
+		mpFrameInterpSelector->value(1);
+		mpFrameInterpSelector->redraw();
+	}
+
+	void Fl_SMS_Morph_Control::DeactivateFrameInterpolation()
+	{
+		mpFrameInterpSelector->value(0);
+		mpFrameInterpSelector->redraw();
+	}
+
+	void Fl_SMS_Morph_Control::RetrieveGlobalEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mGlobalControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetGlobalEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mGlobalControlKey ] );
+
+		editor->Clear();
+		editor->InitPoints( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::RetrieveSinAmpEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mSinAmpControlKey ] );
+		
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetSinAmpEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mSinAmpControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::RetrievePitchHybEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mPitchHybControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetPitchHybEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mPitchHybControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::RetrieveSinFreqEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mSinFreqControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetSinFreqEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mSinFreqControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::RetrieveResAmpEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mResAmpControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetResAmpEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mResAmpControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+	}
+
+
+	void Fl_SMS_Morph_Control::OnGlobalEnvelopeEdition()
+	{
+		GlobalEnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnSinAmpEnvelopeEdition()
+	{
+		SinAmpEnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnPitchHybEnvelopeEdition()
+	{
+		PitchHybEnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnSinFreqEnvelopeEdition()
+	{
+		SinFreqEnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnResAmpEnvelopeEdition()
+	{
+		ResAmpEnvelopeChanged.Emit();
+	}
+
 	Fl_Widget* Fl_SMS_Morph_Control::BuildGlobalEditor()
 	{
 		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
@@ -77,6 +200,8 @@ namespace CLAMVM
 		widget->InitPoints( 0.5 );
 		add( widget );
 
+		widget->PointsChanged.Connect( GlobalEnvelopeEdited );
+		
 		return widget;
 	}
 
@@ -99,6 +224,7 @@ namespace CLAMVM
 		widget->hide();
 		widget->InitPoints( 0.5 );
 		add( widget );
+		widget->PointsChanged.Connect( SinAmpEnvelopeEdited );
 
 		return widget;
 	}
@@ -123,6 +249,7 @@ namespace CLAMVM
 		widget->InitPoints( 0.5 );
 		add( widget );
 
+		widget->PointsChanged.Connect( SinFreqEnvelopeEdited );
 
 		return widget;
 	}
@@ -146,7 +273,9 @@ namespace CLAMVM
 		widget->hide();
 		widget->InitPoints( 0.5 );
 		add( widget );
-
+		
+		widget->PointsChanged.Connect( PitchHybEnvelopeEdited );
+		
 		return widget;
 	}
 
@@ -168,6 +297,9 @@ namespace CLAMVM
 
 		widget->hide();
 		widget->InitPoints( 0.5 );
+
+		widget->PointsChanged.Connect( ResAmpEnvelopeEdited );
+		
 		add( widget );
 
 		return widget;
@@ -226,6 +358,26 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::sMenuItemSelectedCb( Fl_Choice* i, Fl_SMS_Morph_Control* obj )
 	{
 		obj->ShowEnvelopeEditorFor( i->text( i->value() ) );
+	}
+
+	void Fl_SMS_Morph_Control::sFrameInterpolationCb( Fl_Check_Button* b, Fl_SMS_Morph_Control* obj )
+	{
+		if ( b->value() == 0 )
+			obj->FrameInterpolationDeactivated();
+		else
+			obj->FrameInterpolationActivated();
+	}
+
+	void Fl_SMS_Morph_Control::FrameInterpolationActivated()
+	{
+		std::cout << "Frame interpolation activated!" << std::endl;
+		FrameInterpolationChanged.Emit( true );
+	}
+
+	void Fl_SMS_Morph_Control::FrameInterpolationDeactivated()
+	{
+		std::cout << "Frame interpolation deactivated!" << std::endl;
+		FrameInterpolationChanged.Emit( false );
 	}
 
 	void Fl_SMS_Morph_Control::InitEnvelopeSelectorContents()

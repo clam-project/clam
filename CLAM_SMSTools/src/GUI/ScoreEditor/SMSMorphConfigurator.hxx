@@ -4,6 +4,8 @@
 
 #include "SMS_Configurator.hxx"
 #include "SMSMorphConfig.hxx"
+#include "Signalv0.hxx"
+#include "Slotv1.hxx"
 
 class Fl_Widget;
 class Fl_Help_View;
@@ -14,6 +16,78 @@ namespace CLAMVM
 	
 	class SMSMorphConfigurator : public SMSConfigurator
 	{
+	protected:
+		class UserDefinedParams
+		{
+		protected:
+			bool   mUserActivatedFrameInterpolation;
+			bool   mUserDefinedGlobalEnvelope;
+			bool   mUserDefinedSinAmpEnvelope;
+			bool   mUserDefinedSinFreqEnvelope;
+			bool   mUserDefinedResAmpEnvelope;
+			bool   mUserDefinedPitchHybEnvelope;
+			bool   mOnlyGlobalEnvelope;
+
+		public:
+			UserDefinedParams(  );
+			~UserDefinedParams();
+
+			void Reset();
+
+			bool UserOnlyDefinedGlobalEnvelope() const
+			{
+				return mOnlyGlobalEnvelope;
+			}
+
+			bool UserActivatedFrameInterpolation() const
+			{
+				return mUserActivatedFrameInterpolation;
+			}
+
+			bool UserDefinedGlobalEnvelope() const
+			{
+				return mUserDefinedGlobalEnvelope;
+			}
+
+			bool UserDefinedSinAmpEnvelope() const
+			{
+				return mUserDefinedSinAmpEnvelope;
+			}
+			
+			bool UserDefinedSinFreqEnvelope() const
+			{
+				return mUserDefinedSinFreqEnvelope;
+			}
+
+			bool UserDefinedResAmpEnvelope() const
+			{
+				return mUserDefinedResAmpEnvelope;
+			}
+
+			bool UserDefinedPitchHybEnvelope() const
+			{
+				return mUserDefinedPitchHybEnvelope;
+			}
+
+			SigSlot::Slotv1<bool> FrameInterpolationListener;
+			SigSlot::Slotv0       GlobalEnvelopeListener;
+			SigSlot::Slotv0       PitchHybEnvelopeListener;
+			SigSlot::Slotv0       SinAmpEnvelopeListener;
+			SigSlot::Slotv0       SinFreqEnvelopeListener;
+			SigSlot::Slotv0       ResAmpEnvelopeListener;
+			SigSlot::Signalv0     UserHasActed;
+
+		protected:
+
+			void OnFrameInterpolationChanged( bool newState );
+			void OnGlobalEnvelopeChanged();
+			void OnPitchHybEnvelopeChanged();
+			void OnSinAmpEnvelopeChanged();
+			void OnSinFreqEnvelopeChanged();
+			void OnResAmpEnvelopeChanged();
+		};
+		
+
 	public:
 		SMSMorphConfigurator();
 		virtual ~SMSMorphConfigurator();
@@ -36,8 +110,13 @@ namespace CLAMVM
 		Fl_SMS_Morph_Control*         mpMorphEditor;
 		CLAM::SMSMorphConfig          mConfig;
 		static const char*            mHelpText;
-		
-		
+		UserDefinedParams             mUserListener;
+
+		UserDefinedParams&            UserListener()
+		{
+			return mUserListener;
+		}
+
 	};
 }
 
