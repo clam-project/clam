@@ -108,6 +108,13 @@ void UserInterface::cb_Sound(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Sound_i(o,v);
 }
 
+inline void UserInterface::cb_Spectrum_i(Fl_Menu_*, void*) {
+  DisplayOutputSpectrum();
+}
+void UserInterface::cb_Spectrum(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_Spectrum_i(o,v);
+}
+
 inline void UserInterface::cb_Sinusoidal_i(Fl_Menu_*, void*) {
   DisplayOutputSoundSinusoidal();
 }
@@ -186,7 +193,7 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Store Configuration...", 0,  (Fl_Callback*)UserInterface::cb_Store, 0, 0, 0, 0, 12, 0},
  {"Display", 0,  0, 0, 65, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSound, 0, 1, 0, 0, 12, 0},
- {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSpec, 0, 17, 0, 0, 12, 0},
+ {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSpec, 0, 1, 0, 0, 12, 0},
  {0},
  {"Play", 0,  (Fl_Callback*)UserInterface::cb_mPlayInputSound, 0, 1, 0, 0, 12, 0},
  {0},
@@ -209,6 +216,7 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Output", 0,  0, 0, 65, 0, 0, 12, 0},
  {"Display", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound, 0, 0, 0, 0, 12, 0},
+ {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_Spectrum, 0, 16, 0, 0, 12, 0},
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal, 0, 0, 0, 0, 12, 0},
  {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual, 0, 0, 0, 0, 12, 0},
  {0},
@@ -240,8 +248,8 @@ Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 
 Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 23;
 Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 26;
 Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 27;
-Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 32;
-Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 37;
+Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 33;
+Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 38;
 
 inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
   ChangeFrame();
