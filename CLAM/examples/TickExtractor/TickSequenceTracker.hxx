@@ -26,24 +26,19 @@ namespace CLAM
 
 	namespace RhythmDescription
 	{
-		class GlobalPulseGenerator;
-		class PulseGridGenerator;
-
 
 		class TickSequenceTracker : public ProcessingComposite
 		{
 			TickSequenceTrackerConfig mConfig;
-			const char *GetClassName() const {return "TickSequenceTracker";}
-			bool ConcreteConfigure(const ProcessingConfig&);
 
 		public:
 			TickSequenceTracker();
 
-			TickSequenceTracker(const TickSequenceTrackerConfig &c);
-
-			~TickSequenceTracker() {}
+			~TickSequenceTracker();
 
 			const ProcessingConfig &GetConfig() const { return mConfig;}
+			
+			const char *GetClassName() const {return "TickSequenceTracker";}
 
 			bool Do(void);
 
@@ -52,10 +47,10 @@ namespace CLAM
 			bool Do(const Array<TimeIndex>& transients, Pulse& tickSequence,
 				Pulse& beatSequence, IOIHistogram& interOnsetHist );
 
-
-
-
 		protected:
+
+			bool ConcreteConfigure(const ProcessingConfig&);
+
 			bool Compute(const Array<TimeIndex>& transients, 
 				     IOIHistogram& interOnsetHist,
 				     Array<TimeIndex>& ticks,
@@ -63,20 +58,10 @@ namespace CLAM
 				     TData& globalTick,
 				     TData& globalTempo);
 
-			TData CompGlobPulse( GlobalPulseGenerator& gpulse, 
-					     const int pulseLimSup, 
-					     const Array<TData> &forGlobalPulseCalc);
-
 			void StorePulseIndexes( const int nLoops, 
 						const Array<TimeIndex>& pulsesArray,
 						Array<TimeIndex>& mPulses );
 
-			void GeneratePulseGrid( const TData start, const TData gap, const TData end, 
-						PulseGridGenerator& pulseGridGen, 
-						Array<TimeIndex>& pulseArray );
-
-
-			TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
 				       
 
 		private: // children Processing

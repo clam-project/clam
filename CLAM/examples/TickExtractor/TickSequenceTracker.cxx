@@ -41,13 +41,20 @@ namespace CLAM
 
 		TickSequenceTracker::TickSequenceTracker()
 		{
-			Configure(TickSequenceTrackerConfig());
 
+			mPeakDetector.SetParent( this );
+			mTemporalDiff.SetParent( this );
+			mTimeSeriesFinder.SetParent( this );
+			mTickSwingAdjuster.SetParent( this );
+			mTickOnsetsAdjuster.SetParent( this );			
+			mBeatTickAdjuster.SetParent( this );
+			mBeatOnsetsAdjuster.SetParent( this );
+			mTempoEstimator.SetParent( this );
+			mGlobalPREstimator.SetParent( this );
 		}
-
-		TickSequenceTracker::TickSequenceTracker(const TickSequenceTrackerConfig &c)
+		
+		TickSequenceTracker::~TickSequenceTracker()
 		{
-			Configure(c);
 		}
 
 		// Configure the Processing Object according to the Config object
@@ -62,23 +69,27 @@ namespace CLAM
 
 			mPeakDetector.Configure( apdconf );
 
-			mPeakDetector.SetParent( this );
-
 			TimeDifferenceConfig tconf;
 			tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 
 			mTemporalDiff.Configure( tconf );
 		
-			mTemporalDiff.SetParent( this );
-		
 			TimeSeriesFinderConfig tsfConfig;
 
+			//Here the offset is set to 0 as the computation is done
+			// over the histogram peaks
+			//Thus, OffsetStep=tickLimInf ==> no offset seeking
+										
+			tsfConfig.SetOffsetMin( 0 );
+			tsfConfig.SetOffsetStep(  mConfig.GetTickLimInf()*mConfig.GetSamplingRate() );
+			tsfConfig.SetIntervalMin( mConfig.GetTickLimSup()*mConfig.GetSamplingRate());
+			tsfConfig.SetIntervalMax( mConfig.GetTickLimInf()*mConfig.GetSamplingRate() );
+			tsfConfig.SetIntervalStep( 10 );
 			tsfConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
 			tsfConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
 				
 			mTimeSeriesFinder.Configure( tsfConfig );
 
-			mTimeSeriesFinder.SetParent( this );
 
 			AdjustTickWRTSwingConfig swingAdjusterCfg;
 
@@ -88,7 +99,6 @@ namespace CLAM
 
 			mTickSwingAdjuster.Configure( swingAdjusterCfg );
 
-			mTickSwingAdjuster.SetParent( this );
 
 			AdjustTickWRTOnsetsConfig onsetsAdjusterCfg;
 
@@ -100,16 +110,12 @@ namespace CLAM
 
 			mTickOnsetsAdjuster.Configure( onsetsAdjusterCfg );
 
-			mTickOnsetsAdjuster.SetParent( this );
-
 			AdjustBeatWRTTickConfig beatTickAdjusterCfg;
 			beatTickAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
 			beatTickAdjusterCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
 			beatTickAdjusterCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
 
 			mBeatTickAdjuster.Configure( beatTickAdjusterCfg );
-
-			mBeatTickAdjuster.SetParent( this );
 
 
 			AdjustBeatWRTOnsetsConfig beatOnsetsAdjusterCfg;
@@ -120,8 +126,6 @@ namespace CLAM
 
 			mBeatOnsetsAdjuster.Configure( beatOnsetsAdjusterCfg );
 
-			mBeatOnsetsAdjuster.SetParent( this );
-
 			BeatIntervalEstimatorConfig tempoEstCfg;
 
 			tempoEstCfg.SetSampleRate( mConfig.GetSamplingRate() );
@@ -130,8 +134,6 @@ namespace CLAM
 
 			mTempoEstimator.Configure( tempoEstCfg );
 
-			mTempoEstimator.SetParent( this );
-
 			GlobalPulseRateEstimatorConfig gpreCfg;
 
 			gpreCfg.SetSampleRate( mConfig.GetSamplingRate() );
@@ -139,8 +141,6 @@ namespace CLAM
 			gpreCfg.SetGaussianSize( mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize() );
 
 			mGlobalPREstimator.Configure( gpreCfg );
-
-			mGlobalPREstimator.SetParent( this );
 
 			return true;
 		}
@@ -234,20 +234,14 @@ namespace CLAM
 
 			TData tempo;
 
-			const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
-			const TData tempoLimSup = mConfig.GetTempoLimSup();
-			const TData tickLimInfS = mConfig.GetTickLimInf(); //seconds
-			const TData tickLimSupS = mConfig.GetTickLimSup();
-			const int tickLimInf = tickLimInfS*mConfig.GetSamplingRate(); //samples
-			const int tickLimSup = tickLimSupS*mConfig.GetSamplingRate();
-
 			Array<TimeIndex> tickArray, tempoArray;
 
 			Array<TData> forGlobalTempoCalc;
 
 			Array<TData> forGlobalTickCalc;
 		
-			//put a maximum on the IOIHist length
+			//MRJ: put a maximum on the IOIHist length (maximum difference to be considered
+			//is 10s)
 			const TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
 
 			int nLoops = 0;
@@ -290,16 +284,6 @@ namespace CLAM
 
 				///Tick Estimation
 
-				//Here the offset is set to 0 as the computation is done
-				// over the histogram peaks
-				//Thus, OffsetStep=tickLimInf ==> no offset seeking
-				
-				mTimeSeriesFinder.GetInControl("OffsetMin").DoControl( 0 );
-				mTimeSeriesFinder.GetInControl("OffsetStep").DoControl( tickLimInf );
-				mTimeSeriesFinder.GetInControl("IntervalMin").DoControl( tickLimSup );
-				mTimeSeriesFinder.GetInControl("IntervalMax").DoControl( tickLimInf );
-				mTimeSeriesFinder.GetInControl("IntervalStep").DoControl( 10 );
-				
 				//Use of both errors:
 				// default value: 2				
 				//Use of histogram peak weights
@@ -396,12 +380,14 @@ namespace CLAM
 			///Compute Global tempo
 			if (computeBeats)
 			{
+				const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
 				TData rateLowerBound = (mConfig.GetSamplingRate()*60.0)/tempoLimInf;
 				mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( rateLowerBound );
 				mGlobalPREstimator.Do( forGlobalTempoCalc, globalTempo );
 			}
 
 			///Compute Global tick
+			const int tickLimInf = mConfig.GetTickLimInf()*mConfig.GetSamplingRate(); //samples
 			mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( tickLimInf );
 			mGlobalPREstimator.Do( forGlobalTickCalc, globalTick );
 
