@@ -45,18 +45,22 @@ namespace CLAM
  */
 class XercesDomReadingContext
 {
+//	std::list<std::string> _errors;
 	xercesc::DOMElement * _context;
 	xercesc::DOMNodeList * _children;
 	std::stringstream _plainContentToParse;
 	unsigned int _currentChild;
+	XercesDomReadingContext * _parentContext;
 //	std::list<std::string> & _currentPath;
 public:
 	XercesDomReadingContext(xercesc::DOMElement * element)
 	{
+		_parentContext=0;
 		setAt(element);
 	}
 	XercesDomReadingContext(XercesDomReadingContext * oldContext, const char * name)
 	{
+		_parentContext=oldContext;
 		setAt(oldContext->fetchElement(name));
 	}
 	void setAt(xercesc::DOMElement * element)
@@ -96,7 +100,8 @@ public:
 	 */
 	xercesc::DOMElement * fetchElement(const char * name)
 	{
-		CLAM_ASSERT(!contentLeft(), "Fetching element with content left");
+		bool hasContentLeft = contentLeft();
+		CLAM_ASSERT(!hasContentLeft, "Fetching element with content left");
 		CLAM_ASSERT(_currentChild!=_children->getLength(), 
 			"Accessing beyond DOM nodes");
 		xercesc::DOMNode * child = _children->item(_currentChild);
@@ -109,9 +114,13 @@ public:
 		return dynamic_cast<xercesc::DOMElement *>(child);
 	}
 
-	void release()
+	XercesDomReadingContext * release()
 	{
+//		checkNoContentLeftOrError();
+//		checkNoElementLeftOrError();
+		return _parentContext;
 	}
+
 	std::istream & reachableContent()
 	{
 		return _plainContentToParse;
@@ -120,6 +129,7 @@ public:
 	/**
 	 * Dumps the reachable content of text nodes onto the content stream.
 	 * Reachable means continuous Text which may have XML comments inside.
+	 * As side effect trims initial spaces on content
 	 */
 	void fetchContent()
 	{
@@ -132,6 +142,7 @@ public:
 			_plainContentToParse << L(child->getNodeValue());
 		}
 		_plainContentToParse << std::flush;
+		contentLeft();
 	}
 
 	/**
@@ -140,12 +151,12 @@ public:
 	 */
 	bool contentLeft()
 	{
-		char c;
-		do _plainContentToParse.get(c);
-		while (!_plainContentToParse.fail() && isspace(c));
-		if (!_plainContentToParse.fail()) {
-			_plainContentToParse.putback(c);
-			return true;
+		int c = _plainContentToParse.peek();
+		while (c != EOF)
+		{
+			if (!isspace(c)) return true;
+			_plainContentToParse.ignore();
+			c = _plainContentToParse.peek();
 		}
 		_plainContentToParse.clear();
 		return false;
@@ -208,17 +219,25 @@ public:
 	bool Load2(Storable & storable)
 	{
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
+		if (!xmlable) return false;
 		if (xmlable->IsXMLElement())
 		{
 			if (!_context->findElement(xmlable->XMLName())) return false;
-			XercesDomReaderContext newContext(_context, xmlable->XMLName());
-			_context = & newContext;
-
+			XercesDomReaderContext innerContext(_context, xmlable->XMLName());
+			_context = & innerContext;
 			LoadContentAndChildren(xmlable);
-
-			_context = _context->release();
+			_context = innerContext->release();
+			addErrors(innerContext.errors());
+			return true;
 		}
-		return xmlable->XMLContent(_plainContentToParse);
+		LoadContentAndChildren(xmlable);
+		return true;
+	}
+	void LoadContentAndChildren(XMLable* xmlable)
+	{
+		bool result = xmlable->XMLContent(_contex->reachableContent());
+		Component * component = dynamic_cast<Component*>(xmlable);
+		if (component) component->LoadFrom(*this);
 	}
 #endif
 };
