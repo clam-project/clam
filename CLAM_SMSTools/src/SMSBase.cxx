@@ -76,6 +76,18 @@ void SMSBase::DestroyProgressIndicator( )
 	mCurrentProgressIndicator = NULL;
 }
 
+
+
+CLAMGUI::Progress* SMSBase::CreateProgress(const char* title, float from, float to)
+{
+	return new CLAMGUI::NullProgress;
+}
+CLAMGUI::WaitMessage* SMSBase::CreateWaitMessage(const char * title)
+{
+	return new CLAMGUI::StdOutWaitMessage(title);
+}
+
+
 SMSBase::~SMSBase(void)
 {
 	delete mpAnalysis;
