@@ -53,6 +53,10 @@ namespace CLAMVM
 		  mUserDefinedResAmpEnvelope( false ),
 		  mUserDefinedPitchHybEnvelope( false ),
 		  mUserDefinedTimeSyncEnvelope( false ),
+		  mUserDefinedSinShapeW1Envelope( false ),
+		  mUserDefinedSinShapeW2Envelope( false ),
+		  mUserDefinedResShapeW1Envelope( false ),
+		  mUserDefinedResShapeW2Envelope( false ),
 		  mOnlyGlobalEnvelope( true )
 	{
 		FrameInterpolationListener.Wrap( this, 
@@ -69,6 +73,18 @@ namespace CLAMVM
 					     &SMSMorphConfigurator::UserDefinedParams::OnResAmpEnvelopeChanged );
 		TimeSyncEnvelopeListener.Wrap( this, 
 					       &SMSMorphConfigurator::UserDefinedParams::OnTimeSyncEnvelopeChanged );
+
+		SinShapeW1EnvelopeListener.Wrap( this, 
+						 &SMSMorphConfigurator::UserDefinedParams::OnSinShapeW1EnvelopeChanged );
+
+		SinShapeW2EnvelopeListener.Wrap( this, 
+						 &SMSMorphConfigurator::UserDefinedParams::OnSinShapeW2EnvelopeChanged );
+
+		ResShapeW1EnvelopeListener.Wrap( this, 
+						 &SMSMorphConfigurator::UserDefinedParams::OnResShapeW1EnvelopeChanged );
+		
+		ResShapeW2EnvelopeListener.Wrap( this, 
+						 &SMSMorphConfigurator::UserDefinedParams::OnResShapeW2EnvelopeChanged );
 	}
 
 	SMSMorphConfigurator::UserDefinedParams::~UserDefinedParams()
@@ -122,6 +138,34 @@ namespace CLAMVM
 		UserHasActed.Emit();
 	}
 
+	void SMSMorphConfigurator::UserDefinedParams::OnSinShapeW1EnvelopeChanged()
+	{
+		mUserDefinedSinShapeW1Envelope = true;
+		mOnlyGlobalEnvelope = false;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnSinShapeW2EnvelopeChanged()
+	{
+		mUserDefinedSinShapeW2Envelope = true;
+		mOnlyGlobalEnvelope = false;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnResShapeW1EnvelopeChanged()
+	{
+		mUserDefinedResShapeW1Envelope = true;
+		mOnlyGlobalEnvelope = false;
+		UserHasActed.Emit();
+	}
+
+	void SMSMorphConfigurator::UserDefinedParams::OnResShapeW2EnvelopeChanged()
+	{
+		mUserDefinedResShapeW2Envelope = true;
+		mOnlyGlobalEnvelope = false;
+		UserHasActed.Emit();
+	}
+
 	void SMSMorphConfigurator::UserDefinedParams::Reset()
 	{
 		mUserActivatedFrameInterpolation = false;
@@ -131,6 +175,10 @@ namespace CLAMVM
 		mUserDefinedResAmpEnvelope = false;
 		mUserDefinedPitchHybEnvelope = false;
 		mUserDefinedTimeSyncEnvelope = false;
+		mUserDefinedSinShapeW1Envelope = false;
+		mUserDefinedSinShapeW2Envelope = false;
+		mUserDefinedResShapeW1Envelope = false;
+		mUserDefinedResShapeW2Envelope = false;
 	}
 
 	SMSMorphConfigurator::SMSMorphConfigurator()
@@ -151,6 +199,10 @@ namespace CLAMVM
 		mpMorphEditor->SinFreqEnvelopeChanged.Connect( UserListener().SinFreqEnvelopeListener );
 		mpMorphEditor->ResAmpEnvelopeChanged.Connect( UserListener().ResAmpEnvelopeListener );
 		mpMorphEditor->TimeSyncEnvelopeChanged.Connect( UserListener().TimeSyncEnvelopeListener );
+		mpMorphEditor->SinShapeW1EnvelopeChanged.Connect( UserListener().SinShapeW1EnvelopeListener );
+		mpMorphEditor->SinShapeW2EnvelopeChanged.Connect( UserListener().SinShapeW2EnvelopeListener );
+		mpMorphEditor->ResShapeW1EnvelopeChanged.Connect( UserListener().ResShapeW1EnvelopeListener );
+		mpMorphEditor->ResShapeW2EnvelopeChanged.Connect( UserListener().ResShapeW2EnvelopeListener );
 	
 	}
 
@@ -209,6 +261,14 @@ namespace CLAMVM
 
 		mpMorphEditor->SetTimeSyncEnvelope( mConfig.GetSynchronizeTime() );
 
+		mpMorphEditor->SetSinShapeW1Envelope( mConfig.GetHybSinShapeW1() );
+
+		mpMorphEditor->SetSinShapeW2Envelope( mConfig.GetHybSinShapeW2() );
+		
+		mpMorphEditor->SetResShapeW1Envelope( mConfig.GetHybResShapeW1() );
+		
+		mpMorphEditor->SetResShapeW2Envelope( mConfig.GetHybResShapeW2() );
+
 	}
 	
 	void SMSMorphConfigurator::SetupConfigObject()
@@ -232,6 +292,14 @@ namespace CLAMVM
 		mpMorphEditor->RetrieveResAmpEnvelope( mConfig.GetHybResAmp() );
 		
 		mpMorphEditor->RetrieveTimeSyncEnvelope( mConfig.GetSynchronizeTime() );
+
+		mpMorphEditor->RetrieveSinShapeW1Envelope( mConfig.GetHybSinShapeW1() );
+		
+		mpMorphEditor->RetrieveSinShapeW2Envelope( mConfig.GetHybSinShapeW2() );
+		
+		mpMorphEditor->RetrieveResShapeW1Envelope( mConfig.GetHybResShapeW1() );
+		
+		mpMorphEditor->RetrieveResShapeW2Envelope( mConfig.GetHybResShapeW2() );
 
 	}
 

@@ -34,6 +34,10 @@ namespace CLAMVM
 		SigSlot::Signalv0        SinFreqEnvelopeChanged;
 		SigSlot::Signalv0        ResAmpEnvelopeChanged;
 		SigSlot::Signalv0        TimeSyncEnvelopeChanged;
+		SigSlot::Signalv0        SinShapeW1EnvelopeChanged;
+		SigSlot::Signalv0        SinShapeW2EnvelopeChanged;
+		SigSlot::Signalv0        ResShapeW1EnvelopeChanged;
+		SigSlot::Signalv0        ResShapeW2EnvelopeChanged;
 		SigSlot::Signalv1<bool>  FrameInterpolationChanged;   
 
 		void RetrieveGlobalEnvelope( CLAM::BPF& );
@@ -54,6 +58,18 @@ namespace CLAMVM
 		void RetrieveTimeSyncEnvelope( CLAM::BPF& );
 		void SetTimeSyncEnvelope( const CLAM::BPF& );
 
+		void RetrieveSinShapeW1Envelope( CLAM::BPF& );
+		void SetSinShapeW1Envelope( const CLAM::BPF& );
+
+		void RetrieveSinShapeW2Envelope( CLAM::BPF& );
+		void SetSinShapeW2Envelope( const CLAM::BPF& );
+
+		void RetrieveResShapeW1Envelope( CLAM::BPF& );
+		void SetResShapeW1Envelope( const CLAM::BPF& );
+
+		void RetrieveResShapeW2Envelope( CLAM::BPF& );
+		void SetResShapeW2Envelope( const CLAM::BPF& );
+
 		void ActivateFrameInterpolation();
 		void DeactivateFrameInterpolation();
 
@@ -66,6 +82,10 @@ namespace CLAMVM
 		SigSlot::Slotv0       SinFreqEnvelopeEdited;
 		SigSlot::Slotv0       ResAmpEnvelopeEdited;
 		SigSlot::Slotv0       TimeSyncEnvelopeEdited;
+		SigSlot::Slotv0       SinShapeW1EnvelopeEdited;
+		SigSlot::Slotv0       SinShapeW2EnvelopeEdited;
+		SigSlot::Slotv0       ResShapeW1EnvelopeEdited;
+		SigSlot::Slotv0       ResShapeW2EnvelopeEdited;
 
 		void OnGlobalEnvelopeEdition();
 		void OnSinAmpEnvelopeEdition();
@@ -73,6 +93,10 @@ namespace CLAMVM
 		void OnSinFreqEnvelopeEdition();
 		void OnResAmpEnvelopeEdition();
 		void OnTimeSyncEnvelopeEdition();
+		void OnSinShapeW1EnvelopeEdition();
+		void OnSinShapeW2EnvelopeEdition();
+		void OnResShapeW1EnvelopeEdition();
+		void OnResShapeW2EnvelopeEdition();
 
 		void InitEnvelopeSelectorContents();
 
@@ -109,6 +133,10 @@ namespace CLAMVM
 		Fl_Widget* BuildSinFreqEditor();
 		Fl_Widget* BuildResAmpEditor();
 		Fl_Widget* BuildTimeSyncEditor();
+		Fl_Widget* BuildSinShapeW1Editor();
+		Fl_Widget* BuildSinShapeW2Editor();
+		Fl_Widget* BuildResShapeW1Editor();
+		Fl_Widget* BuildResShapeW2Editor();
 
 	
 	protected: // "dynamic widgets"
@@ -156,6 +184,11 @@ namespace CLAMVM
 		const std::string mSinFreqControlKey;
 		const std::string mResAmpControlKey;
 		const std::string mTimeSyncControlKey;
+
+		const std::string mSinShapeW1ControlKey;
+		const std::string mSinShapeW2ControlKey;
+		const std::string mResShapeW1ControlKey;
+		const std::string mResShapeW2ControlKey;
 		
 		bool  mFirstTimeShown;
 

@@ -27,6 +27,10 @@ namespace CLAMVM
 			bool   mUserDefinedResAmpEnvelope;
 			bool   mUserDefinedPitchHybEnvelope;
 			bool   mUserDefinedTimeSyncEnvelope;
+			bool   mUserDefinedSinShapeW1Envelope;
+			bool   mUserDefinedSinShapeW2Envelope;
+			bool   mUserDefinedResShapeW1Envelope;
+			bool   mUserDefinedResShapeW2Envelope;
 			bool   mOnlyGlobalEnvelope;
 
 		public:
@@ -75,6 +79,26 @@ namespace CLAMVM
 				return mUserDefinedTimeSyncEnvelope;
 			}
 
+			bool UserDefinedSinShapeW1Envelope() const
+			{
+				return mUserDefinedSinShapeW1Envelope;
+			}
+
+			bool UserDefinedSinShapeW2Envelope() const
+			{
+				return mUserDefinedSinShapeW2Envelope;
+			}
+
+			bool UserDefinedResShapeW1Envelope() const
+			{
+				return mUserDefinedResShapeW1Envelope;
+			}
+
+			bool UserDefinedResShapeW2Envelope() const
+			{
+				return mUserDefinedResShapeW2Envelope;
+			}
+
 			SigSlot::Slotv1<bool> FrameInterpolationListener;
 			SigSlot::Slotv0       GlobalEnvelopeListener;
 			SigSlot::Slotv0       PitchHybEnvelopeListener;
@@ -82,6 +106,10 @@ namespace CLAMVM
 			SigSlot::Slotv0       SinFreqEnvelopeListener;
 			SigSlot::Slotv0       ResAmpEnvelopeListener;
 			SigSlot::Slotv0       TimeSyncEnvelopeListener;
+			SigSlot::Slotv0       SinShapeW1EnvelopeListener;
+			SigSlot::Slotv0       SinShapeW2EnvelopeListener;
+			SigSlot::Slotv0       ResShapeW1EnvelopeListener;
+			SigSlot::Slotv0       ResShapeW2EnvelopeListener;
 			SigSlot::Signalv0     UserHasActed;
 
 		protected:
@@ -93,6 +121,11 @@ namespace CLAMVM
 			void OnSinFreqEnvelopeChanged();
 			void OnResAmpEnvelopeChanged();
 			void OnTimeSyncEnvelopeChanged();
+
+			void OnSinShapeW1EnvelopeChanged();
+			void OnSinShapeW2EnvelopeChanged();
+			void OnResShapeW1EnvelopeChanged();
+			void OnResShapeW2EnvelopeChanged();
 		};
 		
 
