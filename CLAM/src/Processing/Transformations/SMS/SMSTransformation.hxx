@@ -95,18 +95,16 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			bool ret=true;
 			CopyAsConcreteConfig(mConfig, c);
-			mUseBPF=false;
+			mUseTemporalBPF=false;
 			if(mConfig.HasAmount())
 				mAmountCtrl.DoControl(mConfig.GetAmount());
-				
 			else if(mConfig.HasBPFAmount()){
 				mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
-				mUseBPF=true;}
+				mUseTemporalBPF=true;}
 			else
-				ret=false;
-			return ret;
+				mAmountCtrl.DoControl(0);
+			return true;
 		}
 		
 		const ProcessingConfig& GetConfig() const
@@ -249,7 +247,7 @@ namespace CLAM {
 		 *	parameter that can be automatically extracted from mConfig but it is placed here to make
 		 *	it more explicit.
 		 */
-		bool mUseBPF;
+		bool mUseTemporalBPF;
 	public:
 		/** Control for the amount of the concrete transformation that will be applied. This control
 		 *	value can be manually updated or automatically from the values in the BPF envelope-like
@@ -298,7 +296,7 @@ namespace CLAM {
 		bool Do(const Segment& in, Segment& out)
 		{
 			
-			if(mUseBPF)
+			if(mUseTemporalBPF)
 				UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
 			return Do(UnwrapSegment(in),UnwrapSegment(out));
 			
