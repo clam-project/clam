@@ -77,7 +77,7 @@ namespace CLAM
 		{
 			bool inserted = 
 				GetNames().insert(std::make_pair(name,GetNames().size())).second;
-			CLAM_ASSERT(inserted,"LAla");
+			CLAM_ASSERT(inserted,"ScopeSpec::Add, Attribute already present");
 		}
 	};
 
