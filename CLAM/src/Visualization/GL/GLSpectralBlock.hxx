@@ -71,15 +71,14 @@ private:
 		float h = ( A - Th )/r;
 
 		if ( x < Th )
-			{
-
-				return x*((1.0f-h)/Th);
-			}
+		{
+			return x*((1.0f-h)/Th);
+		}
 		else if ( x >= Th )
-			{
-				std::cout << "G: " << (1.0f-h)+(x-Th)/r << std::endl;
-				return (1.0f-h)+(x-Th)/r;
-			}
+		{
+//			std::cout << "G: " << (1.0f-h)+(x-Th)/r << std::endl;
+			return (1.0f-h)+(x-Th)/r;
+		}
 	}
 
 
@@ -107,6 +106,7 @@ private:
 	const float               Th; // threshold
 	const float               A;  // maximum input amplitude
 	const float               r;  // compression ratio [ 1, 10 ]
+	unsigned                  mBands;
 
 };
 
