@@ -27,6 +27,8 @@
 #include "AudioOutPort.hxx"
 #include "ProcessingComposite.hxx"
 #include "SMSAnalysisCore.hxx"
+#include "Frame.hxx"
+
 
 namespace CLAM 
 {
