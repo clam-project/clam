@@ -293,19 +293,31 @@ namespace CLAM
 
 		double inverseWCSum = 1.0 / mWinCoefSummation;
 
+		CLAM_ASSERT( mnSamples > mWinSize, 
+			     "OnsetDetector::Smoothing() : number of samples to process should be greater than mWinSize" );
+
 		//convolution
+		for ( i = 0; i < mWinSize; i++ )
+		{
+			temp = 0.0;
+			for ( j = -(i-mWinSize)-1; j < mWinSize; j++ )
+				temp+=energy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+
+			const double normConv = temp * inverseWCSum;
+
+			smoothedEnergy[i] = ( normConv > mNoiseThreshold ) ? normConv : mNoiseThreshold;
+
+			mRevSmoothedEnergy[mnSamples-i-1]=smoothedEnergy[i];
+		}
 
 
-		for(i=0; i<mnSamples;i++)
+		for(; i<mnSamples;i++)
 		{	
 			temp=0.0;
 
-			j = ( i < mWinSize ) ? -(i-mWinSize)-1 : 0;
-
-			for(; j<mWinSize; j++)
-			{
+			for(j = 0; j<mWinSize; j++)
 				temp+=energy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
-			}
+
 
 			const double normConv = temp * inverseWCSum;
 
@@ -315,13 +327,24 @@ namespace CLAM
 		}
 
 		//reverse convolution for zero-phase distortion
-		for(i=0; i<mnSamples;i++)
+		for ( i = 0; i < mWinSize; i++ )
+		{
+			temp=0.0;
+
+			for( j = -(i-mWinSize)-1; j<mWinSize; j++)
+			{
+				temp+=mRevSmoothedEnergy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+				
+			}
+			smoothedEnergy[mnSamples-i-1]=temp*inverseWCSum;		
+
+		}
+
+		for(; i<mnSamples;i++)
 		{	
 			temp=0.0;
 
-			j = ( i < mWinSize ) ? -(i-mWinSize)-1 : 0;
-
-			for(; j<mWinSize; j++)
+			for(j=0; j<mWinSize; j++)
 			{
 				temp+=mRevSmoothedEnergy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
 				
