@@ -14,8 +14,10 @@ namespace CLAMVM
 	{
 	public:
 		virtual ~SMSConfigurator() { }
-		virtual Fl_Widget* GetWidget() = 0;
-		virtual const ProcessingConfig& GetConfig() = 0;
+
+		virtual Fl_Widget* GetParametersWidget() = 0;
+		virtual Fl_Widget* GetHelpWidget() = 0;
+		virtual const CLAM::ProcessingConfig& GetConfig() = 0;
 	};
 }
 

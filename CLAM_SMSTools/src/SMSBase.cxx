@@ -73,6 +73,8 @@ SMSBase::SMSBase()
 	mpAnalysis=new SMSAnalysis;
 	mpSynthesis=new SMSSynthesis;
 
+	SetScore.Wrap( this, &SMSBase::OnNewScore );
+
 }
 
 void SMSBase::DestroyWaitMessage( )
@@ -92,6 +94,12 @@ SMSBase::~SMSBase(void)
 {
 	delete mpAnalysis;
 	delete mpSynthesis;
+}
+
+void SMSBase::OnNewScore( const SMSTransformationChainConfig& cfg )
+{
+	mTransformationScore = cfg;
+	ScoreChanged.Emit( mTransformationScore );
 }
 
 void SMSBase::InitConfigs(void)
@@ -825,6 +833,15 @@ void SMSBase::LoadTransformationScore(const std::string& inputFileName)
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mTransformationScore,inputFileName);
+	delete wm;
+	ScoreChanged.Emit( mTransformationScore );
+}
+
+void SMSBase::StoreTransformationScore( const std::string& outputFilename )
+{
+	CLAMGUI::WaitMessage* wm = CreateWaitMessage( "Storing transformation score" );
+	XMLStorage x;
+	x.Dump( mTransformationScore, "SMS_Transformation_Score", outputFilename );
 	delete wm;
 }
 

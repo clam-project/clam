@@ -52,6 +52,20 @@ void UserInterface::cb_mLoadSMSTransScoreMenuItem(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mLoadSMSTransScoreMenuItem_i(o,v);
 }
 
+inline void UserInterface::cb_mEditSMSTransScoreMenuItem_i(Fl_Menu_*, void*) {
+  EditTransformScore();
+}
+void UserInterface::cb_mEditSMSTransScoreMenuItem(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mEditSMSTransScoreMenuItem_i(o,v);
+}
+
+inline void UserInterface::cb_mSaveSMSTransScoreMenuItem_i(Fl_Menu_*, void*) {
+  SaveTransformScore();
+}
+void UserInterface::cb_mSaveSMSTransScoreMenuItem(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mSaveSMSTransScoreMenuItem_i(o,v);
+}
+
 inline void UserInterface::cb_mStoreSMSSynthSoundMenuItem_i(Fl_Menu_*, void*) {
   StoreOutputSound();
 }
@@ -202,6 +216,8 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {0},
  {"SMS Transformation", 0,  0, 0, 64, 0, 0, 12, 56},
  {"Load Score...", 0,  (Fl_Callback*)UserInterface::cb_mLoadSMSTransScoreMenuItem, 0, 0, 0, 0, 12, 56},
+ {"Edit Score...", 0,  (Fl_Callback*)UserInterface::cb_mEditSMSTransScoreMenuItem, 0, 0, 0, 0, 12, 56},
+ {"Save Score...", 0,  (Fl_Callback*)UserInterface::cb_mSaveSMSTransScoreMenuItem, 0, 0, 0, 0, 12, 56},
  {0},
  {"SMS Synthesis", 0,  0, 0, 64, 0, 0, 12, 56},
  {"Save synthesized sound...", 0,  (Fl_Callback*)UserInterface::cb_mStoreSMSSynthSoundMenuItem, 0, 0, 0, 0, 12, 56},
@@ -255,33 +271,35 @@ Fl_Menu_Item* UserInterface::mMelodyFileOpsMenuItem = UserInterface::menu_mMenuB
 Fl_Menu_Item* UserInterface::mStoreMelodyMenuItem = UserInterface::menu_mMenuBar + 11;
 Fl_Menu_Item* UserInterface::mSMSTransFileOpsMenuItem = UserInterface::menu_mMenuBar + 13;
 Fl_Menu_Item* UserInterface::mLoadSMSTransScoreMenuItem = UserInterface::menu_mMenuBar + 14;
-Fl_Menu_Item* UserInterface::mSMSSynthesisFileOpsMenuItem = UserInterface::menu_mMenuBar + 16;
-Fl_Menu_Item* UserInterface::mStoreSMSSynthSoundMenuItem = UserInterface::menu_mMenuBar + 17;
-Fl_Menu_Item* UserInterface::mStoreSMSSynthSinusoidalMenuItem = UserInterface::menu_mMenuBar + 18;
-Fl_Menu_Item* UserInterface::mStoreSMSSynthResidualMenuItem = UserInterface::menu_mMenuBar + 19;
-Fl_Menu_Item* UserInterface::mAppExitMenuItem = UserInterface::menu_mMenuBar + 21;
-Fl_Menu_Item* UserInterface::mSMSAnalysisMenuItem = UserInterface::menu_mMenuBar + 23;
-Fl_Menu_Item* UserInterface::mDoSMSAnalysisMenuItem = UserInterface::menu_mMenuBar + 24;
-Fl_Menu_Item* UserInterface::mMelodyExtractionMenuItem = UserInterface::menu_mMenuBar + 25;
-Fl_Menu_Item* UserInterface::mSMSTransformationMenuItem = UserInterface::menu_mMenuBar + 27;
-Fl_Menu_Item* UserInterface::mDoSMSTransMenuItem = UserInterface::menu_mMenuBar + 28;
-Fl_Menu_Item* UserInterface::mUndoTransMenuItem = UserInterface::menu_mMenuBar + 29;
-Fl_Menu_Item* UserInterface::mSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 31;
-Fl_Menu_Item* UserInterface::mDoSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 32;
-Fl_Menu_Item* UserInterface::mViewMenuItem = UserInterface::menu_mMenuBar + 34;
-Fl_Menu_Item* UserInterface::mShowOriginalAudioMenuItem = UserInterface::menu_mMenuBar + 35;
-Fl_Menu_Item* UserInterface::mShowAnalysisResultsMenuItem = UserInterface::menu_mMenuBar + 36;
-Fl_Menu_Item* UserInterface::mShowSinTracksMenuItem = UserInterface::menu_mMenuBar + 37;
-Fl_Menu_Item* UserInterface::mShowFundFreqMenuItem = UserInterface::menu_mMenuBar + 38;
-Fl_Menu_Item* UserInterface::mViewFrameDataMenuItem = UserInterface::menu_mMenuBar + 39;
-Fl_Menu_Item* UserInterface::mShowSpectrumAndPeaksMenuItem = UserInterface::menu_mMenuBar + 40;
-Fl_Menu_Item* UserInterface::mShowSinusoidalSpectrumMenuItem = UserInterface::menu_mMenuBar + 41;
-Fl_Menu_Item* UserInterface::mShowResidualSpectrumMenuItem = UserInterface::menu_mMenuBar + 42;
-Fl_Menu_Item* UserInterface::mViewSynthesisResultsMenuItem = UserInterface::menu_mMenuBar + 45;
-Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu_mMenuBar + 46;
-Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 47;
-Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 48;
-Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 51;
+Fl_Menu_Item* UserInterface::mEditSMSTransScoreMenuItem = UserInterface::menu_mMenuBar + 15;
+Fl_Menu_Item* UserInterface::mSaveSMSTransScoreMenuItem = UserInterface::menu_mMenuBar + 16;
+Fl_Menu_Item* UserInterface::mSMSSynthesisFileOpsMenuItem = UserInterface::menu_mMenuBar + 18;
+Fl_Menu_Item* UserInterface::mStoreSMSSynthSoundMenuItem = UserInterface::menu_mMenuBar + 19;
+Fl_Menu_Item* UserInterface::mStoreSMSSynthSinusoidalMenuItem = UserInterface::menu_mMenuBar + 20;
+Fl_Menu_Item* UserInterface::mStoreSMSSynthResidualMenuItem = UserInterface::menu_mMenuBar + 21;
+Fl_Menu_Item* UserInterface::mAppExitMenuItem = UserInterface::menu_mMenuBar + 23;
+Fl_Menu_Item* UserInterface::mSMSAnalysisMenuItem = UserInterface::menu_mMenuBar + 25;
+Fl_Menu_Item* UserInterface::mDoSMSAnalysisMenuItem = UserInterface::menu_mMenuBar + 26;
+Fl_Menu_Item* UserInterface::mMelodyExtractionMenuItem = UserInterface::menu_mMenuBar + 27;
+Fl_Menu_Item* UserInterface::mSMSTransformationMenuItem = UserInterface::menu_mMenuBar + 29;
+Fl_Menu_Item* UserInterface::mDoSMSTransMenuItem = UserInterface::menu_mMenuBar + 30;
+Fl_Menu_Item* UserInterface::mUndoTransMenuItem = UserInterface::menu_mMenuBar + 31;
+Fl_Menu_Item* UserInterface::mSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 33;
+Fl_Menu_Item* UserInterface::mDoSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 34;
+Fl_Menu_Item* UserInterface::mViewMenuItem = UserInterface::menu_mMenuBar + 36;
+Fl_Menu_Item* UserInterface::mShowOriginalAudioMenuItem = UserInterface::menu_mMenuBar + 37;
+Fl_Menu_Item* UserInterface::mShowAnalysisResultsMenuItem = UserInterface::menu_mMenuBar + 38;
+Fl_Menu_Item* UserInterface::mShowSinTracksMenuItem = UserInterface::menu_mMenuBar + 39;
+Fl_Menu_Item* UserInterface::mShowFundFreqMenuItem = UserInterface::menu_mMenuBar + 40;
+Fl_Menu_Item* UserInterface::mViewFrameDataMenuItem = UserInterface::menu_mMenuBar + 41;
+Fl_Menu_Item* UserInterface::mShowSpectrumAndPeaksMenuItem = UserInterface::menu_mMenuBar + 42;
+Fl_Menu_Item* UserInterface::mShowSinusoidalSpectrumMenuItem = UserInterface::menu_mMenuBar + 43;
+Fl_Menu_Item* UserInterface::mShowResidualSpectrumMenuItem = UserInterface::menu_mMenuBar + 44;
+Fl_Menu_Item* UserInterface::mViewSynthesisResultsMenuItem = UserInterface::menu_mMenuBar + 47;
+Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu_mMenuBar + 48;
+Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 49;
+Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 50;
+Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 53;
 
 inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
   ChangeFrame();
@@ -901,13 +919,13 @@ UserInterface::UserInterface() {
       o->end();
     }
     { Fl_Menu_Bar* o = mMenuBar = new Fl_Menu_Bar(0, 0, 872, 21);
-      o->box(FL_THIN_UP_BOX);
+      o->box(FL_PLASTIC_UP_BOX);
       o->labelsize(13);
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
     { Fl_Counter* o = mCounter = new Fl_Counter(330, 525, 190, 20, "Frame ");
-      o->box(FL_THIN_UP_BOX);
+      o->box(FL_PLASTIC_UP_BOX);
       o->labelsize(12);
       o->minimum(0);
       o->maximum(0);

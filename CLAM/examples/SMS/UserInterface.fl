@@ -20,25 +20,24 @@ class UserInterface {open
 } {
   decl {public: CLAMGUI::SMSTools* mSMS;} {public
   }
-  Function {UserInterface()} {open
-  } {
+  Function {UserInterface()} {} {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {276 191 872 548} resizable
-      code0 {mWindow2=NULL;} visible
+      xywh {182 177 872 548} hide resizable
+      code0 {mWindow2=NULL;}
     } {
-      Fl_Group {} {open
+      Fl_Group {} {
         xywh {0 0 872 21}
       } {}
-      Fl_Menu_Bar mMenuBar {open
-        private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
+      Fl_Menu_Bar mMenuBar {
+        private xywh {0 0 872 21} box PLASTIC_UP_BOX labelsize 13 textsize 12
       } {
         submenu mFileMenuItem {
-          label File
+          label File open
           private xywh {5 5 100 20} labelsize 12
         } {
           submenu mConfigurationOpsMenuItem {
-            label Configuration open
+            label Configuration
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mLoadCfgMenuItem {
@@ -83,13 +82,23 @@ class UserInterface {open
             }
           }
           submenu mSMSTransFileOpsMenuItem {
-            label {SMS Transformation}
+            label {SMS Transformation} open
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mLoadSMSTransScoreMenuItem {
               label {Load Score...}
               callback {LoadTransformation();}
               private xywh {65 65 100 20} labelsize 12
+            }
+            menuitem mEditSMSTransScoreMenuItem {
+              label {Edit Score...}
+              callback {EditTransformScore();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mSaveSMSTransScoreMenuItem {
+              label {Save Score...}
+              callback {SaveTransformScore();}
+              private xywh {0 0 100 20} labelsize 12
             }
           }
           submenu mSMSSynthesisFileOpsMenuItem {
@@ -160,7 +169,7 @@ Exit();}
           }
         }
         submenu mViewMenuItem {
-          label View open
+          label View
           private xywh {0 0 100 20} labelsize 12
         } {
           menuitem mShowOriginalAudioMenuItem {
@@ -169,7 +178,7 @@ Exit();}
             private xywh {0 0 100 20} labelsize 12
           }
           submenu mShowAnalysisResultsMenuItem {
-            label {Analysis Results} open
+            label {Analysis Results}
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mShowSinTracksMenuItem {
@@ -179,7 +188,7 @@ Exit();}
             }
             menuitem mShowFundFreqMenuItem {
               label {Fundamental Frequency}
-              callback {DisplayFundFreqTrajectory();} selected
+              callback {DisplayFundFreqTrajectory();}
               private xywh {0 0 100 20} labelsize 12
             }
             submenu mViewFrameDataMenuItem {
@@ -238,9 +247,9 @@ Exit();}
       Fl_Counter mCounter {
         label {Frame }
         callback {ChangeFrame();}
-        xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+        xywh {330 525 190 20} box PLASTIC_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
       }
-      Fl_Group {} {open
+      Fl_Group {} {
         xywh {0 25 870 495} resizable
       } {
         Fl_Box mSmartTile {
@@ -256,7 +265,7 @@ Exit();}
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;} open
+mWindow2=NULL;}
       private xywh {837 547 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
       code0 {mWindow2->show();} modal
     } {
@@ -322,4 +331,8 @@ mWindow2=NULL;} open
   }
   decl {void UndoTransform();} {}
   decl {void DisplayFundFreqTrajectory();} {}
+  decl {void EditTransformScore();} {}
+  decl {void SaveTransformScore();} {}
+  decl {SMSScoreEditor* mScoreEditor;} {selected
+  }
 } 

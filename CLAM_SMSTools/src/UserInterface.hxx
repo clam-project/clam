@@ -47,6 +47,12 @@ private:
   static Fl_Menu_Item *mLoadSMSTransScoreMenuItem;
   inline void cb_mLoadSMSTransScoreMenuItem_i(Fl_Menu_*, void*);
   static void cb_mLoadSMSTransScoreMenuItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mEditSMSTransScoreMenuItem;
+  inline void cb_mEditSMSTransScoreMenuItem_i(Fl_Menu_*, void*);
+  static void cb_mEditSMSTransScoreMenuItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mSaveSMSTransScoreMenuItem;
+  inline void cb_mSaveSMSTransScoreMenuItem_i(Fl_Menu_*, void*);
+  static void cb_mSaveSMSTransScoreMenuItem(Fl_Menu_*, void*);
   static Fl_Menu_Item *mSMSSynthesisFileOpsMenuItem;
   static Fl_Menu_Item *mStoreSMSSynthSoundMenuItem;
   inline void cb_mStoreSMSSynthSoundMenuItem_i(Fl_Menu_*, void*);
@@ -168,5 +174,8 @@ public:
 private:
   void UndoTransform();
   void DisplayFundFreqTrajectory();
+  void EditTransformScore();
+  void SaveTransformScore();
+  SMSScoreEditor* mScoreEditor;
 };
 #endif

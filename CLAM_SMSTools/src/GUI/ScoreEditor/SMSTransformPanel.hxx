@@ -2,28 +2,90 @@
 
 #ifndef SMSTransformPanel_hxx
 #define SMSTransformPanel_hxx
-#include <FL/Fl.H>
-#include <FL/Fl_Browser.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Tabs.H>
 
-class SMS_ScoreEditor : Fl_Window {
+#include "SMSTransformationChain.hxx"
+#include "Signalv1.hxx"
+#include "Slotv1.hxx"
+
+namespace CLAMVM
+{
+	class SMSConfigurator;
+}
+
+// forward declarations
+class Fl_Widget;
+class Fl_Group;
+class Fl_Window;
+class Fl_Select_Browser;
+class Fl_Button;
+class Fl_Tabs;
+
+class SMSScoreEditor 
+{
 public:
-  SMS_ScoreEditor();
-private:
-  Fl_Window *mMainWindow;
-  Fl_Group *mChainTopologyDock;
-  Fl_Browser *mRepositoryBox;
-  Fl_Browser *mScoreContentsBox;
-  Fl_Button *mMoveTransUpInScoreButton;
-  Fl_Button *mMoveTransDownInScoreButton;
-  Fl_Button *mRemoveTransFromScoreButton;
-  Fl_Button *mAddTransformToScoreButton;
-  Fl_Group *mTransParmDock;
-  Fl_Button *mApplyChangesToCurrentCfg;
-  Fl_Button *mDiscardConfigButton;
-  Fl_Tabs *mTransTabs;
-  Fl_Button *mApplyChangesToScoreButton;
-  Fl_Button *mDiscardChangesButton;
+	SMSScoreEditor();
+	~SMSScoreEditor();
+	
+	SigSlot::Signalv1< const CLAM::SMSTransformationChainConfig& > TransformationChainChanged;
+	
+	SigSlot::Slotv1< const CLAM::SMSTransformationChainConfig& > SetTransformationScore;
+
+	void Show();
+	void Hide();
+
+protected:
+	CLAM::SMSTransformationChainConfig mChainConfig;
+	bool                               mUserChangedSomething; 
+	CLAMVM::SMSConfigurator*           mpCurrentConfigurator;
+
+	void OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg );
+	void ShowScoreOnBrowser();
+	void ShowFactoryProductsOnBrowser();
+	void ActivateConfigurator( std::string transformName );
+
+private: // widgets
+	Fl_Window *mMainWindow;
+	Fl_Group *mChainTopologyDock;
+	Fl_Select_Browser *mRepositoryBox;
+	Fl_Select_Browser *mScoreContentsBox;
+	Fl_Button *mMoveTransUpInScoreButton;
+	Fl_Button *mMoveTransDownInScoreButton;
+	Fl_Button *mRemoveTransFromScoreButton;
+	Fl_Button *mAddTransformToScoreButton;
+	Fl_Group *mTransParmDock;
+	Fl_Button *mApplyChangesToCurrentCfg;
+	Fl_Button *mDiscardConfigButton;
+	Fl_Tabs *mTransTabs;
+	Fl_Button *mApplyChangesToScoreButton;
+	Fl_Button *mDiscardChangesButton;
+	Fl_Group*    mHelpWidgetContainer;
+	Fl_Group*    mConfigWidgetContainer;
+
+private: // Crappy FLTK attempt at improving the callback mechanism
+ 	inline void cb_mMoveTransUpInScoreButton_i(Fl_Button*, void*);
+	static void cb_mMoveTransUpInScoreButton(Fl_Button*, void*);
+	inline void cb_mMoveTransDownInScoreButton_i(Fl_Button*, void*);
+	static void cb_mMoveTransDownInScoreButton(Fl_Button*, void*);
+	inline void cb_mRemoveTransFromScoreButton_i(Fl_Button*, void*);
+	static void cb_mRemoveTransFromScoreButton(Fl_Button*, void*);
+	inline void cb_mAddTransformToScoreButton_i(Fl_Button*, void*);
+	static void cb_mAddTransformToScoreButton(Fl_Button*, void*);
+	inline void cb_mApplyChangesButton_i(Fl_Button*, void* );
+	static void cb_mApplyChangesButton( Fl_Button*, void* );
+	inline void cb_mDiscardChangesButton_i(Fl_Button*, void*);
+	static void cb_mDiscardChangesButton(Fl_Button*, void*);
+
+	inline void cb_mRepositoryBrowser_i( Fl_Select_Browser*, void* );
+	static void cb_mRepositoryBrowser( Fl_Select_Browser*, void* );
+
+private: // "True" callback methods
+	void DiscardChangesAndClose();
+	void ApplyChangesAndClose();
+	void AddHighlightedToScore();
+	void RemoveHighlightedFromScore();
+	void MoveHighlightedDown();
+	void MoveHighlightedUp();
+
 };
+
 #endif

@@ -37,6 +37,8 @@
 #include "WaitMessage.hxx"
 #include "SDIFIn.hxx"
 #include "SDIFOut.hxx"
+#include "Slotv1.hxx"
+#include "Signalv1.hxx"
 
 namespace CLAM
 {
@@ -61,8 +63,14 @@ namespace CLAM
 		void Run(void);
 		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
+		/** Slot for setting the current score*/
+		SigSlot::Slotv1< const SMSTransformationChainConfig& > SetScore;
+		SigSlot::Signalv1< const SMSTransformationChainConfig& > ScoreChanged;
+
 	protected:
 		
+		/** callback for the SetScore slot */
+		void OnNewScore( const SMSTransformationChainConfig& cfg );
 	
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);
@@ -79,6 +87,9 @@ namespace CLAM
 		void StoreConfig(const std::string& inputFileName);
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
+
+		/** Store transformation score */
+		void StoreTransformationScore( const std::string& outputFileName );
 
 		bool LoadAnalysis(const char* filename);
 		bool LoadAnalysis(const std::string& filename){return LoadAnalysis(filename.c_str());}
