@@ -13,6 +13,7 @@
 
 namespace FlowControlExample
 {
+
 class System
 {
 	// Iteration method type
