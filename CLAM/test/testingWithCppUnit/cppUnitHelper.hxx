@@ -22,7 +22,11 @@
 #define _cppUnitHelper_hxx_
 
 #include <iostream>
+#include <typeinfo>
+//#include <cstddef> seems not necessary //definition of std::size_t
 #include <cppunit/TestSuite.h>
+#include <cppunit/TestAssert.h>
+
 
 namespace CLAMTest
 {
@@ -33,19 +37,25 @@ namespace CLAMTest
 			for (unsigned i=0; i<n; i++) std::cout << " ";
 		}
 		typedef std::vector<CppUnit::Test *> Tests;
-
+		
 	public:
 		static void printTestNames(const CppUnit::Test* test, const unsigned ind=0)
 		{
-			indent(ind);
+			
 			const CppUnit::TestSuite * suite = dynamic_cast<const CppUnit::TestSuite*>( test );
 			if (suite) {
+				std::cout << std::endl;
+				indent(ind);
 				std::cout << "+ " << suite->getName() << std::endl;
 				Tests::const_iterator it;
 				for (it=suite->getTests().begin(); it!=suite->getTests().end(); it++ )
 					printTestNames(*it, ind+4);
 			} else {
-				std::cout << ". " << test->getName() << std::endl;
+				std::string testName = test->getName();
+				indent(ind);
+				std::cout << ". "
+					<< testName.replace(0,testName.find(".")+1,"")
+					<< std::endl;
 			}
 			if (ind==0) {
 				std::cout << "\n\n";
@@ -53,6 +63,49 @@ namespace CLAMTest
 		} 
 	};
 
-}; //namespace CLAMTest
+#define CLAMTEST_ASSERT_EQUAL_RTTYPES( expected, actual ) \
+	CPPUNIT_ASSERT_EQUAL( \
+		typeid(expected), \
+		typeid(actual) )
+
+} //namespace CLAMTest
+
+// Helper traits for assertions
+namespace CppUnit
+{
+	template<>
+	struct assertion_traits< std::type_info >
+	{
+		static bool equal( const std::type_info& x, const std::type_info& y )
+		{
+			return 0!=(x == y);
+		}
+
+		static std::string toString( const std::type_info& x )
+		{
+			std::string text = std::string("'") + x.name() + "'";    // adds quote around the string to see whitespace
+			CppUnit::OStringStream ost;
+			ost << text;
+			return ost.str();
+		}
+	};
+
+	// traits for avoiding warning message.
+	template<>
+	struct assertion_traits< std::size_t >
+	{
+		static bool equal( const std::size_t& x, const std::size_t& y )
+		{
+			return (x==y);
+		}
+		static std::string toString( const std::size_t& x)
+		{
+			CppUnit::OStringStream ost;
+			ost << int(x);
+			return ost.str();
+		}
+	};
+
+} //namespace CppUnit
 
 #endif
