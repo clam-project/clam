@@ -64,9 +64,10 @@ namespace CLAM
 		}
 		virtual void XmlRestoreData(Storage & storage, void * data, unsigned size ) const
 		{
-//			std::string name;
-//			XMLAdapter<std::string> nameAdapter(name,"name",false);
-//			storage.Load(nameAdapter);
+			std::string name;
+			XMLAdapter<std::string> nameAdapter(name,"name",false);
+			storage.Load(nameAdapter);
+			CLAM_ASSERT(name==GetName(),"Loading a attribute pool for a different attribute");
 			XmlRestoreConcreteData(storage,(AttributeType*)data,size,(AttributeType*)0);
 		}
 	private:

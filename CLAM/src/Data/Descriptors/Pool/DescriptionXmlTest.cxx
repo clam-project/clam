@@ -22,6 +22,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DescriptionXmlTest );
 class DescriptionXmlTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DescriptionXmlTest );
+	CPPUNIT_TEST(testDumpAttributePool_withSimpleData);
+	CPPUNIT_TEST(testDumpAttributePool_withComponentData);
+	CPPUNIT_TEST(testRestoreAttributePool_withSimpleData);
+	CPPUNIT_TEST(testRestoreAttributePool_withComponentData);
+	CPPUNIT_TEST(testRestoreAttributePool_withDifferentNameFails);
 	CPPUNIT_TEST(testDumpScopePool_withNoAttributes);
 	CPPUNIT_TEST(testDumpScopePool_withAttributesAndZeroSize);
 	CPPUNIT_TEST(testDumpScopePool_withAttributes);
@@ -29,10 +34,6 @@ class DescriptionXmlTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testDumpScopePool_withComponentAttributes);
 	CPPUNIT_TEST(testDumpScopePool_withNonInstantiatedAttributes);
 	CPPUNIT_TEST(testDumpDescriptionDataPool_withAllKindsOfData);
-	CPPUNIT_TEST(testDumpAttributePool_withSimpleData);
-	CPPUNIT_TEST(testDumpAttributePool_withComponentData);
-	CPPUNIT_TEST(testRestoreAttributePool_withSimpleData);
-	CPPUNIT_TEST(testRestoreAttributePool_withComponentData);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -164,6 +165,31 @@ private:
 		CPPUNIT_ASSERT_EQUAL(value0, data[0].GetValue());
 		CPPUNIT_ASSERT_EQUAL(value1, data[1].GetValue());
 		CPPUNIT_ASSERT_EQUAL(value2, data[2].GetValue());
+
+		pool.Deallocate();
+	}
+	void testRestoreAttributePool_withDifferentNameFails()
+	{
+		std::istringstream input(
+			"<AttributePool name=\"DifferentName\">"
+			"0 -1 -2"
+			"</AttributePool>");
+
+		CLAM::Attribute<int> attribute("MyAttribute");
+		CLAM::AttributePool pool;
+		pool.SetDefinition(attribute);
+		pool.Allocate(3);
+
+		try
+		{
+			CLAM::XmlStorage::Restore(pool, input);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Loading a attribute pool for a different attribute";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
 
 		pool.Deallocate();
 	}
