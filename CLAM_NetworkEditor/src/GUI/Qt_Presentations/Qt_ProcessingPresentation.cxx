@@ -34,8 +34,6 @@
 #include <cmath>
 #include <qcursor.h> 
 
-#include <iostream> // TODO: remove
-
 namespace NetworkGUI
 {
 
@@ -69,7 +67,6 @@ void Qt_ProcessingPresentation::Initialize( const std::string & nameFromNetwork,
 
 void Qt_ProcessingPresentation::UpdateSize( bool hasToResize )
 {
-	std::cout << "updating size" << std::endl;
 	int maxWidth;
 	int maxHeight;
 	QString name(mName.c_str());
@@ -426,7 +423,6 @@ void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
 {
 	if(mResizePosition!=NoResize)
 	{
-		std::cout << "finished resizing" << std::endl;
 		mResizePosition = NoResize;
 		setCursor( QCursor(ArrowCursor) );
 	}
@@ -437,39 +433,33 @@ void Qt_ProcessingPresentation::EvaluateIfClickingToResize( const QPoint & pos )
 {
 	if( QRect( 12, 7, 5, 5 ).contains(pos) ) // up left
 	{
-		std::cout << "resizing up left" << std::endl;
 		setCursor( QCursor(SizeFDiagCursor) );
 		mResizePosition = UpLeft;
 	}
 	if( QRect( width()/2 - 5 , 7, 5, 5 ).contains(pos) ) 
 	{
-		std::cout << "resizing up" << std::endl;
 		setCursor( QCursor(SizeVerCursor) );
 		mResizePosition = Up;
 	}
 	if( QRect( width()-17, 7, 5, 5 ).contains(pos) ) 
 	{
-		std::cout << "resizing up right" << std::endl;
 		setCursor( QCursor(SizeBDiagCursor) );
 		mResizePosition = UpRight;
 	}
 
 	if( QRect( 12, height()-12, 5, 5 ).contains(pos) ) 
 	{
-		std::cout << "resizing down left" << std::endl;
 		setCursor( QCursor(SizeBDiagCursor) );
 		mResizePosition = DownLeft;
 	}
 	if( QRect( width()/2 - 5, height()-12, 5, 5 ).contains(pos) ) 
 	{
-		std::cout << "resizing down" << std::endl;
 		mResizePosition = Down;
 		setCursor( QCursor(SizeVerCursor) );
 
 	}
 	if( QRect( width()-17, height()-12, 5, 5 ).contains(pos) ) 
 	{
-		std::cout << "resizing down right" << std::endl;
 		setCursor( QCursor(SizeFDiagCursor) );
 		mResizePosition = DownRight;
 	}
@@ -609,6 +599,12 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
 {
 	mSelected = false;
+	repaint();
+}
+
+void Qt_ProcessingPresentation::SelectProcessingPresentation()
+{
+	mSelected = true;
 	repaint();
 }
 

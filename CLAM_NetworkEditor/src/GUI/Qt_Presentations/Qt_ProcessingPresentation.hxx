@@ -67,6 +67,7 @@ public:
 	void Hide();
 	void EmitPositionOfChildren();
 
+	void SelectProcessingPresentation();
 	void UnSelectProcessingPresentation();
 	void Move( const QPoint & );
 	void Initialize( const std::string & nameFromNetwork, QWidget * parent );
