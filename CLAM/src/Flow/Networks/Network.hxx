@@ -63,7 +63,10 @@ public:
 
 	// methods used to create processings and get them
 	Processing& GetProcessing( const std::string & name );
+	// add method using a pointer to a new processing
 	void AddProcessing( const std::string &, Processing* );
+	// add method using a key to get the new processing from factory
+	void AddProcessing( const std::string & name, const std::string & key );
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name );
 
@@ -74,10 +77,7 @@ public:
 	ProcessingsMap::iterator EndProcessings();
 	ProcessingsMap::const_iterator BeginProcessings() const;
 	ProcessingsMap::const_iterator EndProcessings() const;
-	Nodes::iterator BeginNodes();
-	Nodes::iterator EndNodes();
-	Nodes::const_iterator BeginNodes() const;
-	Nodes::const_iterator EndNodes() const;
+
 	InPort & GetInPortByCompleteName( const std::string& );
 	OutPort & GetOutPortByCompleteName( const std::string& );
 	InControl & GetInControlByCompleteName( const std::string& );
@@ -99,12 +99,18 @@ private:
 	Nodes mNodesToConfigure;
 
 	// helpers
+	Nodes::iterator BeginNodes();
+	Nodes::iterator EndNodes();
+	Nodes::const_iterator BeginNodes() const;
+	Nodes::const_iterator EndNodes() const;
+
 	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
 	std::string GetLastIdentifier( const std::string& );
 	std::string GetProcessingIdentifier( const std::string& );
 	static char NamesIdentifiersSeparator();
+
 
 
 	FlowControl* mFlowControl;
