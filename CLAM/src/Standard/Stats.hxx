@@ -220,32 +220,75 @@ public:
 		return mMinElement(*mData);
 	}
 
+	/**
+	 * Computes and returns the Slope.
+	 *
+	 * The slope gives an idea of the mean pendent on the array:
+	 * - Less than zero means that is decreasing
+	 * - More than zero means that is increasing
+	 * - Zero means that any tendency is the dominant
+	 * 
+	 * The Slope is defined as:
+	 * \f[
+	 * 	{N \sum{i x_i } - \sum{i} \sum{x_i} } 
+	 * 		\over
+	 * 	( {\sum{i^2} - \sum{i}^2 } ) \sum{x_i}
+	 * \f]
+	 *
+	 * We can deduce that this is equivalent to:
+	 * \f[
+	 * 	6  \times { 2 centroid - N + 1}
+	 * 		\over
+	 * 	{ N (N-1) (N+1)}
+	 * \f]
+	 * 
+	 * The slope is relative to the array position index.
+	 * If you want to give to the array position a dimentional meaning,
+	 * (p.e. frequency or time) then you should divide by the gap between array positions.
+	 * for example GetSlope/BinFreq for a FFT or GetSlope*SampleRate for an audio
+	 *
+	 */
+
 	U GetSlope()
 	{
-		// TODO: Sums where Y is not used can be computed out loop
 		// TODO: Sums where Y is used can be taken from Mean and Centroid
 
 		const Array<T>& Y = *mData;
 		const TSize size  = mData->Size();
 
-		TData f = 1; // Temporary place holder to remember where to normalize the bin index
-		TData sumY = 0;
-		TData sumXY   = 0;
-		TData sumXX = 0;
+		// \sum^{i=0}_{N-1}(x_i)
+//		const TData sumY = GetMean()*size;
+		// \sum^{i=0}_{N-1}(i x_i)
+//		const TData sumXY = GetCentroid()*GetMean()*size;
+		// \sum^{i=0}_{N-1}(i)
+//		const TData sumX = (size-1)*size/2.0;
+		// \sum^{i=0}_{N-1}(i^2)
+//		const TData sumXX = (size-1)*(size)*(size+size-1)/6.0;
 
-		for (TIndex i=0; i<size; i++)
-		{
-			sumY += Y[i];
-			sumXY += i*Y[i];
-			sumXX += i*i;
-		}
-		TData sumX = (size-1)*size/2.0;
+		//TData num = size*sumXY - sumX*sumY; 
+		// = size Centroid Mean size - (size-1)(size)(size)Mean/2
+		// = size^2 mean (Centroid - (size-1)/2)
+		//num = size*size*GetMean()*(GetCentroid()-(size-1)/2.0);
 
-		TData num = size*sumXY - sumX*sumY;
-		TData denum = (size*sumXX - sumX*sumX)*sumY;
+		// size*sumXX - sumX*sumX =
+		// = size (size-1) size (size+size-1)/6 - (size-1)^2(size)^2/4
+		// = size^2 ( (size-1)(size+size-1)/6 - (size-1)^2/4 )
+		// = size^2 (size-1)( (size+size-1)/6 - (size-1)/4 )
+		// = size^2 (size-1)( (4*size-2) - (3*size-3) )/12
+		// = size^2 (size-1) (size+1)/12
 
-		// Normalize by the total amplitude
-		return num/(denum*f);
+		//TData denum = (size*sumXX - sumX*sumX)*sumY;
+		// = size mean size^2 (size-1) (size+1) / 12
+		// = size^3 mean (size-1) (size+1) / 12
+		//denum = size*size*size * GetMean() * (size-1) * (size+1) /12.0;
+
+		// return num/denum;
+		// = size^2 mean (Centroid - (size-1)/2) / (size^3 mean (size-1) (size+1) / 12)
+		// = (Centroid - (size-1)/2) / (size (size-1) (size+1) /12)
+		// = ( 12*centroid - 6*size + 6 ) / ( size (size-1) (size+1) )
+		// = 6 (2*centroid - size + 1)) / ( size (size-1) (size+1) )
+		return 6*(2*GetCentroid() - size + 1) / (size * (size-1) * (size+1));
+
 	}
 	U GetTilt()
 	{
