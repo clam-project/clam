@@ -151,15 +151,17 @@ TInt32 SpectralAnalysisConfig::PowerOfTwo(TInt32 size)
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
-SpectralAnalysis::SpectralAnalysis():mInput("Input",this,1),
-		mOutput("Output",this,1)
+SpectralAnalysis::SpectralAnalysis()
+	: mInput("Input",this ),
+	  mOutput("Output",this )
 {
 	AttachChildren();
 	Configure(SpectralAnalysisConfig());
 }
 
-SpectralAnalysis::SpectralAnalysis(SpectralAnalysisConfig& cfg):mInput("Input",this,1),
-		mOutput("Output",this,1)
+SpectralAnalysis::SpectralAnalysis(SpectralAnalysisConfig& cfg)
+	: mInput("Input",this),
+   	  mOutput("Output",this)
 {
 	AttachChildren();
 	Configure(cfg);
@@ -167,12 +169,6 @@ SpectralAnalysis::SpectralAnalysis(SpectralAnalysisConfig& cfg):mInput("Input",t
 
 SpectralAnalysis::~SpectralAnalysis()
 {
-}
-
-void SpectralAnalysis::Attach(Audio& in, Spectrum &out)
-{
-	mInput.Attach(in);
-	mOutput.Attach(out);
 }
 
 bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
@@ -229,7 +225,15 @@ void SpectralAnalysis::AttachChildren()
 	mPO_FFT.SetParent(this);
 }
 
-bool SpectralAnalysis::Do(void){return Do(mInput.GetData(),mOutput.GetData());}
+bool SpectralAnalysis::Do(void)
+{
+	mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+	bool result =  Do(mInput.GetAudio(),mOutput.GetData());
+	mInput.Consume();
+	mOutput.Produce();
+
+	return result;
+}
 
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
@@ -265,3 +269,4 @@ bool SpectralAnalysis::Do(Segment& in)
 {
 	return Do(in.GetFrame(in.mCurrentFrameIndex++));
 }
+

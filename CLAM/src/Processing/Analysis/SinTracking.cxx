@@ -21,11 +21,18 @@ using namespace CLAM;
 	}
 	
 	SinTracking::SinTracking()
+		: mInput("Input", this ),
+		  mOutput("Output", this ),
+		  mFundFreqValue("Fund Freq Value", this )
 	{
 		Configure(SinTrackingConfig());
 	}
 
 	SinTracking::SinTracking(const SinTrackingConfig &c )
+		: mInput("Input", this ),
+		  mOutput("Output", this ),
+		  mFundFreqValue("Fund Freq Value", this )
+
 	{
 		Configure(c);
 	}
@@ -78,29 +85,12 @@ using namespace CLAM;
 	//Supervised mode
 	bool  SinTracking::Do(void) 
 	{
-		CLAM_ASSERT(false, "SinTracking::Do(): Supervised mode not implemented");
-		return false;
+		bool result = Do( mInput.GetData(), mOutput.GetData() );
+		mInput.Consume();
+		mOutput.Produce();
+		return result;
 	}
   
-
-	bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray,TData fn)
-	{
-		//oPeakArray initialization		
-		oPeakArray.AddIndexArray();
-		oPeakArray.AddPhaseBuffer();
-		oPeakArray.AddBinWidthBuffer();
-		oPeakArray.AddBinPosBuffer();
-		oPeakArray.AddIsIndexUpToDate();
-		oPeakArray.UpdateData();
-		if(mHarmonic && fn>0){
-			mLastHarmonic=true;
-			return DoHarmonic(iPeakArray,oPeakArray,fn);}
-		else{
-			if(mLastHarmonic) KillAll();
-			mLastHarmonic=false;
-			return DoInharmonic(iPeakArray,oPeakArray);}
-	}
-
 	bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
 	{
 		//oPeakArray initialization		
@@ -110,7 +100,19 @@ using namespace CLAM;
 		oPeakArray.AddBinPosBuffer();
 		oPeakArray.AddIsIndexUpToDate();
 		oPeakArray.UpdateData();
-		return DoInharmonic(iPeakArray,oPeakArray);
+	
+		TData fn = mFundFreqValue.GetLastValue();
+		if(mHarmonic && fn>0)
+		{
+			mLastHarmonic=true;
+			return DoHarmonic(iPeakArray,oPeakArray,fn);
+		}
+		else
+		{
+			if(mLastHarmonic) KillAll();
+			mLastHarmonic=false;
+			return DoInharmonic(iPeakArray,oPeakArray);
+		}
 	}
 
 

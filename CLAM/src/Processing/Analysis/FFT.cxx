@@ -65,7 +65,7 @@ namespace CLAM {
 		// Input object checking
 		if (in.GetSize()!=mSize) { 
 			std::stringstream ss;
-			ss << "FFT_rfftw::Do: Wrong size in FFT Audio input\n"
+			ss << "FFT::Do: Wrong size in FFT Audio input\n"
 			   << "  Expected: " << mSize << ", used " << in.GetSize();
 			CLAM_ASSERT(0,ss.str().c_str());
 		}
@@ -73,7 +73,7 @@ namespace CLAM {
 			CLAM_ASSERT(0,"FFT Do: Float attribute required for Audio object.");
 		if (out.GetSize() != mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
 			std::stringstream ss;
-			ss << "FFT_rfftw::Do: wrong size  Spectrum.\n"
+			ss << "FFT::Do: wrong size  Spectrum.\n"
 			   << "  Expected: " << mSize/2+1 << ", used " << out.GetSize();
 			CLAM_ASSERT(0,ss.str().c_str());
 		}

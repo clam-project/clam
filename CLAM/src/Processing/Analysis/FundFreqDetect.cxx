@@ -43,11 +43,17 @@ namespace CLAM {
 	}
 
 	FundFreqDetect::FundFreqDetect()
+		: mInput( "Input", this),
+		  mOutput( "Output", this ),
+		  mFundFreqValue( "Fund Freq Value", this )
 	{
 		Configure(FundFreqDetectConfig());
 	}
 
 	FundFreqDetect::FundFreqDetect(const FundFreqDetectConfig &c )
+		: mInput( "Input", this),
+		  mOutput( "Output", this ),
+		  mFundFreqValue( "Fund Freq Value", this )
 	{
 		Configure(c);
 	}
@@ -112,8 +118,10 @@ namespace CLAM {
   /* The supervised Do() function */
 	bool  FundFreqDetect::Do(void) 
 	{
-		CLAM_ASSERT(false, "Do(): Supervised mode not implemented");
-		return false;
+		bool result = Do( mInput.GetData(), mOutput.GetData() );
+		mInput.Consume();
+		mOutput.Produce();
+		return result;
 	}
   
   /* The  unsupervised Do() function */
@@ -138,7 +146,11 @@ namespace CLAM {
 		tmpFreq.SetnMaxCandidates(int(mnMaxCandidates));
 
 		// not enough peak information available for fundamental frequency detection");
-		if (peaks.GetnPeaks() <= 0) return false;
+		if (peaks.GetnPeaks() <= 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
+			return false;
+		}
 
 		// Calculate Maximun Magnitude Peak
 		TIndex nMaxMagPeak = peaks.GetMaxMagPos();
@@ -198,7 +210,10 @@ namespace CLAM {
 
 	  // If there no valid peaks for calculate a fundamental frequency
 	  if (peaks.GetIndexArray().Size() <= 0)
-	    return false;
+	  {
+		mFundFreqValue.SendControl(0.0f);
+		return false;
+	  }
 	  
 	  // Find maximun magnitude peak from the selected ones
 	  nMaxMagPeak = peaks.GetMaxMagIndex(); // only indexed peaks
@@ -302,7 +317,10 @@ namespace CLAM {
 	  }
 
 		if(tmpFreq.GetnCandidates() <= 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
 			return false;
+		}
 
 	  // 3.- CALCULATE ERRORS (TMW procedure)
     double myf=0, mye=0; 
@@ -377,11 +395,15 @@ namespace CLAM {
 				outFreq.AddElem(tmpFreq2.GetFreq(i), tmpFreq2.GetErr(i));
 
 		if(outFreq.GetnCandidates() == 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
 			return false;
+		}
 
 	  // Added to get into account fundamental frequency for consecutive frames
 	  // Set Reference fundFreq to last FundFreq
 	  mReferenceFundFreq = outFreq.GetFreq(0);
+	  mFundFreqValue.SendControl( mReferenceFundFreq );
 	  return true;
 	}
 	

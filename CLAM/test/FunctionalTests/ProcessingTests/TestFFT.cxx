@@ -154,13 +154,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			//processing.Attach( input, output );
 			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -192,13 +192,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			// processing.Attach( input, output );
 			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -233,13 +233,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			// processing.Attach( input, output );
 			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -271,13 +271,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			// processing.Attach( input, output );
 			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -307,13 +307,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
+			//processing.Attach( input, output );
+						
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -343,13 +343,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			// processing.Attach( input, output );
 			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -379,7 +379,7 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			// processing.Attach( input, output );
 			
 			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );
 			
@@ -400,7 +400,7 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			//processing.Attach( input, output );
 			
 			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );	
 		}

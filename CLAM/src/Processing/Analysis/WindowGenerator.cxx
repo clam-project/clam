@@ -70,14 +70,14 @@ using namespace CLAM;
 
 	WindowGenerator::WindowGenerator():
 		mSize("Size",this),
-		mOutput( "Generated window function samples", this, 1 )
+		mOutput( "Generated window function samples", this )
 	{
 		Configure(WindowGeneratorConfig());
 	}
 
 	WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
 		mSize("Size",this),
-		mOutput( "Generated window function samples", this, 1 )
+		mOutput( "Generated window function samples", this )
 	{
 		Configure(c);
 	}
@@ -137,7 +137,9 @@ using namespace CLAM;
 	{
 		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
 		
-		return Do( mOutput.GetData() );
+		bool result = Do( mOutput.GetAudio() );
+		mOutput.Produce();
+		return result;
 	}
 
 	/* The  unsupervised Do() function */

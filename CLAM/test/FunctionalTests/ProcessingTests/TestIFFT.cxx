@@ -114,12 +114,12 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			(*processing.GetInPorts().Begin())->Attach( smReferenceP2Spectrum );
-			(*processing.GetOutPorts().Begin())->Attach( actualOutput );
+			//(*processing.GetInPorts().Begin())->Attach( smReferenceP2Spectrum );
+			//(*processing.GetOutPorts().Begin())->Attach( actualOutput );
 			
 			processing.Start();
 
-			processing.Do( );
+			processing.Do( smReferenceP2Spectrum, actualOutput );
 
 			processing.Stop();
 
@@ -148,12 +148,12 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			(*processing.GetInPorts().Begin())->Attach( smReferenceNP2Spectrum );
-			(*processing.GetOutPorts().Begin())->Attach( actualOutput );
+			//(*processing.GetInPorts().Begin())->Attach( smReferenceNP2Spectrum );
+			//(*processing.GetOutPorts().Begin())->Attach( actualOutput );
 
 			processing.Start();
 
-			processing.Do( );
+			processing.Do( smReferenceNP2Spectrum, actualOutput );
 
 			processing.Stop();
 

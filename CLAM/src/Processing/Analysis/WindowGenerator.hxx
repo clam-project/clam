@@ -30,7 +30,7 @@
 #include "Processing.hxx"
 #include "WindowGeneratorConfig.hxx"
 #include "Array.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM {
 
@@ -120,7 +120,7 @@ class ProcessingConfig;
 		}
 
 	protected:
-		OutPortTmpl< Audio >  mOutput;
+		AudioOutPort  mOutput;
 
 	private:
 		InControl   mSize;
