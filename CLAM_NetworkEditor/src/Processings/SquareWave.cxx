@@ -22,7 +22,8 @@
 #include "SquareWave.hxx"
 #include <iostream>
 
-using namespace CLAM;
+namespace CLAM
+{
 
 // SquareWave controls enumeration
 
@@ -144,6 +145,8 @@ int SquareWave::UpdateAmp( TControlData value )
 
 	return 0;
 }
+
+} // namespace CLAM
 
 
 
