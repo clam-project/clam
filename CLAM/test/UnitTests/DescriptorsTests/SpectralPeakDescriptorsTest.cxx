@@ -212,12 +212,12 @@ private:
 
 		std::map<std::string, CLAM::TData> data;
 		
-		data["test1to5.xml"] = 3;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] = 4;
-		data["5flatPeak.xml"] = 5;
-		data["../bell_A3.wav"] = 4.69634;
-		data["5linearslopePeak.xml"] = 6;
+		data["Serie1To5-Peaks.xml"] = 3;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] = 4;
+		data["5FlatSloped-Peaks.xml"] = 5;
+		data["bell_A3.wav-Peaks.xml"] = 4.69634;
+		data["5LinearSloped-Peaks.xml"] = 6;
 
 		
 
@@ -234,12 +234,12 @@ private:
 
 		std::map<std::string, CLAM::TData> data;
 		
-		data["test1to5.xml"] = 366.6667;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] = 1500;
-		data["5flatPeak.xml"] = 940;
-		data["../bell_A3.wav"] = 2463.38;
-		data["5linearslopePeak.xml"] = 580;
+		data["Serie1To5-Peaks.xml"] = 366.6667;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] = 1500;
+		data["5FlatSloped-Peaks.xml"] = 940;
+		data["bell_A3.wav-Peaks.xml"] = 2463.38;
+		data["5LinearSloped-Peaks.xml"] = 580;
 		
 
 		mDescriptors->AddHarmonicCentroid();
@@ -254,13 +254,13 @@ private:
 
 		std::map<std::string, CLAM::TData> data;
 		
-		data["test1to5.xml"] =  0.1067;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] = 0;
-		data["5flatPeak.xml"] = 0;
-		data["../bell_A3.wav"] = 2.02832;
-		data["5linearslopePeak.xml"] = 0.061894;
-		data["test5to1.xml"] = 0.1067;
+		data["Serie1To5-Peaks.xml"] =  0.1067;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] = 0;
+		data["5FlatSloped-Peaks.xml"] = 0;
+		data["bell_A3.wav-Peaks.xml"] = 2.02832;
+		data["5LinearSloped-Peaks.xml"] = 0.061894;
+		data["Serie5To1-Peaks.xml"] = 0.1067;
 		
 		mDescriptors->AddHarmonicDeviation ();
 
@@ -272,12 +272,12 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["test1to5.xml"] = 0.0181818;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] = 1;
-		data["5flatPeak.xml"] = 0.2;
-		data["../bell_A3.wav"] = 4.5164e-005;
-		data["5linearslopePeak.xml"] = 0.4545;
+		data["Serie1To5-Peaks.xml"] = 0.0181818;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] = 1;
+		data["5FlatSloped-Peaks.xml"] = 0.2;
+		data["bell_A3.wav-Peaks.xml"] = 4.5164e-005;
+		data["5LinearSloped-Peaks.xml"] = 0.4545;
 		
 
 		mDescriptors->AddFirstTristimulus();
@@ -291,12 +291,12 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["test1to5.xml"] = 0.527273;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] = 0;
-		data["5flatPeak.xml"] = 0.6;
-		data["../bell_A3.wav"] = 0.00486879;
-		data["5linearslopePeak.xml"] = 0.5273;
+		data["Serie1To5-Peaks.xml"] = 0.527273;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] = 0;
+		data["5FlatSloped-Peaks.xml"] = 0.6;
+		data["bell_A3.wav-Peaks.xml"] = 0.00486879;
+		data["5LinearSloped-Peaks.xml"] = 0.5273;
 		
 	
 
@@ -310,12 +310,12 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["test1to5.xml"] = 0.454545;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] =0;
-		data["5flatPeak.xml"] = 0.2;
-		data["../bell_A3.wav"] = 0.995086;
-		data["5linearslopePeak.xml"] = 0.0182;
+		data["Serie1To5-Peaks.xml"] = 0.454545;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] =0;
+		data["5FlatSloped-Peaks.xml"] = 0.2;
+		data["bell_A3.wav-Peaks.xml"] = 0.995086;
+		data["5LinearSloped-Peaks.xml"] = 0.0182;
 	
 	
 
@@ -330,12 +330,12 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["test1to5.xml"] = 0.618182;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] =0;
-		data["5flatPeak.xml"] = 0.4;
-		data["../bell_A3.wav"] =0.365391 ;
-		data["5linearslopePeak.xml"] = 0.1818;
+		data["Serie1To5-Peaks.xml"] = 0.618182;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] =0;
+		data["5FlatSloped-Peaks.xml"] = 0.4;
+		data["bell_A3.wav-Peaks.xml"] =0.365391 ;
+		data["5LinearSloped-Peaks.xml"] = 0.1818;
 		
 		mDescriptors->AddOddHarmonics();
 
@@ -348,12 +348,12 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["test1to5.xml"] = 0.363636;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] =0;
-		data["5flatPeak.xml"] = 0.4;
-		data["../bell_A3.wav"] = 0.634564;
-		data["5linearslopePeak.xml"] = 0.3636;
+		data["Serie1To5-Peaks.xml"] = 0.363636;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] =0;
+		data["5FlatSloped-Peaks.xml"] = 0.4;
+		data["bell_A3.wav-Peaks.xml"] = 0.634564;
+		data["5LinearSloped-Peaks.xml"] = 0.3636;
 		
 	
 		mDescriptors->AddEvenHarmonics();
@@ -367,12 +367,12 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["test1to5.xml"] = 0.6296;
-		data["empty.xml"] = 0.5;
-		data["onePeak.xml"] =0.5;
-		data["5flatPeak.xml"] = 0.5;
-		data["../bell_A3.wav"] = 0.365407;
-		data["5linearslopePeak.xml"] = 0.3333;
+		data["Serie1To5-Peaks.xml"] = 0.6296;
+		data["No-Peaks.xml"] = 0.5;
+		data["Single-Peaks.xml"] =0.5;
+		data["5FlatSloped-Peaks.xml"] = 0.5;
+		data["bell_A3.wav-Peaks.xml"] = 0.365407;
+		data["5LinearSloped-Peaks.xml"] = 0.3333;
 		
 		
 		mDescriptors->AddOddToEvenRatio();
@@ -385,9 +385,9 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["empty.xml"] = 0;
-		data["onePeak.xml"] =0;
-		data["5flatPeak.xml"] = 0;
+		data["No-Peaks.xml"] = 0;
+		data["Single-Peaks.xml"] =0;
+		data["5FlatSloped-Peaks.xml"] = 0;
 
 		
 		mDescriptors->AddSpectralTilt();
