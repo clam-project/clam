@@ -173,7 +173,9 @@ public:
 	void RemoveAttr_ (const unsigned id);
 
 
+	void FullfilsInvariant() const;
 
+	virtual Component* DeepCopy() const;
 protected:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
@@ -208,7 +210,6 @@ protected:
 	};
 	virtual DynamicType& GetDynamicTypeCopy(const bool shareData = false, const bool deep = false) const =0;
 	virtual Component* ShallowCopy() const;
-	virtual Component* DeepCopy() const;
 	DynamicType& operator= (const DynamicType& source);
 
 
@@ -233,7 +234,6 @@ protected:
 
 	// Developing tools:
 	void Debug();
-	void FullfilsInvariant() const;
 
 protected:
 	
