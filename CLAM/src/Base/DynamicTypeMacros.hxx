@@ -335,10 +335,9 @@ protected: \
 		if (!LoadAttribute((CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, s, obj, #NAME)) { \
 			Remove##NAME(); \
 			return false; \
-		} else {\
-			Set##NAME(obj); \
-			return true; \
-		}\
+		} \
+		Set##NAME(obj); \
+		return true; \
 	} \
 ACCESS: \
 
