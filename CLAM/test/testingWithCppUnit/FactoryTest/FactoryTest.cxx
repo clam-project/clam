@@ -17,6 +17,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
 	CPPUNIT_TEST( testRegistryGetCreatorUnsafe_WhenIsEmpty );
 	CPPUNIT_TEST( testRegistryGetCreatorSafe_WhenIsEmpty );
+	CPPUNIT_TEST( testRegistryAskTheWrongKey_WithASingleCreator );
 	
 
 	CPPUNIT_TEST_SUITE_END();
@@ -50,15 +51,23 @@ private:
 
 	void testRegistryGetCreatorSafe_WhenIsEmpty()
 	{
-		CLAM::FactoryRegistry reg; // an  empty factory register
+		CLAM::FactoryRegistry reg; // an  empty factor y register
 		try {
 			reg.GetCreatorSafe("foo");
 		} catch (CLAM::ErrFactory e) {
-			CPPUNIT_ASSERT_MESSAGE("In ErrFactory message:", 
-				"GetCreatorSafe invoked on an empty registry", e.what() );
+			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:", 
+				std::string("GetCreatorSafe invoked on an empty registry"), 
+				std::string( e.what() ) );
 			return;
 		}
 		CPPUNIT_FAIL( "it was extected to catch a CLAM::ErrFactory" );
+	}
+
+	void testRegistryAskTheWrongKey_WithASingleCreator()
+	{
+		CLAM::FactoryRegistry reg;
+		
+		CPPUNIT_ASSERT_EQUAL(NULL, reg.GetCreator("non existent key") );
 	}
 };
 
