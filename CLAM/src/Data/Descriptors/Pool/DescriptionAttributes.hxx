@@ -11,6 +11,7 @@
 
 namespace CLAM
 {
+	/** @ingroup SemanticalAnalysis */
 	class AbstractAttribute
 	{
 	public:
@@ -36,6 +37,7 @@ namespace CLAM
 		std::string _attributeName;
 	};
 
+	/** @ingroup SemanticalAnalysis */
 	template <typename AttributeType>
 	class Attribute : public AbstractAttribute
 	{
