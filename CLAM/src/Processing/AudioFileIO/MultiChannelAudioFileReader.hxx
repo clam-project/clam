@@ -43,6 +43,7 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do();
+		virtual bool Do( std::vector<Audio>& outputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
 	
 	protected: // methods

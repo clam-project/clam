@@ -61,6 +61,76 @@ namespace CLAM
 		return mConfig;
 	}
 
+	bool MultiChannelAudioFileReader::Do( std::vector<Audio>& outputs )
+	{
+		typedef std::vector<Audio> OutputVec;
+
+		if ( !AbleToExecute() )
+			return false;
+
+		if ( mEOFReached )
+			return false;
+		
+		// Check all outputs sizes
+		bool allOutputsSameSize = true;
+		
+		TSize sizeTmp = 0;
+
+		// MRJ: We have to keep internally references to
+		// the Audio objects yield by Flow Control, since
+		// the GetData operation not just returns a reference
+		// to writable/readable data, but also performs
+		// several checks ( as well as advancing reading/writing
+		// zones, etc. )
+		// TODO: update this code, because GetData doesn't modifies state anymore
+		
+		sizeTmp = outputs[0].GetSize();	
+		
+		for( OutputVec::iterator i = outputs.begin();
+		     i!= outputs.end(); i++ )
+		  {
+		    allOutputsSameSize = ( sizeTmp == (*i).GetSize() );
+		  }
+
+
+		CLAM_ASSERT( allOutputsSameSize, "Outputs sizes differ!" );
+
+		// build the samples matrix
+
+		int j = 0;
+		for ( OutputVec::iterator i = outputs.begin();
+		      i != outputs.end(); i++ )
+			mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
+
+		// read the data
+		
+		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannels().GetPtr(),
+						       mConfig.GetSelectedChannels().Size(),
+						       mSamplesMatrix.GetPtr(),
+						       sizeTmp );
+
+		if ( mNativeStream->WasSomethingRead() )
+		{
+			// Audio 'simple meta-data' setup
+			
+			for ( OutputVec::iterator i = outputs.begin();
+			      i != outputs.end(); i++ )
+			{
+				(*i).SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+				(*i).SetBeginTime( mCurrentBeginTime );
+			}
+			
+			
+			mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+			mCurrentBeginTime += mDeltaTime;
+			
+		}
+		
+		return mNativeStream->WasSomethingRead();
+
+		
+	}
+
 	bool MultiChannelAudioFileReader::Do()
 	{
 		if ( !AbleToExecute() )
