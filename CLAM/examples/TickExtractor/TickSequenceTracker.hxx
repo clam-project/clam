@@ -11,6 +11,7 @@
 #include "RD_TimeDifference.hxx"
 #include "RD_TimeSeriesFinder.hxx"
 #include "RD_TimeSeriesSeed.hxx"
+#include "AdjustTickWRTSwing.hxx"
 
 namespace CLAM
 {
@@ -70,18 +71,16 @@ namespace CLAM
 						Array<TimeIndex>& pulseArray );
 
 
-			unsigned AdjustTickIntervalForSwing( IOIHistogram& ioiHistogram, 
-							     unsigned previousTickInterval );
-
 			TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
 				       
 
 		private: // children Processing
 
-			IOIHistPeakDetector   mPeakDetector;
-			TimeDifference        mTemporalDiff;
-			TimeSeriesFinder                     mTimeSeriesFinder;
-			TimeSeriesFinderConfig               mTSFConfig;
+			IOIHistPeakDetector     mPeakDetector;
+			TimeDifference          mTemporalDiff;
+			TimeSeriesFinder        mTimeSeriesFinder;
+			TimeSeriesFinderConfig  mTSFConfig;
+			AdjustTickWRTSwing      mTickSwingAdjuster;
 
 		private: // Internal PD's
 		

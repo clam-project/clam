@@ -79,6 +79,16 @@ namespace CLAM
 
 			mTimeSeriesFinder.SetParent( this );
 
+			AdjustTickWRTSwingConfig swingAdjusterCfg;
+
+			swingAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			swingAdjusterCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
+			swingAdjusterCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
+
+			mTickSwingAdjuster.Configure( swingAdjusterCfg );
+
+			mTickSwingAdjuster.SetParent( this );
+
 			return true;
 		}
 
@@ -244,11 +254,7 @@ namespace CLAM
 
 
 				if ( mConfig.GetTickAdjustForSwing() ) 
-				{				
-					tickFirstGuessInterval = AdjustTickIntervalForSwing( IOIHist, 
-											     tickFirstGuessInterval );
-				}
-
+					mTickSwingAdjuster.Do( IOIHist, tickFirstGuessInterval, tickFirstGuessInterval );
 
 
 				unsigned int goodTickInterval,goodTickOffset;
@@ -367,46 +373,6 @@ namespace CLAM
 
 			return true;
 
-		}
-
-		unsigned TickSequenceTracker::AdjustTickIntervalForSwing( IOIHistogram& ioiHist,
-									  unsigned prevTickInterval )
-		{
-			//quarter-note is either = tick, 2 ticks, 3 ticks or 4 ticks
-			TData quarternote = prevTickInterval;
-			TData max = 0.0;
-		
-			std::list<TData> candidates;
-			typedef std::list<TData>::iterator LI;
-		
-			TData* arr = ioiHist.GetBins().GetPtr();		
-			TData tmpCand= prevTickInterval;
-		
-			TData upperBound = mConfig.GetSamplingRate()*60.0/ mConfig.GetTempoLimSup();
-			TData lowerBound = mConfig.GetSamplingRate()*60.0/ mConfig.GetTempoLimInf();
-
-			for(int i=0;i<3;i++) 
-			{
-				if( (tmpCand>upperBound) 
-				    && (tmpCand<lowerBound) ) 
-				{
-					candidates.push_back(tmpCand);
-				}
-			
-				tmpCand += prevTickInterval;
-			}
-		
-			for( LI i=candidates.begin();
-			     i != candidates.end(); i++) 
-			{
-				if (arr[(int)(*i)] > max) 
-				{
-					max = arr[(int)*i];
-					quarternote = *i;	
-				} 
-			}
-		
-			return (unsigned)quarternote;
 		}
 
 		void TickSequenceTracker::StorePulseIndexes(const int nLoops,
