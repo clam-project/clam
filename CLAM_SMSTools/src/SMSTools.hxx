@@ -1,10 +1,10 @@
 #ifndef __SMSTools__
 #define __SMSTools__
 
+#include "SMSBase.hxx"
 #include "NotGeneratedUserInterface.hxx"
 #include "WaitMessageGUI.hxx"
 #include "ProgressGUI.hxx"
-#include "SMSBase.hxx"
 #include "Thread.hxx"
 #include "SMS_DataExplorer.hxx"
 #include "Signalv1.hxx"
