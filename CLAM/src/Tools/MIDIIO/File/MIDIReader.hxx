@@ -22,7 +22,7 @@ namespace MIDI
 		}
 		bool Ok(void)
 		{
-			return mFile;
+			return mFile!=NULL;
 		}
 		Byte GetByte(void)
 		{
