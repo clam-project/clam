@@ -29,6 +29,10 @@ class DescriptionXmlTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testDumpScopePool_withComponentAttributes);
 	CPPUNIT_TEST(testDumpScopePool_withNonInstantiatedAttributes);
 	CPPUNIT_TEST(testDumpDescriptionDataPool_withAllKindsOfData);
+	CPPUNIT_TEST(testDumpAttributePool_withSimpleData);
+	CPPUNIT_TEST(testDumpAttributePool_withComponentData);
+//	CPPUNIT_TEST(testRestoreAttributePool_withSimpleData);
+	CPPUNIT_TEST(testRestoreAttributePool_withComponentData);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,6 +51,10 @@ private:
 		{
 			_dummyMember=newValue;
 		}
+		const std::string & GetValue() const
+		{
+			return _dummyMember;
+		}
 		const char * GetClassName() const { return "DummyComponent"; }
 		void StoreOn(CLAM::Storage & storage) const
 		{
@@ -55,6 +63,8 @@ private:
 		}
 		void LoadFrom(CLAM::Storage & storage)
 		{
+			CLAM::XMLAdapter<std::string> adapter(_dummyMember,"DummyMember",false);
+			storage.Load(adapter);
 		}
 	private:
 		std::string _dummyMember;
@@ -62,13 +72,112 @@ private:
 
 	void testDumpAttributePool_withSimpleData()
 	{
+		CLAM::Attribute<int> attribute("MyAttribute");
+		CLAM::AttributePool pool;
+		pool.SetDefinition(attribute);
+		pool.Allocate(3);
+		int * data = (int*) pool.GetData();
+		for (unsigned int i = 0; i<3; i++) data[i]= -i;
+
+		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream);
+
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"<AttributePool name=\"MyAttribute\">"
+			"0 -1 -2"
+			"</AttributePool>"
+			),_targetStream.str());
+
+		pool.Deallocate();
 	}
 	void testDumpAttributePool_withComponentData()
 	{
+		CLAM::Attribute<DummyComponent> attribute("MyAttribute");
+		CLAM::AttributePool pool;
+		pool.SetDefinition(attribute);
+		pool.Allocate(3);
+		DummyComponent * data = (DummyComponent*) pool.GetData();
+		data[0].SetValue("value0");
+		data[1].SetValue("value1");
+		data[2].SetValue("value2");
+
+		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream);
+
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"<AttributePool name=\"MyAttribute\">"
+				"<DummyComponent DummyMember=\"value0\"/>"
+				"<DummyComponent DummyMember=\"value1\"/>"
+				"<DummyComponent DummyMember=\"value2\"/>"
+			"</AttributePool>"
+			),_targetStream.str());
+
+		pool.Deallocate();
 	}
+
 	void testDumpAttributePool_withNonDumpableData()
 	{
+		//TODO:
 	}
+
+	void testDumpAttributePool_withNoData()
+	{
+		//TODO:
+	}
+
+	void testRestoreAttributePool_withSimpleData()
+	{
+		std::istringstream input(
+			"<AttributePool name=\"MyAttribute\">"
+			"0 -1 -2"
+			"</AttributePool>");
+
+		CLAM::Attribute<int> attribute("MyAttribute");
+		CLAM::AttributePool pool;
+		pool.SetDefinition(attribute);
+		pool.Allocate(3);
+
+		CLAM::XmlStorage::Restore(pool, input);
+
+		const int * data = (int*) pool.GetData();
+		for (unsigned int i = 0; i<3; i++)
+			CPPUNIT_ASSERT_EQUAL((const int)-i, data[i]);
+
+		pool.Deallocate();
+	}
+	void testRestoreAttributePool_withComponentData()
+	{
+		std::istringstream input(
+			"<AttributePool name=\"MyAttribute\">"
+			"<DummyComponent DummyMember=\"value0\"/>"
+			"<DummyComponent DummyMember=\"value1\"/>"
+			"<DummyComponent DummyMember=\"value2\"/>"
+			"</AttributePool>");
+
+		CLAM::Attribute<DummyComponent> attribute("MyAttribute");
+		CLAM::AttributePool pool;
+		pool.SetDefinition(attribute);
+		pool.Allocate(3);
+
+		CLAM::XmlStorage::Restore(pool, input);
+
+		const DummyComponent * data = (DummyComponent*) pool.GetData();
+		const std::string value0("value0"), value1("value1"), value2("value2");
+		CPPUNIT_ASSERT_EQUAL(value0, data[0].GetValue());
+		CPPUNIT_ASSERT_EQUAL(value1, data[1].GetValue());
+		CPPUNIT_ASSERT_EQUAL(value2, data[2].GetValue());
+
+		pool.Deallocate();
+	}
+
+	void testRestoreAttributePool_withNonDumpableData()
+	{
+		//TODO:
+	}
+
+	void testRestoreAttributePool_withNoData()
+	{
+		//TODO:
+	}
+
 	void testDumpScopePool_withNoAttributes()
 	{
 		CLAM::DescriptionScope scope("TestScope");
