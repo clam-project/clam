@@ -30,6 +30,8 @@ namespace CLAM
 		AttributePool()
 		{
 			_data=0;
+			_size=0;
+			_attribute=0;
 		}
 		void SetDefinition(const AbstractAttribute & attribute)
 		{
@@ -42,6 +44,7 @@ namespace CLAM
 		}
 		void LoadFrom(Storage & storage)
 		{
+			_attribute->XmlRestoreData(storage, _data, _size);
 		}
 		void * GetData() { return _data; }
 		const void * GetData() const { return _data; }
@@ -52,6 +55,7 @@ namespace CLAM
 		}
 		void Deallocate()
 		{
+			if (!_data) return;
 			_attribute->Deallocate(_data);
 			_data = 0;
 		}
@@ -74,26 +78,6 @@ namespace CLAM
 		unsigned _size;
 		AttributesData _attributePools;
 		const DescriptionScope & _spec;
-		class AttributePoolAdapter : public Component
-		{
-		public:
-			AttributePoolAdapter(const DescriptionScope & scope, unsigned attribute, AttributePool & pool, unsigned size)
-				: _scope(scope), _attribute(attribute), _pool(pool), _size(size) { }
-			const char * GetClassName() const { return "TODO"; }
-			void StoreOn(Storage & storage) const
-			{
-				_scope.DumpAttributeData(storage,_attribute,_pool.GetData(),_size);
-			}
-			void LoadFrom(Storage & storage)
-			{
-			}
-		private:
-			const DescriptionScope & _scope;
-			unsigned _attribute;
-			AttributePool & _pool;
-			unsigned _size;
-		};
-
 	public:
 		ScopePool(const DescriptionScope & spec, unsigned size=0)
 			: _size(size), _spec(spec), _attributePools(spec.GetNAttributes())
@@ -109,11 +93,7 @@ namespace CLAM
 		{
 			AttributesData::iterator it = _attributePools.begin();
 			AttributesData::iterator end = _attributePools.end();
-			for (unsigned i=0; it!=end; i++, it++)
-			{
-				if (!it->GetData()) continue;
-				it->Deallocate();
-			}
+			for (; it!=end; it++) it->Deallocate();
 			_size=0;
 		}
 		const char * GetClassName() const { return "ScopePool"; }
@@ -126,14 +106,26 @@ namespace CLAM
 			for (unsigned attribute=0; attribute<_attributePools.size(); attribute++)
 			{
 				if (_size && !_attributePools[attribute].GetData()) continue;
-				AttributePoolAdapter attributeAdapter(_spec, attribute, (AttributePool&) _attributePools[attribute], _size);
-				XMLComponentAdapter adapter(attributeAdapter,"AttributePool",true);
+				XMLComponentAdapter adapter(_attributePools[attribute],"AttributePool",true);
 				storage.Store(adapter);
 			}
-
 		}
 		void LoadFrom(Storage & storage)
 		{
+#ifdef NEVERDEFINED	
+			XMLAdapter<std::string> nameAdapter(_spec.GetName(),"name",false);
+			storage.Load(nameAdapter);
+			XMLAdapter<unsigned> sizeAdapter(_size,"size",false);
+			storage.Load(sizeAdapter);
+			for (unsigned attribute=0; attribute<_attributePools.size(); attribute++)
+			{
+				_attributePools[attribute].Deallocate();
+				_attributePools[attribute].Allocate(_size);
+				if (_size && !_attributePools[attribute].GetData()) continue;
+				XMLComponentAdapter adapter(_attributePools[attribute],"AttributePool",true);
+				storage.Load(adapter);
+			}
+#endif
 		}
 	private:
 		void Reallocate(unsigned newSize)
@@ -144,7 +136,7 @@ namespace CLAM
 			for (unsigned i=0; it!=end; i++, it++)
 			{
 				if (!it->GetData()) continue;
-				_spec.Deallocate(i, it->GetData());
+				it->Deallocate();
 				if (newSize) it->Allocate(_size);
 			}
 		}
