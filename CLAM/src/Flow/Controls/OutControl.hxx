@@ -28,6 +28,10 @@
 
 namespace CLAM {
 
+//free method to link two Processing
+	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
+				  Processing* inProc, std::string inControl);
+
 class OutControl
 {
 //Attributes
