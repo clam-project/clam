@@ -55,14 +55,16 @@ const Segment* SegmentDescriptors::GetpSegment() const {
 }
 
 void SegmentDescriptors::SetpSegment(const Segment* pSegment) {
-	CLAM_ASSERT(mSegmentStats,"SegmentDescriptors::SetpSegment: Frame Prototype must be set before, please call SetFramePrototype");
+	if (HasFramesD())
+		CLAM_ASSERT(mSegmentStats,"SegmentDescriptors::SetpSegment: Frame Prototype must be set before, please call SetFramePrototype");
 	mpSegment=pSegment;
 	if(mpSegment->HasAudio())
 	{
 		//with this operation we may lose pointer reference in Stats!
 		AddAudioD();
 		UpdateData();
-		mSegmentStats->SetArray(&GetFramesD());
+		if(HasFramesD())
+			mSegmentStats->SetArray(&GetFramesD());
 	}
 	if(mpSegment->HasAudio())
 		GetAudioD().SetpAudio(&mpSegment->GetAudio());
