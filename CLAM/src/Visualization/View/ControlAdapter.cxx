@@ -64,7 +64,7 @@ namespace CLAMVM
 				return true;
 		}
 
-		void ControlAdapter::DispatchControlValue( TControlData value )
+		void ControlAdapter::DispatchControlValue( CLAM::TControlData value )
 		{
 				mEmitter.mIsDirty = true;
 				mEmitter.mValueToEmit = value;
