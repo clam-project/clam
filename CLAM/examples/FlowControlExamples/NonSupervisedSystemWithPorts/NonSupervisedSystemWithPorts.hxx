@@ -6,14 +6,14 @@
 #include "AudioFileIn.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioOut.hxx"
-
+#include "AudioMixer.hxx"
 #include "Audio.hxx"
 #include "AudioManager.hxx"
 #include <list>
 #include <string>
 
+
 //TODO - Modify these includes
-#include "AudioMixerNew.hxx"
 #include "ControlSender.hxx"
 
 namespace FlowControlExample
@@ -134,7 +134,6 @@ private:
 	CLAM::AudioFileOut _fileOut;
 	CLAM::AudioMultiplier _multiplier;
 	CLAM::AudioOut _audioOut;
-
 	CLAM::AudioMixer<2> _mixer;
 	ControlSender _controlSender;	
 

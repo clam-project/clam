@@ -1,12 +1,11 @@
 
-#ifndef _AUDIO_MIXER_NEW_HXX
-#define _AUDIO_MIXER_NEW_HXX
+#ifndef _AUDIO_MIXER_HXX
+#define _AUDIO_MIXER_HXX
 
 #include "Processing.hxx"
 #include "Port.hxx"
 #include "Audio.hxx"
 #include <string>
-#include <iostream>
 
 namespace CLAM
 {
@@ -111,13 +110,14 @@ namespace CLAM
 			}
 			out_array[i] = sum / TData(N);
 		}
-		std::cout << Volumes[0].GetLastValue() << "  " <<  Volumes[1].GetLastValue() << std::endl;
 	}
 
 
 	template<unsigned int N>
 	bool AudioMixer<N>::Do(Audio* inp[N], Audio& out)
 	{
+		if( !AbleToExecute() ) return true;
+	
 		CLAM_ASSERT(inp[0]->GetSize() == int(mFrameSize) &&
 					out.GetSize()     == int(mFrameSize),
 					"AudioMixer::Do(...): Size mismatch");

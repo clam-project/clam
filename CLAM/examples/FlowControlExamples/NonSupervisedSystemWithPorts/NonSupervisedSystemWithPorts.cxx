@@ -23,15 +23,15 @@ void NetworkConfiguration::ConnectAndDo()
 }
 
 
-SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int frameSize , int nFrames,
-				  bool hasAudioOut ) :
+SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut ) :
 	_audioManager(44100, frameSize),
+	_controlSender(20,44100,0,frameSize),
 	_fileInName(fileIn),
 	_fileOutName(fileOut), 
 	_frameSize(frameSize), 
 	_maxFramesToProcess(nFrames),
-	_hasAudioOut(hasAudioOut),
-	_controlSender(20,44100,0,frameSize);
+	_hasAudioOut(hasAudioOut)
+
 {
 	AddNetworkConfiguration( new OscillatorToFileOut( this, hasAudioOut ) );
 	AddNetworkConfiguration( new FileInFileOut( this, hasAudioOut ) );
