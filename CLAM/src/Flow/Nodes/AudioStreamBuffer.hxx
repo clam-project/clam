@@ -28,21 +28,22 @@
 
 #include "Audio.hxx"
 
+
 namespace CLAM {
 
 	template<class B>
-	class StreamBuffer<Audio,B> : public StreamBuffer<TData,B> {
+		class AudioStreamBuffer : public StreamBuffer<TData,B> {
 
 		TData mSampleRate;
 
 	public:
 
-		StreamBuffer(unsigned int max_window_size = 0)
+		AudioStreamBuffer(unsigned int max_window_size = 0)
 			: StreamBuffer<TData,B>(max_window_size),
 			  mSampleRate(0.0)
 		{}
 
-		StreamBuffer(const StreamBuffer& b)
+		AudioStreamBuffer(const StreamBuffer& b)
 			: StreamBuffer<TData,B>(b),
 			  mSampleRate(0.0)
 		{}
