@@ -104,7 +104,11 @@ public: // Inner classes. Public for better testing
 
 			CreatorMethod res = CommonGetCreator(creatorId);
 			if (!res)
-				throw ErrFactory("GetCreatorSafe invoked with a non existent key");
+			{
+				std::string msg("GetCreatorSafe invoked with a non existent key");
+				msg += std::string(creatorId);
+				throw ErrFactory(msg.c_str());
+			}
 			return res;
 		}
 
