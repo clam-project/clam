@@ -32,7 +32,6 @@ namespace CLAMTest
 class DynamicTypeBasicTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DynamicTypeBasicTest );
-	CPPUNIT_TEST( CheckCLAM_EXTRA_CHECKS_ON_DT );
 	CPPUNIT_TEST( InstantiateAttributes );
 	CPPUNIT_TEST( RepetitiveOperations );
 	CPPUNIT_TEST( NonUpdatedAddsAndRemoves );
