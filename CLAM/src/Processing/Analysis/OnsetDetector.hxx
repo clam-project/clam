@@ -78,10 +78,14 @@ namespace CLAM
 		TData mBandThreshold;					//Threshold for Band peak picking 
 		TData mMinPeakDist;						//Minimum distance between picked peaks
 		TData mGlobalThreshold;					
-		DataArray mWinCoef;						//Smoothing Filter Coefficients
+
 		TData mSampleRate;						//Sample Rate after down sampling
 		TData mOffsetThreshold;
 		bool mComputeOffsets;
+
+		Array<double> mWinCoef;						//Smoothing Filter Coefficients
+		//Rescaling factor
+		double        mWinCoefSummation;
 		Array< Array<double> > mFilterBankOutputs;
 		Array<TimeIndex> mOnsets;
 		Array<double>    mRevSmoothedEnergy;

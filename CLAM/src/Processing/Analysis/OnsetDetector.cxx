@@ -57,11 +57,15 @@ namespace CLAM
 		mWinCoef.Resize(mWinSize);
 		mWinCoef.SetSize(mWinSize);
 
-		TData dPhi = ( 2.0 * M_PI ) / ( TData(mWinSize)*2.0 );
-		TData phi = 0.0;
-		
+		double dPhi = ( 2.0 * M_PI ) / ( TData(mWinSize)*2.0 );
+		double phi = 0.0;
+		mWinCoefSummation = 0.0;
+
 		for(int i=0; i<mWinSize; i++, phi += dPhi )
+		{
 			mWinCoef[i]=0.5+0.5*std::cos(phi);
+			mWinCoefSummation += mWinCoef[i];
+		}
 
 		
 		ConfigureChildren();
@@ -161,6 +165,12 @@ namespace CLAM
 	
 		Array< Array<double> > smoothedInput(mnBands);	//Smoothed Band Energy Array
 		smoothedInput.SetSize(mnBands);
+
+		for ( int i = 0; i < mnBands; i++ )
+		{
+			smoothedInput[i].Resize( mnSamples );
+			smoothedInput[i].SetSize( mnSamples );
+		}
 
 		Array< Array<double> > bandOnsetDetectData(mnBands);	//Data on which detection is performed 
 		bandOnsetDetectData.SetSize(mnBands);
@@ -279,18 +289,14 @@ namespace CLAM
 	void OnsetDetector::Smoothing(Array<double>& energy, Array<double>& smoothedEnergy )
 	{
 		int i, j, k;
-		TData temp;
+		double temp;
 
-
-		//Rescaling factor
-		TData sum=0;
-		for(k=0; k<mWinCoef.Size(); k++)
-			sum += mWinCoef [k];
+		double inverseWCSum = 1.0 / mWinCoefSummation;
 
 		//convolution
 		for(i=0; i<mnSamples;i++)
 		{	
-			temp=0;
+			temp=0.0;
 			for(j=0; j<mWinSize; j++)
 			{
 				if(i-mWinSize+1+j>=0) 
@@ -299,10 +305,9 @@ namespace CLAM
 				}
 			}
 
-			if ( (temp/sum) >mNoiseThreshold)
-			{smoothedEnergy.AddElem(temp/sum);}
-			else 
-			{smoothedEnergy.AddElem(mNoiseThreshold);}
+			const double normConv = temp * inverseWCSum;
+
+			smoothedEnergy[i] = ( normConv > mNoiseThreshold ) ? normConv : mNoiseThreshold;
 
 			mRevSmoothedEnergy[mnSamples-i-1]=smoothedEnergy[i];
 		}
@@ -318,7 +323,7 @@ namespace CLAM
 					temp+=mRevSmoothedEnergy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
 				}
 			}
-			smoothedEnergy[mnSamples-i-1]=temp/sum;		
+			smoothedEnergy[mnSamples-i-1]=temp*inverseWCSum;		
 		}
 
 	}
