@@ -492,7 +492,7 @@ typedef EnergyTmpl<> Energy;
 template<class T=TData,class U=TData> class RMSTmpl:public BaseMemOp
 {
 public:
-	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticTrue* useMemory=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -501,16 +501,16 @@ public:
 		}
 		return memory;
 	}
-	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticFalse* b)
+	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticFalse* useMemory)
 	{
 		return sqrt(sqrSum(a,(StaticFalse*)(0)));
 	}
 	/**No squared sum previously computed, use member*/
-	U operator()(const Array<T>& a,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
 	{
 		return (*this)(a,mSS,(StaticTrue*)(0));
 	}
-	U operator()(const Array<T>& a,StaticFalse* b)
+	U operator()(const Array<T>& a,StaticFalse* useMemory)
 	{
 		return (*this)(a,mSS,(StaticFalse*)(0));
 	}
@@ -527,18 +527,18 @@ typedef RMSTmpl<> RMS;
 template<class T=TData,class U=TData> class GeometricMeanTmpl:public BaseMemOp
 {
 public:
+	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticFalse * useMemory)
+	{
+		return exp(inProd(a,(StaticFalse*)(0))*1.0/(double)a.Size());
+	}
 	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticTrue* useMemory=NULL)
 	{
 		if(!alreadyComputed)
 		{
-			memory=(*this)(a,(StaticFalse*)(0));
+			memory=(*this)(a,inProd, (StaticFalse*)(0));
 			alreadyComputed=true;
 		}
 		return memory;
-	}
-	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticFalse * useMemory)
-	{
-		return exp(inProd(a,(StaticFalse*)(0))*1.0/(double)a.Size());
 	}
 	/**No inner product previously computed, use temporary*/
 	U operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
@@ -564,7 +564,13 @@ template <int s,bool abs=false,class T=TData,class U=TData> class BiasedPoweredS
 {
 public:
 	BiasedPoweredSum():memory(0.0){}
-	U operator()(const Array<T>& a,MeanTmpl<abs,T,U>& imean,StaticTrue* b=NULL)
+
+	U operator()(const Array<T>& a, MeanTmpl<abs,T,U>& imean, StaticFalse* useMemory)
+	{
+		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),U(),BiasedPower<s,abs,T,U>(imean(a)));
+	}
+
+	U operator()(const Array<T>& a, MeanTmpl<abs,T,U>& imean, StaticTrue* useMemory=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -572,10 +578,6 @@ public:
 			alreadyComputed=true;
 		}
 		return memory;
-	}
-	U operator()(const Array<T>& a,MeanTmpl<abs,T,U>& imean,StaticFalse*)
-	{
-		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),U(),BiasedPower<s,abs,T,U>(imean(a)));
 	}
 
 	/** if no mean functor is passed, used member functor*/
