@@ -20,7 +20,7 @@
  */
 
 /**
- * @file
+ * @example Configurators_example.cxx
  * This example shows how the diferent values inside a dinamic type
  * can be shown and edited using the Qt and FLTK configurator widgets.
  * The kind of attributes that are shown are:
@@ -38,8 +38,6 @@
 #include "ProcessingConfig.hxx"
 #include "Enum.hxx"
 #include "Filename.hxx"
-
-
 
 
 namespace CLAMTest
@@ -200,3 +198,4 @@ int main(int argc, char** argv)
 
 	return 0;	
 } 
+
