@@ -7,9 +7,8 @@
 namespace CLAM
 {
 /**
- * \todo 
+ * \todo document this class
  */ 
-	class FooBar {};
 template <class TProcessing>
 class InControlTmplArray
 {
@@ -43,7 +42,7 @@ InControlTmplArray<TProcessing>::InControlTmplArray(
 	for (int i=0; i<size; i++) {
 		std::stringstream str;
 		str << name << "_" << i;
-		CLAM_ASSERT(!parent, "ArrayControls not being published. TODO: check ctr parameters");
+		CLAM_ASSERT(parent, "InControlTmplArray must be published. Check ctr processing* parameter");
 		mArray[i] = new TInControl(i, str.str(), parent, f);	
 	}
 }
