@@ -1,6 +1,5 @@
 PROGRAMS = \
            TestSnapshots \
-           TestEnum \
            TestComplex \
            TestPoint \
            TestPolar \
@@ -15,6 +14,7 @@ PROGRAMS = \
            TestAudioFileIO \
 
 TESTS = \
+        TestEnum \
         TestXMLAdapters \
         TestConfig \
         TestFlags \

@@ -54,71 +54,76 @@ namespace CLAMTest {
 
 	Enum::tValue MyEnum::sDefault = MyEnum::dos;
 
-	void MyEnum::TestClass () {
-		bool the_test_is_passed = true;
-		std::cout << "-- Testing Enum" << std::endl;
-		{
-			std::cout << "+ Default constructor" << std::endl;
-			MyEnum e;
-			std::cout << e.GetString() << std::endl;
-		}
-		{
-			std::cout << "+ Value constructor" << std::endl;
-			MyEnum e(MyEnum::cent);
-			std::cout << e.GetString() << std::endl;
-		}
-		{
-			std::cout << "+ String constructor" << std::endl;
-			MyEnum e("cent");
-			std::cout << e.GetString() << std::endl;
-		}
-		{
-			std::cout << "+ Value Set" << std::endl;
-			MyEnum e;
-			e.SetValue(0);
-			std::cout << e.GetString() << std::endl;
-		}
-		{
-			std::cout << "+ String Set" << std::endl;
-			MyEnum e;
-			e.SetValue("dos");
-			std::cout << e.GetString() << std::endl;
-		}
-		{
-			std::cout << "+ Illegal String Set" << std::endl;
-			MyEnum e;
-			try {
-				e.SetValueSafely("dros");
-				the_test_is_passed &= false;
-				std::cout << e.GetString() << std::endl;
-			} 
-			catch (IllegalValue e) {
-				std::cerr << "Exception thrown: " << e.msg << std::endl;
+	class EnumTest {
+	public:
+		int testAll() {
+			std::cout << "-- Testing Enum" << std::endl;
+			try 
+			{
+				{
+					std::cout << "+ Default constructor" << std::endl;
+					MyEnum e;
+					CLAM_ASSERT (e.GetString()=="dos", "Default constructor didn't get the expected value 'dos'");
+				}
+				{
+					std::cout << "+ Value constructor" << std::endl;
+					MyEnum e(MyEnum::cent);
+					CLAM_ASSERT (e.GetString()=="cent", "Value constructor didn't get the expected value 'cent'");
+				}
+				{
+					std::cout << "+ String constructor" << std::endl;
+					MyEnum e("cent");
+					CLAM_ASSERT (e.GetString()=="cent", "String constructor didn't get the expected value 'cent'");
+				}
+				{
+					std::cout << "+ Value Set" << std::endl;
+					MyEnum e;
+					e.SetValue(0);
+					CLAM_ASSERT (e.GetString()=="zero", "SetValue(enum) didn't change the value to 'zero'");
+				}
+				{
+					std::cout << "+ String Set" << std::endl;
+					MyEnum e;
+					e.SetValue("dos");
+					CLAM_ASSERT (e.GetString()=="dos", "SetValue(string) didn't change the value to 'dos'");
+				}
+				{
+					std::cout << "+ Illegal String Set" << std::endl;
+					MyEnum e;
+					try {
+						e.SetValueSafely("dros");
+						CLAM_ASSERT (false, "Exception not thrown, when setting an illegal string symbol");
+					} 
+					catch (IllegalValue e) {
+						// That's ok
+					}
+				}
+				{
+					std::cout << "+ Illegal Value Set" << std::endl;
+					MyEnum e;
+					try {
+						e.SetValueSafely(4);
+						CLAM_ASSERT (false, "Exception not thrown, when setting an illegal integer value");
+					} 
+					catch (IllegalValue e) {
+						// That's ok
+					}
+				}
 			}
-		}
-		{
-			std::cout << "+ Illegal Value Set" << std::endl;
-			MyEnum e;
-			try {
-				e.SetValueSafely(4);
-				the_test_is_passed &= false;
-				std::cout << e.GetString() << std::endl;
-			} 
-			catch (IllegalValue e) {
-				std::cerr << "Exception thrown: " << e.msg << std::endl;
+			catch (...) {
+				std::cout << "Test Failed." << std::endl;
+				return -1;
 			}
-		}
-		if ( the_test_is_passed )
 			std::cout << "Test Passed." << std::endl;
-		else
-			std::cout << "Test Failed." << std::endl;
-	}
+			return 0;
+		}
+	};
 }
 
 
 int main () {
-	CLAMTest::MyEnum::TestClass();
-	return 0;
+	CLAMTest::EnumTest test;
+	return test.testAll();
 }
 
 
