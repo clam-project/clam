@@ -1,5 +1,6 @@
 
 #include "MainWindow.hxx"
+#include "ProcessingTree.hxx"
 #include <qstatusbar.h>
 #include <qtoolbar.h>
 #include <qbutton.h>
@@ -8,7 +9,7 @@
 #include <qpopupmenu.h>
 #include <qmenubar.h>
 #include <qfiledialog.h>
-
+#include <qapplication.h>
 #include <string>
 
 namespace NetworkGUI
@@ -16,13 +17,10 @@ namespace NetworkGUI
 
 MainWindow::MainWindow()
 	: mNetwork(this),
-	  mFactory( this , "factory" ),
-	  mNetworkActions( this ),
+	  mDockProcMenu(0),
 	  QMainWindow( 0, "", WGroupLeader )
 {
-	mNetwork.setFocus();	
-	mFactory.move(640, 40);
-	mNetworkActions.move(640, 300);
+	mNetwork.setFocus();
 
 	setCentralWidget( &mNetwork );
 	setCaption( "CLAM Network Editor" );
@@ -32,13 +30,16 @@ MainWindow::MainWindow()
 	mNetwork.SendNewMessageToStatus.Connect( NewMessageToStatus );
 	statusBar()->message( "Ready to edit" );
 
-	mFactory.AddNewProcessing.Connect( mNetwork.AddNewProcessing );
-	mNetworkActions.ChangeNetworkState.Connect( mNetwork.ChangeState );
+	ChangeNetworkState.Connect( mNetwork.ChangeState );
 
 
 	QPopupMenu * file = new QPopupMenu( this );
-        menuBar()->insertItem( "&File", file );
-
+	QPopupMenu * view = new QPopupMenu( this );
+	QPopupMenu * networkActions = new QPopupMenu( this );
+        menuBar()->insertItem( "File", file );
+        menuBar()->insertItem( "View", view );
+	menuBar()->insertItem( "Network Actions", networkActions );
+        menuBar()->insertItem( "About", this, SLOT(About()));
 
 	setCentralWidget(&mNetwork);
  
@@ -46,7 +47,27 @@ MainWindow::MainWindow()
 	file->insertItem("Load", this, SLOT(LoadNetwork()));
 	file->insertItem("Save", this, SLOT(SaveNetwork()));
 	file->insertItem("Save As", this, SLOT(SaveAsNetwork()));
+	file->insertSeparator();
+	file->insertItem("Exit", qApp, SLOT(quit()));
 
+	view->insertItem("Processing Menu", this, SLOT(ShowProcMenu()));
+
+	networkActions->insertItem("Start", this, SLOT(StartNetwork()));
+	networkActions->insertItem("Stop", this, SLOT(StopNetwork()));	
+
+	mDockProcMenu = new QDockWindow( QDockWindow::InDock, this );
+	mDockProcMenu->setResizeEnabled( true );
+	mDockProcMenu->setCloseMode( QDockWindow::Always );
+	addToolBar( mDockProcMenu, Qt::DockLeft );
+
+	mDockProcMenu->setFixedExtentWidth( 160 );
+	mDockProcMenu->setCaption( tr( "Processing menu" ) );
+	mDockProcMenu->show();
+	setDockEnabled( mDockProcMenu, Qt::DockTop, false );
+	setDockEnabled( mDockProcMenu, Qt::DockBottom, false );
+
+	ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
+	mDockProcMenu->setWidget( procTree );
 }
 
 MainWindow::~MainWindow()
@@ -114,6 +135,24 @@ void MainWindow::SaveNetwork()
 void MainWindow::SaveAsNetwork()
 {
 	std::cout << "saving network as" << std::endl;
+	SaveNetwork();
+}
+
+void MainWindow::StartNetwork()
+{
+	ChangeNetworkState.Emit(true);
+	
+		
+}
+
+void MainWindow::StopNetwork()
+{
+	ChangeNetworkState.Emit(false);
+}
+
+void MainWindow::ShowProcMenu()
+{
+	mDockProcMenu->show();
 }
 
 } // namespace NetworkGUI
