@@ -9,15 +9,13 @@
 namespace CLAMTest
 {
 
-class PoolTest;
-class PoolBuilderTest;
+class ScopePoolTest;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( PoolTest );
-CPPUNIT_TEST_SUITE_REGISTRATION( PoolBuilderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ScopePoolTest );
 
-class PoolTest : public CppUnit::TestFixture
+class ScopePoolTest : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE( PoolTest );
+	CPPUNIT_TEST_SUITE( ScopePoolTest );
 	CPPUNIT_TEST( testGet_ReturnsSameMemory );
 	CPPUNIT_TEST( testGet_ReturnsConstMemory );
 	CPPUNIT_TEST( testGet_withStrings );
@@ -44,7 +42,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		
-		CLAM::Pool pool(spec,poolSize);
+		CLAM::ScopePool pool(spec,poolSize);
 		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
@@ -58,11 +56,11 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
-		CLAM::Pool pool(spec,poolSize);
+		CLAM::ScopePool pool(spec,poolSize);
 		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		const CLAM::Pool & pool2 = pool;
+		const CLAM::ScopePool & pool2 = pool;
 		const CLAM::TData * data2 = pool2.Get<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(const_cast<const CLAM::TData*>(data),data2);
 	}
@@ -73,7 +71,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
-		CLAM::Pool pool(spec,poolSize);
+		CLAM::ScopePool pool(spec,poolSize);
 		std::string * data = pool.Get<std::string>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 		{
@@ -81,7 +79,7 @@ private:
 			os << "Hola " << i*i;
 			data[i] += os.str();
 		}
-		const CLAM::Pool & pool2 = pool;
+		const CLAM::ScopePool & pool2 = pool;
 		const std::string * data2 = pool2.Get<std::string>("MyAttribute");
 		const std::string expected = "Hola 16";
 		CPPUNIT_ASSERT_EQUAL(expected,data2[4]);
@@ -93,7 +91,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
-		CLAM::Pool pool(spec,poolSize);
+		CLAM::ScopePool pool(spec,poolSize);
 		try
 		{
 			int * data = pool.Get<int>("MyAttribute");
@@ -112,8 +110,8 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
-		CLAM::Pool pool(spec,poolSize);
-		const CLAM::Pool & pool2 = pool;
+		CLAM::ScopePool pool(spec,poolSize);
+		const CLAM::ScopePool & pool2 = pool;
 		try
 		{
 			const int * data = pool2.Get<int>("MyAttribute");
@@ -131,8 +129,8 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
-		CLAM::Pool pool(spec);
-		const CLAM::Pool & constPool = pool;
+		CLAM::ScopePool pool(spec);
+		const CLAM::ScopePool & constPool = pool;
 
 		try
 		{
@@ -151,7 +149,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
-		CLAM::Pool pool(spec);
+		CLAM::ScopePool pool(spec);
 
 		try
 		{
@@ -170,7 +168,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
-		CLAM::Pool pool(spec);
+		CLAM::ScopePool pool(spec);
 		CPPUNIT_ASSERT_EQUAL(0u,pool.GetSize());
 
 	}
@@ -182,7 +180,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
-		CLAM::Pool pool(spec);
+		CLAM::ScopePool pool(spec);
 
 		pool.SetSize(poolSize);
 
@@ -200,7 +198,7 @@ private:
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
-		CLAM::Pool pool(spec,7);
+		CLAM::ScopePool pool(spec,7);
 
 		pool.SetSize(poolSize);
 
@@ -211,66 +209,6 @@ private:
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
-
-};
-
-class PoolBuilderTest : public CppUnit::TestFixture
-{
-	CPPUNIT_TEST_SUITE( PoolBuilderTest );
-	CPPUNIT_TEST( testPoolBuilder_withNoScopeRegistered );
-	CPPUNIT_TEST( testPoolBuilder_withARegisteredAttribute );
-	CPPUNIT_TEST( testPoolBuilder_withTwoScopes );
-	CPPUNIT_TEST_SUITE_END();
-
-public:
-	/// Common initialization, executed before each test method
-	void setUp() { }
-
-	/// Common clean up, executed after each test method
-	void tearDown() { }
-
-private:
-	void testPoolBuilder_withNoScopeRegistered()
-	{
-		CLAM::DescriptionScheme scheme;
-		try
-		{
-			scheme.GetSpec("NonExistent");
-			CPPUNIT_FAIL("Should have thrown an exception");
-		}
-		catch (CLAM::ErrAssertionFailed & err)
-		{
-			const std::string expected = "No scope registered with that name";
-			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
-		}
-	}
-
-	void testPoolBuilder_withARegisteredAttribute()
-	{
-		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
-
-		const CLAM::DescriptionScope & spec = scheme.GetSpec("MyScope");
-
-		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
-		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("MyOtherAttribute"));
-	}
-
-	void testPoolBuilder_withTwoScopes()
-	{
-		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
-		scheme.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
-
-		const CLAM::DescriptionScope & mySpec = scheme.GetSpec("MyScope");
-		const CLAM::DescriptionScope & yourSpec = scheme.GetSpec("YourScope");
-
-		CPPUNIT_ASSERT_EQUAL(0u,mySpec.GetIndex("MyAttribute"));
-		CPPUNIT_ASSERT_EQUAL(0u,yourSpec.GetIndex("YourAttribute"));
-		CPPUNIT_ASSERT_EQUAL(1u,yourSpec.GetIndex("YourIntAttribute"));
-	}
 
 };
 
