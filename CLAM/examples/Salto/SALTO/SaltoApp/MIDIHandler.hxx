@@ -22,7 +22,7 @@ namespace CLAM
 	class MIDIHandler: public Processing
 	{
 	public:	
-	//	CSaltoHandleParamChanges(CSaltoParameter* pParams);
+
 		MIDIHandler();
 
 		MIDIHandler( const MIDIHandlerConfig& cfg );
@@ -31,11 +31,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
 
-
-	//	void NoteOn(TTime timetag, TData pitch,TData velocity,Parameters& params);
-	//	void NoteOff(TTime timetag, TData pitch,TData velocity,Parameters& params);
 		bool Do(void) { return true; }
 
 		bool Do( Parameters& params );
@@ -62,8 +58,13 @@ namespace CLAM
 			eIdle		 = 3,
 		}   mStatus;
 
+		FILE	*mMIDIFile;
+
 	protected:
 
+		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
+		bool ConcreteStart();
+		bool ConcreteStop();
 		void NoteOn(Parameters& params);
 		void NoteOff(Parameters& params);
 		void CtrAirSpeed( Parameters &params );
@@ -84,12 +85,20 @@ namespace CLAM
 		{
 			mVelocity = velocity;
 
-			//std::cout << "Updating velocity:" << mVelocity << std::endl;
+	//		std::cout << "Updating velocity:" << mVelocity << std::endl;
 
-			if( mVelocity == 0 )
+		/*	if( mVelocity == 0 )
+			{
 				mStatus = eNoteOff;
-			else
+				//std::cout << "Note On received !!!!!!!!!"<< std::endl;
+			}
+			else if( mStatus != eCtrAirSpeed )
+			{
 				mStatus = eNoteOn;
+				//std::cout << "Note On received !!!!!!!!!"<< std::endl;
+			}*/
+
+			
 
 			return 0;
 		}
@@ -98,16 +107,42 @@ namespace CLAM
 		{
 			ScaleNote( note );
 
-			if( mStatus == eNoteOn )
+//			std::cout << "Note updated: "<< note <<std::endl;
+
+			if( mStatus != eNoteOff )
+			{
+				if( mVelocity == 0 ) 
+				{
+					if( note == mNote ) // Note Off
+					{
+						mStatus = eNoteOff;
+						mNoteOff = note;
+						mNote = 0.0;
+						mAirSpeed = 0.0;
+					}
+				}
+				else
+				{
+					if( mStatus != eCtrAirSpeed )
+						mStatus = eNoteOn;
+
+					mNote = note;
+					mLastPitch = 0.0;
+				}
+
+			}
+		/*	if( ( mStatus == eNoteOn ) || ( mStatus == eCtrAirSpeed ) )
 			{
 				mNote = note;
 				mLastPitch = 0.0;
 			}
 			else if( note == mNote )
 			{
+				//std::cout << "Note recieved: " << mNote << std::endl;
 				mNoteOff = note;
 				mNote = 0.0;
-			}
+				mAirSpeed = 0.0;
+			}*/
 
 			return 0;
 		}
@@ -117,7 +152,7 @@ namespace CLAM
 	
 			mPitchBend = ((double) value - 70 ) / 70.0 * mPitchModRange + 1.0;
 
-			std::cout << "Pich bend value received: "<< mPitchBend << std::endl;
+//			std::cout << "Pich bend value received: "<< mPitchBend << std::endl;
 
 			 //params.SetPitchModFactor(
 			//	((double)bytes[2]-70)/70.0*params.GetPitchModRange()+1.0);
@@ -127,7 +162,9 @@ namespace CLAM
 		int UpdateAirSpeed( TControlData airSpeed )
 		{
 			mAirSpeed = airSpeed;
+//			std::cout << "Air speed updated"<< mAirSpeed << std::endl;
 			mStatus = eCtrAirSpeed;
+			//mStatus = eNoteOn;
 
 			return 0;
 		}
