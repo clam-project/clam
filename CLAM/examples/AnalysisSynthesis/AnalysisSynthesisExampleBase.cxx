@@ -138,10 +138,17 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 {
-
-
+	if(mHaveConfig)//This means we had a previous configuration
+	{
+		mHaveAnalysis = false;
+		mHaveAudioIn = false;
+		mHaveAudioOut = false;
+		mHaveTransformationScore = false;
+		mHaveMelody = false;
+		mHaveSpectrum = false;
+	}
+	
 	mCurrentWaitMessage = CreateWaitMessage( "Loading configuration xml file, please wait." );
-
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
