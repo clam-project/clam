@@ -1,7 +1,6 @@
 #ifndef __SPECTRALPEAKARRAYASPECT__
 #define __SPECTRALPEAKARRAYASPECT__
 
-#include "Aspect.hxx"
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "Partial.hxx"
@@ -14,7 +13,7 @@ namespace CLAMVM
 
 		class SpectralPeakArrayAdapter;
 
-		class SpectralPeakArrayAspect : public Aspect
+		class SpectralPeakArrayAspect
 		{
 		public:
 			   

@@ -1,7 +1,6 @@
 #ifndef __SINETRACKSASPECT__
 #define __SINETRACKSASPECT__
 
-#include "Aspect.hxx"
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "Partial.hxx"
@@ -18,7 +17,7 @@ namespace CLAMVM
 
 		class SinTracksAdapter;
 
-		class SinTracksAspect : public Aspect
+		class SinTracksAspect
 		{
 		public:
 				

@@ -1,7 +1,6 @@
 #ifndef __SPECTRUMASPECT__
 #define __SPECTRUMASPECT__
 
-#include "Aspect.hxx"
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "Signalv1.hxx"
@@ -16,7 +15,7 @@ namespace CLAMVM
 
 		class SpectrumAdapter;
 
-		class SpectrumAspect : public Aspect
+		class SpectrumAspect
 		{
 		public:
 
