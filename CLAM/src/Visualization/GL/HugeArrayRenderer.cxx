@@ -1,6 +1,6 @@
 #include "HugeArrayRenderer.hxx"
-#include "CLAM_Math.hxx"
 #include "CLAMGL.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAMVM
 {
@@ -28,7 +28,7 @@ namespace CLAMVM
 						int end = (i+0.5)*10;
 						begin = std::max(begin , 0);
 						begin = std::min(begin , hugeArray.Size()-2);
-						end = min(end , hugeArray.Size());
+						end = std::min(end , hugeArray.Size());
 						float top = hugeArray[begin];
 						float bottom = hugeArray[begin];
 						for(int k=begin+1; k<end; k++)
@@ -47,7 +47,7 @@ namespace CLAMVM
 						int end = (i+0.5)*10;
 						begin = std::max(begin , 0);
 						begin = std::min(begin , mMaxs.Size()-2);
-						end = min(end , mMaxs.Size());
+						end = std::min(end , mMaxs.Size());
 						float top = mMaxs[begin];
 						float bottom = mMins[begin];
 						for(int k=begin+1; k<end; k++)

@@ -10,6 +10,7 @@ namespace CLAMVM
 		using CLAM::TData;
 		using CLAM::TIndex;
 		using CLAM::TSize;
+		using CLAM::DataArray;
 
 		class HugeArrayRenderer : public GLRenderer
 		{
