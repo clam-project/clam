@@ -36,7 +36,7 @@ public:
 private:
 	void assertBackToBackMatches(const CLAM::Component & result, const std::string & referenceFilename)
 	{
-		std::ifstream referenceFile( referenceFilename.c_str() );
+		std::ifstream referenceFile( (GetTestDataDirectory("DescriptionPool/") + referenceFilename).c_str() );
 		std::string reference(  
 			(std::istreambuf_iterator<char>(referenceFile)),
 			std::istreambuf_iterator<char>() );
