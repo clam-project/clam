@@ -45,7 +45,6 @@ namespace CLAMExamples
 		  mDataConsumer( NULL )
 		  
 	{
-		SetExecState( CLAM::Processing::Unconfigured );		
 	}
 
 	SpectralFourierAnalyzer::~SpectralFourierAnalyzer()
@@ -113,7 +112,7 @@ namespace CLAMExamples
 		{
 			AddConfigErrorMessage( "Error configuring processing:\n requested algorithm ");
 			AddConfigErrorMessage( mConfig.GetFFTAlgorithm() );
-			AddConfigErrorMessage("' is not supported. Supported algorithms are:\n";
+			AddConfigErrorMessage("' is not supported. Supported algorithms are:\n"
 				"'FFTW', 'NumericalRecipes' and 'Ooura'");
 
 			return false;
