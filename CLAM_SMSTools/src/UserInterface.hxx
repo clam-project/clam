@@ -86,6 +86,9 @@ private:
   static Fl_Menu_Item *mShowSinTracksMenuItem;
   inline void cb_mShowSinTracksMenuItem_i(Fl_Menu_*, void*);
   static void cb_mShowSinTracksMenuItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mShowFundFreqMenuItem;
+  inline void cb_mShowFundFreqMenuItem_i(Fl_Menu_*, void*);
+  static void cb_mShowFundFreqMenuItem(Fl_Menu_*, void*);
   static Fl_Menu_Item *mViewFrameDataMenuItem;
   static Fl_Menu_Item *mShowSpectrumAndPeaksMenuItem;
   inline void cb_mShowSpectrumAndPeaksMenuItem_i(Fl_Menu_*, void*);
@@ -164,5 +167,6 @@ public:
   bool FrameDataAvailable();
 private:
   void UndoTransform();
+  void DisplayFundFreqTrajectory();
 };
 #endif

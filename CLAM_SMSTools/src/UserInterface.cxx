@@ -130,6 +130,13 @@ void UserInterface::cb_mShowSinTracksMenuItem(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mShowSinTracksMenuItem_i(o,v);
 }
 
+inline void UserInterface::cb_mShowFundFreqMenuItem_i(Fl_Menu_*, void*) {
+  DisplayFundFreqTrajectory();
+}
+void UserInterface::cb_mShowFundFreqMenuItem(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mShowFundFreqMenuItem_i(o,v);
+}
+
 inline void UserInterface::cb_mShowSpectrumAndPeaksMenuItem_i(Fl_Menu_*, void*) {
   DisplaySpectrumAndPeaks();
 }
@@ -217,7 +224,8 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"View", 0,  0, 0, 64, 0, 0, 12, 56},
  {"Original Audio", 0,  (Fl_Callback*)UserInterface::cb_mShowOriginalAudioMenuItem, 0, 0, 0, 0, 12, 56},
  {"Analysis Results", 0,  0, 0, 64, 0, 0, 12, 56},
- {"SinusoidalTracks", 0,  (Fl_Callback*)UserInterface::cb_mShowSinTracksMenuItem, 0, 0, 0, 0, 12, 56},
+ {"Sinusoidal Tracks", 0,  (Fl_Callback*)UserInterface::cb_mShowSinTracksMenuItem, 0, 0, 0, 0, 12, 56},
+ {"Fundamental Frequency", 0,  (Fl_Callback*)UserInterface::cb_mShowFundFreqMenuItem, 0, 0, 0, 0, 12, 56},
  {"Frame Data", 0,  0, 0, 64, 0, 0, 12, 56},
  {"Spectrum and Peaks", 0,  (Fl_Callback*)UserInterface::cb_mShowSpectrumAndPeaksMenuItem, 0, 0, 0, 0, 12, 56},
  {"Sinusoidal Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mShowSinusoidalSpectrumMenuItem, 0, 1, 0, 0, 12, 56},
@@ -264,15 +272,16 @@ Fl_Menu_Item* UserInterface::mViewMenuItem = UserInterface::menu_mMenuBar + 34;
 Fl_Menu_Item* UserInterface::mShowOriginalAudioMenuItem = UserInterface::menu_mMenuBar + 35;
 Fl_Menu_Item* UserInterface::mShowAnalysisResultsMenuItem = UserInterface::menu_mMenuBar + 36;
 Fl_Menu_Item* UserInterface::mShowSinTracksMenuItem = UserInterface::menu_mMenuBar + 37;
-Fl_Menu_Item* UserInterface::mViewFrameDataMenuItem = UserInterface::menu_mMenuBar + 38;
-Fl_Menu_Item* UserInterface::mShowSpectrumAndPeaksMenuItem = UserInterface::menu_mMenuBar + 39;
-Fl_Menu_Item* UserInterface::mShowSinusoidalSpectrumMenuItem = UserInterface::menu_mMenuBar + 40;
-Fl_Menu_Item* UserInterface::mShowResidualSpectrumMenuItem = UserInterface::menu_mMenuBar + 41;
-Fl_Menu_Item* UserInterface::mViewSynthesisResultsMenuItem = UserInterface::menu_mMenuBar + 44;
-Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu_mMenuBar + 45;
-Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 46;
-Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 47;
-Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 50;
+Fl_Menu_Item* UserInterface::mShowFundFreqMenuItem = UserInterface::menu_mMenuBar + 38;
+Fl_Menu_Item* UserInterface::mViewFrameDataMenuItem = UserInterface::menu_mMenuBar + 39;
+Fl_Menu_Item* UserInterface::mShowSpectrumAndPeaksMenuItem = UserInterface::menu_mMenuBar + 40;
+Fl_Menu_Item* UserInterface::mShowSinusoidalSpectrumMenuItem = UserInterface::menu_mMenuBar + 41;
+Fl_Menu_Item* UserInterface::mShowResidualSpectrumMenuItem = UserInterface::menu_mMenuBar + 42;
+Fl_Menu_Item* UserInterface::mViewSynthesisResultsMenuItem = UserInterface::menu_mMenuBar + 45;
+Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu_mMenuBar + 46;
+Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 47;
+Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 48;
+Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 51;
 
 inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
   ChangeFrame();

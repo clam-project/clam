@@ -50,6 +50,8 @@ void UserInterface::Update()
 	ApplyInitialState();
 	ApplyReadyToAnalyzeState();
 	mSMS->mExplorer.CloseAll();
+	mSMS->mExplorer.SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
+					      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
 	mWindow->redraw();
 }
 
@@ -70,6 +72,8 @@ void UserInterface::LoadConfiguration(void)
 			ApplyAnalysisAvailableState();
 
 		mSMS->mExplorer.CloseAll();
+		mSMS->mExplorer.SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
+						      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
 
 		mWindow->redraw();
 	}		
@@ -311,6 +315,12 @@ void UserInterface::DisplaySinusoidalTracks()
 
 }
 
+void UserInterface::DisplayFundFreqTrajectory()
+{
+	mSMS->mExplorer.ShowFundFreq();
+	mWindow->redraw();
+}
+
 void UserInterface::ApplyInitialState()
 {
 	mSMS->mExplorer.CloseAll();
@@ -344,6 +354,7 @@ void UserInterface::ApplyInitialState()
 	mShowOriginalAudioMenuItem->deactivate();
 	mShowAnalysisResultsMenuItem->deactivate();
 	mShowSinTracksMenuItem->deactivate();
+	mShowFundFreqMenuItem->deactivate();
 	mViewFrameDataMenuItem->deactivate();
 	mShowSinusoidalSpectrumMenuItem->deactivate();
 	mShowSpectrumAndPeaksMenuItem->deactivate();
@@ -383,6 +394,7 @@ void UserInterface::ApplyAnalysisAvailableState()
 	
 	mShowAnalysisResultsMenuItem->activate();
 	mShowSinTracksMenuItem->activate();
+	mShowFundFreqMenuItem->activate();
 	mViewFrameDataMenuItem->activate();
 	mShowSpectrumAndPeaksMenuItem->activate();
 	mShowResidualSpectrumMenuItem->activate();
