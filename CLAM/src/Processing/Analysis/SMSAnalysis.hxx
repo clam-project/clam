@@ -127,6 +127,8 @@ public:
 	/** Supervised mode execution */
 	bool Do(void){return false;}
 
+	void Start();
+	
 	/** Unsupervised mode execution */
 	bool Do(Segment& in);
 	bool Do(Frame& in);
@@ -170,7 +172,7 @@ private:
 	Audio mAudioFrame;
 
 	TSize mInitialOffset;
-	TSize mEndingOffset;
+	
 
 #ifdef WITH_GUI
 #endif
