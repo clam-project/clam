@@ -28,7 +28,7 @@ namespace CLAM {
 // by default, CLAM asserts must breakpoint
 // we'll want to disable breakpoints for automatic assertion testing 
 // purposes
-extern bool disabledCLAMAssertBreakpoint = false;
+bool disabledCLAMAssertBreakpoint = false;
 
 // Assert related
 
