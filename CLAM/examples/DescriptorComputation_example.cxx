@@ -31,19 +31,15 @@ int main( int argc, char** argv )
 	CLAM::SegmentDescriptors segmentDescriptors;
 
 	CLAM::SpectralDescriptors specProto;
-	specProto.AddMean();
-	specProto.AddCentroid();
-	specProto.AddEnergy();
+	specProto.AddAll();
 	specProto.UpdateData();
 
 	CLAM::SpectralPeakDescriptors peakProto;
-	peakProto.AddMagnitudeMean();
-	peakProto.AddHarmonicCentroid();
+	peakProto.AddAll();
 	peakProto.UpdateData();
 
 	CLAM::FrameDescriptors frameProto;
-	frameProto.AddSpectralPeakD();
-	frameProto.AddResidualSpecD();
+	frameProto.AddAll();
 	frameProto.UpdateData();
 		
 	frameProto.GetSpectralPeakD().SetPrototype(peakProto);
