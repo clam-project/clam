@@ -52,6 +52,7 @@ namespace CLAM {
 		bool IsSourceOf(const ReadStreamRegion*) const;
 
 		virtual bool FulfilsInvariant() const;
+		bool CanActivate() const;
 		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
 
 		/** This method initializes the source region and all its associated
@@ -60,6 +61,8 @@ namespace CLAM {
 		 *	so half of the biggest window size is written with zeros. */
 		void Init(unsigned int offset=0);
 		
+		const ReadStreamRegion& GetLastReading() const;
+
 	protected:
 		/** Initializes associated reading regions*/
 		void InitReaders(unsigned int offset);
@@ -67,6 +70,9 @@ namespace CLAM {
 		unsigned int FindLargestReadRegionLength();
 
 		virtual ~SourceStreamRegion() {}
+	private:
+		bool AllReadersPreceedsThisWithNoOverlap() const;
+		bool HasReaders() const { return !mReaders.empty(); }
 	};
 
 }

@@ -75,13 +75,26 @@ namespace CLAM {
 
 	bool SourceStreamRegion::FulfilsInvariant() const
 	{
-		reader_const_iterator rit;
-		for (rit=readers_begin();
-			 rit != readers_end();
-			 rit++)
-			if (!Preceeds(*rit))
+		return AllReadersPreceedsThisWithNoOverlap();
+	}
+
+	bool SourceStreamRegion::AllReadersPreceedsThisWithNoOverlap() const
+	{
+		reader_const_iterator actualReadingRegion;
+		for (actualReadingRegion=readers_begin();
+			 actualReadingRegion != readers_end();
+			 actualReadingRegion++)
+			if ( !(*actualReadingRegion)->PreceedsWithNoOverlap(this) )
 				return false;
 
+		return true;
+	}
+
+	bool SourceStreamRegion::CanActivate() const
+	{
+		CLAM_DEBUG_ASSERT( AllReadersPreceedsThisWithNoOverlap(), 
+			"In CanActivate() found a reader that don't preceeds this writer." );
+		
 		return true;
 	}
 
@@ -114,9 +127,25 @@ namespace CLAM {
 		reader_const_iterator rit;
 
 		for (rit=readers_begin();  rit != readers_end();  rit++)
-				if ((*rit)->MaxLength() >len) len=(*rit)->MaxLength();
+				if ((*rit)->Len() >len)
+						len=(*rit)->Len();
 		
 		return len;
 	}
+	
+	const ReadStreamRegion& SourceStreamRegion::GetLastReading() const
+	{
+		CLAM_DEBUG_ASSERT( HasReaders(), "GetLastReading(): Source region doesn't have its correspondant reading region" );
 
-}
+		reader_const_iterator it;
+		const ReadStreamRegion* actual = *readers_begin();
+
+		for( it=readers_begin();  it != readers_end();  it++ )
+				if ( (*it)->Pos() < actual->Pos() )
+						actual = *it;
+		
+		return *actual;
+	}
+
+
+} // namespace
