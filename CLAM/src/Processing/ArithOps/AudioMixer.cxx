@@ -25,6 +25,11 @@ void AudioMixer::CreatePortsAndControls()
 		
 		mInputControls.push_back( new InControl("Gain " + number.str(), this) );
 	}
+	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
+	{
+		/* Set gain = 1 by default */
+		mInputControls[i]->DoControl(1.);
+	}
 	
 	mOutputPort.SetSize( mConfig.GetFrameSize());
 	mOutputPort.SetHop( mConfig.GetFrameSize());
