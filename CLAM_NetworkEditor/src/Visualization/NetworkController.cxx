@@ -317,8 +317,8 @@ bool NetworkController::Publish()
 		CLAM::Processing * producer = it->second;
 		CLAM::Processing::OutPortIterator itOutPort;
 	
-		for (itOutPort= producer->GetOutPorts().Begin(); 
-		     itOutPort!= producer->GetOutPorts().End(); 
+		for (itOutPort=producer->GetOutPorts().Begin(); 
+		     itOutPort!=producer->GetOutPorts().End(); 
 		     itOutPort++)
 
 		{	
@@ -329,7 +329,7 @@ bool NetworkController::Publish()
 			consumers = mObserved->GetInPortsConnectedTo( **itOutPort );
 			CLAM::Network::InPortsList::iterator itInPort;
 			
-			for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
+			for ( itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++ )
 			{
 				ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>* conAdapter = new ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>;
 				conAdapter->BindTo(  **itOutPort, **itInPort, (const CLAM::Network&)*mObserved);
@@ -337,6 +337,26 @@ bool NetworkController::Publish()
 				AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
 			}		
 		}
+		CLAM::Processing::OutControlIterator itOutControl;
+
+		for( itOutControl=producer->GetOutControls().Begin();
+		     itOutControl!=producer->GetOutControls().End();
+		     itOutControl++)
+		{
+			CLAM::OutControl * sender = *itOutControl;
+			std::list<CLAM::InControl*>::iterator itInControl;
+			for( itInControl=sender->BeginInControlsConnected();
+			     itInControl!=sender->EndInControlsConnected();
+			     itInControl++)
+			{
+				ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl>* conAdapter = 
+					new ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl>;
+				conAdapter->BindTo( *sender, **itInControl, (const CLAM::Network&)*mObserved);
+				mConnectionAdapters.push_back((ConnectionAdapter*)conAdapter);
+				AcquireControlConnection.Emit( (ConnectionAdapter*)conAdapter);
+			}
+		}
+
 		
 	}
 	// TODO: Get Control Connections
