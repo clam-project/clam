@@ -50,45 +50,19 @@ namespace CLAM {
 
 
 DynamicType::DynamicType()
-{
-	/*
-	numAttr = GetDynamicInfo().NumAttr();
-	dynamicTable = new TDynInfo[numAttr + 1];
-	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false; // global modification flags.
-	for ( unsigned i=0; i < numAttr; i++)
-	{
-		dynamicTable[i].offs = -1;
-		dynamicTable[i].hasBeenAdded = false;
-		dynamicTable[i].hasBeenRemoved = false;
-	}
-	numActiveAttr = 0;
-	data = 0;
-	dataSize = 0;
-	allocatedDataSize = 0;
-	maxAttrSize = 0;		// initialized in method InformAll()
-	bPreAllocateAllAttributes = false;
-	InitDynTableRefCounter();
-	*/
-}
+{}
 
 /// \todo fix deepCopy appereances
 DynamicType::DynamicType(const DynamicType& prototype)
 {
 	bool deepCopy = true; // cludge \todo !
-/*	numActiveAttr = 0;
-	data = 0;
-	dynamicTable=0;
-	dataSize = 0;
-	allocatedDataSize = 0;
-	bPreAllocateAllAttributes = false;
-*/
+
 	if (prototype.data)
 	{
 		if (deepCopy)
 			; //SelfDeepCopy(prototype);
 		else
 			SelfShallowCopy(prototype);
-		
 	}
 	else 
 		SelfCopyPrototype(prototype);

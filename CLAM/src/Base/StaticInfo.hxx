@@ -23,7 +23,7 @@ class StaticInfo
 	// well, a DT can access through a DynamicInfo
 	friend DynamicInfo;
 
-	StaticInfo() {}
+	StaticInfo() : _totalSize(0) {}
 
 	class AttrStaticInfo
 	{
@@ -43,7 +43,6 @@ class StaticInfo
 		DestructorInplaceFn destructObj;
 		bool isComponent;
 		bool isDynamicType;
-		bool isPointer;
 	};
 
 public:  

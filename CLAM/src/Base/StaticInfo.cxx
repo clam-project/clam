@@ -14,24 +14,22 @@ void StaticInfo::AddClassName( char* name) {
 }
 
 void StaticInfo::AddAttr( StaticInfo::AttrStaticInfo& info ) { 
-	info.offset = _totalSize = info.size + _attributes.back().offset;
+	info.offset = _totalSize;
+	_totalSize += info.size;
 	_attributes.push_back( info );
 }
 
-void StaticInfo::GetTypeInfo( const void* ptr, bool& isComponent, bool& isDynamicType  )
-{
+void StaticInfo::GetTypeInfo( const void* ptr, bool& isComponent, bool& isDynamicType  ) {
 	isComponent = false;
 	isDynamicType = false;
 }
 
-void StaticInfo::GetTypeInfo( const Component* ptr, bool& isComponent, bool& isDynamicType )
-{
+void StaticInfo::GetTypeInfo( const Component* ptr, bool& isComponent, bool& isDynamicType ) {
 	isComponent = true;
 	isDynamicType = false;
 }
 
-void StaticInfo::GetTypeInfo(const DynamicType* ptr, bool& isComponent, bool& isDynamicType )
-{
+void StaticInfo::GetTypeInfo(const DynamicType* ptr, bool& isComponent, bool& isDynamicType ) {
 	isComponent = true;
 	isDynamicType = true;
 }

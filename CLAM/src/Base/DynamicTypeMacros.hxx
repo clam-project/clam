@@ -49,8 +49,7 @@ public: \
 		return *new CLASS_NAME(*this); \
 	}\
 	virtual CLAM::StaticInfo& GetStaticInfo() const { \
-		/*static StaticInfo* p=0;*/ \
-		CLAM::StaticInfo* p=0; \
+		static CLAM::StaticInfo* p=0; \
 		if (!p) { \
 			InitStaticInfo( p ); \
 		} \
@@ -262,6 +261,12 @@ private: \
 	void InformChainedAttr(AttributePosition<N>*) const { \
 		AttrStaticInfo attr; \
 		CLAM::StaticInfo::GetTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
+		attr.name= #NAME; \
+		attr.type= #TYPE; \
+		attr.size= sizeof(TYPE); \
+		attr.newObj= _new_##NAME; \
+		attr.newObjCopy= _new_##NAME; \
+		attr.destructObj= _destructor_##NAME; \
 		GetStaticInfo().AddAttr( attr ); \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
