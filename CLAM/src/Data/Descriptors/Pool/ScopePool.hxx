@@ -1,20 +1,6 @@
 #ifndef _ScopePool_hxx_
 #define _ScopePool_hxx_
 
-
-/*
-#include <string>
-#include <map>
-#include <vector>
-#include "Assert.hxx"
-#include "DataTypes.hxx"
-#include "Component.hxx"
-#include "XMLAdapter.hxx"
-#include "XMLComponentAdapter.hxx"
-#include "XMLArrayAdapter.hxx"
-*/
-
-#include "DescriptionAttributes.hxx"
 #include "AttributePool.hxx"
 #include "DescriptionScheme.hxx"
 

@@ -3,9 +3,6 @@
 
 #include "Pool.hxx"
 #include "DataTypes.hxx"
-#include "Component.hxx"
-#include "Spectrum.hxx"
-
 
 namespace CLAMTest
 {

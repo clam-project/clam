@@ -3,7 +3,6 @@
 
 #include "Pool.hxx"
 #include "DataTypes.hxx"
-#include "Component.hxx"
 
 
 namespace CLAMTest
