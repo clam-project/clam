@@ -84,7 +84,7 @@ namespace CLAM
 		{
 			NamesMap::const_iterator it = _nameMap.find(name);
 			CLAM_ASSERT(it!=_nameMap.end(),
-				"Not such descriptor name on this descriptor scope");
+				"Accessing an unexisting attribute inside a scope");
 			return it->second;
 		}
 
@@ -223,11 +223,11 @@ namespace CLAM
 				_attributes[i]=_spec.Allocate(i,_size);
 		}
 	public:
-		unsigned GetNAttributes()
+		unsigned GetNAttributes() const
 		{
 			return _spec.GetNAttributes();
 		}
-		unsigned GetSize()
+		unsigned GetSize() const
 		{
 			return _size;
 		}
@@ -258,7 +258,7 @@ namespace CLAM
 
 	/**
 	 * Contains the extracted data for a given description target.
-	 * It conforms to 
+	 * It conforms to a given DescriptionScheme
 	 */
 	class DescriptionDataPool
 	{
@@ -269,38 +269,39 @@ namespace CLAM
 		}
 		~DescriptionDataPool()
 		{
-			/*
 			ScopePools::iterator it = _scopePools.begin();
 			ScopePools::iterator end = _scopePools.end();
 			for (; it != end; it++)
 				if (*it) delete *it;
-			*/
 		}
-		void PopulateScope(const std::string & scopeName, unsigned size)
-		{
-		}
-#ifdef NEVER_DEFINED
 		void PopulateScope(const std::string & scopeName, unsigned size)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
-			const DescriptionScope & scope = _scheme.GetScope(scopeName);
-			_scopePools.push_back(new ScopePool(scope, size));
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+			_scopePools[scopeIndex] = new ScopePool(scope, size);
 		}
-		void InstantiateAttribute(const std::string & scope, const std::string & attribute)
+		void InstantiateAttribute(const std::string & scopeName, const std::string & attributeName)
 		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+			unsigned attributeIndex = scope.GetIndex(attributeName);
+			CLAM_ASSERT(_scopePools[scopeIndex], "Instantianting an attribute inside an unpopulated scope");
 		}
 		template <typename AttributeType>
-		AttributeType * GetAttributePool(const std::string & scope, const std::string & attribute)
+		AttributeType * GetAttributePool(const std::string & scopeName, const std::string & attributeName)
 		{
-			return NULL;
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+
+			return _scopePools[scopeIndex]->template Get<AttributeType>(attributeName);
 		}
+		/*
 		unsigned GetScopeSize(const std::string & scopeName);
 
 		
 		void DeleteContext(const std::string & scope, unsigned position);
+		*/
 	private:
-		typedef std::map<const std::string,unsigned> ScopePoolMap;
-#endif
 		const DescriptionScheme & _scheme;
 		typedef std::vector<ScopePool*> ScopePools;
 		ScopePools _scopePools;
