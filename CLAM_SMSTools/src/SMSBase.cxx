@@ -48,6 +48,7 @@
 #include "AudioIO.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
+#include "SMSMorphConfig.hxx"
 
 using namespace CLAMGUI;
 using namespace CLAM;

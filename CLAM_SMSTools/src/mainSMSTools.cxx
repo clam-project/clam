@@ -25,7 +25,6 @@
 #include <iostream>
 #include <cstdlib>
 
-using CLAM::SMSFreqShift;
 using CLAM::Err;
 
 using CLAMGUI::SMSTools;
