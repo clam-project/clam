@@ -36,9 +36,11 @@ class ControlsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( NonPublishedControls );
 	CPPUNIT_TEST( InControlBasics );
 	CPPUNIT_TEST( ProcessingWithControlArray );
-	CPPUNIT_TEST_EXCEPTION( ProcessingSidePublishedContainers, std::exception );
+#ifndef HAVE_STANDARD_VECTOR_AT 
+	CPPUNIT_TEST_EXCEPTION( ProcessingSidePublishedContainers, std::out_of_range );
+#endif
 	CPPUNIT_TEST( ProcessingSideInterface );
-//	CPPUNIT_TEST( );
+
 
 	CPPUNIT_TEST_SUITE_END();
 
