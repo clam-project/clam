@@ -485,12 +485,14 @@ void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window)
 void WindowGenerator::Gaussian(long size,DataArray& window) const
 {
 	double  s = 0.15;
+	double scale = 1.0 / ( 2.0 * M_PI * 0.15 * 0.15 );
+
 	if(size%2 !=0)
-		window[size/2] = 1;
+		window[size/2] = scale;
 	for(int i = 0; i < size/2; i++)
 	{
 		TData x = (TData)(i-(TData)size/2.)/(TData)(size-1);
-		window[i] = window[size-i-1]= exp(-(x*x)/(2*s*s));
+		window[i] = window[size-i-1]= scale * exp(-(x*x)/(2*s*s));
 	}
 }
 
