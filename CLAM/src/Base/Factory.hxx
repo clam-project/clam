@@ -4,10 +4,9 @@
 #include <map>
 #include <string>
 
-#include "Err.hxx"
+#include "Assert.hxx"
 
 namespace CLAM {
-class Processing;
 
 /// Error type thrown by Factory classes (Factory, FactoryRegistry)
 class ErrFactory : public Err
@@ -19,7 +18,7 @@ public:
 };
 
 
-template <typename AbstractProductType = Processing>
+template <typename AbstractProductType>
 class Factory
 {
 public:
@@ -35,7 +34,6 @@ public:
 		static Factory theInstance;
 		return theInstance;
 	}
-
 
 	/**
 	 * Gives ownership of the new created Product registered with
@@ -156,20 +154,20 @@ inline void Factory<AbstractProductType>::AddCreatorSafe(const RegistryKey name,
 
 
 template <typename AbstractProductType>
-inline typename Factory<AbstractProductType>::CreatorMethod 
+inline typename Factory<AbstractProductType>::CreatorMethod
 	Factory<AbstractProductType>::Registry::GetCreator( RegistryKey creatorId)
 {
 	CLAM_ASSERT(_creators.begin() != _creators.end(),
 		"the Factory Registry shouldn't be empty");
 
 	CreatorMethod res = CommonGetCreator(creatorId);
-	CLAM_ASSERT(res,"GetCreatorSafe invoked with a non existent key")
+	CLAM_ASSERT(res,"GetCreatorSafe invoked with a non existent key");
 
 	return res;
 }
 
 template <typename AbstractProductType>
-inline typename Factory<AbstractProductType>::CreatorMethod 
+inline typename Factory<AbstractProductType>::CreatorMethod
 	Factory<AbstractProductType>::Registry::GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory)
 {
 	if ( _creators.begin() == _creators.end() )
