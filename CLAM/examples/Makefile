@@ -12,7 +12,7 @@ PROGRAMS=\
 	GUIAudioApplicationExample\
 	FundamentalDetect\
 	XMLViewExample\
-	SIViewExample
+	SIViewExample \
 
 
 TOP=..
