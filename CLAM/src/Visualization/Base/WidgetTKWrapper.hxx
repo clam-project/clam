@@ -41,38 +41,33 @@ class EWidgetTK
 	: public CLAM::Enum
 {
 public:
-	static tEnumValue sEnumValues[];
-	static tValue     sDefault;
-
 	EWidgetTK()
-		: CLAM::Enum( sEnumValues, sDefault )
-	{
-	}
+		: CLAM::Enum( ValueTable(), FLTK ) { }
 
 	EWidgetTK( tValue v )
-		: CLAM::Enum( sEnumValues, v )
-	{
-	}
+		: CLAM::Enum( ValueTable(), v ) { }
 
 	EWidgetTK( std::string s )
-		: CLAM::Enum( sEnumValues, s )
-	{
-	}
-
-	~EWidgetTK()
-	{
-	}
-
+		: CLAM::Enum( ValueTable(), s ) { }
 	CLAM::Component* Species() const
 	{
 		return new EWidgetTK;
 	}
-
 	typedef enum 
 	{ 
 		FLTK = 0,
 		Qt
 	} tEnum;
+	static Enum::tEnumValue * ValueTable()
+	{
+		static Enum::tEnumValue sEnumValues[] =
+		{
+			{ FLTK, "FLTK" },
+			{ Qt,   "Qt" },
+			{ 0, NULL }
+		};
+		return sEnumValues;
+	}
 };
 
 		/**  \class WidgetTKWrapper
@@ -100,7 +95,7 @@ public:
 		 *  \params   The string that identifies the toolkit for which a Wrapper is requested
 		 *  \returns  A reference to a toolkit wrapper
 		 */
-		static WidgetTKWrapper& GetWrapperFor( std::string toolkit );
+		static WidgetTKWrapper& GetWrapperFor( const std::string & toolkit );
 		
 		/** \brief Destructor
 		 *
