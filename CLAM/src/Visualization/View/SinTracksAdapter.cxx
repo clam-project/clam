@@ -63,7 +63,7 @@ namespace CLAMVM
 		}
 		else if ( mMatrixObserved )
 		{
-			SpectralRangePublished.Emit( mMatrixSampleRate );
+			SpectralRangePublished.Emit( mMatrixSampleRate/2 );
 			DurationPublished.Emit( 0, mMatrixObserved->Size() );			
 		}
 
