@@ -56,12 +56,6 @@ namespace CLAM {
 		void LeaveAndAdvance(ReadStreamRegion *r);
 		void LeaveAndAdvance(DelayStreamRegion *r);
 		void LeaveAndAdvance(InplaceStreamRegion *r);
-
-	void Foo()
-	{
-		//Bar();
-	}
-
 };
 
 	template<class DATA, class BUFFER>
