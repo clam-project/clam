@@ -48,7 +48,7 @@ $$source{$$package}
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in $$libs{$$package}
+				for tmp in $$libs{$$package} $$ext_libs{$$package}
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -120,3 +120,4 @@ $$source{$$package};
 	fi
     fi
 fi
+

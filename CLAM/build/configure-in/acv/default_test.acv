@@ -21,7 +21,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with $$package])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(

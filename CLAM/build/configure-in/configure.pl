@@ -281,7 +281,7 @@ sub ac_package_substs
 
 if ($ARGV[0] eq '-u')
 {
-open OUTFILE,">$ARGV[1]";
+open OUTFILE,">$ARGV[1]" or die "Failed to open $ARGV[1] for writing\n";
 foreach $f (@packagedlibs)
 {
 	my $package = $f;
@@ -314,7 +314,7 @@ if ($ARGV[0] eq '')
 	die "Missing outfile\n";
 }
 
-open OUTFILE,">$ARGV[0]";
+open OUTFILE,">$ARGV[0]" or die "Failed to open $ARGV[0] for writing\n";
 
 &ac('INIT','test','0.1','clam@iua.upf.es');
 
@@ -333,6 +333,7 @@ $sandbox{'qt'} = 'qt';
 $headers{'qt'} = 'qapplication.h';
 $libs{'qt'} = 'qt-mt';
 $alt_libs{'qt'} = 'qt';
+$ext_libs{'qt'} = '';
 $source{'qt'} = <<EOF;
 #include<qapplication.h>
 int main()
@@ -348,6 +349,7 @@ $sandbox{'fftw'} = 'fftw';
 $headers{'fftw'} = 'fftw.h';
 $libs{'fftw'} = 'fftw rfftw';
 $alt_libs{'fftw'} = 'dfftw drfftw';
+$ext_libs{'fftw'} = '';
 $source{'fftw'} = <<EOF;
 #include<fftw.h>
 #include<rfftw.h>
@@ -367,6 +369,7 @@ $sandbox{'sfftw'} = 'fftw';
 $headers{'sfftw'} = 'fftw.h';
 $libs{'sfftw'} = 'sfftw srfftw';
 $alt_libs{'sfftw'} = '';
+$ext_libs{'sfftw'} = '';
 $source{'sfftw'} = <<EOF;
 #include<sfftw.h>
 #include<srfftw.h>
@@ -384,8 +387,9 @@ EOF
 
 $sandbox{'mad'} = 'libmad';
 $headers{'mad'} = 'mad.h';
-$libs{'mad'} = 'm mad';
+$libs{'mad'} = 'mad';
 $alt_libs{'mad'} = '';
+$ext_libs{'mad'} = 'm';
 $source{'mad'} = <<EOF;
 #include<mad.h>
 int main()
@@ -398,8 +402,9 @@ EOF
 
 $sandbox{'id3'} = 'id3lib';
 $headers{'id3'} = 'id3/tag.h';
-$libs{'id3'} = 'z id3';
+$libs{'id3'} = 'id3';
 $alt_libs{'id3'} = '';
+$ext_libs{'id3'} = 'z';
 $source{'id3'} = <<EOF;
 #include <id3/tag.h>
 int main()
@@ -413,6 +418,7 @@ $sandbox{'xerces'} = 'xercesc';
 $headers{'xerces'} = 'xercesc/util/PlatformUtils.hpp';
 $libs{'xerces'} = 'xerces-c';
 $alt_libs{'xerces'} = '';
+$ext_libs{'xerces'} = '';
 $source{'xerces'} = <<EOF;
 #include<xercesc/util/PlatformUtils.hpp>
 int main()
@@ -425,7 +431,8 @@ EOF
 
 $sandbox{'fltk'} = 'fltk';
 $headers{'fltk'} = 'FL/gl.h';
-$libs{'fltk'} = 'fltk fltk_images fltk_forms fltk_gl GL';
+$libs{'fltk'} = 'fltk fltk_images fltk_forms fltk_gl';
+$ext_libs{'fltk'} = 'GL';
 $alt_libs{'fltk'} = '';
 $source{'fltk'} = <<EOF;
 #include<FL/Fl_Gl_Window.H>
@@ -443,6 +450,7 @@ $sandbox{'portmidi'} = 'portmidi';
 $headers{'portmidi'} = 'portmidi.h';
 $libs{'portmidi'} = 'porttime portmidi';
 $alt_libs{'portmidi'} = 'portmidi';
+$ext_libs{'portmidi'} = '';
 $source{'portmidi'} = <<EOF;
 #include<portmidi.h>
 int main()
@@ -456,6 +464,7 @@ $sandbox{'alsa'} = 'alsa';
 $headers{'alsa'} = 'alsa/asoundlib.h';
 $libs{'alsa'} = 'asound';
 $alt_libs{'alsa'} = '';
+$ext_libs{'alsa'} = '';
 $source{'alsa'} = <<EOF;
 #include<alsa/asoundlib.h>
 int main()
@@ -470,6 +479,7 @@ $sandbox{'ladspa'} = 'ladspa';
 $headers{'ladspa'} = 'ladspa.h';
 $libs{'ladspa'} = '';
 $alt_libs{'ladspa'} = '';
+$ext_libs{'ladspa'} = '';
 $source{'ladspa'} = <<EOF;
 #include <ladspa.h>
 const LADSPA_Descriptor * ladspa_descriptor(unsigned long Index)
@@ -485,6 +495,7 @@ $sandbox{'sndfile'} = 'libsndfile';
 $headers{'sndfile'} = 'sndfile.h';
 $libs{'sndfile'} = 'sndfile';
 $alt_libs{'sndfile'} = '';
+$ext_libs{'sndfile'} = '';
 $source{'sndfile'} = <<EOF;
 #include <sndfile.h>
 #include <stdio.h>
@@ -500,6 +511,7 @@ $sandbox{'oggvorbis'} = 'oggvorbis';
 $headers{'oggvorbis'} = 'vorbis/vorbisfile.h ogg/ogg.h';
 $libs{'oggvorbis'} = 'vorbisenc vorbisfile ogg vorbis';
 $alt_libs{'oggvorbis'} = '';
+$ext_libs{'oggvorbis'} = '';
 $source{'oggvorbis'} = <<EOF;
 #include <vorbis/vorbisenc.h>
 #include <vorbis/vorbisfile.h>
@@ -509,6 +521,7 @@ int main()
 	vorbis_info vi;
 	OggVorbis_File vf;
 	oggpack_buffer b;
+	vorbis_info_init(&vi);
 	vorbis_encode_setup_init(&vi);
 	ov_test_open(&vf);
 	oggpack_writeinit(&b);

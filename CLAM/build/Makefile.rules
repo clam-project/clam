@@ -63,9 +63,9 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 
 $(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
 ifeq ($(OS_MACOSX),1)
-	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+	$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
 endif
 
 %.o:

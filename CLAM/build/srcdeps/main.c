@@ -80,10 +80,10 @@ void check_use_has_consistency(void)
 			strncpy(tmp,k->str,256);
 			memcpy(tmp,"HAS_",4);
 			k_has = listhash_find(config,tmp);
-			fprintf(stderr,"%s=%s %s=%s\n",
+			/*fprintf(stderr,"%s=%s %s=%s\n",
 						k->str,k->l->first->str,
 						tmp,k_has ? k_has->l->first->str : "[undefined]");
-						
+			*/			
 			if (strcmp(k->l->first->str,"1")==0)
 			{
 				if (k_has)
@@ -91,15 +91,13 @@ void check_use_has_consistency(void)
 					if (strcmp(k_has->l->first->str,"1"))
 					{
 						fprintf(stderr,
-							"ERROR: Your settings say: %s=1\n"
-							"       but %s!=1\n"
+"srcdeps: error: configuration specifies %s=1, but %s!=1\n"
 							,k->str,tmp);
 						exit(-1);						
 					}
 				}else{
 					fprintf(stderr,
-							"ERROR: Your settings say: %s=1\n"
-							"       but no %s variable was defined\n"
+"srcdeps: error: configuration specifies %s=1, but %s was undefined\n"
 							,k->str,tmp);
 					exit(-1);
 				}

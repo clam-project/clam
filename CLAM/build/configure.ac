@@ -394,7 +394,7 @@ else
 				if test -r $sandbox_location/fftw/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_fftw="$libs_fftw$sep$file"
+					libs_in_sandbox_fftw="$libs_in_sandbox_fftw$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_fftw="$sandbox_location/fftw/lib"
@@ -409,8 +409,9 @@ else
 			AC_MSG_CHECKING([[all fftw lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_fftw=yes
+				found_in_sandbox_fftw=yes
 			else
 				AC_MSG_RESULT([no])
 				found_fftw=no
@@ -421,8 +422,89 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_fftw = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_fftw"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_fftw
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_fftw
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for fftw])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<fftw.h>
+#include<rfftw.h>
+int main()
+{
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(double))
+	{
+		return -1;
+	}
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_fftw 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<fftw.h>
+#include<rfftw.h>
+int main()
+{
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(double))
+	{
+		return -1;
+	}
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_fftw=$tmp_libs
+			found_fftw=yes
+			AC_MSG_RESULT([$libs_fftw])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding fftw
 #
@@ -521,7 +603,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in fftw rfftw
+				for tmp in fftw rfftw 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -617,6 +699,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if sfftw is going to be used
@@ -696,7 +779,7 @@ else
 				if test -r $sandbox_location/fftw/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_sfftw="$libs_sfftw$sep$file"
+					libs_in_sandbox_sfftw="$libs_in_sandbox_sfftw$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_sfftw="$sandbox_location/fftw/lib"
@@ -711,8 +794,9 @@ else
 			AC_MSG_CHECKING([[all sfftw lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_sfftw=yes
+				found_in_sandbox_sfftw=yes
 			else
 				AC_MSG_RESULT([no])
 				found_sfftw=no
@@ -723,8 +807,89 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_sfftw = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_sfftw"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_sfftw
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_sfftw
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for sfftw])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<sfftw.h>
+#include<srfftw.h>
+int main()
+{
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(float))
+	{
+		return -1;
+	}
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_sfftw 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<sfftw.h>
+#include<srfftw.h>
+int main()
+{
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(float))
+	{
+		return -1;
+	}
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_sfftw=$tmp_libs
+			found_sfftw=yes
+			AC_MSG_RESULT([$libs_sfftw])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding sfftw
 #
@@ -823,7 +988,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in sfftw srfftw
+				for tmp in sfftw srfftw 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -919,6 +1084,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if xerces is going to be used
@@ -998,7 +1164,7 @@ else
 				if test -r $sandbox_location/xercesc/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_xerces="$libs_xerces$sep$file"
+					libs_in_sandbox_xerces="$libs_in_sandbox_xerces$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_xerces="$sandbox_location/xercesc/lib"
@@ -1013,8 +1179,9 @@ else
 			AC_MSG_CHECKING([[all xerces lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_xerces=yes
+				found_in_sandbox_xerces=yes
 			else
 				AC_MSG_RESULT([no])
 				found_xerces=no
@@ -1025,8 +1192,79 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_xerces = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_xerces"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_xerces
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_xerces
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for xerces])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<xercesc/util/PlatformUtils.hpp>
+int main()
+{
+	namespace xercesc=XERCES_CPP_NAMESPACE;
+	xercesc::XMLPlatformUtils::Initialize();
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_xerces 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<xercesc/util/PlatformUtils.hpp>
+int main()
+{
+	namespace xercesc=XERCES_CPP_NAMESPACE;
+	xercesc::XMLPlatformUtils::Initialize();
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_xerces=$tmp_libs
+			found_xerces=yes
+			AC_MSG_RESULT([$libs_xerces])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding xerces
 #
@@ -1120,7 +1358,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in xerces-c
+				for tmp in xerces-c 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -1206,6 +1444,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if fltk is going to be used
@@ -1279,13 +1518,13 @@ else
 			sep=""
 			found=1
 			libdirset=no
-			for file in fltk fltk_images fltk_forms fltk_gl GL
+			for file in fltk fltk_images fltk_forms fltk_gl
 			do
 				AC_MSG_CHECKING([lib$file for fltk in sandbox])
 				if test -r $sandbox_location/fltk/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_fltk="$libs_fltk$sep$file"
+					libs_in_sandbox_fltk="$libs_in_sandbox_fltk$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_fltk="$sandbox_location/fltk/lib"
@@ -1300,8 +1539,9 @@ else
 			AC_MSG_CHECKING([[all fltk lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_fltk=yes
+				found_in_sandbox_fltk=yes
 			else
 				AC_MSG_RESULT([no])
 				found_fltk=no
@@ -1312,8 +1552,83 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_fltk = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_fltk"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_fltk
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_fltk
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for fltk])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<FL/Fl_Gl_Window.H>
+#include<FL/Fl_PNG_Image.H>
+#include<FL/fl_draw.H>
+int main()
+{
+	Fl_Gl_Window w(0,0);
+	Fl_PNG_Image png("");
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_fltk GL
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<FL/Fl_Gl_Window.H>
+#include<FL/Fl_PNG_Image.H>
+#include<FL/fl_draw.H>
+int main()
+{
+	Fl_Gl_Window w(0,0);
+	Fl_PNG_Image png("");
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_fltk=$tmp_libs
+			found_fltk=yes
+			AC_MSG_RESULT([$libs_fltk])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding fltk
 #
@@ -1376,7 +1691,7 @@ then
 	if test $found = 1
 	then
 		AC_MSG_RESULT([yes])
-		if test x"fltk fltk_images fltk_forms fltk_gl GL" != x
+		if test x"fltk fltk_images fltk_forms fltk_gl" != x
 		then
 			LIBS=
 			old_CXXFLAGS=$CXXFLAGS
@@ -1499,6 +1814,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if qt is going to be used
@@ -1782,7 +2098,7 @@ else
 				if test -r $sandbox_location/libsndfile/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_sndfile="$libs_sndfile$sep$file"
+					libs_in_sandbox_sndfile="$libs_in_sandbox_sndfile$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_sndfile="$sandbox_location/libsndfile/lib"
@@ -1797,8 +2113,9 @@ else
 			AC_MSG_CHECKING([[all sndfile lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_sndfile=yes
+				found_in_sandbox_sndfile=yes
 			else
 				AC_MSG_RESULT([no])
 				found_sndfile=no
@@ -1809,8 +2126,81 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_sndfile = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_sndfile"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_sndfile
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_sndfile
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for sndfile])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include <sndfile.h>
+#include <stdio.h>
+int main()
+{
+	SF_INFO sfinfo;
+	sf_open_fd(fileno(stdout),SFM_WRITE,&sfinfo,0);
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_sndfile 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <sndfile.h>
+#include <stdio.h>
+int main()
+{
+	SF_INFO sfinfo;
+	sf_open_fd(fileno(stdout),SFM_WRITE,&sfinfo,0);
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_sndfile=$tmp_libs
+			found_sndfile=yes
+			AC_MSG_RESULT([$libs_sndfile])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding sndfile
 #
@@ -1905,7 +2295,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in sndfile
+				for tmp in sndfile 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -1993,6 +2383,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if oggvorbis is going to be used
@@ -2072,7 +2463,7 @@ else
 				if test -r $sandbox_location/oggvorbis/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_oggvorbis="$libs_oggvorbis$sep$file"
+					libs_in_sandbox_oggvorbis="$libs_in_sandbox_oggvorbis$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_oggvorbis="$sandbox_location/oggvorbis/lib"
@@ -2087,8 +2478,9 @@ else
 			AC_MSG_CHECKING([[all oggvorbis lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_oggvorbis=yes
+				found_in_sandbox_oggvorbis=yes
 			else
 				AC_MSG_RESULT([no])
 				found_oggvorbis=no
@@ -2099,8 +2491,93 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_oggvorbis = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_oggvorbis"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_oggvorbis
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_oggvorbis
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for oggvorbis])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include <vorbis/vorbisenc.h>
+#include <vorbis/vorbisfile.h>
+#include <ogg/ogg.h>
+int main()
+{
+	vorbis_info vi;
+	OggVorbis_File vf;
+	oggpack_buffer b;
+	vorbis_info_init(&vi);
+	vorbis_encode_setup_init(&vi);
+	ov_test_open(&vf);
+	oggpack_writeinit(&b);
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_oggvorbis 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <vorbis/vorbisenc.h>
+#include <vorbis/vorbisfile.h>
+#include <ogg/ogg.h>
+int main()
+{
+	vorbis_info vi;
+	OggVorbis_File vf;
+	oggpack_buffer b;
+	vorbis_info_init(&vi);
+	vorbis_encode_setup_init(&vi);
+	ov_test_open(&vf);
+	oggpack_writeinit(&b);
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_oggvorbis=$tmp_libs
+			found_oggvorbis=yes
+			AC_MSG_RESULT([$libs_oggvorbis])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding oggvorbis
 #
@@ -2189,6 +2666,7 @@ int main()
 	vorbis_info vi;
 	OggVorbis_File vf;
 	oggpack_buffer b;
+	vorbis_info_init(&vi);
 	vorbis_encode_setup_init(&vi);
 	ov_test_open(&vf);
 	oggpack_writeinit(&b);
@@ -2200,7 +2678,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in vorbisenc vorbisfile ogg vorbis
+				for tmp in vorbisenc vorbisfile ogg vorbis 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -2217,6 +2695,7 @@ int main()
 	vorbis_info vi;
 	OggVorbis_File vf;
 	oggpack_buffer b;
+	vorbis_info_init(&vi);
 	vorbis_encode_setup_init(&vi);
 	ov_test_open(&vf);
 	oggpack_writeinit(&b);
@@ -2259,6 +2738,7 @@ int main()
 	vorbis_info vi;
 	OggVorbis_File vf;
 	oggpack_buffer b;
+	vorbis_info_init(&vi);
 	vorbis_encode_setup_init(&vi);
 	ov_test_open(&vf);
 	oggpack_writeinit(&b);
@@ -2298,6 +2778,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if ladspa is going to be used
@@ -2377,7 +2858,7 @@ else
 				if test -r $sandbox_location/ladspa/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_ladspa="$libs_ladspa$sep$file"
+					libs_in_sandbox_ladspa="$libs_in_sandbox_ladspa$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_ladspa="$sandbox_location/ladspa/lib"
@@ -2392,8 +2873,9 @@ else
 			AC_MSG_CHECKING([[all ladspa lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_ladspa=yes
+				found_in_sandbox_ladspa=yes
 			else
 				AC_MSG_RESULT([no])
 				found_ladspa=no
@@ -2404,8 +2886,81 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_ladspa = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_ladspa"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_ladspa
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_ladspa
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for ladspa])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include <ladspa.h>
+const LADSPA_Descriptor * ladspa_descriptor(unsigned long Index)
+{ return 0; }
+int main()
+{
+	ladspa_descriptor(0);
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_ladspa 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <ladspa.h>
+const LADSPA_Descriptor * ladspa_descriptor(unsigned long Index)
+{ return 0; }
+int main()
+{
+	ladspa_descriptor(0);
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_ladspa=$tmp_libs
+			found_ladspa=yes
+			AC_MSG_RESULT([$libs_ladspa])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding ladspa
 #
@@ -2500,7 +3055,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in 
+				for tmp in  
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -2588,6 +3143,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if portmidi is going to be used
@@ -2667,7 +3223,7 @@ else
 				if test -r $sandbox_location/portmidi/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_portmidi="$libs_portmidi$sep$file"
+					libs_in_sandbox_portmidi="$libs_in_sandbox_portmidi$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_portmidi="$sandbox_location/portmidi/lib"
@@ -2682,8 +3238,9 @@ else
 			AC_MSG_CHECKING([[all portmidi lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_portmidi=yes
+				found_in_sandbox_portmidi=yes
 			else
 				AC_MSG_RESULT([no])
 				found_portmidi=no
@@ -2694,8 +3251,77 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_portmidi = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_portmidi"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_portmidi
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_portmidi
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for portmidi])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<portmidi.h>
+int main()
+{
+	Pm_CountDevices();
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_portmidi 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<portmidi.h>
+int main()
+{
+	Pm_CountDevices();
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_portmidi=$tmp_libs
+			found_portmidi=yes
+			AC_MSG_RESULT([$libs_portmidi])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding portmidi
 #
@@ -2788,7 +3414,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in porttime portmidi
+				for tmp in porttime portmidi 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -2872,6 +3498,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if alsa is going to be used
@@ -2951,7 +3578,7 @@ else
 				if test -r $sandbox_location/alsa/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_alsa="$libs_alsa$sep$file"
+					libs_in_sandbox_alsa="$libs_in_sandbox_alsa$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_alsa="$sandbox_location/alsa/lib"
@@ -2966,8 +3593,9 @@ else
 			AC_MSG_CHECKING([[all alsa lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_alsa=yes
+				found_in_sandbox_alsa=yes
 			else
 				AC_MSG_RESULT([no])
 				found_alsa=no
@@ -2978,8 +3606,79 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_alsa = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_alsa"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_alsa
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_alsa
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for alsa])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<alsa/asoundlib.h>
+int main()
+{
+	int card = 0;
+	snd_card_next(&card);
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_alsa 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<alsa/asoundlib.h>
+int main()
+{
+	int card = 0;
+	snd_card_next(&card);
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_alsa=$tmp_libs
+			found_alsa=yes
+			AC_MSG_RESULT([$libs_alsa])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding alsa
 #
@@ -3073,7 +3772,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in asound
+				for tmp in asound 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -3159,6 +3858,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if mad is going to be used
@@ -3232,13 +3932,13 @@ else
 			sep=""
 			found=1
 			libdirset=no
-			for file in m mad
+			for file in mad
 			do
 				AC_MSG_CHECKING([lib$file for mad in sandbox])
 				if test -r $sandbox_location/libmad/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_mad="$libs_mad$sep$file"
+					libs_in_sandbox_mad="$libs_in_sandbox_mad$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_mad="$sandbox_location/libmad/lib"
@@ -3253,8 +3953,9 @@ else
 			AC_MSG_CHECKING([[all mad lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_mad=yes
+				found_in_sandbox_mad=yes
 			else
 				AC_MSG_RESULT([no])
 				found_mad=no
@@ -3265,8 +3966,79 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_mad = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_mad"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_mad
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_mad
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for mad])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<mad.h>
+int main()
+{
+	struct mad_stream s;
+	mad_stream_init(&s);
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_mad m
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<mad.h>
+int main()
+{
+	struct mad_stream s;
+	mad_stream_init(&s);
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_mad=$tmp_libs
+			found_mad=yes
+			AC_MSG_RESULT([$libs_mad])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding mad
 #
@@ -3329,7 +4101,7 @@ then
 	if test $found = 1
 	then
 		AC_MSG_RESULT([yes])
-		if test x"m mad" != x
+		if test x"mad" != x
 		then
 			LIBS=
 			old_CXXFLAGS=$CXXFLAGS
@@ -3360,7 +4132,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in m mad
+				for tmp in mad m
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -3446,6 +4218,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # Check if id3 is going to be used
@@ -3519,13 +4292,13 @@ else
 			sep=""
 			found=1
 			libdirset=no
-			for file in z id3
+			for file in id3
 			do
 				AC_MSG_CHECKING([lib$file for id3 in sandbox])
 				if test -r $sandbox_location/id3lib/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_id3="$libs_id3$sep$file"
+					libs_in_sandbox_id3="$libs_in_sandbox_id3$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_id3="$sandbox_location/id3lib/lib"
@@ -3540,8 +4313,9 @@ else
 			AC_MSG_CHECKING([[all id3 lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_id3=yes
+				found_in_sandbox_id3=yes
 			else
 				AC_MSG_RESULT([no])
 				found_id3=no
@@ -3552,8 +4326,77 @@ else
 		fi
 	fi
 fi
-#####################################################################
+if test x$found_in_sandbox_id3 = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_id3"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_id3
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_id3
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for id3])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include <id3/tag.h>
+int main()
+{
+	ID3_Tag myTag;
+	return 0;
+}
 
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_id3 z
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <id3/tag.h>
+int main()
+{
+	ID3_Tag myTag;
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_id3=$tmp_libs
+			found_id3=yes
+			AC_MSG_RESULT([$libs_id3])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
 #####################################################################
 # pkgconfig routine for finding id3
 #
@@ -3616,7 +4459,7 @@ then
 	if test $found = 1
 	then
 		AC_MSG_RESULT([yes])
-		if test x"z id3" != x
+		if test x"id3" != x
 		then
 			LIBS=
 			old_CXXFLAGS=$CXXFLAGS
@@ -3646,7 +4489,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in z id3
+				for tmp in id3 z
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -3730,6 +4573,7 @@ int main()
 	fi
     fi
 fi
+
 fi
 #####################################################################
 # IF fftw is enabled THEN
@@ -3763,7 +4607,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with fftw])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -3842,7 +4685,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with sfftw])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -3921,7 +4763,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with xerces])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -3995,7 +4836,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with fltk])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4071,7 +4911,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with qt])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4146,7 +4985,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with sndfile])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4221,7 +5059,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with oggvorbis])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4234,6 +5071,7 @@ int main()
 	vorbis_info vi;
 	OggVorbis_File vf;
 	oggpack_buffer b;
+	vorbis_info_init(&vi);
 	vorbis_encode_setup_init(&vi);
 	ov_test_open(&vf);
 	oggpack_writeinit(&b);
@@ -4301,7 +5139,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with ladspa])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4376,7 +5213,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with portmidi])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4449,7 +5285,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with alsa])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4523,7 +5358,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with mad])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4597,7 +5431,6 @@ then
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
 	AC_MSG_CHECKING([compiling, linking and running with id3])
-	setenv LD_LIBRARY_PATH /mnt/hda8/CLAM/xercesc/lib/
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
@@ -4638,66 +5471,6 @@ fi
 #####################################################################
 
 fi
-AC_MSG_NOTICE([found_fftw = $found_fftw])
-AC_MSG_NOTICE([include_dirs_fftw = $include_dirs_fftw])
-AC_MSG_NOTICE([lib_dirs_fftw = $lib_dirs_fftw])
-AC_MSG_NOTICE([libs_fftw = $libs_fftw])
-
-AC_MSG_NOTICE([found_sfftw = $found_sfftw])
-AC_MSG_NOTICE([include_dirs_sfftw = $include_dirs_sfftw])
-AC_MSG_NOTICE([lib_dirs_sfftw = $lib_dirs_sfftw])
-AC_MSG_NOTICE([libs_sfftw = $libs_sfftw])
-
-AC_MSG_NOTICE([found_xerces = $found_xerces])
-AC_MSG_NOTICE([include_dirs_xerces = $include_dirs_xerces])
-AC_MSG_NOTICE([lib_dirs_xerces = $lib_dirs_xerces])
-AC_MSG_NOTICE([libs_xerces = $libs_xerces])
-
-AC_MSG_NOTICE([found_fltk = $found_fltk])
-AC_MSG_NOTICE([include_dirs_fltk = $include_dirs_fltk])
-AC_MSG_NOTICE([lib_dirs_fltk = $lib_dirs_fltk])
-AC_MSG_NOTICE([libs_fltk = $libs_fltk])
-
-AC_MSG_NOTICE([found_qt = $found_qt])
-AC_MSG_NOTICE([include_dirs_qt = $include_dirs_qt])
-AC_MSG_NOTICE([lib_dirs_qt = $lib_dirs_qt])
-AC_MSG_NOTICE([libs_qt = $libs_qt])
-
-AC_MSG_NOTICE([found_sndfile = $found_sndfile])
-AC_MSG_NOTICE([include_dirs_sndfile = $include_dirs_sndfile])
-AC_MSG_NOTICE([lib_dirs_sndfile = $lib_dirs_sndfile])
-AC_MSG_NOTICE([libs_sndfile = $libs_sndfile])
-
-AC_MSG_NOTICE([found_oggvorbis = $found_oggvorbis])
-AC_MSG_NOTICE([include_dirs_oggvorbis = $include_dirs_oggvorbis])
-AC_MSG_NOTICE([lib_dirs_oggvorbis = $lib_dirs_oggvorbis])
-AC_MSG_NOTICE([libs_oggvorbis = $libs_oggvorbis])
-
-AC_MSG_NOTICE([found_ladspa = $found_ladspa])
-AC_MSG_NOTICE([include_dirs_ladspa = $include_dirs_ladspa])
-AC_MSG_NOTICE([lib_dirs_ladspa = $lib_dirs_ladspa])
-AC_MSG_NOTICE([libs_ladspa = $libs_ladspa])
-
-AC_MSG_NOTICE([found_portmidi = $found_portmidi])
-AC_MSG_NOTICE([include_dirs_portmidi = $include_dirs_portmidi])
-AC_MSG_NOTICE([lib_dirs_portmidi = $lib_dirs_portmidi])
-AC_MSG_NOTICE([libs_portmidi = $libs_portmidi])
-
-AC_MSG_NOTICE([found_alsa = $found_alsa])
-AC_MSG_NOTICE([include_dirs_alsa = $include_dirs_alsa])
-AC_MSG_NOTICE([lib_dirs_alsa = $lib_dirs_alsa])
-AC_MSG_NOTICE([libs_alsa = $libs_alsa])
-
-AC_MSG_NOTICE([found_mad = $found_mad])
-AC_MSG_NOTICE([include_dirs_mad = $include_dirs_mad])
-AC_MSG_NOTICE([lib_dirs_mad = $lib_dirs_mad])
-AC_MSG_NOTICE([libs_mad = $libs_mad])
-
-AC_MSG_NOTICE([found_id3 = $found_id3])
-AC_MSG_NOTICE([include_dirs_id3 = $include_dirs_id3])
-AC_MSG_NOTICE([lib_dirs_id3 = $lib_dirs_id3])
-AC_MSG_NOTICE([libs_id3 = $libs_id3])
-
 #####################################################################
 # Give a warning when fftw is disabled
 #
@@ -4966,9 +5739,9 @@ fi
 FFTW_INCLUDES=$include_dirs_fftw
 FFTW_LIBS=$libs_fftw
 FFTW_LIB_PATH=$lib_dirs_fftw
-echo FFTW_INCLUDES=$include_dirs_fftw
-echo FFTW_LIBS=$libs_fftw
-echo FFTW_LIB_PATH=$lib_dirs_fftw
+#echo FFTW_INCLUDES=$include_dirs_fftw
+#echo FFTW_LIBS=$libs_fftw
+#echo FFTW_LIB_PATH=$lib_dirs_fftw
 if test x$found_fftw = xyes; then
 	HAS_FFTW=1
 else
@@ -4982,9 +5755,9 @@ AC_SUBST(HAS_FFTW)
 SFFTW_INCLUDES=$include_dirs_sfftw
 SFFTW_LIBS=$libs_sfftw
 SFFTW_LIB_PATH=$lib_dirs_sfftw
-echo SFFTW_INCLUDES=$include_dirs_sfftw
-echo SFFTW_LIBS=$libs_sfftw
-echo SFFTW_LIB_PATH=$lib_dirs_sfftw
+#echo SFFTW_INCLUDES=$include_dirs_sfftw
+#echo SFFTW_LIBS=$libs_sfftw
+#echo SFFTW_LIB_PATH=$lib_dirs_sfftw
 if test x$found_sfftw = xyes; then
 	HAS_SFFTW=1
 else
@@ -4998,9 +5771,9 @@ AC_SUBST(HAS_SFFTW)
 XERCES_INCLUDES=$include_dirs_xerces
 XERCES_LIBS=$libs_xerces
 XERCES_LIB_PATH=$lib_dirs_xerces
-echo XERCES_INCLUDES=$include_dirs_xerces
-echo XERCES_LIBS=$libs_xerces
-echo XERCES_LIB_PATH=$lib_dirs_xerces
+#echo XERCES_INCLUDES=$include_dirs_xerces
+#echo XERCES_LIBS=$libs_xerces
+#echo XERCES_LIB_PATH=$lib_dirs_xerces
 if test x$found_xerces = xyes; then
 	HAS_XERCES=1
 else
@@ -5014,9 +5787,9 @@ AC_SUBST(HAS_XERCES)
 FLTK_INCLUDES=$include_dirs_fltk
 FLTK_LIBS=$libs_fltk
 FLTK_LIB_PATH=$lib_dirs_fltk
-echo FLTK_INCLUDES=$include_dirs_fltk
-echo FLTK_LIBS=$libs_fltk
-echo FLTK_LIB_PATH=$lib_dirs_fltk
+#echo FLTK_INCLUDES=$include_dirs_fltk
+#echo FLTK_LIBS=$libs_fltk
+#echo FLTK_LIB_PATH=$lib_dirs_fltk
 if test x$found_fltk = xyes; then
 	HAS_FLTK=1
 else
@@ -5030,9 +5803,9 @@ AC_SUBST(HAS_FLTK)
 QT_INCLUDES=$include_dirs_qt
 QT_LIBS=$libs_qt
 QT_LIB_PATH=$lib_dirs_qt
-echo QT_INCLUDES=$include_dirs_qt
-echo QT_LIBS=$libs_qt
-echo QT_LIB_PATH=$lib_dirs_qt
+#echo QT_INCLUDES=$include_dirs_qt
+#echo QT_LIBS=$libs_qt
+#echo QT_LIB_PATH=$lib_dirs_qt
 if test x$found_qt = xyes; then
 	HAS_QT=1
 else
@@ -5046,9 +5819,9 @@ AC_SUBST(HAS_QT)
 SNDFILE_INCLUDES=$include_dirs_sndfile
 SNDFILE_LIBS=$libs_sndfile
 SNDFILE_LIB_PATH=$lib_dirs_sndfile
-echo SNDFILE_INCLUDES=$include_dirs_sndfile
-echo SNDFILE_LIBS=$libs_sndfile
-echo SNDFILE_LIB_PATH=$lib_dirs_sndfile
+#echo SNDFILE_INCLUDES=$include_dirs_sndfile
+#echo SNDFILE_LIBS=$libs_sndfile
+#echo SNDFILE_LIB_PATH=$lib_dirs_sndfile
 if test x$found_sndfile = xyes; then
 	HAS_SNDFILE=1
 else
@@ -5062,9 +5835,9 @@ AC_SUBST(HAS_SNDFILE)
 OGGVORBIS_INCLUDES=$include_dirs_oggvorbis
 OGGVORBIS_LIBS=$libs_oggvorbis
 OGGVORBIS_LIB_PATH=$lib_dirs_oggvorbis
-echo OGGVORBIS_INCLUDES=$include_dirs_oggvorbis
-echo OGGVORBIS_LIBS=$libs_oggvorbis
-echo OGGVORBIS_LIB_PATH=$lib_dirs_oggvorbis
+#echo OGGVORBIS_INCLUDES=$include_dirs_oggvorbis
+#echo OGGVORBIS_LIBS=$libs_oggvorbis
+#echo OGGVORBIS_LIB_PATH=$lib_dirs_oggvorbis
 if test x$found_oggvorbis = xyes; then
 	HAS_OGGVORBIS=1
 else
@@ -5078,9 +5851,9 @@ AC_SUBST(HAS_OGGVORBIS)
 LADSPA_INCLUDES=$include_dirs_ladspa
 LADSPA_LIBS=$libs_ladspa
 LADSPA_LIB_PATH=$lib_dirs_ladspa
-echo LADSPA_INCLUDES=$include_dirs_ladspa
-echo LADSPA_LIBS=$libs_ladspa
-echo LADSPA_LIB_PATH=$lib_dirs_ladspa
+#echo LADSPA_INCLUDES=$include_dirs_ladspa
+#echo LADSPA_LIBS=$libs_ladspa
+#echo LADSPA_LIB_PATH=$lib_dirs_ladspa
 if test x$found_ladspa = xyes; then
 	HAS_LADSPA=1
 else
@@ -5094,9 +5867,9 @@ AC_SUBST(HAS_LADSPA)
 PORTMIDI_INCLUDES=$include_dirs_portmidi
 PORTMIDI_LIBS=$libs_portmidi
 PORTMIDI_LIB_PATH=$lib_dirs_portmidi
-echo PORTMIDI_INCLUDES=$include_dirs_portmidi
-echo PORTMIDI_LIBS=$libs_portmidi
-echo PORTMIDI_LIB_PATH=$lib_dirs_portmidi
+#echo PORTMIDI_INCLUDES=$include_dirs_portmidi
+#echo PORTMIDI_LIBS=$libs_portmidi
+#echo PORTMIDI_LIB_PATH=$lib_dirs_portmidi
 if test x$found_portmidi = xyes; then
 	HAS_PORTMIDI=1
 else
@@ -5110,9 +5883,9 @@ AC_SUBST(HAS_PORTMIDI)
 ALSA_INCLUDES=$include_dirs_alsa
 ALSA_LIBS=$libs_alsa
 ALSA_LIB_PATH=$lib_dirs_alsa
-echo ALSA_INCLUDES=$include_dirs_alsa
-echo ALSA_LIBS=$libs_alsa
-echo ALSA_LIB_PATH=$lib_dirs_alsa
+#echo ALSA_INCLUDES=$include_dirs_alsa
+#echo ALSA_LIBS=$libs_alsa
+#echo ALSA_LIB_PATH=$lib_dirs_alsa
 if test x$found_alsa = xyes; then
 	HAS_ALSA=1
 else
@@ -5126,9 +5899,9 @@ AC_SUBST(HAS_ALSA)
 MAD_INCLUDES=$include_dirs_mad
 MAD_LIBS=$libs_mad
 MAD_LIB_PATH=$lib_dirs_mad
-echo MAD_INCLUDES=$include_dirs_mad
-echo MAD_LIBS=$libs_mad
-echo MAD_LIB_PATH=$lib_dirs_mad
+#echo MAD_INCLUDES=$include_dirs_mad
+#echo MAD_LIBS=$libs_mad
+#echo MAD_LIB_PATH=$lib_dirs_mad
 if test x$found_mad = xyes; then
 	HAS_MAD=1
 else
@@ -5142,9 +5915,9 @@ AC_SUBST(HAS_MAD)
 ID3_INCLUDES=$include_dirs_id3
 ID3_LIBS=$libs_id3
 ID3_LIB_PATH=$lib_dirs_id3
-echo ID3_INCLUDES=$include_dirs_id3
-echo ID3_LIBS=$libs_id3
-echo ID3_LIB_PATH=$lib_dirs_id3
+#echo ID3_INCLUDES=$include_dirs_id3
+#echo ID3_LIBS=$libs_id3
+#echo ID3_LIB_PATH=$lib_dirs_id3
 if test x$found_id3 = xyes; then
 	HAS_ID3=1
 else

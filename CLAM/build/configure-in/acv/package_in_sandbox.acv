@@ -42,7 +42,7 @@ else
 				if test -r $sandbox_location/$$sandbox{$$package}/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_$$package_esc="$libs_$$package_esc$sep$file"
+					libs_in_sandbox_$$package_esc="$libs_in_sandbox_$$package_esc$sep$file"
 					if test x$libdirset = xno
 					then
 						lib_dirs_$$package_esc="$sandbox_location/$$sandbox{$$package}/lib"
@@ -57,8 +57,9 @@ else
 			AC_MSG_CHECKING([[all $$package lib(s) found in sandbox]])
 			if test $found = 1
 			then
-				AC_MSG_RESULT([yes])
+				AC_MSG_RESULT([yes - adding to library path])
 				found_$$package_esc=yes
+				found_in_sandbox_$$package_esc=yes
 			else
 				AC_MSG_RESULT([no])
 				found_$$package_esc=no
@@ -69,5 +70,62 @@ else
 		fi
 	fi
 fi
-#####################################################################
-
+if test x$found_in_sandbox_$$package_esc = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_$$package_esc"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_$$package_esc
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_$$package_esc
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for $$package])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+$$source{$$package}
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_$$package_esc $$ext_libs{$$package}
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+$$source{$$package};
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_$$package_esc=$tmp_libs
+			found_$$package_esc=yes
+			AC_MSG_RESULT([$libs_$$package_esc])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
