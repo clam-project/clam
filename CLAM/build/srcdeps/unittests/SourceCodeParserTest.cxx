@@ -5,7 +5,6 @@ extern "C"
 #	include "parser.h"
 #	include "includepaths.h"
 #	include "config_parser.h"
-//#	include "dsp_parser.h"
 }
 
 namespace srcdepsTest
@@ -30,6 +29,8 @@ class SourceCodeParserTest : public CppUnit::TestFixture
 	// the following test can not be automated since exit(-1) gets refactored to exceptions
 //	CPPUNIT_TEST( test_error_impl_not_found_when_not_in_includepath );
 	CPPUNIT_TEST( test_needed_includepaths_when_added_recursive_dir );
+	CPPUNIT_TEST( test_including_with_relative_path );
+	CPPUNIT_TEST( test_sorce_file_path_have_more_priority_than_include_paths );
 	CPPUNIT_TEST_SUITE_END();
 
 	std::string mTestPath;
@@ -102,10 +103,10 @@ private:
                                         d.cxx      
                                                    c.cxx
 
-j.hxx       subdir/h.hxx  ->  subdir/subsubdir/i.hxx
-  ^     -----^   ^                            ^
-  |   /          |                            |
-j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx
+j.hxx       subdir/h.hxx  ->  subdir/subsubdir/i.hxx  <-----.       i.hxx
+  ^     -----^   ^                            ^              \    
+  |   /          |                            |               \(#inc with path)
+j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 
 
 **/
@@ -209,11 +210,28 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx
 		i = i->next;
 		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/h.hxx", std::string(i->str) );
 
-
-
-
 	}
 
+	void test_including_with_relative_path()
+	{
+		parser_run( helper_filename("k.cxx") );
+
+		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_headers) );
+		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_sources) );
+		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.hxx", std::string(guessed_headers->first->str) );
+		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.cxx", std::string(guessed_sources->last->str) );
+	}
+
+	void test_sorce_file_path_have_more_priority_than_include_paths()
+	{
+		includepaths_add( helper_filename("") );// at the test-path root exist another file named i.hxx
+		parser_run( helper_filename("subdir/subsubdir/i.cxx") );
+
+		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_headers) );
+		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_sources) );
+		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.hxx", std::string(guessed_headers->first->str) );
+		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.cxx", std::string(guessed_sources->last->str) );
+	}
 	// void test_priority_finding_headers()
 	// begins looking at the .cxx file dir
 
