@@ -49,7 +49,7 @@
 		<ul>
 			<li class='todo'>
 				unify ports attribute nomenclature (audioout...). Is it worth?</li>
-			<li class='current'>
+			<li class='done'>
 				make ports private. Thus use the base ports for attaching
 				<ul>
 					<li class='done'>
@@ -58,7 +58,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class='todo'>
+			<li class='current'>
 				Processing / Ports / Controls small refactoring, regarding accessing 
 				ports/controls by name
 			</li>
@@ -79,6 +79,21 @@
 		<h2>
 			+ System with Nodes</h2>
 		<h3>milestone 3</h3>
+		<ul>
+			<li class='todo'>Create new system class</li>
+			<li class='todo'>Use nodes instead of audios</li>
+			<li class='todo'>Test GetDataAndAdvance when region_size==hop_size==buffer_size</li>
+			<li class='current'>Test Attach-Unattach ports with nodes</li>
+			<li class='todo> Ports-Nodes refactorings
+			<ul>
+				<li class='todo'>encapsulate NodeParams(hop, length). It should be a port ctr, optional parameter</li>
+				<li class='todo'>extract InPort/OutPort/Tmpl version in different source files</li>
+				<li class='todo'>Try to separate Ports logic regarding connection to Node or ProcessingData (subclasses, strategy?)</li>
+			</ul>
+			</li>
+			
+		</ul>
+		
 		<h2>
 			+ Simple Network and FlowControl</h2>
 		<h3>milestone 4</h3>
