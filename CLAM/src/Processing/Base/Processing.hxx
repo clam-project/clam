@@ -379,18 +379,17 @@ namespace CLAM {
 
 		/** Method to turn the object into running state.
 		 * This method must be called before any call to Do() methods.
-		 * @throw ErrProcessingObj if the processing object is already
-		 * running (or disabled).
+		 * @asserts that the processing object is ready
 		 */
-		void Start(void) throw(ErrProcessingObj);
+		void Start(void);
 
 		/** Method to put the object out of running state When in
 		 * execution mode, this method must be called before any
 		 * further call to Configure() methods
-		 * @throw ErrProcessingObj if the processing object is not
+		 * @asserts that the processing object is
 		 * runnig (or disabled).
 		 */
-		void Stop(void) throw(ErrProcessingObj);
+		void Stop(void);
 	
 
 	public:
