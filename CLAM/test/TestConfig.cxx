@@ -79,8 +79,6 @@ class DummySubConfig : public ProcessingConfig
 
 	DYNAMIC_TYPE_USING_INTERFACE (DummySubConfig,6,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
-
-/** General	**/
 	DYN_ATTRIBUTE(1,public,std::string,ThatIsAString);
 	DYN_ATTRIBUTE(2,public,TData,ThatIsATData);
 	DYN_ATTRIBUTE(3,public,TSize,ThatIsATSize);
@@ -105,8 +103,6 @@ class DummyConfig : public ProcessingConfig
 
 	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,7,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
-
-/** General	**/
 	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
 	DYN_ATTRIBUTE(2,public,TData,ThisIsATData);
 	DYN_ATTRIBUTE(3,public,TSize,ThisIsATSize);
@@ -135,35 +131,41 @@ class DummyVisitor {
 	}
 	template <typename T>
 	void Accept(const char *name, void *foo, T& value) {
-		std::cout << "Uneditable type '" << name << "'" << std::endl;
+		std::cout << "Visiting Uneditable type '" << name << "'" << std::endl;
 	}
 	template <typename T>
 	void Accept(const char *name, std::string *foo, T& value) {
-		std::cout << "ToInt Visiting '" << name << "' Type string Value: '" << value << "'" << std::endl;
+		std::cout << "Visiting '" << name << "' Type string Value: '" << value << "'" << std::endl;
 	}
 	template <typename T>
 	void Accept(const char *name, TData *foo, T& value) {
-		std::cout << "ToInt Visiting '" << name << "' Type TData Value: " << value << std::endl;
+		std::cout << "Visiting '" << name << "' Type TData Value: " << value << std::endl;
 	}
 	template <typename T>
 	void Accept(const char *name, TSize *foo, T& value) {
-		std::cout << "ToInt Visiting '" << name << "' Type TSize Value: " << value << std::endl;
+		std::cout << "Visiting '" << name << "' Type TSize Value: " << value << std::endl;
 	}
 	template <typename T>
 	void Accept(const char *name, bool *foo, T& value) {
-		std::cout << "ToInt Visiting '" << name << "' Type bool Value: " << (value?"true":"false") << std::endl;
+		std::cout << "Visiting '" << name << "' Type bool Value: " << (value?"true":"false") << std::endl;
 	}
 	template <typename T>
 	void Accept(const char *name, Enum *foo, T&value) {
-		std::cout << "ToInt Visiting '" << name << "' Type Enum Value: " << value.GetString() << std::endl;
+		std::cout << "Visiting '" << name << "' Type Enum Value: [ " ;
 		const Enum::tEnumValue * mapping = value.GetSymbolMap();
 		for (unsigned i = 0; mapping[i].name; i++) {
-			std::cout << " Alternate value '" << mapping[i].name << "'" << std::endl;
+			if (mapping[i].value==value.GetValue()) {
+				std::cout << "*'" << value.GetString() << "'* ";
+			}
+			else {
+				std::cout << "'" << mapping[i].name << "' ";
+			}
 		}
+		std::cout << "]" << std::endl;
 	}
 	template <typename T>
 	void Accept(const char *name, DynamicType *foo, T&value) {
-		std::cout << "ToInt Visiting '" << name << "' Dynamic Type" << std::endl;
+		std::cout << "Visiting '" << name << "' Dynamic Type" << std::endl;
 		value.VisitAll(*this);
 	}
 };
@@ -178,9 +180,11 @@ class MyVisitorToFloat {
 	}
 };
 void testVisitors() {
-	DummyConfig config;
-	DummyVisitor visitor;
-	config.VisitAll(visitor);
+	{
+		DummyConfig config;
+		DummyVisitor visitor;
+		config.VisitAll(visitor);
+	}
 }
 
 }
