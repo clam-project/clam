@@ -53,6 +53,16 @@
 		their build projects can be found on the build/Examples/Simple folder
   * FFT refactored:
 	**  removed duplicated code and unused functionality and improved efficiency.
+  * Salto: 
+	** Fix: several potentially dangerous out-of-bounce array accesses in fltk G.interface
+  * Processing Data: 
+	** Documented (doxygen style) that the time unit is miliseconds in Audio, Frame and Segment
+  * Processings:
+	** AudioFileIn stamps the sample-rate to the written audio
+  * Tests:
+	** All unit and functional tests have been merged in only two executables (settings.cfg),
+	   namely: AllUnitTests and AllFunctionalTests
+
 
 	
 
