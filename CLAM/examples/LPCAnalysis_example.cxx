@@ -131,28 +131,46 @@ int main( int argc, char** argv )
 		// Now it's time to create the LPC_AutoCorrelation Processing config
 		// object
 		CLAM::LPCConfig cfg;
+		// We set the order of the approximation to be computed to the same
+		// we did for the LPModel object
 		cfg.SetOrder( lpcOrder );
 
+		// We instantiate the processing
 		CLAM::LPC_AutoCorrelation lpc;
 
+		// We configure it...
 		lpc.Configure( cfg );
+		// start ...
 		lpc.Start();
+		// call its Do() passing the windowed audio data and the LPModel
+		// object where the approximation is to be stored
 		lpc.Do( windowedAudio, lpModel );
+		// ... and we finally stop the object
 		lpc.Stop();
 
+		// We setup the flags for the Spectrum representation of the
+		// information contrived in the LPModel object
 		CLAM::SpecTypeFlags flags;
+		// since we just want a Magnitude/Phase floating-point arrays
+		// representation we deactivate the other representations
 		flags.bMagPhase=1;
 		flags.bComplex = 0;
 
+		// We instantiate here the Spectrum object we will use to reflect
+		// LPModel computed information
 		CLAM::Spectrum lpSpectrum;
 		lpSpectrum.SetSize( samples/2+1 );
 		lpSpectrum.SetSpectralRange( sampleRate/2 );
 		lpSpectrum.SetType( flags );
 
+		// We tell the LPModel to transfer its information to the Spectrum
 		lpModel.ToSpectrum( lpSpectrum );
+		// We make the magnitude buffer in the Spectrum to be set in logarithmic
+		// scale
 		lpSpectrum.ToDB();
 		
-		// And now it is FFT turn
+		// And now it is FFT turn. For details on the following lines refer to
+		// FFT_Example.cxx file, where they are explained in depth and detail
 		CLAM::Spectrum ftSpectrum;
 		ftSpectrum.SetSize( samples/2+1 );
 		ftSpectrum.SetSpectralRange( sampleRate/2 );
