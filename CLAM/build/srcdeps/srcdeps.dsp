@@ -113,13 +113,6 @@ SOURCE=.\dsp_parser.h
 # Begin Source File
 
 SOURCE=.\emptydsp.c
-
-!IF  "$(CFG)" == "srcdeps - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "srcdeps - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

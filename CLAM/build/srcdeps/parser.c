@@ -523,9 +523,10 @@ static void parser_mark_as_mocable( )
 	
 	if ( !strstr( currentFilename, "/include" ) )	/*Ignoring external library headers*/	
 	{
+		list* mocable_headers = NULL;
 		listkey* k = listhash_find( config, "MOCABLE_HEADERS" );
 		assert( k != NULL );
-		list* mocable_headers = k->l;
+		mocable_headers = k->l;
 		assert( mocable_headers != NULL );
 		
 		list_add_str_once( mocable_headers, currentFilename );		

@@ -105,6 +105,9 @@ int main(int argc,char** argv)
 		}
 	}
 
+	/*Create moc folder*/	
+	system( "mkdir moc" );
+	
 	if(dspFileToRead)
 	{
 //		if (files is equal to dspFileToWrite)

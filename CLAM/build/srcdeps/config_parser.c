@@ -141,14 +141,28 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 				k = listhash_find(config,var);
 				if (k==0)
 				{
-					fprintf(stderr,
-						"Variable \"%s\" not found in line %s:%d\n",
-						var,d->filename,d->line);
-					exit(-1);
+					char* environmentVar = NULL;
+					/* Let's check wether it is an environment variable */
+					if ( environmentVar = getenv( var ) )
+					{
+						list* l = listhash_add_key_once( config, var )->l = list_new();
+						list_add_str_once( l, environmentVar );
+						list_add_str_once( used_vars, var );
+						k = listhash_find( config, var );
+					}
+					else
+					{
+						fprintf(stderr,
+							"Variable \"%s\" not found in line %s:%d\n",
+							var,d->filename,d->line);
+						exit(-1);
+					}
 				}
-				
-				/* marked the variable as used */
-				list_add_str_once(used_vars,k->str);
+				else
+				{
+					/* marked the variable as used */
+					list_add_str_once(used_vars,k->str);
+				}
 
 				/* reset the token string pointer to where we encountered the 
 				** variable so we will overwrite it with it's value(s)
@@ -523,7 +537,8 @@ void config_init(void)
 	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
 
-
+	list_add_str_once(used_vars,"MOCABLE_HEADERS");
+	list_add_str_once(used_vars,"MOCABLE_SOURCES");
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"LINK_FLAGS_DEBUG");

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "parser.h"
 #include "config_parser.h"
@@ -9,6 +10,7 @@
 #include "stack.h"
 #include "list.h"
 #include "strfuncs.h"
+#include "objdepname.h"
 
 stack* groupstack = 0;
 
@@ -31,6 +33,8 @@ int  currentConfigIsDebug = 0;
 
 static int skipsource = 0;
 static int begingroupl = 0;
+
+static void dsp_parse_insert_mocable_header( const char* mocableFile );
 
 void winstyle(char* str)
 {
@@ -224,6 +228,17 @@ void dsp_parse_add_link_flags(void)
 	}
 }
 
+void dsp_parse_insert_regular_file( const char* filename )
+{
+	static char tmp[1024];
+	strncpy(tmp,filename,1024);
+	winstyle(tmp);
+	fprintf(outfile,"# Begin Source File\n\n");
+	fprintf(outfile,"SOURCE=%s\n",tmp);
+	fprintf(outfile,"# End Source File\n");
+}
+
+
 void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 {
 	node * n = t->first;
@@ -250,12 +265,20 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 			dsp_parse_insert_recurse(n->sub,repeatcheck,type);
 			fprintf(outfile,"# End Group\n");
 		}else{
-			char tmp[1024];
-			strncpy(tmp,n->str,1024);
-			winstyle(tmp);
-			fprintf(outfile,"# Begin Source File\n\n");
-			fprintf(outfile,"SOURCE=%s\n",tmp);
-			fprintf(outfile,"# End Source File\n");
+			if ( type == 1 )
+			{
+				listkey *k = listhash_find( config, "MOCABLE_HEADERS" );
+				list* mocable_headers = k->l;
+				assert( k!= NULL );
+				assert( mocable_headers != NULL );
+				
+				if ( list_find( mocable_headers, n->str ) )
+					dsp_parse_insert_mocable_header( n->str );
+				else
+					dsp_parse_insert_regular_file( n->str );
+			}
+			else
+				dsp_parse_insert_regular_file( n->str );
 		}
 		n = n->next;
 	}
@@ -310,6 +333,76 @@ void dsp_parse_insert(int type)
 
 	list_free(repeatcheck);
 	tree_free(t);
+}
+
+static dsp_parse_insert_moc_custom_build_rule( const char* fileString  )
+{
+	char filename[2048];
+	char tmpname[2048];
+	char mocname[2048];
+	listkey *k = listhash_find( config, "QTDIR" );
+	const char* qtdir = k->l->first->str;
+
+	convert_to_mocname( tmpname, 2048, fileString );
+	winstyle( tmpname );
+	strstart( mocname, 2048 );
+	stradd( ".\\");
+	stradd( tmpname );
+	strend();
+	/*Split the header path into the path and the filename */
+	discard_path( filename, 2048, fileString );
+
+	strncpy( tmpname, fileString,  2048 );
+	winstyle( tmpname );
+
+
+	/*Generate actual .dsp code */
+
+	fprintf( outfile, "# Begin Custom Build - MOCing %s...\n", filename );
+	/* fprintf( outfile, "InputDir=%s\n", pathToFile ); */
+	/* fprintf( outfile, "InputPath=%s\n", fileString ); */
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "\"%s\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n", mocname );
+	fprintf( outfile, "	%s\\bin\\moc.exe %s -o %s \n", qtdir, tmpname, mocname );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "# End Custom Build \n" );
+}
+
+static void dsp_parse_insert_mocable_header( const char* file  )
+{
+	char* project_name = 0;
+	char tmp[1024];
+	
+	if ( program && program->first && program->first->str )
+	{
+		project_name = program->first->str;
+	}
+	else
+		fprintf( stderr, "Error: Variable PROGRAM was not defined!\n" );
+
+
+	strncpy(tmp,file,1024);
+	winstyle(tmp);
+
+	fprintf( outfile, "#Begin Source File\n");
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "SOURCE=\"%s\"\n", tmp );
+	fprintf( outfile, "\n" );
+	/*Custom build - release mode */
+	fprintf( outfile, "!IF \"$(CFG)\" == \"%s - Win32 Release \"\n", project_name );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
+	dsp_parse_insert_moc_custom_build_rule(  file );
+	fprintf( outfile, "\n" );
+	/*Custom build - debug mode */
+	fprintf( outfile, "!ELSEIF \"$(CFG)\" == \"%s - Win32 Debug\"\n", project_name );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
+	dsp_parse_insert_moc_custom_build_rule(  file );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "!ENDIF\n" );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "#End Source File\n");
 }
 
 void dsp_parse_insert_settings_rule(void)
@@ -676,6 +769,29 @@ void dsp_parse_line(const char* buf,int line)
 		{
 			if (!strcmp_eol(buf,"# End Target"))
 			{
+				char tmpname[2048];
+				char tmpname2[2048];
+				list* mocable_headers = NULL;
+				item* current = NULL;
+				listkey *k = listhash_find( config, "MOCABLE_HEADERS" );
+				assert( k!= NULL );
+				mocable_headers = k->l;
+				if ( mocable_headers)
+				{
+					current = mocable_headers->first;				
+					while ( current != NULL )
+					{		
+						convert_to_mocname( tmpname, 2048, current->str );
+						strstart( tmpname2, 2048 );
+						stradd("./");
+						stradd(tmpname);
+						strend();
+
+						list_add_str_once( guessed_sources, tmpname2 );
+						current = current->next;
+					}
+				}
+
 				dsp_parse_insert_sources();
 				dsp_parse_insert_headers();
 				dsp_parse_insert_settings_rule();

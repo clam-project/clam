@@ -68,6 +68,20 @@ void convert_to_mocname(char* mocname, int maxlen, const char* filename )
 		
 }
 
+void discard_path( char* newName, int maxlen, const char* filename )
+{
+	const char* ptr = filename;
+	ptr = strptr_skip_end(ptr);
+	while (ptr!=filename)
+	{
+		ptr--;
+		if (*ptr=='/') { ptr++; break; }
+	}
+	strstart( newName, maxlen );
+	stradd( ptr );
+	strend();
+}
+
 void convert_to_depname(char* depname,int maxlen,const char* filename)
 {
 	const char* ptr = filename;
