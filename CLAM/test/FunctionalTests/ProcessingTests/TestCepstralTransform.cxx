@@ -5,6 +5,7 @@
 #include "MelCepstrum.hxx"
 #include "Array.hxx"
 #include "similarityHelper.hxx"
+#include "CLAM_Math.hxx"
 #include <algorithm>
 #include <iostream>
 

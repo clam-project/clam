@@ -10,6 +10,7 @@
 #include "similarityHelper.hxx"
 #include <algorithm>
 #include <iterator>
+#include <cstdlib>
 
 namespace CLAMTest
 {
@@ -21,6 +22,9 @@ namespace CLAMTest
 		: public CppUnit::TestFixture
 	{
 		CPPUNIT_TEST_SUITE( MultiChannelAudioFileReaderFunctionalTest );
+
+
+		CPPUNIT_TEST( test_fopen );
 
 		// Configuration values checking tests
 		CPPUNIT_TEST( testConfigure_ReturnsTrueWithJustFilename );
@@ -66,7 +70,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTestData = "../../../../../CLAM-TestData/";
+			mPathToTestData = getenv("CLAM_TEST_DATA");//"../../../../../CLAM-TestData/";
 		}
 
 		void tearDown()
@@ -74,6 +78,30 @@ namespace CLAMTest
 		}
 
 	private: // tests cases
+		void test_fopen()
+		{
+			std::string path = mPathToTestData + "JannieJones-short-Stereo.ogg";
+
+			FILE* fp = NULL;
+				
+			fp = fopen( path.c_str(), "rb" );
+
+			if ( errno )
+			{
+				char* msg = strerror( errno );
+
+				std::cerr << msg << std::endl;
+			}
+
+			char msg[100];
+
+			unsigned bytesRead = fread( msg, 1, 4, fp );
+
+			if ( fp )
+				fclose(fp);
+		}
+
+
 
 		void testConfigure_ReturnsTrueWithJustFilename()
 		{
@@ -563,6 +591,7 @@ namespace CLAMTest
 			similarityRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
 							      prevRightSamples );
 
+			// MRJ: In Windows this is giving out very strange values
 			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection
 					      - similarityLeft ) < 1e-4 );
 			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection

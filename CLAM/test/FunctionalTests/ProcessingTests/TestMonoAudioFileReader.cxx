@@ -9,6 +9,7 @@
 #include "AudioFileOpsTestsHelper.hxx"
 #include "similarityHelper.hxx"
 #include <algorithm>
+#include <cstdio>
 
 namespace CLAMTest
 {
@@ -20,6 +21,8 @@ namespace CLAMTest
 		: public CppUnit::TestFixture
 	{
 		CPPUNIT_TEST_SUITE( MonoAudioFileReaderFunctionalTest );
+
+
 
 		// Configuration values checking tests
 		CPPUNIT_TEST( testConfigure_ReturnsTrueWithJustFilename );
@@ -45,6 +48,7 @@ namespace CLAMTest
 
 		CPPUNIT_TEST( test_WindowsMedia_WAVE_File );
 
+
 		CPPUNIT_TEST_SUITE_END();
 
 	protected: // Attributes
@@ -57,7 +61,8 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTestData = "../../../../../CLAM-TestData/";
+			mPathToTestData = getenv("CLAM_TEST_DATA");//"../../../../../CLAM-TestData/";
+
 		}
 
 		void tearDown()
@@ -453,8 +458,6 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_AreDecoded_OK()
 		{
-			CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
-
 			CLAM::AudioFile inputFile;
 			inputFile.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
 
@@ -541,9 +544,7 @@ namespace CLAMTest
 
 			procReader.Stop();
 			procReader2.Stop();		
-		       
-			CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
-			
+		       		
 			CPPUNIT_ASSERT_EQUAL(framesRead, framesChecked );
 		}
 

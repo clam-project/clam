@@ -120,7 +120,8 @@ namespace CLAMTest
 	public:
 		void setUp()
 		{
-			mPathToTestData = "../../../../../CLAM-TestData/spectralData/";
+			mPathToTestData = getenv("CLAM_TEST_DATA");//"../../../../../CLAM-TestData
+			mPathToTestData += "spectralData/";
 			loadBack2BackDataset( mPathToTestData );
 		}
 
