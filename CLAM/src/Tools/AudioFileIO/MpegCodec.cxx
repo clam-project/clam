@@ -314,7 +314,10 @@ namespace AudioCodecs
 			ID3_Field* artistStr = artistFrame->GetField( ID3FN_TEXT );
 			
 			if ( artistStr != NULL )
-				txt.SetArtist( artistStr->GetRawText() );
+			{
+				if ( artistStr->GetRawText() != NULL )
+					txt.SetArtist( artistStr->GetRawText() );
+			}
 		}
 
 		ID3_Frame* titleFrame = fileTag.Find( ID3FID_TITLE );
@@ -326,7 +329,8 @@ namespace AudioCodecs
 			ID3_Field* titleStr = titleFrame->GetField( ID3FN_TEXT );
 
 			if ( titleStr!=NULL )
-				txt.SetTitle( titleStr->GetRawText() );
+				if ( titleStr->GetRawText() != NULL )
+					txt.SetTitle( titleStr->GetRawText() );
 		}
 
 		ID3_Frame* albumFrame = fileTag.Find( ID3FID_ALBUM );
@@ -338,7 +342,8 @@ namespace AudioCodecs
 			ID3_Field* albumStr = albumFrame->GetField( ID3FN_TEXT );
 
 			if ( albumStr != NULL )
-				txt.SetAlbum( albumStr->GetRawText() );
+				if ( albumStr->GetRawText() != NULL )
+					txt.SetAlbum( albumStr->GetRawText() );
 		}
 
 		ID3_Frame* tracknumFrame = fileTag.Find( ID3FID_TRACKNUM );
@@ -351,7 +356,8 @@ namespace AudioCodecs
 			ID3_Field* tracknumStr = tracknumFrame->GetField( ID3FN_TEXT );
 			
 			if ( tracknumStr != NULL )
-				txt.SetTrackNumber( tracknumStr->GetRawText() );
+				if ( tracknumStr->GetRawText() != NULL )
+					txt.SetTrackNumber( tracknumStr->GetRawText() );
 		}
 
 		ID3_Frame* composerFrame = fileTag.Find( ID3FID_COMPOSER );
@@ -364,7 +370,8 @@ namespace AudioCodecs
 			ID3_Field* composerStr = composerFrame->GetField( ID3FN_TEXT );
 
 			if ( composerStr != NULL )
-				txt.SetComposer( composerStr->GetRawText() );
+				if ( composerStr->GetRawText() != NULL )
+					txt.SetComposer( composerStr->GetRawText() );
 		}
 
 		ID3_Frame* performerFrame = fileTag.Find( ID3FID_CONDUCTOR );
@@ -377,7 +384,8 @@ namespace AudioCodecs
 			ID3_Field* performerStr = performerFrame->GetField( ID3FN_TEXT );
 
 			if ( performerStr != NULL )
-				txt.SetPerformer( performerStr->GetRawText() );
+				if ( performerStr->GetRawText() != NULL )
+					txt.SetPerformer( performerStr->GetRawText() );
 		}
 #endif
 	}
