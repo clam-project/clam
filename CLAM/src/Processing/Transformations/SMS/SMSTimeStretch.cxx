@@ -79,6 +79,7 @@ bool SMSTimeStretch::ConcreteStart()
 	return true;
 }
 
+/**TODO: This method does not work if called directly! it must be called from the Segment overload*/
 bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 {
 	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate());
