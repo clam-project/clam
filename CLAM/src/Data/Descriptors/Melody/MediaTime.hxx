@@ -22,13 +22,8 @@
 #ifndef _MediaTime_
 #define _MediaTime_
 
-#include "DynamicType.hxx"
 #include "DataTypes.hxx"
-#include "OSDefines.hxx"
-#include "Err.hxx"
 #include "ProcessingData.hxx"
-
-#include "Enum.hxx"
 
 #ifdef WIN32
 	//XA: this should not be here but else does not compile
@@ -50,17 +45,18 @@ namespace CLAM {
  *                                               */
 
 class MediaTime: public ProcessingData
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MediaTime, 3, ProcessingData);
-		DYN_ATTRIBUTE (0, public, TData, Begin);   
-		DYN_ATTRIBUTE (1, public, TData, End);
-		DYN_ATTRIBUTE (2, public, TData, Duration);
-		
+{
+public:
+	DYNAMIC_TYPE_USING_INTERFACE (MediaTime, 3, ProcessingData);
+	DYN_ATTRIBUTE (0, public, TData, Begin);   
+	DYN_ATTRIBUTE (1, public, TData, End);
+	DYN_ATTRIBUTE (2, public, TData, Duration);
+	
+protected:	
 	void DefaultInit();	
 };
 
-}; // namespace CLAM
+} // namespace CLAM
 
 #endif
 
