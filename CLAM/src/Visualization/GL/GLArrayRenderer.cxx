@@ -137,19 +137,7 @@ void GLArrayRenderer::DefineViewport( const DataArray& array, Viewport& view_spe
 	else
 		bottom = *( min_element( array.GetPtr(), array.GetPtr()+array.Size() - 1 ) );
 	
-	// MRJ:
-	// we should avoid that top and bottom match, since it seems to cause an undetermined
-	// 'memory straying' somewhere. The possible causes could range from a faulty OpenGL
-	// ICD to a hidden bug in FLTK. However I haven't got a clue what happens when you
-	// specify a projection with the same "top" and "bottom", I should revise the projective
-	// math, since I fear that some numerical unstability problem manifestates 
 	
-	// :KLUDGE: let's pad the top and bottom when they are equal
-	
-	if ( fabs( top - bottom ) < 0.01 )
-	{
-		top += TData(1.0);
-	}
 
 	TData left   = 0;
 	TData right  = (TData) array.Size();

@@ -93,8 +93,15 @@ void GLWaveRenderer::XaxisTransform( TData left, TData right, TData& transleft, 
 void GLWaveRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer )
 {
 
-	transtop = top + 1.0f;
-	transbottom = bottom - 1.0f;
+	if ( fabs( top - bottom ) < 0.01 )
+	{
+		top += TData(0.01);
+		bottom -= TData(0.01);
+	}
+
+
+	transtop = top  + 0.001f;
+	transbottom = bottom  - 0.001f;
 	integer = false;
 }
 
