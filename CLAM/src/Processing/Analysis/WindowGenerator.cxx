@@ -98,12 +98,6 @@ using namespace CLAM;
 		
 		/* Fill the table */
 		
-		// We force the size to odd, because the last point in the window is
-		// needed for interpolation in the table
-
-		/*if (mConfig.GetSize()%2 == 0) 
-			mConfig.SetSize(mConfig.GetSize()+1);*/
-		
 		mTable.Resize(mConfig.GetSize());
 		mTable.SetSize(mConfig.GetSize());
 		mSize.DoControl(TControlData(mConfig.GetSize()));
