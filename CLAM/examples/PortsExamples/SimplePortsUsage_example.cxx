@@ -66,27 +66,23 @@ int main( int argc, char** argv )
 		
 		// we need to configure the ports with the correct size in order to get the data automatically.
 		// the way of accessing the ports is by name, specifying before which kind of port you need.
-		osc.GetOutPorts().Get("Audio Output").SetSize( size );
-		osc.GetOutPorts().Get("Audio Output").SetHop( size );
+		osc.GetOutPort("Audio Output").SetSize( size );
+		osc.GetOutPort("Audio Output").SetHop( size );
 
-		audioOut.GetInPorts().Get("Audio Input").SetSize( size );
-		audioOut.GetInPorts().Get("Audio Input").SetHop( size );
-
-		myfft.GetInPorts().Get("Audio Input").SetSize( size );
-		myfft.GetInPorts().Get("Audio Input").SetHop( size );
-		myifft.GetOutPorts().Get("Audio Output").SetSize( size );
-		myifft.GetOutPorts().Get("Audio Output").SetHop( size );
+		audioOut.GetInPort("Audio Input").SetSize( size );
+		audioOut.GetInPort("Audio Input").SetHop( size );
 
 		// after this, is needed to attach the different ports to their respective nodes.
-//		osc.GetOutPorts().Get("Audio Output").ConnectToIn( audioOut.GetInPorts().Get("Audio Input") );
-		osc.GetOutPorts().Get("Audio Output").ConnectToIn( myfft.GetInPorts().Get("Audio Input") );
-		myfft.GetOutPorts().Get("Spectrum Output").ConnectToIn( myifft.GetInPorts().Get("Spectrum Input") );
-		myifft.GetOutPorts().Get("Audio Output").ConnectToIn( audioOut.GetInPorts().Get("Audio Input") );
-		
+//		osc.GetOutPorts("Audio Output").ConnectToIn( audioOut.GetInPorts("Audio Input") );
+		osc.GetOutPort("Audio Output").ConnectToIn( myfft.GetInPort("Audio Input") );
+		myfft.GetOutPort("Spectrum Output").ConnectToIn( myifft.GetInPort("Spectrum Input") );
+		myifft.GetOutPort("Audio Output").ConnectToIn( audioOut.GetInPort("Audio Input") );
+	
 		osc.Start();
 		myifft.Start();
 		myfft.Start();
 		audioOut.Start();
+
 
 		for(int i=0;i<500;i++)
 		{
