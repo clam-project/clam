@@ -51,7 +51,6 @@
 #include "XMLable.hxx"
 
 #include "AudioIO.hxx"
-//#include "AudioIn.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 
@@ -62,7 +61,7 @@ using namespace CLAM;
 
 Progress::Progress(const char* title,float from,float to)
 {
-//	mTitle = strdup(title);
+
 	mTitle = new char[strlen(title)+1];
 	strncpy( mTitle, title, strlen(title)+1 );
 	mFrom = from;
@@ -71,20 +70,17 @@ Progress::Progress(const char* title,float from,float to)
 
 Progress::~Progress()
 {
-//	free(mTitle);
 	delete[] mTitle;
 }
 
 WaitMessage::WaitMessage(const char* title)
 {
-//	mTitle = strdup(title);
 	mTitle = new char[strlen(title)+1];
 	strncpy(mTitle,title, strlen(title)+1 );
 }
 
 WaitMessage::~WaitMessage()
 {
-//	free(mTitle);
 	delete[] mTitle;
 }
 
@@ -104,17 +100,7 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 
 AnalysisSynthesisExampleBase::~AnalysisSynthesisExampleBase(void)
 {
-/*	if(mpOutputL) 
-	{
-		delete mpOutputL;
-		mpOutputL=NULL;
-	}
-	if(mpOutputR)
-	{ 
-		delete mpOutputR;
-		mpOutputR=NULL;
-	}
-*/
+
 }
 
 void AnalysisSynthesisExampleBase::InitConfigs(void)
@@ -154,7 +140,6 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetSinZeroPadding(analZeroPaddingFactor);
 	mAnalConfig.SetResWindowSize(resAnalWindowSize);
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
-	//	analConfig.SetDisplayFlags(mGlobalConfig.GetAnalysisSynthesisDisplayFlags());
 
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
@@ -219,7 +204,6 @@ void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName
 	{
 		WaitMessage *wm = CreateWaitMessage("Loading analysis data sdif file, please wait");
 		
-		/* temporal SDIF Converter which reads in one pSpecSeg */
 		SDIFInConfig cfg;
 		cfg.SetMaxNumPeaks(100);
 		cfg.SetFileName(inputFileName);
@@ -333,12 +317,13 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	myAudioFileIn.Start();
 	myAudioFileIn.Do(mAudioIn);
 	myAudioFileIn.Stop();
-		//Normalization
-	NormalizationConfig NCfg;
+
+	//Normalization is not needed for the time being
+	/*NormalizationConfig NCfg;
 	NCfg.SetType(3);
 	Normalization mNorm(NCfg);
 
-	//mNorm.Do(mAudioIn);
+	mNorm.Do(mAudioIn);*/
 	
 	mHaveAudioIn = true;
 
@@ -367,7 +352,6 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	//TODO: Using Sinusoidal Hop Size as global, check!
 	
 	Progress* pct = CreateProgress("Analysis Processing",0,float(size));
 	myAnalysis.Start();
@@ -383,7 +367,7 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	myAnalysis.Stop();
 	delete pct;
 	
-	/*Now I will try to clean Tracks (TODO:This should be done on a frame by frame basis
+	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
 	and included in SMSAnalysis*/
 
 	if( mGlobalConfig.GetDoCleanTracks() ){
@@ -483,9 +467,7 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 	Audio tmpAudioFrame,tmpAudioFrame2;
 	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
 		
-	//This does not necessarily have to be true, look at OverlapAddTest above!
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
-//	int windowsInFrame=(mSynthConfig.GetFrameSize()+1)/mSynthConfig.GetHopSize();
 	int i;
 
 	Progress* pct = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
@@ -508,7 +490,6 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 		mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
 		mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
 		beginIndex+=synthFrameSize;
-		//CLAMGUI::showPDSnapshot(&mAudioOutSin,"OutputAudio");
 		pct->Update(float(i));
 	}
 
@@ -521,6 +502,12 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 
 void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 {
+	
+/* This function is just an example of the kind of things you are able to do departing from this
+Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
+in metadata extraction from an input sound.*/	
+	
+	
 	ComputeLowLevelDescriptors();
 	
 	TData frequencies[85]={32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55.000, 58.270, 61.735,
@@ -591,7 +578,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	//Segmentation//
 	////////////////
 			
-	//Configuration
+	//This new segmentator is still to be tested
 /*	OnsetDetectionConfig onsetconfig;
 	onsetconfig.SetFrameSize(analysisFrameSize);
 	onsetconfig.SetSmoothFiltSize(smoothFiltSize);
@@ -636,7 +623,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 		// Compute Fundamental frequency mean
 		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());
 		TIndex e;
-		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())//don't know why but sometimes there is an error in last child
+		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())
 			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
 		else
 			e=roundInt(2*mSegment.GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
@@ -687,7 +674,6 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 				number++;
 			}
 		}
-//		CLAMGUI::showPDSnapshot(&testEnergyAudio);
 		if (number)
 			ff/=number;
 		else ff=0;
@@ -700,8 +686,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 		lastFF=ff;
 		lastEnergy=noteEnergy;
 		myNote.SetFundFreq(ff);
-		//testing!!!!!!
-		myNote.SetEnergy(maxEnergy/30);
+		myNote.SetEnergy(noteEnergy);
 		myNote.SetTime(time);
 		TData min = 10000;
 		TIndex m=0,n=0;
@@ -712,14 +697,9 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 			}
 		myNote.SetPitchNote(pitch[n]);		
 		if(noteEnergy>0.01&&((myNote.GetTime().GetEnd()-myNote.GetTime().GetBegin())>0.01))
-		//if(noteEnergy>0.005&&maxEnergy>0)
 		{
 			if((myNote.GetTime().GetEnd()-myNote.GetTime().GetBegin())<0.2)
 				myNote.GetTime().SetEnd(myNote.GetTime().GetBegin()+TData(0.2));
-/*			if(array.CurrentIndex()!=0&&myNote.GetTime().GetBegin()<array.Last().GetTime().GetEnd()){
-				array.Last().GetTime().SetEnd(myNote.GetTime().GetBegin()-0.05);
-				array.Last().GetTime().SetBegin(array.Last().GetTime().GetBegin()-0.05);}
-*/
 			array.AddElem(myNote);
 		}
 	}
@@ -756,7 +736,6 @@ void AnalysisSynthesisExampleBase::Transform(void)
 		SetTransformation(new SMSFreqShift);
 		def=true;
 	}
-	//mpTransformation->mAmountCtrl.DoControl(mTransformationScore.GetFAmount());
 	mpTransformation->Configure(mTransformationScore);
 	mpTransformation->Do(mSegment,mSegment);
 	if (def) {
@@ -836,7 +815,8 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 	TSize outBufferSize=256;
 	
 #ifdef WIN32
-	//This seems very weird to me. if sound file is played as stereo 2*sampleRate must be used
+	//When using RT implementation in windows, twice the sampling rate must be passed
+	//if a stereo sound is to be reproduced
 	AudioManager audioManager(2*mGlobalConfig.GetSamplingRate(),outBufferSize*2);
 #else
 	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize*2);
