@@ -508,6 +508,7 @@ void SMSBase::SynthesisProcessing()
 		
 		if(GetSynthesis().Do(mTransformedSegment))
 		{
+			std::cout << "true condition" << std::endl;
 			mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
 			mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
 			mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
@@ -518,6 +519,10 @@ void SMSBase::SynthesisProcessing()
 	}
 
 
+	std::cout << "sample: " << mAudioOut.GetBuffer()[15] << std::endl;
+	std::cout << "sample: " << mAudioOut.GetBuffer()[100] << std::endl;
+	std::cout << "sample: " << mAudioOut.GetBuffer()[300] << std::endl;
+	std::cout << "sample: " << mAudioOut.GetBuffer()[500] << std::endl;
 	mHaveAudioOut = true;
 
 	GetSynthesis().Stop();
@@ -767,14 +772,14 @@ void SMSBase::LoadTransformationScore(const std::string& inputFileName)
 {
 	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
-//TODO	XMLStorage::Restore(mTransformationScore,inputFileName);
+	XMLStorage::Restore(mTransformationScore,inputFileName);
 	delete wm;
 }
 
 void SMSBase::StoreTransformationScore( const std::string& outputFilename )
 {
 	CLAMGUI::WaitMessage* wm = CreateWaitMessage( "Storing transformation score" );
-	//TODO	XMLStorage::Dump( mTransformationScore, "SMS_Transformation_Score", outputFilename );
+	XMLStorage::Dump( mTransformationScore, "SMS_Transformation_Score", outputFilename );
 	delete wm;
 }
 
@@ -792,23 +797,23 @@ void SMSBase::Transform()
 
 void SMSBase::SetSMSMorphFileName()
 {
-	//TODO SMSTransformationChainConfig::iterator configIt;
+	SMSTransformationChainConfig::iterator configIt;
 	if(mGlobalConfig.HasMorphSoundFile())
 	{
-	//TODO	for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++)
-	//TODO	{
-		//Note: we are supposing only one Morph is in the chain
-	//TODO		if((*configIt).GetConcreteClassName()=="SMSMorph")
-	//TODO		{
-	//TODO			SMSMorphConfig& morphCfg=dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
-	//TODO			morphCfg.AddFileName();
-	//TODO			morphCfg.UpdateData();
-	//TODO			std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
-	//TODO			tempSdifFilename+="_tmp.sdif";
-	//TODO			morphCfg.SetFileName(tempSdifFilename);
-	//TODO			break;
-	//TODO		}
-	//TODO	}
+		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++)
+		{
+			//Note: we are supposing only one Morph is in the chain
+			if((*configIt).GetConcreteClassName()=="SMSMorph")
+			{
+				SMSMorphConfig& morphCfg=dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
+				morphCfg.AddFileName();
+				morphCfg.UpdateData();
+				std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
+				tempSdifFilename+="_tmp.sdif";
+				morphCfg.SetFileName(tempSdifFilename);
+				break;
+			}
+		}
 	}
 }
 

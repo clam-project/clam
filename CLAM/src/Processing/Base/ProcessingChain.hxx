@@ -7,7 +7,7 @@
 #include "OutPortTmpl.hxx"
 #include "InControlTmplArray.hxx"
 #include "Factory.hxx"
-
+#include "Array.hxx"
 
 namespace CLAM{
 
@@ -96,12 +96,12 @@ namespace CLAM{
 	public:
 		typedef std::list<ProcessingChaineeConfig>::iterator iterator;
 		typedef std::list<ProcessingChaineeConfig>::const_iterator const_iterator;
-		
+
 		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChainConfig, 2,ProcessingConfig);
 		/** List of children configurations, a list of pointers to base class is kept */
-		DYN_CONTAINER_ATTRIBUTE (0, public, std::list<ProcessingChaineeConfig>, Configurations,Config);
+		DYN_CONTAINER_ATTRIBUTE (0, public, std::list<ProcessingChaineeConfig>, Configurations, Config);
 		/** Array of On/off initial values for control*/
-		DYN_ATTRIBUTE (1, public, Array<bool>,OnArray);
+		DYN_ATTRIBUTE (1, public, Array<bool>, OnArray);
 
 		
 		/** By default all attributes are added. */
@@ -190,6 +190,7 @@ namespace CLAM{
 		 */
 		bool ConcreteStart()
 		{
+		/* TODO
 			iterator obj;
 			
 			int i;
@@ -219,6 +220,7 @@ namespace CLAM{
 			(*obj)->GetOutPorts().GetByNumber(0).Attach(mChainOutput.GetData());
 
 			return ProcessingComposite::ConcreteStart();
+		*/
 		}
 		
 		/** Supervised Do method. Iterates through internal Processing and calls each one's
@@ -231,7 +233,8 @@ namespace CLAM{
 		                  "ProcessingChain: Do(): Not in execution mode");
 
 			if (GetExecState() == Disabled)
-				return true;
+		
+		return true;
 			
 			bool result=true;
 			iterator obj;

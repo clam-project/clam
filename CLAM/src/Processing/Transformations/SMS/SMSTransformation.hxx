@@ -27,7 +27,7 @@
 #include "ProcessingData.hxx"
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
-
+#include "InControl.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
@@ -48,6 +48,14 @@ namespace CLAM {
 		typedef InControlTmpl<SMSTransformation> SMSTransformationCtrl;
 	
 	public:
+		//TODO begin to remove
+		
+		void AttachIn( Segment& data ){ mInput.Attach(data); }
+		void AttachOut( Segment& data ){ mOutput.Attach(data); }
+		
+		//TODO end
+		
+		
 		/** Configuration change method. Note that the Amount Control is initialized from the
 		 *	the values in the configuration. Appart from that the member boolean variable that
 		 *	indicates whether a BPF is used is also initialized and the On/Off control also.

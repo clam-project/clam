@@ -73,10 +73,57 @@ namespace CLAM {
 			NextFrame();
 			return ProcessingChain<Segment>::Do();
 		}
+		bool Previously_ProcessingChainConcreteStart()
+		{
+			iterator obj;
+			
+			int i;
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				if(mpTmpDataArray[i]){
+					delete mpTmpDataArray[i];
+					mpTmpDataArray[i]=NULL;}
+			mpTmpDataArray.SetSize(0);
+			Segment* pCurrentData;
+			pCurrentData=new Segment(mChainInput.GetData());
+			mpTmpDataArray.AddElem(pCurrentData);
+			for(obj=composite_begin();obj!=composite_end();obj++)
+			{
+				//connecting ports for non-supervised mode
+				Processing & processing = *(*(obj));
+				SMSTransformation &concreteObj = dynamic_cast<SMSTransformation&>(processing);
+				
+				concreteObj.AttachIn(*pCurrentData);
+//				(*obj)->GetInPorts().GetByNumber(0).Attach(*pCurrentData);
+				if(!(*obj)->CanProcessInplace())
+				{
+					pCurrentData=new Segment(mChainInput.GetData());
+					mpTmpDataArray.AddElem(pCurrentData);
+				}
+//				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
+				concreteObj.AttachOut(*pCurrentData);
+			}
+			obj=composite_begin();
+			Processing& processing = *(*(obj));
+			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>(processing);
+			concreteObj.AttachIn(mChainInput.GetData());
+//			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
+			obj=composite_end();
+			obj--;
+			processing = *(*(obj));
+			concreteObj = dynamic_cast<SMSTransformation&>(processing);
+//			(*obj)->GetOutPorts().GetByNumber(0).Attach(mChainOutput.GetData());
+			
+			
 
+			return ProcessingComposite::ConcreteStart();
+
+		}
+		
 		bool ConcreteStart()
 		{
-			bool ret= ProcessingChain<Segment>::ConcreteStart();
+//			bool ret= ProcessingChain<Segment>::ConcreteStart();
+			bool ret= Previously_ProcessingChainConcreteStart();
+			
 			int i;
 			for(i=0;i<mpTmpDataArray.Size();i++)
 				mpTmpDataArray[i]->mCurrentFrameIndex=0;
