@@ -57,8 +57,7 @@ private:
 public:
 	Array(TSize size = 0,TSize step = 1)
 	{
-		mSize = 0;
-		mAllocSize = 0;
+		mSize = mAllocSize = 0;
 		mStep = step;
 		mpData = NULL;
 		Resize(size);
@@ -70,6 +69,9 @@ public:
 
 	Array(T* ptr,int size = 0)
 	{
+		CLAM_ASSERT( ptr!=NULL,
+			     "Array::Array( T*, int) : you cannot create a not-owning memory array "
+			     "without specifying a valid data pointer. ");
 		mSize = mAllocSize = size;
 		mStep = -1;
 		mpData = ptr;
@@ -91,6 +93,7 @@ public:
 	const char * GetClassName() const {return NULL;}
 
 	bool OwnsMemory() const {return mStep>=0; }
+	bool Empty() const { return mSize==0; }
 
 	TSize Size(void) const { return mSize; }
 	TSize SizeInBytes(void) const { return mSize*sizeof(T); }
@@ -99,7 +102,7 @@ public:
 
 	void SetSize(TSize size)
 	{
-		CLAM_ASSERT(size <= mAllocSize || !OwnsMemory(), msgSetSizeOutOfRange);
+		CLAM_ASSERT(size <= AllocatedSize() || !OwnsMemory(), msgSetSizeOutOfRange);
 		if (OwnsMemory())
 		{
 			if (size > mSize)
@@ -116,7 +119,9 @@ public:
 
 	void Resize(TSize newAllocSize)
 	{
-		CLAM_ASSERT(OwnsMemory(),"Array::Resize(): The array does not own its memory.");
+		CLAM_ASSERT(OwnsMemory(),
+			    "Array::Resize(): You cannot invoke this method on an array that "
+			    "does not own any memory" );
 
 		/* calculate the amount of bytes to allocate */
 		/* effectively resize the array by allocating more memory */
@@ -138,8 +143,8 @@ public:
 		
 		/* if the pointer to the end of the array is over then you're out of memory */
 		/* and an error message will be sent to the console */
-		if (mAllocSize && !mpData)
-			throw ErrOutOfMemory(mAllocSize*sizeof(T));
+		CLAM_ASSERT( AllocatedSize()==0 || mpData!=NULL,
+			     "Array::Resize() : Memory Allocation failed!" );
 	}
 
 	const T* GetPtr(void) const { return mpData; }
@@ -147,8 +152,9 @@ public:
 	
 	void SetPtr(T* ptr, int size = 0)
 	{
-		CLAM_ASSERT( !OwnsMemory() || mAllocSize==0, 
-					 "Array: SetPtr: the array is not empty. (mAllocSize>0)");
+		CLAM_ASSERT( !OwnsMemory() || mAllocSize == 0,
+			     "Array::SetPtr() : You are not allowed to invoke SetPtr() on"
+			     " an Array that owns memory or is not empty" );
 
 		mSize = mAllocSize = size;
 		mpData = ptr;
@@ -213,24 +219,33 @@ public:
 
 	Array<T>& operator = (const Array<T>& src)
 	{
-		int tocopy;
-		if (OwnsMemory())
+
+		if ( OwnsMemory() )
 		{
-			if (Size() != src.Size())
-				Resize(src.Size());
-			mStep = src.mStep;
-		} else {
-			CLAM_ASSERT(src.Size()<=mAllocSize,
-					"Cannot copy a larger array to an array that does not own it's memory!");
-			// important to leave mStep untouched: it indicates that the array !OwnsMemory
+			if ( Size() != src.Size() )
+				Resize( src.Size() );
+			if ( src.OwnsMemory() )
+				mStep = src.mStep;
+			else
+				mStep = 1;
 		}
-		tocopy = (src.Size()<Size())?src.Size():Size();
-		CopyDataBlock(0,tocopy,src.mpData);
-		InitializeCopyDataBlock(tocopy,src.Size(),src.mpData);
+		else
+		{
+			CLAM_ASSERT( AllocatedSize() >= src.Size(),
+				     "Array::RegionWrite() : source size exceeds the Region bounds" );
+			CLAM_ASSERT( GetPtr() != NULL, 
+				     "Array::operator= : if you want to create a not memory owning array "
+				     "from one that does own memory, use instead Array::SetPtr() method");
+		}
+
+		int tocopy = (src.Size()<Size())?src.Size():Size();
+		CopyDataBlock(0,tocopy,src.GetPtr());
+		InitializeCopyDataBlock(tocopy,src.Size(),src.GetPtr());
 		mSize=src.Size();
+
 		return *this;
 
-	}
+	}      
 
 	Array<T>& operator += (const Array<T>& src)
 	{
@@ -452,29 +467,11 @@ void Array<T>::InitializeCopyDataBlock(int first, int last, int src_first, const
 		new (&mpData[i]) T(src[j++]);
 }
 
-#define CLAM_NUMERIC_ARRAY_INITIALIZATION(Type)          \
-template<>                                              \
-inline void Array<Type>::InitializeElement(int i)              \
-{                                                       \
-    mpData[i]=0;                                        \
-}                                                       \
-
-
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned long)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned int)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned short)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned char)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed long)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed int)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed short)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed char)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(double)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(float)
 
 template<class T>
 void Array<T>::DestroyDataBuffer()
 {
-	if (mStep!=-1)
+	if (OwnsMemory())
 	{
 		UninitializeDataBlock(0,mSize);
 		free(mpData);
@@ -532,63 +529,6 @@ void Array<T>::DeleteElemInDataBuffer(int position)
 	(&mpData[mSize-1])->~T();
 }
 
-/** And fast spetialization for basic types */
-
-#define CLAM_FAST_ARRAY_SPECIALIZATIONS(TYPE)                           \
-template<>                                                             \
-inline void Array<TYPE >::CopyDataBlock(int first, int last,                  \
-                                 const TYPE *src)                      \
-{                                                                      \
-    if (last>first)                                                    \
-        memcpy(&mpData[first],&src[first],                             \
-               sizeof(TYPE)*(last-first));                             \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
-                                           const TYPE *src)            \
-{                                                                      \
-    if (last>first)                                                    \
-        memcpy(&mpData[first],&src[first],                             \
-               sizeof(TYPE)*(last-first));                             \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
-                                           int src_first,              \
-                                           const TYPE *src)            \
-{                                                                      \
-    if (last>first)                                                    \
-        memcpy(&mpData[first],&src[src_first],                         \
-               sizeof(TYPE)*(last-first));                             \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::ResizeDataBuffer(int new_size)                      \
-{                                                                      \
-    mpData = (TYPE*) realloc(mpData,new_size*sizeof(TYPE));            \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::InsertElemInDataBuffer(int where)                   \
-{                                                                      \
-    memmove(&mpData[where+1],&mpData[where],                           \
-            (mSize-where)*sizeof(TYPE));                               \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::DeleteElemInDataBuffer(int where)                   \
-{                                                                      \
-    memmove(&mpData[where],&mpData[where+1],                           \
-            (mSize-where-1)*sizeof(TYPE));                             \
-}                                                                      \
-
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned long)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned int)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned short)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned char)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed long)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed int)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed short)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed char)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(double)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(float)
-
 
 template <class T> inline Array<T> operator + (
 	const Array<T>& a,const Array<T>& b)
@@ -608,6 +548,38 @@ template <class T> inline bool operator == (
 	}
 	return true;
 }
+
+#define CLAM_NUMERIC_ARRAY_INIT_DECL(Type)\
+template<>\
+void Array<Type>::InitializeElement(int i );\
+
+CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned long)
+CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned int)
+CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned short)
+CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned char)
+CLAM_NUMERIC_ARRAY_INIT_DECL(signed long)
+CLAM_NUMERIC_ARRAY_INIT_DECL(signed int)
+CLAM_NUMERIC_ARRAY_INIT_DECL(signed short)
+CLAM_NUMERIC_ARRAY_INIT_DECL(signed char)
+CLAM_NUMERIC_ARRAY_INIT_DECL(double)
+CLAM_NUMERIC_ARRAY_INIT_DECL(float)
+
+#define CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(TYPE)                           \
+template<>                                                             \
+void Array<TYPE >::CopyDataBlock(int first, int last,                  \
+                                 const TYPE *src);                      \
+
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned long)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned int)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned short)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned char)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed long)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed int)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed short)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed char)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(double)
+CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(float)
+
 
 // Format specializations. Based on EDataFormat.hxx
 // Warning: This should be architecture dependent code.
