@@ -447,7 +447,7 @@ static void vcproj_parse_insert_ui_file( const char* file, int depth)
 
 }
 
-void vcproj_parse_insert_mocable_header( char* file, int depth) 
+void vcproj_parse_insert_mocable_header( const char* file, int depth) 
 {
 	char winfile[1024];
 
