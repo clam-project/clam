@@ -37,9 +37,14 @@
 namespace CLAM {
 
 /**
- * This class adapts to the XMLable interface any array of objects 
- * which has the insertion (&lt;&lt;) operator defined to an ostream, 
- * and calculates the XML content with such operator on storage time.
+ * @ingroup XmlAdapters
+ * @brief This class adapts to the XMLable interface any STL like container
+ * of basic objects or CLAM::Component's.
+ *
+ * It supports both kind of subitems: Components and Basic Types.
+ * Depending on the kind of subitem it calculates the XML content
+ * with such extraction operator operator when subitems are basic objects
+ * or it stores recursivelly when they are components.
  * The content is the same one which the insertion operator 
  * generates inserting an space between elements.
  * 
@@ -48,11 +53,11 @@ namespace CLAM {
  * adapter is stored on a XMLStorage, so the adapter is sensitive
  * to the adaptee changes after the construction. 
  *
- * <P><B>Important:</B> At storage time, the adaptee must exist in
+ * <B>Important:</B> At storage time, the adaptee must exist in
  * order to follow the reference.
  *
- * <P><B>Pay attention to the management of the name memory</B>
- * (@see BasicXMLable).
+ * <B>Pay attention to the management of the name memory</B>
+ * (see CLAM::BasicXMLable).
  * 
  * @see XMLable
  * @see XMLAdapter

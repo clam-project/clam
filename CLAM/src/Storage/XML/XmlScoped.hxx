@@ -7,10 +7,11 @@
 namespace CLAM
 {
 /**
- * @defgroup XmlScoped XML: Quick Xml Document Writting with Scoped XML
- * 
- * This module contains classes to write an XML document
- * following a "open on create - close on destroy" paradigm.
+ * @defgroup XmlScoped Scoped XML: A quick way to write XML (write only)
+ * @ingroup Xml
+ * @brief This module contains classes to write an XML document
+ * following a "open on create - close on destroy" idiom.
+ *
  * That means that by simply creating an element object
  * you are opening a tag and
  * when the element object goes out of scope the element
@@ -20,7 +21,7 @@ namespace CLAM
  *
  * This system only provides writing XML and
  * has no mapping to CLAM data as CLAM::XmlStorage has.
- * See @link XmlDumpingAndRestoring the XmlStorage way @endlink.
+ * See @link XmlDump the XmlStorage way @endlink.
  * 
  * Two  aproaches can be convined to generate XML with
  * scoped objects:
