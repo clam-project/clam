@@ -155,7 +155,7 @@ namespace CLAM{
 		/** Default Constructor */
 		ProcessingChain():mChainInput("Input",this,1),mChainOutput("Output",this,1)
 		{
-			mpTmpData=NULL;
+//			mpTmpData=NULL;
 			mpConfig=NULL;
 			mpOnCtrlArray=NULL;
 		}
@@ -165,7 +165,10 @@ namespace CLAM{
 		 */
 		virtual ~ProcessingChain()
 		{
-			if (mpTmpData) delete mpTmpData;
+//			if (mpTmpData) delete mpTmpData;
+			int i;
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				if(mpTmpDataArray[i]) delete mpTmpDataArray[i];
 			if (mpConfig) delete mpConfig;
 			iterator obj;
 			for(obj=composite_begin();obj!=composite_end();obj++)
@@ -195,17 +198,32 @@ namespace CLAM{
 		{
 			iterator obj;
 			
-			if(mpTmpData)
+/*			if(mpTmpData)
 			{
 				delete mpTmpData;
 			}
 			mpTmpData=new U(mChainInput.GetData());
-						
+*/						
+			int i;
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				if(mpTmpDataArray[i]){
+					delete mpTmpDataArray[i];
+					mpTmpDataArray[i]=NULL;}
+			mpTmpDataArray.SetSize(0);
+			U* pCurrentData;
+			pCurrentData=new U(mChainInput.GetData());
+			mpTmpDataArray.AddElem(pCurrentData);
 			for(obj=composite_begin();obj!=composite_end();obj++)
 			{
 				//connecting ports for non-supervised mode
-				(*obj)->GetInPorts().GetByNumber(0).Attach(*mpTmpData);
-				(*obj)->GetOutPorts().GetByNumber(0).Attach(*mpTmpData);
+				(*obj)->GetInPorts().GetByNumber(0).Attach(*pCurrentData);
+//test
+				if(!(*obj)->CanProcessInplace())
+				{
+					pCurrentData=new U(mChainInput.GetData());
+					mpTmpDataArray.AddElem(pCurrentData);
+				}
+				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
 			}
 			obj=composite_begin();
 			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
@@ -330,7 +348,8 @@ protected:
 			
 		}
 		/** Temporal ProcessingData used as an internal node for intermediate Processing */
-		U* mpTmpData;
+		//U* mpTmpData;
+		Array<U*> mpTmpDataArray;
 		/** Internal configuration. A pointer is used because polymorphism may be used on it */
 		ProcessingChainConfig* mpConfig;
 

@@ -50,7 +50,8 @@ namespace CLAM
 		if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
 		   type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
 		   type=="SMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||
-		   type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||type=="SMSTransformationChainIO")
+		   type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||type=="SMSTimeStretch"||
+		   type=="SMSTransformationChainIO")
 		{
 			return new CLAM::SMSTransformationConfig();
 		}
