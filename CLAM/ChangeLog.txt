@@ -3,6 +3,8 @@
      ** FlowControlExamples tree has been moved to draft since simpler and more
 	    concrete examples now exists: examples/NetworkUsage_example and
 		examples/PortsAndControlsUsageExample/
+     ** Some broken examples have been fixed, including
+     compiling_against_clam and SpectralDelay.
   * SMSTools:
      ** Fix: Closing window crashed on MacOsX.
   * Base:
