@@ -13,6 +13,7 @@ namespace CLAM
 	class Instrument: public ProcessingComposite
 	{
 	private:
+		AudioOutPort	mOut;
 		enum Status {
 			eDone = 0,
 			eBusy = 1
@@ -20,7 +21,6 @@ namespace CLAM
 
 		int                           mId;
 
-		AudioOutPort	mOut;
 	protected:
 		InControlTmpl< Instrument >   mStateIn;
 		InControlTmpl< Instrument >   mNoteIn;
