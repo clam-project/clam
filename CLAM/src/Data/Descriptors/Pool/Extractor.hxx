@@ -41,7 +41,7 @@ template <typename AttributeType>
 class ReadHook : public Hook<AttributeType>
 {
 public:
-	void Init(const DescriptionDataPool & pool) 
+	virtual void Init(const DescriptionDataPool & pool) 
 	{
 		_pool = &pool;
 		_current = 0;
@@ -59,17 +59,19 @@ public:
 	}
 
 private:
-	unsigned GetCurrent() const
+	virtual unsigned GetCurrent() const
 	{
 		return _current;
 	}
+
+protected:
 	const DescriptionDataPool * _pool;
 	const AttributeType * _data;
 };
 
 
 template <typename AttributeType>
-class ReadIndirectHook : public Hook<AttributeType>
+class ReadIndirectHook : public ReadHook<AttributeType>
 {
 public:
 	void Indirect(
@@ -81,17 +83,10 @@ public:
 
 	void Init(const DescriptionDataPool & pool) 
 	{
-		_pool = &pool;
-		_current = 0;
-		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
+		ReadHook<AttributeType>::Init(pool);
 		_chained.Init(pool);
-		_targetScopeSize = _pool->GetNumberOfContexts(_scope);
 	}
 
-	const AttributeType & GetForReading() const
-	{
-		return _data[GetCurrent()];
-	}
 	virtual unsigned GetIterationSize() const
 	{
 		return _chained.GetIterationSize();
@@ -109,14 +104,11 @@ private:
 	unsigned GetCurrent() const
 	{
 		unsigned indirection = _chained.GetForReading();
-		CLAM_ASSERT(indirection<_targetScopeSize,
+		CLAM_ASSERT(indirection<_pool->GetNumberOfContexts(_scope),
 			"Invalid cross-scope reference");
 		return indirection;
 	}
 	
-	const DescriptionDataPool * _pool;
-	const AttributeType * _data;
-	unsigned _targetScopeSize;
 	ReadHook<unsigned> _chained;
 };
 
