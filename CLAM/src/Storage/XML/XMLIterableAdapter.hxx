@@ -92,6 +92,12 @@ public:
 	{
 		mElementsName = elementName;
 	}
+	XMLIterableAdapter (const T & anAdaptee, const char * elementName, const char * name=NULL, 
+			bool isXMLElement=false)
+		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T&>(anAdaptee))
+	{
+		mElementsName = elementName;
+	}
 	virtual ~XMLIterableAdapter() {};
 	const char * GetClassName() const {
 		CLAM_ASSERT(false, "You should never call XMLIterableAdapter::GetClassName");

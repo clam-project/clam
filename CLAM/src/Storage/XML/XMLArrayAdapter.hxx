@@ -85,6 +85,12 @@ public:
 	{
 		size = nElements;
 	}
+	XMLArrayAdapter (const t_adaptee * anAdaptee, unsigned int nElements, 
+			const char * name=NULL, bool isXMLElement=false)
+		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T*>(anAdaptee))
+	{
+		size = nElements;
+	}
 	virtual ~XMLArrayAdapter() {};
 
 // Accessors

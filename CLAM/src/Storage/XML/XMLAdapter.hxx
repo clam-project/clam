@@ -100,6 +100,10 @@ public:
 		: BasicXMLable(name, isXMLElement), mAdaptee(anAdaptee)
 	{
 	}
+	XMLAdapter (const t_adaptee & anAdaptee, const char * name=NULL, bool isXMLElement=false)
+		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T&>(anAdaptee))
+	{
+	}
 	virtual ~XMLAdapter() 
 	{
 	};
