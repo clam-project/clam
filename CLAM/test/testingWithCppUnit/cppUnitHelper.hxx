@@ -22,7 +22,9 @@
 #define _cppUnitHelper_hxx_
 
 #include <iostream>
+#include <typeinfo>
 #include <cppunit/TestSuite.h>
+
 
 namespace CLAMTest
 {
@@ -52,7 +54,27 @@ namespace CLAMTest
 			}
 		} 
 	};
+} //namespace CLAMTest
 
-}; //namespace CLAMTest
+// Helper traits for assertions
+namespace CppUnit
+{
+	template<>
+	struct assertion_traits< std::type_info >
+	{
+		static bool equal( const std::type_info& x, const std::type_info& y )
+		{
+			return x == y;
+		}
+
+		static std::string toString( const std::type_info& x )
+		{
+			std::string text = '"' + x.name() + '"';    // adds quote around the string to see whitespace
+			CppUnit::OStringStream ost;
+			ost << text;
+			return ost.str();
+		}
+	};
+} //namespace CppUnit
 
 #endif
