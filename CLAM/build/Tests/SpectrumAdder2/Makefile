@@ -1,4 +1,4 @@
-CLAM_PATH=../../..
+TOP=../../..
 
 include ../../Makefile.rules
 
