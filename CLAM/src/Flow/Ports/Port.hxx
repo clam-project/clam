@@ -420,19 +420,11 @@ namespace CLAM {
 		mArray.SetSize(size);
 		mDataPointers.Resize(size);
 		mDataPointers.SetSize(size);
-/*
-		for (int i=0; i<size; i++) {
-			std::stringstream str("");
-//			stringstream::app
-			str << "_" << i << n;
-			mArray[i] = new InPortTmpl<T>(str.str(),o,length,hop,inplace);
-		}
-*/
+
 		for (int i=0; i<size; i++) {
 			std::stringstream sstr;
 			sstr.str("");
 			sstr << n << "_" << i;
-			std::cout << sstr.str() << std::endl;
 			mArray[i] = new InPortTmpl<T>(sstr.str(),o,length,hop,inplace);
 		}
 	}
@@ -483,10 +475,13 @@ namespace CLAM {
 		mArray.SetSize(size);
 		mDataPointers.Resize(size);
 		mDataPointers.SetSize(size);
+
+
 		for (int i=0; i<size; i++) {
-			std::stringstream str(n);
-			str << "_" << i;
-			mArray[i] = new OutPortTmpl<T>(str.str(),o,length,hop,inplace);
+			std::stringstream sstr;
+			sstr.str("");
+			sstr << n << "_" << i;
+			mArray[i] = new OutPortTmpl<T>(sstr.str(),o,length,hop,inplace);
 		}
 	}
 
