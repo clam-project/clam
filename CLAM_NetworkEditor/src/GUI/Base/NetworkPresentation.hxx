@@ -56,7 +56,6 @@ class NetworkPresentation: public CLAMVM::Presentation
 {
 protected:
 	std::string mName;
-	bool mNetworkState;
 	std::list<ProcessingPresentation*> mProcessingPresentations;
 	std::list<ProcessingPresentation*> mProcessingPresentationsToRemove;
 	typedef std::list<ProcessingPresentation*>::iterator ProcessingPresentationIterator;

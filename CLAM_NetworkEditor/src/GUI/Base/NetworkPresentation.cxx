@@ -32,7 +32,6 @@ namespace NetworkGUI
 {
 
 NetworkPresentation::NetworkPresentation()
-	: mNetworkState( false )
 {
 	SlotRemovePortConnection.Wrap( this, &NetworkPresentation::RemovePortConnection);
 	SlotCreatePortConnectionPresentation.Wrap( this, &NetworkPresentation::CreatePortConnectionPresentation);
@@ -58,11 +57,7 @@ NetworkPresentation::NetworkPresentation()
 
 void NetworkPresentation::ChangeState( bool newState )
 {
-	if (newState != mNetworkState)
-	{
-		mNetworkState = newState;
-		SignalChangeState.Emit( mNetworkState );
-	}
+	SignalChangeState.Emit ( newState );
 }
 
 void NetworkPresentation::RemoveConnectionPresentation( const std::string & out, const std::string & in)
