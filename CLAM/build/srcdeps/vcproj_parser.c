@@ -48,7 +48,25 @@ void vcproj_parse_add_release_libraries(void)
 		i = i->next;
 	}
 }
-void vcproj_parse_add_release_library_paths(void)
+
+void vcproj_parse_add_debug_libraries(void)
+{
+	item* i = libraries_debug->first;
+	int first = 1;
+	while (i)
+	{
+		if (i->str && i->str[0]!=0)
+		{
+			if (!first) stradd(" ");
+			first = 0;
+			stradd(i->str);
+			stradd(".lib");
+		}
+		i = i->next;
+	}
+}
+
+void vcproj_parse_add_library_paths(void)
 {
 	item* i = library_paths->first;
 	while (i)
@@ -123,7 +141,7 @@ extern void vcproj_parse(const char* outFilename)
 			{
 				char libdirsbuf[4096];
 				strstart(libdirsbuf, 4096);
-				vcproj_parse_add_release_library_paths();
+				vcproj_parse_add_library_paths();
 				fprintf( outfile, line, libdirsbuf );
 				strend();
 			}
@@ -132,6 +150,55 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf(outfile, line);
 				if ( strstr(line, "Name=\"Debug|Win32\"") )
 						state = configDebug;
+			}
+		}
+		else if(state == configDebug)
+		{
+			if (strstr(line, "\tAdditionalIncludeDirectories="))
+			{
+				char includesbuf[4096];
+				strstart(includesbuf, 4096);
+				vcproj_parse_add_needed_includepaths( );
+				fprintf(outfile, line, includesbuf);
+				strend();
+			}
+			else if ( strstr(line,"\tAdditionalDependencies=") )
+			{
+				char libsbuf[4096];
+				strstart(libsbuf, 4096);
+				vcproj_parse_add_debug_libraries();
+				fprintf(outfile, line, libsbuf);
+				strend();
+			}
+			else if ( strstr(line, "\tOutputFile=") )
+			{
+				fprintf( outfile, line, program->first->str );
+			}
+
+			else if ( strstr(line, "\tAdditionalLibraryDirectories=") )
+			{
+				char libdirsbuf[4096];
+				strstart(libdirsbuf, 4096);
+				vcproj_parse_add_library_paths();
+				fprintf( outfile, line, libdirsbuf );
+				strend();
+			}
+
+			else
+			{
+				fprintf(outfile, line);
+				if ( strstr(line, "<Files>"))						
+					state = files;
+			}	
+		}
+		else if(state == files)
+		{
+			if(0)
+			{
+			}
+			else
+			{
+				fprintf(outfile, line);
 			}
 		}
 		else
