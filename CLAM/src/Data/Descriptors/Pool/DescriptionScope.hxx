@@ -2,6 +2,8 @@
 #define _DescriptionScope_hxx_
 
 #include "DescriptionAttributes.hxx"
+#include <map>
+#include <vector>
 
 namespace CLAM
 {

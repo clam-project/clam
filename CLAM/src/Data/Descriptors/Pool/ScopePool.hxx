@@ -2,13 +2,7 @@
 #define _ScopePool_hxx_
 
 #include "AttributePool.hxx"
-#include "DescriptionScheme.hxx"
-
-
-/**
- * @defgroup SemanticalAnalysis Semantical Analysis
- * These are the classes that handle the description extraction.
- */
+#include "DescriptionScope.hxx"
 
 
 namespace CLAM

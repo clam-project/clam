@@ -2,12 +2,7 @@
 #define _Pool_hxx_
 
 #include "ScopePool.hxx"
-
-/**
- * @defgroup SemanticalAnalysis Semantical Analysis
- * These are the classes that handle the description extraction.
- */
-
+#include "DescriptionScheme.hxx"
 
 namespace CLAM
 {
@@ -52,7 +47,7 @@ namespace CLAM
 			return _scopePools[scopeIndex]->GetSize();
 		}
 
-		
+		/** @todo Should be deprecated?? */
 		void InstantiateAttribute(const std::string & scopeName, const std::string & attributeName)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
