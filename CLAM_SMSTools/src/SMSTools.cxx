@@ -62,7 +62,7 @@ namespace CLAMGUI
 		
 		// FLTK Tooltip settings
 
-		Fl_Tooltip::delay( 0.01 );
+		Fl_Tooltip::delay( 0.5 );
 		Fl_Tooltip::size( 10 );
 		Fl_Tooltip::enable();
 
