@@ -122,6 +122,8 @@ void MyIOAudioApplication::AudioMain(void)
 			outR.Do(bufR);
 
 		} while (!Canceled());
+		
+		TopLevelProcessing::GetInstance().Stop();
 	}
 	catch(Err error)
 	{
@@ -207,8 +209,6 @@ int main(int argc,char** argv)
 			MyOutAudioApplication app;
 			app.Run(argc,argv);
 		}
-		printf("Press enter to continue with next test\n");
-		getchar();
 		{
 			MyIOAudioApplication app;
 			app.Run(argc,argv);
