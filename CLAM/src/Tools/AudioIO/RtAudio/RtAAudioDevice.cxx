@@ -206,6 +206,13 @@ namespace CLAM {
 			int fs = SampleRate();
 			mRtAudioBufferSize = Latency();
 
+#ifdef __WINDOWS_DS__
+			if (mRtAudioBufferSize<4096)
+			{
+				mRtAudioBufferSize = 4096;
+			}
+#endif
+
 #ifdef MACOSX_WORKAROUND
 			mInternalRtAudioBufferSize = mRtAudioBufferSize;
 			if (mInternalRtAudioBufferSize>2048)
@@ -214,33 +221,39 @@ namespace CLAM {
 			}
 #endif
 
-  		try {
-    		mRtAudio = new RtAudio(&mRtAudioStream, 
-					mDevice, mOutputs.size(),
-					mDevice, mInputs.size(), 
-					FORMAT, fs, 
+  			try {
+    			mRtAudio = new RtAudio(&mRtAudioStream, 
+						mDevice, mOutputs.size(),
+						mDevice, mInputs.size(), 
+						FORMAT, fs, 
 #ifdef MACOSX_WORKAROUND
-					&mInternalRtAudioBufferSize,
+						&mInternalRtAudioBufferSize,
 #else
-					&mRtAudioBufferSize, 
+						&mRtAudioBufferSize, 
 #endif
-				2);
-  		}
-  		catch (RtError &) {
-    		exit(EXIT_FAILURE);
-  		}
+					2);
+  			}
+  			catch (RtError &) {
+    			exit(EXIT_FAILURE);
+  			}
+
 #ifdef MACOSX_WORKAROUND
-		mRtAudioBufferSize = mInternalRtAudioBufferSize*((mRtAudioBufferSize+mInternalRtAudioBufferSize-1)/mInternalRtAudioBufferSize);
+			mRtAudioBufferSize = mInternalRtAudioBufferSize*((mRtAudioBufferSize+mInternalRtAudioBufferSize-1)/mInternalRtAudioBufferSize);
 #endif
+
+			/* update the latency value of the audiomanager */
+			SetLatency(mRtAudioBufferSize);
+
+
 			mWriteBuffer.Alloc(mOutputs.size(),mRtAudioBufferSize*2);
 			mReadBuffer.Alloc(mInputs.size(),mRtAudioBufferSize*2);
 
-	  	try {
-  	  	mRtAudioBuffer = (MY_TYPE *) mRtAudio->getStreamBuffer(mRtAudioStream);
+	  		try {
+  	  			mRtAudioBuffer = (MY_TYPE *) mRtAudio->getStreamBuffer(mRtAudioStream);
 			}
-  		catch (RtError &) {
-    		exit(EXIT_FAILURE);
-  		}
+  			catch (RtError &) {
+    			exit(EXIT_FAILURE);
+  			}
 		}
 		
 		mStarted = false;
