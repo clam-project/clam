@@ -35,7 +35,6 @@ namespace CLAMVM
 	class Fl_Y_Axis;
 	class Fl_ZoomSlider;
 	class Fl_Gl_Single_Display;
-	class Fl_GridLayout;
 
 	class Fl_SMS_Spectrum : public SpectrumPresentation, public Fl_Group
 	{
@@ -58,7 +57,7 @@ namespace CLAMVM
 
 	public:
 		Fl_SMS_Spectrum( int X, int Y, int W, int H, const char* label = 0 );
-				~Fl_SMS_Spectrum();
+		~Fl_SMS_Spectrum();
 		
 		int handle( int eventCode );
 
