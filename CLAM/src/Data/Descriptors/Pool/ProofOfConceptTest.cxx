@@ -75,7 +75,7 @@ private:
 				const CLAM::TData * frameAudio = samples + centers[i];
 				for (unsigned j=0; j<frameSize; frameAudio++, j++)
 				{
-					mean += (*frameAudio)*(*frameAudio);
+					mean += (*frameAudio) * (*frameAudio);
 				}
 			}
 

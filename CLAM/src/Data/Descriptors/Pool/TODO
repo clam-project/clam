@@ -69,14 +69,17 @@
 	- Attribute dump
 	- Multitype XML loading
 - Getting names from index
-	- Getting valid scope indexes names
-	- Getting invalid scope indexes names
+	+ Getting valid scope indexes names
+	+ Getting invalid scope indexes names
 	- getting valid attribute indexes names
 	- getting invalid attribute indexes names
 - XML for the Scheme
 - Selecting which attributes should be serialized
 
 - Errors en l'ús d'identificadors irregulars.
+- WriteGet an attribute on an already writegetted attribute -> fails
+- Rename writeget attribute
+- Consider adding a updateget attribute
 
 - Proof of Concept working directly with the pool
 	+ Write a dummy audio
@@ -84,6 +87,14 @@
 	+ Make the spectrum
 	- Dump XML
 
+
+- Mirar especificaciones MyDMS
+- Mirar codigo de QMUL
+- Preguntar a vegard que descriptores son confiables
+- Preguntar a AudioClas que descriptores han corregido o comprovado
+- Planificar la revision de lo no revisado
+- Plantear un conjunto de pruebas
+- Hacer que pasen las pruebas
 
 
 

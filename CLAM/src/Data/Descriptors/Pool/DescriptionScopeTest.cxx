@@ -24,6 +24,8 @@ class DescriptionScopeTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testAdding_DifferentTypes );
 	CPPUNIT_TEST( testCheckType_withOtherType );
 	CPPUNIT_TEST( testCheckType_withSameType );
+	CPPUNIT_TEST( testGetAttributeName_withTwoScopes );
+	CPPUNIT_TEST( testGetAttributeName_withWrongNumber );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -143,6 +145,30 @@ private:
 		spec.CheckType(0,(CLAM::TData*)0);
 	}
 
+	void testGetAttributeName_withTwoScopes()
+	{
+		CLAM::DescriptionScope scope;
+		scope.Add< CLAM::TData >("MyAttribute");
+		scope.Add< CLAM::TData >("YourAttribute");
+		CPPUNIT_ASSERT_EQUAL(std::string("MyAttribute"), scope.GetAttributeName(0));
+		CPPUNIT_ASSERT_EQUAL(std::string("YourAttribute"), scope.GetAttributeName(1));
+	}
+
+	void testGetAttributeName_withWrongNumber()
+	{
+		CLAM::DescriptionScope scope;
+		scope.Add< CLAM::TData >("MyAttribute");
+		try
+		{
+			scope.GetAttributeName(1);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "GetAttributeName: Using a wrong index to look up an attribute name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
 };
 
 
