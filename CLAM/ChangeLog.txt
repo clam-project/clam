@@ -7,6 +7,7 @@
          functional.
   * Processing - Analysis:
       ** SpectralPeakDetect infinite loop bug fixed.
+      ** Added New Ooura FFT algorithm.
   * Standard:
       ** Stack, Queue and String removed. Use the STL ones instead.
       ** Obsoleted DescStats removed.
