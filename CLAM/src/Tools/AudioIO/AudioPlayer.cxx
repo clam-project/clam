@@ -55,7 +55,7 @@ AudioPlayer::~AudioPlayer(  )
 void AudioPlayer::PlayingThreadSafe(  )
 {
 	TSize bufferSize=512;
-	AudioManager audioManager( (int)mAudioReference->GetSampleRate(), bufferSize );
+	AudioManager audioManager( (int)mAudioReference->GetSampleRate(), 4096 );
 	
 	AudioIOConfig mOutCfgL;
 	AudioIOConfig mOutCfgR;
