@@ -184,6 +184,21 @@ public: // Inner classes. Public for better testing
 		static AbstractProduct* Create() {
 			return new ConcreteProductType;
 		}
+
+
+		// MRJ: The following two overloads exist only with testing purposes
+		Registrator( RegistryKey key, TheFactoryType*& pointerToUsedSingleton ) {
+			TheFactoryType::GetInstance().AddCreator( key, Create );
+			pointerToUsedSingleton = &TheFactoryType::GetInstance();
+		}
+
+		Registrator( TheFactoryType*& pointerToUsedSingleton ) {
+			ConcreteProductType dummy;
+			TheFactoryType::GetInstance().AddCreator( dummy.GetClassName(), Create );
+			pointerToUsedSingleton = &TheFactoryType::GetInstance();
+		}
+
+
 	};
 
 private:
