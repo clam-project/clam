@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="ControlsExample" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="ControlArraysExample" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=ControlsExample - Win32 Debug
+CFG=ControlArraysExample - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ControlsExample.mak".
+!MESSAGE NMAKE /f "ControlArraysExample.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ControlsExample.mak" CFG="ControlsExample - Win32 Debug"
+!MESSAGE NMAKE /f "ControlArraysExample.mak" CFG="ControlArraysExample - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ControlsExample - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "ControlsExample - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "ControlArraysExample - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "ControlArraysExample - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=ControlsExample - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ControlsExample - Win32 Release"
+!IF  "$(CFG)" == "ControlArraysExample - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,7 +53,7 @@ LINK32=link.exe
 # ADD LINK32 /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
-!ELSEIF  "$(CFG)" == "ControlsExample - Win32 Debug"
+!ELSEIF  "$(CFG)" == "ControlArraysExample - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -82,8 +82,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "ControlsExample - Win32 Release"
-# Name "ControlsExample - Win32 Debug"
+# Name "ControlArraysExample - Win32 Release"
+# Name "ControlArraysExample - Win32 Debug"
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -92,10 +92,21 @@ LINK32=link.exe
 
 # Begin Group "examples Sources"
 
+# Begin Group "ControlArrayExamples Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\ProcessingObject_controls_example.cxx
+SOURCE=..\..\..\..\examples\ControlArrayExamples\main.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\ControlArrayExamples\MyProcessingWithSimpleControls.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\ControlArrayExamples\MyProcessingWithControlArray.cxx
+# End Source File
+# End Group
 # End Group
 # Begin Group "Errors Sources"
 
@@ -109,11 +120,11 @@ SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
+SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
 # End Group
 # Begin Group "Defines Sources"
@@ -208,11 +219,11 @@ SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
+SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
 # End Group
 # Begin Group "Defines Headers"
@@ -220,6 +231,26 @@ SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\Assert.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
 # End Source File
 # Begin Source File
 
@@ -235,57 +266,8 @@ SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
 # End Source File
-# End Group
-# Begin Group "Base Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\Component.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicType.hxx
-# End Source File
-# End Group
-# Begin Group "Storage Headers"
-
-# Begin Group "Base Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "Flow Headers"
 
@@ -298,6 +280,10 @@ SOURCE=..\..\..\..\src\Flow\Controls\ControlLinker.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Controls\InControl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Controls\InControlTmplArray.hxx
 # End Source File
 # Begin Source File
 
@@ -320,12 +306,59 @@ SOURCE=..\..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # End Group
 # End Group
+# Begin Group "Storage Headers"
+
+# Begin Group "Base Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "Base Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\Component.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\DynamicType.hxx
+# End Source File
+# End Group
 # Begin Group "Standard Headers"
 
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Array.hxx
 # End Source File
+# End Group
+# Begin Group "examples Headers"
+
+# Begin Group "ControlArrayExamples Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\ControlArrayExamples\TransformationDummy.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\ControlArrayExamples\MyProcessingWithSimpleControls.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\ControlArrayExamples\MyProcessingWithControlArray.hxx
+# End Source File
+# End Group
 # End Group
 # Begin Group "Processing Headers"
 
@@ -366,23 +399,23 @@ SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 
 SOURCE=settings.cfg
 
-!IF  "$(CFG)" == "ControlsExample - Win32 Release"
+!IF  "$(CFG)" == "ControlArraysExample - Win32 Release"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "ControlsExample.dsp"
-	srcdeps.exe settings.cfg ControlsExample.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "ControlArraysExample.dsp"
+	srcdeps.exe settings.cfg ControlArraysExample.dsp
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "ControlsExample - Win32 Debug"
+!ELSEIF  "$(CFG)" == "ControlArraysExample - Win32 Debug"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "ControlsExample.dsp"
-	srcdeps.exe settings.cfg ControlsExample.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "ControlArraysExample.dsp"
+	srcdeps.exe settings.cfg ControlArraysExample.dsp
 
 # End Custom Build
 

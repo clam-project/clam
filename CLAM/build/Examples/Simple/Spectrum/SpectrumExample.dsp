@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="FFTExample" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="SpectrumExample" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=FFTExample - Win32 Debug
+CFG=SpectrumExample - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "FFTExample.mak".
+!MESSAGE NMAKE /f "SpectrumExample.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "FFTExample.mak" CFG="FFTExample - Win32 Debug"
+!MESSAGE NMAKE /f "SpectrumExample.mak" CFG="SpectrumExample - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FFTExample - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "FFTExample - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "SpectrumExample - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "SpectrumExample - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=FFTExample - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "FFTExample - Win32 Release"
+!IF  "$(CFG)" == "SpectrumExample - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -53,7 +53,7 @@ LINK32=link.exe
 # ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" RFFTW2st.lib FFTW2st.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
-!ELSEIF  "$(CFG)" == "FFTExample - Win32 Debug"
+!ELSEIF  "$(CFG)" == "SpectrumExample - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -82,8 +82,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "FFTExample - Win32 Release"
-# Name "FFTExample - Win32 Debug"
+# Name "SpectrumExample - Win32 Release"
+# Name "SpectrumExample - Win32 Debug"
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -94,7 +94,7 @@ LINK32=link.exe
 
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\FFT_example.cxx
+SOURCE=..\..\..\..\examples\Spectrum_example.cxx
 # End Source File
 # End Group
 # Begin Group "Errors Sources"
@@ -106,10 +106,6 @@ SOURCE=..\..\..\..\src\Errors\Err.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
 # Begin Source File
 
@@ -129,125 +125,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.cxx
 
 SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Source File
-# End Group
-# Begin Group "Flow Sources"
-
-# Begin Group "Controls Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Controls\InControl.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
-# End Source File
-# End Group
-# Begin Group "Ports Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
-# End Source File
-# End Group
-# Begin Group "Nodes Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\ReadStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\Node.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "Processing Sources"
-
-# Begin Group "Base Sources No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\Processing.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx
-# End Source File
-# End Group
-# Begin Group "Analysis Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT.cxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "Data Sources"
-
-# Begin Group "BasicProcessing Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.cxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "Standard Sources"
 
@@ -280,6 +157,16 @@ SOURCE=..\..\..\..\src\Standard\BPF.cxx
 SOURCE=..\..\..\..\src\Standard\Flags.cxx
 # End Source File
 # End Group
+# Begin Group "Data Sources"
+
+# Begin Group "BasicProcessing Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.cxx
+# End Source File
+# End Group
+# End Group
 # End Group
 # Begin Group "Header Files"
 
@@ -292,10 +179,6 @@ SOURCE=..\..\..\..\src\Errors\Err.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
 # Begin Source File
 
@@ -330,15 +213,15 @@ SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\mtgsstream.h
 # End Source File
 # Begin Source File
 
@@ -371,86 +254,6 @@ SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "Flow Headers"
-
-# Begin Group "Controls Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Controls\ControlLinker.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Controls\InControl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Controls\OutControl.hxx
-# End Source File
-# End Group
-# Begin Group "Ports Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\Port.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\InPort.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\InPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\OutPort.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
-# End Source File
-# End Group
-# Begin Group "Nodes Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\ReadStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\Node.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Source File
 # End Group
 # End Group
@@ -549,54 +352,9 @@ SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
 SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
 # End Source File
 # End Group
-# Begin Group "Processing Headers"
-
-# Begin Group "Base Headers No. 2"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\Processing.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx
-# End Source File
-# End Group
-# Begin Group "Analysis Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT.hxx
-# End Source File
-# End Group
-# End Group
 # Begin Group "Data Headers"
 
-# Begin Group "Base Headers No. 3"
+# Begin Group "Base Headers No. 2"
 
 # Begin Source File
 
@@ -611,25 +369,7 @@ SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "fftw Headers"
-
-# Begin Group "include Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fftw\include\fftw.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fftw\include\rfftw.h
 # End Source File
 # End Group
 # End Group
@@ -638,23 +378,23 @@ SOURCE=..\..\..\..\..\fftw\include\rfftw.h
 
 SOURCE=settings.cfg
 
-!IF  "$(CFG)" == "FFTExample - Win32 Release"
+!IF  "$(CFG)" == "SpectrumExample - Win32 Release"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "FFTExample.dsp"
-	srcdeps.exe settings.cfg FFTExample.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "SpectrumExample.dsp"
+	srcdeps.exe settings.cfg SpectrumExample.dsp
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "FFTExample - Win32 Debug"
+!ELSEIF  "$(CFG)" == "SpectrumExample - Win32 Debug"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "FFTExample.dsp"
-	srcdeps.exe settings.cfg FFTExample.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "SpectrumExample.dsp"
+	srcdeps.exe settings.cfg SpectrumExample.dsp
 
 # End Custom Build
 

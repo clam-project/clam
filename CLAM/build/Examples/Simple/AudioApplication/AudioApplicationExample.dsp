@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\dxsdk\include"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" fltk.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "AudioApplicationExample - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\dxsdk\include"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -171,17 +171,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.cxx
 SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Source File
 # End Group
-# Begin Group "Standard Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Enum.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.cxx
-# End Source File
-# End Group
 # Begin Group "Data Sources"
 
 # Begin Group "BasicProcessing Sources"
@@ -211,6 +200,14 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
 
 SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
 # End Group
 # Begin Group "Nodes Sources"
 
@@ -229,6 +226,10 @@ SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.cxx
 # End Source File
 # Begin Source File
 
@@ -298,6 +299,13 @@ SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.cxx
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
 # End Source File
 # End Group
+# End Group
+# Begin Group "Standard Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Enum.cxx
+# End Source File
 # End Group
 # Begin Group "System Sources"
 
@@ -418,15 +426,11 @@ SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Enum.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Standard\Array.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Enum.hxx
 # End Source File
 # Begin Source File
 
@@ -483,14 +487,6 @@ SOURCE=..\..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Flow\Ports\InPort.hxx
 # End Source File
 # Begin Source File
@@ -500,6 +496,14 @@ SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Ports\InPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
@@ -668,6 +672,10 @@ SOURCE=..\..\..\..\..\pthreads\include\pthread.h
 
 # Begin Group "FL Headers"
 
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Export.H
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\Enumerations.H

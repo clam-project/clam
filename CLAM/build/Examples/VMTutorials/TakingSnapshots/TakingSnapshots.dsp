@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\src\Visualization\Widget"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" RFFTW2st.lib FFTW2st.lib fltk.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" RFFTW2st.lib FFTW2st.lib fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "TakingSnapshots - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\src\Visualization\Widget"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" FFTW2std.lib RFFTW2std.lib fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" FFTW2std.lib RFFTW2std.lib fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -144,37 +144,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.cxx
 SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Source File
 # End Group
-# Begin Group "Standard Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Enum.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Complex.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Polar.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\GlobalEnums.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Point.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\BPF.cxx
-# End Source File
-# End Group
 # Begin Group "Data Sources"
 
 # Begin Group "BasicProcessing Sources"
@@ -189,9 +158,60 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Fundamental.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeak.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeakArray.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Frame.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Segment.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConversions.cxx
 # End Source File
 # End Group
+# End Group
+# Begin Group "Standard Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Complex.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Polar.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Enum.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\GlobalEnums.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Point.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPF.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Flags.cxx
+# End Source File
 # End Group
 # Begin Group "Flow Sources"
 
@@ -310,6 +330,22 @@ SOURCE=..\..\..\..\src\Visualization\Plot\PlotAudio.cxx
 
 SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectrum.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\PlotSinTracks.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectralPeaks.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\Plot.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\Plotter.cxx
+# End Source File
 # End Group
 # Begin Group "Base Sources No. 2"
 
@@ -364,6 +400,22 @@ SOURCE=..\..\..\..\src\Visualization\View\SpectrumAdapter.cxx
 
 SOURCE=..\..\..\..\src\Visualization\View\LogMagSpectrumAdapter.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SpectralPeaksModel.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SpectralPeakArrayAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SinTracksModel.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SinTracksAdapter.cxx
+# End Source File
 # End Group
 # Begin Group "Presentation Sources"
 
@@ -377,6 +429,14 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\Base\AudioPresentation.cxx
 
 SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectrumPresentation.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SinTracksPresentation.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectralPeaksPresentation.cxx
+# End Source File
 # End Group
 # Begin Group "FLTK Sources"
 
@@ -387,6 +447,14 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_Audio.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_Spectrum.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SinTracks.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SpectrumPeaks.cxx
 # End Source File
 # End Group
 # End Group
@@ -420,11 +488,50 @@ SOURCE=..\..\..\..\src\Visualization\GL\GLSampleDetailArray.cxx
 
 SOURCE=..\..\..\..\src\Visualization\GL\SpectrumRenderingManager.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\GLSineTracks.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\SinTracksRenderingManager.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\GLPointsArrays.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\PeaksRenderingManager.cxx
+# End Source File
+# End Group
+# Begin Group "Util Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\TimeFreqMagPoint.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SinTrackListBuilder.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SinTrackHorClipper.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SinTrackVerClipper.cxx
+# End Source File
 # End Group
 # Begin Group "Widget Sources"
 
 # Begin Group "FLTK Sources No. 1"
 
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Palette.cxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Axis.cxx
@@ -452,6 +559,10 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_2DSurface.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Single_Display.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Multi_Display.cxx
 # End Source File
 # End Group
 # Begin Source File
@@ -587,14 +698,6 @@ SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Enum.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Standard\Array.hxx
 # End Source File
 # Begin Source File
@@ -631,6 +734,10 @@ SOURCE=..\..\..\..\src\Standard\SearchArray.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\Enum.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\GlobalEnums.hxx
 # End Source File
 # Begin Source File
@@ -652,6 +759,10 @@ SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
 
@@ -677,6 +788,18 @@ SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
 
 SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\List.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Search.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\IndexArray.hxx
+# End Source File
 # End Group
 # Begin Group "Data Headers"
 
@@ -700,6 +823,26 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Fundamental.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeak.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeakArray.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Frame.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Segment.hxx
 # End Source File
 # Begin Source File
 
@@ -860,7 +1003,19 @@ SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectrum.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Visualization\Plot\PlotSinTracks.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectralPeaks.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Visualization\Plot\Plot.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\Plotter.hxx
 # End Source File
 # End Group
 # Begin Group "Base Headers No. 4"
@@ -964,6 +1119,26 @@ SOURCE=..\..\..\..\src\Visualization\View\SpectrumAdapter.hxx
 
 SOURCE=..\..\..\..\src\Visualization\View\LogMagSpectrumAdapter.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\Partial.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SpectralPeaksModel.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SpectralPeakArrayAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SinTracksModel.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\SinTracksAdapter.hxx
+# End Source File
 # End Group
 # Begin Group "Presentation Headers"
 
@@ -977,6 +1152,14 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\Base\AudioPresentation.hxx
 
 SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectrumPresentation.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SinTracksPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectralPeaksPresentation.hxx
+# End Source File
 # End Group
 # Begin Group "FLTK Headers"
 
@@ -988,6 +1171,14 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_Audio.hxx
 
 SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_Spectrum.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SinTracks.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SpectrumPeaks.hxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "Util Headers"
@@ -995,6 +1186,26 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_Spectrum.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Util\BoundingBoxes.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\TimeFreqMagPoint.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SineTracksDef.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SinTrackListBuilder.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SinTrackHorClipper.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Util\SinTrackVerClipper.hxx
 # End Source File
 # End Group
 # Begin Group "GL Headers"
@@ -1027,11 +1238,31 @@ SOURCE=..\..\..\..\src\Visualization\GL\GLSampleDetailArray.hxx
 
 SOURCE=..\..\..\..\src\Visualization\GL\SpectrumRenderingManager.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\GLSineTracks.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\SinTracksRenderingManager.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\GLPointsArrays.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\PeaksRenderingManager.hxx
+# End Source File
 # End Group
 # Begin Group "Widget Headers"
 
 # Begin Group "FLTK Headers No. 1"
 
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Palette.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Axis_Enumerations.hxx
@@ -1063,6 +1294,10 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_2DSurface.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Single_Display.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Multi_Display.hxx
 # End Source File
 # End Group
 # Begin Source File
@@ -1137,6 +1372,10 @@ SOURCE=..\..\..\..\externals\CbLib\CBL.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Export.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Enumerations.H
 # End Source File
 # Begin Source File
@@ -1157,11 +1396,11 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Box.H
+SOURCE=..\..\..\..\..\fltk\include\FL\fl_draw.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\fl_draw.H
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Box.H
 # End Source File
 # Begin Source File
 
@@ -1170,6 +1409,21 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Valuator.H
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Gl_Window.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Tooltip.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\gl.h
+# End Source File
+# End Group
+# Begin Group "Fl Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\Fl\Fl_Group.H
 # End Source File
 # End Group
 # End Group
