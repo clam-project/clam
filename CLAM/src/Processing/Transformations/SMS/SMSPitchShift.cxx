@@ -73,13 +73,16 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
 	out=in;
+	TData amount=mAmountCtrl.GetLastValue();
+	if(amount==1)//no pitch shift
+		return true;
 	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
 	Fundamental tmpFund=in.GetFundamental();
 	int i;
 	for (i=0;i<in.GetFundamental().GetnCandidates();i++)
 	{
-		tmpFund.SetFreq(i,in.GetFundamental().GetFreq(i)*mAmountCtrl.GetLastValue());
+		tmpFund.SetFreq(i,in.GetFundamental().GetFreq(i)*amount);
 	}
 	out.SetFundamental(tmpFund);
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
