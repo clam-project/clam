@@ -9,7 +9,6 @@ class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
-#include "AudioBrowser.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
 #include <FL/Fl_Window.H>
@@ -70,6 +69,8 @@ private:
   static Fl_Menu_Item *mVisualizeOutputs;
   inline void cb_Sound_i(Fl_Menu_*, void*);
   static void cb_Sound(Fl_Menu_*, void*);
+  inline void cb_Spectrum_i(Fl_Menu_*, void*);
+  static void cb_Spectrum(Fl_Menu_*, void*);
   inline void cb_Sinusoidal_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal(Fl_Menu_*, void*);
   inline void cb_Residual_i(Fl_Menu_*, void*);
@@ -114,6 +115,7 @@ private:
   void StoreMelody(void);
   void StoreOutputSound(void);
   void DisplayOutputSound(void);
+  void DisplayOutputSpectrum(void);
   void StoreOutputSoundResidual(void);
   void DisplayOutputSoundResidual(void);
   void StoreOutputSoundSinusoidal(void);
@@ -121,7 +123,8 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  AudioBrowser* Attach( const char* title, CLAM::Audio* data, int pos );
+  Fl_Window* Attach( const char* title, CLAM::Audio* data );
+  Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
   void PlayInputSound();
@@ -134,11 +137,16 @@ private:
   void DetachDisplays();
   void ChangeFrame();
   void ChangeTimeTag(double tag);
-  AudioBrowser* mAudioInputDisplay;
-  AudioBrowser* mAudioOutputDisplay;
-  AudioBrowser* mAudioOutputResidualDisplay;
-  AudioBrowser* mAudioOutputSinusoidalDisplay;
-  Signalv1<TData> mSignal;
+  Fl_Window* mAudioInputDisplay;
+  Fl_Window* mAudioOutputDisplay;
+  Fl_Window* mAudioOutputResidualDisplay;
+  Fl_Window* mAudioOutputSinusoidalDisplay;
+  Fl_Window* mInputSpectrum;
+  Fl_Window* mOutputSpectrum;
+  ProcDataView<Spectrum>* mInputSpectrumView;
+  ProcDataView<Spectrum>* mOutputSpectrumView;
+  Signalv1<TData> mFrameSignal;
+  Signalv1<bool> mPaintSignal;
   Slotv1<double> mSlot;
 };
 #endif
