@@ -32,36 +32,33 @@
 
 using namespace CLAM;
 
-bool AudioPlayer::sCancel = false;
-void AudioPlayer::SetCancel( bool value ) { sCancel = value; }
-bool AudioPlayer::GetCancel(  ) { return sCancel; }
+//bool AudioPlayer::sCancel = false;
+//void AudioPlayer::SetCancel( bool value ) { sCancel = value; }
+//bool AudioPlayer::GetCancel(  ) { return sCancel; }
 
-AudioPlayer* AudioPlayer::sCurrentPlayer;
+AudioPlayer* AudioPlayer::sCurrentPlayer = NULL;
 
-AudioPlayer::AudioPlayer( const TData& sampleRate, const TTime& beginTime, const DataArray& data, SigSlot::Slotv0& slot )
+AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot ) : mAudioReference( audio )
 {
-	mAudioReference.SetSampleRate( sampleRate );
-	mAudioReference.SetBeginTime( beginTime );
-	mAudioReference.SetBuffer( data );
-
-	SetCancel( false );
+	mCancel = false;
 	sCurrentPlayer = this;
 
-	mSignal.Connect( slot );
+	mRequestStop.Connect( slot );
 
 	pthread_create( &mThread, 0, sPlayingThreadSafe, this );
 }
 
 AudioPlayer::~AudioPlayer(  ) 
 {
-	SetCancel( true );
+	mCancel = true ;
 	pthread_join( mThread, 0 );
+	delete mAudioReference;
 }
 
 void AudioPlayer::PlayingThreadSafe(  )
 {
 	TSize bufferSize=512;
-	AudioManager audioManager( mAudioReference.GetSampleRate(), bufferSize );
+	AudioManager audioManager( mAudioReference->GetSampleRate(), bufferSize );
 	
 	AudioIOConfig mOutCfgL;
 	AudioIOConfig mOutCfgR;
@@ -78,31 +75,32 @@ void AudioPlayer::PlayingThreadSafe(  )
 	
 	Audio tmpAudioBuffer;
 	tmpAudioBuffer.SetSize(bufferSize);
-	TSize dataSize = mAudioReference.GetSize();
+	TSize dataSize = mAudioReference->GetSize();
 	AudioManager::Current().Start();
 		
 	mOutputL.Start();
 	mOutputR.Start();
-	for( int i=0; i<dataSize && !GetCancel(); i+=bufferSize )
+	for( int i=0; i<dataSize && !mCancel; i+=bufferSize )
 	{
-		mAudioReference.GetAudioChunk( i, i + tmpAudioBuffer.GetSize(), tmpAudioBuffer, false );
+		mAudioReference->GetAudioChunk( i, i + tmpAudioBuffer.GetSize(), tmpAudioBuffer, false );
 		mOutputR.Do( tmpAudioBuffer );
 		mOutputL.Do( tmpAudioBuffer );
 	}
 
-	if( !GetCancel() )
-		mSignal.Emit(  );
+	if( !mCancel ) // True if we finished to play all the Audio
+		mRequestStop.Emit(  );
 }
-
-//void AudioPlayer::Play( int i )
 
 void* AudioPlayer::sPlayingThreadSafe(void* ptr)
 {
  	((AudioPlayer*)ptr)->PlayingThreadSafe();
 }
 
-void AudioPlayer::Stop(  )
+void AudioPlayer::StopFromGUIThread(  )
 {
-	if( !sCancel )
+	if( sCurrentPlayer )
+	{
 		delete sCurrentPlayer;
+		sCurrentPlayer = NULL;
+	}
 }

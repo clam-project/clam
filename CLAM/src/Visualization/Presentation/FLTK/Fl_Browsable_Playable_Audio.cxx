@@ -33,9 +33,10 @@
 
 using namespace CLAMVM;
 using CLAM::AudioPlayer;
+using CLAM::Audio;
 
 Fl_Browsable_Playable_Audio::Fl_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Window( X, Y, W, H, label ), AudioPresentation(  ), mCancel( false )
+	: Fl_Window( X, Y, W, H, label ), AudioPresentation(  ), mCancel( false ), mIsThisPlaying( false )
 {
 	mXAxis = new Fl_X_Axis( 0, H-40, W-40, 20, "Time (sec)" );
 	mXAxis->align( FL_ALIGN_BOTTOM );
@@ -102,13 +103,23 @@ void Fl_Browsable_Playable_Audio::stop( Fl_Widget*, void* data)
 
 void Fl_Browsable_Playable_Audio::Play(  )
 { 
-	AudioPlayer::Stop(  );
-	mAudioPlayer = new AudioPlayer( mDrawMgr.GetTimeInfo(  ).sampleRate, 0, mDrawMgr.GetDataCached(  ), mSlot );
+	AudioPlayer::StopFromGUIThread(  );
+	Audio* tempAudio = new Audio;
+	tempAudio->SetSampleRate( mDrawMgr.GetTimeInfo(  ).sampleRate );
+	tempAudio->SetBeginTime( 0 );
+	tempAudio->SetBuffer( mDrawMgr.GetDataCached(  ) );
+
+	mIsThisPlaying = true;
+	mAudioPlayer = new AudioPlayer( tempAudio, mSlot );
 }
 
 void Fl_Browsable_Playable_Audio::Stop(  )
 {
-	AudioPlayer::Stop(  );
+	if( mIsThisPlaying )
+	{
+		AudioPlayer::StopFromGUIThread(  );
+		mIsThisPlaying = false;
+	}
 }
 
 void Fl_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )

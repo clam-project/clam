@@ -24,7 +24,6 @@
 
 #include <FL/Fl_Window.H>
 #include "AudioRenderingManager.hxx"
-#include "PlayablePresentation.hxx"
 #include "AudioPresentation.hxx"
 #include "AudioPlayer.hxx"
 #include "Signalv1.hxx"
@@ -52,7 +51,7 @@ namespace CLAMVM
 		Fl_Gl_Single_Browsable_Display*   mDisplay;
 		AudioRenderingManager   mDrawMgr;
 		Fl_Button * mPlayButton, * mStopButton;
-		bool mCancel;
+		bool mCancel, mIsThisPlaying;
 		SigSlot::Slotv0 mSlot;
 		CLAM::AudioPlayer* mAudioPlayer;
 

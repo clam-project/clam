@@ -35,24 +35,20 @@ namespace CLAM
 {
 	class AudioPlayer
 	{
-		Audio  mAudioReference;
-		SigSlot::Signalv0 mSignal;
+		Audio* mAudioReference;
+		SigSlot::Signalv0 mRequestStop;
 		pthread_t mThread;
-		static bool sCancel;
+		bool mCancel;
 		static AudioPlayer* sCurrentPlayer;
 
-		static void SetCancel( bool );
-		static bool GetCancel(  );
-
 		void PlayingThreadSafe(  );
-		static void* sPlayingThreadSafe( void* ptr );
+		static void* sPlayingThreadSafe( void* thisobject );
 		
 	public:
-		AudioPlayer( const TData& sampleRate, const TTime& beginTime, const DataArray& data, SigSlot::Slotv0& slot );
+		AudioPlayer( Audio* audio, SigSlot::Slotv0& slot );
 		virtual ~AudioPlayer();
 
-		//void Play( int i );
-		static void Stop(  );
+		static void StopFromGUIThread(  );
 	};
 };
 
