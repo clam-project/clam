@@ -66,6 +66,44 @@ namespace CLAM
 		return mConfig;
 	}
 
+	bool MultiChannelAudioFileWriter::Do( std::vector<Audio>& inputs )
+	{
+		typedef std::vector<Audio> InputVec;
+
+		if ( !AbleToExecute() )
+			return false;
+
+		// Checking that all inputs have the same size
+		bool  allInputsSameSize = true;
+		TSize inputsSize = 0;
+
+		inputsSize = inputs[0].GetSize();
+
+		for ( InputVec::iterator i = inputs.begin();
+		      i!= inputs.end() && allInputsSameSize;
+		      i++ )
+		  {
+		    allInputsSameSize = ( inputsSize == (*i).GetSize() );
+		  }
+
+
+		CLAM_ASSERT( allInputsSameSize, "Input sizes differ!" );
+
+		// Now, let's build the samples matrix
+
+		int j = 0;
+
+		for( InputVec::iterator i = inputs.begin();
+		     i != inputs.end(); i++ )
+		  mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
+
+		mNativeStream->WriteData( mChannelsToWrite.GetPtr(), mChannelsToWrite.Size(),
+					 mSamplesMatrix.GetPtr(), inputsSize );
+
+		return true;
+
+	}
+
 	bool MultiChannelAudioFileWriter::Do()
 	{
 		if ( !AbleToExecute() )
