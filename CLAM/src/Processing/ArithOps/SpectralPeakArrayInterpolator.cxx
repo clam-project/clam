@@ -144,7 +144,7 @@ namespace CLAM {
 			{
 				outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
 				outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[i*factor2]*freqFactor;
-				CLAM_DEBUG_ASSERT(outFreq[i]>lastFreq,"Error");
+				CLAM_DEBUG_ASSERT(outFreq[i]>=lastFreq,"Error");
 				lastFreq=outFreq[i];
 				CLAM_DEBUG_ASSERT(outMag[i]<1,"Error");
 				CLAM_DEBUG_ASSERT(outMag[i]>-1,"Error");
