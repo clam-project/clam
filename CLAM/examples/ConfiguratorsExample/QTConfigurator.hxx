@@ -76,13 +76,17 @@ namespace CLAM{
 			QFrame * frame = new QFrame(mLayout);
 			frame->setMinimumHeight(10);
 
-			QGrid *grid = new QGrid( 2, mLayout );
+			QHBox * buttons = new QHBox(mLayout );
 			
-			QPushButton * applyButton = new QPushButton("Apply", grid, "apply");
+			QPushButton * applyButton = new QPushButton("Apply", buttons, "apply");
 			connect( applyButton, SIGNAL(clicked()), this, SLOT(Apply()) );
 
-			QPushButton * discardButton = new QPushButton("Discard", grid, "discard");
+			QPushButton * discardButton = new QPushButton("Discard", buttons, "discard");
 			connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
+			
+			QPushButton * okButton = new QPushButton("Ok", buttons, "apply");
+			connect( okButton, SIGNAL(clicked()), this, SLOT(Ok()) );
+
 			mLayout->adjustSize();
 		}
 	private:
@@ -226,10 +230,13 @@ namespace CLAM{
 		void Discard() {
 			close();
 		}
+		void Ok() {
+			Apply();
+			Discard();
+		}
 	public:
 	
 		void QTConfigurator::show() {
-
 			super::show();
 		}
 
