@@ -1,9 +1,10 @@
 2003-07-25 CLAM_0_5_2
 'Processing bug-fixing
   * Processing - Transformation - SMS:
-      ** SMSMorph was not working by a side-effect of the introduction of the SMS Time Stretch
+      ** SMSMorph was not working by a side-effect of the introduction
+         of the SMS Time Stretch.
   * Processing - Analysis:
-      ** SpectralPeakDetect bug fixed
+      ** SpectralPeakDetect infinite loop bug fixed.
   * Standard:
       ** Stack, Queue and String removed. Use the STL ones instead.
       ** Obsoleted DescStats removed.
