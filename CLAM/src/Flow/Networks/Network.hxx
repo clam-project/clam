@@ -23,6 +23,7 @@ class Network
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
 	typedef ProcessingsMap::iterator ProcessingsMapIterator;
+	typedef ProcessingsMap::const_iterator ConstProcessingsMapIterator;
 	typedef std::list< NodeBase* > NodesList;
 	typedef NodesList::iterator NodesIterator;
 	
@@ -31,7 +32,7 @@ public:
 	Network( const std::string& );
 	~Network();
 	
-	std::string& GetName() { return _name; }
+	const std::string& GetName() const { return _name; }
 	Processing& GetProcessing( const std::string & name );
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
@@ -48,6 +49,8 @@ public:
 	// accessors to nodes and processing
 	ProcessingsMapIterator BeginProcessings();
 	ProcessingsMapIterator EndProcessings();
+	ConstProcessingsMapIterator BeginProcessings() const;
+	ConstProcessingsMapIterator EndProcessings() const;
 	NodesIterator BeginNodes();
 	NodesIterator EndNodes();
 

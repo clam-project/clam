@@ -179,6 +179,15 @@ namespace CLAM
 	{
 		return _processings.end();
 	}
+	Network::ConstProcessingsMapIterator Network::BeginProcessings() const
+	{
+		return _processings.begin();
+	}
+
+	Network::ConstProcessingsMapIterator Network::EndProcessings() const
+	{
+		return _processings.end();
+	}
 
 	Network::NodesIterator Network::BeginNodes()
 	{
