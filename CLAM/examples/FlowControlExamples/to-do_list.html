@@ -19,27 +19,20 @@
 				IterationsMethods for:
 				<ol>
 			<li>
-				OscilatorToFileOut
-			</li>
+				OscilatorToFileOut</li>
 			<li>
-				ModulatedFileIn
-			</li>
+				ModulatedFileIn</li>
 			<li>
-				ModulatedOscillator
-			</li>
+				ModulatedOscillator</li>
 			<li>
-				ModulatedFileInPlusFileIn
-			</li>
+				ModulatedFileInPlusFileIn</li>
 			<li>
-				FileInFileOut
-			</li>
+				FileInFileOut</li>
 			</ol> </li>
 			<li class='todo'>
-				AudioOut of the resulting processed file
-			</li>
+				AudioOut of the resulting processed file</li>
 			<li class='todo'>
-				Generate controls, and use them
-			</li>
+				Generate controls, and use them</li>
 			<li class='todo'>
 				Remove duplicated class Multiplier. Dependecies following:
 				<ul>
@@ -59,20 +52,21 @@
 		</h2>
 		<ul>
 			<li class='todo'>
-			unify ports attribute nomenclature (audioout...)
+				unify ports attribute nomenclature (audioout...)</li>
 			<li class='todo'>
-				make ports private. Thus use the base ports for attaching
-			</li>
+				make ports private. Thus use the base ports for attaching</li>
 			<li class='done'>
-			Port all iterations to use of ports
-			</li>
+				Port all iterations to use of ports</li>
 			<li class='todo'>
-				Define Attach in port[in/out] base class. i.e:
-				<tt>  myProc.GetPort("audioIn").Attach( myAdudio);</tt>
+				Define Attach in port[in/out] base class. i.e: <tt>myProc.GetPort("audioIn").Attach( 
+					myAdudio);</tt>
+			</li>
 			<li class='todo'>
 				Processing / Ports / Controls small refactoring, regarding accessing 
 				ports/controls by name
 			</li>
+			<li class='current'>
+				Convert method to a class: iterations (do, attach, name)
 			</li>
 		</ul>
 	</body>
