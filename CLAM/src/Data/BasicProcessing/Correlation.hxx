@@ -31,13 +31,12 @@
 namespace CLAM
 {
 	/** Correlation class with the Data Buffer
-	 *  @see AudioDescriptors, Spectrum
 	 */
 	class Correlation: public ProcessingData {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (Correlation, 1, ProcessingData);
 
-		/** The Audio buffer */
+		/** The Correlation buffer */
 		DYN_ATTRIBUTE (0, public, DataArray, Buffer);
 
 	protected:
