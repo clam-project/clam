@@ -25,7 +25,9 @@
 
 #include "SMSTransformation.hxx"
 #include "SDIFIn.hxx"
+#include "FrameInterpolator.hxx"
 #include "SpectrumInterpolator.hxx"
+#include "SpectralPeakArrayInterpolator.hxx"
 
 namespace CLAM{
 
@@ -149,17 +151,7 @@ namespace CLAM{
 	protected:
 		
 		bool InterpolateFrames(const Frame& f1, const Frame& f2, Frame& fout,TData frameFactor);
-		
-		bool InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out, TData resFactor);
-		bool InterpolateSinusoidal(const Frame& in1,const Frame& in2, Frame& out, TData magFactor, TData freqFactor, TData pitchFactor);
-
-		bool InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, SpectralPeakArray& out, 
-			TData magFactor, TData freqFactor, TData pitchFactor,
-			TData pitch1, TData pitch2);
-		
 		bool FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame);
-
-		bool FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition);
 
 		bool LoadSDIF( std::string fileName, Segment& segment );
 		
@@ -180,7 +172,8 @@ namespace CLAM{
 
 
 		/** Child processings **/
-		SpectrumInterpolator mPO_SpectrumInterpolator;
+
+		FrameInterpolator mPO_FrameInterpolator;
 	};		
 };//namespace CLAM
 

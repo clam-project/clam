@@ -137,55 +137,12 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 
 bool SMSMorph::ConcreteStart()
 {
-	mPO_SpectrumInterpolator.Start();
+	mPO_FrameInterpolator.Start();
 	return true;
 }
-
-bool SMSMorph::InterpolateSinusoidal(const Frame& in1,const Frame& in2, Frame& out, TData magFactor, TData freqFactor, TData pitchFactor)
-{
-		///////////////////////
-	/*Sinusoidal Morphing*/
-	///////////////////////
-	TData pitch1=in1.GetFundamentalFreq();
-	TData pitch2=in2.GetFundamentalFreq();
-
-	TData newPitch=pitch1*(1-pitchFactor)+pitch2*pitchFactor;
-
-	InterpolateSpectralPeaks(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray(), magFactor, freqFactor, pitchFactor, pitch1,pitch2);
-	//Sets new fund freq
-	out.GetFundamental().SetnCandidates(0);
-	if(mHarmonicMorph)
-		out.GetFundamental().AddElem(0,newPitch);
-	else
-		out.GetFundamental().AddElem(0,0);
-	return true;
-}
-
-bool SMSMorph::InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out,TData resFactor)
-{
-	///////////////////////
-	/**Residual Morphing**/
-	///////////////////////
-	
-	Spectrum &inRes1=in1.GetResidualSpec();
-	Spectrum &inRes2=in2.GetResidualSpec();
-	Spectrum &outRes=out.GetResidualSpec();
-	
-	mPO_SpectrumInterpolator.mInterpolationFactorCtl.DoControl(resFactor);
-	//TODO: should set prototypes at the beginning to enhance speed
-	mPO_SpectrumInterpolator.Do(inRes1,inRes2,outRes);
-
-
-	return true;
-}
-
 
 bool SMSMorph::InterpolateFrames(const Frame& in1,const Frame& in2, Frame& out, TData frameFactor=-1)
 {
-	if(in1.GetFundamentalFreq()!=0 && in2.GetFundamentalFreq()!=0 )
-		mHarmonicMorph=true;
-	else mHarmonicMorph=false;
-
 	TData magFactor,freqFactor,pitchFactor,resFactor;
 	
 	if(frameFactor==-1)//No Frame Interpolation
@@ -200,10 +157,14 @@ bool SMSMorph::InterpolateFrames(const Frame& in1,const Frame& in2, Frame& out, 
 		magFactor=freqFactor=pitchFactor=frameFactor;
 	}
 	
-	InterpolateSinusoidal(in1,in2,out,magFactor, freqFactor, pitchFactor);
-	
 	resFactor=mHybResAmp.GetLastValue();
-	InterpolateResidual(in1,in2,out,resFactor);
+
+	mPO_FrameInterpolator.mMagInterpolationFactorCtl.DoControl(magFactor);
+	mPO_FrameInterpolator.mFreqInterpolationFactorCtl.DoControl(freqFactor);
+	mPO_FrameInterpolator.mPitchInterpolationFactorCtl.DoControl(pitchFactor);
+	mPO_FrameInterpolator.mResidualInterpolationFactorCtl.DoControl(resFactor);
+
+	mPO_FrameInterpolator.Do(in1,in2,out);
 	
 	return true;
 }
@@ -270,97 +231,6 @@ bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)
 	mInput2.Attach(in2);
 	return Do(in1,out);
 }
-
-
-bool SMSMorph::FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition)
-{
-	int i;
-	bool found=false;
-	int nPeaks=indexArray.Size();
-	for(i=lastPosition;i<nPeaks;i++)
-	{
-		if(indexArray[i]==index)
-		{
-			lastPosition=i;
-			found=true;
-			break;
-		}
-	}
-	return found;
-
-}
-
-
-bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, 
-										SpectralPeakArray& out,
-										TData magFactor, TData freqFactor, TData pitchFactor, 
-										TData pitch1=0, TData pitch2=0)
-{
-	//we need to copy input peak arrays to convert them to linear
-	SpectralPeakArray tmpIn1=in1;
-	SpectralPeakArray tmpIn2=in2;
-	tmpIn1.ToLinear();
-	tmpIn2.ToLinear();
-
-	int nPeaks1=in1.GetnPeaks();
-	int nPeaks2=in2.GetnPeaks();
-
-	if(nPeaks1==0)
-	{
-		out=in1;
-		return true;
-	}
-	if(nPeaks2==0)
-	{
-		out=in1;
-		return true;
-	}
-
-	//We initialize out with tmpIn1
-	out=tmpIn1;
-	
-	DataArray& in1Mag=tmpIn1.GetMagBuffer();
-	DataArray& in2Mag=tmpIn2.GetMagBuffer();
-	DataArray& outMag=out.GetMagBuffer();
-
-	DataArray& in1Freq=tmpIn1.GetFreqBuffer();
-	DataArray& in2Freq=tmpIn2.GetFreqBuffer();
-	DataArray& outFreq=out.GetFreqBuffer();
-
-	IndexArray& in1Index=tmpIn1.GetIndexArray();
-	IndexArray& in2Index=tmpIn2.GetIndexArray();
-	
-	//TODO: this computation is duplicated
-	TData newPitch=pitch1*(1-pitchFactor)+pitch2*pitchFactor;
-	
-	TData factor2=nPeaks2/nPeaks1;
-	int pos=0,i=0;
-	do
-	{
-		if(!mHarmonicMorph)
-		{
-			outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
-			outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[i*factor2]*freqFactor;
-		}
-		else if(FindHarmonic(in2Index,in1Index[i],pos))
-		{
-			//Morphing Using Harmonic No*/
-			outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[pos]*magFactor;
-			outFreq[i]=((in1Freq[i]/pitch1)*(1-freqFactor)+(in2Freq[pos]/pitch2)*freqFactor)*newPitch;
-		}
-		else
-		{
-			outMag[i]=0.0000000001;
-		}
-		i++;
-	}while(i<nPeaks1);
-	
-	//Finally we convert output to dB
-	out.TodB();
-
-	return true;
-}
-
 
 bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 {
