@@ -9,18 +9,18 @@ namespace CLAMTest
 {
 
 class PoolTest;
+class PoolSpecTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( PoolTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( PoolSpecTest );
 
-class PoolTest : public CppUnit::TestFixture
+class PoolSpecTest : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE( PoolTest );
+	CPPUNIT_TEST_SUITE( PoolSpecTest );
 	CPPUNIT_TEST( testGetIndex_whenEmpty );
 	CPPUNIT_TEST( testGetIndex_withOneInserted );
 	CPPUNIT_TEST( testGetIndex_withAWrongName );
 	CPPUNIT_TEST( testGetIndex_withSecondInsertedArray );
-	CPPUNIT_TEST( testGet_ReturnsSameMemory );
-	CPPUNIT_TEST( testGet_ReturnsConstMemory );
 	CPPUNIT_TEST( testAddAttribute_whenNameAlreadyAdded );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -30,8 +30,6 @@ public:
 
 	/// Common clean up, executed after each test method
 	void tearDown() { }
-
-	CLAM::PoolSpec _spec;
 
 private:
 	void assertArrayEquals(unsigned size, CLAM::TData * expected, CLAM::TData * result)
@@ -96,6 +94,52 @@ private:
 		CPPUNIT_ASSERT_EQUAL(2u,spec.GetNAttributes());
 	}
 
+	void testAddAttribute_whenNameAlreadyAdded()
+	{
+		std::string expected = "ScopeSpec::Add, Attribute already present";
+		CLAM::PoolSpec spec;
+		spec.Add("Lala");
+		try
+		{
+			spec.Add("Lala");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				expected,
+				std::string(err.what()));
+		}
+		CPPUNIT_ASSERT_EQUAL(1u,spec.GetNAttributes());
+	}
+};
+
+
+
+
+
+class PoolTest : public CppUnit::TestFixture
+{
+	CPPUNIT_TEST_SUITE( PoolTest );
+	CPPUNIT_TEST( testGet_ReturnsSameMemory );
+	CPPUNIT_TEST( testGet_ReturnsConstMemory );
+	CPPUNIT_TEST_SUITE_END();
+
+public:
+	/// Common initialization, executed before each test method
+	void setUp() { }
+
+	/// Common clean up, executed after each test method
+	void tearDown() { }
+
+private:
+	void assertArrayEquals(unsigned size, CLAM::TData * expected, CLAM::TData * result)
+	{
+		for (unsigned int i = 0; i<size; i++)
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(expected[i],result[i],.0001);
+
+	}
+
 	void testGet_ReturnsSameMemory()
 	{
 		const unsigned poolSize=5;
@@ -124,29 +168,6 @@ private:
 		const CLAM::TData * data2 = pool2.Get("Lala");
 		CPPUNIT_ASSERT_EQUAL(const_cast<const CLAM::TData*>(data),data2);
 	}
-
-	void testAddAttribute_whenNameAlreadyAdded()
-	{
-		std::string expected = "ScopeSpec::Add, Attribute already present";
-		CLAM::PoolSpec spec;
-		spec.Add("Lala");
-		try
-		{
-			spec.Add("Lala");
-			CPPUNIT_FAIL("Should have thrown an exception");
-		}
-		catch (CLAM::ErrAssertionFailed & err)
-		{
-			CPPUNIT_ASSERT_EQUAL(
-				expected,
-				std::string(err.what()));
-		}
-		CPPUNIT_ASSERT_EQUAL(1u,spec.GetNAttributes());
-	}
-
-	
-
-
 
 };
 
