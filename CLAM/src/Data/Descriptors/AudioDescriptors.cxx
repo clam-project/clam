@@ -207,7 +207,7 @@ TData AudioDescriptors::ComputeDecrease()
 	{
 		y = b0*(fabsf(data[i-1]) + fabsf(data[i])) - a1*y;
 		correctedY = y<mEpsilon ? mEpsilon : y;
-		logEnv = log10(correctedY);
+		const double logEnv = log10(correctedY);
 
 		if (logEnv > maxVal)
 		{
