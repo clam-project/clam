@@ -138,18 +138,15 @@ namespace CLAMTest
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamples );
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamples );
-
 			procReader.Start();
 			procWriter.Start();
 
 			int  frameCounter = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(readSamples) )
 			{
 				frameCounter++;
-				procWriter.Do();
+				procWriter.Do(readSamples);
 			}
 
 			procReader.Stop();
@@ -166,14 +163,12 @@ namespace CLAMTest
 			CLAM::Audio readSamples2;
 			readSamples2.SetSize( 256 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamples2 );
-		
 			procReader.Start();
 			procReader2.Start();
 
 			frameCounter = 0;
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(readSamples) && procReader2.Do(readSamples2) )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
 
@@ -227,18 +222,15 @@ namespace CLAMTest
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamples );
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamples );
-
 			procReader.Start();
 			procWriter.Start();
 
 			int  framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(readSamples) )
 			{
 				framesRead++;
-				procWriter.Do();
+				procWriter.Do(readSamples);
 			}
 
 			procReader.Stop();
@@ -258,8 +250,6 @@ namespace CLAMTest
 
 			readSamples2.SetSize( 256 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamples2 );
-		
 			procReader.Start();
 			procReader2.Start();
 
@@ -271,7 +261,7 @@ namespace CLAMTest
 			int    minSimFrame = 0;
 			double averageSim = 0.0;
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(readSamples) && procReader2.Do(readSamples2) )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
 

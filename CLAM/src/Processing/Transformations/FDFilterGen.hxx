@@ -25,7 +25,7 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "OutPortTmpl.hxx"
+#include "OutPort.hxx"
 #include "DataTypes.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
@@ -125,7 +125,7 @@ private:
 	typedef InControlTmpl<FDFilterGen> FDFilterGenCtrl;
 
 public:
-	OutPortTmpl<Spectrum> Output;
+	OutPort<Spectrum> Output;
 	
 	FDFilterGenCtrl Gain;
 	FDFilterGenCtrl HighCutOff;

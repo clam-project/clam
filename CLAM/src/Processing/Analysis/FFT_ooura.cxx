@@ -86,9 +86,14 @@ namespace CLAM {
 	ReleaseMemory();
   }
 
-  bool FFT_ooura::Do() {
-	return Do(mInput.GetData(),mOutput.GetData());
-  };
+  bool FFT_ooura::Do() 
+  {
+	mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+	bool toReturn = Do(mInput.GetAudio(), mOutput.GetData());
+	mInput.Consume();
+	mOutput.Produce();
+	return toReturn;
+  }
 
   bool FFT_ooura::Do(const Audio& in, Spectrum &out){
 	TData *inbuffer;

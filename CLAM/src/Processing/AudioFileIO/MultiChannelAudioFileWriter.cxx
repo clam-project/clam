@@ -23,6 +23,8 @@
 #include <sstream>
 #include "AudioCodecs_Stream.hxx"
 #include "FileSystem.hxx"
+#include "AudioInPort.hxx"
+#include "Audio.hxx"
 
 namespace CLAM
 {
@@ -78,7 +80,7 @@ namespace CLAM
 		for ( VectorOfInputs::iterator i = mInputs.begin();
 		      i!= mInputs.end(); i++ )
 		  {
-		    inputsRef.push_back( &((*i)->GetData()) );
+		    inputsRef.push_back( &((*i)->GetAudio()) );
 		  }
 
 		inputsSize = inputsRef[0]->GetSize();
@@ -107,7 +109,7 @@ namespace CLAM
 		for( VectorOfInputs::iterator i = mInputs.begin();
 		     i!=mInputs.end(); i++ )
 		  {
-		    (*i)->LeaveData();
+		    (*i)->Consume();
 		  }
 
 		return true;
@@ -172,7 +174,7 @@ namespace CLAM
 			sstr << i;
 			
 			mInputs.push_back( 
-				new InPortTmpl<Audio>( "Channel #" + sstr.str(), this, 1 ) );
+				new AudioInPort( "Channel #" + sstr.str(), this) );
 		}
 
 		mNativeStream = targetFile.GetStream();

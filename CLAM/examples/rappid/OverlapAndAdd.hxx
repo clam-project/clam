@@ -28,8 +28,8 @@
 
 #include "Processing.hxx"
 #include "Audio.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 
 namespace CLAM {
@@ -60,8 +60,8 @@ namespace CLAM {
 		int mLen;
 		int mOverlapEnd;
 
-		InPortTmpl<Audio>   mInput;
-		OutPortTmpl<Audio>  mOutput;
+		AudioInPort   mInput;
+		AudioOutPort  mOutput;
 
 		bool ConcreteConfigure(const ProcessingConfig&);
 

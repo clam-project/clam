@@ -181,10 +181,8 @@ namespace CLAMTest
 			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples );
-
 			proc.Start();
-			proc.Do();
+			proc.Do(readSamples);
 			proc.Stop();
 
 			double similarity = fileSimilarity( file, 0, readSamples );
@@ -217,15 +215,13 @@ namespace CLAMTest
 
 			proc.Start();
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples_1 );
-
-			proc.Do();
+			proc.Do(readSamples_1);
 			
 			std::copy( readSamples_1.GetBuffer().GetPtr(),
 				   readSamples_1.GetBuffer().GetPtr()+readSamples_1.GetSize(),
 				   previous.GetPtr() );
 
-			proc.Do();
+			proc.Do(readSamples_1);
 
 			proc.Stop();
 
@@ -253,10 +249,9 @@ namespace CLAMTest
 			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 			
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples );
 
 			proc.Start();
-			proc.Do();
+			proc.Do(readSamples);
 			proc.Stop();
 
 			double similarity = fileSimilarity( file, 1, readSamples );
@@ -289,15 +284,13 @@ namespace CLAMTest
 
 			proc.Start();
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples_1 );
-
-			proc.Do();
+			proc.Do(readSamples_1);
 
 			std::copy( readSamples_1.GetBuffer().GetPtr(),
 				   readSamples_1.GetBuffer().GetPtr()+readSamples_1.GetSize(),
 				   previous.GetPtr() );
 
-			proc.Do();
+			proc.Do(readSamples_1);
 
 			proc.Stop();
 
@@ -329,13 +322,11 @@ namespace CLAMTest
 
 			proc.Start();
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples_1 );
-
-			proc.Do();
+			proc.Do(readSamples_1);
 
 			previousBeginTime = readSamples_1.GetBeginTime();
 
-			proc.Do();
+			proc.Do(readSamples_1);
 
 			proc.Stop();
 			
@@ -363,10 +354,8 @@ namespace CLAMTest
 			readSamples.SetSize( 256 );
 
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples );
-
 			proc.Start();
-			proc.Do();
+			proc.Do(readSamples);
 			proc.Stop();
 
 			CPPUNIT_ASSERT_EQUAL( file.GetHeader().GetSampleRate(),
@@ -391,10 +380,8 @@ namespace CLAMTest
 			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 			
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples );
-
 			proc.Start();
-			proc.Do();
+			proc.Do(readSamples);
 			proc.Stop();
 
 			double similarity = fileSimilarity( file, 1, readSamples );
@@ -429,8 +416,6 @@ namespace CLAMTest
 
 			proc.Start();
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamples_1 );
-
 			for ( int i = 0; i < 10; i++ )
 			{
 				proc.Do();
@@ -439,7 +424,7 @@ namespace CLAMTest
 					   readSamples_1.GetBuffer().GetPtr()+readSamples_1.GetSize(),
 					   previous.GetPtr() );
 
-				proc.Do();
+				proc.Do(readSamples_1);
 			}
 
 			proc.Stop();
@@ -503,18 +488,15 @@ namespace CLAMTest
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamples );
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamples );
-
 			procReader.Start();
 			procWriter.Start();
 
 			int  framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(readSamples) )
 			{
 				framesRead++;
-				procWriter.Do();
+				procWriter.Do(readSamples);
 			}
 
 			procReader.Stop();
@@ -531,14 +513,12 @@ namespace CLAMTest
 			CLAM::Audio readSamples2;
 			readSamples2.SetSize( 256 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamples2 );
-		
 			procReader.Start();
 			procReader2.Start();
 
 			int framesChecked = 0;
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(readSamples) && procReader2.Do(readSamples2) )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
 				framesChecked++;

@@ -244,13 +244,19 @@ if [[ "1.1" == "$FLTK_API_VERSION" ]]
 fi;
 
 FLTK_API_VERSION=`$FLTKCONFIG --version`
-if [[ "1.1.4" == "$FLTK_API_VERSION" ]]
+if [[ "$FLTK_API_VERSION" == "1.1.4" ]]
 then
 	RAW_FLTK_CFLAGS=`$FLTKCONFIG --use-gl --use-images --cxxflags`
 	RAW_FLTK_LDFLAGS=`$FLTKCONFIG --use-gl --use-images --ldflags`
 else
-	RAW_FLTK_CFLAGS=`$FLTKCONFIG --cxxflags`
-	RAW_FLTK_LDFLAGS=`$FLTKCONFIG --ldflags`
+	if [[ "$FLTK_API_VERSION" == "1.1.5" ]]
+	then
+		RAW_FLTK_CFLAGS=`$FLTKCONFIG --use-gl --use-images --cxxflags`
+		RAW_FLTK_LDFLAGS=`$FLTKCONFIG --use-gl --use-images --ldflags`
+	else
+		RAW_FLTK_CFLAGS=`$FLTKCONFIG --cxxflags`
+		RAW_FLTK_LDFLAGS=`$FLTKCONFIG --ldflags`
+	fi
 fi
 
 for incpath in $RAW_FLTK_CFLAGS

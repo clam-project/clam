@@ -27,11 +27,11 @@ void CSaltoFileIO::ReadSDIFFile(const char* fileName,Segment *pSpecSeg,bool load
 	
 	//mSegment.AddAll();
 	//mSegment.UpdateData();
-	SDIFReader.Output.Attach(*pSpecSeg);
+//	SDIFReader.mOutput.Attach();
 	
 	SDIFReader.Start();
 	
-	while(SDIFReader.Do()) {}
+	while(SDIFReader.Do(*pSpecSeg)) {}
 
 	SDIFReader.Stop();
 

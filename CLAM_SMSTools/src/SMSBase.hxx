@@ -329,6 +329,6 @@ protected:
 		void UpdateDataInTimeStretch();
 	};
 
-};
+}; //namespace CLAM
 
 #endif

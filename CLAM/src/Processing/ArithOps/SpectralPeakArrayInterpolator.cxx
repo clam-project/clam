@@ -43,10 +43,10 @@ namespace CLAM {
 
 
 	SpectralPeakArrayInterpolator::SpectralPeakArrayInterpolator()
-		: mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
-		  mSpectralShape("SpectralShape",this,1),
+		: mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
+		  mpSpectralShape(0),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
@@ -58,10 +58,10 @@ namespace CLAM {
 	}
 
 	SpectralPeakArrayInterpolator::SpectralPeakArrayInterpolator(const PeaksInterpConfig &c)
-		: mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
-		  mSpectralShape("SpectralShape",this,1),
+		: mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
+		  mpSpectralShape(0),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
@@ -339,7 +339,7 @@ namespace CLAM {
 	bool SpectralPeakArrayInterpolator::Do(void)
 	{
 		if(mConfig.GetUseSpectralShape())
-			return Do(mIn1.GetData(),mIn2.GetData(),mSpectralShape.GetData(),mOut.GetData());
+			return Do( mIn1.GetData(), mIn2.GetData(), *mpSpectralShape, mOut.GetData() );
 		else
 			return Do(mIn1.GetData(),mIn2.GetData(),mOut.GetData());
 	}
@@ -364,3 +364,4 @@ namespace CLAM {
 
 	}
 }
+

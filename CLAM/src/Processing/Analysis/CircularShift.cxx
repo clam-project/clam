@@ -46,8 +46,8 @@ namespace CLAM {
 
 	CircularShift::CircularShift()
 		: mAmount("Amount",this),
-		  mInput( "Input samples", this, 1 ),
-		  mOutput( "Shifted samples", this, 1 )
+		  mInput( "Input samples", this ),
+		  mOutput( "Shifted samples", this )
 		
 	{
 		Configure(CircularShiftConfig());
@@ -55,8 +55,8 @@ namespace CLAM {
 
 	CircularShift::CircularShift(const CircularShiftConfig &c)
 		: mAmount("Amount",this),
-		  mInput( "Input samples", this, 1 ),
-		  mOutput( "Shifted samples", this, 1 )
+		  mInput( "Input samples", this ),
+		  mOutput( "Shifted samples", this )
 	{
 		Configure(c);
 	}
@@ -96,19 +96,21 @@ namespace CLAM {
 
 	bool CircularShift::Do(void)
 	{
-		return Do( mInput.GetData(), mOutput.GetData() );
+		return Do( mInput.GetAudio(), mOutput.GetAudio() );
+		mInput.Consume();
+		mOutput.Produce();
 
 	}
 
 	/* The  unsupervised Do() function */
 
-	bool CircularShift::Do(DataArray& in, DataArray& out)
+	bool CircularShift::Do( const DataArray& in, DataArray& out)
 	{
 
 		int i;
 		TData amount = mAmount.GetLastValue();
 		int size = in.Size();
-		TData* inp = in.GetPtr();
+		const TData* inp = in.GetPtr();
 		TData* outp = out.GetPtr();
 		TData* tmp;
 
@@ -147,7 +149,7 @@ namespace CLAM {
 		return Do(in.GetMagBuffer(),out.GetMagBuffer());
 	}
 
-	bool CircularShift::Do(Audio& in, Audio& out)
+	bool CircularShift::Do( const Audio& in, Audio& out)
 	{
 		Do(in.GetBuffer(),out.GetBuffer());
 		return true;

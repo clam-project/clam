@@ -31,14 +31,14 @@ using namespace CLAM;
 
 AudioFileIn::AudioFileIn() :
 	mpSoundFileIO(0),
-	mOutput("Output",this,1)
+	mOutput("Output",this)
 {
 	Configure(AudioFileConfig());
 };
 
 AudioFileIn::AudioFileIn(const AudioFileConfig &c) :
 	mpSoundFileIO(0),
-	mOutput("Output",this,1)
+	mOutput("Output",this)
 { 
 	Configure(c);
 };
@@ -88,7 +88,8 @@ bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
 	
 	mKeepFrameSizes = mConfig.GetKeepFrameSizes();
 	
-	mOutput.SetParams(mConfig.GetFrameSize());
+	mOutput.SetSize(mConfig.GetFrameSize());
+	mOutput.SetHop(mConfig.GetFrameSize());
 
 	mConfig.SetSampleRate( mpSoundFileIO->Header().mSamplerate );
 	mConfig.SetChannels( mpSoundFileIO->Header().mChannels );
@@ -236,8 +237,8 @@ bool AudioFileIn::Do(Audio& inL,Audio& inR)
 
 bool AudioFileIn::Do(void)
 {
-	bool res = Do(mOutput.GetData());
-	mOutput.LeaveData();
+	bool res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 }
 

@@ -2,7 +2,8 @@
 #include "Err.hxx"
 #include "SpectralPeakArray.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
 Enum::tEnumValue EPhaseGeneration::sEnumValues[] = {
 		{EPhaseGeneration::eAlign,"Align"},
@@ -302,5 +303,6 @@ PhaseManagement::SetLastPhasesAndFreqs(SpectralPeakArray& peakArray)
 	mLastPeakArray.SetIsIndexUpToDate(true);
 
 }
-//----------------------------------------------------------------------------//
-//----------------------------------------------------------------------------//
+
+} // namespace CLAM
+

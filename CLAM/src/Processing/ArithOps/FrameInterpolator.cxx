@@ -47,10 +47,10 @@ namespace CLAM {
 
 
 	FrameInterpolator::FrameInterpolator()
-		: mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
-		  mSpectralShape("SpectralShape",this,1),
+		: mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
+		  mpSpectralShape(0),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
@@ -65,10 +65,10 @@ namespace CLAM {
 	}
 
 	FrameInterpolator::FrameInterpolator(const FrameInterpConfig &c)
-		: mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
-		  mSpectralShape("SpectralShape",this,1),
+		: mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
+		  mpSpectralShape(0),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
@@ -99,7 +99,7 @@ namespace CLAM {
 		//todo: using interpolator with ports is still not available!!
 		if(mConfig.GetUseSpectralShape())
 		{
-			mPO_PeaksInterpolator.mSpectralShape.Attach(mSpectralShape);
+			mPO_PeaksInterpolator.AttachSpectralShape(*mpSpectralShape);
 		}
 
 		SpecInterpConfig spInterpConfig;
@@ -152,7 +152,11 @@ namespace CLAM {
 		out.GetFundamental().SetnCandidates(1);
 
 		if(mConfig.GetUseSpectralShape())
-			mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),mSpectralShape.GetData(),out.GetSpectralPeakArray());
+			mPO_PeaksInterpolator.Do(
+					in1.GetSpectralPeakArray(),
+					in2.GetSpectralPeakArray(),
+					*mpSpectralShape,
+					out.GetSpectralPeakArray() );
 		else
 			mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray());
 		mPO_SpectrumInterpolator.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());

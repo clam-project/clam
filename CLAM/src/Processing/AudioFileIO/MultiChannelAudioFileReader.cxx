@@ -21,6 +21,7 @@
 
 #include "MultiChannelAudioFileReader.hxx"
 #include "AudioCodecs_Stream.hxx"
+#include "AudioOutPort.hxx"
 #include <sstream>
 #include <iostream>
 
@@ -79,12 +80,13 @@ namespace CLAM
 		// to writable/readable data, but also performs
 		// several checks ( as well as advancing reading/writing
 		// zones, etc. )
+		// TODO: update this code, because GetData doesn't modifies state anymore
 		OutRefsVector outRefs;
 
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end();
 		      i++ )
-		  outRefs.push_back( &((*i)->GetData()) );
+		  outRefs.push_back( &((*i)->GetAudio()) );
 		
 		
 		sizeTmp = outRefs[0]->GetSize();	
@@ -132,7 +134,7 @@ namespace CLAM
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end(); i++ )
 		{	
-			(*i)->LeaveData();
+			(*i)->Produce();
 		}
 
 		return mNativeStream->WasSomethingRead();
@@ -174,7 +176,7 @@ namespace CLAM
 				sstr << i;
 
 				mOutputs.push_back(
-					new OutPortTmpl<Audio>( "Channel #" + sstr.str() , this, 1  )
+					new AudioOutPort( "Channel #" + sstr.str(), this )
 					);
 
 				channelsToRead[ i ] = i;
@@ -215,7 +217,7 @@ namespace CLAM
 				sstr << channelsToRead[i];
 
 				mOutputs.push_back(
-					new OutPortTmpl<Audio>( "Channel #" + sstr.str(), this, 1 )
+					new AudioOutPort( "Channel #" + sstr.str(), this )
 					);
 			}
 

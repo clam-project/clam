@@ -25,6 +25,9 @@
 #include "TopLevelProcessing.hxx"
 #include "ErrDynamicType.hxx"
 #include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 
 #include <cstring>
 #include <string>
@@ -131,6 +134,24 @@ namespace CLAM {
 		}
 	}
 
+	void Processing::PublishOutPort(OutPortBase* out) 
+	{
+		mPublishedOutPorts.Publish(out);
+	}
+	void Processing::PublishInPort(InPortBase* in)
+	{
+		mPublishedInPorts.Publish(in);
+	}
+
+	void Processing::PublishOutControl(OutControl* out) 
+	{
+		mPublishedOutControls.Publish(out);
+	}
+	void Processing::PublishInControl(InControl* in)
+	{
+		mPublishedInControls.Publish(in);
+	}
+	
 	void Processing::SetParent(Processing *o)
 	{
 		ProcessingComposite *p;

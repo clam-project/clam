@@ -200,8 +200,8 @@ bool SaltoSynth::ConfigureChildren(void)
 	OverlapAddConfig olaCfg;
 	
 	olaCfg.SetHopSize(mConfig.GetHopSize());
+	// TODO: review config of OverlapAndAdd
 	olaCfg.SetFrameSize(mConfig.GetHopSize()*3);
-	olaCfg.SetBufferSize(mConfig.GetHopSize()*3);
 
 	InterpolatingSynthesisConfig interpCfg;
 	interpCfg.SetSpectralRange( mConfig.GetSpectralRange() );

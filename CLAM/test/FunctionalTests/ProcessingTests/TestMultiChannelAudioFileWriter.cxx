@@ -82,8 +82,7 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriter procWriter;
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procWriter.Configure( cfgWriter ) );
+			CPPUNIT_ASSERT_EQUAL( true, procWriter.Configure( cfgWriter ) );
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 256 );

@@ -25,14 +25,14 @@
 namespace CLAM
 {
 	MonoAudioFileReader::MonoAudioFileReader()
-		: mOutput( "Samples read", this, 1 ),
+		: mOutput( "Samples read", this  ),
 		  mNativeStream( NULL )
 	{
 		
 	}
 
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
-		: mOutput( "Samples read", this, 1 ),
+		: mOutput( "Samples read", this ),
 		  mNativeStream( NULL )
 	{
 		Configure( cfg );
@@ -108,13 +108,13 @@ namespace CLAM
 		
 		return true;
 	}
-
+	
 	bool MonoAudioFileReader::Do()
 	{
-		bool retvalue = Do( mOutput.GetData() );
-		mOutput.LeaveData();
+		bool result = Do( mOutput.GetAudio() );
+		mOutput.Produce();
 
-		return retvalue;
+		return result;
 	}
 
 	bool MonoAudioFileReader::Do( Audio & outputSamples )		
@@ -138,7 +138,6 @@ namespace CLAM
 		}
 
 		return mNativeStream->WasSomethingRead();
-		
 	}
 	
 }

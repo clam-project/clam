@@ -27,6 +27,8 @@
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 
+#include <iostream> // TODO: remove
+
 namespace CLAM {
 
 
@@ -63,8 +65,12 @@ namespace CLAM {
 
 	bool FFT_rfftw::Do()
 	{
-		return Do(mInput.GetData(),mOutput.GetData());
-	};
+		mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+		bool toReturn = Do(mInput.GetAudio(), mOutput.GetData());
+		mInput.Consume();
+		mOutput.Produce();
+		return toReturn;
+	}
 
 	bool FFT_rfftw::Do(const Audio& in, Spectrum &out)
 	{

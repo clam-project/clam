@@ -22,163 +22,8 @@
 #include "SpectrumConfig.hxx"
 #include "SMSSynthesis.hxx"
 
-using namespace CLAM;
-
-
-
-
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-/*					SMSSYNTHESIS CONFIGURATION						*/
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-
-
-void SMSSynthesisConfig::DefaultInit()
+namespace CLAM
 {
-	AddAll();
-	UpdateData();
-	DefaultValues();	
-}
-
-void SMSSynthesisConfig::DefaultValues()
-{
-	SetSamplingRate(44100);
-
-	/** Default analysis window size corresponds to 512*/
-	GetSpectralSynth().SetAnalWindowSize(513);
-	GetSpectralSynth().SetAnalWindowType(EWindowType::eBlackmanHarris92);
-	GetSpectralSynth().GetAnalWindowGenerator().SetInvert(true);
-
-	
-	/** WindowSize/2*/
-	SetHopSize((GetAnalWindowSize()-1)/2);
-
-	/* Default frame size is 256*/
-	SetFrameSize(GetHopSize());
-
-	/** Setting synth sine generator size to default 257 **/
-	GetSynthSineSpectrum().SetSpectrumSize(257);
-}
-
-void SMSSynthesisConfig::SetSpectrumSize(TSize specSize)
-{
-	GetSynthSineSpectrum().SetSpectrumSize(specSize);
-}
-
-TSize SMSSynthesisConfig::GetSpectrumSize() const
-{
-	return GetSynthSineSpectrum().GetSpectrumSize();
-}
-
-/** Synthesis Window size in miliseconds. In num. of samples WindowSize/SR is forced to be odd*/	
-void SMSSynthesisConfig::SetAnalWindowSize(TSize w)
-{
-	CLAM_ASSERT(w%2==1,"Window size must be odd");
-	GetSpectralSynth().SetAnalWindowSize(w);
-	
-	GetSynthSineSpectrum().SetSpectrumSize(GetSpectralSynth().GetIFFT().GetAudioSize()/2+1);
-/*	TODO:This condition should be checked!!
-	if(w<2*GetHopSize()+1)
-		SetHopSize((w-1)/2);*/
-}
-
-TSize SMSSynthesisConfig::GetAnalWindowSize() const
-{
-	return GetSpectralSynth().GetAnalWindowSize();
-}
-
-/** Analysis Window type*/
-void SMSSynthesisConfig::SetAnalWindowType(const EWindowType& t)
-{
-	GetSpectralSynth().SetAnalWindowType(t);
-}
-
-const EWindowType& SMSSynthesisConfig::GetAnalWindowType() const
-{
-	return GetSpectralSynth().GetAnalWindowType();
-}
-
-
-void SMSSynthesisConfig::SetSynthWindowSize(TSize w)
-{
-	CLAM_ASSERT(w%2==1,"Window size must be odd");
-	GetSpectralSynth().SetSynthWindowSize(w);
-}
-
-TSize SMSSynthesisConfig::GetSynthWindowSize() const
-{
-	return GetSpectralSynth().GetSynthWindowSize();
-}
-
-/** Synthesis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
-void SMSSynthesisConfig::SetHopSize(TSize h)
-{
-
-	//CLAM_ASSERT(GetSynthWindowSize()>=2*h, "SMSSynthesisConfig::SetHopSize: Hop Size is too large compared to window size");
-	GetSpectralSynth().SetHopSize(h);
-	GetOverlapAddSin().SetHopSize(h);
-	GetOverlapAddSin().SetBufferSize(GetFrameSize()+h);
-	GetOverlapAddRes().SetHopSize(h);
-	GetOverlapAddRes().SetBufferSize(GetFrameSize()+h);
-	GetOverlapAddGlobal().SetHopSize(h);
-	GetOverlapAddGlobal().SetBufferSize(GetFrameSize()+h);
-}
-
-void SMSSynthesisConfig::SetFrameSize(TSize f)
-{
-//	GetSpectralSynth().SetFrameSize(f);
-	GetOverlapAddSin().SetFrameSize(f);
-	GetOverlapAddSin().SetBufferSize(f+GetHopSize());
-	GetOverlapAddRes().SetFrameSize(f);
-	GetOverlapAddRes().SetBufferSize(f+GetHopSize());
-	GetOverlapAddGlobal().SetFrameSize(f);
-	GetOverlapAddGlobal().SetBufferSize(f+GetHopSize());
-}
-
-TSize SMSSynthesisConfig::GetFrameSize()
-{
-	return GetOverlapAddSin().GetFrameSize();
-}
-
-
-TSize SMSSynthesisConfig::GetHopSize() const
-{
-	return GetSpectralSynth().GetHopSize();
-}
-
-/** Sampling rate of the input audio*/
-void SMSSynthesisConfig::SetSamplingRate(TData sr)
-{
-	GetSynthSineSpectrum().SetSamplingRate(sr);
-	GetPhaseMan().SetSamplingRate(sr);
-	GetSpectralSynth().SetSamplingRate(sr);
-}
-
-TData SMSSynthesisConfig::GetSamplingRate() const
-{
-	return GetSynthSineSpectrum().GetSamplingRate();
-}
-
-
-TInt32 SMSSynthesisConfig::PowerOfTwo(TInt32 size)
-{
-	int tmp = size;
-	int outputSize = 1;
-	while (tmp) 
-	{
-	 	outputSize=outputSize << 1;
-	 	tmp=tmp >> 1;
-	}
-	if(outputSize == size << 1)
-		outputSize = outputSize >> 1;
-	return outputSize;
-}
-
-
-
-
-//methods for PO
 
 void SMSSynthesis::AttachChildren()
 {
@@ -194,13 +39,13 @@ void SMSSynthesis::AttachChildren()
 }
 
 SMSSynthesis::SMSSynthesis():
-mInputSinSpectralPeaks("InputSinPeaks",this,1),
-mInputResSpectrum("InputResSpectrum",this,1),
-mOutputSinSpectrum("OutputSinSpectrum",this,1),
-mOutputSpectrum("OutputSpectrum",this,1),
-mOutputAudio("OutputAudio",this,1),
-mOutputResAudio("OutputResAudio",this,1),
-mOutputSinAudio("OutputSinAudio",this,1),
+mInputSinSpectralPeaks("InputSinPeaks",this),
+mInputResSpectrum("InputResSpectrum",this),
+mOutputSinSpectrum("OutputSinSpectrum",this),
+mOutputSpectrum("OutputSpectrum",this),
+mOutputAudio("OutputAudio",this),
+mOutputResAudio("OutputResAudio",this),
+mOutputSinAudio("OutputSinAudio",this),
 mCurrentTime("CurrentTime",this),
 mCurrentPitch("CurrentPitch",this)
 {
@@ -209,13 +54,13 @@ mCurrentPitch("CurrentPitch",this)
 }
 
 SMSSynthesis::SMSSynthesis(const SMSSynthesisConfig& cfg):
-mInputSinSpectralPeaks("InputSinPeaks",this,1),
-mInputResSpectrum("InputResSpectrum",this,1),
-mOutputSinSpectrum("OutputSinSpectrum",this,1),
-mOutputSpectrum("OutputSpectrum",this,1),
-mOutputAudio("OutputAudio",this,1),
-mOutputResAudio("OutputResAudio",this,1),
-mOutputSinAudio("OutputSinAudio",this,1),
+mInputSinSpectralPeaks("InputSinPeaks",this),
+mInputResSpectrum("InputResSpectrum",this),
+mOutputSinSpectrum("OutputSinSpectrum",this),
+mOutputSpectrum("OutputSpectrum",this),
+mOutputAudio("OutputAudio",this),
+mOutputResAudio("OutputResAudio",this),
+mOutputSinAudio("OutputSinAudio",this),
 mCurrentTime("CurrentTime",this),
 mCurrentPitch("CurrentPitch",this)
 {
@@ -271,7 +116,7 @@ bool SMSSynthesis::ConfigureChildren()
 
 void SMSSynthesis::ConfigureData()
 {
-		mAudioFrame.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
+	mAudioFrame.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
 }
 
 
@@ -285,20 +130,6 @@ bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 	ConfigureData();
 	return true;
 }
-
-void SMSSynthesis::Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
-			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
-			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
-{
-	mInputSinSpectralPeaks.Attach(inputSinusoidalPeaks);
-	mInputResSpectrum.Attach(inputResidualSpectrum);
-	mOutputSinSpectrum.Attach(outputSinusoidalSpectrum);
-	mOutputSpectrum.Attach(outputSpectrum);
-	mOutputAudio.Attach(outputAudio);
-	mOutputResAudio.Attach(outputSinusoidalAudio);
-	mOutputSinAudio.Attach(outputResidualAudio);
-}
-
 
 bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out)
 {
@@ -324,9 +155,20 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& out
 
 bool SMSSynthesis::Do(void)
 {
-	return Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+	bool result =  Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
 		mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
-		mOutputAudio.GetData(),mOutputSinAudio.GetData(),mOutputResAudio.GetData());
+		mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
+	
+	mInputSinSpectralPeaks.Consume();
+	mInputResSpectrum.Consume();
+
+	mOutputSinSpectrum.Produce();
+	mOutputSpectrum.Produce();
+	mOutputAudio.Produce();
+	mOutputSinAudio.Produce();
+	mOutputResAudio.Produce();
+
+	return result;
 }
 
 
@@ -346,7 +188,6 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 		Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
 		Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
 {
-	
 	//First we do the phase managing. Note that if the Do(frame) overload is not used,
 	//the time and pitch controls in this processing should be set by hand before this
 	//method is used
@@ -362,20 +203,23 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 	
 	//We synthesize to audio the resulting summed spectrum
 	mPO_SpectralSynthesis.Do(outputSpectrum,mAudioFrame);
+
+		
 	//We do the overlap and add
 	mPO_OverlapAddGlobal.Do(mAudioFrame, outputAudio);
+
 
 
 	//Now we synthesize only the residual spectrum
 	mPO_ResSpectralSynthesis.Do(inputResidualSpectrum,mAudioFrame);
 	//And we do the overlap and add process for the residual
-	return mPO_OverlapAddRes.Do(mAudioFrame, outputResidualAudio);
+	mPO_OverlapAddRes.Do(mAudioFrame, outputResidualAudio);
 
 	/* Note: although sinusoidal spectrum is already available from the analysis phase, we 
 	need to store it again in the frame because the original peak array may have been
 	transformed
 	*/
-
+	return true;
 }
 
 bool SMSSynthesis::Do(Frame& in)
@@ -421,3 +265,6 @@ void SMSSynthesis::InitFrame(Frame& in)
 	in.GetSynthAudioFrame().SetSize(mConfig.GetFrameSize());
 	
 }
+
+} // namespace CLAM
+

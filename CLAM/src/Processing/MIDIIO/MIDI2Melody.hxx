@@ -30,7 +30,7 @@
 
 #include "Control2Data.hxx"
 #include "MIDIMelody.hxx"
-#include "OutPortTmpl.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM {
 
@@ -45,7 +45,7 @@ public:
     virtual  ~MIDI2Melody(){};
     
 	/** Concrete output port of type MIDIMelody */
-	OutPortTmpl<MIDIMelody> mOutput;
+	OutPort<MIDIMelody> mOutput;
 	/** Special input control for keeping trace of the time*/
 	InControl mTime;
     

@@ -28,7 +28,8 @@
 #include "AudioManager.hxx"
 #include "OSDefines.hxx"
 #include "InControl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM
 {
@@ -69,7 +70,7 @@ namespace CLAM
 		} mStatus;
 
 	protected:
-		OutPortTmpl<Audio> mOutput;
+		AudioOutPort mOutput;
 
 		void HandleAttack(void);
 

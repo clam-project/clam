@@ -24,8 +24,6 @@
 #define _Processing_hxx_
 
 
-#include "InControl.hxx"
-#include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
 #include "PublishedInControls.hxx"
 #include "PublishedOutControls.hxx"
@@ -41,9 +39,10 @@
 namespace CLAM {
 
 	class Processing;
-	class Port;
-	class InPort;
-	class OutPort;
+	class InPortBase;
+	class OutPortBase;
+	class InControl;
+	class OutControl;
 	class ProcessingComposite;
 
 	/**
@@ -188,7 +187,12 @@ namespace CLAM {
 		 */
 		ExecState GetExecState() const {return mExecState;}
 		
-		/** Sets the given processing as the current parent */
+
+		void PublishOutPort(OutPortBase* out);
+		void PublishInPort(InPortBase* in);
+		void PublishOutControl(OutControl* out);
+		void PublishInControl(InControl* in);
+
 		void SetParent(Processing *p);
 
 		/**
@@ -199,6 +203,23 @@ namespace CLAM {
 		 */
 		virtual bool ModifiesPortsAndControlsAtConfiguration()	{ return false;	}
 	
+		InPortBase & GetInPort( const std::string & name )
+		{
+			return mPublishedInPorts.Get(name);
+		}
+		OutPortBase & GetOutPort( const std::string & name )
+		{
+			return mPublishedOutPorts.Get(name);
+		}
+		InControl & GetInControl( const std::string & name )
+		{
+			return mPublishedInControls.Get(name);
+		}		
+		OutControl & GetOutControl( const std::string & name )
+		{
+			return mPublishedOutControls.Get(name);
+		}
+
 		/** Accessor to published Controls manager */
 		PublishedInControls& GetInControls() { return mPublishedInControls; }
 		
@@ -245,6 +266,7 @@ namespace CLAM {
 
 		/** Status description, for debugging */
 		std::string mConfigErrorMessage;
+
 
 	private:
 		PublishedInControls mPublishedInControls;

@@ -70,8 +70,8 @@ public:
 		else
 			mPathToTestData = pathToTestData;
 
-		mPathToTestData += "descriptorsData/frames";
-		mPathToTestData = "../../../../CLAM-TestData/descriptorsData/frames/";
+		mPathToTestData += "descriptorsData/";
+		mPathToTestData = "../../../../CLAM-TestData/descriptorsData/";
 
 		mDescriptors = new CLAM::SpectralDescriptors();
 		mDescriptors->RemoveAll();
@@ -129,12 +129,9 @@ private:
 		CLAM::Audio buf;
 		buf.SetSize(512);
 
-		reader.GetOutPorts().GetByNumber(0).Attach( buf );
 
 		reader.Start();
-
-		reader.Do();
-
+		reader.Do( buf );
 		reader.Stop();
 
 		return ComputeSpectrum(buf, buf.GetSize()/2 + 1);

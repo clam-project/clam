@@ -24,7 +24,7 @@
 
 #include "RappidIO.hxx"
 #include "ProcessingComposite.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioInPort.hxx"
 
 namespace CLAM {
 	class AudioFileOut;
@@ -54,7 +54,7 @@ class RappidOutput: public ProcessingComposite, public RappidIO<RappidOutput>
 
 public:
 
-	InPortTmpl<Audio> Input;
+	AudioInPort Input;
 
 	RappidOutput();
 

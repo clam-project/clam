@@ -35,7 +35,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
 	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
 	CPPUNIT_TEST( testhelperLoadAudioFromFile );
-	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
@@ -116,8 +116,6 @@ private:
 		CPPUNIT_ASSERT_EQUAL( true, helperAudiosAreEqual(a, b, diagnostic) );
 		CPPUNIT_ASSERT_EQUAL( std::string(""), diagnostic );
 	}
-	// TODO:
-	// testhelperAudiosAreEqual_WhenDifferentSamplingRate
 	
 // ---------------------------------------------------------------------------------------------------
 
@@ -238,29 +236,42 @@ private:
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("sweep.wav size", 181588, loaded.GetSize() );
 	}
 
+	//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-
-	// TODO
-	void testAnalysisSynthesis_OriginalAudioDiffersFromProcessedAudio()
+	void testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav()
 	{
-	}
-	
-	void testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav()
-	{
-/*		mGlobalConfig.SetInputSoundFile( mPath+"sweep.wav");
+		// TODO: make it with default config	
+		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
+		mGlobalConfig.SetInputSoundFile( mPath+"sine.wav");
 		InitConfigs();
 		LoadInputSound();
 		Analyze();
 		Synthesize();
-	...
-*/
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_sine_defaultConfig";		
+		double delta=0.09;
+		std::string diagnostic;
+		std::string diagnosticRes;
+		std::string diagnosticSin;
+		
+		bool synthesizedAudiosAreEqual = 	
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
+
+		bool residualAudiosAreEqual = 
+			helperAudioIsEqualToAudioFile( accessorResidualAudio(), expectedAudioFile+"_res.wav", diagnostic, delta);
+
+		bool sinusoidalAudiosAreEqual = 
+			helperAudioIsEqualToAudioFile( accessorSinusoidalAudio(), expectedAudioFile+"_sin.wav", diagnostic, delta);
+		
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
+		CPPUNIT_ASSERT_MESSAGE( diagnosticRes, residualAudiosAreEqual );
+		CPPUNIT_ASSERT_MESSAGE( diagnosticSin, sinusoidalAudiosAreEqual );
+
 	}
-	
+
 	void testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav()
 	{
 		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
-//		mGlobalConfig.SetInputSoundFile( mPath + "sweep.wav");
 		InitConfigs();
 		LoadInputSound();
 		Analyze();
@@ -287,7 +298,6 @@ private:
 	void testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav()
 	{
 		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-	//	mGlobalConfig.SetInputSoundFile( mPath + "Elvis.wav");
 		InitConfigs();
 		LoadInputSound();
 		Analyze();
@@ -370,7 +380,6 @@ private:
 			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
 	}
-
 };
 
 

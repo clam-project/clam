@@ -116,7 +116,7 @@ namespace CLAM {
 			remove=0;
 		}
 
-		mInputs = new InPortTmpl<Spectrum>*[mNInputs];
+		mInputs = new InPort<Spectrum>*[mNInputs];
 		complex_bufs = new Complex*[mNInputs];
 		polar_bufs = new Polar*[mNInputs];
 		mag_bufs = new TData*[mNInputs];
@@ -126,7 +126,7 @@ namespace CLAM {
 		for (int i=0; i<mNInputs; i++) {
 			std::stringstream name;
 			name << "Input " << i;
-			mInputs[i]=new InPortTmpl<Spectrum>(name.str(),this,1);
+			mInputs[i]=new InPort<Spectrum>(name.str(),this);
 		}
 
 		return true;

@@ -44,6 +44,10 @@
 #include "SpectrumAdder2.hxx"
 #include "SMSAnalysis.hxx"
 
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "AudioOutPort.hxx"
+
 #include <stdlib.h>
 
 namespace CLAM {
@@ -102,11 +106,6 @@ private:
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}
 
-		/** Method used to attach a Processing Data to input and output ports */
-		void Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
-			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
-			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio);
-		
 		/** Supervised mode execution */
 		bool Do(void);
 
@@ -139,13 +138,13 @@ private:
 		void InitFrame(Frame& in);
 
 		/** Ports */
-		InPortTmpl<SpectralPeakArray>     mInputSinSpectralPeaks;
-		InPortTmpl<Spectrum>     mInputResSpectrum;
-		OutPortTmpl<Spectrum>     mOutputSinSpectrum;
-		OutPortTmpl<Spectrum>     mOutputSpectrum;
-		OutPortTmpl<Audio> mOutputAudio;
-		OutPortTmpl<Audio> mOutputResAudio;
-		OutPortTmpl<Audio> mOutputSinAudio;
+		InPort<SpectralPeakArray>     mInputSinSpectralPeaks;
+		InPort<Spectrum>     mInputResSpectrum;
+		OutPort<Spectrum>     mOutputSinSpectrum;
+		OutPort<Spectrum>     mOutputSpectrum;
+		AudioOutPort mOutputAudio;
+		AudioOutPort mOutputResAudio;
+		AudioOutPort mOutputSinAudio;
 
 	public:
 		//Controls
