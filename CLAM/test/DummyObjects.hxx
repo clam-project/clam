@@ -72,17 +72,17 @@ public:
 
 	const char * GetClassName() const {return "CompWithBasics8";}
 
-	void StoreOn(Storage & storage)
+	void StoreOn(Storage & storage) const
 	{
 #ifdef CLAM_USE_XML
 		if (dynamic_cast < CLAM::XMLStorage* > (&storage))
 		{
 			CLAM::XMLStaticAdapter adaptera(mA, "CWB8a", true);
-			storage.Store(&adaptera);
+			storage.Store(adaptera);
 			CLAM::XMLStaticAdapter adapterb(mB, "CWB8b", true);
-			storage.Store(&adapterb);
+			storage.Store(adapterb);
 			CLAM::XMLStaticAdapter adapterc(mC, "CWB8c", true);
-			storage.Store(&adapterc);
+			storage.Store(adapterc);
 		}
 #endif//CLAM_USE_XML
 	}
@@ -92,13 +92,13 @@ public:
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
 			CLAM::XMLAdapter<int> adaptera(mA, "CWB8a", true);
-			CLAM_ASSERT(storage.Load(&adaptera),
+			CLAM_ASSERT(storage.Load(adaptera),
 				"Failed to load CompWithBasics8 item a");
 			CLAM::XMLAdapter<float> adapterb(mB, "CWB8b", true);
-			CLAM_ASSERT(storage.Load(&adapterb),
+			CLAM_ASSERT(storage.Load(adapterb),
 				"Failed to load CompWithBasics8 item b");
 			CLAM::XMLAdapter<double> adapterc(mC, "CWB8c", true);
-			CLAM_ASSERT(storage.Load(&adapterc),
+			CLAM_ASSERT(storage.Load(adapterc),
 				"Failed to load CompWithBasics8 item c");
 		}
 #endif//CLAM_USE_XML
@@ -149,17 +149,17 @@ public:
 
 	const char * GetClassName() const {return "CompWithBasics8";}
 
-	void StoreOn(CLAM::Storage & storage)
+	void StoreOn(CLAM::Storage & storage) const 
 	{
 #ifdef CLAM_USE_XML
 		if (dynamic_cast < CLAM::XMLStorage* > (&storage))
 		{
 			CLAM::XMLStaticAdapter adaptera(mA, "CWB9a", true);
-			storage.Store(&adaptera);
+			storage.Store(adaptera);
 			CLAM::XMLStaticAdapter adapterb(mB, "CWB9b", true);
-			storage.Store(&adapterb);
+			storage.Store(adapterb);
 			CLAM::XMLStaticAdapter adapterc(mC, "CWB9c", true);
-			storage.Store(&adapterc);
+			storage.Store(adapterc);
 		}
 #endif//CLAM_USE_XML
 	}
@@ -169,13 +169,13 @@ public:
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
 			CLAM::XMLAdapter<int> adaptera(mA, "CWB9a", true);
-			CLAM_ASSERT(storage.Load(&adaptera),
+			CLAM_ASSERT(storage.Load(adaptera),
 				"Failed to load CompWithBasics8 item a");
 			CLAM::XMLAdapter<float> adapterb(mB, "CWB9b", true);
-			CLAM_ASSERT(storage.Load(&adapterb),
+			CLAM_ASSERT(storage.Load(adapterb),
 				"Failed to load CompWithBasics8 item b");
 			CLAM::XMLAdapter<double> adapterc(mC, "CWB9c", true);
-			CLAM_ASSERT(storage.Load(&adapterc),
+			CLAM_ASSERT(storage.Load(adapterc),
 				"Failed to load CompWithBasics8 item c");
 		}
 #endif//CLAM_USE_XML
@@ -275,7 +275,7 @@ public:
 			std::cout << "Deleting a SuperDynAlt at " << this << std::endl;
 	}
 	
-	void StoreOn(CLAM::Storage & storage)
+	void StoreOn(CLAM::Storage & storage) const
 	{
 		// This Attribute is changed in order
 		StoreP(storage);
@@ -287,13 +287,13 @@ public:
 		if (HasMyInt()) {
 #			ifdef CLAM_USE_XML
 				CLAM::XMLStaticAdapter adapter(GetMyInt(), "Size", false);
-				storage.Store(&adapter);
+				storage.Store(adapter);
 #			endif//CLAM_USE_XML
 		}
 		// An extra item
 #		ifdef CLAM_USE_XML
 			CLAM::XMLStaticAdapter adapter("Addedcontent", "Added", false);
-			storage.Store(&adapter);
+			storage.Store(adapter);
 #		endif//CLAM_USE_XML
 	}
 	void LoadFrom(CLAM::Storage & storage)
@@ -310,7 +310,7 @@ public:
 #		ifdef CLAM_USE_XML
 			{
 				CLAM::XMLAdapter<int> adapter(GetMyInt(), "Size", false);
-				if (!storage.Load(&adapter)) {
+				if (!storage.Load(adapter)) {
 					RemoveMyInt();
 				}
 			}
@@ -320,7 +320,7 @@ public:
 			{
 				std::string dummy;
 				CLAM::XMLAdapter<std::string> adapter(dummy, "Added", false);
-				CLAM_ASSERT(storage.Load(&adapter),
+				CLAM_ASSERT(storage.Load(adapter),
 					"The additional parameter was not pressent");
 			}
 #		endif//CLAM_USE_XML

@@ -97,21 +97,18 @@ public:
 	{
 	}
 
-	void StoreOn(CLAM::Storage & storage)
+	void StoreOn(CLAM::Storage & storage) const
 	{
 #ifdef CLAM_USE_XML
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
-			XMLable * adaptera = new XMLStaticAdapter(a, "Aa", true);
-			XMLable * adapterb = new XMLStaticAdapter(b, "Ab", true);
-			XMLable * adapterc = new XMLStaticAdapter(c, "Ac", true);
+			XMLStaticAdapter adaptera(a, "Aa", true);
+			XMLStaticAdapter adapterb(b, "Ab", true);
+			XMLStaticAdapter adapterc(c, "Ac", true);
 
 			storage.Store(adaptera);
 			storage.Store(adapterb);
 			storage.Store(adapterc);
-			delete adaptera;
-			delete adapterb;
-			delete adapterc;
 		}
 #endif//CLAM_USE_XML
 	}
@@ -146,21 +143,18 @@ public:
 	{
 	}
 
-	void StoreOn(CLAM::Storage & storage)
+	void StoreOn(CLAM::Storage & storage) const
 	{
 #ifdef CLAM_USE_XML
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
-			XMLable * adaptera = new XMLStaticAdapter(a, "Ba", true);
-			XMLable * adapterb = new XMLStaticAdapter(b, "Bb", true);
-			XMLable * adapterc = new XMLStaticAdapter(c, "Bc", true);
+			XMLStaticAdapter adaptera(a, "Ba", true);
+			XMLStaticAdapter adapterb(b, "Bb", true);
+			XMLStaticAdapter adapterc(c, "Bc", true);
 
 			storage.Store(adaptera);
 			storage.Store(adapterb);
 			storage.Store(adapterc);
-			delete adaptera;
-			delete adapterb;
-			delete adapterc;
 		}
 #endif // CLAM_USE_XML
 	}
