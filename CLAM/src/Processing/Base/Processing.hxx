@@ -347,6 +347,9 @@ namespace CLAM {
 		{	
 			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 		}
+
+		//XA: test
+		virtual bool CanProcessInplace() {return true;}
 		
 
 		/**
