@@ -65,7 +65,7 @@ namespace CLAM {
 		/** Helper function to compute the length of the largest reading region. */
 		unsigned int FindLargestReadRegionLength();
 
-		virtual ~SourceStreamRegion() {};
+		virtual ~SourceStreamRegion() {}
 	};
 
 }
