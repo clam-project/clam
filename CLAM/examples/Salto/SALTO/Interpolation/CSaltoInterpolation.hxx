@@ -64,7 +64,24 @@ namespace CLAM
 							  bool doPhaseIP=false,
 							  SpectralPeakArray *pTargetPeakArray2=NULL,
 							  double magInterpolFactor2=0.0 );
-														
+
+		void DoInterpolation3( Frame *pSpecFrameBase,	
+							  SpectralPeakArray *pTargetPeakArray,
+							  double targetFundFreq,      
+							  double magInterpolFactor,
+							  double freqInterpolFactor,  
+							  double magGain,            
+							  CSaltoSynthFrame *pSynthFrame, 
+							  SpectralPeakArray *pTargetPeakArray2,																		
+							  double magInterpolFactor2 ) ;
+
+		void DoMagInterpolation(Frame *pSpecFrameBase,	
+							  SpectralPeakArray *pTargetPeakArray,
+							  double targetFundFreq,     
+							  double magInterpolFactor,
+							  double magGain,            
+							  CSaltoSynthFrame *pSynthFrame );							 
+		
 		void FollowOneTrack(Frame *pSpecFrameBase, CSaltoSynthFrame *pSynthFrame);
 		void SetTrackIndex(TIndex trackId);
 		void DoPitchMod(CSaltoSynthFrame *pSynthFrame,double pitchFactor);

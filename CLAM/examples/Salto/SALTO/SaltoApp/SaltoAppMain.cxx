@@ -10,7 +10,6 @@
 #include "MIDIIO.hxx"
 #include "MIDIInControl.hxx"
 #include "AudioFileOut.hxx"
-#include "Melody.hxx"
 #include "MIDIHandler.hxx"
 
 #include <iostream>
@@ -127,6 +126,7 @@ protected:
 			ConfigureSampleBasedIO();
 
 			pDSP->BindWithGUI( pGUI );
+			pDSP->Start();
 
 			mFileAudioOut.Start();
 			mMIDIManager.Start();
@@ -135,6 +135,7 @@ protected:
 
 			while ( not_finished )
 			{
+
 				pthread_testcancel();
 				
 				ProcessMIDIMessages();
@@ -143,10 +144,13 @@ protected:
 
 				CLAM_DEBUG_ASSERT( synthbuffer != NULL, "Whooops! Synthesis buffer was void!" );
 
+			
 				RenderSynthesis( *synthbuffer );
+
 			}
 
 			mMIDIHandler.Stop();
+			pDSP->Stop();
 
 			if ( pParams->GetWriteToFile())
 				{
@@ -199,7 +203,6 @@ protected:
 			mFileAudioOut.Do( synthbuffer );
 		else
 		{
-			//mAudioIn->Do( mDummyIn );
 			
 			mAudioOut->Do( synthbuffer );
 		}

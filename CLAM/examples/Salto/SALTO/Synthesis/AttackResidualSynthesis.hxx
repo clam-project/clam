@@ -5,10 +5,23 @@
 #include "CSaltoSynthFrame.hxx"
 #include "InControl.hxx"
 
-using namespace CLAM;
-
 namespace SALTO
 {
+
+	using CLAM::Processing;
+	using CLAM::ProcessingConfig;
+	using CLAM::InControlTmpl;
+	using CLAM::DynamicType;
+	using CLAM::TControlData;
+	using CLAM::TData;
+	using CLAM::Complex;
+	using CLAM::Spectrum;
+	using CLAM::TSize;
+
+	using CLAM::CSaltoSynthFrame;
+
+
+
 	class AttackResidualSynthesisConfig: public ProcessingConfig
 	{
 	public:
@@ -27,6 +40,8 @@ namespace SALTO
 		AttackResidualSynthesis( AttackResidualSynthesisConfig& cfg );
 
 		virtual ~AttackResidualSynthesis();
+
+		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		virtual const char* GetClassName()
 		{

@@ -1,5 +1,4 @@
-#include "CSaltoSineSynthesis.hxx"
-#include "Float2Bool.hxx"
+#include "SineSynthesis.hxx"
 
 namespace SALTO
 {
@@ -14,31 +13,34 @@ void SineSynthesisConfig::DefaultInit()
 
 SineSynthesis::SineSynthesis()
 	: mCurrentTime( 0 ), mSwitchToRandomPhases( false ),
-	  mAtkTimLvl( "Attack Timbre Level Control", &SineSynthesis::AttackTimbreLevelCB ),
-	  mEnPhAlignCtl( "Enable Phase Alignment", &SineSynthesis::UsePhaseAlignmentCB ),
-	  mInLAFrameCtl( "Last Aligned Frame Detected", &SineSynthesis::LastAlignedFrameCB ),
-	  mInBrOnlyCtl( "BreathOnlySound Detected", &SineSynthesis::BreathOnlySoundCB ),
+  	  mInBrOnlyCtl( "BreathOnlySound Detected", this, &SineSynthesis::BreathOnlySoundCB ),
+	  mAtkTimLvlCtl( "Attack Timbre Level Control", this, &SineSynthesis::AttackTimbreLevelCB ),
+	  mEnPhAlignCtl( "Enable Phase Alignment", this, &SineSynthesis::UsePhaseAlignmentCB ),
+	  mInLAFrameCtl( "Last Aligned Frame Detected", this, &SineSynthesis::LastAlignedFrameCB ),
+	  mOutLAFrameCtl( "Last Aligned Frame Control", this),
+	  mOutBrOnlyCtl( "BreathOnlySound Control", this),
 	  mGain( 0 ), mPhaseAlignmentEnabled( false ), mLastAlignedFrame( false ),
 	  mBreathOnlySound( false )
 {
+	SineSynthesisConfig cfg;
 
-	Configure( CSaltoSineSynthesisConfig() );
-		
+	Configure( cfg );		
 }
 
-SineSynthesis::SineSynthesis( CSaltoSineSynthesis& cfg )
+SineSynthesis::SineSynthesis( const SineSynthesisConfig& cfg )
 	: mCurrentTime( 0 ), mSwitchToRandomPhases( false ),
-	  mAtkTimLvl( "Attack Timbre Level Control", &SineSynthesis::AttackTimbreLevelCB ),
-	  mEnPhAlignCtl( "Enable Phase Alignment", &SineSynthesis::UsePhaseAlignmentCB ),
-	  mInLAFrameCtl( "Last Aligned Frame Detected", &SineSynthesis::LastAlignedFrameCB ),
-	  mInBrOnlyCtl( "Breath Only Sound Detected", &SineSynthesis::BreathOnlySoundCB ),
+  	  mInBrOnlyCtl( "BreathOnlySound Detected", this, &SineSynthesis::BreathOnlySoundCB ),
+	  mAtkTimLvlCtl( "Attack Timbre Level Control", this, &SineSynthesis::AttackTimbreLevelCB ),
+	  mEnPhAlignCtl( "Enable Phase Alignment", this, &SineSynthesis::UsePhaseAlignmentCB ),
+	  mInLAFrameCtl( "Last Aligned Frame Detected", this, &SineSynthesis::LastAlignedFrameCB ),
+	  mOutLAFrameCtl( "Last Aligned Frame Control", this),
+	  mOutBrOnlyCtl( "BreathOnlySound Control", this),
 	  mGain( 0 ), mPhaseAlignmentEnabled( false ), mLastAlignedFrame( false ),
 	  mBreathOnlySound( false )
 {
 
 	Configure( cfg );
-	// Init the internal Processing Objects
-	
+	// Init the internal Processing Objects	
 }
 
 SineSynthesis::~SineSynthesis()
@@ -64,9 +66,9 @@ bool SineSynthesis::ConcreteStop()
 	return true;
 }
 
-bool SineSynthesis::ConcreteConfigure( ProcessingConfig& cfg ) throw ( std::bad_cast )
+bool SineSynthesis::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast )
 {
-	mConfig = dynamic_cast< const CSaltoSineSynthesisConfig& > ( cfg );
+	mConfig = dynamic_cast< const SineSynthesisConfig& > ( cfg );
 
 	CLAM_ASSERT( mConfig.HasFrameTime(), "Configuration Object hasn't FrameTime Attribute instantiated" );
 
@@ -96,8 +98,11 @@ int SineSynthesis::AttackTimbreLevelCB( TControlData value )
 {
 	if( value > 0) 
 		{
-			mOutBrOnlyCtl.SendControl( -1 ); // sending true
-			mBreathOnlySound = false;
+			if( mBreathOnlySound )
+			{
+				mOutBrOnlyCtl.SendControl( -1 ); // sending false
+				mBreathOnlySound = false;
+			}
 			mGain = value/127.0;
 		}
 	else
@@ -110,21 +115,31 @@ int SineSynthesis::AttackTimbreLevelCB( TControlData value )
 			mGain = 0.0;
 		}	
 
+	return 0;
 }
 
 int SineSynthesis::UsePhaseAlignmentCB( TControlData value )
 {
-	mPhaseAlignmentEnabled = EvalAsBool( value );
+	if( value > 0 ) mPhaseAlignmentEnabled = true ;
+	else			mPhaseAlignmentEnabled = false;
+
+	return 0;
 }
 
 int SineSynthesis::LastAlignedFrameCB( TControlData value )
 {
-	mLastAlignedFrame = EvalAsBool( value );
+	if( value > 0 ) mLastAlignedFrame = true;
+	else			mLastAlignedFrame = false;
+
+	return 0;
 }
 
 int SineSynthesis::BreathOnlySoundCB( TControlData value )
 {
-	mBreathOnlySound = EvalAsBool( value );
+	if( value > 0 )	mBreathOnlySound = true;
+	else			mBreathOnlySound = false;
+
+	return 0;
 }
 
 bool SineSynthesis::Do( CSaltoSynthFrame& synthFrame )
@@ -144,6 +159,7 @@ bool SineSynthesis::Do( CSaltoSynthFrame& synthFrame )
 			
 			mPhaseManagerPO.SetLastPhasesAndFreqs(*synthFrame.GetPeakArrayPtr());
 			mLastAlignedFrame = false;
+			mOutLAFrameCtl.SendControlAsBoolean( false );
 			mSwitchToRandomPhases = true;
 		}
 	}
@@ -157,10 +173,12 @@ bool SineSynthesis::Do( CSaltoSynthFrame& synthFrame )
 
 	mCurrentTime += mFrameTime;
 	synthFrame.SetSynthTime(synthFrame.GetSynthTime()+mFrameTime);
+
+	return true;
 }
 
 //----------------------------------------------------------------------------//
-void SineSynthesis::DoSineSynthesis( CSaltoSynthFrame &synthFrame )
+void SineSynthesis::DoSineSynthesis( CSaltoSynthFrame &synthFrame, Parameters* mpParameter )
 {
 	double gain = 0.0;
 
@@ -205,7 +223,6 @@ void SineSynthesis::DoSineSynthesis( CSaltoSynthFrame &synthFrame )
 	mSpecSynthPO.Do(*(synthFrame.GetPeakArrayPtr()),*(synthFrame.GetSpectrumPtr()),gain);
 	
 	synthFrame.SetSynthTime(synthFrame.GetSynthTime()+mFrameTime);
-
 }
 //----------------------------------------------------------------------------//
 void SineSynthesis::ResetSineSynthesis()

@@ -143,7 +143,7 @@ namespace SALTO
 
 	bool StationaryResidualSynthesis::Do( CSaltoSynthFrame& synthFrame, Frame& pStatResFrame )
 	{
-		CLAM_DEBUG_ASSERT( pStatResFrame != NULL, "Check the caller. pStatResFrame MUST NOT be null" );
+//		CLAM_DEBUG_ASSERT( pStatResFrame != NULL, "Check the caller. pStatResFrame MUST NOT be null" );
 	
 		
 		// CAUTION: Hardwired sampling rate value!!!!

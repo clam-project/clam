@@ -6,7 +6,18 @@
 #include "CSaltoSynthFrame.hxx"
 #include "Frame.hxx"
 
-using namespace CLAM;
+using CLAM::Processing;
+using CLAM::ProcessingConfig;
+using CLAM::DynamicType;
+using CLAM::InControlTmpl;
+using CLAM::Frame;
+using CLAM::TData;
+using CLAM::TControlData;
+using CLAM::Spectrum;
+using CLAM::Complex;
+using CLAM::TSize;
+
+using CLAM::CSaltoSynthFrame;
 
 namespace SALTO
 {
@@ -29,6 +40,8 @@ namespace SALTO
 		StationaryResidualSynthesis( StationaryResidualSynthesisConfig& cfg );
 
 		virtual ~StationaryResidualSynthesis();
+
+		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		virtual const char* GetClassName()
 		{

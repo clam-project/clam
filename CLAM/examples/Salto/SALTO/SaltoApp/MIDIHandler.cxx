@@ -499,7 +499,7 @@ namespace CLAM
 		{
 			params.SetPitchModFactor( mPitchBend );
 			NoteOn( params );
-			//std::cout << "Note On "<< mNote << std::endl;
+			std::cout << "Note On "<< mNote << std::endl;
 			//std::cout << "Note: "<< mNote << std::endl;
 		}
 		else if ( mStatus == eNoteOff )
@@ -507,7 +507,8 @@ namespace CLAM
 			NoteOff( params );
 
 			mStatusOut.SendControl( 4 ); // Sending Release state notification to CSatloDSP
-			//std::cout << "Note Off "<< mNote << std::endl;
+			std::cout << "Last Note Off "<< mNote << std::endl;
+			mStatus = eIdle;
 			//std::cout << "Note: "<< mNote << std::endl;
 		}
 		else if( mStatus == eCtrAirSpeed )

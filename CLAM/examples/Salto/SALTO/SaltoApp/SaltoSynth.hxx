@@ -5,16 +5,36 @@
 #include "DataTypes.hxx"
 #include "OSDefines.hxx"
 #include "Array.hxx"
-#include "CSaltoSineSynthesis.hxx"
+//#include "CSaltoSineSynthesis.hxx"
 #include "SpectralSynthesis.hxx"
-#include "CSaltoSynthFrame.hxx"
-#include "CSaltoResidualSynthesis.hxx"
+//#include "CSaltoResidualSynthesis.hxx"
 #include "CSaltoTimbreVektor.hxx"
-#include "CSaltoInterpolation.hxx"
+//#include "CSaltoInterpolation.hxx"
 #include <string>
+
+#include "SineSynthesis.hxx"
+#include "AttackResidualSynthesis.hxx"
+#include "StationaryResidualSynthesis.hxx"
+#include "InterpolatingSynthesis.hxx"
+#include "SynthesisState.hxx"
+#include "AttackHandler.hxx"
+#include "ReleaseHandler.hxx"
+#include "TransitionHandler.hxx"
+
+using SALTO::SineSynthesis;
+using SALTO::SineSynthesisConfig;
+using SALTO::InterpolatingSynthesis;
+using SALTO::InterpolatingSynthesisConfig;
+using SALTO::SynthesisState;
+using SALTO::AttackHandler;
+using SALTO::StationaryHandler;
+using SALTO::TransitionHandler;
+using SALTO::ReleaseHandler;
+using SALTO::SynthesisProcessor;
 
 namespace CLAM
 {
+
 
 class CSaltoStatTmplData;
 class CSaltoEditor;
@@ -76,8 +96,7 @@ public:
 		Release		   = 4,
 		Termination    = 5,
 		TransitionLoop = 6,
-		ReleaseLoop    = 7	} mState;
-
+		ReleaseLoop    = 7 } mState;
 
 	// Methods Definition
 public:
@@ -108,8 +127,6 @@ public:
 
 	void EndTransitionSynthesis(CSaltoSynthFrame *pSynthFrame);
 	
-	void DoInterpolatingSynthesisRelease( CSaltoSynthFrame *mpSynthFrame, double gain );
-
 	const SpectralPeakArray* GetCurrentPeakArrayPtr();
 
 	const Spectrum* GetCurrentResidualPtr();
@@ -147,6 +164,8 @@ public:
 
 protected:
 
+	void DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame );
+
 	void DoStationarySynthesisProcess( CSaltoSynthFrame* pSynthFrame );
 
 	void DoReleaseSynthesisProcess( CSaltoSynthFrame* pSynthFrame );
@@ -160,6 +179,8 @@ protected:
 	void DoInterpolatingReleaseSynthesis( CSaltoSynthFrame* pSynthFrame, double gain, int currRelFrame );
 
 	void DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame );
+
+	void DoTransitionSynthesis( CSaltoSynthFrame *pSynthFrame);
 
 	bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
 
@@ -181,6 +202,10 @@ protected:
 
 	int UpdateState( TControlData state );
 
+	int UpdateBreathOnlySound( TControlData value );
+
+	int UpdateLastAlignedFrame( TControlData value );
+
 	// Attributes
 private:
 
@@ -195,7 +220,7 @@ private:
 	Frame*             mpTransitionFrameBase;
 	Frame*             mpTransitionFrameTarget;
 	
-	CSaltoTimbreVektor mTimbreVektorBase;
+//	CSaltoTimbreVektor mTimbreVektorBase;
 
 	TIndex  mFrameCounterBase;
 	TIndex  mFrameCounterAttackResidual;
@@ -217,8 +242,8 @@ private:
 	TIndex  mStatResFadeInFrom;
 	TIndex  mStatResFadeInTo;
 	TIndex  mNumFramesStatRes;
-	TIndex  mSinAttackOffset;
-	TIndex  mSinAttackOffsetCounter;
+//	TIndex  mSinAttackOffset;
+//	TIndex  mSinAttackOffsetCounter;
 	
 	bool mLoopDirectionFW;
 	bool mStatResLoopDirectionFW;
@@ -242,16 +267,64 @@ private:
 	CSaltoSynthFrame*   mpSynthFrame;
 	
 	/* processing objects* all named PO*/
-	CSaltoSineSynthesis*     mpSineSynthPO;
-	SpectralSynthesis        mSpectralSynthesisPO;
-	CSaltoResidualSynthesis* mpResSynthPO;
-	CSaltoInterpolation*     mpInterpolPO;
+	SineSynthesis						mpSineSynthPO;
+	SpectralSynthesis					mSpectralSynthesisPO;
+	SALTO::AttackResidualSynthesis		mpAttackResSynthPO;
+	SALTO::StationaryResidualSynthesis  mpStatResSyhthesisPO;
+	InterpolatingSynthesis				mpInterpolPO;
+
+	/* Processing Handlers objects */
+	AttackHandler						mAttackHandler;
+	StationaryHandler					mStationaryHandler;
+	TransitionHandler					mTransitionHandler;
+	ReleaseHandler						mReleaseHandler;
+	SynthesisProcessor					mSynthProcessor;
+
+	/* Processing Data that storages synthesis data */
+	SynthesisState						mSynthState;
 		
 	/* pointer to other classes*/
 	Parameters	        *mpParams;
+
 	CSaltoEditor* mpGUI;
 
 	InControlTmpl< SaltoSynth >		mStateIn;
+
+	InControlTmpl< SaltoSynth >		mInBreathOnlySound;
+
+	InControlTmpl< SaltoSynth >		mInLastAlignedFrame;
+
+	OutControl						mOut_InLoopSynthesis;
+
+	OutControl						mOutUseRandomLoop;
+
+	OutControl						mOutUseRandomDeviations;
+
+	OutControl						mOutPitchFactor;
+
+	OutControl						mOutRandomRange;
+
+	OutControl						mOutTargetFreq;
+
+	OutControl						mOutMagInterpolFactor;
+
+	OutControl						mOutMagGain;
+
+	OutControl						mOutFreqInterpolFactor;
+
+	OutControl						mOutMagInterpolFactor2;
+
+	OutControl						mOutAttackTimbreLevel;
+
+	OutControl						mOutUsePhaseAlignment;
+
+	OutControl						mOutLastAlignedFrame;
+
+	OutControl						mOutBreathOnlySound;
+
+	OutControl						mOutResGain;
+
+	OutControl						mOutResonanceFreq;
 
 	/* Sample stepping for counting time: */
 	TSize    mSampleStepping;

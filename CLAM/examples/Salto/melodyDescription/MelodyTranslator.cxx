@@ -77,6 +77,7 @@ namespace CLAM
 			mStartMelody = false;
 		}
 
+		// Note On for the first note
 		if(isFirst&&!play&&currentNote.GetTime().GetBegin()<currentTime/*&&currentNote.GetTime().GetEnd()>currentTime*/)
 		{
 			mVelocityOut.SendControl( currentNote.GetVelocity() );
@@ -86,6 +87,7 @@ namespace CLAM
 
 		if(play&&currentNote.GetTime().GetEnd()<currentTime)
 		{
+			// Note Off for the last note
 			if(isLast)
 			{
 				mVelocityOut.SendControl( 0.0 );//currentNote.GetVelocity() );
@@ -105,6 +107,8 @@ namespace CLAM
 		{
 			mData.GetNoteArray().DoNext();
 			Note& newCurrentNote = mData.GetNoteArray().Current();
+
+			// Note On for a new note
 			if(newCurrentNote.GetTime().GetBegin()<currentTime)
 			{
 				noteOff=false;//no noteOff, transition
@@ -117,9 +121,12 @@ namespace CLAM
 				//we found a note that still has not begun, we must wait
 				mData.GetNoteArray().DoPrevious();
 			}
+
+
 			if(noteOff)
 			{	
-				mVelocityOut.SendControl( currentNote.GetVelocity() );
+				//mVelocityOut.SendControl( currentNote.GetVelocity() );
+				mVelocityOut.SendControl( 0.0 );
 				mNoteOut.SendControl( currentNote.GetNoteNumber()-saltoNoteConstant );
 				//mHandleParams.NoteOff(currentNote.GetTime().GetEnd(),currentNote.GetNoteNumber()-saltoNoteConstant,currentNote.GetVelocity(),*mpParams);
 			}

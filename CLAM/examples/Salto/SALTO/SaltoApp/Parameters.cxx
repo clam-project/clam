@@ -33,7 +33,7 @@ void Parameters::DefaultInit()
   UpdateData();
 
   SetUseMelody(false);
-	mSegData = MAX_SPECTRAL_SEGMENTS;
+  mSegData = MAX_SPECTRAL_SEGMENTS;
   SetCurrentStatTemplate(0);
 	
   //XA: added this condition SetPlay(true)º
@@ -70,7 +70,7 @@ void Parameters::DefaultInit()
   mCurrentStatFundFreq5 = 0.0;
   mCurrentStatFundFreq6 = 0.0;
   mCurrentStatFundFreq7 = 0.0;
-  
+  SetWriteToFile( false );
   SetRandomRange(8);
   SetStatResFreq(200.0);
   SetTranspose(0);

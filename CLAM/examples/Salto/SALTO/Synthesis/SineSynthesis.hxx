@@ -1,8 +1,8 @@
-#ifndef _CSaltoSineSynthesis_
-#define _CSaltoSineSynthesis_
+#ifndef _SineSynthesis_
+#define _SineSynthesis_
 
 
-#include "Processing.hxx"
+#include "ProcessingComposite.hxx"
 #include "Spectrum.hxx"
 #include "CSaltoSynthFrame.hxx"
 #include "SynthSineSpectrum.hxx"
@@ -11,13 +11,16 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 
+#include "Parameters.hxx"
+
 
 namespace SALTO
 {
 
 using CLAM::TSize;
-using CLAM::Processing;
+using CLAM::ProcessingComposite;
 using CLAM::ProcessingConfig;
+using CLAM::DynamicType;
 using CLAM::SynthSineSpectrum;
 using CLAM::SynthSineSpectrumConfig;
 using CLAM::SynPhaseManagement;
@@ -25,6 +28,7 @@ using CLAM::SynPhaseManagementConfig;
 using CLAM::Spectrum;
 using CLAM::InControl;
 using CLAM::OutControl;
+using CLAM::TControlData;
 
 // SALTO things in CLAM namespace
 using CLAM::Parameters;
@@ -34,7 +38,7 @@ using CLAM::CSaltoSynthFrame;
 class SineSynthesisConfig
 	: public ProcessingConfig
 {
-	DYNAMIC_TYPE_USING_INTERFACE( SineSynthesisConfig, 4, ProcessingConfig );
+	DYNAMIC_TYPE_USING_INTERFACE( SineSynthesisConfig, 5, ProcessingConfig );
 	DYN_ATTRIBUTE( 0, public, std::string, Name );
 	DYN_ATTRIBUTE( 1, public, TSize, MaxSines );
 	DYN_ATTRIBUTE( 2, public, double, FrameTime );
@@ -53,22 +57,22 @@ public:
 
 	typedef enum 
 	{
-		eAttackTimbreLevel = 0,
-		eUsePhaseAlignment = 1,
-		eLastAlignedFrame = 2,
-		eBreathOnlySound = 3		
+		inAttackTimbreLevel = 0,
+		inUsePhaseAlignment = 1,
+		inLastAlignedFrame = 2,
+		inBreathOnlySound = 3		
 	} InControls;
 	
 	typedef enum 
 	{ 
-		eLastAlignedFrame = 0,
-		eBreathOnlySound = 1
+		outLastAlignedFrame = 0,
+		outBreathOnlySound = 1
 	} OutControls;
 public:
 
 	SineSynthesis();
 
-	SineSynthesis( CSaltoSineSynthesisConfig& cfg );
+	SineSynthesis( const SineSynthesisConfig& cfg );
 
 	virtual ~SineSynthesis();
 
@@ -77,6 +81,8 @@ public:
 		return "SALTO::SineSynthesis";
 	}
 
+	virtual const ProcessingConfig &GetConfig() const { return mConfig; };
+
 	virtual bool Do();
 
 	bool Do( CSaltoSynthFrame& synthesisFrame );
@@ -84,7 +90,7 @@ public:
 	bool Reset();
 
 //public methods
-	void 	DoSineSynthesis( CSaltoSynthFrame &synthFrame );
+	void 	DoSineSynthesis( CSaltoSynthFrame &synthFrame, Parameters* mpParameter );
 	void    ResetSineSynthesis();
 
 protected:
@@ -93,7 +99,7 @@ protected:
 
 	bool ConcreteStop();
 
-	bool ConcreteConfigure( const ProcessingConfig& cfg );
+	bool ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast );
 
 	int AttackTimbreLevelCB( TControlData value );
 
@@ -105,7 +111,7 @@ protected:
 
 private:
 	// settings
-	SineSynthesisConfig   mConfig;
+	SineSynthesisConfig			mConfig;
 
 	double                      mCurrentTime;
 	double                      mFrameTime;
@@ -118,15 +124,15 @@ private:
 	// In and out controls
 
 	// mAtkTimLvlCtl => Attack Timbre Level in Control
-	CLAM::InControlTmpl< CSaltoSineSynthesis >   mAtkTimLvlCtl;
+	CLAM::InControlTmpl< SineSynthesis >   mAtkTimLvlCtl;
 	// mEnPhAlignCtl => Enable/Disable Phase Alignment
-	CLAM::InControlTmpl< CSaltoSineSynthesis >   mEnPhAlignCtl;
+	CLAM::InControlTmpl< SineSynthesis >   mEnPhAlignCtl;
 	// mInLAFrameCtl => Last Frame Alignment detection outside PO
-	CLAM::InControlTmpl< CSaltoSineSynthesis >   mInLAFrameCtl;
+	CLAM::InControlTmpl< SineSynthesis >   mInLAFrameCtl;
 	// mOutLAFrameCtl => Last Frame Alignment detection on PO's Do
 	OutControl                             mOutLAFrameCtl;
 	// mInBrOnlyCtl => Breath Only sound signal
-	CLAM::InControlTmpl< CSaltoSineSynthesis >   mInBrOnlyCtl;
+	CLAM::InControlTmpl< SineSynthesis >   mInBrOnlyCtl;
 	// mOutBrOnlyCtl => Breath Only sound notification
 	OutControl                             mOutBrOnlyCtl;
 

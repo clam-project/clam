@@ -58,7 +58,8 @@ namespace CLAM
 		enum Status {
 			eNoteOff	 = 0,
 			eNoteOn		 = 1,
-			eCtrAirSpeed = 2
+			eCtrAirSpeed = 2,
+			eIdle		 = 3,
 		}   mStatus;
 
 	protected:
@@ -82,6 +83,8 @@ namespace CLAM
 		int UpdateVelocity( TControlData velocity )
 		{
 			mVelocity = velocity;
+
+			//std::cout << "Updating velocity:" << mVelocity << std::endl;
 
 			if( mVelocity == 0 )
 				mStatus = eNoteOff;
