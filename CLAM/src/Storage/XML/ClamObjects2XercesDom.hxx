@@ -22,17 +22,10 @@
 #ifndef _CLAM_OBJECTS_2_XERCES_DOM_HXX_
 #define _CLAM_OBJECTS_2_XERCES_DOM_HXX_
 
-#include "XercesEncodings.hxx"
-#include "XercesInitializer.hxx"
 #include "XercesDomDocumentHandler.hxx"
 #include "XMLable.hxx"
 #include "Assert.hxx"
 #include "Component.hxx"
-#include <xercesc/dom/DOMNode.hpp>
-#include <xercesc/dom/DOMDocument.hpp>
-#include <xercesc/dom/DOMText.hpp>
-#include <xercesc/dom/DOMElement.hpp>
-#include <xercesc/dom/DOMImplementation.hpp>
 
 
 #include <vector>
