@@ -53,14 +53,8 @@
 	+ no const Get -> GetWritePool
 	+ const Get -> GetReadPool
 	+ Change test names for Get
-- Scope relations
-	- Same context binders
-		- Creating a binder
-		- Ask the binder for the data
-		- The binder adopting the final data type
-		- Checking the binder type matches the extractor binded hook
-	- Relative context binders
-	- Indirect same context binders
+- The binder adopting the final data type
+- Checking the binder type matches the extractor binded hook
 - Zero size pools and instantiation
 - Consider using iterator/vector interface
 - Consider Using the type instead the Attribute<type> as template
@@ -84,7 +78,7 @@
 	+ getting valid attribute indexes names
 	+ getting invalid attribute indexes names
 	+ Refactor to include the name inside as spec member
-- XML for the Scheme
+- XML for the Extraction Scheme
 - Pool XML with non populated attributes, zero-sized attributes...
 - Selecting which attributes should be serialized
 
@@ -119,6 +113,7 @@
 	+ A fast implementation deriving from ReadIndirectHook
 	- Check for outside access (though the begining is inside)
 - Ranged Bindings with variable range
+- Constant Binder
 - Ortogonalize hocks
 - Named hooks
 - Hide Hooks building inside extractors
@@ -130,6 +125,20 @@
 - Different sizes of Binders
 - Extract search and retrieval from Hooks
 - Enhance exception messages with names
++ Load of an Attribute Pool
+	+ Load a simple attribute pool
+	+ Load a component attribute pool
+	+ When the name mismatches fails
++ Load an Scope pool
++ Load a full pool
+- Clearing the pool before loading
+- Load/Store with Uninstanciated scopes
+- Load Name mismatch error in XML should be a catchable runtime error not an assertion
+- Testing the size of the loaded scopes
+- Load/Store Umpopulated scopes and attributes
+- Load/Store Unordered scopes and attributes
+- Load/Store of a DescriptionScheme
+- Load/Store of a ExtractionScheme
 
 
 
