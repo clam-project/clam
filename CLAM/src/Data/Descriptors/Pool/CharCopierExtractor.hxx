@@ -43,6 +43,45 @@ private:
 	CLAM::WriteHook<char> * _outputHook;
 };
 
+class CharJoinExtractor
+{
+public:
+	void SetHooks(CLAM::ReadIndirectRangedHook<char> & inputHook, CLAM::WriteHook<std::string> & outputHook)
+	{
+		_inputHook = &inputHook;
+		_outputHook = &outputHook;
+	}
+
+	void Extract()
+	{
+		const char * input;
+		const char * inputEnd;
+		_inputHook->GetRangeForReading(input, inputEnd);
+		std::string & output = _outputHook->GetForWriting();
+		for (output = ""; input<inputEnd; input++)
+			output += *input;
+	}
+	bool IsInsideScope()
+	{
+		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
+	}
+		
+	void Next()
+	{
+		_inputHook->Next();
+		_outputHook->Next();
+	}
+
+	void Init(CLAM::DescriptionDataPool & pool)
+	{
+		_inputHook->Init(pool);
+		_outputHook->Init(pool);
+	}
+private:
+	CLAM::ReadIndirectRangedHook<char> * _inputHook;
+	CLAM::WriteHook<std::string> * _outputHook;
+};
+
 } // namespace CLAMTest
 
 #endif// _CharCopierExtractor_hxx_
