@@ -37,6 +37,7 @@
  */
 namespace SigSlot
 {
+	class Slot;
 
 /** \class ConnectionHandler
  *  \brief Handler for a given Signal connections.
