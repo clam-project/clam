@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib pthreadVC.lib /subsystem:console /debug /machine:I386 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\pthreads\lib"
+# ADD LINK32 fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\pthreads\lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -259,6 +259,10 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConversions.cxx
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Visualization\Plot\Plot.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Visualization\Plot\PlotAudio.cxx
 # End Source File
 # Begin Source File
@@ -272,6 +276,10 @@ SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectralPeaks.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectrum.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\Plotter.cxx
 # End Source File
 # End Group
 # Begin Group "Base Sources No. 1"
@@ -860,6 +868,10 @@ SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectralPeaks.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Plot\PlotSpectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Plot\Plotter.hxx
 # End Source File
 # End Group
 # Begin Group "Base Headers No. 3"
