@@ -201,7 +201,8 @@ def parseExecutionErrors( executionOut ) :
 
 
 def isTest(path) :
-	return path.find('UnitTests')>=0 or path.find('FunctionalTests')>= 0
+	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')
+	or path.find('build/Tests/') >= 0  
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
