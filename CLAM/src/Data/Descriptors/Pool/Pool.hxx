@@ -267,11 +267,26 @@ namespace CLAM
 
 			return _scopePools[scopeIndex]->template GetWritePool<AttributeType>(attributeName);
 		}
+		template <typename AttributeType>
+		const AttributeType * GetReadAttributePool(const std::string & scopeName, const std::string & attributeName) const
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+
+			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
+
+			return _scopePools[scopeIndex]->template GetReadPool<AttributeType>(attributeName);
+		}
 		/*
-		unsigned GetScopeSize(const std::string & scopeName);
+		unsigned GetScopeSize(const std::string & scopeName)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+			return scope.GetSize();
+		}
 
 		
-		void DeleteContext(const std::string & scope, unsigned position);
+		void DeleteInstances(const std::string & scope, unsigned position, unsigned size);
 		*/
 	private:
 		const DescriptionScheme & _scheme;

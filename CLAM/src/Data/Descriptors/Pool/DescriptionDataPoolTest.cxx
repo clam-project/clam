@@ -27,7 +27,7 @@ class DescriptionDataPoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetAttribute_withTheSameAttributeTwice );
 	CPPUNIT_TEST( testGetAttribute_fromAUnpopulatedScope );
 	CPPUNIT_TEST( testGetAttribute_fromUnexistingScope );
-//	CPPUNIT_TEST( testGetAttribute_withNonInstantiatedAttribute );
+	CPPUNIT_TEST( testGetAttribute_withNonInstantiatedAttribute );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -185,8 +185,6 @@ private:
 		}
 	}
 
-	/*
-
 	void testGetAttribute_withNonInstantiatedAttribute()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
@@ -194,7 +192,7 @@ private:
 
 		try
 		{
-			unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
+			const unsigned * centers = data.GetReadAttributePool<unsigned>("Frame","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -203,7 +201,6 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
-	*/
 
 };
 
