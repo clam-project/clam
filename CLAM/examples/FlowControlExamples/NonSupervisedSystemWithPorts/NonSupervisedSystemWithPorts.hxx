@@ -126,7 +126,7 @@ public:
 	}
 
 
-private:
+public: // just for convenience
 	void StartProcessings();
 	void ConfigureProcessings();
 	void ConfigureData();

@@ -129,8 +129,11 @@ public:
 		return mProcessings.end();
 	}
 
+    
 
-private:
+
+
+public: // just for convenience
 
 	// processing data
 	typedef CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  AudioNode;
@@ -143,6 +146,7 @@ private:
 	//methods relative to audio out
 	bool AudioOutDo();
 	bool ConditionalAudioOutAttach( AudioNode& a);
+
 
 	// audio manager
 	CLAM::AudioManager mAudioManager;
