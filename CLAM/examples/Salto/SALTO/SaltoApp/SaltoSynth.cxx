@@ -6,8 +6,11 @@
 #include <pthread.h>
 #include <iostream>
 
+#define TRACESTATE if (1) ; else std::cout
+
 namespace CLAM
 {
+
 pthread_mutex_t DrawingMutex = PTHREAD_MUTEX_INITIALIZER;
 
 
@@ -114,8 +117,6 @@ bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& cfg)throw( std::bad_
 	mDrawingBuffer.Resize(internalBufferSize);
 	mDrawingBuffer.SetSize(internalBufferSize);
 		
-	//CSaltoDataManagment::InitSaltoDB( mpParams );
-
 	SineSynthesisConfig sineCfg;
 
 	sineCfg.SetMaxSines( MAX_SINES );
@@ -450,22 +451,22 @@ bool SaltoSynth::Do( Audio*& synthBuffer )
 		{		
 		case Idle:
 			HandleIdle( synthBuffer);
-			std::cout << "State: Idle"<< std::endl;
+			TRACESTATE << "State: Idle"<< std::endl;
 			if ( mpParams->GetUseMelody())
 				mEventSample += mSampleStepping;
 			break;
 		case Attack:
 			HandleAttack( synthBuffer );
-			std::cout << "State: Attack"<< std::endl;
+			TRACESTATE << "State: Attack"<< std::endl;
 			mEventSample += mSampleStepping;	// Count processed samples
 			break;			
 		case Sustain:
-			std::cout << "State: Sustain"<< std::endl;
+			TRACESTATE << "State: Sustain"<< std::endl;
 			HandleSustain( synthBuffer );
 			mEventSample += mSampleStepping;	// Count processed samples
 			break;
 		case Transition:
-			std::cout << "State: Transition"<< std::endl;
+			TRACESTATE << "State: Transition"<< std::endl;
 			InitTransitionSynthesis( mpSynthFrame );
 			mState = TransitionLoop; 
 		case TransitionLoop:
@@ -476,16 +477,15 @@ bool SaltoSynth::Do( Audio*& synthBuffer )
 			InitReleaseSynthesis();
 			mState = ReleaseLoop;
 		case ReleaseLoop:
-			std::cout << "State: Release"<< std::endl;
+			TRACESTATE << "State: Release"<< std::endl;
 			HandleRelease( synthBuffer);
 			mEventSample += mSampleStepping;	// Count processed samples
 			break;
 		case Termination:
 			terminationReceived = true;
 		}
-	
 	UpdateGUI();
-		
+
 	return !terminationReceived;
 }
 
@@ -1428,15 +1428,13 @@ void SaltoSynth::EndTransitionSynthesis(CSaltoSynthFrame *pSynthFrame)
 
 void SaltoSynth::UpdateGUI( )
 {
-	if (!mpGUI)
-		return;
-	if (mState == Idle )
-		return;
+	if (!mpGUI) return;
+	if (mState == Idle ) return;
 
 	pthread_mutex_lock(&DrawingMutex);
 	mpGUI->FillDisplayPeakArray(*GetCurrentPeakArrayPtr());
 	mpGUI->FillDisplayAttackResidual(*GetCurrentResidualPtr());
-	//	this->mpGUI->FillDisplayStationaryResidual(this->mpCurrSpectralFrameResidual->GetResidual()); //should be stationary!!
+//	mpGUI->FillDisplayStationaryResidual(this->mpCurrSpectralFrameResidual->GetResidual()); //should be stationary!!
 	mpGUI->FillDisplaySynthesizedSpectrum(*GetSynthFramePtr()->GetSpectrumPtr());
 	pthread_mutex_unlock(&DrawingMutex);
 }
