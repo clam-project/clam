@@ -40,10 +40,10 @@ public:
 
 		CLAM_DEBUG_ASSERT(index<=mTableSize-1, "Bad index calculation");
 
-		TData x1 = mIncr*index;
+		TData x1 = mLowerBound+mIncr*index;
 		TData yIncr = mTable[index+1]-mTable[index];
 
-		return mTable[index] + ((arg-x1) * yIncr) / mIncr;
+		return mTable[index] + ((arg-x1) * yIncr) * mInvIncr;
 	}
 
 // constructor
@@ -66,6 +66,8 @@ private:
 		mTable.reserve(mTableSize);
 		
 		mIncr = (mUpperBound - mLowerBound) / (mTableSize-1);
+		mInvIncr = 1/mIncr;
+
 		TData arg = mLowerBound;
 
 		for (int i=0; arg<=mUpperBound; arg+=mIncr, i++)
@@ -77,7 +79,7 @@ private:
 	TData              mLowerBound;
 	TData              mUpperBound;
 	unsigned           mTableSize;
-	TData              mIncr;
+	TData              mIncr, mInvIncr;
 
 };
 
