@@ -85,7 +85,7 @@ namespace CLAM
 
 		void ConfigureData();
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 		bool ConcreteStart();
 

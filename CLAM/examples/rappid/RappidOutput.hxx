@@ -46,7 +46,7 @@ class RappidOutput: public ProcessingComposite, public RappidIO<RappidOutput>
 
 	bool ConfigureChildren();
 
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	bool ConcreteStart();
 

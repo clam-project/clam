@@ -86,7 +86,7 @@ namespace CLAM
 		template<class COMPRESSOR>
 		void Compress(const Array<TData> &inp, Array<TData> &outp);
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 	public:
 

@@ -117,7 +117,7 @@ public:
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
+		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		bool Do(void) { return true; }
 
@@ -148,9 +148,9 @@ void MyInstrumentConfig::DefaultInit(void)
 }
 
 
-bool MyInstrument::ConcreteConfigure( const ProcessingConfig& cfg) throw( std::bad_cast )
+bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast< const MyInstrumentConfig& >(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 
 	ADSRConfig ADSRCfg;
 	std::string tmp = mConfig.GetName() + ".ADSR";

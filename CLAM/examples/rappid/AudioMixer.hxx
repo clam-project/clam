@@ -56,7 +56,7 @@ namespace CLAM
 
 		unsigned int mFrameSize;
 
-		inline bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		inline bool ConcreteConfigure(const ProcessingConfig& c);
 
 		inline void Do(Array<TData>* inp[N], Array<TData>& out);
 
