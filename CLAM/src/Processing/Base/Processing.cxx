@@ -118,36 +118,32 @@ namespace CLAM {
 		
 	}
 
-	void Processing::Start(void) throw ( ErrProcessingObj )
+	void Processing::Start(void) 
 	{
-		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		
+		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		try {
-			if (!ConcreteStart())
-				mState=Unconfigured;
+			if (ConcreteStart())
+				mState = Running;
 		}
 		catch (Err &e) {
-			//ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
-			//new_e.Embed(e);
-			//CLAM_ASSERT( false, AddStatus(new_e.what()) );
-			
-			mState=Unconfigured;
-
-			AddStatus( "Start(): Object failed to start properly.\n" );
-			AddStatus( e.what() );
-			throw e; // Propagate exception
+			mStatus += "Start(): Object failed to start properly.\n";
+			mStatus += e.what();
 		}
-
-		mState = Running;
-
 	}
 	
 	void Processing::Stop(void)
 	{
 		CLAM_ASSERT( mState==Running ||	mState==Disabled, "Stop(): Object not running." );
 
-		mState=Ready;
-		ConcreteStop();
+		try {
+			if(ConcreteStop())
+				mState = Ready;
+		}
+		catch (Err &e) {
+			mStatus += "Stop(): Object failed to stop properly.\n";
+			mStatus += e.what();
+		}
 	}
 
 	void Processing::PublishOutPort(OutPort* out) 

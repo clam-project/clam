@@ -332,7 +332,7 @@ namespace CLAM {
 		 * This method must be called before any call to Do() methods.
 		 * @asserts that the processing object is ready
 		 */
-		void Start(void) throw( ErrProcessingObj );
+		void Start(void);
 
 		/** Method to put the object out of running state When in
 		 * execution mode, this method must be called before any
