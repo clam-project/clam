@@ -116,7 +116,7 @@ namespace CLAM
 		mFilterBankOutputs.Resize(mnBands);
 		mFilterBankOutputs.SetSize(mnBands);
 		
-		CalcFilterBankOutput(mAudio);
+		CalcFilterBankOutput( );
 		mnSamples = mFilterBankOutputs[0].Size();
 
 		//Onset detection	
@@ -130,24 +130,15 @@ namespace CLAM
 	///////////////
 	//FILTER BANK//
 	///////////////
-	bool OnsetDetector::CalcFilterBankOutput(Audio& in)
+	bool OnsetDetector::CalcFilterBankOutput()
 	{
 		//Filter Bank
 
 
-		Array<Audio> audioArray;
+		DataArray audioArray;
 
-		audioArray.Resize( mnBands );
-		audioArray.SetSize( mnBands );
-
-		for(int i = 0; i < mnBands; i++ )
-		{
-			audioArray[i].SetSize(in.GetSize());
-			audioArray[i].SetSampleRate(mSampleRate);
-		}
-
-
-		mFilterBank.Do( in , audioArray);
+		audioArray.Resize( mAudio.GetSize() );
+		audioArray.SetSize( mAudio.GetSize() );
 
 		cf=mFilterBank.GetCentreFreq();
 
@@ -157,19 +148,20 @@ namespace CLAM
 
 		for(int band=0 ; band<mnBands ; band++)
 		{
-			const TSize bandSize=audioArray[band].GetSize();
+			mFilterBank.Do( mAudio , band,  audioArray);
+			
+			const TSize bandSize=audioArray.Size();
 			//Full-wave rectification
 			mFilterBankOutputs[band].Resize(bandSize/90);
 			mFilterBankOutputs[band].SetSize(bandSize/90);
 
-			DataArray & bandAudioBuffer = audioArray[band].GetBuffer();
 			for(int i=0 ; i<bandSize ; i++)
-				bandAudioBuffer[i]=fabsf(bandAudioBuffer[i]);
+				audioArray[i]=fabsf(audioArray[i]);
 
 					
 			//Decimation to 245 Hz
 
-			mDecimator.DecimateFrom22050To245(bandAudioBuffer, mFilterBankOutputs[band]);
+			mDecimator.DecimateFrom22050To245(audioArray, mFilterBankOutputs[band]);
 
 			for(int i=0 ; i<mFilterBankOutputs[band].Size() ; i++)
 				mFilterBankOutputs[band][i] = mFilterBankOutputs[band][i]*cf[band];

@@ -57,7 +57,7 @@ namespace CLAM
 		bool ConcreteConfigure(const ProcessingConfig&);
 
 	
-		bool CalcFilterBankOutput( Audio &in );
+		bool CalcFilterBankOutput(  );
 		void Algorithm(Segment& s, Array<TimeIndex>& out );
 		void Smoothing(DataArray& energy, DataArray &smoothedEnergy );
 		void DetectPosition(DataArray& in, DataArray &ret);
