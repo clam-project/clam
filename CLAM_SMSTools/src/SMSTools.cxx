@@ -259,10 +259,15 @@ namespace CLAMGUI
 		CLAM::TTime time( value  );
 		CLAM::TIndex nframe;
 		if( GetState().GetHasTransformation() )
+		{
+			GetTransformedSegment().SetHoldsData(true);
 			nframe = GetTransformedSegment().FindFrame( time );
+		}
 		else
+		{
+			GetOriginalSegment().SetHoldsData(true);
 			nframe = GetOriginalSegment().FindFrame( time );
-		
+		}
 		mUI->mCounter->value( (int) nframe );
 		if( GetState().GetHasTransformation() )
 			SegmentExplorer().NewFrame( GetTransformedSegment().GetFramesArray()[nframe],mUI->FrameDataAvailable() );
