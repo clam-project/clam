@@ -4,6 +4,7 @@
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
 #include "DataTypes.hxx"
+#include "RD_TimeSeriesSeed.hxx"
 
 namespace CLAM
 {
@@ -36,7 +37,7 @@ namespace CLAM
 			
 			bool Do();
 
-			bool Do( const IOIHistogram& hist, unsigned prevTickValue, unsigned& refinedTickValue );
+			bool Do( const IOIHistogram& hist, const TimeSeriesSeed& prevTick, TimeSeriesSeed& newTick );
 
 		protected:
 

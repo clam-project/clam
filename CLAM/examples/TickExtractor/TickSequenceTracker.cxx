@@ -298,7 +298,7 @@ namespace CLAM
 
 
 				if ( mConfig.GetTickAdjustForSwing() ) 
-					mTickSwingAdjuster.Do( IOIHist, tickFirstGuessInterval, tickFirstGuessInterval );
+					mTickSwingAdjuster.Do( IOIHist, mTickFirstGuess, mTickFirstGuess );
 
 
 				unsigned int goodTickInterval,goodTickOffset;

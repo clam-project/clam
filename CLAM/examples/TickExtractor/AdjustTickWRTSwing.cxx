@@ -41,18 +41,18 @@ namespace CLAM
 			return false;
 		}
 
-		bool AdjustTickWRTSwing::Do( const IOIHistogram& hist, unsigned prevTickInterval,
-					     unsigned& refinedTickInterval )
+		bool AdjustTickWRTSwing::Do( const IOIHistogram& hist, const TimeSeriesSeed& prevTick,
+					     TimeSeriesSeed& refinedTick )
 		{
 			//quarter-note is either = tick, 2 ticks, 3 ticks or 4 ticks
-			TData quarternote = prevTickInterval;
+			TData quarternote = prevTick.GetInterval();
 			TData max = 0.0;
 		
 			std::list<TData> candidates;
 			typedef std::list<TData>::iterator LI;
 		
 			TData* arr = hist.GetBins().GetPtr();		
-			TData tmpCand= prevTickInterval;
+			TData tmpCand= prevTick.GetInterval();
 
 			for(int i=0;i<3;i++) 
 			{
@@ -62,7 +62,7 @@ namespace CLAM
 					candidates.push_back(tmpCand);
 				}
 			
-				tmpCand += prevTickInterval;
+				tmpCand += prevTick.GetInterval();
 			}
 		
 			for( LI i=candidates.begin();
@@ -76,7 +76,7 @@ namespace CLAM
 			}
 		
 
-			refinedTickInterval = (unsigned)quarternote;	
+			refinedTick.SetInterval( (unsigned)quarternote );	
 
 			return true;
 		}
