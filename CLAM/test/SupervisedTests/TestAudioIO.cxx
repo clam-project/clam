@@ -64,16 +64,12 @@ void test_stereo_io(void)
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
 
-	inCfgL.SetName("left in");
 	inCfgL.SetChannelID(0);
 	
-	inCfgR.SetName("right in");
 	inCfgR.SetChannelID(1);
 
-	outCfgL.SetName("left out");
 	outCfgL.SetChannelID(0);
 	
-	outCfgR.SetName("right out");
 	outCfgR.SetChannelID(1);
 
 	Audio bufL;
@@ -109,9 +105,6 @@ void test_mono_io(void)
 
 	AudioIOConfig inCfg;
 	AudioIOConfig outCfg;
-
-	inCfg.SetName("in");
-	outCfg.SetName("out");
 
 	Audio buf;
 	buf.SetSize(512);
