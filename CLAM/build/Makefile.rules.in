@@ -19,9 +19,9 @@ install: $(PROGRAMPATH)$(PROGRAM)
 	rm -rf $(PREFIX)/include/CLAM/$(MODNAME)
 	rm -rf $(PREFIX)/lib/$(PROGRAM)
 	@echo == installing $(MODNAME)
-	$(INSTALL) -d -m 644 $(PREFIX)/include/CLAM/$(MODNAME)
-	$(INSTALL) -m 644 include/CLAM/$(MODNAME)/* $(PREFIX)/include/CLAM/$(MODNAME)
-	$(INSTALL) -m 755 $(PROGRAMPATH)/$(PROGRAM) $(PREFIX)/lib
+	$(INSTALL) -d -m u+rw,go+rx $(PREFIX)/include/CLAM/$(MODNAME)
+	$(INSTALL) -m u+rw,go+r include/CLAM/$(MODNAME)/* $(PREFIX)/include/CLAM/$(MODNAME)
+	$(INSTALL) -m 755 $(PROGRAM) $(PREFIX)/lib
 	$(LDDCONF) -n $(PROGRAM) 
 
 
