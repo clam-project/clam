@@ -573,10 +573,10 @@ void SMSBase::SynthesisProcessing()
 void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
 {
 	dest=src;
-	dest.CopyInit(src);
-	dest.mCurrentFrameIndex=0;
 	dest.RemoveAudio();
 	dest.UpdateData();
+	dest.CopyInit(src);
+	dest.mCurrentFrameIndex=0;
 }
 
 void SMSBase::Synthesize(void)
@@ -586,6 +586,7 @@ void SMSBase::Synthesize(void)
 		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
 		mHaveTransformation=true;
 	}
+
 	TSize size=TSize((mTransformedSegment.GetEndTime()-
 		mTransformedSegment.GetBeginTime())*mTransformedSegment.GetSamplingRate());
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
