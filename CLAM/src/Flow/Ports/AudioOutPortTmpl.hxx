@@ -16,6 +16,8 @@ class OutPortTmpl<Audio> : public OutPort
 	Audio *mpData;
 	Audio mWrapper;
 public:
+	typedef Audio PortType;
+
 	inline OutPortTmpl(std::string n, Processing *o, int length, int hop = 0);
 	inline Audio &GetData();
 	inline void LeaveData();
@@ -30,6 +32,7 @@ public:
 	ProcessingData* GetProcessingData();
 	bool IsAttached();
 	void Unattach();
+
 };
 
 

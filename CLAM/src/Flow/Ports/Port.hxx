@@ -67,6 +67,7 @@ namespace CLAM {
 			mLength(l),
 			mHop(hop?hop:l)
 		{};
+		typedef ProcessingData PortType;
 
 		virtual ~Port() {}
 

@@ -14,7 +14,7 @@ namespace CLAM
 {
 
 
-template<typename  T>
+template<class T>
 class InPortTmpl : public InPort
 {
 	ReadStreamRegion *mpRegion;
@@ -35,7 +35,7 @@ public:
 	inline void Attach(Node<T> &n);
 	inline void Attach(InPortTmpl<T> &p); // For composites
 	inline void Accept(DataVisitor&);
-	
+
 	ProcessingData* GetProcessingData();
 	NodeBase* GetNode();
 	bool IsAttached();

@@ -19,7 +19,6 @@ class OutPortTmpl : public OutPort
 	Node<T> *mpNode;
 	Array<T> mData;
 public:
-
 	typedef T PortType;
 
 	inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
@@ -31,7 +30,7 @@ public:
 	inline void Attach(Node<T> &n);
 	inline void Attach(OutPortTmpl<T> &p); // For composites
 	inline void Accept(DataVisitor&);
-	
+
 	ProcessingData* GetProcessingData();
 	NodeBase* GetNode();
 	bool IsAttached();
