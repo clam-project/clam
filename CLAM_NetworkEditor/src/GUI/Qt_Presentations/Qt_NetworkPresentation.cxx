@@ -127,7 +127,6 @@ void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::Connectio
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
 	presentation->SignalRemoveConnection.Connect( SlotRemovePortConnection);
-	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
 	AttachConnectionToPortPresentations(presentation);
@@ -152,7 +151,6 @@ void Qt_NetworkPresentation::CreateControlConnectionPresentation( CLAMVM::Connec
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
 	presentation->SignalRemoveConnection.Connect( SlotRemoveControlConnection);
-	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
 	AttachConnectionToControlPresentations(presentation);
