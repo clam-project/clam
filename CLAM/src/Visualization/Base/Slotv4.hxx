@@ -5,7 +5,7 @@
 #include "CBL.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2, typename ParmType3, typename ParmType4 >

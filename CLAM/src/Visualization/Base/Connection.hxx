@@ -22,7 +22,7 @@
 #ifndef __CONNECTION__
 #define __CONNECTION__
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 class Signal;

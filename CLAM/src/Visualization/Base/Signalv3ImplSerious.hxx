@@ -28,7 +28,7 @@
 
 #include "ConnectionHandler.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < typename ParmType1, template ParmType2, typename ParmType3 >

@@ -21,7 +21,7 @@
 
 #include "Signal.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 	Signal::tConnectionId        Signal::smLastConnectionId = 0;
 	Signal::tConnectionIdStack   Signal::smFreeIdStack;

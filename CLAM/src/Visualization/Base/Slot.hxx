@@ -25,7 +25,7 @@
 #include "Connection.hxx"
 #include <list>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 /**

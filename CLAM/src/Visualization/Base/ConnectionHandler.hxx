@@ -26,7 +26,7 @@
 #include <utility>
 #include "Connection.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < class SignalType >

@@ -22,7 +22,7 @@
 #include "Connection.hxx"
 #include "Signal.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 	Connection::Connection()

@@ -29,7 +29,7 @@
 #include <list>
 #include <utility>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2 >

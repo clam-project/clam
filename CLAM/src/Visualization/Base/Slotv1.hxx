@@ -5,7 +5,7 @@
 #include "Functor1.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < typename ParmType1 >

@@ -29,7 +29,7 @@
 
 #include "ConnectionHandler.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 		class Signalv0 

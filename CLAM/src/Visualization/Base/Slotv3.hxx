@@ -1,11 +1,11 @@
-#ifndef __SLOTV2__
-#define __SLOTV2__
+#ifndef __SLOTV3__
+#define __SLOTV3__
 
 #include "Slot.hxx"
 #include "CBL.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2, typename ParmType3 >
