@@ -37,8 +37,6 @@
 
 #include "ProcessingConfig.hxx"
 
-#include "Qt_OutControlSenderPresentation.hxx"
-
 namespace NetworkGUI
 {
 
@@ -117,10 +115,7 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	
 	Qt_ProcessingPresentation* presentation = 0;
 	
-	if(controller->GetObservedClassName()=="OutControlSender") // TODO: do the same with a Factory!
-		presentation = new Qt_OutControlSenderPresentation( name, this );
-	else
-		presentation = new Qt_ProcessingPresentation(name, this);
+	presentation = new Qt_ProcessingPresentation(name, this);
 	presentation->AttachTo(*controller);
 
 	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
