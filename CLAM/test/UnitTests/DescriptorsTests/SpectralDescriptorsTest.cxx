@@ -116,7 +116,7 @@ private:
 	CLAM::Audio ReadAudio(const std::string & fileName)
 	{
 		CLAM::AudioFile audioFile;
-		audioFile.SetLocation(fileName);
+		audioFile.OpenExisting(fileName);
 		CPPUNIT_ASSERT_MESSAGE( 
 			"Unable to load file "+ audioFile.GetLocation(),
 			audioFile.IsReadable());
