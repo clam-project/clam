@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\externals\CbLib" /I "..\..\..\..\..\..\fltk\include" /I "..\..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\src\Base" /I "..\..\..\..\..\src\Data\Base" /I "..\..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\..\src\Defines" /I "..\..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\src\Errors" /I "..\..\..\..\..\src\Flow\Controls" /I "..\..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\..\src\Flow\Ports" /I "..\..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\..\src\Processing\Base" /I "..\..\..\..\..\src\Standard" /I "..\..\..\..\..\src\Storage\Base" /I "..\..\..\..\..\src\Storage\XML" /I "..\..\..\..\..\src\System\Threads" /I "..\..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\..\src\Visualization\Base" /I "..\..\..\..\..\src\Visualization\GL" /I "..\..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\..\src\Visualization\Util" /I "..\..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\externals\CbLib" /I "..\..\..\..\..\..\fltk\include" /I "..\..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\..\dxsdk\include" /I "..\..\..\..\..\src\Base" /I "..\..\..\..\..\src\Data\Base" /I "..\..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\..\src\Defines" /I "..\..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\src\Errors" /I "..\..\..\..\..\src\Flow\Controls" /I "..\..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\..\src\Flow\Ports" /I "..\..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\..\src\Processing\Base" /I "..\..\..\..\..\src\Standard" /I "..\..\..\..\..\src\Storage\Base" /I "..\..\..\..\..\src\Storage\XML" /I "..\..\..\..\..\src\System\Threads" /I "..\..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\..\src\Visualization\Base" /I "..\..\..\..\..\src\Visualization\GL" /I "..\..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\..\src\Visualization\Util" /I "..\..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\..\pthreads\lib" fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\..\dxsdk\lib" fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "Test_SpecificPlots - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\externals\CbLib" /I "..\..\..\..\..\..\fltk\include" /I "..\..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\src\Base" /I "..\..\..\..\..\src\Data\Base" /I "..\..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\..\src\Defines" /I "..\..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\src\Errors" /I "..\..\..\..\..\src\Flow\Controls" /I "..\..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\..\src\Flow\Ports" /I "..\..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\..\src\Processing\Base" /I "..\..\..\..\..\src\Standard" /I "..\..\..\..\..\src\Storage\Base" /I "..\..\..\..\..\src\Storage\XML" /I "..\..\..\..\..\src\System\Threads" /I "..\..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\..\src\Visualization\Base" /I "..\..\..\..\..\src\Visualization\GL" /I "..\..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\..\src\Visualization\Util" /I "..\..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\externals\CbLib" /I "..\..\..\..\..\..\fltk\include" /I "..\..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\..\dxsdk\include" /I "..\..\..\..\..\src\Base" /I "..\..\..\..\..\src\Data\Base" /I "..\..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\..\src\Defines" /I "..\..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\src\Errors" /I "..\..\..\..\..\src\Flow\Controls" /I "..\..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\..\src\Flow\Ports" /I "..\..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\..\src\Processing\Base" /I "..\..\..\..\..\src\Standard" /I "..\..\..\..\..\src\Storage\Base" /I "..\..\..\..\..\src\Storage\XML" /I "..\..\..\..\..\src\System\Threads" /I "..\..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\..\src\Visualization\Base" /I "..\..\..\..\..\src\Visualization\GL" /I "..\..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\..\src\Visualization\Util" /I "..\..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\..\pthreads\lib" fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\..\dxsdk\lib" fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -97,6 +97,74 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\..\..\..\test\Visualization\test_SpecificPlots.cxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "Tools Sources"
+
+# Begin Group "AudioIO Sources"
+
+# Begin Group "Windows Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\RtAAudioDevice.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\RtAudio.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.cxx
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioManager.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDevice.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDeviceList.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioPlayer.cxx
+# End Source File
+# End Group
+# Begin Group "AudioFileIO Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\extended.cxx
 # End Source File
 # End Group
 # End Group
@@ -610,7 +678,7 @@ SOURCE=..\..\..\..\..\src\Processing\Base\ProcessingComposite.cxx
 SOURCE=..\..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
-# Begin Group "AudioFileIO Sources"
+# Begin Group "AudioFileIO Sources No. 1"
 
 # Begin Source File
 
@@ -621,60 +689,15 @@ SOURCE=..\..\..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
 SOURCE=..\..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
 # End Source File
 # End Group
-# Begin Group "AudioIO Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioOut.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioIn.cxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "Tools Sources"
-
 # Begin Group "AudioIO Sources No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioPlayer.cxx
+SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioIn.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioManager.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDevice.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDeviceList.cxx
-# End Source File
-# End Group
-# Begin Group "AudioFileIO Sources No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\extended.cxx
+SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioOut.cxx
 # End Source File
 # End Group
 # End Group
@@ -1497,11 +1520,11 @@ SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioIO.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioOut.hxx
+SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioIn.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioIn.hxx
+SOURCE=..\..\..\..\..\src\Processing\AudioIO\AudioOut.hxx
 # End Source File
 # End Group
 # End Group
@@ -1658,6 +1681,88 @@ SOURCE=..\..\..\..\..\..\fltk\include\FL\gl.h
 # End Group
 # End Group
 # End Group
+# Begin Group "Tools Headers"
+
+# Begin Group "AudioIO Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioManager.hxx
+# End Source File
+# Begin Group "Windows Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\RtAudio.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.hxx
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDevice.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDeviceList.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioPlayer.hxx
+# End Source File
+# End Group
+# Begin Group "AudioFileIO Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\extended.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "dxsdk Headers"
+
+# Begin Group "include Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\..\dxsdk\include\dxerr8.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\..\dxsdk\include\dsound.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\..\dxsdk\include\dinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\..\dxsdk\include\basetsd.h
+# End Source File
+# End Group
+# End Group
 # Begin Group "externals Headers"
 
 # Begin Group "CbLib Headers"
@@ -1718,7 +1823,7 @@ SOURCE=..\..\..\..\..\externals\CbLib\CBL.hxx
 # End Group
 # Begin Group "pthreads Headers"
 
-# Begin Group "include Headers No. 1"
+# Begin Group "include Headers No. 2"
 
 # Begin Source File
 
@@ -1726,54 +1831,9 @@ SOURCE=..\..\..\..\..\..\pthreads\include\pthread.h
 # End Source File
 # End Group
 # End Group
-# Begin Group "Tools Headers"
-
-# Begin Group "AudioIO Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioPlayer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioManager.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDevice.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioIO\AudioDeviceList.hxx
-# End Source File
-# End Group
-# Begin Group "AudioFileIO Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\src\Tools\AudioFileIO\extended.hxx
-# End Source File
-# End Group
-# End Group
 # Begin Group "xercesc Headers"
 
-# Begin Group "include Headers No. 2"
+# Begin Group "include Headers No. 3"
 
 # Begin Group "xercesc Headers No. 1"
 
