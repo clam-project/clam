@@ -122,7 +122,7 @@ int main( int argc, char** argv )
 	std::vector< CLAM::Audio > inputs;
 	inputs.resize( nChannels );         // As many inputs as channels
 
-	for ( int i = 0; i < inputs.size(); i++ )
+	for ( unsigned i = 0; i < inputs.size(); i++ )
 	{
 		inputs[i].SetSize( writeSize );
 	}
