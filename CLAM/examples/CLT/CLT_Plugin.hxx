@@ -53,8 +53,7 @@ protected:
 public:
 		
 		
-		virtual bool ConcreteConfigure(const ProcessingConfig& cfg) 
-				throw(std::bad_cast);
+		virtual bool ConcreteConfigure(const ProcessingConfig& c);
 		virtual const ProcessingConfig &GetConfig() const { return mConfig; }
 //to implement in son classes
 		virtual bool Do(void){return true;} //a implementar pels fills
