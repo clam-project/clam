@@ -197,7 +197,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Accessing a non instanciated attribute inside a scope";
+			const std::string expected = "Getting data from a non instanciated attribute";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}

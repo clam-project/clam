@@ -64,9 +64,9 @@ private:
 	void testSubGoal()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddScope("Frame");
-		scheme.AddSignalScope("AudioSample");
+		scheme.AddScope("AudioSample");
 		scheme.AddAttribute<SignalLevel>   ("AudioSample","Level");
+		scheme.AddScope("Frame");
 		scheme.AddAttribute<SampleDuration>("Frame","Center");
 		scheme.AddAttribute<Spectrum>      ("Frame","SpectralDistribution");
 

@@ -5,6 +5,7 @@
 #include <map>
 #include "Assert.hxx"
 #include "DataTypes.hxx"
+#include "Component.hxx"
 
 
 /**
@@ -244,6 +245,15 @@ namespace CLAM
 			for (; it != end; it++)
 				if (*it) delete *it;
 		}
+		/*
+		const char * GetClassName() const { return "DescriptionDataPool"; }
+		void StoreOn(Storage & storage) const
+		{
+		}
+		void LoadFrom(Storage & storage)
+		{
+		}
+		*/
 		void PopulateScope(const std::string & scopeName, unsigned size)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
