@@ -41,25 +41,22 @@ namespace CLAMVM
 
 		~Fl_Gl_Single_Browsable_Display();
 
-		void DrawOverlay(  );
+		void draw_overlay(  );
 		
  		int handle( int event ); // Fl_Gl_Window required interface
 
-		void SetPainting( bool painting );
+		void SetPainting(  );
+		void UnsetPainting(  );
 		void SetPos( CLAM::TData pos );
-		Slotv1<CLAM::TData>* GetFrameSlot(  ) { return &mFrameSlot; }
-		Slotv1<bool>& GetPaintSlot(  ) { return mPaintSlot; }
-		Signalv1<double>* GetSignal(  ) { return &mSignal; }
-		
+
+		Signalv1<double> mMouseEvent;
+		Slotv1<CLAM::TData> mNewFrame;
+
 	protected:
 		void DrawContents();
 
 		bool mPainting;
 		double mPos;
-
-		Signalv1<double> mSignal;
-		Slotv1<CLAM::TData> mFrameSlot;
-		Slotv1<bool> mPaintSlot;
 
 	private:
 		GLRenderingManager* mRenderer;

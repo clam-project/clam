@@ -25,10 +25,6 @@
 #include "Assert.hxx"
 #include "AudioRenderingManager.hxx"
 
-
-#include <iostream>
-
-
 namespace CLAMVM
 {
 	Fl_Gl_Single_Browsable_Display::Fl_Gl_Single_Browsable_Display( int X, int Y, int W, int H, const char* label)
@@ -37,21 +33,24 @@ namespace CLAMVM
 		mPainting = false;
 		mPos = -1;
 	
-		mFrameSlot.Wrap( this, &Fl_Gl_Single_Browsable_Display::SetPos );
-		mPaintSlot.Wrap( this, &Fl_Gl_Single_Browsable_Display::SetPainting );
+		mNewFrame.Wrap( this, &Fl_Gl_Single_Browsable_Display::SetPos );
 	}
 
 	Fl_Gl_Single_Browsable_Display::~Fl_Gl_Single_Browsable_Display()
 	{
 	}
 
-	void Fl_Gl_Single_Browsable_Display::SetPainting( bool painting ) {
-		mPainting = painting;
+	void Fl_Gl_Single_Browsable_Display::SetPainting(  ) {
+		mPainting = true;
+	}
+
+	void Fl_Gl_Single_Browsable_Display::UnsetPainting(  ) {
+		mPainting = true;
 	}
 
 	void Fl_Gl_Single_Browsable_Display::SetPos( CLAM::TData pos ) {
 		mPos = pos;
-		DrawContents();
+		redraw_overlay();
 	}
 
 	int Fl_Gl_Single_Browsable_Display::handle( int event ) {
@@ -62,24 +61,24 @@ namespace CLAMVM
 				QueryDataBoundBox( dataBBox );
 				
 				mPos = ( Fl::event_x(  ) - x(  ) ) * (dataBBox.mRight-dataBBox.mLeft) / w(  ) + dataBBox.mLeft;
-
-				DrawContents();
+				
+				//DrawContents();
+				redraw_overlay();
 				// notify SLOTTED class to act
-				mSignal.Emit( mPos );
+				mMouseEvent.Emit( mPos );
 				return 1;
 			}
 		}	
 		return Fl_Gl_2DSurface::handle( event );
 	}
 
-	void Fl_Gl_Single_Browsable_Display::DrawOverlay(  ) {
+	void Fl_Gl_Single_Browsable_Display::draw_overlay(  ) {
 		DataBoundBox dataBBox;
 		QueryDataBoundBox( dataBBox );
 
 		if( dataBBox.mLeft < mPos && mPos < dataBBox.mRight ) 
 		{
 			int position = (int) ceil( ( ( mPos - dataBBox.mLeft ) * w() ) / (dataBBox.mRight-dataBBox.mLeft) );
-
 			glMatrixMode( GL_PROJECTION );
 			glPushMatrix();
 			ortho();
@@ -95,8 +94,8 @@ namespace CLAMVM
 			glVertex2i( position, y() );
 			glVertex2i( position, y()+h() );
 			glEnd();
-
-			glMatrixMode( GL_PROJECTION );		
+			glLineWidth( 1 );
+			glMatrixMode( GL_PROJECTION );	
 			glPopMatrix();		
 			glMatrixMode( GL_MODELVIEW );
 
@@ -105,11 +104,9 @@ namespace CLAMVM
 
 	void Fl_Gl_Single_Browsable_Display::DrawContents()
 	{
-		Fl_Gl_Single_Display::DrawContents();
-
 		if( mPainting ) {
-			DrawOverlay(  );
+			redraw_overlay(  );
 		}
-
+		Fl_Gl_Single_Display::DrawContents();
 	}
 }
