@@ -7,8 +7,8 @@
 #include "Fl_Smart_Tile.H"
 class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
-#include "CLAMPresentations.hxx"
-#include "CLAMViews.hxx"
+#include "AudioAdapter.hxx"
+#include "LogMagSpectrumAdapter.hxx"
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Counter.H>
@@ -121,7 +121,10 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  Fl_Window* Attach( const char* title, CLAM::Audio* data );
+  Fl_Window* AttachInputSound( const char* title, CLAM::Audio* data );
+  Fl_Window* AttachOutputSound( const char* title, CLAM::Audio* data );
+  Fl_Window* AttachSynthSineSound( const char* title, CLAM::Audio* data );
+  Fl_Window* AttachSynthResidualSound( const char* title, CLAM::Audio* data ); 
   Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
@@ -141,8 +144,12 @@ private:
   Fl_Window* mAudioOutputSinusoidalDisplay;
   Fl_Window* mInputSpectrum;
   Fl_Window* mOutputSpectrum;
-  ProcDataView<Spectrum>* mInputSpectrumView;
-  ProcDataView<Spectrum>* mOutputSpectrumView;
+  CLAMVM::AudioAdapter          mSoundView;
+  CLAMVM::AudioAdapter          mSynthesizedOutput;
+  CLAMVM::AudioAdapter          mSynthSineOut;
+  CLAMVM::AudioAdapter          mSynthResidualOut;
+  CLAMVM::LogMagSpectrumAdapter mInputSpectrumView;
+  CLAMVM::LogMagSpectrumAdapter mOutputSpectrumView;
   Signalv1<TData> mFrameSignal;
   Signalv1<bool> mPaintSignal;
   Slotv1<double> mSlot;
