@@ -60,15 +60,9 @@ DynamicType::DynamicType(const DynamicType& prototype) :
 	_dynInfo( prototype._dynInfo ),
 	_data(0)
 {
-	bool deepCopy = false; // cludge \todo !
-
 	if (prototype._data)
-	{
-		if (deepCopy)
-			; //SelfDeepCopy(prototype);
-		else
-			SelfShallowCopy(prototype);
-	}
+		SelfShallowCopy(prototype);
+
 }
 DynamicType::~DynamicType(){
 	RemoveAllMem();
@@ -388,7 +382,7 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 
 Component* DynamicType::ShallowCopy() const
 {
-	DynamicType* selfCopy = &(GetDynamicTypeCopy(false));
+	DynamicType* selfCopy = &(GetDynamicTypeCopy());
 
 	return selfCopy;
 }
@@ -396,9 +390,7 @@ Component* DynamicType::ShallowCopy() const
 
 Component* DynamicType::DeepCopy() const
 {	
-	DynamicType* selfCopy = &(GetDynamicTypeCopy(true));
-
-	return selfCopy;
+	return ShallowCopy();
 };
 
 
