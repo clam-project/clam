@@ -365,6 +365,34 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 
 AC_DEFUN(CLAM_LIB_FFTW,
 [
+AC_MSG_CHECKING([for fftw headers; looking relative to CLAM])
+fltk_local=no
+if test -d ../../fftw/include/; then
+	AC_MSG_RESULT(yes)
+	found_fftw=yes
+	FFTW_INCLUDES="../../fftw/include"
+	FFTW_LIB_PATH="../../fftw/lib"
+	FLAG_FFTW_INCLUDES="-I../../fftw/include"
+	FLAG_FFTW_LIB_PATH="-L../../fftw/lib"
+	fltk_local=yes
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING([for fftw headers; looking in standard locations...])
+	found_fltk=no
+	for base in "/usr/include" \
+	            "/usr/local/include" \
+	            "/opt/include" \
+	            "/usr/"
+	do
+		if test -f $base/fftw.h; then
+			AC_MSG_RESULT(yes)
+			found_fftw=yes
+			break;
+		fi
+	done
+	FFTW_LIB_PATH=
+fi
+	echo FLAG_FFTW_LIB_PATH
 	if test "$usedouble" = no; then
 		AC_MSG_CHECKING([for single precision fftw library])
     		OLD_LIBS=$LIBS
