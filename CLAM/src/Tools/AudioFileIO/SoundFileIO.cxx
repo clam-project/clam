@@ -1,5 +1,4 @@
 #include "SoundFileIO.hxx"
-#include "ErrSoundFileIO.hxx"
 
 using namespace CLAM;
 
@@ -27,6 +26,7 @@ void SoundFileIO::Init(void)
 }
 
 void SoundFileIO::Open(const char* filename,EMode mode)
+	throw ( ErrSoundFileIO )
 {
 	char* cmode = 0;
 
