@@ -282,29 +282,24 @@ TData SpectralDescriptors::ComputeRolloff()
 
 TData SpectralDescriptors::ComputeSpread() 
 { 
-	DataArray& mags     = mpSpectrum->GetMagBuffer();
-	TSize      magsSize = mpSpectrum->GetSize();
+	const DataArray& mags = mpSpectrum->GetMagBuffer();
+	const TSize      N    = mpSpectrum->GetSize();
 
-	TData centroid = mpStats->GetCentroid(); // A 1 based centroid
+	const TData centroid = mpStats->GetCentroid(); // A 1 based centroid
 
 	// Compute spectrum variance around centroid frequency
 	TData variance = 0;
 	TData sumMags  = 0;
-	for (TIndex i=0; i<magsSize; i++)
+	for (TIndex i=0; i<N; i++)
 	{
 		TData centroidDistance = i - centroid;
 		centroidDistance *= centroidDistance;
 		variance += centroidDistance * mags[i];
 		sumMags  += mags[i];
 	}
-	if (sumMags < 1e-14) return sqrt(TData(magsSize-1)/(magsSize-3)/3);
-	variance /= sumMags;
-
-	// Avoiding NaN for centroid = 0
-	if (centroid<0.2) centroid = 0.2;
-
-	// Return std.dev. normalized by centroid frequency
-	return sqrt(variance) / centroid;
+	// Silence is like a plain distribution
+	if (sumMags < 1e-14) return mDeltaFreq * mDeltaFreq * (N+1) * (N-1) / 12;
+	return mDeltaFreq * mDeltaFreq * variance / sumMags;
 }
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
