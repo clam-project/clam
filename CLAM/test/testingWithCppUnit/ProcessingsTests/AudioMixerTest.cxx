@@ -32,8 +32,26 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AudioMixerTest );
 
 class AudioMixerTest : public CppUnit::TestFixture
 {
-public:
 
+	CPPUNIT_TEST_SUITE( AudioMixerTest );
+
+	CPPUNIT_TEST( testDo_WhenControlsGivesEqualValue );
+	CPPUNIT_TEST( testDo_WhenControlsGivesDifferentValue );
+
+	CPPUNIT_TEST_SUITE_END();
+	
+	//processing
+	CLAM::OutControl _out1;
+	CLAM::OutControl _out2;
+	CLAM::AudioMixer<2> _mixer;
+
+	//data
+	CLAM::Audio _inAudio1;
+	CLAM::Audio _inAudio2;
+	CLAM::Audio _outAudio;
+	const double _delta;
+
+public:
 	void setUp()
 	{
 
@@ -55,30 +73,12 @@ public:
 		
 
 	}
-	void tearDown(){}
 
 private:
-
-	CPPUNIT_TEST_SUITE( AudioMixerTest );
-
-	CPPUNIT_TEST( testDo_WhenControlsGivesEqualValue );
-	CPPUNIT_TEST( testDo_WhenControlsGivesDifferentValue );
-
-	CPPUNIT_TEST_SUITE_END();
-	
-	//processing
-	CLAM::OutControl _out1;
-	CLAM::OutControl _out2;
-	CLAM::AudioMixer<2> _mixer;
-
-	//data
-	CLAM::Audio _inAudio1;
-	CLAM::Audio _inAudio2;
-	CLAM::Audio _outAudio;
-
 	AudioMixerTest()
 		: _out1("Sender left"),
-		  _out2("Sender right")
+		  _out2("Sender right"),
+		  _delta(0.000001)
 	{		
 	}
 
@@ -88,15 +88,17 @@ private:
 		_inAudio2.GetBuffer()[0] = 2;
 
 		_mixer.Start();
+		const CLAM::TControlData val1(0.3f);
+		const CLAM::TControlData val2(0.3f);
 
-		_out1.SendControl(0.3);
-		_out2.SendControl(0.3);
+		_out1.SendControl( val1 );
+		_out2.SendControl( val2 );
 
 		_mixer.Do();
 		_mixer.Do();
 
-		CPPUNIT_ASSERT_EQUAL( CLAM::TControlData(0.3), _mixer.mGain[0].GetLastValue());
-		CPPUNIT_ASSERT_EQUAL( CLAM::TData(0.45) , _outAudio.GetBuffer()[0] );
+		CPPUNIT_ASSERT_EQUAL( CLAM::TControlData( val1 ), _mixer.mGain[0].GetLastValue());
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData( (val1*1 + val2*2)/2 ) , _outAudio.GetBuffer()[0], _delta );
 	}
 
 	void testDo_WhenControlsGivesDifferentValue()
@@ -106,13 +108,13 @@ private:
 
 		_mixer.Start();
 
-		_out1.SendControl(0.5);
-		_out2.SendControl(0.6);
+		_out1.SendControl(0.5f);
+		_out2.SendControl(0.6f);
 
 		_mixer.Do();
 		_mixer.Do();
 
-		CPPUNIT_ASSERT_EQUAL( CLAM::TData(1.35) , _outAudio.GetBuffer()[0] );
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(1.35) , _outAudio.GetBuffer()[0], _delta );
 	}
 };
 	
