@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\src\Defines" /I "..\..\..\src\System\Application" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Visualization\View" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\..\fltk\include" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\System\Threads" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\src\Visualization\Widget" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\src\Defines" /I "..\..\..\src\System\Application" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Visualization\View" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\..\fltk\include" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\System\Threads" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\GL" /I "..\..\..\examples\SpectralDelay\GUI" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\src\Visualization\Widget" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /c
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\src\Defines" /I "..\..\..\src\System\Application" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Visualization\View" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\..\fltk\include" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\System\Threads" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\src\Visualization\Widget" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /GZ /Zm1000 /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\src\Defines" /I "..\..\..\src\System\Application" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Visualization\View" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\..\fltk\include" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\System\Threads" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\GL" /I "..\..\..\examples\SpectralDelay\GUI" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\src\Visualization\Widget" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /GZ /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,8 +75,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 FFTW2std.lib RFFTW2std.lib fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib dsound.lib dxerr8.lib pthreadVC.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib"
-# SUBTRACT LINK32 /nologo /verbose /pdb:none
+# ADD LINK32 FFTW2std.lib RFFTW2std.lib fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib dsound.lib dxerr8.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib"
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 
@@ -140,20 +140,16 @@ SOURCE=..\..\..\examples\SpectralDelay\GUI\View\AudioFileView.cxx
 SOURCE=..\..\..\examples\SpectralDelay\GUI\View\ViewRegistry.cxx
 # End Source File
 # End Group
-# Begin Group "Presentation Sources"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\examples\SpectralDelay\GUI\Presentation\BaseAudioFilePres.cxx
-# End Source File
-# End Group
 # Begin Group "FLTK Sources"
 
 # PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\Fl_SpectrumAnalyzer.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLDelayPres.cxx
 # End Source File
 # Begin Source File
 
@@ -165,6 +161,10 @@ SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLFileIOWidget.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLFilterBankPres.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLGeoMgr.cxx
 # End Source File
 # Begin Source File
@@ -173,9 +173,33 @@ SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLGridLayout.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLMultiBandEditor.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLSpectralDelayGUI.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\MBEditorUtils.cxx
+# End Source File
 # End Group
+# Begin Group "Presentation Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\Presentation\BaseAudioFilePres.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\Presentation\BaseFilterBankPres.cxx
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\MultiBandProxy.cxx
+# End Source File
 # End Group
 # End Group
 # End Group
@@ -663,7 +687,27 @@ SOURCE=..\..\..\src\Visualization\Base\WidgetTKWrapper.cxx
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\src\Visualization\View\ControlAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\FDFilterController.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\InputControlModel.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Visualization\View\LogMagSpectrumAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\ProcessingController.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\ProcessingInControlSet.cxx
 # End Source File
 # Begin Source File
 
@@ -673,6 +717,10 @@ SOURCE=..\..\..\src\Visualization\View\SpectrumAdapter.cxx
 
 SOURCE=..\..\..\src\Visualization\View\SpectrumModel.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\TokenDelayController.cxx
+# End Source File
 # End Group
 # Begin Group "Presentation Sources No. 1"
 
@@ -680,6 +728,14 @@ SOURCE=..\..\..\src\Visualization\View\SpectrumModel.cxx
 # Begin Group "Base Sources No. 3"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Presentation\Base\InControlPresentation.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Presentation\Base\ProcessingControlsPresentation.cxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Presentation\Base\SpectrumPresentation.cxx
@@ -727,6 +783,10 @@ SOURCE=..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Single_Display.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Widget\FLTK\Fl_GridLayout.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Widget\FLTK\FLKnob.cxx
 # End Source File
 # End Group
 # Begin Source File
@@ -1053,6 +1113,10 @@ SOURCE=..\..\..\src\Standard\Search.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\SearchArray.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\TabFunct.hxx
 # End Source File
 # End Group
 # Begin Group "Data Headers"
@@ -1488,20 +1552,16 @@ SOURCE=..\..\..\examples\SpectralDelay\GUI\View\AudioFileView.hxx
 SOURCE=..\..\..\examples\SpectralDelay\GUI\View\ViewRegistry.hxx
 # End Source File
 # End Group
-# Begin Group "Presentation Headers"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\examples\SpectralDelay\GUI\Presentation\BaseAudioFilePres.hxx
-# End Source File
-# End Group
 # Begin Group "FLTK Headers"
 
 # PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\Fl_SpectrumAnalyzer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLDelayPres.hxx
 # End Source File
 # Begin Source File
 
@@ -1513,6 +1573,10 @@ SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLFileIOWidget.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLFilterBankPres.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLGeoMgr.hxx
 # End Source File
 # Begin Source File
@@ -1521,9 +1585,33 @@ SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLGridLayout.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLMultiBandEditor.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\FLSpectralDelayGUI.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\FLTK\MBEditorUtils.hxx
+# End Source File
 # End Group
+# Begin Group "Presentation Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\Presentation\BaseAudioFilePres.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\Presentation\BaseFilterBankPres.hxx
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\examples\SpectralDelay\GUI\MultiBandProxy.hxx
+# End Source File
 # End Group
 # End Group
 # End Group
@@ -1607,11 +1695,31 @@ SOURCE=..\..\..\src\Visualization\Base\WidgetTKWrapper.hxx
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\src\Visualization\View\ControlAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\FDFilterController.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\InputControlModel.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Visualization\View\LogMagSpectrumAdapter.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Visualization\View\ProcessingController.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Visualization\View\ProcessingDataAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\ProcessingInControlSet.hxx
 # End Source File
 # Begin Source File
 
@@ -1621,6 +1729,10 @@ SOURCE=..\..\..\src\Visualization\View\SpectrumAdapter.hxx
 
 SOURCE=..\..\..\src\Visualization\View\SpectrumModel.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\TokenDelayController.hxx
+# End Source File
 # End Group
 # Begin Group "Presentation Headers No. 1"
 
@@ -1628,6 +1740,14 @@ SOURCE=..\..\..\src\Visualization\View\SpectrumModel.hxx
 # Begin Group "Base Headers No. 5"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Presentation\Base\InControlPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Presentation\Base\ProcessingControlsPresentation.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Presentation\Base\SpectrumPresentation.hxx
@@ -1683,6 +1803,10 @@ SOURCE=..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Single_Display.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Widget\FLTK\Fl_GridLayout.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Widget\FLTK\FLKnob.hxx
 # End Source File
 # End Group
 # Begin Source File
@@ -1782,6 +1906,10 @@ SOURCE=..\..\..\..\fltk\include\FL\Fl_Button.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\fl_draw.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\fl_file_chooser.H
 # End Source File
 # Begin Source File
@@ -1799,6 +1927,14 @@ SOURCE=..\..\..\..\fltk\include\FL\Fl_Input.H
 # Begin Source File
 
 SOURCE=..\..\..\..\fltk\include\FL\Fl_Input_.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Output.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Valuator.H
 # End Source File
 # Begin Source File
 
