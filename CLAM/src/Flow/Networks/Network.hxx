@@ -29,6 +29,11 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
 	bool ConnectPorts( const std::string &, const std::string & );
+	
+	void Start();
+	void Stop();
+	void DoProcessings();
+	void ConfigureNodes( int frameSize );
 
 protected:
 	InPort & GetInPortByCompleteName( const std::string& );
@@ -46,7 +51,7 @@ private:
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
 	std::string GetLastIdentifier( const std::string& );
 	std::string GetProcessingIdentifier( const std::string& );
-	static const char NamesIdentifiersSeparator();
+	static char NamesIdentifiersSeparator();
 
 	/**this method is provisional, because Network may need non-audio nodes.
 	 * Thus the factory method should be a (virtual) method of OutPort, implemented

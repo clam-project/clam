@@ -4,16 +4,26 @@
 
 namespace CLAM
 {
-	namespace Helper
+	namespace HelperFunctions
 	{
 		void DeleteProcessing( Network::ProcessingsMap::value_type& mapElem ) {
 			delete mapElem.second;
+		}
+		void StartProcessing( Network::ProcessingsMap::value_type& mapElem ) {
+			mapElem.second->Start();
+		}
+		void StopProcessing( Network::ProcessingsMap::value_type& mapElem ) {
+			mapElem.second->Stop();
+		}
+		void DoProcessing( Network::ProcessingsMap::value_type& mapElem ) {
+
+			mapElem.second->Do();
 		}
 	}
 	// destructor
 	Network::~Network()
 	{
-		std::for_each(_processings.begin(),	_processings.end(),	Helper::DeleteProcessing );
+		std::for_each( 	_processings.begin(), _processings.end(), HelperFunctions::DeleteProcessing );
 	}
 
 	Processing& Network::GetProcessing( const std::string & name )
@@ -54,7 +64,7 @@ namespace CLAM
 	}
 
 
-	const char Network::NamesIdentifiersSeparator()
+	char Network::NamesIdentifiersSeparator()
 	{ 	
 		return '.'; 	
 	}
@@ -121,6 +131,29 @@ namespace CLAM
 	{
 		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
 		return new NodeTmpl<Audio, DefaultStreamBuffer>;
+	}
+
+	void Network::Start()
+	{
+		
+		std::for_each( _processings.begin(), _processings.end(), HelperFunctions::StartProcessing );
+	}
+	void Network::Stop()
+	{
+		std::for_each( _processings.begin(), _processings.end(), HelperFunctions::StopProcessing );
+	}
+	void Network::DoProcessings()
+	{
+		std::for_each( _processings.begin(), _processings.end(), HelperFunctions::DoProcessing );
+	}
+
+	void Network::ConfigureNodes( int frameSize )
+	{
+		NodesList::iterator it;
+		for (it = _nodes.begin(); it != _nodes.end(); it++ )
+		{
+			(*it)->Configure(frameSize);
+		}
 	}
 
 }
