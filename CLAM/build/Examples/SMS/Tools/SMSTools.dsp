@@ -2075,6 +2075,10 @@ SOURCE=..\..\..\..\examples\SMS\SMSTools.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\examples\SMS\SMSTools_inlines.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\examples\SMS\UserInterface.hxx
 # End Source File
 # Begin Source File
