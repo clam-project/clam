@@ -74,6 +74,7 @@ void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectral
 	mpSpectralPeakArray=pSpectralPeakArray;
     //TODO: it may give problems because pointer passed
 	InitStats(&mpSpectralPeakArray->GetMagBuffer());
+	mCentroid.Reset();
 
 }
 
