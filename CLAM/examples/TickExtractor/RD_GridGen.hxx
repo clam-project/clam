@@ -38,10 +38,10 @@ namespace CLAM
 	namespace RhythmDescription
 	{
 
-		class GridGenConfig : public ProcessingConfig
+		class PulseGridGeneratorConfig : public ProcessingConfig
 		{
 		public:
-			DYNAMIC_TYPE_USING_INTERFACE (GridGenConfig, 3,ProcessingConfig);
+			DYNAMIC_TYPE_USING_INTERFACE (PulseGridGeneratorConfig, 3,ProcessingConfig);
 			DYN_ATTRIBUTE (0, public,TData, Start);
 			DYN_ATTRIBUTE (1, public,TData, Gap);
 			DYN_ATTRIBUTE (2, public,TData, End);
@@ -49,26 +49,29 @@ namespace CLAM
 			void DefaultInit();	
 		};
 
-		class GridGen : public Processing
+		class PulseGridGenerator : public Processing
 		{
-			GridGenConfig mConfig;
-			const char *GetClassName() const {return "GridGen";}
-			bool ConcreteConfigure(const ProcessingConfig&);
 
 		public:
-			GridGen();
-			GridGen(const GridGenConfig &c);
-			~GridGen() {}
+			PulseGridGenerator();
+
+			~PulseGridGenerator() {}
 
 			const ProcessingConfig &GetConfig() const { return mConfig;}
 
 			bool Do(void);
 			bool Do(Array<TimeIndex>& out);
 
+			const char *GetClassName() const;
+
+		protected:
+
+			bool ConcreteConfigure(const ProcessingConfig&);
 		private:
 			InControl mStart;
 			InControl mGap;
 			InControl mEnd;
+			PulseGridGeneratorConfig mConfig;
 		};
 
 	}

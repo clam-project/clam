@@ -21,7 +21,7 @@ namespace CLAM
 	namespace RhythmDescription
 	{
 		class GlobalPulseGenerator;
-		class GridGen;
+		class PulseGridGenerator;
 	}
 
 	class TickSequenceTracker : public ProcessingComposite
@@ -66,7 +66,7 @@ namespace CLAM
 				        Array<TimeIndex>& mPulses );
 
 		void GeneratePulseGrid( const TData start, const TData gap, const TData end, 
-					RhythmDescription::GridGen& pulseGridGen, 
+					RhythmDescription::PulseGridGenerator& pulseGridGen, 
 					Array<TimeIndex>& pulseArray );
 
 

@@ -250,7 +250,7 @@ namespace CLAM
 
 
 			unsigned int goodTickInterval,goodTickOffset;
-			RhythmDescription::GridGen pulseGridGen;
+			RhythmDescription::PulseGridGenerator pulseGridGen;
 			
 			if (mConfig.GetAdjustWithOnsets()) 
 			{
@@ -508,10 +508,10 @@ namespace CLAM
 
 
 	void TickSequenceTracker::GeneratePulseGrid(const TData start, const TData gap, 
-					       const TData end, RhythmDescription::GridGen& pulseGridGen, 
+					       const TData end, RhythmDescription::PulseGridGenerator& pulseGridGen, 
 					       Array<TimeIndex>& pulseArray)
 	{
-		RhythmDescription::GridGenConfig pulseGridConf=dynamic_cast<const RhythmDescription::GridGenConfig&>(pulseGridGen.GetConfig());
+		RhythmDescription::PulseGridGeneratorConfig pulseGridConf;
 		pulseGridConf.SetStart(start);
 		pulseGridConf.SetGap(gap);
 		pulseGridConf.SetEnd(end);

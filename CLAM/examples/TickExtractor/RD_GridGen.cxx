@@ -32,7 +32,7 @@ namespace CLAM
 	namespace RhythmDescription
 	{
 
-		void GridGenConfig::DefaultInit()
+		void PulseGridGeneratorConfig::DefaultInit()
 		{
 			AddStart();
 			AddGap();
@@ -45,24 +45,15 @@ namespace CLAM
 		}
 
 
-		GridGen::GridGen() :
+		PulseGridGenerator::PulseGridGenerator() :
 			mStart("Start",this),
 			mGap("Gap",this),
 			mEnd("End",this)
 		{
-			Configure(GridGenConfig());
 		}
 
-		GridGen::GridGen(const GridGenConfig &c):
-			mStart("Start",this),
-			mGap("Gap",this),
-			mEnd("End",this)
-		{
-			Configure(c);
-		}
-
-// Configure the Processing Object according to the Config object
-		bool GridGen::ConcreteConfigure(const ProcessingConfig& c)
+		// Configure the Processing Object according to the Config object
+		bool PulseGridGenerator::ConcreteConfigure(const ProcessingConfig& c)
 		{
 			CopyAsConcreteConfig( mConfig, c );
 			mStart.DoControl(mConfig.GetStart());
@@ -71,12 +62,17 @@ namespace CLAM
 			return true;
 		}
 
-		bool  GridGen::Do(void) 
+		bool  PulseGridGenerator::Do(void) 
 		{
 			return false;
 		}
 
-		bool GridGen::Do(Array<TimeIndex>& out)
+		const char* PulseGridGenerator::GetClassName() const
+		{
+			return "PulseGridGenerator";
+		}
+
+		bool PulseGridGenerator::Do(Array<TimeIndex>& out)
 		{
 			TData start=mStart.GetLastValue();
 			TData gap=mGap.GetLastValue();
@@ -87,12 +83,19 @@ namespace CLAM
 			out.Resize(nUnits);
 			out.SetSize(nUnits);
 	
+			CLAM_ASSERT( out.Size() == nUnits,
+				     "PulseGridGenerator::Do() : output array of TimeIndex has not enough space to hold the grid" );
+
 			out[0].SetWeight(1.0);
 			out[0].SetPosition(start);
-			for (int i=1;i<nUnits;i++)
+
+
+			for (int i=1;
+			     i < nUnits;
+			     i++)
 			{
 				out[i].SetWeight(1.0);//All weights equal 1
-				out[i].SetPosition(i*gap+start);
+				out[i].SetPosition( (i*gap) + start);
 			}
 			return true;		
 		}
