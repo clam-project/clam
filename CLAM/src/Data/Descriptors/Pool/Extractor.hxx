@@ -38,10 +38,10 @@ public:
 	}
 
 private:
-	unsigned _current;
-	const DescriptionDataPool * _pool;
 	std::string _scope;
 	std::string _attribute;
+	unsigned _current;
+	const DescriptionDataPool * _pool;
 	const AttributeType * _data;
 };
 
