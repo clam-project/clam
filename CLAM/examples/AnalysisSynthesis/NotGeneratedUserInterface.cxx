@@ -75,7 +75,7 @@ void UserInterface::LoadSound(void)
 		mSynthesize->deactivate();
 		mOutputSM->deactivate();
 	}
-
+	Fl::redraw();
 }
 
 void UserInterface::StoreConfiguration(void)
