@@ -51,9 +51,8 @@ namespace CLAM {
 		std::string old_name = mName;
 		mStatus = "";
 
-		if (mState == Running ||
-			mState == Disabled)
-			throw(ErrProcessingObj("Processing::Configure(): Object is running.",this));
+		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
 
 		// As we have no acces to the actual dynamic configuration object
 		// but via its abstract interface, we have no way to do apriori an
