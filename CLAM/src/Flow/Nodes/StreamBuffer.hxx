@@ -110,10 +110,14 @@ namespace CLAM {
 			                  "StreamBuffer::GetAndActivate(): "
 			                  "Region inconsistent before activation.");
 			r->Activate();
-			CLAM_DEBUG_ASSERT(r->FulfilsInvariant(),
-			                  "StreamBuffer::GetAndActivate(): "
-			                  "Region inconsistent after activation.");
-			return mBuffer.GetData(r);
+			/** if r does not fulfil invariant after activation, it means that
+			 *	it cannot be used consistently. The Leave() method should be called
+			 *	afterwards, else results are not predictable when trying to use the region
+			 *	as it does not point to a valid memory.*/
+			if (!r->FulfilsInvariant())	return false;
+			else {
+				return mBuffer.GetData(r);
+				return true;}
 		}
 
 		template<class REGION>
@@ -126,12 +130,11 @@ namespace CLAM {
 			                  "StreamBuffer::GetAndActivate(): "
 			                  "Region inconsistent before activation.");
 			r->Activate();
-/*			CLAM_DEBUG_ASSERT(r->FulfilsInvariant(),
-			                  "StreamBuffer::GetAndActivate(): "
-			                  "Region inconsistent after activation.");
-*/
 			
-			//XA: I don't know if this is sufficiently general as to be here
+			/** if r does not fulfil invariant after activation, it means that
+			 *	it cannot be used consistently. The Leave() method should be called
+			 *	afterwards, else results are not predictable when trying to use the region
+			 *	as it does not point to a valid memory.*/
 			if (!r->FulfilsInvariant())	return false;
 			else {
 				mBuffer.GetData(r,a);
@@ -169,17 +172,9 @@ namespace CLAM {
 			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
 							  "StreamBuffer::LeaveAndAdvance(): "
 							  "Invalid region argument ");
-			//XA: maybe this first line is not necessary?
 			mBuffer.Leave(r);
 			r->Leave();
 		}
-
-	private:
-
-		// This is private only because it returns a non-const
-		// value. The non-template GetAndActivate methods above
-		// exist only to force the return value constness when it
-		// is needed.
 
 	};
 
@@ -268,10 +263,12 @@ namespace CLAM {
 
 		mBuffer.Configure(max_window_size);
 
-/*  Warning: This initialization here suposes that the Configure is always performed 
-	after having instantiated the regions. I don't know if that is a smart
-	thing to suppose. Another thing that could be done is to initialize Regions
-	every time a new one is instantiated. */
+/*  XA: Warning!!!: This initialization here suposes that the Configure is always performed 
+	after having instantiated the regions. This would actually be good as this is the
+	place where we assert that all regions are consistent, but we have no way of knowing
+	whether the StreamBuffer has been added a new region after configuration. 
+	Another thing that could be done is to initialize Regions every time a new one is 
+	instantiated. */
 		mRegions.Init();
 
 		CLAM_ASSERT(mBuffer.FulfilsInvariant(),
