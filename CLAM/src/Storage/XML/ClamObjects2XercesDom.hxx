@@ -24,7 +24,13 @@
 
 #include "XercesEncodings.hxx"
 #include "XMLable.hxx"
+#include "Assert.hxx"
+#include "Component.hxx"
 #include <xercesc/dom/DOMNode.hpp>
+#include <xercesc/dom/DOMDocument.hpp>
+#include <xercesc/dom/DOMText.hpp>
+#include <xercesc/dom/DOMElement.hpp>
+#include <xercesc/dom/DOMImplementation.hpp>
 
 
 #include <vector>
@@ -34,20 +40,84 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 namespace CLAM
 {
 
-class ClamObject2XercesDom
+class ClamObject2XercesDom : public Storage
 {
-	DOMNode * node;
+	xercesc::DOMElement * _currentElement;
+	xercesc::DOMDocument * _document;
+	bool _lastWasContent;
 public:
-	void Store(XMLable & xmlable)
+	ClamObject2XercesDom(const std::string name)
 	{
+		xercesc::XMLPlatformUtils::Initialize();
+		xercesc::DOMImplementation * imp = 
+			xercesc::DOMImplementation::getImplementation();
+		_document = imp->createDocument(
+			0, //X("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
+			X(name.c_str()), // root element name
+			0  // document type object (DTD).
+		);
+		_lastWasContent=false;
+		_currentElement=_document->getDocumentElement();
+	}
+	~ClamObject2XercesDom()
+	{
+		_document->release();
+		xercesc::XMLPlatformUtils::Terminate();
+	}
+	bool Load(Storable & storable)
+	{
+		return false;
 	}
 
-	xercesc::DOMNode * getDom()
+	void Store(const Storable & storable)
 	{
-		return 0;
+		const XMLable & xmlable = dynamic_cast<const XMLable &>(storable);
+		const char * name = xmlable.XMLName();
+		if (!name)
+		{
+			AddContentToElement(_currentElement, xmlable.XMLContent());
+			return;
+		}
+		if (xmlable.IsXMLElement())
+		{
+			_lastWasContent=false;
+			xercesc::DOMElement * domElement = _document->createElement(X(name));
+			_currentElement->appendChild(domElement);
+			AddContentToElement(domElement,xmlable.XMLContent());
+			try { 
+				const Component & component = 
+					dynamic_cast<const Component &>(xmlable);
+				_currentElement = domElement;
+				component.StoreOn(*this);
+			}
+			catch (std::bad_cast &) { /* Do nothing */ }
+			return;
+		}
+		if (xmlable.IsXMLAttribute())
+		{
+			_currentElement->setAttribute(X(name),X(xmlable.XMLContent().c_str()));
+			return;
+		}
+		CLAM_ASSERT(false,"Component not used");
 	}
 
-	
+	void AddContentToElement(xercesc::DOMElement * e, const std::string content)
+	{
+		if (content=="") return;
+		if (_lastWasContent)
+		{
+			xercesc::DOMText * domContent = _document->createTextNode(X(" "));
+			e->appendChild(domContent);
+		}
+		xercesc::DOMText * domContent = _document->createTextNode(X(content.c_str()));
+		e->appendChild(domContent);
+		_lastWasContent = true;
+	}
+
+	xercesc::DOMDocument * getDom()
+	{
+		return _document;
+	}
 };
 
 	
