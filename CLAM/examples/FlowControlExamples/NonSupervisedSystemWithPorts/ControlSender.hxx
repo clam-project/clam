@@ -12,14 +12,22 @@ private:
 	CLAM::TData _samplingRate;
 	CLAM::TData _phase;
 	CLAM::TData _deltaPhase;
+	int _frameSize;
 
+public:
 	CLAM::OutControl _outControl1;
 	CLAM::OutControl _outControl2;
 
 public:
-	ControlSender(CLAM::TData freq = 20.0, 
-		      CLAM::TData samplingRate = 44100,
-		      CLAM::TData phase = 0.0);
+	ControlSender(CLAM::TData freq,
+		      CLAM::TData samplingRate,
+		      CLAM::TData phase = 0.0,
+		      int _frameSize = 1);
+
+	void Configure(CLAM::TData freq,
+		       CLAM::TData samplingRate,
+		       CLAM::TData phase,
+		       int _frameSize);
 	bool Do();
 	virtual ~ControlSender(){}
 };
