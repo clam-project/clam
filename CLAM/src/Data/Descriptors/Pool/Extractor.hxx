@@ -43,17 +43,27 @@ public:
 	{
 		if (_chained) delete _chained;
 	}
-	void Indirect(
+	ReadHook & Bind(
+		const std::string & scope, 
+		const std::string & attribute)
+	{
+		Hook<AttributeType>::Bind(scope,attribute);
+		return *this;
+	}
+	ReadHook & Indirect(
 		const std::string & scope, 
 		const std::string & attribute)
 	{
 		if (_chained) 
 		{
 			_chained->Indirect(scope,attribute);
-			return;
 		}
-		_chained = new ReadHook<unsigned>;
-		_chained->Bind(scope,attribute);
+		else
+		{
+			_chained = new ReadHook<unsigned>;
+			_chained->Bind(scope,attribute);
+		}
+		return *this;
 	}
 
 	const AttributeType & GetForReading() const
@@ -61,7 +71,7 @@ public:
 		return _data [GetCurrent()];
 	}
 
-	virtual void Init(const DescriptionDataPool & pool) 
+	void Init(const DescriptionDataPool & pool) 
 	{
 		_current = 0;
 		_pool = &pool;
@@ -99,7 +109,6 @@ protected:
 private:
 	unsigned _current;
 };
-
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
