@@ -50,7 +50,7 @@ ControlMapper::ControlMapper(const ControlMapperConfig& cfg)
 	Configure(cfg);
 }
 
-bool ControlMapper::ConcreteConfigure( const ProcessingConfig& cfg )
+bool ControlMapper::ConcreteConfigure( const ProcessingConfig& c )
 {
 	CopyAsConcreteConfig(mConfig, c);
 

@@ -99,7 +99,7 @@ namespace CLAM {
 			Configure(cfg);
 		}
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg)
+		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
 			CopyAsConcreteConfig(mConfig, c);
 			return true;
