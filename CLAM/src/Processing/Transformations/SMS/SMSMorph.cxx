@@ -147,11 +147,11 @@ bool SMSMorph::InterpolateSinusoidal(const Frame& in1,const Frame& in2, Frame& o
 
 	InterpolateSpectralPeaks(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray(), magFactor, freqFactor, pitchFactor, pitch1,pitch2);
 	//Sets new fund freq
+	out.GetFundamental().SetnCandidates(0);
 	if(mHarmonicMorph)
-		out.SetFundamentalFreq(0,newPitch);
+		out.GetFundamental().AddElem(0,newPitch);
 	else
-		out.SetFundamentalFreq(0,0);
-
+		out.GetFundamental().AddElem(0,0);
 	return true;
 }
 
