@@ -72,7 +72,6 @@ private:
 	 * This method checks that all the regions have even size and are located at the correct position (the beginning of the buffer )
 	 */
 	void CheckRegionsAreEven();
-	void PositionWritingRegion( int centralIndex );
 	void CenterReadingRegions( int centralIndex );
 
 	/*
@@ -159,27 +158,6 @@ void WritingRegion< Token, DataStructure >::ClearData()
 }
 
 template< typename Token, template <class> class DataStructure>
-void WritingRegion< Token, DataStructure >::PositionWritingRegion( int centralIndex )
-{
-	Pos( 0 );
-	BeginDistance( 0);
-
-	int currentHop = Hop();
-	int currentSize = Size();
-
-	Size( centralIndex);	
-	Hop( centralIndex );
-
-	ClearData();
-	
-	Pos( centralIndex );
-	BeginDistance( centralIndex );
-
-	Size( currentSize );
-	Hop( currentHop );
-}
-
-template< typename Token, template <class> class DataStructure>
 void WritingRegion< Token, DataStructure >::CenterReadingRegions( int centralIndex )
 {
 	ReadingRegionsIterator it;
@@ -197,8 +175,26 @@ void WritingRegion< Token, DataStructure >::CenterEvenRegions()
 	CheckRegionsAreEven();
 	int centralIndex = GetGreatestReaderRegionSize()/2;
 
-	PositionWritingRegion( centralIndex );	
+	Pos( 0 );
+	BeginDistance( 0);
+
+	int currentHop = Hop();
+	int currentSize = Size();
+
+	Size( centralIndex);	
+	Hop( centralIndex );
+
+	ClearData();
+	
+
 	CenterReadingRegions( centralIndex );
+
+	Produce();
+	Size( currentSize );
+	Hop( currentHop );
+
+	
+
 }
 
 template< typename Token, template <class> class DataStructure>
