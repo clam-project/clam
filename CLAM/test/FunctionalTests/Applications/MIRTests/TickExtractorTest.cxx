@@ -2,6 +2,7 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 #include "RhythmDescriptionHelpers.hxx"
 #include "TickExtractor.hxx"
+#include "TickExtractorConfig.hxx"
 #include "XMLStorage.hxx"
 
 namespace CLAMTest
@@ -33,6 +34,7 @@ namespace CLAMTest
 	protected:
 
 		std::string mPathToTests;
+		std::string mOnsetDetectionAlgorithm;
 		CLAM::Pulse extractedBeats;
 
 	public:
@@ -40,6 +42,7 @@ namespace CLAMTest
 		void setUp()
 		{
 			mPathToTests = "../../../../../CLAM-TestData/RhythmDescription";
+			mOnsetDetectionAlgorithm = "MTG";
 		}
 
 		void tearDown()
@@ -59,7 +62,9 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
 
 			
 			RhythmDescriptionTests::RhythmEventsB2B res;
@@ -99,8 +104,10 @@ namespace CLAMTest
 						 inst.IsValid() == true );
 
 			CLAM::Pulse extractedEvents;
-			
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod(mOnsetDetectionAlgorithm) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -140,7 +147,10 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod(mOnsetDetectionAlgorithm) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -181,7 +191,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -231,7 +245,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -281,7 +299,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -331,7 +353,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -372,7 +398,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -413,7 +443,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -454,7 +488,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -495,7 +533,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -536,7 +578,11 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
+			CLAM::TickExtractorConfig cfg;
+			cfg.SetOnsetDetection( CLAM::OnsetDetectMethod( mOnsetDetectionAlgorithm ) );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), cfg, extractedEvents, extractedBeats );
+
+
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 

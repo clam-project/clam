@@ -51,13 +51,6 @@ namespace CLAM
 
 			bool ConcreteConfigure(const ProcessingConfig&);
 
-			bool Compute(const Array<TimeIndex>& transients, 
-				     IOIHistogram& interOnsetHist,
-				     Array<TimeIndex>& ticks,
-				     Array<TimeIndex>& beats,
-				     TData& globalTick,
-				     TData& globalTempo);
-
 			void StorePulseIndexes( const int nLoops, 
 						const Array<TimeIndex>& pulsesArray,
 						Array<TimeIndex>& mPulses );

@@ -64,8 +64,6 @@ namespace CLAM
 	{
 		if ( configuration.GetOnsetDetection().GetString() == "MTG"  )
 		{
-			std::cout << "Onset detection with Cuidado's algorithm" << std::endl;
-
 			Segment seg;
 			seg.AddAudio();
 			seg.UpdateData();
@@ -129,9 +127,7 @@ namespace CLAM
 			TSize hopSize = (windowSize%2==0) ? windowSize/2 : (windowSize+1) / 2 ; // 50% overlap
 			odCfg.SetWindowSize( windowSize );
 			odCfg.SetHopSize( hopSize );
-
-			std::cout << "Onset detection with QMUL: " << odCfg.GetMethod() << std::endl;
-			
+	
 			onsetDetector.Configure( odCfg );
 			
 			onsetDetector.Start();

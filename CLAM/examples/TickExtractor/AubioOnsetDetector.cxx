@@ -154,7 +154,6 @@ namespace CLAM
 			for ( frames = 0; frames < 2; frames++ )
 				aubio_pvoc_do( mPhaseVocoder, mInputAudio, mSpectrum );
 
-			std::cerr << "Onset type: " << mOnsetType << std::endl;
 			frames++;
 			
 			std::copy( inSamples, inSamples + mConfig.GetHopSize(), fvec_get_channel( mInputAudio, 0 ) );		       
