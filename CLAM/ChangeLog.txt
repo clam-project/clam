@@ -18,7 +18,8 @@
       ** GUI - Score Editor:
 	  *** UI screen texts tweaked so they result more informative
 	  *** Added new and improved SMS Morph transformation control widget, 
-	      allowing user a finer grain level of control on that SMS transformation
+	      allowing user a finer grain level of control on that SMS transformation. Also SMS Morph
+	      transformation description has been completely rewritten.
 	  *** Bug fixed: under some circumstances configuration widgets might be 
               unadvertendly duplicated, leading to invalid transformation scores
 	  *** Editor widget layout tweaked a bit to make bigger the screen area devoted
