@@ -11,6 +11,10 @@ moc/Qt_ProcessingConfigPresentation_moc.o: moc/Qt_ProcessingConfigPresentation_m
 
 moc/Qt_ProcessingConfigPresentation_moc.cxx: ../../../../examples/NetworkEditor/GUI/Qt_Presentations/Qt_ProcessingConfigPresentation.hxx
 
+moc/Qt_OutControlSenderPresentation_moc.o: moc/Qt_OutControlSenderPresentation_moc.cxx ../../../../examples/NetworkEditor/GUI/Qt_Presentations/ConcretePresentations/Qt_OutControlSenderPresentation.hxx
+
+moc/Qt_OutControlSenderPresentation_moc.cxx: ../../../../examples/NetworkEditor/GUI/Qt_Presentations/ConcretePresentations/Qt_OutControlSenderPresentation.hxx
+
 
 
 
