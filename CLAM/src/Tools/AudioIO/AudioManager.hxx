@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef __AudioManager__
+#ifndef __AudioManager___
 #define __AudioManager___
 
 #include <vector>
