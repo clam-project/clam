@@ -157,7 +157,7 @@ protected:
 			
 			inCtrlCfg.SetName("inctrl");
 			inCtrlCfg.SetDevice("default:default");
-			inCtrlCfg.SetChannelMask(MIDI::ChannelMask(2));
+			inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
 			inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
 			inCtrlCfg.SetFilter(11);
 
@@ -176,7 +176,6 @@ protected:
 			breathController.mInNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
 
 			breathController.mAirSpeed.LinkOutWithInControl( 0, &mMIDIHandler, 3 );
-
 
 			mFileAudioOut.Start();
 			mMIDIManager.Start();
