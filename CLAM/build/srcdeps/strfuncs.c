@@ -25,6 +25,15 @@ char* stradd(const char* a)
 	return cur;
 }
 
+char* stradd_range( const char* begin, const char* end )
+{
+	if ( begin )
+		while ( begin != end && curn-- )
+			*cur++ = *begin++;
+	*cur = 0;
+	return cur;
+}
+
 char* strend(void)
 {
 	char* ret = cur;

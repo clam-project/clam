@@ -8,6 +8,8 @@ void strstart(char* tgt,int n);
 
 char* stradd(const char* a);
 
+char* stradd_range( const char* begin, const char* end );
+
 char* strend(void);
 
 #endif
