@@ -17,7 +17,8 @@ public:
 	typedef typename CBL::Functor1<ParmType1>                    tCallbackType;
 
 public:
-	
+	virtual ~Signalv1() {}
+
 	template < class RefType, typename PtrMember >
 		Connection Connect( RefType thisRef, PtrMember pMember )
 	{
@@ -37,12 +38,12 @@ public:
 
 		return s;
 	}
-	
+
 	void Emit( ParmType1 parm )
 	{
 		if ( mSuper.HasNoCallbacks() )
 			return;
-		
+
 		tSuperType::tCallList calls = mSuper.GetCalls();
 		tSuperType::tCallIterator i = calls.begin();
 		tSuperType::tCallIterator end = calls.end();
@@ -52,7 +53,7 @@ public:
 				(*(*i))( parm );
 				i++;
 			}
-		
+
 	}
 
 	void FreeConnection( Connection* pConnection )
