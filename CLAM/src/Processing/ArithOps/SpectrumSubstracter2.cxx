@@ -130,6 +130,8 @@ namespace CLAM {
 	bool SpectrumSubstracter2::Do(void)
 	{
 		CLAM_ASSERT(false,"SpectrumSubstracter2::Do(): Not implemented");
+
+		return true;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -318,6 +320,8 @@ namespace CLAM {
 	bool SpectrumSubstracter2::SetPrototypes()
 	{
 		CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes(): Not implemented");
+
+		return true;
 	}
 
 	bool SpectrumSubstracter2::UnsetPrototypes()

@@ -131,6 +131,8 @@ namespace CLAM {
 	bool SpectrumAdder2::Do(void)
 	{
 		CLAM_ASSERT(false,"SpectrumAdder2::Do(): Not implemented");
+		
+		return true;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 

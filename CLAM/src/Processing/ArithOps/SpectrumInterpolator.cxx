@@ -122,6 +122,8 @@ namespace CLAM {
 	bool SpectrumInterpolator::Do(void)
 	{
 		CLAM_ASSERT(false, "SpectrumInterpolator::Do(): Not implemented");
+
+		return true;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -310,6 +312,8 @@ namespace CLAM {
 	bool SpectrumInterpolator::SetPrototypes()
 	{
 		CLAM_ASSERT(false, "SpectrumInterpolator::SetPrototypes(): Not implemented");
+
+		return true;
 	}
 
 	bool SpectrumInterpolator::UnsetPrototypes()
