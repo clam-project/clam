@@ -2,38 +2,39 @@
 #define _Extractor_hxx_
 
 #include <string>
+#include "Pool.hxx"
 
 namespace CLAM
 {
-	template <typename AttributeType> class ReadBinder;
-	class AbstractReadBinder
-	{
-	public:
-		virtual ~AbstractReadBinder() {}
-		template <typename AttribType>
-		const AttribType & TakeValue()
-		{
-			return ((ReadBinder<AttribType>*)this)->TakeValue();
-		}
-	};
 
-	template <typename AttributeType>
-	class ReadBinder : public AbstractReadBinder
+class Binder 
+{
+public:
+	void Init(DescriptionDataPool & pool, 
+			const std::string & scope,
+			const std::string & attribute)
 	{
-		const AttributeType * _value;
-	public:
-		ReadBinder()
-		{
-		}
-		void BindTo(const AttributeType & value)
-		{
-			_value = &value;
-		}
-		const AttributeType & TakeValue()
-		{
-			return *_value;
-		}
-	};
+		_pool = &pool;
+		_scope = scope;
+		_attribute = attribute;
+		_current = 0;
+	}
+	template <typename AttributeType>
+	const AttributeType & GetForReading()
+	{
+		return _pool->template GetAttributePool<AttributeType>(_scope,_attribute)[_current];
+	}
+	void Next()
+	{
+		_current++;
+	}
+private:
+	unsigned _current;
+	DescriptionDataPool * _pool;
+	std::string _scope;
+	std::string _attribute;
+		
+};
 
 
 }
