@@ -55,11 +55,16 @@ bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 	int hopSize=mConfig.GetHopSize();
 	int frameSize=mConfig.GetFrameSize();
 
-	mInput.SetSize( frameSize );
-	mInput.SetHop( frameSize );
+	mInput.SetSize( frameSize*2 );
+	mInput.SetHop( frameSize*2 );
 
 	mOutput.SetSize( frameSize );
-	mOutput.SetHop( hopSize );
+	mOutput.SetHop( frameSize );
+
+	mTmp.SetSize( frameSize*2 );
+
+	for(int i=0;i<mTmp.GetSize();i++)
+		mTmp.GetBuffer()[i]=0.0f;
 	
 	return true;
 }
@@ -76,15 +81,27 @@ bool OverlapAdd::Do(void)
 
 bool OverlapAdd::Do( const Audio &in, Audio & out)
 {
-	for( int i=0;i<out.GetSize()/2-1;i++)
+	// TODO: refactor
+	int halfSize = in.GetSize()/2;
+	CLAM_DEBUG_ASSERT( out.GetSize() == halfSize, "OverlapAdd::Do - Audio Out size must be half the input size" );
+	CLAM_DEBUG_ASSERT( mConfig.GetFrameSize() == halfSize, "OverlapAdd::Do - Config FrameSize must be half the input size" );
+	
+	for( int i=0;i<halfSize;i++)
 	{
-		out.GetBuffer()[i] += in.GetBuffer()[i];
+		mTmp.GetBuffer()[i] = mTmp.GetBuffer()[i+halfSize] + in.GetBuffer()[i];
 	}
 	
-	for( int i=out.GetSize()/2;i<out.GetSize();i++)
+	for( int i=halfSize;i<in.GetSize();i++)
 	{
-		out.GetBuffer()[i] = in.GetBuffer()[i];
+		mTmp.GetBuffer()[i] = in.GetBuffer()[i];
 	}
+
+	for( int i=0;i<out.GetSize();i++)
+	{
+		out.GetBuffer()[i] = mTmp.GetBuffer()[i];
+	}
+
+	return true;
 } 
 
 } // namespace CLAM

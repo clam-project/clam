@@ -100,6 +100,8 @@ namespace CLAM {
 
 		AudioInPort mInput;
 		AudioOutPort mOutput;
+
+		Audio mTmp;
 	};
 } //end of namespace CLAM
 
