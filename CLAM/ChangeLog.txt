@@ -1,6 +1,6 @@
 2003-04-16  CLAM_0_4_3
 'SMS Streaming revolution'
-  * Processing - Analysis and Synthesis
+  * Processing - Analysis and Synthesis:
       ** SMSAnalysis uses a StreamBuffer with one write region and two read regions
       ** SpectralAnalysis does not have an internal CircularBuffer anymore
       ** SpectralSynthesis does not have OverlapAdd as an internal Processing anymore
@@ -8,19 +8,20 @@
          sinusoidal and residual.
       ** OverlapAdd now uses a StreamBuffer with one WriteRegion, one AddRegion and
          one ReadRegion.
-  * Flow - Nodes
+  * Flow - Nodes:
       ** A new AddStreamRegion has been introduced (used for overlap and add).
       ** StreamRegions can be now used using center position logic.
       ** StreamRegions belonging to a StreamBuffer are now automatically initialized
          so the center time is zero and the first half of the biggest read region is
          already written with zeros.
-
-  * Standard
+  * Standard:
+      ** Flags: Flags derived classes should define the copy constructors explicitly.
+         One parameter template constructors is not enough (it never was)
       ** Array: debugged the copy constructor when array does not own memory and
          introduced a CopyChunk method, similar to GiveChunk but with memory copying.
 
 
-2003-03-12  CLAM_0_4_3
+2003-03-12
 'Fast clean up'
 
   * Standard:
