@@ -7,13 +7,17 @@
 namespace CLAMGUI
 {
 
+/**
+ * An Slot is something you may connect with a signal.
+ * @see Signal
+ */
 class Slot
 {
 		typedef std::list<Connection> tConnectionList;
 
 public:
 
-		void Bind( Connection& conn );
+		void Bind(const Connection& conn );
 
 		void Unbind();
 

@@ -13,7 +13,7 @@ namespace CLAMGUI
 				mActiveConnections.clear();
 		}
 
-		void Slot::Bind( Connection& conn )
+		void Slot::Bind( const Connection& conn )
 		{
 				mActiveConnections.push_back( conn );
 		}
