@@ -80,7 +80,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	SignalAddNewProcessing.Connect( network.SlotAddProcessing );	
 	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
 
-	setFocusPolicy( NoFocus );
+//	setFocusPolicy( NoFocus );
 }
 
 ProcessingTree::~ProcessingTree()

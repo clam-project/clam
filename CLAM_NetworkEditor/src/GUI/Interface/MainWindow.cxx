@@ -41,8 +41,6 @@ MainWindow::MainWindow()
 	  mDockProcMenu(0),
 	  QMainWindow( 0, "", WGroupLeader )
 {
-	mNetwork.setFocus();
-
 	setCentralWidget( &mNetwork );
 	setCaption( "CLAM Network Editor" );
 	resize( 800, 600 );
@@ -92,6 +90,8 @@ MainWindow::MainWindow()
 
 	ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
 	mDockProcMenu->setWidget( procTree );
+	setActiveWindow();
+	mNetwork.Show();
 }
 
 MainWindow::~MainWindow()

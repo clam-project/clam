@@ -66,8 +66,7 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	SlotSendMessageToStatus.Wrap( this, &Qt_NetworkPresentation::SendMessageToStatus );
 	SlotMovingMouseWithButtonPressed.Wrap( this, &Qt_NetworkPresentation::MovingMouseWithButtonPressed );
 	setAcceptDrops(TRUE);
-	setFocus();
-	grabKeyboard();
+	setFocusPolicy(QWidget::ClickFocus);
 }
 
 void Qt_NetworkPresentation::SendMessageToStatus( const std::string & message )
@@ -229,6 +228,7 @@ void Qt_NetworkPresentation::Show()
 
 	show();
 }
+
 void Qt_NetworkPresentation::keyPressEvent( QKeyEvent * k)
 {
 	switch ( k->key() ) 
