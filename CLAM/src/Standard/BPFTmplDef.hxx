@@ -112,7 +112,7 @@ namespace CLAM
 * @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 	template <class TX,class TY>
-	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>(TSize size,const EInterpolation& eInterpolation) : 
+	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>(TSize size,const EInterpolation& eInterpolation) :
 		mArray(size),
 		mSearch(mArray),
 		mClosestPoints(10),
@@ -164,9 +164,8 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::Init()
 	{
-		int i;
 		mArray.SetSize(AllocatedSize());
-		for(i=0;i<AllocatedSize();i++)
+		for(int i=0;i<AllocatedSize();i++)
 		{
 			mArray[i].SetX((TX)i);
 			SetValue(i,0);
@@ -178,7 +177,7 @@ namespace CLAM
 * Inserts a point in the correct position. Note that points in the array are always sorted
 * according to their X value. Must therefore perform a previous serch.
 * @param : point to insert
-* @see : CLAM::SearchArray 
+* @see : CLAM::SearchArray
 */
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::Insert(const PointTmpl<TX,TY> &point)
@@ -204,8 +203,8 @@ namespace CLAM
 	}
 
 /**
-* Inserts a point made of an X and a Y value in the correct position. Note that 
-* points in the array are always sorted according to their X value. Must therefore 
+* Inserts a point made of an X and a Y value in the correct position. Note that
+* points in the array are always sorted according to their X value. Must therefore
 * perform a previous serch.
 * @param : X value
 * @param : Y value
@@ -214,10 +213,10 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::Insert(const TX &x,const TX &y)
 	{
-		PointTmpl<TX,TY> tmpPoint(x,y);	
+		PointTmpl<TX,TY> tmpPoint(x,y);
 		Insert(tmpPoint);
 	}
-	
+
 /**
 * Deletes the point found at the given index
 * @param : index of the point to delete
@@ -238,7 +237,7 @@ namespace CLAM
 		mArray.DeleteElem(GetPosition(x));
 		mIsSplineUpdated=false;
 	}
-	
+
 /**
 * Deletes the points between indices given
 * @param : left index
@@ -247,8 +246,7 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::DeleteBetweenIndex(TIndex leftIndex,TIndex rightIndex)
 	{
-		int i;
-		for(i=leftIndex;i<=rightIndex;i++)
+		for (int i=leftIndex; i<=rightIndex; i++)
 		{
 			DeleteIndex(leftIndex);
 		}
@@ -268,7 +266,7 @@ namespace CLAM
 		mIsSplineUpdated=false;
 	}
 
-/** 
+/**
 * Setting a different interpolation type. Auxiliary member arrays mc and md are resized if
 * necessary.
 * @param : new interpolation type
@@ -282,46 +280,26 @@ namespace CLAM
 			case(EInterpolation::eLinear)://linear interpolation between two closest points
 			{
 				mOrder=1;
-				mc.Resize(2);
-				mc.SetSize(2);
-				md.Resize(2);
-				md.SetSize(2);
 				break;
 			}
 			case(EInterpolation::ePolynomial2)://parabolic interpolation
 			{
 				mOrder=2;
-				mc.Resize(3);
-				mc.SetSize(3);
-				md.Resize(3);
-				md.SetSize(3);
 				break;
 			}
 			case(EInterpolation::ePolynomial3)://3rd order polynomial interpolation
 			{
 				mOrder=3;
-				mc.Resize(4);
-				mc.SetSize(4);
-				md.Resize(4);
-				md.SetSize(4);
 				break;
 			}
 			case(EInterpolation::ePolynomial4)://4th order polynomial interpolation
 			{
 				mOrder=4;
-				mc.Resize(5);
-				mc.SetSize(5);
-				md.Resize(5);
-				md.SetSize(5);
 				break;
 			}
 			case(EInterpolation::ePolynomial5)://5th order polynomial interpolation
 			{
 				mOrder=5;
-				mc.Resize(6);
-				mc.SetSize(6);
-				md.Resize(6);
-				md.SetSize(6);
 				break;
 			}
 			case(EInterpolation::ePolynomialn):/*nth order polynomial interpolation where n is number
@@ -329,21 +307,22 @@ namespace CLAM
 			{
 				CLAM_ASSERT(Size()<11,"BPF::SetIntpType:Cannot ser more than 10th order interpolation");
 				mOrder=Size()-1;
-				mc.Resize(mOrder+1);
-				mc.SetSize(mOrder+1);
-				md.Resize(mOrder+1);
-				md.SetSize(mOrder+1);
 				break;
 			}
 		}
+		const unsigned newSize = mOrder+1;
+		mc.Resize(newSize);
+		mc.SetSize(newSize);
+		md.Resize(newSize);
+		md.SetSize(newSize);
 	}
 
-	
-/** 
+
+/**
 * Getting the value of a point from the value of its X component. Performs the kind
 * of interpolation passed as parameter
 * @param : X value
-* @param : interpolation type 
+* @param : interpolation type
 * @see : GetValueFromIndex
 */
 	template <class TX,class TY>
@@ -450,7 +429,7 @@ namespace CLAM
 					TIndex i;
 					Array<TIndex> indexArray(mArray.Size());
 					TData error=0;
-					for(i=0;i<mArray.Size();i++)
+					for(TIndex i=0; i<mArray.Size(); i++)
 					{
 						indexArray[i]=i;
 					}
@@ -488,8 +467,7 @@ namespace CLAM
 		int safelimit = Size()-(mOrder+1);
 		if (first>safelimit) first = safelimit;
 
-		int i;
-		for(i=0;i<mOrder+1;i++) {
+		for(int i=0; i<mOrder+1; i++) {
 			mClosestPoints[i]=first+i;
 		}
 
@@ -520,12 +498,12 @@ namespace CLAM
 		else if (dL<0 && dR >= 0)
 		{
 			i = 0;
-			j = oP + toTakeToTheRight + (-1)*dL;	
+			j = oP + toTakeToTheRight + (-1)*dL;
 		}
 		else if (dL>=0 && dR < 0)
 		{
 			j = N-1;
-			i = oP - toTakeToTheLeft - (-1)*dR - 1 ;	
+			i = oP - toTakeToTheLeft - (-1)*dR - 1 ;
 
 		}
 		else if (dL<0 && dR < 0)
@@ -639,7 +617,7 @@ namespace CLAM
 		TY y=GetValueFromIndex(closestPointsIndex[iClosest]);
 		for(int m=0; m<mOrder; m++)
 		{
-			for(int i=0;i<mOrder-m;i++)
+			for(int i=0; i<mOrder-m; i++)
 			{
 				TX ho=GetXValue(closestPointsIndex[i])-x;
 				TX hp=GetXValue(closestPointsIndex[i+m+1])-x;
@@ -671,7 +649,6 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::CreateSplineTable()
 	{
-		int i,k;
 		TY p,qn,un,sig;
 		int n=mArray.Size();
 
@@ -692,7 +669,7 @@ namespace CLAM
 			                        - mLeftDerivative );
 		}
 
-		for(i=2;i<=n-1;i++)
+		for(int i=2;i<=n-1;i++)
 		{
 			sig=(GetXValue(i-1)-GetXValue(i-2))/(GetXValue(i)-GetXValue(i-2));
 			p=sig*mSplineTable[i-2]+2;
@@ -712,7 +689,7 @@ namespace CLAM
 			      ( GetXValue(n-1)         - GetXValue(n-2)));
 		}
 		mSplineTable[n-1]=((un-qn*u[n-2])/(qn*mSplineTable[n-2]+1));
-		for(k=n-1;k>=1;k--)
+		for(int k=n-1; k>=1; k--)
 		{
 			mSplineTable[k-1]=mSplineTable[k-1]*mSplineTable[k]+u[k-1];
 		}
@@ -724,21 +701,18 @@ namespace CLAM
 	template <class TX,class TY>
 	TY BPFTmpl<TX,TY>::BPFSplineInt(const TX& x) const
 	{
-		int klo,khi,k;
-		TX h,b,a;
-
-		klo=1;
-		khi=mArray.Size();
+		int klo=1;
+		int khi=mArray.Size();
 		while(khi-klo>1)
 		{
-			k=(khi+klo)>>1;
+			int k=(khi+klo)>>1;
 			if(GetXValue(k-1)>x) khi=k;
 			else klo=k;
 		}
-		h=GetXValue(khi-1)-GetXValue(klo-1);
+		TX h=GetXValue(khi-1)-GetXValue(klo-1);
 		CLAM_ASSERT(h!=0.0, "Error interpolating Spline");
-		a=(GetXValue(khi-1)-x)/h;
-		b=(x-GetXValue(klo-1))/h;
+		TX a=(GetXValue(khi-1)-x)/h;
+		TX b=(x-GetXValue(klo-1))/h;
 		return (a*GetValueFromIndex(klo-1)+b*GetValueFromIndex(khi-1)+((a*a*a-a)*
 			mSplineTable[klo-1]+(b*b*b-b)*mSplineTable[khi-1])*(h*h)/6);
 	}
@@ -746,7 +720,7 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::StoreOn(Storage & storage)
 	{
-#		ifdef CLAM_USE_XML	 
+#		ifdef CLAM_USE_XML
 		// This condition is not needed because storing an XML adapter
 		// onto a non XML storage has no effect but it enhances performance.
 		if (dynamic_cast < XMLStorage* > (&storage))
@@ -761,7 +735,7 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::LoadFrom(Storage & storage)
 	{
-#		ifdef CLAM_USE_XML	 
+#		ifdef CLAM_USE_XML
 		// This condition is not needed because storing an XML adapter
 		// onto a non XML storage has no effect but it enhances performance.
 		if (dynamic_cast < XMLStorage* > (&storage))
