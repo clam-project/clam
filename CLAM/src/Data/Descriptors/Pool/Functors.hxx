@@ -54,7 +54,12 @@ namespace CLAM
 	}
 
 	template <typename ConcreteType>
-	struct unary
+	struct scalar
+	{
+	};
+
+	template <typename ConcreteType>
+	struct unary : public scalar<ConcreteType>
 	{
 		typedef TData paramType;
 		typedef TData resultType;
@@ -72,7 +77,7 @@ namespace CLAM
 
 
 	template <typename ConcreteType>
-	struct binary
+	struct binary : public scalar<ConcreteType>
 	{
 		typedef TData param1Type;
 		typedef TData param2Type;
