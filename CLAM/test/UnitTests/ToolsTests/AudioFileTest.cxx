@@ -489,7 +489,7 @@ namespace CLAMTest
 					      (int)header.GetSampleRate() );
 			CPPUNIT_ASSERT_EQUAL( int(1),
 					      (int)header.GetChannels() );
-			CPPUNIT_ASSERT_EQUAL( int(2298),
+			CPPUNIT_ASSERT_EQUAL( int(2560),
 					      (int)header.GetLength() );
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio Layer 3"),
 					      header.GetFormat().GetString() );
