@@ -14,10 +14,11 @@ class FactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( FactoryTest );
 	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
-	CPPUNIT_TEST( testMakeProcessing_ReturnsAnOscillator );
-	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
+	CPPUNIT_TEST( testCreate_ReturnsAnOscillator );
+	CPPUNIT_TEST( testCreateSafe_WithABadKey );
 	CPPUNIT_TEST( testAddCreator_WithRepeatedKey );
 	CPPUNIT_TEST( testAddCreatorSafe_WithRepeatedKey );
+
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -51,11 +52,11 @@ protected:
 		delete returned;
 	}
 	
-	void testMakeProcessing_ReturnsAnOscillator()
+	void testCreate_ReturnsAnOscillator()
 	{
 		_theFactory->GetRegistry().AddCreator( "Oscillator", CLAM::CreateOscillator );
 		
-		CLAM::Processing* returned = _theFactory->MakeProcessing("Oscillator");
+		CLAM::Processing* returned = _theFactory->Create("Oscillator");
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
 		
 		// tear down:
@@ -64,10 +65,10 @@ protected:
 
 	}
 
-	void testMakeProcessingSafe_WithABadKey()
+	void testCreateSafe_WithABadKey()
 	{
 		try{
-			_theFactory->MakeProcessingSafe("Oscillator");
+			_theFactory->CreateSafe("Oscillator");
 			CPPUNIT_FAIL("Should throw an exception");
 		} catch ( CLAM::ErrFactory& ) {}
 	}
@@ -108,8 +109,8 @@ class FactorySingletonTest : public FactoryTest
 {
 	CPPUNIT_TEST_SUITE( FactorySingletonTest );
 	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
-	CPPUNIT_TEST( testMakeProcessing_ReturnsAnOscillator );
-	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
+	CPPUNIT_TEST( testCreate_ReturnsAnOscillator );
+	CPPUNIT_TEST( testCreateSafe_WithABadKey );
 	CPPUNIT_TEST( testFactoryIsSingleton );
 
 	CPPUNIT_TEST_SUITE_END();
