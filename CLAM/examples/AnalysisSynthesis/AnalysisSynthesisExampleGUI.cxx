@@ -21,11 +21,11 @@
 
 
 #include "UserInterface.hxx"
-#include "FL/fl_file_chooser.H"
-#include "Fl_Progress.cxx"
-#include "Fl_WaitMessage.cxx"
+#include <FL/fl_file_chooser.H>
+#include "Fl_Progress.hxx"
+#include "Fl_WaitMessage.hxx"
 #include "AnalysisSynthesisExampleBase.hxx"
-#include "pthread.h"
+#include <pthread.h>
 #include "FLTKConfigurator.hxx"
 #include "CLAMViews.hxx"
 #include "CLAMPresentations.hxx"
@@ -108,6 +108,7 @@ public:
 
 	static void Idle(void* ptr)
 	{
+		std::cout << "Idle #1" << std::endl;
 		if (requestedTitle)
 		{
 
@@ -187,6 +188,7 @@ public:
 
 	static void Idle(void* ptr)
 	{
+		std::cout << "Idle #2" << std::endl;
 		if (requestedTitle)
 		{
 
