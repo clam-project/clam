@@ -77,7 +77,7 @@ inline double DB(double linData, int scaling)
 { 
 	return (scaling*log10(TData(1.0) + linData)); 
 }
-inline double Lin(double logData, int scaling) { return (pow(10,(logData/scaling)) - TData(1.0) ); }
+inline double Lin(double logData, int scaling) { return (pow(double(10),(logData/scaling)) - TData(1.0) ); }
 
 };
 
