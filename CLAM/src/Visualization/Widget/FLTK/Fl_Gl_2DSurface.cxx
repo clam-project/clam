@@ -65,9 +65,12 @@ namespace CLAMVM
 		int width = (int)gl_width( TooltipText() );
 		int height = (int)gl_height();
 		gl_color( FL_BLACK );
+		glEnable( GL_SCISSOR_TEST );
+		glScissor( w() - width - 4, h() - height - 2, width +2 , height + 2 );
 		gl_rectf( w() - width - 4, h() - height - 2, width, height + 2 );
 		gl_color( FL_WHITE );
 		gl_draw( TooltipText(), w() - width - 2, h() - height );
+		glDisable( GL_SCISSOR_TEST );
 		WCSProject();
 	}
 
