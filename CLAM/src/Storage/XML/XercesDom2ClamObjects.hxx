@@ -26,16 +26,14 @@
 #include "XMLable.hxx"
 #include "Assert.hxx"
 #include "Component.hxx"
-
-
-#include <list>
-#include <string>
+#include "ClamObjects2XercesDom.hxx"
 
 namespace xercesc = XERCES_CPP_NAMESPACE;
 
 namespace CLAM
 {
 
+#if 0
 class XercesDom2ClamObjects : public Storage
 {
 	XercesDomDocumentHandler _document;
@@ -112,7 +110,7 @@ public:
 		return result;
 	}
 };
-
+#endif
 
 }
 
