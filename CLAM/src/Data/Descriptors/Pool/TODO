@@ -46,6 +46,7 @@
 	- Getting with different type -> Fail
 	- Change a GetWrite idiom to a Instantiate idiom
 	- Populate a defined scope -> Instanciating attribute -> Accessing -> 
+	+ Rename Populate -> SetNContexts
 - Scope Attribute instantiation
 	+ Refactor to instanciate only write getters
 	+ Accessing an non instantiated on  a scope pool
@@ -84,6 +85,7 @@
 	+ getting invalid attribute indexes names
 	+ Refactor to include the name inside as spec member
 - XML for the Scheme
+- Pool XML with non populated attributes, zero-sized attributes...
 - Selecting which attributes should be serialized
 
 - Errors en l'ús d'identificadors irregulars.
@@ -91,7 +93,17 @@
 - Rename writeget attribute
 - Consider adding a updateget attribute
 
-- Proof of Concept working directly with the pool
+
+* How is the binding project related to extractor-scheme adding
+	- Asociacion con el scheme
+		- Validacion del camino del binder
+	- Asociacion con el extractor
+		- Validacion del tipo del binder
+		- Validacion del scope de salida del binder
+	- Asociacion con el Pool
+		- Obtencion de los datos
+
++ Proof of Concept working directly with the pool
 	+ Write a dummy audio
 	+ Write the centers 
 	+ Make the spectrum
@@ -99,9 +111,9 @@
 
 - Mirar especificaciones MyDMS
 - Mirar codigo de QMUL
-- Preguntar a vegard que descriptores son confiables
++ Preguntar a vegard que descriptores son confiables -> Los testeados solo
 - Preguntar a AudioClas que descriptores han corregido o comprovado
-- Planificar la revision de lo no revisado
+- Planificar la revision de lo no revisados
 - Plantear un conjunto de pruebas
 - Hacer que pasen las pruebas
 
