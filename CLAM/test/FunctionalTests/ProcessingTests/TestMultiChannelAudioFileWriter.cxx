@@ -39,6 +39,7 @@ namespace CLAMTest
 			CLAM::AudioFile file;
 			file.SetLocation( std::string( "NewFile.wav" ) );
 
+
 			CLAM::MultiChannelAudioFileWriterConfig cfg;
 			cfg.AddTargetFile();
 			cfg.UpdateData();
