@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "parser.h"
 #include "includepaths.h"
@@ -22,6 +23,43 @@ void makefilevars_generate(void)
 {
 	FILE* outfile = stdout;
 
+	{
+		listkey* k = listhash_find( config, "MOCABLE_HEADERS" );
+		assert( k != NULL );
+		list* mocable_headers = k->l;
+		assert( mocable_headers != NULL );
+		list* moc_objects = list_new();
+
+		item* current = mocable_headers->first;
+		
+		while( current != NULL )
+		{
+			char mocname[2048];
+			char objname[2048];
+
+			fprintf( stderr, "Mocable header found: %s \n", current->str );
+			convert_to_mocname( mocname, 2048, current->str );
+			convert_to_objname( objname, 2048, mocname );
+			list_add_str_once( moc_objects, objname );
+			/*dependency printing */
+			fprintf( outfile, "%s : %s %s\n", objname, mocname, current->str );
+			fprintf( outfile, "%s : %s \n", mocname, current->str );
+			fprintf( outfile, "\n" );
+			current = current->next;
+		}
+
+		/*MOC_OBJECTS var*/
+		current = moc_objects->first;
+		fprintf( outfile, "MOC_OBJECTS = ");
+		while( current!=NULL )
+		{
+			fprintf( outfile, "\\\n %s", current->str );
+			current = current->next;
+		}
+		fprintf( outfile, "\n\n" );
+
+		list_free( moc_objects );
+	}
 	{
 		listkey* k = listhash_find(config,"EXTRA_MAKEFILE_VARS");
 		item* i = (k && k->l) ? k->l->first : 0;
@@ -47,7 +85,6 @@ void makefilevars_generate(void)
 			i = i->next;
 		}
 	}
-
 	{
 		item* i = guessed_sources->first;
 		fprintf(outfile,"SOURCES =");
