@@ -419,11 +419,11 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 
 	while(myAnalysis.Do(mSegment))
 	{      
-		k+=step;
+		k=step*(mSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
 
-	myAnalysis.Stop();
+ 	myAnalysis.Stop();
 
 
 }
