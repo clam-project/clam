@@ -119,7 +119,7 @@ namespace CLAM {
 
 
 	template<class T>
-	void PhantomBuffer<T>::Resize(unsigned newLogicalSize, unsigned newPhantomSize, unsigned insertionPos)
+	void PhantomBuffer<T>::Resize(unsigned int newLogicalSize, unsigned int newPhantomSize, unsigned int insertionPos)
 	{
 		CLAM_ASSERT(insertionPos <= LogicalSize(),
 		           "PhantomBuffer::Resize(): "
