@@ -14,7 +14,7 @@
 
 
 //TODO - Modify these includes
-#include "ControlSender.hxx"
+#include "AutoPanner.hxx"
 
 namespace FlowControlExample
 {
@@ -135,7 +135,7 @@ private:
 	CLAM::AudioMultiplier _multiplier;
 	CLAM::AudioOut _audioOut;
 	CLAM::AudioMixer<2> _mixer;
-	ControlSender _controlSender;	
+	AutoPanner _controlSender;	
 
 	// processing data
 	CLAM::Audio _oscillatorData;
