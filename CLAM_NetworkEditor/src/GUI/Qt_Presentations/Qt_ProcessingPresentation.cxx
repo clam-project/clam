@@ -14,9 +14,6 @@
 #include <qpainter.h>
 #include <cmath>
 
-#include <iostream>
-
-
 namespace NetworkGUI
 {
 
@@ -117,10 +114,7 @@ void Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl( const QPoint
 	{
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itin);
 		if (in->geometry().contains(real))
-		{
 			in->AcquireInControlClicked.Emit(in);
-			std::cout << in->GetName() << std::endl;
-		}
 	}
 }
 
@@ -137,10 +131,7 @@ void Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl( const QPoint
 	{
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itout);
 		if (out->geometry().contains(real))
-		{
-			std::cout << out->GetName() << std::endl;
 			out->AcquireOutControlClicked.Emit(out);
-		}
 	}
 }	
 

@@ -6,8 +6,6 @@
 
 #include "ProcessingConfig.hxx"
 
-#include <iostream>
-
 namespace NetworkGUI
 {
 
@@ -48,14 +46,12 @@ Qt_ProcessingConfigPresentation::~Qt_ProcessingConfigPresentation()
 
 void Qt_ProcessingConfigPresentation::Ok( bool )
 {
-	std::cout << "ok is pressed" << std::endl;
 	ApplyChangesToConfig();
 	close();
 }
 
 void Qt_ProcessingConfigPresentation::Cancel( bool )
 {
-	std::cout << "cancel is pressed" << std::endl;
 	close();
 }
 

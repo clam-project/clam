@@ -11,8 +11,6 @@
 #include "InControlPresentation.hxx"
 #include "Processing.hxx"
 
-#include <iostream>
-
 namespace NetworkGUI
 {
 
@@ -78,7 +76,6 @@ void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
 	}
 	for(it=toRemove.begin(); it!=toRemove.end(); it++)
 	{
-		std::cout << "to remove: " << (*it)->GetInName() << std::endl;
 		if (proc->HasInPort(GetLastIdentifier((*it)->GetInName())) || proc->HasOutPort(GetLastIdentifier((*it)->GetOutName())))
 			OnRemovePortConnection( *it );
 		else
