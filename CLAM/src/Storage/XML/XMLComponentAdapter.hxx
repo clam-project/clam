@@ -89,11 +89,6 @@ public:
 	 * <b>If a name is given, this must be true because a component
 	 * adapter cannot adapt as attribute.</b>
 	 */
-	template <class T> XMLComponentAdapter (T & adaptee, const char * name=NULL, bool isXMLElement=false)
-		: BasicXMLable(name, isXMLElement), myAdaptee(adaptee)
-	{
-		CLAM_ASSERT(!name||isXMLElement,"Adapting a component as attribute is useless");
-	}
 	template <class T> XMLComponentAdapter (const T & adaptee, const char * name=NULL, bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), myAdaptee(const_cast<T&>(adaptee))
 	{
