@@ -22,6 +22,7 @@ LIBRARIES_DEBUG = \
 	$(USE_FLTK?@FLTK_LIBS@) \
 	$(USE_QT?@QT_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@) \
+	$(USE_CPPUNIT?cppunit) \
 
 LIBRARIES_RELEASE = \
 	$(USE_FFTW?$(CLAM_DOUBLE?fftw rfftw:sfftw srfftw)) \
@@ -29,6 +30,7 @@ LIBRARIES_RELEASE = \
 	$(USE_FLTK?@FLTK_LIBS@) \
 	$(USE_QT?@QT_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@) \
+	$(USE_CPPUNIT?cppunit) \
 
 SOURCES_AUDIODEVICE = \
 	$(USE_ALSA?$(CLAM_PATH)/src/Tools/AudioIO/Linux/ALSAAudioDevice.cxx) \
@@ -47,3 +49,7 @@ EXTRA_MAKEFILE_VARS = PROGRAM LIBRARY
 
 CXXFLAGS_DEBUG = -g -fno-inline -D_DEBUG
 CXXFLAGS_RELEASE = -O6 -fomit-frame-pointer
+
+LINK_FLAGS_DEBUG =
+LINK_FLAGS_RELEASE =
+
