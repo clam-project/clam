@@ -173,7 +173,7 @@ private:
 	Audio mResAudioFrame;
 	Audio mAudioFrame;
 
-	TSize mInitialOffset;
+	TSize mAudioFrameIndex;
 	
 
 #ifdef WITH_GUI

@@ -289,7 +289,7 @@ void SMSAnalysis::ConfigureData()
 	mPO_SinSpectralAnalysis.Attach(mSinAudioFrame,mSinSpec);
 	mPO_ResSpectralAnalysis.Attach(mResAudioFrame,mResSpec);
 
-	mInitialOffset=0;
+	mAudioFrameIndex=0;
 }
 
 void SMSAnalysis::AttachChildren()
@@ -304,7 +304,7 @@ void SMSAnalysis::AttachChildren()
 
 void SMSAnalysis::Start()
 {
-	mInitialOffset=0;
+	mAudioFrameIndex=0;
 	ProcessingComposite::Start();
 }
 
@@ -315,13 +315,23 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk
 	outSinSpec.SetSpectralRange(mResSpec.GetSpectralRange());
 	outResSpec.SetSpectralRange(mResSpec.GetSpectralRange());
 	
-	mStreamBuffer.GetAndActivate(mSinReader,mSinAudioFrame);
+	//first we try to get and activate both readers
+	if(!mStreamBuffer.GetAndActivate(mSinReader,mSinAudioFrame)||
+		!mStreamBuffer.GetAndActivate(mResReader,mResAudioFrame))
+	{
+		//it means that stream buffer is not ready to be read and needs more input data
+		mStreamBuffer.Leave(mSinReader);
+		mStreamBuffer.Leave(mResReader);
+		return false;
+	}
+
+
 
 	//Analyzing sinusoidal component
 	mPO_SinSpectralAnalysis.Do();
 
-	//OK, let's try using these stream buffers
 	mStreamBuffer.LeaveAndAdvance(mSinReader);
+	
 	outGlobalSpec=mSinSpec;
 	SinusoidalAnalysis(mSinSpec,outPk,outFn);
 	
@@ -333,9 +343,7 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk
 	
 	//Then we analyze the spectrum of the whole audio using residual config
 	
-    //stream buffers, now for residual
-	mStreamBuffer.GetAndActivate(mResReader,mResAudioFrame);
-	mPO_ResSpectralAnalysis.Do();
+    mPO_ResSpectralAnalysis.Do();
 	mStreamBuffer.LeaveAndAdvance(mResReader);
 
 
@@ -396,18 +404,10 @@ bool SMSAnalysis::Do(Frame& in)
 	mStreamBuffer.LeaveAndAdvance(mWriter);
 
 	bool result=false;
-	//If we have written enough samples as to do the first processing
-	if (mInitialOffset>mConfig.GetHopsInBiggerWindow()*0.5)
-	{
-		
-		result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	//If we have written enough samples as to do the first processing result will be true
+	result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	if (result)
 		in.SetIsHarmonic(in.GetFundamental().GetFreq(0)>0);
-	}
-	//else we do not analyze, we have only written input audio
-	else
-	{
-		mInitialOffset++;
-	}
 	return result;
 }
 
@@ -422,7 +422,7 @@ bool SMSAnalysis::Do(Segment& in)
 
 	TData samplingRate=mConfig.GetSamplingRate();
 	
-	TSize audioCenterSample=(mInitialOffset+frameIndex)*step;
+	TSize audioCenterSample=(mAudioFrameIndex)*step;
 	TTime audioCenterTime=audioCenterSample/samplingRate;
 
 	TTime frameCenterTime=frameIndex*step/samplingRate;
@@ -447,7 +447,8 @@ bool SMSAnalysis::Do(Segment& in)
 	/*	Note: Here we are just taking the "new" audio belonging to each frame. That is, the
 	HopSize samples centered around CenterTime */
 	in.GetAudio().GetAudioChunk(audioCenterSample-step/2,audioCenterSample+step/2,tmpAudio,true);
-
+	
+	mAudioFrameIndex++;
 	
 	tmpFrame.SetAudioFrame(tmpAudio);
 
