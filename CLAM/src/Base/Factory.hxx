@@ -128,7 +128,8 @@ public: // Inner classes. Public for better testing
 
 		// helper methods:
 		CreatorMethod CommonGetCreator( RegistryKey& creatorId ) {
-			CreatorMap::const_iterator i = _creators.find(creatorId);
+			typename CreatorMap::const_iterator i = 
+				_creators.find(creatorId);
 			if ( i==_creators.end() ) // not found
 				return NULL;
 			return i->second;
