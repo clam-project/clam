@@ -53,22 +53,16 @@ public:
 
 	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
 	{
-		if( 
-			! _creators.insert( 
-			CreatorMap::value_type( creatorId, creator ) ).second 
-		 )
-		{ // repeated key
+		if( !CommonAddCreator( creatorId, creator ) ) { 
+			// repeated key
 			CLAM_ASSERT( false, "creatorId was already a key in the registry" );
 		}
 	}
 
 	void AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory)
 	{
-		if( 
-			! _creators.insert( 
-			CreatorMap::value_type( creatorId, creator ) ).second 
-		 )
-		{ // repeated key
+		if( !CommonAddCreator( creatorId, creator ) ) { 
+			// repeated key
 			throw ErrFactory("FactoryRegistry::AddCreatorSafe(...) a repeated key was passed");
 		}
 	}
@@ -86,6 +80,14 @@ private: // data
 			return NULL;
 		} else 
 			return i->second;
+	}
+
+	bool CommonAddCreator( RegistryKey& creatorId, CreatorMethod& creator)
+	{
+		// returns false if the key was repeated.
+		return  _creators.insert(
+			CreatorMap::value_type( creatorId, creator ) ).second;
+
 	}
 	
 };
