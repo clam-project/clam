@@ -26,6 +26,7 @@ NetworkPresentation::NetworkPresentation()
 	SetRemoveProcessing.Wrap( this, &NetworkPresentation::OnRemoveProcessing );
 	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
 	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
+	Clear.Wrap(this, &NetworkPresentation::OnClear );
 }
 
 void NetworkPresentation::OnNewChangeState( bool newState )
@@ -110,7 +111,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 	RemovePortConnectionFromGUI.Connect( model.RemovePortConnection );
 	RemoveControlConnectionFromGUI.Connect( model.RemoveControlConnection );
 	RemoveProcessingFromGUI.Connect( model.RemoveProcessing );
-
+	ClearSignal.Connect( model.Clear );
 	SaveNetworkTo.Connect( model.SaveNetwork );
 	LoadNetworkFrom.Connect( model.LoadNetwork );
 }
@@ -177,10 +178,24 @@ std::string NetworkPresentation::GetLastIdentifier( const std::string& str )
 	return str.substr( PositionOfLastIdentifier(str)+1 );
 }
 
-void NetworkPresentation::OnAddNewProcessing( const std::string & name, 
-						 CLAM::Processing * proc)
+void NetworkPresentation::OnAddNewProcessing( const std::string & name, CLAM::Processing * proc)
 {
 	AddProcessing.Emit(name,proc);
+}
+
+void NetworkPresentation::OnClear()
+{
+	ProcessingPresentationIterator it;
+	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+		delete *it;
+	mProcessingPresentations.clear();
+
+	ConnectionPresentationIterator itc;
+	for(itc=mConnectionPresentations.begin(); itc!=mConnectionPresentations.end(); itc++)
+		delete *itc;
+	mConnectionPresentations.clear();
+
+	ClearSignal.Emit();
 }
 
 

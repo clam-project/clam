@@ -4,7 +4,9 @@
 
 #include "Presentation.hxx"
 #include "Slotv1.hxx"
+#include "Slotv0.hxx"
 #include "Slotv2.hxx"
+#include "Signalv0.hxx"
 #include "Signalv1.hxx"
 #include "Signalv2.hxx"
 
@@ -59,7 +61,9 @@ protected:
 	virtual void OnRemovePortConnection( ConnectionPresentation* );
 	virtual void OnRemoveControlConnection( ConnectionPresentation* );
 	virtual void OnRemoveProcessing( ProcessingPresentation* );
-	virtual void OnAddNewProcessing ( const std::string &, CLAM::Processing * );
+	virtual void OnAddNewProcessing( const std::string & , CLAM::Processing * );
+	virtual void OnClear( );
+
 
 	// methods related to locate processing
 	OutPortPresentation & GetOutPortPresentationByCompleteName(const std::string &);
@@ -83,6 +87,7 @@ public: //slots
 	SigSlot::Slotv1< ConnectionPresentation* > SetRemovePortConnection;
 	SigSlot::Slotv1< ConnectionPresentation* > SetRemoveControlConnection;
 	SigSlot::Slotv1< ProcessingPresentation* > SetRemoveProcessing;
+	SigSlot::Slotv0 Clear;
 	
 	//signals
 	SigSlot::Signalv2< const std::string &, const std::string & > CreateNewPortConnectionFromGUI;
@@ -94,7 +99,8 @@ public: //slots
 	SigSlot::Signalv1< const std::string & > RemoveProcessingFromGUI;
 	SigSlot::Signalv1< const std::string & > LoadNetworkFrom;
 	SigSlot::Signalv1< const std::string & > SaveNetworkTo;
-	
+	SigSlot::Signalv0 ClearSignal;
+
 	SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
 	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > AddProcessing;
 };
