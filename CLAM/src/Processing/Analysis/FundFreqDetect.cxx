@@ -3,8 +3,7 @@
 #include "Fundamental.hxx"
 #include "ErrProcessingObj.hxx"
 #include "SpectralPeakArray.hxx"
-
-#define CLASS "FundFreqDetect"
+#include <cmath>
 
 #define INFINITE_MAGNITUD 1000000
 
@@ -466,26 +465,18 @@ namespace CLAM {
 /* Get the closest peak to a given frequency 
    and returns the number of the closest peak 
    there's another parameter, peak, that contains the last peak taken   */
-int FundFreqDetect::GetClosestPeak(double freq, int peak,SpectralPeakArray& peaks) const
+int FundFreqDetect::GetClosestPeak(double freq, int firstPeak, SpectralPeakArray& peaks) const
 {
-	int bestpeak = peak;
-	bool found = false;
-	double distance = INFINITE_MAGNITUD, nextdistance = 0;
-	int size=peaks.GetIndexArray().Size();
-	while ( (peak < size) && (!found) )
+	const int size=peaks.GetIndexArray().Size();
+	int bestpeak = firstPeak;
+	double distance = INFINITE_MAGNITUD;
+	for (int peak=firstPeak; peak < size; peak++)
 	{
-		nextdistance = fabs(freq-peaks.GetThruIndexFreq(peak));
+		const double nextdistance = fabs(freq - peaks.GetThruIndexFreq(peak));
 		if (nextdistance >= distance)
-		{ 
-			bestpeak = peak-1;
-			found = true;
-		}
-		else
-		{
-			bestpeak = peak; 
-			distance=nextdistance;
-			peak++;
-		}
+			return peak-1;
+		bestpeak = peak; 
+		distance=nextdistance;
 	}
 	return bestpeak;
 }
@@ -493,32 +484,12 @@ int FundFreqDetect::GetClosestPeak(double freq, int peak,SpectralPeakArray& peak
 /* Get Closest Harmonic */
 double FundFreqDetect::GetClosestHarmonic(double peak, double fundfreq) const
 {
-	double bestHarmonic = fundfreq, distance = INFINITE_MAGNITUD, nextdistance = 0;
-	bool found = false;
-
-	while(!found)
-	{
-		nextdistance = fabs(bestHarmonic - peak);
-		if (nextdistance >= distance)
-		{
-			bestHarmonic -= fundfreq;
-			found = true; 
-		}
-		else
-		{
-			distance = nextdistance;
-			bestHarmonic += fundfreq;
-		}
-	}
-	return bestHarmonic;
+	return floor(peak/fundfreq+.5)*fundfreq;
 }
 
 bool FundFreqDetect::IsGoodCandidate(double freq) const
 {
-	if ( (freq < mLowestFundFreq) | (freq > mHighestFundFreq) )
-		return false;
-	else 
-		return true;
+	return (freq >= mLowestFundFreq)  && (freq <= mHighestFundFreq);
 }
 
 }; // namespace CLAM
