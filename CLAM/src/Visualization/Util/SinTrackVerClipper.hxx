@@ -32,7 +32,10 @@ private:
 		inline outcode in_out_test( TData lower, TData upper, TData f )
 		{
 
-				if ( f > upper || f < lower ) return Outside;
+				if ( f > upper)
+						return Outside;
+				if ( f < lower ) 
+						return Outside;
 				
 				return Inside;
 		}
@@ -61,12 +64,50 @@ private:
 				{
 						last_in = pi;
 						pi++;
-						outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+						outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
 				}
 
 				return last_in;
 		}
+
+		inline peak_iterator find_first_out( TData f_lo, TData f_hi, peak_iterator pi, peak_iterator ei )
+		{
+				// Precondition: pi is inside i.e. in_out_test( f_lo, f_hi, pi->mFreq ) == Inside
+
+				pi++;
+				outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+				
+				while( (pi!=ei) )
+				{
+						if ( outcodei & Outside ) 
+							return pi;
+						pi++;
+						outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+				}
+
+				return pi;
+		}
 		
+		inline peak_iterator find_last_out( TData f_lo, TData f_hi, peak_iterator pi, peak_iterator ei )
+		{
+				peak_iterator last_out = pi;
+				pi++;
+				outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+
+				while ( pi!=ei )
+				{
+						if ( outcodei & Outside )
+						{
+								return last_out;
+						}
+
+						pi++;
+						outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+				}
+
+				return last_out;
+		}
+
 		TData mLowFreq;
 		TData mHiFreq;
 		TData mMinFreqRange;

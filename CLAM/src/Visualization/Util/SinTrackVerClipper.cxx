@@ -74,24 +74,40 @@ namespace CLAMGUI
 						return;
 				}
 
+				if ( first_in != si )
+				{
+						si = first_in;
+						si--;
+				}
 
-				si = currp = first_in; // we set the start to the first_in ( as well as the current point )
+				currp = first_in; // we set the start to the first_in ( as well as the current point )
 
-				peak_iterator last_in = find_last_in( f_lower, f_upper, currp, listEnd );
-				
-				ei = currp = last_in;
+				peak_iterator first_out = find_first_out( f_lower, f_upper, currp, listEnd );
+
+				ei = currp = first_out;
 
 				while ( currp!= listEnd )
 				{
-						currp++;
 						peak_iterator new_start;
 						peak_iterator new_end;
 
-						new_start = currp  = find_first_in( f_lower, f_upper, currp, listEnd );
-						if ( new_start == listEnd ) return;
-						new_end = currp = find_last_in( f_lower, f_upper, currp, listEnd );
-						pl_s.push_back( new_start );
-						pl_e.push_back( new_end );
+						new_start = currp  = find_last_out( f_lower, f_upper, currp, listEnd );
+						
+						if ( new_start != listEnd )
+						{
+							currp++;
+							if ( currp!= listEnd )
+							{
+									new_end = currp = find_first_out( f_lower, f_upper, currp, listEnd );
+									pl_s.push_back( new_start );
+									pl_e.push_back( new_end );
+							}
+							else
+							{
+									pl_s.push_back( new_start );
+									pl_e.push_back( currp );
+							}
+						}
 				}
 
 		}
