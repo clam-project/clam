@@ -15,11 +15,12 @@ NetworkController::NetworkController()
 {
 	CreateNewConnection.Wrap( this, &NetworkController::OnNewConnectionFromGUI );
 	RemoveConnection.Wrap( this, &NetworkController::OnRemoveConnectionFromGUI );
+	RemoveProcessing.Wrap( this, &NetworkController::OnRemoveProcessingFromGUI );
 	AddNewProcessing.Wrap( this, &NetworkController::NewProcessingFromGUI );
 	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
 }
 
-void NetworkController::ExecuteConnections()
+void NetworkController::ExecuteEvents()
 {
 	if ( mToConnect.size() != 0)
 	{
@@ -33,16 +34,22 @@ void NetworkController::ExecuteConnections()
 		ConnectionsMap::iterator it;
 		for (it=mToDisconnect.begin(); it!=mToDisconnect.end(); it++)
 			DisconnectPorts( it->second, it->first );
-		mToDisconnect.clear();
-		
-	}	
+		mToDisconnect.clear();		
+	}
+	if( mProcessingsToRemove.size() != 0)
+	{
+		ProcessingsList::iterator it;
+		for(it=mProcessingsToRemove.begin(); it!=mProcessingsToRemove.end(); it++)
+			RemoveProcessingFromNetwork( *it );
+		mProcessingsToRemove.clear();
+	}
 }
-	
+
 void NetworkController::ProcessingLoop()
 {
 	while(mLoopCondition)
 	{
-		ExecuteConnections();
+		ExecuteEvents();
 		mObserved->DoProcessings();
 	}
 }
@@ -102,6 +109,7 @@ void NetworkController::ConnectPorts( const std::string & out , const std::strin
 
 void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , const std::string & in)
 {
+	std::cout << "removing " << out << " to " << in << std::endl;
 	if (mLoopCondition)
 	{
 		if (!mToDisconnect.insert( ConnectionsMap::value_type( in, out ) ).second )
@@ -115,9 +123,22 @@ void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , cons
 }
 
 
+void NetworkController::OnRemoveProcessingFromGUI(const std::string & proc)
+{
+	if (mLoopCondition)
+		mProcessingsToRemove.push_back( proc );
+	else
+		RemoveProcessingFromNetwork( proc );
+}
+
+void NetworkController::RemoveProcessingFromNetwork( const std::string & proc )
+{
+	mObserved->RemoveProcessing( proc );
+	// passar per totes les connexions i després borrar
+}
+
 void NetworkController::DisconnectPorts( const std::string & out , const std::string & in )
 {
-	std::cout << "remove connection" << std::endl;
 	if(mObserved->DisconnectPorts(out, in))
 	{
 		//remove connection from inport
@@ -128,8 +149,8 @@ void NetworkController::DisconnectPorts( const std::string & out , const std::st
 			ConnectionAdapter * con = (*itc);
 			if (con->ConnectsInPort(inPort))
 			{
-//				mConnectionAdapters.remove(con);
-//				delete con;
+				mConnectionAdapters.remove(con);
+				delete con;
 				return;   
 			}
 		}

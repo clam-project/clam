@@ -214,11 +214,13 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 	{
 		EditConfiguration.Emit( mConfig );
 	}
+	grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
 {
 	mDown = false;
+	releaseKeyboard();
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
@@ -268,6 +270,20 @@ void Qt_ProcessingPresentation::EmitPositionOfPorts()
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
 		out->AcquirePos.Emit( pos().x() + posX , pos().y() + posY );
+	}
+}
+
+void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
+{
+	switch ( tolower(k->ascii()) ) 
+	{
+        case 'x': 
+
+		RemoveProcessing.Emit( this );
+		Hide();
+		mDown = false;
+		releaseKeyboard();
+		break;
 	}
 }
 

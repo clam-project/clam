@@ -75,11 +75,13 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* cont
 	presentation->AcquireInPortClicked.Connect( SetInPortClicked );
 	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
 	presentation->EditConfiguration.Connect( SetConfigurator );
+	presentation->RemoveProcessing.Connect( SetRemoveProcessing );
 	AcquireOutPortAfterClickInPort.Connect( presentation->SetOutPortAfterClickInPort );
 	AcquireInPortAfterClickOutPort.Connect( presentation->SetInPortAfterClickOutPort );
 	controller->Publish();
 	mProcessingPresentations.push_back(presentation);
-	Show();	
+	presentation->Show();
+//	Show();	
 	SendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
 }
 
@@ -93,7 +95,16 @@ void Qt_NetworkPresentation::OnNewConnection( CLAMVM::ConnectionAdapter* adapter
 
 	AttachConnectionToPortPresentations(presentation);
 	mConnectionPresentations.push_back(presentation);
-	Show();
+
+	ProcessingPresentationIterator it;
+	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+	{
+		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
+		proc->EmitPositionOfPorts();
+		
+	}	
+	presentation->Show();
+
 	SendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
 				     " to " + presentation->GetInName() );
 }
@@ -117,20 +128,14 @@ void Qt_NetworkPresentation::Show()
 {
 	ProcessingPresentationIterator it;
 	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-	{
-		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
-		proc->Show();
-		proc->EmitPositionOfPorts();
-		
-	}	
+		(*it)->Show();
+
 	ConnectionPresentationIterator itc;
 	for ( itc=mConnectionPresentations.begin(); itc!=mConnectionPresentations.end(); itc++)
-	{
 		(*itc)->Show();
-	}
+
 	mConfigurator.hide();
 	show();
-
 }
 
 void Qt_NetworkPresentation::mouseMoveEvent( QMouseEvent *m)

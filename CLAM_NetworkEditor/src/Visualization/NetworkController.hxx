@@ -25,6 +25,7 @@ namespace CLAMVM
 	class NetworkController : public ModelController, public NetworkModel
 	{
 		typedef std::map< std::string , std::string  > ConnectionsMap;
+		typedef std::list< std::string > ProcessingsList;
 	private:		
 
 		// multithread related
@@ -33,6 +34,7 @@ namespace CLAMVM
 		bool mLoopCondition;
 		ConnectionsMap mToConnect;
 		ConnectionsMap mToDisconnect;
+		ProcessingsList mProcessingsToRemove;
 
 		CLAM::Network* mObserved;
 		std::list<ProcessingController*> mProcessingControllers;
@@ -40,14 +42,16 @@ namespace CLAMVM
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
-		void OnNewConnectionFromGUI(const std::string &, const std::string &);
+		void OnNewConnectionFromGUI( const std::string &, const std::string & );
 		void OnNewChangeState( bool);
-		void OnRemoveConnectionFromGUI(const std::string &, const std::string &);
+		void OnRemoveConnectionFromGUI( const std::string &, const std::string & );
+		void OnRemoveProcessingFromGUI( const std::string & );
 
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );
 		void DisconnectPorts( const std::string & , const std::string & );
-		void ExecuteConnections();
+		void RemoveProcessingFromNetwork( const std::string & );
+		void ExecuteEvents();
 	public:
 		NetworkController();
 		virtual ~NetworkController();

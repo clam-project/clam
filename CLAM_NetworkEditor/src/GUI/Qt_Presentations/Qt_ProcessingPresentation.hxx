@@ -46,9 +46,10 @@ protected:
 	virtual void OnNewInPortAfterClickOutPort(const QPoint &);
 
 	void paintEvent( QPaintEvent * );
-	void        mousePressEvent( QMouseEvent *);
-	void        mouseReleaseEvent( QMouseEvent *);
-	void        mouseMoveEvent( QMouseEvent *);
+	void mousePressEvent( QMouseEvent * );
+	void mouseReleaseEvent( QMouseEvent * );
+	void mouseMoveEvent( QMouseEvent * );
+	void keyPressEvent( QKeyEvent * );
 
 // qt stuff
 	bool        mDown;

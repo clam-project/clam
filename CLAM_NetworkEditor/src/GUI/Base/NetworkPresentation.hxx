@@ -54,8 +54,9 @@ protected:
 	virtual void OnNewChangeState( bool );
 	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & ) = 0;
 	virtual void OnNewConnection(CLAMVM::ConnectionAdapter* ) = 0;
-	virtual void OnRemoveConnection(const std::string &, const std::string &,ConnectionPresentation*);
-	virtual void OnAddNewProcessing ( const std::string &, CLAM::Processing *);
+	virtual void OnRemoveConnection( const std::string &, const std::string &,ConnectionPresentation* );
+	virtual void OnRemoveProcessing( ProcessingPresentation* );
+	virtual void OnAddNewProcessing ( const std::string &, CLAM::Processing * );
 
 	// methods related to locate processing
 	OutPortPresentation & GetOutPortPresentationByCompleteName(const std::string &);
@@ -73,12 +74,14 @@ public: //slots
 	SigSlot::Slotv1< CLAMVM::ConnectionAdapter* > SetConnection;
 	SigSlot::Slotv1< bool > ChangeState;
 	SigSlot::Slotv3< const std::string &, const std::string &, ConnectionPresentation* > SetRemoveConnection;
+	SigSlot::Slotv1< ProcessingPresentation* > SetRemoveProcessing;
 	
 	//signals
 	SigSlot::Signalv2< const std::string &, const std::string & > CreateNewConnectionFromGUI;
 
 	SigSlot::Signalv1< bool > SChangeState;
 	SigSlot::Signalv2< const std::string &, const std::string & > RemoveConnectionFromGUI;
+	SigSlot::Signalv1< const std::string & > RemoveProcessingFromGUI;
 	SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
 	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > AddProcessing;
 };

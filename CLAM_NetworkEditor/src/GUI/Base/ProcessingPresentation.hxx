@@ -9,6 +9,7 @@
 
 #include "Presentation.hxx"
 #include "Slotv1.hxx"
+#include "Signalv1.hxx"
 
 namespace CLAM
 {
@@ -59,6 +60,7 @@ protected:
 	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* ) = 0;
 
 public:	//slots
+	SigSlot::Signalv1< ProcessingPresentation* > RemoveProcessing;
 	SigSlot::Slotv1<const std::string &> SetName;
 	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfig;
 	SigSlot::Slotv1<const std::string &> SetObservedClassName;

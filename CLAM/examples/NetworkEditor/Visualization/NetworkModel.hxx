@@ -34,6 +34,7 @@ namespace CLAMVM
 
 		SigSlot::Slotv1< bool > ChangeState;
 		SigSlot::Slotv2< const std::string &, const std::string& > RemoveConnection;
+		SigSlot::Slotv1< const std::string & > RemoveProcessing;
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
 		
 	};	
