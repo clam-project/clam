@@ -93,7 +93,7 @@ namespace AudioCodecs
 
 	void MpegAudioStream::DiskToMemoryTransfer()
 	{
-		TSize samplesToRead = mInterleavedData.Size()/mEncodedChannels;
+		unsigned samplesToRead = mInterleavedData.Size()/mEncodedChannels;
 
 		while( mDecodeBuffer[0].size() < samplesToRead
 		       && mBitstream.NextFrame() )
@@ -164,7 +164,7 @@ namespace AudioCodecs
 					sampleValue = -1.0;
 					
 				
-				mInterleavedData[ currOffset + i ] = sampleValue;
+				mInterleavedData[ currOffset + i ] = TData(sampleValue);
 			}
 			
 			mDecodeBuffer[i].erase( mDecodeBuffer[i].begin(),

@@ -69,8 +69,9 @@ namespace AudioCodecs
 			if (bitlen < 800)
 				goto fail;
 			
+			// MRJ: We just need the 8 least significant bits
 			for (i = 0; i < 100; ++i)
-				xing->toc[i] = mad_bit_read(&ptr, 8);
+				xing->toc[i] = (unsigned char)mad_bit_read(&ptr, 8);
 			
 			bitlen -= 800;
 		}
@@ -347,7 +348,7 @@ namespace AudioCodecs
 			break;
 		}
 		
-		header.SetSampleRate( MPEGFrame.header.samplerate );
+		header.SetSampleRate( TData(MPEGFrame.header.samplerate) );
 		header.SetChannels( MAD_NCHANNELS(&MPEGFrame.header) );
 	}
 
