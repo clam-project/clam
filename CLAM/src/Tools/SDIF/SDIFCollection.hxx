@@ -43,8 +43,8 @@ namespace SDIF
 		FrameIterator Begin(void) const { return mFrameList.begin(); }
 		FrameIterator End(void) const { return mFrameList.end(); }
 
-		StreamIterator BeginStreams(void) const { return mFrameList.begin(); }
-		StreamIterator EndStreams(void) const { return mFrameList.end(); }
+		StreamIterator BeginStreams(void) const { return mStreamList.begin(); }
+		StreamIterator EndStreams(void) const { return mStreamList.end(); }
 
 		Stream* FindStream(TInt32 streamId);
 

@@ -16,7 +16,7 @@ namespace SDIF
 	* Used to store the Frame and Matrix types, a 4-byte
 	* identifier
 	*/
-	class Type
+	class TypeId
 	{
 	friend class File;
 	protected:
@@ -26,7 +26,7 @@ namespace SDIF
 		/** Create a new Type
 		* @param str String containing the 4-byte identifier
 		*/
-		Type(const char* str = "\0\0\0\0")
+		TypeId(const char* str = "\0\0\0\0")
 		{
 			memcpy(mData,str,4);	
 		}
@@ -34,7 +34,7 @@ namespace SDIF
 		* @param cmp The Type to compare with
 		* @return true when equal
 		*/
-		bool operator == (const Type& cmp) { return !memcmp(mData,cmp.mData,4); }
+		bool operator == (const TypeId& cmp) { return !memcmp(mData,cmp.mData,4); }
 
 		/** Convert the Type to a character string
 		* @return The 4-byte identifier in a null-terminator const char string>         */
@@ -46,7 +46,7 @@ namespace SDIF
 			return str;
 		}
 
-		static Type sDefault;
+		static TypeId sDefault;
 	};
 
 	enum DataType

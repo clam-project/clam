@@ -18,14 +18,14 @@ namespace SDIF
 	{
 	public:
 		//* Identifier indicating the kind of frame */
-		Type mType;
+		TypeId mType;
 		//* Size in bytes, of the frame, not including the type or size
 		TInt32 mSize;
 	public:
 		/** Create a new FrameHeader
 		* @param type Identifier specifying the frame type
 		*/
-		FrameHeader(const Type& type);
+		FrameHeader(const TypeId& type);
 	};
 
 	/**
@@ -47,7 +47,7 @@ namespace SDIF
 		* @param time Timestamp of the frame
 		* @param id Stream ID
 		*/
-		DataFrameHeader(const Type& type,TFloat64 time=0.,TInt32 id=0);
+		DataFrameHeader(const TypeId& type,TFloat64 time=0.,TInt32 id=0);
 	};
 
 	/** The header for each Matrix
@@ -57,7 +57,7 @@ namespace SDIF
 	public:
 	
 		//* Identifier indicating the matrix type
-		Type mType;
+		TypeId mType;
 		//* Identifier indicating the type of data in the matrix
 		DataType mDataType;
 		//* Number of rows in the matrix
@@ -73,7 +73,7 @@ namespace SDIF
 		* @param nColumns Number of rows in the matrix
 		*/
 		MatrixHeader(
-			const Type& type,
+			const TypeId& type,
 			DataType dataType,
 			TInt32 nRows, TInt32 nColumns);
 	};

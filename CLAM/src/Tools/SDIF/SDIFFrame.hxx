@@ -32,7 +32,7 @@ namespace SDIF
 	friend class File;
 	friend class Collection;
 	public:
-		typedef std::list<Matrix*>::const_iterator iterator;
+		typedef std::list<Matrix*>::const_iterator MatrixIterator;
 	private:
 		DataFrameHeader mHeader;
 		std::list<Matrix*> mMatrixList;
@@ -42,7 +42,7 @@ namespace SDIF
 		* @param time Timestamp of the frame
 		* @param id Stream ID
 		*/
-		Frame(const Type& type = Type::sDefault,
+		Frame(const TypeId& type = TypeId::sDefault,
 			TFloat64 time =0.,TInt32 streamId = 0);
 		~Frame();
 
@@ -51,11 +51,11 @@ namespace SDIF
 		*/
 		void Add(Matrix* pMatrix);
 		
-		iterator Begin(void) const { return mMatrixList.begin(); }
-		iterator End(void) const { return mMatrixList.end(); }
+		MatrixIterator Begin(void) const { return mMatrixList.begin(); }
+		MatrixIterator End(void) const { return mMatrixList.end(); }
 		
 		TFloat64 Time(void) { return mHeader.mTime; }
-		Type	Type(void) {return mHeader.mType;}
+		TypeId Type(void) {return mHeader.mType;}
 		
 	};
 }

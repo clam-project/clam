@@ -35,7 +35,7 @@ namespace SDIF
 		* @param nColumns Number of rows in the matrix
 		*/
 		Matrix(
-				const Type& type = Type::sDefault,
+				const TypeId& type = TypeId::sDefault,
 				DataType dataType = eUnknown,
 				TInt32 nRows = 0, TInt32 nColumns = 0);
 

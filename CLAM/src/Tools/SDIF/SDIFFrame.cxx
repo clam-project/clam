@@ -3,7 +3,7 @@
 
 using namespace SDIF;
 
-Frame::Frame(const Type& type, TFloat64 time,TInt32 id)
+Frame::Frame(const TypeId& type, TFloat64 time,TInt32 id)
 :mHeader(type,time,id)
 {
 }

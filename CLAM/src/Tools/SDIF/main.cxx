@@ -44,11 +44,11 @@ int main()
 		f.Close();
 	}
 	
-	Collection::iterator rit = rc.Begin();
-	Collection::iterator rend = rc.End();
+	Collection::FrameIterator rit = rc.Begin();
+	Collection::FrameIterator rend = rc.End();
 	
-	Collection::iterator wit = wc.Begin();
-	Collection::iterator wend = wc.End();
+	Collection::FrameIterator wit = wc.Begin();
+	Collection::FrameIterator wend = wc.End();
 
 	v = 1.1;
 	t = 0;
@@ -58,11 +58,11 @@ int main()
 		Frame *rf = *rit;
 		Frame *wf = *wit;
 		
-		Frame::iterator rfit = rf->Begin();
-		Frame::iterator rfend = rf->End();
+		Frame::MatrixIterator rfit = rf->Begin();
+		Frame::MatrixIterator rfend = rf->End();
 
-		Frame::iterator wfit = wf->Begin();
-		Frame::iterator wfend = wf->End();
+		Frame::MatrixIterator wfit = wf->Begin();
+		Frame::MatrixIterator wfend = wf->End();
 		
 		if (rf->Time()!=t)
 		{

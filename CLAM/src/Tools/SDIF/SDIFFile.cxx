@@ -27,7 +27,6 @@ namespace SDIF
 
 	void File::Write(const Storage& storage)
 	{
-		WriteInit();		
 		typedef std::list<Frame*>::const_iterator iterator;
 		
 		iterator it = storage.Begin();
@@ -41,12 +40,12 @@ namespace SDIF
 		}
 	}
 
-	void File::Read(Type& type)
+	void File::Read(TypeId& type)
 	{
 		DataFileIO::Read(type.mData,4);
 	}
 
-	void File::Write(const Type& type)
+	void File::Write(const TypeId& type)
 	{
 		DataFileIO::Write(type.mData,4);
 	}

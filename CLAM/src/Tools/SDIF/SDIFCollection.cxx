@@ -63,7 +63,7 @@ namespace SDIF
 		while (it!=end)
 		{
 			Stream* pStream = *it;
-			if (pStream->mStreamId==streamId) return pStream;
+			if (pStream->StreamId()==streamId) return pStream;
 			
 			it++;
 		}

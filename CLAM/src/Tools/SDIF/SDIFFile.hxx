@@ -46,8 +46,8 @@ private:
 	void Read(TFloat64& t);
 	void Write(const TFloat64& t);
 
-	void Read(Type& header);
-	void Write(const Type& header);
+	void Read(TypeId& header);
+	void Write(const TypeId& header);
 
 	void Read(DataFrameHeader& header);
 	void Write(const DataFrameHeader& header);
