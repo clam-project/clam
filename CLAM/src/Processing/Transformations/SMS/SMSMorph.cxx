@@ -144,40 +144,25 @@ bool SMSMorph::ConcreteStart()
 	return true;
 }
 
-bool SMSMorph::InterpolateFrames(const Frame& in1,const Frame& in2, Frame& out, TData frameFactor=-1)
+void SMSMorph::UpdateFrameInterpolatorFactors(bool useFrameFactor=false)
 {
-	TData magFactor,freqFactor,pitchFactor,resFactor;
-	
-	if(frameFactor==-1)//No Frame Interpolation
+	if(useFrameFactor)
 	{
-		frameFactor=mHybBPF.GetLastValue();
-		magFactor=mHybSinAmp.GetLastValue();
-		freqFactor=mHybSinFreq.GetLastValue();
-		pitchFactor=mHybPitch.GetLastValue();
+		mPO_FrameInterpolator.mFrameInterpolationFactorCtl.DoControl(mHybBPF.GetLastValue());
 	}
-	else
+	else//No Global Factor
 	{
-		magFactor=freqFactor=pitchFactor=frameFactor;
+		mPO_FrameInterpolator.mMagInterpolationFactorCtl.DoControl(mHybSinAmp.GetLastValue());
+		mPO_FrameInterpolator.mFreqInterpolationFactorCtl.DoControl(mHybSinFreq.GetLastValue());
+		mPO_FrameInterpolator.mPitchInterpolationFactorCtl.DoControl(mHybPitch.GetLastValue());
+		mPO_FrameInterpolator.mResidualInterpolationFactorCtl.DoControl(mHybResAmp.GetLastValue());
 	}
-	
-	resFactor=mHybResAmp.GetLastValue();
-
-	mPO_FrameInterpolator.mMagInterpolationFactorCtl.DoControl(magFactor);
-	mPO_FrameInterpolator.mFreqInterpolationFactorCtl.DoControl(freqFactor);
-	mPO_FrameInterpolator.mPitchInterpolationFactorCtl.DoControl(pitchFactor);
-	mPO_FrameInterpolator.mResidualInterpolationFactorCtl.DoControl(resFactor);
-
-	mPO_FrameInterpolator.Do(in1,in2,out);
-	
-	return true;
 }
 
 bool SMSMorph::Do(const Frame& in1, Frame& out)
 {
 	TSize nFrames2=mInput2.GetData().GetnFrames();
-	
 	TData synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
-	
 	Frame tempFrame2;
 
 	//With Frame Interpolation
@@ -185,12 +170,14 @@ bool SMSMorph::Do(const Frame& in1, Frame& out)
 	{
 		FindInterpolatedFrameFromSegment2Morph(tempFrame2);
 		//Morphing
-		InterpolateFrames(in1,tempFrame2,out);
+		UpdateFrameInterpolatorFactors();
+		mPO_FrameInterpolator.Do(in1,tempFrame2,out);
 	}
 	//Without Frame Interpolation
 	else
 	{
-		InterpolateFrames(in1,mInput2.GetData().GetFrame(int(synchroTimeFactor)),out);
+		UpdateFrameInterpolatorFactors();
+		mPO_FrameInterpolator.Do(in1,mInput2.GetData().GetFrame(int(synchroTimeFactor)),out);
 	}
 					
 	return true;
@@ -214,7 +201,9 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 
 	//Interpolating
 	TData frameFactor=synchroTimeFactor-frameNo1;
-	return InterpolateFrames(mInput2.GetData().GetFrame(frameNo1) , mInput2.GetData().GetFrame(frameNo2) , interpolatedFrame, frameFactor);			
+	mHybBPF.DoControl(frameFactor);
+	UpdateFrameInterpolatorFactors(true);
+	return mPO_FrameInterpolator.Do(mInput2.GetData().GetFrame(frameNo1) , mInput2.GetData().GetFrame(frameNo2) , interpolatedFrame);			
 }
 
 bool SMSMorph::Do(const Segment& in1, Segment& out)
@@ -228,6 +217,77 @@ bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)
 {
 	mInput2.Attach(in2);
 	return Do(in1,out);
+}
+
+bool SMSMorph::UpdateControlValueFromBPF(TData pos)
+{
+	bool ret=true;
+
+	TData globalFactor;
+	if(mConfig.HasHybBPF())
+	{
+		globalFactor=mConfig.GetHybBPF().GetValue(pos);
+		mAmountCtrl.DoControl(mConfig.GetHybBPF().GetValue(pos));
+		mHybBPF.DoControl(globalFactor);
+	}
+	else
+		ret=false;
+	if(mConfig.HasSynchronizeTime() && mConfig.GetSynchronizeTime().Size() )
+		mSynchronizeTime.DoControl(mConfig.GetSynchronizeTime().GetValue(pos));
+	else
+		mSynchronizeTime.DoControl(globalFactor);
+
+	if(mConfig.HasHybSinAmp() && mConfig.GetHybSinAmp().Size())
+		mHybSinAmp.DoControl(mConfig.GetHybSinAmp().GetValue(pos));
+	else
+		mHybSinAmp.DoControl(globalFactor);
+
+	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size())
+		mHybSinSpectralShape.DoControl(mConfig.GetHybSinSpectralShape().GetValue(pos));
+	else
+		mHybSinSpectralShape.DoControl(globalFactor);
+
+	if(mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size())
+		mHybSinShapeW1.DoControl(mConfig.GetHybSinShapeW1().GetValue(pos));
+	else
+		mHybSinShapeW1.DoControl(globalFactor);
+
+	if(mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
+		mHybSinShapeW2.DoControl(mConfig.GetHybSinShapeW2().GetValue(pos));	
+	else
+		mHybSinShapeW2.DoControl(globalFactor);
+
+	if(mConfig.HasHybPitch() && mConfig.GetHybPitch().Size() )
+		mHybPitch.DoControl(mConfig.GetHybPitch().GetValue(pos));
+	else
+		mHybPitch.DoControl(globalFactor);
+
+	if(mConfig.HasHybSinFreq() && mConfig.GetHybSinFreq().Size())
+		mHybSinFreq.DoControl(mConfig.GetHybSinFreq().GetValue(pos));
+	else
+		mHybSinFreq.DoControl(globalFactor);
+
+	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
+		mHybResAmp.DoControl(mConfig.GetHybResAmp().GetValue(pos));
+	else
+		mHybResAmp.DoControl(globalFactor);
+
+	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size())
+		mHybResSpectralShape.DoControl(mConfig.GetHybResSpectralShape().GetValue(pos));
+	else
+		mHybResSpectralShape.DoControl(globalFactor);
+
+	if(mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size())
+		mHybResShapeW.DoControl(mConfig.GetHybResShapeW1().GetValue(pos));
+	else
+		mHybResShapeW.DoControl(globalFactor);
+
+	if(mConfig.HasHybResPhase() && mConfig.GetHybResPhase().Size())
+		mHybResPhase.DoControl(mConfig.GetHybResPhase().GetValue(pos));
+	else
+		mHybResPhase.DoControl(globalFactor);
+
+	return ret;
 }
 
 bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
@@ -252,55 +312,6 @@ bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 	mSDIFReader.Stop(  );
 	
 	return true;
-}
-
-
-bool SMSMorph::UpdateControlValueFromBPF(TData pos)
-{
-	bool ret=true;
-
-
-	if(mConfig.HasHybBPF())
-	{
-		mAmountCtrl.DoControl(mConfig.GetHybBPF().GetValue(pos));
-		mHybBPF.DoControl(mConfig.GetHybBPF().GetValue(pos));
-	}
-	else
-		ret=false;
-	if(mConfig.HasSynchronizeTime() && mConfig.GetSynchronizeTime().Size() )
-		mSynchronizeTime.DoControl(mConfig.GetSynchronizeTime().GetValue(pos));
-
-	if(mConfig.HasHybSinAmp() && mConfig.GetHybSinAmp().Size())
-		mHybSinAmp.DoControl(mConfig.GetHybSinAmp().GetValue(pos));
-
-	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size())
-		mHybSinSpectralShape.DoControl(mConfig.GetHybSinSpectralShape().GetValue(pos));
-
-	if(mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size())
-		mHybSinShapeW1.DoControl(mConfig.GetHybSinShapeW1().GetValue(pos));
-
-	if(mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
-		mHybSinShapeW2.DoControl(mConfig.GetHybSinShapeW2().GetValue(pos));	
-
-	if(mConfig.HasHybPitch() && mConfig.GetHybPitch().Size() )
-		mHybPitch.DoControl(mConfig.GetHybPitch().GetValue(pos));
-
-	if(mConfig.HasHybSinFreq() && mConfig.GetHybSinFreq().Size())
-		mHybSinFreq.DoControl(mConfig.GetHybSinFreq().GetValue(pos));
-
-	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
-		mHybResAmp.DoControl(mConfig.GetHybResAmp().GetValue(pos));
-
-	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size())
-		mHybResSpectralShape.DoControl(mConfig.GetHybResSpectralShape().GetValue(pos));
-
-	if(mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size())
-		mHybResShapeW.DoControl(mConfig.GetHybResShapeW1().GetValue(pos));
-
-	if(mConfig.HasHybResPhase() && mConfig.GetHybResPhase().Size())
-		mHybResPhase.DoControl(mConfig.GetHybResPhase().GetValue(pos));
-
-	return ret;
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;

@@ -88,7 +88,7 @@ namespace CLAM{
 		SMSMorphCtrl  mHybResPhase;
 	protected:
 		
-		bool InterpolateFrames(const Frame& f1, const Frame& f2, Frame& fout,TData frameFactor);
+		void UpdateFrameInterpolatorFactors(bool useFrameFactor);
 		bool FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame);
 
 		bool LoadSDIF( std::string fileName, Segment& segment );
