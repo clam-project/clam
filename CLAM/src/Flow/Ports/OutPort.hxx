@@ -5,6 +5,7 @@
 #include <list>
 #include <string>
 #include "InPort.hxx"
+#include "InPortPublisher.hxx"
 
 namespace CLAM
 {
@@ -33,8 +34,10 @@ public:
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
 	bool HasConnections(){return mConnectedInPortsList.size();}
+	virtual void CenterEvenRegions()=0;
 
 protected:
+	
 	InPortsList mConnectedInPortsList;	
 	std::string mName;
 	Processing * mProcessing;
@@ -68,7 +71,12 @@ public:
 	void SetHop( int hop );	
 	void Produce();
 	bool CanProduce();
-protected:
+	void CenterEvenRegions();
+
+protected:	
+	bool TryConnectToPublisher( InPortBase & in );
+	bool TryConnectToConcreteIn( InPortBase & in );
+
 	ProperWritingRegion mRegion;
 };
 
@@ -103,17 +111,40 @@ OutPort<Token>::~OutPort()
 }
 
 template<class Token>
-void OutPort<Token>::ConnectToIn( InPortBase& in)
+bool OutPort<Token>::TryConnectToConcreteIn( InPortBase & in )
 {
 	try
 	{
 		ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
-	} catch (...) // could be std::bad_cast ?
-	{
-		CLAM_ASSERT( false,
-			"OutPort<Token>::connectToIn coudn't connect to inPort "
-			"because was not templatized by the same Token type as outPort" );
 	}
+	catch(...)
+	{
+		return false;
+	}
+	return true;
+}
+
+template<class Token>
+bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
+{
+	try
+	{
+		InPortPublisher<Token> & publisher =  dynamic_cast< InPortPublisher<Token> &>(in);
+		ConnectToConcreteIn( publisher.GetPublishedInPort() );
+	}
+	catch(...)
+	{
+		return false;
+	}
+	return true;
+}
+
+template<class Token>
+void OutPort<Token>::ConnectToIn( InPortBase& in)
+{
+	CLAM_ASSERT( TryConnectToConcreteIn( in ) || TryConnectToPublisher( in ),
+		     "OutPort<Token>::connectToIn coudn't connect to inPort "
+   		     "because was not templatized by the same Token type as outPort" );
 }
 
 template<class Token>
@@ -204,6 +235,12 @@ bool OutPort<Token>::IsConnectedTo(InPortBase & in)
 	for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
 		if(*it == &in) return true;
 	return false;
+}
+	
+template<class Token>
+void OutPort<Token>::CenterEvenRegions()
+{
+	mRegion.CenterEvenRegions();
 }
 
 } // namespace CLAM
