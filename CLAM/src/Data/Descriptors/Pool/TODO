@@ -93,6 +93,22 @@
 - Rename writeget attribute
 - Consider adding a updateget attribute
 
++ SameContextBinder::GetForRead
++ SameContextBinder::Init
+* SameContextBinder::Next
+	+ It updates the pointer
++ SameContextBinder::IsInsideScope
+	+ It returns true while valid
+	+ It returns false when out of scope
++ Convert Binder into a template class
++ Convert current Binder into the Hook class
+- WriterHook
+- Read Accessing AttributeScopes that are not writen
+- Read Accessing AttributeScopes that are not populated
+- Extract search and retrieval from Hooks
+- Create an Extractor
+
+
 
 * How is the binding project related to extractor-scheme adding
 	- Asociacion con el scheme
@@ -107,6 +123,7 @@
 	+ Write a dummy audio
 	+ Write the centers 
 	+ Make the spectrum
+
 
 
 - Mirar especificaciones MyDMS
