@@ -7,6 +7,7 @@
 #include <list>
 #include "XercesDomWriter.hxx"
 #include <xercesc/dom/DOMElement.hpp>
+#include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMComment.hpp>
 #include <xercesc/dom/DOMProcessingInstruction.hpp>
 /*
@@ -61,6 +62,8 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testReleaseContext_atRootReturnsNull);
 	CPPUNIT_TEST(testReleaseContext_whenIsChildContext);
 	CPPUNIT_TEST(testRecursiveConstructor_initializesTheContext);
+	CPPUNIT_TEST(testReleaseContext_whenContentLeft);
+	CPPUNIT_TEST(testReleaseContext_whenElementLeft);
 
 
 	CPPUNIT_TEST(testLoadingAWordOnBasicAsContent);
@@ -604,25 +607,63 @@ private:
 		outerElement->appendChild(innerElement);
 		XercesDomReadingContext contextRoot(contextElement);
 		XercesDomReadingContext contextInner(&contextRoot,"Element");
-		xercesc::DOMElement * foundElement = contextInner.fetchElement("InnerElemen");
+		xercesc::DOMElement * foundElement = contextInner.fetchElement("InnerElement");
 
 		CPPUNIT_ASSERT_EQUAL(innerElement, foundElement);
 	}
 
 	void testReleaseContext_whenContentLeft()
 	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Offending input\none line more"));
+		contextElement->appendChild(domContent);
+		XercesDomReadingContext context(contextElement);
+
+		context.release();
+
+		std::list<std::string> errors = context.errors();
+
+		std::string result;
+		for (std::list<std::string>::iterator it=errors.begin(); it!=errors.end(); it++)
+			result+= *it + '\n';
+
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"Unexpected content: 'Offending input\none line more'\n"),
+			result
+			);
 	}
 
 	void testReleaseContext_whenElementLeft()
 	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * unparsedElement = mDocument->createElement(X("Offender"));
+		contextElement->appendChild(domElement);
+		contextElement->appendChild(unparsedElement);
+		
+		XercesDomReadingContext context(contextElement);
+
+		context.fetchElement("Element");
+		context.release();
+
+		std::list<std::string> errors = context.errors();
+
+		std::string result;
+		for (std::list<std::string>::iterator it=errors.begin(); it!=errors.end(); it++)
+			result+= *it + '\n';
+
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"Unexpected Element: 'Offender'\n"),
+			result
+			);
+	}
+
+	void testRelease_whenANonElementAndNonContentNodeLeft()
+	{
+		// TODO
 	}
 
 
-
-
-
-
-	
 	void testLoadingAWordOnBasicAsContent()
 	{
 		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
