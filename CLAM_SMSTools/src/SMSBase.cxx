@@ -104,15 +104,15 @@ void SMSBase::InitConfigs(void)
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
-		analHopSize=(resAnalWindowSize-1)/2;
-	else
-		analHopSize=mGlobalConfig.GetAnalysisHopSize();
+		mGlobalConfig.SetAnalysisHopSize((resAnalWindowSize-1)/2);
+	
+	analHopSize=mGlobalConfig.GetAnalysisHopSize();
 	
 	int synthFrameSize;
 	if(mGlobalConfig.GetSynthesisFrameSize()<0)
-		synthFrameSize=analHopSize;
-	else
-		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
+		mGlobalConfig.SetSynthesisFrameSize(analHopSize);
+	
+	synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
 	// SMS Analysis configuration
@@ -136,14 +136,11 @@ void SMSBase::InitConfigs(void)
 	mAnalConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
 	mAnalConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
 	mAnalConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
-	mAnalConfig.GetFundFreqDetect().SetMaxFundFreqError(mGlobalConfig.GetAnalysisMaxFundFreqError());
-	mAnalConfig.GetFundFreqDetect().SetNMaxCandidates(mGlobalConfig.GetAnalysisMaxFundCandidates());
 	
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
 	mSynthConfig.SetHopSize(synthFrameSize);
-	mSynthConfig.GetPhaseMan().SetType(mGlobalConfig.GetSynthesisPhaseManagementType());
 
 	//Configure child Processings
 	GetAnalysis().Configure(mAnalConfig);
@@ -193,11 +190,8 @@ bool SMSBase::HaveCompatibleConfig()
 	mGlobalConfig.HasAnalysisReferenceFundFreq() && 
 	mGlobalConfig.HasAnalysisLowestFundFreq() && 
 	mGlobalConfig.HasAnalysisHighestFundFreq() && 
-	mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
-	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
 	mGlobalConfig.HasSynthesisFrameSize() &&
 	mGlobalConfig.HasSynthesisWindowType() &&
-	mGlobalConfig.HasSynthesisPhaseManagementType()&&
 	mGlobalConfig.HasMorphSoundFile());
 }
 
