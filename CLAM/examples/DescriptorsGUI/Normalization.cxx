@@ -21,7 +21,7 @@
 
 #include "DataTypes.hxx" 
 #include "Normalization.hxx"
-#include "BasicStatistics.hxx"
+#include "Stats.hxx"
 
 
 using namespace CLAM;
