@@ -361,15 +361,20 @@
       ** Automatic Generic Snapshot Generation first attempt. It works
          for sure for Spectrum's, Audio's and Segment's.
       ** New GUI folder organisation: now it contains several subfolders
-	         + src/GUI/Core - Visualization Module Core Classes
-	         + src/GUI/GL   - OpenGL renderers
-	         + src/GUI/View - Set of actually implemented System Views
+        *** 
+        *** 
+        *** 
+        *** 
+        *** 
+        *** src/GUI/Core - Visualization Module Core Classes
+        *** src/GUI/GL  - OpenGL renderers
+        *** src/GUI/View - Set of actually implemented System Views
               ( Views Processings and PDs offered by CLAM )
-		 + src/GUI/Presentation - Set of presentations for
+        *** src/GUI/Presentation - Set of presentations for
            representing standard CLAM concepts ( Processing's and PDs )
-		 + src/GUI/Widget - Some custom widgets, as well as wrappers
+        *** src/GUI/Widget - Some custom widgets, as well as wrappers
            for different Toolkits
-		 + src/GUI/Util - Miscellaneous stuff
+        *** src/GUI/Util - Miscellaneous stuff
       ** Some old snapshots have been eliminated and is a TODO to port
          them to the new interface
   * Unix build system
