@@ -37,7 +37,7 @@ namespace CLAM {
 
 	class AudioDescriptors : public DescriptorAbs {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 11, DescriptorAbs);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 12, DescriptorAbs);
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, Variance);
 		DYN_ATTRIBUTE (2, public, TData, TemporalCentroid);
@@ -49,6 +49,7 @@ namespace CLAM {
 		DYN_ATTRIBUTE (8, public, TData, Energy);
 		DYN_ATTRIBUTE (9, public, TData, ZeroCrossingRate);
 		DYN_ATTRIBUTE (10,public, TData, RiseTime);
+		DYN_ATTRIBUTE (11,public, TData, Decrease);
 
 	public:
 
@@ -66,10 +67,12 @@ namespace CLAM {
 		TData ComputeZeroCrossingRate();
 		TData ComputeAttackTime();
 		TData ComputeLogAttackTime();
+		TData ComputeDecrease();
 
 		
 	private:
 		Audio* mpAudio;
+		static const TData mEpsilon = 1e-5;
 		
 		TData mComputedAttackTime;
 	};
@@ -142,6 +145,11 @@ inline AudioDescriptors CLAM_min (const AudioDescriptors & a,const AudioDescript
 		if(b.GetRelease()<a.GetRelease())
 			tmpD.SetRelease(b.GetRelease() );
 	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		if(b.GetDecrease()<a.GetDecrease())
+			tmpD.SetDecrease(b.GetDecrease() );
+	}
 	return tmpD;
 
 
@@ -206,6 +214,11 @@ inline AudioDescriptors CLAM_max (const AudioDescriptors & a,const AudioDescript
 	{
 		if(b.GetRelease()>a.GetRelease())
 			tmpD.SetRelease(b.GetRelease() );
+	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		if(b.GetDecrease()>a.GetDecrease())
+			tmpD.SetDecrease(b.GetDecrease() );
 	}
 	return tmpD;
 

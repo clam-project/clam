@@ -49,6 +49,7 @@ AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
 	SetDecay(initVal);
 	SetSustain(initVal);
 	SetRelease(initVal);
+	SetDecrease(initVal);
 }
 
 void AudioDescriptors::DefaultInit() {
@@ -68,7 +69,7 @@ const Audio* AudioDescriptors::GetpAudio() const {
 
 void AudioDescriptors::SetpAudio(Audio* pAudio) {
 	mpAudio=pAudio;
-    //TODO: it may give problems because pointer passed
+	//TODO: it may give problems because pointer passed
 	InitStats(&mpAudio->GetBuffer());
 	mComputedAttackTime=0;	
 }
@@ -89,6 +90,8 @@ void AudioDescriptors::ConcreteCompute()
 		SetRiseTime(ComputeAttackTime());
 	if(HasLogAttackTime())
 		SetLogAttackTime(ComputeLogAttackTime());
+	if(HasDecrease())
+		SetDecrease(ComputeDecrease());
 /*
 		Not implemented yet;
 
@@ -104,8 +107,9 @@ TData AudioDescriptors::ComputeZeroCrossingRate()
 	int sum = 0;
 	DataArray& data=mpAudio->GetBuffer();
 	int size=data.Size();
-	for (int i=1; i<size; i++) {
-	  if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
+	for (int i=1; i<size; i++) 
+	{
+		if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
 		  ((data[i] > 0.0) && (data[i-1] < 0.0)))
 		sum++;
 	}
@@ -123,10 +127,10 @@ TData AudioDescriptors::ComputeAttackTime()
 	int i;
 	int size=mpAudio->GetSize();
 	for (i=0;i<size;i++)
-	   if (data[i] > max) {
-		max = data[i];
-		maxindex = i;
-	}
+		if (data[i] > max) {
+			max = data[i];
+			maxindex = i;
+		}
 	i=0;
 	TData offsetMag=0.02*max;
 	while(true)
@@ -141,9 +145,63 @@ TData AudioDescriptors::ComputeAttackTime()
 	return mComputedAttackTime;
 }
 
+
 TData AudioDescriptors::ComputeLogAttackTime()
 {
 	return log(ComputeAttackTime());
+}
+
+
+TData AudioDescriptors::ComputeDecrease()
+{
+	DataArray& data     = mpAudio->GetBuffer();
+	TSize      dataSize = mpAudio->GetSize();
+
+	DataArray RS;
+	RS.Resize(dataSize);
+	RS.SetSize(dataSize);
+
+	// Find maximum value index
+	TIndex maxRSind = 0;
+	TData  maxRS    = log10(fabsf(mEpsilon));
+
+	for (TIndex i=0; i<dataSize; i++)
+	{
+
+		// Replace zeros with very small value due to log10
+		if (data[i] == 0) data[i] = mEpsilon;
+
+		// Base computation on base 10 logarithm of approx. signal envelope.
+		RS[i] = log10(fabsf(data[i]));
+		if (RS[i] > maxRS) 
+		{
+			maxRS    = RS[i];
+			maxRSind = i;
+		}
+	}
+
+	// Compute means and gradient of decay part
+	TData meanX = 0;
+	TData meanY = 0;
+	TData num   = 0;
+	TData denum = 0;
+	TData N     = (dataSize - maxRSind);
+
+	for (TIndex i=maxRSind; i<dataSize; i++) 
+	{
+		meanX += i;
+		meanY += RS[i];
+
+		num   += i*RS[i];
+		denum += i*i;
+	}
+	meanX /= N;
+	meanY /= N;
+
+	num   -= N*meanX*meanY;
+	denum -= N*meanX*meanX;
+
+	return (num / denum) * mpAudio->GetSampleRate();
 }
 
 
@@ -195,6 +253,10 @@ AudioDescriptors operator * (const AudioDescriptors& a,TData mult)
 	if(a.HasRelease())
 	{
 		tmpD.SetRelease(a.GetRelease()*mult);
+	}
+	if(a.HasDecrease())
+	{
+		tmpD.SetDecrease(a.GetDecrease()*mult);
 	}
 	return tmpD;
 }
@@ -274,6 +336,12 @@ AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.UpdateData();
 		tmpD.SetRelease(a.GetRelease()*b.GetRelease() );
 	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		tmpD.AddDecrease();
+		tmpD.UpdateData();
+		tmpD.SetDecrease(a.GetDecrease()*b.GetDecrease() );
+	}
 	return tmpD;
 }
 
@@ -346,6 +414,12 @@ AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.AddRelease();
 		tmpD.UpdateData();
 		tmpD.SetRelease(a.GetRelease()+b.GetRelease() );
+	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		tmpD.AddDecrease();
+		tmpD.UpdateData();
+		tmpD.SetDecrease(a.GetDecrease()+b.GetDecrease() );
 	}
 	return tmpD;
 
