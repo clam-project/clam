@@ -54,6 +54,9 @@ namespace CLAMVM
 		bool                              mCancel;
 		bool                              mIsThisPlaying;
 		CLAM::AudioPlayer*                mAudioPlayer;
+	  // for transforming the sample index into sample time
+	  CLAM::TData                       mAudioOffset;
+	  CLAM::TData                       mSampleRate;
 
 		void Play(  );
 		void Stop(  );
