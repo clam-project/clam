@@ -24,8 +24,8 @@ namespace CLAMVM
 
 	void DummyFDFWidget::AttachTo( ProcessingInControlSet& cs )
 	{
-		InputControlModel& lcm = cs.Retrieve( "Low Cutoff Frecuency");
-		InputControlModel& hcm = cs.Retrieve( "High Cutoff Frecuency");
+		InputControlModel& lcm = cs.Retrieve( "Low Cutoff Frequency");
+		InputControlModel& hcm = cs.Retrieve( "High Cutoff Frequency");
 		InputControlModel& gcm = cs.Retrieve( "Gain" );
 		InputControlModel& sbcm = cs.Retrieve( "Stop Band Slope" );
 		InputControlModel& pbcm = cs.Retrieve( "Pass Band Slope" );
