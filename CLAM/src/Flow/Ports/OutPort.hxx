@@ -33,7 +33,7 @@ public:
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
-	bool HasConnections(){return mConnectedInPortsList.size();}
+	bool HasConnections(){return mConnectedInPortsList.size()!=0;}
 	virtual void CenterEvenRegions()=0;
 
 protected:
