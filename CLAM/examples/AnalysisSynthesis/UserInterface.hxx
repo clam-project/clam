@@ -7,13 +7,18 @@
 #include "Fl_Smart_Tile.H"
 class Fl_Smart_Tile;
 #include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"
+namespace CLAMGUI
+{
 class AnalysisSynthesisExampleGUI;
+}
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
+
+using namespace CLAMGUI;
 
 class UserInterface {
 public:
