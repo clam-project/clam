@@ -16,8 +16,8 @@ distclean: clean
 	rm -rf dep/
 
 install: $(PROGRAMPATH)$(PROGRAM)
-	@MODNAME=$(PROGRAM#libCLAM)
-	@MODNAME=$(MODNAME%.so)
+	rm -rf $(PREFIX)/include/CLAM/$(MODNAME)
+	rm -rf $(PREFIX)/lib/$(PROGRAM)
 	@echo == installing $(MODNAME)
 	$(INSTALL) -d -m 644 $(PREFIX)/include/CLAM/$(MODNAME)
 	$(INSTALL) -m 644 include/CLAM/$(MODNAME)/* $(PREFIX)/include/CLAM/$(MODNAME)
