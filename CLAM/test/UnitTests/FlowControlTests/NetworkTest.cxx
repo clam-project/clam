@@ -22,6 +22,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "Processing.hxx"
 #include "Network.hxx"
+#include "BasicFlowControl.hxx"
 #include <string>
 #include "BaseLoggable.hxx" // also includes <sstream>
 #include "InPortTmpl.hxx"
@@ -123,7 +124,9 @@ class NetworkTest : public CppUnit::TestFixture
 	void testGetProcessing_WhenProcessingAdded()
 	{
 		CLAM::Network net;
-		
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+			
 		CLAM::Processing* proc = new DummyProcessing;
 		std::string name( "dummy-processing" );
 		net.AddProcessing( name, proc );
@@ -134,7 +137,10 @@ class NetworkTest : public CppUnit::TestFixture
 	void testGetProcessing_WithTwoProcessings()
 	{
 		CLAM::Network net;
-		
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
+	
 		CLAM::Processing* proc = new DummyProcessing;
 		std::string name1( "the first" );
 		net.AddProcessing( name1, proc );
@@ -148,6 +154,8 @@ class NetworkTest : public CppUnit::TestFixture
 	void testHasProcessing_WhenHasIt()
 	{
 		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
 		
 		std::string name("the name");
 		net.AddProcessing( name,  new DummyProcessing );
@@ -180,6 +188,9 @@ class NetworkTest : public CppUnit::TestFixture
 		LoggableDummyProcessing* proc2 = new LoggableDummyProcessing(log);
 		
 		CLAM::Network* net = new CLAM::Network;
+		const int nodeSize=1;
+		net->AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
 		net->AddProcessing( std::string("first"), proc1 );
 		net->AddProcessing( std::string("second"), proc2 );
 		delete net;
@@ -224,6 +235,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		const int dummyLength = 1;
@@ -244,6 +258,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
 
 		// exercice and test
@@ -299,6 +316,10 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		const int dummyLength = 1;
@@ -324,6 +345,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		const int dummyLength = 1;
@@ -344,6 +368,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
 
 		// exercice and test
@@ -399,6 +426,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		const int dummyLength = 1;
@@ -424,6 +454,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		CLAM::InControl* expectedInControl = 
@@ -443,6 +476,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
 
 		// exercice and test
@@ -498,6 +534,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		CLAM::InControl* expectedInControl = 
@@ -523,6 +562,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		CLAM::OutControl* expectedOutControl = 
@@ -542,6 +584,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
 
 		// exercice and test
@@ -597,6 +642,9 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
 		CLAM::OutControl* expectedOutControl = 
@@ -626,6 +674,9 @@ class NetworkTest : public CppUnit::TestFixture
 	void testConnectPorts_WhenConnectionIsValid()
 	{
 		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
 		DummyProcessing* firstProc = new DummyProcessing;
 		DummyProcessing* secondProc = new DummyProcessing;
 
@@ -648,6 +699,9 @@ class NetworkTest : public CppUnit::TestFixture
 	void testConnectPorts_WhenConnectionIsNotValid()
 	{
 		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
 		DummyProcessing* firstProc = new DummyProcessing;
 		DummyProcessing* secondProc = new DummyProcessing;
 
@@ -671,6 +725,9 @@ class NetworkTest : public CppUnit::TestFixture
 	void testRemovePortsConnection_WhenPortsAreNotConnected()
 	{
 		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
 		DummyProcessing* firstProc = new DummyProcessing;
 		DummyProcessing* secondProc = new DummyProcessing;
 
@@ -694,6 +751,9 @@ class NetworkTest : public CppUnit::TestFixture
 	void testRemovePortsConnection_WhenPortsAreConnected()
 	{
 		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
 		DummyProcessing* firstProc = new DummyProcessing;
 		DummyProcessing* secondProc = new DummyProcessing;
 
