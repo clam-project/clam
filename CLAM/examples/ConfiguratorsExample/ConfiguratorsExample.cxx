@@ -20,7 +20,7 @@
  */
 
 #include "FLTKConfigurator.hxx"
-#include "QTConfigurator.hxx"
+//#include "QTConfigurator.hxx"
 #include "HeapDbg.hxx"
 #include "DynamicType.hxx"
 
@@ -76,7 +76,7 @@ Enum::tValue EDummy::sDefault = EDummy::dos;
 
 class DummySubConfig : public ProcessingConfig
 {
-
+public:
 	DYNAMIC_TYPE_USING_INTERFACE (DummySubConfig,6,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 	DYN_ATTRIBUTE(1,public,std::string,ThatIsAString);
@@ -100,7 +100,7 @@ public:
 
 class DummyConfig : public ProcessingConfig
 {
-
+public:
 	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,7,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
@@ -127,19 +127,20 @@ public:
 //using namespace CLAM;
 
 #include <FL/Fl.H>
-#include <qapplication.h>
+//#include <qapplication.h>
 
 
 using namespace CLAMTest;
 
 int TryQTConfigurator(DummyConfig & config, int argc, char**argv) 
-{
+{/*
 	QApplication a(argc,argv);
 	CLAM::QTConfigurator configurator;
 	configurator.SetConfig(config);
 	configurator.show();
 	a.setMainWidget( &configurator );
-	return a.exec();
+	return a.exec();*/
+	return 0;
 }
 
 int TryFLTKConfigurator(DummyConfig & config) 
@@ -176,7 +177,7 @@ void TryLoadXML(DummyConfig & config, char * xmlfilename)
 
 int main(int argc, char** argv)
 {
-	int ret;
+	int ret=0;
 	try{
 		DummyConfig config;
 		TryLoadXML(config,"configout.xml");
