@@ -22,57 +22,8 @@
 #ifndef __PRESENTATION__
 #define __PRESENTATION__
 
-#include "GView.hxx"
-#include "GeometryKit.hxx"
-#include "Assert.hxx"
 #include <typeinfo>
 
-namespace CLAMGUI
-{
-
-class Presentation
-{
-
-public:
-
-	Presentation()
-	{
-	}
-
-
-	virtual void LinkWithView( View* v )
-	{
-		mLinkedView = v;
-
-		PublishCallbacks();
-	}
-
-	View* GetLinkedView(void)
-	{
-		return mLinkedView;
-	}
-
-	virtual void PublishCallbacks()
-	{
-		CLAM_ASSERT( false, " Base presentation class PublishCallbacks() invoked. It is mandatory to overwrite this method" );
-	}
-
-	virtual ~Presentation()
-	{
-		mLinkedView->Release();
-	}
-
-protected:
-
-	virtual void Init( const Geometry& g, const char* label = 0 )
-	{
-	}
-
-	View* mLinkedView;
-
-};
-
-}
 
 namespace CLAMVM
 {

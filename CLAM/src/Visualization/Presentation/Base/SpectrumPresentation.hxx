@@ -27,21 +27,6 @@
 #include "Array.hxx"
 #include "DataTypes.hxx"
 #include "Slotv2.hxx"
-//  Includes of old Visualization Module
-/** @todo: Remove this **/
-#include "ProcDataPresentation.hxx"
-#include "FLDisplayContainer.hxx"
-#include "PresentationWindow.hxx"
-#include "GLPortNew.hxx"
-#include "GLLinearSpRenderer.hxx"
-#include "GLState.hxx"
-#include "SpectrumGView.hxx"
-#include "ViewConfiguration.hxx"
-#include "CLAMGL.hxx"
-#include "CBL.hxx"
-#include "GeometryKit.hxx"
-#include "Viewport.hxx"
-#include "GlobalEnums.hxx"
 
 namespace CLAMVM
 {
@@ -71,96 +56,5 @@ namespace CLAMVM
 		};
 }
 
-/** @todo: remove this **/
-
-namespace CLAMGUI
-{
-		using CLAM::DataArray;
-		using CLAM::TData;
-		using CLAM::EScale;
-
-
-	class SpecPresGLState : public GLState
-	{
-	public:
-		
-		
-		void Apply()
-			{
-				glClearColor( 0.0, 0.0, 0.0, 0.0 );
-				glShadeModel( GL_FLAT );
-			}
-	};
-
-	template<>
-	class ProcDataPresentation< Spectrum >
-		: public Presentation
-	{
-	public:
-		
-		ProcDataPresentation( const char* label = 0)
-			: Presentation(), mSpectralMetrixLocked( false )
-		{
-			Geometry geo ( 100, 100, 400, 300 );
-			Init( geo, label );
-		}
-		
-		
-		ProcDataPresentation( const Geometry& g, const char* label = 0)
-			: Presentation(), mSpectralMetrixLocked( false )
-		{
-			Init( g, label );
-		}
-	
-		virtual ~ProcDataPresentation()
-		{
-			delete mWindow;
-			delete mRenderer;
-		}	
-		
-		void PublishCallbacks();
-		
-		
-		void Show();
-		
-		
-		void Do()
-		{
-			mDispContainer->redraw();
-		}
-		
-		Fl_Window* GetWindow() { return mWindow; }
-		
-	protected:
-		
-		
-		virtual void Init( const Geometry& g, const char* label );
-		virtual void UpdateMagData( const DataArray& array );
-		virtual void UpdatePhaseData( const DataArray& array );
-		void UpdateScale( unsigned int nbins, EScale scale );
-		void UpdateSpectralRangeData( TData value );
-		
-		void UpdateSpectralResolutionData( TData value );
-	
-	protected:
-		
-		
-		CBL::Functor1< const DataArray& >               mDrawMagCb;
-		CBL::Functor1< const DataArray& >               mDrawPhaseCb;
-		CBL::Functor1< TData >                          mDrawRangeCb;
-		CBL::Functor1< TData >                          mDrawResolutionCb;
-		CBL::Functor2< unsigned int, EScale >           mDrawScaleCb;
-		
-		GLPort*                           mPort;
-		GLLinearSpRenderer*               mRenderer;
-		FLDisplayContainer*               mDispContainer;
-		PresentationWindow*               mWindow;
-
-		Viewport                          mSpecPresMetrix;
-		bool                              mSpectralMetrixLocked;
-		
-	};
-	
-}
 
 #endif // SpectrumPresentation.hxx
