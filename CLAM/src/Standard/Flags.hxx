@@ -75,7 +75,7 @@ public:
 	*/
 	unsigned int GetFlagPosition(const std::string & whichOne) const throw (IllegalValue);
 
-	/* 
+	/*
 	 * Stores component's subitems on the given Storage
 	 * @param store The given storage where the subitem will be stored
 	 * @see Storage
@@ -83,7 +83,7 @@ public:
 	 */
 	virtual void StoreOn (Storage & storage);
 
-	/* 
+	/*
 	 * Loads component's subitems from the given Storage
 	 * @param store The given storage where the subitem will be stored
 	 * @see Storage
@@ -113,30 +113,30 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 
 /**
 * Instances of this class represents objects containing a set
-* of booleans values (flags) that can be accessed by their 
+* of booleans values (flags) that can be accessed by their
 * symbolic name.
 * <p>
 * Because Flags derives from std::bitset<N> it provides all the
 * standard operations like bitwise operators and so.
-* This interface has been fattened to provide symbolic 
+* This interface has been fattened to provide symbolic
 * representation (name string) for each flag.
-* If symbolic names for flags are not useful to you, consider 
+* If symbolic names for flags are not useful to you, consider
 * use std::bitset instead which has a pure positional approach.
 * <p>
 * <ul>
 * <li>Bitwise operators
 * <li>Several ways to access to individual flags
-* <li>Formated input and output to an std::stream as symbols 
-* with the insertion (&lt;&lt;) and extraction (&gt;&gt;) 
+* <li>Formated input and output to an std::stream as symbols
+* with the insertion (&lt;&lt;) and extraction (&gt;&gt;)
 * operators
 * <li>Implements the Component interface: StoreOn, DeepCopy,
 * ShallowCopy...
 * <li>Runtime symbolic representation
-* <li>Runtime checking of the values 
+* <li>Runtime checking of the values
 * </ul>
 * <h3>Accessing individual flags</h3>
 * <p>
-* You can acces an individual flag of the Flags object in 
+* You can acces an individual flag of the Flags object in
 * different ways:
 * <table border='0'>
 * <tr><td>Access by name:</td>	<td>flags.bFlagName</td></tr>
@@ -147,12 +147,12 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 * You can use references this individual flags like any reference to a boolean.
 * Moreover, you can use some extra operations like <tt>flip</tt> that inverses
 * the actual value of the flag:
-* <pre><tt>
+* @code
 * 	bool isTrue= flags.bFlagName;
 * 	bool isFalse= ~(flags.bFlagName);
 * 	flags.bFlagName=true;
 * 	flags.bFlagName.flip();
-* </tt></pre>
+* @endcode
 * <h3>Bitwise operations</h3>
 * <h3>Non Standard operations</h3>
 * <p>
@@ -169,19 +169,87 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 * <tr><td>operator int</td><td>operator int</td><td>The interface is unchanged but throws a </td></tr>
 * </table>
 * <h3>Creating your own flags</h3>
-* <p>TODO: Adapt this!!!
-* <p>The way to define an enumerated type is by subclassing
-* <tt>Enum</tt>.
+* <p>The way to define a new Flags type is by subclassing
+* <tt>Flags<N></tt>.
 * The subclass MUST redefine its constructors by
-* providing the Enum constructor an array of tEnumValue's,
+* providing the Flags constructor an array of tFlagsValue's,
 * which defines the mapping between numeric and symbolic
 * values, and an initialization value, than can be both a
 * symbol (char* or std::string) or an integer.
 * </p>
-* <pre>
-* // MyFlags.hxx
-* // MyFlags.cxx
-* </pre>
+* @code
+	// MyFlags.hxx
+	class MyFlags : public Flags<5> {
+	// Construction/Destruction
+	public:
+		static tFlagValue sFlagValues[];
+		static tValue sDefault;
+		virtual Component * Species() const {
+			return new MyFlags();
+		}
+		typedef enum {
+			eFlag0=0,
+			eFlag1=1,
+			eFlag2=2,
+			eFlag3=3,
+			eFlag4=4
+		} tFlag;
+		MyFlags () :
+			Flags<5>(sFlagValues),
+			flag0(operator[](eFlag0)),
+			flag1(operator[](eFlag1)),
+			flag2(operator[](eFlag2)),
+			flag3(operator[](eFlag3)),
+			flag4(operator[](eFlag4))
+		{
+			// The default flag configuration is set here
+			flag4=true;
+		};
+		MyFlags (const MyFlags& someFlags) :
+			Flags<5>(sFlagValues,someFlags),
+			flag0(operator[](eFlag0)),
+			flag1(operator[](eFlag1)),
+			flag2(operator[](eFlag2)),
+			flag3(operator[](eFlag3)),
+			flag4(operator[](eFlag4))
+		{};
+		template <class T>
+		MyFlags(const T &t) :
+			Flags<5>(sFlagValues,t),
+			flag0(operator[](eFlag0)),
+			flag1(operator[](eFlag1)),
+			flag2(operator[](eFlag2)),
+			flag3(operator[](eFlag3)),
+			flag4(operator[](eFlag4))
+		{};
+		template <class T1, class T2>
+		MyFlags(const T1 &t1, const T2 &t2) :
+			Flags<5>(sFlagValues,t1,t2),
+			flag0(operator[](eFlag0)),
+			flag1(operator[](eFlag1)),
+			flag2(operator[](eFlag2)),
+			flag3(operator[](eFlag3)),
+			flag4(operator[](eFlag4))
+		{}
+		reference flag0;
+		reference flag1;
+		reference flag2;
+		reference flag3;
+		reference flag4;
+	};
+@endcode
+
+@code
+	// MyFlags.cxx
+	Flags<5>::tFlagValue MyFlags::sFlagValues[] = {
+		{MyFlags::eFlag0, "flag0"},
+		{MyFlags::eFlag1, "flag1"},
+		{MyFlags::eFlag2, "flag2"},
+		{MyFlags::eFlag3, "flag3"},
+		{MyFlags::eFlag4, "flag4"},
+		{0,NULL}
+	};
+@endcode
 */
 template <unsigned int N> class Flags : public FlagsBase, public std::bitset<N>
 {
@@ -191,13 +259,13 @@ protected:
 	Flags(tFlagValue * names) : std::bitset<N>() {
 		mFlagValues=names;
 	};
-	/** 
+	/**
 	* The derived copy constructor will use this
 	*/
 	Flags(tFlagValue * names, const Flags<N> &t) : std::bitset<N>() {
 		mFlagValues=names;
 	};
-	/** 
+	/**
 	* A lazy way to redefine all unary constructors in bitset 
 	* by forwarding it.
 	* @see std::bitset To obtain the complete set of available 
