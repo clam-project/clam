@@ -1,5 +1,7 @@
 // deque standard header
 
+#if _MSC_VER < 1300 /* VC6 */
+
 #if     _MSC_VER > 1000
 #pragma once
 #endif
@@ -544,6 +546,12 @@ _STD_END
 #endif  /* _MSC_VER */
 
 #endif /* _DEQUE_ */
+
+#else /* VC6 */
+
+#	include<deque>
+
+#endif /* VC6 */
 
 /*
  * Copyright (c) 1995 by P.J. Plauger.  ALL RIGHTS RESERVED. 
