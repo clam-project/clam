@@ -118,7 +118,7 @@ namespace CLAM{
  * configurator->show();
  * @endcode
  *
- * @section Extending to other toolkits or attribute types.
+ * @section ExtendingConfigurators Extending to other toolkits or attribute types.
  * 
  * A given configurator overloads the AddWidget and RetrieveValue for
  * every type it wants to deal diferently.
