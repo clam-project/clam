@@ -1,4 +1,4 @@
-2003-12-XX  CLAM_0_4_2
+2003-02-28  CLAM_0_4_2
 'Cuidado merge update'
   * Spectral Processings:
       ** Added Gaussian window to WindowGenerator
@@ -8,6 +8,7 @@
       ** Fix: 'this' (the processing) was thown on error instead exceptions
   * Visualization:
       ** Removed: FLDisplay, FLMultiDisplay, FLDisplayArray and CUIDADO_Snapshots
+      ** libsigslot added
   * FLTKConfigurator:
       ** Uses FL_Pack  & FL_Scroll for managing the widgets position
   * Normalization:
@@ -15,6 +16,8 @@
   * AnalysisSynthesis:
       ** Added Spectrum View
       ** Added Signal/Slot facilities to coordinate Spectrum and Frame marker
+      ** Added Transformations
+      ** Lot of fixes
   * AudioBrowser:
       ** New class added, derived from AudioPresentation, that includes a 
          GLPortSigSlot and capabilities to get its Signals and its Slots.
