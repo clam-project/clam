@@ -1,5 +1,5 @@
 2004-??-?? CLAM_0_6_2
-'???'
+'Clean up!!'
   * Processing Interface Clean up:
      ** Removed Processing inheritance from Component
      ** Processing::FlattenObjects removed until needed
@@ -9,6 +9,10 @@
      ** Processing::LostData removed until needed
      ** Processing::StoreOn/LoadFrom removed until needed
      ** Processing::composite_begin/end moved to the ProcessingComposite
+  * Standard:
+     ** FormatData.hxx removed, also their useless uses
+     ** Vector removed
+     ** QSort removed, use stl's qsort instead
 
 2004-04-13 CLAM_0_6_1
 'qt && Visual 7 support'
