@@ -157,9 +157,8 @@ public:
 	 *	@param outFn: output Fundamental Frequency computed from the sinusoidal peaks
 	 *	@param outResSpec: residual spectrum computed from substracting the synthesized sinusoidal
 	 *	spectrum from the original spectrum.
-	 *	@param outSinSpec: synthesized sinusoidal spectrum
 	 */
-	bool Do(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
+	bool Do(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec);
 
 	/**	Auxiliary method to perform the analysis on the sinusoidal component. It computes the
 	 *	spectral peaks, the fundamental frequency and then performs sinusoidal tracking on the
@@ -241,6 +240,9 @@ private:
 	
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+
+	/** Internal convenience method used for initializing frames */
+	void InitFrame(Frame& in);
 
 };
 
