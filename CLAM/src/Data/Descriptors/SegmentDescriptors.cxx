@@ -77,9 +77,9 @@ void SegmentDescriptors::SetpSegment(const Segment* pSegment) {
 void SegmentDescriptors::SetFramePrototype(const FrameDescriptors& proto, int nFrames)
 {
 	int i;
-	FrameDescriptors tmpFrD;
+	GetFramesD().Resize(nFrames);
+	GetFramesD().SetSize(nFrames);
 	for (i=0;i<nFrames;i++){
-		GetFramesD().AddElem(tmpFrD);
 		GetFramesD()[i].SetPrototype(proto);}
 	mSegmentStats= new StatsTmpl<false,FrameDescriptors,FrameDescriptors>(&GetFramesD());
 	if(HasMeanD())
