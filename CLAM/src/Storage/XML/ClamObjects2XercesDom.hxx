@@ -40,9 +40,45 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 namespace CLAM
 {
 
-class ClamObject2XercesDom : public Storage
+class XercesDomWritingContext
 {
 	xercesc::DOMElement * _currentElement;
+	XercesDomWritingContext * _parent;
+public:
+	XercesDomWritingContext(xercesc::DOMElement * element)
+	{
+		_parent = 0;
+		_currentElement = element;
+	}
+
+	XercesDomWritingContext(XercesDomWritingContext * parent, const char * name)
+	{
+		_parent = parent;
+		xercesc::DOMElement * parentElement = parent->_currentElement;
+		_currentElement = parentElement->getOwnerDocument()->createElement(X(name));
+		parentElement->appendChild(_currentElement);
+	}
+
+	XercesDomWritingContext * release()
+	{
+		return _parent;
+	}
+	
+	void addAttribute(const char * name, const char * value)
+	{
+		_currentElement->setAttribute(X(name),X(value));
+	}
+	void addContent(const char * content)
+	{
+		xercesc::DOMText * domContent = _currentElement->getOwnerDocument()->createTextNode(X(content));
+		_currentElement->appendChild(domContent);
+	}
+};
+
+class ClamObject2XercesDom : public Storage
+{
+	XercesDomWritingContext * _context;
+	XercesDomWritingContext * _rootContext;
 	xercesc::DOMDocument * _document;
 	bool _lastWasContent;
 public:
@@ -57,10 +93,12 @@ public:
 			0  // document type object (DTD).
 		);
 		_lastWasContent=false;
-		_currentElement=_document->getDocumentElement();
+		_rootContext= new XercesDomWritingContext(_document->getDocumentElement());
+		_context = _rootContext;
 	}
 	~ClamObject2XercesDom()
 	{
+		delete _rootContext;
 		_document->release();
 		xercesc::XMLPlatformUtils::Terminate();
 	}
@@ -74,60 +112,49 @@ public:
 	}
 	void Store(const Storable & storable)
 	{
-		const XMLable & xmlable = dynamic_cast<const XMLable &>(storable);
-		const char * name = xmlable.XMLName();
+		const XMLable * xmlable = dynamic_cast<const XMLable *>(&storable);
+		const char * name = xmlable->XMLName();
 		if (!name)
 		{
 			StoreContentAndChildren(xmlable);
 			return;
 		}
-		if (xmlable.IsXMLElement())
+		if (xmlable->IsXMLAttribute())
+		{
+			_context->addAttribute(name,xmlable->XMLContent().c_str());
+			return;
+		}
+		if (xmlable->IsXMLElement())
 		{
 			_lastWasContent=false;
-			xercesc::DOMElement * oldElement = _currentElement;
-			_currentElement = _document->createElement(X(name));
-			oldElement->appendChild(_currentElement);
-
+			XercesDomWritingContext newContext(_context, name);
+			_context = & newContext;
 			StoreContentAndChildren(xmlable);
-
-			_currentElement = oldElement;
+			_context = newContext.release();
 			_lastWasContent=false;
 			return;
 		}
-		if (xmlable.IsXMLAttribute())
-		{
-			_currentElement->setAttribute(X(name),X(xmlable.XMLContent().c_str()));
-			return;
-		}
-		CLAM_ASSERT(false,"Component not used");
+		CLAM_ASSERT(false,"A weird XMLable inserted");
 	}
 
-	void StoreContentAndChildren(const XMLable & xmlable)
+	void StoreContentAndChildren(const XMLable * xmlable)
 	{
-		AddContentToElement(xmlable.XMLContent());
+		AddContentToElement(xmlable->XMLContent());
 		StoreChildrenIfComponent(xmlable);
 	}
 
-	void StoreChildrenIfComponent(const XMLable & xmlable)
+	void StoreChildrenIfComponent(const XMLable * xmlable)
 	{
-		try { 
-			const Component & component = 
-				dynamic_cast<const Component &>(xmlable);
-			component.StoreOn(*this);
-		}
-		catch (std::bad_cast &) { }
+		const Component * component = dynamic_cast<const Component *>(xmlable);
+		if (component) component->StoreOn(*this);
 	}
 
 	void AddContentToElement(const std::string & content)
 	{
 		if (content=="") return;
 		if (_lastWasContent)
-		{
-			xercesc::DOMText * domContent = _document->createTextNode(X(" "));
-			_currentElement->appendChild(domContent);
-		}
-		xercesc::DOMText * domContent = _document->createTextNode(X(content.c_str()));
-		_currentElement->appendChild(domContent);
+			_context->addContent(" ");
+		_context->addContent(content.c_str());
 		_lastWasContent = true;
 	}
 
