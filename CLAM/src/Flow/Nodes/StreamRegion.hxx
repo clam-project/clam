@@ -59,7 +59,7 @@ namespace CLAM {
 		unsigned int Len() const {return mEnd-mPos;}
 				
 		/** Accessor to "virtual" center of region. @see mOffset*/
-		unsigned int Center() const {return Chop((mPos+mEnd)*0.5)-mOffset;} 
+		unsigned int Center() const {return Chop((mPos+mEnd)*0.5f)-mOffset;} 
 		/** Returns the maximum length of the region. @see mLen. */
 		unsigned int MaxLength() const {return mLen;}
 
@@ -74,7 +74,7 @@ namespace CLAM {
 
 		/** Set center of the region to specified value */
 		void SetCenter(unsigned int center){
-			mPos=center-mLen*0.5+mOffset;
+			mPos=center - Chop(mLen*0.5f) + mOffset;
 		}
 		/** Sets center of the region to the "virtual" zero. @see Center, SetCenter */
 		void CenterToZero() {SetCenter(0);}

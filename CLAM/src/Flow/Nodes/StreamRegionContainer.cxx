@@ -115,7 +115,7 @@ namespace CLAM {
 		source_const_iterator sit;
 		for (sit=sources_begin();sit!=sources_end();sit++)
 		{
-			if(writer=dynamic_cast<WriteStreamRegion*>(*sit));
+			if(writer=dynamic_cast<WriteStreamRegion*>(*sit))
 				return writer;
 		}
 		return 0;
@@ -129,7 +129,7 @@ namespace CLAM {
 		source_const_iterator sit;
 		for (sit=sources_begin();sit!=sources_end();sit++)
 		{
-			if(writer=dynamic_cast<WriteStreamRegion*>(*sit));
+			if(writer=dynamic_cast<WriteStreamRegion*>(*sit))
 				return writer;
 		}
 		return 0;
@@ -143,7 +143,7 @@ namespace CLAM {
 		source_const_iterator sit;
 		for (sit=sources_begin();sit!=sources_end();sit++)
 		{
-			if(adder=dynamic_cast<AddStreamRegion*>(*sit));
+			if(adder=dynamic_cast<AddStreamRegion*>(*sit))
 				return adder;
 		}
 		return 0;
@@ -157,7 +157,7 @@ namespace CLAM {
 		source_const_iterator sit;
 		for (sit=sources_begin();sit!=sources_end();sit++)
 		{
-			if(adder=dynamic_cast<AddStreamRegion*>(*sit));
+			if(adder=dynamic_cast<AddStreamRegion*>(*sit))
 				return adder;
 		}
 		return 0;
