@@ -23,7 +23,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 AC_DEFUN(CLAM_CHECK_CXX,
 [
 	AC_MSG_CHECKING([if default compiler g++ is acceptable])
-	CXXVERSION=`g++ -v 2>&1 | grep version | cut -d' ' -f3`
+	CXXVERSION=`g++ -v 2>&1 | grep 'gcc version' | cut -d' ' -f3`
 	CXXVERSION_MAJOR=`echo $CXXVERSION | cut -d'.' -f1`
 	CXXVERSION_MINOR=`echo $CXXVERSION | cut -d'.' -f2`
 	if test $CXXVERSION_MAJOR = 3 ; then
