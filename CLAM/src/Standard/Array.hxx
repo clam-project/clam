@@ -170,6 +170,8 @@ public:
 
 	inline void GiveChunk(int pos, int size, Array<T>&) const;
 
+	inline void CopyChunk(int pos, int size, Array<T>&) const;
+
 	EDataFormat Format() { return eFmtDefault; }
 
 	const T& operator [](const int& i) const
@@ -367,6 +369,19 @@ void Array<T>::GiveChunk(int pos, int size, Array<T>& a) const
 	CLAM_ASSERT(pos + size <= mSize,
 	            "Array::GiveChunk(): Chunk out of bounds.");
 	a.SetPtr(&mpData[pos],size);
+}
+
+template<class T>
+void Array<T>::CopyChunk(int pos, int size, Array<T>& a) const
+{
+	int last=pos+size;
+	CLAM_ASSERT(last <= mSize,
+	            "Array::CopyChunk(): Chunk out of bounds.");
+	CLAM_ASSERT(pos <= a.mSize,
+	            "Array::GiveChunk(): destination array does not have enough memory");
+	int i;
+	for (i=pos;i<last;i++)
+		a.mpData[i-pos]=mpData[i];
 }
 
 template<class T>
