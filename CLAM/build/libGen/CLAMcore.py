@@ -12,7 +12,7 @@ def makeAutoconf( outPath ) :
     script = AutoconfTools.AutoconfScript("CLAMCore","0.7")
 
     script.descriptionText = "The CLAM Framework core services and classes"
-    script.preinclude = "preinclude.hxx"
+    script.preinclude = "CLAM/Core/preinclude.hxx"
 
     xml = AutoconfTools.Feature( "xml" )
     xml.addEffectWhenEnabled( "-DCLAM_USE_XML" )

@@ -11,7 +11,7 @@ def makeAutoconf( outPath ) :
     script = AutoconfTools.AutoconfScript("CLAMProcessing","0.7")
 
     script.descriptionText = "The CLAM Framework DSP algorithms repository"
-    script.preinclude = "preinclude.hxx"
+    script.preinclude = "CLAM/Core/preinclude.hxx"
     script.dependsOn( "CLAMCore" )
 
     xml = AutoconfTools.Feature( "xml" )

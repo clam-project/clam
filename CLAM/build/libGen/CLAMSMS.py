@@ -11,7 +11,7 @@ def makeAutoconf( outPath ) :
     script = AutoconfTools.AutoconfScript("CLAMSMS","0.7")
 
     script.descriptionText = "The CLAM Framework SMS Analysis/Synthesis/Transformation package"
-    script.preinclude = "preinclude.hxx"
+    script.preinclude = "CLAM/Core/preinclude.hxx"
     script.dependsOn( "CLAMProcessing" )
     script.dependsOn( "CLAMIO" )
 

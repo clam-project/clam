@@ -11,7 +11,7 @@ def makeAutoconf( outPath ) :
     script = AutoconfTools.AutoconfScript("CLAMVM","0.7")
 
     script.descriptionText = "The CLAM Framework Visualization Module"
-    script.preinclude = "preinclude.hxx"
+    script.preinclude = "/CLAM/Core/preinclude.hxx"
     script.dependsOn( "CLAMProcessing" )
     script.dependsOn( "CLAMIO" )
 

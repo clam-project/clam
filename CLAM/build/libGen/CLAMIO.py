@@ -10,8 +10,9 @@ def makeAutoconf( outPath ) :
 
     script = AutoconfTools.AutoconfScript("CLAMIO","0.7")
     script.descriptionText = "The CLAM Framework Input/Output facilities"
-    script.preinclude = "preinclude.hxx"
+    script.preinclude = "CLAM/Core/preinclude.hxx"
     script.dependsOn( "CLAMCore" )
+    script.dependsOn( "CLAMProcessing" )
 
     xml = AutoconfTools.Feature( "xml" )
     xml.addEffectWhenEnabled( "-DCLAM_USE_XML" )
