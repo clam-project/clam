@@ -47,16 +47,16 @@ void SpectralAnalysisConfig::DefaultValues()
 {
 
 	SetprSamplingRate(44100);
-/** prFFTSize will be next power of two of the window size*/
+	/* prFFTSize will be next power of two of the window size*/
 	SetprZeroPadding(0);
 
 	SetprHopSize(0);//for preventing reading uninitialized memory
 
-	/** Default window size */
+	/* Default window size */
 	SetWindowSize(513);
 	SetWindowType(EWindowType::eHamming);
 	
-	/** WindowSize/2*/
+	/* WindowSize/2*/
 	SetHopSize((GetWindowSize()-1)/2);
 
 	GetCircularShift().SetAmount(-256);
