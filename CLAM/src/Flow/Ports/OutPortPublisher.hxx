@@ -115,6 +115,12 @@ public:
 	}
 
 	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
+	
+	bool HasConnections()
+	{
+		std::cout << "has connections publisher" << std::endl;
+		return mPublishedOutPort->HasConnections();
+	}
 
 protected:
 	ProperOutPort * mPublishedOutPort;
