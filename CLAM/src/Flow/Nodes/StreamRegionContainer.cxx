@@ -246,7 +246,7 @@ namespace CLAM {
 			(*sit)->Init();
 	}
 
-	unsigned int StreamRegionContainer::FindLargestReadRegionLenght()
+	unsigned int StreamRegionContainer::FindLargestReadRegionLength() const
 	{
 		if (mSources.size() == 0)
 			return 0;

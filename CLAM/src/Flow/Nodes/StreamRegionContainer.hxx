@@ -116,7 +116,7 @@ namespace CLAM {
 
 		//XA:
 		void Init();
-		unsigned int FindLargestReadRegionLenght();
+		unsigned int FindLargestReadRegionLength() const;
 	};
 };
 
