@@ -25,14 +25,14 @@
 #include <algorithm>
 
 namespace CLAM{
-
+	
 DataArray	Add(DataArray &a, DataArray &b) {
 	TIndex i;
 	TSize sizea=a.Size(); 
 	TSize sizeb=b.Size();
 	TSize size;
 	DataArray result;
-
+	
 	// One has size==0 (optimized with respect to the following case?)
 	if (sizea==0) {
 		result=b;
@@ -86,6 +86,7 @@ DataArray Multiply(TData &factor, DataArray &a) {
 	return result;
 }
 
+/* Scalar product of two vectors */
 DataArray Multiply(DataArray &a, DataArray &b) {
 	TIndex i;
 	TSize size=a.Size(); 
@@ -469,8 +470,7 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 	{
 		tmpD.AddPCP();
 		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetPCP(a.GetPCP() /* * b.GetPCP() */);
+		tmpD.SetPCP(Multiply(a.GetPCP(),b.GetPCP()));
 	}	
 	return tmpD;
 }

@@ -31,6 +31,7 @@ namespace CLAM{
 
 	DataArray Add(DataArray &a, DataArray &b);
 	DataArray Multiply(TData &factor, DataArray &a);
+	DataArray Multiply(DataArray &a, DataArray &b); // scalar product
 
 SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): Descriptor(eNumAttr)
 {
@@ -316,6 +317,12 @@ SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,const Spect
 		tmpD.AddOddToEvenRatio();
 		tmpD.UpdateData();
 		tmpD.SetOddToEvenRatio(a.GetOddToEvenRatio()*b.GetOddToEvenRatio());
+	}
+	if (a.HasHPCP() && b.HasHPCP())
+	{
+		tmpD.AddHPCP();
+		tmpD.UpdateData();
+		tmpD.SetHPCP(Multiply(a.GetHPCP(),b.GetHPCP()));
 	}
 	
 	return tmpD;

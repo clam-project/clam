@@ -109,12 +109,8 @@ void SegmentDescriptors::ConcreteCompute()
 		SetMaxD(mSegmentStats->GetMax());
 	if(HasMinD())
 		SetMinD(mSegmentStats->GetMin());
-#include <iostream>
 	if(HasVarianceD()) {
-		std::cout << "computing variance:" <<  std::endl;
-		std::cout << 	GetVarianceD().GetSpectralPeakD().HasHPCP() << std::endl;
 		SetVarianceD(mSegmentStats->GetVariance());
-		std::cout << 	GetVarianceD().GetSpectralPeakD().HasHPCP() << std::endl;
 	}
 }
 
