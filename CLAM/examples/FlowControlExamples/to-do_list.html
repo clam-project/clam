@@ -28,7 +28,7 @@
 			</ol> </li>
 			<li class='done'>
 				AudioOut of the resulting processed file</li>
-			<li class='todo'>
+			<li class='done'>
 				Generate controls, and use them</li>
 			<li class='done'>
 				Remove duplicated class Multiplier. Dependecies following:
@@ -49,10 +49,10 @@
 		<ul>
 			<li class='todo'>
 				unify ports attribute nomenclature (audioout...). Is it worth?</li>
-			<li class='todo'>
+			<li class='current'>
 				make ports private. Thus use the base ports for attaching
 				<ul>
-					<li class='todo'>
+					<li class='done'>
 						Define Attach in port[in/out] base class. i.e: <tt>myProc.GetPort("audioIn").Attach( 
 						myAdudio);</tt>
 					</li>
@@ -67,6 +67,14 @@
 				Convert SystemWithProts methods (do, attach, name) to a classes deriving from: 
 				NetworkConfiguration
 			</li>
+			<li class ='todo'> Extract <em>network definition</em> from the system. (i.e. for GUI porpouses
+			<ul>
+				<li class='todo'> define free function bool AreConnected( const Port&, const Port&) that works 
+				(only) for ports attached to single ProcessingData</li>
+				<li class='todo'> note: it is just a provisionaly way to do it</li>
+			</ul>
+			</li>
+			
 		</ul>
 		<h2>
 			+ System with Nodes</h2>
