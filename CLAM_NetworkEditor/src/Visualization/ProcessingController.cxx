@@ -35,6 +35,7 @@ ProcessingController::ProcessingController()
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingController::ConfigureProcessing );
 	SlotProcessingNameChanged.Wrap( this, &ProcessingController::ProcessingNameChanged );
+	SlotSendOutControlValue.Wrap( this, &ProcessingController::SendOutControlValue );
 }
 
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
@@ -181,6 +182,11 @@ ProcessingController::NamesList::iterator ProcessingController::EndOutControlNam
 void ProcessingController::SetName( const std::string & name )
 {
 	SignalChangeProcessingPresentationName.Emit( name );
+}
+
+void ProcessingController::SendOutControlValue( const std::string & name, CLAM::TControlData value )
+{
+	mObserved->GetOutControls().Get( name ).SendControl( value );
 }
 
 } //namespace CLAMVM
