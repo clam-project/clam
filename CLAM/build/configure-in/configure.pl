@@ -536,7 +536,7 @@ foreach $f (@packagedlibs)
 	}
 }
 foreach $f (@packagedlibs) { &ac_default_test($f); }
-foreach $f (@packagedlibs) { &ac_introspect($f); }
+#foreach $f (@packagedlibs) { &ac_introspect($f); }
 foreach $f (@packagedlibs) { &ac_disabled_package_warning($f); }
 foreach $f (@packagedlibs) { &ac_package_substs($f); }
 
