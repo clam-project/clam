@@ -104,15 +104,19 @@ void AudioDescriptors::ConcreteCompute()
 
 TData AudioDescriptors::ComputeZeroCrossingRate()
 {
+	DataArray& data = mpAudio->GetBuffer();
+
 	int sum = 0;
-	DataArray& data=mpAudio->GetBuffer();
-	int size=data.Size();
-	for (int i=1; i<size; i++) 
+	const TSize size = data.Size();
+
+	// Detect zero-crossings
+	for (int i=1; i<size; i++)
 	{
 		if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
 		  ((data[i] > 0.0) && (data[i-1] < 0.0)))
-		sum++;
+			sum++;
 	}
+	// Average
 	return ((TData)sum)/size;
 }
 
