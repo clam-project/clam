@@ -25,6 +25,8 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
+#include "Port.hxx"
+
 #include "BPF.hxx"
 
 #include "SpectralPeakArray.hxx"
@@ -37,7 +39,6 @@ namespace CLAM {
 
 	class SMSTransformationConfig: public ProcessingConfig
 	{
-	public:
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationConfig, 4,ProcessingConfig);
 		/** Name of the SMSTransformation object*/
@@ -105,21 +106,21 @@ namespace CLAM {
 		}
 
 		
-		const ProcessingConfig& SMSTransformation::GetConfig() const
+		const ProcessingConfig& GetConfig() const
 		{
 			return mConfig;
 		}
 
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSTransformation():mAmountCtrl("Amount",this)
+		SMSTransformation():mAmountCtrl("Amount",this),mInput("Input",this,1),mOutput("Output",this,1)
 		{
 			Configure(SMSTransformationConfig());
-		};
+		}
 
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSFreqShiftConfig object created by the user
 		*/
-		SMSTransformation(const SMSTransformationConfig& c):mAmountCtrl("Amount",this)
+		SMSTransformation(const SMSTransformationConfig& c):mAmountCtrl("Amount",this),mInput("Input",this,1),mOutput("Output",this,1)
 		{
 			Configure(c);
 		}
@@ -128,7 +129,7 @@ namespace CLAM {
  		~SMSTransformation(){};
 
 		/** Supervised Do() function, not yet implemented*/
-		virtual bool Do(void){return false;};
+		virtual bool Do(void){return false;}
 
 		/** Unsupervised Do function, receives a Processing data object input output.
 		 *  @param input the processing data that is input to the transformation
@@ -136,41 +137,9 @@ namespace CLAM {
 		 *  @return Boolean value, never gets to return any value as it stops in ASSERT
 		 *  It is an abstract method to be implemented in all derived classes
 		 */
-		virtual bool Do(const ProcessingData& in, ProcessingData& out)
-		{
-			CLAM_ASSERT(true,"Transformation not Implemented for such datatypes");
-			return false;
-		}	
-		
-		virtual bool Do(const Audio& in, Audio& out)
-		{
-			CLAM_ASSERT(true,"Transformation not Implemented for such datatypes");
-			return false;
-		};
+		virtual bool Do(const Segment& in, Segment& out){return false;}
 
-		virtual bool Do(const Spectrum& in, Spectrum& out)
-		{
-			CLAM_ASSERT(true,"Transformation not Implemented for such datatypes");
-			return false;
-		};
-		
-		virtual bool Do(const SpectralPeakArray& in, SpectralPeakArray& out)
-		{
-			CLAM_ASSERT(false,"Transformation not Implemented for such datatypes");
-			return false;
-		};
-		virtual bool Do(const Frame& in, Frame& out)
-		{
-			CLAM_ASSERT(false,"Transformation not Implemented for such datatypes");
-			return false;
-		};
-		
-		virtual bool Do(const Segment& in, Segment& out)
-		{
-			CLAM_ASSERT(false,"Transformation not Implemented for such datatypes");
-			return false;
-		};
-		
+
 		bool UpdateControlValueFromBPF(TData pos)
 		{
 			if(mConfig.HasBPFAmount())
@@ -180,11 +149,12 @@ namespace CLAM {
 			}
 			else return false;
 		}
-
 	protected:
 		SMSTransformationConfig mConfig;
 	public:
 		SMSTransformationCtrl mAmountCtrl;
+		InPortTmpl<Segment> mInput;
+		OutPortTmpl<Segment> mOutput;
 
  	}; 
 
