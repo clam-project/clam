@@ -26,7 +26,6 @@
 #include "DynamicType.hxx"
 #include "Audio.hxx"
 #include <typeinfo> // std::bad_cast
-#include "ErrProcessingObj.hxx"
 #include "AudioInPort.hxx"
 #include "AudioOutPort.hxx"
 

@@ -24,7 +24,6 @@
 
 #include <sstream>
 
-#include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 

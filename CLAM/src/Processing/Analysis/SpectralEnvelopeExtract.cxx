@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "SpectralEnvelopeExtract.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Spectrum.hxx"
 #include "SpecTypeFlags.hxx"
 #include "SpectralPeakArray.hxx"

@@ -22,7 +22,6 @@
 
 #include "FFT_rfftw.hxx"
 
-#include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"

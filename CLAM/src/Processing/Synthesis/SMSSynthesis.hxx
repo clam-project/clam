@@ -30,7 +30,6 @@
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Err.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "InControl.hxx"

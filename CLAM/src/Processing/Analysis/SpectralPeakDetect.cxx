@@ -23,7 +23,6 @@
 #include "Spectrum.hxx"
 #include "SpectralPeakArray.hxx"
 #include "SpectralPeakDetect.hxx"
-#include "ErrProcessingObj.hxx"
 
 #define CLASS "SpectralPeakDetect"
 

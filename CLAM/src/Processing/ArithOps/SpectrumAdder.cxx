@@ -22,7 +22,6 @@
 #include "Complex.hxx"
 #include "SpectrumAdder.hxx"
 #include "SpectrumConfig.hxx"
-#include "ErrProcessingObj.hxx"
 
 #include <sstream>
 

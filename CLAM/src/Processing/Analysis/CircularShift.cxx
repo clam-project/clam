@@ -23,7 +23,6 @@
 #include "Spectrum.hxx"
 #include "Complex.hxx"
 #include "CircularShift.hxx"
-#include "ErrProcessingObj.hxx"
 
 namespace CLAM {
 

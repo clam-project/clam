@@ -22,7 +22,6 @@
 #include "Complex.hxx"
 #include "SpecTypeFlags.hxx"
 #include "FrameInterpolator.hxx"
-#include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 

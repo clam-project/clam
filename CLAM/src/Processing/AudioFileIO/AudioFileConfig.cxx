@@ -20,7 +20,6 @@
  */
 
 #include "AudioFileConfig.hxx"
-#include "ErrProcessingObj.hxx"
 
 namespace CLAM {
 

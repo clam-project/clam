@@ -24,7 +24,6 @@
 #include "DataTypes.hxx"
 #include "Enum.hxx"
 #include "Array.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Spectrum.hxx"
 #include "Audio.hxx"
 #include "WindowGenerator.hxx"

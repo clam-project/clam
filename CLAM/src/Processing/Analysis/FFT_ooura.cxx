@@ -22,7 +22,6 @@
 
 #include "FFT_ooura.hxx"
 
-#include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
@@ -142,7 +141,7 @@ namespace CLAM {
 	  ToOther(out);
 	  break;
 	default:
-	  throw(ErrProcessingObj("FFT_ooura: Do(): Inconsistent state",this));
+	  CLAM_ASSERT("FFT_ooura: Do(): Inconsistent state");
 	}
 
 	return true;

@@ -22,7 +22,6 @@
 
 #include "IFFT.hxx"
 #include <string>
-#include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 

@@ -22,7 +22,6 @@
 
 #include "FFT_numrec.hxx"
 
-#include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"

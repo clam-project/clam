@@ -29,7 +29,6 @@
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Err.hxx"
-#include "ErrProcessingObj.hxx"
 #include "IFFT.hxx"
 #include "IFFT_rfftw.hxx"
 #include "Frame.hxx"

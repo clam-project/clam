@@ -22,7 +22,6 @@
 #include "Complex.hxx"
 #include "SpecTypeFlags.hxx"
 #include "SpectralPeakArrayInterpolator.hxx"
-#include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 #include "Spectrum.hxx"

@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "SpectrumSubstracter2.hxx"
-#include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 #include "SpecTypeFlags.hxx"

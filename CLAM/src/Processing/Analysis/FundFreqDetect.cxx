@@ -1,7 +1,6 @@
 #include "Complex.hxx"
 #include "FundFreqDetect.hxx"
 #include "Fundamental.hxx"
-#include "ErrProcessingObj.hxx"
 #include "SpectralPeakArray.hxx"
 #include <cmath>
 

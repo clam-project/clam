@@ -1,5 +1,4 @@
 #include "SinTracking.hxx"
-#include "ErrProcessingObj.hxx"
 
 #include <iostream> // TODO: remove
 

@@ -21,7 +21,6 @@
 
 
 #include "FFT.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
@@ -97,7 +96,7 @@ namespace CLAM {
 			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
 				mState=sOther;
 			else
-				throw(ErrProcessingObj("FFT_numrec: SetPrototypes(): Spectrum with no attributes!",this));
+				CLAM_ASSERT(false,"FFT_numrec: SetPrototypes(): Spectrum with no attributes!");
 
 		return true;
 	}

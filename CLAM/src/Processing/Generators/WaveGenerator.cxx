@@ -21,7 +21,6 @@
 
 #include "OSDefines.hxx"
 #include "WaveGenerator.hxx"
-#include "ErrProcessingObj.hxx"
 #include "CLAM_Math.hxx"
 
 namespace CLAM {
