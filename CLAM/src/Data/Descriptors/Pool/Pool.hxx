@@ -39,9 +39,9 @@ namespace CLAM
 		template <typename AttributeType>
 		void Add(const std::string & name)
 		{
-			unsigned pos = _nameMap.size();
+			unsigned attributeIndex = _nameMap.size();
 			bool inserted = 
-				_nameMap.insert(std::make_pair(name,pos)).second;
+				_nameMap.insert(std::make_pair(name,attributeIndex)).second;
 			CLAM_ASSERT(inserted,"DescriptionScope::Add, Attribute already present");
 			_attributes.push_back(new Attribute<AttributeType>);
 		}
@@ -69,9 +69,9 @@ namespace CLAM
 		}
 
 		template <typename AttributeType>
-		void CheckType(unsigned pos, AttributeType *) const
+		void CheckType(unsigned attributeIndex, AttributeType *) const
 		{
-			_attributes[pos]->CheckType<AttributeType>();
+			_attributes[attributeIndex]->CheckType<AttributeType>();
 		}
 	};
 
@@ -162,31 +162,33 @@ namespace CLAM
 		const DescriptionScope & _spec;
 	public:
 		ScopePool(const DescriptionScope & spec, unsigned size=0)
-			: _size(0), _spec(spec)
+			: _size(size), _spec(spec), _attributes(spec.GetNAttributes(),(void*)0)
 		{
-			_attributes.resize(_spec.GetNAttributes());
-			Allocate(size);
 		}
 		~ScopePool()
 		{
-			Deallocate();
-		}
-	private:
-		void Deallocate()
-		{
-			if (!_size) return;
 			AttributesData::iterator it = _attributes.begin();
 			AttributesData::iterator end = _attributes.end();
 			for (unsigned i=0; it!=end; i++, it++)
+			{
+				if (!*it) continue;
 				_spec.Deallocate(i, *it);
+				*it=0;
+			}
 			_size=0;
 		}
-		void Allocate(unsigned newSize)
+	private:
+		void Reallocate(unsigned newSize)
 		{
-			if (!newSize) return;
 			_size = newSize;
-			for (unsigned i = 0; i<_spec.GetNAttributes(); i++)
-				_attributes[i]=_spec.Allocate(i,_size);
+			AttributesData::iterator it = _attributes.begin();
+			AttributesData::iterator end = _attributes.end();
+			for (unsigned i=0; it!=end; i++, it++)
+			{
+				if (!*it) continue;
+				_spec.Deallocate(i, *it);
+				*it = newSize ? _spec.Allocate(i,_size) : 0;
+			}
 		}
 	public:
 		unsigned GetNAttributes() const
@@ -199,25 +201,27 @@ namespace CLAM
 		}
 		void SetSize(unsigned newSize)
 		{
-			Deallocate();
-			Allocate(newSize);
+			Reallocate(newSize);
 		}
 
 		template <typename AttributeType>
-		const AttributeType * Get(const std::string & name) const
+		const AttributeType * GetReadPool(const std::string & name) const
 		{
 			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
 			unsigned attribPos = _spec.GetIndex(name);
 			_spec.CheckType(attribPos,(AttributeType*)0);
+			CLAM_ASSERT(_attributes[attribPos],"Getting data from a non instanciated attribute");
 			return (const AttributeType*) _attributes[attribPos];
 		}
 
 		template <typename AttributeType>
-		AttributeType * Get(const std::string & name)
+		AttributeType * GetWritePool(const std::string & name)
 		{
 			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
 			unsigned attribPos = _spec.GetIndex(name);
 			_spec.CheckType(attribPos,(AttributeType*)0);
+			if (!_attributes[attribPos])
+				_attributes[attribPos] = _spec.Allocate(attribPos,_size);
 			return (AttributeType*) _attributes[attribPos];
 		}
 	};
@@ -259,7 +263,9 @@ namespace CLAM
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
 
-			return _scopePools[scopeIndex]->template Get<AttributeType>(attributeName);
+			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
+
+			return _scopePools[scopeIndex]->template GetWritePool<AttributeType>(attributeName);
 		}
 		/*
 		unsigned GetScopeSize(const std::string & scopeName);
