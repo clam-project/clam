@@ -1,6 +1,6 @@
 // deque standard header
 
-#if WIN32 && _MSC_VER < 1300 /* VC6 */
+#if defined( _MSC_VER ) && _MSC_VER < 1300 /* VC6 */
 
 #if     _MSC_VER > 1000
 #pragma once
