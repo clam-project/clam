@@ -119,7 +119,7 @@ void ControlsTest::ProcessingSideInterface()
 
 }
 
-/// we make this dummy class a composite just for testing 
+/// we make this dummy class a composite for testing controls in composites
 class DummyProcArray : public CLAM::ProcessingComposite
 {
 public:
@@ -131,8 +131,8 @@ public:
 	enum {ctlSize=4};
 	// constructor
 	DummyProcArray() :
-		_control( "control", this, fun, true ),
-		_controls( ctlSize, "myName1", this, fun, true)
+		_control( "control", this, &DummyProcArray::fun, true ),
+		_controls( ctlSize, "myName1", this, &DummyProcArray::fun, true)
 	{}
 
 private:	

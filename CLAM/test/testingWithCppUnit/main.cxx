@@ -7,6 +7,7 @@
 #include "cppUnitHelper.hxx"
 
 int main(void){
+
 	CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();
 	CppUnit::Test* theTest = registry.makeTest();
 	CLAMTest::Helper::printTestNames( theTest );

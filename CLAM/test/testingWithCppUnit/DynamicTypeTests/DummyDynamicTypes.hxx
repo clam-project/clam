@@ -34,7 +34,6 @@
 #include "Array.hxx"
 
 namespace CLAMTest {
-using namespace CLAM;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -71,7 +70,7 @@ public:
 			std::cout << "Destructor CompWithBasics8 at "<< this << std::endl;
 	}
 
-	void StoreOn(Storage & storage)
+	void StoreOn(CLAM::Storage & storage)
 	{
 #ifdef CLAM_USE_XML
 		if (dynamic_cast < CLAM::XMLStorage* > (&storage))
@@ -85,10 +84,10 @@ public:
 		}
 #endif//CLAM_USE_XML
 	}
-	void LoadFrom(Storage & storage)
+	void LoadFrom(CLAM::Storage & storage)
 	{
 #ifdef CLAM_USE_XML
-		if (dynamic_cast < XMLStorage* > (&storage))
+		if (dynamic_cast < CLAM::XMLStorage* > (&storage))
 		{
 			CLAM::XMLAdapter<int> adaptera(mA, "CWB8a", true);
 			CLAM_ASSERT(storage.Load(&adaptera),
@@ -163,7 +162,7 @@ public:
 	void LoadFrom(CLAM::Storage & storage)
 	{
 #ifdef CLAM_USE_XML
-		if (dynamic_cast < XMLStorage* > (&storage))
+		if (dynamic_cast < CLAM::XMLStorage* > (&storage))
 		{
 			CLAM::XMLAdapter<int> adaptera(mA, "CWB9a", true);
 			CLAM_ASSERT(storage.Load(&adaptera),
@@ -290,7 +289,7 @@ public:
  * A dynamic type containing as dyn attributes components Array and a
  * basic type (float) Array.
  */
-class DynWithArrays : public DynamicType {
+class DynWithArrays : public CLAM::DynamicType {
 	public:
 		DYNAMIC_TYPE(DynWithArrays, 3);
 		DYN_ATTRIBUTE(0, public, float, MyFloat);
@@ -336,7 +335,7 @@ class DynWithArrays : public DynamicType {
  * A dynamic type containing as dyn attributes components Array and a
  * basic type (float) Array.
  */
-class DynWithIterables : public DynamicType {
+class DynWithIterables : public CLAM::DynamicType {
 	public:
 		DYNAMIC_TYPE(DynWithIterables, 3);
 		DYN_ATTRIBUTE(0, public, float, MyFloat);

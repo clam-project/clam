@@ -212,9 +212,26 @@ void DynamicTypeBasicTest::DeepCopy()
 	
 	delete dynCopy;
 }
+///\todo remove:
+
+class bar : public CLAM::DynamicType
+{
+public:
+	bar(const int n) : CLAM::DynamicType(n) {}
+	bar(const bar& arg, const bool share=false, const bool deep=true) : 
+	CLAM::DynamicType(arg, share, deep) {}
+	virtual ~bar(){};
+};
+
+class foo : public bar
+{
+public:
+	DYNAMIC_TYPE_USING_INTERFACE(foo, 0, bar);
+};
 
 void DynamicTypeBasicTest::Assignation()
 {
+	foo f;
 	// the same as before, now using an operator=
 	dyn->AddInt();
 	dyn->AddSubDyn();
