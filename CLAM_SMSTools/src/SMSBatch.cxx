@@ -86,35 +86,49 @@ void SMSBatch::Run(void)
 					std::string ext=inputConfigFileName.substr(inputConfigFileName.length()-4,inputConfigFileName.length());
 					if(ext!=".xml") break;
 					
-					std::string fullPathConfigName=folderName+'/'+inputConfigFileName;
+					std::string fullPathConfigName = folderName + "/" + inputConfigFileName;
 					std::cout <<"Processing configuration file: "<<fullPathConfigName<<"\n";
 					LoadConfig(fullPathConfigName);
 					switch(option)
 					{
 						case 1://Analyze, synthesize and store output sound + sinusoidal componet + residual component
 						{
-							LoadInputSound();
+							LoadInputSound( );
 							Analyze();
 							Synthesize();
-							StoreOutputSound();
-							StoreOutputSoundSinusoidal();
-							StoreOutputSoundResidual();
+							std::string name=mGlobalConfig.GetInputSoundFile().substr( 0, mGlobalConfig.GetInputSoundFile().length()-4);
+							std::string tmp;
+							tmp=name+"_out.wav";
+							StoreOutputSound( tmp.c_str() );
+							tmp=name+"_sin.wav";
+							StoreOutputSoundSinusoidal( tmp.c_str() );
+							tmp=name+"_res.wav";
+							StoreOutputSoundResidual( tmp.c_str() );
 							break;
 						}
 						case 2://Analyze content of a given folder and store output .sdif or .xml files
 						{
 							LoadInputSound();
 							Analyze();
-							StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
+							std::string name=mGlobalConfig.GetInputSoundFile().substr( 0, mGlobalConfig.GetInputSoundFile().length()-4);
+							std::string tmp;
+							tmp=name+"_analysis.sdif";
+							//StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );
+							StoreAnalysis( tmp.c_str() );
 							break;
 						}
 						case 3://Synthesize previously analyzed .sdif or .xml files
 						{
-							LoadAnalysis(mGlobalConfig.GetInputAnalysisFile());
+							LoadAnalysis( mGlobalConfig.GetInputAnalysisFile() );
 							Synthesize();
-							StoreOutputSound();
-							StoreOutputSoundSinusoidal();
-							StoreOutputSoundResidual();
+							std::string name=mGlobalConfig.GetInputSoundFile().substr( 0, mGlobalConfig.GetInputSoundFile().length()-4);
+							std::string tmp;
+							tmp=name+"_out.wav";
+							StoreOutputSound( tmp.c_str() );
+							tmp=name+"_sin.wav";
+							StoreOutputSoundSinusoidal( tmp.c_str() );
+							tmp=name+"_res.wav";
+							StoreOutputSoundResidual( tmp.c_str() );
 							break;
 						}
 						default:
@@ -149,23 +163,3 @@ int main(int argc,char** argv)
 	return 0;
 }
 
-/*
-void GenerateXML()
-{
-	SMSAnalysisSynthesisConfig c;
-	XMLStorage x;
-	x.Dump(c,"SMSAnalysisSynthesisConfig","c:\\config.xml");
-}
-
-TData Error(Audio& original, Audio& synthesized,Audio& error)
-{
-	CLAM_ASSERT(original.GetSize()==synthesized.GetSize(),"Original and synthesized audio do not have the same size");
-	TData err=0;
-	int size=original.GetSize();
-	for(int i=0;i<size;i++)
-	{
-		err+=error.GetBuffer()[i]=(original.GetBuffer()[i]-synthesized.GetBuffer()[i]);
-	}
-	return err;
-}
-*/
