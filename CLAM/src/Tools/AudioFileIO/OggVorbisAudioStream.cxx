@@ -173,17 +173,13 @@ namespace AudioCodecs
 
 		// Now we ensure that the audio data will begin on a new
 		// 'page' as the specs require
-		int eos = 0;
 
-		while( !eos )
+		while( ogg_stream_flush( &mOggStreamState, &mOggPage ) > 0 )
 		{
-			int res = ogg_stream_flush( &mOggStreamState, &mOggPage );
-			if ( res == 0 )
-				break;
-
 			fwrite( mOggPage.header, 1, mOggPage.header_len, mFileHandle );
 			fwrite( mOggPage.body, 1, mOggPage.body_len, mFileHandle );
 		}
+
 
 	}
 
@@ -302,6 +298,13 @@ namespace AudioCodecs
 		TIndex currentOffset = 0;
 		int i;
 
+		int lastSize = mEncodeBuffer[0].size();
+		for ( int k = 1; k < mEncodeBuffer.size(); k++ )
+		{
+			CLAM_DEBUG_ASSERT( lastSize == mEncodeBuffer[k].size(),
+					   "Whoops!" );
+		}
+
 		do
 		{
 			for ( i = mEncodeBuffer[0].size(); 
@@ -323,7 +326,9 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::PushAnalysisBlocksOntoOggStream()
 	{
-		while( vorbis_analysis_blockout( &mDSPState, &mVorbisBlock ) == 1 )
+		int eos = 0;
+
+		while( vorbis_analysis_blockout( &mDSPState, &mVorbisBlock ) == 1 && !eos )
 		{
 			// we assume we want bitrate management
 
@@ -334,22 +339,20 @@ namespace AudioCodecs
 			{
 				// We push the packet into the bitstream
 				ogg_stream_packetin( &mOggStreamState, &mOggPacket );				
-				
-				
+
 				// page writeout
-				int eos = 0;
-			
-				while( !eos )
+
+				
+				while( ogg_stream_pageout( &mOggStreamState, &mOggPage ) > 0 
+					&& !eos)
 				{
-					int res = ogg_stream_pageout( &mOggStreamState, &mOggPage );
-					if ( res == 0 )
-						break;
 					fwrite( mOggPage.header, 1, mOggPage.header_len, mFileHandle );
 					fwrite( mOggPage.body, 1, mOggPage.body_len, mFileHandle );
 					
 					eos = ( ogg_page_eos( &mOggPage ) )? 1 : 0;
-				}
 
+				}
+			
 			}
 		}
 
@@ -357,14 +360,15 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::DoVorbisAnalysis()
 	{
+
 		float** encBuffer = vorbis_analysis_buffer( &mDSPState, 
-							    mAnalysisWindowSize );
+							    mAnalysisWindowSize);
 		
 		int samplesWrote = 0;
-		int i = 0;
 
 		for ( int j = 0; j < mEncodedChannels; j++ )
 		{
+			int i = 0;
 
 			while( !mEncodeBuffer[j].empty() )
 			{
@@ -374,6 +378,7 @@ namespace AudioCodecs
 				i++;
 			}
 
+			// Zero padding
 			while( i < mAnalysisWindowSize )
 			{
 				encBuffer[j][i] = 0.0;

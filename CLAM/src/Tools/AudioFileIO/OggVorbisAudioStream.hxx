@@ -73,6 +73,7 @@ namespace AudioCodecs
 		TSize                   mLastBytesRead;
 		TSize                   mTotalSamplesRead;
 		TSize                   mTotalSamplesEncoded;
+		bool                    mEndOfStream;
   	};
 }
 
