@@ -105,6 +105,7 @@ void Qt_ConnectionPresentation::UpdatePosition()
 
 	move (x,y);
 	setFixedSize(w,h);
+	repaint();
 }
 
 void Qt_ConnectionPresentation::mouseMoveEvent( QMouseEvent *m)
