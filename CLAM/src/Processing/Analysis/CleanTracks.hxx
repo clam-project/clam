@@ -43,10 +43,10 @@ namespace CLAM {
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/** Maximum tolerance (in frames) to peak discontinuation */
 		DYN_ATTRIBUTE (1,public,TSize,MaxDropOut);
-		/** */
+		/** The minimum lenght a track should have to be keeped */
 		DYN_ATTRIBUTE (2,public,TSize,MinLength);
-		/** Maximum frequency distance between two tracks to be considered as continuation
-		of the other */
+		/** Maximum frequency distance between two tracks to be considered one
+		as continuation of the other */
 		DYN_ATTRIBUTE (3,public,TData,FreqDev);
 		/** This attribute is necessary so that BinPosition can be recomputed*/
 		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
