@@ -28,15 +28,14 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
-class UserInterface {open
+class UserInterface {open selected
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {open
-  } {
+  Function {UserInterface()} {} {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {87 139 872 548} color 50 hide resizable
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
+      xywh {89 185 872 548} color 50 hide resizable
       code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
@@ -47,7 +46,7 @@ class UserInterface {open
         private xywh {0 0 872 21} box THIN_UP_BOX color 50 labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input open
+          label Input
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -56,7 +55,7 @@ class UserInterface {open
             private xywh {5 5 100 20} labelsize 12
           }
           menuitem {} {
-            label {Edit Configure...}
+            label {Edit Configuration...}
             callback {EditConfiguration();}
             private xywh {15 15 100 20} labelsize 12
           }
@@ -87,7 +86,7 @@ class UserInterface {open
           }
         }
         submenu {} {
-          label Analysis open
+          label Analysis
           xywh {0 0 100 20} labelsize 12
         } {
           menuitem mAnalyze {
@@ -107,7 +106,7 @@ class UserInterface {open
           }
         }
         submenu {} {
-          label Transformation open
+          label Transformation
           private xywh {20 20 100 20} labelsize 12
         } {
           menuitem {} {
@@ -122,7 +121,7 @@ class UserInterface {open
           }
         }
         submenu mSynthesize {
-          label Synthesis open
+          label Synthesis
           xywh {0 0 100 20} labelsize 12 deactivate
         } {
           menuitem {} {
@@ -132,7 +131,7 @@ class UserInterface {open
           }
         }
         submenu mOutputSM {
-          label Output open
+          label Output
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mVisualizeOutputs {
@@ -191,7 +190,7 @@ class UserInterface {open
             }
           }
           submenu mStoreOutputs {
-            label Store open
+            label Store
             private xywh {10 10 100 20} labelsize 12
           } {
             menuitem {} {
@@ -223,7 +222,7 @@ Exit();}
           private xywh {10 10 100 20} labelsize 12
         }
       }
-      Fl_Box mSmartTile {selected
+      Fl_Box mSmartTile {
         private xywh {5 50 860 490} color 23 resizable
         class Fl_Smart_Tile
       }
@@ -239,7 +238,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {438 330 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      private xywh {441 333 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {
@@ -285,7 +284,6 @@ mWindow2=NULL;}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
   decl {void Attach(Fl_Window* canvas);} {}
-  decl {void Detach(Fl_Window* canvas);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}

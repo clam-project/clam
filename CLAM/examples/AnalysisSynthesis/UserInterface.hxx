@@ -117,7 +117,6 @@ private:
   void Transform(void);
   void Exit(void);
   void Attach(Fl_Window* canvas);
-  void Detach(Fl_Window* canvas);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();

@@ -514,11 +514,13 @@ void UserInterface::DisplayOutputSound(void)
 		mAttachedViews[1]->Refresh();
 	}
 	else{
-		Detach( mAttachedPresentations[1]->GetWindow() );
-		delete mAttachedPresentations[1];
-		mAttachedPresentations[1]=NULL;
-		delete mAttachedViews[1];
-		mAttachedViews[1]=NULL;
+		mAttachedViews[1]->Refresh();
+		if( mAttachedPresentations[1]->GetWindow()->shown() ) {
+			mAttachedPresentations[1]->GetWindow()->hide();
+		}
+		else {
+			mAttachedPresentations[1]->GetWindow()->show();
+		}
 	}
 	Fl::redraw();
 }
@@ -538,11 +540,13 @@ void UserInterface::DisplayOutputSoundResidual(void)
 		mAttachedViews[2]->Refresh();
 	}
 	else{
-		Detach( mAttachedPresentations[2]->GetWindow() );
-		delete mAttachedPresentations[2];
-		mAttachedPresentations[2]=NULL;
-		delete mAttachedViews[2];
-		mAttachedViews[2]=NULL;
+		mAttachedViews[2]->Refresh();
+		if( mAttachedPresentations[2]->GetWindow()->shown() ) {
+			mAttachedPresentations[2]->GetWindow()->hide();
+		}
+		else {
+			mAttachedPresentations[2]->GetWindow()->show();
+		}
 	}
 	Fl::redraw();
 }
@@ -562,11 +566,13 @@ void UserInterface::DisplayOutputSoundSinusoidal(void)
 		mAttachedViews[3]->Refresh();
 	}
 	else{
-		Detach( mAttachedPresentations[3]->GetWindow() );
-		delete mAttachedPresentations[3];
-		mAttachedPresentations[3]=NULL;
-		delete mAttachedViews[3];
-		mAttachedViews[3]=NULL;
+		mAttachedViews[3]->Refresh();
+		if( mAttachedPresentations[3]->GetWindow()->shown() ) {
+			mAttachedPresentations[3]->GetWindow()->hide();
+		}
+		else {
+			mAttachedPresentations[3]->GetWindow()->show();
+		}
 	}
 	Fl::redraw();
 }
