@@ -1,12 +1,100 @@
-#include "RtAAudioDevice.hxx"
+#include "AudioDevice.hxx"
+#include "AudioDeviceList.hxx"
+#include "RtAudio.h"
+#include "RtAudioUtils.hxx"
+
 #include <windows.h>
 #undef GetClassName
 #include <iostream>
+
 using std::cout;
 using std::endl;
 
 namespace CLAM
 {
+
+	class RtAAudioDevice : public AudioDevice
+	{
+		enum IOModalities
+		{
+			eFullDuplex=0,
+			eHalfDuplexIn,
+			eHalfDuplexOut,
+			eNoneYet
+		};
+
+	public:
+
+		RtAAudioDevice( const std::string& str, int devID );
+		~RtAAudioDevice( );
+
+		void Start() throw( ErrRtAudio );
+		void Stop() throw ( ErrRtAudio );
+		void Read( Audio& samples, const int channelID );
+		void Write( const Audio& samples, const  int channelID );
+
+		virtual void GetInfo( AudioDevice::TInfo& );
+
+	protected:
+
+		void SetupMonoOutputStream() throw( ErrRtAudio );
+		void SetupStereoOutputStream() throw( ErrRtAudio );
+		void SetupMultiOutputStream() throw( ErrRtAudio );
+		void SetupMonoInputStream() throw( ErrRtAudio );
+		void SetupStereoInputStream() throw( ErrRtAudio );
+		void SetupMultiInputStream() throw( ErrRtAudio );
+		void SetupStereoFullDuplexStream() throw( ErrRtAudio );
+
+	private:
+
+		unsigned                 mNChannelsWritten;
+		bool                     mChannelsWritten[256];
+
+		unsigned                 mNChannelsRead;
+		bool                     mChannelsRead[256];
+
+		int                      mFramesPerBuffer;
+
+		int                      mDevID;
+
+		short*                   mInputSamples;
+		short*                   mOutputSamples;
+
+		int                      mInputStreamId;
+		int                      mOutputStreamId;
+
+		IOModalities             mIOModel;
+		RtAudio*                 mDevice;
+
+		bool                     mStarted;
+	};
+
+
+	class RtAAudioDeviceList : public AudioDeviceList
+	{
+	private:
+		static RtAAudioDeviceList sDevices;
+
+		RtAAudioDeviceList();
+
+		std::vector< int > mDevIDs;
+
+	protected:
+
+		void EnumerateAvailableDevices() throw ( ErrRtAudio );
+
+	public:
+
+		virtual ~RtAAudioDeviceList();
+
+		inline std::string DefaultDevice()
+		{
+			return mAvailableDevices[0];
+		}
+
+		AudioDevice* Create( const std::string& name, const std::string& device );
+
+	};
 	
 	RtAAudioDevice::RtAAudioDevice( const std::string& name, int devID )
 		: AudioDevice(name), mDevID( devID ), 
@@ -60,7 +148,7 @@ namespace CLAM
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
 										   RtAudio::RTAUDIO_SINT16, SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
-											 SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
+											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 
 					mOutputSamples = (short*) mDevice->getStreamBuffer( mOutputStreamId );
 					mDevice->startStream( mOutputStreamId );
@@ -77,7 +165,7 @@ namespace CLAM
 					mFramesPerBuffer = Latency()/mNChannels;
 					mDevice = new RtAudio();
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
-										   RtAudio::RTAUDIO_SINT16, SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
+										   RtAudio::RTAUDIO_SINT16, SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 					mOutputSamples = (short*) mDevice->getStreamBuffer( mOutputStreamId );
 					mDevice->startStream( mOutputStreamId );
 								
@@ -91,7 +179,7 @@ namespace CLAM
 					mFramesPerBuffer = Latency()/mNChannels;
 					mDevice = new RtAudio();
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
-											 SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers());
+											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers());
 					mInputSamples = (short*) mDevice->getStreamBuffer( mInputStreamId );
 					mDevice->startStream( mInputStreamId );
 				
@@ -122,6 +210,7 @@ namespace CLAM
 				mDevice->closeStream( mOutputStreamId );
 				mDevice->closeStream( mInputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mInputSamples = NULL;
 				mOutputSamples = NULL;
 				mOutputStreamId = -1;
@@ -131,6 +220,7 @@ namespace CLAM
 				mDevice->stopStream( mInputStreamId );
 				mDevice->closeStream( mInputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mInputSamples = NULL;
 				mInputStreamId = -1;
 				break;
@@ -138,6 +228,7 @@ namespace CLAM
 				mDevice->stopStream( mOutputStreamId );
 				mDevice->closeStream( mOutputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mOutputSamples = NULL;
 				mOutputStreamId = -1;
 				break;
@@ -226,7 +317,7 @@ namespace CLAM
 
 		EnumerateAvailableDevices();
 
-		sRtAAudioDeviceList = this;
+		AddMe();
 	}
 
 	RtAAudioDeviceList::~RtAAudioDeviceList()
@@ -276,6 +367,7 @@ namespace CLAM
 		return 0;
 	}
 
-	RtAAudioDeviceList RtAAudioDeviceList::mDevices;
+	RtAAudioDeviceList RtAAudioDeviceList::sDevices;
+
 }
 

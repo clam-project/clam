@@ -6,96 +6,95 @@
 #include "Err.hxx"
 #include "GUIAudioApplication.hxx"
 #include "WidgetTKWrapper.hxx"
-#include "AudioIO.hxx"
-#include "MIDIIO.hxx"
+#include "AudioManager.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "MIDIManager.hxx"
 #include "MIDIInControl.hxx"
 #include "AudioFileOut.hxx"
-#include "Melody.hxx"
 #include "MIDIHandler.hxx"
-
+#include "MIDIBreathController.hxx"
+#include "CSaltoDataManagment.hxx"
 #include <iostream>
+#include "MelodyTranslator.hxx"
+#include <FL/Fl_Double_Window.H>
 
+using SALTO::CSaltoEditor;
 using CLAMGUI::WidgetTKWrapper;
 using namespace CLAM;
-
-struct BreathController
-{
-public:
-	MIDIInControl	mInNote;
-	MIDIInControl	mAirSpeed;
-	
-	BreathController( const MIDIInConfig &note,
-					  const MIDIInConfig &airspeed )
-		: mInNote( note ), mAirSpeed( airspeed ) 
-	{
-	}
-	
-	BreathController()
-	{
-	}
-};
-
 
 class SaltoApp:public GUIAudioApplication
 {
 public:
 	SaltoApp()
 	{
-		pParams=NULL;
+		//mParams=NULL;
 		pDSP = NULL;
 		pMelody = NULL;
 		pGUI=NULL;
 	}
 
-	~SaltoApp()
+	virtual ~SaltoApp()
 	{
-		delete pParams;
-		delete pDSP;
-		delete pMelody;
-		delete pGUI;
+		
+		if (pDSP) 
+		{
+			delete pDSP;
+			pDSP=NULL;
+		}
+		if (pMelody)
+		{ 
+			delete pMelody;
+			pMelody=NULL;
+		}
+		if (pGUI)
+		{ 
+			delete pGUI;
+			pGUI=NULL;
+		}
 	}
 
 	Fl_Window* CreateWindow(int argc,char** argv)
 	{
-		pParams = Parameters::GetInstance();
-		if(pParams==NULL)
-			throw Err("OOM in MAIN cant construct params");
-		
+		mParams = Parameters::GetInstance();
+
+		CSaltoDataManagment::InitSaltoDB( &mParams );
+
 		pMelody = new MelodyTranslator;
 		if( pMelody == NULL )
 			throw Err("OOM in MAIN cant construct melody");
 
 
-		//pDSP = new CSaltoDSP(pParams);//,pMIDI);
-		DSPCfg.SetParams( *pParams );
+		DSPCfg.SetParams( mParams );
+		mMIDIHandler.SetParams( &mParams );
 		pDSP = new SaltoSynth(DSPCfg);
 		if(pDSP==NULL)
 			throw Err("OOM in MAIN cant construct CSaltoDSP");
 
 		// gui , user interface interacts also with parameter class
-		pGUI = new CSaltoEditor(pParams, pDSP, pMelody, this);//,pMIDI);
+		pGUI = new CSaltoEditor(&mParams, pDSP, pMelody, this);//,pMIDI);
 		if(pGUI==NULL)
 			throw Err("OOM in MAIN cant construct editor");
 
 		MIDIHandlerConfig MIDIHandlerCfg;
-		MIDIHandlerCfg.SetTranspose( pParams->GetTranspose() );
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
-
-		mMIDIHandler.LinkOutWithInControl( 0, pDSP, 0 ); 
+		mMIDIHandler.SetParams(&mParams);
+		mMIDIHandler.LinkOutWithInControl( 0, pDSP, 0 );
 
 		pMelody->LinkOutWithInControl( 0, &mMIDIHandler, 0);
 		pMelody->LinkOutWithInControl( 1, &mMIDIHandler, 1);
 
 		pGUI->mpEditorWindow->set_non_modal();
 		pGUI->mpEditorWindow->show(argc,argv);
-	
+
+
 		return pGUI->mpEditorWindow;
 	}
 
 protected:
 
-	Parameters*       pParams;
+	Parameters       mParams;
 	SaltoSynth*       pDSP;
 	MelodyTranslator* pMelody;
 	CSaltoEditor*     pGUI;
@@ -105,21 +104,18 @@ protected:
 	{
 		WidgetTKWrapper* tk = WidgetTKWrapper::GetWrapperFor("FLTK");
 
-		tk->Tick();
-
 		Start();
 
-		while ( !cancel && !tk->IsClosing() )
-		{
-			tk->Tick();
-		}
+		tk->Run();
+
+		Stop();
 	}
 
 
 	void AudioMain(void)
 	{
 
-		try 
+		try
 		{
 			bool not_finished = true;
 			Audio* synthbuffer = NULL;
@@ -127,38 +123,97 @@ protected:
 			ConfigureSampleBasedIO();
 
 			pDSP->BindWithGUI( pGUI );
+			pDSP->Start();
+
+			MIDIInConfig inNoteCfg;
+
+			inNoteCfg.SetName("in");
+			inNoteCfg.SetDevice("default:default");
+			inNoteCfg.SetChannelMask(MIDI::ChannelMask(1));
+			inNoteCfg.SetMessageMask(
+				MIDI::MessageMask(MIDI::eNoteOn)|
+				MIDI::MessageMask(MIDI::eNoteOff)
+			);
+			MIDIInControl keyboardNote( inNoteCfg );
+
+			MIDIInConfig inPitchBendCfg;
+			
+			inPitchBendCfg.SetName("inPitchBend");
+			inPitchBendCfg.SetDevice("default:default");
+			inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
+			inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
+
+			MIDIInControl pitchBend( inPitchBendCfg );
+
+			MIDIInConfig inBreathNoteCfg;
+
+			inBreathNoteCfg.SetName("in2");
+			inBreathNoteCfg.SetDevice("default:default");
+			inBreathNoteCfg.SetChannelMask( 				
+				MIDI::ChannelMask(3) |
+				MIDI::ChannelMask(4)
+			);
+
+			inBreathNoteCfg.SetMessageMask(
+				MIDI::MessageMask(MIDI::eNoteOn)|
+				MIDI::MessageMask(MIDI::eNoteOff)
+			);
+
+			MIDIInConfig inCtrlCfg;
+			
+			inCtrlCfg.SetName("inctrl");
+			inCtrlCfg.SetDevice("default:default");
+			inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
+			inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
+			inCtrlCfg.SetFilter(11);
+
+			SALTO::BreathController breathController( inBreathNoteCfg, inCtrlCfg );
+
+			pitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
+
+			keyboardNote.LinkOutWithInControl( 0, &mMIDIHandler, 1);
+			keyboardNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
+			keyboardNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
+			keyboardNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
+
+			breathController.mInNote.LinkOutWithInControl( 0, &mMIDIHandler, 1 );
+			breathController.mInNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
+			breathController.mInNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
+			breathController.mInNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
+
+			breathController.mAirSpeed.LinkOutWithInControl( 0, &mMIDIHandler, 3 );
 
 			mFileAudioOut.Start();
 			mMIDIManager.Start();
 			mAudioManager->Start();
 			mMIDIHandler.Start();
 
-			while ( not_finished )
+			while ( !Canceled() )
 			{
-				pthread_testcancel();
-				
+
 				ProcessMIDIMessages();
 				
 				not_finished = pDSP->Do( synthbuffer );
 
 				CLAM_DEBUG_ASSERT( synthbuffer != NULL, "Whooops! Synthesis buffer was void!" );
-
+			
 				RenderSynthesis( *synthbuffer );
+
 			}
 
 			mMIDIHandler.Stop();
+			pDSP->Stop();
 
-			if ( pParams->GetWriteToFile())
+			if ( mParams.GetWriteToFile())
 				{
 					std::cout << "Closing audio File ..... " << std::endl;
-					pParams->SetExit(true); // MRJ: Ya lo es no?
+					mParams.SetExit(true); // MRJ: Ya lo es no?
 					mFileAudioOut.Stop();
 				}
 
 
 			std::cout << "exiting..." << std::endl;
 		
-			pthread_exit( NULL );
 
 		}
 		catch (Err err)
@@ -177,15 +232,22 @@ protected:
 
 		mFileAudioOut.Configure( outcfg );
 
-	
+#ifdef _WIN32
 		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());
-	
+#else
+		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());	
+#endif
+
 		mAudioManager->SetInternalBuffersNumber(12);
 
-		AudioIOConfig iocfg;
-		iocfg.SetName("left out");
-		iocfg.SetChannelID(0);
-		mAudioOut = new AudioOut(iocfg);
+		AudioIOConfig iocfgL;
+		iocfgL.SetName("left out");
+		iocfgL.SetChannelID(0);
+		AudioIOConfig iocfgR;
+		iocfgR.SetName("right out");
+		iocfgR.SetChannelID(1);
+		mAudioOutL = new AudioOut(iocfgL);
+		mAudioOutR = new AudioOut(iocfgR);
 		//iocfg.SetName("left in");
 		//mAudioIn = new AudioIn(iocfg);
 
@@ -195,106 +257,39 @@ protected:
 
 	void RenderSynthesis(Audio& synthbuffer)
 	{
-		if( pParams->GetWriteToFile())
+		if( mParams.GetWriteToFile())
 			mFileAudioOut.Do( synthbuffer );
 		else
 		{
-			//mAudioIn->Do( mDummyIn );
 			
-			mAudioOut->Do( synthbuffer );
+			mAudioOutL->Do( synthbuffer );
+			mAudioOutR->Do( synthbuffer );
 		}
-	}
-
-	void SetupMIDI()
-	{
-		MIDIInConfig inNoteCfg;
-
-		inNoteCfg.SetName("in");
-		inNoteCfg.SetDevice("default:default");
-		inNoteCfg.SetChannelMask( 
-									MIDI::ChannelMask(1) |
-									MIDI::ChannelMask(2)
-								);
-
-		inNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff)
-		);
-
-		MIDIInControl keyboardNote( inNoteCfg );
-
-		MIDIInConfig inPitchBendCfg;
-		
-		inPitchBendCfg.SetName("inPithcBend");
-		inPitchBendCfg.SetDevice("default:default");
-		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
-		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
-
-		MIDIInControl pitchBend( inPitchBendCfg );
-
-		MIDIInConfig inBreathNoteCfg;
-
-		inBreathNoteCfg.SetName("in2");
-		inBreathNoteCfg.SetDevice("default:default");
-		inBreathNoteCfg.SetChannelMask( 				
-										MIDI::ChannelMask(3) |
-										MIDI::ChannelMask(4)
-									  );
-
-		inBreathNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff)
-		);
-
-		MIDIInConfig inCtrlCfg;
-		
-		inCtrlCfg.SetName("inctrl");
-		inCtrlCfg.SetDevice("default:default");
-		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(2));
-		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-		inCtrlCfg.SetFilter(0x02);
-
-		BreathController breathController( inBreathNoteCfg, inCtrlCfg );
-
-		pitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
-
-		keyboardNote.LinkOutWithInControl( 0, &mMIDIHandler, 1);
-		keyboardNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
-		keyboardNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
-		keyboardNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
-
 	}
 
 	void ProcessMIDIMessages(void)
 	{
-		if (pParams->GetUseMelody())
+		if (mParams.GetUseMelody())
+		{
+			TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
+			if (!pMelody->Do( mParams.GetPlay(), currentTime ))
 			{
-				TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
-				if (!pMelody->Do( pParams->GetPlay(), currentTime ))
-					{
-						mMIDIHandler.Do( *pParams );
-						pParams->SetUseMelody( false );
-						pDSP->ResetEventSample();
-					}
-				else
-					mMIDIHandler.Do( *pParams );
+				mParams.SetUseMelody( false );
+				pDSP->ResetEventSample();
 			}
-			
-		if ( pParams->GetUseMidiKeyboard() || pParams->GetUseBreathController() )
-			{
-				mMIDIManager.Check();
-				mMIDIHandler.Do( *pParams );
-			}		
-
-		// End of SALTO MIDI Messages Processing
+		}
+		if ( mParams.GetUseMidiKeyboard() || mParams.GetUseBreathController() )
+		{
+			mMIDIManager.Check();
+		}
 	}
 
 private:
 
 	// Sample Based
 	AudioManager*    mAudioManager;
-	AudioIn*         mAudioIn;
-	AudioOut*        mAudioOut;
+	AudioOut*        mAudioOutL;
+	AudioOut*        mAudioOutR;
 	AudioFileOut     mFileAudioOut;
 	//MIDI based
 	MIDIManager      mMIDIManager;

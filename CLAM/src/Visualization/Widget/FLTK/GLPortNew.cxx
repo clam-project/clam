@@ -32,9 +32,10 @@ void GLPort::DrawSelf()
 
 void GLPort::draw()
 {
-	ApplyProjection(); // Window has been resized or something so projection must change
+	if (!valid())
+		ApplyProjection(); // Window has been resized or something so projection must change
 	glPushAttrib( GL_ALL_ATTRIB_BITS );
-		
+	
 	mRenderingState->Apply(); // We apply our selected rendering environment onto the OpenGL stack
 			
 	mDrawCb();  // We make here the call to the rendering code
@@ -43,8 +44,8 @@ void GLPort::draw()
 	
 	if ( !mTimerLaunched )
 	{
-		FLTKWrapper* tk = dynamic_cast<FLTKWrapper*>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
-		mRefreshSlot = tk->RequestAsynchronousRefresh( this );
+		FLTKWrapper& tk = dynamic_cast<FLTKWrapper&>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		mRefreshSlot = tk.RequestAsynchronousRefresh( this );
 	
 		mTimerLaunched = true;
 	}
@@ -64,6 +65,17 @@ void GLPort::ApplyProjection()
 	//glOrtho ( mOrthoVol.GetX(), mOrthoVol.GetW(), mOrthoVol.GetH(), mOrthoVol.GetY(), -1.0f, 1.0f );
 	// Let's try with the rulers...
 	glOrtho( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, mVerRange.mPosition - mVerRange.mSize, mVerRange.mPosition, -1.0f, 1.0f );
+
+
+	mCullCb( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, w() );
 }
 
 }
+
+
+
+
+
+
+
+

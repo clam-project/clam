@@ -138,8 +138,6 @@ void GLTF2DRenderer::RenderFrame( const DataArray& array, bool isLin )
 
 void GLTF2DRenderer::BuildNewTex()
 {
-	// TODO: if wraparound happens we should write over the texture, instead of creating
-	// a new one. 
 
 	GLuint texId;
 
@@ -197,7 +195,7 @@ void GLTF2DRenderer::Draw()
 	glLoadIdentity();
 
 	GLSprite::SetOpenGLState( GL_TEXTURE_1D );
-	for (int k=0; k < unsigned(mSprites.size()) ; k++ )
+	for (unsigned int k=0; k < unsigned(mSprites.size()) ; k++ )
 	{
 		(mSprites[k])->ImmediateDisplaySprite( GL_TEXTURE_1D );
 		CLAM_ASSERT( glIsTexture(*(mSprites[k]->GetPixMap())), "That wasn't a valid texture boy!");

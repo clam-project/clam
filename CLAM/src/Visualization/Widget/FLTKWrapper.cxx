@@ -27,10 +27,11 @@
 namespace CLAMGUI
 {
 
-FLTKWrapper* FLTKWrapper::GetInstance()
+FLTKWrapper& FLTKWrapper::GetInstance()
 {
-	Fl::visual( FL_DOUBLE );
-	return new FLTKWrapper;
+	static FLTKWrapper wrapper;
+
+	return wrapper;
 }
 
 bool FLTKWrapper::IsClosing() const
@@ -73,6 +74,11 @@ void FLTKWrapper::Run() const
 void FLTKWrapper::SetFPS( unsigned desired_fps )
 {
 	mTimeoutInterval = 1.0 / float( desired_fps ); 
+}
+
+void FLTKWrapper::DisableAsynchronousRefresh()
+{
+	CancelAllAsynchronousRefresh();
 }
 
 unsigned FLTKWrapper::RequestAsynchronousRefresh( Fl_Widget* pWidget )
@@ -132,6 +138,7 @@ void FLTKWrapper::CancelAllAsynchronousRefresh()
 
 void FLTKWrapper::sRefreshingCallback( void* data )
 {
+
 	FLTKWrapper* pFl = ( FLTKWrapper* ) data;
 
 	if ( !pFl->mWidgetsToBeRefreshed.empty() )
