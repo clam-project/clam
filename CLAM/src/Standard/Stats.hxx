@@ -229,16 +229,20 @@ public:
 	 * 
 	 * The Slope is defined as:
 	 * \f[
-	 * 	{N \sum{i x_i } - \sum{i} \sum{x_i} } 
+	 * 	{1 \over \sum{x_i}}
+	 * 	{ N \sum{i x_i } - \sum{i} \sum{x_i}
 	 * 		\over
-	 * 	( {\sum{i^2} - \sum{i}^2 } ) \sum{x_i}
+	 * 	{N \sum{i^2} - (\sum{i})^2 }}
 	 * \f]
 	 *
-	 * We can deduce that this is equivalent to:
+	 * We can transform this formula into one depending on the Centroid
+	 * which is already calculated in order to obtain other stats:
 	 * \f[
-	 * 	6  \times { 2 centroid - N + 1}
-	 * 		\over
-	 * 	{ N (N-1) (N+1)}
+	 * 	6 {
+	 * 		{ 2 Centroid - N + 1}
+	 * 			\over
+	 * 		{ N (N-1) (N+1)}
+	 * 	}
 	 * \f]
 	 * 
 	 * The slope is relative to the array position index.
