@@ -23,7 +23,7 @@ include $(DEPENDS)
 endif
 endif
 
-Makefile.vars: Makefile $(SRCDEPS)
+Makefile.vars: Makefile $(SRCDEPS) settings.cfg
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
 	$(SRCDEPS) settings.cfg > Makefile.vars
 
