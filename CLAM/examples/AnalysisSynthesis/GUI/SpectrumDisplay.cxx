@@ -69,6 +69,7 @@ namespace CLAMVM
 		{
 				
 				Viewport                          mSpecPresMetrix;
+				mRenderer->CacheData( samples );
 				mRenderer->SetSamplingRate( specRange );
 			
 				// :MRJ: We discard any estimation. this is a ugly hack that
@@ -81,7 +82,6 @@ namespace CLAMVM
 				mDispContainer->mpHorRuler->mInteger = mSpecPresMetrix.isIntX;
 				mDispContainer->mpVerRuler->mInteger = mSpecPresMetrix.isIntY;
 
-				mRenderer->CacheData( samples );
 
 
 		}
