@@ -44,22 +44,12 @@ public:
 		mSuper.DestroyConnections();
 	}
 
-	template < class RefType, typename PtrMember >
-		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
+
+	void Connect( Slotv2<ParmType1,ParmType2>& slot )
 	{
 		Connection c( AssignConnection(), this );
 
-		mSuper.AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, *thisRef, pMember ) );
-
-		slot.Bind(c);
-	}
-
-	template < typename PtrFunction >
-		void Connect( PtrFunction pMember, Slot& slot )
-	{
-		Connection c( AssignConnection(), this );
-
-		mSuper.AddCallback( s.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType1, ParmType2>*)0, pMember ) );
+		mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
 
 		slot.Bind(c);
 	}

@@ -122,22 +122,11 @@ public:
 		DestroyConnections();
 	}
 
-	template < class RefType, typename PtrMember >
-		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
+	void Connect( Slotv1<ParmType1>& slot )
 	{
 		Connection c( AssignConnection(), this );
 
-		AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
-
-		slot.Bind(c);
-	}
-
-	template < typename PtrFunction >
-		void Connect( PtrFunction pMember, Slot& slot )
-	{
-		Connection c( AssignConnection(), this );
-
-		AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
+		AddCallback( c.GetID(), &slot, slot.GetMethod() );
 
 		slot.Bind(c);
 	}

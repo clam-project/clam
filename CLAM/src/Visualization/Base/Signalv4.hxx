@@ -25,7 +25,7 @@
 #include "Functor4.hxx"
 #include "Signal.hxx"
 #include "Connection.hxx"
-#include "Slot.hxx"
+#include "Slotv4.hxx"
 
 #if defined( _MSC_VER )&&(_MSC_VER < 1310)
 #include "Signalv4ImplVC6.hxx"
