@@ -77,7 +77,7 @@ namespace CppUnit
 	{
 		static bool equal( const std::type_info& x, const std::type_info& y )
 		{
-			return bool(x == y);
+			return 0!=(x == y);
 		}
 
 		static std::string toString( const std::type_info& x )
