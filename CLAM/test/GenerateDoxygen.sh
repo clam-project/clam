@@ -20,15 +20,22 @@ GenerateDoxygen()
 
 		Tarball=$TargetDir.tar.bz
 
+		echo creating tarball
 		mv doxygen/html $TargetDir
 		tar cfvj $Tarball $TargetDir
 
+		echo removing old remote dir $TargetDir
 		ssh clamadm@www.iua.upf.es rm -rf $TargetDir
-		scp $Tarball "clamadm@www.iua.upf.es:"
+		echo transferring new tarball
+		scp -r $Tarball "clamadm@www.iua.upf.es:"
+		echo extracting new tarball on remote
 		ssh clamadm@www.iua.upf.es tar xfvj $Tarball
+		echo cleaning remote tarball
 		ssh clamadm@www.iua.upf.es rm $Tarball
-		scp DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
+		echo transferring DoxyLog
+		scp -r DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
 	popd
+	echo removing local temporary CLAM repository
 	rm -rf CLAM-for-doxygen
 }
 
