@@ -3,6 +3,7 @@
 
 #include "Slotv2.hxx"
 #include "Slotv4.hxx"
+#include "BoundingBoxes.hxx"
 
 namespace CLAMGUI
 {
@@ -28,6 +29,8 @@ public:
 				return mMustReproject;
 		}
 
+		void QueryDataBoundBox( DataBoundBox& );
+
 		Slotv4< double, double, double, double>  SetWorldSpace;
 		Slotv2< double, double>                  AdjustXAxis;
 		Slotv2< double, double>                  AdjustYAxis;
@@ -45,13 +48,17 @@ protected:
 		virtual void WCSProject() = 0;
 		virtual void WindowProject() = 0;
 		virtual void DrawContents()=0;
-
+		virtual void Refresh() = 0;
+		
 private:
-
 		bool   mMustReproject;
+		double mxdist, mydist;
+
+protected:
+
+		
 		double mxmax, mxmin, mymax, mymin;
 		double mcxmax, mcxmin, mcymax, mcymin;
-		double mxdist, mydist;
 };
 
 }

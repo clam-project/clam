@@ -22,15 +22,25 @@ namespace CLAMGUI
 
 		void DrawingSurface2D::_SetWorldSpace( double xmax, double xmin, double ymax, double ymin )
 		{
-				mxmax = xmax;
-				mxmin = xmin;
-				mymax = ymax;
-				mymin = ymin;
+				mxmax = mcxmax = xmax;
+				mxmin = mcxmin = xmin;
+				mymax = mcymax = ymax;
+				mymin = mcymin = ymin;
 				
 				mxdist = fabs( mxmax - mxmin );
 				mydist = fabs( mymax - mymin );
 				
 				DamageProjection();
+		}
+
+		void DrawingSurface2D::QueryDataBoundBox( DataBoundBox& bbox )
+		{
+				bbox.mLeft = mcxmin;
+				bbox.mRight = mcxmax;
+				bbox.mTop = mcymax;
+				bbox.mBottom = mcymin;
+				bbox.mNear = 0;
+				bbox.mFar = -1;
 		}
 
 		void DrawingSurface2D::_AdjustXAxis( double offset, double scale )
@@ -39,13 +49,15 @@ namespace CLAMGUI
 				mcxmax = mcxmin + mxdist*scale;
 
 				DamageProjection();
+				Refresh();
 		}
 
 		void DrawingSurface2D::_AdjustYAxis( double offset, double scale )
 		{
-				mcymin = mymin + ydist*offset;
-				mcymax = mcymin + ydist* scale;
+				mcymin = mymin + mydist*offset;
+				mcymax = mcymin + mydist* scale;
 
 				DamageProjection();
+				Refresh();
 		}		
 }
