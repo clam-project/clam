@@ -550,8 +550,10 @@ void config_init(void)
 	listhash_add_key_once(config,"DEFINES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
+	listhash_add_key_once(config,"IS_LIBRARY")->l = list_new();
 
 	list_add_str_once(used_vars,"UI_FILES");
+	list_add_str_once(used_vars,"IS_LIBRARY");
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"VC7_LIBRARIES_DEBUG");
