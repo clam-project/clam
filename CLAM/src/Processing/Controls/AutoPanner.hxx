@@ -13,46 +13,30 @@ namespace CLAM
 class AutoPanner
 {
 private:
-	TData _freq;
-	TData _samplingRate;
-	TData _phase;
-	TData _deltaPhase;
-	int _frameSize;
+	TData mFreq;
+	TData mSamplingRate;
+	TData mPhase;
+	TData mDeltaPhase;
+	int mFrameSize;
 
 public:
-	OutControl _outControl1;
-	OutControl _outControl2;
+	OutControl mLeft;
+	OutControl mRight;
 
 public:
 	AutoPanner(TData freq,
 		      TData samplingRate,
 		      TData phase = 0.0,
-		      int _frameSize = 1);
+		      int frameSize = 1);
 
 	void Configure(TData freq,
 		       TData samplingRate,
 		       TData phase,
-		       int _frameSize);
+		       int frameSize);
 	bool Do();
 	virtual ~AutoPanner(){}
 };
 
 } //namespace CLAM
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif
