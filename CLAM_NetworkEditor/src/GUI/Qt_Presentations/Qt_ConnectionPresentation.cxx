@@ -27,6 +27,8 @@
 #include <qpainter.h>
 #include <qbitmap.h>
 
+#include <iostream> // TODO: remove
+
 namespace NetworkGUI
 {
 
@@ -35,7 +37,8 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 	  origin(-1,-1),
 	  end(-1,-1),
 	  mPositions(4),
-	  mDown(false)
+	  mDown(false),
+	  mSelected(false)
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
 
@@ -108,24 +111,45 @@ void Qt_ConnectionPresentation::UpdatePosition()
 	setFixedSize(w,h);
 }
 
+void Qt_ConnectionPresentation::mouseMoveEvent( QMouseEvent *m)
+{
+	SignalMovingMouseWithButtonPressed.Emit( m->globalPos() - mPrevPos );
+	mPrevPos = m->globalPos();
+}
+
+
 
 void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 {
+	mPrevPos = m->globalPos();
 	mDown = true;
-	grabKeyboard();
-	repaint();
+	if(!mSelected) // already selected
+	{
+		mSelected = true;
+		if((m->button() & LeftButton) && (m->state() & ShiftButton))
+			SignalConnectionPresentationAddedToSelection.Emit( this );
+		else
+			SignalConnectionPresentationSelected.Emit( this );
+		repaint();
+		std::cout << "selected" << std::endl;
+	}
+
+
+//	grabKeyboard();
+//	repaint();
 }
 
 void Qt_ConnectionPresentation::mouseReleaseEvent( QMouseEvent *)
 {
 	mDown = false;
-	releaseKeyboard();
-	repaint();
+//	releaseKeyboard();
+//	repaint();
 }
 
 
 void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
 {
+	/*
 	switch ( tolower(k->ascii()) )
 	{
         case 'x':
@@ -134,8 +158,16 @@ void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
 		mDown = false;
 		releaseKeyboard();
 		break;
-	}
+	}*/
 }
+
+void Qt_ConnectionPresentation::UnSelectConnectionPresentation()
+{
+	mSelected = false;
+	std::cout << "unselect" << std::endl;
+	repaint();
+}
+
 
 } // namespace NetworkGUI
 

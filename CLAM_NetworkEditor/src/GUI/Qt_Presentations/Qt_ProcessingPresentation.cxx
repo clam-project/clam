@@ -403,12 +403,12 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 
 void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 {
-	mClickPos = m->pos();
+	mPrevPos = m->globalPos();
 	if(!mSelected) // already selected
 	{
 		mSelected = true;
 		if((m->button() & LeftButton) && (m->state() & ShiftButton))
-			SignalProcessingPresentatioAddedToSelection.Emit( this );
+			SignalProcessingPresentationAddedToSelection.Emit( this );
 		else
 			SignalProcessingPresentationSelected.Emit( this );
 		repaint();
@@ -428,13 +428,8 @@ void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 {
-//	if(!mDown)
-//		return;
-
-	QPoint difference(mapFromGlobal(m->globalPos()));
-//	difference = mapToParent(difference) - mClickPos;
-
-	SignalMovingMouseWithButtonPressed.Emit( m->pos() - mClickPos );
+	SignalMovingMouseWithButtonPressed.Emit( m->globalPos() - mPrevPos );
+	mPrevPos = m->globalPos();
 }
 
 void Qt_ProcessingPresentation::Move( const QPoint & difference)
@@ -473,7 +468,7 @@ void Qt_ProcessingPresentation::Move( const QPoint & difference)
 		out->SignalAcquirePos.Emit( toMove.x() + posX - 4, toMove.y()+ posY +2 );
 	}
 	QWidget * parent = parentWidget();
-	parent->repaint(); // TODO -> really ugly!
+	//parent->repaint(); // TODO -> really ugly!
 }
 
 void Qt_ProcessingPresentation::EmitPositionOfChildren()

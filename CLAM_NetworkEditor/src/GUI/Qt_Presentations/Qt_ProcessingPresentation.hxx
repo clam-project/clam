@@ -67,14 +67,14 @@ protected:
 
 	// control methods
 	void SetInControl( const std::string & );
-	void SetOutControl( const std::string & );
+	virtual void SetOutControl( const std::string & ); // reimplemented in Qt_OutControlSender widget
 	void SetInControlClicked( Qt_InControlPresentation *);
 	void SetOutControlClicked( Qt_OutControlPresentation *);
 	void SetOutControlAfterClickInControl(const QPoint &);
 	void SetInControlAfterClickOutControl(const QPoint &);
 	
 
-	void paintEvent( QPaintEvent * );
+	virtual void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent * );
 	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
@@ -84,7 +84,7 @@ protected:
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
-	void UpdateSize();
+	virtual void UpdateSize();
 	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
 	void DrawSelectedRepresentation();
 	void  UpdatePresentation(){ repaint(); }
@@ -93,7 +93,7 @@ protected:
 // qt stuff
 	bool        mDown;
 	bool	    mSelected;
-	QPoint     mClickPos;
+	QPoint     mPrevPos;
 
 public: // signals
 	SigSlot::Signalv1< Qt_InPortPresentation * > SignalAcquireInPortClicked;
@@ -102,7 +102,7 @@ public: // signals
 	SigSlot::Signalv1< Qt_OutControlPresentation * > SignalAcquireOutControlClicked;
 
 	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationSelected;
-	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentatioAddedToSelection;
+	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationAddedToSelection;
 	SigSlot::Signalv1< const std::string & > SignalSendMessageToStatus;
 //	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationUnSelected;
 	SigSlot::Signalv1< const QPoint & > SignalMovingMouseWithButtonPressed;
