@@ -37,7 +37,6 @@ public:
 	CPPUNIT_TEST( testWritingRegion_CenterRegion_withSomeReaders );
 	CPPUNIT_TEST( testWritingRegion_CenterRegion_assertsWithUnevenRegion );
 	CPPUNIT_TEST( testWritingRegion_CenterRegion_withOneReaderAndBiggerWriter );
-	CPPUNIT_TEST( testTDataConstructorInitializesToZero );
 	CPPUNIT_TEST( testWritingRegion_GetLastWrittenData_withoutOverlap );
 	CPPUNIT_TEST( testWritingRegion_GetLastWrittenData_withOverlap );
 	CPPUNIT_TEST( testWritingRegion_GetLastWrittenData_withDifferentHopAndSize );
@@ -450,7 +449,10 @@ public:
 		CPPUNIT_ASSERT_EQUAL( '\0', reader3[0] );
 		CPPUNIT_ASSERT_EQUAL( 'a', reader3[1] );
 	}
-			
+
+	// MRJ: This test passes on GNU C++ compiler since it
+	// *does* initialize scalar types to zero.
+	/*
 	void testTDataConstructorInitializesToZero()
 	{
 		CLAM::TData zero( 0.0f );
@@ -459,6 +461,7 @@ public:
 				
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( zero, defaultValue, delta );
 	}
+	*/
 	void testWritingRegion_GetLastWrittenData_withoutOverlap()
 	{
 		CLAM::WritingRegion<char,DataStructure> writer;
