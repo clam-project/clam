@@ -28,7 +28,7 @@
 
 using namespace CLAM;
 
-FrameDescriptors::FrameDescriptors(Frame* pFrame=NULL): ProcessingData(eNumAttr)
+FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
 	mpFrame=pFrame;

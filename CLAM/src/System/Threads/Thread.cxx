@@ -6,7 +6,7 @@
 #include <cstdio>
 #endif
 #ifdef WIN32
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #endif
 
@@ -28,7 +28,8 @@ Thread::Thread(bool realtime):
 
 Thread::~Thread()
 {
-	CLAM_ASSERT( !mRunning, "Trying to destroy the thread without stopping it" );
+	if ( mRunning )
+		Stop();
 }
 
 void Thread::SetupPriorityPolicy()
@@ -114,6 +115,8 @@ void Thread::LaunchThreadCleanup( void* pvoid )
 	Thread* pSelf = (Thread*)pvoid;
 	if ( pSelf->mHasCleanup )
 		pSelf->mCleanUpCode();
+
+	pthread_join( pSelf->mThreadID, NULL );
 }
 
 void Thread::Sleep( unsigned int milliseconds )

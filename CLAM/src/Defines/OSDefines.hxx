@@ -26,19 +26,7 @@
 #include "CLAM_Math.hxx"
 
 
-/* roundInt Implementation */
-#ifdef __unix__
-// on linux, rint exists in math.h
-#define roundInt(var) int(rint(var))
-#else
-// on mac and windows it doesn't
-static int roundInt(double in)
-{
-	double f = floor(in);
-	return int((in-f)<=0.5 ? f : f+1);
-}
-#endif
-
+# define M_1_2PI         0.15915494309189533577  /* 1/(2pi) */
 
 #if defined _MSC_VER
 
@@ -63,7 +51,12 @@ static int roundInt(double in)
    Therefore we provide as an extension constants with similar names as a
    GNU extension.  Provide enough digits for the 128-bit IEEE quad.  */
 # define M_El           2.7182818284590452353602874713526625L  /* e */
+
+// MRJ: 
+#if defined(__GNUC__) && (__GNUC__<3)
 # define M_LOG2El       1.4426950408889634073599246810018922L  /* log_2 e */
+#endif
+
 # define M_LOG10El      0.4342944819032518276511289189166051L  /* log_10 e */
 # define M_LN2l         0.6931471805599453094172321214581766L  /* log_e 2 */
 # define M_LN10l        2.3025850929940456840179914546843642L  /* log_e 10 */

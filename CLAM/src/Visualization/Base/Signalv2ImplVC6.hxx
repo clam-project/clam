@@ -29,7 +29,7 @@
 #include <list>
 #include <utility>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2 >
@@ -126,25 +126,15 @@ public:
 		DestroyConnections();
 	}
 
-	template < class RefType, typename PtrMember >
-		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
+	void Connect( Slotv2<ParmType1,ParmType2>& slot )
 	{
 		Connection c( AssignConnection(), this );
 
-		AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, *thisRef, pMember ) );
+		AddCallback( c.GetID(), &slot, slot.GetMethod() );
 
 		slot.Bind(c);
 	}
 
-	template < typename PtrFunction >
-		void Connect( PtrFunction pMember, Slot& slot )
-	{
-		Connection c( AssignConnection(), this );
-
-		AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, pMember ) );
-
-		slot.Bind(c);
-	}
 	
 	void Emit( ParmType1 parm1, ParmType2 parm2 )
 	{

@@ -22,6 +22,7 @@
 #ifndef _Segment_
 #define _Segment_
 
+#include "Frame.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Array.hxx"
@@ -34,18 +35,15 @@
 #include "Err.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
-#include "Frame.hxx"
 #include "Audio.hxx"
 
-namespace CLAM{
-
-
+namespace CLAM {
 
 typedef Search < List < Frame >, Frame> FrameSearch;
 
 /**	Processing Data class to encapsulate a CLAM segment. A Segment is basically an ordered
  *	list of Frames (@see Frame). It also has a BeginTime and EndTime time tags, an associated
- *	Audio (usually a large audio chunk from which smaller Audio Frames are obtained9 and
+ *	Audio (usually a large audio chunk from which smaller Audio Frames are obtained) and
  *	a global SamplingRate.
  *	Appart from these internal Processing Data, a Segment also holds a list of child segments
  *	named Children. These are usually smaller segments that result from applying some sort of
@@ -61,7 +59,7 @@ public:
 	DYN_ATTRIBUTE (0, public, TTime, BeginTime);
 	DYN_ATTRIBUTE (1, public, TTime, EndTime);
 	DYN_ATTRIBUTE (2, private, bool, prHoldsData);
-	DYN_ATTRIBUTE (3, public, List<Frame>, FramesArray);
+	DYN_ATTRIBUTE (3, private, List<Frame>, prFramesArray);
 	DYN_ATTRIBUTE (4, public, Audio, Audio);
 	DYN_ATTRIBUTE (5, public, List<Segment>, Children);
 	DYN_ATTRIBUTE (6, public, TData, SamplingRate);
@@ -74,6 +72,22 @@ private:
 
 public:
 
+	void AddFramesArray()
+	{
+		AddprFramesArray();
+	}
+	void RemoveFramesArray()
+	{
+		RemoveprFramesArray();
+	}
+	
+	void SetFramesArray(const List<Frame>& frames)
+	{
+		SetprFramesArray(frames);
+		GetFramesSearch().Set(GetprFramesArray());
+	}
+	const List<Frame>& GetFramesArray() const {return GetprFramesArray();}
+	List<Frame>& GetFramesArray() {return GetprFramesArray();}
 	/** Index used when processing for keeeping trace of current location in Frame list*/
 	TIndex mCurrentFrameIndex;
 	
@@ -96,11 +110,11 @@ public:
 	 *	@see GetFrame(TTime time)
 	 */
 	Frame& GetFrame(TIndex pos);
-	/** Returns a constant reference to the frame found in a given position*/
+	/** Returns a constant reference to the frame found in a given position. */
 	const Frame& GetFrame(TIndex pos) const;
-	/** Adds a new frame at the end of the segment*/
-	void AddFrame(Frame& newFrame);
-	/** Deletes frame in a given position */
+	/** Adds a new frame at the end of the segment. Note that this operation copies the frame. */
+	void AddFrame(Frame& newFrame); // XXX: should really be a const reference as the frame is copied
+	/** Deletes frame in a given position. */
 	void DeleteFrame(TIndex pos);
 	/** Finds frame with center time closest to the one given 
 	 *	@return position of frame in segment 

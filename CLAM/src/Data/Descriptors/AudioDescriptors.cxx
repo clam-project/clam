@@ -28,8 +28,7 @@
 
 using namespace CLAM;
 
-
-AudioDescriptors::AudioDescriptors(Audio* pAudio=NULL): ProcessingData(eNumAttr)
+AudioDescriptors::AudioDescriptors(Audio* pAudio): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
 	mpAudio=pAudio;

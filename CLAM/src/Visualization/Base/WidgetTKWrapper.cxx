@@ -22,7 +22,9 @@
 #include "WidgetTKWrapper.hxx"
 #include "ErrGUI.hxx"
 #include "SupportedToolkits.hxx"
-using namespace CLAMGUI;
+
+namespace CLAMVM
+{
 
 Enum::tEnumValue EWidgetTK::sEnumValues[] =
 {
@@ -33,18 +35,28 @@ Enum::tEnumValue EWidgetTK::sEnumValues[] =
 
 Enum::tValue EWidgetTK::sDefault = EWidgetTK::FLTK;
 
+		WidgetTKWrapper::WidgetTKWrapper()
+		{
+		}
+
+		WidgetTKWrapper::~WidgetTKWrapper()
+		{
+		}
+
 WidgetTKWrapper& WidgetTKWrapper::GetWrapperFor( std::string toolkit )
 {
 	EWidgetTK requestedTK( toolkit );
 
 	if ( requestedTK.GetValue() == EWidgetTK::FLTK )
 	{
-			return FLTKWrapper::GetInstance();
+		return FLTKWrapper::GetInstance();
 	}
 	else
 	{
-		throw ( ErrGUI( "None of supported toolkits was chosen. Check documentation\n"
-		      "about CLAM supported toolkits\n" ) );
+		CLAM_ASSERT(false, "None of supported toolkits was chosen. Check documentation\n"
+		      "about CLAM supported toolkits\n" );
 	}
+
+}
 
 }

@@ -26,72 +26,60 @@
 #error "This is an internal implementation header. You are not allowed to include it directly!"
 #endif
 
-
 #include "ConnectionHandler.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-		class Signalv0 
-				: public Signal
+	class Signalv0 
+		: public Signal
+	{
+	public:
+		typedef CBL::Functor0     tCallbackType;
+	public:
+		virtual ~Signalv0()
 		{
-		public:
-				typedef typename CBL::Functor0     tCallbackType;
-		public:
-				virtual ~Signalv0()
-				{
-						mSuper.DestroyConnections();
-				}
-				
-				template < class RefType, typename PtrMember >
-				void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
-				{
-						Connection c ( AssignConnection(), this );
-
-						mSuper.AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor0*)0, *thisRef, pMember ) );
-						
-						slot.Bind(c);
-				}
-
-				template < class PtrFunction >
-				void Connect( PtrFunction pMember, Slot& slot )
-				{
-						Connection c ( AssignConnection(), this );
-
-						mSuper.AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor0*)0, pMember ) ); 
-
-						slot.Bind(c);
-				}
-
-				void Emit()
-				{
-						if ( HasNoCallbacks() )
-								return;
-
-						tSuperType::tCallbackList calls = GetCalls();
-						tSuperType::tCallIterator i = calls.begin();
-						tSuperType::tCallIterator end = calls.end();
-
-						while( i != end )
-						{
-								(*(*i))();
-								i++;
-						}
-				}
-
-				void FreeConnection( Connection* pConnection )
-				{
-						mSuper.RemoveCall( pConnection->GetID() );
-						FreeConnectionId( pConnection->GetID() );
-				}
-
-		private:
-				typedef Signalv0                            tSignalType;
-				typedef ConnectionHandler<tSignalType >     tSuperType;
-				
-				tSuperType  mSuper;
-		};
+			mSuper.DestroyConnections();
+		}
+  
+		void Connect( Slotv0& slot )
+		{
+			Connection c ( AssignConnection(), this );
+    
+			mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
+    
+			slot.Bind(c);
+		}
+  
+		void Emit()
+		{
+			if ( mSuper.HasNoCallbacks() )
+				return;
+    
+			tSuperType::tCallList calls = mSuper.GetCalls();
+			tSuperType::tCallIterator i = calls.begin();
+			tSuperType::tCallIterator end = calls.end();
+    
+			while( i != end )
+			{
+				(*(*i))();
+				i++;
+			}
+		}
+  
+		void FreeConnection( Connection* pConnection )
+		{
+			mSuper.RemoveCall( pConnection->GetID() );
+			FreeConnectionId( pConnection->GetID() );
+		}
+  
+	private:
+		typedef Signalv0                            tSignalType;
+		typedef ConnectionHandler<tSignalType >     tSuperType;
+  
+		tSuperType  mSuper;
+	};
 
 }
 
-#endif // Signalv0.hxx
+#endif // Signalv0ImplSerious.hxx

@@ -45,7 +45,7 @@ using std::vector;
 #endif
 
 
-#ifdef CLAM_USE_XML 
+#ifdef CLAM_USE_XML
 	#include "XMLStorage.hxx"
 	#include "XMLAdapter.hxx"
 	#include "XMLArrayAdapter.hxx"
@@ -92,7 +92,7 @@ public:
 	}
 
 	~Array()
-	{	
+	{
 		DestroyDataBuffer();
 		mAllocSize=mSize=mStep=0;
 	}
@@ -108,7 +108,7 @@ public:
 
 	void SetSize(TSize size)
 	{
-		CLAM_ASSERT(size <= mAllocSize,msgSetSizeOutOfRange);
+		CLAM_ASSERT(size <= mAllocSize || !OwnsMemory(), msgSetSizeOutOfRange);
 		if (OwnsMemory())
 		{
 			if (size > mSize)
@@ -139,7 +139,7 @@ public:
 				mpData=NULL;
 			}
 		}
-		
+
 		mAllocSize = newAllocSize;
 
 		if (mAllocSize<mSize)
@@ -170,18 +170,22 @@ public:
 
 	inline void GiveChunk(int pos, int size, Array<T>&) const;
 
+	inline void CopyChunk(int pos, int size, Array<T>&) const;
+
 	EDataFormat Format() { return eFmtDefault; }
 
 	const T& operator [](const int& i) const
-	{	
-		CLAM_DEBUG_ASSERT(i>=0 && i<mSize,msgIndexOutOfRange);
-		return mpData[i]; 
+	{
+		CLAM_DEBUG_ASSERT(i>=0,msgIndexOutOfRange);
+		CLAM_DEBUG_ASSERT(i<mSize,msgIndexOutOfRange);
+		return mpData[i];
 	}
 
-	T& operator [](const int& i) 
-	{	
-		CLAM_DEBUG_ASSERT(i>=0 && i<mSize,msgIndexOutOfRange);
-		return mpData[i]; 
+	T& operator [](const int& i)
+	{
+		CLAM_DEBUG_ASSERT(i>=0,msgIndexOutOfRange);
+		CLAM_DEBUG_ASSERT(i<mSize,msgIndexOutOfRange);
+		return mpData[i];
 	}
 	
 	void	AddElem(const T& elem)
@@ -219,9 +223,16 @@ public:
 	Array<T>& operator = (const Array<T>& src)
 	{
 		int tocopy;
-		if (Size() != src.Size())
-			Resize(src.Size());
-		mStep = src.mStep;
+		if (OwnsMemory())
+		{
+			if (Size() != src.Size())
+				Resize(src.Size());
+			mStep = src.mStep;
+		} else {
+			CLAM_ASSERT(src.Size()<=mAllocSize,
+					"Cannot copy a larger array to an array that does not own it's memory!");
+			// important to leave mStep untouched: it indicates that the array !OwnsMemory
+		}
 		tocopy = (src.Size()<Size())?src.Size():Size();
 		CopyDataBlock(0,tocopy,src.mpData);
 		InitializeCopyDataBlock(tocopy,src.Size(),src.mpData);
@@ -260,7 +271,7 @@ public:
 		// onto a non XML storage has no effect but it enhances performance.
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
-			StoreBufferOn((TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
+			StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 		}
 		#endif//CLAM_USE_XML
 	}
@@ -273,7 +284,7 @@ public:
 		{
 			while (true) {
 				T elem;
-				if (!LoadMemberFrom((TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
+				if (!LoadMemberFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
 				AddElem(elem);
 			}
 		}
@@ -360,6 +371,19 @@ void Array<T>::GiveChunk(int pos, int size, Array<T>& a) const
 	CLAM_ASSERT(pos + size <= mSize,
 	            "Array::GiveChunk(): Chunk out of bounds.");
 	a.SetPtr(&mpData[pos],size);
+}
+
+template<class T>
+void Array<T>::CopyChunk(int pos, int size, Array<T>& a) const
+{
+	int last=pos+size;
+	CLAM_ASSERT(last <= mSize,
+	            "Array::CopyChunk(): Chunk out of bounds.");
+	CLAM_ASSERT(pos <= a.mSize,
+	            "Array::GiveChunk(): destination array does not have enough memory");
+	int i;
+	for (i=pos;i<last;i++)
+		a.mpData[i-pos]=mpData[i];
 }
 
 template<class T>
@@ -649,7 +673,7 @@ void Array<T>::Init()
 template<class T>
 Array<T>::Array(T* ptr,int size) 
 {
-	throw(Err("Array::Array(T*): Not implemented"));
+	CLAM_ASSERT(false,"Array::Array(T*): Not implemented");
 }
 
 template<class T>
@@ -725,19 +749,19 @@ T* Array<T>::GetPtr(void)
 template<class T>
 void Array<T>::SetPtr(T* ptr) 
 {
-	throw(Err("Array::SetPtr(T*): Not implemented"));
+	CLAM_ASSERT(false,"Array::SetPtr(T*): Not implemented");
 }
 
 template<class T>
 TSize Array<T>::GetStep() 
 {
-	throw(Err("Array::GetStep(): Not implemented"));
+	CLAM_ASSERT(false,"Array::GetStep(): Not implemented");
 }
 
 template<class T>
 void Array<T>::SetStep(TSize step) 
 {
-	throw(Err("Array::SetStep(int): Not implemented"));
+	CLAM_ASSERT(false,"Array::SetStep(int): Not implemented");
 }
 
 template<class T>

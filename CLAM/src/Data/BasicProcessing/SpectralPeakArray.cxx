@@ -44,10 +44,22 @@ void SpectralPeakArray::DefaultInit()
 	//Initializing minimum set of attributes (mag, freq and scale)
 	AddFreqBuffer();
 	AddMagBuffer();
+	// MRJ: More forgotten donuts here. What am I missing here? 
+	// SpectralPeakDetect::CheckOutputType demands all SpectralPeakArrays to comply
+	// with the following dyn attribs
+	AddBinWidthBuffer();
+	AddFreqBuffer();
+	AddBinPosBuffer();
+	AddPhaseBuffer();
+	// MRJ: End of SpectralPeakDetect::CheckOutputType attributes requirements. It
+	// seems that someone did an optimization that consisted in not adding these
+	// in SpectralPeakDetect::CheckOutputType... Merlijn?
 	AddScale();
+	AddMinimizeResizes();
 	UpdateData();
 	SetScale(EScale(EScale::eLinear));
 	SetnPeaks(0);
+	SetMinimizeResizes(1);
 }
  
 
@@ -300,11 +312,14 @@ TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maxim
 
 void SpectralPeakArray::ResetIndices() // reset all indices 
 {
+	static int nTimes=0;
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::ResetIndices: Index array is not instantiated");
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks();
+	//Resize will only be done once
+	if(indexArray.AllocatedSize()!=GetnMaxPeaks())
+		indexArray.Resize(GetnMaxPeaks());
 	// set size to the number of Peaks
-	indexArray.Resize(nPeaks);
 	indexArray.SetSize(nPeaks);
 
 	indexArray.Reset();
@@ -317,7 +332,8 @@ void SpectralPeakArray::InitIndices() // Initialize all indices to -1 and set si
 	int i;
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks(); 
-	indexArray.Resize(nPeaks);
+	TSize nMaxPeaks=GetnMaxPeaks();
+	indexArray.Resize(nMaxPeaks);
 	indexArray.SetSize(nPeaks);
 	for(i=0;i<nPeaks;i++)
 	{
@@ -499,7 +515,7 @@ void SpectralPeakArray::ToLinear()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= pow(TData(10),TData(mag[i]/20)); 
+			mag[i]= log2lin(mag[i]); 
 		}
 		SetScale(EScale::eLinear);
 	}
@@ -507,6 +523,68 @@ void SpectralPeakArray::ToLinear()
 
 }
 
+
+SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
+{
+	SpectralPeakArray tmp(in);
+	tmp.SetnMaxPeaks(GetnMaxPeaks()+in.GetnMaxPeaks());
+	tmp.SetnPeaks(0);
+	int origIndex=0,inIndex=0;
+	SpectralPeak currentOrigPeak,currentInPeak;
+	bool finished=false,finishedOrig=false, finishedIn=false;
+	TSize origSize,inSize;
+	origSize=GetnPeaks();
+	inSize=in.GetnPeaks();
+	while(!finished)
+	{
+		if(origIndex>=origSize-1) finishedOrig=true;
+		if(inIndex>=inSize-1) finishedIn=true;
+		//add always peak with lower freq. If both are equal, add magnitudes (and take original phase?)
+		if(finishedOrig)
+		{
+			if(!finishedIn)
+			{
+				currentInPeak=in.GetSpectralPeak(inIndex);
+				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				inIndex++;
+			}
+			else finished=true;
+		}
+		else if(finishedIn)
+		{
+			if(!finishedOrig)
+			{
+				currentOrigPeak=GetSpectralPeak(origIndex);
+				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				origIndex++;
+			}
+			else finished=true;
+		}
+		else
+		{
+			currentOrigPeak=GetSpectralPeak(origIndex);
+			currentInPeak=in.GetSpectralPeak(inIndex);
+			if(currentOrigPeak.GetFreq()<currentInPeak.GetFreq())
+			{
+				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				origIndex++;
+			}
+			else if(currentOrigPeak.GetFreq()>currentInPeak.GetFreq())
+			{
+				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				inIndex++;
+			}
+			else
+			{
+				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				origIndex++;
+				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				inIndex++;
+			}
+		}
+	}
+	return tmp;
+}
 
 };//namespace
 

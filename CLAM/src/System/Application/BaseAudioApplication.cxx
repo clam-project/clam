@@ -20,12 +20,12 @@
  */
 
 #include "BaseAudioApplication.hxx"
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
 #include <pthread.h>
 #include <cstdio>
 #include <iostream>
 #ifdef WIN32
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #else
 #include <unistd.h>

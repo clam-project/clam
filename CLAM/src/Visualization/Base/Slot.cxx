@@ -22,7 +22,7 @@
 #include "Slot.hxx"
 #include <algorithm>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 	class ConnectionSearchPred

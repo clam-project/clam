@@ -24,17 +24,21 @@
 
 #include "ConfigurationVisitor.hxx"
 #include <map>
+#include <list>
 #include <string>
 
 #include "Assert.hxx"
 #include "Enum.hxx"
+#include "Filename.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 
 #include <FL/fl_draw.H>
+#include <FL/Fl_Group.H>
 #include <FL/Fl_Valuator.H> // For the FL_HORIZONTAL macro
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Pack.H>
+#include <FL/Fl_Scroll.H>
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Float_Input.H>
@@ -43,29 +47,70 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Item.H>
+#include <FL/fl_file_chooser.H>
+
 #include "CBL.hxx"
 
-#define HorPos fl_width(name)+5+(mWidgetNum/20)*340
-#define VerPos 5+25*(mWidgetNum%20)
+#define HorPos fl_width(name)
+#define VerPos 0
 
 namespace CLAM{
+	class FLTKConfigurator;
+
+	class ConfigurationHolderBase
+	{
+	protected:
+		ConfigurationHolderBase(DynamicType & holded)
+			: mConfiguration(holded)
+		{}
+		DynamicType & mConfiguration;
+	public:
+		virtual void ApplyDataTo(FLTKConfigurator & configurator)=0;
+		virtual ~ConfigurationHolderBase() {}
+	};
+
+	template <class HoldedType>
+	class ConfigurationHolder : public ConfigurationHolderBase
+	{
+	public:
+		ConfigurationHolder(HoldedType & configuration)
+			: ConfigurationHolderBase(configuration)
+		{}
+		void ApplyDataTo(FLTKConfigurator & configurator)
+		{
+			configurator.SetConfig(static_cast<HoldedType&>(mConfiguration));
+		}
+	};
+
+
 	class FLTKConfigurator : public Fl_Window {
 
 		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
+		typedef std::list<ConfigurationHolderBase *> tConfigHolders;
 	public:
-		FLTKConfigurator() 
-			: super(345, 40, "Edit the configuration")
-			
+		FLTKConfigurator()
+			: super(360, 540, "Edit the configuration")
 		{
-			mSetter = 0;
-			mGetter = 0;
+			mSetter = NULL;
+			mGetter = NULL;
+			mWidgetPack = NULL;
+			mScrollGroup = NULL;
 			mWidgetNum = 0;
+			mApplyCallback= makeMemberFunctor0((*this),FLTKConfigurator,noAction);
+			end();
 		}
 
 		virtual ~FLTKConfigurator() {
 			if (mSetter) delete mSetter;
 			if (mGetter) delete mGetter;
+			if (mWidgetPack) delete mWidgetPack;
+			if (mScrollGroup) delete mScrollGroup;
+
+			tConfigHolders::iterator it =
+				mSubConfigurationHolders.begin();
+			for (;it!=mSubConfigurationHolders.end(); it++)
+				delete *it;
 		}
 
 		void SetApplyCallback(CBL::Functor0 functor) {
@@ -74,23 +119,32 @@ namespace CLAM{
 
 		template <class Config>
 		void SetConfig(Config & config) {
+			begin();
 			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
 			CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
 			mSetter = new ConfigurationSetter<Config,FLTKConfigurator>(&config, this);
 			mGetter = new ConfigurationGetter<Config,FLTKConfigurator>(&config, this);
 
+			mScrollGroup = new Fl_Scroll( 0, 0, w() , h()-25 );
+
+			mWidgetPack = new Fl_Pack( 0 , 0, 0, 0 );
+			mWidgetPack->type(FL_VERTICAL);
+			mWidgetPack->align(FL_ALIGN_LEFT);
+			mWidgetPack->spacing(4);
+
 			GetInfo();
-			
-			// MRJ: Buttons should appear as the mWidget+1 widget plus a small offset
-			// MRJ: This should center also properly the three buttons. The idea is to divide
-			// the widget's width into 17 equal parts, and then first position the widget 
-			// left coordinates and adjust widget's width on will
-			//Fl_Pack* buttons = new Fl_Pack( (w()/17)*1 , (mWidgetNum+1)*25, (w()/17)*13, 20 );
+
+ 			mWidgetPack->size( 340, mWidgetNum * 25 );
+ 			mWidgetPack->end();
+
+			mScrollGroup->end();
+
 			int widgetsOnColumn = mWidgetNum;
-			if ( mWidgetNum > 20 ) 
+			if ( mWidgetNum > 20 )
 				widgetsOnColumn = 20;
-				
-			Fl_Pack* buttons = new Fl_Pack( (w()/17)*1 , (widgetsOnColumn+1)*25, (w()/17)*13, 20 );
+
+			Fl_Pack* buttons = new Fl_Pack( 20 , (widgetsOnColumn+1)*25, w(), 20 );
+
 			buttons->type(FL_HORIZONTAL);
 			buttons->spacing(4);
 
@@ -111,9 +165,10 @@ namespace CLAM{
 
 			buttons->end();
 
-			size(345+(mWidgetNum/20)*340,35+25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1));
+			size( w(), 25*(widgetsOnColumn+2));
 
 			end();
+			//show();
 		}
 	private:
 
@@ -137,6 +192,22 @@ namespace CLAM{
 		/** Default implementation, do nothing */
 		template <typename T>
 		void AddWidget(const char *name, void *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+			Fl_Box* notEditable = new Fl_Box( 155, 0, 170, 20, "Not Editable");
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
+			notEditable->labelsize(12);
+			notEditable->align(FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+			notEditable->box(FL_FLAT_BOX);
+
+			mWidgetNum++;
 		}
 		/** Default implementation, do nothing */
 		template <typename T>
@@ -146,13 +217,20 @@ namespace CLAM{
 		template <typename T>
 		void AddWidget(const char *name, std::string *foo, T& value) {
 			fl_font(FL_HELVETICA,12);
-			Fl_Input * mInput = new Fl_Input(HorPos, VerPos, 330-fl_width(name), 20);
-			mInput->label( name );
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+			Fl_Input * mInput = new Fl_Input( 155, 0, 170, 20);
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
 			mInput->value( value.c_str() );
-			mInput->labelsize(12);
 			mInput->textsize(12);
 			mInput->align(FL_ALIGN_LEFT);
-			add(*mInput);
+
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
@@ -164,19 +242,62 @@ namespace CLAM{
 		}
 
 		template <typename T>
+		void AddWidget(const char *name, Filename *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+
+			Fl_Pack* fileWidget = new Fl_Pack( 155, 0, 170, 20);
+
+			fileWidget->type(FL_HORIZONTAL);
+			fileWidget->spacing(4);
+
+			Fl_Input * mInput = new Fl_Input( 0, 0, 150, 20);
+			Fl_Button * fileBrowserLauncher = new Fl_Button (0,0,20,20);
+			fileBrowserLauncher->label("...");
+			fileBrowserLauncher->callback(LaunchFileBrowser, mInput);
+
+			fileWidget->end();
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
+			mInput->value( value.c_str() );
+			mInput->textsize(12);
+			mInput->align(FL_ALIGN_LEFT);
+
+			mWidgetNum++;
+			mWidgets.insert(tWidgets::value_type(name, mInput));
+		}
+		template <typename T>
+		void RetrieveValue(const char *name, Filename *foo, T& value) {
+			Fl_Input * mInput = dynamic_cast<Fl_Input*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value=mInput->value();
+		}
+
+		template <typename T>
 		void AddWidget(const char *name, TData *foo, T& value) {
 			fl_font(FL_HELVETICA,12);
 
-			Fl_Float_Input * mInput = new Fl_Float_Input(HorPos, VerPos, 330-fl_width(name), 20);
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+			Fl_Box* b = new Fl_Box(0, 0, 250, 20, name);
+			Fl_Float_Input * mInput = new Fl_Float_Input(250, 0, 75, 20);
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
 
 			std::stringstream val;
 			val << value << std::ends;
 			mInput->value( val.str().c_str() );
 
-			mInput->label( name );
-			mInput->labelsize(12);
 			mInput->align(FL_ALIGN_LEFT);
-			add(*mInput);
+
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
@@ -193,15 +314,21 @@ namespace CLAM{
 		void AddWidget(const char *name, TSize *foo, T& value) {
 			fl_font(FL_HELVETICA,12);
 
-			Fl_Int_Input * mInput = new Fl_Int_Input(HorPos, VerPos, 330-fl_width(name), 20, name);
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+			Fl_Box * b = new Fl_Box(0, 0, 250, 20, name);
+			Fl_Int_Input * mInput = new Fl_Int_Input(250, 0, 75, 20);
+			o->end();
 
 			std::stringstream val;
 			val << value << std::ends;
 			mInput->value( val.str().c_str() );
 
-			mInput->labelsize(12);
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
 			mInput->align(FL_ALIGN_LEFT);
-			add(*mInput);
+
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
@@ -217,11 +344,13 @@ namespace CLAM{
 		template <typename T>
 		void AddWidget(const char *name, bool *foo, T& value) {
 			fl_font(FL_HELVETICA,12);
-			Fl_Light_Button * mInput = new Fl_Light_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
+
+			Fl_Light_Button * mInput = new Fl_Light_Button(0, 0, 330, 20);
+
 			mInput->label( name );
 			mInput->labelsize(12);
 			mInput->value( value );
-			add(*mInput);
+
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
@@ -236,9 +365,15 @@ namespace CLAM{
 		void AddWidget(const char *name, Enum *foo, T& value) {
 			fl_font(FL_HELVETICA,12);
 
-			Fl_Choice* mChoice = new Fl_Choice(int(HorPos), int(VerPos), 330-fl_width(name), 20);
-			mChoice->label( name );
-			mChoice->labelsize(12);
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+			Fl_Box * b = new Fl_Box(0, 0, 180, 20, name);
+			Fl_Choice* mChoice = new Fl_Choice(180, 0, 145, 20);
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
 			mChoice->textsize(12);
 			mChoice->align(FL_ALIGN_LEFT);
 
@@ -247,7 +382,7 @@ namespace CLAM{
 				mChoice->add( mapping[i].name );
 				if (mapping[i].value==value.GetValue()) mChoice->value(i);
 			}
-			add(*mChoice);
+
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mChoice));
 		}
@@ -267,15 +402,23 @@ namespace CLAM{
 		template <typename T>
 		void AddWidget(const char *name, DynamicType *foo, T&value) {
 			fl_font(FL_HELVETICA,12);
-			Fl_Button * mInput = new Fl_Button( /* 70+(mWidgetNum/20)*340*/ HorPos, VerPos, 330-fl_width(name), 20, "Details...");
-			Fl_Box * mBox = new Fl_Box(3+(mWidgetNum/20)*340, VerPos, fl_width(name), 20, name);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+			Fl_Box * mBox = new Fl_Box(HorPos, VerPos, fl_width(name), 20);
+			Fl_Button * mInput = new Fl_Button( 330-55-fl_width( "Details..." ), VerPos, fl_width( "Details..." )+55, 20, "Details...");
+			o->end();
+
 			mInput->labelsize(12);
+
 			mBox->labelsize(12);
+			mBox->label(name);
+			mBox->align(FL_ALIGN_LEFT);
+
 			mInput->callback(ShowSubConfig);
-			FLTKConfigurator * subConfigurator = new FLTKConfigurator;
-			subConfigurator->SetConfig(value);
-			mInput->user_data(subConfigurator);
-			begin();
+			ConfigurationHolderBase * holder = new ConfigurationHolder<T>(value);
+			mInput->user_data(holder);
+			mSubConfigurationHolders.push_back(holder);
+
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
@@ -292,27 +435,45 @@ namespace CLAM{
 		}
 		static void Discard(Fl_Widget* o, void* v) {
 			o->window()->hide();
+			delete o->window();
 		}
 		static void Ok(Fl_Widget* o, void* v) {
 			Apply(o,v);
 			Discard(o,v);
 		}
 		static void ShowSubConfig(Fl_Widget* o, void* v) {
-			FLTKConfigurator * sub = (FLTKConfigurator*)(v);
-			sub->show();
+			FLTKConfigurator * subConfigurator = new FLTKConfigurator;
+
+			ConfigurationHolderBase * handler = (ConfigurationHolderBase*)(v);
+			handler->ApplyDataTo(*subConfigurator);
+			subConfigurator->show();
 		}
 
-		void /*FLTKConfigurator::*/show() {
+		static void LaunchFileBrowser(Fl_Widget* o, void * data)
+		{
+			Fl_Input * fileInput = (Fl_Input*) data;
+			fileInput->value(fl_file_chooser("Select filename","*",fileInput->value(),1 ));
+		}
+
+		void show() {
 			set_modal();
 			super::show();
 		}
 
+		void noAction() {
+		}
+
 	private:
 		int mWidgetNum;
+
+		Fl_Pack * mWidgetPack;
+		Fl_Scroll * mScrollGroup;
+
 		ConfigurationVisitor * mGetter;
 		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
 		CBL::Functor0 mApplyCallback;
+		tConfigHolders mSubConfigurationHolders;
 
 	};
 }

@@ -20,6 +20,10 @@
  */
 
 #include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
+#include "SpecTypeFlags.hxx"
+#include "ArrayToBPFCnv.hxx"
+#include "ComplexToPolarCnv.hxx"
 
 using namespace CLAM;
 
@@ -73,6 +77,12 @@ void SpectrumConfig::DefaultValues()
 //////////////////////////////////////////////////////////////////////
 
 
+Spectrum::Spectrum(const SpectrumConfig &newConfig) : ProcessingData(eNumAttr)
+{
+	MandatoryInit(); // Macro-expanded function. Necessary for some dynamic type initialization.
+	Configure(newConfig);
+}
+
 void Spectrum::GetConfig(SpectrumConfig& c) const
 {
 	SpecTypeFlags f;
@@ -98,6 +108,7 @@ void Spectrum::GetConfig(SpectrumConfig& c) const
 		c.SetBPFSize( GetBPFSize() );
 	}
 }
+
 
 
 void Spectrum::DefaultInit()
@@ -176,9 +187,7 @@ void Spectrum::SetType(const SpecTypeFlags& tmpFlags)
 set as constants elsewhere */
 void Spectrum::ToDB()
 {
-	SpectrumConfig c;
-	GetConfig(c);
-	if(c.GetScale()==EScale::eLinear)
+	if(GetScale()==EScale::eLinear)
 	{
 		int i;
 		SpecTypeFlags flags;
@@ -189,27 +198,26 @@ void Spectrum::ToDB()
 			specSize=TData(GetSize());
 			for (i=0; i<specSize; i++)
 			{
-				if(mag[i]==0) mag[i]=TData(0.0001);
-				mag[i]= 20*log10(mag[i]); 
+				if(mag[i]==0) mag[i]=-200;
+				else mag[i]= 20*log10(mag[i]); 
 			}
-			SynchronizeTo(flags);
 		}
-		else if (HasPolarArray()) // WARNING: computational expensive operation
+		if (HasPolarArray()) // WARNING: computational expensive operation
 		{
 			Array<Polar> &polar = GetPolarArray();
 			specSize=TData(GetSize());
 			for (i=0; i<specSize; i++)
 			{
 				TData magLin = polar[i].Mag();
-				if(magLin==0) magLin=TData(0.0001);
-				TData magLog = 20*log10(magLin);
+				TData magLog;
+				if(magLin==0) magLog=-200;
+				else magLog = 20*log10(magLin);
 				polar[i].SetMag(magLog);
 			}
 			flags.bPolar = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasComplexArray())  // WARNING: computational expensive operation
+		if (HasComplexArray())  // WARNING: computational expensive operation
 		{
 			Array<Complex> &complex = GetComplexArray();
 			specSize=TData(GetSize());
@@ -217,30 +225,30 @@ void Spectrum::ToDB()
 			{
 				TData re = complex[i].Real();
 				TData im = complex[i].Imag();
-				TData magLin = sqrt(pow(re,2) + pow(im,2));
-				if(magLin==0) magLin=TData(0.0001);
-				TData magLog = 20*log10(magLin);
+				TData magLin = sqrt(re*re + im*im);
+				TData magLog;
+				if(magLin==0) magLog=-200;
+				else magLog = 20*log10(magLin);
 				complex[i].SetReal(magLog * re / magLin);
 				complex[i].SetImag(magLog * im / magLin);
 			}
 			flags.bComplex = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasMagBPF())  // WARNING: computational expensive operation
+		if (HasMagBPF())  // WARNING: computational expensive operation
 		{
 			BPF &magBPF= GetMagBPF();
-			int bpfSize=TData(GetBPFSize());
+			const int bpfSize=GetBPFSize();
 			for (i=0; i<bpfSize; i++)
 			{
 				TData magLin=magBPF.GetValueFromIndex(i);
-				if(magLin==0) magLin=TData(0.0001);
-				TData magLog = 20*log10(magLin);
+				TData magLog;
+				if(magLin==0) magLog=-200;
+				else magLog = 20*log10(magLin);
 				magBPF.SetValue(i,magLog);
 			}
 			flags.bMagPhaseBPF = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
 		SetScale(EScale(EScale::eLog));
 	}
@@ -249,9 +257,7 @@ void Spectrum::ToDB()
 
 void Spectrum::ToLinear()
 {
-	SpectrumConfig c;
-	GetConfig(c);
-	if(c.GetScale()==EScale::eLog)
+	if(GetScale()==EScale::eLog)
 	{
 		int i;
 		SpecTypeFlags flags;
@@ -261,63 +267,62 @@ void Spectrum::ToLinear()
 			DataArray &mag = GetMagBuffer();
 			for (i=0; i<specSize; i++)
 			{
-				if(mag[i]==0.0001) mag[i]=0;
-				mag[i]= pow(TData(10),TData(mag[i]/20)); 
+				if(mag[i]<=-200) mag[i]=0;
+				else mag[i]= log2lin(mag[i]); 
 			}
-			SynchronizeTo(flags);
 		}
-		else if (HasPolarArray())  // WARNING: computational expensive operation
+		if (HasPolarArray())  // WARNING: computational expensive operation
 		{
 			Array<Polar> &polar = GetPolarArray();
 			for (i=0; i<specSize; i++)
 			{
-				TData magLin = polar[i].Mag();
-				if(magLin==0.0001) magLin=0;
-				TData magLog = pow(TData(10),TData(magLin/20));
-				polar[i].SetMag(magLog);
+				TData magLog = polar[i].Mag();
+				TData magLin;
+				if(magLog<=-200) magLin=0;
+				else magLin = log2lin(magLog);
+				polar[i].SetMag(magLin);
 			}
 			flags.bPolar = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasComplexArray())  // WARNING: computational expensive operation
+		if (HasComplexArray())  // WARNING: computational expensive operation
 		{
 			Array<Complex> &complex = GetComplexArray();
 			for (i=0; i<specSize; i++)
 			{
 				TData re = complex[i].Real();
 				TData im = complex[i].Imag();
-				TData magLin = sqrt(pow(re,2) + pow(im,2));
-				if(magLin==0.0001) magLin=0;
-				TData magLog = pow(TData(10),TData(magLin/20));
-				complex[i].SetReal(magLog * re / magLin);
-				complex[i].SetImag(magLog * im / magLin);
+				TData magLog = sqrt(re*re + im*im);
+				TData magLin;
+				if(magLog<=-200) magLin=0;
+				else magLin = log2lin(magLog);
+				complex[i].SetReal(magLin * re / magLin);
+				complex[i].SetImag(magLin * im / magLin);
 			}
 			flags.bComplex = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasMagBPF())  // WARNING: computational expensive operation
+		if (HasMagBPF())  // WARNING: computational expensive operation
 		{
 			BPF &magBPF = GetMagBPF();
 			int bpfSize=GetBPFSize();
 			for (i=0; i<bpfSize; i++)
 			{
-				TData magLin = magBPF.GetValueFromIndex(i);
-				if(magLin==0.0001) magLin=0;
-				TData magLog = pow(TData(10),TData(magLin/20));
-				magBPF.SetValue(i,magLog);
+				TData magLog = magBPF.GetValueFromIndex(i);
+				TData magLin;
+				if(magLog<=-200) magLin=0;
+				else magLin = log2lin(magLog);
+				magBPF.SetValue(i,magLin);
 			}
 			flags.bMagPhaseBPF = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
 		SetScale(EScale(EScale::eLinear));
 
 	}
 }
 
-TData Spectrum::GetMag(TIndex pos)
+TData Spectrum::GetMag(TIndex pos) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -333,7 +338,7 @@ TData Spectrum::GetMag(TIndex pos)
 	return 0;
 }
 
-TData Spectrum::GetMag(TData freq)
+TData Spectrum::GetMag(TData freq) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -350,7 +355,7 @@ TData Spectrum::GetMag(TData freq)
 	return 0;
 }
 
-TData Spectrum::GetPhase(TIndex pos)
+TData Spectrum::GetPhase(TIndex pos) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -366,7 +371,7 @@ TData Spectrum::GetPhase(TIndex pos)
 	return 0;
 }
 
-TData Spectrum::GetPhase(TData freq)
+TData Spectrum::GetPhase(TData freq) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -581,13 +586,10 @@ void Spectrum::MagPhase2Complex()
 	Array<Complex > &complexArray=GetComplexArray();
 	complexArray.Resize(size);
 	complexArray.SetSize(size);
-	Polar aux;
 	for (int i=0; i<size; i++) 
 	{
-		aux.SetMag(magBuffer[i]);
-		aux.SetAng(phaseBuffer[i]);
-		complexArray[i].SetReal(aux.Real());
-		complexArray[i].SetImag(aux.Imag());
+		complexArray[i].SetReal(magBuffer[i]*cos(phaseBuffer[i]));
+		complexArray[i].SetImag(magBuffer[i]*sin(phaseBuffer[i]));
 	}
 }
 
@@ -626,7 +628,7 @@ void Spectrum::BPF2MagPhase()
 
 int Spectrum::GetSize() const
 {
-	int size= GetprSize();
+	const int size= GetprSize();
 
 	CLAM_BEGIN_CHECK
 	if(HasMagBuffer() && GetMagBuffer().Size())
@@ -683,7 +685,7 @@ void Spectrum::SetSize(int newSize)
 
 int Spectrum::GetBPFSize() const
 {
-	int bpfsize= HasprBPFSize() ? GetprBPFSize() : GetSize();
+	const int bpfsize= HasprBPFSize() ? GetprBPFSize() : GetSize();
 
 	CLAM_BEGIN_CHECK
 	CLAM_ASSERT(! (HasMagBPF() && GetMagBPF().Size() && GetMagBPF().Size() != bpfsize) ,
@@ -741,7 +743,7 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 	f.bComplex = HasComplexArray();
 }
 
-TIndex Spectrum::IndexFromFreq(TData freq)
+TIndex Spectrum::IndexFromFreq(TData freq) const
 {
-	return roundInt(freq*((GetSize()-1)/GetSpectralRange()));
+	return Round(freq*((GetSize()-1)/GetSpectralRange()));
 }

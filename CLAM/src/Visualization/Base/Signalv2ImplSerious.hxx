@@ -28,14 +28,14 @@
 
 #include "ConnectionHandler.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-template < typename ParmType1, template ParmType2 >
+template < typename ParmType1, typename ParmType2 >
 	class Signalv2 : public Signal
 {
 public:
-	typedef typename CBL::Functor1<ParmType1,ParmType2>              tCallbackType;
+	typedef typename CBL::Functor2<ParmType1,ParmType2>              tCallbackType;
 
 public:
 	
@@ -44,22 +44,12 @@ public:
 		mSuper.DestroyConnections();
 	}
 
-	template < class RefType, typename PtrMember >
-		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
+
+	void Connect( Slotv2<ParmType1,ParmType2>& slot )
 	{
 		Connection c( AssignConnection(), this );
 
-		mSuper.AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, *thisRef, pMember ) );
-
-		slot.Bind(c);
-	}
-
-	template < typename PtrFunction >
-		void Connect( PtrFunction pMember, Slot& slot )
-	{
-		Connection c( AssignConnection(), this );
-
-		mSuper.AddCallback( s.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType2>*)0, pMember ) );
+		mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
 
 		slot.Bind(c);
 	}
@@ -69,9 +59,9 @@ public:
 		if ( mSuper.HasNoCallbacks() )
 			return;
 		
-		tSuperType::tCallList calls = mSuper.GetCalls();
-		tSuperType::tCallIterator i = calls.begin();
-		tSuperType::tCallIterator end = calls.end();
+		typename tSuperType::tCallList calls = mSuper.GetCalls();
+		typename tSuperType::tCallIterator i = calls.begin();
+		typename tSuperType::tCallIterator end = calls.end();
 
 		while ( i != end )
 			{
@@ -87,7 +77,7 @@ public:
 		FreeConnectionId( pConnection->GetID() );
 	}
 private:
-	typedef Signalv1<ParmType1,ParmType2>                tSignalType;
+	typedef Signalv2<ParmType1,ParmType2>                tSignalType;
 	typedef ConnectionHandler<tSignalType >     tSuperType;
 
 	tSuperType  mSuper;

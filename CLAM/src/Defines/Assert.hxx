@@ -64,17 +64,22 @@ namespace CLAM
 #define CLAM_USE_RELEASE_ASSERTS
 #endif
 
+
 /// Macro used when an assert fails
 #if defined(CLAM_USE_RELEASE_ASSERTS)
-#define CLAM_ABORT(description) \
+#define CLAM_ABORT(message) \
 	{ \
-		throw CLAM::ErrAssertionFailed( description, __FILE__, __LINE__); \
+		throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
 	}
 #else
-#define CLAM_ABORT(description) \
+#define CLAM_ABORT(message) \
 	{ \
-		CLAM::ExecuteAssertFailedHandler ( description, __FILE__, __LINE__); \
-		CLAM_BREAKPOINT; \
+		if ( !CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled ) { \
+			throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
+		} else { \
+			CLAM::ExecuteAssertFailedHandler ( message, __FILE__, __LINE__); \
+			CLAM_BREAKPOINT; \
+		} \
 	}
 #endif
 
@@ -135,18 +140,18 @@ namespace CLAM
 #if defined(CLAM_DISABLE_CHECKS)
 #define CLAM_BEGIN_CHECK if (0) {
 #define CLAM_END_CHECK }
-#define CLAM_ASSERT( expression, description ) 
-#define CLAM_WARNING( expression, description )
+#define CLAM_ASSERT( expression, message ) 
+#define CLAM_WARNING( expression, message )
 #else
 #define CLAM_BEGIN_CHECK {
 #define CLAM_END_CHECK }
-#define CLAM_ASSERT( expression, description ) \
+#define CLAM_ASSERT( expression, message ) \
 	if (!(expression)) { \
-		CLAM_ABORT(description); \
+		CLAM_ABORT(message); \
 	}
-#define CLAM_WARNING( expression, description ) \
+#define CLAM_WARNING( expression, message ) \
 	if (!(expression)) { \
-		CLAM::ExecuteWarningHandler ( description, __FILE__, __LINE__); \
+		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
 	}
 #endif
 
@@ -168,18 +173,18 @@ namespace CLAM
 #if defined(CLAM_DISABLE_CHECKS) || defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_BEGIN_DEBUG_CHECK if (0) {
 #define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, description ) 
-#define CLAM_DEBUG_WARNING( expression, description )
+#define CLAM_DEBUG_ASSERT( expression, message ) 
+#define CLAM_DEBUG_WARNING( expression, message )
 #else
 #define CLAM_BEGIN_DEBUG_CHECK {
 #define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, description ) \
+#define CLAM_DEBUG_ASSERT( expression, message ) \
 	if (!(expression)) { \
-		CLAM_ABORT(description); \
+		CLAM_ABORT(message); \
 	}
-#define CLAM_DEBUG_WARNING( expression, description ) \
+#define CLAM_DEBUG_WARNING( expression, message ) \
 	if (!(expression)) { \
-		CLAM::ExecuteWarningHandler ( description, __FILE__, __LINE__); \
+		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
 	}
 #endif
 /// @}
@@ -200,8 +205,14 @@ namespace CLAM
 
 class ErrAssertionFailed : public Err {
 public:
+	/** this bool is used for automatic-tesing CLAM asserts.
+	 * by default is defined to true. But can be set to false where we
+	 * want to test that a CLAM_ASSERT has occurred.
+	 */
+	static bool breakpointInCLAMAssertEnabled;
+
 	ErrAssertionFailed(const char* message, const char* filename, int linenumber);
-	virtual ~ErrAssertionFailed() throw () {}
+	virtual ~ErrAssertionFailed() throw () { }
 };
 
 /**

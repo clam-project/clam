@@ -26,7 +26,7 @@
 
 namespace CLAM
 {
-	/// \todo: Give this class another name, or remove.
+
 	class ControlConfig : public DynamicType {
 	public:
 		DYNAMIC_TYPE(ControlConfig, 3);

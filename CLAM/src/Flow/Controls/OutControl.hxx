@@ -28,12 +28,19 @@
 
 namespace CLAM {
 
-class OutControl : public ControlLinker
+class InPort;
+
+//free method to link two Processing
+	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
+				  Processing* inProc, std::string inControl);
+
+class OutControl
 {
 //Attributes
 private:
 	std::list<InControl*> mLinks;
 	std::string mName;
+	Processing * mParent;
 //Constructor/Destructor
 public:
 	~OutControl();
@@ -51,7 +58,7 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	* \todo improve construction mechanism (params set)
 	*/
-	OutControl( std::string name, Processing* parent=0, const bool publish=true );
+	OutControl( std::string name, Processing* parent=0, const bool publish=true );	
 	
 	
 //Methods
@@ -68,11 +75,10 @@ public:
 		return SendControl( booleanValue ? TControlData(1) : TControlData(-1) );
 	}
 
-//Redefined Methods
-	OutControlIterator GetOutControls() const;
-	InControlIterator GetInControls() const;
-
 	const std::string& GetName(void) const { return mName; }
+	bool IsConnected();
+	bool IsConnectedTo( InControl & );
+	Processing * GetProcessing() const { return mParent;}
 };
 
 
@@ -93,7 +99,7 @@ public:
 	inline OutControl       &operator[](int i)        { return *mArray[i]; }
 	inline const OutControl &operator[](int i) const  { return *mArray[i]; }
 
-	inline const int Size() {return mArray.Size();}
+	inline int Size() const {return mArray.Size();}
 };
 
 
@@ -113,8 +119,8 @@ void OutControlArray::Configure(int size,
 	mArray.Resize(size);
 	mArray.SetSize(size);
 	for (int i=0; i<size; i++) {
-		std::stringstream str(name);
-		str << "_" << i;
+		std::stringstream str("");
+		str << name << "_" << i;
 		mArray[i] = new OutControl(str.str(),wtp);
 	}
 }

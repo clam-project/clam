@@ -62,7 +62,9 @@ void SoundFileIO::Open(const char* filename,EMode mode)
 		}
 	
 		mFile = fopen(filename,cmode);
-		if (mFile==0) throw ErrSoundFileIO("File not found");
+
+		if (mFile==0) 
+		  throw ErrSoundFileIO("File not found");
 	}
 
 	ReadHeader();
@@ -122,17 +124,141 @@ void SoundFileIO::Close(void)
 	mFile = 0;
 }
 
-int SoundFileIO::Read(short *data,int size)
+int SoundFileIO::Read(float *out,int& size)
 {
-	if (mHeader.mSampleWidth !=16)
-		throw ErrSoundFileIO("Samplewidth doesn't match");
-		
-	int n = fread(data,2,size,mFile);
-	mPos += n;
-	if (n!=size) throw ErrSoundFileIO("Could not read requested size");
+	/** PCM encoding*/
+	int n = 0;
 
-	if (mSwap)
-		for (int i=0;i<size;i++) Swap(data[i]);
+	if ( mHeader.mFormatTag == 0x0001 )
+	{
+		if ( mHeader.mSampleWidth == 8 )
+		{
+			unsigned char* data = new unsigned char[size];
+			n = int( fread(data,1,size,mFile) );
+			mPos += n;
+			if (n!=size) 
+				size = n;
+			//throw ErrSoundFileIO("Could not read requested size");
+
+			for ( int j = 0; j < size; j++ )
+			  {
+			    // MRJ: According to some dox found in http://www.wotsit.org
+			    // 8-bit PCM WAV samples are always unsigned!
+				out[j] = float( short(data[j])-128)/128.0f;
+			  }
+
+			delete [] data;
+		}
+		else if (mHeader.mSampleWidth == 16 )
+		{	
+			short* data = new short[size];
+
+			n = int( fread(data,2,size,mFile) );
+			mPos += n;
+			if (n!=size) 
+				size = n;
+				//throw ErrSoundFileIO("Could not read requested size");
+
+			if (mSwap)
+				for (int i=0;i<size;i++) Swap(data[i]);
+
+			for ( int j = 0; j < size; j++ )
+			{
+				out[j] = data[j] / 32768.f;
+			}
+
+			delete [] data;
+		}
+		else if ( mHeader.mSampleWidth == 24 )
+		{
+			int* data = new int[size];
+
+			n = int( fread(data,3,size,mFile) );
+			mPos += n;
+			if (n!=size)
+				size = n;
+				//throw ErrSoundFileIO("Could not read requested size");
+
+			char* cdata = (char*) data;
+			if (mSwap)
+			{
+				for (int i=size-1;i>=0;i--)
+					data[i] = 
+						(cdata[i*3+1]<<8)+
+						(cdata[i*3]<<16)+
+						(cdata[i*3+2]<<8);
+			} else {
+				for (int i=size-1;i>=0;i--)
+					data[i] = 
+						(cdata[i*3+1]<<16)+
+						(cdata[i*3]<<8)+
+						(cdata[i*3+2]);
+			}
+
+			for ( int j = 0; j < size; j++ )
+			{
+				out[j] = data[j] / 8388608.f;
+			}
+
+			delete [] data;
+
+		}
+		else if ( mHeader.mSampleWidth == 32 )
+		{
+			int* data = new int[size];
+
+			n = int( fread(data,4,size,mFile) );
+		
+			mPos += n;
+			
+			if (n!=size)
+				size = n;
+				//throw ErrSoundFileIO("Could not read requested size");
+
+			if (mSwap)
+				for (int i=0;i<size;i++) Swap(data[i]);
+
+			for ( int j = 0; j < size; j++ )
+			{
+				out[j] = data[j] / 2147483648.f;
+			}
+
+			delete [] data;
+
+		}
+		else 
+		{
+			throw ErrSoundFileIO( "Unsupported PCM sample format: supported values are"
+								  "8, 16, 24 and 32 bits per sample");
+		}
+	}
+	else if ( mHeader.mFormatTag == 0x0003 ) // IEEE float
+	{
+		float* data = new float[size];
+
+		n = int( fread(data,4,size,mFile) );
+	
+		mPos += n;
+		
+		if (n!=size)
+			size = n;
+			//throw ErrSoundFileIO("Could not read requested size");
+
+		if (mSwap)
+			for (int i=0;i<size;i++) Swap(data[i]);
+
+		for ( int j = 0; j < size; j++ )
+		{
+			out[j] = data[j];
+		}
+
+		delete [] data;
+
+	}
+	else 
+	{
+		throw ErrSoundFileIO( "Unsupported encoding: only PCM and IEEE float encodings");
+	}
 
 	return n;
 }
@@ -153,13 +279,13 @@ int SoundFileIO::Write(const short *data,int size)
 				tmp[i]=data[i]; 
 				Swap(tmp[i]);
 			}
-			m = fwrite(tmp,2,m,mFile);
+			m = int( fwrite(tmp,2,m,mFile) );
 			if (m<-1) 
 				throw ErrSoundFileIO("Could not write requested size");
 			n += m;
 		}
 	}else{
-		n = fwrite(data,2,size,mFile);
+		n = int( fwrite(data,2,size,mFile) );
 	}
 	mPos += n;
 	if (mPos>mSize) mSize = mPos;
@@ -169,7 +295,7 @@ int SoundFileIO::Write(const short *data,int size)
 
 int SoundFileIO::Read(int *data,int size)
 {
-	int n = fread(data,mHeader.mBytesPerSample,size,mFile);
+	int n = int( fread(data,mHeader.mBytesPerSample,size,mFile) );
 	mPos += n;
 	if (n!=size) throw ErrSoundFileIO("Could not read requested size");
 
