@@ -44,7 +44,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			std::string expected = "Not such descriptor name on this descriptor scope";
+			std::string expected = "Accessing an unexisting attribute inside a scope";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
@@ -71,7 +71,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			std::string expected = "Not such descriptor name on this descriptor scope";
+			std::string expected = "Accessing an unexisting attribute inside a scope";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
