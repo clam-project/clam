@@ -374,6 +374,8 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,
 	//we can now leave and advance sinusoidal reader
 	mStreamBuffer->LeaveAndAdvance(mSinReader);
 	
+
+	mSinSpec.SetSpectralRange( in.GetSampleRate() / 2.0 );
 	//we call auxiliary method to compute sinusoidal peaks and fundamental frequency
 	SinusoidalAnalysis(mSinSpec,outPk,outFn);
 	
