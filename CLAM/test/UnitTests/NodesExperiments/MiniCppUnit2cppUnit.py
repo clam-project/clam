@@ -37,7 +37,7 @@ def processLine(aLine) :
 	global parsingState
 
 	if parsingState == 'DEFAULT' :
-		if contains(aLine, 'class \S+Test') :
+		if contains(aLine, 'class Test\S+') :
 			matchGroup = re.search('class(.+):', aLine)
 			classname = matchGroup.group(1)
 			register = 'class%s;\nCPPUNIT_TEST_SUITE_REGISTRATION(%s);' % (classname, classname)
