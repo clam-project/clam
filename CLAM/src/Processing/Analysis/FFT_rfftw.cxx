@@ -99,9 +99,9 @@ namespace CLAM {
 		}
 		if (!in.HasBuffer())
 			CLAM_ASSERT(0,"FFT Do: Float attribute required for Audio object.");
-		if (out.GetSize() < mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
+		if (out.GetSize() != mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
 			std::stringstream ss;
-			ss << "FFT_rfftw::Do: not enough memory in out Spectrum.\n"
+			ss << "FFT_rfftw::Do: wrong size  Spectrum.\n"
 			   << "  Expected: " << mSize/2+1 << ", used " << out.GetSize();
 			CLAM_ASSERT(0,ss.str().c_str());
 		}
