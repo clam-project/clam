@@ -1,9 +1,9 @@
 CLAM_PATH ?= $(TOP)
 
-all: program
+all: program library
 
 clean:
-	rm -rf obj/ dep/ Makefile.vars $(PROGRAM)
+	rm -rf obj/ dep/ Makefile.vars $(PROGRAM) $(LIBRARY)
 
 distclean: clean
 	rm -rf dep/
@@ -28,6 +28,8 @@ Makefile.vars: Makefile $(SRCDEPS)
 
 program: $(PROGRAM)
 
+library: $(LIBRARY)
+
 ifeq ($(CONFIG),debug)
 LIBRARIES = $(LIBRARIES_DEBUG) 
 CXXFLAGS = $(CXXFLAGS_DEBUG)
@@ -35,6 +37,10 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
 	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) $(OBJECTS) -o $@
+
+$(LIBRARY): $(OBJECTS)
+	@echo == linking $@
+	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) $(OBJECTS) -o lib$@.so -shared 
 
 %.o:
 	@mkdir -p obj
@@ -49,6 +55,10 @@ CXXFLAGS = $(CXXFLAGS_RELEASE)
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
 	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(OBJECTS) -o $@
+
+$(LIBRARY): $(OBJECTS)
+	@echo == linking $@
+	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(OBJECTS) -o lib$@.so -shared 
 
 %.o:
 	@mkdir -p obj
@@ -73,6 +83,20 @@ else
 	@echo "===================================================================="
 
 $(PROGRAM): .FORCE
+	@echo "===================================================================="
+	@echo "Error: specify configuration, either by"
+	@echo "- specifying CONFIG=[debug|release] when running make"
+	@echo "   $(MAKE_COMMAND) $(MAKECMDGOALS) CONFIG=debug"
+	@echo "   $(MAKE_COMMAND) $(MAKECMDGOALS) CONFIG=release"
+	@echo "- setting the environment variable CONFIG"
+	@echo "   bash: export CONFIG=debug"
+	@echo "         export CONFIG=release"
+	@echo "   csh:  setenv CONFIG debug"
+	@echo "         setenv CONFIG release"
+	@echo "===================================================================="
+
+
+$(LIBRARY): .FORCE
 	@echo "===================================================================="
 	@echo "Error: specify configuration, either by"
 	@echo "- specifying CONFIG=[debug|release] when running make"
