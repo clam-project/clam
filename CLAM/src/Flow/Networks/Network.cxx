@@ -415,10 +415,8 @@ namespace CLAM
 	{
 		Stop();
 		
-		ProcessingsMap::iterator it;
-		for( it=mProcessings.begin(); it!=mProcessings.end(); it++ )
-			RemoveProcessing( it->first );
-		mProcessings.clear();	
+		while( !mProcessings.empty() )
+			RemoveProcessing( mProcessings.begin()->first );
 	}
 
 	Network::ProcessingsMap::iterator Network::BeginProcessings()
