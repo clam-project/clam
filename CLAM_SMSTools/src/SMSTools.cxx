@@ -91,8 +91,11 @@ namespace CLAMGUI
 		mExplorer.SelectedTime.Connect( TimeSelected );
 		SetScore.Wrap( this, &SMSTools::OnNewScore );
 
+		// MRJ: To ease debuggin of SMS Tools
+#ifdef NDEBUG
 		CLAM::SetAssertFailedHandler( RedirectAssertToLogFile );
 		CLAM::SetWarningHandler( RedirectWarningToLogFile );
+#endif
 
 	}
 
