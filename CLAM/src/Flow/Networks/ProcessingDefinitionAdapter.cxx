@@ -22,9 +22,9 @@ namespace CLAM
 
 	void ProcessingDefinitionAdapter::StoreOn (Storage & store)	
 	{
-		XMLAdapter<std::string> nameAdapter( mName, "id");
-		std::string className(mAdaptee->GetClassName());
-		XMLAdapter<std::string> classNameAdapter( className, "type");
+		XMLAdapter<Text> nameAdapter( mName, "id");
+		Text className(mAdaptee->GetClassName());
+		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Store(&nameAdapter);
 		store.Store(&classNameAdapter);
 
@@ -34,10 +34,10 @@ namespace CLAM
 
 	void ProcessingDefinitionAdapter::LoadFrom (Storage & store) 
 	{	
-		XMLAdapter<std::string> nameAdapter( mName, "id");
+		XMLAdapter<Text> nameAdapter( mName, "id");
 		store.Load(&nameAdapter);
-		std::string className("");
-		XMLAdapter<std::string> classNameAdapter( className, "type");
+		Text className("");
+		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Load(&classNameAdapter);
 
 		mAdaptee = ProcessingFactory::GetInstance().Create(className);

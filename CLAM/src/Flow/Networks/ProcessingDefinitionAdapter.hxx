@@ -4,6 +4,7 @@
 
 #include "Component.hxx"
 #include <string>
+#include "Text.hxx"
 
 namespace CLAM
 {
@@ -13,7 +14,7 @@ class ProcessingDefinitionAdapter :public Component
 {
 private:
 	Processing * mAdaptee;
-	std::string mName;
+	Text mName;
 
 public:
 	ProcessingDefinitionAdapter( Processing * adaptee = 0, const std::string & name = "");
