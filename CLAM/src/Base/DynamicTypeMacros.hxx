@@ -265,7 +265,8 @@ ACCESS: \
 	inline void Add##NAME() {\
 		AddAttr_(N, sizeof(TYPE));\
 	}\
-	inline void Visit##NAME() { \
+	template <typename Visitor> \
+	inline void Visit##NAME(Visitor & visitor) { \
 		if (Has##NAME()) \
 			visitor.Accept(#NAME,Get##NAME()); \
 	}\
