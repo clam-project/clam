@@ -143,7 +143,7 @@ void UserInterface::LoadAnalysisData(void)
 		return;
 	mSMS->mHaveAnalysis = true;
 	// @todo: Check this is true...
-	mSMS->mHaveConfig = true;
+	mSMS->mHaveConfig = false;
 	ApplyAnalysisAvailableState();
 	DeactivateFrameDataMenuItems();
 	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
@@ -411,9 +411,24 @@ void UserInterface::ApplyAnalysisAvailableState()
 	mCounter->lstep( mSMS->mOriginalSegment.GetnFrames()/10 );
 
 	mStoreAnalysisMenuItem->activate();
-	mMelodyExtractionMenuItem->activate();
-	mDoSMSSynthesisMenuItem->activate();
-	
+
+	if(mSMS->mHaveConfig)
+	{
+		mMelodyExtractionMenuItem->activate();	
+		mDoSMSSynthesisMenuItem->activate();
+		
+		if ( mSMS->mHaveTransformationScore )
+			mDoSMSTransMenuItem->activate();
+		else
+			mDoSMSTransMenuItem->deactivate();	
+	}
+	else
+	{
+		mMelodyExtractionMenuItem->deactivate();	
+		mDoSMSSynthesisMenuItem->deactivate();
+		mDoSMSTransMenuItem->deactivate();	
+	}
+
 	mShowAnalysisResultsMenuItem->activate();
 	mShowSinTracksMenuItem->activate();
 	mShowFundFreqMenuItem->activate();
@@ -421,11 +436,7 @@ void UserInterface::ApplyAnalysisAvailableState()
 	mShowSpectrumAndPeaksMenuItem->activate();
 	mShowResidualSpectrumMenuItem->activate();
 
-	if ( mSMS->mHaveTransformationScore )
-		mDoSMSTransMenuItem->activate();
-
 	mWindow->redraw();
-
 }
 
 void UserInterface::DeactivateFrameDataMenuItems()
