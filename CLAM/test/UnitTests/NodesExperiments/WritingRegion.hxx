@@ -41,6 +41,7 @@ public:
 	void RemoveRegion( ProperReadingRegion & region )
 	{
 		mReadingRegions.remove( &region );
+		region.RemoveProducer();
 	}
 
 
