@@ -31,34 +31,13 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
 	bool ConnectPorts( const std::string &, const std::string & );
-	NodeBase& GetNode(OutPort& out);
 
 protected:
 	InPort & GetInPortByCompleteName( const std::string& );
 	OutPort & GetOutPortByCompleteName( const std::string& );
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
-
-//	template <typename OutPortType>
-	NodeBase& GetNode(OutPort & out)
-	{
-
-		NodeTmpl<OutPort::PortType,
-			CircularStreamImpl<OutPort::PortType> > node;
-//		typedef typename CircularStreamImpl<DummyProcessingData> ConcreteBuffer;
-//		typedef typename CircularStreamImpl<typename OutPortType::PortType> ConcreteBuffer;
-//		typedef typename NodeTmpl<<OutPortType::PortType, <CircularStreamImpl<OutPortType::PortType>>> ConcreteNodeType;
-		
-
-		if (out.GetNode() == 0) //if it hasn't associated node
-		{
-
-//			_nodes.insert(node);
-//			out.Attach(node);
-		}
-		return *(out.GetNode());
-	}
-	
+	NodeBase & GetNodeAttachedTo(OutPort & );
 
 private:
 	// fields
