@@ -212,8 +212,11 @@ namespace CLAM
 
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		if(i==mProcessings.end())
-			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing that is not included in the network" );
-		
+		{
+			std::string msg("Network::RemoveProcessing() Trying to remove a processing that is not included in the network:");
+			msg += name;
+			CLAM_ASSERT(false, msg.c_str() );
+		}
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
