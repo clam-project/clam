@@ -32,7 +32,8 @@ namespace CLAMVM
 		{
 				mCachedTracks = &list;
 				mHorClipper.SetTrackList( *mCachedTracks );
-
+				mStarts.clear();
+				mEnds.clear();
 				mMustProcessData = true;
 				mColorsAssigned = false;
 		}
