@@ -1290,6 +1290,10 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Group.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Help_Dialog.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Help_View.H
 # End Source File
 # Begin Source File

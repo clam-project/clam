@@ -24,6 +24,7 @@ TODOs:
 
       ** GUI - Main Window:
    	 *** Bug fixed: pressing 'SMS Analysis->Store Melody' button crashed application
+	 *** New feature: now a wait message will appear while Tools is computing sounds melodies
 	 *** New feature: message box added telling the user that the melody extraction was successfully performed
 
 	
