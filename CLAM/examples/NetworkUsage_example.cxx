@@ -38,8 +38,6 @@
 #include <iostream>
 #include "AudioManager.hxx"
 
-//CLAM::AudioManager audioManager( 44100, 512 );
-
 int main( int argc, char** argv )
 {	
 	try
@@ -48,14 +46,12 @@ int main( int argc, char** argv )
 		int size = 512;
 		int sampleRate = 44100;
 
+		// We need to deploy the audio manager class in order to get audio sound.
 		CLAM::AudioManager audioManager( sampleRate, size );
+
 		// First of all we need to create a clam network. It isn't really complicated; just setting the name.
 		CLAM::Network network;
 		network.SetName("My Network");
-
-		// We need to deploy the audio manager class in order to get audio sound.
-
-//		(CLAM::AudioManager::Current()
 
 		// Now we need to add a flow control to the network, because CLAM network needs a flow control
 		// to manage the connections, data communication, etc.
