@@ -18,7 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#ifndef _XercesInitializer_hxx_
+#define _XercesInitializer_hxx_
 #include <iostream>
 
 class XercesInitializer
@@ -41,3 +42,4 @@ public:
 	}
 };
 
+#endif//_XercesInitializer_hxx_
