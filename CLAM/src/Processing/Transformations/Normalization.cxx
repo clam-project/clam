@@ -40,11 +40,13 @@ void NormalizationConfig::DefaultInit()
 
 
 Normalization::Normalization()
+	: mIsSilenceCtrl( "Silence", this )
 {
 	Configure(NormalizationConfig());
 }
 
 Normalization::Normalization(NormalizationConfig& c)
+	: mIsSilenceCtrl( "Silence", this )
 {
 	Configure(c);
 }
@@ -106,7 +108,14 @@ bool Normalization::Do(Audio &in){
 	//normalizes according to the average energy
 	else if (mType==2)
 	{
-		scalFactor=sqrt(totEnergy/in.GetSize());		
+		if (totEnergy!=0)
+		{
+			scalFactor=sqrt(totEnergy/in.GetSize());		
+		}
+		else
+		{
+			scalFactor=1;
+		}
 	}
 
 	//normalizes according to the threshold under which lies percent% of
@@ -115,26 +124,39 @@ bool Normalization::Do(Audio &in){
 	{
 		//find the threshold under which lies percent% of the energy values
 		//that are not silence
-
-		int percent=90, i;
-
-		sort(energy, energy.Size());
-
-		i=energy.Size()*percent/100;
-
-		scalFactor=sqrt(energy[i-1]/mFrameSize);
+		if (energy.Size()!=0) 
+		{
+			int percent=90;
+			sort(energy, energy.Size());
+			int i=(energy.Size()*percent)/100;
+			scalFactor=sqrt(energy[i-1]/mFrameSize);
+		}
+		else
+		{
+			scalFactor=1;
+		}
 
 	}
 		
 	DataArray tempBuffer(in.GetSize());
 	tempBuffer.SetSize(in.GetSize());
-		
+
+	CheckSilence( energy.Size() );
+
 	for (int n=0; n<in.GetSize(); n++)
 		tempBuffer[n] = in.GetBuffer()[n]/scalFactor;
 
 	in.SetBuffer(tempBuffer);
 	
 	return true;
+}
+
+void Normalization::CheckSilence( int size )
+{
+	if (size==0) 
+		mIsSilenceCtrl.SendControl(true);
+	else
+		mIsSilenceCtrl.SendControl(false);
 }
 
 

@@ -24,7 +24,7 @@
 
 #include "Processing.hxx"
 #include "Audio.hxx"
-
+#include "OutControl.hxx"
 
 namespace CLAM
 {
@@ -76,11 +76,21 @@ namespace CLAM
 	private:
 		NormalizationConfig mConfig;
 
+		/**
+		 * This control will send a signal for each Do execution, telling if the passed audio is silence (0) or not (1)
+		 * */
+		OutControl mIsSilenceCtrl;
+
 		int mType;
 		TSize mFrameSize;
 		
 		bool ConcreteConfigure(const ProcessingConfig& c);
 
+		/*
+		 * With this check an app can know if the passed audio is silence, 
+		 * just consulting the value of the control.
+		 */
+		void CheckSilence( int size );
 	public:
 
 		Normalization();
