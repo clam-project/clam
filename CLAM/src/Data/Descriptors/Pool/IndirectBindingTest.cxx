@@ -76,7 +76,7 @@ private:
 
 	void testInit_PointsToThePlaceReferencedByTheFirstReference()
 	{
-		CLAM::ReadIndirectHook<char> hook;
+		CLAM::ReadHook<char> hook;
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","Reference");
 		hook.Init(*mPool);
@@ -88,7 +88,7 @@ private:
 
 	void testNext_PointsToThePlaceReferencedByTheSecondReference()
 	{
-		CLAM::ReadIndirectHook<char> hook;
+		CLAM::ReadHook<char> hook;
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","Reference");
 		hook.Init(*mPool);
@@ -102,7 +102,7 @@ private:
 	
 	void testIsInsideScope_returnsTrueBeforeEnd()
 	{
-		CLAM::ReadIndirectHook<char> hook;
+		CLAM::ReadHook<char> hook;
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","Reference");
 		hook.Init(*mPool);
@@ -116,7 +116,7 @@ private:
 
 	void testIsInsideScope_returnsFalseAfterLastReference()
 	{
-		CLAM::ReadIndirectHook<char> hook;
+		CLAM::ReadHook<char> hook;
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","Reference");
 		hook.Init(*mPool);
@@ -129,7 +129,7 @@ private:
 
 	void testGetForReading_failsWhenInvalidReference()
 	{
-		CLAM::ReadIndirectHook<char> hook;
+		CLAM::ReadHook<char> hook;
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","BadReference");
 		hook.Init(*mPool);
@@ -148,7 +148,7 @@ private:
 	void testExtraction_usingHooks()
 	{
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadIndirectHook<char> inputHook;
+		CLAM::ReadHook<char> inputHook;
 		inputHook.Bind("Referenced","Input");
 		inputHook.Indirect("Referencer","Reference");
 		outputHook.Bind("Referencer","Output");
@@ -171,7 +171,7 @@ private:
 		CharCopierExtractor extractor;
 
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadIndirectHook<char> inputHook;
+		CLAM::ReadHook<char> inputHook;
 		inputHook.Bind("Referenced","Input");
 		inputHook.Indirect("Referencer","Reference");
 		outputHook.Bind("Referencer","Output");

@@ -97,22 +97,17 @@ private:
 };
 
 
-/** @ingroup SemanticalAnalysis */
-template <typename AttributeType>
-class ReadIndirectHook : public ReadHook<AttributeType>
-{
-};
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
-class ReadIndirectRangedHook : public ReadIndirectHook<AttributeType>
+class ReadIndirectRangedHook : public ReadHook<AttributeType>
 {
 public:
 	void GetRangeForReading(
 		const AttributeType*& begin,
 		const AttributeType*& end) const
 	{
-		begin = & (ReadIndirectHook<AttributeType>::GetForReading());
+		begin = & (ReadHook<AttributeType>::GetForReading());
 		end = begin + _range;
 	}
 
