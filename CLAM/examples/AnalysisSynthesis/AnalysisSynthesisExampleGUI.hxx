@@ -1,7 +1,7 @@
 #ifndef __ANALYSISSYNTHESISEXAMPLEGUI__
 #define __ANALYSISSYNTHESISEXAMPLEGUI__
 
-#include "UserInterface.hxx"
+#include "NotGeneratedUserInterface.hxx"
 #include "WaitMessageGUI.hxx"
 #include "ProgressGUI.hxx"
 #include "AnalysisSynthesisExampleBase.hxx"

@@ -1,4 +1,4 @@
-#include "UserInterface.hxx"
+#include "NotGeneratedUserInterface.hxx"
 #include "GeometryKit.hxx"
 #include "AnalysisSynthesisExampleGUI.hxx"
 #include "AudioBrowser.hxx"
