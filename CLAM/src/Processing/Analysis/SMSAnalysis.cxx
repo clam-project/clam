@@ -281,40 +281,6 @@ void SMSAnalysis::ConfigureData()
 	mResReader=mStreamBuffer.NewReader(hopSize,resWindowSize-1);
 	mStreamBuffer.Configure(sinWindowSize*2);
 
-	TSize hopsInHalfWindow;
-
-	//Now we have to advance smaller reader so center time is the same as the biggest
-	if(sinWindowSize>resWindowSize)
-	{
-		TSize smallerInBigger=(sinWindowSize-resWindowSize)/(2*hopSize);
-		for(i=0;i<smallerInBigger;i++)
-		{
-			mStreamBuffer.LeaveAndAdvance(mResReader);
-		}
-		hopsInHalfWindow=0.5*sinWindowSize/hopSize;
-	}
-	else if(sinWindowSize<resWindowSize)
-	{
-		TSize smallerInBigger=(resWindowSize-sinWindowSize)/(2*hopSize);
-		for(i=0;i<smallerInBigger;i++)
-		{
-			mStreamBuffer.LeaveAndAdvance(mSinReader);
-		}
-		hopsInHalfWindow=0.5*resWindowSize/hopSize;
-	}
-
-	//We will now write biggestWindowSize/2 zeros so we have the first half of the window full
-	Audio tmpAudio,tmpAudio2;
-	tmpAudio2.SetSize(hopSize);
-		
-	int i;
- 	for(i=0;i<hopsInHalfWindow;i++)
-	{
-		mStreamBuffer.GetAndActivate(mWriter,tmpAudio);
-		tmpAudio.GetBuffer()=tmpAudio2.GetBuffer();
-		mStreamBuffer.LeaveAndAdvance(mWriter);
-	}
-
 	//configure internal audio members used for convinience
 	mSinAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
 	mResAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
