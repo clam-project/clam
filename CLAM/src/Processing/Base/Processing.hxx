@@ -52,6 +52,13 @@ namespace CLAM {
 	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName );
+	/**
+	 * Free function that connects two controls.
+	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
+	 */
+	void ConnectControls(
+			Processing & sender, unsigned outControlNumber, 
+			Processing & receiver, unsigned inControlNumber );
 		
 	/**
 	 * The base class for all the CLAM processing object classes.

@@ -34,13 +34,22 @@
 
 namespace CLAM {
 
-	 void ConnectPorts(
+	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName )
 	{
 		OutPortBase & out = sender.GetOutPort(outPortName);
 		InPortBase & in = receiver.GetInPort(inPortName);
 		out.ConnectToIn(in);
+	}
+	
+	void ConnectControls(
+			Processing & sender, unsigned outControlNumber, 
+			Processing & receiver, unsigned inControlNumber )
+	{
+		OutControl & out = sender.GetOutControls().GetByNumber(outControlNumber);
+		InControl & in = receiver.GetInControls().GetByNumber(inControlNumber);
+		out.AddLink(&in);
 	}
 	
 	Processing::Processing() 
