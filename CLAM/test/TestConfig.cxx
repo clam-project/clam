@@ -81,11 +81,11 @@ class DummySubConfig : public ProcessingConfig
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 
 /** General	**/
-	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
-	DYN_ATTRIBUTE(2,public,TData,ThisIsATData);
-	DYN_ATTRIBUTE(3,public,TSize,ThisIsATSize);
-	DYN_ATTRIBUTE(4,public,EDummy, ThisIsAEDummy);
-	DYN_ATTRIBUTE(5,public,bool, ThisIsABool);
+	DYN_ATTRIBUTE(1,public,std::string,ThatIsAString);
+	DYN_ATTRIBUTE(2,public,TData,ThatIsATData);
+	DYN_ATTRIBUTE(3,public,TSize,ThatIsATSize);
+	DYN_ATTRIBUTE(4,public,EDummy, ThatIsAEDummy);
+	DYN_ATTRIBUTE(5,public,bool, ThatIsABool);
 private:
 
 	void DefaultInit() {
@@ -156,6 +156,10 @@ class DummyVisitor {
 	template <typename T>
 	void Accept(const char *name, Enum *foo, T&value) {
 		std::cout << "ToInt Visiting '" << name << "' Type Enum Value: " << value.GetString() << std::endl;
+		const Enum::tEnumValue * mapping = value.GetSymbolMap();
+		for (unsigned i = 0; mapping[i].name; i++) {
+			std::cout << " Alternate value '" << mapping[i].name << "'" << std::endl;
+		}
 	}
 	template <typename T>
 	void Accept(const char *name, DynamicType *foo, T&value) {
