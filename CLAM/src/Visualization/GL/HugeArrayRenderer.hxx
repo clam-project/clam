@@ -4,7 +4,7 @@
 #include "GLRenderer.hxx"
 #include "Array.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		using CLAM::TData;

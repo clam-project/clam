@@ -2,7 +2,7 @@
 #include "Assert.hxx"
 #include "CLAMGL.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		GLMaxMinArrays::GLMaxMinArrays()
 				: mMaxsPtr( NULL ), mMinsPtr( NULL ), mNElems( 0 ), mMaxY( 1.0 ), mMinY( -1.0 )

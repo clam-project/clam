@@ -2,7 +2,7 @@
 #include <cmath>
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		DrawingSurface2D::DrawingSurface2D()
 				: mxmax( 1.0f ), mxmin( -1.0f ), mymax( 1.0f ), mymin( -1.0f ),

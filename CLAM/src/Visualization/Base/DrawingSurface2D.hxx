@@ -6,8 +6,12 @@
 #include "Slotv4.hxx"
 #include "BoundingBoxes.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+
+	using SigSlot::Slotv1;
+	using SigSlot::Slotv2;
+	using SigSlot::Slotv4;
 
 class DrawingSurface2D
 {

@@ -24,7 +24,7 @@
 
 #include "ModelAdapter.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 /**

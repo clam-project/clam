@@ -1,6 +1,6 @@
 #include "GLRenderingManager.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 	GLRenderingManager::GLRenderingManager()
 		: mSurface ( NULL )

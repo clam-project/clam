@@ -27,7 +27,7 @@ namespace CLAM
 class Mutex;
 }
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 using CLAM::Mutex;

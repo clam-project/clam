@@ -7,7 +7,7 @@
 #include "Partial.hxx"
 #include "Array.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::Array;
 		using CLAM::DataArray;

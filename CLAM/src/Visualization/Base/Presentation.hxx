@@ -24,7 +24,7 @@
 
 #include <typeinfo>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class ModelAdapter;

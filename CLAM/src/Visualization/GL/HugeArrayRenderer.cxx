@@ -2,7 +2,7 @@
 #include "CLAM_Math.hxx"
 #include "CLAMGL.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		
 		void HugeArrayRenderer::CacheData( const DataArray& hugeArray )

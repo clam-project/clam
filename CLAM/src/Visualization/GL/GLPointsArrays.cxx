@@ -2,7 +2,7 @@
 #include "Assert.hxx"
 #include "CLAMGL.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		GLPointsArrays::GLPointsArrays()
 				: mXDataArray( NULL ), mYDataArray( NULL ), mXDataLen( NULL ), mYDataLen( NULL ), mMinY( 0 )

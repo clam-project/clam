@@ -1,7 +1,7 @@
 #include "PeaksRenderingManager.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		PeaksRenderingManager::PeaksRenderingManager()
 				: mMustProcessData( false ), mNoPeaksToShow( false ), mSpecRange( 22050 ), mNumBins( 513 )

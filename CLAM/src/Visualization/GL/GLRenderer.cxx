@@ -1,7 +1,7 @@
 #include "GLRenderer.hxx"
 #include "CLAMGL.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		GLRenderer::~GLRenderer()
 		{

@@ -21,7 +21,7 @@
 #ifndef __ASPECT__
 #define __ASPECT__
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 /**

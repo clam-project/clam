@@ -3,7 +3,7 @@
 
 #include "BoundingBoxes.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 	class DrawingSurface2D;

@@ -25,7 +25,7 @@
 
 using CLAM::Mutex;
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		void ModelAdapter::Publish( Mutex& mutexObj )
 		{

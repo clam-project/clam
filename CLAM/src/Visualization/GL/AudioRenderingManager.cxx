@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		AudioRenderingManager::AudioRenderingManager()
 				: mActiveRenderer( NULL ), mDetailThreshold( 100 ), mMustProcessData( false ), mHugeArrayCondition( false ), mOffset(0)

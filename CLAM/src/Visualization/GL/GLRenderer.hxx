@@ -1,7 +1,7 @@
 #ifndef __GLRENDERER__
 #define __GLRENDERER__
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		class GLRenderer
 		{

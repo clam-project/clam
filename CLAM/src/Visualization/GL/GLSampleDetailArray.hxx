@@ -3,7 +3,7 @@
 
 #include "GLStraightLineArray.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class GLSampleDetailArray

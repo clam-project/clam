@@ -1,7 +1,7 @@
 #include "SpectrumRenderingManager.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		SpectrumRenderingManager::SpectrumRenderingManager()
 				: mDrawAsLines( true ), mDrawAsDetail( false ), mDetailThreshold( 100 ), mMustProcessData( false ), mOffset(0), mLen(0)

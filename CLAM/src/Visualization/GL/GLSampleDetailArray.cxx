@@ -1,7 +1,7 @@
 #include "GLSampleDetailArray.hxx"
 #include "CLAMGL.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		GLSampleDetailArray::GLSampleDetailArray()

@@ -1,7 +1,7 @@
 #include "GLStraightLineArray.hxx"
 #include "CLAMGL.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 	GLStraightLineArray::GLStraightLineArray()
 				: mElemsToDraw( 0 ), mValues( NULL ), mXStart( 0 ), mXHopSize( 1 )

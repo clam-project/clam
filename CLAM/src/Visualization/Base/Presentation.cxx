@@ -22,7 +22,7 @@
 #include "Presentation.hxx"
 #include "ModelAdapter.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		void Presentation::AttachTo( ModelAdapter& view ) throw ( std::bad_cast )
 		{
