@@ -19,7 +19,7 @@ LIBRARY_PATHS = \
 	$(USE_XERCESC?@XERCESC_LIB_PATH@)
 
 LIBRARIES = \
-	$(USE_FFTW?$(USE_DOUBLE?rfftw:srfftw)) \
+	$(USE_FFTW?$(USE_DOUBLE?fftw rfftw:sfftw srfftw)) \
 	$(USE_ALSA?asound) \
 	$(USE_FLTK?@FLTK_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@)
