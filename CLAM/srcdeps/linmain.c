@@ -20,6 +20,32 @@ void makefilevars_generate(void)
 	FILE* outfile = stdout;
 
 	{
+		listkey* k = listhash_find(config,"EXTRA_MAKEFILE_VARS");
+		item* i = (k && k->l) ? k->l->first : 0;
+		while (i)
+		{	
+			if (i->str && i->str[0]!=0)
+			{
+				fprintf(outfile,"%s = ",i->str);
+				{
+					listkey* kk = listhash_find(config,i->str);
+					item* ii = (kk && kk->l) ? kk->l->first : 0;
+					while (ii)
+					{	
+						if (ii->str && ii->str[0]!=0)
+						{
+							fprintf(outfile,"\\\n %s",ii->str);
+						}
+						ii = ii->next;
+					}
+				}
+				fprintf(outfile,"\n\n");
+			}
+			i = i->next;
+		}
+	}
+
+	{
 		item* i = guessed_sources->first;
 		fprintf(outfile,"SOURCES =");
 		while (i)
@@ -91,9 +117,23 @@ void makefilevars_generate(void)
 	}
 
 	{
-		listkey* k = listhash_find(config,"LIBRARIES");
+		listkey* k = listhash_find(config,"LIBRARIES_DEBUG");
 		item* i = (k && k->l) ? k->l->first : 0;
-		fprintf(outfile,"LIBRARIES =");
+		fprintf(outfile,"LIBRARIES_DEBUG =");
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				fprintf(outfile,"\\\n -l%s",i->str);
+
+			i = i->next;
+		}
+		fprintf(outfile,"\n\n");
+	}
+
+	{
+		listkey* k = listhash_find(config,"LIBRARIES_RELEASE");
+		item* i = (k && k->l) ? k->l->first : 0;
+		fprintf(outfile,"LIBRARIES_RELEASE =");
 		while (i)
 		{
 			if (i->str && i->str[0]!=0)
@@ -129,9 +169,23 @@ void makefilevars_generate(void)
 	}
 
 	{
-		listkey* k = listhash_find(config,"CXXFLAGS");
+		listkey* k = listhash_find(config,"CXXFLAGS_DEBUG");
 		item* i = (k && k->l) ? k->l->first : 0;
-		fprintf(outfile,"CXXFLAGS =");
+		fprintf(outfile,"CXXFLAGS_DEBUG =");
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				fprintf(outfile,"\\\n %s",i->str);
+
+			i = i->next;
+		}
+		fprintf(outfile,"\n\n");
+	}
+
+	{
+		listkey* k = listhash_find(config,"CXXFLAGS_RELEASE");
+		item* i = (k && k->l) ? k->l->first : 0;
+		fprintf(outfile,"CXXFLAGS_RELEASE =");
 		while (i)
 		{
 			if (i->str && i->str[0]!=0)
@@ -154,6 +208,10 @@ int main(int argc,char** argv)
 		gendepend=1;
 
 	config_init();
+
+	listhash_add_item_str(config,"OS_WINDOWS","0");
+	listhash_add_item_str(config,"OS_LINUX","1");
+
 
 	if (gendepend==1)
 	{
@@ -182,12 +240,16 @@ int main(int argc,char** argv)
 	config_check();
 
 	{
+		int cnt = 0;
 		item* i = guessed_sources->first;
 		while (i)
 		{
-			parser_run(i->str);
-			
-			i = i->next;
+/*		 fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+*/
+		 parser_run(i->str);
+
+		 i = i->next;
+		 cnt++;
 		}
 	}
 

@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "list.h"
 #include "listhash.h"
 #include "hash.h"
@@ -9,6 +12,14 @@
 
 listhash* config = 0;
 list* used_vars = 0;
+list* ignore_unused = 0;
+list *libraries_debug = 0;
+list *libraries_release = 0;
+
+list *cxxflags_debug = 0;
+list *cxxflags_release = 0;
+
+list *library_paths = 0;
 
 int config_parse(const char* filename);
 
@@ -23,7 +34,6 @@ int var_true(char* subst,const char* filename,int line)
 	}
 	list_add_str_once(used_vars,n->str);
 
-
 	if (n->l && n->l->first && 
 		(
 			!strcmp(n->l->first->str,"1") ||
@@ -36,6 +46,27 @@ int var_true(char* subst,const char* filename,int line)
 	{
 		return 1;
 	}
+
+	if (n->l && n->l->first && 
+		(
+			!strcmp(n->l->first->str,"0") ||
+			!strcmp(n->l->first->str,"no") ||
+			!strcmp(n->l->first->str,"NO") ||
+			!strcmp(n->l->first->str,"false") ||
+			!strcmp(n->l->first->str,"FALSE")
+		)
+	)
+	{
+		return 0;
+	}
+
+	fprintf(stderr,
+	"Variable \"%s\" has not a valid boolean value %s in line %s:%d\n",
+		subst,
+		(n->l && n->l->first) ? n->l->first->str : "undef",
+		filename,line);
+	exit(-1);
+
 	return 0;
 }
 
@@ -220,34 +251,79 @@ void config_parse_line(char* ptr,const char* filename,int line)
 	** in tmp */	
 	config_parse_line_sub(&d,0,1);
 
-	/* we now have a token list */
-
-	{
+	if (tmp[0]) {
+		/* we now have a token list */
 		int k = 0;
 		char* ptr = tmp;
 		char* key = ptr;
 		listkey* i = 0;
-		int isinclude = 0;
+
+		int is_include = 0;
+		int is_echo = 0;
+		int need_assign = 1;
+		int had_assign = 0;
+		int had_filename = 0;
 
 		/* special case: the first token is include */
 		if (!strcmp(key,"include"))
 		{
-			isinclude = 1;
+			is_include = 1;
+			need_assign = 0;
+		}
+		/* special case: the first token is echo */
+		if (!strcmp(key,"echo"))
+		{
+			is_echo = 1;
+			need_assign = 0;
 		}
 		
 		while (*ptr)
 		{
-			if (isinclude)
+			if (is_echo)
 			{
 				if (k>0)
 				{
-					int err = config_parse(ptr);
+					if (k>1) fputs(" ",stderr);
+					fputs(ptr,stderr);
+				}
+			}
+			else if (is_include)
+			{
+				if (k>0)
+				{
+					int err;
+					char filename2[2048];
+					{
+						const char* a = filename;
+						char* b = filename2;
+						if (*ptr=='/' || 
+							(isalpha(*ptr) && *(ptr+1)==':' && *(ptr+2)=='\\'))
+						{
+							strcpy(filename2,ptr);
+						}else{
+							char* q = 0;
+							while (*a)
+							{
+								if (*a=='/' || *a=='\\') q = b;
+								*b++ = *a++;
+							}
+							if (q)
+							{
+								q++;
+								strcpy(q,ptr);
+							}else{
+								strcpy(filename2,ptr);
+							}
+						}
+					}
+					err = config_parse(filename2);
 					if (err)
 					{
 						fprintf(stderr,"Error: could not include file '%s' in line %s:%d\n",
 							ptr,filename,line);
 						exit(-1);			
 					}
+					had_filename = 1;
 				}
 			}
 			else
@@ -258,6 +334,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 				{
 					if (!strcmp(ptr,"="))
 					{
+						had_assign = 1;
 						i = listhash_add_key_once(config,key);
 						if (i->l)
 						{
@@ -275,7 +352,30 @@ void config_parse_line(char* ptr,const char* filename,int line)
 			ptr++;
 			k++;
 		}
-	}
+
+		if (need_assign && !had_assign)
+		{
+			fprintf(stderr,
+					"Error: missing '=' in line %s:%d\n"
+					"(Maybe a missing '\' at an end of line?)\n",
+					filename,line);
+			exit(-1);			
+		}
+
+		if (is_echo)
+		{
+			fputs("\n",stderr);
+		}
+
+		if (is_include && !had_filename)
+		{
+			fprintf(stderr,
+					"Error: filename missing after include in line %s:%d\n"
+					"(Maybe a missing '\' at an end of line?)\n",
+					filename,line);
+			exit(-1);			
+		}
+}
 }
 
 int config_parse(const char* filename)
@@ -326,44 +426,59 @@ int config_parse(const char* filename)
 
 void config_init(void)
 {
-	used_vars = list_new();
-
 	config = listhash_new();
 
-	listhash_add_key_once(config,"LIBRARIES")->l = list_new();
-	listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
-	listhash_add_key_once(config,"CXXFLAGS")->l = list_new();
+	used_vars = list_new();
+
+	ignore_unused =
+		listhash_add_key_once(config,"IGNORE_UNUSED")->l = list_new();
+
+	libraries_debug = 
+		listhash_add_key_once(config,"LIBRARIES_DEBUG")->l = list_new();
+
+	libraries_release = 
+		listhash_add_key_once(config,"LIBRARIES_RELEASE")->l = list_new();
+
+	library_paths = 
+		listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
+
+	cxxflags_debug = 
+		listhash_add_key_once(config,"CXXFLAGS_DEBUG")->l = list_new();
+
+	cxxflags_release = 
+		listhash_add_key_once(config,"CXXFLAGS_RELEASE")->l = list_new();
+
 	listhash_add_key_once(config,"SOURCES")->l = list_new();
 	listhash_add_key_once(config,"PRE_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"DEFINES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
 
-	list_add_str_once(used_vars,"LIBRARIES");
+	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
+	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"LIBRARY_PATHS");
-	list_add_str_once(used_vars,"CXXFLAGS");
+	list_add_str_once(used_vars,"CXXFLAGS_DEBUG");
+	list_add_str_once(used_vars,"CXXFLAGS_RELEASE");
 	list_add_str_once(used_vars,"SOURCES");
 	list_add_str_once(used_vars,"PRE_INCLUDES");
 	list_add_str_once(used_vars,"DEFINES");
 	list_add_str_once(used_vars,"SEARCH_INCLUDES");
 	list_add_str_once(used_vars,"SEARCH_RECURSE_INCLUDES");
 
-#ifdef WIN32
-	listhash_add_item_str(config,"OS_WINDOWS","1");
-	listhash_add_item_str(config,"OS_LINUX","0");
-#else
-	listhash_add_item_str(config,"OS_WINDOWS","0");
-	listhash_add_item_str(config,"OS_LINUX","1");
-#endif
 }
 
 void config_check(void)
 {
-
 	listkey* n = config->first;
+
+	list_add_str_once(ignore_unused,"IGNORE_UNUSED");
+	list_add_str_once(ignore_unused,"EXTRA_MAKEFILE_VARS");
+	list_add_str_once(ignore_unused,"OS_LINUX");
+	list_add_str_once(ignore_unused,"OS_WINDOWS");
+
 	while (n)
 	{
-		if (!list_find(used_vars,n->str))
+		if (!list_find(used_vars,n->str) && !list_find(ignore_unused,n->str))
 		{
 			fprintf(stderr,"Warning: unused variable %s\n",n->str);
 		}

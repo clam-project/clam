@@ -17,14 +17,17 @@ void strstart(char* tgt,int n)
 		*cur = 0;
 }
 
-void stradd(const char* a)
+char* stradd(const char* a)
 {
 	if (a) while  (*a && curn--) { *cur++ = *a++; }
 	*cur = 0;
+	return cur;
 }
 
-void strend(void)
+char* strend(void)
 {
+	char* ret = cur;
 	*cur = 0;
 	cur = 0;
+	return ret;
 }
