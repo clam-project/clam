@@ -45,12 +45,10 @@ using std::vector;
 #endif
 
 
-#ifdef CLAM_USE_XML
-	#include "XMLStorage.hxx"
-	#include "XMLAdapter.hxx"
-	#include "XMLArrayAdapter.hxx"
-	#include "XMLComponentAdapter.hxx"
-#endif//CLAM_USE_XML 
+#include "XMLStorage.hxx"
+#include "XMLAdapter.hxx"
+#include "XMLArrayAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
 
 namespace CLAM {
 
@@ -266,29 +264,11 @@ public:
 
 	void StoreOn(Storage & storage) const
 	{
-		#ifdef CLAM_USE_XML
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
-		}
-		#endif//CLAM_USE_XML
+		StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 	}
 	void LoadFrom(Storage & storage)
 	{
-		#ifdef CLAM_USE_XML 
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			while (true) {
-				T elem;
-				if (!LoadMemberFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
-				AddElem(elem);
-			}
-		}
-		#endif//CLAM_USE_XML
+		LoadBufferFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 	}
 
 	// Error messages, to ease tests a little while we decide
@@ -310,21 +290,69 @@ private:
 	inline void InitializeCopyDataBlock(int first, int last, const T* src);
 	inline void InitializeCopyDataBlock(int first, int last, int src_first, const T* src);
 
-#ifdef CLAM_USE_XML
-	void StoreBufferOn(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage) const {
+	void StoreBufferOn(StaticFalse* asLeave, const Component * polymorphicSelector, Storage & storage) const
+	{
 		if (mSize<=0) return;
 		const char* className = mpData[1].GetClassName();
 		const char* label = className? className : "Element";
-		for (int i=0; i<mSize; i++) {
+		for (int i=0; i<mSize; i++)
+		{
 			XMLComponentAdapter adapter(mpData[i], label, true);
 			storage.Store(adapter);
 		}
 	}
-	void StoreBufferOn(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage) const {
+	void StoreBufferOn(StaticTrue* asLeave, const void * polymorphicSelector, Storage & storage) const 
+	{
+		XMLAdapter<unsigned> sizeAdapter(Size(),"size");
+		storage.Store(sizeAdapter);
 		XMLArrayAdapter<T> adapter(mpData,mSize);
 		storage.Store(adapter);
 	}
-	void StoreBufferOn(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage) const {
+	void StoreBufferOn(StaticFalse* asLeave, const void * polymorphicSelector, Storage & storage) const 
+	{
+		CLAM_ASSERT(false, 
+			"Trying to Store an object that is not neither a streamable nor a Component");
+	}
+	void LoadBufferFrom(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage)
+	{
+		const char* label = 0;
+		while (true)
+		{
+			T elem;
+			if (!label)
+			{
+				label = elem.GetClassName();
+				if (!label)
+					label = "Element";
+			}
+			XMLComponentAdapter adapter(elem, label, true);
+			if (!storage.Load(adapter)) return;
+			AddElem(elem);
+		}
+	}
+	void LoadBufferFrom(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage)
+	{
+		unsigned size;
+		XMLAdapter<unsigned> sizeAdapter(size,"size");
+		if (storage.Load(sizeAdapter))
+		{
+			Resize(size);
+			SetSize(size);
+			XMLArrayAdapter<T> adapter(mpData,mSize);
+			storage.Load(adapter);
+			// TODO: if false, then insert an error on the storage
+			return;
+		}
+
+		while (true) {
+			T elem;
+			XMLAdapter<T> adapter(elem);
+			if ( ! storage.Load(adapter)) return;
+			AddElem(elem);
+		}
+	}
+	void LoadBufferFrom(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage)
+	{
 		CLAM_ASSERT(false, 
 			"Trying to Store an object that is not neither a streamable nor a Component");
 	}
@@ -358,7 +386,6 @@ private:
 		CLAM_ASSERT(false, "Trying to Load an object that is not neither a streamable nor a Component");
 		return false;
 	}
-#endif//CLAM_USE_XML
 
 };
 
@@ -647,12 +674,10 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 	private:
 
-#ifdef CLAM_USE_XML
 	void StoreMemberOn(void * item, Storage & storage) const;
 	void StoreMemberOn(Component * item, Storage & storage) const;
 	bool LoadMemberFrom(void * item, Storage & storage);
 	bool LoadMemberFrom(Component * item, Storage & storage);
-#endif //CLAM_USE_XML
 
 	};
 
