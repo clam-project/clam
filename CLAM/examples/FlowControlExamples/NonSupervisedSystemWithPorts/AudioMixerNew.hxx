@@ -6,6 +6,7 @@
 #include "Port.hxx"
 #include "Audio.hxx"
 #include <string>
+#include <iostream>
 
 namespace CLAM
 {
