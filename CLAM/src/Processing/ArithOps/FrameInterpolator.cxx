@@ -121,13 +121,14 @@ namespace CLAM {
 		mPitch2Ctl.DoControl(in2.GetFundamentalFreq());
 
 		TData newPitch=mPitch1Ctl.GetLastValue()*(1-mPitchInterpolationFactorCtl.GetLastValue())+mPitch2Ctl.GetLastValue()*mPitchInterpolationFactorCtl.GetLastValue();
-
+		if(!mIsHarmonicCtl.GetLastValue()) newPitch=0;
 		//Sets new fund freq
-		out.GetFundamental().SetnCandidates(0);
-		if(mIsHarmonicCtl.GetLastValue())
-			out.GetFundamental().AddElem(0,newPitch);
+		
+		if(out.GetFundamental().GetnCandidates()==0)
+			out.GetFundamental().AddElem(newPitch,0);
 		else
-			out.GetFundamental().AddElem(0,0);
+			out.GetFundamental().SetFreq(0,newPitch);
+		out.GetFundamental().SetnCandidates(1);
 
 		mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray());
 		mPO_SpectrumInterpolator.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
