@@ -25,7 +25,7 @@ using namespace CLAM;
 
 void SpectralDescriptors::DefaultInit()
 {
-	mpSegment=NULL;
+	mpSpectrum=NULL;
 }
 	
 
