@@ -1,4 +1,5 @@
 #include "MIDIManager.hxx"
+#include "MIDIIOConfig.hxx"
 #include "MIDIOutControl.hxx"
 
 using namespace CLAM;
@@ -6,7 +7,7 @@ using namespace CLAM;
 main()
 {
 	MIDIManager manager;
-	MIDIOutConfig outNoteCfg;
+	MIDIIOConfig outNoteCfg;
 
 	// NOTE OUT EXAMPLE WITH FIXED CHANNEL`
 	outNoteCfg.SetDevice("alsa:hw:1,0");
@@ -31,7 +32,7 @@ main()
 	// STOP HERE
 	return 0;
 	// NOTE OUT EXAMPLE WITH VARIABLE CHANNEL
-	MIDIOutConfig outNote2Cfg;
+	MIDIIOConfig outNote2Cfg;
 
 	outNote2Cfg.SetDevice("default:default");
 	outNote2Cfg.SetChannel(0); // means: create an in control!
@@ -49,7 +50,7 @@ main()
 	outNote2.GetInControls().GetByNumber(2).DoControl(120);
 
 	// VOLUME CONTROL CHANGE EXAMPLE
-	MIDIOutConfig volCtrlCfg;
+	MIDIIOConfig volCtrlCfg;
 
 	volCtrlCfg.SetDevice("default:default");
 	volCtrlCfg.SetChannel(1);
