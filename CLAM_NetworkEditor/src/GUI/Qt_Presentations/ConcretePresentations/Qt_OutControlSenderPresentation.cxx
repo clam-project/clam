@@ -2,6 +2,7 @@
 #include "Qt_OutControlSenderPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
 #include "OutControlSender.hxx"
+#include <cmath>
 
 #include <qslider.h>
 #include <qpainter.h>
@@ -13,10 +14,9 @@ namespace NetworkGUI
 Qt_OutControlSenderPresentation::Qt_OutControlSenderPresentation()
 	: mSlider(0)
 {
-	std::cout << "out control sender presentation" << std::endl;
-
 	mSlider = new QSlider( Vertical, this );
-	mSlider->setFixedSize( 20, 50 );
+	mSlider->setMinimumSize( 20, 50 );
+	mSlider->resize(20, 50 );
 	mSlider->move( 18, 14 );
 
 	connect( mSlider, SIGNAL( valueChanged( int ) ), 
@@ -25,9 +25,11 @@ Qt_OutControlSenderPresentation::Qt_OutControlSenderPresentation()
 
 }
 
-void Qt_OutControlSenderPresentation::UpdateSize()
+void Qt_OutControlSenderPresentation::UpdateSize( bool hasToResize)
 {
-	setFixedSize(56, 76 );
+	setMinimumSize(56, 76 );
+	if(hasToResize)
+		resize(56,76);
 }
 
 void Qt_OutControlSenderPresentation::paintEvent( QPaintEvent * )
@@ -57,8 +59,6 @@ void Qt_OutControlSenderPresentation::paintEvent( QPaintEvent * )
 
 void Qt_OutControlSenderPresentation::ConfigurationUpdated( bool ok )
 {
-	parentWidget()->setFocus();
-	parentWidget()->grabKeyboard();
 
 	CLAM::OutControlSenderConfig * config = dynamic_cast<CLAM::OutControlSenderConfig *>(mConfig->GetConfig());
 	CLAM_ASSERT( config, " Qt_OutControlSenderPresentation::ConfigurationUpdated(), config has the wrong concrete type" );
@@ -66,19 +66,54 @@ void Qt_OutControlSenderPresentation::ConfigurationUpdated( bool ok )
 	mDefault = config->GetDefault();
 	mMax = config->GetMax();
 	mStep = config->GetStep();
+
+	mSlider->setRange( (int)(round(mMin/mStep)),
+			   (int)(round(mMax/mStep)) );
 	
 	mSlider->setValue( (int)(mDefault/mStep) );
-	mSlider->setRange( (int)(mMin/mStep), 
-			   (int)(mMax/mStep) +1);
+	SignalSendOutControlValue.Emit( "out", mDefault );
 
 }
 void Qt_OutControlSenderPresentation::SlotValueChanged( int value )
 {
-	std::cout << "value: " << value << std::endl;
-	std::cout << "changing value: " << (CLAM::TControlData)( value*mStep ) << std::endl;
 	SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
 }
 
+void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
+{	
+	QRect newGeometry = geometry();
+	switch( mResizePosition )
+	{
+		case UpLeft:
+			newGeometry.setTopLeft( difference + pos() );
+			break;
+		case Up:
+			newGeometry.setTop( difference.y() + pos().y() );
+			break;
+		case UpRight:
+			newGeometry.setTopRight( difference + pos() );	
+			newGeometry.setWidth( difference.x() + width() );
+			break;
+		case DownLeft:
+			newGeometry.setBottomLeft( difference + pos() );
+			newGeometry.setHeight( difference.y() + height() );
+			break;
+		case Down:
+			newGeometry.setHeight( difference.y() + height() );
+			break;
+		case DownRight:
+			newGeometry.setWidth( difference.x() + width() );
+			newGeometry.setHeight( difference.y() + height() );
+			break;
+	}
+	setGeometry( newGeometry );
+	//QRect sliderGeometry = newGeometry;
+	//sliderGeometry.setWidth( width() - 24 );
+	//sliderGeometry.setHeight( height() - 14 );
+	mSlider->resize( geometry().width() - 36, geometry().height() - 28 );
+	std::cout << "slider measures: " << mSlider->width() << "  " << mSlider->height() << std::endl;
+	UpdateOutControlsPosition();
+}
 
 } // namespace NetworkGUI
 

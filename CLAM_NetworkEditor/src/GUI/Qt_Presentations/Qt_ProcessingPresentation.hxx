@@ -47,6 +47,19 @@ class Qt_OutControlPresentation;
 class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
 	Q_OBJECT
+protected:
+	enum ResizePosition
+	{
+		NoResize,
+		UpLeft,
+		Up,
+		UpRight,
+//		MedLeft,
+//		MedRight,
+		DownLeft,
+		Down,
+		DownRight
+	};
 public:
 	Qt_ProcessingPresentation();
 	virtual ~Qt_ProcessingPresentation(){SlotConfigurationUpdated.Unbind();}
@@ -59,7 +72,7 @@ public:
 	void Initialize( const std::string & nameFromNetwork, QWidget * parent );
 protected:
 	void SetObservedClassName(const std::string& name);
-
+	
 	// port methods
 	void SetInPort( const std::string & );
 	void SetOutPort( const std::string & );
@@ -80,6 +93,7 @@ protected:
 	virtual void paintEvent( QPaintEvent * );
 	QColor GetColorOfState();
 	void mousePressEvent( QMouseEvent * );
+	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
 	void mouseDoubleClickEvent ( QMouseEvent * );
 
@@ -87,11 +101,14 @@ protected:
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
-	virtual void UpdateSize();
+	virtual void UpdateSize( bool hasToResize = true );
 	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
 	void DrawSelectedRepresentation();
-	void  UpdatePresentation();
+	void UpdatePresentation();
+	void EvaluateIfClickingToResize( const QPoint & pos );
+	virtual void ExecuteResize( const QPoint & difference );
 	bool	    mSelected;
+	ResizePosition mResizePosition;
 	QPoint     mPrevPos;
 
 public: // signals

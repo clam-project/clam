@@ -17,9 +17,10 @@ class Qt_OutControlSenderPresentation : public Qt_ProcessingPresentation
 	QSlider * mSlider;
 public:
 	Qt_OutControlSenderPresentation();
-	void UpdateSize();
+	void UpdateSize( bool hasToResize = true );
 protected:
 	void ConfigurationUpdated( bool ok );
+	void ExecuteResize( const QPoint & difference );
 	void paintEvent( QPaintEvent * );
 
 	CLAM::TControlData mMin;

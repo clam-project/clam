@@ -32,12 +32,16 @@
 #include <qpainter.h>
 #include <qlineedit.h>
 #include <cmath>
+#include <qcursor.h> 
+
+#include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
 
 Qt_ProcessingPresentation::Qt_ProcessingPresentation()
-	: mSelected( false )
+	: mSelected( false ),
+	  mResizePosition( NoResize )
 {
 	// port slots
 	SlotSetInPortClicked.Wrap( this, &Qt_ProcessingPresentation::SetInPortClicked);
@@ -55,15 +59,17 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation()
 }
 
 void Qt_ProcessingPresentation::Initialize( const std::string & nameFromNetwork, QWidget * parent )
-{
-	ChangeProcessingPresentationName( nameFromNetwork );
+{	
+	mName = nameFromNetwork;
+	UpdateSize();
+	UpdateOutControlsPosition();
+	UpdateOutPortsPosition();
 	reparent( parent, 0, QPoint(rand()%(3*parent->width()/4), rand()%(3*parent->height()/4)), true );
-//	move(position);
-
 }
 
-void Qt_ProcessingPresentation::UpdateSize()
+void Qt_ProcessingPresentation::UpdateSize( bool hasToResize )
 {
+	std::cout << "updating size" << std::endl;
 	QString name(mName.c_str());
 	QString className(mObservedClassName.c_str() );
 
@@ -72,24 +78,34 @@ void Qt_ProcessingPresentation::UpdateSize()
 	QFontMetrics fm( font );
 	int pixelsWide = std::max( fm.width( name ), fm.width( className ) );
 	int pixelsHigh = fm.height();
-	setFixedSize(pixelsWide + 35, pixelsHigh*2 + 30);
+	setMinimumSize(pixelsWide + 35, pixelsHigh*2 + 30);
+	if(hasToResize)
+		resize(pixelsWide + 35, pixelsHigh*2 + 30);
 
 	int heightPorts = std::max( mInPortPresentations.size(), mOutPortPresentations.size() );
 	heightPorts = heightPorts*7+14;
 	if (height() < heightPorts)
-		setFixedSize(width(),heightPorts);
+	{
+		setMinimumSize(width(),heightPorts);
+		if(hasToResize)
+			resize(width(),heightPorts);
+	}
 	
 	int widthControls = std::max( mInControlPresentations.size(), mOutControlPresentations.size());
 	widthControls = widthControls*13+24;
 	if (width() < widthControls)
-		setFixedSize(widthControls, height());
+	{
+		setMinimumSize(widthControls, height());
+		if(hasToResize)
+			resize(widthControls, height());
+	}
 
 }
 
 void Qt_ProcessingPresentation::ConfigurationUpdated( bool ok )
 {
-	parentWidget()->setFocus();
-	parentWidget()->grabKeyboard();
+	// TODO: this function should check if config has changed. if not (cancel button pressed) it should restore
+	// the older values of config
 }
 
 void Qt_ProcessingPresentation::SetInPortAfterClickOutPort( const QPoint & p)
@@ -199,7 +215,8 @@ void Qt_ProcessingPresentation::SetInPort( const std::string & name )
 	int heightPorts = mInPortPresentations.size()*7+14;
 	if (height() < heightPorts)
 	{
-		setFixedSize(width(),heightPorts);
+		setMinimumSize(width(),heightPorts);
+		resize(width(),heightPorts);
 		UpdateOutControlsPosition();
 	}
 }
@@ -215,7 +232,8 @@ void Qt_ProcessingPresentation::SetOutPort( const std::string & name )
 	int heightPorts = mOutPortPresentations.size()*7+14;
 	if (height() < heightPorts)
 	{
-		setFixedSize(width(),heightPorts);
+		setMinimumSize(width(),heightPorts);
+		resize(width(),heightPorts);
 		UpdateOutControlsPosition();
 	}
 }
@@ -233,7 +251,8 @@ void Qt_ProcessingPresentation::SetInControl( const std::string & name )
 	int widthControls = mInControlPresentations.size()*13+24;
 	if (width() < widthControls)
 	{
-		setFixedSize(widthControls, height());
+		setMinimumSize(widthControls, height());
+		resize(widthControls, height());
 		UpdateOutPortsPosition();
 	}
 }
@@ -249,7 +268,8 @@ void Qt_ProcessingPresentation::SetOutControl(  const std::string & name )
 	int widthControls = mOutControlPresentations.size()*13+24;
 	if (width() < widthControls)
 	{
-		setFixedSize(widthControls, height());
+		setMinimumSize(widthControls, height());
+		resize(widthControls, height());
 		UpdateOutPortsPosition();
 	}
 }
@@ -418,14 +438,104 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 			Qt_ProcessingConfigPresentation * cfg = (Qt_ProcessingConfigPresentation*)mConfig;
 			cfg->SignalConfigurationUpdated.Connect( SlotConfigurationUpdated );
 		}
-		parentWidget()->releaseKeyboard();
 		mConfig->Show();
 	}
+	else // maybe it's resizing
+	{
+		EvaluateIfClickingToResize( m->pos() );
+	}
+}
+void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
+{
+	if(mResizePosition!=NoResize)
+	{
+		std::cout << "finished resizing" << std::endl;
+		mResizePosition = NoResize;
+		setCursor( QCursor(ArrowCursor) );
+	}
+}
+
+
+void Qt_ProcessingPresentation::EvaluateIfClickingToResize( const QPoint & pos )
+{
+	if( QRect( 12, 7, 5, 5 ).contains(pos) ) // up left
+	{
+		std::cout << "resizing up left" << std::endl;
+		setCursor( QCursor(SizeFDiagCursor) );
+		mResizePosition = UpLeft;
+	}
+	if( QRect( width()/2 - 5 , 7, 5, 5 ).contains(pos) ) 
+	{
+		std::cout << "resizing up" << std::endl;
+		setCursor( QCursor(SizeVerCursor) );
+		mResizePosition = Up;
+	}
+	if( QRect( width()-17, 7, 5, 5 ).contains(pos) ) 
+	{
+		std::cout << "resizing up right" << std::endl;
+		setCursor( QCursor(SizeBDiagCursor) );
+		mResizePosition = UpRight;
+	}
+
+	if( QRect( 12, height()-12, 5, 5 ).contains(pos) ) 
+	{
+		std::cout << "resizing down left" << std::endl;
+		setCursor( QCursor(SizeBDiagCursor) );
+		mResizePosition = DownLeft;
+	}
+	if( QRect( width()/2 - 5, height()-12, 5, 5 ).contains(pos) ) 
+	{
+		std::cout << "resizing down" << std::endl;
+		mResizePosition = Down;
+		setCursor( QCursor(SizeVerCursor) );
+
+	}
+	if( QRect( width()-17, height()-12, 5, 5 ).contains(pos) ) 
+	{
+		std::cout << "resizing down right" << std::endl;
+		setCursor( QCursor(SizeFDiagCursor) );
+		mResizePosition = DownRight;
+	}
+}
+
+void Qt_ProcessingPresentation::ExecuteResize( const QPoint & difference )
+{	
+	QRect newGeometry = geometry();
+	switch( mResizePosition )
+	{
+		case UpLeft:
+			newGeometry.setTopLeft( difference + pos() );
+			break;
+		case Up:
+			newGeometry.setTop( difference.y() + pos().y() );
+			break;
+		case UpRight:
+			newGeometry.setTopRight( difference + pos() );	
+			newGeometry.setWidth( difference.x() + width() );
+			break;
+		case DownLeft:
+			newGeometry.setBottomLeft( difference + pos() );
+			newGeometry.setHeight( difference.y() + height() );
+			break;
+		case Down:
+			newGeometry.setHeight( difference.y() + height() );
+			break;
+		case DownRight:
+			newGeometry.setWidth( difference.x() + width() );
+			newGeometry.setHeight( difference.y() + height() );
+			break;
+	}
+	setGeometry( newGeometry );
+	UpdateOutPortsPosition();
+	UpdateOutControlsPosition();
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 {
-	SignalMovingMouseWithButtonPressed.Emit( m->globalPos() - mPrevPos );
+	if( mResizePosition != NoResize ) // resizing
+		ExecuteResize( m->globalPos()  - mPrevPos );
+	else
+		SignalMovingMouseWithButtonPressed.Emit( m->globalPos() - mPrevPos );
 	mPrevPos = m->globalPos();
 }
 
@@ -517,7 +627,6 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 	nameEdit->show();
 
 	SignalSendMessageToStatus.Emit( "Edit the processing name" );
-	nameEdit->grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
@@ -536,7 +645,6 @@ void Qt_ProcessingPresentation::SlotTextChange( const QString & newName )
 void Qt_ProcessingPresentation::SlotExecuteChangeName()
 {
 	SignalProcessingNameChanged.Emit( mName );
-	parentWidget()->grabKeyboard();
 	parentWidget()->setFocus();
 }
 
@@ -548,7 +656,7 @@ void Qt_ProcessingPresentation::UpdatePresentation()
 void Qt_ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )
 {
 	mName = name;
-	UpdateSize();
+	UpdateSize( false );
 	UpdateOutControlsPosition();
 	UpdateOutPortsPosition();
 }
