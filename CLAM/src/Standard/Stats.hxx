@@ -220,6 +220,63 @@ public:
 		return mMinElement(*mData);
 	}
 
+	U GetSlope()
+	{
+		// TODO: Sums where Y is not used can be computed out loop
+		// TODO: Sums where Y is used can be taken from Mean and Centroid
+
+		const Array<T>& Y = *mData;
+		const TSize size  = mData->Size();
+
+		TData f = 1; // Temporary place holder to remember where to normalize the bin index
+		TData sumY = 0;
+		TData sumXY   = 0;
+		TData sumXX = 0;
+
+		for (TIndex i=0; i<size; i++)
+		{
+			sumY += Y[i];
+			sumXY += i*Y[i];
+			sumXX += i*i;
+		}
+		TData sumX = (size-1)*size/2.0;
+
+		TData num = size*sumXY - sumX*sumY;
+		TData denum = (size*sumXX - sumX*sumX)*sumY;
+
+		// Normalize by the total amplitude
+		return num/(denum*f);
+	}
+	U GetTilt()
+	{
+		const Array<T>& Y = *mData;
+		const TSize size  = mData->Size();
+		const U m1 = GetMoment(FirstOrder);
+
+		TData d1=0;
+		TData d2=0;
+		for (unsigned i=0;i<size;i++)
+		{
+			d1 += i/Y[i];
+			d2 += 1/Y[i];
+		}
+
+		// ti = m1/ai *(n - (d1/d2))
+		// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
+
+		TData SumTi2 = 0;
+		TData Tilt = 0;
+		for (unsigned i=0;i<size;i++) 
+		{
+			Tilt += (1/Y[i] *(i-d1/d2));
+			TData ti = m1/Y[i]*(i - (d1/d2));
+			SumTi2 += ti*ti;
+		}
+
+		Tilt*= (m1*m1/SumTi2);
+		return Tilt;
+	}
+
 	/** Reset all previously computed values */
 	void Reset()
 	{
@@ -402,6 +459,7 @@ private:
 	{
 		(*pTmpArray)[0]=GetCenterOfGravity((O<1>*)(0));
 	}
+
 
 	Array<BaseMemOp*> mMoments;
 	Array<BaseMemOp*> mCentralMoments;
