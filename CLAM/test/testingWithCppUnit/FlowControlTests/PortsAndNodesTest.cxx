@@ -30,7 +30,7 @@
 #include "DummyProcessingData.hxx"
 #include "NodeTmpl.hxx"
 #include "CircularStreamImpl.hxx"
-
+#include "Processing.hxx"
 
 namespace CLAMTest {
 
@@ -49,8 +49,18 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testAttachPortsToNode_WithAudioPorts_GetsAttachedToConcreteNode );
 	CPPUNIT_TEST( testAttachPortsAndGetData_WithGeneralTemplatePorts_ReadsTheWrittenData );
 	CPPUNIT_TEST( testAttachPortsAndGetData_WithAudioPorts_ReadsTheWrittenData );
+	
+	// tests for IsAttached / AreConnected methods using Nodes
+	CPPUNIT_TEST( testIsAttached_WithAudioOutPort_AfterAttachWithNode );
+	CPPUNIT_TEST( testIsAttached_WithAudioInPort_AfterAttachWithNode );
+	CPPUNIT_TEST( testIsAttached_WithGeneralTemplateOutPort_AfterAttachWithNode );
+	CPPUNIT_TEST( testIsAttached_WithGeneralTemplateInPort_AfterAttachWithNode );
 
-	// Tests for the concrete PortTmpl classes
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreConnectedWithNode );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreConnectedWithNode );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnectedWithNode );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnectedWithNode );
+	
 	CPPUNIT_TEST_SUITE_END();
 
 	// Testing pattern: Self Shunt
@@ -166,6 +176,111 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::Audio returned = concreteIn.GetData();
 		CPPUNIT_ASSERT_EQUAL( CLAM::TData(1), returned.GetBuffer()[0] );
 		CPPUNIT_ASSERT_EQUAL( 1, returned.GetSize() );
+	}
+
+	void testIsAttached_WithAudioOutPort_AfterAttachWithNode()
+	{
+		const int samples=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
+
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
+			concreteNode;
+
+		concreteOut.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( true, concreteOut.IsAttached() );
+	}
+
+	void testIsAttached_WithAudioInPort_AfterAttachWithNode()
+	{
+		const int samples=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("out", this, samples);
+
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
+			concreteNode;
+	
+		concreteOut.Attach(concreteNode);
+		concreteIn.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( true, concreteIn.IsAttached() );
+	}
+
+	void testIsAttached_WithGeneralTemplateOutPort_AfterAttachWithNode()
+	{
+		const int samples=1; 
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
+
+		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
+			concreteNode;
+
+		concreteOut.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( true, concreteOut.IsAttached() );
+	}
+
+	void testIsAttached_WithGeneralTemplateInPort_AfterAttachWithNode()
+	{
+		const int samples=1; 
+
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
+		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, samples);
+
+		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
+			concreteNode;
+
+		concreteOut.Attach(concreteNode);
+		concreteIn.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( true, concreteIn.IsAttached() );
+	}
+
+	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreConnectedWithNode()
+	{
+		const int samples=1; 
+
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("out", this, samples);
+
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
+			concreteNode;
+
+		concreteOut.Attach(concreteNode);
+		concreteIn.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( true, concreteOut.IsConnectedTo(concreteIn) );
+	}
+
+	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreConnectedWithNode()
+	{
+		const int samples=1; 
+
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
+		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, samples);
+
+		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
+			concreteNode;
+
+		concreteOut.Attach(concreteNode);
+		concreteIn.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( true, concreteOut.IsConnectedTo(concreteIn) );
+	}
+
+	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnectedWithNode()
+	{
+		const int samples=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("out", this, samples);
+
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
+			concreteNode;
+
+		concreteOut.Attach(concreteNode);
+		CPPUNIT_ASSERT_EQUAL( false, concreteOut.IsConnectedTo(concreteIn) );
+	}
+
+	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnectedWithNode()
+	{
+		const int samples=1; 
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
+		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, samples);
+
+		CPPUNIT_ASSERT_EQUAL( false, concreteOut.IsConnectedTo(concreteIn) );
 	}
 	
 
