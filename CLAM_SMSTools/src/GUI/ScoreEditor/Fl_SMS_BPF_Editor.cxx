@@ -1,13 +1,16 @@
 #include "Fl_SMS_BPF_Editor.hxx"
 #include "Fl_Envelope_Scroll.H"
 #include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Box.H>
 #include "CLAM_Math.hxx"
 #include "BPF.hxx"
+#include "Assert.hxx"
 
 namespace CLAMVM
 {
 	Fl_SMS_BPF_Editor::Fl_SMS_BPF_Editor( int X, int Y, int W, int H )
-		: Fl_Group( X, Y, W, H), mpFunctionEditor( NULL )
+		: Fl_Group( X, Y, W, H), mpFunctionEditor( NULL ), mXAxisLabel( "No label set" ),
+		  mYAxisLabel( "No label set" ), mpXAxisLabelBox( NULL ), mpYAxisLabelBox( NULL )
 	{
 		mpFunctionEditor = new Fl_Envelope_Scroll( X+5, Y+5, W-10, H-30 );
 		mpFunctionEditor->envelope->grid( 0.1f, 0.1f );
@@ -15,6 +18,19 @@ namespace CLAMVM
 		mpFunctionEditor->control->vvalue( 0.0, 1.0, 0.0, 1.0 );
 		mpFunctionEditor->envelope->margin( 20, 10, 5, 5 );
 		mpFunctionEditor->end();
+
+		// MRJ: Possible bug with Fl_Envelope_Scroll, since it seems that whenever
+		// the widget is smaller than a certain critical size it is not drawn!
+		/*	mpXAxisLabelBox = new Fl_Box( X+5, Y, W-10, 30 ); 
+		mpXAxisLabelBox->label( mXAxisLabel.c_str() );
+		mpXAxisLabelBox->labelsize( 9 );
+		mpXAxisLabelBox->align( FL_ALIGN_INSIDE | FL_ALIGN_CLIP );
+
+		mpYAxisLabelBox = new Fl_Box( X, Y+35, 30, H-60 );
+		mpYAxisLabelBox->label( mYAxisLabel.c_str() );
+		mpYAxisLabelBox->labelsize( 9 );
+		mpYAxisLabelBox->align( FL_ALIGN_INSIDE | FL_ALIGN_CLIP );
+		*/
 
 		mpSnapToGridBtn = new Fl_Check_Button( X+10, H-15, W-40, 15 );
 		mpSnapToGridBtn->label( "Snap points to grid" );
@@ -48,6 +64,22 @@ namespace CLAMVM
 	void Fl_SMS_BPF_Editor::OnPointMoved()
 	{
 		PointsChanged.Emit();
+	}
+
+	void Fl_SMS_BPF_Editor::SetXAxisLabel( const char* xlabel )
+	{
+		mXAxisLabel = xlabel;
+		CLAM_ASSERT( mpXAxisLabelBox != NULL, "X Axis label box was NULL!" );
+		mpXAxisLabelBox->label( mXAxisLabel.c_str() );
+		mpXAxisLabelBox->redraw();
+	}
+
+	void Fl_SMS_BPF_Editor::SetYAxisLabel( const char* ylabel )
+	{
+		mYAxisLabel = ylabel;
+		CLAM_ASSERT( mpYAxisLabelBox != NULL, "Y Axis label box was NULL!" );
+		mpYAxisLabelBox->label( mYAxisLabel.c_str() );
+		mpYAxisLabelBox->redraw();
 	}
 
 	void Fl_SMS_BPF_Editor::SetHorizontalRange( double xmin, double xmax )
