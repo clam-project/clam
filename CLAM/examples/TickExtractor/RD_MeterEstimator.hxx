@@ -62,21 +62,20 @@ namespace CLAM
 		{
 		public:
 			MeterEstimator();
-			MeterEstimator(const MeterEstimatorConfig &c);
-			~MeterEstimator() {}
+			~MeterEstimator();
 
-			const ProcessingConfig &GetConfig() const { return mConfig;}
-
+			const ProcessingConfig &GetConfig() const;
+			const char *GetClassName() const;
+			
 			bool Do(void);
 			bool Do(Audio& audioIn, const Array<TimeIndex>& beats, Meter& dataOut);
 
-			bool Compute(Audio& audioIn, const Array<TimeIndex>& allBeats, 
-				     const TData& globalTempo, const TData& globalTick, Meter& dataOut);
+		protected:
+			bool ConcreteConfigure(const ProcessingConfig&);
 
+			
 		private:
 			MeterEstimatorConfig mConfig;
-			const char *GetClassName() const {return "MeterEstimator";}
-			bool ConcreteConfigure(const ProcessingConfig&);
 
 			//Internal POs
 			AutocorrelationTD mACF;

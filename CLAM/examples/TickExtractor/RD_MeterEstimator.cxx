@@ -53,18 +53,28 @@ namespace CLAM
 			Configure(MeterEstimatorConfig());
 		}
 
-		MeterEstimator::MeterEstimator(const MeterEstimatorConfig &c)
+		MeterEstimator::~MeterEstimator()
 		{
-			AttachChildren();
-			Configure(c);
 		}
 
-// Configure the Processing Object according to the Config object
+		const ProcessingConfig& MeterEstimator::GetConfig() const
+		{
+			return mConfig;
+		}
+
+		const char* MeterEstimator::GetClassName() const
+		{
+			return "MeterEstimator";
+		}
+
+		// Configure the Processing Object according to the Config object
 		bool MeterEstimator::ConcreteConfigure(const ProcessingConfig& c)
 		{
 			CopyAsConcreteConfig( mConfig, c );
+
 			ConfigureData();
 			ConfigureChildren();
+
 			return true;
 		}
 
@@ -95,29 +105,20 @@ namespace CLAM
 			{
 				dataOut.SetNumerator(0);
 				dataOut.SetDenominator(0);
+				
+				return true;
 			}
-			else
-			{
-				TData globalTempo, globalTick;
-				//Beat centering method 1
-				//globalTempo = beats[1].GetPosition()-beats[0].GetPosition(); 
-				//Beat centering method 3 (mean IBI)
-				globalTempo = .0; 
-				for (int i=0;i<beats.Size()-1;i++) 
-					globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
-				globalTempo /= beats.Size()-1;
-				globalTick = globalTempo; //further just used for test
-				Compute(audioIn, beats, globalTempo, globalTick, dataOut);
-			}
-			return true;
-		}
 
-
-		bool MeterEstimator::Compute(Audio& audioIn, 
-					     const Array<TimeIndex>& allBeats, const TData& globalTempo, 
-					     const TData& globalTick, Meter& dataOut)
-		{
-			TData samplingRate = audioIn.GetSampleRate();
+			TData globalTempo, globalTick;
+			//Beat centering method 1
+			//globalTempo = beats[1].GetPosition()-beats[0].GetPosition(); 
+			//Beat centering method 3 (mean IBI)
+			globalTempo = .0; 
+			for (int i=0;i<beats.Size()-1;i++) 
+				globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
+			globalTempo /= beats.Size()-1;
+			
+			TData sampleRate = audioIn.GetSampleRate();
 
 			//-------Remove audio DC component------------------
 			//TODO
@@ -127,13 +128,13 @@ namespace CLAM
 			//-------Compute beat descriptors----
 			Array<TData> segments; segments.Init();
 			//Beat index recentering method 1 & 3
-			for (int i=1;i<allBeats.Size();i++)   //NB: begins at 1
-				segments.AddElem(allBeats[i].GetPosition()*samplingRate
-						 -globalTempo*samplingRate/2);
+			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
+				segments.AddElem(beats[i].GetPosition()*sampleRate
+						 -globalTempo*sampleRate/2);
 			//Beat index recentering method 2
-/*			for (int i=1;i<allBeats.Size();i++)   //NB: begins at 1
-			segments.AddElem((allBeats[i].GetPosition()+
-			allBeats[i-1].GetPosition())*samplingRate/2);
+/*			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
+			segments.AddElem((beats[i].GetPosition()+
+			beats[i-1].GetPosition())*sampleRate/2);
 */
 			//mSegment.SetAudio(audioIn);
 			mSegment.SetHoldsData(true);
@@ -207,10 +208,12 @@ namespace CLAM
 				dataOut.SetNumerator(4);
 				std::cout<<"Duple meter"<<std::endl;
 			}
-			
-			
+					       
+
 			return true;
 		}
+
+
 		
 		
 		
