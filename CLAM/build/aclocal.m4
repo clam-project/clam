@@ -162,10 +162,10 @@ if test -d ../../fltk/include/FL/; then
 	AC_MSG_RESULT(yes)
 	found_fltk=yes
 	pwd=`pwd`
-	FLTK_VERSION=`$pwd/../../fltk/fltk-config --api-version`
+	FLTK_VERSION=`$pwd/../../fltk/bin/fltk-config --api-version`
 	if test $FLTK_VERSION = 1.1; then
-	    FLAG_FLTK_INCLUDES=`$pwd/../../fltk/fltk-config --use-gl --use-images --cxxflags`
-	    FLAG_FLTK_LIBS=`$pwd/../../fltk/fltk-config --use-gl --use-images --ldflags`
+	    FLAG_FLTK_INCLUDES=`$pwd/../../fltk/bin/fltk-config --use-gl --use-images --cxxflags`
+	    FLAG_FLTK_LIBS=`$pwd/../../fltk/bin/fltk-config --use-gl --use-images --ldflags`
 	else
 	    FLTK_INCLUDES="../../fltk/include"
 	    FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
