@@ -1,6 +1,6 @@
 #include "PublishedInPorts.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPort.hxx"
 #include <string>
 
 namespace CLAM

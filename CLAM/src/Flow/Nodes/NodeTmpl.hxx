@@ -57,6 +57,11 @@ namespace CLAM {
 		void LeaveAndAdvance(DelayStreamRegion *r);
 		void LeaveAndAdvance(InplaceStreamRegion *r);
 
+	void Foo()
+	{
+		//Bar();
+	}
+
 };
 
 	template<class DATA, class BUFFER>
@@ -71,7 +76,8 @@ namespace CLAM {
 														 unsigned int hop,
 														 unsigned int length)
 	{
-		mpDriver = port;
+	
+		Node<DATA>::mpDriver = port;
 		return mStream.NewWriter(hop,length);
 	}
 	
@@ -82,7 +88,7 @@ namespace CLAM {
 														unsigned int length,
 														SourceStreamRegion* source = 0)
 	{
-		mInputs.AddElem(port);
+		Node<DATA>::mInputs.AddElem(port);
 		return mStream.NewReader(hop,length,source);
 	}
 

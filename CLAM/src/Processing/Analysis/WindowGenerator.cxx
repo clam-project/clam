@@ -21,7 +21,6 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "Port.hxx"
 #include "DataTypes.hxx"
 #include "Enum.hxx"
 #include "Array.hxx"

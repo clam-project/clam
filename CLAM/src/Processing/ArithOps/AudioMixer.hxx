@@ -3,7 +3,8 @@
 #define _AUDIO_MIXER_HXX
 
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
+#include "InPortArrayTmpl.hxx"
 #include "Audio.hxx"
 #include "InControlArray.hxx"
 #include <string>

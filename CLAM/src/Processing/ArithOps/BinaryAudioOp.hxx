@@ -27,7 +27,8 @@
 #include "Audio.hxx"
 #include <typeinfo> // std::bad_cast
 #include "ErrProcessingObj.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 
 #include <iostream>
 

@@ -26,7 +26,7 @@
 #include "ProcessingData.hxx"
 #include "OSDefines.hxx"
 #include "Audio.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
 #include "InControl.hxx"
 #include "Enum.hxx"
 #include <string>
