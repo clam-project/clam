@@ -41,7 +41,7 @@ namespace CLAM {
 		  mInputs(0),
 		  complex_bufs(0),polar_bufs(0),mag_bufs(0),phase_bufs(0),
 		  remove(0),
-		  mOut("Output",this,1),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(SpecAdderConfig());
@@ -52,7 +52,7 @@ namespace CLAM {
 		  mInputs(0),
 		  complex_bufs(0),polar_bufs(0),mag_bufs(0),phase_bufs(0),
 		  remove(0),
-		  mOut("Output",this,1),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(c);

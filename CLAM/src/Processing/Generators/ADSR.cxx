@@ -21,7 +21,6 @@
 
 
 #include "ADSR.hxx"
-#include "AudioManager.hxx"
 
 using namespace CLAM;
 
@@ -31,19 +30,11 @@ void ADSRConfig::DefaultInit(void)
 	AddDecayTime(),
 	AddSustainLevel();
 	AddReleaseTime();
-	AddSamplingRate();
+	AddSampleRate();
 
 	UpdateData();
 
-	try
-	{
-		SetSamplingRate( AudioManager::Current().SampleRate() );
-	}
-	catch(Err)
-	{
-		SetSamplingRate( 8000 );
-	}
-
+	SetSampleRate( 8000 );
 }
 
 ADSR::ADSR():
@@ -80,7 +71,7 @@ bool ADSR::ConcreteConfigure( const ProcessingConfig& c )
 	mDecayTime = mConfig.GetDecayTime();
 	mSustainLevel = mConfig.GetSustainLevel();
 	mReleaseTime = mConfig.GetReleaseTime();
-	mSamplingRate = mConfig.GetSamplingRate();
+	mSamplingRate = mConfig.GetSampleRate();
 
 	return true;
 }

@@ -81,7 +81,7 @@ namespace CLAM {
 
 		mType = mConfig.GetWaveType();
 		
-		Output.SetParams(mConfig.GetFrameSize());
+		Output.SetSize(mConfig.GetFrameSize());
 
 		return true;
 	}

@@ -125,7 +125,7 @@ namespace CLAM {
 			return mAmplitude;
 		}
 
-		AudioOutPort Output;
+		OutPort<Audio> Output;
 
 		WaveGenerator();
 
