@@ -10,7 +10,7 @@ namespace CLAMVM
 
 		void ControlAdapter::tManagedEmitter::Emit(  )
 		{
-				mControl.SendControl( mEmitter.mValueToEmit );										
+				mControl.SendControl( mValueToEmit );										
 				mIsDirty = false;				
 		}
 
@@ -47,19 +47,19 @@ namespace CLAMVM
 		
 		bool ControlAdapter::Update()
 		{
-				if ( mEmitter.mIsDirty )
-				{
-						if ( fabs( mMinValue - mMaxValue) > 0 ) // range is not null								
-								if ( (mMinValue <= value) && (value <= mMaxValue) )
-										mEmitter.Emit( );
-								else 
-										return false;
-						
-						// if the range is null then no check is done
+				if ( ! mEmitter.mIsDirty ) return true;
 
-						mEmitter.mControl.SendControl( mEmitter.mValueToEmit );
-						mEmitter.mIsDirty = false;
+				if ( fabs( mMinValue - mMaxValue) > 0 ) // range is not null
+				{
+						if (mMinValue > mEmitter.mValueToEmit) return false;
+						if (mEmitter.mValueToEmit > mMaxValue) return false;
+						mEmitter.Emit( );
 				}
+
+				// if the range is null then no check is done
+
+				mEmitter.mControl.SendControl( mEmitter.mValueToEmit );
+				mEmitter.mIsDirty = false;
 
 				return true;
 		}
