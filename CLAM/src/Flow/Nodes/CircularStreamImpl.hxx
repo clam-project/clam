@@ -284,7 +284,9 @@ namespace CLAM {
 	template<class T>
 	bool CircularStreamImpl<T>::CanActivateSourceWithNoCircularOverlap( const SourceStreamRegion & source) const
 	{
-		return ExistCircularOverlapWhenActivateSource( source.GetLastReading(), source );
+		if( !source.HasReaders() ) return true; 
+
+		return !ExistCircularOverlapWhenActivateSource( source.GetLastReading(), source );
 	}
 	
 	template<class T>
