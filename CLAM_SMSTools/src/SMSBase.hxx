@@ -239,6 +239,8 @@ namespace CLAM
 
 		SMSAnalysis& GetAnalysis(){return *mpAnalysis;}
 		SMSSynthesis& GetSynthesis(){return *mpSynthesis;}
+
+		void UpdateDataInTimeStretch();
 	};
 
 };

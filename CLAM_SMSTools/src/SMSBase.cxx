@@ -49,6 +49,7 @@
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 #include "SMSMorphConfig.hxx"
+#include "SMSTimeStretchConfig.hxx"
 
 using namespace CLAMGUI;
 using namespace CLAM;
@@ -875,6 +876,7 @@ void SMSBase::TransformProcessing(void)
 {
 	bool def=false;
 	SetSMSMorphFileName();
+	UpdateDataInTimeStretch();
 	mTransformation.Configure(mTransformationScore);
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
@@ -888,6 +890,33 @@ void SMSBase::TransformProcessing(void)
 	mTransformation.Stop();
 	mHaveTransformation=true;
 
+
+}
+
+void SMSBase::UpdateDataInTimeStretch()
+{
+	SMSTransformationChainConfig::iterator cfg;
+	for(cfg=mTransformationScore.ConfigList_begin();cfg!=mTransformationScore.ConfigList_end();cfg++)
+	{
+		if((*cfg).GetConcreteClassName()=="SMSTimeStretch")
+		{
+			SMSTimeStretchConfig& baseConfig=static_cast<SMSTimeStretchConfig&>((*cfg).GetConcreteConfig());
+			SMSTimeStretchConfig concreteConfig;
+			if(baseConfig.HasAmount()) 
+				concreteConfig.SetAmount(baseConfig.GetAmount());
+			else 
+				concreteConfig.RemoveAmount();
+			if(baseConfig.HasBPFAmount())
+				concreteConfig.SetBPFAmount(baseConfig.GetBPFAmount());
+			else
+				concreteConfig.RemoveBPFAmount();
+			concreteConfig.UpdateData();
+			concreteConfig.SetSamplingRate(mSamplingRate);
+			concreteConfig.SetHopSize(mGlobalConfig.GetAnalysisHopSize());
+			(*cfg).AddConcreteConfig();
+			(*cfg).SetConcreteConfig(concreteConfig);
+		}
+	}
 
 }
 
