@@ -8,12 +8,12 @@ AudioInPortPublisher::AudioInPortPublisher( const std::string & name, Processing
 	: InPortPublisher<TData>(name, proc)
 {
 }
-
+/*
 Audio & AudioInPortPublisher::GetAudio()
 {
 	mAudio.GetBuffer().SetPtr( &(mPublishedInPort->GetData()), mPublishedInPort->GetSize() );
 	return mAudio;
-}
+}*/
 
 } // namespace CLAM
 

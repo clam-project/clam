@@ -19,5 +19,15 @@ const Audio & AudioInPort::GetAudio()
 	return mAudio;
 }
 
+void AudioInPort::SetSampleRate( TData sampleRate )
+{
+	mAudio.SetSampleRate( sampleRate );
+}
+
+TData AudioInPort::GetSampleRate()
+{
+	return mAudio.GetSampleRate();
+}
+
 } // namespace CLAM
 

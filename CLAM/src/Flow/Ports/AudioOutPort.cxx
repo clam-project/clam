@@ -19,5 +19,15 @@ Audio & AudioOutPort::GetAudio()
 	return mAudio;
 }
 
+void AudioOutPort::SetSampleRate( TData sampleRate )
+{
+	mAudio.SetSampleRate( sampleRate );
+}
+
+TData AudioOutPort::GetSampleRate()
+{
+	return mAudio.GetSampleRate();
+}
+
 } // namespace CLAM
 

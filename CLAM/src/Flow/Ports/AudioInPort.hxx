@@ -13,7 +13,11 @@ class AudioInPort : public InPort<TData>
 public:
 	AudioInPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
 	virtual ~AudioInPort();
-	const Audio & GetAudio();	
+	const Audio & GetAudio();
+
+	// TODO: Rethink propagation of audio sampling rate
+	void SetSampleRate( TData sampleRate );
+	TData GetSampleRate();
 protected:
 	Audio mAudio;		
 };

@@ -12,9 +12,9 @@ class AudioInPortPublisher : public InPortPublisher<TData>
 {
 public:
 	AudioInPortPublisher( const std::string & name = "unnamed in port", Processing * proc = 0 );
-	Audio & GetAudio();
-protected:
-	Audio mAudio;
+//	Audio & GetAudio();
+//protected:
+//	Audio mAudio;
 };
 
 } // namespace CLAM

@@ -13,7 +13,9 @@ class AudioOutPort : public OutPort<TData>
 public:
 	AudioOutPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
 	virtual ~AudioOutPort();
-	Audio & GetAudio();	
+	Audio & GetAudio();
+	void SetSampleRate( TData sampleRate );
+	TData GetSampleRate();
 protected:
 	Audio mAudio;		
 };
