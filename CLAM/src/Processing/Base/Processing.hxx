@@ -180,7 +180,7 @@ namespace CLAM {
 		 */
 		virtual const ProcessingConfig &GetConfig() const = 0;
 
-		/* State getter.
+		/** State getter.
 		 * Returns the object execution state. This may be used for
 		 * debugging purposes, and should also be used inside the
 		 * execution (Do) methods to confirm that the object is either
@@ -261,11 +261,6 @@ namespace CLAM {
 
 inline bool Processing::AbleToExecute(void) const
 {
-	/* this looks more complicated than what it is, but that's because
-	 * we have to work around a gcc bug where the running operator +
-	 * is called for string + string. ideally, we would just use
-	 * CLAM_DEBUG_ASSERT
-	 */
 	CLAM_BEGIN_DEBUG_CHECK
 		if (GetExecState() == Unconfigured ||
 		    GetExecState() == Ready)
