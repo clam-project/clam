@@ -109,6 +109,7 @@ class Factory
 {
 private:
 	typedef FactoryRegistry::RegistryKey RegistryKey;
+	typedef FactoryRegistry::CreatorMethod CreatorMethod;
 	// singleton and final class: so private ctr and dtr
 	Factory() {};
 	~Factory() {};
@@ -128,10 +129,10 @@ public:
 	/// Gives ownership of the new created Processing registered with
 	/// the given name.
 	/// It asserts that the name is in the registry.
-	Processing* MakeProcessing( RegistryKey name )
+	Processing* MakeProcessing( const RegistryKey name )
 	{
 		// it asserts that name is in the registry
-		FactoryRegistry::CreatorMethod creator =
+		CreatorMethod creator =
 			GetRegistry().GetCreator( name );
 		return (*creator)();
 	}
@@ -139,7 +140,7 @@ public:
 	/// Gives ownership of the new created Processing registered with
 	/// the given name.
 	/// It throws an ErrFactory if the name isn't found in the registry.
-	Processing* MakeProcessingSafe( RegistryKey name ) throw (ErrFactory)
+	Processing* MakeProcessingSafe( const RegistryKey name ) throw (ErrFactory)
 	{
 		return ( *GetRegistry().GetCreatorSafe(name) )();
 	}
@@ -147,11 +148,16 @@ public:
 	{
 		GetRegistry().RemoveAllCreators();
 	}
-
+	void AddCreator(const RegistryKey name, CreatorMethod creator) {
+//		GetRegistry().AddCreator(name, creator);
+	}
+/*
+	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory) {
+		GetRegistry().AddCreatorSafe(name, creator);
+	}
+*/
 private:
 	FactoryRegistry _registry;
-	
-	
 
 };
 
