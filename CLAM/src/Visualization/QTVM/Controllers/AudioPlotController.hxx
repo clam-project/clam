@@ -23,10 +23,10 @@ namespace CLAM
 				void SurfaceDimensions(int w,int h);
 				void Draw();
 
+				void SetSelPos(const TData& value);
 				void SetMousePos(TData x,TData y);
 
 				TData GetAmp(TData t) const;
-
 				Audio& GetAudioData();
 
 			signals:

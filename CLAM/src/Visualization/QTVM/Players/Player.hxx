@@ -31,9 +31,10 @@ namespace CLAM
 				void HaveData(bool d);
 				void SetPlaying(bool playing);
 				void SetPaused(bool paused);
+
+				bool IsPaused();
 					
 				bool HaveData();
-				bool IsPaused();
 								
 				void SetBeginTime(const TData& begin);
 				TData GetBeginTime() const;

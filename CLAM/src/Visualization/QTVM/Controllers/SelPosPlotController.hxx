@@ -29,6 +29,7 @@ namespace CLAM
 				virtual void SetHBounds(const TData& left,const TData& right);
 				virtual void SetVBounds(const TData& bottom,const TData& top);
 				void UpdateDial(const TData& value);
+				TData GetDialPos() const;
 			
 			private:
 				Dial _dial;

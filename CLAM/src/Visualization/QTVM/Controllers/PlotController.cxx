@@ -63,11 +63,7 @@ namespace CLAM
 
 		void PlotController::SetSelPos(const TData& value)
 		{
-			if(value != _selPos)
-			{
-				_selPos = value;
-				emit selPos(_selPos);
-			}
+			_selPos = value;
 		}
 
 		TData PlotController::GetSelPos() const

@@ -33,12 +33,12 @@ namespace CLAM
 			private:
 				RegionMarker _rMarker;
 				bool _keyShiftPressed;
-
-				void SetBeginRegion(const TData& value);
-				void SetEndRegion(const TData& value);
+				
 				TData GetBeginRegion() const;
 				TData GetEndRegion() const;
-				
+				void SetBeginRegion(const TData& value);
+				void SetEndRegion(const TData& value);
+
 				MediaTime GetRegionTime() const;
 		};
 	}

@@ -37,6 +37,11 @@ namespace CLAM
 		{
 			_data = value;
 		}
+
+		TData Dial::GetPos() const
+		{
+			return _data;
+		}
 	}
 }
 

@@ -30,6 +30,15 @@ namespace CLAM
 
 				void RemovePlayPanel();
 
+				void SetKeyPressed(QKeyEvent* e);
+				void SetKeyReleased(QKeyEvent* e);
+
+				void UpdateRegion(MediaTime);
+				Audio& GetAudioData();
+
+			signals:
+				void regionTime(MediaTime);
+
 			protected slots:
 				void updateRegion(MediaTime);
 
@@ -51,6 +60,8 @@ namespace CLAM
 				QBoxLayout* _panel;
 				TimeSegmentLabelsGroup* _labelsGroup;
 				SingleLabel *_leftAmpLab, *_rightAmpLab;
+				MediaTime _playBounds;
+				bool showRightAmp;
 
 				// holes
 				QFrame *lefthole,*righthole;

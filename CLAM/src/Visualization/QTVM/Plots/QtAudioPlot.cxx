@@ -12,6 +12,9 @@ namespace CLAM
 	{
 		QtAudioPlot::QtAudioPlot(QWidget* parent) : QtPresentation(parent)
 		{
+			_playBounds.SetBegin(-1.0);
+			_playBounds.SetEnd(-1.0);
+			showRightAmp=true;
 			SetPlotController();
 			InitAudioPlot();	
 			Connect();
@@ -101,11 +104,16 @@ namespace CLAM
 
 		void QtAudioPlot::updateRegion(MediaTime time)
 		{
+			if(	time.GetBegin()==_playBounds.GetBegin() &&
+				time.GetEnd()==_playBounds.GetEnd()) return;
+	
+			_playBounds=time;
 			_player->stop();
 			_player->SetPlaySegment(time);
 			_labelsGroup->UpdateLabels(time);
 
 			UpdateAmpLabels(time);
+			emit regionTime(time);
 		}
 
 		void QtAudioPlot::UpdateAmpLabels(MediaTime time)
@@ -115,7 +123,10 @@ namespace CLAM
 			    _leftAmpLab->Update(((AudioPlotController*)_controller)->GetAmp(time.GetBegin()));
 				_leftAmpLab->SetToolTip("Amplitude Left");
 				_rightAmpLab->Update(((AudioPlotController*)_controller)->GetAmp(time.GetEnd()));
-				_rightAmpLab->show();
+				if(showRightAmp)
+				{
+					_rightAmpLab->show();
+				}
 			}
 			else
 			{
@@ -174,8 +185,23 @@ namespace CLAM
 			_leftAmpLab->hide();
 			_rightAmpLab->hide();
 			_labelsGroup->hide();
+			showRightAmp=false;
 		}
 
+		Audio& QtAudioPlot::GetAudioData()
+		{
+			return ((AudioPlotController*)_controller)->GetAudioData();
+		}
+
+		void QtAudioPlot::SetKeyPressed(QKeyEvent* e)
+		{
+			keyPressEvent(e);
+		}
+
+		void QtAudioPlot::SetKeyReleased(QKeyEvent* e)
+		{
+			keyReleaseEvent(e);
+		}
 	}	
 }
 

@@ -47,6 +47,9 @@ namespace CLAM
 			connect(_controller,SIGNAL(hZoomRatio(int)),this,SLOT(receivedHZoomRatio(int)));
 			connect(_controller,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
 			connect(_controller,SIGNAL(hScrollValue(int)),this,SLOT(updateHScroll(int)));
+
+			// connections to emit sel pos
+			connect(_controller,SIGNAL(selPos(TData)),this,SIGNAL(selPos(TData)));
 		}
 
 		void QtPresentation::Init()
@@ -124,14 +127,20 @@ namespace CLAM
 
 		void QtPresentation::hZoomIn()
 		{
-			if(_controller) _controller->HZoomIn();
-			emit HZoomIn();
+			if(_controller) 
+			{
+				_controller->HZoomIn();
+				emit HZoomIn();
+			}
 		}
 
 		void QtPresentation::hZoomOut()
 		{
-			if(_controller) _controller->HZoomOut();	
-			emit HZoomOut();
+			if(_controller) 
+			{
+				_controller->HZoomOut();	
+				emit HZoomOut();
+			}
 		}
 
 		void QtPresentation::receivedHZoomRatio(int zr)
@@ -143,7 +152,7 @@ namespace CLAM
 
 		void QtPresentation::hScrollValue(int value)
 		{
-			if(_controller)
+			if(_controller && _hs->GetScrollValue() != value)
 			{
 				_controller->UpdateHViewport(value);
 				emit HScrollValue(value);
@@ -317,6 +326,16 @@ namespace CLAM
 		void QtPresentation::RemoveFromMainLayout(QLayout* layout)
 		{
 			_mainLayout->removeItem(layout);
+		}
+
+		void QtPresentation::setSelPos(TData pos)
+		{
+			_controller->SetSelPos(pos);
+		}
+
+		void QtPresentation::SetToggleColorOn(bool b)
+		{
+			_btoggle_color->setOn(b);
 		}
 	}
 }

@@ -207,6 +207,7 @@ namespace CLAM
 		{
 			MediaTime time;
 			time.SetBegin(TData(0.0));
+			time.SetEnd(TData(GetnSamples())/_sampleRate);
 			emit selectedRegion(time);
 		}
 
@@ -234,6 +235,16 @@ namespace CLAM
 			QString s;
 			s = "t="+(s.setNum(t,'f',3))+"s amp="+(s.setNum(amp,'f',3));
 			emit toolTip(s);
+		}
+
+		void AudioPlotController::SetSelPos(const TData& value)
+		{
+			if(GetDialPos() != value)
+			{
+				SelTimeRegionPlotController::SetSelPos(value);
+				emit requestRefresh();
+				emit selPos(value);
+			}
 		}
 	}
 }

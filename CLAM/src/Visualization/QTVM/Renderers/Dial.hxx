@@ -16,6 +16,7 @@ namespace CLAM
 				virtual void Render();
 
 				void Update(const TData& value);
+				TData GetPos() const;
 		
 			private:
 				TData _data;

@@ -42,6 +42,7 @@ namespace CLAM
 				void Show();
 				void Hide();
 
+				void SetToggleColorOn(bool b);
 				void SwitchDisplayColors(bool b);
 
 				void RemoveXRuler();
@@ -73,6 +74,8 @@ namespace CLAM
 
 				void switchColorsRequested();
 
+				void selPos(TData);
+
 			public slots:
 				void hZoomIn();
 				void hZoomOut();
@@ -92,6 +95,8 @@ namespace CLAM
 				void setYRulerScaleDiv(QwtScaleDiv);
 
 				void switchColors();
+
+				void setSelPos(TData);
 
 			protected:
 				PlotController* _controller;
