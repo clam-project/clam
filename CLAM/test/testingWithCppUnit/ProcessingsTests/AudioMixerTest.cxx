@@ -62,6 +62,7 @@ private:
 	CPPUNIT_TEST_SUITE( AudioMixerTest );
 
 	CPPUNIT_TEST( testDo_WhenControlsGivesEqualValue );
+	CPPUNIT_TEST( testDo_WhenControlsGivesDifferentValue );
 
 	CPPUNIT_TEST_SUITE_END();
 	
@@ -84,12 +85,34 @@ private:
 	void testDo_WhenControlsGivesEqualValue()
 	{
 		_inAudio1.GetBuffer()[0] = 1;
-		_inAudio2.GetBuffer()[0] = 1;
-		_out1.SendControl(0.5);
-		_out2.SendControl(0.5);
+		_inAudio2.GetBuffer()[0] = 2;
+
+		_mixer.Start();
+
+		_out1.SendControl(0.3);
+		_out2.SendControl(0.3);
+
 		_mixer.Do();
-		
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.5) , _outAudio.GetBuffer()[0],0.000001);
+		_mixer.Do();
+
+		CPPUNIT_ASSERT_EQUAL( CLAM::TControlData(0.3), _mixer.mGain[0].GetLastValue());
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.45) , _outAudio.GetBuffer()[0],0.000001);
+	}
+
+	void testDo_WhenControlsGivesDifferentValue()
+	{
+		_inAudio1.GetBuffer()[0] = 3;
+		_inAudio2.GetBuffer()[0] = 2;
+
+		_mixer.Start();
+
+		_out1.SendControl(0.5);
+		_out2.SendControl(0.6);
+
+		_mixer.Do();
+		_mixer.Do();
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.35) , _outAudio.GetBuffer()[0],0.000001);
 	}
 };
 	
