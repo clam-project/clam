@@ -36,8 +36,6 @@ public:
 	{
 		xercesc::XMLPlatformUtils::Initialize();
 		mTargetStream.str("");
-		xercesc::DOMImplementation * imp = 
-			xercesc::DOMImplementation::getImplementation();
 	}
 
 	/// Common clean up, executed after each test method
@@ -57,10 +55,10 @@ private:
 	void testEmptyDocument()
 	{
 		std::istringstream toRead("<EmptyDocument />");
-		XercesDomReader reader(toRead);
-		xercesc::DOMDocument * doc = reader.read();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(doc);
+		XercesDomReader reader;
+		xercesc::DOMDocument * doc = reader.read(toRead);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, doc);
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
 		xmlHeader() +
@@ -79,10 +77,10 @@ private:
 		"</TestDoc>";
 		
 		std::istringstream toRead(toParse);
-		XercesDomReader reader(toRead);
-		xercesc::DOMDocument * doc = reader.read();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(doc);
+		XercesDomReader reader;
+		xercesc::DOMDocument * doc = reader.read(toRead);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, doc);
 
 		CPPUNIT_ASSERT_EQUAL(xmlHeader()+toParse,
 			mTargetStream.str());
@@ -99,9 +97,9 @@ private:
 		"</TestDoc>";
 		
 		std::istringstream toRead(toParse);
-		XercesDomReader reader(toRead);
+		XercesDomReader reader;
 		try {
-			xercesc::DOMNode * document = reader.read();
+			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
 		}
 		catch (Err & e)
@@ -127,9 +125,9 @@ private:
 		"</TestDoc>";
 		
 		std::istringstream toRead(toParse);
-		XercesDomReader reader(toRead);
+		XercesDomReader reader;
 		try {
-			xercesc::DOMNode * document = reader.read();
+			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
 		}
 		catch (Err & e)
@@ -155,9 +153,9 @@ private:
 		"</TestDoc>";
 		
 		std::istringstream toRead(toParse);
-		XercesDomReader reader(toRead);
+		XercesDomReader reader;
 		try {
-			xercesc::DOMNode * document = reader.read();
+			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
 		}
 		catch (Err & e)
