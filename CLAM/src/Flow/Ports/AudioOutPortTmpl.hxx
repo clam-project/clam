@@ -150,7 +150,8 @@ inline bool OutPortTmpl<Audio>::IsConnectableTo(InPort & in)
 inline NodeBase* OutPortTmpl<Audio>::CreateNodeWithDefaultStreamBuffer()
 {
 	typedef CircularStreamImpl<TData> DefaultStreamBuffer;
-	return new NodeTmpl<Audio, DefaultStreamBuffer>;
+	CLAM_ASSERT(false, "on work. inclusion of nodetmpl is difficult")
+	//return new NodeTmpl<Audio, DefaultStreamBuffer>;
 }
 
 
