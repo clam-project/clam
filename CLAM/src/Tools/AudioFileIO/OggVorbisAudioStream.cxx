@@ -244,7 +244,7 @@ namespace AudioCodecs
 	{
 
 		TSize nBytes = 0;
-		TSize samplesRead = 0;
+		unsigned samplesRead = 0;
 
 		while ( mDecodeBuffer.size() < mInterleavedData.Size() )
 		{
@@ -261,12 +261,10 @@ namespace AudioCodecs
 
 			samplesRead = mLastBytesRead / sizeof(TInt16 );
 
-
-
+			
 			mDecodeBuffer.insert( mDecodeBuffer.end(),
 					      mBlockBuffer.GetPtr(),
-					      mBlockBuffer.GetPtr() + samplesRead );
-				
+					      mBlockBuffer.GetPtr() + samplesRead);				
 		}
 
 		if ( mDecodeBuffer.size() < mInterleavedData.Size() )
