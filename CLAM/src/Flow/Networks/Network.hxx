@@ -11,8 +11,6 @@
 #include <string>
 #include <map>
 
-// to remove
-#include "DummyProcessingData.hxx"
 #include "Audio.hxx"
 
 namespace CLAM
