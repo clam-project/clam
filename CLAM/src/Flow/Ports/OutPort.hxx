@@ -74,6 +74,7 @@ public:
 	void CenterEvenRegions();
 
 protected:	
+	// XR TODO: TryDisconnect
 	bool TryConnectToPublisher( InPortBase & in );
 	bool TryConnectToConcreteIn( InPortBase & in );
 
@@ -130,7 +131,12 @@ bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
 	try
 	{
 		InPortPublisher<Token> & publisher =  dynamic_cast< InPortPublisher<Token> &>(in);
-		ConnectToConcreteIn( publisher.GetPublishedInPort() );
+		typename InPortPublisher<Token>::ProperInPortsList::iterator it;
+
+		for( it=publisher.BeginPublishedInPortsList(); it!=publisher.EndPublishedInPortsList(); it++)
+		{
+			ConnectToConcreteIn( **it );
+		}
 	}
 	catch(...)
 	{

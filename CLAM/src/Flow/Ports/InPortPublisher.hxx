@@ -12,20 +12,15 @@ class InPortPublisher : public InPortBase
 {
 	typedef InPort<Token> ProperInPort;
 public:
+	typedef std::list< ProperInPort * > ProperInPortsList;
+
 	InPortPublisher( const std::string & name = "unnamed in port", Processing * proc = 0 )
-		: InPortBase( name, proc ), mPublishedInPort(0)
+		: InPortBase( name, proc )
 	{
 	}
 	
 	virtual ~InPortPublisher()
 	{
-	}
-
-	// XR: BIG TODO: make this method const!
-	/*const*/ Token & GetData(int offset=0)
-	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		mPublishedInPort->GetData( offset );
 	}
 
 	void PublishInPort( InPortBase & in )
@@ -44,54 +39,47 @@ public:
 
 	void ConcretePublishInPort( ProperInPort & in )
 	{
-		mPublishedInPort = &in;
-	}
-
-	
-	void SetSize( int newSize )
-	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		mPublishedInPort->SetSize( newSize );
+		mPublishedInPortsList.push_back( &in );
 	}
 	
 	int GetSize()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		return mPublishedInPort->GetSize();
+		return 0;
 	}
-		
+	
+	void SetSize(int newSize)
+	{
+	}
+	
 	int GetHop()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		return mPublishedInPort->GetHop();
+		return 0;
 	}
 	
-	void SetHop( int hop )
+	void SetHop(int newHop)
 	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		mPublishedInPort->SetHop( hop );
-	}
-	
-	void Consume()
-	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		mPublishedInPort->Consume();
 	}
 	
 	bool CanConsume()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedInPort != 0, "InPortPublisher - no in port published" );
-		return mPublishedInPort->CanConsume();
+	//	return mPublishedInPort->CanConsume();
+		return true;	
 	}
+	
 
-	ProperInPort & GetPublishedInPort()
+	typename ProperInPortsList::iterator BeginPublishedInPortsList()
 	{
-		return *mPublishedInPort;
+		return mPublishedInPortsList.begin();
 	}
-			
+	
+	typename ProperInPortsList::iterator EndPublishedInPortsList()
+	{
+		return mPublishedInPortsList.end();
+	}
+		
  protected:
 
-	ProperInPort * mPublishedInPort;
+	ProperInPortsList mPublishedInPortsList;
 };
 
 } // namespace CLAM

@@ -77,42 +77,32 @@ public:
 		return mPublishedOutPort->GetData( offset );
 	}
 	
-	void SetSize( int newSize )
-	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
-		mPublishedOutPort->SetSize( newSize );
-	}
-	
 	int GetSize()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		return mPublishedOutPort->GetSize();
+	}
+	
+	void SetSize(int newSize)
+	{
+		mPublishedOutPort->SetSize( newSize );
 	}
 	
 	int GetHop()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		return mPublishedOutPort->GetHop();
 	}
 	
-	void SetHop( int hop )
+	void SetHop(int newHop)
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
-		mPublishedOutPort->SetHop( hop );
+		mPublishedOutPort->SetHop( newHop );
 	}
-	
-	
-	void Produce()
-	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
-		mPublishedOutPort->Produce();
-	}
+
 	
 	bool CanProduce()
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		return mPublishedOutPort->CanProduce();
-	}
+	}	
 	
 	void CenterEvenRegions()
 	{
