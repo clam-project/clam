@@ -72,6 +72,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
+	out=in;
 	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
 	Fundamental tmpFund=in.GetFundamental();
@@ -82,6 +83,7 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 	}
 	out.SetFundamental(tmpFund);
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
+
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
