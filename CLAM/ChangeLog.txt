@@ -4,6 +4,8 @@
 'Processing ports rewrite and clean up'
   * Processing Ports Infrastructure Complete Rewrite:
      ** Now effectively works with any datatype (i.e. InPort<Spectrum>)
+     ** Shortcut CLAM::ConnectPorts with either ports numbers and names
+     ** Shortcut CLAM::ConnectControls with either control numbers and names
      ** Underlying data structure for streaming tokens is specified using a 
         Template-Policy
         *** Default policy is PhantomBuffer: an contiguous-memory circular 
