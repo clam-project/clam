@@ -52,6 +52,7 @@ namespace CLAMVM
 		  mUserDefinedSinFreqEnvelope( false ),
 		  mUserDefinedResAmpEnvelope( false ),
 		  mUserDefinedPitchHybEnvelope( false ),
+		  mUserDefinedTimeSyncEnvelope( false ),
 		  mOnlyGlobalEnvelope( true )
 	{
 		FrameInterpolationListener.Wrap( this, 
@@ -66,6 +67,8 @@ namespace CLAMVM
 					      &SMSMorphConfigurator::UserDefinedParams::OnSinFreqEnvelopeChanged );
 		ResAmpEnvelopeListener.Wrap( this,
 					     &SMSMorphConfigurator::UserDefinedParams::OnResAmpEnvelopeChanged );
+		TimeSyncEnvelopeListener.Wrap( this, 
+					       &SMSMorphConfigurator::UserDefinedParams::OnTimeSyncEnvelopeChanged );
 	}
 
 	SMSMorphConfigurator::UserDefinedParams::~UserDefinedParams()
@@ -112,6 +115,13 @@ namespace CLAMVM
 		UserHasActed.Emit();
 	}
 
+	void SMSMorphConfigurator::UserDefinedParams::OnTimeSyncEnvelopeChanged() 
+	{
+		mUserDefinedTimeSyncEnvelope = true;
+		mOnlyGlobalEnvelope = false;
+		UserHasActed.Emit();
+	}
+
 	void SMSMorphConfigurator::UserDefinedParams::Reset()
 	{
 		mUserActivatedFrameInterpolation = false;
@@ -120,6 +130,7 @@ namespace CLAMVM
 		mUserDefinedSinFreqEnvelope = false;
 		mUserDefinedResAmpEnvelope = false;
 		mUserDefinedPitchHybEnvelope = false;
+		mUserDefinedTimeSyncEnvelope = false;
 	}
 
 	SMSMorphConfigurator::SMSMorphConfigurator()
@@ -139,6 +150,7 @@ namespace CLAMVM
 		mpMorphEditor->SinAmpEnvelopeChanged.Connect( UserListener().SinAmpEnvelopeListener );
 		mpMorphEditor->SinFreqEnvelopeChanged.Connect( UserListener().SinFreqEnvelopeListener );
 		mpMorphEditor->ResAmpEnvelopeChanged.Connect( UserListener().ResAmpEnvelopeListener );
+		mpMorphEditor->TimeSyncEnvelopeChanged.Connect( UserListener().TimeSyncEnvelopeListener );
 	
 	}
 
@@ -195,6 +207,8 @@ namespace CLAMVM
 
 		mpMorphEditor->SetResAmpEnvelope( mConfig.GetHybResAmp() );
 
+		mpMorphEditor->SetTimeSyncEnvelope( mConfig.GetSynchronizeTime() );
+
 	}
 	
 	void SMSMorphConfigurator::SetupConfigObject()
@@ -203,35 +217,22 @@ namespace CLAMVM
 
 		// HybBPF ( Global envelope ) sync
 		
-		if ( UserListener().UserOnlyDefinedGlobalEnvelope() )
-		{
-			mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybBPF() );
-			mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybSinFreq() );
-			mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybSinAmp() );
-			mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybPitch() );
-			mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybResAmp() );
-		}
-		else
-		{
-			mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybBPF() );
+		mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybBPF() );
+		
+		mpMorphEditor->RetrieveSinFreqEnvelope( mConfig.GetHybSinFreq() );
 			
-			mpMorphEditor->RetrieveSinFreqEnvelope( mConfig.GetHybSinFreq() );
+		mpMorphEditor->RetrieveSinAmpEnvelope( mConfig.GetHybSinAmp() );
+		
+		// Pitch hybridization control envelope sync
+		
+		mpMorphEditor->RetrievePitchHybEnvelope( mConfig.GetHybPitch() );
 			
-			mpMorphEditor->RetrieveSinAmpEnvelope( mConfig.GetHybSinAmp() );
+		// Residual amplitude blending envelope sync
 			
-			// Pitch hybridization control envelope sync
-			
-			mpMorphEditor->RetrievePitchHybEnvelope( mConfig.GetHybPitch() );
-			
-			// Residual amplitude blending envelope sync
-			
-			mpMorphEditor->RetrieveResAmpEnvelope( mConfig.GetHybResAmp() );
-		}
+		mpMorphEditor->RetrieveResAmpEnvelope( mConfig.GetHybResAmp() );
+		
+		mpMorphEditor->RetrieveTimeSyncEnvelope( mConfig.GetSynchronizeTime() );
 
-		CLAM::BPF tmpBPF;
-		tmpBPF.Insert( 0, 0 );
-		tmpBPF.Insert( 1, 1 );
-		mConfig.SetSynchronizeTime( tmpBPF );
 	}
 
 

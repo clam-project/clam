@@ -3,6 +3,7 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Check_Button.H>
 #include "Fl_SMS_BPF_Editor.hxx"
+#include "Fl_SMS_BPF_Sync_Editor.hxx"
 #include <iostream>
 
 namespace CLAMVM
@@ -15,7 +16,10 @@ namespace CLAMVM
 		  mPitchHybControlKey( "Pitch hybridization" ),
 		  mSinFreqControlKey( "Sinusoidal component frequency hybridization" ),
 		  mResAmpControlKey( "Residual component amplitude hybridization" ),
-		  mFirstTimeShown( true )
+		  mTimeSyncControlKey( "Time synchronization" ),
+		  mFirstTimeShown( true ),
+		  mSynchSinAmpEditorWithGlobal( true ), mSynchSinFreqEditorWithGlobal( true ),
+		  mSynchPitchHybEditorWithGlobal( true ), mSynchResAmpEditorWithGlobal( true )
 	{
 		mpFrameInterpSelector = new Fl_Check_Button( X+5, Y+5, 80, 20 );
 		mpFrameInterpSelector->label( "Interpolate intermediate frames" );
@@ -45,6 +49,12 @@ namespace CLAMVM
 		PitchHybEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnPitchHybEnvelopeEdition );
 		SinFreqEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnSinFreqEnvelopeEdition );
 		ResAmpEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResAmpEnvelopeEdition );
+		TimeSyncEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnTimeSyncEnvelopeEdition );
+
+		ChangeSinAmpSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForSinAmpEditorChanged );
+		ChangeSinFreqSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForSinFreqEditorChanged );
+		ChangePitchHybSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForPitchHybEditorChanged );
+		ChangeResAmpSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForResAmpEditorChanged );
 
 		InitEnvelopeSelectorContents();
 		CreateEnvelopeEditors();
@@ -58,6 +68,7 @@ namespace CLAMVM
 		mEnvelopeEditors[ mPitchHybControlKey ] = BuildPitchHybEditor();
 		mEnvelopeEditors[ mSinFreqControlKey ] = BuildSinFreqEditor();
 		mEnvelopeEditors[ mResAmpControlKey ] = BuildResAmpEditor();
+		mEnvelopeEditors[ mTimeSyncControlKey ] = BuildTimeSyncEditor();
 	}
 	
 	void Fl_SMS_Morph_Control::DestroyEnvelopeEditors()
@@ -80,7 +91,6 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::DeactivateFrameInterpolation()
 	{
 		mpFrameInterpSelector->value(0);
-		mpFrameInterpSelector->redraw();
 	}
 
 	void Fl_SMS_Morph_Control::RetrieveGlobalEnvelope( CLAM::BPF& bpf )
@@ -96,6 +106,7 @@ namespace CLAMVM
 
 		editor->Clear();
 		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
 	}
 
 	void Fl_SMS_Morph_Control::RetrieveSinAmpEnvelope( CLAM::BPF& bpf )
@@ -111,6 +122,7 @@ namespace CLAMVM
 		
 		editor->Clear();
 		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );		
 	}
 
 	void Fl_SMS_Morph_Control::RetrievePitchHybEnvelope( CLAM::BPF& bpf )
@@ -126,6 +138,8 @@ namespace CLAMVM
 		
 		editor->Clear();
 		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
+		
 	}
 
 	void Fl_SMS_Morph_Control::RetrieveSinFreqEnvelope( CLAM::BPF& bpf )
@@ -141,6 +155,7 @@ namespace CLAMVM
 		
 		editor->Clear();
 		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
 	}
 
 	void Fl_SMS_Morph_Control::RetrieveResAmpEnvelope( CLAM::BPF& bpf )
@@ -156,12 +171,61 @@ namespace CLAMVM
 		
 		editor->Clear();
 		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
 	}
 
+	void Fl_SMS_Morph_Control::RetrieveTimeSyncEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mTimeSyncControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetTimeSyncEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mTimeSyncControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
+	}
+
+
+	void Fl_SMS_Morph_Control::OnSynchStateForSinAmpEditorChanged( bool state )
+	{
+		mSynchSinAmpEditorWithGlobal = state;
+	}
+
+	void Fl_SMS_Morph_Control::OnSynchStateForSinFreqEditorChanged( bool state )
+	{
+		mSynchSinFreqEditorWithGlobal = state;
+	}
+
+	void Fl_SMS_Morph_Control::OnSynchStateForPitchHybEditorChanged( bool state )
+	{
+		mSynchPitchHybEditorWithGlobal = state;
+	}
+
+	void Fl_SMS_Morph_Control::OnSynchStateForResAmpEditorChanged( bool state )
+	{
+		mSynchResAmpEditorWithGlobal = state;
+	}
 
 	void Fl_SMS_Morph_Control::OnGlobalEnvelopeEdition()
 	{
 		GlobalEnvelopeChanged.Emit();
+		CLAM::BPF globalBPF;
+
+		RetrieveGlobalEnvelope( globalBPF );
+
+		if ( MustBeSinAmpInSynch() )
+			SetSinAmpEnvelope( globalBPF );
+		if ( MustBeSinFreqInSynch() )
+			SetSinFreqEnvelope( globalBPF );
+		if ( MustBePitchHybInSynch() )
+			SetPitchHybEnvelope( globalBPF );
+		if ( MustBeResAmpInSynch() )
+			SetResAmpEnvelope( globalBPF );
 	}
 
 	void Fl_SMS_Morph_Control::OnSinAmpEnvelopeEdition()
@@ -182,6 +246,11 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::OnResAmpEnvelopeEdition()
 	{
 		ResAmpEnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnTimeSyncEnvelopeEdition()
+	{
+		TimeSyncEnvelopeChanged.Emit();
 	}
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildGlobalEditor()
@@ -207,7 +276,7 @@ namespace CLAMVM
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildSinAmpEditor()
 	{
-		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		Fl_SMS_BPF_Sync_Editor* widget = new Fl_SMS_BPF_Sync_Editor( 0, 0, 100, 100 );
 		widget->label( mSinAmpControlKey.c_str() );
 		widget->SetHorizontalRange( 0.0, 1.0 );
 		widget->SetVerticalRange( 0.0, 1.0 );
@@ -225,13 +294,14 @@ namespace CLAMVM
 		widget->InitPoints( 0.5 );
 		add( widget );
 		widget->PointsChanged.Connect( SinAmpEnvelopeEdited );
+		widget->SynchronizationChanged.Connect( ChangeSinAmpSynchState );		
 
 		return widget;
 	}
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildSinFreqEditor()
 	{
-		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		Fl_SMS_BPF_Sync_Editor* widget = new Fl_SMS_BPF_Sync_Editor( 0, 0, 100, 100 );
 		widget->label( mSinFreqControlKey.c_str() );
 		widget->SetHorizontalRange( 0.0, 1.0 );
 		widget->SetVerticalRange( 0.0, 1.0 );
@@ -250,13 +320,14 @@ namespace CLAMVM
 		add( widget );
 
 		widget->PointsChanged.Connect( SinFreqEnvelopeEdited );
+		widget->SynchronizationChanged.Connect( ChangeSinFreqSynchState );		
 
 		return widget;
 	}
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildPitchHybEditor()
 	{
-		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		Fl_SMS_BPF_Sync_Editor* widget = new Fl_SMS_BPF_Sync_Editor( 0, 0, 100, 100 );
 		widget->label( mPitchHybControlKey.c_str() );
 		widget->SetHorizontalRange( 0.0, 1.0 );
 		widget->SetVerticalRange( 0.0, 1.0 );
@@ -275,13 +346,14 @@ namespace CLAMVM
 		add( widget );
 		
 		widget->PointsChanged.Connect( PitchHybEnvelopeEdited );
-		
+		widget->SynchronizationChanged.Connect( ChangePitchHybSynchState );		
+
 		return widget;
 	}
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildResAmpEditor()
 	{
-		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		Fl_SMS_BPF_Sync_Editor* widget = new Fl_SMS_BPF_Sync_Editor( 0, 0, 100, 100 );
 		widget->label( mResAmpControlKey.c_str() );
 		widget->SetHorizontalRange( 0.0, 1.0 );
 		widget->SetVerticalRange( 0.0, 1.0 );
@@ -299,7 +371,33 @@ namespace CLAMVM
 		widget->InitPoints( 0.5 );
 
 		widget->PointsChanged.Connect( ResAmpEnvelopeEdited );
+		widget->SynchronizationChanged.Connect( ChangeResAmpSynchState );		
+
+		add( widget );
+
+		return widget;
+	}
+
+	Fl_Widget* Fl_SMS_Morph_Control::BuildTimeSyncEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mTimeSyncControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "TODO: write a description for this ");
+
+		widget->hide();
 		
+		CLAM::BPF tmpBPF;
+		tmpBPF.Insert( 0.0, 0.0 );
+		tmpBPF.Insert( 1.0, 1.0 );
+
+		widget->InitPoints( tmpBPF );
+
+		widget->PointsChanged.Connect( TimeSyncEnvelopeEdited );
+
 		add( widget );
 
 		return widget;
@@ -384,11 +482,13 @@ namespace CLAMVM
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mSinAmpControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
-		mpEnvelopeSelector->add( mPitchHybControlKey.c_str(), NULL,
-					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mSinFreqControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mResAmpControlKey.c_str(), NULL, 
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mPitchHybControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mTimeSyncControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 					 
 	}

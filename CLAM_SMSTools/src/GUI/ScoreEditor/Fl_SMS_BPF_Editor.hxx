@@ -30,9 +30,22 @@ namespace CLAMVM
 		void SetXAxisLabel( const char* label );
 		void SetYAxisLabel( const char* label );
 
-		SigSlot::Signalv0   PointsChanged;		
+		virtual void resize( int X, int Y, int W, int H );
+		
+		SigSlot::Signalv0   PointsChanged;	
 
 	protected:
+
+		Fl_Envelope_Scroll&   FunctionEditor() { 
+			return *mpFunctionEditor;
+		}
+
+		Fl_Check_Button& SnapToGridButton() {
+			return *mpSnapToGridBtn;
+		}
+
+		virtual void CreateContents();
+		virtual void ApplyLayoutOnContents( int X, int Y, int W, int H);
 
 		SigSlot::Slotv2<double,double>  NewPoint;
 		SigSlot::Slotv0                 PointRemoved;

@@ -33,6 +33,7 @@ namespace CLAMVM
 		SigSlot::Signalv0        PitchHybEnvelopeChanged;
 		SigSlot::Signalv0        SinFreqEnvelopeChanged;
 		SigSlot::Signalv0        ResAmpEnvelopeChanged;
+		SigSlot::Signalv0        TimeSyncEnvelopeChanged;
 		SigSlot::Signalv1<bool>  FrameInterpolationChanged;   
 
 		void RetrieveGlobalEnvelope( CLAM::BPF& );
@@ -50,6 +51,9 @@ namespace CLAMVM
 		void RetrieveResAmpEnvelope( CLAM::BPF& );
 		void SetResAmpEnvelope( const CLAM::BPF& );
 
+		void RetrieveTimeSyncEnvelope( CLAM::BPF& );
+		void SetTimeSyncEnvelope( const CLAM::BPF& );
+
 		void ActivateFrameInterpolation();
 		void DeactivateFrameInterpolation();
 
@@ -61,12 +65,14 @@ namespace CLAMVM
 		SigSlot::Slotv0       PitchHybEnvelopeEdited;
 		SigSlot::Slotv0       SinFreqEnvelopeEdited;
 		SigSlot::Slotv0       ResAmpEnvelopeEdited;
+		SigSlot::Slotv0       TimeSyncEnvelopeEdited;
 
 		void OnGlobalEnvelopeEdition();
 		void OnSinAmpEnvelopeEdition();
 		void OnPitchHybEnvelopeEdition();
 		void OnSinFreqEnvelopeEdition();
 		void OnResAmpEnvelopeEdition();
+		void OnTimeSyncEnvelopeEdition();
 
 		void InitEnvelopeSelectorContents();
 
@@ -102,12 +108,41 @@ namespace CLAMVM
 		Fl_Widget* BuildPitchHybEditor();
 		Fl_Widget* BuildSinFreqEditor();
 		Fl_Widget* BuildResAmpEditor();
-		
+		Fl_Widget* BuildTimeSyncEditor();
+
+	
 	protected: // "dynamic widgets"
 
 		typedef std::map< std::string, Fl_Widget* >   EnvelopeWidgetRepository;
 		
 		EnvelopeWidgetRepository                      mEnvelopeEditors;
+
+
+		bool  MustBeSinAmpInSynch() const { 
+			return mSynchSinAmpEditorWithGlobal;
+		}
+
+		bool  MustBeSinFreqInSynch() const {
+			return mSynchSinFreqEditorWithGlobal;
+		}
+
+		bool  MustBePitchHybInSynch() const {
+			return mSynchPitchHybEditorWithGlobal;
+		}
+
+		bool  MustBeResAmpInSynch() const {
+			return mSynchResAmpEditorWithGlobal;
+		}
+
+		void  OnSynchStateForSinAmpEditorChanged( bool state );
+		void  OnSynchStateForSinFreqEditorChanged( bool state );
+		void  OnSynchStateForPitchHybEditorChanged( bool state );
+		void  OnSynchStateForResAmpEditorChanged( bool state );
+
+		SigSlot::Slotv1<bool>   ChangeSinAmpSynchState;
+		SigSlot::Slotv1<bool>   ChangeSinFreqSynchState;
+		SigSlot::Slotv1<bool>   ChangePitchHybSynchState;
+		SigSlot::Slotv1<bool>   ChangeResAmpSynchState;
 
 	protected: // "static" widgets
 		
@@ -120,7 +155,15 @@ namespace CLAMVM
 		const std::string mPitchHybControlKey;
 		const std::string mSinFreqControlKey;
 		const std::string mResAmpControlKey;
+		const std::string mTimeSyncControlKey;
+		
 		bool  mFirstTimeShown;
+
+		bool  mSynchSinAmpEditorWithGlobal;
+		bool  mSynchPitchHybEditorWithGlobal;
+		bool  mSynchSinFreqEditorWithGlobal;
+		bool  mSynchResAmpEditorWithGlobal;
+
 	};
 
 }

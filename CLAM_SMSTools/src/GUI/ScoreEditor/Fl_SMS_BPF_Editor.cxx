@@ -13,7 +13,22 @@ namespace CLAMVM
 		: Fl_Group( X, Y, W, H), mpFunctionEditor( NULL ), mXAxisLabel( "No label set" ),
 		  mYAxisLabel( "No label set" ), mpXAxisLabelBox( NULL ), mpYAxisLabelBox( NULL )
 	{
-		mpFunctionEditor = new Fl_Envelope_Scroll( X+5, Y+5, W-10, H-30 );
+		CreateContents();
+		end();
+		ApplyLayoutOnContents( X, Y, W, H );
+
+		NewPoint.Wrap( this, &Fl_SMS_BPF_Editor::OnNewPoint );
+		PointRemoved.Wrap( this, &Fl_SMS_BPF_Editor::OnPointRemoved );
+		PointMoved.Wrap( this, &Fl_SMS_BPF_Editor::OnPointMoved );
+
+		FunctionEditor().envelope->PointAdded.Connect( NewPoint );
+		FunctionEditor().envelope->PointMoved.Connect( PointMoved );
+		FunctionEditor().envelope->PointRemoved.Connect( PointRemoved );
+	}
+
+	void Fl_SMS_BPF_Editor::CreateContents()
+	{
+		mpFunctionEditor = new Fl_Envelope_Scroll( 0,0,100,100 );
 		mpFunctionEditor->envelope->grid( 0.1f, 0.1f );
 		mpFunctionEditor->control->hvalue( 0.0, 1.0, 0.0, 1.0 );
 		mpFunctionEditor->control->vvalue( 0.0, 1.0, 0.0, 1.0 );
@@ -33,25 +48,29 @@ namespace CLAMVM
 		mpYAxisLabelBox->align( FL_ALIGN_INSIDE | FL_ALIGN_CLIP );
 		*/
 
-		mpSnapToGridBtn = new Fl_Check_Button( X+10, H-15, W-40, 15 );
+		mpSnapToGridBtn = new Fl_Check_Button( 0,0,30,10 );
 		mpSnapToGridBtn->label( "Snap points to grid" );
 		mpSnapToGridBtn->labelsize( 10 );
 		//mpSnapToGridBtn->align( FL_ALIGN_RIGHT );
 		mpSnapToGridBtn->callback( (Fl_Callback*)cbSnapToGrid, this );
 
-		end();
-		resizable( mpFunctionEditor );
 
-		NewPoint.Wrap( this, &Fl_SMS_BPF_Editor::OnNewPoint );
-		PointRemoved.Wrap( this, &Fl_SMS_BPF_Editor::OnPointRemoved );
-		PointMoved.Wrap( this, &Fl_SMS_BPF_Editor::OnPointMoved );
-
-		mpFunctionEditor->envelope->PointAdded.Connect( NewPoint );
-		mpFunctionEditor->envelope->PointMoved.Connect( PointMoved );
-		mpFunctionEditor->envelope->PointRemoved.Connect( PointRemoved );
 	}
 
-	
+	void Fl_SMS_BPF_Editor::ApplyLayoutOnContents( int X, int Y, int W, int H)
+	{
+		FunctionEditor().resize( X+2, Y+2, W-4, H-30 );
+		FunctionEditor().margin_adjust();
+		SnapToGridButton().resize( X+2, Y+H-20, W/2, 15);
+	}
+
+	void Fl_SMS_BPF_Editor::resize( int X, int Y, int W, int H )
+	{
+		Fl_Group::resize( X, Y, W, H );
+		ApplyLayoutOnContents( x(), y(), w(), h() );
+	}
+
+
 	void Fl_SMS_BPF_Editor::OnNewPoint( double x, double y )
 	{
 		PointsChanged.Emit();

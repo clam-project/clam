@@ -26,6 +26,7 @@ namespace CLAMVM
 			bool   mUserDefinedSinFreqEnvelope;
 			bool   mUserDefinedResAmpEnvelope;
 			bool   mUserDefinedPitchHybEnvelope;
+			bool   mUserDefinedTimeSyncEnvelope;
 			bool   mOnlyGlobalEnvelope;
 
 		public:
@@ -69,12 +70,18 @@ namespace CLAMVM
 				return mUserDefinedPitchHybEnvelope;
 			}
 
+			bool UserDefinedTimeSyncEnvelope() const
+			{
+				return mUserDefinedTimeSyncEnvelope;
+			}
+
 			SigSlot::Slotv1<bool> FrameInterpolationListener;
 			SigSlot::Slotv0       GlobalEnvelopeListener;
 			SigSlot::Slotv0       PitchHybEnvelopeListener;
 			SigSlot::Slotv0       SinAmpEnvelopeListener;
 			SigSlot::Slotv0       SinFreqEnvelopeListener;
 			SigSlot::Slotv0       ResAmpEnvelopeListener;
+			SigSlot::Slotv0       TimeSyncEnvelopeListener;
 			SigSlot::Signalv0     UserHasActed;
 
 		protected:
@@ -85,6 +92,7 @@ namespace CLAMVM
 			void OnSinAmpEnvelopeChanged();
 			void OnSinFreqEnvelopeChanged();
 			void OnResAmpEnvelopeChanged();
+			void OnTimeSyncEnvelopeChanged();
 		};
 		
 
