@@ -24,7 +24,7 @@
 
 #include "GeometryKit.hxx"
 #include "GLPortNew.hxx"
-#include "FL/Fl.H"
+#include <FL/Fl.H>
 #include "DataTypes.hxx"
 
 #include "Signalv1.hxx"
