@@ -320,7 +320,7 @@ double WindowGenerator::BesselFunction(double x) const
 	for(i=2; i<50; i++)
 	{
 		Factorial *= i;
-		Sum += pow( pow(HalfX,i) / Factorial, 2);
+		Sum += pow( pow(HalfX, (double)i) / Factorial, 2.0);
 	}
 	return Sum;
 }
@@ -345,7 +345,7 @@ void WindowGenerator::KaiserBessel(long size,DataArray& window,
 	{
 		window[i] = window[windowsize-i-1] =TData(
 		   BesselFunction(PiAlpha * sqrt(1.0 - pow((double)(i-iHalfsize) /
-		   dHalfsize, 2))) / BesselFunction(PiAlpha) );
+		   dHalfsize, 2.0))) / BesselFunction(PiAlpha) );
 	}
 
 }
