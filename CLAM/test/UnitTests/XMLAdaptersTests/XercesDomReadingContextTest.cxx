@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "XercesDom2ClamObjects.hxx"
+#include "ClamObjects2XercesDom.hxx"
 #include "XmlMockUpObjects.hxx"
 #include "Component.hxx"
 #include <list>
