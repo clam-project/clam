@@ -7,7 +7,13 @@
 
 namespace CLAM
 {
+	class TickExtractorConfig;
+
 	void ExtractTicksSequence( std::string pathToFile,
+				   CLAM::Pulse& ticksList );
+
+	void ExtractTicksSequence( std::string pathToFile,
+				   TickExtractorConfig& cfg,
 				   CLAM::Pulse& ticksList);
 }
 

@@ -50,9 +50,17 @@ namespace CLAM
 	void ExtractTicksSequence( std::string pathToFile,
 				   CLAM::Pulse& ticksList )
 	{
-		TickExtractorConfig configuration; // we will be using default config
-		configuration.SetFromAudio( false );		
+		TickExtractorConfig defaultConfig;
 
+		ExtractTicksSequence( pathToFile, defaultConfig, ticksList );
+	}
+	
+	void ExtractTicksSequence( std::string pathToFile,
+				   TickExtractorConfig& configuration,
+				   CLAM::Pulse& ticksList )	
+	{
+
+		configuration.SetFromAudio( false );		
 		Segment seg;
 		seg.AddAudio();
 		seg.UpdateData();
@@ -76,10 +84,10 @@ namespace CLAM
 		seg.SetEndTime(duration);
 		
 		Array< TimeIndex > transients;
-
 		
 		OnsetDetectorConfig onsetconfig;
-		OnsetDetector onset(onsetconfig);
+		OnsetDetector onset;
+		
 		onsetconfig.SetComputeOffsets(false);
 		onsetconfig.SetGlobalThreshold(25);
 		

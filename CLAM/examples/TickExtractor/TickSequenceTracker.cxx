@@ -81,9 +81,9 @@ namespace CLAM
 			//Thus, OffsetStep=tickLimInf ==> no offset seeking
 										
 			tsfConfig.SetOffsetMin( 0 );
-			tsfConfig.SetOffsetStep(  mConfig.GetTickLimInf()*mConfig.GetSampleRate() );
-			tsfConfig.SetIntervalMin( mConfig.GetTickLimSup()*mConfig.GetSampleRate());
-			tsfConfig.SetIntervalMax( mConfig.GetTickLimInf()*mConfig.GetSampleRate() );
+			tsfConfig.SetOffsetStep(  unsigned(mConfig.GetTickLimInf()*mConfig.GetSampleRate()) );
+			tsfConfig.SetIntervalMin( unsigned(mConfig.GetTickLimSup()*mConfig.GetSampleRate()) );
+			tsfConfig.SetIntervalMax( unsigned(mConfig.GetTickLimInf()*mConfig.GetSampleRate()) );
 			tsfConfig.SetIntervalStep( 10 );
 			tsfConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
 			tsfConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
@@ -170,8 +170,6 @@ namespace CLAM
 					     IOIHistogram& IOIHist)
 		{
 
-			TData globalTick = -1 , globalTempo = -1;
-
 			mTickFirstGuess.SetOffset(0); 
 			mTickFirstGuess.SetInterval(1);
 		
@@ -189,6 +187,7 @@ namespace CLAM
 
 			int stop = 0;
 			int numbTrans = mConfig.GetNTrans();
+
 			//If one gives a large value for numbTrans, the computation is done
 			// in a single loop
 			if (numbTrans>transients.Size())
@@ -205,11 +204,10 @@ namespace CLAM
 			int lastTransientPos;
 
 			Array<TimeIndex>  IOIHistPeaks;
-
-			Array<TimeIndex> tickArray, tempoArray;
+			Array<TimeIndex> tickArray;
+			Array<TimeIndex> tempoArray;
 
 			Array<TData> forGlobalTempoCalc;
-
 			Array<TData> forGlobalTickCalc;
 		
 			
@@ -218,8 +216,8 @@ namespace CLAM
 
 			while (lastTransientIndex<transients.Size() && stop<2)
 			{
-				firstTransientPos = transients[firstTransientIndex].GetPosition();
-				lastTransientPos = transients[lastTransientIndex].GetPosition();
+				firstTransientPos = (int)transients[firstTransientIndex].GetPosition();
+				lastTransientPos = (int)transients[lastTransientIndex].GetPosition();
 				TSize windowSize = lastTransientPos - firstTransientPos;
 			
 				TSize actualIOIHistSize = std::min((TSize)windowSize,mIOIHistMaxSize);
@@ -323,23 +321,11 @@ namespace CLAM
 			}
 
 			///Compute Global tick
-			const int tickLimInf = mConfig.GetTickLimInf()*mConfig.GetSampleRate(); //samples
+			const int tickLimInf = int(mConfig.GetTickLimInf()*mConfig.GetSampleRate()); //samples
 			mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( tickLimInf );
 			mGlobalPREstimator.Do( forGlobalTickCalc, tickSequence );
 		
 			return true;
-		}
-
-
-
-		bool TickSequenceTracker::Compute(const Array<TimeIndex>& transients, 
-						  IOIHistogram& IOIHist, 
-						  Array<TimeIndex>& ticks,Array<TimeIndex>& beats,
-						  TData& globalTick, 
-						  TData& globalTempo)
-		{
-			return true;
-
 		}
 
 		void TickSequenceTracker::StorePulseIndexes(const int nLoops,
@@ -360,7 +346,7 @@ namespace CLAM
 			{
 				// MRJ: Concatenates previously found pulses with the new ones
 
-				int lastPosition = mPulses[mPulses.Size()-1].GetPosition();
+				int lastPosition = (int)mPulses[mPulses.Size()-1].GetPosition();
 
 
 				while ((pulsesArray[i].GetPosition() <
@@ -369,8 +355,6 @@ namespace CLAM
 				{
 					i+=1;
 				}
-
-
 
 				while (i<pulsesArray.Size())
 				{
