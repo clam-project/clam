@@ -14,13 +14,16 @@ namespace CLAM
 {
 
 
-template<class T>
+template<typename  T>
 class InPortTmpl : public InPort
 {
 	ReadStreamRegion *mpRegion;
 	Node<T> *mpNode;
 	Array<T> mData;
 public:
+	
+	typedef T PortType;
+
 	inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
 	inline T &GetData();
 	inline void LeaveData();

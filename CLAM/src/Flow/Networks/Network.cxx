@@ -37,6 +37,24 @@ namespace CLAM
 		return i!=_processings.end();
 	}
 
+
+	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
+	{
+//		Processing &producerProc= GetProcessing(GetProcessingIdentifier(producer));
+		OutPort & outport = GetOutPortByCompleteName(producer);
+//		Processing * consumerProc = &GetProcessingIdentifier(consumer);
+		InPort & inport = GetInPortByCompleteName(consumer);
+
+		if (PortsAreConnected(outport, inport)) //currently are connected
+		{
+			return true;
+		}
+
+		inport.Attach(GetNode(outport));
+		return true;
+	}
+
+
 	const char Network::NamesIdentifiersSeparator()
 	{ 	
 		return '.'; 	
@@ -89,6 +107,20 @@ namespace CLAM
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutControls().Get( GetLastIdentifier(name) );
 	}
+
+	
+	NodeBase& Network::GetNode(OutPort & out)
+	{
+		
+		if (out.GetNode() == 0) //if it hasn't associated node		 
+		{
+			//		BaseNode* node = new NodeTmpl<TIPUSDADES, CircularStreamImpl<TIPUSDADES>>;
+//			_nodes.insert(node);
+//			out.Attach(node);
+		}
+		return *(out.GetNode());
+	}
+
 
 
 }

@@ -19,6 +19,9 @@ class OutPortTmpl : public OutPort
 	Node<T> *mpNode;
 	Array<T> mData;
 public:
+
+	typedef T PortType;
+
 	inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
 	inline T &GetData();
 	inline void LeaveData();
