@@ -82,7 +82,11 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void dropEvent(QDropEvent* event);
 	void dragEnterEvent(QDragEnterEvent* event);
 	void MovingMouseWithButtonPressed( const QPoint & );
-
+	void DrawSelectionRectangle();
+	void CheckSelectionRectangle();
+	bool CheckPortsSelection( QMouseEvent *m );
+	bool CheckControlsSelection(QMouseEvent *m );
+	
 	void SendMessageToStatus( const std::string & );		
 	
 	Qt_InPortPresentation* mInPortSelected;
@@ -90,6 +94,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
+	QPoint mSelectionPos;
+
 	QtProcessingList mSelectedProcessingPresentations;
 	QtConnectionList mSelectedConnectionPresentations;
 public:
