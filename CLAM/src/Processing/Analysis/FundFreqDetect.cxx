@@ -117,6 +117,8 @@ namespace CLAM {
   /* The  unsupervised Do() function */
 	bool  FundFreqDetect::Do(SpectralPeakArray& peaks,Fundamental& outFreq)
 	{
+		outFreq.Init();
+		
 		// Check Number of Candidates required
 		if (outFreq.GetnMaxCandidates() <= 0)
 		throw Err("FundFreqDet::Detection: negative number of candidates wanted");
