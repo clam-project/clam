@@ -67,7 +67,11 @@ namespace CLAMGUI
 		
 		void Do() { mGLsurface->redraw(); }
 
-		Fl_Window* GetWindow() { return mWindow; } 
+		Fl_Window* GetWindow() { return mWindow; }
+
+		Slotv1<CLAM::TData>* GetFrameSlot() { return mGLsurface->getFrameSlot(); } 
+		Slotv1<bool>* GetPaintSlot() { return mGLsurface->getPaintSlot(); } 
+		Signalv1<double>* GetSignal() { return mGLsurface->getSignal(); } 
 		
 	protected:
 		
