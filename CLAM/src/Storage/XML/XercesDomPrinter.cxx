@@ -31,7 +31,7 @@
 #include "XercesDomPrinter.hxx"
 #include <string>
 
-//#define CLAM_INDENT_XML
+#define CLAM_INDENT_XML
 #define TRACEDUMP if (1); else std::cout
 
 class DOMPrintFormatTarget : public XMLFormatTarget
@@ -203,19 +203,19 @@ static const XMLCh  gNotation[] =
 
 CLAM::XercesDomPrinter::XercesDomPrinter() 
 {
+	mLastWasContent = true;
+	mIndentationLevel = 0;
 }
 CLAM::XercesDomPrinter::~XercesDomPrinter()
 {
 }
 
-unsigned tabPosition = 0;
-bool gLastWasContent = true;
 
 
 void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 {
-	tabPosition = 0;
-	gLastWasContent = true;
+	mIndentationLevel = 0;
+	mLastWasContent = true;
 	DOMString encNameStr("UTF-8");
 	DOM_Node aNode = toWrite;
 	if (aNode.getNodeType() == DOM_Node::XML_DECL_NODE)
@@ -262,7 +262,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 	// Get the name and value out for convenience
 	DOMString   nodeName = toWrite.getNodeName();
 	DOMString   nodeValue = toWrite.getNodeValue();
-	std::string currentIndentation(tabPosition,'\t');
+	std::string currentIndentation(mIndentationLevel,'\t');
 	unsigned long lent = nodeValue.length();
 	bool thisWasContent=false;
 
@@ -270,7 +270,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 	{
 		case DOM_Node::TEXT_NODE:
 		{
-			if (gIndentXml && !gLastWasContent)
+			if (gIndentXml && !mLastWasContent)
 				*gFormatter
 					<< endLine << currentIndentation.c_str();
 			gFormatter->formatBuf(nodeValue.rawBuffer(), 
@@ -307,8 +307,11 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 
 		case DOM_Node::ELEMENT_NODE :
 		{
-		TRACEDUMP << std::string(tabPosition++,'\t') << "Element: " << nodeName << std::endl;
+			TRACEDUMP << std::string(mIndentationLevel++,'\t') << "Element: " << nodeName << std::endl;
 			// The name has to be representable without any escapes
+			if (gIndentXml)
+				*gFormatter
+					<< endLine << currentIndentation.c_str();
 			*gFormatter  << XMLFormatter::NoEscapes
 						<< chOpenAngle << nodeName;
 
@@ -346,7 +349,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 				// No escapes are legal here
 				*gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
 
-				tabPosition++;
+				mIndentationLevel++;
 				while( child != 0)
 				{
 					PrintNode(os, child);
@@ -356,7 +359,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 				//
 				// Done with children.  Output the end tag.
 				//
-				tabPosition--;
+				mIndentationLevel--;
 				if (gIndentXml)
 					*gFormatter
 						<< endLine << currentIndentation.c_str();
@@ -510,7 +513,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 			std::cerr << "Unrecognized node type = "
 				<< (long)toWrite.getNodeType() << std::endl;
 	}
-	gLastWasContent=thisWasContent;
+	mLastWasContent=thisWasContent;
 }
 
 // ---------------------------------------------------------------------------

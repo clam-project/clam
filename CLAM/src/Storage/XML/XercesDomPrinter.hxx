@@ -49,7 +49,8 @@ private:
 	void PrintNode(ostream & os, DOM_Node & toWrite);
 // Attributes
 private:
-	unsigned _indentationLevel;
+	unsigned mIndentationLevel;
+	bool mLastWasContent;
 };
 
 }
