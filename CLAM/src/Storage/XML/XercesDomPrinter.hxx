@@ -35,12 +35,18 @@ namespace CLAM {
 
 
 class XercesDomPrinter {
-public:
 // Construction/Destruction
+public:
 	XercesDomPrinter ();
 	~XercesDomPrinter ();
 // Operations
+public:
 	void Print(std::ostream & os, DOM_Node & toWrite);
+
+
+// Implementation Details
+private:
+	void PrintNode(ostream & os, DOM_Node & toWrite);
 // Attributes
 private:
 	unsigned _indentationLevel;

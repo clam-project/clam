@@ -233,7 +233,7 @@ void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 	{
 		gFormatter = new XMLFormatter(gEncodingName, formatTarget, 
 			XMLFormatter::NoEscapes, gUnRepFlags);
-		os << toWrite << std::endl;
+		PrintNode(os, toWrite);
 	}
 	catch (XMLException& e)
 	{
@@ -248,7 +248,6 @@ void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 
 }
 
-
 static const XMLCh endLine[] = { chCR, chLF, chNull };
 
 #ifdef CLAM_INDENT_XML
@@ -257,9 +256,9 @@ static const bool gIndentXml = true;
 static const bool gIndentXml = false;
 #endif
 
-std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
-{
 
+void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
+{
 	// Get the name and value out for convenience
 	DOMString   nodeName = toWrite.getNodeName();
 	DOMString   nodeValue = toWrite.getNodeValue();
@@ -299,7 +298,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
 			DOM_Node child = toWrite.getFirstChild();
 			while( child != 0)
 			{
-				target << child << std::endl;
+				PrintNode(os, child);
 				child = child.getNextSibling();
 			}
 			break;
@@ -350,7 +349,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
 				tabPosition++;
 				while( child != 0)
 				{
-					target << child;
+					PrintNode(os, child);
 					child = child.getNextSibling();
 				}
 
@@ -391,7 +390,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
 			child != 0;
 			child = child.getNextSibling())
 			{
-				target << child;
+				PrintNode(os, child);
 			}
 #else
 			//
@@ -512,10 +511,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
 				<< (long)toWrite.getNodeType() << std::endl;
 	}
 	gLastWasContent=thisWasContent;
-	return target;
 }
-
-
 
 // ---------------------------------------------------------------------------
 //  ostream << DOMString
