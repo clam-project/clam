@@ -177,9 +177,6 @@ public:
 	/** Definition of the Processing virtual method */
 	const ProcessingConfig &GetConfig() const { return mConfig; };
 		
-	bool Start(){return 0;};
-	bool Stop(){return 0;};
-	
 private:
 	
 	const char *GetClassName() const {return "FDFilterGen";}
