@@ -54,16 +54,15 @@ public:
 	}
 	~StatsTmpl()
 	{
-		int i;
-		for (i=0;i<mMoments.Size();i++)
+		for (unsigned i=0;i<mMoments.Size();i++)
 		{
 			if(mMoments[i]) delete mMoments[i];
 		}
-		for (i=0;i<mCentralMoments.Size();i++)
+		for (unsigned i=0;i<mCentralMoments.Size();i++)
 		{
 			if(mCentralMoments[i]) delete mCentralMoments[i];
 		}
-		for (i=0;i<mCenterOfGravities.Size();i++)
+		for (unsigned i=0;i<mCenterOfGravities.Size();i++)
 		{
 			if(mCenterOfGravities[i]) delete mCenterOfGravities[i];
 		}
@@ -320,16 +319,20 @@ public:
 		return Tilt;
 	}
 
+	U GetFlatness()
+	{
+		return 10*log10(GetGeometricMean()/GetMean());
+	}
+
 	/** Reset all previously computed values */
 	void Reset()
 	{
 		//Note: we keep previously allocated data, we just reset computations
-		int i;
-		for(i=0;i<mMoments.Size();i++)
+		for (unsigned i=0;i<mMoments.Size();i++)
 			if(mMoments[i]!=NULL) mMoments[i]->Reset();
-		for(i=0;i<mCentralMoments.Size();i++)
+		for (unsigned i=0;i<mCentralMoments.Size();i++)
 			if(mCentralMoments[i]!=NULL) mCentralMoments[i]->Reset();
-		for(i=0;i<mCenterOfGravities.Size();i++)
+		for (unsigned i=0;i<mCenterOfGravities.Size();i++)
 			if(mCenterOfGravities[i]!=NULL) mCenterOfGravities[i]->Reset();
 
 		mKurtosis.Reset();
