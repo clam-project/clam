@@ -78,6 +78,7 @@ namespace CLAM {
 				mState=Unconfigured;
 				mPreconfigureExecuted = false;
 				mStatus+=" Configuration failed.";
+				mState = Unconfigured;
 				return false;
 			}
 		}
@@ -127,16 +128,9 @@ namespace CLAM {
 				mState = Running;
 		}
 		catch (Err &e) {
+			mStatus += "Start(): Object failed to start properly.\n";
+			mStatus += e.what();
 
-			ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
-			new_e.Embed(e);
-			//CLAM_ASSERT( false, AddStatus(new_e.what()) );
-			
-			mState=Unconfigured;
-
-			AddStatus( "Start(): Object failed to start properly.\n" );
-			AddStatus( e.what() );
-			throw new_e; // Propagate exception
 		}
 	}
 	

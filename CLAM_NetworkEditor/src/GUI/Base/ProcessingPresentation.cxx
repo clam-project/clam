@@ -20,23 +20,22 @@
  */
 
 #include "ProcessingPresentation.hxx"
-#include "ProcessingController.hxx"
 #include "ProcessingConfig.hxx"
 #include "ConnectionPointPresentation.hxx"
 #include "Factory.hxx"
-
-#include <iostream>
 
 namespace NetworkGUI
 {
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
-ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwork)
-	: mNameFromNetwork(nameFromNetwork),
+ProcessingPresentation::ProcessingPresentation(const std::string& name )
+	: mName(name),
 	  mConfig(0)
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingPresentation::ConfigureProcessing );
+	SlotChangeProcessingPresentationName.Wrap( this, &ProcessingPresentation::ChangeProcessingPresentationName );
+	SlotChangeState.Wrap( this, &ProcessingPresentation::ChangeState );
 }
 
 void ProcessingPresentation::SetConfig( const CLAM::ProcessingConfig & cfg)
@@ -55,6 +54,22 @@ void ProcessingPresentation::ConfigureProcessing( const CLAM::ProcessingConfig &
 	SignalConfigureProcessing.Emit( cfg );
 }
 
+void ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )
+{
+	mName = name;
+
+}
+
+void ProcessingPresentation::ChangeState( CLAMVM::ProcessingController::ProcessingExecState state, const std::string & status )
+
+{
+	mProcessingState = state;
+	mProcessingStatus = status;
+	UpdatePresentation();
+
+}
+
+
 ProcessingPresentation::~ProcessingPresentation()
 {
 	ConnectionPointPresentationsList::iterator it;
@@ -66,6 +81,12 @@ ProcessingPresentation::~ProcessingPresentation()
 		delete *it;
 	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
 		delete *it;
+
+	mInPortPresentations.clear();
+	mOutPortPresentations.clear();
+	mInControlPresentations.clear();
+	mOutControlPresentations.clear();
+
 
 	if (mConfig)
 	{
@@ -90,9 +111,15 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
 		SetOutControl(*it);
 
 	SetObservedClassName( controller.GetObservedClassName() );
-	SetConfig( controller.GetObservedConfig() );
+	SetConfig( controller.GetObservedConfig() );	
 	
 	SignalConfigureProcessing.Connect( controller.SlotConfigureProcessing );
+	SignalProcessingNameChanged.Connect( controller.SlotProcessingNameChanged );
+	controller.SignalChangeProcessingPresentationName.Connect( SlotChangeProcessingPresentationName );
+	controller.SignalChangeState.Connect( SlotChangeState );
+
+	ChangeState( controller.GetProcessingExecState(), controller.GetProcessingStatus() );
+
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)
@@ -143,6 +170,44 @@ bool ProcessingPresentation::HasOutPort( const std::string& name)
 		if((*itout)->GetName() == name)
 			return true;
 	return false;	
+}
+
+void ProcessingPresentation::UpdateListOfPortsAndControls( CLAMVM::ProcessingController & controller )
+{
+	Hide();
+
+	// delete all ports and controls of the processing
+	ConnectionPointPresentationsList::iterator itc;
+	for(itc=mInPortPresentations.begin(); itc!=mInPortPresentations.end(); itc++)
+		delete (*itc);
+	for(itc=mOutPortPresentations.begin(); itc!=mOutPortPresentations.end(); itc++)
+		delete (*itc);
+	for(itc=mInControlPresentations.begin(); itc!=mInControlPresentations.end(); itc++)
+		delete (*itc);
+	for(itc=mOutControlPresentations.begin(); itc!=mOutControlPresentations.end(); itc++)
+		delete (*itc);
+
+	mInPortPresentations.clear();
+	mOutPortPresentations.clear();
+	mInControlPresentations.clear();
+	mOutControlPresentations.clear();
+
+ 
+// create all ports and controls of processing
+	CLAMVM::ProcessingController::NamesList::const_iterator it;
+	for( it=controller.BeginInPortNames();it!=controller.EndInPortNames();it++)
+		SetInPort(*it);
+	
+	for( it=controller.BeginOutPortNames();it!=controller.EndOutPortNames();it++)
+		SetOutPort(*it);
+	
+	for( it=controller.BeginInControlNames();it!=controller.EndInControlNames();it++)
+		SetInControl(*it);
+	
+	for( it=controller.BeginOutControlNames();it!=controller.EndOutControlNames();it++)
+		SetOutControl(*it);
+
+	Show(); 	
 }
 
 } //namespace NetworkGUI

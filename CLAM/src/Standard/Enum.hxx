@@ -232,7 +232,7 @@ public:
 			if (mValue==mEnumValues[i].value) 
 				return mEnumValues[i].name;
 		}
-		CLAM_ASSERT(false, "Illegal numeric value for an Enum")
+		CLAM_ASSERT(false, "Illegal numeric value for an Enum");
 		return "IllegalValue";
 	}
 
@@ -293,6 +293,7 @@ public:
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
+
 	virtual void StoreOn (Storage & storage) const;
 
 	/** 
@@ -301,6 +302,7 @@ public:
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
+
 	virtual void LoadFrom (Storage & storage);
 
 };

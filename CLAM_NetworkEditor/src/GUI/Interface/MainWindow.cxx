@@ -32,6 +32,8 @@
 #include <qapplication.h>
 #include <string>
 
+#include <iostream> // TODO: remove
+
 namespace NetworkGUI
 {
 
@@ -46,9 +48,10 @@ MainWindow::MainWindow()
 	setCaption( "CLAM Network Editor" );
 	resize( 800, 600 );
 	
-	SlotNewMessageToStatus.Wrap( this, &MainWindow::OnNewMessageToStatus );
-	mNetwork.SignalSendNewMessageToStatus.Connect( SlotNewMessageToStatus );
+	SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
+	mNetwork.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
 	SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
+
 	statusBar()->message( "Ready to edit" );
 
 	SignalChangeNetworkState.Connect( mNetwork.SlotChangeState );
@@ -95,7 +98,7 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::OnNewMessageToStatus( const std::string & message)
+void MainWindow::SendMessageToStatus( const std::string & message)
 {
 	statusBar()->message( QString( message.c_str() ), 2000);
 }
@@ -117,8 +120,8 @@ void MainWindow::Stop()
 
 void MainWindow::NewNetwork()
 {
-	std::cout << "new network" << std::endl;
 	SignalNewNetworkSignal.Emit();
+
 }
 
 void MainWindow::LoadNetwork()
@@ -151,7 +154,6 @@ void MainWindow::SaveNetwork()
 
 void MainWindow::SaveAsNetwork()
 {
-	std::cout << "saving network as" << std::endl;
 	SaveNetwork();
 }
 

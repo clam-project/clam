@@ -61,8 +61,9 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
 
-	QListViewItem * externals = new QListViewItem( this, "Externals" );
+	QListViewItem * externals = new QListViewItem( this, "Plugins" );
 	ProcessingItem * ladspaloader = new ProcessingItem( externals, "LadspaLoader" );
+
 	show();
 	header()->hide();
 
