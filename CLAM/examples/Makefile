@@ -12,10 +12,7 @@ PROGRAMS=\
 	GUIAudioApplicationExample\
 	FundamentalDetect\
 	XMLViewExample\
-	SIViewExample\
-	SnapshotExample\
-	StreamBufferExample\
-	NodeExample
+	SIViewExample
 
 
 TOP=..
