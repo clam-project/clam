@@ -94,7 +94,7 @@ namespace CLAM {
 
 		const char *GetClassName() const {return "FundFreqDetect";}
 
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		FundFreqDetect();

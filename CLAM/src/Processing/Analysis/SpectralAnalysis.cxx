@@ -167,9 +167,9 @@ SpectralAnalysis::~SpectralAnalysis()
 {
 }
 
-bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	mConfig=dynamic_cast<const SpectralAnalysisConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	ConfigureChildren();
 	ConfigureData();
 	return true;

@@ -88,9 +88,9 @@ using namespace CLAM;
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const WindowGeneratorConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		mSize.DoControl(TControlData(mConfig.GetSize()));
 
 		if (mConfig.HasUseTable())

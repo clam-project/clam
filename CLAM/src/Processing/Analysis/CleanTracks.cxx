@@ -58,10 +58,10 @@ namespace CLAM {
 
 /* Configure the Processing Object according to the Config object */
 
-	bool CleanTracks::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
-	{	    
+	bool CleanTracks::ConcreteConfigure(const ProcessingConfig& c)
+	{
 
-		mConfig = dynamic_cast<const CleanTracksConfig&>(c);	    
+		CopyAsConcreteConfig(mConfig, c);	    
 
 		mMaxDropOut = mConfig.GetMaxDropOut();
 		mMinLength= mConfig.GetMinLength();
@@ -80,7 +80,7 @@ namespace CLAM {
 	//Supervised mode
 	bool  CleanTracks::Do(void) 
 	{
-		throw(ErrProcessingObj("CleanTracks::Do(): Supervised mode not implemented"),this);
+		throw(ErrProcessingObj("CleanTracks::Do(): Supervised mode not implemented",this));
 		return false;
 	}  
 

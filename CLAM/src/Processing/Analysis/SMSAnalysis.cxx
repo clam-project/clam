@@ -216,9 +216,9 @@ SMSAnalysis::~SMSAnalysis()
 {
 }
 
-bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	mConfig=dynamic_cast<const SMSAnalysisConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	ConfigureChildren();
 	ConfigureData();
 	return true;

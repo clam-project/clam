@@ -53,9 +53,9 @@ namespace CLAM {
 	FundFreqDetect::~FundFreqDetect()	{}
 
   /* Configure the Processing Object according to the Config object */
-	bool FundFreqDetect::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FundFreqDetect::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const FundFreqDetectConfig&>(c);	    
+		CopyAsConcreteConfig(mConfig, c);
 
 		mReferenceFundFreq = mConfig.GetReferenceFundFreq();
 		mLowestFundFreq    = mConfig.GetLowestFundFreq();

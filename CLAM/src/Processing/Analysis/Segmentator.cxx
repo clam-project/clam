@@ -194,9 +194,9 @@ Segmentator::~Segmentator()
 {
 }
 
-bool Segmentator::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool Segmentator::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const SegmentatorConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 	return true;
 }
 

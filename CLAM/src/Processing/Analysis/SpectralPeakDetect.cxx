@@ -65,10 +65,10 @@ namespace CLAM {
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool SpectralPeakDetect::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool SpectralPeakDetect::ConcreteConfigure(const ProcessingConfig& c)
 	{
 
-		mConfig = dynamic_cast<const SpectralPeakDetectConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 

@@ -229,7 +229,7 @@ public:
 
 	
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 };
 
