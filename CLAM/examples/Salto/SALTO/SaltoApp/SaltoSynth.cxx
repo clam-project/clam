@@ -580,7 +580,7 @@ void SaltoSynth::DoInterpolatingReleaseSynthesis( CSaltoSynthFrame* pSynthFrame,
 									mIndividualGain/(currRelFrame*currRelFrame),
 									mpSynthFrame );
 */
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -741,7 +741,7 @@ void SaltoSynth::DoTransitionSynthesis( CSaltoSynthFrame *pSynthFrame)
 	mpInterpolPO->DoPitchMod(pSynthFrame,mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor);
 */
 
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -794,7 +794,7 @@ void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
 			int freqIPUpStart = mNumTransitionFrames/2-1;
 			freqIPUpStart = CLIP(freqIPUpStart,0,mNumTransitionFrames);
 			freqIPUpEnd = CLIP(freqIPUpEnd,0,mNumTransitionFrames);
-			
+
 			/* frequency transition function */
 			if (mFrameCounterTransition<freqIPUpStart)
 				{
@@ -884,7 +884,7 @@ void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
 								 mIPFactor);
 */
 
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -899,15 +899,15 @@ void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
 //								 mpTransitionFrameTarget->GetFundamental().GetFreq(),
 //								 iPFactor,
 //								 freqIPFactor,
-//								 gain * (mLastIndividualGain+iPFactor*(mIndividualGain-mLastIndividualGain)), // interpolate individual gain factors	
+//								 gain * (mLastIndividualGain+iPFactor*(mIndividualGain-mLastIndividualGain)), // interpolate individual gain factors
 								 *pSynthFrame,
 								 *mpCurrPeakArrayTarget);
 //								 mIPFactor);
 
 	// use last pith correction factor here too
-//	mpInterpolPO->DoPitchMod2(pSynthFrame,mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor);	
+//	mpInterpolPO->DoPitchMod2(pSynthFrame,mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor);
 	mOutPitchFactor.SendControl( mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor );
-	mpInterpolPO.DoPitchMod(*pSynthFrame);	
+	mpInterpolPO.DoPitchMod(*pSynthFrame);
 
 }
 
@@ -916,7 +916,7 @@ void SaltoSynth::DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
   double ipFactor=1;
   CSaltoDataManagment* handleDB = CSaltoDataManagment::GetSaltoDBHandle();
   // from here on, the content of the synthframe shouldn't be changed anymore
-	
+
 	// -- Sinusoidal Synthesis --
 	if	(mpParams->GetUseSines())
 	{
@@ -926,7 +926,7 @@ void SaltoSynth::DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
           {
             mpParams->SetBreathOnlySound(false);
 //			mpSineSynthPO->DoSineSynthesis(*pSynthFrame,mpParams->GetAttackTimbre().GetLevel()/127.0);
-		
+
 			mOutAttackTimbreLevel.SendControl( mpParams->GetAttackTimbre().GetLevel() );
 			mOutUsePhaseAlignment.SendControlAsBoolean( mpParams->GetUsePhaseAlignment() );
 			mOutLastAlignedFrame.SendControlAsBoolean( mpParams->GetLastAlignedFrame() );
@@ -962,7 +962,7 @@ void SaltoSynth::DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
           else
           {
 //            mpSineSynthPO->DoSineSynthesis(*pSynthFrame,mpParams->GetAttackTimbre().GetLevel()/127.0);
-	  		
+
 			mOutAttackTimbreLevel.SendControl( mpParams->GetAttackTimbre().GetLevel() );
 			mOutUsePhaseAlignment.SendControlAsBoolean( mpParams->GetUsePhaseAlignment() );
 			mOutLastAlignedFrame.SendControlAsBoolean( mpParams->GetLastAlignedFrame() );
@@ -973,7 +973,7 @@ void SaltoSynth::DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
         }
 ////		  mpSineSynthPO->DoSineSynthesis(*pSynthFrame,mpParams->GetAttackTimbre().GetLevel()/127.0);
 	}
-	
+
 	// -- attack residual synthesis --
 	if	(mpParams->GetUseAttackResidual()&!mpParams->GetPlayFrameOnly())
 	{
@@ -987,7 +987,7 @@ void SaltoSynth::DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
 		mOutResGain.SendControl( mAttackResVolume*ipFactor*mpParams->GetAttackTimbre().GetLevel()/127.0 );
 		mpAttackResSynthPO.Do( *pSynthFrame );
 	}
-	
+
 	// -- stationary residual synthesis --
 	if	(mpParams->GetUseStatResidual())
 	{
@@ -1145,7 +1145,7 @@ void SaltoSynth::DoInterpolatingSynthesis(CSaltoSynthFrame *pSynthFrame)
 		mFrameCounterAttackResidual=nResFrames-1;
 	
 	mpCurrSpectralFrameResidual = handleDB->GetSpectralFrame(mpParams->GetAttackTimbre().GetPosition(),mFrameCounterAttackResidual);
-	
+
 	pSynthFrame->SetResidualPtr(&mpCurrSpectralFrameResidual->GetResidualSpec()); //BUGFRAME? //SEGMENTBUG
 	
 	
@@ -1179,7 +1179,7 @@ void SaltoSynth::DoInterpolatingSynthesis(CSaltoSynthFrame *pSynthFrame)
 								   mIndividualGain,// magnitude gain
 								   pSynthFrame);
 */
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
