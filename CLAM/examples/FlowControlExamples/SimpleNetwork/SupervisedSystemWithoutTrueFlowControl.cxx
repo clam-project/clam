@@ -220,13 +220,37 @@ void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworks()
 	for ( it=_networks.begin(); it != _networks.end(); it++ )
 	{
 		(*it)->Start();
-		for (int i=0; i<_maxFramesToProcess; i++)
 			(*it)->DoProcessings();
 
 		std::cout << (*it)->GetName() << " network processed.\n";
 		(*it)->Stop();
 	}
 }
+
+
+void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworkTopologies()
+{
+	NetworkConfigurationMethods::iterator currentConfigMethod;
+	for ( currentConfigMethod=_configurations.begin(); 
+		  currentConfigMethod != _configurations.end(); 
+		  currentConfigMethod++ )
+	{
+		_network.DisconnectAllPorts();
+		//NetworkConfigurationMethod actual=*currentConfigMethod;
+		//(this->*actual)(_network);
+
+		(this->**currentConfigMethod)(_network);
+
+		_network.Start();
+
+		for (int i=0; i<_maxFramesToProcess; i++)
+			_network.DoProcessings();
+
+		std::cout << _network.GetName() << " network processed.\n";
+		_network.Stop();
+	}
+}
+
 
 } //namespace
 

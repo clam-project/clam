@@ -16,7 +16,11 @@ namespace FlowControlExample
 
 class SupervisedSystemWithoutTrueFlowControl
 {
+	//! Deprecated type	
 	typedef std::list<CLAM::Network*> NetworkList;
+
+	typedef void (SupervisedSystemWithoutTrueFlowControl::*NetworkConfigurationMethod) (CLAM::Network & );
+	typedef std::list<NetworkConfigurationMethod> NetworkConfigurationMethods;
 public:	
 	SupervisedSystemWithoutTrueFlowControl( 
 		std::string fileIn, 
@@ -27,17 +31,24 @@ public:
 
 	virtual ~SupervisedSystemWithoutTrueFlowControl(){}
 
+	//! Deprecated method
 	void ConfigureNetworks();
+	//! Deprecated method
 	void ProcessAllNetworks();
 
+	void ProcessAllNetworkTopologies();
+
 private:
+
+	//! Deprecated method
 	void InitConfigurations();
+	//! to refactor
 	void ConfigureOscillatorToFileOut();
 	void ConfigureFileInFileOut();
 	void ConfigureModulatedFileIn();
 	void ConfigureModulatedOscillator();
 	void ConfigureModulatedFileInPlusFileIn();
-
+	//! end to refactor
 
 	//other system parameters
 	std::string _fileInName;
@@ -47,13 +58,24 @@ private:
 	bool _hasAudioOut;
 
 	//networks
+
+	//! Deprecated attribute
 	CLAM::Network _oscillatorToFileOut;
+	//! Deprecated attribute
 	CLAM::Network _fileInFileOut;
+	//! Deprecated attribute
 	CLAM::Network _modulatedFileIn;
+	//! Deprecated attribute
 	CLAM::Network _modulatedOscillator;
+	//! Deprecated attribute
 	CLAM::Network _modulatedFileInPlusFileIn;
 
+	CLAM::Network _network;
+
+	//! Deprecated attribute
 	NetworkList _networks;
+
+	NetworkConfigurationMethods _configurations;
 
 	CLAM::AudioManager _audioManager;
 
