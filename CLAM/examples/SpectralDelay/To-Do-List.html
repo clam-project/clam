@@ -80,18 +80,21 @@
 							<li class='done'>Refactor ProcessingController</li>
 							<li class='done'>Convert ProcessingControllerAspect into ProcessingModel</li>
 							<li class='done'>Refactor the tests at draft</li>
+							<li class='done'>One last refactoring: Remove duplication of bound controls</li>
+							<li class='done'>Make really really generic the input control binding</li>
 						</ul>
 					</li>
 				</ul>
 			</li>
-			<li class='to-do'>Write/Test a TokenDelayController</li>
+			<li class='done'>Transplant the things in src/Visualization</li>
 			</ul>
 		</li>
-		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterPres.hxx'
-			<ul>
-				<li class='to-do'>Write/Test a FDFilterController</li>
-			</ul>
+		<li class='current'>Fix TokenDelayPresentation 
+			<li class='current'>Write TokenDelayController</li>
+			<li class='current'>Fix FLDelayPres</li>
 		</li>
+		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterPres.hxx'</li>
+		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterBankPres.hxx' ( not very sure about what to do with this thing )</li>
 		<li class='to-do'>Fix 'examples/GUI/View/AudioFileView.hxx'
 			<ul>
 				<li class='to-do'>In this case, we are just accessing a ProcessingConfig ( AudioFileConfig ) so this should be handled by the Configurators thing. However, this may imply major hacking of that nifty generative programming example. In a nutshell, we must decide between doing the 'right' thing or hacking a ModelController that is bound to a Processing
@@ -100,7 +103,6 @@
 		</li>
 		<li class='to-do'>Remove 'examples/GUI/Presentation/BaseSpecPres.hxx' since the needs it covers are already covered by the SpectrumPresentation class at 'src/Visualization/Presentation/Base'</li>
 
-		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterBankPres.hxx' ( not very sure about what to do with this thing )</li>
 	</ul>
 </li>
 
