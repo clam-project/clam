@@ -35,6 +35,14 @@ Enum::tEnumValue EWidgetTK::sEnumValues[] =
 
 Enum::tValue EWidgetTK::sDefault = EWidgetTK::FLTK;
 
+		WidgetTKWrapper::WidgetTKWrapper()
+		{
+		}
+
+		WidgetTKWrapper::~WidgetTKWrapper()
+		{
+		}
+
 WidgetTKWrapper& WidgetTKWrapper::GetWrapperFor( std::string toolkit )
 {
 	EWidgetTK requestedTK( toolkit );
