@@ -25,6 +25,10 @@
    * Processing:
       ** SMSAnalysis: fixed a bug that lead to divisions by zero 
 
+   * Testing:
+      ** CLAMTEST_ASSERT_XML_EQUAL to compare XML canonically
+      ** Helpfull colors for finding differences on expected and obtained strings
+
 2003-10-4 CLAM_0_5_3
 'Starting the new course'
 
