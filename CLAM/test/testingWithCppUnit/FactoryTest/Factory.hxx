@@ -82,7 +82,7 @@ private: // data
 			return i->second;
 	}
 
-	bool CommonAddCreator( RegistryKey& creatorId, CreatorMethod& creator)
+	bool CommonAddCreator( RegistryKey& creatorId, CreatorMethod creator)
 	{
 		// returns false if the key was repeated.
 		return  _creators.insert(
