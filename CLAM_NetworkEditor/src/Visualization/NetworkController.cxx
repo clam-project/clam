@@ -12,16 +12,36 @@ namespace CLAMVM
 NetworkController::NetworkController()
 	: mObserved(0)
 {
-	CreateNewConnection.Wrap(this, &NetworkController::OnNewConnectionFromGUI );
-	RemoveConnection.Wrap(this, &NetworkController::OnRemoveConnectionFromGUI );
-	AddNewProcessing.Wrap(this, &NetworkController::NewProcessingFromGUI );
+	CreateNewConnection.Wrap( this, &NetworkController::OnNewConnectionFromGUI );
+	RemoveConnection.Wrap( this, &NetworkController::OnRemoveConnectionFromGUI );
+	AddNewProcessing.Wrap( this, &NetworkController::NewProcessingFromGUI );
+	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
 }
 	
+
+void NetworkController::OnNewChangeState( bool state)
+{
+	if (state) // start the network
+	{
+		mObserved->Start();
+		std::cout << "starting network" << std::endl;
+		for (int i=0; i<200; i++)
+		{
+			std::cout << "doing" << std::endl;
+			mObserved->DoProcessings();
+		}
+	}
+	else // stop the network
+	{			
+		std::cout << "stopping network" << std::endl;
+		mObserved->Stop();
+	}
+}
+
 void NetworkController::OnNewConnectionFromGUI( const std::string & out, const std::string& in)
 {
 	if(mObserved->ConnectPorts(out, in))
 	{
-		std::cout << "connected " << out << " to " << in << std::endl;
 
 	// now we must to create a new gui connection
 //	OutPort & outPort = mObserved->GetOutPortByCompleteName(out);
@@ -32,11 +52,6 @@ void NetworkController::OnNewConnectionFromGUI( const std::string & out, const s
 		mConnectionAdapters.push_back( conAdapter );
 		AcquireConnection.Emit( conAdapter );
 	}
-	else
-	{
-		std::cout << out << " has not been connected to " << in << std::endl;
-	}
-	
 }
 
 void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , const std::string & in)
@@ -51,18 +66,12 @@ void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , cons
 			ConnectionAdapter * con = (*itc);
 			if (con->ConnectsInPort(inPort))
 			{
-				std::cout << "Removed connection from " << out << " to " << in << std::endl;
 //				mConnectionAdapters.remove(con);
 //				delete con;
 				return;   
 			}
 		}
 	}
-	else
-	{
-		std::cout << in << " has not been disconnected from " << out << std::endl;
-	}
-	
 }
 
 NetworkController::~NetworkController()
@@ -80,7 +89,6 @@ NetworkController::~NetworkController()
 void NetworkController::NewProcessingFromGUI( const std::string & name, 
 					      CLAM::Processing * proc )
 {
-	std::cout << "added processing " << name << std::endl;
 	mObserved->AddProcessing(name, proc);
 	AddProcessing(name, proc);
 }

@@ -43,13 +43,13 @@ void FactoryToolBox::AddProcessingLabel( const std::string & name)
 
 void FactoryToolBox::mousePressEvent( QMouseEvent * m )
 {
-	if (m->button() == MidButton )
+	if (m->button() == RightButton )
 	{
 		mDown = true;
 		mClickPos = m->pos();
 		grabMouse();
 	}
-	if (m->button() == RightButton )
+	if (m->button() == MidButton )
 	{
 		if (mMinimized)
 		{

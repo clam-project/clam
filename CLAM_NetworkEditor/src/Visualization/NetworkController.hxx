@@ -27,6 +27,7 @@ namespace CLAMVM
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
 		void OnNewConnectionFromGUI(const std::string &, const std::string &);
+		void OnNewChangeState( bool);
 		void OnRemoveConnectionFromGUI(const std::string &, const std::string &);
 	public:
 		NetworkController();

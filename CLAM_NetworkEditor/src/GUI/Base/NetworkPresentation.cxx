@@ -13,14 +13,24 @@ namespace NetworkGUI
 {
 
 NetworkPresentation::NetworkPresentation()
+	: mNetworkState( false )
 {
 	SetName.Wrap( this, &NetworkPresentation::OnNewName );
 	SetProcessing.Wrap( this, &NetworkPresentation::OnNewProcessing );
 	SetConnection.Wrap( this, &NetworkPresentation::OnNewConnection );
 	SetRemoveConnection.Wrap( this, &NetworkPresentation::OnRemoveConnection );
-	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing);
+	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
+	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
 }
 
+void NetworkPresentation::OnNewChangeState( bool newState )
+{
+	if (newState != mNetworkState)
+	{
+		mNetworkState = newState;
+		SChangeState.Emit( mNetworkState );
+	}
+}
 
 void NetworkPresentation::OnRemoveConnection( const std::string & out, const std::string & in, ConnectionPresentation * con)
 {
@@ -46,6 +56,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 	model.AcquireName.Connect(SetName);
 	model.AcquireProcessing.Connect(SetProcessing);
 	model.AcquireConnection.Connect(SetConnection);
+	SChangeState.Connect(model.ChangeState);
 	AddProcessing.Connect(model.AddNewProcessing);
 	
 	CreateNewConnectionFromGUI.Connect(model.CreateNewConnection);

@@ -9,9 +9,6 @@
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
 
-#include "FactoryToolBox.hxx"
-
-
 namespace CLAMVM
 {
 	class ProcessingAdapter;
@@ -54,13 +51,12 @@ public: // slots
 	// signals
 	SigSlot::Signalv1< const QPoint & > AcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > AcquireInPortAfterClickOutPort;
+	SigSlot::Signalv1< const std::string& > SendNewMessageToStatus;
 
 
 private:
 	const std::string GetCompleteNameFromInPortSelected();
 	const std::string GetCompleteNameFromOutPortSelected();
-
-	FactoryToolBox mFactory;
 };
 
 } // namespace NetworkGUI

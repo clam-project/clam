@@ -19,6 +19,7 @@
 #include <cmath>
 #include <time.h>
 #include "Factory.hxx"
+#include "MainWindow.hxx"
 
 
 void ConfigureNetwork(CLAM::Network & net)
@@ -61,17 +62,17 @@ void ConfigureNetwork(CLAM::Network & net)
 	net.AddProcessing( "oscillator-modulator", new CLAM::Oscillator( modulatorCfg) );
 	net.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
 	net.AddProcessing( "oscillator-generator", new CLAM::Oscillator(generatorCfg) );
-	net.AddProcessing( "mixer", new CLAM::AudioMixer<6>(mixerCfg) );
+	net.AddProcessing( "mixer", new CLAM::AudioMixer<2>(mixerCfg) );
 	net.AddProcessing( "file-out", new CLAM::AudioFileOut(fileOutCfg));
 	
+//	net.ConnectPorts( "file-in.Output", "file-out.Input" );
+
 	net.ConnectPorts( "file-in.Output", "multiplier.First Audio Input" );
 	net.ConnectPorts( "oscillator-modulator.Audio Output", 
 			  "multiplier.Second Audio Input" );
 	net.ConnectPorts( "multiplier.Audio Output" , "mixer.Input Audio_0" );
 	net.ConnectPorts( "oscillator-generator.Audio Output", "mixer.Input Audio_1" );
 	net.ConnectPorts( "mixer.Output Audio", "file-out.Input" );
-
-	net.ConfigureAllNodes();
 }
 
 int main( int argc, char **argv )
@@ -85,13 +86,16 @@ int main( int argc, char **argv )
 	CLAMVM::NetworkController controller;
 	controller.BindTo(net);
 
-
 	QApplication app( argc, argv );
-	NetworkGUI::Qt_NetworkPresentation qtpresentation;
-	qtpresentation.AttachTo(controller);
+	NetworkGUI::MainWindow *mw = new NetworkGUI::MainWindow;
+
+	mw->GetNetworkPresentation().AttachTo(controller);
 	controller.Publish();
-	app.setMainWidget( &qtpresentation );
-	qtpresentation.Show();
+
+	mw->show();
+	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
+
+
 	return app.exec();
 }
 

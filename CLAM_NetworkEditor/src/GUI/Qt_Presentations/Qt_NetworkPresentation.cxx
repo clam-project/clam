@@ -18,16 +18,12 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	: QWidget( parent, name ),	  
 	  mNameLabel(this),
 	  mInPortSelected(0),
-	  mOutPortSelected(0),
-	  
-	  mFactory( this , "factory" )
+	  mOutPortSelected(0)
 {
 	resize(800,600);
-	mFactory.move(640, 10);
 	setPalette( QPalette( QColor( 250, 250, 200 )));
  	SetInPortClicked.Wrap( this, &Qt_NetworkPresentation::OnNewInPortClicked);
  	SetOutPortClicked.Wrap( this, &Qt_NetworkPresentation::OnNewOutPortClicked);
-	mFactory.AddNewProcessing.Connect( AddNewProcessing );
 }
 
 Qt_NetworkPresentation::~Qt_NetworkPresentation()
@@ -72,7 +68,8 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingAdapter* adapter
 	AcquireInPortAfterClickOutPort.Connect( presentation->SetInPortAfterClickOutPort );
 	adapter->Publish();
 	mProcessingPresentations.push_back(presentation);
-	Show();
+	Show();	
+	SendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
 }
 
 void Qt_NetworkPresentation::OnNewConnection( CLAMVM::ConnectionAdapter* adapter)
@@ -86,6 +83,8 @@ void Qt_NetworkPresentation::OnNewConnection( CLAMVM::ConnectionAdapter* adapter
 	AttachConnectionToPortPresentations(presentation);
 	mConnectionPresentations.push_back(presentation);
 	Show();
+	SendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
+				     " to " + presentation->GetInName() );
 }
 
 void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_ConnectionPresentation * con)
