@@ -3,7 +3,7 @@
 
 #include "Audio.hxx"
 #include "AudioGView.hxx"
-#include "FLTK/AudioPresentation.hxx"
+#include "AudioPresentation.hxx"
 #include "DebugSnapshots.hxx"
 
 using CLAM::Audio;

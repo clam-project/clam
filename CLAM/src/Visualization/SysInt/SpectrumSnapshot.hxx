@@ -3,7 +3,7 @@
 
 #include "Spectrum.hxx"
 #include "SpectrumGView.hxx"
-#include "FLTK/SpectrumPresentation.hxx"
+#include "SpectrumPresentation.hxx"
 #include "DebugSnapshots.hxx"
 
 using CLAM::Spectrum;

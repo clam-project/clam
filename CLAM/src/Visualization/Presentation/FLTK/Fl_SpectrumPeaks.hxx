@@ -2,7 +2,7 @@
 #define __FLSPECTRUMPEAKS__
 
 #include <FL/Fl_Window.H>
-#include "Base/SpectralPeaksPresentation.hxx"
+#include "SpectralPeaksPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 #include "PeaksRenderingManager.hxx"
 
