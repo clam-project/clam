@@ -1,4 +1,4 @@
-2003-11-?? CLAM_0_5_4
+2003-11-06 CLAM_0_5_4
 
   * Build system:
      ** Added 'Compiling_against_CLAM_example' subdir to the build dir. It 
