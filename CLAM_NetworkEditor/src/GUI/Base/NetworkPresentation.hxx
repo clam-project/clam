@@ -104,7 +104,6 @@ public: //slots
 	SigSlot::Slotv1< bool > SlotChangeState;
 	SigSlot::Slotv1< ConnectionPresentation* > SlotSetRemovePortConnection;
 	SigSlot::Slotv1< ConnectionPresentation* > SlotSetRemoveControlConnection;
-	SigSlot::Slotv0 SlotClear;
 	
 	//signals
 	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreateNewPortConnectionFromGUI;
@@ -117,14 +116,25 @@ public: //slots
 	
 	SigSlot::Signalv1< const std::string & > SignalLoadNetworkFrom;
 	SigSlot::Signalv1< const std::string & > SignalSaveNetworkTo;
-	SigSlot::Signalv0 SignalClear;
 
+
+	// this signal is emitted to network controller when network must be cleared
+	SigSlot::Signalv0 SignalClear;
+	// this slot receives clear signal from gui
+	SigSlot::Slotv0 SlotClear;
+
+	// this slot receives order from gui to add a processing
 	SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
+	// the upper slot emits this signal to the network controller
 	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > SignalAddProcessing;
+	// when network controller creates a new processing controller calls this slot to create the corresponding presentation
 	SigSlot::Slotv2< const std::string & , CLAMVM::ProcessingController * > SlotCreateProcessingPresentation;
 	
+	// this slot receives order from gui to remove a processing
 	SigSlot::Slotv1< ProcessingPresentation* > SlotRemoveProcessing;
+	// the upper slot emits this signal to the network controller
 	SigSlot::Signalv1< const std::string & > SignalRemoveProcessing;
+	// when network controller removes a processing controller calls this slot to remove the corresponding presentation
 	SigSlot::Slotv1< const std::string & > SlotRemoveProcessingPresentation;	
 };
 
