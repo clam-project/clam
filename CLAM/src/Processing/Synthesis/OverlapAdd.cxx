@@ -22,70 +22,27 @@
 #include "OverlapAdd.hxx"
 
 
-using namespace CLAM;
-
-
-//////////////////////////////////////////////////////////////////////
-//
-// OverlapAddConfig
-//
-//////////////////////////////////////////////////////////////////////
-
-/* the configuration object has at least to have a name */
-
-void OverlapAddConfig::DefaultInit()
+namespace CLAM
 {
-	/* the dynamic type takes care if we add an existing attr .. */
-	AddHopSize();
-	AddFrameSize();
-	AddBufferSize();
-
-	/* all attributes are added */
-	UpdateData();
-	DefaultValues();
-}
-
-void OverlapAddConfig::DefaultValues()
-{
-	/* set default values */
-	SetHopSize(256);
-	SetFrameSize(256);
-	SetBufferSize(768);
-}
-
-//////////////////////////////////////////////////////////////////////
-//
-// OverlapAdd
-//
-//////////////////////////////////////////////////////////////////////
 
 /* processing object method implementations */
 
 OverlapAdd::OverlapAdd(void)
+	: mInput( "Audio Input", this ),
+	  mOutput( "Audio Output", this )
 {
-	mStreamBuffer=NULL;
-	mReader=NULL;
-	mWriter=NULL;
-	mAdder=NULL;
 	Configure(OverlapAddConfig());
 }
 
 OverlapAdd::OverlapAdd(const OverlapAddConfig &c)
+	: mInput( "Audio Input", this ),
+	  mOutput( "Audio Output", this )
 {
-	mStreamBuffer=NULL;
-	mReader=NULL;
-	mWriter=NULL;
-	mAdder=NULL;
 	Configure(c);
 }
 
 OverlapAdd::~OverlapAdd()
 {
-	if (mStreamBuffer) delete mStreamBuffer;
-	if(mWriter) delete mWriter;
-	if(mAdder) delete mAdder;
-	if(mReader) delete mReader;
-	
 }
 
 
@@ -98,71 +55,37 @@ bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 	int hopSize=mConfig.GetHopSize();
 	int frameSize=mConfig.GetFrameSize();
 
-	if (mStreamBuffer) delete mStreamBuffer;
-	mStreamBuffer= new StreamBuffer<TData, CircularStreamImpl<TData> >;
-	if(mWriter) delete mWriter;
-	mWriter=mStreamBuffer->NewWriter(hopSize,frameSize);
-	if(mAdder) delete mAdder;
-	mAdder=mStreamBuffer->NewAdder(hopSize,frameSize);
-	if(mReader) delete mReader;
-	mReader=mStreamBuffer->NewReader(hopSize,frameSize, mAdder);
-	mStreamBuffer->Configure(hopSize*3);
+	mInput.SetSize( frameSize );
+	mInput.SetHop( frameSize );
+
+	mOutput.SetSize( frameSize );
+	mOutput.SetHop( hopSize );
 	
-	mStreamBuffer->LeaveAndAdvance(mWriter);
 	return true;
-}
-
-/* other functions */
-
-
-
-/* setting prototypes for faster processing */
-
-bool OverlapAdd::SetPrototypes(){
-	return false;
-}
-
-bool OverlapAdd::UnsetPrototypes(){
-	return false;
 }
 
 /* the supervised Do() function */
 
 bool OverlapAdd::Do(void)
 {
-	CLAM_ASSERT(false,"OverlapAdd::Do(): Supervised mode not implemented");
-	return false;
+	bool result = Do( mInput.GetAudio(), mOutput.GetAudio() );
+	mInput.Consume();
+	mOutput.Produce();
+	return result;
 }
 
-bool OverlapAdd::Do(DataArray &in, DataArray &out)
+bool OverlapAdd::Do( const Audio &in, Audio & out)
 {
-	int hopSize=mConfig.GetHopSize();
-	DataArray inToAdd,inToWrite;
+	for( int i=0;i<out.GetSize()/2-1;i++)
+	{
+		out.GetBuffer()[i] += in.GetBuffer()[i];
+	}
 	
-	mStreamBuffer->GetAndActivate(mWriter,inToWrite);
-	mStreamBuffer->GetAndActivate(mAdder,inToAdd);
-
-	in.CopyChunk(0,hopSize,inToAdd);
-	in.CopyChunk(hopSize,hopSize,inToWrite);
-
-	mStreamBuffer->LeaveAndAdvance(mWriter);
-	mStreamBuffer->LeaveAndAdvance(mAdder);
-
-	if(mStreamBuffer->GetAndActivate(mReader,mBuffer))
+	for( int i=out.GetSize()/2;i<out.GetSize();i++)
 	{
-		mStreamBuffer->LeaveAndAdvance(mReader);
-		out=mBuffer;
-		return true;
+		out.GetBuffer()[i] = in.GetBuffer()[i];
 	}
-	else
-	{
-		mStreamBuffer->Leave(mReader);
-		return false;
-	}
-
 } 
 
-bool OverlapAdd::Do(Audio &in, Audio &out)
-{
-	return Do(in.GetBuffer(), out.GetBuffer());
-}
+} // namespace CLAM
+
