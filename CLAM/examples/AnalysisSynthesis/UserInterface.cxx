@@ -183,7 +183,7 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Input", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Load Configuration...", 0,  (Fl_Callback*)UserInterface::cb_Load, 0, 0, 0, 0, 12, 0},
  {"Edit Configuration...", 0,  (Fl_Callback*)UserInterface::cb_Edit, 0, 0, 0, 0, 12, 0},
- {"Store Configure...", 0,  (Fl_Callback*)UserInterface::cb_Store, 0, 16, 0, 0, 12, 0},
+ {"Store Configuration...", 0,  (Fl_Callback*)UserInterface::cb_Store, 0, 0, 0, 0, 12, 0},
  {"Display", 0,  0, 0, 65, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSound, 0, 1, 0, 0, 12, 0},
  {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSpec, 0, 17, 0, 0, 12, 0},

@@ -192,7 +192,7 @@ void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 	wm = CreateWaitMessage("Storing configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
-	x.Restore(mGlobalConfig,inputFileName);
+	x.Dump(mGlobalConfig,"SMSAnalysisSynthesisConfig",inputFileName);
 
 	delete wm;
 }
