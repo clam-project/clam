@@ -3,18 +3,18 @@ PROGRAMS=Salto SaltoConsole
 TOP=../..
 
 INCLUDES += \
--I$(TOP)/examples/Salto/Base \
--I$(TOP)/examples/Salto/File \
--I$(TOP)/examples/Salto/MIDI \
--I$(TOP)/examples/Salto/melodyDescription \
--I$(TOP)/examples/Salto/SALTO/FileIO \
--I$(TOP)/examples/Salto/SALTO/Gui_Editor \
--I$(TOP)/examples/Salto/SALTO/Interpolation \
--I$(TOP)/examples/Salto/SALTO/SaltoApp \
--I$(TOP)/examples/Salto/SALTO/SaltoMIDI \
--I$(TOP)/examples/Salto/SALTO/Synthesis \
--I$(TOP)/examples/Salto/SDIF \
--I$(TOP)/examples/Salto/Storage
+-I$(TOP)/examples/SALTOv2/Application \
+-I$(TOP)/examples/SALTOv2/Application/MIDIIO \
+-I$(TOP)/examples/SALTOv2/Base \
+-I$(TOP)/examples/SALTOv2/Data \
+-I$(TOP)/examples/SALTOv2/Defines \
+-I$(TOP)/examples/SALTOv2/FileIO \
+-I$(TOP)/examples/SALTOv2/GUI \
+-I$(TOP)/examples/SALTOv2/Processing \
+-I$(TOP)/examples/SALTOv2/Processing/SynthesisAudio \
+-I$(TOP)/examples/SALTOv2/Processing/SynthesisControl \
+-I$(TOP)/examples/SALTOv2/Storage \
+-I$(TOP)/examples/SALTOv2/Storage/SDIF \
 
 include $(TOP)/unix_tools/make.rules
 
