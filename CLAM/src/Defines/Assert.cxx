@@ -64,10 +64,6 @@ ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename
 	CurrentAssertFailedHandler( message, filename, lineNumber );
 }
 
-ErrAssertionFailed::~ErrAssertionFailed() throw () 
-{
-}
-
 // Warning related
 
 static void DefaultWarningHandler(const char* message, const char* filename, int lineNumber )
