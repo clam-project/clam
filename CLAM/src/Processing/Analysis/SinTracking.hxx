@@ -133,6 +133,8 @@ namespace CLAM {
 		/** Kills track identified by trackId and assigns pPeakArray as its last peak array
 		* (spectral frame)*/
 		void KillTrack(int trackPosition) const;
+
+		void KillAll();
   
 		
   
@@ -161,6 +163,8 @@ namespace CLAM {
 		mutable int mnActiveGuides;		
 		mutable int mNextTrackId;
 		bool mHarmonic;//TODO: this should be a runtime modificable control
+
+		bool mLastHarmonic;
 
 	};
 

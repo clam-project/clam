@@ -54,6 +54,7 @@ using namespace CLAM;
 		mNextTrackId=0;
 
 		mInitialized=false;
+		mLastHarmonic=false;
 		
 		int i;
 		//initializes guide array
@@ -91,10 +92,13 @@ using namespace CLAM;
 		oPeakArray.AddBinPosBuffer();
 		oPeakArray.AddIsIndexUpToDate();
 		oPeakArray.UpdateData();
-		if(mHarmonic && fn>0)
-			return DoHarmonic(iPeakArray,oPeakArray,fn);
-		else
-			return DoInharmonic(iPeakArray,oPeakArray);
+		if(mHarmonic && fn>0){
+			mLastHarmonic=true;
+			return DoHarmonic(iPeakArray,oPeakArray,fn);}
+		else{
+			if(mLastHarmonic) KillAll();
+			mLastHarmonic=false;
+			return DoInharmonic(iPeakArray,oPeakArray);}
 	}
 
 	bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
@@ -344,6 +348,15 @@ already been assigned)*/
 		mPreviousPeakArray=oPeakArray;
 	}
 
+	void SinTracking::KillAll()
+	{
+		int i;
+		for (i=0;i<mnMaxSines;i++)
+		{
+			mGuideArray[i].isDead=true;
+		}
+		mnActiveGuides=0;
+	}
 
 	bool SinTracking::DoInharmonic(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
 	{
