@@ -102,7 +102,6 @@ public:
 		mpFirst = mpLast = mpCurrent = NULL;
 		mCurrentIndex = 0;
 		mSize = 0;
-		int i;
 		*this=src;
 	}
 	
