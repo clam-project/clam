@@ -9,11 +9,6 @@
 #include "AudioMultiplier.hxx"
 #include "AudioMixer.hxx"
 
-//#include "Audio.hxx"
-//#include "AudioManager.hxx"
-
-
-
 
 namespace FlowControlExample
 {
@@ -38,14 +33,14 @@ SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl (
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureNetworks()
 {
-	ConfigureOscillatorToFileOut();
+//	ConfigureOscillatorToFileOut();
 	ConfigureFileInFileOut();
-	ConfigureModulatedFileIn();
-	ConfigureModulatedOscillator();
-	ConfigureModulatedFileInPlusFileIn();
+//	ConfigureModulatedFileIn();
+//	ConfigureModulatedOscillator();
+//	ConfigureModulatedFileInPlusFileIn();
 
-	//_networks.push_back(&_fileInFileOut);
-	_networks.push_back(&_oscillatorToFileOut);
+	_networks.push_back(&_fileInFileOut);
+	//_networks.push_back(&_oscillatorToFileOut);
 	//_networks.push_back(&_modulatedFileIn);
 	//_networks.push_back(&_modulatedOscillator);
 	//_networks.push_back(&_modulatedFileInPlusFileIn);
@@ -70,6 +65,11 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 
 	_oscillatorToFileOut.AddProcessing("1_file-out", new CLAM::AudioFileOut(fileCfg));
 
+
+	_oscillatorToFileOut.GetProcessing("0_oscillator-generator").GetOutPorts().Get("Audio Output").SetParams(_frameSize);
+	_oscillatorToFileOut.GetProcessing("1_file-out").GetInPorts().Get("Input").SetParams(_frameSize);
+
+
 	//link them
 	_oscillatorToFileOut.ConnectPorts( "0_oscillator-generator.Audio Output", "1_file-out.Input" );
 
@@ -82,9 +82,6 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 		_oscillatorToFileOut.AddProcessing( "2_audio-out", new CLAM::AudioOut(audioCfg) );
 		_oscillatorToFileOut.ConnectPorts( "0_oscillator-generator.Audio Output", "2_audio-out.Input" );
 	}
-
-//	_oscillatorToFileOut.GetProcessing("0_oscillator-generator").GetOutPorts().Get("Audio Output").SetParams(_frameSize);
-//	_oscillatorToFileOut.GetProcessing("1_file-out").GetInPorts().Get("Input").SetParams(_frameSize);
 
 }
 
@@ -105,6 +102,8 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
 
 	_fileInFileOut.AddProcessing("1_file-out", new CLAM::AudioFileOut(fileCfg));
 
+	_fileInFileOut.GetProcessing("0_file-in").GetOutPorts().Get("Output").SetParams(_frameSize);
+	_fileInFileOut.GetProcessing("1_file-out").GetInPorts().Get("Input").SetParams(_frameSize);
 
 	_fileInFileOut.ConnectPorts( "0_file-in.Output", "1_file-out.Input" );
 	
@@ -243,7 +242,7 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn(
 
 void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworks()
 {
-/*
+
 	NetworkList::iterator it;
 	for ( it=_networks.begin(); it != _networks.end(); it++ )
 	{
@@ -253,23 +252,6 @@ void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworks()
 			(*it)->DoProcessings();
 		(*it)->Stop();
 	}
-*/
-
-	_oscillatorToFileOut.Start();
-	_oscillatorToFileOut.ConfigureNodes(_frameSize);
-
-
-	_oscillatorToFileOut.GetProcessing("0_oscillator-generator").GetOutPorts().Get("Audio Output").SetParams(_frameSize);
-	_oscillatorToFileOut.GetProcessing("1_file-out").GetInPorts().Get("Input").SetParams(_frameSize);
-
-
-	for (int i=0; i<_maxFramesToProcess; i++)
-	{
-		_oscillatorToFileOut.GetProcessing("0_oscillator-generator").Do();
-		_oscillatorToFileOut.GetProcessing("1_file-out").Do();
-	}
-	_oscillatorToFileOut.Stop();
-	
 }
 
 } //namespace
