@@ -42,8 +42,7 @@ public:
 		mMoments.SetSize(initOrder);
 		mCentralMoments.SetSize(initOrder);
 		mCenterOfGravities.SetSize(initOrder);
-		int i;
-		for(i=0;i<initOrder;i++)
+		for(unsigned i=0;i<initOrder;i++)
 		{
 			mMoments[i]=NULL;
 			mCentralMoments[i]=NULL;
@@ -151,6 +150,7 @@ public:
 	/** Get mean, compute it if necessary*/
 	U GetMean()
 	{
+		if (mData->Size()<=0) return 0;
 		//FirstOrder* first;
 		return GetMoment(FirstOrder);
 	}
@@ -373,7 +373,7 @@ public:
 	{
 		const Array<T>& Y = *mData;
 		const TSize size  = mData->Size();
-		const U m1 = GetMoment(FirstOrder);
+		const U m1 = GetMean();
 
 		TData d1=0;
 		TData d2=0;

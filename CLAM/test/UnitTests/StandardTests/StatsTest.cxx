@@ -23,6 +23,7 @@ class StatsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCentroid_withOddZeros );
 	CPPUNIT_TEST( testCentroid_withEvenConstant );
 	CPPUNIT_TEST( testCentroid_withOddConstant );
+	CPPUNIT_TEST( testMean_withNoElements );
 	CPPUNIT_TEST( testMoment1 );
 	CPPUNIT_TEST( testMoment2 );
 	CPPUNIT_TEST( testMoment3 );
@@ -198,6 +199,11 @@ private:
 		_array[49]=CLAM::TData(1.0);
 		CLAM::Stats stats(&_array);
 		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
+	}
+	void testMean_withNoElements()
+	{
+		CLAM::Stats stats(&_array);
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(0.0), stats.GetMean());
 	}
 	void testMoment1()
 	{
