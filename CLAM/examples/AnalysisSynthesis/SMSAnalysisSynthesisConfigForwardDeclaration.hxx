@@ -1,0 +1,4 @@
+namespace CLAM
+{
+	class SMSAnalysisSynthesisConfig;
+}
