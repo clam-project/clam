@@ -11,7 +11,13 @@
 #include "makegen.h"
 #include "verbose.h"
 
-typedef enum {windows, linux, apple} Platform;
+typedef enum 
+{
+	windows_platform, 
+	linux_platform, 
+	apple_platform
+} Platform;
+
 Platform platform;
 
 int verbose = 0;
@@ -21,7 +27,7 @@ void createQtGenDirsIfNecessary()
 {
 	listkey* h = NULL;
 
-	if (platform != windows)
+	if (platform != windows_platform)
 		return;
 
 	h = listhash_find( config, "USE_QT" );
@@ -53,7 +59,7 @@ void addQtGenDirsToIncludepaths()
 
 	if (verbose)
 	{
-		printf( stderr, "Files that need to be uic'ed\n" );
+		fprintf( stderr, "Files that need to be uic'ed\n" );
 		while( current != NULL )
 		{
 			fprintf( stderr, "%s \n", current->str );
@@ -97,18 +103,18 @@ int main(int argc,char** argv)
 	config_init();
 
 #ifdef __APPLE__
-	platform = apple;
+	platform = apple_platform;
 	listhash_add_item_str(config,"OS_WINDOWS","0");
 	listhash_add_item_str(config,"OS_LINUX","0");
 	listhash_add_item_str(config,"OS_MACOSX","1");
 #else
 #	ifdef WIN32
-	platform = windows;
+	platform = windows_platform;
 	listhash_add_item_str(config,"OS_WINDOWS","1");
 	listhash_add_item_str(config,"OS_LINUX","0");
 	listhash_add_item_str(config,"OS_MACOSX","0");
 #	else // Linux
-	platform = linux;
+	platform = linux_platform;
 	listhash_add_item_str(config,"OS_WINDOWS","0");
 	listhash_add_item_str(config,"OS_LINUX","1");
 	listhash_add_item_str(config,"OS_MACOSX","0");
@@ -157,12 +163,12 @@ int main(int argc,char** argv)
 	addQtGenDirsToIncludepaths();
 
 
-	if (platform != windows && gendepend==2)
+	if (platform != windows_platform && gendepend==2)
 	{
 		makefilevars_generate();
 	}
 
-	if (platform == windows )
+	if (platform == windows_platform )
 	{
 		dsp_parse( dspFileToWrite );
 		vcproj_parse( vcprojFileToWrite);
