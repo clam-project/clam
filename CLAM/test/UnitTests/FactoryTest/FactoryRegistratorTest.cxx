@@ -4,6 +4,7 @@
 #include "DummyProducts.hxx"
 
 #include "Factory.hxx"
+#include "FactoryOnOtherTranslationUnits.hxx"
 
 namespace CLAMTest
 {
@@ -115,17 +116,15 @@ private:
 
 		theFactory.GetRegisteredNames( keysInFactory );
 
-		CPPUNIT_ASSERT_EQUAL( keysInFactory.empty(), false );
+		CPPUNIT_ASSERT_EQUAL( false, keysInFactory.empty() );
 	}
 
 	void testRegistratorsAsStaticObjects_FactoryUnicity()
 	{
-		extern FactoryOfAs* gAddressOfFactoryUsedByRegistrator;
-
 		FactoryOfAs& theFactory = FactoryOfAs::GetInstance();
 
-		CPPUNIT_ASSERT_EQUAL( gAddressOfFactoryUsedByRegistrator == &theFactory,
-				      true );
+		CPPUNIT_ASSERT( RegistratorStub::StaticInstance().AddressOfFactory() 
+				== &theFactory);
 	}
 
 };
