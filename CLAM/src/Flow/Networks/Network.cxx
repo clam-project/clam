@@ -259,7 +259,7 @@ namespace CLAM
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
 		InPortBase & inport = GetInPortByCompleteName(consumer);
 
-		if ( outport.IsConnectedTo(inport) ) 
+		if ( outport.IsDirectlyConnectedTo(inport) ) 
 			return false;
 			
 		if ( !outport.IsConnectableTo(inport) ) //they have different type
@@ -294,7 +294,7 @@ namespace CLAM
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
 		InPortBase & inport = GetInPortByCompleteName(consumer);
 
-		if ( !outport.IsConnectedTo(inport) ) 
+		if ( !outport.IsDirectlyConnectedTo(inport))
 			return false;
 
 		outport.DisconnectFromIn( inport );
