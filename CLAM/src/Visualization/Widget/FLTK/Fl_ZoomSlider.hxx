@@ -50,7 +50,7 @@ namespace CLAMGUI
 
 				int handle( int evt );
 
-				Signalv2<float, float> SpanChanged;
+				Signalv2<double, double> SpanChanged;
 
 		protected:
 				/**
@@ -95,9 +95,9 @@ namespace CLAMGUI
 				{			
 
 					if ( mOrientation == FL_HORIZONTAL )
-							mPixelLen = fabs( h() - y() ) -offset_*2;
+							mPixelLen = fabs( double(h() - y()) ) -offset_*2;
 					else if ( mOrientation == FL_VERTICAL )
-							mPixelLen = fabs( w() - x() ) - offset_ * 2;
+							mPixelLen = fabs( double(w() - x()) ) - offset_ * 2;
 						
 				}
 
