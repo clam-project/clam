@@ -24,6 +24,10 @@
 
 namespace CLAM
 {
+	/**
+	 * A container for the values for a single attribute along the scope.
+	 * @ingroup SemanticalAnalysis
+	 */
 	class AttributePool : public Component
 	{
 	public:
