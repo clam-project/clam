@@ -82,6 +82,7 @@ private:
 
 
 
+// Implementation
 
 inline FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
 {
