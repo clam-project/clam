@@ -265,10 +265,19 @@ PhaseManagement::SetLastPhasesAndFreqs(SpectralPeakArray& peakArray)
 {
 	DataArray& lastPhase=mLastPeakArray.GetPhaseBuffer();
 	DataArray& lastFreq=mLastPeakArray.GetFreqBuffer();
-	for (int i=0;i<peakArray.GetnPeaks();i++)
+	DataArray& currentPhase= peakArray.GetPhaseBuffer();
+	DataArray& currentFreq= peakArray.GetFreqBuffer();
+	int nPeaks=peakArray.GetnPeaks();
+
+	lastPhase.Resize(nPeaks);
+	lastPhase.SetSize(nPeaks);
+	lastFreq.Resize(nPeaks);
+	lastFreq.SetSize(nPeaks);
+
+	for (int i=0;i<nPeaks;i++)
 	{
-		lastPhase[i] = peakArray.GetPhase(i);
-		lastFreq[i]  = peakArray.GetFreq(i);
+		lastPhase[i] = currentPhase[i];
+		lastFreq[i]  = currentFreq[i];
 	}
 	mLastPeakArray.SetIsIndexUpToDate(true);
 
