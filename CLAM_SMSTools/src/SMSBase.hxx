@@ -38,6 +38,7 @@
 #include "SDIFIn.hxx"
 #include "SDIFOut.hxx"
 #include "NullProgress.hxx"
+#include "NullWaitMessage.hxx"
 #include "StdOutWaitMessage.hxx"
 
 #include "SMSAppState.hxx"

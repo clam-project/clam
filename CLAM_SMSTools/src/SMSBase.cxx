@@ -84,7 +84,7 @@ CLAMGUI::Progress* SMSBase::CreateProgress(const char* title, float from, float 
 }
 CLAMGUI::WaitMessage* SMSBase::CreateWaitMessage(const char * title)
 {
-	return new CLAMGUI::StdOutWaitMessage(title);
+	return new CLAMGUI::NullWaitMessage();
 }
 
 
@@ -382,6 +382,8 @@ void SMSBase::DoMorphTracksCleanup()
 
 void SMSBase::Analyze(void)
 {
+	CLAM_ASSERT(GetState().GetHasAudioIn(), "Bad file-name in configuration" );
+
 	CLAM_ACTIVATE_FAST_ROUNDING;
 	TSize size = mOriginalSegment.GetAudio().GetSize();
 	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
