@@ -31,7 +31,7 @@
 namespace SigSlot
 {
 
-template < typename ParmType1, template ParmType2 >
+template < typename ParmType1, typename ParmType2 >
 	class Signalv2 : public Signal
 {
 public:
