@@ -1,39 +1,22 @@
-2004-02-18 CLAM_0_6_0 
+2004-02-18 CLAM_0_6_0
 'Audio file formats: Reloaded'
 
-  * XML:
-     ** Both, basic XMLStorage usage interface and customization interface have changed.
-        Check 'Migration Guidelines' on the documentation and update your code.
-     ** Ported to XercesC 2.4. Library dependant code is more isolated and structured
-        so libxml or expat ports will be easy.
-     ** Atomical operations are available so partial loading or document updating is now
-        more feasible.
-     ** One statement calls using static methods XMLStorage::Dump and XMLStorage::Restore
-     ** Trapable error notification using exceptions.
-     ** API Change: XMLStorage::Store and XMLStorage::Load receives a const-ref and a ref
-        to adapters instead a pointer
-     ** API Change: Component::StoreOn is now a const method.
-     ** Scoped XML: [Experimental] allows (write only) fast XML generation without having
-        to define CLAM data.
-     ** Cppunit Tested and general code clean up
   * Network Editor:
-     ** Smarter conections display (control conection with vertical tangent and that wires
-        always goes outward the processing)
      ** Added support for ladspa plugins inside the GUI
      ** Support to change the name of processings
      ** Support for new Audio File I/O processings
      ** Now is possible to know the state of a given processing and the error
-     message (if it exists).
+        message (if it exists).
   * Audio File I/O Support:
-     ** Four new processings available for reading/writing from audio files: 
+     ** Four new processings available for reading/writing from audio files:
         *** MonoAudioFileReader/Writer ( single channel reading and writing )
 		*** MultiChannelAudioFileReader/Writer ( multi channel reading and writing )
      ** New AudioFile class. This class models the concept of 'audio file' which has
         attached attributes as 'Location' ( the path to the file ), 'Header' ( the concrete
-		file header information such as length, samplerate, etc. ) and 
+		file header information such as length, samplerate, etc. ) and
 		'TextDescriptors' (text-based meta-data such as Artist, Title, Album, etc. )
      ** New File formats supported:
-		*** Almost any PCM-based audio data storage scheme encoding/decoding is supported 
+		*** Almost any PCM-based audio data storage scheme encoding/decoding is supported
 		    through libsndfile ( http://www.zip.com.au/~erikd/libsndfile )
 		*** Ogg/Vorbis encoding and decoding support
 		*** Mpeg Audio Layer 1/2/3 decoding support
@@ -46,31 +29,37 @@
 			since Apple did not include Unicode ( wchar_t ) support in their libstdc++ binary
 			distribution.
      ** Three new examples showing how to use the new Processing's and the AudioFile class:
-
 		*** examples/FileInfo_example.cxx
 		*** examples/AudioFileReading_example.cxx
 		*** examples/AudioFileWritiing_example.cxx
 		their build projects can be found on the build/Examples/Simple folder
   * FFT refactored:
-	**  removed duplicated code and unused functionality and improved efficiency.
-  * Salto: 
+	** Removed duplicated code and unused functionality and improved efficiency.
+  * Salto:
 	** Fix: several potentially dangerous out-of-bounce array accesses in fltk G.interface
-  * Processing Data: 
+  * Processing Data:
 	** Documented (doxygen style) that the time unit is miliseconds in Audio, Frame and Segment
   * Processings:
 	** AudioFileIn stamps the sample-rate to the written audio
+  * Descriptors:
+    ** AttackTime is based on the envelope
+    ** Fix: LogAttackTime recalculated the AttackTime always
+    ** New AudioDescriptors: Decrease
+    ** New SpectralDescriptors: Slope and Spread
+    ** Functional tests added
+    ** Fixes and precission enhancements
   * Tests:
 	** All unit and functional tests have been merged in only two executables (settings.cfg),
 	   namely: AllUnitTests and AllFunctionalTests
 
 
-	
 
-2004-01-15 CLAM_0_5_7 
+
+2004-01-15 CLAM_0_5_7
 'Tomorrow MacOsX patch'
   * SMSTools:
      ** Fix: Closing window crashed on MacOsX.
-     ** Fix: Storing output global sound stored sinusoidal in previous release 
+     ** Fix: Storing output global sound stored sinusoidal in previous release
   * Base:
      ** [Experimental] Support for Polymorphic attributes in DT
   * XML:
@@ -95,7 +84,7 @@
   * Salto:
      ** Fix: Did not compile in previous release. Example in general is still outdated though.
 
-2004-01-12 CLAM_0_5_6 
+2004-01-12 CLAM_0_5_6
 'XML and Ladspa rewrite'
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface have changed.
