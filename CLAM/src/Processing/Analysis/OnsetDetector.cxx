@@ -297,9 +297,9 @@ namespace CLAM
 		for(i=0; i<mnSamples;i++)
 		{	
 			temp=0.0;
-			for(j=0; j<mWinSize; j++)
+			if ( i >= mWinSize )
 			{
-				if(i-mWinSize+1+j>=0) 
+				for(j=0; j<mWinSize; j++)
 				{
 					temp+=energy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
 				}
