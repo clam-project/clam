@@ -10,11 +10,11 @@
 
 namespace CLAM {
 	
-	Processing * CreateOscillator() {
+	inline Processing * CreateOscillator() {
 		return new Oscillator;
 	}
 
-	Processing * CreateAudioAdder() {
+	inline Processing * CreateAudioAdder() {
 		return new AudioAdder;
 	}
 

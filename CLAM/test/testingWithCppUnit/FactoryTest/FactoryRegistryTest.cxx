@@ -14,12 +14,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FactoryRegistryTest );
 class FactoryRegistryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( FactoryRegistryTest );
-	CPPUNIT_TEST( testRegistryGetCreatorUnsafe_WhenIsEmpty );
-	CPPUNIT_TEST( testRegistryGetCreatorSafe_WhenIsEmpty );
-	CPPUNIT_TEST( testRegistryAskTheWrongKey_WithASingleCreator );
-	CPPUNIT_TEST( testRegistryAskTheCorrectKey_WithASingleCreator );
-	CPPUNIT_TEST( testRegistryAskACorrectKey_WithTwoCreators );
-	CPPUNIT_TEST( testRegistryAddCreator_RepeatedKey );
+	CPPUNIT_TEST( testGetCreatorUnsafe_WhenIsEmpty );
+	CPPUNIT_TEST( testGetCreatorSafe_WhenIsEmpty );
+	CPPUNIT_TEST( testGetCreatorWrongKey_WithASingleCreator );
+	CPPUNIT_TEST( testGetCreatorCorrectKey_WithASingleCreator );
+	CPPUNIT_TEST( testGetCreatorCorrectKey_WithTwoCreators );
+	CPPUNIT_TEST( testAddCreator_RepeatedKey );
 	
 
 	CPPUNIT_TEST_SUITE_END();
@@ -30,7 +30,7 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 private:
 	
 
-	void testRegistryGetCreatorUnsafe_WhenIsEmpty()
+	void testGetCreatorUnsafe_WhenIsEmpty()
 	{
 		CLAM::FactoryRegistry reg; // an empty factory register
 		try {
@@ -44,7 +44,7 @@ private:
 		}
 	}
 
-	void testRegistryGetCreatorSafe_WhenIsEmpty()
+	void testGetCreatorSafe_WhenIsEmpty()
 	{
 		CLAM::FactoryRegistry reg; // an  empty factor y register
 		try {
@@ -57,7 +57,7 @@ private:
 		}
 	}
 
-	void testRegistryAskTheWrongKey_WithASingleCreator()
+	void testGetCreatorWrongKey_WithASingleCreator()
 	{
 		CLAM::FactoryRegistry reg;
 		// set up:
@@ -66,7 +66,7 @@ private:
 		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
 	}
 
-	void testRegistryAskTheCorrectKey_WithASingleCreator()
+	void testGetCreatorCorrectKey_WithASingleCreator()
 	{
 		CLAM::FactoryRegistry reg;
 		// set up:
@@ -79,7 +79,7 @@ private:
 		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("Oscillator") ); 
 	}
 
-	void testRegistryAskACorrectKey_WithTwoCreators()
+	void testGetCreatorCorrectKey_WithTwoCreators()
 	{
 		CLAM::FactoryRegistry reg;
 		// set up
@@ -91,7 +91,7 @@ private:
 		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreatorSafe("Oscillator") );
 	}
 
-	void testRegistryAskIncorrectKey_WithTwoCreators()
+	void testGetCreatorIncorrectKey_WithTwoCreators()
 	{
 		CLAM::FactoryRegistry reg;
 		// set up
@@ -103,7 +103,7 @@ private:
 		CPPUNIT_ASSERT( NULL == reg.GetCreatorSafe("incorrect as well") );
 	}
 
-	void testRegistryAddCreator_RepeatedKey()
+	void testAddCreator_RepeatedKey()
 	{
 		CLAM::FactoryRegistry reg;
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
@@ -115,7 +115,7 @@ private:
 		} catch (CLAM::ErrAssertionFailed& expected ) {}
 	}
 
-	void testRegistryAddCreatorSafe_RepeatedKey()
+	void testAddCreatorSafe_RepeatedKey()
 	{
 		CLAM::FactoryRegistry reg;
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );

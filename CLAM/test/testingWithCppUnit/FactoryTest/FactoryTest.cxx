@@ -1,5 +1,5 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx"
+#include "cppUnitHelper.hxx" // necessary for custom assert
 
 #include "Oscillator.hxx"
 #include "Factory.hxx"
