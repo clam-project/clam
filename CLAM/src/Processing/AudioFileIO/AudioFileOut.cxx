@@ -30,14 +30,14 @@ namespace CLAM {
 
 	AudioFileOut::AudioFileOut() :
 		mpSoundFileIO(0),
-		Input("Input",this,1)
+		mInput("Input",this)
 	{
 		Configure(AudioFileConfig());
 	};
 
 	AudioFileOut::AudioFileOut(const AudioFileConfig &c) :
 		mpSoundFileIO(0),
-		Input("Input",this,1)
+		mInput("Input",this)
 	{ 
 		Configure(c);
 	};
@@ -87,7 +87,8 @@ namespace CLAM {
 
 		ConcreteStop();
 
-		Input.SetParams(mConfig.GetFrameSize());
+		mInput.SetSize(mConfig.GetFrameSize());
+		mInput.SetHop(mConfig.GetFrameSize());
 		return true;
 	}
 
@@ -227,8 +228,8 @@ namespace CLAM {
 
 	bool AudioFileOut::Do(void)
 	{
-		bool res = Do(Input.GetData());
-		Input.LeaveData();
+		bool res = Do(mInput.GetAudio());
+		mInput.Consume();
 		return res;		
 	}
 };//namespace CLAM

@@ -1,7 +1,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "InControl.hxx"
+#include "OutPort.hxx"
+#include "OutControl.hxx"
 #include "DummyProcessingData.hxx"
 
 namespace CLAMTest
@@ -45,9 +47,9 @@ public:
 		mOutControl1("out1", this),
 		mOutControl2("out2", this),
 		
-		mInPort(std::string("in"),this,0/*length*/),
-		mOutPort1("out1",this,0/*length*/),
-		mOutPort2("out2",this,0/*length*/)
+		mInPort(std::string("in"),this),
+		mOutPort1("out1",this),
+		mOutPort2("out2",this)
 	{};
 
 private:
@@ -65,9 +67,9 @@ private:
 	CLAM::OutControl mOutControl1;
 	CLAM::OutControl mOutControl2;
 
-	CLAM::InPortTmpl<DummyProcessingData> mInPort;
-	CLAM::OutPortTmpl<DummyProcessingData> mOutPort1;
-	CLAM::OutPortTmpl<DummyProcessingData> mOutPort2;
+	CLAM::InPort<DummyProcessingData> mInPort;
+	CLAM::OutPort<DummyProcessingData> mOutPort1;
+	CLAM::OutPort<DummyProcessingData> mOutPort2;
 
 	void testGetInControl_GetTheRightControl()
 	{
@@ -120,14 +122,14 @@ private:
 	}
 	void testOutPorts_GetByNumber_GetTheRightPort()
 	{
-		CLAM::OutPort* returnedPort = &GetOutPorts().GetByNumber(1); // get the second port
-		CLAM::OutPort* expectedPort = &mOutPort2;
+		CLAM::OutPortBase* returnedPort = &GetOutPorts().GetByNumber(1); // get the second port
+		CLAM::OutPortBase* expectedPort = &mOutPort2;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInPorts_GetByNumber_GetTheRightPort()
 	{
-		CLAM::InPort* returnedPort = &GetInPorts().GetByNumber(0); // get the first port
-		CLAM::InPort* expectedPort = &mInPort;
+		CLAM::InPortBase* returnedPort = &GetInPorts().GetByNumber(0); // get the first port
+		CLAM::InPortBase* expectedPort = &mInPort;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 
@@ -146,14 +148,14 @@ private:
 	}
 	void testOutPorts_GetByName_GetTheRightPort()
 	{
-		CLAM::OutPort* returnedPort = &GetOutPorts().Get("out2"); // get the second port
-		CLAM::OutPort* expectedPort = &mOutPort2;
+		CLAM::OutPortBase* returnedPort = &GetOutPorts().Get("out2"); // get the second port
+		CLAM::OutPortBase* expectedPort = &mOutPort2;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInPorts_GetByName_GetTheRightPort()
 	{
-		CLAM::InPort* returnedPort = &GetInPorts().Get("in"); // get the first port
-		CLAM::InPort* expectedPort = &mInPort;
+		CLAM::InPortBase* returnedPort = &GetInPorts().Get("in"); // get the first port
+		CLAM::InPortBase* expectedPort = &mInPort;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 
