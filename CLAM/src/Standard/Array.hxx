@@ -549,36 +549,6 @@ template <class T> inline bool operator == (
 	return true;
 }
 
-#define CLAM_NUMERIC_ARRAY_INIT_DECL(Type)\
-template<>\
-void Array<Type>::InitializeElement(int i );\
-
-CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned long)
-CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned int)
-CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned short)
-CLAM_NUMERIC_ARRAY_INIT_DECL(unsigned char)
-CLAM_NUMERIC_ARRAY_INIT_DECL(signed long)
-CLAM_NUMERIC_ARRAY_INIT_DECL(signed int)
-CLAM_NUMERIC_ARRAY_INIT_DECL(signed short)
-CLAM_NUMERIC_ARRAY_INIT_DECL(signed char)
-CLAM_NUMERIC_ARRAY_INIT_DECL(double)
-CLAM_NUMERIC_ARRAY_INIT_DECL(float)
-
-#define CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(TYPE)                           \
-template<>                                                             \
-void Array<TYPE >::CopyDataBlock(int first, int last,                  \
-                                 const TYPE *src);                      \
-
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned long)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned int)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned short)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(unsigned char)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed long)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed int)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed short)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed char)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(double)
-CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(float)
 
 
 typedef Array<TData> DataArray;
