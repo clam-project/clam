@@ -135,12 +135,10 @@ using namespace CLAMTest;
 int TryQTConfigurator(DummyConfig & config, int argc, char**argv) 
 {
 	QApplication a(argc,argv);
-
 	CLAM::QTConfigurator configurator;
 	configurator.SetConfig(config);
-	a.setMainWidget( &configurator );
 	configurator.show();
-
+	a.setMainWidget( &configurator );
 	return a.exec();
 }
 

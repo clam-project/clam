@@ -30,10 +30,10 @@
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 
-#include <qpushbutton.h>
-#include <qwidget.h>
+#include <qdialog.h>
 #include <qvbox.h>
 #include <qgrid.h>
+#include <qpushbutton.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qspinbox.h>
@@ -99,9 +99,9 @@ namespace CLAM{
 		
 	};
 
-	class QTConfigurator : public QVBox {
+	class QTConfigurator : public QDialog {
 		Q_OBJECT
-		typedef QVBox super;
+		typedef QDialog super;
 		typedef std::map<std::string, QWidget*> tWidgets;
 		typedef std::map<std::string, QTConfigurator*> tSubConfigurators;
 	public:
@@ -112,33 +112,37 @@ namespace CLAM{
 			mWidgetNum = 0;
 			mSetter = 0;
 			mGetter = 0;
+			mLayout = 0;
 		}
 
 		virtual ~QTConfigurator() {
 			if (mSetter) delete mSetter;
 			if (mGetter) delete mGetter;
 		}
-
+		QVBox * mLayout;
 		template <class Config>
 		void SetConfig(Config & config) {
-			if (mSetter) delete mSetter;
+			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
+			CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
+			CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 			mSetter = new VisitorSetter<Config,QTConfigurator>(&config, this);
-			if (mGetter) delete mGetter;
 			mGetter = new VisitorGetter<Config,QTConfigurator>(&config, this);
 
-			setSpacing(3);
+			mLayout = new QVBox(this);
+			mLayout->setSpacing(3);
 			GetInfo();
 			
-			QFrame * frame = new QFrame(this);
+			QFrame * frame = new QFrame(mLayout);
 			frame->setMinimumHeight(10);
 
-			QGrid *grid = new QGrid( 2, this );
+			QGrid *grid = new QGrid( 2, mLayout );
 			
 			QPushButton * applyButton = new QPushButton("Apply", grid, "apply");
 			connect( applyButton, SIGNAL(clicked()), this, SLOT(Apply()) );
 
 			QPushButton * discardButton = new QPushButton("Discard", grid, "discard");
 			connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
+			mLayout->adjustSize();
 		}
 	private:
 
@@ -170,7 +174,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, std::string *foo, T& value) {
-			QHBox * cell = new QHBox(this);
+			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
 			mWidgetNum++;
@@ -185,7 +189,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, TData *foo, T& value) {
-			QHBox * cell = new QHBox(this);
+			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			std::stringstream val;
 			val << value << std::ends;
@@ -205,7 +209,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, TSize *foo, T& value) {
-			QHBox * cell = new QHBox(this);
+			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			QSpinBox * mInput = new QSpinBox(cell);
 			QIntValidator * validator = new QIntValidator(mInput);
@@ -224,7 +228,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, bool *foo, T& value) {
-			QPushButton * mInput = new QPushButton(name, this);
+			QPushButton * mInput = new QPushButton(name, mLayout);
 			mInput->setToggleButton(true);
 			mInput->setOn(value);
 			mWidgetNum++;
@@ -239,7 +243,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, Enum *foo, T& value) {
-			QHBox * cell = new QHBox(this);
+			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			QComboBox * mChoice = new QComboBox(/*editable*/false, cell);
 
@@ -266,10 +270,10 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, DynamicType *foo, T&value) {
-			QHBox * cell = new QHBox(this);
+			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			QPushButton * mInput = new QPushButton("Details...", cell);
-			QTConfigurator * subConfigurator = new QTConfigurator();
+			QTConfigurator * subConfigurator = new QTConfigurator(this);
 			subConfigurator->SetConfig(value);
 			mSubConfigurators.insert(tSubConfigurators::value_type(name, subConfigurator));
 			connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
