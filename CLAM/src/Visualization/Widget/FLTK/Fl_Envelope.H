@@ -16,6 +16,8 @@ either version 2 of the License, or (at your option) any later version.
 #include <FL/Fl_Widget.H>
 #include <FL/Fl.H>
 #include "Selection.H"
+#include "Signalv2.hxx"
+#include "Signalv0.hxx"
 
 typedef struct {
 	float x;
@@ -80,6 +82,11 @@ public:
 
 	Fl_PointMover(int x,int y,int w,int h);
 	virtual void draw(void);
+
+	/** Signal to send when the user adds a point*/
+	SigSlot::Signalv2< double, double > PointAdded;
+	SigSlot::Signalv0                   PointMoved;
+	SigSlot::Signalv0                   PointRemoved;
 
 	void margin(int left,int top,int right,int bottom) {
 		leftmargin_=left;

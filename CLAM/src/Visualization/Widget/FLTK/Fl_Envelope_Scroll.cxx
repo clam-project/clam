@@ -144,37 +144,37 @@ void Fl_EnvelopeControl::e_cb(Fl_Envelope* ev,Fl_EnvelopeControl* ec)
 // class Fl_Envelope_Scroll
 
 Fl_Envelope_Scroll::Fl_Envelope_Scroll(int x,int y,int w,int h)
-:Fl_Group(x,y,w,h)
-,hscroll(x,y+h-36,w-36,18),
-vscroll(x+w-36,y,18,h-36),
-hslider(x,y+h-18,w-36,18),
-vslider(x+w-18,y,18,h-36),
-window(x,y,w-36,h-36),
-envelope(0,0,w-36,h-36),
-control(&envelope,&hscroll,&vscroll,&hslider,&vslider,this)
+	: Fl_Group(x,y,w,h)
 {
-	window.end();
-	hscroll.type(FL_HOR_SLIDER);
-	hslider.type(FL_HOR_SLIDER);
+	hscroll = new Fl_Scrollbar( x, y+h-36, w-36, 18);
+	vscroll = new Fl_Scrollbar( x+w-36, y, 18, h-36);
+	hslider = new Fl_Slider(x,y+h-18, w-36,18);
+	vslider = new Fl_Slider(x+w-18, y, 18, h-36);
+	window = new Fl_Double_Window( x,y,w-36,h-36);
+	envelope = new Fl_Envelope( x,y,w-36,h-36);
+	control = new Fl_EnvelopeControl( envelope,hscroll,vscroll,hslider,vslider,this);
+	window->end();
+	hscroll->type(FL_HOR_SLIDER);
+	hslider->type(FL_HOR_SLIDER);
 	end();
 	resizable( window );
-	window.resizable(envelope);
+	window->resizable(envelope);
 }
 
 void Fl_Envelope_Scroll::margin_adjust(void)
 {
-	hscroll.resize(
-		x()+envelope.leftmargin(),y()+h()-36,
-		w()-36-envelope.hmargin(),18);
-	vscroll.resize(
-		x()+w()-36,y()+envelope.topmargin(),
-		18,h()-36-envelope.vmargin());
-	hslider.resize(
-		x()+envelope.leftmargin(),y()+h()-18,
-		w()-36-envelope.hmargin(),18);
-	vslider.resize(
-		x()+w()-18,y()+envelope.topmargin(),
-		18,h()-36-envelope.vmargin());
+	hscroll->resize(
+		x()+envelope->leftmargin(),y()+h()-36,
+		w()-36-envelope->hmargin(),18);
+	vscroll->resize(
+		x()+w()-36,y()+envelope->topmargin(),
+		18,h()-36-envelope->vmargin());
+	hslider->resize(
+		x()+envelope->leftmargin(),y()+h()-18,
+		w()-36-envelope->hmargin(),18);
+	vslider->resize(
+		x()+w()-18,y()+envelope->topmargin(),
+		18,h()-36-envelope->vmargin());
 }
 
 

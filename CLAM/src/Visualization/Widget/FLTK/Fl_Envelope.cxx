@@ -184,8 +184,14 @@ int Fl_PointMover::handle(int event) {
 			float py=pointy(Fl::event_y());
 			dragselecting_=0;
 			if (Fl::event_clicks()){
+
 				selection_.Clear();
+				
 				add_point(snapx(px),snapy(py));
+				
+				/** The user has added a point*/
+				PointAdded.Emit( snapx(px), snapy(py) );
+
 				dragid_=npoints_-1;
 				do_callback();
 				damage(FL_DAMAGE_EXPOSE,
@@ -265,9 +271,11 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].y+=add;
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
+					
 					return 1;
 				}
 				case FL_Up:
@@ -277,6 +285,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].y+=add;
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
@@ -289,6 +298,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].x+=add;
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
@@ -301,6 +311,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].x+=add;
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
@@ -327,6 +338,7 @@ int Fl_PointMover::handle(int event) {
 						int idto=selection_.GetTo();
 						int n=idto-idfrom;
 						remove_points(idfrom-offset,n);
+						PointRemoved.Emit();
 						offset+=n;
 					}	
 					selection_.Clear();
@@ -376,6 +388,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						sum+=points_[id].y;
+						PointMoved.Emit();
 						n++;
 					}	
 					float average=sum/float(n)*0.1;
@@ -383,6 +396,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].y=(points_[id].y*0.9+average);
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
@@ -403,6 +417,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].y=(points_[id].y*1.1-average);
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
@@ -423,6 +438,7 @@ int Fl_PointMover::handle(int event) {
 					while (!selection_.DoneGet()) {	
 						int id=selection_.Get();
 						points_[id].y=average-points_[id].y;
+						PointMoved.Emit();
 						bound(id);
 					}	
 					redraw();
@@ -465,7 +481,7 @@ int Fl_PointMover::handle(int event) {
 					pointx(fcoorx(points_[id].x)+newx-prevx));
 				points_[id].y=snapy(
 					pointy(fcoory(points_[id].y)+newy-prevy));
-
+				PointMoved.Emit();
 				bound(id);
 			}
 			

@@ -65,15 +65,15 @@ public:
 class Fl_Envelope_Scroll:public Fl_Group
 {
 public:
-	Fl_Scrollbar hscroll;
-	Fl_Scrollbar vscroll;
-	Fl_Slider	 hslider;
-	Fl_Slider vslider;
+	Fl_Scrollbar* hscroll;
+	Fl_Scrollbar* vscroll;
+	Fl_Slider*    hslider;
+	Fl_Slider*    vslider;
 private:
-	Fl_Double_Window window;
+	Fl_Double_Window* window;
 public:
-	Fl_Envelope  envelope;	
-	Fl_EnvelopeControl control;
+	Fl_Envelope*  envelope;	
+	Fl_EnvelopeControl* control;
 
 	Fl_Envelope_Scroll(int x,int y,int w,int h);
 
