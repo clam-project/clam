@@ -1,3 +1,6 @@
+#ifndef _Pool_hxx_
+#define _Pool_hxx_
+
 
 #include "DescriptionAttributes.hxx"
 
@@ -311,7 +314,7 @@ namespace CLAM
 			for (; it != end; it++)
 				if (*it) delete *it;
 		}
-		void PopulateScope(const std::string & scopeName, unsigned size)
+		void SetNumberOfContexts(const std::string & scopeName, unsigned size)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
@@ -377,4 +380,5 @@ namespace CLAM
 }
 
 
+#endif// _Pool_hxx_
 
