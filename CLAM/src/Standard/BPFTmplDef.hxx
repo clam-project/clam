@@ -412,8 +412,7 @@ namespace CLAM
 				}
 				case(EInterpolation::eSpline)://3rd order spline interpolation
 				{
-					 if(!mIsSplineUpdated) 
-						throw Err("BPF::Spline table not updated");
+					CLAM_ASSERT(mIsSplineUpdated,"BPF::Spline table not updated");
 					result=BPFSplineInt(x);//get actual value
 					break;
 				}
