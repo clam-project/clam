@@ -23,7 +23,6 @@ LIBRARY_PATHS = \
 
 LIBRARIES = \
 	$(USE_DOUBLE?rfftw:srfftw) \
-	$(USE_DOUBLE?fftw:sfftw) \
 	$(USE_FLTK?fltk) \
 	$(USE_FLTK?GL) \
 	$(USE_ALSA?asound) \
