@@ -75,7 +75,7 @@ namespace CLAM
 		SpectralPeakDetect(const SpectralPeakDetectConfig &c);
 
 		/** Destructor of the class*/
- 		~SpectralPeakDetect();
+ 		virtual ~SpectralPeakDetect();
 
 		virtual void Attach( Spectrum& in, SpectralPeakArray& out );
 
