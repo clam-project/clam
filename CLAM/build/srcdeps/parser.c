@@ -820,6 +820,7 @@ void parser_run(const char* filename)
 
 		if (gendepend==1)
 		{
+			/* when this is executed, the stdout is supposed to be redirected to .d file */
 			item* i;
 			char objname[2048];
 			char depname[2048];
@@ -853,6 +854,8 @@ void parser_run(const char* filename)
 		else
 		if (gendepend==2)
 		{
+			/* when this is executed, the stdout is supposed to be redirected to the Makefile.vars file */
+			/* adding .d dependency to Makefile.vars and ... */
 			char depname[2048];
 			FILE* df;
 			convert_to_depname(depname,2048,filename);
@@ -873,6 +876,7 @@ void parser_run(const char* filename)
 			}
 			else
 			{
+			/* ... creating .d depency file */
 				item* i;
 				char objname[2048];
 				char depname[2048];
@@ -919,4 +923,57 @@ void parser_run(const char* filename)
 	conditions_end();
 }
 
+
+// used in dsp_parser and vcproj_parser
+void generate_files_tree(list* filelist, tree* t)
+{
+	item* i = filelist->first;
+
+
+	while (i)
+	{
+		char tmp[1024];
+		char* ptr;
+		char* start = 0;
+
+		tree* c = t;
+
+		strncpy(tmp,i->str,1024);
+		
+		ptr = tmp;
+
+		// traverse path name, creating nodes for each name in path
+		while (*ptr)
+		{
+			if (start==0) start = ptr;
+			if (*ptr=='/' || *ptr=='\\')
+			{
+				*ptr = 0;
+				if (strcmp(start,"..") && strcmp(start,"src"))
+				{
+					node* n = tree_add_str_once(c,start);
+					if (!n->sub) n->sub = tree_new();
+					c = n->sub;
+				}
+				start = 0;
+			}
+			ptr++;
+		}
+
+		tree_add_str_once(c,i->str);
+		i = i->next;
+	}
+}
+const char* filetype_str(FileType type)
+{
+	if ( type == header ) 
+		return "Headers";
+
+	if ( type == source ) 
+		return "Sources";
+	if ( type == qt ) 
+		return "Qt Files";
+	
+       	return "Unknown files :o";
+}
 

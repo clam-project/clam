@@ -3,6 +3,7 @@
 
 #include "list.h"
 #include "listhash.h"
+#include "tree.h"
 
 extern list* pre_includes;
 extern list* guessed_sources;
@@ -23,6 +24,12 @@ void parser_exit(void);
 
 void parser_run(const char* filename);
 
+// Function for building a tree following the paths in file lists
+// This is used in dsp_parser and vcproj_parser
+void generate_files_tree(list* filelist, tree* t);
 
+typedef enum { source=0, header, qt } FileType;
+const char* filetype_str(FileType type);
 
 #endif
+

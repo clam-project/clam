@@ -69,12 +69,14 @@ static void dsp_parse_add_link_flags( void );
 
 
 /* Main functions for mapping folder structure into virtual vc6 folders
- * structure. The type parameter indicates the kind of files we are
+ * structure. The filetype parameter indicates the kind of files we are
  * going to insert: 0 for regular c/c++ source files (.c, .C, .cpp, .cxx, etc. ),
  * 1 for c/c++ headers ( .h, .hxx, etc. ) and 2 for Qt ui files.
+ * Now it this parameter is an enum (also conserving old int values)
  */
-static void dsp_parse_insert( int type );
-static void dsp_parse_insert_recurse( tree* t, list* repeatCheck, int type );
+
+static void dsp_parse_insert( FileType filetype );
+static void dsp_parse_insert_recurse( tree* t, list* repeatCheck, FileType type );
 
 /* Shorthand functions for calling dsp_parse_insert() function
  * passing the adequate value for type
@@ -340,11 +342,10 @@ void dsp_parse_insert_regular_file( const char* filename )
 	fprintf(outfile,"# End Source File\n");
 }
 
-
-void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
+void dsp_parse_insert_recurse(tree* t,list* repeatcheck, FileType type)
 {
 	node * n = t->first;
-	char* typestr = type ? "Headers" : "Sources";
+	const char* typestr = filetype_str(type);
 	while (n)
 	{
 		if (n->sub)
@@ -367,7 +368,7 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 			dsp_parse_insert_recurse(n->sub,repeatcheck,type);
 			fprintf(outfile,"# End Group\n");
 		}else{
-			if ( type == 1 )
+			if ( type == header )
 			{
 				assert( mocable_headers != NULL );
 				
@@ -376,7 +377,7 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 				else
 					dsp_parse_insert_regular_file( n->str );
 			}
-			else if ( type == 2 )
+			else if ( type == qt )
 			{
 				dsp_parse_insert_ui_file( n->str );
 			}
@@ -388,75 +389,43 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 }
 
 
-void dsp_parse_insert(int type)
+void dsp_parse_insert(FileType type)
 {
-	tree* t = tree_new();
-	item* i = NULL;
+	char* typestr = NULL;
+	list* filelist;
+	tree* filetree = tree_new();
 	list* repeatcheck = list_new();
 
-	char* typestr = NULL;
-
-	if ( type == 1 ) 
+	if ( type == header ) 
 	{
 		typestr = "Header Files";
-		i = guessed_headers->first;
+		filelist = guessed_headers;
 	}
-	else if ( type == 0 ) 
+	else if ( type == source ) 
 	{ 
 		typestr = "Source Files";
-		i = guessed_sources->first;
+		filelist = guessed_sources;
 	}
-	else if ( type == 2 ) 
+	else if ( type == qt ) 
 	{
 		typestr = "Qt .ui Files";
-		i = ui_files->first;
+		filelist = ui_files;
 	}
 	else
 	{
 		typestr = "Unknown files :o";
-		i = NULL;
+		filelist = NULL;
 	}
 
-	while (i)
-	{
-		char tmp[1024];
-		char* ptr;
-		char* start = 0;
 
-		tree* c = t;
-
-		strncpy(tmp,i->str,1024);
-		
-		ptr = tmp;
-
-		while (*ptr)
-		{
-			if (start==0) start = ptr;
-			if (*ptr=='/' || *ptr=='\\')
-			{
-				*ptr = 0;
-				if (strcmp(start,"..") && strcmp(start,"src"))
-				{
-					node* n = tree_add_str_once(c,start);
-					if (!n->sub) n->sub = tree_new();
-					c = n->sub;
-				}
-				start = 0;
-			}
-			ptr++;
-		}
-
-		tree_add_str_once(c,i->str);
-		
-		i = i->next;
-	}
+	generate_files_tree(filelist, filetree);
 
 	fprintf(outfile,"# Begin Group \"%s\"\n\n",typestr);
-	dsp_parse_insert_recurse(t,repeatcheck,type);
+	dsp_parse_insert_recurse(filetree,repeatcheck,type);
 	fprintf(outfile,"# End Group\n");
 
 	list_free(repeatcheck);
-	tree_free(t);
+	tree_free(filetree);
 }
 
 static void dsp_parse_insert_moc_custom_build_rule( const char* fileString  )
@@ -658,17 +627,17 @@ void dsp_parse_insert_settings_rule(void)
 
 void dsp_parse_insert_sources()
 {
-	dsp_parse_insert(0);
+	dsp_parse_insert(source);
 }
 
 void dsp_parse_insert_headers()
 {
-	dsp_parse_insert(1);
+	dsp_parse_insert(header);
 }
 
 void dsp_parse_insert_ui_rules()
 {
-	dsp_parse_insert(2);
+	dsp_parse_insert(qt);
 }
 
 /*
