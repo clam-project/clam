@@ -66,7 +66,7 @@ private:
 	SMSAnalysisCore mCore;
 
 	/** Index that indicates how many audio frames have been processed until now*/
-	TLongIndex mAudioFrameIndex;
+	TIndex mAudioFrameIndex;
 
 /**	This method notifies child processing objets that "this" is their parent*/
 	void AttachChildren();
