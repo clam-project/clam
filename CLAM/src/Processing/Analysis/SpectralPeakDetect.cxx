@@ -217,14 +217,14 @@ namespace CLAM {
 					// f(n-1) = A1, f(n) = A2 and f(n+1) = A3, where 
 					// A1 = 20log10(|X(n-1)|), A2 = 20log10(|X(n)|), A3 = 20log10(|X(n+1)|).
 					//
-					// Solving these equation yields: a = 1/2*A1 + A2 + 1/2*A3, b = 1/2*A3 - 1/2*A1 and 
+					// Solving these equation yields: a = 1/2*A1 - A2 + 1/2*A3, b = 1/2*A3 - 1/2*A1 and 
 					// c = A2.
 					//
 					// As the 3 bins are known to be a maxima, solving d/dx f(x) = 0, yields (fractional) bin 
 					// position x of the estimated peak. Substituting delta_x for (x-n) in this equation yields 
 					// the fractional offset in bins from n where the peak's maximum is.
 					//
-					// Solving this equation yields: delta_x = 1/2 * (A1 - A3)/(A1 + 2*A2 + A3).
+					// Solving this equation yields: delta_x = 1/2 * (A1 - A3)/(A1 - 2*A2 + A3).
 					// 
 					// Computing f(n+delta_x) will estimate the peak's magnitude (in dB's):
 					// f(n+delta_x) = A2 - 1/4*(A1-A3)*delta_x.
