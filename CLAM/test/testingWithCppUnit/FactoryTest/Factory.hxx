@@ -162,7 +162,8 @@ class FactoryRegistrator
 public:
 	FactoryRegistrator( Factory& fact )
 	{
-		fact.AddCreator( "Oscillator", CreateAudioAdder );
+		ConcreteProcessingType* foo = 0;
+		fact.AddCreator(foo->GetClassName() , CreateAudioAdder );
 	}
 
 	static Processing* Create()
