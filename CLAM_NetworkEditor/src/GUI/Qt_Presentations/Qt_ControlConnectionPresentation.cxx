@@ -79,16 +79,16 @@ void Qt_ControlConnectionPresentation::UpdateBezierLine()
 	if(((origin.x()<end.x()) && origin.y()<end.y()) || 
 	   ((origin.x()>end.x()) && origin.y()>end.y()))  // origin is in 1 o 3 quadrant of end
 	{
-		mPositions.setPoint(0, QPoint(mapFromParent( geometry().topLeft() )));
-		mPositions.setPoint(1, QPoint(mapFromParent(geometry().topRight() )));
-		mPositions.setPoint(2, QPoint(mapFromParent(geometry().bottomLeft() )));
+		mPositions.setPoint(0, QPoint(mapFromParent(geometry().topLeft() )));
+		mPositions.setPoint(1, QPoint(mapFromParent(geometry().bottomLeft() )));
+		mPositions.setPoint(2, QPoint(mapFromParent(geometry().topRight() )));
 		mPositions.setPoint(3, QPoint(mapFromParent(geometry().bottomRight() )));
 	}
 	else
 	{	
 		mPositions.setPoint(0, QPoint(mapFromParent(geometry().bottomLeft() )));
-		mPositions.setPoint(1, QPoint(mapFromParent(geometry().bottomRight() )));	
-		mPositions.setPoint(2, QPoint(mapFromParent( geometry().topLeft() )));
+		mPositions.setPoint(1, QPoint(mapFromParent(geometry().topLeft() )));
+		mPositions.setPoint(2, QPoint(mapFromParent(geometry().bottomRight() )));	
 		mPositions.setPoint(3, QPoint(mapFromParent(geometry().topRight() )));
 	}
 }

@@ -1,3 +1,21 @@
+2003-XX-XX CLAM_0_6_0
+
+  * XML:
+     ** Both, basic XMLStorage usage interface and customization interface have changed.
+        Check the documentation and update your code.
+     ** Ported to XercesC 2.4. Library dependant code is more isolated and structured
+        so libxml or expat ports will be easy.
+     ** Atomical operations are available so partial loading or document updating is now
+        feasible.
+     ** One statement calls using static methods XMLStorage::Dump and XMLStorage::Restore
+     ** Trapable error notification using exceptions.
+     ** API Change: XMLStorage::Store and XMLStorage::Load receives a const-ref and a ref
+        to adapters instead a pointer
+     ** API Change: Component::StoreOn is now a const method.
+     ** Scoped XML: allows (write only) fast XML generation without having
+        to define CLAM data.
+     ** Cppunit Tested and general code clean up
+
 2003-11-26 CLAM_0_5_5
 
   * General:
@@ -22,7 +40,7 @@
   * Build system:
      ** Added 'Compiling_against_CLAM_example' subdir to the build dir. It 
         contains an out-of-the-box example of how a CLAM external aplication 
-        can compile against the library. It contains a tutorial in its 
+        can compile against the library. It contains a tutorial in its
         'readme.html' file. Since now it was a separated tarball available in 
         the web. Now integrated in the CLAM dir tree.
      ** Configuration:
@@ -57,7 +75,7 @@
         compatibility issue )
   * ProcessingData:
      ** SpectralPeakArray ProcessingData; when adding an IndexArray to an 
-        already existing SpectralPeakArray and calling InitIndices(), the 
+        already existing SpectralPeakArray and calling InitIndices(), the
         IndexArray would be allocated to the actual number of elements in the 
         other arrays, not their allocated size (i.e. the maximum elements 
         they can hold without reallocating).
@@ -66,7 +84,7 @@
         the Fundamental. These values are now derived from either of the 
         arrays (freq/err). Also calling SetnCandidates() or 
         SetnMaxCandidates() now actually affects the arrays instead of merely 
-        setting the size fields. This is more consistent with 
+        setting the size fields. This is more consistent with
         SpectralPeakArray for instance.
      ** Audio ProcessingData: bug fixed in GetAudioChunk method that left 
         extracted chunks with uninitialized Sample Rate and Begin Time
@@ -136,7 +154,7 @@
      ** New LPC_AutoCorrelation Processing object added to spectral analysis 
         Processings set
      ** The SpectralPeakDetect Processing class now no longer alters it's 
-        given ProcessingData if it's different than expected, but instead 
+        given ProcessingData if it's different than expected, but instead
         checks it using an assert. Also, a bug was fixed which tried to use 
         an uninitialized index variable when setting the values for the last 
         spectral peak.
@@ -241,7 +259,7 @@
      ** See the documentation for more details
      ** Depends on FLTK 1.1.3 instead 1.0.X
   * Processing - All:
-     ** Concreteconfigure should asserts false instead throwing bad_cast 
+     ** Concreteconfigure should asserts false instead throwing bad_cast
         exceptions when a wrong type of configuration is provided.
      ** Provided a helper template function 'CopyAsConcreteConfig()' to be 
         used in ConcreteConfigure instead using slow dynamic_cast's.
@@ -276,7 +294,7 @@
         progress
      ** A new AddStreamRegion has been introduced (used for overlap and add).
      ** StreamRegions can be now used using center position logic.
-     ** StreamRegions belonging to a StreamBuffer are now automatically 
+     ** StreamRegions belonging to a StreamBuffer are now automatically
         initialized so the center time is zero and the first half of the 
         biggest read region is already written with zeros.
      ** Limitation: Do using ports (supervised mode) only tested with fixed 
@@ -381,7 +399,7 @@
      ** Added Transformations
      ** Lot of fixes
   * Visualization:
-     ** Removed: FLDisplay, FLMultiDisplay, FLDisplayArray and 
+     ** Removed: FLDisplay, FLMultiDisplay, FLDisplayArray and
         CUIDADO_Snapshots
      ** Added new custom FLTK widgets: Fl_ZoomSlider and Fl_Range
      ** libsigslot added
