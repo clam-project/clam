@@ -15,6 +15,9 @@ list* used_vars = 0;
 list* ignore_unused = 0;
 list *libraries_debug = 0;
 list *libraries_release = 0;
+list *vc7_libraries_debug = 0;
+list *vc7_libraries_release = 0;
+
 
 list *link_flags_debug = 0;
 list *link_flags_release = 0;
@@ -504,6 +507,14 @@ void config_init(void)
 	libraries_release = 
 		listhash_add_key_once(config,"LIBRARIES_RELEASE")->l = list_new();
 	list_lock(libraries_release );
+
+	vc7_libraries_debug =
+		listhash_add_key_once(config, "VC7_LIBRARIES_DEBUG")->l = list_new();
+	list_lock(vc7_libraries_debug);
+
+	vc7_libraries_release = 
+		listhash_add_key_once(config, "VC7_LIBRARIES_RELEASE")->l = list_new();
+	list_lock(vc7_libraries_release);
 	
 	library_paths = 
 		listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
@@ -543,6 +554,8 @@ void config_init(void)
 	list_add_str_once(used_vars,"UI_FILES");
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
+	list_add_str_once(used_vars,"VC7_LIBRARIES_DEBUG");
+	list_add_str_once(used_vars,"VC7_LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"LINK_FLAGS_DEBUG");
 	list_add_str_once(used_vars,"LINK_FLAGS_RELEASE");
 	list_add_str_once(used_vars,"LIBRARY_PATHS");
@@ -594,6 +607,8 @@ void config_exit(void)
 	list_unlock(ignore_unused);
 	list_unlock(libraries_debug );
 	list_unlock(libraries_release );
+	list_unlock(vc7_libraries_debug );
+	list_unlock(vc7_libraries_release );
 	list_unlock(library_paths );
 	list_unlock(link_flags_debug );
 	list_unlock(link_flags_release );

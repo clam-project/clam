@@ -57,9 +57,9 @@ void vcproj_parse_add_libraries(int isDebug)
 	int first = 1;
 	item* i;
 	if (isDebug)
-		i = libraries_debug->first;
+		i = vc7_libraries_debug->first;
 	else
-		i = libraries_release->first;
+		i = vc7_libraries_release->first;
 
 	while (i)
 	{
@@ -260,7 +260,6 @@ extern void vcproj_parse(const char* outFilename)
 			vcproj_parse_insert( source );
 			vcproj_parse_insert( header );
 			vcproj_parse_insert( qt );
-			//TODO uics qt
 			
 			fprintf(outfile, line);
 			state = theRest;
@@ -414,7 +413,6 @@ void vcproj_parse_insert_regular_file( const char* filename, FileType type, int 
 
 static void vcproj_parse_insert_ui_file( const char* file, int depth)
 {
-	char* project_name = 0;
 	char winfile[1024];
 
 	strncpy(winfile,file,1024);
