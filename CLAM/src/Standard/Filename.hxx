@@ -31,6 +31,8 @@
 	#include "XMLAdapter.hxx"
 #endif//CLAM_USE_XML
 
+using std::string;
+
 namespace CLAM {
 
 /**
@@ -40,14 +42,14 @@ namespace CLAM {
  * by type discriminators.
  * @todo Build a filename specific interface
  */
-class Filename : public std::string 
+class Filename : public string 
 {
 	public:
 		Filename() {}
 
-		Filename(const std::string &s) : std::string(s) {} 
+		Filename(const std::string &s) : string(s) {} 
 
-		Filename(const char * s) : std::string(s) {}
+		Filename(const char * s) : string(s) {}
 };
 
 CLAM_TYPEINFOGROUP(BasicCTypeInfo, Filename);
