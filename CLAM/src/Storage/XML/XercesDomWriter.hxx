@@ -21,8 +21,8 @@
 #ifndef _XERCES_DOM_WRITER_HXX_
 #define _XERCES_DOM_WRITER_HXX_
 
-#include "XmlWriteContext.hxx"
 #include "XercesEncodings.hxx"
+#include "XercesInitializer.hxx"
 
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
@@ -47,6 +47,7 @@ class XercesDomWriter
 		}
 		void write(std::ostream & target, xercesc::DOMNode * node)
 		{
+			XercesInitializer::require();
 			const XMLCh * propertyCanonical = xercesc::XMLUni::fgDOMWRTCanonicalForm;
 			const XMLCh * propertyPrettyPrint = xercesc::XMLUni::fgDOMWRTFormatPrettyPrint;
 			xercesc::DOMImplementation *impl = 

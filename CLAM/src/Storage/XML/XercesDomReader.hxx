@@ -20,6 +20,7 @@
  */
 
 #include "XercesEncodings.hxx"
+#include "XercesInitializer.hxx"
 
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
@@ -39,6 +40,8 @@ class XercesDomReader : private xercesc::HandlerBase
 	public:
 		XercesDomReader()
 		{
+			// This should be done in the read method itself when the xerces but is solved
+			XercesInitializer::require();
 			parser = new xercesc::XercesDOMParser();
 		}
 		~XercesDomReader()
