@@ -305,8 +305,6 @@ namespace CLAM
 			} //end of while loop
 
 
-			std::cerr << "Number of loops: " << nLoops;
-
 			///Compute Global tempo
 			if (mConfig.GetComputeBeats() )
 			{
