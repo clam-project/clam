@@ -44,7 +44,8 @@ public:
 	}
 	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
 	{
-		return; // fake impl.
+		_creators.insert( 
+			CreatorMap::value_type( creatorId, creator ) );
 	}
 private:
 	CreatorMap _creators;

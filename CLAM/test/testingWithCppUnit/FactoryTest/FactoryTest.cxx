@@ -60,7 +60,7 @@ private:
 				std::string( e.what() ) );
 			return;
 		}
-		CPPUNIT_FAIL( "it was extected to catch a CLAM::ErrFactory" );
+		CPPUNIT_FAIL( "it was expected to catch a CLAM::ErrFactory" );
 	}
 
 	void testRegistryAskTheWrongKey_WithASingleCreator()
