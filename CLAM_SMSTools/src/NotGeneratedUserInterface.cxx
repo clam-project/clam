@@ -51,8 +51,10 @@ void UserInterface::Update()
 	// check if LoadSound operation could be carried
 	if(LoadSound())
 	{
+		bool hadTransScore=mSMS->GetState().GetHasTransformationScore();
 		mSMS->GetState().DefaultInit();
 		mSMS->GetState().SetHasAudioIn(true);
+		mSMS->GetState().SetHasTransformationScore(hadTransScore);
 	}
 	mSMS->GetState().SetHasConfig(true);
 	UpdateState();
