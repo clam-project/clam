@@ -31,7 +31,8 @@ namespace CLAM {
 	//-------------------------------------------
 	class NodeBase {
 	public:
-		virtual ~NodeBase() {}
+		virtual ~NodeBase() {}		
+		virtual void Configure(int max_window_size=0) = 0;
 		
 	};
 
