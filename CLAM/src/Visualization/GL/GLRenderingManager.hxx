@@ -9,9 +9,9 @@ namespace CLAMVM
 
 	class DrawingSurface2D;
 
-class GLRenderingManager
-{
-public:
+	class GLRenderingManager
+	{
+	public:
 
 		GLRenderingManager();
 
@@ -33,13 +33,13 @@ public:
 			return mSurface;
 		}
 
-protected:
+	protected:
 
 
-private:
+	private:
 
 		DrawingSurface2D*  mSurface;
-};
+	};
 
 
 }

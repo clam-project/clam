@@ -9,51 +9,51 @@
 
 namespace CLAMVM
 {
-		using CLAM::DataArray;
-		using CLAM::TData;
-		using CLAM::TSize;
+	using CLAM::DataArray;
+	using CLAM::TData;
+	using CLAM::TSize;
 
-		class SpectrumRenderingManager : public GLRenderingManager
+	class SpectrumRenderingManager : public GLRenderingManager
+	{
+	public:
+		SpectrumRenderingManager();
+		virtual ~SpectrumRenderingManager();
+
+		virtual void SetWorldBounds( const DataBoundBox&  );
+		virtual void SetPixelBounds( const ScreenBoundBox& );
+		virtual void CacheData( const DataArray& array );
+		virtual void RenderData();
+				
+		void SetDetailThreshold( int nSamples )
 		{
-		public:
-				SpectrumRenderingManager();
-				virtual ~SpectrumRenderingManager();
-
-				virtual void SetWorldBounds( const DataBoundBox&  );
-				virtual void SetPixelBounds( const ScreenBoundBox& );
-				virtual void CacheData( const DataArray& array );
-				virtual void RenderData();
+			mDetailThreshold = nSamples;
+		}
 				
-				void SetDetailThreshold( int nSamples )
-				{
-						mDetailThreshold = nSamples;
-				}
-				
-		protected:
+	protected:
 		
-				virtual void ProcessData();
+		virtual void ProcessData();
 				
-				void ActivateStraightRenderer( );
+		void ActivateStraightRenderer( );
 				
-				void ActivateDetailRenderer( );
+		void ActivateDetailRenderer( );
 
-				void DetermineVisibleSamples();
+		void DetermineVisibleSamples();
 
-		private:			
+	private:			
 				
-				DataArray                mDataCached;
-				DataArray                mProcessedData;
-				GLStraightLineArray      mLineRenderer;
-				bool                     mDrawAsLines;
-				GLSampleDetailArray      mDetailRenderer;
-				bool                     mDrawAsDetail;
-				int                      mDetailThreshold;
-				bool                     mMustProcessData;
-				DataBoundBox             mDataBBox;
-				ScreenBoundBox           mScreenBBox;
-				TSize                    mOffset;
-				TSize                    mLen;
-		};
+		DataArray                mDataCached;
+		DataArray                mProcessedData;
+		GLStraightLineArray      mLineRenderer;
+		bool                     mDrawAsLines;
+		GLSampleDetailArray      mDetailRenderer;
+		bool                     mDrawAsDetail;
+		int                      mDetailThreshold;
+		bool                     mMustProcessData;
+		DataBoundBox             mDataBBox;
+		ScreenBoundBox           mScreenBBox;
+		TSize                    mOffset;
+		TSize                    mLen;
+	};
 		
 }
 
