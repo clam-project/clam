@@ -139,7 +139,7 @@ namespace CLAMGUI
 		Fl::run();
 	}
 
-	void SMSTools::OnNewScore( const SMSTransformationChainConfig& cfg )
+	void SMSTools::OnNewScore( const CLAM::SMSTransformationChainConfig& cfg )
 	{
 		mTransformationScore = cfg;
 		mHaveTransformationScore = true;
@@ -160,8 +160,8 @@ namespace CLAMGUI
 		if (!mHaveAnalysis)
 			return;
 		//Change mCounter
-		TTime time( value  );
-		TIndex nframe;
+		CLAM::TTime time( value  );
+		CLAM::TIndex nframe;
 		if(mHaveTransformation)
 			nframe = mTransformedSegment.FindFrame( time );
 		else
@@ -263,6 +263,25 @@ namespace CLAMGUI
 		return true;
 	}
 	
+	void SMSTools::AnalyzeMelody()
+	{
+		
+		SMSBase::AnalyzeMelody();
+
+
+	}
+
+	void SMSTools::ExecuteMelodyAnalysis( )
+	{
+		mCurrentWaitMessage = CreateWaitMessage("Analyzing melody, please wait");
+
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, SMSTools, AnalyzeMelody ) );
+		
+		DestroyWaitMessage();
+
+	}
+
 	void SMSTools::StoreMelody(void)
 	{
 		const char* filename = fl_file_chooser( "Choose file to store the extracted melody...",
@@ -318,7 +337,7 @@ namespace CLAMGUI
 		
 	}
 
-	void SMSTools::StoreSound(const Audio& audio)
+	void SMSTools::StoreSound(const CLAM::Audio& audio)
 	{
 		char* fileName = fl_file_chooser("Choose file to store on...", "*.wav", "");
 

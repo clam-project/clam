@@ -10,7 +10,7 @@
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
 #include <string>
-using namespace CLAM;
+
 
 class UserInterface;
 
@@ -38,14 +38,14 @@ public:
 
 	SigSlot::Slotv1<double>        TimeSelected;
 	/** Slot for setting the current score*/
-	SigSlot::Slotv1< const SMSTransformationChainConfig& > SetScore;
-	SigSlot::Signalv1< const SMSTransformationChainConfig& > ScoreChanged;
+	SigSlot::Slotv1< const CLAM::SMSTransformationChainConfig& > SetScore;
+	SigSlot::Signalv1< const CLAM::SMSTransformationChainConfig& > ScoreChanged;
 
 protected: // methods
 
 		
 	/** callback for the SetScore slot */
-	virtual void OnNewScore( const SMSTransformationChainConfig& cfg );
+	virtual void OnNewScore( const CLAM::SMSTransformationChainConfig& cfg );
 
 	/** Load transformation score */
 	virtual void LoadTransformationScore(const std::string& inputFileName);
@@ -70,8 +70,10 @@ protected: // methods
 
 	bool LoadAnalysis();
 	void StoreAnalysis();
+	void ExecuteMelodyAnalysis();
+	void AnalyzeMelody();
 
-	void StoreSound(const Audio& audio);
+	void StoreSound(const CLAM::Audio& audio);
 	void StoreOutputSound();
 	void StoreOutputSoundResidual();
 	void StoreOutputSoundSinusoidal();
@@ -87,7 +89,7 @@ protected:
 	std::string               mFilename;
 	std::string               mAnalysisInputFile;
 	std::string               mAnalysisOutputFile;
-	Thread                    mThread;
+	CLAM::Thread              mThread;
 	CLAMVM::SMS_DataExplorer  mExplorer;
 	UserInterface*            mUI;
 };

@@ -218,9 +218,8 @@ void UserInterface::StoreOutputSoundSinusoidal(void)
 
 void UserInterface::AnalyzeMelody(void)
 {
-	mSMS->AnalyzeMelody();
+	mSMS->ExecuteMelodyAnalysis();
 	ApplyMelodyAvailableState();
-	fl_message( "Melody extracted successfully!");
 }
 
 void UserInterface::StoreMelody(void)
