@@ -210,5 +210,6 @@ namespace CLAM
 		}
 
 		mInputs.clear();
+		GetInPorts().Clear();
 	}
 }

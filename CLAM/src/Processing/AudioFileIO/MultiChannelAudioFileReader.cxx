@@ -241,6 +241,7 @@ namespace CLAM
 			if( *i ) delete *i;
 
 		mOutputs.clear();
+		GetOutPorts().Clear();
 	}
 
 	bool MultiChannelAudioFileReader::ConcreteStart()
