@@ -5,13 +5,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSPitchShiftConfigurator::mHelpText = "
-<html>
-<body>
-<p>The <bf>Frequency Shift</bf> SMS transformation, is an operator over the results of an SMS Analysis, that allows to offset all
-detected partials by the same frequency differential.</p>
-</body>
-</html>";
+	const char* SMSPitchShiftConfigurator::mHelpText = "<html><body><p>The <bf>Frequency Shift</bf> SMS transformation, is an operator over the results of an SMS Analysis, that allows to offset all detected partials by the same frequency differential.</p></body></html>";
 
 	SMSPitchShiftConfigurator::SMSPitchShiftConfigurator()
 	{

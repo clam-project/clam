@@ -19,6 +19,7 @@ class Fl_Window;
 class Fl_Select_Browser;
 class Fl_Button;
 class Fl_Tabs;
+class Fl_Box;
 
 class SMSScoreEditor 
 {
@@ -41,7 +42,13 @@ protected:
 	void OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg );
 	void ShowScoreOnBrowser();
 	void ShowFactoryProductsOnBrowser();
+
 	void ActivateConfigurator( std::string transformName );
+	void ShowActiveConfiguratorHelp();
+	void ShowActiveConfiguratorEditWidget();
+	void ApplyChangesToCurrentCfg();
+
+	int  mHighlightedConfig;
 
 private: // widgets
 	Fl_Window *mMainWindow;
@@ -60,6 +67,7 @@ private: // widgets
 	Fl_Button *mDiscardChangesButton;
 	Fl_Group*    mHelpWidgetContainer;
 	Fl_Group*    mConfigWidgetContainer;
+	Fl_Box*      mNoConfigWidgetAvailable;
 
 private: // Crappy FLTK attempt at improving the callback mechanism
  	inline void cb_mMoveTransUpInScoreButton_i(Fl_Button*, void*);
@@ -70,6 +78,9 @@ private: // Crappy FLTK attempt at improving the callback mechanism
 	static void cb_mRemoveTransFromScoreButton(Fl_Button*, void*);
 	inline void cb_mAddTransformToScoreButton_i(Fl_Button*, void*);
 	static void cb_mAddTransformToScoreButton(Fl_Button*, void*);
+	inline void cb_mApplyChangesToCurrentCfg_i(Fl_Button*, void* );
+	static void cb_mApplyChangesToCurrentCfg( Fl_Button*, void* );
+
 	inline void cb_mApplyChangesButton_i(Fl_Button*, void* );
 	static void cb_mApplyChangesButton( Fl_Button*, void* );
 	inline void cb_mDiscardChangesButton_i(Fl_Button*, void*);
@@ -78,6 +89,9 @@ private: // Crappy FLTK attempt at improving the callback mechanism
 	inline void cb_mRepositoryBrowser_i( Fl_Select_Browser*, void* );
 	static void cb_mRepositoryBrowser( Fl_Select_Browser*, void* );
 
+	inline void cb_mScoreBrowser_i( Fl_Select_Browser*, void* );
+	static void cb_mScoreBrowser( Fl_Select_Browser*, void* );
+
 private: // "True" callback methods
 	void DiscardChangesAndClose();
 	void ApplyChangesAndClose();
@@ -85,6 +99,8 @@ private: // "True" callback methods
 	void RemoveHighlightedFromScore();
 	void MoveHighlightedDown();
 	void MoveHighlightedUp();
+
+	
 
 };
 

@@ -7,6 +7,7 @@
 #include <FL/Fl_Select_Browser.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Tabs.H>
+#include <FL/Fl_Box.H>
 #include <FL/fl_ask.H>
 #include "Factory.hxx"
 #include "SMS_Configurator.hxx"
@@ -55,15 +56,27 @@ void SMSScoreEditor::cb_mDiscardChangesButton(Fl_Button* o, void* v) {
 inline void SMSScoreEditor::cb_mApplyChangesButton_i(Fl_Button*, void*) {
 	ApplyChangesAndClose();
 }
+
+void SMSScoreEditor::cb_mApplyChangesToCurrentCfg(Fl_Button* o, void* v) {
+	((SMSScoreEditor*)(o->parent()->user_data()))->cb_mDiscardChangesButton_i(o,v);
+}
+
+inline void SMSScoreEditor::cb_mApplyChangesToCurrentCfg_i(Fl_Button*, void*) {
+	ApplyChangesToCurrentCfg();
+}
+
+
 void SMSScoreEditor::cb_mApplyChangesButton(Fl_Button* o, void* v) {
 	((SMSScoreEditor*)(o->parent()->user_data()))->cb_mApplyChangesButton_i(o,v);
 }
 
 inline void SMSScoreEditor::cb_mRepositoryBrowser_i(Fl_Select_Browser* b, void*) 
 {
-	if ( b->value() > b->size() )
-	     return;
+	if ( b->value() > b->size() || b->value() < 1 )
+	     return;	
+	mHighlightedConfig = 0;
 	ActivateConfigurator( b->text( b->value() ) );
+	ShowActiveConfiguratorHelp();
 }
 
 void SMSScoreEditor::cb_mRepositoryBrowser(Fl_Select_Browser* o, void* v) 
@@ -71,9 +84,35 @@ void SMSScoreEditor::cb_mRepositoryBrowser(Fl_Select_Browser* o, void* v)
 	((SMSScoreEditor*)v)->cb_mRepositoryBrowser_i(o,v);
 }
 
+inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*) 
+{
+	if ( b->value() > b->size() || b->value() < 1 )
+	     return;
+	mHighlightedConfig = b->value();
+	std::string obtainedString = b->text( b->value() );
+	std::string purifiedString;
+
+	if ( obtainedString[0] == '@' ) // Special Fl_Browser 'command'
+	{
+		purifiedString = obtainedString.substr(2);
+	}
+	else
+		purifiedString = obtainedString;	
+
+	ActivateConfigurator( purifiedString );
+	ShowActiveConfiguratorHelp();
+	ShowActiveConfiguratorEditWidget();
+}
+
+void SMSScoreEditor::cb_mScoreBrowser(Fl_Select_Browser* o, void* v) 
+{
+	((SMSScoreEditor*)v)->cb_mScoreBrowser_i(o,v);
+}
+
+
 
 SMSScoreEditor::SMSScoreEditor() 
-	: mUserChangedSomething( false ),  mpCurrentConfigurator( NULL )
+	: mUserChangedSomething( false ),  mpCurrentConfigurator( NULL ), mHighlightedConfig( 0 )
 {
 	Fl_Window* w;
 	{ Fl_Window* o = mMainWindow = new Fl_Window(927, 483, "SMS - Transformation Score Edition");
@@ -107,6 +146,7 @@ SMSScoreEditor::SMSScoreEditor()
 	{ Fl_Select_Browser* o = mScoreContentsBox = new Fl_Select_Browser(20, 35, 225, 365, "Transformations in the Score");
         o->labelsize(12);
         o->textsize(12);
+	o->callback( (Fl_Callback*)cb_mScoreBrowser, this );
         o->align(FL_ALIGN_TOP);
 	}
 	{ Fl_Button* o = mMoveTransUpInScoreButton = new Fl_Button(20, 405, 70, 25, "Move &up");
@@ -153,6 +193,7 @@ SMSScoreEditor::SMSScoreEditor()
         o->tooltip("Applies configuration to the selected transformation");
         o->box(FL_PLASTIC_UP_BOX);
         o->down_box(FL_PLASTIC_DOWN_BOX);
+	o->callback( (Fl_Callback*) cb_mApplyChangesToCurrentCfg );
         o->deactivate();
 	}
 	{ Fl_Button* o = mDiscardConfigButton = new Fl_Button(775, 445, 145, 30, "Discard configuration");
@@ -169,8 +210,7 @@ SMSScoreEditor::SMSScoreEditor()
 	}
 	{ Fl_Button* o = mApplyChangesToScoreButton = new Fl_Button(5, 450, 230, 25, "&Apply Changes to Score");
 	o->box(FL_PLASTIC_UP_BOX);
-	o->down_box(FL_PLASTIC_DOWN_BOX);	CLAM::SMSTransformationChainConfig::const_iterator i = mChainConfig.ConfigList_begin_const();
-
+	o->down_box(FL_PLASTIC_DOWN_BOX);
 	o->shortcut(0x80061);
 	o->callback( (Fl_Callback*)cb_mApplyChangesButton );
 	}
@@ -213,17 +253,21 @@ SMSScoreEditor::SMSScoreEditor()
 	mChainConfig.GetOnArray().Resize( 2 );
 	mChainConfig.GetOnArray().SetSize( 2 );
 	mChainConfig.GetOnArray()[0] = mChainConfig.GetOnArray()[1] = true;
+
+	mNoConfigWidgetAvailable = new Fl_Box( 0, 0, 100, 100 );
+	mNoConfigWidgetAvailable->label( "Non-editable configuration" );
+	mNoConfigWidgetAvailable->align( FL_ALIGN_INSIDE );
 }
 
 void SMSScoreEditor::OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg ) 
 {
 	mChainConfig = cfg;
-	std::cout << "Transformation score in editor changed!" << std::endl;
 }
 
 SMSScoreEditor::~SMSScoreEditor()
 {
-	
+	if ( mNoConfigWidgetAvailable->parent() == NULL )
+		delete mNoConfigWidgetAvailable;
 }
 
 void SMSScoreEditor::Show( ) 
@@ -238,6 +282,39 @@ void SMSScoreEditor::Hide( )
 	mMainWindow->hide();
 }
 
+void SMSScoreEditor::ShowActiveConfiguratorHelp()
+{
+	CLAM_ASSERT( mpCurrentConfigurator->GetHelpWidget()!=NULL, "Configurator did not provide help widget" );
+
+	mHelpWidgetContainer->add( mpCurrentConfigurator->GetHelpWidget() );
+	mpCurrentConfigurator->GetHelpWidget()->resize( mHelpWidgetContainer->x(), mHelpWidgetContainer->y()+5,
+							mHelpWidgetContainer->w(), mHelpWidgetContainer->h()-5 );
+	mpCurrentConfigurator->GetHelpWidget()->show();
+	mHelpWidgetContainer->activate();
+	mHelpWidgetContainer->redraw();
+
+}
+
+void SMSScoreEditor::ShowActiveConfiguratorEditWidget()
+{
+	Fl_Widget* configWidget = mpCurrentConfigurator->GetParametersWidget();
+	mApplyChangesToCurrentCfg->activate();	
+
+	if ( !configWidget ) // if no configuration widget then show the fallback		
+	{
+		configWidget = mNoConfigWidgetAvailable;
+		mApplyChangesToCurrentCfg->deactivate();	
+	}
+
+	mConfigWidgetContainer->add( configWidget );
+	configWidget->resize( mConfigWidgetContainer->x(), mConfigWidgetContainer->y()+5,
+			      mConfigWidgetContainer->w(), mConfigWidgetContainer->h()-5 );
+
+	configWidget->show();
+	mConfigWidgetContainer->activate();
+	mConfigWidgetContainer->redraw();
+}
+
 void SMSScoreEditor::ActivateConfigurator( std::string transformName )
 {
 	if ( mpCurrentConfigurator )
@@ -247,6 +324,7 @@ void SMSScoreEditor::ActivateConfigurator( std::string transformName )
 
 		if ( mpCurrentConfigurator->GetParametersWidget() )
 		{
+			mApplyChangesToCurrentCfg->deactivate();
 			mpCurrentConfigurator->GetParametersWidget()->hide();
 			mConfigWidgetContainer->remove(*(mpCurrentConfigurator->GetParametersWidget() ) );		
 		}
@@ -258,24 +336,7 @@ void SMSScoreEditor::ActivateConfigurator( std::string transformName )
 	}
 	
 	mpCurrentConfigurator = CLAMVM::SMSConfiguratorFactory::GetInstance().Create( transformName );
-	mHelpWidgetContainer->add( mpCurrentConfigurator->GetHelpWidget() );
-	mpCurrentConfigurator->GetHelpWidget()->resize( mHelpWidgetContainer->x(), mHelpWidgetContainer->y()+5,
-							mHelpWidgetContainer->w(), mHelpWidgetContainer->h()-5 );
-	mpCurrentConfigurator->GetHelpWidget()->show();
-	mHelpWidgetContainer->activate();
-	mHelpWidgetContainer->redraw();
 
-	Fl_Widget* configWidget = mpCurrentConfigurator->GetParametersWidget();
-
-	if ( configWidget )
-	{
-		mConfigWidgetContainer->add( configWidget );
-		configWidget->resize( mConfigWidgetContainer->x(), mConfigWidgetContainer->y()+5,
-				      mConfigWidgetContainer->w(), mConfigWidgetContainer->h()-5 );
-		configWidget->show();
-		mConfigWidgetContainer->activate();
-		mConfigWidgetContainer->redraw();
-	}
 }
 
 void SMSScoreEditor::ShowFactoryProductsOnBrowser()
@@ -448,6 +509,20 @@ void SMSScoreEditor::MoveHighlightedUp()
 
 
 	mScoreContentsBox->selected( destination );
+
+	mUserChangedSomething = true;
+}
+
+void SMSScoreEditor::ApplyChangesToCurrentCfg()
+{
+	CLAM::SMSTransformationChainConfig::iterator it = mChainConfig.ConfigList_begin();
+	CLAM_ASSERT( mHighlightedConfig >= 1, "mHighlightedConfig has an invalid value!" );
+	CLAM_ASSERT( mHighlightedConfig < mScoreContentsBox->size(), "mHighlightedConfig has an invalid value!" );
+	CLAM_ASSERT( mHighlightedConfig < mChainConfig.ConfigList_size(), "mHighlightedConfig has an invalid value!" );
+	CLAM_ASSERT( mpCurrentConfigurator!=NULL, "No configurator active!" );
+	std::advance( it, mHighlightedConfig );
+	
+	it->SetConcreteConfig( mpCurrentConfigurator->GetConfig() );
 
 	mUserChangedSomething = true;
 }
