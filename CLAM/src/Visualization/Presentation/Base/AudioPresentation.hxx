@@ -36,28 +36,77 @@ namespace CLAMVM
 		// forward declaration
 		class AudioModel;
 
+		/**  \class AudioPresentation
+		 *   \brief Abstract Audio signal concept representation			
+		 *
+		 *   This abstract class is the base class for all CLAM-based
+		 *   audio signal graphical representations.
+		 */
 		class AudioPresentation 
 				: public Presentation
 		{
 		protected:				
-//slots functions:
-				virtual void OnNewAudio( const DataArray&, TTime, TTime, TData ) = 0;
-// Accessors to received data
-				
+				/** \brief "Slotted method"
+				 *
+				 *  Slotted function that will catch the audio signal characteristic
+				 *  attributes.
+				 */
+				virtual void OnNewAudio( const DataArray& array, TTime start, TTime duration, TData  srate ) = 0;				
 		public:
 
+				/** \brief Default constructor
+				 *
+				 *  Class default constructor
+				 */
 				AudioPresentation();
 
+				/** \brief Destructor
+				 *
+				 *  Class destructor
+				 */
 				~AudioPresentation();
 
+				/** \brief Attaches object to an AudioModel
+				 *
+				 *  Attaches the presentation object to an AudioModel, so the object can be sent the 
+				 *  characteristics of the model object for rendering it.
+				 *
+				 *  \see AudioModel
+				 */
 				virtual void AttachTo( AudioModel&  );
 
+				/** \brief Detaches object from AudioModel
+				 *
+				 *  This method detaches the presentation from the AudioModel it is currently attached to. If
+				 *  the presentation is not attached to anybody, then this method does nothing.
+				 *
+				 *  \see AudioModel
+				 */
 				virtual void Detach();
 
+				/** \brief Inherited from CLAMVM::Presentation
+				 *
+				 *  \see Presentation::Show
+				 */
 				virtual void Show() = 0;
 				
+				/** \brief Inherited from CLAMVM::Presentation
+				 *
+				 *  \see Presentation::Hide
+				 */
 				virtual void Hide() = 0;
 
+				/** \brief Sets the characteristis of the audio signal to display
+				 *
+				 *  This is an Slot that receives four parameters ( as can be seen in its signature, expressed
+				 *  as template parameters ).
+				 *  The parameters, listed in order are:
+				 *
+				 *  \param samples  Audio signal samples
+				 *  \param start    Audio signal start time ( in secs )
+				 *  \param duration Audio signal total duration
+				 *  \param srate    Audio signal sample rate
+				 */
 				Slotv4<const DataArray&, TTime, TTime, TData> SetAudio;
 		};
 }
