@@ -22,7 +22,7 @@ namespace CLAM
 
 	}
 
-	Processing& Network::GetProcessing( std::string & name )
+	Processing& Network::GetProcessing( const std::string & name )
 	{
 		CLAM_ASSERT( HasProcessing(name), "No Processing with the given name" );
 
@@ -30,14 +30,14 @@ namespace CLAM
 		return *it->second;
 	}
 
-	void Network::AddProcessing( std::string & name, Processing* proc)
+	void Network::AddProcessing( const std::string & name, Processing* proc)
 	{
 		// returns false if the key was repeated.
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 	}
 
-	bool Network::HasProcessing( std::string & name )
+	bool Network::HasProcessing( const std::string & name )
 	{
 		ProcessingsMap::const_iterator i = _processings.find( name );
 		return i!=_processings.end();

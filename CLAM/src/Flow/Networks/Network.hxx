@@ -16,9 +16,9 @@ public:
 	// destructor
 	~Network();
 
-	Processing& GetProcessing( std::string & name );
-	void AddProcessing( std::string &, Processing* );
-	bool HasProcessing( std::string & name );
+	Processing& GetProcessing( const std::string & name );
+	void AddProcessing( const std::string &, Processing* );
+	bool HasProcessing( const std::string & name );
 
 private:
 	ProcessingsMap _processings;
