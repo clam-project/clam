@@ -40,6 +40,10 @@
 
 namespace CLAM
 {
+	
+	class SMSAnalysis;
+	class SMSSynthesis;
+
 	/** This is the base class for the Analysis Synthesis example. It implements
 	* all the necessary processing but it cannot be instantiated. To instantiate
 	* a particular analysis synthesis application you need to work directly with 
@@ -181,8 +185,8 @@ namespace CLAM
 
 
 		/** Internal Processings used for analysis and synthesis */
-		SMSAnalysis mAnalysis;
-		SMSSynthesis mSynthesis;
+		SMSAnalysis* mpAnalysis;
+		SMSSynthesis* mpSynthesis;
 
 		/** Indicates whether there is a valid analysis-synthesis configuration */
 		bool mHaveConfig;
@@ -231,7 +235,8 @@ namespace CLAM
 		/** sampling rate for the whole application */
 		TSize mSamplingRate;
 
-
+		SMSAnalysis& GetAnalysis(){return *mpAnalysis;}
+		SMSSynthesis& GetSynthesis(){return *mpSynthesis;}
 	};
 
 };
