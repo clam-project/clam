@@ -471,7 +471,7 @@ namespace CLAM
 		else if (dL<0 && dR < 0)
 		{
 			throw Err("Not enough Points to interpolate");
-		} 
+		}
 
 		for (int k=i; k<=j; k++)
 		{
@@ -480,7 +480,7 @@ namespace CLAM
 
 	}
 
-/** 
+/**
 * Get point position in BPf from X value
 * @param : X value
 * @return : index position
@@ -491,7 +491,7 @@ namespace CLAM
 		PointTmpl<TX,TY> tmpPoint(x,0);
 		return mSearch.Find(tmpPoint);
 	}
-	
+
 /**
 *  = operator, TODO: check!!!!
 */
@@ -611,7 +611,6 @@ namespace CLAM
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::CreateSplineTable()
 	{
-		TY p,qn,un,sig;
 		int n=mArray.Size();
 
 		CLAM_ASSERT(n > 2,"BPF size too small for spline");
@@ -633,17 +632,17 @@ namespace CLAM
 
 		for(int i=2;i<=n-1;i++)
 		{
-			sig=(GetXValue(i-1)-GetXValue(i-2))/(GetXValue(i)-GetXValue(i-2));
-			p=sig*mSplineTable[i-2]+2;
+			TY sig=(GetXValue(i-1)-GetXValue(i-2))/(GetXValue(i)-GetXValue(i-2));
+			TY p=sig*mSplineTable[i-2]+2;
 			mSplineTable[i-1]=(sig-1)/p;
 			u[i-1]=(GetValueFromIndex(i)-GetValueFromIndex(i-1))/(GetXValue(i)-GetXValue(i-1))-
 				(GetValueFromIndex(i-1)-GetValueFromIndex(i-2))/(GetXValue(i-1)-GetXValue(i-2));
 			u[i-1]=(6*u[i-1]/(GetXValue(i)-GetXValue(i-2))-sig*u[i-2])/p;
 		}
-		if (mRightDerivative >= Infinity) {
-			qn=un=0.0; //For a 'natural' spline
-		}
-		else {
+
+		TY qn = 0.0;
+		TY un = 0.0;
+		if (mRightDerivative < Infinity) {
 			qn = 0.5;
 			un = (TData(3.0)/(GetXValue(n-1)-GetXValue(n-2))) *
 			  ( mRightDerivative -
