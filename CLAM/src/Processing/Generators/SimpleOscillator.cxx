@@ -25,19 +25,6 @@
 namespace CLAM
 {
 
-// Oscillator controls enumeration
-
-Enum::tEnumValue EOscillatorControls::sEnumValues[] =
-	{
-		{ EOscillatorControls::pitch, "pitch" },
-		{ EOscillatorControls::amplitude, "amplitude" },
-		{ EOscillatorControls::modidx, "modidx" },
-		{ EOscillatorControls::phase, "phase" },
-		{ 0, NULL }
-	};
-
-Enum::tValue EOscillatorControls::sDefault = EOscillatorControls::pitch;
-
 // OscillatorConfig method definition
 void SimpleOscillatorConfig::DefaultInit(void)
 {

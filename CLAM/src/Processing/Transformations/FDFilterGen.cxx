@@ -27,31 +27,6 @@
 #define MINUSINFINITY -99 //Value for an infinitely negative number
 
 namespace CLAM {
-
-	Enum::tEnumValue EFDFilterGenControls::sEnumValues[] =
-	{
-		{ EFDFilterGenControls::gain, "gain" },
-		{ EFDFilterGenControls::highcutoff, "highcutoff" },
-		{ EFDFilterGenControls::lowcutoff, "lowcutoff" },
-		{ EFDFilterGenControls::passbandslope, "passbandslope" },
-		{ EFDFilterGenControls::stopbandslope, "stopbandslope" },
-		{ 0, NULL }
-	};
-	
-	Enum::tValue EFDFilterGenControls::sDefault = EFDFilterGenControls::gain;
-	
-	
-	Enum::tEnumValue EFDFilterType::sEnumValues[] = {
-		{EFDFilterType::eLowPass,"Low-pass"},
-		{EFDFilterType::eHighPass,"High-pass"},
-		{EFDFilterType::eBandPass,"Band-pass"},
-		{EFDFilterType::eStopBand,"Stop-Band"},
-		{0,NULL}
-	};
-	
-	Enum::tValue EFDFilterType::sDefault = EFDFilterType::eLowPass;
-	
-	
 	void FDFilterGenConfig::DefaultInit(void)
 	{
 		AddAll();

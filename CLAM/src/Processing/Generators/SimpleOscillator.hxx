@@ -38,41 +38,34 @@ class EOscillatorControls : public Enum
 {
 public:
 
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	
-	EOscillatorControls() 
-		: Enum(sEnumValues, sDefault) 
-	{
-	}
-	
-	EOscillatorControls(tValue v) 
-		: Enum(sEnumValues, v) 
-	{
-	}
-	
-	EOscillatorControls(std::string s) 
-		: Enum(sEnumValues, s) 
-	{
-	}
-	
-	~EOscillatorControls() 
-	{
-	};
+	EOscillatorControls() : Enum(ValueTable(), pitch) { } 
+	EOscillatorControls(tValue v) : Enum(ValueTable(), v) { } 
+	EOscillatorControls(std::string s) : Enum(ValueTable(), s) { }
+	~EOscillatorControls() { };
 
 	Component * Species() const 
 	{ 
 		return new EOscillatorControls;
 	}
-
 	typedef enum 
-		{
-			pitch=0,
-			amplitude,
-			modidx,
-			phase
-		} tEnum;
-
+	{
+		pitch=0,
+		amplitude,
+		modidx,
+		phase
+	} tEnum;
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] =
+			{
+				{ pitch, "pitch" },
+				{ amplitude, "amplitude" },
+				{ modidx, "modidx" },
+				{ phase, "phase" },
+				{ 0, NULL }
+			};
+		return sEnumValues;
+	}
 };
 
 class SimpleOscillatorConfig: public ProcessingConfig

@@ -25,13 +25,6 @@
 
 namespace CLAM {
 
-	Enum::tEnumValue EWaveType::sEnumValues[] = {
-		{EWaveType::eSine,"Sine wave"},
-		{0,NULL}
-	};
-
-	Enum::tValue EWaveType::sDefault = EWaveType::eSine;
-
 	void WaveGeneratorConfig::DefaultInit()
 	{
 		AddAll();

@@ -32,16 +32,22 @@ namespace CLAM {
 	class EWaveType : public Enum {
 	public:
 		
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
-		EWaveType() : Enum(sEnumValues, sDefault) {}
-		EWaveType(tValue v) : Enum(sEnumValues, v) {};
-		EWaveType(std::string s) : Enum(sEnumValues, s) {};
+		EWaveType() : Enum(ValueTable(), eSine) {}
+		EWaveType(tValue v) : Enum(ValueTable(), v) {};
+		EWaveType(std::string s) : Enum(ValueTable(), s) {};
 		
 		typedef enum {
 			eSine
 		};
-		
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sEnumValues[] = {
+				{EWaveType::eSine,"SineWave"},
+				{0,NULL}
+			};
+			return sEnumValues;
+		}
+
 		virtual Component* Species() const
 		{
 			return (Component*) new EWaveType(eSine);

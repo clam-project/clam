@@ -23,17 +23,6 @@
 
 namespace CLAM {
 
-	Enum::tEnumValue EAudioFileType::sEnumValues[] = {
-		{EAudioFileType::eRaw,"Raw"},
-		{EAudioFileType::eWave,"Wave"},
-		{EAudioFileType::eAIFF,"AIFF"},
-		{EAudioFileType::eAuto,"Auto"},
-		{EAudioFileType::eUnknown,"Unknown"},
-		{0,NULL}
-	};
-
-	Enum::tValue EAudioFileType::sDefault = EAudioFileType::eRaw;
-
 	void AudioFileConfig::DefaultInit(void)
 	{
 		AddAll();

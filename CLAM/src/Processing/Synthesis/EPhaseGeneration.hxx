@@ -15,7 +15,7 @@ public:
 	
 	static tEnumValue sEnumValues[];
 	static tValue sDefault;
-	EPhaseGeneration() : Enum(sEnumValues, sDefault) {}
+	EPhaseGeneration() : Enum(sEnumValues, eAlign) {}
 	EPhaseGeneration(tValue v) : Enum(sEnumValues, v) {};
 	EPhaseGeneration(std::string s) : Enum(sEnumValues, s) {};
 
@@ -29,6 +29,16 @@ public:
 	{
 		return (Component*) new EPhaseGeneration;
 	};
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] = {
+			{eAlign,"Align"},
+			{eRandom,"Random"},
+			{eContinuation,"Continuation"},
+			{0,NULL}
+		};
+		return sEnumValues;
+	}
 };
 
 }

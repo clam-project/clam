@@ -2,17 +2,6 @@
 
 namespace CLAM
 {
-	Enum::tEnumValue EWindowNormalize::sEnumValues[] = {
-		{EWindowNormalize::eNone,"NoNormalization"},
-		{EWindowNormalize::eAnalysis,"NormalizationForAnalysis"},
-		{EWindowNormalize::eEnergy,"NormalizationForConstantEnergy"},
-		{EWindowNormalize::eMax,"NormalizationForMaximizingMagnitude"},
-		{0,NULL}
-	};
-
-	Enum::tValue EWindowNormalize::sDefault = EWindowNormalize::eAnalysis;
-
-
 	void WindowGeneratorConfig::DefaultInit()
 	{
 		/* All Attributes are added */
