@@ -19,29 +19,38 @@
  *
  */
 
-#include "ErrProcessingObj.hxx"
-#include "Processing.hxx"
-#include <cstdio>
+#ifndef __MULTICHANNELAUDIOFILEWRITERCONFIG__
+#define __MULTICHANNELAUDIOFILEWRITERCONFIG__
 
-namespace CLAM {
+#include "ProcessingConfig.hxx"
+#include "AudioFile.hxx"
+#include "DataTypes.hxx"
 
-	ErrProcessingObj::ErrProcessingObj()
+namespace CLAM
+{
+	/**
+	 *  Configuration class for the CLAM::MultiChannelAudioFileWriter 
+	 *  processing object.
+	 *
+	 *  @see MultiChannelAudioFileWriter
+	 */
+
+	class MultiChannelAudioFileWriterConfig
+		: public ProcessingConfig
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		snprintf(mMsg, 1024, "Processing Error"); // Initialization of the error message
-	}
+		DYNAMIC_TYPE_USING_INTERFACE
+		( MultiChannelAudioFileWriterConfig, 1, ProcessingConfig );
+		
+		/**
+		 *  The file where samples are to be stored
+		 */
 
+		DYN_ATTRIBUTE( 0, public, AudioFile, TargetFile );
 
-	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o)
-	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		if (!o)
-			snprintf(mMsg,1024,"Processing Error: %s", msg); // Initialization of the error message
-		else
-//			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetFullName().c_str(),msg);
-			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetClassName(),msg);
-	}
+	protected:
 
+		void DefaultInit();
+	};
 }
+
+#endif // MultiChannelAudioFileWriterConfig.hxx

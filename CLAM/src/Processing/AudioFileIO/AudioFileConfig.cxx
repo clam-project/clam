@@ -19,29 +19,31 @@
  *
  */
 
+#include "AudioFileConfig.hxx"
 #include "ErrProcessingObj.hxx"
-#include "Processing.hxx"
-#include <cstdio>
 
 namespace CLAM {
 
-	ErrProcessingObj::ErrProcessingObj()
+	Enum::tEnumValue EAudioFileType::sEnumValues[] = {
+		{EAudioFileType::eRaw,"Raw"},
+		{EAudioFileType::eWave,"Wave"},
+		{EAudioFileType::eAIFF,"AIFF"},
+		{EAudioFileType::eAuto,"Auto"},
+		{EAudioFileType::eUnknown,"Unknown"},
+		{0,NULL}
+	};
+
+	Enum::tValue EAudioFileType::sDefault = EAudioFileType::eRaw;
+
+	void AudioFileConfig::DefaultInit(void)
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		snprintf(mMsg, 1024, "Processing Error"); // Initialization of the error message
+		AddAll();
+		UpdateData();
+
+		SetSampleRate(44100);
+		SetChannels(0);
+		SetKeepFrameSizes(false);
+		SetFrameSize(512);
+		SetStartFrame(0);
 	}
-
-
-	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o)
-	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		if (!o)
-			snprintf(mMsg,1024,"Processing Error: %s", msg); // Initialization of the error message
-		else
-//			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetFullName().c_str(),msg);
-			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetClassName(),msg);
-	}
-
-}
+};//namespace CLAM

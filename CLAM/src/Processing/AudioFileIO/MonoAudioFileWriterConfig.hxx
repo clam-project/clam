@@ -19,29 +19,36 @@
  *
  */
 
-#include "ErrProcessingObj.hxx"
-#include "Processing.hxx"
-#include <cstdio>
+#ifndef __MONOAUDIOFILEWRITERCONFIG__
+#define __MONOAUDIOFILEWRITERCONFIG__
 
-namespace CLAM {
+#include "ProcessingConfig.hxx"
+#include "AudioFile.hxx"
+#include "DataTypes.hxx"
 
-	ErrProcessingObj::ErrProcessingObj()
+namespace CLAM
+{
+	/**
+	 *  Configuration class for the CLAM::MonoAudioFileWriter processing
+	 *  object.
+	 *
+	 *  @see MonoAudioFileWriter
+	 */
+	class MonoAudioFileWriterConfig
+		: public ProcessingConfig
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		snprintf(mMsg, 1024, "Processing Error"); // Initialization of the error message
-	}
+		DYNAMIC_TYPE_USING_INTERFACE
+		( MonoAudioFileWriterConfig, 1, ProcessingConfig );
+		
+		/** 
+		 *  The file where samples will be stored
+		 */
+		DYN_ATTRIBUTE( 0, public, AudioFile, TargetFile );
 
-
-	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o)
-	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		if (!o)
-			snprintf(mMsg,1024,"Processing Error: %s", msg); // Initialization of the error message
-		else
-//			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetFullName().c_str(),msg);
-			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetClassName(),msg);
-	}
-
+	protected:
+		
+		void DefaultInit();
+	};
 }
+
+#endif // MonoAudioFileWriterConfig.hxx

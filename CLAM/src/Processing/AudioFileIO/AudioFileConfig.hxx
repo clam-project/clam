@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _AudioFile_
-#define _AudioFile_
+#ifndef _AudioFileConfig_
+#define _AudioFileConfig_
 
 #include <typeinfo> // for bad_cast definition
 #include "Processing.hxx"
@@ -79,4 +79,4 @@ namespace CLAM {
 
 };//namespace CLAM
 
-#endif // _AudioFile_
+#endif // _AudioFileConfig_

@@ -19,29 +19,14 @@
  *
  */
 
-#include "ErrProcessingObj.hxx"
-#include "Processing.hxx"
-#include <cstdio>
+#include "MonoAudioFileReaderConfig.hxx"
 
-namespace CLAM {
-
-	ErrProcessingObj::ErrProcessingObj()
+namespace CLAM
+{
+	void MonoAudioFileReaderConfig::DefaultInit()
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		snprintf(mMsg, 1024, "Processing Error"); // Initialization of the error message
+		AddAll();
+		UpdateData();
+		SetSelectedChannel( 0 );
 	}
-
-
-	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o)
-	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		if (!o)
-			snprintf(mMsg,1024,"Processing Error: %s", msg); // Initialization of the error message
-		else
-//			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetFullName().c_str(),msg);
-			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetClassName(),msg);
-	}
-
 }

@@ -19,29 +19,39 @@
  *
  */
 
-#include "ErrProcessingObj.hxx"
+#ifndef __MONOAUDIOFILEWRITER__
+#define __MONOAUDIOFILEWRITER__
+
 #include "Processing.hxx"
-#include <cstdio>
+#include "MonoAudioFileWriterConfig.hxx"
+#include "AudioInPortTmpl.hxx"
+#include "PCMStreamCodec.hxx"
 
-namespace CLAM {
-
-	ErrProcessingObj::ErrProcessingObj()
+namespace CLAM
+{
+	class MonoAudioFileWriter
+		: public Processing
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		snprintf(mMsg, 1024, "Processing Error"); // Initialization of the error message
-	}
+	public:
+		MonoAudioFileWriter();
+		MonoAudioFileWriter( const ProcessingConfig& cfg );
 
+		virtual const char* GetClassName() const;
+		virtual const ProcessingConfig& GetConfig() const;
+		virtual bool Do();
 
-	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o)
-	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		if (!o)
-			snprintf(mMsg,1024,"Processing Error: %s", msg); // Initialization of the error message
-		else
-//			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetFullName().c_str(),msg);
-			snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetClassName(),msg);
-	}
+	protected: // methods
+		
+		virtual bool ConcreteConfigure( const ProcessingConfig& cfgObj );
+		virtual bool ConcreteStart();
+		virtual bool ConcreteStop();
 
+	protected: // attributes
+		
+		MonoAudioFileWriterConfig      mConfig;
+		InPortTmpl<Audio>              mInput;
+		PCMStreamCodec                 mOutStream;
+	};
 }
+
+#endif // MonoAudiOFileWriter.hxx

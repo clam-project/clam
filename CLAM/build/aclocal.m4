@@ -154,116 +154,72 @@ int main() {
 
 ])
 
+dnl Begin of FLTK checking procedure
 AC_DEFUN(CLAM_LIB_FLTK,
 [
-AC_MSG_CHECKING([for fltk headers; looking relative to CLAM])
-fltk_local=no
-if test -d ../../fltk/include/FL/; then
-	AC_MSG_RESULT(yes)
-	found_fltk=yes
-	pwd=`pwd`
-	FLTK_VERSION=`$pwd/../../fltk/bin/fltk-config --api-version`
-	if test $FLTK_VERSION = 1.1; then
-	    FLAG_FLTK_INCLUDES=`$pwd/../../fltk/bin/fltk-config --use-gl --use-images --cxxflags`
-	    FLAG_FLTK_LIBS=`$pwd/../../fltk/bin/fltk-config --use-gl --use-images --ldflags`
-	else
-	    FLTK_INCLUDES="../../fltk/include"
-	    FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
-	    FLAG_FLTK_INCLUDES="-I../../fltk/include"
-	    FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
-	fi
-	fltk_local=yes
-else
-	AC_MSG_RESULT(no)
-dnl	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
-	AC_MSG_CHECKING([for fltk-config...])
-	found_fltk=no
-	FLTK_VERSION=`fltk-config --api-version`
-    	if test $FLTK_VERSION = 1.1; then
+AC_MSG_CHECKING([fltk-config is known by the /usr/bin/which command...])
+if test -n `which fltk-config`
+	then
+		fltk_config_exec=`which fltk-config`
 		AC_MSG_RESULT(yes)
-		found_fltk=yes
-		FLAG_FLTK_INCLUDES=`fltk-config --use-gl --use-images --cxxflags`
-		FLAG_FLTK_LIBS=`fltk-config --use-gl --use-images --ldflags`
-	fi
-dnl	for base in "/usr" \
-dnl	            "/usr/local" \
-dnl	            "/opt" 
-dnl	do
-dnl		if test -d $base/include/FL; then
-dnl			AC_MSG_RESULT(yes)
-dnl			found_fltk=yes
-dnl			FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L$base/lib"
-dnl			FLTK_LIB_PATH="/usr/X11R6/lib $base/lib"
-dnl			break;
-dnl		fi
-dnl	done
-fi
-if test $found_fltk = yes; then
-	AC_MSG_CHECKING([for fltk library (and other fltk required)...])
-	OLD_FLAGS=$CXXFLAGS
-
-	link_ok=no
-
-dnl	FLTK_LIBS="fltk GL fltk_gl X11 Xext fltk_forms fltk_images z png jpeg"
-dnl	for lib in $FLTK_LIBS
-dnl	do
-dnl		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
-dnl	done
-	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIB_PATH $FLAG_FLTK_LIBS"
-	AC_TRY_LINK([
-		#include<FL/Fl_Window.H>
-		#include<FL/Fl.H>
-	],[
-		Fl_Window w(100,100);
-		Fl::run();
-	],[
-		link_ok=yes
-	],[])
-
-	if test $link_ok = no; then
-		AC_MSG_ERROR([
-The test program did not compile or link. Check your config.log for
-details.]
-		)
 	else
-		AC_MSG_RESULT(yes: [$FLTK_LIBS])
-	fi
-
-	AC_TRY_RUN([
-		#include<FL/Fl_Window.H>
-		#include<FL/Fl.H>
-		int main()
-		{
-			Fl_Window w(100,100);
-			Fl::run();
-			return 0;
-		}
-	],[
-		AC_MSG_RESULT(yes)
-		DEFINE_HAVE_FLTK=HAVE_FLTK
-		if test $fltk_local = yes; then
-			FLTK_INCLUDES="\$(CLAM_PATH)/../fltk/include"
-			FLTK_LIB_PATH="\$(CLAM_PATH)/../fltk/lib"
-		fi
-	],[
-		AC_MSG_ERROR([
-The test program did compile, but failed to link. This probably means that
-the run-time linker is not able to find libxercesc. You might want to set
-your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to the
-right location.]
-		)
-	],[
-		echo $ac_n "cross compiling; assumed OK... $ac_c"
-	])
-
-	CXXFLAGS=$OLD_FLAGS
-else
-	AC_MSG_ERROR([
-No fltk headers found!]
-	)
+		AC_MSG_RESULT(no)
+		AC_MSG_CHECKING([fltk-config is in the sandbox...])
+		if test -f `$pwd/../../fltk/bin/fltk-config`
+			then
+				fltk_config_exec=`$pwd/../../fltk/bin/fltk-config`
+				AC_MSG_RESULT(yes)
+			else
+				AC_MSG_RESULT(no)
+				AC_MSG_ERROR([The autoconf script has been unable to locate fltk-config script. This means that you have neither installed a suitable FLTK package or it is not present in your CLAM sandbox])
+		fi;
 fi;
+
+fltk_config_exec="$fltk_config_exec --use-gl --use-images"
+
+AC_MSG_CHECKING([checking FLTK API version is 1.1 ...])
+
+FLTK_API_VERSION=`$fltk_config_exec --api-version`
+
+if [[ "1.1" == "$FLTK_API_VERSION" ]]
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Currently CLAM only supports FLTK API version 1.1])
+fi;	
+
+RAW_FLTK_CFLAGS=`$fltk_config_exec --cxxflags`
+RAW_FLTK_LDFLAGS=`$fltk_config_exec --ldflags`
+
+for incpath in $RAW_FLTK_CFLAGS
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+			then
+				FLTK_INCLUDES="$FLTK_INCLUDES ${incpath#-I*}"
+		fi
+	done
+
+for libpath in $RAW_FLTK_LDFLAGS
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+			then
+				FLTK_LIB_PATH="$FLTK_LIB_PATH ${libpath#-L*}"
+		fi
+	done
+
+for binname in $RAW_FLTK_LDFLAGS
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+			then
+				FLTK_LIBS="$FLTK_LIBS ${binname#-l*}"
+		fi
+	done
+
 ]
 )
+dnl End of FLTK checking procedure
+
 
 AC_DEFUN(CLAM_LIB_XERCESC,
 [
@@ -469,6 +425,146 @@ No fftw headers found!]
 fi;
 ]
 )
+
+dnl Start of Vorbis I SDK checking procedure
+AC_DEFUN(CLAM_LIB_OGGVORBIS,
+[
+	AC_MSG_NOTICE([Checking that Vorbis I SDK is installed])
+	AC_CHECK_LIB(vorbisfile,
+		     ov_open,
+		     [LIBVORBISFILE_PRESENT="yes";OGGVORBIS_LIBS="vorbisfile"],
+		     [LIBVORBISFILE_PRESENT="no"],
+		     -lvorbis -logg)
+	
+	AC_CHECK_LIB(vorbisenc,
+		     vorbis_encode_init,
+		     [LIBVORBISENC_PRESENT="yes";OGGVORBIS_LIBS="$OGGVORBIS_LIBS vorbisenc"],
+		     [LIBVORBISENC_PRESENT="no"],
+		     -lvorbis -logg)
+	
+	AC_CHECK_HEADER(vorbis/vorbisfile.h,
+			[HDRVORBISFILE_PRESENT="yes"],
+			[HDRVORBISFILE_PRESENT="no"] )
+	
+	AC_CHECK_HEADER(vorbis/vorbisenc.h,
+			[HDRVORBISENC_PRESENT="yes"],
+			[HDRVORBISENC_PRESENT="no"] )
+	
+	if test $LIBVORBISFILE_PRESENT = no || test $HDRVORBISFILE_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libvorbisfile.so seems not to be present on your system. Please install Xiph.org Vorbis I development libraries])
+	fi
+	if test $HDRVORBISFILE_PRESENT = no || test $HDRVORBISENC_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Vorbis SDK headers were not found. Please install Xiph.org Vorbis I development libraries])
+	fi
+
+	OGGVORBIS_LIBS="vorbis ogg $OGGVORBIS_LIBS"
+	OGGVORBIS_LIB_PATH=""
+	OGGVORBIS_INCLUDES=""
+	
+	AC_PATH_TOOL( OGGVORBIS_LIB_PATH,
+		      libvorbis.so,
+		      [],
+		      [/usr/lib:/usr/local/lib:/opt/lib])
+
+	OGGVORBIS_LIB_PATH=${OGGVORBIS_LIB_PATH%/libvorbis.so}
+
+	if test $OGGVORBIS_LIB_PATH = "/usr/lib";
+	then
+		OGGVORBIS_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( OGGVORBIS_INCLUDES,
+		      vorbis/vorbisfile.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	OGGVORBIS_INCLUDES=${OGGVORBIS_INCLUDES%/vorbis/vorbisfile.h}
+	
+	if test $OGGVORBIS_INCLUDES = "/usr/include" || test $OGGVORBIS_INCLUDES = "/usr/local/include";
+	then
+		OGGVORBIS_INCLUDES=""
+	fi
+
+])
+dnl End of Vorbis I SDK checking procedure
+
+dnl End of Vorbis I SDK checking
+
+dnl Start of libsndfile checking procedure
+AC_DEFUN(CLAM_LIB_SNDFILE,
+[
+AC_MSG_CHECKING([pkg-config is present...])
+if test -n `which pkg-config`
+	then 
+		pkg_config_exec=`which pkg-config`
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([pkg-config is not installed in your system. Please first install pkg-config and then install libsndfile, before attempting to execute CLAM configure script.
+		])
+fi;
+
+AC_MSG_CHECKING([libsndfile is installed...])
+
+$pkg_config_exec --exists sndfile
+
+if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Seems that libsndfile is not installed in your system. If you haven't installed it yet, please do so. If you have, then check that the sndfile.pc file location is in the PKG_CONFIG_PATH environment variable.
+		])
+fi;
+
+AC_MSG_CHECKING([libsndfile version is acceptable...])
+
+$pkg_config_exec --atleast-version=1.0.3 sndfile
+
+if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Currently installed libsndfile version is inferior to 1.0.3. Please update your current libsndfile installation to a more recent release.
+		])
+fi;
+
+SNDFILE_INCLUDE_PATH_0=`$pkg_config_exec --cflags sndfile`
+SNDFILE_LIBS_PATH_0=`$pkg_config_exec --libs-only-L sndfile`
+SNDFILE_LIBS_0=`$pkg_config_exec --libs-only-l sndfile `
+
+for incpath in $SNDFILE_INCLUDE_PATH_0
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+	 	   then
+			SNDFILE_INCLUDES="$SNDFILE_INCLUDE_PATH ${incpath#-I*}"
+		fi
+	done
+
+for libpath in $SNDFILE_LIBS_PATH_0
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+		   then
+			SNDFILE_LIB_PATH="$SNDFILE_LIBS_PATH ${libpath#-L*}"
+		fi
+	done
+
+for binname in $SNDFILE_LIBS_0
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+		   then
+			SNDFILE_LIBS="$SNDFILE_LIBS ${binname#-l}"
+		fi
+	done
+
+]
+) 
+dnl End of libsndfile checking procedure
 
 AC_DEFUN(CLAM_LIB_FFTWOLD,
 [

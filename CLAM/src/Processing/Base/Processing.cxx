@@ -124,7 +124,7 @@ namespace CLAM {
 		
 	}
 
-	void Processing::Start(void) throw ( ErrProcessingObj )
+	void Processing::Start(void)
 	{
 		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		
@@ -133,15 +133,15 @@ namespace CLAM {
 				mState=Unconfigured;
 		}
 		catch (Err &e) {
-			//ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
-			//new_e.Embed(e);
+			ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
+			new_e.Embed(e);
 			//CLAM_ASSERT( false, AddStatus(new_e.what()) );
 			
 			mState=Unconfigured;
 
 			AddStatus( "Start(): Object failed to start properly.\n" );
 			AddStatus( e.what() );
-			throw e; // Propagate exception
+			throw new_e; // Propagate exception
 		}
 
 		mState = Running;

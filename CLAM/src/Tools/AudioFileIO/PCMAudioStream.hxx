@@ -19,31 +19,47 @@
  *
  */
 
-#include "AudioFile.hxx"
-#include "ErrProcessingObj.hxx"
+#ifndef __PCMAudioStream__
+#define __PCMAudioStream__
 
-namespace CLAM {
+#include "AudioCodecs_Stream.hxx"
+#include <sndfile.h>
+#include <string>
 
-	Enum::tEnumValue EAudioFileType::sEnumValues[] = {
-		{EAudioFileType::eRaw,"Raw"},
-		{EAudioFileType::eWave,"Wave"},
-		{EAudioFileType::eAIFF,"AIFF"},
-		{EAudioFileType::eAuto,"Auto"},
-		{EAudioFileType::eUnknown,"Unknown"},
-		{0,NULL}
+namespace CLAM
+{
+
+namespace AudioCodecs
+{
+
+	class PCMAudioStream : public Stream
+	{
+	public:
+		PCMAudioStream();
+		PCMAudioStream( const AudioFile& file );
+
+		~PCMAudioStream();
+
+		void SetFOI( const AudioFile& file );
+
+		void PrepareReading();
+		void PrepareWriting();
+		void PrepareReadWrite();
+		void Dispose();
+
+	protected:
+		
+		void AudioFileToNative( const AudioFile& file );
+		void DiskToMemoryTransfer();
+		void MemoryToDiskTransfer();		
+
+	protected:
+		SNDFILE*            mFileHandle;
+		SF_INFO             mNativeFileParams;
+		std::string         mName;
 	};
 
-	Enum::tValue EAudioFileType::sDefault = EAudioFileType::eRaw;
+}
 
-	void AudioFileConfig::DefaultInit(void)
-	{
-		AddAll();
-		UpdateData();
-
-		SetSampleRate(44100);
-		SetChannels(0);
-		SetKeepFrameSizes(false);
-		SetFrameSize(512);
-		SetStartFrame(0);
-	}
-};//namespace CLAM
+}
+#endif // PCMAudioStream.hxx
