@@ -137,7 +137,7 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
 	// this points to a temporaryly loaded SDIF File (used for StatTmpl-Editing)
 	char filename[255];
 	strcpy(filename,mpParams->GetFilePathOfSegmentPos(0));
-  strcat(filename,mpParams->GetFileNameOfSegmentPos(0));
+	strcat(filename,mpParams->GetFileNameOfSegmentPos(0));
 
 	LoadSDIFToEditPosition(filename);
 
