@@ -18,6 +18,7 @@ namespace CLAMTest
 		CPPUNIT_TEST_SUITE( MultiChannelAudioFileWriterFunctionalTest );
 		CPPUNIT_TEST( testConfigure_ReturnsFalse_WithJustFilename );
 		CPPUNIT_TEST( testDo_PCM_WritesRightAKnownSignal );
+		CPPUNIT_TEST( testDo_DoubleWriting_Is_Not_Allowed );
 		CPPUNIT_TEST( testDo_PCM_WritesTheSameThatWasRead );
 		CPPUNIT_TEST( testDo_OggVorbis_WritesTheSameThatWasRead );
 		CPPUNIT_TEST_SUITE_END();
@@ -135,6 +136,34 @@ namespace CLAMTest
 
 
 			procWriter.Stop();
+
+		}
+
+		void testDo_DoubleWriting_Is_Not_Allowed()
+		{
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "twosines-stereo.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+						
+			outputFileHeader.SetValues( 44100, 2, "WAV" );
+
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+
+			CLAM::MultiChannelAudioFileWriter procWriter;
+			
+			CLAM::MultiChannelAudioFileWriter procWriter2;
+
+			
+			procWriter.Configure( cfgWriter );
+
+			CPPUNIT_ASSERT_EQUAL( false, procWriter2.Configure( cfgWriter ) );
 
 		}
 
