@@ -74,7 +74,6 @@ public:
 			throw Err("OOM in MAIN cant construct editor");
 
 		MIDIHandlerConfig MIDIHandlerCfg;
-		MIDIHandlerCfg.SetTranspose( mParams.GetTranspose() );
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
 		mMIDIHandler.SetParams(&mParams);
@@ -279,7 +278,7 @@ protected:
 		if ( mParams.GetUseMidiKeyboard() || mParams.GetUseBreathController() )
 		{
 			mMIDIManager.Check();
-		}		
+		}
 	}
 
 private:

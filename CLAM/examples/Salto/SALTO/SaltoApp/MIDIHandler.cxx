@@ -60,7 +60,7 @@ namespace CLAM
 
 	int MIDIHandler::UpdateNote ( TControlData note )
 	{
-		int	pitch = int(note+mConfig.GetTranspose());
+		int	pitch = int(note+Params().GetTranspose());
 		int velocity = int(mVelocity);
 
 		pitch -= 50;

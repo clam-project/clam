@@ -10,10 +10,9 @@ namespace CLAM
 	class MIDIHandlerConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDIHandlerConfig, 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDIHandlerConfig, 2, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TIndex, Transpose);
-		DYN_ATTRIBUTE (2, public, double, PitchModRange);
+		DYN_ATTRIBUTE (1, public, double, PitchModRange);
 	protected:
 		void DefaultInit(void);
 	};
