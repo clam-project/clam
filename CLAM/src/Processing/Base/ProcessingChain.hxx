@@ -9,8 +9,10 @@
 #include "SMSFreqShift.hxx"
 #include "SMSPitchShift.hxx"
 #include "SMSOddEvenHarmonicRatio.hxx"
-#include "SMSHarmonicFilter.hxx"
+#include "SMSSineFilter.hxx"
+#include "SMSResidualGain.hxx"
 #include "SMSTransformationChainIO.hxx"
+#include "SMSHarmonizer.hxx"
 
 #ifndef _ProcessingChain_
 #define _ProcessingChain_
@@ -103,7 +105,8 @@ namespace CLAM{
 		ProcessingConfig* InstantiateConcreteConfig(const std::string& type)
 		{
 			if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
-				type=="SMSOddEvenHarmonicRatio"||type=="SMSHarmonicFilter"||type=="SMSTransformationChainIO")
+				type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
+				type=="SMSHarmonizer"||type=="SMSTransformationChainIO")
 			{
 				return new CLAM::SMSTransformationConfig();
 			}
@@ -293,7 +296,7 @@ namespace CLAM{
 			iterator obj;
 			int i=0;
 			//We iterate through all chainees and call their Do()
-			for (obj=composite_begin(); obj!=composite_end(); obj++)
+			for (obj=composite_begin(); obj!=composite_end(); obj++,i++)
 			{
 				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==composite_size()-1)
 				//Note: First and last chainee's will always be active regartheless the value
@@ -309,15 +312,15 @@ namespace CLAM{
 						else
 							throw e;
 					}
-					i++;
+					
 				}
-				else
+			/*	else
 				{
 					iterator last=obj;
 					last++;
 					if (obj==composite_begin()||last==composite_end())
 						throw(ErrProcessingObj("ProcessingChain::Do(): first and last processing in the chain must be active",this));
-				}
+				}*/
 				
 			}
 			return result;
@@ -395,13 +398,21 @@ protected:
 			{
 				InsertAndGiveName(*(new SMSOddEvenHarmonicRatio()));
 			}
-			else if(type=="SMSHarmonicFilter")
+			else if(type=="SMSSineFilter")
 			{
-				InsertAndGiveName(*(new SMSHarmonicFilter()));
+				InsertAndGiveName(*(new SMSSineFilter()));
+			}
+			else if(type=="SMSResidualGain")
+			{
+				InsertAndGiveName(*(new SMSResidualGain()));
 			}
 			else if(type=="SMSTransformationChainIO")
 			{
 				InsertAndGiveName(*(new SMSTransformationChainIO()));
+			}
+			else if(type=="SMSHarmonizer")
+			{
+				InsertAndGiveName(*(new SMSHarmonizer()));
 			}
 			else
 			{
