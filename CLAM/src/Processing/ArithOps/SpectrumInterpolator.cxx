@@ -384,7 +384,7 @@ namespace CLAM {
 		TData *mo = out.GetMagBuffer().GetPtr();
 		TData *fo = out.GetPhaseBuffer().GetPtr();
 /*****************************/
-//OPERATION: POLAR AND POLAR		
+//OPERATION: MAGPHASE AND MAGPHASE		
 		
 		TData intFactor=mInterpolationFactorCtl.GetLastValue();
 		if(intFactor>1) intFactor=1;
