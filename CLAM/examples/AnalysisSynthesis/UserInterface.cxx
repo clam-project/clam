@@ -900,6 +900,7 @@ void UserInterface::AboutWindow() {
       pixmap_mtg.label(o);
     }
     mWindow2->show();
+    o->set_modal();
     o->clear_border();
     o->end();
   }

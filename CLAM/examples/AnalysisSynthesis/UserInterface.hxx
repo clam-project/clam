@@ -129,5 +129,6 @@ private:
   Fl_Window* mAudioOutputSinusoidalDisplay;
 public:
   void Update();
+  void DetachDisplays();
 };
 #endif

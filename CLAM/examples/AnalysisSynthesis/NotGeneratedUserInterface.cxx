@@ -25,6 +25,7 @@ void UserInterface::Update()
 	mAnalysisSynthesisExample->SetHaveConfig(true);
  	mAnalysisSynthesisExample->InitConfigs();
 	LoadSound();
+	DetachDisplays();
 }
 
 
@@ -44,16 +45,25 @@ void UserInterface::LoadConfiguration(void)
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
 			mSynthesize->activate();
 		Fl::redraw();
+		DetachDisplays();
 
-		if( mAudioInputDisplay!=NULL )
-			Detach( mAudioInputDisplay );
-		if( mAudioOutputDisplay!=NULL )
-			Detach( mAudioOutputDisplay );
-		if( mAudioOutputResidualDisplay!=NULL )
-			Detach( mAudioOutputResidualDisplay );
-		if( mAudioOutputSinusoidalDisplay!=NULL )
-			Detach( mAudioOutputSinusoidalDisplay );
 	}		
+}
+
+void UserInterface::DetachDisplays()
+{
+	if( mAudioInputDisplay!=NULL ){
+//			mSmartTile->close( mAudioInputDisplay );
+		Detach( mAudioInputDisplay );
+//			mSmartTile->equalize();
+	}
+	if( mAudioOutputDisplay!=NULL )
+		Detach( mAudioOutputDisplay );
+	if( mAudioOutputResidualDisplay!=NULL )
+		Detach( mAudioOutputResidualDisplay );
+	if( mAudioOutputSinusoidalDisplay!=NULL )
+		Detach( mAudioOutputSinusoidalDisplay );
+
 }
 
 void UserInterface::LoadSound(void)
@@ -289,7 +299,6 @@ void UserInterface::Detach(Fl_Window *w)
 		mAudioOutputSinusoidalDisplay = NULL;
 
 	mSmartTile->equalize();
-	Fl::redraw();
 }
 
 Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
@@ -309,12 +318,12 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
 	
 	localPresentation->Show();
 
+	mSmartTile->equalize();
+
 	localPresentation->GetWindow()->callback((Fl_Callback*) _Detach,this);
 
 	localView->Refresh();
-	mSmartTile->equalize();	
-
-	Fl::redraw();
+	
 	return localPresentation->GetWindow();
 }
 
