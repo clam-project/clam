@@ -1,7 +1,6 @@
 #ifndef __AUDIOASPECT__
 #define __AUDIOASPECT__
 
-#include "Aspect.hxx"
 #include "Signalv1.hxx"
 #include "Signalv4.hxx"
 #include "DataTypes.hxx"
@@ -16,10 +15,10 @@ namespace CLAMVM
 	using CLAM::DataArray;
 	class AudioAdapter;
 
-	class AudioAspect : public Aspect
+	class AudioAspect
 	{
-	public:				
-		AudioAspect( AudioAdapter& );
+	public:
+		explicit AudioAspect( AudioAdapter& );
 
 		virtual ~AudioAspect();
 
