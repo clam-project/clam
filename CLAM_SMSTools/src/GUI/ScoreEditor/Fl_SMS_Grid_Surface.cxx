@@ -39,7 +39,8 @@ namespace CLAMVM
 		double yOffset = dataBBox.mBottom;
 
 		glBegin( GL_LINES );
-		glColor3f( 0.0f, 0.0f, 0.7f );
+		glColor3f( 0.1f, 0.1f, 0.6f );
+		glLineWidth( 0.5 );
 
 		while ( yOffset <= dataBBox.mTop )
 		{
@@ -55,6 +56,7 @@ namespace CLAMVM
 			xOffset+=mXAxisGridWidth;
 		}
 
+		glLineWidth( 1.0 );
 		glEnd();
 	}
 }
