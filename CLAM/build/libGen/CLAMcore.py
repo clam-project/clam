@@ -59,6 +59,7 @@ def makeSettings( outPath ) :
     libCLAMCore.blackBall( "AudioInPortPublisher" )
     libCLAMCore.blackBall( "AudioOutPort" )
     libCLAMCore.blackBall( "AudioOutPortPublisher" )
+    libCLAMCore.blackBall( "DefaultProcessingFactoryRegistration" )
     libCLAMCore.blackBall( "ScaleCnv" )
 
     libCLAMCore.addFolder( "Base" )

@@ -52,6 +52,9 @@ def makeSettings( outPath ) :
     print "Generating libCLAM%s..."%libCLAMProcessing.libName
     # Depends on CUIDADO code
     libCLAMProcessing.blackBall( "OnsetDetector" )
+    libCLAMProcessing.blackBall( "OnsetDetectorConfig" )
+    libCLAMProcessing.blackBall( "GT_FilterBank" )
+    libCLAMProcessing.blackBall( "ERB_Space_Gen" )
     libCLAMProcessing.blackBall( "SMSAnalysis" )
     libCLAMProcessing.blackBall( "SMSAnalysisConfig" )
     libCLAMProcessing.blackBall( "SMSAnalysisCore" )
@@ -63,6 +66,7 @@ def makeSettings( outPath ) :
     # processings into LADSPA plug-ins
     libCLAMProcessing.blackBall( "LadspaBridge" )
 
+    libCLAMProcessing.addFile( "DefaultProcessingFactoryRegistration", "Processing/Base" )
     libCLAMProcessing.addFile( "ScaleCnv", "Standard" )
     libCLAMProcessing.addFolder( "Data/BasicProcessing" )
     libCLAMProcessing.addFolder( "Data/Descriptors" )
