@@ -19,7 +19,7 @@ private:
 
 public:
 	MIDIInControl();
-	MIDIInControl(const MIDIInConfig &c);
+	MIDIInControl(const MIDIIOConfig &c);
 	const char * GetClassName() const {return "MIDIInControl";}
 
 	bool ConcreteConfigure(const ProcessingConfig& c)

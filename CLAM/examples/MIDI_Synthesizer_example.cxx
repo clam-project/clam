@@ -241,7 +241,7 @@ void MyAudioApplication::AudioMain(void)
 		unsigned int buffersize = 256;
 
 		// Audio and MIDI managers
-		AudioManager audioManager(48000,2048);
+		AudioManager audioManager(44100,4096);
 		MIDIManager midiManager;
 
 		// AudioIn

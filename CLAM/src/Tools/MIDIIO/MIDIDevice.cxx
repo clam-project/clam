@@ -186,8 +186,8 @@ void MIDIDevice::Start(void)
 	
 	for (unsigned int i=0; i<mInputs.size(); i++)
 	{
-		const MIDIInConfig &cfg = 
-			dynamic_cast<const MIDIInConfig&>(mInputs[i]->GetConfig());
+		const MIDIIOConfig &cfg = 
+			dynamic_cast<const MIDIIOConfig&>(mInputs[i]->GetConfig());
 
 		SetTarget(
 			MIDI::Message(cfg.GetMessage()),

@@ -7,10 +7,10 @@ MIDIOutControl::MIDIOutControl():MIDIOut(false)
 { 
 	mpDevice = 0;
 	InitMembers();
-	Configure(MIDIOutConfig());
+	Configure(MIDIIOConfig());
 }
 
-MIDIOutControl::MIDIOutControl(const MIDIOutConfig &c):MIDIOut(false)
+MIDIOutControl::MIDIOutControl(const MIDIIOConfig &c):MIDIOut(false)
 {
 	mpDevice = 0;
 	InitMembers();

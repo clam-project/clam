@@ -1,3 +1,11 @@
+#ifndef __MIDIIOConfig__
+#define __MIDIIOConfig__
+
+#include "ProcessingConfig.hxx"
+
+namespace CLAM
+{
+
 /** Configuration of the MIDIIn and MIDIOut classes. You can specify
  * a device (string), which will be used by the MIDIManager, when creating
  * the MIDIDevice objects. When you don't specify a concrete device, or
@@ -59,4 +67,7 @@ protected:
 };
 
 
+} // namespace CLAM
+
+#endif // __MIDIIOConfig__
 

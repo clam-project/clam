@@ -4,7 +4,7 @@
 #include "MIDIEnums.hxx"
 #include "Array.hxx"
 #include "MIDIOut.hxx"
-
+#include "MIDIIOConfig.hxx"
 
 namespace CLAM {
 
@@ -47,7 +47,7 @@ class MIDIOutControl:public MIDIOut
 		int DoControl(int id,TControlData val);
 	public:
 		MIDIOutControl();
-		MIDIOutControl(const MIDIOutConfig &c);
+		MIDIOutControl(const MIDIIOConfig &c);
 
 		const char * GetClassName() const {return "MIDIOutControl";}
 

@@ -37,7 +37,7 @@ class MIDIIn: public Processing
 friend class MIDIManager;
 friend class MIDIDevice;
 protected:
-	MIDIInConfig mConfig;
+	MIDIIOConfig mConfig;
 	MIDIDevice* mpDevice;
 public:
 	/** Configuration method interface. The Processing base class forces
@@ -80,16 +80,16 @@ public:
 		mpDevice = 0;
 		if (configure)
 		{
-			Configure(MIDIInConfig());
+			Configure(MIDIIOConfig());
 		}
 	}
 
-	/** Constructor of the class with an MIDIInConfig object constructed by
+	/** Constructor of the class with an MIDIIOConfig object constructed by
 	 *  the user as parameter.
-	 *  @param c The concrete MIDIInConfig that will be used for this
+	 *  @param c The concrete MIDIIOConfig that will be used for this
 	 *  construction
 	 */		
-	MIDIIn(const MIDIInConfig &c)
+	MIDIIn(const MIDIIOConfig &c)
 	{
 		mpDevice = 0;
 		Configure(c);

@@ -6,48 +6,76 @@
 
 using namespace CLAM;
 
+void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
+{
+	CLAM_ASSERT(p.Configure(cfg),p.GetStatus().c_str());
+}
+
 main()
 {
+	char* indevice = "file:test.mid";
+	char* outdevice = "textfile:test.txt";
+	
 	MIDIManager manager;
-	MIDIInConfig inNoteCfg;
-	MIDIOutConfig outNoteCfg;
+	MIDIIOConfig inNoteCfg;
+	MIDIIOConfig outNoteCfg;
 
-	MIDIDeviceList* list = manager.FindList("portmidi");
-	const std::vector<std::string>& availableDevices = list->AvailableDevices();
+	MIDIClockerConfig inpClockerCfg;
+	MIDIClockerConfig outClockerCfg;
 
-	for (std::vector<std::string>::const_iterator it = availableDevices.begin();
-			it != availableDevices.end();
-			it++)
-	{
-		printf("%s\n",(*it).c_str());
-	}
+	inpClockerCfg.SetDevice(indevice);
+	outClockerCfg.SetDevice(outdevice);
+		
+	MIDIClocker inpClocker(inpClockerCfg);
+	MIDIClocker outClocker(outClockerCfg);
+
+	inNoteCfg.SetDevice(indevice);
+	inNoteCfg.SetMessage(MIDI::eNoteOnOff);
 	
-	inNoteCfg.SetDevice("portmidi:input:VirMIDI 1-0");
-	inNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff));
-	inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1));
-	
-	outNoteCfg.SetDevice("textfile:-");
-	outNoteCfg.SetMessage(MIDI::eNoteOn);
-	outNoteCfg.SetChannel(1);
+	outNoteCfg.SetDevice(outdevice);
+	outNoteCfg.SetMessage(MIDI::eNoteOnOff);
 
-	MIDIInControl inNote(inNoteCfg);
-	MIDIOutControl outNote(outNoteCfg);
+	MIDIInControl inNote;
+	ConfigureAndCheck(inNote,inNoteCfg);
+	MIDIOutControl outNote;
+	ConfigureAndCheck(outNote,outNoteCfg);
+	
+	
+	//control for stoping at eof 
+	
+	MIDIIOConfig inStopCfg;
+	inStopCfg.SetDevice(indevice);
+	inStopCfg.SetChannel(CLAM::MIDI::eStop); //it is a sys message that uses channel byte for actual data
+	inStopCfg.SetMessage(CLAM::MIDI::eSystem);
+	
+	MIDIInControl inStop;
+	ConfigureAndCheck(inStop,inStopCfg);
+	InControl stopReceiver("stop-receiver");
+
+	inStop.GetOutControls().GetByNumber(0).AddLink(
+			&stopReceiver);
 	
 	inNote.GetOutControls().GetByNumber(0).AddLink(
 			&outNote.GetInControls().GetByNumber(0));
 	inNote.GetOutControls().GetByNumber(1).AddLink(
 			&outNote.GetInControls().GetByNumber(1));
 	inNote.GetOutControls().GetByNumber(2).AddLink(
-			&outNote.GetInControls().GetByNumber(0));
-	inNote.GetOutControls().GetByNumber(3).AddLink(
-			&outNote.GetInControls().GetByNumber(1));
+			&outNote.GetInControls().GetByNumber(2));
 	
 	manager.Start();
 
-	while (1)
+	TTime curTime = 0;
+
+	while (stopReceiver.GetLastValue()==0)
 	{
+		//we send a timing control to the MIDI clocker 
+		inpClocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		outClocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		
+		//we check for new events in the MIDI manager
 		manager.Check();
+		
+		//we increment the time counter
+		curTime ++;
 	}
 }

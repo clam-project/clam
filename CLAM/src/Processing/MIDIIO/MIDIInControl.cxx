@@ -7,12 +7,10 @@ MIDIInControl::MIDIInControl():MIDIIn(false)
 	mpDevice = 0;
 	mMessageSize = mControllingBytes = 0;
 	mMsgByteIdToControlId = 0;
-	// TODO: specify global behaviour of Processings; should
-	// the default constructor configure by default?
-	// Configure(MIDIInConfig());
+	Configure(MIDIIOConfig());
 }
 
-MIDIInControl::MIDIInControl(const MIDIInConfig &c):MIDIIn(false)
+MIDIInControl::MIDIInControl(const MIDIIOConfig &c):MIDIIn(false)
 {
 	mpDevice = 0;
 	mMessageSize = mControllingBytes = 0;

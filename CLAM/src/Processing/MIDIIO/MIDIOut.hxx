@@ -37,7 +37,7 @@ class MIDIOut: public Processing
 friend class MIDIManager;
 friend class MIDIDevice;
 protected:
-	MIDIOutConfig mConfig;
+	MIDIIOConfig mConfig;
 	MIDIDevice* mpDevice;
 public:
 
@@ -76,16 +76,16 @@ public:
 		mpDevice = 0;
 		if (configure)
 		{
-			Configure(MIDIOutConfig());
+			Configure(MIDIIOConfig());
 		}
 	}
 
-	/** Constructor of the class with an MIDIOutConfig object constructed by
+	/** Constructor of the class with an MIDIIOConfig object constructed by
 	 *  the user as parameter.
-	 *  @param c The concrete MIDIOutConfig that will be used for this
+	 *  @param c The concrete MIDIIOConfig that will be used for this
 	 *  construction
 	 */		
-	MIDIOut(const MIDIOutConfig &c)
+	MIDIOut(const MIDIIOConfig &c)
 	{
 		mpDevice = 0;
 		Configure(c);
