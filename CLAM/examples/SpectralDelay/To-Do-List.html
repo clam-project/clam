@@ -12,16 +12,74 @@
 <li class='to-do'>Fix broken sources
 	<ul>
 		<li class='done'>Remove any trace of Qt ( for now ) from the .dsp file</li>
-		<li class='to-do'>Fix 'examples/GUI/View/TokenDelayView.hxx'
+		<li class='current'>Fix 'examples/GUI/View/TokenDelayView.hxx'
 			<ul>
 			<li class='done'>Change the name of UpdatingModelAdapter class for ModelController</li>
-			<li class='current'>Define precisely the interface and roles of a ConcreteModelController
+			<li class='done'>Define precisely the interface and roles of a ConcreteModelController
 				<ul>
-					<li class='to-do'>Write a Test for a ConcreteModelController
+					<li class='done'>Write a Test for a ConcreteModelController
 						<ul>
-							<li class='to-do'>Write a mockup Processing with input controls</li>
-							<li class='to-do'>Write a mockup Presentation that is the controlling interface</li>
-							<li class='to-do'>Use as base of designing process a the ConcreteModelController</li>
+							<li class='done'>Write/Test ControlAdapter 
+								<ul>
+									<li class='done'>Unitary/Functional test: InControl - ControlAdapter Binding</li>
+								</ul>
+							</li>
+							<li class='done'>Propose a CompositeAspect class</li>
+							<li class='done'>Write a mockup Processing with input controls</li>
+							<li class='done'>Write a mockup Presentation that is the controlling interface</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class='done'>ConcreteModelController - generic behaviour extraction
+				<ul>
+					<li class='done'>Extract an abstract ProcessingController class from ConcreteModelController</li>
+				</ul>
+			</li>
+			<li class='done'>Aspect refactoring
+				<ul>
+					<li class='done'>Refactor Audio visualization support
+						<ul>
+							<li class='done'>Refactor AudioAdapter</li>
+							<li class='done'>Convert AudioAspect into AudioModel</li>
+							<li class='done'>Refactor AudioPresentation</li>
+							<li class='done'>Check that AnalysisSynthesis is still working</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor Spectrum visualization support
+						<ul>
+							<li class='done'>Refactor SpectrumAdapter</li>
+							<li class='done'>Convert SpectrumAspect into SpectrumModel</li>
+							<li class='done'>Refactor SpectrumPresentation</li>
+							<li class='done'>Check that AnalysisSynthesis is still working</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor SpectralPeakArray visualization support
+						<ul>
+							<li class='done'>Refactor SpectralPeakArrayAdapter</li>
+							<li class='done'>Convert SpectralPeakArrayAspect into PeakArrayModel</li>
+							<li class='done'>Refactor SpectralPeakArrayPresentation</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor SinTracks visualization support
+						<ul>
+							<li class='done'>Refactor SinTracksAdapter</li>
+							<li class='done'>Convert SinTracksAspect into SinTracksModel</li>
+							<li class='done'>Refactor SinTracksPresentation</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor Control visualization support
+						<ul>
+							<li class='done'>Refactor ControlAdapter</li>
+							<li class='done'>Convert ControlAdapterAspect into InputControlModel</li>
+							<li class='done'>Refactor the tests at draft</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor Processing visualization support
+						<ul>
+							<li class='done'>Refactor ProcessingController</li>
+							<li class='done'>Convert ProcessingControllerAspect into ProcessingModel</li>
+							<li class='done'>Refactor the tests at draft</li>
 						</ul>
 					</li>
 				</ul>

@@ -14,9 +14,8 @@ h2
 .to-do 
 {
 	font-weight: normal;
-	color: Red;
-	text-decoration: underline;
-	
+	text-decoration: normal;
+	color: green;
 }
 .done 
 {
