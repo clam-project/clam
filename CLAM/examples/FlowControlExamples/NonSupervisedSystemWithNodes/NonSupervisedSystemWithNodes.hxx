@@ -140,7 +140,7 @@ private:
 	void ConfigurePorts();
 	void DeleteAllNodes();
 
-//methods relative to audio out
+	//methods relative to audio out
 	bool AudioOutDo();
 	bool ConditionalAudioOutAttach( AudioNode& a);
 
