@@ -54,9 +54,6 @@
 
 #include "CBL.hxx"
 
-#define HorPos fl_width(name)
-#define VerPos 0
-
 namespace CLAM{
 
 	/**
@@ -413,11 +410,12 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, DynamicType *foo, T&value) {
+			const unsigned int verPos = 0;
 			fl_font(FL_HELVETICA,12);
 
 			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
-			Fl_Box * mBox = new Fl_Box(HorPos, VerPos, fl_width(name), 20);
-			Fl_Button * mInput = new Fl_Button( 330-55-fl_width( "Details..." ), VerPos, fl_width( "Details..." )+55, 20, "Details...");
+			Fl_Box * mBox = new Fl_Box(fl_with(name), verPos, fl_width(name), 20);
+			Fl_Button * mInput = new Fl_Button( 330-55-fl_width( "Details..." ), verPos, fl_width( "Details..." )+55, 20, "Details...");
 			o->end();
 
 			mInput->labelsize(12);
