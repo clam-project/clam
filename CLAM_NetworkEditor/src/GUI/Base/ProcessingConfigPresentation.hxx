@@ -24,7 +24,7 @@
 
 #include "Presentation.hxx"
 #include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include "ProcessingConfig.hxx"
 
 namespace CLAM
 {
@@ -36,17 +36,12 @@ namespace NetworkGUI
 
 class ProcessingConfigPresentation : public CLAMVM::Presentation
 {
-protected:
 
-	virtual void SetConfig( CLAM::ProcessingConfig* ) = 0;
 public:
-	ProcessingConfigPresentation();       
-	virtual ~ProcessingConfigPresentation(){}
-	
+	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 
 public: // signals
-	SigSlot::Signalv1< CLAM::ProcessingConfig* > SignalApplyConfig;
-	SigSlot::Slotv1< CLAM::ProcessingConfig* > SlotSetConfig;
+	SigSlot::Signalv1< const CLAM::ProcessingConfig & > SignalConfigureProcessing;
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 

@@ -50,10 +50,7 @@ namespace NetworkGUI
 
 class ProcessingPresentation;
 class ConnectionPresentation;
-class OutPortPresentation;
-class InPortPresentation;
-class OutControlPresentation;
-class InControlPresentation;
+class ConnectionPointPresentation;
 
 class NetworkPresentation: public CLAMVM::Presentation
 {
@@ -87,10 +84,10 @@ protected:
 
 
 	// methods related to locate processing
-	OutPortPresentation & GetOutPortPresentationByCompleteName(const std::string &);
-	InPortPresentation & GetInPortPresentationByCompleteName(const std::string &);
-	OutControlPresentation & GetOutControlPresentationByCompleteName(const std::string &);
-	InControlPresentation & GetInControlPresentationByCompleteName(const std::string &);
+	ConnectionPointPresentation & GetOutPortPresentationByCompleteName(const std::string &);
+	ConnectionPointPresentation & GetInPortPresentationByCompleteName(const std::string &);
+	ConnectionPointPresentation & GetOutControlPresentationByCompleteName(const std::string &);
+	ConnectionPointPresentation & GetInControlPresentationByCompleteName(const std::string &);
 
 	ProcessingPresentation& GetProcessingPresentation( const std::string & );
 	std::string GetProcessingIdentifier( const std::string& );

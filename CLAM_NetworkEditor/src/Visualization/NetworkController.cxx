@@ -242,7 +242,6 @@ void NetworkController::RemoveProcessingFromNetwork( const std::string & name )
 
 	ProcessingController * proc = it->second;
 	mProcessingControllers.erase( name );
-
 	mObserved->RemoveProcessing( name );
 	delete proc;
 }
@@ -322,9 +321,9 @@ void NetworkController::CreateProcessingController( const std::string & name, CL
 	ProcessingController* controller = new ProcessingController;
 
 	controller->BindTo(*proc);
-	controller->SignalCreateNewPresentation.Connect(SlotCreateNewPresentation);
-	controller->SignalRebuildProcessingStructure.Connect(SlotRebuildProcessingStructure);
-	controller->SignalRemoveProcessingController.Connect(SlotRemoveProcessingController);
+//	controller->SignalCreateNewPresentation.Connect(SlotCreateNewPresentation);
+//	controller->SignalRebuildProcessingStructure.Connect(SlotRebuildProcessingStructure);
+//	controller->SignalRemoveProcessingController.Connect(SlotRemoveProcessingController);
 	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, controller));
 	SignalAcquireProcessing.Emit(controller, name);
 }

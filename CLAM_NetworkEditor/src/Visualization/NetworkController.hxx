@@ -23,9 +23,16 @@
 #define _NETWORKCONTROLLER_HXX_
 
 #include "ModelController.hxx"
-//#include "NetworkModel.hxx"
 #include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
+
+
+#include "Signalv1.hxx"
+#include "Signalv2.hxx"
+#include "Slotv0.hxx"
+#include "Slotv1.hxx"
+#include "Slotv2.hxx"
+
 
 #include <list>
 #include <string>
@@ -43,7 +50,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class NetworkController : public ModelController // , public NetworkModel
+	class NetworkController : public ModelController
 	{
 	public:
 		typedef std::map< std::string , std::string  > ConnectionsMap;
