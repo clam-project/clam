@@ -172,15 +172,11 @@ void OutPort<Token>::DisconnectFromIn( InPortBase& in)
 template<class Token>
 bool OutPort<Token>::TryDisconnectFromConcreteIn( InPortBase & in )
 {
-	try
-	{
-		ProperInPort & concreteIn = dynamic_cast<ProperInPort&>(in);
-		DisconnectFromConcreteIn( concreteIn );
-	}
-	catch(...)
-	{
+	ProperInPort * concreteIn = dynamic_cast<ProperInPort*>(&in);
+	if (!concreteIn)
 		return false;
-	}
+	
+	DisconnectFromConcreteIn( *concreteIn );
 	return true;
 }
 

@@ -89,7 +89,10 @@ public:
 	}
 
 	/** Do nothing, since a publisher itself don't have any region */
-	void UnAttachRegion() {}
+	void UnAttachRegion() 
+	{
+		SetAttachedOutPort( 0 );
+	}
 	
 	bool IsPublisherOf( InPortBase& in)
 	{	
