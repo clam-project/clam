@@ -499,7 +499,7 @@ namespace CLAM {
 		 * @see Storage
 		 * @see Component::StoreOn
 		 */
-		virtual void StoreOn(Storage & store)
+		virtual void StoreOn(Storage & store) const
 		{
 			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
 		}

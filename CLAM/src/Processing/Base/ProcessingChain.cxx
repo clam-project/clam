@@ -32,7 +32,7 @@ namespace CLAM
 		SetConcreteConfig(*(originalConfig.mpConcreteConfig));
 	}
 
-	void ProcessingChaineeConfig::StoreOn(Storage & s)
+	void ProcessingChaineeConfig::StoreOn(Storage & s) const
 	{
 		ProcessingConfig::StoreOn(s);
 		mpConcreteConfig->StoreOn(s);

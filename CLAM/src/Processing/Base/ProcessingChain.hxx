@@ -34,7 +34,7 @@ namespace CLAM{
 		/** Overriding virtual method in base class to store concrete configuration by hand as it
 		 *	is not a dynamic attribute.
 		 */
-		void StoreOn(Storage & s); 
+		void StoreOn(Storage & s) const; 
 		/** Overriding virtual method in base class to load concrete configuration by hand as it
 		 *	is not a dynamic attribute.
 		 */
