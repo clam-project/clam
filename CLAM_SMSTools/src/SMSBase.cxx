@@ -77,6 +77,7 @@ SMSBase::SMSBase()
 
 void SMSBase::DestroyWaitMessage( )
 {
+	CLAM_DEBUG_ASSERT( 0!=mCurrentWaitMessage, "SMSBase destructor needs mCUrrentWaitMessage not null. (used by LoadConfig -Pau)");
 	delete mCurrentWaitMessage;
 	mCurrentWaitMessage = NULL;
 }
@@ -324,7 +325,7 @@ void SMSBase::Flush(Segment& seg)
 
 void SMSBase::AnalysisProcessing()
 {
-
+	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator")
 	TSize size = mOriginalSegment.GetAudio().GetSize();
 	
 	Flush(mOriginalSegment);
