@@ -1,17 +1,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-//#include "XercesDomWriter.hxx"
-//#include "XercesEncodings.hxx"
-//#include <xercesc/dom/DOMElement.hpp>
-//#include <xercesc/dom/DOMText.hpp>
 #include "ClamObjects2XercesDom.hxx"
 #include "XmlMockUpObjects.hxx"
-#include "BasicXMLable.hxx"
 #include "Component.hxx"
 #include <list>
-#include "XercesDomWriter.hxx"
-#include <xercesc/dom/DOMElement.hpp>
 
 namespace CLAM
 {
@@ -68,15 +61,14 @@ private:
 
 	void assertRootDocumentStoresAs(const std::string & expected, ClamObject2XercesDom & dumper)
 	{
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer;
-		writer.write(mTargetStream, node);
+		dumper.WriteSelection(mTargetStream);
 		CPPUNIT_ASSERT_EQUAL(expected, mTargetStream.str());
 	}
 
 	void testEmptyDocument()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 
 		assertRootDocumentStoresAs("<Doc/>",dumper);
 	}
@@ -85,7 +77,8 @@ private:
 	{
 		XmlMockUpBasic basic;
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(basic);
 
 		assertRootDocumentStoresAs("<Doc>Content</Doc>",dumper);
@@ -94,7 +87,8 @@ private:
 	void testBasicAsPlainContent_withoutContent()
 	{
 		XmlMockUpBasic basic;
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(basic);
 
 		assertRootDocumentStoresAs("<Doc/>",dumper);
@@ -103,7 +97,8 @@ private:
 	void testBasicAsElement_withoutContent()
 	{
 		XmlMockUpBasic basic("Element",true);
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(basic);
 
 		assertRootDocumentStoresAs("<Doc><Element/></Doc>",dumper);
@@ -113,7 +108,8 @@ private:
 	{
 		XmlMockUpBasic basic("Element",true);
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(basic);
 
 		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
@@ -123,7 +119,8 @@ private:
 	{
 		XmlMockUpBasic basic("at",false);
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(basic);
 
 		assertRootDocumentStoresAs("<Doc at=\"Content\"/>",dumper);
@@ -133,7 +130,8 @@ private:
 	{
 		XmlMockUpComponent component;
 		component.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(component);
 
 		assertRootDocumentStoresAs("<Doc>Content</Doc>",dumper);
@@ -142,7 +140,8 @@ private:
 	void testComponentAsPlainContent_withoutContent()
 	{
 		XmlMockUpComponent component;
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(component);
 
 		assertRootDocumentStoresAs("<Doc/>",dumper);
@@ -151,7 +150,8 @@ private:
 	void testComponentAsElement_withoutContent()
 	{
 		XmlMockUpComponent component("Element",true);
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(component);
 
 		assertRootDocumentStoresAs("<Doc><Element/></Doc>",dumper);
@@ -161,7 +161,8 @@ private:
 	{
 		XmlMockUpComponent component("Element",true);
 		component.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(component);
 
 		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
@@ -171,7 +172,8 @@ private:
 	{
 		XmlMockUpComponent component("at",false);
 		component.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		dumper.Store(component);
 
 		assertRootDocumentStoresAs("<Doc at=\"Content\"/>",dumper);
@@ -181,7 +183,8 @@ private:
 
 	void testSibblingsContentsAndAttributes_getOrderedAsInserted()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic oneElement("OneElement",true);
 		XmlMockUpBasic otherElement("OtherElement",true);
 		XmlMockUpBasic content;
@@ -196,7 +199,8 @@ private:
 
 	void testConsecutiveContents_getSpaceSeparation()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic content1;
 		content1.setContent("Content1");
 		XmlMockUpBasic content2;
@@ -209,7 +213,8 @@ private:
 
 	void testNonConsecutiveContents_dontGetSpaceSeparation()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic content1;
 		content1.setContent("Content1");
 		XmlMockUpBasic content2;
@@ -225,7 +230,8 @@ private:
 	void testSibblingsAttributes_getReordered()
 	{
 		// Not a requirement, just to check the behabiour
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic attribute1("zFirst");
 		attribute1.setContent("Content1");
 		XmlMockUpBasic attribute2("aSecond");
@@ -238,7 +244,8 @@ private:
 
 	void testComponentAsElement_containingBasicAsPlainContent()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
@@ -251,7 +258,8 @@ private:
 
 	void testElementContents_getPrintedBeforeSiblingContent()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
@@ -265,7 +273,8 @@ private:
 
 	void testNodesInsertionAfterComponentElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
@@ -281,7 +290,8 @@ private:
 
 	void testComponentAsElement_containingBasicAsAttribute()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent element("Element",true);
 		XmlMockUpBasic attribute("at");
 		attribute.setContent("atContent");
@@ -294,7 +304,8 @@ private:
 
 	void testComponentAsElement_containingBasicAsElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent componentElement("Component",true);
 		componentElement.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("Basic",true);
@@ -308,7 +319,8 @@ private:
 
 	void testComponentAsElement_containingComponentAsElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent outsideElement("Outside",true);
 		outsideElement.setContent("ComponentContent");
 		XmlMockUpComponent insideElement("Inside",true);
@@ -322,7 +334,8 @@ private:
 
 	void testComponentAsContent_containingBasicAsPlainContent()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicContent;
@@ -335,7 +348,8 @@ private:
 
 	void testComponentAsContent_containingBasicAsAttribute()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicAttribute("at");
@@ -348,7 +362,8 @@ private:
 
 	void testComponentAsContent_containingBasicAsElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("Basic",true);
@@ -361,7 +376,8 @@ private:
 
 	void testComponentAsAttribute_containingAnything_childrenHaveNoEffect()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		ClamObject2XercesDom dumper;
+		dumper.Create("Doc");
 		XmlMockUpComponent componentAttribute("componentAttribute");
 		componentAttribute.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("BasicElement",true);
