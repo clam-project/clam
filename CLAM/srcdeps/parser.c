@@ -148,7 +148,8 @@ int parser_include(const char* filename)
 	char tmp[2048];
 	char tmp2[2048];
 	char* pathend = 0;
-	
+	int inlocalpath = 0;
+
 	/* about tmp vs tmp2: 
 	** we used to add tmp to includes_checked, but
 	** this went wrong when the a different path and 
@@ -219,6 +220,8 @@ int parser_include(const char* filename)
 			stradd(filename);
 			strend();	
 		}
+	}else{
+		inlocalpath = 1;
 	}
 
 	if (!f) 
@@ -248,9 +251,14 @@ int parser_include(const char* filename)
 		
 		/* remove filename from tmp2 */
 		*pathend = 0;
-		
-		list_add_str_once(needed_includepaths,tmp2);
 
+		if (!inlocalpath)
+		{
+			/* the compiler will look in the local path
+			** anyway, so don't add it to the list of
+			** needed include paths */
+			list_add_str_once(needed_includepaths,tmp2);
+		}
 		list_add_str_once(guessed_headers,tmp);
 
 		if (recursesrcs)
