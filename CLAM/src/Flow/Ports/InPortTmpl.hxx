@@ -117,7 +117,7 @@ inline void InPortTmpl<T>::Attach(InPortTmpl<T>& port)
 	if (port.mpNode)
 		Attach(*port.mpNode);
 	else
-		Attach(*port.mpData);
+		Attach(port.mData[0]);
 }	
 
 template<class T>
@@ -131,7 +131,7 @@ inline void InPortTmpl<T>::Accept(DataVisitor& v)
 template<class T>
 inline ProcessingData* InPortTmpl<T>::GetProcessingData()
 {
-	if (IsAttached())
+	if (mData.Size()>0)
 	{
 		return &(mData[0]);
 	}
@@ -147,7 +147,7 @@ inline NodeBase* InPortTmpl<T>::GetNode()
 template<class T>
 inline bool InPortTmpl<T>::IsAttached()
 {
-	return mData.Size()>0;
+	return  mData.Size()>0 || mpNode ;
 }
 
 template<class T>
