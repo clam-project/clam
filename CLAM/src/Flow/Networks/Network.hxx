@@ -31,6 +31,7 @@ public:
 	virtual ~Network();
 	
 	const std::string& GetName() const { return _name; }
+	void SetName( const std::string& name ) { _name=name; }
 	Processing& GetProcessing( const std::string & name );
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
