@@ -135,6 +135,12 @@ void Qt_ConnectionPresentation::UnSelectConnectionPresentation()
 	repaint();
 }
 
+void Qt_ConnectionPresentation::SelectConnectionPresentation()
+{
+	mSelected = true;
+	repaint();
+}
+
 
 } // namespace NetworkGUI
 
