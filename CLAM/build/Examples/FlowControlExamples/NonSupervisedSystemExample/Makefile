@@ -1,3 +1,3 @@
-SRCDEPS = ../../../../srcdeps/srcdeps
+CLAM_PATH=../../../..
 
 include ../../../Makefile.rules
