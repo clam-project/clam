@@ -243,9 +243,10 @@ bool SpectralAnalysis::Do(void){return Do(mInput.GetData(),mOutput.GetData());}
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
-	mAudioFrame=in;
-	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);
+	
+	in.GetAudioChunk(0,in.GetSize() ,mAudioFrame,false);
 
+	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);
 	/* Input audio frame is writen onto circular buffer */
 //	mCircularBuffer.WriteAudio(in);
 	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
