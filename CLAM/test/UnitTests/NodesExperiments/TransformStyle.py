@@ -32,6 +32,7 @@ def changeMethods(aLine) :
 
 def processLine(aLine) :
 	changed = False
+	changed, aLine = changeMethods(aLine)
 	attribute = '([^a-zA-Z0-9])_([a-z])\S*'
 	matchAttribute = re.search( attribute, aLine )
 	
@@ -41,7 +42,6 @@ def processLine(aLine) :
 		newAttribute = '%sm%s%s' % ( matchAttribute.group(1), matchAttribute.group(0)[2].upper(), matchAttribute.group(0)[3:] )
 		aLine = re.sub( attribute, newAttribute, aLine )
 	
-	changed, aLine = changeMethods(aLine)
 		
 	return changed, aLine
 

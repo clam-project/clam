@@ -16,49 +16,49 @@ public:
 
 	WritingRegion()
 	{
-		sizeChanged( size() );
+		SizeChanged( Size() );
 	}
 	virtual ~WritingRegion()
 	{
 	}
 
-	Region::ReadingRegionsIterator beginReaders()
+	Region::ReadingRegionsIterator BeginReaders()
 	{
-		return _readingRegions.begin();
+		return mReadingRegions.begin();
 	}
-	Region::ReadingRegionsIterator endReaders()
+	Region::ReadingRegionsIterator EndReaders()
 	{
-		return _readingRegions.end();
+		return mReadingRegions.end();
 	}
 
-	void linkRegions( ProperReadingRegion &  reader)
+	void LinkRegions( ProperReadingRegion &  reader)
 	{
-		_readingRegions.push_back(&reader);
-		reader.linkProducerRegion(*this);
-		reader.linkAndNotifySizeToStream( stream() );
+		mReadingRegions.push_back(&reader);
+		reader.LinkProducerRegion(*this);
+		reader.LinkAndNotifySizeToStream( Stream() );
   	}
 
-	void removeRegion( ProperReadingRegion & region )
+	void RemoveRegion( ProperReadingRegion & region )
 	{
-		_readingRegions.remove( &region );
+		mReadingRegions.remove( &region );
 	}
 
 
 	/**
 		returns the underlying stream. Useful for testing.
 	*/
-	ProperStream& stream()
+	ProperStream& Stream()
 	{
-		return _stream;
+		return mStream;
 	}
 
 	/** when no linked reading region is found it returns the writing pos thus eviting overlap condition */
-	int rearmostReadingPos()
+	int RearmostReadingPos()
 	{
-		int result = pos();
+		int result = Pos();
 		ReadingRegionsIterator it;
-		for(it=_readingRegions.begin(); it!=_readingRegions.end(); it++)
-			if( (*it)->pos() < result) result = (*it)->pos();
+		for(it=mReadingRegions.begin(); it!=mReadingRegions.end(); it++)
+			if( (*it)->Pos() < result) result = (*it)->Pos();
 
 		return result;
 	}
@@ -67,48 +67,48 @@ public:
 		reading regions. This could happen since this is a circular buffer.
 		Returns true if no overlapping occur so it can produce.
 	*/
-	bool canProduce()
+	bool CanProduce()
 	{
-		CLAM_DEBUG_ASSERT( fulfilsInvariant(), "WritingRegion::canProduce() - fulfils invariant checking failed" );
-		return !_stream.existsCircularOverlap( rearmostReadingPos(), pos()+size() );
+		CLAM_DEBUG_ASSERT( FulfilsInvariant(), "WritingRegion::canProduce() - fulfils invariant checking failed" );
+		return !mStream.ExistsCircularOverlap( RearmostReadingPos(), Pos()+Size() );
  	}
 
-	void produce()
+	void Produce()
 	{
-		CLAM_DEBUG_ASSERT( canProduce(), "WritingRegion::produce() - WritingRegion can't produce" );
-		pos() += hop();
+		CLAM_DEBUG_ASSERT( CanProduce(), "WritingRegion::produce() - WritingRegion can't produce" );
+		Pos() += Hop();
 		// reserve stream tokens for next position
-		_stream.writerHasAdvanced( *this );
+		mStream.WriterHasAdvanced( *this );
 	}
 
 
 	Token& operator[](int offset)  // TODO decide if operator[0] is the best option to get the data chunk
 	{
 
-		CLAM_DEBUG_ASSERT(0 <= offset && offset < size(), "WritingRegion::operator [] - Index out of bounds" ); 
-		int physicalIndex = beginDistance() + offset;
+		CLAM_DEBUG_ASSERT(0 <= offset && offset < Size(), "WritingRegion::operator [] - Index out of bounds" ); 
+		int physicalIndex = BeginDistance() + offset;
 
 		if (offset==0)
-			return _stream.read(physicalIndex, size());
-		return _stream[physicalIndex];
+			return mStream.Read(physicalIndex, Size());
+		return mStream[physicalIndex];
 	}
 
 		
-	bool fulfilsInvariant()
+	bool FulfilsInvariant()
 	{
 		ReadingRegionsIterator it;
-		for(it=_readingRegions.begin(); it!=_readingRegions.end(); it++)
-			if( (*it)->pos() >= pos()+size() )
+		for(it=mReadingRegions.begin(); it!=mReadingRegions.end(); it++)
+			if( (*it)->Pos() >= Pos()+Size() )
 				return false;
 		return true;
 	}
 
-	int logicalStreamSize()
+	int LogicalStreamSize()
 	{
-		return _stream.logicalSize();
+		return mStream.LogicalSize();
 	}
 
-	Region* producerRegion()
+	Region* ProducerRegion()
 	{
 		return 0;
 	}
@@ -118,13 +118,13 @@ private:
 	{
 	}
 
-	void sizeChanged(const int & newSize)
+	void SizeChanged(const int & newSize)
 	{
-		_stream.newWritingRegionSize( *this );
+		mStream.NewWritingRegionSize( *this );
 	}
 
-	ReadingRegionsList _readingRegions;
-	ProperStream  _stream;
+	ReadingRegionsList mReadingRegions;
+	ProperStream  mStream;
 };
 
 #endif

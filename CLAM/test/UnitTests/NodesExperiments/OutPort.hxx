@@ -7,8 +7,8 @@
 class OutPortBase
 {
 public:
-	virtual void connectToIn(InPortBase& in) = 0;
-	virtual InPortBase* connectedInPorts() const = 0;
+	virtual void ConnectToIn(InPortBase& in) = 0;
+	virtual InPortBase* ConnectedInPorts() const = 0;
 	virtual ~OutPortBase()
 	{}
 };
@@ -24,11 +24,11 @@ class OutPort : public OutPortBase
 
 public:
 
-	void connectToIn( InPortBase& in)
+	void ConnectToIn( InPortBase& in)
 	{
 		try
 		{
-			connectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
+			ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
 		} catch (...) // could be std::bad_cast ?
 		{
 			CLAM_ASSERT( false,
@@ -38,30 +38,30 @@ public:
 	}
 
 
-	void connectToConcreteIn(InPort<Token>& in)
+	void ConnectToConcreteIn(InPort<Token>& in)
 	{
-		_connectedInPorts = &in;
-		in.addReaderToWriterRegion(_region);
+		mConnectedInPorts = &in;
+		in.AddReaderToWriterRegion(mRegion);
 	}
 
-	InPort<Token>* connectedInPorts() const
+	InPort<Token>* ConnectedInPorts() const
 	{
-		return _connectedInPorts;
+		return mConnectedInPorts;
 	}
 
 	// Concrete interface
-	void produceData(const Token& token)
+	void ProduceData(const Token& token)
 	{
-		_region.accessStreamData(token);
+		mRegion.AccessStreamData(token);
 	}
 
 
 private:
-	InPort<Token>* _connectedInPorts;
+	InPort<Token>* mConnectedInPorts;
 
 
 protected:
-	ProperWritingRegion _region;
+	ProperWritingRegion mRegion;
 };
 
 #endif

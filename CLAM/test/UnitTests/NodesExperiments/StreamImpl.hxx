@@ -22,72 +22,72 @@ class StreamImpl
 {
 
 public:
-	void newWritingRegionSize( Region& writer  )
+	void NewWritingRegionSize( Region& writer  )
 	{
-		if ( writer.size() <= logicalSize() ) return;
-		int newTokens = writer.size() - logicalSize();
+		if ( writer.Size() <= LogicalSize() ) return;
+		int newTokens = writer.Size() - LogicalSize();
 		for( int i=0; i<newTokens; i++)
-			_dataImpl.push_back(Token());
+			mDataImpl.push_back(Token());
 	}
 private:
-	void regionHasAdvanced( Region& region ) 
+	void RegionHasAdvanced( Region& region ) 
 	{
-		region.beginDistance() += region.hop();
+		region.BeginDistance() += region.Hop();
 
-		if (region.beginDistance() >= logicalSize() ) // circular movement
-			region.beginDistance() -= logicalSize();
+		if (region.BeginDistance() >= LogicalSize() ) // circular movement
+			region.BeginDistance() -= LogicalSize();
 	}
 public:
 	/** Do not check anything because the necessary checks are done at consume time*/
-	void newReadingRegionSize( Region& )
+	void NewReadingRegionSize( Region& )
 	{
 	}
 
-	void writerHasAdvanced( Region& writer )
+	void WriterHasAdvanced( Region& writer )
 	{
-		for( int i=0; i<writer.hop(); i++)
-			_dataImpl.push_back(Token());
+		for( int i=0; i<writer.Hop(); i++)
+			mDataImpl.push_back(Token());
 
-		regionHasAdvanced( writer );
+		RegionHasAdvanced( writer );
 	}
 
-	void readerHasAdvanced( Region& reader )
+	void ReaderHasAdvanced( Region& reader )
 	{
 		// TODO: discard old tokens
-		regionHasAdvanced( reader);
+		RegionHasAdvanced( reader);
 	}
 	/** This method is for generic interface convenience.
 		It is used in the PhantomBuffer implementation.
 	*/
-	Token& read(int physicalIndex, int size)
+	Token& Read(int physicalIndex, int size)
 	{
 		return operator[](physicalIndex);
 	}
 
 	Token& operator[](int physicalIndex)
 	{
-		CLAM_DEBUG_ASSERT( physicalIndex < int(_dataImpl.size()), "StreamImpl operator[] - Index out of bounds" );
+		CLAM_DEBUG_ASSERT( physicalIndex < int(mDataImpl.size()), "StreamImpl operator[] - Index out of bounds" );
 		typename DataStructure<Token>::iterator it;
 		int i;
-		for(i=0, it = _dataImpl.begin();
+		for(i=0, it = mDataImpl.begin();
 			i<physicalIndex;
 			it++, i++);
 		return (*it);
 	}
 
-	int logicalSize() const
+	int LogicalSize() const
 	{
-		return int(_dataImpl.size());
+		return int(mDataImpl.size());
 	}
 
-	bool existsCircularOverlap(int rear, int writingHead) const
+	bool ExistsCircularOverlap(int rear, int writingHead) const
 	{
 		return false;
 	}
 
 
 private:
-	DataStructure<Token> _dataImpl;
+	DataStructure<Token> mDataImpl;
 };
 
 
@@ -104,122 +104,122 @@ class StreamImpl<Token, CLAM::PhantomBuffer>
 
 public:
 	
-	void newWritingRegionSize( Region& writer )
+	void NewWritingRegionSize( Region& writer )
 	{
-		CLAM_DEBUG_ASSERT( writer.size()>0, "StreamImpl::newWritingRegionSize() - size must be greather than 0" );
-		CLAM_DEBUG_ASSERT( !writer.producerRegion(), "StreamImpl::newWritingRegionSize() - region must be a WritingRegion" );
-		commonNewRegionSize( writer );	
+		CLAM_DEBUG_ASSERT( writer.Size()>0, "StreamImpl::newWritingRegionSize() - size must be greater than 0" );
+		CLAM_DEBUG_ASSERT( !writer.ProducerRegion(), "StreamImpl::newWritingRegionSize() - region must be a WritingRegion" );
+		CommonNewRegionSize( writer );	
 	}
 
 
-	void newReadingRegionSize( Region& reader )
+	void NewReadingRegionSize( Region& reader )
 	{
-		CLAM_DEBUG_ASSERT( reader.producerRegion(), "StreamImpl::newReadingRegionSize() - region must be a ReadingRegion" );
-		commonNewRegionSize(reader);
+		CLAM_DEBUG_ASSERT( reader.ProducerRegion(), "StreamImpl::newReadingRegionSize() - region must be a ReadingRegion" );
+		CommonNewRegionSize(reader);
 	}
 private:
-	void commonNewRegionSize( Region& anyRegion )
+	void CommonNewRegionSize( Region& anyRegion )
 	{
-		int logicalSizeCandidate = anyRegion.size()*2;
+		int logicalSizeCandidate = anyRegion.Size()*2;
 
-		if(logicalSizeCandidate <= logicalSize())
+		if(logicalSizeCandidate <= LogicalSize())
 			return;
 		
-		Region & producer = anyRegion.producerRegion() ? (*anyRegion.producerRegion()) : anyRegion;
-		int insertionPos = producer.beginDistance();
+		Region & producer = anyRegion.ProducerRegion() ? (*anyRegion.ProducerRegion()) : anyRegion;
+		int insertionPos = producer.BeginDistance();
 
-		int newLogicalSize = 1 << exponentOfClosestGreaterPowerOfTwo(logicalSizeCandidate);
+		int newLogicalSize = 1 << ExponentOfClosestGreaterPowerOfTwo(logicalSizeCandidate);
 
-		CLAM_DEBUG_ASSERT(newLogicalSize > logicalSize(), "StreamImpl::commonNewRegionSize() - new logical size"
+		CLAM_DEBUG_ASSERT(newLogicalSize > LogicalSize(), "StreamImpl::commonNewRegionSize() - new logical size"
 								"must be greater than the older logical size" ); 
-		int tokensToInsert = newLogicalSize - logicalSize();
+		int tokensToInsert = newLogicalSize - LogicalSize();
 
-		_dataImpl.Resize( 
+		mDataImpl.Resize( 
 				newLogicalSize, 
-				anyRegion.size()*2, // phantom buffer size
+				anyRegion.Size()*2, // phantom buffer size
 				insertionPos );
 		
-		updateBeginDistanceOfReadingRegions( producer, tokensToInsert );
+		UpdateBeginDistanceOfReadingRegions( producer, tokensToInsert );
 	}
 
 	
-	bool readerAffectedByInsertion( Region & reader, Region & writer ) const
+	bool ReaderAffectedByInsertion( Region & reader, Region & writer ) const
 	{
 		// a reader will be affected by the insertion of new tokens due a writer's resize if:
 		
 		// a) the reader is physically positioned (beginDistance) at the rear of the writer.
-		if (reader.beginDistance() > writer.beginDistance()) 
+		if (reader.BeginDistance() > writer.BeginDistance()) 
 			return true;
 		
 		// b) the reader is physically positioned (beginDistance) at the same position than the writer AND
 		// is logically position (pos) after the writer. It means that the writer is exactly at
-		// logicalSize() positions before the reader.
-		if( reader.beginDistance()==writer.beginDistance() && reader.pos() < writer.pos() )
+		// LogicalSize() positions before the reader.
+		if( reader.BeginDistance()==writer.BeginDistance() && reader.Pos() < writer.Pos() )
 			return true;
 		return false;
 	}
 	
-	void updateBeginDistanceOfReadingRegions( Region & writer, int tokensInserted )
+	void UpdateBeginDistanceOfReadingRegions( Region & writer, int tokensInserted )
 	{
 		/// traverses reading regions and only updates the ones
 		/// that are at the right hand of the writer
 		Region::ReadingRegionsIterator actualReader;
 
-		for ( actualReader=writer.beginReaders(); actualReader!=writer.endReaders(); actualReader++)
-			if( readerAffectedByInsertion(**actualReader, writer) )
-				(*actualReader)->beginDistance() += tokensInserted;
+		for ( actualReader=writer.BeginReaders(); actualReader!=writer.EndReaders(); actualReader++)
+			if( ReaderAffectedByInsertion(**actualReader, writer) )
+				(*actualReader)->BeginDistance() += tokensInserted;
 	}
 	
-	void regionHasAdvanced( Region& region ) 
+	void RegionHasAdvanced( Region& region ) 
 	{
-		region.beginDistance() += region.hop();
-		if (region.beginDistance() >= logicalSize() ) // circular movement
-			region.beginDistance() -= logicalSize();
+		region.BeginDistance() += region.Hop();
+		if (region.BeginDistance() >= LogicalSize() ) // circular movement
+			region.BeginDistance() -= LogicalSize();
 	}
 public:
 	/** Notifies the stream impl that the writing region have just produced */
-	void writerHasAdvanced( Region& writer )	
+	void WriterHasAdvanced( Region& writer )	
 	{
-		_dataImpl.Touch( writer.beginDistance(), writer.size() );
-		regionHasAdvanced( writer );
+		mDataImpl.Touch( writer.BeginDistance(), writer.Size() );
+		RegionHasAdvanced( writer );
 	}
-	void readerHasAdvanced( Region& reader )
+	void ReaderHasAdvanced( Region& reader )
 	{
-		regionHasAdvanced( reader );		
+		RegionHasAdvanced( reader );		
 	}
 		
-	Token& read(int physicalIndex, int size)
+	Token& Read(int physicalIndex, int size)
 	{
-		return *_dataImpl.Read( physicalIndex, size );
+		return *mDataImpl.Read( physicalIndex, size );
 	}
 
 	Token& operator[](int physicalIndex)
 	{
-		CLAM_DEBUG_ASSERT( physicalIndex < logicalSize()+phantomSize(), "StreamImpl::operator[] - Index out of bounds" );
-		return read( physicalIndex, 1);
+		CLAM_DEBUG_ASSERT( physicalIndex < LogicalSize()+PhantomSize(), "StreamImpl::operator[] - Index out of bounds" );
+		return Read( physicalIndex, 1);
 	}
 
-	int logicalSize() const
+	int LogicalSize() const
 	{
-		return _dataImpl.LogicalSize();
+		return mDataImpl.LogicalSize();
 	}
 
 	/**
 		This method appears only in the PhantomBuffer specialization template.
 		Most useful for testing purposes.
 	*/
-	int phantomSize()
+	int PhantomSize()
 	{
-		return _dataImpl.PhantomSize();
+		return mDataImpl.PhantomSize();
 	}
 
-	bool existsCircularOverlap(int rear, int writingHead) const
+	bool ExistsCircularOverlap(int rear, int writingHead) const
 	{
-		return writingHead - rear > logicalSize(); 
+		return writingHead - rear > LogicalSize(); 
 	}
 
 private:
-	int exponentOfClosestGreaterPowerOfTwo( int newSize)
+	int ExponentOfClosestGreaterPowerOfTwo( int newSize)
 	{
 		int newLogicalSize = 1;
 		int power = 0;
@@ -231,7 +231,7 @@ private:
 		return power;
 	}
 	
-	CLAM::PhantomBuffer<Token> _dataImpl;
+	CLAM::PhantomBuffer<Token> mDataImpl;
 };
 
 

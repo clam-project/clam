@@ -38,31 +38,31 @@ public:
 	void testWritingRegion_constructor()
 	{
 		WritingRegion<int,DataStructure> writer;
-		CPPUNIT_ASSERT(0 == writer.pos());
-		CPPUNIT_ASSERT(1 == writer.size());
-		CPPUNIT_ASSERT(1 == writer.hop());
+		CPPUNIT_ASSERT(0 == writer.Pos());
+		CPPUNIT_ASSERT(1 == writer.Size());
+		CPPUNIT_ASSERT(1 == writer.Hop());
 	}
 
 	void testReadingRegion_constructor()
 	{
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		CPPUNIT_ASSERT(0 == reader.pos());
-		CPPUNIT_ASSERT(1 == reader.size());
-		CPPUNIT_ASSERT(1 == reader.hop());
+		CPPUNIT_ASSERT(0 == reader.Pos());
+		CPPUNIT_ASSERT(1 == reader.Size());
+		CPPUNIT_ASSERT(1 == reader.Hop());
 	}
 
 	void testWritingRegion_canProduce_withNoReaders()
 	{
 		WritingRegion<int,DataStructure> writer;
-		CPPUNIT_ASSERT( true == writer.canProduce() );
+		CPPUNIT_ASSERT( true == writer.CanProduce() );
 	}
 
 	void testWritingRegion_canProduce_withOneReader()
 	{
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
-		CPPUNIT_ASSERT( true == writer.canProduce() );
+		writer.LinkRegions( reader );
+		CPPUNIT_ASSERT( true == writer.CanProduce() );
 	}
 
 	void testWritingRegion_fulfilsInvariant_whenRegionsAreOverlapped()
@@ -74,9 +74,9 @@ public:
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
-		CPPUNIT_ASSERT( true == writer.fulfilsInvariant() );
+		CPPUNIT_ASSERT( true == writer.FulfilsInvariant() );
 	}
 
 	void testWritingRegion_fulfilsInvariant_whenReaderOverlapsAndSurpassesWriter()
@@ -87,13 +87,13 @@ public:
 		// W:  ^^
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
-		writer.size(2);
-		reader.pos(1);
-		reader.size(4);
+		writer.Size(2);
+		reader.Pos(1);
+		reader.Size(4);
 
-		CPPUNIT_ASSERT( true == writer.fulfilsInvariant() );
+		CPPUNIT_ASSERT( true == writer.FulfilsInvariant() );
 	}
 
 	void testWritingRegion_fulfilsInvariant_whenReaderSurpassesWriterWithoutOverlapping()
@@ -104,13 +104,13 @@ public:
 		// W:  ^--^
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
-		writer.size(4);
-		reader.size(4);
-		reader.pos(4);
+		writer.Size(4);
+		reader.Size(4);
+		reader.Pos(4);
 
-		CPPUNIT_ASSERT( false == writer.fulfilsInvariant() );
+		CPPUNIT_ASSERT( false == writer.FulfilsInvariant() );
 	}
 
 
@@ -122,9 +122,9 @@ public:
 		// W:  ^
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
-		CPPUNIT_ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT( false == reader.CanConsume() );
 	}
 
 	void testReadingRegion_canConsume_when2ReadingRegionsBehindAndNonOverlap()
@@ -137,24 +137,24 @@ public:
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader1;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader2;
-		writer.linkRegions( reader1 );
-		writer.linkRegions( reader2 );
+		writer.LinkRegions( reader1 );
+		writer.LinkRegions( reader2 );
 
-		reader2.size(3);
-		writer.pos(3);
+		reader2.Size(3);
+		writer.Pos(3);
 
-		CPPUNIT_ASSERT( true == reader2.canConsume() );
-		CPPUNIT_ASSERT( true == reader1.canConsume() );
+		CPPUNIT_ASSERT( true == reader2.CanConsume() );
+		CPPUNIT_ASSERT( true == reader1.CanConsume() );
 	}
 
 
 	void testWritingRegion_produce_movesRegion()
 	{
 		WritingRegion<int,DataStructure> writer;
-		writer.size(4);
-		writer.hop(3);
-		writer.produce();
-		CPPUNIT_ASSERT_EQUAL( long(3), writer.pos() );
+		writer.Size(4);
+		writer.Hop(3);
+		writer.Produce();
+		CPPUNIT_ASSERT_EQUAL( long(3), writer.Pos() );
 	}
 
 	void testReadingRegion_consume_whenIsLegal_movesRegion()
@@ -168,41 +168,41 @@ public:
 
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
-		writer.size(3);
-		writer.pos(4);
-		reader.size(4);
-		reader.hop(2);
+		writer.Size(3);
+		writer.Pos(4);
+		reader.Size(4);
+		reader.Hop(2);
 
-		reader.consume();
+		reader.Consume();
 
-		CPPUNIT_ASSERT_EQUAL( long(2), reader.pos() );
-		CPPUNIT_ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT_EQUAL( long(2), reader.Pos() );
+		CPPUNIT_ASSERT( false == reader.CanConsume() );
 	}
 
 	void testProduceConsumeData_withUnitaryRegions()
 	{
 		WritingRegion<char,DataStructure> writer;
 		typename WritingRegion<char,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
 		writer[0] = 'a';
-		writer.produce();
+		writer.Produce();
 		CPPUNIT_ASSERT_EQUAL( 'a', reader[0] );
-		reader.consume();
-		CPPUNIT_ASSERT( false == reader.canConsume() );
+		reader.Consume();
+		CPPUNIT_ASSERT( false == reader.CanConsume() );
 	}
 
 	void testProduceConsumeData_withSizedRegions()
 	{
 		WritingRegion<char,DataStructure> writer;
 		typename WritingRegion<char,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
-		writer.size(5);
-		writer.hop(5);
-		CPPUNIT_ASSERT_EQUAL( 0, int(writer.pos()) );
+		writer.Size(5);
+		writer.Hop(5);
+		CPPUNIT_ASSERT_EQUAL( 0, int(writer.Pos()) );
 
 
 		writer[0] = 'h';
@@ -210,28 +210,28 @@ public:
 		writer[2] = 'l';
 		writer[3] = 'l';
 		writer[4] = 'o';
-		writer.produce();
+		writer.Produce();
 
-		reader.size(3);
-		reader.hop(2);
+		reader.Size(3);
+		reader.Hop(2);
 		CPPUNIT_ASSERT_EQUAL( 'h', reader[0] );
 		CPPUNIT_ASSERT_EQUAL( 'e', reader[1] );
 		CPPUNIT_ASSERT_EQUAL( 'l', reader[2] );
 
-		reader.consume();
+		reader.Consume();
 		CPPUNIT_ASSERT_EQUAL( 'l', reader[0] );
 		CPPUNIT_ASSERT_EQUAL( 'l', reader[1] );
 		CPPUNIT_ASSERT_EQUAL( 'o', reader[2] );
 
-		reader.consume();
-		CPPUNIT_ASSERT( false == reader.canConsume() );
+		reader.Consume();
+		CPPUNIT_ASSERT( false == reader.CanConsume() );
 	}
 
 	void testProduceConsumeData_withSizedRegions_writerProducesMultipleTimes()
 	{
 		WritingRegion<char,DataStructure> writer;
 		typename WritingRegion<char,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 
 		//       	|hello world
 		// W         ^--------^  (hop=5)
@@ -246,21 +246,21 @@ public:
 		//    3		                ^--------^
 		// 4		         ^-^
 
-		writer.size(10);
-		writer.hop(5);
+		writer.Size(10);
+		writer.Hop(5);
 		writer[0] = 'h';
 		writer[1] = 'e';
 		writer[2] = 'l';
 		writer[3] = 'l';
 		writer[4] = 'o';
-		writer.produce();  // 1
+		writer.Produce();  // 1
 
-		reader.size(3);
-		reader.hop(2);
+		reader.Size(3);
+		reader.Hop(2);
 
-		reader.consume();  // 1
-		reader.consume();  // 2
-		CPPUNIT_ASSERT( false == reader.canConsume() );
+		reader.Consume();  // 1
+		reader.Consume();  // 2
+		CPPUNIT_ASSERT( false == reader.CanConsume() );
 
 		writer[0] = ' ';
 		writer[1] = 'w';
@@ -268,13 +268,13 @@ public:
 		writer[3] = 'r';
 		writer[4] = 'l';
 		writer[5] = 'd';
-		writer.produce(); // 2
+		writer.Produce(); // 2
 
-		reader.consume(); // 3
-		reader.consume(); // 4
+		reader.Consume(); // 3
+		reader.Consume(); // 4
 
-		CPPUNIT_ASSERT( false == reader.canConsume() );
-		writer.produce();  // without producing here, the following indexed acceses
+		CPPUNIT_ASSERT( false == reader.CanConsume() );
+		writer.Produce();  // without producing here, the following indexed acceses
 		CPPUNIT_ASSERT_EQUAL( 'r', reader[0] );  // to the reader would fail an assert
 		CPPUNIT_ASSERT_EQUAL( 'l', reader[1] );
 		CPPUNIT_ASSERT_EQUAL( 'd', reader[2] );
@@ -285,14 +285,14 @@ public:
 		const int lastTokenToConsume = 500;
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 		for (int actual=0; actual < lastTokenToConsume; actual++)
 		{
 			writer[0] = actual;
-			writer.produce();
+			writer.Produce();
 
 			CPPUNIT_ASSERT_EQUAL( actual, reader[0] );
-			reader.consume();
+			reader.Consume();
 		}
 	}
 

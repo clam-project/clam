@@ -10,94 +10,95 @@ template<class WritingRegion>
 class ReadingRegion : public Region
 {
 	//typedef StreamImpl< Token > ProperStream;
-	typedef typename WritingRegion::ProperStream Stream;
-	typedef typename WritingRegion::ProperToken Token;
+	typedef typename WritingRegion::ProperStream ProperStream;
+	typedef typename WritingRegion::ProperToken ProperToken;
 
 public:
-	ReadingRegion() : _attachedStream(0), _producingRegion(0)
+	ReadingRegion() : mAttachedStream(0), mProducingRegion(0)
 	{
 	}
 
-	void linkAndNotifySizeToStream(Stream& stream)
+	void LinkAndNotifySizeToStream( ProperStream& stream )
 	{
-		_attachedStream = &stream;
-		_attachedStream->newReadingRegionSize( *this );
+		mAttachedStream = &stream;
+		mAttachedStream->NewReadingRegionSize( *this );
 	}
 
-	Stream& stream()
+	ProperStream& Stream()
 	{
-		return *(_attachedStream);
+		return *(mAttachedStream);
 	}
 
 	/** Condition of overlap between reading and writing regions.
 		Returns true if are not overlapping so it can consume
 	*/
-	bool canConsume()
+	bool CanConsume()
 	{
-		CLAM_ASSERT(_producingRegion, "ReadingRegion::CanConsume() - Reading region should have a producer linked" );
-		return producerRegion()->pos() >= pos()+size();
+		CLAM_ASSERT(mProducingRegion, "ReadingRegion::CanConsume() - Reading region should have a producer linked" );
+		return ProducerRegion()->Pos() >= Pos()+Size();
 	}
 	/**
 		This method must be called when the data of the reading-region has been
 		already readen (consumed) and we want to advance the region position
 		for further	readings (consumes)
 	*/
-	void consume()
+	void Consume()
 	{
-		CLAM_DEBUG_ASSERT( canConsume(), "ReadingRegion::Consume() - region can't consume" );
-		pos() += hop();
-		_attachedStream->readerHasAdvanced( *this );
+		CLAM_DEBUG_ASSERT( CanConsume(), "ReadingRegion::Consume() - region can't consume" );
+		Pos() += Hop();
+		mAttachedStream->ReaderHasAdvanced( *this );
 	}
 
-	void linkProducerRegion( Region& writing)
+	void LinkProducerRegion( Region& writing)
 	{
-		_producingRegion = &writing;
+		mProducingRegion = &writing;
 		// it starts at the same position than the writer is in this exact moment
-		pos( writing.pos() );
-		beginDistance( writing.beginDistance() );
+		Pos( writing.Pos() );
+		BeginDistance( writing.BeginDistance() );
 	}
 	
-	const Token& operator[](int offset)
+	const ProperToken& operator[](int offset)
 	{
-		CLAM_DEBUG_ASSERT( _attachedStream, "ReadingRegion operator[] - No attached stream" );
-		CLAM_DEBUG_ASSERT( canConsume(), "ReadingRegion operator[] - region can't consume" );
+		CLAM_DEBUG_ASSERT( mAttachedStream, "ReadingRegion operator[] - No attached stream" );
+		CLAM_DEBUG_ASSERT( CanConsume(), "ReadingRegion operator[] - region can't consume" );
 		// TODO msg:region is still not completely produced
 
-		int physicalIndex = beginDistance() + offset;
+		int physicalIndex = BeginDistance() + offset;
 
-		CLAM_ASSERT( physicalIndex < _attachedStream->logicalSize(), "ReadingRegion operator[] - Out of bounds access" );
+		CLAM_ASSERT( physicalIndex < mAttachedStream->LogicalSize(), "ReadingRegion operator[] - Out of bounds access" );
 
-		return _attachedStream->operator[](physicalIndex);
+		return mAttachedStream->operator[](physicalIndex);
 	}
 	
-	Region* producerRegion()
+	Region* ProducerRegion()
 	{
-		return _producingRegion;
+		return mProducingRegion;
 	}
 	
- 	ReadingRegionsIterator beginReaders()
+ 	ReadingRegionsIterator BeginReaders()
 	{
 		return 0; 
 	}
-	ReadingRegionsIterator endReaders()
+	ReadingRegionsIterator EndReaders()
 	{
 		return 0; 
 	}
 private:
-	void sizeChanged(const int & newSize)
+	void SizeChanged(const int & newSize)
 	{
-		if (_attachedStream)
-			_attachedStream->newReadingRegionSize(*this);
+		if (mAttachedStream)
+			mAttachedStream->NewReadingRegionSize(*this);
 	}
 
-	void dumpState() // TODO: implement and include std headers in the cxx
+	void DumpState() // TODO: implement and include std headers in the cxx
 	{
 		std::cout << "ReadingRegion pos="
-		<< pos() << " size=" << size() << " hop: " << hop() << " anchorToStreamBuffer:"		<< anchorToStreamBuffer() << std::endl;
+		<< Pos() << " Size=" << Size() << " Hop: " << Hop() << " AnchorToStreamBuffer:"	<< AnchorToStreamBuffer() << std::endl;
 	}
 
-	Stream* _attachedStream;
-	Region* _producingRegion;
+	ProperStream* mAttachedStream;
+	
+	Region* mProducingRegion;
 
 };
 

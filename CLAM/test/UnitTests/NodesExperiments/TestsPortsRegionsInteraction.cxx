@@ -29,46 +29,46 @@ public:
 		OutPortBase& outBase = out;
 		InPortBase& inBase = in;
 
-		outBase.connectToIn(inBase);
+		outBase.ConnectToIn(inBase);
 
-		CPPUNIT_ASSERT_EQUAL( &inBase, outBase.connectedInPorts() );
+		CPPUNIT_ASSERT_EQUAL( &inBase, outBase.ConnectedInPorts() );
 	}
 	void testWritingRegion_addRegion()
 	{
 		WritingRegion<int> writer;
 		WritingRegion<int>::ProperReadingRegion reader;
 
-		writer.linkRegions( reader );
+		writer.LinkRegions( reader );
 		Region & baseReader = (Region &)reader;
-		CPPUNIT_ASSERT_EQUAL( &baseReader, *(writer.beginReaders()) );
+		CPPUNIT_ASSERT_EQUAL( &baseReader, *(writer.BeginReaders()) );
 	}
 	void testWritingRegion_removeRegion()
 	{
 		WritingRegion<int> writer;
 		WritingRegion<int>::ProperReadingRegion reader;
 
-		writer.linkRegions( reader );
-		writer.removeRegion( reader );
-		CPPUNIT_ASSERT( writer.beginReaders() == writer.endReaders() );
+		writer.LinkRegions( reader );
+		writer.RemoveRegion( reader );
+		CPPUNIT_ASSERT( writer.BeginReaders() == writer.EndReaders() );
 	}
 	void testWritingRegion_removeRegion_withTwoReadingRegions()
 	{
 		WritingRegion<int> writer;
 		WritingRegion<int>::ProperReadingRegion reader1, reader2;
-		writer.linkRegions( reader1 );
-		writer.linkRegions( reader2 );
-		writer.removeRegion( reader1 );
+		writer.LinkRegions( reader1 );
+		writer.LinkRegions( reader2 );
+		writer.RemoveRegion( reader1 );
 
 		Region & baseReader2 = (Region &)reader2;
-		CPPUNIT_ASSERT_EQUAL( &baseReader2, *writer.beginReaders() );
+		CPPUNIT_ASSERT_EQUAL( &baseReader2, *writer.BeginReaders() );
 	}
 
 	class OutPortStub : public OutPort<int>
 	{
 	public:
-		WritingRegion<int>& writingRegion()
+		WritingRegion<int>& WritingRegion()
 		{
-			return _region;
+			return mRegion;
 		}
 	};
 
@@ -76,39 +76,39 @@ public:
 	{
 		OutPortStub out;
 		InPort<int> in;
-		out.connectToIn(in);
+		out.ConnectToIn(in);
 		//TODO check that stream has been initialized (as soon as is implemented)
 
 		const bool existReadingRegion =
-			out.writingRegion().beginReaders() != out.writingRegion().endReaders();
+			out.WritingRegion().BeginReaders() != out.WritingRegion().EndReaders();
 		CPPUNIT_ASSERT( existReadingRegion );
 
-		WritingRegion<int> & writer = out.writingRegion();
+		WritingRegion<int> & writer = out.WritingRegion();
 		
-		Region & baseReader = **(writer.beginReaders());
+		Region & baseReader = **(writer.BeginReaders());
 		WritingRegion<int>::ProperReadingRegion & reader = 
 			(WritingRegion<int>::ProperReadingRegion &)baseReader;
-		CPPUNIT_ASSERT( &(writer.stream()) == &(reader.stream()) );
+		CPPUNIT_ASSERT( &(writer.Stream()) == &(reader.Stream()) );
 	}
 
 /*
 	void testNode_content()
 	{
 		Node<int, DefaultStreamImpl> stream;
-		stream.content(1);
-		CPPUNIT_ASSERT_EQUAL( 1, stream.content() );
+		stream.Content(1);
+		CPPUNIT_ASSERT_EQUAL( 1, stream.Content() );
 	}
 */
 
 /*
-	void testProduceAndConsume()
+	void TestProduceAndConsume()
 	{
 		OutPort<int> out;
 		InPort<int> in;
 
-		out.connectToIn(in);
-		out.produceData(1);
-		CPPUNIT_ASSERT_EQUAL( 1, in.consumeData() );
+		out.ConnectToIn(in);
+		out.ProduceData(1);
+		CPPUNIT_ASSERT_EQUAL( 1, in.ConsumeData() );
 	}
 */
 	//TODO: next test: produceAndConsume

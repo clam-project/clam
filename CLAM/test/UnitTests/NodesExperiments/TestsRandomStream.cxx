@@ -20,28 +20,28 @@ class TestsRandomStream : public CppUnit::TestFixture
 	typedef WritingRegion<char, CLAM::PhantomBuffer > WRegion;
 	typedef WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion RRegion;
 
-	WRegion _writer;
-	RRegion _outputReader;
-	std::list< RRegion * > _otherReaders;
-	std::ifstream _inputFile;
-	std::string _inputString;
-	std::ostringstream _output;
-	std::ostringstream _buff;
+	WRegion mWriter;
+	RRegion mOutputReader;
+	std::list< RRegion * > mOtherReaders;
+	std::ifstream mInputFile;
+	std::string mInputString;
+	std::ostringstream mOutput;
+	std::ostringstream mBuff;
 
 public:
 	TestsRandomStream() :
-		_inputFile( "testFile.txt" ),
-		_inputString( (std::istreambuf_iterator<char>(_inputFile)), std::istreambuf_iterator<char>() )
+		mInputFile( "testFile.txt" ),
+		mInputString( (std::istreambuf_iterator<char>(mInputFile)), std::istreambuf_iterator<char>() )
 	{
 
-		_inputFile.seekg( std::ios::beg );
+		mInputFile.seekg( std::ios::beg );
 		std::srand(std::time(0));
 	}
 		
 	~TestsRandomStream()
 	{
 		std::list< RRegion* >::iterator it;
-		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
+		for(it=mOtherReaders.begin(); it!=mOtherReaders.end(); it++)
 			delete *it;
 	}
 
@@ -49,48 +49,48 @@ public:
 	CPPUNIT_TEST( test );
 	CPPUNIT_TEST_SUITE_END();
 private:
-	bool fillWriterFromInputFile()
+	bool FillWriterFromInputFile()
 	{
 		int inchar;
-		for (int i=0; i<_writer.size(); i++)
+		for (int i=0; i<mWriter.Size(); i++)
 		{
-			if (i<_writer.hop())
+			if (i<mWriter.Hop())
 			{
-				inchar = _inputFile.get();
+				inchar = mInputFile.get();
 				if (inchar<0)
 				{
-					_writer[i] ='\0';
+					mWriter[i] ='\0';
 					return false;
 				}
-				_writer[i] = inchar;
+				mWriter[i] = inchar;
 			}
 			else
-				_writer[i] = 'X';
+				mWriter[i] = 'X';
 		}
 		return true;
 	}
-	void dumpOutputReader()
+	void DumpOutputReader()
 	{
-		for (int i=0; i<_outputReader.size(); i++)
+		for (int i=0; i<mOutputReader.Size(); i++)
 		{
-			char actualToken = _outputReader[i];
+			char actualToken = mOutputReader[i];
 			if (actualToken =='\n')
 			{
-				_output << _buff.str() << '\n';
-				_buff.str("");
+				mOutput << mBuff.str() << '\n';
+				mBuff.str("");
 			}
 			else
-				_buff << actualToken;
+				mBuff << actualToken;
 		}
 	}
 
-	bool chanceOf(double chance)
+	bool ChanceOf(double chance)
 	{
 		double rand = random() / float(RAND_MAX);
 		return rand < chance;
 	}
 
-	int randomIntFromTo(int from, int to)
+	int RandomIntFromTo(int from, int to)
 	{
 		int dist = to-from;
 		int result = from + int((random() / double(RAND_MAX)) * dist);
@@ -101,131 +101,131 @@ private:
 	}
 
 
-	void maybeChangeSizeWriter()
+	void MaybeChangeSizeWriter()
 	{
-		if (chanceOf(1-0.3))
+		if (ChanceOf(1-0.3))
 			return;
 
-		int newSize = randomIntFromTo(1, 40);
-		_writer.size(newSize);
-		_writer.hop(newSize);
+		int newSize = RandomIntFromTo(1, 40);
+		mWriter.Size(newSize);
+		mWriter.Hop(newSize);
 	}
 	
-	void maybeChangeHopWriter()
+	void MaybeChangeHopWriter()
 	{
-		if (chanceOf(1-0.3))
+		if (ChanceOf(1-0.3))
 			return;
 
-		int newSize = randomIntFromTo(1, _writer.size());
-		_writer.hop(newSize);
+		int newSize = RandomIntFromTo(1, mWriter.Size());
+		mWriter.Hop(newSize);
 	}
 
-	void maybeChangeHopAndSizeOutputReader()
+	void MaybeChangeHopAndSizeOutputReader()
 	{	
-		if (chanceOf(1-0.3))
+		if (ChanceOf(1-0.3))
 			return;
 
-		int newSize = randomIntFromTo(1, 40);
-		_outputReader.size(newSize);
-		_outputReader.hop(newSize);
+		int newSize = RandomIntFromTo(1, 40);
+		mOutputReader.Size(newSize);
+		mOutputReader.Hop(newSize);
 	}
 
-	void maybeCreateOtherReader()
+	void MaybeCreateOtherReader()
 	{
-		if(chanceOf(1-0.3))
+		if(ChanceOf(1-0.3))
 			return;
 
 		RRegion * newRegion = new RRegion; 
-		_writer.linkRegions( *newRegion );
-		_otherReaders.push_back( newRegion );
+		mWriter.LinkRegions( *newRegion );
+		mOtherReaders.push_back( newRegion );
 	}
 
-	void maybeRemoveOtherReader()
+	void MaybeRemoveOtherReader()
 	{	
 		std::list< RRegion * >::iterator it;
-		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
+		for(it=mOtherReaders.begin(); it!=mOtherReaders.end(); it++)
 		{
-			if(chanceOf(0.1))
+			if(ChanceOf(0.1))
 			{
 				RRegion * toDelete = *it;
-				_writer.removeRegion( *toDelete );
-				_otherReaders.remove( toDelete );
+				mWriter.RemoveRegion( *toDelete );
+				mOtherReaders.remove( toDelete );
 				delete toDelete;
 				return;
 			}
 		}
 	}
 	
-	void maybeModifyHopAndSizeOfOtherReaders()
+	void MaybeModifyHopAndSizeOfOtherReaders()
 	{	
 		std::list< RRegion * >::iterator it;
-		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
+		for(it=mOtherReaders.begin(); it!=mOtherReaders.end(); it++)
 		{
-			if(chanceOf(0.2))
+			if(ChanceOf(0.2))
 			{
 				RRegion * otherRegion = *it;
-				int newSize = randomIntFromTo(1, 40);
-				otherRegion->size( newSize );
-				otherRegion->hop( newSize );
+				int newSize = RandomIntFromTo(1, 40);
+				otherRegion->Size( newSize );
+				otherRegion->Hop( newSize );
 
 			}		
-			if(chanceOf(0.2))
+			if(ChanceOf(0.2))
 			{
 				RRegion * otherRegion = *it;
-				int newHop = randomIntFromTo(1, otherRegion->size() );
-				otherRegion->hop( newHop );
+				int newHop = RandomIntFromTo(1, otherRegion->Size() );
+				otherRegion->Hop( newHop );
 			}
 
 		}
 	}
 
-	void maybeChangeOtherReaders()
+	void MaybeChangeOtherReaders()
 	{
-		maybeCreateOtherReader();
-		maybeRemoveOtherReader();
-		maybeModifyHopAndSizeOfOtherReaders();
+		MaybeCreateOtherReader();
+		MaybeRemoveOtherReader();
+		MaybeModifyHopAndSizeOfOtherReaders();
 	}
 
 	void OtherReadersConsume()
 	{
 		std::list< RRegion * >::iterator it;
-		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
-			if( (*it)->canConsume() )
-				(*it)->consume();
+		for(it=mOtherReaders.begin(); it!=mOtherReaders.end(); it++)
+			if( (*it)->CanConsume() )
+				(*it)->Consume();
 	}
 
 	void test()
 	{
-		_writer.size(2);
-		_writer.hop(2);
-		_writer.linkRegions(_outputReader);
+		mWriter.Size(2);
+		mWriter.Hop(2);
+		mWriter.LinkRegions(mOutputReader);
 		bool endOfFile = false;
 
 		while(true)
 		{	
-			if ( _writer.canProduce() && !endOfFile )
+			if ( mWriter.CanProduce() && !endOfFile )
 			{
-				endOfFile =  !fillWriterFromInputFile();
-				_writer.produce();
+				endOfFile =  !FillWriterFromInputFile();
+				mWriter.Produce();
 			}
 								
-			maybeChangeSizeWriter();
-			maybeChangeHopWriter();
-		//	maybeChangeHopAndSizeOutputReader();
-			maybeChangeOtherReaders();
+			MaybeChangeSizeWriter();
+			MaybeChangeHopWriter();
+		//	MaybeChangeHopAndSizeOutputReader();
+			MaybeChangeOtherReaders();
 
 			OtherReadersConsume();
 			
-			if( _outputReader.canConsume() )
+			if( mOutputReader.CanConsume() )
 			{
-				dumpOutputReader();
-				_outputReader.consume();
+				DumpOutputReader();
+				mOutputReader.Consume();
 			}
 			else
 				if( endOfFile ) break;
 		}
 
-		CPPUNIT_ASSERT_EQUAL( _inputString, _output.str() );
+		CPPUNIT_ASSERT_EQUAL( mInputString, mOutput.str() );
 	}
 };
 

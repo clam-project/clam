@@ -12,61 +12,61 @@ public:
 	typedef ReadingRegionsList::iterator ReadingRegionsIterator;
 
 
-	Region() : _pos(0), _size(1), _hop(1), _beginDistance(0)
+	Region() : mPos(0), mSize(1), mHop(1), mBeginDistance(0)
 	{
 	}
 
-	long& pos()
+	long& Pos()
 	{
-		return _pos;
+		return mPos;
 	}
-	int& size()
+	int& Size()
 	{
-		return _size;
+		return mSize;
 	}
-	int& hop()
+	int& Hop()
 	{
-		return _hop;
+		return mHop;
 	}
 	
-	int& beginDistance()
+	int& BeginDistance()
 	{
-		return _beginDistance;
+		return mBeginDistance;
 	}
-	void beginDistance(int &dist)
+	void BeginDistance(int &dist)
 	{
-		_beginDistance = dist;		
+		mBeginDistance = dist;		
 	}
-	void pos( const long & pos )
+	void Pos( const long & pos )
 	{
-		_pos = pos;
-	}
-
-	void size( const int & size )
-	{
-		_size = size;
-		sizeChanged(size);
+		mPos = pos;
 	}
 
-	void hop( const int & hop )
+	void Size( const int & size )
 	{
-		CLAM_ASSERT( hop <= _size, "Region::hop() - hop can't be greater than size" );
-		_hop = hop;
+		mSize = size;
+		SizeChanged(size);
 	}
 
-	virtual Region* producerRegion() = 0;
+	void Hop( const int & hop )
+	{
+		CLAM_ASSERT( hop <= mSize, "Region::hop() - hop can't be greater than size" );
+		mHop = hop;
+	}
 
-	virtual ReadingRegionsIterator beginReaders() = 0;
-	virtual ReadingRegionsIterator endReaders() = 0;
+	virtual Region* ProducerRegion() = 0;
+
+	virtual ReadingRegionsIterator BeginReaders() = 0;
+	virtual ReadingRegionsIterator EndReaders() = 0;
 
 protected:
- 	virtual void sizeChanged(const int & newSize) = 0;
+ 	virtual void SizeChanged(const int & newSize) = 0;
 
 private:
-	long _pos;
-	int _size;
-	int _hop;
-	int _beginDistance; /// offset from the beginning of the data structure 
+	long mPos;
+	int mSize;
+	int mHop;
+	int mBeginDistance; /// offset from the beginning of the data structure 
 };
 
 #endif

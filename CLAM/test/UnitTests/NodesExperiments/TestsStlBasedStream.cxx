@@ -27,11 +27,11 @@ public:
 	void testStreamIncreasesSizeAfterProducing()
 	{
 		WritingRegion<char,std::list> writer;
-		writer.size(5);
-		writer.hop(2);
-		CPPUNIT_ASSERT_EQUAL(5, writer.logicalStreamSize() );
-		writer.produce();
-		CPPUNIT_ASSERT_EQUAL(7, writer.logicalStreamSize() );
+		writer.Size(5);
+		writer.Hop(2);
+		CPPUNIT_ASSERT_EQUAL(5, writer.LogicalStreamSize() );
+		writer.Produce();
+		CPPUNIT_ASSERT_EQUAL(7, writer.LogicalStreamSize() );
 	}
 
 };

@@ -21,18 +21,18 @@ class InPort : public InPortBase
 public:
 
 	// concrete interface
-	const Token& consumeData() const
+	const Token& ConsumeData() const
 	{
-		return _region.accessStreamData();
+		return mRegion.AccessStreamData();
 	}
 
-	void addReaderToWriterRegion( ProperWritingRegion& writer )
+	void AddReaderToWriterRegion( ProperWritingRegion& writer )
 	{
-		writer.linkRegions( _region );
+		writer.LinkRegions( mRegion );
 	}
 
 private:
-	ProperReadingRegion _region;
+	ProperReadingRegion mRegion;
 
 };
 
