@@ -47,6 +47,7 @@ namespace CLAM {
 
 	FFT_base::~FFT_base()
 	{
+		if (fftbuffer) delete [] fftbuffer;
 	}
 
 	void FFT_base::ChangeSize(int n)
