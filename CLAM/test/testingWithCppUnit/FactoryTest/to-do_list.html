@@ -14,16 +14,16 @@
 				Query "Oscillator" to the factory and the returned Processing* type_id == 
 				Oscillator
 			</li>
-			<li class='current'>
+			<li class='done'>
 				Processing* p = CreateOscillator(); type_id of p is Oscillator
 			</li>
 			<li class='to-do'>
 				Registry :
 				<ul>
-					<li class='to-do'>
+					<li class='current'>
 						Get a creator method when registry is empty
 						<ul>
-							<li class='to-do'>
+							<li class='current'>
 								Unsafe version with CLAM_ASSERT</li>
 							<li class='to-do'>
 								Save version rises Err</li>
@@ -50,9 +50,11 @@
 						Automatic registry</li>
 				</ul>
 			</li>
-			<li> Avoid #include bottleneck in Factory</li>
-			<li> Create custom assert for typeid </li>
+			<li>
+				Avoid #include bottleneck in Factory</li>
+			<li>
+				Create custom assert for typeid
+			</li>
 		</ul>
 	</body>
 </html>
-
