@@ -28,13 +28,10 @@
 #include "SpecTypeFlags.hxx"
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
+#include "XMLStorage.hxx"
 
 
 
-/*
-#include "similarityHelper.hxx"
-#include <algorithm>
-*/
 #include <iostream>
 
 namespace CLAMTest
@@ -84,11 +81,11 @@ public:
 
 private:
 	CLAM::SpectralDescriptors *mDescriptors;
-	CLAM::Spectrum             mHelperDataSpec;
 	std::string mPathToTestData;
 
-	CLAM::Spectrum ComputeSpectrum(const CLAM::Audio& audioData, CLAM::TSize spectrumSize)
+	CLAM::Spectrum ComputeSpectrum(const CLAM::Audio& audioData)
 	{
+		const CLAM::TSize spectrumSize = audioData.GetSize()/2 + 1;
 		// Configure and create the spectrum
 		CLAM::SpecTypeFlags specFlags;
 		specFlags.bMagPhase = 1;
@@ -112,10 +109,10 @@ private:
 		return mySpectrum;
 	}
 
-	CLAM::Spectrum helperGetData(const std::string & fileName)
+	CLAM::Audio ReadAudio(const std::string & fileName)
 	{
 		CLAM::AudioFile audioFile;
-		audioFile.SetLocation(mPathToTestData+fileName);
+		audioFile.SetLocation(fileName);
 		CPPUNIT_ASSERT_MESSAGE( 
 			"Unable to load file "+ audioFile.GetLocation(),
 			audioFile.IsReadable());
@@ -134,8 +131,21 @@ private:
 		reader.Do( buf );
 		reader.Stop();
 
-		return ComputeSpectrum(buf, buf.GetSize()/2 + 1);
+		return buf;
+
 	}
+
+	CLAM::Spectrum helperGetData(const std::string & fileName)
+	{
+		std::string extension = fileName.substr(fileName.size()-4,fileName.size());
+		std::string fullPath = mPathToTestData+fileName;
+		if (extension!=".xml")
+			return ComputeSpectrum(ReadAudio(fullPath));
+		CLAM::Spectrum spectrum;
+		CLAM::XMLStorage::Restore(spectrum,fullPath); 
+		return spectrum;
+	}
+
 
 	void assertDescriptorExtractionInsideTolerance(const std::map<std::string, CLAM::TData> & expected, 
 		CLAM::TData tolerance, CLAM::TData & (CLAM::SpectralDescriptors::*getter)() const )
@@ -146,12 +156,12 @@ private:
 		CLAM::Spectrum spectrum;
 		std::map<std::string, CLAM::TData>::const_iterator it;
 		for (it = expected.begin(); it != expected.end(); it++) {
-			mHelperDataSpec = helperGetData((*it).first);
-			mDescriptors->SetpSpectrum(&mHelperDataSpec);
+			spectrum = helperGetData((*it).first);
+			mDescriptors->SetpSpectrum(&spectrum);
+//			CLAM::XMLStorage::Dump(spectrum, "Spectrum", mPathToTestData + it->first + "-Spectrum.xml");
 			mDescriptors->Compute();
 			if (
-				(std::isnan((mDescriptors->*getter)()) && !std::isnan(it->second)) ||
-				(!std::isnan((mDescriptors->*getter)()) && std::isnan(it->second)) ||
+				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
 				(mDescriptors->*getter)() > (*it).second + tolerance ||
 				(mDescriptors->*getter)() < (*it).second - tolerance
 				)
