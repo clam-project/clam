@@ -192,6 +192,7 @@ if test $found_fltk = yes; then
 	 return 0;
 			],[
 	  		 link_ok=yes
+			 FLTK_LIBS="fltk"
 			],[])
 	 fi
 
@@ -207,6 +208,7 @@ if test $found_fltk = yes; then
 	 return 0;
 			],[
 	  		 link_ok=yes
+			 FLTK_LIBS="fltk GL"
 			],[])
 	 fi
 
@@ -222,6 +224,7 @@ if test $found_fltk = yes; then
 	 return 0;
 			],[
 	  		 link_ok=yes
+			 FLTK_LIBS="fltk GL pthread"
 			],[])
 	 fi
 	 
