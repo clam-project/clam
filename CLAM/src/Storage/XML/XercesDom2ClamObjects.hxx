@@ -22,6 +22,7 @@
 #ifndef _XERCES_DOM_2_CLAM_OBJECTS_HXX_
 #define _XERCES_DOM_2_CLAM_OBJECTS_HXX_
 
+#include "XercesDomDocumentHandler.hxx"
 #include "XercesEncodings.hxx"
 #include "XMLable.hxx"
 #include "Assert.hxx"
@@ -40,6 +41,8 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 
 namespace CLAM
 {
+
+
 
 /**
  * Keeps the booking when loading one Xerces-C DOM single element into CLAM data.
@@ -61,6 +64,12 @@ public:
 		_parentContext=0;
 		setAt(element);
 	}
+	// TODO: Test this
+	XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
+	{
+		_parentContext=0;
+		setAt(docHandler.getSelection());
+	}
 	XercesDomReadingContext(XercesDomReadingContext * oldContext, const char * name)
 	{
 		_parentContext=oldContext;
@@ -76,7 +85,7 @@ public:
 	}
 
 	/**
-	 * Returns true when the next DOM element to be read is an element 
+	 * Returns true when the next DOM element to be read is an element
 	 * with the required name.
 	 * Returns false when all the nodes have been read.
 	 * Returns false when there is content left before the next element.
@@ -106,10 +115,10 @@ public:
 	{
 		bool hasContentLeft = contentLeft();
 		CLAM_ASSERT(!hasContentLeft, "Fetching element with content left");
-		CLAM_ASSERT(_currentChild!=_children->getLength(), 
+		CLAM_ASSERT(_currentChild!=_children->getLength(),
 			"Accessing beyond DOM nodes");
 		xercesc::DOMNode * child = _children->item(_currentChild);
-		CLAM_ASSERT(child->getNodeType() == xercesc::DOMNode::ELEMENT_NODE, 
+		CLAM_ASSERT(child->getNodeType() == xercesc::DOMNode::ELEMENT_NODE,
 			"Can't change the context to a non element node");
 		CLAM_ASSERT(xercesc::XMLString::equals(child->getNodeName(), X(name)),
 			"XML element name should be the one expected");
@@ -151,13 +160,13 @@ public:
 		os << "Unexpected Element: '";
 		os << L(child->getNodeName());
 		os << "'";
-			
+
 		_errors.push_back(os.str());
 	}
 
 	bool extractAttribute(const char * attributeName, std::ostream & os)
 	{
-		xercesc::DOMNode * attribute = 
+		xercesc::DOMNode * attribute =
 			_attributes->getNamedItem(X(attributeName));
 		if (!attribute) return false;
 		os << L(attribute->getNodeValue()) << std::flush;
@@ -213,14 +222,15 @@ public:
 
 class XercesDom2ClamObjects : public Storage
 {
+	XercesDomDocumentHandler _document;
 	XercesDomReadingContext _rootContext;
-	XercesDomReadingContext * _context;
-	
+	XercesDomReadingContext * _readContext;
+
 public:
 	XercesDom2ClamObjects(xercesc::DOMDocument * document)
 		: _rootContext(document->getDocumentElement())
 	{
-		_context=&_rootContext;
+		_readContext=&_rootContext;
 	}
 	~XercesDom2ClamObjects()
 	{
@@ -233,10 +243,10 @@ public:
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
 		if (xmlable->IsXMLElement())
 		{
-			if (!_context->findElement(xmlable->XMLName()))
+			if (!_readContext->findElement(xmlable->XMLName()))
 				return false;
 		}
-		return xmlable->XMLContent(_context->reachableContent());
+		return xmlable->XMLContent(_readContext->reachableContent());
 	}
 #endif
 	void Store(const Storable & storable)
@@ -253,18 +263,18 @@ public:
 		if (xmlable->IsXMLAttribute())
 		{
 			std::stringstream stream;
-			if (!_context->extractAttribute(xmlable->XMLName(), stream))
+			if (!_readContext->extractAttribute(xmlable->XMLName(), stream))
 				return false;
 			return xmlable->XMLContent(stream);
 		}
 
 		if (xmlable->IsXMLElement())
 		{
-			if (!_context->findElement(xmlable->XMLName())) return false;
-			XercesDomReadingContext innerContext(_context, xmlable->XMLName());
-			_context = & innerContext;
+			if (!_readContext->findElement(xmlable->XMLName())) return false;
+			XercesDomReadingContext innerContext(_readContext, xmlable->XMLName());
+			_readContext = & innerContext;
 			LoadContentAndChildren(xmlable);
-			_context = innerContext.release();
+			_readContext = innerContext.release();
 		//	addErrors(innerContext.errors());
 			return true;
 		}
@@ -273,14 +283,14 @@ public:
 	}
 	bool LoadContentAndChildren(XMLable* xmlable)
 	{
-		bool result = xmlable->XMLContent(_context->reachableContent());
+		bool result = xmlable->XMLContent(_readContext->reachableContent());
 		Component * component = dynamic_cast<Component*>(xmlable);
 		if (component) component->LoadFrom(*this);
 		return result;
 	}
 };
 
-	
+
 }
 
 
