@@ -230,13 +230,13 @@ void UserInterface::DisplayOutputSpectrum(void)
 void UserInterface::DisplayOutputSoundResidual(void)
 {
 	if ( mAudioOutputResidualDisplay == NULL )
-		mAudioOutputResidualDisplay = AttachSynthSineSound( "Residual" , &mAnalysisSynthesisExample->mAudioOutRes );
+		mAudioOutputResidualDisplay = AttachSynthResidualSound( "Residual" , &mAnalysisSynthesisExample->mAudioOutRes );
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
 	if ( mAudioOutputSinusoidalDisplay == NULL )
-		mAudioOutputSinusoidalDisplay = AttachSynthResidualSound( "Sinusoidal" , &mAnalysisSynthesisExample->mAudioOutSin );
+		mAudioOutputSinusoidalDisplay = AttachSynthSineSound( "Sinusoidal" , &mAnalysisSynthesisExample->mAudioOutSin );
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -379,7 +379,7 @@ Fl_Window* UserInterface::AttachOutputSound(const char* title, CLAM::Audio* data
 	return localPresentation;
 }
 
-Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* data )
+Fl_Window* UserInterface::AttachSynthResidualSound(const char* title, CLAM::Audio* data )
 {
 	AudioBrowser* localPresentation;
 
@@ -408,7 +408,7 @@ Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* d
 	return localPresentation;
 }
 
-Fl_Window* UserInterface::AttachSynthResidualSound(const char* title, CLAM::Audio* data )
+Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* data )
 {
 	AudioBrowser* localPresentation;
 
