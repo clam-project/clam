@@ -6,7 +6,7 @@ class OutPortTmpl
 {
 	T* mData;
 public:
-	OutPortTmpl(const char*, void*, int)
+	OutPortTmpl(const char*, void*, int=0)
 	{
 	}
 	void Attach( T& toAttach)

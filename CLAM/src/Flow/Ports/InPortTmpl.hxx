@@ -6,7 +6,7 @@ class InPortTmpl
 {
 	T* mData;
 public:
-	InPortTmpl(const char*, void*, int)
+	InPortTmpl(const char*, void*, int=0)
 	{
 	}
 	void Attach( T& toAttach)
