@@ -19,49 +19,31 @@
  *
  */
 
-#ifndef __PROCESSINGTREE_HXX__
-#define __PROCESSINGTREE_HXX__
 
-#include <qlistview.h>
+#ifndef __ConnectionPointPresentation_hxx__ 
+#define __ConnectionPointPresentation_hxx__ 
+
+#include "Presentation.hxx"
 #include <string>
-#include "Signalv2.hxx"
-#include "Slotv0.hxx"
-#include "Qt_NetworkPresentation.hxx"
-
-namespace CLAM
-{
-	class Processing;
-}
 
 namespace NetworkGUI
 {
 
-class ProcessingTree : public QListView
+class ConnectionPointPresentation : public CLAMVM::Presentation
 {
-Q_OBJECT
-public:
-	ProcessingTree( Qt_NetworkPresentation & network, QWidget * parent = 0, const char * name = 0 );
-	virtual ~ProcessingTree();
-
 protected:
-	int mNumProc;
-	bool mItemPressed;
-	QListViewItem * mSelectedItem;
+	std::string mName;
+public:
+	ConnectionPointPresentation() : mName("unnamed")
+	{}
+		
+	virtual void Show() = 0;
+	virtual void Hide() = 0;
+	virtual const std::string & GetName(){return mName;}
+	virtual void SetName(const std::string& name) = 0;
 
-	void contentsMouseReleaseEvent ( QMouseEvent * e );
-	void startDrag();
-	void IncreaseNumProc();
-
-public slots:
-
-void CreateProcessing(QListViewItem *);
-	void PressProcessing(QListViewItem *);
-
-public: //signals
-	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > SignalAddNewProcessing;      
-	SigSlot::Slotv0 SlotProcessingCreated;
 };
 
 } // namespace NetworkGUI
 
-#endif //  __PROCESSINGTREE_HXX__
+#endif // __ConnectionPointPresentation_hxx__ 
