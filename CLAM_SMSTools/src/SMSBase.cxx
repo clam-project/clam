@@ -143,6 +143,9 @@ void SMSBase::InitConfigs(void)
 	mSynthConfig.SetHopSize(synthFrameSize);
 	mSynthConfig.GetPhaseMan().SetType(mGlobalConfig.GetSynthesisPhaseManagementType());
 
+	//Configure child Processings
+	GetAnalysis().Configure(mAnalConfig);
+	GetSynthesis().Configure(mSynthConfig);
 	
 }
 
@@ -323,8 +326,6 @@ void SMSBase::AnalysisProcessing()
 
 	TSize size = mOriginalSegment.GetAudio().GetSize();
 	
-	GetAnalysis().Configure(mAnalConfig);
-
 	Flush(mOriginalSegment);
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -349,8 +350,6 @@ void SMSBase::MorphAnalysisProcessing()
 
 	TSize size = mMorphSegment.GetAudio().GetSize();
 	
-	GetAnalysis().Configure(mAnalConfig);
-
 	Flush(mMorphSegment);
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -543,7 +542,6 @@ void SMSBase::SynthesisProcessing()
 
 	//The system that contains all synthesis PO
 	
-	GetSynthesis().Configure(mSynthConfig);
 	GetSynthesis().Start();
 	/////////////////////////////////////////////////////////////////////////////
 	// The main synthesis processing loop.
@@ -919,6 +917,10 @@ void SMSBase::SetSamplingRate(TSize samplingRate)
 	mSamplingRate=samplingRate;
 	mAnalConfig.SetSamplingRate(TData(samplingRate));
 	mSynthConfig.SetSamplingRate(TData(samplingRate));
+
+	//Configure child Processings
+	GetAnalysis().Configure(mAnalConfig);
+	GetSynthesis().Configure(mSynthConfig);
 
 	//Initialize audios sample rate
 	mAudioOut.SetSampleRate(samplingRate);
