@@ -301,8 +301,8 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InPorts collection: NonExistingPort. "
-					"In ports availables: Dummy In"),
+				std::string( "name not found in InPorts collection: 'NonExistingPort'. "
+					"In ports availables: 'Dummy In'"),
 				std::string( expected.what() ) );
 
 		}
