@@ -3,7 +3,6 @@
 #define __CONFIGPRESENTATIONTMPL_HXX__
 
 #include "Qt_ProcessingConfigPresentation.hxx"
-#include "QTConfigurator.hxx"
 #include <qwidget.h>
 
 #include <map>
@@ -22,6 +21,7 @@
 #include <qspinbox.h>
 #include <qvalidator.h>
 #include <qcombobox.h>
+#include <qpushbutton.h>
 
 
 
@@ -117,12 +117,6 @@ ConfigPresentationTmpl<ConcreteConfig>::~ConfigPresentationTmpl()
 template<class ConcreteConfig>
 void ConfigPresentationTmpl<ConcreteConfig>::Show()
 {
-
-/*
-	CLAM::QTConfigurator * config = new CLAM::QTConfigurator(0);
-	config->SetConfig(*mConfig);
-	config->show();
-*/
 	show();
 }
 
