@@ -72,9 +72,11 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 
 	if(mConfig.HasFileName())
 	{
-		LoadSDIF(mConfig.GetFileName(),mSegment);
-		mInput2.Attach(mSegment);
-		mHaveInternalSegment=true;
+		if(LoadSDIF(mConfig.GetFileName(),mSegment))
+		{
+			mInput2.Attach(mSegment);
+			mHaveInternalSegment=true;
+		}
 	}
 	
 	if(!mConfig.HasHybBPF())
@@ -217,7 +219,8 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 
 bool SMSMorph::Do(const Segment& in1, Segment& out)
 {
-	CLAM_ASSERT(mHaveInternalSegment, "SMSMorph::Do: you cannot call this overload if internal segment has not been previously lodade");
+	if(!mHaveInternalSegment) return false;
+	
 	TSize nFrames=in1.GetnFrames();
 	int currentFrameIndex=in1.mCurrentFrameIndex;
 
@@ -239,21 +242,21 @@ bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 	cfg.SetMaxNumPeaks( 100 );
 	cfg.SetFileName( fileName );
 	cfg.SetEnableResidual( true );
-	mSDIFReader.Configure( cfg );
+	if(!mSDIFReader.Configure( cfg )) return false;//wrong filename or non-existing sdif
 		
 	segment.AddAll(  );
 	segment.UpdateData(  );
 	mSDIFReader.Output.Attach( segment );
 
 	try{
-		mSDIFReader.Start(  );
-		while( mSDIFReader.Do() ) {  }
-		mSDIFReader.Stop(  );
-	} catch (Err e)
+		mSDIFReader.Start(  );}
+	catch (Err)
 	{
-		std::cout << e.what() << std::endl;
+		return false;//wrong filename or non-existing sdif
 	}
-
+	while( mSDIFReader.Do() ) {  }
+	mSDIFReader.Stop(  );
+	
 	return true;
 }
 
