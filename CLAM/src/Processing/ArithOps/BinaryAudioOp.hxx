@@ -27,6 +27,9 @@
 #include "Audio.hxx"
 #include <typeinfo> // std::bad_cast
 #include "ErrProcessingObj.hxx"
+#include "Port.hxx"
+
+#include <iostream>
 
 namespace CLAM 
 {
@@ -73,12 +76,24 @@ namespace CLAM
 		}
 		
 	public:
+
+		InPortTmpl<Audio> mFirstInput;
+		InPortTmpl<Audio> mSecondInput;
+		OutPortTmpl<Audio> mOutput;
+		
 		BinaryAudioOp()
+			:mFirstInput("First Audio Input",this,1)
+			 ,mSecondInput("Second Audio Input",this,1)
+			 ,mOutput("Audio Output",this,1)
 		{
 			Configure( BinaryAudioOpConfig() );
 		}
 		
 		BinaryAudioOp(const BinaryAudioOpConfig &c)
+			:mFirstInput("First Audio Input",this,1)
+			 ,mSecondInput("Second Audio Input",this,1)
+			 ,mOutput("Audio Output",this,1)
+
 		{
 				Configure( c );
 		}
@@ -100,16 +115,18 @@ namespace CLAM
 
 		bool Do(void)
 		{
-			CLAM_ASSERT ( false,  "BinaryAudioOperation::Do() : Supervised mode not implemented" );
-			return false;
+//			CLAM_ASSERT ( false,  "BinaryAudioOperation::Do() : Supervised mode not implemented" );
+			return (Do(mFirstInput.GetData(),mSecondInput.GetData(),mOutput.GetData()));
+//			return false;
 		}
 
 		bool Do(Audio& in1, Audio& in2, Audio& out)
 		{
 
+
 			int size = in1.GetSize();
 			int i;
-			
+
 			Check(in1,in2,out);
 
 			TData* inb1 = in1.GetBuffer().GetPtr();
