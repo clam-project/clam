@@ -58,7 +58,7 @@ protected:
 	
 public: //slots
 	SigSlot::Slotv2< const std::string &, const std::string &> SetNames;
-	SigSlot::Signalv1< ConnectionPresentation* > RemovePortConnection;
+	SigSlot::Signalv1< ConnectionPresentation* > RemoveConnection;
 
 };
 

@@ -11,6 +11,8 @@
 #include "InControlPresentation.hxx"
 #include "Processing.hxx"
 
+#include <iostream>
+
 namespace NetworkGUI
 {
 
@@ -22,6 +24,7 @@ NetworkPresentation::NetworkPresentation()
 	SetPortConnection.Wrap( this, &NetworkPresentation::OnNewPortConnection );
 	SetControlConnection.Wrap( this, &NetworkPresentation::OnNewControlConnection );
 	SetRemovePortConnection.Wrap( this, &NetworkPresentation::OnRemovePortConnection );
+	SetRemoveControlConnection.Wrap( this, &NetworkPresentation::OnRemoveControlConnection );
 	SetRemoveProcessing.Wrap( this, &NetworkPresentation::OnRemoveProcessing );
 	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
 	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
@@ -42,6 +45,14 @@ void NetworkPresentation::OnRemovePortConnection(  ConnectionPresentation * con)
 	con->Hide();
 
 	RemovePortConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
+}
+
+void NetworkPresentation::OnRemoveControlConnection(  ConnectionPresentation * con)
+{
+	mConnectionPresentations.remove(con);
+	con->Hide();
+
+	RemoveControlConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
 }
 
 void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
@@ -67,7 +78,12 @@ void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
 	}
 	for(it=toRemove.begin(); it!=toRemove.end(); it++)
 	{
-		OnRemovePortConnection( *it );
+		std::cout << "to remove: " << (*it)->GetInName() << std::endl;
+		if (proc->HasInPort(GetLastIdentifier((*it)->GetInName())) || proc->HasOutPort(GetLastIdentifier((*it)->GetOutName())))
+			OnRemovePortConnection( *it );
+		else
+			OnRemoveControlConnection(*it);
+		    
 	}
 	mProcessingPresentations.remove( proc );
 	RemoveProcessingFromGUI.Emit( proc->GetNameFromNetwork() );
@@ -95,6 +111,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 	CreateNewPortConnectionFromGUI.Connect( model.CreateNewPortConnection );
 	CreateNewControlConnectionFromGUI.Connect( model.CreateNewControlConnection );
 	RemovePortConnectionFromGUI.Connect( model.RemovePortConnection );
+	RemoveControlConnectionFromGUI.Connect( model.RemoveControlConnection );
 	RemoveProcessingFromGUI.Connect( model.RemoveProcessing );
 }
 
