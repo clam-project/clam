@@ -74,7 +74,7 @@ namespace CLAM
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
 
-		void LoadAnalysis(  );
+		bool LoadAnalysis(  );
 
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */

@@ -203,9 +203,12 @@ void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 	delete wm;
 }
 
-void AnalysisSynthesisExampleBase::LoadAnalysis()
+bool AnalysisSynthesisExampleBase::LoadAnalysis()
 {
 	char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
+
+	if ( !fileName )
+		return false;
 
 	mCurrentWaitMessage = CreateWaitMessage("Loading analysis data, please wait");
 
@@ -213,11 +216,16 @@ void AnalysisSynthesisExampleBase::LoadAnalysis()
 
 	DestroyWaitMessage();
 	mHaveTransformation=false;
+
+	return true;
 }
 
 void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 {
 	char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
+
+	if ( !fileName )
+		return;
 
 	mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
 

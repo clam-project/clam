@@ -47,6 +47,7 @@ void UserInterface::Update()
 	// check if LoadSound operation could be carried
 	if ( !LoadSound() )
 		return;
+	ApplyInitialState();
 	ApplyReadyToAnalyzeState();
 	mAnalysisSynthesisExample->mExplorer.CloseAll();
 	mWindow->redraw();
@@ -116,7 +117,8 @@ void UserInterface::LoadTransformation(void)
 void UserInterface::LoadAnalysisData(void)
 {
 
-	mAnalysisSynthesisExample->LoadAnalysis(  );
+	if ( !mAnalysisSynthesisExample->LoadAnalysis(  ) )
+		return;
 	mAnalysisSynthesisExample->mHaveAnalysis = true;
 	// @todo: Check this is true...
 	mAnalysisSynthesisExample->mHaveConfig = true;
@@ -140,7 +142,8 @@ void UserInterface::Analyze(void)
 	mAnalysisSynthesisExample->Analyze();
 	if (mAnalysisSynthesisExample->mHaveAnalysis)
 	{
-
+		ApplyInitialState();
+		ApplyReadyToAnalyzeState();
 		ApplyAnalysisAvailableState();
 		mFrameDataAvailable = true;
 		mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mOriginalSegment );
