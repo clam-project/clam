@@ -337,6 +337,7 @@ namespace CLAM {
 		}
 		
 		// 5.- SEARCH AROUND FOR A RELATIVE MINIMUM
+
 		TData nMinimum = std::min(3,tmpFreq2.GetnCandidates());
 		for(int i=0; i<nMinimum; i++)
 		{
@@ -377,6 +378,7 @@ namespace CLAM {
 		// Added to get into account fundamental frequency for consecutive frames
 		// Set Reference fundFreq to last FundFreq
 		mReferenceFundFreq = outFreq.GetFreq(0);
+
 		return true;
 	}
 	
@@ -391,7 +393,7 @@ namespace CLAM {
 		int MaxNPM = 10;
 		if (nPeaks > 4)
 			MaxNPM = std::min(mPMnPeaks,nPeaks);
-		
+
 		TData Harmonic = TData(freq);
 		TSize nPM = MaxNPM;
 		int Peak =0;
@@ -443,13 +445,14 @@ namespace CLAM {
 			nMP =	Peak+1;
 			break;
 		}
-		
+	
+
 		// total error
 		if (ErrorPM > 20)
 			ErrorPM = 20 + (ErrorPM-20)*(ErrorPM-20);
 		if (ErrorMP > 20)
 			ErrorMP = 20 + (ErrorMP-20)*(ErrorMP-20);
-	
+
 		return (mPMCont * ErrorPM/nPM + mMPCont * ErrorMP/nMP);
 	}
 
@@ -475,6 +478,8 @@ int FundFreqDetect::GetClosestPeak(double freq, int firstPeak, SpectralPeakArray
 /* Get Closest Harmonic */
 double FundFreqDetect::GetClosestHarmonic(double peak, double fundfreq) const
 {
+	if(peak<fundfreq)
+		return fundfreq;
 	return floor(peak/fundfreq+.5)*fundfreq;
 }
 
