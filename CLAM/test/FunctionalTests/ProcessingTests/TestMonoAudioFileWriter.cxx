@@ -23,8 +23,6 @@ namespace CLAMTest
 		CPPUNIT_TEST( testDo_PCM_WritesTheSameItWasRead );
 		CPPUNIT_TEST( testDo_OggVorbis_WritesTheSameItWasRead );
 
-		CPPUNIT_TEST( testDequeUsage );
-
 		CPPUNIT_TEST_SUITE_END();
 
 	protected:
@@ -43,62 +41,6 @@ namespace CLAMTest
 
 	private:
 		
-		void testDequeUsage()
-		{
-			int buffer[] = { 3, 4, 5, 6, 7, 8, 9, 10 };
-			std::deque<int> mydeque;
-
-			std::cout << std::endl;
-
-			for ( int i = 0; i < 8; i++ )
-				mydeque.push_front( buffer[i] );
-
-			// Let's see 
-
-			std::cout << "Front poping ( using as a LIFO queue ): ";
-			while( !mydeque.empty() )
-			{
-				std::cout << mydeque.front() << " ";
-				mydeque.pop_front();
-			}
-
-			std::cout << std::endl;
-
-			for ( int i = 0; i < 8; i++ )
-				mydeque.push_front( buffer[i] );
-
-			// Let's see 
-
-			std::cout << "Back poping ( using as a FIFO queue ): ";
-			while( !mydeque.empty() )
-			{
-				std::cout << mydeque.back() << " ";
-				mydeque.pop_back();
-			}
-
-			std::cout << "Range insertion ( on the beginning ): ";
-			
-
-			mydeque.insert( mydeque.end(), (int*)buffer, buffer+8 );
-			mydeque.insert( mydeque.end(), (int*)buffer, buffer+8 );
-
-			std::cout << "deque size (after block insertion) is: " << mydeque.size();
-
-			std::cout << "Range popping: ";
-
-			std::copy( mydeque.begin(), mydeque.begin()+8, buffer );
-			mydeque.erase( mydeque.begin(), mydeque.begin()+8 );
-
-			std::cout << "Buffer contents: ";
-			
-			for ( int i= 0; i < 8; i++ )
-				std::cout << buffer[i] << " ";
-			
-			std::cout << "and deque size is: " << mydeque.size();
-			
-			std::cout << std::endl;
-			
-		}
 
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
@@ -295,21 +237,52 @@ namespace CLAMTest
 
 			int framesChecked = 0;
 
+			double maxSim = -1e20;
+			int    maxSimFrame = 0;
+			double minSim = 1e20;
+			int    minSimFrame = 0;
+			double averageSim = 0.0;
+
 			while( procReader.Do() && procReader2.Do() )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
 
 				framesChecked++;
 
-				std::cout << "# " << framesChecked << " s(i)= " << sim;
-				std::cout.flush();
+				if ( sim > maxSim )
+				{
+					maxSim = sim;
+					maxSimFrame = framesChecked;
+				}
+				if ( sim < minSim )
+				{
+					minSim = sim;
+					minSimFrame = framesChecked;
+				}
 
+				averageSim += sim;
+				
 				// MRJ: Note that due to decoding/encoding approximation errors
-				// correlation is not as higher as in the PCM case
-				//CPPUNIT_ASSERT
-				//	(  sim >= 0.9);
+				// correlation is not as higher as in the PCM case. Note we have
+				// put it to 0.5 which is the 'parameter' value for deciding
+				// trade-off between quality and bitrate.
+				CPPUNIT_ASSERT(  sim >= 0.5);
 
 			}
+			
+			averageSim *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Maximum similarity: " << maxSim << " at " << maxSimFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum similarity: " << minSim << " at " << minSimFrame;
+			std::cout << std::endl;
+			std::cout << "Average similarity: " << averageSim  << std::endl;
+			*/
+			CPPUNIT_ASSERT( fabs( maxSim - 1.0 ) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( minSim - 0.644362 ) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( averageSim - 0.99589 ) < 1e-4 );
 
 			procReader.Stop();
 			procReader2.Stop();		
