@@ -24,6 +24,7 @@ class PoolSpecTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testAddAttribute_whenNameAlreadyAdded );
 	CPPUNIT_TEST( testAdding_DifferentTypes );
 	CPPUNIT_TEST( testCheckType_withOtherType );
+	CPPUNIT_TEST( testCheckType_withSameType );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -125,7 +126,7 @@ private:
 		spec.Add<CLAM::TData>("Lala");
 		try
 		{
-			spec.CheckType(1,(CLAM::TIndex*)0);
+			spec.CheckType(0,(CLAM::TIndex*)0);
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -134,6 +135,13 @@ private:
 				expected,
 				std::string(err.what()));
 		}
+	}
+
+	void testCheckType_withSameType()
+	{
+		CLAM::PoolSpec spec;
+		spec.Add<CLAM::TData>("Lala");
+		spec.CheckType(0,(CLAM::TData*)0);
 	}
 
 };
@@ -148,6 +156,8 @@ class PoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGet_ReturnsSameMemory );
 	CPPUNIT_TEST( testGet_ReturnsConstMemory );
 	CPPUNIT_TEST( testGet_withStrings );
+	CPPUNIT_TEST( testGet_withWrongType );
+	CPPUNIT_TEST( testGet_withWrongTypeAndConst );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -214,6 +224,44 @@ private:
 		CPPUNIT_ASSERT_EQUAL(expected,data2[4]);
 	}
 
+	void testGet_withWrongType()
+	{
+		const std::string expected = "Type Missmatch using a pool";
+		const unsigned poolSize=5;
+		CLAM::PoolSpec spec;
+		spec.Add<std::string>("Lala");
+
+		CLAM::Pool pool(spec,poolSize);
+		try
+		{
+			int * data = pool.Get<int>("Lala");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testGet_withWrongTypeAndConst()
+	{
+		const std::string expected = "Type Missmatch using a pool";
+		const unsigned poolSize=5;
+		CLAM::PoolSpec spec;
+		spec.Add<std::string>("Lala");
+
+		CLAM::Pool pool(spec,poolSize);
+		const CLAM::Pool & pool2 = pool;
+		try
+		{
+			const int * data = pool2.Get<int>("Lala");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
 };
 
 
