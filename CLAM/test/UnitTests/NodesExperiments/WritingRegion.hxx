@@ -19,7 +19,10 @@ public:
 		SizeChanged( Size() );
 	}
 	virtual ~WritingRegion()
-	{
+	{	
+		ReadingRegionsIterator it;
+		for(it=BeginReaders(); it!=EndReaders(); it++)
+			RemoveRegion(**it);
 	}
 
 	Region::ReadingRegionsIterator BeginReaders()
@@ -38,12 +41,13 @@ public:
 		reader.LinkAndNotifySizeToStream( Stream() );
   	}
 
-	void RemoveRegion( ProperReadingRegion & region )
+	void RemoveRegion( Region & region )
 	{
+		CLAM_ASSERT( region.ProducerRegion()==this, "Region::RemoveRegion() - Trying to remove an unlinked region");
+
 		mReadingRegions.remove( &region );
 		region.RemoveProducer();
 	}
-
 
 	/**
 		returns the underlying stream. Useful for testing.
