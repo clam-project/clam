@@ -15,12 +15,12 @@ PROGRAMS = \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
+           TestSignalv1 \
 
 TESTS = \
         TestXMLAdapters \
         TestConfig \
         TestFlags \
-        TestSignalv1 \
         TestArray \
         TestArray2 \
         TestDynamicType3 \
