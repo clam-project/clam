@@ -336,8 +336,8 @@ configure with the --disable-xml option.]
 	if test $found_dom = yes; then
 		AC_MSG_CHECKING([for xercesc library...])
 		OLD_FLAGS=$CXXFLAGS
-		XERCESC_LIBS=xerces-c
-		FLAG_XERCESC_LIBS=-lxerces-c
+		XERCESC_LIBS="xerces-c pthread"
+		FLAG_XERCESC_LIBS="-lxerces-c -lpthread"
 		CXXFLAGS="$CXXFLAGS $FLAG_XERCESC_INCLUDES $FLAG_XERCESC_LIBS $FLAG_XERCESC_LIB_PATH"
 		AC_TRY_RUN([
 			#include<xercesc/util/PlatformUtils.hpp>
