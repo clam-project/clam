@@ -68,4 +68,5 @@ protected:
 
 };
 
-#endif
+#endif // Descriptor.hxx
+
