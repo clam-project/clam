@@ -66,12 +66,11 @@ public:
 		char* pathToTestData = getenv("CLAM_TEST_DATA");
 
 		if ( !pathToTestData )
-			mPathToTestData = "../../../../CLAM-TestData/";
+			mPathToTestData = "../../../../../CLAM-TestData/";
 		else
 			mPathToTestData = pathToTestData;
 
-		mPathToTestData += "descriptorsData/";
-		mPathToTestData = "../../../../CLAM-TestData/descriptorsData/";
+		mPathToTestData += "descriptorsData/frames/";
 
 		mDescriptors = new CLAM::SpectralDescriptors();
 		mDescriptors->RemoveAll();
@@ -127,7 +126,7 @@ private:
 			reader.Configure(cfg));
 
 		CLAM::Audio buf;
-		buf.SetSize(512);
+		buf.SetSize(1025);
 
 
 		reader.Start();
