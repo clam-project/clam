@@ -26,7 +26,7 @@
 namespace CLAM
 {
 	MonoAudioFileWriter::MonoAudioFileWriter()
-		: mInput( "Samples to write", this ),
+		: mInput( "Samples Write", this ),
 		  mOutStream( NULL )
 	{
 	}
