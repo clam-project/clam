@@ -1,3 +1,15 @@
+2004-??-?? CLAM_0_6_2
+'???'
+  * Processing Interface Clean up:
+     ** Removed Processing inheritance from Component
+     ** Processing::FlattenObjects removed until needed
+     ** Processing::SetPrototypes/UnsetPrototypes removed until needed
+     ** Processing::MayDisableExecution removed until needed
+     ** Processing::DisableExecution removed until needed
+     ** Processing::LostData removed until needed
+     ** Processing::StoreOn/LoadFrom removed until needed
+     ** Processing::composite_begin/end moved to the ProcessingComposite
+
 2004-04-13 CLAM_0_6_1
 'qt && Visual 7 support'
   * General:
@@ -7,17 +19,17 @@
      ** Added support for MS Visual 7. Srcdeps now  generates .vcproj
      ** Support for QT library preprocessor steps in linux, mac and windows : visual6 and visual7:
      	*** Moc objects generated automatically from mocable headers.
-	*** Moc objects generated from UIC files.
+        *** Moc objects generated from UIC files.
      ** Integration of all the platforms code ( linux and mac Makefiles,
      windows .dsp and .vcproj generated from the same program).
   * XML:
      ** Fix: Storing arrays with size 1 crashes
  	  ** Fix: IterableAdapter joined array elements when basics
-  * MIDI I/O
+  * MIDI I/O:
      ** Added MIDI output
-	  ** Added virtual devices for midi-to-text out
-	  ** PortMIDI now also works on Linux
-	  ** Simplified MIDI input (see documentation)
+     ** Added virtual devices for midi-to-text out
+     ** PortMIDI now also works on Linux
+     ** Simplified MIDI input (see documentation)
   * Descriptors:
      ** More fixes on SpectralFlatness, LowFrequencyEnergiRelation and Rolloff:
         *** SpectralFlatness uses log10 instead log
