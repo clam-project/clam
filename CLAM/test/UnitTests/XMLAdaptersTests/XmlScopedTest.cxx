@@ -4,7 +4,7 @@
 
 #include "XmlScoped.hxx"
 
-namespace Cuidado
+namespace CLAM
 {
 namespace Test
 {
@@ -153,5 +153,5 @@ private:
 
 
 } // namespace Test
-} // namespace Cuidado
+} // namespace CLAM
 
