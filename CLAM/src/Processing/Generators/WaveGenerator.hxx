@@ -91,7 +91,9 @@ namespace CLAM {
 		const char *GetClassName() const {return "WaveGenerator";}
 
 		/** Configuration change method
-		 * @pre argument should be an WaveGeneratorConfig
+		 * @throw
+		 * bad_cast exception when the argument is not an FFTConfig
+		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

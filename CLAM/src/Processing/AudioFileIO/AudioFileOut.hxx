@@ -48,7 +48,9 @@ namespace CLAM {
 		const char *GetClassName() const {return "AudioFileOut";}
 
 		/** Configuration change method
-		 * @pre argument should be an AudioFileOutConfig
+		 * @throw
+		 * bad_cast exception when the argument is not an FFTConfig
+		 * object.  
 		 */
 
 		bool ConcreteConfigure(const ProcessingConfig&);

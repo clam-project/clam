@@ -67,7 +67,7 @@ namespace CLAM {
 
 		/** Config change method
 		 *  @param The ProcessingConfig object
-		 *  @pre argument should be a FDCombFilterConfig.
+		 *  @throw bad_cast exception when the argument is not an FDCombFilterConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);

@@ -92,7 +92,7 @@ namespace CLAM {
 
 	bool  SpectralEnvelopeExtract::Do(void) 
 	{
-		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
+		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
 		return false;
 	}
 

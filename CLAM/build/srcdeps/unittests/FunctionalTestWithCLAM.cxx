@@ -40,7 +40,7 @@ class FunctionalTestWithCLAM : public CppUnit::TestFixture, public FileHelper
 
 
 public:
-	FunctionalTestWithCLAM() : FileHelper("../Examples/FlowControlExamples/NonSupervisedSystemExample/")
+	FunctionalTestWithCLAM() : FileHelper("../../Examples/FlowControlExamples/NonSupervisedSystemExamples/")
 	{
 	}
 	/// Common initialization, executed before each test method
@@ -64,7 +64,7 @@ private:
 		listhash_add_item_str(config,"OS_WINDOWS","1");
 		listhash_add_item_str(config,"OS_LINUX","0");
 		listhash_add_item_str(config,"OS_MACOSX","0");
-		config_parse( helper_filename("settings.cfg") );
+		config_parse( helper_filename("testsettings.cfg") );
 	
 		parser_init();
 			
@@ -94,7 +94,7 @@ private:
 		listhash_add_item_str(config,"OS_WINDOWS","1");
 		listhash_add_item_str(config,"OS_LINUX","0");
 		listhash_add_item_str(config,"OS_MACOSX","0");
-		config_parse( helper_filename("settings.cfg") );
+		config_parse( helper_filename("testsettings.cfg") );
 	
 		parser_init();
 			

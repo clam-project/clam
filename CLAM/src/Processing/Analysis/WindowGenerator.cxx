@@ -134,7 +134,7 @@ using namespace CLAM;
 
 	bool  WindowGenerator::Do(void)
 	{
-		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
+		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
 		return false;
 	}
 
@@ -185,10 +185,11 @@ using namespace CLAM;
 	bool  WindowGenerator::Do(Spectrum& out)
 	{
 
-		CLAM_ASSERT(out.HasMagBuffer(),
-			CLASS"::Do(): Spectral Window exists only for type MagPhase");
+		if (out.HasMagBuffer())
+			Do(out.GetMagBuffer());
+		else
+			throw(ErrProcessingObj(CLASS"::Do(): Spectral Window exists only for type MagPhase"),this);
 
-		Do(out.GetMagBuffer());
 		return true;
 	}
 

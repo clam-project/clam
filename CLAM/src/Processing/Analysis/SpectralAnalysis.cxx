@@ -175,9 +175,9 @@ void SpectralAnalysis::Attach(Audio& in, Spectrum &out)
 	mOutput.Attach(out);
 }
 
-bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
+bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
 {
-	CopyAsConcreteConfig(mConfig,cfg);
+	mConfig=dynamic_cast<const SpectralAnalysisConfig&> (cfg);
 	ConfigureChildren();
 	ConfigureData();
 	return true;

@@ -128,7 +128,7 @@ private:
 
 	
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&);
+	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
 
 	/** Ports */
 	InPortTmpl<Audio>     mInput;

@@ -108,7 +108,9 @@ namespace CLAM {
 		const char *GetClassName() const {return "OverlapAdd";}
 
 		/** Configuration change method
-		 * @pre argument should be an OverlapAddConfig
+		 * @throw
+		 * bad_cast exception when the argument is not an OverlapAddConfig
+		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

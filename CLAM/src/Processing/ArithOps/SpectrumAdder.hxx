@@ -127,7 +127,9 @@ namespace CLAM {
 		const char *GetClassName() const {return "SpectrumAdder";}
 
 		/** Config change method
-		 * @pre argument should be an SpectrumAdderConfig
+		 * @throw
+		 * bad_cast exception when the argument is not an SpecAdderConfig
+		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

@@ -107,6 +107,9 @@ namespace CLAM
 
 	protected:
 		/** Config change method
+		 * @throw
+		 * bad_cast exception when the argument is not an SpecAdderConfig
+		 * object.
 		 */
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{

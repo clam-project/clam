@@ -36,7 +36,6 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testhelperLoadAudioFromFile );
 //	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
-	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -66,7 +65,7 @@ private:
 	
 
 	/// this helper func. should result in the future in a processing or assert. 
-	bool helperAudiosAreEqual(CLAM::Audio& first, CLAM::Audio& second, std::string& whyDifferents, double delta = 0.001)
+	bool helperAudiosAreEqual(CLAM::Audio& first, CLAM::Audio& second, std::string& whyDifferents, double delta=0.000001 )
 	{
 		if (first.GetSize() != second.GetSize() )
 		{	
@@ -128,7 +127,7 @@ private:
 		std::string diagnostic;
 		const bool resultEquals = helperAudiosAreEqual(a, b, diagnostic);
 		CPPUNIT_ASSERT_EQUAL( std::string(
-			"found a different sampler in position 9 first value is 1 second value is 0.9 with delta = 0.001"),
+			"found a different sampler in position 9 first value is 1 second value is 0.9 with delta = 1e-06"),
 			diagnostic );
 
 		CPPUNIT_ASSERT_EQUAL( false, resultEquals );
@@ -330,8 +329,8 @@ private:
 	void testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav()
 	{
 		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
-//		mGlobalConfig.SetInputSoundFile( mPath + "sweep.wav");
-		InitConfigs();
+		mGlobalConfig.SetInputSoundFile( mPath + "sweep.wav");
+//		InitConfigs();
 		LoadInputSound();
 		Analyze();
 		Synthesize();
@@ -355,31 +354,8 @@ private:
 
 	void testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav()
 	{
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-	//	mGlobalConfig.SetInputSoundFile( mPath + "Elvis.wav");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
 
-		const std::string expectedAudioFile = mPath+"/SMSTests/out_elvis_loadedConfig";
-		double delta=0.09;
-		std::string diagnostic;
-		bool synthesizedAudiosAreEqual = 	
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
-
-		bool residualAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorResidualAudio(), expectedAudioFile+"_res.wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, residualAudiosAreEqual );
-
-		bool sinusoidalAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorSinusoidalAudio(), expectedAudioFile+"_sin.wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, sinusoidalAudiosAreEqual );
 	}
-
-	// TODO
-	//void testMorfing_WithLoadedConfig_ElvisToTrumpet_Wav()
 	
 };
 

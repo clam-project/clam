@@ -82,7 +82,9 @@ class ProcessingConfig;
 		const char *GetClassName() const {return "WindowGenerator";}
 
 		/** Config change method
-		 * @pre the argument should be an WindowGeneratorConfig object.
+		 * @throw
+		 * bad_cast exception when the argument is not an SpecAdderConfig
+		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

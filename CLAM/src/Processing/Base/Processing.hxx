@@ -437,8 +437,6 @@ namespace CLAM {
 		/** Configuration attribute access method */
 		const std::string &GetName() const {return mName;}
 
-		void SetName( const std::string& str ) { mName = str; }
-
 		/**
 		 * Builds the qualified name of the object.
 		 * @return Name of the processing object, after appending to it

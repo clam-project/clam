@@ -40,6 +40,7 @@ public:
 	void Convert(DataArray<T>& inputArray,
 		DataArray<T>& outputArray,EScaleType oScaleType=eUnknown)// non-destructive overload
 	{
+		int i;
 		if(oScaleType==0) oScaleType=outputArray.GetScale();
 		if(inputArray.GetScale()!=oScaleType)
 		{
@@ -47,16 +48,19 @@ public:
 			{
 				ConvertTodB(inputArray,outputArray,(int)oScaleType);
 			}
-			else if(oScaleType==eLinear)
-			{
-				ConvertToLin(inputArray,outputArray,inputArray.GetScale());
-			}
 			else
 			{
-				double factor = ((double)oScaleType)/((double)inputArray.GetScale());
-				for(int i=0;i<inputArray.Size();i++)
+				if(oScaleType==eLinear)
 				{
-					outputArray[i]=inputArray[i]*factor;
+					ConvertToLin(inputArray,outputArray,inputArray.GetScale());
+				}
+				else
+				{
+					double factor = ((double)oScaleType)/((double)inputArray.GetScale());
+					for(i=0;i<inputArray.Size();i++)
+					{
+						outputArray[i]=inputArray[i]*factor;
+					}
 				}
 			}
 		}
@@ -73,8 +77,8 @@ public:
 				 Spectrum &outputSpectrum, EScaleType oScaleType=eUnknown)
 	{
 		if(oScaleType==0) oScaleType=outputSpectrum.GetScale();
-		CLAM_ASSERT(inputSpectrum.GetSpectrum() == eMagPhase,
-			"ScaleConv::Convert: spectrum must be eMagPhase"); 
+		if(inputSpectrum.GetSpectrum() != eMagPhase)
+			throw Err("ScaleConv::Convert: spectrum must be eMagPhase"); 
 		// Other Spectrum types should be implemented
 
 		Convert(inputSpectrum.GetRefToMagBuffer(), outputSpectrum.GetRefToMagBuffer(), oScaleType);
