@@ -63,7 +63,7 @@ sub ac_check_feature_enabled
 	
 	if ($default eq "") { $default = "yes"; }
 
-	parse_acv_file("acv/check_feature_enable.acv");
+	&parse_acv_file("acv/check_feature_enable.acv");
 }
 
 sub ac_check_package_enabled
@@ -76,7 +76,7 @@ sub ac_check_package_enabled
 	
 	if ($default eq "") { $default = "yes"; }
 
-	parse_acv_file("acv/check_package_enable.acv");
+	&parse_acv_file("acv/check_package_enable.acv");
 }
 
 sub ac_package_enabled_start
@@ -84,7 +84,7 @@ sub ac_package_enabled_start
 	local $package = shift;
 	local $package_esc = $package;
 	$package_esc =~ s/-/_/g;
-	parse_acv_file("acv/package_enabled_start.acv");
+	&parse_acv_file("acv/package_enabled_start.acv");
 }
 
 sub ac_package_enabled_end
@@ -92,7 +92,7 @@ sub ac_package_enabled_end
 	local $package = shift;
 	local $package_esc = $package;
 	$package_esc =~ s/-/_/g;
-	parse_acv_file("acv/package_enabled_end.acv");
+	&parse_acv_file("acv/package_enabled_end.acv");
 }
 
 sub ac_disabled_package_warning
@@ -102,7 +102,7 @@ sub ac_disabled_package_warning
 	local $uc_package = uc($package);
 	$package_esc =~ s/-/_/g;
 
-	parse_acv_file("acv/disabled_package_warning.acv");
+	&parse_acv_file("acv/disabled_package_warning.acv");
 }
 
 sub ac_sandbox_location
@@ -111,12 +111,12 @@ sub ac_sandbox_location
 	$checked_sandbox_location = 1;
 
 	&ac_check_feature_enabled('sandbox');
-	parse_acv_file("acv/sandbox_location.acv");
+	&parse_acv_file("acv/sandbox_location.acv");
 }
 
 sub ac_cplusplus_tests
 {
-	parse_acv_file("acv/cplusplus_tests.acv");
+	&parse_acv_file("acv/cplusplus_tests.acv");
 }
 
 sub ac_sandbox_find
@@ -131,7 +131,7 @@ sub ac_sandbox_find
 	{
 		die "configure.pl: no headers for $package specified\n";
 	}
-	parse_acv_file("acv/package_in_sandbox.acv");
+	&parse_acv_file("acv/package_in_sandbox.acv");
 }
 
 sub ac_standard_find
@@ -148,7 +148,7 @@ sub ac_standard_find
 	{
 		die "configure.pl: no libs for $package specified\n";
 	}
-	parse_acv_file("acv/standard_find.acv");
+	&parse_acv_file("acv/standard_find.acv");
 }
 
 sub ac_standard_qt_find
@@ -165,7 +165,7 @@ sub ac_standard_qt_find
 	{
 		die "configure.pl: no libs for $package specified\n";
 	}
-	parse_acv_file("acv/standard_qt_find.acv");
+	&parse_acv_file("acv/standard_qt_find.acv");
 }
 
 sub ac_pkg_config_availability
@@ -179,7 +179,7 @@ sub ac_pkg_config_availability
 
 	&ac_check_feature_enabled('pkg-config');
 
-	parse_acv_file("acv/pkg_config_availability.acv");
+	&parse_acv_file("acv/pkg_config_availability.acv");
 }
 
 sub ac_pkg_config_find
@@ -190,7 +190,7 @@ sub ac_pkg_config_find
 	local $package_esc = $package;
 	$package_esc =~ s/-/_/g;
 
-	parse_acv_file("acv/pkg_config_find.acv");
+	&parse_acv_file("acv/pkg_config_find.acv");
 
 }
 
@@ -227,7 +227,7 @@ sub ac_default_test
 	$package_esc =~ s/-/_/g;
 
 	&ac_package_enabled_start($package);
-	parse_acv_file("acv/default_test.acv");
+	&parse_acv_file("acv/default_test.acv");
 	&ac_package_enabled_end($package);
 }
 
@@ -236,12 +236,12 @@ sub ac_get_cpp_preprocessor_variable
 	local $header = shift;
 	local $variable = shift;
 	
-	parse_acv_file("acv/get_cpp_preprocessor_variable.acv");
+	&parse_acv_file("acv/get_cpp_preprocessor_variable.acv");
 }
 
 sub ac_sed
 {
-	parse_acv_file("acv/sed_presence.acv");
+	&parse_acv_file("acv/sed_presence.acv");
 }
 
 sub ac_introspect
@@ -261,7 +261,7 @@ EOF
 
 sub ac_dllextension
 {
-	parse_acv_file("acv/dllextension.acv");
+	&parse_acv_file("acv/dllextension.acv");
 }
 
 sub ac_package_substs
@@ -274,10 +274,11 @@ sub ac_package_substs
 	local $uc_package_esc_LIBS = $uc_package_esc."_LIBS";
 	local $uc_package_esc_LIB_PATH = $uc_package_esc."_LIB_PATH";
 
-	parse_acv_file("acv/package_substs.acv");
+	&parse_acv_file("acv/package_substs.acv");
 }
 
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','gl','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
+# important: qt should come before qwt
+@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','qwt','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
 
 if ($ARGV[0] eq '-u')
 {
@@ -318,7 +319,7 @@ open OUTFILE,">$ARGV[0]" or die "Failed to open $ARGV[0] for writing\n";
 
 &ac('INIT','test','0.1','clam@iua.upf.es');
 
-parse_acv_file("acv/portable_setenv.acv");
+&parse_acv_file("acv/portable_setenv.acv");
 
 &ac('PROG_CC');
 &ac('PROG_CPP');
@@ -342,6 +343,23 @@ int main()
 	char *argv[]={"Just","testing"};
 	QApplication app(argc,argv);
 	return 0;	
+}
+EOF
+
+$sandbox{'qwt'} = 'qwt';
+$headers{'qwt'} = 'qwt/qwt_math.h';
+$libs{'qwt'} = 'qwt';
+$alt_libs{'qwt'} = '';
+$ext_libs{'qwt'} = '';
+$source{'qwt'} = <<EOF;
+#include<qwt/qwt_math.h>
+int main()
+{
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 EOF
 
@@ -446,20 +464,6 @@ int main()
 }
 EOF
 
-$sandbox{'gl'} = 'gl';
-$headers{'gl'} = 'GL/gl.h';
-$libs{'gl'} = 'GL';
-$ext_libs{'gl'} = '';
-$alt_libs{'gl'} = '';
-$source{'gl'} = <<EOF;
-#include<GL/gl.h>
-int main()
-{
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
-}
-EOF
-
 $sandbox{'portmidi'} = 'portmidi';
 $headers{'portmidi'} = 'portmidi.h';
 $libs{'portmidi'} = 'porttime portmidi';
@@ -558,11 +562,25 @@ foreach $f (@packagedlibs)
 	if ($f eq 'qt')
 	{
 		&ac_qt_find($f);	
+	}elsif ($f eq 'qwt')
+	{
+		&parse_acv_file("acv/add_qt_include_path.acv");
+		&ac_default_find($f);
+		&parse_acv_file("acv/add_qt_include_path_done.acv");
 	}else{
 		&ac_default_find($f);
 	}
 }
-foreach $f (@packagedlibs) { &ac_default_test($f); }
+foreach $f (@packagedlibs) { 
+	if ($f eq 'qwt')
+	{
+		&parse_acv_file("acv/add_qt_include_path.acv");
+		&ac_default_test($f);
+		&parse_acv_file("acv/add_qt_include_path_done.acv");
+	}else{
+		&ac_default_test($f);
+	}
+}
 #foreach $f (@packagedlibs) { &ac_introspect($f); }
 foreach $f (@packagedlibs) { &ac_disabled_package_warning($f); }
 foreach $f (@packagedlibs) { &ac_package_substs($f); }

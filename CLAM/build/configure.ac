@@ -2020,46 +2020,56 @@ int main()
 	fi
 fi
 fi
+if test x$found_qt = xyes
+then
+	before_adding_qt_include_path_CXXFLAGS=$CXXFLAGS
+	before_adding_qt_include_path_CPPFLAGS=$CPPFLAGS
+	for tmp in $include_dirs_qt
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+		CPPFLAGS="$CPPFLAGS -I$tmp"
+	done
+fi
 #####################################################################
-# Check if gl is going to be used
+# Check if qwt is going to be used
 #
 # source: acv/check_package_enable.acv 
 #####################################################################
-AC_MSG_CHECKING([gl usage specified])
+AC_MSG_CHECKING([qwt usage specified])
 #
 AC_ARG_WITH(
-	[gl],AC_HELP_STRING([--with-gl],
-	[use gl (default is yes)]),[
+	[qwt],AC_HELP_STRING([--with-qwt],
+	[use qwt (default is yes)]),[
 	if test x$enableval = xyes
 	then
 		AC_MSG_RESULT([yes])
-		enabled_gl=yes
+		enabled_qwt=yes
 	else
 		AC_MSG_RESULT([no])
-		enabled_gl=no
+		enabled_qwt=no
 	fi
 ],[
 	AC_MSG_RESULT([yes (default)])
-	enabled_gl=yes
+	enabled_qwt=yes
 ])
-found_gl=no
+found_qwt=no
 #####################################################################
 
 #####################################################################
-# IF gl is enabled THEN
+# IF qwt is enabled THEN
 #
 # source: acv/package_enabled_start.acv 
 #####################################################################
-if test x$enabled_gl = xyes
+if test x$enabled_qwt = xyes
 then
 #####################################################################
 
 #####################################################################
-# Look for gl in the sandbox
+# Look for qwt in the sandbox
 #
 # source: acv/package_in_sandbox.acv 
 #####################################################################
-AC_MSG_CHECKING([gl in sandbox])
+AC_MSG_CHECKING([qwt in sandbox])
 if test x$sandbox_location = x
 then
 	if test x$enabled_sandbox = xno
@@ -2070,38 +2080,38 @@ then
 	fi
 else
 	AC_MSG_RESULT([searching headers])	
-	if test x$found_gl = xno
+	if test x$found_qwt = xno
 	then
 		found=1
-		for file in GL/gl.h
+		for file in qwt/qwt_math.h
 		do
-			AC_MSG_CHECKING([$file for gl in sandbox])
-			if test -r $sandbox_location/gl/include/$file
+			AC_MSG_CHECKING([$file for qwt in sandbox])
+			if test -r $sandbox_location/qwt/include/$file
 			then
 				AC_MSG_RESULT([yes])
-				include_dirs_gl="$sandbox_location/gl/include"
+				include_dirs_qwt="$sandbox_location/qwt/include"
 			else
 				AC_MSG_RESULT([no])
 				found=0
 			fi
 		done
-		AC_MSG_CHECKING([[gl header(s) found in sandbox]])
+		AC_MSG_CHECKING([[qwt header(s) found in sandbox]])
 		if test $found = 1
 		then
 			AC_MSG_RESULT([yes])
 			sep=""
 			found=1
 			libdirset=no
-			for file in GL
+			for file in qwt
 			do
-				AC_MSG_CHECKING([lib$file for gl in sandbox])
-				if test -r $sandbox_location/gl/lib/lib$file.$dllext
+				AC_MSG_CHECKING([lib$file for qwt in sandbox])
+				if test -r $sandbox_location/qwt/lib/lib$file.$dllext
 					then
 					AC_MSG_RESULT([yes])
-					libs_in_sandbox_gl="$libs_in_sandbox_gl$sep$file"
+					libs_in_sandbox_qwt="$libs_in_sandbox_qwt$sep$file"
 					if test x$libdirset = xno
 					then
-						lib_dirs_gl="$sandbox_location/gl/lib"
+						lib_dirs_qwt="$sandbox_location/qwt/lib"
 						libdirset=yes
 					fi
 					sep=" "
@@ -2110,47 +2120,50 @@ else
 					found=0
 				fi
 			done
-			AC_MSG_CHECKING([[all gl lib(s) found in sandbox]])
+			AC_MSG_CHECKING([[all qwt lib(s) found in sandbox]])
 			if test $found = 1
 			then
 				AC_MSG_RESULT([yes - adding to library path])
-				found_gl=yes
-				found_in_sandbox_gl=yes
+				found_qwt=yes
+				found_in_sandbox_qwt=yes
 			else
 				AC_MSG_RESULT([no])
-				found_gl=no
+				found_qwt=no
 			fi
 		else
 			AC_MSG_RESULT([no])
-			found_gl=no
+			found_qwt=no
 		fi
 	fi
 fi
-if test x$found_in_sandbox_gl = xyes
+if test x$found_in_sandbox_qwt = xyes
 then
-	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_gl"
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_qwt"
 	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
-	for tmp in $include_dirs_gl
+	for tmp in $include_dirs_qwt
 	do
 		CXXFLAGS="$CXXFLAGS -I$tmp"
 	done
-	for tmp in $lib_dirs_gl
+	for tmp in $lib_dirs_qwt
 	do
 		LDFLAGS="$LDFLAGS -L$tmp"
 	done
-	AC_MSG_CHECKING([libraries needed for gl])
+	AC_MSG_CHECKING([libraries needed for qwt])
 	AC_COMPILE_IFELSE(
 	[
 		AC_LANG_SOURCE(
 [[
-#include<GL/gl.h>
+#include<qwt/qwt_math.h>
 int main()
 {
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 
 ]]	
@@ -2158,7 +2171,7 @@ int main()
 		links_ok=0
 		tmp_libs=""
 		sep=""
-		for tmp in $libs_in_sandbox_gl 
+		for tmp in $libs_in_sandbox_qwt 
 		do
 			LDFLAGS="$LDFLAGS -l$tmp"
 			tmp_libs="$tmp_libs$sep$tmp"
@@ -2167,11 +2180,14 @@ int main()
 			[
 				AC_LANG_SOURCE(
 [[
-#include<GL/gl.h>
+#include<qwt/qwt_math.h>
 int main()
 {
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 ;
 ]])	
@@ -2185,9 +2201,9 @@ int main()
 			fi
 		done
 		if test x$links_ok = xyes; then
-			libs_gl=$tmp_libs
-			found_gl=yes
-			AC_MSG_RESULT([$libs_gl])
+			libs_qwt=$tmp_libs
+			found_qwt=yes
+			AC_MSG_RESULT([$libs_qwt])
 		else
 			AC_MSG_RESULT([linking failed])
 		fi
@@ -2198,28 +2214,28 @@ int main()
 	LDFLAGS=$old_LDFLAGS
 fi
 #####################################################################
-# pkgconfig routine for finding gl
+# pkgconfig routine for finding qwt
 #
 # source: acv/pkg_config_find.acv 
 #####################################################################
-if test x$enabled_gl = xyes
+if test x$enabled_qwt = xyes
     then
-    if test x$found_gl = xno
+    if test x$found_qwt = xno
 	then
-	AC_MSG_CHECKING([gl has pkg-config])
+	AC_MSG_CHECKING([qwt has pkg-config])
 	if test x$pkg_config_status = xenabled
 	    then
-	    $pkg_config --exists gl
+	    $pkg_config --exists qwt
 	    if test $? = 0
 		then
 		AC_MSG_RESULT([yes])
-		found_gl=yes
-		include_dirs_gl=`$pkg_config gl --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
-		libs_gl=`$pkg_config gl --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
-		lib_dirs_gl=`$pkg_config gl --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
+		found_qwt=yes
+		include_dirs_qwt=`$pkg_config qwt --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
+		libs_qwt=`$pkg_config qwt --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
+		lib_dirs_qwt=`$pkg_config qwt --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
 	    else
 		AC_MSG_RESULT([no])
-		found_gl=no
+		found_qwt=no
 	    fi
 	else
 	    if test x$pkg_config_status = xdisabled
@@ -2234,19 +2250,19 @@ fi
 #####################################################################
 
 #####################################################################
-# Standard routine for finding gl
+# Standard routine for finding qwt
 #
 # source: acv/standard_find.acv 
 #####################################################################
-if test x$enabled_gl = xyes
+if test x$enabled_qwt = xyes
 then
-  if test x$found_gl = xno
+  if test x$found_qwt = xno
 	then
 	found=1
-	for file in GL/gl.h
+	for file in qwt/qwt_math.h
 	do
 		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
-		AC_MSG_CHECKING([$file for gl in standard locations])
+		AC_MSG_CHECKING([$file for qwt in standard locations])
 		if test $filefound = 1
 		then
 			AC_MSG_RESULT([yes])
@@ -2255,33 +2271,36 @@ then
 	    found=0
 		fi
 	done
-	AC_MSG_CHECKING([[gl header(s) found in standard locations]])
+	AC_MSG_CHECKING([[qwt header(s) found in standard locations]])
 	if test $found = 1
 	then
 		AC_MSG_RESULT([yes])
-		if test x"GL" != x
+		if test x"qwt" != x
 		then
 			LIBS=
 			old_CXXFLAGS=$CXXFLAGS
 			old_LDFLAGS=$LDFLAGS
-			for tmp in $include_dirs_gl
+			for tmp in $include_dirs_qwt
 			do
 				CXXFLAGS="$CXXFLAGS -I$tmp"
 			done
-			for tmp in $lib_dirs_gl
+			for tmp in $lib_dirs_qwt
 			do
 				LDFLAGS="$LDFLAGS -L$tmp"
 			done
-			AC_MSG_CHECKING([libraries needed for gl])
+			AC_MSG_CHECKING([libraries needed for qwt])
 			AC_COMPILE_IFELSE(
 			[
 				AC_LANG_SOURCE(
 [[
-#include<GL/gl.h>
+#include<qwt/qwt_math.h>
 int main()
 {
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 
 ]]	
@@ -2289,7 +2308,7 @@ int main()
 				links_ok=0
 				tmp_libs=""
 				sep=""
-				for tmp in GL 
+				for tmp in qwt 
 				do
 					LDFLAGS="$LDFLAGS -l$tmp"
 					tmp_libs="$tmp_libs$sep$tmp"
@@ -2298,11 +2317,14 @@ int main()
 					[
 						AC_LANG_SOURCE(
 [[
-#include<GL/gl.h>
+#include<qwt/qwt_math.h>
 int main()
 {
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 ;
 ]])	
@@ -2316,9 +2338,9 @@ int main()
 					fi
 				done
 				if test x$links_ok = xyes; then
-					libs_gl=$tmp_libs
-					found_gl=yes
-					AC_MSG_RESULT([$libs_gl])
+					libs_qwt=$tmp_libs
+					found_qwt=yes
+					AC_MSG_RESULT([$libs_qwt])
 				else
 					# trying alternative libs
 					LDFLAGS=$old_LDFLAGS
@@ -2333,11 +2355,14 @@ int main()
 						[
 							AC_LANG_SOURCE(
 [[
-#include<GL/gl.h>
+#include<qwt/qwt_math.h>
 int main()
 {
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 ;
 ]])	
@@ -2351,9 +2376,9 @@ int main()
 						fi
 					done
 					if test x$links_ok = xyes; then
-						libs_gl=$tmp_libs
-						found_gl=yes
-						AC_MSG_RESULT([$libs_gl])
+						libs_qwt=$tmp_libs
+						found_qwt=yes
+						AC_MSG_RESULT([$libs_qwt])
 					else
 						AC_MSG_RESULT([linking failed])
 					fi
@@ -2365,16 +2390,18 @@ int main()
 			LDFLAGS=$old_LDFLAGS
 		else
 			# no libs to checks
-			found_gl=yes
+			found_qwt=yes
 		fi
 	else
 	    AC_MSG_RESULT([no])
-	    found_gl=no
+	    found_qwt=no
 	fi
     fi
 fi
 
 fi
+CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
+CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
 #####################################################################
 # Check if sndfile is going to be used
 #
@@ -5303,47 +5330,60 @@ fi
 #####################################################################
 
 fi
+if test x$found_qt = xyes
+then
+	before_adding_qt_include_path_CXXFLAGS=$CXXFLAGS
+	before_adding_qt_include_path_CPPFLAGS=$CPPFLAGS
+	for tmp in $include_dirs_qt
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+		CPPFLAGS="$CPPFLAGS -I$tmp"
+	done
+fi
 #####################################################################
-# IF gl is enabled THEN
+# IF qwt is enabled THEN
 #
 # source: acv/package_enabled_start.acv 
 #####################################################################
-if test x$enabled_gl = xyes
+if test x$enabled_qwt = xyes
 then
 #####################################################################
 
 #####################################################################
-# Default test, to test gl
+# Default test, to test qwt
 #
 # source: acv/default_test.acv 
 #####################################################################
 failure=no
-if test $found_gl
+if test $found_qwt
 then
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
-	for tmp in $include_dirs_gl
+	for tmp in $include_dirs_qwt
 	  do
 	  CXXFLAGS="$CXXFLAGS -I$tmp"
 	done
-	for tmp in $lib_dirs_gl
+	for tmp in $lib_dirs_qwt
 	  do
 	  LDFLAGS="$LDFLAGS -L$tmp"
 	done
-	for tmp in $libs_gl
+	for tmp in $libs_qwt
 	  do
 	  LDFLAGS="$LDFLAGS -l$tmp"
 	done
-	AC_MSG_CHECKING([compiling, linking and running with gl])
+	AC_MSG_CHECKING([compiling, linking and running with qwt])
 	AC_RUN_IFELSE(
 	    [
 		AC_LANG_SOURCE(
 		    [[
-			    #include<GL/gl.h>
+			    #include<qwt/qwt_math.h>
 int main()
 {
-	glClearColor(0.0,0.0,0.0,0.0);
-	return 0;
+	if (qwtCeil125(1.1)==2.0)
+	{
+		return 0;
+	}
+	return -1;
 }
 
 			    ]])	
@@ -5362,18 +5402,20 @@ fi
 if test x$failure = xyes
 then
 	AC_MSG_FAILURE([
-Configure-checks for gl failed.
+Configure-checks for qwt failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of gl altogether, running configure
+Note that you can disable the use of qwt altogether, running configure
 with the
-  --without-gl
+  --without-qwt
 option.
 ])
 fi
 #####################################################################
 
 fi
+CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
+CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
 #####################################################################
 # IF sndfile is enabled THEN
 #
@@ -5996,23 +6038,23 @@ fi
 #####################################################################
 
 #####################################################################
-# Give a warning when gl is disabled
+# Give a warning when qwt is disabled
 #
 # source: acv/disabled_package_warning.acv 
 #####################################################################
-if test x$enabled_gl = x
+if test x$enabled_qwt = x
 then
-	AC_MSG_ERROR('gl with/without checking not done')
+	AC_MSG_ERROR('qwt with/without checking not done')
 fi
-if test x$enabled_gl = xno
+if test x$enabled_qwt = xno
 then
-	AC_MSG_WARN([without gl
+	AC_MSG_WARN([without qwt
 ======================================================================
-You deactivated usage of package gl. Note that this may cause 
+You deactivated usage of package qwt. Note that this may cause 
 that certain examples and tests will not compile. Typically running
 'make depend' may give you an error that says:
 
-srcdeps: configuration specifies USE_GL=1, but HAS_GL=0
+srcdeps: configuration specifies USE_QWT=1, but HAS_QWT=0
 ======================================================================])
 fi
 #####################################################################
@@ -6251,22 +6293,22 @@ AC_SUBST(QT_INCLUDES)
 AC_SUBST(QT_LIB_PATH)
 AC_SUBST(QT_LIBS)
 AC_SUBST(HAS_QT)
-# substs for gl
-GL_INCLUDES=$include_dirs_gl
-GL_LIBS=$libs_gl
-GL_LIB_PATH=$lib_dirs_gl
-#echo GL_INCLUDES=$include_dirs_gl
-#echo GL_LIBS=$libs_gl
-#echo GL_LIB_PATH=$lib_dirs_gl
-if test x$found_gl = xyes; then
-	HAS_GL=1
+# substs for qwt
+QWT_INCLUDES=$include_dirs_qwt
+QWT_LIBS=$libs_qwt
+QWT_LIB_PATH=$lib_dirs_qwt
+#echo QWT_INCLUDES=$include_dirs_qwt
+#echo QWT_LIBS=$libs_qwt
+#echo QWT_LIB_PATH=$lib_dirs_qwt
+if test x$found_qwt = xyes; then
+	HAS_QWT=1
 else
-	HAS_GL=0
+	HAS_QWT=0
 fi
-AC_SUBST(GL_INCLUDES)
-AC_SUBST(GL_LIB_PATH)
-AC_SUBST(GL_LIBS)
-AC_SUBST(HAS_GL)
+AC_SUBST(QWT_INCLUDES)
+AC_SUBST(QWT_LIB_PATH)
+AC_SUBST(QWT_LIBS)
+AC_SUBST(HAS_QWT)
 # substs for sndfile
 SNDFILE_INCLUDES=$include_dirs_sndfile
 SNDFILE_LIBS=$libs_sndfile
