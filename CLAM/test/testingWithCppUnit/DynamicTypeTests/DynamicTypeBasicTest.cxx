@@ -54,6 +54,7 @@ void DynamicTypeBasicTest::InstantiateAttributes ()
 	CPPUNIT_ASSERT( !dyn->HasInt() && !dyn->HasMyB() && !dyn->HasInt() );
 	dyn->UpdateData();
 	CPPUNIT_ASSERT( dyn->HasInt() && dyn->HasMyA() && !dyn->HasMyB() );
+	dyn->FullfilsInvariant();
 }
 
 void DynamicTypeBasicTest::RepetitiveOperations()
@@ -68,6 +69,7 @@ void DynamicTypeBasicTest::RepetitiveOperations()
 	CPPUNIT_ASSERT( !dyn->HasInt() );
 	dyn->UpdateData();
 	CPPUNIT_ASSERT( !dyn->HasInt() );
+	dyn->FullfilsInvariant();
 }
 void DynamicTypeBasicTest::NonUpdatedAddsAndRemoves ()
 {
@@ -96,7 +98,7 @@ void DynamicTypeBasicTest::ChainedMethods ()
 	CPPUNIT_ASSERT( !dyn->HasInt() && !dyn->HasMyA() && !dyn->HasMyB() );
 	dyn->UpdateData();
 	CPPUNIT_ASSERT( !dyn->HasInt() && !dyn->HasMyA() && !dyn->HasMyB() );
-
+	dyn->FullfilsInvariant();
 }
 
 void DynamicTypeBasicTest::ShallowDataAccess ()
@@ -129,6 +131,7 @@ void DynamicTypeBasicTest::ShallowDeletion ()
 {
 	Dyn *p = new Dyn;
 	CPPUNIT_ASSERT( p );
+	dyn->FullfilsInvariant();
 	delete p;
 }
 
@@ -183,6 +186,7 @@ void DynamicTypeBasicTest::CopyConstructor()
 	dynCopy->GetSubDyn().SetInt(-1);
 	CPPUNIT_ASSERT_EQUAL( 10, dyn->GetSubDyn().GetInt() );
 	
+	dynCopy->FullfilsInvariant();
 	delete dynCopy;
 }
 
@@ -210,28 +214,14 @@ void DynamicTypeBasicTest::DeepCopy()
 	dynCopy->GetSubDyn().SetInt(-1);
 	CPPUNIT_ASSERT_EQUAL( 10, dyn->GetSubDyn().GetInt() );
 	
+	dyn->FullfilsInvariant();
+	dynCopy->FullfilsInvariant();
+	
 	delete dynCopy;
 }
-///\todo remove:
-
-class bar : public CLAM::DynamicType
-{
-public:
-	bar(const int n) : CLAM::DynamicType(n) {}
-	bar(const bar& arg, const bool share=false, const bool deep=true) : 
-	CLAM::DynamicType(arg, share, deep) {}
-	virtual ~bar(){};
-};
-
-class foo : public bar
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE(foo, 0, bar);
-};
 
 void DynamicTypeBasicTest::Assignation()
 {
-	foo f;
 	// the same as before, now using an operator=
 	dyn->AddInt();
 	dyn->AddSubDyn();
