@@ -218,14 +218,14 @@ SMSScoreEditor::SMSScoreEditor()
 		{
 			Fl_Group* o =
 				mTransParmDock =
-				new Fl_Group(465, 20, 420, 420, "Transformation");
+				new Fl_Group(465, 20, 420, 450, "Transformation");
 			o->labelfont(FL_HELVETICA);
 			o->labelsize(14);
 			o->align(FL_ALIGN_TOP);
 			o->box(FL_ENGRAVED_BOX);
 
 			{
-				Fl_Tabs* o = mTransTabs = new Fl_Tabs(470, 25, 410, 410);
+				Fl_Tabs* o = mTransTabs = new Fl_Tabs(470, 25, 410, 440);
 				o->box(FL_DEFINED_UP_BOX);
 				o->labelsize(12);
 
@@ -264,6 +264,7 @@ SMSScoreEditor::SMSScoreEditor()
 			o->callback( (Fl_Callback*) cb_mApplyChangesToCurrentCfg, this );
 			o->deactivate();
 			o->labelsize(12);
+			o->hide();
 		}
 		{
 			Fl_Button* o =
@@ -273,6 +274,7 @@ SMSScoreEditor::SMSScoreEditor()
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->deactivate();
 			o->labelsize(12);
+			o->hide();
 		}
 		{
 			mNoConfigWidgetAvailable = new Fl_Box( 0, 0, 100, 100 );
