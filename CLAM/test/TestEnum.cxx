@@ -84,11 +84,13 @@ namespace CLAMTest {
 			MyEnum e(MyEnum::cent);
 			CLAM_ASSERT (e.GetString()=="cent", "Value constructor didn't get the expected value 'cent'");
 		}
+
 		void testStringConstructor()
 		{
 			MyEnum e("cent");
 			CLAM_ASSERT (e.GetString()=="cent", "String constructor didn't get the expected value 'cent'");
 		}
+
 		void testSetValue()
 		{
 			MyEnum e;
