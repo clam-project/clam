@@ -25,11 +25,12 @@ void NetworkController::OnNewChangeState( bool state)
 	{
 		mObserved->Start();
 		std::cout << "starting network" << std::endl;
-		for (int i=0; i<200; i++)
+		for (int i=0; i<400; i++)
 		{
 			std::cout << "doing" << std::endl;
 			mObserved->DoProcessings();
 		}
+
 	}
 	else // stop the network
 	{			
