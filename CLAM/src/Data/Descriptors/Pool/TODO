@@ -45,7 +45,6 @@ CreatePoolFrame("nom")
 
 
 
-
 PoolFactory::CreateScope("FrameA200mx");
 PoolFactory::AddAttribute("Nota","fundamental",);
 PoolFactory::CreateScope("FrameA400mx");
@@ -53,6 +52,30 @@ PoolFactory::AddAttribute("Nota","fundamental",);
 
 
 
+CLAM::DescriptionScheme scheme("DescriptionScheme.xml");
+scheme.setParameter("FrameSize",256);
+CLAM::DescriptionDataPool pool(scheme);
+pool.ExtractFrom("mysong.mp3");
+CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
+
+
+----------- DescriptionScheme.xml
+<Parameter name="FrameSize" type="Integer" units="SampleRange" />
+...
+<Attribute scope="Frame" name="Center" type="SamplePosition" />
+<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+....
+<Extractor name="SpectralAnalysis" >
+	<Target scope="Frame" attribute="SpectralDistribution" />
+	<Dependency 
+		type="Indirect" 
+		scope="Sample" 
+		attribute="Signal" 
+		indirectAttribute="Center"
+		size = "$FrameSize"
+	/>
+</Extractor>
+...
 
 
 
