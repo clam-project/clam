@@ -72,12 +72,32 @@ namespace CLAM
 	}
 
 
-	bool TickSequenceTracker::Do(const Array<TimeIndex>& transients, Array<TimeIndex>& ticksOut,
-				Array<TimeIndex>& beatsOut, TData& globalTick, TData& globalTempo, 
-				Audio& IOIHist)
+	bool TickSequenceTracker::Do(const Array<TimeIndex>& transients,
+				     Pulse& tickSequence,
+				     Pulse& beatSequence,
+				     Audio& IOIHist)
 	{
 
-		Compute(transients, IOIHist, ticksOut, beatsOut, globalTick, globalTempo);
+		TData globalTick = -1 , globalTempo = -1;
+		
+		Compute( transients, 
+			 IOIHist, 
+			 tickSequence.GetIndexes(), 
+			 beatSequence.GetIndexes(), 
+			 globalTick, 
+			 globalTempo);
+		
+		if (globalTick==-1) 
+		{
+			tickSequence.SetRate(0.0);
+			beatSequence.SetRate(0.0);
+		}
+		else 
+		{
+			tickSequence.SetRate(60.0/globalTick);
+			beatSequence.SetRate(60.0/globalTempo);
+		}
+		
 		return true;
 	}
 

@@ -6,6 +6,7 @@
 #include "TimeIndex.hxx"
 #include "TickSequenceTrackerConfig.hxx"
 #include "AudioPeakDetect.hxx"
+#include "Pulse.hxx"
 
 namespace CLAM
 {
@@ -33,9 +34,10 @@ namespace CLAM
 
 		///Method to use when the input is a list of note onsets
 		///(onsets already computed, or MIDI)
-		bool Do(const Array<TimeIndex>& transients, Array<TimeIndex>& ticksOut,
-			Array<TimeIndex>& beatsOut, TData& globalTick, 
-			TData& globalTempo, Audio& IOIHist); 
+		bool Do(const Array<TimeIndex>& transients, 
+			Pulse& tickSequence,
+			Pulse& beatSequence,
+			Audio& IOIHist );
 
 
 		void SetVisualizationAudio(Audio& audio);

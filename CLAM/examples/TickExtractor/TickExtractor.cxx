@@ -133,28 +133,18 @@ namespace CLAM
 		Audio IOIHist;
 		IOIHist.SetSampleRate(sampleRate); //Don't really know if it's used, but just in case...
 
+		Pulse tickSequence;
+		Pulse beatSequence;
 
 		//Use the transients computed in this main
-		myTickSequenceTracker.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
+		myTickSequenceTracker.Do( transients, tickSequence, beatSequence, IOIHist );
+
+		//myTickSequenceTracker.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
 
 		myTickSequenceTracker.Stop();
 
-		Pulse tick;
-		Pulse beat;
-		if (globalTick==-1) 
-		{
-			tick.SetRate(0.0);
-			beat.SetRate(0.0);
-		}
-		else 
-		{
-			tick.SetRate(60.0/globalTick);
-			beat.SetRate(60.0/globalTempo);
-		}
-		tick.SetIndexes(allTicks);
-		beat.SetIndexes(allBeats);
 
-		ticksList = tick;
+		ticksList = tickSequence;
 		
 
 	}
