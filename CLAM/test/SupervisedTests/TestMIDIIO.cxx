@@ -1,165 +1,81 @@
-/*
- * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
- *
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- */
-
-#include "MIDIInControl.hxx"
 #include "MIDIManager.hxx"
-#include "PrintControl.hxx"
-#include "ControlMapper.hxx"
-#include "Oscillator.hxx"
-#include "ControlMultiplier.hxx"
-#include <iostream>
+#include "MIDIInControl.hxx"
+#include "MIDIOutControl.hxx"
+#include "MIDIClocker.hxx"
+#include <vector>
 
 using namespace CLAM;
-using namespace std;
 
-int main(void)
+void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
 {
-	try {
+	CLAM_ASSERT(p.Configure(cfg),p.GetStatus().c_str());
+}
 
-		PrintControlConfig printCtrlCfg;
-		printCtrlCfg.SetMessage("Control:");
+main()
+{
+	char* indevice = "file:test.mid";
+	char* outdevice = "textfile:test.txt";
+	
+	MIDIManager manager;
+	MIDIIOConfig inNoteCfg;
+	MIDIIOConfig outNoteCfg;
 
-		PrintControlConfig printKeyCfg;
-		printKeyCfg.SetMessage("Note key");
+	MIDIClockerConfig inpClockerCfg;
+	MIDIClockerConfig outClockerCfg;
+
+	inpClockerCfg.SetDevice(indevice);
+	outClockerCfg.SetDevice(outdevice);
 		
-		PrintControlConfig printVelCfg;
-		printVelCfg.SetMessage("Note vel");
+	MIDIClocker inpClocker(inpClockerCfg);
+	MIDIClocker outClocker(outClockerCfg);
 
-		PrintControlConfig printPichBendCfg;
-		printPichBendCfg.SetMessage("Pitch Bend");
-		
-		PrintControl printCtrl(printCtrlCfg);
-		PrintControl printKey(printKeyCfg);
-		PrintControl printVel(printVelCfg);
-		PrintControl printPitchBend(printPichBendCfg);
+	inNoteCfg.SetDevice(indevice);
+	inNoteCfg.SetMessage(MIDI::eNoteOnOff);
+	
+	outNoteCfg.SetDevice(outdevice);
+	outNoteCfg.SetMessage(MIDI::eNoteOnOff);
 
+	MIDIInControl inNote;
+	ConfigureAndCheck(inNote,inNoteCfg);
+	MIDIOutControl outNote;
+	ConfigureAndCheck(outNote,outNoteCfg);
+	
+	
+	//control for stoping at eof 
+	
+	MIDIIOConfig inStopCfg;
+	inStopCfg.SetDevice(indevice);
+	inStopCfg.SetChannel(CLAM::MIDI::eStop); //it is a sys message that uses channel byte for actual data
+	inStopCfg.SetMessage(CLAM::MIDI::eSystem);
+	
+	MIDIInControl inStop;
+	ConfigureAndCheck(inStop,inStopCfg);
+	InControl stopReceiver("stop-receiver");
 
-		ControlMapperConfig mapperCfg;
-		
-		mapperCfg.SetMapping("linear");
-		TData ptr[]={0.0, 127.0, 0.0, 1.0};
-		mapperCfg.SetArguments(DataArray(ptr,4));
+	inStop.GetOutControls().GetByNumber(0).AddLink(
+			&stopReceiver);
+	
+	inNote.GetOutControls().GetByNumber(0).AddLink(
+			&outNote.GetInControls().GetByNumber(0));
+	inNote.GetOutControls().GetByNumber(1).AddLink(
+			&outNote.GetInControls().GetByNumber(1));
+	inNote.GetOutControls().GetByNumber(2).AddLink(
+			&outNote.GetInControls().GetByNumber(2));
+	
+	manager.Start();
 
-		ControlMapper mapper(mapperCfg);
+	TTime curTime = 0;
 
-
-
-		ControlMapperConfig mapperNoteCfg ;
-
-		mapperNoteCfg.SetMapping( "NoteToFreq" ) ;
-
-		ControlMapper mapperNote(mapperNoteCfg);
-
-
-
-		ControlMapperConfig mapperVelCfg ;
-
-		mapperVelCfg.SetMapping("linear");
-		TData ptr3[] = {0 ,127 ,0 ,1} ;
-		mapperVelCfg.SetArguments(DataArray(ptr3,4));
-
-		ControlMapper mapperVel(mapperVelCfg);
-
-
-
-		ControlMapperConfig mapperPBendCfg ;
-
-		mapperPBendCfg.SetMapping("ValueToRatio");
-		TData ptr4[] = { 12 } ;							// 1 octave up or down
-		mapperPBendCfg.SetArguments(DataArray(ptr4,1));
-
-		ControlMapper mapperPitchBend(mapperPBendCfg);
-
-		BinaryControlOpConfig multiplyCfg ;
-
-		ControlMultiplier FreqMultiplier( multiplyCfg); 
-
-
-		MIDIManager midiManager;
-
-		MIDIInConfig inNoteCfg;
-
-		
-		inNoteCfg.SetDevice("default:default");
-		inNoteCfg.SetChannelMask(
-			MIDI::ChannelMask(1)|
-			MIDI::ChannelMask(2)
-		);
-
-		inNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff)
-		);
-		
-		MIDIInControl inNote(inNoteCfg);
-
-		MIDIInConfig inCtrlCfg;
-		
-		inCtrlCfg.SetDevice("default:default");
-		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
-		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-		inCtrlCfg.SetFilter(0x02); // breath control
-		
-		MIDIInControl inCtrl(inCtrlCfg);
-
-		MIDIInConfig inPitchBendCfg;
-		
-		inPitchBendCfg.SetDevice("default:default");
-		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
-		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
-		
-		MIDIInControl inPitchBend(inPitchBendCfg);
-
-		inNote.GetOutControls().GetByNumber(2).AddLink(&mapperNote.GetInControls().GetByNumber(0));
-		inNote.GetOutControls().GetByNumber(3).AddLink(&mapperVel.GetInControls().GetByNumber(0));
-		inNote.GetOutControls().GetByNumber(1).AddLink(&mapperVel.GetInControls().GetByNumber(0));
-		inCtrl.GetOutControls().GetByNumber(0).AddLink(&mapper.GetInControls().GetByNumber(0));
-
-		inPitchBend.GetOutControls().GetByNumber(0).AddLink(&mapperPitchBend.GetInControls().GetByNumber(0));
-
-
-		mapperNote.GetOutControls().GetByNumber(0).AddLink(&printKey.GetInControls().GetByNumber(0));
-		mapperNote.GetOutControls().GetByNumber(0).AddLink(&FreqMultiplier.GetInControls().GetByNumber(0));
-
-		mapperVel.GetOutControls().GetByNumber(0).AddLink(&printVel.GetInControls().GetByNumber(0));
-		
-		mapper.GetOutControls().GetByNumber(0).AddLink(&printCtrl.GetInControls().GetByNumber(0));
-		
-		mapperPitchBend.GetOutControls().GetByNumber(0).AddLink(&FreqMultiplier.GetInControls().GetByNumber(1));
-		
-		FreqMultiplier.GetOutControls().GetByNumber(0).AddLink(&printPitchBend.GetInControls().GetByNumber(0));
-
-		midiManager.Start();
-
-		while (1)
-		{
-			midiManager.Check();
-		}
-	}
-	catch(Err error)
+	while (stopReceiver.GetLastValue()==0)
 	{
-		error.Print();
-		std::cerr << "Abnormal Program Termination" << std::endl;
+		//we send a timing control to the MIDI clocker 
+		inpClocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		outClocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		
+		//we check for new events in the MIDI manager
+		manager.Check();
+		
+		//we increment the time counter
+		curTime ++;
 	}
-
-	std::cerr << "Successfully finished" << std::endl;
-	return 0;
 }
