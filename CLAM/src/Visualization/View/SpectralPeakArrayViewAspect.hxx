@@ -27,7 +27,7 @@ namespace CLAMGUI
 				virtual void ForceViewRefresh();
 
 				// Signals
-				Signalv1< const Array<Partial>& > AcquirePartials;
+				Signalv1< const Array<Partial>& >       AcquirePartials;
 
 		private:
 				SpectralPeakArrayView&       mView;
