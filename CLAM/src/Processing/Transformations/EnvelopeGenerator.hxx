@@ -26,6 +26,8 @@
 #include "ProcessingData.hxx"
 #include "ProcessingData.hxx"
 #include "Envelope.hxx"
+#include "AudioOutPort.hxx"
+#include "InPort.hxx"
 
 namespace CLAM
 {
@@ -81,9 +83,9 @@ public:
 
 	const char * GetClassName() const { return "EnvelopeGenerator";}
 
-	InPortTmpl<Envelope> Input;
+	InPort<Envelope> Input;
 
-	OutPortTmpl<Audio>   Output;
+	AudioOutPort   Output;
 
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 

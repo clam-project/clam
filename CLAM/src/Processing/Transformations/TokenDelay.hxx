@@ -26,8 +26,8 @@
 
 #include "Processing.hxx"
 #include "InControl.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -85,8 +85,8 @@ private:
 	/** TokenDelay Configuration */
 	TokenDelayConfig mConfig;
 	// Ports and control
-	InPortTmpl<T> mInput;
-	OutPortTmpl<T> mOutput;
+	InPort<T> mInput;
+	OutPort<T> mOutput;
 	InControl mDelayControl;
 
 public:

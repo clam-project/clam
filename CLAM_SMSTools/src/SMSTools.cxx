@@ -170,6 +170,7 @@ namespace CLAMGUI
 	{
 		mHaveAudioIn = LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment());
 
+
 		if ( !mHaveAudioIn )
 		{
 			fl_message( "Input sound unavailable. No analysis can be performed" );
@@ -240,10 +241,14 @@ namespace CLAMGUI
 		segment.GetAudio().SetSize(samplesInFile);
 		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
 		
-		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
+//		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
 
 		//Read Audio File
-		fileReader.Do();
+		fileReader.Do( segment.GetAudio() );
+
+		std::cout << "audio loaded of size: " << segment.GetAudio().GetSize() << std::endl;
+		std::cout << "audio sample: " << segment.GetAudio().GetBuffer()[400] << std::endl;
+		std::cout << "audio sample: " << segment.GetAudio().GetBuffer()[2000] << std::endl;
 
 		fileReader.Stop();
 
@@ -474,9 +479,9 @@ namespace CLAMGUI
 
 		proc.Start();
 
-		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
+//		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
 
-		proc.Do();
+		proc.Do( const_cast<CLAM::Audio& >(audio) );
 
 		proc.Stop();
 		

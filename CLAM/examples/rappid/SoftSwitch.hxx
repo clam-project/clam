@@ -23,8 +23,8 @@
 #define _SOFT_SWITCH_HXX
 
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 #include "Audio.hxx"
 #include "Enum.hxx"
@@ -79,8 +79,8 @@ namespace CLAM
 	{
 	public:
 
-		InPortTmpl<Audio>  Input;
-		OutPortTmpl<Audio> Output;
+		AudioInPort  Input;
+		AudioOutPort Output;
 
 		/** Switch control
 		 *  0.0 value      -> Output is enabled.

@@ -50,15 +50,15 @@ namespace CLAM {
 	/* Processing  object Method  implementations */
 
 	SpectralPeakDetect::SpectralPeakDetect()
-		: mInput( "Input spectrum", this, 1 ),
-		  mOutput( "Output spectral peak array", this, 1 )
+		: mInput( "Input spectrum", this ),
+		  mOutput( "Output spectral peak array", this )
 	{
 		Configure(SpectralPeakDetectConfig());
 	}
 
 	SpectralPeakDetect::SpectralPeakDetect(const SpectralPeakDetectConfig &c = SpectralPeakDetectConfig())
-		: mInput( "Input spectrum", this, 1 ),
-		  mOutput( "Output spectral peak array", this, 1 )
+		: mInput( "Input spectrum", this ),
+		  mOutput( "Output spectral peak array", this )
 	{
 		Configure(c);
 	}
@@ -93,18 +93,20 @@ namespace CLAM {
 		return true;
 	}
 
-	void SpectralPeakDetect::Attach( Spectrum& in, SpectralPeakArray& out )
-	{
-		mInput.Attach( in );
-		mOutput.Attach( out );
-	}
-
 	/* The supervised Do() function */
-
 	bool  SpectralPeakDetect::Do(void)
 	{
+		if (mInput.GetData().GetScale() != EScale::eLog)
+		{
+			mInput.GetData().ToDB();
+		}
+		mOutput.GetData().SetScale( EScale::eLog );
 
-		return Do( mInput.GetData(), mOutput.GetData() );
+		bool result = Do( mInput.GetData(), mOutput.GetData() );
+		mInput.GetData().ToLinear();
+		mInput.Consume();
+		mOutput.Produce();
+		return result;
 	}
 
 	/* The  unsupervised Do() function */
@@ -113,7 +115,7 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(CheckInputType(input), "SpectralPeakDetect::Do() - Type of input data doesn't match expected type.");
 		CLAM_ASSERT(CheckOutputType(out), "SpectralPeakDetect::Do() - Type of output data doesn't match expected type.");
-
+		
 		int i;
 		TSize nSpectralPeaks = 0;
 		TSize binWidth = 0;	 // BinWidth is in NumBins

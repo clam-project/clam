@@ -30,9 +30,9 @@ namespace CLAM {
 
 	SpectrumAdder2::SpectrumAdder2()
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(SpecAdder2Config());
@@ -40,9 +40,9 @@ namespace CLAM {
 
 	SpectrumAdder2::SpectrumAdder2(const SpecAdder2Config &c)
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(c);
@@ -121,9 +121,11 @@ namespace CLAM {
 
 	bool SpectrumAdder2::Do(void)
 	{
-		CLAM_ASSERT(false,"SpectrumAdder2::Do(): Not implemented");
-		
-		return true;
+		bool result = Do( mIn1.GetData(), mIn2.GetData(), mOut.GetData() );
+		mIn1.Consume();
+		mIn2.Consume();
+		mOut.Produce();
+		return result;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 

@@ -71,7 +71,11 @@ namespace CLAM {
 
 	bool FFT_numrec::Do()
 	{
-		return Do(mInput.GetData(),mOutput.GetData());
+		mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+		bool toReturn = Do(mInput.GetAudio(), mOutput.GetData());
+		mInput.Consume();
+		mOutput.Produce();
+		return toReturn;
 	};
 
 	bool FFT_numrec::Do(const Audio& in, Spectrum &out)

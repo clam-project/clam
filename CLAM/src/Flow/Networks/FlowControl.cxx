@@ -25,7 +25,6 @@
 #include <iostream>
 #include "Network.hxx"
 #include "Processing.hxx"
-#include "Node.hxx"
 
 namespace CLAM
 {
@@ -45,16 +44,18 @@ void FlowControl::AttachToNetwork( Network* network)
 void FlowControl::ConfigurePorts(Processing& toConfigure) const
 {
 	PublishedInPorts::Iterator itin; // todo : should be a typdef of PublishedInPorts
-	for (itin = toConfigure.GetInPorts().Begin(); 
-	     itin != toConfigure.GetInPorts().End(); 
-	     itin++)
-		(*itin)->SetParams(mFrameSize);
+	for (itin = toConfigure.GetInPorts().Begin(); itin != toConfigure.GetInPorts().End(); itin++)
+	{
+		(*itin)->SetSize(mFrameSize);
+		(*itin)->SetHop(mFrameSize);
+	}
 		
 	PublishedOutPorts::Iterator itout; // todo: idem
-	for (itout = toConfigure.GetOutPorts().Begin(); 
-	     itout != toConfigure.GetOutPorts().End(); 
-	     itout++)
-		(*itout)->SetParams(mFrameSize);		
+	for (itout = toConfigure.GetOutPorts().Begin(); itout != toConfigure.GetOutPorts().End(); itout++)
+	{
+		(*itout)->SetSize(mFrameSize);
+		(*itout)->SetHop(mFrameSize);
+	}
 }
 
 void FlowControl::ProcessingConfigured( Processing & configured )
@@ -74,12 +75,6 @@ void FlowControl::ProcessingRemovedFromNetwork( Processing& removed )
 {
 	NetworkTopologyChanged();
 }
-
-void FlowControl::ConfigureNode( NodeBase& toConfigure ) const
-{
-	toConfigure.Configure( mFrameSize );
-}
-
 
 void FlowControl::DoProcessings()
 {

@@ -47,7 +47,7 @@ void ADSRConfig::DefaultInit(void)
 }
 
 ADSR::ADSR():
-mOutput("Audio Output",this,1),
+mOutput("Audio Output",this),
 mAmpValue(0),
 mLevel(0),
 mDLevel(0),
@@ -61,7 +61,7 @@ mAmplitude( "Amplitude", this, &ADSR::UpdateAmp )
 }
 
 ADSR::ADSR( const ADSRConfig& cfg ):
-mOutput("Audio Output",this,1),
+mOutput("Audio Output",this),
 mAmpValue(0),
 mLevel(0),
 mDLevel(0),
@@ -212,8 +212,8 @@ bool ADSR::Do( Audio& out)
 bool ADSR::Do()
 {	
 	bool res = false;
-	res = Do(mOutput.GetData());
-	mOutput.LeaveData();
+	res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 
 

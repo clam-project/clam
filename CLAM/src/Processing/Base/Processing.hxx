@@ -26,8 +26,7 @@
 
 #include "DynamicType.hxx"
 #include "Component.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
+
 #include "ErrProcessingObj.hxx"
 #include "PublishedInControls.hxx"
 #include "PublishedOutControls.hxx"
@@ -44,9 +43,10 @@
 namespace CLAM {
 
 	class Processing;
-	class Port;
-	class InPort;
-	class OutPort;
+	class InPortBase;
+	class OutPortBase;
+	class InControl;
+	class OutControl;
 	class ProcessingComposite;
 
 	/**
@@ -241,15 +241,10 @@ namespace CLAM {
 
 		void SetExecState( const ExecState& s ) { mState = s; }
 
-		void PublishOutPort(OutPort* out);
-		void PublishInPort(InPort* in);
+		void PublishOutPort(OutPortBase* out);
+		void PublishInPort(InPortBase* in);
 		void PublishOutControl(OutControl* out);
 		void PublishInControl(InControl* in);
-//		void LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const;// throw out_of_range;
-//		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
-//		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
-//		InControl* GetInControl(unsigned inId) const;
-//		OutControl* GetOutControl(unsigned inId) const;
 
 		/** Processing object composite iterator */
 		typedef std::list<Processing*>::iterator iterator;
@@ -389,6 +384,24 @@ namespace CLAM {
 		{
 			return mPublishedOutPorts;
 		}
+
+		InPortBase & GetInPort( const std::string & name )
+		{
+			return mPublishedInPorts.Get(name);
+		}
+		OutPortBase & GetOutPort( const std::string & name )
+		{
+			return mPublishedOutPorts.Get(name);
+		}
+		InControl & GetInControl( const std::string & name )
+		{
+			return mPublishedInControls.Get(name);
+		}		
+		OutControl & GetOutControl( const std::string & name )
+		{
+			return mPublishedOutControls.Get(name);
+		}
+
 
 	private:
 		PublishedInControls mPublishedInControls;

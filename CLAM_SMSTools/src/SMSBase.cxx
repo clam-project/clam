@@ -64,8 +64,8 @@ SMSBase::SMSBase()
 	mHaveTransformation = false;
 	mHaveAudioMorph = false;
 
-	mTransformation.mChainInput.Attach(mOriginalSegment);
-	mTransformation.mChainOutput.Attach(mTransformedSegment);
+	mTransformation.mpChainInput = &mOriginalSegment;
+	mTransformation.mpChainOutput = &mTransformedSegment;
 
 
 	mpAnalysis=new SMSAnalysis;
@@ -98,6 +98,7 @@ void SMSBase::InitConfigs(void)
 	/*global parameters*/
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
 	int resAnalWindowSize=mGlobalConfig.GetResAnalysisWindowSize();
+
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
@@ -139,7 +140,7 @@ void SMSBase::InitConfigs(void)
 	mSynthConfig.SetHopSize(synthFrameSize);
 
 	//Configure child Processings
-	GetAnalysis().Configure(mAnalConfig);
+	GetAnalysis().Configure(mAnalConfig);	
 	GetSynthesis().Configure(mSynthConfig);
 	
 }
@@ -290,9 +291,8 @@ void SMSBase::AnalysisProcessing()
 	int step=mAnalConfig.GetHopSize();
 	
 	GetAnalysis().Start();
-
 	while(GetAnalysis().Do(mOriginalSegment))
-	{      
+	{   
 		k=step*(mOriginalSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
@@ -502,7 +502,9 @@ void SMSBase::SynthesisProcessing()
 
 
 	mTransformedSegment.mCurrentFrameIndex=0;
-	for(i=0;i<nSynthFrames;i++){
+	
+	for(i=0;i<nSynthFrames;i++)
+	{
 		
 		if(GetSynthesis().Do(mTransformedSegment))
 		{
@@ -514,8 +516,6 @@ void SMSBase::SynthesisProcessing()
 		}
 		//else it is an analysis frame with negative center time and thus should not be used
 	}
-
-
 	mHaveAudioOut = true;
 
 	GetSynthesis().Stop();
@@ -786,9 +786,7 @@ void SMSBase::Transform()
 	DoTransformation();
 
 	DestroyProgressIndicator();	
-
 }
-
 
 void SMSBase::SetSMSMorphFileName()
 {
@@ -822,11 +820,11 @@ void SMSBase::TransformProcessing(void)
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
 
-	mTransformation.Start();
+	 mTransformation.Start();
 	int i = 0;
 	while(mTransformation.Do())
 	{
-		mCurrentProgressIndicator->Update(float(i++));
+	 	mCurrentProgressIndicator->Update(float(i++));
 	}
 	mTransformation.Stop();
 	mHaveTransformation=true;
@@ -856,9 +854,8 @@ void SMSBase::UpdateDataInTimeStretch()
 			concreteConfig.SetHopSize(mGlobalConfig.GetAnalysisHopSize());
 			(*cfg).AddConcreteConfig();
 			(*cfg).SetConcreteConfig(concreteConfig);
-		}
+		}	
 	}
-
 }
 
 

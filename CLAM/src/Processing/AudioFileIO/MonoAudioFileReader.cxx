@@ -25,14 +25,14 @@
 namespace CLAM
 {
 	MonoAudioFileReader::MonoAudioFileReader()
-		: mOutput( "Samples read", this, 1 ),
+		: mOutput( "Samples read", this  ),
 		  mNativeStream( NULL )
 	{
 		
 	}
 
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
-		: mOutput( "Samples read", this, 1 ),
+		: mOutput( "Samples read", this ),
 		  mNativeStream( NULL )
 	{
 		Configure( cfg );
@@ -110,8 +110,16 @@ namespace CLAM
 		
 		return true;
 	}
-
+	
 	bool MonoAudioFileReader::Do()
+	{
+		bool result = Do( mOutput.GetAudio() );
+		mOutput.Produce();
+
+		return result;
+	}
+
+	bool MonoAudioFileReader::Do( Audio & outputSamples )		
 	{
 		if ( !AbleToExecute() )
 			return false;
@@ -119,18 +127,13 @@ namespace CLAM
 		if ( mEOFReached )
 			return false;
 
-		Audio& outputSamples = mOutput.GetData();
-
-		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
-						      outputSamples.GetBuffer().GetPtr(),
-						      outputSamples.GetSize() );
-
+	
+		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(), outputSamples.GetBuffer().GetPtr(), outputSamples.GetSize() );
 		outputSamples.SetBeginTime( mCurrentBeginTime );
 		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
 		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 
-		mOutput.LeaveData();
 		return true;
 	}
 	

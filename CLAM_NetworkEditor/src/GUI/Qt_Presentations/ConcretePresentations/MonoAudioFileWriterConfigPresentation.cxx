@@ -29,8 +29,8 @@
 #include <qcombobox.h>
 #include <qvalidator.h>
 #include <qpushbutton.h>
-#include <iostream> // TODO:remove
 #include <string>
+
 namespace NetworkGUI
 {
 

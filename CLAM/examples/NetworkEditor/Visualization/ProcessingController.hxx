@@ -29,6 +29,7 @@
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
 #include "Processing.hxx"
+#include "InControl.hxx"
 
 #include <string>
 #include <list>

@@ -23,8 +23,8 @@
 #define _AUDIO_MIXER_HXX
 
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 #include "Audio.hxx"
 
 namespace CLAM
@@ -49,7 +49,7 @@ namespace CLAM
 	public:
 
 		InPortArrayTmpl<Audio> Input;
-		OutPortTmpl<Audio>     Output;
+		AudioOutPort     Output;
 
 	private:
 

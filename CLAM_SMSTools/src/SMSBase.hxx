@@ -356,6 +356,6 @@ namespace CLAM
 		void UpdateDataInTimeStretch();
 	};
 
-};
+}; //namespace CLAM
 
 #endif

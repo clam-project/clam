@@ -25,6 +25,9 @@
 #include "TopLevelProcessing.hxx"
 #include "ErrDynamicType.hxx"
 #include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 
 #include "mtgsstream.h" // An alias for <sstream>
 #include <cstring>
@@ -147,11 +150,11 @@ namespace CLAM {
 		}
 	}
 
-	void Processing::PublishOutPort(OutPort* out) 
+	void Processing::PublishOutPort(OutPortBase* out) 
 	{
 		mPublishedOutPorts.Publish(out);
 	}
-	void Processing::PublishInPort(InPort* in)
+	void Processing::PublishInPort(InPortBase* in)
 	{
 		mPublishedInPorts.Publish(in);
 	}

@@ -25,11 +25,13 @@
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "Audio.hxx"
-#include "AudioOutPortTmpl.hxx"
 #include <vector>
 
 namespace CLAM
 {
+
+	class AudioOutPort;
+	
 	class MultiChannelAudioFileReader 
 		: public Processing
 	{
@@ -54,8 +56,8 @@ namespace CLAM
 		
 	protected: // attributes
 
-		typedef std::vector< OutPortTmpl<Audio>* >  OutputVector;
-	  typedef std::vector< Audio* > OutRefsVector;
+		typedef std::vector< AudioOutPort* >  OutputVector;
+		typedef std::vector< Audio* > OutRefsVector;
 
 		MultiChannelAudioFileReaderConfig   mConfig;
 		OutputVector                        mOutputs;

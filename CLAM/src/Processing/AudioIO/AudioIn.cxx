@@ -56,7 +56,7 @@ bool AudioIn::ConcreteConfigure(const ProcessingConfig& c)
 		mStatus += "AudioIn::ConcreteConfigure(): "
 			       "Failed to register in AudioManager.";
 
-	Output.SetParams(mConfig.GetFrameSize());
+	mOutput.SetSize(mConfig.GetFrameSize());
 
 	return res;
 }
@@ -79,7 +79,7 @@ void AudioIn::GetDeviceInfo(AudioDevice::TInfo &info) const
 
 bool AudioIn::Do()
 {
-	bool res = Do(Output.GetData());
-	Output.LeaveData();
+	bool res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 }

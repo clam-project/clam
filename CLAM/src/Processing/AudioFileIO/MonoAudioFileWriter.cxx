@@ -26,13 +26,13 @@
 namespace CLAM
 {
 	MonoAudioFileWriter::MonoAudioFileWriter()
-		: mInput( "Samples to write", this, 1 ),
+		: mInput( "Samples to write", this ),
 		  mOutStream( NULL )
 	{
 	}
 
 	MonoAudioFileWriter::MonoAudioFileWriter( const ProcessingConfig& cfg )
-		: mInput( "Samples to write", this, 1 ),
+		: mInput( "Samples to write", this ),
 		  mOutStream( NULL )
 	{
 		Configure( cfg );
@@ -60,11 +60,14 @@ namespace CLAM
 
 	bool MonoAudioFileWriter::Do()
 	{
-		Audio& data = mInput.GetData();
-
-		mOutStream->WriteData( 0, data.GetBuffer().GetPtr(), data.GetSize() );
+		bool result = Do( mInput.GetAudio() );
+		mInput.Consume();
+		return result;		
+	}
 	
-		mInput.LeaveData();
+	bool MonoAudioFileWriter::Do( const Audio & data )
+	{
+		mOutStream->WriteData( 0, data.GetBuffer().GetPtr(), data.GetSize() );
 		return true;
 	}
 

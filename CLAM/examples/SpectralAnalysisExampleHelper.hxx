@@ -6,8 +6,8 @@
 #include "DataTypes.hxx"
 #include "ProcessingComposite.hxx"
 #include "ProcessingConfig.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "OutPort.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 #include "FFT_rfftw.hxx"
@@ -17,8 +17,8 @@
 #include "ZeroPadder.hxx"
 #include "CircularShift.hxx"
 #include "AudioMultiplier.hxx"
-#include "CircularStreamImpl.hxx"
-#include "StreamBuffer.hxx"
+//#include "CircularStreamImpl.hxx"
+//#include "StreamBuffer.hxx"
 #include "Text.hxx"
 #include "Filename.hxx"
 #include <list>
@@ -114,12 +114,8 @@ namespace CLAMExamples
 		CLAM::ZeroPadder       mZeroPadder;
 		
 		/** Ports */
-		CLAM::InPortTmpl< CLAM::Audio >                        mInput;
-		CLAM::OutPortTmpl< CLAMExamples::SpectralAnalysis  >   mOutput;
-
-		CLAM::AudioStreamBuffer< CLAM::CircularStreamImpl<CLAM::TData> >*  mStreamingBuffer;
-		CLAM::WriteStreamRegion*  mDataProvider;
-		CLAM::ReadStreamRegion*   mDataConsumer;
+		CLAM::AudioInPort				   mInput;
+		CLAM::OutPort< CLAMExamples::SpectralAnalysis  >   mOutput;
 
 	protected: // methods;
 		

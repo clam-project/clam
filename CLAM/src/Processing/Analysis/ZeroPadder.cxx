@@ -3,8 +3,8 @@
 namespace CLAM
 {
 	ZeroPadder::ZeroPadder()
-		: mInput( "Input samples", this, 1 ),
-		  mOutput( "Zero-padded samples", this, 1 )
+		: mInput( "Input samples", this ),
+		  mOutput( "Zero-padded samples", this )
 	{
 	}
 
