@@ -1,2 +1,0 @@
-+ Check that the endianess handling is not done elsewhere in CLAM
-  ( OSDefines.hxx o DataTypes.hxx )
