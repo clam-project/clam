@@ -372,9 +372,11 @@ def deployClamBuildSystem() :
 
 	# Setting the clam location
 	global sandboxes
+	os.chdir(CLAM_SANDBOXES)
 	for module, sandbox, tag, level in sandboxes :
-		clamlocationfile = sandbox+'/build/clam-location.cfg'
-		if not os.access(clamlocationfile, os.F_OK) : continue
+		clamlocationfile = sandbox + '/build/clam-location.cfg'
+		if not os.access(clamlocationfile, os.F_OK) :
+			continue
 		executeMandatory('echo \'CLAM_PATH = %s%s\' > %s' %(CLAM_SANDBOXES, SANDBOX_NAME, clamlocationfile))
 
 
