@@ -31,6 +31,8 @@
 #include "SMSSynthesis.hxx"//For Sinusoidal Synthesis
 #include "SpectrumSubstracter2.hxx"
 #include "SpectralAnalysis.hxx"
+#include "StreamBuffer.hxx"
+#include "CircularStreamImpl.hxx"
 
 #include "Flags.hxx"
 
@@ -57,8 +59,6 @@ class SMSAnalysisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
 	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
 	DYN_ATTRIBUTE(8,public, SynthSineSpectrumConfig,SynthSineSpectrum);
-	//DYN_ATTRIBUTE(9,protected, int, SinBufferSize);
-	//DYN_ATTRIBUTE(10,protected, int, ResBufferSize);
 
 	
 //Config shortcuts
@@ -129,7 +129,7 @@ public:
 	/** Unsupervised mode execution */
 	bool Do(Segment& in);
 	bool Do(Frame& in);
-	bool Do(const Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
+	bool Do(Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 
 	bool SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
 
@@ -160,10 +160,26 @@ private:
 	AudioCircularBuffer mSinCircularBuffer;
 	AudioCircularBuffer mResCircularBuffer;
 
+	//Trying to use stream buffers
+//	AudioStreamBuffer<CircularStreamImpl<TData> > mSinStreamBuffer;
+//	AudioStreamBuffer<CircularStreamImpl<TData> > mResStreamBuffer;
+	
+	AudioStreamBuffer<CircularStreamImpl<TData> > mStreamBuffer;
+	
+//	WriteStreamRegion* mSinWriter;
+//	WriteStreamRegion* mResWriter;
+
+	WriteStreamRegion* mWriter;
+	ReadStreamRegion* mSinReader;
+	ReadStreamRegion* mResReader;
+
 	//Internal audio objects used for convenience
 	Audio mSinAudioFrame;
 	Audio mResAudioFrame;
+	Audio mAudioFrame;
 
+	TSize mInitialOffset;
+	TSize mEndingOffset;
 
 #ifdef WITH_GUI
 #endif
