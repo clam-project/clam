@@ -159,10 +159,6 @@ namespace CLAMTest
 			inputFile.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
-			std::cout << "\n Original wave file sample count: ";
-			std::cout << (inputFile.GetHeader().GetLength()/1000) * inputFile.GetHeader().GetSampleRate();
-			std::cout << std::endl;
-
 			CLAM::AudioFile outputFile;
 			outputFile.SetLocation( "CopyOfElvis.ogg" );
 
@@ -218,10 +214,6 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader procReader2;
 			inputFile.SetLocation( "CopyOfElvis.ogg" );
 			cfgReader.SetSourceFile( inputFile );
-
-			std::cout << "\n CLAM-encoded OggVorbis file sample count: ";
-			std::cout << (inputFile.GetHeader().GetLength()/1000) * inputFile.GetHeader().GetSampleRate();
-			std::cout << std::endl;
 
 
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );

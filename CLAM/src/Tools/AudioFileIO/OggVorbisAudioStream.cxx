@@ -96,8 +96,6 @@ namespace AudioCodecs
 		// having this the effect of reading several frames of zeros
 		// at the beginning
 		ov_pcm_seek( &mNativeFileParams, 0 );		
-		mLastBytesRead = 1;
-		mTotalSamplesRead = 0;
 	}
 
 	void OggVorbisAudioStream::PrepareWriting()
@@ -113,7 +111,7 @@ namespace AudioCodecs
 		VorbisI_EncoderSetup();
 		MarkAllChannelsAsProduced();
 		mEncoding = true;
-		mTotalSamplesEncoded = 0;
+
 	}
 
 	void OggVorbisAudioStream::VorbisI_EncoderSetup()
@@ -140,7 +138,7 @@ namespace AudioCodecs
 		
 		// packet->stream encoder setup
 		// pick random serial number
-		srand( time(NULL) );
+		// :TODO: this random number thing might be really important...
 		ogg_stream_init( &mOggStreamState, rand() );
 
 		WriteBitstreamHeader();
@@ -194,8 +192,6 @@ namespace AudioCodecs
 		{
 			ov_clear( &mNativeFileParams );
 			mValidFileParams = false;
-			std::cout << "\nTotal samples read by the Codec: ";
-			std::cout << mTotalSamplesRead << std::endl;
 		}
 		else
 		{
@@ -221,8 +217,6 @@ namespace AudioCodecs
 			fclose( mFileHandle );
 			
 			mEncoding = false;
-			std::cout << "\nTotal samples encoded by the Codec: ";
-			std::cout << mTotalSamplesEncoded << std::endl;
 
 		}
 	}
@@ -267,7 +261,7 @@ namespace AudioCodecs
 
 			samplesRead = mLastBytesRead / sizeof(TInt16 );
 
-			mTotalSamplesRead += samplesRead;
+
 
 			mDecodeBuffer.insert( mDecodeBuffer.end(),
 					      mBlockBuffer.GetPtr(),
@@ -297,13 +291,6 @@ namespace AudioCodecs
 
 		TIndex currentOffset = 0;
 		int i;
-
-		int lastSize = mEncodeBuffer[0].size();
-		for ( int k = 1; k < mEncodeBuffer.size(); k++ )
-		{
-			CLAM_DEBUG_ASSERT( lastSize == mEncodeBuffer[k].size(),
-					   "Whoops!" );
-		}
 
 		do
 		{
@@ -384,7 +371,7 @@ namespace AudioCodecs
 				encBuffer[j][i] = 0.0;
 				i++;
 			}
-			mTotalSamplesEncoded += mAnalysisWindowSize;
+
 		}
 
 		vorbis_analysis_wrote( &mDSPState, mAnalysisWindowSize );

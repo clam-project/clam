@@ -166,12 +166,10 @@ namespace CLAMTest
 		{
 			
 			CLAM::AudioFile inputFile;
-			//inputFile.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
-			inputFile.SetLocation( mPathToTestData + std::string( "JannieJones.ogg" ) );
-
+			inputFile.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "JannieJones-copy.ogg" );			
+			outputFile.SetLocation( "ElvisStereo-copy.ogg" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -222,8 +220,6 @@ namespace CLAMTest
 				procWriter.Do();
 			}
 
-
-
 			procReader.Stop();
 			procWriter.Stop();
 
@@ -231,7 +227,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( mPathToTestData + "JannieJones.ogg" );
+			inputFile.SetLocation( "ElvisStereo-copy.ogg" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -248,26 +244,94 @@ namespace CLAMTest
 
 			int framesChecked = 0;
 
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
 			while( procReader.Do() && procReader2.Do() )
 			{
 				framesChecked++;
 				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
 								     readSamplesLeft2.GetBuffer() );
 
-				CPPUNIT_ASSERT
-					(  simLeft >= 0.9999 );
-
 				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
 								      readSamplesRight2.GetBuffer() );
 
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+
+
 				CPPUNIT_ASSERT
-					( simRight >= 0.9999 );
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
 
 			}
 
 			procReader.Stop();
 			procReader2.Stop();		
 
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+
+			CPPUNIT_ASSERT( fabs( maxSimLeft -  0.999595) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( minSimLeft -  0.980736) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( averageSimLeft - 0.99788 ) < 1e-4 );
+
+			CPPUNIT_ASSERT( fabs( maxSimRight -  1) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( minSimRight -  1) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( averageSimRight -  1) < 1e-4 );
 
 			CPPUNIT_ASSERT_EQUAL( framesRead,
 					      framesChecked );

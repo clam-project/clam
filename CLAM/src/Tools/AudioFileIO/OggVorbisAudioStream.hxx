@@ -70,10 +70,8 @@ namespace AudioCodecs
 		Array<TInt16>           mBlockBuffer;
 		std::vector<std::deque<TData> >       mEncodeBuffer;
 		std::deque<TInt16>      mDecodeBuffer;
+		
 		TSize                   mLastBytesRead;
-		TSize                   mTotalSamplesRead;
-		TSize                   mTotalSamplesEncoded;
-		bool                    mEndOfStream;
   	};
 }
 
