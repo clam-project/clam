@@ -56,13 +56,13 @@ namespace CLAM {
 
 
 	WaveGenerator::WaveGenerator()
-		: Output("Output",this,1)
+		: Output("Output",this)
 	{
 		Configure(WaveGeneratorConfig());
 	};
 
 	WaveGenerator::WaveGenerator(const WaveGeneratorConfig &c)
-		: Output("Output",this,1)
+		: Output("Output",this)
 	{ 
 		Configure(c);
 	};
@@ -108,7 +108,7 @@ namespace CLAM {
 	bool WaveGenerator::Do(void)
 	{
 		bool res = Do(Output.GetData());
-		Output.LeaveData();
+		Output.Produce();
 		return res;
 	}
 
