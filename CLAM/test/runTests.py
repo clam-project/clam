@@ -1,11 +1,14 @@
 #! /usr/bin/python
 
-# thoroughtnessLevel :
-# 0: only make and execute
-# 1: make depend and make clean
-# 2: cvs update
-# 3: remove & cvs checkout
-thoroughtnessLevel = 3  # at night we want 3
+# update level: 0-Keep, 1-Update, 2-CleanCheckout
+# when the sandbox is not present always clean checkout
+updateLevelForCLAM = 0
+updateLevelForExamples = 2
+updateLevelForTestData = 0
+
+# When false keeps already compiled objects
+doCleanMake = True
+
 enableSendMail = False
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
@@ -37,13 +40,13 @@ nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 #TODO max time allowed for each test -
 
 sandboxes = [ # Module, Sandbox, Tag, Update level
-	( 'CLAM', SANDBOX_NAME, MODULE_TAG, 0),
-	( 'CLAM_SMSTools', 'CLAM_SMSTools', '', 2 ),
-	( 'CLAM_Salto', 'CLAM_Salto', '', 2 ),
-	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', 2 ),
-	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', 2 ),
-	( 'CLAM_Voice2MIDI', 'CLAM_Voice2MIDI', '', 2 ),
-	( 'CLAM-TestData', 'CLAM-TestData', '', 0 )
+	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
+	( 'CLAM_SMSTools', 'CLAM_SMSTools', '', updateLevelForExamples ),
+	( 'CLAM_Salto', 'CLAM_Salto', '', updateLevelForExamples ),
+	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', updateLevelForExamples ),
+	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', updateLevelForExamples ),
+	( 'CLAM_Voice2MIDI', 'CLAM_Voice2MIDI', '', updateLevelForExamples ),
+	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
@@ -127,8 +130,7 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 		print msg
 		return
 	
-	# in case of network error, we better off save the mail in a file
-	file('last_mail_sent_by_tests.txt','w').write(msg)
+	file(CLAM_SANDBOXES + 'testslog.txt','w').write(msg)
 	
 	server = smtplib.SMTP('iua-mail.upf.es')
 	server.set_debuglevel(1)
@@ -239,7 +241,7 @@ def compileAndRun(name, path) :
 	# compilation phase
 	summary = details = s = d = ''
 	for configuration in configurations :
-		if thoroughtnessLevel >= 1 :
+		if doCleanMake :
 			getStatusOutput('make clean')
 			getStatusOutput('make depend')
 		makecmd = 'make CONFIG=%s' % (configuration)
@@ -389,42 +391,29 @@ def runTests() :
 	global totalSummary, totalDetails		
 	subj = [subject]
 	report = []
-	if thoroughtnessLevel <3 :
-		checkPaths()
-	# CVS phase
-	if thoroughtnessLevel >= 3 :
-		if 'CVSROOT' not in os.environ :
-			print 'warning: CVSROOT not found in environ'
-			os.environ['CVSROOT'] = CVSROOT
+	if 'CVSROOT' not in os.environ :
+		print 'warning: CVSROOT not found in environ'
+		os.environ['CVSROOT'] = CVSROOT
 
-		os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
-		os.chdir(CLAM_SANDBOXES)
-		#sanity check
-		if SANDBOX_NAME in ['devel','CLAM'] : 
-			sendError( 'ups, trying to remove devel sandbox !!' )
-			sys.exit(-1)
+	os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
+	os.chdir(CLAM_SANDBOXES)
+	#sanity check
+	if SANDBOX_NAME in ['devel','CLAM'] : 
+		sendError( 'ups, trying to remove devel sandbox !!' )
+		sys.exit(-1)
 
-		updateSandboxes()
-		checkPaths();
-		deployClamBuildSystem()
+	updateSandboxes()
+	checkPaths();
+	deployClamBuildSystem()
 
-		# LinkSaltoDataFolder
-#		os.chdir(CLAM_SANDBOXES + SANDBOX_NAME+ '/build/Examples/Salto')
-#		executeMandatory('ln -s ' + SALTO_DATA_FOLDER)
-	elif thoroughtnessLevel >= 2 :
-		os.chdir(BUILDPATH)
-		print 'updating repository: cvs update'
-		ok, output = getStatusOutput( 'cvs update -d' )
-		if output.find('\nC ')>=0 :
-			print 'CVS CONFLICT !!', output
-			summary += 'CVS CONFLICT(S) !!'
-			details += output
+	# LinkSaltoDataFolder
+#	os.chdir(CLAM_SANDBOXES + SANDBOX_NAME+ '/build/Examples/Salto')
+#	executeMandatory('ln -s ' + SALTO_DATA_FOLDER)
 
 	# compile and run/tests entries
 	for name, path in testsToRun :
 		print '\n\nname\t\t %s \npath \t\t%s \n' % (name, path)
 		summary, details  = compileAndRun(name, path)
-		#TODO a refactoring this huge line -> create class
 		totalSummary.append(summary)
 		totalDetails.append(details)
 
@@ -462,3 +451,4 @@ if __name__ == '__main__':
 		print 'interrupted by the user'
 	except:
 		sendError()
+
