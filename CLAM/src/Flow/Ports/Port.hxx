@@ -64,11 +64,11 @@ namespace CLAM {
 		/** Number of data objects discarded in each Do */
 		unsigned int mHop;
 	public:
-		Port(const std::string &n, Processing *o, int l, int hop = 0) : 
+		Port(const std::string &n, Processing *o, int length, int hop = 0) : 
 			mName(n),
 			mObject(o),
-			mLength(l),
-			mHop(hop?hop:l)
+			mLength(length),
+			mHop(hop?hop:length)
 		{};
 
 		virtual ~Port() {}
@@ -86,7 +86,7 @@ namespace CLAM {
 		void SetParams(unsigned int length,
 		               unsigned int hop = 0)
 		{
-//			CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
+			CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
 			mLength = length;
 			mHop = hop?hop:length;
 		}
