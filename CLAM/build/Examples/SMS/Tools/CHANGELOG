@@ -7,6 +7,13 @@ TODOs:
 	    erased from main UI ( X-Windows only )
 
 	
+
+9999-99-99
+
+  * SMS Tools 2 - v.0.1.3
+      ** General issues:
+	 *** Bug Fixed: When SMS Tools is provided with an stereo WAVE/AIFF File it should no longer
+	     crash
 	
 2003-08-01
 'Bug fixing and SMS Morph editor improvements'

@@ -69,6 +69,10 @@ protected: // methods
 	void DoMorphTracksCleanup();
 
 	bool LoadAnalysis();
+	virtual bool LoadSound(const std::string& filename,CLAM::Segment& segment);
+
+	virtual bool LoadInputSound();
+
 	void StoreAnalysis();
 	void ExecuteMelodyAnalysis();
 	void AnalyzeMelody();

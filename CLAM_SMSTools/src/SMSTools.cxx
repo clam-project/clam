@@ -20,6 +20,7 @@
  */
 
 #include "SMSTools.hxx"
+#include "AudioFileIn.hxx"
 #include <iostream>
 #include <fstream>
 #include <FL/Fl.H>
@@ -154,6 +155,72 @@ namespace CLAMGUI
 	{
 		SMSBase::LoadTransformationScore( inputFilename );
 		ScoreChanged.Emit( GetCurrentTransformationScore() );
+	}
+
+	bool SMSTools::LoadInputSound(void)
+	{
+		mHaveAudioIn = LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment());
+
+		if ( !mHaveAudioIn )
+		{
+			fl_message( "Input sound unavailable. No analysis can be performed" );
+		}
+
+		mHaveAudioMorph = LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment);
+		return mHaveAudioIn;
+	}
+
+	bool SMSTools::LoadSound(const std::string& filename, CLAM::Segment& segment)
+	{
+		CLAM::AudioFileIn myAudioFileIn;
+		CLAM::AudioFileConfig infilecfg;
+
+		if ( filename == "" ) // No file specified
+		{
+			return false;
+		}
+
+		infilecfg.SetFilename(filename);
+		infilecfg.SetFiletype(CLAM::EAudioFileType::eWave);
+		if(!myAudioFileIn.Configure(infilecfg))
+		{
+			fl_message(
+				"The file you specified in the configuration does not exists\n"
+				"or it is encoded in an unsupported format."
+				);
+			return false;
+		}
+		
+		if ( myAudioFileIn.Channels() > 1 )
+		{
+			fl_message( 
+				"Sorry, but the input sound you specified in the configuration\n"
+				"is not a mono file. Currently, SMS Tools doesn't support non\n"
+				"mono files."
+				);
+
+			return false;
+		}
+		/////////////////////////////////////////////////////////////////////////////
+		// Initialization of the processing data objects :
+		CLAM::TSize fileSize=myAudioFileIn.Size();
+
+		SetSamplingRate(myAudioFileIn.SampleRate());
+		
+		// Spectral Segment that will actually hold data
+		float duration=fileSize/mSamplingRate;
+		segment.SetEndTime(duration);
+		segment.SetSamplingRate(mSamplingRate);
+		segment.mCurrentFrameIndex=0;
+		segment.GetAudio().SetSize(fileSize);
+		segment.GetAudio().SetSampleRate(mSamplingRate);
+		
+
+		//Read Audio File
+		myAudioFileIn.Start();
+		myAudioFileIn.Do(segment.GetAudio());
+		myAudioFileIn.Stop();
+		return true;
 	}
 
 	

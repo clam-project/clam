@@ -188,12 +188,12 @@ namespace CLAM
 		void StoreSound(const std::string& filename,const Audio& audio);
 		
 		/** Load input sound */
-		bool LoadInputSound(void);
+		virtual bool LoadInputSound(void);
 		/** Load sound to morph*/
 		bool LoadMorphSound(void);
 
 		/** General method for loading a sound */
-		bool LoadSound(const std::string& filename,Segment& segment);
+		virtual bool LoadSound(const std::string& filename,Segment& segment);
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */

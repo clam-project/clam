@@ -86,7 +86,6 @@ bool UserInterface::LoadSound(void)
 	mSMS->LoadInputSound();
 	if ( !mSMS->mHaveAudioIn )
 	{
-		fl_alert( "Unable to open the Input sound file!");
 		ApplyInitialState();
 		return false;
 	}
