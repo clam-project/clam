@@ -28,7 +28,6 @@ public:
 	//! implementation of the virtual method declared in InPort
 	void Attach(ProcessingData& data);
 	inline void Attach(T& data);
-	//! implementation of the virtual method declared in InPort
 	void Attach( NodeBase&);
 	inline void Attach(Node<T> &n);
 	inline void Attach(InPortTmpl<T> &p); // For composites
@@ -37,6 +36,7 @@ public:
 	ProcessingData* GetProcessingData();
 	NodeBase* GetNode();
 	bool IsAttached();
+	bool IsReadyForReading();
 	void Unattach();
 };
 
@@ -155,6 +155,13 @@ inline bool InPortTmpl<T>::IsAttached()
 }
 
 template<class T>
+inline bool InPortTmpl<T>::IsReadyForReading()
+{
+	CLAM_ASSERT( GetNode()!=0, "InPortTmpl<T>::IsReadyForReading() only makes sense when Port attached to Node" );
+	return mpNode->CanActivateRegion( *mpRegion );
+}
+
+template<class T>
 inline void InPortTmpl<T>::Unattach()
 {
 	if( !IsAttached() )
@@ -166,7 +173,7 @@ inline void InPortTmpl<T>::Unattach()
 		mpNode = 0;
 		mpRegion = 0;
 	}
-	mData.SetPtr(NULL);
+	mData.SetPtr(0);
 }
 	
 

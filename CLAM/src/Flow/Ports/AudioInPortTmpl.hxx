@@ -29,6 +29,7 @@ public:
 	ProcessingData* GetProcessingData();
 	NodeBase* GetNode();
 	bool IsAttached();
+	bool IsReadyForReading();
 	void Unattach();
 };
 
@@ -113,6 +114,14 @@ inline bool InPortTmpl<Audio>::IsAttached()
 {
 	return mpData || mpNode;
 }
+
+inline bool InPortTmpl<Audio>::IsReadyForReading()
+{
+	CLAM_ASSERT( GetNode()!=0, "InPortTmpl<Audio>::IsReadyForReading() only makes sense when Port attached to Node" );
+	return mpNode->CanActivateRegion( *mpRegion );
+}
+
+
 inline void InPortTmpl<Audio>::Unattach()
 {
 	if( !IsAttached() )

@@ -25,6 +25,7 @@ public:
 	bool CanDoInplace(void)  {return mCanDoInplace;}
 	
 	bool IsConnectedTo( OutPort& out );
+	virtual bool IsReadyForReading() = 0;
 };
 
 
