@@ -167,7 +167,7 @@ SpectralAnalysis::~SpectralAnalysis()
 {
 }
 
-bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
+bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 	ConfigureChildren();

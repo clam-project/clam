@@ -216,7 +216,7 @@ SMSAnalysis::~SMSAnalysis()
 {
 }
 
-bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
+bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 	ConfigureChildren();
