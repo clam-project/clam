@@ -69,7 +69,7 @@ namespace CLAM
 
 	bool AutocorrelationEvaluator::ConcreteStop()
 	{
-		return false;
+		return true;
 	}
 
 	void AutocorrelationEvaluator::CheckTypes( const Audio& in, const Correlation& out) const
@@ -109,7 +109,7 @@ namespace CLAM
 		{
 			for( n = 0; n < in.GetSize(); n++ )
 			{
-				if( n < k )
+				if( n < k )	// k is out of the segment
 					outBuffer[ k ] = 0;
 				else
 					outBuffer[ k ] += inBuffer[ n ] * inBuffer[ n - k ] ;
@@ -144,7 +144,7 @@ namespace CLAM
 				( *outBuffer ) += ( *inBuffer++ ) * ( *inBuffer2++ );
 
 			inBuffer = in.GetBuffer().GetPtr();
-			outBuffer ++;
+			outBuffer++;
 			k++;
 		}
 
