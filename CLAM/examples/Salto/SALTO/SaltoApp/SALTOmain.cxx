@@ -1,10 +1,10 @@
 #define SALTO_CONSOLE
 #ifndef SALTO_CONSOLE
 #include "SALTOApplication.hxx"
-using SALTO::Application;
+typedef SALTO::Application SaltoApplication;
 #else 
 #include "SALTOConsoleApplication.hxx"
-typedef SALTO::ConsoleApplication Application;
+typedef SALTO::ConsoleApplication SaltoApplication;
 #endif
 #include "Err.hxx"
 #include <exception>
@@ -14,7 +14,7 @@ int main( int argc, char** argv )
 {
 	try
 		{
-			Application app;
+			SaltoApplication app;
 			app.Run( argc, argv );
 		}
 	catch ( Err& e )
