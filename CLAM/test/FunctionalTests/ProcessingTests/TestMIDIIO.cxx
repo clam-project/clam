@@ -8,34 +8,37 @@ using namespace CLAM;
 
 main()
 {
+	char* indevice = "file:zefile.mid";
+	char* outdevice = "textfile:test.txt";
+	
 	MIDIManager manager;
 	MIDIInConfig inNoteCfg;
 	MIDIOutConfig outNoteCfg;
 
-	inNoteCfg.SetDevice("file:test.mid");
-	inNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff));
-	inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1));
-	
-	MIDIClockerConfig clockerCfg;
+	MIDIClockerConfig inpClockerCfg;
+	MIDIClockerConfig outClockerCfg;
 
-	clockerCfg.SetDevice("file:test.mid");
+	inpClockerCfg.SetDevice(indevice);
+	outClockerCfg.SetDevice(outdevice);
 		
-	MIDIClocker clocker(clockerCfg);
+	MIDIClocker inpClocker(inpClockerCfg);
+	MIDIClocker outClocker(outClockerCfg);
+
+	inNoteCfg.SetDevice(indevice);
+	inNoteCfg.SetMessage(MIDI::eNoteOnOff);
 	
-	outNoteCfg.SetDevice("textfile:test.txt");
-	outNoteCfg.SetMessage(MIDI::eNoteOn);
-	outNoteCfg.SetChannel(1);
+	outNoteCfg.SetDevice(outdevice);
+	outNoteCfg.SetMessage(MIDI::eNoteOnOff);
 
 	MIDIInControl inNote(inNoteCfg);
 	MIDIOutControl outNote(outNoteCfg);
 	
 	//control for stoping at eof 
+	
 	MIDIInConfig inStopCfg;
-	inStopCfg.SetDevice("file:test.mid");
-	inStopCfg.SetChannelMask(CLAM::MIDI::SysMsgMask(CLAM::MIDI::eStop)); //it is a sys message that uses channel byte for actual data
-	inStopCfg.SetMessageMask(CLAM::MIDI::MessageMask(CLAM::MIDI::eSystem));
+	inStopCfg.SetDevice(indevice);
+	inStopCfg.SetChannel(CLAM::MIDI::eStop); //it is a sys message that uses channel byte for actual data
+	inStopCfg.SetMessage(CLAM::MIDI::eSystem);
 	
 	MIDIInControl inStop(inStopCfg);
 	InControl stopReceiver("stop-receiver");
@@ -48,19 +51,17 @@ main()
 	inNote.GetOutControls().GetByNumber(1).AddLink(
 			&outNote.GetInControls().GetByNumber(1));
 	inNote.GetOutControls().GetByNumber(2).AddLink(
-			&outNote.GetInControls().GetByNumber(0));
-	inNote.GetOutControls().GetByNumber(3).AddLink(
-			&outNote.GetInControls().GetByNumber(1));
+			&outNote.GetInControls().GetByNumber(2));
 	
 	manager.Start();
 
-	TTime curTimeInc = 10;
 	TTime curTime = 0;
 
 	while (stopReceiver.GetLastValue()==0)
 	{
 		//we send a timing control to the MIDI clocker 
-		clocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		inpClocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		outClocker.GetInControls().GetByNumber(0).DoControl(curTime);
 		
 		//we check for new events in the MIDI manager
 		manager.Check();
