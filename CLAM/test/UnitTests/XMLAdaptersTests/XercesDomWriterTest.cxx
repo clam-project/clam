@@ -2,6 +2,7 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "XercesDomWriter.hxx"
+#include "XercesInitializer.hxx"
 #include "XercesEncodings.hxx"
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>
@@ -35,7 +36,7 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		xercesc::XMLPlatformUtils::Initialize();
+		XercesInitializer::require();
 		mTargetStream.str("");
 		xercesc::DOMImplementation * imp = 
 			xercesc::DOMImplementation::getImplementation();
@@ -50,7 +51,6 @@ public:
 	void tearDown()
 	{
 		mDocument->release();
-		xercesc::XMLPlatformUtils::Terminate();
 	}
 
 private:

@@ -3,6 +3,7 @@
 
 #include "XercesDomWriter.hxx"
 #include "XercesDomReader.hxx"
+#include "XercesInitializer.hxx"
 #include "XercesEncodings.hxx"
 #include <sstream>
 
@@ -34,14 +35,13 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		xercesc::XMLPlatformUtils::Initialize();
+		XercesInitializer::require();
 		mTargetStream.str("");
 	}
 
 	/// Common clean up, executed after each test method
 	void tearDown()
 	{
-		xercesc::XMLPlatformUtils::Terminate();
 	}
 
 private:
