@@ -2,16 +2,16 @@
 
 namespace CLAMGUI
 {
-	Signal::tSlotId        Signal::smLastSlotId = 0;
-	Signal::tSlotIdStack   Signal::smFreeIdStack;
+	Signal::tConnectionId        Signal::smLastConnectionId = 0;
+	Signal::tConnectionIdStack   Signal::smFreeIdStack;
 
-	Signal::tSlotId Signal::AssignSlot()
+	Signal::tConnectionId Signal::AssignConnection()
 	{
-		tSlotId id;
+		tConnectionId id;
 		if ( smFreeIdStack.empty() )
 			{
-				id = smLastSlotId;
-				smLastSlotId++;
+				id = smLastConnectionId;
+				smLastConnectionId++;
 				return id;
 			}
 		else
@@ -22,8 +22,8 @@ namespace CLAMGUI
 			}
 	}
 
-	void Signal::FreeSlotId( Signal::tSlotId freedSlotId )
+	void Signal::FreeConnectionId( Signal::tConnectionId freedConnectionId )
 	{
-		smFreeIdStack.push( freedSlotId );
+		smFreeIdStack.push( freedConnectionId );
 	}
 }

@@ -8,25 +8,25 @@
 namespace CLAMGUI
 {
 
-class Slot;
+class Connection;
 
 class Signal
 {
 public:
-	typedef unsigned  tSlotId;
+	typedef unsigned  tConnectionId;
 
-	virtual void FreeSlot( Slot* ) = 0;
+	virtual void FreeConnection( Connection* ) = 0;
 
 protected:
-	void FreeSlotId( tSlotId );
-	tSlotId AssignSlot();
+	void FreeConnectionId( tConnectionId );
+	tConnectionId AssignConnection();
 
 	// Types
-	typedef std::stack< unsigned >      tSlotIdStack;
+	typedef std::stack< unsigned >      tConnectionIdStack;
 protected:
 	
-	static tSlotIdStack  smFreeIdStack;
-    static tSlotId       smLastSlotId;
+	static tConnectionIdStack  smFreeIdStack;
+    static tConnectionId       smLastConnectionId;
 };
 
 }

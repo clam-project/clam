@@ -3,7 +3,7 @@
 
 #include "Functor1.hxx"
 #include "Signal.hxx"
-#include "Slot.hxx"
+#include "Connection.hxx"
 
 // MRJ: Argh! I hate this, but I hope at least this is a
 // quite clear way to differentiate both implementations

@@ -12,7 +12,7 @@ template < typename ParmType1 >
 {
 public:
 		typedef typename CBL::Functor1<ParmType1>                  tCallbackType;
-		typedef std::pair<tSlotId, tCallbackType>                  tCallback;
+		typedef std::pair<tConnectionId, tCallbackType>                  tCallback;
 		typedef tCallbackType*                                     tCallbackPtr;
 		typedef std::list<tCallbackPtr>                            tCallList;
 		typedef std::list<tCallbackPtr >::iterator                 tCallIterator;
@@ -22,9 +22,9 @@ public:
 
 protected:		
 
-		void AddCallback( tSlotId pSlot, tCallbackType cb )
+		void AddCallback( tConnectionId pConnection, tCallbackType cb )
 		{
-				mCallbacks.push_back( tCallback( pSlot, cb ) );
+				mCallbacks.push_back( tCallback( pConnection, cb ) );
 		}
 		
 		bool HasNoCallbacks( ) const
@@ -48,7 +48,7 @@ protected:
 				return mCalls;
 		}
 		
-		void RemoveCall(  tSlotId id )
+		void RemoveCall(  tConnectionId id )
 		{
 				tCbListIterator i = mCallbacks.begin();
 				tCbListIterator end = mCallbacks.end();
@@ -68,9 +68,9 @@ protected:
 public:
 	
 	template < class RefType, typename PtrMember >
-		Slot Connect( RefType thisRef, PtrMember pMember )
+		Connection Connect( RefType thisRef, PtrMember pMember )
 	{
-		Slot s( AssignSlot(), this );
+		Connection s( AssignConnection(), this );
 
 		AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
 
@@ -78,9 +78,9 @@ public:
 	}
 
 	template < typename PtrFunction >
-		Slot Connect( PtrFunction pMember )
+		Connection Connect( PtrFunction pMember )
 	{
-		Slot s( AssignSlot(), this );
+		Connection s( AssignConnection(), this );
 
 		AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
 
@@ -104,10 +104,10 @@ public:
 		
 	}
 
-	void FreeSlot( Slot* pSlot )
+	void FreeConnection( Connection* pConnection )
 	{
-		RemoveCall( pSlot->GetID() );
-		FreeSlotId( pSlot->GetID() );
+		RemoveCall( pConnection->GetID() );
+		FreeConnectionId( pConnection->GetID() );
 	}
 
 private:

@@ -19,9 +19,9 @@ public:
 public:
 	
 	template < class RefType, typename PtrMember >
-		Slot Connect( RefType thisRef, PtrMember pMember )
+		Connection Connect( RefType thisRef, PtrMember pMember )
 	{
-		Slot s( AssignSlot(), this );
+		Connection s( AssignConnection(), this );
 
 		mSuper.AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
 
@@ -29,9 +29,9 @@ public:
 	}
 
 	template < typename PtrFunction >
-		Slot Connect( PtrFunction pMember )
+		Connection Connect( PtrFunction pMember )
 	{
-		Slot s( AssignSlot(), this );
+		Connection s( AssignConnection(), this );
 
 		mSuper.AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
 
@@ -55,10 +55,10 @@ public:
 		
 	}
 
-	void FreeSlot( Slot* pSlot )
+	void FreeConnection( Connection* pConnection )
 	{
-		mSuper.RemoveCall( pSlot->GetID() );
-		FreeSlotId( pSlot->GetID() );
+		mSuper.RemoveCall( pConnection->GetID() );
+		FreeConnectionId( pConnection->GetID() );
 	}
 private:
 	typedef Signalv1<ParmType1>                          tSignalType;

@@ -3,7 +3,7 @@
 
 #include <list>
 #include <utility>
-#include "Slot.hxx"
+#include "Connection.hxx"
 
 namespace CLAMGUI
 {
@@ -13,8 +13,8 @@ class ConnectionHandler
 {
 public:
 		typedef typename SignalType::tCallbackType                 tCallbackType;
-		typedef typename SignalType::tSlotId                       tSlotId;
-		typedef std::pair<tSlotId, tCallbackType>                  tCallback;
+		typedef typename SignalType::tConnectionId                 tConnectionId;
+		typedef std::pair<tConnectionId, tCallbackType>            tCallback;
 		typedef tCallbackType*                                     tCallbackPtr;
 		typedef std::list<tCallbackPtr>                            tCallList;
 		typedef typename std::list<tCallbackPtr >::iterator        tCallIterator;
@@ -24,9 +24,9 @@ public:
 		
 public:
 		
-		void AddCallback( tSlotId pSlot, tCallbackType cb )
+		void AddCallback( tConnectionId pConnection, tCallbackType cb )
 		{
-				mCallbacks.push_back( tCallback( pSlot, cb ) );
+				mCallbacks.push_back( tCallback( pConnection, cb ) );
 		}
 		
 		bool HasNoCallbacks( ) const
@@ -50,7 +50,7 @@ public:
 				return mCalls;
 		}
 		
-		void RemoveCall(  tSlotId id )
+		void RemoveCall(  tConnectionId id )
 		{
 				tCbListIterator i = mCallbacks.begin();
 				tCbListIterator end = mCallbacks.end();

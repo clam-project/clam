@@ -1,31 +1,27 @@
 #ifndef __SLOT__
 #define __SLOT__
 
+#include "Connection.hxx"
+#include <list>
+
 namespace CLAMGUI
 {
 
-class Signal;
-
 class Slot
 {
-	typedef unsigned tSlotId;
+		typedef std::list<Connection> tConnectionList;
+
 public:
-	Slot();
-	Slot( tSlotId id, Signal* connectedSignal );
-	Slot& operator=( Slot& s );
-	Slot( Slot& s );
 
-	tSlotId GetID() const
-	{
-		return mID;
-	}
+		void Bind( Connection& conn );
 
-	~Slot();
+		void Unbind();
+
+		~Slot();
 
 private:
-	bool    mMustFreeSignal;
-	tSlotId mID;
-	Signal* mConnectedSignal;
+
+		tConnectionList     mActiveConnections;
 };
 
 }
