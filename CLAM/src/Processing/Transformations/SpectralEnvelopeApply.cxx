@@ -118,8 +118,8 @@ namespace CLAM {
 		for(i=0;i<nPeaks;i++)
 		{
 			ophaseBuffer[i]=iphaseBuffer[i];
-			ofreqBuffer[i]=ifreqBuffer[i];
 			omagBuffer[i]=spectralEnvelope.GetMag((TData)ifreqBuffer[i]);
+			ofreqBuffer[i]=ifreqBuffer[i];
 		}
 		
 		return true;
