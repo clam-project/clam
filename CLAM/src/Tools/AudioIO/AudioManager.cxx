@@ -126,8 +126,8 @@ AudioDevice* AudioManager::FindOrCreateDevice(const std::string& name)
 	{
 		std::string errstr;
 		errstr = "AudioManager::FindOrCreateDevice(): "
-			"No device \""+device+"\" available in architecture \""+arch+"\".\n";
-		" Maybe you are not specifying any library to play sound (alsa, rtaudio...)\n";
+			"No device \""+device+"\" available in architecture \""+arch+"\".\n"
+			" Maybe you are not specifying any library to play sound (alsa, rtaudio...)\n";
 		throw Err((char*) errstr.c_str());
 	}
 
