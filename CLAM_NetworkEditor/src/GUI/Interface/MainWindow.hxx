@@ -14,6 +14,7 @@ namespace NetworkGUI
 
 class MainWindow : public QMainWindow
 {
+	Q_OBJECT
 public:
 	MainWindow();
 	virtual ~MainWindow();
@@ -21,7 +22,7 @@ public:
 
 private:
 	void OnNewMessageToStatus( const std::string & );
-	void OnNewChangeOnNetworkState( bool );
+//	void OnNewChangeOnNetworkState( bool );
 	void Start();
 	void Stop();
 
@@ -31,6 +32,12 @@ private:
 
 public: //slots
 	SigSlot::Slotv1< const std::string & > NewMessageToStatus;
+
+ public slots:
+ void LoadNetwork();
+	void SaveNetwork();
+	void NewNetwork(); 
+	void SaveAsNetwork();
 
 };
 
