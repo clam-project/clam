@@ -8,6 +8,7 @@
 using CLAM::TData;
 using CLAM::TSize;
 using CLAM::TIndex;
+using CLAM::Array;
 
 // MRJ: As soon as these are inside the SALTO namespace
 // this will be changed

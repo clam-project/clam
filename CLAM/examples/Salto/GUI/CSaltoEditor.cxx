@@ -25,7 +25,10 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Dial.H>
 
+#include "CSaltoSegData.hxx"
+
 using CLAM::CSaltoStatTmplData;
+using CLAM::CSaltoSegData;
 
 const int TP_FUNCTIONS_X = 200;
 const int TP_FUNCTIONS_Y = 660;
