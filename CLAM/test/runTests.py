@@ -2,7 +2,7 @@
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 0
+updateLevelForCLAM = 1
 updateLevelForExamples = 0
 updateLevelForTestData = 0
 
@@ -71,9 +71,9 @@ externalApplications = [
 ]
 
 supervisedTests = [
-	('SpectralPeaksPresentation', spvTestsPath+'SpectralPeaksPresentation/' ), 
-	('SpectrumPresentation', spvTestsPath+'SpectrumPresentation/' ),
-	('AudioPresentation', spvTestsPath+'AudioPresentation/' ),
+	('SpectralPeaksPresentationTest', spvTestsPath+'SpectralPeaksPresentation/' ), 
+	('SpectrumPresentationTest', spvTestsPath+'SpectrumPresentation/' ),
+	('AudioPresentationTest', spvTestsPath+'AudioPresentation/' ),
 	('FunFreqPresentationTest', spvTestsPath+'FundFreqPresentation/' ),
 #	('AudioIOTest', spvTestsPath+'AudioIO/' ), TODO: fix. now needs root access and consumes all cpu
 	('MIDIIOTest', spvTestsPath+'MIDIIO/' ),
@@ -111,8 +111,8 @@ testsToRun = []
 #    this makes debugging easier
 #testsToRun[-1:-1] = externalApplications 
 testsToRun[-1:-1] = supervisedTests
-testsToRun[-1:-1] = notPortedTests
-testsToRun[-1:-1] = automaticTests 
+#testsToRun[-1:-1] = notPortedTests
+#testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
