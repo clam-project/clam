@@ -193,6 +193,13 @@ void UserInterface::cb_mShowSynthesizedResidualMenuItem(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mShowSynthesizedResidualMenuItem_i(o,v);
 }
 
+inline void UserInterface::cb_mHelpLauchLicense_i(Fl_Menu_*, void*) {
+  DisplayLicense();
+}
+void UserInterface::cb_mHelpLauchLicense(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mHelpLauchLicense_i(o,v);
+}
+
 inline void UserInterface::cb_About_i(Fl_Menu_*, void*) {
   AboutWindow();
 }
@@ -255,7 +262,8 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {0},
  {0},
  {"Help", 0,  0, 0, 64, 0, 0, 12, 56},
- {"About", 0,  (Fl_Callback*)UserInterface::cb_About, 0, 0, 0, 0, 12, 56},
+ {"License...", 0,  (Fl_Callback*)UserInterface::cb_mHelpLauchLicense, 0, 0, 0, 0, 12, 56},
+ {"About SMSTools 2...", 0,  (Fl_Callback*)UserInterface::cb_About, 0, 0, 0, 0, 12, 56},
  {0},
  {0}
 };
@@ -300,6 +308,7 @@ Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu
 Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 49;
 Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 50;
 Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 53;
+Fl_Menu_Item* UserInterface::mHelpLauchLicense = UserInterface::menu_mMenuBar + 54;
 
 inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
   ChangeFrame();

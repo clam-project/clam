@@ -46,10 +46,11 @@ namespace CLAMGUI
 		
 		log.close();
 
-		fl_message( "Sorry, but SMSTools has crashed. You may send us a bug-report through"
-			    "our web (http://www.iua.upf.es/mtg/clam). Please, do not forget to send"
-			    "us the SMSTools2_errors.log file that can be located in SMSTools 2 folder.");
-				
+		Fl::lock();
+		fl_message( "Sorry, but SMSTools has crashed. You may send us a bug-report through\n"
+			    "our web (http://www.iua.upf.es/mtg/clam). Please, do not forget to send\n"
+			    "us the SMSTools2_errors.log file that can be located in SMSTools 2 folder.\n");
+		Fl::unlock();
 	}
 
 	void RedirectWarningToLogFile( const char* message, const char* filename, int lineNumber)
