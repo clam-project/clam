@@ -88,6 +88,32 @@ namespace CLAM {
 		if (GetExecState() == Disabled)
 			return true;
 
+		
+		//First, we get values of the internal controls
+		TData magFactor=mMagInterpolationFactorCtl.GetLastValue();
+		TData freqFactor=mFreqInterpolationFactorCtl.GetLastValue();
+
+		TData pitch1=mPitch1Ctl.GetLastValue();
+		TData pitch2=mPitch2Ctl.GetLastValue();
+		TData pitchFactor=mPitchInterpolationFactorCtl.GetLastValue();
+
+		//we then chek if interpolation really needs to be done
+		if(magFactor>0.99&&freqFactor>0.99&&pitchFactor>0.99)
+		{
+			//we return target spectral peak array
+			out=in2;
+			return true;
+		}
+		if(magFactor<0.01&&freqFactor<0.01&&pitchFactor<0.01)
+		{
+			//we return source spectral peak array
+			out=in1;
+			return true;
+		}
+		
+
+		//else, it means we are in a intermediate point and we need to interpolate
+
 		//we need to copy input peak arrays to convert them to linear
 		SpectralPeakArray tmpIn1=in1;
 		SpectralPeakArray tmpIn2=in2;
@@ -126,12 +152,6 @@ namespace CLAM {
 		
 		TData factor2=(TData)nPeaks2/nPeaks1;
 		
-		TData magFactor=mMagInterpolationFactorCtl.GetLastValue();
-		TData freqFactor=mFreqInterpolationFactorCtl.GetLastValue();
-
-		TData pitch1=mPitch1Ctl.GetLastValue();
-		TData pitch2=mPitch2Ctl.GetLastValue();
-		TData pitchFactor=mPitchInterpolationFactorCtl.GetLastValue();
 
 		//TODO: this computation is duplicated
 		TData newPitch=pitch1*(1-pitchFactor)+pitch2*pitchFactor;
