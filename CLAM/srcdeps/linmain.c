@@ -121,7 +121,7 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = predefines->first;
+		item* i = preincludes->first;
 		fprintf(outfile,"PRE_INCLUDES =");
 		while (i)
 		{
