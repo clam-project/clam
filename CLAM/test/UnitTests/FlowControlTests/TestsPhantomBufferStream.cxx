@@ -3,6 +3,7 @@
 #include "PhantomBuffer.hxx"
 #include "WritingRegion.hxx"
 #include <list>
+#include <iostream>
 
 // TODO to remove. Just for debugging purposes
 #include <cctype>
