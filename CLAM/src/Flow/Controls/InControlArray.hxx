@@ -35,6 +35,7 @@ InControlArray::InControlArray(int size,
 	mArray.SetSize(size);
 	for (int i=0; i<size; i++) {
 		std::stringstream str;
+		str.str("");
 		str << name << "_" << i;
 		if (parent)
 			mArray[i] = new InControl(str.str(),parent);
