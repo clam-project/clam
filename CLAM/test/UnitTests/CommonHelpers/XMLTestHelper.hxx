@@ -65,8 +65,6 @@ namespace CLAMTest {
 			storage.UseIndentation(true);
 			storage.Dump(inObject, "Object", in);
 		}
-		std::cout << " Stored: " << out.str() << std::endl;
-		std::cout << " Loaded: " << in.str() << std::endl;
 #endif//CLAM_USE_XML
 		CPPUNIT_ASSERT_EQUAL(in.str(),out.str());
 		return in.str()==out.str();
