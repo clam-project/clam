@@ -27,11 +27,13 @@ public:
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		mPublishedOutPort->DisconnectFromAll();
+		mConnectedInPortsList.clear();
 	}
 	void ConnectToIn( InPortBase& in)
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		mPublishedOutPort->ConnectToIn( in );
+		mConnectedInPortsList.push_back(&in);
 	}
 	
 	void PublishOutPort( OutPortBase & out )
@@ -57,6 +59,7 @@ public:
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		mPublishedOutPort->DisconnectFromIn( in );
+		mConnectedInPortsList.remove(&in);
 	}
 	
 	bool IsConnectableTo(InPortBase & in)
@@ -116,12 +119,6 @@ public:
 
 	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
 	
-	bool HasConnections()
-	{
-		std::cout << "has connections publisher" << std::endl;
-		return mPublishedOutPort->HasConnections();
-	}
-
 protected:
 	ProperOutPort * mPublishedOutPort;
 };
