@@ -20,6 +20,32 @@ void makefilevars_generate(void)
 	FILE* outfile = stdout;
 
 	{
+		listkey* k = listhash_find(config,"EXTRA_MAKEFILE_VARS");
+		item* i = (k && k->l) ? k->l->first : 0;
+		while (i)
+		{	
+			if (i->str && i->str[0]!=0)
+			{
+				fprintf(outfile,"%s = ",i->str);
+				{
+					listkey* kk = listhash_find(config,i->str);
+					item* ii = (kk && kk->l) ? kk->l->first : 0;
+					while (ii)
+					{	
+						if (ii->str && ii->str[0]!=0)
+						{
+							fprintf(outfile,"\\\n %s",ii->str);
+						}
+						ii = ii->next;
+					}
+				}
+				fprintf(outfile,"\n\n");
+			}
+			i = i->next;
+		}
+	}
+
+	{
 		item* i = guessed_sources->first;
 		fprintf(outfile,"SOURCES =");
 		while (i)
@@ -218,7 +244,8 @@ int main(int argc,char** argv)
 		item* i = guessed_sources->first;
 		while (i)
 		{
-		 fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+/*		 fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+*/
 		 parser_run(i->str);
 
 		 i = i->next;

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "list.h"
 #include "listhash.h"
 #include "hash.h"
@@ -11,7 +12,7 @@
 
 listhash* config = 0;
 list* used_vars = 0;
-
+list* ignore_unused = 0;
 list *libraries_debug = 0;
 list *libraries_release = 0;
 
@@ -32,7 +33,6 @@ int var_true(char* subst,const char* filename,int line)
 		exit(-1);
 	}
 	list_add_str_once(used_vars,n->str);
-
 
 	if (n->l && n->l->first && 
 		(
@@ -260,21 +260,26 @@ void config_parse_line(char* ptr,const char* filename,int line)
 					{
 						const char* a = filename;
 						char* b = filename2;
-						char* q = 0;
-						while (*a)
+						if (*ptr=='/' || 
+							(isalpha(*ptr) && *(ptr+1)==':' && *(ptr+2)=='\\'))
 						{
-							if (*a=='/' || *a=='\\') q = b;
-							*b++ = *a++;
-						}
-						if (q)
-						{
-							q++;
-							strcpy(q,ptr);
-						}else{
 							strcpy(filename2,ptr);
+						}else{
+							char* q = 0;
+							while (*a)
+							{
+								if (*a=='/' || *a=='\\') q = b;
+								*b++ = *a++;
+							}
+							if (q)
+							{
+								q++;
+								strcpy(q,ptr);
+							}else{
+								strcpy(filename2,ptr);
+							}
 						}
 					}
-					fprintf(stderr,"FILENAME2=%s\n",filename2);
 					err = config_parse(filename2);
 					if (err)
 					{
@@ -380,9 +385,12 @@ int config_parse(const char* filename)
 
 void config_init(void)
 {
+	config = listhash_new();
+
 	used_vars = list_new();
 
-	config = listhash_new();
+	ignore_unused =
+		listhash_add_key_once(config,"IGNORE_UNUSED")->l = list_new();
 
 	libraries_debug = 
 		listhash_add_key_once(config,"LIBRARIES_DEBUG")->l = list_new();
@@ -420,11 +428,16 @@ void config_init(void)
 
 void config_check(void)
 {
-
 	listkey* n = config->first;
+
+	list_add_str_once(ignore_unused,"IGNORE_UNUSED");
+	list_add_str_once(ignore_unused,"EXTRA_MAKEFILE_VARS");
+	list_add_str_once(ignore_unused,"OS_LINUX");
+	list_add_str_once(ignore_unused,"OS_WINDOWS");
+
 	while (n)
 	{
-		if (!list_find(used_vars,n->str))
+		if (!list_find(used_vars,n->str) && !list_find(ignore_unused,n->str))
 		{
 			fprintf(stderr,"Warning: unused variable %s\n",n->str);
 		}

@@ -34,7 +34,8 @@ int main(int argc,char** argv)
 		item* i = guessed_sources->first;
 		while (i)
 		{
-			fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+/*			fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+*/
 			parser_run(i->str);
 			
 			i = i->next;
