@@ -73,7 +73,7 @@ namespace CLAM
 	bool OnsetDetector::ConfigureChildren()
 	{
 		//Filter Bank Configuration
-		GTFilterbankConfig bankcfg;
+		GT_FilterBankConfig bankcfg;
 		bankcfg.SetnChannels(mnBands);
 		bankcfg.SetLowFreq(mLowFreq);
 		bankcfg.SetHighFreq(mHighFreq);
@@ -113,13 +113,14 @@ namespace CLAM
 		
 
 		//Filter bank output computation
-		mFilterBankOutput.Resize(mnBands);
-		mFilterBankOutput.SetSize(mnBands);
+		mFilterBankOutputs.Resize(mnBands);
+		mFilterBankOutputs.SetSize(mnBands);
+		
 		CalcFilterBankOutput(mAudio);
-		mnSamples = mFilterBankOutput[0].Size();
+		mnSamples = mFilterBankOutputs[0].Size();
 
 		//Onset detection	
-		Algorithm( originalSegment , mFilterBankOutput, out, true);
+		Algorithm( originalSegment , mFilterBankOutputs, out, true);
 	
 		return true;
 
@@ -135,9 +136,18 @@ namespace CLAM
 
 
 		Array<Audio> audioArray;
-		mFilterBank.Do( in , audioArray);
 
-		//CLAM::ShowSnapshot( audioArray[5] , "please");
+		audioArray.Resize( mnBands );
+		audioArray.SetSize( mnBands );
+
+		for(int i = 0; i < mnBands; i++ )
+		{
+			audioArray[i].SetSize(in.GetSize());
+			audioArray[i].SetSampleRate(mSampleRate);
+		}
+
+
+		mFilterBank.Do( in , audioArray);
 
 		cf=mFilterBank.GetCentreFreq();
 
@@ -149,20 +159,20 @@ namespace CLAM
 		{
 			const TSize bandSize=audioArray[band].GetSize();
 			//Full-wave rectification
-			mFilterBankOutput[band].Resize(bandSize);
-			mFilterBankOutput[band].SetSize(bandSize);
+			mFilterBankOutputs[band].Resize(bandSize);
+			mFilterBankOutputs[band].SetSize(bandSize);
 
 			DataArray & bandAudioBuffer = audioArray[band].GetBuffer();
 			for(int i=0 ; i<bandSize ; i++)
-				mFilterBankOutput[band][i]=fabsf(bandAudioBuffer[i]);
+				mFilterBankOutputs[band][i]=fabsf(bandAudioBuffer[i]);
 
 					
 			//Decimation to 245 Hz
 
-			mDecimator.DecimateFrom22050To245(mFilterBankOutput[band], mFilterBankOutput[band]);
+			mDecimator.DecimateFrom22050To245(mFilterBankOutputs[band], mFilterBankOutputs[band]);
 
-			for(int i=0 ; i<mFilterBankOutput[band].Size() ; i++)
-				mFilterBankOutput[band][i] = mFilterBankOutput[band][i]*cf[band];
+			for(int i=0 ; i<mFilterBankOutputs[band].Size() ; i++)
+				mFilterBankOutputs[band][i] = mFilterBankOutputs[band][i]*cf[band];
 
 			//cout<<(band+1)*100/mnBands<<"%"<<endl;
 	

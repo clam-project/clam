@@ -6,7 +6,7 @@
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "TimeIndex.hxx"
-#include "GTFilterbank.hxx"
+#include "GT_FilterBank.hxx"
 #include "Normalization.hxx"
 #include "OnsetDetectorConfig.hxx"
 #include "OD_AudioDecimation.hxx"
@@ -43,7 +43,7 @@ namespace CLAM
 		OnsetDetectorConfig mConfig;
 	
 		Normalization	mNorm;
-		GTFilterbank	mFilterBank;
+		GT_FilterBank	mFilterBank;
 		OnsetDetection::AudioDecimator  mDecimator;
 
 	
@@ -83,7 +83,7 @@ namespace CLAM
 		TData mSampleRate;						//Sample Rate after down sampling
 		TData mOffsetThreshold;
 		bool mComputeOffsets;
-		Array< Array<TData> > mFilterBankOutput;
+		Array< Array<TData> > mFilterBankOutputs;
 		Array<TimeIndex> mOnsets;
 		DataArray cf;
 	};
