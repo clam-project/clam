@@ -64,13 +64,13 @@ public:
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
 
-	template <int order> U GetMoment(O<order>*)
+	template <int order> U GetMoment(const O<order>*)
 	{
-		return GetMoment((O<order>*)(0),GreaterThan<order,initOrder>::mIs);
+		return GetMoment((const O<order>*)(0),GreaterThan<order,initOrder>::mIs);
 	}
 
 	/** Get all raw moments up to the order indicated*/
-	template<int order> void GetMoments(Array<U>& moments, O<order>*)
+	template<int order> void GetMoments(Array<U>& moments, const O<order>*)
 	{
 		if(moments.Size()<order)
 		{
@@ -78,7 +78,7 @@ public:
 			moments.SetSize(order);
 		}
 		pTmpArray=&moments;
-		GetChainedMoment((O<order>*)(0));
+		GetChainedMoment((const O<order>*)(0));
 		pTmpArray=NULL;
 	}
 
@@ -87,13 +87,14 @@ public:
 	 *	This method just acts as a selector, if order is greater than init order, we cannot assure
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
-	template <int order> U GetCentralMoment(O<order>*)
+	template <int order> U GetCentralMoment(const O<order>*)
 	{
-		return GetCentralMoment((O<order>*)(0),GreaterThan<order,initOrder>::mIs);
+		return GetCentralMoment((const O<order>*)(0),GreaterThan<order,initOrder>::mIs);
 	}
 
 	/** Get all central moments up to the order indicated*/
-	template<int order> void GetCentralMoments(Array<U>& centralMoments, O<order>*)
+	template<int order> void GetCentralMoments(Array<U>& centralMoments, 
+		const O<order>*)
 	{
 		if(centralMoments.Size()<order)
 		{
@@ -101,7 +102,7 @@ public:
 			centralMoments.SetSize(order);
 		}
 		pTmpArray=&centralMoments;
-		GetChainedCentralMoment((O<order>*)(0));
+		GetChainedCentralMoment((const O<order>*)(0));
 		pTmpArray=NULL;
 	}
 
@@ -110,13 +111,14 @@ public:
 	 *	This method just acts as a selector, if order is greater than init order, we cannot assure
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
-	template <int order> U GetCenterOfGravity(O<order>*)
+	template <int order> U GetCenterOfGravity(const O<order>*)
 	{
-		return GetCenterOfGravity((O<order>*)(0),GreaterThan<order,initOrder>::mIs);
+		return GetCenterOfGravity((const O<order>*)(0),GreaterThan<order,initOrder>::mIs);
 	}
 	
 	/** Get all center of gravities up to the order indicated*/
-	template<int order> void GetCenterOfGravities(Array<U>& centerOfGravities, O<order>*)
+	template<int order> void GetCenterOfGravities(Array<U>& centerOfGravities,
+		const O<order>*)
 	{
 		if(centerOfGravities.Size()<order)
 		{
@@ -124,7 +126,7 @@ public:
 			centerOfGravities.SetSize(order);
 		}
 		pTmpArray=&centerOfGravities;
-		GetChainedCenterOfGravity((O<order>*)(0));
+		GetChainedCenterOfGravity((const O<order>*)(0));
 		pTmpArray=NULL;
 	}
 
@@ -227,7 +229,7 @@ private:
 
 
 	/** Chained method for initializing moments*/
-	template<int order> void InitMoment(O<order>*)
+	template<int order> void InitMoment(const O<order>*)
 	{
 		if(mMoments[order-1]!=NULL)
 			delete mMoments[order-1];
@@ -250,13 +252,13 @@ private:
 	}	
 
 	/** Get order-th raw moment, order is smaller than init order*/
-	template<int order> U GetMoment(O<order>*,StaticFalse&)
+	template<int order> U GetMoment(const O<order>*,StaticFalse&)
 	{
 		return (*(dynamic_cast<Moment<order,abs,T,U>*> (mMoments[order-1])))(*mData);
 	}
 
 	/** Get order-th raw moment, order is greater than init order*/
-	template<int order> U GetMoment(O<order>*,StaticTrue&)
+	template<int order> U GetMoment(const O<order>*,StaticTrue&)
 	{
 		if(order>mMoments.Size())
 		{
@@ -271,14 +273,14 @@ private:
 		{
 			mMoments[order-1]=new Moment<order,abs,T,U>;
 		}
-		//return GetMoment((O<order>*)(0),StaticFalse());
+		//return GetMoment((const O<order>*)(0),StaticFalse());
 		return (*(dynamic_cast<Moment<order,abs,T,U>*> (mMoments[order-1])))(*mData);
 	}
 
 	/** Chained method to return moment indicated by order and previous*/
-	template<int order> void GetChainedMoment(O<order>* )
+	template<int order> void GetChainedMoment(const O<order>* )
 	{
-		(*pTmpArray)[order-1]=GetMoment((O<order>*)(0));
+		(*pTmpArray)[order-1]=GetMoment((const O<order>*)(0));
 		GetChainedMoment((O<order-1>*)(0));
 	}
 
@@ -289,7 +291,7 @@ private:
 	}
 
 	/** Get order-th central moment, order is smaller than init order*/
-	template<int order> U GetCentralMoment(O<order>*,StaticFalse&)
+	template<int order> U GetCentralMoment(const O<order>*,StaticFalse&)
 	{
 		CentralMoment<order,abs,T,U>* tmpMoment= dynamic_cast<CentralMoment<order,abs,T,U>*> (mCentralMoments[order-1]);
 
@@ -312,7 +314,7 @@ private:
 	}
 
 	/** Get order-th central moment, order is greater than init order*/
-	template<int order> U GetCentralMoment(O<order>*,StaticTrue&)
+	template<int order> U GetCentralMoment(const O<order>*,StaticTrue&)
 	{
 		if(order>mCentralMoments.Size())
 		{
@@ -327,15 +329,15 @@ private:
 			mCentralMoments[order-1]=new CentralMoment<order,abs,T,U>;
 		}
 		
-		return GetCentralMoment((O<order>*)(0),StaticFalse());
+		return GetCentralMoment((const O<order>*)(0),StaticFalse());
 	}
 
 
 
 	/** Chained method to return central moment indicated by order and previous*/
-	template<int order> void GetChainedCentralMoment(O<order>* )
+	template<int order> void GetChainedCentralMoment(const O<order>* )
 	{
-		(*pTmpArray)[order-1]=GetCentralMoment((O<order>*)(0));
+		(*pTmpArray)[order-1]=GetCentralMoment((const O<order>*)(0));
 		GetChainedCentralMoment((O<order-1>*)(0));
 	}
 
@@ -346,13 +348,13 @@ private:
 	}
 
 	/** Get order-th center of gravity, order is smaller than init order*/
-	template<int order> U GetCenterOfGravity(O<order>*,StaticFalse&)
+	template<int order> U GetCenterOfGravity(const O<order>*,StaticFalse&)
 	{
 		return (*dynamic_cast<CenterOfGravity<order,abs,T,U>*> (mCenterOfGravities[order-1]))(*mData);
 	}
 
 	/** Get order-th center of gravity, order is greater than init order*/
-	template<int order> U GetCenterOfGravity(O<order>*,StaticTrue&)
+	template<int order> U GetCenterOfGravity(const O<order>*,StaticTrue&)
 	{
 		if(order>mCenterOfGravities.Size())
 		{
@@ -364,16 +366,16 @@ private:
 		}
 		if(mCenterOfGravities[order-1]=NULL) 
 		{
-			mCenterOfGravities[order-1]=new CenterOfGravity<order,T,U>;
+			mCenterOfGravities[order-1]=new CenterOfGravity<order,abs,T,U>;
 		}
 
-		return GetCenterOfGravity((O<order>*)(0),StaticFalse());
+		return GetCenterOfGravity((const O<order>*)(0),StaticFalse());
 	}
 
 	/** Chained method to return center of gravity indicated by order and previous*/
-	template<int order> void GetChainedCenterOfGravity(O<order>* )
+	template<int order> void GetChainedCenterOfGravity(const O<order>* )
 	{
-		(*pTmpArray)[order-1]=GetCenterOfGravity((O<order>*)(0));
+		(*pTmpArray)[order-1]=GetCenterOfGravity((const O<order>*)(0));
 		GetChainedCenterOfGravity((O<order-1>*)(0));
 	}
 

@@ -164,7 +164,7 @@ TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 {
 	DataArray& a=mpSpectralPeakArray->GetMagBuffer();
-	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0,Power<2,false,TData>())/mpStats->GetEnergy();	
+	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2,false,TData>())/mpStats->GetEnergy();	
 }
 
 TData SpectralPeakDescriptors::ComputeHarmonicDeviation()

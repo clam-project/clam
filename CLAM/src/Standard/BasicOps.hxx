@@ -7,14 +7,12 @@
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "CLAM_Math.hxx"
-
+#include "Order.hxx"
 
 
 using std::accumulate;
 using std::inner_product;
 using std::mem_fun;
-
-
 
 
 /** @todo: 
@@ -32,23 +30,6 @@ namespace CLAM{
  *	be performed directly on the values (by default or when abs=false) or whether the statistic
  *	should be computed on the absolute value
  */
-
-
-/** Auxiliary class to define the order of a moment at compile time*/
-template<int order> struct O
-{
-	public: static O<order> instance;
-};
-
-template<int order> O<order>  O<order>::instance;
-
-//A nicer way of referring to the first orders
-
-static O<1>* FirstOrder=NULL;
-static O<2>* SecondOrder=NULL;
-static O<3>* ThirdOrder=NULL;
-static O<4>* FourthOrder=NULL;
-static O<5>* FifthOrder=NULL;
 
 template <int o> struct Pow
 {
@@ -90,11 +71,14 @@ protected:
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^1)*/
-template<class T=TData> class NoPowerTmpl:public Power<1,T>{};
+template<bool abs=false,class T=TData> class NoPowerTmpl
+:public Power<1,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^2)*/
-template<class T=TData> class SquareTmpl:public Power<2,T>{};
+template<bool abs=false,class T=TData> class SquareTmpl
+:public Power<2,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^3)*/
-template<class T=TData> class CubeTmpl:public Power<3,T>{};
+template<bool abs=false,class T=TData> class CubeTmpl
+:public Power<3,abs,T>{};
 
 /** Typedefs */
 typedef  NoPowerTmpl<> NoPower;
@@ -140,11 +124,14 @@ protected:
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^1)*/
-template<class T=TData> class WeightedNoPowerTmpl:public WeightedPower<1,T>{};
+template<bool abs=false,class T=TData> class WeightedNoPowerTmpl
+:public WeightedPower<1,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^2)*/
-template<class T=TData> class WeightedSquareTmpl:public WeightedPower<2,T>{};
+template<bool abs=false,class T=TData> class WeightedSquareTmpl
+:public WeightedPower<2,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^3)*/
-template<class T=TData> class WeightedCubeTmpl:public WeightedPower<3,T>{};
+template<bool abs=false,class T=TData> class WeightedCubeTmpl
+:public WeightedPower<3,abs,T>{};
 
 /** typedefs */
 typedef WeightedNoPowerTmpl<> WeightedNoPower;

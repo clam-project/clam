@@ -226,6 +226,8 @@ bool Segmentator::Do()
 			return true;
 
 	CLAM_ASSERT(false, "Segmentator: Do(): Supervised mode not implemented");
+
+	return false;
 }
 
 
@@ -485,11 +487,11 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 void Segmentator::DataFusion(Segment& s,const SegmentBoundaries& segmentBoundaries)
 {
 
-	unsigned int n,m,z;
+	int n,m,z;
 	// DATA FUSION (of the segmentation parameters), taken from Rossignol's Thesis
 	// DoNothing,1) Generate probability functions for both parameters
-	unsigned int nFrames=s.GetnFrames();
-	unsigned int nDescriptors=mConfig.GetDescriptorsParams().Size();
+	int nFrames=s.GetnFrames();
+	int nDescriptors=mConfig.GetDescriptorsParams().Size();
 	TData duration=s.GetFrame(0).GetDuration();/*BEWARE!Assuming equal lengthed frames*/
 	TData sampleRate=s.GetSamplingRate();
 

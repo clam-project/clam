@@ -117,7 +117,7 @@ TData AudioDescriptors::ComputeAttackTime()
 	if(mComputedAttackTime) return mComputedAttackTime;
 
 	TData max = 0.;
-	TIndex maxindex,offset;
+	TIndex maxindex = -1,offset;
 
 	//this algorithm is not the first time I see it, should be generalized and optimized
 	int i;
