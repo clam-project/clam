@@ -150,7 +150,7 @@ namespace CLAM {
 			peaks.AddIndexArray();
 			peaks.AddIsIndexUpToDate();
 			peaks.UpdateData();
-			peaks.SetnMaxPeaks(peaks.GetnMaxpeaks());
+			peaks.SetnMaxPeaks(peaks.GetnMaxPeaks());
 		}
   
 		// Reset indices in the peak array
