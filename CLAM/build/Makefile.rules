@@ -30,6 +30,9 @@ Makefile.vars: Makefile $(SRCDEPS) settings.cfg
 
 program: $(PROGRAM)
 
+tags:
+	ctags-exuberant --excmd=number $(SOURCES) src/*.h
+
 ifeq ($(CONFIG),debug)
 LIBRARIES = $(LIBRARIES_DEBUG)
 LINK_FLAGS = $(LINK_FLAGS_DEBUG)
