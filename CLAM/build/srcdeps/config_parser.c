@@ -140,9 +140,10 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 				k = listhash_find(config,var);
 				if (k==0)
 				{
-					char* environmentVar = NULL;
+					char* environmentVar = getenv(var);
 					/* Let's check wether it is an environment variable */
-					if ( environmentVar = getenv( var ) )
+					
+					if ( environmentVar )
 					{
 						list* l = listhash_add_key_once( config, var )->l = list_new();
 						list_add_str_once( l, environmentVar );
