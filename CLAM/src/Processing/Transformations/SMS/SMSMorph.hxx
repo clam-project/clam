@@ -85,7 +85,6 @@ namespace CLAM{
 		SMSMorphCtrl  mHybResAmp;
 		SMSMorphCtrl  mHybResSpectralShape;
 		SMSMorphCtrl  mHybResShapeW;
-		SMSMorphCtrl  mHybResPhase;
 	protected:
 		
 		void UpdateFrameInterpolatorFactors(bool useFrameFactor);

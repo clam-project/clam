@@ -39,7 +39,6 @@ SMSMorph::SMSMorph():
 	mHybResAmp("ResAmp", this),
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW("ResShapeW", this),
-	mHybResPhase("ResPhase", this),
 	mInput2("Input2",this,1)
 {
 		mHaveInternalSegment=false;
@@ -58,7 +57,6 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 	mHybResAmp("ResAmp", this),
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW("ResShapeW", this),
-	mHybResPhase("ResPhase", this),
 	mInput2("Input2",this,1)
 {
 	mHaveInternalSegment=false;
@@ -163,6 +161,14 @@ bool SMSMorph::Do(const Frame& in1, Frame& out)
 {
 	TSize nFrames2=mInput2.GetData().GetnFrames();
 	TData synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
+	
+	if(mSynchronizeTime.GetLastValue()<0.0001||mSynchronizeTime.GetLastValue()>0.9999)
+	{
+		//it means we are at the boudaries of segment to morph
+		out=in1;
+		return true;
+	}
+
 	Frame tempFrame2;
 
 	//With Frame Interpolation
@@ -220,6 +226,7 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 	bool ret=true;
 
 	TData globalFactor;
+	
 	if(mConfig.HasHybBPF())
 	{
 		globalFactor=mConfig.GetHybBPF().GetValue(pos);
@@ -229,9 +236,10 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 	else
 		ret=false;
 	if(mConfig.HasSynchronizeTime() && mConfig.GetSynchronizeTime().Size() )
-		mSynchronizeTime.DoControl(mConfig.GetSynchronizeTime().GetValue(pos));
-	else
-		mSynchronizeTime.DoControl(globalFactor);
+	{
+		pos=mConfig.GetSynchronizeTime().GetValue(pos);
+		mSynchronizeTime.DoControl(pos);
+	}
 
 	if(mConfig.HasHybSinAmp() && mConfig.GetHybSinAmp().Size())
 		mHybSinAmp.DoControl(mConfig.GetHybSinAmp().GetValue(pos));
@@ -277,11 +285,6 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 		mHybResShapeW.DoControl(mConfig.GetHybResShapeW1().GetValue(pos));
 	else
 		mHybResShapeW.DoControl(globalFactor);
-
-	if(mConfig.HasHybResPhase() && mConfig.GetHybResPhase().Size())
-		mHybResPhase.DoControl(mConfig.GetHybResPhase().GetValue(pos));
-	else
-		mHybResPhase.DoControl(globalFactor);
 
 	return ret;
 }
