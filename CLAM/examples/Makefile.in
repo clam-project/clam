@@ -4,6 +4,7 @@ PROGRAMS=\
 	FFT_example\
 	FDFilterExample\
 	ProcessingObject_controls_example\
+	StereoToMonoFile\
 	POCompositeExample\
 	AudioIOExample\
 	MIDI_Synthesizer_example\
