@@ -117,7 +117,7 @@ namespace CLAM {
 		}
 
 		template<class REGION>
-		void GetAndActivate(REGION* r, Array<D> &a)
+		bool GetAndActivate(REGION* r, Array<D> &a)
 		{
 			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
 			                  "StreamBuffer::GetAndActivate(): "
@@ -126,10 +126,16 @@ namespace CLAM {
 			                  "StreamBuffer::GetAndActivate(): "
 			                  "Region inconsistent before activation.");
 			r->Activate();
-			CLAM_DEBUG_ASSERT(r->FulfilsInvariant(),
+/*			CLAM_DEBUG_ASSERT(r->FulfilsInvariant(),
 			                  "StreamBuffer::GetAndActivate(): "
 			                  "Region inconsistent after activation.");
-			mBuffer.GetData(r,a);
+*/
+			
+			//XA: I don't know if this is sufficiently general as to be here
+			if (!r->FulfilsInvariant())	return false;
+			else {
+				mBuffer.GetData(r,a);
+				return true;}
 		}
 
 		/** @name Region Advance methods.
@@ -150,6 +156,24 @@ namespace CLAM {
 			r->LeaveAndAdvance();
 		}
 
+		/** @name Region Advance methods.
+		 * This methods notify the buffer that data processing in the
+		 * region which was requested by a previous GetAndActivate
+		 * call is done.
+		 * Differently to LeaveAndAdvance, this method does not increment
+		 * the region position.
+		 */
+		template<class REGION>
+		void Leave(REGION*r)
+		{
+			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
+							  "StreamBuffer::LeaveAndAdvance(): "
+							  "Invalid region argument ");
+			//XA: maybe this first line is not necessary?
+			mBuffer.Leave(r);
+			r->Leave();
+		}
+
 	private:
 
 		// This is private only because it returns a non-const
@@ -163,7 +187,100 @@ namespace CLAM {
 
 // Template method implementations:
 
-#include "StreamBuffer.cxx"
+#include "Array.hxx"
+
+namespace CLAM {
+
+	template<class D, class B>
+	StreamBuffer<D,B>::StreamBuffer(unsigned int max_window_size)
+		: mRegions(),
+		  mBuffer(max_window_size,mRegions)
+	{}
+
+	template<class D, class B>
+	StreamBuffer<D,B>::StreamBuffer(const StreamBuffer& buf)
+		: mRegions(buf.mRegions),
+		  mBuffer(buf.mBuffer.MaxSize(),mRegions)
+	{}
+
+
+	template<class D, class B>
+	WriteStreamRegion *StreamBuffer<D,B>::NewWriter (unsigned int hop,
+	                                                 unsigned int length)
+	{
+		CLAM_ASSERT(mRegions.Writer() == 0,
+		            "StreamBuffer::NewWirter(): Writer already registered");
+		WriteStreamRegion *writer = new WriteStreamRegion(hop,length);
+		mRegions.SetWriter(writer);
+		return writer;
+	}
+
+	template<class D, class B>
+	ReadStreamRegion *StreamBuffer<D,B>::NewReader (unsigned int hop,
+	                                                unsigned int length,
+	                                                SourceStreamRegion* source)
+	{
+		CLAM_ASSERT(source?mRegions.Contains(source):true,
+		            "StreamBuffer::NewReader(): Invalid source argument.");
+		if (!source)
+			source = mRegions.Writer();
+ 		ReadStreamRegion *reader = new ReadStreamRegion(hop,length,source);
+		mRegions.AddReader(reader,source);
+		return reader;
+	}
+
+	template<class D, class B>
+	DelayStreamRegion *StreamBuffer<D,B>::NewDelay  (unsigned int hop,
+	                                                 unsigned int length,
+	                                                 SourceStreamRegion* source = 0)
+	{
+		CLAM_ASSERT(source?mRegions.Contains(source):true,
+		            "StreamBuffer::NewDelay(): Invalid source argument.");
+		if (!source)
+			source = mRegions.Writer();
+ 		DelayStreamRegion *delay = new DelayStreamRegion(hop,length,source);
+		mRegions.AddDelay(delay,source);
+		return delay;
+	}
+
+	template<class D, class B>
+	InplaceStreamRegion *StreamBuffer<D,B>::NewInplace(unsigned int hop, 
+	                                                   unsigned int read_length,
+	                                                   unsigned int write_length,
+	                                                   SourceStreamRegion* source,
+	                                                   unsigned int write_delay)
+	{
+		CLAM_ASSERT(source?mRegions.Contains(source):true,
+		            "StreamBuffer::NewInplace(): Invalid source argument.");
+		if (!source)
+			source = mRegions.Writer();
+ 		InplaceStreamRegion *inplace = new InplaceStreamRegion(hop,length,source);
+		mRegions.AddInplace(inplace,source);
+		return inplace;
+	}
+
+	template<class D, class B>
+	void StreamBuffer<D,B>::Configure(unsigned int max_window_size)
+	{
+		CLAM_ASSERT(mRegions.FulfilsInvariant(),
+		            "StreamBuffer::Configure(): "
+		            "Inconsisntent regions before configuration")
+
+		mBuffer.Configure(max_window_size);
+
+/*  Warning: This initialization here suposes that the Configure is always performed 
+	after having instantiated the regions. I don't know if that is a smart
+	thing to suppose. Another thing that could be done is to initialize Regions
+	every time a new one is instantiated. */
+		mRegions.Init();
+
+		CLAM_ASSERT(mBuffer.FulfilsInvariant(),
+		            "StreamBuffer::Configure(): "
+		            "Inconsistent buffer after configuration.");
+	}
+
+}
+
 
 // Class speciallizations:
 
