@@ -597,7 +597,7 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 			int attrCount = attributes.getLength();
 			for (int i = 0; i < attrCount; i++)
 			{
-				for (unsigned int i=indentation++; i--;) target << ". ";
+				for (unsigned int j=indentation++; j--;) target << ". ";
 				DOM_Node  attribute = attributes.item(i);
 				target << "ATTRIBUTE:"<<attribute.getNodeName()<<"="<<attribute.getNodeValue()<< std::endl;
 				indentation--;  
