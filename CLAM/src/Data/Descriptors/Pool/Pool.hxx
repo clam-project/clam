@@ -103,8 +103,9 @@ namespace CLAM
 
 	class Pool
 	{
+	public:
 		typedef std::vector<void*> Attributes;
-	
+	private:
 		unsigned _size;
 		Attributes _attributes;
 		const PoolSpec & _spec;
