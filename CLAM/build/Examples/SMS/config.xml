@@ -2,9 +2,6 @@
 <SMSAnalysisSynthesisConfig>
 	<Name></Name>
 	<InputSoundFile>../input.wav</InputSoundFile>
-	<OutputSoundFile>../output.wav</OutputSoundFile>
-	<OutputAnalysisFile></OutputAnalysisFile>
-	<InputAnalysisFile></InputAnalysisFile>
 	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
