@@ -55,6 +55,12 @@ namespace CLAMTest
 			}
 		} 
 	};
+
+#define CLAMTEST_ASSERT_EQUAL_RTTYPES( expected, actual ) \
+	CPPUNIT_ASSERT_EQUAL( \
+		typeid(expected), \
+		typeid(actual) )
+
 } //namespace CLAMTest
 
 // Helper traits for assertions
@@ -78,4 +84,5 @@ namespace CppUnit
 	};
 
 } //namespace CppUnit
+
 #endif
