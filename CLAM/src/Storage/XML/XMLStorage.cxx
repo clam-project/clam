@@ -27,18 +27,13 @@
 #include "mtgsstream.h" // An alias for <sstream>
 #include <iostream>
 #include "XMLStorage.hxx"
-#include "DOMPrint.hpp"
 #include "XMLable.hxx"
 #include "Component.hxx"
+#include "XercesDomPrinter.hxx"
 
-// MRJ: See the comments in DOMPrint.hpp
-#ifndef WIN32
-#include <util/PlatformUtils.hpp>
-#include <dom/DOM.hpp>
-#else
 #include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/parsers/DOMParser.hpp>
 #include <xercesc/dom/DOM.hpp>
-#endif
 
 #include <list>
 #include <deque>
@@ -238,7 +233,8 @@ namespace CLAM
 				mCurrentPath.push_back(rootName);
 			}
 			virtual void WriteDOM(std::ostream & os) {
-				PrintDoc(os,DOMDoc);
+				XercesDomPrinter printer;
+				printer.Print(os,DOMDoc);
 			}
 			void AddAttribute(const char * name, const char * content) {
 				mWrittingNode.setAttribute(name, content);
