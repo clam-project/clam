@@ -350,8 +350,8 @@ public:
 	 * - A constant distribution has a kurtosis of \f$\frac{-6(n^2+1)}{5(n^2-1)} + 3 \f$
 	 *
 	 * Singularities and solutions:
-	 * - Constant functions: Currently returns NaN but, in the future,
-	 *   it should return the value for a constant distribution.
+	 * - Constant functions: Currently returns 3 althought it is not clear
+	 *   that it should be the right one, and it can vary on future implementations.
 	 */
 	U GetKurtosis()
 	{
