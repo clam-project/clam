@@ -44,10 +44,9 @@ namespace CLAMTest
 	inline void helperSaveAudioToFile( CLAM::Audio& audio, const std::string filename )
 	{
 		CLAM::AudioFile file;
-		file.SetLocation(filename);
 		CLAM::AudioFileHeader outputFileHeader;
 		outputFileHeader.SetValues( audio.GetSampleRate(), 1, "WAV" );
-		file.SetHeader(outputFileHeader);
+		file.CreateNew(filename, outputFileHeader);
 		CLAM::MonoAudioFileWriterConfig cfg;
 		CLAM::MonoAudioFileWriter writer;
 		cfg.AddAll();
@@ -128,6 +127,35 @@ namespace CLAMTest
 	}
 
 
+	/// shorthand for loading two audios and then call
+	/// helperAudiosAreEqual
+	/// in any case it does NOT save any file (no need to)
+	inline bool helperCompareTwoAudioFiles( 
+		const std::string& audioFile1,
+		const std::string& audioFile2, 
+		std::string& whyDifferents,
+		double delta=0.0001 )
+	{
+		if( !helperFileExist(audioFile1) )
+		{
+			whyDifferents += "Error in helperCompareTwoAudioFiles: file "+audioFile1+" doesn't exist";
+			return false;
+		}
+		if (!helperFileExist(audioFile2) )
+		{
+			whyDifferents += "Error in helperCompareTwoAudioFiles: file "+audioFile2+" doesn't exist";
+			return false;
+		}
+
+		whyDifferents += "comparing file1: " + audioFile1 + 
+			" with file2: "+audioFile2 + "\n";
+		CLAM::Audio loadedAudio1, loadedAudio2;
+		helperLoadAudioFromFile( audioFile1, loadedAudio1);
+		helperLoadAudioFromFile( audioFile2, loadedAudio2);
+		
+		bool result = helperAudiosAreEqual(loadedAudio1, loadedAudio2, whyDifferents, delta);
+		return result;
+	}
 	
 } // namespace CLAMTest
 
