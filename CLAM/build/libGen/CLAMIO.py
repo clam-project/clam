@@ -1,13 +1,132 @@
 #!/usr/bin/python
 
-import libGen, sys
+import AutoconfTools, SettingsGen, sys, os
 
-def makeSettings( ) :
-    libCLAMIO = libGen.LibGenerator( "IO" )
+def makeAutoconf( outPath ) :
+    outPath = "../Libs/%s"%"IO"
+
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+
+    script = AutoconfTools.AutoconfScript()
+
+    xml = AutoconfTools.Feature( "xml" )
+    script.addFeature( xml )
+
+    double = AutoconfTools.Feature( "double", False )
+    script.addFeature( double )
+
+    checks = AutoconfTools.Feature( "checks" )
+    script.addFeature( checks )
+
+    releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    script.addFeature( releaseAsserts )
+
+    libSndFile = AutoconfTools.Library( "sndfile", "C" )
+    libSndFile.sandboxName = "sndfile"
+    libSndFile.headers = "sndfile.h"
+    libSndFile.libs = "sndfile"
+    libSndFile.function = "sf_open"
+
+    script.addLibrary( libSndFile )
+
+    libMad = AutoconfTools.Library( "mad", "C" )
+    libMad.sandboxName ="libmad"
+    libMad.headers="mad.h"
+    libMad.libs = "mad"
+    libMad.function = "mad_stream_init"
+
+    script.addLibrary( libMad )
+
+    libOgg = AutoconfTools.Library( "ogg", "C" )
+    libOgg.sandboxName = "oggvorbis"
+    libOgg.headers = "ogg/ogg.h"
+    libOgg.libs = "ogg"
+    libOgg.function = "ogg_sync_init"
+
+    script.addLibrary( libOgg ) 
+
+    libVorbis = AutoconfTools.Library( "vorbis", "C" )
+    libVorbis.sandboxName = "oggvorbis"
+    libVorbis.headers = "vorbis/codec.h"
+    libVorbis.libs = "vorbis"
+    libVorbis.function = "vorbis_block_init"
+
+    script.addLibrary( libVorbis )
+
+    libVorbisEnc = AutoconfTools.Library( "vorbisenc", "C")
+    libVorbisEnc.sandboxName = "oggvorbis"
+    libVorbisEnc.headers="vorbis/vorbisenc.h"
+    libVorbisEnc.libs="vorbisenc"
+    libVorbisEnc.function= "vorbis_encode_init"
+    
+    script.addLibrary( libVorbisEnc )
+
+    libVorbisFile = AutoconfTools.Library("vorbisfile","C")
+    libVorbisFile.sandboxName="oggvorbis"
+    libVorbisFile.headers="vorbis/vorbisfile.h"
+    libVorbisFile.libs = "vorbisfile"
+    libVorbisFile.function = "ov_open"
+
+    script.addLibrary( libVorbisFile )
+
+    id3lib = AutoconfTools.Library( "id3lib", "C++" )
+    id3lib.sandboxName = "id3lib"
+    id3lib.headers = "id3/tag.h"
+    id3lib.libs = "id3"
+    id3lib.function = "ID3Tag::~ID3Tag"
+    id3lib.source="""
+#include <id3/tag.h>
+		
+int main( int argc, char** argv )
+{
+    ID3_Tag myTag;
+
+    return 0;
+}
+    
+"""
+
+    script.addLibrary( id3lib ) 
+    
+    if sys.platform == "linux2" :
+        libALSA = AutoconfTools.Library( "alsa", "C" )
+        libALSA.headers = "alsa/asoundlib.h"
+        libALSA.libs = "asound"
+        libALSA.function = "snd_pcm_open"
+        
+        script.addLibrary( libALSA )
+    
+    libPortmidi = AutoconfTools.Library( "portmidi", "C" )
+    libPortmidi.sandboxName = "portmidi"
+    libPortmidi.headers = "portmidi.h"
+    libPortmidi.libs = "portmidi"
+    libPortmidi.other_libs = "-lporttime"
+    libPortmidi.function = "Pm_CountDevices"
+    libPortmidi.source = """
+#include <portmidi.h>
+
+int main( )
+{
+    Pm_CountDevices();
+    return 0;
+}
+"""
+    script.addLibrary( libPortmidi )
+
+    script.commitToFile( outPath )
+   
+    AutoconfTools.copySupportFiles( outPath )
+
+
+
+def makeSettings( outPath ) :
+    libCLAMIO = SettingsGen.LibGenerator( "IO" )
+
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
 
     print "Generating libCLAM%s..."%libCLAMIO.libName
-    libCLAMIO.activate( 'XML' )
-    libCLAMIO.activate( 'PTHREADS' )
 
     libCLAMIO.addFolder( "Tools/AudioFileIO" )
     libCLAMIO.addFolder( "Processing/AudioFileIO" )
@@ -17,14 +136,12 @@ def makeSettings( ) :
         libCLAMIO.blackBall( "RtAudio" )
         libCLAMIO.blackBall( "RtAAudioDevice" )
         libCLAMIO.blackBall( "foo" )
-        libCLAMIO.addFolder( "Tools/AudioIO/Linux" )
-        libCLAMIO.activate( 'ALSA' )
+        libCLAMIO.condAddFolder( "alsa","Tools/AudioIO/Linux" )
     else :
         libCLAMIO.blackBall( "ALSAAudioDevice" )
         libCLAMIO.blackBall( "foo" )
         libCLAMIO.blackBall( "SndPcm" )
         libCLAMIO.addFolder( "Tools/AudioIO/RtAudio" )
-        libCLAMIO.activate( 'RTAUDIO' )
 
     libCLAMIO.addFolder( "Tools/AudioIO" )
     libCLAMIO.addFolder( "Processing/AudioIO" )
@@ -35,7 +152,7 @@ def makeSettings( ) :
     if sys.platform == "win32" :
         libCLAMIO.addFolder( "Tools/MIDIIO/Portmidi" )
     else :
-        libCLAMIO.addFolder( "Tools/MIDIIO/Linux" )
+        libCLAMIO.condAddFolder( "alsa","Tools/MIDIIO/Linux" )
     libCLAMIO.addFolder( "Processing/MIDIIO" )
 
     libCLAMIO.addFolder( "Tools/SDIF" )
@@ -43,12 +160,13 @@ def makeSettings( ) :
     
     libCLAMIO.dependsOn( "Core" )
 
-    libCLAMIO.generateFiles( )
+    libCLAMIO.generateFiles( outPath )
 
-    print "Files are being generated on build/Libs/%s..."%libCLAMIO.libName
+    print "Files are being generated on %s/%s..."%(outPath,libCLAMIO.libName)
     
 if __name__ == "__main__" :
-    makelib()
+    makeAutoconf("../Libs")
+    makeSettings("../Libs")
 
 
     

@@ -1,9 +1,53 @@
 #!/usr/bin/python
 
-import libGen, sys
+import AutoconfTools, SettingsGen, sys, os
 
-def makeSettings() :
-    libCLAMProcessing = libGen.LibGenerator( "Processing" )
+def makeAutoconf( outPath ) :
+    outPath = "../Libs/%s"%"Processing"
+
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+
+    script = AutoconfTools.AutoconfScript()
+
+    xml = AutoconfTools.Feature( "xml" )
+    script.addFeature( xml )
+
+    double = AutoconfTools.Feature( "double", False )
+    script.addFeature( double )
+
+    checks = AutoconfTools.Feature( "checks" )
+    script.addFeature( checks )
+
+    releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    script.addFeature( releaseAsserts )
+
+    libfftw = AutoconfTools.Library("fftw","C")
+    libfftw.sandboxName="fftw"
+    libfftw.headers="fftw.h"
+    libfftw.libs="fftw"
+    libfftw.other_libs="-lrfftw"
+    libfftw.function="fftw_sizeof_fftw_real"
+    libfftw.source="""
+#include <fftw.h>
+int main()
+{
+    fftw_sizeof_fftw_real();
+    return 0;
+}
+    """
+    script.addLibrary( libfftw )
+
+    
+    script.commitToFile( outPath )
+    AutoconfTools.copySupportFiles( outPath )
+
+
+def makeSettings( outPath ) :
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+
+    libCLAMProcessing = SettingsGen.LibGenerator( "Processing" )
 
     print "Generating libCLAM%s..."%libCLAMProcessing.libName
     # Depends on CUIDADO code
@@ -35,14 +79,11 @@ def makeSettings() :
     libCLAMProcessing.addFolder( "Flow/Ports")
     libCLAMProcessing.addFolder( "numrec", "externals")
 
-    libCLAMProcessing.activate( 'XML' )
-    libCLAMProcessing.activate( 'PTHREADS' )
-    libCLAMProcessing.activate( 'FFTW' )
-
     libCLAMProcessing.dependsOn( "Core" )
 
-    libCLAMProcessing.generateFiles()
-    print "Files are being generated on build/Libs/%s..."%libCLAMProcessing.libName
+    libCLAMProcessing.generateFiles(outPath)
+    print "Files are being generated on %s/%s..."%(outPath,libCLAMProcessing.libName)
 
 if __name__ == "__main__" :
-    makelib()
+    makeAutoconf("../Libs")
+    makeSettings("../Libs")

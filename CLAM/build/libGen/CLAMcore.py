@@ -1,10 +1,55 @@
 #!/usr/bin/python
 
-import libGen, sys
+import SettingsGen, os
 import AutoconfTools
 
-def makeSettings() :
-    libCLAMCore = libGen.LibGenerator("Core")
+def makeAutoconf( outPath ) :
+    outPath = "../Libs/%s"%"Core"
+    
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+    
+    script = AutoconfTools.AutoconfScript()
+
+    xml = AutoconfTools.Feature( "xml" )
+    script.addFeature( xml )
+
+    double = AutoconfTools.Feature( "double", False )
+    script.addFeature( double )
+
+    checks = AutoconfTools.Feature( "checks" )
+    script.addFeature( checks )
+
+    releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    script.addFeature( releaseAsserts )
+
+    libxercesc = AutoconfTools.Library( "xercesc", "C++" )
+    libxercesc.sandboxName = "xercesc"
+    libxercesc.headers="xercesc/util/PlatformUtils.hpp"
+    libxercesc.libs="xerces-c"
+    libxercesc.function="xercesc_2_3::XMLPlatformUtils::Initialize"
+    libxercesc.source="""
+#include<xercesc/util/PlatformUtils.hpp>
+
+int main( )
+{
+   namespace xercesc=XERCES_CPP_NAMESPACE;
+   xercesc::XMLPlatformUtils::Initialize();
+
+   return 0;
+}
+
+"""
+    script.addLibrary( libxercesc )
+
+    script.commitToFile( outPath )
+    AutoconfTools.copySupportFiles( outPath )
+
+def makeSettings( outPath ) :
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+
+    libCLAMCore = SettingsGen.LibGenerator("Core")
 
     print "Generating libCLAM%s..."%libCLAMCore.libName
 
@@ -34,16 +79,15 @@ def makeSettings() :
     
     libCLAMCore.addFolder( "Standard" )
     libCLAMCore.addFolder( "Storage/Base" )
-    libCLAMCore.addFolder( "Storage/XML" )
+    libCLAMCore.condAddFolder( "xercesc", "Storage/XML" )
     libCLAMCore.addFolder( "System" )
     libCLAMCore.addFolder( "System/Threads" )
     libCLAMCore.addFolder( "CbLib", "externals" )
 
-    libCLAMCore.activate('XML')
-    libCLAMCore.activate('PTHREADS')
-
-    libCLAMCore.generateFiles()
-    print "Files are being generated on build/Libs/%s..."%libCLAMCore.libName
+    libCLAMCore.generateFiles( outPath )
+    print "Files are being generated on %s/%s..."%(outPath,libCLAMCore.libName)
 
 if __name__ == "__main__" :
-    makelib()
+
+    makeAutoconf("../Libs" )
+    makeSettings("../Libs" )

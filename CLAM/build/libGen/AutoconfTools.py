@@ -174,7 +174,8 @@ int main( void )
     def introspect( self ):
         eFeatName = re.sub( "-","_", self.name)
         out = list()
-        
+
+        out.append("AC_MSG_NOTICE([==========%s detection results=============])"%self.name)
         out.append("AC_MSG_NOTICE([found_%s = $found_%s])"%(eFeatName,eFeatName) )
         out.append("AC_MSG_NOTICE([include_dirs_%s = $include_dirs_%s])"%(eFeatName,eFeatName))
         out.append("AC_MSG_NOTICE([lib_dirs_%s = $lib_dirs_%s])"%(eFeatName,eFeatName))
@@ -182,6 +183,8 @@ int main( void )
         out.append('include_dirs="$include_dirs $include_dirs_%s"'%eFeatName )        
         out.append('lib_dirs="$lib_dirs $lib_dirs_%s"'%eFeatName)
         out.append('libs="$libs $libs_%s"'%eFeatName)
+        equals = '='*len(self.name)
+        out.append("AC_MSG_NOTICE([==========%s===============================])"% equals)
 
         return "\n".join( out )
                                           
@@ -239,7 +242,8 @@ class AutoconfScript :
         for lib in self.librariesList :
             if lib.language == 'C' :
                 self << lib.find()
-                self << lib.test()
+                if len( lib.source ) > 0 :
+                    self << lib.test()
                 self << lib.introspect()
                 self << ac_disabled_package_warning( lib.name )
                 self.defaults.addLibrary( lib.name )
@@ -248,14 +252,15 @@ class AutoconfScript :
         for lib in self.librariesList:
             if lib.language == 'C++' :
                 self << lib.find()
-                self << lib.test()
+                if len( lib.source ) > 0 :
+                    self << lib.test()
                 self << lib.introspect()
                 self << ac_disabled_package_warning( lib.name )
                 self.defaults.addLibrary( lib.name )
 
-        self << ac('OUTPUT','defaults.cfg')
-        self << ac('OUTPUT','system-linux.cfg')
-        self << ac('OUTPUT','Makefile.rules' )
+        self << ac('OUTPUT','defaults.cfg system-linux.cfg Makefile.rules')
+#        self << ac('OUTPUT','system-linux.cfg')
+#        self << ac('OUTPUT','Makefile.rules' )
 
 
     def commitToFile( self, filename ) :
@@ -272,6 +277,9 @@ class AutoconfScript :
 def copySupportFiles( path ) :
     os.system("cp system-common.cfg %s/"%path )
     os.system("cp system-linux.cfg.in %s/"%path )
+    os.system("cp system-macosx.cfg.in %s/"%path )
+    os.system("cp system.cfg %s/"%path )
+    os.system("cp system-win.cfg %s/"%path )
     os.system("cp install-sh %s/"%path )
     os.system("cp Makefile.rules.in %s/"%path )
 

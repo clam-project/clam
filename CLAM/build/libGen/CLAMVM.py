@@ -1,14 +1,52 @@
 #!/usr/bin/python
 
-import libGen, sys
+import AutoconfTools, SettingsGen, sys, os
 
-def makeSettings() :
-    libCLAMVM = libGen.LibGenerator( "VM" )
+def makeAutoconf( outPath ) :
+    outPath = "../Libs/%s"%"VM"
+    
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+    
+    script = AutoconfTools.AutoconfScript()
+
+    xml = AutoconfTools.Feature( "xml" )
+    script.addFeature( xml )
+
+    double = AutoconfTools.Feature( "double", False )
+    script.addFeature( double )
+
+    checks = AutoconfTools.Feature( "checks" )
+    script.addFeature( checks )
+
+    releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    script.addFeature( releaseAsserts )
+
+    libfltk = AutoconfTools.Library("fltk", "C++")
+    libfltk.sandboxName="fltk"
+    libfltk.headers="FL/Fl.H"
+    libfltk.libs="fltk"
+    libfltk.other_libs="-lGL -lGLU -lz -ljpeg -lpng -lfltk_forms -lfltk_images -lfltk_gl"
+    libfltk.function="fl_yes"
+    libfltk.source="""
+#include <FL/Fl.H>
+
+int main( )
+{
+    Fl::run();
+    return 0;
+}
+"""
+    script.addLibrary( libfltk )
+
+    script.commitToFile( outPath )
+    AutoconfTools.copySupportFiles( outPath )
+
+
+def makeSettings( outPath ) :
+    libCLAMVM = SettingsGen.LibGenerator( "VM" )
 
     print "Generating libCLAM%s..."%libCLAMVM.libName
-
-    libCLAMVM.activate( 'FLTK' )
-    libCLAMVM.activate( 'PTHREADS' )
 
     # Files that do not compile
     libCLAMVM.blackBall( "TmplSlice" )
@@ -31,16 +69,20 @@ def makeSettings() :
     libCLAMVM.addFolder( "Visualization/Presentation" )
     libCLAMVM.addFolder( "Visualization/Plot" )
     libCLAMVM.addFolder( "Visualization/Presentation/Base" )
-    libCLAMVM.addFolder( "Visualization/Presentation/FLTK" )
+    libCLAMVM.condAddFolder( "fltk","Visualization/Presentation/FLTK" )
     libCLAMVM.addFolder( "Visualization/View" )
     libCLAMVM.addFolder( "Visualization/Util" )
-    libCLAMVM.addFolder( "Visualization/Widget/FLTK" )
-    libCLAMVM.addFile( "FLTKWrapper", "Visualization/Widget" )
+    libCLAMVM.condAddFolder( "fltk", "Visualization/Widget/FLTK" )
+    libCLAMVM.condAddFile( "fltk", "FLTKWrapper", "Visualization/Widget" )
 
     libCLAMVM.dependsOn( "Core" )
     libCLAMVM.dependsOn( "Processing" )
     libCLAMVM.dependsOn( "IO" )
 
-    libCLAMVM.generateFiles()
+    libCLAMVM.generateFiles(outPath)
 
-    print "Files are being generated on build/Libs/%s..."%libCLAMVM.libName
+    print "Files are being generated on %s/%s..."%(outPath,libCLAMVM.libName)
+
+if __name__ == "__main__" :
+    makeAutoconf( "../Libs" )
+    makeSettings( "../Libs" )

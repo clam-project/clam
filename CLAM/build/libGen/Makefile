@@ -1,4 +1,4 @@
 TOP=../../..
 
-include $(TOP)/build/Makefile.rules
+include Makefile.rules
 
