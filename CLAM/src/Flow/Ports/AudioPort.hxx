@@ -42,6 +42,13 @@ namespace CLAM {
 		inline void Attach(Node<Audio> &n);
 		inline void Attach(InPortTmpl<Audio> &n);
 		inline void Accept(DataVisitor&);
+		bool IsAttached()
+		{
+			return mpData!=0;
+		}
+		void Unattach()
+		{
+		}
 	};
 
 	template<>
@@ -73,7 +80,8 @@ namespace CLAM {
 								  bool inplace)
 		: InPort(n,o,length,hop,inplace),
 		  mpRegion(0),
-		  mpNode(0)
+		  mpNode(0),
+		  mpData(0)
 	{
 		o->PublishInPort(this);
 	}

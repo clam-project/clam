@@ -94,7 +94,10 @@ namespace CLAM {
 		virtual ~InPort() {}
 
 		virtual void Attach(ProcessingData& data)=0;
-		
+			
+		virtual bool IsAttached() = 0;
+		virtual void Unattach() = 0;
+
 		bool CanDoInplace(void)  {return mCanDoInplace;}
 
 	};
@@ -119,11 +122,20 @@ namespace CLAM {
 		inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
 		inline T &GetData();
 		inline void LeaveData();
+		//! implementation of the virtual method declared in InPort
 		void Attach(ProcessingData& data);
 		inline void Attach(T& data);
 		inline void Attach(Node<T> &n);
 		inline void Attach(InPortTmpl<T> &p); // For composites
 		inline void Accept(DataVisitor&);
+		
+		bool IsAttached()
+		{
+			return mData.Size();
+		}
+		void Unattach()
+		{
+		}
 	};
 
 	template<class T>
