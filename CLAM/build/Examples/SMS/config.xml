@@ -1,7 +1,7 @@
 <!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
 	<Name/>
-	<InputSoundFile>../input.wav</InputSoundFile>
+	<InputSoundFile>./3.wav</InputSoundFile>
 	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
@@ -14,12 +14,9 @@
 	<AnalysisReferenceFundFreq>1000</AnalysisReferenceFundFreq>
 	<AnalysisLowestFundFreq>100</AnalysisLowestFundFreq>
 	<AnalysisHighestFundFreq>1000</AnalysisHighestFundFreq>
-	<AnalysisMaxFundFreqError>10</AnalysisMaxFundFreqError>
-	<AnalysisMaxFundCandidates>10</AnalysisMaxFundCandidates>
 	<AnalysisHarmonic>1</AnalysisHarmonic>
 	<DoCleanTracks>0</DoCleanTracks>
 	<SynthesisFrameSize>-1</SynthesisFrameSize>
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
-	<SynthesisPhaseManagementType>Continuation</SynthesisPhaseManagementType>
-	<MorphSoundFile>../morph.wav</MorphSoundFile>
+	<MorphSoundFile/>
 </SMSAnalysisSynthesisConfig>
