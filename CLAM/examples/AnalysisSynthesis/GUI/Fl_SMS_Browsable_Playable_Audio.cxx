@@ -26,6 +26,7 @@
 #include "Fl_SMS_Gl_Single_Browsable_Display.hxx"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
+#include <iostream>
 
 #include "Audio.hxx"
 #include "AudioPlayer.hxx"
@@ -35,7 +36,7 @@ using CLAM::AudioPlayer;
 using CLAM::Audio;
 
 Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Window( X, Y, W, H, label ), AudioPresentation(  ), mCancel( false ), mIsThisPlaying( false )
+	: Fl_Window( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false )
 {
 	mXAxis = new Fl_X_Axis( 0, H-40, W-40, 20 );
 	mXAxis->align( FL_ALIGN_BOTTOM );
@@ -98,7 +99,9 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )
 {
 	// towards the outer world
-  double sampleTime = (value / mSampleRate ) + mAudioOffset;
+	double sampleTime = (value / mSampleRate ) + mAudioOffset;
+	std::cerr << "Sample rate: " << mSampleRate << std::endl;
+	std::cerr << "Display selected new sample time: " << sampleTime << std::endl;
 	SelectedXValue.Emit( sampleTime );
 }
 

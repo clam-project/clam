@@ -39,6 +39,9 @@ namespace CLAMVM
 	class Fl_Y_Axis;
 	class Fl_ZoomSlider;
 	class Fl_SMS_Gl_Single_Browsable_Display;
+	using SigSlot::Signalv1;
+	using SigSlot::Slotv1;
+	using SigSlot::Slotv0;
 
 	class Fl_SMS_Browsable_Playable_Audio 
 		: public Fl_Window, public AudioPresentation
@@ -54,9 +57,9 @@ namespace CLAMVM
 		bool                              mCancel;
 		bool                              mIsThisPlaying;
 		CLAM::AudioPlayer*                mAudioPlayer;
-	  // for transforming the sample index into sample time
-	  CLAM::TData                       mAudioOffset;
-	  CLAM::TData                       mSampleRate;
+		// for transforming the sample index into sample time
+		CLAM::TData                       mAudioOffset;
+		CLAM::TData                       mSampleRate;
 
 		void Play(  );
 		void Stop(  );
@@ -72,8 +75,8 @@ namespace CLAMVM
 		void OnDisplaySelectedXValue( double value );
 		void OnSetSelectedXValue( double value );
 
-		SigSlot::Signalv1< double > ChangeSelectedXValue;
-		SigSlot::Slotv1< double >   HandleDisplaySelection;
+		Signalv1< double > ChangeSelectedXValue;
+		Slotv1< double >   HandleDisplaySelection;
 
 	public:
 		Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
@@ -83,11 +86,11 @@ namespace CLAMVM
 		void UnsetPaint(); 
 		void SetPos( CLAM::TData pos );
 
-		SigSlot::Slotv1<double>        SetSelectedXValue;
-		SigSlot::Signalv1<double>      SelectedXValue;
+		Slotv1<double>        SetSelectedXValue;
+		Signalv1<double>      SelectedXValue;
 
 
-		SigSlot::Slotv0                mStopSlot;
+		Slotv0                mStopSlot;
 
 		void Show();
 		void Hide();
