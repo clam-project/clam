@@ -9,6 +9,8 @@
 #include "SMSFreqShift.hxx"
 #include "SMSPitchShift.hxx"
 #include "SMSOddEvenHarmonicRatio.hxx"
+#include "SMSHarmonicFilter.hxx"
+#include "SMSTransformationChainIO.hxx"
 
 #ifndef _ProcessingChain_
 #define _ProcessingChain_
@@ -101,7 +103,7 @@ namespace CLAM{
 		ProcessingConfig* InstantiateConcreteConfig(const std::string& type)
 		{
 			if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
-				type=="SMSOddEvenHarmonicRatio")
+				type=="SMSOddEvenHarmonicRatio"||type=="SMSHarmonicFilter"||type=="SMSTransformationChainIO")
 			{
 				return new CLAM::SMSTransformationConfig();
 			}
@@ -266,10 +268,6 @@ namespace CLAM{
 				(*obj)->GetInPorts().GetByNumber(0).Attach(*mpTmpData);
 				(*obj)->GetOutPorts().GetByNumber(0).Attach(*mpTmpData);
 			}
-			/* Now we connect first input port to chain input and last output port to
-			chain output. Note that if any of these Processings is not On, the chain will
-			have no effect at all (working around this problem would mean that the On/Off
-			control can no longer be seen as a control*/
 			obj=composite_begin();
 			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
 			obj=composite_end();
@@ -294,9 +292,12 @@ namespace CLAM{
 			bool result=true;
 			iterator obj;
 			int i=0;
+			//We iterate through all chainees and call their Do()
 			for (obj=composite_begin(); obj!=composite_end(); obj++)
 			{
-				if((*mpOnCtrlArray)[i].GetLastValue())
+				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==composite_size()-1)
+				//Note: First and last chainee's will always be active regartheless the value
+				//of their On control.
 				{
 					try {
 						result&=(*obj)->Do();
@@ -352,7 +353,7 @@ namespace CLAM{
 			CLAM_ASSERT(mpConfig->GetConfigurations().size()==composite_size(),"Number of configurations should be the same as number of children");
 		
 			//TODO: right now there is no way to add or remove controls than to instantiate control array again
-			CLAM_ASSERT(mpConfig->GetOnArray().Size()==composite_size(),"Error");
+			CLAM_ASSERT(mpConfig->GetOnArray().Size()==composite_size(),"ProcessingChain::ConcreteConfigure: On array does not have same size as number of configurations");
 			TSize nControls=composite_size();
 			if(mpOnCtrlArray) delete mpOnCtrlArray;
 			mpOnCtrlArray= new InControlTmplArray<ProcessingChain>(nControls,"OnControlArray",this,NULL);
@@ -394,9 +395,17 @@ protected:
 			{
 				InsertAndGiveName(*(new SMSOddEvenHarmonicRatio()));
 			}
+			else if(type=="SMSHarmonicFilter")
+			{
+				InsertAndGiveName(*(new SMSHarmonicFilter()));
+			}
+			else if(type=="SMSTransformationChainIO")
+			{
+				InsertAndGiveName(*(new SMSTransformationChainIO()));
+			}
 			else
 			{
-				throw Err("Not a valid Chainee");
+				throw Err("ProcessingChain::AddChainee:Not a valid Chainee");
 			}
 			return true;
 			
