@@ -81,7 +81,9 @@ bool SDIFIn::Do(void)
 	if (frameTimeTag != mLastCenterTime)	// new SpectralFrame, need to add it to segment
 	{
 		Frame initFrame;
-		initFrame.AddAll();
+		initFrame.AddSpectralPeakArray();
+		initFrame.AddResidualSpec();
+		initFrame.AddFundamental();
    		initFrame.UpdateData();
 
 		//Residual Spectrum in frame should be configured to have the ComplexArray
@@ -143,6 +145,7 @@ bool SDIFIn::Do(void)
 		tmpFrame.GetSpectralPeakArray().AddAll();
 		tmpFrame.GetSpectralPeakArray().UpdateData();
 		SpectralPeakArray& tmpPeakArray=tmpFrame.GetSpectralPeakArray();
+		tmpPeakArray.SetScale(EScale::eLinear);
 
 		tmpPeakArray.SetnMaxPeaks(nElems); //number of peaks in the sdif file
 		tmpPeakArray.SetnPeaks(nElems); //number of peaks in the sdif file

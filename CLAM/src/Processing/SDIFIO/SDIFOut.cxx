@@ -95,7 +95,6 @@ bool SDIFOut::Do(const Frame& frame)
 		tmpSDIFFrame.Add(pMatrix);
 		//Next matrix
 		pMatrix=new SDIF::Matrix("1STF",SDIF::eFloat32,frame.GetResidualSpec().GetSize(),2);
-		//pMatrix->mHeader.mnRows=frame.GetResidualSpec().GetSize();
 		
 		//We have to convert residual spectrum to complex
   		SpectrumConfig Scfg;
@@ -106,6 +105,9 @@ bool SDIFOut::Do(const Frame& frame)
 			sflags.bComplex = 1;
   			frame.GetResidualSpec().SetTypeSynchronize(sflags);
 		}
+		//SDIF only accepts linear data
+		frame.GetResidualSpec().ToLinear();
+		
 		Array<Complex>& complexBuffer=frame.GetResidualSpec().GetComplexArray();
 		for (int r=0;r<pMatrix->mHeader.mnRows;r++)	//Write in complex data
 		{
@@ -119,6 +121,8 @@ bool SDIFOut::Do(const Frame& frame)
 	if(mConfig.GetEnablePeakArray())
 	{
 		SpectralPeakArray& tmpPeakArray=frame.GetSpectralPeakArray();
+		//SDIF only accepts linear data
+		tmpPeakArray.ToLinear();
 		
 		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime());
 		
