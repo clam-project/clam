@@ -114,17 +114,16 @@ namespace CLAM {
 			                  "StreamBuffer::GetAndActivate(): "
 			                  "Region inconsistent before activation.");
 			r->Activate();
-			
+
 			/* if r does not fulfil invariant after activation, it means that
 			 *	it cannot be used consistently. The Leave() method should be called
 			 *	afterwards, else results are not predictable when trying to use the region
 			 *	as it does not point to a valid memory.*/
-			if (!r->FulfilsInvariant())	return false;
-			
+			if (!r->FulfilsInvariant()) return false;
+
 			mBuffer.GetData(r,a);
 			return true;
 		}
-
 
 		bool GetAndActivate(AddStreamRegion* r, Array<D> &a)
 		{
@@ -141,12 +140,11 @@ namespace CLAM {
 			 *	afterwards, else results are not predictable when trying to use the region
 			 *	as it does not point to a valid memory.*/
 			if (!r->FulfilsInvariant())	return false;
-			else {
-				mBuffer.GetData(r,a);
-				mTmpBuffer=a;
-				return true;
 
-			}
+			mBuffer.GetData(r,a);
+			mTmpBuffer=a;
+			return true;
+
 		}
 
 		/** @name Region Advance methods.
@@ -166,7 +164,6 @@ namespace CLAM {
 			mBuffer.Leave(r);
 			r->LeaveAndAdvance();
 		}
-
 
 		void LeaveAndAdvance(AddStreamRegion*r)
 		{
@@ -202,7 +199,6 @@ namespace CLAM {
 		
 
 	};
-
 
 // Template method implementations:
 
@@ -297,7 +293,7 @@ namespace CLAM {
 	after having instantiated the regions. This would actually be good as this is the
 	place where we assert that all regions are consistent, but we have no way of knowing
 	whether the StreamBuffer has been added a new region after configuration. 
-	Another thing that could be done is to initialize Regions every time a new one is 
+	Another thing that could be done is to initialize Regions every time a new one is
 	instantiated. */
 		mRegions.Init();
 
