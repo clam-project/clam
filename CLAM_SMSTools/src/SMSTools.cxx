@@ -37,6 +37,7 @@ namespace CLAMGUI
 	{
 		TimeSelected.Wrap( this, &SMSTools::OnNewTime );
 		mExplorer.SelectedTime.Connect( TimeSelected );
+		SetScore.Wrap( this, &SMSTools::OnNewScore );
 	}
 
 	SMSTools::~SMSTools()
@@ -69,8 +70,17 @@ namespace CLAMGUI
 
 	void SMSTools::OnNewScore( const SMSTransformationChainConfig& cfg )
 	{
-		SMSBase::OnNewScore( cfg );
+		mTransformationScore = cfg;
+		mHaveTransformationScore = true;
+		ScoreChanged.Emit( mTransformationScore );
+
 		mUI->ApplyTransformationReadyState();
+	}
+
+	void SMSTools::LoadTransformationScore( const std::string& inputFilename )
+	{
+		SMSBase::LoadTransformationScore( inputFilename );
+		ScoreChanged.Emit( mTransformationScore );
 	}
 
 	

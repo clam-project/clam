@@ -73,8 +73,6 @@ SMSBase::SMSBase()
 	mpAnalysis=new SMSAnalysis;
 	mpSynthesis=new SMSSynthesis;
 
-	SetScore.Wrap( this, &SMSBase::OnNewScore );
-
 }
 
 void SMSBase::DestroyWaitMessage( )
@@ -95,14 +93,6 @@ SMSBase::~SMSBase(void)
 	delete mpAnalysis;
 	delete mpSynthesis;
 }
-
-void SMSBase::OnNewScore( const SMSTransformationChainConfig& cfg )
-{
-	mTransformationScore = cfg;
-	mHaveTransformationScore = true;
-	ScoreChanged.Emit( mTransformationScore );
-}
-
 void SMSBase::InitConfigs(void)
 {
 	if (!mHaveConfig) return;
@@ -835,7 +825,6 @@ void SMSBase::LoadTransformationScore(const std::string& inputFileName)
 	XMLStorage x;
 	x.Restore(mTransformationScore,inputFileName);
 	delete wm;
-	ScoreChanged.Emit( mTransformationScore );
 }
 
 void SMSBase::StoreTransformationScore( const std::string& outputFilename )
