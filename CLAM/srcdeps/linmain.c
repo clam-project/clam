@@ -9,8 +9,6 @@
 #include "config_parser.h"
 
 
-extern list* includepaths; /* parser.c */
-
 void usage(void)
 {
 	fprintf(stderr,"Usage srcdeps SETTINGSFILE\n");

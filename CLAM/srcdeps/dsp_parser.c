@@ -65,17 +65,20 @@ FILE* outfile = 0;
 
 void dsp_parse_add_needed_includepaths(void)
 {
-	item* i = needed_includepaths->first;
+	item* i = includepaths->first;
 	while (i)
 	{
 		if (i->str && i->str[0]!=0)
-		{
-			char tmp[1024];
-			strncpy(tmp,i->str,1024);
-			winstyle(tmp);
-			stradd(" /I \"");
-			stradd(tmp);
-			stradd("\"" );
+		{	
+			if (list_find(needed_includepaths,i->str))
+			{
+				char tmp[1024];
+				strncpy(tmp,i->str,1024);
+				winstyle(tmp);
+				stradd(" /I \"");
+				stradd(tmp);
+				stradd("\"" );
+			}
 		}
 		i = i->next;
 	}

@@ -8,6 +8,7 @@ extern list* guessed_sources;
 extern list* guessed_headers;
 extern list* defines;
 extern list *includes;
+extern list *includepaths;
 extern list *needed_includepaths;
 
 extern int gendepend;
