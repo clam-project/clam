@@ -74,6 +74,11 @@ void SystemWithPorts::ConfigureProcessings()
 
 	_fileIn.Configure (fileCfg);
 
+	CLAM::AudioMixerConfig mixerCfg;
+	mixerCfg.SetFrameSize(_frameSize);
+
+	_mixer.Configure( mixerCfg );
+
 	if (_hasAudioOut)
 	{
 		CLAM::AudioIOConfig audioCfg;
@@ -227,12 +232,17 @@ void SystemWithPorts::FileInFileOut::Stop()
 
 void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 {
+	// linking ControlSender with AudioMixer volumes.
+	System()._controlSender._outControl1.AddLink(&(System()._mixer.Volumes[0]));
+	System()._controlSender._outControl2.AddLink(&(System()._mixer.Volumes[1]));
+
+
+
 	System()._fileIn.mOutput.Attach( System()._fileInData );
 	System()._modulator.mOutput.Attach( System()._modulatorData );
 	System()._multiplier.mFirstInput.Attach( System()._fileInData );
 	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
 	System()._multiplier.mOutput.Attach( System()._multiplierData );
-
 	System()._mixer.Input[0].Attach( System()._multiplierData );
 	System()._mixer.Input[1].Attach( System()._fileInData );
 	System()._mixer.Output.Attach( System()._mixerData );
@@ -248,6 +258,7 @@ bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
 	System()._fileIn.Do();
 	System()._modulator.Do();
 	System()._multiplier.Do();
+	System()._controlSender.Do();
 	System()._mixer.Do();
 	System()._fileOut.Do();
 	if (_hasAudioOut)

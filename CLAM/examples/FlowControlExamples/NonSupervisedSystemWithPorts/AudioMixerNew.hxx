@@ -105,9 +105,12 @@ namespace CLAM
 		for (unsigned i=0; i<mFrameSize; i++) {
 			sum=0.0;
 			for (unsigned a=0; a<N; a++)
+			{
 				sum += ((*in_array[a])[i])*(Volumes[a].GetLastValue());
+			}
 			out_array[i] = sum / TData(N);
 		}
+		std::cout << Volumes[0].GetLastValue() << "  " <<  Volumes[1].GetLastValue() << std::endl;
 	}
 
 
