@@ -146,7 +146,7 @@ void AudioIOExampleConfig::DefaultInit()
 	AddAll();
 	UpdateData();
 	SetFilename("foo.wav");
-	SetUseAudioIn(false);
+	SetUseAudioIn(true);
 
 	SetFirstTremoloFreq( 50.0 );
 	SetFirstTremoloStartingPhase( 0 );
