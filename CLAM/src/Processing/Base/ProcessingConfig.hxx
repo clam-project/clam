@@ -40,9 +40,9 @@ namespace CLAM {
 
 
 		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @param n Name of the new processing object
+		 * @param name Name of the new processing object
 		 */
-		virtual void SetName(const std::string&) = 0;
+		virtual void SetName(const std::string&name) = 0;
 
 		/** This method forces the derived class to implement a Name dynamic attribute.
 		 * @return Name of the new processing object
