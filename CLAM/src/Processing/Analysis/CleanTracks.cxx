@@ -78,11 +78,11 @@ namespace CLAM {
 
 	
 	//Supervised mode
-	bool  CleanTracks::Do(void) 
+	bool  CleanTracks::Do(void)
 	{
-		throw(ErrProcessingObj("CleanTracks::Do(): Supervised mode not implemented",this));
+		CLAM_ASSERT(false,"CleanTracks::Do(): Supervised mode not implemented");
 		return false;
-	}  
+	}
 
 	bool CleanTracks::Do(Array<SpectralPeakArray*>& peakArrayArray)
 	{
@@ -97,11 +97,10 @@ namespace CLAM {
 
 	bool CleanTracks::Do(Segment& segment)
 	{
-		int i;
-		int nFrames=segment.GetnFrames();
+		const int nFrames=segment.GetnFrames();
 		Array<SpectralPeakArray*> spectralPeakArrayArray;
 		spectralPeakArrayArray.Resize(nFrames);
-		for(i=0;i<nFrames;i++)
+		for(int i=0;i<nFrames;i++)
 		{
 			spectralPeakArrayArray.AddElem(&segment.GetFrame(i).GetSpectralPeakArray());
 		}
@@ -111,10 +110,9 @@ namespace CLAM {
 
 	void CleanTracks::Update(Array<SpectralPeakArray*>& peakArrayArray)
 	{
-		int i,z;
-		for(i=0;i<peakArrayArray.Size();i++)
+		for(int i=0;i<peakArrayArray.Size();i++)
 		{
-			for(z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
+			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
 			{
 				TTrajectory tmpTrajectory;
 				tmpTrajectory.id=peakArrayArray[i]->GetIndex(z);
@@ -131,50 +129,43 @@ namespace CLAM {
 
 	void CleanTracks::Continue(Array<SpectralPeakArray*>& peakArrayArray)
 	{
-		int i, id, contAt, begPos,lastfreq;
-		for(i=0;i<mTrajectoryArray.Size();i++)
+		for(int i=0;i<mTrajectoryArray.Size();i++)
 		{
-			id=mTrajectoryArray[i].id;
-			contAt=mTrajectoryArray[i].continuedAtId;
-			begPos=mTrajectoryArray[i].beginPos;
-			lastfreq=int(mTrajectoryArray[i].finalFreq);
-			if(mTrajectoryArray[i].continuedAtId!=-1)
+			const int id     = mTrajectoryArray[i].id;
+			      int contAt = mTrajectoryArray[i].continuedAtId;
+			const int begPos = mTrajectoryArray[i].beginPos;
+			const int lastfreq=int(mTrajectoryArray[i].finalFreq);
+			while(mTrajectoryArray[i].continuedAtId!=-1)
 			{
-				while(mTrajectoryArray[i].continuedAtId!=-1)
-				{
-					contAt=mTrajectoryArray[i].continuedAtId;
-					InterpolatePeaks(mTrajectoryArray[i], peakArrayArray);
-				}
+				contAt=mTrajectoryArray[i].continuedAtId;
+				InterpolatePeaks(mTrajectoryArray[i], peakArrayArray);
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	void CleanTracks::Clean(Array<SpectralPeakArray*>& peakArrayArray)
 	{
-		int i,z;
-		for(i=0;i<peakArrayArray.Size();i++)
+		for(int i=0;i<peakArrayArray.Size();i++)
 		{
 			int nDeleted=0;
-			for(z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
+			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
 			{
-				int id=peakArrayArray[i]->GetIndex(z-nDeleted);
-				int trajectoryPosition=FindTrajectoryPosition(id);
-				if (trajectoryPosition!=-1)
-				{
-					if(mTrajectoryArray[trajectoryPosition].length<mMinLength)
-					{
-						//modified
-						peakArrayArray[i]->DeleteSpectralPeak(z-nDeleted);
-						peakArrayArray[i]->SetIsIndexUpToDate(true);
-						peakArrayArray[i]->DeleteIndex(id);
-						mTrajectoryArray[trajectoryPosition].length--;//update length
-						if(mTrajectoryArray[trajectoryPosition].length==0)
-							DeleteTrajectory(id);
-						nDeleted++;
-					}
-				}
+				const int id=peakArrayArray[i]->GetIndex(z-nDeleted);
+				const int trajectoryPosition=FindTrajectoryPosition(id);
+
+				if (trajectoryPosition==-1) continue;
+				if (mTrajectoryArray[trajectoryPosition].length>=mMinLength) continue;
+
+				//modified
+				peakArrayArray[i]->DeleteSpectralPeak(z-nDeleted);
+				peakArrayArray[i]->SetIsIndexUpToDate(true);
+				peakArrayArray[i]->DeleteIndex(id);
+				mTrajectoryArray[trajectoryPosition].length--;//update length
+				if(mTrajectoryArray[trajectoryPosition].length==0)
+					DeleteTrajectory(id);
+				nDeleted++;
 			}
 		}
 	}
@@ -182,15 +173,12 @@ namespace CLAM {
 
 	void CleanTracks::UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray)
 	{
-		int i,z;
-		int currentTrackid;
-		int newTrackid;
-		for(i=0;i<peakArrayArray.Size();i++)
+		for(int i=0;i<peakArrayArray.Size();i++)
 		{
-			for(z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
+			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
 			{
-				currentTrackid=peakArrayArray[i]->GetIndex(z);
-				newTrackid=FindTrajectoryPosition(currentTrackid);
+				const int currentTrackid=peakArrayArray[i]->GetIndex(z);
+				const int newTrackid=FindTrajectoryPosition(currentTrackid);
 				if(newTrackid!=currentTrackid)
 				{
 					peakArrayArray[i]->SetIndex(z,newTrackid);
@@ -200,60 +188,58 @@ namespace CLAM {
 		}
 	}
 
-				
+
 
 	void CleanTracks::AddTrajectory(TTrajectory& trajectory)
 	{
-		int pos=-1;
 		//if the trajectory exists, pos=id?
-		TSize nTrajectories=mTrajectoryArray.Size();
-		if(nTrajectories>0)
-		{
+		const TSize nTrajectories=mTrajectoryArray.Size();
+
+		const int pos=(nTrajectories>0)?
 			//would be faster using searcharray.find
-			pos=FindTrajectoryPosition(trajectory.id);
-		}
-		if(pos!=-1)//if found, length and last data are updated
+			FindTrajectoryPosition(trajectory.id):
+			-1;
+
+		if(pos==-1)
 		{
-			mTrajectoryArray[pos].length++;
-			mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
-			mTrajectoryArray[pos].finalMag=trajectory.finalMag;
-		}
-		else  //trajectory added
-		{
+			//not found
 			mTrajectoryArray.AddElem(trajectory);
+			return;
 		}
+
+		//if found, length and last data are updated
+		mTrajectoryArray[pos].length++;
+		mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
+		mTrajectoryArray[pos].finalMag=trajectory.finalMag;
 	}
 
 
 	void CleanTracks::DeleteTrajectory(int id)
 	{
-		int pos;
-		
-		pos=FindTrajectoryPosition(id);
+		const int pos=FindTrajectoryPosition(id);
 		mTrajectoryArray.DeleteElem(pos);
 	}
 
 
-	
+
 	void  CleanTracks::ContinuedAt()
-	{		
-		int i, j, k;
+	{
 		TSize dropOut;
 		int bestCandidate;
 		bool ThereIsCandidate;
 
-		for(i=0; i<mTrajectoryArray.Size(); i++)
+		for(int i=0; i<mTrajectoryArray.Size(); i++)
 		{
 			ThereIsCandidate=false;
 			TData bestFreqDif=mFreqDev;
-			
+
 			//GetBestCandidate
-			for(k=0; k<mTrajectoryArray.Size(); k++)
+			for(int k=0; k<mTrajectoryArray.Size(); k++)
 			{
 				dropOut=mTrajectoryArray[i].beginPos-(mTrajectoryArray[k].beginPos+mTrajectoryArray[k].length);
-				
+
 				if((dropOut>0)&&(dropOut<=mMaxDropOut)&&
-					(Abs(mTrajectoryArray[i].initialFreq-mTrajectoryArray[k].finalFreq)<bestFreqDif))				
+					(Abs(mTrajectoryArray[i].initialFreq-mTrajectoryArray[k].finalFreq)<bestFreqDif))
 				{
 					bestFreqDif=Abs(mTrajectoryArray[i].initialFreq-mTrajectoryArray[k].finalFreq);
 					bestCandidate=k;
@@ -264,16 +250,16 @@ namespace CLAM {
 			if(ThereIsCandidate)
 			{
 				//IsBestCandidateInTheOtherWay
-				bool IsBestCandidate=true;
-				for(j=0; j<mTrajectoryArray.Size(); j++)
+				bool isBestCandidate=true;
+				for(int j=0; j<mTrajectoryArray.Size(); j++)
 				{
 					dropOut=mTrajectoryArray[j].beginPos-(mTrajectoryArray[bestCandidate].beginPos+mTrajectoryArray[bestCandidate].length);
 					if((dropOut>0)&&(dropOut<=mMaxDropOut)&&
 						(Abs(mTrajectoryArray[j].initialFreq-mTrajectoryArray[bestCandidate].finalFreq)<bestFreqDif))
 						//(Abs(mTrajectoryArray[j].initialFreq-mTrajectoryArray[bestCandidate].finalFreq)/(dropOut+1)<bestFreqDif))
-						IsBestCandidate=false;
+						isBestCandidate=false;
 				}
-				if(IsBestCandidate==true) mTrajectoryArray[bestCandidate].continuedAtId=mTrajectoryArray[i].id;
+				if (isBestCandidate==true) mTrajectoryArray[bestCandidate].continuedAtId=mTrajectoryArray[i].id;
 
 			}
 		}
