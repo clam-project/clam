@@ -134,6 +134,7 @@ namespace CLAMVM
 			CLAM_ASSERT( mpOriginalAudioWidget!=NULL, "The widget could not be created");
 			mpOriginalAudioWidget->AttachTo( mOriginalAudioAdapter );
 			mpOriginalAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
+			mpOriginalAudioWidget->SelectedXValue.Connect( SelectedTimeChanged );
 		}
 
 		mOriginalAudioAdapter.Publish();
@@ -149,6 +150,7 @@ namespace CLAMVM
 			CLAM_ASSERT( mpSynthesizedAudioWidget!=NULL, "The widget could not be created");
 			mpSynthesizedAudioWidget->AttachTo( mSynthesizedAudioAdapter );
 			mpSynthesizedAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
+			mpSynthesizedAudioWidget->SelectedXValue.Connect( SelectedTimeChanged );
 		}
 
 		mSynthesizedAudioAdapter.Publish();
@@ -165,6 +167,7 @@ namespace CLAMVM
 			CLAM_ASSERT( mpSynthesizedSinusoidalWidget!=NULL, "The widget could not be created");
 			mpSynthesizedSinusoidalWidget->AttachTo( mSynthesizedSinusoidalAdapter );
 			mpSynthesizedSinusoidalWidget->SetSelectedXValue( mCurrentFrameCenterTime );
+			mpSynthesizedSinusoidalWidget->SelectedXValue.Connect( SelectedTimeChanged );
 		}
 
 		mSynthesizedSinusoidalAdapter.Publish();
@@ -181,6 +184,7 @@ namespace CLAMVM
 			CLAM_ASSERT( mpSynthesizedResidualWidget!=NULL, "The widget could not be created");
 			mpSynthesizedResidualWidget->AttachTo( mSynthesizedResidualAdapter );
 			mpSynthesizedResidualWidget->SetSelectedXValue( mCurrentFrameCenterTime );
+			mpSynthesizedResidualWidget->SelectedXValue.Connect( SelectedTimeChanged );
 		}
 
 		mSynthesizedResidualAdapter.Publish();
