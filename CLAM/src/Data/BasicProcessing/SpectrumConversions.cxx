@@ -93,6 +93,34 @@ namespace CLAM
 		}
 	}
 
+	void Complex2LogMagPhase(const Array<Complex> &src, DataArray &destMag, DataArray &destPhase)
+	{
+		CLAM_ASSERT(src.Size() == destMag.Size() && src.Size() == destPhase.Size(), "Complex2LogMagPhase() - input/output sizes inconsistent.");
+
+		const int n = src.Size();
+		for (int i = 0; i < n; ++i)
+		{
+			static const float minLinSquared = 1.0e-20f;
+			static const float minLog = -200.f; // -200 dB
+
+			const float re = src[i].Real();
+			const float im = src[i].Imag();
+
+			const float magSquared = re*re + im*im;
+
+			if (magSquared < minLinSquared)
+			{
+				destMag[i] = minLog;
+			}
+			else
+			{
+				destMag[i] = 10.f*log10f(re*re + im*im); // = 20*log10(sqrt(re^2 + im^2))
+			}
+
+			destPhase[i] = src[i].Ang(); // = atan2(im. re)
+		}
+	}
+
 	void Linear2LogMagnitude( const DataArray& linearBuffer, DataArray& logData )
 	{
 		const TSize nBins = linearBuffer.Size();
