@@ -79,7 +79,7 @@ namespace CLAMGUI
 
 						void AssignList( SinusoidalTrack* new_list )
 						{								
-								CLAM_ASSERT( !new_list, "new_list is NULL!" );
+								CLAM_ASSERT( new_list!=NULL, "new_list is NULL!" );
 								mListPtr = new_list;
 						}
 
@@ -165,8 +165,13 @@ namespace CLAMGUI
 				typedef std::map< TIndex, TrackHead >   TrackingList;
 				
 		public:
-				SinTrackBuilder( SineTrackList& l );
+				SinTrackBuilder( );
 				
+				void SetTrackList( SineTrackList& list )
+				{
+					mSineTrackList = &list;
+				}
+
 				void AddFrame( const Array<Partial>& , TIndex );
 				
 				void Flush()
@@ -178,7 +183,7 @@ namespace CLAMGUI
 
 		private:
 				TrackingList          mHeadsList;
-				SineTrackList&        mSineTrackList;
+				SineTrackList*        mSineTrackList;
 		};
 
 };

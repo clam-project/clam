@@ -1,5 +1,6 @@
 #include "SinTrackVerClipper.hxx"
 #include "Assert.hxx"
+#include <iterator>
 
 namespace CLAMGUI
 {
@@ -67,17 +68,18 @@ namespace CLAMGUI
 
 				peak_iterator first_in = find_first_in( f_lower, f_upper, currp, listEnd );
 				
-				if ( first_in == ei ) // no points in
+				if ( first_in == listEnd ) // no points in
 				{
 						si = ei;
 						return;
 				}
-				
+
+
 				si = currp = first_in; // we set the start to the first_in ( as well as the current point )
 
 				peak_iterator last_in = find_last_in( f_lower, f_upper, currp, listEnd );
 				
-				ei = currp = last_in; // first span 
+				ei = currp = last_in;
 
 				while ( currp!= listEnd )
 				{

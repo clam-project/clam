@@ -16,9 +16,14 @@ namespace CLAMGUI
 				typedef SineTrackSpanEnds::iterator peak_iterator;
 		public:
 				
-				SinTrackHorClipper( SineTrackList& list )
-						: mList( list )
+				SinTrackHorClipper( )
+						: mList( NULL)
 				{
+				}
+
+				void SetTrackList( SineTrackList& list )
+				{
+					mList = &list;
 				}
 
 				void Cull( TIndex start_frame, TIndex end_frame, 
@@ -32,7 +37,7 @@ namespace CLAMGUI
 
 		private:
 				
-				SineTrackList&   mList;
+				SineTrackList*   mList;
 		};
 }
 

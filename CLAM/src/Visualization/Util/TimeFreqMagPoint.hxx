@@ -14,6 +14,7 @@ namespace CLAMGUI
 				TData   mMag;
 				TData   mFreq;
 				TIndex  mTimeIndex;
+				TIndex  mColorIndex;
 
 				TimeFreqMagPoint();
 
