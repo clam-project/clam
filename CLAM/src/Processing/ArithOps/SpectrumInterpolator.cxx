@@ -57,16 +57,6 @@ namespace CLAM {
 		Configure(c);
 	}
 
-	std::string SpectrumInterpolator::NewUniqueName()
-	{
-		static int ObjectCount=0;
-
-		std::stringstream name;
-		name << "SpectrumInterpolator_" << ObjectCount++;
-
-		return name.str();
-	}
-
 	bool SpectrumInterpolator::ConcreteConfigure(const ProcessingConfig&c)
 	{
 		CopyAsConcreteConfig(mConfig, c);

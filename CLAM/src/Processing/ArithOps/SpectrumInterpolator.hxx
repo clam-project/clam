@@ -121,9 +121,6 @@ namespace CLAM {
 		ScaleState mScaleState;
 
 
-		/** OBSOLETE */
-		std::string NewUniqueName();
-
 		const char *GetClassName() const {return "SpectrumInterpolator";}
 
 
