@@ -67,6 +67,8 @@ namespace CLAM
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
 		void InitConfigs(void);
+		/** Returns true if mGlobalConfig has the required elements.*/
+		bool HaveCompatibleConfig();
 		/** Load global configuration */
 		void LoadConfig(const std::string& inputFileName);
 		/** Store global configuration */
@@ -176,6 +178,11 @@ namespace CLAM
 
 		/** Actual transformation to be used*/
 		SMSTransformationChain mTransformation;
+
+
+		/** Internal Processings used for analysis and synthesis */
+		SMSAnalysis mAnalysis;
+		SMSSynthesis mSynthesis;
 
 		/** Indicates whether there is a valid analysis-synthesis configuration */
 		bool mHaveConfig;

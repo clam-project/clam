@@ -159,11 +159,18 @@ void SMSBase::LoadConfig(const std::string& inputFileName)
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
 	mHaveConfig = false;
-	if(	
-	mGlobalConfig.HasInputSoundFile() &&
-	mGlobalConfig.HasOutputSoundFile() &&
-	mGlobalConfig.HasOutputAnalysisFile() &&
-	mGlobalConfig.HasInputAnalysisFile() &&
+	if(HaveCompatibleConfig())
+	{	
+		mHaveConfig = true;
+		InitConfigs();
+	}
+	DestroyWaitMessage();
+
+}
+
+bool SMSBase::HaveCompatibleConfig()
+{
+	return(mGlobalConfig.HasInputSoundFile() &&
 	mGlobalConfig.HasAnalysisWindowSize() &&
 	mGlobalConfig.HasAnalysisHopSize() &&
 	mGlobalConfig.HasAnalysisWindowType() &&
@@ -180,13 +187,8 @@ void SMSBase::LoadConfig(const std::string& inputFileName)
 	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
 	mGlobalConfig.HasSynthesisFrameSize() &&
 	mGlobalConfig.HasSynthesisWindowType() &&
-	mGlobalConfig.HasSynthesisPhaseManagementType())
-	{	
-		mHaveConfig = true;
-		InitConfigs();
-	}
-	DestroyWaitMessage();
-
+	mGlobalConfig.HasSynthesisPhaseManagementType()&&
+	mGlobalConfig.HasMorphSoundFile());
 }
 
 void SMSBase::StoreConfig(const std::string& inputFileName)
@@ -316,7 +318,7 @@ void SMSBase::AnalysisProcessing()
 
 	TSize size = mOriginalSegment.GetAudio().GetSize();
 	
-	SMSAnalysis myAnalysis(mAnalConfig);
+	mAnalysis.Configure(mAnalConfig);
 
 	Flush(mOriginalSegment);
 	
@@ -326,15 +328,15 @@ void SMSBase::AnalysisProcessing()
 	int step=mAnalConfig.GetHopSize();
 	int initialOffset=mAnalConfig.GetInitialOffset();	
 
-	myAnalysis.Start();
+	mAnalysis.Start();
 
-	while(myAnalysis.Do(mOriginalSegment))
+	while(mAnalysis.Do(mOriginalSegment))
 	{      
 		k=step*(mOriginalSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
 
- 	myAnalysis.Stop();
+ 	mAnalysis.Stop();
 }
 
 void SMSBase::MorphAnalysisProcessing()
@@ -342,7 +344,7 @@ void SMSBase::MorphAnalysisProcessing()
 
 	TSize size = mMorphSegment.GetAudio().GetSize();
 	
-	SMSAnalysis myAnalysis(mAnalConfig);
+	mAnalysis.Configure(mAnalConfig);
 
 	Flush(mMorphSegment);
 	
@@ -352,15 +354,15 @@ void SMSBase::MorphAnalysisProcessing()
 	int step=mAnalConfig.GetHopSize();
 	int initialOffset=mAnalConfig.GetInitialOffset();	
 
-	myAnalysis.Start();
+	mAnalysis.Start();
 
-	while(myAnalysis.Do(mMorphSegment))
+	while(mAnalysis.Do(mMorphSegment))
 	{      
 		k=step*(mMorphSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
 
- 	myAnalysis.Stop();
+ 	mAnalysis.Stop();
 
 
 }
@@ -536,8 +538,8 @@ void SMSBase::SynthesisProcessing()
 
 	//The system that contains all synthesis PO
 	
-	SMSSynthesis mySynthesis(mSynthConfig);
-	mySynthesis.Start();
+	mSynthesis.Configure(mSynthConfig);
+	mSynthesis.Start();
 	/////////////////////////////////////////////////////////////////////////////
 	// The main synthesis processing loop.
 	
@@ -554,7 +556,7 @@ void SMSBase::SynthesisProcessing()
 	mTransformedSegment.mCurrentFrameIndex=0;
 	for(i=0;i<nSynthFrames;i++){
 		
-		if(mySynthesis.Do(mTransformedSegment))
+		if(mSynthesis.Do(mTransformedSegment))
 		{
 			mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
 			mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
@@ -568,7 +570,7 @@ void SMSBase::SynthesisProcessing()
 
 	mHaveAudioOut = true;
 
-	mySynthesis.Stop();
+	mSynthesis.Stop();
 
 }
 void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
