@@ -5,6 +5,7 @@
 
 #include "Factory.hxx"
 
+#include <list>
 
 namespace CLAMTest
 {
@@ -21,6 +22,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCreateSafe_WithABadKey );
 	CPPUNIT_TEST( testAddCreator_WithRepeatedKey );
 	CPPUNIT_TEST( testAddCreatorSafe_WithRepeatedKey );
+	CPPUNIT_TEST( testGetRegisteredNames_WithNoKeys );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -94,10 +96,19 @@ protected:
 		mTheFactory->AddCreator("DummyProductFoo", BarCreator() );
 		try{
 			mTheFactory->AddCreatorSafe("DummyProductFoo", FooCreator());
-			CPPUNIT_FAIL("an ErrFactory should be rised");
+			CPPUNIT_FAIL("an ErrFactory should be raised");
 		} catch (CLAM::ErrFactory&) {
 
 		}
+	}
+
+	void testGetRegisteredNames_WithNoKeys()
+	{
+		std::list<std::string> registeredNames;
+
+		mTheFactory->GetRegisteredNames( registeredNames );
+
+		CPPUNIT_ASSERT_EQUAL( (unsigned int )0, registeredNames.size() );
 	}
 
 };
