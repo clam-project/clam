@@ -92,6 +92,9 @@ public: //slots
 	SigSlot::Signalv2< const std::string &, const std::string & > RemovePortConnectionFromGUI;
 	SigSlot::Signalv2< const std::string &, const std::string & > RemoveControlConnectionFromGUI;
 	SigSlot::Signalv1< const std::string & > RemoveProcessingFromGUI;
+	SigSlot::Signalv1< const std::string & > LoadNetworkFrom;
+	SigSlot::Signalv1< const std::string & > SaveNetworkTo;
+	
 	SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
 	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > AddProcessing;
 };

@@ -113,6 +113,9 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 	RemovePortConnectionFromGUI.Connect( model.RemovePortConnection );
 	RemoveControlConnectionFromGUI.Connect( model.RemoveControlConnection );
 	RemoveProcessingFromGUI.Connect( model.RemoveProcessing );
+
+	SaveNetworkTo.Connect( model.SaveNetwork );
+	LoadNetworkFrom.Connect( model.LoadNetwork );
 }
 
 
