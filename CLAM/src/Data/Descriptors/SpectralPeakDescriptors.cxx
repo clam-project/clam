@@ -70,7 +70,10 @@ const SpectralPeakArray* SpectralPeakDescriptors::GetpSpectralPeakArray() const 
 	return mpSpectralPeakArray;
 }
 
-void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {
+void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray)
+{
+	CLAM_ASSERT(pSpectralPeakArray->GetScale()==EScale::eLinear,
+		"Spectral Peak Descriptors require a linear magnitude SpectralPeakArray");
 	mpSpectralPeakArray=pSpectralPeakArray;
     //TODO: it may give problems because pointer passed
 	InitStats(&mpSpectralPeakArray->GetMagBuffer());
@@ -105,7 +108,7 @@ void SpectralPeakDescriptors::ConcreteCompute()
 
 TData SpectralPeakDescriptors::ComputeCentroid()
 {
-	int size = mpSpectralPeakArray->GetnPeaks();
+	unsigned size = mpSpectralPeakArray->GetnPeaks();
 	if (size<=0) return 0;
 	const Array<TData> & magnitudes = mpSpectralPeakArray->GetMagBuffer();
 	const Array<TData> & frequencies = mpSpectralPeakArray->GetFreqBuffer();
@@ -121,7 +124,7 @@ TData SpectralPeakDescriptors::ComputeCentroid()
 it promoted into basicOps*/
 TData SpectralPeakDescriptors::ComputeSpectralTilt()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=1) return 0;
+	if (mpSpectralPeakArray->GetnPeaks()<=1) return 0;
 
 	/* TODO check me , this computation does not seem to work*/
 	TData m1;
@@ -141,7 +144,7 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 	m1 = Mean()(mag);
 
-	for (int i=0;i<size;i++)
+	for (unsigned i=0;i<size;i++)
 	{
 		d1 += pos[i]/mag[i];
 		d2 += 1/mag[i];
@@ -150,7 +153,7 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 	/* ti = m1/ai *(n - (d1/d2)) */
 	/* SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]  */
 
-	for (int i=0;i<size;i++) {
+	for (unsigned i=0;i<size;i++) {
 		Tilt += (1/mag[i] *(pos[i]-d1/d2));
 		ti = m1/mag[i]*(pos[i] - (d1/d2));
 		SumTi2 += ti*ti;
@@ -162,18 +165,18 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 TData SpectralPeakDescriptors::ComputeFirstTristimulus()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=0) return 0;
-	TData firstHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[0];
+	if (mpSpectralPeakArray->GetnPeaks()<=0) return 0;
+	const TData firstHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[0];
 	return firstHarmonicMag*firstHarmonicMag/mpStats->GetEnergy();
 }
 
 TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=3) return 0;
+	if (mpSpectralPeakArray->GetnPeaks()<=3) return 0;
 
-	TData secondHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[1];
-	TData thirdHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[2];
-	TData fourthHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[3];
+	const TData secondHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[1];
+	const TData thirdHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[2];
+	const TData fourthHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[3];
 	
 	return (secondHarmonicMag*secondHarmonicMag+thirdHarmonicMag*thirdHarmonicMag+
 			fourthHarmonicMag*fourthHarmonicMag)/mpStats->GetEnergy();
@@ -181,15 +184,15 @@ TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 
 TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=4) return 0;
-	DataArray& a=mpSpectralPeakArray->GetMagBuffer();
+	if (mpSpectralPeakArray->GetnPeaks()<=4) return 0;
+	const DataArray& a=mpSpectralPeakArray->GetMagBuffer();
 	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2,false,TData>())/mpStats->GetEnergy();	
 }
 
 TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 {
-	int size=mpSpectralPeakArray->GetnPeaks();
-	if(size<4) return 0;//is it really necessary to have 4 or with 2 is enough
+	const unsigned size=mpSpectralPeakArray->GetnPeaks();
+	if (size<4) return 0.0; //is it really necessary to have 4 or with 2 is enough
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 
 	DataArray SE;
@@ -198,7 +201,7 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 
 	SE[0] = log10((data[0]+data[1])/2);
 	
-	for (int i=1; i<size-1; i++)
+	for (unsigned i=1; i<size-1; i++)
 	{
 		SE[i]=log10((data[i-1]+data[i]+data[i+1])/3);
 		data[i-1] = log10(data[i-1]);
@@ -212,9 +215,9 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 	TData nom = 0;
 	TData denom = 0;
 
-	for (int i=0;i<size;i++)
+	for (unsigned i=0;i<size;i++)
 	{
-		nom +=	abs(data[i] - SE[i]);
+		nom +=	CLAM::Abs(data[i] - SE[i]);
 		denom += data[i];
 	}
 
@@ -223,27 +226,24 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 
 TData SpectralPeakDescriptors::ComputeOddHarmonics()
 {
-	int size=mpSpectralPeakArray->GetnPeaks();
-	if(size<3) return 0;
-	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
-	int i;
+	const unsigned size=mpSpectralPeakArray->GetnPeaks();
+	if (size<3) return 0;
+	const DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	DataArray odd;
-	for (i=2;i<size;i+=2)
+	for (unsigned i=2;i<size;i+=2)
 	{
 		odd.AddElem(data[i]);
 	}
 	return Energy()(odd)/mpStats->GetEnergy();
-	
 }
 
 TData SpectralPeakDescriptors::ComputeEvenHarmonics()
 {
-	int size=mpSpectralPeakArray->GetnPeaks();
-	if(size<2) return 0;
-	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
-	int i;
+	const unsigned size=mpSpectralPeakArray->GetnPeaks();
+	if (size<2) return 0;
+	const DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	DataArray even;
-	for (i=1;i<size;i+=2)
+	for (unsigned i=1;i<size;i+=2)
 	{
 		even.AddElem(data[i]);
 	}
@@ -253,11 +253,11 @@ TData SpectralPeakDescriptors::ComputeEvenHarmonics()
 
 TData SpectralPeakDescriptors::ComputeOddToEvenRatio()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=1) return 0.5;
+	if (mpSpectralPeakArray->GetnPeaks()<=1) return 0.5;
 	TData odd,even;
-	if(HasOddHarmonics()) odd=GetOddHarmonics();
+	if (HasOddHarmonics()) odd=GetOddHarmonics();
 	else odd=ComputeOddHarmonics();
-	if(HasEvenHarmonics()) even=GetEvenHarmonics();
+	if (HasEvenHarmonics()) even=GetEvenHarmonics();
 	else even=ComputeEvenHarmonics();
 
 	return odd/(even+odd);
