@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "Polar.cxx"
+#include "Polar.hxx"
 
 namespace CLAMTest
 {
@@ -76,10 +76,10 @@ private:
 	void testStreamInsertion()
 	{
 		std::stringstream s;
-		CLAM::Polar complex(1.453,3.454);
+		CLAM::Polar polar(1.453,3.454);
 		std::string expectedString("{1.453 3.454}");
 
-		s << complex << flush;
+		s << polar << flush;
 
 		CPPUNIT_ASSERT_EQUAL(expectedString, s.str());
 	}
