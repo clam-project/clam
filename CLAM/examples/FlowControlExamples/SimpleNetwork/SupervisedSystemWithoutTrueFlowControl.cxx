@@ -48,12 +48,12 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 	_oscillatorToFileOut.AddProcessing("file-out", new CLAM::AudioFileOut(fileCfg));
 
 	//link them
-	_oscillatorToFileOut.ConnectPorts( "oscillator-generator:Audio Output", "file-out:Input" );
+	_oscillatorToFileOut.ConnectPorts( "oscillator-generator.Audio Output", "file-out.Input" );
 
 	if (_hasAudioOut)
 	{
 		_oscillatorToFileOut.AddProcessing( "audio-out", new CLAM::AudioOut(fileCfg) );
-		_oscillatorToFileOut.ConnectPorts( "Oscillator0.Audio Output", "Audio Out.Input" );
+		_oscillatorToFileOut.ConnectPorts( "oscillator-generator.Audio Output", "audio-out.Input" );
 	}
 
 }
