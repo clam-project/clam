@@ -49,8 +49,6 @@ namespace CLAM
 		const AudioFile& operator=( const AudioFile& );
 		~AudioFile();
 
-		void                          SetLocation( std::string uri );
-
 		bool                          SetHeader( const AudioFileHeader& );
 		const AudioFileHeader&        GetHeader() const;
 		
@@ -58,8 +56,11 @@ namespace CLAM
 		AudioTextDescriptors&         GetTextDescriptors();
 		const AudioTextDescriptors&   GetTextDescriptors() const;
 
-		const std::string &              GetLocation() const;
+		const std::string &           GetLocation() const;
 		EAudioFileKind                GetKind() const;
+
+		void                          OpenExisting( const std::string& uri );
+		void                          CreateNew( const std::string& uri, const AudioFileHeader& );
 
 		bool                          IsValid() const;
 		bool                          IsReadable() const;
