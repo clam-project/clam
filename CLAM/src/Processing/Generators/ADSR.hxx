@@ -28,6 +28,7 @@
 #include "AudioManager.hxx"
 #include "OSDefines.hxx"
 #include "InControl.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM
 {
@@ -69,7 +70,8 @@ namespace CLAM
 		} mStatus;
 
 	protected:
-		
+		OutPortTmpl<Audio> mOutput;
+
 		void HandleAttack(void);
 
 		void HandleDecay(void);
@@ -115,7 +117,7 @@ namespace CLAM
 		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		// Unsupervised mode 
-		bool Do(void) { return true; }
+		bool Do(void); // { return true; }
 
 		bool Do( Audio& out);
 
