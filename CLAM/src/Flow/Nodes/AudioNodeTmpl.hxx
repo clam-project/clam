@@ -51,6 +51,8 @@ namespace CLAM {
 	
 		ReadStreamRegion  *NewReader (InPort *port, unsigned int hop,
 					      unsigned int length, SourceStreamRegion* source = 0);
+		
+		void RemoveInPortConnection( InPort * port , ReadStreamRegion *  reader);
 
 		void GetAndActivate(WriteStreamRegion* r, Audio &a);
 		void GetAndActivate(ReadStreamRegion* r, Audio &a);
@@ -83,8 +85,18 @@ namespace CLAM {
 		SourceStreamRegion* source 
 	)
 	{
-		Node<Audio>::mInputs.AddElem(port);
+		Node<Audio>::mInputs.push_back(port);
 		return mStream.NewReader(hop,length,source);
+	}
+
+	template<class BUFFER>
+	void NodeTmpl<Audio,BUFFER>::RemoveInPortConnection(
+		InPort * port , ReadStreamRegion *  reader)
+	{
+		CLAM_ASSERT( port->GetNode() == this, "NodeTmpl::RemoveInPort() "
+			     "InPort to remove connection is not attached to the node" );
+//		Node<Audio>::mInputs.RemoveElem(port); // ??
+		mStream.RemoveReader( reader );
 	}
 
 
