@@ -128,7 +128,7 @@ endif
 %.d:
 	@mkdir -p dep
 	@echo Generating dependency information for $<
-	@$(SRCDEPS) -d settings.cfg $< > $@
+	@$(SRCDEPS) -d $< settings.cfg > $@
 
 $(SRCDEPS):
 	@echo ===============================================================
