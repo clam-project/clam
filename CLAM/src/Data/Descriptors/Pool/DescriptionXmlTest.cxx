@@ -31,7 +31,7 @@ class DescriptionXmlTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testDumpDescriptionDataPool_withAllKindsOfData);
 	CPPUNIT_TEST(testDumpAttributePool_withSimpleData);
 	CPPUNIT_TEST(testDumpAttributePool_withComponentData);
-//	CPPUNIT_TEST(testRestoreAttributePool_withSimpleData);
+	CPPUNIT_TEST(testRestoreAttributePool_withSimpleData);
 	CPPUNIT_TEST(testRestoreAttributePool_withComponentData);
 	CPPUNIT_TEST_SUITE_END();
 
