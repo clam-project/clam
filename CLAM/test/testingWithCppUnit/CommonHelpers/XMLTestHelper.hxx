@@ -26,6 +26,7 @@
 #include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
+
 #ifdef CLAM_USE_XML
 #include "XMLStorage.hxx"
 #include "XMLComponentAdapter.hxx"
@@ -67,7 +68,7 @@ namespace CLAMTest {
 		std::cout << " Stored: " << out.str() << std::endl;
 		std::cout << " Loaded: " << in.str() << std::endl;
 #endif//CLAM_USE_XML
-		CPPUNIT_ASSERT_EQUALS(in.str(),out.str());
+		CPPUNIT_ASSERT_EQUAL(in.str(),out.str());
 		return in.str()==out.str();
 
 	}
