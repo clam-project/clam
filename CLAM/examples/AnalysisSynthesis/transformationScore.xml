@@ -2,11 +2,9 @@
 	<Name/>
 	<Configurations>
 		<Config>
-			<Name/>
 			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
 		</Config>
 		<Config>
-			<Name>ProcessingChaineeConfig</Name>
 			<ConcreteClassName>SMSPitchShift</ConcreteClassName>
 			<!--Amount>1.7</Amount-->
 			<BPFAmount>
@@ -15,17 +13,17 @@
 			</BPFAmount>
 		</Config>
 		<Config>
-			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSPitchDiscretization</ConcreteClassName>
+		</Config>
+		<Config>
 			<ConcreteClassName>SMSOddEvenHarmonicRatio</ConcreteClassName>
 			<Amount>12</Amount>
 		</Config>
 		<Config>
-			<Name>ProcessingChaineeConfig</Name>
 			<ConcreteClassName>SMSFreqShift</ConcreteClassName>
 			<Amount>100</Amount>
 		</Config>
 		<Config>
-			<Name>ProcessingChaineeConfig</Name>
 			<ConcreteClassName>SMSSineFilter</ConcreteClassName>
 			<BPFAmount>
 				<Interpolation>Step</Interpolation>
@@ -33,12 +31,14 @@
 			</BPFAmount>
 		</Config>
 		<Config>
-			<Name>ProcessingChaineeConfig</Name>
 			<ConcreteClassName>SMSResidualGain</ConcreteClassName>
 			<Amount>6</Amount>
 		</Config>
 		<Config>
-			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSSinusoidalGain</ConcreteClassName>
+			<Amount>-3</Amount>
+		</Config>
+		<Config>
 			<ConcreteClassName>SMSHarmonizer</ConcreteClassName>
 			<BPFAmount>
 				<Interpolation>Step</Interpolation>
@@ -46,9 +46,8 @@
 			</BPFAmount>
 		</Config>
 		<Config>
-			<Name/>
 			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
 		</Config>
 	</Configurations>
-	<OnArray>1 1 1 0 0 1 1 1</OnArray>
+	<OnArray>1 1 1 0 0 0 0 0 1 1</OnArray>
 </SMSTransformationChainConfig>
