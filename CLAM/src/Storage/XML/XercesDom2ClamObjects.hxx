@@ -27,9 +27,9 @@
 #include "Assert.hxx"
 #include "Component.hxx"
 #include <xercesc/dom/DOMDocument.hpp>
-//#include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNodeList.hpp>
+#include <xercesc/dom/DOMNamedNodeMap.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 
 
@@ -48,6 +48,7 @@ class XercesDomReadingContext
 {
 	xercesc::DOMElement * _context;
 	xercesc::DOMNodeList * _children;
+	xercesc::DOMNamedNodeMap * _attributes;
 	std::stringstream _plainContentToParse;
 	unsigned int _currentChild;
 	XercesDomReadingContext * _parentContext;
@@ -69,6 +70,7 @@ public:
 	{
 		_context = element;
 		_children = _context->getChildNodes();
+		_attributes = _context->getAttributes();
 		_currentChild=0;
 		fetchContent();
 	}
@@ -153,6 +155,15 @@ public:
 		_errors.push_back(os.str());
 	}
 
+	bool extractAttribute(const char * attributeName, std::ostream & os)
+	{
+		xercesc::DOMNode * attribute = 
+			_attributes->getNamedItem(X(attributeName));
+		if (!attribute) return false;
+		os << L(attribute->getNodeValue()) << std::flush;
+		return true;
+	}
+
 	std::istream & reachableContent()
 	{
 		return _plainContentToParse;
@@ -202,52 +213,30 @@ public:
 
 class XercesDom2ClamObjects : public Storage
 {
-	xercesc::DOMDocument * _document;
-	xercesc::DOMElement * _context;
-	xercesc::DOMNodeList * _contextChildren;
-	std::stringstream _plainContentToParse;
-	unsigned int _currentChild;
+	XercesDomReadingContext _rootContext;
+	XercesDomReadingContext * _context;
+	
 public:
-	XercesDom2ClamObjects()
+	XercesDom2ClamObjects(xercesc::DOMDocument * document)
+		: _rootContext(document->getDocumentElement())
 	{
-		_currentChild=0;
-		_context=0;
-		_contextChildren=0;
+		_context=&_rootContext;
 	}
 	~XercesDom2ClamObjects()
 	{
 	}
-	void setContextNode(xercesc::DOMElement * contextNode)
-	{
-		_context=contextNode;
-		_contextChildren = _context->getChildNodes();
-		_currentChild = 0;
-		for (; _currentChild<_contextChildren->getLength(); _currentChild++)
-			_plainContentToParse << L(_contextChildren->item(_currentChild)->getNodeValue());
-	}
-	void setDocument(xercesc::DOMDocument * document)
-	{
-		_document=document;
-		setContextNode(_document->getDocumentElement());
-	}
-	xercesc::DOMElement * findElement()
-	{
-		for (; _currentChild<_contextChildren->getLength(); _currentChild++)
-			_plainContentToParse << L(_contextChildren->item(_currentChild)->getNodeValue());
-	}
+public:
 #ifdef NEVERDEFINED
+	// Solo este codigo del load esta cppunitao
 	bool Load(Storable & storable)
 	{
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
 		if (xmlable->IsXMLElement())
 		{
-			xercesc::DOMNodeList * children = _context->getChildNodes();
-			std::cout << xmlable->XMLName() << std::endl;
-			std::cout << children->item(0)->getNodeName() << std::endl;
-			if (!xercesc::XMLString::equals(L(children->item(0)->getNodeName()),xmlable->XMLName()))
+			if (!_context->findElement(xmlable->XMLName()))
 				return false;
 		}
-		return xmlable->XMLContent(_plainContentToParse);
+		return xmlable->XMLContent(_context->reachableContent());
 	}
 #endif
 	void Store(const Storable & storable)
@@ -257,24 +246,37 @@ public:
 	{
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
 		if (!xmlable) return false;
+
+		if (xmlable->IsXMLText())
+			return LoadContentAndChildren(xmlable);
+
+		if (xmlable->IsXMLAttribute())
+		{
+			std::stringstream stream;
+			if (!_context->extractAttribute(xmlable->XMLName(), stream))
+				return false;
+			return xmlable->XMLContent(stream);
+		}
+
 		if (xmlable->IsXMLElement())
 		{
 			if (!_context->findElement(xmlable->XMLName())) return false;
-			XercesDomReaderContext innerContext(_context, xmlable->XMLName());
+			XercesDomReadingContext innerContext(_context, xmlable->XMLName());
 			_context = & innerContext;
 			LoadContentAndChildren(xmlable);
-			_context = innerContext->release();
-			addErrors(innerContext.errors());
+			_context = innerContext.release();
+		//	addErrors(innerContext.errors());
 			return true;
 		}
-		LoadContentAndChildren(xmlable);
-		return true;
+
+		CLAM_ASSERT(false, "A weird XMLable inserted");
 	}
-	void LoadContentAndChildren(XMLable* xmlable)
+	bool LoadContentAndChildren(XMLable* xmlable)
 	{
-		bool result = xmlable->XMLContent(_contex->reachableContent());
+		bool result = xmlable->XMLContent(_context->reachableContent());
 		Component * component = dynamic_cast<Component*>(xmlable);
 		if (component) component->LoadFrom(*this);
+		return result;
 	}
 };
 
