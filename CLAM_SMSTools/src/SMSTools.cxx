@@ -451,28 +451,14 @@ namespace CLAMGUI
 		if ( !fileName )
 			return;
 
-		std::string fmtString;
-
-		std::string selectedFile = fileName;
-		std::string selectedFmt;
-
-		std::string::iterator dotPos = std::find( selectedFile.begin(),
-							  selectedFile.end(), '.' );
-
-		selectedFmt.assign( dotPos+1, selectedFile.end() );
-
-		if ( selectedFmt == "wav" || selectedFmt == "WAV" )
-			fmtString = "WAV";
-		else if ( selectedFmt =="ogg" || selectedFmt == "OGG" )
-			fmtString = "VorbisMk1";
-		else
-			fmtString = "WAV";
+		CLAM::EAudioFileFormat desiredOutputFmt = 
+			CLAM::EAudioFileFormat::FormatFromFilename( fileName );
 
 		CLAM::AudioFile outputFile;
 		outputFile.SetLocation( fileName );
 
 		CLAM::AudioFileHeader fileHeader;
-		fileHeader.SetValues( audio.GetSampleRate(), 1, fmtString.c_str() );
+		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
 
 		outputFile.SetHeader( fileHeader );
 
