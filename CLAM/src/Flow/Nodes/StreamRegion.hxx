@@ -67,7 +67,6 @@ namespace CLAM {
 		bool CanActivate();
 		/** Sets the condition of the region being active, which is actually setting mEnd
 		 *	to mPos+mLen. */
-		bool CanActivate();
 		void Activate();
 		/** Moves the starting position the number of elements specified by mHop. @see mHop. */
 		void LeaveAndAdvance();
