@@ -81,14 +81,6 @@ namespace CLAM {
 			CLAM_ASSERT( ((*it) != &obj) , "ProcessingComposite::Insert():"
 			                              "Object already inserted\n");
 		CLAM_END_CHECK
-		try {
-			mNames.Add(obj.GetName());
-		}
-		catch (NameTable::DuplicatedName)
-		{
-			throw(ErrProcessingObj("ProcessingComposite::Insert():"
-								   " Duplicated Name",&obj));
-		}
 		mObjects.push_back(&obj);
 	}
 

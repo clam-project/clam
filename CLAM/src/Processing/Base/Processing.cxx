@@ -282,10 +282,7 @@ namespace CLAM {
 
 		mpParent=p;
 
-		if (GetConfig().GetName() == "")
-			mName = mpParent->InsertAndGiveName(*this);
-		else
-			mpParent->Insert(*this);
+		mpParent->Insert(*this);
 	}
 
 	void Processing::SetOrphan()
