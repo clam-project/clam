@@ -77,62 +77,6 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 		}
 	}
 	
-	if(!mConfig.HasHybBPF())
-	{
-		mConfig.AddHybBPF();
-		mConfig.UpdateData();
-		
-		BPF tmpBPF(2);
-		tmpBPF.SetValue(0,0);
-		tmpBPF.SetXValue(0,0);
-		tmpBPF.SetValue(1,1);
-		tmpBPF.SetXValue(1,1);
-		mConfig.SetHybBPF(tmpBPF);
-	}
-	if(!mConfig.HasInterpolateFrame())
-	{
-		mConfig.AddInterpolateFrame();
-		mConfig.UpdateData();
-		mConfig.SetInterpolateFrame(false);
-	}
-	if(!mConfig.HasHybSinFreq() && mConfig.HasHybBPF())
-	{
-		mConfig.AddHybSinFreq();
-		mConfig.UpdateData();
-		mConfig.SetHybSinFreq(mConfig.GetHybBPF());
-	}
-	if(!mConfig.HasHybSinAmp() && mConfig.HasHybBPF())
-	{
-		mConfig.AddHybSinAmp();
-		mConfig.UpdateData();
-		mConfig.SetHybSinAmp(mConfig.GetHybBPF());
-	}
-//	if(mConfig.HasHybSinSpectralShape())
-//		mHarmSpectralShapeMorph=true;
-	if(!mConfig.HasHybPitch())
-	{
-		mConfig.AddHybPitch();
-		mConfig.UpdateData();
-		mConfig.SetHybPitch(mConfig.GetHybSinFreq());
-	}
-	if(!mConfig.HasHybResAmp())
-	{
-		mConfig.AddHybResAmp();
-		mConfig.UpdateData();
-		mConfig.SetHybResAmp(mConfig.GetHybBPF());
-	}
-	if(!mConfig.HasSynchronizeTime())
-	{
-		mConfig.AddSynchronizeTime();
-		mConfig.UpdateData();
-		BPF tmpBPF(2);
-		tmpBPF.SetXValue(0,0);
-		tmpBPF.SetValue(0,0);
-		tmpBPF.SetXValue(1,1);
-		tmpBPF.SetValue(1,1);
-		mConfig.SetSynchronizeTime(tmpBPF);
-	}
-	
 	return UpdateControlValueFromBPF(0);
 }
 
