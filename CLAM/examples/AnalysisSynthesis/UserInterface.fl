@@ -27,7 +27,7 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
-      xywh {505 191 872 548} resizable
+      xywh {403 191 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
       Fl_Group {} {open
@@ -244,7 +244,7 @@ Exit();}
       }
     }
   }
-  Function {AboutWindow()} {private return_type void
+  Function {AboutWindow()} {open private return_type void
   } {
     Fl_Window mWindow2 {
       label {About this program...}
@@ -262,8 +262,8 @@ mWindow2=NULL;}
         private xywh {85 40 265 20} labelfont 2 labelsize 12
       }
       Fl_Box {} {
-        label {logos/iua.xpm}
-        private xywh {360 15 50 60}
+        label {logos/iua.xpm} selected
+        private xywh {360 15 50 60} labeltype image
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -271,7 +271,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55}
+        private xywh {10 20 75 55} labeltype image
       }
     }
   }
@@ -292,8 +292,7 @@ mWindow2=NULL;}
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {bool LoadSound();} {selected
-  }
+  decl {bool LoadSound();} {}
   decl {void ChangeFrame();} {}
   decl {void ChangeTimeTag(double tag);} {}
   decl {void DisplayInputSound();} {}
