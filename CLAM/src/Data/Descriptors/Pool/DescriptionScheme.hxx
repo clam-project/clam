@@ -110,11 +110,6 @@ namespace CLAM
 			AbstractAttribute * attribute = _attributes[attributeIndex];
 			return attribute->GetName();
 		}
-		void DumpAttributeData(Storage & storage, unsigned attribute, void * data, unsigned size) const
-		{
-			CLAM_ASSERT(data || !size, "Dumping data from a non instantiated attribute");
-			_attributes[attribute]->XmlDumpData(storage, data, size);
-		}
 		const AbstractAttribute & GetAttribute(unsigned int attribute) const
 		{
 			return * _attributes[attribute];
