@@ -247,12 +247,14 @@ void SMSAnalysis::ConfigureData()
 {
 	TData samplingRate=mConfig.GetSamplingRate();
 
-	// Objects used only for initializing a frame
-	// Spectrum used for temporary residual analysis, it may be possible to get rid of
+	// Spectrum used for temporary residual analysis
 	SpectrumConfig scfg;
 	scfg.SetSize(mConfig.GetResSpectralAnalysis().GetFFT().GetAudioSize()/2+1); // s.AudioFrameSize is the size of the generated frames
 	scfg.SetSpectralRange(mConfig.GetSamplingRate()*0.5);
-	mSpec.Configure(scfg);
+	mResSpec.Configure(scfg);
+	// Spectrum used for temporary sinusoidal analysis
+	scfg.SetSize(mConfig.GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
+	mSinSpec.Configure(scfg);
 	
 	/* Now we set prototype of SpectrumSubstracter: we want to substract two spectrums: 
 	the first on in MagPhase format, the second in Complex format and get the result back
@@ -265,11 +267,11 @@ void SMSAnalysis::ConfigureData()
  		sflags.bMagPhase = 0;
  		sflags.bMagPhaseBPF = 0;
  	Scfg.SetType(sflags);
- 	Scfg.SetSize(mSpec.GetSize());
+ 	Scfg.SetSize(mResSpec.GetSize());
  	Scfg.SetSpectralRange(mConfig.GetSamplingRate()*0.5);
  	Spectrum tmpSpecIn(Scfg);    
 
-	mPO_SpecSubstract.SetPrototypes(mSpec,tmpSpecIn,mSpec);
+	mPO_SpecSubstract.SetPrototypes(mResSpec,tmpSpecIn,mResSpec);
 
 	
 	// Fundamental
@@ -310,6 +312,10 @@ void SMSAnalysis::ConfigureData()
 	mSinAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
 	mResAudioFrame.SetSize(mConfig.GetResSpectralAnalysis().GetWindowSize()-1);
 	mResAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
+
+	//now we will Attach input and output ports of Spectral Analysis
+	mPO_SinSpectralAnalysis.Attach(mSinAudioFrame,mSinSpec);
+	mPO_ResSpectralAnalysis.Attach(mResAudioFrame,mResSpec);
 }
 
 void SMSAnalysis::AttachChildren()
@@ -325,9 +331,9 @@ void SMSAnalysis::AttachChildren()
 bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
 {
 	//Synchronizing spectral ranges of other spectrums
-	outGlobalSpec.SetSpectralRange(mSpec.GetSpectralRange());
-	outSinSpec.SetSpectralRange(mSpec.GetSpectralRange());
-	outResSpec.SetSpectralRange(mSpec.GetSpectralRange());
+	outGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+	outSinSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+	outResSpec.SetSpectralRange(mResSpec.GetSpectralRange());
 	
 	/* Input audio frame is writen onto circular buffer */
 	mSinCircularBuffer.WriteAudio(in);
@@ -337,9 +343,10 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 	mSinCircularBuffer.DecreaseReadIndex(mConfig.GetSinSpectralAnalysis().GetWindowSize()-mConfig.GetSinSpectralAnalysis().GetHopSize()-1);
 
 	//Analyzing sinusoidal component
-	mPO_SinSpectralAnalysis.Do(mSinAudioFrame,outGlobalSpec);
+	mPO_SinSpectralAnalysis.Do();
+	outGlobalSpec=mSinSpec;
 	
-	SinusoidalAnalysis(outGlobalSpec,outPk,outFn);
+	SinusoidalAnalysis(mSinSpec,outPk,outFn);
 
 	
 	//Analyzing residual component
@@ -356,13 +363,13 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 	
 	//Then we analyze the spectrum of the whole audio using residual config
 	    
-	outResSpec.SetSize(mSpec.GetSize());
+	outResSpec.SetSize(mResSpec.GetSize());
 
-	mPO_ResSpectralAnalysis.Do(mResAudioFrame,mSpec);
+	mPO_ResSpectralAnalysis.Do();
 
 	//Finally we substract mSpectrum-SinusoidalSpectrum
 	
-	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
+	mPO_SpecSubstract.Do(mResSpec,outSinSpec,outResSpec);
 
 
 
