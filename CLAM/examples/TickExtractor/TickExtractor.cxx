@@ -12,6 +12,7 @@
 #include "TickSequenceTracker.hxx"
 #include "IOIHistogram.hxx"
 #include "Normalization.hxx"
+#include "AubioOnsetDetector.hxx"
 
 
 namespace CLAM
@@ -56,6 +57,99 @@ namespace CLAM
 
 		ExtractTicksSequence( pathToFile, defaultConfig, ticksList, beatsList );
 	}
+
+	static void OnsetDetection( TickExtractorConfig& configuration, 
+				    Audio& audioFromFile,
+				    Array<TimeIndex>& transients )
+	{
+		if ( configuration.GetOnsetDetection().GetString() == "MTG"  )
+		{
+			std::cout << "Onset detection with Cuidado's algorithm" << std::endl;
+
+			Segment seg;
+			seg.AddAudio();
+			seg.UpdateData();
+			seg.SetHoldsData(true);
+			seg.GetAudio().SetSize( audioFromFile.GetSize() );
+			seg.GetAudio().SetSampleRate( audioFromFile.GetSampleRate() );
+			TTime duration = audioFromFile.GetSize()/audioFromFile.GetSampleRate();			
+			TData sampleRate = audioFromFile.GetSampleRate();
+			// Audio normalization pass
+			
+			Normalization audioNormalizer;
+			NormalizationConfig audioNormCfg;
+			
+			audioNormCfg.SetType( 3 ); // Scaling factor computed from "dominant energy"
+			
+			audioNormalizer.Configure( audioNormCfg );
+			
+			audioNormalizer.Start();
+			
+			audioNormalizer.Do( audioFromFile, seg.GetAudio() );
+			
+			audioNormalizer.Stop();
+			
+			
+			seg.SetEndTime(duration);		
+			
+			OnsetDetectorConfig onsetconfig;
+			OnsetDetector onset;
+			
+			onsetconfig.SetComputeOffsets(false);
+			onsetconfig.SetGlobalThreshold(25);
+			
+			onset.Configure(onsetconfig);
+			
+			onset.Start();
+			onset.Do(seg, transients);
+			
+			if ( transients.Size() > 0 )
+			{
+				TimeIndex nullTransient;
+				nullTransient.SetPosition( 0.0 );
+				nullTransient.SetWeight( 0.0 );
+				
+				transients.InsertElem( 0, nullTransient );
+				
+				for ( int k = 0; k < transients.Size(); k++ )
+				{
+					transients[k].SetPosition( transients[k].GetPosition()*sampleRate );
+					transients[k].SetWeight( transients[k].GetWeight() );
+				}
+			}
+		}
+		else
+		{
+			CLAM::RhythmDescription::AubioOnsetDetectorConfig odCfg;
+			
+			CLAM::RhythmDescription::AubioOnsetDetector onsetDetector;
+			
+			odCfg.SetMethod(  configuration.GetOnsetDetection().GetValue() - 1);
+			TSize windowSize = TSize(audioFromFile.GetSampleRate()*0.02); // 20ms window
+			TSize hopSize = (windowSize%2==0) ? windowSize/2 : (windowSize+1) / 2 ; // 50% overlap
+			odCfg.SetWindowSize( windowSize );
+			odCfg.SetHopSize( hopSize );
+
+			std::cout << "Onset detection with QMUL: " << odCfg.GetMethod() << std::endl;
+			
+			onsetDetector.Configure( odCfg );
+			
+			onsetDetector.Start();
+			
+			onsetDetector.Do( audioFromFile, transients );
+			
+			onsetDetector.Stop();
+
+			// the dummy transient
+			if ( transients.Size() > 0 )
+			{
+				transients[0].SetWeight(0.0);
+				
+			}
+
+		}
+
+	}
 	
 	void ExtractTicksSequence( std::string pathToFile,
 				   TickExtractorConfig& configuration,
@@ -64,10 +158,6 @@ namespace CLAM
 	{
 
 		configuration.SetFromAudio( false );		
-		Segment seg;
-		seg.AddAudio();
-		seg.UpdateData();
-		seg.SetHoldsData(true);
 		Audio   audioFromFile;
 
 		try
@@ -82,56 +172,12 @@ namespace CLAM
 			throw propErr;
 		}
 
-		seg.GetAudio().SetSize( audioFromFile.GetSize() );
-		seg.GetAudio().SetSampleRate( audioFromFile.GetSampleRate() );
-		
-		// Audio normalization pass
-
-		Normalization audioNormalizer;
-		NormalizationConfig audioNormCfg;
-		
-		audioNormCfg.SetType( 3 ); // Scaling factor computed from "dominant energy"
-		
-		audioNormalizer.Configure( audioNormCfg );
-
-		audioNormalizer.Start();
-
-		audioNormalizer.Do( audioFromFile, seg.GetAudio() );
-
-		audioNormalizer.Stop();
-
-
-		TData sampleRate = seg.GetAudio().GetSampleRate();
-		TTime duration = seg.GetAudio().GetSize()/sampleRate;
-		seg.SetEndTime(duration);
-		
 		Array< TimeIndex > transients;
-		
-		OnsetDetectorConfig onsetconfig;
-		OnsetDetector onset;
-		
-		onsetconfig.SetComputeOffsets(false);
-		onsetconfig.SetGlobalThreshold(25);
-		
-		onset.Configure(onsetconfig);
-		
-		onset.Start();
-		onset.Do(seg, transients);
+		TData sampleRate = audioFromFile.GetSampleRate();
 
-		if ( transients.Size() > 0 )
-		{
-			TimeIndex nullTransient;
-			nullTransient.SetPosition( 0.0 );
-			nullTransient.SetWeight( 0.0 );
-			
-			transients.InsertElem( 0, nullTransient );
-			
-			for ( int k = 0; k < transients.Size(); k++ )
-			{
-				transients[k].SetPosition( transients[k].GetPosition()*sampleRate );
-				transients[k].SetWeight( transients[k].GetWeight() );
-			}
-		}
+
+		OnsetDetection( configuration, audioFromFile, transients );
+		
 		// Ticks ( and beats ) computation 
 
 		RhythmDescription::TickSequenceTracker myTickSequenceTracker;

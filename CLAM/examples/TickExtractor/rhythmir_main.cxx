@@ -68,6 +68,7 @@ static void ParseCmdline( int argc, char** argv )
 			outputFilename = optarg;
 			break;
 		case 'c':
+			std::cout << "Loading config from " << optarg << std::endl;
 			CLAM::XMLStorage::Restore( cfg, optarg );
 			break;
 		case -1:
@@ -97,7 +98,7 @@ static void ParseCmdline( int argc, char** argv )
 	CLAM::Pulse beatData;
 	
 
-	CLAM::ExtractTicksSequence( inputFilename, tickData, beatData );
+	CLAM::ExtractTicksSequence( inputFilename, cfg, tickData, beatData );
 
 	std::cout << "Dumping data on " << outputFilename << "..." << std::endl;
 	DumpExtractedData( outputFilename, inputFilename, tickData, beatData );

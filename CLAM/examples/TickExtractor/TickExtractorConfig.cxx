@@ -2,6 +2,38 @@
 
 namespace CLAM
 {
+	OnsetDetectMethod::OnsetDetectMethod()
+		: Enum( sEnumValues, sDefault )
+	{
+	}
+
+	OnsetDetectMethod::OnsetDetectMethod( tValue v )
+		: Enum( sEnumValues, v )
+	{
+	}
+
+	OnsetDetectMethod::OnsetDetectMethod( std::string s )
+		: Enum( sEnumValues, s )
+	{
+	}
+
+	Enum::tEnumValue OnsetDetectMethod::sEnumValues[] = {
+		{ eMTG, "MTG" },
+		{ eQMUL_Energy, "QMUL_Energy"},
+		{ eQMUL_SpectralDifference, "QMUL_SpectralDifference"},
+		{ eQMUL_HFC, "QMUL_HFC"},
+		{ eQMUL_ComplexDomain, "QMUL_ComplexDomain"},
+		{ eQMUL_Phase, "QMUL_Phase"},
+		{ 0,           NULL }
+	};
+	
+	Enum::tValue OnsetDetectMethod::sDefault = OnsetDetectMethod::eMTG;
+
+	Component* OnsetDetectMethod::Species() const
+	{
+		return new OnsetDetectMethod( "MTG" );
+	}
+
 	void TickExtractorConfig::DefaultInit()
 	{
 		AddAll();

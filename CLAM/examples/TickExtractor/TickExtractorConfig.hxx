@@ -3,12 +3,35 @@
 
 #include "DynamicType.hxx"
 #include "DataTypes.hxx"
+#include "Enum.hxx"
 
 namespace CLAM
 {
+	class OnsetDetectMethod : public Enum
+	{
+	public:
+		static tEnumValue   sEnumValues[];
+		static tValue       sDefault;
+
+		OnsetDetectMethod();
+		OnsetDetectMethod( tValue val );
+		OnsetDetectMethod( std::string s );
+		
+		typedef enum {
+			eMTG,
+			eQMUL_Energy,
+			eQMUL_SpectralDifference,
+			eQMUL_HFC,
+			eQMUL_ComplexDomain,
+			eQMUL_Phase
+		};
+
+		virtual Component* Species() const;
+	};
+
 	class TickExtractorConfig : public CLAM::DynamicType 
 	{
-		DYNAMIC_TYPE(TickExtractorConfig,16);
+		DYNAMIC_TYPE(TickExtractorConfig, 17);
 
 		/** FromAudio, boolean (default true)
 		 *	If set to false, transients will be computed in the main, otherwise
@@ -101,6 +124,8 @@ namespace CLAM
 		 * Can be used for tick tracking.
 		 */
 		DYN_ATTRIBUTE( 15, public, int, TransHop);
+
+		DYN_ATTRIBUTE( 16, public, OnsetDetectMethod, OnsetDetection );
 
 	public:
 		void DefaultInit();
