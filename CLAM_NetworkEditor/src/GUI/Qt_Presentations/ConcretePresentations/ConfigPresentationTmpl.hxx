@@ -26,13 +26,14 @@
 #include <qwidget.h>
 
 #include <map>
-#include<string>
+#include <string>
 #include "ConfigurationVisitor.hxx"
 #include "Assert.hxx"
 #include "Enum.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Filename.hxx"
+#include "AudioFile.hxx"
 
 #include <limits>
 #include <qdialog.h>
@@ -120,6 +121,11 @@ public:
 	void AddWidget(const char *name, CLAM::Filename *foo, T& value);
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::Filename *foo, T& value);
+
+	template<typename T>
+	void AddWidget(const char *name, CLAM::AudioFile *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value);
 
 };
 
@@ -385,6 +391,36 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	value=mInput->text().latin1();
 }
 
+template <class ConcreteConfig>
+template <typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::AudioFile *foo, T& value) 
+{	
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	QLabel * label = new QLabel(QString(name), cell);
+	QLineEdit * mInput = new QLineEdit(QString(value.GetLocation().c_str()), cell);
+	mInput->setMinimumWidth(300);
+
+	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
+	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+	QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
+	fd->setMode( QFileDialog::ExistingFile );
+
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+
+	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+	connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value) 
+{	
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+//	value=mInput->text().latin1();
+	value.SetLocation( mInput->text().latin1());
+}
 
 
 /*	
