@@ -23,6 +23,7 @@
 #include "MIDIDevice.hxx"
 #include "MIDIDeviceList.hxx"
 #include "MIDIIn.hxx"
+#include "MIDIOut.hxx"
 #include "MIDIClocker.hxx"
 #include <algorithm>
 using std::find ;
@@ -215,13 +216,11 @@ bool MIDIManager::Register(MIDIClocker& cl)
 	return device->Register(this,cl);
 }
 
-/*
 bool MIDIManager::Register(MIDIOut& out)
 {
 	MIDIDevice* device = FindOrCreateDevice(out.mConfig.GetDevice());
-	return device->Register(out);
+	return device->Register(this,out);
 }
-*/
 
 MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
 {

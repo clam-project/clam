@@ -21,6 +21,7 @@
 
 #include "MIDIDevice.hxx"
 #include "MIDIIn.hxx"
+#include "MIDIOut.hxx"
 #include "MIDIClocker.hxx"
 #include "MIDIEnums.hxx"
 #include <algorithm>
@@ -64,23 +65,14 @@ bool MIDIDevice::Register(MIDIManager* mm,MIDIClocker& in)
 	return true;
 }
 
-/*
-
-bool MIDIDevice::Register(MIDIOut& out)
+bool MIDIDevice::Register(MIDIManager* mm,MIDIOut& out)
 {
-	unsigned int i;
-	for (i=0; i<mOutputs.size(); i++)
-		if (dynamic_cast<const MIDIIOConfig&>(mOutputs[i]->GetConfig()).GetChannelID() ==
-			dynamic_cast<const MIDIIOConfig&>(out.GetConfig()).GetChannelID())
-		{
-			out.mpDevice = 0;
-			return false;
-		}
 	mOutputs.push_back(&out);
+	_SetMIDIManager(mm);
 	out.mpDevice = this;
 	return true;
 }
-*/
+
 void MIDIDevice::Unregister(MIDIIn& in)
 {
 	if (in.mpDevice != this)
@@ -117,13 +109,8 @@ void MIDIDevice::Unregister(MIDIClocker& in)
 }
 
 
-/*	
 void MIDIDevice::Unregister(MIDIOut& out)
 {
-	if (out.mpDevice != this)
-	{
-		throw(Err("MIDIDevice::Unregister(): I am not this MIDIOut object's device."));
-	}
 	std::vector<MIDIOut*>::iterator it = std::find(mOutputs.begin(),mOutputs.end(),&out);
 	if (it == mOutputs.end())
 	{
@@ -132,7 +119,7 @@ void MIDIDevice::Unregister(MIDIOut& out)
 	mOutputs.erase(it);
 	out.mpDevice = 0;
 }
-*/
+
 
 void MIDIDevice::GetInfo(MIDIDevice::TInfo &info)
 {
