@@ -1,25 +1,7 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0103 
 header_name {.hxx} 
 code_name {.cxx}
-decl {\#include <FL/Fl_Group.H>} {public
-} 
-
-class Fl_Centering {open : {public Fl_Group}
-} {
-  Function {Fl_Centering(int X,int Y,int W,int H,const char* L = ""):Fl_Group(X,Y,W,H,L)} {open
-  } {}
-  Function {resize(int X,int Y,int W,int H)} {open
-  } {
-    code {int n = children();
-for (int i=0;i<n;i++)
-{
-	child(i)->position(X+(W-child(i)->w())/2,Y+(H-child(i)->h())/2);
-}
-Fl_Widget::resize(X,Y,W,H);} {}
-  }
-} 
-
 decl {\#include <FL/Fl_Tile.H>} {public
 } 
 
@@ -262,18 +244,20 @@ Exit();}
       }
       Fl_Group {} {open
         xywh {0 520 870 30}
-        class Fl_Centering
       } {
         Fl_Counter mCounter {
           label {Frame }
           callback {ChangeFrame();}
           xywh {340 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
         }
+        Fl_Box {} {
+          xywh {0 520 340 30} resizable
+        }
       }
       Fl_Group {} {open
         xywh {0 25 870 495} resizable
       } {
-        Fl_Box mSmartTile {selected
+        Fl_Box mSmartTile {
           private xywh {0 30 870 490} resizable
           code0 {o->minsize(80);}
           class Fl_Smart_Tile
@@ -318,7 +302,7 @@ mWindow2=NULL;} open
         private xywh {110 115 230 20}
       }
       Fl_Box {} {
-        label {CLAM Release 0.5beta1}
+        label {CLAM Release 0.5 beta 2} selected
         private xywh {5 145 440 30} box FLAT_BOX labelfont 3 labelcolor 0
       }
     }
