@@ -41,7 +41,6 @@ SystemWithNodes::SystemWithNodes( std::string fileIn, std::string fileOut , int 
 	_multiplierData(0)
 
 {
-	const int nodeSize = _frameSize*2;
 	AddNetworkConfiguration( new OscillatorToFileOut( this ) );
 	AddNetworkConfiguration( new FileInFileOut( this ) );
 	AddNetworkConfiguration( new ModulatedFileIn( this ) );
@@ -145,7 +144,7 @@ void SystemWithNodes::OscillatorToFileOut::Connect()
 	System().ConditionalAudioOutAttach( *System()._oscillatorData );
 
 	// configuring node with frame size
-	System()._oscillatorData->Configure( System()._frameSize*2 );
+	System()._oscillatorData->Configure( System()._frameSize );
 }
 
 bool SystemWithNodes::OscillatorToFileOut::Do() 
@@ -166,9 +165,9 @@ void SystemWithNodes::ModulatedFileIn::Connect()
 	System()._fileOut.GetInPorts().Get( "Input" ).Attach( *System()._multiplierData );
 	System().ConditionalAudioOutAttach( *System()._multiplierData );
 
-	System()._fileInData->Configure( System()._frameSize*2 );
-	System()._modulatorData->Configure( System()._frameSize*2 );
-	System()._multiplierData->Configure( System()._frameSize*2 );
+	System()._fileInData->Configure( System()._frameSize );
+	System()._modulatorData->Configure( System()._frameSize );
+	System()._multiplierData->Configure( System()._frameSize );
 	
 }
 bool SystemWithNodes::ModulatedFileIn::Do()
@@ -198,9 +197,9 @@ void SystemWithNodes::ModulatedOscillator::Connect()
 	System().ConditionalAudioOutAttach( *System()._multiplierData );
 
 
-	System()._oscillatorData->Configure( System()._frameSize*2 );
-	System()._modulatorData->Configure( System()._frameSize*2 );
-	System()._multiplierData->Configure( System()._frameSize*2 );
+	System()._oscillatorData->Configure( System()._frameSize );
+	System()._modulatorData->Configure( System()._frameSize );
+	System()._multiplierData->Configure( System()._frameSize );
 
 }
 bool SystemWithNodes::ModulatedOscillator::Do()
@@ -222,7 +221,7 @@ void SystemWithNodes::FileInFileOut::Connect()
 	System()._fileOut.GetInPorts().Get( "Input" ).Attach( *System()._fileInData );
 	System().ConditionalAudioOutAttach( *System()._fileInData );
 
-	System()._fileInData->Configure( System()._frameSize*2 );
+	System()._fileInData->Configure( System()._frameSize );
 
 }
 bool SystemWithNodes::FileInFileOut::Do()
@@ -257,10 +256,10 @@ void SystemWithNodes::ModulatedFileInPlusFileIn::Connect()
 	System()._fileOut.GetInPorts().Get( "Input" ).Attach( *System()._mixerData );
 	System().ConditionalAudioOutAttach( *System()._mixerData);
 
-	System()._fileInData->Configure( System()._frameSize*2 );
-	System()._modulatorData->Configure( System()._frameSize*2 );
-	System()._multiplierData->Configure( System()._frameSize*2 );
-	System()._mixerData->Configure( System()._frameSize*2 );
+	System()._fileInData->Configure( System()._frameSize );
+	System()._modulatorData->Configure( System()._frameSize );
+	System()._multiplierData->Configure( System()._frameSize );
+	System()._mixerData->Configure( System()._frameSize );
 }
 bool SystemWithNodes::ModulatedFileInPlusFileIn::Do()
 {
