@@ -35,7 +35,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
 	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
 	CPPUNIT_TEST( testhelperLoadAudioFromFile );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 	CPPUNIT_TEST_SUITE_END();
@@ -75,7 +75,7 @@ private:
 		std::string diagnostic;
 		// Verification
 		bool resultEquals = helperAudiosAreEqual(a, b, diagnostic);
-		CPPUNIT_ASSERT_EQUAL( std::string("different audio sizes: first 2 second 0"), diagnostic );
+		CPPUNIT_ASSERT_EQUAL( std::string("different audio sizes: first 2 second 0\n"), diagnostic );
 		CPPUNIT_ASSERT_EQUAL( false, resultEquals );
 	}
 
@@ -260,6 +260,7 @@ private:
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_sweep_loadedConfig";
 		double delta=0.09;
 		std::string diagnostic;
+		
 		bool synthesizedAudiosAreEqual = 	
 			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
@@ -286,6 +287,11 @@ private:
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_elvis_loadedConfig";
 		double delta=0.09;
 		std::string diagnostic;
+
+		CLAM_ASSERT(22050==accessorOriginalAudio().GetSampleRate(), "original bad SamplRate" );
+		CLAM_ASSERT(22050==accessorSinusoidalAudio().GetSampleRate(),  "sinusoidal bad SamplRate" );
+		CLAM_ASSERT(22050==accessorSynthesizedAudio().GetSampleRate(), "synth bad SamplRate" );
+		
 		bool synthesizedAudiosAreEqual = 	
 			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
