@@ -57,59 +57,73 @@ public:
 	
 	void DisconnectFromIn( InPortBase& in)
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::DisconnectFromIn() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		mPublishedOutPort->DisconnectFromIn( in );
 		mConnectedInPortsList.remove(&in);
 	}
 	
 	bool IsConnectableTo(InPortBase & in)
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::IsConnectableTo() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		return mPublishedOutPort->IsConnectableTo( in );
 	}
 	
 	bool IsDirectlyConnectedTo(InPortBase & in)
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher:IsDirectlyConnectedTo() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		return mPublishedOutPort->IsDirectlyConnectedTo( in );
 	}
 	
 	Token & GetData(int offset=0)
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::GetData() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		return mPublishedOutPort->GetData( offset );
 	}
 	
 	int GetSize()
 	{
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::GetSize() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		return mPublishedOutPort->GetSize();
 	}
 	
 	void SetSize(int newSize)
 	{
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::SetSize() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		mPublishedOutPort->SetSize( newSize );
 	}
 	
 	int GetHop()
 	{
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::GetHop() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		return mPublishedOutPort->GetHop();
 	}
 	
 	void SetHop(int newHop)
 	{
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::SetHop() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		mPublishedOutPort->SetHop( newHop );
 	}
 
 	
 	bool CanProduce()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::CanProduce() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		return mPublishedOutPort->CanProduce();
 	}	
 	
 	void CenterEvenRegions()
 	{
-		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::CenterEvenRegions() A published port is missing. "
+				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		mPublishedOutPort->CenterEvenRegions();
 	}
 	Token & GetLastWrittenData( int offset = 0 )
