@@ -5,8 +5,6 @@
 #include <string>
 
 #include "Err.hxx"
-//#include "Oscillator.hxx"
-//#include "AudioAdder.hxx"
 
 namespace CLAM {
 class Processing;	
