@@ -316,14 +316,14 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	InControlPresentationIterator itInControl;
 	for (itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end();itInControl++)
 	{
-		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
-		reg += in->geometry();
+		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl)
+;		reg += in->GetRegion();
 	}
 	OutControlPresentationIterator itOutControl;
 	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
 	{
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
-		reg += out->geometry();
+		reg += out->GetRegion();
 	}
 
 	setMask(reg);
