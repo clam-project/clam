@@ -246,7 +246,7 @@ namespace CLAM
 			//is 10s)
 			
 
-			int nLoops = 0;
+			int nLoops = 1;
 
 			while (indTrans2<transients.Size() && stop<2)
 			{
@@ -264,7 +264,6 @@ namespace CLAM
 				IOIHist.GetBins().SetSize( actualIOIHistSize );
 
 				/// Compute the IOIHistogram
-			
 				for (int i=1;i<mTransientsForHist.Size();i++)
 				{
 					mTransientsForHist[i].SetPosition
@@ -272,84 +271,62 @@ namespace CLAM
 					mTransientsForHist[i].SetWeight(1); //All weights to 1
 				}
 
-
-				mTemporalDiff.Do(mTransientsForHist,IOIHist);
+				mTemporalDiff.Do( mTransientsForHist, IOIHist );
 
 				///IOI histogram Peak Detection
 
-				mPeakDetector.Do(IOIHist,IOIHistPeaks);
-
-				TimeSeriesSeed initialBeatParams;
-
-				///Compute Tempo (optional)
-				if (computeBeats)
-					mTempoEstimator.Do( IOIHistPeaks, initialBeatParams );
-
-
+				mPeakDetector.Do( IOIHist, IOIHistPeaks );
 
 				///Tick Estimation
 
 				//Use of both errors:
 				// default value: 2				
 				//Use of histogram peak weights
-				mTimeSeriesFinder.Do(IOIHistPeaks,mTickFirstGuess);
-
-				unsigned int tickFirstGuessInterval = mTickFirstGuess.GetInterval();
-
-
-				if ( mConfig.GetTickAdjustForSwing() ) 
+				mTimeSeriesFinder.Do( IOIHistPeaks, mTickFirstGuess );
+				
+				if ( mConfig.GetTickAdjustForSwing() )
 					mTickSwingAdjuster.Do( IOIHist, mTickFirstGuess, mTickFirstGuess );
+		
+				///Adjust pulses and generate arrays of pulses
+				///Tick adjustment
+				mTickOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
+				mTickOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
+				
+				//Use of transientsForHist or transients???
+				// i.e. use of weights or not??					
+				mTickOnsetsAdjuster.Do(transients,mTickFirstGuess,tickArray,mGoodTick);		
 
+				forGlobalTickCalc.AddElem(mGoodTick.GetInterval());
 
-				unsigned int goodTickInterval,goodTickOffset;
-			
-				if (mConfig.GetAdjustWithOnsets()) 
-				{
-					///Adjust pulses and generate arrays of pulses
-					///Tick adjustment
-					mTickOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
-					mTickOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
+				StorePulseIndexes(nLoops, tickArray, ticks);
 
-					//Use of transientsForHist or transients???
-					// i.e. use of weights or not???
-					//myTemporalSeriesFinder.Do(transientsForHist,mGoodTick);
-					
-					mTickOnsetsAdjuster.Do(transients,mTickFirstGuess,tickArray,mGoodTick);		
-
-					goodTickInterval = mGoodTick.GetInterval();
-					goodTickOffset = mGoodTick.GetOffset();
-				}
-				else
-					goodTickInterval = tickFirstGuessInterval;
-
-				forGlobalTickCalc.AddElem(goodTickInterval);
-
+				///Compute Tempo (optional)
 				if (computeBeats) 
 				{
+
+					TimeSeriesSeed initialBeatParams;
+					
+					mTempoEstimator.Do( IOIHistPeaks, initialBeatParams );
+
 					TimeSeriesSeed tickAdjustedBeatParams;
 					mBeatTickAdjuster.Do( mGoodTick, initialBeatParams, tickAdjustedBeatParams );
+					
+					//get the best phase
+					// Computing best beat phase
 
-					if (mConfig.GetAdjustWithOnsets()) 
-					{
-						//get the best phase
-						// Computing best beat phase
-
-						mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
-						mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
+					mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
+					mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
 
 
-						//NB: Use of transients instead of transientsForHist
-						// i.e. making use of transient weights
-						mBeatOnsetsAdjuster.Do( transients, mGoodTick, tickAdjustedBeatParams,
-									tempoArray, mGoodTempo );
-
-					}
-					else 
-						mGoodTempo = tickAdjustedBeatParams;
-
+					//NB: Use of transients instead of transientsForHist
+					// i.e. making use of transient weights
+					mBeatOnsetsAdjuster.Do( transients, mGoodTick, tickAdjustedBeatParams,
+								tempoArray, mGoodTempo );
+					
 					forGlobalTempoCalc.AddElem( mGoodTempo.GetInterval() );
-				}
 
+					StorePulseIndexes(nLoops, tempoArray, beats);
+				}
 
 				nLoops +=1;
 				indTrans1 = nLoops*transHop;
@@ -361,12 +338,6 @@ namespace CLAM
 					indTrans1 = indTrans2-numbTrans+1;
 					stop += 1;
 				}
-
-				///Store Tick indexes and (optionally) Beat indexes
-				if (computeBeats)
-					StorePulseIndexes(nLoops, tempoArray, beats);
-			
-				StorePulseIndexes(nLoops, tickArray, ticks);
 
 		
 			} //end of while loop
