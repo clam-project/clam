@@ -8,6 +8,7 @@ namespace CLAMTest
 		DummyProduct() {}
 		virtual ~DummyProduct() {}
 		virtual void dummyVirtual() =0;
+		virtual const char * GetClassName() const {return "DummyProduct";}
 
 	};
 
@@ -18,6 +19,7 @@ namespace CLAMTest
 		DummyProductFoo() {}
 		virtual ~DummyProductFoo() {}
 		virtual void dummyVirtual() {}
+		virtual const char * GetClassName() const {return "DummyProductFoo";}
 	};
 
 	class DummyProductBar
@@ -27,6 +29,7 @@ namespace CLAMTest
 		DummyProductBar() {}
 		virtual ~DummyProductBar() {}
 		virtual void dummyVirtual() {}
+		virtual const char * GetClassName() const {return "DummyProductBar";}
 	};
 
 }
