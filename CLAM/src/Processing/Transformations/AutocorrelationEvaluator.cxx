@@ -52,11 +52,11 @@ namespace CLAM
 	{
 		mConfig = dynamic_cast< const AutocorrelationEvaluatorConfig& > (cfg);
 
-		if( mConfig.HasSize() )
+		if( mConfig.HasCorrelationSize() )
 		{
-			if( mConfig.GetSize() < 0 )
+			if( mConfig.GetCorrelationSize() < 0 )
 				throw( ErrProcessingObj( "Wrong (negative) Size in Autocorrelation Evaluator Configuration", this ) );
-			mSize = mConfig.GetSize();
+			mSize = mConfig.GetCorrelationSize();
 		}
 
 		return true;
@@ -80,7 +80,7 @@ namespace CLAM
 		{
 			std::stringstream s;
 
-			s << "Autocorrelation::Do: Wrong size in Autocorrelation Audio output\n"
+			s << "Autocorrelation::Do: Wrong size in Autocorrelation output\n"
 			  << "	Expected: " << mSize << " , used " << out.GetSize();
 			CLAM_ASSERT( 0, s.str().c_str() );
 		}
@@ -93,19 +93,59 @@ namespace CLAM
 
 	bool AutocorrelationEvaluator::Do(const Audio& in, Correlation &out)
 	{
-		int n, k ;
-		TData *inbuffer, *outbuffer;
+/*** this is the "clean" version:
+		TData *inBuffer, *outBuffer;
+		int k, n;
+
+  		if( !AbleToExecute() ) return true;
+		
+		CheckTypes( in, out );
+
+  		inBuffer = in.GetBuffer().GetPtr();
+		outBuffer = out.GetBuffer().GetPtr();
+
+
+		for( k = 0; k < out.GetSize(); k++ )
+		{
+			for( n = 0; n < in.GetSize(); n++ )
+			{
+				if( n < k )
+					outBuffer[ k ] = 0;
+				else
+					outBuffer[ k ] += inBuffer[ n ] * inBuffer[ n - k ] ;
+			}
+		}
+*/
+
+/*
+	The following does the same, but more efficient, by removing the condition
+	from the for loop
+*/
+		int k = 0;
+		TData *inBuffer, *inBuffer2, *outBuffer;
+		TData *endInBuffer, *endOutBuffer;
 
 		if( !AbleToExecute() ) return true;
 		
 		CheckTypes( in, out );
 
-		inbuffer = in.GetBuffer().GetPtr();
+		inBuffer = in.GetBuffer().GetPtr();
+		endInBuffer = inBuffer + in.GetSize();
 
-		for( k = 0; k < mSize; k++ )
+		outBuffer = out.GetBuffer().GetPtr();
+		endOutBuffer = outBuffer + out.GetSize();
+
+		while( outBuffer != endOutBuffer )
 		{
-			for( n = 1 + k; n < in.GetSize(); n++ )
-				out
+			inBuffer2 = inBuffer;
+			inBuffer += k;
+
+			while( inBuffer != endInBuffer )
+				( *outBuffer ) += ( *inBuffer++ ) * ( *inBuffer2++ );
+
+			inBuffer = in.GetBuffer().GetPtr();
+			outBuffer ++;
+			k++;
 		}
 
 		return true;

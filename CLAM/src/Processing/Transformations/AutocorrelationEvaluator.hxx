@@ -33,8 +33,9 @@ namespace CLAM
 	class AutocorrelationEvaluatorConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AutocorrelationEvaluatorConfig, 1, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (AutocorrelationEvaluatorConfig, 2, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYN_ATTRIBUTE (1, public, int, CorrelationSize);
 	protected:
 		/** Dynamic type initialization: All attributes are
 		 *   instantiated.
