@@ -31,15 +31,17 @@ namespace CLAM
 
 		SetSynchronizeTime(tmpBPF);
 
-		BPF weightDefault;
-		weightDefault.Insert( 0.0, 1.0 );
-		weightDefault.Insert( 1.0, 1.0 );
+		BPF defaultWeight;
+		defaultWeight.Insert( 0.0, 1.0 );
+		defaultWeight.Insert( 1.0, 1.0 );
 
-		SetHybSinShapeW1( weightDefault );
-		SetHybSinShapeW2( weightDefault );
+		SetHybSinShapeW1( defaultWeight );
+		SetHybSinShapeW2( defaultWeight );
 		
-		SetHybResShapeW1( weightDefault );
-		SetHybResShapeW2( weightDefault );
+		SetHybResShapeW1( defaultWeight );
+		SetHybResShapeW2( defaultWeight );
+
+		SetHybSinSpectralShape( defaultWeight );
 
 	}
 }
