@@ -116,13 +116,17 @@ namespace CLAM
 
 			//Beat centering method 3 (mean IBI)
 
+			/*
 			globalTempo = .0; 
 			for (int i=0;i<beats.Size()-1;i++) 
 				globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
 			globalTempo /= beats.Size()-1;
-			globalTempo *= sampleRate/2;
-
-
+			globalTempo *= sampleRate;
+			globalTempo /= 2;
+			*/
+			globalTempo = (60.0 * sampleRate)/beatData.GetRate();
+			TData offset = globalTempo / 2.0;
+			
 			//-------Remove audio DC component------------------
 			//TODO
 
@@ -170,8 +174,16 @@ namespace CLAM
 			for (int i=0;i<segments.Size()-1;i++) 
 			{
 				//temporal centroid mapped to values between 0 and 1
-				seq.AddElem(segDList[i].GetAudioD().GetTemporalCentroid()
-					    / (segments[i+1]-segments[i]));
+				//MRJ: TemporalCentroid is in seconds!!!!!
+				//seq.AddElem(segDList[i].GetAudioD().GetTemporalCentroid()
+				// / (segments[i+1]-segments[i]));
+				TData centroidTime = segDList[i].GetAudioD().GetTemporalCentroid();
+				centroidTime*=sampleRate;
+				std::cerr << "Centroid: " << centroidTime << " Segment("<< i+1 <<"): ";
+				std::cerr << segments[i+1] << " Segment("<<i<<"): " << segments[i];
+				std::cerr << " Width: " << segments[i+1] - segments[i];
+				std::cerr << " Factor: " << centroidTime / ( segments[i+1] - segments[i] ) << std::endl; 
+				seq.AddElem( centroidTime / ( segments[i+1] - segments[i] ) );
 			}
 
 			mACF.Do(seq,acf);
@@ -187,28 +199,34 @@ namespace CLAM
 			}
 #if 1
 			std::cout<<"ACF"<<std::endl;
-			for(int i=0;i<acf.Size()-1;i++) 
-				std::cout<<	acf[i]<<"\n";
+			for(int i=0;i<acf.Size();i++) 
+				std::cout << "acf("<<i<<"):="<<acf[i]<<"\n";
 #endif
-			// MRJ: Not a clue about where this does come from
-			//TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[6]+acf[9])/3;
-			// MRJ: Almost the one on the paper ( coefficient #9 is used instead of #6 )
+			// MRJ: Almost the one on the paper ( coefficient #9 is used instead of #6 ).
+			// Fabien changed this so we don't mix ternary and binary hypotheses: 3 and
+			// 9 do not have as factor two, while six does. 
+
 			TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[9])/2;
-			// MRJ: The one on the paper
-			//TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[6])/2;
 			std::cout<<"Feature M = "<<M<<std::endl;
 			
 			//--------Final decision--------------
 			dataOut.SetDenominator(4);
-			if ( M < -0.000665 ) 
+
+
+			//if ( M < -0.108046 )
+			//if ( (acf[3]+acf[9])/2 > (acf[2]+acf[4]+acf[8])/3 )
+			//
+
+			//if ( M < -0.000665 ) 
+			if ( (acf[2]+acf[8])/2.0 > (acf[1]+acf[3]+acf[7]+acf[9])/4.0 )
 			{
 				dataOut.SetNumerator(3);
-				std::cout<<"Triple meter"<<std::endl;
+				std::cout<<"Triple (3/4) meter"<<std::endl;
 			}
 			else 
 			{
 				dataOut.SetNumerator(4);
-				std::cout<<"Duple meter"<<std::endl;
+				std::cout<<"Duple (4/4) meter"<<std::endl;
 			}
 					       
 

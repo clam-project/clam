@@ -103,41 +103,54 @@ namespace CLAM
 				// final estimate may be unreliable.
 			}
 
-			Array<TData> aux1, aux2;
+			Array<TData> x, y;
 			TData* ptr = sequence.GetPtr();
 
-			//build aux1
-			aux1.SetPtr(ptr,it);
+			//build x
+			x.SetPtr(ptr,it);
 
-			TData normAux1=0.0;
+			/*
+			TData normX=0.0;
 
-			for(int i=0;i<aux1.Size();i++) 
-				normAux1 += aux1[i]*aux1[i];
+			for(int i=0;i<x.Size();i++) 
+				normX += x[i]*x[i];
 
-			normAux1 = sqrt(normAux1);
+			normX = sqrt(normX);
+			*/
+			
+			TData normX = sqrt( std::inner_product( x.GetPtr(), x.GetPtr()+it,
+								x.GetPtr(), 0.0 ) );
 
 			//acf computation
 
 			TData tmpCoef;
-			TData normAux2;
+			TData normY;
 
 			for(int m=0;m<ul;m++) 
 			{
 				tmpCoef = 0.0;
 			
-				//build aux2
-				aux2.SetPtr(ptr,it);
-				normAux2=0.0;
+				//build y
+				y.SetPtr(ptr,it);
+				/*
+				normY=0.0;
 				
-				for(int i=0;i<aux2.Size();i++) 
-					normAux2 += aux2[i]*aux2[i];
+				for(int i=0;i<y.Size();i++) 
+					normY += y[i]*y[i];
 				
-				normAux2 = sqrt(normAux2);
-				
-				for(int k=0;k<aux2.Size();k++) 
-					tmpCoef += aux1[k]*aux2[k];
-				
-				tmpCoef /= normAux1*normAux2;
+				normY = sqrt(normY);
+				*/
+				normY = sqrt( std::inner_product( y.GetPtr(), y.GetPtr()+it,
+								  y.GetPtr(), 0.0 ) );
+
+				/*
+				for(int k=0;k<y.Size();k++) 
+					tmpCoef += x[k]*y[k];
+				*/
+
+				tmpCoef = std::inner_product( x.GetPtr(), x.GetPtr()+it,
+							      y.GetPtr(), 0.0 );
+				tmpCoef /= normX*normY;
 				
 				acf.AddElem(tmpCoef);
 				
@@ -146,10 +159,10 @@ namespace CLAM
 			/*  --MATLAB code--
 			    for featInd=1:size(A,2)
 			    for m=1:upperLimit
-			    aux1 = []; aux2 = []; aux = [];
-			    aux1 = A(1:integTime+1,featInd);     
-			    aux2 = A(m:m+integTime,featInd);
-			    aux = aux1'*aux2/(norm(aux1)*norm(aux2));
+			    x = []; y = []; aux = [];
+			    x = A(1:integTime+1,featInd);     
+			    y = A(m:m+integTime,featInd);
+			    aux = x'*y/(norm(x)*norm(y));
 			    atc(featInd,m) = aux;
 			    end;
 			    end;
