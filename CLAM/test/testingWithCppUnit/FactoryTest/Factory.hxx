@@ -21,7 +21,9 @@ public:
 	
 class FactoryRegistry
 {	
+public:
 	typedef Processing* (*CreatorMethod)(void);
+private:
 	typedef std::string RegistryKey;
 	typedef std::map<std::string, CreatorMethod> CreatorMap;
 
