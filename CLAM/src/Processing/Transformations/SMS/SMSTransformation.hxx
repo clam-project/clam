@@ -236,7 +236,7 @@ namespace CLAM {
 		 *  @param out the Segment that is output from the transformation.
 		 *  @return Boolean value, whether the process has finished successfully or not.
 		 */
-		bool Do(const Segment& in, Segment& out)
+		virtual bool Do(const Segment& in, Segment& out)
 		{
 			
 			if(mUseTemporalBPF)
