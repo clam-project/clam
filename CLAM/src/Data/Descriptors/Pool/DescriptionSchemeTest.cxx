@@ -48,23 +48,23 @@ private:
 	void testGetNScopes_withASingleAttribute()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(1u, scheme.GetNScopes());
 	}
 
 	void testGetNScopes_withTwoAttributeOnDifferentScopes()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("YourScope","YourAttribute");
 		CPPUNIT_ASSERT_EQUAL(2u, scheme.GetNScopes());
 	}
 
 	void testGetNScopes_withTwoAttributeOnTheSameScope()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","YourAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","YourAttribute");
 		CPPUNIT_ASSERT_EQUAL(1u, scheme.GetNScopes());
 	}
 
@@ -86,8 +86,8 @@ private:
 	void testGetScope_withARegisteredAttribute()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyOtherAttribute");
 
 		const CLAM::DescriptionScope & spec = scheme.GetScope("MyScope");
 
@@ -98,9 +98,9 @@ private:
 	void testGetScope_withTwoScopes()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
-		scheme.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("YourScope","YourAttribute");
+		scheme.AddAttribute<int>("YourScope","YourIntAttribute");
 
 		const CLAM::DescriptionScope & myScope = scheme.GetScope("MyScope");
 		const CLAM::DescriptionScope & yourScope = scheme.GetScope("YourScope");
@@ -143,8 +143,8 @@ private:
 	void testGetScopeIndex_withARegisteredAttribute()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyOtherAttribute");
 
 		unsigned scopeIndex = scheme.GetScopeIndex("MyScope");
 		const CLAM::DescriptionScope & scope = scheme.GetScope(scopeIndex);
@@ -156,9 +156,9 @@ private:
 	void testGetScopeIndex_withTwoScopes()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
-		scheme.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("YourScope","YourAttribute");
+		scheme.AddAttribute<int>("YourScope","YourIntAttribute");
 
 		unsigned myScopeIndex = scheme.GetScopeIndex("MyScope");
 		const CLAM::DescriptionScope & myScope = scheme.GetScope(myScopeIndex);
@@ -173,8 +173,8 @@ private:
 	void testGetScopeName_withTwoScopes()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("YourScope","YourAttribute");
 		CPPUNIT_ASSERT_EQUAL(std::string("MyScope"), scheme.GetScopeName(0));
 		CPPUNIT_ASSERT_EQUAL(std::string("YourScope"), scheme.GetScopeName(1));
 	}
@@ -182,7 +182,7 @@ private:
 	void testGetScopeName_withWrongNumber()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
 		try
 		{
 			scheme.GetScopeName(1);

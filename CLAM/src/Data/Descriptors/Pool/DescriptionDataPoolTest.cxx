@@ -31,10 +31,10 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp()
 	{
-		mScheme.AddAttribute<CLAM::Attribute<CLAM::TData> >   ("AudioSample","Level");
-		mScheme.AddAttribute<CLAM::Attribute<unsigned> >      ("Frame","Center");
-		mScheme.AddAttribute<CLAM::Attribute<unsigned> >      ("Frame","Size");
-		mScheme.AddAttribute<CLAM::Attribute<std::string> >   ("Frame","MyLabel");
+		mScheme.AddAttribute<CLAM::TData>   ("AudioSample","Level");
+		mScheme.AddAttribute<unsigned>      ("Frame","Center");
+		mScheme.AddAttribute<unsigned>      ("Frame","Size");
+		mScheme.AddAttribute<std::string>   ("Frame","MyLabel");
 	}
 
 	/// Common clean up, executed after each test method

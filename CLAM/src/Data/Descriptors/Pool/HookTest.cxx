@@ -33,9 +33,9 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp()
 	{
-		mScheme.AddAttribute< CLAM::Attribute<char> >(
+		mScheme.AddAttribute<char>(
 				"TestScope1","InputData");
-		mScheme.AddAttribute< CLAM::Attribute<char> >(
+		mScheme.AddAttribute<char>(
 				"TestScope1","OutputData");
 
 		mPool = new CLAM::DescriptionDataPool(mScheme);

@@ -386,9 +386,9 @@ private:
 	void testDumpDescriptionDataPool_withAllKindsOfData()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<DummyComponent> >("TestScope1","DummyComponentAttribute");
-		scheme.AddAttribute< CLAM::Attribute<unsigned> >("TestScope2","UnsignedAttribute");
-		scheme.AddAttribute< CLAM::Attribute<std::string> >("TestScope2","StringAttribute");
+		scheme.AddAttribute<DummyComponent>("TestScope1","DummyComponentAttribute");
+		scheme.AddAttribute<unsigned>("TestScope2","UnsignedAttribute");
+		scheme.AddAttribute<std::string>("TestScope2","StringAttribute");
 
 		CLAM::DescriptionDataPool pool(scheme);
 		pool.SetNumberOfContexts("TestScope1",3);
@@ -439,9 +439,9 @@ private:
 	void testRestoreDescriptionDataPool_withAllKindsOfData()
 	{
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<DummyComponent> >("TestScope1","DummyComponentAttribute");
-		scheme.AddAttribute< CLAM::Attribute<unsigned> >("TestScope2","UnsignedAttribute");
-		scheme.AddAttribute< CLAM::Attribute<std::string> >("TestScope2","StringAttribute");
+		scheme.AddAttribute<DummyComponent>("TestScope1","DummyComponentAttribute");
+		scheme.AddAttribute<unsigned>("TestScope2","UnsignedAttribute");
+		scheme.AddAttribute<std::string>("TestScope2","StringAttribute");
 
 		CLAM::DescriptionDataPool pool(scheme);
 

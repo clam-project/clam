@@ -27,13 +27,13 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp()
 	{
-		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referenced","Input");
-		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referenced","Output");
-		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referenced","ReverseReference");
-		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referencer","BadReference");
-		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referencer","Reference");
-		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referencer","Output");
-		mScheme.AddAttribute< CLAM::Attribute<std::string> >( "Referencer","Concatenations");
+		mScheme.AddAttribute<char>       ( "Referenced","Input");
+		mScheme.AddAttribute<char>       ( "Referenced","Output");
+		mScheme.AddAttribute<unsigned>   ( "Referenced","ReverseReference");
+		mScheme.AddAttribute<unsigned>   ( "Referencer","BadReference");
+		mScheme.AddAttribute<unsigned>   ( "Referencer","Reference");
+		mScheme.AddAttribute<char>       ( "Referencer","Output");
+		mScheme.AddAttribute<std::string>( "Referencer","Concatenations");
 
 		mPool = new CLAM::DescriptionDataPool(mScheme);
 		mPool->SetNumberOfContexts("Referenced",10);

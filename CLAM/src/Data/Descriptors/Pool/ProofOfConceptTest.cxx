@@ -55,12 +55,12 @@ private:
 	{
 		typedef unsigned SamplePosition;
 		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >         ("AudioSample","Level");
-		scheme.AddAttribute<CLAM::Attribute<SamplePosition> >      ("Frame","Center");
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >         ("Frame","Energy");
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >         ("Frame","RMS");
-		scheme.AddAttribute<CLAM::Attribute<CLAM::Spectrum> >      ("Frame","SpectralDistribution");
-//		scheme.AddAttribute<CLAM::Attribute<CLAM::Spectrum> >      ("Song","EnergyCentroid");
+		scheme.AddAttribute<CLAM::TData>         ("AudioSample","Level");
+		scheme.AddAttribute<SamplePosition>      ("Frame","Center");
+		scheme.AddAttribute<CLAM::TData>         ("Frame","Energy");
+		scheme.AddAttribute<CLAM::TData>         ("Frame","RMS");
+		scheme.AddAttribute<CLAM::Spectrum>      ("Frame","SpectralDistribution");
+//		scheme.AddAttribute<CLAM::Spectrum>      ("Song","EnergyCentroid");
 
 		CLAM::DescriptionDataPool pool(scheme);
 
