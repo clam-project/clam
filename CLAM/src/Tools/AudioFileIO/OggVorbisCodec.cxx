@@ -193,7 +193,7 @@ namespace AudioCodecs
 				{
 					std::string msg = fieldName;
 					msg+= ":  Ignored comment field!";
-					CLAM_WARNING( false, msg.c_str() );
+					//CLAM_WARNING( false, msg.c_str() );
 				}
 			}
 			
