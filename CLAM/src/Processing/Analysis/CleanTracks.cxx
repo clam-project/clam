@@ -128,15 +128,24 @@ namespace CLAM {
 
 	void CleanTracks::FindContinuations()
 	{
+		int firstCandidatable = 0;
+
 		for(int i=0; i<mTrajectoryArray.Size(); i++)
 		{
 			const TTrajectory & toBeAppended = mTrajectoryArray[i];
+/*
+			// Non-candidatables now won't be candidatables never
+			while (firstCandidatable<i && toBeAppended.beginPos <
+				mTrajectoryArray[firstCandidatable].beginPos+
+				mTrajectoryArray[firstCandidatable].length+mMaxDropOut)
+				firstCandidatable++;
+*/
 			bool thereIsCandidate=false;
 			TData bestFreqDif=mFreqDev;
 			int bestCandidate;
 
 			// Get the best 'candidate' to be followed by the track 'toBeAppended'
-			for(int k=0; k<i; k++)
+			for(int k=firstCandidatable; k<i; k++)
 			{
 				const TTrajectory & candidate = mTrajectoryArray[k];
 
@@ -174,27 +183,15 @@ namespace CLAM {
 			const TSize candidateEnd =
 				candidateTrajectory.beginPos+candidateTrajectory.length;
 
+			TSize previousFollowerPosition = candidateTrajectory.continuedAtId;
 			// Candidate has already has been attached?
-			if (candidateTrajectory.continuedAtId != -1) continue;
-
-			// Candidate will have a better one
-			bool isBetterForAnother=false;
-			for(int j=i; j<mTrajectoryArray.Size(); j++)
+			if (previousFollowerPosition != -1)
 			{
-				const TTrajectory & another = mTrajectoryArray[j];
-				const TSize dropOut=another.beginPos-candidateEnd;
-
-				if (dropOut<=0) continue;
-				if (dropOut>mMaxDropOut) continue;
+				TTrajectory & previousFollower = mTrajectoryArray[previousFollowerPosition];
 				const TData frequencyDistance =
-					Abs(another.initialFreq-candidateTrajectory.finalFreq);
-				if (frequencyDistance >= bestFreqDif) continue;
-
-				isBetterForAnother=true;
-				break; // there is no reason to continue the search
+					Abs(previousFollower.initialFreq-candidateTrajectory.finalFreq);
+				if (frequencyDistance <= bestFreqDif) continue;
 			}
-
-			if (isBetterForAnother) continue;
 
 			candidateTrajectory.continuedAtId=toBeAppended.id;
 
