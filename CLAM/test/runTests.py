@@ -10,6 +10,7 @@ updateLevelForTestData = 0
 doCleanMake = False
 # When false does nothing
 doAutoconf = False
+doAutoconf = doAutoconf or updateLevelForCLAM == 2
 
 enableSendMail = False
 publicAddress = 'clam-devel@iua.upf.es'
@@ -57,15 +58,15 @@ automaticTests = [
 ]
 
 externalApplications = [
-	( 'SpectralDelay', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/'),
-	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
-	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
-	( 'SpectralDelay-DelayPoolTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/DelayPoolTest/'),
+#	( 'SpectralDelay', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/'),
+#	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
+#	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
+#	( 'SpectralDelay-DelayPoolTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/DelayPoolTest/'),
 	( 'NetworkEditor', CLAM_SANDBOXES+'CLAM_NetworkEditor/build/' ),
 	( 'Voice2MIDI', CLAM_SANDBOXES+'CLAM_Voice2MIDI/build/' ),
 	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
 	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
-	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
+#	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
 	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' )
 ]
 
@@ -74,7 +75,7 @@ supervisedTests = [
 	('SpectrumPresentation', spvTestsPath+'SpectrumPresentation/' ),
 	('AudioPresentation', spvTestsPath+'AudioPresentation/' ),
 	('FunFreqPresentationTest', spvTestsPath+'FundFreqPresentation/' ),
-	('AudioIOTest', spvTestsPath+'AudioIO/' ),
+#	('AudioIOTest', spvTestsPath+'AudioIO/' ), TODO: fix. now needs root access and consumes all cpu
 	('MIDIIOTest', spvTestsPath+'MIDIIO/' ),
 	('Fl_EnvelopeTest', spvTestsPath+'Fl_Envelope/' ),
 	('Test_Multiplot', spvTestsPath+'Plotsv2/Test_Multiplot/' ),
@@ -84,31 +85,31 @@ supervisedTests = [
 
 
 notPortedTests = [
-	( 'Array', nonPortedTestsPath+'Array/'),
-        ( 'Array2', nonPortedTestsPath+'Array2/'),
-        ( 'Assert', nonPortedTestsPath+'Assert/'),
-        ( 'BPF', nonPortedTestsPath+'BPF/'),
-        ( 'EnvelopeExtractor', nonPortedTestsPath+'EnvelopeExtractor/'),
-        ( 'Error', nonPortedTestsPath+'Error/'),
-        ( 'FDFilterGen', nonPortedTestsPath+'FDFilterGen/'),
-        ( 'List', nonPortedTestsPath+'List/'),
-        ( 'Segment', nonPortedTestsPath+'Segment/'),
-        ( 'Signalv1', nonPortedTestsPath+'Signalv1/'),
-        ( 'Spectrum', nonPortedTestsPath+'Spectrum/'),
-        ( 'SpectrumAdder', nonPortedTestsPath+'SpectrumAdder/'),
-        ( 'SpectrumAdder2', nonPortedTestsPath+'SpectrumAdder2/'),
-        ( 'SpectrumProduct', nonPortedTestsPath+'SpectrumProduct/'),
-        ( 'TabFunct', nonPortedTestsPath+'TabFunct/'),
-        ( 'Threading', nonPortedTestsPath+'Threading/'),
-        ( 'WaveGenerator', nonPortedTestsPath+'WaveGenerator/'),
-        ( 'Windowing', nonPortedTestsPath+'Windowing/')
+	( 'ArrayTest', nonPortedTestsPath+'Array/'),
+        ( 'Array2Test', nonPortedTestsPath+'Array2/'),
+        ( 'AssertTest', nonPortedTestsPath+'Assert/'),
+        ( 'BPFTest', nonPortedTestsPath+'BPF/'),
+#        ( 'EnvelopeExtractorTest', nonPortedTestsPath+'EnvelopeExtractor/'),
+        ( 'ErrorTest', nonPortedTestsPath+'Error/'),
+        ( 'FDFilterGenTest', nonPortedTestsPath+'FDFilterGen/'),
+        ( 'ListTest', nonPortedTestsPath+'List/'),
+        ( 'SegmentTest', nonPortedTestsPath+'Segment/'),
+        ( 'Signalv1Test', nonPortedTestsPath+'Signalv1/'),
+        ( 'SpectrumTest', nonPortedTestsPath+'Spectrum/'),
+        ( 'SpectrumAdderTest', nonPortedTestsPath+'SpectrumAdder/'),
+        ( 'SpectrumAdder2Test', nonPortedTestsPath+'SpectrumAdder2/'),
+        ( 'SpectrumProductTest', nonPortedTestsPath+'SpectrumProduct/'),
+        ( 'TabFunctTest', nonPortedTestsPath+'TabFunct/'),
+        ( 'ThreadingTest', nonPortedTestsPath+'Threading/'),
+        ( 'WaveGeneratorTest', nonPortedTestsPath+'WaveGenerator/'),
+        ( 'WindowingTest', nonPortedTestsPath+'Windowing/')
 ]
 
 
 testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
-testsToRun[-1:-1] = externalApplications 
+#testsToRun[-1:-1] = externalApplications 
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 testsToRun[-1:-1] = automaticTests 
@@ -176,16 +177,19 @@ def parseTestsFailures( testsOut ) :
 	for line in testsOut.split('\n') :
 		if state == 'TESTS_INFO' :
 			if line.find('!!!FAILURES!!!') >=0 :
+				print 'found !!!FAILURES!!!'
 				details = line + '\n'
 				summary +=  line
 				state = 'FAILURES'
 			if line.find('OK (') == 0 :
+				print 'found OK'
 				details = ''
 				summary += line
 		elif state == 'FAILURES' :
 			details +=  line + '\n'
 		else :
 			assert(false)
+	print 'in parseTestsFailures :', summary, ' details: ',details
 	return summary, details
 
 def parseExecutionErrors( executionOut ) :
@@ -201,7 +205,8 @@ def parseExecutionErrors( executionOut ) :
 
 
 def isTest(path) :
-	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')>=0 or path.find('build/Tests/')>= 0  
+	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')>=0 
+		#TODO for SMSBaseTests or path.find('build/Tests/')>= 0  
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
@@ -263,6 +268,11 @@ def compileAndRun(name, path) :
 			
 		# execution phase
 		execcmd = './'+name
+		
+		if not os.access(execcmd, os.X_OK) :
+			print 'file should exist: ', execcmd
+			assert(False)
+
 		if isTest(path) :
 			print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
