@@ -361,9 +361,9 @@ void MyAudioApplication::AudioMain(void)
 
 		for ( i=0;i<nVoices;i++)
 		{
-			mixer.Input[i].Attach(audioArray[i]);
+			mixer.mInput[i].Attach(audioArray[i]);
 		}
-		mixer.Output.Attach(out);
+		mixer.mOutput.Attach(out);
 
 		inNote.LinkOutWithInControl( 0, &dispatcher, 1 );   /** Key for Note Off */
 		inNote.LinkOutWithInControl( 1, &dispatcher, 2 );   /** Velocity for Note Off */
