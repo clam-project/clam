@@ -55,7 +55,7 @@ namespace CLAMGUI
 	void AnalysisSynthesisExampleGUI::OnNewTime( double value )
 	{
 		//Change mCounter
-		TTime time( value / mSegment.GetSamplingRate() );
+		TTime time( value  );
 		TIndex nframe = mSegment.FindFrame( time );
 		
 		mUI->mCounter->value( (int) nframe );
