@@ -120,6 +120,7 @@ void GLArrayRenderer::Draw()
 void GLArrayRenderer::DefineViewport( const DataArray& array, Viewport& view_specs )
 {
 
+	CLAM_DEBUG_ASSERT( (array.GetPtr()!=NULL ), "There is no data in the array!");
 
 	TData top ;
 	TData bottom ;	
