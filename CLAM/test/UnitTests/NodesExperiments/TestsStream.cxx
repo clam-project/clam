@@ -309,7 +309,9 @@ public:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::PhantomBuffer> );
-CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<std::vector> );
-CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<std::list> );
+//CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<std::vector> );
+//CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<std::list> );
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::StdVector> );
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::StdList> );
 
 } // namespace CLAMTest 
