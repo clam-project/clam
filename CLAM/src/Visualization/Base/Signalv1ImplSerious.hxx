@@ -58,9 +58,9 @@ public:
 		if ( mSuper.HasNoCallbacks() )
 			return;
 
-		tSuperType::tCallList calls = mSuper.GetCalls();
-		tSuperType::tCallIterator i = calls.begin();
-		tSuperType::tCallIterator end = calls.end();
+		typename tSuperType::tCallList calls = mSuper.GetCalls();
+		typename tSuperType::tCallIterator i = calls.begin();
+		typename tSuperType::tCallIterator end = calls.end();
 
 		while ( i != end )
 			{

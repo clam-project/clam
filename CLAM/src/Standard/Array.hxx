@@ -267,7 +267,7 @@ public:
 		// onto a non XML storage has no effect but it enhances performance.
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
-			StoreBufferOn((TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
+			StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 		}
 		#endif//CLAM_USE_XML
 	}
@@ -280,7 +280,7 @@ public:
 		{
 			while (true) {
 				T elem;
-				if (!LoadMemberFrom((TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
+				if (!LoadMemberFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
 				AddElem(elem);
 			}
 		}
