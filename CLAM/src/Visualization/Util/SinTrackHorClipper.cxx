@@ -5,8 +5,8 @@ namespace CLAMGUI
 {
 	
 		void SinTrackHorClipper::Cull( TIndex start_frame, TIndex end_frame, 
-									std::vector< SinusoidalTrack::iterator >& line_starts,
-									std::vector< SinusoidalTrack::iterator >& line_ends )
+									SineTrackSpanEnds& line_starts,
+									SineTrackSpanEnds& line_ends )
 		{
 				// Some defensive programming...
 				

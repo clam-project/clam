@@ -13,7 +13,7 @@ namespace CLAMGUI
 
 		class SinTrackHorClipper
 		{
-				typedef std::vector< SinusoidalTrack::iterator>::iterator peak_iterator;
+				typedef SineTrackSpanEnds::iterator peak_iterator;
 		public:
 				
 				SinTrackHorClipper( SineTrackList& list )
@@ -22,8 +22,8 @@ namespace CLAMGUI
 				}
 
 				void Cull( TIndex start_frame, TIndex end_frame, 
-						   std::vector< SinusoidalTrack::iterator >& line_starts,
-						   std::vector< SinusoidalTrack::iterator >& line_ends );
+						   SineTrackSpanEnds& line_starts,
+						   SineTrackSpanEnds& line_ends );
 
 		protected:
 				
