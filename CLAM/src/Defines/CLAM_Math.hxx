@@ -41,12 +41,12 @@
 		template <typename T>
 		bool isnan(T data)
 		{
-			return _isnan(data);
+			return _isnan(data) == 1;
 		}
 		template <typename T>
 		bool isinf(T data)
 		{
-			return _isnan(data);
+			return _isnan(data) == 1;
 		}
 	}
 #endif // MSVC++ 7
