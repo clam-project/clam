@@ -49,8 +49,7 @@ class NetworkTest : public CppUnit::TestFixture
 		CLAM::Network net;
 
 		try{
-			std::string name("not existing processing");
-			net.GetProcessing(name);
+			net.GetProcessing(std::string("not existing processing"));
 			CPPUNIT_FAIL("Assert expected, but no exception was thrown");
 		}
 		catch( CLAM::ErrAssertionFailed& )
@@ -98,8 +97,7 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( name1, proc );
 
 		CLAM::Processing* proc2 = new DummyProcessing;
-		std::string name2( "the second" );
-		net.AddProcessing( name2,proc2 );
+		net.AddProcessing( std::string("the second"),proc2 );
 
 		CPPUNIT_ASSERT_EQUAL( proc, &net.GetProcessing( name1 ) );
 	}
@@ -117,8 +115,7 @@ class NetworkTest : public CppUnit::TestFixture
 	void testHasProcessing_WhenHasntIt()
 	{
 		CLAM::Network net;
-		std::string name("non-existing");
-		CPPUNIT_ASSERT_EQUAL( false, net.HasProcessing(name) );
+		CPPUNIT_ASSERT_EQUAL( false, net.HasProcessing(std::string("non-existing") ) );
 	}
 
 	class LoggableDummyProcessing : public DummyProcessing
@@ -140,10 +137,8 @@ class NetworkTest : public CppUnit::TestFixture
 		LoggableDummyProcessing* proc2 = new LoggableDummyProcessing(log);
 		
 		CLAM::Network* net = new CLAM::Network;
-		std::string name1("first");
-		std::string name2("second");
-		net->AddProcessing( name1, proc1 );
-		net->AddProcessing( name2, proc2 );
+		net->AddProcessing( std::string("first"), proc1 );
+		net->AddProcessing( std::string("second"), proc2 );
 		delete net;
 
 		std::ostringstream expected;
@@ -151,8 +146,6 @@ class NetworkTest : public CppUnit::TestFixture
 
 		CPPUNIT_ASSERT_EQUAL(expected.str(), log.GetLog() );
 	}
-
-
 };
-
+   
 } // namespace 
