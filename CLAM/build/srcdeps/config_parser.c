@@ -37,11 +37,34 @@ int config_parse(const char* filename);
 
 int var_true(char* subst,const char* filename,int line)
 {
-	listkey* n = listhash_find(config,subst);
+	listkey* n;
+
+	{
+		char* definedkw = ":defined";
+		int l1 = strlen(subst);
+		int l2 = strlen(definedkw);
+
+		if (l1>l2)
+		{
+			if (strcmp(subst+l1-l2,definedkw)==0)
+			{
+				subst[l1-l2] = '\0';
+				if (listhash_find(config,subst))
+				{
+					return 1;
+				}else{
+					return 0;
+				}
+			}
+		}
+	}
+	
+	n= listhash_find(config,subst);
+
 	if (n==0)
 	{
 		fprintf(stderr,
-		"Variable \"%s\" not found in line %s:%d\n",subst,filename,line);
+		"Condition-variable \"%s\" not found in line %s:%d\n",subst,filename,line);
 		exit(-1);
 	}
 	list_add_str_once(used_vars,n->str);
@@ -205,7 +228,7 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 				ENDOUT(d);
 				d->in++;
 
-				/* evuluate variable */				
+				/* evuluate variable */
 				subcond = var_true(var,d->filename,d->line);
 
 				/* reset the token string pointer to where we encountered the 
