@@ -1,14 +1,17 @@
 2004-XX-XX CLAM_0_6_1
 ''
-
+  * General:
+     ** Some memory leaks removed with Valgrind
   * XML:
      ** Indentation is back
      ** Fix: Storing arrays with size 1 crashes
+	 ** Fix: IterableAdapter joined array elements when basics
   * Descriptors:
      ** More fixes on SpectralFlatness, LowFrequencyEnergiRelation and Rolloff:
         *** SpectralFlatness uses log10 instead log
         *** LowFrequencyEnergiRelation doesn't modify the incoming data
         *** RollOff uses Energy instead Moment<O1> and compares with the square
+     ** Moved to Stats: Tilt, Slope, Flatness
 
 
 2004-02-18 CLAM_0_6_0
