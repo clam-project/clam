@@ -35,13 +35,23 @@
 	+ Instanciating Attribute inside Unpopulated -> Fail
 	+ Instanciating Unexisting Attribute -> Fail
 	+ Instanciating Unexisting Attribute inside populated -> Fail
-	- Getting with different type
+	+ Getting an attribute from an unpopulated scope -> Fail
 	- Populate an already populated Scope -> ??
+	- Instantiate an already instantiated attribute -> Fail
+	- Get from an unpopulated scope -> Fail
 	- ScopePool::InstantiateAttribute
 	- ScopePool::Get(index)
-	- Const getter
+	- Const Getter
 	- Accessing an uninstantiated attribute -> Fail
+	- Getting with different type -> Fail
+	- Change an Instantiate idiom to a GetNew idiom
 	- Populate a defined scope -> Instanciating attribute -> Accessing -> 
+- Scope Attribute instantiation
+	+ Refactor to instanciate only write getters
+	+ Accessing an non instantiated on  a scope pool
+	+ no const Get -> GetWritePool
+	+ const Get -> GetReadPool
+	- Change test names for Get
 - Scope relations
 	- Same context binders
 		- Creating a binder
@@ -50,6 +60,7 @@
 		- Checking the binder type maches the extractor binded hook
 	- Relative context binders
 	- Indirect same context binders
+- Zero size pools and instantiation
 - Consider using iterator/vector interface
 - Consider Using the type instead the Attribute<type> as template
 - Prepare: Determinar attributos necesarios
