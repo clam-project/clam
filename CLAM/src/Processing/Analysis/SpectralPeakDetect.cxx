@@ -138,7 +138,7 @@ namespace CLAM {
 		
 
 		// detection loop 
-		for (int i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
+		for (i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
 		{
 			leftMag 	= inMagBuffer[i];
 			middleMag	= inMagBuffer[i+1];
