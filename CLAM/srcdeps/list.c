@@ -60,6 +60,7 @@ void list_add_in_front(list* l,item* i)
 {
 	i->next = l->first;
 	l->first = i;
+	if (l->last==0) l->last = i;
 }
 
 int list_size(list* l)

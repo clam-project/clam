@@ -388,15 +388,17 @@ parse_include_filename:
 				}
 				else
 				{
-					char* i = 0;
-					fprintf(stderr,"Error: include \"%s\" not found\n",tmp);
-
-					while ((i==stack_top(filenamestack)))
 					{
-						fprintf(stderr,"  from %s\n",i);
-						stack_pop(filenamestack);
+						const char* i = 0;
+						fprintf(stderr,"Error: include \"%s\" not found\n",tmp);
+
+						while ((i=stack_top(filenamestack)))
+						{
+							fprintf(stderr,"  from %s\n",i);
+							stack_pop(filenamestack);
+						}
 					}
-					
+										
 					fprintf(stderr,"Checked in:\n");
 					{
 						item* i = includepaths->first;
