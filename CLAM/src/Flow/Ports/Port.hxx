@@ -83,17 +83,13 @@ namespace CLAM {
 		void SetParams(unsigned int length,
 		               unsigned int hop = 0)
 		{
+			CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
 			mLength = length;
 			mHop = hop?hop:length;
 		}
 		const std::string& GetName() const { return mName; }
 	};
 
-
-
-
-
-	
 }
 
 
