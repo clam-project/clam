@@ -246,8 +246,8 @@ namespace CLAM {
 		unsigned int r2_start        = r2.Pos() % mStream.mLogicalSize;
 		unsigned int r1_end_phantom  = r1_start + r1.Len();
 		unsigned int r2_end_phantom  = r2_start + r2.Len();
-		return ! (r1_end_phantom <= r2_start ||
-		          r2_end_phantom <= r1_start);
+		return (r1_end_phantom > r2_start &&
+		        r1_start < r2_end_phantom );
 	}
 
 	template<class T>
