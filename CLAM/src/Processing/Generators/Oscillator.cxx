@@ -51,7 +51,7 @@ void OscillatorConfig::DefaultInit(void)
 	
 	SetFrequency(440.0);
 	SetAmplitude(1.0);
-	SetModIndex(0.0);
+	SetModIndex(1.0);
 	SetPhase(0.0);
 	SetSamplingRate( 44100 );
 }
