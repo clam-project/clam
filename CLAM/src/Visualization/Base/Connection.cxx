@@ -6,7 +6,7 @@ namespace CLAMGUI
 
 	Connection::Connection()
 		: mMustFreeSignal(false), mConnectedSignal( NULL )
-	{		
+	{
 	}
 
 	Connection::~Connection()

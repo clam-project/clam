@@ -23,7 +23,7 @@ public:
 	~Connection();
 
 private:
-	mutable bool          mMustFreeSignal;
+	mutable bool  mMustFreeSignal;
 	tConnectionId mID;
 	Signal*       mConnectedSignal;
 };
