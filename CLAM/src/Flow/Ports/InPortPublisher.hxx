@@ -10,7 +10,16 @@ namespace CLAM
 template<typename Token>
 class InPortPublisher : public InPortBase
 {
-	typedef InPort<Token> ProperInPort;
+	typedef InPort<Token> ProperInPort;	
+	
+	/** Made private since Size and Hop have no meaning for an InPortPublisher  */
+	int GetSize()	{ return 0; }
+	/** Made private since Size and Hop have no meaning for an InPortPublisher  */
+	void SetSize(int newSize) {}
+	/** Made private since Size and Hop have no meaning for an InPortPublisher  */
+	int GetHop() { return 0; }
+	/** Made private since Size and Hop have no meaning for an InPortPublisher  */
+	void SetHop(int newHop)	{}
 	
 public:
 	typedef std::list< ProperInPort * > ProperInPortsList;
@@ -50,23 +59,7 @@ public:
 		mPublishedInPortsList.push_back( &in );
 	}
 	
-	int GetSize()
-	{
-		return 0;
-	}
 	
-	void SetSize(int newSize)
-	{
-	}
-	
-	int GetHop()
-	{
-		return 0;
-	}
-	
-	void SetHop(int newHop)
-	{
-	}
 	
 	bool CanConsume()
 	{
