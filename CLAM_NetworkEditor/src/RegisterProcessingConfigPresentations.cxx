@@ -31,6 +31,7 @@
 #include "AudioIO.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
+#include "AudioMixer.hxx"
 #include "BinaryAudioOp.hxx"
 #include "SimpleOscillator.hxx"
 #include "Oscillator.hxx"
@@ -67,7 +68,10 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 	
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> > 
 	regAudioAdderCfg( "AudioAdderConfig" );
-	
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioMixerConfig> > 
+	regAudioMixerCfg( "AudioMixerConfig" );
+
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::BinaryAudioOpConfig> > 
 	regtBinaryAudioOpCfg( "BinaryAudioOpConfig" );
 	

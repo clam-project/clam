@@ -23,6 +23,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
 	regtAudioAdder( "AudioAdder" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
+	regtAudioMixer( "AudioMixer" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
 	regtAudioMultiplier( "AudioMultiplier" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
 	regtFFT_rfftw( "FFT_rfftw" );

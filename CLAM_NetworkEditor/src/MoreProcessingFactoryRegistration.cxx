@@ -11,10 +11,8 @@
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
 #include "OutControlSender.hxx"
-
-// inside default registration
-//#include "MonoAudioFileReader.hxx"
-//#include "MonoAudioFileWriter.hxx"
+#include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
 
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
@@ -26,8 +24,8 @@ static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" )
 static ProcessingFactory::Registrator<CLAM::SquareWave> regtSquareWave( "SquareWave" );
 
 static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
-//static ProcessingFactory::Registrator<CLAM::MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );
-//static ProcessingFactory::Registrator<CLAM::MonoAudioFileWriter> regtMonoAudioFileWriter( "MonoAudioFileWriter" );
+static ProcessingFactory::Registrator<CLAM::MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );
+static ProcessingFactory::Registrator<CLAM::MonoAudioFileWriter> regtMonoAudioFileWriter( "MonoAudioFileWriter" );
 static ProcessingFactory::Registrator<CLAM::MultiChannelAudioFileReader> regtMultiChannelAudioFileReader( "MultiChannelAudioFileReader" );
 static ProcessingFactory::Registrator<CLAM::MultiChannelAudioFileWriter> regtMultiChannelAudioFileWriter( "MultiChannelAudioFileWriter" );
 
