@@ -146,7 +146,7 @@ int TryFLTKConfigurator(DummyConfig & config)
 {
 	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
 	configurator->SetConfig(config);
-	configurator->Show();
+	configurator->show();
 	return Fl::run();
 }
 
@@ -176,8 +176,8 @@ int main(int argc, char** argv)
 		TryLoadXML(config,"configout.xml");
 		TryQTConfigurator(config,argc,argv);
 		TryFLTKConfigurator(config);
-		TryQTConfigurator(config,argc,argv);
-		TryFLTKConfigurator(config);
+//		TryQTConfigurator(config,argc,argv);
+//		TryFLTKConfigurator(config);
 		TryStoreXML(config,"configout.xml");
 	} catch (CLAM::Err e)
 	{
