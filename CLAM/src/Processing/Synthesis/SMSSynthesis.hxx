@@ -65,16 +65,16 @@ private:
 		 * for residual synthesis. In principle we could use the same one
 		 * but we may want to synthesize both components separately.
 		 */
-		SpectralSynthesis		mPO_SinSpectralSynthesis;
-		SpectralSynthesis		mPO_ResSpectralSynthesis;
-		SpectralSynthesis		mPO_SpectralSynthesis;
-		SynthSineSpectrum		mPO_SynthSineSpectrum;
-		PhaseManagement			mPO_PhaseMan;
-		SpectrumAdder2			mPO_SpectrumAdder;
+		SpectralSynthesis		mSinSpectralSynthesis;
+		SpectralSynthesis		mResSpectralSynthesis;
+		SpectralSynthesis		mSpectralSynthesis;
+		SynthSineSpectrum		mSynthSineSpectrum;
+		PhaseManagement			mPhaseMan;
+		SpectrumAdder2			mSpectrumAdder;
 		
-		OverlapAdd				mPO_OverlapAddSin;
-		OverlapAdd				mPO_OverlapAddRes;
-		OverlapAdd				mPO_OverlapAddGlobal;
+		OverlapAdd				mOverlapAddSin;
+		OverlapAdd				mOverlapAddRes;
+		OverlapAdd				mOverlapAddGlobal;
 
 
 
