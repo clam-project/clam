@@ -108,11 +108,9 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	else
 		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
-	int samplingRate=int(mGlobalConfig.GetSamplingRate());
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
 	// SMS Analysis configuration
 	mAnalConfig.SetSinWindowSize(analWindowSize);
-	mAnalConfig.SetSamplingRate(TData(samplingRate));
 	mAnalConfig.SetHopSize(analHopSize);
 	mAnalConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
 	mAnalConfig.SetSinZeroPadding(analZeroPaddingFactor);
@@ -136,8 +134,9 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
 	mSynthConfig.SetHopSize(synthFrameSize);
-	mSynthConfig.SetSamplingRate(TData(samplingRate));
 	mSynthConfig.GetPhaseMan().SetType(mGlobalConfig.GetSynthesisPhaseManagementType());
+
+	
 }
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
@@ -162,7 +161,6 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	mGlobalConfig.HasOutputSoundFile() &&
 	mGlobalConfig.HasOutputAnalysisFile() &&
 	mGlobalConfig.HasInputAnalysisFile() &&
-	mGlobalConfig.HasSamplingRate() &&
 	mGlobalConfig.HasAnalysisWindowSize() &&
 	mGlobalConfig.HasAnalysisHopSize() &&
 	mGlobalConfig.HasAnalysisWindowType() &&
@@ -265,7 +263,7 @@ void AnalysisSynthesisExampleBase::StoreSDIFAnalysis()
 {
 	int i;
 	SDIFOutConfig cfg;
-	cfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	cfg.SetSamplingRate(mSamplingRate);
 	cfg.SetFileName(mGlobalConfig.GetOutputAnalysisFile());
 	cfg.SetEnableResidual(true);
 	SDIFOut SDIFWriter(cfg);
@@ -370,7 +368,11 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	// Initialization of the processing data objects :
 	TSize fileSize=myAudioFileIn.Size();
 
+	SetSamplingRate(myAudioFileIn.SampleRate());
+	
+	
 	mAudioIn.SetSize(fileSize);
+	
 
 	//Read Audio File
 	myAudioFileIn.Start();
@@ -401,11 +403,11 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	mSegment.DefaultInit();
 
 	// Spectral Segment that will actually hold data
-	float duration=size/mAnalConfig.GetSamplingRate();
+	float duration=size/mSamplingRate;
 	mSegment.SetHoldsData(true);
 	mSegment.SetAudio(mAudioIn);
 	mSegment.SetEndTime(duration);
-	mSegment.SetSamplingRate(mAnalConfig.GetSamplingRate());
+	mSegment.SetSamplingRate(mSamplingRate);
 	mSegment.mCurrentFrameIndex=0;
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -432,7 +434,7 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 void AnalysisSynthesisExampleBase::TracksCleanupProcessing()
 {
 	CleanTracksConfig clcfg;
-	clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	clcfg.SetSamplingRate(mSamplingRate);
 	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
 	CleanTracks myCleanTracks;
 	myCleanTracks.Configure(clcfg);
@@ -485,7 +487,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSound(void)
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
-	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	outfilecfg.SetSampleRate(mSamplingRate);
 
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -507,7 +509,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundSinusoidal(void)
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_sin.wav";
 	outfilecfg.SetFilename(filename);
-	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	outfilecfg.SetSampleRate(mSamplingRate);
 	
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -523,7 +525,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundResidual(void)
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	outfilecfg.SetSampleRate(mSamplingRate);
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
@@ -722,12 +724,12 @@ in metadata extraction from an input sound.*/
 		myNote.UpdateData();
 
 		// Compute Fundamental frequency mean
-		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());
+		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());
 		TIndex e;
 		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())
-			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
+			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 		else
-			e=roundInt(2*mSegment.GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
+			e=roundInt(2*mSegment.GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 
 		int j;
 		// Compute mean
@@ -755,7 +757,7 @@ in metadata extraction from an input sound.*/
 			{
 				if(onset){
 				e=j;
-				time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mGlobalConfig.GetSamplingRate()));
+				time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mSamplingRate));
 				break;}
 			}}
 		}
@@ -914,7 +916,7 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 {
 	
 	TSize outBufferSize=512;
-	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize);
+	AudioManager audioManager(mSamplingRate,outBufferSize);
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
 
@@ -939,4 +941,18 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 		outputR.Do(tmpAudioBuffer);
 		outputL.Do(tmpAudioBuffer);
 	}
+}
+
+void AnalysisSynthesisExampleBase::SetSamplingRate(TSize samplingRate)
+{
+	mSamplingRate=samplingRate;
+	mAnalConfig.SetSamplingRate(TData(samplingRate));
+	mSynthConfig.SetSamplingRate(TData(samplingRate));
+
+	//Initialize audios sample rate
+	mAudioIn.SetSampleRate(samplingRate);
+	mAudioOut.SetSampleRate(samplingRate);
+	mAudioOutRes.SetSampleRate(samplingRate);
+	mAudioOutSin.SetSampleRate(samplingRate);
+
 }
