@@ -101,9 +101,10 @@ public:
 		writer.write(os,_document);
 
 	}
-	void writeSelection(std::ostream & os)
+	void writeSelection(std::ostream & os, bool useIndentation=false)
 	{
 		XercesDomWriter writer;
+		writer.DoIndentedFormat(useIndentation);
 		writer.write(os,_selection);
 
 	}
