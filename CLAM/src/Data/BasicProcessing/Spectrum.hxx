@@ -27,8 +27,6 @@
 #include "Complex.hxx"
 #include "Polar.hxx"
 #include "BPF.hxx"
-#include "ArrayToBPFCnv.hxx"
-#include "ComplexToPolarCnv.hxx"
 #include "DataTypes.hxx"
 #include "Flags.hxx"
 #include "OSDefines.hxx"
