@@ -46,12 +46,19 @@ namespace CLAM {
 	class ProcessingComposite;
 
 	/**
-	 * Free function that connects two ports.
+	 * Connects two ports of two processings selecting them by the port name.
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
 	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName );
+	/**
+	 * Connects two ports of two processings selecting them by the port number.
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 */
+	void ConnectPorts(
+			Processing & sender, unsigned outPortNumber, 
+			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Free function that connects two controls.
 	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
@@ -59,6 +66,13 @@ namespace CLAM {
 	void ConnectControls(
 			Processing & sender, unsigned outControlNumber, 
 			Processing & receiver, unsigned inControlNumber );
+	/**
+	 * Connects two controls of two processings selecting them by the control name.
+	 * Short hand for sender.GetOutControls().GetByName(outControlName).AddLink(&receiver.GetOutControls().GetByName(inControlName))
+	 */
+	void ConnectControls(
+			Processing & sender, const std::string & outControlName, 
+			Processing & receiver, const std::string & inControlName );
 		
 	/**
 	 * The base class for all the CLAM processing object classes.
