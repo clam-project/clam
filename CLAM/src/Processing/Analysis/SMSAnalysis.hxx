@@ -19,28 +19,19 @@
  *
  */
 
-#ifndef __SMSAnalysisCore_hxx__
-#define __SMSAnalysisCore_hxx__
+#ifndef __SMSAnalysis_hxx__
+#define __SMSAnalysis_hxx__
 
 #include "DataTypes.hxx"
-#include "SpectralPeakDetect.hxx"
-#include "FundFreqDetect.hxx"
-#include "SinTracking.hxx"
-#include "SpectrumSubstracter2.hxx"
-#include "SpectralAnalysis.hxx"
 #include "SMSAnalysisConfig.hxx"
-#include "Audio.hxx"
+#include "AudioOutPort.hxx"
 #include "ProcessingComposite.hxx"
-#include "Spectrum.hxx"
-#include "SynthSineSpectrum.hxx"
+#include "SMSAnalysisCore.hxx"
 
 namespace CLAM 
 {
 
-class Segment;
-class Fundamental;
 class ProcessingConfig;
-class SpectralPeakArray;
 
 /** Class that encapsulates all the building blocks of the SegmentAnalysis example */
 class SMSAnalysis : public ProcessingComposite
@@ -50,7 +41,7 @@ public:
 	
 // Processing Object compliance methods.
 
-	const char *GetClassName() const {return "SMSAnalysisCore";}
+	const char *GetClassName() const {return "SMSAnalysis";}
 
 	SMSAnalysis(SMSAnalysisConfig& config);
 	SMSAnalysis();
@@ -62,44 +53,21 @@ public:
 	/** Supervised mode execution */
 	bool Do(void);
 
-	void ConcreteStart();
+	bool Do( Frame & frame );
+	bool Do( Segment & segment );
+
+	bool ConcreteStart();
 	
 private:
 
 /** Configuration data */
 	SMSAnalysisConfig mConfig;
 
-// The internal Processing Objects
+	SMSAnalysisCore mCore;
 
-/** Child processing object: spetral analysis for the sinusoidal component.
- *	@see SpectralAnalysis */
-	SpectralAnalysis mSinSpectralAnalysis;
-/** Child processing object: spetral analysis for the residual component
- *	@see SpectralAnalysis */
-	SpectralAnalysis mResSpectralAnalysis;
-/** Child processing object: spetral peak detection for the sinusoidal component
- *	@see SpectralPeakDetect */
-	SpectralPeakDetect		mPeakDetect;
-/** Child processing object: fundamental detection for the sinusoidal component
- *	@see FundFreqDetect */
-	FundFreqDetect  mFundDetect;
-/** Child processing object: sinusoidal peak tracking for the sinusoidal component
- *	@see SinTracking */
-	SinTracking		mSinTracking;
-/** Child processing object: sinusoidal synthesis to compute a sinsoidal spectrum from
-	the extracted peaks. 
- *	@see SynthSineSpectrum*/
-	SynthSineSpectrum		mSynthSineSpectrum;
-/** Child processing object: spectrum substracter to compute the residual spectrum from
-	the original and the sinusoidal one.
- *	@see SpectrumSubstracter2 */
-	SpectrumSubstracter2		mSpecSubstracter;
+	/** Index that indicates how many audio frames have been processed until now*/
+	TSize mAudioFrameIndex;
 
-/** internal spectrum objects used for convinience */	
-	Spectrum mResSpec;
-	Spectrum mSinSpec;
-
-// Internal convenience methods.
 
 /**	This method notifies child processing objets that "this" is their parent*/
 	void AttachChildren();
@@ -112,16 +80,16 @@ private:
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&);
 
-	/** Ports */
-	AudioInPort			mInputAudio; // audio input
-	OutPort<Spectrum> 		mOutputResSpectrum; // output of resSpectralAnalysis
-	OutPort<SpectralPeakArray>  	mOutputSpectralPeaks; // output of sintracking
-	OutPort<Fundamental>		mOutputFundamental; // output of fundamental
-	OutPort<Spectrum>		mOutputSubstractedSpectrum; // output of spectrumSubstracter
-	OutPort<Spectrum>		mOutputSinSpectrum; // output of sinSpectralAnalysis
+	/** Internal convenience method used for initializing frames */
+	void InitFrame(Frame& in);
+
+	AudioOutPort mAudioProvider;
+
+	Frame tmpFrame;
+
 };
 
 } //namespace CLAM
 
-#endif // __SMSAnalysisCore_hxx__
+#endif // __SMSAnalysis_hxx__
 
