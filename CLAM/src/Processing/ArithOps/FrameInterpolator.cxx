@@ -43,7 +43,7 @@ namespace CLAM {
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
 		  mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl),
-		  mFrameInterpolationFactorCtl("FrameInterpolationFactor",this),
+		  mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
 		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
 		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
 		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
@@ -59,7 +59,7 @@ namespace CLAM {
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
 		  mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl),
-		  mFrameInterpolationFactorCtl("FrameInterpolationFactor",this),
+		  mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
 		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
 		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
 		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
@@ -138,6 +138,16 @@ namespace CLAM {
 	bool FrameInterpolator::Do(void)
 	{
 		throw(ErrProcessingObj("FrameInterpolator::Do(): Not implemented"),this);
+	}
+
+	
+	int FrameInterpolator::DoFrameFactorControl(TData value)
+	{
+		mMagInterpolationFactorCtl.DoControl(value);
+		mFreqInterpolationFactorCtl.DoControl(value);
+		mPitchInterpolationFactorCtl.DoControl(value);
+		mResidualInterpolationFactorCtl.DoControl(value);
+		return 0;
 	}
 
 	int FrameInterpolator::DoMagFactorControl(TData value)

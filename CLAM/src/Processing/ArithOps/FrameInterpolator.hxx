@@ -113,6 +113,8 @@ namespace CLAM {
 		SpectralPeakArrayInterpolator mPO_PeaksInterpolator;
 
 		/** callbacks for controls */
+		int DoFrameFactorControl(TData value);
+
 		int DoMagFactorControl(TData value);
 		int DoFreqFactorControl(TData value);
 		int DoPitchFactorControl(TData value);
