@@ -174,7 +174,7 @@ public:
 
 
 
-public:
+protected:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
