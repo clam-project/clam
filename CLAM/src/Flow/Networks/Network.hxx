@@ -28,13 +28,14 @@ class Network : public Component
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
 	typedef std::list< NodeBase* > Nodes;
+	typedef std::list<std::string> NamesList;
 	
 	// constructor / destructor
 	Network();
 	virtual ~Network();
 	
-	const std::string& GetName() const { return _name; }
-	void SetName( const std::string& name ) { _name=name; }
+	const std::string& GetName() const { return mName; }
+	void SetName( const std::string& name ) { mName=name; }
 	Processing& GetProcessing( const std::string & name );
 	void AddProcessing( const std::string &, Processing* );
 	void RemoveProcessing ( const std::string & );
@@ -52,6 +53,7 @@ public:
 	void ConfigureAllNodes();
 
 	void AddFlowControl( FlowControl* );
+	void Clear();
 
 	// accessors to nodes and processing
 	ProcessingsMap::iterator BeginProcessings();
@@ -66,7 +68,8 @@ public:
 	OutPort & GetOutPortByCompleteName( const std::string& );
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
-
+	NamesList GetInPortsConnectedTo( const std::string & );
+	NamesList GetInControlsConnectedTo( const std::string & );
 	// serialization methods
 	virtual void StoreOn( Storage & storage);
 	virtual void LoadFrom( Storage & storage);
@@ -78,13 +81,14 @@ public:
 
 protected:
 	NodeBase & GetNodeAttachedTo(OutPort & );
+	const std::string & GetNetworkId(const Processing * proc);
 private:
 	
 	// fields
-	std::string _name;
-	ProcessingsMap _processings;
-	Nodes _nodes;
-	Nodes _nodesToConfigure;
+	std::string mName;
+	ProcessingsMap mProcessings;
+	Nodes mNodes;
+	Nodes mNodesToConfigure;
 
 	// helpers
 	void AssertFlowControlNotNull() const;
@@ -95,7 +99,7 @@ private:
 	static char NamesIdentifiersSeparator();
 
 
-	FlowControl* _flowControl;
+	FlowControl* mFlowControl;
 
 	/**this method is provisional, because Network may need non-audio nodes.
 	 * Thus the factory method should be a (virtual) method of OutPort, implemented
