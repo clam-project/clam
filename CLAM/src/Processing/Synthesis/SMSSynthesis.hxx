@@ -161,6 +161,11 @@ private:
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}
 
+		/** Method used to attach a Processing Data to input and output ports */
+		void Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
+			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
+			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio);
+		
 		/** Supervised mode execution */
 		bool Do(void);
 

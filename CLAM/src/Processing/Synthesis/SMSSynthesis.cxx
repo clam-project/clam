@@ -49,6 +49,7 @@ void SMSSynthesisConfig::DefaultValues()
 	GetSpectralSynth().SetAnalWindowType(EWindowType::eBlackmanHarris92);
 	GetSpectralSynth().GetAnalWindowGenerator().SetInvert(true);
 
+	
 	/** WindowSize/2*/
 	SetHopSize((GetAnalWindowSize()-1)/2);
 
@@ -232,10 +233,12 @@ bool SMSSynthesis::ConfigureChildren()
 		return false;
 
 	//configure residual spectral synthesis
+	mConfig.GetSpectralSynth().SetResidual(true);
 	if(!mPO_ResSpectralSynthesis.Configure(mConfig.GetSpectralSynth()))
 		return false;
 
 	//configure sinusoidal spectral synthesis
+	mConfig.GetSpectralSynth().SetResidual(false);
 	if(!mPO_SinSpectralSynthesis.Configure(mConfig.GetSpectralSynth()))
 		return false;
 
@@ -281,6 +284,18 @@ bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 	return true;
 }
 
+void SMSSynthesis::Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
+			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
+			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
+{
+	mInputSinSpectralPeaks.Attach(inputSinusoidalPeaks);
+	mInputResSpectrum.Attach(inputResidualSpectrum);
+	mOutputSinSpectrum.Attach(outputSinusoidalSpectrum);
+	mOutputSpectrum.Attach(outputSpectrum);
+	mOutputAudio.Attach(outputAudio);
+	mOutputResAudio.Attach(outputSinusoidalAudio);
+	mOutputSinAudio.Attach(outputResidualAudio);
+}
 
 
 bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out)
