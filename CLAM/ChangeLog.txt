@@ -12,7 +12,7 @@
      ** API Change: XMLStorage::Store and XMLStorage::Load receives a const-ref and a ref
         to adapters instead a pointer
      ** API Change: Component::StoreOn is now a const method.
-     ** Scoped XML: allows (write only) fast XML generation without having
+     ** Scoped XML: [Experimental] allows (write only) fast XML generation without having
         to define CLAM data.
      ** Cppunit Tested and general code clean up
 
