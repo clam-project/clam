@@ -66,7 +66,7 @@ private:
 public:
 	/**
 	 * Constructs a XMLArrayAdapter
-	 * @param adaptee The object to be adapted (where the 
+	 * @param anAdaptee The object to be adapted (where the 
 	 * XML content will be extracted from)
 	 * @param name A pointer to a 0 terminated string 
 	 * containing the xml name (for elements and attributes)
@@ -76,6 +76,7 @@ public:
 	 * <B>Because no internal copy of the string is done, the 
 	 * 0 terminated string pointed by <EM>name</EM> must 
 	 * exist during the BasicXMLable life as is directly used.</B>
+	 * @param nElements The number of elements on the array.
 	 * @param isXMLElement Tells whether the object is an
 	 * element or an attribute when the name is defined.
 	 */

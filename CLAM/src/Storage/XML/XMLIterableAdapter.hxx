@@ -76,6 +76,9 @@ public:
 	 * Constructs a XMLIterableAdapter
 	 * @param anAdaptee The object to be adapted (where the 
 	 * XML content will be extracted from)
+	 * @param elementName The XML tag that will be open
+	 *        for every element on the iterable.
+	 *        Only apliable when elements are not basics.
 	 * @param name A pointer to a 0 terminated string 
 	 * containing the xml name (for elements and attributes)
 	 * or 0 (the default) if the element is neither an 
