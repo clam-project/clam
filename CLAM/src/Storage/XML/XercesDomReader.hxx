@@ -37,8 +37,7 @@ class XercesDomReader : private xercesc::HandlerBase
 {
 	xercesc::XercesDOMParser * parser;
 	public:
-		XercesDomReader(std::istream & stream)
-			: mTarget(stream)
+		XercesDomReader()
 		{
 			parser = new xercesc::XercesDOMParser();
 		}
@@ -46,11 +45,11 @@ class XercesDomReader : private xercesc::HandlerBase
 		{
 			delete parser;
 		}
-		xercesc::DOMDocument * read()
+		xercesc::DOMDocument * read(std::istream & target)
 		{
 			std::ostringstream stream;
 			char c;
-			while (mTarget.get(c)) stream.put(c);
+			while (target.get(c)) stream.put(c);
 			const char * documentText = stream.str().c_str();
 			unsigned length = stream.str().length();
 			xercesc::MemBufInputSource* memBufIS = new xercesc::MemBufInputSource
@@ -70,34 +69,8 @@ class XercesDomReader : private xercesc::HandlerBase
 			parser->setCreateEntityReferenceNodes(false);
 
 			parser->parse(*memBufIS);
-/*
-			try
-			{
-			}
 
-			catch (const xercesc::XMLException& e)
-			{
-				std::cerr << "An error occurred during parsing\n   Message: "
-					<< L(e.getMessage()) << std::endl;
-			}
-			catch (const xercesc::DOMException& e)
-			{
-				const unsigned int maxChars = 2047;
-				XMLCh errText[maxChars + 1];
-
-				std::cerr << "\nDOM Error during parsing\n"
-				<< "DOMException code is:  " << e.code << std::endl;
-
-				if (xercesc::DOMImplementation::loadDOMExceptionMsg(e.code, errText, maxChars))
-					std::cerr << "Message is: " << L(errText) << std::endl;
-
-			}
-			catch (...)
-			{
-				std::cerr << "An error occurred during parsing\n " << std::endl;
-			}
-*/
-			if (parser->getErrorCount()) 
+			if (parser->getErrorCount())
 				throw Err(
 					(std::string("\nXML Parser Errors:\n")+
 					 RecopilaErrors()).c_str());
@@ -106,7 +79,6 @@ class XercesDomReader : private xercesc::HandlerBase
 			return doc;
 		}
 	private:
-		std::istream & mTarget;
 		typedef std::list<std::string> Missatges;
 		Missatges _errors;
 		void error(const xercesc::SAXParseException& e)
