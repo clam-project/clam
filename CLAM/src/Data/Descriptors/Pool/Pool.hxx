@@ -15,7 +15,8 @@
 
 
 /**
- * @group Descriptors Pool
+ * @defgroup SemanticalAnalysis Semantical Analysis
+ * These are the classes that handle the description extraction.
  */
 
 
@@ -25,6 +26,7 @@ namespace CLAM
 	/**
 	 * A description scope defines a set of attributes which change
 	 * their values along a given dimension.
+	 * @ingroup SemanticalAnalysis
 	 */
 	class DescriptionScope
 	{
@@ -44,11 +46,19 @@ namespace CLAM
 			for (; it!=end; it++)
 				delete *it;
 		}
+
+		/** @return the scope name */
 		const std::string & GetName() const
 		{
 			return _scopeName;
 		}
 
+		/** 
+		 * Adds the scope an attribute named 'name' using the template parameter 
+		 * as the attribute type.
+		 * @arg AttributeType The type for the attribute
+		 * @arg name The name for the new attribute
+		 */
 		template <typename AttributeType>
 		void Add(const std::string & name)
 		{
@@ -59,6 +69,11 @@ namespace CLAM
 			_attributes.push_back(new Attribute<AttributeType>(name));
 		}
 
+		/**
+		 * Returns the attribute index that can be used for fast access to the 
+		 * attribute in a spec or even . 
+		 * @warning The index is not a confident reference after serialization.
+		 */
 		unsigned GetIndex(const std::string & name) const
 		{
 			NamesMap::const_iterator it = _nameMap.find(name);
@@ -106,6 +121,7 @@ namespace CLAM
 	 * will be used, which attributes they have, which extractors
 	 * will compute such attributes and where the extractors
 	 * are feeded from.
+	 * @ingroup SemanticalAnalysis
 	 */
 	class DescriptionScheme
 	{
@@ -182,6 +198,7 @@ namespace CLAM
 	/**
 	 * A container for the attributes values along the differents
 	 * contexts of a single scope.
+	 * @ingroup SemanticalAnalysis
 	 */
 	class ScopePool : public Component
 	{
@@ -299,6 +316,7 @@ namespace CLAM
 	/**
 	 * Contains the extracted data for a given description target.
 	 * It conforms to a given DescriptionScheme
+	 * @ingroup SemanticalAnalysis
 	 */
 	class DescriptionDataPool : public Component
 	{
@@ -314,12 +332,29 @@ namespace CLAM
 			for (; it != end; it++)
 				if (*it) delete *it;
 		}
+
+		/**
+		 * Sets the number of contexts (ie. Notes) for the given Scope (Note), 
+		 * so that every attribute registered for the scope will have a value 
+		 * for every one of those contexts.
+		 *
+		 * Scopes are like Classes, Contexts are like Class Instances.
+		 */
 		void SetNumberOfContexts(const std::string & scopeName, unsigned size)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
 			_scopePools[scopeIndex] = new ScopePool(scope, size);
 		}
+
+		unsigned GetNumberOfContexts(const std::string & scopeName)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			CLAM_ASSERT(_scopePools[scopeIndex],"Getting the Scope size but it is not populated");
+			return _scopePools[scopeIndex]->GetSize();
+		}
+
+		
 		void InstantiateAttribute(const std::string & scopeName, const std::string & attributeName)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
