@@ -125,11 +125,6 @@ namespace CLAM
 		
 		myTickSequenceTracker.Start();
 
-		Array<TimeIndex> allTicks; allTicks.Init();
-		Array<TimeIndex> allBeats; allBeats.Init();
-		TData globalTempo=-1;
-		TData globalTick=-1;
-
 		Audio IOIHist;
 		IOIHist.SetSampleRate(sampleRate); //Don't really know if it's used, but just in case...
 

@@ -63,11 +63,11 @@ namespace CLAM
 		bool CalcFilterBankOutput(  );
 		void Algorithm(Segment& s, Array<TimeIndex>& out );
 		void Smoothing(Array<double>& energy, Array<double> &smoothedEnergy );
+
 		void DetectPosition(Array<double>& in, Array<double> &ret);
-		void DetectCandidates(Array<double>& in, Array<double>& weight, TData threshold , Array<TimeIndex> &ret);
+
 		void DetectCandidates( Array<double>& in, Array<double>& weight,
 				       TData threshold, std::list<TimeIndex>& candidates );
-		void DeleteWeakOnsets(Array<TimeIndex> &in , int type );
 
 		void RemoveTooNearOnsetsFromCandidatesList( std::list<TimeIndex>& in );
 		void PeakDeletion( LI first, LI last, TimeIndex& newPeak );
@@ -75,8 +75,6 @@ namespace CLAM
 		void RemoveTooWeakOnsetsFromCandidatesList( std::list<TimeIndex>& in );
 		void PeakSummation( LI first, LI last, TimeIndex& newPeak );
 
-		void PeakDeletion( Array<TimeIndex>& in , TimeIndex &ret );
-		void PeakSummation( Array<TimeIndex>& in , TimeIndex &ret );
 		
 		void CheckOffset( Segment &s , Array<TimeIndex>& finalOnsets);
 		void CheckOffset( Segment& s, std::list<TimeIndex>& candidates );
