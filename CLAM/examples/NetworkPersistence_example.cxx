@@ -29,7 +29,6 @@
 
 #include "XMLStorage.hxx"
 #include "Network.hxx"
-#include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "Err.hxx"
 #include "SimpleOscillator.hxx"
@@ -38,8 +37,8 @@
 #include "AudioIO.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
-#include "AudioFileIn.hxx" 
-#include "AudioFileOut.hxx" 
+#include "MonoAudioFileReader.hxx" 
+#include "MonoAudioFileWriter.hxx" 
 #include "AudioFile.hxx"
 #include <iostream>
 #include <FL/fl_file_chooser.H>
@@ -64,28 +63,38 @@ int main( int argc, char** argv )
 			std::cout << "User cancelled" << std::endl;
 			exit(0);
 		}
-
-		CLAM::AudioFileConfig audioFileInCfg;
-		audioFileInCfg.SetKeepFrameSizes( true );
-		audioFileInCfg.SetFilename( fileName );
-		audioFileInCfg.SetFrameSize( size );
-		audioFileInCfg.SetFiletype( CLAM::EAudioFileType::eWave );
 		
+		CLAM::AudioFile file;
+		file.SetLocation( fileName );
+		CLAM::AudioFileHeader header;
+		CLAM::EAudioFileFormat inputFormat = 
+		CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
+		header.SetValues( sampleRate, 1, inputFormat );
+		file.SetHeader( header );
+		CLAM::MonoAudioFileReaderConfig configReader;
+		configReader.AddSourceFile();
+		configReader.UpdateData();
+		configReader.SetSourceFile( file );	
+		/*	
 		const char* outputFileName = fl_file_chooser(  "Please, specify the wav where result will be stored", "*.wav", NULL );
 		if ( outputFileName == NULL )
 		{
 			std::cout << "User cancelled" << std::endl;
 			exit(0);
 		}
-			
-		CLAM::AudioFileConfig audioFileOutCfg;
-		audioFileOutCfg.SetFilename( outputFileName );
-		audioFileOutCfg.SetKeepFrameSizes( true );
-		audioFileOutCfg.SetFrameSize( size );
-		audioFileOutCfg.SetSampleRate( sampleRate );
-		audioFileOutCfg.SetFiletype( CLAM::EAudioFileType::eWave );
 
-
+		CLAM::AudioFile file2;
+		file2.SetLocation( outputFileName );
+		CLAM::AudioFileHeader header2;
+		CLAM::EAudioFileFormat outputFormat = 
+		CLAM::EAudioFileFormat::FormatFromFilename( file2.GetLocation() );
+		header2.SetValues( sampleRate, 1, outputFormat );
+		file2.SetHeader( header2 );
+		CLAM::MonoAudioFileWriterConfig configWriter;
+		configWriter.AddTargetFile();
+		configWriter.UpdateData();
+		configWriter.SetTargetFile( file2 );
+*/
 		// network initialization
 
 		CLAM::AudioManager audioManager( sampleRate, size );
@@ -115,20 +124,20 @@ int main( int argc, char** argv )
 		// multiplied in order to modulate it. Finally we will store the signal on another 
 		// audio file while we hear it.
 
-		network->AddProcessing( "File In", new CLAM::AudioFileIn( audioFileInCfg ) );
+		network->AddProcessing( "File Reader", new CLAM::MonoAudioFileReader( configReader ) );
 		network->AddProcessing( "Generator", new CLAM::SimpleOscillator( osc1Cfg ) );
 		network->AddProcessing( "Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
 		network->AddProcessing( "Audio Multiplier", new CLAM::AudioMultiplier( audioMultiplierCfg ) );
 		network->AddProcessing( "Audio Adder", new CLAM::AudioAdder( audioAdderCfg ) );
 		network->AddProcessing( "Audio Mono Out", new CLAM::AudioOut( audioOutCfg ) );
-		network->AddProcessing( "File Out", new CLAM::AudioFileOut( audioFileOutCfg ) );
+	//	network->AddProcessing( "File Writer", new CLAM::MonoAudioFileWriter( configWriter ) );
 
 		network->ConnectPorts( "Generator.Audio Output", "Audio Adder.First Audio Input" );
-		network->ConnectPorts( "File In.Output", "Audio Adder.Second Audio Input" );
+		network->ConnectPorts( "File Reader.Samples read", "Audio Adder.Second Audio Input" );
 		network->ConnectPorts( "Audio Adder.Audio Output", "Audio Multiplier.First Audio Input" );
 		network->ConnectPorts( "Modulator.Audio Output", "Audio Multiplier.Second Audio Input" );
-		network->ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Input" );
-		network->ConnectPorts( "Audio Multiplier.Audio Output", "File Out.Input" );
+		network->ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Audio Input" );
+	//	network->ConnectPorts( "Audio Multiplier.Audio Output", "File Writer.Samples to write" );
 
 		// Now that we have the network created with our desired processing and connections, we will store it to an xml file.
 
@@ -157,7 +166,7 @@ int main( int argc, char** argv )
 		network2->AddFlowControl( new CLAM::PushFlowControl( size ));
 
 		CLAM::XMLStorage loadingObject;
-		loadingObject.Restore( *network2, outputFileName );
+		loadingObject.Restore( *network2, networkFileName );
 
 		// With these few lines we have in "network2" the same connections and processings (with his configs) that we had in "network".
 

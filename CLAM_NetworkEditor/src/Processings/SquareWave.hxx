@@ -26,8 +26,7 @@
 #include "ProcessingData.hxx"
 #include "OSDefines.hxx"
 #include "Audio.hxx"
-#include "OutPortTmpl.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 #include "InControl.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -93,7 +92,7 @@ protected:
 class SquareWave: public Processing
 {
 protected:
-	OutPortTmpl<Audio> mOutput;
+	AudioOutPort mOutput;
 	SquareWaveConfig mConfig;
 	TData mAmp;
 	TData mPhase;

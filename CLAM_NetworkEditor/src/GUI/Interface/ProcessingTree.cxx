@@ -42,8 +42,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	setRootIsDecorated( TRUE );
 	QListViewItem * gen = new QListViewItem( this,"Generators" );
 	ProcessingItem * osc = new ProcessingItem( gen, "SimpleOscillator");
-	ProcessingItem * osc2 = new ProcessingItem( gen, "Oscillator");
-	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
+//	ProcessingItem * osc2 = new ProcessingItem( gen, "Oscillator");
+//	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
 	ProcessingItem * squarewave = new ProcessingItem( gen, "SquareWave" );	
 	
 	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
@@ -51,22 +51,22 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * adder = new ProcessingItem( binops, "AudioAdder" );
 	
 	QListViewItem * controls = new QListViewItem( this, "Controls" );
-	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
+//	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
 	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
 	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
 	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
 
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
-	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
-	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
+//	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
+//	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
 	ProcessingItem * monoaudiofilereader = new ProcessingItem( inputoutput, "MonoAudioFileReader" );
 	ProcessingItem * monoaudiofilewriter = new ProcessingItem( inputoutput, "MonoAudioFileWriter" );
-	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( inputoutput, "MultiChannelAudioFileReader" );
-	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( inputoutput, "MultiChannelAudioFileWriter" );
+//	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( inputoutput, "MultiChannelAudioFileReader" );
+//	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( inputoutput, "MultiChannelAudioFileWriter" );
 	
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
-	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
+//	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
 	ProcessingItem * outcontrolsender = new ProcessingItem( utils, "OutControlSender" );	
 	show();
 	header()->hide();
