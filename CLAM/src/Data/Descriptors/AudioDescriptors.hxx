@@ -39,13 +39,13 @@ namespace CLAM {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 8, DescriptorAbs);
 		
-		/** The mean value of audio samples amplitude. 
-		 *  This is a unitless measure.
+		/** The mean value of the absolute value of the audio samples amplitude. 
+		 *  The result is in signal units.
 		 *  @see Stats::GetMean
 		 */
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		/** The variance of audio samples amplitude. 
-		 *  This is a unitless measure.
+		 * The result is in signal difference squared units.
 		 *  @see Stats::GetVariance
 		 */
 		DYN_ATTRIBUTE (1, public, TData, Variance);
@@ -53,6 +53,8 @@ namespace CLAM {
 		 * The temporal centroid is time where signal energy
 		 * is "concentrated". For a "silence" signal the centroid will be 
 		 * placed in the middle of the signal.
+		 * It is computed by computing the statistical centroid over
+		 * the absolute value of the signal.
 		 * Measured in seconds.
 		 * @see Stats::GetCentroid
 		 */
@@ -68,7 +70,7 @@ namespace CLAM {
 		/**
 		 * The squared sum of audio samples amplitudes. 
 		 * This measure is not limited to the range [0,1].
-		 * This measure is unitless.
+		 * Measured in squared signal units.
 		 * @see Stats::GetEnergy
 		 */
 		DYN_ATTRIBUTE (4, public, TData, Energy);
