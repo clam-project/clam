@@ -28,8 +28,9 @@
 
 namespace CLAM {
 
-MIDI2Melody::MIDI2Melody():mOutput("Output",this,1),
-							mTime("time",this)
+MIDI2Melody::MIDI2Melody()
+	: mOutput("Output",this),
+	  mTime("time",this)
 {
 	ConcreteConfigure(Control2DataConfig());
 }

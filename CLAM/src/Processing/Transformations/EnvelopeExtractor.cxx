@@ -63,9 +63,9 @@ namespace CLAM {
 	}
 
 	void IntervalAmplitudeAverages::Compute(int interval,
-										   Array<TData> &audio,
-										   int interval_start,
-										   int interval_end)
+						Array<TData> &audio,
+						int interval_start,
+						int interval_end)
 	{
 		TData interval_mean = 0.0;
 		for (int i=interval_start; i<interval_end; i++)
@@ -311,7 +311,7 @@ namespace CLAM {
 
 		InitializeControls();
 
-		Input.SetParams(mFrameSize);
+		Input.SetSize(mFrameSize);
 		return true;
 	}
 
@@ -365,11 +365,6 @@ namespace CLAM {
 	}
 
 
-	void EnvelopeExtractor::Attach(Audio& inp, Envelope& env)
-	{
-		Input.Attach(inp);
-		Output.Attach(env);
-	}
 
 
 	int EnvelopeExtractor::InterpolationPeriodChange(TControlData val)

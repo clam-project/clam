@@ -49,8 +49,8 @@ namespace CLAM
 	public:
 
 		InPort<Envelope> InputEnvelope;
-		AudioInPort InputAudio;
-		AudioOutPort Output;
+		InPort<Audio> InputAudio;
+		OutPort<Audio> Output;
 
 	private:
 		EnvModulatorConfig mConfig;

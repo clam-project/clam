@@ -29,6 +29,7 @@
 
 
 #include "Control2Data.hxx"
+#include "Array.hxx"
 #include "MIDIMelody.hxx"
 #include "OutPort.hxx"
 
