@@ -147,9 +147,6 @@ namespace CLAM {
 		 */
 		bool Do(Audio& in);
 
-		/** @todo Not yet implemented. */
-		void StoreOn(Storage &s) {};
-
 	private:
 
  	

@@ -75,9 +75,6 @@ public:
 	bool Do();
 	/** Returns internal configuration method */
 	const ProcessingConfig&  GetConfig() const;	
-	/** Not implemented */
-	void StoreOn( Storage& s) {}
-
 protected:
 
 	//typedefs

@@ -53,8 +53,6 @@ namespace CLAM {
 		bool Do(void);
 
 		bool Do(Descriptor& input);
-			
-		void StoreOn(Storage &s);
 	protected:
 		DescriptorComputationConfig mConfig;
 	

@@ -144,8 +144,6 @@ public:
 
 	// "Generative Do"
 	bool Do(Audio& out);
-	
-	void StoreOn(Storage &s) {};
 };
 
 }

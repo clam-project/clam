@@ -157,8 +157,6 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		void StoreOn(Storage &s) {};
-
 		/** Input control for interpolation factor */
 		SpectrumInterpolatorCtl  mInterpolationFactorCtl;
 

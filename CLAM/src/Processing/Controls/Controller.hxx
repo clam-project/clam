@@ -113,8 +113,6 @@ public:
 	void EnqueueControl(unsigned id, TControlData data);
 	TControlData LastDequeuedValue(unsigned id);
 
-	void StoreOn( Storage& s) {}
-
 	OutControlArray OutControls;
 	std::vector<TControlData> OutValues;
 private:

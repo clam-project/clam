@@ -98,9 +98,6 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		/** Not implemented yet*/
-		void StoreOn(Storage &s) {};
-	
 		InControlTmpl<FDCombFilter> mFreq;
 
 	

@@ -111,13 +111,6 @@ namespace CLAM {
 
 	virtual bool MayDisableExecution() const {return false;}
 
-	// COMPONENT Methods
-
-	/** @todo Not yet implemented. */
-	virtual void StoreOn(Storage &s) {};
-	/** @todo Not yet implemented. */
-	virtual void LoadFrom(Storage &s) {};
-
     };
 }
 

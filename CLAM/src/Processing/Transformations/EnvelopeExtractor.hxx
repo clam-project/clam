@@ -186,8 +186,6 @@ namespace CLAM
 
 		bool Do(const Audio& inp, Envelope& env);
 
-		void StoreOn(Storage &s) {};
-
 		// Debugging accessors
 
 		int NPoints() const { return mPointsPerFrame; }

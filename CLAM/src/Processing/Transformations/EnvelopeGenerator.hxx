@@ -131,7 +131,6 @@ public:
 		return true;
 	}
 
-	void StoreOn(Storage &s) {};
 };
 	
 }

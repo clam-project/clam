@@ -107,13 +107,6 @@ namespace CLAM {
 
 	virtual bool EnableExecution() {return false;}
 
-	// COMPONENT Methods
-
-	/** @todo Not yet implemented. */
-	virtual void StoreOn(Storage &s) {};
-	/** @todo Not yet implemented. */
-	virtual void LoadFrom(Storage &s) {};
-
     };
 };//namespace CLAM
 

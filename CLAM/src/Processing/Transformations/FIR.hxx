@@ -222,17 +222,6 @@ namespace CLAM
 			return true;
 		}
 
-		/** Stores the processing running status */
-		virtual void StoreOn(Storage &s)
-		{
-			// This processing has no running status
-		}
-		/** Loads the processing running status */
-		virtual void LoadFrom(Storage &s)
-		{
-			// This processing has no running status
-		}
-
 	private:
 		/**
 		 * Private implementation shared between the different Do entry points.
