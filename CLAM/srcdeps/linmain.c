@@ -153,25 +153,29 @@ int main(int argc,char** argv)
 	if (strcmp(argv[1],"-d")==0)
 		gendepend=1;
 
+	config_init();
+
 	if (gendepend==1)
 	{
 		if (argc!=4) usage();
+		config_parse(argv[2]);
 	}
 	else
 	{
 		if (argc!=2) usage();
+		config_parse(argv[1]);
 	}
+
 
 	if (gendepend==1)
 	{
+		listkey* k = listhash_find(config,"SOURCES");
+		list* sources = k->l;
+		list_add_str(sources,argv[3]);
 		recursesrcs = 0;
-		list_add_str(guessed_sources,argv[3]);
 	}else{
 		recursesrcs = 1;
 	}
-	
-	config_init();
-	config_parse(argv[1]);
 	
 	parser_init();
 
