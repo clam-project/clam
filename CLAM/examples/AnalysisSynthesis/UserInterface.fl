@@ -33,10 +33,10 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {89 185 872 548} hide resizable
-      code0 {mWindow2=NULL;}
+      xywh {325 514 872 548} resizable
+      code0 {mWindow2=NULL;} visible
     } {
-      Fl_Input mConfigurationText {
+      Fl_Output mConfigurationText {
         label {Configuration File}
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
@@ -59,7 +59,7 @@ class UserInterface {open
           }
           menuitem {} {
             label {Store Configuration...}
-            callback {StoreConfiguration();} selected
+            callback {StoreConfiguration();}
             private xywh {15 15 100 20} labelsize 12
           }
           submenu mDisplayInSM {
@@ -220,7 +220,7 @@ Exit();}
           private xywh {10 10 100 20} labelsize 12
         }
       }
-      Fl_Box mSmartTile {
+      Fl_Box mSmartTile {selected
         private xywh {5 50 860 490} resizable
         class Fl_Smart_Tile
       }
@@ -236,7 +236,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {445 337 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
+      private xywh {447 339 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {

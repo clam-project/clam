@@ -850,7 +850,7 @@ UserInterface::UserInterface() {
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
-    { Fl_Input* o = mConfigurationText = new Fl_Input(105, 25, 400, 20, "Configuration File");
+    { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
       o->box(FL_THIN_DOWN_BOX);
       o->labelsize(12);
       o->textsize(12);

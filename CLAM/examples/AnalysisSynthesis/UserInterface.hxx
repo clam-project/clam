@@ -10,7 +10,7 @@ class Fl_Smart_Tile;
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Input.H>
+#include <FL/Fl_Output.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
 
@@ -20,7 +20,7 @@ public:
   UserInterface();
   Fl_Window *mWindow;
 private:
-  Fl_Input *mConfigurationText;
+  Fl_Output *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
   inline void cb_Load_i(Fl_Menu_*, void*);
