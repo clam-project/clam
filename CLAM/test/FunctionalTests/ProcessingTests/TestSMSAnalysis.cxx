@@ -117,13 +117,9 @@ private: // Attributes	CLAM::SMSAnalysisCore mAnalysis;
 public: // TestFixture interface
 
 	SMSAnalysisTest()
-	{	
-		char* pathToTestData = getenv("CLAM_TEST_DATA");
-		if ( !pathToTestData )
-			mPathToTestData ="../../../../CLAM-TestData/"; 
-		else
-			mPathToTestData = pathToTestData;
-	
+	{
+		mPathToTestData = GetTestDataDirectory();
+
 		mPathToAnalysisTestData = mPathToTestData + "SMSAnalysisTests/";
 		mReader.GetOutPort("Samples read").ConnectToIn( mAnalysis.GetInPort("Input Audio"));
 		CLAM::TSize frameSize = 256;		

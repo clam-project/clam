@@ -94,12 +94,12 @@ private:
 		CLAM::MonoAudioFileWriter audioWriter;
 		CLAM::MonoAudioFileWriterConfig writercfg;
 		CLAM::AudioFile file;
-		file.OpenExisting("../../../../CLAM-TestData/sine.wav");
+		file.OpenExisting(GetTestDataDirectory("sine.wav"));
 		readercfg.SetSourceFile(file);
 		audioProvider.GetOutPort("Samples Read").SetSize( frameSize );
 		audioProvider.GetOutPort("Samples Read").SetHop(frameSize);
 		
-		const std::string storedResult("../../../../CLAM-TestData/SMSTests/out_analysis-synthesis-streaming_sine");
+		const std::string storedResult(GetTestDataDirectory("SMSTests/out_analysis-synthesis-streaming_sine"));
 		audioProvider.Configure( readercfg );
 		CLAM::AudioFileHeader header;
 		header.SetValues(44100, 1, "WAV");
@@ -188,7 +188,7 @@ private:
 
 		CLAM::MonoAudioFileReaderConfig audioInCfg;
 		CLAM::AudioFile file;
-		file.OpenExisting("../../../../CLAM-TestData/sine.wav");
+		file.OpenExisting(GetTestDataDirectory("sine.wav"));
 		audioInCfg.SetSourceFile(file);
 		net.ConfigureProcessing("AudioIn", audioInCfg);
 		
@@ -197,7 +197,7 @@ private:
 		header.AddChannels();
 		header.UpdateData();
 		header.SetValues(44100, 1, "WAV");
-		file.CreateNew("../../../../CLAM-Test/out_sms_net_stream_result.wav", header);
+		file.CreateNew(GetTestDataDirectory("out_sms_net_stream_result.wav"), header);
 		writercfg.SetTargetFile(file);
 		CLAM::MonoAudioFileWriter foo;
 		foo.Configure(writercfg);

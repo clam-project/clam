@@ -67,13 +67,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-			if ( !pathToTestData )
-				mPathToTestData ="../../../../CLAM-TestData/"; 
-			else
-				mPathToTestData = pathToTestData;
-
+			mPathToTestData = GetTestDataDirectory("spectralData/");
 		}
 
 		void tearDown()
@@ -595,7 +589,7 @@ namespace CLAMTest
 			inputFile.OpenExisting( mPathToTestData + "trumpet.wav");
 			CLAM_ASSERT( inputFile.IsReadable(), "collons, amb wav tampoc");
 			
-			inputFile.OpenExisting(std::string("/home/parumi/clam-sandboxes/CLAM-TestData/test-stereo-decoding-128_44.mp3"));
+			inputFile.OpenExisting(std::string(mPathToTestData+"test-stereo-decoding-128_44.mp3"));
 			CLAM_ASSERT( inputFile.IsReadable(), "absolute path to : test-stereo-decoding-128_44.mp3" );
 
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );

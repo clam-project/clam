@@ -78,14 +78,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-			if ( !pathToTestData )
-				mPathToTestData ="../../../../CLAM-TestData/"; 
-			else
-				mPathToTestData = pathToTestData;
-
-			mPathToTestData += "spectralData/";
+			mPathToTestData = GetTestDataDirectory("spectralData/");
 			loadBack2BackDataset( mPathToTestData );
 		}
 
