@@ -18,14 +18,39 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 */
-#include "ControlsTest.hxx"
+//#include "ControlsTest.hxx"
 #include "InControl.hxx"
 #include "Processing.hxx"
 #include "ProcessingComposite.hxx"
 
+#include <cppunit/extensions/HelperMacros.h>
+
 namespace CLAMTest {
 
 using CLAM::TControlData;
+
+
+class ControlsTest : public CppUnit::TestFixture
+{
+	CPPUNIT_TEST_SUITE( ControlsTest );
+	CPPUNIT_TEST( NonPublishedControls );
+	CPPUNIT_TEST( InControlBasics );
+	CPPUNIT_TEST( ProcessingWithControlArray );
+	CPPUNIT_TEST_EXCEPTION( ProcessingSidePublishedContainers, std::exception );
+	CPPUNIT_TEST( ProcessingSideInterface );
+//	CPPUNIT_TEST( );
+
+	CPPUNIT_TEST_SUITE_END();
+
+private:
+	void NonPublishedControls();
+	void InControlBasics();
+	void ProcessingWithControlArray();
+	void ProcessingSidePublishedContainers();
+	void ProcessingSideInterface();
+	
+};
+
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ControlsTest );
 
