@@ -122,6 +122,9 @@ public:
 		CLAM_ASSERT(OwnsMemory(),
 			    "Array::Resize(): You cannot invoke this method on an array that "
 			    "does not own any memory" );
+		CLAM_ASSERT( newAllocSize >= 0,
+			     "Array::Resize(): You are trying to allocate a negative amount of "
+			     "space, which is a weird thing to do, isn't it?");
 
 		/* calculate the amount of bytes to allocate */
 		/* effectively resize the array by allocating more memory */
