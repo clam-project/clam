@@ -38,6 +38,7 @@ namespace CLAM
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
+		mTextDescriptors = obj.mTextDescriptors;
 	}
 
 	const AudioFile& AudioFile::operator=( const AudioFile& obj )
@@ -46,6 +47,7 @@ namespace CLAM
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
+		mTextDescriptors = obj.mTextDescriptors;
 
 		return *this;
 	}
