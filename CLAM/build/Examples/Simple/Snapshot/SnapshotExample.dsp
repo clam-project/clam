@@ -187,6 +187,14 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
 
 SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
+# End Source File
 # End Group
 # Begin Group "Nodes Sources"
 

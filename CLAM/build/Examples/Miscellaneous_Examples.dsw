@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "AudioApplicationExample"="..\Simple\AudioApplication\AudioApplicationExample.dsp" - Package Owner=<4>
+Project: "AudioApplicationExample"=".\Simple\AudioApplication\AudioApplicationExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AudioIOExample"="..\Simple\AudioIO\AudioIOExample.dsp" - Package Owner=<4>
+Project: "AutocorrelationExample"=".\Simple\Autocorrelation\AutoCorrelationExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -27,7 +27,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AutocorrelationExample"="..\Simple\Autocorrelation\AutoCorrelationExample.dsp" - Package Owner=<4>
+Project: "ConfiguratorExample"=".\Simple\Configurator\ConfiguratorExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -39,7 +39,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ConfiguratorExample"="..\Simple\Configurator\ConfiguratorExample.dsp" - Package Owner=<4>
+Project: "ControlsExample"=".\Simple\Controls\ControlsExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -51,7 +51,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ControlsExample"="..\Simple\Controls\ControlsExample.dsp" - Package Owner=<4>
+Project: "FDFilterExample"=".\Simple\FDFilter\FDFilterExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,7 +63,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FDFilterExample"="..\Simple\FDFilter\FDFilterExample.dsp" - Package Owner=<4>
+Project: "FFTExample"=".\Simple\FFT\FFTExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -75,7 +75,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FFTExample"="..\Simple\FFT\FFTExample.dsp" - Package Owner=<4>
+Project: "LPCExample"=".\Simple\LPC\LPCExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -87,7 +87,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "LPCExample"="..\Simple\LPC\LPCExample.dsp" - Package Owner=<4>
+Project: "POCompositeExample"=".\Simple\POComposite\POCompositeExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -99,19 +99,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "POCompositeExample"="..\Simple\POComposite\POCompositeExample.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "SnapshotExample"="..\Simple\Snapshot\SnapshotExample.dsp" - Package Owner=<4>
+Project: "SnapshotExample"=".\Simple\Snapshot\SnapshotExample.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
