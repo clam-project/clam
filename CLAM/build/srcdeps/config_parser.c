@@ -621,7 +621,10 @@ void config_check(void)
 	{
 		if (!list_find(used_vars,n->str) && !list_find(ignore_unused,n->str))
 		{
-			fprintf(stderr,"Warning: unused variable %s\n",n->str);
+			if (strncmp("HAS_",n->str,4))
+			{
+				fprintf(stderr,"Warning: unused variable %s\n",n->str);
+			}
 		}
 		n = n->next;
 	}
