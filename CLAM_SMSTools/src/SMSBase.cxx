@@ -99,6 +99,7 @@ void SMSBase::InitConfigs(void)
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
 	int resAnalWindowSize=mGlobalConfig.GetResAnalysisWindowSize();
 
+
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
 		mGlobalConfig.SetAnalysisHopSize((resAnalWindowSize-1)/2);
@@ -139,7 +140,7 @@ void SMSBase::InitConfigs(void)
 	mSynthConfig.SetHopSize(synthFrameSize);
 
 	//Configure child Processings
-	GetAnalysis().Configure(mAnalConfig);
+	GetAnalysis().Configure(mAnalConfig);	
 	GetSynthesis().Configure(mSynthConfig);
 	
 }
@@ -290,9 +291,8 @@ void SMSBase::AnalysisProcessing()
 	int step=mAnalConfig.GetHopSize();
 	
 	GetAnalysis().Start();
-
 	while(GetAnalysis().Do(mOriginalSegment))
-	{      
+	{   
 		k=step*(mOriginalSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
@@ -502,7 +502,9 @@ void SMSBase::SynthesisProcessing()
 
 
 	mTransformedSegment.mCurrentFrameIndex=0;
-	for(i=0;i<nSynthFrames;i++){
+	
+	for(i=0;i<nSynthFrames;i++)
+	{
 		
 		if(GetSynthesis().Do(mTransformedSegment))
 		{
