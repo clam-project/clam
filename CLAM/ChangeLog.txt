@@ -1,5 +1,21 @@
-2004-??-?? CLAM_0_6_2
-'Clean up!!'
+
+
+2004-??-?? CLAM_0_7_0
+'Processing ports rewrite and clean up'
+  * NetworkEditor:
+     ** 
+  * Processing Ports Rewrite:
+     this is draft: PA
+     ** internal hierarchie now simplified
+     ** stream class can be templatized to PhantomBuffer or any STL container
+     ** New ports-linking schema
+       *** ports Attach(ProcessingData&) method is obsolete 
+  * AudioFile IO:
+     ** AudioFile have easier and clearer interface:
+       *** AudioFile::SetHeader is obsolete
+       *** AudioFile::SetLocation is obsolete, instead use:
+       *** AudioFile::OpenExisting
+       *** AudioFile::CreateNew
   * Processing Interface Clean up:
      ** Removed Processing inheritance from Component
      ** Processing::FlattenObjects removed until needed
