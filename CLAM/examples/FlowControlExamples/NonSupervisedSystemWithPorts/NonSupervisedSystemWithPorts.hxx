@@ -11,9 +11,6 @@
 #include "AudioManager.hxx"
 #include <list>
 #include <string>
-
-
-//TODO - Modify these includes
 #include "AutoPanner.hxx"
 
 namespace FlowControlExample
@@ -49,7 +46,6 @@ private:
 protected:
 	const std::string _name;
 	static bool trace;
-
 };
 
 //----------------------------------------------------------------------
@@ -66,6 +62,7 @@ public:
 	void ProcessAllNetworkConfigurations();
 	void RemoveAllNetworkConfigurations();
 	void AddNetworkConfiguration( NetworkConfiguration* );
+	void RegisterProcessings();
 
 	int GetMaxFramesToProcess() const {
 		return _maxFramesToProcess;
@@ -114,7 +111,20 @@ public:
 		void Connect();
 		void Stop();
 	};
+
+	//outside access to Processings
+	typedef std::vector<CLAM::Processing*>::iterator ProcessingIterator;
 	
+	ProcessingIterator FirstProcessing()
+	{
+		return _processings.begin();
+	}
+
+	ProcessingIterator LastProcessing()
+	{
+		return _processings.end();
+	}
+
 
 private:
 	void StartProcessings();
@@ -155,6 +165,7 @@ private:
 
 	//system infrastructure
 	NetworkConfigurations _networks;
+	std::vector<CLAM::Processing*> _processings;
 
 };
 

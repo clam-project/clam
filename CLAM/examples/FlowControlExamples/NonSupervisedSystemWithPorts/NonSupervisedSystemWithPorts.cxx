@@ -39,13 +39,30 @@ SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int 
 	AddNetworkConfiguration( new ModulatedOscillator( this ) );
 	AddNetworkConfiguration( new ModulatedFileInPlusFileIn( this ) );
 
+
+	RegisterProcessings();
 	ConfigureProcessings();
 	ConfigureData();
 	StartProcessings();
+
+
 }
 SystemWithPorts::~SystemWithPorts()
 {
 	RemoveAllNetworkConfigurations();
+}
+
+void SystemWithPorts::RegisterProcessings()
+{
+	_processings.push_back( &_oscillator );
+	_processings.push_back( &_modulator );
+	_processings.push_back( &_fileIn );
+	_processings.push_back( &_fileOut );
+	_processings.push_back( &_multiplier );
+	_processings.push_back( &_audioOut);
+	_processings.push_back( &_mixer );
+//	_processings.push_back( &_controlSender );
+	
 }
 
 void SystemWithPorts::ConfigureProcessings()
