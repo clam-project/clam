@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <typeinfo>
+//#include <cstddef> seems not necessary //definition of std::size_t
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestAssert.h>
 
@@ -85,6 +86,22 @@ namespace CppUnit
 			std::string text = std::string("'") + x.name() + "'";    // adds quote around the string to see whitespace
 			CppUnit::OStringStream ost;
 			ost << text;
+			return ost.str();
+		}
+	};
+
+	// traits for avoiding warning message.
+	template<>
+	struct assertion_traits< std::size_t >
+	{
+		static bool equal( const std::size_t& x, const std::size_t& y )
+		{
+			return (x==y);
+		}
+		static std::string toString( const std::size_t& x)
+		{
+			CppUnit::OStringStream ost;
+			ost << int(x);
 			return ost.str();
 		}
 	};
