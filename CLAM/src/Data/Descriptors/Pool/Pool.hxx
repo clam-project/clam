@@ -75,7 +75,9 @@ namespace CLAM
 
 		void Add(const std::string & name)
 		{
-			GetNames().insert(std::make_pair(name,GetNames().size()));
+			bool inserted = 
+				GetNames().insert(std::make_pair(name,GetNames().size())).second;
+			CLAM_ASSERT(inserted,"LAla");
 		}
 	};
 

@@ -21,6 +21,7 @@ class PoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetIndex_withSecondInsertedArray );
 	CPPUNIT_TEST( testGet_ReturnsSameMemory );
 	CPPUNIT_TEST( testGet_ReturnsConstMemory );
+	CPPUNIT_TEST( testAddAttribute_whenNameAlreadyAdded );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -122,6 +123,25 @@ private:
 		const CLAM::Pool & pool2 = pool;
 		const CLAM::TData * data2 = pool2.Get("Lala");
 		CPPUNIT_ASSERT_EQUAL(const_cast<const CLAM::TData*>(data),data2);
+	}
+
+	void testAddAttribute_whenNameAlreadyAdded()
+	{
+		std::string expected = "ScopeSpec::Add, Attribute already present";
+		CLAM::PoolSpec spec;
+		spec.Add("Lala");
+		try
+		{
+			spec.Add("Lala");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				expected,
+				std::string(err.what()));
+		}
+		CPPUNIT_ASSERT_EQUAL(1u,spec.GetNAttributes());
 	}
 
 	

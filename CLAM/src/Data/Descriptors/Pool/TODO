@@ -11,11 +11,14 @@
 	+ When two added
 	+ When wrong name
 + Place data inside the Scope
-- Split definition and data
-	- posar el spec com a const
-	- remove Pool::GetIndex
-	- remove Pool::Add
-- duplicated attribute names
++ Split definition and data
+	+ remove Pool::GetIndex
+	+ remove Pool::Add
+	+ posar el atributo spec com a const
+* duplicated attribute names
+- Separate Pool and PoolSpec tests in two fixtures
+- Move attribute pool allocation and deallocation to the spec
+- Introduce multiple types
 - Include ScopeDivision attributes
 - XML for the Pool
 - XML for the Pool Spec
