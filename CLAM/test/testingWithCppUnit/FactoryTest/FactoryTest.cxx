@@ -1,6 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <iostream>
 #include <typeinfo>
+#include "cppUnitHelper.hxx"
 
 #include "Oscillator.hxx"
 #include "Factory.hxx"
@@ -33,11 +34,7 @@ private:
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
 		CLAM::Processing* returned = CLAM::CreateOscillator();
-		std::string msg = std::string(
-			"Expected: ") + typeid( CLAM::Oscillator ).name() +
-			"But was: " + typeid( returned ).name();
-		
-		CPPUNIT_ASSERT_MESSAGE( msg, typeid( CLAM::Oscillator ) == typeid(*returned) ); 
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned ); 
 	}
  
 	void testRegistryGetCreatorUnsafe_WhenIsEmpty()
