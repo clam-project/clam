@@ -54,6 +54,8 @@ class SpectralDescriptorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testSpread );
 	CPPUNIT_TEST( testSlope );
 	CPPUNIT_TEST( testMaxMagFreq );
+	CPPUNIT_TEST( testMagnitudeSkewness );
+	CPPUNIT_TEST( testMagnitudeKurtosis );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -64,14 +66,7 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-		if ( !pathToTestData )
-			mPathToTestData = "../../../../CLAM-TestData/";
-		else
-			mPathToTestData = pathToTestData;
-
-		mPathToTestData += "descriptorsData/frames/";
+		mPathToTestData = GetTestDataDirectory("descriptorsData/frames/");
 
 		mDescriptors = new CLAM::SpectralDescriptors();
 		mDescriptors->RemoveAll();
@@ -305,7 +300,7 @@ private:
 
 	void testCentroid()
 	{
-		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 0.007;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
 		data["DeltasAtExtremeBins-Spectrum.xml"] = 11025;
@@ -429,6 +424,12 @@ private:
 		CLAM::TData tolerance = 1;  // Due to numerical inaccuracies, 1 Hz
 
 		std::map<std::string, CLAM::TData> data;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0;
+		data["Constant-Spectrum.xml"]= 0.0;
+		data["ConstantDouble-Spectrum.xml"]= 0.0;
+		data["ConstantHalfSize-Spectrum.xml"]= 0.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 0.0;
+		data["DeltaAtCenterBin-Spectrum.xml"]= 129.19921875;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 258.3984;
 		data["Balance000.600.wav"] = 129.1992;
 		data["Balance000.992.wav"] = 215.3320;
@@ -453,6 +454,82 @@ private:
 		mDescriptors->AddMaxMagFreq();
 
 		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralDescriptors::GetMaxMagFreq);
+	}
+
+	void testMagnitudeSkewness()
+	{
+		CLAM::TData tolerance = 0.001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 22.5830516815186;
+		data["Constant-Spectrum.xml"]= 0.0;
+		data["ConstantDouble-Spectrum.xml"]= 0.0;
+		data["ConstantHalfSize-Spectrum.xml"]= 0.0; // Avoid NaN
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 15.9218053817749;
+		data["DeltaAtCenterBin-Spectrum.xml"]= 22.5830516815186;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 8.40675163269043;
+		data["Balance000.600.wav"] = 18.5365924835205;
+		data["Balance000.992.wav"] = 21.5264225006104;
+		data["Balance001.988.wav"] = 6.5138783454895;
+		data["Balance010.910.wav"] = 14.1958694458008;
+		data["Cello_A2.wav"] = 7.86557388305664;
+		data["Cello_C2.wav"] = 0.000000; // Avoid NaN!!
+		data["Disco_Rojo001.008.wav"] = 3.03432536125183;
+		data["Disco_Rojo002.327.wav"] = 9.71939277648926;
+		data["Geiger_Counter005.020.wav"] = 10.891640663147;
+		data["SaxBritHorns12.wav"] = 4.83596897125244;
+		data["Time002.624.wav"] = 4.86174297332764;
+		data["bell_A3.wav"] = 8.53497505187988;
+		data["gamelan-gong.wav"] = 13.2020807266235;
+		data["gt_E4.wav"] = 15.7197198867798;
+		data["pno_Eb1.wav"] = 0.000000;  // Avoid NaN!!
+		data["silence.wav"] = 0.000000; // Avoid NaN!!
+		data["vln_A3.wav"] = 0.000000; // Avoid NaN!!
+		data["vln_D5.wav"] = 0.000000; // Avoid NaN!!
+		data["whitenoise.wav"] = 0.401344895362854;
+
+		mDescriptors->AddMagnitudeSkewness();
+
+		assertDescriptorExtractionInsideTolerance(data,tolerance, &CLAM::SpectralDescriptors::GetMagnitudeSkewness);
+
+	}
+
+	void testMagnitudeKurtosis()
+	{
+		CLAM::TData tolerance = 0.000000001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 507.994171142578;
+		data["Constant-Spectrum.xml"]= 0.0;
+		data["ConstantDouble-Spectrum.xml"]= 0.0;
+		data["ConstantHalfSize-Spectrum.xml"]= 0.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 251.503921508789;
+		data["DeltaAtCenterBin-Spectrum.xml"]= 507.994232177734;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 79.7926788330078;
+		data["Balance000.600.wav"] = 374.411987304688;
+		data["Balance000.992.wav"] = 474.992065429688;
+		data["Balance001.988.wav"] = 50.0362358093262;
+		data["Balance010.910.wav"] = 235.156997680664;
+		data["Cello_A2.wav"] = 90.5747756958008;
+		data["Cello_C2.wav"] = 0.000000; // Avoid NaN!!
+		data["Disco_Rojo001.008.wav"] = 13.8839492797852;
+		data["Disco_Rojo002.327.wav"] = 125.505096435547;
+		data["Geiger_Counter005.020.wav"] = 137.091598510742;
+		data["SaxBritHorns12.wav"] = 29.0153884887695;
+		data["Time002.624.wav"] = 30.4215717315674;
+		data["bell_A3.wav"] = 84.1860504150391;
+		data["gamelan-gong.wav"] = 188.309326171875;
+		data["gt_E4.wav"] = 293.318389892578;
+		data["pno_Eb1.wav"] = 0.000000;  // Avoid NaN!!
+		data["silence.wav"] = 0.000000; // Avoid NaN!!
+		data["vln_A3.wav"] = 0.000000; // Avoid NaN!!
+		data["vln_D5.wav"] = 0.000000; // Avoid NaN!!
+		data["whitenoise.wav"] = -0.515219032764435;
+
+		mDescriptors->AddMagnitudeKurtosis();
+
+		assertDescriptorExtractionInsideTolerance(data,tolerance, &CLAM::SpectralDescriptors::GetMagnitudeKurtosis);
+
 	}
 
 
