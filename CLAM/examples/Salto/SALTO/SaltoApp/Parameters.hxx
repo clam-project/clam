@@ -65,11 +65,11 @@ private:
 	  
 	  // Singleton interface
 
-	  static Parameters* mpInstance;
+	  static Parameters mInstance;
 
 public:
 	  
-	  static Parameters* GetInstance();
+	  static Parameters& GetInstance();
 
 public:
   // this should change when the CLAM Classes allow storage of a SpectralPeakArray. Right now this

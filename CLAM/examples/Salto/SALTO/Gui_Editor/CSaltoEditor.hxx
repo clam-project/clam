@@ -586,21 +586,24 @@ static void sLoadMelody(Fl_Button* pButton, CSaltoEditor* pThis)
 {
 	(void) pButton; // prevent unused variable warnings
 	char* str = fl_file_chooser("Select analysis data file","*.xml","");
-	std::string melodyFileName(str);
-//	pThis->mpSaltoApp->LoadMelody(melodyFileName);
-
-	MelodyTranslatorConfig melodyCfg;
-	melodyCfg.SetFileName( melodyFileName );
-
-	if( pThis->mMelody->IsRunning() ) pThis->mMelody->Stop();
-
-	pThis->mMelody->Configure( melodyCfg );
-	pThis->mMelody->Start();
-
-	pThis->mpSaltoApp->ResetEventSample();
 	
+	if(str)
+	{
+		std::string melodyFileName(str);
 
-	pThis->mpPlayMelodyButton->activate();
+		MelodyTranslatorConfig melodyCfg;
+		melodyCfg.SetFileName( melodyFileName );
+
+		if( pThis->mMelody->IsRunning() ) pThis->mMelody->Stop();
+
+		pThis->mMelody->Configure( melodyCfg );
+		pThis->mMelody->Start();
+
+		pThis->mpSaltoApp->ResetEventSample();
+		
+
+		pThis->mpPlayMelodyButton->activate();
+	}
 }
 
 static void sPlayMelody(Fl_Button* pButton, CSaltoEditor* pThis)

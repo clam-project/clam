@@ -9,17 +9,11 @@ namespace CLAM
 {
 //template <class T> void InitArrayElement(T& t)
 
-Parameters* Parameters::mpInstance = NULL;
+Parameters Parameters::mInstance;
 
-Parameters* Parameters::GetInstance()
+Parameters& Parameters::GetInstance()
 {
-	if ( mpInstance )
-		return mpInstance;
-	else
-		{
-			mpInstance = new Parameters;
-			return mpInstance;
-		}
+	return mInstance;
 }
 
 //////////////////////////////////////////

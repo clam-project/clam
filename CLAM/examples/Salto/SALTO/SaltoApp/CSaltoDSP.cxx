@@ -387,23 +387,41 @@ CSaltoDSP::~CSaltoDSP()
 {
 	//storage
 	if (mpSpectralBuffer!=NULL)
+	{
 		delete mpSpectralBuffer;
+		mpSpectralBuffer=NULL;
+	}
 	
 	if (mpSynthFrame!= NULL)
+	{
 		delete mpSynthFrame;
+		mpSynthFrame=NULL;
+	}
 		
 	if (mpDataManagment!= NULL)
+	{
 		delete mpDataManagment;
+		mpDataManagment=NULL;
+	}
 	
 	// processing objects
 	if (mpSineSynthPO!=NULL)
+	{
 		delete mpSineSynthPO;
+		mpSineSynthPO=NULL;
+	}
 	
 	if (mpResSynthPO!=NULL)
+	{
 		delete mpResSynthPO;
+		mpResSynthPO=NULL;
+	}
 		
 	if (mpInterpolPO!=NULL)
+	{
 		delete mpInterpolPO;
+		mpInterpolPO=NULL;
+	}
 }
 //#pragma mark -
 //----------------------------------------------------------------------------//

@@ -25,7 +25,7 @@ class SaltoApp:public GUIAudioApplication
 public:
 	SaltoApp()
 	{
-		pParams=NULL;
+		//mParams=NULL;
 		pDSP = NULL;
 		pMelody = NULL;
 		pGUI=NULL;
@@ -33,38 +33,47 @@ public:
 
 	virtual ~SaltoApp()
 	{
-		if (pParams) delete pParams;
-		if (pDSP) delete pDSP;
-		if (pMelody) delete pMelody;
-		if (pGUI) delete pGUI;
+		
+		if (pDSP) 
+		{
+			delete pDSP;
+			pDSP=NULL;
+		}
+		if (pMelody)
+		{ 
+			delete pMelody;
+			pMelody=NULL;
+		}
+		if (pGUI)
+		{ 
+			delete pGUI;
+			pGUI=NULL;
+		}
 	}
 
 	Fl_Window* CreateWindow(int argc,char** argv)
 	{
-		pParams = Parameters::GetInstance();
-		if(pParams==NULL)
-			throw Err("OOM in MAIN cant construct params");
+		mParams = Parameters::GetInstance();
 
-		CSaltoDataManagment::InitSaltoDB( pParams );
+		CSaltoDataManagment::InitSaltoDB( &mParams );
 
 		pMelody = new MelodyTranslator;
 		if( pMelody == NULL )
 			throw Err("OOM in MAIN cant construct melody");
 
 
-		//pDSP = new CSaltoDSP(pParams);//,pMIDI);
-		DSPCfg.SetParams( *pParams );
+		DSPCfg.SetParams( mParams );
 		pDSP = new SaltoSynth(DSPCfg);
 		if(pDSP==NULL)
 			throw Err("OOM in MAIN cant construct CSaltoDSP");
 
 		// gui , user interface interacts also with parameter class
-		pGUI = new CSaltoEditor(pParams, pDSP, pMelody, this);//,pMIDI);
+		pGUI = new CSaltoEditor(&mParams, pDSP, pMelody, this);//,pMIDI);
 		if(pGUI==NULL)
 			throw Err("OOM in MAIN cant construct editor");
 
 		MIDIHandlerConfig MIDIHandlerCfg;
-		MIDIHandlerCfg.SetTranspose( pParams->GetTranspose() );
+		MIDIHandlerCfg.SetTranspose( mParams.GetTranspose() );
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
 
@@ -82,7 +91,7 @@ public:
 
 protected:
 
-	Parameters*       pParams;
+	Parameters       mParams;
 	SaltoSynth*       pDSP;
 	MelodyTranslator* pMelody;
 	CSaltoEditor*     pGUI;
@@ -95,6 +104,8 @@ protected:
 		Start();
 
 		tk->Run();
+
+		Stop();
 	}
 
 
@@ -169,17 +180,14 @@ protected:
 			mAudioManager->Start();
 			mMIDIHandler.Start();
 
-			while ( not_finished )
+			while ( !Canceled() )
 			{
 
-				pthread_testcancel();
-				
 				ProcessMIDIMessages();
 				
 				not_finished = pDSP->Do( synthbuffer );
 
 				CLAM_DEBUG_ASSERT( synthbuffer != NULL, "Whooops! Synthesis buffer was void!" );
-
 			
 				RenderSynthesis( *synthbuffer );
 
@@ -188,17 +196,16 @@ protected:
 			mMIDIHandler.Stop();
 			pDSP->Stop();
 
-			if ( pParams->GetWriteToFile())
+			if ( mParams.GetWriteToFile())
 				{
 					std::cout << "Closing audio File ..... " << std::endl;
-					pParams->SetExit(true); // MRJ: Ya lo es no?
+					mParams.SetExit(true); // MRJ: Ya lo es no?
 					mFileAudioOut.Stop();
 				}
 
 
 			std::cout << "exiting..." << std::endl;
 		
-			pthread_exit( NULL );
 
 		}
 		catch (Err err)
@@ -239,7 +246,7 @@ protected:
 
 	void RenderSynthesis(Audio& synthbuffer)
 	{
-		if( pParams->GetWriteToFile())
+		if( mParams.GetWriteToFile())
 			mFileAudioOut.Do( synthbuffer );
 		else
 		{
@@ -311,26 +318,30 @@ protected:
 
 	void ProcessMIDIMessages(void)
 	{
-		if (pParams->GetUseMelody())
-			{
-				TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
-				if (!pMelody->Do( pParams->GetPlay(), currentTime ))
-					{
-						mMIDIHandler.Do( *pParams );
-						pParams->SetUseMelody( false );
-						pDSP->ResetEventSample();
-					}
-				else
-					mMIDIHandler.Do( *pParams );
-			}
-			
-		if ( pParams->GetUseMidiKeyboard() || pParams->GetUseBreathController() )
-			{
-				mMIDIManager.Check();
-				mMIDIHandler.Do( *pParams );
-			}		
+//		if(mParams)
+//		{
+		
+			if (mParams.GetUseMelody())
+				{
+					TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
+					if (!pMelody->Do( mParams.GetPlay(), currentTime ))
+						{
+							mMIDIHandler.Do( mParams );
+							mParams.SetUseMelody( false );
+							pDSP->ResetEventSample();
+						}
+					else
+						mMIDIHandler.Do( mParams );
+				}
+				
+			if ( mParams.GetUseMidiKeyboard() || mParams.GetUseBreathController() )
+				{
+					mMIDIManager.Check();
+					mMIDIHandler.Do( mParams );
+				}		
 
-		// End of SALTO MIDI Messages Processing
+			// End of SALTO MIDI Messages Processing
+//		}
 	}
 
 private:

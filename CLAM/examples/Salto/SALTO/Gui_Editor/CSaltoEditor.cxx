@@ -909,7 +909,11 @@ CSaltoEditor::CSaltoEditor(Parameters *pParams,SaltoSynth *pSaltoApp, MelodyTran
 
 CSaltoEditor::~CSaltoEditor()
 {
-	delete	mpEditorWindow;
+	if(mpEditorWindow)
+	{
+		delete	mpEditorWindow;
+		mpEditorWindow=NULL;
+	}
 }
 
 //#pragma mark-

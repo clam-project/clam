@@ -23,7 +23,11 @@ CSaltoSpectralDisplay::CSaltoSpectralDisplay(int X,int Y,int W,int H):Fl_Widget(
 
 CSaltoSpectralDisplay::~CSaltoSpectralDisplay()
 {
-	delete mSDToolTip;
+	if(mSDToolTip)
+	{
+		delete mSDToolTip;
+		mSDToolTip=NULL;
+	}
 }
 
 int CSaltoSpectralDisplay::SetPtr(Array<float>& displayPeakArray)

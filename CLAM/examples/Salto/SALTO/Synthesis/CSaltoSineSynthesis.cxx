@@ -33,10 +33,12 @@ CSaltoSineSynthesis::~CSaltoSineSynthesis()
 {	
 	if (mpSpecSynthPO!=NULL){
 		delete mpSpecSynthPO;
+		mpSpecSynthPO=NULL;
 	}
 	
 	if (mpPhaseManagerPO!=NULL){
 		delete mpPhaseManagerPO;
+		mpPhaseManagerPO=NULL;
 	}	
 }
 
