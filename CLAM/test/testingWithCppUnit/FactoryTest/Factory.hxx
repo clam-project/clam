@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 
+#include "Err.hxx"
+
 namespace CLAM {
 	
 	Processing * CreateOscillator() {
@@ -19,8 +21,17 @@ public:
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
 	}
+	void GetCreatorSafe(char*)
+	{
+		return;
+	}
 private:
 	std::map< RegistryKey, CreatorMethod> _creators;
+};
+
+
+class ErrFactory : public Err
+{
 };
 
 } // namespace
