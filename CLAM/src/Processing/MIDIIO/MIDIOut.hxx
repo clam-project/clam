@@ -25,64 +25,9 @@
 #include "Processing.hxx"
 #include "MIDIDevice.hxx"
 #include "MIDIEnums.hxx"
+#include "MIDIIOConfig.hxx"
 
 namespace CLAM {
-
-/** Configuration of the MIDIOut class. You can specify
- * a device (string), which will be used by the MIDIManager, when creating
- * the MIDIDevice objects. When you don't specify a concrete device, or
- * specify "default", the MIDIManager will choose the default device for your
- * setup.
- * @see MIDIIn, MIDIOut, MIDIDevice, MIDIManager, ProcessingConfig
- */
-class MIDIOutConfig: public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (MIDIOutConfig, 4, ProcessingConfig);
-
-	/** The Device that will be used by this MIDIOut instantiation, if it 
-	 *  is not indicated, or its value is "default:default", system will
-	 *  choose the best device for this object
-	 **/
-	DYN_ATTRIBUTE (0, public, std::string, Device);
-
-	/** The Message attribute allows you to create a MIDIOut that sends midi
-	 *  messages of a certain type. */
-	DYN_ATTRIBUTE (1, public, unsigned short, Message);
-
-	/** The Channel attribute allows you to create a MIDIOut that sends midi
-	 *  messages on a certain channel. If you leave it 0 (default), an 
-	 *  InControl will be created to control the channel of each MIDI message.
-	 **/
-	DYN_ATTRIBUTE (2, public, unsigned short, Channel);
-
-	/** The Message attribute allows you to create a MIDIOut that sends midi
-	 *  messages with a certain first data byte (typically usefull for
-	 *  control messages). If you leave it 128 (default), an InControl will
-	 *  be created to control the first data byte. */
-	DYN_ATTRIBUTE (3, public, unsigned short, FirstData);
-
-protected:
-	void DefaultInit(void)
-	{
-		AddDevice();
-		AddMessage();
-		AddChannel();
-		AddFirstData();
-
-		UpdateData();
-
-		SetDevice("default:default");
-		SetMessage(0);
-
-		/* 0 means: channel is controlled by and InControl */
-		SetChannel(0);
-		
-		/* 128 means: first data byte is controlled by an InControl */
-		SetFirstData(128); 
-	}
-};
-
 
 /** This class is the interface to an input of an MIDIDevice.
  *  @see Processing, MIDIInConfig, MIDIIn, MIDIManager, MIDIDevice

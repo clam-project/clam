@@ -25,59 +25,9 @@
 #include "Processing.hxx"
 #include "MIDIDevice.hxx"
 #include "MIDIEnums.hxx"
+#include "MIDIIOConfig.hxx"
 
 namespace CLAM {
-
-/** Configuration of the MIDIIn class. You can specify
- * a device (string), which will be used by the MIDIManager, when creating
- * the MIDIDevice objects. If you don't specify a concrete device, or
- * specify "default", the MIDIManager will choose the default device for your
- * setup.
- * @see MIDIIn, MIDIOut, MIDIDevice, MIDIManager, ProcessingConfig
- */
-class MIDIInConfig: public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (MIDIInConfig, 4, ProcessingConfig);
-
-	/** The Device that will be used by this MIDIIn instantiation, if it 
-	 *  is not indicated, or its value is "default:default", system will
-	 *  choose the best device for this object
-	 **/
-	DYN_ATTRIBUTE (0, public, std::string, Device);
-	
-	/** The Channel allows you to create a MIDIIn that receives midi
-	 *  messages on a certain channel only.
-	 **/
-	DYN_ATTRIBUTE (1, public, unsigned char, Channel);
-
-	/** The Message allows you to create a MIDIIn that receives midi
-	 *  messages of a certain type only. 0 means: all channels
-	 **/
-	DYN_ATTRIBUTE (2, public, unsigned char, Message);
-
-	/** The FirstData allows you to create a MIDIIn that receives midi messages
-	 *  where the second byte (first data byte) has a certain value. This is
-	 *  particularly useful for control change messages, where the second byte
-	 *  specifies the type of control change.
-	 **/
-	DYN_ATTRIBUTE (3, public, unsigned char, FirstData);
-protected:
-	void DefaultInit(void)
-	{
-		AddDevice();
-		AddChannel();
-		AddMessage();
-		AddFirstData();
-
-		UpdateData();
-
-		SetDevice("default:default");
-		SetMessage(0);
-		SetChannel(0);
-		SetFirstData(128);
-	}
-};
 
 /** This class is the interface to an input of an MIDIDevice.
  *  @see Processing, MIDIInConfig, MIDIOut, MIDIManager, MIDIDevice
