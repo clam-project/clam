@@ -370,6 +370,11 @@ namespace CLAM
 		ret[0] = 0.0;
 		ret[mnSamples-1] = 0.0;
 
+		// MRJ: Original computation was a loop from 1:mnSamples-1 where
+		// ret(i):=log(in[i+1])-log(in[i-1]).
+		// This simple trick reduces the overall number of log()'s to
+		// exactly mnSamples ( which is yet a lot of times ).
+
 		double a = log( in[0] );
 		double b = log( in[1] );
 		double c = log( in[2] );
@@ -400,13 +405,14 @@ namespace CLAM
 	
 	
 		int i=1, length, begin, maxLogPos, maxLinPos;
-		TData maxLog, maxLin, intDyn;	
+		TData maxLog, maxLin;	
 		TimeIndex candidate;
 
 
+		TSize maxPosition = in.Size() - 3;
 
 		//takes peaks above the threshold
-		while(i<in.Size()-3)
+		while(i < maxPosition)
 		{
 			length=maxLog=maxLin=0;		
 
@@ -417,7 +423,7 @@ namespace CLAM
 				begin=i;
 
 				//while the derivative is positive (up to 2 negative values are allowed)
-				while(i<in.Size()-3 && (in[i]>0 || in[i+1]>0 || in[i+2]>0))
+				while(i < maxPosition  && (in[i]>0 || in[i+1]>0 || in[i+2]>0))
 				{
 				
 
@@ -425,16 +431,17 @@ namespace CLAM
 					//the log smoothed energy)
 					if(in[i]>maxLog)
 					{
-						maxLog=in[i];
-						maxLogPos=i;
+						maxLog = in[i];
+						maxLogPos = i;
 					}
 
 					//store the position and the value of the highest peak in the derivative of
 					//the smoothed energy
-					if((weight[i+1]-weight[i-1])>maxLin)
+					double deltaEnergy = weight[i+1] - weight[i-1];
+					if(deltaEnergy > maxLin)
 					{
-						maxLin=weight[i+1]-weight[i-1];
-						maxLinPos=i;
+						maxLin = deltaEnergy;
+						maxLinPos = i;
 					}
 				
 					length++;
