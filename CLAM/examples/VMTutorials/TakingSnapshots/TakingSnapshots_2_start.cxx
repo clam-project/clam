@@ -24,6 +24,7 @@
 #include <string>
 #include "Err.hxx"
 #include "Segment.hxx"
+#include "XMLStorage.hxx"
 
 void getFileFromArgs( int argc, char** argv, std::string& filename )
 {
@@ -45,6 +46,13 @@ void getFileFromArgs( int argc, char** argv, std::string& filename )
 	}
 }
 
+void restoreObject( const std::string& filename, CLAM::Segment& obj )
+{
+	CLAM::XMLStorage loader;
+
+	loader.Restore( obj, filename );
+}
+
 int main( int argc, char** argv )
 {
 	try
@@ -58,6 +66,10 @@ int main( int argc, char** argv )
 
 		// we retrieve from the program arguments the name of the xml file
 		getFileFromArgs( argc, argv, filename );
+
+		// we restore the Segment contained in filename
+		restoreObject( filename, restoredSegment );
+		
 
 	}
 	catch( CLAM::Err& e )
