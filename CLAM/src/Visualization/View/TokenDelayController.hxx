@@ -1,0 +1,38 @@
+#ifndef __TOKENDELAYCONTROLLER__
+#define __TOKENDELAYCONTROLLER__
+
+#include "ProcessingController.hxx"
+namespace CLAM
+{
+		class Spectrum;
+		class TokenDelay<Spectrum>;
+};
+
+namespace CLAMVM
+{
+		using CLAM::TokenDelay<Spectrum>;
+		
+
+		class SpectralTokenDelayController 
+				: public ProcessingController
+		{
+		protected:
+				const TokenDelay<Spectrum>*  mObserved;
+
+		public:
+				SpectralTokenDelayController();
+
+				~SpectralTokenDelayController();
+
+				virtual const char* GetClassName() const
+				{
+						return "SpectralTokenDelayController";
+				}
+
+				virtual bool BindTo( Processing& proc );
+
+				virtual bool Publish();
+		};
+}
+
+#endif // TokenDelayController.hxx
