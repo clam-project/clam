@@ -479,12 +479,20 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	mySynthesis.Stop();
 
 }
+void AnalysisSynthesisExampleBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
+{
+	dest=src;
+	dest.CopyInit(src);
+	dest.mCurrentFrameIndex=0;
+	dest.RemoveAudio();
+	dest.UpdateData();
+}
 
 void AnalysisSynthesisExampleBase::Synthesize(void)
 {
 	if(!mHaveTransformation)
 	{
-		mTransformedSegment=mOriginalSegment;
+		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
 		mHaveTransformation=true;
 	}
 	TSize size=TSize((mTransformedSegment.GetEndTime()-
@@ -736,10 +744,8 @@ void AnalysisSynthesisExampleBase::TransformProcessing(void)
 {
 	bool def=false;
 	mTransformation.Configure(mTransformationScore);
+	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
-	//test
-	mTransformedSegment=mOriginalSegment;
-	mTransformedSegment.mCurrentFrameIndex=0;
 
 	mTransformation.Start();
 	int i = 0;
