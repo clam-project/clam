@@ -70,6 +70,10 @@ namespace CLAM {
 		{};
 
 		virtual ~Port() {}
+
+		virtual bool IsAttached() = 0;
+		virtual void Unattach() = 0;
+
 		virtual void Accept(DataVisitor&) = 0;
 		unsigned int Length() const { return mLength; }
 		unsigned int Hop() const { return mHop; }
@@ -107,6 +111,9 @@ namespace CLAM {
 		OutPort(const std::string &n, Processing *o, int length, int hop = 0);
 		
 		virtual void Attach(ProcessingData& data)=0;
+		virtual bool IsAttached() = 0;
+		virtual void Unattach() = 0;
+
 
 		virtual ~OutPort() {}
 	};
@@ -135,6 +142,7 @@ namespace CLAM {
 		}
 		void Unattach()
 		{
+			mData.SetPtr(NULL);
 		}
 	};
 
@@ -153,6 +161,16 @@ namespace CLAM {
 		inline void Attach(Node<T> &n);
 		inline void Attach(OutPortTmpl<T> &p); // For composites
 		inline void Accept(DataVisitor&);
+		
+		bool IsAttached()
+		{
+			return mData.Size();
+		}
+		void Unattach()
+		{
+			mData.SetPtr(NULL);
+		}
+
 	};
 
 	template<class T>

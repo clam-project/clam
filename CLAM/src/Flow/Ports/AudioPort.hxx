@@ -23,6 +23,7 @@
 #define _AUDIO_PORT_HXX
 
 #include "Audio.hxx"
+#include <iostream>
 
 namespace CLAM {
 
@@ -48,6 +49,7 @@ namespace CLAM {
 		}
 		void Unattach()
 		{
+			mpData = 0;
 		}
 	};
 
@@ -67,6 +69,15 @@ namespace CLAM {
 		inline void Attach(OutPortTmpl<Audio> &n);
 		inline void Attach(Node<Audio> &n);
 		inline void Accept(DataVisitor&);
+		bool IsAttached()
+		{
+			return mpData!=0;
+		}
+		void Unattach()
+		{
+			mpData = 0;
+		}
+
 	};
 
 
@@ -145,7 +156,8 @@ namespace CLAM {
 									int hop)
 		: OutPort(n,o,length,hop),
 		  mpRegion(0),
-		  mpNode(0)
+		  mpNode(0),
+		  mpData(0)
 	{
 		o->PublishOutPort(this);
 	}
