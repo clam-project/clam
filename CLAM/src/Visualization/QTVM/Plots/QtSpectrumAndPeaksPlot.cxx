@@ -47,7 +47,7 @@ namespace CLAM
 		void QtSpectrumAndPeaksPlot::DisplayBackgroundBlack()
 		{
 			QtSpectrumPlot::DisplayBackgroundBlack();
-			SetPeaksColor(VMColor::Cyan(),VMColor::Red());
+			SetPeaksColor(VMColor::Yellow(),VMColor::Red());
 		}
 
 		void QtSpectrumAndPeaksPlot::DisplayBackgroundWhite()
