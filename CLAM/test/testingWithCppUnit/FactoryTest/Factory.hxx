@@ -10,6 +10,15 @@ namespace CLAM {
 		return new Oscillator;
 	}
 
+/// Error type thrown by Factory classes (Factory, FactoryRegistry)
+class ErrFactory : public Err
+{
+public:
+	ErrFactory(const char* msg) : Err(msg)
+	{}
+
+};
+	
 class FactoryRegistry
 {	
 	typedef Processing* (*CreatorMethod)(void);
@@ -21,18 +30,17 @@ public:
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
 	}
-	void GetCreatorSafe(char*)
+	void GetCreatorSafe(char*) throw (ErrFactory)
 	{
-		return;
+		if ( _creators.begin() == _creators.end() )
+			throw ErrFactory("GetCreatorSafe invoked on an empty registry");
 	}
 private:
 	std::map< RegistryKey, CreatorMethod> _creators;
 };
 
 
-class ErrFactory : public Err
-{
-};
+
 
 } // namespace
 

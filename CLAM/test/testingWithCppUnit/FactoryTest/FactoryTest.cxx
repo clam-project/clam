@@ -39,11 +39,15 @@ private:
 		try {
 			reg.GetCreator("bla");
 
-		} catch( CLAM::ErrAssertionFailed e ) {
+		} catch( CLAM::ErrAssertionFailed& e ) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string("the Factory Registry shouldn't be empty"),
+				std::string( e.what() ) );
 			return;
 		}
 		CPPUNIT_FAIL( "Assert was expected to happen");
 	}
+
 	void testRegistryGetCreatorSafe_WhenIsEmpty()
 	{
 		CLAM::FactoryRegistry reg; // an  empty factory register
@@ -51,7 +55,7 @@ private:
 			reg.GetCreatorSafe("foo");
 		} catch (CLAM::ErrFactory e) {
 			CPPUNIT_ASSERT_MESSAGE("In ErrFactory message:", 
-				"GetCreator invoked in an empty registry", e.what() );
+				"GetCreatorSafe invoked on an empty registry", e.what() );
 			return;
 		}
 		CPPUNIT_FAIL( "it was extected to catch a CLAM::ErrFactory" );
