@@ -37,16 +37,13 @@ namespace CLAM
 
 	/**
 	 * This class is dedicated to find magnitude SpectralPeaks in a given spectral frame.
-	 * The spectral frame has to be in MagPhaseBPF format for the algorithm. All 
-	 * other formats will be converted and will therefore run slower.
+	 * The spectral frame has to be in phase/magnitudes (in dB's) format for the algorithm.
 	 * <p>
 	 * In order to get a better frequency solution, the precise SpectralPeakBinPosition 
-	 * is interpolated. The Magnitude at this interpolated BinPos is calculated 
-	 * by using the second order interpolation of the BPF type, phase is 
-	 * interpolated linearly.
+	 * is interpolated. The Magnitude at this interpolated BinPos is calculated a 3-point 
+	 * curve-fit, phase is interpolated linearly.
 	 * <p>
 	 * The type of the  output is  SpectralPeakArray
-	 *
 	 */
 	class SpectralPeakDetect: public Processing {
 
