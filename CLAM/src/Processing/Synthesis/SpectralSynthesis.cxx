@@ -59,8 +59,6 @@ void SpectralSynthesisConfig::DefaultValues()
 	GetSynthWindowGenerator().SetNormalize(EWindowNormalize::eNone);
 	GetSynthWindowGenerator().SetSize(GetHopSize()*2+1);
 	
-	/* Default frame size is 256*/
-	SetFrameSize(256);
 
 }
 
@@ -115,24 +113,13 @@ int SpectralSynthesisConfig::GetZeroPadding() const
 void SpectralSynthesisConfig::SetHopSize(TSize h)
 {
 	GetSynthWindowGenerator().SetSize(2*h+1);
-	GetOverlapAdd().SetHopSize(h);
-	GetOverlapAdd().SetBufferSize(GetFrameSize()+h);
-}
-
-void SpectralSynthesisConfig::SetFrameSize(TSize f)
-{
-	GetOverlapAdd().SetFrameSize(f);
-	GetOverlapAdd().SetBufferSize(f+GetHopSize());
-}
-
-TSize SpectralSynthesisConfig::GetFrameSize()
-{
-	return GetOverlapAdd().GetFrameSize();
+	//GetOverlapAdd().SetHopSize(h);
+	//GetOverlapAdd().SetBufferSize(GetFrameSize()+h);
 }
 
 TSize SpectralSynthesisConfig::GetHopSize() const
 {
-	return GetOverlapAdd().GetHopSize();
+	return (GetSynthWindowGenerator().GetSize()-1)*0.5;
 }
 
 void SpectralSynthesisConfig::SetSamplingRate(TData sr)
@@ -172,17 +159,18 @@ void SpectralSynthesis::AttachChildren()
 	mPO_AudioProduct.SetParent(this);
 	mPO_CircularShift.SetParent(this);
 	mPO_IFFT.SetParent(this);
-	mPO_OverlapAdd.SetParent(this);
-
+	
 }
 
-SpectralSynthesis::SpectralSynthesis() 
+SpectralSynthesis::SpectralSynthesis():mInput("Input",this,1),
+		mOutput("Output",this,1)
 {
 	Configure(SpectralSynthesisConfig());
 	AttachChildren();
 }
 
-SpectralSynthesis::SpectralSynthesis(const SpectralSynthesisConfig& cfg)
+SpectralSynthesis::SpectralSynthesis(const SpectralSynthesisConfig& cfg):mInput("Input",this,1),
+		mOutput("Output",this,1)
 {
 	Configure(cfg);
 	AttachChildren();
@@ -191,6 +179,12 @@ SpectralSynthesis::SpectralSynthesis(const SpectralSynthesisConfig& cfg)
 SpectralSynthesis::~SpectralSynthesis()
 {
 	
+}
+
+void SpectralSynthesis::Attach(Spectrum& in, Audio &out)
+{
+	mInput.Attach(in);
+	mOutput.Attach(out);
 }
 
 bool SpectralSynthesis::ConfigureChildren()
@@ -208,9 +202,6 @@ bool SpectralSynthesis::ConfigureChildren()
 	if(!mPO_CircularShift.Configure(mConfig.GetCircularShift()))
 		return false;		
 
-	//Overlap and add PO
-	if(!mPO_OverlapAdd.Configure(mConfig.GetOverlapAdd()))
-		return false;
 
 	//instantiate IFFT
 	IFFTConfig IFFTCFG;
@@ -234,8 +225,6 @@ void SpectralSynthesis::ConfigureData()
 	mAudio1.SetSize(mConfig.GetAnalWindowSize()-1);//audio without zeropadding
 	
 	mAudio2.SetSize(mConfig.GetHopSize()*2);//audio used as input of the inverse + triangular windowing 
-	
-	mAudio3.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
 	
 	mSynthWindow.SetSize(mConfig.GetHopSize()*2+1);
 
@@ -287,7 +276,7 @@ bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 
 bool SpectralSynthesis::Do(void)
 {
-	return false;
+	return Do(mInput.GetData(),mOutput.GetData());
 }
 
 
@@ -312,9 +301,7 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 	int centerSample=mAudio1.GetSize()/2;
 	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);
 //Aplying inverse window
-	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);
-//Finally the overlap and add is accomplished
-	mPO_OverlapAdd.Do(mAudio3, out);
+	mPO_AudioProduct.Do(mAudio2, mSynthWindow,out);
 	
 	return true;
 }
