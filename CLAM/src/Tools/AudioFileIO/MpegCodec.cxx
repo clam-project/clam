@@ -5,10 +5,9 @@
 #include "MpegBitstream.hxx"
 #include "MpegAudioStream.hxx"
 #include <mad.h>
-#ifndef HAVE_STANDARD_UNICODE
-#error This platform c++ standard library does not support wchar_t
-#endif
+#ifdef HAVE_STANDARD_UNICODE
 #include <id3/tag.h>
+#endif
 #include <cstdio>
 
 namespace CLAM
@@ -154,8 +153,10 @@ namespace AudioCodecs
 		header.SetChannels( MAD_NCHANNELS(&MPEGFrame.header) );
 	}
 
+
 	void   MpegCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& txt )
 	{
+#ifdef HAVE_STANDARD_UNICODE
 		ID3_Tag fileTag;
 
 		fileTag.Link( uri.c_str() );
@@ -234,7 +235,9 @@ namespace AudioCodecs
 			if ( performerStr != NULL )
 				txt.SetPerformer( performerStr->GetRawText() );
 		}
+#endif
 	}
+
 }
 
 }
