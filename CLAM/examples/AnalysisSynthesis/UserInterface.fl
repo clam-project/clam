@@ -400,18 +400,18 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {154 298 1104 779} type Double color 23 resizable
-      code0 {mWindow2=NULL;} visible
+      xywh {40 125 1104 779} type Double color 23 hide resizable
+      code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
         label {Configuration File}
         private xywh {105 25 985 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
-      Fl_Menu_Bar mMenuBar {
+      Fl_Menu_Bar mMenuBar {open
         private xywh {0 0 1110 20} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input
+          label Input open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -419,6 +419,11 @@ class UserInterface {open
             callback {LoadConfiguration();
 //EditConfiguration();}
             private xywh {5 5 100 20} labelsize 12
+          }
+          menuitem {} {
+            label {Edit Configure...}
+            callback {EditConfiguration();} selected
+            private xywh {15 15 100 20} labelsize 12
           }
           submenu {} {
             label {Analysis Data}
@@ -548,7 +553,7 @@ Exit();}
           private xywh {10 10 100 20} labelfont 13 labelsize 12
         }
       }
-      Fl_Box mSmartTile {selected
+      Fl_Box mSmartTile {
         private xywh {5 50 1095 725} color 23 resizable
         class Fl_Smart_Tile
       }
