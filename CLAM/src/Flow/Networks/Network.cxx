@@ -256,6 +256,15 @@ namespace CLAM
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		return i!=mProcessings.end();
 	}
+	
+	void Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
+	{
+		AssertFlowControlNotNull();
+		ProcessingsMap::iterator it = mProcessings.find( name );
+		Processing * proc = it->second;
+		proc->Configure( newConfig );
+		mFlowControl->ProcessingConfigured(*proc);
+	}
 
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
