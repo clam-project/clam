@@ -115,9 +115,7 @@ namespace CLAM
 
 		bool Do(void)
 		{
-//			CLAM_ASSERT ( false,  "BinaryAudioOperation::Do() : Supervised mode not implemented" );
 			return (Do(mFirstInput.GetData(),mSecondInput.GetData(),mOutput.GetData()));
-//			return false;
 		}
 
 		bool Do(Audio& in1, Audio& in2, Audio& out)
