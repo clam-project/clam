@@ -79,7 +79,7 @@ bool SineSynthesis::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std
 	sscfg.SetSamplingRate( mConfig.GetSampleRate());
 	mSpecSynthPO.Configure(sscfg);
 
-	SynPhaseManagementConfig pmcfg;
+	PhaseManagementConfig pmcfg;
 	pmcfg.SetMaxSines(mConfig.GetMaxSines());
 	pmcfg.SetSamplingRate(mConfig.GetSampleRate());
 	//TODO XA: DYN_ATTRIBUTE(3,public,EPhaseGeneration,Type);

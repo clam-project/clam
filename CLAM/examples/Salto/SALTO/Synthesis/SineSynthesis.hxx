@@ -6,7 +6,7 @@
 #include "Spectrum.hxx"
 #include "CSaltoSynthFrame.hxx"
 #include "SynthSineSpectrum.hxx"
-#include "SynPhaseManagement.hxx"
+#include "PhaseManagement.hxx"
 #include "Parameters.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
@@ -23,8 +23,8 @@ using CLAM::ProcessingConfig;
 using CLAM::DynamicType;
 using CLAM::SynthSineSpectrum;
 using CLAM::SynthSineSpectrumConfig;
-using CLAM::SynPhaseManagement;
-using CLAM::SynPhaseManagementConfig;
+using CLAM::PhaseManagement;
+using CLAM::PhaseManagementConfig;
 using CLAM::Spectrum;
 using CLAM::InControl;
 using CLAM::OutControl;
@@ -119,7 +119,7 @@ private:
 
 	//Sub-Processing
 	SynthSineSpectrum			mSpecSynthPO;
-	SynPhaseManagement          mPhaseManagerPO;
+	PhaseManagement          mPhaseManagerPO;
 	
 	// In and out controls
 
