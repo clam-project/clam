@@ -1,18 +1,21 @@
 2003-03-12  CLAM_0_4_3
 'Fast clean up'
 
-  * DynamicTypes
+  * DynamicTypes:
       ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  to
          compilation problems if you don't use the ugly 'using namespace CLAM;'.
-  * Processing - All
+  * Processing - All:
       ** Concreteconfigure  should  asserts   false  instead  throwing  bad_cast 
          exceptions when a wrong type of configuration is provided.
       ** Provided  a  helper  template  function  'CopyAsConcreteConfig()' to be 
          used in ConcreteConfigure instead using slow dynamic_cast's.
       ** Most Processing in CLAM adapted to use 'CopyAsConcreteConfig'.
-  * Examples
+  * Examples:
       ** Fix:  The Tutorial4 didn't compile  (used  Complex  in  a old fashioned 
          way).
+  * XML:
+      ** Obsoleted constructor receiving the root tag as parameter
+      ** Obsoleted _restoreFrom and dumpOn, use Dump and Restore instead  
 
 2003-03-05  CLAM_0_4_2
 'Cuidado merge update'
