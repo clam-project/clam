@@ -7,6 +7,7 @@
 #include "ConnectionPresentation.hxx"
 #include "OutPortPresentation.hxx"
 #include "InPortPresentation.hxx"
+#include "Processing.hxx"
 
 namespace NetworkGUI
 {
@@ -17,6 +18,7 @@ NetworkPresentation::NetworkPresentation()
 	SetProcessing.Wrap( this, &NetworkPresentation::OnNewProcessing );
 	SetConnection.Wrap( this, &NetworkPresentation::OnNewConnection );
 	SetRemoveConnection.Wrap( this, &NetworkPresentation::OnRemoveConnection );
+	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing);
 }
 
 
@@ -44,6 +46,8 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 	model.AcquireName.Connect(SetName);
 	model.AcquireProcessing.Connect(SetProcessing);
 	model.AcquireConnection.Connect(SetConnection);
+	AddProcessing.Connect(model.AddNewProcessing);
+	
 	CreateNewConnectionFromGUI.Connect(model.CreateNewConnection);
 	RemoveConnectionFromGUI.Connect(model.RemoveConnection);
 }
@@ -100,5 +104,13 @@ std::string NetworkPresentation::GetLastIdentifier( const std::string& str )
 {
 	return str.substr( PositionOfLastIdentifier(str)+1 );
 }
+
+void NetworkPresentation::OnAddNewProcessing( const std::string & name, 
+						 CLAM::Processing * proc)
+{
+	AddProcessing.Emit(name,proc);
+}
+
+
 
 } // namespace NetworkGUI

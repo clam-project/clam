@@ -14,6 +14,7 @@ NetworkController::NetworkController()
 {
 	CreateNewConnection.Wrap(this, &NetworkController::OnNewConnectionFromGUI );
 	RemoveConnection.Wrap(this, &NetworkController::OnRemoveConnectionFromGUI );
+	AddNewProcessing.Wrap(this, &NetworkController::NewProcessingFromGUI );
 }
 	
 void NetworkController::OnNewConnectionFromGUI( const std::string & out, const std::string& in)
@@ -74,6 +75,25 @@ NetworkController::~NetworkController()
 		delete *itc;
 	
 }
+
+
+void NetworkController::NewProcessingFromGUI( const std::string & name, 
+					      CLAM::Processing * proc )
+{
+	std::cout << "added processing " << name << std::endl;
+	mObserved->AddProcessing(name, proc);
+	AddProcessing(name, proc);
+}
+
+void NetworkController::AddProcessing( const std::string & name, CLAM::Processing * proc )
+{
+
+	ProcessingAdapter* adapter = new ProcessingAdapter;
+
+	adapter->BindTo(*proc);
+	mProcessingAdapters.push_back(adapter);
+	AcquireProcessing.Emit(adapter, name);
+}
 	
 bool NetworkController::Publish()
 {
@@ -85,13 +105,8 @@ bool NetworkController::Publish()
 	CLAM::Network::ProcessingsMap::const_iterator it;
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{
-		ProcessingAdapter* adapter = new ProcessingAdapter;
-		CLAM::Processing* processing = it->second;
-		adapter->BindTo(*processing);
-		mProcessingAdapters.push_back(adapter);
-		std::string name = it->first;
-		AcquireProcessing.Emit(adapter, name);
-	} 
+		AddProcessing( it->first,  it->second );
+	}
 
 	CLAM::Network::Nodes::const_iterator itNodes;
 	for(itNodes=mObserved->BeginNodes(); itNodes!=mObserved->EndNodes(); itNodes++)

@@ -11,6 +11,10 @@
 #include <string>
 #include <list>
 
+namespace CLAM
+{
+	class Processing;
+}
 
 namespace CLAMVM
 {
@@ -48,6 +52,7 @@ protected:
 	virtual void OnNewProcessing(CLAMVM::ProcessingAdapter*, const std::string & ) = 0;
 	virtual void OnNewConnection(CLAMVM::ConnectionAdapter* ) = 0;
 	virtual void OnRemoveConnection(const std::string &, const std::string &,ConnectionPresentation*);
+	virtual void OnAddNewProcessing ( const std::string &, CLAM::Processing *);
 
 	// methods related to locate processing
 	OutPortPresentation & GetOutPortPresentationByCompleteName(const std::string &);
@@ -68,7 +73,8 @@ public: //slots
 	//signals
 	SigSlot::Signalv2< const std::string &, const std::string & > CreateNewConnectionFromGUI;
 	SigSlot::Signalv2< const std::string &, const std::string & > RemoveConnectionFromGUI;
-
+	SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
+	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > AddProcessing;
 };
 
 } // namespace NetworkGUI

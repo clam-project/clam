@@ -1,13 +1,16 @@
 
 #ifndef __QT_NETWORKPRESENTATION_HXX__
 #define __QT_NETWORKPRESENTATION_HXX__
-#include <qpushbutton.h>
+
 #include <string>
 #include <qwidget.h>
 #include <qlabel.h>
 #include "NetworkPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+
+#include "FactoryToolBox.hxx"
+
 
 namespace CLAMVM
 {
@@ -52,9 +55,12 @@ public: // slots
 	SigSlot::Signalv1< const QPoint & > AcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > AcquireInPortAfterClickOutPort;
 
+
 private:
 	const std::string GetCompleteNameFromInPortSelected();
 	const std::string GetCompleteNameFromOutPortSelected();
+
+	FactoryToolBox mFactory;
 };
 
 } // namespace NetworkGUI

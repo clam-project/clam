@@ -25,7 +25,7 @@ namespace CLAMVM
 		typedef std::list<ProcessingAdapter*>::iterator ProcessingAdapterIterator;
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
-		
+
 		void OnNewConnectionFromGUI(const std::string &, const std::string &);
 		void OnRemoveConnectionFromGUI(const std::string &, const std::string &);
 	public:
@@ -35,7 +35,9 @@ namespace CLAMVM
 		{
 			return "NetworkController";
 		}
-
+		void AddProcessing( const std::string & , CLAM::Processing *  );
+		void NewProcessingFromGUI( const std::string & , CLAM::Processing * );
+	
 		virtual bool Publish();
 		virtual bool Update();
 		virtual bool BindTo( CLAM::Network&  );

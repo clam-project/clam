@@ -89,7 +89,6 @@ int main( int argc, char **argv )
 
 	QApplication app( argc, argv );
 	NetworkGUI::Qt_NetworkPresentation qtpresentation;
-	qtpresentation.setGeometry( 30, 30, 800, 600 );
 	qtpresentation.AttachTo(controller);
 	controller.Publish();
 	app.setMainWidget( &qtpresentation );
