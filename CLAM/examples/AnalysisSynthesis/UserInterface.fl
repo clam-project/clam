@@ -31,7 +31,7 @@ decl {\#include "Signalv1.hxx"} {public
 decl {\#include "Slotv1.hxx"} {public
 } 
 
-class UserInterface {open selected
+class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
@@ -236,8 +236,9 @@ Exit();}
       Fl_Group {} {
         xywh {5 50 860 470} resizable
       } {
-        Fl_Box mSmartTile {
+        Fl_Box mSmartTile {selected
           private xywh {5 50 860 470}
+          code0 {o->minsize(80);}
           class Fl_Smart_Tile
         }
       }
