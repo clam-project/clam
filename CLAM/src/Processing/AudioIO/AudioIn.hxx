@@ -104,4 +104,4 @@ protected:
 
 
 };//CLAM
-#endif __AudioIn__
+#endif // __AudioIn__
