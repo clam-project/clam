@@ -15,7 +15,67 @@ Package=<4>
 
 ###############################################################################
 
-Project: "CLAM_Skeleton_project"=".\Albert\AlbertBugReproduction.dsp" - Package Owner=<4>
+Project: "ControlAdapterTest"=".\ControlAdapter\ControlAdapter.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ModelControllerTest"=".\ModelController\ModelController.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Signalv1Test"=".\Signalv1\Signalv1Test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SpectralPeaksPresentationTest"=".\SpectralPeaksPresentation\SpectralPeaksPresentationTest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SpectrumPresentationTest"=".\SpectrumPresentation\SpectrumPresentationTest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "XMLAdaptersTest"=".\XMLAdapters\XMLAdaptersTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
