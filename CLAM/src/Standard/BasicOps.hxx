@@ -15,20 +15,21 @@ using std::inner_product;
 using std::mem_fun;
 
 
-/** @todo: 
+/** 
+ @file BasicOps.cxx
+ @todo 
 - There a lot of hacks because of Visual C++ compiler, could be optimized and cleaned-up
 	making use of partial specialization. 
 - It is still not clear whether the "abs" aspect should be promoted later on to the argument
 	list.
-*/
+ * Note: the "abs" aspect present in many of the operations means whether the statistic should
+ *	be performed directly on the values (by default or when abs=false) or whether the statistic
+ *	should be computed on the absolute value
+ */
 
 namespace CLAM {
 
 
-/** Note: the "abs" aspect present in many of the operations means whether the statistic should
- *	be performed directly on the values (by default or when abs=false) or whether the statistic
- *	should be computed on the absolute value
- */
 
 namespace Implementation {}
 
