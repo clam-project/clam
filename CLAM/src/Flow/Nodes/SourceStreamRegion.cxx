@@ -88,11 +88,10 @@ namespace CLAM {
 	
 	void SourceStreamRegion::Init(unsigned int offset)
 	{
-		unsigned int realOffset=Chop(FindLargestReadRegionLength()*0.5)+offset;
-		unsigned int hopsInHalfWindow=Chop(realOffset/mHop);
+		unsigned int realOffset = Chop( FindLargestReadRegionLength()*0.5f ) + offset;
+		unsigned int hopsInHalfWindow = realOffset / mHop;
 
-		int i;
-		for(i=0;i<hopsInHalfWindow;i++)
+		for(unsigned int i=0; i<hopsInHalfWindow; i++)
 		{
 			Activate();
 			//Would have to make sure that zeros are here
