@@ -110,8 +110,7 @@ namespace CLAM
 			}
 
 			TData globalTempo, globalTick;
-			//Beat centering method 1
-			//globalTempo = beats[1].GetPosition()-beats[0].GetPosition(); 
+
 			//Beat centering method 3 (mean IBI)
 			globalTempo = .0; 
 			for (int i=0;i<beats.Size()-1;i++) 
@@ -131,11 +130,7 @@ namespace CLAM
 			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
 				segments.AddElem(beats[i].GetPosition()*sampleRate
 						 -globalTempo*sampleRate/2);
-			//Beat index recentering method 2
-/*			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
-			segments.AddElem((beats[i].GetPosition()+
-			beats[i-1].GetPosition())*sampleRate/2);
-*/
+
 			//mSegment.SetAudio(audioIn);
 			mSegment.SetHoldsData(true);
 			//mSegmentD.SetpSegment(&mSegment);
@@ -168,16 +163,13 @@ namespace CLAM
 			
 			//-------Compute ACFs------------
 			Array<TData> seq,acf;
-			for (int i=0;i<segments.Size()-1;i++) {
+			for (int i=0;i<segments.Size()-1;i++) 
+			{
 				//temporal centroid mapped to values between 0 and 1
 				seq.AddElem(segDList[i].GetAudioD().GetTemporalCentroid()
 					    / (segments[i+1]-segments[i]));
 			}
-#if 0
-			std::cout<<"temp cent between 0 and 1"<<std::endl;
-			for(int i=0;i<segments.Size()-1;i++) 
-				std::cout<<seq[i]<<"\n";
-#endif
+
 			mACF.Do(seq,acf);
 			
 			//-------Compute feature M------------
@@ -200,11 +192,13 @@ namespace CLAM
 			
 			//--------Final decision--------------
 			dataOut.SetDenominator(4);
-			if(M<-0.000665) {
+			if(M<-0.000665) 
+			{
 				dataOut.SetNumerator(3);
 				std::cout<<"Triple meter"<<std::endl;
 			}
-			else {
+			else 
+			{
 				dataOut.SetNumerator(4);
 				std::cout<<"Duple meter"<<std::endl;
 			}
