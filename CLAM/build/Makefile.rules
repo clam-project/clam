@@ -43,7 +43,7 @@ $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 moc/%_moc.cxx:
 	@mkdir -p moc
@@ -65,7 +65,7 @@ $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 moc/%_moc.cxx:
 	@mkdir -p moc

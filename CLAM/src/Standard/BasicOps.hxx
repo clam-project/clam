@@ -22,8 +22,7 @@ using std::mem_fun;
 	list.
 */
 
-namespace CLAM{
-
+namespace CLAM {
 
 
 /** Note: the "abs" aspect present in many of the operations means whether the statistic should
