@@ -33,7 +33,8 @@ protected:
 
 		virtual void Bind( Aspect& ) throw (std::bad_cast);
 
-		// callback methods to retrieving data from the view
+		// callback methods to retrieving data from the vie
+//public slots:
 		virtual void HandleIncomingBuffer( const DataArray& array );
 		virtual void HandleIncomingDuration(  TTime secs );
 		virtual void HandleIncomingStartTime(  TTime secs );

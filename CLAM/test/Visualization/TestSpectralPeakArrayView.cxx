@@ -1,56 +1,54 @@
-#include "Audio.hxx"
-#include "AudioView.hxx"
+#include "SpectralPeakArray.hxx"
+#include "SpectralPeakArrayView.hxx"
+#include "StdioSpectralPeakArrayPresentation.hxx"
 #include "XMLStorage.hxx"
-#include "StdioAudioPresentation.hxx"
 #include "Err.hxx"
 #include <iostream>
 #include <exception>
+#include <string>
 
-using CLAM::Audio;
+using CLAM::SpectralPeakArray;
 using CLAM::XMLStorage;
-using CLAMGUI::AudioView;
-using CLAMGUI::StdioAudioPresentation;
+using CLAMGUI::SpectralPeakArrayView;
+using CLAMGUI::StdioSpectralPeakArrayPresentation;
 
-static const char* sPathToData="./DataSets/";
+static const char* sPathToData = "./DataSets/";
 
-bool TestBasicUseCase( AudioView& view, StdioAudioPresentation& presentation )
+bool TestBasicUseCase( SpectralPeakArrayView& view, StdioSpectralPeakArrayPresentation& presentation )
 {
+		XMLStorage x;
+		SpectralPeakArray    specPeakArrayObj;
 		
-		XMLStorage  x;
-		Audio       audioObj;
-
-		std::string filename = "Audio_2.xml";
+		std::string filename = "SpectralPeakArray.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;
 
-		x.Restore( audioObj, pathToFile );
+		x.Restore( specPeakArrayObj, pathToFile );
 
-		// View and Presentation now talk with each other
-
-		view.BindTo( &audioObj );
+		view.BindTo( &specPeakArrayObj );
 
 		view.Refresh();
 		presentation.Show();
-		
+
 		return true;
 }
 
-
 int main( int argc, char** argv )
 {
-		AudioView                   view;
-		StdioAudioPresentation      presentation;
-
-		presentation.AttachTo( view );
-
 		try
 		{
-				if ( !TestBasicUseCase( view, presentation) )
+				SpectralPeakArrayView                view;
+				StdioSpectralPeakArrayPresentation   presentation;
+
+				presentation.AttachTo( view );
+
+				std::cerr << "BASIC SPECTRAL PEAK ARRAY USE CASE TEST LAUNCHED" << std::endl;
+				if ( !TestBasicUseCase( view, presentation ) )
 						std::cerr << "Basic Use case Test...... FAILED!" << std::endl;
 				else
 						std::cerr << "Basic Use case Test...... Passed!" << std::endl;
-				
+
 		}
 		catch ( CLAM::Err& e )
 		{
