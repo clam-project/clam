@@ -224,12 +224,12 @@ TData SpectralPeakDescriptors::ComputeOddHarmonics()
 	const unsigned size=mpSpectralPeakArray->GetnPeaks();
 	if (size<3) return 0;
 	const DataArray& data=mpSpectralPeakArray->GetMagBuffer();
-	DataArray odd;
+	TData oddEnergy = 0.0;
 	for (unsigned i=2;i<size;i+=2)
 	{
-		odd.AddElem(data[i]);
+		oddEnergy+=data[i]*data[i];
 	}
-	return Energy()(odd)/mpStats->GetEnergy();
+	return oddEnergy/mpStats->GetEnergy();
 }
 
 TData SpectralPeakDescriptors::ComputeEvenHarmonics()
@@ -237,13 +237,12 @@ TData SpectralPeakDescriptors::ComputeEvenHarmonics()
 	const unsigned size=mpSpectralPeakArray->GetnPeaks();
 	if (size<2) return 0;
 	const DataArray& data=mpSpectralPeakArray->GetMagBuffer();
-	DataArray even;
+	TData evenEnergy = 0.0;
 	for (unsigned i=1;i<size;i+=2)
 	{
-		even.AddElem(data[i]);
+		evenEnergy+=data[i]*data[i];
 	}
-	return Energy()(even)/mpStats->GetEnergy();
-
+	return evenEnergy/mpStats->GetEnergy();
 }
 
 TData SpectralPeakDescriptors::ComputeOddToEvenRatio()
