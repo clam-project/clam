@@ -8,6 +8,8 @@
 #include <id3/tag.h>
 #include <cstdio>
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 namespace CLAM
 {
@@ -170,6 +172,40 @@ namespace AudioCodecs
 		if ( !handle ) // File doesn't exists / not readable
 			return;
 
+		struct stat fileStats;
+
+		if ( stat( uri.c_str(), &fileStats ) != 0 )
+		{
+			// Error reading stats from file
+			fclose(handle);
+			return;
+		}
+
+		unsigned long fileLength = fileStats.st_size;
+		
+		if ( fseek( handle, -128, SEEK_END ) < 0 )
+		{
+			/* File empty */
+			fclose(handle);
+			return;
+		}
+
+		char buffer[3];
+
+		if ( fread( buffer, 1, 3, handle ) != 3 )
+		{
+			fclose(handle);
+			return;
+		}
+
+		if ( !strncmp( buffer, "TAG", 3 ) )
+		{
+			fileLength -=128;
+		}
+
+		fclose( handle );
+		handle = fopen( uri.c_str(), "rb" );
+
 		hdr.AddSampleRate();
 		hdr.AddChannels();
 		hdr.AddFormat();
@@ -244,19 +280,22 @@ namespace AudioCodecs
 
 		if ( !isVBR )
 		{
-			double time = ( 40. * 8192. ) / bitstream.CurrentFrame().header.bitrate;
+			double time = ( fileLength * 8.0 ) / bitstream.CurrentFrame().header.bitrate;
 			double timeFrac = (double)time - ((long)(time));
 			long   nsamples = 32 * MAD_NSBSAMPLES(&bitstream.CurrentFrame().header); // samples per frame
 			numFrames = ( long) ( time * bitstream.CurrentFrame().header.samplerate / nsamples );
 			
 			mad_timer_set( &madFmtTime, (long)time, (long)(timeFrac*100), 100 );
 
-			if ( hasXingHeader )
-			{
-				mad_timer_multiply( &bitstream.CurrentFrame().header.duration,
-						    numFrames );
-				madFmtTime = bitstream.CurrentFrame().header.duration;
-			}
+			bitstream.Finish();
+
+			hdr.SetLength( (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS ) );
+		}
+		else if ( hasXingHeader )
+		{
+			mad_timer_multiply( &bitstream.CurrentFrame().header.duration,
+					    numFrames );
+			madFmtTime = bitstream.CurrentFrame().header.duration;
 
 			bitstream.Finish();
 
