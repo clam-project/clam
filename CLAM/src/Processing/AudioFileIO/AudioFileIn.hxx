@@ -63,7 +63,7 @@ class SoundFileIO;
 
 		AudioFileIn(const AudioFileConfig &c);
 
-		OutPortTmpl<Audio> Output;
+		OutPortTmpl<Audio> mOutput;
 
 		virtual ~AudioFileIn();
 
@@ -71,7 +71,7 @@ class SoundFileIO;
 		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		void Attach(Audio& out) {Output.Attach(out);}
+		void Attach(Audio& out) {mOutput.Attach(out);}
 
 		/** Supervised-mode Do function.
 		 */
