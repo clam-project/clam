@@ -42,6 +42,7 @@ LIBRARIES_DEBUG = \
 	$(USE_QT?@QT_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@) \
 	$(USE_CPPUNIT?cppunit) \
+	$(USE_CPPUNIT?$(USE_QT?qttestrunner:):) \
 	$(USE_PTHREADS?pthread) \
 	$(USE_FLTK?@FLTK_LIBS@) \
 	$(USE_SNDFILE?@SNDFILE_LIBS@) \
@@ -57,6 +58,7 @@ LIBRARIES_RELEASE = \
 	$(USE_QT?@QT_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@) \
 	$(USE_CPPUNIT?cppunit) \
+	$(USE_CPPUNIT?$(USE_QT?qttestrunner:):) \
 	$(USE_PTHREADS?pthread) \
 	$(USE_SNDFILE?@SNDFILE_LIBS@) \
 	$(USE_OGGVORBIS?@OGGVORBIS_LIBS@) \
@@ -83,6 +85,9 @@ DEFINES = \
 	@DEFINE_HAVE_STANDARD_UNICODE@ \
 	$(USE_RTAUDIO?__LINUX_ALSA__) \
 	$(COMMON_DEFINES) \
+
+TEST_RUNNER = \
+	$(CLAM_PATH)/test/UnitTests/TestRunner$(USE_QT?Qt:Console).cxx
 
 PROGRAM = $(IS_LIBRARY?lib$(PROGRAM).so:$(PROGRAM))
 
