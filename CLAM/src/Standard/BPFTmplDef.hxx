@@ -309,6 +309,14 @@ namespace CLAM
 				mOrder=Size()-1;
 				break;
 			}
+			case(EInterpolation::eSpline ): // MRJ: Nice refactoring, but forgot about the Spline...
+			{
+				return;
+			}
+			default:
+			{
+				CLAM_ASSERT( false, "Unsupported interpolation method" );
+			}
 		}
 		const unsigned newSize = mOrder+1;
 		mc.Resize(newSize);
@@ -392,7 +400,6 @@ namespace CLAM
 			case(EInterpolation::ePolynomialn):/*nth order polynomial interpolation where n is number
 				of points in the BPF-1*/
 			{
-				TIndex i;
 				Array<TIndex> indexArray(mArray.Size());
 				TData error=0;
 				for(TIndex i=0; i<mArray.Size(); i++)
