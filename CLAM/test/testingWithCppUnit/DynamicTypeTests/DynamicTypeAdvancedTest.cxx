@@ -195,9 +195,11 @@ void DynamicTypeAdvancedTest::VisitorsToDTWithArrays()
 void DynamicTypeAdvancedTest::VisitorsToDTTrees()
 {
 	DynAlt o;
-	o.AddAll(); o.UpdateData();
+	o.Populate();
 	Dyn & p = o.GetSubDyn();
-	p.AddAll(); p.UpdateData();
+	p.Populate();
+	p.Modify(5);
+	
 
 	MyVisitorToInt visitorToInt;
 	o.VisitAll(visitorToInt);	
@@ -206,12 +208,12 @@ void DynamicTypeAdvancedTest::VisitorsToDTTrees()
 		"ToInt Visiting 'Int' Type int Value: 0\n"
 		"ToInt Visiting 'MyA' Component\n"
 		"ToInt Visiting 'MyB' Component\n"
-		"ToInt Visiting 'MoreInt' Type int Value: 0\n"
+		"ToInt Visiting 'MoreInt' Type int Value: 100\n"
 		"ToInt Visiting 'SubDyn' Dynamic Type\n"
-		"ToInt Visiting 'Int' Type int Value: 0\n"
+		"ToInt Visiting 'Int' Type int Value: 5\n"
 		"ToInt Visiting 'MyA' Component\n"
 		"ToInt Visiting 'MyB' Component\n"
-		"ToInt Visiting 'MoreInt' Type int Value: 0\n"
+		"ToInt Visiting 'MoreInt' Type int Value: 105\n"
 		"ToInt Visiting 'SubDyn' Dynamic Type\n" ),
 		visitorToInt.GetLog() );
 
@@ -222,7 +224,7 @@ void DynamicTypeAdvancedTest::VisitorsToDTTrees()
 		"ToFloat Visiting 'Int' Type float Value: 0\n"
 		"ToFloat Visiting 'MyA' Component\n"
 		"ToFloat Visiting 'MyB' Component\n"
-		"ToFloat Visiting 'MoreInt' Type float Value: 0\n"
+		"ToFloat Visiting 'MoreInt' Type float Value: 100\n"
 		"ToFloat Visiting 'SubDyn' Component\n" ),
 		visitorToFloat.GetLog() );
 
