@@ -39,35 +39,39 @@ namespace CLAM
 class XercesDom2ClamObjects : public Storage
 {
 	XercesDomDocumentHandler _document;
-	XercesDomReadingContext _rootContext;
+	XercesDomReadingContext * _rootReadContext;
 	XercesDomReadingContext * _readContext;
 
 public:
-	XercesDom2ClamObjects(xercesc::DOMDocument * document)
-		: _rootContext(document->getDocumentElement())
+	XercesDom2ClamObjects()
 	{
-		_readContext=&_rootContext;
+		_rootReadContext = 0;
+		_readContext = 0;
 	}
 	~XercesDom2ClamObjects()
 	{
+		if (_rootReadContext)
+			delete _rootReadContext;
 	}
 public:
-#ifdef NEVERDEFINED
-	// Solo este codigo del load esta cppunitao
-	bool Load(Storable & storable)
+	/*
+	void setDocument(xercesc::DOMDocument * document)
 	{
-		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
-		if (xmlable->IsXMLElement())
-		{
-			if (!_readContext->findElement(xmlable->XMLName()))
-				return false;
-		}
-		return xmlable->XMLContent(_readContext->reachableContent());
+		_document.setDocument(document);
+		_rootReadContext = new XercesDomReadingContext(_document);
+		_readContext=_rootReadContext;
 	}
-#endif
+	*/
+	void Read(std::istream & is)
+	{
+		_document.read(is);
+		_rootReadContext = new XercesDomReadingContext(_document);
+		_readContext=_rootReadContext;
+	}
 	void Store(const Storable & storable)
 	{
 	}
+
 	bool Load(Storable & storable)
 	{
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
@@ -76,6 +80,19 @@ public:
 		if (xmlable->IsXMLText())
 			return LoadContentAndChildren(xmlable);
 
+		if (xmlable->IsXMLElement())
+		{
+			if (!_readContext->findElement(xmlable->XMLName()))
+				return false;
+			XercesDomReadingContext innerContext(_readContext, xmlable->XMLName());
+			_readContext = &innerContext;
+			LoadContentAndChildren(xmlable);
+			_readContext = innerContext.release();
+		//	addErrors(innerContext.errors());
+			return true;
+		}
+
+		// TODO: Test Attributes
 		if (xmlable->IsXMLAttribute())
 		{
 			std::stringstream stream;
@@ -84,19 +101,9 @@ public:
 			return xmlable->XMLContent(stream);
 		}
 
-		if (xmlable->IsXMLElement())
-		{
-			if (!_readContext->findElement(xmlable->XMLName())) return false;
-			XercesDomReadingContext innerContext(_readContext, xmlable->XMLName());
-			_readContext = & innerContext;
-			LoadContentAndChildren(xmlable);
-			_readContext = innerContext.release();
-		//	addErrors(innerContext.errors());
-			return true;
-		}
-
 		CLAM_ASSERT(false, "A weird XMLable inserted");
 	}
+
 	bool LoadContentAndChildren(XMLable* xmlable)
 	{
 		bool result = xmlable->XMLContent(_readContext->reachableContent());
