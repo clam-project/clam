@@ -23,6 +23,9 @@
 #define _XercesDomWritingContext_hxx_
 
 #include "XercesDomDocumentHandler.hxx"
+
+#ifdef CLAM_USE_XML
+
 #include <xercesc/dom/DOMText.hpp>
 
 namespace CLAM
@@ -69,6 +72,39 @@ public:
 };
 
 }
+
+#else // Xerces-less implementation
+
+namespace CLAM
+{
+
+class XercesDomWritingContext
+{
+	XercesDomWritingContext * _parent;
+public:
+	XercesDomWritingContext(XercesDomDocumentHandler & docHandler)
+	{
+	}
+
+	XercesDomWritingContext(XercesDomWritingContext * parent, const char * name)
+	{
+	}
+
+	XercesDomWritingContext * release()
+	{
+	}
+	
+	void addAttribute(const char * name, const char * value)
+	{
+	}
+	void addContent(const char * content)
+	{
+	}
+};
+
+}
+
+#endif//CLAM_USE_XML
 
 
 #endif//_XercesDomWritingContext_hxx_

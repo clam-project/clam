@@ -20,10 +20,15 @@
  */
 #ifndef _XercesDomDocumentHandler_hxx_
 #define _XercesDomDocumentHandler_hxx_
+
+#ifdef CLAM_USE_XML
+
 #include "XercesDomReader.hxx"
 #include "XercesDomWriter.hxx"
 #include "XercesEncodings.hxx"
 #include "XercesInitializer.hxx"
+
+
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
@@ -106,6 +111,38 @@ public:
 
 }
 
+#else // No CLAM_USE_XML
+namespace CLAM
+{
+
+class XercesDomDocumentHandler
+{
+public:
+	XercesDomDocumentHandler()
+	{
+		CLAM_ASSERT(false, "Using XML but not linked");
+	}
+	~XercesDomDocumentHandler()
+	{
+	}
+	void selectPath(const char * path){}
+	void create(const char * rootName)
+	{
+	}
+	void read(std::istream & stream)
+	{
+	}
+	void writeDocument(std::ostream & os)
+	{
+	}
+	void writeSelection(std::ostream & os)
+	{
+	}
+};
+
+}
+
+#endif//CLAM_USE_XML
 
 #endif//_XercesDomDocumentHandler_hxx_
 
