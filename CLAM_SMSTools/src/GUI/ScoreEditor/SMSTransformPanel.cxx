@@ -116,7 +116,7 @@ SMSScoreEditor::SMSScoreEditor()
 	Fl_Window* w;
 
 	{
-		Fl_Window* o = mMainWindow = new Fl_Window(890, 475, "SMS - Transformation Score Edition");
+		Fl_Window* o = mMainWindow = new Fl_Window(890, 475, "SMS Tools 2 - SMS Transformation Score Editor");
 		w = o;
 		o->box(FL_FLAT_BOX);
 		o->user_data((void*)(this));
