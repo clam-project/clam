@@ -302,7 +302,7 @@ mWindow2=NULL;} open
         private xywh {110 115 230 20}
       }
       Fl_Box {} {
-        label {CLAM Release 0.5 beta 3} selected
+        label {CLAM Release 0.5 beta 4} selected
         private xywh {5 145 440 30} box FLAT_BOX labelfont 3 labelcolor 0
       }
     }
