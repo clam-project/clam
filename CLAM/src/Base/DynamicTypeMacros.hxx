@@ -233,6 +233,9 @@ private: \
 		static_cast<__Ty*>(p)->~__Ty();\
 	}\
 	\
+/** This declaration to detect compile-time-err of repeated attribute IDs(num), without having to relay in templates*/\
+	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
+	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
 		CLAM_DEBUG_ASSERT((N<numAttr), \
