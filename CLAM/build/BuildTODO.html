@@ -189,7 +189,7 @@
 	<TD>ArrayTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
@@ -197,9 +197,9 @@
 </TR>
 <TR>
 	<TD>ArrayTest2</TD>
-	<TD>No</TD>
-	<TD>No</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
@@ -209,27 +209,27 @@
 	<TD>ComplexTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>This test is not very informative to decide if the class is working or not.</TD>
 </TR>
 <TR>
 	<TD>BPFTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Weird thing here: The release version loaded the BPF fine, but the debug version didn't, without signaling any kind of error condition.</TD>
 </TR>
 <TR>
 	<TD>FlagsTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
@@ -239,7 +239,7 @@
 	<TD>ListTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
@@ -249,51 +249,51 @@
 	<TD>PointTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Another of the not much informative tests...</TD>
 </TR>
 <TR>
 	<TD>PolarTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Another of the not much informative tests...</TD>
 </TR>
 <TR>
 	<TD>AudioFileIOTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Seems to work fine, but it is not very informative...</TD>
 </TR>
 <TR>
 	<TD>AudioPlayerTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Supervised test.</TD>
 </TR>
 <TR>
 	<TD>DelayPoolTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>It seemed to work: is not informative enough ( it did not prompt any kind of message at all, thing I suppose means 'OK').</TD>
 </TR>
 <TR>
 	<TD>EnvelopeExtractorTest</TD>
@@ -309,11 +309,11 @@
 	<TD>FDFilterGenTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>See mantis bug ID#0000112</TD>
 </TR>
 <TR>
 	<TD>FFTTest</TD>
@@ -323,7 +323,7 @@
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD></TD>
+	<TD>Unable to execute since regression data is not available at CVS ( at least ). See mantis ID#0000194.</TD>
 </TR>
 <TR>
 	<TD>IFFTTest</TD>
@@ -333,7 +333,7 @@
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD></TD>
+	<TD>Unable to execute since regression data is not available at CVS ( at least ). See mantis ID#0000194.</TD>
 </TR>
 <TR>
 	<TD>MIDIIOTest</TD>
@@ -343,53 +343,53 @@
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD></TD>
+	<TD>Unable to execute due to hardware problems ( my board chipset has to be told to enable the MIDI port... )</TD>
 </TR>
 <TR>
 	<TD>POCompositeTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Not very informative.</TD>
 </TR>
 <TR>
 	<TD>SpectrumAdderTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Only passes when CLAM_DOUBLE is activated</TD>
 </TR>
 <TR>
 	<TD>SpectrumAdder2Test</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Only passes when CLAM_DOUBLE is activated</TD>
 </TR>
 <TR>
 	<TD>SegmentTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Not working.</TD>
 </TR>
 <TR>
 	<TD>SpectrumTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
