@@ -59,9 +59,8 @@ namespace CLAM {
 		DYN_ATTRIBUTE (15,public, Array<TData>, MFCC);
 		DYN_ATTRIBUTE (16,public, Array<TData>, BandEnergy);
 		DYN_ATTRIBUTE (17,public, TData, MaxMagFreq); 
-		// Frequency of the maximun of the spectrum normalized by the spectral range
+		/** Frequency of the maximun of the spectrum normalized by the spectral range */
 		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
-
 		/**
 		 * The spectral spread is the variation of the spectrum
 		 * around its mean value. It's computed from the second
@@ -69,7 +68,6 @@ namespace CLAM {
 		 */
 		DYN_ATTRIBUTE (19,public, TData, Spread);
 		DYN_ATTRIBUTE (20,public, TData, Skewness);
-
 		/**
 		 * The spectral roll-off point is the frequency so that 85%
 		 * of the signal energy is contained below this
@@ -77,7 +75,6 @@ namespace CLAM {
 		 * found. Measured in Hz.
 		 */
 		DYN_ATTRIBUTE (21,public, TData, Rolloff); 
-
 		/**
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
