@@ -625,20 +625,20 @@ namespace CLAM
 	{
 		int iClosest=1;
 		TX dif=Abs(x-GetXValue(closestPointsIndex[0]));
-		
-		for(int i=1;i<=mOrder+1;i++)
+
+		for(int i=0;i<mOrder+1;i++)
 		{
-			TX dift=Abs(x-GetXValue(closestPointsIndex[i-1]));
+			TX dift=Abs(x-GetXValue(closestPointsIndex[i]));
 			if(dift<dif)
 			{
-				iClosest=i;
+				iClosest=i+1;
 				dif=dift;
 			}
 
-			md[i-1]=mc[i-1]=GetValueFromIndex(closestPointsIndex[i-1]);
-			
+			md[i]=mc[i]=GetValueFromIndex(closestPointsIndex[i]);
+
 		}
-	
+
 		TY y=GetValueFromIndex(closestPointsIndex[iClosest-1]);
 		iClosest--;
 		for(int m=1;m<mOrder+1;m++)
