@@ -185,10 +185,6 @@ TData AudioDescriptors::ComputeDecrease()
 	DataArray&  data     = mpAudio->GetBuffer();
 	const TSize dataSize = mpAudio->GetSize();
 
-	DataArray logEnv;
-	logEnv.Resize(dataSize);
-	logEnv.SetSize(dataSize);
-
 	// Compute 20Hz lowpass filter coefficients
 	const double omega_c = 2*PI*20/mpAudio->GetSampleRate();
 	const double alpha   = (1-sin(omega_c)) / cos(omega_c);
@@ -199,40 +195,37 @@ TData AudioDescriptors::ComputeDecrease()
 	// Find maximum value
 	double y = b0*fabsf(data[0]);
 	TData correctedY = y<mEpsilon ? mEpsilon : y;
-	logEnv[0] = log10(correctedY);
+	double logEnv = log10(correctedY);
 
-	TData maxVal = logEnv[0];
+	TData maxVal = logEnv;
 	TSize maxIdx = 0;
+	double sumXX = 0;
+	double sumY = 0;
+	double sumXY = 0;
 
 	for (TIndex i=1; i<dataSize; i++)
 	{
-		y = b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*y;
+		y = b0*(fabsf(data[i-1]) + fabsf(data[i])) - a1*y;
 		correctedY = y<mEpsilon ? mEpsilon : y;
-		logEnv[i] = log10(correctedY);
+		logEnv = log10(correctedY);
 
-		if (logEnv[i] > maxVal)
+		if (logEnv > maxVal)
 		{
-			maxVal = logEnv[i];
+			maxVal = logEnv;
 			maxIdx = i;
+			sumXX = 0;
+			sumY = 0;
+			sumXY = 0;
 		}
+		sumY += logEnv;
+		sumXY += i*logEnv;
+		sumXX += i*i;
 	}
 
 	// Compute means and gradient of decay part
-	TData sumX = 0;
-	TData sumXX = 0;
-	TData sumY = 0;
-	TData sumXY = 0;
 	const long N = dataSize - maxIdx;
+	TData sumX = N*(N + 2*maxIdx - 1)/2;
 
-	for (TIndex i=maxIdx; i<dataSize; i++)
-	{
-		sumX += i;
-		sumY += logEnv[i];
-
-		sumXY += i*logEnv[i];
-		sumXX += i*i;
-	}
-	sumX = N*(N + 2*maxIdx - 1)/2;
 	TData num = N * sumXY - sumX * sumY;
 	TData den = N * sumXX - sumX * sumX;
 
