@@ -70,7 +70,7 @@ void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
 	mpStats=0;
 }
 
-inline const Spectrum* SpectralDescriptors::GetpSpectrum() const {
+const Spectrum* SpectralDescriptors::GetpSpectrum() const {
 	return mpSpectrum;
 }
 

@@ -58,7 +58,7 @@ void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
 	mpFrame=copied.mpFrame;
 }
 
-inline const Frame* FrameDescriptors::GetpFrame() const {
+const Frame* FrameDescriptors::GetpFrame() const {
 	return mpFrame;
 }
 
