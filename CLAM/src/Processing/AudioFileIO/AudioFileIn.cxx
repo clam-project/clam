@@ -323,11 +323,11 @@ bool AudioFileIn::ConcreteStop()
 
 
 
-bool AudioFileIn::Done(void)
+bool AudioFileIn::Done() const
 {
 	return mpSoundFileIO->Tell()>=mpSoundFileIO->Size();
 }
-int AudioFileIn::Size()
+int AudioFileIn::Size() const
 {
 	return mpSoundFileIO->Size();
 }
