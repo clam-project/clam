@@ -10,6 +10,8 @@ class Fl_Help_View;
 
 namespace CLAMVM
 {
+	class Fl_SMS_Harmonizer;
+	
 	class SMSHarmonizerConfigurator : public SMSConfigurator
 	{
 	public:
@@ -29,6 +31,7 @@ namespace CLAMVM
 	protected:
 		
 		Fl_Help_View*                 mHelpWidget;
+		Fl_SMS_Harmonizer*            mEditorWidget;
 		CLAM::SMSTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
