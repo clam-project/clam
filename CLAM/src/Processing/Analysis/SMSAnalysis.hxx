@@ -91,8 +91,9 @@ public:
 	TData GetSamplingRate() const;
 
 /** Initial offset that is applied to analysis frame computed from windowSize and hopSize*/
-	TSize GetInitialOffset();
+	TSize GetInitialOffset() const;
 
+	TSize GetHopsInBiggerWindow() const;
 
 private:
 
@@ -155,20 +156,10 @@ private:
 	Spectrum mSinSpec;
 /** object only used for initializing frames */	
 	Fundamental mFund;
-	/** Internal Circular Buffer Processing for overlap 
- *  @see AudioCircularBuffer  */
-	AudioCircularBuffer mSinCircularBuffer;
-	AudioCircularBuffer mResCircularBuffer;
 
 	//Trying to use stream buffers
-//	AudioStreamBuffer<CircularStreamImpl<TData> > mSinStreamBuffer;
-//	AudioStreamBuffer<CircularStreamImpl<TData> > mResStreamBuffer;
-	
 	AudioStreamBuffer<CircularStreamImpl<TData> > mStreamBuffer;
 	
-//	WriteStreamRegion* mSinWriter;
-//	WriteStreamRegion* mResWriter;
-
 	WriteStreamRegion* mWriter;
 	ReadStreamRegion* mSinReader;
 	ReadStreamRegion* mResReader;
