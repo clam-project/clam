@@ -52,13 +52,7 @@ private:
 
 
 	CPPUNIT_TEST_SUITE_END();
-	
-	//fixture attributes
-	CLAM::InControl _receiverLeft;
-	CLAM::InControl _receiverRight;
-	CLAM::AutoPanner _controlSender;
-	const double _delta;
-
+public:
 	AutoPannerTest()
 		: _receiverLeft("Receiver Left"),
 		  _receiverRight("Receiver Right"),
@@ -68,6 +62,13 @@ private:
 		// this configuration
 	{
 	}
+
+private:
+	//fixture attributes
+	CLAM::InControl _receiverLeft;
+	CLAM::InControl _receiverRight;
+	CLAM::AutoPanner _controlSender;
+	const double _delta;
 
 	void testDo_WhenFreqEqualSamplingRateAndNoPhase()
 	{

@@ -39,6 +39,7 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	
 	CPPUNIT_TEST_SUITE_END();
 
+public:
 	// void implementation the pure virtual methods of processing
 	ProcessingTest() : 
 		_inControl("in", this), 
@@ -51,6 +52,7 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 		_outPort2("out2",this,0/*length*/)
 	{};
 
+private:
 	// using testing pattern Self Shunt (make the fixture be a Processing under test)
 	bool ConcreteConfigure(const CLAM::ProcessingConfig&) { return false; }
 	const CLAM::ProcessingConfig &GetConfig() const {

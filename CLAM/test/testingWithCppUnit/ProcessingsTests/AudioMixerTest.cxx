@@ -72,7 +72,7 @@ public:
 		_mixer.GetOutPorts().Get("Output Audio").Attach(_outAudio);
 	}
 
-private:
+public:
 	AudioMixerTest()
 		: _out1("Sender left"),
 		  _out2("Sender right"),
@@ -80,6 +80,7 @@ private:
 	{		
 	}
 
+private:
 	void testDo_WhenControlsGivesEqualValue()
 	{
 		_inAudio1.GetBuffer()[0] = 1;
