@@ -6,7 +6,7 @@ int main()
 {
 	System s(
 		"snd.wav" /* file in */,
-		"curtout.wav" /* file out */, 
+		"nonsupervisedsystem.wav" /* file out */, 
 		512 /* frame size */, 
 		5000 /* frames to compute*/ );
 
