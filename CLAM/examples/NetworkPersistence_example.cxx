@@ -110,10 +110,7 @@ int main( int argc, char** argv )
 		}
 
 		// the first step to passivate the network is create an storage object
-		CLAM::XMLStorage savingObject;
-		// now we can store the network to the file choosed before. Before this step, we set indentation to create a file user-readable
-		savingObject.UseIndentation( true );
-		savingObject.Dump( *network, "network", networkFileName );
+		CLAM::XMLStorage::Dump( *network, "network", networkFileName );
 
 		// ok, we just stored it. You can take a look to the file you specified, read the contents and modify it if you want
 		// (to your own risk, of course).
@@ -126,8 +123,7 @@ int main( int argc, char** argv )
 		network2->SetName("Network Loaded");
 		network2->AddFlowControl( new CLAM::PushFlowControl( size ));
 
-		CLAM::XMLStorage loadingObject;
-		loadingObject.Restore( *network2, networkFileName );
+		CLAM::XMLStorage::Restore( *network2, networkFileName );
 
 		// With these few lines we have in "network2" the same connections and processings (with his configs) that we had in "network".
 
