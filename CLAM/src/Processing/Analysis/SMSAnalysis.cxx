@@ -287,7 +287,7 @@ void SMSAnalysis::ConfigureData()
 	if(sinWindowSize>resWindowSize)
 	{
 		TSize smallerInBigger=(sinWindowSize-resWindowSize)/(2*hopSize);
-		for(i=0;i<smallerInBigger;i++)
+		for(int i=0;i<smallerInBigger;i++)
 		{
 			mStreamBuffer.LeaveAndAdvance(mResReader);
 		}
@@ -296,7 +296,7 @@ void SMSAnalysis::ConfigureData()
 	else if(sinWindowSize<resWindowSize)
 	{
 		TSize smallerInBigger=(resWindowSize-sinWindowSize)/(2*hopSize);
-		for(i=0;i<smallerInBigger;i++)
+		for(int i=0;i<smallerInBigger;i++)
 		{
 			mStreamBuffer.LeaveAndAdvance(mSinReader);
 		}
@@ -307,8 +307,7 @@ void SMSAnalysis::ConfigureData()
 	Audio tmpAudio,tmpAudio2;
 	tmpAudio2.SetSize(hopSize);
 		
-	int i;
- 	for(i=0;i<hopsInHalfWindow;i++)
+ 	for(int i=0;i<hopsInHalfWindow;i++)
 	{
 		mStreamBuffer.GetAndActivate(mWriter,tmpAudio);
 		tmpAudio.GetBuffer()=tmpAudio2.GetBuffer();
