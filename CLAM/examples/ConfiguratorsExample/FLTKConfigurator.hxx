@@ -32,7 +32,9 @@
 #include "DynamicType.hxx"
 
 #include <FL/fl_draw.H>
+#include <FL/Fl_Valuator.H> // For the FL_HORIZONTAL macro
 #include <FL/Fl_Window.H>
+#include <FL/Fl_Pack.H>
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Float_Input.H>
@@ -73,17 +75,26 @@ namespace CLAM{
 
 			GetInfo();
 			
-			Fl_Button *applyButton=new Fl_Button((345+(mWidgetNum/20)*340)/2-110,25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1),100,20);
+			Fl_Pack * buttons = new Fl_Pack(w()-3*((w()-40)/3)-10,mWidgetNum*25+25,600,20);
+			buttons->type(FL_HORIZONTAL);
+			buttons->spacing(4);
+
+			Fl_Button *applyButton=new Fl_Button(1,1,(w()-40)/3,20);
 			applyButton->label( "Apply" );
 			applyButton->labelsize(12);
 			applyButton->callback(Apply,this);
-			add(*applyButton);
 
-			Fl_Button *discardButton=new Fl_Button((345+(mWidgetNum/20)*340)/2+70, 25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1),100,20);
+			Fl_Button *discardButton=new Fl_Button(1,1,(w()-40)/3,20);
 			discardButton->label( "Discard" );
 			discardButton->labelsize(12);
 			discardButton->callback(Discard, this);
-			add(*discardButton);
+
+			Fl_Return_Button *okButton=new Fl_Return_Button(1,1,(w()-40)/3,20);
+			okButton->label( "Ok" );
+			okButton->labelsize(12);
+			okButton->callback(Discard, this);
+
+			buttons->end();
 
 			size(345+(mWidgetNum/20)*340,35+25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1));
 
@@ -190,13 +201,13 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, bool *foo, T& value) {
-			Fl_Light_Button * mButton = new Fl_Light_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
-			mButton->label( name );
-			mButton->labelsize(12);
-			mButton->value( value );
-			add(*mButton);
+			Fl_Light_Button * mInput = new Fl_Light_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
+			mInput->label( name );
+			mInput->labelsize(12);
+			mInput->value( value );
+			add(*mInput);
 			mWidgetNum++;
-			mWidgets.insert(tWidgets::value_type(name, mButton));
+			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, bool *foo, T& value) {
@@ -237,31 +248,24 @@ namespace CLAM{
 			value=mapping[mInput->value()].value;
 		}
 
-#if 0 // SubConfigs still not supported
 		template <typename T>
-		virtual void AddWidget(const char *name, DynamicType *foo, T&value) {
-			Fl_Button * mButton = new Fl_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
-			mButton->label( name );
-			mButton->labelsize(12);
-			mButton->value( value );
-			mButton->callback(...);
-			add(*mButton);
+		void AddWidget(const char *name, DynamicType *foo, T&value) {
+			Fl_Button * mInput = new Fl_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20, "Details...");
+			mInput->label( name );
+			mInput->labelsize(12);
+			mInput->callback(ShowSubConfig);
+			FLTKConfigurator * subConfigurator = new FLTKConfigurator;
+			subConfigurator->SetConfig(value);
+			mInput->user_data(subConfigurator);
+			begin();
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
-		virtual void RetrieveValue(const char *name, DynamicType *foo, T&value) {
-			Fl_Button * mButton = new Fl_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
-			mButton->label( name );
-			mButton->labelsize(12);
-			mButton->value( value );
-			mButton->callback(...);
-			add(*mButton);
-			mWidgetNum++;
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+		void RetrieveValue(const char *name, DynamicType *foo, T&value) {
 		}
-#endif
 
+	public: // Callbacks
 		static void Apply(Fl_Widget* o, void* v) {
 			FLTKConfigurator * owner = dynamic_cast<FLTKConfigurator*>(o->window());
 			CLAM_ASSERT(owner,"The given widget is not a FLTKConfigurator");
@@ -269,10 +273,17 @@ namespace CLAM{
 		}
 		static void Discard(Fl_Widget* o, void* v) {
 			o->window()->hide();
-			delete o->window();	
+		}
+		static void Ok(Fl_Widget* o, void* v) {
+			Apply(o,v);
+			Discard(o,v);
+		}
+		static void ShowSubConfig(Fl_Widget* o, void* v) {
+			FLTKConfigurator * sub = (FLTKConfigurator*)(v);
+			sub->show();
 		}
 
-		void FLTKConfigurator::Show() {
+		void FLTKConfigurator::show() {
 			set_modal();
 			super::show();
 		}
