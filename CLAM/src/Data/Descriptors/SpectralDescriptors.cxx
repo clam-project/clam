@@ -75,14 +75,14 @@ DataArray	Add(DataArray &a, DataArray &b) {
 	return result;
 }
 
-DataArray	Multiply(TData &factor, DataArray &a) {
+DataArray Multiply(TData &factor, DataArray &a) {
 	TIndex i;
-  TSize size=a.Size(); 
-  DataArray result;
+	TSize size=a.Size(); 
+	DataArray result;
 	result.Resize(size);
-  result.SetSize(size);
-  for (i=0; i<size; i++)
-    result[i]=factor*a[i];
+	result.SetSize(size);
+	for (i=0; i<size; i++)
+	 	result[i]=factor*a[i];
 	return result;
 }
 
