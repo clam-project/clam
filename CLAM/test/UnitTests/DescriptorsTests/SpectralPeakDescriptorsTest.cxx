@@ -47,6 +47,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SpectralPeakDescriptorsTest );
 class SpectralPeakDescriptorsTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralPeakDescriptorsTest );
+	CPPUNIT_TEST( testDataAttachment_whenLogDataFails );
+	CPPUNIT_TEST( testConstructionDataAttachment_whenLogDataFails );
 	CPPUNIT_TEST( testMagnitudeMean );
 	CPPUNIT_TEST( testSpectralTilt );
 	CPPUNIT_TEST( testHarmonicCentroid );
@@ -205,6 +207,41 @@ private:
 	}
 
 private:
+	void testDataAttachment_whenLogDataFails()
+	{
+		CLAM::SpectralPeakArray peaks;
+		peaks = helperGetData("bell_A3.wav-Peaks.xml");
+		peaks.SetScale(CLAM::EScale::eLog);
+		try 
+		{
+			mDescriptors->SetpSpectralPeakArray(&peaks);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (const CLAM::ErrAssertionFailed & e)
+		{
+			std::string msg = e.what();
+			CPPUNIT_ASSERT_EQUAL(std::string("Spectral Peak Descriptors require a linear magnitude SpectralPeakArray"),
+					std::string(e.what()));
+		}
+	}
+
+	void testConstructionDataAttachment_whenLogDataFails()
+	{
+		CLAM::SpectralPeakArray peaks;
+		peaks = helperGetData("bell_A3.wav-Peaks.xml");
+		peaks.SetScale(CLAM::EScale::eLog);
+		try 
+		{
+			CLAM::SpectralPeakDescriptors peakDescriptors(&peaks);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (const CLAM::ErrAssertionFailed & e)
+		{
+			std::string msg = e.what();
+			CPPUNIT_ASSERT_EQUAL(std::string("Spectral Peak Descriptors require a linear magnitude SpectralPeakArray"),
+					std::string(e.what()));
+		}
+	}
 
 	void testMagnitudeMean()
 	{
