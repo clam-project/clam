@@ -75,7 +75,7 @@ namespace CLAM
 			     itOutPort++)
 			{
 				if (!(*itOutPort)->HasConnections())
-					break;
+					continue;
 	
 				std::string outPortName(name);
 				outPortName += ".";
