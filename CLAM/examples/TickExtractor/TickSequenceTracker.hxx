@@ -6,6 +6,7 @@
 #include "TimeIndex.hxx"
 #include "TickSequenceTrackerConfig.hxx"
 #include "IOIHistPeakDetector.hxx"
+#include "IOIHistogram.hxx"
 #include "Pulse.hxx"
 #include "RD_TimeDifference.hxx"
 #include "TemporalSeriesFinder.hxx"
@@ -15,8 +16,12 @@ namespace CLAM
 {
 
 	class Audio;
-	class GlobalPulse;
 	class GridGen;
+
+	namespace RhythmDescription
+	{
+		class GlobalPulse;
+	}
 
 	class TickSequenceTracker : public ProcessingComposite
 	{
@@ -38,17 +43,20 @@ namespace CLAM
 		///Method to use when the input is a list of note onsets
 		///(onsets already computed, or MIDI)
 		bool Do(const Array<TimeIndex>& transients, Pulse& tickSequence,
-			Pulse& beatSequence, Audio& IOIHist );
+			Pulse& beatSequence, RhythmDescription::IOIHistogram& interOnsetHist );
 
 
 
 
 	protected:
-		bool Compute(const Array<TimeIndex>& transients, Audio& IOIHist,
-			     Array<TimeIndex>& ticks,Array<TimeIndex>& beats,TData& globalTick,
+		bool Compute(const Array<TimeIndex>& transients, 
+			     RhythmDescription::IOIHistogram& interOnsetHist,
+			     Array<TimeIndex>& ticks,
+			     Array<TimeIndex>& beats,
+			     TData& globalTick,
 			     TData& globalTempo);
 
-		TData CompGlobPulse(GlobalPulse& gpulse, const int pulseLimSup, 
+		TData CompGlobPulse(RhythmDescription::GlobalPulse& gpulse, const int pulseLimSup, 
 				    const Array<TData> &forGlobalPulseCalc);
 
 		void StorePulseIndexes(const int nLoops, const Array<TimeIndex>& pulsesArray,
@@ -58,7 +66,8 @@ namespace CLAM
 				       GridGen& pulseGridGen, Array<TimeIndex>& pulseArray);
 
 
-		unsigned AdjustTickIntervalForSwing( Audio& IOIHistogram, unsigned previousTickInterval );
+		unsigned AdjustTickIntervalForSwing( RhythmDescription::IOIHistogram& ioiHistogram, 
+						     unsigned previousTickInterval );
 
 		TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
 				       

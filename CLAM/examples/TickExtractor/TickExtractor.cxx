@@ -10,6 +10,7 @@
 #include "OnsetDetector.hxx"
 #include "TransientGen.hxx"
 #include "TickSequenceTracker.hxx"
+#include "IOIHistogram.hxx"
 
 
 namespace CLAM
@@ -123,8 +124,8 @@ namespace CLAM
 		
 		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);		
 
-		Audio IOIHist;
-		IOIHist.SetSampleRate( sampleRate );
+		RhythmDescription::IOIHistogram ioiHistogram;
+		ioiHistogram.SetBinRate( sampleRate );
 
 		Pulse tickSequence;
 		Pulse beatSequence;
@@ -132,7 +133,7 @@ namespace CLAM
 		myTickSequenceTracker.Start();
 		
 		//Use the transients computed in this main
-		myTickSequenceTracker.Do( transients, tickSequence, beatSequence, IOIHist );
+		myTickSequenceTracker.Do( transients, tickSequence, beatSequence, ioiHistogram );
 
 		myTickSequenceTracker.Stop();
 

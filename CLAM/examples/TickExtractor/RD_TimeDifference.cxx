@@ -92,7 +92,6 @@ namespace RhythmDescription
 		//	where s is the standard dev
 		//	in WindowGenerator::Gaussian, s=0.15
 
-		//mWindowGen.SetParent( this );
 
 		return true;
 	}

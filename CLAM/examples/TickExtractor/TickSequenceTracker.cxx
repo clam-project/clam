@@ -26,7 +26,7 @@
  */
 
 #include "TickSequenceTracker.hxx"
-#include "GlobalPulse.hxx"
+#include "RD_GlobalPulse.hxx"
 #include "GridGen.hxx"
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
@@ -85,7 +85,7 @@ namespace CLAM
 	bool TickSequenceTracker::Do(const Array<TimeIndex>& transients,
 				     Pulse& tickSequence,
 				     Pulse& beatSequence,
-				     Audio& IOIHist)
+				     RhythmDescription::IOIHistogram& IOIHist)
 	{
 
 		TData globalTick = -1 , globalTempo = -1;
@@ -124,7 +124,7 @@ namespace CLAM
 
 
 	bool TickSequenceTracker::Compute(const Array<TimeIndex>& transients, 
-					  Audio& IOIHist, 
+					  RhythmDescription::IOIHistogram& IOIHist, 
 					  Array<TimeIndex>& ticks,Array<TimeIndex>& beats,
 					  TData& globalTick, 
 					  TData& globalTempo)
@@ -186,7 +186,8 @@ namespace CLAM
 			TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
 
 			TSize IOIhistSize = CLAM::CLAM_min(windowSize,IOIHistLim);
-			IOIHist.SetSize( IOIhistSize );
+			IOIHist.GetBins().Resize( IOIhistSize );
+			IOIHist.GetBins().SetSize( IOIhistSize );
 
 			/// Compute the IOIHistogram
 			//Don't use weights for the building of the histogram:
@@ -201,7 +202,7 @@ namespace CLAM
 			}
 
 
-			mTemporalDiff.Do(transientsForHist,IOIHist.GetBuffer());
+			mTemporalDiff.Do(transientsForHist,IOIHist.GetBins());
 
 
 			///IOI histogram Peak Detection
@@ -353,10 +354,10 @@ namespace CLAM
 		} //end of while loop
 
 		///Compute Global tempo
-		GlobalPulseConfig gpconf;
+		RhythmDescription::GlobalPulseConfig gpconf;
 		gpconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 		//This is bad, There should be a global attribute specifying this size
-		GlobalPulse gpulse(gpconf);
+		RhythmDescription::GlobalPulse gpulse(gpconf);
 		if (computeBeats)
 			globalTempo = CompGlobPulse(gpulse,
 						    (mConfig.GetSamplingRate()*60.0)/tempoLimInf, forGlobalTempoCalc) / mConfig.GetSamplingRate();
@@ -369,7 +370,7 @@ namespace CLAM
 
 	}
 
-	unsigned TickSequenceTracker::AdjustTickIntervalForSwing( Audio& IOIHistogram,
+	unsigned TickSequenceTracker::AdjustTickIntervalForSwing( RhythmDescription::IOIHistogram& ioiHist,
 								  unsigned prevTickInterval )
 	{
 		//quarter-note is either = tick, 2 ticks, 3 ticks or 4 ticks
@@ -379,7 +380,7 @@ namespace CLAM
 		std::list<TData> candidates;
 		typedef std::list<TData>::iterator LI;
 		
-		TData* arr = IOIHistogram.GetBuffer().GetPtr();		
+		TData* arr = ioiHist.GetBins().GetPtr();		
 		TData tmpCand= prevTickInterval;
 		
 		TData upperBound = mConfig.GetSamplingRate()*60.0/ mConfig.GetTempoLimSup();
@@ -435,16 +436,17 @@ namespace CLAM
 		}
 	}
 
-	TData TickSequenceTracker::CompGlobPulse(GlobalPulse& gpulse,
+	TData TickSequenceTracker::CompGlobPulse(RhythmDescription::GlobalPulse& gpulse,
 						 const int pulseLimSup, 
 						 const Array<TData> &forGlobalPulseCalc)
 	{
-		Audio pulseHist;
-		pulseHist.SetSampleRate( mConfig.GetSamplingRate() );
-		pulseHist.SetSize((int) (pulseLimSup +10000));//just for security
+		RhythmDescription::IOIHistogram pulseHist;
+		pulseHist.SetBinRate( mConfig.GetSamplingRate() );
+		pulseHist.GetBins().Resize((int) (pulseLimSup +10000));//just for security
+		pulseHist.GetBins().SetSize((int) (pulseLimSup +10000));//just for security
 		
 		gpulse.Start();
-		gpulse.Do(forGlobalPulseCalc,pulseHist);
+		gpulse.Do(forGlobalPulseCalc, pulseHist);
 		gpulse.Stop();
 
 		Array<TimeIndex>  pulseHistPeaks;
@@ -501,7 +503,6 @@ namespace CLAM
 					       const TData end, GridGen& pulseGridGen, 
 					       Array<TimeIndex>& pulseArray)
 	{
-		pulseArray.Init();
 		GridGenConfig pulseGridConf=dynamic_cast<const GridGenConfig&>(pulseGridGen.GetConfig());
 		pulseGridConf.SetStart(start);
 		pulseGridConf.SetGap(gap);
