@@ -1,3 +1,5 @@
+2003-10-?? CLAM_0_5_4
+
   * ProcessingData:
       ** SpectralPeakArray ProcessingData; when adding an IndexArray to an already 
          existing SpectralPeakArray and calling InitIndices(), the IndexArray would be 
@@ -9,6 +11,11 @@
          SetnCandidates() or SetnMaxCandidates() now actually affects the arrays instead of 
          merely setting the size fields. This is more consistent with SpectralPeakArray for 
          instance.
+      ** Audio ProcessingData: bug fixed in GetAudioChunk method that left extracted chunks
+         with uninitialized Sample Rate and Begin Time
+
+   * Processing:
+      ** SMSAnalysis: fixed a bug that lead to divisions by zero 
 
 2003-10-4 CLAM_0_5_3
 'Starting the new course'
