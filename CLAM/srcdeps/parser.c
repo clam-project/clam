@@ -15,7 +15,7 @@
 
 /* for mkdir */
 #ifdef WIN32
-
+#include <direct.h>
 #else
 
 #include <sys/stat.h>
@@ -717,8 +717,11 @@ void parser_run(const char* filename)
 
 			printf("%s: %s \n\n",depname,filename);
 			
+#ifdef WIN32
+			mkdir("dep");
+#else
 			mkdir("dep",0775);
-			
+#endif		
 			df = fopen(depname,"w");
 			
 			if (df == 0)

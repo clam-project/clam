@@ -201,6 +201,20 @@ void dsp_parse_add_library_paths(void)
 	}
 }
 
+void dsp_parse_add_link_flags(void)
+{
+	item* i = link_flags->first;
+	while (i)
+	{
+		if (i->str && i->str[0]!=0)
+		{
+			stradd(" ");
+			stradd(i->str);
+		}
+		i = i->next;
+	}
+}
+
 void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 {
 	node * n = t->first;
@@ -487,6 +501,7 @@ void dsp_parse_line(const char* buf,int line)
 
 			dsp_parse_add_libraries();
 			dsp_parse_add_library_paths();
+			dsp_parse_add_link_flags();
 
 			stradd("\n");
 			
