@@ -120,12 +120,13 @@ namespace CLAM {
 		outFreq.Init();
 		
 		// Check Number of Candidates required
-		if (outFreq.GetnMaxCandidates() <= 0)
-		throw Err("FundFreqDet::Detection: negative number of candidates wanted");
+		CLAM_ASSERT (outFreq.GetnMaxCandidates() > 0, 
+			"FundFreqDet::Detection: negative number of candidates wanted");
 
 		// See if the number of best candidates to be calculated is less than the maximum permitted
-		if(outFreq.GetnMaxCandidates() > mnMaxCandidates)
-		throw Err("FundFreqDet::Detection:Number of candidates wanted bigger than the maximum configured on the algorithm"); 
+		CLAM_ASSERT (outFreq.GetnMaxCandidates() <= mnMaxCandidates,
+			"FundFreqDet::Detection:Number of candidates wanted bigger "
+			"than the maximum configured on the algorithm"); 
 
 		Fundamental tmpFreq; // this will be used throughout the algorithm to allocate new candidates
 		tmpFreq.AddCandidatesFreq();
