@@ -643,16 +643,16 @@ namespace CLAM
 		iClosest--;
 		for(int m=0; m<mOrder; m++)
 		{
-			for(int i=1;i<=mOrder-m;i++)
+			for(int i=0;i<mOrder-m;i++)
 			{
-				TX ho=GetXValue(closestPointsIndex[i-1])-x;
-				TX hp=GetXValue(closestPointsIndex[i+m])-x;
-				TX w=mc[i]-md[i-1];
+				TX ho=GetXValue(closestPointsIndex[i])-x;
+				TX hp=GetXValue(closestPointsIndex[i+m+1])-x;
+				TX w=mc[i+1]-md[i];
 				TX den=ho-hp;
 				CLAM_ASSERT(den!=0, "Division by zero error interpolating BPF");
 				den=w/den;
-				md[i-1]=hp*den;
-				mc[i-1]=ho*den;
+				md[i]=hp*den;
+				mc[i]=ho*den;
 			}
 			if(2*iClosest<(mOrder-m))
 			{
