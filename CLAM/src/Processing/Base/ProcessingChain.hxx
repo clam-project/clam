@@ -17,6 +17,7 @@
 #include "SMSPitchDiscretization.hxx"
 #include "SMSSpectralShapeShift.hxx"
 #include "SMSGenderChange.hxx"
+#include "SMSMorph.hxx"
 
 #ifndef _ProcessingChain_
 #define _ProcessingChain_
@@ -115,6 +116,7 @@ namespace CLAM{
 			{
 				return new CLAM::SMSTransformationConfig();
 			}
+			else if (type=="SMSMorph") return new CLAM::SMSMorphConfig();
 			else
 			{
 				std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig:Trying to instantiate a non-valid Configuration: ";
@@ -436,6 +438,10 @@ protected:
 			else if(type=="SMSGenderChange")
 			{
 				InsertAndGiveName(*(new SMSGenderChange()));
+			}
+			else if(type=="SMSMorph")
+			{
+				InsertAndGiveName(*(new SMSMorph()));
 			}
 			else
 			{
