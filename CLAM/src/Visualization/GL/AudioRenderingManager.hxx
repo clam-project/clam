@@ -9,24 +9,24 @@
 namespace CLAMVM
 {
 
-		using CLAM::DataArray;
-		using CLAM::TData;
-		using CLAM::TSize;
-		using CLAM::TTime;
+	using CLAM::DataArray;
+	using CLAM::TData;
+	using CLAM::TSize;
+	using CLAM::TTime;
 
-		struct tAudioTimeInfo
-		{
-				TTime startTime;
-				TTime endTime;
-				TData sampleRate;
-		};
+	struct tAudioTimeInfo
+	{
+		TTime startTime;
+		TTime endTime;
+		TData sampleRate;
+	};
 
-		class GLStraightLineArray;
+	class GLStraightLineArray;
 		
 
-class AudioRenderingManager : public GLRenderingManager
-{
-public:
+	class AudioRenderingManager : public GLRenderingManager
+	{
+	public:
 
 		AudioRenderingManager();
 
@@ -34,15 +34,17 @@ public:
 		virtual void SetPixelBounds( const ScreenBoundBox& );
 		virtual void CacheData( const DataArray& array, const tAudioTimeInfo& nfo );
 		virtual void RenderData();
+		const tAudioTimeInfo& GetTimeInfo(  );
+		const DataArray& GetDataCached(  );
 
 		void SetDetailThreshold( int nSamples )
 		{
-				mDetailThreshold = nSamples;
+			mDetailThreshold = nSamples;
 		}
 
 		virtual ~AudioRenderingManager();
 
-protected:
+	protected:
 
 		virtual void ProcessData();
 		
@@ -54,7 +56,7 @@ protected:
 		
 		void DetermineVisibleSamples();
 
-private:
+	private:
 		
 		DataArray                mDataCached;
 		DataArray                mProcessedData;
@@ -69,7 +71,7 @@ private:
 		bool                     mHugeArrayCondition;
 		tAudioTimeInfo           mCachedTimeInfo;
 		TSize                    mOffset;
-};
+	};
 
 }
 #endif // AudioRenderingManager.hxx
