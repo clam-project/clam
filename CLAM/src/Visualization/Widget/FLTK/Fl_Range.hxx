@@ -3,6 +3,7 @@
 
 #include <FL/Fl_Slider.H> // needed for FL_HORIZONTAL definition
 #include <FL/Fl_Widget.H>
+#include "Fl_GeoMgr.hxx"
 #include "Signalv2.hxx"
 #include "Slot.hxx"
 
@@ -18,17 +19,7 @@ namespace CLAMGUI
 				
 				void draw();
 				
-				void resize( int newx, int newy, int neww, int newh )
-				{
-						Fl_Widget::resize(newx,newy,neww,newh);
-						
-						if ( type() == FL_HORIZONTAL )
-								mPixelLen = float( w() );
-						else
-								mPixelLen = float( h() );
-
-						CalculateDrawingConstants();
-				}
+				void resize( int newx, int newy, int neww, int newh );
 
 				virtual void SetRangeNotifier( Signalv2<float,float>& sig );
 
