@@ -93,7 +93,7 @@ public:
 	inline OutControl       &operator[](int i)        { return *mArray[i]; }
 	inline const OutControl &operator[](int i) const  { return *mArray[i]; }
 
-	inline const int Size() {return mArray.Size();}
+	inline int Size() const {return mArray.Size();}
 };
 
 
