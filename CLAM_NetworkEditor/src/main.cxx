@@ -94,7 +94,7 @@ void ConfigureNetwork(CLAM::Network & net)
 	net.AddProcessing( "oscillator-generator", new CLAM::Oscillator(generatorCfg) );
 	net.AddProcessing( "mixer", new CLAM::AudioMixer<8>(mixerCfg) );
 	net.AddProcessing( "file-out", new CLAM::AudioFileOut(fileOutCfg));
-	net.AddProcessing("controller", new CLAM::Controller(controllerCfg));
+//	net.AddProcessing("controller", new CLAM::Controller(controllerCfg));
 	net.AddProcessing("auto panner", new CLAM::AutoPanner(pannerCfg));
 	
 //	net.ConnectPorts( "file-in.Output", "file-out.Input" );
