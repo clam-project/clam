@@ -27,6 +27,7 @@
 #include "MIDIMelody.hxx"
 #include "TraverseDirectory.hxx"
 #include "XMLStorage.hxx"
+#include "OutControl.hxx"
 
 #include <iostream>
 

@@ -2,6 +2,7 @@
 #include "MIDIInControl.hxx"
 #include "MIDIOutControl.hxx"
 #include "MIDIClocker.hxx"
+#include "OutControl.hxx"
 #include <vector>
 
 using namespace CLAM;
