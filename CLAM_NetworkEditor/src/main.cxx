@@ -14,6 +14,7 @@
 #include "AudioMixer.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioOut.hxx"
+#include "AudioIO.hxx"
 #include "AudioManager.hxx"
 
 #include "Qt_NetworkPresentation.hxx"
@@ -57,10 +58,19 @@ void ConfigureNetwork(CLAM::Network & net)
 	fileOutCfg.SetFrameSize( frameSize );
 	fileOutCfg.SetFilename( fileOutName );
 	fileOutCfg.SetKeepFrameSizes(true);
-	
+
+	CLAM::AudioIOConfig outCfgL;
+	CLAM::AudioIOConfig outCfgR;
+
+	outCfgL.SetName("left out");
+	outCfgL.SetChannelID(0);
+	outCfgR.SetName("right out");
+	outCfgR.SetChannelID(1);
+
 	net.AddFlowControl( new CLAM::BasicFlowControl( frameSize ));
 
-	net.AddProcessing( "audio-out", new CLAM::AudioOut );
+	net.AddProcessing( "audio-out-left", new CLAM::AudioOut(outCfgL));
+	net.AddProcessing( "audio-out-right", new CLAM::AudioOut(outCfgR));
 	net.AddProcessing( "file-in", new CLAM::AudioFileIn(fileInCfg));
 	net.AddProcessing( "oscillator-modulator", new CLAM::Oscillator( modulatorCfg) );
 	net.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
