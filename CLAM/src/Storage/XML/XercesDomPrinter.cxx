@@ -37,8 +37,8 @@
 class DOMPrintFormatTarget : public XMLFormatTarget
 {
 public:
-	DOMPrintFormatTarget()  {};
-	DOMPrintFormatTarget(std::ostream& target)  {mpTarget=&target;};//added by XA
+	DOMPrintFormatTarget(): mTarget(std::cout)  {};
+	DOMPrintFormatTarget(std::ostream& target) : mTarget(target) {};
 	~DOMPrintFormatTarget() {};
 
 	// -----------------------------------------------------------------------
@@ -54,16 +54,11 @@ public:
 		// Without the cast, it was printing the pointer value in hex.
 		// Quite annoying, considering every other platform printed
 		// the string with the explicit cast to char* below.
-		mpTarget->write((char *) toWrite, count);
+		mTarget.write((char *) toWrite, count);
 	};
 
 private:
-	// -----------------------------------------------------------------------
-	//  Unimplemented methods.
-	// -----------------------------------------------------------------------
-	DOMPrintFormatTarget(const DOMPrintFormatTarget& other);
-	void operator=(const DOMPrintFormatTarget& rhs);
-	std::ostream* mpTarget;//mpTarget added by XA in order to use other ostream than cout
+	std::ostream & mTarget;
 };
 
 
