@@ -116,17 +116,19 @@ namespace CLAM
 
 			//Beat centering method 3 (mean IBI)
 
-			/*
+
 			globalTempo = .0; 
 			for (int i=0;i<beats.Size()-1;i++) 
 				globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
 			globalTempo /= beats.Size()-1;
 			globalTempo *= sampleRate;
 			globalTempo /= 2;
-			*/
+
+			/*
 			globalTempo = (60.0 * sampleRate)/beatData.GetRate();
 			TData offset = globalTempo / 2.0;
-			
+			*/
+
 			//-------Remove audio DC component------------------
 			//TODO
 
@@ -217,34 +219,44 @@ namespace CLAM
 			//if ( M < -0.108046 )
 			//if ( (acf[3]+acf[9])/2 > (acf[2]+acf[4]+acf[8])/3 )
 			//
-
-			//if ( M < -0.000665 ) 
 			TData dupleLikelihood = 0.0;
 			int twoMults = 0, threeMults = 0;
 			TData tripleLikelihood = 0.0;
 
+
 			for ( int i = 1; i < acf.Size(); i++ )
 			{
-				if ( (i+1)%2 == 0)
+				if ( fabs(acf[i]) > 1e-7 )
 				{
-					dupleLikelihood+=acf[i];
-					twoMults++;
-				}
 
-				if ( (i+1)%3 == 0)
-				{
-					tripleLikelihood+=acf[i];
-					threeMults++;
+					if ( (i+1)%2 == 0)
+					{
+						dupleLikelihood+=acf[i];
+						twoMults++;
+					}
+					
+					if ( (i+1)%3 == 0)
+					{
+						tripleLikelihood+=acf[i];
+						threeMults++;
+					}
 				}
 			}
 
 			tripleLikelihood *= 1.0/TData(threeMults);
 			dupleLikelihood *= 1.0/TData(twoMults);
-
+			
+			std::cout << "twoMults= " << twoMults << std::endl;
+			std::cout << "threeMults= " << threeMults << std::endl;
+			std::cout << "dupleLikelihood = " << dupleLikelihood << std::endl;
+			std::cout << "tripleLikelihood = " << tripleLikelihood << std::endl;
 			std::cout << "M2 = " << dupleLikelihood - tripleLikelihood << std::endl;
 
 			//if ( (acf[2]+acf[8])/2.0 > (acf[1]+acf[3]+acf[7])/3.0 )
-			if ( tripleLikelihood > dupleLikelihood )
+
+			//if ( tripleLikelihood > dupleLikelihood )
+			TData M2 = dupleLikelihood - tripleLikelihood;
+			if ( M2 < -0.000665 ) 
 			{
 				dataOut.SetNumerator(3);
 				std::cout<<"Triple (3/4) meter"<<std::endl;
