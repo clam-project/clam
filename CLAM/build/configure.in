@@ -70,4 +70,4 @@ CLAM_CHECK_LIBCXX_FEATURES
 # Should we check for this?
 DEFINE_CLAM_HAVE_PTHREADS=CLAM_HAVE_PTHREADS
 
-AC_OUTPUT(system.cfg)
+AC_OUTPUT(system-linux.cfg)

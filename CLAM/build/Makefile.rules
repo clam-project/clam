@@ -27,14 +27,62 @@ include $(DEPENDS)
 endif
 endif
 
+ifeq ($(CONFIG),debug)
+LIBRARIES = $(LIBRARIES_DEBUG) 
+CXXFLAGS = $(CXXFLAGS_DEBUG)
+
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
 	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(OBJECTS) -o $@
 
-%.o:	
+%.o:
 	@mkdir -p obj
 	@echo == compiling $<
 	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+
+else
+ifeq ($(CONFIG),release)
+LIBRARIES = $(LIBRARIES_RELEASE) 
+CXXFLAGS = $(CXXFLAGS_RELEASE)
+
+$(PROGRAM): $(OBJECTS)
+	@echo == linking $@
+	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(OBJECTS) -o $@
+
+%.o:
+	@mkdir -p obj
+	@echo == compiling $<
+	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+
+else
+%.o:
+	@echo "===================================================================="
+	@echo "Error: specify configuration, either by"
+	@echo "- specifying CONFIG=[debug|release] when running make"
+	@echo "   $(MAKE_COMMAND) $(MAKECMDGOALS) CONFIG=debug"
+	@echo "   $(MAKE_COMMAND) $(MAKECMDGOALS) CONFIG=release"
+	@echo "- setting the environment variable CONFIG"
+	@echo "   bash: export CONFIG=debug"
+	@echo "         export CONFIG=release"
+	@echo "   csh:  setenv CONFIG debug"
+	@echo "         setenv CONFIG release"
+	@echo "===================================================================="
+
+$(PROGRAM):
+	@echo "===================================================================="
+	@echo "Error: specify configuration, either by"
+	@echo "- specifying CONFIG=[debug|release] when running make"
+	@echo "   $(MAKE_COMMAND) $(MAKECMDGOALS) CONFIG=debug"
+	@echo "   $(MAKE_COMMAND) $(MAKECMDGOALS) CONFIG=release"
+	@echo "- setting the environment variable CONFIG"
+	@echo "   bash: export CONFIG=debug"
+	@echo "         export CONFIG=release"
+	@echo "   csh:  setenv CONFIG debug"
+	@echo "         setenv CONFIG release"
+	@echo "===================================================================="
+
+endif
+endif
 
 %.d:
 	@mkdir -p dep
