@@ -68,6 +68,15 @@ public:
 	{
 		return false;
 	}
+	void StoreSibblingsIfComponent(const XMLable & xmlable)
+	{
+		try { 
+			const Component & component = 
+				dynamic_cast<const Component &>(xmlable);
+			component.StoreOn(*this);
+		}
+		catch (std::bad_cast &) { }
+	}
 
 	void Store(const Storable & storable)
 	{
@@ -76,12 +85,7 @@ public:
 		if (!name)
 		{
 			AddContentToElement(_currentElement, xmlable.XMLContent());
-			try { 
-				const Component & component = 
-					dynamic_cast<const Component &>(xmlable);
-				component.StoreOn(*this);
-			}
-			catch (std::bad_cast &) { }
+			StoreSibblingsIfComponent(xmlable);
 			return;
 		}
 		if (xmlable.IsXMLElement())
@@ -92,12 +96,7 @@ public:
 			AddContentToElement(domElement,xmlable.XMLContent());
 			xercesc::DOMElement * oldElement = _currentElement;
 			_currentElement = domElement;
-			try { 
-				const Component & component = 
-					dynamic_cast<const Component &>(xmlable);
-				component.StoreOn(*this);
-			}
-			catch (std::bad_cast &) { /* Do nothing */ }
+			StoreSibblingsIfComponent(xmlable);
 			_currentElement = oldElement;
 			_lastWasContent=false;
 			return;
