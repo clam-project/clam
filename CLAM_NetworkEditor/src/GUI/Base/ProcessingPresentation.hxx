@@ -73,7 +73,7 @@ public:
 	ConnectionPointPresentation & GetInControlPresentation( const std::string& );
 	bool HasInPort( const std::string& name);
 	bool HasOutPort( const std::string& name);
-	void ChangeProcessingPresentationName( const std::string & name );
+	virtual void ChangeProcessingPresentationName( const std::string & name );
 
 protected:
 	void SetConfig( const CLAM::ProcessingConfig & );

@@ -253,6 +253,7 @@ namespace CLAMVM
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
 		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
 		SigSlot::Slotv2< const std::string &, ProcessingController * > SlotProcessingNameChanged;
+		SigSlot::Signalv2< const std::string &, const std::string & > SignalChangeConnectionPresentationNames;
 
 		SigSlot::Slotv3< ProcessingController *, CLAM::Processing *, const CLAM::ProcessingConfig & > SlotProcessingControllerNeedsRebuild;
 		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;

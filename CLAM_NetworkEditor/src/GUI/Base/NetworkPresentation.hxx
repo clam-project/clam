@@ -80,7 +80,8 @@ protected:
 	void RemoveProcessing( ProcessingPresentation* );
 	void AddProcessing( const std::string & , CLAM::Processing * );
 	void RemoveProcessingPresentationAttachedTo( const std::string & );
-
+	void ChangeConnectionPresentationNames( const std::string &, const std::string & );
+	
 	virtual void CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
 	virtual void CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
 	void RemovePortConnection( ConnectionPresentation * );
@@ -134,6 +135,8 @@ public:
 	SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveControlConnection;
 	SigSlot::Slotv1< ConnectionPresentation *> SlotRemoveControlConnection;
 	SigSlot::Slotv1< CLAMVM::ConnectionAdapter * > SlotCreateControlConnectionPresentation;
+
+	SigSlot::Slotv2< const std::string &, const std::string & > SlotChangeConnectionPresentationNames;
 };
 
 } // namespace NetworkGUI

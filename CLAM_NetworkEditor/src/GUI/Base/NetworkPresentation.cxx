@@ -28,6 +28,8 @@
 #include "ConnectionPointPresentation.hxx"
 #include "Processing.hxx"
 
+#include <iostream> // TODO: remove
+
 namespace NetworkGUI
 {
 
@@ -52,6 +54,8 @@ NetworkPresentation::NetworkPresentation()
 	
 	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
 	SlotClear.Wrap(this, &NetworkPresentation::Clear );
+
+	SlotChangeConnectionPresentationNames.Wrap( this, &NetworkPresentation::ChangeConnectionPresentationNames );
 }
 
 void NetworkPresentation::ChangeState( bool newState )
@@ -171,12 +175,24 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 	controller.SignalCreateControlConnectionPresentation.Connect( SlotCreateControlConnectionPresentation );
 	controller.SignalCreatePortConnectionPresentation.Connect( SlotCreatePortConnectionPresentation );
 	controller.SignalRemoveConnectionPresentation.Connect( SlotRemoveConnectionPresentation );
+	controller.SignalChangeConnectionPresentationNames.Connect( SlotChangeConnectionPresentationNames );
 
 	SignalClear.Connect( controller.SlotClear );
 	SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );
 	SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
 }
 
+void NetworkPresentation::ChangeConnectionPresentationNames( const std::string & oldName, const std::string & newName )
+{
+	ConnectionPresentationIterator it;
+	for(it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++ )
+	{
+		if(GetProcessingIdentifier((*it)->GetInName()) == oldName )
+			(*it)->SetInName( newName + "." + GetLastIdentifier( (*it)->GetInName()) );
+		if(GetProcessingIdentifier((*it)->GetOutName()) == oldName )
+			(*it)->SetOutName( newName + "." + GetLastIdentifier( (*it)->GetOutName()) );
+	}
+}
 
 ConnectionPointPresentation & NetworkPresentation::GetOutPortPresentationByCompleteName(const std::string & name)
 {

@@ -123,6 +123,7 @@ void NetworkController::ProcessingNameChanged( const std::string & newName, Proc
 
 	// change key map in network
 	mObserved->ChangeKeyMap( oldName, newName );
+	SignalChangeConnectionPresentationNames.Emit( oldName, newName );
 }
 
 bool NetworkController::ChangeKeyMap( const std::string & oldName, const std::string & newName )
