@@ -62,7 +62,7 @@ namespace AudioCodecs
 		bool validFrameFound = false;
 
 
-		while( !validFrameFound )
+		while( !validFrameFound && !EOS() && !FatalError() )
 		{
 			if ( mStreamBuffer.buffer == NULL || mStreamBuffer.error == MAD_ERROR_BUFLEN )
 			{
@@ -86,13 +86,8 @@ namespace AudioCodecs
 				readSize = fread( readStart, 1, readSize, mpFile );
 				
 				if ( readSize <= 0 )
-				{
-					if ( ferror( mpFile ) ) // File error
-						return false;
-					if ( feof( mpFile ) ) // end of input stream
-						break;
-					return false;
-				}
+					continue;
+				
 				
 				mad_stream_buffer( &mStreamBuffer, mInputBuffer, readSize+remaining );
 				mStreamBuffer.error = mad_error(0);
@@ -101,14 +96,13 @@ namespace AudioCodecs
 			if (mad_frame_decode( &mCurrentFrame, &mStreamBuffer ) ) // error
 			{
 				if ( MAD_RECOVERABLE( mStreamBuffer.error ) )
-					return false;
+					continue;
+
 				if ( mStreamBuffer.error == MAD_ERROR_BUFLEN )
-					return false;
-				else
-				{
-					mFatalError = true;
-					break;
-				}
+					continue;
+
+				mFatalError = true;
+
 			}
 			else
 			{
@@ -125,7 +119,7 @@ namespace AudioCodecs
 
 	bool MpegBitstream::FatalError()
 	{
-		return mFatalError;
+		return mFatalError || ferror(mpFile)!=0;
 	}
 
 	bool MpegBitstream::SynthesizeCurrent()
