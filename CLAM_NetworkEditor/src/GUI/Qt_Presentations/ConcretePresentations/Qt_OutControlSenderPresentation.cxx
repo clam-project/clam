@@ -7,7 +7,6 @@
 #include <qdial.h>
 #include <qspinbox.h>
 #include <qpainter.h>
-#include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
@@ -73,6 +72,9 @@ void Qt_OutControlSenderPresentation::ConfigurationUpdated( bool ok )
 	CreateControlRepresentationWidget( config->GetControlRepresentation() );
 	AdjustControlRepresentationValues();
 	SignalSendOutControlValue.Emit( "out", mDefault );
+	UpdateOutControlsPosition();
+	EmitPositionOfChildren();
+	repaint();
 }
 
 void Qt_OutControlSenderPresentation::AdjustControlRepresentationValues()
@@ -124,6 +126,7 @@ void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget(
 	mControlRepresentation->show();
 	mControlRepresentation->resize( geometry().width() - 36, geometry().height() - 28 );
 	UpdateOutControlsPosition();
+	EmitPositionOfChildren();
 	repaint();
 }
 
@@ -160,12 +163,11 @@ void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
 			break;
 	}
 	setGeometry( newGeometry );
-	//QRect sliderGeometry = newGeometry;
-	//sliderGeometry.setWidth( width() - 24 );
-	//sliderGeometry.setHeight( height() - 14 );
 	if(mControlRepresentation)
 		mControlRepresentation->resize( geometry().width() - 36, geometry().height() - 28 );
 	UpdateOutControlsPosition();
+	EmitPositionOfChildren();
+	repaint();
 }
 
 } // namespace NetworkGUI

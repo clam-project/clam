@@ -495,6 +495,7 @@ void Qt_ProcessingPresentation::ExecuteResize( const QPoint & difference )
 	setGeometry( newGeometry );
 	UpdateOutPortsPosition();
 	UpdateOutControlsPosition();
+	EmitPositionOfChildren();
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
