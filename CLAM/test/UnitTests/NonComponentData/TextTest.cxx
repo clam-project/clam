@@ -20,6 +20,9 @@
  */
 
 #include "Text.hxx"
+#include "DynamicType.hxx"
+#include "XMLStorage.hxx"
+#include "XMLTestHelper.hxx"
 #include <cppunit/extensions/HelperMacros.h>
 
 
@@ -45,8 +48,18 @@ namespace CLAMTest {
 		CPPUNIT_TEST (testStreamExtraction_withSpaces);
 		CPPUNIT_TEST (testStreamExtraction_withTabs);
 		CPPUNIT_TEST (testStreamExtraction_clearsPreviousContent);
+		CPPUNIT_TEST (testXml_output);
+		CPPUNIT_TEST (testXml_inputOutputAreIdempotent);
 
 		CPPUNIT_TEST_SUITE_END();
+
+	private:
+		class TextContainerComponent : public CLAM::DynamicType
+		{
+		public:
+			DYNAMIC_TYPE(TextContainerComponent, 1);
+			DYN_ATTRIBUTE(0, public, CLAM::Text, Text);
+		};
 	private:
 		void testDefaultConstructor()
 		{
@@ -114,6 +127,33 @@ namespace CLAMTest {
 
 			CPPUNIT_ASSERT_EQUAL(expected, extracted);
 			
+		}
+
+		void testXml_inputOutputAreIdempotent()
+		{
+			TextContainerComponent component;
+			component.AddText();
+			component.UpdateData();
+			component.SetText("La cadena esperada");
+
+			bool match = XMLInputOutputMatches(component,__FILE__"TextContainer.xml");
+			CLAM_ASSERT(match, "Text Store/Load mismatch");
+		}
+
+		void testXml_output()
+		{
+			TextContainerComponent component;
+			component.AddText();
+			component.UpdateData();
+			component.SetText("La cadena esperada");
+
+			std::stringstream stream;
+			XMLStorage storage;
+			storage.Dump(component, "object", stream);
+
+			std::string expected = "<object><Text>La cadena esperada</Text></object>";
+			CPPUNIT_ASSERT_EQUAL(expected, stream.str());
+
 		}
 
 	};
