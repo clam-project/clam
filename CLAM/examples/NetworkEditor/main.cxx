@@ -28,7 +28,7 @@
 #include "MainWindow.hxx"
 
 #include "AudioOutWrapper.hxx"
-
+#include "AutoPanner.hxx"
 
 CLAM::AudioManager audioManager( 44100, 512 );
 
@@ -69,6 +69,10 @@ void ConfigureNetwork(CLAM::Network & net)
 	CLAM::ControllerConfig controllerCfg;
 	controllerCfg.SetName(" 10 controller ");
 	controllerCfg.SetNumControls(10);
+
+	CLAM::AutoPannerConfig pannerCfg;
+	pannerCfg.SetFrameSize( frameSize );
+	pannerCfg.SetFrequency( 10.0 );
 /*	CLAM::AudioIOConfig outCfgL;
 	CLAM::AudioIOConfig outCfgR;
 
@@ -91,6 +95,7 @@ void ConfigureNetwork(CLAM::Network & net)
 	net.AddProcessing( "mixer", new CLAM::AudioMixer<8>(mixerCfg) );
 	net.AddProcessing( "file-out", new CLAM::AudioFileOut(fileOutCfg));
 	net.AddProcessing("controller", new CLAM::Controller(controllerCfg));
+	net.AddProcessing("auto panner", new CLAM::AutoPanner(pannerCfg));
 	
 //	net.ConnectPorts( "file-in.Output", "file-out.Input" );
 
