@@ -140,7 +140,7 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 
 std::istream& operator >> (std::istream& myStream, const TDescriptorsParams& a)
 {
-	throw Err("Extractor not implemented");
+	CLAM_ASSERT(false, "TDescriptorParams extractor operator is not implemented");
 	return myStream;
 }
 
@@ -226,7 +226,7 @@ bool Segmentator::Do()
 		if (GetExecState() == Disabled)
 			return true;
 
-	throw(ErrProcessingObj("Segmentator: Do(): Supervised mode not implemented",this));
+	CLAM_ASSERT(false, "Segmentator: Do(): Supervised mode not implemented");
 }
 
 
