@@ -5,6 +5,7 @@
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "Signalv1.hxx"
+#include "Signalv2.hxx"
 
 namespace CLAMGUI
 {
@@ -27,7 +28,7 @@ namespace CLAMGUI
 				Signalv1< const DataArray& > AcquireMagnitude;
 				Signalv1< const DataArray& > AcquirePhase;
 				Signalv1< TData >            AcquireSpectralRange;
-				
+				Signalv2< const DataArray&, TData > AcquireSpectrum;
 
 		private:
 				SpectrumAdapter&           mAdapter;

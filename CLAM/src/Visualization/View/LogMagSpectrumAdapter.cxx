@@ -106,7 +106,7 @@ namespace CLAMGUI
 				mAspect.AcquireMagnitude.Emit( mMagBuffer );
 				mAspect.AcquirePhase.Emit( mPhaseBuffer );
 				mAspect.AcquireSpectralRange.Emit( mObserved->GetSpectralRange() );
-
+				mAspect.AcquireSpectrum.Emit( mMagBuffer,  mObserved->GetSpectralRange() );
 
 				return true;
 		}
