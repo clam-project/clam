@@ -86,6 +86,7 @@ namespace CLAM {
 			mLength = length;
 			mHop = hop?hop:length;
 		}
+		const std::string& GetName() const { return mName; }
 	};
 
 	/** Input port */
@@ -305,7 +306,7 @@ namespace CLAM {
 	template<class T>
 	bool InPortTmpl<T>::IsAttached()
 	{
-		return mData.Size();
+		return mData.Size()>0;
 	}
 	
 	template<class T>
@@ -398,7 +399,7 @@ namespace CLAM {
 	template<class T>
 	bool OutPortTmpl<T>::IsAttached()
 	{
-		return mData.Size();
+		return mData.Size()>0;
 	}
 	
 	template<class T>
