@@ -25,6 +25,8 @@
 #include "Factory.hxx"
 #include "MainWindow.hxx"
 
+#include "AudioOutWrapper.hxx"
+
 
 CLAM::AudioManager audioManager( 44100, 512 );
 
@@ -59,18 +61,23 @@ void ConfigureNetwork(CLAM::Network & net)
 	fileOutCfg.SetFilename( fileOutName );
 	fileOutCfg.SetKeepFrameSizes(true);
 
-	CLAM::AudioIOConfig outCfgL;
+	CLAM::AudioOutWrapperConfiguration outCfg;
+	outCfg.SetName("audio out");
+/*	CLAM::AudioIOConfig outCfgL;
 	CLAM::AudioIOConfig outCfgR;
 
-	outCfgL.SetName("left out");
+
 	outCfgL.SetChannelID(0);
 	outCfgR.SetName("right out");
 	outCfgR.SetChannelID(1);
+*/
 
 	net.AddFlowControl( new CLAM::BasicFlowControl( frameSize ));
 
-	net.AddProcessing( "audio-out-left", new CLAM::AudioOut(outCfgL));
-	net.AddProcessing( "audio-out-right", new CLAM::AudioOut(outCfgR));
+//	net.AddProcessing( "audio-out-left", new CLAM::AudioOut(outCfgL));
+//	net.AddProcessing( "audio-out-right", new CLAM::AudioOut(outCfgR));
+	net.AddProcessing( "audio-out", new CLAM::AudioOutWrapper(outCfg));
+
 	net.AddProcessing( "file-in", new CLAM::AudioFileIn(fileInCfg));
 	net.AddProcessing( "oscillator-modulator", new CLAM::Oscillator( modulatorCfg) );
 	net.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
