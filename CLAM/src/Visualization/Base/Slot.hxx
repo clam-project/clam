@@ -13,13 +13,21 @@ namespace CLAMGUI
  */
 class Slot
 {
-		typedef std::list<Connection> tConnectionList;
+		typedef std::list<Connection>        tConnectionList;
+		typedef tConnectionList::iterator    tConnectionIterator;
 
 public:
 
 		void Bind(const Connection& conn );
 
 		void Unbind();
+
+		void Unbind( Connection::tConnectionId conn );
+
+		unsigned  ActiveConnections() const
+		{
+			return mActiveConnections.size();
+		}
 
 		~Slot();
 

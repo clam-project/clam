@@ -8,8 +8,9 @@ class Signal;
 
 class Connection
 {
-	typedef unsigned tConnectionId;
 public:
+	typedef unsigned tConnectionId;
+
 	Connection();
 	Connection( tConnectionId id, Signal* connectedSignal );
 	Connection& operator=( Connection& s );

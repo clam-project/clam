@@ -16,19 +16,32 @@ template < typename ParmType1 >
 {
 public:
 		typedef typename CBL::Functor1<ParmType1>                  tCallbackType;
-		typedef std::pair<tConnectionId, tCallbackType>                  tCallback;
+// Begin of ConnectionHandler
+		struct tCallback
+		{
+			tConnectionId  mConnection;
+			Slot*          mSlot;
+			tCallbackType  mCallback;
+
+			tCallback( tConnectionId id, Slot* slot, tCallbackType cb )
+				: mConnection( id ), mSlot( slot ), mCallback( cb )
+			{
+			}
+		};
+
 		typedef tCallbackType*                                     tCallbackPtr;
 		typedef std::list<tCallbackPtr>                            tCallList;
-		typedef std::list<tCallbackPtr >::iterator                 tCallIterator;
+		typedef typename std::list<tCallbackPtr >::iterator        tCallIterator;
 		typedef std::list<tCallback>                               tCallbackList;
 		typedef typename std::list<tCallback>::iterator            tCbListIterator;
 		typedef typename std::list<tCallback>::const_iterator      const_tCbListIterator;
 
+
 protected:		
 
-		void AddCallback( tConnectionId pConnection, tCallbackType cb )
+		void AddCallback( tConnectionId pConnection, Slot* slot, tCallbackType cb )
 		{
-				mCallbacks.push_back( tCallback( pConnection, cb ) );
+				mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
 		}
 		
 		bool HasNoCallbacks( ) const
@@ -45,7 +58,7 @@ protected:
 				
 				while ( i!=end)
 				{
-						mCalls.push_back( &(i->second) );
+						mCalls.push_back( &(i->mCallback) );
 						i++;
 				}
 				
@@ -59,7 +72,7 @@ protected:
 
 				while ( i!=end )
 				{
-						if ( i->first == id )
+						if ( i->mConnection == id )
 						{
 								mCallbacks.erase( i );
 								break;
@@ -67,16 +80,33 @@ protected:
 						i++;
 				}
 		}
-		
+
+		void DestroyConnections()
+		{
+			tCbListIterator elem;
+
+			while ( !mCallbacks.empty() )
+			{
+				elem = mCallbacks.begin();
+
+				elem->mSlot->Unbind( elem->mConnection );
+			}
+		}
+// End of "ConnectionHandler"
 		
 public:
 	
+	virtual ~Signalv1()
+	{
+		DestroyConnections();
+	}
+
 	template < class RefType, typename PtrMember >
 		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
 	{
 		Connection c( AssignConnection(), this );
 
-		AddCallback( c.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
+		AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
 
 		slot.Bind(c);
 	}
@@ -86,7 +116,7 @@ public:
 	{
 		Connection c( AssignConnection(), this );
 
-		AddCallback( c.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
+		AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
 
 		slot.Bind(c);
 	}

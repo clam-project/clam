@@ -17,14 +17,17 @@ public:
 	typedef typename CBL::Functor1<ParmType1>                    tCallbackType;
 
 public:
-	virtual ~Signalv1() {}
+	virtual ~Signalv1() 
+	{
+		mSuper.DestroyConnections();
+	}
 
 	template < class RefType, typename PtrMember >
 		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
 	{
 		Connection c( AssignConnection(), this );
 
-		mSuper.AddCallback( c.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
+		mSuper.AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
 
 		slot.Bind(c);
 	}

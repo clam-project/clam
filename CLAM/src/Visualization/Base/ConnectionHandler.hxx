@@ -14,7 +14,20 @@ class ConnectionHandler
 public:
 		typedef typename SignalType::tCallbackType                 tCallbackType;
 		typedef typename SignalType::tConnectionId                 tConnectionId;
-		typedef std::pair<tConnectionId, tCallbackType>            tCallback;
+
+
+		struct tCallback
+		{
+			tConnectionId  mConnection;
+			Slot*          mSlot;
+			tCallbackType  mCallback;
+
+			tCallback( tConnectionId id, Slot* slot, tCallbackType cb )
+				: mConnection( id ), mSlot( slot ), mCallback( cb )
+			{
+			}
+		};
+
 		typedef tCallbackType*                                     tCallbackPtr;
 		typedef std::list<tCallbackPtr>                            tCallList;
 		typedef typename std::list<tCallbackPtr >::iterator        tCallIterator;
@@ -24,9 +37,9 @@ public:
 		
 public:
 		
-		void AddCallback( tConnectionId pConnection, tCallbackType cb )
+		void AddCallback( tConnectionId pConnection, Slot* slot, tCallbackType cb )
 		{
-				mCallbacks.push_back( tCallback( pConnection, cb ) );
+				mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
 		}
 		
 		bool HasNoCallbacks( ) const
@@ -43,7 +56,7 @@ public:
 				
 				while ( i!=end)
 				{
-						mCalls.push_back( &(i->second) );
+						mCalls.push_back( &(i->mCallback) );
 						i++;
 				}
 				
@@ -57,7 +70,7 @@ public:
 
 				while ( i!=end )
 				{
-						if ( i->first == id )
+						if ( i->mConnection == id )
 						{
 								mCallbacks.erase( i );
 								break;
@@ -66,6 +79,18 @@ public:
 				}
 		}
 		
+		void DestroyConnections()
+		{
+			tCbListIterator elem;
+
+			while ( !mCallbacks.empty() )
+			{
+				elem = mCallbacks.begin();
+
+				elem->mSlot->Unbind( elem->mConnection );
+			}
+		}
+
 private:
 		
 		tCallList       mCalls;
