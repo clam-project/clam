@@ -83,7 +83,7 @@ namespace CppUnit
 			int minLen=one.length()<other.length()?
 				one.length():other.length();
 			for ( int index = 0; index < minLen; index++ )
-					if (one[index] != other[index]) return index;
+				if (one[index] != other[index]) return index;
 			return minLen;
 		}
 
@@ -95,7 +95,7 @@ namespace CppUnit
 		                   const std::string& actual,
 		                   long lineNumber,
 		                   std::string fileName )
-    	{
+		{
 			if ( !assertion_traits<std::string>::equal(expected,actual) )
 			{
 				unsigned int index = firstMismatch(expected, actual);
