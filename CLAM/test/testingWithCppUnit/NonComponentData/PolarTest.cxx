@@ -79,7 +79,7 @@ private:
 		CLAM::Polar polar(1.453,3.454);
 		std::string expectedString("{1.453 3.454}");
 
-		s << polar << flush;
+		s << polar << std::flush;
 
 		CPPUNIT_ASSERT_EQUAL(expectedString, s.str());
 	}

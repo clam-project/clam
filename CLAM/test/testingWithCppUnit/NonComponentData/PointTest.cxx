@@ -80,7 +80,7 @@ private:
 		CLAM::Point point(1.453,3.454);
 		std::string expectedString("{1.453 3.454}");
 
-		s << point << flush;
+		s << point << std::flush;
 
 		CPPUNIT_ASSERT_EQUAL(expectedString, s.str());
 	}

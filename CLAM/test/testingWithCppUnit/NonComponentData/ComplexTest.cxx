@@ -79,7 +79,7 @@ private:
 		CLAM::Complex complex(1.453,3.454);
 		std::string expectedString("{1.453 3.454i}");
 
-		s << complex << flush;
+		s << complex << std::flush;
 
 		CPPUNIT_ASSERT_EQUAL(expectedString, s.str());
 	}
