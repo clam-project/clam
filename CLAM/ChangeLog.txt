@@ -18,6 +18,25 @@
   * Network Editor:
      ** Smarter conections display (control conection with vertical tangent and that wires
         always goes outward the processing)
+  * Audio File I/O Support:
+     ** Four new processings available for reading/writing from audio files: 
+        -> MonoAudioFileReader/Writer ( single channel reading and writing )
+	-> MultiChannelAudioFileReader/Writer ( multi channel reading and writing )
+     ** New AudioFile class. This class models the concept of 'audio file' which has
+        attached attributes as 'Location' ( the path to the file ), 'Header' ( the concrete
+	file header information such as length, samplerate, etc. ) and 
+	'TextDescriptors' (text-based meta-data such as Artist, Title, Album, etc. )
+     ** New File formats supported:
+	-> Almost any PCM-based audio data storage scheme encoding/decoding is supported 
+	   through libsndfile ( http://www.zip.com.au/~erikd/libsndfile )
+	-> Ogg/Vorbis encoding and decoding support
+	-> Mpeg Audio Layer 1/2/3 decoding support
+     ** New Feature: Partial retrieval of textual metadata embedded in files. For now
+	CLAM is just able to extract information such as Artist, Title, Album and Track number.
+	Support for a wider range of textual descriptors extraction will be available soon.
+	-> ID3 metadata frames retrieval from Mpeg bitstreams
+	-> Vorbis Comments retrieval from Vorbis bitstreams
+	
 
 2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
   * SMSTools:
