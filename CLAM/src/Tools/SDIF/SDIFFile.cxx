@@ -9,37 +9,20 @@ namespace SDIF
 	:DataFileIO(filename,mode)
 	{
 		mSkipData = false;
+		mFirstAccess = true;
 	}
 
 	File::~File()
 	{
 	}
 
-	void File::ReadInit()
-	{
-		OpeningsFrame opening;
-		Read(opening);
-	}
-
-	void File::WriteInit()
-	{
-		OpeningsFrame opening;
-		Write(opening);
-	}
-
 	void File::Read(Storage& storage)
 	{
-		ReadInit();		
-	#ifdef FEW_MEM
-
-
-	#else
 		while (!Done()) {
 			Frame* frame = new Frame;
 			Read(*frame);
 			storage.Add(frame);
 		}
-	#endif
 	}
 
 	void File::Write(const Storage& storage)
@@ -98,6 +81,13 @@ namespace SDIF
 
 	void File::Read(Frame& frame)
 	{
+		if (mFirstAccess)
+		{
+			mFirstAccess = false;
+			OpeningsFrame opening;
+			Read(opening);
+		}
+
 		Read(frame.mHeader);
 		int tmp = frame.mHeader.mnMatrices;
 		frame.mHeader.mnMatrices = 0; // frame.Add will increase this
@@ -111,6 +101,13 @@ namespace SDIF
 
 	void File::Write(const Frame& frame)
 	{
+		if (mFirstAccess)
+		{
+			mFirstAccess = false;
+			OpeningsFrame opening;
+			Write(opening);
+		}
+
 		Write(frame.mHeader);
 		
 		typedef std::list<Matrix*>::const_iterator iterator;

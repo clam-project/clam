@@ -19,6 +19,8 @@ namespace SDIF
 	*/
 	class Stream
 	{
+	public:
+		typedef std::list<Frame*>::const_iterator FrameIterator;
 	private:
 		std::list<Frame*> mFrameList;
 		TInt32 mStreamId;
@@ -31,6 +33,9 @@ namespace SDIF
 		* @param pFrame The Frame that this stream starts with.
 		*/
 		void Add(Frame* pFrame);
+
+		FrameIterator Begin(void) const { return mFrameList.begin(); }
+		FrameIterator End(void) const { return mFrameList.begin(); }
 
 		TInt32 StreamId(void) { return mStreamId; }		
 	};

@@ -6,8 +6,6 @@
 namespace SDIF
 {
 
-	typedef std::list<Frame*>::const_iterator iterator;
-	 
 	/** Storage is an abstract class, that is passed to File,
 	* used to handle every read frame.
 	* 
@@ -18,14 +16,16 @@ namespace SDIF
 	*/
 	class Storage
 	{
-	public:	
+	public:
+		typedef std::list<Frame*>::const_iterator FrameIterator;
+
 		/** virtual function that where derived classes get the frames read by the
 		* File. Note that the derived class is responsible for handling
 		* the memory deallocation of the frames it gets passed.
 		*/
 		virtual void Add(Frame* pFrame) = 0;
-		virtual iterator Begin(void) const = 0;
-		virtual iterator End(void) const = 0;
+		virtual FrameIterator Begin(void) const = 0;
+		virtual FrameIterator End(void) const = 0;
 	};
 
 }

@@ -21,8 +21,9 @@ namespace SDIF
 	class Collection:public Storage
 	{
 	public:
-		typedef std::list<Frame*>::const_iterator iterator;
+		typedef std::list<Stream*>::const_iterator StreamIterator;
 
+	private:
 		//* The list of Frames
 		std::list<Frame*> mFrameList;
 
@@ -39,8 +40,11 @@ namespace SDIF
 		void Add(Frame* pFrame);
 		void Add(Stream* pStream);
 
-		iterator Begin(void) const { return mFrameList.begin(); }
-		iterator End(void) const { return mFrameList.end(); }
+		FrameIterator Begin(void) const { return mFrameList.begin(); }
+		FrameIterator End(void) const { return mFrameList.end(); }
+
+		StreamIterator BeginStreams(void) const { return mFrameList.begin(); }
+		StreamIterator EndStreams(void) const { return mFrameList.end(); }
 
 		Stream* FindStream(TInt32 streamId);
 

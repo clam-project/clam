@@ -29,27 +29,22 @@ namespace SDIF
 
 class File:public DataFileIO
 {
-public:
+private:
 	bool mSkipData;
+	bool mFirstAccess;
 public:
 	File(const char* filename, Mode mode);
 	~File();
 
+private:
 	inline void FixByteOrder(TByte* ptr,
 		TUInt32 nElems,TUInt32 elemSize);
-
-	
-	void ReadInit();
-	void WriteInit();
 	
 	void Read(TInt32& t);
 	void Write(const TInt32& t);
 
 	void Read(TFloat64& t);
 	void Write(const TFloat64& t);
-
-	void Read(Storage& storage);
-	void Write(const Storage& storage);
 
 	void Read(Type& header);
 	void Write(const Type& header);
@@ -63,9 +58,6 @@ public:
 	void Read(MatrixHeader& header);
 	void Write(const MatrixHeader& header);
 
-	void Read(Frame& frame);
-	void Write(const Frame& frame);
-
 	void Read(OpeningsFrame& frame);
 	void Write(const OpeningsFrame& frame);
 
@@ -75,6 +67,13 @@ public:
 	void SkipMatrixData(const Matrix& matrix);
 	void ReadMatrixData(Matrix& matrix);
 	void WriteMatrixData(const Matrix& matrix);
+
+public:
+	void Read(Frame& frame);
+	void Write(const Frame& frame);
+
+	void Read(Storage& storage);
+	void Write(const Storage& storage);
 private:
 	void _FixByteOrder(
 	TByte* ptr,TUInt32 nElems,TUInt32 elemSize);
