@@ -59,11 +59,11 @@ void OscillatorConfig::DefaultInit(void)
 
 // Oscillator method definition
 Oscillator::Oscillator()
-	:mOutput("Audio Output",this,1)
-	,mFreqUpdated( false )
-	,mPhaseUpdated( false )
-	,mModIdxUpdated( false )
-	,mAmpUpdated( false )
+	:mOutput("Audio Output",this,1),
+	mFreqUpdated( false ),
+	mPhaseUpdated( false ),
+	mModIdxUpdated( false ),
+	mAmpUpdated( false )
 
 {
 	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
@@ -77,11 +77,11 @@ Oscillator::Oscillator()
 }
 
 Oscillator::Oscillator( const OscillatorConfig& cfg )
-:mOutput("Audio Output",this,1)
-,mFreqUpdated( false )
-,mPhaseUpdated( false )
-,mModIdxUpdated( false )
-,mAmpUpdated( false )
+	:mOutput("Audio Output",this,1),
+	mFreqUpdated( false ),
+	mPhaseUpdated( false ),
+	mModIdxUpdated( false ),
+	mAmpUpdated( false )
 
 {
 	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
@@ -116,7 +116,8 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 
 bool Oscillator::Do()
 {
-	bool res = Do(mOutput.GetData());
+	bool res = false;
+	res = Do(mOutput.GetData());
 	mOutput.LeaveData();
 	return res;
 }
@@ -130,7 +131,7 @@ bool Oscillator::Do( Audio& out )
 	TData* ptr = out.GetBuffer().GetPtr();
 	for (int i=0;i<out.GetSize();i++)
 	{
-		(*ptr++) = mAmp * TData(sin(mPhase + mModIndex));
+		(*ptr++) = mAmp * TData(sin(mPhase));
 		mPhase += mDeltaPhase;
 		
 		if (mPhase>TData(2*PI)) 
@@ -239,3 +240,4 @@ int Oscillator::UpdateAmp( TControlData value )
 
 	return 0;
 }
+

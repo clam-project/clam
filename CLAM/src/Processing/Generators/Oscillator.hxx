@@ -27,6 +27,7 @@
 #include "OSDefines.hxx"
 #include "Audio.hxx"
 #include "OutPortTmpl.hxx"
+#include "InPortTmpl.hxx"
 #include "InControl.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -91,10 +92,9 @@ protected:
 	
 class Oscillator: public Processing
 {
-
-private:
+protected:
 	OutPortTmpl<Audio> mOutput;
-
+private:
 	OscillatorConfig mConfig;
 	TData mModIndex;
 	TData mAmp;
@@ -123,17 +123,17 @@ protected:
 				mDeltaPhase = TData(2. * PI * mFreqCtl->GetLastValue() / mSamplingRate);
 				mFreqUpdated = false;
 			}
-		else if ( mAmpUpdated )
+		if ( mAmpUpdated )
 			{
 				mAmp = mAmpCtl->GetLastValue();
 				mAmpUpdated = false;
 			}
-		else if ( mModIdxUpdated )
+		if ( mModIdxUpdated )
 			{
 				mModIndex = mModIdxCtl->GetLastValue();
 				mModIdxUpdated = false;
 			}
-		else if ( mPhaseUpdated )
+		if ( mPhaseUpdated )
 			{
 				mPhase = mPhaseCtl->GetLastValue();
 				mPhaseUpdated = false;
@@ -164,7 +164,7 @@ public:
 	
 	// Unsupervised mode Do
 	// now it works only for an audio output and no inputs
-	bool Do(void); //{ return true; }
+	virtual bool Do(void); //{ return true; }
 
 	// "Generative Do"
 	bool Do(Audio& out);
