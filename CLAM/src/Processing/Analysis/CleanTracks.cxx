@@ -260,7 +260,7 @@ namespace CLAM {
 			// Check that the best candidate for 'toBeAppended'
 			// is not the best one to another
 
-			bool isBetterForAnother=true;
+			bool isBetterForAnother=false;
 			const TSize candidateEnd =
 				candidateTrajectory.beginPos+candidateTrajectory.length;
 
@@ -275,11 +275,11 @@ namespace CLAM {
 					Abs(another.initialFreq-candidateTrajectory.finalFreq);
 				if (frequencyDistance >= bestFreqDif) continue;
 
-				isBetterForAnother=false;
+				isBetterForAnother=true;
 				break; // there is no reason to continue the search
 			}
 
-			if (!isBetterForAnother) continue;
+			if (isBetterForAnother) continue;
 
 			candidateTrajectory.continuedAtId=toBeAppended.id;
 
