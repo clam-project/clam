@@ -33,24 +33,41 @@ namespace CLAMGUI
 				if ( !mObserved )
 						return false;
 				
-				TranscribePeakArray();
+				if ( !TranscribePeakArray( *mObserved ) )
+					return false;
 
 				mAspect.AcquirePartials.Emit( mPartialBuffer );
 
 				return true;
 		}
 
-		void SpectralPeakArrayView::TranscribePeakArray()
+		bool SpectralPeakArrayView::TranscribePeakArray( const SpectralPeakArray& peakArray )
 		{
-				TSize nPeaks = mObserved->GetMagBuffer().Size();
+				TSize nPeaks = peakArray.GetMagBuffer().Size();
 				
-				CLAM_DEBUG_ASSERT( nPeaks==mObserved->GetFreqBuffer().Size() &&
-								   nPeaks==mObserved->GetPhaseBuffer().Size(),
+				CLAM_DEBUG_ASSERT( nPeaks==peakArray.GetFreqBuffer().Size() &&
+								   nPeaks==peakArray.GetPhaseBuffer().Size(),
 								   "Inconsistency detected at SpectralPeakArray: buffers differ in size" );
 
-				const DataArray& magBuff = mObserved->GetMagBuffer();
-				const DataArray& freqBuff = mObserved->GetFreqBuffer();
-				const DataArray& phaseBuff = mObserved->GetPhaseBuffer();
+				if ( !peakArray.GetMagBuffer().Size() )
+					return false;
+				
+				const DataArray& magBuff = peakArray.GetMagBuffer();
+				
+				if ( !peakArray.GetFreqBuffer().Size() )
+					return false;
+
+				const DataArray& freqBuff = peakArray.GetFreqBuffer();
+				
+				if ( !peakArray.GetPhaseBuffer().Size() )
+					return false;
+
+				const DataArray& phaseBuff = peakArray.GetPhaseBuffer();
+
+				if ( !peakArray.GetIndexArray().Size() )
+					return false;
+
+				const Array<TIndex>& indexBuff = peakArray.GetIndexArray();
 
 				mPartialBuffer.Resize( nPeaks );
 				mPartialBuffer.SetSize( nPeaks );
@@ -60,12 +77,15 @@ namespace CLAMGUI
 						mPartialBuffer[i].mMag = magBuff[i];
 						mPartialBuffer[i].mFreq = freqBuff[i];
 						mPartialBuffer[i].mPhase = phaseBuff[i];
+						mPartialBuffer[i].mTrackId = indexBuff[i];
 				}
 				
-				if ( mObserved->GetScale() == EScale::eLinear )
+				if ( peakArray.GetScale() == EScale::eLinear )
 				{
 						for ( int i=0; i < nPeaks; i++ )
 								mPartialBuffer[i].mMag = 20.0f*log10( mPartialBuffer[i].mMag );
 				}
+
+				return true;
 		}
 }
