@@ -14,7 +14,7 @@ namespace AudioCodecs
 
 	bool Codec::FileExists( std::string filename )
 	{
-		CLAM_DEBUG_ASSERT( filename.length() > 0, "Unnamed files never exist" );
+		//CLAM_DEBUG_ASSERT( filename.length() > 0, "Unnamed files never exist" );
 
 		// MRJ: Quite weak file existence check
 
