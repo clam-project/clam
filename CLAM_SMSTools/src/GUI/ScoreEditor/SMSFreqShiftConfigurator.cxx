@@ -29,6 +29,7 @@ namespace CLAMVM
 		mConfig.GetBPFAmount().Insert( 1.0, 0.0 );
 		
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSFreqShiftConfigurator::~SMSFreqShiftConfigurator()
@@ -50,24 +51,37 @@ namespace CLAMVM
 		return mEditorWidget;
 	}
 	
+	void SMSFreqShiftConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+		
+		if ( conCfg.HasBPFAmount() )
+		{
+			conCfg.RemoveBPFAmount();
+			conCfg.UpdateData();
+		}
+		
+		conCfg.AddBPFAmount();
+		conCfg.RemoveAmount();
+		conCfg.UpdateData();
+		conCfg.GetBPFAmount().Insert( 0.0, 0.0 );
+		conCfg.GetBPFAmount().Insert( 1.0, 0.0 );
+	
+	}
+	
 	void SMSFreqShiftConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
 		mEditorWidget->Clear();
-		if ( mConfig.HasBPFAmount() )
-		{
-			mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
-		}
-		else
-		{
-
+		
+		if ( !mConfig.HasBPFAmount() )
 			mEditorWidget->InitPoints( mConfig.GetAmount() );
-			mConfig.AddBPFAmount();
-			mConfig.RemoveAmount();
-			mConfig.UpdateData();
-		}
+		else
+			mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 
-
+		mConfig.RemoveAmount();
+		mConfig.AddBPFAmount();
+		mConfig.UpdateData();
 	}
 
 	const CLAM::ProcessingConfig& SMSFreqShiftConfigurator::GetConfig()

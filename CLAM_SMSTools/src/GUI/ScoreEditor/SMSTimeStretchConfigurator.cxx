@@ -30,6 +30,7 @@ namespace CLAMVM
 		mConfig.GetBPFAmount().Insert( 1.0, 1.0 );
 		
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSTimeStretchConfigurator::~SMSTimeStretchConfigurator()
@@ -48,6 +49,18 @@ namespace CLAMVM
 	Fl_Widget* SMSTimeStretchConfigurator::GetParametersWidget()
 	{
 		return mEditorWidget;
+	}
+
+	void SMSTimeStretchConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTimeStretchConfig& conCfg = static_cast< CLAM::SMSTimeStretchConfig& >( cfg );
+		conCfg.RemoveAmount();
+		conCfg.AddBPFAmount();
+		conCfg.UpdateData();
+
+		conCfg.GetBPFAmount().Insert( 0, 1.0 );
+		conCfg.GetBPFAmount().Insert( 1, 1.0 );
+
 	}
 
 	void SMSTimeStretchConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
@@ -72,10 +85,6 @@ namespace CLAMVM
 		}
 		else
 		{
-			mConfig.RemoveAmount();
-			mConfig.UpdateData();
-
-
 			for ( int i = 0; i < mConfig.GetBPFAmount().Size(); i++ )
 			{
 				if ( mConfig.GetBPFAmount().GetValueFromIndex( i ) < 0.5 )

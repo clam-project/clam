@@ -1,5 +1,6 @@
 #include "SMSGenderChangeConfigurator.hxx"
 #include "Factory.hxx"
+#include "Assert.hxx"
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
 #include "Fl_SMS_Gender_Selector.hxx"
@@ -9,11 +10,15 @@ namespace CLAMVM
 	const char* SMSGenderChangeConfigurator::mHelpText = "<html><body><h2>Gender Change</h2><p><strong>Usage:</strong> If amount is 0 it means from male to female. If it is 1 (or anything different than 0) it means from female to male. </p><p><strong>Explanation:</strong> Gender change works by making a pitch shift with timbre preservation an octave and then shifting the spectral shape.</p></body></html>";
 
 	SMSGenderChangeConfigurator::SMSGenderChangeConfigurator()
+		: mHelpWidget( NULL ), mpGenderSelector( NULL )
 	{
 		mHelpWidget = new Fl_Help_View( 0, 0, 100, 100 );
+		CLAM_ASSERT( mHelpWidget != NULL, "Allocation failed" );
 		mHelpWidget->textsize( 12 );
 		
 		mpGenderSelector = new Fl_SMS_Gender_Selector( 0, 0, 100, 100 );
+		CLAM_ASSERT( mpGenderSelector != NULL, "Allocation failed" );
+
 		mpGenderSelector->end();
 
 		SetGender.Wrap( this, &SMSGenderChangeConfigurator::OnGenderSet ); 
@@ -27,21 +32,22 @@ namespace CLAMVM
 		mConfig.UpdateData();
 		mConfig.SetType( "SMSGenderChange" );
 		mConfig.SetAmount( 0 );
-		GenderChanged.Emit( mConfig.GetAmount() );
+		GenderChanged.Emit( (int)mConfig.GetAmount() );
 	}
 
 	SMSGenderChangeConfigurator::~SMSGenderChangeConfigurator()
 	{
-		if ( mHelpWidget->parent() == NULL )
+		if ( mHelpWidget!=NULL && mHelpWidget->parent() != NULL )
 			delete mHelpWidget;
 
-		if ( mpGenderSelector->parent() == NULL )
+		if ( mHelpWidget!=NULL && mpGenderSelector->parent() != NULL )
 			delete mpGenderSelector;
 	}
 
 	void SMSGenderChangeConfigurator::OnGenderSet( int gender )
 	{
 		mConfig.SetAmount( gender );
+		ConfigurationChanged.Emit();
 	}
 
 	void SMSGenderChangeConfigurator::SetHelpWidgetText()
@@ -54,18 +60,22 @@ namespace CLAMVM
 		return mpGenderSelector;
 	}
 
+	void SMSGenderChangeConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+		
+		conCfg.AddAmount();
+		conCfg.UpdateData();
+
+		conCfg.SetAmount( 0 );
+
+	}
+
 	void SMSGenderChangeConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
 		
-		if ( !mConfig.HasAmount() )
-		{
-			mConfig.AddAmount();
-			mConfig.UpdateData();
-		}
-
-		mConfig.SetAmount( 0 );
-		GenderChanged.Emit( mConfig.GetAmount() );
+		GenderChanged.Emit( (int)mConfig.GetAmount() );
 
 	}
 

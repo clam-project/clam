@@ -59,9 +59,8 @@ void SMSScoreEditor::cb_mApplyChangesToCurrentCfg(Fl_Button* o, void* v) {
 }
 
 inline void SMSScoreEditor::cb_mApplyChangesToCurrentCfg_i(Fl_Button*, void*) {
-	ApplyChangesToCurrentCfg();
-}
 
+}
 
 void SMSScoreEditor::cb_mApplyChangesButton(Fl_Button* o, void* v) {
 	((SMSScoreEditor*)(o->parent()->user_data()))->cb_mApplyChangesButton_i(o,v);
@@ -71,12 +70,12 @@ inline void SMSScoreEditor::cb_mRepositoryBrowser_i(Fl_Select_Browser* b, void*)
 {
 	if ( b->value() > b->size() || b->value() < 1 )
 	     return;
+	
 	mScoreContentsBox->deselect( mHighlightedConfig );
 	mHighlightedConfig = 0;
-	RemoveCurrentConfiguratorFromTabs();
-	ActivateConfigurator( b->value(), mRepositoryBox );
-	ShowActiveConfiguratorHelp();
-	mTransTabs->redraw();
+	
+	ClearTransformationWidgets();
+	SetTransformationHelpWidget( *((CLAMVM::SMSConfigurator*)b->data( b->value() )));	
 }
 
 void SMSScoreEditor::cb_mRepositoryBrowser(Fl_Select_Browser* o, void* v)
@@ -90,13 +89,16 @@ inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 	     return;
 	if ( mHighlightedConfig == b->value() )
 		return;
+	
 	mHighlightedConfig = b->value();
-	RemoveCurrentConfiguratorFromTabs();
-	ActivateConfigurator( mHighlightedConfig, mScoreContentsBox);
-	ShowActiveConfiguratorHelp();
-	ShowActiveConfiguratorEditWidget();
+	b->select( mHighlightedConfig );
+	
+	ClearTransformationWidgets();
+	CLAMVM::SMSConfigurator& selectedConfigurator = *((CLAMVM::SMSConfigurator*)( b->data(b->value() )));
 
-	mScoreContentsBox->select( mHighlightedConfig );
+	SetTransformationHelpWidget( selectedConfigurator );
+	SetTransformationEditWidget( selectedConfigurator );
+	
 	mTransTabs->redraw();
 
 }
@@ -109,7 +111,7 @@ void SMSScoreEditor::cb_mScoreBrowser(Fl_Select_Browser* o, void* v)
 
 
 SMSScoreEditor::SMSScoreEditor()
-	: mUserChangedSomething( false ),  mpCurrentConfigurator( NULL ), mHighlightedConfig( 0 )
+	: mHighlightedConfig( 0 )
 {
 	Fl_Window* w;
 
@@ -198,6 +200,7 @@ SMSScoreEditor::SMSScoreEditor()
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->shortcut(0x80061);
 			o->callback( (Fl_Callback*)cb_mApplyChangesButton );
+			o->deactivate();
 			o->labelsize(12);
 		}
 		{
@@ -282,14 +285,20 @@ SMSScoreEditor::SMSScoreEditor()
 	}
 
 	SetTransformationScore.Wrap( this, &SMSScoreEditor::OnSetTransformationScore );
+	ScoreWasChanged.Wrap( this, &SMSScoreEditor::OnScoreChanged );
+	ShowFactoryProductsOnBrowser();
+	ResetChangedStatus();
+}
 
-	ResetChainConfig();
-	mPreviousChainConfig = mChainConfig;
+void SMSScoreEditor::OnScoreChanged( )
+{
+	mUserChangedSomething = true;
+	mApplyChangesToScoreButton->activate();
 }
 
 void SMSScoreEditor::OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg )
 {
-	mChainConfig = cfg;
+	ShowScoreOnBrowser(cfg);
 }
 
 SMSScoreEditor::~SMSScoreEditor()
@@ -298,65 +307,22 @@ SMSScoreEditor::~SMSScoreEditor()
 		delete mNoConfigWidgetAvailable;
 }
 
+void SMSScoreEditor::ResetChangedStatus()
+{
+	mUserChangedSomething = false;
+}
+
 void SMSScoreEditor::Show( )
 {
-	ShowScoreOnBrowser();
-	ShowFactoryProductsOnBrowser();
+	mApplyChangesToScoreButton->deactivate();
 	mMainWindow->show();
 }
 
 void SMSScoreEditor::Hide( )
 {
-	mUserChangedSomething = false;
+	ResetChangedStatus();
 	mHighlightedConfig = 0;
-	RemoveCurrentConfiguratorFromTabs();
 	mMainWindow->hide();
-}
-
-void SMSScoreEditor::ShowActiveConfiguratorHelp()
-{
-	CLAM_ASSERT( mpCurrentConfigurator->GetHelpWidget()!=NULL, "Configurator did not provide help widget" );
-
-	mHelpWidgetContainer->add( mpCurrentConfigurator->GetHelpWidget() );
-	mpCurrentConfigurator->GetHelpWidget()->resize( mHelpWidgetContainer->x(), mHelpWidgetContainer->y()+5,
-							mHelpWidgetContainer->w(), mHelpWidgetContainer->h()-5 );
-	mpCurrentConfigurator->GetHelpWidget()->show();
-	//mTransTabs->value( mpCurrentConfigurator->GetHelpWidget() );
-	mHelpWidgetContainer->activate();
-	mTransTabs->value( mHelpWidgetContainer );
-}
-
-void SMSScoreEditor::ShowActiveConfiguratorEditWidget()
-{
-	Fl_Widget* configWidget = mpCurrentConfigurator->GetParametersWidget();
-	mApplyChangesToCurrentCfg->activate();
-
-	if ( !configWidget ) // if no configuration widget then show the fallback
-	{
-		configWidget = mNoConfigWidgetAvailable;
-		mApplyChangesToCurrentCfg->deactivate();
-	}
-
-	mConfigWidgetContainer->add( configWidget );
-	configWidget->resize( mConfigWidgetContainer->x(), mConfigWidgetContainer->y()+5,
-			      mConfigWidgetContainer->w(), mConfigWidgetContainer->h()-5 );
-
-	mConfigWidgetContainer->activate();
-	configWidget->show();
-	mTransTabs->value( mConfigWidgetContainer );
-
-}
-
-
-
-void SMSScoreEditor::ActivateConfigurator( int index, Fl_Select_Browser* browser  )
-{
-
-	RemoveCurrentConfiguratorFromTabs();
-
-
-	mpCurrentConfigurator = (CLAMVM::SMSConfigurator*)browser->data( index );
-
 }
 
 void SMSScoreEditor::ShowFactoryProductsOnBrowser()
@@ -377,15 +343,15 @@ void SMSScoreEditor::ShowFactoryProductsOnBrowser()
 
 }
 
-void SMSScoreEditor::ShowScoreOnBrowser( )
+void SMSScoreEditor::ShowScoreOnBrowser(  const CLAM::SMSTransformationChainConfig& cfg )
 {
 	mScoreContentsBox->clear();
-	CLAM::SMSTransformationChainConfig::const_iterator i = mChainConfig.ConfigList_begin_const();
+	CLAM::SMSTransformationChainConfig::const_iterator i = cfg.ConfigList_begin_const();
 
 	i++;
-	for ( int k = 1; k < mChainConfig.ConfigList_size()-1; k++ )
+	for ( int k = 1; k < cfg.ConfigList_size()-1; k++ )
 	{
-		if ( mChainConfig.GetOnArray()[k] )
+		if ( cfg.GetOnArray()[k] )
 		{
 			mScoreContentsBox->add( i->GetConcreteClassName().c_str() );
 		}
@@ -403,27 +369,9 @@ void SMSScoreEditor::ShowScoreOnBrowser( )
 
 }
 
-void SMSScoreEditor::ResetChainConfig()
-{
-	mChainConfig.GetConfigurations().clear();
-	mChainConfig.GetOnArray().Resize(0);
-	mChainConfig.GetOnArray().SetSize(0);
-
-	CLAM::ProcessingChaineeConfig cfg;
-	cfg.SetConcreteClassName( "SMSTransformationChainIO" );
-	cfg.AddConcreteConfig();
-
-	mChainConfig.GetConfigurations().push_back(  cfg  );
-	mChainConfig.GetConfigurations().push_back(  cfg );
-	mChainConfig.GetOnArray().Resize( 2 );
-	mChainConfig.GetOnArray().SetSize( 2 );
-	mChainConfig.GetOnArray()[0] = mChainConfig.GetOnArray()[1] = true;
-
-}
-
 void SMSScoreEditor::DiscardChangesAndClose()
 {
-	if ( !mUserChangedSomething )
+	if ( !IsScoreChanged() )
 	{
 		Hide();
 		return;
@@ -433,7 +381,6 @@ void SMSScoreEditor::DiscardChangesAndClose()
 
 	if ( answer )
 	{
-		mChainConfig = mPreviousChainConfig;
 		Hide();
 	}
 
@@ -441,7 +388,7 @@ void SMSScoreEditor::DiscardChangesAndClose()
 
 void SMSScoreEditor::ApplyChangesAndClose()
 {
-	if ( !mUserChangedSomething )
+	if ( !IsScoreChanged() )
 	{
 		fl_message( "The score has not been changed" );
 		Hide();
@@ -452,96 +399,180 @@ void SMSScoreEditor::ApplyChangesAndClose()
 
 	if ( answer )
 	{
-		mPreviousChainConfig = mChainConfig;
-		TransformationChainChanged.Emit( mChainConfig );
+		ApplyChangesIntoChain();
 		Hide();
 	}
 }
 
-void SMSScoreEditor::AddHighlightedToScore( )
+void SMSScoreEditor::InsertNewConfiguratorInScoreBox( const char* transName )
 {
-	if ( mRepositoryBox->size() == 0 )
-		return;
+	mScoreContentsBox->add( transName );
 
-	int insertedTransformation = mRepositoryBox->value();
+	std::string key = transName;
 
-	mScoreContentsBox->add( mRepositoryBox->text( insertedTransformation ) );
-	std::string key = mRepositoryBox->text( insertedTransformation );
 	CLAMVM::SMSConfigurator* pCfg = CLAMVM::SMSConfiguratorFactory::GetInstance().Create( key );
+
 	mScoreContentsBox->data( mScoreContentsBox->size(), pCfg );
 
-
-	CLAM::ProcessingChaineeConfig cfg;
-	cfg.SetConcreteClassName( mRepositoryBox->text( insertedTransformation ) );
-	cfg.AddConcreteConfig();
-	pCfg->SetConfig( cfg.GetConcreteConfig() );
-
-	CLAM::SMSTransformationChainConfig::iterator i = mChainConfig.ConfigList_begin();
-	std::advance( i, mChainConfig.ConfigList_size()-1 );
-	mChainConfig.GetConfigurations().insert( i, cfg );
-	//mChainConfig.GetConfigurations().push_back( cfg );
-	mChainConfig.GetOnArray().AddElem( 1 );
 	mHighlightedConfig = mScoreContentsBox->size();
 
+	// we 'activate' the configurator by showing it on the GUI
+	ClearTransformationWidgets();
+	SetTransformationHelpWidget( *pCfg );
+	SetTransformationEditWidget( *pCfg );
 
-	ActivateConfigurator( mHighlightedConfig, mScoreContentsBox );
-	ShowActiveConfiguratorHelp();
-	ShowActiveConfiguratorEditWidget();
+	// Connect 
+	pCfg->ConfigurationChanged.Connect( ScoreWasChanged );
 
-
+	// we highlight the configuration just added
 	mScoreContentsBox->select( mHighlightedConfig );
-	mUserChangedSomething = true;
-
 }
 
-void SMSScoreEditor::RemoveCurrentConfiguratorFromTabs()
+void SMSScoreEditor::InsertConfigurationIntoChain( const char* name, const CLAM::ProcessingConfig& userConfig,
+						   CLAM::SMSTransformationChainConfig& chain )
 {
-	if ( !mpCurrentConfigurator )
-		return;
-
-	mpCurrentConfigurator->GetHelpWidget()->hide();
-	mHelpWidgetContainer->remove(*(mpCurrentConfigurator->GetHelpWidget() ) );
-
-	if ( mpCurrentConfigurator->GetParametersWidget() )
+	std::string givenName = name;
+	
+	// search for special Fl_Browser chars
+	if ( givenName[0] == '@' )
 	{
-		mApplyChangesToCurrentCfg->deactivate();
-		mpCurrentConfigurator->GetParametersWidget()->hide();
-		mConfigWidgetContainer->remove(*(mpCurrentConfigurator->GetParametersWidget() ) );		
+		givenName = givenName.substr( 2, givenName.size()-2 );
 	}
 	else
-	{
-		if ( mNoConfigWidgetAvailable->visible() )
-			mNoConfigWidgetAvailable->hide();
-		if ( mNoConfigWidgetAvailable->parent() == mConfigWidgetContainer )
-			mConfigWidgetContainer->remove(*(mNoConfigWidgetAvailable) );		
+		givenName = name;
 
-	}
+	CLAM::ProcessingChaineeConfig cfg;
+	cfg.SetConcreteClassName( givenName.c_str() );
+	cfg.SetConcreteConfig( userConfig );
+
+	CLAM::SMSTransformationChainConfig::iterator i = chain.ConfigList_begin();
+	// we insert the new configuration just before the 'ending' SMSTransformationChainIO
+	std::advance( i, chain.ConfigList_size()-1 );
+	chain.GetConfigurations().insert( i, cfg );
+	chain.GetOnArray().AddElem( 1 );
 	
+}
+
+void SMSScoreEditor::AddHighlightedToScore( )
+{
+	if ( mRepositoryBox->size() == 0 ) // there are no configurators available
+		return;
+
+	// let's retrieve the transformation selected by the user
+	int insertedTransformation = mRepositoryBox->value();
+	const char* transformationName =  mRepositoryBox->text( insertedTransformation );
+
+	InsertNewConfiguratorInScoreBox( transformationName );
+
+	// turn 'on' the 'dirty' boolean
+	ScoreWasChanged();
+}
+
+void SMSScoreEditor::ClearTransformationHelpWidget()
+{
+	CLAM_ASSERT( mHelpWidgetContainer->children() <= 1, "Help widget container had more than one widget" );
+	
+	if ( mHelpWidgetContainer->children() > 0 ) // no widgets to hide
+	{
+	
+		Fl_Widget* currentHelpWidget = mHelpWidgetContainer->child(0);
+		CLAM_ASSERT( currentHelpWidget != NULL, "Current help widget was NULL!" );
+		currentHelpWidget->hide();
+		mHelpWidgetContainer->remove( *currentHelpWidget );
+	}
+
 	mHelpWidgetContainer->deactivate();
+	mTransTabs->redraw();
+}
+
+void SMSScoreEditor::ClearTransformationEditWidget()
+{
+	CLAM_ASSERT( mConfigWidgetContainer->children() <= 1, "Config widget container had more than widget" );
+	if ( mConfigWidgetContainer->children() > 0 )
+	{
+		Fl_Widget* currentConfigWidget = mConfigWidgetContainer->child(0);
+		CLAM_ASSERT( currentConfigWidget !=NULL, "Current config widget was NULL!" );
+		currentConfigWidget->hide();
+		mConfigWidgetContainer->remove( *currentConfigWidget );
+		
+	}
 	mConfigWidgetContainer->deactivate();
 	mTransTabs->redraw();
+}
 
-	mpCurrentConfigurator = NULL;
+void SMSScoreEditor::SetTransformationHelpWidget( CLAMVM::SMSConfigurator& conf )
+{
+	CLAM_ASSERT( conf.GetHelpWidget() != NULL, "Configurator did not provide help widget" );
+	CLAM_ASSERT( mHelpWidgetContainer->children() == 0, "Help widget container was not empty" );
+	
+	Fl_Widget* helpWidget = conf.GetHelpWidget();
+	
+	mHelpWidgetContainer->add( helpWidget );
+	helpWidget->resize( mHelpWidgetContainer->x(), mHelpWidgetContainer->y()+5,
+			    mHelpWidgetContainer->w(), mHelpWidgetContainer->h()-5 );
+	helpWidget->show();
+	mHelpWidgetContainer->activate();
+	mTransTabs->value( mHelpWidgetContainer );
+}
+
+void SMSScoreEditor::SetTransformationEditWidget( CLAMVM::SMSConfigurator& conf )
+{
+	CLAM_ASSERT( mConfigWidgetContainer->children() == 0, "Config widget container was not empty" );
+	Fl_Widget* configWidget = conf.GetParametersWidget();
+	
+	if ( configWidget == NULL )
+	{
+		configWidget = mNoConfigWidgetAvailable;
+	}
+	
+	mConfigWidgetContainer->add( configWidget );
+	configWidget->resize( mConfigWidgetContainer->x(), mConfigWidgetContainer->y()+5,
+			      mConfigWidgetContainer->w(), mConfigWidgetContainer->h()-5 );
+
+	mConfigWidgetContainer->activate();
+	configWidget->show();
+	mTransTabs->value( mConfigWidgetContainer );
+}
+
+void SMSScoreEditor::RemoveConfiguratorFromScoreBox( int index )
+{
+	CLAMVM::SMSConfigurator* cfg = (CLAMVM::SMSConfigurator*)mScoreContentsBox->data( index );
+
+	CLAM_ASSERT( mHelpWidgetContainer->children() <= 1, "Too many children for the help widget container" );
+	if ( mHelpWidgetContainer->children() )
+		if ( cfg->GetHelpWidget() == mHelpWidgetContainer->child(0) )
+			ClearTransformationHelpWidget();
+	
+	CLAM_ASSERT( mConfigWidgetContainer->children() <=1, "Too many children for the config widget container" );
+	if ( mConfigWidgetContainer->children() )
+		if ( cfg->GetParametersWidget() == mConfigWidgetContainer->child(0) )
+			ClearTransformationEditWidget();
+
+	CLAM_ASSERT( cfg!=NULL, "The browser row did not have a configurator!" );
+	delete cfg;
+
+	mScoreContentsBox->data( index, NULL );
+	mScoreContentsBox->remove(  index );
+
 }
 
 void SMSScoreEditor::RemoveHighlightedFromScore( )
 {
-	int removedTransformation = mScoreContentsBox->value();
-	CLAMVM::SMSConfigurator* cfg = (CLAMVM::SMSConfigurator*)mScoreContentsBox->data( removedTransformation );
-	if ( cfg == mpCurrentConfigurator )
-		RemoveCurrentConfiguratorFromTabs();
-	delete cfg;
-	mScoreContentsBox->data( removedTransformation, NULL );
-	mScoreContentsBox->remove(  removedTransformation );
+	if ( mHighlightedConfig == 0 ) // no selected configuration
+		return;
 
-	CLAM::SMSTransformationChainConfig::iterator it = mChainConfig.ConfigList_begin();
+	RemoveConfiguratorFromScoreBox( mHighlightedConfig );
 
-	std::advance( it, removedTransformation );
+	ScoreWasChanged();
 
-	mChainConfig.GetConfigurations().erase( it );//mChainConfig.GetConfigurations().begin()+removedTransformation );
-	mChainConfig.GetOnArray().DeleteElem( removedTransformation );
-	mUserChangedSomething = true;
 	mHighlightedConfig = 0;
+
+}
+
+void SMSScoreEditor::SwapConfigurators( int source, int destination )
+{
+	mScoreContentsBox->move( source,destination );
+	mScoreContentsBox->select( destination );
 }
 
 void SMSScoreEditor::MoveHighlightedDown()
@@ -552,32 +583,9 @@ void SMSScoreEditor::MoveHighlightedDown()
 	if ( destination > mScoreContentsBox->size() )
 		return;
 
-	mScoreContentsBox->move( destination,  source );
+	SwapConfigurators( source, destination );
 
-	CLAM::ProcessingChaineeConfig tmpCfg;
-	bool tmpFlag;
-
-	CLAM::SMSTransformationChainConfig::iterator itSrc = mChainConfig.ConfigList_begin();
-	std::advance( itSrc, source );
-	CLAM::SMSTransformationChainConfig::iterator itDst = mChainConfig.ConfigList_begin();
-	std::advance( itDst, destination );
-	
-
-	tmpCfg.SetConcreteClassName( itSrc->GetConcreteClassName() );
-	tmpCfg.SetConcreteConfig( itSrc->GetConcreteConfig() );
-
-	itSrc->SetConcreteClassName( itDst->GetConcreteClassName() );
-	itSrc->SetConcreteConfig( itDst->GetConcreteConfig() );
-
-	itDst->SetConcreteClassName( tmpCfg.GetConcreteClassName() );
-	itDst->SetConcreteConfig( tmpCfg.GetConcreteConfig() );
-
-	tmpFlag = mChainConfig.GetOnArray()[source];
-	mChainConfig.GetOnArray()[source] = mChainConfig.GetOnArray()[destination];
-	mChainConfig.GetOnArray()[destination] = tmpFlag;
-
-	mScoreContentsBox->select( destination );
-	mUserChangedSomething = true;	
+	ScoreWasChanged();
 	mHighlightedConfig++;
 }
 
@@ -589,50 +597,40 @@ void SMSScoreEditor::MoveHighlightedUp()
 	if ( destination < 1 )
 		return;
 
-	mScoreContentsBox->move( destination, source );
+	SwapConfigurators( source, destination );
 
-	CLAM::ProcessingChaineeConfig tmpCfg;
-	bool tmpFlag;
-
-	CLAM::SMSTransformationChainConfig::iterator itSrc = mChainConfig.ConfigList_begin();
-	std::advance( itSrc, source );
-	CLAM::SMSTransformationChainConfig::iterator itDst = mChainConfig.ConfigList_begin();
-	std::advance( itDst, destination );
-	
-
-	tmpCfg.SetConcreteClassName( itSrc->GetConcreteClassName() );
-	tmpCfg.SetConcreteConfig( itSrc->GetConcreteConfig() );
-
-	itSrc->SetConcreteClassName( itDst->GetConcreteClassName() );
-	itSrc->SetConcreteConfig( itDst->GetConcreteConfig() );
-
-	itDst->SetConcreteClassName( tmpCfg.GetConcreteClassName() );
-	itDst->SetConcreteConfig( tmpCfg.GetConcreteConfig() );
-
-	tmpFlag = mChainConfig.GetOnArray()[source];
-	mChainConfig.GetOnArray()[source] = mChainConfig.GetOnArray()[destination];
-	mChainConfig.GetOnArray()[destination] = tmpFlag;
-
-
-	mScoreContentsBox->select( destination );
 	mHighlightedConfig--;
-	mUserChangedSomething = true;
+	ScoreWasChanged();
 }
 
-void SMSScoreEditor::ApplyChangesToCurrentCfg()
+void SMSScoreEditor::ApplyChangesIntoChain()
 {
-	CLAM::SMSTransformationChainConfig::iterator it = mChainConfig.ConfigList_begin();
-	CLAM_ASSERT( mHighlightedConfig >= 1, "mHighlightedConfig has an invalid value!" );
-	CLAM_ASSERT( mHighlightedConfig <= mScoreContentsBox->size(), "mHighlightedConfig has an invalid value!" );
-	CLAM_ASSERT( mHighlightedConfig < mChainConfig.ConfigList_size(), "mHighlightedConfig has an invalid value!" );
-	CLAM_ASSERT( mpCurrentConfigurator!=NULL, "No configurator active!" );
-	std::advance( it, mHighlightedConfig );
-	
-	it->SetConcreteConfig( mpCurrentConfigurator->GetConfig() );
+	CLAM::SMSTransformationChainConfig newChainConfig;
 
-	mScoreContentsBox->select( mHighlightedConfig );
+	// first we insert the TransformationChainIO's at the beginning and at the end
+	newChainConfig.GetConfigurations().clear();
+	newChainConfig.GetOnArray().Resize(0);
+	newChainConfig.GetOnArray().SetSize(0);
 
-	mUserChangedSomething = true;
+	CLAM::ProcessingChaineeConfig cfg;
+	cfg.SetConcreteClassName( "SMSTransformationChainIO" );
+	cfg.AddConcreteConfig();
 
-	fl_message("Score has been changed");
+	newChainConfig.GetConfigurations().push_back(  cfg  );
+	newChainConfig.GetConfigurations().push_back(  cfg );
+	newChainConfig.GetOnArray().Resize( 2 );
+	newChainConfig.GetOnArray().SetSize( 2 );
+	newChainConfig.GetOnArray()[0] = newChainConfig.GetOnArray()[1] = true;
+
+
+	for ( int i = 1; i <= mScoreContentsBox->size(); i++ )
+	{
+		CLAMVM::SMSConfigurator* pCfg = ( CLAMVM::SMSConfigurator* )mScoreContentsBox->data(i);
+		CLAM_ASSERT( pCfg != NULL, "Invalid configurator!" );
+		InsertConfigurationIntoChain( mScoreContentsBox->text(i), pCfg->GetConfig(), newChainConfig );
+	}
+
+	TransformationChainChanged.Emit( newChainConfig );
+
 }
+

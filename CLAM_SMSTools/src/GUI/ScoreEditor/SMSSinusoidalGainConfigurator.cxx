@@ -28,7 +28,9 @@ namespace CLAMVM
 		mConfig.SetType( "SMSSinusoidalGain" );
 		mConfig.GetBPFAmount().Insert( 0.0, 0.0 );
 		mConfig.GetBPFAmount().Insert( 1.0, 0.0 );
+		
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSSinusoidalGainConfigurator::~SMSSinusoidalGainConfigurator()
@@ -48,11 +50,24 @@ namespace CLAMVM
 	{
 		return mEditorWidget;
 	}
+
+	void SMSSinusoidalGainConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+		
+		conCfg.RemoveAmount();
+		conCfg.RemoveBPFAmount();
+		conCfg.UpdateData();
+		conCfg.AddBPFAmount();
+		conCfg.UpdateData();
+		conCfg.GetBPFAmount().Insert( 0.0, 0.0 );
+		conCfg.GetBPFAmount().Insert( 1.0, 0.0 );
+
+	}
 	
 	void SMSSinusoidalGainConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
-		mEditorWidget->Clear();
 
 		if ( !mConfig.HasBPFAmount() )
 		{
@@ -64,6 +79,8 @@ namespace CLAMVM
 			mConfig.GetBPFAmount().Insert( 1.0, value );
 		
 		}
+
+		mEditorWidget->Clear();
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 	
 	}

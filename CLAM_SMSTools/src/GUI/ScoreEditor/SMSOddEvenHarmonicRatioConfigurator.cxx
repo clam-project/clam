@@ -28,9 +28,10 @@ namespace CLAMVM
 		mConfig.UpdateData();
 		mConfig.SetType( "SMSOddEvenHarmonicRatio" );
 		mConfig.GetBPFAmount().Insert( 0.0, 0 );
-		mConfig.GetBPFAmount().Insert( 0.0, 0 );
+		mConfig.GetBPFAmount().Insert( 1.0, 0 );
 		
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSOddEvenHarmonicRatioConfigurator::~SMSOddEvenHarmonicRatioConfigurator()
@@ -51,11 +52,28 @@ namespace CLAMVM
 		return mEditorWidget;
 	}
 
+	void SMSOddEvenHarmonicRatioConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+
+		conCfg.RemoveAmount();
+		conCfg.RemoveBPFAmount();
+		conCfg.UpdateData();
+		conCfg.AddBPFAmount();
+		conCfg.UpdateData();
+
+		mConfig.GetBPFAmount().Insert( 0.0, 0 );
+		mConfig.GetBPFAmount().Insert( 1.0, 0 );
+
+		
+	}
+
 	void SMSOddEvenHarmonicRatioConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
 		mEditorWidget->Clear();
-
+		
 		if ( !mConfig.HasBPFAmount() )
 		{
 			double value = mConfig.GetAmount();
@@ -66,7 +84,7 @@ namespace CLAMVM
 			mConfig.GetBPFAmount().Insert( 0, value );
 			mConfig.GetBPFAmount().Insert( 1, value );
 		}
-		
+			
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 
 	}

@@ -26,6 +26,8 @@ namespace CLAMVM
 		mConfig.UpdateData();
 		mConfig.SetType( "SMSHarmonizer" );
 
+
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSHarmonizerConfigurator::~SMSHarmonizerConfigurator()
@@ -45,18 +47,32 @@ namespace CLAMVM
 	{
 		return mEditorWidget;
 	}
+
+	void SMSHarmonizerConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );		
+
+		conCfg.RemoveAmount();
+		conCfg.RemoveBPFAmount();
+		conCfg.UpdateData();
+		conCfg.AddBPFAmount();
+		conCfg.UpdateData();
+
+	}
+
 	
 	void SMSHarmonizerConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
-		mEditorWidget->Clear();
+
 		if ( !mConfig.HasBPFAmount() )
 		{
 			mConfig.AddBPFAmount();
 			mConfig.RemoveAmount();
 			mConfig.UpdateData();
 		}
-
+	
+		mEditorWidget->Clear();
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 	}
 

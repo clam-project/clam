@@ -21,6 +21,8 @@ namespace CLAMVM
 
 	SMSPitchDiscretizationConfigurator::~SMSPitchDiscretizationConfigurator()
 	{
+		if ( mHelpWidget->parent() == NULL )
+			delete mHelpWidget;
 	}
 
 	void SMSPitchDiscretizationConfigurator::SetHelpWidgetText()
@@ -31,6 +33,10 @@ namespace CLAMVM
 	Fl_Widget* SMSPitchDiscretizationConfigurator::GetParametersWidget()
 	{
 		return NULL;
+	}
+
+	void SMSPitchDiscretizationConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
 	}
 
 	void SMSPitchDiscretizationConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )

@@ -6,6 +6,7 @@
 #include "SMSTransformationChain.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include "Slotv0.hxx"
 
 namespace CLAMVM
 {
@@ -31,25 +32,37 @@ public:
 	
 	SigSlot::Slotv1< const CLAM::SMSTransformationChainConfig& > SetTransformationScore;
 
+	SigSlot::Slotv0 ScoreWasChanged;
+
 	void Show();
 	void Hide();
 
 protected:
-	CLAM::SMSTransformationChainConfig mChainConfig;
-	CLAM::SMSTransformationChainConfig mPreviousChainConfig;
 	bool                               mUserChangedSomething; 
-	CLAMVM::SMSConfigurator*           mpCurrentConfigurator;
 
 	void OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg );
-	void ShowScoreOnBrowser();
+	void OnScoreChanged();
+	void ResetChangedStatus();
+	bool IsScoreChanged() const { return mUserChangedSomething; }
+
+	void ShowScoreOnBrowser( const CLAM::SMSTransformationChainConfig& cfg );
 	void ShowFactoryProductsOnBrowser();
 
-	void ActivateConfigurator( int idx, Fl_Select_Browser* browser );
-	void ShowActiveConfiguratorHelp();
-	void ShowActiveConfiguratorEditWidget();
-	void ApplyChangesToCurrentCfg();
-	void RemoveCurrentConfiguratorFromTabs();
-	void ResetChainConfig();
+	void InsertNewConfiguratorInScoreBox( const char* transName );
+	void RemoveConfiguratorFromScoreBox( int index );
+	void SwapConfigurators( int source, int destination );
+	void ApplyChangesIntoChain();
+	void InsertConfigurationIntoChain( const char* name, const CLAM::ProcessingConfig& cfg,
+					   CLAM::SMSTransformationChainConfig& chain );
+
+	void ClearTransformationHelpWidget();
+	void ClearTransformationEditWidget();
+	void ClearTransformationWidgets() {
+		ClearTransformationHelpWidget();
+		ClearTransformationEditWidget();
+	}
+	void SetTransformationHelpWidget( CLAMVM::SMSConfigurator& conf );
+	void SetTransformationEditWidget( CLAMVM::SMSConfigurator& conf );
 
 	int  mHighlightedConfig;
 

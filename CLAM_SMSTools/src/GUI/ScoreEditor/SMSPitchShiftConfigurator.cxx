@@ -28,6 +28,8 @@ namespace CLAMVM
 		mConfig.GetBPFAmount().Insert( 0.0, 1.0 );
 		mConfig.GetBPFAmount().Insert( 1.0, 1.0 );
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSPitchShiftConfigurator::~SMSPitchShiftConfigurator()
@@ -48,12 +50,24 @@ namespace CLAMVM
 		return mEditorWidget;
 	}
 
+	void SMSPitchShiftConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+
+		conCfg.RemoveAmount();
+		conCfg.RemoveBPFAmount();
+		conCfg.UpdateData();
+		conCfg.AddBPFAmount();
+		conCfg.UpdateData();
+		conCfg.GetBPFAmount().Insert( 0.0, 1.0 );
+		conCfg.GetBPFAmount().Insert( 1.0, 1.0 );
+		
+	}
+
 	void SMSPitchShiftConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast< const CLAM::SMSTransformationConfig& >( cfg );
 		
-		mEditorWidget->Clear();
-
 		if ( !mConfig.HasBPFAmount() )
 		{
 			double oldAmount = mConfig.GetAmount();
@@ -71,6 +85,7 @@ namespace CLAMVM
 		else
 			clampBPFValues( mConfig.GetBPFAmount(), 0.5, 2.0 );
 
+		mEditorWidget->Clear();
 
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 

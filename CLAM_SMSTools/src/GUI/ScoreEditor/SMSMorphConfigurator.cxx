@@ -24,8 +24,9 @@ namespace CLAMVM
 		
 		mConfig.GetHybBPF().Insert( 0.0, 0.0 );
 		mConfig.GetHybBPF().Insert( 1.0, 1.0 );
+
 		mEditorWidget->InitPoints( mConfig.GetHybBPF() );
-		
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSMorphConfigurator::~SMSMorphConfigurator()
@@ -46,10 +47,26 @@ namespace CLAMVM
 		return mEditorWidget;
 	}
 
+	void SMSMorphConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSMorphConfig& conCfg = static_cast< CLAM::SMSMorphConfig& >( cfg );
+
+		if ( conCfg.HasHybBPF() )
+		{
+			conCfg.RemoveHybBPF();
+			conCfg.UpdateData();
+		}
+		conCfg.AddHybBPF();
+		conCfg.UpdateData();
+		conCfg.GetHybBPF().Insert( 0.0, 0.0 );
+		conCfg.GetHybBPF().Insert( 1.0, 1.0 );
+				
+	}
+
 	void SMSMorphConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSMorphConfig& >(cfg);
-		mEditorWidget->Clear();
+
 		if ( !mConfig.HasHybBPF() )
 		{
 			mConfig.AddHybBPF();
@@ -58,7 +75,9 @@ namespace CLAMVM
 			mConfig.GetHybBPF().Insert( 1.0, 1.0 );
 
 		}
-		
+
+
+		mEditorWidget->Clear();
 		mEditorWidget->InitPoints( mConfig.GetHybBPF() );
 
 	}

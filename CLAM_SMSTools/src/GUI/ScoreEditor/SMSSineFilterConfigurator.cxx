@@ -27,8 +27,9 @@ namespace CLAMVM
 		mConfig.SetType( "SMSSineFilter" );
 		mConfig.GetBPFAmount().Insert( 0.0, 0.0 );
 		mConfig.GetBPFAmount().Insert( 200.0, 0.0 );
-		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 
+		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSSineFilterConfigurator::~SMSSineFilterConfigurator()
@@ -49,11 +50,26 @@ namespace CLAMVM
 		return mEditorWidget;
 	}
 
+	void SMSSineFilterConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+		
+		conCfg.RemoveAmount();
+		conCfg.RemoveBPFAmount();
+		conCfg.UpdateData();
+		conCfg.AddBPFAmount();
+		conCfg.UpdateData();
+		conCfg.GetBPFAmount().Insert( 0.0, 0.0 );
+		conCfg.GetBPFAmount().Insert( 200.0, 0.0 );
+		
+		
+	}
+
 	void SMSSineFilterConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
-		mEditorWidget->Clear();
-		
+		mEditorWidget->Clear();		
 
 		if ( !mConfig.HasBPFAmount() )
 		{
@@ -65,7 +81,8 @@ namespace CLAMVM
 			mConfig.GetBPFAmount().Insert( 0.0, value );
 			mConfig.GetBPFAmount().Insert( 200.0, value );
 		}
-		
+
+
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 
 	}

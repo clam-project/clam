@@ -28,6 +28,8 @@ namespace CLAMVM
 		mConfig.GetBPFAmount().Insert( 0.0, 1.0 );
 		mConfig.GetBPFAmount().Insert( 1.0, 1.0 );
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+
+		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
 	}
 
 	SMSSpectralShapeShiftConfigurator::~SMSSpectralShapeShiftConfigurator()
@@ -46,6 +48,19 @@ namespace CLAMVM
 	Fl_Widget* SMSSpectralShapeShiftConfigurator::GetParametersWidget()
 	{
 		return mEditorWidget;
+	}
+
+	void SMSSpectralShapeShiftConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
+	{
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+
+		conCfg.RemoveBPFAmount();
+		conCfg.RemoveAmount();
+		conCfg.UpdateData();
+
+		conCfg.GetBPFAmount().Insert( 0.0, 1.0 );
+		conCfg.GetBPFAmount().Insert( 1.0, 1.0 );	
+		
 	}
 
 	void SMSSpectralShapeShiftConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
