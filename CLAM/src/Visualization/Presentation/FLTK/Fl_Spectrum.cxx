@@ -12,7 +12,7 @@ namespace CLAMVM
 				: Fl_Window( X, Y, W, H, label )
 		{
 				mLayout = new Fl_GridLayout( 10, 14 );
-				mXAxis = new Fl_X_Axis( 0,0,0,0, "Time (sec)" );
+				mXAxis = new Fl_X_Axis( 0,0,0,0, "Frequency (Hz)" );
 				mXAxis->align( FL_ALIGN_BOTTOM );
 				mXAxis->scale( FL_AXIS_LIN );
 				mXAxis->minimum( 0.0f );
@@ -26,7 +26,7 @@ namespace CLAMVM
 				mLayout->AddMultiCellWidget( mXAxis, 0, 8, 12, 1  );				
 				mLayout->MakeHeightFixed();
 
-				mYAxis = new Fl_Y_Axis( 0,0,0,0, "Amplitude" );
+				mYAxis = new Fl_Y_Axis( 0,0,0,0, "Amplitude (dB)" );
 				mYAxis->align( FL_ALIGN_LEFT );
 				mYAxis->scale( FL_AXIS_LIN );
 				mYAxis->minimum( -1.0 );
