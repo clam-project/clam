@@ -10,13 +10,12 @@ namespace CLAMVM
 {
 		using SigSlot::Signalv1;
 		using SigSlot::Slotv1;
-		using CLAM::TControlData;
 
 		class InputControlModel
 		{
 		protected:
 
-			virtual void DispatchControlValue( TControlData value ) = 0;
+			virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
 
 		public:
 
@@ -25,11 +24,11 @@ namespace CLAMVM
 				virtual ~InputControlModel();
 
 				// Signals
-				Signalv1< TControlData >                  ValuePublished;
-				Signalv1< TControlData, TControlData >    ValueRangePublished;
+				Signalv1< CLAM::TControlData >                  ValuePublished;
+				Signalv1< CLAM::TControlData, CLAM::TControlData >    ValueRangePublished;
 				
 				// Slots
-				Slotv1< TControlData>                     UpdateValue;
+				Slotv1< CLAM::TControlData>                     UpdateValue;
 
 		};
 }

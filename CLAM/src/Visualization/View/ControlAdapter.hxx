@@ -10,8 +10,7 @@ namespace CLAMVM
 {
 		using CLAM::InControl;
 		using CLAM::OutControl;
-		using CLAM::TControlData;
-		
+
 		class ControlAdapter
 				: public  ModelController, public  InputControlModel
 		{
@@ -19,25 +18,25 @@ namespace CLAMVM
 
 				struct tManagedEmitter
 				{
-				
+
 						OutControl              mControl;
-						TControlData            mValueToEmit;
+						CLAM::TControlData            mValueToEmit;
 						bool                    mIsDirty;
-						
+
 						tManagedEmitter();
-						
+
 						void Emit(  );
-		
+
 				};
-		
+
 				tManagedEmitter         mEmitter;
 				bool                    mIsBound;
 				bool                    mValueRangeChanged;
-				TControlData            mMinValue;
-				TControlData            mMaxValue;
+				CLAM::TControlData            mMinValue;
+				CLAM::TControlData            mMaxValue;
 		protected:
-		
-				void DispatchControlValue( TControlData value );
+
+				void DispatchControlValue( CLAM::TControlData value );
 
 				void DeleteSubAdapters();
 
@@ -45,17 +44,17 @@ namespace CLAMVM
 				ControlAdapter();
 
 				virtual ~ControlAdapter();
-				
-				virtual const char* GetClassName() const 
+
+				virtual const char* GetClassName() const
 				{
 						return "ControlAdapter";
 				}
-				
+
 				virtual bool Publish();
 
 				virtual bool Update();
 
-				void SetValueRange( TControlData min, TControlData max )
+				void SetValueRange( CLAM::TControlData min, CLAM::TControlData max )
 				{
 						mMinValue = min;
 						mMaxValue = max;
@@ -63,7 +62,7 @@ namespace CLAMVM
 				}
 
 				virtual bool BindTo( InControl&  adaptee );
-				
+
 				bool IsBound() const
 				{
 						return mIsBound;
