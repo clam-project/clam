@@ -1,9 +1,4 @@
-SRCDEPS = ../../../srcdeps/srcdeps
-
-PROGRAM = CppUnitTests
-
-EXTRA_LINK_FLAGS = -lcppunit
-
+CLAM_PATH = ../../..
 
 include ../../Makefile.rules
 
