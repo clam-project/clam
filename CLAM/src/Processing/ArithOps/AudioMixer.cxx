@@ -56,19 +56,25 @@ bool AudioMixer::ConcreteConfigure(const ProcessingConfig& c)
 
 bool AudioMixer::Do()
 {
-	for (unsigned int sample=0; sample<mConfig.GetFrameSize(); sample++) 
+	unsigned int frameSize = mConfig.GetFrameSize();
+	unsigned int numInPorts = mConfig.GetNumberOfInPorts();
+
+	TData normConstant = (TData)1.0 /TData(numInPorts);
+	
+	for (unsigned int sample=0; sample < frameSize; sample++) 
 	{
 		TData sum=0.0;
-		for (unsigned int inPort=0; inPort<mConfig.GetNumberOfInPorts(); inPort++)
+		
+		for (unsigned int inPort=0; inPort< numInPorts; inPort++)
 		{
 			TData valueModified = mInputPorts[inPort]->GetData(sample) * mInputControls[inPort]->GetLastValue();
 			sum += valueModified;
 		}
-		mOutputPort.GetData(sample) = sum/TData(mConfig.GetNumberOfInPorts());
+		mOutputPort.GetData(sample) = sum * normConstant;
 	}
 
 	// execute consume/produce methods	
-	for (unsigned int inPort=0; inPort<mConfig.GetNumberOfInPorts(); inPort++)
+	for (unsigned int inPort=0; inPort<numInPorts; inPort++)
 		mInputPorts[inPort]->Consume();
 	mOutputPort.Produce();
 	
