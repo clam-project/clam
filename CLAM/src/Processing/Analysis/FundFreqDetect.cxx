@@ -142,7 +142,7 @@ namespace CLAM {
 		// Calculate Maximun Magnitude Peak
 		TIndex nMaxMagPeak = peaks.GetMaxMagPos();
 		double maxMag      = peaks.GetMag(nMaxMagPeak);
-		int i, j;
+		int j;
 
 		// 1.- SELECT PEAKS
 		// Add an index to the PeakArray
@@ -170,7 +170,7 @@ namespace CLAM {
 		}
 
 		// Before the maximum magnitude peak
-		for(i=z; i<nMaxMagPeak; i++) {
+		for(int i=z; i<nMaxMagPeak; i++) {
 			if(peakMagBuffer[i] < maxMag - 30)
 				peaks.DeleteIndex(i);
 		}
@@ -187,7 +187,7 @@ namespace CLAM {
 		TData x,y,a,b;
 		a = - 10*spectralRes/TData(1000.0);
 		b = maxMag - 50 - a*(double)peakBinPosBuffer[nMaxMagPeak];
-		for(i=nMaxMagPeak+1; i<z; i++) {
+		for(int i=nMaxMagPeak+1; i<z; i++) {
 			y = peakMagBuffer[i];
 			x = peakBinPosBuffer[i];
 			if(y < (a*x+b)) {
@@ -244,31 +244,26 @@ namespace CLAM {
 			tmpFreq.AddElem(peaks.GetThruIndexFreq(nMaxMagPeak));	
 		
 		// 2.2.- Peaks below the maximum magnitude peak (except for the 3 max peaks)
-		i=0;
-		while ( (i < nMaxMagPeak) && (tmpFreq.GetnCandidates() < mnMaxCandidates) ) // be careful not to exceed the maximun permitted
+		for (int i=0; (i < nMaxMagPeak) && (tmpFreq.GetnCandidates() < mnMaxCandidates); i++ ) // be careful not to exceed the maximun permitted
 		{
 				if((i!=nMaxMagPeak2) && (i!=nMaxMagPeak3))
 					if (peaks.GetThruIndexMag(i) > (maxMag - mMaxCandMagDiff) )
 						if ( IsGoodCandidate(peaks.GetThruIndexFreq(i)) )
 							tmpFreq.AddElem(peaks.GetThruIndexFreq(i));
-				i++;
 		}
 		
 		// 2.3.- Frequency offset between peaks above the maximun magnitude peak and the maximun magnitude peak
 		double freq;
-		i=nMaxMagPeak+1;
-		while ( (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates) )
+		for (int i = nMaxMagPeak+1; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++)
 		{
 			freq = peaks.GetThruIndexFreq(i) - peaks.GetThruIndexFreq(nMaxMagPeak);
 			if (freq < peaks.GetThruIndexFreq(nMaxMagPeak)*1.1)
 				if (IsGoodCandidate(freq))
 					tmpFreq.AddElem(freq);
-			i++;
 		}
 		
 		// 2.4.- Frequency offset between peaks
-		i=0;
-		while( (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates) )
+		for (int i = 0; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++ )
 		{
 			if (i!=nMaxMagPeak) {	
 				j = i+1;
@@ -281,12 +276,10 @@ namespace CLAM {
 					j++;
 				}
 			}
-			i++;
 		}
 		
 		// 2.5.- Frequencies related to peaks by integer ratios (before: except for the 3 maximun peaks. not now)
-		i=0;
-		while( (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates) )
+		for (int i=0; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++ )
 		{
 			j=1;
 			while( (j <= mnInt) && (tmpFreq.GetnCandidates()<mnMaxCandidates) )
@@ -297,7 +290,6 @@ namespace CLAM {
 						tmpFreq.AddElem(freq);
 				j++;
 			}
-			i++;
 		}
 
 		if(tmpFreq.GetnCandidates() <= 0)
@@ -305,7 +297,7 @@ namespace CLAM {
 
 		// 3.- CALCULATE ERRORS (TMW procedure)
 		double myf=0, mye=0; 
-		for (i=0; i<tmpFreq.GetnCandidates(); i++)
+		for (int i=0; i<tmpFreq.GetnCandidates(); i++)
 		{
 			myf = tmpFreq.GetFreq(i);
 			mye = WeightCandidate(myf,maxMag,peaks);
@@ -313,7 +305,7 @@ namespace CLAM {
 		}
 		
 		// 4.- CHOOSE THE BEST CANDIDATES: choose the FundFreq.NCandidates() candidates with the smallest error
-		for (i=0; i<tmpFreq.GetnCandidates(); i++) // Ordering
+		for (int i=0; i<tmpFreq.GetnCandidates(); i++) // Ordering
 			for (j=i+1; j<tmpFreq.GetnCandidates(); j++)
 				if (tmpFreq.GetErr(i) > tmpFreq.GetErr(j))
 					tmpFreq.Exchange(i,j);
@@ -321,7 +313,7 @@ namespace CLAM {
 		Fundamental tmpFreq2;
 		tmpFreq2.SetnMaxCandidates(tmpFreq.GetnCandidates());
 
-		for (i=0;i<tmpFreq.GetnCandidates();i++)
+		for (int i=0;i<tmpFreq.GetnCandidates();i++)
 			if (i>0)
 			{
 				int j; 
@@ -344,7 +336,7 @@ namespace CLAM {
 		
 		// 5.- SEARCH AROUND FOR A RELATIVE MINIMUM
 		TData nMinimum = std::min(3,tmpFreq2.GetnCandidates());
-		for(i=0; i<nMinimum; i++)
+		for(int i=0; i<nMinimum; i++)
 		{
 			TData Low  = tmpFreq2.GetFreq(i)*TData(.9);
 			TData High = tmpFreq2.GetFreq(i)*TData(1.1);
@@ -368,13 +360,13 @@ namespace CLAM {
 		} 		
 
 		// Ordering the minimum
-		for (i=0; i<tmpFreq2.GetnCandidates(); i++) 
+		for (int i=0; i<tmpFreq2.GetnCandidates(); i++) 
 			for (j=i+1; j<tmpFreq2.GetnCandidates(); j++)
 				if (tmpFreq2.GetErr(i) > tmpFreq2.GetErr(j))
 					tmpFreq2.Exchange(i,j);
 
 			TIndex nCandidates = std::min(outFreq.GetnMaxCandidates(),tmpFreq2.GetnCandidates());
-		for(i=0; i<nCandidates; i++)
+		for(int i=0; i<nCandidates; i++)
 			if(tmpFreq2.GetErr(i) <= mMaxFundFreqError)
 				outFreq.AddElem(tmpFreq2.GetFreq(i), tmpFreq2.GetErr(i));
 
@@ -390,9 +382,8 @@ namespace CLAM {
 	double FundFreqDetect::WeightCandidate(double freq, double MaxMag, SpectralPeakArray& peaks) const
 	{
 		
-		TData Mag, Freq, FreqDistance, Tmp;
-		int Peak=0, i;
-		int nPeaks = peaks.GetIndexArray().Size();
+		TData Tmp;
+		const int nPeaks = peaks.GetIndexArray().Size();
 		
 		// predicted to measured mismatch error
 		TData ErrorPM = 0;
@@ -404,17 +395,17 @@ namespace CLAM {
 		TSize nPM = MaxNPM;
 		TData lastFreq=TData(peaks.GetThruIndexFreq(nPeaks-1));
 		if (nPeaks > 0)
-			for (i=0; i<MaxNPM; i++)
+			for (int i=0; i<MaxNPM; i++)
 			{
 				if (Harmonic > lastFreq)
 				{
 					nPM = i+1;
 					break;	
 				}
-				Peak = GetClosestPeak(Harmonic,Peak,peaks);
-				Freq = TData(peaks.GetThruIndexFreq(Peak));
-				Mag  = TData(peaks.GetThruIndexMag(Peak));
-				FreqDistance = fabs(Freq - Harmonic);
+				const int Peak = GetClosestPeak(Harmonic,Peak,peaks);
+				TData Freq = TData(peaks.GetThruIndexFreq(Peak));
+				TData Mag  = TData(peaks.GetThruIndexMag(Peak));
+				TData FreqDistance = fabs(Freq - Harmonic);
 				Tmp = FreqDistance *	pow(Harmonic, -mPMp);
 				TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
 				MagFactor = TData(1.0) - MagFactor/TData(75.0);
@@ -429,28 +420,26 @@ namespace CLAM {
 		int MaxNMP = std::min(mMPnPeaks,nPeaks);
 		Harmonic = TData(freq);
 		TSize nMP = nPeaks;
-		for (Peak=0; Peak<nPeaks; Peak++)
+		for (int Peak=0; Peak<nPeaks; Peak++)
 		{
-			Freq = TData(peaks.GetThruIndexFreq(Peak));
+			TData Freq = TData(peaks.GetThruIndexFreq(Peak));
 			// For high frequency candidates, not get into account too-low peaks
 			if ( (freq > 500) && (Freq < 100))
 				continue;
 
-			Mag = TData(peaks.GetThruIndexMag(Peak));
+			TData Mag = TData(peaks.GetThruIndexMag(Peak));
 			Harmonic = TData(GetClosestHarmonic(Freq,freq));
-			FreqDistance = fabs(Freq - Harmonic);
+			TData FreqDistance = fabs(Freq - Harmonic);
 			Tmp = FreqDistance * pow(Freq, -mMPp);
 			TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
 			MagFactor = TData(1.0) - MagFactor/TData(75.0);
 			if (MagFactor < 0)
 				MagFactor = 0;
 			ErrorMP += (Tmp + MagFactor * (mMPq * Tmp - mMPr))*MagFactor*MagFactor*MagFactor;
-			if (Freq > freq * 10)
-				if (Peak > MaxNMP)
-				{
-					nMP =	Peak+1;
-					break;
-				}
+			if (Freq <= freq * 10) continue;
+			if (Peak <= MaxNMP) continue;
+			nMP =	Peak+1;
+			break;
 		}
 		
 		// total error
