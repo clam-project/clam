@@ -74,8 +74,8 @@ namespace CLAM {
 	FDFilterGen::FDFilterGen() :
 		Output("Output",this,1),
 		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
-		HighCutOff( "High Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
-		LowCutOff( "Low Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
+		HighCutOff( "High Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
+		LowCutOff( "Low Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
 		PassBandSlope("Pass Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
 		StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
 		SpectralRange(0),
