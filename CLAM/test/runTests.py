@@ -3,8 +3,8 @@
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 1
-updateLevelForExamples = 0
-updateLevelForTestData = 0
+updateLevelForExamples = 1
+updateLevelForTestData = 1
 
 # When false keeps already compiled objects
 doCleanMake = False
@@ -12,7 +12,7 @@ doCleanMake = False
 doAutoconf = False
 doAutoconf = doAutoconf or updateLevelForCLAM == 2
 
-enableSendMail = False
+enableSendMail = True
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
@@ -74,13 +74,13 @@ supervisedTests = [
 	('SpectralPeaksPresentationTest', spvTestsPath+'SpectralPeaksPresentation/' ), 
 	('SpectrumPresentationTest', spvTestsPath+'SpectrumPresentation/' ),
 	('AudioPresentationTest', spvTestsPath+'AudioPresentation/' ),
-	('FunFreqPresentationTest', spvTestsPath+'FundFreqPresentation/' ),
+	('FundFreqPresentationTest', spvTestsPath+'FundFreqPresentation/' ),
 #	('AudioIOTest', spvTestsPath+'AudioIO/' ), TODO: fix. now needs root access and consumes all cpu
 	('MIDIIOTest', spvTestsPath+'MIDIIO/' ),
 	('Fl_EnvelopeTest', spvTestsPath+'Fl_Envelope/' ),
 	('Test_Multiplot', spvTestsPath+'Plotsv2/Test_Multiplot/' ),
-	('Test_SinlglePlot', spvTestsPath+'Plotsv2/Test_SinglePlot/' ),
-	('Test_SpecificPlots', spvTestsPath+'Plotsv2/Test_Multiplot/' )
+	('Test_SinglePlot', spvTestsPath+'Plotsv2/Test_SinglePlot/' ),
+	('Test_SpecificPlots', spvTestsPath+'Plotsv2/Test_SpecificPlots/' )
 ]
 
 
@@ -109,10 +109,10 @@ notPortedTests = [
 testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
-#testsToRun[-1:-1] = externalApplications 
+testsToRun[-1:-1] = externalApplications 
 testsToRun[-1:-1] = supervisedTests
-#testsToRun[-1:-1] = notPortedTests
-#testsToRun[-1:-1] = automaticTests 
+testsToRun[-1:-1] = notPortedTests
+testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
