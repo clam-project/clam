@@ -23,7 +23,7 @@
 
 #endif
 
-int verbose = 0;
+#include "verbose.h" 
 
 /* hash with all cur_defines during a parser_run */
 hash *cur_defines = 0;
@@ -609,8 +609,11 @@ void parser_init(void)
 			i = i->next;
 		}
 #ifndef WIN32
+/* MDB: TODO: I really prefer not to include these, because it really slows
+** down srcdeps, especially on OSX, but maybe some problem occurs???
 		includepaths_add("/usr/include");
 		includepaths_add("/usr/local/include");
+*/
 #endif
 		i = search_recurse_includes->first;
 		while (i)

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 
-extern int verbose;
+#include "verbose.h"
 
 int condi = -1;
 char cond[2048];
