@@ -604,14 +604,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-128-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -770,19 +768,16 @@ namespace CLAMTest
 			outputFile.OpenExisting( "test-mp3-192-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
-					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-192-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -946,14 +941,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-64-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1115,15 +1108,12 @@ namespace CLAMTest
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
-	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-320-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1286,14 +1276,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-LowVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1449,6 +1437,7 @@ namespace CLAMTest
 
 			CLAM::AudioFile outputFile;
 			outputFile.OpenExisting( "test-mp3-HighVBR-44.wav" );			
+>>>>>>> 1.1.4.10
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -1456,14 +1445,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-HighVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1627,14 +1614,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-AvgVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;

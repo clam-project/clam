@@ -52,7 +52,7 @@ namespace CLAMTest
 		void LoadAudio( CLAM::Audio& audio, const std::string& audioFileName )
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( audioFileName );
+			file.OpenExisting( audioFileName );
 			
 			if ( !file.IsReadable() )
 			{

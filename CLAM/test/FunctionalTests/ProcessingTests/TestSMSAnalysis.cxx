@@ -63,7 +63,7 @@ private: // Attributes	CLAM::SMSAnalysisCore mAnalysis;
 	void LoadAudioFile( const std::string & audioFileName )
 	{
 		CLAM::AudioFile file;
-		file.SetLocation( audioFileName );
+		file.OpenExisting( audioFileName );
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
@@ -148,7 +148,7 @@ public: // TestFixture interface
 	void testSine_comparingSegment()
 	{
 		CLAM::AudioFile file;
-		file.SetLocation( mPathToTestData + "sine.wav" );
+		file.OpenExisting( mPathToTestData + "sine.wav" );
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
@@ -183,7 +183,7 @@ public: // TestFixture interface
 	void testSweep_comparingSegment()
 	{
 		CLAM::AudioFile file;
-		file.SetLocation( mPathToTestData + "sweep.wav" );
+		file.OpenExisting( mPathToTestData + "sweep.wav" );
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
@@ -218,7 +218,7 @@ public: // TestFixture interface
 	void testTrumpet_comparingSegment()
 	{
 		CLAM::AudioFile file;
-		file.SetLocation( mPathToTestData + "trumpet.wav" );
+		file.OpenExisting( mPathToTestData + "trumpet.wav" );
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );

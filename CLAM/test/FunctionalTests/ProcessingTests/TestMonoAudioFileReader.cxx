@@ -457,8 +457,6 @@ namespace CLAMTest
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    1,
 						    "WAV" );
-
-
 			outputFile.CreateNew( "trumpet-copy.wav", outputFileHeader );
 
 			CLAM::MonoAudioFileReaderConfig cfgReader;
@@ -466,8 +464,6 @@ namespace CLAMTest
 			cfgReader.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MonoAudioFileReader procReader;

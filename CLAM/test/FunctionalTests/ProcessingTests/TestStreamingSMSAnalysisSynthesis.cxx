@@ -104,8 +104,6 @@ private:
 		CLAM::AudioFileHeader header;
 		header.SetValues(44100, 1, "WAV");
 		file.CreateNew(storedResult+"_result.wav", header);
-		writercfg.AddTargetFile(); //TODO modify XWriterConfig: add at the DefaultInit
-		writercfg.UpdateData();
 		writercfg.SetTargetFile(file);
 		audioWriter.Configure( writercfg );
 		
@@ -158,8 +156,6 @@ private:
 		CPPUNIT_ASSERT_MESSAGE("file have channels", file.GetHeader().HasChannels() );	
 		
 		
-		conf.AddTargetFile();
-		conf.UpdateData();
 		conf.SetTargetFile( file );
 		CPPUNIT_ASSERT_MESSAGE("config have channels", conf.GetTargetFile().GetHeader().HasChannels() );	
 

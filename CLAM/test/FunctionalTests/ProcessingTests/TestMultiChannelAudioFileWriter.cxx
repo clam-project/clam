@@ -56,14 +56,11 @@ namespace CLAMTest
 
 			CPPUNIT_ASSERT_EQUAL( false,
 					      configResult );
-
 		}
 
 		void testDo_PCM_WritesRightAKnownSignal()
 		{
 			CLAM::AudioFile outputFile;
-
-
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 2, "WAV" );
@@ -71,8 +68,6 @@ namespace CLAMTest
 			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 
@@ -140,12 +135,8 @@ namespace CLAMTest
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 2, "WAV" );
-
 			outputFile.SetLocation( "twosines-stereo.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 
@@ -163,7 +154,7 @@ namespace CLAMTest
 		void testDo_PCM_WritesTheSameThatWasRead()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding.wav" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding.wav" ) );
 
 
 			CLAM::AudioFile outputFile;
@@ -178,7 +169,7 @@ namespace CLAMTest
 			outputFileHeader.SetEncoding( inputFile.GetHeader().GetEncoding() );
 			outputFileHeader.SetEndianess( inputFile.GetHeader().GetEndianess() );
 
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-stereo-decoding-copy.wav", outputFileHeader );
 
 			outputFile.SetLocation( "test-stereo-decoding-copy.wav", outputFileHeader);						
 
@@ -186,8 +177,6 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -229,8 +218,8 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-stereo-decoding-copy.wav" );
-			cfgReader.OpenExisting( inputFile );
+			inputFile.OpenExisting( "test-stereo-decoding-copy.wav" );
+			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamplesLeft2;
@@ -274,11 +263,9 @@ namespace CLAMTest
 		{
 			
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 
 			CLAM::AudioFile outputFile;
-
-
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -291,8 +278,6 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
