@@ -56,6 +56,9 @@ namespace CLAM {
 		void LeaveAndAdvance();
 
 		//XA
+		void Leave();
+
+		//XA
 		void SetCenter(unsigned int center){
 			mPos=center-mLen*0.5+mOffset;
 		}

@@ -43,6 +43,13 @@ namespace CLAM {
 		mEnd = mPos+mLen;
 	}
 
+	//XA: Leaving region but without advancing
+	void StreamRegion::Leave()
+	{
+		mEnd=mPos;
+	}
+
+
 	void StreamRegion::LeaveAndAdvance()
 	{
 		mPos += mHop;
