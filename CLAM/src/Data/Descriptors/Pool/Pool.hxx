@@ -33,7 +33,7 @@ namespace CLAM
 	class Attribute : public AbstractAttribute
 	{
 	public:
-		typedef TData DataType;
+		typedef AttributeType DataType;
 		virtual void * Allocate(unsigned size)
 		{
 			return new AttributeType[size];
@@ -76,7 +76,7 @@ namespace CLAM
 			unsigned pos = _nameMap.size();
 			bool inserted = 
 				_nameMap.insert(std::make_pair(name,pos)).second;
-			CLAM_ASSERT(inserted,"ScopeSpec::Add, Attribute already present");
+			CLAM_ASSERT(inserted,"DescriptionScope::Add, Attribute already present");
 			_attributes.push_back(new Attribute<AttributeType>);
 		}
 
@@ -107,6 +107,79 @@ namespace CLAM
 		{
 			_attributes[pos]->CheckType<AttributeType>();
 		}
+	};
+
+	/**
+	 * Represents a description schema, that is which scopes
+	 * will be used, which attributes they have, which extractors
+	 * will compute such attributes and where the extractors
+	 * are feeded from.
+	 */
+	class DescriptionScheme
+	{
+	private:
+		typedef std::map<std::string, unsigned> ScopeMap;
+		typedef std::vector<DescriptionScope *> Scopes;
+	private:
+		Scopes _scopes;
+		ScopeMap _specMap;
+	public:
+		DescriptionScheme()
+		{
+		}
+
+		~DescriptionScheme()
+		{
+			Scopes::iterator it = _scopes.begin();
+			Scopes::iterator end = _scopes.end();
+			for (; it!=end; it++)
+				delete *it;
+		}
+
+		template < typename AttributeSpec >
+		void AddAttribute(const std::string &scope, const std::string & name)
+		{
+			typedef typename AttributeSpec::DataType DataType;
+			DescriptionScope & theScope = SearchScopeOrAdd(scope);
+			theScope.template Add<DataType>(name);
+		}
+
+		DescriptionScope & SearchScopeOrAdd(const std::string scopeName)
+		{
+			const unsigned nScopes = _scopes.size();
+			std::pair<ScopeMap::iterator,bool> result = 
+				_specMap.insert(std::make_pair(scopeName,nScopes));
+
+			if (!result.second) return *_scopes[result.first->second];
+
+			DescriptionScope * theScope = new DescriptionScope;
+			_scopes.push_back(theScope);
+			return *theScope;
+		}
+
+		unsigned GetScopeIndex(const std::string & name) const
+		{
+			ScopeMap::const_iterator it = _specMap.find(name);
+			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
+			return it->second;
+		}
+
+		const DescriptionScope & GetScope(unsigned scopeIndex) const
+		{
+			CLAM_ASSERT(scopeIndex < _scopes.size(), "Accessing an illegal scope index for the description scheme");
+			return *_scopes[scopeIndex];
+		}
+
+		const DescriptionScope & GetScope(const std::string & name) const
+		{
+			unsigned scopeIndex = GetScopeIndex(name);
+			return GetScope(scopeIndex);
+		}
+		unsigned GetNScopes() const 
+		{
+			return _scopes.size();
+		}
+
 	};
 
 	/**
@@ -184,69 +257,6 @@ namespace CLAM
 	};
 
 	/**
-	 * Represents a description schema, that is which scopes
-	 * will be used, which attributes they have, which extractors
-	 * will compute such attributes and where the extractors
-	 * are feeded from.
-	 */
-	class DescriptionScheme
-	{
-	private:
-		typedef std::map<std::string, unsigned> SpecMap;
-		typedef std::vector<DescriptionScope *> Specs;
-	private:
-		Specs _specs;
-		SpecMap _specMap;
-	public:
-		DescriptionScheme()
-		{
-		}
-
-		~DescriptionScheme()
-		{
-			Specs::iterator it = _specs.begin();
-			Specs::iterator end = _specs.end();
-			for (; it!=end; it++)
-				delete *it;
-		}
-
-		template < typename AttributeSpec >
-		void AddAttribute(const std::string &scope, const std::string & name)
-		{
-			typedef typename AttributeSpec::DataType DataType;
-			DescriptionScope & theSpec = SearchScopeOrAdd(scope);
-			theSpec.template Add<DataType>(name);
-		}
-
-		DescriptionScope & SearchScopeOrAdd(const std::string scopeName)
-		{
-			const unsigned nSpecs = _specs.size();
-			std::pair<SpecMap::iterator,bool> result = 
-				_specMap.insert(std::make_pair(scopeName,nSpecs));
-
-			// Already inserted
-			if (!result.second) return *_specs[result.first->second];
-
-			DescriptionScope * theSpec = new DescriptionScope;
-			_specs.push_back(theSpec);
-			return *theSpec;
-		}
-
-		const DescriptionScope & GetSpec(const std::string & name) const
-		{
-			SpecMap::const_iterator it = _specMap.find(name);
-			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
-			return *_specs[it->second];
-		}
-
-		ScopePool * CreatePool(const std::string & scope)
-		{
-			return new ScopePool(GetSpec(scope));
-			
-		}
-	};
-
-	/**
 	 * Contains the extracted data for a given description target.
 	 * It conforms to 
 	 */
@@ -254,13 +264,27 @@ namespace CLAM
 	{
 	public:
 		DescriptionDataPool(const DescriptionScheme & scheme)
-			: mScheme(scheme)
+			: _scheme(scheme), _scopePools(_scheme.GetNScopes(),(ScopePool*)0)
 		{
+		}
+		~DescriptionDataPool()
+		{
+			/*
+			ScopePools::iterator it = _scopePools.begin();
+			ScopePools::iterator end = _scopePools.end();
+			for (; it != end; it++)
+				if (*it) delete *it;
+			*/
 		}
 		void PopulateScope(const std::string & scopeName, unsigned size)
 		{
-			const DescriptionScope & scope = mScheme.GetSpec(scopeName);
-			ScopePool * scopePool = new ScopePool(scope, size);
+		}
+#ifdef NEVER_DEFINED
+		void PopulateScope(const std::string & scopeName, unsigned size)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeName);
+			_scopePools.push_back(new ScopePool(scope, size));
 		}
 		void InstantiateAttribute(const std::string & scope, const std::string & attribute)
 		{
@@ -275,9 +299,12 @@ namespace CLAM
 		
 		void DeleteContext(const std::string & scope, unsigned position);
 	private:
-		const DescriptionScheme & mScheme;
+		typedef std::map<const std::string,unsigned> ScopePoolMap;
+#endif
+		const DescriptionScheme & _scheme;
+		typedef std::vector<ScopePool*> ScopePools;
+		ScopePools _scopePools;
 	};
-
 
 }
 
