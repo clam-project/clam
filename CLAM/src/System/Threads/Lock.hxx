@@ -7,243 +7,242 @@
 namespace CLAM
 {
 	class Condition;
-
+	
 	namespace Detail
 	{
-
-	using CLAM::xtime;
 		
-		
-	template <typename MutexType>
-    class LockOps 
-    {
-    private:
-        LockOps() { }
-
-    public:
-        typedef typename MutexType::ConditionVar LockState;
-
-        static void Lock(MutexType& m)
-        {
-            m.DoLock();
-        }
-        static bool TryLock(MutexType& m)
-        {
-            return m.DoTryLock();
-        }
-        static bool TimedLock(MutexType& m, const xtime& xt)
-        {
-            return m.DoTimedLock(xt);
-        }
-        static void Unlock(MutexType& m)
-        {
-            m.DoUnlock();
-        }
-        static void Lock(MutexType& m, LockState& state)
-        {
-            m.DoLock(state);
-        }
-        static void Unlock(MutexType& m, LockState& state)
-        {
-            m.DoUnlock(state);
-        }
-    };
-
-    template <typename MutexType>
-    class ScopedLock
-    {
-    public:
-        typedef MutexType mutex_type;
-
-        explicit ScopedLock(MutexType& mx, bool initially_locked=true)
-            : mMutex(mx), mLocked(false)
-        {
-            if (initially_locked) 
-				Lock();
-        }
-        ~ScopedLock()
-        {
-            if (mLocked) 
-				Unlock();
-        }
-
-        void Lock()
-        {
-            if (mLocked) 
-				throw LockError( "Trying to Lock already locked Mutex" );
+		using CLAM::xtime;
+				
+		template <typename MutexType>
+		class LockOps 
+		{
+		private:
+			LockOps() { }
 			
-			Detail::LockOps<mutex_type>::Lock(mMutex);
-            mLocked = true;
-        }
-
-        void Unlock()
-        {
-            if (!mLocked) 
-				throw LockError("Trying to Unlock already a not yet locked Mutex");
+		public:
+			typedef typename MutexType::ConditionVar LockState;
 			
-            LockOps<mutex_type>::Unlock(mMutex);
-
-            mLocked = false;
-        }
-
-        bool Locked() const 
-		{ 
-			return mLocked; 
-		}
-
-        operator const void*() const 
-		{ 
-			return mLocked ? this : 0; 
-		}
-
-    private:
-		friend class CLAM::Condition;
-
-        MutexType& mMutex;
-        bool mLocked;
-    };
-
-    template <typename TryMutexType>
-    class ScopedTryLock 
-    {
-    public:
-        typedef TryMutexType mutex_type;
-
-        explicit ScopedTryLock(TryMutexType& mx)
-            : mMutex(mx), mLocked(false)
-        {
-            TryLock();
-        }
-
-        ScopedTryLock(TryMutexType& mx, bool initially_locked)
-            : mMutex(mx), mLocked(false)
-        {
-            if (initially_locked) 
-				Lock();
-        }
+			static void Lock(MutexType& m)
+			{
+				m.DoLock();
+			}
+			static bool TryLock(MutexType& m)
+			{
+				return m.DoTryLock();
+			}
+			static bool TimedLock(MutexType& m, const xtime& xt)
+			{
+				return m.DoTimedLock(xt);
+			}
+			static void Unlock(MutexType& m)
+			{
+				m.DoUnlock();
+			}
+			static void Lock(MutexType& m, LockState& state)
+			{
+				m.DoLock(state);
+			}
+			static void Unlock(MutexType& m, LockState& state)
+			{
+				m.DoUnlock(state);
+			}
+		};
 		
-        ~ScopedTryLock()
-        {
-            if (mLocked) 
-				Unlock();
-        }
-
-        void Lock()
-        {
-            if (mLocked) 
-				throw LockError("Trying to Lock already locked Mutex");
+		template <typename MutexType>
+		class ScopedLock
+		{
+		public:
+			typedef MutexType mutex_type;
 			
-            LockOps<TryMutexType>::Lock(mMutex);
-
-            mLocked = true;
-        }
-
-        bool TryLock()
-        {
-            if (mLocked) 
-				throw LockError("Trying to Lock already locked Mutex");
-
-            return (mLocked = LockOps<TryMutexType>::TryLock(mMutex));
-        }
-		
-        void Unlock()
-        {
-            if (!mLocked) 
-				throw LockError("Trying to Unlock already a not yet locked Mutex");
+			explicit ScopedLock(MutexType& mx, bool initially_locked=true)
+				: mMutex(mx), mLocked(false)
+			{
+				if (initially_locked) 
+					Lock();
+			}
+			~ScopedLock()
+			{
+				if (mLocked) 
+					Unlock();
+			}
 			
-            LockOps<TryMutexType>::Unlock(mMutex);
-
-            mLocked = false;
-        }
-
-        bool Locked() const 
-		{ 
-			return mLocked; 
-		}
-		
-        operator const void*() const 
-		{ 
-			return mLocked ? this : 0; 
-		}
-
-    private:
-		
-		friend class CLAM::Condition;
-
-        TryMutexType& mMutex;
-        bool mLocked;
-    };
-
-    template <typename TimedMutexType>
-    class ScopedTimedLock 
-    {
-    public:
-        typedef TimedMutexType mutex_type;
-
-        ScopedTimedLock(TimedMutexType& mx, const xtime& xt )
-            : mMutex(mx), mLocked(false)
-        {
+			void Lock()
+			{
+				if (mLocked) 
+					throw LockError( "Trying to Lock already locked Mutex" );
+				
+				Detail::LockOps<mutex_type>::Lock(mMutex);
+				mLocked = true;
+			}
 			
-            TimedLock(xt);
-        }
-		
-        ScopedTimedLock(TimedMutexType& mx, bool initially_locked)
-            : mMutex(mx), mLocked(false)
-        {
-            if (initially_locked) 
-				Lock();
-        }
-		
-        ~ScopedTimedLock()
-        {
-            if (mLocked) 
-				Unlock();
-        }
-
-        void Lock()
-        {
-            if (mLocked) 
-				throw LockError("Trying to Lock already locked Mutex");
+			void Unlock()
+			{
+				if (!mLocked) 
+					throw LockError("Trying to Unlock already a not yet locked Mutex");
 			
-            LockOps<TimedMutexType>::Lock(mMutex);
+				LockOps<mutex_type>::Unlock(mMutex);
 
-            mLocked = true;
-        }
+				mLocked = false;
+			}
 
-        bool TimedLock(const xtime& xt)
-        {
-            if (mLocked) 
-				throw LockError("Trying to Lock already locked Mutex");
+			bool Locked() const 
+			{ 
+				return mLocked; 
+			}
 
-            return (mLocked = LockOps<TimedMutexType>::TimedLock(mMutex, xt));
-        }
-        void Unlock()
-        {
-            if (!mLocked) 
-				throw LockError("Trying to Unlock already a not yet locked Mutex");
+			operator const void*() const 
+			{ 
+				return mLocked ? this : 0; 
+			}
 
-            LockOps<TimedMutexType>::Unlock(mMutex);
-			
-            mLocked = false;
-        }
+		private:
+			friend class CLAM::Condition;
 
-        bool Locked() const 
-		{ 
-			return mLocked; 
-		}
+			MutexType& mMutex;
+			bool mLocked;
+		};
+
+		template <typename TryMutexType>
+		class ScopedTryLock 
+		{
+		public:
+			typedef TryMutexType mutex_type;
+
+			explicit ScopedTryLock(TryMutexType& mx)
+				: mMutex(mx), mLocked(false)
+			{
+				TryLock();
+			}
+
+			ScopedTryLock(TryMutexType& mx, bool initially_locked)
+				: mMutex(mx), mLocked(false)
+			{
+				if (initially_locked) 
+					Lock();
+			}
 		
-        operator const void*() const 
-		{ 
-			return mLocked ? this : 0; 
-		}
+			~ScopedTryLock()
+			{
+				if (mLocked) 
+					Unlock();
+			}
 
-    private:
+			void Lock()
+			{
+				if (mLocked) 
+					throw LockError("Trying to Lock already locked Mutex");
+			
+				LockOps<TryMutexType>::Lock(mMutex);
 
-		friend class CLAM::Condition;
+				mLocked = true;
+			}
 
-        TimedMutexType& mMutex;
-        bool mLocked;
-    };
+			bool TryLock()
+			{
+				if (mLocked) 
+					throw LockError("Trying to Lock already locked Mutex");
+
+				return (mLocked = LockOps<TryMutexType>::TryLock(mMutex));
+			}
+		
+			void Unlock()
+			{
+				if (!mLocked) 
+					throw LockError("Trying to Unlock already a not yet locked Mutex");
+			
+				LockOps<TryMutexType>::Unlock(mMutex);
+
+				mLocked = false;
+			}
+
+			bool Locked() const 
+			{ 
+				return mLocked; 
+			}
+		
+			operator const void*() const 
+			{ 
+				return mLocked ? this : 0; 
+			}
+
+		private:
+		
+			friend class CLAM::Condition;
+
+			TryMutexType& mMutex;
+			bool mLocked;
+		};
+
+		template <typename TimedMutexType>
+		class ScopedTimedLock 
+		{
+		public:
+			typedef TimedMutexType mutex_type;
+
+			ScopedTimedLock(TimedMutexType& mx, const xtime& xt )
+				: mMutex(mx), mLocked(false)
+			{
+			
+				TimedLock(xt);
+			}
+		
+			ScopedTimedLock(TimedMutexType& mx, bool initially_locked)
+				: mMutex(mx), mLocked(false)
+			{
+				if (initially_locked) 
+					Lock();
+			}
+		
+			~ScopedTimedLock()
+			{
+				if (mLocked) 
+					Unlock();
+			}
+
+			void Lock()
+			{
+				if (mLocked) 
+					throw LockError("Trying to Lock already locked Mutex");
+			
+				LockOps<TimedMutexType>::Lock(mMutex);
+
+				mLocked = true;
+			}
+
+			bool TimedLock(const xtime& xt)
+			{
+				if (mLocked) 
+					throw LockError("Trying to Lock already locked Mutex");
+
+				return (mLocked = LockOps<TimedMutexType>::TimedLock(mMutex, xt));
+			}
+			void Unlock()
+			{
+				if (!mLocked) 
+					throw LockError("Trying to Unlock already a not yet locked Mutex");
+
+				LockOps<TimedMutexType>::Unlock(mMutex);
+			
+				mLocked = false;
+			}
+
+			bool Locked() const 
+			{ 
+				return mLocked; 
+			}
+		
+			operator const void*() const 
+			{ 
+				return mLocked ? this : 0; 
+			}
+
+		private:
+
+			friend class CLAM::Condition;
+
+			TimedMutexType& mMutex;
+			bool mLocked;
+		};
 	
 	} // End of namespace detail
 
