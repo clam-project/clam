@@ -16,158 +16,55 @@ namespace CLAM
 		DYN_ATTRIBUTE (2, public, double, PitchModRange);
 	protected:
 		void DefaultInit(void);
-
 	};
 
 	class MIDIHandler: public Processing
 	{
 	public:	
-
 		MIDIHandler();
-
 		MIDIHandler( const MIDIHandlerConfig& cfg );
 
 		virtual ~MIDIHandler();
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-
 		bool Do(void) { return true; }
 
-		bool Do( Parameters& params );
-
+		void SetParams(Parameters* params) { mParams = params; }
 	private:
 		MIDIHandlerConfig							mConfig;
+
 		InControlTmpl< MIDIHandler >				mVelocityIn;
 		InControlTmpl< MIDIHandler >				mNoteIn;
 		InControlTmpl< MIDIHandler >				mPitchBendIn;
 		InControlTmpl< MIDIHandler >				mAirSpeedIn;
-		OutControl									mStatusOut;
-		TControlData								mVelocity;
-		TControlData								mNote;
-		TControlData								mNoteOff;
-		TControlData								mPitchBend;
-		TControlData								mAirSpeed;
-		TIndex										mTranspose;
-		double										mPitchModRange;
-		int											mLastPitch;
-		enum Status {
-			eNoteOff	 = 0,
-			eNoteOn		 = 1,
-			eCtrAirSpeed = 2,
-			ePitchBend   = 3,
-			eIdle		 = 4,
-		}   mStatus;
 
+		OutControl mStatusOut;
+
+		int mLastPitch;
+		TControlData mVelocity;
+		
+		Parameters* mParams;
+		Parameters& Params(void) { return *mParams; }
 	protected:
-
 		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
 		bool ConcreteStart();
 		bool ConcreteStop();
-		void NoteOn(Parameters& params);
-		void NoteOff(Parameters& params);
-		void CtrAirSpeed( Parameters &params );
-
-		void ScaleNote( TControlData& note )
-		{
-		    note += mTranspose;
-
-			if (note<=50) 
-				note = 0;       //we work with two octaves 
-			else if (note >=75)
-				note =24;
-			else              // 0 is lowest pitch
-				note -= 50;
-		}
 
 		int UpdateVelocity( TControlData velocity )
 		{
+			std::cout << "velocity = " << velocity << endl;
 			mVelocity = velocity;
 
 			return 0;
 		}
 
-		int UpdateNote ( TControlData note )
-		{
-			std::cout << "note-update: " << note << std::endl;
-			std::cout << "status: " << mStatus << std::endl;
+		int UpdateNote ( TControlData note );
 
-			ScaleNote( note );
+		int UpdatePitchBend( TControlData value );
 
-			if( ( mStatus != eNoteOff ) && ( note != 0.0 ) ) // Processing new note
-			{
-				if( mVelocity == 0 )  // Note Off
-				{
-					if( note == mNote ) // Note Off for the actual note
-					{
-						mStatus = eNoteOff;
-						mNoteOff = note;
-						mNote = 0.0;
-						mAirSpeed = 0.0;
-					}
-				}
-				else // Note On or Note On + Air Speed message
-				{
-					if( mStatus != eCtrAirSpeed ) 
-						mStatus = eNoteOn;
+		int UpdateAirSpeed( TControlData airSpeed );
 
-					mNote = note;
-					mLastPitch = 0.0;
-				}
-
-			}
-
-			return 0;
-		}
-
-
-/*		int UpdateNote ( TControlData note )
-		{
-			std::cout << "note-update: " << note << std::endl;
-			std::cout << "status: " << mStatus << std::endl;
-
-			ScaleNote( note );
-
-			if( mVelocity != 0 )  // Note Off
-			{
-				if (note != mNote)
-				{
-					mNote = note;
-				}
-
-			}
-			else
-			{
-				if (note == mNote)
-					mStatus = eNoteOff;
-			}
-			return 0;
-		}
-
-*/
-
-		
-		
-		
-		int UpdatePitchBend( TControlData value )
-		{
-			//mPitchBend = ((double) value - 70.0 ) / 70.0 * mPitchModRange + 1.0;
-			//mPitchBend = pow( 2. , ( ( 1 / 12. ) * ( ( value - 8192. ) / 8192. ) ) );
-			//mStatus = ePitchBend;
-			std::cout << "Pitch Bend updated: "<< mPitchBend <<std::endl;
-
-			return 0;
-		}
-
-		int UpdateAirSpeed( TControlData airSpeed )
-		{
-			mAirSpeed = airSpeed;
-			mStatus = eCtrAirSpeed;
-
-			return 0;
-		}
-
-	
 	};
 }
 

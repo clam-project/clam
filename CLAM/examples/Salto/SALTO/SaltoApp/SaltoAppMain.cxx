@@ -76,7 +76,7 @@ public:
 		MIDIHandlerCfg.SetTranspose( mParams.GetTranspose() );
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
-
+		mMIDIHandler.SetParams(&mParams);
 		mMIDIHandler.LinkOutWithInControl( 0, pDSP, 0 );
 
 		pMelody->LinkOutWithInControl( 0, &mMIDIHandler, 0);
@@ -126,11 +126,16 @@ protected:
 
 			inNoteCfg.SetName("in");
 			inNoteCfg.SetDevice("default:default");
+			inNoteCfg.SetChannelMask(MIDI::ChannelMask(1));
+			inNoteCfg.SetMessageMask(
+				MIDI::MessageMask(MIDI::eNoteOn)|
+				MIDI::MessageMask(MIDI::eNoteOff)
+			);
 			MIDIInControl keyboardNote( inNoteCfg );
 
 			MIDIInConfig inPitchBendCfg;
 			
-			inPitchBendCfg.SetName("inPithcBend");
+			inPitchBendCfg.SetName("inPitchBend");
 			inPitchBendCfg.SetDevice("default:default");
 			inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
 			inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
@@ -256,92 +261,21 @@ protected:
 		}
 	}
 
-	void SetupMIDI()
-	{
-		MIDIInConfig inNoteCfg;
-
-		inNoteCfg.SetName("in");
-		inNoteCfg.SetDevice("default:default");
-		inNoteCfg.SetChannelMask( 
-			MIDI::ChannelMask(1) |
-			MIDI::ChannelMask(2)
-		);
-
-		inNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff)
-		);
-
-		MIDIInControl keyboardNote( inNoteCfg );
-
-		MIDIInConfig inPitchBendCfg;
-		
-		inPitchBendCfg.SetName("inPithcBend");
-		inPitchBendCfg.SetDevice("default:default");
-		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
-		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
-
-		MIDIInControl pitchBend( inPitchBendCfg );
-
-		MIDIInConfig inBreathNoteCfg;
-
-		inBreathNoteCfg.SetName("in2");
-		inBreathNoteCfg.SetDevice("default:default");
-		inBreathNoteCfg.SetChannelMask( 				
-			MIDI::ChannelMask(3) |
-			MIDI::ChannelMask(4)
-		);
-
-		inBreathNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff)
-		);
-
-		MIDIInConfig inCtrlCfg;
-		
-		inCtrlCfg.SetName("inctrl");
-		inCtrlCfg.SetDevice("default:default");
-		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(2));
-		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-		inCtrlCfg.SetFilter(0x02);
-
-		SALTO::BreathController breathController( inBreathNoteCfg, inCtrlCfg );
-
-		pitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
-
-		keyboardNote.LinkOutWithInControl( 0, &mMIDIHandler, 1);
-		keyboardNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
-		keyboardNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
-		keyboardNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
-
-	}
-
 	void ProcessMIDIMessages(void)
 	{
-//		if(mParams)
-//		{
-		
-			if (mParams.GetUseMelody())
-				{
-					TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
-					if (!pMelody->Do( mParams.GetPlay(), currentTime ))
-						{
-							mMIDIHandler.Do( mParams );
-							mParams.SetUseMelody( false );
-							pDSP->ResetEventSample();
-						}
-					else
-						mMIDIHandler.Do( mParams );
-				}
-				
-			if ( mParams.GetUseMidiKeyboard() || mParams.GetUseBreathController() )
-				{
-					mMIDIManager.Check();
-					mMIDIHandler.Do( mParams );
-				}		
-
-			// End of SALTO MIDI Messages Processing
-//		}
+		if (mParams.GetUseMelody())
+		{
+			TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
+			if (!pMelody->Do( mParams.GetPlay(), currentTime ))
+			{
+				mParams.SetUseMelody( false );
+				pDSP->ResetEventSample();
+			}
+		}
+		if ( mParams.GetUseMidiKeyboard() || mParams.GetUseBreathController() )
+		{
+			mMIDIManager.Check();
+		}		
 	}
 
 private:

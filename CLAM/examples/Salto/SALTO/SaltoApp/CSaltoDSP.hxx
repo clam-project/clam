@@ -41,14 +41,10 @@ public:
 	DYN_ATTRIBUTE (3, public, EWindowType, AnalysisWindowType );
 	DYN_ATTRIBUTE (4, public, TData, PitchModRange );
 private:
-	Parameters*			mpParams;
 	MelodyTranslator*	mMelody;
 protected:
 	void DefaultInit(void);
 public:
-	inline Parameters* GetParams() { return mpParams; }
-	inline void SetParams( Parameters& params ) { mpParams = &params; }
-
 	inline MelodyTranslator* GetMelody() { return mMelody; }
 	inline void SetMelody( MelodyTranslator& melody ) { mMelody = &melody; }
 
