@@ -69,11 +69,13 @@ namespace CLAM {
 	}
 
 	FFT_numrec::FFT_numrec()
+		: fftbuffer( NULL )
 	{
 		Configure(FFTConfig());
 	}
 
 	FFT_numrec::FFT_numrec(const FFTConfig &c) throw(ErrDynamicType)
+		: fftbuffer( NULL )
 	{ 
 		Configure(c);
 	};
