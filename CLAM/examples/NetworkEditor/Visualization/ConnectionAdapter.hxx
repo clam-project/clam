@@ -28,6 +28,8 @@
 #include <string>
 #include <list>
 
+#include <iostream> // TODO: remove
+
 namespace CLAM
 {
 	class OutPort;
@@ -49,19 +51,16 @@ namespace CLAMVM
 		{
 		}
 	
-		virtual ~ConnectionAdapter()
-		{
-		}
-
 		virtual const char* GetClassName() const
 		{
 			return "ConnectionAdapter";
 		}
 
 		virtual bool Publish()=0;
-		
-		//signals
-		SigSlot::Signalv2< const std::string &, const std::string &>  SignalAcquireNames;
+
+		virtual std::string GetInName() = 0;
+		virtual std::string GetOutName() = 0;
+
 	};
 
 
@@ -73,16 +72,18 @@ namespace CLAMVM
 		const IN* mInObserved;
 	public:
 		ConnectionAdapterTmpl();
-		virtual ~ConnectionAdapterTmpl();
 
-		virtual const char* GetClassName() const
+		const char* GetClassName() const
 		{
 			return "ConnectionAdapterTmpl";
 		}
 
-		virtual bool ConnectsInElement( IN &);
-		virtual bool Publish();
-		virtual bool BindTo( const OUT &, const IN &, const CLAM::Network &);
+		std::string GetOutName();
+		std::string GetInName();		
+
+		bool ConnectsInElement( IN &);
+		bool Publish();
+		bool BindTo( const OUT &, const IN &, const CLAM::Network &);
 	};
 
 
@@ -96,44 +97,59 @@ namespace CLAMVM
 	}
 
 	template<class OUT, class IN>
-	ConnectionAdapterTmpl<OUT,IN>::~ConnectionAdapterTmpl()
-	{
-	}
-	
-	template<class OUT, class IN>
 	bool ConnectionAdapterTmpl<OUT,IN>::Publish()
 	{
 		if ((!mOutObserved)  || (!mInObserved) || (!mNetworkObserved))
 			return false;
 		
-		std::string outName("");
-		std::string inName("");
-		
+	}
+	
+	template<class OUT, class IN>
+	std::string ConnectionAdapterTmpl<OUT,IN>::GetOutName()
+	{
+		std::string name("");
+
 		CLAM::Network::ProcessingsMap::const_iterator it;
 		for(it=mNetworkObserved->BeginProcessings(); it!=mNetworkObserved->EndProcessings(); it++)
 		{
 			if( (it->second) == (mOutObserved->GetProcessing()) )
 			{
-				outName += it->first;
-			}
-			
-			else if( (it->second) == (mInObserved->GetProcessing()) )
-			{
-				inName += it->first;
+				name += it->first;
+				break;
 			}
 		}
+
+		CLAM_ASSERT( name!="", "ConnectionAdapterTmpl::GetOutName : Processing doesn't exist" );
 		
-		outName += ".";
-		outName += mOutObserved->GetName();
-		
-		
-		inName += ".";
-		inName += mInObserved->GetName();
-		
-		SignalAcquireNames.Emit( outName, inName );
+		name += ".";
+		name += mOutObserved->GetName();
+
+		return name;
+
 	}
+	
+	template<class OUT, class IN>
+	std::string ConnectionAdapterTmpl<OUT,IN>::GetInName()
+	{
+		std::string name("");
 
+		CLAM::Network::ProcessingsMap::const_iterator it;
+		for(it=mNetworkObserved->BeginProcessings(); it!=mNetworkObserved->EndProcessings(); it++)
+		{
+			if( (it->second) == (mInObserved->GetProcessing()) )
+			{
+				name += it->first;
+				break;
+			}
+		}
+		CLAM_ASSERT( name!="", "ConnectionAdapterTmpl::GetOutName : Processing doesn't exist" );
+		
+		name += ".";
+		name += mInObserved->GetName();
 
+		return name;
+	}
+		
 	template<class OUT, class IN>
 	bool ConnectionAdapterTmpl<OUT,IN>::BindTo( const OUT & out, 
 						    const IN & in, 

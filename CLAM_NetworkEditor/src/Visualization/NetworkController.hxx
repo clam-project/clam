@@ -26,7 +26,7 @@
 #include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 
-
+//#include "Signalv0.hxx"
 #include "Signalv1.hxx"
 #include "Signalv2.hxx"
 #include "Slotv0.hxx"
@@ -75,21 +75,25 @@ namespace CLAMVM
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
-		void CreateNewPortConnection( const std::string &, const std::string & );
-		void CreateNewControlConnection( const std::string &, const std::string & );
-		void ChangeState( bool);
+		void CreatePortConnection( const std::string &, const std::string & );
+		void ExecuteCreatePortConnection( const std::string & , const std::string & );
+		void ExecuteRemovePortConnection( const std::string & , const std::string & );
 		void RemovePortConnection( const std::string &, const std::string & );
+		
+		void CreateControlConnection( const std::string &, const std::string & );
+		void ExecuteCreateControlConnection( const std::string & , const std::string & );
+		void ExecuteRemoveControlConnection( const std::string & , const std::string & );
 		void RemoveControlConnection( const std::string &, const std::string & );
-		void RemoveProcessing( const std::string & );
+
+		void ChangeState( bool);
 		void LoadNetwork( const std::string & );
 		void SaveNetwork( const std::string & );
+		
 		void Clear();
-		// helper methods
-		void ConnectPorts( const std::string & , const std::string & );
-		void ConnectControls( const std::string & , const std::string & );
-		void DisconnectPorts( const std::string & , const std::string & );
-		void DisconnectControls( const std::string & , const std::string & );
+	
+		void RemoveProcessing( const std::string & );
 		void ExecuteRemoveProcessing( const std::string & );
+		
 		void ExecuteEvents();
 	public:
 		NetworkController();
@@ -115,19 +119,22 @@ namespace CLAMVM
 		virtual bool BindTo( CLAM::Network&  );
 
 	public:
-		//signals
-		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;
-		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > SignalAcquirePortConnection;
-		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > SignalAcquireControlConnection;
-		SigSlot::Signalv1< const std::string & > SignalRemoveProcessingPresentation;
-		//slots
 		SigSlot::Slotv1< bool > SlotChangeState;
-		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
+		
+		SigSlot::Signalv1< CLAMVM::ConnectionAdapter * > SignalCreatePortConnectionPresentation;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemovePortConnection;
+		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreatePortConnection;
+		
+		SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveConnectionPresentation;
+		
+		SigSlot::Signalv1< CLAMVM::ConnectionAdapter * > SignalCreateControlConnectionPresentation;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemoveControlConnection;
+		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateControlConnection;
+
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
-		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateNewPortConnection;
-		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateNewControlConnection;
+		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
+		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;
+
 		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
 		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
 		SigSlot::Slotv0 SlotClear;
