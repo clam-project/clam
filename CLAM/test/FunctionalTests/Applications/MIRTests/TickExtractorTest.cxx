@@ -56,13 +56,36 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/02_alles_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "02_alles_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "test_Ticks_diff.xml" );
+
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check test_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check test_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 		}
 
 		void test_12_cubic_Ticks()
@@ -74,13 +97,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE(	"Error loading back to back test data: problem with RhythmDescription/Tick/12_cubic_Ticks.xml",
 						 inst.IsValid() == true );
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 			
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "12_cubic_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "12_cubic_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check 12_cubic_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check 12_cubic_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 		}
 
 		void test_blue_monday_Ticks()
@@ -92,13 +137,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/blue_monday_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "blue_monday_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "blue_monday_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check blue_monday_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check blue_monday_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -111,13 +178,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/ALoCubano_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "ALoCubano_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "ALoCubano_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check ALoCubano_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check ALoCubano_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -130,13 +219,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/AmourEnPoudre_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "AmourEnPoudre_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "AmourEnPoudre_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check AmourEnPoudre_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check AmourEnPoudre_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -149,13 +260,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/Amsterdam_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "Amsterdam_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "Amsterdam_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check Amsterdam_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check Amsterdam_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -168,13 +301,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/clicseq_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "clicseq_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "clicseq_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check clicseq_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check clicseq_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -187,13 +342,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/drums-electronic-guit_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "drums-electronic-guit_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "drums-electronic-guit_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check drums-electronic-guit_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check drums-electronic-guit_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -206,13 +383,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/elecpiano-drums_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "elecpiano-drums_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "elecpiano-drums_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check elecpiano-drums_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check elecpiano-drums_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -225,13 +424,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/test1_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "test1_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "test1_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check test1_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check test1_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -244,13 +465,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/test2_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "test2_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "test2_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check test2_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check test2_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
@@ -263,13 +506,35 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/test_Ticks.xml",
 						inst.IsValid() == true);
 
-			CLAM::DataArray extractedEvents;
-			CLAM::TData     tickRate = 0;
+			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, tickRate );
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
 
-			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.Size() );
-			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(tickRate) );
+			RhythmDescriptionTests::RhythmEventsB2B res;
+
+			res.AddAll();
+			res.UpdateData();
+			
+			res.SetRelativePath( inst.GetRelativePath() );
+			res.SetEvents( extractedEvents );
+
+			CLAM::XMLStorage::Dump( res, "RhythmEventsB2B", "test_Ticks.xml" );
+
+			RhythmDescriptionTests::EventListDifference diff;
+
+			diff.SetFileTested( inst.GetRelativePath() );
+			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diff, "EventListDifference", "test_Ticks_diff.xml" );
+
+			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
+			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check test_Ticks_diff.xml!",
+					       diff.GetMaxTimePositionDeviation() <= 0.03 );
+			CPPUNIT_ASSERT_MESSAGE("Maximum weight difference above 0.5! Check test_Ticks_diff.xml!",
+					       diff.GetMaxWeightDeviation() <= 0.5 );
+
+			CPPUNIT_ASSERT_EQUAL( int(inst.GetEvents().GetRate()), int(extractedEvents.GetRate()) );
+
 
 		}
 
