@@ -48,14 +48,13 @@ private:
   static void cb_Zero(Fl_Value_Input*, void*);
   static Fl_Menu_Item menu_Phase[];
 };
-#include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 
 class UserInterface {
 public:
   public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
-  Fl_Double_Window *mWindow;
+  Fl_Window *mWindow;
 private:
   Fl_Input *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
