@@ -48,6 +48,16 @@ class SpectralPeakDescriptorsTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralPeakDescriptorsTest );
 	CPPUNIT_TEST( testMagnitudeMean );
+	CPPUNIT_TEST( testSpectralTilt );
+	CPPUNIT_TEST( testHarmonicCentroid );
+	CPPUNIT_TEST( testHarmonicDeviation );
+	CPPUNIT_TEST( testFirstTristimulus );
+	CPPUNIT_TEST( testSecondTristimulus );
+	CPPUNIT_TEST( testThirdTristimulus );
+	CPPUNIT_TEST( testOddHarmonics );
+	CPPUNIT_TEST( testEvenHarmonics );
+	CPPUNIT_TEST( testOddToEvenRatio );
+
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -176,6 +186,7 @@ private:
 			mDescriptors->Compute();
 			if (
 				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
+				(std::isinf((mDescriptors->*getter)()) != std::isinf(it->second)) ||
 				(mDescriptors->*getter)() > (*it).second + tolerance ||
 				(mDescriptors->*getter)() < (*it).second - tolerance
 				)
@@ -200,32 +211,189 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 473.268293;
-		data["Balance000.600.wav"] = 250.585366;
-		data["Balance000.992.wav"] = 236.634146;
-		data["Balance001.988.wav"] = 925.024390;
-		data["Balance010.910.wav"] = 150.585366;
-		data["Cello_A2.wav"] = 1656.439024;
-		data["Cello_C2.wav"] = -1.000000;
-		data["Disco_Rojo001.008.wav"] = 4904.780488;
-		data["Disco_Rojo002.327.wav"] = 537.804878;
-		data["Geiger_Counter005.020.wav"] = 258.146341;
-		data["SaxBritHorns12.wav"] = 2732.048780;
-		data["Time002.624.wav"] = 9874.097561;
-		data["bell_A3.wav"] = 2646.000000;
-		data["gamelan-gong.wav"] = 139.829268;
-		data["gt_E4.wav"] = 86.048780;
-		data["pno_Eb1.wav"] = -1.000000;
-		data["silence.wav"] = -1.000000;
-		data["vln_A3.wav"] = -1.000000;
-		data["vln_D5.wav"] = -1.000000;
-		data["whitenoise.wav"] = 18672.585366;
+		
+		data["test1to5.xml"] = 3;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] = 4;
+		data["5flatPeak.xml"] = 5;
+		data["bell_A3.wav"] = 4.69634;
+		data["5linearslopePeak.xml"] = 6;
+
+		
 
 		mDescriptors->AddMagnitudeMean();
 
 		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetMagnitudeMean);
 	}
 
+
+
+	void testHarmonicCentroid()
+	{
+		CLAM::TData tolerance = 0.01;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		
+		data["test1to5.xml"] = 366.6667;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] = 1500;
+		data["5flatPeak.xml"] = 940;
+		data["bell_A3.wav"] = 2463.38;
+		data["5linearslopePeak.xml"] = 580;
+		
+
+		mDescriptors->AddHarmonicCentroid();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetHarmonicCentroid);
+	}
+
+	
+	void testHarmonicDeviation()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		
+		data["test1to5.xml"] =  0.1067;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] = 0;
+		data["5flatPeak.xml"] = 0;
+		data["bell_A3.wav"] = 2.02832;
+		data["5linearslopePeak.xml"] = 0.061894;
+		data["test5to1.xml"] = 0.1067;
+		
+		mDescriptors->AddHarmonicDeviation ();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetHarmonicDeviation);
+	}
+
+	void testFirstTristimulus()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["test1to5.xml"] = 0.0181818;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] = 1;
+		data["5flatPeak.xml"] = 0.2;
+		data["bell_A3.wav"] = 4.5164e-005;
+		data["5linearslopePeak.xml"] = 0.4545;
+		
+
+		mDescriptors->AddFirstTristimulus();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetFirstTristimulus);
+	}
+
+
+	void testSecondTristimulus()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["test1to5.xml"] = 0.527273;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] = 0;
+		data["5flatPeak.xml"] = 0.6;
+		data["bell_A3.wav"] = 0.00486879;
+		data["5linearslopePeak.xml"] = 0.5273;
+		
+	
+
+		mDescriptors->AddSecondTristimulus();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetSecondTristimulus);
+	}
+
+	void testThirdTristimulus()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["test1to5.xml"] = 0.454545;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] =0;
+		data["5flatPeak.xml"] = 0.2;
+		data["bell_A3.wav"] = 0.995086;
+		data["5linearslopePeak.xml"] = 0.0182;
+	
+	
+
+		mDescriptors->AddThirdTristimulus();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetThirdTristimulus);
+	}
+
+	
+	void testOddHarmonics()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["test1to5.xml"] = 0.618182;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] =0;
+		data["5flatPeak.xml"] = 0.4;
+		data["bell_A3.wav"] =0.365391 ;
+		data["5linearslopePeak.xml"] = 0.1818;
+		
+		mDescriptors->AddOddHarmonics();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetOddHarmonics);
+	}
+
+	
+	void testEvenHarmonics()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["test1to5.xml"] = 0.363636;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] =0;
+		data["5flatPeak.xml"] = 0.4;
+		data["bell_A3.wav"] = 0.634564;
+		data["5linearslopePeak.xml"] = 0.3636;
+		
+	
+		mDescriptors->AddEvenHarmonics();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetEvenHarmonics);
+	}
+
+	
+	void testOddToEvenRatio()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["test1to5.xml"] = 0.6296;
+		data["empty.xml"] = 0.5;
+		data["onePeak.xml"] =0.5;
+		data["5flatPeak.xml"] = 0.5;
+		data["bell_A3.wav"] = 0.365407;
+		data["5linearslopePeak.xml"] = 0.3333;
+		
+		
+		mDescriptors->AddOddToEvenRatio();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetOddToEvenRatio);
+	}
+		
+		void testSpectralTilt()
+	{
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["empty.xml"] = 0;
+		data["onePeak.xml"] =0;
+		data["5flatPeak.xml"] = 0;
+
+		
+		mDescriptors->AddSpectralTilt();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetSpectralTilt);
+	}
 
 };
 
