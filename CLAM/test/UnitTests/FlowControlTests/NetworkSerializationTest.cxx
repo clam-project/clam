@@ -29,6 +29,7 @@
 #include "FFT_rfftw.hxx"
 #include "XMLStorage.hxx"
 #include "BasicFlowControl.hxx"
+#include "cppUnitHelper.hxx"
 
 namespace CLAMTest {
 
@@ -58,12 +59,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 public: // TestFixture interface
 	void setUp()
 	{
-		char* pathToTestData = getenv("CLAM_TEST_DATA");
-		if ( !pathToTestData )
-			mPathToTestData ="../../../../CLAM-TestData"; 
-		else
-			mPathToTestData = pathToTestData;
-		mPathToTestData += "/networkTestsData/";
+		mPathToTestData = GetTestDataDirectory("networkTestsData/");
 	}
 private:
 	void TestLoadEmptyNetwork()

@@ -9,6 +9,7 @@
 #include <list>
 #include <cstdlib>
 #include <ctime>
+#include "cppUnitHelper.hxx"
 
 namespace CLAMTest {
 
@@ -30,7 +31,7 @@ class TestsRandomStream : public CppUnit::TestFixture
 
 public:
 	TestsRandomStream() :
-		mInputFile( "../../../../CLAM-TestData/networkTestsData/testFile.txt" ),
+		mInputFile( GetTestDataDirectory("networkTestsData/testFile.txt").c_str()),
 		mInputString( (std::istreambuf_iterator<char>(mInputFile)), std::istreambuf_iterator<char>() )
 	{
 
