@@ -42,46 +42,6 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 namespace CLAM
 {
 
-class XercesDomWritingContext
-{
-	xercesc::DOMElement * _currentElement;
-	XercesDomWritingContext * _parent;
-public:
-	XercesDomWritingContext(xercesc::DOMElement * element)
-	{
-		_parent = 0;
-		_currentElement = element;
-	}
-	XercesDomWritingContext(XercesDomDocumentHandler & docHandler)
-	{
-		_parent=0;
-		_currentElement = docHandler.getSelection();
-	}
-
-	XercesDomWritingContext(XercesDomWritingContext * parent, const char * name)
-	{
-		_parent = parent;
-		xercesc::DOMElement * parentElement = parent->_currentElement;
-		_currentElement = parentElement->getOwnerDocument()->createElement(X(name));
-		parentElement->appendChild(_currentElement);
-	}
-
-	XercesDomWritingContext * release()
-	{
-		return _parent;
-	}
-	
-	void addAttribute(const char * name, const char * value)
-	{
-		_currentElement->setAttribute(X(name),X(value));
-	}
-	void addContent(const char * content)
-	{
-		xercesc::DOMText * domContent = _currentElement->getOwnerDocument()->createTextNode(X(content));
-		_currentElement->appendChild(domContent);
-	}
-};
-
 class ClamObject2XercesDom : public Storage
 {
 	XercesDomDocumentHandler _documentHandler;
