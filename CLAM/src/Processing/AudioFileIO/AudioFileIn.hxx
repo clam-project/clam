@@ -31,7 +31,13 @@ namespace CLAM {
 
 class SoundFileIO;
 
-	/** Class for audiofile Input */
+	/**
+	 * Processing for audio file input. It can be configured 
+	 * using an AudioFileConfig Config class. Only file name 
+	 * and optionally file type must be configured, other 
+	 * fields will be set by the Processing itself once 
+	 * Start() has been called.
+	 */
 	class AudioFileIn: public Processing
 	{
 	protected:
