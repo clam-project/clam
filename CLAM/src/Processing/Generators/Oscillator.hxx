@@ -156,7 +156,7 @@ public:
 	
 	inline const ProcessingConfig &GetConfig() const { return mConfig;}
 	
-	bool ConcreteConfigure(const ProcessingConfig& cfg);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 	
 	// Unsupervised mode Do
 	bool Do(void) { return true; }

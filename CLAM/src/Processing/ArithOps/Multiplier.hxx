@@ -78,7 +78,7 @@ public:
 	 *  @param cfg The configuration object
 	 *  @return A boolean value, true if method has been executed correctly
 	 */
-	bool ConcreteConfigure(const ProcessingConfig& cfg)
+	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(mConfig, c);
 

@@ -172,7 +172,7 @@ protected:
 
 	void DoTransitionSynthesis( CSaltoSynthFrame* pSynthFrame );
 
-	bool ConcreteConfigure( const ProcessingConfig& cfg );
+	bool ConcreteConfigure( const ProcessingConfig& c );
 
 	bool ConcreteStart();
 

@@ -57,7 +57,7 @@ namespace SALTO
 
 		bool ConcreteStop();
 
-		bool ConcreteConfigure( const ProcessingConfig &cfg );
+		bool ConcreteConfigure( const ProcessingConfig &c );
 
 		void AttackResidualSynthesis( SynthesisState   &synthState );
 

@@ -80,7 +80,7 @@ namespace CLAM
 		int mType;
 		TSize mFrameSize;
 		
-		bool ConcreteConfigure(const ProcessingConfig& cfg);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 	public:
 

@@ -44,7 +44,7 @@ namespace CLAM
 		const char * GetClassName() const {return "Mixer";}
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg )
+		bool ConcreteConfigure( const ProcessingConfig& c )
 		{
 			CopyAsConcreteConfig(mConfig, c);
 			return true;

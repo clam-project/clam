@@ -103,7 +103,7 @@ namespace CLAM
 		 const int numByte=0);
 		
 	private:
-		virtual bool ConcreteConfigure(const ProcessingConfig& cfg);
+		virtual bool ConcreteConfigure(const ProcessingConfig& c);
 		ControlMapperConfig GetMapper(string mapName);
 		MIDIInConfig GetMIDI(string midiName);
 		MIDIInControl* CreateMIDICtrl(const MIDIInConfig &cfg);

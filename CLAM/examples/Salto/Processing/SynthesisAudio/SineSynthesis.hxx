@@ -99,7 +99,7 @@ protected:
 
 	bool ConcreteStop();
 
-	bool ConcreteConfigure( const ProcessingConfig& cfg );
+	bool ConcreteConfigure( const ProcessingConfig& c );
 
 	int AttackTimbreLevelCB( TControlData value );
 
