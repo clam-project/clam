@@ -49,7 +49,6 @@ namespace CLAM
 		const AudioFile& operator=( const AudioFile& );
 		~AudioFile();
 
-		bool                          SetHeader( const AudioFileHeader& );
 		const AudioFileHeader&        GetHeader() const;
 		
 		void                          SetTextDescriptors( const AudioTextDescriptors& );
@@ -73,6 +72,8 @@ namespace CLAM
 		const char*            GetClassName() const;
 
 	protected:
+		//! Usually the header is set into the file using CreateNew or OpenExistig (public) methods 
+		bool                   SetHeader( const AudioFileHeader& );
 		void                   ResolveCodec();
 		void		       VerifyLocation();
 		void                   SetKind( EAudioFileKind newKind );
