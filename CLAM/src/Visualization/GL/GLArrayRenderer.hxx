@@ -35,13 +35,17 @@ namespace CLAMGUI
 class GLArrayRenderer
 	: public ArrayRenderer
 {
-
+	struct tCullingData
+	{
+		unsigned left, right, pixel_width;
+	};
 public:
 
 	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
-	: mIntertwined( 1024 ), r( red ), g( gree ), b( blu )
+		: mLastIndex(0), r( red ), g( gree ), b( blu ), mDataChanged( false ), 
+		mCullingRequested(false), mMustGenerateIndexes( true )
 	{
-		InitArray( 1024 );
+		ResizeArray( 1024 );
 	}
 
 	virtual ~GLArrayRenderer()
@@ -49,7 +53,8 @@ public:
 	}
 
 	virtual void CacheData( const DataArray& array );
-	void Draw();
+	virtual void Draw();
+	virtual void PerformCulling( float left, float right, unsigned pixel_width );
 	virtual void DefineViewport( const DataArray& array, Viewport& view_specs );
 
 protected:
@@ -59,16 +64,36 @@ protected:
 	virtual void DataTransform( const DataArray& array);
 	virtual void XaxisTransform( TData left, TData right, TData& transleft, TData& transright, bool& integer );
 	virtual void YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer );
+	virtual float GetXConversionFactor()
+	{
+		return 1;
+	}
+	virtual void GenerateElemIndexes();
 
 protected:
 
 	std::valarray< c3f_v3f > mIntertwined;
+	std::valarray< GLuint >  mElemIdxBuffer; // element index buffer
+	unsigned       mLastIndex;
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
+	bool          mDataChanged;
+	bool          mCullingRequested;
+	bool          mMustGenerateIndexes;
+	tCullingData  mCullingData;
 };
 
 
 }
 
 #endif // GLArrayRenderer.hxx
+
+
+
+
+
+
+
+
+

@@ -22,9 +22,11 @@
 #include "GLArrayRenderer.hxx"
 #include "Viewport.hxx"
 #include <algorithm>
+#include "Assert.hxx"
 using std::max_element;
 using std::min_element;
 #include "CLAM_Math.hxx"
+#include <iostream>
 using namespace CLAMGUI;
 
 void GLArrayRenderer::InitArray( unsigned int nelems )
@@ -45,6 +47,8 @@ void GLArrayRenderer::ResizeArray( unsigned int new_size )
 {
 	mIntertwined.resize( new_size );
 	InitArray( new_size );
+	mElemIdxBuffer.resize( new_size );
+	mLastIndex = 0;
 }
 
 void GLArrayRenderer::CacheData( const DataArray& array )
@@ -56,6 +60,7 @@ void GLArrayRenderer::CacheData( const DataArray& array )
 		ResizeArray( nbins ); // Valarray resizing to accomodate the new CLAM Array
 
 	DataTransform( array );
+	mDataChanged = true;
 }
 
 void GLArrayRenderer::DataTransform( const DataArray& array )
@@ -72,8 +77,28 @@ void GLArrayRenderer::Draw()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
-	glInterleavedArrays (GL_C3F_V3F, 0, &mIntertwined[0]);
-	glDrawArrays( GL_LINE_STRIP, 0, mIntertwined.size() );
+
+	if ( mDataChanged )
+		{
+			// caches the data on the video card ( if possible, otherwise it remains in 
+			// processor memory - bad luck boy)
+			glInterleavedArrays (GL_C3F_V3F, 0, &mIntertwined[0]);
+			mDataChanged = false;
+			
+		}
+	if ( mCullingRequested )
+		{
+			if ( mMustGenerateIndexes )
+				{
+					GenerateElemIndexes();
+					mMustGenerateIndexes = false;
+				}
+			glDrawElements( GL_LINE_STRIP, mLastIndex, GL_UNSIGNED_INT, &mElemIdxBuffer[0] );
+		}
+	else
+		{
+			glDrawArrays( GL_LINE_STRIP, 0, mIntertwined.size() );
+		}
 	glFlush();
 }
 
@@ -130,3 +155,64 @@ void GLArrayRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, 
 	transbottom = bottom;
 	integer = true;
 }
+
+void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_width )
+{
+	mCullingData.left = left*GetXConversionFactor();
+	mCullingData.right = right*GetXConversionFactor();
+	mCullingData.pixel_width = pixel_width;
+	mCullingRequested = true;
+	mMustGenerateIndexes = true;	
+
+}
+
+void GLArrayRenderer::GenerateElemIndexes()
+{
+	GLuint start, end, range, step;
+	start = mCullingData.left;
+	end = mCullingData.right;
+	range = end - start;
+
+	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
+	CLAM_ASSERT( mElemIdxBuffer.size() > end, "End index is out of bonds!!!!" );
+
+	unsigned k = 0;
+
+	if ( range <= mCullingData.pixel_width )
+		{
+
+			for ( k = 0; k < range-1; k++ )
+				{
+					mElemIdxBuffer[k]=start++;
+				}
+			mElemIdxBuffer[k]=end;
+			mLastIndex = range;
+		}
+	else
+		{
+			step = range / mCullingData.pixel_width;
+			std::cout << "start " << start << "end " << end << " range " << range;
+			std::cout << "pwidth " << mCullingData.pixel_width << " step  " << step << std::endl;;
+
+			for ( k = 0; k < (range-1)/step; k++ )
+				{
+					mElemIdxBuffer[k]= start;
+					start+=step;
+				}
+			mElemIdxBuffer[k]=end;
+			mLastIndex = k;
+			std::cout << "last index " << mLastIndex << " and k is " << k << std::endl;
+		}
+}
+
+
+
+
+
+
+
+
+
+
+
+
