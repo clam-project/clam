@@ -939,7 +939,7 @@ void CSaltoEditor::DisplayPeakArray(const SpectralPeakArray& peakArray/*Par*/) /
 	double sampleFrequency = mSamplingRate;
 	int i;
 	
-	Array<float> displayPeakArray(spectralFrameSize);
+	DataArray displayPeakArray(spectralFrameSize);
 	displayPeakArray.Resize(spectralFrameSize); //BUG??
 	displayPeakArray.SetSize(spectralFrameSize);
 	
@@ -957,16 +957,16 @@ void CSaltoEditor::DisplayPeakArray(const SpectralPeakArray& peakArray/*Par*/) /
 	// set peaks in display array
 	for (i=0;i<nPeaks;i++)  //BUG this chashes because nPeaks > peakArray.GetFreqBuffer().Size()
 	{
-//std::cout << "nPeaks= " << nPeaks << " Freqsize: " << peakArray->GetFreqBuffer().Size() << " Magsize: " << peakArray->GetMagBuffer().Size() << " i= " << i << "\n";
-			binPos = (TIndex)peakArray.GetFreqBuffer()[i]/sampleFrequency*2*spectralFrameSize;
-      mag = peakArray.GetMagBuffer()[i];
-      if (mag>0)
-        logMag = 20*log10(mag);
-      else
-        logMag = -100;
-
-      if (binPos>=0 && binPos<spectralFrameSize) // security
-          displayPeakArray[binPos] = logMag;
+		//std::cout << "nPeaks= " << nPeaks << " Freqsize: " << peakArray->GetFreqBuffer().Size() << " Magsize: " << peakArray->GetMagBuffer().Size() << " i= " << i << "\n";
+		binPos = (TIndex)peakArray.GetFreqBuffer()[i]/sampleFrequency*2*spectralFrameSize;
+		mag = peakArray.GetMagBuffer()[i];
+		if (mag>0)
+			logMag = 20*log10(mag);
+		else
+			logMag = -100;
+		
+		if (binPos>=0 && binPos<spectralFrameSize) // security
+			displayPeakArray[binPos] = logMag;
 	}
 
 	mpWidgetPeaks->size = spectralFrameSize;
@@ -991,7 +991,7 @@ void CSaltoEditor::DisplayAttackResidual(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumSize " << spectrumSize << "\n";
 
-	Array<float> displaySpecArray(spectrumSize);
+	DataArray displaySpecArray(spectrumSize);
 	displaySpecArray.Resize(spectrumSize);
 	displaySpecArray.SetSize(spectrumSize);
 	
@@ -1024,7 +1024,7 @@ void CSaltoEditor::DisplaySynthesizedSpectrum(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumTestSize " << spectrumSize << "\n";
 
-	Array<float> displayTestSpecArray(spectrumSize);
+	DataArray displayTestSpecArray(spectrumSize);
 	displayTestSpecArray.Resize(spectrumSize);
 	displayTestSpecArray.SetSize(spectrumSize);
 	
@@ -1057,7 +1057,7 @@ void CSaltoEditor::FillDisplayPeakArray(const SpectralPeakArray& peakArray) //pa
 	double sampleFrequency = mSamplingRate;
 	int i;
 	
-	Array<float> displayPeakArray(spectralFrameSize);
+	DataArray displayPeakArray(spectralFrameSize);
 	displayPeakArray.Resize(spectralFrameSize); //BUG??
 	displayPeakArray.SetSize(spectralFrameSize);
 		
@@ -1107,7 +1107,7 @@ void CSaltoEditor::FillDisplayAttackResidual(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumSize " << spectrumSize << "\n";
 
-	Array<float> displaySpecArray(spectrumSize);
+	DataArray displaySpecArray(spectrumSize);
 	displaySpecArray.Resize(spectrumSize);
 	displaySpecArray.SetSize(spectrumSize);
 	
@@ -1139,7 +1139,7 @@ void CSaltoEditor::FillDisplayStationaryResidual(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumSize " << spectrumSize << "\n";
 
-	Array<float> displaySpecArray(spectrumSize);
+	DataArray displaySpecArray(spectrumSize);
 	displaySpecArray.Resize(spectrumSize);
 	displaySpecArray.SetSize(spectrumSize);
 	
@@ -1171,7 +1171,7 @@ void CSaltoEditor::FillDisplaySynthesizedSpectrum(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumTestSize " << spectrumSize << "\n";
 
-	Array<float> displaySynthSpecArray(spectrumSize);
+	DataArray displaySynthSpecArray(spectrumSize);
 	displaySynthSpecArray.Resize(spectrumSize);
 	displaySynthSpecArray.SetSize(spectrumSize);
 	
