@@ -20,6 +20,7 @@
  */
 
 #include "FLTKConfigurator.hxx"
+#include "QTConfigurator.hxx"
 #include "HeapDbg.hxx"
 #include "DynamicType.hxx"
 
@@ -55,7 +56,8 @@ public:
 	typedef enum {
 		zero=0,
 		dos=2,
-		cent=100
+		cent=100,
+		mil=1000
 	} tEnum;
 	static void TestClass ();
 };
@@ -63,6 +65,7 @@ Enum::tEnumValue EDummy::sEnumValues[] = {
 	{EDummy::zero,"zero"},
 	{EDummy::dos,"dos"},
 	{EDummy::cent,"cent"},
+	{EDummy::mil,"mil"},
 	{0,NULL}
 };
 
@@ -124,29 +127,61 @@ public:
 //using namespace CLAM;
 
 #include <FL/Fl.H>
+#include <qapplication.h>
 
 
 using namespace CLAMTest;
 
-int main(void)
+int TryQTConfigurator(DummyConfig & config, int argc, char**argv) 
+{
+	QApplication a(argc,argv);
+
+	CLAM::QTConfigurator configurator;
+	configurator.SetConfig(config);
+	a.setMainWidget( &configurator );
+	configurator.show();
+
+	return a.exec();
+}
+
+int TryFLTKConfigurator(DummyConfig & config) 
+{
+	CLAM::FLTKConfigurator<DummyConfig> * configurator = 
+		new CLAM::FLTKConfigurator<DummyConfig>;
+	configurator->SetConfig(config);
+	configurator->Show();
+	return Fl::run();
+}
+
+void TryDisplayXML(DummyConfig & config) 
+{
+	XMLStorage storage;
+	storage.Dump(config,"DummyConfig", std::cout);
+}
+
+void TryStoreXML(DummyConfig & config, char * xmlfilename) 
+{
+	XMLStorage storage;
+	storage.Dump(config,"DummyConfig", xmlfilename);
+}
+
+void TryLoadXML(DummyConfig & config, char * xmlfilename) 
+{
+	XMLStorage storage;
+	storage.Restore(config, xmlfilename);
+}
+
+int main(int argc, char** argv)
 {
 	int ret;
 	try{
 		DummyConfig config;
-		CLAM::FLTKConfigurator<DummyConfig> * configurator = 
-			new CLAM::FLTKConfigurator<DummyConfig>;
-		configurator->SetConfig(config);
-		configurator->Show();
-		ret = Fl::run();
-		{
-			XMLStorage storage;
-			storage.Dump(config,"DummyConfig", std::cout);
-		}
-		{
-			XMLStorage storage;
-			storage.Dump(config,"DummyConfig", "configout.xml");
-		}
-
+		TryLoadXML(config,"configout.xml");
+		TryQTConfigurator(config,argc,argv);
+		TryFLTKConfigurator(config);
+		TryQTConfigurator(config,argc,argv);
+		TryFLTKConfigurator(config);
+		TryStoreXML(config,"configout.xml");
 	} catch (CLAM::Err e)
 	{
 		e.Print();
@@ -160,7 +195,6 @@ int main(void)
 		std::cout << "catch (...)" << std::endl;
 	}
 
-	std::cout << "Passed." << std::endl;
 	return ret;	
 } 
 
