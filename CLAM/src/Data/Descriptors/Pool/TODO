@@ -5,3 +5,27 @@
 - ponderedSum(X) = accomulate(sum, productindex(I),I))
 
 
++ Getting the attribute index
+	+ When empty
+	+ When added
+	+ When two added
+	+ When wrong name
++ Place data inside the Scope
+- Split definition and data
+	- posar el spec com a const
+	- remove Pool::GetIndex
+	- remove Pool::Add
+- duplicated attribute names
+- Include ScopeDivision attributes
+- XML for the Pool
+- XML for the Pool Spec
+- Multitype XML loading
+
+
+
+
+
+
+
+
+
