@@ -183,11 +183,19 @@ namespace SDIF
 	#ifdef LINUX
 	#include <byteswap.h>
 	#endif
+	
+	#ifdef WIN32
+	#include <stdlib.h>
+	#endif
 
 	TUInt16 Swap(const TUInt16& val)
 	{
 	#if defined LINUX 
 		return bswap_16(val);
+	/*#elif defined WIN32
+		TUInt16 ret;
+		_swab((char*)(&val),(char*)(&ret),16);
+		return ret;*/
 	#else
 		return (val>>8)|(val<<8);
 	#endif
@@ -197,8 +205,12 @@ namespace SDIF
 	{
 	#if defined LINUX 
 		return bswap_32(val);
+	/*#elif defined WIN32
+		TUInt32 ret;
+		_swab((char*)(&val),(char*)(&ret),32);
+		return ret;*/
 	#else
-  	TUInt32 cp = val;
+  		TUInt32 cp = val;
 		TByte* ptr=(TByte*) &cp;
 		static TByte tmp;
 		tmp=ptr[0]; ptr[0]=ptr[3]; ptr[3]=tmp;
@@ -211,8 +223,12 @@ namespace SDIF
 	{
 	#if defined LINUX 
 		return bswap_64(val);
+	/*#elif defined WIN32
+		TUInt64 ret;
+		_swab((char*)(&val),(char*)(&ret),64);
+		return ret;*/
 	#else
-  	TUInt64 cp = val;
+  		TUInt64 cp = val;
 		TByte* ptr=(TByte*) &cp;
 		static TByte tmp;
 		tmp=ptr[0]; ptr[0]=ptr[7]; ptr[7]=tmp;
@@ -265,29 +281,25 @@ namespace SDIF
 
 	void File::ReadMatrixData(Matrix& matrix)
 	{
-  	TByte dum[8];
+  		TByte dum[8];
 		TUInt32 nElems = matrix.mHeader.mnColumns*matrix.mHeader.mnRows;
 		TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
 		TUInt32 size = nElems*elemSize;
 
 		TUInt32 padding = 8-size&7;
 
-	// Testing XA	matrix.mpData = new TByte[size];
 		matrix.mpFloat32Data.Resize(nElems);
 		matrix.mpFloat32Data.SetSize(nElems);
 
-	// Testing XA	DataFileIO::Read((TByte*) matrix.mpData,size);
 		DataFileIO::Read((TByte*) matrix.mpFloat32Data.GetPtr(),size);
-	// Testing XA	FixByteOrder((TByte*) matrix.mpData,nElems,elemSize);
 		FixByteOrder((TByte*) matrix.mpFloat32Data.GetPtr(),nElems,elemSize);
 
-	//  Pos(Pos()+padding);
 		DataFileIO::Read(dum,padding);  
 	}
 
 	void File::WriteMatrixData(const Matrix& matrix)
 	{
-  	TByte dum[8];
+  		TByte dum[8];
 		TUInt32 nElems = matrix.mHeader.mnColumns*matrix.mHeader.mnRows;
 		TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
 		TUInt32 size = nElems*elemSize;
@@ -302,8 +314,8 @@ namespace SDIF
 			if (blocksize>1024) blocksize = 1024;
 			memcpy(tmp,ptr,blocksize);
 
-			FixByteOrder(tmp,blocksize,elemSize);
-			DataFileIO::Write((TByte*) tmp,size);
+			FixByteOrder(tmp,blocksize/elemSize,elemSize);
+			DataFileIO::Write((TByte*) tmp,blocksize);
 
 			ptr+=blocksize;
 			size-=blocksize;
