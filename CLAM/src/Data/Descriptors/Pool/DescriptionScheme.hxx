@@ -14,9 +14,9 @@ namespace CLAM
 
 
 	/**
-	 * @ingroup SemanticalAnalysis
 	 * The description scheme defines the set of attributes (Attribute)
 	 * to be used for feature extraction systems.
+	 * @ingroup SemanticalAnalysis
 	 *
 	 * A DescriptionScheme is only an specification.
 	 * The real data is held in a DescriptionDataPool,
@@ -168,15 +168,34 @@ namespace CLAM
  * CLAM::DescriptionDataPool pool(scheme);
  * @endcode
  *
- * See the documentation for CLAM::DescriptionDataPool to see how to work
- * with it directly.
- *
  * So, summarizing:
  * - A description scheme defines attributes to be computed
  * - Every attribute has its name and type and is related to a given scope
  * - A scope specifies the kind of attribute target
  * - A description data pool is the real container for the values computed by extraction.
  * - A description data pool matches the structure specified by a given description scheme.
+ *
+ * @dot
+ digraph lala 
+ {
+	 edge [fontname=Helvetica, fontsize=10]
+	 node [shape=rectangle, fontname=Helvetica, fontsize=12, style=filled]
+	 node [URL="classCLAM_1_1\N.html"]
+	 {
+		 edge[dir=back, arrowtail=diamond, taillabel=" *    "]
+		 node [color=indigo,fillcolor="0.6 0.1 .9"]
+		 DescriptionScheme -> DescriptionScope -> Attribute
+		 node [color=darkgreen,fillcolor="0.2 0.1 1.0"]
+		 DescriptionDataPool -> ScopePool -> AttributePool
+	 }
+	 {
+		 edge[dir=back, constraint=false]
+		 DescriptionScheme -> DescriptionDataPool
+		 DescriptionScope -> ScopePool
+		 Attribute -> AttributePool
+	 }
+ }
+ * @enddot
  *
  * @section PoolByHand Accessing the pool by hand
  *

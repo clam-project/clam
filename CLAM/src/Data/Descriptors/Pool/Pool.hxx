@@ -7,7 +7,6 @@
 namespace CLAM
 {
 	/**
-	 * @ingroup SemanticalAnalysis
 	 * Contains the extracted data for a given description process.
 	 * Its structure conforms the one defined by a DescriptionScheme
 	 * specified when constructed.
@@ -15,6 +14,7 @@ namespace CLAM
 	 * Data is stored for each attribute as a C array.
 	 *
 	 * The values can be dumped and restored to and from an XML file.
+	 * @ingroup SemanticalAnalysis
 	 */
 	class DescriptionDataPool : public Component
 	{
@@ -27,8 +27,8 @@ namespace CLAM
 		DescriptionDataPool(const DescriptionScheme & scheme)
 			: _scheme(scheme), _scopePools(_scheme.GetNScopes(),(ScopePool*)0)
 		{
-		}
-		~DescriptionDataPool()
+			}
+			~DescriptionDataPool()
 		{
 			ScopePools::iterator it = _scopePools.begin();
 			ScopePools::iterator end = _scopePools.end();
