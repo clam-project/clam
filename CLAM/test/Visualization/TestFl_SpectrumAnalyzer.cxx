@@ -1,6 +1,6 @@
 #include "Spectrum.hxx"
 #include "LogMagSpectrumAdapter.hxx"
-#include "Fl_SpectrumAnalyzer.hxx"
+#include "FLTK/Fl_Spectrum.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
 #include "WidgetTKWrapper.hxx"
@@ -15,12 +15,12 @@ using CLAMTest::WindowedSpectrumGenerator;
 using CLAM::Spectrum;
 using CLAMVM::WidgetTKWrapper;
 using CLAMVM::LogMagSpectrumAdapter;
-using CLAMVM::Fl_SpectrumAnalyzer;
+using CLAMVM::Fl_Spectrum;
 using CLAM::XMLStorage;
 
 static const char* sPathToData= "./Datasets/";
 
-bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& presentation )
+bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
 		int i,Size=1024;
 		float SampleRate=8000.0;
@@ -86,7 +86,7 @@ bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer&
 		
 }
 
-bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& presentation )
+bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -114,7 +114,7 @@ bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& prese
 }
 
 
-bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& presentation )
+bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -141,7 +141,7 @@ bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& pr
 
 }
 
-bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& presentation)
+bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation)
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -169,7 +169,7 @@ bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& pres
 
 }
 
-bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& presentation )
+bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -194,7 +194,7 @@ bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& prese
 		return true;
 }
 
-bool TestBasicUseCase( LogMagSpectrumAdapter& view, Fl_SpectrumAnalyzer& presentation )
+bool TestBasicUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -224,7 +224,7 @@ int main( int argc, char** argv )
 		try
 		{
 				LogMagSpectrumAdapter        view;
-				Fl_SpectrumAnalyzer presentation( 100, 100, 640, 480, "An Spectrum Presentation");
+				Fl_Spectrum presentation( 100, 100, 640, 480, "An Spectrum Presentation");
 
 				presentation.AttachTo( view );
 

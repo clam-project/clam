@@ -124,36 +124,31 @@ private: \
 	/** Undefined link for the Remove method chain (Remove) */ \
 	template <unsigned int NAttrib> \
 	void RemoveChainedAttr (AttributePosition<NAttrib>*a) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link for the Add method chain (Add) */ \
 	template <unsigned int NAttrib> \
 	void AddChainedAttr (AttributePosition<NAttrib>*a) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link for the Inform method chain (Inform) */ \
 	template <unsigned int NAttrib> \
 	void InformChainedAttr (AttributePosition<NAttrib>*a) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link on the method chain (Store) */ \
 	template <unsigned int NAttrib> \
 	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link on the method chain (Load) */ \
 	template <unsigned int NAttrib> \
 	void LoadChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
-		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 private: \
