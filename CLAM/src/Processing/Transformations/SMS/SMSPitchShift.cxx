@@ -73,5 +73,12 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
 	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
+	Fundamental tmpFund=in.GetFundamental();
+	int i;
+	for (i=0;i<in.GetFundamental().GetnCandidates();i++)
+	{
+		tmpFund.SetFreq(i,in.GetFundamental().GetFreq(i)*mAmountCtrl.GetLastValue());
+	}
+	out.SetFundamental(tmpFund);
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
 }

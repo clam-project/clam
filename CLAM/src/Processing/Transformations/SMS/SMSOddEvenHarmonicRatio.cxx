@@ -34,8 +34,8 @@ bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray&
 	TData evenFactor=-oddFactor;
 	for(i=0;i<nPeaks-1;i+=2)
 	{
-		oMagArray[i]=iMagArray[i]+oddFactor;
-		oMagArray[i+1]=iMagArray[i+1]+evenFactor;
+		//oMagArray[i]=MIN(iMagArray[i]+oddFactor,0);
+		oMagArray[i+1]=MIN(iMagArray[i+1]+evenFactor,0);
 	}
 	return true;
 }

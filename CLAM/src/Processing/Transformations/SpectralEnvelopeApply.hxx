@@ -54,6 +54,8 @@ namespace CLAM {
 
 	/**
 	 * Applies an existing spectral envelope to incoming spectral peaks or spectrum
+	 * @todo: the spline interpolation gets a bit out of hand in the ends of the spectral envelope
+	 *	so you may get artifacts in the higher frequencies!!!
 	 */
 	class SpectralEnvelopeApply: public Processing {
 		SpectralEnvelopeApplyConfig mConfig;

@@ -120,7 +120,8 @@ namespace CLAM {
 			ophaseBuffer[i]=iphaseBuffer[i];
 			ofreqBuffer[i]=ifreqBuffer[i];
 			omagBuffer[i]=spectralEnvelope.GetMag((TData)ifreqBuffer[i]);
-			CLAM_ASSERT(omagBuffer[i]<0,"Error");
+			//TODO: This is indeed very nasty, read todo in header!!
+			if(omagBuffer[i]>0) omagBuffer[i]=-200;
 
 		}
 		

@@ -55,6 +55,7 @@ namespace CLAM {
 	 *	Basid Frequency domain Comb Filter. It has one control (mFreq) which sets the fundamental of
 	 *	harmonic series that wants to be amplified.
 	 *	@todo: add a gain control to be able to filter out harmonic series instead of amplifying it.
+	 *  @todo: don't know why it does not work correctly with spectrums that have less than 512 bins !!
 	 */
 	class FDCombFilter: public Processing {
 		FDCombFilterConfig mConfig;
@@ -76,7 +77,7 @@ namespace CLAM {
 		FDCombFilter();
 		/** Constructor with an object of FDCombFilterConfig class by parameter
 		 *  @param c FDCombFilterConfig object created by the user
-*/
+		 */
 		FDCombFilter(const FDCombFilterConfig &c);
 
 		/** Destructor of the class*/
