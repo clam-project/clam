@@ -37,7 +37,7 @@
 #include "Segmentator.hxx"
 #include "OnsetDetection.hxx"
 #include "Normalization.hxx"
-
+#include "HeapDbg.hxx"
 
 //Transformation class
 #include "SMSFreqShift.hxx"
@@ -138,7 +138,10 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 {
-	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
+
+
+	mCurrentWaitMessage = CreateWaitMessage( "Loading configuration xml file, please wait." );
+
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
@@ -172,7 +175,8 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 		mHaveConfig = true;
 		InitConfigs();
 	}
-	delete wm;
+	DestroyWaitMessage();
+
 }
 
 void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
@@ -182,6 +186,8 @@ void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
+
+	delete wm;
 }
 
 void AnalysisSynthesisExampleBase::DoLoadSDIFAnalysis()

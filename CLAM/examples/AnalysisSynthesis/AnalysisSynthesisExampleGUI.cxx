@@ -42,17 +42,13 @@ void AnalysisSynthesisExampleGUI::Run(void)
 	
 Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 
 {
-	//std::cout << "Creating progress indicator " << std::endl;
 	ProgressGUI* tmp = new ProgressGUI(title,from,to);
-	//std::cout << "ProgressGUI constructor OK!" << std::endl;
 	return tmp;
 }
 
 WaitMessage* AnalysisSynthesisExampleGUI::CreateWaitMessage(const char* title) 
 {
-	//std::cout << "Creating WaitMessage" << std::endl;
 	WaitMessageGUI* tmp = new WaitMessageGUI(title);
-	//std::cout << "WaitMessage constructor OK!" << std::endl;
 	return tmp;
 }
 

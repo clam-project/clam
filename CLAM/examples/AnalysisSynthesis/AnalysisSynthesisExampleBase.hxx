@@ -218,6 +218,7 @@ namespace CLAM
 
 		SDIFIn  mSDIFReader;
 
+
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
 		/** Creates a wait message. Implemented both in GUI and stdio versions */
@@ -231,7 +232,8 @@ namespace CLAM
 		{
 			return mGlobalConfig.GetDoCleanTracks();
 		}
-		
+
+
 	};
 
 };

@@ -25,11 +25,11 @@ void UserInterface::LoadConfiguration(void)
 	if ( str )
 	{
 		mConfigurationText->value(str);
-		
 		std::string inputXMLFileName(str);
-		
+
 		mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
 		
+
 		if (mAnalysisSynthesisExample->mHaveConfig)
 		{	
 			mAnalysisSynthesisExample->LoadInputSound();
