@@ -19,22 +19,11 @@
  *
  */
 
-#include "ModelAdapter.hxx"
-#include "Mutex.hxx"
-#include "Lock.hxx"
-
-using CLAM::Mutex;
+#include "ModelController.hxx"
 
 namespace CLAMVM
 {
-		ModelAdapter::~ModelAdapter()
+		ModelController::~ModelController()
 		{
-		}
-
-		void ModelAdapter::Publish( Mutex& mutexObj )
-		{
-			Mutex::ScopedLock lock( mutexObj );
-				
-			Publish();
 		}
 }

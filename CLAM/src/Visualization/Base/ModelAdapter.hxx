@@ -34,7 +34,9 @@ using CLAM::Mutex;
 
 class Aspect;
 
-/**
+/** \class ModelAdapter
+ *  \brief Base class for Model Object Adapters
+ *
  *  This class defines the interface common to all model object adapters available in CLAM
  *  Visualization module. The ModelAdapter encodes the interface required by the Observable
  *  concept of the GOF Observer pattern. We chose to write an Adapter, since we didn't feel
@@ -45,41 +47,36 @@ class Aspect;
 class ModelAdapter
 {
 public:
-		virtual ~ModelAdapter()
-		{
-		}
+		/** \brief Destructor
+		 *
+		 *  Class destructor
+		 */
+		virtual ~ModelAdapter();
 
-		/**
-		 *   Returns the class name of the view. It's purpose as of today is
-		 *   to provide run-time debugging information.
-		 *   @returns A human-readable class name
+		/** \brief Returns adapter classname
+		 *
+		 *   Returns the class name of the adapter. It's purpose is to be used in
+		 *   a future Adapter Factory.
+		 *   \return A human-readable class name
 		 */
 
 		virtual const char* GetClassName() const = 0;
 
-		/**
-		 *   Returns a non-const reference to the aspect supported by concrete
-		 *   views, so a Presentation class can use it to select which kind of
-		 *   events wants to be notified.
-		 *   @returns A reference to the concrete aspect
-		 *   @see Aspect
-		 *   @see Presentation
-		 */
-
-		//virtual Aspect& GetAspect() = 0;
-		
-		/**
-		 *   The main message to be send to any view. Its purpose is the same
+		/** \brief Publishes adapted model object internal state
+		 *
+		 *   The main message to be send to any ModelAdapter. Its purpose is the same
 		 *   as the Observer::broadcast() method found in the Observer pattern.
-		 *   @returns A boolean indicating wether it has been possible to perform the refresh
+		 *
+		 *   @returns A boolean indicating wether it has been possible to retrieve the model
+		 *            object internal state
 		 */
 
 		virtual bool Publish() = 0;
 
-		/**
-		 *   This is a proxy method that ensures that ModelAdapter::Refresh() is an
-		 *   atomic operation. Users must provide a CLAM::Mutex object when
-		 *   necessary.
+		/**  \brief  Publishes adapted model object internal state, trying to lock a mutex object
+		 *
+		 *   This is a proxy method that ensures that ModelAdapter::Publish() is an
+		 *   atomic operation. The application must provide the CLAM::Mutex object as necessary.
 		 */
 
 		void Publish( Mutex& );

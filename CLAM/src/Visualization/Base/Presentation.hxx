@@ -25,33 +25,34 @@
 namespace CLAMVM
 {
 
-/**
- *   This is the interface required to all Visualization Module presentations.
- *   Presentations are the entities in charge of applying some kind of transformation
- *   to data received from attached views in order to make it more knowledgeable
- *   to users. Views and Presentations talk with each other through the Aspect supported
- *   by each View.
+/** \class Presentation
+ *  \brief Base class for concept representations
  *
- *   @see View
- *   @see Aspect
+ *  A Presentation presents some information, contained in the application
+ *  model objects, to the user. This "information presentation" is accomplished,
+ *  typically, through some sort of graphical metaphor.
  */
 class Presentation
 {
 public:
 		
-		//@todo: the destructor should not be present in the header, so I should move it
-		//       down to the implementation file ( broking several makefiles and dsp's :/ )
+		/** \brief Destructor
+		 *
+		 *  Class destructor
+		 */
 		virtual ~Presentation();
 
-		/**
-		 *   Calling this method makes the widget to appear on the screen
+		/** \brief 'Activates' presentation
+		 *   
+		 *  This methods makes the presentation to become visible to the user. If it
+		 *  is a widget, then this method shows the widget on the screen.
 		 */
 		virtual void Show() = 0;
 
-		/**
-		 *   Calling this method makes the widget to disappear from the screen,
-		 *   so it should not be confused with concepts such as 'minimize' or
-		 *   'iconify'.
+		/**  \brief 'Deactivates' presentation
+		 *
+		 *   This method makes the presentation to become hidden to the user. If we
+		 *   are talking about widgets, this makes the widget to disappear from the screen.
 		 */
 		virtual void Hide() = 0;
 

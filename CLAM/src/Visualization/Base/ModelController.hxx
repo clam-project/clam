@@ -27,36 +27,41 @@
 namespace CLAMVM
 {
 
-/**
- *   This class is just a way to accomplish finer grain control
- *   for defining concrete view interface since many views won't
- *   be able to modify the model ( the components of applications )
- *   whatsoever.
- * 
- *   @see ProcessingModelAdapter
+/** \class ModelController
+ *  \brief Base class for all ModelControllers
+ *
+ *  A ModelController is a ModelAdapter, that besides publishing
+ *  a model object internal state, also allows to modify it.
+ *
+ *   @see ModelAdapter
  */
 class ModelController
 		: public ModelAdapter
 {
 public:
-		virtual ~ModelController()
-		{
-		}
+		/** \brief Destructor
+		 * 
+		 *  Class destructor
+		 */
+		virtual ~ModelController();
 
-		/**
-		 *  @see ModelAdapter::GetClassName
+		/** \brief Returns object class name
+		 *
+		 *  \see ModelAdapter::GetClassName
 		 */
 		virtual const char* GetClassName() const = 0;
 
-		/**
-		 *  ModelControllers are also able to Publish
+		/** \brief Publishes adapted model object internal state
+		 *
 		 *  @see ModelAdapter::Publish
 		 */
 		virtual bool Publish() = 0;
 
-		/**
-		 *  This pure virtual method expresses a view ability to
-		 *  to modify the model as sees fit.
+		/** \brief Modifies adapted model object internal state
+		 *
+		 *  This method tries to apply changes into adapted model object
+		 *  internal state.
+		 *
 		 *  @returns A boolean indicating wether it has been possible 
 		 *           to update the model object associated to this controller
 		 */
