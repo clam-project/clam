@@ -23,7 +23,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 
 #include "Array.hxx"
 #include "Complex.hxx"
