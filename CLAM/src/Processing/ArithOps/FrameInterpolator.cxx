@@ -32,6 +32,7 @@ namespace CLAM {
 	{
 		AddAll();
 		UpdateData();
+		DefaultValues();
 	}
 
 	void FrameInterpConfig::DefaultValues()
@@ -88,6 +89,7 @@ namespace CLAM {
 		pkInterpConfig.SetUseSpectralShape(mConfig.GetUseSpectralShape());
 		mPO_PeaksInterpolator.Configure(pkInterpConfig);
 
+		//todo: using interpolator with ports is still not available!!
 		if(mConfig.GetUseSpectralShape())
 		{
 			mPO_PeaksInterpolator.mSpectralShape.Attach(mSpectralShape);
@@ -142,7 +144,10 @@ namespace CLAM {
 			out.GetFundamental().SetFreq(0,newPitch);
 		out.GetFundamental().SetnCandidates(1);
 
-		mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray());
+		if(mConfig.GetUseSpectralShape())
+			mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),mSpectralShape.GetData(),out.GetSpectralPeakArray());
+		else
+			mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray());
 		mPO_SpectrumInterpolator.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
 
 		return true;

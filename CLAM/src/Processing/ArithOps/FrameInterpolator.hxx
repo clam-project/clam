@@ -63,13 +63,6 @@ namespace CLAM {
 		FrameInterpConfig mConfig;
 
 
-		InPortTmpl<Frame> mIn1;
-		InPortTmpl<Frame> mIn2;
-		OutPortTmpl<Frame> mOut;
-
-		InPortTmpl<Spectrum> mSpectralShape;
-
-	
 		const char *GetClassName() const {return "FrameInterpolator";}
 
 
@@ -111,6 +104,13 @@ namespace CLAM {
 
 		/** Input control for whether harmonic interpolation has to be performed*/
 		FrameInterpolatorCtl mIsHarmonicCtl;
+
+		/** Ports */
+		InPortTmpl<Frame> mIn1;
+		InPortTmpl<Frame> mIn2;
+		OutPortTmpl<Frame> mOut;
+
+		InPortTmpl<Spectrum> mSpectralShape;
 	private:
 		/** children processings */
 		SpectrumInterpolator mPO_SpectrumInterpolator;

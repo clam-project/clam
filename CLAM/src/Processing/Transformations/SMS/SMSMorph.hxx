@@ -72,23 +72,41 @@ namespace CLAM{
 		
 		virtual bool UpdateControlValueFromBPF(TData pos);
 	
-		SMSMorphCtrl  mAmountCtrl;
 		
+		bool mUseGlobalFactor;
 		SMSMorphCtrl  mHybBPF;
+
+		bool mUseSynchronizeTime;
 		SMSMorphCtrl  mSynchronizeTime;
+		
+		bool mUseSinAmp;
 		SMSMorphCtrl  mHybSinAmp;
+
+		bool mUseSinSpectralShape;
 		SMSMorphCtrl  mHybSinSpectralShape;
 		SMSMorphCtrl  mHybSinShapeW1;
 		SMSMorphCtrl  mHybSinShapeW2;
+		
+		bool mUsePitch;
 		SMSMorphCtrl  mHybPitch;
+		
+		bool mUseSinFreq;
 		SMSMorphCtrl  mHybSinFreq;
+		
+		bool mUseResAmp;
 		SMSMorphCtrl  mHybResAmp;
+		
+		bool mUseResSpectralShape;
 		SMSMorphCtrl  mHybResSpectralShape;
-		SMSMorphCtrl  mHybResShapeW;
+		SMSMorphCtrl  mHybResShapeW1;
+		SMSMorphCtrl  mHybResShapeW2;
+						
 	protected:
 		
 		void UpdateFrameInterpolatorFactors(bool useFrameFactor);
 		bool FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame);
+		void UpdateSpectralShape(const BPF& weightBPF1, const BPF& weightBPF2, TData interpFactor, Spectrum& spectralShape);
+		void InitializeFactorsToUse();
 
 		bool LoadSDIF( std::string fileName, Segment& segment );
 		
@@ -105,6 +123,9 @@ namespace CLAM{
 		bool mHaveInternalSegment;
 
 		Segment mSegment;
+
+		Spectrum mSpectralShape;
+		Spectrum mResSpectralShape;
 
 
 		/** Child processings **/

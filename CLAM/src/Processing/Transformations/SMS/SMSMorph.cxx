@@ -22,12 +22,12 @@
 #include <fstream>
 #include "SMSMorph.hxx"
 #include "Factory.hxx"
+#include "SpectrumConfig.hxx"
 
 using namespace CLAM;
 
 
 SMSMorph::SMSMorph():
-	mAmountCtrl("Amount",this),  
 	mHybBPF("MorphFactor",this),
 	mSynchronizeTime("Time", this),
 	mHybSinAmp("SinAmp", this),
@@ -38,14 +38,24 @@ SMSMorph::SMSMorph():
 	mHybSinFreq("SinFreq", this),
 	mHybResAmp("ResAmp", this),
 	mHybResSpectralShape("ResShape", this),
-	mHybResShapeW("ResShapeW", this),
+	mHybResShapeW1("ResShapeW1", this),
+	mHybResShapeW2("ResShapeW2", this),
 	mInput2("Input2",this,1)
 {
 		mHaveInternalSegment=false;
+		
+		mUseSinSpectralShape=false;
+		mUseGlobalFactor=false;
+		mUseSynchronizeTime=false;
+		mUseSinAmp=false;
+		mUsePitch=false;
+		mUseSinFreq=false;
+		mUseResAmp=false;
+		mUseResSpectralShape=false;
+		mUseSinSpectralShape=false;
 }
 
 SMSMorph::SMSMorph(const SMSMorphConfig &c):
-	mAmountCtrl("Amount",this),
 	mHybBPF("MorphFactor",this),
 	mSynchronizeTime("Time", this),
 	mHybSinAmp("SinAmp", this),
@@ -56,10 +66,21 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 	mHybSinFreq("SinFreq", this),
 	mHybResAmp("ResAmp", this),
 	mHybResSpectralShape("ResShape", this),
-	mHybResShapeW("ResShapeW", this),
+	mHybResShapeW1("ResShapeW1", this),
+	mHybResShapeW2("ResShapeW2", this),
 	mInput2("Input2",this,1)
 {
 	mHaveInternalSegment=false;
+	
+	mUseSinSpectralShape=false;
+	mUseGlobalFactor=false;
+	mUseSynchronizeTime=false;
+	mUseSinAmp=false;
+	mUsePitch=false;
+	mUseSinFreq=false;
+	mUseResAmp=false;
+	mUseResSpectralShape=false;
+	mUseSinSpectralShape=false;
 	Configure(c);
 }
 
@@ -67,7 +88,7 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 {
 	mConfig=dynamic_cast<const SMSMorphConfig&>(c);
 	mHaveInternalSegment=false;
-
+	
 	if(mConfig.HasFileName())
 	{
 		if(LoadSDIF(mConfig.GetFileName(),mSegment))
@@ -76,7 +97,29 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 			mHaveInternalSegment=true;
 		}
 	}
+
+	SpecTypeFlags type;
+	SpectrumConfig cfg;
+	type.bMagPhase=false;
+	type.bMagPhaseBPF=true;
+	cfg.SetType(type);
+	cfg.SetSpectralRange(mSegment.GetFrame(0).GetResidualSpec().GetSpectralRange());
+
+	mSpectralShape.Configure(cfg);
+	mResSpectralShape.Configure(cfg);
 	
+	InitializeFactorsToUse();
+	
+	FrameInterpConfig frIntCfg;
+	frIntCfg.SetUseSpectralShape(mUseSinSpectralShape);
+	mPO_FrameInterpolator.Configure(frIntCfg);
+	
+	if(mUseSinSpectralShape)
+	{
+		frIntCfg.SetUseSpectralShape(true);
+		mPO_FrameInterpolator.mSpectralShape.Attach(mSpectralShape);
+	}
+
 	return UpdateControlValueFromBPF(0);
 }
 
@@ -171,66 +214,126 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 
 	TData globalFactor;
 	
-	if(mConfig.HasHybBPF())
+	//Warning, maybe controls that are not used should be initialize to something sensible (does not affect)
+	
+	if(mUseGlobalFactor)
 	{
 		globalFactor=mConfig.GetHybBPF().GetValue(pos);
-		mAmountCtrl.DoControl(mConfig.GetHybBPF().GetValue(pos));
 		mHybBPF.DoControl(globalFactor);
 	}
 	else
 		ret=false;
-	if(mConfig.HasSynchronizeTime() && mConfig.GetSynchronizeTime().Size() )
+	if(mUseSynchronizeTime)
 	{
 		pos=mConfig.GetSynchronizeTime().GetValue(pos);
 		mSynchronizeTime.DoControl(pos);
 	}
 
-	if(mConfig.HasHybSinAmp() && mConfig.GetHybSinAmp().Size())
+	if(mUseSinAmp)
 		mHybSinAmp.DoControl(mConfig.GetHybSinAmp().GetValue(pos));
 	else
 		mHybSinAmp.DoControl(globalFactor);
 
-	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size())
-		mHybSinSpectralShape.DoControl(mConfig.GetHybSinSpectralShape().GetValue(pos));
-	else
-		mHybSinSpectralShape.DoControl(globalFactor);
-
-	if(mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size())
-		mHybSinShapeW1.DoControl(mConfig.GetHybSinShapeW1().GetValue(pos));
-	else
-		mHybSinShapeW1.DoControl(globalFactor);
-
-	if(mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
-		mHybSinShapeW2.DoControl(mConfig.GetHybSinShapeW2().GetValue(pos));	
-	else
-		mHybSinShapeW2.DoControl(globalFactor);
-
-	if(mConfig.HasHybPitch() && mConfig.GetHybPitch().Size() )
+	if(mUsePitch)
 		mHybPitch.DoControl(mConfig.GetHybPitch().GetValue(pos));
 	else
 		mHybPitch.DoControl(globalFactor);
 
-	if(mConfig.HasHybSinFreq() && mConfig.GetHybSinFreq().Size())
+	if(mUseSinFreq)
 		mHybSinFreq.DoControl(mConfig.GetHybSinFreq().GetValue(pos));
 	else
 		mHybSinFreq.DoControl(globalFactor);
 
-	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
+	if(mUseResAmp)
 		mHybResAmp.DoControl(mConfig.GetHybResAmp().GetValue(pos));
 	else
 		mHybResAmp.DoControl(globalFactor);
 
-	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size())
+	//Updating spectral shapes
+	if(mUseResSpectralShape)
+	{
 		mHybResSpectralShape.DoControl(mConfig.GetHybResSpectralShape().GetValue(pos));
-	else
-		mHybResSpectralShape.DoControl(globalFactor);
-
-	if(mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size())
-		mHybResShapeW.DoControl(mConfig.GetHybResShapeW1().GetValue(pos));
-	else
-		mHybResShapeW.DoControl(globalFactor);
+		UpdateSpectralShape(mConfig.GetHybResShapeW1(),mConfig.GetHybResShapeW2(),mHybResSpectralShape.GetLastValue(),mResSpectralShape);
+	}
+	if(mUseSinSpectralShape)
+	{
+		mHybSinSpectralShape.DoControl(mConfig.GetHybSinSpectralShape().GetValue(pos));
+		UpdateSpectralShape(mConfig.GetHybSinShapeW1(),mConfig.GetHybSinShapeW2(),mHybSinSpectralShape.GetLastValue(),mSpectralShape);
+	}
 
 	return ret;
+}
+
+void SMSMorph::InitializeFactorsToUse()
+{
+	if(mConfig.HasHybBPF())
+		mUseGlobalFactor=true;
+	if(mConfig.HasSynchronizeTime() && mConfig.GetSynchronizeTime().Size() )
+		mUseSynchronizeTime=true;
+	if(mConfig.HasHybSinAmp() && mConfig.GetHybSinAmp().Size())
+		mUseSinAmp=true;
+	if(mConfig.HasHybPitch() && mConfig.GetHybPitch().Size() )
+		mUsePitch=true;
+	if(mConfig.HasHybSinFreq() && mConfig.GetHybSinFreq().Size())
+		mUseSinFreq=true;
+	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
+		mUseResAmp=true;
+	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size()&&
+		mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size()&&
+		mConfig.HasHybResShapeW2() && mConfig.GetHybResShapeW2().Size())
+	{
+			mUseResSpectralShape=true;
+			mUseResAmp=false;
+	}
+	//Updating spectral shapes
+	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size()&&
+		mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size()&&
+		mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
+	{
+		mUseSinSpectralShape=true;
+		mUseSinAmp=false;
+	}
+
+}
+
+void SMSMorph::UpdateSpectralShape(const BPF& weightBPF1, const BPF& weightBPF2,TData interpFactor, Spectrum& spectralShape)
+{
+	BPF spectralShapeBPF;
+	TData spectralRange=spectralShape.GetSpectralRange();
+	//we will always add as many points as possible, so we take weightBPF with maximum points
+	int nPoints;
+	bool usingFirst=false;
+	if(weightBPF1.Size()>weightBPF2.Size())
+	{
+		nPoints=weightBPF1.Size();
+		usingFirst=true;
+	}
+	else nPoints=weightBPF2.Size();
+	int i;
+	TData xValue,yValue;
+	if(usingFirst)
+	{
+		for(i=0;i<nPoints;i++)
+		{
+			xValue=weightBPF1.GetXValue(i);
+			yValue=weightBPF1.GetValueFromIndex(i)*interpFactor+weightBPF2.GetValue(xValue)*(1-interpFactor);
+			xValue*=spectralRange;
+			spectralShapeBPF.Insert(xValue,yValue);
+		}
+	}
+	else
+	{
+		for(i=0;i<nPoints;i++)
+		{
+			xValue=weightBPF2.GetXValue(i);
+			yValue=weightBPF2.GetValueFromIndex(i)*interpFactor+weightBPF1.GetValue(xValue)*(1-interpFactor);
+			xValue*=spectralRange;
+			spectralShapeBPF.Insert(xValue,yValue);
+		}
+	}
+	spectralShape.SetMagBPF(spectralShapeBPF);
+	spectralShape.SetSize(spectralShapeBPF.Size());
+
 }
 
 bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
