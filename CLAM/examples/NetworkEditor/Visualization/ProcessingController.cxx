@@ -20,10 +20,6 @@
  */
 
 #include "ProcessingController.hxx"
-//#include "InPortAdapter.hxx"
-//#include "OutPortAdapter.hxx"
-//#include "InControlAdapter.hxx"
-//#include "OutControlAdapter.hxx"
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
 #include "InPort.hxx"
@@ -31,49 +27,25 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 
-#include <iostream>
 namespace CLAMVM
 {
 
 ProcessingController::ProcessingController()
-	: mObserved(0),
-	  mConfig(0)
+	: mObserved(0)
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingController::ConfigureProcessing );
 }
 
-ProcessingController::~ProcessingController()
+void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
 {
-	if (mConfig)
-		delete mConfig;
-
-//	InPortAdapterIterator itPortIn;
-//	for ( itPortIn=mInPortAdapters.begin(); itPortIn!=mInPortAdapters.end(); itPortIn++)
-//		delete *itPortIn;
-//	OutPortAdapterIterator itPortOut;
-//	for ( itPortOut=mOutPortAdapters.begin(); itPortOut!=mOutPortAdapters.end(); itPortOut++)
-//		delete *itPortOut;
-//	InControlAdapterIterator itCtrlIn;
-//	for ( itCtrlIn=mInControlAdapters.begin(); itCtrlIn!=mInControlAdapters.end(); itCtrlIn++)
-///		delete *itCtrlIn;
-//	OutControlAdapterIterator itCtrlOut;
-//	for ( itCtrlOut=mOutControlAdapters.begin(); itCtrlOut!=mOutControlAdapters.end(); itCtrlOut++)
-//		delete *itCtrlOut;
-
-}
-
-void ProcessingController::ConfigureProcessing( CLAM::ProcessingConfig * cfg) 
-{
-	mConfig = (CLAM::ProcessingConfig*)cfg->DeepCopy();
-
 	if (mObserved->GetExecState() == CLAM::Processing::Running)
 	{
 		mObserved->Stop();
-		Update();
+		mObserved->Configure(cfg);
 		mObserved->Start();
 	}
 	else
-		Update();
+		mObserved->Configure(cfg);
 }
 	
 
@@ -81,85 +53,21 @@ bool ProcessingController::Publish()
 {
 	if ( !mObserved )  // there is no object being observed
 		return false;
-	
-	SignalAcquireClassName.Emit( mObserved->GetClassName() );
-	if (mConfig)
-		delete mConfig;
-
-	const CLAM::ProcessingConfig & conf( mObserved->GetConfig() );
-	mConfig = (CLAM::ProcessingConfig*)conf.DeepCopy();
-	SignalAcquireConfig.Emit( mConfig );
-//	CLAM::Processing* mObserved = (CLAM::Processing*) mObserved;	
-//	CLAM::PublishedInPorts::ConstIterator itPortIn;
-//	for (itPortIn = mObserved->GetInPorts().Begin(); 
-//	     itPortIn != mObserved->GetInPorts().End(); 
-//	     itPortIn++)
-//	{
-
-//		std::cout << "publishing" << std::endl;
-//		mInPortNames.push_back((*itPortIn)->GetName());
-		
-//		InPortAdapter* adapter = new InPortAdapter;
-//		CLAM::InPort* inport = *itPortIn;
-//		adapter->BindTo(*inport);
-//		mInPortAdapters.push_back(adapter);
-//		SignalAcquireInPort.Emit(adapter);
-//	}
-	
-//	CLAM::PublishedOutPorts::ConstIterator itPortOut;
-//	for (itPortOut = mObserved->GetOutPorts().Begin(); 
-//	     itPortOut != mObserved->GetOutPorts().End(); 
-//	     itPortOut++)
-//	{		
-//		mOutPortNames.push_back((*itPortOut)->GetName());
-
-//		OutPortAdapter* adapter = new OutPoirtAdapter;
-//		CLAM::OutPort* outport = *itPortOut;
-//		adapter->BindTo(*outport);
-//		mOutPortAdapters.push_back(adapter);
-//		SignalAcquireOutPort.Emit(adapter);
-//	}
-
-
-//	CLAM::PublishedInControls::ConstIterator itCtrlIn;
-//	for (itCtrlIn = mObserved->GetInControls().Begin(); 
-//	     itCtrlIn != mObserved->GetInControls().End(); 
-//	     itCtrlIn++)
-//	{
-//		mInControlNames.push_back((*itCtrlIn)->GetName());
-
-//		InControlAdapter* adapter = new InControlAdapter;
-//		CLAM::InControl* incontrol = *itCtrlIn;
-//		adapter->BindTo(*incontrol);
-//		mInControlAdapters.push_back(adapter);
-//		SignalAcquireInControl.Emit(adapter);
-//	}
-	
-//	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
-//	for (itCtrlOut = mObserved->GetOutControls().Begin(); 
-//	     itCtrlOut != mObserved->GetOutControls().End(); 
-//	     itCtrlOut++)
-//	{		
-//		mOutControlNames.push_back((*itCtrlOut)->GetName());
-
-//		OutControlAdapter* adapter = new OutControlAdapter;
-//		CLAM::OutControl* outcontrol = *itCtrlOut;
-//		adapter->BindTo(*outcontrol);
-//		mOutControlAdapters.push_back(adapter);
-//		SignalAcquireOutControl.Emit(adapter);
-//	}
-
 	return true;
 }
 
+std::string ProcessingController::GetObservedClassName()
+{
+	if(mObserved)
+		return mObserved->GetClassName();
+	return "unbinded processing controller";
+}
 bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
 	mObserved = dynamic_cast< CLAM::Processing* > (&obj);
 	
 	if ( !mObserved )
-	{ 
 		return false;
-	}
 
 	CLAM::PublishedInPorts::ConstIterator itPortIn;
 	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
@@ -181,22 +89,50 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 	return true;
 }
 
-bool ProcessingController::Update()
+const CLAM::ProcessingConfig & ProcessingController::GetObservedConfig()
 {
-	mObserved->Configure( *mConfig );
-
-	CheckIfLadspaLoader();
-	return true;
+	return mObserved->GetConfig();
 }
 
-void ProcessingController::CheckIfLadspaLoader()
+ProcessingController::NamesList::iterator ProcessingController::BeginInPortNames()
 {
-	if(std::string(mObserved->GetClassName())=="LadspaLoader")
-	{
-		SignalRebuildProcessingStructure.Emit( mObserved );
-		SignalRemoveProcessingController.Emit(this );
-	}
+	return mInPortNames.begin();
+}
 	
+ProcessingController::NamesList::iterator ProcessingController::EndInPortNames()
+{
+	return mInPortNames.end();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::BeginOutPortNames()
+{
+	return mOutPortNames.begin();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::EndOutPortNames()
+{
+	return mOutPortNames.end();
+}
+
+ProcessingController::NamesList::iterator ProcessingController::BeginInControlNames()
+{
+	return mInControlNames.begin();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::EndInControlNames()
+{
+	return mInControlNames.end();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::BeginOutControlNames()
+{
+	return mOutControlNames.begin();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::EndOutControlNames()
+{
+	return mOutControlNames.end();
 }
 
 } //namespace CLAMVM
+
