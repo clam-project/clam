@@ -97,7 +97,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool Network::RemovePortsConnection( const std::string & producer, const std::string & consumer)
+	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
@@ -110,6 +110,23 @@ namespace CLAM
 		//todo: send a message to flowcontrol about connections modified
 
 		return true;
+	}
+
+	void Network::DisconnectAllPorts()
+	{
+		ProcessingsMap it;
+		// pass trough all the processing
+		for( it=_processings.begin(); it!=_processings.end(); it++)
+		{
+			Processing* proc = it->second;
+			PublishedInPorts::Iterator iteratorInPorts;
+
+			//unattach all the inports of each processing
+			for(iteratorInPorts=proc->GetInPorts().Begin();
+			    iteratorInPorts!=proc->GetInPorts().End();
+			    iteratorInPorts++)
+				(*iteratorInPorts)->Unattach();
+		}
 	}
 
 
