@@ -5,6 +5,8 @@
 #include "DataTypes.hxx"
 #include "OutControl.hxx"
 #include "Processing.hxx"
+#include "ProcessingConfig.hxx"
+#include <string>
 
 namespace CLAM
 {
