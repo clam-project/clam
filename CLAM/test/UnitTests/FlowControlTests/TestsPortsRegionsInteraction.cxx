@@ -35,18 +35,27 @@ public:
 	CPPUNIT_TEST( testOutPortDisconnectFromAll );	
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WhenInPortIsTheSameType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WhenInPortIsDifferentType );
+	CPPUNIT_TEST( testConnectedPortsDestructors_whenInDeletedBefore );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withIncorrectInPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withProperInPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withIncorrectOutPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withSomeInPorts );
-//	CPPUNIT_TEST( testOutPort_GetConnectedInPorts_whenConnectedToInPortPublisher );
-//	CPPUNIT_TEST( testInPortPublisher_deleteInPortPublisherAfterRealPorts );
+	CPPUNIT_TEST( testOutPort_GetConnectedInPorts_whenConnectedToInPortPublisher );
+	CPPUNIT_TEST( testOutPort_IsPhysicallyConnectedToIn_withOneInPort );
+	CPPUNIT_TEST( testInPortPublisher_deleteInPortPublisherAfterRealPorts );
 	CPPUNIT_TEST( testGetLastWrittenData_whenPortIsWrongType_throwsException );
 	CPPUNIT_TEST( testGetLastWrittenData_fillsWithCorrectData );
 	
 	CPPUNIT_TEST_SUITE_END();
 
+public:
+	void setUp()
+	{
+	}
+	void tearDown()
+	{
+	}
 	void testOutPortConnectToIn_usingBaseClass()
 	{
 		CLAM::OutPort<int> out;
@@ -56,7 +65,7 @@ public:
 
 		outBase.ConnectToIn(inBase);
 
-		CPPUNIT_ASSERT_EQUAL( true, outBase.IsConnectedTo(inBase) );
+		CPPUNIT_ASSERT_EQUAL( true, outBase.IsDirectlyConnectedTo(inBase) );
 	}
 	
 	void testOutPortConnect()
@@ -66,7 +75,7 @@ public:
 		out.ConnectToIn(in);
 		//TODO check that stream has been initialized (as soon as is implemented)
 
-		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo( in ) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsDirectlyConnectedTo( in ) );
 	}
 
 	void testOutPortConnect_whenMoreThanOneInPort()
@@ -76,8 +85,8 @@ public:
 		out.ConnectToIn(in1);
 		out.ConnectToIn(in2);
 
-		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo(in1) );
-		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo(in2) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsDirectlyConnectedTo(in1) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsDirectlyConnectedTo(in2) );
 	}
 
 	void testOutPortConnect_whenPortsAlreadyConnected()
@@ -141,7 +150,7 @@ public:
 
 		outBase.DisconnectFromIn(inBase);
 
-		CPPUNIT_ASSERT_EQUAL( false, outBase.IsConnectedTo(inBase) );
+		CPPUNIT_ASSERT_EQUAL( false, outBase.IsDirectlyConnectedTo(inBase) );
 	}
 
 	void testOutPortDisconnect_whenPortsAreNotConnected_throwsException()
@@ -169,7 +178,7 @@ public:
 
 		out.DisconnectFromConcreteIn(in2);
 
-		CPPUNIT_ASSERT_EQUAL( false, out.IsConnectedTo(in2) );
+		CPPUNIT_ASSERT_EQUAL( false, out.IsDirectlyConnectedTo(in2) );
 	}
 
 	void testOutPortDisconnectNotifiesInPort()
@@ -339,9 +348,21 @@ public:
 		}
 	}
 	
+	void testConnectedPortsDestructors_whenInDeletedBefore()	
+	{
+		CLAM::OutPort<int> *out = new CLAM::OutPort<int>();
+		CLAM::InPort<int> *in = new CLAM::InPort<int>();
+		CLAM::InPortPublisher<int> *inPublisher = new CLAM::InPortPublisher<int>();
+		
+		inPublisher->PublishInPort( *in );
+		out->ConnectToIn(*inPublisher);
+		
+		delete inPublisher;
+		delete out;		
+	}
+	
 	void testInPortPublisher_PublishInPort_withProperInPort()
 	{
-		
 		CLAM::OutPort<int> out;
 		CLAM::InPort<int> in;
 		CLAM::InPortPublisher<int> inPublisher;
@@ -484,7 +505,22 @@ public:
 
 		CPPUNIT_ASSERT_EQUAL( data, result );
 	}
-	
+
+	void testOutPort_IsPhysicallyConnectedToIn_withOneInPort() 
+	{
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> inPublished, inDirect, inNotConnected; 
+		CLAM::InPortPublisher<int> publisher;
+
+		publisher.PublishInPort( inPublished );
+		out.ConnectToIn( publisher ); // so inPublished gets "physically" connected
+		out.ConnectToIn( inDirect );
+
+		CPPUNIT_ASSERT( true==out.IsPhysicallyConnectedToIn(inDirect) );
+		CPPUNIT_ASSERT( true==out.IsPhysicallyConnectedToIn(inPublished) );
+		CPPUNIT_ASSERT( false==out.IsPhysicallyConnectedToIn(inNotConnected) );
+	}
+
 };
 
 } // namespace CLAMTest 
