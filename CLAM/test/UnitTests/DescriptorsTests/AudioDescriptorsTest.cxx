@@ -192,7 +192,7 @@ private:
 		data["gamelan-gong.wav"] = 1.803790;
 		data["gt_E4.wav"] = 0.646689;
 		data["pno_Eb1.wav"] = 2.341217;
-		data["silence.wav"] = 0.000000;  // std::numeric_limits<CLAM::TData>::quiet_NaN();
+		data["silence.wav"] = 0.05;  // std::numeric_limits<CLAM::TData>::quiet_NaN();
 		data["vln_A3.wav"] = 0.500487;
 		data["vln_D5.wav"] = 0.456816;
 		data["whitenoise.wav"] = 0.049801;
