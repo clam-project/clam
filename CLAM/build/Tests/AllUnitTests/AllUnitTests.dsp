@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\include" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\lib" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "AllUnitTests - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\include" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -337,6 +337,13 @@ SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
 # End Group
 # Begin Group "Processing Sources"
 
+# Begin Group "Controls Sources No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Controls\AutoPanner.cxx
+# End Source File
+# End Group
 # Begin Group "Base Sources No. 1"
 
 # Begin Source File
@@ -366,27 +373,6 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
-# End Source File
-# End Group
-# Begin Group "Generators Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Generators\Oscillator.cxx
-# End Source File
-# End Group
-# Begin Group "ArithOps Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioAdder.cxx
-# End Source File
-# End Group
-# Begin Group "Controls Sources No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.cxx
 # End Source File
 # End Group
 # End Group
@@ -522,9 +508,12 @@ SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DummyDynamicTypes.hxx
 
 SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DynamicTypeAdvancedTest.hxx
 # End Source File
+# End Group
+# Begin Group "FactoryTest Headers"
+
 # Begin Source File
 
-SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\XMLTestHelper.hxx
+SOURCE=..\..\..\test\UnitTests\FactoryTest\DummyProducts.hxx
 # End Source File
 # End Group
 # End Group
@@ -628,10 +617,6 @@ SOURCE=..\..\..\src\Standard\Flags.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\Array.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\CommonOps.hxx
 # End Source File
 # Begin Source File
 
@@ -824,6 +809,13 @@ SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Group
 # Begin Group "Processing Headers"
 
+# Begin Group "Controls Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
+# End Source File
+# End Group
 # Begin Group "Base Headers No. 2"
 
 # Begin Source File
@@ -855,33 +847,11 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
-# Begin Group "Generators Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Generators\Oscillator.hxx
-# End Source File
-# End Group
 # Begin Group "ArithOps Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioAdder.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Processing\ArithOps\AudioMixer.hxx
-# End Source File
-# End Group
-# Begin Group "Controls Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
 # End Source File
 # End Group
 # End Group
