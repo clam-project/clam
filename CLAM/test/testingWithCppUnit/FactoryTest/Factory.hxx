@@ -62,6 +62,18 @@ public:
 		}
 	}
 
+	void AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory)
+	{
+		if( 
+			! _creators.insert( 
+			CreatorMap::value_type( creatorId, creator ) ).second 
+		 )
+		{ // repeated key
+			throw ErrFactory("FactoryRegistry::AddCreatorSafe(...) a repeated key was passed");
+		}
+	}
+	
+
 private: // data
 	CreatorMap _creators;
 	

@@ -122,10 +122,25 @@ private:
 			reg.AddCreator( "Oscillator", CLAM::CreateAudioAdder );
 			CPPUNIT_FAIL( "Assert expected to happen" );
 
-		} catch (CLAM::ErrAssertionFailed& expected ) {
+		} catch (CLAM::ErrAssertionFailed& expected ) {}
+	}
 
+	void testRegistryAddCreatorSafe_RepeatedKey()
+	{
+		CLAM::FactoryRegistry reg;
+		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
+
+		try {
+			reg.AddCreatorSafe( "Oscillator", CLAM::CreateAudioAdder );
+			CPPUNIT_FAIL( "CLAM::ErrFactory expected" );
+
+		} catch (CLAM::ErrFactory& expected) {
+			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:", 
+				std::string("FactoryRegistry::AddCreatorSafe(...) a repeated key was passed"), 
+				std::string( expected.what() ) );
 		}
 	}
+
 };
 
 	
