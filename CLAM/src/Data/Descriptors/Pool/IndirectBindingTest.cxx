@@ -179,11 +179,11 @@ private:
 		CharCopierExtractor extractor;
 
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadHook<char> inputHook;
-		inputHook.Bind("Referenced","Input");
-		inputHook.Indirect("Referencer","Reference");
-		outputHook.Bind("Referencer","Output");
-		extractor.SetHooks(inputHook,outputHook);
+		extractor.GetOutHook()
+			.Bind("Referencer","Output");
+		extractor.GetInHook()
+			.Bind("Referenced","Input")
+			.Indirect("Referencer","Reference");
 
 		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
 		{
@@ -221,12 +221,12 @@ private:
 		CharCopierExtractor extractor;
 
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadHook<char> inputHook;
-		inputHook.Bind("Referenced","Input");
-		inputHook.Indirect("Referenced","ReverseReference");
-		inputHook.Indirect("Referencer","Reference");
-		outputHook.Bind("Referencer","Output");
-		extractor.SetHooks(inputHook,outputHook);
+		extractor.GetOutHook()
+			.Bind("Referencer","Output");
+		extractor.GetInHook()
+			.Bind("Referenced","Input")
+			.Indirect("Referenced","ReverseReference")
+			.Indirect("Referencer","Reference");
 
 		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
 		{

@@ -195,10 +195,10 @@ private:
 		CharCopierExtractor extractor;
 
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadHook<char> inputHook;
-		inputHook.Bind("TestScope1","InputData");
-		outputHook.Bind("TestScope1","OutputData");
-		extractor.SetHooks(inputHook,outputHook);
+		extractor.GetOutHook()
+			.Bind("TestScope1","OutputData");
+		extractor.GetInHook()
+			.Bind("TestScope1","InputData");
 
 		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
 		{

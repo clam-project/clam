@@ -10,37 +10,41 @@ namespace CLAMTest
 class CharCopierExtractor
 {
 public:
-	void SetHooks(CLAM::ReadHook<char> & inputHook, CLAM::WriteHook<char> & outputHook)
+	CLAM::ReadHook<char> & GetInHook()
 	{
-		_inputHook = &inputHook;
-		_outputHook = &outputHook;
+		return _inputHook;
+	}
+
+	CLAM::WriteHook<char> & GetOutHook()
+	{
+		return _outputHook;
 	}
 
 	void Extract()
 	{
-		const char  & input = _inputHook->GetForReading();
-		char & output = _outputHook->GetForWriting();
+		const char  & input = _inputHook.GetForReading();
+		char & output = _outputHook.GetForWriting();
 		output = input;
 	}
 	bool IsInsideScope()
 	{
-		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
+		return _inputHook.IsInsideScope() && _outputHook.IsInsideScope();
 	}
 		
 	void Next()
 	{
-		_inputHook->Next();
-		_outputHook->Next();
+		_inputHook.Next();
+		_outputHook.Next();
 	}
 
 	void Init(CLAM::DescriptionDataPool & pool)
 	{
-		_inputHook->Init(pool);
-		_outputHook->Init(pool);
+		_inputHook.Init(pool);
+		_outputHook.Init(pool);
 	}
 private:
-	CLAM::ReadHook<char> * _inputHook;
-	CLAM::WriteHook<char> * _outputHook;
+	CLAM::ReadHook<char> _inputHook;
+	CLAM::WriteHook<char> _outputHook;
 };
 
 class CharJoinExtractor
@@ -65,7 +69,7 @@ public:
 	{
 		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
 	}
-		
+
 	void Next()
 	{
 		_inputHook->Next();
