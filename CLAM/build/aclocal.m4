@@ -548,6 +548,91 @@ AC_DEFUN(CLAM_LIB_ID3TAG,
 
 dnl End of libid3tag checking procedure
 
+dnl Start of libid3 checking procedure
+AC_DEFUN( CLAM_LIB_ID3LIB,
+[
+	AC_MSG_NOTICE([Checking that id3lib is installed])
+
+	AC_CHECK_HEADER(id3/tag.h,
+			[HDRID3_PRESENT="yes"],
+			[HDRID3_PRESENT="no"])
+
+
+	if test $HDRID3_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libid3 seems not to be installed on your system!])
+	fi
+
+	ID3_INCLUDES=""
+
+	AC_PATH_TOOL( ID3_INCLUDES,
+		      id3/tag.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	ID3LIB_INCLUDES=${ID3_INCLUDES%/id3/tag.h}
+
+	if test $ID3_INCLUDES = "/usr/include" || test $ID3_INCLUDES="/usr/local/include"
+	then
+		ID3_INCLUDES=""
+	fi
+
+
+	CXXFLAGS="-I$ID3_INCLUDES -lid3 -lz"
+
+	LIBID3_PRESENT="no"
+
+	AC_TRY_LINK(
+	[
+		#include <id3/tag.h>
+		
+		int main( int argc, char** argv )
+		{
+			ID3_Tag myTag;
+
+			return 0;
+		}
+	], 
+	[
+		LIBID3_PRESENT="yes"
+	],
+	[
+		LIBID3_PRESENT="no"
+	]
+	);
+
+	if test $LIBID3_PRESENT="yes";
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Seems that id3lib, http://id3lib.sourceforge.net is not installed. Please make necessary steps to install it on your system.])
+	fi
+	
+	ID3LIB_LIBS="id3 z"
+	ID3LIB_LIB_PATH=""
+
+
+	AC_PATH_TOOL( ID3_LIB_PATH,
+		      libid3.so,
+		      [],
+		      [/usr/lib:/usr/local:/opt/lib])
+
+	ID3_LIB_PATH=${ID3_LIB_PATH%/libid3.so}
+
+	if test $ID3_LIB_PATH="/usr/lib"
+	then
+		ID3_LIB_PATH=""
+	fi
+
+
+
+
+])
+
+dnl End of libid3 checking procedure
+
 dnl Start of Underbit's libmad checking procedure
 AC_DEFUN(CLAM_LIB_MAD,
 [
