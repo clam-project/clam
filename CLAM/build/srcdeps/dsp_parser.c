@@ -36,10 +36,6 @@ static int begingroupl = 0;
 
 /* Private utility functions */
 
-/* Converts a given path from the UNIX way: a/b/c into 
- * Windows' way, namely a\b\c
- */
-static void winstyle( char* str );
 
 /* Optimization over C standard library own strcmp based
  * on the assumption that comparing equal strings will be
@@ -111,13 +107,6 @@ static void dsp_parse_insert_ui_custom_build_rule( const char* uiFile );
 /*Main .dsp generation routine*/
 static void dsp_parse_line( const char* buf, int line );
 
-/* Function for changing just the project name from a 
- * pre-existing .dsp file.
- * MRJ: This is no longer necessary, since now .dsps are always
- * generated from scratch, much like makefile.vars under GNU/Linuxes
- */
-static int dsp_parse_modify_project_name( const char* buf, char* tmp, int len );
-
 /* Checks syntax of damned ! IF !ELSEIF construct for discriminating
  * between Release and Debug builds
  */
@@ -146,15 +135,6 @@ void dsp_parse(const char* outFilename)
 }
 
 /* Private module functions implementation */
-
-void winstyle(char* str)
-{
-	while (*str)
-	{
-		if (*str=='/') *str='\\';
-		str++;
-	}
-}
 
 int strcmp_begin(const char* a,const char* b)
 {
