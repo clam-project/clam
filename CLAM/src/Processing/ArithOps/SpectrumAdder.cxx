@@ -230,7 +230,7 @@ namespace CLAM {
 
 
 		// Do we have the necesary attributes?
-		CLAM_BEGIN_CHECKS
+		CLAM_BEGIN_CHECK
 			for (int i=0;i<mNInputs; i++)
 				CLAM_ASSERT(ti[i].bMagPhase || ti[i].bComplex || ti[i].bPolar,
 					"SpectrumAdders: Output spectrum object with no non-BPF attributes");
@@ -238,13 +238,13 @@ namespace CLAM {
 				"SpectrumAdders: Output spectrum object with no non-BPF attributes");
 			// We check that the size, the spectral range and the scale of the arrays all match.
 			CLAM_ASSERT(so.GetSize(), "SpectrumAdder::SetPrototypes: Zero size spectrum output");
-		CLAM_END_CHECKS
+		CLAM_END_CHECK
 
 		mSize=so.GetSize();
 		TData range = so.GetSpectralRange();
 		EScale scale = so.GetScale();
 
-		CLAM_BEGIN_CHECKS
+		CLAM_BEGIN_CHECK
 		for (int i=0; i<mNInputs; i++) {
 			CLAM_ASSERT(mSize == si[i].GetSize(),
 				"SpectrumAdder::SetPrototypes: Size mismatch in spectrum sum");
@@ -253,7 +253,7 @@ namespace CLAM {
 			CLAM_ASSERT(scale == si[i].GetScale(),
 				"SpectrumAdder::SetPrototypes: Scale mismatch in spectrum sum");
 		}
-		CLAM_END_CHECKS
+		CLAM_END_CHECK
 
 		if (scale == EScale::eLinear)
 			mScaleState=Slin;
@@ -265,7 +265,7 @@ namespace CLAM {
 		// We first count how many inputs have each type of attribute
 		// instantiated.
 		int Ncomplex=0,Npolar=0,Nmagphase=0;
-		for (i=0; i<mNInputs;i++) {
+		for (int i=0; i<mNInputs;i++) {
 			if (ti[i].bMagPhase)
 				Nmagphase++;
 			if (ti[i].bComplex)
@@ -281,7 +281,7 @@ namespace CLAM {
 			Npolar++;
 
 		// Now we look for the best choice.
-		for (i=mNInputs+1; i>0; i--) {
+		for (int i=mNInputs+1; i>0; i--) {
 			if (Nmagphase == i) {
 				mProtoState=SMagPhase;
 				return true;
