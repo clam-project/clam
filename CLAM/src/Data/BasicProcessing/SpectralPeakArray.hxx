@@ -414,6 +414,8 @@ public:
 	void TodB();
 	/** Converts dB magnitude data to linear*/
 	void ToLinear();
+	
+	SpectralPeakArray operator+(const SpectralPeakArray& in);
 
 };
 
