@@ -192,31 +192,27 @@ namespace CLAM {
 
 	void CleanTracks::AddTrajectory(TTrajectory& trajectory)
 	{
-		//if the trajectory exists, pos=id?
-		const TSize nTrajectories=mTrajectoryArray.Size();
-
-		const int pos=(nTrajectories>0)?
-			//would be faster using searcharray.find
-			FindTrajectoryPosition(trajectory.id):
-			-1;
-
+		// would be faster using searcharray.find?
+		const int pos = FindTrajectoryPosition(trajectory.id);
 		if(pos==-1)
 		{
-			//not found
+			// not found, new id, add it
 			mTrajectoryArray.AddElem(trajectory);
-			return;
 		}
-
-		//if found, length and last data are updated
-		mTrajectoryArray[pos].length++;
-		mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
-		mTrajectoryArray[pos].finalMag=trajectory.finalMag;
+		else
+		{
+			// if found, length and last data are updated
+			mTrajectoryArray[pos].length++;
+			mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
+			mTrajectoryArray[pos].finalMag=trajectory.finalMag;
+		}
 	}
 
 
 	void CleanTracks::DeleteTrajectory(int id)
 	{
 		const int pos=FindTrajectoryPosition(id);
+		CLAM_ASSERT(pos!=-1, "CleanTracks: Deleting a non-existent trajectory");
 		mTrajectoryArray.DeleteElem(pos);
 	}
 
@@ -286,7 +282,7 @@ namespace CLAM {
 		}
 	}
 
-	void  CleanTracks::InterpolatePeaks(TTrajectory& fromTrajectory, Array<SpectralPeakArray*>& peakArrayArray)
+	void CleanTracks::InterpolatePeaks(TTrajectory& fromTrajectory, Array<SpectralPeakArray*>& peakArrayArray)
 	{
 		const int newTrajPos=FindTrajectoryPosition(fromTrajectory.continuedAtId);
 		CLAM_ASSERT(newTrajPos>-1,"CleanTracks::InterpolatePeaks:Negative Index for track");
@@ -335,6 +331,9 @@ namespace CLAM {
 
 TIndex CleanTracks::FindTrajectoryPosition(TIndex id)
 {
+	// For Empty arrays return not found
+	if (mTrajectoryArray.Size()==0)
+		return -1;
 	//we have to check whether it is first or last track
 	if (id == mTrajectoryArray[0].id)
 		return 0;
