@@ -8,6 +8,28 @@
 namespace CLAMTest
 {
 
+class A
+{
+public:
+	virtual void foo() = 0;
+
+	virtual ~A()
+	{
+	}
+};
+
+class B : public A
+{
+public:
+	virtual void foo() {}
+
+	virtual ~B()
+	{
+	}
+};
+
+typedef CLAM::Factory< A > FactoryOfAs;
+
 class FactoryRegistratorTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FactoryRegistratorTest );
@@ -20,6 +42,7 @@ class FactoryRegistratorTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testConstructorPassingFactory_RegistersCreator );
 	CPPUNIT_TEST( testConstructorPassingKey_RegistersCreator );
 	CPPUNIT_TEST( testDefaultConstructor_RegistersCreator );
+	CPPUNIT_TEST( testRegistratorsAsStaticObjects_ProductsRegistered );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -102,6 +125,20 @@ private:
 		delete created;
 		theFactory.Clear();
 	}
+
+	void testRegistratorsAsStaticObjects_ProductsRegistered()
+	{
+
+		FactoryOfAs& theFactory = FactoryOfAs::GetInstance();
+		std::list< std::string > keysInFactory;
+
+		theFactory.GetRegisteredNames( keysInFactory );
+
+		CPPUNIT_ASSERT_EQUAL( keysInFactory.empty(), false );
+	}
+
 };
+
+	static FactoryOfAs::Registrator<B> DummyRegt("B");
 
 } // namespace CLAMTest
