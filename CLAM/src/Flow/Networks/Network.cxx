@@ -27,17 +27,10 @@
 #include "ConnectionDefinitionAdapter.hxx"
 #include "Factory.hxx"
 
+
 namespace CLAM
 {	
 	typedef Factory<CLAM::Processing> ProcessingFactory;
-	
-	namespace HelperFunctions
-	{
-		void DeleteProcessing( Network::ProcessingsMap::value_type& mapElem ) {
-			delete mapElem.second;
-		}
-	}
-	// constructor / destructor
 
 	Network::Network() :
 		mName("Unnamed Network"),
@@ -476,7 +469,11 @@ namespace CLAM
 //			delete *itNodes;
 		mNodes.clear();
 		
-		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
+		ProcessingsMap::iterator it;
+		for( it=mProcessings.begin(); it!=mProcessings.end(); it++ )
+		{
+			RemoveProcessing( it->first );
+		}
 		mProcessings.clear();	
 	}
 
