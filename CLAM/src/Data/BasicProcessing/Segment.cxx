@@ -34,7 +34,7 @@ using namespace CLAM;
 void Segment::DefaultInit()
 {
 	pParent=NULL;
-	mCurrentFrameIndex=-1;
+	mCurrentFrameIndex=0;
 	AddprHoldsData();
 	AddBeginTime();
 	AddEndTime();
@@ -54,6 +54,8 @@ void Segment::DefaultValues()
 void Segment::CopyInit(const Segment& prototype)
 {
 	pParent=prototype.pParent;
+	mFramesSearch=prototype.mFramesSearch;
+	mCurrentFrameIndex=prototype.mCurrentFrameIndex;
 }
 
 
