@@ -14,7 +14,6 @@
 // VC6 needs to see the whole types
 #include "Audio.hxx"
 #include "Spectrum.hxx"
-#include "LadspaLoader.hxx"
 
 /**
  * In this cxx are defined the objects that will be in the factory by default. Including it 
@@ -38,5 +37,4 @@ static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Control
 static ProcessingFactory::Registrator<CLAM::AudioFileIn> regtAudioFileIn( "AudioFileIn" );
 static ProcessingFactory::Registrator<CLAM::AudioFileOut> regtAudioFileOut( "AudioFileOut" );
 static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
-static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
 
