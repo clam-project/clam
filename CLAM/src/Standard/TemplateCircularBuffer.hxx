@@ -48,15 +48,13 @@ namespace CLAM {
 		TemplateCircularBuffer(TInt32 bufferSize)
 			:mBuffer(bufferSize)
 		{
-			if(bufferSize > 0)
-			{
-				mBufferSize = bufferSize;
-				mBuffer.Resize(mBufferSize);
-				mBuffer.SetSize(mBufferSize);
-				mWriteIndex = 0;				
-				mReadIndex = 0;
-			}
-			else throw Err("TemplateCircularBuffer:TemplateCircularBuffer: BufferSize has to be larger than zero");
+			CLAM_ASSERT (bufferSize > 0, 
+				"TemplateCircularBuffer:TemplateCircularBuffer: BufferSize has to be larger than zero");
+			mBufferSize = bufferSize;
+			mBuffer.Resize(mBufferSize);
+			mBuffer.SetSize(mBufferSize);
+			mWriteIndex = 0;				
+			mReadIndex = 0;
 		};
 
 
@@ -82,21 +80,11 @@ namespace CLAM {
 
 		bool SetBufferSize(TInt32 size)
 		{
-		#ifdef PARANOID
-			if(mBufferSize > 0)
-			{
-				mBufferSize = size;
-				return true;
-			}
-			else
-			{
-				throw Err("TemplateCircularBuffer:SetBufferSize: BufferSize has to be larger than zero");
-				return false;
-			}
-		#else
+			CLAM_ASSERT(mBufferSize > 0, 
+				"TemplateCircularBuffer:SetBufferSize: BufferSize has to be larger than zero");
+
 			mBufferSize = size;
 			return true;
-		#endif
 		};
 
 
@@ -107,17 +95,11 @@ namespace CLAM {
 
 		bool SetWriteIndex(TInt32 size)
 		{
-		#ifdef PARANOID
-			if((mWriteIndex >= 0)&&(mWriteIndex < mBufferSize-1)){
-				mWriteIndexSize = size;
-				return true;}
-			else{
-				throw Err("TemplateCircularBuffer:SetWriteIndex: FrameWriteIndex has to be larger than zero");
-				return false;}
-		#else
+			CLAM_ASSERT((mWriteIndex >= 0)&&(mWriteIndex < mBufferSize-1)
+				"TemplateCircularBuffer:SetWriteIndex: FrameWriteIndex has to be larger than zero");
+
 			mWriteIndexSize = size;
 			return true;
-		#endif
 		};
 
 		TInt32 GetReadIndex()
@@ -127,17 +109,11 @@ namespace CLAM {
 
 		bool SetReadIndex(TInt32 size)
 		{
-		#ifdef PARANOID
-			if((mReadIndex >= 0)&&(mReadIndex < mBufferSize-1)){
-				mReadIndexSize = size;
-				return true;}
-			else{
-				throw Err("TemplateCircularBuffer:SetReadIndex: FrameReadIndex has to be larger than zero");
-				return false;}
-		#else
+			if((mReadIndex >= 0)&&(mReadIndex < mBufferSize-1)
+				"TemplateCircularBuffer:SetReadIndex: FrameReadIndex has to be larger than zero");
+
 			mReadIndexSize = size;
 			return true;
-		#endif
 		};
 
 
@@ -148,17 +124,12 @@ namespace CLAM {
 
 		bool SetInitialReadOffset(TInt32 size)
 		{
-		#ifdef PARANOID
-			if((mInitialReadOffset >= 0)&&(mInitialReadOffset < mBufferSize-1)){
-				mInitialReadOffsetSize = size;
-				return true;}
-			else{
-				throw Err("TemplateCircularBuffer:SetInitialReadOffset: InitialReadOffset has to be larger than zero");
-				return false;}
-		#else
+			CLAM_ASSERT((mInitialReadOffset >= 0)&&(mInitialReadOffset < mBufferSize-1)
+
+				"TemplateCircularBuffer:SetInitialReadOffset: InitialReadOffset has to be larger than zero");
+
 			mInitialReadOffsetSize = size;
 			return true;
-		#endif
 		};
 
 		

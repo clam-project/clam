@@ -27,6 +27,8 @@
 #ifdef WIN32
 #include <windows.h>
 #undef GetClassName
+#else
+#include <unistd.h>
 #endif
 #include "AudioManager.hxx"
 
@@ -51,9 +53,9 @@ namespace CLAM {
 	{
 		pthread_cleanup_push((cleanfn)SAudioThreadCleanup,this);
 
-		pthread_cancel(thread);
 		cancel = true;
 		pthread_join(thread,NULL);
+				
 		pthread_cleanup_pop(1);
 		cancel = false;
 	}
@@ -112,7 +114,7 @@ namespace CLAM {
 		}
 
 	#endif
-
+	
 		pThis->AudioMain();
 	
 		return NULL;
@@ -120,9 +122,6 @@ namespace CLAM {
 
 	void BaseAudioApplication::SAudioThreadCleanup(BaseAudioApplication *pThis)
 	{
-		if (AudioManager::pSingleton) AudioManager::pSingleton->~AudioManager();
-		pThis->AppCleanup();
-		std::cout << "Clean up done" << std::endl;
 	}
 
 } // namespace CLAM

@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 		int i,Size=1024;
 		float SampleRate=8000.0;
 		
-		WidgetTKWrapper* toolkit = WidgetTKWrapper::GetWrapperFor("FLTK");
+		WidgetTKWrapper& toolkit = WidgetTKWrapper::GetWrapperFor("FLTK");
 
 		// Audio creation
 		CLAM::Audio myaudio;
@@ -82,8 +82,8 @@ int main(int argc, char* argv[])
 		
 		SpectrumView specView;
 		SpectrumPresentation spectrum_pres(	Geometry( 562, 100, 512, 384 ),
-									"An Spectrum Processing Data Presentation" );
-		//SpectrumPresentation pres;
+											"An Spectrum Processing Data Presentation" );
+		SpectrumPresentation pres;
 
 		specView.BindTo( &myspectrum );
 		spectrum_pres.LinkWithView( &specView );
@@ -113,8 +113,8 @@ int main(int argc, char* argv[])
 		{
 //			spectrum_pres.Do();
 //			audio_pres.Do();
-			toolkit->Tick();
-		} while ( !toolkit->IsClosing() );
+			toolkit.Tick();
+		} while ( !toolkit.IsClosing() );
 		
 	}
 	catch(Err err) {
@@ -124,3 +124,4 @@ int main(int argc, char* argv[])
 	return 0;
 	
 }
+

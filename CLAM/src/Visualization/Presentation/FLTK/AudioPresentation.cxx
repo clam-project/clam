@@ -24,6 +24,7 @@
 #include "GeometryKit.hxx"
 #include "Viewport.hxx"
 #include <algorithm>
+
 using std::max_element;
 using std::min_element;
 using namespace CLAMGUI;
@@ -57,7 +58,8 @@ void ProcDataPresentation<Audio>::UpdateBufferData( const DataArray& array )
 	mRenderer->DefineViewport( array, view_specs );
 
 	mDispContainer->SetHorRange( view_specs.left, view_specs.right );
-	mDispContainer->SetVerRange( view_specs.top, -( view_specs.top - view_specs.bottom ) );
+	mDispContainer->SetVerRange( view_specs.top, -fabs(view_specs.top-view_specs.bottom));//-( view_specs.top - view_specs.bottom ) );
+//	mDispContainer->SetVerRange( view_specs.top, view_specs.bottom );
 	mDispContainer->mpHorRuler->mInteger = view_specs.isIntX;
 	mDispContainer->mpVerRuler->mInteger = view_specs.isIntY;
 
@@ -78,8 +80,9 @@ void ProcDataPresentation<Audio>::Init( const Geometry& g, const char* l )
 {
 	// FLTK thingies initialization
 
-	mWindow = new Fl_Double_Window( g.GetX(), g.GetY(), g.GetW(), g.GetH(), l );
+	mWindow = new PresentationWindow( this , g.GetX(), g.GetY(), g.GetW(), g.GetH(), l );
 	mDispContainer = new FLDisplayContainer( 0, 0, g.GetW(), g.GetH() );
+
 
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
 	mRenderer = new GLWaveRenderer( 0, 200, 0 );
@@ -92,6 +95,8 @@ void ProcDataPresentation<Audio>::Init( const Geometry& g, const char* l )
 
 	// Linking the port and the renderer...
 
+	mPort->SetCullingCallback( makeMemberFunctor4( float, float, unsigned, unsigned, *mRenderer, GLWaveRenderer, PerformCulling ) );
+	mPort->SetDrawingCallback( makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
 	mPort->Configure( new AudioPresGLState, makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
 
 	// Initializing the callback placeholders

@@ -28,39 +28,12 @@ using std::find;
 
 namespace CLAM{
 
-AudioManager* AudioManager::pSingleton = 0;
-AudioDeviceList *sAlsaAudioDeviceList = 0;
-AudioDeviceList *sDirectXAudioDeviceList = 0;
-AudioDeviceList *sPAAudioDeviceList = 0;
-AudioDeviceList *sRtAAudioDeviceList = 0;
-
-
-AudioManager::AudioManager(int sampleRate,int latency) throw(Err)
-	: mInternalBuffersNumber( 8 )
+AudioManager::AudioManager(int sr,int lat)
+:mSampleRate(sr),
+ mLatency(lat),
+ mInternalBuffersNumber(8)
 {	
-	mSampleRate = sampleRate;
-	mLatency = latency;
-
-	if (pSingleton)
-		throw Err("can only have one audiomanager at a time");
-	pSingleton = this;
-
-	if (sAlsaAudioDeviceList)
-	{
-		Singleton().mDeviceLists.push_back(sAlsaAudioDeviceList);
-	}
-	if (sDirectXAudioDeviceList)
-	{
-		Singleton().mDeviceLists.push_back(sDirectXAudioDeviceList);
-	}
-	if (sPAAudioDeviceList)
-		{
-			Singleton().mDeviceLists.push_back(sPAAudioDeviceList);
-		}
-	if ( sRtAAudioDeviceList )
-		{
-			Singleton().mDeviceLists.push_back( sRtAAudioDeviceList );
-		}
+	_Current(true,this);
 }
 
 AudioManager::~AudioManager()
@@ -68,10 +41,15 @@ AudioManager::~AudioManager()
 	unsigned int i;
 	for (i=0;i<mDevices.size(); i++)
 	{
-		mDevices[i]->Stop();
 		delete mDevices[i];
 	}
-	pSingleton = 0;
+	_Current(true,0);
+}
+
+std::vector<AudioDeviceList*>& AudioManager::DeviceLists(void)
+{ 
+	static std::vector<AudioDeviceList*> sDeviceLists;
+	return sDeviceLists;
 }
 
 AudioDevice* AudioManager::FindDevice(const std::string& name)
@@ -94,7 +72,8 @@ void AudioManager::Start(void) throw(Err)
 	unsigned int i;
 	for (i=0;i<mDevices.size();i++)
 	{
-		mDevices[i]->Start();
+		if (mDevices[i]->mInputs.size() || mDevices[i]->mOutputs.size())
+			mDevices[i]->Start();
 	}
 }
 
@@ -175,13 +154,13 @@ AudioDevice* AudioManager::FindOrCreateDevice(const std::string& name)
 bool AudioManager::Register(AudioIn& in)
 {
 	AudioDevice* device = FindOrCreateDevice(in.mConfig.GetDevice());
-	return device->Register(in);
+	return device->Register(this,in);
 }
 
 bool AudioManager::Register(AudioOut& out)
 {
 	AudioDevice* device = FindOrCreateDevice(out.mConfig.GetDevice());
-	return device->Register(out);
+	return device->Register(this,out);
 }
 
 AudioDeviceList* AudioManager::FindList(const std::string& arch)
@@ -191,12 +170,11 @@ AudioDeviceList* AudioManager::FindList(const std::string& arch)
 
 	if (tmp == "default")
 		tmp = DEFAULT_AUDIO_ARCH;
-
-	for (i=0;i<Singleton().mDeviceLists.size();i++)
+	for (i=0;i<DeviceLists().size();i++)
 	{
-		if (Singleton().mDeviceLists[i]->ArchName() == tmp)
+		if (DeviceLists()[i]->ArchName() == tmp)
 		{
-			return Singleton().mDeviceLists[i];
+			return DeviceLists()[i];
 		}
 	}
 

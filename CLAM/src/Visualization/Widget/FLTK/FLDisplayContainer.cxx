@@ -22,36 +22,37 @@
 #include "FLDisplayContainer.hxx"
 #include "GLPortNew.hxx"
 #include "ErrGUI.hxx"
+#include <math.h>
 
 using namespace CLAMGUI;
 
 void FLDisplayContainer::redraw()
 {
-	
 	Fl_Group::redraw();
-
+	mpDisplay->damage();
+	mpDisplay->redraw();
 }
 
 void FLDisplayContainer::draw()
 {
 	mpDisplay->SetHorRange( mHorRange );
 	mpDisplay->SetVerRange( mVerRange );
-
-
+	
 	Fl_Group::draw();
 }
 
 void FLDisplayContainer::SliderCB(Fl_Slider* slider,Fl_Scrollbar* scrollbar)
 {
 	int v = scrollbar->value();
-	int max = 400;
+	int max = 4000000;
 
 	double f = slider->value();
 
 	if (f>0) 
 		f = 0.5+(f/slider->maximum())/2.;
 	else 
-		f = 0.5/(1.+-f);
+		//f = 0.5/(1.+-f);
+		f = 0.5 * pow(10,f);
 
 	int r = static_cast<int>( f*max );
 	if (v+r > max) 
@@ -149,8 +150,9 @@ FLDisplayContainer::FLDisplayContainer(int x,int y,int w,int h)
 	mpHorSlider->box(FL_THIN_DOWN_BOX);
 	mpVerSlider->box(FL_THIN_DOWN_BOX);
 
-	mpHorSlider->range(-10,1);
-	mpVerSlider->range(-10,1);
+	mpHorSlider->range(-4,1);
+//	mpHorSlider->precision(6);
+	mpVerSlider->range(-2,1);
 
 	mpHorSlider->value(1);
 	mpVerSlider->value(1);
@@ -196,3 +198,4 @@ void FLDisplayContainer::Add( GLPort* port )
 	port->resize( x(), y(), w() - 70, h() - 60 );
 
 }
+

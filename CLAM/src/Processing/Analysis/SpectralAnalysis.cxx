@@ -186,7 +186,7 @@ bool SpectralAnalysis::ConfigureChildren()
 
 void SpectralAnalysis::ConfigureData()
 {
-	TData samplingRate=mConfig.GetSamplingRate();
+//	TData samplingRate=mConfig.GetSamplingRate();
 		  
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
 	mAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
