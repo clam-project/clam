@@ -28,7 +28,7 @@ SMSTimeStretch::SMSTimeStretch()
 {
 	mSynthesisTime=0;
 	mAnalysisTime=0;
-	mPreviousLeftFrameIndex=-1;
+	mIndex=-1;
 	//@todo: this should not be hardwired!
 	mHopSize=256;
 	mSampleRate=22050;
@@ -78,28 +78,50 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 }
 
 
-const Frame& SMSTimeStretch::UnwrapProcessingData(const Segment& in,Frame*)
+bool SMSTimeStretch::Do(const Segment& in, Segment& out)
+{
+	if(mIndex>-1)
+	{
+		while(mIndex<in.mCurrentFrameIndex&&!HaveFinished())
+		{
+			SMSTransformationTmpl<Frame>::Do(in,out);
+		}
+	}
+	else mIndex++;
+	return true;
+}
+
+void SMSTimeStretch::UpdateTimeAndIndex(const Segment& in)
 {
 	mAnalysisTime+=(TData)mHopSize*mAmountCtrl.GetLastValue()/mSampleRate;
-	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mHopSize/mSampleRate&&mPreviousLeftFrameIndex<=in.GetnFrames())
+	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mHopSize/mSampleRate&&mIndex<=in.GetnFrames())
 	{
-		mPreviousLeftFrameIndex++;
-		mLeftFrame=in.GetFrame(mPreviousLeftFrameIndex);
+		mLeftFrame=in.GetFrame(mIndex);
+		mIndex++;
 	}
-	return in.GetFrame(mPreviousLeftFrameIndex+1);
+}
+
+const Frame& SMSTimeStretch::UnwrapProcessingData(const Segment& in,Frame*)
+{
+	UpdateTimeAndIndex(in);	
+	return in.GetFrame(mIndex);
 }
 
 Frame& SMSTimeStretch::UnwrapProcessingData(Segment& out,Frame*)
 {
-	if(out.mCurrentFrameIndex>out.GetnFrames())
-		out.AddFrame(out.GetFrame(out.mCurrentFrameIndex-1));
-	return out.GetFrame(out.mCurrentFrameIndex);
+	if(mnSynthesisFrames>out.GetnFrames())
+		out.AddFrame(out.GetFrame(mnSynthesisFrames-1));
+	return out.GetFrame(mnSynthesisFrames);
+}
 
+bool SMSTimeStretch::HaveFinished()
+{
+	return mIndex>mInput.GetData().GetnFrames();
 }
 
 bool SMSTimeStretch::IsLastFrame()
 {
-	bool isLast=mPreviousLeftFrameIndex>mInput.GetData().GetnFrames();
+	bool isLast=HaveFinished();
 	if(isLast)
 	{
 		while(mOutput.GetData().GetnFrames()>mnSynthesisFrames)

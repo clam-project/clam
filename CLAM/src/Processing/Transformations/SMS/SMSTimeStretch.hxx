@@ -55,16 +55,21 @@ namespace CLAM{
  		~SMSTimeStretch(){};
 
 		bool Do(const Frame& in, Frame& out);
+		bool Do(const Segment& in, Segment& out);
 		bool CanProcessInplace() {return false;}
-		virtual bool IsLastFrame();
+		bool IsLastFrame();
+		
+
 			
 	protected:
-		
+		bool HaveFinished();
+		void UpdateTimeAndIndex(const Segment& in);
 		const Frame& UnwrapProcessingData(const Segment& in,Frame*);
 		Frame& UnwrapProcessingData(Segment& in,Frame*);
+
 		TTime mSynthesisTime;
 		TTime mAnalysisTime;
-		TIndex mPreviousLeftFrameIndex;
+		TIndex mIndex;
 		TIndex mnSynthesisFrames;
 		TData mHopSize;
 		TData mSampleRate;
