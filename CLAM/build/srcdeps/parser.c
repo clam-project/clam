@@ -159,7 +159,7 @@ int parser_recurse(const char* filename);
 **   trying different extensions occurding to extmap, and add that
 **   source to the sources list
 */
-int parser_include(const char* filename)
+int parser_include(const char* filename,int shouldrecurse)
 {
 	const char* path;
 	char tmp[2048];
@@ -257,7 +257,10 @@ int parser_include(const char* filename)
 	** - pathend point to the end of the path in tmp2
 	*/
 
-	parser_recurse(tmp);
+	if (shouldrecurse)
+	{
+		parser_recurse(tmp);
+	}
 
 	list_add_str_once(includes,tmp);
 
@@ -389,7 +392,8 @@ parse_include_filename:
 				ptr = strptr_copy_until(ptr,term,tmp,2048);
 			}
 
-			if (parser_include(tmp)==0)
+			/* don't recurse <system> includes, only recurse "filename" includes  */
+			if ( !parser_include(tmp,term=='"'/*should recurse*/) )
 			{
 				if (term=='>') {
 					/* a system include was not found, but that's okay, because
