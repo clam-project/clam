@@ -81,7 +81,12 @@ namespace CLAM{
 
 			GetInfo();
 			
-			Fl_Pack * buttons = new Fl_Pack(w()-3*((w()-40)/3)-10,(mWidgetNum-1)*20,600,20);
+//			Fl_Pack * buttons = new Fl_Pack(w()-3*((w()-40)/3)-10, (mWidgetNum+1)*25,600,20);
+			// MRJ: Buttons should appear as the mWidget+1 widget plus a small offset
+			// MRJ: This should center also properly the three buttons. The idea is to divide
+			// the widget's width into 17 equal parts, and then first position the widget 
+			// left coordinates and adjust widget's width on will
+			Fl_Pack* buttons = new Fl_Pack( (w()/17)*1 , (mWidgetNum+1)*25, (w()/17)*13, 20 );
 			buttons->type(FL_HORIZONTAL);
 			buttons->spacing(4);
 
