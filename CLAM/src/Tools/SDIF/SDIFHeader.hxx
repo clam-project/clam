@@ -25,7 +25,14 @@ namespace SDIF
 		/** Create a new FrameHeader
 		* @param type Identifier specifying the frame type
 		*/
-		FrameHeader(const TypeId& type);
+		FrameHeader(const TypeId& type,TInt32 size);
+
+		static TInt32 SizeInFile(void)
+		{
+			return 
+				sizeof(TypeId)+ // mType
+				sizeof(TInt32); // mSize
+		}
 	};
 
 	/**
@@ -48,6 +55,14 @@ namespace SDIF
 		* @param id Stream ID
 		*/
 		DataFrameHeader(const TypeId& type,TFloat64 time=0.,TInt32 id=0);
+
+		static TInt32 SizeInFile(void)
+		{
+			return 
+				sizeof(TFloat64)+ // mTime
+				sizeof(TInt32)+   // mStreamId
+				sizeof(TInt32);   // mnMatrices
+		}
 	};
 
 	/** The header for each Matrix
@@ -72,6 +87,20 @@ namespace SDIF
 		* @param nRows Number of rows in the matrix
 		* @param nColumns Number of rows in the matrix
 		*/
+		
+		static TInt32 SizeInFile(void)
+		{
+			return 
+				sizeof(TypeId)+
+				sizeof(TInt32)+ // mDataType
+				sizeof(TInt32)+ // mnRows
+				sizeof(TInt32); // mnColumns
+		}
+		
+		MatrixHeader()
+		{
+		}
+		
 		MatrixHeader(
 			const TypeId& type,
 			DataType dataType,

@@ -2,12 +2,24 @@
 #define __SDIFFile__
 
 #include "SDIFType.hxx"
-#include "DataFileIO.hxx"
 #include "SDIFHeader.hxx"
 #include "SDIFFrame.hxx"
 #include "SDIFMatrix.hxx"
 #include "SDIFStorage.hxx"
 #include "ByteOrder.hxx"
+
+#ifndef WIN32
+	#ifdef macintosh
+		#include <types.h>
+		#include <unistd.h>	
+	#else
+		#include <sys/types.h>
+		#include <unistd.h>
+	#endif
+#else
+  #include <stdio.h>
+  #include <io.h>
+#endif
 
 /** Used to read or write an SDIF file. When reading, the File
 * parses the whole files and passes the read Frames to a 
@@ -27,28 +39,73 @@ using namespace CLAM;
 namespace SDIF
 {
 
-class File:public DataFileIO
+class File
 {
-private:
-	bool mSkipData;
-	bool mFirstAccess;
 public:
+	enum Mode
+	{
+		eInput = 1, eOutput = 2, eFullDuplex = 3
+	};
+
 	File(const char* filename, Mode mode);
 	~File();
 
+	void Open(void);										//open data file
+	void Close(void);										//close data file
+
 private:
+	bool mSkipData;
+	bool mFirstAccess;
+	char* mpName;
+	Mode mMode;
+	int mFile;
+	TSize mSize;
+
+	TIndex Pos(void);
+	TIndex Pos(TIndex pos);
+	bool Done(void);
+
+/*	
+  template <class T> void ReadArray(Array<T>& data)					//read from data file
+  {
+  	if (mFile==-1)													// check if file is opened 
+  		throw Err("DataFileIO not opened");
+  	
+  	// added (char*) typecast to compile in MCW	
+  	int size = read(mFile,(char*)data.GetPtr(),data.AllocatedSizeInBytes());
+  	data.SetSize(size/sizeof(T));
+  }
+
+  template <class T> void WriteArray(const Array<T>& data)			  //write to data file
+  {
+  	if (mFile==-1)													// check if file is open
+  		throw Err("DataFileIO not opened");
+
+  	// added (char*) typecast to compile in MCW
+  	write(mFile,(char*)data.GetPtr(),data.SizeInBytes());
+  }
+*/
+
+	void Read(TByte* ptr,int n);
+
+	template <class T> void TRead(T& t)
+	{
+		Read((TByte*) &t,sizeof(T));
+		FixByteOrder((TByte*) &t,1,sizeof(T));
+	}
+
+	void Write(const TByte* ptr,int n);
+
+	template <class T> void TWrite(const T& t)
+	{
+		T tmp(t);
+		FixByteOrder((TByte*) &tmp,1,sizeof(T));
+		Write((TByte*) &tmp,sizeof(T));
+	}
+
 	inline void FixByteOrder(TByte* ptr,
 		TUInt32 nElems,TUInt32 elemSize);
 	
-	void Read(TInt32& t);
-	void Write(const TInt32& t);
-
-	void Read(TFloat64& t);
-	void Write(const TFloat64& t);
-
-	void Read(TypeId& header);
-	void Write(const TypeId& header);
-
 	void Read(DataFrameHeader& header);
 	void Write(const DataFrameHeader& header);
 
@@ -64,45 +121,53 @@ private:
 	void Read(Matrix& matrix);
 	void Write(const Matrix& matrix);
 
+	void Read(TypeId& header);
+	void Write(const TypeId& header);
+
 	void SkipMatrixData(const Matrix& matrix);
 	void ReadMatrixData(Matrix& matrix);
 	void WriteMatrixData(const Matrix& matrix);
 
 public:
+	void Read(Storage& storage);
+	void Write(const Storage& storage);
+
 	void Read(Frame& frame);
 	void Write(const Frame& frame);
 
-	void Read(Storage& storage);
-	void Write(const Storage& storage);
 private:
 	void _FixByteOrder(
-	TByte* ptr,TUInt32 nElems,TUInt32 elemSize);
+		TByte* ptr,TUInt32 nElems,TUInt32 elemSize);
 };
 
-inline void File::Read(TInt32& t)
+inline void File::Read(TByte* ptr,int n)
 {
-	DataFileIO::Read(t);
-	FixByteOrder((TByte*) &t,1,sizeof(t));
+	if (read(mFile,(char*)ptr,n)!=n) {
+  		throw Err("DataFileIO read error");
+	}
 }
 
-inline void File::Read(TFloat64& t)
+inline void File::Write(const TByte* ptr,int n)
 {
-	DataFileIO::Read(t);
-	FixByteOrder((TByte*) &t,1,sizeof(t));
+	if (write(mFile,(const char*)ptr,n)!=n) {
+  		throw Err("DataFileIO read error");
+	}
 }
 
-inline void File::Write(const TInt32& t)
-{
-	TInt32 tmp(t);
-	FixByteOrder((TByte*) &tmp,1,sizeof(tmp));
-	DataFileIO::Write(tmp);
+inline int File::Pos(void)
+{	
+	int pos = lseek(mFile,0,SEEK_CUR);
+	return pos;
 }
 
-inline void File::Write(const TFloat64& t)
+inline int File::Pos(int pos)
 {
-	TFloat64 tmp(t);
-	FixByteOrder((TByte*) &tmp,1,sizeof(tmp));
-	DataFileIO::Write(tmp);
+	return lseek(mFile,pos,SEEK_SET);	
+}
+
+inline bool File::Done(void)
+{
+	return Pos()>=mSize;
 }
 
 inline void File::FixByteOrder(TByte* ptr,

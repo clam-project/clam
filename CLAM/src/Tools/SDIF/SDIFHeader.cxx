@@ -4,14 +4,14 @@ namespace SDIF
 {
 
 	FrameHeader::FrameHeader(
-		const TypeId& type)
+		const TypeId& type, TInt32 size)
 	{
 		mType = type;
-		mSize = 0;
+		mSize = size;
 	}
 
 	DataFrameHeader::DataFrameHeader(const TypeId& type,TFloat64 time,TInt32 id)
-	:FrameHeader(type) 
+	:FrameHeader(type,SizeInFile()) 
 	{
 		mTime = time;
 		mStreamId = id;

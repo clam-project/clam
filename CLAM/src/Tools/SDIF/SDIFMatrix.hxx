@@ -16,17 +16,45 @@
 */
 namespace SDIF
 {
+
 	class Matrix
 	{
-	public:
+	friend class File;
+	protected:
 		MatrixHeader mHeader;
 
-		// Testing XA union {
-			// Testing XAvoid* mpData;
-			// Testing XA TFloat32* mpFloat32Data;
-		CLAM::Array<TFloat32> mpFloat32Data;
-		// Testing XA};
-		
+		Matrix(const MatrixHeader& header)
+		:mHeader(header)
+		{
+		}
+
+		Matrix(
+				const TypeId& type = TypeId::sDefault,DataType dataType = eUnknown,
+				TInt32 nRows = 0, TInt32 nColumns = 0);
+		virtual char* GetPtr(void) = 0;
+		virtual void Resize(int nElems) = 0;
+		virtual void SetSize(int nElems) = 0;
+	public:
+		virtual ~Matrix() { }
+
+		TInt32 Rows(void) { return mHeader.mnRows; }
+		TInt32 Columns(void) { return mHeader.mnColumns; }
+		TInt32 SizeInFile(void)
+		{
+			TUInt32 nElems = mHeader.mnColumns*mHeader.mnRows;
+			TUInt32 elemSize = mHeader.mDataType&0xFF;
+			TUInt32 size = nElems*elemSize;
+			TUInt32 padding = 8-size&7;
+			
+			return mHeader.SizeInFile()+size+padding;
+		}
+	};
+
+	template <class T> class ConcreteMatrix:public Matrix
+	{
+	friend class File;
+	private:
+		CLAM::Array<T> mpData;
 	public:
 		/** Create a new Matrix.
 		* @param type Identifier specifying the matrix type
@@ -34,27 +62,47 @@ namespace SDIF
 		* @param nRows Number of rows in the matrix
 		* @param nColumns Number of rows in the matrix
 		*/
-		Matrix(
+		ConcreteMatrix(
 				const TypeId& type = TypeId::sDefault,
-				DataType dataType = eUnknown,
-				TInt32 nRows = 0, TInt32 nColumns = 0);
+				TInt32 nRows = 0, TInt32 nColumns = 0)
+			:Matrix(type,GetType<T>::Get(),nRows,nColumns)
+		{
+			TInt32 nElems = Rows()*Columns();
+			Resize(nElems);
+			SetSize(nElems);
+		}
+
+		ConcreteMatrix(const MatrixHeader& header)
+		:Matrix(header)
+		{
+			TInt32 nElems = Rows()*Columns();
+			Resize(nElems);
+			SetSize(nElems);
+		}
+
+		char* GetPtr(void) { return (char*)mpData.GetPtr(); }
+		void Resize(int nElems) { mpData.Resize(nElems); }
+		void SetSize(int nElems) { mpData.SetSize(nElems); }
+
 
 		/** Lookup a value in the matrix
 		* @param row,col coordinates of the value
 		* @return The indicated value
 		*/
-		TFloat32 GetValue(TInt32 row,TInt32 col)
+		T GetValue(TInt32 row,TInt32 col)
 		{
-			return mpFloat32Data[row*mHeader.mnColumns + col];
+			return mpData[row*mHeader.mnColumns + col];
 		}
 		
-		void SetValue(TInt32 row,TInt32 col,TFloat32 val)
+		/** Set a value in the matrix
+		* @param row,col coordinates of the value
+		* @param val The new value
+		*/
+		void SetValue(TInt32 row,TInt32 col,const T& val)
 		{
-			mpFloat32Data[row*mHeader.mnColumns + col] = val;
+			mpData[row*mHeader.mnColumns + col] = val;
 		}
-		
-		TInt32 Rows(void) { return mHeader.mnRows; }
-		TInt32 Columns(void) { return mHeader.mnColumns; }
 	};
 }
+
 #endif

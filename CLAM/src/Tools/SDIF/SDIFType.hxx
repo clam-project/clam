@@ -61,5 +61,24 @@ namespace SDIF
 		eByte     = 0x401  // Arbitrary byte, 1 bytes
 	};
 
+	template <class T> class GetType
+	{
+	public:
+		static DataType Get(void) { return eUnknown; }
+	};
+	
+	class TUTF8byte
+	{
+	public:
+		char c;
+	};
+	
+	template <> class GetType<TFloat32>{public:static DataType Get(void){return eFloat32;}};
+	template <> class GetType<TFloat64>{public:static DataType Get(void){return eFloat64;}};
+	template <> class GetType<TInt32>{public:static DataType Get(void){return eInt32;}};
+	template <> class GetType<TInt64>{public:static DataType Get(void){return eInt64;}};
+	template <> class GetType<TUTF8byte>{public:static DataType Get(void){return eUTF8byte;}};
+	template <> class GetType<TByte>{public:static DataType Get(void){return eByte;}};
+
 }
 #endif

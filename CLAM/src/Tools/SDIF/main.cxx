@@ -6,7 +6,7 @@ using namespace SDIF;
 int main()
 {
 	int error = 0;
-	int nrefvalsmatched = 0;
+	int valsread=0,valswritten = 0;
 	
 	Collection wc;
 	Collection rc;
@@ -17,11 +17,20 @@ int main()
 	{
 		for (int i=0;i<100;i++)
 		{
-			Frame *frame = new Frame("1FQ0",t);
-			Matrix *matrix = new Matrix("1FQ0",eFloat32,1,1);
+			Frame *frame = new Frame("1TST",t);
+			int w = rand()&15;
+			int h = rand()&15;
+			ConcreteMatrix<TFloat32> *matrix = 
+				new ConcreteMatrix<TFloat32>("1TST",h,w);
 
-			matrix->SetValue(0,0,v);
-
+			for (int r=0;r<h;r++)
+			{
+				for (int c=0;c<w;c++)
+				{
+					matrix->SetValue(r,c,v);
+					valswritten++;
+				}
+			}
 			v+=1.1;
 			t+=0.1;
 
@@ -89,26 +98,33 @@ int main()
 			{
 				printf("matrix header mismatch\n");
 				error++;
-			}else	for (int j=0;j<wm->mHeader.mnRows;j++)
+			}else	for (int j=0;j<wm->Rows();j++)
 			{
-				for (int i=0;i<wm->mHeader.mnColumns;i++)
+				for (int i=0;i<wm->Columns();i++)
 				{
-					if (rm->GetValue(j,i) != wm->GetValue(j,i))
+					if (
+						dynamic_cast< ConcreteMatrix<TFloat32>* >(rm)->GetValue(j,i) != 
+						dynamic_cast< ConcreteMatrix<TFloat32>* >(wm)->GetValue(j,i)
+					)
 					{
 						printf("read matrix value != write matrix value\n");
 						error++;
 					}
-					if (rm->GetValue(j,i) != v)
+					if (
+						dynamic_cast< ConcreteMatrix<TFloat32>* >(rm)->GetValue(j,i) != v
+					)
 					{
 						printf("read matrix value != reference value\n");
 						error++;
 					}else
-					if (wm->GetValue(j,i) != v)
+					if (
+						dynamic_cast< ConcreteMatrix<TFloat32>* >(wm)->GetValue(j,i) != v
+					)
 					{
 						printf("write matrix value != reference value\n");
 						error++;
 					}else{
-						nrefvalsmatched++;
+						valsread++;
 					}
 				}
 			}
@@ -146,7 +162,8 @@ int main()
 		error++;
 	}
 	
-	printf("%d errors encountered, %d/100 reference values matched\n",error,nrefvalsmatched);
+	printf("%d errors encountered, %d/%d values matched\n",error,
+		valsread,valswritten);
 
 	return 0;
 }

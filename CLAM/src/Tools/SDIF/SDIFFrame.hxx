@@ -17,10 +17,10 @@ namespace SDIF
 		TInt32 mStandardTypesVersion;
 	public:	
 		/** Create the frame */
-		OpeningsFrame():mHeader("SDIF")
+		OpeningsFrame():
+			mHeader("SDIF",sizeof(TInt32)+sizeof(TInt32)),
+			mSpecVersion(3),mStandardTypesVersion(1)
 		{
-			mHeader.mSize = 8;
-			mSpecVersion = 0; mStandardTypesVersion = 0;
 		}
 	};
 

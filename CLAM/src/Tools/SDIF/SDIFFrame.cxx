@@ -26,5 +26,6 @@ void Frame::Add(Matrix* pMatrix)
 {
 	mMatrixList.push_back(pMatrix);
 	mHeader.mnMatrices++;
+	mHeader.mSize += pMatrix->SizeInFile();
 };
 
