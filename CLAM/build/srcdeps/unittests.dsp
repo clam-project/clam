@@ -270,6 +270,10 @@ SOURCE=.\unittests\FileHelper.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\unittests\FunctionalTestWithCLAM.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\unittests\SourceCodeParserTest.cxx
 # End Source File
 # End Group
