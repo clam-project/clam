@@ -115,14 +115,14 @@ namespace CLAM {
 			                  "Region inconsistent before activation.");
 			r->Activate();
 			
-			/** if r does not fulfil invariant after activation, it means that
+			/* if r does not fulfil invariant after activation, it means that
 			 *	it cannot be used consistently. The Leave() method should be called
 			 *	afterwards, else results are not predictable when trying to use the region
 			 *	as it does not point to a valid memory.*/
 			if (!r->FulfilsInvariant())	return false;
-			else {
-				mBuffer.GetData(r,a);
-				return true;}
+			
+			mBuffer.GetData(r,a);
+			return true;
 		}
 
 
