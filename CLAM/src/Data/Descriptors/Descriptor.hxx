@@ -46,6 +46,14 @@ public:
 	{
 		mpStats=0;
 	};
+	virtual ~DescriptorTmpl()
+	{
+		if (mpStats)
+		{
+			delete mpStats;
+			mpStats=0;
+		}
+	}
 	virtual void Compute()
 	{
 		CLAM_ASSERT(mpStats,"Descriptor::Compute: Error no valid statistics. This may happen if you forget to set your data after having set the prototype");
