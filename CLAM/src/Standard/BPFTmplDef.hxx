@@ -329,124 +329,86 @@ namespace CLAM
 	TY BPFTmpl<TX,TY>::GetValue(const TX& x,const EInterpolation& eInterpolation) const	/*Gets value
 		according to the interpolation type set*/
 	{
-		/*First we should check if the the x value belongs to the BPF itself
-		and there is no need to interpolate*/
+		// First we should check if the the x value belongs to the BPF itself
+		// and there is no need to interpolate
+
 		if(x<mLastX)  mLastIndex=0;
-		PointTmpl<TX,TY> tmpPoint(x,0.0);
-		TIndex i=mSearch.Find(tmpPoint,mLastIndex);
+
+		TIndex i=mSearch.Find( PointTmpl<TX,TY>(x,0.0), mLastIndex);
 		if(i==-1)
 		{
-			if(GetXValue(0)>x) return GetValueFromIndex(0);
-			else return GetValueFromIndex(Size()-1);
+			// Outside of the BPF; get the first or last value
+			if (GetXValue(0)>x)
+				return GetValueFromIndex(0);
+			else
+				return GetValueFromIndex(Size()-1);
 		}
 		mLastIndex=i;
 		mLastX=x;
 		if(GetXValue(mLastIndex)==x) return GetValueFromIndex(mLastIndex);
-		else
+		switch(eInterpolation)
 		{
-			TY result;
-			switch(eInterpolation)
+			case(EInterpolation::eStep)://returns previous point value
 			{
-				case(EInterpolation::eStep)://returns previous point value
-				{
-					GetnClosest(mLastIndex);
-					if(GetXValue(mClosestPoints[0])<=x)
-						result=GetValueFromIndex(mClosestPoints[0]);
-					else
-						result=GetValueFromIndex(mClosestPoints[0]+1);
-					break;
-				}
-				case(EInterpolation::eRound)://return closest point value
-				{
-					GetnClosest(mLastIndex);
-					result=GetValueFromIndex(mClosestPoints[0]);
-					break;
-				}
-				case(EInterpolation::eLinear)://linear interpolation between two closest points
-				{
-					TData error=0;
-					if(GetXValue(mLastIndex)<=x)
-					{
-						/*if(mLastIndex==Size()-1){ 
-							result=GetValueFromIndex(Size()-1);
-							break;
-						}
-						else{*/
-							mClosestPoints[0]=mLastIndex;
-							mClosestPoints[1]=mLastIndex+1;
-						//}
-					}
-					else
-					{
-						/*if(mLastIndex==0){ 
-							result=GetValueFromIndex(0);
-							break;}
-						else{*/
-						mClosestPoints[0]=mLastIndex-1;
-						mClosestPoints[1]=mLastIndex;
-						//}
-					}
-					result=BPFPolInt(x,mClosestPoints,error);
-					break;
-				}
-				case(EInterpolation::eSpline)://3rd order spline interpolation
-				{
-					CLAM_ASSERT(mIsSplineUpdated,"BPF::Spline table not updated");
-					result=BPFSplineInt(x);//get actual value
-					break;
-				}
-				case(EInterpolation::ePolynomial2)://parabolic interpolation
-				{
-					TData error=0;
-					GetnClosest(mLastIndex);
-					result=BPFPolInt(x,mClosestPoints,error);
-					break;
-				}
-				case(EInterpolation::ePolynomial3)://3rd order polynomial interpolation
-				{
-					TData error=0;
-					GetnClosest(mLastIndex);
-					result=BPFPolInt(x,mClosestPoints,error);
-					break;
-				}
-				case(EInterpolation::ePolynomial4)://4th order polynomial interpolation
-				{
-					TData error=0;
-					GetnClosest(mLastIndex);
-					result=BPFPolInt(x,mClosestPoints,error);
-					break;
-				}
-				case(EInterpolation::ePolynomial5)://5th order polynomial interpolation
-				{
-					TData error=0;
-					GetnClosest(mLastIndex);
-					result=BPFPolInt(x,mClosestPoints,error);
-					break;
-				}
-				case(EInterpolation::ePolynomialn):/*nth order polynomial interpolation where n is number
-					of points in the BPF-1*/
-				{
-					TIndex i;
-					Array<TIndex> indexArray(mArray.Size());
-					TData error=0;
-					for(TIndex i=0; i<mArray.Size(); i++)
-					{
-						indexArray[i]=i;
-					}
-					result=BPFPolInt(x,indexArray,error);
-					break;
-				}
-				default:
-				{
-					CLAM_ASSERT(false, "Invalid BPF interpolation method.");
-					result = 0;
-					break;
-				}
+				GetnClosest(mLastIndex);
+				if(GetXValue(mClosestPoints[0])<=x)
+					return GetValueFromIndex(mClosestPoints[0]);
+				return GetValueFromIndex(mClosestPoints[0]+1);
 			}
-			return result;
+			case(EInterpolation::eRound)://return closest point value
+			{
+				GetnClosest(mLastIndex);
+				return GetValueFromIndex(mClosestPoints[0]);
+			}
+			case(EInterpolation::eLinear)://linear interpolation between two closest points
+			{
+				TData error=0;
+				if(GetXValue(mLastIndex)<=x)
+				{
+					mClosestPoints[0]=mLastIndex;
+					mClosestPoints[1]=mLastIndex+1;
+				}
+				else
+				{
+					mClosestPoints[0]=mLastIndex-1;
+					mClosestPoints[1]=mLastIndex;
+				}
+				return BPFPolInt(x,mClosestPoints,error);
+			}
+			case(EInterpolation::eSpline)://3rd order spline interpolation
+			{
+				CLAM_ASSERT(mIsSplineUpdated,"BPF::Spline table not updated");
+				return BPFSplineInt(x);//get actual value
+			}
+			case(EInterpolation::ePolynomial2)://parabolic interpolation
+			case(EInterpolation::ePolynomial3)://3rd order polynomial interpolation
+			case(EInterpolation::ePolynomial4)://4th order polynomial interpolation
+			case(EInterpolation::ePolynomial5)://5th order polynomial interpolation
+			{
+				TData error=0;
+				GetnClosest(mLastIndex);
+				return BPFPolInt(x,mClosestPoints,error);
+			}
+			case(EInterpolation::ePolynomialn):/*nth order polynomial interpolation where n is number
+				of points in the BPF-1*/
+			{
+				TIndex i;
+				Array<TIndex> indexArray(mArray.Size());
+				TData error=0;
+				for(TIndex i=0; i<mArray.Size(); i++)
+				{
+					indexArray[i]=i;
+				}
+				return BPFPolInt(x,indexArray,error);
+			}
+			default:
+			{
+				CLAM_ASSERT(false, "Invalid BPF interpolation method.");
+				return 0;
+			}
 		}
 	}
-	
+
 /**
 * Fills the interpolation points index buffer with the n closest points to
 * the selected point, trying to keep n/2 points to the right and n/2 to the left
@@ -526,7 +488,7 @@ namespace CLAM
 	template <class TX,class TY>
 	TIndex BPFTmpl<TX,TY>::GetPosition(const TX& x) const
 	{
-		PointTmpl<TX,TY> tmpPoint(x,0);	
+		PointTmpl<TX,TY> tmpPoint(x,0);
 		return mSearch.Find(tmpPoint);
 	}
 	
