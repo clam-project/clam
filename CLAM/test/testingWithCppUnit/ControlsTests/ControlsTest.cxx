@@ -23,7 +23,7 @@
 #include "OutControl.hxx"
 #include "InControlArray.hxx"
 #include "InControlTmplArray.hxx"
-#include "cppUnitHelper.hxx" // defines BaseLoggable
+#include "BaseLoggable.hxx"
 
 #include <cppunit/extensions/HelperMacros.h>
 
