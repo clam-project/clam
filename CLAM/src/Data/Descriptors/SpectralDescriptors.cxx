@@ -190,7 +190,7 @@ TData SpectralDescriptors::ComputeSpectralFlatness()
 
 	TData geomean = mpStats->GetGeometricMean();
 
-	return 10*log(geomean/mean);
+	return 10*log10(geomean/mean);
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
@@ -233,7 +233,7 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 	int size=mpSpectrum->GetSize();
 	TIndex index = Round(100.0/(mpSpectrum->GetSpectralRange()/(TData)size));
 	
-	DataArray& data=mpSpectrum->GetMagBuffer();
+	DataArray data=mpSpectrum->GetMagBuffer();
 	
 	data.SetSize(index);
 
@@ -248,21 +248,19 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeRolloff() 
 { 
-	// Frequency f below which 85% of the magnitude distribution is concentrated
-	TIndex i = 0;
-	TData m = fabsf(data[0]);
+	DataArray& mags     = mpSpectrum->GetMagBuffer();
+	TSize      magsSize = mpSpectrum->GetSize();
 
-	TData zeroMoment=mpStats->GetMoment(FirstOrder);
-	zeroMoment*=0.85;
-	int size=mpSpectrum->GetSize();
-	DataArray& data=mpSpectrum->GetMagBuffer();
-
-	for ( i = 0; ( m < zeroMoment ) && ( i < size ); i++ )
+	TData eThreshold = 0.85 * mpStats->GetEnergy();
+	TData cumEnergy  = 0;
+	for (TIndex i=0; i<magsSize; i++)
 	{
-		m += fabsf(data[i]);
+		cumEnergy += mags[i]*mags[i];
+		if (cumEnergy < eThreshold) continue;
+		return (i * mpSpectrum->GetSpectralRange() / (TData)magsSize);
 	}
-	 
-	return i;
+	// Return -1 if no rolloff point could be found (e.g. digital silence)
+	return -1;
 }
 
 
