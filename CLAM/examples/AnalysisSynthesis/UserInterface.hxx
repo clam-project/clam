@@ -48,6 +48,13 @@ private:
   static Fl_Menu_Item *mStoreAnalysisData;
   inline void cb_mStoreAnalysisData_i(Fl_Menu_*, void*);
   static void cb_mStoreAnalysisData(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mMelodySM;
+  static Fl_Menu_Item *mMelodyAnalyze;
+  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
+  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mMelodyStore;
+  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
+  static void cb_mMelodyStore(Fl_Menu_*, void*);
   inline void cb_Load2_i(Fl_Menu_*, void*);
   static void cb_Load2(Fl_Menu_*, void*);
   static Fl_Menu_Item *mDoTransformation;
@@ -71,13 +78,6 @@ private:
   static void cb_Sinusoidal1(Fl_Menu_*, void*);
   inline void cb_Residual1_i(Fl_Menu_*, void*);
   static void cb_Residual1(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodySM;
-  static Fl_Menu_Item *mMelodyAnalyze;
-  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
-  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodyStore;
-  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
-  static void cb_mMelodyStore(Fl_Menu_*, void*);
   static Fl_Menu_Item *mStoreOutputs;
   inline void cb_Sound2_i(Fl_Menu_*, void*);
   static void cb_Sound2(Fl_Menu_*, void*);

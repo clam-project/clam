@@ -66,6 +66,20 @@ void UserInterface::cb_mStoreAnalysisData(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mStoreAnalysisData_i(o,v);
 }
 
+inline void UserInterface::cb_mMelodyAnalyze_i(Fl_Menu_*, void*) {
+  AnalyzeMelody();
+}
+void UserInterface::cb_mMelodyAnalyze(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyAnalyze_i(o,v);
+}
+
+inline void UserInterface::cb_mMelodyStore_i(Fl_Menu_*, void*) {
+  StoreMelody();
+}
+void UserInterface::cb_mMelodyStore(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyStore_i(o,v);
+}
+
 inline void UserInterface::cb_Load2_i(Fl_Menu_*, void*) {
   LoadTransformation();
 }
@@ -129,20 +143,6 @@ void UserInterface::cb_Residual1(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Residual1_i(o,v);
 }
 
-inline void UserInterface::cb_mMelodyAnalyze_i(Fl_Menu_*, void*) {
-  AnalyzeMelody();
-}
-void UserInterface::cb_mMelodyAnalyze(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyAnalyze_i(o,v);
-}
-
-inline void UserInterface::cb_mMelodyStore_i(Fl_Menu_*, void*) {
-  StoreMelody();
-}
-void UserInterface::cb_mMelodyStore(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyStore_i(o,v);
-}
-
 inline void UserInterface::cb_Sound2_i(Fl_Menu_*, void*) {
   StoreOutputSound();
 }
@@ -194,6 +194,10 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Analyze", 0x40061,  (Fl_Callback*)UserInterface::cb_mAnalyze, 0, 1, 0, 0, 12, 0},
  {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load1, 0, 0, 0, 0, 12, 0},
  {"Store...", 0,  (Fl_Callback*)UserInterface::cb_mStoreAnalysisData, 0, 1, 0, 0, 12, 0},
+ {"Melody", 0,  0, 0, 65, 0, 0, 12, 0},
+ {"Analyze", 0,  (Fl_Callback*)UserInterface::cb_mMelodyAnalyze, 0, 0, 0, 0, 12, 0},
+ {"Store", 0,  (Fl_Callback*)UserInterface::cb_mMelodyStore, 0, 1, 0, 0, 12, 0},
+ {0},
  {0},
  {"Transformation", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load2, 0, 0, 0, 0, 12, 0},
@@ -213,10 +217,6 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal1, 0, 0, 0, 0, 12, 0},
  {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual1, 0, 0, 0, 0, 12, 0},
  {0},
- {"Melody", 0,  0, 0, 65, 0, 0, 12, 0},
- {"Analyze", 0,  (Fl_Callback*)UserInterface::cb_mMelodyAnalyze, 0, 0, 0, 0, 12, 0},
- {"Store", 0,  (Fl_Callback*)UserInterface::cb_mMelodyStore, 0, 1, 0, 0, 12, 0},
- {0},
  {"Store", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound2, 0, 0, 0, 0, 12, 0},
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal2, 0, 0, 0, 0, 12, 0},
@@ -233,14 +233,14 @@ Fl_Menu_Item* UserInterface::mDisplayInSpec = UserInterface::menu_mMenuBar + 6;
 Fl_Menu_Item* UserInterface::mPlayInputSound = UserInterface::menu_mMenuBar + 8;
 Fl_Menu_Item* UserInterface::mAnalyze = UserInterface::menu_mMenuBar + 11;
 Fl_Menu_Item* UserInterface::mStoreAnalysisData = UserInterface::menu_mMenuBar + 13;
-Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 17;
-Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 19;
-Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 22;
-Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 23;
-Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 28;
-Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 33;
-Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 34;
-Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 35;
+Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 14;
+Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 15;
+Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 16;
+Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 21;
+Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 23;
+Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 26;
+Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 27;
+Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 32;
 Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 37;
 
 inline void UserInterface::cb_mWindow2_i(Fl_Window*, void*) {

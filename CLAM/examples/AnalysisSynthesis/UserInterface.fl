@@ -34,7 +34,7 @@ class UserInterface {open
     code {Init();} {}
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {550 299 872 548} resizable
+      xywh {551 322 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
       Fl_Box mResizable {
@@ -44,7 +44,7 @@ class UserInterface {open
         label {Configuration File}
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
-      Fl_Menu_Bar mMenuBar {open
+      Fl_Menu_Bar mMenuBar {open selected
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
@@ -88,7 +88,7 @@ class UserInterface {open
           }
         }
         submenu {} {
-          label Analysis
+          label Analysis open
           xywh {0 0 100 20} labelsize 12
         } {
           menuitem mAnalyze {
@@ -105,6 +105,21 @@ class UserInterface {open
             label {Store...}
             callback {StoreAnalysisData();}
             private xywh {45 45 100 20} labelsize 12 deactivate
+          }
+          submenu mMelodySM {
+            label Melody
+            private xywh {25 25 100 20} labelsize 12 deactivate
+          } {
+            menuitem mMelodyAnalyze {
+              label Analyze
+              callback {AnalyzeMelody();}
+              private xywh {75 75 100 20} labelsize 12
+            }
+            menuitem mMelodyStore {
+              label Store
+              callback {StoreMelody();}
+              private xywh {75 75 100 20} labelsize 12 deactivate
+            }
           }
         }
         submenu {} {
@@ -176,21 +191,6 @@ class UserInterface {open
               private xywh {0 0 100 20} labelsize 12
             }
           }
-          submenu mMelodySM {
-            label Melody
-            private xywh {20 20 100 20} labelsize 12 deactivate
-          } {
-            menuitem mMelodyAnalyze {
-              label Analyze
-              callback {AnalyzeMelody();}
-              private xywh {70 70 100 20} labelsize 12
-            }
-            menuitem mMelodyStore {
-              label Store
-              callback {StoreMelody();}
-              private xywh {70 70 100 20} labelsize 12 deactivate
-            }
-          }
           submenu mStoreOutputs {
             label Store
             private xywh {10 10 100 20} labelsize 12
@@ -236,7 +236,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {452 344 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
+      private xywh {453 345 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} modal noborder visible
     } {
       Fl_Box {} {
@@ -289,8 +289,7 @@ mWindow2=NULL;}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
   decl {void LoadSound();} {}
-  decl {void Init();} {selected
-  }
+  decl {void Init();} {}
   decl {Fl_Window* mAudioInputDisplay;} {}
   decl {Fl_Window* mAudioOutputDisplay;} {}
   decl {Fl_Window* mAudioOutputResidualDisplay;} {}
