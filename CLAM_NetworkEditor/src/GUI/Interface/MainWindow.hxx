@@ -6,6 +6,7 @@
 #include <string>
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
+#include "Signalv0.hxx"
 #include "Qt_NetworkPresentation.hxx"
 
 class QDockWindow;
@@ -44,6 +45,7 @@ public: //slots
 
 public: // CLAM signals
 	SigSlot::Signalv1 < bool > ChangeNetworkState;
+	SigSlot::Signalv0 NewNetworkSignal;
 
 };
 

@@ -21,11 +21,19 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 {	
 	addColumn( "Processing" );
 	setRootIsDecorated( TRUE );
-	QListViewItem * tmp1 = new QListViewItem( this,"Generators" );
-	ProcessingItem * tmp2 = new ProcessingItem( tmp1, "Oscillator");
-	QListViewItem * tmp3 = new QListViewItem( this,"Binary Operations" );
-	ProcessingItem * tmp4 = new ProcessingItem( tmp3, "Multiplier" );
-	ProcessingItem * tmp5 = new ProcessingItem( tmp3, "Mixer 2" );
+	QListViewItem * gen = new QListViewItem( this,"Generators" );
+	ProcessingItem * osc = new ProcessingItem( gen, "Oscillator");
+	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
+	ProcessingItem * multiplier = new ProcessingItem( binops, "AudioMultiplier" );
+	ProcessingItem * adder = new ProcessingItem( binops, "AudioAdder" );
+//	ProcessingItem * mixer_2 = new ProcessingItem( binops, "Mixer 2" );
+	QListViewItem * analysis = new QListViewItem( this,"Analysis" );
+	ProcessingItem * fft_rfftw = new ProcessingItem( analysis, "FFT_rfftw" );
+	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
+	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
+	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
+	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
+
 	show();
 	header()->hide();
 

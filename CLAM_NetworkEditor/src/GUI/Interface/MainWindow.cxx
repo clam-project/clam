@@ -28,6 +28,7 @@ MainWindow::MainWindow()
 	
 	NewMessageToStatus.Wrap( this, &MainWindow::OnNewMessageToStatus );
 	mNetwork.SendNewMessageToStatus.Connect( NewMessageToStatus );
+	NewNetworkSignal.Connect( mNetwork.Clear );
 	statusBar()->message( "Ready to edit" );
 
 	ChangeNetworkState.Connect( mNetwork.ChangeState );
@@ -97,6 +98,7 @@ void MainWindow::Stop()
 void MainWindow::NewNetwork()
 {
 	std::cout << "new network" << std::endl;
+	NewNetworkSignal.Emit();
 }
 
 void MainWindow::LoadNetwork()
@@ -114,6 +116,8 @@ void MainWindow::LoadNetwork()
 		this,
 		"open file dialog"
 		"Choose a file to load network" );
+
+	NewNetworkSignal.Emit();
 	if (s!=QString::null)
 		mNetwork.LoadNetworkFrom.Emit(std::string(s.ascii()));
 }
