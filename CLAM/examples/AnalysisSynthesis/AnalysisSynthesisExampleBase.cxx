@@ -57,32 +57,8 @@
 #define MIN(a,b) ((a<=b)?(a):(b))
 #define MAX(a,b) ((a>=b)?(a):(b))
 
+using namespace CLAMGUI;
 using namespace CLAM;
-
-Progress::Progress(const char* title,float from,float to)
-{
-
-	mTitle = new char[strlen(title)+1];
-	strncpy( mTitle, title, strlen(title)+1 );
-	mFrom = from;
-	mTo = to;
-}
-
-Progress::~Progress()
-{
-	delete[] mTitle;
-}
-
-WaitMessage::WaitMessage(const char* title)
-{
-	mTitle = new char[strlen(title)+1];
-	strncpy(mTitle,title, strlen(title)+1 );
-}
-
-WaitMessage::~WaitMessage()
-{
-	delete[] mTitle;
-}
 
 AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 {
@@ -151,7 +127,7 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 {
-	WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
+	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
@@ -190,7 +166,7 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 
 void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 {
-	WaitMessage *wm;
+	CLAMGUI::WaitMessage *wm;
 	wm = CreateWaitMessage("Storing configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
@@ -202,7 +178,7 @@ void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName
 	std::string ext=inputFileName.substr(inputFileName.length()-4,inputFileName.length());
 	if(ext=="sdif")
 	{
-		WaitMessage *wm = CreateWaitMessage("Loading analysis data sdif file, please wait");
+		CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading analysis data sdif file, please wait");
 		
 		SDIFInConfig cfg;
 		cfg.SetMaxNumPeaks(100);
@@ -221,7 +197,7 @@ void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName
 	}
 	else if(ext==".xml")
 	{
-		WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
+		CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
 		//Loading analysis
 		XMLStorage x;
 		x.Restore(mSegment,inputFileName);
@@ -240,7 +216,7 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
 	if(ext=="sdif")
 	{
-		WaitMessage *wm = CreateWaitMessage("Storing sdif file, please wait");
+		CLAMGUI::WaitMessage *wm = CreateWaitMessage("Storing sdif file, please wait");
 		int i;
 		SDIFOutConfig cfg;
 		cfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
@@ -256,7 +232,7 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 	}
 	else if(ext==".xml")
 	{
-		WaitMessage *wm = CreateWaitMessage("Storing xml file, please wait");
+		CLAMGUI::WaitMessage *wm = CreateWaitMessage("Storing xml file, please wait");
 		//first we have to get rid of not wanted data
 		mSegment.RemoveAudio();
 		mSegment.UpdateData();
@@ -353,7 +329,7 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
 	
-	Progress* pct = CreateProgress("Analysis Processing",0,float(size));
+	CLAMGUI::Progress* pct = CreateProgress("Analysis Processing",0,float(size));
 	myAnalysis.Start();
 
 	do
@@ -371,7 +347,7 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	and included in SMSAnalysis*/
 
 	if( mGlobalConfig.GetDoCleanTracks() ){
-		WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
+		CLAMGUI::WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
 	
 		CleanTracksConfig clcfg;
 		clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
@@ -470,7 +446,7 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
 	int i;
 
-	Progress* pct = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
+	CLAMGUI::Progress* pct = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
@@ -721,7 +697,7 @@ void AnalysisSynthesisExampleBase::StoreMelody(void)
 
 void AnalysisSynthesisExampleBase::LoadTransformationScore(const std::string& inputFileName)
 {
-	WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
+	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mTransformationScore,inputFileName);

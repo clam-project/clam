@@ -1,6 +1,6 @@
 <SMSAnalysisSynthesisConfig>
 	<Name/>
-	<InputSoundFile>1.wav</InputSoundFile>
+	<InputSoundFile>c:\vln_gclra_mf_1_12.wav</InputSoundFile>
 	<OutputSoundFile>/1_out.wav</OutputSoundFile>
 	<OutputAnalysisFile>c:/analysis.sdif</OutputAnalysisFile>
 	<InputAnalysisFile>c:/analysis.sdif</InputAnalysisFile>

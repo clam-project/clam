@@ -23,7 +23,9 @@
 #include "UserInterface.hxx"
 #include <FL/fl_file_chooser.H>
 #include "Fl_Progress.hxx"
+#include "ProgressGUI.hxx"
 #include "Fl_WaitMessage.hxx"
+#include "WaitMessageGUI.hxx"
 #include "AnalysisSynthesisExampleBase.hxx"
 #include <pthread.h>
 #include "FLTKConfigurator.hxx"
@@ -40,180 +42,6 @@
 using namespace CLAM;
 using namespace CLAMGUI;
 using namespace std;
-
-#ifndef WIN32
-#include <unistd.h>
-#define Sleep(var) usleep(var*1000)
-#endif
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-class ProgressGUI:public Progress
-{
-public:
-	Fl_Progress* mFlProgress;
-	static Fl_Progress* requested;
-	static Fl_Progress* delRequested;
-	static const char* requestedTitle;
-	static pthread_t flThread;
-	static float requestedFrom;	
-	static float requestedTo;	
-	
-	void Update(float val)
-	{
-		mFlProgress->mValue = val;
-	}
-
-	ProgressGUI(const char* title,float from,float to)
-		:Progress(title,from,to)
-	{
-		if (flThread == pthread_self())
-		{
-
-			mFlProgress = new Fl_Progress;
-			mFlProgress->mLabel->label(mTitle);
-			mFlProgress->mSlider->range(mFrom,mTo);
-			mFlProgress->mWindow->show();
-		}else{
-			requested = 0;
-
-			requestedFrom = mFrom;
-			requestedTo = mTo;
-			requestedTitle = mTitle;
-			while (requested==0)
-			{
-				Sleep(1);
-			}
-
-			mFlProgress = requested;
-		}
-	}
-
-	~ProgressGUI()
-	{
-		if (flThread == pthread_self())
-		{
-
-			delete mFlProgress;
-		}else{
-			delRequested = mFlProgress;
-			while (delRequested)
-			{
-				Sleep(1);
-			}
-		}
-	}	
-
-	static void Idle(void* ptr)
-	{
-		std::cout << "Idle #1" << std::endl;
-		if (requestedTitle)
-		{
-
-			const char* tmp = requestedTitle;
-			float tmpFrom = requestedFrom;
-			float tmpTo = requestedTo;
-			requestedTitle = 0;
-			Fl_Progress * o= new Fl_Progress;
-			o->mLabel->label(tmp);
-			o->mSlider->range(tmpFrom,tmpTo);
-			o->mWindow->show();
-			requested = o;
-		}
-		if (delRequested)
-		{
-
-			Fl_Progress* tmp = delRequested;
-			delRequested = 0;
-			delete tmp;
-		}
-	}
-};
-
-Fl_Progress* ProgressGUI::requested = 0;
-Fl_Progress* ProgressGUI::delRequested = 0;
-const char* ProgressGUI::requestedTitle = 0;
-float ProgressGUI::requestedFrom;
-float ProgressGUI::requestedTo;
-pthread_t ProgressGUI::flThread;
-
-class WaitMessageGUI:public WaitMessage
-{
-public:
-	Fl_WaitMessage* mFlWaitMessage;
-	static Fl_WaitMessage* requested;
-	static Fl_WaitMessage* delRequested;
-	static const char* requestedTitle;
-	static pthread_t flThread;
-	
-	
-	WaitMessageGUI(const char* title)
-	:WaitMessage(title)
-	{
-		if (flThread == pthread_self())
-		{
-	
-			mFlWaitMessage = new Fl_WaitMessage;
-			mFlWaitMessage->mLabel->label(title);
-			mFlWaitMessage->mWindow->show();
-		}else{
-			requested = 0;
-	
-			requestedTitle = title;
-			while (requested==0)
-			{
-				Sleep(1);
-			}
-	
-			mFlWaitMessage = requested;
-		}
-	}
-
-	~WaitMessageGUI()
-	{
-		if (flThread == pthread_self())
-		{
-
-			delete mFlWaitMessage;
-		}else{
-			delRequested = mFlWaitMessage;
-			while (delRequested)
-			{
-				Sleep(10);
-			}
-		}
-	}	
-
-	static void Idle(void* ptr)
-	{
-		std::cout << "Idle #2" << std::endl;
-		if (requestedTitle)
-		{
-
-			const char* tmp = requestedTitle;
-			requestedTitle = 0;
-			Fl_WaitMessage * o= new Fl_WaitMessage;
-			o->mLabel->label(tmp);
-			o->mWindow->show();
-			requested = o;
-		}
-		if (delRequested)
-		{
-
-			Fl_WaitMessage* tmp = delRequested;
-			delRequested = 0;
-			delete tmp;
-		}
-	}
-
-};
-
-Fl_WaitMessage* WaitMessageGUI::requested = 0;
-Fl_WaitMessage* WaitMessageGUI::delRequested = 0;
-const char* WaitMessageGUI::requestedTitle = 0;
-pthread_t WaitMessageGUI::flThread;
 
 class AnalysisSynthesisExampleGUI:public AnalysisSynthesisExampleBase
 {
@@ -235,12 +63,12 @@ public:
 		Fl::run();
 	}
 	
-	CLAM::Progress* CreateProgress(const char* title,float from,float to) 
+	CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) 
 	{
 		return new ProgressGUI(title,from,to);
 	}
 
-	CLAM::WaitMessage* CreateWaitMessage(const char* title) 
+	CLAMGUI::WaitMessage* CreateWaitMessage(const char* title) 
 	{
 		return new WaitMessageGUI(title);
 	}

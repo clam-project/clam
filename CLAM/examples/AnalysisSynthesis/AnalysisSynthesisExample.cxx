@@ -24,56 +24,21 @@
 #include "AudioSnapshot.hxx"
 #include "SpectrumSnapshot.hxx"
 #include <iostream>
+#include "StdOutProgress.hxx"
+#include "StdOutWaitMessage.hxx"
+
 
 using namespace CLAM;
 using namespace std;
 
-class StdOutProgress:public Progress
-{
-public:
-	int mLastVal;
-		
-	StdOutProgress(const char* title,float from,float to)
-	:Progress(title,from,to)
-	{
-		mLastVal=0;
-		std::cout << mTitle << "\n";
-	}
-	~StdOutProgress()
-	{
-		std::cout << "Done\n";
-	}
-	void Update(float val)
-	{
-		int ival = int(100.*(val-mFrom)/(mTo-mFrom));
-		if (ival==mLastVal) return;
-		mLastVal = ival;
-		std::cout << mLastVal << "% \n";
-	}
-};
-
-class StdOutWaitMessage:public WaitMessage
-{
-public:
-	StdOutWaitMessage(const char* title)
-	:WaitMessage(title)
-	{
-		std::cout << mTitle << "\n";
-	}
-	~StdOutWaitMessage()
-	{
-		std::cout << "Done\n";
-	}
-};
-
 class AnalysisSynthesisExampleStdio:public AnalysisSynthesisExampleBase
 {
 public:
-	CLAM::Progress* CreateProgress(const char* title,float from,float to)
+	CLAMGUI::Progress* CreateProgress(const char* title,float from,float to)
 	{
 		return new StdOutProgress(title,from,to);
 	}
-	CLAM::WaitMessage* CreateWaitMessage(const char* title)
+	CLAMGUI::WaitMessage* CreateWaitMessage(const char* title)
 	{
 		return new StdOutWaitMessage(title);
 	}

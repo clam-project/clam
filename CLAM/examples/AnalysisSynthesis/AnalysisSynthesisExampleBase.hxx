@@ -31,31 +31,12 @@
 #include "SMSTransformation.hxx"
 #include "SegmentDescriptors.hxx"
 #include "AudioOut.hxx"
+#include "Progress.hxx"
+#include "WaitMessage.hxx"
+
 
 namespace CLAM
 {
-
-	class Progress
-	{
-	public:
-		char* mTitle;
-		float mFrom;
-		float mTo;
-
-		Progress(const char* title,float from,float to);
-		virtual ~Progress();
-		virtual void Update(float val) = 0;
-	};
-
-	class WaitMessage
-	{
-	public:
-		char* mTitle;
-
-		WaitMessage(const char* title);
-		virtual ~WaitMessage();
-	};
-
 
 	/** This is the base class for the Analysis Synthesis example. It implements
 	* all the necessary processing but it cannot be instantiated. To instantiate
@@ -178,9 +159,9 @@ namespace CLAM
 		bool mHaveSpectrum;
 
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
-		virtual CLAM::Progress* CreateProgress(const char* title,float from,float to) = 0;
+		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
 		/** Creates a wait message. Implemented both in GUI and stdio versions */
-		virtual CLAM::WaitMessage* CreateWaitMessage(const char* title) = 0;
+		virtual CLAMGUI::WaitMessage* CreateWaitMessage(const char* title) = 0;
 	};
 
 };
