@@ -304,7 +304,7 @@ int main (int argc,char** argv)
 	//SaltoConfig config(argc,argv);
 	//InstrumentValues::Instantiate(config.mInstrument,config.mDataFolder);
 
-	InstrumentValues::Instantiate(0,"/root/stanford/SaltoDataFolder");
+	InstrumentValues::Instantiate(0,"SaltoDataFolder");
 
 	SaltoApp mySalto;
 
