@@ -50,9 +50,11 @@ namespace CLAM {
 
 	// assert that mSize is a power of two as well, we don't
 	// want to get in any unwanted and unexpected trouble...
-	int n = 1;
-	while (n < mSize) n <<= 1;
-	CLAM_ASSERT(n==mSize, "Size in FFT configuration must be a power of two");
+	if (mSize > 0) { // mSize can be 0 in the case of an uninitialized creation
+	  int n = 1;
+	  while (n < mSize) n <<= 1;
+	  CLAM_ASSERT(n==mSize, "Size in FFT configuration must be a power of two");
+	}
 
 	mState=sOther;
 	mComplexflags.bComplex=1;
