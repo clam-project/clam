@@ -39,31 +39,99 @@ class ClamObject2XercesDom : public Storage
 {
 	XercesDomDocumentHandler _documentHandler;
 	XercesDomWritingContext * _writeContext;
-	XercesDomWritingContext * _rootWriteContext;
+	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
 public:
 	ClamObject2XercesDom()
 	{
 		_writeContext = 0;
-		_rootWriteContext = 0;
 		_lastWasContent = true;
+		_readContext = 0;
 	}
 	~ClamObject2XercesDom()
 	{
-		if (_rootWriteContext)
-			delete _rootWriteContext;
 	}
+
+// Final user interface
+public:
+	void Read(std::istream & is)
+	{
+		_documentHandler.read(is);
+	}
+
 	void Create(const std::string name)
 	{
 		_documentHandler.create(name.c_str());
 		_lastWasContent=false;
-		_rootWriteContext= new XercesDomWritingContext(_documentHandler);
-		_writeContext = _rootWriteContext;
 	}
-	bool Load(Storable & storable)
+
+	void WriteSelection(std::ostream & os)
 	{
-		return false;
+		_documentHandler.writeSelection(os);
 	}
+
+	void WriteDocument(std::ostream & os)
+	{
+		_documentHandler.writeDocument(os);
+	}
+
+	void DumpObject(const Component & component)
+	{
+		XercesDomWritingContext rootContext(_documentHandler);
+		_writeContext = & rootContext;
+		component.StoreOn(*this);
+	}
+
+	void RestoreObject(Component & component)
+	{
+		XercesDomReadingContext rootContext(_documentHandler);
+		_readContext = & rootContext;
+		component.LoadFrom(*this);
+	}
+
+	void Select(const std::string & path)
+	{
+	}
+
+// Final User static interface
+public:
+
+	static void Dump(std::ostream & os, const Component & obj, const std::string & rootName)
+	{
+		ClamObject2XercesDom storage;
+		storage.Create(rootName);
+		storage.DumpObject(obj);
+		storage.WriteDocument(os);
+	}
+
+	static void Restore(std::istream & is, Component & obj)
+	{
+		ClamObject2XercesDom storage;
+		storage.Read(is);
+		storage.RestoreObject(obj);
+	}
+
+	static void RestorePartialDocument(std::istream & is, Component & obj, const std::string & path)
+	{
+		ClamObject2XercesDom storage;
+		storage.Read(is);
+		storage.Select(path);
+		storage.RestoreObject(obj);
+	}
+
+	static void AppendToDocument(std::iostream & str, Component & obj, const std::string & path)
+	{
+		ClamObject2XercesDom storage;
+		storage.Read(str);
+		storage.Select(path);
+		storage.DumpObject(obj);
+		storage.WriteDocument(str);
+	}
+
+	
+
+// Interface for Components to load/store their subitems
+public:
 	void Store(const Storable & storable)
 	{
 		const XMLable * xmlable = dynamic_cast<const XMLable *>(&storable);
@@ -90,7 +158,46 @@ public:
 		}
 		CLAM_ASSERT(false,"A weird XMLable inserted");
 	}
+
+	bool Load(Storable & storable)
+	{
+		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
+		if (!xmlable) return false;
+
+		if (xmlable->IsXMLText())
+			return LoadContentAndChildren(xmlable);
+
+		if (xmlable->IsXMLElement())
+		{
+			if (!_readContext->findElement(xmlable->XMLName()))
+				return false;
+			XercesDomReadingContext innerContext(_readContext, xmlable->XMLName());
+			_readContext = &innerContext;
+			LoadContentAndChildren(xmlable);
+			_readContext = innerContext.release();
+		//	addErrors(innerContext.errors());
+			return true;
+		}
+
+		// TODO: Test Attributes
+		if (xmlable->IsXMLAttribute())
+		{
+			std::stringstream stream;
+			if (!_readContext->extractAttribute(xmlable->XMLName(), stream))
+				return false;
+			return xmlable->XMLContent(stream);
+		}
+
+		CLAM_ASSERT(false, "A weird XMLable inserted");
+	}
 private:
+	bool LoadContentAndChildren(XMLable* xmlable)
+	{
+		bool result = xmlable->XMLContent(_readContext->reachableContent());
+		Component * component = dynamic_cast<Component*>(xmlable);
+		if (component) component->LoadFrom(*this);
+		return result;
+	}
 
 	void StoreContentAndChildren(const XMLable * xmlable)
 	{
@@ -113,13 +220,9 @@ private:
 		_lastWasContent = true;
 	}
 
-public:
-	void WriteSelection(std::ostream & os)
-	{
-		_documentHandler.writeSelection(os);
-	}
 };
 
+typedef ClamObject2XercesDom XercesDom2ClamObjects;
 	
 }
 
