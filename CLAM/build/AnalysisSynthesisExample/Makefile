@@ -9,7 +9,7 @@ clean:
 
 distclean: clean
 	rm -rf dep/
-	
+
 depend: .FORCE
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
 	$(SRCDEPS) settings.cfg > Makefile.vars
