@@ -106,6 +106,10 @@ inline void InPortTmpl<T>::Attach(T& data)
 template<class T>
 inline void InPortTmpl<T>::Attach(Node<T>& node)
 {
+	CLAM_ASSERT( mpNode == 0, "InPortTmpl::Attach. Trying to attach an inport already connected"
+		     "Try to call Unattach before connect another time the port" );
+	CLAM_ASSERT( mpRegion == 0, "InPortTmpl::Attach. Trying to attach an inport already connected"
+		     "Try to call Unattach before connect another time the port" );
 	mData.SetPtr(0);
 	mpNode = &node;
 	mpRegion = node.NewReader(this, Hop(), Length());
@@ -153,7 +157,15 @@ inline bool InPortTmpl<T>::IsAttached()
 template<class T>
 inline void InPortTmpl<T>::Unattach()
 {
-	mpNode = 0;
+	if( !IsAttached() )
+		return;
+	if(mpNode)
+	{
+		mpNode->RemoveInPortConnection( this, mpRegion );
+		delete mpRegion;
+		mpNode = 0;
+		mpRegion = 0;
+	}
 	mData.SetPtr(NULL);
 }
 	

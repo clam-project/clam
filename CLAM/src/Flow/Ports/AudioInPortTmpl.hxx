@@ -93,6 +93,10 @@ inline void InPortTmpl<Audio>::Attach( NodeBase& node)
 
 inline void InPortTmpl<Audio>::Attach(Node<Audio>& node)
 {
+	CLAM_ASSERT( mpNode == 0, "InPortTmpl::Attach. Trying to attach an inport already connected"
+		     "Try to call Unattach before connect another time the port" );
+	CLAM_ASSERT( mpRegion == 0, "InPortTmpl::Attach. Trying to attach an inport already connected"
+		     "Try to call Unattach before connect another time the port" );
 	mpData = 0;
 	mpNode = &node;
 	mpRegion = node.NewReader(this, Hop(), Length());
@@ -111,8 +115,18 @@ inline bool InPortTmpl<Audio>::IsAttached()
 }
 inline void InPortTmpl<Audio>::Unattach()
 {
-	mpNode = 0;
+	if( !IsAttached() )
+		return;
+
+	if(mpNode)
+	{
+		mpNode->RemoveInPortConnection( this, mpRegion );
+		delete mpRegion;
+		mpNode = 0;
+		mpRegion = 0;
+	}
 	mpData = 0;
+
 }
 
 void InPortTmpl<Audio>::Accept(DataVisitor& v)
