@@ -80,6 +80,14 @@ namespace CLAM
 		/** Load input sound */
 		bool LoadInputSound(void);
 
+		virtual void DoAnalysis();
+
+		void AnalysisProcessing();
+
+		virtual void DoTracksCleanup();
+
+		void TracksCleanupProcessing();
+
 		/** Perform analysis. Requires a valid configuration file to be loaded */
 		void Analyze(void);
 		/** Perform synthesis. Requires a valid configuration file to be loaded 
@@ -158,10 +166,23 @@ namespace CLAM
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
 
+		CLAMGUI::Progress* mCurrentProgressIndicator;
+		CLAMGUI::WaitMessage* mCurrentWaitMessage;
+
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
 		/** Creates a wait message. Implemented both in GUI and stdio versions */
 		virtual CLAMGUI::WaitMessage* CreateWaitMessage(const char* title) = 0;
+
+		void DestroyProgressIndicator();
+
+		void DestroyWaitMessage();
+
+		inline bool HasToDoTracksCleaning() const
+		{
+			return mGlobalConfig.GetDoCleanTracks();
+		}
+		
 	};
 
 };

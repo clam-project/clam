@@ -61,6 +61,7 @@ using namespace CLAMGUI;
 using namespace CLAM;
 
 AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
+	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
 	mHaveConfig = false;
 	mHaveAnalysis = false;
@@ -72,6 +73,18 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 
 	mpTransformation=NULL;
 
+}
+
+void AnalysisSynthesisExampleBase::DestroyWaitMessage( )
+{
+	delete mCurrentWaitMessage;
+	mCurrentWaitMessage = NULL;
+}
+
+void AnalysisSynthesisExampleBase::DestroyProgressIndicator( )
+{
+	delete mCurrentProgressIndicator;
+	mCurrentProgressIndicator = NULL;
 }
 
 AnalysisSynthesisExampleBase::~AnalysisSynthesisExampleBase(void)
@@ -306,8 +319,9 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	return mHaveAudioIn;
 }
 
-void AnalysisSynthesisExampleBase::Analyze(void)
+void AnalysisSynthesisExampleBase::AnalysisProcessing()
 {
+
 	TSize size = mAudioIn.GetSize();
 	
 	SMSAnalysis myAnalysis(mAnalConfig);
@@ -329,7 +343,7 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
 	
-	CLAMGUI::Progress* pct = CreateProgress("Analysis Processing",0,float(size));
+
 	myAnalysis.Start();
 
 	do
@@ -337,30 +351,53 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 		myAnalysis.Do(mSegment);
 		mSegment.mCurrentFrameIndex++;
 	    k+=step;
-		pct->Update(float(k));
+		mCurrentProgressIndicator->Update(float(k));
 	}  while(k<=size-step);
 
 	myAnalysis.Stop();
-	delete pct;
+
 	
+}
+
+void AnalysisSynthesisExampleBase::TracksCleanupProcessing()
+{
+	CleanTracksConfig clcfg;
+	clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
+	CleanTracks myCleanTracks;
+	myCleanTracks.Configure(clcfg);
+	myCleanTracks.Start();
+	myCleanTracks.Do(mSegment);
+	myCleanTracks.Stop();	
+
+}
+
+void AnalysisSynthesisExampleBase::DoAnalysis()
+{
+	TSize size = mAudioIn.GetSize();
+	
+	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
+	AnalysisProcessing();
+	DestroyProgressIndicator();
+}
+
+void AnalysisSynthesisExampleBase::DoTracksCleanup()
+{
+	mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
+	TracksCleanupProcessing();
+	DestroyWaitMessage();
+
+}
+
+void AnalysisSynthesisExampleBase::Analyze(void)
+{
+	DoAnalysis();
 	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
 	and included in SMSAnalysis*/
-
-	if( mGlobalConfig.GetDoCleanTracks() ){
-		CLAMGUI::WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
-	
-		CleanTracksConfig clcfg;
-		clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
-		clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
-		CleanTracks myCleanTracks;
-		myCleanTracks.Configure(clcfg);
-		myCleanTracks.Start();
-		myCleanTracks.Do(mSegment);
-		myCleanTracks.Stop();
-
-		delete wm;
-	}
-
+	if ( HasToDoTracksCleaning() )
+		{
+			DoTracksCleanup();
+		}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
 }
