@@ -710,12 +710,12 @@ in metadata extraction from an input sound.*/
 		myNote.UpdateData();
 
 		// Compute Fundamental frequency mean
-		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());
+		TIndex b=Round(2*mSegment.GetChildren()[i].GetBeginTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());
 		TIndex e;
 		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())
-			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
+			e=Round(2*mSegment.GetChildren()[i].GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 		else
-			e=roundInt(2*mSegment.GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
+			e=Round(2*mSegment.GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 
 		int j;
 		// Compute mean
