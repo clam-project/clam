@@ -744,7 +744,7 @@ private:
 	template <unsigned order>
 	CentralMoment<order,abs,T,U> & GetCentralMomentFunctor()
 	{
-		CLAM_ASSERT( (order-1) < mCentralMoments.Size(),
+		CLAM_ASSERT( signed(order-1) < mCentralMoments.Size(),
 			"Calling for a Central Moment order above the configured one");
 
 		typedef CentralMoment<order,abs,T,U> CentralMomentN;
