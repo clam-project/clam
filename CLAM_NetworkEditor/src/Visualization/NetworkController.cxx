@@ -45,7 +45,6 @@ NetworkController::NetworkController()
 	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
 	
 	SlotRemoveProcessing.Wrap( this, &NetworkController::RemoveProcessing );
-//	SlotProcessingControllerNeedsRebuild.Wrap( this, &NetworkController::ProcessingControllerNeedsRebuild );
 	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkController::RebuildProcessingPresentationAttachedTo );
 	SlotRemoveAllConnections.Wrap( this, &NetworkController::RemoveAllConnections );
 	SlotAddProcessing.Wrap( this, &NetworkController::AddProcessing );
