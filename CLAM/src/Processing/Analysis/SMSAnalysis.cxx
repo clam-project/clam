@@ -67,6 +67,9 @@ bool SMSAnalysis::ConfigureChildren()
 void SMSAnalysis::ConfigureData()
 {
 	mAudioFrameIndex=0;
+	
+	mAudioProvider.SetSize( mConfig.GetHopSize() );
+	mAudioProvider.SetHop( mConfig.GetHopSize() );
 }
 
 void SMSAnalysis::AttachChildren()
@@ -78,10 +81,6 @@ bool SMSAnalysis::ConcreteStart()
 {
 	//we have to initialize internal counter
 	mAudioFrameIndex=0;
-	
-	mAudioProvider.SetSize( mConfig.GetHopSize() );
-	mAudioProvider.SetHop( mConfig.GetHopSize() );
-	
 	return ProcessingComposite::ConcreteStart();
 }
 
@@ -102,6 +101,7 @@ bool SMSAnalysis::Do(Frame& in)
 
 	if(mAudioProvider.CanProduce())
 	{
+		
 		mAudioProvider.SetSampleRate( in.GetAudioFrame().GetSampleRate() );
 		mAudioProvider.GetAudio().GetBuffer() = in.GetAudioFrame().GetBuffer();
 		mAudioProvider.Produce();

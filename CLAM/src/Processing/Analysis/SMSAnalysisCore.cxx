@@ -150,8 +150,12 @@ bool SMSAnalysisCore::ConcreteStart()
 {
 	if( mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort() )
 	{
-		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetSize( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
-		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetHop( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
+		// TODO: it must be solved by the flow control
+		if(mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->GetSize()%2!=0)
+		{
+			mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetSize( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
+			mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetHop( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
+		}
 		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->CenterEvenRegions();
 	}
 	return ProcessingComposite::ConcreteStart();
