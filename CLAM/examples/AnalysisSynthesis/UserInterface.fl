@@ -19,377 +19,10 @@ decl {class AnalysisSynthesisExampleGUI;} {public
 
 decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {} 
 
-class Configuration {} {
-  decl {public: CLAM::SMSAnalysisSynthesisConfig* mConfig;} {public
-  }
-  Function {Configuration(CLAM::SMSAnalysisSynthesisConfig* config)} {open
-  } {
-    code {mConfig = config;} {}
-    Fl_Window mWindow {
-      label {Configure the Analysis/Synthesis parameters}
-      callback {delete mWindow;} open
-      private xywh {37 23 536 740} color 16 hide
-      code0 {mWindow->show();}
-    } {
-      Fl_Box {} {
-        private xywh {10 15 515 115} box SHADOW_BOX color 16 labeltype NO_LABEL
-      }
-      Fl_Box {} {
-        label {Input & Output Files}
-        private xywh {15 5 120 20} box FLAT_BOX color 16 labelsize 12 align 16
-      }
-      Fl_Input mFileInName {
-        label {Input Sound File:}
-        private xywh {115 25 355 20} labelsize 12 textsize 12
-      }
-      Fl_Input mFileOutName {
-        label {Output Sound File:}
-        private xywh {125 50 345 20} labelsize 12 textsize 12
-      }
-      Fl_Input mXMLInName {
-        label {Input XML File:}
-        private xywh {105 75 365 20} labelsize 12 textsize 12
-      }
-      Fl_Input mXMLOutName {
-        label {Output XML File:}
-        private xywh {115 100 355 20} labelsize 12 textsize 12
-      }
-      Fl_Box {} {
-        private xywh {10 145 515 325} box SHADOW_BOX color 16 labeltype NO_LABEL
-      }
-      Fl_Box {} {
-        label {Analysis Parameters}
-        private xywh {15 135 120 20} box FLAT_BOX color 16 labelsize 12 align 16
-      }
-      Fl_Value_Input {} {
-        label {Hop size:}
-        callback {mConfig->SetAnalysisHopSize(o->value());}
-        private xywh {75 240 80 20} labelsize 12 textsize 12
-      }
-      Fl_Choice {} {
-        label {Analysis Window Size:}
-        callback {printf("Value= %d\\n",atoi(o->text()));
-mConfig->SetAnalysisWindowSize(o->value()*512);}
-        private xywh {20 170 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label 512
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 1024
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 2048
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 4096
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 8192
-          private xywh {0 0 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Analysis Window Type:}
-        private xywh {20 210 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label {Kaiser-Bessel 17}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 18}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 19}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 20}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 25}
-          private xywh {60 60 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 30}
-          private xywh {70 70 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 35}
-          private xywh {80 80 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 74}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 62}
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 70}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Hamming
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Triangular
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92 Trans Main Lobe}
-          private xywh {10 10 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Residual Window Size:}
-        callback {printf("Value= %d\\n",atoi(o->text()));
-mConfig->SetAnalysisWindowSize(o->value()*512);}
-        private xywh {280 170 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label 512
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 1024
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 2048
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 4096
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 8192
-          private xywh {10 10 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Residual Window Type:}
-        private xywh {280 210 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label {Kaiser-Bessel 17}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 18}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 19}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 20}
-          private xywh {60 60 100 20} labelsize 13
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 25}
-          private xywh {70 70 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 30}
-          private xywh {80 80 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 35}
-          private xywh {90 90 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 74}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 62}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 70}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Hamming
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Triangular
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92 Trans Main Lobe}
-          private xywh {20 20 100 20} labelsize 12
-        }
-      }
-      Fl_Value_Slider {} {
-        label {Zero Padding Factor:}
-        private xywh {140 270 375 20} type {Horz Fill} color 16 selection_color 24 labelsize 12 align 4 maximum 10000 step 10
-      }
-      Fl_Light_Button {} {
-        label {Analysis Harmonic}
-        private xywh {20 440 130 20} labelsize 12
-      }
-      Fl_Light_Button {} {
-        label {Do Clean Tracks}
-        private xywh {395 440 120 20} labelsize 12
-      }
-      Fl_Box {} {
-        private xywh {10 485 515 140} box SHADOW_BOX color 16 labeltype NO_LABEL
-      }
-      Fl_Box {} {
-        label {Synthesis Parameters}
-        private xywh {20 475 125 20} box FLAT_BOX color 16 labelsize 12 align 16
-      }
-      Fl_Choice {} {
-        label {Window Size:}
-        callback {printf("Value= %d\\n",atoi(o->text()));
-mConfig->SetAnalysisWindowSize(o->value()*512);}
-        private xywh {95 495 235 20} labelsize 12 textsize 12
-      } {
-        menuitem {} {
-          label 512
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 1024
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 2048
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 4096
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 8192
-          private xywh {10 10 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Window Type:}
-        private xywh {100 520 235 20} labelsize 12 textsize 12
-      } {
-        menuitem {} {
-          label {Kaiser-Bessel 17}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 18}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 19}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 20}
-          private xywh {60 60 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 25}
-          private xywh {70 70 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 30}
-          private xywh {80 80 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 35}
-          private xywh {90 90 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 74}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 62}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 70}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Hamming
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Triangular
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92 Trans Main Lobe}
-          private xywh {20 20 100 20} labelsize 12
-        }
-      }
-      Fl_Value_Input {} {
-        label {Hop size: }
-        callback {mConfig->SetAnalysisHopSize(o->value());}
-        private xywh {75 545 80 20} labelsize 12 textsize 12
-      }
-      Fl_Value_Input {} {
-        label {Zero Padding Factor:}
-        callback {mConfig->SetAnalysisHopSize(o->value());}
-        private xywh {140 570 80 20} labelsize 12 textsize 12
-      }
-      Fl_Choice {} {
-        label {Phase Management Type:}
-        private xywh {165 595 235 20} labelsize 12 textsize 12
-      } {
-        menuitem {} {
-          label Align
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Random
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Continuation
-          private xywh {60 60 100 20} labelsize 12
-        }
-      }
-      Fl_Button {} {
-        label {Dump on an XML File...}
-        private xywh {215 705 155 25} labelsize 12
-      }
-      Fl_Button {} {
-        label {Set Configuration}
-        private xywh {390 705 135 25} labelsize 12
-      }
-      Fl_Button {} {
-        label {Load from an XML File...}
-        private xywh {35 705 155 25} labelsize 12
-      }
-    }
-  }
+decl {\#include "CLAMPresentations.hxx"} {public
+} 
+
+decl {\#include "CLAMViews.hxx"} {public
 } 
 
 class UserInterface {open
@@ -399,34 +32,38 @@ class UserInterface {open
   Function {UserInterface()} {open
   } {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open selected
-      xywh {4 30 1114 796} color 23 hide resizable
-      code0 {mWindow2=NULL;}
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
+      xywh {182 512 872 548} color 23 resizable
+      code0 {mWindow2=NULL;} visible
     } {
       Fl_Input mConfigurationText {
         label {Configuration File}
-        private xywh {105 25 985 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
+        private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
       Fl_Menu_Bar mMenuBar {open
-        private xywh {0 0 1110 20} box THIN_UP_BOX labelsize 13 textsize 12
+        private xywh {0 0 905 20} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input open
+          label Input open selected
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
-            label {Configure...}
-            callback {LoadConfiguration();
-//EditConfiguration();}
+            label {Load Configure...}
+            callback {LoadConfiguration();}
             private xywh {5 5 100 20} labelsize 12
           }
           menuitem {} {
             label {Edit Configure...}
             callback {EditConfiguration();}
-            private xywh {15 15 100 20} labelsize 12
+            private xywh {15 15 100 20} labelsize 12 hide
+          }
+          menuitem {} {
+            label {Store Configure...}
+            callback {StoreConfiguration();}
+            private xywh {15 15 100 20} labelsize 12 hide
           }
           submenu {} {
-            label {Analysis Data} open
+            label {Analysis Data}
             private xywh {35 35 100 20} labelsize 12
           } {
             menuitem {} {
@@ -455,23 +92,8 @@ class UserInterface {open
               private xywh {55 55 100 20} labelsize 12 deactivate
             }
           }
-          submenu mMelodySM {
-            label Melody
-            private xywh {15 15 100 20} labelsize 12 deactivate
-          } {
-            menuitem mMelodyAnalyze {
-              label Analyze
-              callback {AnalyzeMelody();}
-              private xywh {65 65 100 20} labelsize 12
-            }
-            menuitem mMelodyStore {
-              label Store
-              callback {StoreMelody();}
-              private xywh {65 65 100 20} labelsize 12 deactivate
-            }
-          }
           submenu mDisplayInSM {
-            label Display
+            label Display open
             private xywh {10 10 100 20} labelsize 12 deactivate
           } {
             menuitem mDisplayInSound {
@@ -482,7 +104,7 @@ class UserInterface {open
             menuitem mDisplayInSpec {
               label Spectrum
               callback {DisplayInputSpectrum();}
-              private xywh {45 45 100 20} labelsize 12 deactivate
+              private xywh {45 45 100 20} labelsize 12 hide deactivate
             }
           }
           menuitem mPlayInputSound {
@@ -526,7 +148,7 @@ class UserInterface {open
             }
           }
           submenu mVisualizeOutputs {
-            label Display open
+            label Display
             private xywh {5 5 100 20} labelsize 12
           } {
             menuitem {} {
@@ -546,7 +168,7 @@ class UserInterface {open
             }
           }
           submenu mPlayOutputs {
-            label Play open
+            label Play
             private xywh {0 0 100 20} labelsize 12 deactivate
           } {
             menuitem {} {
@@ -565,6 +187,21 @@ class UserInterface {open
               private xywh {0 0 100 20} labelsize 12
             }
           }
+          submenu mMelodySM {
+            label Melody
+            private xywh {20 20 100 20} labelsize 12 deactivate
+          } {
+            menuitem mMelodyAnalyze {
+              label Analyze
+              callback {AnalyzeMelody();}
+              private xywh {70 70 100 20} labelsize 12
+            }
+            menuitem mMelodyStore {
+              label Store
+              callback {StoreMelody();}
+              private xywh {70 70 100 20} labelsize 12 deactivate
+            }
+          }
         }
         menuitem {} {
           label Exit
@@ -579,10 +216,14 @@ Exit();}
         }
       }
       Fl_Box mSmartTile {
-        private xywh {5 50 1095 725} color 23 resizable
+        private xywh {5 50 860 490} color 23 resizable
         class Fl_Smart_Tile
       }
     }
+    code {for(int i=0; i<4; i++){
+	mAttachedViews[i]=NULL;
+	mAttachedPresentations[i]=NULL;
+}} {}
   }
   Function {AboutWindow()} {private return_type void
   } {
@@ -590,8 +231,8 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {408 300 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10 hide
-      code0 {mWindow2->show();} noborder
+      private xywh {433 325 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
@@ -603,7 +244,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/iua.xpm}
-        private xywh {360 15 50 60}
+        private xywh {360 15 50 60} labeltype image
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -611,12 +252,13 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55}
+        private xywh {10 20 75 55} labeltype image
       }
     }
   }
   decl {void LoadConfiguration(void);} {}
   decl {void EditConfiguration(void);} {}
+  decl {void StoreConfiguration(void);} {}
   decl {void DisplayInputSound(void);} {}
   decl {void DisplayInputSpectrum(void);} {}
   decl {void Analyze(void);} {}
@@ -635,8 +277,11 @@ mWindow2=NULL;}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
   decl {void Attach(Fl_Window* canvas);} {}
+  decl {void Detach(Fl_Window* canvas);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
+  decl {CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];} {}
+  decl {CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];} {}
 } 

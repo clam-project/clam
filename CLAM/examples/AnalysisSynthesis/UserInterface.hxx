@@ -7,48 +7,12 @@
 class Fl_Smart_Tile;
 #include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"
 class AnalysisSynthesisExampleGUI;
+#include "CLAMPresentations.hxx"
+#include "CLAMViews.hxx"
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
 #include <FL/Fl_Input.H>
-#include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Choice.H>
-#include <FL/Fl_Value_Slider.H>
-#include <FL/Fl_Light_Button.H>
-#include <FL/Fl_Button.H>
-
-class Configuration {
-public:
-  public: CLAM::SMSAnalysisSynthesisConfig* mConfig;
-  Configuration(CLAM::SMSAnalysisSynthesisConfig* config);
-private:
-  Fl_Window *mWindow;
-  inline void cb_mWindow_i(Fl_Window*, void*);
-  static void cb_mWindow(Fl_Window*, void*);
-  Fl_Input *mFileInName;
-  Fl_Input *mFileOutName;
-  Fl_Input *mXMLInName;
-  Fl_Input *mXMLOutName;
-  inline void cb_Hop_i(Fl_Value_Input*, void*);
-  static void cb_Hop(Fl_Value_Input*, void*);
-  inline void cb_Analysis_i(Fl_Choice*, void*);
-  static void cb_Analysis(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Analysis[];
-  static Fl_Menu_Item menu_Analysis1[];
-  inline void cb_Residual_i(Fl_Choice*, void*);
-  static void cb_Residual(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Residual[];
-  static Fl_Menu_Item menu_Residual1[];
-  inline void cb_Window_i(Fl_Choice*, void*);
-  static void cb_Window(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Window[];
-  static Fl_Menu_Item menu_Window1[];
-  inline void cb_Hop1_i(Fl_Value_Input*, void*);
-  static void cb_Hop1(Fl_Value_Input*, void*);
-  inline void cb_Zero_i(Fl_Value_Input*, void*);
-  static void cb_Zero(Fl_Value_Input*, void*);
-  static Fl_Menu_Item menu_Phase[];
-};
 #include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Box.H>
 
 class UserInterface {
 public:
@@ -59,27 +23,22 @@ private:
   Fl_Input *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
-  inline void cb_Configure_i(Fl_Menu_*, void*);
-  static void cb_Configure(Fl_Menu_*, void*);
-  inline void cb_Edit_i(Fl_Menu_*, void*);
-  static void cb_Edit(Fl_Menu_*, void*);
   inline void cb_Load_i(Fl_Menu_*, void*);
   static void cb_Load(Fl_Menu_*, void*);
+  inline void cb_Edit_i(Fl_Menu_*, void*);
+  static void cb_Edit(Fl_Menu_*, void*);
+  inline void cb_Store_i(Fl_Menu_*, void*);
+  static void cb_Store(Fl_Menu_*, void*);
+  inline void cb_Load1_i(Fl_Menu_*, void*);
+  static void cb_Load1(Fl_Menu_*, void*);
   static Fl_Menu_Item *mStoreAnalysisData;
   inline void cb_mStoreAnalysisData_i(Fl_Menu_*, void*);
   static void cb_mStoreAnalysisData(Fl_Menu_*, void*);
-  inline void cb_Load1_i(Fl_Menu_*, void*);
-  static void cb_Load1(Fl_Menu_*, void*);
+  inline void cb_Load2_i(Fl_Menu_*, void*);
+  static void cb_Load2(Fl_Menu_*, void*);
   static Fl_Menu_Item *mDoTransformation;
   inline void cb_mDoTransformation_i(Fl_Menu_*, void*);
   static void cb_mDoTransformation(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodySM;
-  static Fl_Menu_Item *mMelodyAnalyze;
-  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
-  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodyStore;
-  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
-  static void cb_mMelodyStore(Fl_Menu_*, void*);
   static Fl_Menu_Item *mDisplayInSM;
   static Fl_Menu_Item *mDisplayInSound;
   inline void cb_mDisplayInSound_i(Fl_Menu_*, void*);
@@ -102,22 +61,29 @@ private:
   static void cb_Sound(Fl_Menu_*, void*);
   inline void cb_Sinusoidal_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal(Fl_Menu_*, void*);
-  inline void cb_Residual1_i(Fl_Menu_*, void*);
-  static void cb_Residual1(Fl_Menu_*, void*);
+  inline void cb_Residual_i(Fl_Menu_*, void*);
+  static void cb_Residual(Fl_Menu_*, void*);
   static Fl_Menu_Item *mVisualizeOutputs;
   inline void cb_Sound1_i(Fl_Menu_*, void*);
   static void cb_Sound1(Fl_Menu_*, void*);
   inline void cb_Sinusoidal1_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal1(Fl_Menu_*, void*);
-  inline void cb_Residual2_i(Fl_Menu_*, void*);
-  static void cb_Residual2(Fl_Menu_*, void*);
+  inline void cb_Residual1_i(Fl_Menu_*, void*);
+  static void cb_Residual1(Fl_Menu_*, void*);
   static Fl_Menu_Item *mPlayOutputs;
   inline void cb_Sound2_i(Fl_Menu_*, void*);
   static void cb_Sound2(Fl_Menu_*, void*);
   inline void cb_Sinusoidal2_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal2(Fl_Menu_*, void*);
-  inline void cb_Residual3_i(Fl_Menu_*, void*);
-  static void cb_Residual3(Fl_Menu_*, void*);
+  inline void cb_Residual2_i(Fl_Menu_*, void*);
+  static void cb_Residual2(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mMelodySM;
+  static Fl_Menu_Item *mMelodyAnalyze;
+  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
+  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mMelodyStore;
+  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
+  static void cb_mMelodyStore(Fl_Menu_*, void*);
   inline void cb_Exit_i(Fl_Menu_*, void*);
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
@@ -129,6 +95,7 @@ private:
   static void cb_mWindow2(Fl_Window*, void*);
   void LoadConfiguration(void);
   void EditConfiguration(void);
+  void StoreConfiguration(void);
   void DisplayInputSound(void);
   void DisplayInputSpectrum(void);
   void Analyze(void);
@@ -147,9 +114,12 @@ private:
   void Transform(void);
   void Exit(void);
   void Attach(Fl_Window* canvas);
+  void Detach(Fl_Window* canvas);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();
   void PlayResidual();
+  CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];
+  CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];
 };
 #endif
