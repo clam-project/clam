@@ -156,7 +156,6 @@ namespace CLAMTest {
 		int proto1,proto2,proto3;
 		TData max_err = 0.00001;
 		SpecAdderConfig cfg;
-		cfg.SetName("2 inputs adder");
 		cfg.SetNInputs(2);
 		if (adder.GetExecState()==Processing::Running)
 			adder.Stop();
