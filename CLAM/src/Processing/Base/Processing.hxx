@@ -95,8 +95,8 @@ namespace CLAM {
 
 	/**
 	 * This is the base of all the CLAM processing object classes.
-	 * <p>
-	 * It holds information common to all objects: lists of ports,
+	 * 
+	 * It holds common information to all processings: lists of ports,
 	 * lists of controls, name, etc.  */
 	class Processing: public Component {
 	public:
