@@ -75,8 +75,8 @@ public:
 	EnvelopeGenerator(const EnvelopeGeneratorConfig& c = EnvelopeGeneratorConfig())
 		:
 		mEnvelopePos("EnvelopePosition",this, &EnvelopeGenerator::UpdateEnvelopePosition),
-		Input("Input",this,1),
-		Output("Output",this,1)
+		Input("Input",this),
+		Output("Output",this)
 	{
 		Configure(c);
 	}
@@ -111,8 +111,8 @@ public:
 	bool Do(void)
 	{
 		bool res = Do(Input.GetData(),Output.GetData());
-		Input.LeaveData();
-		Output.LeaveData();
+		Input.Consume();
+		Output.Produce();
 		return res;
 	}
 

@@ -35,9 +35,9 @@ namespace CLAM {
 
 
 	EnvelopeModulator::EnvelopeModulator(const EnvModulatorConfig& c)
-		: InputEnvelope("Input Envelope",this,1),
-		  InputAudio("Input Audio",this,1),
-		  Output("Output Audio",this,1)
+		: InputEnvelope("Input Envelope",this),
+		  InputAudio("Input Audio",this),
+		  Output("Output Audio",this)
 	{
 		Configure(c);
 	}
@@ -69,9 +69,9 @@ namespace CLAM {
 		bool res = Do(InputEnvelope.GetData(),
 					  InputAudio.GetData(),
 					  Output.GetData());
-		InputEnvelope.LeaveData();
-		InputAudio.LeaveData();
-		Output.LeaveData();	  
+		InputEnvelope.Consume();
+		InputAudio.Consume();
+		Output.Produce();	  
 		return res;
 	}
 

@@ -58,8 +58,7 @@ namespace CLAM {
 
 	void IntervalAmplitudeAverages::AdvanceFrame()
 	{
-		int i;
-		for ( i = -mCurrentPos; i<=0; i++)
+		for (int i = -mCurrentPos; i<=0; i++)
 			Current(i) = Current(i+mPointsPerFrame);
 	}
 
@@ -68,9 +67,8 @@ namespace CLAM {
 										   int interval_start,
 										   int interval_end)
 	{
-		int i;
 		TData interval_mean = 0.0;
-		for (i=interval_start; i<interval_end; i++)
+		for (int i=interval_start; i<interval_end; i++)
 			interval_mean += fabs(audio[i]);
 		interval_mean /= interval_end - interval_start;
 		Current(interval) = interval_mean;
@@ -83,9 +81,8 @@ namespace CLAM {
 
 	TData IntervalAmplitudeAverages::Acumulated(int ipoint)
 	{
-		int i;
 		TData res =0.0;
-		for (i=0; i< mNMemoryPoints; i++)
+		for (unsigned i=0; i< mNMemoryPoints; i++)
 			res += AcumulationShape(i) * Current(ipoint-i);
 		return res;
 	}
@@ -126,8 +123,8 @@ namespace CLAM {
 		  CONTROL(IntegrationLength),
 		  CONTROL(NormalLevel),
 		  CONTROL(SilenceLevel),
-		  Input("Input",this,1),
-		  Output("Output",this,1),
+		  Input("Input",this),
+		  Output("Output",this),
 		  mPointsPerFrame(0),
 		  mNMemoryPoints(0),
 		  mNormalLevel(0.0),
@@ -430,8 +427,8 @@ namespace CLAM {
 	bool EnvelopeExtractor::Do()
 	{ 
 		bool res = Do(Input.GetData(),Output.GetData()); 
-		Input.LeaveData();
-		Output.LeaveData();
+		Input.Consume();
+		Output.Produce();
 		return res;
 	}
 
