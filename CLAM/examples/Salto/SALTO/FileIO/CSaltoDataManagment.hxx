@@ -1,12 +1,14 @@
 #ifndef _CSaltoDataManagment_
 #define _CSaltoDataManagment_
 
+#ifndef SALTO_CONSOLE
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <string.h>
+#endif
 
 //#include "CSaltoParameter.hxx"
 #include "Parameters.hxx"
@@ -50,7 +52,7 @@ private:
 public:
 	
 	/* data load/save */
-	void			LoadSDIFDatabase();
+	void      LoadSDIFDatabase();
 	void      StoreSaltoDatabase();
 	void      LoadSaltoDatabase();
 	void      LoadStatTmplDatabase();
@@ -110,8 +112,11 @@ private:
 	Parameters               *mpParams;	
 	
 	// Dislay
+#ifndef SALTO_CONSOLE
+
 	Fl_Window *mpLoadDisplayWindow;
 	Fl_Output *mpTextBox,*mpCurrentTaskDisplay;
+#endif
 };
 
 }

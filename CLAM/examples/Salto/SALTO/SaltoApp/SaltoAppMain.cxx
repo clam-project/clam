@@ -13,28 +13,12 @@
 #include "MIDIInControl.hxx"
 #include "AudioFileOut.hxx"
 #include "MIDIHandler.hxx"
-
+#include "MIDIBreathController.hxx"
 #include <iostream>
 
 using CLAMGUI::WidgetTKWrapper;
 using namespace CLAM;
 
-struct BreathController
-{
-public:
-	MIDIInControl	mInNote;
-	MIDIInControl	mAirSpeed;
-	
-	BreathController( const MIDIInConfig &note,
-					  const MIDIInConfig &airspeed )
-		: mInNote( note ), mAirSpeed( airspeed ) 
-	{
-	}
-	
-	BreathController()
-	{
-	}
-};
 
 
 class SaltoApp:public GUIAudioApplication
@@ -177,7 +161,7 @@ protected:
 			inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
 			inCtrlCfg.SetFilter(11);
 
-			BreathController breathController( inBreathNoteCfg, inCtrlCfg );
+			SALTO::BreathController breathController( inBreathNoteCfg, inCtrlCfg );
 
 			pitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
 
@@ -323,7 +307,7 @@ protected:
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
 		inCtrlCfg.SetFilter(0x02);
 
-		BreathController breathController( inBreathNoteCfg, inCtrlCfg );
+		SALTO::BreathController breathController( inBreathNoteCfg, inCtrlCfg );
 
 		pitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
 

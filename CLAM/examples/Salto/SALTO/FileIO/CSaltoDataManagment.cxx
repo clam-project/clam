@@ -1,9 +1,12 @@
+#ifndef SALTO_CONSOLE
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Widget.H>
+#endif
 #include "CSaltoDataManagment.hxx"
 #include "CSaltoFileIO.hxx"
 #include "Segment.hxx"
 #include "Err.hxx"
+#include <iostream>
 
 namespace CLAM
 {
@@ -62,13 +65,16 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
   mnStatTemplArrays = 0;
   mpParams = pParams;
 */
+  int i;
+
   mpStatTemplDataArray=new Array<CSaltoStatTmplData>(MAX_STAT_TEMPLATES);
   
   // Load Process Display ..
   mSpectralSeg.SetSize(MAX_SPECTRAL_SEGMENTS);
+#ifndef SALTO_CONSOLE
+
   mpLoadDisplayWindow = new Fl_Window(240,90);
   
-  int i;
   mpLoadDisplayWindow->color(FL_GRAY);
   mpTextBox = new Fl_Output (10,10,220,40);
   mpTextBox->color(FL_WHITE);
@@ -87,7 +93,7 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
   mpLoadDisplayWindow->show();
 
   Fl::check();
-	
+#endif	
 	// File-handling and Conversion
 	mpFileIO = new CSaltoFileIO();
 	if(mpFileIO==NULL)
@@ -134,9 +140,12 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
   strcat(filename,mpParams->GetFileNameOfSegmentPos(0));
 
 	LoadSDIFToEditPosition(filename);
+
+#ifndef SALTO_CONSOLE
 	
 	delete mpLoadDisplayWindow;
 	mpLoadDisplayWindow=NULL;
+#endif 
 
 	delete mpStatTemplDataArray;
 	
@@ -430,12 +439,16 @@ void CSaltoDataManagment::GetNextSynthFrame(CSaltoSynthFrame *pSynthFrame,TIndex
 //----------------------------------------------------------------------------//
 void CSaltoDataManagment::ShowLoadProcess(const char* text,float percentage)
 {
-  if (mpCurrentTaskDisplay!=NULL)
-  {
-    mpCurrentTaskDisplay->value(text);
-
-    Fl::check();
-  }
+#ifndef SALTO_CONSOLE
+	if (mpCurrentTaskDisplay!=NULL)
+		{
+			mpCurrentTaskDisplay->value(text);
+			
+			Fl::check();
+		}
+#endif
+	std::cout << "Loading " << text << std::endl;
+	std::cout << percentage*100 << "% of Load done" << std::endl;
 }
 
 //correct pitch so all the frames in an spectral segment have the same base pitch

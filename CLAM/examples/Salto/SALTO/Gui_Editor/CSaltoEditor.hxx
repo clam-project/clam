@@ -1,6 +1,7 @@
 #ifndef _CSaltoEditor_
 #define _CSaltoEditor_
 
+#include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
