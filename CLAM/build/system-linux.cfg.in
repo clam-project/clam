@@ -30,6 +30,7 @@ LIBRARIES_RELEASE = \
 
 SOURCES_AUDIODEVICE = \
 	$(USE_ALSA?$(CLAM_PATH)/src/Tools/AudioIO/Linux/ALSAAudioDevice.cxx) \
+	$(USE_RTAUDIO?$(CLAM_PATH)/src/Tools/AudioIO/RtAudio/RtAAudioDevice.cxx) \
 
 SOURCES_MIDIDEVICE = \
 	$(USE_ALSA?$(CLAM_PATH)/src/Tools/MIDIIO/Linux/ALSAMIDIDevice.cxx) \
