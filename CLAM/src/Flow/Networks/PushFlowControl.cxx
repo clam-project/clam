@@ -49,15 +49,15 @@ void PushFlowControl::DoProcessings()
 
 
 void PushFlowControl::AddNewPossibleProcessingsToDo(
-	Processing * father, 
+	Processing * producer, 
 	std::list<Processing*> & toDo,
-	std::list<Processing*> & done )
+	std::list<Processing*> & executed )
 {
 	
 	// for each out port of the processing already executed
 	Processing::OutPortIterator itOutPort;		
-	for (itOutPort=father->GetOutPorts().Begin(); 
-	     itOutPort!=father->GetOutPorts().End(); 
+	for (itOutPort=producer->GetOutPorts().Begin(); 
+	     itOutPort!=producer->GetOutPorts().End(); 
 	     itOutPort++)
 	{
 		if (!(*itOutPort)->GetNode())
@@ -68,14 +68,14 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 		std::list< InPort* >::iterator itInPort;
 		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
 		{
-			Processing * son = (Processing*)(*itInPort)->GetProcessing();
-			if (AllFathersExecuted( son, done ))
-				toDo.push_back( son );
+			Processing * consumer = (Processing*)(*itInPort)->GetProcessing();
+			if (AreAllProducersExecuted( consumer, executed ))
+				toDo.push_back( consumer );
 		}
 	}
 }
 
-bool PushFlowControl::AllFathersExecuted( Processing * son, std::list<Processing*> & done)
+bool PushFlowControl::AreAllProducersExecuted( Processing * son, std::list<Processing*> & done)
 {
 	Processing::InPortIterator itInPort;
 	for (itInPort=son->GetInPorts().Begin(); 
