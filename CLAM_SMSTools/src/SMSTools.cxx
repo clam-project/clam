@@ -58,7 +58,7 @@ namespace CLAMGUI
 		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
 		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
 
-		Fl_Tooltip::delay( 0.01 );
+		Fl_Tooltip::delay( 0.01f );
 		Fl_Tooltip::size( 10 );
 		Fl_Tooltip::enable();
 
