@@ -25,10 +25,6 @@
 #include "Assert.hxx"
 #include "AudioRenderingManager.hxx"
 
-
-#include <iostream>
-
-
 namespace CLAMVM
 {
 	Fl_Gl_Single_Browsable_Display::Fl_Gl_Single_Browsable_Display( int X, int Y, int W, int H, const char* label)
