@@ -20,16 +20,16 @@
  */
 
 #include "VisualizationController.hxx"
-#include "DataTypes.hxx"
 
+#include "Segment.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
-
 #include "AudioAdapter.hxx"
 #include "LogMagSpectrumAdapter.hxx"
 
 #include "Fl_Browsable_Playable_Audio.hxx"
 #include "Fl_SMS_Spectrum.hxx"
+#include "Fl_SMS_SinTracks.hxx"
 
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
@@ -50,27 +50,21 @@ VisualizationController::VisualizationController(  )
 	: mAudioAdapters( eAudioDisplays ), mSpectrumAdapters( eSpectrumDisplays ),
 	  mAudioPresentations( eAudioDisplays, 0 ), mSpectrumPresentations( eSpectrumDisplays, 0 ),
 	  mDetachCallbackData( eNumDisplays ), mOpenDisplays( eNumDisplays, false ), mCanvas( 0 ),
-	  mAnalysisDone( false )
+	  mAnalysisDone( false ), mSinTracksWidget( NULL )
 {
-	for( int i = 0; i < eAudioDisplays; i++ )
-	{
-		// registering callback for notifying the ui the need of 'detaching'
-		mDetachCallbackData[ i ].view = ( enum DisplayList ) i;
-		mDetachCallbackData[ i ].vc = this;
-	}
-		
-	for( int i = 0; i < eSpectrumDisplays; i++ )
-	{
-		mDetachCallbackData[ i+eAudioDisplays ].view = ( enum DisplayList )(i + eAudioDisplays);
-		mDetachCallbackData[ i+eAudioDisplays ].vc = this;
-	}
+	InitDetachCallbackData();
 }
 
 VisualizationController::VisualizationController( Fl_Smart_Tile* canvas )
 	: mAudioAdapters( eAudioDisplays ), mSpectrumAdapters( eSpectrumDisplays ),
 	  mAudioPresentations( eAudioDisplays, 0 ), mSpectrumPresentations( eSpectrumDisplays, 0 ),
 	  mDetachCallbackData( eNumDisplays ), mOpenDisplays( eNumDisplays, false ), mCanvas( canvas ),
-	  mAnalysisDone( false )
+	  mAnalysisDone( false ), mSinTracksWidget( NULL )
+{
+	InitDetachCallbackData();
+}
+
+void VisualizationController::InitDetachCallbackData()
 {
 	for( int i = 0; i < eAudioDisplays; i++ )
 	{
@@ -84,9 +78,14 @@ VisualizationController::VisualizationController( Fl_Smart_Tile* canvas )
 		mDetachCallbackData[ i+eAudioDisplays ].view = ( enum DisplayList )(i + eAudioDisplays);
 		mDetachCallbackData[ i+eAudioDisplays ].vc = this;
 	}
+
+	mDetachCallbackData[ eSinTracks ].view = eSinTracks;
+	mDetachCallbackData[ eSinTracks ].vc = this;
 }
 
-VisualizationController::~VisualizationController(  ) { }
+VisualizationController::~VisualizationController(  ) 
+{ 
+}
 
 void VisualizationController::AnalysisDone ( )
 {
@@ -152,6 +151,16 @@ void VisualizationController::Detach( enum DisplayList view )
 		}
 		delete mSpectrumPresentations[ view-eAudioDisplays ];
 		break;
+	case eSinTracks:
+		mSinTracksWidget->hide();
+		if ( mCanvas )
+		{
+			mCanvas->remove( mSinTracksWidget );
+			mCanvas->redraw();
+		}
+		delete mSinTracksWidget;
+		mSinTracksWidget = NULL;
+		break;
 	}
 	mOpenDisplays[ view ] = false;
 }
@@ -171,7 +180,44 @@ void VisualizationController::Display ( enum DisplayList view )
 		case eSpectrumOut:
 			mSpectrumPresentations[ view ]->redraw();
 			break;
+		case eSinTracks:
+			mSinTracksWidget->redraw();
+			break;
 		}
+}
+
+void VisualizationController::Display( CLAM::Segment& data )
+{
+	if ( mSinTracksWidget )
+	{
+		mSinTracksAdapter.BindTo( data );
+		mSinTracksAdapter.Publish();
+		mSinTracksWidget->redraw();
+	}
+	else
+	{
+		int widgetWidth = 800;
+		int widgetHeight = 600;
+		if( mCanvas )
+		{
+			widgetWidth = mCanvas->w();
+			widgetHeight = mCanvas->h()/(mCanvas->children()+1);
+		}
+
+		mSinTracksWidget = new Fl_SMS_SinTracks( 0,0, widgetWidth, widgetHeight);
+		mSinTracksWidget->label( "Sinusoidal Tracks" );
+		mSinTracksWidget->callback( (Fl_Callback*)_Detach,&mDetachCallbackData[ eSinTracks ] );
+		mSinTracksWidget->AttachTo( mSinTracksAdapter );
+		mSinTracksAdapter.BindTo( data );
+
+		mSinTracksAdapter.Publish();
+
+		if ( mCanvas )
+			mCanvas->add( *mSinTracksWidget );
+		mSinTracksWidget->Show();
+		if ( mCanvas )
+			mCanvas->redraw();
+	}
 }
 
 void VisualizationController::Display ( enum DisplayList view, Audio& data )

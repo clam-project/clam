@@ -27,10 +27,10 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {585 192 872 548} hide resizable
-      code0 {mWindow2=NULL;}
+      xywh {514 237 872 548} resizable
+      code0 {mWindow2=NULL;} visible
     } {
-      Fl_Menu_Bar mMenuBar {
+      Fl_Menu_Bar mMenuBar {open
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
@@ -69,7 +69,7 @@ class UserInterface {open
           }
         }
         submenu {} {
-          label Analysis
+          label Analysis open
           xywh {0 0 100 20} labelsize 12
         } {
           menuitem mAnalyze {
@@ -102,6 +102,11 @@ class UserInterface {open
               private xywh {75 75 100 20} labelsize 12 deactivate
             }
           }
+          menuitem mSinTracksDisplay {
+            label {Display Sinusoidal Tracks}
+            callback {DisplaySinusoidalTracks();}
+            private xywh {0 0 100 20} labelsize 12 deactivate
+          }
         }
         submenu {} {
           label Transformation
@@ -119,7 +124,7 @@ class UserInterface {open
           }
         }
         submenu mSynthesize {
-          label Synthesis
+          label Synthesis open
           private xywh {0 0 100 20} labelsize 12 deactivate
         } {
           menuitem {} {
@@ -129,11 +134,11 @@ class UserInterface {open
           }
         }
         submenu mOutputSM {
-          label Output
+          label Output open
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mVisualizeOutputs {
-            label Display
+            label Display open
             private xywh {5 5 100 20} labelsize 12
           } {
             menuitem {} {
@@ -236,7 +241,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/iua.xpm}
-        private xywh {360 15 50 60} labeltype image
+        private xywh {360 15 50 60}
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -244,11 +249,11 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55} labeltype image
+        private xywh {10 20 75 55}
       }
     }
   }
-  decl {void Init(void);} {selected public
+  decl {void Init(void);} {public
   }
   decl {void LoadConfiguration(void);} {}
   decl {void EditConfiguration(void);} {}
@@ -275,4 +280,6 @@ mWindow2=NULL;}
   decl {void DisplayOutputSoundSinusoidal();} {}
   decl {void DisplayOutputSoundResidual();} {}
   decl {void Update();} {}
+  decl {void DisplaySinusoidalTracks();} {selected
+  }
 } 

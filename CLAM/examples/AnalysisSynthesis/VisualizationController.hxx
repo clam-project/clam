@@ -25,19 +25,22 @@
 #include <vector>
 
 #include "Fl_Smart_Tile.hxx"
-
+#include "DataTypes.hxx"
 #include "Enum.hxx"
-#include "Audio.hxx"
-#include "Spectrum.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include "SinTracksAdapter.hxx"
 
 class Fl_Window;
 class Fl_Smart_Tile;
 
-using CLAM::TData;
-using CLAM::Audio;
-using CLAM::Spectrum;
+
+namespace CLAM
+{
+	class Audio;
+	class Spectrum;
+	class Segment;
+}
 
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
@@ -48,6 +51,7 @@ namespace CLAMVM
 	class LogMagSpectrumAdapter;
 	class Fl_Browsable_Playable_Audio;
 	class Fl_SMS_Spectrum;
+	class Fl_SMS_SinTracks;
 
 	class VisualizationController
 	{
@@ -58,9 +62,10 @@ namespace CLAMVM
 			eAudioSinusoidal,
 			eAudioResidual,
 			eSpectrumIn,
-			eSpectrumOut
+			eSpectrumOut,
+			eSinTracks
 		};
-		enum { eNumDisplays=6 };
+		enum { eNumDisplays=7 };
 		enum { eAudioDisplays=4 };
 		enum { eSpectrumDisplays=2 };
 
@@ -75,8 +80,9 @@ namespace CLAMVM
 		void AnalysisToDo ( );
 		void CloseAll ( );
 		void Display ( enum DisplayList view );
-		void Display ( enum DisplayList view, Audio& data );
-		void Display ( enum DisplayList view, Spectrum& data );
+		void Display ( enum DisplayList view, CLAM::Audio& data );
+		void Display ( enum DisplayList view, CLAM::Spectrum& data );
+		void Display( CLAM::Segment& data );
 		void SetCanvas( Fl_Smart_Tile* canvas );
 
 	private:
@@ -86,6 +92,7 @@ namespace CLAMVM
 			VisualizationController* vc;
 		}; 
 
+		void InitDetachCallbackData();
 		bool mAnalysisDone;
 
 		void Detach( enum DisplayList view );
@@ -101,6 +108,8 @@ namespace CLAMVM
 		std::vector<Fl_SMS_Spectrum*> mSpectrumPresentations;
 
 		std::vector<bool> mOpenDisplays;
+		SinTracksAdapter  mSinTracksAdapter;
+		Fl_SMS_SinTracks* mSinTracksWidget;
 
 		static CLAM::Enum::tEnumValue sDisplayName[];
 	};

@@ -70,6 +70,8 @@ void UserInterface::LoadConfiguration(void)
 		Fl::redraw();
 		mAnalysisSynthesisExample->mVisualization.CloseAll();
 		mAnalysisSynthesisExample->mVisualization.AnalysisToDo();
+		mSinTracksDisplay->deactivate();
+
 	}		
 }
 
@@ -168,7 +170,7 @@ void UserInterface::Analyze(void)
 		mSynthesize->activate();
 		mMelodySM->activate();
 		mStoreAnalysisData->activate();
-
+		mSinTracksDisplay->activate();
 		mCounter->activate();
 		mCounter->range( 0, mAnalysisSynthesisExample->mSegment.GetnFrames() );
 		mCounter->step( 1 );
@@ -179,8 +181,11 @@ void UserInterface::Analyze(void)
 		if(mAnalysisSynthesisExample->mHaveTransformationScore)
 			mDoTransformation->activate();
 
-		ChangeFrame();
-
+		//ChangeFrame();
+		mAnalysisSynthesisExample->mVisualization.Display ( mAnalysisSynthesisExample->mVisualization.eAudioIn, 
+								    mAnalysisSynthesisExample->mAudioIn );
+		mAnalysisSynthesisExample->mVisualization.Display( mAnalysisSynthesisExample->mSegment );
+		
 		Fl::redraw();
 	}
 }
@@ -198,7 +203,8 @@ void UserInterface::Synthesize(void)
 
 void UserInterface::Exit(void)
 {
-	delete mWindow;
+	//delete mWindow;
+	mWindow->hide();
 }
 
 void UserInterface::StoreAnalysisData(void)
@@ -215,6 +221,11 @@ void UserInterface::DisplayInputSpectrum(void)
 void UserInterface::DisplayInputSound(void)
 {
 	mAnalysisSynthesisExample->mVisualization.Display ( mAnalysisSynthesisExample->mVisualization.eAudioIn, mAnalysisSynthesisExample->mAudioIn );
+}
+
+void UserInterface::DisplaySinusoidalTracks()
+{
+	mAnalysisSynthesisExample->mVisualization.Display( mAnalysisSynthesisExample->mSegment );
 }
 
 void UserInterface::DisplayOutputSound(void)
@@ -282,7 +293,8 @@ void UserInterface::ChangeFrame()
 	//Notify SigSlotted class to change
 	mAnalysisSynthesisExample->mVisualization.mFrameSignal.Emit( nextcursorpos );
 	mAnalysisSynthesisExample->mVisualization.Display ( mAnalysisSynthesisExample->mVisualization.eAudioIn );
-	mAnalysisSynthesisExample->mVisualization.Display ( mAnalysisSynthesisExample->mVisualization.eSpectrumIn, mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ nframe ).GetSpectrum() );
+	mAnalysisSynthesisExample->mVisualization.Display ( mAnalysisSynthesisExample->mVisualization.eSpectrumIn, 
+							    mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ nframe ).GetSpectrum() );
 
 //	Fl::redraw();
 }

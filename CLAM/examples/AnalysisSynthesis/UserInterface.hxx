@@ -50,6 +50,9 @@ private:
   static Fl_Menu_Item *mMelodyStore;
   inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
   static void cb_mMelodyStore(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mSinTracksDisplay;
+  inline void cb_mSinTracksDisplay_i(Fl_Menu_*, void*);
+  static void cb_mSinTracksDisplay(Fl_Menu_*, void*);
   inline void cb_Load2_i(Fl_Menu_*, void*);
   static void cb_Load2(Fl_Menu_*, void*);
   static Fl_Menu_Item *mDoTransformation;
@@ -116,5 +119,6 @@ private:
   void DisplayOutputSoundSinusoidal();
   void DisplayOutputSoundResidual();
   void Update();
+  void DisplaySinusoidalTracks();
 };
 #endif
