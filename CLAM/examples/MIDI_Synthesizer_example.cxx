@@ -19,7 +19,6 @@
  *
  */
 
-
 /*
 A FLOW DIAGRAM TO DEMONSTRATE THIS EXAMPLE CAN BE FOUND IN
 CLAM-Docs/MIDI_Synthesizer_example (development-branch)
