@@ -36,7 +36,7 @@ namespace CLAMTest
 			char* pathToTestData = getenv("CLAM_TEST_DATA");
 
 			if ( !pathToTestData )
-				pathToTestData = "../../../../../CLAM-TestData/";
+				mPathToTestData = "../../../../../CLAM-TestData/";
 			else
 				mPathToTestData = pathToTestData;
 

@@ -64,7 +64,7 @@ namespace CLAMTest
 			char* pathToTestData = getenv("CLAM_TEST_DATA");
 
 			if ( !pathToTestData )
-				pathToTestData ="../../../../../CLAM-TestData/"; 
+				mPathToTestData ="../../../../../CLAM-TestData/"; 
 			else
 				mPathToTestData = pathToTestData;
 
@@ -376,7 +376,7 @@ namespace CLAMTest
 		void testDo_OggVorbis_JustOneFrameFromStereoFile()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "JannieJones-short-Stereo.ogg" ) );
+			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MonoAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -407,7 +407,7 @@ namespace CLAMTest
 		void testDo_OggVorbis_JustTwoFramesFromStereoFile()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "JannieJones-short-Stereo.ogg" ) );
+			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MonoAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -464,11 +464,11 @@ namespace CLAMTest
 		void test_MpegAudioFiles_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
+			inputFile.SetLocation( mPathToTestData + std::string( "trumpet.mp3" ) );
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "PeopleSay-mono-copy.wav" );
+			outputFile.SetLocation( "trumpet-copy.wav" );
 
 			CLAM::AudioFileHeader outputFileHeader;
 
@@ -523,7 +523,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.SetLocation( "PeopleSay-mono-copy.wav" );
+			inputFile.SetLocation( "trumpet-copy.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 

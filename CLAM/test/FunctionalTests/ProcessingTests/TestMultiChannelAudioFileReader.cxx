@@ -23,9 +23,6 @@ namespace CLAMTest
 	{
 		CPPUNIT_TEST_SUITE( MultiChannelAudioFileReaderFunctionalTest );
 
-
-		CPPUNIT_TEST( test_fopen );
-
 		// Configuration values checking tests
 		CPPUNIT_TEST( testConfigure_ReturnsTrueWithJustFilename );
 		CPPUNIT_TEST( testConfigure_ReturnsFalseWithoutAudioFileInConfig );
@@ -73,7 +70,7 @@ namespace CLAMTest
 			char* pathToTestData = getenv("CLAM_TEST_DATA");
 
 			if ( !pathToTestData )
-				pathToTestData ="../../../../../CLAM-TestData/"; 
+				mPathToTestData ="../../../../../CLAM-TestData/"; 
 			else
 				mPathToTestData = pathToTestData;
 
@@ -84,30 +81,6 @@ namespace CLAMTest
 		}
 
 	private: // tests cases
-		void test_fopen()
-		{
-			std::string path = mPathToTestData + "JannieJones-short-Stereo.ogg";
-
-			FILE* fp = NULL;
-				
-			fp = fopen( path.c_str(), "rb" );
-
-			if ( errno )
-			{
-				char* msg = strerror( errno );
-
-				std::cerr << msg << std::endl;
-			}
-
-			char msg[100];
-
-			unsigned bytesRead = fread( msg, 1, 4, fp );
-
-			if ( fp )
-				fclose(fp);
-		}
-
-
 
 		void testConfigure_ReturnsTrueWithJustFilename()
 		{
@@ -508,7 +481,7 @@ namespace CLAMTest
 		void testDo_OggVorbis_JustOneFrame ()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "JannieJones-short-Stereo.ogg" ) );
+			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -542,7 +515,7 @@ namespace CLAMTest
 		void testDo_OggVorbis_JustTwoFrames()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "JannieJones-short-Stereo.ogg" ) );
+			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -598,9 +571,14 @@ namespace CLAMTest
 							      prevRightSamples );
 
 			// MRJ: In Windows this is giving out very strange values
-			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection
+			/*
+			std::cerr << "\n" << similarityLeft << "\n";
+			std::cerr << "\n" << similarityRight << "\n";
+			*/
+
+			CPPUNIT_ASSERT( fabs( -0.840286 // MRJ: value established by inspection
 					      - similarityLeft ) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection
+			CPPUNIT_ASSERT( fabs( -0.840286 // MRJ: value established by inspection
 					      - similarityRight ) < 1e-4 );
 
 
