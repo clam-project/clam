@@ -79,7 +79,9 @@ inline void InPortTmpl<T>::Attach(ProcessingData& data)
 	try { 
 		Attach(dynamic_cast<T&>(data));
 	}
-	catch (std::bad_cast){
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception){
 		CLAM_ASSERT(false,"You are trying to attach a processing data that is not suitable for this port");
 	}
 }	
@@ -90,7 +92,9 @@ inline void InPortTmpl<T>::Attach( NodeBase& node)
 	try {
 		Attach( dynamic_cast< Node<T>& >(node) );
 	}
-	catch (std::bad_cast) {
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception) {
 		CLAM_ASSERT(false,"You are trying to attach a node that is not suitable for this port");
 	}
 }
