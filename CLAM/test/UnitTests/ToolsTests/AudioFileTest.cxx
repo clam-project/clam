@@ -179,6 +179,9 @@ namespace CLAMTest
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
+			CPPUNIT_ASSERT_EQUAL( int(133888),
+					      int(header.GetSamples()) );
+
 			CPPUNIT_ASSERT_EQUAL( int(22050),
 					      int(header.GetSampleRate()) );
 			CPPUNIT_ASSERT_EQUAL( 1,
