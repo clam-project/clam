@@ -24,37 +24,114 @@
 #include "ProcessingComposite.hxx"
 
 #include <cppunit/extensions/HelperMacros.h>
+#include <sstream>
 
 namespace CLAMTest {
 
 using CLAM::TControlData;
 
+class ControlsTest;
+CPPUNIT_TEST_SUITE_REGISTRATION( ControlsTest );
 
 class ControlsTest : public CppUnit::TestFixture
 {
+	// old tests (to remove) :
 	CPPUNIT_TEST_SUITE( ControlsTest );
-	CPPUNIT_TEST( NonPublishedControls );
-	CPPUNIT_TEST( InControlBasics );
-	CPPUNIT_TEST( ProcessingWithControlArray );
-#ifdef HAVE_STANDARD_VECTOR_AT 
-	CPPUNIT_TEST_EXCEPTION( ProcessingSidePublishedContainers, std::out_of_range );
-#endif
 	CPPUNIT_TEST( ProcessingSideInterface );
+	CPPUNIT_TEST_EXCEPTION( ProcessingSidePublishedContainers, std::out_of_range );
 
-
+	// new tests
+	CPPUNIT_TEST( testInControl_DoControl_ChangesInternalState );
+	CPPUNIT_TEST( testLinkAndSendControl_ChangesInControlInternalState );
+	CPPUNIT_TEST( testInControlTmpl_DoControl_ChangesInternalState );
+	CPPUNIT_TEST( testLinkAndSendWithInControlTmpl_CallbackMethodGetsCalled );
+	CPPUNIT_TEST( testLinkAndSendWithInControlTmpl_CallbackWithIdMethodGetsCalled );
+	CPPUNIT_TEST( testInControl_GetName_ChangesInteralState );
+	CPPUNIT_TEST( testOutControl_GetName_ChangesInteralState );
 	CPPUNIT_TEST_SUITE_END();
-
+	
+	std::stringstream _ost;
 private:
-	void NonPublishedControls();
-	void InControlBasics();
-	void ProcessingWithControlArray();
+	// old tests
+
 	void ProcessingSidePublishedContainers();
 	void ProcessingSideInterface();
-	
+
+	// new tests
+	void testInControl_DoControl_ChangesInternalState()
+	{
+		CLAM::InControl in("i'm an in control");
+		in.DoControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
+	}
+
+	void testLinkAndSendControl_ChangesInControlInternalState()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		out.AddLink(&in);
+		out.SendControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f , in.GetLastValue() );
+	}
+	// this method is used by the CLAM::InControlTmpl<T>
+	// here we are simulating that this class is the parent processing object
+public:
+	void PublishInControl(CLAM::InControl*) {}	
+
+private:
+	void testInControlTmpl_DoControl_ChangesInternalState()
+	{
+		CLAM::InControlTmpl<ControlsTest> in("I'm an in ctrl template", this);// calls this->PublishInControl
+		in.DoControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
+	}
+	// helper method used for handling incoming control
+	int ControlHandler(CLAM::TControlData val) {
+		_ost << "ControlHandler called with: " << val;
+		return 0;
+	}
+	void testLinkAndSendWithInControlTmpl_CallbackMethodGetsCalled()
+	{
+		CLAM::InControlTmpl<ControlsTest> 
+			in("in", this, &ControlsTest::ControlHandler); // calls this->PublishInControl
+		
+		in.DoControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( _ost.str(), std::string("ControlHandler called with: 1") );
+		_ost.clear();
+	}
+
+	// helper method for handling incoming control plus incontrol ID
+	int ControlHandlerId(int id, CLAM::TControlData val) {
+		_ost << "ControlHandler called with id : " << id << " and value : " << val;
+		return 0;
+	}
+	void testLinkAndSendWithInControlTmpl_CallbackWithIdMethodGetsCalled()
+	{
+		const int controlId=2;
+		CLAM::InControlTmpl<ControlsTest> 
+			in( controlId, "in", this, &ControlsTest::ControlHandlerId ); // calls this->PublishInControl
+				
+		in.DoControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 
+			_ost.str(), 
+			std::string("ControlHandler called with id : 2 and value : 1") );
+		    // note that controlId == 2
+		_ost.clear();
+	}
+
+	void testInControl_GetName_ChangesInteralState()
+	{
+		CLAM::InControl in("in name");
+		CPPUNIT_ASSERT_EQUAL(std::string("in name"), in.GetName() );
+	}
+	void testOutControl_GetName_ChangesInteralState()
+	{
+		CLAM::OutControl out("out name");
+		CPPUNIT_ASSERT_EQUAL(std::string("out name"), out.GetName() );
+	}
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ControlsTest );
 
 	// dummy classes for testing
 	class DummyConfig : public CLAM::ProcessingConfig
@@ -72,26 +149,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ControlsTest );
 		const CLAM::ProcessingConfig &GetConfig() const { static DummyConfig _c; return _c; }
 		bool Do() { return true; }
 	};
-
-	void ControlsTest::NonPublishedControls() {
-		// construction outside the processing is possible
-		CLAM::InControl in("i'm a non published in" );
-		CLAM::OutControl out("i'm a non published out");
-	}
-
-void ControlsTest::InControlBasics() {
-	TControlData _3(3), _1_1( TControlData(1.1) );
-	CLAM::InControl in("i'm an in control");
-	CLAM::OutControl out("i'm an out control");
-	in.DoControl( _1_1 );
-	CPPUNIT_ASSERT_EQUAL( _1_1, in.GetLastValue() );
-	CPPUNIT_ASSERT_EQUAL(std::string("i'm an in control"), in.GetName() );
-
-	DummyProcessing parentProc;
-	CLAM::InControl published( "not used name", &parentProc );
-	parentProc.DoControl(0, _3);
-	CPPUNIT_ASSERT_EQUAL( _3, parentProc.GetInControl(0)->GetLastValue() );
-}
 
 	// dummy class for testing
 	class DummyWithDynamicInControls : public DummyProcessing
@@ -111,6 +168,7 @@ void ControlsTest::InControlBasics() {
 		}
 	};
 
+// todo: rename and place in processing test
 void ControlsTest::ProcessingSidePublishedContainers()
 {
 	DummyWithDynamicInControls dum;
@@ -118,7 +176,9 @@ void ControlsTest::ProcessingSidePublishedContainers()
 	// rise an exepected std::exception
 	// some compiler uses insecure operator[] instead of .at
 #ifdef HAVE_STANDARD_VECTOR_AT
-	dum.GetInControl(last+1);
+		dum.GetInControl(last+1);
+#else
+		throw std::out_of_range("in his case, pass the test")
 #endif
 }
 
@@ -145,44 +205,4 @@ void ControlsTest::ProcessingSideInterface()
 	// in control 1 wasn't connected. So it remains with the init value
 
 }
-
-/// we make this dummy class a composite for testing controls in composites
-class DummyProcArray : public CLAM::ProcessingComposite
-{
-public:
-	typedef CLAM::InControlTmplArray<DummyProcArray> CtlArray;
-	typedef CLAM::InControlTmpl<DummyProcArray> Ctl;
-	Ctl _control;
-	CtlArray _controls;
-	
-	enum {ctlSize=4};
-	// constructor
-	DummyProcArray() :
-		_control( "control", this, &DummyProcArray::fun, true ),
-		_controls( ctlSize, "myName1", this, &DummyProcArray::fun, true)
-	{}
-
-private:	
-	const char* GetClassName() const { return "DummyProcArray"; }
-	bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return true; }
-	const CLAM::ProcessingConfig &GetConfig() const { return _c;}
-	bool Do() { return true; }
-
-	int fun( int id, TControlData val ) { return id; }
-	int fun( TControlData val ) { return 0; }
-
-	DummyConfig _c;
-	
-
-};
-
-void ControlsTest::ProcessingWithControlArray() {
-	DummyProcArray proc;
-	CPPUNIT_ASSERT_EQUAL( std::string("myName1_2"),
-			proc._controls[2].GetName() );
-	/// \todo test publishing in arrays
-
-	/// \todo test callback functions.
-}
-
-} // namespace 
+} // namespace
