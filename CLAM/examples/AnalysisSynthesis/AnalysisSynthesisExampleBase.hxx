@@ -235,6 +235,12 @@ namespace CLAM
 			return mGlobalConfig.GetDoCleanTracks();
 		}
 
+		/** sets and synchronizes sampling rate of internal objects and configurations*/
+		void SetSamplingRate(TSize samplingRate);
+
+		/** sampling rate for the whole application */
+		TSize mSamplingRate;
+
 
 	};
 
