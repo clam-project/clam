@@ -134,7 +134,9 @@ namespace CLAM {
 		fl.bComplex=1;
 		cfg.SetType(fl);
 		cfg.SetSize(mSize);
-		mComplexSpectrum.Configure(cfg);
+		mComplexSpectrum.Configure(cfg);		
+
+		return true;
 	}
 
 	bool FFT_base::UnsetPrototypes()
