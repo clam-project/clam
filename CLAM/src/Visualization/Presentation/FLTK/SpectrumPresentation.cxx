@@ -116,7 +116,7 @@ void ProcDataPresentation<Spectrum>::Init( const Geometry& g, const char* label)
 	
 	// FLTK thingies initialization
 	
-	mWindow = new Fl_Double_Window( g.GetX(), g.GetY(), g.GetW(), g.GetH(), label );
+	mWindow = new PresentationWindow( this, g.GetX(), g.GetY(), g.GetW(), g.GetH(), label );
 	mDispContainer = new FLDisplayContainer( 0, 0, g.GetW(), g.GetH() );
 	
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );

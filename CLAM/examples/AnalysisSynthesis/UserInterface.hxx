@@ -9,7 +9,6 @@ class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
-#include "AudioBrowser.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
 #include <FL/Fl_Window.H>
@@ -121,9 +120,12 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  AudioBrowser* Attach( const char* title, CLAM::Audio* data, int pos );
+  Fl_Window* Attach( const char* title, CLAM::Audio* data );
+  Fl_Window* Attach( const char* title, CLAM::Spectrum* data );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
+  static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
+  void DetachSpectrum(Fl_Window* buffer);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();
@@ -134,11 +136,14 @@ private:
   void DetachDisplays();
   void ChangeFrame();
   void ChangeTimeTag(double tag);
-  AudioBrowser* mAudioInputDisplay;
-  AudioBrowser* mAudioOutputDisplay;
-  AudioBrowser* mAudioOutputResidualDisplay;
-  AudioBrowser* mAudioOutputSinusoidalDisplay;
-  Signalv1<TData> mSignal;
+  Fl_Window* mAudioInputDisplay;
+  Fl_Window* mAudioOutputDisplay;
+  Fl_Window* mAudioOutputResidualDisplay;
+  Fl_Window* mAudioOutputSinusoidalDisplay;
+  Fl_Window* mInputSpectrum;
+  ProcDataView<Spectrum>* mSpectrumView;
+  Signalv1<TData> mFrameSignal;
+  Signalv1<bool> mPaintSignal;
   Slotv1<double> mSlot;
 };
 #endif

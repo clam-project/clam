@@ -25,9 +25,6 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
-decl {\#include "AudioBrowser.hxx"} {public
-} 
-
 decl {\#include "Signalv1.hxx"} {public
 } 
 
@@ -42,15 +39,15 @@ class UserInterface {open
     code {Init();} {}
     code {mSlot.Wrap( this, &UserInterface::ChangeTimeTag );} {}
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {491 671 872 548} resizable
-      code0 {mWindow2=NULL;} visible
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
+      xywh {491 651 872 548} hide resizable
+      code0 {mWindow2=NULL;}
     } {
-      Fl_Menu_Bar mMenuBar {
+      Fl_Menu_Bar mMenuBar {open
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input
+          label Input open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -69,7 +66,7 @@ class UserInterface {open
             private xywh {15 15 100 20} labelsize 12
           }
           submenu mDisplayInSM {
-            label Display
+            label Display open
             private xywh {10 10 100 20} labelsize 12 deactivate
           } {
             menuitem mDisplayInSound {
@@ -80,7 +77,7 @@ class UserInterface {open
             menuitem mDisplayInSpec {
               label Spectrum
               callback {DisplayInputSpectrum();}
-              private xywh {45 45 100 20} labelsize 12 hide deactivate
+              private xywh {45 45 100 20} labelsize 12 deactivate
             }
           }
           menuitem mPlayInputSound {
@@ -90,7 +87,7 @@ class UserInterface {open
           }
         }
         submenu {} {
-          label Analysis open
+          label Analysis
           xywh {0 0 100 20} labelsize 12
         } {
           menuitem mAnalyze {
@@ -150,7 +147,7 @@ class UserInterface {open
           }
         }
         submenu mOutputSM {
-          label Output open
+          label Output
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mVisualizeOutputs {
@@ -257,9 +254,9 @@ Exit();}
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;} selected
-      private xywh {516 493 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
-      code0 {mWindow2->show();} modal visible
+mWindow2=NULL;}
+      private xywh {516 493 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
+      code0 {mWindow2->show();} modal
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
@@ -303,9 +300,13 @@ mWindow2=NULL;} selected
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {AudioBrowser* Attach( const char* title, CLAM::Audio* data, int pos );} {}
+  decl {Fl_Window* Attach( const char* title, CLAM::Audio* data );} {}
+  decl {Fl_Window* Attach( const char* title, CLAM::Spectrum* data );} {}
   decl {static void _Detach(Fl_Window* buffer,UserInterface* ui);} {}
+  decl {static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);} {selected
+  }
   decl {void Detach(Fl_Window* buffer);} {}
+  decl {void DetachSpectrum(Fl_Window* buffer);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
@@ -316,10 +317,13 @@ mWindow2=NULL;} selected
   decl {void DetachDisplays();} {}
   decl {void ChangeFrame();} {}
   decl {void ChangeTimeTag(double tag);} {}
-  decl {AudioBrowser* mAudioInputDisplay;} {}
-  decl {AudioBrowser* mAudioOutputDisplay;} {}
-  decl {AudioBrowser* mAudioOutputResidualDisplay;} {}
-  decl {AudioBrowser* mAudioOutputSinusoidalDisplay;} {}
-  decl {Signalv1<TData> mSignal;} {}
+  decl {Fl_Window* mAudioInputDisplay;} {}
+  decl {Fl_Window* mAudioOutputDisplay;} {}
+  decl {Fl_Window* mAudioOutputResidualDisplay;} {}
+  decl {Fl_Window* mAudioOutputSinusoidalDisplay;} {}
+  decl {Fl_Window* mInputSpectrum;} {}
+  decl {ProcDataView<Spectrum>* mSpectrumView;} {}
+  decl {Signalv1<TData> mFrameSignal;} {}
+  decl {Signalv1<bool> mPaintSignal;} {}
   decl {Slotv1<double> mSlot;} {}
 } 
