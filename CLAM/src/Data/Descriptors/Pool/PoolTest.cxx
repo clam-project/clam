@@ -11,8 +11,8 @@ namespace CLAMTest
 class PoolTest;
 class PoolSpecTest;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( PoolTest );
 CPPUNIT_TEST_SUITE_REGISTRATION( PoolSpecTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( PoolTest );
 
 class PoolSpecTest : public CppUnit::TestFixture
 {

@@ -93,7 +93,7 @@ namespace CLAM
 		Pool(const PoolSpec & spec, unsigned size)
 			: _size(size), _spec(spec)
 		{
-			for (unsigned i = 0; i<size; i++)
+			for (unsigned i = 0; i<_spec.GetNAttributes(); i++)
 				_attributes.push_back(new AttributeType[_size]);
 		}
 		~Pool()
