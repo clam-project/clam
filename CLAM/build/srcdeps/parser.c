@@ -538,17 +538,32 @@ restart:
 
 int parser_recurse(const char* filename)
 {
-	FILE* f = fopen(filename,"r");
+	static FILE* f = 0;
+	FILE* g = fopen(filename,"r");
 	int in_comment = 0;
 	static char buf[2048];
+	int filepos = -1;
 
-	if (f==0) return 0;
-		
+	if (g==0) return 0;
+
+	if (f)
+	{
+		filepos = ftell(f);
+//		fprintf(stderr,"saving filepos %s:%d\n",stack_top(filenamestack),filepos);
+		fclose(f);
+	}
+
+
+	f = g;
+	
 	stack_push(filenamestack,filename);
+
+//	fprintf(stderr,"opening %s\n",filename);
 
 	while (fgets(buf, 2048, f))
 	{
 		const char* ptr = buf;
+		//fprintf(stderr,buf);
 		if (in_comment)
 		{
 			ptr = parser_comment(ptr);
@@ -563,6 +578,18 @@ int parser_recurse(const char* filename)
 	fclose(f);
 
 	stack_pop(filenamestack);
+
+//	fprintf(stderr,"closing %s\n",filename);
+
+	if (filepos != -1)
+	{
+//		fprintf(stderr,"restore filepos %s %d\n",stack_top(filenamestack),filepos);
+		f = fopen(stack_top(filenamestack),"r");
+		fseek(f,filepos,SEEK_SET);
+	}else
+	{
+		f = 0;
+	}
 
 	return 1;
 }
