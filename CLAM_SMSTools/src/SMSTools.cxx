@@ -227,8 +227,8 @@ namespace CLAMGUI
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
-		CLAM::TSize samplesInFile=(selectedFile.GetHeader().GetLength()/1000.)*
-			selectedFile.GetHeader().GetSampleRate();
+		CLAM::TSize samplesInFile=CLAM::TSize((selectedFile.GetHeader().GetLength()/1000.)*
+			selectedFile.GetHeader().GetSampleRate());
 
 		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
 		
