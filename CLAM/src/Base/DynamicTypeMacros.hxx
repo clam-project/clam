@@ -48,9 +48,9 @@ public: \
 	{ \
 		return *new CLASS_NAME(*this); \
 	}\
-	virtual StaticInfo& GetStaticInfo() const { \
+	virtual CLAM::StaticInfo& GetStaticInfo() const { \
 		/*static StaticInfo* p=0;*/ \
-		StaticInfo* p=0; \
+		CLAM::StaticInfo* p=0; \
 		if (!p) { \
 			InitStaticInfo( p ); \
 		} \
@@ -183,19 +183,14 @@ public: \
 
 #define __COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 private: \
-	static void* _new_##NAME(void* p)\
-	{\
+	static void* _new_##NAME(void* p) { \
 		return static_cast<void*> (new(p) TYPE());\
 	}\
-	\
-	static void* _new_##NAME(void* pos, void* orig)\
-	{\
+	static void* _new_##NAME(void* pos, void* orig) { \
 		TYPE* typed = static_cast< TYPE*>(orig);\
 		return static_cast<void*>( new(pos) TYPE(*typed) );\
 	}\
-	\
-	static void _destructor_##NAME(void* p)\
-	{\
+	static void _destructor_##NAME(void* p) { \
 		typedef TYPE __Ty;\
 		static_cast<__Ty*>(p)->~__Ty();\
 	}\
@@ -205,7 +200,7 @@ private: \
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
-		CLAM_DEBUG_ASSERT((N<numAttr), \
+		CLAM_DEBUG_ASSERT( (N<NumAttr()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
@@ -213,35 +208,35 @@ ACCESS: \
 			" that is not Added or not Updated.");\
 		CLAM_DEBUG_ASSERT(data, \
 			"No data allocated for the accessed dynamic type:" #NAME );\
-		void *p=data + dynamicTable[N].offs;\
+		void *p=data + GetAttrOffs(N);\
 		return *static_cast<TYPE*>(p); \
 	}\
 	\
 	/*  already exist an object of the type in that position (that will be deleted)*/\
 	inline void Set##NAME(TYPE const & arg) {\
-		CLAM_DEBUG_ASSERT((N<numAttr), \
+		CLAM_DEBUG_ASSERT(( N<NumAttr() ), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
 		CLAM_ASSERT(ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
 		CLAM_DEBUG_ASSERT(data, \
-			"No data allocated for the accessed dynamic type." #NAME );\
-		void* orig = (void*)(&arg);\
-		char* pos = data+dynamicTable[N].offs;\
-		_destructor_##NAME(pos);\
-		_new_##NAME(pos, orig);\
-	}\
-	inline void Add##NAME() {\
-		AddAttr_(N, sizeof(TYPE));\
-	}\
+			"No data allocated for the accessed dynamic type." #NAME ); \
+		void* orig = (void*)(&arg); \
+		char* pos = data + GetAttrOffs(N); \
+		_destructor_##NAME(pos); \
+		_new_##NAME(pos, orig); \
+	} \
+	inline void Add##NAME() { \
+		_AddAttr( N, sizeof(TYPE) ); \
+	} \
 	template <typename Visitor> \
 	inline void Visit##NAME(Visitor & visitor) { \
 		if (Has##NAME()) \
 			visitor.Accept(#NAME,Get##NAME()); \
 	}\
 	inline void Remove##NAME() { \
-		RemoveAttr_(N); \
+		_RemoveAttr( N, sizeof(TYPE) ); \
 	}\
 	inline bool Has##NAME() const { \
 		return ExistAttr(N); \
@@ -266,7 +261,7 @@ private: \
 	} \
 	void InformChainedAttr(AttributePosition<N>*) const { \
 		AttrStaticInfo attr; \
-		StaticInfo::GetTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
+		CLAM::StaticInfo::GetTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
 		GetStaticInfo().AddAttr( attr ); \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
