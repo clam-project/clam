@@ -36,15 +36,17 @@ namespace CLAM {
 	class FrameInterpConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (FrameInterpConfig, 6,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (FrameInterpConfig, 7,ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		DYN_ATTRIBUTE(1, public, TData, MagInterpolationFactor);
 		DYN_ATTRIBUTE(2, public, TData, FreqInterpolationFactor);
 		DYN_ATTRIBUTE(3, public, TData, PitchInterpolationFactor);
 		DYN_ATTRIBUTE(4, public, TData, ResidualInterpolationFactor);
 		DYN_ATTRIBUTE(5, public, bool, Harmonic);
+		DYN_ATTRIBUTE(6, public, bool, UseSpectralShape);
 	protected:
 		void DefaultInit();
+		void DefaultValues();
 
 	};
 
@@ -64,6 +66,8 @@ namespace CLAM {
 		InPortTmpl<Frame> mIn1;
 		InPortTmpl<Frame> mIn2;
 		OutPortTmpl<Frame> mOut;
+
+		InPortTmpl<Spectrum> mSpectralShape;
 
 	
 		const char *GetClassName() const {return "FrameInterpolator";}

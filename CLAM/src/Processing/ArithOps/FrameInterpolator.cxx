@@ -34,11 +34,17 @@ namespace CLAM {
 		UpdateData();
 	}
 
+	void FrameInterpConfig::DefaultValues()
+	{
+		SetUseSpectralShape(false);
+	}
+
 
 	FrameInterpolator::FrameInterpolator()
 		: mIn1("Input 1",this,1),
 		  mIn2("Input 2",this,1),
 		  mOut("Output",this,1),
+		  mSpectralShape("SpectralShape",this,1),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
@@ -55,6 +61,7 @@ namespace CLAM {
 		: mIn1("Input 1",this,1),
 		  mIn2("Input 2",this,1),
 		  mOut("Output",this,1),
+		  mSpectralShape("SpectralShape",this,1),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
@@ -78,8 +85,13 @@ namespace CLAM {
 		pkInterpConfig.SetFreqInterpolationFactor(mConfig.GetFreqInterpolationFactor());
 		pkInterpConfig.SetPitchInterpolationFactor(mConfig.GetPitchInterpolationFactor());
 		pkInterpConfig.SetHarmonic(mConfig.GetHarmonic());
-
+		pkInterpConfig.SetUseSpectralShape(mConfig.GetUseSpectralShape());
 		mPO_PeaksInterpolator.Configure(pkInterpConfig);
+
+		if(mConfig.GetUseSpectralShape())
+		{
+			mPO_PeaksInterpolator.mSpectralShape.Attach(mSpectralShape);
+		}
 
 		SpecInterpConfig spInterpConfig;
 		spInterpConfig.SetInterpolationFactor(mConfig.GetResidualInterpolationFactor());
