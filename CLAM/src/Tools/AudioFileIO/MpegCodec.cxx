@@ -209,6 +209,7 @@ namespace AudioCodecs
 
 		hdr.AddSampleRate();
 		hdr.AddChannels();
+		hdr.AddSamples();
 		hdr.AddFormat();
 		hdr.AddEncoding();
 		hdr.AddEndianess();
@@ -308,7 +309,10 @@ namespace AudioCodecs
 			TTime decodedFramesLength = bitstream.Finish();
 			hdr.SetLength( decodedFramesLength );
 		}
-
+		
+		// @TODO@: Find a way to estimate reasonably well the actual
+		// number of samples.
+		hdr.SetSamples(  (hdr.GetLength()*1000.)/hdr.GetSampleRate() );
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 
 		fclose( handle );
