@@ -311,6 +311,11 @@ bool NetworkController::Publish()
 		CLAM::Processing * producer = it->second;
 		AddProcessing( it->first,  it->second );
 		CLAM::Processing::OutPortIterator itOutPort;
+	}
+	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
+	{
+		CLAM::Processing * producer = it->second;
+		CLAM::Processing::OutPortIterator itOutPort;
 	
 		for (itOutPort= producer->GetOutPorts().Begin(); 
 		     itOutPort!= producer->GetOutPorts().End(); 
@@ -332,6 +337,7 @@ bool NetworkController::Publish()
 				AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
 			}		
 		}
+		
 	}
 	// TODO: Get Control Connections
 	return true;
