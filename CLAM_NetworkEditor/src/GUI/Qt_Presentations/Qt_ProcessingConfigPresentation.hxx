@@ -24,7 +24,7 @@
 
 #include <qdialog.h>
 #include <qvbox.h>
-#include "Slotv1.hxx"
+#include "Signalv1.hxx"
 #include "ProcessingConfigPresentation.hxx"
 
 class QGroupBox;
@@ -38,17 +38,12 @@ namespace CLAM
 namespace NetworkGUI
 {
 
-class ActionButton;
-
 class Qt_ProcessingConfigPresentation : public QDialog, public ProcessingConfigPresentation
 {
+	Q_OBJECT
 protected:
 	QVBox * mAttributeContainer;
-	ActionButton * mOkButton;
-	ActionButton * mCancelButton;
 
-	void Ok( bool );
-	void Cancel( bool );
 	virtual void ConfigureProcessing() = 0;
 	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 public:
@@ -56,9 +51,11 @@ public:
 	virtual void Show();
 	virtual void Hide();
 
-public: // slots
-	SigSlot::Slotv1< bool > SlotOk;
-	SigSlot::Slotv1< bool > SlotCancel;
+public slots:
+	void SlotOk();
+	void SlotCancel();
+public: // signals
+	SigSlot::Signalv1<bool> SignalConfigurationUpdated;
 };
 
 } // namespace NetworkGUI

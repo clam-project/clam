@@ -30,7 +30,6 @@
 
 namespace NetworkGUI
 {
-
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * parent, const char * name  )
@@ -80,6 +79,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	SignalAddNewProcessing.Connect( network.SlotAddProcessing );	
 	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
+
+	setFocusPolicy( NoFocus );
 }
 
 ProcessingTree::~ProcessingTree()
