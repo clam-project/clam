@@ -1,6 +1,6 @@
 PROGRAMS=Rondebosse CMLRappid TestSoftSwitch TestAudioMixer TestAudioCompressor TestDynamicMixer TestRappidIO
 TOP=../..
-INCLUDE_DIRS=/usr/include/kde
+INCLUDE_DIRS=/usr/include/kde ./
 include $(TOP)/unix_tools/make.rules
 
 #### The following is very KDE specific, and only needed for Rondebosse
