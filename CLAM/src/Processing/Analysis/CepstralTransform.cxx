@@ -15,12 +15,11 @@ namespace CLAM
   
   CepstralTransform::CepstralTransform(  )
   {
+    Configure(CepstralTransformConfig());
   }
   
   CepstralTransform::CepstralTransform( const CepstralTransformConfig& cfg )
   {
-    /* NOTE: Calling this constructor cause an "Object not ready"
-       assertion failure when calling the Start() method. */
     Configure( cfg );
   }
   
