@@ -79,9 +79,9 @@ OverlapAdd::~OverlapAdd()
 
 /* configure the processing object according to the config object */
 
-bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const OverlapAddConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 	mCircBuffer.SetBufferSize(mConfig.GetBufferSize());
 	mCircBuffer.SetReadSize(mConfig.GetFrameSize());
 	mCircBuffer.SetWriteSize(mConfig.GetHopSize());

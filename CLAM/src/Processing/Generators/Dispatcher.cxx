@@ -2,9 +2,9 @@
 
 using namespace CLAM;
 
-bool Dispatcher::ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast)
+bool Dispatcher::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast< const DispatcherConfig& >(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	int i,j,k;
 
 	mInstruments = mConfig.GetInstruments();

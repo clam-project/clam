@@ -156,7 +156,7 @@ public:
 	
 	inline const ProcessingConfig &GetConfig() const { return mConfig;}
 	
-	bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& cfg);
 	
 	// Unsupervised mode Do
 	bool Do(void) { return true; }

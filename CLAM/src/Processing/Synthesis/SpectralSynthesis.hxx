@@ -181,7 +181,7 @@ private:
 
 		
 		/** Configuration method */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		TInt32 CalculatePowerOfTwo(TInt32 size);
 

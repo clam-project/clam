@@ -225,9 +225,9 @@ void SMSSynthesis::ConfigureData()
 }
 
 
-bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const SMSSynthesisConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();

@@ -125,7 +125,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
+		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		bool Do(void) { return true; }
 

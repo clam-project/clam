@@ -120,7 +120,7 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an OverlapAddConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		/* protected methods */
 	protected:

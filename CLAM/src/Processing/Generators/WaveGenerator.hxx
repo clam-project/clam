@@ -94,7 +94,7 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an FFTConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		inline TData Sine(TTime pos);
 

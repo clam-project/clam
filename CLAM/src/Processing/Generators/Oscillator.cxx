@@ -106,10 +106,10 @@ Oscillator::~Oscillator()
 	delete mPhaseCtl;
 }
 
-bool Oscillator::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast<const OscillatorConfig&>(cfg);
-	
+	CopyAsConcreteConfig(mConfig, c);
+
 
 	mAmp = mConfig.GetAmplitude();
 	mPhase = mConfig.GetPhase(); // TEMP HACK  (See also constructor

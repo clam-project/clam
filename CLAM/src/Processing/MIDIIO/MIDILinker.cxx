@@ -99,9 +99,9 @@ MIDILinker::MIDILinker(const MIDILinkerConfig& cfg)
 	Configure(cfg);
 }
 
-bool MIDILinker::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool MIDILinker::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const MIDILinkerConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	
 	std::vector<unsigned>::iterator beginBytes;
 	std::vector<MIDIRelation>::iterator beginRel, endRel;

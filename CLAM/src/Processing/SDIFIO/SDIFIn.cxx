@@ -54,7 +54,7 @@ SDIFIn::~SDIFIn()
 
 bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
+	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
 	return true;

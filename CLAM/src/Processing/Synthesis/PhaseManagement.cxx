@@ -44,7 +44,7 @@ PhaseManagement::PhaseManagement(PhaseManagementConfig& c)
 
 bool PhaseManagement::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const PhaseManagementConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 	return true;
 }
 

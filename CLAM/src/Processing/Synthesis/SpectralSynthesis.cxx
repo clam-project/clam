@@ -274,9 +274,9 @@ void SpectralSynthesis::ConfigureData()
 }
 
 
-bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const SpectralSynthesisConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();

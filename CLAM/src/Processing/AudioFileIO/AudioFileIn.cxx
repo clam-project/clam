@@ -43,9 +43,8 @@ using namespace CLAM;
 	};
 
 	bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
-		throw(std::bad_cast)
 	{
-		mConfig = dynamic_cast<const AudioFileConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		
 		if (!mConfig.HasFilename()) {
 			mStatus += "No filename specified in config\n";

@@ -628,9 +628,9 @@ SynthSineSpectrum::SynthSineSpectrum(SynthSineSpectrumConfig& cfg)
 }
 
 
-bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const SynthSineSpectrumConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	WindowGeneratorConfig wcfg;
 	wcfg.SetNormalize(EWindowNormalize::eNone);
 	wcfg.SetSize(MAINLOBE_TABLE_SIZE);
