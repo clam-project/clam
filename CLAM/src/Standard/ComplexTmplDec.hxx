@@ -33,39 +33,41 @@ namespace CLAM
 	class ComplexTmpl
 	{
 	private:
-		T mRe, mIm;
+		T mRe;
+		T mIm;
+
 	public:
-		ComplexTmpl(T re = 0.0,T im = 0.0) //< constructor
+		ComplexTmpl(T re = 0.0, T im = 0.0) //< constructor
 		{
 			mRe = re;
 			mIm = im;
-		};
+		}
 
-		~ComplexTmpl(){}
+//		~ComplexTmpl(){}
 
-		const T Real(void) const {return mRe;}; //< accessor returns the real part
-		const T Imag(void) const {return mIm;}; //< accessor returns the imaginary part
+		const T Real() const { return mRe; } //< accessor returns the real part
+		const T Imag() const { return mIm; } //< accessor returns the imaginary part
 
-		void SetReal(const T& re) { mRe = re;}; //< accesor sets the real part
-		void SetImag(const T& im) { mIm = im;}; //< accesor sets the imaginary part
+		void SetReal(const T& re) { mRe = re; } //< accesor sets the real part
+		void SetImag(const T& im) { mIm = im; } //< accesor sets the imaginary part
 
 		/// returns magnitude
-		const T Mag(void) const
+		const T Mag() const
 		{
-			return sqrt (mRe*mRe + mIm*mIm);
+			return sqrt(mRe*mRe + mIm*mIm);
 		}
 
 		/// returns angle
-		const T Ang(void) const
+		const T Ang() const
 		{
-			return atan2 (mIm,mRe);
+			return atan2(mIm, mRe);
 		}
 
 		/// friend function to handle polar coordinates
 		friend ComplexTmpl<T> ToPolar(const T& r, const T& theta)
 		{
 			return ComplexTmpl<T>(r * cos(theta), r * sin(theta));
-		};
+		}
 
 		// ------   member operators ... ------
 
