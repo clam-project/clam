@@ -19,6 +19,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testRegistryGetCreatorSafe_WhenIsEmpty );
 	CPPUNIT_TEST( testRegistryAskTheWrongKey_WithASingleCreator );
 	CPPUNIT_TEST( testRegistryAskTheCorrectKey_WithASingleCreator );
+	CPPUNIT_TEST( testRegistryAskACorrectKey_WithTwoCreators );
 	
 
 	CPPUNIT_TEST_SUITE_END();
@@ -84,7 +85,18 @@ private:
 
 		CPPUNIT_ASSERT( inserted == reg.GetCreator("Oscillator") ); 
 		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("Oscillator") ); 
+	}
 
+	void testRegistryAskACorrectKey_WithTwoCreators()
+	{
+		CLAM::FactoryRegistry reg;
+		// set up
+		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
+		reg.AddCreator( "AudioAdder", CLAM::CreateAudioAdder );
+
+		CLAM::FactoryRegistry::CreatorMethod oscillatorCreator = CLAM::CreateOscillator;
+		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreator("Oscillator") );
+		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreatorSafe("Oscillator") );
 	}
 };
 

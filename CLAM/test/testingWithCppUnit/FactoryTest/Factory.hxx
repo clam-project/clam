@@ -1,13 +1,18 @@
-#include <Oscillator.hxx>
 #include <map>
 #include <string>
 
 #include "Err.hxx"
+#include "Oscillator.hxx"
+#include "AudioAdder.hxx"
 
 namespace CLAM {
 	
 	Processing * CreateOscillator() {
 		return new Oscillator;
+	}
+
+	Processing * CreateAudioAdder() {
+		return new AudioAdder;
 	}
 
 /// Error type thrown by Factory classes (Factory, FactoryRegistry)
