@@ -6,7 +6,12 @@
 #include "config_parser.h"
 #include "makegen.h"
 
+/* Private vars */
+static list* gen_ui_objs = NULL;
+
 /* Private module functions declaration*/
+
+static void generate_uic_dependencies( FILE* outfile );
 
 static void generate_moc_dependencies( FILE* outfile );
 
@@ -40,6 +45,55 @@ static void generate_link_flags_release_var( FILE* outfile );
 
 
 /* Private module functions implementation */
+
+static void generate_uic_dependencies( FILE* outfile )
+{
+	listkey* k = listhash_find( config, "UI_FILES" );
+
+	list* ui_files = NULL;
+	item* current = NULL;
+
+	assert( k->l != NULL );
+	
+	ui_files = k->l;
+
+	if ( ! ui_files->first ) /* There are no .ui files to be considered */
+		return;
+
+	list_add_str_once( includepaths, "./uic" );
+	list_add_str_once( needed_includepaths, "./uic" );
+	fprintf( stderr, "Added ./uic to includepaths \n" );
+
+	current = ui_files->first;
+
+	while( current != NULL )
+	{
+		char hdrname[2048];
+		char hdrwopath[2048];
+		char srcname[2048];
+		char objname[2048];
+
+		fprintf( stderr, "Generating rules for %s ...\n", current->str );
+
+		convert_to_uicname( hdrname, 2048, current->str, ".h" );
+		convert_to_uicname( srcname, 2048, current->str, ".cxx" );
+		convert_to_objname( objname, 2048, srcname );
+		discard_path( hdrwopath, 2048, hdrname );
+
+
+		list_add_str_once( mocable_headers, hdrname );
+		list_add_str_once( gen_ui_objs, objname );
+
+		/* dependency writing */
+		fprintf( outfile, "%s : %s\n", hdrname, current->str );
+		fprintf( outfile, "%s : %s\n", srcname, current->str );
+		fprintf( outfile, "%s : %s %s\n", objname, srcname, hdrname );
+		fprintf( outfile, "\n" );
+		
+		current = current->next;
+	}
+	
+}
 
 static void generate_moc_dependencies( FILE* outfile )
 {
@@ -133,6 +187,16 @@ static void generate_objects_var( FILE* outfile )
 		
 		i = i->next;
 	}
+
+	i = gen_ui_objs->first;
+
+	while( i != NULL )
+	{
+		fprintf( outfile, "\\\n %s", i->str );
+		
+		i = i->next;
+	}
+
 	fprintf(outfile,"\n\n");
 }
 
@@ -307,6 +371,10 @@ void makefilevars_generate(void)
 {
 	FILE* outfile = stdout;
 
+	gen_ui_objs = list_new();
+
+	generate_uic_dependencies( outfile );
+
 	generate_moc_dependencies( outfile );
 
 	generate_extra_makefile_vars( outfile );
@@ -336,6 +404,8 @@ void makefilevars_generate(void)
 	generate_link_flags_debug_var( outfile );
 
 	generate_link_flags_release_var( outfile );
+
+	list_free( gen_ui_objs );
 
 	fclose(outfile);
 }
