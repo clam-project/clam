@@ -268,13 +268,53 @@ TData SpectralDescriptors::ComputeRolloff()
 
 TData SpectralDescriptors::ComputeSpread() 
 { 
-	return 0;
+	DataArray& mags     = mpSpectrum->GetMagBuffer();
+	TSize      magsSize = mpSpectrum->GetSize();
+
+	TData centroid = mpStats->GetCentroid()*mDeltaFreq;
+
+	// Compute spectrum variance around centroid frequency
+	TData variance = 0;
+	TData sumMags  = 0;
+	for (TIndex i=0; i<magsSize; i++)
+	{
+		variance += pow((i*mDeltaFreq - centroid), 2) * mags[i];
+		sumMags  += mags[i];
+	}
+	variance /= sumMags;
+
+	// Return std.dev. normalized by centroid frequency
+	return sqrt(variance) / centroid;
 }
 
 
 TData SpectralDescriptors::ComputeSlope() 
 { 
-	return 0;
+	DataArray& mags     = mpSpectrum->GetMagBuffer();
+	TSize      magsSize = mpSpectrum->GetSize();
+
+	// Compute means and gradient of decay part
+	TData meanX = 0;
+	TData meanY = 0;
+	TData num   = 0;
+	TData denum = 0;
+
+	for (TIndex i=0; i<magsSize; i++)
+	{
+		meanX += (i*mDeltaFreq);
+		meanY += mags[i];
+
+		num   += (i*mDeltaFreq)*mags[i];
+		denum += pow(i*mDeltaFreq, 2);
+	}
+	meanX /= magsSize;
+	meanY /= magsSize;
+
+	num   -= magsSize*meanX*meanY;
+	denum -= magsSize*meanX*meanX;
+
+	// Normalize by the total amplitude
+	return (num/denum) / (meanY*magsSize);
 }
 
 
