@@ -620,8 +620,8 @@ void XMLComponentListTest() {
 	a.AddElem(MyComponent("Two"));
 	a.AddElem(MyComponent("Three"));
 	a.AddElem(MyComponent("Four"));
-	bool match = XMLInputOutputMatches(a,__FILE__"ComponentArray.xml");
-	CLAM_ASSERT(match, "Store/Load mismatch using array of components");
+	bool match = XMLInputOutputMatches(a,__FILE__"ComponentListy.xml");
+	CLAM_ASSERT(match, "Store/Load mismatch using list of components");
 }
 
 
