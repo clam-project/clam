@@ -36,15 +36,24 @@ public:
 			"the Factory Registry shouldn't be empty");
 		
 		CreatorMap::const_iterator i = _creators.find(creatorId);
-
-		return i->second;
+		if ( i==_creators.end() ) {
+			// not found
+			return NULL;
+		} else 
+			return i->second;
 	}
-	CreatorMethod GetCreatorSafe(char*) throw (ErrFactory)
+
+	CreatorMethod GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory)
 	{
 		if ( _creators.begin() == _creators.end() )
 			throw ErrFactory("GetCreatorSafe invoked on an empty registry");
 
-		return 0;
+		CreatorMap::const_iterator i = _creators.find(creatorId);
+		if ( i==_creators.end() ) {
+			// not found
+			return NULL;
+		} else 
+			return i->second;
 	}
 	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
 	{

@@ -72,6 +72,7 @@ private:
 		
 		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
 	}
+
 	void testRegistryAskTheCorrectKey_WithASingleCreator()
 	{
 		CLAM::FactoryRegistry reg;
@@ -82,6 +83,8 @@ private:
 		reg.AddCreator( "Oscillator", inserted);
 
 		CPPUNIT_ASSERT( inserted == reg.GetCreator("Oscillator") ); 
+		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("Oscillator") ); 
+
 	}
 };
 
