@@ -68,16 +68,10 @@ namespace CLAM {
 		{
 			if(IsLastFrame())
 			{
-				/*BIG WARNING!!: This is necessary for smstransformations that generate less frames at
-				the output than they have at the input. With this current setting, such transformations 
-				can only work correctly if located at the end of the chain.*/
-				while(mChainOutput.GetData().GetnFrames()>mpTmpDataArray[mpTmpDataArray.Size()-1]->GetnFrames()){
-					mChainOutput.GetData().DeleteFrame(mChainOutput.GetData().GetnFrames()-1);}
 				return false;
 			}
-			bool result=ProcessingChain<Segment>::Do();
 			NextFrame();
-			return result;
+			return ProcessingChain<Segment>::Do();
 		}
 
 		bool ConcreteStart()
@@ -94,12 +88,7 @@ namespace CLAM {
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()
 		{
-			int i;
-			for(i=0;i<mpTmpDataArray.Size();i++)
-				mpTmpDataArray[i]->mCurrentFrameIndex++;
 			mChainInput.GetData().mCurrentFrameIndex++;
-			if(!mChainInput.IsConnectedTo(mChainOutput))
-				mChainOutput.GetData().mCurrentFrameIndex++;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment
