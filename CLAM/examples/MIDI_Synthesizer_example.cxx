@@ -67,7 +67,7 @@ public:
 	DYN_ATTRIBUTE (2, public, TData, DecayTime);
 	DYN_ATTRIBUTE (3, public, TData, SustainLevel);
 	DYN_ATTRIBUTE (4, public, TData , ReleaseTime);
-	DYN_ATTRIBUTE (5, public, TData , SamplingRate);
+	DYN_ATTRIBUTE (5, public, TData , SampleRate);
 protected:
 	void DefaultInit(void);
 };
@@ -133,8 +133,6 @@ public:
 	
 	bool ConcreteStart();
 
-		bool Do(void) { return true; }
-
 		bool Do(Audio& out) ;
 };
 
@@ -146,17 +144,17 @@ void MyInstrumentConfig::DefaultInit(void)
 	AddDecayTime(),
 	AddSustainLevel();
 	AddReleaseTime();
-	AddSamplingRate();
+	AddSampleRate();
 
 	UpdateData();
 
 	try
 	{
-		SetSamplingRate( AudioManager::Current().SampleRate() );
+		SetSampleRate( AudioManager::Current().SampleRate() );
 	}
 	catch(Err)
 	{
-		SetSamplingRate( 8000 );
+		SetSampleRate( 8000 );
 	}
 
 }
@@ -173,7 +171,7 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 	ADSRCfg.SetDecayTime( mConfig.GetDecayTime() );
 	ADSRCfg.SetSustainLevel( mConfig.GetSustainLevel() );
 	ADSRCfg.SetReleaseTime( mConfig.GetReleaseTime() );
-	ADSRCfg.SetSamplingRate( mConfig.GetSamplingRate() );
+	ADSRCfg.SetSampleRate( mConfig.GetSampleRate() );
 
 	mADSR.Configure( ADSRCfg );
 
@@ -181,8 +179,7 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 
 	MapperVelCfg.SetMapping( "linear" );
 	TData ptr1[] = {0.0 ,127.0 ,0.0 ,1.0};
-	MapperVelCfg.SetArguments( DataArray( ptr1, 4 ) );
-
+ 	MapperVelCfg.SetArguments( DataArray( ptr1, 4 ) );
 	mMapperVel.Configure( MapperVelCfg );
 
 	ControlMapperConfig MapperNoteCfg;
@@ -237,8 +234,11 @@ void MyAudioApplication::AudioMain(void)
 	TControlData curTimeInc = 0.;
 	try
 	{
-		const int nVoices = 4;
-		unsigned int buffersize = 256;
+		const int nVoices = 6;
+		// TODO: this is a bit of a kludge
+		// to make sure all buffersizes us the default AudioOutPort buffersize
+		AudioOutPort dummy("dummy",0);
+		unsigned int buffersize = dummy.GetSize(); 
 
 		// Audio and MIDI managers
 		AudioManager audioManager(44100,4096);
@@ -250,10 +250,11 @@ void MyAudioApplication::AudioMain(void)
 
 		inCfgL.SetDevice(mAudioDeviceStr);
 		inCfgL.SetChannelID(0);
-
+		inCfgL.SetFrameSize(buffersize);
+		
 		inCfgR.SetDevice(mAudioDeviceStr);
 		inCfgR.SetChannelID(1);
-
+		inCfgR.SetFrameSize(buffersize);
 	
 		AudioIn inL(inCfgL);
 		AudioIn inR(inCfgR);
@@ -264,9 +265,11 @@ void MyAudioApplication::AudioMain(void)
 
 		outCfgL.SetDevice(mAudioDeviceStr);
 		outCfgL.SetChannelID(0);
+		outCfgL.SetFrameSize(buffersize);
 
 		outCfgR.SetDevice(mAudioDeviceStr);
 		outCfgR.SetChannelID(1);
+		outCfgR.SetFrameSize(buffersize);
 
 		AudioOut outL(outCfgL);
 		AudioOut outR(outCfgR);
@@ -359,21 +362,29 @@ void MyAudioApplication::AudioMain(void)
 		// Mixer Declaration
 		AudioMixerConfig mixerCfg;
 		mixerCfg.SetFrameSize(buffersize);
-//		mixerCfg.SetSampleRate(audioManager.SampleRate());
+		mixerCfg.SetNumberOfInPorts(nVoices);
 
-		AudioMixer<nVoices> mixer;
+		AudioMixer mixer;
 		mixer.Configure(mixerCfg);
 
 		for ( i=0;i<nVoices;i++)
 		{
 			std::stringstream sstr;
 			sstr.str("");
-			std::string name("Input Audio");
-			sstr << name << "_" << i;
-			mixer.GetInPorts().Get(sstr.str()).Attach(audioArray[i]);
+			std::string name("Input");
+			sstr << name << " " << i;
+			ConnectPorts(*instruments[i],"AudioOut", mixer, sstr.str());
+			// TODO: connect
+			//mixer.GetInPorts().Get(sstr.str()).Attach(audioArray[i]);
 		}
-		mixer.GetOutPorts().Get("Output Audio").Attach(out);
-
+		// TODO: connect
+		//mixer.GetOutPorts().Get("Output Audio").Attach(out);
+		//ConnectPorts(*instruments[0],"AudioOut", outL, "Audio Input");
+		//ConnectPorts(inL,"Audio Output", outL, "Audio Input");
+		//ConnectPorts(*instruments[0],"AudioOut", outR, "Audio Input");
+		ConnectPorts(mixer,"Output Audio", outR, "Audio Input");
+		ConnectPorts(mixer,"Output Audio", outL, "Audio Input");
+		
 		/** Ignoring channel, which is OutControl 0 */
 		
 		/** Key for Note On/Off */
@@ -384,7 +395,7 @@ void MyAudioApplication::AudioMain(void)
 		for( i = 0; i < nVoices; i++ )
 			inPitchBend.GetOutControls().GetByNumber(1).AddLink(&instruments[i]->GetInControls().GetByNumber(3));
 		
-		mixer.Start();
+		//mixer.Start();
 
 		inL.Start();
 		inR.Start();
@@ -411,17 +422,16 @@ void MyAudioApplication::AudioMain(void)
 			curTime += curTimeInc;
 			
 			midiManager.Check();
-			
+		
 			for ( i = 0; i < nVoices; i++ )
 			{
-				instruments[ i ]->Do( audioArray[ i ] );
+				instruments[ i ]->Do();
 			}
 
 			mixer.Do();
 
-			outL.Do( out );
-			outR.Do( out );
-
+			outL.Do();
+			outR.Do();
 		} while (!Canceled()) ;
 
 		for ( i = 0; i < nVoices; i++ )
@@ -443,7 +453,8 @@ void MyAudioApplication::AudioMain(void)
 
 int main(int argc,char** argv)
 {
-	char* midiDeviceStr = "alsa:hw:1,0"; // TODO: but back to default
+	//char* midiDeviceStr = "alsa:hw:1,0"; // TODO: but back to default
+	char* midiDeviceStr = "file:test.mid";
 	char* audioDeviceStr = "default";
 	
 	try
