@@ -1,11 +1,10 @@
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
 	<Name/>
 	<InputSoundFile>./1.wav</InputSoundFile>
-	<OutputSoundFile>./1.wav</OutputSoundFile>
+	<OutputSoundFile>./1_out.wav</OutputSoundFile>
 	<OutputAnalysisFile/>
 	<InputAnalysisFile/>
-	<AnalysisWindowSize>2049</AnalysisWindowSize>
+	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
 	<ResAnalysisWindowSize>1025</ResAnalysisWindowSize>
