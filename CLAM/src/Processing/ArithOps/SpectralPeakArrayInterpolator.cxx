@@ -137,30 +137,41 @@ namespace CLAM {
 		TData newPitch=pitch1*(1-pitchFactor)+pitch2*pitchFactor;
 
 		int pos=0,i=0;
+		TData lastFreq=0;
 		do
 		{
 			if(!mIsHarmonicCtl.GetLastValue())
 			{
 				outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
 				outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[i*factor2]*freqFactor;
+				CLAM_DEBUG_ASSERT(outFreq[i]>lastFreq,"Error");
+				lastFreq=outFreq[i];
 				CLAM_DEBUG_ASSERT(outMag[i]<1,"Error");
 				CLAM_DEBUG_ASSERT(outMag[i]>-1,"Error");
 				CLAM_DEBUG_ASSERT(outFreq[i]<22000,"Error");
-				CLAM_DEBUG_ASSERT(outFreq[i]>0,"Error");
+				CLAM_DEBUG_ASSERT(outFreq[i]>=0,"Error");
 			}
 			else if(FindHarmonic(in2Index,in1Index[i],pos))
 			{
 				//Morphing Using Harmonic No*/
 				outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[pos]*magFactor;
 				outFreq[i]=((in1Freq[i]/pitch1)*(1-freqFactor)+(in2Freq[pos]/pitch2)*freqFactor)*newPitch;
+				CLAM_DEBUG_ASSERT(outFreq[i]>lastFreq,"Error");
+				lastFreq=outFreq[i];
 				CLAM_DEBUG_ASSERT(outMag[i]<1,"Error");
 				CLAM_DEBUG_ASSERT(outMag[i]>-1,"Error");
 				CLAM_DEBUG_ASSERT(outFreq[i]<22000,"Error");
-				CLAM_DEBUG_ASSERT(outFreq[i]>0,"Error");
+				CLAM_DEBUG_ASSERT(outFreq[i]>=0,"Error");
 			}
 			else
 			{
+				if(i>in2.GetnPeaks()-1)
+				{
+					out.SetnPeaks(i-1);
+					break;
+				}
 				outMag[i]=0.0000000001;
+				outFreq[i]=lastFreq+=100;
 			}
 			i++;
 		}while(i<nPeaks1);
@@ -177,6 +188,7 @@ namespace CLAM {
 	}
 
 	
+	/** TODO: This method does not take into account a possible change in fundamental!!!*/
 	bool SpectralPeakArrayInterpolator::FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition)
 	{
 		int i;
