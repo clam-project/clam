@@ -53,8 +53,13 @@ public:
 
 	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
 	{
-		_creators.insert( 
-			CreatorMap::value_type( creatorId, creator ) );
+		if( 
+			! _creators.insert( 
+			CreatorMap::value_type( creatorId, creator ) ).second 
+		 )
+		{ // repeated key
+			CLAM_ASSERT( false, "creatorId was already a key in the registry" );
+		}
 	}
 
 private: // data

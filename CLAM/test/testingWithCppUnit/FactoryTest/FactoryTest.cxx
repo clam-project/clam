@@ -20,6 +20,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testRegistryAskTheWrongKey_WithASingleCreator );
 	CPPUNIT_TEST( testRegistryAskTheCorrectKey_WithASingleCreator );
 	CPPUNIT_TEST( testRegistryAskACorrectKey_WithTwoCreators );
+	CPPUNIT_TEST( testRegistryAddCreator_RepeatedKey );
 	
 
 	CPPUNIT_TEST_SUITE_END();
@@ -46,10 +47,10 @@ private:
 			reg.GetCreator("bla");
 			CPPUNIT_FAIL( "Assert was expected to happen");
 
-		} catch( CLAM::ErrAssertionFailed& e ) {
+		} catch( CLAM::ErrAssertionFailed& expected ) {
 			CPPUNIT_ASSERT_EQUAL( 
 				std::string("the Factory Registry shouldn't be empty"),
-				std::string( e.what() ) );
+				std::string( expected.what() ) );
 		}
 	}
 
@@ -59,10 +60,10 @@ private:
 		try {
 			reg.GetCreatorSafe("foo");
 			CPPUNIT_FAIL( "it was expected to catch a CLAM::ErrFactory" );
-		} catch (CLAM::ErrFactory e) {
+		} catch (CLAM::ErrFactory& expected) {
 			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:", 
 				std::string("GetCreatorSafe invoked on an empty registry"), 
-				std::string( e.what() ) );
+				std::string( expected.what() ) );
 		}
 	}
 
@@ -110,6 +111,20 @@ private:
 		CLAM::FactoryRegistry::CreatorMethod oscillatorCreator = CLAM::CreateOscillator;
 		CPPUNIT_ASSERT( NULL == reg.GetCreator("Oscillator ") );
 		CPPUNIT_ASSERT( NULL == reg.GetCreatorSafe("incorrect as well") );
+	}
+
+	void testRegistryAddCreator_RepeatedKey()
+	{
+		CLAM::FactoryRegistry reg;
+		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
+
+		try {
+			reg.AddCreator( "Oscillator", CLAM::CreateAudioAdder );
+			CPPUNIT_FAIL( "Assert expected to happen" );
+
+		} catch (CLAM::ErrAssertionFailed& expected ) {
+
+		}
 	}
 };
 
