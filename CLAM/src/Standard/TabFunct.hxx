@@ -38,7 +38,7 @@ public:
 		
 		int index = int((arg-mLowerBound) / mIncr);
 
-		CLAM_DEBUG_ASSERT(index<=mTableSize-1, "Bad index calculation");
+		CLAM_DEBUG_ASSERT(index<=mTableSize-2, "Bad index calculation");
 
 		TData x1 = mLowerBound+mIncr*index;
 		TData yIncr = mTable[index+1]-mTable[index];
@@ -70,7 +70,7 @@ private:
 
 		TData arg = mLowerBound;
 
-		for (int i=0; arg<=mUpperBound; arg+=mIncr, i++)
+		for (int i=0; i<=mTableSize-1; arg+=mIncr, i++)
 			mTable[i] = OriginalFunction::operator() (arg);
 
 	}
