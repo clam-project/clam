@@ -48,16 +48,18 @@ namespace CLAM
 
 
 	void ExtractTicksSequence( std::string pathToFile,
-				   CLAM::Pulse& ticksList )
+				   CLAM::Pulse& ticksList,
+				   CLAM::Pulse& beatsList )
 	{
 		TickExtractorConfig defaultConfig;
 
-		ExtractTicksSequence( pathToFile, defaultConfig, ticksList );
+		ExtractTicksSequence( pathToFile, defaultConfig, ticksList, beatsList );
 	}
 	
 	void ExtractTicksSequence( std::string pathToFile,
 				   TickExtractorConfig& configuration,
-				   CLAM::Pulse& ticksList )	
+				   CLAM::Pulse& tickSequence,
+				   CLAM::Pulse& beatSequence )	
 	{
 
 		configuration.SetFromAudio( false );		
@@ -136,19 +138,13 @@ namespace CLAM
 
 		RhythmDescription::IOIHistogram ioiHistogram;
 
-		Pulse tickSequence;
-		Pulse beatSequence;
 
 		myTickSequenceTracker.Start();
 		
 		//Use the transients computed in this main
 		myTickSequenceTracker.Do( transients, tickSequence, beatSequence, ioiHistogram );
 
-		myTickSequenceTracker.Stop();
-
-
-		ticksList = tickSequence;
-		
+		myTickSequenceTracker.Stop();	
 
 	}
 }

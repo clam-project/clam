@@ -200,24 +200,20 @@ namespace CLAM
 			int transHop = mConfig.GetTransHop();
 			int firstTransientIndex = 0;
 			int lastTransientIndex = numbTrans-1;
-			int firstTransientPos;
-			int lastTransientPos;
 
-			Array<TimeIndex>  IOIHistPeaks;
+			Array<TimeIndex> IOIHistPeaks;
 			Array<TimeIndex> tickArray;
 			Array<TimeIndex> tempoArray;
 
 			Array<TData> forGlobalTempoCalc;
 			Array<TData> forGlobalTickCalc;
 		
-			
-
 			int nLoops = 1;
 
 			while (lastTransientIndex<transients.Size() && stop<2)
 			{
-				firstTransientPos = (int)transients[firstTransientIndex].GetPosition();
-				lastTransientPos = (int)transients[lastTransientIndex].GetPosition();
+				int firstTransientPos = (int)transients[firstTransientIndex].GetPosition();
+				int lastTransientPos = (int)transients[lastTransientIndex].GetPosition();
 				TSize windowSize = lastTransientPos - firstTransientPos;
 			
 				TSize actualIOIHistSize = std::min((TSize)windowSize,mIOIHistMaxSize);

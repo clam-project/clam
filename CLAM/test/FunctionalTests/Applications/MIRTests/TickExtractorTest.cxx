@@ -33,12 +33,13 @@ namespace CLAMTest
 	protected:
 
 		std::string mPathToTests;
+		CLAM::Pulse extractedBeats;
 
 	public:
 
 		void setUp()
 		{
-			mPathToTests = "../../../../CLAM-TestData/RhythmDescription";
+			mPathToTests = "../../../../../CLAM-TestData/RhythmDescription";
 		}
 
 		void tearDown()
@@ -58,7 +59,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			
 			RhythmDescriptionTests::RhythmEventsB2B res;
@@ -99,7 +100,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 			
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -139,7 +140,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -180,7 +181,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -198,6 +199,15 @@ namespace CLAMTest
 			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
 
 			CLAM::XMLStorage::Dump( diff, "EventListDifference", "ALoCubano_Ticks_diff.xml" );
+
+			RhythmDescriptionTests::TickSequence ideal;
+			CLAM::XMLStorage::Restore( ideal, mPathToTests + "/Tick/ALoCubano_IdealTickSequence.xml" );
+			RhythmDescriptionTests::EventListDifference diffWithIdeal;
+
+			diffWithIdeal.SetFileTested( inst.GetRelativePath() );
+			diffWithIdeal.CompareWithIdeal( ideal, extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diffWithIdeal, "EventListDifference", "ALoCubano_IdealTicks_diff.xml" );
 
 			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
 			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check ALoCubano_Ticks_diff.xml!",
@@ -221,7 +231,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -239,6 +249,15 @@ namespace CLAMTest
 			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
 
 			CLAM::XMLStorage::Dump( diff, "EventListDifference", "AmourEnPoudre_Ticks_diff.xml" );
+
+			RhythmDescriptionTests::TickSequence ideal;
+			CLAM::XMLStorage::Restore( ideal, mPathToTests + "/Tick/AmourEnPoudre_IdealTickSequence.xml" );
+			RhythmDescriptionTests::EventListDifference diffWithIdeal;
+
+			diffWithIdeal.SetFileTested( inst.GetRelativePath() );
+			diffWithIdeal.CompareWithIdeal( ideal, extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diffWithIdeal, "EventListDifference", "AmourEnPoudre_IdealTicks_diff.xml" );
 
 			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
 			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check AmourEnPoudre_Ticks_diff.xml!",
@@ -262,7 +281,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -280,6 +299,15 @@ namespace CLAMTest
 			diff.Compare( inst.GetEvents().GetIndexes(), extractedEvents.GetIndexes() );
 
 			CLAM::XMLStorage::Dump( diff, "EventListDifference", "Amsterdam_Ticks_diff.xml" );
+
+			RhythmDescriptionTests::TickSequence ideal;
+			CLAM::XMLStorage::Restore( ideal, mPathToTests + "/Tick/Amsterdam_IdealTickSequence.xml" );
+			RhythmDescriptionTests::EventListDifference diffWithIdeal;
+
+			diffWithIdeal.SetFileTested( inst.GetRelativePath() );
+			diffWithIdeal.CompareWithIdeal( ideal, extractedEvents.GetIndexes() );
+
+			CLAM::XMLStorage::Dump( diffWithIdeal, "EventListDifference", "Amsterdam_IdealTicks_diff.xml" );
 
 			CPPUNIT_ASSERT_EQUAL( inst.GetEvents().GetIndexes().Size(), extractedEvents.GetIndexes().Size() );
 			CPPUNIT_ASSERT_MESSAGE("Maximum time position difference above 30 ms! Check Amsterdam_Ticks_diff.xml!",
@@ -303,7 +331,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -344,7 +372,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -385,7 +413,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -426,7 +454,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -467,7 +495,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 
@@ -508,7 +536,7 @@ namespace CLAMTest
 
 			CLAM::Pulse extractedEvents;
 
-			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents);
+			CLAM::ExtractTicksSequence( mPathToTests + "/" + inst.GetRelativePath(), extractedEvents, extractedBeats );
 
 			RhythmDescriptionTests::RhythmEventsB2B res;
 

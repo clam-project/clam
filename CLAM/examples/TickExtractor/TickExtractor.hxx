@@ -10,11 +10,13 @@ namespace CLAM
 	class TickExtractorConfig;
 
 	void ExtractTicksSequence( std::string pathToFile,
-				   CLAM::Pulse& ticksList );
+				   CLAM::Pulse& ticksSequence,
+				   CLAM::Pulse& beatsSequence );
 
 	void ExtractTicksSequence( std::string pathToFile,
 				   TickExtractorConfig& cfg,
-				   CLAM::Pulse& ticksList);
+				   CLAM::Pulse& ticksSequence,
+				   CLAM::Pulse& beatsSequence );
 }
 
 #endif // TickExtractor.hxx
