@@ -297,7 +297,11 @@ namespace CLAM {
 
 		void SetOrphan();
 
-		bool ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj);
+		/**
+		 * An special Configure case for TopLevelProcessing.
+		 * @todo review its utility and refactor code duplication
+		 */
+		void ConfigureOrphan(const ProcessingConfig &c);
 
 		bool AbleToExecute(void) const
 		{

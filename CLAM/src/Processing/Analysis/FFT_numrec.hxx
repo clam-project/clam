@@ -68,9 +68,6 @@ namespace CLAM {
 		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an FFTConfig
-		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
