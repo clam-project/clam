@@ -73,6 +73,8 @@ namespace CLAMVM
 
 	void SpectrumRenderingManager::RenderData()
 	{
+		if ( mDataCached.Size() <= 0 ) // has data
+				return;
 		if ( mMustProcessData )
 			ProcessData();
 		if ( mDrawAsLines )
