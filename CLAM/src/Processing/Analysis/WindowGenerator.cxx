@@ -28,42 +28,8 @@
 #include "Audio.hxx"
 #include "WindowGenerator.hxx"
 
-#define CLASS "WindowGenerator"
-
-using namespace CLAM;
-
-	Enum::tEnumValue EWindowNormalize::sEnumValues[] = {
-		{EWindowNormalize::eNone,"NoNormalization"},
-		{EWindowNormalize::eAnalysis,"NormalizationForAnalysis"},
-		{EWindowNormalize::eEnergy,"NormalizationForConstantEnergy"},
-		{EWindowNormalize::eMax,"NormalizationForMaximizingMagnitude"},
-		{0,NULL}
-	};
-
-	Enum::tValue EWindowNormalize::sDefault = EWindowNormalize::eAnalysis;
-
-	void WindowGeneratorConfig::DefaultInit()
-	{
-		/* All Attributes are added */
-		AddType();
-		AddSize();
-		AddMaxSize();
-		AddUseTable();
-		AddNormalize();
-		AddInvert();
-
-		UpdateData();
-		DefaultValues();
-	}
-
-	void WindowGeneratorConfig::DefaultValues()
-	{
-		SetUseTable(true);
-		SetSize(4097);
-		SetNormalize(EWindowNormalize::eAnalysis);
-		SetInvert(false);
-		SetType(EWindowType::eHamming);
-	}
+namespace CLAM
+{
 
 	/* Processing  object Method  implementations */
 
@@ -189,7 +155,7 @@ using namespace CLAM;
 	{
 
 		CLAM_ASSERT(out.HasMagBuffer(),
-			CLASS"::Do(): Spectral Window exists only for type MagPhase");
+			    "WindowGenerator::Do(): Spectral Window exists only for type MagPhase");
 
 		Do(out.GetMagBuffer());
 		return true;
@@ -568,11 +534,4 @@ void WindowGenerator::NormalizeWindow(DataArray& window) const
 	return (sin ((N/2) * x) / sin (x/2));
 }
 
-
-
-
-
-
-
-
-
+}

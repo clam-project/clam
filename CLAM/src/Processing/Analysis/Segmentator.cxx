@@ -317,7 +317,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralKurtosisId  )
 		{
-			value=descriptors.GetFrameD(i).GetSpectrumD().GetKurtosis();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMagnitudeKurtosis();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
