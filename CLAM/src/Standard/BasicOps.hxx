@@ -39,6 +39,13 @@ public:
 	Pow<o-1> next;
 };
 
+template<> struct Pow<1>
+{
+public:
+	template<class T>
+	T operator() (const T& n) const {return n;}
+};
+
 template<> struct Pow<0>
 {
 public:
