@@ -184,7 +184,7 @@ void SystemWithPorts::ModulatedOscillator::Connect()
 {
 	System()._oscillator.GetOutPorts().Get( "Audio Output" ).Attach( System()._oscillatorData );
 	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
-	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._fileInData );
+	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._oscillatorData );
 	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
 	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
 	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._multiplierData );
