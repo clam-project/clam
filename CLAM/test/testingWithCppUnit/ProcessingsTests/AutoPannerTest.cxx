@@ -20,15 +20,16 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "ControlSender.hxx"
+#include "AutoPanner.hxx"
 #include "InControl.hxx"
+#include "OSDefines.hxx" // some  tests use M_PI
 
 namespace CLAMTest {
 
-class ControlSenderTest;
-CPPUNIT_TEST_SUITE_REGISTRATION( ControlSenderTest );
+class AutoPannerTest;
+CPPUNIT_TEST_SUITE_REGISTRATION( AutoPannerTest );
 
-class ControlSenderTest : public CppUnit::TestFixture
+class AutoPannerTest : public CppUnit::TestFixture
 {
 public:
 
@@ -41,7 +42,7 @@ public:
 
 private:
 
-	CPPUNIT_TEST_SUITE( ControlSenderTest );
+	CPPUNIT_TEST_SUITE( AutoPannerTest );
 	CPPUNIT_TEST( testDo_WhenFreqEqualSamplingRateAndNoPhase );
 	CPPUNIT_TEST( testDo_WhenFreqEqualSamplingRateWithPhase );
 	CPPUNIT_TEST( testDo_WhenFreqIsQuarterOfSamplingRate );
@@ -55,15 +56,15 @@ private:
 	//fixture attributes
 	CLAM::InControl _receiverLeft;
 	CLAM::InControl _receiverRight;
-	ControlSender _controlSender;
+	CLAM::AutoPanner _controlSender;
 	const double _delta;
 
-	ControlSenderTest()
+	AutoPannerTest()
 		: _receiverLeft("Receiver Left"),
 		  _receiverRight("Receiver Right"),
 		  _controlSender(44100, 44100, 0),
 		  _delta(0.00001)
-		// ControlSender needs a constructor but we won't use
+		// AutoPanner needs a constructor but we won't use
 		// this configuration
 	{
 	}
@@ -92,7 +93,7 @@ private:
 	{
 		CLAM::TData freq = 44100;
 		CLAM::TData samplingRate = 44100;
-		CLAM::TData phase = M_PI/2;
+		CLAM::TData phase = CLAM::TData(M_PI/2);
 		int frameSize = 1;
 
 		_controlSender.Configure( freq , samplingRate, phase, frameSize );
@@ -150,7 +151,7 @@ private:
 	{
 		CLAM::TData samplingRate = 44100;
 		CLAM::TData freq = samplingRate/4;
-		CLAM::TData phase = M_PI;
+		CLAM::TData phase = CLAM::TData(M_PI);
 		int frameSize = 7;
 
 		_controlSender.Configure( freq , samplingRate, phase, frameSize );
