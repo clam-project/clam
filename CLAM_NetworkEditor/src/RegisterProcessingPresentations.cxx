@@ -25,6 +25,10 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
 	regtAudioMultiplier( "AudioMultiplier" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
+	regtFFT_rfftw( "FFT_rfftw" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
+	regtIFFT_rfftw( "IFFT_rfftw" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
 	regtLadspaLoader( "LadspaLoader" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation > 
 	regtMonoAudioFileReader( "MonoAudioFileReader" );
