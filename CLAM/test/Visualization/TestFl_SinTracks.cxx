@@ -7,7 +7,7 @@
 #include <iostream>
 #include <exception>
 #include <string>
-#include <Fl/fl_file_chooser.H>
+#include <FL/fl_file_chooser.H>
 
 using CLAM::Segment;
 using CLAM::XMLStorage;
