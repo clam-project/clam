@@ -37,6 +37,11 @@ namespace CLAM {
 
 	void FrameInterpConfig::DefaultValues()
 	{
+		SetMagInterpolationFactor( 0.0 );
+		SetFreqInterpolationFactor( 0.0 );
+		SetPitchInterpolationFactor( 0.0 );
+		SetResidualInterpolationFactor( 0.0 );
+		SetHarmonic( false );
 		SetUseSpectralShape(false);
 	}
 
