@@ -33,8 +33,9 @@ namespace CLAM
 
 	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void Network::AddFlowControl(FlowControl* flowControl)
-	{
+	{		
 		_flowControl = flowControl;
+		_flowControl->AttachToNetwork(this);
 	}
 
 	Processing& Network::GetProcessing( const std::string & name )

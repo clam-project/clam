@@ -10,14 +10,16 @@ class Network;
 class FlowControl
 {
 	typedef enum {
+		NotAttachedToNetwork,
 		SomePortsNotConfigured,
 		SomeNodesNotConfigured,
 		Ready,
 		Running		
 	} ExecState;
 public:
-	FlowControl( Network &, int frameSize = 0 );
+	FlowControl( int frameSize = 0 );
 	virtual ~FlowControl(){}
+	void AttachToNetwork( Network* );
 	void ConfigureNodes();
 	void ConfigurePorts();
 	
@@ -31,7 +33,7 @@ public:
 private:
 	
 	int _frameSize;
-	Network & _network;
+	Network * _network;
 	ExecState _state;
 };
 
