@@ -337,7 +337,7 @@ namespace CLAM {
 			 */
 			CLAM_BEGIN_DEBUG_CHECK
 				if (GetExecState() == Unconfigured ||
-			      GetExecState() == Ready)
+				    GetExecState() == Ready)
 				{
 					std::string err(GetClassName());
 					err += ": Do(): Not in execution mode - did you call Start on this "
