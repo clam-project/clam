@@ -44,14 +44,9 @@ namespace CLAM
 		const char * GetClassName() const {return "Mixer";}
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast)
+		bool ConcreteConfigure( const ProcessingConfig& cfg )
 		{
-			try {
-				mConfig = dynamic_cast<const MixerConfig&>(cfg);
-			}
-			catch (std::bad_cast) {
-				throw(ErrProcessingObj("Mixer::ConcreteConfigure(): Wrong argument type.",this));
-			}
+			CopyAsConcreteConfig(mConfig, c);
 			return true;
 		}
 

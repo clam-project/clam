@@ -78,10 +78,10 @@ public:
 	 *  @param cfg The configuration object
 	 *  @return A boolean value, true if method has been executed correctly
 	 */
- 	bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool ConcreteConfigure(const ProcessingConfig& cfg)
 	{
-		mConfig = dynamic_cast<const MultiplierConfig&>(cfg);
-				
+		CopyAsConcreteConfig(mConfig, c);
+
 		return true;
 	}
 
@@ -111,7 +111,7 @@ public:
 	/** Storage class, not implemented yet*/
 	void StoreOn(Storage &s) {};
 };
-	
+
 }
 
 #endif
