@@ -131,7 +131,23 @@ namespace CLAM {
 		if (sndpcm==0)
 		{
 			try {
-				sndpcm = new ::SndPcm(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+				if (mNReadChannels && mNWriteChannels)
+				{
+					if (mNReadChannels!=mNWriteChannels)
+					{
+						throw(Err("ALSAAudioDevice::Start(): "
+							"Number of inputs and outputs must match"));
+					}
+					sndpcm = new ::SndPcmFullDuplex(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+				}
+				else if (mNReadChannels)
+				{
+					sndpcm = new ::SndPcmInput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+				}
+				else if (mNWriteChannels)
+				{
+					sndpcm = new ::SndPcmOutput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+				}
 			}
 			catch (SndPcmError &e) {
 				Err ne("ALSAAudioDevice::Start(): Failed to create PCM device.");
@@ -141,24 +157,27 @@ namespace CLAM {
 			needs_start = true;
 		}
 
-		int bufSize = sndpcm->latency * mNChannels;
-		mReadBuf.Resize(bufSize);
-		mWriteBuf.Resize(bufSize);
-		mReadBuf.SetSize(bufSize);
-		mWriteBuf.SetSize(bufSize);
+		if (sndpcm)
+		{
+			int bufSize = sndpcm->latency * mNChannels;
+			mReadBuf.Resize(bufSize);
+			mWriteBuf.Resize(bufSize);
+			mReadBuf.SetSize(bufSize);
+			mWriteBuf.SetSize(bufSize);
 
-		for (i=0; i<bufSize; i++) {
-			mReadBuf[i] = 0;
-			mWriteBuf[i] = 0;
+			for (i=0; i<bufSize; i++) {
+				mReadBuf[i] = 0;
+				mWriteBuf[i] = 0;
+			}
+
+			// the following settings will be set at the first Read/Write
+			// to the Audio buffer size that is passed.
+			mReadBufSize = 0; 
+			mWriteBufSize = 0;
+
+			if (needs_start)
+				sndpcm->Start();
 		}
-
-		// the following settings will be set at the first Read/Write
-		// to the Audio buffer size that is passed.
-		mReadBufSize = 0; 
-		mWriteBufSize = 0;
-
-		if (needs_start)
-			sndpcm->Start();
 	}
 
 	void ALSAAudioDevice::Stop(void) throw(Err)
@@ -218,16 +237,13 @@ namespace CLAM {
 			mNChannelsRead = 0;
 			for (int i=0;i<mNChannels;i++)
 				mChannelsRead[i] = false;
-
-			if (mNWriteChannels == 0)
-				sndpcm->WriteBuf(mWriteBuf.GetPtr());
 		}
 	}
 
 	void ALSAAudioDevice::Write(const Audio& audio,const int channelID)
 	{
 		CLAM_DEBUG_ASSERT(channelID < mNChannels,
-		                  "ALSAAudioDevice::Read(): Invalid Channel ID");
+		                  "ALSAAudioDevice::Write(): Invalid Channel ID");
 
 		TData* ptrA = audio.GetBuffer().GetPtr();
 		short* ptrB = mWriteBuf.GetPtr() + channelID;
@@ -264,10 +280,6 @@ namespace CLAM {
 			mNChannelsWritten = 0;
 			for (i=0;i<mNChannels;i++)
 				mChannelsWritten[i] = false;
-
-			if (mNReadChannels == 0)
-				sndpcm->ReadBuf(mReadBuf.GetPtr());
-				
 		}
 	}
 

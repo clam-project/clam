@@ -17,8 +17,8 @@
 
 
 open LAT,"latency.c";
-open HXX,">SndPcm.hxx";
-open CXX,">SndPcm.cxx";
+open HXX,">SndPcmFullDuplex.hxx";
+open CXX,">SndPcmFullDuplex.cxx";
 
 @functions =
  (setparams_stream,setparams_bufsize,setparams_set,setparams,readbuf,writebuf);
@@ -49,14 +49,14 @@ SndPcm.in.tail.hxx
 
 EOF
 
-open IN,"SndPcm.in.head.cxx";
+open IN,"SndPcmFullDuplex.in.head.cxx";
 while (<IN>)
 {
 	print CXX;
 }
 close IN;
 
-open IN,"SndPcm.in.head.hxx";
+open IN,"SndPcmFullDuplex.in.head.hxx";
 while (<IN>)
 {
 	print HXX;
@@ -133,14 +133,14 @@ EOF
 	}
 }
 
-open IN,"SndPcm.in.tail.cxx";
+open IN,"SndPcmFullDuplex.in.tail.cxx";
 while (<IN>)
 {
 	print CXX;
 }
 close IN;
 
-open IN,"SndPcm.in.tail.hxx";
+open IN,"SndPcmFullDuplex.in.tail.hxx";
 while (<IN>)
 {
 	print HXX;
