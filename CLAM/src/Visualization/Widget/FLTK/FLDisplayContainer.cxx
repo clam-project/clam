@@ -27,7 +27,7 @@ using namespace CLAMGUI;
 
 void FLDisplayContainer::redraw()
 {
-	
+	mpDisplay->damage();
 	Fl_Group::redraw();
 
 }
@@ -36,8 +36,8 @@ void FLDisplayContainer::draw()
 {
 	mpDisplay->SetHorRange( mHorRange );
 	mpDisplay->SetVerRange( mVerRange );
-
-
+	mpDisplay->damage();
+	
 	Fl_Group::draw();
 }
 
