@@ -35,12 +35,7 @@ public:
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
 		
-		CreatorMap::const_iterator i = _creators.find(creatorId);
-		if ( i==_creators.end() ) {
-			// not found
-			return NULL;
-		} else 
-			return i->second;
+		return CommonGetCreator(creatorId);
 	}
 
 	CreatorMethod GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory)
@@ -48,6 +43,21 @@ public:
 		if ( _creators.begin() == _creators.end() )
 			throw ErrFactory("GetCreatorSafe invoked on an empty registry");
 
+		return CommonGetCreator(creatorId);
+	}
+
+	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
+	{
+		_creators.insert( 
+			CreatorMap::value_type( creatorId, creator ) );
+	}
+
+private: // data
+	CreatorMap _creators;
+	
+	// helper methods:
+	CreatorMethod CommonGetCreator( RegistryKey& creatorId )
+	{
 		CreatorMap::const_iterator i = _creators.find(creatorId);
 		if ( i==_creators.end() ) {
 			// not found
@@ -55,13 +65,7 @@ public:
 		} else 
 			return i->second;
 	}
-	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
-	{
-		_creators.insert( 
-			CreatorMap::value_type( creatorId, creator ) );
-	}
-private:
-	CreatorMap _creators;
+	
 };
 
 
