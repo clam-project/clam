@@ -21,6 +21,8 @@
 
 #include "GLWaveRenderer.hxx"
 #include "DataTypes.hxx"
+#include "CLAM_Math.hxx"
+
 using CLAM::TData;
 using namespace CLAMGUI;
 

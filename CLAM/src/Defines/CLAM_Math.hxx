@@ -16,6 +16,18 @@
 
 #endif //linux
 
+#if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
+	namespace std
+	{
+		inline int max(int a, int b) { 
+			return (a>=b)? a : b;
+		}
+		inline int min(int a, int b) { 
+			return (a<=b)? a : b;
+		}
+	} // namespace std
+#endif // MSVC++ 6
+
 #ifndef __USE_ISOC99
 inline double  round(double _X)
         {return (floor(_X+0.5)); }
