@@ -497,56 +497,6 @@ AC_DEFUN(CLAM_LIB_OGGVORBIS,
 ])
 dnl End of Vorbis I SDK checking procedure
 
-dnl Start of libid3tag checking procedure
-AC_DEFUN(CLAM_LIB_ID3TAG,
-[
-	AC_MSG_NOTICE([Checking that libid3tag is installed])
-	
-	AC_CHECK_LIB(id3tag, id3_file_open,
-		     [LIBID3TAG_PRESENT="yes";ID3TAG_LIBS="id3tag"],
-		     [LIBID3TAG_PRESENT="no"],
-		     -lz)
-
-	AC_CHECK_HEADER(id3tag.h,
-			[HDRID3TAG_PRESENT="yes"],
-			[HDRID3TAG_PRESENT="no"])
-
-	if test $LIBID3TAG_PRESENT = no || test $HDRID3TAG_PRESENT = no;
-	then
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR([libid3tag seems not to be installed on your system!])
-	fi
-
-	ID3TAG_LIBS="$ID3TAG_LIBS z"
-	ID3TAG_LIB_PATH=""
-	ID3TAG_INCLUDES=""
-
-	AC_PATH_TOOL( ID3TAG_LIB_PATH,
-		      libid3tag.so,
-		      [],
-		      [/usr/lib:/usr/local:/opt/lib])
-
-	ID3TAG_LIB_PATH=${ID3TAG_LIB_PATH%/libid3tag.so}
-
-	if test $ID3TAG_LIB_PATH = "/usr/lib"
-	then
-		ID3TAG_LIB_PATH=""
-	fi
-
-	AC_PATH_TOOL( ID3TAG_INCLUDES,
-		      id3tag.h,
-		      [/usr/include:/usr/local/include])
-
-	ID3TAG_INCLUDES=${ID3TAG_INCLUDES%/id3tag.h}
-
-	if test $ID3TAG_INCLUDES = "/usr/include" || test $ID3TAG_INCLUDES="/usr/local/include"
-	then
-		ID3TAG_INCLUDES=""
-	fi
-	
-])
-
-dnl End of libid3tag checking procedure
 
 dnl Start of LADSPA SDK checking procedure
 AC_DEFUN( CLAM_LIB_LADSPA,
