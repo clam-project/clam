@@ -111,6 +111,26 @@ private:
 	ReadHook<unsigned> _chained;
 };
 
+/** @ingroup SemanticalAnalysis */
+template <typename AttributeType>
+class ReadIndirectRangedHook : public ReadIndirectHook<AttributeType>
+{
+public:
+	void GetRangeForReading(
+		const AttributeType*& begin,
+		const AttributeType*& end) const
+	{
+		begin = & (ReadIndirectHook<AttributeType>::GetForReading());
+		end = begin + _range;
+	}
+
+	void Range(unsigned range)
+	{
+		_range = range;
+	}
+private:
+	unsigned _range;
+};
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
