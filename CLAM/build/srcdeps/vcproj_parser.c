@@ -5,6 +5,7 @@
 #include "config_parser.h"
 #include "list.h"
 #include "strfuncs.h"
+#include "listhash.h"
 
 
 extern char* empty_vcproj_lines[];
@@ -72,6 +73,23 @@ void vcproj_parse_add_libraries(int isDebug)
 		i = i->next;
 	}
 }
+void vcproj_parse_add_defines(void)
+{
+	int first=1;
+	item* i = defines->first;
+	while (i)
+	{
+		if (i->str && i->str[0]!=0)
+		{
+			char tmp[1024];
+			strncpy(tmp,i->str,1024);
+			if (!first) stradd(";");
+			else first = 0;
+			stradd(tmp);
+		}
+		i = i->next;
+	}
+}
 	
 void vcproj_parse_add_release_libraries(void)
 {
@@ -103,9 +121,19 @@ void vcproj_parse_add_library_paths(void)
 	}
 }
 
+char* srcdeps_path()
+{
+	char* toppath = listhash_find(config, "TOP")->l->first->str;
+	static char srcdepspath[100];
+	sprintf(srcdepspath,"%s%s",toppath,"/build/srcdeps/srcdeps.exe");
+	winstyle(srcdepspath);
+	return srcdepspath;
+}
+
 /** The public function to be called from the main */
 extern void vcproj_parse(const char* outFilename)
 {
+	// Parser based (conceptually) in a state machine
 	typedef enum { visualStudioProject, configRelease, configDebug, files, theRest } ParserStates;
 	ParserStates state;
 	int nline = 0;
@@ -138,10 +166,17 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf(outfile, line, includesbuf);
 				strend();
 			}
+			else if ( strstr(line, "\tPreprocessorDefinitions=") )
+			{
+				char definesbuf[4096];
+				strstart(definesbuf, 4096);
+				vcproj_parse_add_defines();
+				fprintf(outfile, line, definesbuf);
+				strend();
+			}
 			else if(strstr(line,"\tForcedIncludeFiles=" ) )
 			{ 
-				//TODO get it from the proper place (not hardwired!)
-				fprintf(outfile, line, "preinclude.hxx");
+				fprintf(outfile, line, pre_includes->first->str);
 			}
 			else if ( strstr(line,"\tAdditionalDependencies=") )
 			{
@@ -163,7 +198,7 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf( outfile, line, libdirsbuf );
 				strend();
 			}
-			else  // tag not found. maybe should change state?
+			else  // tag not found. check if we must change state
 			{
 				fprintf(outfile, line);
 				if ( strstr(line, "Name=\"Debug|Win32\"") )
@@ -180,6 +215,18 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf(outfile, line, includesbuf);
 				strend();
 			}
+			else if ( strstr(line, "\tPreprocessorDefinitions=") )
+			{
+				char definesbuf[4096];
+				strstart(definesbuf, 4096);
+				vcproj_parse_add_defines();
+				fprintf(outfile, line, definesbuf);
+				strend();
+			}
+			else if(strstr(line,"\tForcedIncludeFiles=" ) )
+			{ 
+				fprintf(outfile, line, pre_includes->first->str);
+			}
 			else if ( strstr(line,"\tAdditionalDependencies=") )
 			{
 				char libsbuf[4096];
@@ -192,7 +239,6 @@ extern void vcproj_parse(const char* outFilename)
 			{
 				fprintf( outfile, line, program->first->str );
 			}
-
 			else if ( strstr(line, "\tAdditionalLibraryDirectories=") )
 			{
 				char libdirsbuf[4096];
@@ -201,7 +247,6 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf( outfile, line, libdirsbuf );
 				strend();
 			}
-
 			else
 			{
 				fprintf(outfile, line);
@@ -222,11 +267,22 @@ extern void vcproj_parse(const char* outFilename)
 		}
 		else // state == theRest
 		{
-			fprintf(outfile, line);
+			if ( strstr(line, "\tCommandLine=") )
+			{
+					fprintf( outfile, line, srcdeps_path() );
+			}
+			else
+			{
+				fprintf(outfile, line);
+			}
 		}
 		nline++;
 	}
 	fclose(outfile);
+	{
+		FILE* stamp = fopen("buildstamp", "w");
+		close(stamp);
+	}
 }
 
 
