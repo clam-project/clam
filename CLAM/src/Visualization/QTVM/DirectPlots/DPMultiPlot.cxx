@@ -10,6 +10,7 @@ namespace CLAM
 		{
 			QtAppWrapper::Init();
 			_plot = new QtMultiPlot();
+			_plot->Geometry(100,100,500,225);
 			_plot->SwitchDisplayColors(true);
 			_plot->Show();
 		}

@@ -71,6 +71,14 @@ namespace CLAM
 			return static_cast<QtSpectrumAndPeaksPlot*> (create(spec,peaks,label,x,y,w,h,sc));
 		}
 
+		QtMultiPlot* PlotFactory::GetMultiPlot(	const std::string& label,
+												int x, int y, int w, int h,
+												bool sc )
+		{
+			QtAppWrapper::Init();
+			return static_cast<QtMultiPlot*> (create(label,x,y,w,h,sc));
+		}
+
 		QtAudioPlot* PlotFactory::GetAudioPlot(	QWidget* parent,
 												const Audio& audio, 
 												const std::string& label,
@@ -143,6 +151,21 @@ namespace CLAM
 			QtAppWrapper::Init();
 			return static_cast<QtSpectrumAndPeaksPlot*> (create(spec,peaks,label,x,y,w,h,sc,parent));
 		}
+
+		QtMultiPlot* PlotFactory::GetMultiPlot(	QWidget* parent,
+												const std::string& label,
+												int x,int y, int w, int h,
+												bool sc )
+		{
+			QtAppWrapper::Init();
+			return static_cast<QtMultiPlot*> (create(label,x,y,w,h,sc,parent));
+		}
+
+		//////////////////////////////////////////////////////////////////////
+		//                                                                  //
+		//                      Private methods                             //
+		//                                                                  //
+		//////////////////////////////////////////////////////////////////////
 
 		QtPlot* PlotFactory::create(const Audio& audio,
 									const std::string& label,
@@ -232,6 +255,17 @@ namespace CLAM
 		{
 			QtSinTracksPlot* plot = new QtSinTracksPlot(parent);
 			plot->SetData(peakMtx,sr,dur);
+			plot->Label(label);
+			plot->Geometry(x,y,w,h);
+			plot->SwitchDisplayColors(sc);
+			return plot;
+		}
+
+		QtPlot* PlotFactory::create(const std::string& label,
+									int x, int y, int w, int h,
+									bool sc, QWidget* parent)
+		{
+			QtMultiPlot* plot = new QtMultiPlot(parent);
 			plot->Label(label);
 			plot->Geometry(x,y,w,h);
 			plot->SwitchDisplayColors(sc);

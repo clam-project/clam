@@ -69,6 +69,13 @@ namespace CLAM
 																		int h=225,
 																		bool sc=true);
 
+				static QtMultiPlot* GetMultiPlot(	const std::string& label="",
+													int x=100,
+													int y=100,
+													int w=500,
+													int h=225,
+													bool sc=true );
+
 				static QtAudioPlot* GetAudioPlot(	QWidget* parent, // widget parent
 													const Audio& audio,
 													const std::string& label="",
@@ -135,6 +142,14 @@ namespace CLAM
 															int h=225,
 															bool sc=true);
 
+				static QtMultiPlot* GetMultiPlot(	QWidget* parent,
+													const std::string& label="",
+													int x=100,
+													int y=100,
+													int w=500,
+													int h=225,
+													bool sc=true );
+
 		private:
 				static QtPlot* create(const Audio& audio,
 									   const std::string& label,
@@ -175,6 +190,11 @@ namespace CLAM
 										int x, int y, int w, int h,
 										bool sc=true,
 									    QWidget* parent=0 );
+
+				static QtPlot* create( const std::string& label,
+										int x, int y, int w, int h,
+										bool sc=true,
+										QWidget* parent=0 );
 
 		};
 	}
