@@ -36,11 +36,11 @@ class AnalysisSynthesisExampleStdio:public AnalysisSynthesisExampleBase
 public:
 	CLAMGUI::Progress* CreateProgress(const char* title,float from,float to)
 	{
-		return new StdOutProgress(title,from,to);
+		return new CLAMGUI::StdOutProgress(title,from,to);
 	}
 	CLAMGUI::WaitMessage* CreateWaitMessage(const char* title)
 	{
-		return new StdOutWaitMessage(title);
+		return new CLAMGUI::StdOutWaitMessage(title);
 	}
 
 	void Run(void);
