@@ -204,7 +204,7 @@ namespace CLAM
 
 		void AnalysisProcessing();
 		void MorphAnalysisProcessing();
-		void SetSMSMorphFileName();
+		void ConfigureSMSMorph();
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */

@@ -777,7 +777,7 @@ void SMSBase::Transform()
 }
 
 
-void SMSBase::SetSMSMorphFileName()
+void SMSBase::ConfigureSMSMorph()
 {
 	SMSTransformationChain::iterator transIt=mTransformation.composite_begin();
 	SMSTransformationChainConfig::iterator configIt;
@@ -790,6 +790,9 @@ void SMSBase::SetSMSMorphFileName()
 			{
 				try{
 					SMSMorph* tmpMorph= dynamic_cast<SMSMorph*>(*transIt);
+					SMSMorphConfig& tmpMorphConfig= dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
+					tmpMorphConfig.SetSamplingRate(mMorphSegment.GetSamplingRate());
+					tmpMorph->Configure(tmpMorphConfig);
 					tmpMorph->SetSegmentToMorph(mMorphSegment);
 				}
 				catch (Err e)
@@ -800,25 +803,6 @@ void SMSBase::SetSMSMorphFileName()
 
 		}
 	}
-	/*	SMSTransformationChainConfig::iterator configIt;
-	if(mGlobalConfig.HasMorphSoundFile())
-	{
-		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++)
-		{
-			//Note: we are supposing only one Morph is in the chain
-			if((*configIt).GetConcreteClassName()=="SMSMorph")
-			{
-				SMSMorphConfig& morphCfg=dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
-				morphCfg.AddFileName();
-				morphCfg.UpdateData();
-				std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
-				tempSdifFilename+="_tmp.sdif";
-				morphCfg.SetFileName(tempSdifFilename);
-				break;
-			}
-		}
-	}
-*/
 }
 
 void SMSBase::TransformProcessing(void)
@@ -827,7 +811,7 @@ void SMSBase::TransformProcessing(void)
 	/* UNUSED: bool def=false; */
 	UpdateDataInTimeStretch();
 	mTransformation.Configure(mTransformationScore);
-	SetSMSMorphFileName();
+	ConfigureSMSMorph();
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
 
