@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include "PhantomBuffer.hxx"
+#include "DataTypes.hxx"
 
 namespace CLAMTest {
 
@@ -32,6 +33,11 @@ public:
 	CPPUNIT_TEST( testProduceConsumeData_withSizedRegions );
 	CPPUNIT_TEST( testProduceConsumeData_withSizedRegions_writerProducesMultipleTimes );
 	CPPUNIT_TEST( testStreamImplementation_avancingALongWay_semiStressTest );
+	CPPUNIT_TEST( testWritingRegion_CenterRegion_withOneReader );
+	CPPUNIT_TEST( testWritingRegion_CenterRegion_withSomeReaders );
+	CPPUNIT_TEST( testWritingRegion_CenterRegion_assertsWithUnevenRegion );
+	CPPUNIT_TEST( testWritingRegion_CenterRegion_withOneReaderAndBiggerWriter );
+	CPPUNIT_TEST( testTDataConstructorInitializesToZero );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -304,8 +310,153 @@ public:
 
 	// tests inplace regions
 
+	void testWritingRegion_CenterRegion_withOneReader()
+	{
 
+		//    	    012345678901
+		//    W	    0abcdefgh
+		//    R	    ------	 
+		
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(4);
+		writer.Hop(4);
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		reader.Size(6);
+		reader.Hop(3);
+		writer.LinkRegions( reader );
+		writer.CenterEvenRegions();
 
+		writer[0] = 'a';
+		writer[1] = 'b';
+		writer[2] = 'c';
+		writer[3] = 'd';
+		writer.Produce();
+		writer[0] = 'e';
+		writer[1] = 'f';
+		writer[2] = 'g';
+		writer[3] = 'h';
+		writer.Produce();
+
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[1] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[2] );
+		CPPUNIT_ASSERT_EQUAL( 'a', reader[3] );
+		CPPUNIT_ASSERT_EQUAL( 'b', reader[4] );
+		CPPUNIT_ASSERT_EQUAL( 'c', reader[5] );
+		
+	}
+	
+	void testWritingRegion_CenterRegion_withOneReaderAndBiggerWriter()
+	{
+
+		//    	    012345678901
+		//    W	    0abcdefgh
+		//    R	    ------	 
+		
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(4);
+		writer.Hop(4);
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		reader.Size(2);
+		reader.Hop(2);
+		writer.LinkRegions( reader );
+		writer.CenterEvenRegions();
+
+		writer[0] = 'a';
+		writer[1] = 'b';
+		writer[2] = 'c';
+		writer[3] = 'd';
+		writer.Produce();
+
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( 'a', reader[1] );
+	}
+
+	void testWritingRegion_CenterRegion_assertsWithUnevenRegion()
+	{
+
+		//    	    012345678901
+		//    W	    0abcdefgh
+		//    R	    ------	 
+		
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(4);
+		writer.Hop(4);
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		reader.Size(5);
+		reader.Hop(3);
+		writer.LinkRegions( reader );
+		try
+		{
+			writer.CenterEvenRegions();
+			CPPUNIT_FAIL( "Exception should have been thrown");
+		}
+		catch( CLAM::ErrAssertionFailed & )
+		{
+		}
+	}
+
+	void testWritingRegion_CenterRegion_withSomeReaders()
+	{
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(4);
+		writer.Hop(4);
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader2;
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader3;
+
+		reader.Size(6);
+		reader.Hop(3);
+		reader2.Size(8);
+		reader2.Hop(8);
+		reader3.Size(2);
+		reader3.Hop(2);
+		
+		writer.LinkRegions( reader );
+		writer.LinkRegions( reader2 );
+		writer.LinkRegions( reader3 );
+		
+		writer.CenterEvenRegions();
+
+		writer[0] = 'a';
+		writer[1] = 'b';
+		writer[2] = 'c';
+		writer[3] = 'd';
+		writer.Produce();
+		writer[0] = 'e';
+		writer[1] = 'f';
+		writer[2] = 'g';
+		writer[3] = 'h';
+		writer.Produce();
+
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[1] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader[2] );
+		CPPUNIT_ASSERT_EQUAL( 'a', reader[3] );
+		CPPUNIT_ASSERT_EQUAL( 'b', reader[4] );
+		CPPUNIT_ASSERT_EQUAL( 'c', reader[5] );
+	
+		CPPUNIT_ASSERT_EQUAL( '\0', reader2[0] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader2[1] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader2[2] );
+		CPPUNIT_ASSERT_EQUAL( '\0', reader2[3] );
+		CPPUNIT_ASSERT_EQUAL( 'a', reader2[4] );
+		CPPUNIT_ASSERT_EQUAL( 'b', reader2[5] );
+		CPPUNIT_ASSERT_EQUAL( 'c', reader2[6] );
+		CPPUNIT_ASSERT_EQUAL( 'd', reader2[7] );
+		
+		CPPUNIT_ASSERT_EQUAL( '\0', reader3[0] );
+		CPPUNIT_ASSERT_EQUAL( 'a', reader3[1] );
+	}
+			
+	void testTDataConstructorInitializesToZero()
+	{
+		CLAM::TData zero( 0.0f );
+		CLAM::TData defaultValue;
+		double delta( 0.000001 );
+				
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( zero, defaultValue, delta );
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::PhantomBuffer> );
@@ -315,3 +466,4 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::StdVector> );
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::StdList> );
 
 } // namespace CLAMTest 
+
