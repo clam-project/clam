@@ -566,15 +566,15 @@ namespace CLAM
 		mnPoints=originalBPF.mnPoints;
 		mOrder=originalBPF.mOrder;
 		return *this;
-	} 
-	
+	}
+
 /**
 * Updates Spline table creating it from scratch
 */
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::UpdateSplineTable()
 	{
-		if(!mIsSplineUpdated) 
+		if(!mIsSplineUpdated)
 			CreateSplineTable(); // Create spline table if not updated
 		mIsSplineUpdated=true;
 	}
@@ -625,8 +625,7 @@ namespace CLAM
 	{
 		int iClosest=0;
 		TX dif=Abs(x-GetXValue(closestPointsIndex[0]));
-
-		for(int i=0;i<mOrder+1;i++)
+		for(int i=0; i<=mOrder; i++)
 		{
 			TX dift=Abs(x-GetXValue(closestPointsIndex[i]));
 			if(dift<dif)
@@ -634,13 +633,10 @@ namespace CLAM
 				iClosest=i;
 				dif=dift;
 			}
-
 			md[i]=mc[i]=GetValueFromIndex(closestPointsIndex[i]);
-
 		}
 
 		TY y=GetValueFromIndex(closestPointsIndex[iClosest]);
-  
 		for(int m=0; m<mOrder; m++)
 		{
 			for(int i=0;i<mOrder-m;i++)
@@ -654,7 +650,7 @@ namespace CLAM
 				md[i]=hp*den;
 				mc[i]=ho*den;
 			}
-			if(2*iClosest<(mOrder-m))
+			if ( 2*iClosest < mOrder-m )
 			{
 				errorEstimate=mc[iClosest];
 			}
@@ -690,7 +686,7 @@ namespace CLAM
 			mSplineTable[0]=u[0]=0.0; // For a 'natural' spline
 		else {
 			mSplineTable[0] = -0.5;
-			u[0]= (TData(3.0) / (GetXValue(1)-GetXValue(0)) ) * 
+			u[0]= (TData(3.0) / (GetXValue(1)-GetXValue(0)) ) *
 			      ( (GetValueFromIndex(1) - GetValueFromIndex(0)) /
 			                (GetXValue(1)         - GetXValue(0))
 			                        - mLeftDerivative );
@@ -711,7 +707,7 @@ namespace CLAM
 		else {
 			qn = 0.5;
 			un = (TData(3.0)/(GetXValue(n-1)-GetXValue(n-2))) *
-			  ( mRightDerivative - 
+			  ( mRightDerivative -
 			      ( GetValueFromIndex(n-1) - GetValueFromIndex(n-2)) /
 			      ( GetXValue(n-1)         - GetXValue(n-2)));
 		}
