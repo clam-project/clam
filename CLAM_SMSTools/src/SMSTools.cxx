@@ -181,6 +181,8 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadSound(const std::string& filename, CLAM::Segment& segment)
 	{
+		if ( filename.length() <= 0 )
+			return false;
 		
 		CLAM::AudioFile selectedFile;
 		selectedFile.SetLocation( filename );
