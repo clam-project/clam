@@ -62,12 +62,12 @@ void Thread::Start()
 
 void Thread::Stop()
 {
-	pthread_cleanup_push((pthread_clean_pfunc)LaunchThreadCleanup, this);
-	
-	pthread_cancel(mThreadID);
+//	pthread_cleanup_push((pthread_clean_pfunc)LaunchThreadCleanup, this);
+	LaunchThreadCleanup(this);
+//	pthread_cancel(mThreadID);
 	mIsCancelled = true;
-	pthread_join(mThreadID,NULL);
-	pthread_cleanup_pop(1);
+//	pthread_join(mThreadID,NULL);
+//	pthread_cleanup_pop(1);
 	mIsCancelled = false;
 	mRunning = false;
 }
@@ -91,7 +91,6 @@ void* Thread::LaunchThread( void* pvoid )
 
 	pSelf->SetupPriorityPolicy();
 	pSelf->mThreadCode();
-	
 	pthread_exit(NULL);
 
 	return NULL;
