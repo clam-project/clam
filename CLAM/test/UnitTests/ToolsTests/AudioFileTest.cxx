@@ -17,10 +17,14 @@ namespace CLAMTest
 
 		CPPUNIT_TEST( testSetLocation_FileExists_and_Is_PCM );
 		CPPUNIT_TEST( testSetLocation_FileExists_and_Is_OggVorbis );
+		CPPUNIT_TEST( testSetLocation_FileExists_and_Is_Mpeg );
+		CPPUNIT_TEST( testSetLocation_FileExists_NotSpurious_Mpeg );
+		
 		CPPUNIT_TEST( testSetLocation_FileDoesNotExist_UnrecognizedFormat );
 
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_PCM );
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_OggVorbis );
+		CPPUNIT_TEST( testGetHeader_HeaderIsRight_Mpeg );
 
 		CPPUNIT_TEST( testGetHeader_NoHeaderWhenFileIsUnreadable );
 		CPPUNIT_TEST( testGetHeader_NoHeaderWhenFileIsUnreadable_AfterOneSuccessful );
@@ -427,7 +431,56 @@ namespace CLAMTest
 					      file.IsWritable() );
 		}
 
-		
+		void testSetLocation_FileExists_and_Is_Mpeg()
+		{
+			CLAM::AudioFile file;
+			file.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
+
+			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio"),
+					      file.GetKind().GetString() );			
+
+		}
+
+
+		void testSetLocation_FileExists_NotSpurious_Mpeg()
+		{
+			CLAM::AudioFile file;
+			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
+
+			CPPUNIT_ASSERT( std::string("Mpeg Audio") != file.GetKind().GetString() );						
+		}
+
+		void testGetHeader_HeaderIsRight_Mpeg()
+		{
+			CLAM::AudioFile file;
+			file.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
+
+			const CLAM::AudioFileHeader& header = file.GetHeader();
+
+			/*
+			std::cout << std::endl;
+			std::cout << header.GetSampleRate() << std::endl;
+			std::cout << header.GetChannels() << std::endl;
+			std::cout << header.GetLength() << std::endl;
+			std::cout << header.GetFormat().GetString() << std::endl;
+			std::cout << header.GetEncoding().GetString() << std::endl;
+			std::cout << header.GetEndianess().GetString() << std::endl;
+			std::cout << std::endl;
+			*/
+
+			CPPUNIT_ASSERT_EQUAL( int(44100),
+					      (int)header.GetSampleRate() );
+			CPPUNIT_ASSERT_EQUAL( int(2),
+					      (int)header.GetChannels() );
+			CPPUNIT_ASSERT_EQUAL( int(50703),
+					      (int)header.GetLength() );
+			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio Layer 3"),
+					      header.GetFormat().GetString() );
+			CPPUNIT_ASSERT_EQUAL( std::string("Format Default"),
+					      header.GetEncoding().GetString() );
+			CPPUNIT_ASSERT_EQUAL( std::string("Format Default"),
+					      header.GetEndianess().GetString() );
+		}
 		
 
 	};
