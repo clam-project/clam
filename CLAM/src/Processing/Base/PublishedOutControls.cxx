@@ -20,8 +20,11 @@ OutControl& PublishedOutControls::Get(const std::string & name) const
 		std::string actualName( (*it)->GetName() );
 		if (name == (*it)->GetName()) return *(*it);
 	}
-	CLAM_ASSERT(false, "name not found in OutControls collection");
 	
+	std::string error( "name not found in OutControls collection: " );
+	error += name;
+	CLAM_ASSERT( false, error.c_str() );
+
 	return *(OutControl*)NULL; // Just to get rid of warnings
 }
 
