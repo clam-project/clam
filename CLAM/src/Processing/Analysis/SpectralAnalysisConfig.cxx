@@ -39,7 +39,7 @@ void SpectralAnalysisConfig::SetWindowSize(TSize w)
 {
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
 	GetWindowGenerator().SetSize(w);
-	SetprFFTSize(int(PowerOfTwo((w-1)*pow(TData(2),TData(GetZeroPadding())))));
+	SetprFFTSize(nextPowerOfTwo( int( (w-1)*pow(TData(2),TData(GetZeroPadding())) ) ) );
 	GetCircularShift().SetAmount(-((w-1)/TData(2))); 
 	GetFFT().SetAudioSize(GetprFFTSize());
 	if(w<2*GetHopSize()+1)
@@ -67,7 +67,7 @@ const EWindowType& SpectralAnalysisConfig::GetWindowType() const
 void SpectralAnalysisConfig::SetZeroPadding(int z)
 {
 	SetprZeroPadding(z);
-	SetprFFTSize(int(PowerOfTwo((GetWindowSize()-1)*pow(TData(2),TData(GetZeroPadding())))));
+	SetprFFTSize(nextPowerOfTwo( int( (GetWindowSize()-1) * pow(TData(2),TData(GetZeroPadding())) ) ) );
 	GetFFT().SetAudioSize(GetprFFTSize());
 }
 
@@ -102,20 +102,7 @@ TData SpectralAnalysisConfig::GetSamplingRate() const
 }
 
 
-/* TODO: this functionality should be elsewhere */
-TInt32 SpectralAnalysisConfig::PowerOfTwo(TInt32 size)
-{
-	int tmp = size;
-	int outputSize = 1;
-	while (tmp) 
-	{
-	 	outputSize=outputSize << 1;
-	 	tmp=tmp >> 1;
-	}
-	if(outputSize == size << 1)
-		outputSize = outputSize >> 1;
-	return outputSize;
-}
+
 
 } // namespace CLAM
 
