@@ -90,7 +90,7 @@ public:
 		mController.BindTo( mNetwork );
 		AttachTo( mController );
 		
-		SignalRemoveProcessing.Emit( "osc" );
+		RemoveProcessing( &GetProcessingPresentation("osc") );
 		
 		CLAM::Network::ProcessingsMap::const_iterator it;
 		int size = 0;
@@ -114,7 +114,7 @@ public:
 
 		CPPUNIT_ASSERT_EQUAL( 4, (int)mProcessingPresentations.size() ) ;
 		
-		SignalClear.Emit();
+		Clear(); 
 		
 		CLAM::Network::ProcessingsMap::const_iterator it;
 		int size = 0;
@@ -131,11 +131,13 @@ public:
 		mNetwork.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
 
 		mController.BindTo( mNetwork );
+		mController.Publish();
 		AttachTo( mController );
 		
 		CPPUNIT_ASSERT_EQUAL( 2 , (int)mProcessingPresentations.size() );
 
-		SignalRemoveProcessing.Emit( "osc" );
+		RemoveProcessing( &GetProcessingPresentation("osc") );
+		UpdatePresentations();
 		
 		CLAMVM::NetworkController::ProcessingControllersMapIterator it;
 		int size = 0;
@@ -158,7 +160,7 @@ public:
 
 		CPPUNIT_ASSERT_EQUAL( 4 , (int)mProcessingPresentations.size() );
 
-		SignalClear.Emit();
+		Clear();
 		
 		CLAMVM::NetworkController::ProcessingControllersMapIterator it;
 		int size = 0;
