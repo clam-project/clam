@@ -72,6 +72,10 @@ public:
 	void Read(TInt32& t);
 	void Read(TFloat64& t);
 	void Read(TByte* ptr,int n);
+
+	void Write(const TInt32& t);
+	void Write(const TFloat64& t);
+	void Write(const TByte* ptr,int n);
 };
 
 
@@ -108,6 +112,23 @@ inline bool DataFileIO::Done(void)
 	return Pos()>=mSize;
 }
 
-} // end of namespace CLAM
+inline void DataFileIO::Write(const TInt32& t)
+{
+	Write((const TByte*)&t,sizeof(t));
+}
+
+inline void DataFileIO::Write(const TFloat64& t)
+{
+	Write((const TByte*)&t,sizeof(t));
+}
+
+inline void DataFileIO::Write(const TByte* ptr,int n)
+{
+	if (write(mFile,(const char*)ptr,n)!=n) {
+  		throw Err("DataFileIO read error");
+	}
+}
+
+}; // end of namespace CLAM
 
 #endif

@@ -4,10 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "SDIFFile.hxx"
-#include "SDIFFrame.hxx"
-#include "SDIFCollection.hxx"
-#include "SDIFConvert.hxx"
+#include "SDIFIn.hxx"
 #include "DataFileIO.hxx"
 #include "ByteOrderConvert.hxx"
 #include "CSaltoSegData.hxx"
@@ -26,7 +23,6 @@ CSaltoFileIO();
 //----------------------------------------------------------------------------//
 
   // accesors
-//  long GetAllocatedMemoryInBytes(){return mAllocatedMemoryInBytes;}
 
   // methods
   void ReadSDIFFile(const char* fileName,Segment* pSpecSeg,bool loadResidual);
@@ -42,10 +38,8 @@ CSaltoFileIO();
 //----------------------------------------------------------------------------//
 private:
 
-SDIFFile							*mpFile;
-//long                      mAllocatedMemoryInBytes;
-ByteOrderConvert      mByteConvertor;
-std::fstream              mFout;
+	ByteOrderConvert      mByteConvertor;
+	std::fstream              mFout;
 
 };
 

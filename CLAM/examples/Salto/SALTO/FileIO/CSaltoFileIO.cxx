@@ -6,8 +6,6 @@ namespace CLAM
 {
 
 CSaltoFileIO::CSaltoFileIO()
-://mAllocatedMemoryInBytes(0),
-  mByteConvertor()
 {
 
 }
@@ -21,16 +19,27 @@ CSaltoFileIO::~CSaltoFileIO()
 void CSaltoFileIO::ReadSDIFFile(const char* fileName,Segment *pSpecSeg,bool loadResidual)
 {
   /* temporal SDIF Converter which reads in one pSpecSeg */
-  SDIFConvert SDIFConverter(pSpecSeg,MAX_SINES);
+	SDIFInConfig cfg;
+	cfg.SetMaxNumPeaks(100);
+	cfg.SetFileName(fileName);
+	cfg.SetEnableResidual(true);
+	SDIFIn SDIFReader(cfg);
+	
+	//mSegment.AddAll();
+	//mSegment.UpdateData();
+	SDIFReader.Output.Attach(*pSpecSeg);
+		
+	while(SDIFReader.Do()) {}
 
-  mpFile = new SDIFFile(fileName,eInput);
+/*  SDIFIn SDIFIn(pSpecSeg,MAX_SINES);
+
+  mpFile = new SDIF::File(fileName,eInput);
   mpFile->Open();
   SDIFConverter.SetEnableResidual(loadResidual);
   mpFile->Read(SDIFConverter);
-//  mAllocatedMemoryInBytes += SDIFConverter.GetAllocatedMemoryApprox();
   mpFile->Close();
 
-  delete mpFile;
+  delete mpFile;*/
 }
 //----------------------------------------------------------------------------//
 
@@ -52,12 +61,6 @@ void CSaltoFileIO::WriteSaltoDataFile(const char* fileName,Array<CSaltoSegData> 
 {
   DataFileIO  *mpFileIO = NULL;
   
-  /* we dont need this anymore, only if the data file gets corrupt
-  // clear unused segdata
-  CSaltoSegData emptySegment;
-  for (int i=SPECTRAL_SEGMENTS_IN_USE;i<MAX_SPECTRAL_SEGMENTS;i++)
-     saltoData[i]= emptySegment;
-  */
   mpFileIO = new DataFileIO(fileName,eOutput);
   if (mpFileIO == NULL) throw
     Err("CSaltoFileIO::WriteSaltoDataFile cant construct FileIO");
