@@ -40,6 +40,7 @@ class OutControl
 private:
 	std::list<InControl*> mLinks;
 	std::string mName;
+	Processing * mParent;
 //Constructor/Destructor
 public:
 	~OutControl();
@@ -57,7 +58,7 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	* \todo improve construction mechanism (params set)
 	*/
-	OutControl( std::string name, Processing* parent=0, const bool publish=true );
+	OutControl( std::string name, Processing* parent=0, const bool publish=true );	
 	
 	
 //Methods
@@ -77,6 +78,7 @@ public:
 	const std::string& GetName(void) const { return mName; }
 	bool IsConnected();
 	bool IsConnectedTo( InControl & );
+	Processing * GetProcessing() const { return mParent;}
 };
 
 
