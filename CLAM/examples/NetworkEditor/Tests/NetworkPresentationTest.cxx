@@ -3,6 +3,7 @@
 #include "BaseLoggable.hxx" // also includes <sstream>
 #include "NetworkController.hxx"
 #include "Qt_NetworkPresentation.hxx"
+#include "ProcessingPresentation.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 
@@ -21,14 +22,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION( NetworkPresentationTest );
 class NetworkPresentationTest : public CppUnit::TestFixture, public NetworkGUI::Qt_NetworkPresentation
 {
 	CPPUNIT_TEST_SUITE( NetworkPresentationTest );
-
+	
 	CPPUNIT_TEST( testNetworkPresentationIsCreatedCorrectly_afterAttached );
 	CPPUNIT_TEST( testAddProcessingRegisterProcessingInNetwork );
 	CPPUNIT_TEST( testRemoveProcessingDeletesProcessing );
 	CPPUNIT_TEST( testClearDeletesProcessings );
 	CPPUNIT_TEST( testRemoveProcessingDeletesPresentationAndController );
 	CPPUNIT_TEST( testClearDeletesPresentationsAndControllers );
-//	CPPUNIT_TEST( testRemoveProcessingDeletesItsConnections );
+	CPPUNIT_TEST( testProcessingNameChangedCancelsModificationIfNotValidName );
+//	CPPUNIT_TEST( testProcessingNameChangedModifiesConnectionPresentationsNames );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -171,7 +173,23 @@ public:
 		CPPUNIT_ASSERT_EQUAL( 0 , (int)mProcessingPresentations.size() );
 
 	}
-	
+
+	void testProcessingNameChangedCancelsModificationIfNotValidName()
+	{
+		mNetwork.AddProcessing( "original", new CLAM::Oscillator );
+		mNetwork.AddProcessing( "repeatedName", new CLAM::Oscillator );
+
+		mController.BindTo( mNetwork );
+		AttachTo( mController );
+
+		NetworkGUI::ProcessingPresentation * processingPresentation = *(mProcessingPresentations.begin());
+		processingPresentation->ChangeProcessingPresentationName("repeatedName");
+		processingPresentation->SignalProcessingNameChanged.Emit( "repeatedName" );
+		std::string oldName("original");
+		std::string newName(processingPresentation->GetName());	
+		CPPUNIT_ASSERT_EQUAL( oldName, newName );
+		
+	}
 };
 
 } // namespace CLAMTest

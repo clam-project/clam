@@ -37,7 +37,7 @@ public:
 
 	void testProcessingPresentationIsCreatedCorrectly_afterAttached()
 	{
-		CPPUNIT_ASSERT_EQUAL( std::string("foo"), mPresentation.GetNameFromNetwork() );
+		CPPUNIT_ASSERT_EQUAL( std::string("foo"), mPresentation.GetName() );
 		CPPUNIT_ASSERT_EQUAL( true, mPresentation.HasInPort("Input Phase Modulation") );
 		CPPUNIT_ASSERT_EQUAL( true, mPresentation.HasInPort("Input Frequency Modulation") );
 		CPPUNIT_ASSERT_EQUAL( true, mPresentation.HasOutPort("Audio Output") );
