@@ -22,7 +22,7 @@ decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {}
 decl {\#include "AudioAdapter.hxx"} {public
 } 
 
-decl {\#include "SpectrumAdapter.hxx"} {public
+decl {\#include "LogMagSpectrumAdapter.hxx"} {public
 } 
 
 class UserInterface {open

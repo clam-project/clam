@@ -1,7 +1,7 @@
 #include "OnsetDetection.hxx"
 
 //Includes for debug display
-#include "CUIDADO_Snapshots.hxx"
+//#include "CUIDADO_Snapshots.hxx"
 #include <fstream>
 
 using namespace CLAM;
