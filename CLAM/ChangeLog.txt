@@ -13,6 +13,8 @@
   * Some examples:
     ** CLAM/build/Examples/Simple/QtPlots
   * Note that these widgets are in the initial development phase.
+  * Extra requirements:
+    ** qwt library.
 'Processing ports rewrite and clean up'
   * NetworkEditor:
      ** 
