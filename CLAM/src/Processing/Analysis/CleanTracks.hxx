@@ -33,16 +33,20 @@
 
 namespace CLAM {
 
-	
-	
-	
+
+
+
 	class CleanTracksConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE(CleanTracksConfig, 6,ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
+		/** Maximum tolerance (in frames) to peak discontinuation */
 		DYN_ATTRIBUTE (1,public,TSize,MaxDropOut);
+		/** */
 		DYN_ATTRIBUTE (2,public,TSize,MinLength);
+		/** Maximum frequency distance between two tracks to be considered as continuation
+		of the other */
 		DYN_ATTRIBUTE (3,public,TData,FreqDev);
 		/** This attribute is necessary so that BinPosition can be recomputed*/
 		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
@@ -73,13 +77,13 @@ namespace CLAM {
 		}
 	}TTrajectory;
 
-	
+
 
 	class CleanTracks: public Processing
 	{
 		mutable CleanTracksConfig mConfig;
 
-		const char *GetClassName() const {return "CleanTracks";} 
+		const char *GetClassName() const {return "CleanTracks";}
 
 		/** Config change method
 		 * @throw
@@ -95,7 +99,7 @@ namespace CLAM {
 		~CleanTracks();
 
 		//Configuration accessor
-		const ProcessingConfig &GetConfig() const { return mConfig;};		
+		const ProcessingConfig &GetConfig() const { return mConfig;};
 
 		//Peak Continuation for one frame
 		bool Do(Array<SpectralPeakArray*>& peakArrayArray);
@@ -103,7 +107,7 @@ namespace CLAM {
         bool Do(void);
 
 		int GetnCleanedTracks() const {return mTrajectoryArray.Size();};
-		
+
 	private:
 		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
 		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
@@ -125,7 +129,7 @@ namespace CLAM {
 		SearchArray<TTrajectory> mSearchTrajectories;
 
 
-			
+
 
 	};
 
