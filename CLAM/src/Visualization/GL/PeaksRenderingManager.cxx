@@ -5,7 +5,8 @@
 namespace CLAMVM
 {
 	PeaksRenderingManager::PeaksRenderingManager()
-		: mMustProcessData( false ), mNoPeaksToShow( false ), mSpecRange( 22050 ), mNumBins( 513 )
+		: mMustProcessData( false ), mNoPeaksToShow( false ), mSpecRange( 22050 ), mNumBins( 513 ),
+		  mLeftMostPeak( 0 )
 	{
 		mPeakRenderer.SetLineColor( 0, 0, 255 );
 	}
@@ -80,7 +81,7 @@ namespace CLAMVM
 	{
 		TIndex peakIndex = mLeftMostPeak;
 
-		for ( peakIndex = 0; peakIndex < mProcessedX.Size(); peakIndex++ )
+		for ( ; peakIndex < mProcessedX.Size(); peakIndex++ )
 		{
 			mProcessedX[peakIndex]= mDataCached[peakIndex].mFreq * ( mNumBins / mSpecRange );
 			mProcessedY[peakIndex]= mDataCached[peakIndex].mMag;
