@@ -4,28 +4,96 @@
 
 #include "DescriptionScope.hxx"
 
+
 /**
  * @defgroup SemanticalAnalysis Semantical Analysis
- * These are the classes that handle the description extraction.
+ * This module explains how to use CLAM to handle audio description
+ * extraction using the DescriptionScheme object and its relatives.
+ * They will allow you to do the extraction in a modular and incremental way
+ * taking from other projects the parts you are interested in and
+ * adding your own descriptors in a incremental way.
+ *
+ * @section DescriptionSpecification Defining and instanciating descriptors
+ *
+ * The central object for description extraction is the DescriptionScheme.
+ * The description scheme (CLAM::DescriptionScheme) defines 
+ * which are the attributes (CLAM::Attribute) we want to compute.
+ * You can relate attributes to a name and a type and you
+ * can organize attributes in different ''scopes''.
+ * You can understand a scope (CLAM::DescriptionScope) as 
+ * the kind of target for a given set of attributes.
+ * For example, we normaly talk about
+ * note scope, sample scope, frame scope, phrase scope...
+ * that means that a given attribute will have a value for
+ * every single note, sample, frame, phrase...
+ * 
+ * The description scheme only specifies the attribute organization.
+ * The real values are hold into the data pool (CLAM::DescriptionDataPool).
+ * An instance of a DescriptionDataPool will hold the attributes
+ * extracted from a single description source (ie, an audio).
+ * It take the structure defined by the description scheme.
+ *
+ * Description data pools can be loaded or stored in XML as any
+ * other CLAM::Component.
+ * @see CLAM::XmlStorage
+ *
+ * Attributes assures multiple type safe operations.
+ *
+ * So, summarizing:
+ * - A description scheme defines attributes to be computed
+ * - Every attribute has its name and type and is related to a given scope
+ * - A scope specifies the kind of attribute target
+ * - A description data pool contains the values computed from an extraction
+ *   matching the structure specified by a description scheme
+ * 
+ * @section ExtractorBinding Binding extractors 
+ *
+ * This part of the module is work on progress.
+ *
+ * You may use the data pool directly as a container of your extraction process.
+ * But CLAM offers a functionality to encapsulate the extraction process
+ * in an encapsulated object (CLAM::Extractor).
+ * You can bind the extractor to compute a given attribute by
+ * binding its output hook.
+ * and bind it to compute a given attribute and obtaining data for the rest of attributes.
+ *
+ * Current implemented binding operations are Bindings on the same context, 
+ * and indirection, that is, using an attribute to point another one even on a different scope.
+ *
+ * By now, there is no such abstract CLAM::Extractor but you can take a look
+ * to some Extractors CLAMTest::CharCopierExtractor and CLAMTest::CharJoinExtractor
+ *
+ * @todo Abstracting the CLAM::Extractor
+ * @todo An special kind of extractor for scope population (how many items in a scope?)
+ * @todo Others bindings like relative shift
+ * @todo Solving Range and Relative bindings when outside the scope space
+ * @todo Discontinuous Range Binding?
+ * @todo XML Serialization for schemes
+ * @todo Defining units friendly types for using them in attributes
+ * 
  */
-
-
-
 namespace CLAM
 {
+
+
 	/**
+	 * @ingroup SemanticalAnalysis
 	 * Represents a description schema for feature extraction.
-	 * The description scheme consists on: 
-	 * - a set of scopes (DescriptionScope) each scope defines a
-	 *   kind of target for the attributes.
-	 *   (note scope, sample scope, frame scope, phrase scope, sample scope...)
-	 * - a set of attributes (Attribute) for each scope and its type.
+	 * The description scheme defines the set of attributes (Attribute)
+	 * to work with.
 	 *
-	 * You can use a DescriptionScheme in order to instantiate
-	 * a DescriptionDataPool, that will contain the real data for
-	 * a given concrete sound sound.
-	 * DescriptionSchema is the definition and the DescriptionDataPool
-	 * is the instance for a given case.
+	 * A DescriptionScheme is only an specification.
+	 * The real data is held in a DescriptionDataPool,
+	 * a container that fits its structure to the one defined on
+	 * the DescriptionScheme specification.
+	 * 
+	 * Attributes in a DescriptionScheme have a name and a type
+	 * and they are organized in scopes.
+	 * Each  scope (see DescriptionScope) defines a kind of target for the attributes:
+	 * (note scope, sample scope, frame scope, phrase scope, sample scope...)
+	 *
+	 * You can add Attributes to the DescriptionScheme by
+	 * using the Add method.
 	 *
 	 * @todo The DescriptionSchema should also contain
 	 * which Extractors are used to compute the attributes and
@@ -33,7 +101,6 @@ namespace CLAM
 	 *
 	 * @see DescriptionDataPool
 	 * 
-	 * @ingroup SemanticalAnalysis
 	 */
 	class DescriptionScheme
 	{
