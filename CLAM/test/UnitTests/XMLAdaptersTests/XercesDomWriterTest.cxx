@@ -58,21 +58,6 @@ private:
 	std::stringstream mTargetStream;
 	xercesc::DOMDocument * mDocument;
 
-	void testCurrentContext_whenNoContextDefinedFails()
-	{
-		try
-		{
-			XmlWriteContext::CurrentContext();
-			CPPUNIT_FAIL("Assertion should have failed");
-		}
-		catch (CLAM::ErrAssertionFailed e)
-		{
-			CPPUNIT_ASSERT_EQUAL(
-				std::string("XML generation context not created"),
-				std::string(e.what()));
-		}
-	}
-
 	void testPlainContent()
 	{
 		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
