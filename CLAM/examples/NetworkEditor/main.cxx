@@ -63,7 +63,7 @@ void ConfigureNetwork(CLAM::Network & net)
 	fileOutCfg.SetFilename( fileOutName );
 	fileOutCfg.SetKeepFrameSizes(true);
 
-	CLAM::AudioOutWrapperConfiguration outCfg;
+	CLAM::AudioOutWrapperConfig outCfg;
 	outCfg.SetName("audio out");
 
 	CLAM::ControllerConfig controllerCfg;
@@ -75,7 +75,7 @@ void ConfigureNetwork(CLAM::Network & net)
 	pannerCfg.SetFrequency( 10.0 );
 /*	CLAM::AudioIOConfig outCfgL;
 	CLAM::AudioIOConfig outCfgR;
-
+	
 
 	outCfgL.SetChannelID(0);
 	outCfgR.SetName("right out");
@@ -125,31 +125,15 @@ int main( int argc, char **argv )
 
 	QApplication app( argc, argv );
 	app.setFont(QFont("Verdana", 9));
-	NetworkGUI::MainWindow *mw = new NetworkGUI::MainWindow;
+	NetworkGUI::MainWindow mw;
+	
 
-	mw->GetNetworkPresentation().AttachTo(controller);
+	mw.GetNetworkPresentation().AttachTo(controller);
 	controller.Publish();
-
-	mw->show();
+	app.setMainWidget(&mw);
+	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
 	return app.exec();
-
-/*
-	net.Start();
-	for (int i=0; i<400; i++)
-	{
-		net.DoProcessings();
-	}
-	net.Stop();
-	std::cout << "stop and start" << std::endl;
-	net.Start();
-	for (int i=0; i<400; i++)
-	{
-		net.DoProcessings();
-	}
-	net.Stop();
-	return 0;
-*/
 
 }
 

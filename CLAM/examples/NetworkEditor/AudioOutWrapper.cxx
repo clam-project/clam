@@ -5,7 +5,7 @@
 namespace CLAM
 {
 
-void AudioOutWrapperConfiguration::DefaultInit()
+void AudioOutWrapperConfig::DefaultInit()
 {
 	AddAll();
 	UpdateData();
@@ -19,11 +19,11 @@ AudioOutWrapper::AudioOutWrapper()
 	: mInput( "Audio Input", this, 1 )
 {
 	AdoptChildren();
-	Configure(AudioOutWrapperConfiguration());
+	Configure(AudioOutWrapperConfig());
 }
 
-AudioOutWrapper::AudioOutWrapper( AudioOutWrapperConfiguration & cfg)
-	: mInput( "Audio Inout", this, 1 )
+AudioOutWrapper::AudioOutWrapper( AudioOutWrapperConfig & cfg)
+	: mInput( "Audio Input", this, 1 )
 {
 	AdoptChildren();
 	Configure( cfg );
@@ -65,9 +65,10 @@ bool AudioOutWrapper::ConcreteConfigure(const ProcessingConfig& cfg)
 
 	int size=0;
 	if (mConfig.HasFrameSize())
+	{
 		size = mConfig.GetFrameSize();
-
-	ConfigureChildren(size);
+		ConfigureChildren(size);
+	}
 
 	return true;
 }

@@ -9,10 +9,10 @@
 namespace CLAM
 {
 
-class AudioOutWrapperConfiguration : public ProcessingConfig
+class AudioOutWrapperConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (AudioOutWrapperConfiguration,4 , ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (AudioOutWrapperConfig,4 , ProcessingConfig);
 	DYN_ATTRIBUTE(0, public, std::string, Name);
 	DYN_ATTRIBUTE (1, public, std::string, Device);
 	DYN_ATTRIBUTE (2, public, int, FrameSize);
@@ -21,10 +21,10 @@ public:
 	void DefaultInit();
 };
 
-class AudioOutWrapper : public ProcessingComposite
+	class AudioOutWrapper : public ProcessingComposite
 {
 
-	AudioOutWrapperConfiguration mConfig;
+	AudioOutWrapperConfig mConfig;
 
 	AudioOut mLeft;
 	AudioOut mRight;
@@ -38,7 +38,7 @@ class AudioOutWrapper : public ProcessingComposite
 	bool ConcreteConfigure(const ProcessingConfig&);
 
 public:
-	AudioOutWrapper( AudioOutWrapperConfiguration & );
+	AudioOutWrapper( AudioOutWrapperConfig & );
 	AudioOutWrapper();
 
 	const ProcessingConfig &GetConfig() const {return mConfig;}

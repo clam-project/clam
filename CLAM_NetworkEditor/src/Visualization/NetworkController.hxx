@@ -50,12 +50,14 @@ namespace CLAMVM
 		void OnNewControlConnectionFromGUI( const std::string &, const std::string & );
 		void OnNewChangeState( bool);
 		void OnRemovePortConnectionFromGUI( const std::string &, const std::string & );
+		void OnRemoveControlConnectionFromGUI( const std::string &, const std::string & );
 		void OnRemoveProcessingFromGUI( const std::string & );
 
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );
 		void ConnectControls( const std::string & , const std::string & );
 		void DisconnectPorts( const std::string & , const std::string & );
+		void DisconnectControls( const std::string & , const std::string & );
 		void RemoveProcessingFromNetwork( const std::string & );
 		void ExecuteEvents();
 	public:

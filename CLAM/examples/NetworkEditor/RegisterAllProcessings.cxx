@@ -20,4 +20,3 @@ static ProcessingFactory::Registrator<MixerTwoInPorts> regtMixer( "Mixer 2" );
 static ProcessingFactory::Registrator<CLAM::AudioMultiplier> regtMulti( "Multiplier" );
 
 
-

@@ -19,6 +19,7 @@ NetworkController::NetworkController()
 	CreateNewPortConnection.Wrap( this, &NetworkController::OnNewPortConnectionFromGUI );
 	CreateNewControlConnection.Wrap( this, &NetworkController::OnNewControlConnectionFromGUI );
 	RemovePortConnection.Wrap( this, &NetworkController::OnRemovePortConnectionFromGUI );
+	RemoveControlConnection.Wrap( this, &NetworkController::OnRemoveControlConnectionFromGUI );
 	RemoveProcessing.Wrap( this, &NetworkController::OnRemoveProcessingFromGUI );
 	AddNewProcessing.Wrap( this, &NetworkController::NewProcessingFromGUI );
 	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
@@ -32,6 +33,7 @@ void NetworkController::ExecuteEvents()
 		for (it=mPortsToConnect.begin(); it!=mPortsToConnect.end(); it++)
 			ConnectPorts( it->second, it->first );
 		mPortsToConnect.clear();
+
 		for (it=mControlsToConnect.begin(); it!=mControlsToConnect.end(); it++)
 			ConnectControls( it->second, it->first );
 		mControlsToConnect.clear();
@@ -42,10 +44,9 @@ void NetworkController::ExecuteEvents()
 		for (it=mPortsToDisconnect.begin(); it!=mPortsToDisconnect.end(); it++)
 			DisconnectPorts( it->second, it->first );
 		mPortsToDisconnect.clear();		
+
 		for (it=mControlsToDisconnect.begin(); it!=mControlsToDisconnect.end(); it++)
-		{
-//			DisconnectControls( it->second, it->first );
-		}
+			DisconnectControls( it->second, it->first );
 		mControlsToDisconnect.clear();		
 	}
 	if( mProcessingsToRemove.size() != 0)
@@ -142,11 +143,27 @@ void NetworkController::OnRemovePortConnectionFromGUI( const std::string & outPo
 	if (mLoopCondition)
 	{
 		if (!mPortsToDisconnect.insert( ConnectionsMap::value_type( inPort, outPort ) ).second )
-			CLAM_ASSERT(false, "NetworkController::OnRemoveConnectionFromGUI() Trying to remove connection with repeated key" );
+			CLAM_ASSERT(false, "NetworkController::OnRemovePortConnectionFromGUI() Trying to remove connection with repeated key" );
 	}
 	else
 	{
 		DisconnectPorts(outPort, inPort);
+	}
+
+}
+
+
+void NetworkController::OnRemoveControlConnectionFromGUI( const std::string & outControl, 
+						       const std::string & inControl )
+{
+	if (mLoopCondition)
+	{
+		if (!mControlsToDisconnect.insert( ConnectionsMap::value_type( inControl, outControl ) ).second )
+			CLAM_ASSERT(false, "NetworkController::OnRemoveControlConnectionFromGUI() Trying to remove connection with repeated key" );
+	}
+	else
+	{
+		DisconnectControls(outControl, inControl);
 	}
 
 }
@@ -175,7 +192,7 @@ void NetworkController::DisconnectPorts( const std::string & out , const std::st
 		for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
 		{
 			ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort> * con = (ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>*)(*itc);
-			if (con->ConnectsInPort(inPort))
+			if (con->ConnectsInElement(inPort))
 			{
 				mConnectionAdapters.remove(con);
 				delete con;
@@ -184,6 +201,28 @@ void NetworkController::DisconnectPorts( const std::string & out , const std::st
 		}
 	}
 }
+
+void NetworkController::DisconnectControls( const std::string & out , const std::string & in )
+{
+	if(mObserved->DisconnectControls(out, in))
+	{
+		//remove connection from inport
+		CLAM::InControl & inControl = mObserved->GetInControlByCompleteName(in);
+		ConnectionAdapterIterator itc;
+		for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
+		{
+			ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl> * con = (ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl>*)(*itc);
+			if (con->ConnectsInElement(inControl))
+			{
+				mConnectionAdapters.remove(con);
+				delete con;
+				return;   
+			}
+		}
+	}
+}
+
+
 
 NetworkController::~NetworkController()
 {
@@ -223,7 +262,6 @@ bool NetworkController::Publish()
 	if ( !mObserved )
 		return false;
 
-	
 	AcquireName.Emit(mObserved->GetName());
 	CLAM::Network::ProcessingsMap::const_iterator it;
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
