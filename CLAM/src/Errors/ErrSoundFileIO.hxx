@@ -1,11 +1,11 @@
 #ifndef __SoundFileIOError__
 #define __SoundFileIOError__
 
-#include "Err.hxx"
+#include "ErrProcessingObj.hxx"
 
 namespace CLAM {
 
-	class ErrSoundFileIO : public Err
+	class ErrSoundFileIO : public ErrProcessingObj
 	{
 	public:
 		ErrSoundFileIO() throw();

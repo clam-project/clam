@@ -3,17 +3,17 @@
 namespace CLAM
 {
 	ErrSoundFileIO::ErrSoundFileIO() throw()
-		: Err( )
+		: ErrProcessingObj( )
 	{
 	}
 
 	ErrSoundFileIO::ErrSoundFileIO( const char* msg ) throw ()
-		: Err( msg )
+		: ErrProcessingObj( msg )
 	{
 	}
 
 	ErrSoundFileIO::ErrSoundFileIO( const ErrSoundFileIO& obj ) throw ()
-		: Err( obj )
+		: ErrProcessingObj( obj )
 	{
 	}
 
