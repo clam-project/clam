@@ -24,6 +24,11 @@ OutPortBase * InPortBase::GetAttachedOutPort()
 	return mAttachedOutPort;
 }
 
+void InPortBase::SetAttachedOutPort( OutPortBase* out )
+{
+	mAttachedOutPort = out;
+}
+
 const std::string & InPortBase::GetName()
 {
 	return mName;

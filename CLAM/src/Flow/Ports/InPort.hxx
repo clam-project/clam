@@ -17,6 +17,7 @@ public:
 	InPortBase( const std::string & name = "unnamed in port", Processing * proc = 0 );
 	virtual ~InPortBase();
 	OutPortBase * GetAttachedOutPort(); 
+	void SetAttachedOutPort( OutPortBase* );
 	const std::string & GetName();
 	Processing * GetProcessing();
 	virtual bool CanConsume()=0;
@@ -24,8 +25,9 @@ public:
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
+	virtual void UnAttachRegion()=0;
 	void Disconnect();	
-
+	virtual bool IsPublisherOf( InPortBase& ) { return false; }
 protected:
 	OutPortBase * mAttachedOutPort;
 	std::string mName;
@@ -58,12 +60,12 @@ public:
 	 *  This method is intended to be used only for the OutPort. A user shouldn't call it directly. 
 	 *  Instead , use ConnectToIn method in OutPortBase.
 	 */
-	void AttachToOutPort( OutPortBase * out, ProperWritingRegion & writer );
+	void AttachRegionToOutPort( OutPortBase * out, ProperWritingRegion & writer );
 	/**
 	 *  This method is intended to be used only for the OutPort. A user shouldn't call it directly. 
-	 *  Instead , use DisconnectToIn method in OutPortBase.
+	 *  Instead , use DisconnectFromIn method in OutPortBase.
 	 */
-	void UnAttach();
+	void UnAttachRegion();
 protected:
 
 	ProperReadingRegion mRegion;
@@ -129,16 +131,16 @@ bool InPort<Token>::CanConsume()
 }
 
 template<class Token>
-void InPort<Token>::AttachToOutPort( OutPortBase * out, ProperWritingRegion & writer )
+void InPort<Token>::AttachRegionToOutPort( OutPortBase * out, ProperWritingRegion & writer )
 {
 	writer.LinkRegions( mRegion );
 	mAttachedOutPort = out;
 }
 
 template<class Token>
-void InPort<Token>::UnAttach()
+void InPort<Token>::UnAttachRegion()
 {
-	CLAM_DEBUG_ASSERT( mAttachedOutPort, "InPort<T>::UnAttach() - InPort is not connected" );
+	CLAM_DEBUG_ASSERT( mAttachedOutPort, "InPort<T>::UnAttachRegion() - InPort is not connected" );
 	mRegion.ProducerRegion()->RemoveRegion( mRegion );
 	mAttachedOutPort = 0;
 }

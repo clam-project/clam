@@ -65,10 +65,10 @@ public:
 		return mPublishedOutPort->IsConnectableTo( in );
 	}
 	
-	bool IsConnectedTo(InPortBase & in)
+	bool IsDirectlyConnectedTo(InPortBase & in)
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
-		return mPublishedOutPort->IsConnectedTo( in );
+		return mPublishedOutPort->IsDirectlyConnectedTo( in );
 	}
 	
 	Token & GetData(int offset=0)

@@ -11,6 +11,7 @@ template<typename Token>
 class InPortPublisher : public InPortBase
 {
 	typedef InPort<Token> ProperInPort;
+	
 public:
 	typedef std::list< ProperInPort * > ProperInPortsList;
 
@@ -20,7 +21,9 @@ public:
 	}
 	
 	virtual ~InPortPublisher()
-	{
+	{	
+		if ( GetAttachedOutPort() )
+			Disconnect();
 	}
 
 	void PublishInPort( InPortBase & in )
@@ -35,6 +38,11 @@ public:
 			"because was not templatized by the same Token type as InPortPublisher" );
 		}
 
+	}
+	//why not pass InPortBase? still not needed to call from the "generic" interface
+	void UnPublishInPort( ProperInPort& in )
+	{
+		mPublishedInPortsList.remove(&in);
 	}
 
 	void ConcretePublishInPort( ProperInPort & in )
@@ -79,7 +87,21 @@ public:
 	{
 		return mPublishedInPortsList.end();
 	}
-		
+
+	/** Do nothing, since a publisher itself don't have any region */
+	void UnAttachRegion() {}
+	
+	bool IsPublisherOf( InPortBase& in)
+	{	
+		// BIG TODO: go in-depth (search for publisher-publiser-inport)
+		typename ProperInPortsList::iterator it;
+		for(it=mPublishedInPortsList.begin(); it!=mPublishedInPortsList.end(); it++)
+		{
+			if( *it == &in)
+				return true;
+		}
+		return false;
+	}
  protected:
 
 	ProperInPortsList mPublishedInPortsList;
