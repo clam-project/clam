@@ -22,6 +22,7 @@ namespace CLAMVM
 		  mResShapeW1ControlKey( "Residual spectral shape weight A" ),
 		  mResShapeW2ControlKey( "Residual spectral shape weight B" ),
 		  mSinShapeControlKey( "Sinusoidal spectral shape interpolation" ),
+		  mResShapeControlKey( "Residual spectral shape interpolation" ),
 		  mFirstTimeShown( true ),
 		  mSynchSinAmpEditorWithGlobal( true ), mSynchSinFreqEditorWithGlobal( true ),
 		  mSynchPitchHybEditorWithGlobal( true ), mSynchResAmpEditorWithGlobal( true )
@@ -60,6 +61,7 @@ namespace CLAMVM
 		ResShapeW1EnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResShapeW1EnvelopeEdition );
 		ResShapeW2EnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResShapeW2EnvelopeEdition );
 		SinShapeEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnSinShapeEnvelopeEdition );
+		ResShapeEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResShapeEnvelopeEdition );
 
 		ChangeSinAmpSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForSinAmpEditorChanged );
 		ChangeSinFreqSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForSinFreqEditorChanged );
@@ -84,6 +86,7 @@ namespace CLAMVM
 		mEnvelopeEditors[ mResShapeW1ControlKey ] = BuildResShapeW1Editor();
 		mEnvelopeEditors[ mResShapeW2ControlKey ] = BuildResShapeW2Editor();
 		mEnvelopeEditors[ mSinShapeControlKey ] = BuildSinShapeEditor();
+		mEnvelopeEditors[ mResShapeControlKey ] = BuildResShapeEditor();
 	}
 	
 	void Fl_SMS_Morph_Control::DestroyEnvelopeEditors()
@@ -285,6 +288,22 @@ namespace CLAMVM
 		editor->damage( FL_DAMAGE_ALL );
 	}
 
+	void Fl_SMS_Morph_Control::RetrieveResShapeEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mResShapeControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetResShapeEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mResShapeControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
+	}
+
 
 	void Fl_SMS_Morph_Control::OnSynchStateForSinAmpEditorChanged( bool state )
 	{
@@ -371,6 +390,11 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::OnSinShapeEnvelopeEdition()
 	{
 		SinShapeEnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnResShapeEnvelopeEdition()
+	{
+		ResShapeEnvelopeChanged.Emit();
 	}
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildGlobalEditor()
@@ -648,6 +672,32 @@ namespace CLAMVM
 		return widget;
 	}
 
+	Fl_Widget* Fl_SMS_Morph_Control::BuildResShapeEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mResShapeControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "TODO: please, write me!");
+
+		widget->hide();
+		
+		CLAM::BPF tmpBPF;
+		tmpBPF.Insert( 0.0, 1.0 );
+		tmpBPF.Insert( 1.0, 1.0 );
+
+		widget->InitPoints( tmpBPF );
+
+		widget->PointsChanged.Connect( ResShapeEnvelopeEdited );
+
+		add( widget );
+
+		return widget;
+	}
+
+
 
 	void Fl_SMS_Morph_Control::ShowEnvelopeEditorFor( const char* name )
 	{
@@ -736,18 +786,19 @@ namespace CLAMVM
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mTimeSyncControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
-					 
+		mpEnvelopeSelector->add( mSinShapeControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );				 
 		mpEnvelopeSelector->add( mSinShapeW1ControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mSinShapeW2ControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mResShapeControlKey.c_str(), NULL, 
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mResShapeW1ControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mResShapeW2ControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 
-		mpEnvelopeSelector->add( mSinShapeControlKey.c_str(), NULL,
-					 (Fl_Callback*)sMenuItemSelectedCb, this );
 	}
 	
 	void Fl_SMS_Morph_Control::resize( int X, int Y, int W, int H )

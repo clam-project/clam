@@ -57,6 +57,8 @@ namespace CLAMVM
 		  mUserDefinedSinShapeW2Envelope( false ),
 		  mUserDefinedResShapeW1Envelope( false ),
 		  mUserDefinedResShapeW2Envelope( false ),
+		  mUserDefinedSinShapeEnvelope( false ),
+		  mUserDefinedResShapeEnvelope( false ),
 		  mOnlyGlobalEnvelope( true )
 	{
 		FrameInterpolationListener.Wrap( this, 
@@ -88,6 +90,9 @@ namespace CLAMVM
 
 		SinShapeEnvelopeListener.Wrap( this, 
 					       &SMSMorphConfigurator::UserDefinedParams::OnSinShapeEnvelopeChanged );
+
+		ResShapeEnvelopeListener.Wrap( this, 
+					       &SMSMorphConfigurator::UserDefinedParams::OnResShapeEnvelopeChanged );
 	}
 
 	SMSMorphConfigurator::UserDefinedParams::~UserDefinedParams()
@@ -176,6 +181,13 @@ namespace CLAMVM
 		UserHasActed.Emit();
 	}
 
+	void SMSMorphConfigurator::UserDefinedParams::OnResShapeEnvelopeChanged()
+	{
+		mUserDefinedResShapeEnvelope = true;
+		mOnlyGlobalEnvelope = false;
+		UserHasActed.Emit();
+	}
+
 	void SMSMorphConfigurator::UserDefinedParams::Reset()
 	{
 		mUserActivatedFrameInterpolation = false;
@@ -190,6 +202,7 @@ namespace CLAMVM
 		mUserDefinedResShapeW1Envelope = false;
 		mUserDefinedResShapeW2Envelope = false;
 		mUserDefinedSinShapeEnvelope = false;
+		mUserDefinedResShapeEnvelope = false;
 	}
 
 	SMSMorphConfigurator::SMSMorphConfigurator()
@@ -215,6 +228,7 @@ namespace CLAMVM
 		mpMorphEditor->ResShapeW1EnvelopeChanged.Connect( UserListener().ResShapeW1EnvelopeListener );
 		mpMorphEditor->ResShapeW2EnvelopeChanged.Connect( UserListener().ResShapeW2EnvelopeListener );
 		mpMorphEditor->SinShapeEnvelopeChanged.Connect( UserListener().SinShapeEnvelopeListener );
+		mpMorphEditor->ResShapeEnvelopeChanged.Connect( UserListener().ResShapeEnvelopeListener );
 	
 	}
 
@@ -283,6 +297,8 @@ namespace CLAMVM
 
 		mpMorphEditor->SetSinShapeEnvelope( mConfig.GetHybSinSpectralShape() );
 
+		mpMorphEditor->SetResShapeEnvelope( mConfig.GetHybResSpectralShape() );
+
 	}
 	
 	void SMSMorphConfigurator::SetupConfigObject()
@@ -316,6 +332,8 @@ namespace CLAMVM
 		mpMorphEditor->RetrieveResShapeW2Envelope( mConfig.GetHybResShapeW2() );
 
 		mpMorphEditor->RetrieveSinShapeEnvelope( mConfig.GetHybSinSpectralShape() );
+
+		mpMorphEditor->RetrieveResShapeEnvelope( mConfig.GetHybResSpectralShape() );
 
 	}
 
