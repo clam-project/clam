@@ -578,7 +578,7 @@ template <class T> inline T& List<T>::operator [] (TIndex i) {
 	return ((Node*)mpCurrent)->mValue;
 }
 
-template <class T> inline List<T>::Node* List<T>::GetNodeAt(TIndex i){
+template <class T> inline typename List<T>::Node* List<T>::GetNodeAt(TIndex i){
 	/* this function is optimized, by starting searching from the current 
 	index, or from the beginning or the end, when that's closer.
 	*/
