@@ -9,6 +9,7 @@
 #include "Pulse.hxx"
 #include "TimeDifference.hxx"
 #include "TemporalSeriesFinder.hxx"
+#include "TemporalSeriesSeed.hxx"
 
 namespace CLAM
 {
@@ -42,7 +43,12 @@ namespace CLAM
 			Audio& IOIHist );
 
 
-		void SetVisualizationAudio(Audio& audio);
+
+
+	protected:
+		bool Compute(const Array<TimeIndex>& transients, Audio& IOIHist,
+			     Array<TimeIndex>& ticks,Array<TimeIndex>& beats,TData& globalTick,
+			     TData& globalTempo);
 
 		TData CompGlobPulse(GlobalPulse& gpulse, const int pulseLimSup, 
 				    const Array<TData> &forGlobalPulseCalc);
@@ -53,17 +59,12 @@ namespace CLAM
 		void GeneratePulseGrid(const TData start, const TData gap, const TData end, 
 				       GridGen& pulseGridGen, Array<TimeIndex>& pulseArray);
 
-		void VisualizeGrid(Audio& IOIHist, TIndex index, Array<TimeIndex>& pulseArray,
-				   TData samplingRate);
 
 		void ComputeOnsets(Audio& readAudio, Array<TimeIndex>& transients, 
 				   TData samplingRate);
 
 
-	protected:
-		bool Compute(const Array<TimeIndex>& transients, Audio& IOIHist,
-			     Array<TimeIndex>& ticks,Array<TimeIndex>& beats,TData& globalTick,
-			     TData& globalTempo);
+		unsigned AdjustTickIntervalForSwing( Audio& IOIHistogram, unsigned previousTickInterval );
 
 	private: // children Processing
 
@@ -71,6 +72,12 @@ namespace CLAM
 		TimeDifference        mTemporalDiff;
 		TemporalSeriesFinder  mTimeSeriesFinder;
 		TemporalSeriesFinderConfig mTSFConfig;
+
+	private: // Internal PD's
+		
+		TemporalSeriesSeed    mTickFirstGuess;
+		TemporalSeriesSeed    mGoodTick;
+		TemporalSeriesSeed    mGoodTempo;
 
 	};
 

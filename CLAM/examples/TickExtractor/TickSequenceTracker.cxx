@@ -34,6 +34,7 @@
 #include "TemporalSeriesFinder.hxx"
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
+#include <list>
 
 namespace CLAM
 {
@@ -92,6 +93,17 @@ namespace CLAM
 	{
 
 		TData globalTick = -1 , globalTempo = -1;
+
+		mTickFirstGuess.SetOffset(0); 
+		mTickFirstGuess.SetInterval(1);
+		
+		mGoodTick.SetOffset(0); 
+		mGoodTick.SetInterval(1);
+		
+		mGoodTempo.SetOffset(0); 
+		mGoodTempo.SetInterval(1);
+
+
 		
 		Compute( transients, 
 			 IOIHist, 
@@ -127,11 +139,6 @@ namespace CLAM
 			return false;
 		}
 
-		beats.Init();
-		ticks.Init();
-		globalTempo = -1;
-		globalTick = -1;
-
 		bool computeBeats = mConfig.GetComputeBeats();
 		int stop = 0;
 		int numbTrans = mConfig.GetNTrans();
@@ -142,8 +149,8 @@ namespace CLAM
 			numbTrans = transients.Size();
 			stop = 1;
 		}
-		int transHop = mConfig.GetTransHop();
 
+		int transHop = mConfig.GetTransHop();
 		int indTrans1 = 0;
 		int indTrans2 = numbTrans-1;
 		int posTrans1;
@@ -151,24 +158,12 @@ namespace CLAM
 
 		TData windowSize;
 
-		Audio readAudioBuf;
-		TData* tdataBuf;
-
-
-
 		Array<TimeIndex>  transientsForHist(numbTrans);
 		transientsForHist.SetSize(numbTrans);
-
 
 		Array<TimeIndex>  IOIHistPeaks;
 
 		TData tempo;
-
-		TemporalSeriesSeed tickFirstGuess, goodTick, goodTempo;
-		tickFirstGuess.SetOffset(0); tickFirstGuess.SetInterval(1);
-		goodTick.SetOffset(0); goodTick.SetInterval(1);
-		goodTempo.SetOffset(0); goodTempo.SetInterval(1);
-
 
 		const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
 		const TData tempoLimSup = mConfig.GetTempoLimSup();
@@ -180,11 +175,12 @@ namespace CLAM
 		Array<TimeIndex> tickArray, tempoArray;
 
 		Array<TData> forGlobalTempoCalc;
-		forGlobalTempoCalc.Init();
+
 		Array<TData> forGlobalTickCalc;
-		forGlobalTickCalc.Init();
+
 
 		int nLoops = 0;
+
 		while (indTrans2<transients.Size() && stop<2)
 		{
 			posTrans1 = transients[indTrans1].GetPosition();
@@ -199,6 +195,7 @@ namespace CLAM
 			transientsForHist[0].SetWeight(0); //because the 1st transient is added manually
 			//transientsForHist[0].SetPosition(posTrans1);//Original
 			transientsForHist[0].SetPosition(0);
+			
 			for (int i=1;i<transientsForHist.Size();i++)
 			{
 				transientsForHist[i].SetPosition
@@ -259,41 +256,24 @@ namespace CLAM
 			mTimeSeriesFinder.Configure(mTSFConfig);
 			mTimeSeriesFinder.Start();
 			//Use of histogram peak weights
-			mTimeSeriesFinder.Do(IOIHistPeaks,tickFirstGuess);
+			mTimeSeriesFinder.Do(IOIHistPeaks,mTickFirstGuess);
 
-			unsigned int tickFirstGuessInterval = tickFirstGuess.GetInterval();
+			unsigned int tickFirstGuessInterval = mTickFirstGuess.GetInterval();
 
 
-			if (mConfig.GetTickAdjustForSwing()) {
-
-				//quarter-note is either = tick, 2 ticks, 3 ticks or 4 ticks
-				TData quarternote = tickFirstGuessInterval;
-				TData max = 0.0;
-				Array<TData> candidates;
-				TData* arr = IOIHist.GetBuffer().GetPtr();
-				TData tmpCand=tickFirstGuessInterval;
-				for(int i=0;i<3;i++) {
-					if((tmpCand>mConfig.GetSamplingRate()*60.0/tempoLimSup) 
-					   && (tmpCand<mConfig.GetSamplingRate()*60.0/tempoLimInf)) {
-						candidates.AddElem(tmpCand);
-					}
-					tmpCand+=tickFirstGuessInterval;
-				}
-				for(int i=0;i<candidates.Size();i++) {
-					if (arr[(int)(candidates[i])]>max) {
-						max = arr[(int)(candidates[i])];
-						quarternote = candidates[i];	
-					} 
-				}
-				tickFirstGuessInterval = quarternote;
-
+			if ( mConfig.GetTickAdjustForSwing() ) 
+			{				
+				tickFirstGuessInterval = AdjustTickIntervalForSwing( IOIHist, 
+										     tickFirstGuessInterval );
 			}
 
 
 
 			unsigned int goodTickInterval,goodTickOffset;
 			GridGen pulseGridGen;
-			if (mConfig.GetAdjustWithOnsets()) {
+			
+			if (mConfig.GetAdjustWithOnsets()) 
+			{
 				///Adjust pulses and generate arrays of pulses
 				///Tick adjustment
 
@@ -313,11 +293,11 @@ namespace CLAM
 				mTimeSeriesFinder.Start();
 				//Use of transientsForHist or transients???
 				// i.e. use of weights or not???
-				//myTemporalSeriesFinder.Do(transientsForHist,goodTick);
-				mTimeSeriesFinder.Do(transients,goodTick);		
+				//myTemporalSeriesFinder.Do(transientsForHist,mGoodTick);
+				mTimeSeriesFinder.Do(transients,mGoodTick);		
 
-				goodTickInterval = goodTick.GetInterval();
-				goodTickOffset = goodTick.GetOffset();
+				goodTickInterval = mGoodTick.GetInterval();
+				goodTickOffset = mGoodTick.GetOffset();
 				///Generate tick indexes array
 				GeneratePulseGrid((posTrans1+goodTickOffset)/mConfig.GetSamplingRate(),
 						  goodTickInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
@@ -354,10 +334,10 @@ namespace CLAM
 					mTimeSeriesFinder.Start();
 					//NB: Use of transients instead of transientsForHist
 					// i.e. making use of transient weights
-					mTimeSeriesFinder.Do(transients,goodTempo);
+					mTimeSeriesFinder.Do(transients,mGoodTempo);
 
-					goodTempoInterval = goodTempo.GetInterval();
-					goodTempoOffset = goodTempo.GetOffset();
+					goodTempoInterval = mGoodTempo.GetInterval();
+					goodTempoOffset = mGoodTempo.GetOffset();
 					///Generate beat indexes array
 					GeneratePulseGrid((posTrans1+goodTempoOffset)/mConfig.GetSamplingRate(),
 							  goodTempoInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
@@ -403,6 +383,46 @@ namespace CLAM
 
 		return true;
 
+	}
+
+	unsigned TickSequenceTracker::AdjustTickIntervalForSwing( Audio& IOIHistogram,
+								  unsigned prevTickInterval )
+	{
+		//quarter-note is either = tick, 2 ticks, 3 ticks or 4 ticks
+		TData quarternote = prevTickInterval;
+		TData max = 0.0;
+		
+		std::list<TData> candidates;
+		typedef std::list<TData>::iterator LI;
+		
+		TData* arr = IOIHistogram.GetBuffer().GetPtr();		
+		TData tmpCand= prevTickInterval;
+		
+		TData upperBound = mConfig.GetSamplingRate()*60.0/ mConfig.GetTempoLimSup();
+		TData lowerBound = mConfig.GetSamplingRate()*60.0/ mConfig.GetTempoLimInf();
+
+		for(int i=0;i<3;i++) 
+		{
+			if( (tmpCand>upperBound) 
+			    && (tmpCand<lowerBound) ) 
+			{
+				candidates.push_back(tmpCand);
+			}
+			
+			tmpCand += prevTickInterval;
+		}
+		
+		for( LI i=candidates.begin();
+		     i != candidates.end(); i++) 
+		{
+			if (arr[(int)(*i)] > max) 
+			{
+				max = arr[(int)*i];
+				quarternote = *i;	
+			} 
+		}
+		
+		return (unsigned)quarternote;
 	}
 
 	void TickSequenceTracker::StorePulseIndexes(const int nLoops,
