@@ -164,8 +164,14 @@ void TryStoreXML(DummyConfig & config, char * xmlfilename)
 
 void TryLoadXML(DummyConfig & config, char * xmlfilename) 
 {
-	XMLStorage storage;
-	storage.Restore(config, xmlfilename);
+	try {
+		XMLStorage storage;
+		storage.Restore(config, xmlfilename);
+	} catch (...) {
+		std::cout 
+			<< "Could not read the file '" << xmlfilename <<  "'. " 
+			<< "Working with a default configuration." << std::endl;
+	}
 }
 
 int main(int argc, char** argv)
