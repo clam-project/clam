@@ -21,7 +21,9 @@ void WaveFileIO::InitSelf(void)
 int WaveFileIO::ReadChunkHeader(ChunkHeader& h)
 {
 	int ret = int( fread(&h,1,sizeof(h),mFile) );
-	if (ret>0) SWAP(h.len);
+	if (ret>0) {
+		SWAP(h.len);
+	}
 	return ret;
 }
 
