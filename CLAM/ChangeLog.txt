@@ -1,4 +1,4 @@
-2003-XX-XX CLAM_0_6_0
+2004-02-XX CLAM_0_6_0 'Audio file formats: Reloaded'
 
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface have changed.
@@ -19,6 +19,74 @@
      ** Smarter conections display (control conection with vertical tangent and that wires
         always goes outward the processing)
 
+2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
+  * SMSTools:
+     ** Fix: Closing window crashed on MacOsX.
+     ** Fix: Storing output global sound stored sinusoidal in previous release 
+  * Base:
+     ** [Experimental] Support for Polymorphic attributes in DT
+  * XML:
+     ** Abstract types thru Polymorphic attributes
+     ** XMLStaticAdapter is deprecated
+  * Network Editor:
+     ** Better layout on processing configuration dialogs
+     ** Fix: integer fiels on processing configuration dialogs were
+        limited to 99. Now it uses std::numeric_limits
+     ** Fix: Network serialization loading was broken
+     ** Some processings still in draft moved to example files
+  * Simple Examples:
+     ** FlowControlExamples tree has been moved to draft since simpler and more
+        concrete examples now exists: examples/NetworkUsage_example and
+        examples/PortsAndControlsUsageExample/
+     ** Examples have been ported to use the XML static XMLStorage methods
+     ** Some broken examples have been fixed, including
+     compiling_against_clam and SpectralDelay.
+  * Windows Build System:
+     ** Updated .dsp Visual 6 projects that were outdated in previous release
+     ** Fixed some minor problems in some settings.cfg files
+  * Salto:
+     ** Fix: Did not compile in previous release. Example in general is still outdated though.
+
+2004-01-12 CLAM_0_5_6 'XML and Ladspa rewrite'
+  * XML:
+     ** Both, basic XMLStorage usage interface and customization interface have changed.
+        Check 'Migration Guidelines' on the documentation and update your code.
+     ** Ported to XercesC 2.3. Library dependant code is more isolated and structured
+        so libxml or expat ports will be easy.
+     ** Atomical operations are available so partial loading or document updating is now
+        more feasible.
+     ** One statement calls using static methods XMLStorage::Dump and XMLStorage::Restore
+     ** Trapable error notification using exceptions.
+     ** API Change: XMLStorage::Store and XMLStorage::Load receives a const-ref and a ref
+        to adapters instead a pointer
+     ** API Change: Component::StoreOn is now a const method.
+     ** Scoped XML: [Experimental] allows (write only) fast XML generation without having
+        to define CLAM data.
+     ** Cppunit Tested and general code clean up
+  * Network Editor:
+     ** Smarter conections display (control conection with vertical tangent and that wires
+        always goes outward the processing)
+     ** Refactoring of the application structure.
+     ** Bug fixing.
+     ** Created Unit Tests for the entire application.
+  * Processing Objects:
+     ** GetName has been removed from all CLAM processing configurations 
+     because it was not really useful.
+     ** Simplified Processing interface related to ports and controls.
+  * Error handling:
+     ** Failed assertions dump a backtrace in GNU/Linux.
+  * SMSTools:
+     ** Fix: SDIF storage was unconfigured on release mode.
+     ** fixed compilation with g++ 2.95.4 (Debian Woody), fixed SMS Tools build 
+  * Descriptors:
+     ** Added descriptors to compute on a whole segment.
+     ** Added basic arithmetic operators to descriptors.
+     ** General debugging.
+  * LADSPA:
+     ** Rewrited and simplified support to create LADSPA plugins using CLAM.
+     ** New support for using LADSPA plugins as CLAM Processings.
+  * Build system:
+     ** Fix: some fltk-config nagging options removed on aclocal
 
 2003-11-26 CLAM_0_5_5
 
@@ -29,13 +97,13 @@
      ** Bug that prevented some code to compile fixed
   * Examples/NetworkEditor:
      ** Bug Fixing
-  * Processing/Analysis
+  * Processing/Analysis:
      ** DescriptorsComputer added: now there is the possibility of computing 
         statistics for Spectrums, SpectralPeakArrays, Frames, etc
-  * MacOSX Support
+  * MacOSX Support:
      ** build system changes
      ** RtAudio for Audio I/O
-  * Audio I/O 
+  * Audio I/O:
      ** A generic RtAAudioDevice for all platforms (includes some platform 
         specific workarounds)
 

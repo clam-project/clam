@@ -30,7 +30,9 @@ ConnectionPresentation::ConnectionPresentation()
 	: mInName( "unnamed inport" ),
 	  mOutName( "unnamed outport" )
 {
-	SlotSetNames.Wrap( this, &ConnectionPresentation::SetNames );
+	SlotSetOutName.Wrap( this, &ConnectionPresentation::SetOutName );
+	SlotSetInName.Wrap( this, &ConnectionPresentation::SetInName );
+
 }
 
 ConnectionPresentation::~ConnectionPresentation()
@@ -39,13 +41,18 @@ ConnectionPresentation::~ConnectionPresentation()
 
 void ConnectionPresentation::AttachTo( CLAMVM::ConnectionAdapter & adapter )
 {
-	adapter.SignalAcquireNames.Connect(SlotSetNames);
+	SetOutName( adapter.GetOutName() );
+	SetInName( adapter.GetInName() );
+
 }
 
-void ConnectionPresentation::SetNames( const std::string & portOut, const std::string & portIn )
+void ConnectionPresentation::SetOutName( const std::string & out )
 {
-	mInName = portIn;
-	mOutName = portOut;
+	mOutName = out;
+}
+void ConnectionPresentation::SetInName( const std::string & in )
+{
+	mInName = in;
 }
 
 } // namespace NetworkGUI
