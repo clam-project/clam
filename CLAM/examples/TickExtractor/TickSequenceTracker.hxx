@@ -14,6 +14,7 @@
 #include "AdjustTickWRTSwing.hxx"
 #include "AdjustTickWRTOnsets.hxx"
 #include "AdjustBeatWRTTick.hxx"
+#include "AdjustBeatWRTOnsets.hxx"
 
 namespace CLAM
 {
@@ -85,6 +86,7 @@ namespace CLAM
 			AdjustTickWRTSwing      mTickSwingAdjuster;
 			AdjustTickWRTOnsets     mTickOnsetsAdjuster;
 			AdjustBeatWRTTick       mBeatTickAdjuster;
+			AdjustBeatWRTOnsets     mBeatOnsetsAdjuster;
 
 		private: // Internal PD's
 		

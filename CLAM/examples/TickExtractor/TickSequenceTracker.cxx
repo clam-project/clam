@@ -110,6 +110,17 @@ namespace CLAM
 
 			mBeatTickAdjuster.SetParent( this );
 
+
+			AdjustBeatWRTOnsetsConfig beatOnsetsAdjusterCfg;
+
+			beatOnsetsAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			beatOnsetsAdjusterCfg.SetDeviationPenalty( mConfig.GetDeviationPenalty() );
+			beatOnsetsAdjusterCfg.SetOverSubdivisionPenalty( mConfig.GetOverSubdivisionPenalty() );
+
+			mBeatOnsetsAdjuster.Configure( beatOnsetsAdjusterCfg );
+
+			mBeatOnsetsAdjuster.SetParent( this );
+
 			return true;
 		}
 
@@ -329,14 +340,22 @@ namespace CLAM
 
 					if (mConfig.GetAdjustWithOnsets()) 
 					{
+						mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
+						mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
+
+						mBeatOnsetsAdjuster.Do( transients, mGoodTick, newBeatParams,
+									tempoArray, mGoodTempo );
+
 						//get the best phase
 						// Computing best beat phase
+						/*
  						mTimeSeriesFinder.GetInControl("OffsetMin").DoControl(goodTickOffset);			
 						mTimeSeriesFinder.GetInControl("OffsetStep").DoControl(goodTickInterval);
 						mTimeSeriesFinder.GetInControl("IntervalMin").DoControl(tempo);
 						mTimeSeriesFinder.GetInControl("IntervalMax").DoControl(tempo+1);
 						mTimeSeriesFinder.GetInControl("IntervalStep").DoControl(2);
-						
+						*/
+
 						//NB: Use of transients instead of transientsForHist
 						// i.e. making use of transient weights
 						mTimeSeriesFinder.Do(transients,mGoodTempo);
@@ -344,9 +363,11 @@ namespace CLAM
 						goodTempoInterval = mGoodTempo.GetInterval();
 						goodTempoOffset = mGoodTempo.GetOffset();
 						///Generate beat indexes array
+						/*
 						GeneratePulseGrid((posTrans1+goodTempoOffset)/mConfig.GetSamplingRate(),
 								  goodTempoInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
 								  pulseGridGen,tempoArray);
+						*/
 					}
 					else 
 						goodTempoInterval = tempo;
