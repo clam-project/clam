@@ -39,13 +39,6 @@
 #include "DynamicType.hxx"
 
 
-#ifdef CLAM_USE_STL_ARRAY
-#include <vector>
-using std::vector;
-#endif
-
-
-#include "XMLStorage.hxx"
 #include "XMLAdapter.hxx"
 #include "XMLArrayAdapter.hxx"
 #include "XMLComponentAdapter.hxx"
@@ -627,11 +620,14 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 #else // CLAM_USE_STL_ARRAY
 
+	#include <vector>
+
+
 	template<class T>
-	class Array : public Component, public vector<T> {
+	class Array : public Component, public std::vector<T> {
 	public:
-		typedef vector<T>::iterator iterator;
-		typedef vector<T>::const_iterator const_iterator;
+		typedef std::vector<T>::iterator iterator;
+		typedef std::vector<T>::const_iterator const_iterator;
 		Array(TSize size = 0);
 		Array(T* ptr,int size = 0);
 		inline void  Init();
@@ -749,14 +745,14 @@ template<class T>
 const T& Array<T>::operator [](const int& i) const
 {	
 	CLAM_DEBUG_ASSERT(i>=0 && i<(signed)Size(),msgIndexOutOfRange);
-	return vector<T>::operator[](i); 
+	return std::vector<T>::operator[](i); 
 }
 
 template<class T>
 T& Array<T>::operator [](const int& i) 
 {	
 	CLAM_DEBUG_ASSERT(i>=0 && i<(signed)size(),msgIndexOutOfRange);
-	return vector<T>::operator[](i); 
+	return std::vector<T>::operator[](i); 
 }
 
 template<class T>
@@ -832,40 +828,24 @@ template<class T>
 void Array<T>::StoreOn(Storage & storage) const
 {
 //	CLAM_ASSERT(mpData,"Array contains no buffer")
-	#ifdef CLAM_USE_XML
-	// This condition is not needed because storing an XML adapter
-	// onto a non XML storage has no effect but it enhances performance.
 	int mSize = Size();
 	T* mpData = GetPtr();
-	if (dynamic_cast < XMLStorage* > (&storage))
-	{
-		for (int i=0; i<mSize; i++) {
-			StoreMemberOn(&(mpData[i]), storage);
-		}
+	for (int i=0; i<mSize; i++) {
+		StoreMemberOn(&(mpData[i]), storage);
 	}
-	#endif//CLAM_USE_XML
 }
 
 template <class T>
 void Array<T>::LoadFrom(Storage & storage)
 {
 //	CLAM_ASSERT(mpData,"Array contains no buffer")
-	#ifdef CLAM_USE_XML 
-	// This condition is not needed because storing an XML adapter
-	// onto a non XML storage has no effect but it enhances performance.
-	if (dynamic_cast < XMLStorage* > (&storage))
-	{
-		while (true) {
-			T elem;
-			if (!LoadMemberFrom(&(elem), storage)) return;
-			AddElem(elem);
-		}
+	while (true) {
+		T elem;
+		if (!LoadMemberFrom(&(elem), storage)) return;
+		AddElem(elem);
 	}
-	#endif//CLAM_USE_XML
 }
 
-
-#ifdef CLAM_USE_XML
 
 template<class T>
 void Array<T>::StoreMemberOn(void * item, Storage & storage) const
@@ -898,8 +878,6 @@ bool Array<T>::LoadMemberFrom(Component * item, Storage & storage)
 	XMLComponentAdapter adapter(*item, label, true);
 	return storage.Load(adapter);
 }
-
-#endif//CLAM_USE_XML
 
 
 #endif // CLAM_USE_STL_ARRAY
