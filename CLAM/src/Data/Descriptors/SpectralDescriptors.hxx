@@ -39,16 +39,49 @@ namespace CLAM {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 22, Descriptor);
 		
+		/** The spectral power mean value.
+		 *  The unit of this measure can be dB
+		 *  or none, depending on the scale set for the
+		 *  measured Spectrum object.
+		 *  @see Spectrum::SetScale
+		 *  @see EScale
+		 *  @see Stats::GetMean
+		 */
 		DYN_ATTRIBUTE (0, public, TData, Mean);
+		/**
+		 * The geometric mean for the spectral power values sequence.
+		 * See <a href="http://mathworld.wolfram.com/GeometricMean.html">this</a> for a definition of
+		 * this pythagorean mean. Note that computing this measurement over long sequences of
+		 * small real numbers ( as the ones one usually founds in spectral power distributions derived
+		 * of audio windowed with a normalized window function ) pose a numerical problem. To avoid
+		 * this, computation of Geometric mean is restricted to Log scale Spectral Power Distributions 
+		 * since this allows to change the product for a summation.
+		 *
+		 * This measure is expressed in dBs.
+		 * @see Stats::GetGeometricMean
+		 */
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
+		/**
+		 *  The squared sum of spectral power distribution values.
+		 *  This measure comes in the same units as the distribution
+		 *  values.
+		 *  @see Stats::GetEnergy
+		 */
 		DYN_ATTRIBUTE (2, public, TData, Energy);
+		/**
+		 *  The frequency where the center of mass of the spectral power
+		 *  distribution lies.
+		 *  This measure is expressed in Hz.
+		 * 
+		 *  @see Stats::GetCentroid
+		 */
 		DYN_ATTRIBUTE (3, public, TData, Centroid);
 		DYN_ATTRIBUTE (4, public, TData, Moment2);
 		DYN_ATTRIBUTE (5, public, TData, Moment3);
 		DYN_ATTRIBUTE (6, public, TData, Moment4);
 		DYN_ATTRIBUTE (7, public, TData, Moment5);
 		DYN_ATTRIBUTE (8, public, TData, Moment6);
-		DYN_ATTRIBUTE (9,public, TData, Flatness);
+		DYN_ATTRIBUTE (9, public, TData, Flatness);
 		DYN_ATTRIBUTE (10,public, TData, Kurtosis);
 		DYN_ATTRIBUTE (11,public, TData, HFC);
 		DYN_ATTRIBUTE (12,public, Array<TData>, MFCC);

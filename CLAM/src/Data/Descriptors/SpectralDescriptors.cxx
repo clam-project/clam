@@ -64,31 +64,26 @@ void SpectralDescriptors::DefaultInit() {
 	//Warning: no attributes are added by default, the user is in charge of adding the ones he is interested in
 }
 
-void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
+void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) 
+{
 	mpSpectrum=copied.mpSpectrum;
 	mpStats=0;
 }
 
-const Spectrum* SpectralDescriptors::GetpSpectrum() const {
+const Spectrum* SpectralDescriptors::GetpSpectrum() const 
+{
 	return mpSpectrum;
 }
 
-void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
-	if(pSpectrum->GetScale()==EScale::eLog)
-	{
-		/*WARNING: if spectrum is in dB we need to copy spectrum and this copy will
-		not be updated if original spectrum changes */
-		mAuxLinearSpectrum=*pSpectrum;
-		mAuxLinearSpectrum.ToLinear();
-		mpSpectrum=&mAuxLinearSpectrum;
-	}
-	else
-		mpSpectrum=pSpectrum;
+void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) 
+{
+	
+	mpSpectrum=pSpectrum;
 	//TODO: we are asuming Spectrum is in MagBuffer
 	//TODO: it may give problems because pointer passed
 	InitStats(&mpSpectrum->GetMagBuffer());
 
-	mDeltaFreq=mpSpectrum->GetSpectralRange()/mpSpectrum->GetSize();
+	mDeltaFreq=mpSpectrum->GetSpectralRange()/(mpSpectrum->GetSize()+1);
 	
 }
 
@@ -97,7 +92,12 @@ void SpectralDescriptors::ConcreteCompute()
 	if (HasMean())
 		SetMean(mpStats->GetMean());
 	if (HasGeometricMean())
+	{
+		CLAM_ASSERT( mpSpectrum->GetScale() == CLAM::EScale::eLinear,
+			     "The Geometric Mean, as implemented in CLAM, can only"
+			     " be computed over Linar Spectral Power distirbutions");
 		SetGeometricMean(mpStats->GetGeometricMean());
+	}
 	if (HasEnergy())
 		SetEnergy(mpStats->GetEnergy());
 	if (HasCentroid())
