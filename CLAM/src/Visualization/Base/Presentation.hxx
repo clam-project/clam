@@ -22,52 +22,50 @@
 #ifndef __PRESENTATION__
 #define __PRESENTATION__
 
-#include "GView.hxx"
-#include "GeometryKit.hxx"
-#include "Assert.hxx"
+#include <exception>
 
 namespace CLAMGUI
 {
 
+class View;
+class Aspect;
+
+/**
+ *   This is the interface required to all Visualization Module presentations.
+ *   Presentations are the entities in charge of applying some kind of transformation
+ *   to data received from attached views in order to make it more knowledgeable
+ *   to users. Views and Presentations talk with each other through the Aspect supported
+ *   by each View.
+ *
+ *   @see View
+ *   @see Aspect
+ */
 class Presentation
 {
 
 public:
+		/**
+		 *  Presentation users should use this method to attach a given presentation
+		 *  with an arbitrary View. The concrete association between the concrete
+		 *  presentation and the concrete view is resolved in the Presentation::Bind
+		 *  method.
+		 */
+		virtual void AttachTo( View& );
 
-	Presentation()
-	{
-	}
-
-
-	virtual void LinkWithView( View* v )
-	{
-		mLinkedView = v;
-
-		PublishCallbacks();
-	}
-
-	View* GetLinkedView(void)
-	{
-		return mLinkedView;
-	}
-
-	virtual void PublishCallbacks()
-	{
-		CLAM_ASSERT( false, " Base presentation class PublishCallbacks() invoked. It is mandatory to overwrite this method" );
-	}
-
-	virtual ~Presentation()
-	{
-		mLinkedView->Release();
-	}
+		virtual ~Presentation()
+		{
+		}
 
 protected:
-
-	virtual void Init( const Geometry& g, const char* label = 0 )
-	{
-	}
-
-	View* mLinkedView;
+		/**
+		 *  The Presentation base class forces all concrete classes derived from it
+		 *  to implement this method, which should perform the concrete binding
+		 *  between the Presentation and the attached view. 
+		 *  @param Reference to the Aspect supported by the attached view
+		 *  @throw This method must throw a bad_cast exception if the Aspect provided
+		 *  by the view is not the one the Presentation expects
+		 */
+		virtual void Bind( Aspect& ) = 0;
 
 };
 
