@@ -290,7 +290,6 @@ void SMSBase::AnalysisProcessing()
 	while(GetAnalysis().Do(mOriginalSegment))
 	{   
 		k=step*(mOriginalSegment.mCurrentFrameIndex+1);
-		std::cout<<mOriginalSegment.mCurrentFrameIndex<<std::endl;
 		mCurrentProgressIndicator->Update(float(k));
 	}
 
@@ -486,7 +485,7 @@ void SMSBase::SynthesisProcessing()
 
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
-	TLongIndex beginIndex=-synthFrameSize/2;
+	TIndex beginIndex=-synthFrameSize/2;
 	
 	TSize size=synthFrameSize*nSynthFrames;
 

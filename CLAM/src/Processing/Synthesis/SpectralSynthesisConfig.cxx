@@ -1,5 +1,6 @@
 
 #include "SpectralSynthesisConfig.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {
@@ -39,7 +40,7 @@ void SpectralSynthesisConfig::SetAnalWindowSize(TSize w)
 {
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
 	GetAnalWindowGenerator().SetSize(w);
-	TData audioSize=TData(PowerOfTwo((w-1)*int(pow(TData(2.0),TData(GetZeroPadding())))));
+	TData audioSize=(TData)(PowerOfTwo((w-1)*int((TData)pow((TData)2.0,(TData)GetZeroPadding()))));
 	GetIFFT().SetAudioSize(int(audioSize));
 	GetCircularShift().SetAmount(TData(w/2)); 
 }
@@ -74,7 +75,7 @@ TSize SpectralSynthesisConfig::GetSynthWindowSize() const
 void SpectralSynthesisConfig::SetZeroPadding(int z)
 {
 	SetprZeroPadding(z);
-	TData audioSize=TData(PowerOfTwo((GetAnalWindowSize()-1)*int(pow(TData(2),TData(GetZeroPadding())))));
+	TData audioSize=(TData)(PowerOfTwo((GetAnalWindowSize()-1)*int(pow(TData(2),TData(GetZeroPadding())))));
 	GetIFFT().SetAudioSize(int(audioSize));
 }
 

@@ -192,6 +192,7 @@ namespace CLAM{
 		 */
 		bool ConcreteStart()
 		{
+			return true;
 		/* TODO
 			iterator obj;
 			

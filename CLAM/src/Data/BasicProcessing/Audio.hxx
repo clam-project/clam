@@ -106,7 +106,7 @@ namespace CLAM {
 		 *  @param chunk The Audio data chunk
 		 *  @param configureChunk Optional parameter to set the configuration of the chunk. True by default.
 		*/
-		void GetAudioChunk(TLongIndex beginIndex,TLongIndex endIndex,Audio& chunk, bool configureChunk=true) const;
+		void GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool configureChunk=true) const;
 
 		/** Method for copying an audio "slice" out of the existing data. The difference between slices
 		 *  Time in miliseconds.
@@ -126,7 +126,7 @@ namespace CLAM {
 		 *  @param slice The Audio slice
 		 *  @param configureSlice Optional parameter to set the configuration of the slice. True by default.
 		*/
-		void GetAudioSlice( TLongIndex beginIndex, TLongIndex endIndex, Audio& slice, bool configureSlice=true) const;
+		void GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, bool configureSlice=true) const;
 
 		/**Method for setting an audio chunk of the audio out of an existing chunk. Time in miliseconds.
 		 *  @param beginTime Beginning location of the chunk in the Buffer in time measure.
@@ -138,20 +138,20 @@ namespace CLAM {
 		 *  @param beginIndex Beginning location of the chunk in the Buffer.
 		 *  @param chunk The Audio data chunk to insert
 		 */
-		void SetAudioChunk(TLongIndex beginIndex,const Audio& chunk);
+		void SetAudioChunk(TIndex beginIndex,const Audio& chunk);
 
 	private:
 		/** Conversion utility for handling indices and time tags
 		 *  @param index Point to get time tag
 		 *  @return  Exact time for the index indicated
 		 */
-		TTime GetTimeFromIndex(TLongIndex index) const;
+		TTime GetTimeFromIndex(TIndex index) const;
 
 		/** Conversion utility for handling indices and time tags. Time in miliseconds
 		 *  @param time Point to get index tag
 		 *  @return Index of the position marked in time
 		 */
-		TLongIndex GetIndexFromTime(TTime time) const;
+		TIndex GetIndexFromTime(TTime time) const;
 	};
 };//namespace
 

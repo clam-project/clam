@@ -88,7 +88,7 @@ bool SMSAnalysis::ConcreteStart()
 
 bool SMSAnalysis::Do()
 {
-	mCore.Do();
+	return mCore.Do();
 }
 
 bool SMSAnalysis::Do(Frame& in)
@@ -138,21 +138,14 @@ bool SMSAnalysis::Do(Frame& in)
 bool SMSAnalysis::Do(Segment& in)
 {
 	//first we compute necessary sizes, indices and parameters
-	TLongIndex frameIndex=in.mCurrentFrameIndex;
+	TIndex frameIndex=in.mCurrentFrameIndex;
 	int step=mConfig.GetHopSize();
 	TData samplingRate=mConfig.GetSamplingRate();
 	TTime frameCenterTime=frameIndex*step/samplingRate;
 	//Audio center time is different from frame center time. This index corresponds to
 	//the audio that is being written into member stream buffer
-	TLongIndex audioCenterSample=(mAudioFrameIndex)*step;
+	TIndex audioCenterSample=(mAudioFrameIndex)*step;
 	TTime audioCenterTime=audioCenterSample/samplingRate;
-	
-	std::cout<<"frame index: "<<frameIndex<<std::endl;
-	std::cout<<"frame center time: "<<frameCenterTime<<std::endl;
-	std::cout<<"audio center sample: "<<audioCenterSample<<std::endl;
-	std::cout<<"audio center time: "<<audioCenterTime<<std::endl;
-	std::cout<<"audio chunk end sample: "<<audioCenterSample-step/2<<std::endl;
-	std::cout<<"audio frame begin time: "<<((float)frameIndex - 0.5f)*step/samplingRate<<std::endl;
 	
 	/**TODO: miliseconds and seconds are inconsistently used in different places?*/
 	//If we have reached end of input audio we return false
