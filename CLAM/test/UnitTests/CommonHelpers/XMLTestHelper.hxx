@@ -27,10 +27,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 
-#ifdef CLAM_USE_XML
 #include "XMLStorage.hxx"
-#include "XMLComponentAdapter.hxx"
-#endif//CLAM_USE_XML
 
 using namespace CLAM;
 
@@ -48,20 +45,15 @@ namespace CLAMTest {
 #ifdef CLAM_USE_XML
 		{
 			// Store the arg a file and on a string
-			XMLStorage storage;
-			storage.UseIndentation(true);
-			storage.Dump(outObject, "Object", out);
+			XMLStorage::Dump(outObject, "Object", out);
 		}
 		{
 			// Recover the objec on superIn
-			XMLStorage storage;
-			storage.Restore(inObject, out);
+			XMLStorage::Restore(inObject, out);
 		}
 		{
 			// Store it on a string again
-			XMLStorage storage;
-			storage.UseIndentation(true);
-			storage.Dump(inObject, "Object", in);
+			XMLStorage::Dump(inObject, "Object", in);
 		}
 #endif//CLAM_USE_XML
 		CPPUNIT_ASSERT_EQUAL(in.str(),out.str());
