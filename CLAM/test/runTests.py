@@ -32,7 +32,7 @@ import sys
 CLAM_SANDBOXES = os.path.abspath( os.path.dirname(sys.argv[0])+'/../..' ) + '/'
 print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
-MODULE_TAG = 'CLAM-0_7_0-pre1-rel'
+MODULE_TAG = 'CLAM-0_7_0-pre2-rel'
 #MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
 
@@ -76,7 +76,7 @@ externalApplications = [
 	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
 	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
 #	( 'Rappid', CLAM_SANDBOXES+'CLAM_Rappid/build/' ),
-	( 'SDIF_Display', CLAM_SANDBOXES+'SDIF_Display/build/' )
+	( 'SDIFDisplay', CLAM_SANDBOXES+'SDIFDisplay/build/' )
 #	( 'DescriptorsGUI', CLAM_SANDBOXES+'DescriptorsGUI/build/' ),
 #	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' ),
 ]
