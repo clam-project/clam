@@ -366,7 +366,7 @@ namespace CLAM {
 		 * can do this, it should reimplement the method returning true, in order to notify networks, graphical
 		 * interfaces, etc.
 		 */
-		virtual bool ModifiesPortsAndControlsAtRuntime()
+		virtual bool ModifiesPortsAndControlsAtConfiguration()
 		{ 
 			return false;
 		}
