@@ -39,6 +39,7 @@ unitTestsPath = BUILDPATH+'Tests/UnitTests/'
 functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/'
 spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
+simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
 sandboxes = [ # Module, Sandbox, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
@@ -105,14 +106,46 @@ notPortedTests = [
         ( 'WindowingTest', nonPortedTestsPath+'Windowing/')
 ]
 
+simpleExamples = [
+        ( 'AudioApplication', simpleExamplesPath+'AudioApplication/'),
+        ( 'AudioFileReading', simpleExamplesPath+'AudioFileReading/'),
+        ( 'AudioFileWriting', simpleExamplesPath+'AudioFileWriting/'),
+        ( 'Configurator', simpleExamplesPath+'Configurator/'),
+        ( 'ControlArrays', simpleExamplesPath+'ControlArrays/'),
+        ( 'Controls', simpleExamplesPath+'Controls/'),
+        ( 'DescriptorsComputation', simpleExamplesPath+'DescriptorsComputation/'),
+        ( 'FDFilter', simpleExamplesPath+'FDFilter/'),
+        ( 'FFT', simpleExamplesPath+'FFT/'),
+        ( 'FileInfo', simpleExamplesPath+'FileInfo/'),
+        ( 'FilePlayback', simpleExamplesPath+'FilePlayback/'),
+        ( 'LPC', simpleExamplesPath+'LPC/'),
+        ( 'MIDI2XML', simpleExamplesPath+'MIDI2XML/'),
+        ( 'MIDIIO', simpleExamplesPath+'MIDIIO/'),
+        ( 'MIDIOut', simpleExamplesPath+'MIDIOut/'),
+        ( 'MultiPlot', simpleExamplesPath+'MultiPlot/'),
+        ( 'NetworkPersistence', simpleExamplesPath+'NetworkPersistence/'),
+        ( 'NetworkUsage', simpleExamplesPath+'NetworkUsage/'),
+        ( 'POComposite', simpleExamplesPath+'POComposite/'),
+        ( 'PersistenceThroughDTs', simpleExamplesPath+'PersistenceThroughDTs/'),
+        ( 'PortsAndControlUsage', simpleExamplesPath+'PortsAndControlUsage/'),
+        ( 'ProcessingLifeCycle', simpleExamplesPath+'ProcessingLifeCycle/'),
+        ( 'QtPlots', simpleExamplesPath+'QtPlots/'),
+        ( 'SDIF_And_Segment', simpleExamplesPath+'SDIF_And_Segment/'),
+        ( 'SimplePortsUsage', simpleExamplesPath+'SimplePortsUsage/'),
+        ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
+        ( 'Spectrum', simpleExamplesPath+'Spectrum/'),
+        ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/')
+]
+
 
 testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
-testsToRun[-1:-1] = externalApplications 
-testsToRun[-1:-1] = supervisedTests
-testsToRun[-1:-1] = notPortedTests
-testsToRun[-1:-1] = automaticTests 
+#testsToRun[-1:-1] = externalApplications 
+testsToRun[-1:-1] = simpleExamples
+#testsToRun[-1:-1] = supervisedTests
+#testsToRun[-1:-1] = notPortedTests
+#testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
