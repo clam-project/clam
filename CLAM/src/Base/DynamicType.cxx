@@ -49,13 +49,18 @@ namespace CLAM {
 //////////////////////////////////////////////////////////////////////
 
 
-DynamicType::DynamicType() : _data(0), _bPreAllocateAllAttributes(false)
+DynamicType::DynamicType() : 
+	_data(0), 
+	_preAllocateAllAttributes(false)
 {}
 
 /// \todo fix deepCopy appereances
-DynamicType::DynamicType(const DynamicType& prototype)
+DynamicType::DynamicType(const DynamicType& prototype) :
+	_preAllocateAllAttributes( prototype._preAllocateAllAttributes ),
+	_dynInfo( prototype._dynInfo ),
+	_data(0)
 {
-	bool deepCopy = true; // cludge \todo !
+	bool deepCopy = false; // cludge \todo !
 
 	if (prototype._data)
 	{
@@ -64,8 +69,6 @@ DynamicType::DynamicType(const DynamicType& prototype)
 		else
 			SelfShallowCopy(prototype);
 	}
-	else 
-		SelfCopyPrototype(prototype);
 }
 DynamicType::~DynamicType(){
 	RemoveAllMem();
@@ -98,9 +101,8 @@ void DynamicType::RemoveAllMem()
 		delete [] _data;
 		_data = 0;
 	}
-	GetDynamicInfo().DecrementRefCount();
+	// DynamicInfo ref counter gets decremetned in it's own destructor
 }
-
 
 
 void DynamicType::MandatoryInit() {
@@ -136,7 +138,7 @@ bool DynamicType::UpdateData()
 	CLAM_DEBUG_ASSERT(maxAttrSize >= allocatedDataSize && maxAttrSize >= dataSize, 
 		"DT::UpdateData() data sizes error");
 
-	if (_bPreAllocateAllAttributes) {
+	if (_preAllocateAllAttributes) {
 		GetDynamicInfo().SetDataSize( maxAttrSize );
 		dataSize = maxAttrSize;
 	}
@@ -379,33 +381,6 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 	GetDynamicInfo().UnsetAnyRemoved();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-// these methods are important to be inline. TODO: check if the compiler does it automatically
-// or should be better move them to the .hxx
-
-/*
-int DynamicType::DynTableRefCounter()
-{
-	return dynamicTable[numAttr].offs;
-}
-void DynamicType::InitDynTableRefCounter()
-{
-	dynamicTable[numAttr].offs = 1;       //at least the object that has created the table points to it.
-}
-
-
-
-
-
-int DynamicType::DecrementDynTableRefCounter()
-{
-	return --dynamicTable[numAttr].offs;
-}
-int DynamicType::IncrementDynTableRefCounter()
-{
-	return ++dynamicTable[numAttr].offs;
-}
-*/
 
 //////////////////////////////////////////////////////////////////////
 // Component interface implementation
@@ -427,15 +402,6 @@ Component* DynamicType::DeepCopy() const
 };
 
 
-void DynamicType::SelfCopyPrototype(const DynamicType &prototype)
-{
-	RemoveAllMem(); // deletes all mem in data and calls de destructor of every object.
-	
-	// the _dynInfo._dynInfoImpl is not copied, but is referenced (reference counter incremented)
-	_dynInfo = prototype._dynInfo;
-	_bPreAllocateAllAttributes = prototype._bPreAllocateAllAttributes;
-}
-
 bool DynamicType::ExistAttr(unsigned id) const
 {
 	return GetDynamicInfo().ExistAttr(id);
@@ -445,21 +411,22 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 {
 	// that counter is in the table, so it is shared by prototype and this
 	// this check is not really necessary, but it can be usefull to catch bugs of the user of this class
-	CLAM_ASSERT( prototype.GetDynamicInfo().AnyAdded() ||prototype.GetDynamicInfo().AnyRemoved(),
+	CLAM_ASSERT( !prototype.GetDynamicInfo().AnyAdded() && !prototype.GetDynamicInfo().AnyRemoved(),
 		"DT::SelfShallowCopy(arg) copy argument is not updated (has added or removed attrs) "
 		"call UpdateData before copy" );
 
-	SelfCopyPrototype(prototype);
+	RemoveAllMem(); // deletes all mem in data and calls de destructor of every object.
 
 	const int allocatedDataSize = GetDynamicInfo().GetAllocatedDataSize();
 	const int numAttr = GetDynamicInfo().NumAttr();
+	const StaticInfo &sInfo = GetDynamicInfo().GetCachedStaticInfo();
 
 	_data = new char[allocatedDataSize];
 
 	for ( int i = 0; i < numAttr; i++ ) {
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
-		const NewCopyInplaceFn fcopy = GetStaticInfo().GetAttrInfo(i).newObjCopy;
+		const NewCopyInplaceFn fcopy = sInfo.GetAttrInfo(i).newObjCopy;
 		fcopy(pos, prototype.GetPtrToData_(i));
 	}
 }
@@ -542,7 +509,6 @@ void DynamicType::FullfilsInvariant() const
 
 	for (int i=0; i<numAttr; i++)
 	{
-		
 		const bool attrAdded = dInfo.GetAttrInfo(i).Added();
 		const bool attrRemoved = dInfo.GetAttrInfo(i).Removed();
 		const int attrOffs = dInfo.GetAttrInfo(i).GetOffs();
@@ -562,9 +528,10 @@ void DynamicType::FullfilsInvariant() const
 			throw ErrDynamicType(" in FullfilsInvariant: an attribute has"
 				"no data (offs==-1) but do has the hasBeenRemoved flag set. Class: ", className );
 		
-		if( attrHasData && attrAdded )  
+		if( attrHasData && attrAdded )   {
 			throw ErrDynamicType(" in FullfilsInvariant: an attribute has"
 				"data (offs>0) but do has the hasBeenAdded flag set. Class: ", className );
+		}
 		// data size calculation
 		if ( attrOffs >= 0) 
 		{
@@ -585,9 +552,11 @@ void DynamicType::FullfilsInvariant() const
 			throw ErrDynamicType(" in FullfilsInvariant: attribute not informed with dynamic offset <> -1");
 
 	}
-	if (!_bPreAllocateAllAttributes) {
-		if (auxAllocatedSize+incData-decData != dataSize) 
+	if (!_preAllocateAllAttributes) {
+		if (auxAllocatedSize+incData-decData != dataSize) {
+			CLAM_ASSERT(false,"");
 			throw ErrDynamicType("in FullfilsInvariant: dataSize attribute is not consistent. Class: ", className );
+		}
 		if (auxAllocatedSize + incData - decData != dataSize)
 			throw ErrDynamicType("in FullfilsInvariant: the dataSize is not well calculated. Class: ", className );
 	}

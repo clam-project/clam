@@ -244,43 +244,4 @@ void DynamicTypeBasicTest::Assignation()
 	// don't delete dynCopy, now:  the copy object is a local variable.
 }
 
-class StaticInfoTester : public Dyn
-{
-public:
-	int GetStaticInfoNumAttr() {
-		return GetStaticInfo().NumAttr();
-	}
-	void StaticInfoAddAttr() {
-		GetStaticInfo().AddAttr();
-	}
-	const char* GetStaticType(const int idAttr) {
-		return typeDescTable[idAttr].type;
-	}
-	const char* GetStaticName(const int idAttr) {
-		return typeDescTable[idAttr].id;
-	}
-};
-
-void DynamicTypeBasicTest::StaticInfoAddAttr()
-{
-	StaticInfoTester tester;
-	CPPUNIT_ASSERT_EQUAL( 0, tester.GetStaticInfoNumAttr() );
-	tester.StaticInfoAddAttr();
-	CPPUNIT_ASSERT_EQUAL( 1, tester.GetStaticInfoNumAttr() );
-}
-
-void DynamicTypeBasicTest::StaticInfoDescriptors()
-{
-	StaticInfoTester tester;
-	// reminder from decl. of Dyn: DYN_ATTRIBUTE(1, public, CompWithBasics8, MyA);
-	CPPUNIT_ASSERT_EQUAL(
-		std::string( "CompWithBasics8" ),
-		std::string( tester.GetStaticType(1) ) );
-
-	CPPUNIT_ASSERT_EQUAL(
-		std::string( "MyA" ),
-		std::string( tester.GetStaticName(1) ) );
-
-}
-
 }; //namespace

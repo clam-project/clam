@@ -200,7 +200,7 @@ public:
 	virtual void StoreOn(CLAM::Storage & s);
 	virtual void LoadFrom(CLAM::Storage & s);
 
-	void SetPreAllocateAllAttributes() { _bPreAllocateAllAttributes=true; }
+	void SetPreAllocateAllAttributes() { _preAllocateAllAttributes=true; }
 
 	/// Developing/testing method
 	void Debug();
@@ -249,8 +249,6 @@ protected:
 	};
 
 private:
-	mutable DynamicInfo _dynInfo; // can't never be const because it's accessed via GetDynamicInfo
-
 	virtual void RemoveAllMem();
 	void* GetPtrToData_(const int id) const;
 	void* GetDataAsPtr_(const int id) const;
@@ -276,8 +274,7 @@ private:
 	 */
 	void UpdateDataInPreAllocatedMode();
 
-	void SelfCopyPrototype(const DynamicType &orig);
-	void SelfSharedCopy(const DynamicType &orig);
+	
 	void SelfShallowCopy(const DynamicType &orig);
 //	void SelfDeepCopy(const DynamicType &orig);
 	
@@ -286,7 +283,9 @@ protected:
 	///\todo make private
 	char* _data;
 private:
-	bool _bPreAllocateAllAttributes;
+	bool _preAllocateAllAttributes;
+	mutable DynamicInfo _dynInfo; // can't never be const because it's accessed via GetDynamicInfo
+
 
 
 };

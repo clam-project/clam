@@ -17,7 +17,6 @@ class DynamicInfo
 	//just allow instance creation from DynamicType
 	friend DynamicType;
 
-
 	// nested class:
 	class AttrDynamicInfo 
 	{
@@ -48,18 +47,13 @@ public:
 	AttrDynamicInfo& GetAttrInfo (int idAttr );
 	bool AnyRemoved();
 	bool AnyAdded();
+	int RefCount() const;
 
 private:
 	// interface for the friendly DynamicType :
 	//   constructor/destructor:
-	DynamicInfo() : 
-		_numInstantiatedAttr(0), 
-		_parentDT(0), 
-		_dataSize(0),
-		_allocatedDataSize(0), 
-		_dynInfoImpl(0),
-		_cachedStaticInfo(0)
-	   {}
+	DynamicInfo();
+	DynamicInfo( const DynamicInfo& );
 
 	~DynamicInfo();
 
@@ -72,7 +66,6 @@ private:
 	
 	void IncrementRefCount();
 	void DecrementRefCount();
-	int RefCount() const;
 	void InitRefCount();	
 
 	void AddAttr( int idAttr, int attrSize );
@@ -91,7 +84,7 @@ private:
 
 	DynamicInfo& operator= (const DynamicInfo& arg);
 
-	// private attributes:
+// Attributes:
 	DynamicType* _parentDT;
 	int _numInstantiatedAttr;
 	int _numAttr;

@@ -110,17 +110,11 @@ namespace CLAM {
 			mState == Disabled)
 			throw(ErrProcessingObj("Processing::Configure(): Object is running.",this));
 
-		// As we have no acces to the actual dynamic configuration object
-		// but via its abstract interface, we have no way to do apriori an
-		// ExistAttr check, so we have to catch the possible exceptions.
-		try {
+		// We have no acces to the actual dynamic configuration object
+		// But ProcessingConfig base class defines a virtual HasName and GetName
+		if ( c.HasName() ) 
 			config_name = c.GetName();
-		}
-		catch (ErrDynamicType)
-		{
-			throw(ErrProcessingObj("Processing::Configure(): No name in config object.",this));
-		}
-
+		
 		bool name_change_requested = config_name != ""     && 
 		                             config_name != mName;
 		if (name_change_requested)

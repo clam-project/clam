@@ -296,11 +296,12 @@ class DynWithArrays : public DynamicType {
 		DYN_ATTRIBUTE(0, public, float, MyFloat);
 		DYN_ATTRIBUTE(1, public, CLAM::Array<float>, MyFloatArray);
 		DYN_ATTRIBUTE(2, public, CLAM::Array<Dyn>, MyDynArray);
-	private:
-		void DefaultInit() {
+		
+		DynWithArrays() {
 			AddAll();
 			UpdateData();
 		}
+	
 	public:
 		void Populate() {
 			GetMyFloat()=0;
@@ -342,11 +343,12 @@ class DynWithIterables : public DynamicType {
 		DYN_ATTRIBUTE(0, public, float, MyFloat);
 		DYN_CONTAINER_ATTRIBUTE(1, public, std::vector<float>, MyFloatVector, notused);
 		DYN_CONTAINER_ATTRIBUTE(2, public, std::vector<Dyn>, MyDynVector, aDyn);
-	private:
-		void DefaultInit() {
+	
+		DynWithIterables() {
 			AddAll();
 			UpdateData();
 		}
+
 	public:
 		void Populate() {
 			GetMyFloat()=0;

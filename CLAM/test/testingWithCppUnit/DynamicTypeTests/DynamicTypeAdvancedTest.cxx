@@ -68,8 +68,9 @@ void DynamicTypeAdvancedTest::XMLCustomizationBySubclassing()
 void DynamicTypeAdvancedTest::XMLWithArrayAttribute()
 {
 	DynWithArrays o;
-	o.AddAll(); o.UpdateData();
-	Array<float> & af = o.GetMyFloatArray();
+	o.AddAll(); 
+	o.UpdateData();
+	CLAM::Array<float> & af = o.GetMyFloatArray();
 	af.AddElem(7);
 	af.AddElem(6);
 	af.AddElem(5);
@@ -79,7 +80,10 @@ void DynamicTypeAdvancedTest::XMLWithArrayAttribute()
 	af.AddElem(1);
 	af.AddElem(0);
 	Array<Dyn> & ad = o.GetMyDynArray();
-	Dyn d1; d1.AddAll(); d1.UpdateData();
+	Dyn d1; 
+	d1.AddAll(); 
+	d1.UpdateData();
+	
 	ad.AddElem(d1);
 	ad.AddElem(d1);
 	ad.AddElem(d1);

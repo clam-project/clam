@@ -5,8 +5,38 @@
 
 namespace CLAM
 {
+
+DynamicInfo::DynamicInfo() : 
+	_numInstantiatedAttr(0), 
+	_parentDT(0), 
+	_dataSize(0),
+	_allocatedDataSize(0), 
+	_dynInfoImpl(0),
+	_cachedStaticInfo(0)
+{}
+
+DynamicInfo::DynamicInfo( const DynamicInfo& arg) :
+	_parentDT( arg._parentDT),
+	_numInstantiatedAttr( arg._numInstantiatedAttr ),
+	_numAttr( arg._numAttr ),
+	_dataSize( arg._dataSize ),
+	_allocatedDataSize( arg._allocatedDataSize ),
+	_cachedStaticInfo( arg._cachedStaticInfo ),
+	_dynInfoImpl(0)
+{
+	if ( !_parentDT ) return;
+
+	_dynInfoImpl = arg._dynInfoImpl;
+	IncrementRefCount();
+}
+
 DynamicInfo::~DynamicInfo() {
-	if (_dynInfoImpl && RefCount()==0) {
+	if (!_dynInfoImpl) // not init
+		return;
+	
+	DecrementRefCount();
+
+	if (RefCount()==0) {
 		delete [] _dynInfoImpl;
 	}
 }
@@ -133,41 +163,50 @@ void DynamicInfo::CreateASeparatedDynInfoImpl() {
 
 
 void DynamicInfo::AddAttr( int idAttr, int attrSize ) {
-	if ( GetAttrInfo(idAttr).Added() ) 
+	 AttrDynamicInfo &attr = GetAttrInfo(idAttr);
+
+	if ( attr.Added() ) 
 		return;
 
 	if ( RefCount() > 1)  // since its dynamic info is shared, we need to separate it
 		CreateASeparatedDynInfoImpl();
 
-	if ( GetAttrInfo(idAttr).Removed() ) {
-		GetAttrInfo(idAttr).UnsetRemoved();
+	if ( attr.Removed() ) {
+		attr.UnsetRemoved();
 		TryToUnsetAnyRemoved();
-	} else {
-		GetAttrInfo(idAttr).SetAdded();
+	} else if (!attr.HasData() ) {
+		attr.SetAdded();
 		SetAnyAdded();
+	} else {// else, if attr HasData, don't set the flag
+		return;
 	}
-	
+
 	++_numInstantiatedAttr;
 	_dataSize += attrSize;
-
+	
 	_parentDT->CheckInvariantIfExtraChecksIsSet();
 }
 
 
 void DynamicInfo::RemoveAttr( int idAttr, int attrSize ) {
-	if ( GetAttrInfo(idAttr).Removed() )
+	AttrDynamicInfo &attr = GetAttrInfo(idAttr);
+
+	if ( attr.Removed() )
 		return;
 
 	if ( RefCount() > 1)  // since its dynamic info is shared, we need to separate it
 		CreateASeparatedDynInfoImpl();
 
-	if ( GetAttrInfo(idAttr).Added() ) {
-		GetAttrInfo(idAttr).UnsetAdded();
+	if ( attr.Added() ) {
+		attr.UnsetAdded();
 		TryToUnsetAnyAdded();
-	} else {
-		GetAttrInfo(idAttr).SetRemoved();
+	} else if ( attr.HasData() ) {
+		attr.SetRemoved();
 		SetAnyRemoved();
+	} else {// else, if attr don't HasData, don't set Removed flag.
+		return;
 	}
+
 	--_numInstantiatedAttr;
 	_dataSize -= attrSize;
 
