@@ -16,7 +16,7 @@ using namespace CLAM;
 	void SinTrackingConfig::DefaultValues()
 	{
 		SetThreshold(20);//in percents
-		SetnMaxSines(50);
+		SetnMaxSines(250);
 		SetIsHarmonic(0);
 	}
 	
@@ -54,6 +54,7 @@ using namespace CLAM;
 		mNextTrackId=0;
 
 		mInitialized=false;
+		mLastHarmonic=false;
 		
 		int i;
 		//initializes guide array
@@ -77,7 +78,7 @@ using namespace CLAM;
 	//Supervised mode
 	bool  SinTracking::Do(void) 
 	{
-		throw(ErrProcessingObj("SinTracking::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false, "SinTracking::Do(): Supervised mode not implemented");
 		return false;
 	}
   
@@ -91,10 +92,13 @@ using namespace CLAM;
 		oPeakArray.AddBinPosBuffer();
 		oPeakArray.AddIsIndexUpToDate();
 		oPeakArray.UpdateData();
-		if(mHarmonic && fn>0)
-			return DoHarmonic(iPeakArray,oPeakArray,fn);
-		else
-			return DoInharmonic(iPeakArray,oPeakArray);
+		if(mHarmonic && fn>0){
+			mLastHarmonic=true;
+			return DoHarmonic(iPeakArray,oPeakArray,fn);}
+		else{
+			if(mLastHarmonic) KillAll();
+			mLastHarmonic=false;
+			return DoInharmonic(iPeakArray,oPeakArray);}
 	}
 
 	bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
@@ -151,7 +155,9 @@ using namespace CLAM;
 		SpectralPeak candidatePeak;
 		candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
 		//I added &&(candidatePeak.GetIndex()==-1) because it matched already matched peak
-		if(candidatePos<mnMaxSines&&(IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
+		if( candidatePos<oPeakArray.GetnPeaks()
+		    && (IsBestCandidate(candidatePeak,processedPeakPos))
+		    && (oPeakArray.GetIndex(candidatePos)==-1) )
 		{
 		  //Match
 		  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
@@ -188,8 +194,9 @@ using namespace CLAM;
 
 
 //true as soon as the distance between currentPeak and a Peak in iPeakArray is <mThreshold
-	bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak,
-										const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray) const
+	bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak, 
+					   const SpectralPeakArray& iPeakArray,
+					   SpectralPeakArray& oPeakArray) const
 	{
 	  int i;
 	  int dist;
@@ -344,6 +351,15 @@ already been assigned)*/
 		mPreviousPeakArray=oPeakArray;
 	}
 
+	void SinTracking::KillAll()
+	{
+		int i;
+		for (i=0;i<mnMaxSines;i++)
+		{
+			mGuideArray[i].isDead=true;
+		}
+		mnActiveGuides=0;
+	}
 
 	bool SinTracking::DoInharmonic(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
 	{

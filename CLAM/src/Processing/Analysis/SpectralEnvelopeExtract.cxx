@@ -22,6 +22,9 @@
 #include "Complex.hxx"
 #include "SpectralEnvelopeExtract.hxx"
 #include "ErrProcessingObj.hxx"
+#include "Spectrum.hxx"
+#include "SpecTypeFlags.hxx"
+#include "SpectralPeakArray.hxx"
 
 #define CLASS "SpectralEnvelopeExtract"
 
@@ -89,7 +92,7 @@ namespace CLAM {
 
 	bool  SpectralEnvelopeExtract::Do(void) 
 	{
-		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
 		return false;
 	}
 

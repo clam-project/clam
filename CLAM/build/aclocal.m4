@@ -1,9 +1,7 @@
 dnl Some aditional checks for the CLAM library
 dnl
-dnl
 dnl Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
 dnl                         UNIVERSITAT POMPEU FABRA
-dnl
 dnl
 dnl This program is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -22,20 +20,26 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 AC_DEFUN(CLAM_CHECK_CXX,
 [
-	AC_MSG_CHECKING([if default compiler g++ is acceptable])
-	CXXVERSION=`g++ -v 2>&1 | grep 'gcc version' | cut -d' ' -f3`
+	AC_MSG_CHECKING(default g++ compiler)
+	CXXVERSION=`
+		g++ -v 2>&1 | grep 'gcc version' | \
+		sed -e 's/.*gcc version \([[^ ]]*\).*/\1/'`
+	AC_MSG_RESULT($CXXVERSION)
 	CXXVERSION_MAJOR=`echo $CXXVERSION | cut -d'.' -f1`
 	CXXVERSION_MINOR=`echo $CXXVERSION | cut -d'.' -f2`
+	AC_MSG_CHECKING(if default g++ compiler is acceptable)
 	if test $CXXVERSION_MAJOR = 3 ; then
 		CXX=g++
-		AC_MSG_RESULT(yes ($CXX=$CXXVERSION))
+		AC_MSG_RESULT(yes: $CXX=$CXXVERSION)
 	elif test $CXXVERSION_MAJOR = 2 ; then
 		if test $CXXVERSION_MINOR = 96 ; then
-			AC_MSG_RESULT(no ($CXXVERSION))
-			AC_MSG_CHECKING([if prefered g++ 3 is available])
+			AC_MSG_RESULT(no: $CXX=$CXXVERSION)
+			AC_MSG_CHECKING([if prefered g++3 is available])
 			if test x`which g++3` != x ; then
 				CXX=g++3
-				CXXVERSION=`$CXX -v 2>&1 | grep version | cut -d' ' -f3`
+				CXXVERSION=`
+					g++3 -v 2>&1 | grep 'gcc version' | \
+					sed -e 's/.*gcc version \([[^ ]]*\).*/\1/'`
 				AC_MSG_RESULT(yes ($CXX=$CXXVERSION))
 			elif test x`which g++-3.0` != x ; then
 				CXX=g++-3.0
@@ -46,7 +50,9 @@ AC_DEFUN(CLAM_CHECK_CXX,
 			AC_MSG_RESULT(yes ($CXX=$CXXVERSION))
 		fi
 	else
-		AC_MSG_ERROR([cannot handle g++ version ($CXXVERSION)]);
+		AC_MSG_ERROR([
+cannot handle g++ version ($CXXVERSION)]
+		);
 	fi
 ])
 
@@ -73,7 +79,7 @@ int main() {
 	fi
 
     dnl We now try to make the standard sstream header work
-	dnl Really old versions of g++ do not have it.
+		dnl Really old versions of g++ do not have it.
     AC_MSG_CHECKING([for standard sstream header in libstdc++])
     AC_TRY_RUN([
 #include<sstream>
@@ -109,14 +115,14 @@ int main() {
 				DEFINE_HAVE_STRSTREAM_SSTREAM=HAVE_STRSTREAM_SSTREAM
 		dnl Bad luck. No known string stream header file found.
 		else
-
-			AC_MSG_ERROR([No standard c++ library String Streams header file found! ])
-
+			AC_MSG_ERROR([
+No standard c++ library String Streams header file found!]
+			)
 		fi
-	fi 
+	fi
 
 
-	dnl It seems we have an lod string stream implementation. Lets check 
+	dnl It seems we have an lod string stream implementation. Lets check
 	dnl if it has any peculiarity...
 	AC_MSG_CHECKING([if stringstream::str() returns std::string in libstdc++])
     AC_TRY_RUN([
@@ -148,100 +154,74 @@ int main() {
 
 ])
 
+dnl Begin of FLTK checking procedure
 AC_DEFUN(CLAM_LIB_FLTK,
 [
-AC_MSG_CHECKING([for fltk headers; looking relative to CLAM])
-fltk_local=no
-if test -d ../../fltk/include/FL/; then
-	AC_MSG_RESULT(yes)
-	found_fltk=yes
-	FLTK_INCLUDES="../../fltk/include"
-	FLTK_LIB_PATH="../../fltk/lib"
-	FLAG_FLTK_INCLUDES="-I../../fltk/include"
-	FLAG_FLTK_LIB_PATH="-L../../fltk/lib"
-	fltk_local=yes
-else
-	AC_MSG_RESULT(no)
-	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
-	found_fltk=no
-	for base in "/usr/include" \
-	            "/usr/local/include" \
-	            "/opt/include" \
-	            "/usr/"
-	do
-		if test -d $base/FL; then
-			AC_MSG_RESULT(yes)
-			found_fltk=yes
-			break;
-		fi
-	done
-	FLTK_LIB_PATH=
-fi
-if test $found_fltk = yes; then
-	AC_MSG_CHECKING([for fltk library (and other fltk required)...])
-	OLD_FLAGS=$CXXFLAGS
+AC_MSG_CHECKING([fltk-config is known by the /usr/bin/which command...])
 
-	link_ok=no
-
-	for lib in fltk GL pthreads
-	do
-		FLTK_LIBS="$FLTK_LIBS $lib"
-		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
-		CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
-		AC_TRY_LINK([
-			#include<FL/Fl_Window.H>
-			#include<FL/Fl.H>
-		],[
-			Fl_Window w(100,100);
-			Fl::run();
-			return 0;
-		],[
-			link_ok=yes
-		],[])
-		test $link_ok = yes && break;
-	done
-
-	if test $link_ok = no; then
-		AC_MSG_ERROR([
-			The test program did not compile or link. Check your config.log for details.
-		])
-	else
-		AC_MSG_RESULT(yes: [$FLTK_LIBS])
-	fi
-	 
-	AC_TRY_RUN([
-		#include<FL/Fl_Window.H>
-		#include<FL/Fl.H>
-		int main()
-		{
-			Fl_Window w(100,100);
-			Fl::run();
-			return 0;
-		}
-	],[
+if test -f `which fltk-config`
+	then
+		fltk_config_exec=`which fltk-config`	
 		AC_MSG_RESULT(yes)
-		DEFINE_HAVE_FLTK=HAVE_FLTK
-		if test $fltk_local = yes; then
-			FLTK_INCLUDES="\$(CLAM_PATH)/../fltk/include"
-			FLTK_LIB_PATH="\$(CLAM_PATH)/../fltk/lib"
-		fi
-	],[
-		The test program did compile and to link, but failed to run. This probably 
-		means that the run-time linker is not able to find libfltk.so. You might want
-		to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to
-		the right location.
-	],[
-		echo $ac_n "cross compiling; assumed OK... $ac_c"
-	])
-
-	CXXFLAGS=$OLD_FLAGS
-else
-	AC_MSG_ERROR([
-		No fltk headers found!
-	])
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_CHECKING([fltk-config is in the sandbox...])
+		PWD=`pwd`
+		if test -f "$PWD/../../fltk/bin/fltk-config"
+			then
+				fltk_config_exec="$PWD/../../fltk/bin/fltk-config"
+				AC_MSG_RESULT(yes)
+			else
+				AC_MSG_RESULT(no)
+				AC_MSG_ERROR([The autoconf script has been unable to locate fltk-config script. This means that you have neither installed a suitable FLTK package or it is not present in your CLAM sandbox])
+		fi;
 fi;
+
+fltk_config_exec="$fltk_config_exec --use-gl --use-images"
+
+AC_MSG_CHECKING([checking FLTK API version is 1.1 ...])
+
+FLTK_API_VERSION=`$fltk_config_exec --api-version`
+
+if [[ "1.1" == "$FLTK_API_VERSION" ]]
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Currently CLAM only supports FLTK API version 1.1])
+fi;	
+
+RAW_FLTK_CFLAGS=`$fltk_config_exec --cxxflags`
+RAW_FLTK_LDFLAGS=`$fltk_config_exec --ldflags`
+
+for incpath in $RAW_FLTK_CFLAGS
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+			then
+				FLTK_INCLUDES="$FLTK_INCLUDES ${incpath#-I*}"
+		fi
+	done
+
+for libpath in $RAW_FLTK_LDFLAGS
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+			then
+				FLTK_LIB_PATH="$FLTK_LIB_PATH ${libpath#-L*}"
+		fi
+	done
+
+for binname in $RAW_FLTK_LDFLAGS
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+			then
+				FLTK_LIBS="$FLTK_LIBS ${binname#-l*}"
+		fi
+	done
+
 ]
 )
+dnl End of FLTK checking procedure
+
 
 AC_DEFUN(CLAM_LIB_XERCESC,
 [
@@ -263,13 +243,11 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 			FLAG_XERCESC_INCLUDES=-I$XERCESCROOT/include
 		else
 			AC_MSG_ERROR([
-				No xerces header directories found! 
-
-				If you don't want to compile with XML support, run
-				configure with the --disable-xml option.
-			])
+No xerces header directories found!  If you don't want to compile with XML support, run
+configure with the --disable-xml option.]
+			)
 		fi
-	else # XERCESCROOT 
+	else # XERCESCROOT
 		AC_MSG_RESULT(no)
 		AC_MSG_CHECKING([for xercesc headers; looking relative to CLAM])
 		xerces_local=no
@@ -316,14 +294,15 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 	if test $found_dom = yes; then
 		AC_MSG_CHECKING([for xercesc library...])
 		OLD_FLAGS=$CXXFLAGS
-		XERCESC_LIBS=xerces-c
-		FLAG_XERCESC_LIBS=-lxerces-c
+		XERCESC_LIBS="xerces-c pthread"
+		FLAG_XERCESC_LIBS="-lxerces-c -lpthread"
 		CXXFLAGS="$CXXFLAGS $FLAG_XERCESC_INCLUDES $FLAG_XERCESC_LIBS $FLAG_XERCESC_LIB_PATH"
 		AC_TRY_RUN([
-			#include<xercesc/dom/DOM_Document.hpp>
+			#include<xercesc/util/PlatformUtils.hpp>
 			int main()
 			{
-				DOM_Document::createDocument();
+				namespace xercesc=XERCES_CPP_NAMESPACE;
+				xercesc::XMLPlatformUtils::Initialize();
 				return 0;
 			}
 		],[
@@ -331,32 +310,31 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 			DEFINE_HAVE_XERCESC=HAVE_XERCESC
 		],[
 			AC_TRY_LINK([
-					#include<xercesc/dom/DOM_Document.hpp>
+					#include<xercesc/util/PlatformUtils.hpp>
 				],[
-					DOM_Document::createDocument();
+					namespace xercesc=XERCES_CPP_NAMESPACE;
+					xercesc::XMLPlatformUtils::Initialize();
 					return 0;
 				],[
-				AC_MSG_ERROR(
-					[The test program did compile, but failed to link. This probably means that
-					the run-time linker is not able to find libxercesc.so. You might want
-					to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to
-					the right location.]
+				AC_MSG_ERROR([
+The test program did compile, but failed to link. This probably means that
+the  run-time linker is not able to find libxercesc. You might want to set
+your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to the
+right location.]
 					)
 				],[
 				AC_MSG_ERROR([
-					The test program did not compile or link. Check your config.log for details.
-				])
+The test program did not compile or link. Check your config.log for
+details.])
 			])
 		],[echo $ac_n "cross compiling; assumed OK... $ac_c"
 		])
 		CXXFLAGS=$OLD_FLAGS
 	else
 		AC_MSG_ERROR([
-			No xerces headers found!
-
-			If you don't want to compile with XML support, run
-			configure with the --disable-xml option.
-		])
+No xerces headers found! If you don't want to compile with XML support,
+run configure with the --disable-xml option.]
+		)
 	fi;
 ])
 
@@ -364,6 +342,95 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 
 
 AC_DEFUN(CLAM_LIB_FFTW,
+[
+AC_MSG_CHECKING([for fftw headers; looking relative to CLAM])
+fftw_local=no
+if test -d ../../fftw/include; then
+	AC_MSG_RESULT(yes)
+	found_fftw=yes
+	FFTW_INCLUDES="../../fftw/include"
+	FFTW_LIB_PATH="../../fftw/lib"
+	FLAG_FFTW_INCLUDES="-I../../fftw/include"
+	FLAG_FFTW_LIB_PATH="-L../../fftw/lib"
+	fftw_local=yes
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING([for fftw headers; looking in standard locations...])
+	found_fftw=no
+	for base in "/usr/include" \
+	            "/usr/local/include" \
+	            "/opt/include"
+	do
+		if test -r "$base/rfftw.h"; then
+			AC_MSG_RESULT(yes)
+			found_fftw=yes
+			break;
+		fi
+	done
+	FFTW_LIB_PATH=
+fi
+if test $found_fftw = yes; then
+	AC_MSG_CHECKING([for fftw library...])
+	OLD_FLAGS=$CXXFLAGS
+
+	link_ok=no
+
+	FFTW_LIBS="fftw"
+	FLAG_FFTW_LIBS="$FLAG_FFTW_LIBS -lfftw"
+	CFLAGS="$CFLAGS $FLAG_FFTW_INCLUDES $FLAG_FFTW_LIB_PATH $FLAG_FFTW_LIBS"
+	AC_TRY_LINK([
+		#include<fftw.h>
+	],[
+		fftw_sizeof_fftw_real();
+		return 0;
+	],[
+		link_ok=yes
+	],[])
+
+	if test $link_ok = no; then
+		AC_MSG_ERROR([
+The test program did not compile or link. Check your config.log for
+details.]
+		)
+	else
+		AC_MSG_RESULT(yes: [$FFTW_LIBS])
+	fi
+	 
+	AC_TRY_RUN([
+		#include<fftw.h>
+		int main()
+		{
+			fftw_sizeof_fftw_real();
+			return 0;
+		}
+	],[
+		AC_MSG_RESULT(yes)
+		DEFINE_HAVE_FFTW=HAVE_FFTW
+		if test $fftw_local = yes; then
+			FFTW_INCLUDES="\$(CLAM_PATH)/../fftw/include"
+			FFTW_LIB_PATH="\$(CLAM_PATH)/../fftw/lib"
+		fi
+	],[
+				AC_MSG_ERROR([
+The test program did compile, but failed to link. This probably means that
+the run-time linker is not able to find libfftw. You might want to set your
+LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to the right
+location.]
+					)
+	],[
+		echo $ac_n "cross compiling; assumed OK... $ac_c"
+	])
+
+	CXXFLAGS=$OLD_FLAGS
+else
+	AC_MSG_ERROR([
+No fftw headers found!]
+	)
+fi;
+]
+)
+
+AC_DEFUN(CLAM_LIB_FFTWOLD,
 [
 AC_MSG_CHECKING([for fftw headers; looking relative to CLAM])
 fltk_local=no
@@ -410,7 +477,11 @@ fi
 						DEFINE_HAVE_FFTW=HAVE_FFTW
 						FFTW_LIBS="rfftw fftw"
 					])
-				],AC_MSG_ERROR([fftw not found])
+				],
+				[AC_MSG_ERROR
+				(
+[fftw not found]
+				)]
 				,-lfftw -lm)
 			],-lsfftw -lm
 		)
@@ -425,9 +496,9 @@ fi
 		]
 		)
 	],
-	AC_MSG_ERROR(
-[fftw library (double precision) not found. Maybe you want to configure with 
---disable-double?]) 		
+	AC_MSG_ERROR([
+fftw library (double precision) not found. Maybe you want to configure
+with  --disable-double?]) 		
 	,-lfftw -lm
     )
 	fi
@@ -455,7 +526,7 @@ else
 	found_qt=no
 	for base in "/usr" \
 	            "/usr/local" \
-	            "/opt" 
+	            "/opt"
 	do
 		if test -d $base/include/qt3; then
 			AC_MSG_RESULT(yes)
@@ -467,7 +538,18 @@ else
 			break;
 		fi
 	done
+	
+	if test -d $QTDIR/include/; then
+		AC_MSG_RESULT(yes)
+		QT_INCLUDES="$QTDIR/include"
+		QT_LIB_PATH="$QTDIR/lib"
+		FLAG_QT_INCLUDES="-I$QTDIR/include"
+		FLAG_QT_LIB_PATH="-L$QTDIR/lib"
+		found_qt=yes
+		break;
+	fi
 fi
+
 if test $found_qt = yes; then
 	AC_MSG_CHECKING([for qt library (and other qt required)...])
 	OLD_FLAGS=$CXXFLAGS
@@ -479,7 +561,7 @@ if test $found_qt = yes; then
 	for lib in qt-mt qt; do
 		QT_LIBS="$lib"
 		FLAG_QT_LIBS="-l$lib"
-		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIBS $FLAG_QT_LIB_PATH"
+		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIB_PATH $FLAG_QT_LIBS"
 		AC_TRY_LINK([
 				#include<qapplication.h>
 			],[
@@ -494,8 +576,9 @@ if test $found_qt = yes; then
 
 	if test $link_ok = no; then
 		AC_MSG_ERROR([
-			The test program did not compile or link. Check your config.log for details.
-		])
+The test program did not compile or link. Check your config.log for
+details.]
+		)
 	else
 		AC_MSG_RESULT(yes: [$QT_LIBS])
 	fi
@@ -515,19 +598,21 @@ if test $found_qt = yes; then
 			QT_LIB_PATH="\$(CLAM_PATH)/../qt/lib"
 		fi
 	],[
-		The test program did compile and to link, but failed to run. This probably 
-		means that the run-time linker is not able to find libqt.so. You might want
-		to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to
-		the right location.
+		AC_MSG_ERROR([
+The test program did compile and to link, but failed to run. This
+probably  means that the run-time linker is not able to find libqt.so. You
+might want to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to
+point to the right location.]
+		)
 	],[
 		echo $ac_n "cross compiling; assumed OK... $ac_c"
 	])
-	 
+
 	CXXFLAGS=$OLD_FLAGS
 else
-	AC_MSG_ERROR([
-		No qt headers found!
-	])
+	AC_MSG_WARN([
+No qt headers found!]
+	)
 fi
 ])
 

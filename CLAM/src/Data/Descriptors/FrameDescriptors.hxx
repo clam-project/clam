@@ -22,10 +22,7 @@
 #ifndef __FrameDescriptors__
 #define __FrameDescriptors__
 
-#include "Flags.hxx"
-#include "DynamicType.hxx"
-#include "ProcessingData.hxx"
-#include "DataTypes.hxx"
+#include "Descriptor.hxx"
 
 #include "AudioDescriptors.hxx"
 #include "SpectralDescriptors.hxx"
@@ -42,10 +39,10 @@ class Frame;
  * inside the frame. TODO: add specific descriptors.
  *
  */
-class FrameDescriptors : public ProcessingData
+class FrameDescriptors : public Descriptor
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 8, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 8, Descriptor);
 	/** Spectrum analyzed from the Audio input  */
 	DYN_ATTRIBUTE (0, public, SpectralDescriptors, SpectrumD);
 	/** Vector of peaks in spectral analysis  */
@@ -64,13 +61,16 @@ public:
 	DYN_ATTRIBUTE (6, public, AudioDescriptors, ResidualAudioFrameD);
 	/** Global synthesized Audio */
 	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
-
+	//Note: some specific frame descriptors should be added
 public:
 	FrameDescriptors(Frame* pFrame);
+	FrameDescriptors(TData initVal);
 
 	const Frame* GetpFrame() const;
 	void SetpFrame(Frame* pFrame);
-
+	void Compute();
+	void ConcreteCompute();
+	
 private:
 	void DefaultInit();
 	void CopyInit(const FrameDescriptors & copied);
@@ -80,25 +80,91 @@ private:
 
 };
 
+FrameDescriptors operator * (const FrameDescriptors& a,const FrameDescriptors& b);
+FrameDescriptors operator + (const FrameDescriptors& a,const FrameDescriptors& b);
+FrameDescriptors operator * (const FrameDescriptors& a,TData mult);
+FrameDescriptors operator * (TData mult,const FrameDescriptors& a);
+FrameDescriptors operator - (const FrameDescriptors& a,const FrameDescriptors& b);
+FrameDescriptors operator / (const FrameDescriptors& a,TData div);
 
-
-// Implementation
-
-inline void FrameDescriptors::DefaultInit() {
-	mpFrame=0;
+template<>
+inline FrameDescriptors CLAM_max (const FrameDescriptors& a,const FrameDescriptors& b)
+{
+	FrameDescriptors  tmpD(a);
+	if(a.HasSpectralPeakD() && b.HasSpectralPeakD())
+	{
+		tmpD.SetSpectralPeakD(CLAM_max(a.GetSpectralPeakD(),b.GetSpectralPeakD()));
+	}
+	if(a.HasSpectrumD() && b.HasSpectrumD())
+	{
+		tmpD.SetSpectrumD(CLAM_max(a.GetSpectrumD(),b.GetSpectrumD()));
+	}
+	if(a.HasResidualSpecD() && b.HasResidualSpecD())
+	{
+		tmpD.SetResidualSpecD(CLAM_max(a.GetResidualSpecD(),b.GetResidualSpecD()));
+	}
+	if(a.HasSinusoidalSpecD() && b.HasSinusoidalSpecD())
+	{
+		tmpD.SetSinusoidalSpecD(CLAM_max(a.GetSinusoidalSpecD(),b.GetSinusoidalSpecD()));
+	}
+	if(a.HasAudioFrameD() && b.HasAudioFrameD())
+	{
+		tmpD.SetAudioFrameD(CLAM_max(a.GetAudioFrameD(),b.GetAudioFrameD()));
+	}
+	if(a.HasSinusoidalAudioFrameD() && b.HasSinusoidalAudioFrameD())
+	{
+		tmpD.SetSinusoidalAudioFrameD(CLAM_max(a.GetSinusoidalAudioFrameD(),b.GetSinusoidalAudioFrameD()));
+	}
+	if(a.HasResidualAudioFrameD() && b.HasResidualAudioFrameD())
+	{
+		tmpD.SetResidualAudioFrameD(CLAM_max(a.GetResidualAudioFrameD(),b.GetResidualAudioFrameD()));
+	}
+	if(a.HasSynthAudioFrameD() && b.HasSynthAudioFrameD())
+	{
+		tmpD.SetSynthAudioFrameD(CLAM_max(a.GetSynthAudioFrameD(),b.GetSynthAudioFrameD()));
+	}
+	return tmpD;
 }
 
-inline void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
-	mpFrame=copied.mpFrame;
+template<>
+inline FrameDescriptors CLAM_min (const FrameDescriptors& a,const FrameDescriptors& b)
+{
+	FrameDescriptors  tmpD(a);
+	if(a.HasSpectralPeakD() && b.HasSpectralPeakD())
+	{
+		tmpD.SetSpectralPeakD(CLAM_min(a.GetSpectralPeakD(),b.GetSpectralPeakD()));
+	}
+	if(a.HasSpectrumD() && b.HasSpectrumD())
+	{
+		tmpD.SetSpectrumD(CLAM_min(a.GetSpectrumD(),b.GetSpectrumD()));
+	}
+	if(a.HasResidualSpecD() && b.HasResidualSpecD())
+	{
+		tmpD.SetResidualSpecD(CLAM_min(a.GetResidualSpecD(),b.GetResidualSpecD()));
+	}
+	if(a.HasSinusoidalSpecD() && b.HasSinusoidalSpecD())
+	{
+		tmpD.SetSinusoidalSpecD(CLAM_min(a.GetSinusoidalSpecD(),b.GetSinusoidalSpecD()));
+	}
+	if(a.HasAudioFrameD() && b.HasAudioFrameD())
+	{
+		tmpD.SetAudioFrameD(CLAM_min(a.GetAudioFrameD(),b.GetAudioFrameD()));
+	}
+	if(a.HasSinusoidalAudioFrameD() && b.HasSinusoidalAudioFrameD())
+	{
+		tmpD.SetSinusoidalAudioFrameD(CLAM_min(a.GetSinusoidalAudioFrameD(),b.GetSinusoidalAudioFrameD()));
+	}
+	if(a.HasResidualAudioFrameD() && b.HasResidualAudioFrameD())
+	{
+		tmpD.SetResidualAudioFrameD(CLAM_min(a.GetResidualAudioFrameD(),b.GetResidualAudioFrameD()));
+	}
+	if(a.HasSynthAudioFrameD() && b.HasSynthAudioFrameD())
+	{
+		tmpD.SetSynthAudioFrameD(CLAM_min(a.GetSynthAudioFrameD(),b.GetSynthAudioFrameD()));
+	}
+	return tmpD;
 }
 
-inline const Frame* FrameDescriptors::GetpFrame() const {
-	return mpFrame;
-}
-
-inline void FrameDescriptors::SetpFrame(Frame* pFrame) {
-	mpFrame=pFrame;
-}
 
 
 

@@ -27,17 +27,14 @@
 
 namespace CLAM
 {
+	typedef BinaryAudioOp< Multiply<TData> > AudioMultiplier;
+	typedef BinaryAudioOpConfig              AudioMultiplierConfig;
 
-	
-		template <>
-		const char* BinaryAudioOp< Multiply<TData> >::GetClassName() const 
-		{
-				return "BinaryAudioOperation_Multiply";
-		}
-		
-		typedef BinaryAudioOp< Multiply<TData> > AudioMultiplier;
-
-		typedef BinaryAudioOpConfig              AudioMultiplierConfig;
+	template <>
+	inline const char* BinaryAudioOp< Multiply<TData> >::GetClassName() const 
+	{
+			return "AudioMultiplier";
+	}
 }
 
 

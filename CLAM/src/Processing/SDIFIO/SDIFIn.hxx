@@ -1,34 +1,34 @@
 #ifndef _SDIFIn_
 #define _SDIFIn_
 
+#include "Segment.hxx"
 #include "IndexArray.hxx"
 #include "Processing.hxx"
 #include "Err.hxx"
 #include "OutPortTmpl.hxx"
-#include "Segment.hxx"
-#include <string.h>
+#include "Filename.hxx"
 
-namespace SDIF{class File;};//forward declaration
+namespace SDIF { class File; } //forward declaration
 
-namespace CLAM{
+namespace CLAM
+{
 
 
 class SDIFInConfig:public ProcessingConfig
 {
 public:
 
-	DYNAMIC_TYPE_USING_INTERFACE (SDIFInConfig, 8, ProcessingConfig);
-	DYN_ATTRIBUTE(0,public, std::string, Name);
-	DYN_ATTRIBUTE(1,public, double, SpectralRange);
-	DYN_ATTRIBUTE(2,public, TIndex, MaxNumPeaks);
-	DYN_ATTRIBUTE(3,public, bool,EnableResidual);
-	DYN_ATTRIBUTE(4,public, bool,EnablePeakArray);
-	DYN_ATTRIBUTE(5,public, bool,EnableFundFreq);
-	DYN_ATTRIBUTE(6,public, std::string,FileName);
+	DYNAMIC_TYPE_USING_INTERFACE (SDIFInConfig, 7, ProcessingConfig);
+	DYN_ATTRIBUTE(0,public, double, SpectralRange);
+	DYN_ATTRIBUTE(1,public, TIndex, MaxNumPeaks);
+	DYN_ATTRIBUTE(2,public, bool,EnableResidual);
+	DYN_ATTRIBUTE(3,public, bool,EnablePeakArray);
+	DYN_ATTRIBUTE(4,public, bool,EnableFundFreq);
+	DYN_ATTRIBUTE(5,public, Filename, FileName);
 /** If true, indices are treated as relative to previous frame (useful for some synthesis
 	engines like SALTO). Else index found in SDIF is loaded as is.
  */
-	DYN_ATTRIBUTE(7,public,bool,RelativePeakIndices);
+	DYN_ATTRIBUTE(6,public,bool,RelativePeakIndices);
 	void DefaultInit();
 };
 
@@ -49,6 +49,8 @@ public:
 	
 	bool Do(void);
 
+	bool Do( CLAM::Segment& segment );
+
 	const ProcessingConfig &GetConfig() const;
 
 	SDIF::File* mpFile;
@@ -58,6 +60,8 @@ protected:
 	bool ConcreteStart();
 
 	bool ConcreteStop();
+
+	bool LoadSDIFDataIntoSegment( CLAM::Segment& s );
 
 private:
 	

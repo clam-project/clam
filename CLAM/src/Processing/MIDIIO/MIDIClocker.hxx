@@ -40,20 +40,15 @@ namespace CLAM
 class MIDIClockerConfig: public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (MIDIClockerConfig, 2, ProcessingConfig);
-
-	/** The name of the object*/
-	DYN_ATTRIBUTE (0, public, std::string, Name)
+	DYNAMIC_TYPE_USING_INTERFACE (MIDIClockerConfig, 1, ProcessingConfig);
 
 	/** The Device that will be used by this MIDIClocker or MIDIOut instantiation, if it is not indicated, or its value is "default:default", system will choose the best device for this object*/
-	DYN_ATTRIBUTE (1, public, std::string, Device);
+	DYN_ATTRIBUTE (0, public, std::string, Device);
 
 protected:
 	void DefaultInit(void)
 	{
-		AddName();
 		AddDevice();
-
 		UpdateData();
 
 		SetDevice("default:default");
@@ -78,7 +73,7 @@ public:
 	 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
 	 *  @return true if the object has been configured correctly; true otherwise
 	 *  @param The related ProcessingConfig object
-	 *  @throws A bad_cast exception if the arguments is not the expected configuration class
+	 *  @throws ErrProcessingObj when there is an error on device adquisition
 	 */
 	virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		throw(ErrProcessingObj);

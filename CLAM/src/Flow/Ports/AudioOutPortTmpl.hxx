@@ -19,6 +19,7 @@ class OutPortTmpl<Audio> : public OutPort
 public:
 
 	inline OutPortTmpl(std::string n, Processing *o, int length, int hop = 0);
+	inline ~OutPortTmpl();
 	inline Audio &GetData();
 	inline void LeaveData();
 	void Attach(ProcessingData& data);
@@ -52,13 +53,21 @@ OutPortTmpl<Audio>::OutPortTmpl(std::string n,
 	o->PublishOutPort(this);
 }
 
+inline OutPortTmpl<Audio>::~OutPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
+}
+
 
 inline void OutPortTmpl<Audio>::Attach(ProcessingData& data)
 {
 	try{
 		Attach(dynamic_cast<Audio&> (data));
 	}
-	catch (std::bad_cast){
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception){
 		CLAM_ASSERT(false,"You are trying to attach a processing data that is not an Audio to an Audio port");
 	}
 }
@@ -68,7 +77,9 @@ inline void OutPortTmpl<Audio>::Attach( NodeBase& node)
 	try {
 		Attach( dynamic_cast< Node<Audio>& >(node) );
 	}
-	catch (std::bad_cast) {
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception) {
 		CLAM_ASSERT(false,"You are trying to attach a node that is not suitable for this port");
 	}
 }
@@ -146,7 +157,17 @@ inline bool OutPortTmpl<Audio>::IsReadyForWriting()
 
 inline void OutPortTmpl<Audio>::Unattach()
 {
-	mpNode = 0;
+	if( !IsAttached() )
+		return;
+
+	if(mpNode)
+	{
+		mpNode->UnattachAll();
+		delete mpRegion;
+		delete mpNode;
+		mpRegion = 0;
+		mpNode = 0;
+	}	
 	mpData = 0;
 }
 

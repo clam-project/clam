@@ -28,10 +28,7 @@
 #include <fstream>  // idem
 #include <list>	   // needed in UpdateData 
 
-#ifdef CLAM_USE_XML
-#	include "XMLStaticAdapter.hxx"
-#	include "XMLStorage.hxx"
-#endif//CLAM_USE_XML
+#include "XMLStorage.hxx"
 
 #include "ErrDynamicType.hxx"
 
@@ -157,15 +154,9 @@ void DynamicType::RemoveAllMem()
 void DynamicType::InformAttr_(unsigned val, const char* name, unsigned size, const char* type, const bool isPtr,
                             const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr)
 {
-CLAM_BEGIN_CHECK
-	if (val >= numAttr)
-	{
-		throw ErrDynamicType("There are more registered Attributes than the "
-		                     "number defined in DYN_CLASS_TABLE macro. In class:",
-		                     GetClassName());
-	}
-CLAM_END_CHECK
-
+	CLAM_ASSERT(val<numAttr, 
+		"There are more registered Attributes than the "
+		"number defined in DYN_CLASS_TABLE macro.");
 	CLAM_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
 	CLAM_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
 
@@ -671,12 +662,12 @@ void DynamicType::SelfSharedCopy(const DynamicType &prototype)
 
 void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 {
-	// that counter is in the table, so it is shared by prototype and this
-	// this check is not really necessary, but it can be usefull to catch bugs of the user of this class
-	if (prototype.dynamicTable[prototype.numAttr].hasBeenAdded || 
-		prototype.dynamicTable[prototype.numAttr].hasBeenRemoved)
-		throw ErrDynamicType("in SelfShallowCopy(). A copy is not allowed when the origin"
-							 "object is not updated. call Update() before making the copy.");
+	CLAM_ASSERT( 
+		!prototype.dynamicTable[prototype.numAttr].hasBeenAdded &&	
+		!prototype.dynamicTable[prototype.numAttr].hasBeenRemoved,
+		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
+	);
+	if (this==&prototype) return;
 
 	SelfCopyPrototype(prototype);
 
@@ -694,13 +685,13 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 
 void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 {
-	// that counter is in the table, so it is shared by prototype and this
-	// this check is not really necessary, but it can be usefull to catch bugs of the user of this class
-	if (prototype.dynamicTable[prototype.numAttr].hasBeenAdded || 
-		prototype.dynamicTable[prototype.numAttr].hasBeenRemoved)
-		throw ErrDynamicType("in SelfDeepCopy(). A copy is not allowed when the origin object is not updated.\
-		call Update() before making the copy.");
-
+	CLAM_ASSERT( 
+		!prototype.dynamicTable[prototype.numAttr].hasBeenAdded &&	
+		!prototype.dynamicTable[prototype.numAttr].hasBeenRemoved,
+		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
+	);
+	if (this==&prototype) return;
+		
 	SelfCopyPrototype(prototype);
 
 	data = new char[allocatedDataSize];
@@ -748,98 +739,7 @@ DynamicType& DynamicType::operator=(const DynamicType& source)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////
-void DynamicType::StoreDynAttributes(Storage & storage)
-{
-	int tableSize = GetNumAttr();
-	for (int i = 0; i < tableSize; i++)
-	{
-		if (!ExistAttr(i))
-			continue;
-#ifdef CLAM_USE_XML
 
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			XMLable * adapter = 0;
-			if (!typeDescTable[i].isPointer && !typeDescTable[i].isComponent)
-
-			{   //TODO: provisional (or not...)
-				char * type = typeDescTable[i].type;
-				if (!strcmp(type, "int"))
-				{
-					int value = *static_cast<int*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "float"))
-				{
-					float value = *static_cast<float*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				} 
-				else if (!strcmp(type, "TData"))
-				{
-					TData value = *static_cast<TData*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "double"))
-				{
-					double value = *static_cast<double*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "unsigned"))
-				{
-					unsigned value = *static_cast<unsigned*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "std::string"))
-				{
-					std::string value = *static_cast<std::string*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "bool"))
-				{
-					bool value = *static_cast<bool*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else
-					adapter = new XMLStaticAdapter("nested object that is not basic nor component", typeDescTable[i].id, true);
-			}
-			else
-			{
-				if (typeDescTable[i].isComponent)
-				{
-					Component *component = 
-						(!typeDescTable[i].isPointer)? static_cast<Component*>(GetPtrToData_(i)) :
-						static_cast<Component*>(GetDataAsPtr_(i));
-
-					if (component)
-					{
-						adapter = new XMLComponentAdapter(*component, typeDescTable[i].id, true);
-						//	 		storage.Store(adapter);
-						//			delete adapter;
-						//			adapter = 0;
-					}
-				}
-				else
-					if (typeDescTable[i].isPointer)
-						adapter = new XMLStaticAdapter("pointer to a non-component", typeDescTable[i].id, true);
-
-			}
-			if (adapter)
-			{
-				storage.Store(adapter);
-				delete adapter;
-			}
-		}
-#endif//CLAM_USE_XML
-	}
-
-}
-
-void DynamicType::LoadDynAttributes(Storage & storage) {
-	CLAM_ASSERT(false, "Using Loading with deprecated DynamicType macros");
-}
 
 /////////////////////////////////////////////////////////////////////////////////////77
 // Developing aids methods: FullfilsInvariant and Debug
@@ -952,11 +852,10 @@ void DynamicType::Debug()
 	}
 	std::cout<<std::endl;
 
-#	ifdef CLAM_USE_XML
-		XMLStorage storage;
-		std::fstream fileout("Debug.xml", std::ios::out);
-		storage.Dump(*this, GetClassName(), fileout);
-#	endif//CLAM_USE_XML
+	// Only dump when CLAM_USE_XML defined
+	#ifdef CLAM_USE_XML
+	XMLStorage::Dump(*this, GetClassName(), "Debug.xml");
+	#endif// CLAM_USE_XML
 }
 
 }; //namespace CLAM

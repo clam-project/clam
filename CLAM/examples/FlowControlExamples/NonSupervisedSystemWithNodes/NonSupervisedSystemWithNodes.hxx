@@ -4,7 +4,7 @@
 #include "NodeTmpl.hxx"
 #include "CircularStreamImpl.hxx"
 
-#include "Oscillator.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioFileOut.hxx"
 #include "AudioFileIn.hxx"
 #include "AudioMultiplier.hxx"
@@ -26,8 +26,8 @@ class NetworkConfiguration
 {
 public: 
 	NetworkConfiguration( SystemWithNodes* sys, std::string name ) : 
-	  _system(sys),
-	  _name(name)
+	  mSystem(sys),
+	  mName(name)
 	{}
 
 	// returns true if has finished the processing (i.e. end-of-file)
@@ -35,19 +35,19 @@ public:
 	virtual void Connect()  =0;
 	virtual void Start() {};
 	virtual void Stop() {};
-	const std::string& GetName() const { return _name; }
+	const std::string& GetName() const { return mName; }
 	
 	void ConnectAndDo();
 	virtual ~NetworkConfiguration() {};
 
 protected:
 	/// to be used in template methods definitions Do() and Connect()
-	SystemWithNodes& System() { return *_system; }
+	SystemWithNodes& System() { return *mSystem; }
 
 private:
-	SystemWithNodes* _system;
+	SystemWithNodes* mSystem;
 protected:
-	const std::string _name;
+	const std::string mName;
 	static bool trace;
 };
 
@@ -67,9 +67,10 @@ public:
 	void AddNetworkConfiguration( NetworkConfiguration* );
 	void RegisterProcessings();
 	void ResetAllNodes();
-	
+	void UnattachAllPorts();
+
 	int GetMaxFramesToProcess() const {
-		return _maxFramesToProcess;
+		return mMaxFramesToProcess;
 	}
 	// NetworkConfiguration classes:
 	
@@ -121,16 +122,19 @@ public:
 	
 	ProcessingIterator FirstProcessing()
 	{
-		return _processings.begin();
+		return mProcessings.begin();
 	}
 
 	ProcessingIterator LastProcessing()
 	{
-		return _processings.end();
+		return mProcessings.end();
 	}
 
+    
 
-private:
+
+
+public: // just for convenience
 
 	// processing data
 	typedef CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  AudioNode;
@@ -144,37 +148,38 @@ private:
 	bool AudioOutDo();
 	bool ConditionalAudioOutAttach( AudioNode& a);
 
+
 	// audio manager
-	CLAM::AudioManager _audioManager;
+	CLAM::AudioManager mAudioManager;
 
 	// processings
-	CLAM::Oscillator _oscillator;
-	CLAM::Oscillator _modulator;
-	CLAM::AudioFileIn _fileIn;
-	CLAM::AudioFileOut _fileOut;
-	CLAM::AudioMultiplier _multiplier;
-	CLAM::AudioOut _audioOut;
-	CLAM::AudioMixer<2> _mixer;
-	CLAM::AutoPanner _controlSender;	
+	CLAM::SimpleOscillator mOscillator;
+	CLAM::SimpleOscillator mModulator;
+	CLAM::AudioFileIn mFileIn;
+	CLAM::AudioFileOut mFileOut;
+	CLAM::AudioMultiplier mMultiplier;
+	CLAM::AudioOut mAudioOut;
+	CLAM::AudioMixer<2> mMixer;
+	CLAM::AutoPanner mControlSender;	
 
 
-	AudioNode* _oscillatorData;
-	AudioNode* _fileInData;
-	AudioNode* _modulatorData;
-	AudioNode* _mixerData;
-	AudioNode* _multiplierData;
+	AudioNode* mOscillatorData;
+	AudioNode* mFileInData;
+	AudioNode* mModulatorData;
+	AudioNode* mMixerData;
+	AudioNode* mMultiplierData;
 	
 	//other system parameters
-	std::string _fileInName;
-	std::string _fileOutName;
-	int _frameSize;
-	int _maxFramesToProcess;
-	bool _hasAudioOut;
+	std::string mFileInName;
+	std::string mFileOutName;
+	int mFrameSize;
+	int mMaxFramesToProcess;
+	bool mHasAudioOut;
 
 
 	//system infrastructure
-	NetworkConfigurations _networks;
-	std::vector<CLAM::Processing*> _processings;
+	NetworkConfigurations mNetworks;
+	std::vector<CLAM::Processing*> mProcessings;
 
 };
 

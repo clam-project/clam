@@ -223,7 +223,7 @@ namespace CLAM {
 		SourceStreamRegion* source 
 	)
 	{
-		Node<Audio>::mInputs.AddElem(port);
+		Node<Audio>::mInputs.push_back(port);
 		return mStream.NewReader(hop,length,source);
 	}
 
@@ -253,7 +253,7 @@ namespace CLAM {
 		mStream.SetPrototype(a);
 	}
 
-	void NodeTmpl::SetSampleRate(TData sr)
+	void AudioNodeTmpl::SetSampleRate(TData sr)
 	{
 		mStream.SetSampleRate(sr);
 	}

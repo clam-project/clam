@@ -19,6 +19,9 @@
  *
  */
 
+#include "Segment.hxx"
+#include "Frame.hxx"
+#include "SpectrumConfig.hxx"
 #include "SpectralAnalysis.hxx"
 
 using namespace CLAM;
@@ -172,9 +175,9 @@ void SpectralAnalysis::Attach(Audio& in, Spectrum &out)
 	mOutput.Attach(out);
 }
 
-bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	mConfig=dynamic_cast<const SpectralAnalysisConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig,cfg);
 	ConfigureChildren();
 	ConfigureData();
 	return true;
