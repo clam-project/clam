@@ -71,7 +71,6 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 
 	void ProcessingPresentationSelected( Qt_ProcessingPresentation * );
 	void ConnectionPresentationSelected( Qt_ConnectionPresentation * );
-//	void ProcessingPresentationUnselected( Qt_ProcessingPresentation * );
 	void ProcessingPresentationAddedToSelection( Qt_ProcessingPresentation * );
 	void ConnectionPresentationAddedToSelection( Qt_ConnectionPresentation * );
 
@@ -108,7 +107,6 @@ public:
 	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentationAddedToSelection;
 	SigSlot::Slotv1< Qt_ConnectionPresentation * > SlotConnectionPresentationSelected;
 	SigSlot::Slotv1< Qt_ConnectionPresentation * > SlotConnectionPresentationAddedToSelection;
-//	SigSlot::Slotv1< Qt_ProcessingPresentation *> SlotProcessingPresentationUnSelected;
 
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 	SigSlot::Slotv1< const QPoint & > SlotMovingMouseWithButtonPressed;
@@ -120,7 +118,6 @@ public:
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInControlAfterClickOutControl;
 	SigSlot::Signalv1< const std::string& > SignalSendMessageToStatus;
 	SigSlot::Signalv0 SignalProcessingCreated;
-//	SigSlot::Signalv0 SignalUnselectProcessingPresentation;
 
 private:
 	const std::string GetCompleteNameFromInPortSelected();

@@ -41,6 +41,7 @@ namespace NetworkGUI
 {
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
 Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *name)
 	: QWidget( parent, name ),	  
@@ -114,8 +115,11 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 {
 	
 	Qt_ProcessingPresentation* presentation = 0;
-	
-	presentation = new Qt_ProcessingPresentation(name, this);
+
+	Qt_ProcessingPresentationFactory & factory =  Qt_ProcessingPresentationFactory::GetInstance();
+	presentation = factory.Create(controller->GetObservedClassName());
+	presentation->Initialize( name, this );
+			
 	presentation->AttachTo(*controller);
 
 	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
