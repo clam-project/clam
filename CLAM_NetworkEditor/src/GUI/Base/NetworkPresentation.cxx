@@ -119,6 +119,7 @@ void NetworkPresentation::UpdatePresentations()
 	mProcessingPresentationsToRemove.clear();
 }
 
+
 void NetworkPresentation::RemoveProcessing( ProcessingPresentation * proc)
 {
 	mProcessingPresentationsToRemove.push_back(proc);
@@ -166,6 +167,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 	SignalAddProcessing.Connect( controller.SlotAddProcessing );
 	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
 	controller.SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
+	controller.SignalClearPresentation.Connect( SlotClear );
 	
 	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
 	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );

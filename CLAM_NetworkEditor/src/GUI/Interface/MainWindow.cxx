@@ -122,7 +122,7 @@ void MainWindow::LoadNetwork()
 		"open file dialog"
 		"Choose a file to load network" );
 
-	SignalNewNetworkSignal.Emit();
+//	SignalNewNetworkSignal.Emit();
 	if (s!=QString::null)
 		mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
 }

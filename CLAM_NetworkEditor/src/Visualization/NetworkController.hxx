@@ -26,6 +26,7 @@
 #include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 
+#include "Signalv0.hxx"
 #include "Signalv1.hxx"
 #include "Signalv2.hxx"
 #include "Slotv0.hxx"
@@ -262,6 +263,7 @@ namespace CLAMVM
 		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
 		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
 		SigSlot::Slotv0 SlotClear;
+		SigSlot::Signalv0 SignalClearPresentation;
 		
 	};
 } // namespace CLAMVM

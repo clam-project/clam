@@ -71,6 +71,7 @@ public:
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	void UpdatePresentations();
+	void Clear( );
 
 protected:
 	virtual void SetName(const std::string& name) = 0; 
@@ -90,9 +91,7 @@ protected:
 	void CreateControlConnection( const std::string &, const std::string & );
 
 	void RemoveConnectionPresentation( const std::string &, const std::string & );
-	
-	virtual void Clear( );
-	
+
 	ConnectionPointPresentation & GetOutPortPresentationByCompleteName(const std::string &);
 	ConnectionPointPresentation & GetInPortPresentationByCompleteName(const std::string &);
 	ConnectionPointPresentation & GetOutControlPresentationByCompleteName(const std::string &);

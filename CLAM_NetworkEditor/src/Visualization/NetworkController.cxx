@@ -254,6 +254,8 @@ void NetworkController::RemoveControlConnection( const std::string & outControl,
 
 void NetworkController::LoadNetwork( const std::string & file)
 {
+	Clear();
+	SignalClearPresentation.Emit();
 	CLAM::XMLStorage storage;
 	storage.Restore( *mObserved, file );
 
@@ -315,7 +317,6 @@ void NetworkController::LoadNetwork( const std::string & file)
 
 	}
 	Publish();
-	
 }
 
 void NetworkController::SaveNetwork( const std::string & file)
@@ -578,12 +579,7 @@ bool NetworkController::Update()
 void NetworkController::Clear()
 {
 
-	if(mThread.IsRunning())
-	{
-		mLoopCondition = false;
-		mThread.Stop();
-	}
-
+	ChangeState( false );
 	ProcessingControllersMapIterator it;
 	for(it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
 	{
