@@ -68,7 +68,6 @@ private:
 
 
 XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s);
-std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite);
 
 void Inspect (std::ostream& target, DOM_Node& toWrite);
 
