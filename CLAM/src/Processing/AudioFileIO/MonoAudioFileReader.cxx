@@ -113,8 +113,10 @@ namespace CLAM
 
 	bool MonoAudioFileReader::Do()
 	{
-		Do( mOutput.GetData() );
+		bool retvalue = Do( mOutput.GetData() );
 		mOutput.LeaveData();
+
+		return retvalue;
 	}
 
 	bool MonoAudioFileReader::Do( Audio & outputSamples )		
