@@ -48,11 +48,13 @@
 #define VerPos 5+25*(mWidgetNum%20)
 
 namespace CLAM{
+	template<typename App=char>
 	class FLTKConfigurator : public Fl_Window {
 
 		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
 	public:
+		App* mApp;
 		FLTKConfigurator() 
 			: super(345, 40, "Edit the configuration")
 			
@@ -60,6 +62,7 @@ namespace CLAM{
 			mSetter = 0;
 			mGetter = 0;
 			mWidgetNum = 0;
+			mApp=NULL;
 		}
 
 		virtual ~FLTKConfigurator() {
@@ -67,6 +70,14 @@ namespace CLAM{
 			if (mGetter) delete mGetter;
 		}
 
+		template <class Config>
+		void SetConfig(Config & config, App* a) 
+		{
+			SetConfig(config);
+			mApp=a;
+		}
+
+		
 		template <class Config>
 		void SetConfig(Config & config) {
 			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
@@ -110,6 +121,7 @@ namespace CLAM{
 		void SetInfo() {
 			CLAM_ASSERT(mSetter,"Configurator: No config to set");
 			mSetter->VisitConfig();
+			if(mApp) mApp->Update();
 		}
 
 		Fl_Widget * GetWidget(const char * name) {
@@ -287,7 +299,7 @@ namespace CLAM{
 			sub->show();
 		}
 
-		void FLTKConfigurator::show() {
+		void /*FLTKConfigurator::*/show() {
 			set_modal();
 			super::show();
 		}
