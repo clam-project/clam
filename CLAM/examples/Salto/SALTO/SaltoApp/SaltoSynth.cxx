@@ -474,141 +474,6 @@ void SaltoSynth::DoReleaseSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
 
 void SaltoSynth::DoTransitionSynthesis( CSaltoSynthFrame* pSynthFrame )
 {
-  pSynthFrame->ClearSpectrum();
-
-  double iPFactor = (double) mFrameCounterTransition/mNumTransitionFrames;
-    
-  double baseFreq,targetFreq,resultFreq,a,b;
-  double freqIPFactor=0;
-  double gain;
-  double gainReductionFactor; // -20=-10dB -40=-20dB -60=-30dB
-
-//  gainReductionFactor= -(mpParams->GetTransitionInterval() + 20); // gain reduction in transition depends on interval..
-/* the gain reduction in a transition seems to be dependent on
-    a.) the absolut pitch ( the higher the more we have to reduce the gain inbetween)
-    b.) the interval ( for small intervall we dont need that much reduction)
-*/
-  gainReductionFactor= 
-    - ( 20 + mpParams->GetTransitionInterval() + mpParams->GetAttackTimbre().GetPitch());
-  gainReductionFactor=CLIP(gainReductionFactor,-80,-20);
-  
-  mpParams->SetTransitionFrequency(gainReductionFactor);
-  mpParams->SetDisplayedValuesChanged(true);
-
-  if (mpParams->GetTransitionUpwards())
-  { 
-    int freqIPUpEnd = mNumTransitionFrames/2+1;
-    int freqIPUpStart = mNumTransitionFrames/2-1;
-    freqIPUpStart = CLIP(freqIPUpStart,0,mNumTransitionFrames);
-    freqIPUpEnd = CLIP(freqIPUpEnd,0,mNumTransitionFrames);
-    
-    /* frequency transition function */
-    if (mFrameCounterTransition<freqIPUpStart)
-    {
-      freqIPFactor = 0;
-    }
-    else if (mFrameCounterTransition>=freqIPUpStart&&mFrameCounterTransition<freqIPUpEnd)  
-    {
-      baseFreq =mpTransitionFrameBase->GetFundamental().GetFreq();
-      targetFreq = mpTransitionFrameTarget->GetFundamental().GetFreq();
-      b = (freqIPUpEnd - freqIPUpStart) / (log10 (targetFreq/baseFreq)); // optimize and calc this factors in trans init !
-      a = baseFreq/pow(10.0,freqIPUpStart/b);
-      resultFreq = a * pow (10,mFrameCounterTransition/b);
-      freqIPFactor = resultFreq/targetFreq;
-    }
-    else if (mFrameCounterTransition>freqIPUpEnd)
-    {
-      freqIPFactor = 1;
-    }
-
-    /* gain transition function */
-    if (iPFactor<0.5)
-    {
-       gain=pow(10,gainReductionFactor*iPFactor/20);  // fade down in the first half
-    }
-    else
-    {
-      gain=pow(10,(-gainReductionFactor*iPFactor+gainReductionFactor)/20); // fade in again
-    }
-  }
-  else // transition downwards
-  {
-    int freqIPDownStart = mNumTransitionFrames/2-1;
-    int freqIPDownEnd = mNumTransitionFrames/2+1;
-    freqIPDownStart = CLIP(freqIPDownStart,0,mNumTransitionFrames);
-    freqIPDownEnd = CLIP(freqIPDownEnd,0,mNumTransitionFrames);
-
-    if (mFrameCounterTransition<freqIPDownStart)
-    {
-      freqIPFactor = 0;
-    }
-    else if (mFrameCounterTransition==freqIPDownStart)   //we are in the fourth quarter of the transition...
-    {
-      baseFreq =mpTransitionFrameBase->GetFundamental().GetFreq();
-      targetFreq = mpTransitionFrameTarget->GetFundamental().GetFreq();
-      b = (freqIPDownEnd - freqIPDownStart) / (log10 (targetFreq/baseFreq)); // optimize and calc this factors in trans init !
-      a = baseFreq/pow(10.0,freqIPDownStart/b);
-      resultFreq = a * pow (10,mFrameCounterTransition/b);
-      freqIPFactor = resultFreq/targetFreq;
-    }
-    else if (mFrameCounterTransition>freqIPDownEnd) 
-    {
-      freqIPFactor = 1;
-    }
-
-    if (iPFactor<0.5)
-    {
-       gain=pow(10,gainReductionFactor*iPFactor/20);  // fade down about 10 dB in the first half
-    }
-    else
-    {
-      gain=pow(10,(-gainReductionFactor*iPFactor+gainReductionFactor)/20); // fade in again
-    }
-  }
-
-/*  mpInterpolPO->DoInterpolation
-	  (mpTransitionFrameBase,
-	   &mpTransitionFrameTarget->GetSpectralPeakArray(),
-	   mpTransitionFrameTarget->GetFundamental().GetFreq(),
-	   iPFactor,
-	   freqIPFactor,
-	   gain * (mLastIndividualGain+iPFactor*(mIndividualGain-mLastIndividualGain)), // interpolate individual gain factors	
-	   pSynthFrame,
-	   true,
-	   true,
-	   mpCurrPeakArrayTarget,
-	   mIPFactor);
-	
-	// use last pith correction factor here too
-	mpInterpolPO->DoPitchMod(pSynthFrame,mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor);
-*/
-
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
-	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
-	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
-	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
-	mOutTargetFreq.SendControl( mpTransitionFrameTarget->GetFundamental().GetFreq() );
-	mOutMagInterpolFactor.SendControl( iPFactor );
-	mOutMagGain.SendControl( gain * (mLastIndividualGain+iPFactor*(mIndividualGain-mLastIndividualGain)) );
-	mOutFreqInterpolFactor.SendControl( freqIPFactor );
-	mOutMagInterpolFactor2.SendControl( mIPFactor );
-
-	mpInterpolPO.DoInterpolation(* mpTransitionFrameBase,
-								 mpTransitionFrameTarget->GetSpectralPeakArray(),
-								 *pSynthFrame,
-								 *mpCurrPeakArrayTarget);
-	// use last pith correction factor here too
-	mOutPitchFactor.SendControl( mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor );
-	mpInterpolPO.DoPitchMod(*pSynthFrame);	
-
-	
- /* mFrameCounterTransition++;
-  if (mFrameCounterTransition>=mNumTransitionFrames)
-    EndTransitionSynthesis(pSynthFrame);*/
-}
-
-void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
-{
 	pSynthFrame->ClearSpectrum();
 	
 	double iPFactor = (double) mFrameCounterTransition/mNumTransitionFrames;
@@ -724,7 +589,6 @@ void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
 	mInterpolPO.DoPitchMod(*pSynthFrame);
 
 }
-
 void SaltoSynth::DoStationarySynthesisProcess( CSaltoSynthFrame* pSynthFrame )
 {
 
@@ -864,7 +728,6 @@ void SaltoSynth::AttackResidualSynthesis( CSaltoSynthFrame* pSynthFrame )
 	if (mFrameCounterBase >= mResFadeStart)
 		{
 			// precalculate the reciprocal to avoid the floating point division
-			// ipfactor = 1 - ( (mFrameCounterBase - mResFadeStart) / ( mResFadeEnd - mResFadeStart ) )
 			// DEBUG_ASSERT added to check against divisions by zero
 			CLAM_DEBUG_ASSERT( (mResFadeEnd-mResFadeStart), "Division by zero! check mResFadeEnd and mResFadeStart");
 
@@ -961,8 +824,6 @@ void SaltoSynth::InitTransitionSynthesis( CSaltoSynthFrame *pSynthFrame)
 	mpTransitionFrameTarget = handleDB->GetSpectralFrame(mSegPositionTransition,loopFrameTarget);
 	
 	// check for level differences in transition mode
-	// mLevelAtBeginOfTransition = mTimbreVektorBase.GetLevel();
-	// mLevelAtEndOfTransition = mpParams->GetAttackTimbre().GetLevel();
 	mNumTransitionFrames = mpParams->GetAttackTimbre().GetTransitionFrames();
 	mFrameCounterTransition = 1;// init to one to discard the first transition frame which would be equal to the last baseframe
 	
