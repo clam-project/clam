@@ -65,9 +65,9 @@ void UserInterface::DetachDisplays()
 	if( mAudioOutputSinusoidalDisplay!=NULL )
 		Detach( mAudioOutputSinusoidalDisplay );
 	if( mInputSpectrum!=NULL )
-		Detach( mInputSpectrum );
+		DetachSpectrum( mInputSpectrum );
 	if( mOutputSpectrum!=NULL )
-		Detach( mOutputSpectrum );
+		DetachSpectrum( mOutputSpectrum );
 }
 
 void UserInterface::LoadSound(void)
@@ -306,6 +306,11 @@ void UserInterface::Detach(Fl_Window *w)
 {
 	Fl_Widget* w2 = w->parent();
 
+
+	/* it should not be necesary to close w2 explicitely. instead, deleting
+	** w2 should already take care of that (through a callback). mdeboer
+	** should edit SmartTile to do so.
+	*/
 	mSmartTile->close( w2 );
 
 	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
@@ -327,6 +332,8 @@ void UserInterface::Detach(Fl_Window *w)
 	mSmartTile->equalize();
 }
 
+
+//TODO: Couldn't this method just be inside the normal Detach?
 void UserInterface::DetachSpectrum(Fl_Window *w)
 {
 	Fl_Widget* w2 = w->parent();
@@ -339,6 +346,7 @@ void UserInterface::DetachSpectrum(Fl_Window *w)
 	
 	delete p->GetPresentation();
 	delete v;
+	delete w2;
 		
 	v = NULL;
 
