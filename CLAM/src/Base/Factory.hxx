@@ -92,7 +92,12 @@ public: // Inner classes. Public for better testing
 				"the Factory Registry shouldn't be empty");
 
 			CreatorMethod res = CommonGetCreator(creatorId);
-			CLAM_ASSERT(res,"GetCreatorSafe invoked with a non existent key");
+			if (!res)
+			{
+				std::string errmsg("GetCreator invoked with a non existent key : ");
+				errmsg += creatorId;
+				CLAM_ASSERT(res,errmsg.c_str());
+			}
 
 			return res;
 		}
@@ -115,8 +120,7 @@ public: // Inner classes. Public for better testing
 		void AddCreator( RegistryKey creatorId, CreatorMethod creator ) 
 		{
 			if( !CommonAddCreator( creatorId, creator ) ) 
-					CLAM_ASSERT( false, "creatorId was already a key in the registry" );
-			
+				CLAM_ASSERT( false, "creatorId was already a key in the registry" );
 		}
 
 		void AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory) 
@@ -191,11 +195,12 @@ public: // Inner classes. Public for better testing
 
 	};
 
+	int Count() { return _registry.Count(); }
+
 private:
 	Registry _registry;
 
 };
-
 
 
 } // namespace
