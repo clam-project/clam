@@ -300,19 +300,23 @@ void UserInterface::_Detach(Fl_Window *w,UserInterface* ui)
 
 void UserInterface::Detach(Fl_Window *w)
 {
-		
-	if (w==mAudioInputDisplay) 
-		mAudioInputDisplay = NULL;
-	else if (w==mAudioOutputDisplay)
-		mAudioOutputDisplay = NULL;
-	else if (w==mAudioOutputResidualDisplay)
-		mAudioOutputResidualDisplay = NULL;
-	else if (w==mAudioOutputSinusoidalDisplay)
-		mAudioOutputSinusoidalDisplay = NULL;
- 	else if (w==mInputSpectrum) 
-		mInputSpectrum = NULL;
-	else if (w==mOutputSpectrum)
-		mOutputSpectrum = NULL;
+	
+		mSmartTile->remove( w );
+		mSmartTile->redraw();
+		w->hide();
+
+		if (w==mAudioInputDisplay) 
+				mAudioInputDisplay = NULL;
+		else if (w==mAudioOutputDisplay)
+				mAudioOutputDisplay = NULL;
+		else if (w==mAudioOutputResidualDisplay)
+				mAudioOutputResidualDisplay = NULL;
+		else if (w==mAudioOutputSinusoidalDisplay)
+				mAudioOutputSinusoidalDisplay = NULL;
+		else if (w==mInputSpectrum) 
+				mInputSpectrum = NULL;
+		else if (w==mOutputSpectrum)
+				mOutputSpectrum = NULL;
 
 //	mSmartTile->equalize();
 }
