@@ -102,6 +102,7 @@ private:
 	InControl mIntervalMin;
 	InControl mIntervalMax;
 	InControl mIntervalStep;
+	InControl mOverSubdivisionPenalty;
 
 	static const unsigned long mInfinite;
 

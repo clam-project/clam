@@ -54,7 +54,8 @@ namespace CLAM
 			mOffsetStep("OffsetStep",this),
 			mIntervalMin("IntervalMin",this),
 			mIntervalMax("IntervalMax",this),
-			mIntervalStep("IntervalStep",this)
+			mIntervalStep("IntervalStep",this),
+			mOverSubdivisionPenalty("OverSubdivisionPenalty",this)
 		{
 
 		}
@@ -73,6 +74,8 @@ namespace CLAM
 			mIntervalMin.DoControl(mConfig.GetIntervalMin());
 			mIntervalMax.DoControl(mConfig.GetIntervalMax());
 			mIntervalStep.DoControl(mConfig.GetIntervalStep());
+			mOverSubdivisionPenalty.DoControl(mConfig.GetOverSubdivisionPenalty());
+			
 			return true;
 		}
 
@@ -95,7 +98,7 @@ namespace CLAM
 			const unsigned int intervalMax = (unsigned int)(mIntervalMax.GetLastValue()+0.5);
 			const unsigned int intervalStep = (unsigned int)(mIntervalStep.GetLastValue()+0.5);
 			const TData deviationPenalty = mConfig.GetDeviationPenalty();
-			const TData overSubdivisionPenalty = mConfig.GetOverSubdivisionPenalty();
+			const TData overSubdivisionPenalty = mOverSubdivisionPenalty.GetLastValue();
 
 			CLAM_ASSERT(offsetStep>0, "TimeSeriesFinder::Do() : No valid offset step");
 			CLAM_ASSERT(intervalMin<intervalMax, "TimeSeries::Do() : No valid interval range");

@@ -72,6 +72,9 @@ namespace CLAM
 		
 			TimeSeriesFinderConfig tsfConfig;
 
+			tsfConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
+			tsfConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
+				
 			mTimeSeriesFinder.Configure( tsfConfig );
 
 			mTimeSeriesFinder.SetParent( this );
@@ -225,19 +228,15 @@ namespace CLAM
 				//Here the offset is set to 0 as the computation is done
 				// over the histogram peaks
 				//Thus, OffsetStep=tickLimInf ==> no offset seeking
-				mTSFConfig.SetOffsetMin(0);
-				mTSFConfig.SetOffsetStep(tickLimInf);
-				mTSFConfig.SetIntervalMin(tickLimSup);
-				mTSFConfig.SetIntervalMax(tickLimInf);
-				mTSFConfig.SetIntervalStep(10);
+				
+				mTimeSeriesFinder.GetInControl("OffsetMin").DoControl( 0 );
+				mTimeSeriesFinder.GetInControl("OffsetStep").DoControl( tickLimInf );
+				mTimeSeriesFinder.GetInControl("IntervalMin").DoControl( tickLimSup );
+				mTimeSeriesFinder.GetInControl("IntervalMax").DoControl( tickLimInf );
+				mTimeSeriesFinder.GetInControl("IntervalStep").DoControl( 10 );
+				
 				//Use of both errors:
-				mTSFConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
-				mTSFConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
-				// default value: 2
-				// bigger --> favor large ticks
-				mTimeSeriesFinder.Stop();
-				mTimeSeriesFinder.Configure(mTSFConfig);
-				mTimeSeriesFinder.Start();
+				// default value: 2				
 				//Use of histogram peak weights
 				mTimeSeriesFinder.Do(IOIHistPeaks,mTickFirstGuess);
 
@@ -262,19 +261,15 @@ namespace CLAM
 
 					unsigned int scope = CLAM::CLAM_min(TData(mConfig.GetScope()*mConfig.GetSamplingRate()),
 									    TData(tickFirstGuessInterval*0.5));
-					mTSFConfig.SetOffsetMin(0);
-					mTSFConfig.SetOffsetStep(50);
-					mTSFConfig.SetIntervalMin(
-						CLAM::CLAM_max(TData(tickFirstGuessInterval-scope*0.5),TData(tickLimSup)));
-					mTSFConfig.SetIntervalMax(
-						tickFirstGuessInterval+scope/2);
-					mTSFConfig.SetIntervalStep(10);
-					//Use of a single error:
-					mTSFConfig.SetOverSubdivisionPenalty(0);
 
-					mTimeSeriesFinder.Stop();
-					mTimeSeriesFinder.Configure(mTSFConfig);
-					mTimeSeriesFinder.Start();
+					mTimeSeriesFinder.GetInControl("OffsetMin").DoControl( 0 );
+					mTimeSeriesFinder.GetInControl("OffsetStep").DoControl( 50 );
+					mTimeSeriesFinder.GetInControl("IntervalMin").DoControl(
+						std::max(TData(tickFirstGuessInterval-scope*0.5),TData(tickLimSup)) );
+					mTimeSeriesFinder.GetInControl("IntervalMax").DoControl(tickFirstGuessInterval+scope/2);
+					mTimeSeriesFinder.GetInControl("IntervalStep").DoControl( 10 );
+					mTimeSeriesFinder.GetInControl("OverSubdivisionPenalty").DoControl( 0 );
+
 					//Use of transientsForHist or transients???
 					// i.e. use of weights or not???
 					//myTemporalSeriesFinder.Do(transientsForHist,mGoodTick);
@@ -311,15 +306,12 @@ namespace CLAM
 					{
 						//get the best phase
 						// Computing best beat phase
-						mTSFConfig.SetOffsetMin(goodTickOffset);			
-						mTSFConfig.SetOffsetStep(goodTickInterval);
-						mTSFConfig.SetIntervalMin(tempo);
-						mTSFConfig.SetIntervalMax(tempo+1);
-						mTSFConfig.SetIntervalStep(2);
-						mTimeSeriesFinder.Stop();
-						mTimeSeriesFinder.Configure(mTSFConfig);
-						mTimeSeriesFinder.Start();
-
+ 						mTimeSeriesFinder.GetInControl("OffsetMin").DoControl(goodTickOffset);			
+						mTimeSeriesFinder.GetInControl("OffsetStep").DoControl(goodTickInterval);
+						mTimeSeriesFinder.GetInControl("IntervalMin").DoControl(tempo);
+						mTimeSeriesFinder.GetInControl("IntervalMax").DoControl(tempo+1);
+						mTimeSeriesFinder.GetInControl("IntervalStep").DoControl(2);
+						
 						//NB: Use of transients instead of transientsForHist
 						// i.e. making use of transient weights
 						mTimeSeriesFinder.Do(transients,mGoodTempo);
