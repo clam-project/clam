@@ -1,8 +1,8 @@
 #ifndef __AUDIOVIEW__
 #define __AUDIOVIEW__
 
-#include "ProcessingDataView.hxx"
-#include "AudioViewAspect.hxx"
+#include "ProcessingDataAdapter.hxx"
+#include "AudioAspect.hxx"
 
 namespace CLAM
 {
@@ -15,23 +15,23 @@ namespace CLAMGUI
 		using CLAM::Audio;
 		using CLAM::ProcessingData;
 
-		class AudioView : public ProcessingDataView
+		class AudioAdapter : public ProcessingDataAdapter
 		{
 				// attributes
 		private:
-				AudioViewAspect      mAspect;
+				AudioAspect          mAspect;
 				const Audio*         mObserved;
 
 		protected:
 				// methods
 		public:
-				AudioView();
+				AudioAdapter();
 
-				virtual ~AudioView();
+				virtual ~AudioAdapter();
 
 				virtual const char* GetClassName() const
 				{
-						return "AudioView";
+						return "AudioAdapter";
 				}
 
 				virtual Aspect& GetAspect()
@@ -39,7 +39,7 @@ namespace CLAMGUI
 						return mAspect;
 				}
 
-				virtual bool Refresh();
+				virtual bool Publish();
 
 				virtual bool BindTo( const ProcessingData* audioObj );
 
@@ -47,4 +47,4 @@ namespace CLAMGUI
 }
 
 
-#endif // AudioView.hxx
+#endif // AudioAdapter.hxx
