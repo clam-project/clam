@@ -29,6 +29,14 @@ namespace CLAM{
 		virtual void VisitConfig()=0;
 	};
 
+	/**
+	 * A DynamicType attribute visitor that builds a widget
+	 * for each attribute using a user interface builder.
+	 * The builder should implement AddWidget overloaded methods
+	 * for every type whe want to support.
+	 * @ingroup Configurators
+	 * @see ConfigurationSetter, QTConfigurator, FLTKConfigurator, DynamicType
+	 */
 	template <typename Configuration, typename Builder>
 	class ConfigurationGetter : public ConfigurationVisitor {
 	public:
@@ -53,6 +61,15 @@ namespace CLAM{
 		Configuration * mConfig;
 		
 	};
+	/**
+	 * A DynamicType attribute visitor that takes the attribute
+	 * values from an a 'Builder' which implements the RetrieveValue.
+	 * for each attribute using a user interface builder.
+	 * The builder should implement RetrieveValue overloaded methods
+	 * for every type whe want to support.
+	 * @ingroup Configurators
+	 * @see configurationGetter, QTConfigurator, FLTKConfigurator, DynamicType
+	 */
 	template <typename Configuration, typename Builder>
 	class ConfigurationSetter : public ConfigurationVisitor {
 	public:
@@ -77,6 +94,29 @@ namespace CLAM{
 		Configuration * mConfig;
 		
 	};
+
+/**
+ * @defgroup Configurators Dynamic Types Configurators: Quick generation of graphic dialogs for editing DTs
+ *
+ * Configurators quickly builds GUI dialogs to modify a given DynamicType object.
+ * They use DynamicType's introspection features to build a dialog for a given graphic toolkit.
+ * Qt and FLTK suported at the moment but it would be easy to extend to other toolkits
+ * by provident a new Configurator Object.
+ *
+ * For example, to show a Qt configurator dialog.
+ * @code
+ * CLAM::QTConfigurator dialog;
+ * dialog.SetConfig(myDinamicType);
+ * dialog.show();
+ * @endcode
+ * 
+ * For FLTK you can achieve nearly the same by doing:
+ * @code
+ * CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
+ * configurator->SetConfig(myDynamicType);
+ * configurator->show();
+ * @endcode
+ */
 
 }
 #endif//__CONFIGURATIONVISITOR__

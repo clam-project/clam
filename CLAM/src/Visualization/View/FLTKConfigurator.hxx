@@ -58,39 +58,44 @@
 #define VerPos 0
 
 namespace CLAM{
-	class FLTKConfigurator;
 
-	class ConfigurationHolderBase
-	{
-	protected:
-		ConfigurationHolderBase(DynamicType & holded)
-			: mConfiguration(holded)
-		{}
-		DynamicType & mConfiguration;
-	public:
-		virtual void ApplyDataTo(FLTKConfigurator & configurator)=0;
-		virtual ~ConfigurationHolderBase() {}
-	};
-
-	template <class HoldedType>
-	class ConfigurationHolder : public ConfigurationHolderBase
-	{
-	public:
-		ConfigurationHolder(HoldedType & configuration)
-			: ConfigurationHolderBase(configuration)
-		{}
-		void ApplyDataTo(FLTKConfigurator & configurator)
-		{
-			configurator.SetConfig(static_cast<HoldedType&>(mConfiguration));
-		}
-	};
-
-
+	/**
+	 * A generic DynamicType edition dialog for FLTK.
+	 * @ingroup Configurators
+	 * @see DynamicType, QTConfigurator
+	 */
 	class FLTKConfigurator : public Fl_Window {
+	// Inner classes
+	private:
+		class ConfigurationHolderBase
+		{
+		protected:
+			ConfigurationHolderBase(DynamicType & holded)
+				: mConfiguration(holded)
+			{}
+			DynamicType & mConfiguration;
+		public:
+			virtual void ApplyDataTo(FLTKConfigurator & configurator)=0;
+			virtual ~ConfigurationHolderBase() {}
+		};
 
+		template <class HoldedType>
+		class ConfigurationHolder : public ConfigurationHolderBase
+		{
+		public:
+			ConfigurationHolder(HoldedType & configuration)
+				: ConfigurationHolderBase(configuration)
+			{}
+			void ApplyDataTo(FLTKConfigurator & configurator)
+			{
+				configurator.SetConfig(static_cast<HoldedType&>(mConfiguration));
+			}
+		};
+	// Own types
 		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
 		typedef std::list<ConfigurationHolderBase *> tConfigHolders;
+
 	public:
 		FLTKConfigurator()
 			: super(360, 540, "Edit the configuration")
