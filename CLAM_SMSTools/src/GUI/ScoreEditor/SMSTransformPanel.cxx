@@ -108,7 +108,7 @@ void SMSScoreEditor::cb_mScoreBrowser(Fl_Select_Browser* o, void* v)
 
 
 
-SMSScoreEditor::SMSScoreEditor() 
+SMSScoreEditor::SMSScoreEditor()
 	: mUserChangedSomething( false ),  mpCurrentConfigurator( NULL ), mHighlightedConfig( 0 )
 {
 	Fl_Window* w;
@@ -118,17 +118,17 @@ SMSScoreEditor::SMSScoreEditor()
 		w = o;
 		o->box(FL_FLAT_BOX);
 		o->user_data((void*)(this));
-	
-		{ 
+
+		{
 			Fl_Group* o = mChainTopologyDock = new Fl_Group(5, 20, 455, 420,"Score");
 			o->labelfont(FL_HELVETICA);
 			o->labelsize(14);
 			o->align(FL_ALIGN_TOP);
 			o->box(FL_ENGRAVED_BOX);
-			{ 
-				Fl_Select_Browser* o = 
+			{
+				Fl_Select_Browser* o =
 					mScoreContentsBox =
-					new Fl_Select_Browser(10, 40, 220, 365, "Transformations in the Score");
+					new Fl_Select_Browser(235, 40, 220, 365, "Transformations in the Score");
 				o->labelsize(12);
 				o->textsize(12);
 				o->callback( (Fl_Callback*)cb_mScoreBrowser, this );
@@ -137,7 +137,7 @@ SMSScoreEditor::SMSScoreEditor()
 			{
 				Fl_Select_Browser* o =
 					mRepositoryBox =
-					new Fl_Select_Browser(235, 40, 220, 365, "Available SMS Transformations");
+					new Fl_Select_Browser(10, 40, 220, 365, "Available SMS Transformations");
 				o->labelsize(12);
 				o->textsize(12);
 				o->callback( (Fl_Callback*)cb_mRepositoryBrowser, this );
@@ -146,7 +146,7 @@ SMSScoreEditor::SMSScoreEditor()
 			{
 				Fl_Button* o =
 					mMoveTransUpInScoreButton =
-					new Fl_Button(10, 410, 65, 25, "Move &up");
+					new Fl_Button(235, 410, 65, 25, "Move &up");
 				o->tooltip("Move selected transformation up in the score");
 				o->box(FL_DEFINED_UP_BOX);
 				o->down_box(FL_DEFINED_DOWN_BOX);
@@ -157,7 +157,7 @@ SMSScoreEditor::SMSScoreEditor()
 			{
 				Fl_Button* o =
 					mMoveTransDownInScoreButton =
-					new Fl_Button(80, 410, 85, 25, "Move &down");
+					new Fl_Button(305, 410, 85, 25, "Move &down");
 				o->tooltip("Move selected transformation down in the score");
 				o->box(FL_DEFINED_UP_BOX);
 				o->down_box(FL_DEFINED_DOWN_BOX);
@@ -168,7 +168,7 @@ SMSScoreEditor::SMSScoreEditor()
 			{
 				Fl_Button* o =
 					mRemoveTransFromScoreButton =
-					new Fl_Button(170, 410, 60, 25, "&Remove");
+					new Fl_Button(395, 410, 60, 25, "&Remove");
 				o->tooltip("Remove selected transformation from score");
 				o->box(FL_DEFINED_UP_BOX);
 				o->down_box(FL_DEFINED_DOWN_BOX);
@@ -179,7 +179,7 @@ SMSScoreEditor::SMSScoreEditor()
 			{
 				Fl_Button* o =
 					mAddTransformToScoreButton =
-					new Fl_Button(235, 410, 220, 25, "Add &transformation to score");
+					new Fl_Button(10, 410, 220, 25, "Add &transformation to score");
 				o->tooltip("Adds selected transformation to score");
 				o->box(FL_DEFINED_UP_BOX);
 				o->down_box(FL_DEFINED_DOWN_BOX);
