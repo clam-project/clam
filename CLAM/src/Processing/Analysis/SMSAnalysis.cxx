@@ -34,17 +34,7 @@ using namespace CLAM;
 
 void SMSAnalysisConfig::DefaultInit()
 {
-	AddName();
-	AddprSamplingRate();
-	AddprFFTSize();
-	
-	AddSinSpectralAnalysis();
-	AddResSpectralAnalysis();
-	AddPeakDetect();
-	AddFundFreqDetect();
-	AddSinTracking();
-	AddSynthSineSpectrum();
-
+	AddAll();
 	UpdateData();
 	DefaultValues();	
 }
@@ -224,8 +214,6 @@ bool SMSAnalysis::ConfigureChildren()
 
 void SMSAnalysis::ConfigureData()
 {
-	TData samplingRate=mConfig.GetSamplingRate();
-
 	// Objects used only for initializing a frame
 	// Spectrum used for temporary residual analysis, it may be possible to get rid of
 	SpectrumConfig scfg;
@@ -300,8 +288,6 @@ bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& ou
 	// Peak Detection
 	SpectralPeakArray tmpPk;
 	mPO_PeakDetect.Do(outSp,tmpPk);
-	// If not possible to detect anything with this peak information, FundDetect will return a false
-	bool fundFreqFound = mPO_FundDetect.Do(tmpPk,outFn);
 	// Sinusoidal Tracking
 	mPO_SinTracking.Do(tmpPk,pkArray,outFn.GetFreq(0));
 	
@@ -313,7 +299,7 @@ bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& ou
 
 bool SMSAnalysis::Do(Frame& in)
 {
-	return Do(in.GetAudioFrame(),/*in.GetResidualAudioFrame(),*/in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	return Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
 }
 
 bool SMSAnalysis::Do(Segment& in)
@@ -321,8 +307,6 @@ bool SMSAnalysis::Do(Segment& in)
 	int frameIndex=in.mCurrentFrameIndex;
 
 	int step=mConfig.GetHopSize();
-	int sinFrameSize=mConfig.GetSinSpectralAnalysis().GetWindowSize()-1;
-	int resFrameSize=mConfig.GetResSpectralAnalysis().GetWindowSize()-1;
 
 	TData samplingRate=mConfig.GetSamplingRate();
 	TSize centerSample=(frameIndex*step);

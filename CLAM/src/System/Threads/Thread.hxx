@@ -14,7 +14,7 @@ class Thread
 {
 public:
 
-	Thread();
+	Thread(bool realtime = false);
 
 	virtual ~Thread();
 
@@ -41,7 +41,13 @@ public:
 		return mIsCancelled;
 	}
 
+	inline bool IsRunning() const
+	{
+		return mRunning;
+	}
+
 private:
+	bool               mRealtime;
 	bool               mHasCode;
 	bool               mHasCleanup;
 	pthread_t          mThreadID;

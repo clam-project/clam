@@ -38,7 +38,8 @@ namespace CLAMGUI
 
 {
 
-template <class T, class DecoratorType = Decorator< std::vector<int> > > class FLDisplayArray:public FLDisplay
+template <class T, class DecoratorType = Decorator< std::vector<int> > > class FLDisplayArray
+:public FLDisplay
 {
 private:
 

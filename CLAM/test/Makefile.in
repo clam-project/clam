@@ -1,14 +1,13 @@
 PROGRAMS = \
+           TestSnapshots \
            TestMoc \
            TestEnum \
            TestComplex \
            TestPoint \
            TestPolar \
            BPFTest \
-           QtSIViewExample\
            ListTest \
            TestAudioFileIO \
-           TestXMLAdapters \
            TestMIDIIO \
            TestAudioIO \
            TestControlMapper \
@@ -16,11 +15,10 @@ PROGRAMS = \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
-           TestMMAudioPresentation \
-           TestMIDILinker \
-           TestFLTK_GUI_MIDILinker \
 
 TESTS = \
+        TestXMLAdapters \
+        TestConfig \
         TestFlags \
         TestArray \
         TestArray2 \
@@ -30,6 +28,7 @@ TESTS = \
         TestFFT \
         TestIFFT \
         TestSpectrum \
+        TestSignalv1 \
         TestSpectrumAdder \
         TestSpectrumAdder2 \
         TestSpectrumProduct \

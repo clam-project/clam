@@ -45,9 +45,8 @@ private:
 protected:
 	std::vector<std::string> mAvailableDevices;
 
+	void AddMe(void);
 public:
-	typedef std::vector<AudioDeviceList*>::const_iterator list_iterator;
-
 
 	/** Constructor of the AudioDeviceList class, with a string as parameter that contains the name of the concrete architecture by this list.
 	 *  @param arch The name of architecture (i.e. ALSA)

@@ -35,6 +35,58 @@ namespace CLAMGUI
 
 class GLPort : public Fl_Gl_Window
 {
+
+	class DrawCallbackAdapter
+	{
+		
+		CBL::Functor0    mDrawCb;
+		bool             mValid;
+		public:
+		DrawCallbackAdapter()
+			: mValid( false )
+		{
+		}
+
+		inline void SetCallback( const CBL::Functor0& cb )
+		{
+			mDrawCb = cb;
+			mValid = true;
+		}
+
+		inline void operator()()
+		{
+			if ( mValid )
+				mDrawCb();
+		}
+
+	};
+
+	class CullingCallbackAdapter
+	{
+		
+		CBL::Functor4<float, float, unsigned,unsigned>    mCullingCb;
+		bool                                     mValid;
+		public:
+		CullingCallbackAdapter()
+			: mValid( false )
+		{
+		}
+
+		inline void SetCallback( const CBL::Functor4<float,float,unsigned,unsigned>& cb )
+		{
+			mCullingCb = cb;
+			mValid = true;
+		}
+
+		inline void operator()( float left, float right, unsigned pixel_width,unsigned pixel_height)
+		{
+			if ( mValid )
+				mCullingCb( left, right, pixel_width, pixel_height );
+		}
+
+	};
+
+
 public:
 
 	Range mVerRange;
@@ -51,9 +103,9 @@ public:
 
 	~GLPort()
 	{
-		FLTKWrapper* tk = dynamic_cast<FLTKWrapper*>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		FLTKWrapper& tk = dynamic_cast<FLTKWrapper&>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
 		
-		tk->CancelAsynchronousRefresh( mRefreshSlot );
+		tk.CancelAsynchronousRefresh( mRefreshSlot );
 		
 		delete mRenderingState;
 
@@ -63,7 +115,6 @@ public:
 	{
 		mIsConf = false;
 		mRenderingState = state;
-		mDrawCb = draw_cb;
 		mIsConf = true;
 	 
 	}
@@ -78,25 +129,44 @@ public:
 		mVerRange = range;
 	}
 
+	inline void SetDrawingCallback( const CBL::Functor0& cb )
+	{
+		mDrawCb.SetCallback( cb );
+	}
+
+	inline void SetCullingCallback( const CBL::Functor4<float,float,unsigned,unsigned>& cb )
+	{
+		mCullCb.SetCallback( cb );
+	}
+
 	void DrawSelf(); // Kludge
 
 	void draw(); // Fl_Gl_Window required interface
 
 	int handle( int ); // Fl_Gl_Window required interface
 
+	void damage()
+	{
+		invalidate();
+		Fl_Gl_Window::damage();
+	}
+
 protected:
 
 	void ApplyProjection();
 	
 private:
-	CBL::Functor0    mDrawCb;
-	bool             mIsConf;
-	bool             mTimerLaunched;
-	GLState*         mRenderingState;
-	unsigned         mRefreshSlot;
+
+	DrawCallbackAdapter     mDrawCb;
+	CullingCallbackAdapter  mCullCb;
+	bool                    mIsConf;
+	bool                    mTimerLaunched;
+	GLState*                mRenderingState;
+	unsigned                mRefreshSlot;
 };
 
 }
 
 #endif // GLPort_new.hxx
+
 

@@ -35,6 +35,9 @@
 #include "Component.hxx"
 #include "TypeInfo.hxx"
 
+// @todo Remove this include. See Bug#111
+#include "DynamicType.hxx"
+
 
 #ifdef CLAM_USE_STL_ARRAY
 #include <vector>
@@ -45,6 +48,7 @@ using std::vector;
 #ifdef CLAM_USE_XML 
 	#include "XMLStorage.hxx"
 	#include "XMLAdapter.hxx"
+	#include "XMLArrayAdapter.hxx"
 	#include "XMLComponentAdapter.hxx"
 #endif//CLAM_USE_XML 
 
@@ -254,9 +258,7 @@ public:
 		// onto a non XML storage has no effect but it enhances performance.
 		if (dynamic_cast < XMLStorage* > (&storage))
 		{
-			for (int i=0; i<mSize; i++) {
-				StoreMemberOn((TypeInfo<T>::StorableAsLeaf *)NULL, &(mpData[i]), storage);
-			}
+			StoreBufferOn((TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 		}
 		#endif//CLAM_USE_XML
 	}
@@ -296,6 +298,26 @@ private:
 	inline void InitializeCopyDataBlock(int first, int last, int src_first, const T* src);
 
 #ifdef CLAM_USE_XML
+	void StoreBufferOn(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage) {
+		char * label = NULL;
+		for (int i=0; i<mSize; i++) {
+			if (!label) {
+				label = const_cast<char*>(mpData[i].GetClassName());
+				if (!label) label = "Element";
+			}
+			XMLComponentAdapter adapter(mpData[i], label, true);
+			storage.Store(&adapter);
+		}
+	}
+	void StoreBufferOn(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage) {
+		XMLArrayAdapter<T> adapter(mpData,mSize);
+		storage.Store(&adapter);
+	}
+	void StoreBufferOn(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage) {
+		CLAM_ASSERT(false, 
+			"Trying to Store an object that is not neither a streamable nor a Component");
+	}
+/*
 	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) {
 		XMLAdapter<T> adapter(*(T*)item);
 		storage.Store(&adapter);
@@ -310,13 +332,23 @@ private:
 		CLAM_ASSERT(false, "Trying to Store an object that is not neither a streamable nor a Component");
 		return false;
 	}
+*/
 	bool LoadMemberFrom(StaticTrue* asLeave, void * item, Storage & storage) {
 		XMLAdapter<T> adapter(*(T*)item);
 		return storage.Load(&adapter);
 	}
+	/**
+	 * @todo This method is a temporal kludge to solve the problem reported in bug #111
+	 */
+	bool LoadMemberFrom(StaticFalse* asLeave, DynamicType * item, Storage & storage) {
+		char* className = (item->GetClassName());
+		const char* label = className? className : "Element";
+		XMLComponentAdapter adapter(*item, label, true);
+		return storage.Load(&adapter);
+	}
 	bool LoadMemberFrom(StaticFalse* asLeave, Component * item, Storage & storage) {
-		char* label = const_cast<char*>(item->GetClassName());
-		if (!label) label = "Element";
+		const char* className = (item->GetClassName());
+		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
 		return storage.Load(&adapter);
 	}
@@ -785,7 +817,6 @@ void Array<T>::LoadFrom(Storage & storage)
 	{
 		while (true) {
 			T elem;
-			printf("External template\n");
 			if (!LoadMemberFrom(&(elem), storage)) return;
 			AddElem(elem);
 		}

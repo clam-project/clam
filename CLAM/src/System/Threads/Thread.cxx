@@ -17,8 +17,12 @@ typedef void (*pthread_clean_pfunc) (void *);
 namespace CLAM
 {
 
-Thread::Thread()
-	: mHasCode( false ), mHasCleanup( false ), mIsCancelled(false), mRunning(false)
+Thread::Thread(bool realtime):
+	mHasCode( false ), 
+  mHasCleanup( false ),
+	mIsCancelled(false),
+	mRunning(false),
+	mRealtime(realtime)
 {
 }
 
@@ -38,6 +42,8 @@ void Thread::SetupPriorityPolicy()
 		res = SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_NORMAL );
 		err = GetLastError();
 	#else
+	if (mRealtime)
+	{
 		struct sched_param sched_param;
 		int policy;
 
@@ -48,13 +54,22 @@ void Thread::SetupPriorityPolicy()
 		if (!pthread_setschedparam(pthread_self(), SCHED_RR, &sched_param)) {
 			printf("Scheduler set to Round Robin with priority %i...\n", sched_param.sched_priority);
 		}
+	}else{
+		struct sched_param sched_param;
+		int policy;
+
+		if (pthread_getschedparam(pthread_self(), &policy, &sched_param) < 0) {
+			printf("Scheduler getparam failed...\n");
+		}
+		sched_param.sched_priority = sched_get_priority_max(policy)/2;
+		pthread_setschedparam(pthread_self(), policy, &sched_param);
+	}
 	#endif  
 }
 
 void Thread::Start()
 {
 	CLAM_ASSERT( mHasCode, "The thread has no code to execute!" );
-//	CLAM_ASSERT( mHasCleanup, "The thread has no cleanup routine!");
 
 	mRunning = true;
 	pthread_create(&mThreadID, NULL, (pthread_start_pfunc)LaunchThread, this );
@@ -62,12 +77,8 @@ void Thread::Start()
 
 void Thread::Stop()
 {
-	pthread_cleanup_push((pthread_clean_pfunc)LaunchThreadCleanup, this);
-	
-	pthread_cancel(mThreadID);
+	LaunchThreadCleanup(this);
 	mIsCancelled = true;
-	pthread_join(mThreadID,NULL);
-	pthread_cleanup_pop(1);
 	mIsCancelled = false;
 	mRunning = false;
 }
@@ -89,9 +100,10 @@ void* Thread::LaunchThread( void* pvoid )
 {
 	Thread* pSelf = (Thread*)pvoid;
 
+	pSelf->mRunning=true;
 	pSelf->SetupPriorityPolicy();
 	pSelf->mThreadCode();
-	
+	pSelf->mRunning = false;
 	pthread_exit(NULL);
 
 	return NULL;
