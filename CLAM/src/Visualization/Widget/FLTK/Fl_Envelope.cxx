@@ -511,7 +511,7 @@ void Fl_PointMover::ybound(float min,float max)
 }
 
 Fl_PointMover::Fl_PointMover(int x,int y,int w,int h)
-:Fl_Widget(x,y,w,h)
+	:Fl_Widget(x,y,w,h)
 {
 	points_ = 0;
 	npoints_ = 0;
