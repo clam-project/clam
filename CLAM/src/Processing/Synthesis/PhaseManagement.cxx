@@ -201,7 +201,7 @@ void PhaseManagement::DoRandomPhases(SpectralPeakArray& peakArray)
 		freq  = peakArray.GetFreq(i);
 		
 		//find peak corresponding to current track
-		TIndex prevPos =peakArray.GetPositionFromIndex(peakArray.GetIndex(i));
+		TIndex prevPos =peakArray.GetIndex(i);
 		
 		// use a set of random phases and calculate each time the correct phase..
   		if (prevPos == -1) // new track...
