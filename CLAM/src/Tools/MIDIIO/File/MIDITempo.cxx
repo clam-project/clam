@@ -1,9 +1,12 @@
 #include "MIDITrack.hxx"
 #include "MIDISong.hxx"
 #include "MIDITempo.hxx"
+#include "DataTypes.hxx"
 
 namespace MIDI
 {
+
+	using CLAM::TInt64;
 
 	class TempoImpl
 	/* hidden implementation of class Tempo */
@@ -54,7 +57,6 @@ namespace MIDI
 
 		Milliseconds TicksToTime(Ticks t)
 		{
-			typedef long long int int64;
 			int i = 0;
 
 			/* move the iterator to the next tempo event */
@@ -101,8 +103,8 @@ namespace MIDI
 					// (ticks/ticksPerQ)*msPerQ
 					// but we change the order to stay with integers
 					mLastTime += 
-						( (int64(ev->GetTicks() - mLastTicks) * int64(mUsPerQ)) / 
-							(int64(mSong->GetTicksPerQ())*int64(1000)) );
+						( (TInt64(ev->GetTicks() - mLastTicks) * TInt64(mUsPerQ)) / 
+							(TInt64(mSong->GetTicksPerQ())*TInt64(1000)) );
 
 					mUsPerQ = 
 						(ev->mData[0]<<16) | 
@@ -124,8 +126,8 @@ namespace MIDI
 			// (ticks/ticksPerQ)*msPerQ
 			// but we change the order to stay with integers
 			return mLastTime + Milliseconds(
-					(int64(t - mLastTicks) * int64(mUsPerQ)) / 
-					(int64(mSong->GetTicksPerQ())*int64(1000))); 
+					(TInt64(t - mLastTicks) * TInt64(mUsPerQ)) / 
+					(TInt64(mSong->GetTicksPerQ())*TInt64(1000))); 
 		}
 	};
 
