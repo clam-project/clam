@@ -164,7 +164,8 @@ int parser_include(const char* filename)
 	
 	FILE* f = 0;
 
-//	fprintf(stderr,"INCLUDING %s FROM %s\n",filename,curFilename);
+	if (verbose)
+		fprintf(stderr,"Including %s from %s\n",filename,curFilename);
 		
 	{
 		/* first, check local path */
@@ -208,6 +209,9 @@ int parser_include(const char* filename)
 		f = fopen_in_includepaths(filename,&path);
 		if (f)
 		{
+			if (verbose)
+				fprintf(stderr,"Found in path %s\n",path);
+
 			strstart(tmp,2032); /* leave room for possible extension change */
 			stradd(path);
 			if (strcmp(path,""))
@@ -224,11 +228,15 @@ int parser_include(const char* filename)
 			strend();	
 		}
 	}else{
+		if (verbose)
+			fprintf(stderr,"Found in same directory\n");
 		inlocalpath = 1;
 	}
 
 	if (!f) 
 	{
+		if (verbose)
+			fprintf(stderr,"Not found...\n");
 		return 0;
 	}else{
 		fclose(f);
@@ -239,7 +247,7 @@ int parser_include(const char* filename)
 	** - tmp2 	contains the path + "/:/" + filename
 	** - pathend point to the end of the path in tmp2
 	*/
-		
+
 	parser_recurse(tmp);
 
 	list_add_str_once(includes,tmp);
@@ -263,7 +271,17 @@ int parser_include(const char* filename)
 			/* the compiler will look in the local path
 			** anyway, so don't add it to the list of
 			** needed include paths */
+#ifndef WIN32
+			if (	strcmp(tmp2,"/usr/include") && 
+				strcmp(tmp2,"/usr/local/include") )
+			{
+				if (verbose)
+					fprintf(stderr,"Adding %s to needed include paths",tmp2);
+				list_add_str_once(needed_includepaths,tmp2);
+			}
+#else
 			list_add_str_once(needed_includepaths,tmp2);
+#endif
 		}
 		list_add_str_once(guessed_headers,tmp);
 
@@ -309,7 +327,10 @@ int parser_include(const char* filename)
 			}
 		}						
 		list_free(possible_impl_files);
-	}
+	}else{
+		if (verbose)
+			fprintf(stderr,"Already checked\n");
+	}	
 	return 1;
 }
 
@@ -358,8 +379,6 @@ parse_include_filename:
 			{
 				ptr = strptr_copy_until(ptr,term,tmp,2048);
 			}
-
-			if (verbose) { fprintf(stderr,"including %s\n",tmp); }
 
 			if (parser_include(tmp)==0)
 			{
@@ -588,7 +607,10 @@ void parser_init(void)
 			includepaths_add(i->str);
 			i = i->next;
 		}
-
+#ifndef WIN32
+		includepaths_add("/usr/include");
+		includepaths_add("/usr/local/include");
+#endif
 		i = search_recurse_includes->first;
 		while (i)
 		{
