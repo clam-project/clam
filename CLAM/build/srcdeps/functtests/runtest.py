@@ -1,9 +1,23 @@
 #!/usr/bin/python
 
-import os, sys, commands
+logfile = 'timesLog.txt'
+
+import os, sys, commands, time
 
 settingsToTest = ['FilePlayback', 'SMSTools']
 
+def timeToExecute(cmd) :
+	_,_,beforeUserTime,beforeSysTime,_ = os.times()
+	os.system(cmd )
+	_,_,afterUserTime,afterSysTime,_= os.times()
+	return afterUserTime - beforeUserTime, afterSysTime - beforeSysTime
+
+def appendTimesLog(testname, usrtime, systime) :
+	date = time.strftime('%d/%m/%y\t(%A)')
+	line = '%s\t%s\t%s\t%s\n' % (testname, usrtime, systime, date)
+	file(logfile, 'a').write( line )
+
+	
 for test in settingsToTest :
 	config = test + '.cfg'
 	if not os.path.exists(config) :
@@ -15,11 +29,10 @@ for test in settingsToTest :
 		print expected, 'created void'
 		file(expected,'w')
 	print 'testing', test
-	[_,_,beforeUserTime,beforeSysTime,_] = os.times()
-	os.system('../srcdeps %s > %s ' % (config, result) )
-	[_,_,afterUserTime,afterSysTime,_]= os.times()
-	print "User time:", afterUserTime - beforeUserTime
-	print "Sys time:", afterSysTime - beforeSysTime
+	usrtime, systime = timeToExecute('../srcdeps %s > %s ' % (config, result))
+	print "User time: %s\nSys time: %s" % (usrtime, systime)
+	appendTimesLog(test, usrtime, systime)
+
 	toCompare = expected, result
 	if commands.getoutput('diff -q %s %s' % toCompare) :
 		os.system('xxdiff %s %s' % toCompare)
