@@ -40,6 +40,10 @@ def makeSettings( outPath) :
     libCLAMSMS.addFile( "SMSAnalysis", "Processing/Analysis" )
     libCLAMSMS.addFile( "SMSSynthesisConfig", "Processing/Synthesis" )
     libCLAMSMS.addFile( "SMSSynthesis", "Processing/Synthesis" )
+
+    libCLAMSMS.addFile( "SMSProcessingFactoryRegistration", "Processing/Base" )
+    libCLAMSMS.addFile( "ProcessingChain", "Processing/Base" )
+    
     libCLAMSMS.addFolder( "Processing/Transformations/SMS" )
 
     libCLAMSMS.dependsOn( "Core" )
