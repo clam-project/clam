@@ -102,7 +102,6 @@ namespace CLAM{
 		 *	transformation. Here we add a second segment for the sound to morph.*/
 		InPortTmpl<Segment> mInput2;
 		
-		bool mHarmonicMorph;
 		bool mHarmSpectralShapeMorph;
 		bool mHaveInternalSegment;
 

@@ -196,9 +196,6 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 	int frameNo1=floor(synchroTimeFactor);
 	int frameNo2=ceil(synchroTimeFactor);
 	
-	if(mInput2.GetData().GetFrame(frameNo1).GetFundamentalFreq()!=0 && mInput2.GetData().GetFrame(frameNo2).GetFundamentalFreq()!=0 ) 
-		mHarmonicMorph=true;
-
 	//Interpolating
 	TData frameFactor=synchroTimeFactor-frameNo1;
 	mHybBPF.DoControl(frameFactor);
@@ -209,7 +206,6 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 bool SMSMorph::Do(const Segment& in1, Segment& out)
 {
 	if(!mHaveInternalSegment) return false;
-	mHarmonicMorph=false;
 	return SMSTransformationTmpl<Frame>::Do(in1,out);
 }
 
