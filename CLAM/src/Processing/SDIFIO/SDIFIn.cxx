@@ -129,6 +129,8 @@ bool SDIFIn::Do(void)
 	{
 		CLAM_ASSERT(pMatrix->Type() == "ISTF","SDIFIn::Add ISTF Header in Matrix expected");
 		
+		tmpFrame.GetResidualSpec().SetSpectralRange(pMatrix->GetValue(0,0)*0.5);
+		
 		// move pointer to next matrix in frame
 		frameIt++;
 		pMatrix=
