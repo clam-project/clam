@@ -27,7 +27,7 @@
 namespace CLAMGUI
 {
 
-class View;
+class ModelAdapter;
 class Aspect;
 
 /**
@@ -50,7 +50,7 @@ public:
 		 *  presentation and the concrete view is resolved in the Presentation::Bind
 		 *  method.
 		 */
-		virtual void AttachTo( View& ) throw ( std::bad_cast );
+		virtual void AttachTo( ModelAdapter& ) throw ( std::bad_cast );
 
 		virtual ~Presentation()
 		{

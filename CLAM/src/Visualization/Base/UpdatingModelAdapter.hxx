@@ -22,7 +22,7 @@
 #ifndef __MODELUPDATINGVIEW__
 #define __MODELUPDATINGVIEW__
 
-#include "View.hxx"
+#include "ModelAdapter.hxx"
 
 namespace CLAMGUI
 {
@@ -33,30 +33,30 @@ namespace CLAMGUI
  *   be able to modify the model ( the components of applications )
  *   whatsoever.
  * 
- *   @see ProcessingView
+ *   @see ProcessingModelAdapter
  */
-class ModelUpdatingView
-		: public View
+class UpdatingModelAdapter
+		: public ModelAdapter
 {
 public:
-		virtual ~ModelUpdatingView()
+		virtual ~UpdatingModelAdapter()
 		{
 		}
 
 		/**
-		 *  @see View::GetClassName
+		 *  @see ModelAdapter::GetClassName
 		 */
 		virtual const char* GetClassName() const = 0;
 
 		/**
-		 *  @see View::GetAspect
+		 *  @see ModelAdapter::GetAspect
 		 */
 		virtual Aspect& GetAspect() = 0;
 
 		/**
-		 *  @see View::Refresh
+		 *  @see ModelAdapter::Publish
 		 */
-		virtual bool Refresh() = 0;
+		virtual bool Publish() = 0;
 
 		/**
 		 *  This pure virtual method expresses a view ability to
@@ -68,4 +68,4 @@ public:
 };
 
 }
-#endif // ModelUpdatingView.hxx
+#endif // UpdatingModelAdapter.hxx

@@ -19,7 +19,7 @@
  *
  */
 
-#include "View.hxx"
+#include "ModelAdapter.hxx"
 #include "Mutex.hxx"
 #include "Lock.hxx"
 
@@ -27,10 +27,10 @@ using CLAM::Mutex;
 
 namespace CLAMGUI
 {
-		void View::Refresh( Mutex& mutexObj )
+		void ModelAdapter::Publish( Mutex& mutexObj )
 		{
 			Mutex::ScopedLock lock( mutexObj );
 				
-			Refresh();
+			Publish();
 		}
 }

@@ -20,11 +20,11 @@
  */
 
 #include "Presentation.hxx"
-#include "View.hxx"
+#include "ModelAdapter.hxx"
 
 namespace CLAMGUI
 {
-		void Presentation::AttachTo( View& view ) throw ( std::bad_cast )
+		void Presentation::AttachTo( ModelAdapter& view ) throw ( std::bad_cast )
 		{
 				Bind( view.GetAspect() );
 		}

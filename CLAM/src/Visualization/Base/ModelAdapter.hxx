@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __VIEW__
-#define __VIEW__
+#ifndef __MODEL_ADAPTER__
+#define __MODEL_ADAPTER__
 
 namespace CLAM
 {
@@ -35,16 +35,17 @@ using CLAM::Mutex;
 class Aspect;
 
 /**
- *  This class defines the interface common to all views available in CLAM
- *  Visualization module. It is a quite loose implementation of the Observer
- *  pattern where the View plays the role of an observer. The "loose" qualification
- *  will be justified as you see more concrete views.
+ *  This class defines the interface common to all model object adapters available in CLAM
+ *  Visualization module. The ModelAdapter encodes the interface required by the Observable
+ *  concept of the GOF Observer pattern. We chose to write an Adapter, since we didn't feel
+ *  that tainting the model object interface satisfied our goal of separating effectively
+ *  the Model objects from its representation.
  */
 
-class View
+class ModelAdapter
 {
 public:
-		virtual ~View()
+		virtual ~ModelAdapter()
 		{
 		}
 
@@ -73,17 +74,17 @@ public:
 		 *   @returns A boolean indicating wether it has been possible to perform the refresh
 		 */
 
-		virtual bool Refresh() = 0;
+		virtual bool Publish() = 0;
 
 		/**
-		 *   This is a proxy method that ensures that View::Refresh() is an
+		 *   This is a proxy method that ensures that ModelAdapter::Refresh() is an
 		 *   atomic operation. Users must provide a CLAM::Mutex object when
 		 *   necessary.
 		 */
 
-		void Refresh( Mutex& );
+		void Publish( Mutex& );
 };
 
 }
 
-#endif // View.hxx
+#endif // ModelAdapter.hxx
