@@ -1,5 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
+#include "BaseLoggable.hxx"
 
 namespace CLAMTest
 {
