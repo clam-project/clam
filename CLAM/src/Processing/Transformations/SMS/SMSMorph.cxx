@@ -220,14 +220,8 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 bool SMSMorph::Do(const Segment& in1, Segment& out)
 {
 	if(!mHaveInternalSegment) return false;
-	
-	TSize nFrames=in1.GetnFrames();
-	int currentFrameIndex=in1.mCurrentFrameIndex;
-
-	UpdateControlValueFromBPF((TData)currentFrameIndex/nFrames);
 	mHarmonicMorph=false;
-	
-	return Do(in1.GetFrame(currentFrameIndex),out.GetFrame(currentFrameIndex));
+	return SMSTransformationTmpl<Frame>::Do(in1,out);
 }
 
 bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)
