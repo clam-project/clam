@@ -22,16 +22,16 @@ namespace CLAM
 	public:
 		AbstractAttribute(const std::string & attributeName) : _attributeName(attributeName) {}
 		virtual ~AbstractAttribute() {}
-		virtual void * Allocate(unsigned size) = 0;
-		virtual void Deallocate(void * data) = 0;
-		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) = 0;
+		virtual void * Allocate(unsigned size) const = 0;
+		virtual void Deallocate(void * data) const = 0;
+		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) const = 0;
 		template <typename TypeToCheck>
 		void CheckType() const
 		{
 			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
 				"Type Missmatch using a pool");
 		}
-		const std::string & GetName()
+		const std::string & GetName() const
 		{
 			return _attributeName;
 		}
@@ -47,15 +47,15 @@ namespace CLAM
 	public:
 		Attribute(const std::string & attributeName) : AbstractAttribute(attributeName) {}
 		typedef AttributeType DataType;
-		virtual void * Allocate(unsigned size)
+		virtual void * Allocate(unsigned size) const
 		{
 			return new AttributeType[size];
 		}
-		virtual void Deallocate(void * data)
+		virtual void Deallocate(void * data) const
 		{
 			delete [] (AttributeType*)data;
 		}
-		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size )
+		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) const
 		{
 			XMLAdapter<std::string> nameAdapter(GetName(),"name",false);
 			storage.Store(nameAdapter);
@@ -63,13 +63,13 @@ namespace CLAM
 		}
 	private:
 		template <typename T>
-		void XmlDumpConcreteData(Storage & storage, const T * data, unsigned size, void * discriminator )
+		void XmlDumpConcreteData(Storage & storage, const T * data, unsigned size, void * discriminator ) const
 		{
 			XMLArrayAdapter<AttributeType> dataAdapter((AttributeType*)data, size);
 			storage.Store(dataAdapter);
 		}
 		template <typename T>
-		void XmlDumpConcreteData(Storage & storage, const T * data, unsigned size, Component * discriminator )
+		void XmlDumpConcreteData(Storage & storage, const T * data, unsigned size, Component * discriminator ) const
 		{
 			for (unsigned i=0 ; i < size ; i++ )
 			{
