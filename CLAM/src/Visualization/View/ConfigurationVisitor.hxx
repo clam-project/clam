@@ -68,7 +68,7 @@ namespace CLAM{
 	 * The builder should implement RetrieveValue overloaded methods
 	 * for every type whe want to support.
 	 * @ingroup Configurators
-	 * @see configurationGetter, QTConfigurator, FLTKConfigurator, DynamicType
+	 * @see ConfigurationGetter, QTConfigurator, FLTKConfigurator, DynamicType
 	 */
 	template <typename Configuration, typename Builder>
 	class ConfigurationSetter : public ConfigurationVisitor {
