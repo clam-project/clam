@@ -45,8 +45,6 @@ namespace AudioCodecs
 			return false;
 		}
 
-		void* pFunc = ov_open;
-
 		int retval = ov_open( fileHandle, &vorbisFile, NULL, 0 );
 
 		if (  retval < 0 )		
