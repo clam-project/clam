@@ -18,6 +18,11 @@
   * Network Editor:
      ** Smarter conections display (control conection with vertical tangent and that wires
         always goes outward the processing)
+     ** Added support for ladspa plugins inside the GUI
+     ** Support to change the name of processings
+     ** Support for new Audio File I/O processings
+     ** Now is possible to know the state of a given processing and the error
+     message (if it exists).
   * Audio File I/O Support:
      ** Four new processings available for reading/writing from audio files: 
         -> MonoAudioFileReader/Writer ( single channel reading and writing )
