@@ -78,7 +78,7 @@ using namespace CLAM;
 	//Supervised mode
 	bool  SinTracking::Do(void) 
 	{
-		throw(ErrProcessingObj("SinTracking::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false, "SinTracking::Do(): Supervised mode not implemented");
 		return false;
 	}
   
