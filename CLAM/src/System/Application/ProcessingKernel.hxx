@@ -10,6 +10,8 @@ class ProcessingKernel
 {
 
 public:
+	ProcessingKernel();
+
 	virtual ~ProcessingKernel() {}
 
 	virtual void ProcessingCleanup() = 0;
@@ -23,6 +25,11 @@ protected:
 	bool LoopCondition();
 
 	virtual bool UserCondition();
+
+	void Cancel();
+
+private:
+	bool  mShouldRun;
 
 };
 

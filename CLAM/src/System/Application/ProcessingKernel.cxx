@@ -5,20 +5,30 @@
 
 using namespace CLAM;
 
+ProcessingKernel::ProcessingKernel()
+	: mShouldRun( true )
+{
+}
+
 bool ProcessingKernel::UserCondition()
 {
 	return true;
 }
 
+void ProcessingKernel::Cancel()
+{
+	mShouldRun = false;
+}
+
 bool ProcessingKernel::LoopCondition()
 {
-	pthread_testcancel();
-
-	return UserCondition();
+	return mShouldRun&&UserCondition();
 }
 
 void ProcessingKernel::AttachToThread( Thread& att_thread )
 {
 	att_thread.SetThreadCode( makeMemberFunctor0( *this, ProcessingKernel, ProcessingLoop ) );
-	att_thread.SetCleanupCode( makeMemberFunctor0( *this, ProcessingKernel, ProcessingCleanup ) );
+	att_thread.SetCleanupCode( makeMemberFunctor0( *this, ProcessingKernel, Cancel ) );
 }
+
+
