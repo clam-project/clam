@@ -14,8 +14,6 @@
 #include <time.h>
 #include "MainWindow.hxx"
 
-CLAM::AudioManager audioManager( 44100, 512 );
-
 void ConfigureNetwork(CLAM::Network & net)
 {	
 	int frameSize = 512;
@@ -25,6 +23,8 @@ void ConfigureNetwork(CLAM::Network & net)
 
 int main( int argc, char **argv )
 {
+
+	CLAM::AudioManager audioManager( 44100, 512 );
 
 	srand(time(NULL)); // gui stuff
 
