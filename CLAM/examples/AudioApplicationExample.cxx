@@ -30,14 +30,14 @@
 
 using namespace CLAM;
 
-class MyAudioApplication:public AudioApplication
+class MyIOAudioApplication:public AudioApplication
 {
 	void AppCleanup() {}
 public:
 	void AudioMain(void);	
 };
 
-void MyAudioApplication::AudioMain(void)
+void MyIOAudioApplication::AudioMain(void)
 {
 	try
 	{
@@ -79,19 +79,14 @@ void MyAudioApplication::AudioMain(void)
 		OscillatorConfig oscRcfg;
 		OscillatorConfig oscLcfg;
 		
-		OscillatorConfig testtoneCfg;
-
 		oscRcfg.SetFrequency(0.2);
 		oscLcfg.SetFrequency(0.2);
 		oscLcfg.SetPhase(PI/2.);
-
-		testtoneCfg.SetFrequency(440);
 
 		Multiplier mul;
 
 		Oscillator oscL(oscRcfg);
 		Oscillator oscR(oscLcfg);
-		Oscillator testtone(testtoneCfg);
 
 		audioManager.Start();
 
@@ -107,15 +102,60 @@ void MyAudioApplication::AudioMain(void)
 			oscR.Do(bufOsc);
 			mul.Do(bufR,bufOsc,bufR);
 
-#ifdef testtone
-			/* just play a test tone at 440 hz instead of doing the realtime I/O with LFO */
-			testtone.Do(bufOsc);
-			outL.Do(bufOsc);
-			outR.Do(bufOsc);
-#else
 			outL.Do(bufL);
 			outR.Do(bufR);
-#endif
+
+		} while (!Canceled());
+	}
+	catch(Err error)
+	{
+		error.Print();
+		std::cerr << "Abnormal Program Termination" << std::endl;
+		exit(-1);
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+		exit(-1);
+	}
+}
+
+class MyOutAudioApplication:public AudioApplication
+{
+	void AppCleanup() {}
+public:
+	void AudioMain(void);	
+};
+
+void MyOutAudioApplication::AudioMain(void)
+{
+	try
+	{
+		unsigned int buffersize = 256;
+
+		AudioManager audioManager(48000,4096);
+
+		AudioIOConfig outCfg;
+		outCfg.SetName("mono out");
+		outCfg.SetChannelID(0);
+
+		Audio bufOsc;
+		bufOsc.SetSize(buffersize);
+
+		AudioOut out(outCfg);
+
+		OscillatorConfig testtoneCfg;
+
+		testtoneCfg.SetFrequency(440);
+
+		Oscillator testtone(testtoneCfg);
+
+		audioManager.Start();
+
+		do
+		{
+			testtone.Do(bufOsc);
+			out.Do(bufOsc);
 		} while (!Canceled());
 	}
 	catch(Err error)
@@ -135,8 +175,16 @@ int main(int argc,char** argv)
 {
 	try
 	{
-		MyAudioApplication app;
-		app.Run(argc,argv);
+		{
+			MyOutAudioApplication app;
+			app.Run(argc,argv);
+		}
+
+		{
+			MyIOAudioApplication app;
+			app.Run(argc,argv);
+		}
+
 	}
 	catch(Err error)
 	{

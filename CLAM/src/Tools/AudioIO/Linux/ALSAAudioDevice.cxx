@@ -131,23 +131,7 @@ namespace CLAM {
 		if (sndpcm==0)
 		{
 			try {
-				if (mNReadChannels && mNWriteChannels)
-				{
-					if (mNReadChannels!=mNWriteChannels)
-					{
-						throw(Err("ALSAAudioDevice::Start(): "
-							"Number of inputs and outputs must match"));
-					}
-					sndpcm = new ::SndPcm(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
-				}
-				else if (mNReadChannels)
-				{
-//					sndpcm = new ::SndPcmInput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
-				}
-				else if (mNWriteChannels)
-				{
-//					sndpcm = new ::SndPcmOutput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
-				}
+				sndpcm = new ::SndPcm(SampleRate(),mNReadChannels,mNWriteChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 			}
 			catch (SndPcmError &e) {
 				Err ne("ALSAAudioDevice::Start(): Failed to create PCM device.");
@@ -157,27 +141,24 @@ namespace CLAM {
 			needs_start = true;
 		}
 
-		if (sndpcm)
-		{
-			int bufSize = sndpcm->latency * mNChannels;
-			mReadBuf.Resize(bufSize);
-			mWriteBuf.Resize(bufSize);
-			mReadBuf.SetSize(bufSize);
-			mWriteBuf.SetSize(bufSize);
+		int bufSize = sndpcm->latency * mNChannels;
+		mReadBuf.Resize(bufSize);
+		mWriteBuf.Resize(bufSize);
+		mReadBuf.SetSize(bufSize);
+		mWriteBuf.SetSize(bufSize);
 
-			for (i=0; i<bufSize; i++) {
-				mReadBuf[i] = 0;
-				mWriteBuf[i] = 0;
-			}
-
-			// the following settings will be set at the first Read/Write
-			// to the Audio buffer size that is passed.
-			mReadBufSize = 0; 
-			mWriteBufSize = 0;
-
-			if (needs_start)
-				sndpcm->Start();
+		for (i=0; i<bufSize; i++) {
+			mReadBuf[i] = 0;
+			mWriteBuf[i] = 0;
 		}
+
+		// the following settings will be set at the first Read/Write
+		// to the Audio buffer size that is passed.
+		mReadBufSize = 0; 
+		mWriteBufSize = 0;
+
+		if (needs_start)
+			sndpcm->Start();
 	}
 
 	void ALSAAudioDevice::Stop(void) throw(Err)
@@ -275,6 +256,7 @@ namespace CLAM {
 
 		if (mNChannelsWritten==mNWriteChannels)
 		{
+			sndpcm->Poll();
 			sndpcm->WriteBuf(mWriteBuf.GetPtr(),mWriteBufSize);
 						
 			mNChannelsWritten = 0;

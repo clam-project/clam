@@ -65,13 +65,19 @@ AudioManager::AudioManager(int sampleRate,int latency) throw(Err)
 
 AudioManager::~AudioManager()
 {
+	printf(">1AudioManager::~AudioManager\n");
+	printf(">8AudioManager::~AudioManager\n");
 	unsigned int i;
+	printf(">2AudioManager::~AudioManager\n");
 	for (i=0;i<mDevices.size(); i++)
 	{
-		mDevices[i]->Stop();
+		printf(">3AudioManager::~AudioManager\n");
+		printf("deleting %d\n",i);
 		delete mDevices[i];
 	}
+	printf(">4AudioManager::~AudioManager\n");
 	pSingleton = 0;
+	printf("AudioManager::pSingleton=0\n");
 }
 
 AudioDevice* AudioManager::FindDevice(const std::string& name)

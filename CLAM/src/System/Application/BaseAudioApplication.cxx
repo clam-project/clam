@@ -22,6 +22,7 @@
 #include "BaseAudioApplication.hxx"
 #include "AudioIO.hxx"
 #include <pthread.h>
+#include <unistd.h>
 #include <cstdio>
 #include <iostream>
 #ifdef WIN32
@@ -51,9 +52,9 @@ namespace CLAM {
 	{
 		pthread_cleanup_push((cleanfn)SAudioThreadCleanup,this);
 
-		pthread_cancel(thread);
 		cancel = true;
 		pthread_join(thread,NULL);
+				
 		pthread_cleanup_pop(1);
 		cancel = false;
 	}
@@ -112,7 +113,7 @@ namespace CLAM {
 		}
 
 	#endif
-
+	
 		pThis->AudioMain();
 	
 		return NULL;
@@ -120,8 +121,18 @@ namespace CLAM {
 
 	void BaseAudioApplication::SAudioThreadCleanup(BaseAudioApplication *pThis)
 	{
+		/* mdeboer: i believe this is wrong! the audiomanager will be 
+		** defined in the AudioMain, and destructed right there.
+		** anyway, this is no way to call a destructor!
 		if (AudioManager::pSingleton) AudioManager::pSingleton->~AudioManager();
-		pThis->AppCleanup();
+		*/
+		//pThis->AppCleanup();
+
+		while (AudioManager::pSingleton)
+		{
+			printf("!\n");
+		}
+		
 		std::cout << "Clean up done" << std::endl;
 	}
 
