@@ -1,7 +1,7 @@
 #ifndef __SDIFType__
 #define __SDIFType__
 
-#ifndef LINUX
+#ifndef linux
 	#include <string.h>
 #endif
 
