@@ -38,8 +38,6 @@ private:
 public:
 	CreatorMethod GetCreator( RegistryKey creatorId)
 	{
-		CreatorMethod foo = 0;//CLAM::CreateOscillator;
-
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
 		

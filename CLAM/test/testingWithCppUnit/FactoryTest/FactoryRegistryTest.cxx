@@ -131,7 +131,6 @@ private:
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
 		reg.AddCreator( "AudioAdder", CLAM::CreateAudioAdder );
 
-		CLAM::FactoryRegistry::CreatorMethod oscillatorCreator = CLAM::CreateOscillator;
 		CPPUNIT_ASSERT( NULL == reg.GetCreator("Oscillator ") );
 	}
 
@@ -142,7 +141,6 @@ private:
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
 		reg.AddCreator( "AudioAdder", CLAM::CreateAudioAdder );
 
-		CLAM::FactoryRegistry::CreatorMethod oscillatorCreator = CLAM::CreateOscillator;
 		CPPUNIT_ASSERT( NULL == reg.GetCreatorSafe("incorrect as well") );
 	}
 
