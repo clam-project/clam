@@ -7,13 +7,10 @@
 		<h1>
 			Flow control examples to-do's
 		</h1>
-		<h2>
-			General milestones
+		<h2>+ Non supervised system
 		</h2>
-		<P>&nbsp;</P>
-		<h2><PRE><TABLE id=Table1 borderColor=#999999 cellSpacing=1 cellPadding=2 width=800 border=1><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 1</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Non-supervised processing system with AudioIn/Out + Time Domain processings</TD></TR><TR><TD width=161 bgColor=#996699><PRE><B><FONT color=#ffffff>    Sub milestone</FONT></B></PRE></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>First step with AudioFileIn/Out, instead (no multithreading)</TD></TR><TR><TD width=161 bgColor=#996699 height=21><B><FONT color=#ffffff>Milestone 2</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7 height=21>Only use supervised ::Do() and Ports to ProcessingDatas</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 3</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Use Nodes that wrapps ProcessingDatas. Connections between Ports and Nodes</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 4</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Network class that holds (owns) Processings, Nodes and connections. It comunicates with an <I>stub</I> FlowControl (implements the ::Do() )</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 5</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>ProcessingFactories and Network with (de)serialization: XML definition, and Network activation using the ProcessingFactory</TD></TR><TR><TD width=161 bgColor=#996699 height=39><B><FONT color=#ffffff>Milestone 6</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7 height=39>A true FlowControl that 1) sets up the Nodes during Network activation and 2) does the Do's firing scheduling.</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR></TABLE></PRE>
-			Non supervised system
-		</h2>
+		<h3>
+			milestone 1</h3>
 		<ul>
 			<li class='done'>
 				IterationsMethods for:
@@ -47,28 +44,52 @@
 				</ul>
 			</li>
 		</ul>
-		<h2>
-			Non supervised system with ports
-		</h2>
+		<h2>+ Non supervised system with ports</h2>
+		<h3>milestone 2</h3>
 		<ul>
 			<li class='todo'>
-				unify ports attribute nomenclature (audioout...)</li>
+				unify ports attribute nomenclature (audioout...). Is it worth?</li>
 			<li class='todo'>
-				make ports private. Thus use the base ports for attaching</li>
-			<li class='done'>
-				Port all iterations to use of ports</li>
-			<li class='todo'>
-				Define Attach in port[in/out] base class. i.e: <tt>myProc.GetPort("audioIn").Attach( 
-					myAdudio);</tt>
+				make ports private. Thus use the base ports for attaching
+				<ul>
+					<li class='todo'>
+						Define Attach in port[in/out] base class. i.e: <tt>myProc.GetPort("audioIn").Attach( 
+						myAdudio);</tt>
+					</li>
+				</ul>
 			</li>
 			<li class='todo'>
 				Processing / Ports / Controls small refactoring, regarding accessing 
 				ports/controls by name
 			</li>
+			<li class='done'>Dont use Do(..) with arguments. Thus make all iterations use ports</li>
 			<li class='done'>
 				Convert SystemWithProts methods (do, attach, name) to a classes deriving from: 
 				NetworkConfiguration
 			</li>
 		</ul>
+		<h2>
+			+ System with Nodes</h2>
+		<h3>milestone 3</h3>
+		<h2>
+			+ Simple Network and FlowControl</h2>
+		<h3>milestone 4</h3>
+		<h2>
+			+ Network activation/deactivation and processing factories</h2>
+		<h3>milestone 5</h3>
+		<ul>
+			<li class='done'>Have a Processing (or generic) factory</li>
+			<li class='todo'>Add registrator for each used processing</li>
+		</ul>
+		
+		<h2>
+			+ A true FlowControl
+		</h2>
+		<h3>milestone 6</h3>
+		<h1>
+			General milestones
+		</h1>
+		<P>&nbsp;</P>
+		<PRE><TABLE id=Table1 borderColor=#999999 cellSpacing=1 cellPadding=2 width=800 border=1><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 1</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Non-supervised processing system with AudioIn/Out + Time Domain processings</TD></TR><TR><TD width=161 bgColor=#996699><PRE><B><FONT color=#ffffff>    Sub milestone</FONT></B></PRE></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>First step with AudioFileIn/Out, instead (no multithreading)</TD></TR><TR><TD width=161 bgColor=#996699 height=21><B><FONT color=#ffffff>Milestone 2</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7 height=21>Only use supervised ::Do() and Ports to ProcessingDatas</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 3</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Use Nodes that wrapps ProcessingDatas. Connections between Ports and Nodes</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 4</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Network class that holds (owns) Processings, Nodes and connections. It comunicates with an <I>stub</I> FlowControl (implements the ::Do() )</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 5</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>ProcessingFactories and Network with (de)serialization: XML definition, and Network activation using the ProcessingFactory</TD></TR><TR><TD width=161 bgColor=#996699 height=39><B><FONT color=#ffffff>Milestone 6</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7 height=39>A true FlowControl that 1) sets up the Nodes during Network activation and 2) does the Do's firing scheduling.</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR></TABLE></PRE>
 	</body>
 </html>
