@@ -421,21 +421,15 @@ private:
 		CentralMoment<order,abs,T,U>* tmpMoment= dynamic_cast<CentralMoment<order,abs,T,U>*> (mCentralMoments[order-1]);
 
 		//first we see if we already have corresponding Raw Moments up to the order demanded
-		int i;
-		bool existRawMoments=true;
-		for(i=0;i<order;i++)
+		for(int i=0;i<order;i++)
 		{
+			//if we don't, we will have to compute them
 			if(mMoments[i]==NULL)
-			{
-				existRawMoments=false;
-				break;
-			}
+				return (*tmpMoment)(*mData);
 		}
 
-		if(existRawMoments) //if we do, we will use formula that relates Central Moments with Raw Moments
-			return (*tmpMoment)(*mData,mMoments);
-		else //if we don't, we will have to compute them
-			return (*tmpMoment)(*mData);
+		// if we do, we will use formula that relates Central Moments with Raw Moments
+		return (*tmpMoment)(*mData,mMoments);
 	}
 
 	/** Get order-th central moment, order is greater than init order*/
@@ -486,8 +480,7 @@ private:
 			int previousSize=mCenterOfGravities.Size();
 			mCenterOfGravities.Resize(order);
 			mCenterOfGravities.SetSize(order);
-			int i;
-			for(i=previousSize;i<order;i++) mCenterOfGravities[i]=NULL;
+			for(int i=previousSize;i<order;i++) mCenterOfGravities[i]=NULL;
 		}
 		if(mCenterOfGravities[order-1]=NULL)
 		{
