@@ -42,6 +42,8 @@ static KCmdLineOptions options[] =
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
+#define VERSION ""
+
 int main(int argc, char *argv[])
 {
 	RappidConfig cfg;
