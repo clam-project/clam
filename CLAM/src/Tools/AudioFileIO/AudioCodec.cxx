@@ -18,6 +18,9 @@ namespace AudioCodecs
 
 		// MRJ: Quite weak file existence check
 
+		if ( filename.length() <= 0 )
+			return false;
+
 		FILE* fileHandle = NULL;
 
 		fileHandle = fopen( filename.c_str(), "rb" );
