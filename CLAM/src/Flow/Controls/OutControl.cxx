@@ -78,7 +78,7 @@ int OutControl::SendControl(TControlData val)
 
 bool OutControl::IsConnected()
 {
-	return (mLinks.size());
+	return (mLinks.size()!=0);
 }
 
 bool OutControl::IsConnectedTo( InControl & in)
