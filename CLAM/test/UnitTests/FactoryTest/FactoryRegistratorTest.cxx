@@ -128,7 +128,6 @@ private:
 
 	void testRegistratorsAsStaticObjects_ProductsRegistered()
 	{
-
 		FactoryOfAs& theFactory = FactoryOfAs::GetInstance();
 		std::list< std::string > keysInFactory;
 
