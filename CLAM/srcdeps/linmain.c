@@ -120,6 +120,18 @@ void makefilevars_generate(void)
 		fprintf(outfile,"\n\n");
 	}
 
+	{
+		item* i = predefines->first;
+		fprintf(outfile,"PRE_INCLUDES =");
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				fprintf(outfile,"\\\n -include %s",i->str);
+			i = i->next;
+		}
+		fprintf(outfile,"\n\n");
+	}
+
 	fclose(outfile);
 }
 
