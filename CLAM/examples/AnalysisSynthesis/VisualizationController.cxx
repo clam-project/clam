@@ -51,8 +51,6 @@ VisualizationController::VisualizationController(  )
 	  mAudioPresentations( eAudioDisplays, 0 ), mSpectrumPresentations( eSpectrumDisplays, 0 ),
 	mDetachCallbackData( eNumDisplays ), mOpenDisplays( eNumDisplays, false ), mCanvas( 0 )
 {
-	mCanvas = new Fl_Smart_Tile(0, 0, 800,600);
-
 	for( int i = 0; i < eAudioDisplays; i++ )
 	{
 		// registering callback for notifying the ui the need of 'detaching'
@@ -95,7 +93,8 @@ void VisualizationController::CloseAll ( )
 		if( mOpenDisplays[ i ] )
 			Detach( ( enum DisplayList )i );
 	}
-	mCanvas->redraw();
+	if( mCanvas )
+		mCanvas->redraw();
 }
 
 void VisualizationController::_Detach(Fl_Window *w,DetachCallbackData* d)
@@ -111,17 +110,23 @@ void VisualizationController::Detach( enum DisplayList view )
 	case eAudioSinusoidal:
 	case eAudioResidual:
 		mAudioPresentations[ view ]->hide( );
-		mCanvas->remove( mAudioPresentations[ view ] );
+		if( mCanvas )
+		{
+			mCanvas->remove( mAudioPresentations[ view ] );
+			mCanvas->redraw();
+		}
 		delete mAudioPresentations[ view ];
-		mCanvas->redraw();
 		break;
 
 	case eSpectrumIn:
 	case eSpectrumOut:
 		mSpectrumPresentations[ view-eAudioDisplays ]->hide();
-		mCanvas->remove( mSpectrumPresentations[ view-eAudioDisplays ] );
+		if( mCanvas )
+		{
+			mCanvas->remove( mSpectrumPresentations[ view-eAudioDisplays ] );
+			mCanvas->redraw();
+		}
 		delete mSpectrumPresentations[ view-eAudioDisplays ];
-		mCanvas->redraw();
 		break;
 	}
 	mOpenDisplays[ view ] = false;
@@ -135,9 +140,15 @@ void VisualizationController::Display ( enum DisplayList view, Audio& data )
 
 		mAudioAdapters[ view ].BindTo( data );
 
-		mAudioPresentations[ view ] = new Fl_Browsable_Playable_Audio( 0, 0, mCanvas->w(), mCanvas->h() );
+		short width = 800;
+		short height = 600;
+		if( mCanvas )
+		{
+			width = mCanvas->w();
+			height = mCanvas->h()/(mCanvas->children()+1)
+		}
+		mAudioPresentations[ view ] = new Fl_Browsable_Playable_Audio( 0, 0, width, height );
 		mAudioPresentations[ view ]->label( sDisplayName[ view ].name );
-		mAudioPresentations[ view ]->size( mCanvas->w(), mCanvas->h()/(mCanvas->children()+1) );
 		mAudioPresentations[ view ]->callback( (Fl_Callback*)_Detach, &mDetachCallbackData[ view ] );
 
 		mAudioPresentations[ view ]->setAudioPlayer( new AudioPlayer( data ) );
@@ -150,9 +161,11 @@ void VisualizationController::Display ( enum DisplayList view, Audio& data )
 		mAudioPresentations[ view ]->GetSignal()->Connect( mSlot );
 		mAudioAdapters[ view ].Publish();
 
-		mCanvas->add( *mAudioPresentations[ view ] );
+		if( mCanvas )
+			mCanvas->add( *mAudioPresentations[ view ] );
 		mAudioPresentations[ view ]->Show();
-		mCanvas->redraw();
+		if( mCanvas )
+			mCanvas->redraw();
 	}
 }
 
@@ -164,16 +177,24 @@ void VisualizationController::Display ( enum DisplayList view, Spectrum& data )
 
 		mSpectrumAdapters[ view-eAudioDisplays ].BindTo( data );
 
-		mSpectrumPresentations[ view-eAudioDisplays ] = new Fl_Spectrum( 0, 0, mCanvas->w(), mCanvas->h() );
+		short width = 800;
+		short height = 600;
+		if( mCanvas )
+		{
+			width = mCanvas->w();
+			height = mCanvas->h()/(mCanvas->children()+1)
+		}
+		mSpectrumPresentations[ view-eAudioDisplays ] = new Fl_Spectrum( 0, 0, width, height );
 		mSpectrumPresentations[ view-eAudioDisplays ]->label( sDisplayName[ view ].name );
-		mSpectrumPresentations[ view-eAudioDisplays ]->size( mCanvas->w(), mCanvas->h()/(mCanvas->children()+1) );	
 		mSpectrumPresentations[ view-eAudioDisplays ]->callback( (Fl_Callback*)_Detach, &mDetachCallbackData[ view ] );
 
 		mSpectrumPresentations[ view-eAudioDisplays ]->AttachTo( mSpectrumAdapters[ view-eAudioDisplays ] );
 		mSpectrumAdapters[ view-eAudioDisplays ].Publish();
 
-		mCanvas->add( *mSpectrumPresentations[ view-eAudioDisplays ] );
+		if( mCanvas )
+			mCanvas->add( *mSpectrumPresentations[ view-eAudioDisplays ] );
 		mSpectrumPresentations[ view-eAudioDisplays ]->Show();
-		mCanvas->redraw();
+		if( mCanvas )
+			mCanvas->redraw();
 	}
 }
