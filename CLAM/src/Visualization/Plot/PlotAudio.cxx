@@ -2,7 +2,7 @@
 
 #include "Audio.hxx"
 #include "AudioAdapter.hxx"
-#include "../Presentation/FLTK/Fl_Audio.hxx"
+#include "Fl_Audio.hxx"
 #include "WidgetTKWrapper.hxx"
 
 void CLAMVM::plot(const CLAM::Audio &model, const char *label)

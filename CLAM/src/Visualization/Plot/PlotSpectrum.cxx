@@ -2,7 +2,7 @@
 
 #include "Spectrum.hxx"
 #include "LogMagSpectrumAdapter.hxx"
-#include "../Presentation/FLTK/Fl_Spectrum.hxx"
+#include "Fl_Spectrum.hxx"
 #include "WidgetTKWrapper.hxx"
 
 void CLAMVM::plot(const CLAM::Spectrum &model, const char *label)
