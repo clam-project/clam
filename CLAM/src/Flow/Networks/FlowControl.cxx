@@ -99,7 +99,10 @@ void FlowControl::DoProcessings()
 	CLAM_ASSERT(_state == Running , "FlowControl not started");		
 	Network::ProcessingsMapIterator it;
 	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
-		it->second->Do();
+	{
+		if (it->second->CanDoUsingPorts())
+			it->second->Do();
+	}
 }
 
 }
