@@ -82,6 +82,10 @@ namespace CLAM
 			TimeSeriesSeed    mTickFirstGuess;
 			TimeSeriesSeed    mGoodTick;
 			TimeSeriesSeed    mGoodTempo;
+			Array<TimeIndex>  mTransientsForHist;
+
+			// Internal Parameters
+			TSize             mIOIHistMaxSize;
 
 		};
 

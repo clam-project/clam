@@ -65,12 +65,12 @@ namespace CLAM
 			//For Hist peaks:
 			IOIHistPeakDetectorConfig apdconf;
 			apdconf.SetThreshold( mConfig.GetThreshold_IOIHistPeaks() );
-			apdconf.SetSampleRate( mConfig.GetSamplingRate() );
+			apdconf.SetSampleRate( mConfig.GetSampleRate() );
 
 			mPeakDetector.Configure( apdconf );
 
 			TimeDifferenceConfig tconf;
-			tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
+			tconf.SetGaussianSize((TSize)(mConfig.GetSampleRate()*mConfig.GetGaussianWindowSize()));
 
 			mTemporalDiff.Configure( tconf );
 		
@@ -81,9 +81,9 @@ namespace CLAM
 			//Thus, OffsetStep=tickLimInf ==> no offset seeking
 										
 			tsfConfig.SetOffsetMin( 0 );
-			tsfConfig.SetOffsetStep(  mConfig.GetTickLimInf()*mConfig.GetSamplingRate() );
-			tsfConfig.SetIntervalMin( mConfig.GetTickLimSup()*mConfig.GetSamplingRate());
-			tsfConfig.SetIntervalMax( mConfig.GetTickLimInf()*mConfig.GetSamplingRate() );
+			tsfConfig.SetOffsetStep(  mConfig.GetTickLimInf()*mConfig.GetSampleRate() );
+			tsfConfig.SetIntervalMin( mConfig.GetTickLimSup()*mConfig.GetSampleRate());
+			tsfConfig.SetIntervalMax( mConfig.GetTickLimInf()*mConfig.GetSampleRate() );
 			tsfConfig.SetIntervalStep( 10 );
 			tsfConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
 			tsfConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
@@ -93,7 +93,7 @@ namespace CLAM
 
 			AdjustTickWRTSwingConfig swingAdjusterCfg;
 
-			swingAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			swingAdjusterCfg.SetSampleRate( mConfig.GetSampleRate() );
 			swingAdjusterCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
 			swingAdjusterCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
 
@@ -102,16 +102,16 @@ namespace CLAM
 
 			AdjustTickWRTOnsetsConfig onsetsAdjusterCfg;
 
-			onsetsAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			onsetsAdjusterCfg.SetSampleRate( mConfig.GetSampleRate() );
 			onsetsAdjusterCfg.SetDeviationPenalty( mConfig.GetDeviationPenalty() );
 			onsetsAdjusterCfg.SetOverSubdivisionPenalty( mConfig.GetOverSubdivisionPenalty() );
 			onsetsAdjusterCfg.SetScope( mConfig.GetScope() );
-			onsetsAdjusterCfg.SetTickLimSup( mConfig.GetTickLimSup()*mConfig.GetSamplingRate() );
+			onsetsAdjusterCfg.SetTickLimSup( mConfig.GetTickLimSup()*mConfig.GetSampleRate() );
 
 			mTickOnsetsAdjuster.Configure( onsetsAdjusterCfg );
 
 			AdjustBeatWRTTickConfig beatTickAdjusterCfg;
-			beatTickAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			beatTickAdjusterCfg.SetSampleRate( mConfig.GetSampleRate() );
 			beatTickAdjusterCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
 			beatTickAdjusterCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
 
@@ -120,7 +120,7 @@ namespace CLAM
 
 			AdjustBeatWRTOnsetsConfig beatOnsetsAdjusterCfg;
 
-			beatOnsetsAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			beatOnsetsAdjusterCfg.SetSampleRate( mConfig.GetSampleRate() );
 			beatOnsetsAdjusterCfg.SetDeviationPenalty( mConfig.GetDeviationPenalty() );
 			beatOnsetsAdjusterCfg.SetOverSubdivisionPenalty( mConfig.GetOverSubdivisionPenalty() );
 
@@ -128,7 +128,7 @@ namespace CLAM
 
 			BeatIntervalEstimatorConfig tempoEstCfg;
 
-			tempoEstCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			tempoEstCfg.SetSampleRate( mConfig.GetSampleRate() );
 			tempoEstCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
 			tempoEstCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
 
@@ -136,11 +136,23 @@ namespace CLAM
 
 			GlobalPulseRateEstimatorConfig gpreCfg;
 
-			gpreCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			gpreCfg.SetSampleRate( mConfig.GetSampleRate() );
 			gpreCfg.SetRateLowerBound( mConfig.GetTickLimInf() );
-			gpreCfg.SetGaussianSize( mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize() );
+			gpreCfg.SetGaussianSize( mConfig.GetSampleRate()*mConfig.GetGaussianWindowSize() );
 
 			mGlobalPREstimator.Configure( gpreCfg );
+
+			// internal parameters setup
+			mIOIHistMaxSize = 10 * (TSize)mConfig.GetSampleRate();
+
+			// Internal data objects setup
+			mTransientsForHist.Resize( mConfig.GetNTrans() );
+			mTransientsForHist.SetSize( mConfig.GetNTrans() );
+			//Don't use weights for the building of the histogram:
+			mTransientsForHist[0].SetWeight(0); //because the 1st transient is added manually			
+			mTransientsForHist[0].SetPosition(0);
+
+
 
 			return true;
 		}
@@ -212,6 +224,7 @@ namespace CLAM
 			if (numbTrans>transients.Size())
 			{
 				numbTrans = transients.Size();
+				mTransientsForHist.SetSize( numbTrans );
 				stop = 1;
 			}
 
@@ -220,15 +233,6 @@ namespace CLAM
 			int indTrans2 = numbTrans-1;
 			int posTrans1;
 			int posTrans2;
-
-			TData windowSize;
-
-			Array<TimeIndex>  transientsForHist(numbTrans);
-			transientsForHist.SetSize(numbTrans);
-			//Don't use weights for the building of the histogram:
-			transientsForHist[0].SetWeight(0); //because the 1st transient is added manually			
-			transientsForHist[0].SetPosition(0);
-
 
 			Array<TimeIndex>  IOIHistPeaks;
 
@@ -242,7 +246,7 @@ namespace CLAM
 		
 			//MRJ: put a maximum on the IOIHist length (maximum difference to be considered
 			//is 10s)
-			const TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
+			
 
 			int nLoops = 0;
 
@@ -250,23 +254,28 @@ namespace CLAM
 			{
 				posTrans1 = transients[indTrans1].GetPosition();
 				posTrans2 = transients[indTrans2].GetPosition();
-				windowSize = posTrans2-posTrans1;
+				TSize windowSize = posTrans2 - posTrans1;
 			
-				TSize IOIhistSize = CLAM::CLAM_min(windowSize,IOIHistLim);
-				IOIHist.GetBins().Resize( IOIhistSize );
-				IOIHist.GetBins().SetSize( IOIhistSize );
+				TSize actualIOIHistSize = std::min((TSize)windowSize,mIOIHistMaxSize);
+				
+				if ( IOIHist.GetBins().Size() < actualIOIHistSize )
+				{
+					IOIHist.GetBins().Resize( actualIOIHistSize );
+				}
+				
+				IOIHist.GetBins().SetSize( actualIOIHistSize );
 
 				/// Compute the IOIHistogram
 			
-				for (int i=1;i<transientsForHist.Size();i++)
+				for (int i=1;i<mTransientsForHist.Size();i++)
 				{
-					transientsForHist[i].SetPosition
+					mTransientsForHist[i].SetPosition
 						(transients[indTrans1+i].GetPosition()-posTrans1);
-					transientsForHist[i].SetWeight(1); //All weights to 1
+					mTransientsForHist[i].SetWeight(1); //All weights to 1
 				}
 
 
-				mTemporalDiff.Do(transientsForHist,IOIHist);
+				mTemporalDiff.Do(mTransientsForHist,IOIHist);
 
 
 				///IOI histogram Peak Detection
@@ -358,7 +367,8 @@ namespace CLAM
 				nLoops +=1;
 				indTrans1 = nLoops*transHop;
 				indTrans2 = nLoops*transHop+numbTrans-1;
-				if (indTrans2>=transients.Size())
+
+				if ( indTrans2 >= transients.Size() )
 				{
 					indTrans2 = transients.Size()-1;
 					indTrans1 = indTrans2-numbTrans+1;
@@ -381,13 +391,13 @@ namespace CLAM
 			if (computeBeats)
 			{
 				const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
-				TData rateLowerBound = (mConfig.GetSamplingRate()*60.0)/tempoLimInf;
+				TData rateLowerBound = (mConfig.GetSampleRate()*60.0)/tempoLimInf;
 				mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( rateLowerBound );
 				mGlobalPREstimator.Do( forGlobalTempoCalc, globalTempo );
 			}
 
 			///Compute Global tick
-			const int tickLimInf = mConfig.GetTickLimInf()*mConfig.GetSamplingRate(); //samples
+			const int tickLimInf = mConfig.GetTickLimInf()*mConfig.GetSampleRate(); //samples
 			mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( tickLimInf );
 			mGlobalPREstimator.Do( forGlobalTickCalc, globalTick );
 

@@ -13,7 +13,7 @@ namespace CLAM
 		{
 		public:
 			DYNAMIC_TYPE_USING_INTERFACE (TickSequenceTrackerConfig, 21,ProcessingConfig);
-			DYN_ATTRIBUTE ( 0, public, TData, SamplingRate);
+			DYN_ATTRIBUTE ( 0, public, TData, SampleRate);
 
 			//Tick and beat computation attributes
 			DYN_ATTRIBUTE ( 1, public, bool, ComputeBeats);

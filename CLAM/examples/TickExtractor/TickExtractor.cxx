@@ -122,7 +122,7 @@ namespace CLAM
 		myTickSequenceTrackerConfig.SetNTrans(configuration.GetNTrans());
 		myTickSequenceTrackerConfig.SetTransHop(configuration.GetTransHop());
 		
-		myTickSequenceTrackerConfig.SetSamplingRate(sampleRate);
+		myTickSequenceTrackerConfig.SetSampleRate(sampleRate);
 		
 		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);		
 

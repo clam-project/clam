@@ -10,7 +10,7 @@ namespace CLAM
 			AddAll();
 			UpdateData();
 			//default values
-			SetSamplingRate(44100.0);
+			SetSampleRate(44100.0);
 			SetComputeBeats(true);
 			SetNTrans(500);
 			SetTransHop(450);
