@@ -6,19 +6,13 @@
 #include "FL/Fl_Tile.H"
 #include "Fl_Smart_Tile.H"
 class Fl_Smart_Tile;
-#include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"
-namespace CLAMGUI
-{
-class AnalysisSynthesisExampleGUI;
-}
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
+#include "ForwardDeclarations.hxx"
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
-
-using namespace CLAMGUI;
 
 class UserInterface {
 public:
@@ -121,7 +115,7 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  void Attach(Fl_Window* canvas);
+  void Attach(int i, CLAM::Audio* obj);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();

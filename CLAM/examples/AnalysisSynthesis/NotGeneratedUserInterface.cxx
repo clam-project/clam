@@ -140,16 +140,7 @@ void UserInterface::StoreAnalysisData(void)
 void UserInterface::DisplayInputSound(void)
 {
 	if(mAttachedPresentations[0]==NULL){
-		Geometry g(0, 0, 890, 490);
-		mAttachedViews[0] = new ProcDataView<Audio>;
-		mAttachedPresentations[0] = new ProcDataPresentation<Audio>(g, "Input Audio");
-		
-		mAttachedViews[0]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-		mAttachedPresentations[0]->LinkWithView( mAttachedViews[0] );
-		
-		Attach( mAttachedPresentations[0]->GetWindow() );
-		mAttachedPresentations[0]->Show();
-		mAttachedViews[0]->Refresh();
+		Attach(0, &mAnalysisSynthesisExample->mAudioIn); 
 	}
  	else{
 		//MRJ: Don't forget to always refresh associated views!
@@ -174,7 +165,7 @@ void UserInterface::DisplayInputSpectrum(void)
 	view->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[1].GetSpectrum() );
 	presentation->LinkWithView( view );
 
-	Attach(presentation->GetWindow());
+//	Attach(presentation->GetWindow());
 
 	presentation->Show();
 	view->Refresh();
@@ -185,16 +176,7 @@ void UserInterface::DisplayInputSpectrum(void)
 void UserInterface::DisplayOutputSound(void)
 {
 	if(mAttachedPresentations[1]==NULL){
-		Geometry g(0, 0, 890, 490);
-		mAttachedViews[1] = new ProcDataView<Audio>;
-		mAttachedPresentations[1] = new ProcDataPresentation<Audio>(g, "Output Audio");
-		
-		mAttachedViews[1]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-		mAttachedPresentations[1]->LinkWithView( mAttachedViews[1] );
-		
-		Attach( mAttachedPresentations[1]->GetWindow() );
-		mAttachedPresentations[1]->Show();
-		mAttachedViews[1]->Refresh();
+		Attach(1, &mAnalysisSynthesisExample->mAudioOut); 
 	}
 	else{
 		mAttachedViews[1]->Refresh();
@@ -211,16 +193,7 @@ void UserInterface::DisplayOutputSound(void)
 void UserInterface::DisplayOutputSoundResidual(void)
 {
 	if(mAttachedPresentations[2]==NULL){
-		Geometry g(0, 0, 890, 490);
-		mAttachedViews[2] = new ProcDataView<Audio>;
-		mAttachedPresentations[2] = new ProcDataPresentation<Audio>(g, "Output Residual");
-		
-		mAttachedViews[2]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-		mAttachedPresentations[2]->LinkWithView( mAttachedViews[2] );
-		
-		Attach( mAttachedPresentations[2]->GetWindow() );
-		mAttachedPresentations[2]->Show();
-		mAttachedViews[2]->Refresh();
+		Attach(2, &mAnalysisSynthesisExample->mAudioOutRes); 
 	}
 	else{
 		mAttachedViews[2]->Refresh();
@@ -237,16 +210,7 @@ void UserInterface::DisplayOutputSoundResidual(void)
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
 	if(mAttachedPresentations[3]==NULL){
-		Geometry g(0, 0, 890, 490);
-		mAttachedViews[3] = new ProcDataView<Audio>;
-		mAttachedPresentations[3] = new ProcDataPresentation<Audio>(g, "Output Sinusoidal");
-		
-		mAttachedViews[3]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-		mAttachedPresentations[3]->LinkWithView( mAttachedViews[3] );
-		
-		Attach( mAttachedPresentations[3]->GetWindow() );
-		mAttachedPresentations[3]->Show();
-		mAttachedViews[3]->Refresh();
+		Attach(3, &mAnalysisSynthesisExample->mAudioOutSin);
 	}
 	else{
 		mAttachedViews[3]->Refresh();
@@ -315,12 +279,24 @@ void UserInterface::PlayResidual(void)
 	mAnalysisSynthesisExample->PlayResidual();
 }
 
-void UserInterface::Attach(Fl_Window* canvas)
+
+void UserInterface::Attach(int i, Audio* obj)
 {
-	canvas->resizable();
-	mSmartTile->add(canvas);
+	Geometry g(0, 0, 860, 490);
+	mAttachedViews[i] = new ProcDataView<Audio>;
+	mAttachedPresentations[i] = new ProcDataPresentation<Audio>(g, "");
+	
+	mAttachedViews[i]->BindTo( obj );
+	mAttachedPresentations[i]->LinkWithView( mAttachedViews[i] );
+	
+	mAttachedPresentations[i]->GetWindow()->resizable();
+	
+	mSmartTile->add(mAttachedPresentations[i]->GetWindow());
 	mSmartTile->equalize();
-	canvas->show();
+	mAttachedPresentations[i]->GetWindow()->show();
+	
+	mAttachedPresentations[i]->Show();
+	mAttachedViews[i]->Refresh();
 }
 
 

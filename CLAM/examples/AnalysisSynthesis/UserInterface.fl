@@ -14,10 +14,7 @@ decl {\#include "Fl_Smart_Tile.H"} {public
 decl {class Fl_Smart_Tile;} {public
 } 
 
-decl {\#include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"} {public
-} 
-
-decl {class AnalysisSynthesisExampleGUI;} {public
+decl {\#include "ForwardDeclarations.hxx"} {public
 } 
 
 decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {} 
@@ -28,7 +25,7 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
-class UserInterface {open selected
+class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
@@ -238,7 +235,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {441 333 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      private xywh {444 336 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {
@@ -283,7 +280,7 @@ mWindow2=NULL;}
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {void Attach(Fl_Window* canvas);} {}
+  decl {void Attach(int i, CLAM::Audio* obj);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
