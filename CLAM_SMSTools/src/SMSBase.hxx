@@ -30,7 +30,7 @@
 #include "SMSAnalysisConfig.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
-#include "SMSTransformationChain.hxx"
+//TODO#include "SMSTransformationChain.hxx"
 #include "SegmentDescriptors.hxx"
 #include "AudioOut.hxx"
 #include "Progress.hxx"
@@ -63,9 +63,9 @@ namespace CLAM
 			mHaveConfig=hasConfig;
 		}
 
-		SMSTransformationChainConfig& GetCurrentTransformationScore() {
-			return mTransformationScore;
-		}
+//TODO		SMSTransformationChainConfig& GetCurrentTransformationScore() {
+//TODO			return mTransformationScore;
+//TODO		}
 		
 		Segment& GetOriginalSegment()
 		{
@@ -97,11 +97,11 @@ namespace CLAM
 			return mHaveTransformationScore;
 		}
 
-		void  SetCurrentTransformationScore( const SMSTransformationChainConfig& cfg )
-		{
-			mTransformationScore = cfg;
-			mHaveTransformationScore = true;
-		}
+//TODO		void  SetCurrentTransformationScore( const SMSTransformationChainConfig& cfg )
+//TODO		{
+//TODO			mTransformationScore = cfg;
+//TODO			mHaveTransformationScore = true;
+//TODO		}
 
 		void  SetAnalysisInputFile( const char* filename )
 		{
@@ -292,11 +292,11 @@ namespace CLAM
 		* @see InitConfigs */
 		SMSAnalysisSynthesisConfig mGlobalConfig;
 		/** Transformation score loaded from an xml file */
-		SMSTransformationChainConfig mTransformationScore;
+//TODO		SMSTransformationChainConfig mTransformationScore;
 
 
 		/** Actual transformation to be used*/
-		SMSTransformationChain mTransformation;
+	//TODO		SMSTransformationChain mTransformation;
 
 
 		/** Internal Processings used for analysis and synthesis */
