@@ -35,7 +35,6 @@ namespace CLAM {
 		  mLen(length),
 		  mEnd(0)
 	{
-		CLAM_ASSERT(mLen%2==0, "StreamRegion:: size of stream region always has to be even");
 	}
 
 	void StreamRegion::Activate()
