@@ -32,7 +32,7 @@
 namespace CLAMVM
 {
 	Fl_Gl_Single_Browsable_Display::Fl_Gl_Single_Browsable_Display( int X, int Y, int W, int H, const char* label)
-		: Fl_Gl_Single_Display( X, Y, W, H, label ), mRenderer( NULL )
+		: Fl_Gl_Single_Display( X, Y, W, H, label )
 	{
 		mPainting = false;
 		mPos = -1;
@@ -50,8 +50,7 @@ namespace CLAMVM
 	}
 
 	void Fl_Gl_Single_Browsable_Display::SetPos( CLAM::TData pos ) {
-		AudioRenderingManager* arm = dynamic_cast<AudioRenderingManager*>(mRenderer);
-		mPos = pos * arm->GetTimeInfo().sampleRate;
+		mPos = pos;
 		DrawContents();
 	}
 
@@ -63,9 +62,6 @@ namespace CLAMVM
 				QueryDataBoundBox( dataBBox );
 				
 				mPos = ( Fl::event_x(  ) - x(  ) ) * (dataBBox.mRight-dataBBox.mLeft) / w(  ) + dataBBox.mLeft;
-
-				AudioRenderingManager* arm = dynamic_cast<AudioRenderingManager*>(mRenderer);
-				mPos /= arm->GetTimeInfo().sampleRate;
 
 				DrawContents();
 				// notify SLOTTED class to act

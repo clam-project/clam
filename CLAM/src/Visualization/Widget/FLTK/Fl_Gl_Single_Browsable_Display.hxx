@@ -41,12 +41,6 @@ namespace CLAMVM
 
 		~Fl_Gl_Single_Browsable_Display();
 
-		void SetRenderer( GLRenderingManager& renderer )
-		{
-			mRenderer = &renderer;
-			mRenderer->SetSurface( this );
-		}
-
 		void DrawOverlay(  );
 		
  		int handle( int event ); // Fl_Gl_Window required interface
