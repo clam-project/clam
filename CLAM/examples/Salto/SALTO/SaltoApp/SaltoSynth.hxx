@@ -5,11 +5,8 @@
 #include "DataTypes.hxx"
 #include "OSDefines.hxx"
 #include "Array.hxx"
-//#include "CSaltoSineSynthesis.hxx"
 #include "SpectralSynthesis.hxx"
-//#include "CSaltoResidualSynthesis.hxx"
 #include "CSaltoTimbreVektor.hxx"
-//#include "CSaltoInterpolation.hxx"
 #include <string>
 
 #include "SineSynthesis.hxx"
@@ -164,8 +161,6 @@ public:
 
 protected:
 
-	void DoSynthesisProcess( CSaltoSynthFrame *pSynthFrame );
-
 	void DoStationarySynthesisProcess( CSaltoSynthFrame* pSynthFrame );
 
 	void DoReleaseSynthesisProcess( CSaltoSynthFrame* pSynthFrame );
@@ -178,9 +173,7 @@ protected:
 
 	void DoInterpolatingReleaseSynthesis( CSaltoSynthFrame* pSynthFrame, double gain, int currRelFrame );
 
-	void DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame );
-
-	void DoTransitionSynthesis( CSaltoSynthFrame *pSynthFrame);
+	void DoTransitionSynthesis( CSaltoSynthFrame* pSynthFrame );
 
 	bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
 
@@ -267,11 +260,11 @@ private:
 	CSaltoSynthFrame*   mpSynthFrame;
 	
 	/* processing objects* all named PO*/
-	SineSynthesis						mpSineSynthPO;
+	SineSynthesis						mSineSynthPO;
 	SpectralSynthesis					mSpectralSynthesisPO;
-	SALTO::AttackResidualSynthesis		mpAttackResSynthPO;
-	SALTO::StationaryResidualSynthesis  mpStatResSyhthesisPO;
-	InterpolatingSynthesis				mpInterpolPO;
+	SALTO::AttackResidualSynthesis		mAttackResSynthPO;
+	SALTO::StationaryResidualSynthesis  mStatResSyhthesisPO;
+	InterpolatingSynthesis				mInterpolPO;
 
 	/* Processing Handlers objects */
 	AttackHandler						mAttackHandler;
