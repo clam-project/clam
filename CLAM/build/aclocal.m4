@@ -17,6 +17,34 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+AC_DEFUN(CLAM_CHECK_DARWINESS,
+[
+	AC_MSG_CHECKING([system 'darwiness'])
+	UNAME_RESULT=`uname`
+	if test $UNAME_RESULT = "Darwin"
+	then
+		AC_MSG_RESULT(yes)
+		IS_DARWIN="yes"
+	else
+		AC_MSG_RESULT(no)
+		IS_DARWIN="no"
+	fi
+])
+
+AC_DEFUN(CLAM_CHECK_PKGCONFIG,
+[
+	AC_MSG_CHECKING([pkg-config availability])
+	WHICH_RESULTS=`which pkg-config`
+	if test -x "$WHICH_RESULTS"
+	then
+		PKGCONFIG=$WHICH_RESULTS
+		PKGCONFIG_AVAILABLE="yes"
+		AC_MSG_RESULT(yes)
+	else
+		PKGCONFIG_AVAILABLE="no"
+		AC_MSG_RESULT(no)
+	fi
+])
 
 AC_DEFUN(CLAM_CHECK_CXX,
 [
@@ -159,30 +187,28 @@ AC_DEFUN(CLAM_LIB_FLTK,
 [
 AC_MSG_CHECKING([fltk-config is known by the /usr/bin/which command...])
 
-if test -f `which fltk-config`
-	then
-		fltk_config_exec=`which fltk-config`	
+FLTKCONFIG=`which fltk-config`
 
+if test -x "$FLTKCONFIG"
+then
+	AC_MSG_RESULT(yes)
+else
+
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING([fltk-config is in the sandbox...])
+	FLTKCONFIG="../../fltk/bin/fltk-config"
+	if test -x "$FLTKCONFIG"
+	then
 		AC_MSG_RESULT(yes)
 	else
-
 		AC_MSG_RESULT(no)
-		AC_MSG_CHECKING([fltk-config is in the sandbox...])
-		if test -f `$pwd/../../fltk/bin/fltk-config`
-			then
-				fltk_config_exec=`$pwd/../../fltk/bin/fltk-config`
-				AC_MSG_RESULT(yes)
-			else
-				AC_MSG_RESULT(no)
-				AC_MSG_ERROR([The autoconf script has been unable to locate fltk-config script. This means that you have neither installed a suitable FLTK package or it is not present in your CLAM sandbox])
-		fi;
+		AC_MSG_ERROR([The autoconf script has been unable to locate fltk-config script. This means that you have neither installed a suitable FLTK package or it is not present in your CLAM sandbox])
+	fi;
 fi;
-
-fltk_config_exec="$fltk_config_exec --use-gl --use-images"
 
 AC_MSG_CHECKING([checking FLTK API version is 1.1 ...])
 
-FLTK_API_VERSION=`$fltk_config_exec --api-version`
+FLTK_API_VERSION=`$FLTKCONFIG --api-version`
 
 if [[ "1.1" == "$FLTK_API_VERSION" ]]
 	then
@@ -192,8 +218,8 @@ if [[ "1.1" == "$FLTK_API_VERSION" ]]
 		AC_MSG_ERROR([Currently CLAM only supports FLTK API version 1.1])
 fi;	
 
-RAW_FLTK_CFLAGS=`$fltk_config_exec --cxxflags`
-RAW_FLTK_LDFLAGS=`$fltk_config_exec --ldflags`
+RAW_FLTK_CFLAGS=`$FLTKCONFIG --cxxflags`
+RAW_FLTK_LDFLAGS=`$FLTKCONFIG --ldflags`
 
 for incpath in $RAW_FLTK_CFLAGS
 	do
@@ -431,6 +457,88 @@ fi;
 ]
 )
 
+dnl Darwin checking procs
+AC_DEFUN(CLAM_LIB_OGGVORBIS_DARWIN,
+[
+	AC_MSG_NOTICE([Checking that Ogg/Vorbis libs are in CLAM sandbox])
+		
+	OGGVORBIS_IN_SANDBOX="no"
+	
+	AC_CHECK_FILE( ../../oggvorbis/include/vorbis/vorbisfile.h,
+			[OGGVORBIS_IN_SANDBOX="yes"], [OGGVORBIS_IN_SANDBOX="no"] )
+	
+	if test $OGGVORBIS_IN_SANDBOX = "no"
+	then
+		AC_MSG_ERROR([Ogg/Vorbis libraries are not in local CLAM Sandbox: follow MacOS X installation instructions])
+	fi
+
+	OGGVORBIS_LIBS="ogg vorbis vorbisenc vorbisfile"
+	OGGVORBIS_LIB_PATH="../../oggvorbis/lib"
+	OGGVORBIS_INCLUDES="../../oggvorbis/include"
+])
+
+AC_DEFUN( CLAM_LIB_SNDFILE_DARWIN,
+[
+	AC_MSG_NOTICE([Checking that libsndfile is in CLAM sandbox])
+		
+	SNDFILE_IN_SANDBOX="no"
+	
+	AC_CHECK_FILE( ../../libsndfile/include/sndfile.h,
+			[SNDFILE_IN_SANDBOX="yes"], [SNDFILE_IN_SANDBOX="no"] )
+	
+	if test $SNDFILE_IN_SANDBOX = "no"
+	then
+		AC_MSG_ERROR([libsndfile are not in local CLAM Sandbox: follow MacOS X installation instructions])
+	fi
+
+	SNDFILE_LIBS="sndfile"
+	SNDFILE_LIB_PATH="../../libsndfile/lib"
+	SNDFILE_INCLUDES="../../libsndfile/include"
+	
+])
+
+AC_DEFUN(CLAM_LIB_MAD_DARWIN,
+[
+	AC_MSG_NOTICE([Checking that Underbit's libmad is in CLAM sandbox])
+		
+	LIBMAD_IN_SANDBOX="no"
+	
+	AC_CHECK_FILE( ../../libmad/include/mad.h,
+			[LIBMAD_IN_SANDBOX="yes"], [LIBMAD_IN_SANDBOX="no"] )
+	
+	if test $LIBMAD_IN_SANDBOX = "no"
+	then
+		AC_MSG_ERROR([libmad cannot be found on local CLAM Sandbox: follow MacOS X installation instructions])
+	fi
+
+	LIBMAD_LIBS="mad"
+	LIBMAD_LIB_PATH="../../libmad/lib"
+	LIBMAD_INCLUDES="../../libmad/include"
+	
+])
+
+AC_DEFUN(CLAM_LIB_ID3LIB_DARWIN,
+[
+	AC_MSG_NOTICE([Checking that id3lib is in CLAM sandbox])
+		
+	ID3LIB_IN_SANDBOX="no"
+	
+	AC_CHECK_FILE( ../../id3lib/include/id3/tag.h,
+			[ID3LIB_IN_SANDBOX="yes"], [ID3LIB_IN_SANDBOX="no"] )
+	
+	if test $ID3LIB_IN_SANDBOX = "no"
+	then
+		AC_MSG_ERROR([id3lib cannot be found on local CLAM Sandbox: follow MacOS X installation instructions])
+	fi
+
+	ID3LIB_LIBS="id3 z"
+	ID3LIB_LIB_PATH="../../id3lib/lib"
+	ID3LIB_INCLUDES="../../id3lib/include"
+	
+])
+
+dnl End Of Darwin checking procs
+
 dnl Start of Vorbis I SDK checking procedure
 AC_DEFUN(CLAM_LIB_OGGVORBIS,
 [
@@ -618,10 +726,9 @@ dnl End of libid3 checking procedure
 dnl Start of Underbit's libmad checking procedure
 AC_DEFUN(CLAM_LIB_MAD,
 [
-	pkg_config_exec=`which pkg-config`
 	AC_MSG_NOTICE([Checking that Underbit's MPEG Audio Decoder library is installed])
 	
-	$pkg_config_exec --exists mad
+	$PKGCONFIG --exists mad
 	
 	if test "$?" -eq 0;
 	then
@@ -633,7 +740,7 @@ AC_DEFUN(CLAM_LIB_MAD,
 
 	AC_MSG_NOTICE([Checking that libmad version is acceptable (above 0.14.2)])
 	
-	$pkg_config_exec --atleast-version=0.14.2 mad
+	$PKGCONFIG --atleast-version=0.14.2 mad
 	
 	if test "$?" -eq 0;
 	then
@@ -643,9 +750,9 @@ AC_DEFUN(CLAM_LIB_MAD,
 		AC_MSG_ERROR([The currently installed libmad version is inferior to 0.14.2. Please update you currently installed version to a more recent release])
 	fi;
 
-	LIBMAD_INCLUDES__0=`$pkg_config_exec --cflags mad`
-	LIBMAD_LIBS_PATH_0=`$pkg_config_exec --libs-only-L mad`
-	LIBMAD_LIBS_0=`$pkg_config_exec --libs-only-l mad`
+	LIBMAD_INCLUDES__0=`$PKGCONFIG --cflags mad`
+	LIBMAD_LIBS_PATH_0=`$PKGCONFIG --libs-only-L mad`
+	LIBMAD_LIBS_0=`$PKGCONFIG --libs-only-l mad`
 
 	for incpath in $LIBMAD_INCLUDES_0
 	do
@@ -671,29 +778,67 @@ AC_DEFUN(CLAM_LIB_MAD,
 		fi
 	done
 
-
-
 ])
 dnl end of Underbit's libmad checking procedure
 
+dnl Start of Underbit's libmad checking procedure without pkg-config
+AC_DEFUN(CLAM_LIB_MAD_NO_PKGCONFIG,
+[
+	AC_MSG_NOTICE([Checking that Underbit's MPEG Audio Decoder library is installed])
+
+	LIBMADPRESENT="no"
+	HDRMADPRESENT="no"
+	
+	AC_CHECK_LIB( mad,
+		      mad_stream_init,
+		      [LIBMADPRESENT="yes"],[LIBMADPRESENT="no"])
+
+	AC_CHECK_HEADER( mad.h,
+			[HDRMADPRESENT="yes"],[HDRMADPRESENT="no"],
+			[/usr/include:/usr/local/include])
+
+	if test $LIBMADPRESENT = "no" || test $HDRMADPRESENT = "no";
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libmad seems not to be present on your system!])
+	fi
+
+	LIBMAD_LIBS="mad"
+	LIBMAD_LIB_PATH=""
+	LIBMAD_INCLUDES=""
+	
+	AC_PATH_TOOL( LIBMAD_LIB_PATH,
+		      libmad.so,
+		      [],
+		      [/usr/lib:/usr/local/lib:/opt/lib])
+
+	LIBMAD_LIB_PATH=${LIBMAD_LIB_PATH%/libmad.so}
+
+	if test $LIBMAD_LIB_PATH = "/usr/lib";
+	then
+		LIBMAD_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( LIBMAD_INCLUDES,
+		      mad.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	LIBMAD_INCLUDES=${LIBMAD_INCLUDES%/mad.h}
+	
+	if test $LIBMAD_INCLUDES = "/usr/include" || test $LIBMAD_INCLUDES = "/usr/local/include";
+	then
+		LIBMAD_INCLUDES=""
+	fi		
+])
+dnl End of libmad checking procedure
 
 dnl Start of libsndfile checking procedure
 AC_DEFUN(CLAM_LIB_SNDFILE,
 [
-AC_MSG_CHECKING([pkg-config is present...])
-if test -n `which pkg-config`
-	then 
-		pkg_config_exec=`which pkg-config`
-		AC_MSG_RESULT(yes)
-	else
-		AC_MSG_RESULT(no)
-		AC_MSG_ERROR([pkg-config is not installed in your system. Please first install pkg-config and then install libsndfile, before attempting to execute CLAM configure script.
-		])
-fi;
-
 AC_MSG_CHECKING([libsndfile is installed...])
 
-$pkg_config_exec --exists sndfile
+$PKGCONFIG --exists sndfile
 
 if test "$?" -eq 0;
 	then
@@ -706,7 +851,7 @@ fi;
 
 AC_MSG_CHECKING([libsndfile version is acceptable...])
 
-$pkg_config_exec --atleast-version=1.0.3 sndfile
+$PKGCONFIG --atleast-version=1.0.3 sndfile
 
 if test "$?" -eq 0;
 	then
@@ -717,9 +862,9 @@ if test "$?" -eq 0;
 		])
 fi;
 
-SNDFILE_INCLUDE_PATH_0=`$pkg_config_exec --cflags sndfile`
-SNDFILE_LIBS_PATH_0=`$pkg_config_exec --libs-only-L sndfile`
-SNDFILE_LIBS_0=`$pkg_config_exec --libs-only-l sndfile `
+SNDFILE_INCLUDE_PATH_0=`$PKGCONFIG --cflags sndfile`
+SNDFILE_LIBS_PATH_0=`$PKGCONFIG --libs-only-L sndfile`
+SNDFILE_LIBS_0=`$PKGCONFIG --libs-only-l sndfile `
 
 for incpath in $SNDFILE_INCLUDE_PATH_0
 	do
@@ -748,6 +893,57 @@ for binname in $SNDFILE_LIBS_0
 ]
 ) 
 dnl End of libsndfile checking procedure
+
+dnl Start of libsndfile checking procedure without pkg-config
+AC_DEFUN(CLAM_LIB_SNDFILE_NO_PKGCONFIG,
+[
+	AC_MSG_NOTICE([Checking that libsndfile is installed])
+	AC_CHECK_LIB(sndfile,
+		     sf_open,
+		     [LIBSNDFILE_PRESENT="yes";SNDFILE_LIBS="sndfile"],
+		     [LIBSNDFILE_PRESENT="no"])
+	
+	
+	AC_CHECK_HEADER(sndfile.h,
+			[HDRSNDFILE_PRESENT="yes"],
+			[HDRSNDFILE_PRESENT="no"] )
+	
+	if test $LIBSNDFILE_PRESENT = no || test $HDRSNDFILE_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libsndfile seems not to be present on your system!])
+	fi
+
+	SNDFILE_LIB_PATH=""
+	SNDFILE_INCLUDES=""
+	
+	AC_PATH_TOOL( SNDFILE_LIB_PATH,
+		      libsndfile.so,
+		      [],
+		      [/usr/lib:/usr/local/lib:/opt/lib])
+
+	SNDFILE_LIB_PATH=${SNDFILE_LIB_PATH%/libsndfile.so}
+
+	if test $SNDFILE_LIB_PATH = "/usr/lib";
+	then
+		SNDFILE_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( SNDFILE_INCLUDES,
+		      sndfile.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	SNDFILE_INCLUDES=${SNDFILE_INCLUDES%/sndfile.h}
+	
+	if test $SNDFILE_INCLUDES = "/usr/include" || test $SNDFILE_INCLUDES = "/usr/local/include";
+	then
+		SNDFILE_INCLUDES=""
+	fi
+
+
+])
+dnl End of libsndfile checking procedure without pkg-config
 
 AC_DEFUN(CLAM_LIB_FFTWOLD,
 [
