@@ -116,7 +116,9 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 
 bool Oscillator::Do()
 {
-	return Do(mOutput.GetData());
+	bool res = Do(mOutput.GetData());
+	mOutput.LeaveData();
+	return res;
 }
 
 bool Oscillator::Do( Audio& out )
