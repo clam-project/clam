@@ -44,6 +44,8 @@ private:
 		std::stringstream dumpedResult;
 		CLAM::XmlStorage::Dump(result,"DescriptionData",dumpedResult);
 
+		if (reference!=dumpedResult.str())
+			CLAM::XmlStorage::Dump(result,"DescriptionData",referenceFilename+".failed.xml");
 		CPPUNIT_ASSERT_EQUAL(reference,dumpedResult.str());
 	}
 
@@ -53,19 +55,23 @@ private:
 	{
 		typedef unsigned SamplePosition;
 		CLAM::DescriptionScheme scheme;
-//		scheme.AddScope("AudioSample");
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >   ("AudioSample","Level");
-//		scheme.AddScope("Frame");
+		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >         ("AudioSample","Level");
 		scheme.AddAttribute<CLAM::Attribute<SamplePosition> >      ("Frame","Center");
 		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >         ("Frame","Energy");
+		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >         ("Frame","RMS");
 		scheme.AddAttribute<CLAM::Attribute<CLAM::Spectrum> >      ("Frame","SpectralDistribution");
-		
+//		scheme.AddAttribute<CLAM::Attribute<CLAM::Spectrum> >      ("Song","EnergyCentroid");
+
 		CLAM::DescriptionDataPool pool(scheme);
 
 
 		const unsigned audioSize = 1025;
 		const unsigned frameSize = 256;
-		pool.PopulateScope("AudioSample",audioSize);
+
+		// AudioSample
+		pool.SetNumberOfContexts("AudioSample",audioSize);
+
+		// AudioSample::Level
 		{
 			CLAM::TData * audio = pool.GetAttributePool<CLAM::TData>("AudioSample","Level");
 			for (unsigned i=0; i<audioSize; i++) audio[i] = 0;
@@ -74,7 +80,11 @@ private:
 		}
 
 		const unsigned nFrames = audioSize/frameSize;
-		pool.PopulateScope("Frame",nFrames);
+
+		// Frame
+		pool.SetNumberOfContexts("Frame",nFrames);
+
+		// Frame::Center
 		{
 			SamplePosition * centers = pool.GetAttributePool<SamplePosition>("Frame","Center");
 			for (unsigned i=0; i<nFrames; i++)
@@ -82,6 +92,8 @@ private:
 				centers[i] = i*frameSize;
 			}
 		}
+
+		// Frame::Energy
 		{
 			CLAM::TData * means = pool.GetAttributePool<CLAM::TData>("Frame","Energy");
 			const SamplePosition * centers = pool.GetReadAttributePool<SamplePosition>("Frame","Center");
@@ -97,6 +109,40 @@ private:
 			}
 
 		}
+
+		// Frame::RMS
+		//
+		// Extractor Square
+		//    TargetScope: Frame
+		//    OutputBinding: .attribute(RMS)
+		//    InputBinding: .attribute(Energy)
+		{
+			/*
+			CLAM::SquareExtractor square; 
+			CLAM::Extractor & extractor = square;
+			extractor.BaseScope(pool,"Frame");
+			extractor.OutputHook("Squared").Attribute("RMS");
+			extractor.InputHook("ToBeSquared").Attribute("Energy");
+			while  (extractor.NextContext())
+			{
+				extractor.Compute();
+			}
+			*/
+
+			CLAM::TData * RMS = pool.GetAttributePool<CLAM::TData>("Frame","RMS");
+			const CLAM::TData * energy = pool.GetReadAttributePool<CLAM::TData>("Frame","Energy");
+			for (unsigned i=0; i<nFrames; i++)
+			{
+				CLAM::TData & outData = RMS[i];
+				const CLAM::TData & inData = energy[i];
+				{
+					outData = std::sqrt( inData );
+				}
+			}
+
+		}
+
+		// Frame::SpectralDistribution
 		{
 			CLAM::Spectrum * spectrums = pool.GetAttributePool<CLAM::Spectrum>("Frame","SpectralDistribution");
 			const SamplePosition * centers = pool.GetReadAttributePool<SamplePosition>("Frame","Center");
@@ -130,7 +176,7 @@ private:
 		assertBackToBackMatches(pool,"SpectralAnalysis.xml");
 	}
 
-	
+
 #ifdef NEVERDEFINED
 	void testSubGoal()
 	{
@@ -142,7 +188,7 @@ private:
 		scheme.AddAttribute<Spectrum>      ("Frame","SpectralDistribution");
 
 		CLAM::Scoper * loader = CLAM::Extractor::Create("SoundLoader");
-		loader.BindOutputHook("AudioSample",);
+		loader.BindOutputHook("AudioSample","Level");
 
 		CLAM::Scoper * frametizer = CLAM::Extractor::Create("Frametizer");
 		frametizer.BindOutputHook("Output","Frame");
@@ -151,33 +197,118 @@ private:
 
 		
 		CLAM::Extractor * fft = CLAM::Extractor::Create("SpectralAnalysis");
+		scheme.AddExtractor(fft);
+
 		fft.BindOutputHook("Output","Frame","SpectralDistribution");
 		fft.BindInputHook("Input",
-			CurrentContext().Attribute("Center").Indirect("AudioSample")
-				.RelativeRange(-framesize/2,+framesize/2).Attribute("Level")
+			CurrentContext().Attribute("Center").Indirect("AudioSample").Range("WindowSize")
+				.Attribute("Level").RelativeRange(-framesize/2,+framesize/2)
 			);
 
-		scheme.AddExtractor(fft);
+		scheme.AddExtractor(loader);
+		scheme.AddExtractor(frametizer);
+
+		scheme.SetParameter("FrameSize",256);
+
+		CLAM::DescriptionDataPool pool(scheme);
+		pool.ExtractFrom("mysong.mp3");
+		CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
 	}
-
-	void testExtractionGoal()
-	{
-		std::string fileName("mysong.mpg");
-		
-
-
-		
-	}
-
+/*
+----------- DescriptionScheme.xml
+<Parameter name="FrameSize" type="Integer" units="SampleRange" />
+...
+<Attribute scope="Frame" name="Center" type="SamplePosition" />
+<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+....
+<Extractor name="SpectralAnalysis" >
+	<Target scope="Frame" attribute="SpectralDistribution" />
+	<Dependency 
+		type="Indirect" 
+		scope="Sample" 
+		attribute="Signal" 
+		indirectAttribute="Center"
+		size = "$FrameSize"
+	/>
+</Extractor>
+...
+*/
 	void testGoal()
 	{
 		CLAM::DescriptionScheme scheme("DescriptionScheme.xml");
 		scheme.AddPlugin("DescriptionSchemeExtension.xml");
 		scheme.SetParameter("FrameSize",256);
+
 		CLAM::DescriptionDataPool pool(scheme);
 		pool.ExtractFrom("mysong.mp3");
 		CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
 	}
+/*
+<DescriptionDataPool NumberOfScopes='3'>
+	<DescriptionScheme>
+		<ImportScheme
+			uri='http://www.semanticaudio.org/RecomenderDS.xml'/>
+		<Attribute scope="Sample" name="Level" type="Signal" />
+		<Attribute scope="Frame" name="Center" type="SamplePosition" />
+		<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+	</DescriptionScheme>
+	<ScopePool name='Sample' size='2000'>
+		<AttributePool name='Level'>
+			0.0 0.0 .342161 ....
+		</AttributePool>"
+	</ScopePool>
+	<ScopePool name='Frame' size='8'>
+		<AttributePool name='Center'>
+			0 256 512 768 1024 1280 1536 1792
+		</AttributePool>
+		<AttributePool name='SpectralDistribution'>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			....
+		</AttributePool>
+	</ScopePool>
+</DescriptionDataPool>
+
+<DescriptionDataPool NumberOfScopes='3'>
+	<DescriptionScheme>
+		<ImportScheme
+			uri='http://www.semanticaudio.org/RecomenderDS.xml'/>
+		<Attribute scope="Sample" name="Level" type="Signal" />
+		<Attribute scope="Frame" name="Center" type="SamplePosition" />
+		<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+	</DescriptionScheme>
+	<Sample size='2000'>
+		<Level>
+			0.0 0.0 .342161 ....
+		</Level>
+	</Sample>
+	<Frame size='8'>
+		<Center>
+			0 256 512 768 1024 1280 1536 1792
+		</Center>
+		<SpectralDistribution>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			....
+		</SpectralDistribution>
+	</Frame>
+</DescriptionDataPool>
+
+ */
 #endif
 
 };
