@@ -48,19 +48,25 @@ class XmlStorage : public Storage
 	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
 	bool _useIndentation;
+/**
+ * @name Atomic primitives to Dump and Restore
+ * To be used only when you need to twickle the default behavior for summary operations
+ * (Dump, Restore...).
+ */
+// @{
 public:
 	XmlStorage();
 	~XmlStorage();
 
-// Final user interface (Atomic operations)
 public:
-	void Read(std::istream & is);
-	void Create(const std::string name);
-	void WriteSelection(std::ostream & os);
-	void WriteDocument(std::ostream & os);
-	void DumpObject(const Component & component);
-	void RestoreObject(Component & component);
+	void Read(std::istream & is); ///< Loads the DOM from the stream and selects the root node
+	void Create(const std::string name); ///< Creates a root node and selects it
+	void WriteSelection(std::ostream & os); ///< Dumps the selected node on the stream
+	void WriteDocument(std::ostream & os); ///< Dumps the full document on the stream
+	void DumpObject(const Component & component); ///< Holds the component DOM to the selected node
+	void RestoreObject(Component & component); ///< Restores the component from the selected node
 	/**
+	 * @brief Sets the selection at the specified path
 	 * @todo Not implemented yet
 	 */
 	void Select(const std::string & path);
@@ -72,11 +78,17 @@ public:
 	 * @todo Not implemented yet
 	 */
 	void UseIndentation(bool useIndentation);
-// Final User static interface (Summary operations)
+/// @}
+
+/**
+ * @name Summary operations to Dump and Restore
+ * Those operations are the simplest ones to use to dump and restore
+ * your objects in XML.
+ */
 public:
 
 	/**
-	 * Dumps a Component as XML onto the named file with name as the root element
+	 * Dumps a Component as XML onto the named file with name as the root element.
 	 */
 	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os)
 	{
@@ -88,7 +100,7 @@ public:
 	}
 
 	/**
-	 * Restore a Component from the given istream
+	 * Restore a Component from the given istream.
 	 */
 	static void Restore(Component & obj, std::istream & is)
 	{
@@ -98,7 +110,7 @@ public:
 	}
 
 	/**
-	 * Restore a Component from the xml fragment on the given xpath of the given document
+	 * Restore a Component from the xml fragment on the given xpath of the given document.
 	 * @todo Not implemented
 	 */
 	static void RestorePartialDocument(Component & obj, const std::string & path, std::istream & is)
@@ -111,22 +123,27 @@ public:
 
 	/**
 	 * Append the xml fragment corresponding to the given component
-	 * on the given xpath of an existing i/o stream
+	 * on the given xpath of an existing i/o stream.
 	 * @todo Not implemented
 	 */
 	static void AppendToDocument(const Component & obj, const std::string & path, std::iostream & str);
 
 	/**
-	 * Dump a Component from the named XML file
+	 * Dump a Component from the named XML file.
 	 */
 	static void Dump(const Component & obj, const std::string & rootName, const std::string & filename);
 
 	/**
-	 * Restore a Component from the named XML file
+	 * Restore a Component from the named XML file.
 	 */
 	static void Restore(Component & obj, const std::string & filename);
 
-// Interface for Components to load/store their subitems
+/**
+ * @name Interface for Components to load/store their subitems
+ * This is the interface to be used by the CLAM::Component::StoreOn 
+ * and CLAM::Component::LoadFrom implementers.
+ */
+// @{
 public:
 	/**
 	 * Components should use that function in their LoadFrom in order to store
@@ -138,6 +155,7 @@ public:
 	 * their subitems wrapped with XML*Adapters.
 	 */
 	bool Load(Storable & storable);
+// @}
 
 // Private helper functions
 private:
@@ -152,5 +170,49 @@ private:
 typedef XmlStorage XMLStorage;
 
 } // namespace CLAM
+
+/**
+ * @class CLAM::XmlStorage
+ * Provides XML format storage for CLAM Component's.
+ * Any class that derives from Component can be dumped and
+ * restored in XML (http://www.w3.org/XML) format.
+ * Components includes Arrays, DynamicType, ProcessingConfig,
+ * ProcessingData...
+ *
+ * @warning XML storage is a very expensive task when dealing
+ * 	with big amounts of numeric data.
+ *
+ * @section XMLStaticInterface Dumping and restoring a component on a file
+ * In its simplest usage, you can use the static functions
+ * Dump and Restore.
+ * @code
+ * MyComponent myComponent;
+ *
+ * // Here you can modify your Component
+ *
+ * CLAM::XmlStorage::Dump(myComponent, "Document", "MyComponent.xml")
+ * @endcode
+ *
+ * Later you can restore the component:
+ * @code
+ * // An unmodified default constructed object!!!
+ * MyComponent comp;
+ * CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
+ * @endcode
+ *
+ * Dump and Restore are overloaded to accept any C++ stream instead of a filename.
+ *
+ * Although is not implemented yet, you could use the AppendToDocument
+ * static function to add an object in a given path of an existing XML file,
+ * or using RestorePartialDocument to restore the object taking an XML fragment.
+ * Vote for them in the CLAM stories if you are interested in such functionality
+ * to be prioritized.
+ * 
+ */
+
+/**
+ * @defgroup XmlDumpingAndRestoring XML: Dumping and Restoring CLAM Components in XML format
+ * 
+ */
 
 #endif//_XMLStorage_
