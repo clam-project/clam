@@ -28,108 +28,130 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
 
-namespace CLAMVM
+#include "Audio.hxx"
+#include "AudioPlayer.hxx"
+
+using namespace CLAMVM;
+using CLAM::AudioPlayer;
+
+Fl_Browsable_Playable_Audio::Fl_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
+	: Fl_Window( X, Y, W, H, label ), AudioPresentation(  ), mCancel( false )
 {
-	Fl_Browsable_Playable_Audio::Fl_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-		: Fl_Window( X, Y, W, H, label )
-	{
-		mXAxis = new Fl_X_Axis( 0, H-40, W-40, 20, "Time (sec)" );
-		mXAxis->align( FL_ALIGN_BOTTOM );
-		mXAxis->scale( FL_AXIS_LIN );
-		mXAxis->minimum( 0.0f );
-		mXAxis->maximum( 1.0f );
-		mXAxis->label_format( "%g" );
-		mXAxis->label_step( 10 );
-		mXAxis->label_size( 9 );
-		mXAxis->axis_color( FL_BLACK );
-		mXAxis->axis_align( FL_AXIS_BOTTOM|FL_AXIS_LINE);
+	mXAxis = new Fl_X_Axis( 0, H-40, W-40, 20, "Time (sec)" );
+	mXAxis->align( FL_ALIGN_BOTTOM );
+	mXAxis->scale( FL_AXIS_LIN );
+	mXAxis->minimum( 0.0f );
+	mXAxis->maximum( 1.0f );
+	mXAxis->label_format( "%g" );
+	mXAxis->label_step( 10 );
+	mXAxis->label_size( 9 );
+	mXAxis->axis_color( FL_BLACK );
+	mXAxis->axis_align( FL_AXIS_BOTTOM|FL_AXIS_LINE);
 		
-		mYAxis = new Fl_Y_Axis( W-50, 0, 30, H-40, "Amplitude" );
-		mYAxis->align( FL_ALIGN_LEFT );
-		mYAxis->scale( FL_AXIS_LIN );
-		mYAxis->minimum( -1.0 );
-		mYAxis->maximum( 1.0 );
-		mYAxis->label_format( "%g" );
-		mYAxis->label_step( 10 );
-		mYAxis->label_size( 9 );
-		mYAxis->axis_color( FL_BLACK );
-		mYAxis->axis_align( FL_AXIS_RIGHT | FL_AXIS_LINE );
+	mYAxis = new Fl_Y_Axis( W-50, 0, 30, H-40, "Amplitude" );
+	mYAxis->align( FL_ALIGN_LEFT );
+	mYAxis->scale( FL_AXIS_LIN );
+	mYAxis->minimum( -1.0 );
+	mYAxis->maximum( 1.0 );
+	mYAxis->label_format( "%g" );
+	mYAxis->label_step( 10 );
+	mYAxis->label_size( 9 );
+	mYAxis->axis_color( FL_BLACK );
+	mYAxis->axis_align( FL_AXIS_RIGHT | FL_AXIS_LINE );
 
-		mXSlider = new Fl_ZoomSlider( 0, H-20, W-40, 20, FL_HORIZONTAL );
-		mYSlider = new Fl_ZoomSlider( W-20, 0, 20, H-40, FL_VERTICAL );
+	mXSlider = new Fl_ZoomSlider( 0, H-20, W-40, 20, FL_HORIZONTAL );
+	mYSlider = new Fl_ZoomSlider( W-20, 0, 20, H-40, FL_VERTICAL );
 
-		mDisplay = new Fl_Gl_Single_Browsable_Display( 0, 0, W-50, H-40 );
-		resizable( mDisplay );
-		mDisplay->SetRenderer( mDrawMgr );
-		mDisplay->EnableDoubleBuffering();
+	mDisplay = new Fl_Gl_Single_Browsable_Display( 0, 0, W-50, H-40 );
+	resizable( mDisplay );
+	mDisplay->SetRenderer( mDrawMgr );
+	mDisplay->EnableDoubleBuffering();
 		
-		mPlayButton = new Fl_Button ( W-40, H-20, 20, 20, "@>" );
-		mPlayButton->callback( play, NULL );
-		mPlayButton->shortcut( 'p' );
-		mPlayButton->labeltype(FL_SYMBOL_LABEL);
+	mPlayButton = new Fl_Button ( W-40, H-20, 20, 20, "@>" );
+	mPlayButton->callback( play, this );
+	mPlayButton->labeltype(FL_SYMBOL_LABEL);
 
-		mStopButton = new Fl_Button ( W-20, H-20, 20, 20, "@square" );
-		mStopButton->callback( stop, NULL );
-		mStopButton->shortcut( 's' );
-		mStopButton->labeltype(FL_SYMBOL_LABEL);
+	mStopButton = new Fl_Button ( W-20, H-20, 20, 20, "@square" );
+	mStopButton->callback( stop, this );
+	mStopButton->labeltype(FL_SYMBOL_LABEL);
 
-		// Signal and Slot connections
-		mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
-		mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
-		mYSlider->SpanChanged.Connect( mYAxis->AdjustRange );
-		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
+	// Signal and Slot connections
+	mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
+	mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
+	mYSlider->SpanChanged.Connect( mYAxis->AdjustRange );
+	mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
 				
-		end();
-		mDrawMgr.SetDetailThreshold( 500 );
-	}
+	end();
+	mDrawMgr.SetDetailThreshold( 500 );
+	mSlot.Wrap( this, &Fl_Browsable_Playable_Audio::Stop );
+}
 
-	Fl_Browsable_Playable_Audio::~Fl_Browsable_Playable_Audio( )
-	{
-	}
+Fl_Browsable_Playable_Audio::~Fl_Browsable_Playable_Audio( )
+{
+}
 
-	void Fl_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
-	{
-		tAudioTimeInfo timeNfo = { begin, begin+end, srate };
-		mDrawMgr.CacheData( array, timeNfo );
-		mDisplay->SetWorldSpace( array.Size() - 2, 0, 1.0, -1.0f );
-		mXAxis->minimum( begin );
-		mXAxis->maximum( begin+end );
-		redraw();
-	}
+void Fl_Browsable_Playable_Audio::play( Fl_Widget*, void* data)
+{
+	((Fl_Browsable_Playable_Audio*)data)->Play();
+}
 
+void Fl_Browsable_Playable_Audio::stop( Fl_Widget*, void* data)
+{
+	((Fl_Browsable_Playable_Audio*)data)->Stop();
+}
+
+void Fl_Browsable_Playable_Audio::Play(  )
+{ 
+	AudioPlayer::Stop(  );
+	mAudioPlayer = new AudioPlayer( mDrawMgr.GetTimeInfo(  ).sampleRate, 0, mDrawMgr.GetDataCached(  ), mSlot );
+}
+
+void Fl_Browsable_Playable_Audio::Stop(  )
+{
+	AudioPlayer::Stop(  );
+}
+
+void Fl_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
+{
+	tAudioTimeInfo timeNfo = { begin, begin+end, srate };
+	mDrawMgr.CacheData( array, timeNfo );
+	mDisplay->SetWorldSpace( array.Size() - 2, 0, 1.0, -1.0f );
+	mXAxis->minimum( begin );
+	mXAxis->maximum( begin+end );
+	redraw();
+}
 	
-	void Fl_Browsable_Playable_Audio::Show()
-	{
-		show();
-	}
+void Fl_Browsable_Playable_Audio::Show()
+{
+	show();
+}
 
-	void Fl_Browsable_Playable_Audio::Hide()
-	{
-		hide();
-	}
-	void Fl_Browsable_Playable_Audio::SetPainting(bool painting) 
-	{ 
-		mDisplay->SetPainting(painting); 
-	}
+void Fl_Browsable_Playable_Audio::Hide()
+{
+	hide();
+}
+void Fl_Browsable_Playable_Audio::SetPainting(bool painting) 
+{ 
+	mDisplay->SetPainting(painting); 
+}
 		
-	void Fl_Browsable_Playable_Audio::SetPos( CLAM::TData pos )
-	{ 
-		mDisplay->SetPos(pos); 
-	}
+void Fl_Browsable_Playable_Audio::SetPos( CLAM::TData pos )
+{ 
+	mDisplay->SetPos(pos); 
+}
 		
-	Slotv1<TData>* Fl_Browsable_Playable_Audio::GetFrameSlot()
-	{
-		return mDisplay->GetFrameSlot();
+Slotv1<TData>* Fl_Browsable_Playable_Audio::GetFrameSlot()
+{
+	return mDisplay->GetFrameSlot();
 
-	}
+}
 
-	Slotv1<bool>& Fl_Browsable_Playable_Audio::GetPaintSlot() 
-	{ 
-		return mDisplay->GetPaintSlot(); 
-	} 
+Slotv1<bool>& Fl_Browsable_Playable_Audio::GetPaintSlot() 
+{ 
+	return mDisplay->GetPaintSlot(); 
+} 
 
-	Signalv1<double>* Fl_Browsable_Playable_Audio::GetSignal() 
-	{ 
-		return mDisplay->GetSignal(); 
-	}
+Signalv1<double>* Fl_Browsable_Playable_Audio::GetSignal() 
+{ 
+	return mDisplay->GetSignal(); 
 }

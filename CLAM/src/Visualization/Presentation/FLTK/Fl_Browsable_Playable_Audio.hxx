@@ -26,16 +26,15 @@
 #include "AudioRenderingManager.hxx"
 #include "PlayablePresentation.hxx"
 #include "AudioPresentation.hxx"
-#include "Slotv1.hxx"
+#include "AudioPlayer.hxx"
 #include "Signalv1.hxx"
+#include "Slotv0.hxx"
+#include "Slotv1.hxx"
 
 class Fl_Button;
 
 namespace CLAMVM
 {
-	using SigSlot::Slotv1;
-	using SigSlot::Signalv1;
-
 	// forward declarations
 	class Fl_X_Axis;
 	class Fl_Y_Axis;
@@ -43,9 +42,8 @@ namespace CLAMVM
 	class Fl_Gl_Single_Browsable_Display;
 	class Fl_GridLayout;
 
-	class Fl_Browsable_Playable_Audio : public Fl_Window, public AudioPresentation, public PlayablePresentation
+	class Fl_Browsable_Playable_Audio : public Fl_Window, public AudioPresentation
 	{
-	private:
 		Fl_X_Axis*              mXAxis;
 		Fl_Y_Axis*              mYAxis;
 		Fl_ZoomSlider*          mXSlider;
@@ -54,10 +52,18 @@ namespace CLAMVM
 		Fl_Gl_Single_Browsable_Display*   mDisplay;
 		AudioRenderingManager   mDrawMgr;
 		Fl_Button * mPlayButton, * mStopButton;
+		bool mCancel;
+		SigSlot::Slotv0 mSlot;
+		CLAM::AudioPlayer* mAudioPlayer;
+
+		void Play(  );
+		void Stop(  );
+
+		static void play( Fl_Widget*, void* data);
+		static void stop( Fl_Widget*, void* data);
 
 	protected:
-
-		virtual void OnNewAudio( const DataArray&, TTime, TTime, TData );
+		void OnNewAudio( const DataArray&, TTime, TTime, TData );
 
 	public:
 		Fl_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
@@ -65,9 +71,9 @@ namespace CLAMVM
 				
 		void SetPainting(bool painting); 
 		void SetPos( CLAM::TData pos );
-		Slotv1<CLAM::TData>* GetFrameSlot();
-		Slotv1<bool>& GetPaintSlot(); 
-		Signalv1<double>* GetSignal();
+		SigSlot::Slotv1<CLAM::TData>* GetFrameSlot();
+		SigSlot::Slotv1<bool>& GetPaintSlot(); 
+		SigSlot::Signalv1<double>* GetSignal();
 		
 		void Show();
 		void Hide();
