@@ -67,9 +67,9 @@ namespace CLAMTest {
 		CPPUNIT_TEST (testValueConstructor);
 		CPPUNIT_TEST (testStringConstructor);
 		CPPUNIT_TEST (testSetValue);
-		CPPUNIT_TEST (testSetValueWithString);
-		CPPUNIT_TEST (testSetValueSafely_With_IllegalString);
-		CPPUNIT_TEST (testSetValueSafely_With_IllegalValue);
+		CPPUNIT_TEST (testSetValue_WithString);
+		CPPUNIT_TEST (testSetValueSafely_WithIllegalString);
+		CPPUNIT_TEST (testSetValueSafely_WithIllegalValue);
 
 		CPPUNIT_TEST_SUITE_END();
 	private:
@@ -95,13 +95,13 @@ namespace CLAMTest {
 			e.SetValue(0);
 			CLAM_ASSERT (e.GetString()=="zero", "SetValue(enum) didn't change the value to 'zero'");
 		}
-		void testSetValueWithString()
+		void testSetValue_WithString()
 		{
 			MyEnum e;
 			e.SetValue("dos");
 			CLAM_ASSERT (e.GetString()=="dos", "SetValue(string) didn't change the value to 'dos'");
 		}
-		void testSetValueSafely_With_IllegalString()
+		void testSetValueSafely_WithIllegalString()
 		{
 			MyEnum e;
 			try {
@@ -112,7 +112,7 @@ namespace CLAMTest {
 				// That's ok
 			}
 		}
-		void testSetValueSafely_With_IllegalValue()
+		void testSetValueSafely_WithIllegalValue()
 		{
 			MyEnum e;
 			try {
