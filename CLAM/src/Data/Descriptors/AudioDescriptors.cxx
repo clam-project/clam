@@ -150,7 +150,7 @@ TData AudioDescriptors::ComputeAttackTime()
 TData AudioDescriptors::ComputeLogAttackTime()
 {
 	ComputeAttackTime();
-	if (mComputedAttackTime<=0)
+	if (mComputedAttackTime==0)
 		return log10(mEpsilon);
 	return log10(mComputedAttackTime);
 }
