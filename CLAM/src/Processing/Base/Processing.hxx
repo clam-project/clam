@@ -326,6 +326,20 @@ namespace CLAM {
 
 		bool ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj);
 
+		bool AbleToExecute(void)
+		{
+			CLAM_DEBUG_ASSERT(
+				GetExecState() != Unconfigured &&
+			  GetExecState() != Ready,
+				string(GetClassName()+string(
+": Do(): Not in execution mode - did you call Start on this "
+"object, the composite it is in, or the ToplevelProcessing singleton?")
+).c_str());
+
+			return GetExecState() != Disabled;
+		}
+
+
 	public:
 		Processing();
 
