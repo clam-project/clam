@@ -46,7 +46,6 @@ namespace CLAM{
 		Q_OBJECT
 		typedef QDialog super;
 		typedef std::map<std::string, QWidget*> tWidgets;
-		typedef std::map<std::string, QTConfigurator*> tSubConfigurators;
 	public:
 		QTConfigurator(QWidget * parent = NULL, char * name = "Edit the configuration") 
 			: super(parent, name)
@@ -61,15 +60,15 @@ namespace CLAM{
 			if (mSetter) delete mSetter;
 			if (mGetter) delete mGetter;
 		}
-		QVBox * mLayout;
+
 		template <class Config>
 		void SetConfig(Config & config) {
 			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
 			CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
-			CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 			mSetter = new ConfigurationSetter<Config,QTConfigurator>(&config, this);
 			mGetter = new ConfigurationGetter<Config,QTConfigurator>(&config, this);
 
+			CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 			mLayout = new QVBox(this);
 			mLayout->setSpacing(3);
 			GetInfo();
@@ -104,7 +103,7 @@ namespace CLAM{
 		}
 
 	public:
-		
+
 		/** Default implementation, do nothing */
 		template <typename T>
 		void AddWidget(const char *name, void *foo, T& value) {
@@ -235,6 +234,7 @@ namespace CLAM{
 		}
 
 	private:
+		QVBox * mLayout;
 		ConfigurationVisitor * mGetter;
 		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
