@@ -30,7 +30,7 @@ namespace CLAM {
 		{  0x0002, 3, "NoteOn",         {"Key",    "Vel"}   }, // eNoteOn
 		{  0x0004, 3, "PolyAftertouch", {"Key",    "Value"} }, // ePolyAftertouch
 		{  0x0008, 3, "ControlChange",  {"CtrlNr", "Value"} }, // eControlChange
-		{  0x0010, 2, "ModeChange",     {0,0}               }, // eModeChange
+		{  0x0010, 2, "ProgramChange",     {"Value",0}               }, // eProgramChange
 		{  0x0020, 3, "Aftertouch",     {"Channel","Value"} }, // eAftertouch
 		{  0x0040, 3, "Pitchbend",      {"LSB",    "MSB"}   }, // ePitchbend
 		{  0x0080, 0, "System",         {0,        0}       }  // eSystem

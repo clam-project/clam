@@ -36,7 +36,7 @@ public:
 		eNoteOn = 1,
 		ePolyAftertouch = 2,
 		eControlChange = 3,
-		eModeChange = 4,
+		eProgramChange = 4,
 		eAftertouch = 5,
 		ePitchbend = 6,
 		eSystem = 7
