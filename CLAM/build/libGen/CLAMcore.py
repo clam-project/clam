@@ -9,16 +9,24 @@ def main() :
     libCLAMCore.add( "Data/Base" )
     libCLAMCore.add( "Defines" )
 
-    libCLAMCore.add( "Defines/Windows" )
+    #libCLAMCore.add( "Defines/Windows" )
     
     libCLAMCore.add( "Defines/Unix" )
     libCLAMCore.add( "Errors" )
+
+    # These files are blackballed since they depend on
+    # the Audio concrete ProcessingData
+    libCLAMCore.blackBall( "AudioInPort" )
+    libCLAMCore.blackBall( "AudioInPortPublisher" )
+    libCLAMCore.blackBall( "AudioOutPort" )
+    libCLAMCore.blackBall( "AudioOutPortPublisher" ) 
     libCLAMCore.add( "Flow/Ports" )
+
     libCLAMCore.add( "Flow/Networks" )
     libCLAMCore.add( "Flow/Controls" )
     libCLAMCore.add( "Processing/Base" )
     libCLAMCore.add( "Data/Base" )
-    libCLAMCore.add( "Data/BasicProcessing" )
+    
     libCLAMCore.add( "Standard" )
     libCLAMCore.add( "Storage/Base" )
     libCLAMCore.add( "Storage/XML" )

@@ -31,6 +31,7 @@ class LibGenerator :
     removeAllCmds = re.compile( r"@.+@" )
 
     variables = dict()
+    blackBalled = dict()
 
     hdrNormRE = re.compile( r"#include \"(?P<hdr>.+)\"" )
 
@@ -58,6 +59,15 @@ class LibGenerator :
         self.extraLibs.append( "CLAM%s"%CLAMlibname )
         self.extraLibPaths.append( "../%s"%CLAMlibname )
 
+    def blackBall( self, name ) :
+        self.blackBalled[name]=True
+
+    def isBlackBalled( self, name ) :
+        try:
+            return self.blackBalled[name]
+        except KeyError :
+            return False
+
     def add( self, folder, rootFolder="src" ) :
         if rootFolder != "src" :
             self.extraIncludes.append( "$(TOP)/%s"%(rootFolder,) )
@@ -70,14 +80,18 @@ class LibGenerator :
         headerDB = shelve.open( "CLAM_Headers", "c" )
 
         for item in folderContents :
+            fullPath = "%s/%s"%(basePath,item)
+
+            if self.isBlackBalled( item.split(".")[0]) :
+                print "Rejecting %s : it has been black balled"%fullPath
+                continue
             
-            fullPath = basePath + "/" + item
             
             if os.path.isdir( fullPath ) : continue
 
             if ( self.isCSourceRE.search( item ) != None or
                  self.isCxxSourceRE.search( item ) != None ) :
-                self.sourceFilenames.append( "$(TOP)/src/"+folder+"/"+item)
+                self.sourceFilenames.append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, item ) )
                 continue
 
             if ( self.isCxxHeaderRE.search( item ) != None or
@@ -154,6 +168,9 @@ class LibGenerator :
                 newHeader = file( libIncPath +"/"+header, "w" )
                 newHeader.write( pureHeader )
                 newHeader.close()
+
+        # and nevermind the bollo..., hrmm, the Makefile
+        os.system( "cp Makefile %s"%libFilesPath )
 
     def purifyHeader( self, basePath, header ) :
         pureHeader = []
