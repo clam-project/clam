@@ -9,7 +9,7 @@
 #include "AudioFile.hxx"
 #include "OnsetDetector.hxx"
 #include "TransientGen.hxx"
-#include "TickFromOnsets.hxx"
+#include "TickSequenceTracker.hxx"
 
 
 namespace CLAM
@@ -86,43 +86,44 @@ namespace CLAM
 		
 		onset.Start();
 		onset.Do(seg, transients);
-		
-		transients.Resize(transients.Size()+1);
-		transients.SetSize(transients.Size()+1);
-		
-		for(int i=transients.Size()-1;i>0;i--)
+
+		if ( transients.Size() > 0 )
 		{
-			transients[i].SetPosition(transients[i-1].GetPosition()*sampleRate);
-			transients[i].SetWeight(transients[i-1].GetWeight());
+			TimeIndex nullTransient;
+			nullTransient.SetPosition( 0.0 );
+			nullTransient.SetWeight( 0.0 );
+			
+			transients.InsertElem( 0, nullTransient );
+			
+			for ( int k = 0; k < transients.Size(); k++ )
+			{
+				transients[k].SetPosition( transients[k].GetPosition()*sampleRate );
+				transients[k].SetWeight( transients[k].GetWeight() );
+			}
 		}
-
-		transients[0].SetPosition(0.0);
-		transients[0].SetWeight(0.0);
-
-
 		// Ticks ( and beats ) computation 
 
-		TickFromOnsetsConfig myTickFromOnsetsConfig;
-		TickFromOnsets myTickFromOnsets(myTickFromOnsetsConfig);
-		myTickFromOnsetsConfig.SetComputeBeats(configuration.GetComputeBeats());
-		myTickFromOnsetsConfig.SetThreshold_IOIHistPeaks(configuration.GetThreshold_IOIHistPeaks());
-		myTickFromOnsetsConfig.SetTempoLimInf(configuration.GetTempoLimInf());
-		myTickFromOnsetsConfig.SetTempoLimSup(configuration.GetTempoLimSup());
-		myTickFromOnsetsConfig.SetTickLimInf(configuration.GetTickLimInf());
-		myTickFromOnsetsConfig.SetTickLimSup(configuration.GetTickLimSup());
-		myTickFromOnsetsConfig.SetDeviationPenalty(configuration.GetDeviationPenalty());
-		myTickFromOnsetsConfig.SetOverSubdivisionPenalty(configuration.GetOverSubdivisionPenalty());
-		myTickFromOnsetsConfig.SetGaussianWindowSize(configuration.GetGaussianWindowSize());
-		myTickFromOnsetsConfig.SetScope(configuration.GetScope());
-		myTickFromOnsetsConfig.SetAdjustWithOnsets(configuration.GetAdjustWithOnsets());
-		myTickFromOnsetsConfig.SetNTrans(configuration.GetNTrans());
-		myTickFromOnsetsConfig.SetTransHop(configuration.GetTransHop());
+		TickSequenceTrackerConfig myTickSequenceTrackerConfig;
+		TickSequenceTracker myTickSequenceTracker(myTickSequenceTrackerConfig);
+		myTickSequenceTrackerConfig.SetComputeBeats(configuration.GetComputeBeats());
+		myTickSequenceTrackerConfig.SetThreshold_IOIHistPeaks(configuration.GetThreshold_IOIHistPeaks());
+		myTickSequenceTrackerConfig.SetTempoLimInf(configuration.GetTempoLimInf());
+		myTickSequenceTrackerConfig.SetTempoLimSup(configuration.GetTempoLimSup());
+		myTickSequenceTrackerConfig.SetTickLimInf(configuration.GetTickLimInf());
+		myTickSequenceTrackerConfig.SetTickLimSup(configuration.GetTickLimSup());
+		myTickSequenceTrackerConfig.SetDeviationPenalty(configuration.GetDeviationPenalty());
+		myTickSequenceTrackerConfig.SetOverSubdivisionPenalty(configuration.GetOverSubdivisionPenalty());
+		myTickSequenceTrackerConfig.SetGaussianWindowSize(configuration.GetGaussianWindowSize());
+		myTickSequenceTrackerConfig.SetScope(configuration.GetScope());
+		myTickSequenceTrackerConfig.SetAdjustWithOnsets(configuration.GetAdjustWithOnsets());
+		myTickSequenceTrackerConfig.SetNTrans(configuration.GetNTrans());
+		myTickSequenceTrackerConfig.SetTransHop(configuration.GetTransHop());
 		
-		myTickFromOnsetsConfig.SetSamplingRate(sampleRate);
+		myTickSequenceTrackerConfig.SetSamplingRate(sampleRate);
 		
-		myTickFromOnsets.Configure(myTickFromOnsetsConfig);
+		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);
 		
-		myTickFromOnsets.Start();
+		myTickSequenceTracker.Start();
 
 		Array<TimeIndex> allTicks; allTicks.Init();
 		Array<TimeIndex> allBeats; allBeats.Init();
@@ -134,9 +135,9 @@ namespace CLAM
 
 
 		//Use the transients computed in this main
-		myTickFromOnsets.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
+		myTickSequenceTracker.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
 
-		myTickFromOnsets.Stop();
+		myTickSequenceTracker.Stop();
 
 		Pulse tick;
 		Pulse beat;
