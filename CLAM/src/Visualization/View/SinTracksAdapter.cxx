@@ -38,7 +38,7 @@ namespace CLAMGUI
 
 				TransmitPeakArrays();
 				
-				mThisAspect.AcquireSpectralRange.Emit( mObserved->GetSamplingRate() );
+				mThisAspect.AcquireSpectralRange.Emit( mObserved->GetSamplingRate()/2 );
 				mThisAspect.AcquireDuration.Emit( mObserved->GetBeginTime(), mObserved->GetEndTime() );
 
 				return true;
