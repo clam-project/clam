@@ -79,12 +79,12 @@ inline void SMSScoreEditor::cb_mRepositoryBrowser_i(Fl_Select_Browser* b, void*)
 	mTransTabs->redraw();
 }
 
-void SMSScoreEditor::cb_mRepositoryBrowser(Fl_Select_Browser* o, void* v) 
+void SMSScoreEditor::cb_mRepositoryBrowser(Fl_Select_Browser* o, void* v)
 {
 	((SMSScoreEditor*)v)->cb_mRepositoryBrowser_i(o,v);
 }
 
-inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*) 
+inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 {
 	if ( b->value() > b->size() || b->value() < 1 )
 	     return;
@@ -101,7 +101,7 @@ inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 
 }
 
-void SMSScoreEditor::cb_mScoreBrowser(Fl_Select_Browser* o, void* v) 
+void SMSScoreEditor::cb_mScoreBrowser(Fl_Select_Browser* o, void* v)
 {
 	((SMSScoreEditor*)v)->cb_mScoreBrowser_i(o,v);
 }
@@ -127,106 +127,107 @@ SMSScoreEditor::SMSScoreEditor()
 			o->box(FL_ENGRAVED_BOX);
 			{ 
 				Fl_Select_Browser* o = 
-					mScoreContentsBox = 
+					mScoreContentsBox =
 					new Fl_Select_Browser(10, 40, 220, 365, "Transformations in the Score");
-        o->labelsize(12);
-        o->textsize(12);
+				o->labelsize(12);
+				o->textsize(12);
 				o->callback( (Fl_Callback*)cb_mScoreBrowser, this );
-        o->align(FL_ALIGN_TOP);
+				o->align(FL_ALIGN_TOP);
 			}
-			{ 
-				Fl_Select_Browser* o = 
-					mRepositoryBox = 
+			{
+				Fl_Select_Browser* o =
+					mRepositoryBox =
 					new Fl_Select_Browser(235, 40, 220, 365, "Available SMS Transformations");
-	      o->labelsize(12);
-  	    o->textsize(12);
+				o->labelsize(12);
+				o->textsize(12);
 				o->callback( (Fl_Callback*)cb_mRepositoryBrowser, this );
-	      o->align(FL_ALIGN_TOP);
+				o->align(FL_ALIGN_TOP);
 			}
-			{ 
-				Fl_Button* o = 
-					mMoveTransUpInScoreButton = 
+			{
+				Fl_Button* o =
+					mMoveTransUpInScoreButton =
 					new Fl_Button(10, 410, 65, 25, "Move &up");
-        o->tooltip("Move selected transformation up in the score");
-        o->box(FL_DEFINED_UP_BOX);
-        o->down_box(FL_DEFINED_DOWN_BOX);
-        o->shortcut(0x80075);
-        o->callback((Fl_Callback*)cb_mMoveTransUpInScoreButton);
-	      o->labelsize(12);
+				o->tooltip("Move selected transformation up in the score");
+				o->box(FL_DEFINED_UP_BOX);
+				o->down_box(FL_DEFINED_DOWN_BOX);
+				o->shortcut(0x80075);
+				o->callback((Fl_Callback*)cb_mMoveTransUpInScoreButton);
+				o->labelsize(12);
 			}
 			{
-				Fl_Button* o = 
-					mMoveTransDownInScoreButton = 
+				Fl_Button* o =
+					mMoveTransDownInScoreButton =
 					new Fl_Button(80, 410, 85, 25, "Move &down");
-        o->tooltip("Move selected transformation down in the score");
-        o->box(FL_DEFINED_UP_BOX);
-        o->down_box(FL_DEFINED_DOWN_BOX);
-        o->shortcut(0x80064);
-        o->callback((Fl_Callback*)cb_mMoveTransDownInScoreButton);
-	      o->labelsize(12);
-			}
-			{ Fl_Button* o = 
-					mRemoveTransFromScoreButton = 
-					new Fl_Button(170, 410, 60, 25, "&Remove");
-        o->tooltip("Remove selected transformation from score");
-        o->box(FL_DEFINED_UP_BOX);
-        o->down_box(FL_DEFINED_DOWN_BOX);
-        o->shortcut(0x80072);
-        o->callback((Fl_Callback*)cb_mRemoveTransFromScoreButton);
-	      o->labelsize(12);
+				o->tooltip("Move selected transformation down in the score");
+				o->box(FL_DEFINED_UP_BOX);
+				o->down_box(FL_DEFINED_DOWN_BOX);
+				o->shortcut(0x80064);
+				o->callback((Fl_Callback*)cb_mMoveTransDownInScoreButton);
+				o->labelsize(12);
 			}
 			{
-				Fl_Button* o = 
-					mAddTransformToScoreButton = 
+				Fl_Button* o =
+					mRemoveTransFromScoreButton =
+					new Fl_Button(170, 410, 60, 25, "&Remove");
+				o->tooltip("Remove selected transformation from score");
+				o->box(FL_DEFINED_UP_BOX);
+				o->down_box(FL_DEFINED_DOWN_BOX);
+				o->shortcut(0x80072);
+				o->callback((Fl_Callback*)cb_mRemoveTransFromScoreButton);
+				o->labelsize(12);
+			}
+			{
+				Fl_Button* o =
+					mAddTransformToScoreButton =
 					new Fl_Button(235, 410, 220, 25, "Add &transformation to score");
-        o->tooltip("Adds selected transformation to score");
-        o->box(FL_DEFINED_UP_BOX);
-        o->down_box(FL_DEFINED_DOWN_BOX);
-        o->shortcut(0x80074);
-        o->callback((Fl_Callback*)cb_mAddTransformToScoreButton);
-	      o->labelsize(12);
+				o->tooltip("Adds selected transformation to score");
+				o->box(FL_DEFINED_UP_BOX);
+				o->down_box(FL_DEFINED_DOWN_BOX);
+				o->shortcut(0x80074);
+				o->callback((Fl_Callback*)cb_mAddTransformToScoreButton);
+				o->labelsize(12);
 			}
 			o->end();
 		} // Score group
-		
-		{ 
-			Fl_Button* o = 
-				mApplyChangesToScoreButton = 
+
+		{
+			Fl_Button* o =
+				mApplyChangesToScoreButton =
 				new Fl_Button(5, 445, 225, 25, "&Apply Changes to Score");
 			o->box(FL_DEFINED_UP_BOX);
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->shortcut(0x80061);
 			o->callback( (Fl_Callback*)cb_mApplyChangesButton );
-      o->labelsize(12);
+			o->labelsize(12);
 		}
-		{ 
-			Fl_Button* o = 
-				mDiscardChangesButton = 
+		{
+			Fl_Button* o =
+				mDiscardChangesButton =
 				new Fl_Button(235, 445, 225, 25, "&Discard Changes to Score");
 			o->box(FL_DEFINED_UP_BOX);
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->shortcut(0x80064);
 			o->callback((Fl_Callback*)cb_mDiscardChangesButton);
-      o->labelsize(12);
+			o->labelsize(12);
 		}
 
 		{
-			Fl_Group* o = 
-				mTransParmDock = 
+			Fl_Group* o =
+				mTransParmDock =
 				new Fl_Group(465, 20, 420, 420, "Transformation");
 			o->labelfont(FL_HELVETICA);
 			o->labelsize(14);
 			o->align(FL_ALIGN_TOP);
 			o->box(FL_ENGRAVED_BOX);
-		
-			{ 
+
+			{
 				Fl_Tabs* o = mTransTabs = new Fl_Tabs(470, 25, 410, 410);
-        o->box(FL_DEFINED_UP_BOX);
-        o->labelsize(12);
+				o->box(FL_DEFINED_UP_BOX);
+				o->labelsize(12);
 
 				{
-					Fl_Group* o = 
-						mHelpWidgetContainer = 
+					Fl_Group* o =
+						mHelpWidgetContainer =
 						new Fl_Group( mTransTabs->x()+5, mTransTabs->y()+30, mTransTabs->w()-10, mTransTabs->h()-35 );
 					o->label( "Description" );
 					o->labelsize( 12 );
@@ -234,8 +235,8 @@ SMSScoreEditor::SMSScoreEditor()
 					o->end();
 				}
 				{
-					Fl_Group* o = 
-						mConfigWidgetContainer = 
+					Fl_Group* o =
+						mConfigWidgetContainer =
 						new Fl_Group( mTransTabs->x()+5, mTransTabs->y()+30, mTransTabs->w()-10, mTransTabs->h()-35 );
 					o->label( "Parameters" );
 					o->labelsize( 12 );
@@ -244,32 +245,32 @@ SMSScoreEditor::SMSScoreEditor()
 					o->deactivate();
 				}
 
-        o->end();
+				o->end();
 			} // tabs
 			o->end();
 		} // Transformation Group
 
-		{ 
-			Fl_Button* o = 
-				mApplyChangesToCurrentCfg = 
+		{
+			Fl_Button* o =
+				mApplyChangesToCurrentCfg =
 				new Fl_Button(580, 445, 150, 25, "Apply configuration");
 			o->tooltip("Applies configuration to the selected transformation");
 			o->box(FL_DEFINED_UP_BOX);
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->callback( (Fl_Callback*) cb_mApplyChangesToCurrentCfg, this );
 			o->deactivate();
-      o->labelsize(12);
+			o->labelsize(12);
 		}
-		{ 
-			Fl_Button* o = 
-				mDiscardConfigButton = 
+		{
+			Fl_Button* o =
+				mDiscardConfigButton =
 				new Fl_Button(735, 445, 150, 25, "Discard configuration");
-      o->box(FL_DEFINED_UP_BOX);
-      o->down_box(FL_DEFINED_DOWN_BOX);
-      o->deactivate();
-      o->labelsize(12);
+			o->box(FL_DEFINED_UP_BOX);
+			o->down_box(FL_DEFINED_DOWN_BOX);
+			o->deactivate();
+			o->labelsize(12);
 		}
-	
+
 		o->set_modal();
 		o->end();
 	}
@@ -286,7 +287,7 @@ SMSScoreEditor::SMSScoreEditor()
 	mPreviousChainConfig = mChainConfig;
 }
 
-void SMSScoreEditor::OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg ) 
+void SMSScoreEditor::OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg )
 {
 	mChainConfig = cfg;
 }
@@ -297,14 +298,14 @@ SMSScoreEditor::~SMSScoreEditor()
 		delete mNoConfigWidgetAvailable;
 }
 
-void SMSScoreEditor::Show( ) 
+void SMSScoreEditor::Show( )
 {
 	ShowScoreOnBrowser();
 	ShowFactoryProductsOnBrowser();
 	mMainWindow->show();
 }
 
-void SMSScoreEditor::Hide( ) 
+void SMSScoreEditor::Hide( )
 {
 	mUserChangedSomething = false;
 	mHighlightedConfig = 0;
@@ -328,12 +329,12 @@ void SMSScoreEditor::ShowActiveConfiguratorHelp()
 void SMSScoreEditor::ShowActiveConfiguratorEditWidget()
 {
 	Fl_Widget* configWidget = mpCurrentConfigurator->GetParametersWidget();
-	mApplyChangesToCurrentCfg->activate();	
+	mApplyChangesToCurrentCfg->activate();
 
-	if ( !configWidget ) // if no configuration widget then show the fallback		
+	if ( !configWidget ) // if no configuration widget then show the fallback
 	{
 		configWidget = mNoConfigWidgetAvailable;
-		mApplyChangesToCurrentCfg->deactivate();	
+		mApplyChangesToCurrentCfg->deactivate();
 	}
 
 	mConfigWidgetContainer->add( configWidget );
@@ -353,7 +354,7 @@ void SMSScoreEditor::ActivateConfigurator( int index, Fl_Select_Browser* browser
 
 	RemoveCurrentConfiguratorFromTabs();
 
-	
+
 	mpCurrentConfigurator = (CLAMVM::SMSConfigurator*)browser->data( index );
 
 }
@@ -367,11 +368,11 @@ void SMSScoreEditor::ShowFactoryProductsOnBrowser()
 
 	std::list< std::string >::const_iterator i = availableTransformationsList.begin();
 
- 	for ( ; i != availableTransformationsList.end(); i++ )
+	for ( ; i != availableTransformationsList.end(); i++ )
 	{
 		mRepositoryBox->add( i->c_str() );
-		mRepositoryBox->data( mRepositoryBox->size(), 
-				      CLAMVM::SMSConfiguratorFactory::GetInstance().Create( i->c_str() ) );
+		mRepositoryBox->data( mRepositoryBox->size(),
+			CLAMVM::SMSConfiguratorFactory::GetInstance().Create( i->c_str() ) );
 	}
 
 }
@@ -397,7 +398,7 @@ void SMSScoreEditor::ShowScoreOnBrowser( )
 		CLAMVM::SMSConfigurator* pCfg = CLAMVM::SMSConfiguratorFactory::GetInstance().Create( i->GetConcreteClassName().c_str() );
 		pCfg->SetConfig( i->GetConcreteConfig() );
 		mScoreContentsBox->data( mScoreContentsBox->size(), pCfg );
-		i++;		
+		i++;
 	}
 
 }
@@ -420,7 +421,7 @@ void SMSScoreEditor::ResetChainConfig()
 
 }
 
-void SMSScoreEditor::DiscardChangesAndClose() 
+void SMSScoreEditor::DiscardChangesAndClose()
 {
 	if ( !mUserChangedSomething )
 	{
@@ -429,7 +430,7 @@ void SMSScoreEditor::DiscardChangesAndClose()
 	}
 	int answer = fl_ask( "Are you sure to discard score changes?" );
 
-	
+
 	if ( answer )
 	{
 		mChainConfig = mPreviousChainConfig;
@@ -448,8 +449,8 @@ void SMSScoreEditor::ApplyChangesAndClose()
 	}
 
 	int answer = fl_ask( "Are you sure to apply score changes?" );
-	
-	if ( answer ) 
+
+	if ( answer )
 	{
 		mPreviousChainConfig = mChainConfig;
 		TransformationChainChanged.Emit( mChainConfig );
@@ -464,7 +465,7 @@ void SMSScoreEditor::AddHighlightedToScore( )
 
 	int insertedTransformation = mRepositoryBox->value();
 
-	mScoreContentsBox->add( mRepositoryBox->text( insertedTransformation ) ); 
+	mScoreContentsBox->add( mRepositoryBox->text( insertedTransformation ) );
 	std::string key = mRepositoryBox->text( insertedTransformation );
 	CLAMVM::SMSConfigurator* pCfg = CLAMVM::SMSConfiguratorFactory::GetInstance().Create( key );
 	mScoreContentsBox->data( mScoreContentsBox->size(), pCfg );
@@ -482,7 +483,7 @@ void SMSScoreEditor::AddHighlightedToScore( )
 	mChainConfig.GetOnArray().AddElem( 1 );
 	mHighlightedConfig = mScoreContentsBox->size();
 
-	
+
 	ActivateConfigurator( mHighlightedConfig, mScoreContentsBox );
 	ShowActiveConfiguratorHelp();
 	ShowActiveConfiguratorEditWidget();
@@ -500,7 +501,7 @@ void SMSScoreEditor::RemoveCurrentConfiguratorFromTabs()
 
 	mpCurrentConfigurator->GetHelpWidget()->hide();
 	mHelpWidgetContainer->remove(*(mpCurrentConfigurator->GetHelpWidget() ) );
-	
+
 	if ( mpCurrentConfigurator->GetParametersWidget() )
 	{
 		mApplyChangesToCurrentCfg->deactivate();
