@@ -26,7 +26,6 @@ SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl (
 {
 	_network.AddFlowControl( new CLAM::PushFlowControl( _frameSize ));
 	ConfigureAndAddProcessingsToNetwork();
-	_network.ConfigurePorts();
 	RegisterAllNetworkConfigurationMethods();
 }
 
@@ -115,7 +114,6 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 	if (_hasAudioOut)
 		_network.ConnectPorts( "oscillator-generator.Audio Output", "audio-out.Input" );
 	
-	_network.ConfigureNodes();
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
 {
@@ -124,8 +122,6 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
 	
 	if (_hasAudioOut)
 		_network.ConnectPorts( "file-in.Output", "audio-out.Input" );
-	
-	_network.ConfigureNodes();
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn()
 {
@@ -136,8 +132,6 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn()
 
 	if (_hasAudioOut)
 		_network.ConnectPorts( "multiplier.Audio Output", "audio-out.Input" );
-	
-	_network.ConfigureNodes();
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator()
 {
@@ -148,8 +142,6 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator()
 
 	if (_hasAudioOut)
 		_network.ConnectPorts( "multiplier.Audio Output", "audio-out.Input" );
-	
-	_network.ConfigureNodes();
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn()
 {
@@ -162,14 +154,10 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn(
 
 	if (_hasAudioOut)
 		_network.ConnectPorts( "mixer.Output Audio", "audio-out.Input" );
-
-	_network.ConfigureNodes();
 }
 
 void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworkTopologies()
 {
-	_network.Start();
-
 	NetworkConfigurationMethods::iterator currentConfigMethod;
 	for ( currentConfigMethod=_configurations.begin(); 
 		  currentConfigMethod != _configurations.end(); 
@@ -177,13 +165,15 @@ void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworkTopologies()
 	{
 		_network.DisconnectAllPorts();
 		currentConfigMethod->Configure();
+		_network.Start();
+
 		for (int i=0; i<_maxFramesToProcess; i++)
 			_network.DoProcessings();
 
 		std::cout << _network.GetName() << " network processed.\n";
-		//_network.Stop();
+		_network.Stop();
 	}
-	_network.Stop();
+	
 }
 
 } //namespace
