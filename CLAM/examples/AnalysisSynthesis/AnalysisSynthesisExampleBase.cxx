@@ -359,7 +359,10 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	infilecfg.SetFilename(mGlobalConfig.GetInputSoundFile());
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	if(!myAudioFileIn.Configure(infilecfg))
-		return false;
+	{
+		mHaveAudioIn = false;
+		return mHaveAudioIn;
+	}
 			
 	/////////////////////////////////////////////////////////////////////////////
 	// Initialization of the processing data objects :

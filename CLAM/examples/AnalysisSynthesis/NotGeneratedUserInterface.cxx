@@ -58,8 +58,14 @@ void UserInterface::LoadSound(void)
 			mDisplayInSound->activate();
 			mPlayInputSound->activate();
 		}
-		else 
+		else
+		{
+			mAnalyze->deactivate();
+			mDisplayInSM->deactivate();
+			mDisplayInSound->deactivate();
+			mPlayInputSound->deactivate();
 			mAnalysisSynthesisExample->mHaveConfig=false;
+		}
 		for(int i=0;i<4;i++){
 			if(mAttachedPresentations[i]!=NULL){
 				if( mAttachedPresentations[i]->GetWindow()->shown() ) 
