@@ -93,11 +93,10 @@ protected:
 
 	typedef InControlTmpl<SimpleOscillator> SimpleOscillatorCtrl;
 
-	SimpleOscillatorCtrl* mAmpCtl;
-	SimpleOscillatorCtrl* mFreqCtl;
-	
 	bool           mFreqUpdated;
 	bool           mAmpUpdated;
+	SimpleOscillatorCtrl* mFreqCtl;
+	SimpleOscillatorCtrl* mAmpCtl;
 
 protected:	
 
