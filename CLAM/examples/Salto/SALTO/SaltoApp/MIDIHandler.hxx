@@ -58,8 +58,6 @@ namespace CLAM
 			eIdle		 = 3,
 		}   mStatus;
 
-		FILE	*mMIDIFile;
-
 	protected:
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
@@ -85,21 +83,6 @@ namespace CLAM
 		{
 			mVelocity = velocity;
 
-	//		std::cout << "Updating velocity:" << mVelocity << std::endl;
-
-		/*	if( mVelocity == 0 )
-			{
-				mStatus = eNoteOff;
-				//std::cout << "Note On received !!!!!!!!!"<< std::endl;
-			}
-			else if( mStatus != eCtrAirSpeed )
-			{
-				mStatus = eNoteOn;
-				//std::cout << "Note On received !!!!!!!!!"<< std::endl;
-			}*/
-
-			
-
 			return 0;
 		}
 
@@ -107,13 +90,11 @@ namespace CLAM
 		{
 			ScaleNote( note );
 
-//			std::cout << "Note updated: "<< note <<std::endl;
-
-			if( mStatus != eNoteOff )
+			if( ( mStatus != eNoteOff ) && ( note != 0 ) ) // Processing new note
 			{
-				if( mVelocity == 0 ) 
+				if( mVelocity == 0 )  // Note Off
 				{
-					if( note == mNote ) // Note Off
+					if( note == mNote ) // Note Off for the actual note
 					{
 						mStatus = eNoteOff;
 						mNoteOff = note;
@@ -121,9 +102,9 @@ namespace CLAM
 						mAirSpeed = 0.0;
 					}
 				}
-				else
+				else // Note On or Note On + Air Speed message
 				{
-					if( mStatus != eCtrAirSpeed )
+					if( mStatus != eCtrAirSpeed ) 
 						mStatus = eNoteOn;
 
 					mNote = note;
@@ -131,18 +112,6 @@ namespace CLAM
 				}
 
 			}
-		/*	if( ( mStatus == eNoteOn ) || ( mStatus == eCtrAirSpeed ) )
-			{
-				mNote = note;
-				mLastPitch = 0.0;
-			}
-			else if( note == mNote )
-			{
-				//std::cout << "Note recieved: " << mNote << std::endl;
-				mNoteOff = note;
-				mNote = 0.0;
-				mAirSpeed = 0.0;
-			}*/
 
 			return 0;
 		}
@@ -152,19 +121,13 @@ namespace CLAM
 	
 			mPitchBend = ((double) value - 70 ) / 70.0 * mPitchModRange + 1.0;
 
-//			std::cout << "Pich bend value received: "<< mPitchBend << std::endl;
-
-			 //params.SetPitchModFactor(
-			//	((double)bytes[2]-70)/70.0*params.GetPitchModRange()+1.0);
 			return 0;
 		}
 
 		int UpdateAirSpeed( TControlData airSpeed )
 		{
 			mAirSpeed = airSpeed;
-//			std::cout << "Air speed updated"<< mAirSpeed << std::endl;
 			mStatus = eCtrAirSpeed;
-			//mStatus = eNoteOn;
 
 			return 0;
 		}

@@ -83,7 +83,6 @@ namespace CLAM
 
 	if ( params.GetUseMidiKeyboard() || params.GetUseMelody() ) //   MIDI handling KEYBOARD
     {
-
      /*   mNote+=params.GetTranspose(); 
 		if (mNote<=50) 
            mNote = 0;       //we work with two octaves 
@@ -513,17 +512,13 @@ namespace CLAM
 		{
 			params.SetPitchModFactor( mPitchBend );
 			NoteOn( params );
-	//		std::cout << "Note On "<< mNote << std::endl;
-			//std::cout << "Note: "<< mNote << std::endl;
 		}
 		else if ( mStatus == eNoteOff )
 		{
 			NoteOff( params );
 
 			mStatusOut.SendControl( 4 ); // Sending Release state notification to CSatloDSP
-	//		std::cout << "Last Note Off "<< mNote << std::endl;
 			mStatus = eIdle;
-			//std::cout << "Note: "<< mNote << std::endl;
 		}
 		else if( mStatus == eCtrAirSpeed )
 		{
@@ -531,9 +526,6 @@ namespace CLAM
 				NoteOn( params );
 
 			CtrAirSpeed( params );
-
-	//		std::cout << "Air Speed State"<< std::endl;
-	//		std::cout << "Note: "<< mNote << std::endl;			
 		}
 
 		return true;
