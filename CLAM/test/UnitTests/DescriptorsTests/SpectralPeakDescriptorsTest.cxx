@@ -75,7 +75,7 @@ public:
 		else
 			mPathToTestData = pathToTestData;
 
-		mPathToTestData += "descriptorsData/frames/";
+		mPathToTestData += "descriptorsData/frames/SpectralPeaks/";
 
 		mDescriptors = new CLAM::SpectralPeakDescriptors();
 		mDescriptors->RemoveAll();
@@ -216,7 +216,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] = 4;
 		data["5flatPeak.xml"] = 5;
-		data["bell_A3.wav"] = 4.69634;
+		data["../bell_A3.wav"] = 4.69634;
 		data["5linearslopePeak.xml"] = 6;
 
 		
@@ -238,7 +238,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] = 1500;
 		data["5flatPeak.xml"] = 940;
-		data["bell_A3.wav"] = 2463.38;
+		data["../bell_A3.wav"] = 2463.38;
 		data["5linearslopePeak.xml"] = 580;
 		
 
@@ -258,7 +258,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] = 0;
 		data["5flatPeak.xml"] = 0;
-		data["bell_A3.wav"] = 2.02832;
+		data["../bell_A3.wav"] = 2.02832;
 		data["5linearslopePeak.xml"] = 0.061894;
 		data["test5to1.xml"] = 0.1067;
 		
@@ -276,7 +276,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] = 1;
 		data["5flatPeak.xml"] = 0.2;
-		data["bell_A3.wav"] = 4.5164e-005;
+		data["../bell_A3.wav"] = 4.5164e-005;
 		data["5linearslopePeak.xml"] = 0.4545;
 		
 
@@ -295,7 +295,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] = 0;
 		data["5flatPeak.xml"] = 0.6;
-		data["bell_A3.wav"] = 0.00486879;
+		data["../bell_A3.wav"] = 0.00486879;
 		data["5linearslopePeak.xml"] = 0.5273;
 		
 	
@@ -314,7 +314,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] =0;
 		data["5flatPeak.xml"] = 0.2;
-		data["bell_A3.wav"] = 0.995086;
+		data["../bell_A3.wav"] = 0.995086;
 		data["5linearslopePeak.xml"] = 0.0182;
 	
 	
@@ -334,7 +334,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] =0;
 		data["5flatPeak.xml"] = 0.4;
-		data["bell_A3.wav"] =0.365391 ;
+		data["../bell_A3.wav"] =0.365391 ;
 		data["5linearslopePeak.xml"] = 0.1818;
 		
 		mDescriptors->AddOddHarmonics();
@@ -352,7 +352,7 @@ private:
 		data["empty.xml"] = 0;
 		data["onePeak.xml"] =0;
 		data["5flatPeak.xml"] = 0.4;
-		data["bell_A3.wav"] = 0.634564;
+		data["../bell_A3.wav"] = 0.634564;
 		data["5linearslopePeak.xml"] = 0.3636;
 		
 	
@@ -371,7 +371,7 @@ private:
 		data["empty.xml"] = 0.5;
 		data["onePeak.xml"] =0.5;
 		data["5flatPeak.xml"] = 0.5;
-		data["bell_A3.wav"] = 0.365407;
+		data["../bell_A3.wav"] = 0.365407;
 		data["5linearslopePeak.xml"] = 0.3333;
 		
 		
