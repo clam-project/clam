@@ -28,6 +28,38 @@
 
 namespace CLAM
 {
+	/**
+	Normalization is a CLAM implementation of 3 normalization's algorithms.
+	-# normalizes in relation to the maximum energy value of the signal
+	-# normalizes in relation to the average energy of the signal
+	-# scales the audio by the value under which lies 90% of the energy values that are not "silence"
+
+	The class's Do() function input is CLAM Audio, the ouput is the normalized Audio.
+
+	The class's configuration parameters are:
+	<table>
+	<tr>
+		<th>parameters</th>
+		<th>default value)</th>
+		<th>Comment</th>
+	</tr>
+	<tr>
+		<th>FrameSize</th>
+		<td>2205 - 0.05s @ 44.1 kHz</td>
+		<td>Frame Size over which normalization takes place</td>
+	</tr>
+	<tr>
+		<th>Type</th>
+		<td>(1)</td>
+		<td>Type of normalization to be applied. 1, 2 or 3 according to 
+		the normalizations descriptions above.</td>
+	</tr>
+
+
+	@author jricard@iua.upf.es
+	@author gpeter@iua.upf.es
+
+*/
 
 	class NormalizationConfig: public ProcessingConfig
 	{
