@@ -2,11 +2,15 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "Oscillator.hxx"
+#include "AudioAdder.hxx"
+
 #include "Factory.hxx"
+
 
 namespace CLAMTest
 {
 
+	
 class FactoryTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( FactoryTest );
 
@@ -34,27 +38,27 @@ public:
 		delete _theFactory;
 	}
 
+	// helper methods:
+	CLAM::Factory::CreatorMethod OscillatorCreator() { 
+		return CLAM::Factory::Registrator<CLAM::Oscillator>::Create;
+	}
+
+	CLAM::Factory::CreatorMethod AudioAdderCreator() { 
+		return CLAM::Factory::Registrator<CLAM::AudioAdder>::Create;
+	}
 	// Tests definition :
 protected:
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
-		CLAM::Processing* returned = CLAM::CreateOscillator();
+		CLAM::Processing* returned = OscillatorCreator()();
 		
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned ); 
-		delete returned;
-
-		// test that we can store and postpone execution of such a creator method
-		typedef CLAM::Processing* (*CreatorMethod)();
-		CreatorMethod storedMethod = CLAM::CreateOscillator;
-		returned = storedMethod();
-		
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
 		delete returned;
 	}
 	
 	void testCreate_ReturnsAnOscillator()
 	{
-		_theFactory->AddCreator( "Oscillator", CLAM::CreateOscillator );
+		_theFactory->AddCreator( "Oscillator", OscillatorCreator() );
 		
 		CLAM::Processing* returned = _theFactory->Create("Oscillator");
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
@@ -76,9 +80,9 @@ protected:
 
 	void testAddCreator_WithRepeatedKey()
 	{
-		_theFactory->AddCreator("Oscillator", CLAM::CreateOscillator );
+		_theFactory->AddCreator("Oscillator", OscillatorCreator() );
 		try{
-			_theFactory->AddCreator("Oscillator", CLAM::CreateOscillator);
+			_theFactory->AddCreator("Oscillator", OscillatorCreator());
 			CPPUNIT_FAIL("an assertion should happen");
 		} catch ( CLAM::ErrAssertionFailed& )
 		{}
@@ -86,9 +90,9 @@ protected:
 
 	void testAddCreatorSafe_WithRepeatedKey()
 	{
-		_theFactory->AddCreator("Oscillator", CLAM::CreateAudioAdder );
+		_theFactory->AddCreator("Oscillator", AudioAdderCreator() );
 		try{
-			_theFactory->AddCreatorSafe("Oscillator", CLAM::CreateOscillator);
+			_theFactory->AddCreatorSafe("Oscillator", OscillatorCreator());
 			CPPUNIT_FAIL("an ErrFactory should be rised");
 		} catch (CLAM::ErrFactory&) {
 			

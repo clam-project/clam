@@ -15,7 +15,7 @@
 			Oscillator
 			<li class='done'>
 			Processing* p = CreateOscillator(); type_id of p is Oscillator
-			<li class='to-do'>
+			<li class='done'>
 				Registry :
 				<ul>
 					<li class='done'>
@@ -42,20 +42,21 @@
 							<li class='done'>
 								Safe version: rises ErrFactory</li>
 						</ul>
-					<li class='current'>
+					<li class='done'>
 						Automatic registry
 						<ul>
 							<li class='done'>
 								FactoryRegistrator&lt Dummy &gt Create() returns a Dummy;
 							</li>
-							<li class='to-do'>
+							<li class='done'>
 								create a Oscillator after having constructed the FactoryRegistrator with 
 								factory. (two versions: passing explicitly the key, and using GetClassName)
 							</li>
-							<li class='to-do'>
-								The same after FactoryRegistrator constructed by default
+							<li class='done'>
+								The same after FactoryRegistrator without an explcit factory (so using 
+								singleton)
 							</li>
-							<li class='to-do'>
+							<li class='done'>
 								Make Registrator inner class of Factory
 							</li>
 						</ul>
@@ -75,8 +76,11 @@
 					<li class='done'>
 						Count when empty and non empty.
 					</li>
+					<li class='done'>
+						Make Registry a Factory inner class
+					</li>
 				</ul>
-			<li class='to-do'>
+			<li class='done'>
 			Avoid #include bottleneck in Factory
 			<li class='done'>
 			Create custom assert for typeid
@@ -84,7 +88,7 @@
 			ProcessingFactory singleton
 			<li class='to-do'>
 			Arrange documentation
-			<li class="to-do">
+			<li class="done">
 				Split into hxx and cxx
 			</li>
 			<li class="done">
