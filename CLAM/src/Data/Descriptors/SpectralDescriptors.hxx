@@ -140,10 +140,9 @@ namespace CLAM {
 		TData ComputeSlope();
 
 	private:
-		Spectrum* mpSpectrum;
-		Spectrum mAuxLinearSpectrum;	
+		const Spectrum* mpSpectrum;
 		/** Conversion from index to frequency, needed for many descriptors */
-		TData mDeltaFreq;
+		double mDeltaFreq; // double because a lot of computations depends on its precission
 };
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult);
