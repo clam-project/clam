@@ -43,6 +43,19 @@ namespace CLAM {
 		inline void Attach(Node<Audio> &n);
 		inline void Attach(InPortTmpl<Audio> &n);
 		inline void Accept(DataVisitor&);
+//		ProcessingData* GetProcessingData();
+//		bool IsAttached();
+//		void Unattach();
+
+		ProcessingData* GetProcessingData()
+		{
+			if (IsAttached())
+			{
+				return mpData; 
+			}
+			return 0;
+		}
+		
 		bool IsAttached()
 		{
 			return mpData!=0;
@@ -69,6 +82,19 @@ namespace CLAM {
 		inline void Attach(OutPortTmpl<Audio> &n);
 		inline void Attach(Node<Audio> &n);
 		inline void Accept(DataVisitor&);
+		
+//		ProcessingData* GetProcessingData();
+//		bool IsAttached();
+//		void Unattach();
+		ProcessingData* GetProcessingData()
+		{
+			if (IsAttached())
+			{
+				return mpData; 
+			}
+			return 0;
+		}
+		
 		bool IsAttached()
 		{
 			return mpData!=0;
@@ -149,11 +175,29 @@ namespace CLAM {
 	{
 		v.Visit(*mpData);
 	}
-
+/*	
+	ProcessingData* InPortTmpl<Audio>::GetProcessingData()
+	{
+		if (IsAttached())
+		{
+			return mpData; 
+		}
+		return 0;
+	}
+	
+	bool InPortTmpl<Audio>::IsAttached()
+	{
+		return mpData!=0;
+	}
+	void InPortTmpl<Audio>::Unattach()
+	{
+		mpData = 0;
+	}
+*/
 	OutPortTmpl<Audio>::OutPortTmpl(std::string n,
-									Processing *o,
-									int length,
-									int hop)
+					Processing *o,
+					int length,
+					int hop)
 		: OutPort(n,o,length,hop),
 		  mpRegion(0),
 		  mpNode(0),
@@ -215,8 +259,25 @@ namespace CLAM {
 	{
 		v.Visit(*mpData);
 	}
-
-
+/*
+	ProcessingData* OutPortTmpl<Audio>::GetProcessingData()
+	{
+		if (IsAttached())
+		{
+			return mpData; 
+		}
+		return 0;
+	}
+	
+	bool OutPortTmpl<Audio>::IsAttached()
+	{
+		return mpData!=0;
+	}
+	void OutPortTmpl<Audio>::Unattach()
+	{
+		mpData = 0;
+	}
+*/
 }
 
 #endif

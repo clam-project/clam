@@ -23,6 +23,32 @@
 
 namespace CLAM {
 
+	// function to check the connection of two ports
+
+	bool PortsAreConnected(CLAM::Port &p1, CLAM::Port &p2)
+	{
+		if (dynamic_cast<InPort*>(&p1) != NULL) // p1 is inport
+		{
+			// if p2 is inport, assert
+			CLAM_ASSERT(dynamic_cast<InPort*>(&p2) == NULL,
+				    "Error, the two ports introduced are the same type");
+		}
+		if (dynamic_cast<OutPort*>(&p1) != NULL) // p1 is inport
+		{
+			// if p2 is inport, assert
+			CLAM_ASSERT(dynamic_cast<OutPort*>(&p2) == NULL,
+				    "Error, the two ports introduced are the same type");
+		}
+		if (p1.GetProcessingData() == p2.GetProcessingData())
+		{
+			return p1.IsAttached(); // if both aren't attached, it mustn't be true
+		}
+
+		return false;
+	}
+
+
+
 	// Data visitor
 
 	void DataVisitor::ErrMsg(std::string &msg,const std::string &data_class)

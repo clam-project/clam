@@ -38,6 +38,8 @@ namespace CLAM {
 	class Envelope;
 	class Peak;
 
+
+
 	class DataVisitor
 	{
 		void ErrMsg(std::string&,const std::string&);
@@ -73,6 +75,7 @@ namespace CLAM {
 
 		virtual bool IsAttached() = 0;
 		virtual void Unattach() = 0;
+		virtual ProcessingData* GetProcessingData() = 0;
 
 		virtual void Accept(DataVisitor&) = 0;
 		unsigned int Length() const { return mLength; }
@@ -101,6 +104,7 @@ namespace CLAM {
 			
 		virtual bool IsAttached() = 0;
 		virtual void Unattach() = 0;
+		virtual ProcessingData* GetProcessingData() = 0;
 
 		bool CanDoInplace(void)  {return mCanDoInplace;}
 
@@ -113,7 +117,7 @@ namespace CLAM {
 		virtual void Attach(ProcessingData& data)=0;
 		virtual bool IsAttached() = 0;
 		virtual void Unattach() = 0;
-
+		virtual ProcessingData* GetProcessingData() = 0;
 
 		virtual ~OutPort() {}
 	};
@@ -136,14 +140,9 @@ namespace CLAM {
 		inline void Attach(InPortTmpl<T> &p); // For composites
 		inline void Accept(DataVisitor&);
 		
-		bool IsAttached()
-		{
-			return mData.Size();
-		}
-		void Unattach()
-		{
-			mData.SetPtr(NULL);
-		}
+		ProcessingData* GetProcessingData();
+		bool IsAttached();
+		void Unattach();
 	};
 
 	template<class T>
@@ -162,14 +161,9 @@ namespace CLAM {
 		inline void Attach(OutPortTmpl<T> &p); // For composites
 		inline void Accept(DataVisitor&);
 		
-		bool IsAttached()
-		{
-			return mData.Size();
-		}
-		void Unattach()
-		{
-			mData.SetPtr(NULL);
-		}
+		ProcessingData* GetProcessingData();
+		bool IsAttached();
+		void Unattach();
 
 	};
 
@@ -297,6 +291,28 @@ namespace CLAM {
 		for (i=0; i<mData.Size(); i++)
 			v.Visit(mData[i]);
 	}
+	
+	template<class T>
+	ProcessingData* InPortTmpl<T>::GetProcessingData()
+	{
+		if (IsAttached())
+		{
+			return &(mData[0]);
+		}
+		return 0;
+	}
+	
+	template<class T>
+	bool InPortTmpl<T>::IsAttached()
+	{
+		return mData.Size();
+	}
+	
+	template<class T>
+	void InPortTmpl<T>::Unattach()
+	{
+		mData.SetPtr(NULL);
+	}
 
 	template<class T>
 	OutPortTmpl<T>::OutPortTmpl(const std::string &n,
@@ -368,7 +384,28 @@ namespace CLAM {
 		for (i=0; i<mData.Size(); i++)
 			v.Visit(mData[i]);
 	}
-
+	
+	template<class T>
+	ProcessingData* OutPortTmpl<T>::GetProcessingData()
+	{
+		if (IsAttached())
+		{
+			return &(mData[0]);
+		}
+		return 0;
+	}
+	
+	template<class T>
+	bool OutPortTmpl<T>::IsAttached()
+	{
+		return mData.Size();
+	}
+	
+	template<class T>
+	void OutPortTmpl<T>::Unattach()
+	{
+		mData.SetPtr(NULL);
+	}
 
 	template<class T>
 	InPortArrayTmpl<T>::InPortArrayTmpl(int size,
@@ -475,6 +512,9 @@ namespace CLAM {
 		for (int i=0; i<size; i++)
 			mArray[i]->LeaveData();
 	}
+
+	// function to check the connection of two ports
+	bool PortsAreConnected(CLAM::Port &p1, CLAM::Port &p2);
 
 }
 
