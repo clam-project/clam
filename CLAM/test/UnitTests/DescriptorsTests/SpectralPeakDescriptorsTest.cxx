@@ -149,7 +149,7 @@ private:
 		return buf;
 
 	}
-	
+
 	CLAM::SpectralPeakArray helperGetData(const std::string & fileName)
 	{
 		std::string extension = fileName.substr(fileName.size()-4,fileName.size());
@@ -171,12 +171,11 @@ private:
 		std::map<std::string, CLAM::TData>::const_iterator it;
 		for (it = expected.begin(); it != expected.end(); it++) {
 			peaks = helperGetData(it->first);
-//			CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + it->first + "-Peak.xml");
+//			CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + it->first + "-Peaks.xml");
 			mDescriptors->SetpSpectralPeakArray(&peaks);
 			mDescriptors->Compute();
 			if (
-				(std::isnan((mDescriptors->*getter)()) && !std::isnan(it->second)) ||
-				(!std::isnan((mDescriptors->*getter)()) && std::isnan(it->second)) ||
+				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
 				(mDescriptors->*getter)() > (*it).second + tolerance ||
 				(mDescriptors->*getter)() < (*it).second - tolerance
 				)
