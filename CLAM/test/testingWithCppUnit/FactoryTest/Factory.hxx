@@ -28,14 +28,16 @@ private:
 	typedef std::map<std::string, CreatorMethod> CreatorMap;
 
 public:
-	CreatorMethod GetCreator(char*)
+	CreatorMethod GetCreator( RegistryKey creatorId)
 	{
 		CreatorMethod foo = 0;//CLAM::CreateOscillator;
 
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
 		
-		return 0;
+		CreatorMap::const_iterator i = _creators.find(creatorId);
+
+		return i->second;
 	}
 	CreatorMethod GetCreatorSafe(char*) throw (ErrFactory)
 	{
