@@ -16,3 +16,7 @@ HAS_RTAUDIO=1
 
 # always true on posix
 HAS_PTHREADS=1
+
+# false on macosx/linux
+HAS_DIRECTX=0
+
