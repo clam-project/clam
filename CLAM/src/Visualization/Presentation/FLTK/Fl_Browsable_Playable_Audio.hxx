@@ -82,9 +82,6 @@ namespace CLAMVM
 
 		SigSlot::Slotv0 mStopSlot;
 
-//		Slotv1<CLAM::TData>* GetFrameSlot();
-//		SigSlot::Signalv1<double>* GetSignal();
-		
 		void Show();
 		void Hide();
 	};
