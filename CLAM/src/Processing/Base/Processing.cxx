@@ -124,7 +124,7 @@ namespace CLAM {
 
 	void Processing::Start(void)
 	{
-		CLAM_ASSERT(mState==Ready,"Start(): Object not ready");
+		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		mState=Running;
 		
 		try {
@@ -135,7 +135,7 @@ namespace CLAM {
 			ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
 			mState=Unconfigured;
 			new_e.Embed(e);
-			CLAM_ASSERT( false, new_e.what() );
+			CLAM_ASSERT( false, AddStatus(new_e.what()) );
 		}
 	}
 	
@@ -255,4 +255,34 @@ namespace CLAM {
 			mName = "";
 	}
 
+	const char* Processing::AddStatus(const std::string& a)
+	{
+		return AddStatus(a.c_str());
+	}
+
+	const char* Processing::AddStatus(const char* a)
+	{
+		static char ret[256];
+		int len_a = strlen(a);
+		int len_b = mStatus.length();
+		char* truncated_str = "[truncated]...";
+		int space_left = 255-strlen(truncated_str);
+		bool truncated = false;
+		if (len_a > space_left) {
+			len_a = space_left;
+			truncated = true;
+		}
+		space_left -= len_a; 
+		strncpy(ret,a,len_a);
+		if (len_b > space_left) {
+			len_b = space_left;
+			truncated = true;
+		}
+		strncpy(ret + len_a,mStatus.c_str(),len_b);
+		if (truncated)
+		{
+			strcpy(ret + len_a + len_b,truncated_str);
+		}
+		return ret;
+	}
 };//namespace CLAM

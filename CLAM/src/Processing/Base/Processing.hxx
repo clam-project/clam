@@ -556,7 +556,14 @@ namespace CLAM {
 
 		// end refactoring in progress
 		// ---------
-
+		
+	private:
+		/* Methods to prepend a message to mStatus, truncate if necesary,
+		** and return a static char [] , used for passing the status to
+		** CLAM_ASSERT 
+		*/
+		const char* AddStatus(const char* a);
+		const char* AddStatus(const std::string& a);
 	};
 
 
