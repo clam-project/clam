@@ -57,6 +57,7 @@ public:
 private: // Attributes	CLAM::SMSAnalysisCore mAnalysis;
 	CLAM::SMSAnalysisCore mAnalysis;
 	std::string mPathToTestData;
+	std::string mPathToAnalysisTestData;
 	CLAM::MonoAudioFileReader mReader;
 
 	void LoadAudioFile( const std::string & audioFileName )
@@ -106,7 +107,7 @@ private: // Attributes	CLAM::SMSAnalysisCore mAnalysis;
 		return streamWithResultOfTest.str();
 	}
 
-	void Execute()
+	void DoReaderAndAnalysis()
 	{
 		mReader.Do();
 		mAnalysis.Do();
@@ -122,7 +123,8 @@ public: // TestFixture interface
 			mPathToTestData ="../../../../CLAM-TestData/"; 
 		else
 			mPathToTestData = pathToTestData;
-		
+	
+		mPathToAnalysisTestData = mPathToTestData + "SMSAnalysisTests/";
 		mReader.GetOutPort("Samples read").ConnectToIn( mAnalysis.GetInPort("Input Audio"));
 		CLAM::TSize frameSize = 256;		
 
@@ -154,17 +156,17 @@ public: // TestFixture interface
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
-		CLAM::MonoAudioFileReader completeReader;
-		completeReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
-		completeReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
+		CLAM::MonoAudioFileReader wholeFileReader;
+		wholeFileReader.GetOutPort("Samples read").SetSize( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort("Samples read").SetHop( file.GetHeader().GetSamples() );
 		
-		completeReader.Configure( cfg );
-		completeReader.Start();
-		completeReader.Do();		
-		completeReader.Stop();
+		wholeFileReader.Configure(cfg);
+		wholeFileReader.Start();
+		wholeFileReader.Do();		
+		wholeFileReader.Stop();
 
 		CLAM::Segment segment;
-		CLAM::OutPortBase & outAudio  = completeReader.GetOutPort("Samples read" );
+		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples read" );
 		segment.SetAudio( CLAM::AudioOutPort::GetLastWrittenAudio( outAudio ) );
 
 		CLAM::SMSAnalysisConfig cfgAnalysis;
@@ -177,7 +179,9 @@ public: // TestFixture interface
 	
 //		CLAM::XMLStorage::Dump(segment, "Data", mPathToTestData + "/SMSAnalysisTests/sine_segment.xml" );
 		
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/sine_segment.xml" ), StringFromData( segment ) );
+		CPPUNIT_ASSERT_EQUAL( 
+				StringFromFile(mPathToTestData+"/SMSAnalysisTests/sine_segment.xml" ), 
+				StringFromData(segment) );
 	}
 	
 	void testSweep_comparingSegment()
@@ -187,17 +191,17 @@ public: // TestFixture interface
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
-		CLAM::MonoAudioFileReader completeReader;
-		completeReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
-		completeReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
+		CLAM::MonoAudioFileReader wholeFileReader;
+		wholeFileReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
 		
-		completeReader.Configure( cfg );
-		completeReader.Start();
-		completeReader.Do();		
-		completeReader.Stop();
+		wholeFileReader.Configure( cfg );
+		wholeFileReader.Start();
+		wholeFileReader.Do();		
+		wholeFileReader.Stop();
 
 		CLAM::Segment segment;
-		CLAM::OutPortBase & outAudio  = completeReader.GetOutPort("Samples read" );
+		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples read" );
 		segment.SetAudio( CLAM::AudioOutPort::GetLastWrittenAudio( outAudio ) );
 
 		CLAM::SMSAnalysisConfig cfgAnalysis;
@@ -210,7 +214,9 @@ public: // TestFixture interface
 	
 //		CLAM::XMLStorage::Dump(segment, "Data", mPathToTestData + "/SMSAnalysisTests/sweep_segment_ports.xml" );
 		
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/sweep_segment.xml" ), StringFromData( segment ) );
+		CPPUNIT_ASSERT_EQUAL( 
+				StringFromFile(mPathToTestData+"/SMSAnalysisTests/sweep_segment.xml"), 
+				StringFromData(segment) );
 	}
 	
 	void testTrumpet_comparingSegment()
@@ -220,17 +226,17 @@ public: // TestFixture interface
 
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
-		CLAM::MonoAudioFileReader completeReader;
-		completeReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
-		completeReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
+		CLAM::MonoAudioFileReader wholeFileReader;
+		wholeFileReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
 		
-		completeReader.Configure( cfg );
-		completeReader.Start();
-		completeReader.Do();		
-		completeReader.Stop();
+		wholeFileReader.Configure( cfg );
+		wholeFileReader.Start();
+		wholeFileReader.Do();		
+		wholeFileReader.Stop();
 
 		CLAM::Segment segment;
-		CLAM::OutPortBase & outAudio  = completeReader.GetOutPort("Samples read" );
+		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples read" );
 		segment.SetAudio( CLAM::AudioOutPort::GetLastWrittenAudio( outAudio ) );
 
 		CLAM::SMSAnalysisConfig cfgAnalysis;
@@ -243,17 +249,19 @@ public: // TestFixture interface
 	
 //		CLAM::XMLStorage::Dump(segment, "Data", mPathToTestData + "/SMSAnalysisTests/trumpet_segment_ports.xml" );
 		
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/trumpet_segment.xml" ), StringFromData( segment ) );
+		CPPUNIT_ASSERT_EQUAL( 
+				StringFromFile(mPathToTestData+"/SMSAnalysisTests/trumpet_segment.xml"), 
+				StringFromData(segment) );
 	}
 	
 	void testSine_innerData()
 	{
 				
 		LoadAudioFile( mPathToTestData + "sine.wav" );
-		Execute();
-		Execute();
+		DoReaderAndAnalysis();
+		DoReaderAndAnalysis();
 
-	/*	
+	/*	// For getting the "good" xml files	
 		CLAM::XMLStorage::Dump(outputSpectrum, "Data", mPathToTestData + "/SMSAnalysisTests/outputSpectrum_sine.xml" );
 		CLAM::XMLStorage::Dump(outputSinSpectrum, "Data", mPathToTestData + "/SMSAnalysisTests/outputSinSpectrum_sine.xml" );
 		CLAM::XMLStorage::Dump(outputSpectralPeaks, "Data",mPathToTestData +  "/SMSAnalysisTests/outputSpectralPeaks_sine.xml" );
@@ -261,26 +269,40 @@ public: // TestFixture interface
 		CLAM::XMLStorage::Dump(outputResSpectrum, "Data",mPathToTestData +  "/SMSAnalysisTests/outputResSpectrum_sine.xml" );
 	*/
 
-
-		CLAM::OutPortBase & outSpectrum  = mAnalysis.GetOutPort("Residual Branch Spectrum");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSpectrum_sine.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSpectrum)) );
-					      
-		CLAM::OutPortBase & outSinSpectrum  = mAnalysis.GetOutPort("Sinusoidal Branch Spectrum");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSinSpectrum_sine.xml" ), 
-  	 			      StringFromData(  CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSinSpectrum)) );
-
-		CLAM::OutPortBase & outSinTracking  = mAnalysis.GetOutPort("Sinusoidal Peaks");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSpectralPeaks_sine.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::SpectralPeakArray>::GetLastWrittenData( outSinTracking)) );
-	
-		CLAM::OutPortBase & outFundamental  = mAnalysis.GetOutPort("Fundamental");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputFundamental_sine.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Fundamental>::GetLastWrittenData( outFundamental)) );
-
-		CLAM::OutPortBase & outSubstracted  = mAnalysis.GetOutPort("Residual Spectrum");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputResSpectrum_sine.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSubstracted)) );
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Residual Branch Spectrum");
+			CLAM::Spectrum & out = CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( 
+					StringFromFile(mPathToAnalysisTestData+"outputSpectrum_sine.xml" ), 
+					StringFromData(out ) );
+		}
+		{
+			CLAM::OutPortBase & outPort = mAnalysis.GetOutPort("Sinusoidal Branch Spectrum");
+			CLAM::Spectrum & out = CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( 
+					StringFromFile( mPathToAnalysisTestData+"outputSinSpectrum_sine.xml" ), 
+					StringFromData(out) );
+		}	
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Sinusoidal Peaks");
+			CLAM::SpectralPeakArray & out = 
+				CLAM::OutPortPublisher<CLAM::SpectralPeakArray>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( 
+					StringFromFile( mPathToAnalysisTestData+"outputSpectralPeaks_sine.xml" ), 
+					StringFromData(out) );
+		}
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Fundamental");
+			CLAM::Fundamental & out = CLAM::OutPortPublisher<CLAM::Fundamental>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToAnalysisTestData+"outputFundamental_sine.xml" ), 
+					      StringFromData(out) );
+		}
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Residual Spectrum");
+			CLAM::Spectrum & out = CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToAnalysisTestData+"outputResSpectrum_sine.xml" ), 
+					      StringFromData(out) ); 
+		}
 
 		mReader.Stop();
 	}
@@ -288,8 +310,8 @@ public: // TestFixture interface
 	void testSweep_innerData()
 	{	
 		LoadAudioFile( mPathToTestData + "sweep.wav" );
-		Execute();
-		Execute();
+		DoReaderAndAnalysis();
+		DoReaderAndAnalysis();
 
 	/*	
 		CLAM::XMLStorage::Dump(outputSpectrum, "Data", mPathToTestData + "/SMSAnalysisTests/outputSpectrum_sweep.xml" );
@@ -298,35 +320,48 @@ public: // TestFixture interface
 		CLAM::XMLStorage::Dump(outputFundamental, "Data",mPathToTestData +  "/SMSAnalysisTests/outputFundamental_sweep.xml" );
 		CLAM::XMLStorage::Dump(outputResSpectrum, "Data",mPathToTestData +  "/SMSAnalysisTests/outputResSpectrum_sweep.xml" );
 	*/	
-		CLAM::OutPortBase & outSpectrum  = mAnalysis.GetOutPort("Residual Branch Spectrum");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSpectrum_sweep.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSpectrum)) );
-					      
-		CLAM::OutPortBase & outSinSpectrum  = mAnalysis.GetOutPort("Sinusoidal Branch Spectrum");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSinSpectrum_sweep.xml" ), 
-  	 			      StringFromData(  CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSinSpectrum)) );
-
-		CLAM::OutPortBase & outSinTracking  = mAnalysis.GetOutPort("Sinusoidal Peaks");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSpectralPeaks_sweep.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::SpectralPeakArray>::GetLastWrittenData( outSinTracking)) );
-	
-		CLAM::OutPortBase & outFundamental  = mAnalysis.GetOutPort("Fundamental");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputFundamental_sweep.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Fundamental>::GetLastWrittenData( outFundamental)) );
-
-		CLAM::OutPortBase & outSubstracted  = mAnalysis.GetOutPort("Residual Spectrum");
-		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputResSpectrum_sweep.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSubstracted)) );
-
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Residual Branch Spectrum");
+			CLAM::Spectrum & out = CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( 
+					StringFromFile(mPathToAnalysisTestData+"outputSpectrum_sweep.xml" ), 
+					StringFromData(out ) );
+		}
+		{
+			CLAM::OutPortBase & outPort = mAnalysis.GetOutPort("Sinusoidal Branch Spectrum");
+			CLAM::Spectrum & out = CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( 
+					StringFromFile( mPathToAnalysisTestData+"outputSinSpectrum_sweep.xml" ), 
+					StringFromData(out) );
+		}	
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Sinusoidal Peaks");
+			CLAM::SpectralPeakArray & out = 
+				CLAM::OutPortPublisher<CLAM::SpectralPeakArray>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( 
+					StringFromFile( mPathToAnalysisTestData+"outputSpectralPeaks_sweep.xml" ), 
+					StringFromData(out) );
+		}
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Fundamental");
+			CLAM::Fundamental & out = CLAM::OutPortPublisher<CLAM::Fundamental>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToAnalysisTestData+"outputFundamental_sweep.xml" ), 
+					      StringFromData(out) );
+		}
+		{
+			CLAM::OutPortBase & outPort  = mAnalysis.GetOutPort("Residual Spectrum");
+			CLAM::Spectrum & out = CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outPort);
+			CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToAnalysisTestData+"outputResSpectrum_sweep.xml" ), 
+					      StringFromData(out) ); 
+		}
 		mReader.Stop();
 	}
 	
 	void testTrumpet_innerData()
 	{
-	
 		LoadAudioFile( mPathToTestData + "trumpet.wav" );
-		Execute();
-		Execute();
+		DoReaderAndAnalysis();
+		DoReaderAndAnalysis();
 		
 	/*	
 		CLAM::XMLStorage::Dump(outputSpectrum, "Data", mPathToTestData + "/SMSAnalysisTests/outputSpectrum_trumpet.xml" );
@@ -335,9 +370,10 @@ public: // TestFixture interface
 		CLAM::XMLStorage::Dump(outputFundamental, "Data",mPathToTestData +  "/SMSAnalysisTests/outputFundamental_trumpet.xml" );
 		CLAM::XMLStorage::Dump(outputResSpectrum, "Data",mPathToTestData +  "/SMSAnalysisTests/outputResSpectrum_trumpet.xml" );
 	*/
-		CLAM::OutPortBase & outSpectrum  = mAnalysis.GetOutPort("Residual Branch Spectrum");
+		CLAM::OutPortBase & outSpectrumPort  = mAnalysis.GetOutPort("Residual Branch Spectrum");
+		
 		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSpectrum_trumpet.xml" ), 
-	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSpectrum)) );
+	 			      StringFromData( CLAM::OutPortPublisher<CLAM::Spectrum>::GetLastWrittenData( outSpectrumPort)) );
 					      
 		CLAM::OutPortBase & outSinSpectrum  = mAnalysis.GetOutPort("Sinusoidal Branch Spectrum");
 		CPPUNIT_ASSERT_EQUAL( StringFromFile( mPathToTestData + "/SMSAnalysisTests/outputSinSpectrum_trumpet.xml" ), 
