@@ -24,12 +24,15 @@ public:
 	
 	virtual void ConnectToIn(InPortBase& in) = 0;
 	virtual void DisconnectFromIn(InPortBase & in) = 0;
+	virtual void DisconnectFromAll()=0;
 	virtual bool IsConnectedTo(InPortBase & in) = 0;
+	virtual bool IsConnectableTo(InPortBase & ) = 0;
 	virtual bool CanProduce()=0;
 	virtual int GetSize()=0;
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
+	bool HasConnections(){return mConnectedInPortsList.size();}
 
 protected:
 	InPortsList mConnectedInPortsList;	
@@ -51,6 +54,18 @@ public:
 		: OutPortBase(name,proc)
 	{
 	}
+
+	void DisconnectFromAll()
+	{
+		InPortsList::iterator it = mConnectedInPortsList.begin();
+		for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )	
+		{ 
+			ProperInPort & in = dynamic_cast<ProperInPort&>(**it);
+			in.UnAttach();
+		}
+		mConnectedInPortsList.clear();
+	}
+
 	virtual ~OutPort()
 	{
 		InPortsList::iterator it = mConnectedInPortsList.begin();
@@ -139,7 +154,12 @@ public:
 	{
 		return mRegion.CanProduce();
 	}
-		
+	
+	bool IsConnectableTo(InPortBase & in)
+	{	
+		return ((dynamic_cast< ProperInPort* >(&in)) != 0);
+	}
+	
 	bool IsConnectedTo(InPortBase & in)
 	{
 		InPortsList::iterator it;
