@@ -25,163 +25,222 @@
 
 
 
-using namespace CLAM;
-
-
-void NormalizationConfig::DefaultInit()
+namespace CLAM
 {
-	AddType();
-	AddFrameSize();
-	UpdateData();
-	SetType(1);
-	SetFrameSize(2205);//0.05s at 44.1k
-
-}
 
 
-Normalization::Normalization()
-	: mIsSilenceCtrl( "Silence", this )
-{
-	Configure(NormalizationConfig());
-}
-
-Normalization::Normalization(NormalizationConfig& c)
-	: mIsSilenceCtrl( "Silence", this )
-{
-	Configure(c);
-}
-
-Normalization::~Normalization() {}
-
-
-bool Normalization::ConcreteConfigure(const ProcessingConfig& c)
-{
-	CopyAsConcreteConfig(mConfig,c);
-
-	mType=mConfig.GetType();
-	mFrameSize=mConfig.GetFrameSize();
-	
-	return true;
-}
-
-bool Normalization::Do(void) 
-{
-	return false;
-}
-	
-bool Normalization::Do(Audio &in){
-
-	Audio chunk;
-	TData max=0;
-	TIndex p=0, m=0;
-	DataArray energy;
-	TData totEnergy=0;
-	TData scalFactor = 0;
-
-	do
+	void NormalizationConfig::DefaultInit()
 	{
-		in.GetAudioChunk(p, p+mFrameSize, chunk);
-		/* unused: TSize size = chunk.GetSize(); */
-		DataArray moments(4);
-		moments.SetSize(4);
-		Stats myStats(&chunk.GetBuffer());
-		myStats.GetMoments(moments, FifthOrder);
+		AddType();
+		AddFrameSize();
+		UpdateData();
+		SetType(1);
+		SetFrameSize(2205);//0.05s at 44.1k
 
-		TData temp = myStats.GetEnergy();
-
-		//remove silence
-		if ( temp>0.3*mFrameSize/4410 ) //seems to be just above noise due to 8 bits quantization
-		{
-			energy.AddElem(temp);
-			totEnergy += temp;
-
-			if(max<temp) max=temp;
-		}
-
-		p += mFrameSize;
-		m++;
-	} while (p<=in.GetSize()-mFrameSize);
-
-	//normalizes according to the max energy 
-	if (mType==1) scalFactor=sqrt(max/mFrameSize);
-
-	//normalizes according to the average energy
-	else if (mType==2)
-	{
-		if (totEnergy!=0)
-		{
-			scalFactor=sqrt(totEnergy/in.GetSize());		
-		}
-		else
-		{
-			scalFactor=1;
-		}
 	}
 
-	//normalizes according to the threshold under which lies percent% of
-	//the energy values that are not silence
-	else if (mType==3)
+
+	Normalization::Normalization()
+		: mIsSilenceCtrl( "Silence", this )
 	{
+		Configure(NormalizationConfig());
+	}
+
+	Normalization::Normalization(NormalizationConfig& c)
+		: mIsSilenceCtrl( "Silence", this )
+	{
+		Configure(c);
+	}
+
+	Normalization::~Normalization() {}
+
+
+	bool Normalization::ConcreteConfigure(const ProcessingConfig& c)
+	{
+		CopyAsConcreteConfig(mConfig,c);
+
+		mType=mConfig.GetType();
+		mFrameSize=mConfig.GetFrameSize();
+	
+		return true;
+	}
+
+	bool Normalization::Do(void) 
+	{
+		return false;
+	}
+	
+	bool Normalization::Do(Audio &in)
+	{
+		TData scaleFactor = 0;
+
+		//Type #1: normalizes according to the max energy 
+		//Type #2: normalizes according to the average energy
+		//Type #3: normalizes according to the threshold under which lies percent% of
+		//the energy values that are not silence
+
+		if ( mType == 1 ) 
+			scaleFactor = ComputeScaleFactorFromMaxEnergy( in.GetBuffer() );
+		else if ( mType == 2 )
+			scaleFactor = ComputeScaleFactorFromAvgEnergy( in.GetBuffer() );
+		else if ( mType == 3 )
+			scaleFactor = ComputeScaleFactorFromDominantEnergy( in.GetBuffer() );
+
+		const TData invScaleFactor = 1.0 / scaleFactor;
+		DataArray& inBufferSamples = in.GetBuffer();
+
+		for (int n=0; n<in.GetSize(); n++)
+			inBufferSamples[n]*=invScaleFactor;
+		
+		return true;
+	}
+
+
+	TData Normalization::ComputeScaleFactorFromMaxEnergy( DataArray& inAudio )
+	{
+		TIndex    p = 0;
+		const     TIndex end = inAudio.Size() - mFrameSize;
+		DataArray chunk;
+		TData     maxEnergy = 0.0;
+		const     TData quantizationThreshold = 0.3 * TData( mFrameSize ) / TData( 4410 );
+
+		do
+		{
+			chunk.SetPtr( inAudio.GetPtr()+p, mFrameSize );
+			/* unused: TSize size = chunk.GetSize(); */
+			DataArray moments(4);
+			moments.SetSize(4);
+			Stats myStats(&chunk);
+			myStats.GetMoments(moments, FifthOrder);
+
+			TData currentChunkEnergy = myStats.GetEnergy();
+
+			//remove silence
+			if ( currentChunkEnergy > quantizationThreshold ) //seems to be just above noise due to 8 bits quantization
+			{
+				if(maxEnergy<currentChunkEnergy) maxEnergy=currentChunkEnergy;
+			}
+
+			p += mFrameSize;
+			
+		} while (p <= end );
+
+		// Enjoy the Silence...
+		if ( maxEnergy <= 1e-7 )
+		{
+			mIsSilenceCtrl.SendControl( true );
+			return 1.0;
+		}
+
+		mIsSilenceCtrl.SendControl(false);
+			
+		return sqrt( maxEnergy / TData(mFrameSize ) );
+		
+
+	}
+	
+	TData Normalization::ComputeScaleFactorFromAvgEnergy( DataArray& inAudio )
+	{
+
+		TIndex    p = 0;
+		const     TIndex end = inAudio.Size() - mFrameSize;
+		DataArray chunk;
+		TData     avgEnergy = 0.0;
+		const     TData quantizationThreshold = 0.3 * TData( mFrameSize ) / TData( 4410 );
+
+		do
+		{
+			chunk.SetPtr( inAudio.GetPtr()+p, mFrameSize );
+			DataArray moments(4);
+			moments.SetSize(4);
+			Stats myStats(&chunk);
+			myStats.GetMoments(moments, FifthOrder);
+
+			TData currentChunkEnergy = myStats.GetEnergy();
+
+			//remove silence
+			if ( currentChunkEnergy > quantizationThreshold ) //seems to be just above noise due to 8 bits quantization
+			{
+				avgEnergy += currentChunkEnergy;
+			}
+
+			p += mFrameSize;
+			
+		} while (p <= end );
+
+		avgEnergy /= TData( inAudio.Size() );
+
+		// Enjoy the Silence...
+		if ( avgEnergy <= 1e-7 )
+		{
+			mIsSilenceCtrl.SendControl( true );
+			return 1.0;
+		}
+
+		mIsSilenceCtrl.SendControl(false);
+
+		return sqrt( avgEnergy );
+
+	}
+
+	TData Normalization::ComputeScaleFactorFromDominantEnergy( DataArray& inAudio )
+	{
+		TIndex    p = 0;
+		const     TIndex end = inAudio.Size() - mFrameSize;
+		DataArray chunk;
+		DataArray chunksEnergies;
+		const     TData quantizationThreshold = 0.3 * TData( mFrameSize ) / TData( 4410 );
+
+		do
+		{
+			chunk.SetPtr( inAudio.GetPtr()+p, mFrameSize );
+			DataArray moments(4);
+			moments.SetSize(4);
+			Stats myStats(&chunk);
+			myStats.GetMoments(moments, FifthOrder);
+
+			TData currentChunkEnergy = myStats.GetEnergy();
+
+			//remove silence
+			if ( currentChunkEnergy > quantizationThreshold ) //seems to be just above noise due to 8 bits quantization
+			{
+				chunksEnergies.AddElem( currentChunkEnergy );
+			}
+
+			p += mFrameSize;			
+		} while (p <= end );
+
+		// Enjoy the silence...
+		if ( chunksEnergies.Size() == 0 )
+		{
+			mIsSilenceCtrl.SendControl( true );
+			return 1.0;
+		}
+
+		std::sort( chunksEnergies.GetPtr(), chunksEnergies.GetPtr()+chunksEnergies.Size() );
+
 		//find the threshold under which lies percent% of the energy values
 		//that are not silence
-		if (energy.Size()!=0) 
-		{
-			int percent=90;
-			sort(energy, energy.Size());
-			int i=(energy.Size()*percent)/100;
-			scalFactor=sqrt(energy[i-1]/mFrameSize);
-		}
-		else
-		{
-			scalFactor=1;
-		}
+		
+		int percentage = 90;
+
+		int i = ( chunksEnergies.Size()*percentage ) / 100;
+
+		i = ( i == 0 ) ? i : i - 1;
+
+		mIsSilenceCtrl.SendControl(false);
+
+		return sqrt( chunksEnergies[i]/TData(mFrameSize) );
 
 	}
-		
-	DataArray tempBuffer(in.GetSize());
-	tempBuffer.SetSize(in.GetSize());
-
-	CheckSilence( energy.Size() );
-
-	for (int n=0; n<in.GetSize(); n++)
-		tempBuffer[n] = in.GetBuffer()[n]/scalFactor;
-
-	in.SetBuffer(tempBuffer);
 	
-	return true;
+	void Normalization::CheckSilence( int size )
+	{
+		if (size==0) 
+			mIsSilenceCtrl.SendControl(true);
+		else
+			mIsSilenceCtrl.SendControl(false);
+	}
+
+
 }
-
-void Normalization::CheckSilence( int size )
-{
-	if (size==0) 
-		mIsSilenceCtrl.SendControl(true);
-	else
-		mIsSilenceCtrl.SendControl(false);
-}
-
-
-void Normalization::sort(DataArray& list, int size)
-{
-   int pass;   // Number of pass.
-   int i;      // Index variable.
-
-   // Do size - 1 passes.
-   for (pass = 1; pass < size; ++pass)
-      // On each pass, compare size - pass pairs of elements.
-      for (i = 0; i < size - pass; ++i)
-         if (list[i] > list[i + 1])
-            swap(list[i], list[i + 1]);   // Swap if out of ascending
-                                          // order.
-}
-
-
-void Normalization::swap(TData& a, TData& b)
-{
-   TData temp;
-
-   temp = a;
-   a = b;
-   b = temp;
-}
-
-

@@ -91,6 +91,7 @@ namespace CLAM
 		 * just consulting the value of the control.
 		 */
 		void CheckSilence( int size );
+
 	public:
 
 		Normalization();
@@ -102,10 +103,15 @@ namespace CLAM
 		bool Do(void);
 
 		bool Do(Audio &in);
-		void sort(DataArray& list, int size);
-		void swap(TData& a, TData& b);
+
 		
 		const ProcessingConfig &GetConfig() const { return mConfig;}
+
+	protected:
+		
+		TData ComputeScaleFactorFromMaxEnergy( DataArray& inAudio );
+		TData ComputeScaleFactorFromAvgEnergy( DataArray& inAudio );
+		TData ComputeScaleFactorFromDominantEnergy( DataArray& inAudio );
 
 	};
 	
