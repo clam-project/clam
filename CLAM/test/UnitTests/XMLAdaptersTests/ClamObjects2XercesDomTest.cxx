@@ -66,15 +66,11 @@ public:
 private:
 	std::stringstream mTargetStream;
 
-	void writeRootDocumentElement(ClamObject2XercesDom & dumper)
-	{
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-	}
 	void assertRootDocumentStoresAs(const std::string & expected, ClamObject2XercesDom & dumper)
 	{
-		writeRootDocumentElement(dumper);
+		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
+		XercesDomWriter writer;
+		writer.write(mTargetStream, node);
 		CPPUNIT_ASSERT_EQUAL(expected, mTargetStream.str());
 	}
 
@@ -82,8 +78,7 @@ private:
 	{
 		ClamObject2XercesDom dumper("Doc");
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc/>",dumper);
 	}
 
 	void testBasicAsPlainContent()
@@ -93,8 +88,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc>Content</Doc>",dumper);
 	}
 
 	void testBasicAsPlainContent_withoutContent()
@@ -103,8 +97,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc/>",dumper);
 	}
 
 	void testBasicAsElement_withoutContent()
@@ -113,8 +106,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element/></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element/></Doc>",dumper);
 	}
 
 	void testBasicAsElement_withContent()
@@ -124,8 +116,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
 	}
 	
 	void testBasicAsAttribute()
@@ -135,8 +126,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc at=\"Content\"/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc at=\"Content\"/>",dumper);
 	}
 
 	void testComponentAsPlainContent()
@@ -146,8 +136,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc>Content</Doc>",dumper);
 	}
 
 	void testComponentAsPlainContent_withoutContent()
@@ -156,8 +145,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc/>",dumper);
 	}
 
 	void testComponentAsElement_withoutContent()
@@ -166,8 +154,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element/></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element/></Doc>",dumper);
 	}
 
 	void testComponentAsElement_withContent()
@@ -177,8 +164,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
 	}
 	
 	void testComponentAsAttribute()
@@ -188,8 +174,7 @@ private:
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc at=\"Content\"/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc at=\"Content\"/>",dumper);
 	}
 
 
@@ -205,8 +190,7 @@ private:
 		dumper.Store(content);
 		dumper.Store(otherElement);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><OneElement/>Content<OtherElement/></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><OneElement/>Content<OtherElement/></Doc>",dumper);
 	}
 	
 
@@ -220,8 +204,7 @@ private:
 		dumper.Store(content1);
 		dumper.Store(content2);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content1 Content2</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc>Content1 Content2</Doc>",dumper);
 	}
 
 	void testNonConsecutiveContents_dontGetSpaceSeparation()
@@ -236,8 +219,7 @@ private:
 		dumper.Store(element);
 		dumper.Store(content2);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content1<Element/>Content2</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc>Content1<Element/>Content2</Doc>",dumper);
 	}
 
 	void testSibblingsAttributes_getReordered()
@@ -251,8 +233,7 @@ private:
 		dumper.Store(attribute1);
 		dumper.Store(attribute2);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc aSecond=\"Content2\" zFirst=\"Content1\"/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc aSecond=\"Content2\" zFirst=\"Content1\"/>",dumper);
 	}
 
 	void testComponentAsElement_containingBasicAsPlainContent()
@@ -265,8 +246,7 @@ private:
 		dumper.Store(element);
 
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
 	}
 
 	void testElementContents_getPrintedBeforeSiblingContent()
@@ -280,8 +260,7 @@ private:
 		dumper.Store(element);
 
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>ElementContent Content</Element></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element>ElementContent Content</Element></Doc>",dumper);
 	}
 
 	void testNodesInsertionAfterComponentElement()
@@ -297,8 +276,7 @@ private:
 		dumper.Store(afterContent);
 
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element>AfterContent</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element>Content</Element>AfterContent</Doc>",dumper);
 	}
 
 	void testComponentAsElement_containingBasicAsAttribute()
@@ -311,8 +289,7 @@ private:
 		dumper.Store(element);
 
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element at=\"atContent\"/></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Element at=\"atContent\"/></Doc>",dumper);
 	}
 
 	void testComponentAsElement_containingBasicAsElement()
@@ -325,8 +302,8 @@ private:
 		componentElement.add(basicElement);
 		dumper.Store(componentElement);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Component>ComponentContent<Basic>BasicContent</Basic></Component></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Component>ComponentContent"
+			"<Basic>BasicContent</Basic>""</Component></Doc>",dumper);
 	}
 
 	void testComponentAsElement_containingComponentAsElement()
@@ -339,8 +316,8 @@ private:
 		outsideElement.add(insideElement);
 		dumper.Store(outsideElement);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Outside>ComponentContent<Inside>InsideContent</Inside></Outside></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc><Outside>ComponentContent"
+			"<Inside>InsideContent</Inside></Outside></Doc>",dumper);
 	}
 
 	void testComponentAsContent_containingBasicAsPlainContent()
@@ -353,8 +330,7 @@ private:
 		componentContent.add(basicContent);
 		dumper.Store(componentContent);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>ComponentContent BasicContent</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc>ComponentContent BasicContent</Doc>",dumper);
 	}
 
 	void testComponentAsContent_containingBasicAsAttribute()
@@ -367,8 +343,7 @@ private:
 		componentContent.add(basicAttribute);
 		dumper.Store(componentContent);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc at=\"BasicContent\">ComponentContent</Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc at=\"BasicContent\">ComponentContent</Doc>",dumper);
 	}
 
 	void testComponentAsContent_containingBasicAsElement()
@@ -381,8 +356,7 @@ private:
 		componentContent.add(basicElement);
 		dumper.Store(componentContent);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>ComponentContent<Basic>BasicContent</Basic></Doc>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc>ComponentContent<Basic>BasicContent</Basic></Doc>",dumper);
 	}
 
 	void testComponentAsAttribute_containingAnything_childrenHaveNoEffect()
@@ -401,8 +375,7 @@ private:
 		componentAttribute.add(basicContent);
 		dumper.Store(componentAttribute);
 
-		writeRootDocumentElement(dumper);
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc componentAttribute=\"ComponentContent\"/>"), mTargetStream.str());
+		assertRootDocumentStoresAs("<Doc componentAttribute=\"ComponentContent\"/>",dumper);
 	}
 
 };
