@@ -46,6 +46,7 @@
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 #include "SMSMorphConfig.hxx"
+#include "SMSMorph.hxx"
 #include "SMSTimeStretchConfig.hxx"
 
 using namespace CLAMGUI;
@@ -778,7 +779,28 @@ void SMSBase::Transform()
 
 void SMSBase::SetSMSMorphFileName()
 {
+	SMSTransformationChain::iterator transIt=mTransformation.composite_begin();
 	SMSTransformationChainConfig::iterator configIt;
+	if(mGlobalConfig.HasMorphSoundFile())
+	{
+		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++,transIt++)
+		{
+			//Note: we are supposing only one Morph is in the chain
+			if((*configIt).GetConcreteClassName()=="SMSMorph")
+			{
+				try{
+					SMSMorph* tmpMorph= dynamic_cast<SMSMorph*>(*transIt);
+					tmpMorph->SetSegmentToMorph(mMorphSegment);
+				}
+				catch (Err e)
+				{
+					e.Print();
+				}
+			}
+
+		}
+	}
+	/*	SMSTransformationChainConfig::iterator configIt;
 	if(mGlobalConfig.HasMorphSoundFile())
 	{
 		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++)
@@ -796,15 +818,16 @@ void SMSBase::SetSMSMorphFileName()
 			}
 		}
 	}
+*/
 }
 
 void SMSBase::TransformProcessing(void)
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;
 	/* UNUSED: bool def=false; */
-	SetSMSMorphFileName();
 	UpdateDataInTimeStretch();
 	mTransformation.Configure(mTransformationScore);
+	SetSMSMorphFileName();
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
 

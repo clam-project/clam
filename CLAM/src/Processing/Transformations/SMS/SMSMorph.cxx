@@ -106,7 +106,7 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	type.bMagPhase=false;
 	type.bMagPhaseBPF=true;
 	cfg.SetType(type);
-	cfg.SetSpectralRange(mSegment.GetFrame(0).GetResidualSpec().GetSpectralRange());
+	cfg.SetSpectralRange(mConfig.GetSamplingRate()/2);
 
 	mUseSinSpectralShape=mConfig.GetUseSpectralShapes();
 	mUseResSpectralShape=mConfig.GetUseSpectralShapes();
@@ -361,6 +361,12 @@ bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 	mSDIFReader.Stop(  );
 	
 	return true;
+}
+
+void SMSMorph::SetSegmentToMorph(Segment& segmentToMorph)
+{
+	mInput2.Attach(segmentToMorph);
+	mHaveInternalSegment=true;
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;

@@ -71,7 +71,8 @@ namespace CLAM{
 		
 		virtual bool UpdateControlValueFromBPF(TData pos);
 	
-		
+		void SetSegmentToMorph(Segment&segmentToMorph);
+
 		bool mUseGlobalFactor;
 		SMSMorphCtrl  mHybBPF;
 
@@ -115,7 +116,8 @@ namespace CLAM{
 
 		/** Input Port. Note that all SMSTransformations will have segment as input and output, 
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
-		 *	transformation. Here we add a second segment for the sound to morph.*/
+		 *	transformation. Here we add a second segment for the sound to morph. In order to 
+		 *	attach an external segment use the SetSegmentToMorph operation*/
 		InPortTmpl<Segment> mInput2;
 		
 		bool mHarmSpectralShapeMorph;
