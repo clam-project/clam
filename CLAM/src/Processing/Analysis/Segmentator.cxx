@@ -94,11 +94,6 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 			myStream << "SpectralMoment6";
 			break;
 		}
-		case SpectralIrregularityId:
-		{
-			myStream << "SpectralIrregularity";
-			break;
-		}
 		case SpectralTiltId:
 		{
 			myStream << "SpectralTilt";
@@ -317,14 +312,6 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescr
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMoment6Id)
 		{
 			value=descriptors.GetFrameD(i).GetSpectrumD().GetMoment6();
-			if(value>mConfig.GetDescriptorsParams()[z].threshold)
-				descriptorsValues.SetAt(z,i,value);
-			else descriptorsValues.SetAt(z,i,0);
-			z++;
-		}
-		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralIrregularityId)
-		{
-			value=descriptors.GetFrameD(i).GetSpectrumD().GetIrregularity();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);

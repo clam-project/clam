@@ -37,7 +37,7 @@ namespace CLAM {
 
   	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 27, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 26, Descriptor);
 		
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
@@ -48,41 +48,40 @@ namespace CLAM {
 		DYN_ATTRIBUTE (6, public, TData, Moment4);
 		DYN_ATTRIBUTE (7, public, TData, Moment5);
 		DYN_ATTRIBUTE (8, public, TData, Moment6);
-		DYN_ATTRIBUTE (9, public, TData, Irregularity);
-		DYN_ATTRIBUTE (10,public, TData, Tilt);
-		DYN_ATTRIBUTE (11,public, TData, Flatness);
-		DYN_ATTRIBUTE (12,public, TData, Kurtosis);
-		DYN_ATTRIBUTE (13,public, TData, StrongPeak);
-		DYN_ATTRIBUTE (14,public, TData, HFC);
-		DYN_ATTRIBUTE (15,public, Array<TData>, MFCC);
-		DYN_ATTRIBUTE (16,public, Array<TData>, BandEnergy);
-		DYN_ATTRIBUTE (17,public, TData, MaxMagFreq); 
+		DYN_ATTRIBUTE (9,public, TData, Tilt);
+		DYN_ATTRIBUTE (10,public, TData, Flatness);
+		DYN_ATTRIBUTE (11,public, TData, Kurtosis);
+		DYN_ATTRIBUTE (12,public, TData, StrongPeak);
+		DYN_ATTRIBUTE (13,public, TData, HFC);
+		DYN_ATTRIBUTE (14,public, Array<TData>, MFCC);
+		DYN_ATTRIBUTE (15,public, Array<TData>, BandEnergy);
+		DYN_ATTRIBUTE (16,public, TData, MaxMagFreq); 
 		/** Frequency of the maximun of the spectrum normalized by the spectral range */
-		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
+		DYN_ATTRIBUTE (17,public, TData, LowFreqEnergyRelation); 
 		/**
 		 * The spectral spread is the variation of the spectrum
 		 * around its mean value. It's computed from the second
 		 * order moment.
 		 */
-		DYN_ATTRIBUTE (19,public, TData, Spread);
-		DYN_ATTRIBUTE (20,public, TData, Skewness);
+		DYN_ATTRIBUTE (18,public, TData, Spread);
+		DYN_ATTRIBUTE (19,public, TData, Skewness);
 		/**
 		 * The spectral roll-off point is the frequency so that 85%
 		 * of the signal energy is contained below this
 		 * frequency. Returns -1 if the rolloff point can't be
 		 * found. Measured in Hz.
 		 */
-		DYN_ATTRIBUTE (21,public, TData, Rolloff); 
+		DYN_ATTRIBUTE (20,public, TData, Rolloff); 
 		/**
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
 		 */
-	    DYN_ATTRIBUTE (22,public, TData, Slope); 
-		DYN_ATTRIBUTE (23,public, TData, HighFrequencyCoefficient);
-		DYN_ATTRIBUTE (24,public, Array<SpectralDescriptors>, BandDescriptors);
+		DYN_ATTRIBUTE (21,public, TData, Slope); 
+		DYN_ATTRIBUTE (22,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (23,public, Array<SpectralDescriptors>, BandDescriptors);
 
-		DYN_ATTRIBUTE (25,public, Array<TData>,PCP);
-		DYN_ATTRIBUTE (26, public, Array<TData>,MFCCDerivative);
+		DYN_ATTRIBUTE (24,public, Array<TData>,PCP);
+		DYN_ATTRIBUTE (25, public, Array<TData>,MFCCDerivative);
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
@@ -166,11 +165,6 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 	{
 		if(b.GetMoment6()>a.GetMoment6())
 			tmpD.SetMoment6(b.GetMoment6());
-	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		if(b.GetIrregularity()>a.GetIrregularity())
-			tmpD.SetIrregularity(b.GetIrregularity());
 	}
 	if(a.HasTilt() && b.HasTilt() )
 	{
@@ -304,11 +298,6 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 	{
 		if(b.GetMoment6()<a.GetMoment6())
 			tmpD.SetMoment6(b.GetMoment6());
-	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		if(b.GetIrregularity()<a.GetIrregularity())
-			tmpD.SetIrregularity(b.GetIrregularity());
 	}
 	if(a.HasTilt() && b.HasTilt() )
 	{
