@@ -192,6 +192,22 @@ namespace CLAM{
 		/** Default implementation, do nothing */
 		template <typename T>
 		void AddWidget(const char *name, void *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+			Fl_Box* notEditable = new Fl_Box( 155, 0, 170, 20, "Not Editable");
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
+			notEditable->labelsize(12);
+			notEditable->align(FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+			notEditable->box(FL_FLAT_BOX);
+
+			mWidgetNum++;
 		}
 		/** Default implementation, do nothing */
 		template <typename T>
