@@ -39,8 +39,7 @@ namespace CLAM {
 	
 	void SpectralEnvelopeApplyConfig::DefaultValues()
 	{
-		SetName("SpectralEnvelopeApply");
-		
+				
 	}
 
 

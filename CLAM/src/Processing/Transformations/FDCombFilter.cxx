@@ -39,7 +39,6 @@ namespace CLAM {
 	
 	void FDCombFilterConfig::DefaultValues()
 	{
-		SetName("FDCombFilter");
 		
 	}
 

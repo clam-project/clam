@@ -39,8 +39,6 @@ namespace CLAM {
 	
 	void SpectralEnvelopeExtractConfig::DefaultValues()
 	{
-		SetName("SpectralEnvelopeExtract");
-		
 		SetInterpolationType(EInterpolation::eSpline);
 	}
 
