@@ -49,7 +49,6 @@ AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
 	SetZeroCrossingRate(initVal);
 	SetRiseTime(initVal);
 	SetLogAttackTime(initVal);
-	SetAttack(initVal);
 	SetDecrease(initVal);
 }
 
@@ -93,29 +92,26 @@ void AudioDescriptors::ConcreteCompute()
 		SetLogAttackTime(ComputeLogAttackTime());
 	if(HasDecrease())
 		SetDecrease(ComputeDecrease());
-/*
-		Not implemented yet;
-
-		DYN_ATTRIBUTE (3, public, TData, Attack);
-*/
 }
 
 TData AudioDescriptors::ComputeZeroCrossingRate()
 {
 	DataArray& data = mpAudio->GetBuffer();
 
-	int sum = 0;
+	int signChangeCount = 0;
 	const TSize size = data.Size();
+	bool wasPositive = data[0] > 0.0;
 
-	// Detect zero-crossings
 	for (int i=1; i<size; i++)
 	{
-		if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
-		  ((data[i] > 0.0) && (data[i-1] < 0.0)))
-			sum++;
+		const bool isPositive = (data[i] > 0.0);
+		if (wasPositive ==  isPositive) continue;
+
+		signChangeCount++;
+		wasPositive = isPositive;
 	}
 	// Average
-	return ((TData)sum)/size;
+	return ((TData)signChangeCount)/size;
 }
 
 TData AudioDescriptors::ComputeAttackTime()
@@ -260,10 +256,6 @@ AudioDescriptors operator * (const AudioDescriptors& a,TData mult)
 	{
 		tmpD.SetLogAttackTime(a.GetLogAttackTime()*mult);
 	}
-	if(a.HasAttack())
-	{
-		tmpD.SetAttack(a.GetAttack()*mult);
-	}
 	if(a.HasDecrease())
 	{
 		tmpD.SetDecrease(a.GetDecrease()*mult);
@@ -322,12 +314,6 @@ AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.UpdateData();
 		tmpD.SetLogAttackTime(a.GetLogAttackTime()*b.GetLogAttackTime() );
 	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		tmpD.AddAttack();
-		tmpD.UpdateData();
-		tmpD.SetAttack(a.GetAttack()*b.GetAttack() );
-	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
 		tmpD.AddDecrease();
@@ -382,12 +368,6 @@ AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.AddLogAttackTime();
 		tmpD.UpdateData();
 		tmpD.SetLogAttackTime(a.GetLogAttackTime()+b.GetLogAttackTime() );
-	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		tmpD.AddAttack();
-		tmpD.UpdateData();
-		tmpD.SetAttack(a.GetAttack()+b.GetAttack() );
 	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{

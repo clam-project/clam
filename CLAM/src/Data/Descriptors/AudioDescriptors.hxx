@@ -37,7 +37,7 @@ namespace CLAM {
 
 	class AudioDescriptors : public DescriptorAbs {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 12, DescriptorAbs);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 8, DescriptorAbs);
 		
 		/** The mean value of audio samples amplitude. 
 		 *  This is a unitless measure.
@@ -58,17 +58,12 @@ namespace CLAM {
 		 */
 		DYN_ATTRIBUTE (2, public, TData, TemporalCentroid);
 		
-		DYN_ATTRIBUTE (3, public, TData, Attack);
-		DYN_ATTRIBUTE (4, public, TData, Decay);
-		DYN_ATTRIBUTE (5, public, TData, Sustain);
-		DYN_ATTRIBUTE (6, public, TData, Release);
-
 		/**
 		 * The log-attack time is the (base 10) logarithm of the
 		 * rise time. For a silent signal, log-attack time is
 		 * -5 (approx. silence). Measured in log10(seconds).
 		 */
-		DYN_ATTRIBUTE (7, public, TData, LogAttackTime);
+		DYN_ATTRIBUTE (3, public, TData, LogAttackTime);
 
 		/**
 		 * The squared sum of audio samples amplitudes. 
@@ -76,14 +71,14 @@ namespace CLAM {
 		 * This measure is unitless.
 		 * @see Stats::GetEnergy
 		 */
-		DYN_ATTRIBUTE (8, public, TData, Energy);
+		DYN_ATTRIBUTE (4, public, TData, Energy);
 
 		/**
 		 * The zero-crossing rate is a measure of the number of time
 		 * the signal value cross the zero axe, averaged over the
 		 * whole signal. Measured in crossings/second.
 		 */
-		DYN_ATTRIBUTE (9, public, TData, ZeroCrossingRate);
+		DYN_ATTRIBUTE (5, public, TData, ZeroCrossingRate);
 
 		/**
 		 * The rise time is the time duration between the signal
@@ -91,14 +86,14 @@ namespace CLAM {
 		 * of its maximum value. For a silent signal, rise time is
 		 * 0. Measured in seconds.
 		 */
-		DYN_ATTRIBUTE (10,public, TData, RiseTime);
+		DYN_ATTRIBUTE (6, public, TData, RiseTime);
 
 		/**
 		 * The temporal decrease is a measure of the amount of
 		 * decrease in the signal energy. Measured in dB per
 		 * seconds??
 		 */
-		DYN_ATTRIBUTE (11,public, TData, Decrease);
+		DYN_ATTRIBUTE (7, public, TData, Decrease);
 
 	public:
 
@@ -176,26 +171,6 @@ inline AudioDescriptors CLAM_min (const AudioDescriptors & a,const AudioDescript
 		if(b.GetLogAttackTime()<a.GetLogAttackTime())
 			tmpD.SetLogAttackTime(b.GetLogAttackTime() );
 	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		if(b.GetAttack()<a.GetAttack())
-			tmpD.SetAttack(b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		if(b.GetDecay()<a.GetDecay())
-			tmpD.SetDecay(b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		if(b.GetSustain()<a.GetSustain())
-			tmpD.SetSustain(b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		if(b.GetRelease()<a.GetRelease())
-			tmpD.SetRelease(b.GetRelease() );
-	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
 		if(b.GetDecrease()<a.GetDecrease())
@@ -245,26 +220,6 @@ inline AudioDescriptors CLAM_max (const AudioDescriptors & a,const AudioDescript
 	{
 		if(b.GetLogAttackTime()>a.GetLogAttackTime())
 			tmpD.SetLogAttackTime(b.GetLogAttackTime() );
-	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		if(b.GetAttack()>a.GetAttack())
-			tmpD.SetAttack(b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		if(b.GetDecay()>a.GetDecay())
-			tmpD.SetDecay(b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		if(b.GetSustain()>a.GetSustain())
-			tmpD.SetSustain(b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		if(b.GetRelease()>a.GetRelease())
-			tmpD.SetRelease(b.GetRelease() );
 	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
