@@ -186,24 +186,36 @@ void PhaseManagement::DoRandomPhases(SpectralPeakArray& peakArray)
 	int							i;
 	double					phase,freq;
 		
+	DataArray& lastPhase=mLastPeakArray.GetPhaseBuffer();
+	DataArray& lastFreq=mLastPeakArray.GetFreqBuffer();
+	int nPeaks=peakArray.GetnPeaks();
+	
+	lastPhase.Resize(nPeaks);
+	lastPhase.SetSize(nPeaks);
+	lastFreq.Resize(nPeaks);
+	lastFreq.SetSize(nPeaks);
+
 	for	(i=0;i<numPeaks;i++)
 	{
 		//phase = peakArray.GetPhase(i);
 		freq  = peakArray.GetFreq(i);
 		
 		//find peak corresponding to current track
-		TIndex prevPos = mLastPeakArray.GetPositionFromIndex(peakArray.GetIndex(i));
+		TIndex prevPos =peakArray.GetPositionFromIndex(peakArray.GetIndex(i));
 		
 		// use a set of random phases and calculate each time the correct phase..
   		if (prevPos == -1) // new track...
   		{
   			phase = mRandomPhase[i];
   			peakArray.SetPhase(i,TData(phase));
-			SpectralPeak tmpPeak;
+
+			lastPhase[i]=phase;
+			lastFreq[i]=freq;
+			/*SpectralPeak tmpPeak;
 			mLastPeakArray.InitPeak(tmpPeak);
   			tmpPeak.SetPhase(TData(phase));
 			tmpPeak.SetFreq(TData(phase));
-			mLastPeakArray.AddSpectralPeak(tmpPeak);
+			mLastPeakArray.AddSpectralPeak(tmpPeak);*/
   		}
   		else	// track is existing, calculate according phase..
   		{
@@ -213,8 +225,8 @@ void PhaseManagement::DoRandomPhases(SpectralPeakArray& peakArray)
   			//phase = phase - floor(phase/TWO_PI)*TWO_PI;
   			while (phase >= TWO_PI) phase = phase -TWO_PI;		// other way..
   			peakArray.SetPhase(i,TData(phase));
-  			mLastPeakArray.SetPhase(prevPos,TData(phase));
-			mLastPeakArray.SetFreq(prevPos,TData(phase));
+  			lastPhase[prevPos]=TData(phase);
+			lastFreq[prevPos]=TData(phase);
   		}	
 	}
 	mLastPeakArray.SetIsIndexUpToDate(true);
