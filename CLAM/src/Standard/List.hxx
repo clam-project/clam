@@ -78,6 +78,18 @@ public:
 		CLAM_DEBUG_ASSERT(FulfillsInvariant(),"List does not fulfill invariant");
 
 	}
+	
+	~List()
+	{
+		mpCurrent = mpFirst;
+		while (mpCurrent)
+		{
+			Node* next = mpCurrent->mpNext;
+			delete mpCurrent;
+			mpCurrent = next;
+		}
+	}
+	
 	void AddElem(const T& value);
 	void InsertElem(const T& value,TIndex i);
 	void InsertElem(const T& value);
@@ -156,14 +168,17 @@ public:
 	
 	bool IsLast()
 	{
-		if (mCurrentIndex==mSize-1) return true;
-		else return false;
+		return (mpCurrent==mpLast);
+	}
+
+	bool Done(void)
+	{
+		return mCurrentIndex==mSize;
 	}
 
 	bool IsFirst()
 	{
-		if (mCurrentIndex==0) return true;
-		else return false;
+		return (mpCurrent==mpFirst);
 	}
 
 	int CurrentIndex() const{return mCurrentIndex;}
