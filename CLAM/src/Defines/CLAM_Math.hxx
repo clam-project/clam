@@ -96,10 +96,12 @@ inline int Round(float a)
 #endif // MSVC++ 6
 
 #ifndef __USE_ISOC99
+#ifndef __APPLE__
 inline double  round(double _X)
         {return (floor(_X+0.5)); }
 inline float  round(float _X)
         {return (floorf(_X+0.5f)); }
+#endif
 #endif
 
 
