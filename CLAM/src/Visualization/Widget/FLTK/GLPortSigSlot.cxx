@@ -26,13 +26,13 @@
 
 using namespace CLAMGUI;
 
-GLPortSigSlot::GLPortSigSlot( const Rect<int>& geometry, const char* label = 0 ) 
+GLPortSigSlot::GLPortSigSlot( const Rect<int>& geometry, const char* label ) 
 	: GLPort( geometry, label ) { 
 	
 	mPainting = false;
 	mPos = -1;////////////////////////////////
 
-	mSlot.Wrap( this, &setPos );
+	mSlot.Wrap( this, &GLPortSigSlot::setPos );
 }
 
 void GLPortSigSlot::setPainting( bool painting ) {
@@ -40,7 +40,7 @@ void GLPortSigSlot::setPainting( bool painting ) {
 }
 
 void GLPortSigSlot::setPos( TData pos ) {
-	mPos ( pos );
+	mPos = pos ;
 	redraw();
 }
 
@@ -88,9 +88,9 @@ int GLPortSigSlot::handle( int event ) {
 			mSignal.Emit( mPos );
 
 			redraw();
-			cout<<"-->"<<mPos<<endl;
 			return 1;
 		}
 //	}	
-	GLPort::handle( event );
+	return GLPort::handle( event );
+	
 }

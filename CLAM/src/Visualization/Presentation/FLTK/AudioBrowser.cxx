@@ -23,7 +23,7 @@
 
 using namespace CLAMGUI;
 
-AudioBrowser::AudioBrowser( int X, int Y, int W, int H, const char* label = 0 )
+AudioBrowser::AudioBrowser( int X, int Y, int W, int H, const char* label )
 {
 
 	Geometry g( X, Y, W, H );
@@ -31,7 +31,7 @@ AudioBrowser::AudioBrowser( int X, int Y, int W, int H, const char* label = 0 )
 	Init( g, label );
 }
 
-AudioBrowser::AudioBrowser( const Geometry& g, const char* label = 0 )
+AudioBrowser::AudioBrowser( const Geometry& g, const char* label )
 {
 	Init( g, label );
 }

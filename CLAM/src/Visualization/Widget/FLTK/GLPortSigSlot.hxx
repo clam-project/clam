@@ -24,6 +24,7 @@
 
 #include "GeometryKit.hxx"
 #include "GLPortNew.hxx"
+#include "DataTypes.hxx"
 #include "FL/Fl.H"
 
 #include "Signalv1.hxx"
@@ -32,6 +33,8 @@
 namespace CLAMGUI
 {
 	
+	using CLAM::TData;
+
 	class GLPortSigSlot : public GLPort
 	{
 		
