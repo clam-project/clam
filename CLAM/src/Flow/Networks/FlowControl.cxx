@@ -27,7 +27,7 @@ void FlowControl::ConfigureNodes()
 	if(_state != SomeNodesNotConfigured )
 		return;
 
-	Network::NodesIterator it;
+	Network::Nodes::iterator it;
 	for (it = _network->BeginNodes(); it != _network->EndNodes(); it++ )
 	{
 		(*it)->Configure(_frameSize);
@@ -41,7 +41,7 @@ void FlowControl::ConfigurePorts()
 	if(_state != SomePortsNotConfigured )
 		return;
 
-	Network::ProcessingsMapIterator it;
+	Network::ProcessingsMap::iterator it;
 	for( it=_network->BeginProcessings(); it!= _network->EndProcessings(); it++)
 	{
 		Processing* proc = it->second;
@@ -74,7 +74,7 @@ void FlowControl::StartNetwork()
 {
 	CLAM_ASSERT(_state == Ready , "FlowControl not ready to Start Network");
 
-	Network::ProcessingsMapIterator it;
+	Network::ProcessingsMap::iterator it;
 	for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 	{
 		it->second->Start();
@@ -86,7 +86,7 @@ void FlowControl::StopNetwork()
 {
 	CLAM_ASSERT(_state == Running , "FlowControl cannot Stop a Network that is not running");
 
-	Network::ProcessingsMapIterator it;
+	Network::ProcessingsMap::iterator it;
 	for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 	{
 		it->second->Stop();
@@ -97,7 +97,7 @@ void FlowControl::StopNetwork()
 void FlowControl::DoProcessings()
 {
 	CLAM_ASSERT(_state == Running , "FlowControl not started");		
-	Network::ProcessingsMapIterator it;
+	Network::ProcessingsMap::iterator it;
 	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
 	{
 		if (it->second->CanDoUsingPorts())

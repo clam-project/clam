@@ -23,11 +23,7 @@ class Network
 {
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
-	typedef ProcessingsMap::iterator ProcessingsMapIterator;
-	typedef ProcessingsMap::const_iterator ConstProcessingsMapIterator;
-	typedef std::list< NodeBase* > NodesList;
-	typedef NodesList::iterator NodesIterator;
-	typedef NodesList::const_iterator ConstNodesIterator;
+	typedef std::list< NodeBase* > Nodes;
 	
 	// constructor / destructor
 	Network();
@@ -45,20 +41,20 @@ public:
 	void Start();
 	void Stop();
 	void DoProcessings();
-	void ConfigureNodes( int frameSize );
-	void ConfigurePorts( int frameSize );
+	void ConfigureNodes();
+	void ConfigurePorts();
 
 	void AddFlowControl( FlowControl* );
 
 	// accessors to nodes and processing
-	ProcessingsMapIterator BeginProcessings();
-	ProcessingsMapIterator EndProcessings();
-	ConstProcessingsMapIterator BeginProcessings() const;
-	ConstProcessingsMapIterator EndProcessings() const;
-	NodesIterator BeginNodes();
-	NodesIterator EndNodes();
-	ConstNodesIterator BeginNodes() const;
-	ConstNodesIterator EndNodes() const;
+	ProcessingsMap::iterator BeginProcessings();
+	ProcessingsMap::iterator EndProcessings();
+	ProcessingsMap::const_iterator BeginProcessings() const;
+	ProcessingsMap::const_iterator EndProcessings() const;
+	Nodes::iterator BeginNodes();
+	Nodes::iterator EndNodes();
+	Nodes::const_iterator BeginNodes() const;
+	Nodes::const_iterator EndNodes() const;
 	InPort & GetInPortByCompleteName( const std::string& );
 	OutPort & GetOutPortByCompleteName( const std::string& );
 
@@ -71,7 +67,7 @@ private:
 	// fields
 	std::string _name;
 	ProcessingsMap _processings;
-	NodesList _nodes;
+	Nodes _nodes;
 	// helpers
 	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );

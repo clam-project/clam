@@ -114,7 +114,7 @@ namespace CLAM
 
 	void Network::DisconnectAllPorts()
 	{
-		ProcessingsMap it;
+		ProcessingsMap::iterator it;
 		// pass trough all the processing
 		for( it=_processings.begin(); it!=_processings.end(); it++)
 		{
@@ -218,53 +218,53 @@ namespace CLAM
 		_flowControl->DoProcessings();
 	}
 
-	void Network::ConfigureNodes( int frameSize )
+	void Network::ConfigureNodes()
 	{
 		AssertFlowControlNotNull();
 		_flowControl->ConfigureNodes();
 	}
 
-	void Network::ConfigurePorts( int frameSize )
+	void Network::ConfigurePorts()
 	{
 		AssertFlowControlNotNull();
 		_flowControl->ConfigurePorts();	
 	}
 
-	Network::ProcessingsMapIterator Network::BeginProcessings()
+	Network::ProcessingsMap::iterator Network::BeginProcessings()
 	{
 		return _processings.begin();
 	}
 
-	Network::ProcessingsMapIterator Network::EndProcessings()
+	Network::ProcessingsMap::iterator Network::EndProcessings()
 	{
 		return _processings.end();
 	}
-	Network::ConstProcessingsMapIterator Network::BeginProcessings() const
+	Network::ProcessingsMap::const_iterator Network::BeginProcessings() const
 	{
 		return _processings.begin();
 	}
 
-	Network::ConstProcessingsMapIterator Network::EndProcessings() const
+	Network::ProcessingsMap::const_iterator Network::EndProcessings() const
 	{
 		return _processings.end();
 	}
 
-	Network::NodesIterator Network::BeginNodes()
+	Network::Nodes::iterator Network::BeginNodes()
 	{
 		return _nodes.begin();
 	}
 
-	Network::NodesIterator Network::EndNodes()
+	Network::Nodes::iterator Network::EndNodes()
 	{
 		return _nodes.end();
 	}
 
-	Network::ConstNodesIterator Network::BeginNodes() const
+	Network::Nodes::const_iterator Network::BeginNodes() const
 	{
 		return _nodes.begin();
 	}
 
-	Network::ConstNodesIterator Network::EndNodes() const
+	Network::Nodes::const_iterator Network::EndNodes() const
 	{
 		return _nodes.end();
 	}
