@@ -80,6 +80,11 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testConnectPorts_WhenConnectionIsNotValid );
 	CPPUNIT_TEST( testRemovePortsConnection_WhenPortsAreNotConnected );
 	CPPUNIT_TEST( testRemovePortsConnection_WhenPortsAreConnected );
+
+	CPPUNIT_TEST( testRemoveProcessing_WhenHasIt );
+	CPPUNIT_TEST( testRemoveProcessing_WhenHasntIt );
+	CPPUNIT_TEST( testRemoveProcessing_WhenRemoveProducer_DeletesAlsoNodesAndPortConnections );
+	CPPUNIT_TEST( testRemoveProcessing_WhenRemoveConsumer_DeletesAlsoPortConnections );
 	
 //	CPPUNIT_TEST( testConnectControls_WhenConnectionIsValid );
 //	CPPUNIT_TEST( testConnectControls_WhenConnectionIsNotValid );
@@ -772,6 +777,89 @@ class NetworkTest : public CppUnit::TestFixture
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
 		net.DisconnectPorts( "first.outPortOfFirstProc","second.inPortOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+	}
+
+	void testRemoveProcessing_WhenHasIt()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
+		DummyProcessing* proc = new DummyProcessing;
+
+		net.AddProcessing( "the processing", proc );
+		net.RemoveProcessing( "the processing" );
+		CPPUNIT_ASSERT_EQUAL( false, net.HasProcessing( "the processing" ));
+	}
+
+	void testRemoveProcessing_WhenHasntIt()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
+		DummyProcessing* proc = new DummyProcessing;
+
+		net.AddProcessing( "the processing", proc );
+
+		try{ 
+			net.RemoveProcessing( "false processing" );
+			CPPUNIT_FAIL("Assert expected, but no exception was thrown");
+		}
+		catch( CLAM::ErrAssertionFailed& )
+		{}
+	}
+
+	void testRemoveProcessing_WhenRemoveProducer_DeletesAlsoNodesAndPortConnections()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutPort* outPortOfFirstProc = 
+			new CLAM::OutPortTmpl<CLAM::Audio>
+			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
+
+		CLAM::InPort* inPortOfSecondProc = 
+			new CLAM::InPortTmpl<CLAM::Audio>
+			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+		
+		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
+		net.RemoveProcessing( "first" );
+		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );	
+	}
+
+	void testRemoveProcessing_WhenRemoveConsumer_DeletesAlsoPortConnections()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutPort* outPortOfFirstProc = 
+			new CLAM::OutPortTmpl<CLAM::Audio>
+			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
+
+		CLAM::InPort* inPortOfSecondProc = 
+			new CLAM::InPortTmpl<CLAM::Audio>
+			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+		
+		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
+		net.RemoveProcessing( "second" );
+		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );	
 	}
 
 };
