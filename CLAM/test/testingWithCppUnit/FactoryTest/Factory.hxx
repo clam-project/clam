@@ -1,3 +1,6 @@
+#ifndef _Factory_hxx_
+#define _Factory_hxx_
+
 #include <map>
 #include <string>
 
@@ -97,4 +100,5 @@ private: // data
 
 } // namespace
 
+#endif // _Factory_hxx_
 
