@@ -55,6 +55,7 @@ namespace SDIF
 		iterator End(void) const { return mMatrixList.end(); }
 		
 		TFloat64 Time(void) { return mHeader.mTime; }
+		Type	Type(void) {return mHeader.mType;}
 		
 	};
 }
