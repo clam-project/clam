@@ -161,7 +161,6 @@ bool SMSAnalysisCore::Do()
 {
 	if( mSinSpectralAnalysis.CanConsumeAndProduce() && mResSpectralAnalysis.CanConsumeAndProduce()  )
 	{
-		std::cout << "doing analysis" << std::endl;
 		mSinSpectralAnalysis.Do();
 		mResSpectralAnalysis.Do();
 		
@@ -180,18 +179,6 @@ bool SMSAnalysisCore::Do()
 		
 		CLAM_DEBUG_ASSERT( mSpecSubstracter.CanConsumeAndProduce(), "SMSAnalysisCore::Do() specSubstracter should have data feeded");
 		mSpecSubstracter.Do();
-
-		static int i=0;
-		if(!i)
-		{
-			std::stringstream prova1("");
-			prova1 << "peaks_anal.xml_" << i;
-			std::stringstream prova2("");
-			prova2 << "spec_anal.xml_" << i;
-			XmlStorage::Dump( mOutputSpectralPeaks.GetData(), "prova", prova1.str() );
-			XmlStorage::Dump( mOutputSubstractedSpectrum.GetData(), "prova", prova2.str() );
-			i++;
-		}
 
 		return true;
 	}
