@@ -259,7 +259,7 @@ namespace CLAM {
 
 		if (!mFrameSize)
 		{
-			mStatus += "FrameSize must be non-zero\n";
+			AddConfigErrorMessage("FrameSize must be non-zero");
 			return false;
 		}
 
@@ -273,14 +273,14 @@ namespace CLAM {
 		{
 			if (!SetInterpolationPeriod(mConfig.GetInterpolationPeriod().GetInitValue()))
 			{
-				mStatus += "The interpolation period requested in config would require\n"
-				           "less than one interpolation point per frame\n";
+				AddConfigErrorMessage("The interpolation period requested in config would require\n"
+				           "less than one interpolation point per frame");
 				return false;
 			}
 		}
 		else {
-			mStatus += "Neither the number of interpolation points per frame nor the \n"
-			           "interpolation period requested in configuration are valid.";
+			AddConfigErrorMessage("Neither the number of interpolation points per frame nor the \n"
+			           "interpolation period requested in configuration are valid.");
 			return false;
 		}
 
@@ -292,15 +292,15 @@ namespace CLAM {
 		{
 			if (!SetIntegrationLength(mConfig.GetIntegrationLength().GetInitValue()))
 			{
-				mStatus += "The integration length requested leads\n"
-				           "to a non-positive number of memory points.\n";
+				AddConfigErrorMessage("The integration length requested leads"
+				           "to a non-positive number of memory points.");
 				return false;
 			}
 		}
 		else
 		{
-			mStatus += "Neither the integration length nor the number of memory points\n"
-			           "requested in configuration are valid.";
+			AddConfigErrorMessage("Neither the integration length nor the number of memory points"
+			           "requested in configuration are valid.");
 			return false;
 		}
 

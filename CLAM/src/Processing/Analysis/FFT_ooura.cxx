@@ -37,9 +37,7 @@ namespace CLAM {
 	FFT_base::ConcreteConfigure(c);
 	if ( !isPowerOfTwo( mSize ) )
 	{
-		mStatus = "Configure failed: FFT Ooura algorithm only works for input buffers";
-		mStatus += "that are a power of two!";
-
+		AddConfigErrorMessage("Configure failed: FFT Ooura algorithm only works for input buffers that are a power of two!");
 		return false;
 	}
 	if (mSize>0) {

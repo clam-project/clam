@@ -125,31 +125,30 @@ namespace CLAM
 
 		if ( !targetFile.GetHeader().HasChannels() )
 		{
-			mStatus = "Channels field was not added to header";
+			AddConfigErrorMessage("Channels field was not added to header");
 			return false;
 		}
 
 		if ( targetFile.GetHeader().GetChannels() < 2 )
 		{
-			mStatus = "Too few channels. This processing is meant for handling ";
-			mStatus+= "files with two or more channels.";
+			AddConfigErrorMessage("Too few channels. This processing is meant for handling files with two or more channels.");
 			return false;
 		}
 
 		if ( !targetFile.IsWritable() )
 		{
-			mStatus = "Settings were not supported by selected output format. ";
-			mStatus += "Check that the sample rate, endianess and number of ";
-			mStatus += "channels conform the format specification.";
+			AddConfigErrorMessage("Settings were not supported by selected output format. "
+				"Check that the sample rate, endianess and number of "
+				"channels conform the format specification.");
 
 			return false;
 		}
 
 		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
 		{
-			mStatus = "File: ";
-			mStatus += mConfig.GetTargetFile().GetLocation();
-			mStatus += " has been locked by another Processing";
+			AddConfigErrorMessage("File: ");
+			AddConfigErrorMessage( mConfig.GetTargetFile().GetLocation() );
+			AddConfigErrorMessage(" has been locked by another Processing");
 
 			return false;
 		}
@@ -180,7 +179,7 @@ namespace CLAM
 
 		if ( !mNativeStream )
 		{
-			mStatus = "Could not acquire an audio file stream!";
+			AddConfigErrorMessage("Could not acquire an audio file stream!");
 			return false;
 		}
 

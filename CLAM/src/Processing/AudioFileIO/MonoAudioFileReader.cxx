@@ -60,16 +60,14 @@ namespace CLAM
 
 		if ( !mConfig.HasSourceFile() )
 		{
-			mStatus = "The provided config object lacked the field ";
-			mStatus += "'SourceFile'";
-
+			AddConfigErrorMessage("The provided config object lacked the field 'SourceFile'");
 			return false;
 		}
 
 		// Check that the given file can be opened
 		if ( ! mConfig.GetSourceFile().IsReadable() )
 		{
-			mStatus = "The Source file could not be opened";
+			AddConfigErrorMessage("The Source file could not be opened");
 			return false;
 		}
 
@@ -77,7 +75,7 @@ namespace CLAM
 		if ( mConfig.GetSelectedChannel() < 0
 		     || mConfig.GetSelectedChannel() >= mConfig.GetSourceFile().GetHeader().GetChannels() )
 		{
-			mStatus = "The channel selected for reading does not exist";
+			AddConfigErrorMessage("The channel selected for reading does not exist");
 			return false;
 		}
 
@@ -86,7 +84,7 @@ namespace CLAM
 
 		if ( !mNativeStream ) // For some reason a stream could not be acquired
 		{
-			mStatus = "Could not get a valid audio file stream!";
+			AddConfigErrorMessage("Could not get a valid audio file stream!");
 			return false;
 		}
 

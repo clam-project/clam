@@ -41,8 +41,8 @@ namespace CLAM {
 		FFT_base::ConcreteConfigure(c);
 		if ( !isPowerOfTwo( mSize ) )
 		{
-			mStatus = "Configure failed: Numerical Recipes FFT algorithm does not\n";
-			mStatus += "accept non power of two buffers";
+			AddConfigErrorMessage("Configure failed: Numerical Recipes FFT algorithm does not"
+				"accept non power of two buffers");
 
 			return false;
 		}

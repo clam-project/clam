@@ -68,13 +68,13 @@ bool AudioOut::ConcreteConfigure(const ProcessingConfig& c)
 		res = m->Register(*this);
 	}
 	catch (Err &e) {
-		mStatus += e.what();
+		AddConfigErrorMessage( e.what() );
 		res = false;
 	}
 
 	if (res == false)
-		mStatus += "AudioOut::ConcreteConfigure(): "
-			       "Failed to register in AudioManager.";
+		AddConfigErrorMessage( "AudioOut::ConcreteConfigure(): "
+		       "Failed to register in AudioManager.") ;
 
 	Input.SetParams(mConfig.GetFrameSize());
 

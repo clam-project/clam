@@ -320,7 +320,7 @@ void SMSAnalysis::Start()
 {
 	//we have to initialize internal counter
 	mAudioFrameIndex=0;
-	ProcessingComposite::Start();
+ 	ProcessingComposite::Start();
 }
 
 void SMSAnalysis::Attach(Audio& inputAudio, Spectrum& outSpectrum,SpectralPeakArray& outPk,

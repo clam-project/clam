@@ -144,14 +144,14 @@ namespace CLAM
 
 		if ( !mConfig.HasSourceFile() )			
 		{
-			mStatus = "No 'source file' was specified in the configuration!";
+			AddConfigErrorMessage("No 'source file' was specified in the configuration!");
 
 			return false;
 		}
 
 		if ( !mConfig.GetSourceFile().IsReadable() )
 		{
-			mStatus = "The source file could not be opened!";
+			AddConfigErrorMessage("The source file could not be opened!");
 
 			return false;
 		}
@@ -192,9 +192,7 @@ namespace CLAM
 
 			if ( channelsToRead.Size() != mConfig.GetSourceFile().GetHeader().GetChannels() )
 			{
-				mStatus = "There are not so many channels in the source file ";
-				mStatus += "check configuration";
-
+				AddConfigErrorMessage("There are not so many channels in the source file. Check configuration");
 				return false;
 			}
 
@@ -204,7 +202,7 @@ namespace CLAM
 				if ( channelsToRead[i] < 0
 				     || channelsToRead[i] >= maxChannels )
 				{
-					mStatus = "Invalid channel index in configuration!";
+					AddConfigErrorMessage("Invalid channel index in configuration!");
 					return false;
 				}
 				     
@@ -229,7 +227,7 @@ namespace CLAM
 
 		if (!mNativeStream )
 		{
-			mStatus = "Could not get a valid audio file stream!";
+			AddConfigErrorMessage("Could not get a valid audio file stream!");
 			return false;
 		}
 

@@ -48,11 +48,11 @@ namespace CLAM {
 		
 		if (mConfig.HasFilename()) {
 			if (mConfig.GetFilename()=="") {
-				mStatus += "Empty filename specified in config\n";
+				AddConfigErrorMessage("Empty filename specified in config");
 				return false;
 			}
 		}else{
-			mStatus += "No filename specified in config\n";
+			AddConfigErrorMessage("No filename specified in config");
 			return false;
 		}
 
@@ -74,7 +74,7 @@ namespace CLAM {
 				mpSoundFileIO = new AIFFFileIO;;
 				break;			
 			default:
-				mStatus += "Unknown file type specified in config\n";
+				AddConfigErrorMessage("Unknown file type specified in config");
 				return false;
 		}
 
@@ -117,9 +117,8 @@ namespace CLAM {
 		}
 		catch (ErrSoundFileIO& err)
 		{
-			mStatus += "Error opening file: ";
-			mStatus += err.what();
-			mStatus += "\n";
+			AddConfigErrorMessage("Error opening file: ");
+			AddConfigErrorMessage("err.what()");
 			return false;
 		}
 		return true;
