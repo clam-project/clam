@@ -144,19 +144,24 @@ int main(int argc,char** argv)
 			}
 		}
 	}
-	
+
+	//TODO multiple platform config parsing
+	if (gendepend==2)
+	{
+	//	listhash_add_item_str(config,"OS_WINDOWS","0");
+	//	listhash_add_item_str(config,"OS_LINUX","1");
+		makefilevars_generate();		
+	}
+//	listhash_add_item_str(config,"PROGRAM","MIDIOut"); // TODO CLUDGE !!!
+
 	listhash_add_item_str(config,"OS_WINDOWS","1");
-	listhash_add_item_str(config,"OS_LINUX","0");	
+	listhash_add_item_str(config,"OS_LINUX","0");
+
+	// config_init ?	
+	config_parse( settings.settingsfile );
 	dsp_parse( dspFileToWrite );
 	vcproj_parse( vcprojFileToWrite);
 	
-	if (gendepend==2)
-	{
-		listhash_add_item_str(config,"OS_WINDOWS","0");
-		listhash_add_item_str(config,"OS_LINUX","1");
-		makefilevars_generate();		
-	}
-
 
 	parser_exit();
 	config_exit();
