@@ -23,7 +23,7 @@
 #include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
 #include "Port.hxx"
 #include "Processing.hxx"
-#include "ProcessingData.hxx"
+#include "DummyProcessingData.hxx"
 
 namespace CLAMTest {
 
@@ -95,20 +95,6 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	const CLAM::ProcessingConfig& GetConfig() const { throw 0; }
 	bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return false; }
 	
-
-	class DummyProcessingData : public CLAM::ProcessingData
-	{
-		int _state;
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE( DummyProcessingData, 0, CLAM::ProcessingData );
-	public:
-		void DefaultInit() { _state = -1; }
-
-		void SetState(int val) { _state = val; }
-		int GetState() { return _state; }
-	};
-
-
 	///////////////// TESTING IN PORTS /////////////////
 	void testInPort_Attach_WithGeneralTemplateInPort_UpdatesConcretePortState()
 	{
