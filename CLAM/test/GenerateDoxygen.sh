@@ -24,10 +24,10 @@ GenerateDoxygen()
 		tar cfvj $Tarball $TargetDir
 
 		ssh clamadm@www.iua.upf.es rm -rf $TargetDir
-		scp -r $Tarball "clamadm@www.iua.upf.es:"
+		scp $Tarball "clamadm@www.iua.upf.es:"
 		ssh clamadm@www.iua.upf.es tar xfvj $Tarball
 		ssh clamadm@www.iua.upf.es rm $Tarball
-		scp -r DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
+		scp DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
 	popd
 	rm -rf CLAM-for-doxygen
 }
