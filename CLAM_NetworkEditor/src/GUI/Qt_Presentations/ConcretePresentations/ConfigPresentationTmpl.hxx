@@ -286,8 +286,6 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, uns
 	s >> value;
 }
 
->>>>>>> 1.1.2.10
-
 template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::TSize *foo, T& value) {
