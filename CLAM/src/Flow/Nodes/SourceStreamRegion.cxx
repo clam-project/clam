@@ -65,6 +65,12 @@ namespace CLAM {
 					"SourceStreamRegion::AddReader(): reader already added");
 		mReaders.push_back(reader);
 	}
+	void SourceStreamRegion::RemoveReader(ReadStreamRegion * reader)
+	{
+		CLAM_ASSERT(IsSourceOf(reader),  "SourceStreamRegion::RemoveReader(): "
+			    "this region is not source of the reader region to remove");
+		mReaders.remove(reader);
+	}
 
 
 	bool SourceStreamRegion::FulfilsInvariant() const

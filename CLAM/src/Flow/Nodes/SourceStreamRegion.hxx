@@ -48,6 +48,7 @@ namespace CLAM {
 		reader_const_iterator readers_end()   const;
 
 		void AddReader(ReadStreamRegion*);
+		void RemoveReader(ReadStreamRegion*);
 		bool IsSourceOf(const ReadStreamRegion*) const;
 
 		virtual bool FulfilsInvariant() const;

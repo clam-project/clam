@@ -106,6 +106,15 @@ namespace CLAM {
 			source=mSources.front();
 		source->AddReader(new_reader);
 	}
+	void StreamRegionContainer::RemoveReader(ReadStreamRegion * reader)
+	{
+ 		CLAM_ASSERT(Contains(reader), "StreamRegionContainer::RemoveReader(): "
+			    " Reader to remove is not present in container" );
+		
+		// we remove the reader from writer region
+		// todo: remove reader from all the sources
+		mSources.front()->RemoveReader(reader); 
+	}
 
 	WriteStreamRegion *StreamRegionContainer::Writer()
 	{

@@ -97,6 +97,7 @@ namespace CLAM {
 		                 SourceStreamRegion  *source=0);
 		void AddReader  (ReadStreamRegion    *new_reader,
 		                 SourceStreamRegion  *source=0);
+		void RemoveReader(ReadStreamRegion * reader);
 
 		WriteStreamRegion *Writer();
 		const WriteStreamRegion *Writer() const;
