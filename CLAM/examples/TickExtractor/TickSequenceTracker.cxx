@@ -89,6 +89,27 @@ namespace CLAM
 
 			mTickSwingAdjuster.SetParent( this );
 
+			AdjustTickWRTOnsetsConfig onsetsAdjusterCfg;
+
+			onsetsAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			onsetsAdjusterCfg.SetDeviationPenalty( mConfig.GetDeviationPenalty() );
+			onsetsAdjusterCfg.SetOverSubdivisionPenalty( mConfig.GetOverSubdivisionPenalty() );
+			onsetsAdjusterCfg.SetScope( mConfig.GetScope() );
+			onsetsAdjusterCfg.SetTickLimSup( mConfig.GetTickLimSup()*mConfig.GetSamplingRate() );
+
+			mTickOnsetsAdjuster.Configure( onsetsAdjusterCfg );
+
+			mTickOnsetsAdjuster.SetParent( this );
+
+			AdjustBeatWRTTickConfig beatTickAdjusterCfg;
+			beatTickAdjusterCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			beatTickAdjusterCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
+			beatTickAdjusterCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
+
+			mBeatTickAdjuster.Configure( beatTickAdjusterCfg );
+
+			mBeatTickAdjuster.SetParent( this );
+
 			return true;
 		}
 
@@ -264,29 +285,17 @@ namespace CLAM
 				{
 					///Adjust pulses and generate arrays of pulses
 					///Tick adjustment
-
-					unsigned int scope = CLAM::CLAM_min(TData(mConfig.GetScope()*mConfig.GetSamplingRate()),
-									    TData(tickFirstGuessInterval*0.5));
-
-					mTimeSeriesFinder.GetInControl("OffsetMin").DoControl( 0 );
-					mTimeSeriesFinder.GetInControl("OffsetStep").DoControl( 50 );
-					mTimeSeriesFinder.GetInControl("IntervalMin").DoControl(
-						std::max(TData(tickFirstGuessInterval-scope*0.5),TData(tickLimSup)) );
-					mTimeSeriesFinder.GetInControl("IntervalMax").DoControl(tickFirstGuessInterval+scope/2);
-					mTimeSeriesFinder.GetInControl("IntervalStep").DoControl( 10 );
-					mTimeSeriesFinder.GetInControl("OverSubdivisionPenalty").DoControl( 0 );
+					mTickOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
+					mTickOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
 
 					//Use of transientsForHist or transients???
 					// i.e. use of weights or not???
 					//myTemporalSeriesFinder.Do(transientsForHist,mGoodTick);
-					mTimeSeriesFinder.Do(transients,mGoodTick);		
+					
+					mTickOnsetsAdjuster.Do(transients,mTickFirstGuess,tickArray,mGoodTick);		
 
 					goodTickInterval = mGoodTick.GetInterval();
 					goodTickOffset = mGoodTick.GetOffset();
-					///Generate tick indexes array
-					GeneratePulseGrid((posTrans1+goodTickOffset)/mConfig.GetSamplingRate(),
-							  goodTickInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
-							  pulseGridGen,tickArray);			
 				}
 				else
 					goodTickInterval = tickFirstGuessInterval;
@@ -295,8 +304,9 @@ namespace CLAM
 
 				if (computeBeats) 
 				{
+					/*
 					///Tempo adjustment (optional)
-					unsigned int goodTempoInterval, goodTempoOffset;
+
 					//set the tempo to the closest exact multiple of the tick
 					tempo = ((int)(tempo+goodTickInterval/2)/goodTickInterval)
 						*goodTickInterval;
@@ -307,7 +317,16 @@ namespace CLAM
 
 					if(tempo==0) 
 						tempo = goodTickInterval;
-				
+					*/
+					unsigned int goodTempoInterval, goodTempoOffset;
+					TimeSeriesSeed oldBeatParams;
+					oldBeatParams.SetInterval( unsigned( tempo ) );
+					TimeSeriesSeed newBeatParams;
+
+					mBeatTickAdjuster.Do( mGoodTick, oldBeatParams, newBeatParams );
+
+					tempo = newBeatParams.GetInterval();
+
 					if (mConfig.GetAdjustWithOnsets()) 
 					{
 						//get the best phase

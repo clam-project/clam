@@ -12,6 +12,8 @@
 #include "RD_TimeSeriesFinder.hxx"
 #include "RD_TimeSeriesSeed.hxx"
 #include "AdjustTickWRTSwing.hxx"
+#include "AdjustTickWRTOnsets.hxx"
+#include "AdjustBeatWRTTick.hxx"
 
 namespace CLAM
 {
@@ -81,6 +83,8 @@ namespace CLAM
 			TimeSeriesFinder        mTimeSeriesFinder;
 			TimeSeriesFinderConfig  mTSFConfig;
 			AdjustTickWRTSwing      mTickSwingAdjuster;
+			AdjustTickWRTOnsets     mTickOnsetsAdjuster;
+			AdjustBeatWRTTick       mBeatTickAdjuster;
 
 		private: // Internal PD's
 		
