@@ -548,6 +548,38 @@ AC_DEFUN(CLAM_LIB_ID3TAG,
 
 dnl End of libid3tag checking procedure
 
+dnl Start of LADSPA SDK checking procedure
+AC_DEFUN( CLAM_LIB_LADSPA,
+[
+	AC_MSG_NOTICE([Checking that LADSPA SDK is installed])
+
+	HDRLADSPA_PRESENT="no"
+
+	AC_CHECK_HEADER(ladspa.h,
+			[HDRLADSPA_PRESENT="yes"],
+			[HDRLADSPA_PRESENT="no"])
+
+	if test $HDRLADSPA_PRESENT = no
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([LADSPA SDK has not been installed in your system!])
+	fi
+
+	AC_PATH_TOOL( LADSPA_INCLUDES,
+		      ladspa.h,
+		      [],
+		      [/usr/include:/usr/local/include] )
+
+	LADSPA_INCLUDES=${LADSPA_INCLUDES%/ladspa.h}
+
+	if test $LADSPA_INCLUDES = "/usr/include" || test $LADSPA_INCLUDES="/usr/local/include"
+	then
+		LADSPA_INCLUDES=""
+	fi
+
+])
+dnl End of LADSPA SDK checking procedure
+
 dnl Start of libid3 checking procedure
 AC_DEFUN( CLAM_LIB_ID3LIB,
 [
