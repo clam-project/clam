@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "parser.h"
+#include "config_parser.h"
 #include "listhash.h"
 #include "tree.h"
 #include "stack.h"
@@ -19,6 +20,9 @@ static int sourcefile = 0;
 /* 1 = inside Begin..End Source File, before SOURCE=
 ** 2 = inside Begin..End Source File, after SOURCE= 
 */
+
+char currentConfig[256];
+int  currentConfigIsDebug = 0;
 
 static int skipsource = 0;
 static int begingroupl = 0;
@@ -141,6 +145,62 @@ void dsp_parse_add_defines(void)
 	}
 }
 
+void dsp_parse_add_cxxflags(void)
+{
+	item* i = currentConfigIsDebug ?
+		cxxflags_debug->first 
+		:
+		cxxflags_release->first 
+	;
+	while (i)
+	{
+		if (i->str && i->str[0]!=0)
+		{
+			stradd(" ");
+			stradd(i->str);
+		}
+		i = i->next;
+	}
+}
+
+void dsp_parse_add_libraries(void)
+{
+	item* i = currentConfigIsDebug ?
+		libraries_debug->first 
+		:
+		libraries_release->first 
+	;
+	while (i)
+	{
+		if (i->str && i->str[0]!=0)
+		{
+			stradd(" ");
+			stradd(i->str);
+			stradd(".lib");
+		}
+		i = i->next;
+	}
+}
+
+void dsp_parse_add_library_paths(void)
+{
+	item* i = library_paths->first;
+	while (i)
+	{
+		if (i->str && i->str[0]!=0)
+		{
+			char tmp[1024];
+			strncpy(tmp,i->str,1024);
+			winstyle(tmp);
+
+			stradd(" /libpath:\"");
+			stradd(tmp);
+			stradd("\"");
+		}
+		i = i->next;
+	}
+}
+
 void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 {
 	node * n = t->first;
@@ -239,6 +299,7 @@ void dsp_parse_insert_headers()
 	dsp_parse_insert(1);
 }
 
+/*
 void copy_without_includes(char* tgt,const char* src)
 {
 	while (*src && *src!='\r' && *src!='\n')
@@ -276,9 +337,49 @@ void copy_without_includes(char* tgt,const char* src)
 	}
 	*tgt = 0;
 }
+*/
+
+void dsp_parse_line_chkcfg(const char* buf,int line)
+{
+	const char* a = 0;
+	if (strcmp_begin(buf,"!ELSEIF  \"$(CFG)\" == \"")==0)
+	{
+		a = buf + strlen("!ELSEIF  \"$(CFG)\" == \"");
+	}
+	else if (strcmp_begin(buf,"!IF  \"$(CFG)\" == \"")==0)
+	{
+		a = buf + strlen("!IF  \"$(CFG)\" == \"");
+	}
+	
+	if (a)
+	{
+		int n = 256;
+		char* b = currentConfig;
+		while (--n && *a && *a!='"') { *b++ = *a++;}
+		*b = 0;
+
+		b = currentConfig;
+		while (*b) {
+			if (strcmp("Debug",b)==0){
+				currentConfigIsDebug = 1;
+				break;
+			}
+			b++;
+		}
+
+		fprintf(stderr,"%d CURRENTCONFIG=%s %d\n",line,currentConfig,currentConfigIsDebug);
+	}
+	if (strcmp_eol(buf,"!ENDIF")==0)
+	{
+		strcpy(currentConfig,"");
+		currentConfigIsDebug = 0;
+	}
+}
 
 void dsp_parse_line(const char* buf,int line)
 {
+	dsp_parse_line_chkcfg(buf,line);
+
 	if (sourcefile==1)
 	{
 		if (strcmp_eol(buf,""))  /* ignore empty lines */
@@ -342,19 +443,50 @@ void dsp_parse_line(const char* buf,int line)
 	if (!skip && !skipsource && sourcefile!=1) {
 
 		if (
-			!strcmp_begin(buf,"# ADD CPP ") || 
-			!strcmp_begin(buf,"# ADD BASE CPP ")
+			!strcmp_begin(buf,"# ADD CPP ")
 		) {
 			char tmp[4096];
+			/*
 			char tmp2[4096];
 			copy_without_includes(tmp2,buf);
 			strstart(tmp,4096);
 			stradd(tmp2);
+			*/
+
+			strstart(tmp,4096);
+			stradd("# ADD CPP");
+			
 			/** add all needed_includepaths here **/
 
+			dsp_parse_add_cxxflags();
 			dsp_parse_add_defines();
 			dsp_parse_add_pre_includes();
 			dsp_parse_add_needed_includepaths();
+
+			stradd("\n");
+			
+			strend();
+			fputs(tmp,outfile);
+		}
+		else
+		if (
+			!strcmp_begin(buf,"# ADD LINK32 ")
+		) {
+			char tmp[4096];
+			/*
+			char tmp2[4096];
+			copy_without_includes(tmp2,buf);
+			strstart(tmp,4096);
+			stradd(tmp2);
+			*/
+
+			strstart(tmp,4096);
+			stradd("# ADD LINK32");
+			
+			/** add all needed_includepaths here **/
+
+			dsp_parse_add_libraries();
+			dsp_parse_add_library_paths();
 
 			stradd("\n");
 			
@@ -384,7 +516,6 @@ void dsp_parse_line(const char* buf,int line)
 		sourcefile = 0;
 		if (skipsource) skipsource = 0;
 	}
-
 }
 
 void dsp_parse(const char* filename)
@@ -422,7 +553,7 @@ void dsp_parse(const char* filename)
 	outfile = fopen(filename,"w");
 	if (!outfile)
 	{
-		fprintf(stderr,"Could not open %s.dsp for writing\n",filename);
+		fprintf(stderr,"Could not open %s for writing\n",filename);
 		exit(-1);
 	}
 

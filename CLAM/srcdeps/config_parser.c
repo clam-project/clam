@@ -10,6 +10,14 @@
 listhash* config = 0;
 list* used_vars = 0;
 
+list *libraries_debug = 0;
+list *libraries_release = 0;
+
+list *cxxflags_debug = 0;
+list *cxxflags_release = 0;
+
+list *library_paths = 0;
+
 int config_parse(const char* filename);
 
 int var_true(char* subst,const char* filename,int line)
@@ -241,7 +249,28 @@ void config_parse_line(char* ptr,const char* filename,int line)
 			{
 				if (k>0)
 				{
-					int err = config_parse(ptr);
+				
+					int err;
+					char filename2[2048];
+					{
+						const char* a = filename;
+						char* b = filename2;
+						char* q = 0;
+						while (*a)
+						{
+							if (*a=='/' || *a=='\\') q = b;
+							*b++ = *a++;
+						}
+						if (q)
+						{
+							q++;
+							strcpy(q,ptr);
+						}else{
+							strcpy(filename2,ptr);
+						}
+					}
+					fprintf(stderr,"FILENAME2=%s\n",filename2);
+					err = config_parse(filename2);
 					if (err)
 					{
 						fprintf(stderr,"Error: could not include file '%s' in line %s:%d\n",
@@ -330,31 +359,38 @@ void config_init(void)
 
 	config = listhash_new();
 
-	listhash_add_key_once(config,"LIBRARIES")->l = list_new();
-	listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
-	listhash_add_key_once(config,"CXXFLAGS")->l = list_new();
+	libraries_debug = 
+		listhash_add_key_once(config,"LIBRARIES_DEBUG")->l = list_new();
+
+	libraries_release = 
+		listhash_add_key_once(config,"LIBRARIES_RELEASE")->l = list_new();
+
+	library_paths = 
+		listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
+
+	cxxflags_debug = 
+		listhash_add_key_once(config,"CXXFLAGS_DEBUG")->l = list_new();
+
+	cxxflags_release = 
+		listhash_add_key_once(config,"CXXFLAGS_RELEASE")->l = list_new();
+
 	listhash_add_key_once(config,"SOURCES")->l = list_new();
 	listhash_add_key_once(config,"PRE_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"DEFINES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
 
-	list_add_str_once(used_vars,"LIBRARIES");
+	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
+	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"LIBRARY_PATHS");
-	list_add_str_once(used_vars,"CXXFLAGS");
+	list_add_str_once(used_vars,"CXXFLAGS_DEBUG");
+	list_add_str_once(used_vars,"CXXFLAGS_RELEASE");
 	list_add_str_once(used_vars,"SOURCES");
 	list_add_str_once(used_vars,"PRE_INCLUDES");
 	list_add_str_once(used_vars,"DEFINES");
 	list_add_str_once(used_vars,"SEARCH_INCLUDES");
 	list_add_str_once(used_vars,"SEARCH_RECURSE_INCLUDES");
 
-#ifdef WIN32
-	listhash_add_item_str(config,"OS_WINDOWS","1");
-	listhash_add_item_str(config,"OS_LINUX","0");
-#else
-	listhash_add_item_str(config,"OS_WINDOWS","0");
-	listhash_add_item_str(config,"OS_LINUX","1");
-#endif
 }
 
 void config_check(void)

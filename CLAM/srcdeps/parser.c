@@ -58,10 +58,6 @@ list *guessed_headers = 0;
 */
 list *needed_includepaths = 0;
 
-list *libraries = 0;
-
-list *library_paths = 0;
-
 /* list of all includes checked when building the
 ** needed_includepaths, for efficiency.
 */
@@ -151,9 +147,80 @@ int parser_include(const char* filename)
 	const char* path;
 	char tmp[2048];
 	char tmp2[2048];
+	char* pathend = 0;
+	
+	/* about tmp vs tmp2: 
+	** we used to add tmp to includes_checked, but
+	** this went wrong when the a different path and 
+	** a different include let to the same file,
+	** for example PATH a/b , INCLUDE c and
+	** PATH a INCLUDE b/c
+	** so now we use tmp2 where path and file are
+	** seperated with /:/ instead of only a /
+	*/
 
-	FILE* f = fopen_in_includepaths(filename,&path);
+	const char* curFilename = stack_top(filenamestack);
+	FILE* f = 0;
+	
+	{
+		/* first, check local path */
+		const char* a = curFilename;
+		char* b = tmp;
+		char* c = tmp2;
+		char* qb = 0;
+		char* qc = 0;
+		int n = 2032; /* leave room for possible extension change */
+		while (*a && n)
+		{
+			if (*a=='/' || *a=='\\')
+			{
+				qb = b;
+				qc = c;
+			}
+			*b++ = *a;
+			*c++ = *a;
+			a++;
+			n--;
+		}
+		*b = 0;
+		*c = 0;
+		if (qb)
+		{
+			pathend = qc;
+			qb++;
+			qc++;
+			*qc++ = ':';
+			*qc++ = '/';
+			strncpy(qb,filename,n);
+			strncpy(qc,filename,n-2);
+		}
 		
+		f = fopen(tmp,"r");
+	}
+
+	if (f==0)
+	{
+		/* the file was not in the local path, so we check all other paths */
+		f = fopen_in_includepaths(filename,&path);
+		if (f)
+		{
+			strstart(tmp,2032); /* leave room for possible extension change */
+			stradd(path);
+			if (strcmp(path,""))
+			{
+				stradd("/");
+			}
+			stradd(filename);
+			strend();	
+
+			strstart(tmp2,2048);
+			pathend = stradd(path);
+			stradd("/:/");
+			stradd(filename);
+			strend();	
+		}
+	}
+
 	if (!f) 
 	{
 		return 0;
@@ -161,30 +228,15 @@ int parser_include(const char* filename)
 		fclose(f);
 	}
 
-	strstart(tmp,2032); /* leave room for possible extension change */
-	if (strcmp(path,""))
-	{
-		stradd(path);
-		stradd("/");
-	}
-	stradd(filename);
-	strend();	
-
+	/* now, :
+	** - tmp contains the path + "/" +  filename
+	** - tmp2 	contains the path + "/:/" + filename
+	** - pathend point to the end of the path in tmp2
+	*/
+		
 	parser_recurse(tmp);
 
 	list_add_str_once(includes,tmp);
-
-	/* we used to add tmp to includes_checked, but
-	** this went wrong when the a different path and 
-	** a different include let to the same file,
-	** for example PATH a/b , INCLUDE c and
-	** PATH a INCLUDE b/c
-	*/
-	strstart(tmp2,2048);
-	stradd(path);
-	stradd("/:/");
-	stradd(filename);
-	strend();	
 
 	if (!list_find(includes_checked,tmp2))
 	{
@@ -192,9 +244,12 @@ int parser_include(const char* filename)
 		
 		list* possible_impl_files = list_new();
 
-		list_add_str_once(needed_includepaths,path);
-
 		list_add_str(includes_checked,tmp2);
+		
+		/* remove filename from tmp2 */
+		*pathend = 0;
+		
+		list_add_str_once(needed_includepaths,tmp2);
 
 		list_add_str_once(guessed_headers,tmp);
 
@@ -503,6 +558,7 @@ void parser_init(void)
 	pre_includes = listhash_find(config,"PRE_INCLUDES")->l;
 
 	defines = listhash_find(config,"DEFINES")->l;
+
 
 	extmap_init();
 

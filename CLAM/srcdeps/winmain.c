@@ -19,6 +19,10 @@ int main(int argc,char** argv)
 	recursesrcs = 1;
 	
 	config_init();
+	
+	listhash_add_item_str(config,"OS_WINDOWS","1");
+	listhash_add_item_str(config,"OS_LINUX","0");
+
 	config_parse(argv[1]);
 
 	parser_init();

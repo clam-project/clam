@@ -6,8 +6,8 @@
 /* set the ptr where we will be adding, and the max. length */
 void strstart(char* tgt,int n);
 
-void stradd(const char* a);
+char* stradd(const char* a);
 
-void strend(void);
+char* strend(void);
 
 #endif
