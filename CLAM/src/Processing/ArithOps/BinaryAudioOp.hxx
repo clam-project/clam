@@ -106,6 +106,8 @@ namespace CLAM
 
 		bool Do(Audio& in1, Audio& in2, Audio& out)
 		{
+			if( !AbleToExecute() ) return true;
+
 			int size = in1.GetSize();
 			int i;
 			
