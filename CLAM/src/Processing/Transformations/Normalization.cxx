@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include "DataTypes.hxx"
 #include "CLAM_Math.hxx"
 #include "Normalization.hxx"
 #include "Stats.hxx"
@@ -34,7 +35,7 @@ void NormalizationConfig::DefaultInit()
 	AddFrameSize();
 	UpdateData();
 	SetType(1);
-	SetFrameSize(4410);	//0.1s at 44.1k
+	SetFrameSize(2205);//0.05s at 44.1k
 
 }
 
@@ -54,7 +55,7 @@ Normalization::~Normalization() {}
 
 bool Normalization::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const NormalizationConfig&> (c);
+	CopyAsConcreteConfig(mConfig,c);
 
 	mType=mConfig.GetType();
 	mFrameSize=mConfig.GetFrameSize();
