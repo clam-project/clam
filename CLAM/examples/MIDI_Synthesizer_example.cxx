@@ -120,6 +120,8 @@ public:
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure( const ProcessingConfig& c );
+	
+	bool ConcreteStart();
 
 		bool Do(void) { return true; }
 
@@ -191,6 +193,15 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 	mMapperPitchBend.Configure( MapperPBendCfg );
 
 	LinkControls();
+
+	return true;
+}
+
+bool MyInstrument::ConcreteStart()
+{
+	mOscillator.Start();
+	mADSR.Start();
+	mSampleMultiplier.Start();
 
 	return true;
 }
@@ -343,7 +354,7 @@ void MyAudioApplication::AudioMain(void)
 		// Mixer Declaration
 		AudioMixerConfig mixerCfg;
 		mixerCfg.SetFrameSize(buffersize);
-		mixerCfg.SetSampleRate(audioManager.SampleRate());
+//		mixerCfg.SetSampleRate(audioManager.SampleRate());
 
 		AudioMixer<nVoices> mixer;
 		mixer.Configure(mixerCfg);
@@ -370,9 +381,22 @@ void MyAudioApplication::AudioMain(void)
 
 		mixer.Start();
 
-		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
+		inL.Start();
+		inR.Start();
+		outL.Start();
+		outR.Start();
 
-		TopLevelProcessing::GetInstance().Start();
+		for ( i = 0; i < nVoices; i++ )
+		{
+			instruments[ i ]->Start();
+		}
+
+
+
+		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
+		std::cout << "before" << std::endl;
+//		TopLevelProcessing::GetInstance().Start();
+		std::cout << "after" << std::endl;			
 
 		do
 		{
@@ -381,7 +405,7 @@ void MyAudioApplication::AudioMain(void)
 
 			clocker.DoControl(0,curTime);
 			curTime += curTimeInc;
-			
+
 			midiManager.Check();
 
 			for ( i = 0; i < nVoices; i++ )
