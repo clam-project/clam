@@ -3,13 +3,15 @@
 
 #include "Oscillator.hxx"
 #include "AudioFileOut.hxx"
+#include "AudioFileIn.hxx"
+#include "AudioAdder.hxx"
 
 #include "Audio.hxx"
 #include <list>
+#include <string>
 
 namespace FlowControlExample
 {
-
 class System
 {
 	// Iteration method type
@@ -17,32 +19,39 @@ class System
 
 public:
 	virtual ~System() {};
-	System( std::string fileOut , int frameSize, int iterations);
+	System( std::string fileIn, std::string fileOut , int frameSize, int maxFramesToProcess);
 	
 	void DoProcessings( IterationMethod );
 	
 	void ProcessAllIterations();
+
+	// Iteration methods
+	bool OscillatorToFileOut();
+	bool ModulatedFileIn();
 	
 private:
 	void StartProcessings();
 	void ConfigureProcessings();
 	void ConfigureData();
-	
 
-	// Iteration methods
-
-	bool OscillatorToFileOut();
 	// processings
 	CLAM::Oscillator _oscillator;
+	CLAM::Oscillator _modulator;
+	CLAM::AudioFileIn _fileIn;
 	CLAM::AudioFileOut _fileOut;
+	CLAM::AudioAdder _adder;
 
 	// processing data
-	CLAM::Audio _oscillatorOut;
+	CLAM::Audio _oscillatorData;
+	CLAM::Audio _fileInData;
+	CLAM::Audio _modulatorData;
+	CLAM::Audio _adderData;
 
 	//other system parameters
+	std::string _fileInName;
 	std::string _fileOutName;
 	int _frameSize;
-	int _iterations;
+	int _maxFramesToProcess;
 
 };
 
