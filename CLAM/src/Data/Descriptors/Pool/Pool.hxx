@@ -13,10 +13,10 @@
 
 namespace CLAM
 {
-	class AbstractPoolAttribute
+	class AbstractAttribute
 	{
 	public:
-		virtual ~AbstractPoolAttribute() {}
+		virtual ~AbstractAttribute() {}
 		virtual void * Allocate(unsigned size) = 0;
 		virtual void Deallocate(void * data) = 0;
 		template <typename TypeToCheck>
@@ -30,7 +30,7 @@ namespace CLAM
 	};
 
 	template <typename AttributeType>
-	class PoolAttribute : public AbstractPoolAttribute
+	class Attribute : public AbstractAttribute
 	{
 	public:
 		typedef TData DataType;
@@ -49,16 +49,16 @@ namespace CLAM
 		}
 	};
 
-	class PoolSpec
+	class AttributeScope
 	{
 	public:
 		typedef std::map<std::string, unsigned> NamesMap;
-		typedef std::vector<AbstractPoolAttribute *> Attributes;
+		typedef std::vector<AbstractAttribute *> Attributes;
 	private:
 		NamesMap _nameMap;
 		Attributes _attributes;
 	public:
-		~PoolSpec()
+		~AttributeScope()
 		{
 			Attributes::iterator it = _attributes.begin();
 			Attributes::iterator end = _attributes.end();
@@ -73,7 +73,7 @@ namespace CLAM
 			bool inserted = 
 				_nameMap.insert(std::make_pair(name,pos)).second;
 			CLAM_ASSERT(inserted,"ScopeSpec::Add, Attribute already present");
-			_attributes.push_back(new PoolAttribute<AttributeType>);
+			_attributes.push_back(new Attribute<AttributeType>);
 		}
 
 		unsigned GetIndex(const std::string & name) const
@@ -112,9 +112,9 @@ namespace CLAM
 	private:
 		unsigned _size;
 		Attributes _attributes;
-		const PoolSpec & _spec;
+		const AttributeScope & _spec;
 	public:
-		Pool(const PoolSpec & spec, unsigned size=0)
+		Pool(const AttributeScope & spec, unsigned size=0)
 			: _size(0), _spec(spec)
 		{
 			_attributes.resize(_spec.GetNAttributes());
@@ -179,7 +179,7 @@ namespace CLAM
 	{
 	private:
 		typedef std::map<std::string, unsigned> SpecMap;
-		typedef std::vector<PoolSpec *> Specs;
+		typedef std::vector<AttributeScope *> Specs;
 	private:
 		Specs _specs;
 		SpecMap _specMap;
@@ -200,11 +200,11 @@ namespace CLAM
 		void AddAttribute(const std::string &scope, const std::string & name)
 		{
 			typedef typename AttributeSpec::DataType DataType;
-			PoolSpec & theSpec = SearchScopeOrAdd(scope);
+			AttributeScope & theSpec = SearchScopeOrAdd(scope);
 			theSpec.template Add<DataType>(name);
 		}
 
-		PoolSpec & SearchScopeOrAdd(const std::string scopeName)
+		AttributeScope & SearchScopeOrAdd(const std::string scopeName)
 		{
 			const unsigned nSpecs = _specs.size();
 			std::pair<SpecMap::iterator,bool> result = 
@@ -213,12 +213,12 @@ namespace CLAM
 			// Already inserted
 			if (!result.second) return *_specs[result.first->second];
 
-			PoolSpec * theSpec = new PoolSpec;
+			AttributeScope * theSpec = new AttributeScope;
 			_specs.push_back(theSpec);
 			return *theSpec;
 		}
 
-		const PoolSpec & GetSpec(const std::string & name) const
+		const AttributeScope & GetSpec(const std::string & name) const
 		{
 			SpecMap::const_iterator it = _specMap.find(name);
 			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
