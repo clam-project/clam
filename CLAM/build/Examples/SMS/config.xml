@@ -1,10 +1,10 @@
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
+
 <SMSAnalysisSynthesisConfig>
-	<Name/>
-	<InputSoundFile>./input.wav</InputSoundFile>
-	<OutputSoundFile>./output.wav</OutputSoundFile>
-	<OutputAnalysisFile/>
-	<InputAnalysisFile/>
+	<Name></Name>
+	<InputSoundFile>../input.wav</InputSoundFile>
+	<OutputSoundFile>../output.wav</OutputSoundFile>
+	<OutputAnalysisFile></OutputAnalysisFile>
+	<InputAnalysisFile></InputAnalysisFile>
 	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
@@ -24,5 +24,5 @@
 	<SynthesisFrameSize>-1</SynthesisFrameSize>
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
 	<SynthesisPhaseManagementType>Continuation</SynthesisPhaseManagementType>
-	<MorphSoundFile/>
+	<MorphSoundFile></MorphSoundFile>
 </SMSAnalysisSynthesisConfig>
