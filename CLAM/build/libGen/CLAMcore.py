@@ -34,6 +34,7 @@ def makelib() :
     libCLAMCore.addFolder( "Standard" )
     libCLAMCore.addFolder( "Storage/Base" )
     libCLAMCore.addFolder( "Storage/XML" )
+    libCLAMCore.addFolder( "System" )
     libCLAMCore.addFolder( "System/Threads" )
     libCLAMCore.addFolder( "CbLib", "externals" )
 

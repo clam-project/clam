@@ -4,8 +4,8 @@ import CLAMcore
 import CLAMProcessing
 import CLAMIO
 import CLAMSMS
+import CLAMVM
 import libGen
-
 
 def main() :
 
@@ -14,6 +14,7 @@ def main() :
     CLAMProcessing.makelib()
     CLAMIO.makelib()
     CLAMSMS.makelib()
+    CLAMVM.makelib()
 
 if __name__ == "__main__" :
     main()

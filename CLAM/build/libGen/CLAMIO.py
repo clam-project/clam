@@ -17,7 +17,6 @@ def makelib( ) :
         libCLAMIO.blackBall( "RtAudio" )
         libCLAMIO.blackBall( "RtAAudioDevice" )
         libCLAMIO.blackBall( "foo" )
-        libCLAMIO.blackBall( "SndPcm" )
         libCLAMIO.addFolder( "Tools/AudioIO/Linux" )
         libCLAMIO.activate( 'ALSA' )
     else :

@@ -8,11 +8,8 @@ def resetHeaderDB() :
 
 class LibGenerator :
 
-
-    isCxxSourceRE = re.compile( r"[^\.#]+\.cxx\Z" )
-    isCSourceRE = re.compile(r"[^\.#]+\.c\Z" )
-    isCHeaderRE = re.compile( r"[^\.#].+\.hxx\Z" )
-    isCxxHeaderRE = re.compile( r"[^\.#].+\.h\Z" )
+    isSourceRE = re.compile(r"[^\.#]+\.[cC][xp]?[xp]?\Z" )
+    isHeaderRE = re.compile( r"[^\.#].+\.[hH][xp]?[xp]?\Z" )
 
     setlibName = re.compile( r"@libname@" )
     setXMLRE = re.compile( r"@XML@" )
@@ -149,12 +146,10 @@ class LibGenerator :
         headerDB = shelve.open( "CLAM_Headers", "c" )
         
         for fname in self.contents(basePath) :                    
-            if ( self.isCSourceRE.search( fname ) != None or
-                 self.isCxxSourceRE.search( fname ) != None ) :
+            if ( self.isSourceRE.search( fname ) != None ) :
                 self.sourceFilenames.append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, fname ) )
                 continue
-            if ( self.isCxxHeaderRE.search( fname ) != None or
-                 self.isCHeaderRE.search( fname ) != None ) :
+            if (self.isHeaderRE.search( fname ) != None ) :
                 self.accountHeader( headerDB, basePath, fname )
 
         headerDB.sync()

@@ -9,10 +9,17 @@ def makelib() :
     # Depends on CUIDADO code
     libCLAMProcessing.blackBall( "OnsetDetector" )
     libCLAMProcessing.blackBall( "SMSAnalysis" )
+    libCLAMProcessing.blackBall( "SMSAnalysisConfig" )
+    libCLAMProcessing.blackBall( "SMSAnalysisCore" )
     libCLAMProcessing.blackBall( "SMSSynthesis" )
+    libCLAMProcessing.blackBall( "SMSSynthesisConfig" )
+    
+    # This cannot work on a pre-compiled library...
+    # as it only works/makes sense when converting CLAM
+    # processings into LADSPA plug-ins
+    libCLAMProcessing.blackBall( "LadspaBridge" )
 
     libCLAMProcessing.addFile( "ScaleCnv", "Standard" )
-
     libCLAMProcessing.addFolder( "Data/BasicProcessing" )
     libCLAMProcessing.addFolder( "Data/Descriptors" )
     libCLAMProcessing.addFolder( "Data/Descriptors/Melody" )

@@ -6,8 +6,11 @@ def makelib() :
     libCLAMSMS = libGen.LibGenerator( "SMS" )
 
     print "Generating libCLAM%s..."%libCLAMSMS.libName
-    
+
+    libCLAMSMS.addFile( "SMSAnalysisCore", "Processing/Analysis" )
+    libCLAMSMS.addFile( "SMSAnalysisConfig","Processing/Analysis")
     libCLAMSMS.addFile( "SMSAnalysis", "Processing/Analysis" )
+    libCLAMSMS.addFile( "SMSSynthesisConfig", "Processing/Synthesis" )
     libCLAMSMS.addFile( "SMSSynthesis", "Processing/Synthesis" )
     libCLAMSMS.addFolder( "Processing/Transformations/SMS" )
 
