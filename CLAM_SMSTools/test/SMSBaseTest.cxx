@@ -1,5 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "AudioCollator.hxx"  // includes audio matching algorithms and audio file helpers
 
 
 #include "SMSBase.hxx"
@@ -63,39 +64,7 @@ public:
 	void Run(){}
 
 private:
-
 	
-	
-
-	/// this helper func. should result in the future in a processing or assert. 
-	bool helperAudiosAreEqual(CLAM::Audio& first, CLAM::Audio& second, std::string& whyDifferents, double delta = 0.001)
-	{
-		if (first.GetSize() != second.GetSize() )
-		{	
-			std::stringstream formatter;
-			formatter << "different audio sizes: first " << first.GetSize() << " second " << second.GetSize();
-			whyDifferents += formatter.str();
-			return false;
-		}
-
-		CLAM::DataArray& samplesFirst = first.GetBuffer();
-		CLAM::DataArray& samplesSecond = second.GetBuffer();
-		for (int i=0; i<samplesFirst.Size(); i++)
-		{
-			if( fabs(samplesFirst[i] - samplesSecond[i]) > delta )
-			{
-				std::stringstream formatter;
-				formatter << "found a different sampler in position " << i << " first value is "<< samplesFirst[i]
-					<< " second value is " << samplesSecond[i] << " with delta = " << delta;
-				whyDifferents += formatter.str();
-				return false;
-			}
-		}
-
-		return true;
-		
-	}
-
 	void testhelperAudiosAreEqual_WhenDifferentSizes()
 	{
 		// Setup
@@ -168,14 +137,6 @@ private:
 		CPPUNIT_ASSERT_MESSAGE("after InitConfigs, HaveCompatibleConfig() should be true", HaveCompatibleConfig() );
 	}
 
-	bool helperFileExist( const std::string& filename ) const
-	{
-		std::ifstream fs;
-		fs.open( filename.c_str() );
-		const bool result = !fs.fail();
-		fs.close();
-		return result;
-	}
 
 	void testhelperFileExist()
 	{
@@ -260,57 +221,15 @@ private:
 		return mLoadedTestAudio;
 	}
 
-	void helperLoadAudioFromFile(const std::string filename )
-	{
-		CPPUNIT_ASSERT( helperFileExist(filename) );
-		CLAM::AudioFileConfig conf;
-		conf.SetFilename(filename);
-		conf.SetFiletype(CLAM::EAudioFileType::eWave);
-
-		CLAM::AudioFileIn in;
-		in.Configure(conf);
-		in.Start();
-		
-		mLoadedTestAudio.SetSize( in.Size() );
-		in.Do( accessorLoadedTestAudio() );
-		in.Stop();
-	}
-
 	
 	void testhelperLoadAudioFromFile()
 	{
-		helperLoadAudioFromFile( mPath+"sweep.wav" );
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("sweep.wav size", 181588, accessorLoadedTestAudio().GetSize() );
-	}
-
-	void helperSaveAudioToFile( const CLAM::Audio& audio, const std::string filename )
-	{
-		CLAM::AudioFileConfig conf;
-		conf.SetFilename( filename );
-		conf.SetFiletype(CLAM::EAudioFileType::eWave);
-		CLAM::AudioFileOut out;
-		out.Configure(conf);
-		out.Start();
-		out.Do( audio );
-		out.Stop();
+		CLAM::Audio loaded;
+		helperLoadAudioFromFile( mPath+"sweep.wav", loaded );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("sweep.wav size", 181588, loaded.GetSize() );
 	}
 
 
-	bool helperAudioIsEqualToAudioFile( 
-		CLAM::Audio& audio, 
-		const std::string& audioFile, 
-		std::string& whyDifferents,
-		double delta=0.0001 )
-	{
-		CLAM_ASSERT( mLoadedTestAudio.GetSize() == 0, "no test audio should be loaded");
-		
-		whyDifferents = "comparing with file: "+ audioFile+" ";
-		helperLoadAudioFromFile( audioFile );
-		bool result = helperAudiosAreEqual(audio, mLoadedTestAudio, whyDifferents, delta);
-				
-		mLoadedTestAudio = CLAM::Audio();
-		return result;
-	}
 //-------------------------------------------------------------------------
 
 	// TODO
