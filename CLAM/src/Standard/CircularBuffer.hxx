@@ -28,6 +28,9 @@
 
 namespace CLAM {
 
+	/**
+	 * Generic container-like circular buffer class.
+	 */
 	template <class T> class CircularBuffer
 	{
 	/*testing*/
