@@ -6,39 +6,39 @@
 
 namespace CLAM
 {
-		class Audio;
-		class ProcessingData;
+	class Audio;
+	class ProcessingData;
 }
 
 namespace CLAMVM
 {
-		using CLAM::Audio;
-		using CLAM::ProcessingData;
+	using CLAM::Audio;
+	using CLAM::ProcessingData;
 
-		class AudioAdapter 
-				: public ProcessingDataAdapter, public AudioModel
+	class AudioAdapter 
+		: public ProcessingDataAdapter, public AudioModel
+	{
+		// attributes
+	private:
+		const Audio*         mObserved;
+
+	protected:
+		// methods
+	public:
+		AudioAdapter();
+
+		virtual ~AudioAdapter();
+
+		virtual const char* GetClassName() const
 		{
-				// attributes
-		private:
-				const Audio*         mObserved;
+			return "AudioAdapter";
+		}
 
-		protected:
-				// methods
-		public:
-				AudioAdapter();
+		virtual bool Publish();
 
-				virtual ~AudioAdapter();
+		virtual bool BindTo( const ProcessingData& audioObj );
 
-				virtual const char* GetClassName() const
-				{
-						return "AudioAdapter";
-				}
-
-				virtual bool Publish();
-
-				virtual bool BindTo( const ProcessingData& audioObj );
-
-		};
+	};
 }
 
 
