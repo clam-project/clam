@@ -2,6 +2,7 @@
 #include <FL/fl_draw.H>
 #include <cmath>
 #include <iostream>
+#include "Assert.hxx"
 
 namespace CLAMGUI
 {
@@ -18,6 +19,17 @@ namespace CLAMGUI
 		{
 		}
 
+		void Fl_Range::resize( int newx, int newy, int neww, int newh )
+		{
+				Fl_Widget::resize(newx,newy,neww,newh);
+				if ( type() == FL_HORIZONTAL )
+						mPixelLen = float( w() );
+				else
+						mPixelLen = float( h() );
+
+				CalculateDrawingConstants();
+		}
+
 		void Fl_Range::SetRangeNotifier( Signalv2<float,float>& sig )
 		{
 				sig.Connect( this, &Fl_Range::SetRange, mRangeSlot );
@@ -30,22 +42,56 @@ namespace CLAMGUI
 
 		void Fl_Range::SetRange( float lowerBound, float upperBound )
 		{
-				mLowerBound = lowerBound;
-				mUpperBound = upperBound;
-				mDistance = mUpperBound - mLowerBound;
-				CalculateDrawingConstants();
+			CLAM_ASSERT( upperBound > lowerBound, "Upper bound must be greater than lower bound" );
+
+			mLowerBound = lowerBound;
+			mUpperBound = upperBound;
+			if ( type() == FL_HORIZONTAL )
+			{
+				mLeft = mLowerBound;
+				mRight = mUpperBound;
+			}
+			else
+			{
+				mRight = mLowerBound;
+				mLeft = mUpperBound;
+			}
+			mDistance = mUpperBound - mLowerBound;
+			CalculateDrawingConstants();
 		}
 
 		void Fl_Range::SetSpan( float left, float right ) 
 		{
-				mLeft = left;
-				mRight = right;
+				if ( type() == FL_HORIZONTAL )
+				{
+					mLeft = mLeft + mDistance*left;
+					mRight = mRight + mDistance*right;
 
-				// we clip the span to the current range
-				if ( mLeft < mLowerBound )
+					// we clip the span to the current range
+					if ( mLeft < mLowerBound )
 						mLeft = mLowerBound;
-				if ( mRight > mUpperBound )
+
+					if ( mRight > mUpperBound )
 						mRight = mUpperBound;
+				}
+				else
+				{
+					mLeft = mLeft - mDistance*left;
+					mRight = mRight - mDistance*right;
+
+					// we clip the span to the current range
+					if ( mLeft > mUpperBound )
+						mLeft = mUpperBound;
+
+					if ( mRight < mLowerBound )
+						mRight = mLowerBound;
+
+				}
+				
+				std::cout << "left is: " << left << " right is: " << right << std::endl;
+				std::cout << "Left is: " << mLeft << " Right is: " << mRight << std::endl;
+				CalculateDrawingConstants();
+				redraw();
 		}
 
 		void Fl_Range::CalculateDrawingConstants()
@@ -53,41 +99,41 @@ namespace CLAMGUI
 				double mul;
 
 				valuePerPixel = fabs(mDistance)/mPixelLen; 
-				pixelsPerValue = mPixelLen/fabs(mUpperBound - mLowerBound); // number of pixels per position increment
+				pixelsPerValue = mPixelLen/fabs(mRight - mLeft); // number of pixels per position increment
 				/* we can draw a number at most every 30 pixels. we calculate how often that is */
 				every = valuePerPixel*30.; // this value has to be rounded to a nice divider
-				std::cout << "every: " << every << std::endl;
+//				std::cout << "every: " << every << std::endl;
 
 				mDecimalDigits = -int(log10(every)); // number of decimals
-				std::cout << "mDecimalDigits: " << mDecimalDigits << std::endl;
+//				std::cout << "mDecimalDigits: " << mDecimalDigits << std::endl;
 
 				if (every<1) mDecimalDigits++;
 				
 				mul = pow(double(10),double(-mDecimalDigits));
-				std::cout << "mul = pow( 10, " << -mDecimalDigits  << " ) = " << mul << std::endl;
+//				std::cout << "mul = pow( 10, " << -mDecimalDigits  << " ) = " << mul << std::endl;
 
 				if (every>5*mul) 
 				{
 						mDecimalDigits--;
 						mul*=10;
-						std::cout << "every was > than 5*mul "
-								  << "mDecimalDigits: " << mDecimalDigits 
-								  << "mul: " << mul << std::endl;
+						//std::cout << "every was > than 5*mul "
+						//		  << "mDecimalDigits: " << mDecimalDigits 
+						//		  << "mul: " << mul << std::endl;
 				}
 	
 				if (every<=1*mul)
 				{
 						every = 1*mul;
-						std::cout << "every was <= 1*mul "
-								  << "every: " << every
-								  << "mul: " << mul << std::endl;
+						//std::cout << "every was <= 1*mul "
+						//		  << "every: " << every
+						//		  << "mul: " << mul << std::endl;
 				}
 				else 
 				{
 						every = 5*mul;
-						std::cout << "every was between 1*mul and 5*mul "
-								  << "every: " << every 
-								  << "mul: " << mul << std::endl;
+						//std::cout << "every was between 1*mul and 5*mul "
+						//		  << "every: " << every 
+						//		  << "mul: " << mul << std::endl;
 				}
 				
 				if (mDecimalDigits<0) 
@@ -169,7 +215,7 @@ namespace CLAMGUI
 						if (cnt==0) 
 						{
 								sprintf(fmt,"%%.%df",int(mDecimalDigits));
-//								sprintf(txt,fmt,v+extra);
+								sprintf(txt,fmt,v+extra);
 								sprintf(txt,fmt,v);
 								fl_color(FL_BLACK);
 								
