@@ -8,10 +8,6 @@
 #include "WriteStreamRegion.hxx"
 #include "Processing.hxx"
 
-//#include "NodeTmpl.hxx"
-#include "CircularStreamImpl.hxx"
-
-
 #include <string>
 
 namespace CLAM
@@ -40,7 +36,6 @@ public:
 	bool IsAttached();
 	void Unattach();
 	bool IsConnectableTo(InPort & );
-	NodeBase* CreateNodeWithDefaultStreamBuffer();
 };
 
 // Implementation
@@ -90,7 +85,7 @@ inline void OutPortTmpl<T>::Attach(OutPortTmpl<T>& port)
 	if (port.mpNode)
 		Attach(*port.mpNode);
 	else
-		Attach(*port.mpData);
+		Attach(*port.mData);
 }	
 
 template<class T>
@@ -132,7 +127,7 @@ inline void OutPortTmpl<T>::Accept(DataVisitor& v)
 template<class T>
 inline ProcessingData* OutPortTmpl<T>::GetProcessingData()
 {
-	if (IsAttached())
+	if ( mData.Size()>0 )
 	{
 		return &(mData[0]);
 	}
@@ -164,15 +159,6 @@ inline bool OutPortTmpl<T>::IsConnectableTo(InPort & in)
 {
 	return ((dynamic_cast< InPortTmpl<T>* >(&in)) != 0);
 }
-
-template <class T>
-inline NodeBase* OutPortTmpl<T>::CreateNodeWithDefaultStreamBuffer()
-{
-	typedef CircularStreamImpl<T> DefaultStreamBuffer;
-	CLAM_ASSERT(false, "todo #include NodeTmpl causes problems to VC6");
-	//return new NodeTmpl<T, DefaultStreamBuffer>;
-}
-
 
 
 } // namespace CLAM
