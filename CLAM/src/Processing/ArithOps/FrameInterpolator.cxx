@@ -41,7 +41,7 @@ namespace CLAM {
 		SetFreqInterpolationFactor( 0.0 );
 		SetPitchInterpolationFactor( 0.0 );
 		SetResidualInterpolationFactor( 0.0 );
-		SetHarmonic( false );
+		SetHarmonic( true );
 		SetUseSpectralShape(false);
 	}
 
