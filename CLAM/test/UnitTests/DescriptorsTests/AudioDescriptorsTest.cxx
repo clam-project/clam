@@ -62,7 +62,7 @@ public:
 		char* pathToTestData = getenv("CLAM_TEST_DATA");
 
 		if ( !pathToTestData )
-			mPathToTestData = "../../../../../CLAM-TestData/";
+			mPathToTestData = "../../../../CLAM-TestData/";
 		else
 			mPathToTestData = pathToTestData;
 
