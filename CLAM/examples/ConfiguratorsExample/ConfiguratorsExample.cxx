@@ -34,6 +34,7 @@
 #include "TypeInfo.hxx"
 #include "TypeInfoStd.hxx"
 
+#include "Filename.hxx"
 #include "Enum.hxx"
 #include "Processing.hxx"
 
@@ -101,14 +102,16 @@ public:
 class DummyConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,7,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,9,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
 	DYN_ATTRIBUTE(2,public,TData,ThisIsATData);
 	DYN_ATTRIBUTE(3,public,TSize,ThisIsATSize);
 	DYN_ATTRIBUTE(4,public,EDummy, ThisIsAEDummy);
-	DYN_ATTRIBUTE(5,public,bool, ThisIsABool);
-	DYN_ATTRIBUTE(6,public,DummySubConfig, ThisIsASubConfig);
+	DYN_ATTRIBUTE(5,public,DummySubConfig, ThisIsASubConfig);
+	DYN_ATTRIBUTE(6,public,bool, ThisIsABool);
+	DYN_ATTRIBUTE(7,public,DummySubConfig, ThisIsDifferentSubConfig);
+	DYN_ATTRIBUTE(8,public,Filename, ThisIsAFilename);
 private:
 
 	void DefaultInit() {
@@ -132,7 +135,7 @@ public:
 
 using namespace CLAMTest;
 
-int TryQTConfigurator(DummyConfig & config, int argc, char**argv) 
+int TryQTConfigurator(DummyConfig & config, int argc, char**argv)
 {/*
 	QApplication a(argc,argv);
 	CLAM::QTConfigurator configurator;
@@ -143,7 +146,7 @@ int TryQTConfigurator(DummyConfig & config, int argc, char**argv)
 	return 0;
 }
 
-int TryFLTKConfigurator(DummyConfig & config) 
+int TryFLTKConfigurator(DummyConfig & config)
 {
 	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
 	configurator->SetConfig(config);
