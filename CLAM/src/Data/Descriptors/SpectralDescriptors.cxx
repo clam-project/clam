@@ -113,7 +113,7 @@ void SpectralDescriptors::ConcreteCompute()
 	if(HasKurtosis())	
 		SetKurtosis(mpStats->GetKurtosis());
 	if(HasTilt())
-		SetTilt(ComputeSpectralTilt());
+		SetTilt(mpStats->GetTilt());
 	if(HasFlatness())
 		SetFlatness(ComputeSpectralFlatness());
 	if(HasHighFrequencyCoefficient())
@@ -125,7 +125,7 @@ void SpectralDescriptors::ConcreteCompute()
 	if(HasRolloff())
 		SetRolloff(ComputeRolloff());
 	if(HasSlope())
-		SetSlope(ComputeSlope());
+		SetSlope(mpStats->GetSlope()/mDeltaFreq);
 	if(HasIrregularity())
 		//not implemented
 		SetIrregularity(0);
@@ -137,60 +137,23 @@ void SpectralDescriptors::ConcreteCompute()
 		SetHFC(0);
 }
 
-/*this has been mostly copied and pasted from cuidado and should be checked and some of
-it promoted into basicOps*/
-TData SpectralDescriptors::ComputeSpectralTilt()
-{
-
-	/* TODO check me check me check me check me check me check me check me */
-	DataArray& mag=mpSpectrum->GetMagBuffer();
-
-	const TData m1 = mpStats->GetMoment(FirstOrder);
-	const TData size = mag.Size();
-
-	TData d1=0;
-	TData d2=0;
-	for (unsigned i=0;i<size;i++)
-	{
-		d1 += i/mag[i];
-		d2 += 1/mag[i];
-	}
-
-	// ti = m1/ai *(n - (d1/d2))
-	// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
-
-	TData SumTi2 = 0;
-	TData Tilt = 0;
-	for (unsigned i=0;i<size;i++) 
-	{
-		Tilt += (1/mag[i] *(i-d1/d2));
-		TData ti = m1/mag[i]*(i - (d1/d2));
-		SumTi2 += ti*ti;
-	}
-
-	Tilt*= (m1*m1/SumTi2);
-	return Tilt;
-}
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeSpectralFlatness()
 {
-	TData  mean = mpStats->GetMean();
-
-	TData geomean = mpStats->GetGeometricMean();
-
-	return 10*log10(geomean/mean);
+	return mpStats->GetFlatness();
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeHighFrequencyCoefficient()
 {
-	/*int i;
+	/*
 	TData temp = 0;
-	for (i=1;i<size;i++)
-	  temp += pow(mag[i],2)*i;*/ 
+	for (int i=1;i<size;i++)
+		temp += pow(mag[i],2)*i;
+	*/ 
 	return WeightedPoweredSum<2>()(mpSpectrum->GetMagBuffer());
 }
 
@@ -275,35 +238,6 @@ TData SpectralDescriptors::ComputeSpread()
 	return sqrt(variance) / centroid;
 }
 
-
-TData SpectralDescriptors::ComputeSlope() 
-{ 
-	const DataArray& mags = mpSpectrum->GetMagBuffer();
-	const TSize magsSize  = mpSpectrum->GetSize();
-
-	// Compute means and gradient of decay part
-	TData meanX = 0;
-	TData meanY = 0;
-	TData num   = 0;
-	TData denum = 0;
-
-	for (TIndex i=0; i<magsSize; i++)
-	{
-		meanX += (i*mDeltaFreq);
-		meanY += mags[i];
-
-		num   += (i*mDeltaFreq)*mags[i];
-		denum += pow(i*mDeltaFreq, 2);
-	}
-	meanX /= magsSize;
-	meanY /= magsSize;
-
-	num   -= magsSize*meanX*meanY;
-	denum -= magsSize*meanX*meanX;
-
-	// Normalize by the total amplitude
-	return (num/denum) / (meanY*magsSize);
-}
 
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
