@@ -1,20 +1,20 @@
 #ifndef __TICKSEQUENCETRACKER__
 #define __TICKSEQUENCETRACKER__
 
-#include "Processing.hxx"
+#include "ProcessingComposite.hxx"
 #include "Array.hxx"
 #include "TimeIndex.hxx"
 #include "TickSequenceTrackerConfig.hxx"
+#include "AudioPeakDetect.hxx"
 
 namespace CLAM
 {
 
 	class Audio;
 	class GlobalPulse;
-	class AudioPeakDetect;
 	class GridGen;
 
-	class TickSequenceTracker : public Processing
+	class TickSequenceTracker : public ProcessingComposite
 	{
 		TickSequenceTrackerConfig mConfig;
 		const char *GetClassName() const {return "TickSequenceTracker";}
@@ -40,8 +40,8 @@ namespace CLAM
 
 		void SetVisualizationAudio(Audio& audio);
 
-		TData CompGlobPulse(GlobalPulse& gpulse,AudioPeakDetect& apd,
-				    const int pulseLimSup, const Array<TData> &forGlobalPulseCalc);
+		TData CompGlobPulse(GlobalPulse& gpulse, const int pulseLimSup, 
+				    const Array<TData> &forGlobalPulseCalc);
 
 		void StorePulseIndexes(const int nLoops, const Array<TimeIndex>& pulsesArray,
 				       Array<TimeIndex>& mPulses);
@@ -57,9 +57,13 @@ namespace CLAM
 
 
 	protected:
-		bool Compute(const Array<TimeIndex>& transients, Audio& IOIHist,const TData samplingRate,
+		bool Compute(const Array<TimeIndex>& transients, Audio& IOIHist,
 			     Array<TimeIndex>& ticks,Array<TimeIndex>& beats,TData& globalTick,
 			     TData& globalTempo);
+
+	private: // children Processing
+
+		AudioPeakDetect   mAudioPeakDetector;
 
 	};
 

@@ -53,6 +53,15 @@ namespace CLAM
 	bool TickSequenceTracker::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig( mConfig, c );
+
+		//For Hist peaks:
+		AudioPeakDetectConfig apdconf;
+		apdconf.SetThreshold(mConfig.GetThreshold_IOIHistPeaks());
+
+		mAudioPeakDetector.Configure( apdconf );
+
+		mAudioPeakDetector.SetParent( this );
+
 		return true;
 	}
 
@@ -67,20 +76,22 @@ namespace CLAM
 				Array<TimeIndex>& beatsOut, TData& globalTick, TData& globalTempo, 
 				Audio& IOIHist)
 	{
-		TData samplingRate = mConfig.GetSamplingRate();
 
-		Compute(transients, IOIHist, samplingRate, ticksOut, beatsOut, globalTick, globalTempo);
+		Compute(transients, IOIHist, ticksOut, beatsOut, globalTick, globalTempo);
 		return true;
 	}
 
 
 
-	bool TickSequenceTracker::Compute(const Array<TimeIndex>& transients, Audio& IOIHist, 
-				     const TData samplingRate, Array<TimeIndex>& ticks,Array<TimeIndex>& beats,
-				     TData& globalTick, TData& globalTempo)
+	bool TickSequenceTracker::Compute(const Array<TimeIndex>& transients, 
+					  Audio& IOIHist, 
+					  Array<TimeIndex>& ticks,Array<TimeIndex>& beats,
+					  TData& globalTick, 
+					  TData& globalTempo)
 	{
-		if (transients.Size()<5) {
-			return 0;
+		if ( transients.Size() < 5 ) 
+		{
+			return false;
 		}
 
 		beats.Init();
@@ -111,16 +122,13 @@ namespace CLAM
 		TData* tdataBuf;
 
 		TimeDifferenceConfig tconf;
-		tconf.SetGaussianSize((TSize)(samplingRate*mConfig.GetGaussianWindowSize()));
+		tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 		TimeDifference tdiff(tconf);
 
 		Array<TimeIndex>  transientsForHist(numbTrans);
 		transientsForHist.SetSize(numbTrans);
 
-		//For Hist peaks:
-		AudioPeakDetectConfig apdconf;
-		apdconf.SetThreshold(mConfig.GetThreshold_IOIHistPeaks());
-		AudioPeakDetect apd(apdconf);
+
 		Array<TimeIndex>  IOIHistPeaks;
 
 		TData tempo;
@@ -136,8 +144,8 @@ namespace CLAM
 		const TData tempoLimSup = mConfig.GetTempoLimSup();
 		const TData tickLimInfS = mConfig.GetTickLimInf(); //seconds
 		const TData tickLimSupS = mConfig.GetTickLimSup();
-		const int tickLimInf = tickLimInfS*samplingRate; //samples
-		const int tickLimSup = tickLimSupS*samplingRate;
+		const int tickLimInf = tickLimInfS*mConfig.GetSamplingRate(); //samples
+		const int tickLimSup = tickLimSupS*mConfig.GetSamplingRate();
 
 		Array<TimeIndex> tickArray, tempoArray;
 
@@ -153,7 +161,7 @@ namespace CLAM
 			posTrans2 = transients[indTrans2].GetPosition();
 			windowSize = posTrans2-posTrans1;
 			//put a maximum on the IOIHist length
-			TData IOIHistLim = 10.0*samplingRate;
+			TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
 			IOIHist.SetSize(CLAM::CLAM_min(windowSize,IOIHistLim));
 
 			/// Compute the IOIHistogram
@@ -173,10 +181,9 @@ namespace CLAM
 			tdiff.Stop();
 
 			///IOI histogram Peak Detection
-			apd.Configure(apdconf);
-			apd.Start();
-			apd.Do(IOIHist,IOIHistPeaks);
-			apd.Stop();
+
+			mAudioPeakDetector.Do(IOIHist,IOIHistPeaks);
+
 
 			///Compute Tempo (optional)
 			if (computeBeats)
@@ -187,8 +194,8 @@ namespace CLAM
 				for (int i=1;i < IOIHistPeaks.Size() ;i++) //starts at 1 because there is a peak at 0 (with 0 weight)
 				{
 					//Tempo is between tempoLimInf and tempoLimSup BPM
-					if ((IOIHistPeaks[i].GetPosition() > samplingRate*60.0/tempoLimSup)
-					    && (IOIHistPeaks[i].GetPosition() < samplingRate*60.0/tempoLimInf)
+					if ((IOIHistPeaks[i].GetPosition() > mConfig.GetSamplingRate()*60.0/tempoLimSup)
+					    && (IOIHistPeaks[i].GetPosition() < mConfig.GetSamplingRate()*60.0/tempoLimInf)
 					    && (IOIHistPeaks[i].GetWeight() > maxForTempo))
 					{
 						maxForTempo = IOIHistPeaks[i].GetWeight();
@@ -197,7 +204,7 @@ namespace CLAM
 				}
 				if (indexForTempo==0) {
 
-					tempo = 60.0*samplingRate/((tempoLimSup+tempoLimInf)/2);
+					tempo = 60.0*mConfig.GetSamplingRate()/((tempoLimSup+tempoLimInf)/2);
 				}
 				else
 					tempo=IOIHistPeaks[indexForTempo].GetPosition();
@@ -235,8 +242,8 @@ namespace CLAM
 				TData* arr = IOIHist.GetBuffer().GetPtr();
 				TData tmpCand=tickFirstGuessInterval;
 				for(int i=0;i<3;i++) {
-					if((tmpCand>samplingRate*60.0/tempoLimSup) 
-					   && (tmpCand<samplingRate*60.0/tempoLimInf)) {
+					if((tmpCand>mConfig.GetSamplingRate()*60.0/tempoLimSup) 
+					   && (tmpCand<mConfig.GetSamplingRate()*60.0/tempoLimInf)) {
 						candidates.AddElem(tmpCand);
 					}
 					tmpCand+=tickFirstGuessInterval;
@@ -259,7 +266,7 @@ namespace CLAM
 				///Adjust pulses and generate arrays of pulses
 				///Tick adjustment
 
-				unsigned int scope = CLAM::CLAM_min(TData(mConfig.GetScope()*samplingRate),
+				unsigned int scope = CLAM::CLAM_min(TData(mConfig.GetScope()*mConfig.GetSamplingRate()),
 								    TData(tickFirstGuessInterval*0.5));
 				myTemporalSeriesFinderConfig.SetOffsetMin(0);
 				myTemporalSeriesFinderConfig.SetOffsetStep(50);
@@ -280,8 +287,8 @@ namespace CLAM
 				goodTickInterval = goodTick.GetInterval();
 				goodTickOffset = goodTick.GetOffset();
 				///Generate tick indexes array
-				GeneratePulseGrid((posTrans1+goodTickOffset)/samplingRate,
-						  goodTickInterval/samplingRate, posTrans2/samplingRate,
+				GeneratePulseGrid((posTrans1+goodTickOffset)/mConfig.GetSamplingRate(),
+						  goodTickInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
 						  pulseGridGen,tickArray);			
 			}
 			else
@@ -296,9 +303,9 @@ namespace CLAM
 				//set the tempo to the closest exact multiple of the tick
 				tempo = ((int)(tempo+goodTickInterval/2)/goodTickInterval)
 					*goodTickInterval;
-				while (tempo<samplingRate*60.0/tempoLimSup)
+				while (tempo<mConfig.GetSamplingRate()*60.0/tempoLimSup)
 					tempo += goodTickInterval;
-				while (tempo>samplingRate*60.0/tempoLimInf)
+				while (tempo>mConfig.GetSamplingRate()*60.0/tempoLimInf)
 					tempo -= goodTickInterval;
 				if(tempo==0) tempo = goodTickInterval;
 				if (mConfig.GetAdjustWithOnsets()) 
@@ -319,8 +326,8 @@ namespace CLAM
 					goodTempoInterval = goodTempo.GetInterval();
 					goodTempoOffset = goodTempo.GetOffset();
 					///Generate beat indexes array
-					GeneratePulseGrid((posTrans1+goodTempoOffset)/samplingRate,
-							  goodTempoInterval/samplingRate, posTrans2/samplingRate,
+					GeneratePulseGrid((posTrans1+goodTempoOffset)/mConfig.GetSamplingRate(),
+							  goodTempoInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
 							  pulseGridGen,tempoArray);
 				}
 				else 
@@ -350,15 +357,15 @@ namespace CLAM
 
 		///Compute Global tempo
 		GlobalPulseConfig gpconf;
-		gpconf.SetGaussianSize((TSize)(samplingRate*mConfig.GetGaussianWindowSize()));
+		gpconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 		//This is bad, There should be a global attribute specifying this size
 		GlobalPulse gpulse(gpconf);
 		if (computeBeats)
-			globalTempo = CompGlobPulse(gpulse, apd,
-						    (samplingRate*60.0)/tempoLimInf, forGlobalTempoCalc) / samplingRate;
+			globalTempo = CompGlobPulse(gpulse,
+						    (mConfig.GetSamplingRate()*60.0)/tempoLimInf, forGlobalTempoCalc) / mConfig.GetSamplingRate();
 		///Compute Global tick
-		globalTick = CompGlobPulse(gpulse, apd, tickLimInf, 
-					   forGlobalTickCalc) / samplingRate;
+		globalTick = CompGlobPulse(gpulse, tickLimInf, 
+					   forGlobalTickCalc) / mConfig.GetSamplingRate();
 
 
 		return true;
@@ -391,8 +398,9 @@ namespace CLAM
 		}
 	}
 
-	TData TickSequenceTracker::CompGlobPulse(GlobalPulse& gpulse,AudioPeakDetect& apd,
-					    const int pulseLimSup, const Array<TData> &forGlobalPulseCalc)
+	TData TickSequenceTracker::CompGlobPulse(GlobalPulse& gpulse,
+						 const int pulseLimSup, 
+						 const Array<TData> &forGlobalPulseCalc)
 	{
 		Audio pulseHist;
 		pulseHist.SetSize((int) (pulseLimSup +10000));//just for security
@@ -401,12 +409,15 @@ namespace CLAM
 		gpulse.Stop();
 		Array<TimeIndex>  pulseHistPeaks;
 		pulseHistPeaks.Init();
-		AudioPeakDetectConfig apdconf=dynamic_cast<const AudioPeakDetectConfig&>(apd.GetConfig());
+
+		AudioPeakDetectConfig apdconf;
 		apdconf.SetThreshold(0.0);
-		apd.Configure(apdconf);
-		apd.Start();
-		apd.Do(pulseHist,pulseHistPeaks);
-		apd.Stop();
+		mAudioPeakDetector.Stop();
+		mAudioPeakDetector.Configure(apdconf);
+		mAudioPeakDetector.Start();
+
+		mAudioPeakDetector.Do(pulseHist,pulseHistPeaks);
+
 
 		int max = 0;
 		int index = 0;
