@@ -46,9 +46,9 @@ void UserInterface::LoadConfiguration(void)
 		Fl::redraw();
 
 		if( mAudioInputDisplay!=NULL ){
-			mSmartTile->close( mAudioInputDisplay );
+//			mSmartTile->close( mAudioInputDisplay );
 			Detach( mAudioInputDisplay );
-			mSmartTile->equalize();
+//			mSmartTile->equalize();
 		}
 		if( mAudioOutputDisplay!=NULL )
 			Detach( mAudioOutputDisplay );
@@ -271,11 +271,16 @@ void UserInterface::_Detach(Fl_Window *w,UserInterface* ui)
 
 void UserInterface::Detach(Fl_Window *w)
 {
+	Fl_Widget* w2 = w->parent();
+
+	mSmartTile->close( w2 );
+
 	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
 
 	View* v = p->GetPresentation()->GetLinkedView();
 	delete p->GetPresentation();
 	delete v;
+	delete w2;
 		
 	if (w==mAudioInputDisplay) 
 		mAudioInputDisplay = NULL;
@@ -285,6 +290,8 @@ void UserInterface::Detach(Fl_Window *w)
 		mAudioOutputResidualDisplay = NULL;
 	else if (w==mAudioOutputSinusoidalDisplay)
 		mAudioOutputSinusoidalDisplay = NULL;
+
+	mSmartTile->equalize();
 }
 
 Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
