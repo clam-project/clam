@@ -346,6 +346,8 @@ namespace CLAM {
 	public:
 		bool CanDoUsingPorts()
 		{	
+			if(GetExecState()!=Running)
+				return false;
 			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 		}
 
