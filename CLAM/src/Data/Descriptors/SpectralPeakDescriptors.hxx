@@ -83,11 +83,11 @@ inline void SpectralPeakDescriptors::CopyInit(const SpectralPeakDescriptors & co
 	mpSpectralPeakArray=copied.mpSpectralPeakArray;
 }
 
-inline const Frame* SpectralPeakDescriptors::GetpSpectralPeakArray() const {
+inline const SpectralPeakArray* SpectralPeakDescriptors::GetpSpectralPeakArray() const {
 	return mpSpectralPeakArray;
 }
 
-inline void SpectralPeakDescriptors::SetpSpectralPeakArray(Frame* pSpectralPeakArray) {
+inline void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {
 	mpSpectralPeakArray=pSpectralPeakArray;
 }
 

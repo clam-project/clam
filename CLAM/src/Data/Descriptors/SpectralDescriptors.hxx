@@ -97,11 +97,11 @@ inline void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
 	mpSpectrum=copied.mpSpectrum;
 }
 
-inline const Frame* SpectralDescriptors::GetpSpectrum() const {
+inline const Spectrum* SpectralDescriptors::GetpSpectrum() const {
 	return mpSpectrum;
 }
 
-inline void SpectralDescriptors::SetpSpectrum(Frame* pSpectrum) {
+inline void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
 	mpSpectrum=pSpectrum;
 }
 

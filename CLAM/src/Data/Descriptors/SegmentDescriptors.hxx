@@ -95,11 +95,11 @@ inline void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
 	mpSegment=copied.mpSegment;
 }
 
-inline const Frame* SegmentDescriptors::GetpSegment() const {
+inline const Segment* SegmentDescriptors::GetpSegment() const {
 	return mpSegment;
 }
 
-inline void SegmentDescriptors::SetpSegment(Frame* pSegment) {
+inline void SegmentDescriptors::SetpSegment(Segment* pSegment) {
 	mpSegment=pSegment;
 }
 
