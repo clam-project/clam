@@ -631,12 +631,12 @@ class NetworkTest : public CppUnit::TestFixture
 
 		const int dummyLength = 1;
 		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<DummyProcessingData>( std::string("outPortOfFirstProc"), 
-								   firstProc, dummyLength );
+			new CLAM::OutPortTmpl<DummyProcessingData>
+			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
 
 		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<DummyProcessingData>( std::string("inPortOfSecondProc"), 
-								   secondProc, dummyLength );
+			new CLAM::InPortTmpl<DummyProcessingData>
+			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
 		
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, PortsAreConnected( *outPortOfFirstProc, *inPortOfSecondProc ));

@@ -50,7 +50,9 @@ namespace CLAM
 			return true;
 		}
 
-		inport.Attach(GetNode(outport));
+//		inport.Attach(GetNode(outport));
+//		inport.Attach(GetNode());
+		GetNode(outport);
 		return true;
 	}
 
@@ -107,20 +109,5 @@ namespace CLAM
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutControls().Get( GetLastIdentifier(name) );
 	}
-
-	
-	NodeBase& Network::GetNode(OutPort & out)
-	{
-		
-		if (out.GetNode() == 0) //if it hasn't associated node		 
-		{
-			//		BaseNode* node = new NodeTmpl<TIPUSDADES, CircularStreamImpl<TIPUSDADES>>;
-//			_nodes.insert(node);
-//			out.Attach(node);
-		}
-		return *(out.GetNode());
-	}
-
-
 
 }
