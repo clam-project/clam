@@ -1,0 +1,260 @@
+#include "Fl_SMS_Morph_Control.hxx"
+#include <FL/Fl.H>
+#include <FL/Fl_Choice.H>
+#include <FL/Fl_Check_Button.H>
+#include "Fl_SMS_BPF_Editor.hxx"
+#include <iostream>
+
+namespace CLAMVM
+{
+
+	Fl_SMS_Morph_Control::Fl_SMS_Morph_Control( int X, int Y, int W, int H, const char* label ) 
+		: Fl_Group( X,Y,W,H,label ),
+		  mGlobalControlKey( "Global morph factor vs. time"),
+		  mSinAmpControlKey(  "Sinusoidal component amplitude hybridization" ),
+		  mPitchHybControlKey( "Pitch hybridization" ),
+		  mSinFreqControlKey( "Sinusoidal component frequency hybridization" ),
+		  mResAmpControlKey( "Residual component amplitude hybridization" ),
+		  mFirstTimeShown( true )
+	{
+		mpFrameInterpSelector = new Fl_Check_Button( X+5, Y+5, 80, 20 );
+		mpFrameInterpSelector->label( "Interpolate intermediate frames" );
+		mpFrameInterpSelector->labelsize( 12 );
+		mpFrameInterpSelector->tooltip( "Enable for allow interpolation of frames "
+						"while morphing sounds of different lenghts" );
+		mpFrameInterpSelector->down_box(FL_DOWN_BOX);
+  		
+		mpEnvelopeSelector = new Fl_Choice( X+5, Y+45, 150, 20, "Sound hybridization controls"  );
+		mpEnvelopeSelector->labelsize( 12 );
+		mpEnvelopeSelector->textsize( 12 );
+		mpEnvelopeSelector->down_box(FL_BORDER_BOX);
+		mpEnvelopeSelector->align(FL_ALIGN_TOP_LEFT);
+		
+		mpEnvelopeContainer = new Fl_Group( X+10, Y+80,  W-20, H-85, "No label for now" );
+		mpEnvelopeContainer->labelsize( 12 );
+		mpEnvelopeContainer->box( FL_ENGRAVED_BOX );
+		mpEnvelopeContainer->end();
+		
+		end();
+
+		InitEnvelopeSelectorContents();
+		CreateEnvelopeEditors();
+	}
+
+	void Fl_SMS_Morph_Control::CreateEnvelopeEditors()
+	{
+		mEnvelopeEditors[ mGlobalControlKey ] = BuildGlobalEditor();
+		mEnvelopeEditors[ mSinAmpControlKey ] = BuildSinAmpEditor();
+		mEnvelopeEditors[ mPitchHybControlKey ] = BuildPitchHybEditor();
+		mEnvelopeEditors[ mSinFreqControlKey ] = BuildSinFreqEditor();
+		mEnvelopeEditors[ mResAmpControlKey ] = BuildResAmpEditor();
+	}
+	
+	void Fl_SMS_Morph_Control::DestroyEnvelopeEditors()
+	{
+		EnvelopeWidgetRepository::iterator i;
+
+		for ( i = mEnvelopeEditors.begin(); i != mEnvelopeEditors.end(); i++ )
+		{
+			if ( i->second->parent() == NULL )
+				delete i->second;
+		}
+	}
+
+	Fl_Widget* Fl_SMS_Morph_Control::BuildGlobalEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mGlobalControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( "This widget allows to control the morph between the two sounds "
+				 "being the X axis the time, and the Y axis the interpolation factor "
+				 "so a factor of 0.0 means that the resulting sound is exactly the "
+				 "source and a factor of 1.0 means that the resulting sound matches "
+				 "exactly the target" );
+		widget->hide();
+		widget->InitPoints( 0.5 );
+		add( widget );
+
+		return widget;
+	}
+
+	Fl_Widget* Fl_SMS_Morph_Control::BuildSinAmpEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mSinAmpControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "This widget allows you to control an aspect of the timbre blending "
+				 "performed, concretely the sinusoidal component amplitude envelopes blending. "
+				 "The X axis is time, expressed in a parametric form,  and the Y axis is "
+				 "the interpolation factor between the two sinusoidal envelopes. "
+				 "An interpolation factor of 0.0 means that the resulting sound sinusoidal envelope matches "
+				 "source's one,  and a factor of 1.0 means that the resulting sound sinusoidal "
+				 "envelope matches exactly the target's one" );
+
+		widget->hide();
+		widget->InitPoints( 0.5 );
+		add( widget );
+
+		return widget;
+	}
+
+	Fl_Widget* Fl_SMS_Morph_Control::BuildSinFreqEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mSinFreqControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "This widget allows you to control an aspect of the timbre blending "
+				 "performed by the SMS Morphing, concretely the sinusoidal component frequencies blending. "
+				 "The X axis is time, expressed in a parametric form, and the Y axis is "
+				 "the interpolation factor between the two sinusoidal frequency contents. "
+				 "An interpolation factor of 0.0 means that the resulting sound sinusoidal frequency content matches "
+				 "source's one,  and a factor of 1.0 means that the resulting sound sinusoidal "
+				 "frequency content matches exactly the target's one" );
+
+		widget->hide();
+		widget->InitPoints( 0.5 );
+		add( widget );
+
+
+		return widget;
+	}
+
+	Fl_Widget* Fl_SMS_Morph_Control::BuildPitchHybEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mPitchHybControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "This widget allows you to control the blending of the sounds' pitches. Note "
+				 "that this involves not only to blend the fundamental frequency, but also any accompanying "
+				 "harmonics detected. The X axis is time, expressed in a parametric form, and the Y axis is "
+				 "the interpolation factor between the two sounds pitches. "
+				 "An interpolation factor of 0.0 means that the resulting sound harmonicity matches "
+				 "source's one,  and a factor of 1.0 means that the resulting sound harmonicity "
+				 "matches exactly the target's one" );
+
+		widget->hide();
+		widget->InitPoints( 0.5 );
+		add( widget );
+
+		return widget;
+	}
+
+	Fl_Widget* Fl_SMS_Morph_Control::BuildResAmpEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mResAmpControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "This widget allows you to control the blending of the two sounds " 
+				 "hoarseness, or residual component amplitude envelope of the two sounds."
+				 "The X axis represents transformation time, in a parametric form, and the "
+				 "Y axis represents the interpolation factor between the two sounds hoarseness. So "
+				 "a interpolation factor of 0.0 means that the resulting sound hoarseness should match "
+				 "source's one, and an interpolation factor of 1.0 means that the resulting sound hoarseness "
+				 "should match target's one.");
+
+		widget->hide();
+		widget->InitPoints( 0.5 );
+		add( widget );
+
+		return widget;
+	}
+
+	void Fl_SMS_Morph_Control::ShowEnvelopeEditorFor( const char* name )
+	{
+		std::string requested = name;
+
+		SetVisibleEnvelopeWidget( mEnvelopeEditors[ requested ] );
+	}
+
+	void Fl_SMS_Morph_Control::ShowEnvelopeEditorFor( const std::string& name )
+	{
+		SetVisibleEnvelopeWidget( mEnvelopeEditors[ name ] );
+	}
+
+	void Fl_SMS_Morph_Control::SetVisibleEnvelopeWidget( Fl_Widget* w )
+	{
+		CLAM_ASSERT( w!=NULL, "Envelope widget given was NULL!" );
+
+		if ( mpEnvelopeContainer->children() )
+		{
+			CLAM_ASSERT( mpEnvelopeContainer->children() <= 1, 
+				     "Too many children for the envelope widget container!" );
+
+			Fl_Widget* childEnvelope = mpEnvelopeContainer->child(0);
+			childEnvelope->hide();
+			childEnvelope->label( mpEnvelopeContainer->label() );
+			mpEnvelopeContainer->remove( childEnvelope );
+			add( childEnvelope );
+		}
+
+		mpEnvelopeContainer->label( w->label() );
+		w->label( NULL );
+		w->resize( mpEnvelopeContainer->x() + 4, mpEnvelopeContainer->y() + 2 , 
+			   mpEnvelopeContainer->w() - 8, mpEnvelopeContainer->h() - 4 );
+		mpEnvelopeContainer->add( w );
+		w->show();
+		mpEnvelopeContainer->redraw();
+
+	}
+
+	int Fl_SMS_Morph_Control::handle( int event )
+	{
+		if ( FirstTimeShown() && event == FL_SHOW )
+		{
+			ShowEnvelopeEditorFor( mGlobalControlKey );
+			mpEnvelopeSelector->value(0);
+			ShownOnce();
+		}
+
+		return Fl_Group::handle( event );
+	}
+
+	void Fl_SMS_Morph_Control::sMenuItemSelectedCb( Fl_Choice* i, Fl_SMS_Morph_Control* obj )
+	{
+		obj->ShowEnvelopeEditorFor( i->text( i->value() ) );
+	}
+
+	void Fl_SMS_Morph_Control::InitEnvelopeSelectorContents()
+	{
+		mpEnvelopeSelector->add( mGlobalControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mSinAmpControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mPitchHybControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mSinFreqControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+		mpEnvelopeSelector->add( mResAmpControlKey.c_str(), NULL, 
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+					 
+	}
+	
+	void Fl_SMS_Morph_Control::resize( int X, int Y, int W, int H )
+	{
+		Fl_Group::resize( X, Y, W, H );
+		
+		mpFrameInterpSelector->resize( x()+5, y()+5, 80, 20 );
+		mpEnvelopeSelector->resize( x()+5, y()+45, W - 10, 20 );
+		mpEnvelopeContainer->resize( x()+10, y()+80, w()-20, h()-85 );
+		
+	}
+
+	Fl_SMS_Morph_Control::~Fl_SMS_Morph_Control()
+	{
+		DestroyEnvelopeEditors();
+	}
+}
