@@ -41,5 +41,25 @@ namespace CLAM
 		else return false;
 	}
 
+	bool SMSTransformation::IsLastFrame()
+	{
+		bool isLast=mInput.GetData().mCurrentFrameIndex>=mInput.GetData().GetnFrames();
+		if(isLast)
+		{
+			while(mOutput.GetData().GetnFrames()>=mOutput.GetData().mCurrentFrameIndex)
+			{
+				mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
+			}
+		}
+		return isLast;
+	}
+
+	bool SMSTransformation::ConcreteStart()
+	{
+		mCurrentInputFrame=0;
+		return true;
+	}
+
+
 
 }

@@ -89,28 +89,15 @@ namespace CLAM {
 		 */
 		virtual bool UpdateControlValueFromBPF(TData pos);
 
-		virtual bool IsLastFrame()
-		{
-			bool isLast=mInput.GetData().mCurrentFrameIndex>=mInput.GetData().GetnFrames();
-			if(isLast)
-			{
-				while(mOutput.GetData().GetnFrames()>=mOutput.GetData().mCurrentFrameIndex)
-				{
-					mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
-				}
-			}
-			return isLast;
-
-		}
-
-		bool ConcreteStart()
-		{
-			mCurrentInputFrame=0;
-			return true;
-		}
+		/** Returns true if there are no more frames to read from input */
+		virtual bool IsLastFrame();
+		
+		/** Overriding default method to initialize input frame counter */
+		bool ConcreteStart();
 
 	protected:
 		
+		/** Input frame counter */
 		int mCurrentInputFrame;
 
 /**@TODO: The UnwrapProcessingData methods could possibly be moved to a more
@@ -148,7 +135,8 @@ namespace CLAM {
 		 */
 		const Audio& UnwrapProcessingData(const Segment& in,Audio*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex).GetAudioFrame();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(in,pFrame).GetAudioFrame();
 		}
 		/** Particular method for unwrapping an Audio from a given Segment
 		 *	@return: AudioFrame in current Frame in the Segment returned as a non-constant reference.
@@ -158,7 +146,8 @@ namespace CLAM {
 		 */
 		Audio& UnwrapProcessingData(Segment& out,Audio*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex).GetAudioFrame();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(out,pFrame).GetAudioFrame();
 		}
 		/** Particular method for unwrapping a Spectrum from a given Segment
 		 *	@return: Residual Spectrum in current Frame in the Segment returned as a constant reference.
@@ -168,7 +157,8 @@ namespace CLAM {
 		 */
 		const Spectrum& UnwrapProcessingData(const Segment& in,Spectrum*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex).GetResidualSpec();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(in,pFrame).GetResidualSpec();
 		}
 		/** Particular method for unwrapping a Spectrum from a given Segment
 		 *	@return: Residual Spectrum in current Frame in the Segment returned as a non-constant reference.
@@ -178,7 +168,8 @@ namespace CLAM {
 		 */
 		Spectrum& UnwrapProcessingData(Segment& out,Spectrum*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex).GetResidualSpec();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(out,pFrame).GetResidualSpec();
 		}
 		/** Particular method for unwrapping a SpectralPeakArray from a given Segment
 		 *	@return: SpectralPeakArray in current Frame in the Segment returned as a constant reference.
@@ -188,7 +179,8 @@ namespace CLAM {
 		 */
 		const SpectralPeakArray& UnwrapProcessingData(const Segment& in,SpectralPeakArray*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex).GetSpectralPeakArray();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(in,pFrame).GetSpectralPeakArray();
 		}
 		/** Particular method for unwrapping a SpectralPeakArray from a given Segment
 		 *	@return: SpectralPeakArray in current Frame in the Segment returned as a non-constant reference.
@@ -198,7 +190,8 @@ namespace CLAM {
 		 */
 		SpectralPeakArray& UnwrapProcessingData(Segment& out,SpectralPeakArray*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex).GetSpectralPeakArray();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(out,pFrame).GetSpectralPeakArray();
 		}
 
 		/** Internally stored configuration */
