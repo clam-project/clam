@@ -3,7 +3,7 @@ USE_XERCESC = $(USE_XML)
 
 SEARCH_RECURSE_INCLUDES = \
 	$(PRJ_SEARCH_RECURSE_INCLUDES) \
-	$(TOP)/src $(TOP)/externals \
+	$(CLAM_PATH)/src $(CLAM_PATH)/externals \
 	$(USE_XERCESC?@XERCESC_INCLUDES@)
 
 SEARCH_INCLUDES = \
@@ -11,7 +11,7 @@ SEARCH_INCLUDES = \
 	$(USE_FFTW?@FFTW_INCLUDES@) \
 	$(USE_FLTK?@FLTK_INCLUDES@)
 
-PRE_INCLUDES = $(TOP)/src/Defines/preinclude.hxx
+PRE_INCLUDES = $(CLAM_PATH)/src/Defines/preinclude.hxx
 
 LIBRARY_PATHS = \
 	$(USE_FFTW?@FFTW_LIB_PATH@) \
@@ -25,11 +25,11 @@ LIBRARIES = \
 	$(USE_XERCESC?@XERCESC_LIBS@)
 
 SOURCES_AUDIODEVICE = \
-	$(USE_ALSA?$(TOP)/src/Tools/AudioIO/Linux/ALSAAudioDevice.cxx)
+	$(USE_ALSA?$(CLAM_PATH)/src/Tools/AudioIO/Linux/ALSAAudioDevice.cxx)
 
 SOURCES_MIDIDEVICE = \
-	$(USE_ALSA?$(TOP)/src/Tools/MIDIIO/Linux/ALSAMIDIDevice.cxx) \
-	$(USE_ALSA?$(TOP)/src/Tools/MIDIIO/File/FileMIDIDevice.cxx)
+	$(USE_ALSA?$(CLAM_PATH)/src/Tools/MIDIIO/Linux/ALSAMIDIDevice.cxx) \
+	$(USE_ALSA?$(CLAM_PATH)/src/Tools/MIDIIO/File/FileMIDIDevice.cxx)
 
 DEFINES = \
 	@DEFINE_HAVE_STANDARD_SSTREAM@ \

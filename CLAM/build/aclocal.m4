@@ -155,8 +155,10 @@ fltk_local=no
 if test -d ../../fltk/include/FL/; then
    AC_MSG_RESULT(yes)
    found_fltk=yes
-   FLTK_INCLUDES="-I../../fltk/include"
-   FLTK_LIB_PATH="-L../../fltk/lib"
+   FLTK_INCLUDES="../../fltk/include"
+	 FLAG_FLTK_INCLUDES="-I../../fltk/include"
+   FLTK_LIB_PATH="../../fltk/lib"
+	 FLAG_FLTK_LIB_PATH="-L../../fltk/lib"
    fltk_local=yes
 else
  AC_MSG_RESULT(no)
@@ -181,8 +183,9 @@ if test $found_fltk = yes; then
 	 link_ok=no
 
 	 if test $link_ok = no; then
-	    FLTK_LIBS="-lfltk"
-    	CXXFLAGS="$CXXFLAGS $FLTK_INCLUDES $FLTK_LIBS $FLTK_LIB_PATH"
+	    FLTK_LIBS="fltk"
+	    FLAG_FLTK_LIBS="-lfltk"
+    	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
 			AC_TRY_LINK([
 	 #include<FL/Fl_Window.H>
 	 #include<FL/Fl.H>
@@ -192,13 +195,13 @@ if test $found_fltk = yes; then
 	 return 0;
 			],[
 	  		 link_ok=yes
-			 FLTK_LIBS="fltk"
 			],[])
 	 fi
 
 	 if test $link_ok = no; then
-	    FLTK_LIBS="-lfltk -lGL"
-    	CXXFLAGS="$CXXFLAGS $FLTK_INCLUDES $FLTK_LIBS $FLTK_LIB_PATH"
+	    FLTK_LIBS="fltk GL"
+	    FLAGS_FLTK_LIBS="-lfltk -lGL"
+    	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
 			AC_TRY_LINK([
 	 #include<FL/Fl_Window.H>
 	 #include<FL/Fl.H>
@@ -208,13 +211,13 @@ if test $found_fltk = yes; then
 	 return 0;
 			],[
 	  		 link_ok=yes
-			 FLTK_LIBS="fltk GL"
 			],[])
 	 fi
 
 	 if test $link_ok = no; then
-	    FLTK_LIBS="-lfltk -lGL -lpthread"
-    	CXXFLAGS="$CXXFLAGS $FLTK_INCLUDES $FLTK_LIBS $FLTK_LIB_PATH"
+	    FLTK_LIBS="fltk GL pthread"
+	    FLAG_FLTK_LIBS="-lfltk -lGL -lpthread"
+    	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
 			AC_TRY_LINK([
 	 #include<FL/Fl_Window.H>
 	 #include<FL/Fl.H>
@@ -224,7 +227,6 @@ if test $found_fltk = yes; then
 	 return 0;
 			],[
 	  		 link_ok=yes
-			 FLTK_LIBS="fltk GL pthread"
 			],[])
 	 fi
 	 
@@ -249,8 +251,8 @@ int main()
       AC_MSG_RESULT(yes)
 			DEFINE_HAVE_FLTK=HAVE_FLTK
       if test $fltk_local = yes; then
-       FLTK_INCLUDES="-I\$(TOP)/../fltk/include"
-       FLTK_LIB_PATH="-L\$(TOP)/../fltk/lib"
+       FLTK_INCLUDES="\$(CLAM_PATH)/../fltk/include"
+       FLTK_LIB_PATH="\$(CLAM_PATH)/../fltk/lib"
       fi
    ],[
 The test program did compile and to link, but failed to run. This probably 
@@ -275,14 +277,17 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 		# We first try to find the include directory.
 		AC_MSG_RESULT(yes)
 		AC_MSG_CHECKING([for xercesc headers, using XERCESCROOT environment variable...])
-		XERCESC_LIB_PATH=-L${XERCESCROOT}/lib
+		XERCESC_LIB_PATH=${XERCESCROOT}/lib
+		FLAG_XERCESC_LIB_PATH=-L${XERCESCROOT}/lib
 		found_dom=no
 		if test -d $XERCESCROOT/include/dom ; then
 			found_dom=yes
 			XERCESC_INCLUDES=$XERCESCROOT/include
+			FLAG_XERCESC_INCLUDES=-I$XERCESCROOT/include
 		elif test -d $XERCESCROOT/include/xercesc/dom; then
 			found_dom=yes
 			XERCESC_INCLUDES="$XERCESCROOT/include"
+			FLAG_XERCESC_INCLUDES=-I$XERCESCROOT/include
 		else
 			AC_MSG_ERROR([
 				No xerces header directories found! 
@@ -298,14 +303,18 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 		if test -d ../../xercesc/include/xercesc/dom; then
 			AC_MSG_RESULT(yes)
 			found_dom=yes
-			export XERCESC_INCLUDES="`cd ../../xercesc/include; pwd`"
-			export XERCESC_LIB_PATH="-L`cd ../../xercesc/lib; pwd`"
+			XERCESC_INCLUDES="\$(CLAM_PATH)/../xercesc/include"
+			FLAG_XERCESC_INCLUDES="-I../../xercesc/include"
+			XERCESC_LIB_PATH="\$(CLAM_PATH)/../xercesc/lib"
+			FLAG_XERCESC_LIB_PATH="-L../../xercesc/lib"
 			xerces_local=yes
 		elif test -d ../../xercesc/include/dom; then
 			AC_MSG_RESULT(yes)
 			found_dom=yes
-			export XERCESC_INCLUDES=`cd ../../xercesc/include; pwd`
-			export XERCESC_LIB_PATH="-L`../../xercesc/lib; pwd`"
+			XERCESC_INCLUDES="\$(CLAM_PATH)/../xercesc/include"
+			FLAG_XERCESC_INCLUDES="-I../../xercesc/include"
+			XERCESC_LIB_PATH="\$(CLAM_PATH)/../xercesc/lib"
+			FLAG_XERCESC_LIB_PATH="-L../../xercesc/lib"
 			xerces_local=yes
 		else
 			AC_MSG_RESULT(no)
@@ -323,7 +332,8 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 				if test -d $base/xercesc/dom; then
 					AC_MSG_RESULT(yes)
 					found_dom=yes
-					export XERCESC_INCLUDES=$base/xercesc
+					XERCESC_INCLUDES=$base/xercesc
+					FLAG_XERCESC_INCLUDES=-I$base/xercesc
 					break;
 				fi
 			done
@@ -333,9 +343,9 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 	if test $found_dom = yes; then
 		AC_MSG_CHECKING([for xercesc library...])
 		OLD_FLAGS=$CXXFLAGS
-		XERCESC_LIBS=-lxerces-c
-		CXXFLAGS="$CXXFLAGS $XERCESC_LIBS $XERCESC_LIB_PATH"
-		export CPLUS_INCLUDE_PATH=${XERCESC_INCLUDES// /\:}
+		XERCESC_LIBS=xerces-c
+		FLAG_XERCESC_LIBS=-lxerces-c
+		CXXFLAGS="$CXXFLAGS $FLAG_XERCESC_INCLUDES $FLAG_XERCESC_LIBS $FLAG_XERCESC_LIB_PATH"
 		AC_TRY_RUN([
 			#include<xercesc/dom/DOM_Document.hpp>
 			int main()
