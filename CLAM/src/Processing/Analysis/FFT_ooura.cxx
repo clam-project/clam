@@ -21,9 +21,6 @@
 
 
 #include "FFT_ooura.hxx"
-#include <string>
-
-#include "mtgsstream.h" // An alias for <sstream>
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"

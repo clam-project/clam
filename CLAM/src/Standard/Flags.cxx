@@ -25,7 +25,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 #include "Component.hxx"
 #include "XMLAdapter.hxx"
 
