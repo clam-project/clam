@@ -112,7 +112,8 @@ namespace CLAM{
 			}
 			else
 			{
-				std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig:Trying to instantiate a non-valid Configuration: "+type;
+				std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig:Trying to instantiate a non-valid Configuration: ";
+				error+=type;
 				if(type=="Unknown") throw Err("Before instantiating a concrete configuration, you have to set its class name");
 				else throw Err(error.c_str());
 			}
@@ -435,6 +436,6 @@ protected:
 
 
 
-};//namespace
+}//namespace
 
 #endif
