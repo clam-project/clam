@@ -88,7 +88,7 @@ namespace CLAMGUI
 		: mUI( NULL )
 	{
 		TimeSelected.Wrap( this, &SMSTools::OnNewTime );
-		mExplorer.SelectedTime.Connect( TimeSelected );
+		SegmentExplorer().SelectedTime.Connect( TimeSelected );
 		SetScore.Wrap( this, &SMSTools::OnNewScore );
 
 		// MRJ: To ease debuggin of SMS Tools
@@ -144,8 +144,7 @@ namespace CLAMGUI
 
 	void SMSTools::OnNewScore( const CLAM::SMSTransformationChainConfig& cfg )
 	{
-		mTransformationScore = cfg;
-		mHaveTransformationScore = true;
+		SetCurrentTransformationScore( cfg );
 		ScoreChanged.Emit( mTransformationScore );
 
 		mUI->ApplyTransformationReadyState();
@@ -154,27 +153,27 @@ namespace CLAMGUI
 	void SMSTools::LoadTransformationScore( const std::string& inputFilename )
 	{
 		SMSBase::LoadTransformationScore( inputFilename );
-		ScoreChanged.Emit( mTransformationScore );
+		ScoreChanged.Emit( GetCurrentTransformationScore() );
 	}
 
 	
 	void SMSTools::OnNewTime( double value )
 	{
-		if (!mHaveAnalysis)
+		if ( !HasAnalysis() )
 			return;
 		//Change mCounter
 		CLAM::TTime time( value  );
 		CLAM::TIndex nframe;
-		if(mHaveTransformation)
-			nframe = mTransformedSegment.FindFrame( time );
+		if( HasTransformation() )
+			nframe = GetTransformedSegment().FindFrame( time );
 		else
-			nframe = mOriginalSegment.FindFrame( time );
+			nframe = GetOriginalSegment().FindFrame( time );
 		
 		mUI->mCounter->value( (int) nframe );
-		if(mHaveTransformation)
-			mExplorer.NewFrame( mTransformedSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
+		if( HasTransformation() )
+			SegmentExplorer().NewFrame( GetTransformedSegment().GetFramesArray()[nframe],mUI->FrameDataAvailable() );
 		else
-			mExplorer.NewFrame( mOriginalSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
+			SegmentExplorer().NewFrame( GetOriginalSegment().GetFramesArray()[nframe],mUI->FrameDataAvailable() );
 	}
 
 	Progress* SMSTools::CreateProgress(const char* title,float from,float to) 
@@ -204,7 +203,7 @@ namespace CLAMGUI
 
 	void SMSTools::SetCanvas( Fl_Smart_Tile* canvas )
 	{
-		mExplorer.SetCanvas( canvas );
+		SegmentExplorer().SetCanvas( canvas );
 	}
 
 	void SMSTools::DoAnalysis()
@@ -253,7 +252,7 @@ namespace CLAMGUI
 			return false;
 
 
-		mAnalysisInputFile = fileName;
+		SetAnalysisInputFile( fileName );
 
 		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data, please wait");
 
@@ -267,11 +266,8 @@ namespace CLAMGUI
 	}
 	
 	void SMSTools::AnalyzeMelody()
-	{
-		
+	{	
 		SMSBase::AnalyzeMelody();
-
-
 	}
 
 	void SMSTools::ExecuteMelodyAnalysis( )
@@ -299,7 +295,7 @@ namespace CLAMGUI
 
 		CLAM::XMLStorage x;
 		x.UseIndentation(true);
-		x.Dump(mMelody,"Analyzed_Melody",melodyFilename);
+		x.Dump( GetMelody(), "Analyzed_Melody", melodyFilename );
 	}
 
 	bool SMSTools::DoStoreAnalysis()
@@ -309,7 +305,7 @@ namespace CLAMGUI
 		if ( !fileName )
 			return false;
 
-		mAnalysisOutputFile = fileName;
+		SetAnalysisOutputFile( fileName );
 
 		mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
 
@@ -325,9 +321,11 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadAnalysis()
 	{
-		mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, mAnalysisInputFile.c_str() );
+		GetSerializer().DoSerialization( GetSerializer().Load, 
+						 GetOriginalSegment(), 
+						 GetAnalysisInputFile().c_str() );
 
-		mHaveTransformation=false;
+		SetHasTransformation( false );
 
 		return true;
 	}
@@ -335,7 +333,9 @@ namespace CLAMGUI
 	void SMSTools::StoreAnalysis()
 	{
 
-	mSerialization.DoSerialization( mSerialization.Store, mOriginalSegment, mAnalysisOutputFile.c_str() );	
+		GetSerializer().DoSerialization( GetSerializer().Store, 
+						 GetOriginalSegment(), 
+						 GetAnalysisOutputFile().c_str() );	
 
 		
 	}
@@ -352,17 +352,17 @@ namespace CLAMGUI
 
 	void SMSTools::StoreOutputSound()
 	{
-		StoreSound(mAudioOut);
+		StoreSound( GetSynthesizedSinusoidal() );
 	}
 
 	void SMSTools::StoreOutputSoundResidual()
 	{
-		StoreSound(mAudioOutRes);
+		StoreSound( GetSynthesizedResidual() );
 	}
 
 	void SMSTools::StoreOutputSoundSinusoidal()
 	{
-		StoreSound(mAudioOutSin);
+		StoreSound( GetSynthesizedSinusoidal() );
 	}
 
 }

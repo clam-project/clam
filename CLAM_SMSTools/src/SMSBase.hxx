@@ -59,8 +59,95 @@ namespace CLAM
 		SMSBase(void);	
 		virtual ~SMSBase(void);
 		void Run(void);
-		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
+		void SetHaveConfig(bool hasConfig){
+			mHaveConfig=hasConfig;
+		}
+
+		SMSTransformationChainConfig& GetCurrentTransformationScore() {
+			return mTransformationScore;
+		}
 		
+		Segment& GetOriginalSegment()
+		{
+			return mOriginalSegment;
+		}
+
+		Segment& GetTransformedSegment()
+		{
+			return mTransformedSegment;
+		}
+		
+		bool  HasAnalysis()
+		{
+			return mHaveAnalysis;
+		}
+
+		bool  HasTransformation()
+		{
+			return mHaveTransformation;
+		}
+
+		void  SetHasTransformation( bool value )
+		{
+			mHaveTransformation = value;
+		}
+
+		bool  HasTransformationScore( )
+		{
+			return mHaveTransformationScore;
+		}
+
+		void  SetCurrentTransformationScore( const SMSTransformationChainConfig& cfg )
+		{
+			mTransformationScore = cfg;
+			mHaveTransformationScore = true;
+		}
+
+		void  SetAnalysisInputFile( const char* filename )
+		{
+			mGlobalConfig.SetInputAnalysisFile( filename );
+		}
+
+		const std::string& GetAnalysisInputFile() const
+		{
+			return mGlobalConfig.GetInputAnalysisFile();
+		}
+
+		void  SetAnalysisOutputFile( const char* filename )
+		{
+			mGlobalConfig.SetOutputAnalysisFile( filename );
+		}
+
+		const std::string& GetAnalysisOutputFile() const
+		{
+			return mGlobalConfig.GetOutputAnalysisFile();
+		}
+
+		SerializationController& GetSerializer()
+		{
+			return mSerialization;
+		}
+
+		Audio& GetSynthesizedSound()
+		{
+			return mAudioOut;
+		}
+
+		Audio& GetSynthesizedSinusoidal()
+		{
+			return mAudioOutSin;
+		}
+
+		Audio& GetSynthesizedResidual()
+		{
+			return mAudioOutRes;
+		}
+
+		Melody& GetMelody()
+		{
+			return mMelody;
+		}
+
 	protected:
 	
 		/** Cleans up segment from pre-existing data*/ 
@@ -187,6 +274,7 @@ namespace CLAM
 		SMSAnalysisSynthesisConfig mGlobalConfig;
 		/** Transformation score loaded from an xml file */
 		SMSTransformationChainConfig mTransformationScore;
+
 
 		/** Actual transformation to be used*/
 		SMSTransformationChain mTransformation;

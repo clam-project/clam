@@ -83,6 +83,9 @@ private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
+protected: // methods
+	
+	CLAMVM::SMS_DataExplorer& SegmentExplorer();
 
 protected:
 	int                       mThreadState;
@@ -90,10 +93,12 @@ protected:
 	std::string               mAnalysisInputFile;
 	std::string               mAnalysisOutputFile;
 	CLAM::Thread              mThread;
-	CLAMVM::SMS_DataExplorer  mExplorer;
+	CLAMVM::SMS_DataExplorer  mSegmentExplorer;
 	UserInterface*            mUI;
 };
 
 }
+
+#include "SMSTools_inlines.hxx"
 
 #endif // SMSTools.hxx
