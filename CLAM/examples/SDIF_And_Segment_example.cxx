@@ -21,6 +21,8 @@
 #include "SDIFIn.hxx"  // imports CLAM::SDIFIn declaration
 #include "Segment.hxx" // imports CLAM::Segment ProcessingData object declaration
 #include "Err.hxx"     // imports CLAM::Err exception class declaration
+#include "Plots.hxx"   // imports various CLAM Visualization Module plots declarations
+#include "SystemPlots.hxx" // imports CLAMVM::SystemPlots declaration
 #include <FL/fl_file_chooser.H> // imports FLTK file choose dialog function
 #include <iostream>
 
@@ -95,10 +97,66 @@ int main ( int argc, char** argv )
 		sdifLoader.Start();
 
 		// we place the data stored in the file onto the newly created segment
-		sdifLoader.Do( loadedSegment );
+	       sdifLoader.Do( loadedSegment );
 
 		// and we stop the SDIF loader
 		sdifLoader.Stop();
+
+		// To illustrate what's the Segment for, we can take a look at the various
+		// items of information it does contain. One of them is the Fundamental
+		// frequency ( or pitch ) detected in the audio signal
+
+		// You might already know CLAMVM various plots - if that is not the case
+		// then please refer to the plots examples available, for a oresentation
+		// of the general concept. However, in this example we will see ( and use )
+		// the 'specific plots', plot objects devised for rendering concrete data
+		// types that trascend from simple Array's or BPF's.
+		// The first of them is the FundFreqPlot, which as its name implies plots
+		// the fundamental frequency of a given segment
+		CLAMVM::FundFreqPlot         theFundFreqPlot( "f0_plot");
+		// We set the plot window label
+		theFundFreqPlot.SetLabel( "Fundamental frequency in a segment" );
+		// We set the plot window size
+		theFundFreqPlot.SetSize( 640, 480 );
+		
+		// we associate the plot with the segment that contains the data we want to
+		// see
+		theFundFreqPlot.SetData( loadedSegment );
+
+		// Note that the frequency plot you will see is just an 'approximation' several
+		// different factors may affect its exactitude
+		CLAMVM::SystemPlots::Display( "f0_plot" );
+
+
+		// Another interesting thing to see are the sinusoidal tracks found in
+		// the signal
+		CLAMVM::SinTracksPlot    theSinTracksPlot( "strc_plot");
+		theSinTracksPlot.SetLabel( "Sinusoidal tracks in a segment" );
+		theSinTracksPlot.SetSize( 640, 480 );
+
+		// we associate the plot with the data
+		theSinTracksPlot.SetData( loadedSegment );
+
+		// An we see the plots
+		CLAMVM::SystemPlots::Display( "strc_plot" );
+
+		// Finally, the other important data that might be interesting to see is the
+		// spectral peaks detected for a given frame, so we will get a 'peak array' 
+		// at random - a peak array is the set of spectral peaks detected in a given
+		// analysis frame
+		CLAMVM::SpectrumAndPeaksPlot theSpecAndPeaksPlot("peaks_plot");
+		theSpecAndPeaksPlot.SetLabel( "Detected peaks" );
+		theSpecAndPeaksPlot.SetSize( 640, 480 );
+
+		// We get the spectral peak array in the middle of the signal
+		CLAM::SpectralPeakArray& peakArrayInTheMiddle =
+			loadedSegment.GetFrame( loadedSegment.GetnFrames() / 2).GetSpectralPeakArray();
+
+
+		theSpecAndPeaksPlot.SetData( peakArrayInTheMiddle, loadedSegment.GetSamplingRate()/2 );
+
+		CLAMVM::SystemPlots::Display( "peaks_plot");
+
 	}
 	catch( CLAM::Err& e)
 	{
