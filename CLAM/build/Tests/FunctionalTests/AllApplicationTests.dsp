@@ -248,6 +248,10 @@ SOURCE=..\..\..\..\examples\SMS\WaitMessage.cxx
 
 SOURCE=..\..\..\..\examples\SMS\SMSBase.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\StdOutProgress.cxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "Base Sources"
@@ -431,6 +435,10 @@ SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingChain.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
@@ -451,72 +459,50 @@ SOURCE=..\..\..\..\src\Processing\SDIFIO\SDIFOut.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSFreqShift.cxx
+SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformationConfig.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSPitchShift.cxx
+SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformation.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSOddEvenHarmonicRatio.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSSineFilter.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSResidualGain.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformationChainIO.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSHarmonizer.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSSinusoidalGain.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSPitchDiscretization.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSSpectralShapeShift.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSGenderChange.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSMorph.cxx
+SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSMorphConfig.cxx
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SpectralEnvelopeApply.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\FDCombFilter.cxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Transformations\Normalization.cxx
 # End Source File
 # End Group
-# Begin Group "Analysis Sources"
+# Begin Group "AudioIO Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtract.cxx
+SOURCE=..\..\..\..\src\Processing\AudioIO\AudioOut.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIn.cxx
+# End Source File
+# End Group
+# Begin Group "AudioFileIO Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
+# End Source File
+# End Group
+# Begin Group "Analysis Sources"
+
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetect.cxx
@@ -566,41 +552,15 @@ SOURCE=..\..\..\..\src\Processing\Analysis\Segmentator.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
 # End Source File
-# End Group
-# Begin Group "AudioIO Sources"
-
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\AudioIO\AudioOut.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIn.cxx
-# End Source File
-# End Group
-# Begin Group "AudioFileIO Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.cxx
 # End Source File
 # End Group
 # Begin Group "Synthesis Sources"
@@ -950,6 +910,10 @@ SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
 
 SOURCE=..\..\..\..\src\Base\DynamicType.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\Factory.hxx
+# End Source File
 # End Group
 # Begin Group "Standard Headers"
 
@@ -1129,6 +1093,10 @@ SOURCE=..\..\..\..\examples\SMS\WaitMessage.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\SMSBase.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\StdOutProgress.hxx
 # End Source File
 # End Group
 # End Group
@@ -1482,14 +1450,6 @@ SOURCE=..\..\..\..\src\Processing\Analysis\SMSAnalysisConfig.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtractConfig.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtract.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetect.hxx
 # End Source File
 # Begin Source File
@@ -1547,91 +1507,24 @@ SOURCE=..\..\..\..\src\Processing\Analysis\Segmentator.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformationConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformation.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSFreqShift.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSPitchShift.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSOddEvenHarmonicRatio.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSSineFilter.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSResidualGain.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformationChainIO.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSHarmonizer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSSinusoidalGain.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSPitchDiscretization.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSSpectralShapeShift.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSGenderChange.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSMorph.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSTransformationChain.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Transformations\SMS\SMSMorphConfig.hxx
+# End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\SpectralEnvelopeApply.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Transformations\FDCombFilter.hxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Transformations\Normalization.hxx
-# End Source File
-# End Group
-# Begin Group "ArithOps Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
 # End Source File
 # End Group
 # Begin Group "AudioIO Headers"
@@ -1662,6 +1555,25 @@ SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
+# End Source File
+# End Group
+# Begin Group "ArithOps Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.hxx
 # End Source File
 # End Group
 # End Group
