@@ -142,11 +142,10 @@ void UserInterface::Analyze(void)
 	{
 
 		ApplyAnalysisAvailableState();
-
+		mFrameDataAvailable = true;
 		mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
 		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0],
 													   FrameDataAvailable());
-		mFrameDataAvailable = true;
 		mWindow->redraw();
 	}
 }
