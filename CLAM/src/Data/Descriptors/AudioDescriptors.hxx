@@ -81,7 +81,7 @@ inline void AudioDescriptors::CopyInit(const AudioDescriptors & copied) {
 	mpAudio=copied.mpAudio;
 }
 
-inline const Frame* AudioDescriptors::GetpAudio() const {
+inline const Audio* AudioDescriptors::GetpAudio() const {
 	return mpAudio;
 }
 
