@@ -48,19 +48,19 @@ namespace CLAMTest {
 #ifdef CLAM_USE_XML
 		{
 			// Store the arg a file and on a string
-			XMLStorage storage("Document");
+			XMLStorage storage;
 			std::ofstream fout(filename);
 			storage.Dump(outObject, "Object", out);
 			storage.Dump(outObject, "Object", fout);
 		}
 		{
 			// Recover the objec on superIn
-			XMLStorage storage("Document");
+			XMLStorage storage;
 			storage.Restore(inObject, filename);
 		}
 		{
 			// Store it on a string again
-			XMLStorage storage("Document");
+			XMLStorage storage;
 			storage.Dump(inObject, "Object", in);
 		}
 #endif//CLAM_USE_XML

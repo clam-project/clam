@@ -953,7 +953,7 @@ void DynamicType::Debug()
 	std::cout<<std::endl;
 
 #	ifdef CLAM_USE_XML
-		XMLStorage storage ("XML-Class_Debug");
+		XMLStorage storage;
 		std::fstream fileout("Debug.xml", std::ios::out);
 		storage.Dump(*this, GetClassName(), fileout);
 #	endif//CLAM_USE_XML
