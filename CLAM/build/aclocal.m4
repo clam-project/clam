@@ -158,16 +158,18 @@ dnl Begin of FLTK checking procedure
 AC_DEFUN(CLAM_LIB_FLTK,
 [
 AC_MSG_CHECKING([fltk-config is known by the /usr/bin/which command...])
-if test -n `which fltk-config`
+
+if test -f `which fltk-config`
 	then
-		fltk_config_exec=`which fltk-config`
+		fltk_config_exec=`which fltk-config`	
 		AC_MSG_RESULT(yes)
 	else
 		AC_MSG_RESULT(no)
 		AC_MSG_CHECKING([fltk-config is in the sandbox...])
-		if test -f `$pwd/../../fltk/bin/fltk-config`
+		PWD=`pwd`
+		if test -f "$PWD/../../fltk/bin/fltk-config"
 			then
-				fltk_config_exec=`$pwd/../../fltk/bin/fltk-config`
+				fltk_config_exec="$PWD/../../fltk/bin/fltk-config"
 				AC_MSG_RESULT(yes)
 			else
 				AC_MSG_RESULT(no)
