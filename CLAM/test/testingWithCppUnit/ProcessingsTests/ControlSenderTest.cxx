@@ -45,6 +45,11 @@ private:
 	CPPUNIT_TEST( testDo_WhenFreqEqualSamplingRateAndNoPhase );
 	CPPUNIT_TEST( testDo_WhenFreqEqualSamplingRateWithPhase );
 	CPPUNIT_TEST( testDo_WhenFreqIsQuarterOfSamplingRate );
+	CPPUNIT_TEST( testDo_WhenFreqEqualSamplingRateAndFrameSizeIs10 );
+	CPPUNIT_TEST( testDo_WhenFreqIsQuarterOfSamplingRateAndPhaseAndFrameSizeIs7 );
+
+
+
 	CPPUNIT_TEST_SUITE_END();
 	
 	//fixture attributes
@@ -68,8 +73,9 @@ private:
 		CLAM::TData freq = 44100;
 		CLAM::TData samplingRate = 44100;
 		CLAM::TData phase = 0.0;
+		int frameSize = 1;
 
-		_controlSender.Configure( freq , samplingRate, phase );
+		_controlSender.Configure( freq , samplingRate, phase, frameSize );
 
 		_controlSender.Do();
 
@@ -87,8 +93,9 @@ private:
 		CLAM::TData freq = 44100;
 		CLAM::TData samplingRate = 44100;
 		CLAM::TData phase = M_PI/2;
+		int frameSize = 1;
 
-		_controlSender.Configure( freq , samplingRate, phase );
+		_controlSender.Configure( freq , samplingRate, phase, frameSize );
 
 		_controlSender.Do();
 
@@ -107,8 +114,9 @@ private:
 		CLAM::TData samplingRate = 44100;
 		CLAM::TData freq = samplingRate/4;
 		CLAM::TData phase = 0;
+		int frameSize = 1;
 
-		_controlSender.Configure( freq , samplingRate, phase );
+		_controlSender.Configure( freq , samplingRate, phase, frameSize );
 
 		_controlSender.Do();
 		//first Do gives the initial state, already tested
@@ -117,6 +125,53 @@ private:
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverLeft.GetLastValue(),_delta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverRight.GetLastValue(),_delta); 
 	}
+
+	void testDo_WhenFreqEqualSamplingRateAndFrameSizeIs10()
+	{
+		CLAM::TData freq = 44100;
+		CLAM::TData samplingRate = 44100;
+		CLAM::TData phase = 0.0;
+		int frameSize = 10;
+
+		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+
+		_controlSender.Do();
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta);
+
+		_controlSender.Do();
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta);
+	}
+
+	void testDo_WhenFreqIsQuarterOfSamplingRateAndPhaseAndFrameSizeIs7()
+	{
+		CLAM::TData samplingRate = 44100;
+		CLAM::TData freq = samplingRate/4;
+		CLAM::TData phase = M_PI;
+		int frameSize = 7;
+
+		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+
+		_controlSender.Do();
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta); 
+		_controlSender.Do();
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverLeft.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverRight.GetLastValue(),_delta); 
+		_controlSender.Do();
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta); 
+	}
+
+
+
+
 
 };
 
