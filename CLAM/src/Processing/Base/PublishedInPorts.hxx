@@ -20,7 +20,7 @@ public:
 	InPort& GetByNumber(int index) const;
 	InPort& Get( std::string name ) const;
 	int Size() const;
-        Iterator Begin();
+	Iterator Begin();
 	Iterator End();
 	
 	
