@@ -19,11 +19,58 @@
  *
  */
 
-#include "DOMPrint.hpp"
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/framework/XMLFormatter.hpp>
+#include <xercesc/util/TranscodingException.hpp>
+#include <xercesc/dom/DOM_DOMException.hpp>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/parsers/DOMParser.hpp>
+
 #include "XercesDomPrinter.hxx"
 #include <string>
-//#define CLAM_INDENT_XML
+#define CLAM_INDENT_XML
 #define TRACEDUMP if (1); else std::cout
+
+class DOMPrintFormatTarget : public XMLFormatTarget
+{
+public:
+	DOMPrintFormatTarget()  {};
+	DOMPrintFormatTarget(std::ostream& target)  {mpTarget=&target;};//added by XA
+	~DOMPrintFormatTarget() {};
+
+	// -----------------------------------------------------------------------
+	//  Implementations of the format target interface
+	// -----------------------------------------------------------------------
+
+	void writeChars(const   XMLByte* const  toWrite,
+	                const   unsigned int    count,
+                        XMLFormatter * const formatter)
+	{
+		// Surprisingly, Solaris was the only platform on which
+		// required the char* cast to print out the string correctly.
+		// Without the cast, it was printing the pointer value in hex.
+		// Quite annoying, considering every other platform printed
+		// the string with the explicit cast to char* below.
+		mpTarget->write((char *) toWrite, count);
+	};
+
+private:
+	// -----------------------------------------------------------------------
+	//  Unimplemented methods.
+	// -----------------------------------------------------------------------
+	DOMPrintFormatTarget(const DOMPrintFormatTarget& other);
+	void operator=(const DOMPrintFormatTarget& rhs);
+	std::ostream* mpTarget;//mpTarget added by XA in order to use other ostream than cout
+};
+
+
+XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s);
+std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite);
+
+void Inspect (std::ostream& target, DOM_Node& toWrite);
+
 
 // ---------------------------------------------------------------------------
 //  Local data
