@@ -43,6 +43,15 @@ public:
 	{
 		if (_chained) delete _chained;
 	}
+	void Indirect(
+		const std::string & scope, 
+		const std::string & attribute)
+	{
+		if (_chained) delete _chained;
+		_chained= new ReadHook<unsigned>;
+		_chained->Bind(scope,attribute);
+	}
+
 	const AttributeType & GetForReading() const
 	{
 		return _data [GetCurrent()];
@@ -53,22 +62,30 @@ public:
 		_pool = &pool;
 		_current = 0;
 		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
+		if (_chained) _chained->Init(pool);
 	}
 
 	virtual void Next()
 	{
-		_current++;
+		if (_chained) _chained->Next();
+		else _current++;
 	}
 
 	virtual bool IsInsideScope() const
 	{
+		if (_chained) return _chained->IsInsideScope();
 		return _current < _pool->GetNumberOfContexts(_scope);
 	}
 
 protected:
 	virtual unsigned GetCurrent() const
 	{
-		return _current;
+		if (!_chained) return _current;
+
+		unsigned indirection = _chained->GetForReading();
+		CLAM_ASSERT(indirection<_pool->GetNumberOfContexts(_scope),
+			"Invalid cross-scope reference");
+		return indirection;
 	}
 
 protected:
@@ -84,42 +101,6 @@ private:
 template <typename AttributeType>
 class ReadIndirectHook : public ReadHook<AttributeType>
 {
-public:
-	ReadIndirectHook()
-	{
-		_chained= new ReadHook<unsigned>;
-	}
-	void Indirect(
-		const std::string & scope, 
-		const std::string & attribute)
-	{
-		_chained->Bind(scope,attribute);
-	}
-
-	void Init(const DescriptionDataPool & pool) 
-	{
-		ReadHook<AttributeType>::Init(pool);
-		_chained->Init(pool);
-	}
-
-	virtual void Next()
-	{
-		_chained->Next();
-	}
-
-	virtual bool IsInsideScope() const
-	{
-		return _chained->IsInsideScope();
-	}
-
-protected:
-	unsigned GetCurrent() const
-	{
-		unsigned indirection = _chained->GetForReading();
-		CLAM_ASSERT(indirection<_pool->GetNumberOfContexts(_scope),
-			"Invalid cross-scope reference");
-		return indirection;
-	}
 };
 
 /** @ingroup SemanticalAnalysis */
