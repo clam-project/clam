@@ -170,7 +170,7 @@ public:
 		U centroid=0.0;
 		for (unsigned i = 0; i < N; i++)
 		{
-			centroid += (*mData)[i] * (i+1);
+			centroid += (abs?Abs((*mData)[i]):(*mData)[i]) * (i+1);
 		}
 		mCentroid=centroid/mean/U(N) - 1;
 		return mCentroid;
