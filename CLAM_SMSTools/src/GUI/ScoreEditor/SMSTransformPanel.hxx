@@ -44,11 +44,11 @@ protected:
 	void ShowScoreOnBrowser();
 	void ShowFactoryProductsOnBrowser();
 
-	void ActivateConfigurator( std::string transformName );
+	void ActivateConfigurator( int idx, Fl_Select_Browser* browser );
 	void ShowActiveConfiguratorHelp();
 	void ShowActiveConfiguratorEditWidget();
 	void ApplyChangesToCurrentCfg();
-	void HideConfigurator();
+	void RemoveCurrentConfiguratorFromTabs();
 	void ResetChainConfig();
 
 	int  mHighlightedConfig;

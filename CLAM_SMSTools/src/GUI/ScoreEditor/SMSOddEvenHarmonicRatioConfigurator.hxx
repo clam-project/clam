@@ -18,6 +18,7 @@ namespace CLAMVM
 		virtual Fl_Widget* GetParametersWidget();
 		virtual Fl_Widget* GetHelpWidget();
 
+		virtual void SetConfig( const CLAM::ProcessingConfig& cfg );		
 		virtual const CLAM::ProcessingConfig& GetConfig();
 
 	protected:

@@ -33,6 +33,12 @@ namespace CLAMVM
 		return NULL;
 	}
 
+	void SMSGenderChangeConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
+	{
+		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+
+	}
+
 	const CLAM::ProcessingConfig& SMSGenderChangeConfigurator::GetConfig()
 	{
 		return mConfig;

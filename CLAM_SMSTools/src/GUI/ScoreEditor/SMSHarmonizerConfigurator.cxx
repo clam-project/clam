@@ -32,6 +32,11 @@ namespace CLAMVM
 	{
 		return NULL;
 	}
+	
+	void SMSHarmonizerConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
+	{
+		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+	}
 
 	const CLAM::ProcessingConfig& SMSHarmonizerConfigurator::GetConfig()
 	{

@@ -10,6 +10,9 @@ class Fl_Help_View;
 
 namespace CLAMVM
 {
+	class Fl_SMS_BPF_Editor;
+	
+
 	class SMSResidualGainConfigurator : public SMSConfigurator
 	{
 	public:
@@ -19,6 +22,7 @@ namespace CLAMVM
 		virtual Fl_Widget* GetParametersWidget();
 		virtual Fl_Widget* GetHelpWidget();
 
+		virtual void SetConfig( const CLAM::ProcessingConfig& );
 		virtual const CLAM::ProcessingConfig& GetConfig();
 
 	protected:
@@ -28,6 +32,7 @@ namespace CLAMVM
 	protected:
 		
 		Fl_Help_View*                 mHelpWidget;
+		Fl_SMS_BPF_Editor*     mEditorWidget;
 		CLAM::SMSTransformationConfig mConfig;
 		static const char*            mHelpText;
 		

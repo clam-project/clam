@@ -32,6 +32,12 @@ namespace CLAMVM
 		return NULL;
 	}
 
+	void SMSOddEvenHarmonicRatioConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
+	{
+		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+
+	}
+
 	const CLAM::ProcessingConfig& SMSOddEvenHarmonicRatioConfigurator::GetConfig()
 	{
 		return mConfig;

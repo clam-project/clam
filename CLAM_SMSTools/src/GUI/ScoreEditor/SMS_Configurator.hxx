@@ -19,6 +19,7 @@ namespace CLAMVM
 		virtual Fl_Widget* GetParametersWidget() = 0;
 		virtual Fl_Widget* GetHelpWidget() = 0;
 		virtual const CLAM::ProcessingConfig& GetConfig() = 0;
+		virtual void SetConfig( const CLAM::ProcessingConfig& ) = 0;
 	};
 
 	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;

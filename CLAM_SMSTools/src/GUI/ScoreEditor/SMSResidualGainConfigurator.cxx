@@ -2,25 +2,42 @@
 #include "Factory.hxx"
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
-
+#include "Fl_SMS_BPF_Editor.hxx"
 
 namespace CLAMVM
 {
-	const char* SMSResidualGainConfigurator::mHelpText = "<html><body><p>The <bf>Frequency Shift</bf> SMS transformation, is an operator over the results of an SMS Analysis, that allows to offset all detected partials by the same frequency differential.</p></body></html>";
+	const char* SMSResidualGainConfigurator::mHelpText = "<html><body><p>Here should go a nice description of what does the SMS Residual Gain transformation do</p></body></html>";
 
 	SMSResidualGainConfigurator::SMSResidualGainConfigurator()
 	{
 		mHelpWidget = new Fl_Help_View( 0, 0, 100, 100 );
 		mHelpWidget->textsize( 12 );
+
+		mEditorWidget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		mEditorWidget->end();
+		mEditorWidget->SetHorizontalRange( 0.0, 1.0 );
+		mEditorWidget->SetVerticalRange( -24, 24 );
+		mEditorWidget->SetGridWidth( 0.1, 3 );
 		
 		SetHelpWidgetText();
 		mConfig.AddType();
+		mConfig.RemoveAmount();
+		mConfig.AddBPFAmount();
+
 		mConfig.UpdateData();
 		mConfig.SetType( "SMSResidualGain" );
+		mConfig.GetBPFAmount().Insert( 0.0, 1.0 );
+		mConfig.GetBPFAmount().Insert( 1.0, 1.0 );
+		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+
 	}
 
 	SMSResidualGainConfigurator::~SMSResidualGainConfigurator()
 	{
+		if ( mHelpWidget->parent() == NULL )
+			delete mHelpWidget;
+		if ( mEditorWidget->parent() == NULL )
+			delete mEditorWidget;
 	}
 
 	void SMSResidualGainConfigurator::SetHelpWidgetText()
@@ -30,11 +47,34 @@ namespace CLAMVM
 
 	Fl_Widget* SMSResidualGainConfigurator::GetParametersWidget()
 	{
-		return NULL;
+		return mEditorWidget;
+	}
+
+	void SMSResidualGainConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
+	{
+		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+		mEditorWidget->Clear();
+		
+		if ( !mConfig.HasBPFAmount() )
+		{
+			double value = mConfig.GetAmount();
+
+			mConfig.AddBPFAmount();
+			mConfig.RemoveAmount();
+			mConfig.UpdateData();
+			mConfig.GetBPFAmount().Insert( 0.0, value );
+			mConfig.GetBPFAmount().Insert( 1.0, value );
+
+		}
+		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
+
+
 	}
 
 	const CLAM::ProcessingConfig& SMSResidualGainConfigurator::GetConfig()
 	{
+		mEditorWidget->InsertPointsIntoBPF( mConfig.GetBPFAmount() );
+
 		return mConfig;
 	}
 
