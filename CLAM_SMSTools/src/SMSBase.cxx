@@ -83,7 +83,7 @@ SMSBase::~SMSBase(void)
 }
 void SMSBase::InitConfigs(void)
 {
-	if (GetState().GetHasConfig()) return;
+	if (!GetState().GetHasConfig()) return;
 
 	/*global parameters*/
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
