@@ -100,7 +100,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			std::string expected = "ScopeSpec::Add, Attribute already present";
+			std::string expected = "DescriptionScope::Add, Attribute already present";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
