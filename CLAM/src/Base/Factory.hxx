@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <list>
 
 #include "Assert.hxx"
 
@@ -72,6 +73,10 @@ public:
 	}
 
 
+	void GetRegisteredNames( std::list<std::string>& namesList )
+	{
+		_registry.GetRegisteredNames( namesList );
+	}
 
 public: // Inner classes. Public for better testing
 
@@ -122,6 +127,16 @@ public: // Inner classes. Public for better testing
 		}
 
 		std::size_t Count() { return _creators.size(); }
+
+		void GetRegisteredNames( std::list<RegistryKey>& namesList )
+		{
+			CreatorMap::const_iterator i;
+
+			for ( i = _creators.begin(); i != _creators.end(); i++ )
+			{
+				namesList.push_back( i->first );
+			}
+		}
 
 	private: // data
 		CreatorMap _creators;
