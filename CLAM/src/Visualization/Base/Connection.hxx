@@ -25,30 +25,30 @@
 namespace CLAMGUI
 {
 
-class Signal;
+	class Signal;
 
-class Connection
-{
-public:
-	typedef unsigned tConnectionId;
-
-	Connection();
-	Connection( tConnectionId id, Signal* connectedSignal );
-	Connection& operator=( Connection& s );
-	Connection( const Connection& s );
-
-	tConnectionId GetID() const
+	class Connection
 	{
-		return mID;
-	}
+	public:
+		typedef unsigned tConnectionId;
 
-	~Connection();
+		Connection();
+		Connection( tConnectionId id, Signal* connectedSignal );
+		Connection& operator=( Connection& s );
+		Connection( const Connection& s );
 
-private:
-	mutable bool  mMustFreeSignal;
-	tConnectionId mID;
-	Signal*       mConnectedSignal;
-};
+		tConnectionId GetID() const
+		{
+			return mID;
+		}
+
+		~Connection();
+
+	private:
+		mutable bool  mMustFreeSignal;
+		tConnectionId mID;
+		Signal*       mConnectedSignal;
+	};
 
 }
 

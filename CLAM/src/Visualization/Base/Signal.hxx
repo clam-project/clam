@@ -29,7 +29,7 @@
 namespace CLAMGUI
 {
 
-class Connection;
+	class Connection;
 
 /**
  * A signal represents an event to be signaled to a group of Slots.
@@ -38,29 +38,30 @@ class Connection;
  * for signals and some common implementation.
  */
 
-class Signal
-{
-public:
-	typedef unsigned  tConnectionId;
-
-	virtual ~Signal(){}
-
-	/**
-	 * Undoes the given Conection
-	 */
-	virtual void FreeConnection( Connection* ) = 0;
-
-protected:
-	void FreeConnectionId( tConnectionId );
-	tConnectionId AssignConnection();
-
-	// Types
-	typedef std::stack< unsigned >      tConnectionIdStack;
-protected:
-
-	static tConnectionIdStack  smFreeIdStack;
-	static tConnectionId       smLastConnectionId;
-};
+	class Signal
+	{
+	public:
+		typedef unsigned  tConnectionId;
+  
+		virtual ~Signal(){}
+  
+		/**
+		 * Undoes the given Conection
+		 */
+		virtual void FreeConnection( Connection* ) = 0;
+  
+	protected:
+		void FreeConnectionId( tConnectionId );
+		tConnectionId AssignConnection();
+  
+		// Types
+		typedef std::stack< unsigned >      tConnectionIdStack;
+	protected:
+  
+		static tConnectionIdStack  smFreeIdStack;
+		static tConnectionId       smLastConnectionId;
+	};
 
 }
+
 #endif // Signal.hxx

@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef __SIGNALV1IMPLVC6__
-#define __SIGNALV1IMPLVC6__
+#ifndef __SIGNALV4IMPLVC6__
+#define __SIGNALV4IMPLVC6__
 
-#ifndef __SIGNALV1__
+#ifndef __SIGNALV4__
 #error "This is an implementation header. You are not allowed to include it directly!"
 #endif
 
@@ -32,12 +32,15 @@
 namespace CLAMGUI
 {
 
-	template < typename ParmType1 >
-	class Signalv1 : public Signal
+	template < typename ParmType1, typename ParmType2, typename ParmType3, typename ParmType4 >
+	class Signalv4 : public Signal
 	{
+  
 	public:
-		typedef typename CBL::Functor1<ParmType1>                  tCallbackType;
-		// Begin of ConnectionHandler
+		typedef typename CBL::Functor4<ParmType1,ParmType2,ParmType3,ParmType4>        tCallbackType;
+
+		// Begin of "Connection Handler"
+
 		struct tCallback
 		{
 			tConnectionId  mConnection;
@@ -113,16 +116,17 @@ namespace CLAMGUI
 				elem->mSlot->Unbind( elem->mConnection );
 			}
 		}
-		// End of "ConnectionHandler"
   
+		// End of "ConnectionHandler"
+		
 	public:
   
-		virtual ~Signalv1()
+		virtual ~Signalv4()
 		{
 			DestroyConnections();
 		}
   
-		void Connect( Slotv1<ParmType1>& slot )
+		void Connect( Slotv4<ParmType1, ParmType2, ParmType3, ParmType4>& slot )
 		{
 			Connection c( AssignConnection(), this );
     
@@ -131,7 +135,7 @@ namespace CLAMGUI
 			slot.Bind(c);
 		}
   
-		void Emit( ParmType1 parm )
+		void Emit( ParmType1 parm1, ParmType2 parm2, ParmType3 parm3, ParmType4 parm4 )
 		{
 			if ( HasNoCallbacks() )
 				return;
@@ -142,12 +146,12 @@ namespace CLAMGUI
     
 			while ( i != end )
 			{
-				(*(*i))( parm );
+				(*(*i))( parm1, parm2, parm3, parm4 );
 				i++;
 			}
     
 		}
-
+  
 		void FreeConnection( Connection* pConnection )
 		{
 			RemoveCall( pConnection->GetID() );
@@ -159,9 +163,8 @@ namespace CLAMGUI
 		tCallList       mCalls;
 		tCallbackList   mCallbacks;
   
-  
 	};
 
 }
 
-#endif // Signalv1ImplVC6.hxx
+#endif // Signalv4ImplVC6.hxx

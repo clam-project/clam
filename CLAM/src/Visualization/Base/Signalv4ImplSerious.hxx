@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef __SIGNALV0IMPLSERIOUS__
-#define __SIGNALV0IMPLSERIOUS__
+#ifndef __SIGNALV4IMPLSERIOUS__
+#define __SIGNALV4IMPLSERIOUS__
 
-#ifndef __SIGNALV0__
+#ifndef __SIGNALV4__
 #error "This is an internal implementation header. You are not allowed to include it directly!"
 #endif
 
@@ -31,40 +31,43 @@
 namespace CLAMGUI
 {
 
-	class Signalv0 
-		: public Signal
+	template < typename ParmType1, template ParmType2, typename ParmType3, typename ParmType4 >
+	class Signalv4 : public Signal
 	{
 	public:
-		typedef CBL::Functor0     tCallbackType;
+		typedef typename CBL::Functor4<ParmType1,ParmType2, ParmType3,ParmType4>              tCallbackType;
+  
 	public:
-		virtual ~Signalv0()
+  
+		virtual ~Signalv4()
 		{
 			mSuper.DestroyConnections();
 		}
   
-		void Connect( Slotv0& slot )
+		void Connect( Slotv4<ParmType1, ParmType2, ParmType3, ParmType4>& slot )
 		{
-			Connection c ( AssignConnection(), this );
+			Connection c( AssignConnection(), this );
     
 			mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
     
 			slot.Bind(c);
 		}
   
-		void Emit()
+		void Emit( ParmType1 parm1, ParmType2 parm2, ParmType3 parm3, ParmType4 parm4 )
 		{
 			if ( mSuper.HasNoCallbacks() )
 				return;
     
-			tSuperType::tCallList calls = mSuper.GetCalls();
-			tSuperType::tCallIterator i = calls.begin();
-			tSuperType::tCallIterator end = calls.end();
-    
-			while( i != end )
+			typename tSuperType::tCallList calls = mSuper.GetCalls();
+			typename tSuperType::tCallIterator i = calls.begin();
+			typename tSuperType::tCallIterator end = calls.end();
+
+			while ( i != end )
 			{
-				(*(*i))();
+				(*(*i))( parm1, parm2, parm3, parm4 );
 				i++;
 			}
+    
 		}
   
 		void FreeConnection( Connection* pConnection )
@@ -72,9 +75,8 @@ namespace CLAMGUI
 			mSuper.RemoveCall( pConnection->GetID() );
 			FreeConnectionId( pConnection->GetID() );
 		}
-  
 	private:
-		typedef Signalv0                            tSignalType;
+		typedef Signalv4<ParmType1,ParmType2,ParmType3, ParmType4> tSignalType;
 		typedef ConnectionHandler<tSignalType >     tSuperType;
   
 		tSuperType  mSuper;
@@ -82,4 +84,4 @@ namespace CLAMGUI
 
 }
 
-#endif // Signalv0ImplSerious.hxx
+#endif // Signalv4ImplSerious.hxx

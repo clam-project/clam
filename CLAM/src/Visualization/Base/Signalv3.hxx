@@ -19,25 +19,19 @@
  *
  */
 
+#ifndef __SIGNALV3__
+#define __SIGNALV3__
+
+#include "Functor3.hxx"
 #include "Signal.hxx"
+#include "Connection.hxx"
+#include "Slotv3.hxx"
 
-using namespace CLAMGUI;
+#if defined( _MSC_VER )&&(_MSC_VER < 1310)
+#include "Signalv3ImplVC6.hxx"
+#else
+#include "Signalv3ImplSerious.hxx"
+#endif
 
-Signal::tConnectionId        Signal::smLastConnectionId = 0;
-Signal::tConnectionIdStack   Signal::smFreeIdStack;
 
-Signal::tConnectionId Signal::AssignConnection()
-{
-  if ( smFreeIdStack.empty() )
-    return smLastConnectionId++;
-  
-  tConnectionId id = smFreeIdStack.top();
-  smFreeIdStack.pop();
-  return id;
-}
-
-void Signal::FreeConnectionId( Signal::tConnectionId freedConnectionId )
-{
-  smFreeIdStack.push( freedConnectionId );
-}
-
+#endif //Signalv3.hxx

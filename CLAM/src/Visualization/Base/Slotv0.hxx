@@ -19,56 +19,65 @@
  *
  */
 
+#ifndef __SLOTV0__
+#define __SLOTV0__
+
 #include "Slot.hxx"
-#include <algorithm>
+#include "CBL.hxx"
+//#include "Assert.hxx"
 
 namespace CLAMGUI
 {
-	
-	class ConnectionSearchPred
+
+	class Slotv0 : public Slot
 	{
-	public:
-		
-		ConnectionSearchPred( Connection::tConnectionId id )
-		: mSoughtID( id )
-		{
-		}
-
-		bool operator()( const Connection& conn )
-		{
-			return ( conn.GetID() == mSoughtID );
-		}
-		
-	private:
-		
-		Connection::tConnectionId mSoughtID;
-	};
-}
-
-using namespace CLAMGUI;
-	
-Slot::~Slot()
-{
-	Unbind();
-}
-
-void Slot::Unbind()
-{
-	mActiveConnections.clear();
-}
-
-void Slot::Bind( const Connection& conn )
-{
-	mActiveConnections.push_back( conn );
-}
-
-void Slot::Unbind( Connection::tConnectionId conn )
-{
-	tConnectionIterator i = std::find_if(	mActiveConnections.begin(), 
-						mActiveConnections.end(), 
-						ConnectionSearchPred( conn ) );
+		typedef CBL::Functor0 WrappedFuncType;
   
-	mActiveConnections.erase( i );
+	public:
+  
+		Slotv0()
+			: mIsInit( false )
+		{
+		}
+
+		virtual ~Slotv0()
+		{
+		}
+  
+		template < class RefType, typename PtrMember >
+		void Wrap( RefType thisRef, PtrMember pMember )
+		{
+			mFunctor = CBL::makeFunctor( (CBL::Functor0*)0, *thisRef, pMember );
+			mIsInit = true;
+		}
+  
+		template <  typename PtrMember >
+		void Wrap( PtrMember pMember )
+		{
+			mFunctor = CBL::makeFunctor( (CBL::Functor0*)0, pMember );
+			mIsInit = true;
+		}
+  
+
+		const WrappedFuncType& GetMethod() const
+		{
+			//CLAM_ASSERT( mIsInit, "Must be initialized" );
+			return mFunctor;
+		}
+  
+		void operator()( )
+		{
+			//CLAM_ASSERT( mIsInit, "Must be initialized" );
+			mFunctor(  );
+		}
+  
+	private:
+  
+		WrappedFuncType   mFunctor;
+		bool              mIsInit;
+  
+	};
+
 }
 
-
+#endif // Slotv0.hxx
