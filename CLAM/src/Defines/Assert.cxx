@@ -61,11 +61,11 @@ ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename
 {
 	if (!breakpointInCLAMAssertEnabled) return; 
 
-	std::cout << "##########################################################" << std::endl;
-	std::cout << "################### ASSERTION FAILED #####################" << std::endl;
-	std::cout << "##########################################################" << std::endl;
-	std::cout << "At file " << filename << " line " << lineNumber << std::endl;
-	std::cout << message << std::endl;
+	CurrentAssertFailedHandler( message, filename, lineNumber );
+}
+
+ErrAssertionFailed::~ErrAssertionFailed() throw () 
+{
 }
 
 // Warning related
