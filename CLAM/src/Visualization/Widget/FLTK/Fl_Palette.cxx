@@ -12,6 +12,7 @@
 
 #include "Fl_Palette.hxx"
 #include "CLAM_Math.hxx"
+#include <cstdlib>
 
 namespace CLAMVM
 {
