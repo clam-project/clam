@@ -391,7 +391,14 @@ namespace CLAM {
 		 * runnig (or disabled).
 		 */
 		void Stop(void) throw(ErrProcessingObj);
+	
 
+	public:
+		bool CanDoUsingPorts()
+		{	
+			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
+		}
+		
 
 		/**
 		 * Supervised mode execution method (using ports)
