@@ -283,12 +283,12 @@ void SMSAnalysis::AttachChildren()
 	mPO_SpecSubstract.SetParent(this);
 }
 
-bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
+bool SMSAnalysis::Do(const Audio& in,Spectrum& inGlobalSpec, SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
 {
 	//Analyzing sinusoidal component
-	mPO_SinSpectralAnalysis.Do(in,outGlobalSpec);
+	mPO_SinSpectralAnalysis.Do(in,inGlobalSpec);
 	
-	Do(outGlobalSpec,outPk,outFn);
+	Do(inGlobalSpec,outPk,outFn);
 
 	
 	//Analyzing residual component
@@ -299,14 +299,16 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 	    
 	outResSpec.SetSize(mSpec.GetSize());
 
-	mPO_ResSpectralAnalysis.Do(in/*Res*/,mSpec);
+	mPO_ResSpectralAnalysis.Do(in,mSpec);
 
-	//Finally we substract mSpectrum-SinusoidalSpectrum
+
+	inGlobalSpec.SetSize(mSpec.GetSize());
+	//Finally we substract inGlobalSpec-SinusoidalSpectrum
 	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
 
 	//Synchronizing spectral ranges of other spectrums
-	outSinSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
-	outResSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
+	outSinSpec.SetSpectralRange(inGlobalSpec.GetSpectralRange());
+	outResSpec.SetSpectralRange(inGlobalSpec.GetSpectralRange());
 
 	return true;
 

@@ -127,7 +127,7 @@ public:
 	bool Do(Segment& in);
 	bool Do(Frame& in);
 	bool Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
-	bool Do(const Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
+	bool Do(const Audio& in,Spectrum& inGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 
 //private:
 

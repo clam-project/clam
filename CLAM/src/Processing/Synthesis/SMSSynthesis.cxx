@@ -263,6 +263,7 @@ bool SMSSynthesis::Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 
 bool SMSSynthesis::Do(Frame& in)
 {
+	in.AddOutSpec();
 	in.AddSinusoidalAudioFrame();
 	in.AddResidualAudioFrame();
 	in.AddSynthAudioFrame();
@@ -280,14 +281,14 @@ bool SMSSynthesis::Do(Frame& in)
 	tmpcfg.SetScale(EScale::eLinear);
 	Spectrum tmpSpec(tmpcfg),tmpSpec2(tmpcfg);
 	tmpSpec.SetSize(mConfig.GetSpectrumSize());
-	tmpSpec2.SetSize(mConfig.GetSpectrumSize());
+	in.GetOutSpec().SetSize(mConfig.GetSpectrumSize());
 	
 	tmpSpec.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
-	tmpSpec2.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
+	in.GetOutSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
 	Do(in.GetSpectralPeakArray(),tmpSpec,in.GetSinusoidalAudioFrame());
 	
-	mPO_SpectrumAdder.Do(tmpSpec,in.GetResidualSpec(),tmpSpec2);
-	mPO_SpectralSynthesis.Do(tmpSpec2,in.GetSynthAudioFrame());
+	mPO_SpectrumAdder.Do(tmpSpec,in.GetResidualSpec(),in.GetOutSpec());
+	mPO_SpectralSynthesis.Do(in.GetOutSpec(),in.GetSynthAudioFrame());
 
 	//Synthesizing residual only component
 	return mPO_ResSpectralSynthesis.Do(in.GetResidualSpec(),in.GetResidualAudioFrame());

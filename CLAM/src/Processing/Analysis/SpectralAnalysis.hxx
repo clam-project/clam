@@ -181,7 +181,7 @@ public:
  *  @see Segment*/
 	bool Do(Segment& in);
 
-//private:
+private:
 
 /**	Internal Configuration data */
 	SpectralAnalysisConfig mConfig;

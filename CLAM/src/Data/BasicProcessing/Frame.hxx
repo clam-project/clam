@@ -56,7 +56,7 @@ namespace CLAM{
 class Frame : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (Frame, 12, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (Frame, 13, ProcessingData);
 	/** Value of time in the center of the frame  */
 	DYN_ATTRIBUTE (0, public, TData, CenterTime);
 	/** Duration of the Frame  */
@@ -67,22 +67,24 @@ public:
 	DYN_ATTRIBUTE (3, public, SpectralPeakArray, SpectralPeakArray);
 	/** Fundamental frequency of the information being analyzed  */
 	DYN_ATTRIBUTE (4, public, Fundamental, Fundamental);
-	/** Residual spectrum of the Audio  */
-	DYN_ATTRIBUTE (5, public, Spectrum, ResidualSpec);
+	/** Output global spectrum*/
+	DYN_ATTRIBUTE (5, public, Spectrum, OutSpec);
+		/** Residual spectrum of the Audio  */
+	DYN_ATTRIBUTE (6, public, Spectrum, ResidualSpec);
 	/** Sinusoidal spectrum of the Audio  */
-	DYN_ATTRIBUTE (6, public, Spectrum, SinusoidalSpec);
+	DYN_ATTRIBUTE (7, public, Spectrum, SinusoidalSpec);
 	/*Audio chunk that has been used for generating spectral data, will usually be
 	a previously windowed audio chunk*/
 	/** Audio chunk we want to analyze */
-	DYN_ATTRIBUTE (7, public, Audio, AudioFrame);
+	DYN_ATTRIBUTE (8, public, Audio, AudioFrame);
 	/** Sinusoidal synthesized Audio */
-	DYN_ATTRIBUTE (8, public, Audio, SinusoidalAudioFrame);
+	DYN_ATTRIBUTE (9, public, Audio, SinusoidalAudioFrame);
 	/** Residual synthesized Audio */
-	DYN_ATTRIBUTE (9, public, Audio, ResidualAudioFrame);
+	DYN_ATTRIBUTE (10, public, Audio, ResidualAudioFrame);
 	/** Global synthesized Audio */
-	DYN_ATTRIBUTE (10, public, Audio, SynthAudioFrame);
+	DYN_ATTRIBUTE (11, public, Audio, SynthAudioFrame);
 	/** Is a harmonic frame or not */
-	DYN_ATTRIBUTE (11, public, bool, IsHarmonic);
+	DYN_ATTRIBUTE (12, public, bool, IsHarmonic);
 
 protected:
 	void DefaultInit();
