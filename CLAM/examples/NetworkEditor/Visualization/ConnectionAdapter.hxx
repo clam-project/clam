@@ -28,8 +28,6 @@
 #include <string>
 #include <list>
 
-#include <iostream> // TODO: remove
-
 namespace CLAM
 {
 	class OutPort;
@@ -50,7 +48,6 @@ namespace CLAMVM
 		ConnectionAdapter() : mNetworkObserved(0)
 		{
 		}
-	
 		virtual const char* GetClassName() const
 		{
 			return "ConnectionAdapter";
@@ -72,7 +69,6 @@ namespace CLAMVM
 		const IN* mInObserved;
 	public:
 		ConnectionAdapterTmpl();
-
 		const char* GetClassName() const
 		{
 			return "ConnectionAdapterTmpl";
