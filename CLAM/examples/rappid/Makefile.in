@@ -14,7 +14,7 @@ mainwindow.h: mainwindow.ui
 ../../examples/rappid/mainwindow.cpp: mainwindow.h mainwindow.ui
 	uic -i mainwindow.h mainwindow.ui -o mainwindow.cpp 
 
-../../examples/rappid/rondebosse.moc.cpp: rondebosse.h
+../../examples/rappid/rondebosse.moc.cpp: mainwindow.h rondebosse.h
 	moc rondebosse.h -o rondebosse.moc.cpp
 
 rondebosse_meta_unload.cpp: rondebosse.moc.cpp mainwindow.moc.cpp
