@@ -9,7 +9,6 @@
 
 #include <string>
 
-
 namespace CLAM
 {
 
@@ -23,7 +22,7 @@ class InPortTmpl : public InPort
 public:
 
 	inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
-	virtual ~InPortTmpl();
+	inline ~InPortTmpl();
 	inline T &GetData();
 	inline void LeaveData();
 	//! implementation of the virtual method declared in InPort
