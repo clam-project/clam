@@ -35,7 +35,7 @@ template < typename ParmType1, template ParmType2 >
 	class Signalv2 : public Signal
 {
 public:
-	typedef typename CBL::Functor1<ParmType1,ParmType2>              tCallbackType;
+	typedef typename CBL::Functor2<ParmType1,ParmType2>              tCallbackType;
 
 public:
 	
@@ -59,7 +59,7 @@ public:
 	{
 		Connection c( AssignConnection(), this );
 
-		mSuper.AddCallback( s.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType2>*)0, pMember ) );
+		mSuper.AddCallback( s.GetID(), &slot, CBL::makeFunctor( (CBL::Functor2<ParmType1, ParmType2>*)0, pMember ) );
 
 		slot.Bind(c);
 	}
@@ -87,7 +87,7 @@ public:
 		FreeConnectionId( pConnection->GetID() );
 	}
 private:
-	typedef Signalv1<ParmType1,ParmType2>                tSignalType;
+	typedef Signalv2<ParmType1,ParmType2>                tSignalType;
 	typedef ConnectionHandler<tSignalType >     tSuperType;
 
 	tSuperType  mSuper;
