@@ -15,6 +15,7 @@ class FactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( FactoryTest );
 	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
+	CPPUNIT_TEST( testRegistryGetCreatorUnsafe_WhenIsEmpty );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -28,7 +29,19 @@ private:
 			"But was: " + typeid( returned ).name();
 		
 		CPPUNIT_ASSERT_MESSAGE( msg, typeid( CLAM::Oscillator ) == typeid(*returned) ); 
-	
+	}
+ 
+	void testRegistryGetCreatorUnsafe_WhenIsEmpty()
+	{
+		CLAM::FactoryRegistry reg; // an empty factory
+		try {
+			reg.GetCreator( "bla" );
+
+		} catch( CLAM::ErrAssertionFailed e ) {
+			return;
+		}
+		CPPUNIT_FAIL( "Assert should happen when Registry::GetCreatorUnsafe "
+			"is called with the registry empty");
 	}
 };
 
