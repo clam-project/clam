@@ -19,8 +19,8 @@ inline int Chop(float a) {
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
 	You must do so outside the loop that actually calls the loop */
 			CLAM_ASSERT(a>=0,"Chop function only for positive numbers");
-			unsigned int saved;
-			saved = _controlfp(_RC_CHOP,_MCW_RC);
+			unsigned int saved = _controlfp(0, 0);
+			_controlfp(_RC_CHOP, _MCW_RC);
 #endif //_DEBUG
             __asm {
                         fld   a
@@ -46,8 +46,8 @@ inline int Round(float a)
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
 	You must do so outside the loop that actually calls the loop */
 	CLAM_ASSERT(a>=0,"Round function only for positive numbers");
-	unsigned int saved;
-	saved = _controlfp(_RC_CHOP,_MCW_RC);
+	unsigned int saved = _controlfp(0, 0);
+	_controlfp(_RC_CHOP, _MCW_RC);
 #endif //_DEBUG
     __asm {
 			fld   a
