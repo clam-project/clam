@@ -12,7 +12,8 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class MpegAudioStream : public Stream
+	class MpegAudioStream 
+		: public Stream
 	{
 	public:
 

@@ -75,9 +75,6 @@ namespace AudioCodecs
 
 	void MpegAudioStream::Dispose()
 	{
-		std::cout << std::endl;
-		std::cout << "Decoded samples (per channel): " << mSamplesDecoded << std::endl;
-		std::cout << "Transferred samples (per channel): " << mSamplesTransferred << std::endl;
 		mBitstream.Finish();
 	}
 
@@ -115,18 +112,11 @@ namespace AudioCodecs
 			}
 		}
 
-		// Checking zero padding
-		bool once = false;
+
+
 		for ( int i = 0; i < mEncodedChannels; i++ )
 			if ( mDecodeBuffer[i].size() < samplesToRead )
 			{
-				if ( !once )
-				{
-					mSamplesDecoded += samplesToRead - mDecodeBuffer[i].size();
-					once = true;
-					std::cout << "Zero padding of "<< samplesToRead - mDecodeBuffer[i].size() <<  "!" << std::endl;
-				}
-
 				mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
 							 samplesToRead - mDecodeBuffer[i].size(),
 							 mad_fixed_t(0) );
@@ -152,6 +142,8 @@ namespace AudioCodecs
 			{
 				double sampleValue = mad_f_todouble(*j);
 
+				// :TODO: Finding a nicer way to clamp things
+				// to the -1,1 could be necessary
 				// clipping
 				if ( sampleValue > 1.0 )
 					sampleValue = 1.0;
