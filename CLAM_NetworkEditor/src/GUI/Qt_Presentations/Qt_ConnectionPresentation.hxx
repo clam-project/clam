@@ -43,7 +43,9 @@ protected:
 	void OnNewOutPos(int x, int y);
 	void OnNewInPos(int x, int y);
 	void UpdatePosition();
-
+	void ResolveWireZone(int & position, int & extent,
+		const int origin, const int end,
+		const int wireThickness, const int torsionResistence);
 	void mousePressEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *);
 	void keyPressEvent( QKeyEvent * );
