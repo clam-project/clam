@@ -18,7 +18,14 @@ class DescriptionDataPoolTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DescriptionDataPoolTest );
 	CPPUNIT_TEST( testUnpopulatedScopeIsNotFreed );
-//	CPPUNIT_TEST( testPopulateScope_withANonExistingScope );
+	CPPUNIT_TEST( testPopulateScope_withANonExistingScope );
+	CPPUNIT_TEST( testInstanciateAttribute_withinUnexistingScope );
+	CPPUNIT_TEST( testInstanciateAttribute_withinUnpopulatedScope );
+	CPPUNIT_TEST( testInstanciateAttribute_whenTheAttributeDoesNotExist );
+	CPPUNIT_TEST( testInstanciateAttribute_whenTheAttributeDoesNotExistButTheScopeIsNotPopulated );
+	CPPUNIT_TEST( testGetAttribute_withDifferentAttributes );
+	CPPUNIT_TEST( testGetAttribute_withTheSameAttributeTwice );
+	CPPUNIT_TEST( testGetAttribute_withNonInstantiatedAttribute );
 //	CPPUNIT_TEST( testPopulateScope_withAnExistingScope );
 //	CPPUNIT_TEST( testPopulateScop_withSeveralScopes );
 //	CPPUNIT_TEST( testInstantiateAttribute_fromANonPopulatedScope );
@@ -33,6 +40,7 @@ public:
 	{
 		mScheme.AddAttribute<CLAM::Attribute<CLAM::TData> >   ("AudioSample","Level");
 		mScheme.AddAttribute<CLAM::Attribute<unsigned> >      ("Frame","Center");
+		mScheme.AddAttribute<CLAM::Attribute<unsigned> >      ("Frame","Size");
 		mScheme.AddAttribute<CLAM::Attribute<std::string> >   ("Frame","MyLabel");
 	}
 
@@ -63,76 +71,109 @@ private:
 		}
 	}
 
-	/*
-	void testPopulateScope_withAnExistingScope()
+	void testInstanciateAttribute_withinUnexistingScope()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("AudioSample",10);
-		// No memory leak here
+		try
+		{
+			data.InstantiateAttribute("UnexistingScope","Center");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "No scope registered with that name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
 	}
 
-	void testPopulateScop_withSeveralScopes()
+	void testInstanciateAttribute_withinUnpopulatedScope()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("AudioSample",40);
+		try
+		{
+			data.InstantiateAttribute("Frame","Center");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Instantianting an attribute inside an unpopulated scope";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testInstanciateAttribute_whenTheAttributeDoesNotExist()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
 		data.PopulateScope("Frame",10);
-		// No memory leak here
-	}
-
-	void testInstantiateAttribute_fromANonExistingScope()
-	{
-		CLAM::DescriptionDataPool data(mScheme);
 		try
 		{
-			data.InstantiateAttribute("NonExistingScope","AnAttribute");
+			data.InstantiateAttribute("Frame","UnexistingAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Accessing an unexisting attribute inside a scope";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
 
-	void testInstantiateAttribute_fromANonExistingAttribute()
+	void testInstanciateAttribute_whenTheAttributeDoesNotExistButTheScopeIsNotPopulated()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
 		try
 		{
-			data.InstantiateAttribute("AudioSample","ANonExistingAttribute");
+			data.InstantiateAttribute("Frame","UnexistingAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Accessing an unexisting attribute inside a scope";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
 
-	void testInstantiateAttribute_fromANonPopulatedScope()
+	void testGetAttribute_withDifferentAttributes()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
+		data.PopulateScope("Frame",30);
+		data.InstantiateAttribute("Frame","Center");
+		data.InstantiateAttribute("Frame","Size");
+
+		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
+		unsigned * sizes   = data.GetAttributePool<unsigned>("Frame","Size");
+
+		CPPUNIT_ASSERT(centers!=sizes);
+	}
+
+	void testGetAttribute_withTheSameAttributeTwice()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		data.PopulateScope("Frame",30);
+		data.InstantiateAttribute("Frame","Center");
+
+		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
+		unsigned * centers2 = data.GetAttributePool<unsigned>("Frame","Center");
+
+		CPPUNIT_ASSERT_EQUAL(centers,centers2);
+	}
+
+	void testGetAttribute_withNonInstantiatedAttribute()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		data.PopulateScope("Frame",30);
+
+		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
 		try
 		{
-			data.InstantiateAttribute("AudioSample","Level");
-			CPPUNIT_FAIL("Should have thrown an exception");
+			unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Accessing an unexisting attribute inside a scope";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
 
-	void testInstantiateAttribute_withAnExistingScope()
-	{
-		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("AudioSample",10);
-		data.InstantiateAttribute("AudioSample","Level");
-		CLAM::TData * audio = data.GetAttributePool<CLAM::TData>("AudioSample","Level");
-		// TODO: Which assert
-	}
-	*/
 };
 
 
