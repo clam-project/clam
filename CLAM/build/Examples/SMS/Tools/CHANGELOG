@@ -8,14 +8,16 @@ TODOs:
 
 	
 	
-9999-99-99
+2003-08-01
 'Bug fixing and SMS Morph editor improvements'
   * SMS Tools 2 - v.0.1.2
       ** General issues:
 	  *** Bug fixed: DOS console should not appear  ( Windows only )
 	  *** Bug fixed: when storing/loading SMS analysis results into XML
 	      the "wait" message that appears on screen was not being updated
-
+	  *** New feature: now SMSTools 2 license can be read from within the application ( menu Help->License... )
+	  *** New feature: whenever SMSTools 2 crashes a log file ( SMSTools2_errors.log ) is created
+	
       ** GUI - Score Editor:
 	  *** Added several more parameters to the SMS Morph transformation widget
 	
