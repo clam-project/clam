@@ -3,6 +3,7 @@
 //We should avoid having to include all SMS Transformations here: factory needed
 #include "SMSTransformationConfig.hxx"
 #include "SMSMorphConfig.hxx"
+#include "SMSTimeStretchConfig.hxx"
 
 namespace CLAM
 {
@@ -50,13 +51,15 @@ namespace CLAM
 		if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
 		   type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
 		   type=="SMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||
-		   type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||type=="SMSTimeStretch"||
+		   type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||
 		   type=="SMSTransformationChainIO")
 		{
 			return new CLAM::SMSTransformationConfig();
 		}
 		else if (type=="SMSMorph") 
 			return new CLAM::SMSMorphConfig();
+		else if (type=="SMSTimeStretch")
+			return new CLAM::SMSTimeStretchConfig();
 		else
 		{
 			std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig:Trying to instantiate a non-valid Configuration: ";
