@@ -52,9 +52,7 @@ private:
   static Fl_Menu_Item *mDoTransformation;
   inline void cb_mDoTransformation_i(Fl_Menu_*, void*);
   static void cb_mDoTransformation(Fl_Menu_*, void*);
-public:
   static Fl_Menu_Item *mSynthesize;
-private:
   inline void cb_Synthesize_i(Fl_Menu_*, void*);
   static void cb_Synthesize(Fl_Menu_*, void*);
   static Fl_Menu_Item *mOutputSM;
@@ -120,7 +118,10 @@ private:
   void PlayOutputSound();
   void PlaySinusoidal();
   void PlayResidual();
+  void LoadSound();
   CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];
   CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];
+public:
+  void Update();
 };
 #endif
