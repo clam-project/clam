@@ -66,6 +66,7 @@ public:
 	void RemoveAllNetworkConfigurations();
 	void AddNetworkConfiguration( NetworkConfiguration* );
 	void RegisterProcessings();
+	void ClearAttachPorts();
 
 	int GetMaxFramesToProcess() const {
 		return _maxFramesToProcess;
@@ -136,7 +137,7 @@ private:
 
 	void StartProcessings();
 	void ConfigureProcessings();
-	void ConfigureNodes();
+
 
 //methods relative to audio out
 	bool AudioOutDo();
