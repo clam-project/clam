@@ -109,7 +109,6 @@ void NetworkController::ConnectPorts( const std::string & out , const std::strin
 
 void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , const std::string & in)
 {
-	std::cout << "removing " << out << " to " << in << std::endl;
 	if (mLoopCondition)
 	{
 		if (!mToDisconnect.insert( ConnectionsMap::value_type( in, out ) ).second )
