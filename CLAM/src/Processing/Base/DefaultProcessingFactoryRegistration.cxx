@@ -1,4 +1,3 @@
-
 #include "Factory.hxx"
 #include "Oscillator.hxx"
 #include "SimpleOscillator.hxx"
@@ -14,8 +13,6 @@
 // VC6 needs to see the whole types
 #include "Audio.hxx"
 #include "Spectrum.hxx"
-#include "SMSAnalysisCore.hxx"
-#include "SMSSynthesis.hxx"
 
 
 /**
@@ -39,7 +36,5 @@ static ProcessingFactory::Registrator<CLAM::IFFT_rfftw> regtIFFT_rfftw( "IFFT_rf
 static ProcessingFactory::Registrator<CLAM::AutoPanner> regtAutoPanner( "AutoPanner" );
 static ProcessingFactory::Registrator<CLAM::AudioOut> regtAudioOut( "AudioOut" );
 static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Controller" );
-static ProcessingFactory::Registrator<CLAM::SMSAnalysisCore> regtSMSAnalysisCore( "SMSAnalysisCore" );
-static ProcessingFactory::Registrator<CLAM::SMSSynthesis> regtSMSSynthesis( "SMSSynthesis" );
 static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
 
