@@ -7,15 +7,15 @@
 #include <ladspa.h>
 #include <dlfcn.h>
 #include <string>
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
-#include "Audio.hxx"
 #include "Filename.hxx"
+#include "Audio.hxx"
 
 namespace CLAM
 {
+	class AudioInPort;
+	class AudioOutPort;
+	class InControl;
+	class OutControl;
 
 class LadspaLoaderConfig : public ProcessingConfig
 {
@@ -47,8 +47,8 @@ class LadspaLoader : public Processing
 
 	std::vector<Audio> mInputAudio;
 	std::vector<Audio> mOutputAudio;
-	std::vector< InPortTmpl<Audio>* > mInputPorts;
-	std::vector< OutPortTmpl<Audio>* > mOutputPorts;
+	std::vector< AudioInPort* > mInputPorts;
+	std::vector< AudioOutPort* > mOutputPorts;
 
 	std::vector< InControl* > mInputControls;
 	std::vector< OutControl* > mOutputControls;
