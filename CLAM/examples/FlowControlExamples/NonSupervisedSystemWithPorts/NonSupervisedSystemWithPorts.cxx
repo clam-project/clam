@@ -33,11 +33,11 @@ SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int 
 	_hasAudioOut(hasAudioOut)
 
 {
-	AddNetworkConfiguration( new OscillatorToFileOut( this, hasAudioOut ) );
-	AddNetworkConfiguration( new FileInFileOut( this, hasAudioOut ) );
-	AddNetworkConfiguration( new ModulatedFileIn( this, hasAudioOut ) );
-	AddNetworkConfiguration( new ModulatedOscillator( this, hasAudioOut ) );
-	AddNetworkConfiguration( new ModulatedFileInPlusFileIn( this, hasAudioOut ) );
+	AddNetworkConfiguration( new OscillatorToFileOut( this ) );
+	AddNetworkConfiguration( new FileInFileOut( this ) );
+	AddNetworkConfiguration( new ModulatedFileIn( this ) );
+	AddNetworkConfiguration( new ModulatedOscillator( this ) );
+	AddNetworkConfiguration( new ModulatedFileInPlusFileIn( this ) );
 
 	ConfigureProcessings();
 	ConfigureData();
@@ -126,20 +126,13 @@ void SystemWithPorts::OscillatorToFileOut::Connect()
 {
 	System()._oscillator.mOutput.Attach( System()._oscillatorData );
 	System()._fileOut.Input.Attach( System()._oscillatorData );
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Input.Attach( System()._oscillatorData );
-	}
-
+	System().AudioOutAttach(System()._oscillatorData);
 }
 bool SystemWithPorts::OscillatorToFileOut::Do() 
 {
 	System()._oscillator.Do();
 	System()._fileOut.Do();
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Do();
-	}
+	System().AudioOutDo();
 	return false;
 }
 
@@ -151,11 +144,7 @@ void SystemWithPorts::ModulatedFileIn::Connect()
 	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
 	System()._multiplier.mOutput.Attach( System()._multiplierData );
 	System()._fileOut.Input.Attach( System()._multiplierData );
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Input.Attach( System()._multiplierData );
-	}
-
+	System().AudioOutAttach(System()._multiplierData);
 }
 bool SystemWithPorts::ModulatedFileIn::Do()
 {
@@ -163,10 +152,7 @@ bool SystemWithPorts::ModulatedFileIn::Do()
 	System()._modulator.Do();
 	System()._multiplier.Do();
 	System()._fileOut.Do();
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Do();
-	}
+	System().AudioOutDo();	
 
 	return false;
 }
@@ -184,11 +170,7 @@ void SystemWithPorts::ModulatedOscillator::Connect()
 	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
 	System()._multiplier.mOutput.Attach( System()._multiplierData );
 	System()._fileOut.Input.Attach( System()._multiplierData );
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Input.Attach( System()._multiplierData );
-	}
-
+	System().AudioOutAttach(System()._multiplierData);
 }
 bool SystemWithPorts::ModulatedOscillator::Do()
 {
@@ -196,10 +178,8 @@ bool SystemWithPorts::ModulatedOscillator::Do()
 	System()._modulator.Do();
 	System()._multiplier.Do();
 	System()._fileOut.Do();
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Do();
-	}
+	System().AudioOutDo();
+	System().AudioOutDo();
 
 	return false;
 }
@@ -208,20 +188,13 @@ void SystemWithPorts::FileInFileOut::Connect()
 {
 	System()._fileIn.mOutput.Attach( System()._fileInData );
 	System()._fileOut.Input.Attach( System()._fileInData );
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Input.Attach( System()._fileInData );
-	}
-
+	System().AudioOutAttach(System()._fileInData);
 }
 bool SystemWithPorts::FileInFileOut::Do()
 {
 	System()._fileIn.Do();
 	System()._fileOut.Do();
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Do();
-	}
+	System().AudioOutDo();
 
 	return false;
 }
@@ -248,11 +221,7 @@ void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 	System()._mixer.mInput[1].Attach( System()._fileInData );
 	System()._mixer.mOutput.Attach( System()._mixerData );
 	System()._fileOut.Input.Attach( System()._mixerData );
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Input.Attach( System()._mixerData );
-	}
-
+	System().AudioOutAttach(System()._mixerData);
 }
 bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
 {
@@ -262,11 +231,7 @@ bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
 	System()._controlSender.Do();
 	System()._mixer.Do();
 	System()._fileOut.Do();
-	if (_hasAudioOut)
-	{
-		System()._audioOut.Do();
-	}
-
+	System().AudioOutDo();
 	return false;
 }
 void SystemWithPorts::ModulatedFileInPlusFileIn::Stop() {
@@ -292,5 +257,27 @@ void SystemWithPorts::ProcessAllNetworkConfigurations()
 		(*it)->ConnectAndDo();
 	}
 }
+
+
+bool SystemWithPorts::AudioOutDo()
+{
+	if (_hasAudioOut)
+	{
+		_audioOut.Do();
+		return true;
+	}
+	return false;
+}
+
+bool SystemWithPorts::AudioOutAttach(CLAM::Audio& a)
+{
+	if (_hasAudioOut)
+	{
+		_audioOut.Input.Attach( a );
+		return true;
+	}
+	return false;
+}
+
 
 } // namespace

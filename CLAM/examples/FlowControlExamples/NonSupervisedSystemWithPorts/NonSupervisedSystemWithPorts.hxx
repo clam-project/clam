@@ -25,9 +25,8 @@ class SystemWithPorts;
 class NetworkConfiguration
 {
 public: 
-	NetworkConfiguration( SystemWithPorts* sys, bool hasAudioOut, std::string name) : 
+	NetworkConfiguration( SystemWithPorts* sys, std::string name) : 
 	  _system(sys),
-	  _hasAudioOut(hasAudioOut),
 	  _name(name)
 	{}
 
@@ -47,8 +46,6 @@ protected:
 
 private:
 	SystemWithPorts* _system;
-public:
-	bool _hasAudioOut;
 protected:
 	const std::string _name;
 	static bool trace;
@@ -77,16 +74,16 @@ public:
 	
 	class OscillatorToFileOut : public NetworkConfiguration {
 	public:
-		OscillatorToFileOut( SystemWithPorts *parent, bool hasAudioOut ) : 
-		  NetworkConfiguration(parent, hasAudioOut, "OscillatorToFileOut") {}
+		OscillatorToFileOut( SystemWithPorts *parent) : 
+		  NetworkConfiguration(parent, "OscillatorToFileOut") {}
 		bool Do();
 		void Connect();
 	};
 	
 	class FileInFileOut : public NetworkConfiguration {
 	public:
-		FileInFileOut( SystemWithPorts *parent, bool hasAudioOut ) : 
-		  NetworkConfiguration(parent, hasAudioOut, "FileInFileOut") {}
+		FileInFileOut( SystemWithPorts *parent ) : 
+		  NetworkConfiguration(parent, "FileInFileOut") {}
 		bool Do();
 		void Connect();
 		void Stop();
@@ -94,8 +91,8 @@ public:
 	
 	class ModulatedFileIn : public NetworkConfiguration {
 	public:
-		ModulatedFileIn( SystemWithPorts *parent, bool hasAudioOut ) :  
-		  NetworkConfiguration(parent, hasAudioOut, "ModulatedFileIn") {}
+		ModulatedFileIn( SystemWithPorts *parent ) :  
+		  NetworkConfiguration(parent, "ModulatedFileIn") {}
 		bool Do();
 		void Connect();
 		void Stop();
@@ -103,16 +100,16 @@ public:
 
 	class ModulatedOscillator : public NetworkConfiguration {
 	public:
-		ModulatedOscillator( SystemWithPorts *parent, bool hasAudioOut ) :  
-		  NetworkConfiguration(parent, hasAudioOut, "ModulatedOscillator") {}
+		ModulatedOscillator( SystemWithPorts *parent ) :  
+		  NetworkConfiguration(parent, "ModulatedOscillator") {}
 		bool Do();
 		void Connect();
 	};
 
 	class ModulatedFileInPlusFileIn : public NetworkConfiguration {
 	public:
-		ModulatedFileInPlusFileIn( SystemWithPorts *parent, bool hasAudioOut ) : 
-		  NetworkConfiguration(parent, hasAudioOut, "ModulatedFileInPlusFileIn") {}
+		ModulatedFileInPlusFileIn( SystemWithPorts *parent ) : 
+		  NetworkConfiguration(parent, "ModulatedFileInPlusFileIn") {}
 		bool Do();
 		void Connect();
 		void Stop();
@@ -123,6 +120,10 @@ private:
 	void StartProcessings();
 	void ConfigureProcessings();
 	void ConfigureData();
+
+//methods relative to audio out
+	bool AudioOutDo();
+	bool AudioOutAttach(CLAM::Audio& a);
 
 	// audio manager
 	CLAM::AudioManager _audioManager;
@@ -135,7 +136,7 @@ private:
 	CLAM::AudioMultiplier _multiplier;
 	CLAM::AudioOut _audioOut;
 	CLAM::AudioMixer<2> _mixer;
-	AutoPanner _controlSender;	
+	CLAM::AutoPanner _controlSender;	
 
 	// processing data
 	CLAM::Audio _oscillatorData;
