@@ -7,8 +7,10 @@
 #include "ProcessingData.hxx"
 #include "WriteStreamRegion.hxx"
 #include "Processing.hxx"
-#include "NodeTmpl.hxx"
+
+//#include "NodeTmpl.hxx"
 #include "CircularStreamImpl.hxx"
+
 
 #include <string>
 
@@ -167,7 +169,8 @@ template <class T>
 inline NodeBase* OutPortTmpl<T>::CreateNodeWithDefaultStreamBuffer()
 {
 	typedef CircularStreamImpl<T> DefaultStreamBuffer;
-	return new NodeTmpl<T, DefaultStreamBuffer>;
+	CLAM_ASSERT(false, "todo #include NodeTmpl causes problems to VC6");
+	//return new NodeTmpl<T, DefaultStreamBuffer>;
 }
 
 
