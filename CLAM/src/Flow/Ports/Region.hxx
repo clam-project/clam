@@ -18,13 +18,12 @@ public:
 	const long& Pos() const;
 	const int& Size() const;
 	const int& Hop() const;
-	
-	int& BeginDistance();
-	void BeginDistance(int &dist);
+	const int& BeginDistance();
 
 	void Pos( const long & pos );
 	void Size( const int & size );
 	void Hop( const int & hop );
+	void BeginDistance( const int & dist );
 	
 	virtual void RemoveProducer(){}
 	virtual Region* ProducerRegion() = 0;

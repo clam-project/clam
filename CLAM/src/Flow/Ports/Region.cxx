@@ -29,12 +29,12 @@ const int & Region::Hop() const
 	return mHop;
 }
 
-int & Region::BeginDistance()
+const int & Region::BeginDistance()
 {
 	return mBeginDistance;
 }
 
-void Region::BeginDistance(int &dist)
+void Region::BeginDistance( const int &dist )
 {
 	mBeginDistance = dist;		
 }

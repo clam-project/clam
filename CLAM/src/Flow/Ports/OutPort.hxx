@@ -50,8 +50,6 @@ class OutPort : public OutPortBase
 	typedef OutPort<Token> ProperOutPort;
 	typedef InPort<Token> ProperInPort;
 	typedef WritingRegion<Token> ProperWritingRegion;
-
-
 public:
 	OutPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
 	virtual ~OutPort();
@@ -72,13 +70,16 @@ public:
 	void Produce();
 	bool CanProduce();
 	void CenterEvenRegions();
+	
+	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
 
 protected:	
 	// XR TODO: TryDisconnect
 	bool TryConnectToPublisher( InPortBase & in );
 	bool TryConnectToConcreteIn( InPortBase & in );
-
+	Token & GetLastWrittenData( int offset = 0 );
 	ProperWritingRegion mRegion;
+
 };
 
 template<class Token>
@@ -247,6 +248,29 @@ template<class Token>
 void OutPort<Token>::CenterEvenRegions()
 {
 	mRegion.CenterEvenRegions();
+}
+
+template<class Token>
+Token & OutPort<Token>::GetLastWrittenData( int offset )
+{
+	CLAM_DEBUG_ASSERT( 0 <= offset <= GetSize(), "OutPort<Token>::GetLastWrittenData - Index out of bounds" );
+	return mRegion.GetLastWrittenData( offset );
+}
+
+template<class Token>
+Token & OutPort<Token>::GetLastWrittenData( OutPortBase & out, int offset )
+{
+	try
+	{
+		OutPort<Token>& concreteOut = dynamic_cast< OutPort<Token>& >(out);
+		return concreteOut.GetLastWrittenData( offset );
+	}
+	catch(...)
+	{
+		CLAM_ASSERT( false, "OutPort<Token>::DumpDataWithLastToken - Passed an outport of wrong type" );
+	}
+	return *(Token *)NULL;
+		
 }
 
 } // namespace CLAM

@@ -109,10 +109,33 @@ public:
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		mPublishedOutPort->CenterEvenRegions();
 	}
+	Token & GetLastWrittenData( int offset = 0 )
+	{
+		return OutPort<Token>::GetLastWrittenData( *mPublishedOutPort, offset );
+	}
+
+	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
 
 protected:
 	ProperOutPort * mPublishedOutPort;
 };
+
+template<class Token>
+Token & OutPortPublisher<Token>::GetLastWrittenData( OutPortBase & out, int offset )
+{
+	try
+	{
+		OutPortPublisher<Token>& concreteOut = dynamic_cast< OutPortPublisher<Token>& >(out);
+		return concreteOut.GetLastWrittenData( offset );
+	}
+	catch(...)
+	{
+		CLAM_ASSERT( false, "OutPortPublisher<Token>::DumpDataWithLastToken - Passed an outport of wrong type" );
+	}
+	return *(Token *)NULL;
+		
+}
+
 
 
 

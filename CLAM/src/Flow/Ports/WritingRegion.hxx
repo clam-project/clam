@@ -4,6 +4,8 @@
 #include "ReadingRegion.hxx"
 #include "StreamImpl.hxx"
 
+#include <iostream> // TODO: remove
+
 namespace CLAM
 {
 
@@ -54,6 +56,12 @@ public:
 	 * Initializes all the data contained inside the region ( to the Token's default constructor)
 	 */
 	void ClearData();
+
+
+	/*
+	 * Synchronizes Follower Region and returns last written Tokens
+	 */
+	Token & GetLastWrittenData( int offset = 0);
 private:
 	/** Don't allow copies. Thus copy contructor made private */
 	WritingRegion(const WritingRegion<Token>& original){}
@@ -67,8 +75,14 @@ private:
 	void PositionWritingRegion( int centralIndex );
 	void CenterReadingRegions( int centralIndex );
 
+	/*
+	 *  Synchronizes the follower region with the last zone written, with the same size and hop than the writer.
+	 */	
+	void SyncFollowerRegion();
+
 	ReadingRegionsList mReadingRegions;
 	ProperStream  mStream;
+	ProperReadingRegion mFollowerRegion;
 };
 
 /////// Implementation ////////
@@ -266,6 +280,29 @@ template< typename Token, template <class> class DataStructure>
 void WritingRegion< Token, DataStructure >::SizeChanged(const int & newSize)
 {
 	mStream.NewWritingRegionSize( *this );
+}
+
+template< typename Token, template <class> class DataStructure>
+void WritingRegion< Token, DataStructure >::SyncFollowerRegion()
+{
+	mFollowerRegion.LinkProducerRegion(*this);
+	mFollowerRegion.Size( Size() );
+	mFollowerRegion.Hop( Hop() );	
+	mFollowerRegion.LinkAndNotifySizeToStream( Stream() );
+
+	mFollowerRegion.Pos( Pos() - Hop() );
+	mFollowerRegion.BeginDistance( BeginDistance() - Hop() );
+	if(mFollowerRegion.BeginDistance() < 0 )
+		mFollowerRegion.BeginDistance( mFollowerRegion.BeginDistance() + mStream.LogicalSize() );
+}
+
+template< typename Token, template <class> class DataStructure>
+Token & WritingRegion< Token, DataStructure >::GetLastWrittenData( int offset)
+{
+	SyncFollowerRegion();
+	int physicalIndex = mFollowerRegion.BeginDistance() + offset;
+//	CLAM_ASSERT( physicalIndex < mStream.LogicalSize(), "WritingRegion GetLastWrittenData - Out of bounds access"  );
+	return mStream.operator[]( physicalIndex );
 }
 
 } // namespace CLAM

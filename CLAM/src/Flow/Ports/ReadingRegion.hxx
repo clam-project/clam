@@ -109,8 +109,6 @@ typename ReadingRegion<WritingRegion>::ProperToken & ReadingRegion<WritingRegion
 
 	int physicalIndex = BeginDistance() + offset;
 
-	CLAM_ASSERT( physicalIndex < mAttachedStream->LogicalSize(), "ReadingRegion operator[] - Out of bounds access" );
-
 	return mAttachedStream->operator[](physicalIndex);
 }
 

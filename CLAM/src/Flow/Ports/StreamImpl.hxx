@@ -58,10 +58,10 @@ void StreamImpl<Token,DataStructure>::NewWritingRegionSize( Region& writer  )
 template< typename Token, template <class> class DataStructure >
 void StreamImpl<Token,DataStructure>::RegionHasAdvanced( Region& region ) 
 {
-	region.BeginDistance() += region.Hop();
+	region.BeginDistance( region.BeginDistance() +  region.Hop() );
 
 	if (region.BeginDistance() >= LogicalSize() ) // circular movement
-		region.BeginDistance() -= LogicalSize();
+		region.BeginDistance( region.BeginDistance() - LogicalSize() );
 }
 
 template< typename Token, template <class> class DataStructure >
@@ -213,15 +213,15 @@ void StreamImpl<Token, PhantomBuffer>::UpdateBeginDistanceOfReadingRegions( Regi
 
 	for ( actualReader=writer.BeginReaders(); actualReader!=writer.EndReaders(); actualReader++)
 		if( ReaderAffectedByInsertion(**actualReader, writer) )
-			(*actualReader)->BeginDistance() += tokensInserted;
+			(*actualReader)->BeginDistance( (*actualReader)->BeginDistance() + tokensInserted );
 }
 
 template< typename Token >
 void StreamImpl<Token, PhantomBuffer>::RegionHasAdvanced( Region& region ) 
 {
-	region.BeginDistance() += region.Hop();
+	region.BeginDistance( region.BeginDistance() + region.Hop());
 	if (region.BeginDistance() >= LogicalSize() ) // circular movement
-		region.BeginDistance() -= LogicalSize();
+		region.BeginDistance( region.BeginDistance() -  LogicalSize());
 }
 
 template< typename Token >
