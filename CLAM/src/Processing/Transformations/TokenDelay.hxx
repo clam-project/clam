@@ -32,6 +32,8 @@
 #include "Enum.hxx"
 #include <vector>
 #include <string>
+// @todo : debug header
+#include <iostream>
 
 using std::string;
 
@@ -329,7 +331,7 @@ unsigned TokenDelay<T>::RealDelay() const
 {
 	// mLast points to the next place to write. and mFirst is the next element to be poped.
 	// Keep the order to avoid integer over/underflows
-	return (mFirst<mLast) ? mLast - mFirst : (mCapacity - mFirst + mLast);
+	return (mFirst<=mLast) ? mLast - mFirst : (mCapacity - mFirst + mLast);
 }
 
 
