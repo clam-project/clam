@@ -308,9 +308,9 @@ void SMSAnalysis::ConfigureData()
 	mResCircularBuffer.IncreaseReadIndex(((bufferSize-mConfig.GetResSpectralAnalysis().GetHopSize()+1)-(mConfig.GetResSpectralAnalysis().GetWindowSize()))/2);
 
 	//configure internal audio members used for convinience
-	mSinAudioFrame.SetSize(mConfig.GetSinSpectralAnalysis().GetWindowSize()-1);
+	//mSinAudioFrame.SetSize(mConfig.GetSinSpectralAnalysis().GetWindowSize()-1);
 	mSinAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
-	mResAudioFrame.SetSize(mConfig.GetResSpectralAnalysis().GetWindowSize()-1);
+	//mResAudioFrame.SetSize(mConfig.GetResSpectralAnalysis().GetWindowSize()-1);
 	mResAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
 
 	//now we will Attach input and output ports of Spectral Analysis
