@@ -45,7 +45,7 @@ typedef Search < List < Frame >, Frame> FrameSearch;
 
 /**	Processing Data class to encapsulate a CLAM segment. A Segment is basically an ordered
  *	list of Frames (@see Frame). It also has a BeginTime and EndTime time tags, an associated
- *	Audio (usually a large audio chunk from which smaller Audio Frames are obtained9 and
+ *	Audio (usually a large audio chunk from which smaller Audio Frames are obtained) and
  *	a global SamplingRate.
  *	Appart from these internal Processing Data, a Segment also holds a list of child segments
  *	named Children. These are usually smaller segments that result from applying some sort of
