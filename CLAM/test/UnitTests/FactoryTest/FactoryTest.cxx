@@ -139,7 +139,7 @@ private:
 		MyFactoryType &ref2 = MyFactoryType::GetInstance();
 
 		CPPUNIT_ASSERT_MESSAGE(
-			"the thow Factory refs should point the same object ",
+			"Both Factory refs should point the same object ",
 			&ref1 == &ref2);
 
 	}
