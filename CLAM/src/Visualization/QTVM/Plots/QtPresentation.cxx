@@ -162,6 +162,7 @@ namespace CLAM
 		void QtPresentation::setMaxHScroll(int value)
 		{
 			int max = value-_surf->width();
+			if(max < 0) max=0;;
 			if(max >= 0 && _hs->GetMaxScrollValue() != max)
 			{
 				_hs->setMaxScrollValue(max);
@@ -200,6 +201,7 @@ namespace CLAM
 		void QtPresentation::setMaxVScroll(int value)
 		{
 			int max = value-_surf->height();
+			if(max < 0) max=0;
 			if(max >= 0 && _vs->GetMaxScrollValue() != max)
 			{
 				_vs->setMaxScrollValue(max);
