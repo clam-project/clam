@@ -25,6 +25,8 @@
 #include <sndfile.h>
 #include "Enum.hxx"
 #include <string>
+#include <list>
+#include <utility>
 
 namespace CLAM
 {
@@ -81,6 +83,17 @@ namespace CLAM
 		};
 
 		virtual Component* Species() const;
+
+	public:
+
+		static  EAudioFileFormat FormatFromFilename( std::string filename );
+		
+		typedef std::pair< std::string, std::string >              FormatFilter;
+		typedef std::list< FormatFilter >                          FormatFilterList;
+
+		static  const FormatFilterList& ReadableFormats( );
+		static  const FormatFilterList& WritableFormats( );
+
 
 	};
 

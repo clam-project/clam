@@ -20,6 +20,7 @@
  */
 
 #include "AudioFileFormats.hxx"
+#include <algorithm>
 
 namespace CLAM
 {
@@ -95,6 +96,106 @@ namespace CLAM
 	{
 		return new EAudioFileFormat( "WAV" );
 	}
+
+	EAudioFileFormat EAudioFileFormat::FormatFromFilename( std::string filename )
+	{
+		std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
+
+		if ( dotPos == filename.end() )
+			return EAudioFileFormat( eWAV );
+
+		std::string specifiedFmt;
+		specifiedFmt.assign( dotPos+1, filename.end() );
+
+		if ( specifiedFmt == "wav" || specifiedFmt == "WAV" )
+			return EAudioFileFormat( eWAV );
+		else if ( specifiedFmt == "ogg" || specifiedFmt == "OGG" )
+			return EAudioFileFormat( eVorbisMk1 );
+		else if ( specifiedFmt == "aif" || specifiedFmt =="AIF" 
+			  || specifiedFmt == "aiff" || specifiedFmt == "AIFF" )
+			return EAudioFileFormat( eAIFF );
+		else if ( specifiedFmt == "au" || specifiedFmt == "AU" 
+			  || specifiedFmt == "snd" || specifiedFmt == "SND" )
+			return EAudioFileFormat( eAU );
+		else if ( specifiedFmt == "raw" || specifiedFmt == "RAW" )
+			return EAudioFileFormat( eRAW );
+		else if ( specifiedFmt == "paf" || specifiedFmt == "PAF" )
+			return EAudioFileFormat( ePAF );
+		else if ( specifiedFmt == "svx" || specifiedFmt == "SVX" )
+			return EAudioFileFormat( eSVX );
+		else if ( specifiedFmt == "nist" || specifiedFmt == "NIST" )
+			return EAudioFileFormat( eNIST );
+		else if ( specifiedFmt == "voc" || specifiedFmt == "VOC" )
+			return EAudioFileFormat( eVOC );
+		else if ( specifiedFmt == "ircam" || specifiedFmt == "IRCAM" )
+			return EAudioFileFormat( eIRCAM );
+		else if ( specifiedFmt == "w64" || specifiedFmt == "W64" )
+			return EAudioFileFormat( eW64 );
+		else if ( specifiedFmt == "mat4" || specifiedFmt == "MAT4" )
+			return EAudioFileFormat( eMAT4 );
+		else if ( specifiedFmt == "mat5" || specifiedFmt == "MAT5"
+			  || specifiedFmt == "mat" || specifiedFmt == "MAT" )
+			return EAudioFileFormat( eMAT5 );
+		else if ( specifiedFmt == "mp1" || specifiedFmt == "MP1" )
+			return EAudioFileFormat( eMpegLayer1 );
+		else if ( specifiedFmt == "mp2" || specifiedFmt == "MP2" )
+			return EAudioFileFormat( eMpegLayer2 );
+		else if ( specifiedFmt == "mp3" || specifiedFmt == "MP3" )
+			return EAudioFileFormat( eMpegLayer3 );
+		else
+			return EAudioFileFormat( eWAV );
+
+	}
+	
+	const EAudioFileFormat::FormatFilterList& EAudioFileFormat::ReadableFormats( )
+	{
+		static FormatFilterList mReadableFormatsList;
+		
+		if ( mReadableFormatsList.empty() )
+		{
+			mReadableFormatsList.push_back( FormatFilter( "Microsoft RIFF/WAVE files", "*.wav" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Apple/SGI AIFF files", "*.aiff,*.aif") );
+			mReadableFormatsList.push_back( FormatFilter( "Sun/Next AU files", "*.snd,*.au" ) );
+			mReadableFormatsList.push_back( FormatFilter( "RAW PCM files","*.raw" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Ensoniq's PARIS Files","*.paf" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Amiga IFF files","*.svx") );
+			mReadableFormatsList.push_back( FormatFilter( "Sphere NIST files","*.nist" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Creative's VOC files","*.voc" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Berkeley/IRCAM/CARL files","*.ircam" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Sonic Foundry's 64 RIFF/WAV files","*.w64" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Matlab/GNU Octave files", "*.mat4,*.mat5,*.mat" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Vorbis I files (Ogg/Vorbis)","*.ogg" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Mpeg Audio Layer 1","*.mp1,*.mpg") );
+			mReadableFormatsList.push_back( FormatFilter( "Mpeg Audio Layer 2", "*.mp2,*.mpg" ) );
+			mReadableFormatsList.push_back( FormatFilter( "Mpeg Audio Layer 3", "*.mp3,*.mpg" ) );
+		}
+
+		return mReadableFormatsList;
+	}
+
+	const EAudioFileFormat::FormatFilterList& EAudioFileFormat::WritableFormats( )
+	{
+		static FormatFilterList mWritableFormatsList;
+		
+		if ( mWritableFormatsList.empty() )
+		{
+			mWritableFormatsList.push_back( FormatFilter( "Microsoft RIFF/WAVE files", "*.wav" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Apple/SGI AIFF files", "*.aiff,*.aif") );
+			mWritableFormatsList.push_back( FormatFilter( "Sun/Next AU files", "*.snd,*.au" ) );
+			mWritableFormatsList.push_back( FormatFilter( "RAW PCM files","*.raw" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Ensoniq's PARIS Files","*.paf" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Amiga IFF files","*.svx") );
+			mWritableFormatsList.push_back( FormatFilter( "Sphere NIST files","*.nist" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Creative's VOC files","*.voc" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Berkeley/IRCAM/CARL files","*.ircam" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Sonic Foundry's 64 RIFF/WAV files","*.w64" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Matlab/GNU Octave files", "*.mat4,*.mat5,*.mat" ) );
+			mWritableFormatsList.push_back( FormatFilter( "Vorbis I files (Ogg/Vorbis)","*.ogg" ) );
+		}
+		
+		return mWritableFormatsList;
+	}
+
 
 	EAudioFileEncoding::EAudioFileEncoding()
 		: Enum( sEnumValues, sDefault )
