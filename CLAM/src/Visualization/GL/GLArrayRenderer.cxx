@@ -159,7 +159,7 @@ void GLArrayRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, 
 void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_width )
 {
 	mCullingData.left = left*GetXConversionFactor();
-	mCullingData.right = right*GetXConversionFactor();
+	mCullingData.right = (right*GetXConversionFactor())-1;
 	mCullingData.pixel_width = pixel_width;
 	mCullingRequested = true;
 	mMustGenerateIndexes = true;	
