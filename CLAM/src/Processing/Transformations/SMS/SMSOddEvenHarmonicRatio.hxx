@@ -54,10 +54,8 @@ namespace CLAM{
  		~SMSOddEvenHarmonicRatio()
 		{}
 
-//		bool Do(const Segment& in, Segment& out);
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
-//		bool Do(const Frame& in, Frame& out);
-	
+
 	};		
 };//namespace CLAM
 
