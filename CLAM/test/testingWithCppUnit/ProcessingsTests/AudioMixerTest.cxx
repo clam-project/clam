@@ -96,7 +96,7 @@ private:
 		_mixer.Do();
 
 		CPPUNIT_ASSERT_EQUAL( CLAM::TControlData(0.3), _mixer.mGain[0].GetLastValue());
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.45) , _outAudio.GetBuffer()[0],0.000001);
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(0.45) , _outAudio.GetBuffer()[0] );
 	}
 
 	void testDo_WhenControlsGivesDifferentValue()
@@ -112,7 +112,7 @@ private:
 		_mixer.Do();
 		_mixer.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.35) , _outAudio.GetBuffer()[0],0.000001);
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(1.35) , _outAudio.GetBuffer()[0] );
 	}
 };
 	
