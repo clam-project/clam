@@ -22,10 +22,9 @@
  *
  */
 
-//////////////////////////////////////////////////////////////////////
-
 #ifndef _DynamicType_
 #define _DynamicType_
+
 #ifdef CLAM_USE_XML
 	#include "XMLAdapter.hxx"
 	#include "XMLIterableAdapter.hxx"
@@ -36,7 +35,6 @@
 
 #include "Component.hxx"
 #include "DataTypes.hxx"
-#include "ErrDynamicType.hxx"
 
 #include <new>
 
