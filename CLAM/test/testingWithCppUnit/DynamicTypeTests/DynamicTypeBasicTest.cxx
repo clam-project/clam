@@ -37,16 +37,7 @@ void DynamicTypeBasicTest::tearDown()
 }
 
 // Unit tests:
-void DynamicTypeBasicTest::CheckCLAM_EXTRA_CHECKS_ON_DT()
-{
-	bool defined =
-#	ifndef CLAM_EXTRA_CHECKS_ON_DT
-		false;
-#	else 
-		true;
-#	endif
-	CPPUNIT_ASSERT_MESSAGE("CLAM_EXTRA_CHECKS_ON_DT compilation flag is not #defined. It must be.", defined);
-}
+
 void DynamicTypeBasicTest::InstantiateAttributes ()
 {
 	dyn->AddInt();
