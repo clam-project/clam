@@ -15,11 +15,13 @@ PushFlowControl::PushFlowControl( int frameSize )
 {
 }
 
-void PushFlowControl::ProcessingAddedToNetwork( Processing * proc )
+void PushFlowControl::ProcessingAddedToNetwork( Processing & added )
 {
-	_unconfiguredProcessings.push_back(proc);
-	if (proc->GetInPorts().Size() == 0) // if it's a generator
-		_generators.push_back(proc);
+	NetworkTopologyChanged();
+
+	ConfigurePorts( added );
+	if (added.GetInPorts().Size() == 0) // if it's a generator
+		_generators.push_back( &added );
 }
 
 void PushFlowControl::DoProcessings()

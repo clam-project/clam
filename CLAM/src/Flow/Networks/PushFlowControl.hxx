@@ -16,7 +16,7 @@ public:
 	PushFlowControl( int frameSize = 0 );
 	virtual ~PushFlowControl(){}
 
-	void ProcessingAddedToNetwork( Processing * );
+	void ProcessingAddedToNetwork( Processing & added );
 	void DoProcessings();
 
 private:

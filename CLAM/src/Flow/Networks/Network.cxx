@@ -14,11 +14,6 @@ namespace CLAM
 	}
 	// constructor / destructor
 
-	Network::Network( const std::string& name ) :
-		_name( name ),
-		_flowControl(0)
-	{}   
-
 	Network::Network() :
 		_name("Unnamed Network"),
 		_flowControl(0)
@@ -56,14 +51,13 @@ namespace CLAM
 
 	void Network::AddProcessing( const std::string & name, Processing* proc)
 	{
-//		AssertFlowControlNotNull();
+		AssertFlowControlNotNull();
 
 		// returns false if the key was repeated.
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 
-		if(_flowControl)
-			_flowControl->ProcessingAddedToNetwork(proc);
+		_flowControl->ProcessingAddedToNetwork(*proc);
 	}
 
 	bool Network::HasProcessing( const std::string & name )
@@ -75,7 +69,8 @@ namespace CLAM
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
-//		AssertFlowControlNotNull();
+		AssertFlowControlNotNull();
+		_flowControl->NetworkTopologyChanged();
 
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
@@ -96,6 +91,9 @@ namespace CLAM
 
 	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
+		AssertFlowControlNotNull();
+		_flowControl->NetworkTopologyChanged();
+
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
 
@@ -104,13 +102,15 @@ namespace CLAM
 
 		inport.Unattach();
 		
-		//todo: send a message to flowcontrol about connections modified
 
 		return true;
 	}
 
 	void Network::DisconnectAllPorts()
 	{
+		AssertFlowControlNotNull();
+		_flowControl->NetworkTopologyChanged();
+
 		ProcessingsMap::iterator it;
 		// pass trough all the processing
 		for( it=_processings.begin(); it!=_processings.end(); it++)
@@ -187,7 +187,7 @@ namespace CLAM
 				NodeBase * node = CreateAudioNodeWithDefaultStreamBuffer();
 				out.Attach(*node);
 				_nodes.push_back(node);
-				_flowControl->NodeAddedToNetwork(node);
+				_flowControl->NetworkTopologyChanged();
 			}
 			return *out.GetNode();
 	}
@@ -199,33 +199,38 @@ namespace CLAM
 		return new NodeTmpl<Audio, DefaultStreamBuffer>;
 		//return new AudioNodeTmpl;
 	}
+	
+	void Network::ConfigureAllNodes()
+	{
+		AssertFlowControlNotNull();
+
+		Nodes::iterator it = _nodes.begin();
+		while ( it!=_nodes.end() )
+			_flowControl->ConfigureNode(**it++);
+		
+		
+	}
 
 	void Network::Start()
 	{
-		AssertFlowControlNotNull();
-		_flowControl->StartNetwork();
+		ProcessingsMap::iterator it;
+		for (it=BeginProcessings(); it!=EndProcessings(); it++)
+			it->second->Start();
+
+		ConfigureAllNodes(); // todo: provisional till refactoring of Nodes configuration finished.
+
 	}
 	void Network::Stop()
 	{
-		AssertFlowControlNotNull();
-		_flowControl->StopNetwork();
+		ProcessingsMap::iterator it;
+		for (it=BeginProcessings(); it!=EndProcessings(); it++)
+			it->second->Stop();
+	
 	}
 	void Network::DoProcessings()
 	{
 		AssertFlowControlNotNull();
 		_flowControl->DoProcessings();
-	}
-
-	void Network::ConfigureNodes()
-	{
-		AssertFlowControlNotNull();
-		_flowControl->ConfigureNodes();
-	}
-
-	void Network::ConfigurePorts()
-	{
-		AssertFlowControlNotNull();
-		_flowControl->ConfigurePorts();	
 	}
 
 	Network::ProcessingsMap::iterator Network::BeginProcessings()

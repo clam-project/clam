@@ -14,36 +14,33 @@ class Processing;
 
 class FlowControl
 {
-protected:
-	typedef enum {
-		NotAttachedToNetwork,
-		Ready,
-		Running		
-	} ExecState;
+	bool _networkChanged;
+
 public:
 	FlowControl( int frameSize = 0 );
 	virtual ~FlowControl(){}
 	virtual void AttachToNetwork( Network* );
-	virtual void ConfigureNodes();
-	virtual void ConfigurePorts();
 	
 	//methods relative to state of FlowControl & Network
-	virtual void ProcessingAddedToNetwork( Processing * );
-	virtual void NodeAddedToNetwork( NodeBase * );
+	virtual void ProcessingAddedToNetwork( Processing& added );
 
-	virtual void StartNetwork();
-	virtual void StopNetwork();
-
+	void ConfigureNode( NodeBase& toConfigure ) const;
+	
 	// to implement in each type of flowcontrol
 	virtual void DoProcessings() = 0;
+
+	void NetworkTopologyChanged() { _networkChanged=true; }
+
 protected:
+	bool HasNetworkTopologyChanged() const { return _networkChanged; }
+	void ConfigurePorts(Processing &toConfigure) const;
 	
 	int _frameSize;
 	Network * _network;
-	ExecState _state;
 	
-	std::list< NodeBase* > _unconfiguredNodes;
-	std::list< Processing* > _unconfiguredProcessings;
+//	std::list< NodeBase* > _unconfiguredNodes;
+
+
 };
 
 }

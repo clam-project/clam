@@ -14,8 +14,6 @@ BasicFlowControl::BasicFlowControl( int frameSize )
 
 void BasicFlowControl::DoProcessings()
 {
-	CLAM_ASSERT(_state == Running , "FlowControl not started");		
-
 	Network::ProcessingsMap::iterator it;
 	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
 	{

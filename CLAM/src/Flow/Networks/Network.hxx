@@ -27,7 +27,6 @@ public:
 	
 	// constructor / destructor
 	Network();
-	Network( const std::string& );
 	virtual ~Network();
 	
 	const std::string& GetName() const { return _name; }
@@ -42,8 +41,8 @@ public:
 	void Start();
 	void Stop();
 	void DoProcessings();
-	void ConfigureNodes();
-	void ConfigurePorts();
+
+	void ConfigureAllNodes();
 
 	void AddFlowControl( FlowControl* );
 
@@ -65,6 +64,7 @@ protected:
 	OutControl & GetOutControlByCompleteName( const std::string& );
 	NodeBase & GetNodeAttachedTo(OutPort & );
 private:
+	
 	// fields
 	std::string _name;
 	ProcessingsMap _processings;
