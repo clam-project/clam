@@ -293,7 +293,7 @@ private:
 	bool bPreAllocateAllAttributes;
 
 public:
-	virtual void StoreOn(CLAM::Storage & s) {
+	virtual void StoreOn(CLAM::Storage & s) const {
 		this->StoreDynAttributes(s);
 	}
 	virtual void LoadFrom(CLAM::Storage & s) {
@@ -306,27 +306,30 @@ public:
 	};
 	
 protected:
-	virtual void StoreDynAttributes(CLAM::Storage & s);
-	virtual void LoadDynAttributes(CLAM::Storage & s);
+	virtual void StoreDynAttributes(CLAM::Storage & s) const=0;
+	virtual void LoadDynAttributes(CLAM::Storage & s)=0;
 	template <typename AttribType>
-	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const 
+	{
 #ifdef CLAM_USE_XML
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
-		s.Store (&adapter);
+		s.Store (adapter);
 #endif//CLAM_USE_XML
 	}
 	template <typename AttribType>
-	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const
+	{
 #ifdef CLAM_USE_XML
 		CLAM::XMLComponentAdapter adapter(object, name, true);
-		s.Store (&adapter);
+		s.Store (adapter);
 #endif//CLAM_USE_XML
 	} 
 	template <typename AttribType>
-	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
+	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) const
+	{
 #ifdef CLAM_USE_XML
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
-		s.Store (&adapter);
+		s.Store (adapter);
 #endif//CLAM_USE_XML
 	} 
 
@@ -334,7 +337,7 @@ protected:
 	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
 #ifdef CLAM_USE_XML
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
-		return s.Load (&adapter);	
+		return s.Load (adapter);	
 #else 
 		return false;
 #endif//CLAM_USE_XML
@@ -343,7 +346,7 @@ protected:
 	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
 #ifdef CLAM_USE_XML
 		CLAM::XMLComponentAdapter adapter(object, name, true);
-		return s.Load (&adapter);	
+		return s.Load (adapter);	
 #else 
 		return false;
 #endif//CLAM_USE_XML
@@ -352,7 +355,7 @@ protected:
 	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
 #ifdef CLAM_USE_XML
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
-		return s.Load (&adapter);
+		return s.Load (adapter);
 #else 
 		return false;
 #endif//CLAM_USE_XML
