@@ -53,6 +53,13 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testFindElement_withStillNonElement_asserts);
 	CPPUNIT_TEST(testFetchElement_withThatElementFirst);
 	CPPUNIT_TEST(testFetchElement_withSecondElementFirst);
+	CPPUNIT_TEST(testFetchElement_withTextFirst);
+	CPPUNIT_TEST(testFetchElement_withNoElement);
+	CPPUNIT_TEST(testFetchElement_withADifferentName);
+	CPPUNIT_TEST(testFetchElement_withANonElementNode);
+	CPPUNIT_TEST(testFetchContent_afterElement);
+	CPPUNIT_TEST(testFetchContent_whenSecondElement);
+	CPPUNIT_TEST(testFetchContent_afterElementWithSpaces);
 
 
 	CPPUNIT_TEST(testLoadingAWordOnBasicAsContent);
@@ -182,7 +189,7 @@ private:
 
 		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
 		XercesDomReadingContext context(contextElement);
-		std::string content="lala";
+		std::string content="rubbish";
 
 		std::istream & stream = context.reachableContent();
 		
@@ -200,7 +207,7 @@ private:
 		contextElement->appendChild(domContent);
 
 		XercesDomReadingContext context(contextElement);
-		std::string content="lala";
+		std::string content="rubbish";
 		std::istream & stream = context.reachableContent();
 		
 		std::getline(stream, content);
@@ -213,7 +220,7 @@ private:
 		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
 
 		XercesDomReadingContext context(contextElement);
-		std::string content="lala";
+		std::string content="rubbish";
 
 		bool charactersLeft = context.contentLeft();
 		CPPUNIT_ASSERT(!charactersLeft);
@@ -228,7 +235,7 @@ private:
 		XercesDomReadingContext context(contextElement);
 		bool charactersLeft = context.contentLeft();
 		CPPUNIT_ASSERT(charactersLeft);
-		std::string content="lala";
+		std::string content="rubbish";
 		std::istream & stream = context.reachableContent();
 		std::getline(stream, content);
 		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content);
@@ -243,7 +250,7 @@ private:
 		XercesDomReadingContext context(contextElement);
 		bool charactersLeft = context.contentLeft();
 		CPPUNIT_ASSERT(charactersLeft);
-		std::string content="lala";
+		std::string content="rubbish";
 		std::istream & stream = context.reachableContent();
 		std::getline(stream, content);
 		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content);
@@ -258,7 +265,7 @@ private:
 		XercesDomReadingContext context(contextElement);
 		bool charactersLeft = context.contentLeft();
 		CPPUNIT_ASSERT(!charactersLeft);
-		std::string content="lala";
+		std::string content="rubbish";
 		std::istream & stream = context.reachableContent();
 		std::getline(stream, content);
 		CPPUNIT_ASSERT_EQUAL(std::string(""),content);
@@ -369,12 +376,8 @@ private:
 
 		XercesDomReadingContext context(contextElement);
 
-		char c;
-		context.reachableContent().get(c);;
-
 		bool foundElement = context.findElement("Element");
 		CPPUNIT_ASSERT(foundElement);
-		CPPUNIT_ASSERT_EQUAL(' ', c);
 	}
 
 	void testFindElement_withStillNonElement_asserts()
@@ -442,24 +445,129 @@ private:
 		catch (ErrAssertionFailed & e)
 		{
 			CPPUNIT_ASSERT_EQUAL(
+				std::string("Fetching element with content left"),
+				std::string(e.what()));
+		}
+	}
+
+	void testFetchElement_withNoElement()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+
+		xercesc::DOMElement * foundElement1 = context.fetchElement("Element");
+		try 
+		{
+			xercesc::DOMElement * foundElement2 = context.fetchElement("Element");
+			CPPUNIT_FAIL("Should have failed an assertion");
+		} 
+		catch (ErrAssertionFailed & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("Accessing beyond DOM nodes"),
+				std::string(e.what()));
+		}
+	}
+
+	void testFetchElement_withADifferentName()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+
+		try 
+		{
+			xercesc::DOMElement * foundElement = context.fetchElement("WrongElement");
+			CPPUNIT_FAIL("Should have failed an assertion");
+		} 
+		catch (ErrAssertionFailed & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("XML element name should be the one expected"),
+				std::string(e.what()));
+		}
+	}
+	
+	void testFetchElement_withANonElementNode()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMProcessingInstruction * domProcessingInstruction = 
+			mDocument->createProcessingInstruction(X("ProcessingInstruction"),X("Content"));
+		contextElement->appendChild(domProcessingInstruction);
+
+		XercesDomReadingContext context(contextElement);
+
+		try 
+		{
+			xercesc::DOMElement * foundElement = context.fetchElement("Element");
+			CPPUNIT_FAIL("Should have failed an assertion");
+		} 
+		catch (ErrAssertionFailed & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
 				std::string("Can't change the context to a non element node"),
 				std::string(e.what()));
 		}
 	}
 
+
 	void testFetchContent_afterElement()
 	{
 		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
 		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("ContentLeft"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		contextElement->appendChild(domContent1);
+		contextElement->appendChild(domElement);
+		contextElement->appendChild(domContent2);
+
+		XercesDomReadingContext context(contextElement);
+		std::string content1="rubbish";
+		std::getline(context.reachableContent(), content1);
+		xercesc::DOMElement * foundElement = context.fetchElement("Element");
+		std::string content2="rubbish";
+		std::getline(context.reachableContent(), content2);
+
+		CPPUNIT_ASSERT_EQUAL(std::string("Content2"),content2);
+	}
+
+	void testFetchContent_whenSecondElement()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement1 = mDocument->createElement(X("Element1"));
+		xercesc::DOMElement * domElement2 = mDocument->createElement(X("Element2"));
+		contextElement->appendChild(domElement1);
+		contextElement->appendChild(domElement2);
+
+		XercesDomReadingContext context(contextElement);
+		xercesc::DOMElement * foundElement = context.fetchElement("Element1");
+		std::istream & stream = context.reachableContent();
+		std::string content="rubbish";
+		std::getline(stream, content);
+
+		CPPUNIT_ASSERT_EQUAL(true,stream.fail());
+		CPPUNIT_ASSERT_EQUAL(std::string(""),content);
+	}
+
+	void testFetchContent_afterElementWithSpaces()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("  Content"));
 		contextElement->appendChild(domElement);
 		contextElement->appendChild(domContent);
 
 		XercesDomReadingContext context(contextElement);
 		xercesc::DOMElement * foundElement = context.fetchElement("Element");
-	}
-	void testFetchElement_whenSecondElement()
-	{
+		std::string content2="rubbish";
+		std::getline(context.reachableContent(), content2);
+
+		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content2);
 	}
 
 
