@@ -62,7 +62,6 @@ public:
 	 */
 	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
 	virtual ~InControl();
-	
 };
 
 /**
@@ -148,94 +147,6 @@ int InControlTmpl<ProcObj>::DoControl(TControlData val)
 		return (mProcObj->*mFuncId)(mId,val);
 	else
 		return 0;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//  Control Arrays
-//
-
-
-class InControlArray
-{
-	Array<InControl*> mArray;
-public:
-
-	inline InControlArray(int size, const std::string &name, Processing* whereToPublish=0);
-	inline ~InControlArray();
-
-	inline InControl       &operator[](int i)        { return *mArray[i]; }
-	inline const InControl &operator[](int i) const  { return *mArray[i]; }
-};
-
-
-InControlArray::InControlArray(int size,
-                               const std::string &name,
-                               Processing *wtp)
-{
-	mArray.Resize(size);
-	mArray.SetSize(size);
-	for (int i=0; i<size; i++) {
-		std::stringstream str(name);
-		str << "_" << i;
-		if (wtp)
-			mArray[i] = new InControl(str.str(),wtp);
-		else
-			mArray[i] = new InControl(str.str());
-	}
-}
-
-InControlArray::~InControlArray()
-{
-	int size = mArray.Size();
-	for (int i=0; i<size; i++)
-		delete mArray[i];
-}
-
-//////////////////////////////////////////////////
-// 
-template <class Processing>
-class InControlTmplArray
-{
-	typedef InControlTmpl<Processing> TInControl;
-	typedef typename TInControl::TPtrMemberFuncId TPtrMemberFuncId;
-
-	Array<TInControl*> mArray;
-
-public:
-	InControlTmplArray(int size, const std::string &name, Processing* parent,
-		TPtrMemberFuncId f, const bool publish=true);
-	~InControlTmplArray();
-
-	inline TInControl& operator[](int i) { return *mArray[i]; }
-	inline const TInControl& operator[](int i) const { return *mArray[i]; }
-
-};
-/////////////////////////////////////////////
-// Implementation
-template <class Processing>
-InControlTmplArray<Processing>::InControlTmplArray(
-		int size, 
-		const std::string &name,
-		Processing *parent, 
-		TPtrMemberFuncId f,
-		const bool publish)
-{
-	mArray.Resize(size);
-	mArray.SetSize(size);
-	for (int i=0; i<size; i++) {
-		std::stringstream str;
-		str << name << "_" << i;
-		CLAM_ASSERT(parent, "ArrayControls not being published. TODO: check ctr parameters");
-		mArray[i] = new TInControl(i, str.str(), parent, f);
-		
-	}
-}
-template <class Processing>
-InControlTmplArray<Processing>::~InControlTmplArray()
-{
-	int size = mArray.Size();
-	for (int i=0; i<size; i++)
-		delete mArray[i];
 }
 
 
