@@ -14,7 +14,7 @@ namespace CLAMVM
 	 */
 	void plot(const CLAM::Spectrum &model, const char *label = "");
 	
-	void deferredPlot( const CLAM::Spectrum& model, const char* label = NULL );
+	void deferredPlot( const CLAM::Spectrum& model, const char* label = 0 );
 
 
 } // namespace CLAMVM
