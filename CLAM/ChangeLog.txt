@@ -15,6 +15,10 @@
      ** Scoped XML: [Experimental] allows (write only) fast XML generation without having
         to define CLAM data.
      ** Cppunit Tested and general code clean up
+  * Network Editor:
+     ** Smarter conections display (control conection with vertical tangent and that wires
+        always goes outward the processing)
+
 
 2003-11-26 CLAM_0_5_5
 
