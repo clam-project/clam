@@ -41,10 +41,10 @@ namespace RhythmIR
 
 		pool.SetNumberOfContexts( "Sample",  fileSize );	
 
-		*pool.GetAttributePool<CLAM::TData>("Global", "SampleRate" ) = file.GetHeader().GetSampleRate();
+		*pool.GetWritePool<CLAM::TData>("Global", "SampleRate" ) = file.GetHeader().GetSampleRate();
 
 		CLAM::Audio     tempAudio;
-		tempAudio.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"), fileSize  );
+		tempAudio.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"), fileSize  );
 		tempAudio.SetSampleRate( file.GetHeader().GetSampleRate() );
 
 		CLAM::MonoAudioFileReaderConfig cfg;
@@ -74,14 +74,14 @@ namespace RhythmIR
 			CLAM::Audio dummyAudioOrig;
 			CLAM::Audio dummyAudioNorm;
 
-			dummyAudioOrig.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
+			dummyAudioOrig.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"),
 							   pool.GetNumberOfContexts( "Sample") );
 
-			dummyAudioNorm.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","NormalizedValue"),
+			dummyAudioNorm.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","NormalizedValue"),
 							   pool.GetNumberOfContexts( "Sample") );
 
-			dummyAudioOrig.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
-			dummyAudioNorm.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+			dummyAudioOrig.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
+			dummyAudioNorm.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
 
 			// Configuration and execution
 			audioNormalizer.Configure( audioNormalizerConfig );
@@ -109,10 +109,10 @@ namespace RhythmIR
 
 		// Building dummy objects from pool
 		CLAM::Audio dummyAudio;
-		dummyAudio.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","NormalizedValue"),
+		dummyAudio.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","NormalizedValue"),
 					       pool.GetNumberOfContexts( "Sample") );
 
-		dummyAudio.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+		dummyAudio.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
 
 		// The array to leave the transients detected
 		CLAM::Array<CLAM::TimeIndex> transients;
@@ -140,8 +140,8 @@ namespace RhythmIR
 		{
 			pool.SetNumberOfContexts( "Onset", transients.Size()+1 );
 
-			CLAM::TTime* onsetPositions = pool.GetAttributePool<CLAM::TTime>("Onset","Position");
-			CLAM::TData* onsetWeights = pool.GetAttributePool<CLAM::TData>("Onset","Weight");
+			CLAM::TTime* onsetPositions = pool.GetWritePool<CLAM::TTime>("Onset","Position");
+			CLAM::TData* onsetWeights = pool.GetWritePool<CLAM::TData>("Onset","Weight");
 
 			onsetPositions[0] = 0.0;
 			onsetWeights[0] = 0.0;
@@ -156,12 +156,12 @@ namespace RhythmIR
 	
 	void ExtractOnsetsWithAubioAlgorithms( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
 	{
-		CLAM::TData sampleRate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+		CLAM::TData sampleRate = *pool.GetWritePool<CLAM::TData>("Global","SampleRate");
 		
 		CLAM::Audio dummyAudio;
-		dummyAudio.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
+		dummyAudio.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"),
 					       pool.GetNumberOfContexts( "Sample") );
-		dummyAudio.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+		dummyAudio.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
 
 		// The array to leave the transients detected
 		CLAM::Array<CLAM::TimeIndex> transients;
@@ -190,8 +190,8 @@ namespace RhythmIR
 		{
 			pool.SetNumberOfContexts( "Onset", transients.Size()+1 );
 
-			CLAM::TTime* onsetPositions = pool.GetAttributePool<CLAM::TTime>("Onset","Position");
-			CLAM::TData* onsetWeights = pool.GetAttributePool<CLAM::TData>("Onset","Weight");
+			CLAM::TTime* onsetPositions = pool.GetWritePool<CLAM::TTime>("Onset","Position");
+			CLAM::TData* onsetWeights = pool.GetWritePool<CLAM::TData>("Onset","Weight");
 
 			onsetPositions[0] = 0.0;
 			onsetWeights[0] = 0.0;
@@ -209,7 +209,7 @@ namespace RhythmIR
 	void ExtractTicksAndBeats( CLAM::DescriptionDataPool& pool,
 				   const CLAM::TickExtractorConfig& config )
 	{
-		CLAM::TData sampleRate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+		CLAM::TData sampleRate = *pool.GetWritePool<CLAM::TData>("Global","SampleRate");
 		
 		// building the transients from the pool
 
@@ -218,8 +218,8 @@ namespace RhythmIR
 		transients.Resize( pool.GetNumberOfContexts( "Onset" ) );
 		transients.SetSize( pool.GetNumberOfContexts( "Onset" ) );
 
-		CLAM::TTime* transientPosVec = pool.GetAttributePool<CLAM::TTime>( "Onset", "Position");
-		CLAM::TData* transientWeiVec = pool.GetAttributePool<CLAM::TData>( "Onset", "Weight");
+		CLAM::TTime* transientPosVec = pool.GetWritePool<CLAM::TTime>( "Onset", "Position");
+		CLAM::TData* transientWeiVec = pool.GetWritePool<CLAM::TData>( "Onset", "Weight");
 
 		for ( int k = 0; k < transients.Size(); k++ )
 		{
@@ -267,12 +267,12 @@ namespace RhythmIR
 		// Storing the obtained beat and tick sequences into the pool
 		
 		{
-			*pool.GetAttributePool<unsigned>( "Global","BeatsPerMinute" ) = unsigned( beatSequence.GetRate() );
-			*pool.GetAttributePool<unsigned>( "Global","TicksPerMinute" ) = unsigned( tickSequence.GetRate() );
+			*pool.GetWritePool<unsigned>( "Global","BeatsPerMinute" ) = unsigned( beatSequence.GetRate() );
+			*pool.GetWritePool<unsigned>( "Global","TicksPerMinute" ) = unsigned( tickSequence.GetRate() );
 
 			pool.SetNumberOfContexts( "Tick", tickSequence.GetIndexes().Size() );
 
-			CLAM::TTime* tickPositions = pool.GetAttributePool<CLAM::TTime>("Tick","Position");
+			CLAM::TTime* tickPositions = pool.GetWritePool<CLAM::TTime>("Tick","Position");
 
 			for ( int k = 0; k < tickSequence.GetIndexes().Size(); k++ )
 			{
@@ -281,7 +281,7 @@ namespace RhythmIR
 
 			pool.SetNumberOfContexts( "Beat", beatSequence.GetIndexes().Size() );
 
-			CLAM::TTime* beatPositions = pool.GetAttributePool<CLAM::TTime>("Beat","Position");
+			CLAM::TTime* beatPositions = pool.GetWritePool<CLAM::TTime>("Beat","Position");
 
 			for ( int k = 0; k < beatSequence.GetIndexes().Size(); k++ )
 			{
@@ -297,19 +297,19 @@ namespace RhythmIR
 		// Building the dummy audio
 
 		CLAM::Audio signal;
-		signal.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
+		signal.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"),
 					   pool.GetNumberOfContexts( "Sample") );
 
-		signal.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+		signal.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
 
 		// Building the beat sequence for the Meter estimation processing
 		
 		CLAM::Pulse extractedBeats;
-		extractedBeats.SetRate( *pool.GetAttributePool<unsigned>( "Global","BeatsPerMinute" ) );
+		extractedBeats.SetRate( *pool.GetWritePool<unsigned>( "Global","BeatsPerMinute" ) );
 		extractedBeats.GetIndexes().Resize( pool.GetNumberOfContexts( "Beat" ) );
 		extractedBeats.GetIndexes().SetSize( pool.GetNumberOfContexts( "Beat" ) );
 
-		CLAM::TTime* beatPositions = pool.GetAttributePool<CLAM::TTime>("Beat","Position");
+		CLAM::TTime* beatPositions = pool.GetWritePool<CLAM::TTime>("Beat","Position");
 		
 		for ( int k = 0; k < extractedBeats.GetIndexes().Size(); k++ )
 		{
@@ -327,10 +327,10 @@ namespace RhythmIR
 		CLAM::RhythmDescription::MeterEstimator meterEstimator;
 		meterEstimator.Configure( meterEstCfg );
 		meterEstimator.Start();
-		meterEstimator.Log() << "Processing " <<  *pool.GetAttributePool<std::string>("Global","Path") << std::endl;
+		meterEstimator.Log() << "Processing " <<  *pool.GetWritePool<std::string>("Global","Path") << std::endl;
 		meterEstimator.Do( signal, 
 				   extractedBeats, 
-				   *pool.GetAttributePool<CLAM::RhythmDescription::Meter>("Global", "Meter") );
+				   *pool.GetWritePool<CLAM::RhythmDescription::Meter>("Global", "Meter") );
 		
 		meterEstimator.Stop();
 

@@ -31,22 +31,22 @@ namespace RhythmIR
 			XmlElement element( "Simac:RhythmDescription" );
 			{
 				XmlElement element( "Simac:MediaDigitalFile" );
-				XmlAttribute attrib( "path", *pool.GetAttributePool<std::string>("Global","Path") );
+				XmlAttribute attrib( "path", *pool.GetWritePool<std::string>("Global","Path") );
 			}		
 			{
 				XmlElement element( "Simac:BeatsPerMinute" );
-				XmlAttribute attrib( "value", *pool.GetAttributePool<unsigned>("Global","BeatsPerMinute") );
+				XmlAttribute attrib( "value", *pool.GetWritePool<unsigned>("Global","BeatsPerMinute") );
 			}
 			{
 				XmlElement   element( "Simac:BeatSequence" );
 				int nBeats = pool.GetNumberOfContexts( "Beat" );
 
 				XmlAttribute attrib( "size", nBeats );
-				XmlAttribute attrib1( "timeunit", *pool.GetAttributePool<std::string>("Global", "Units.Beat.Position") );
+				XmlAttribute attrib1( "timeunit", *pool.GetWritePool<std::string>("Global", "Units.Beat.Position") );
 
 				if ( nBeats > 0 )
 				{
-					CLAM::TTime* beatPtr = pool.GetAttributePool<CLAM::TTime>("Beat", "Position" );
+					CLAM::TTime* beatPtr = pool.GetWritePool<CLAM::TTime>("Beat", "Position" );
 				
 					for ( int k = 0; k < nBeats-1; k++ )
 					{
@@ -59,7 +59,7 @@ namespace RhythmIR
 			}
 			{
 				XmlElement element( "Simac:TicksPerMinute" );
-				XmlAttribute attrib( "value", *pool.GetAttributePool<unsigned>("Global","TicksPerMinute") );
+				XmlAttribute attrib( "value", *pool.GetWritePool<unsigned>("Global","TicksPerMinute") );
 			}
 			{
 				XmlElement   element( "Simac:TicksSequence" );
@@ -67,11 +67,11 @@ namespace RhythmIR
 				int nTicks = pool.GetNumberOfContexts( "Tick" );
 
 				XmlAttribute attrib( "size", nTicks );
-				XmlAttribute attrib1( "timeunit", *pool.GetAttributePool<std::string>("Global", "Units.Tick.Position")  );
+				XmlAttribute attrib1( "timeunit", *pool.GetWritePool<std::string>("Global", "Units.Tick.Position")  );
 
 				if ( nTicks > 0 )
 				{
-					CLAM::TTime* tickPtr = pool.GetAttributePool<CLAM::TTime>("Tick", "Position" );
+					CLAM::TTime* tickPtr = pool.GetWritePool<CLAM::TTime>("Tick", "Position" );
 				
 					for ( int k = 0; k < nTicks; k++ )
 					{
@@ -85,7 +85,7 @@ namespace RhythmIR
 			{
 				XmlElement element( "Simac:Meter");
 
-				const CLAM::RhythmDescription::Meter& value = *pool.GetAttributePool<CLAM::RhythmDescription::Meter>("Global","Meter");
+				const CLAM::RhythmDescription::Meter& value = *pool.GetWritePool<CLAM::RhythmDescription::Meter>("Global","Meter");
 
 				XmlAttribute attr_num( "numerator", value.GetNumerator() );
 				XmlAttribute attr_den( "denominator", value.GetDenominator() );
@@ -108,11 +108,11 @@ namespace RhythmIR
 			std::ofstream file( filename.c_str() );
 
 			int   nOnsets = pool.GetNumberOfContexts( "Onset" );
-			CLAM::TData srate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+			CLAM::TData srate = *pool.GetWritePool<CLAM::TData>("Global","SampleRate");
 
 			if ( nOnsets > 0 )
 			{
-				CLAM::TTime* onsetPositions = pool.GetAttributePool<CLAM::TTime>("Onset", "Position" );
+				CLAM::TTime* onsetPositions = pool.GetWritePool<CLAM::TTime>("Onset", "Position" );
 				for ( int k = 1; k < nOnsets; k++ )
 					file << onsetPositions[k-1]/srate<< " " << onsetPositions[k]/srate<< " " << "onset" << std::endl;
 			}
@@ -128,11 +128,11 @@ namespace RhythmIR
 			std::ofstream file( filename.c_str() );
 
 			int   nBeats = pool.GetNumberOfContexts( "Beat" );
-			CLAM::TData srate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+			CLAM::TData srate = *pool.GetWritePool<CLAM::TData>("Global","SampleRate");
 
 			if ( nBeats > 0 )
 			{
-				CLAM::TTime* beatPositions = pool.GetAttributePool<CLAM::TTime>("Beat", "Position" );
+				CLAM::TTime* beatPositions = pool.GetWritePool<CLAM::TTime>("Beat", "Position" );
 				file << 0.0 << " " << beatPositions[0] << " " << "beat" << std::endl;
 				for ( int k = 1; k < nBeats; k++ )
 					file << beatPositions[k-1]<< " " << beatPositions[k]<< " " << "beat" << std::endl;
@@ -149,11 +149,11 @@ namespace RhythmIR
 			std::ofstream file( filename.c_str() );
 
 			int   nTicks = pool.GetNumberOfContexts( "Tick" );
-			CLAM::TData srate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+			CLAM::TData srate = *pool.GetReadPool<CLAM::TData>("Global","SampleRate");
 
 			if ( nTicks > 0 )
 			{
-				CLAM::TTime* tickPositions = pool.GetAttributePool<CLAM::TTime>("Tick", "Position" );
+				CLAM::TTime* tickPositions = pool.GetWritePool<CLAM::TTime>("Tick", "Position" );
 				file << 0.0 << " " << tickPositions[0] << " " << "tick" << std::endl;
 				for ( int k = 1; k < nTicks; k++ )
 					file << tickPositions[k-1]<< " " << tickPositions[k]<< " " << "tick" << std::endl;

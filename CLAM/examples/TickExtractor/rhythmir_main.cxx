@@ -45,10 +45,10 @@ int main( int argc, char** argv )
 
 		pool.SetNumberOfContexts( "Global", 1 );
 
-		*pool.GetAttributePool<std::string>("Global", "Units.Onset.Position" ) = "SampleIndex";
-		*pool.GetAttributePool<std::string>("Global", "Units.Beat.Position" ) = "Seconds";
-		*pool.GetAttributePool<std::string>("Global", "Units.Tick.Position" ) = "Seconds";
-		*pool.GetAttributePool<std::string>("Global", "Path" ) = parms.GetInputFilename();
+		*pool.GetWritePool<std::string>("Global", "Units.Onset.Position" ) = "SampleIndex";
+		*pool.GetWritePool<std::string>("Global", "Units.Beat.Position" ) = "Seconds";
+		*pool.GetWritePool<std::string>("Global", "Units.Tick.Position" ) = "Seconds";
+		*pool.GetWritePool<std::string>("Global", "Path" ) = parms.GetInputFilename();
 
 
 		/* Description extraction*/		  		  
