@@ -161,7 +161,7 @@ namespace CLAM {
 					TData t = TData(*ptr++);
 					t += TData(*ptr++);
 					t /= 65534.;
-					mData[i] = t;
+					mData[i++] = t;
 					if (i==limit) i = 0;
 				}
 				mWriteIndex += frames;
@@ -328,6 +328,9 @@ namespace CLAM {
 			{
 				/* see comment above */
 				mRtAudioBufferSize /= 2;
+#ifdef MACOSX_WORKAROUND
+				mInternalRtAudioBufferSize /= 2;
+#endif
 			}
 #endif
 					
@@ -410,6 +413,7 @@ namespace CLAM {
 	{
 #ifdef MACOSX_WORKAROUND
 		int i = mRtAudioBufferSize/mInternalRtAudioBufferSize;
+		
 #ifdef FACTOR2SRC_KLUDGE
 		if (mDoFactor2SRC)
 		{
