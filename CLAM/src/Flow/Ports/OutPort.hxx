@@ -1,5 +1,5 @@
-#ifndef OutPort_hxx
-#define OutPort_hxx
+#ifndef __OutPort_hxx__
+#define __OutPort_hxx__
 
 #include "WritingRegion.hxx"
 #include <list>
@@ -50,128 +50,163 @@ class OutPort : public OutPortBase
 
 
 public:
-	OutPort( const std::string & name = "unnamed in port", Processing * proc = 0 )
-		: OutPortBase(name,proc)
-	{
-	}
+	OutPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	virtual ~OutPort();
 
-	void DisconnectFromAll()
-	{
-		InPortsList::iterator it = mConnectedInPortsList.begin();
-		for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )	
-		{ 
-			ProperInPort & in = dynamic_cast<ProperInPort&>(**it);
-			in.UnAttach();
-		}
-		mConnectedInPortsList.clear();
-	}
-
-	virtual ~OutPort()
-	{
-		InPortsList::iterator it = mConnectedInPortsList.begin();
-		for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )
-		{ 
-			ProperInPort & in = dynamic_cast<ProperInPort&>(**it);
-			in.UnAttach();
-		}
-		mConnectedInPortsList.clear();
-	}
-
-	void ConnectToIn( InPortBase& in)
-	{
-		try
-		{
-			ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
-		} catch (...) // could be std::bad_cast ?
-		{
-			CLAM_ASSERT( false,
-				"OutPort<Token>::connectToIn coudn't connect to inPort "
-				"because was not templatized by the same Token type as outPort" );
-		}
-	}
-
-
-	void ConnectToConcreteIn(InPort<Token>& in)
-	{
-		CLAM_ASSERT( !in.GetAttachedOutPort(), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an inport "
-							    "already connected to another out port" );
-		CLAM_ASSERT( !IsConnectedTo(in), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an in port "
-						"already connected to this out port" );
-		mConnectedInPortsList.push_back(&in);
-		in.AttachToOutPort(this, mRegion );
-	}
-
-	void DisconnectFromIn( InPortBase& in)
-	{
-		try{
-			DisconnectFromConcreteIn( dynamic_cast<ProperInPort&>(in) );
-		} catch (...) // could be std::bad_cast ?
-		{
-			CLAM_ASSERT( false,
-				"OutPort<Token>::DisConnectFromIn coudn't disconnect from inPort"
-				"because was not templatized by the same Token type as outPort" );
-		}
-	}
-
-	void DisconnectFromConcreteIn(InPort<Token>& in)
-	{
-		CLAM_ASSERT( true == IsConnectedTo(in), "OutPort::DisconnectFromConcreteIn() - Trying to disconnect a "
-							"non-connected region" );
-		mConnectedInPortsList.remove(&in);
-		in.UnAttach();
-	}
-	Token & GetData(int offset=0)
-	{
-		return mRegion[offset];
-	}
+	void DisconnectFromAll();
+	void ConnectToIn( InPortBase& in);
+	void ConnectToConcreteIn(InPort<Token>& in);
+	void DisconnectFromIn( InPortBase& in);
+	void DisconnectFromConcreteIn(InPort<Token>& in);
+	bool IsConnectableTo(InPortBase & in);
+	bool IsConnectedTo(InPortBase & in);
 	
-	void SetSize( int newSize )
-	{
-		mRegion.Size( newSize );
-	}
-	
-	int GetSize()
-	{
-		return mRegion.Size();
-	}
-
-	int GetHop()
-	{
-		return mRegion.Hop();
-	}
-	
-	void SetHop( int hop )
-	{
-		mRegion.Hop(hop);
-	}
-		
-	void Produce()
-	{
-		mRegion.Produce();
-	}
-
-	bool CanProduce()
-	{
-		return mRegion.CanProduce();
-	}
-	
-	bool IsConnectableTo(InPortBase & in)
-	{	
-		return ((dynamic_cast< ProperInPort* >(&in)) != 0);
-	}
-	
-	bool IsConnectedTo(InPortBase & in)
-	{
-		InPortsList::iterator it;
-		for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
-			if(*it == &in) return true;
-		return false;
-	}
+	Token & GetData(int offset=0);	
+	void SetSize( int newSize );
+	int GetSize();
+	int GetHop();
+	void SetHop( int hop );	
+	void Produce();
+	bool CanProduce();
 protected:
 	ProperWritingRegion mRegion;
 };
 
+template<class Token>
+OutPort<Token>::OutPort( const std::string & name, Processing * proc )
+	: OutPortBase(name,proc)
+{
+}
+
+template<class Token>
+void OutPort<Token>::DisconnectFromAll()
+{
+	InPortsList::iterator it = mConnectedInPortsList.begin();
+	for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )	
+	{ 
+		ProperInPort & in = dynamic_cast<ProperInPort&>(**it);
+		in.UnAttach();
+	}
+	mConnectedInPortsList.clear();
+}
+
+template<class Token>
+OutPort<Token>::~OutPort()
+{
+	InPortsList::iterator it = mConnectedInPortsList.begin();
+	for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )
+	{ 
+		ProperInPort & in = dynamic_cast<ProperInPort&>(**it);
+		in.UnAttach();
+	}
+	mConnectedInPortsList.clear();
+}
+
+template<class Token>
+void OutPort<Token>::ConnectToIn( InPortBase& in)
+{
+	try
+	{
+		ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
+	} catch (...) // could be std::bad_cast ?
+	{
+		CLAM_ASSERT( false,
+			"OutPort<Token>::connectToIn coudn't connect to inPort "
+			"because was not templatized by the same Token type as outPort" );
+	}
+}
+
+template<class Token>
+void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
+{
+	CLAM_ASSERT( !in.GetAttachedOutPort(), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an inport "
+						    "already connected to another out port" );
+	CLAM_ASSERT( !IsConnectedTo(in), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an in port "
+					"already connected to this out port" );
+	mConnectedInPortsList.push_back(&in);
+	in.AttachToOutPort(this, mRegion );
+}
+
+template<class Token>
+void OutPort<Token>::DisconnectFromIn( InPortBase& in)
+{
+	try{
+		DisconnectFromConcreteIn( dynamic_cast<ProperInPort&>(in) );
+	} catch (...) // could be std::bad_cast ?
+	{
+		CLAM_ASSERT( false,
+			"OutPort<Token>::DisConnectFromIn coudn't disconnect from inPort"
+			"because was not templatized by the same Token type as outPort" );
+	}
+}
+
+template<class Token>
+void OutPort<Token>::DisconnectFromConcreteIn(InPort<Token>& in)
+{
+	CLAM_ASSERT( true == IsConnectedTo(in), "OutPort::DisconnectFromConcreteIn() - Trying to disconnect a "
+						"non-connected region" );
+	mConnectedInPortsList.remove(&in);
+	in.UnAttach();
+}
+
+template<class Token>
+Token & OutPort<Token>::GetData(int offset )
+{
+	return mRegion[offset];
+}
+
+template<class Token>
+void OutPort<Token>::SetSize( int newSize )
+{
+	mRegion.Size( newSize );
+}
+
+template<class Token>
+int OutPort<Token>::GetSize()
+{
+	return mRegion.Size();
+}
+
+template<class Token>
+int OutPort<Token>::GetHop()
+{
+	return mRegion.Hop();
+}
+
+template<class Token>
+void OutPort<Token>::SetHop( int hop )
+{
+	mRegion.Hop(hop);
+}
+
+template<class Token>
+void OutPort<Token>::Produce()
+{
+	mRegion.Produce();
+}
+
+template<class Token>
+bool OutPort<Token>::CanProduce()
+{
+	return mRegion.CanProduce();
+}
+
+template<class Token>
+bool OutPort<Token>::IsConnectableTo(InPortBase & in)
+{	
+	return ((dynamic_cast< ProperInPort* >(&in)) != 0);
+}
+
+template<class Token>
+bool OutPort<Token>::IsConnectedTo(InPortBase & in)
+{
+	InPortsList::iterator it;
+	for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
+		if(*it == &in) return true;
+	return false;
+}
+
 } // namespace CLAM
 
-#endif
+#endif // __OutPort_hxx__
 

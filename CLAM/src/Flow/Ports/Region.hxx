@@ -1,8 +1,7 @@
-#ifndef Region_hxx
-#define Region_hxx
+#ifndef __Region_hxx__
+#define __Region_hxx__
 
 #include <list>
-#include "Assert.hxx"
 
 namespace CLAM
 {
@@ -10,60 +9,25 @@ namespace CLAM
 class Region
 {
 public:
-	
 	typedef std::list<Region*> ReadingRegionsList;
 	typedef ReadingRegionsList::iterator ReadingRegionsIterator;
 
+	Region();
+	virtual ~Region();
 
-	Region() : mPos(0), mSize(1), mHop(1), mBeginDistance(0)
-	{
-	}
+	long& Pos();
+	int& Size();
+	int& Hop();
 
-	virtual ~Region()
-	{
-	}
+	int& BeginDistance();
+	void BeginDistance(int &dist);
 
-	long& Pos()
-	{
-		return mPos;
-	}
-	int& Size()
-	{
-		return mSize;
-	}
-	int& Hop()
-	{
-		return mHop;
-	}
+	void Pos( const long & pos );
+	void Size( const int & size );
+	void Hop( const int & hop );
 	
-	int& BeginDistance()
-	{
-		return mBeginDistance;
-	}
-	void BeginDistance(int &dist)
-	{
-		mBeginDistance = dist;		
-	}
-	void Pos( const long & pos )
-	{
-		mPos = pos;
-	}
-
-	void Size( const int & size )
-	{
-		mSize = size;
-		SizeChanged(size);
-	}
-
-	void Hop( const int & hop )
-	{
-		CLAM_ASSERT( hop <= mSize, "Region::hop() - hop can't be greater than size" );
-		mHop = hop;
-	}
-
-	virtual Region* ProducerRegion() = 0;
 	virtual void RemoveProducer(){}
-
+	virtual Region* ProducerRegion() = 0;
 	virtual ReadingRegionsIterator BeginReaders() = 0;
 	virtual ReadingRegionsIterator EndReaders() = 0;
 	virtual void RemoveRegion( Region & Region ){}
@@ -80,5 +44,5 @@ private:
 
 } // namespace CLAM
 
-#endif
+#endif // __Region_hxx__
 

@@ -1,5 +1,5 @@
-#ifndef InPort_hxx
-#define InPort_hxx
+#ifndef __InPort_hxx__
+#define __InPort_hxx__
 
 #include "WritingRegion.hxx"
 #include "ReadingRegion.hxx"
@@ -40,77 +40,106 @@ class InPort : public InPortBase
 	typedef typename ProperWritingRegion::ProperReadingRegion ProperReadingRegion;
 
 public:
+	InPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	virtual ~InPort();
 
-	InPort( const std::string & name = "unnamed in port", Processing * proc = 0 )
-		: InPortBase( name,proc )
-	{
-	}
-
-	virtual ~InPort()
-	{
-		if(mAttachedOutPort)
-			Disconnect();
-	}
-
-	const Token & GetData(int offset=0)
-	{
-		return mRegion[offset];
-	}
-	
-	void SetSize( int newSize )
-	{
-		mRegion.Size( newSize );
-	}
-	
-	int GetSize()
-	{
-		return mRegion.Size();
-	}
-
-	int GetHop()
-	{
-		return mRegion.Hop();
-	}
-	
-	void SetHop( int hop )
-	{
-		mRegion.Hop(hop);
-	}
-		
-	void Consume() 
-	{
-		mRegion.Consume();
-	}
-
-	bool CanConsume()
-	{
-		return mRegion.CanConsume();
-	}
+	const Token & GetData(int offset=0);
+	void SetSize( int newSize );
+	int GetSize();
+	int GetHop();
+	void SetHop( int hop );
+	void Consume();
+	bool CanConsume();
 
 	/**
 	 *  This method is intended to be used only for the OutPort. A user shouldn't call it directly. 
 	 *  Instead , use ConnectToIn method in OutPortBase.
 	 */
-	void AttachToOutPort( OutPortBase * out, ProperWritingRegion & writer )
-	{
-		writer.LinkRegions( mRegion );
-		mAttachedOutPort = out;
-	}
+	void AttachToOutPort( OutPortBase * out, ProperWritingRegion & writer );
 	/**
 	 *  This method is intended to be used only for the OutPort. A user shouldn't call it directly. 
 	 *  Instead , use DisconnectToIn method in OutPortBase.
 	 */
-	void UnAttach()
-	{
-		CLAM_DEBUG_ASSERT( mAttachedOutPort, "InPort<T>::UnAttach() - InPort is not connected" );
-		mRegion.ProducerRegion()->RemoveRegion( mRegion );
-		mAttachedOutPort = 0;
-	}
+	void UnAttach();
 protected:
 
 	ProperReadingRegion mRegion;
 };
 
+
+/////// Implementation ////////
+
+template<class Token>
+InPort<Token>::InPort( const std::string & name, Processing * proc )
+	: InPortBase( name,proc )
+{
+}
+
+template<class Token> 
+InPort<Token>::~InPort()
+{
+	if(mAttachedOutPort)
+		Disconnect();
+}
+
+template<class Token>
+const Token & InPort<Token>::GetData( int offset )
+{
+	return mRegion[offset];
+}
+
+template<class Token>
+void InPort<Token>::SetSize( int newSize )
+{
+	mRegion.Size( newSize );
+}
+
+template<class Token>
+int InPort<Token>::GetSize()
+{
+	return mRegion.Size();
+}
+
+template<class Token>
+int InPort<Token>::GetHop()
+{
+	return mRegion.Hop();
+}
+
+template<class Token>
+void InPort<Token>::SetHop( int hop )
+{
+	mRegion.Hop(hop);
+}
+
+template<class Token>
+void InPort<Token>::Consume() 
+{
+	mRegion.Consume();
+}
+
+template<class Token>
+bool InPort<Token>::CanConsume()
+{
+	return mRegion.CanConsume();
+}
+
+template<class Token>
+void InPort<Token>::AttachToOutPort( OutPortBase * out, ProperWritingRegion & writer )
+{
+	writer.LinkRegions( mRegion );
+	mAttachedOutPort = out;
+}
+
+template<class Token>
+void InPort<Token>::UnAttach()
+{
+	CLAM_DEBUG_ASSERT( mAttachedOutPort, "InPort<T>::UnAttach() - InPort is not connected" );
+	mRegion.ProducerRegion()->RemoveRegion( mRegion );
+	mAttachedOutPort = 0;
+}
+
 } // namespace CLAM
 
-#endif
+#endif // __InPort_hxx__
+
