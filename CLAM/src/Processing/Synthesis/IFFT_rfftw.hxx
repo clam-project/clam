@@ -24,6 +24,7 @@
 #define _IFFT_rfftw_
 
 #include "IFFT.hxx"
+#include "ErrDynamicType.hxx"
 
 extern "C" {
 #include FFTW_HEADER
