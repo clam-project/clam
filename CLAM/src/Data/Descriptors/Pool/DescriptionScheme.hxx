@@ -13,6 +13,11 @@
  * taking from other projects the parts you are interested in and
  * adding your own descriptors in a incremental way.
  *
+ * This module intends to implement the system described on
+ * http://www.iua.upf.es/mtg/clam/devel/doc/descriptors/Descriptors.html
+ * but there is still some way to achieve the full functionality
+ * described in there.
+ *
  * @section DescriptionSpecification Defining and instanciating descriptors
  *
  * The central object for description extraction is the DescriptionScheme.
@@ -26,6 +31,18 @@
  * note scope, sample scope, frame scope, phrase scope...
  * that means that a given attribute will have a value for
  * every single note, sample, frame, phrase...
+ *
+ * @code
+ * CLAM::DescriptionScheme scheme;
+ * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("AudioSample","SignalLevel");
+ * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("AudioSample","FilteredSignal");
+ * scheme.AddAttribute<CLAM::Attribute<SamplePosition> > ("Frame","Center");
+ * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("Frame","Energy");
+ * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("Frame","RMS");
+ * scheme.AddAttribute<CLAM::Attribute<CLAM::Spectrum> > ("Frame","SpectralDistribution");
+ * scheme.AddAttribute<CLAM::Attribute<FramePosition> >  ("Note","Onset");
+ * scheme.AddAttribute<CLAM::Attribute<CLAM::Pitch> >    ("Note","Pitch");
+ * @endcode
  * 
  * The description scheme only specifies the attribute organization.
  * The real values are hold into the data pool (CLAM::DescriptionDataPool).
@@ -33,11 +50,25 @@
  * extracted from a single description source (ie, an audio).
  * It take the structure defined by the description scheme.
  *
- * Description data pools can be loaded or stored in XML as any
- * other CLAM::Component.
- * @see CLAM::XmlStorage
+ * @code
+ * CLAM::DescriptionDataPool pool(scheme);
+ * @endcode
  *
- * Attributes assures multiple type safe operations.
+ * See the documentation for CLAM::DescriptionDataPool to see how to work
+ * with it directly.
+ *
+ * Description data pools can be loaded or stored in XML as any
+ * other CLAM::Component using an CLAM::XmlStorage.
+ * 
+ * @code
+ * // Storing a description in XML
+ * CLAM::XmlStorage::Dump(pool, "DescriptionPool", "mysong.xml");
+ * @endcode
+ *
+ * @code
+ * // Recovering an XML description
+ * CLAM::XmlStorage::Restore(pool, "mysong.xml");
+ * @endcode
  *
  * So, summarizing:
  * - A description scheme defines attributes to be computed
@@ -45,6 +76,7 @@
  * - A scope specifies the kind of attribute target
  * - A description data pool contains the values computed from an extraction
  *   matching the structure specified by a description scheme
+ * - Attributes assures multiple type safe operations.
  * 
  * @section ExtractorBinding Binding extractors 
  *
@@ -63,13 +95,17 @@
  * By now, there is no such abstract CLAM::Extractor but you can take a look
  * to some Extractors CLAMTest::CharCopierExtractor and CLAMTest::CharJoinExtractor
  *
- * @todo Abstracting the CLAM::Extractor
- * @todo An special kind of extractor for scope population (how many items in a scope?)
- * @todo Others bindings like relative shift
- * @todo Solving Range and Relative bindings when outside the scope space
- * @todo Discontinuous Range Binding?
- * @todo XML Serialization for schemes
- * @todo Defining units friendly types for using them in attributes
+ * @section DescriptionPoolTodo What is left to implement
+ *
+ * - An abstract cLAM::Extractor to derive from
+ * - An special kind of extractor for scope population (how many items in a scope?)
+ * - Bindings extension: relative position
+ * - Solving Range and Relative bindings when outside the scope space
+ * - The type system
+ *   - Defining units friendly types for using them in attributes
+ *   - Solving the creation of concrete Attribute specification from the type name
+ * - XML Serialization for schemes
+ * - Exploring new hook binding functionalities driven by real cases
  * 
  */
 namespace CLAM
