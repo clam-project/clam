@@ -27,6 +27,9 @@
 
 namespace CLAM {
 
+
+const TData AudioDescriptors::mEpsilon = 1e-5;
+
 AudioDescriptors::AudioDescriptors(Audio* pAudio): DescriptorAbs(eNumAttr)
 {
 	MandatoryInit();

@@ -108,12 +108,13 @@ namespace CLAM {
 		
 	private:
 		Audio* mpAudio;
-		static const TData mEpsilon = 1e-5;
+		static const TData mEpsilon;
 		
 		bool mIsAttackTimeComputed;
 		TData mComputedAttackTime;
 	};
 
+	
 
 AudioDescriptors operator * (const AudioDescriptors& a,TData mult) ;
 AudioDescriptors operator * (TData mult, const AudioDescriptors& a) ;
