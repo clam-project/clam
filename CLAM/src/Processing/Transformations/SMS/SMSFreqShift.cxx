@@ -36,20 +36,3 @@ bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	}
 	return true;
 }
-
-bool SMSFreqShift::Do(const Frame& in, Frame& out)
-{
-	return Do(in.GetSpectralPeakArray(),out.GetSpectralPeakArray());
-}
-
-bool SMSFreqShift::Do(const Segment& in, Segment& out)
-{
-	int i;
-	TSize nFrames=in.GetnFrames();
-	for(i=0;i<nFrames;i++)
-	{
-		UpdateControlValueFromBPF((TData)i/nFrames);
-		Do(in.GetFrame(i),out.GetFrame(i));
-	}
-	return true;
-}

@@ -75,16 +75,3 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
 }
-
-bool SMSPitchShift::Do(const Segment& in, Segment& out)
-{
-	int i;
-	TSize nFrames=in.GetnFrames();
-	for(i=0;i<nFrames;i++)
-	{
-		UpdateControlValueFromBPF((TData)i/nFrames);
-		Do(in.GetFrame(i),out.GetFrame(i));
-	}
-	return true;
-}
-
