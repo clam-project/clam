@@ -106,10 +106,6 @@ public:
 		_rootContext= new XercesDomWritingContext(_documentHandler);
 		_writeContext = _rootContext;
 	}
-	xercesc::DOMElement * getSelection()
-	{
-		return _documentHandler.getSelection();
-	}
 	bool Load(Storable & storable)
 	{
 		return false;
@@ -140,6 +136,7 @@ public:
 		}
 		CLAM_ASSERT(false,"A weird XMLable inserted");
 	}
+private:
 
 	void StoreContentAndChildren(const XMLable * xmlable)
 	{
@@ -162,11 +159,11 @@ public:
 		_lastWasContent = true;
 	}
 
+public:
 	void WriteSelection(std::ostream & os)
 	{
 		_documentHandler.writeSelection(os);
 	}
-
 };
 
 	
