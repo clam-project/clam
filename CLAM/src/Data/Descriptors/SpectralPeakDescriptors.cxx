@@ -75,7 +75,6 @@ void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectral
     //TODO: it may give problems because pointer passed
 	InitStats(&mpSpectralPeakArray->GetMagBuffer());
 	mCentroid.Reset();
-
 }
 
 
@@ -85,8 +84,7 @@ void SpectralPeakDescriptors::ConcreteCompute()
 	if (HasMagnitudeMean())
 		SetMagnitudeMean(mpStats->GetMean());
 	if (HasHarmonicCentroid())
-		SetHarmonicCentroid(mCentroid(mpSpectralPeakArray->GetMagBuffer(),
-							mpSpectralPeakArray->GetFreqBuffer()));
+		SetHarmonicCentroid(ComputeCentroid());
 	if(HasSpectralTilt())
 		SetSpectralTilt(ComputeSpectralTilt());
 	if(HasFirstTristimulus())
@@ -103,6 +101,18 @@ void SpectralPeakDescriptors::ConcreteCompute()
 		SetEvenHarmonics(ComputeEvenHarmonics());
 	if(HasOddToEvenRatio())
 		SetOddToEvenRatio(ComputeOddToEvenRatio());
+}
+
+TData SpectralPeakDescriptors::ComputeCentroid()
+{
+	const Array<TData> & magnitudes = mpSpectralPeakArray->GetMagBuffer();
+	const Array<TData> & frequencies = mpSpectralPeakArray->GetFreqBuffer();
+	TData crossProduct=0.0;
+	for (unsigned i = 0; i < magnitudes.GetSize(); i++)
+	{
+		crossProduct += magnitudes[i]*frequencies[i];
+	}
+	return crossProduct/(mpStats->Mean()*magnitudes.GetSize());
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
