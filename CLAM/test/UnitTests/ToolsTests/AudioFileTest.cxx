@@ -25,6 +25,8 @@ namespace CLAMTest
 		
 		CPPUNIT_TEST( testSetLocation_FileDoesNotExist_UnrecognizedFormat );
 
+		CPPUNIT_TEST( testIsReadable_with_strangeThings );
+
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_PCM );
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_OggVorbis );
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_Mpeg );
@@ -75,6 +77,17 @@ namespace CLAMTest
 		std::string mPathToTestData;
 
 	private: // test cases
+
+		void testIsReadable_with_strangeThings()
+		{
+			CLAM::AudioFile file;
+			
+			file.SetLocation( std::string( mPathToTestData + "Image.jpg" ) );
+
+			CPPUNIT_ASSERT_EQUAL( false,
+					      file.IsReadable() );
+				
+		}
 
 
 		void testIsWritable_ReturnsTrue_PCM_WithReasonableHeader()
