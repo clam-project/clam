@@ -7,6 +7,7 @@
 #include "Audio.hxx"
 #include "similarityHelper.hxx"
 #include <deque>
+#include "CLAM_Math.hxx"
 
 namespace CLAMTest
 {

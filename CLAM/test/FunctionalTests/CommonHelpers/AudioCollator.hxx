@@ -9,6 +9,7 @@
 
 #include "AudioFile.hxx"
 #include "MonoAudioFileWriter.hxx"
+#include "CLAM_Math.hxx"
 
 #include <string>
 #include <fstream> // used for open(..) : we want to check if some file exists
