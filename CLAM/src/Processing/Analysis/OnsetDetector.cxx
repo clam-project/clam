@@ -21,8 +21,8 @@
 
 #include "OnsetDetector.hxx"
 #include "Point.hxx"
-#include "Resampling.hxx"
-#include <CLAM_Math.hxx>
+#include "OD_AudioDecimation.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {
@@ -97,16 +97,22 @@ namespace CLAM
 
 	bool OnsetDetector::Do(Segment &originalSegment, Array<TimeIndex>& out)
 	{
-		mAudio = originalSegment.GetAudio();
-		mAudio.SetSampleRate(originalSegment.GetAudio().GetSampleRate());
-	
-//Normalization and downsampling to 22.05 kHz
-		mNorm.Do(mAudio);
-		Resampling decim44100to22500;
-		decim44100to22500.Do(mAudio.GetBuffer() , 44100 , 1);
-		mAudio.SetSampleRate(22050);
+		CLAM_ASSERT( int(originalSegment.GetAudio().GetSampleRate()) == 44100,
+			     "This onset detection algorithm only works for signals sampled at a 44.1kHz rate" );
 
-//Filter bank output computation
+		//Normalization and downsampling to 22.05 kHz
+		mNorm.Do(originalSegment.GetAudio());
+
+		OnsetDetection::AudioDecimator decim44100to22050;
+
+		mAudio.SetSize(originalSegment.GetAudio().GetSize()/2);
+		mAudio.SetSampleRate(originalSegment.GetAudio().GetSampleRate()/2);
+
+		decim44100to22050.DecimateFrom44100To22050( originalSegment.GetAudio().GetBuffer(),
+							    mAudio.GetBuffer() );
+		
+
+		//Filter bank output computation
 		mFilterBankOutput.Resize(mnBands);
 		mFilterBankOutput.SetSize(mnBands);
 		CalcFilterBankOutput(mAudio);
@@ -120,9 +126,9 @@ namespace CLAM
 	}
 
 
-///////////////
-//FILTER BANK//
-///////////////
+	///////////////
+	//FILTER BANK//
+	///////////////
 	bool OnsetDetector::CalcFilterBankOutput(Audio& in)
 	{
 		//Filter Bank
@@ -136,9 +142,9 @@ namespace CLAM
 		cf=mFilterBank.GetCentreFreq();
 
 
-		//Resampling Initialization
+		//OnsetDetection::AudioDecimator Initialization
 
-		Resampling decim22500to245;
+		OnsetDetection::AudioDecimator decim22500to245;
 
 		for(int band=0 ; band<mnBands ; band++)
 		{
@@ -580,7 +586,7 @@ namespace CLAM
 			amplitude.AddElem(fabsf(mAudio.GetBuffer()[i]));
 
 		//Decimation
-		Resampling decim22;
+		OnsetDetection::AudioDecimator decim22;
 		decim22.Do(amplitude , 22050 , 2);
 
 		//Computes the smoothing filter coefficients

@@ -13,7 +13,7 @@
 namespace CLAM
 {
 
-/** OnsetDetector class **/
+	/** OnsetDetector class **/
 	class OnsetDetector : public ProcessingComposite 
 	{
 		
