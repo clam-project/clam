@@ -130,8 +130,25 @@ namespace AudioCodecs
 			foundSomeMpegFrame = bitstream.NextFrame();
 
 		bitstream.Finish();
-
 		fclose( handle );
+
+		if ( uri.size() > 4 )
+		{
+
+			std::string::size_type startExt = uri.find( '.' );
+
+			if ( startExt != std::string::npos )
+			{
+
+				std::string ext;
+				ext.assign( uri, startExt+1, uri.size()-startExt+1 );
+				
+				
+				if ( ext != "mp3" && ext != "mpg" )
+					return false;
+			}
+		}
+
 
 		return foundSomeMpegFrame;
 	}
