@@ -88,11 +88,11 @@ void AnalysisSynthesisExampleStdio::Run(void)
 			}
 			case 3://Analyze
 			{
-				if(!mHaveConfig||!mHaveAudioIn)
+				if(!mHaveConfig)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
-					break;
+				       	break;
 				}
 				LoadInputSound();
 				showSnapshotAudio(mAudioIn,"Input Audio");
