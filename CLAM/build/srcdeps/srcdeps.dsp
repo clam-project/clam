@@ -120,6 +120,10 @@ SOURCE=.\emptydsp.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\emptyvcproj.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\hash.c
 # End Source File
 # Begin Source File
@@ -153,6 +157,14 @@ SOURCE=.\listhash.h
 # Begin Source File
 
 SOURCE=.\main.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\makegen.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\makegen.h
 # End Source File
 # Begin Source File
 
@@ -213,6 +225,14 @@ SOURCE=.\tree.c
 # Begin Source File
 
 SOURCE=.\tree.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\vcproj_parser.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\vcproj_parser.h
 # End Source File
 # End Group
 # Begin Group "Header Files"
