@@ -150,7 +150,6 @@ namespace CLAMVM
 	void Fl_SMS_Spectrum::OnNewSpectrum( const DataArray& array, TData spectralRange )
 	{
 		mDrawMgr.CacheData( array );
-		const TData offsetPercentil = 0.2f; // 20%
 		mWorldSpaceCoords.mRight = array.Size() - 2;
 		mWorldSpaceCoords.mLeft = 0;
 		mWorldSpaceCoords.mTop = mMaxMag;
