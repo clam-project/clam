@@ -73,16 +73,6 @@ std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite);
 void Inspect (std::ostream& target, DOM_Node& toWrite);
 
 
-// ---------------------------------------------------------------------------
-//  Local data
-//
-//  gEncodingName
-//      The encoding we are to output in. If not set on the command line,
-//      then it is defaults to the encoding of the input XML file.
-//
-// ---------------------------------------------------------------------------
-static XMLCh*                   gEncodingName          = 0;
-static XMLFormatter::UnRepFlags gUnRepFlags            = XMLFormatter::UnRep_CharRef;
 static XMLFormatter*            gFormatter             = 0;
 
 
@@ -191,6 +181,8 @@ static const XMLCh  gNotation[] =
     chSpace, chDoubleQuote, chNull
 };
 
+static const XMLCh endLine[] = { chCR, chLF, chNull };
+
 
 // ---------------------------------------------------------------------------
 //  ostream << DOM_Node   
@@ -210,6 +202,7 @@ CLAM::XercesDomPrinter::XercesDomPrinter()
 #else
 	mIndentXml = false;
 #endif
+	mEncodingName = 0;
 
 }
 CLAM::XercesDomPrinter::~XercesDomPrinter()
@@ -222,23 +215,28 @@ void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 {
 	mIndentationLevel = 0;
 	mLastWasContent = true;
+
+	// Discuss about the encoding to get
 	DOMString encNameStr("UTF-8");
 	DOM_Node aNode = toWrite;
 	if (aNode.getNodeType() == DOM_Node::XML_DECL_NODE)
 	{
 		DOMString aStr = ((DOM_XMLDecl &)aNode).getEncoding();
-		if (aStr != "")
-			encNameStr = aStr;
+		if (aStr != "") encNameStr = aStr;
 	}
 	unsigned int lent = encNameStr.length();
-	gEncodingName = new XMLCh[lent + 1];
-	XMLString::copyNString(gEncodingName, encNameStr.rawBuffer(), lent);
-	gEncodingName[lent] = 0;
-	DOMPrintFormatTarget* formatTarget = new DOMPrintFormatTarget(os);
+	XMLCh encodingName[lent+1];
+	XMLString::copyNString(encodingName, encNameStr.rawBuffer(), lent);
+	encodingName[lent] = 0;
+	mEncodingName=encodingName;
+
+	
+	XMLFormatter::UnRepFlags unRepFlags = XMLFormatter::UnRep_CharRef;
+	DOMPrintFormatTarget formatTarget(os);
 	try
 	{
-		gFormatter = new XMLFormatter(gEncodingName, formatTarget, 
-			XMLFormatter::NoEscapes, gUnRepFlags);
+		gFormatter = new XMLFormatter(encodingName, &formatTarget, 
+			XMLFormatter::NoEscapes, unRepFlags);
 		PrintNode(os, toWrite);
 	}
 	catch (XMLException& e)
@@ -248,13 +246,10 @@ void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 			<< std::endl
 			<< DOMString(e.getMessage()) << std::endl;
 	}
-	delete formatTarget;
 	delete gFormatter;
-	delete gEncodingName;
+	mEncodingName=0;
 
 }
-
-static const XMLCh endLine[] = { chCR, chLF, chNull };
 
 
 void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
@@ -497,7 +492,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 
 			*gFormatter << gXMLDecl1 << ((DOM_XMLDecl &)toWrite).getVersion();
 
-			*gFormatter << gXMLDecl2 << gEncodingName;
+			*gFormatter << gXMLDecl2 << mEncodingName;
 
 			str = ((DOM_XMLDecl &)toWrite).getStandalone();
 			if (str != 0)
@@ -522,6 +517,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 //  Stream out a DOM string. Doing this requires that we first transcode
 //  to char * form in the default code page for the system
 // ---------------------------------------------------------------------------
+ 
 std::ostream& operator<< (std::ostream& target, const XMLCh* s)
 {
 	char *p = XMLString::transcode(s);
@@ -538,6 +534,7 @@ std::ostream& operator<< (std::ostream& target, const DOMString& s)
 	return target;
 }
 
+
 XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
 {
 	unsigned int lent = s.length();
@@ -552,7 +549,6 @@ XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
 	delete [] buf;
 	return strm;
 }
-
 
 static unsigned int indentation=0;
 

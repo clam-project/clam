@@ -52,6 +52,7 @@ private:
 	unsigned mIndentationLevel;
 	bool mLastWasContent;
 	bool mIndentXml;
+	XMLCh * mEncodingName;
 };
 
 }
