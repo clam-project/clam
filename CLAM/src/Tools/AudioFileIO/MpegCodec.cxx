@@ -1,3 +1,12 @@
+#if USE_MAD != 1
+#error USE_MAD was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
+#if USE_ID3 != 1
+#error USE_ID3 was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
+
 #include "MpegCodec.hxx"
 #include "AudioFileFormats.hxx"
 #include "AudioFile.hxx"
