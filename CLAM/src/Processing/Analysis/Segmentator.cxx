@@ -243,10 +243,10 @@ bool Segmentator::Do(Segment& originalSegment,SegmentDescriptors& descriptors)
 
 void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescriptors& descriptors,Matrix& descriptorsValues)
 {
-	int i,z=0;
+	int z=0;
 	int nFrames=originalSegment.GetnFrames();
 	int nDescriptors=mConfig.GetDescriptorsParams().Size();
-	for(i=0;i<nFrames;i++)
+	for(int i=0;i<nFrames;i++)
 	{
 /*This looks ugly but right now is the only way to deal with it*/
 		z=0;
@@ -419,68 +419,80 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 	SegmentBoundaries segmentBoundaries(nDescriptors);
 	// segment boundaries for each parameter
 	segmentBoundaries.mArray.SetSize(nDescriptors);
-	int i=0;
-	do
+
+	for (int z=0;z<nDescriptors;z++)
 	{
-		int z;
-		for (z=0;z<nDescriptors;z++)
+		segmentBoundaries.mArray[z].AddElem(PointTmpl<int,TData>(0,100));//very high value
+	}
+	for (int i=0; i<nFrames-4; i++)
+	{
+		for (int z=0;z<nDescriptors;z++)
 		{
-			if(i==0)
-				segmentBoundaries.mArray[z].AddElem(PointTmpl<int,TData>(0,100));//very high value
+			const TData & x3 = values.GetAt(z,i+3);
+			const TData & x2 = values.GetAt(z,i+2);
+			const TData & x1 = values.GetAt(z,i+1);
+			const TData & x0 = values.GetAt(z,i);
+			// Avoid div by 0
+			if (x2==0) continue;
+			
+			const TData relevance = fabs((x3-x2)/x2);
+			const TData & ratio = mConfig.GetDescriptorsParams()[z].percentil/100;
 
-			else if (i<4){}
-			else
+
+			if ((x3/x2)>(1+ratio) ||
+			    (x3/x2)<(1-ratio))
 			{
-				TData currentValue=values.GetAt(z,i);
-				TData previousValue=values.GetAt(z,i-1);
-				if((previousValue!=0))
+			/*
+			if (i>2)
+			{
+				if ((x3/x1)>(1+ratio) || (x3/x1)<(1-ratio))
 				{
-					PointTmpl<int,TData>  tmpValue(i,(currentValue-previousValue)/previousValue);
-					if (tmpValue.GetY()<0) tmpValue.SetY(tmpValue.GetY()*-1);
-					if((values.GetAt(z,i)/values.GetAt(z,i-1))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)
-					||(values.GetAt(z,i)/values.GetAt(z,i-1))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
-					{
-						/*if(i>2){
-						if((values.GetAt(z,i)/values.GetAt(z,i-2))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
-						(values.GetAt(z,i)/values.GetAt(z,i-2))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
-						{*/
-						//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
-						if (((currentValue>previousValue)&&(previousValue>values.GetAt(z,i-2))&&(values.GetAt(z,i-2)>values.GetAt(z,i-3)))||
-						   ((currentValue<previousValue)&&(previousValue<values.GetAt(z,i-2))&&(values.GetAt(z,i-2)<values.GetAt(z,i-3)))){
-						tmpValue.SetY(tmpValue.GetY()/(mConfig.GetDescriptorsParams()[z].percentil/100));
-						segmentBoundaries.mArray[z].AddElem(tmpValue);}
-						else if((currentValue/previousValue)>(1+2*mConfig.GetDescriptorsParams()[z].percentil/100)||
-						       (currentValue/previousValue)<(1-2*mConfig.GetDescriptorsParams()[z].percentil/100)){
-							tmpValue.SetY(tmpValue.GetY()/(mConfig.GetDescriptorsParams()[z].percentil/100));
-							segmentBoundaries.mArray[z].AddElem(tmpValue);}
-
-						//}}
-					}/*
-					else if(i>2){
-					if((values.GetAt(z,i)/values.GetAt(z,i-2))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
-						(values.GetAt(z,i)/values.GetAt(z,i-2))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
-					{
-						//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
-						segmentBoundaries.mArray[z].AddElem(i);
-					}}
-					else if(i>3){
-					if((values.GetAt(z,i)/values.GetAt(z,i-3))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
-						(values.GetAt(z,i)/values.GetAt(z,i-3))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
-					{
-						//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
-						segmentBoundaries.mArray[z].AddElem(i);
-					}}*/
-				}
-				/*else if (values.GetAt(z,i)==0&&values.GetAt(z,i-1)!=0)
+					//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
+			*/
+				if (( x3>x2 && x2>x1 && x1>x0 )||
+				   (  x3<x2 && x2<x1 && x1<x0 ))
 				{
-					Point<int,TData>  tmpValue(i,100);
+					PointTmpl<int,TData>  tmpValue(i+3,relevance/ratio);
 					segmentBoundaries.mArray[z].AddElem(tmpValue);
-				}*/
+				}
+				else if((x3/x2)>(1+2*ratio)||
+				        (x3/x2)<(1-2*ratio))
+				{
+					PointTmpl<int,TData>  tmpValue(i+3,relevance/ratio);
+					segmentBoundaries.mArray[z].AddElem(tmpValue);
+				}
 
 			}
+			/*
+				}
+			}
+			else if (i>2)
+			{
+				if ((x3/x1)>(1+ratio) || (x3/x1)<(1-ratio))
+				{
+					//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
+					segmentBoundaries.mArray[z].AddElem(i);
+				}
+			}
+			else if (i>3)
+			{
+				if ((x3/x0)>(1+ratio) || (x3/x0)<(1-ratio))
+				{
+					//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
+					segmentBoundaries.mArray[z].AddElem(i);
+				}
+			}
+			*/
+			/*
+			if ( x3==0 && x2!=0 )
+			{
+				Point<int,TData>  tmpValue(i,100);
+				segmentBoundaries.mArray[z].AddElem(tmpValue);
+			}
+			*/
+
 		}
-		i++;
-	} while(i<nFrames);
+	}
 	DataFusion(s,segmentBoundaries);
 }
 
