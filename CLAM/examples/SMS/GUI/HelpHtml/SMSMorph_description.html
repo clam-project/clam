@@ -1,0 +1,37 @@
+<html>
+<body>
+<h2>Morph</h2>
+<p>Allows to 'morph' two sounds, so the resulting one possesses a smooth blending of timbre, pitch and harmonicity,
+and texture of the original ones. Control on the actual blending is provided to the user through a set of
+envelopes that define the evolution through time and across several dimensions. These dimensions are:</p>
+<p><strong>Sinusoidal component amplitude hybridization: </strong>
+Allows to control an aspect of the timbre blending performed, concretely the sinusoidal component amplitude 
+envelopes blending. The X axis is time, expressed in a parametric form,  and the Y axis is the interpolation factor between 
+the two sinusoidal envelopes. An interpolation factor of 0.0 means that the resulting sound sinusoidal envelope matches
+source's one, and a factor of 1.0 means that the resulting sound sinusoidal envelope matches exactly the target's one.
+</p>
+<p><strong>Sinusoidal component frequency hybridization: </strong>
+Allows to control another aspect of timbre blending, the sinusoidal component frequencies blending. The X axis represents time, 
+expressed in a parametric form, and the Y axis is the interpolation factor between the two sinusoidal frequency contents. An 
+interpolation factor of 0.0 means that the resulting sound sinusoidal frequency content matches source's one,  and a factor of 
+1.0 means that the resulting sound sinusoidal frequency content matches exactly the target's one.
+</p>
+<p><strong>Pitch Hybridization: </strong>
+Allows to control sounds' pitches blending. Note that this involves not only to blend the fundamental frequency, but also any
+accompanying harmonics detected. The X axis is time, expressed in a parametric form, and the Y axis is the interpolation factor
+between the two sounds pitches. An interpolation factor of 0.0 means that the resulting sound harmonicity matches source's one,  
+and a factor of 1.0 means that the resulting sound harmonicity matches exactly the target's one.
+</p>
+<p><strong>Residual component amplitude hybridization:</strong>
+This widget allows you to control the blending of the two sounds hoarseness, or residual component amplitude envelope of the two 
+sounds. The X axis represents transformation time, in a parametric form, and the Y axis represents the interpolation factor 
+between the two sounds hoarseness. So a interpolation factor of 0.0 means that the resulting sound hoarseness should match 
+source's one, and an interpolation factor of 1.0 means that the resulting sound hoarseness should match target's one.
+</p>
+<p>Finally, in the sake of comodity, a 'global' envelope control is provided, that allows to define morph behaviour across
+all control dimensions in the same way.</p>
+<p>The option to interpolate 'intermediate' frames is given so to define SMS Tools behaviour when source and target morph 
+sounds' lenghts differ. If it is deactivated, Tools will resample shorter sound replicating missing frames. Otherwise, the 
+resampling will imply a linear interpolation between existing frames. Transformation result will sound better with linear interpolation but also will be a bit slower.</p>
+</body>
+</html>
