@@ -25,14 +25,14 @@
 #include <string>
 #include <qwidget.h>
 #include <qregion.h>
-#include "OutControlPresentation.hxx"
+#include "ConnectionPointPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
 
 namespace NetworkGUI
 {
 
-class Qt_OutControlPresentation : public QWidget, public OutControlPresentation
+class Qt_OutControlPresentation : public QWidget, public ConnectionPointPresentation
 {
 public:
 	Qt_OutControlPresentation( int id, QWidget *parent = 0, const char *name = 0);

@@ -24,14 +24,14 @@
 
 #include <string>
 #include <qwidget.h>
-#include "InPortPresentation.hxx"
+#include "ConnectionPointPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
 
 namespace NetworkGUI
 {
 
-class Qt_InPortPresentation : public QWidget, public InPortPresentation
+class Qt_InPortPresentation : public QWidget, public ConnectionPointPresentation
 {
 public:
 	Qt_InPortPresentation( int id, QWidget *parent = 0, const char *name = 0);

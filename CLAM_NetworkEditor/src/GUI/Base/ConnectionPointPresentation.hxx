@@ -19,25 +19,31 @@
  *
  */
 
-#include "OutPortPresentation.hxx"
-//#include "PortModel.hxx"
+
+#ifndef __ConnectionPointPresentation_hxx__ 
+#define __ConnectionPointPresentation_hxx__ 
+
+#include "Presentation.hxx"
+#include <string>
 
 namespace NetworkGUI
 {
 
-OutPortPresentation::OutPortPresentation()
-	: mName( "unnamed out port" )
+class ConnectionPointPresentation : public CLAMVM::Presentation
 {
-//	SlotSetName.Wrap( this, &OutPortPresentation::SetName );
-}
+protected:
+	std::string mName;
+public:
+	ConnectionPointPresentation() : mName("unnamed")
+	{}
+		
+	virtual void Show() = 0;
+	virtual void Hide() = 0;
+	virtual const std::string & GetName(){return mName;}
+	virtual void SetName(const std::string& name) = 0;
 
-OutPortPresentation::~OutPortPresentation()
-{
-}
-
-//void OutPortPresentation::AttachTo( CLAMVM::PortModel & m )
-//{
-//	m.SignalAcquireName.Connect(SlotSetName);
-//}
+};
 
 } // namespace NetworkGUI
+
+#endif // __ConnectionPointPresentation_hxx__ 
