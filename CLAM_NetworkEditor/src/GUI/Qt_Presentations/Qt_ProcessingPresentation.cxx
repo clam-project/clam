@@ -36,18 +36,9 @@
 namespace NetworkGUI
 {
 
-Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent, const char *name)
-	: QWidget( parent, name ),
-	  ProcessingPresentation(nameFromNetwork),
-	  mSelected( false )
+Qt_ProcessingPresentation::Qt_ProcessingPresentation()
+	: mSelected( false )
 {
-	QWidget * top = topLevelWidget();
-	UpdateSize();
-	// now we position the processings in the gui with a random function
-	// we put them inside 3/4 of the network, in order to avoid processings in the borders
-	QPoint position(rand()%(3*top->width()/4), rand()%(3*top->height()/4));
-	move(position);
-
 	// port slots
 	SlotSetInPortClicked.Wrap( this, &Qt_ProcessingPresentation::SetInPortClicked);
 	SlotSetOutPortClicked.Wrap( this, &Qt_ProcessingPresentation::SetOutPortClicked);
@@ -61,6 +52,14 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	SlotSetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::SetInControlAfterClickOutControl);
 
 	SlotConfigurationUpdated.Wrap( this, &Qt_ProcessingPresentation::ConfigurationUpdated );
+}
+
+void Qt_ProcessingPresentation::Initialize( const std::string & nameFromNetwork, QWidget * parent )
+{
+	ChangeProcessingPresentationName( nameFromNetwork );
+	reparent( parent, 0, QPoint(rand()%(3*parent->width()/4), rand()%(3*parent->height()/4)), true );
+//	move(position);
+
 }
 
 void Qt_ProcessingPresentation::UpdateSize()
@@ -328,9 +327,8 @@ void Qt_ProcessingPresentation::DrawSelectedRepresentation()
 	
 }
 
-void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
-{
-
+QColor Qt_ProcessingPresentation::GetColorOfState()
+{	
 	QColor c(0, 0, 0);
 	switch( mProcessingState )
 	{
@@ -348,8 +346,13 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 			break;
 
 	}
+	return c;
+}
+
+void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
+{
 	QPainter p( this );
-        p.setBrush( c );
+        p.setBrush( GetColorOfState() );
 
 
 	QRegion reg(12,7,width()-24, height()-14);
@@ -377,8 +380,6 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 
 	setMask(reg);
 	
-
-	p.drawRect( 12,7, width()-24,height()-14); // draw a rectangle
 	p.setPen( QPen( blue, 1 ));
 	p.drawRect( 12,7, width()-24,height()-14); // draw a rectangle
 	p.drawLine( QPoint( 12, height()/2), QPoint( width()-12, height()/2 )); 
@@ -386,14 +387,8 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	p.setPen( QPen( black,1 ));
 	
 	if(mSelected)
-	{
 		DrawSelectedRepresentation();
-//		p.setFont( QFont( "Helvetica", 8, QFont::Light, true ));
-	}
-//	else
-//	{
-		p.setFont( QFont( "Helvetica" ,8) );
-//	}
+	p.setFont( QFont( "Helvetica" ,8) );
 	p.drawText(  QRect(12,7,width()-24, height()/2 - 5 ),
 		    Qt::AlignCenter ,	
 		    QString( mName.c_str() ));
@@ -401,9 +396,6 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	p.drawText(  QRect(12,height()/2,width()-24, height()/2 - 5 ),
 		    Qt::AlignCenter ,	
 		    QString( mObservedClassName.c_str() ));
-
-	adjustSize();
- 
 }
 
 void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)

@@ -29,6 +29,8 @@
 #include "Signalv0.hxx"
 #include "Slotv1.hxx"
 
+class QColor;
+
 namespace CLAM
 {
 	class ProcessingConfig;
@@ -46,16 +48,17 @@ class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
 	Q_OBJECT
 public:
-	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_ProcessingPresentation(){}
+	Qt_ProcessingPresentation();
+	virtual ~Qt_ProcessingPresentation(){SlotConfigurationUpdated.Unbind();}
 	void Show();
 	void Hide();
 	void EmitPositionOfChildren();
 
 	void UnSelectProcessingPresentation();
 	void Move( const QPoint & );
+	void Initialize( const std::string & nameFromNetwork, QWidget * parent );
 protected:
-	virtual void SetObservedClassName(const std::string& name);
+	void SetObservedClassName(const std::string& name);
 
 	// port methods
 	void SetInPort( const std::string & );
@@ -67,7 +70,7 @@ protected:
 
 	// control methods
 	void SetInControl( const std::string & );
-	virtual void SetOutControl( const std::string & ); // reimplemented in Qt_OutControlSender widget
+	void SetOutControl( const std::string & ); // reimplemented in Qt_OutControlSender widget
 	void SetInControlClicked( Qt_InControlPresentation *);
 	void SetOutControlClicked( Qt_OutControlPresentation *);
 	void SetOutControlAfterClickInControl(const QPoint &);
@@ -75,11 +78,12 @@ protected:
 	
 
 	virtual void paintEvent( QPaintEvent * );
+	QColor GetColorOfState();
 	void mousePressEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
 	void mouseDoubleClickEvent ( QMouseEvent * );
 
-	void ConfigurationUpdated( bool );
+	virtual void ConfigurationUpdated( bool );
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
