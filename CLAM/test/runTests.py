@@ -1,0 +1,317 @@
+#! /usr/bin/python
+
+# thoroughtnessLevel :
+# 0: only make and execute
+# 1: make depend and make clean
+# 2: cvs update
+# 3: remove & cvs checkout
+thoroughtnessLevel = 3  # at night we want 3
+publicAddress = 'pau.arumi@iua.upf.es' #'clam-devel@iua.upf.es'
+privateAddress = 'parumi@iua.upf.es'
+subject = 'nightly tests report'
+executionTime = 30 #sec
+CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
+
+
+import commands
+import os
+import string
+import sys
+
+MODULE_TAG = 'development-branch'
+SANDBOX_NAME = 'clean-'+MODULE_TAG
+CLAM_SANDBOXES = '../../'
+BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
+SALTO_DATA_FOLDER = CLAM_SANDBOXES + 'SaltoDataFolder/'
+
+unitTestsPath = BUILDPATH+'Tests/AllUnitTests/'
+functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/AllFunctionalTests/'
+smsToolsPath = BUILDPATH+'Examples/SMS/Tools/'
+saltoPath = BUILDPATH + 'Examples/Salto/'
+simplePath = BUILDPATH + 'Examples/Simple/'
+
+#TODO max time allowed for each test -
+
+testsToRun = [
+	( 'UnitTests', unitTestsPath, './AllUnitTests'),
+	( 'FunctionalTests', functionalTestsPath, './AllApplicationTests'),
+	( 'SMSTools', smsToolsPath, './SMSTools' ),
+	( 'Salto', saltoPath, './SaltoExample' ),
+	( 'SpectralDelay', BUILDPATH+'Examples/SpectralDelay/', './SpectralDelay' ),
+	( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/', './NetworkEditor' )
+]
+#testsToRun = [( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/', './NetworkEditor' )]
+
+sender = '"automatic tests script" <pau.arumi@iua.upf.es>'
+
+def sendmail(fromaddr, toaddrs, subject, body) :
+	import smtplib
+
+	# Add the From: and To: headers at the start!
+	msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n" % (fromaddr, toaddrs, subject) + body
+
+	server = smtplib.SMTP('iua-mail.upf.es')
+	server.set_debuglevel(1)
+	server.sendmail(fromaddr, toaddrs, msg)
+	server.quit()
+
+def checkPaths() :
+	if not os.access(CLAM_SANDBOXES, os.F_OK) :
+		err = "Sorry can't access CLAM_SANDBOXES path : " + CLAM_SANDBOXES
+		sendError(err)
+		sys.exit(1)
+	for name, path, execcmd in testsToRun :
+		if not os.access(path, os.F_OK) :
+			sendError("Sorry can't access path " +path)
+			sys.exit(1)
+
+def parseCompilationWarnings(compilationOut) :
+	nwarnings = compilationOut.count('warning')
+	warnings = ''
+	if nwarnings > 0 :
+		warnings = ' - found %d warnings !'% (nwarnings)
+		print warnings
+	return warnings
+
+def parseTestsFailures( testsOut ) :
+	state='TESTS_INFO'
+	summary = 'tests results: '
+	details = ''
+	for line in testsOut.split('\n') :
+		if state == 'TESTS_INFO' :
+			if line.find('!!!FAILURES!!!') >=0 :
+				details = line + '\n'
+				summary +=  line
+				state = 'FAILURES'
+			if line.find('OK (') == 0 :
+				details = ''
+				summary += line
+		elif state == 'FAILURES' :
+			details +=  line + '\n'
+		else :
+			assert(false)
+	return summary, details
+
+def parseExecutionErrors( executionOut ) :
+	print 'executed non test\n', executionOut
+	if executionOut.find('# ASSERTION FAILED #')>=0 :
+		return 'execution: assertion failed!', executionOut
+	if executionOut.find('aborted')>=0:
+		return 'execution: aborted!', executionOut
+	#TODO violacio de segment
+	if executionOut.find('# WARNING #')>=0 :
+		return 'execution OK - althought warning-assert(s)', executionOut
+	return 'execution OK', ''
+
+
+def isTest(name) :
+	return name.find('Test') >= 0 or name.find('test') >= 0
+
+#----------------------------------------------------------------
+def getStatusOutput(cmd) :	
+	"returns wheather cmd exits correctly and the output"
+	print 'executing ',cmd
+	stat, output = commands.getstatusoutput(cmd)		
+	if stat != 0 : 
+		print output
+	else :
+		print cmd,' OK'
+	return (stat == 0), output
+
+def executeMandatory(cmd) :
+	stat, output = getStatusOutput(cmd)
+	if not stat : 
+		sendError(output)
+		sys.exit(1)
+#----------------------------------------------------------------
+
+def formatSummary(name, configuration, result) :
+	nameConfig = '%s (%s) ' % (name, configuration)
+	secondRow = 50
+	npoints = 0
+	if len(nameConfig) < secondRow :
+		npoints += secondRow - len(nameConfig)
+	points = '.'
+	for i in range(npoints): 
+		points +='.'
+	return nameConfig + points + result+'\n'
+
+def compileAndRun(name, path, execcmd, compErrs, execErrs, testsErrs ) :
+	os.chdir(path)
+	# compilation phase
+		
+	summary = details = s = d = ''
+	for configuration in ['debug', 'release'] :
+		if thoroughtnessLevel >= 1 :
+			executeMandatory('make clean')
+			executeMandatory('make depend')
+		makecmd = 'make CONFIG=%s' % (configuration)
+		ok, output = getStatusOutput( makecmd )
+		compErrs= compErrs or not ok
+		if not ok :
+			s = 'COMPILATION ERRORS'
+		else :
+			s = 'compilation OK'
+		s += parseCompilationWarnings( output )
+		summary += formatSummary(name, configuration, s)
+		detailsFormat = '\n\n%s\n-----------------------------\n%s\n'
+		if not ok :
+			details += detailsFormat % (name, output)
+		print 'summary: ',summary
+
+		if not ok : 
+			continue
+			
+		# execution phase
+		if isTest(name) :
+			print 'isTest yes\nrunning tests'
+			ok, output = getStatusOutput( execcmd )
+			testsErrs = testsErrs or not ok
+			s, d = parseTestsFailures( output )
+		else :
+			print 'isTest no\nexecuting application for a while'
+			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
+			s, d = parseExecutionErrors( output )
+			execErrs =  execErrs or not ok or s.find('OK')==-1
+		
+		summary += formatSummary(name, configuration, s)
+		if d != '' :
+			details += detailsFormat % (name, d)
+	return summary, details, compErrs, execErrs, testsErrs
+
+
+mailTemplate = '''
+(This message has been automatically generated)
+
+Status of CLAM on tag: %s 
+
+-------  
+SUMMARY
+-------
+%s
+
+---------------------------------------
+DETAILS (only if finds errors/failures)
+---------------------------------------
+%s
+
+-----------------------------------------------------------
+// Powered by Python //
+'''
+
+import time, string, signal
+def runInBackgroundForAWhile(path, command, sleeptime=10) :
+	os.chdir(path)
+	out, err = '/tmp/removeme.out', '/tmp/removeme.err'
+	file(out, 'w')
+	file(err, 'w')
+	fullcmd = '%s > %s 2> %s &' % (command, out, err)
+	print fullcmd
+	print 'result ',os.system( fullcmd )
+	time.sleep( sleeptime )
+	withoutSlash = command[command.find('/')+1 : ]
+	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
+	print 'kill status ', status, dummy
+	result = string.join( file('/tmp/removeme.out').readlines() )
+	result += string.join( file('/tmp/removeme.err').readlines() )
+	os.remove(out)
+	os.remove(err)
+	return True, result #TODO status
+
+
+
+def sendError(usermsg='') :
+	import traceback
+	tb = string.join( traceback.format_exception(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]) )
+	subject = 'unexpected error on runTests.py script'
+	errormsg = usermsg + 'Python interpreter said:\n' + tb
+	print errormsg
+	if privateAddress != '' :
+		sendmail( sender, privateAddress, subject, errormsg )
+	
+#-------------------------------------------------------------------------------------  
+#  Aplication Logic
+#
+def runTests() :
+#	executeMandatory('./setenv.sh') #TODO fix problem with env vars and remove this
+	foundCompilationErrors = False 
+	foundTestsFailures = False
+	foundExecutionErrors = False
+	subj = subject
+	report = []
+	totalSummary = totalDetails = ''
+	if thoroughtnessLevel <3 :
+		checkPaths()
+	# CVS phase
+	if thoroughtnessLevel >= 3 :
+		os.environ['CVSROOT'] = CVSROOT
+		os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
+		os.chdir(CLAM_SANDBOXES)
+		#sanity check
+		if SANDBOX_NAME == 'devel' : 
+			sendError( 'ups, trying to remove devel sandbox !!' )
+			sys.exit(-1)
+		print 'checking out a clean repository'
+		getStatusOutput('rm -rf '+SANDBOX_NAME )
+		executeMandatory('cvs checkout -r %s -d %s CLAM' % (MODULE_TAG, SANDBOX_NAME) )
+		checkPaths()
+		os.chdir(BUILDPATH+'srcdeps/')
+		executeMandatory('make')
+		os.chdir(BUILDPATH)
+		executeMandatory('autoconf')
+		executeMandatory('./configure')
+		executeMandatory('cd ../../CLAM-TestData')
+		executeMandatory('cvs update -d')
+		os.chdir(CLAM_SANDBOXES + SANDBOX_NAME+ '/build/Examples/Salto')
+		executeMandatory('ln -s ' + SALTO_DATA_FOLDER)
+	elif thoroughtnessLevel >= 2 :
+		os.chdir(BUILDPATH)
+		print 'updating repository: cvs update'
+		ok, output = getStatusOutput( 'cvs update -d' )
+		if output.find('\nC ')>=0 :
+			print 'CVS CONFLICT !!', output
+			summary += 'CVS CONFLICT(S) !!'
+			details += output
+
+	# compile and run/tests entries
+	for name, path, execcmd in testsToRun :
+		print '\n\nname\t\t %s \npath \t\t%s \nexec \t\t%s\n' % (name, path, execcmd)
+		summary, details, foundCompilationErrors, foundExecutionErrors, foundTestsFailures = compileAndRun(name, path, execcmd, foundCompilationErrors, foundExecutionErrors, foundTestsFailures )
+		#TODO a refactoring this huge line -> create class
+		totalSummary += summary
+		totalDetails += details
+
+		print totalSummary
+		report.append( (name, summary, details) )
+
+
+	mailBody = mailTemplate  % ( MODULE_TAG, totalSummary, totalDetails )
+	if foundCompilationErrors : 
+		subj += ' - compilation err!'
+	if foundTestsFailures :
+		subj += ' - tests failures!'
+	if foundExecutionErrors :
+		subj += ' - execution errs!'
+
+	if foundCompilationErrors or foundTestsFailures or foundExecutionErrors :
+		sendReportTo = publicAddress
+	else :
+		sendReportTo = privateAddress
+	if sendReportTo != '' :
+		sendmail( sender, sendReportTo, subj, mailBody )
+	else :
+		print 'nowbody to send report'
+		print 'subject: ', subj
+		print mailBody
+
+#--------------------------------------------------------------
+#
+#  If called from command-line, parse arguments and take actions
+#
+if __name__ == '__main__':
+	try :
+		runTests()
+	except KeyboardInterrupt :
+		print 'interrupted by the user'
+	except:
+		sendError()
