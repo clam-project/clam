@@ -1,0 +1,229 @@
+#include "SDIFIn.hxx"
+#include "Spectrum.hxx"
+#include "Frame.hxx"
+#include "Segment.hxx"
+#include "SpectralPeakArray.hxx"
+#include "Fundamental.hxx"
+#include "SDIFFile.hxx"
+#include "SDIFFrame.hxx"
+#include "SDIFMatrix.hxx"
+
+using namespace CLAM;
+
+
+void SDIFInConfig::DefaultInit()
+{
+	AddAll();
+	UpdateData();
+
+/*	This may have to change to false but right now, Salto is the most important app that
+	uses it and needs it set to true.*/
+	SetRelativePeakIndices(true);
+
+	SetEnableResidual(true);
+	SetEnablePeakArray(true);
+	SetEnableFundFreq(true);
+	SetSpectralRange(22050);
+	SetMaxNumPeaks(100);
+	SetFileName("nofile");
+}
+
+SDIFIn::SDIFIn():
+mPrevIndexArray(0),
+Output("Output",this,1)
+{ 
+	mpFile=NULL;
+	mLastCenterTime=-1;
+	mFileInit=false;
+
+	Configure(SDIFInConfig());
+}
+
+SDIFIn::SDIFIn(const SDIFInConfig& c):
+mPrevIndexArray(0),
+Output("Output",this,1)
+{ 
+	mpFile=NULL;
+	mLastCenterTime=-1;
+	mFileInit=false;
+
+	Configure(c);
+}
+	
+SDIFIn::~SDIFIn()
+{
+	mpFile->Close();
+	delete mpFile;
+}
+
+bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
+{
+	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
+	if(mpFile) delete mpFile;
+	mpFile = new SDIFFile(mConfig.GetFileName().c_str(),eInput);
+	mpFile->Open();
+	return true;
+}
+
+
+const ProcessingConfig& SDIFIn::GetConfig() const
+{
+	return mConfig;
+}
+
+bool SDIFIn::Do(void)
+{
+	if(!mpFile) return false;
+	if(mpFile->Done()) return false;
+	
+	if(!mFileInit)
+	{
+		mpFile->ReadInit();
+		mFileInit=true;
+	}
+
+	SDIFFrame tmpSDIFFrame;
+	mpFile->Read(tmpSDIFFrame);
+	
+
+	double frameTimeTag	= tmpSDIFFrame.mHeader.mTime;
+	if (frameTimeTag != mLastCenterTime)	// new SpectralFrame, need to add it to segment
+	{
+		Frame initFrame;
+		initFrame.AddAll();
+   		initFrame.UpdateData();
+
+		//Residual Spectrum in frame should be configured to have the ComplexArray
+  		SpectrumConfig Scfg;
+  		SpecTypeFlags sflags;
+		sflags.bComplex = 1;
+  		sflags.bMagPhase = 0;
+  		initFrame.GetResidualSpec().SetType(sflags);
+				
+		mLastCenterTime=frameTimeTag;
+		initFrame.SetCenterTime(frameTimeTag);
+		Output.GetData().AddFrame(initFrame);
+	}
+
+	Frame& tmpFrame=Output.GetData().GetFrame(Output.GetData().GetnFrames()-1);
+	
+	SDIFMatrix* pMatrix = tmpSDIFFrame.mpFirst;
+	
+	/* its a fundamental frequency ..*/
+	if (tmpSDIFFrame.mHeader.mType=="1FQ0" && mConfig.GetEnableFundFreq())
+	{
+ 		tmpFrame.GetFundamental().AddElem(pMatrix->GetValue(0,0));
+	}	
+	
+	/* it is residual data ..*/
+	else if(tmpSDIFFrame.mHeader.mType=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
+	{
+		if(!(pMatrix->mHeader.mType =="ISTF"))	
+			throw Err("SDIFIn::Add ISTF Header in Matrix expected");	
+		
+		pMatrix=pMatrix->mpNext;	// move pointer to next matrix in frame
+		
+		if(!(pMatrix->mHeader.mType=="1STF"))	
+			throw Err("SDIFIn::Add 1STF Headerin Matrix expected");
+		tmpFrame.GetResidualSpec().SetSize(pMatrix->mHeader.mnRows);
+		Array<Complex>& complexBuffer=tmpFrame.GetResidualSpec().GetComplexArray();
+		for (int r=0;r<pMatrix->mHeader.mnRows;r++)	//read in complex data
+		{
+			Complex tmpComplex(pMatrix->GetValue(r,0),pMatrix->GetValue(r,1));
+			complexBuffer[r] = tmpComplex;
+		}
+		
+	}	
+	
+	/* its sinusoidal track data */ 
+	else if(tmpSDIFFrame.mHeader.mType=="1TRC" && mConfig.GetEnablePeakArray())
+	{				
+		TIndex nElems = pMatrix->mHeader.mnRows;
+	
+		
+		tmpFrame.GetSpectralPeakArray().AddAll();
+		tmpFrame.GetSpectralPeakArray().UpdateData();
+		SpectralPeakArray& tmpPeakArray=tmpFrame.GetSpectralPeakArray();
+
+		tmpPeakArray.SetnMaxPeaks(nElems); //number of peaks in the sdif file
+		tmpPeakArray.SetnPeaks(nElems); //number of peaks in the sdif file
+		tmpPeakArray.ResetIndices();		// resets all indeces, make valid..
+						
+		/* read file data into SpectralPeakArray */
+		DataArray& pkfreqBuffer=tmpPeakArray.GetFreqBuffer();
+		DataArray& pkmagBuffer=tmpPeakArray.GetMagBuffer();
+		DataArray& pkPhaseBuffer=tmpPeakArray.GetPhaseBuffer();
+		DataArray& pkBinPosBuffer=tmpPeakArray.GetBinPosBuffer();
+		DataArray& pkBinWidthBuffer=tmpPeakArray.GetBinWidthBuffer();
+		IndexArray& pkIndexArray=tmpPeakArray.GetIndexArray();
+		if(!mConfig.GetRelativePeakIndices())
+		{
+			for (int r=0;r<nElems;r++)	
+			{
+
+				// get frequency , mag and phase
+				pkfreqBuffer[r]=pMatrix->GetValue(r,1);
+				pkmagBuffer[r]=pMatrix->GetValue(r,2);
+				pkPhaseBuffer[r]=pMatrix->GetValue(r,3);
+				pkBinPosBuffer[r]=-1;
+				pkBinWidthBuffer[r]=-1;
+				pkIndexArray[r]=pMatrix->GetValue(r,0) - 1;	// -1 because SDIF doesnt allow Track 0
+			}
+		}
+		else
+		{
+			IndexArray tmpIndexArray;
+			for (int r=0;r<nElems;r++)	
+			{
+
+				// get frequency , mag and phase
+				pkfreqBuffer[r]=pMatrix->GetValue(r,1);
+				pkmagBuffer[r]=pMatrix->GetValue(r,2);
+				pkPhaseBuffer[r]=pMatrix->GetValue(r,3);
+				pkBinPosBuffer[r]=-1;
+				pkBinWidthBuffer[r]=-1;
+				if(mConfig.GetRelativePeakIndices())
+				{
+					pkIndexArray[r]=-1;			
+					// track index and buffer it
+					int	tempIndex = pMatrix->GetValue(r,0) - 1;	// -1 because SDIF doesnt allow Track 0
+					tmpIndexArray.AddElem(tempIndex);
+				}
+			}
+			/* compare new indizes with the previous
+			 * the indizes of the current peakarray should hold 
+			 * then the related 
+			 * peak positions to the previous peakarray */
+			
+			TIndex	nPeaks = tmpIndexArray.Size();
+			TIndex	nPrevPeaks = mPrevIndexArray.Size();
+			TIndex	currIndex,prevIndex;
+			bool		bIndexFound=false;
+			
+			for (int i=0;i<nPeaks;i++)
+			{
+				bIndexFound=false;
+				currIndex = tmpIndexArray[i];
+				
+				for (int j=0;j<nPrevPeaks;j++)
+				{
+					prevIndex = mPrevIndexArray[j];
+					if 	(prevIndex==currIndex)
+					{
+						pkIndexArray[i]=j;
+						bIndexFound = true;
+						break;
+					}
+				}
+				if (!bIndexFound) pkIndexArray[i]=-1;  
+			}
+					
+			/* current IndexArray becomes the Previous */
+			mPrevIndexArray = tmpIndexArray;
+		}		
+	}
+
+	return true;	
+
+}
+
