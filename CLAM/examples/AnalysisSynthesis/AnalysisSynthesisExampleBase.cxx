@@ -421,7 +421,7 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	{      
 		k+=step;
 		mCurrentProgressIndicator->Update(float(k));
-	}  //while(k<=size-step-initialOffset);
+	}
 
 	myAnalysis.Stop();
 
@@ -559,7 +559,7 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	Audio tmpAudioFrame,tmpAudioFrame2;
 	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
 		
-	int nSynthFrames=size/mSynthConfig.GetFrameSize();
+	int nSynthFrames=mSegment.GetnFrames();
 	int i;
 
 
