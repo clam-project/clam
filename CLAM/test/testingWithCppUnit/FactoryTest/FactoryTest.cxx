@@ -26,7 +26,8 @@ private:
 		std::string msg = std::string(
 			"Expected: CLAM::Oscillator\n"
 			"But was: " ) + std::string( typeid( returned ).name() );
-		CPPUNIT_ASSERT_MESSAGE( msg, typeid( CLAM::Oscillator*) == typeid(returned) ); 
+		
+		CPPUNIT_ASSERT_MESSAGE( msg, typeid( CLAM::Oscillator ) == typeid(*returned) ); 
 	
 	}
 };
