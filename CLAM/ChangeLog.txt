@@ -1,4 +1,14 @@
-
+  * ProcessingData:
+      ** SpectralPeakArray ProcessingData; when adding an IndexArray to an already 
+         existing SpectralPeakArray and calling InitIndices(), the IndexArray would be 
+         allocated to the actual number of elements in the other arrays, not their 
+         allocated size (i.e. the maximum elements they can hold without reallocating).
+      ** Fundamental ProcessingData; removed two Dynamic Type attributes which were used 
+         to keep track of the size and allocated size (max size) of the Fundamental. These 
+         values are now derived from either of the arrays (freq/err). Also calling 
+         SetnCandidates() or SetnMaxCandidates() now actually affects the arrays instead of 
+         merely setting the size fields. This is more consistent with SpectralPeakArray for 
+         instance.
 
 2003-10-4 CLAM_0_5_3
 'Starting the new course'
