@@ -47,6 +47,7 @@ public:
 // Implementation Details
 private:
 	void PrintNode(ostream & os, DOM_Node & toWrite);
+	void UseIndentation(bool);
 // Attributes
 private:
 	unsigned mIndentationLevel;

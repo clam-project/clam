@@ -203,12 +203,17 @@ CLAM::XercesDomPrinter::~XercesDomPrinter()
 {
 }
 
+void CLAM::XercesDomPrinter::UseIndentation(bool shouldI) 
+{
+	mIndentXml = shouldI;
+}
+
 
 
 void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 {
 	mIndentationLevel = 0;
-	mLastWasContent = true;
+	mLastWasContent = false;
 
 	// Discuss about the encoding to get
 	DOMString encNameStr("UTF-8");
