@@ -57,7 +57,7 @@ namespace CLAMVM
 
 		end();
 				
-		mSpectrumDrawMgr.SetDetailThreshold( 50 );				
+		mSpectrumDrawMgr.SetDetailThreshold( 500 );				
 		mWorldSpaceCoords.mLeft = -1.0;
 		mWorldSpaceCoords.mRight = 1.0;
 		mWorldSpaceCoords.mTop = 1.0;
