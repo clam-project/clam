@@ -54,6 +54,11 @@ namespace CLAM
 		return "MultiChannelAudioFileWriter";
 	}
 
+	bool MultiChannelAudioFileWriter::ModifiesPortsAndControlsAtConfiguration()
+	{
+		return true;
+	}
+
 	const ProcessingConfig& MultiChannelAudioFileWriter::GetConfig() const
 	{
 		return mConfig;
