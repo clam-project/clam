@@ -1,8 +1,9 @@
-// SimpleNetwork
+
+#include "SupervisedSystemWithoutTrueFlowControl.hxx"
 
 int main()
 {
-	FlowControlExample::SystemWithNetworks s(
+	FlowControlExample::SupervisedSystemWithoutTrueFlowControl s(
 		"testin.wav" /* file in */,
 		"testout.wav" /* file out */, 
 		512 /* frame size */, 

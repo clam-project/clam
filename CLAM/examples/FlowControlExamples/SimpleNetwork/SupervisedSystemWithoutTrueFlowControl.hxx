@@ -14,7 +14,7 @@ public:
 	SupervisedSystemWithoutTrueFlowControl
 	( std::string fileIn, std::string fileOut , int frameSize, int maxFramesToProcess, bool hasAudioOut );
 
-	virtual ~SupervisedSystemWithoutTrueFlowControl();{}
+	virtual ~SupervisedSystemWithoutTrueFlowControl(){}
 
 	void ConfigureNetworks();
 	void ProcessAllNetworks();
@@ -36,11 +36,11 @@ private:
 	bool _hasAudioOut;
 
 	//networks
-	Network _oscillatorToFileOut;
-	Network _fileInFileOut;
-	Network _modulatedFileIn;
-	Network _modulatedOscillator;
-	Network _modulatedFileInPlusFileIn;
+	CLAM::Network _oscillatorToFileOut;
+	CLAM::Network _fileInFileOut;
+	CLAM::Network _modulatedFileIn;
+	CLAM::Network _modulatedOscillator;
+	CLAM::Network _modulatedFileInPlusFileIn;
 
 	CLAM::AudioManager _audioManager;
 
