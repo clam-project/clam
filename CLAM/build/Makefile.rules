@@ -55,7 +55,10 @@ $(PROGRAM): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 else
-%.o:
+
+.FORCE:
+
+%.o: .FORCE
 	@echo "===================================================================="
 	@echo "Error: specify configuration, either by"
 	@echo "- specifying CONFIG=[debug|release] when running make"
@@ -68,7 +71,7 @@ else
 	@echo "         setenv CONFIG release"
 	@echo "===================================================================="
 
-$(PROGRAM):
+$(PROGRAM): .FORCE
 	@echo "===================================================================="
 	@echo "Error: specify configuration, either by"
 	@echo "- specifying CONFIG=[debug|release] when running make"
