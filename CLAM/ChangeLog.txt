@@ -1,6 +1,5 @@
 2002-11-26  CLAM_0_4_0-rel 
 'Fly examples, fly to seattle' release
-
   * General:
       ** Directory reorganization
       ** CLAM_WARNING macros with customizable behaviour
@@ -15,6 +14,8 @@
   * Standard:
       ** Enum method to get the symbol mapping
       ** Added TabFunct to deal with precalculed function tables
+  * SDIF:
+      ** Added SDIF support for storing analysis result in a binary format
   * Visualization Module( GUI )
       ** Automatic user interface generation for editing configurations
       ** A lot of bug fixes (see Mantis)
@@ -26,11 +27,17 @@
       ** DOMPrint is not used anymore
       ** XMLStorage internal refactoring to improve mantainability, clearness
          and future improvements
+  * LADSPA
+      ** Added support for writing LASDPA plug-ins
+  * Examples
+      ** The following examples are now running and fairly debugged: SALTO, 
+         AnalysisSynthesis, SpectralDelay and Rappid
   * Unix build system
       ** Selective clean
       ** Include paths not shown on the command line
   * Windows build system
       ** Workspaces reorganization
+
 
 
 2002-04-26  CLAM_0_3_0-rel
