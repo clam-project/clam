@@ -33,6 +33,7 @@ void FlowControl::ConfigureNodes()
 		(*it)->Configure(_frameSize);
 	}
 	_state = Ready;
+
 }
 
 void FlowControl::ConfigurePorts()
@@ -84,7 +85,7 @@ void FlowControl::StartNetwork()
 
 void FlowControl::StopNetwork()
 {
-	CLAM_ASSERT(_state == Running , "FlowControl cannot Stop a Network that is not running");
+	//CLAM_ASSERT(_state == Running , "FlowControl cannot Stop a Network that is not running");
 
 	Network::ProcessingsMap::iterator it;
 	for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
@@ -96,7 +97,11 @@ void FlowControl::StopNetwork()
 
 void FlowControl::DoProcessings()
 {
-	CLAM_ASSERT(_state == Running , "FlowControl not started");		
+	//CLAM_ASSERT(_state == Running , "FlowControl not started");		
+	CLAM_ASSERT(_state == Running || _state == Ready , "FlowControl not started");		
+	// todo: rethink FlowControl states. and test.
+
+
 	Network::ProcessingsMap::iterator it;
 	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
 	{
