@@ -1,6 +1,7 @@
 #include "SequenceRenderingManager.hxx"
 #include "Assert.hxx"
 #include "CLAMGL.hxx"
+#include "CLAM_Math.hxx"
 #include <algorithm>
 
 namespace CLAMVM
