@@ -38,7 +38,7 @@ namespace CLAM
 
 	public:
 		ComplexTmpl(T re = 0.f, T im = 0.f) : mRe(re), mIm(im) {}
-
+		ComplexTmpl(const ComplexTmpl<T> &rhs) : mRe(rhs.mRe), mIm(rhs.mIm) {}
 
 		const T Real() const { return mRe; } //< accessor returns the real part
 		const T Imag() const { return mIm; } //< accessor returns the imaginary part
@@ -50,6 +50,12 @@ namespace CLAM
 		const T Mag() const
 		{
 			return sqrt(mRe*mRe + mIm*mIm);
+		}
+
+		/// returns squared magnitude
+		const T SquaredMag() const
+		{
+			return mRe*mRe + mIm*mIm;
 		}
 
 		/// returns angle
@@ -102,7 +108,7 @@ namespace CLAM
 		/// complex '+' operator
 		ComplexTmpl<T> operator + (const ComplexTmpl<T>& rhs) const
 		{
-			return ComplexTmpl<T>(mRe + rhs.mRe , mIm + rhs.mIm);
+			return ComplexTmpl<T>(mRe + rhs.mRe, mIm + rhs.mIm);
 		}
 
 		///  complex '-' operator
