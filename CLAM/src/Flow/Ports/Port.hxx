@@ -50,6 +50,9 @@ namespace CLAM {
 	};
 
 	/** Processing port base class */
+
+	class Processing;
+
 	class Port
 	{
 		/** Port name */
@@ -88,6 +91,7 @@ namespace CLAM {
 			mHop = hop?hop:length;
 		}
 		const std::string& GetName() const { return mName; }
+		const Processing * GetProcessing() const { return mObject;}
 	};
 
 }
