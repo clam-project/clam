@@ -109,7 +109,7 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetMoment5(initVal);
 	SetMoment6(initVal);
 	SetSpread(initVal);
-	SetSkewness(initVal);
+	SetMagnitudeSkewness(initVal);
 	SetKurtosis(initVal);
 	SetFlatness(initVal);
 	SetHighFrequencyCoefficient(initVal);
@@ -177,8 +177,8 @@ void SpectralDescriptors::ConcreteCompute()
 		SetMoment6(mpStats->GetMoment((O<6>*)(0)));
 	if (HasSpread())
 	        SetSpread(mpStats->GetSpread()*mDeltaFreq*mDeltaFreq);
-	if(HasSkewness())
-		SetSkewness(mpStats->GetSkew());
+	if(HasMagnitudeSkewness())
+		SetMagnitudeSkewness(mpStats->GetSkew());
 	if(HasKurtosis())	
 		SetKurtosis(mpStats->GetKurtosis());
 	if(HasFlatness())
@@ -309,8 +309,8 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()*mult);
 	if(a.HasSpread())
 		tmpD.SetSpread(a.GetSpread()*mult);
-	if(a.HasSkewness())
-		tmpD.SetSkewness(a.GetSkewness()*mult);
+	if(a.HasMagnitudeSkewness())
+		tmpD.SetMagnitudeSkewness(a.GetMagnitudeSkewness()*mult);
 	if(a.HasRolloff())
 		tmpD.SetRolloff(a.GetRolloff()*mult);
 	if(a.HasSlope())
@@ -416,11 +416,11 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetSpread(a.GetSpread()*b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		tmpD.AddSkewness();
+		tmpD.AddMagnitudeSkewness();
 		tmpD.UpdateData();
-		tmpD.SetSkewness(a.GetSkewness()*b.GetSkewness());
+		tmpD.SetMagnitudeSkewness(a.GetMagnitudeSkewness()*b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
@@ -557,11 +557,11 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetSpread(a.GetSpread()+b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		tmpD.AddSkewness();
+		tmpD.AddMagnitudeSkewness();
 		tmpD.UpdateData();
-		tmpD.SetSkewness(a.GetSkewness()+b.GetSkewness());
+		tmpD.SetMagnitudeSkewness(a.GetMagnitudeSkewness()+b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{

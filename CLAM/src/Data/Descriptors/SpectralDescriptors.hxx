@@ -82,7 +82,7 @@ namespace CLAM {
 		DYN_ATTRIBUTE (7, public, TData, Moment5);
 		DYN_ATTRIBUTE (8, public, TData, Moment6);
 		DYN_ATTRIBUTE (9, public, TData, Flatness);
-		DYN_ATTRIBUTE (10,public, TData, Kurtosis);
+		DYN_ATTRIBUTE (10,public, TData, MagnitudeKurtosis);
 		DYN_ATTRIBUTE (11,public, Array<TData>, MFCC);
 		DYN_ATTRIBUTE (12,public, TData, MaxMagFreq); 
 		/**
@@ -96,7 +96,7 @@ namespace CLAM {
 		 * order moment.
 		 */
 		DYN_ATTRIBUTE (14,public, TData, Spread);
-		DYN_ATTRIBUTE (15,public, TData, Skewness);
+		DYN_ATTRIBUTE (15,public, TData, MagnitudeSkewness);
 		/**
 		 * The spectral roll-off point is the frequency value 
 		 * so that the 85% of the spectral energy is contained below 
@@ -224,10 +224,10 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetSpread()>a.GetSpread())
 			tmpD.SetSpread(b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		if(b.GetSkewness()>a.GetSkewness())
-			tmpD.SetSkewness(b.GetSkewness());
+		if(b.GetMagnitudeSkewness()>a.GetMagnitudeSkewness())
+			tmpD.SetMagnitudeSkewness(b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
@@ -335,10 +335,10 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetSpread()<a.GetSpread())
 			tmpD.SetSpread(b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		if(b.GetSkewness()<a.GetSkewness())
-			tmpD.SetSkewness(b.GetSkewness());
+		if(b.GetMagnitudeSkewness()<a.GetMagnitudeSkewness())
+			tmpD.SetMagnitudeSkewness(b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
