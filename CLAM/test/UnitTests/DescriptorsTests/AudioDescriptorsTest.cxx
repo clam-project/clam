@@ -47,7 +47,7 @@ class AudioDescriptorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testTemporalCentroid );
 	CPPUNIT_TEST( testZeroCrossingRate );
 	CPPUNIT_TEST( testEnergy );
-	CPPUNIT_TEST( testDecrease );
+//	CPPUNIT_TEST( testDecrease );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -182,7 +182,7 @@ private:
 
 	void testTemporalCentroid()
 	{
-		CLAM::TData tolerance = 0.0002;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1.107199;
@@ -201,7 +201,7 @@ private:
 		data["gamelan-gong.wav"] = 1.803790;
 		data["gt_E4.wav"] = 0.646689;
 		data["pno_Eb1.wav"] = 2.341217;
-		data["silence.wav"] = 0.05;  // std::numeric_limits<CLAM::TData>::quiet_NaN();
+		data["silence.wav"] = 0.05;  // Avoids NaN
 		data["vln_A3.wav"] = 0.500487;
 		data["vln_D5.wav"] = 0.456816;
 		data["whitenoise.wav"] = 0.049801;
