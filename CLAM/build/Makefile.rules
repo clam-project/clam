@@ -1,5 +1,7 @@
 CLAM_PATH ?= $(TOP)
 
+SRCDEPS=$(CLAM_PATH)/srcdeps/srcdeps
+
 all: program library
 
 clean:
@@ -32,38 +34,42 @@ library: $(LIBRARY)
 
 ifeq ($(CONFIG),debug)
 LIBRARIES = $(LIBRARIES_DEBUG) 
+LINK_FLAGS = $(LINK_FLAGS_DEBUG)
 CXXFLAGS = $(CXXFLAGS_DEBUG)
 
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) -o $@ 
+	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@ 
 
 $(LIBRARY): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) -o lib$@.so -shared 
+	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o lib$@.so -shared 	
 
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 else
 ifeq ($(CONFIG),release)
 LIBRARIES = $(LIBRARIES_RELEASE) 
+LINK_FLAGS = $(LINK_FLAGS_RELEASE)
 CXXFLAGS = $(CXXFLAGS_RELEASE)
 
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(OBJECTS) -o $@
+	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@ 
+
 
 $(LIBRARY): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(OBJECTS) -o lib$@.so -shared 
+	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o lib$@.so -shared 
+
 
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 else
 
