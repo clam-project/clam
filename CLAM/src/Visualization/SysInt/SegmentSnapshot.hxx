@@ -3,7 +3,7 @@
 
 #include "Segment.hxx"
 #include "SegmentView.hxx"
-#include "SegmentPresentation.hxx"
+#include "FLTK/SegmentPresentation.hxx"
 #include "DebugSnapshots.hxx"
 
 using CLAM::Segment;

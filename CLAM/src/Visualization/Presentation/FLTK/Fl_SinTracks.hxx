@@ -2,7 +2,7 @@
 #define __FL_SINTRACKS__
 
 #include <FL/Fl_Window.H>
-#include "SinTracksPresentation.hxx"
+#include "Base/SinTracksPresentation.hxx"
 #include "SinTracksRenderingManager.hxx"
 
 namespace CLAMVM

@@ -31,8 +31,8 @@
 #include "WidgetTKWrapper.hxx"
 #include "ProcObjView.hxx"
 #include "ProcDataView.hxx"
-#include "ProcObjPresentation.hxx"
-#include "ProcDataPresentation.hxx"
+#include "FLTK/ProcObjPresentation.hxx"
+#include "FLTK/ProcDataPresentation.hxx"
 #include <FL/Fl.H>
 
 namespace CLAMGUI

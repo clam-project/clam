@@ -1,5 +1,5 @@
 #include "SnapshotGenerator.hxx"
-#include "ArrayPresentation.hxx"
+#include "FLTK/ArrayPresentation.hxx"
 
 namespace CLAMGUI
 {
