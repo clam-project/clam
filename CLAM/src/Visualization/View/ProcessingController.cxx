@@ -4,86 +4,86 @@
 
 namespace CLAMVM
 {
-		using CLAM::Processing;
+	using CLAM::Processing;
 
-		ProcessingController::ProcessingController()
+	ProcessingController::ProcessingController()
+	{
+	}
+
+	ProcessingController::~ProcessingController()
+	{
+		DeleteSubAdapters();
+	}
+
+	bool ProcessingController::Publish()
+	{
+		iterator i = mChildren.begin();
+
+		while ( i != mChildren.end() )
 		{
+			ControlAdapter* adap = static_cast<ControlAdapter* >( i->second );
+			CLAM_ASSERT( adap!=NULL, "The static cast failed: invariant does not hold!" );
+			adap->Publish();
+
+			i++;
 		}
 
-		ProcessingController::~ProcessingController()
+		return true;
+	}
+
+	bool ProcessingController::Update()
+	{
+		iterator i = mChildren.begin();
+
+		while ( i != mChildren.end() )
 		{
-				DeleteSubAdapters();
+			ControlAdapter* adap = static_cast<ControlAdapter* >( i->second );
+			CLAM_ASSERT( adap!=NULL, "The static cast failed: invariant does not hold!" );
+			adap->Update();
+
+			i++;
 		}
-
-		bool ProcessingController::Publish()
-		{
-				iterator i = mChildren.begin();
-
-				while ( i != mChildren.end() )
-				{
-						ControlAdapter* adap = static_cast<ControlAdapter* >( i->second );
-						CLAM_ASSERT( adap!=NULL, "The static cast failed: invariant does not hold!" );
-						adap->Publish();
-
-						i++;
-				}
-
-				return true;
-		}
-
-		bool ProcessingController::Update()
-		{
-				iterator i = mChildren.begin();
-
-				while ( i != mChildren.end() )
-				{
-						ControlAdapter* adap = static_cast<ControlAdapter* >( i->second );
-						CLAM_ASSERT( adap!=NULL, "The static cast failed: invariant does not hold!" );
-						adap->Update();
-
-						i++;
-				}
 				
-				return true;
-		}
+		return true;
+	}
 
 
-		bool ProcessingController::BindTo( Processing& procObj )
+	bool ProcessingController::BindTo( Processing& procObj )
+	{
+
+		CLAM::Processing::InControlIterator i = procObj.FirstInControl();
+
+		while ( i!=procObj.LastInControl() )
 		{
-
-				CLAM::Processing::InControlIterator i = procObj.FirstInControl();
-
-				while ( i!=procObj.LastInControl() )
-				{
-						ControlAdapter* adap = new ControlAdapter();
+			ControlAdapter* adap = new ControlAdapter();
 						
-						Insert( (*i)->GetName(), *adap   );
-						adap->BindTo( *(*i) );
+			Insert( (*i)->GetName(), *adap   );
+			adap->BindTo( *(*i) );
 						
-						i++;
-				}
-
-				return true;
+			i++;
 		}
 
-		bool ProcessingController::Unbind()
-		{
-				DeleteSubAdapters();
-				mChildren.clear();
+		return true;
+	}
+
+	bool ProcessingController::Unbind()
+	{
+		DeleteSubAdapters();
+		mChildren.clear();
 				
-				return true;
-		}
+		return true;
+	}
 
-		void ProcessingController::DeleteSubAdapters()
+	void ProcessingController::DeleteSubAdapters()
+	{
+		iterator i = mChildren.begin();
+
+		while ( i != mChildren.end() )
 		{
-				iterator i = mChildren.begin();
-
-				while ( i != mChildren.end() )
-				{
-						delete i->second;
+			delete i->second;
 				
-						i++;
-				}				
+			i++;
+		}				
 
-		}
+	}
 }

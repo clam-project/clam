@@ -13,36 +13,36 @@ namespace CLAM
 
 namespace CLAMVM
 {
-		using CLAM::Processing;
+	using CLAM::Processing;
 
-		class ProcessingController
-				: public ModelController, public ProcessingInControlSet
-		{
+	class ProcessingController
+		: public ModelController, public ProcessingInControlSet
+	{
 
-		protected:
-				void DeleteSubAdapters();
+	protected:
+		void DeleteSubAdapters();
 
-		public:
+	public:
 			
-				ProcessingController();
+		ProcessingController();
 
-				virtual ~ProcessingController();
+		virtual ~ProcessingController();
 
-				virtual const char* GetClassName() const
-				{
-						return "ProcessingController";
-				}
+		virtual const char* GetClassName() const
+		{
+			return "ProcessingController";
+		}
 
-				virtual bool Publish();
+		virtual bool Publish();
 
-				virtual bool Update();
+		virtual bool Update();
 
-				virtual bool BindTo( Processing& procObj );
+		virtual bool BindTo( Processing& procObj );
 				
-				virtual bool Unbind();
+		virtual bool Unbind();
 
 
-		};
+	};
 }
 
 #endif // ProcessingController.hxx

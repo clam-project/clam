@@ -7,49 +7,49 @@
 
 namespace CLAMVM
 {
-		class ProcessingInControlSet
+	class ProcessingInControlSet
+	{
+	private:
+		typedef std::map< std::string, InputControlModel* >   tChildTbl;
+		typedef tChildTbl::value_type                         tChildvalue_type;
+	protected:		
+
+		tChildTbl                                             mChildren;
+				
+	public:
+		typedef tChildTbl::iterator                           iterator;
+		typedef tChildTbl::const_iterator                     const_iterator;
+
+		ProcessingInControlSet();
+
+		virtual ~ProcessingInControlSet();
+				
+		void Insert( std::string name, InputControlModel& a );
+				
+		InputControlModel& Retrieve( std::string name );
+
+		iterator begin()
 		{
-		private:
-				typedef std::map< std::string, InputControlModel* >   tChildTbl;
-				typedef tChildTbl::value_type                         tChildvalue_type;
-		protected:		
+			return mChildren.begin();
+		}
 
-				tChildTbl                                             mChildren;
-				
-		public:
-				typedef tChildTbl::iterator                           iterator;
-				typedef tChildTbl::const_iterator                     const_iterator;
+		const_iterator begin() const
+		{
+			return mChildren.begin();
+		}
 
-				ProcessingInControlSet();
+		iterator end()
+		{
+			return mChildren.end();
+		}
 
-				virtual ~ProcessingInControlSet();
-				
-				void Insert( std::string name, InputControlModel& a );
-				
-				InputControlModel& Retrieve( std::string name );
+		const_iterator end() const
+		{
+			return mChildren.end();
+		}
 
-				iterator begin()
-				{
-						return mChildren.begin();
-				}
-
-				const_iterator begin() const
-				{
-						return mChildren.begin();
-				}
-
-				iterator end()
-				{
-						return mChildren.end();
-				}
-
-				const_iterator end() const
-				{
-						return mChildren.end();
-				}
-
-				Signalv1< std::string >         NamePublished;
-		};
+		Signalv1< std::string >         NamePublished;
+	};
 
 }
 

@@ -8,30 +8,30 @@
 
 namespace CLAMVM
 {
-		using SigSlot::Signalv1;
-		using SigSlot::Signalv2;
-		using SigSlot::Slotv1;
+	using SigSlot::Signalv1;
+	using SigSlot::Signalv2;
+	using SigSlot::Slotv1;
 
-		class InputControlModel
-		{
-		protected:
+	class InputControlModel
+	{
+	protected:
 
-			virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
+		virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
 
-		public:
+	public:
 
-				InputControlModel( );
+		InputControlModel( );
 
-				virtual ~InputControlModel();
+		virtual ~InputControlModel();
 
-				// Signals
-				Signalv1< CLAM::TControlData >                  ValuePublished;
-				Signalv2< CLAM::TControlData, CLAM::TControlData >    ValueRangePublished;
+		// Signals
+		Signalv1< CLAM::TControlData >                      ValuePublished;
+		Signalv2< CLAM::TControlData, CLAM::TControlData >  ValueRangePublished;
 				
-				// Slots
-				Slotv1< CLAM::TControlData>                     UpdateValue;
+		// Slots
+		Slotv1< CLAM::TControlData>                         UpdateValue;
 
-		};
+	};
 }
 
 #endif // InputControlModel.hxx
