@@ -67,8 +67,11 @@ private:
 		CLAM::FactoryRegistry reg;
 		// set up:
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
-
-		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
+		
+		try{
+			reg.GetCreator("non existent key");
+			CPPUNIT_FAIL( "Assertion should happen" );
+		} catch (CLAM::ErrAssertionFailed& ) {}
 	}
 
 	void testGetCreatorSafe_WrongKeyWithASingleCreator()
@@ -76,8 +79,11 @@ private:
 		CLAM::FactoryRegistry reg;
 		// set up:
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
-
-		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
+		
+		try{
+			reg.GetCreatorSafe("non existent key");
+			CPPUNIT_FAIL( "ErrFactory expected" );
+		} catch (CLAM::ErrFactory& ) {}
 	}
 
 	void testGetCreator_CorrectKeyWithASingleCreator()
@@ -130,8 +136,10 @@ private:
 		// set up
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
 		reg.AddCreator( "AudioAdder", CLAM::CreateAudioAdder );
-
-		CPPUNIT_ASSERT( NULL == reg.GetCreator("Oscillator ") );
+		try{
+			reg.GetCreator("wrong name");
+			CPPUNIT_FAIL( "Assert expected to happen" );
+		} catch (CLAM::ErrAssertionFailed& ) {}
 	}
 
 	void testGetCreatorSafe_WrongKeyWithTwoCreators()
@@ -140,8 +148,11 @@ private:
 		// set up
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
 		reg.AddCreator( "AudioAdder", CLAM::CreateAudioAdder );
-
-		CPPUNIT_ASSERT( NULL == reg.GetCreatorSafe("incorrect as well") );
+		
+		try{
+			reg.GetCreatorSafe("incorrect as well");
+			CPPUNIT_FAIL( "CLAM::ErrFactory exptected" );
+		} catch (CLAM::ErrFactory& expected) {}
 	}
 
 	void testAddCreator_RepeatedKey()
