@@ -22,12 +22,13 @@
 #include "BaseAudioApplication.hxx"
 #include "AudioIO.hxx"
 #include <pthread.h>
-#include <unistd.h>
 #include <cstdio>
 #include <iostream>
 #ifdef WIN32
 #include <windows.h>
 #undef GetClassName
+#else
+#include <unistd.h>
 #endif
 #include "AudioManager.hxx"
 
