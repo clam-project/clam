@@ -24,7 +24,8 @@
 
 #include "RappidIO.hxx"
 #include "ProcessingComposite.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
+
 
 namespace CLAM {
 	class AudioFileIn;

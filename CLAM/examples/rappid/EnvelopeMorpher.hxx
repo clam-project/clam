@@ -28,7 +28,9 @@
 #include "EnvelopeExtractor.hxx"
 #include "EnvelopeGenerator.hxx"
 #include "RappidTypes.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 
 using namespace CLAM;
 

@@ -23,7 +23,9 @@
 #define _DYNAMIC_MIXER_HXX
 
 #include "ProcessingComposite.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 #include "Audio.hxx"
 #include "SoftSwitch.hxx"
 #include "AudioMixer.hxx"

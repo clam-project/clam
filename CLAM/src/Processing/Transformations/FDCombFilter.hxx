@@ -24,7 +24,6 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "Port.hxx"
 #include "Spectrum.hxx"
 
 
@@ -98,7 +97,6 @@ namespace CLAM {
 		 */
 		bool Do(const Spectrum& input,Spectrum& output);
 
-		// Port interfaces.
 
 		/** Change the internal type state.  
 		 */

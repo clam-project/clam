@@ -23,7 +23,9 @@
 #define _SOFT_SWITCH_HXX
 
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 #include "Audio.hxx"
 #include "Enum.hxx"
 

@@ -21,9 +21,15 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 //#include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
-#include "Port.hxx"
+#include "InPort.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPort.hxx"
+#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
 #include "Processing.hxx"
-
+#include "DummyProcessingData.hxx"
+#include "NodeTmpl.hxx"
+#include "CircularStreamImpl.hxx"
 
 namespace CLAMTest {
 
@@ -38,7 +44,7 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	
 	
 	CPPUNIT_TEST( testAttachInPortToNode_WithGeneralTemplateInPort_GetsAttachedToConcreteNode );
-	CPPUNIT_TEST( testAttachPortsAndGetData_ReadsTheWrittenData );
+	//CPPUNIT_TEST( testAttachPortsAndGetData_ReadsTheWrittenData );
 
 /*	
 	CPPUNIT_TEST( testInPort_Attach_WithGeneralTemplateInPort_BadTypeAssertionFails );
@@ -67,10 +73,28 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return false; }
 	
 
-	void testAttachInPortToNode_WithGeneralTemplateInPort_GetsAttachedToConcreteNode
+	void testAttachInPortToNode_WithGeneralTemplateInPort_GetsAttachedToConcreteNode()
 	{
-		CPPUNIT_ASSERT_EQUAL();
+		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
+			concreteNode;
+		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in", this, 0/*dummy length*/);
+		CLAM::InPort& in = concreteInPort;
+
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out", this, 0/*dummy length*/);
+		CLAM::OutPort& out = concreteOutPort;
+
+
+        out.Attach(concreteNode);
+		in.Attach(concreteNode);
+
+		CLAM::NodeBase* theNode = &concreteNode;
+		CPPUNIT_ASSERT_EQUAL( theNode, in.GetNode() );
 	}
+	// idem but with bad concrete node type (asserts)
+
+	// idem but with Node<Audio> (two tests)
+	
+
 	/*
 	void testAttachPortsAndGetData_ReadsTheWrittenData()
 	{

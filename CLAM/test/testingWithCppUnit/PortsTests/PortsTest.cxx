@@ -21,7 +21,10 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
-#include "Port.hxx"
+#include "InPort.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPort.hxx"
+#include "OutPortTmpl.hxx"
 #include "Processing.hxx"
 #include "DummyProcessingData.hxx"
 
