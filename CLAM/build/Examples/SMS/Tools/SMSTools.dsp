@@ -113,14 +113,6 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Gender_Selector.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Grid_Surface.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Harmonizer.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSFreqShiftConfigurator.cxx
 # End Source File
 # Begin Source File
@@ -1906,14 +1898,6 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_BPF_Editor.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Gender_Selector.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Grid_Surface.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Harmonizer.hxx
 # End Source File
 # Begin Source File
 
