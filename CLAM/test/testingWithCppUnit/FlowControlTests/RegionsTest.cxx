@@ -38,7 +38,7 @@ private:
 	void testReadStreamRegion_CanActivate_WhenWriterIsJustInitialized()
 	{
 		// Setup
-		const int hop = 0;
+		const int hop = 1;
 		const int length = 1;
 		CLAM::StreamBuffer<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > buffer;
 		// Exercise
@@ -57,7 +57,7 @@ private:
 	void testWriteStreamRegion_CanActivate_WhenWriterIsJustInitialized()
 	{
 		// Setup
-		const int hop = 0;
+		const int hop = 1;
 		const int length = 1;
 		CLAM::StreamBuffer<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > buffer;
 		// Exercise
@@ -77,7 +77,7 @@ private:
 	void testWriteStreamRegion_CanActivate_WhenWriterIsOutOfBufferSpace()
 	{
 		// Setup
-		const int hop = 0;
+		const int hop = 1;
 		const int length = 1;
 		CLAM::StreamBuffer<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > buffer;
 		// Exercise
@@ -100,7 +100,7 @@ private:
 
 	void testStreamRegionContainer_RemoveReader_WithoutReadersThrowsException ()
 	{
-		const int hop = 0;
+		const int hop = 1;
 		const int length = 1;
 		CLAM::StreamRegionContainer container;
 		CLAM::WriteStreamRegion * writer = 
@@ -119,7 +119,7 @@ private:
 
 	void testStreamRegionContainer_RemoveReader_WithoutCorrectReaderThrowsException ()
 	{
-		const int hop = 0;
+		const int hop = 1;
 		const int length = 1;
 		CLAM::StreamRegionContainer container;
 		CLAM::WriteStreamRegion * writer = new CLAM::WriteStreamRegion( hop, length );
@@ -140,7 +140,7 @@ private:
 
 	void testStreamRegionContainer_RemoveReader_WithCorrectReader()
 	{
-		const int hop = 0;
+		const int hop = 1;
 		const int length = 1;
 		CLAM::StreamRegionContainer container;
 		CLAM::WriteStreamRegion * writer = new CLAM::WriteStreamRegion( hop, length );
