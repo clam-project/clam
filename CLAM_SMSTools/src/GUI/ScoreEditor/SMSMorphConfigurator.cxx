@@ -2,7 +2,7 @@
 #include "Factory.hxx"
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
-#include "Fl_SMS_BPF_Editor.hxx"
+#include "Fl_SMS_Morph_Control.hxx"
 
 namespace CLAMVM
 {
@@ -12,10 +12,8 @@ namespace CLAMVM
 	{
 		mHelpWidget = new Fl_Help_View( 0, 0, 100, 100 );
 		mHelpWidget->textsize( 12 );
-		mEditorWidget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
-		mEditorWidget->SetHorizontalRange( 0.0, 1.0 );
-		mEditorWidget->SetVerticalRange( 0.0, 1.0 );
-		mEditorWidget->SetGridWidth( 0.1, 0.1 );
+
+		mpMorphEditor = new Fl_SMS_Morph_Control( 0, 0, 100, 100 );
 		
 		SetHelpWidgetText();
 		mConfig.AddHybBPF();
@@ -24,16 +22,15 @@ namespace CLAMVM
 		mConfig.GetHybBPF().Insert( 0.0, 0.0 );
 		mConfig.GetHybBPF().Insert( 1.0, 1.0 );
 
-		mEditorWidget->InitPoints( mConfig.GetHybBPF() );
-		mEditorWidget->PointsChanged.Connect( UserEditedParameters );
+	
 	}
 
 	SMSMorphConfigurator::~SMSMorphConfigurator()
 	{
 		if ( mHelpWidget->parent() == NULL )
 			delete mHelpWidget;
-		if ( mEditorWidget->parent() == NULL )
-			delete mEditorWidget;
+		if ( mpMorphEditor->parent() == NULL )
+			delete mpMorphEditor;
 	}
 
 	void SMSMorphConfigurator::SetHelpWidgetText()
@@ -43,7 +40,7 @@ namespace CLAMVM
 
 	Fl_Widget* SMSMorphConfigurator::GetParametersWidget()
 	{
-		return mEditorWidget;
+		return mpMorphEditor;
 	}
 
 	void SMSMorphConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
@@ -75,15 +72,10 @@ namespace CLAMVM
 
 		}
 
-
-		mEditorWidget->Clear();
-		mEditorWidget->InitPoints( mConfig.GetHybBPF() );
-
 	}
 	
 	void SMSMorphConfigurator::SetupConfigObject()
 	{
-		mEditorWidget->InsertPointsIntoBPF( mConfig.GetHybBPF() );
 
 		if ( !mConfig.HasInterpolateFrame() )
 		{

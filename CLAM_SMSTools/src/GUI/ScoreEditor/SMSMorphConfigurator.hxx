@@ -10,7 +10,7 @@ class Fl_Help_View;
 
 namespace CLAMVM
 {
-	class Fl_SMS_BPF_Editor;
+	class Fl_SMS_Morph_Control;
 	
 	class SMSMorphConfigurator : public SMSConfigurator
 	{
@@ -33,7 +33,7 @@ namespace CLAMVM
 	protected:
 		
 		Fl_Help_View*                 mHelpWidget;
-		Fl_SMS_BPF_Editor*            mEditorWidget;
+		Fl_SMS_Morph_Control*         mpMorphEditor;
 		CLAM::SMSMorphConfig          mConfig;
 		static const char*            mHelpText;
 		
