@@ -29,6 +29,17 @@ using std::min_element;
 #include <iostream>
 using namespace CLAMGUI;
 
+GLArrayRenderer::GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
+	: mElemIdxBuffer(0,100), mLastIndex(0), mFirstIndex(0), r( red ), g( gree ), b( blu ), mDataChanged( false ), 
+	  mCullingRequested(false), mMustUpdateBounds( true )
+{
+	ResizeArray( 1024 );
+	/*This limit has been experimentally found to be correct but it depends on the
+	  system and the amount of simultaneous views.*/
+	mMinPointsToOptimize=50000;
+}
+
+
 void GLArrayRenderer::InitArray( unsigned int nelems )
 {
 	GLfloat color[3] = { 0.0f, 0.0f, 0.0f };

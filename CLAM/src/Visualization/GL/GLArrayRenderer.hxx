@@ -41,16 +41,7 @@ class GLArrayRenderer
 	};
 public:
 
-	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
-		: r( red ), g( gree ), b( blu ), mDataChanged( false ), 
-		mCullingRequested(false), mMustUpdateBounds( true ), mFirstIndex(0),mLastIndex(0),
-		mElemIdxBuffer(0,100)
-	{
-		ResizeArray( 1024 );
-		/*This limit has been experimentally found to be correct but it depends on the
-		system and the amount of simultaneous views.*/
-		mMinPointsToOptimize=50000;
-	}
+	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 );
 
 	virtual ~GLArrayRenderer()
 	{
