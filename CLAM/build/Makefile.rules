@@ -36,11 +36,11 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) $(OBJECTS) -o $@
+	$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) -o $@ 
 
 $(LIBRARY): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) $(OBJECTS) -o lib$@.so -shared 
+	$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(EXTRA_LINK_FLAGS) -o lib$@.so -shared 
 
 %.o:
 	@mkdir -p obj
