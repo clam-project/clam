@@ -52,20 +52,21 @@ namespace CLAM
 		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
 	}
 
-	void Network::StoreOn( Storage & storage)
+	void Network::StoreOn( Storage & storage) const
 	{
 		// Storing an standard library string as an attribute
-		XMLAdapter<std::string> strAdapter( mName, "id");
-		storage.Store(&strAdapter);
+		std::string name = mName;
+		XMLAdapter<std::string> strAdapter( name, "id");
+		storage.Store(strAdapter);
 
-		ProcessingsMap::iterator it;
+		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
 			Processing * proc = it->second;
 			std::string name(it->first);
 			ProcessingDefinitionAdapter procDefinitionAdapter(proc, name);
 			XMLComponentAdapter procComponentAdapter(procDefinitionAdapter, "processing", true);
-			storage.Store(&procComponentAdapter);
+			storage.Store(procComponentAdapter);
 		}
 
 		// second iteration to store ports. 
@@ -96,7 +97,7 @@ namespace CLAM
 				{
 					ConnectionDefinitionAdapter connectionDefinitionAdapter( outPortName, *namesIterator );
 					XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "port_connection", true);
-					storage.Store(&connectionComponentAdapter);
+					storage.Store(connectionComponentAdapter);
 				}
 			}
 		}
@@ -126,7 +127,7 @@ namespace CLAM
 				{
 					ConnectionDefinitionAdapter connectionDefinitionAdapter( outControlName, *namesIterator );
 					XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "control_connection", true);
-					storage.Store(&connectionComponentAdapter);
+					storage.Store(connectionComponentAdapter);
 				}
 			}
 		}
@@ -137,13 +138,13 @@ namespace CLAM
 	void Network::LoadFrom( Storage & storage)
 	{
 		XMLAdapter<std::string> strAdapter( mName, "id");
-		storage.Load(&strAdapter);
+		storage.Load(strAdapter);
 
 		while(1)
 		{
 			ProcessingDefinitionAdapter procDefinitionAdapter;
 			XMLComponentAdapter procComponentAdapter(procDefinitionAdapter, "processing", true);
-			if(storage.Load(&procComponentAdapter) == false)
+			if(storage.Load(procComponentAdapter) == false)
 				break;
 			
 			AddProcessing(procDefinitionAdapter.GetName(), procDefinitionAdapter.GetProcessing()); 
@@ -158,7 +159,7 @@ namespace CLAM
 		{
 			ConnectionDefinitionAdapter connectionDefinitionAdapter;
 			XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "port_connection", true);
-			if(storage.Load(&connectionComponentAdapter)==false)
+			if(storage.Load(connectionComponentAdapter)==false)
 				break;
 			ConnectPorts( connectionDefinitionAdapter.GetOutName(), connectionDefinitionAdapter.GetInName() );			
 		}
@@ -167,7 +168,7 @@ namespace CLAM
 		{
 			ConnectionDefinitionAdapter connectionDefinitionAdapter;
 			XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "control_connection", true);
-			if(storage.Load(&connectionComponentAdapter)==false)
+			if(storage.Load(connectionComponentAdapter)==false)
 				break;
 			ConnectControls( connectionDefinitionAdapter.GetOutName(), connectionDefinitionAdapter.GetInName() );			
 		}
@@ -181,7 +182,7 @@ namespace CLAM
 		mFlowControl->AttachToNetwork(this);
 	}
 
-	Processing& Network::GetProcessing( const std::string & name )
+	Processing& Network::GetProcessing( const std::string & name ) const
 	{
 		CLAM_ASSERT( HasProcessing(name), "No Processing with the given name");
 
@@ -249,7 +250,7 @@ namespace CLAM
 		
 	}
 
-	bool Network::HasProcessing( const std::string & name )
+	bool Network::HasProcessing( const std::string & name ) const
 	{
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		return i!=mProcessings.end();
@@ -363,36 +364,36 @@ namespace CLAM
 		return last_ofResult == std::string::npos ? 0 : last_ofResult+1;
 	}
 
-	std::string Network::GetLastIdentifier( const std::string& str )
+	std::string Network::GetLastIdentifier( const std::string& str ) const
 	{
 		return str.substr( PositionOfLastIdentifier(str)+1 );
 	}
 
-	std::string Network::GetProcessingIdentifier( const std::string& str )
+	std::string Network::GetProcessingIdentifier( const std::string& str ) const
 	{
 		std::size_t length = PositionOfLastIdentifier(str)  - PositionOfProcessingIdentifier(str);
 		return str.substr( PositionOfProcessingIdentifier(str), length);
 	}
 
-	InPort & Network::GetInPortByCompleteName( const std::string & name )
+	InPort & Network::GetInPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInPorts().Get( GetLastIdentifier(name) );
 	}
 
-	OutPort & Network::GetOutPortByCompleteName( const std::string & name )
+	OutPort & Network::GetOutPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutPorts().Get( GetLastIdentifier(name) );
 	}
 
-	InControl & Network::GetInControlByCompleteName( const std::string & name )
+	InControl & Network::GetInControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInControls().Get( GetLastIdentifier(name) );
 	}
 
-	OutControl & Network::GetOutControlByCompleteName( const std::string & name )
+	OutControl & Network::GetOutControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutControls().Get( GetLastIdentifier(name) );
@@ -506,7 +507,7 @@ namespace CLAM
 		return mNodes.end();
 	}
 
-	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer )
+	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer ) const
 	{		
 		OutPort & out = GetOutPortByCompleteName( producer );
 		CLAM_ASSERT( out.GetNode(), "Trying to access a node from an outport without connections");
@@ -526,7 +527,7 @@ namespace CLAM
 		return consumers;
 	}
 
-	Network::NamesList  Network::GetInControlsConnectedTo( const std::string & producer )
+	Network::NamesList  Network::GetInControlsConnectedTo( const std::string & producer ) const
 	{		
 		OutControl & out = GetOutControlByCompleteName( producer );
 		NamesList consumers;
@@ -544,7 +545,7 @@ namespace CLAM
 		return consumers;
 	}
 
-	Network::InPortsList Network::GetInPortsConnectedTo( OutPort & producer )
+	Network::InPortsList Network::GetInPortsConnectedTo( OutPort & producer ) const
 	{		
 		CLAM_ASSERT( producer.GetNode(), "Trying to access a node from an outport without connections");
 		InPortsList consumers;
@@ -555,9 +556,9 @@ namespace CLAM
 		return consumers;
 	}
 
-	const std::string &  Network::GetNetworkId(const Processing * proc)
+	const std::string &  Network::GetNetworkId(const Processing * proc) const
 	{
-		ProcessingsMap::iterator it;
+		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings(); it!=EndProcessings(); it++)
 			if(it->second == proc )
 				return it->first;
