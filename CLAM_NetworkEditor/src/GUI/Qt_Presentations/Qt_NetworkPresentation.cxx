@@ -47,8 +47,7 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	  mInPortSelected(0),
 	  mOutPortSelected(0),
 	  mInControlSelected(0),
-	  mOutControlSelected(0),
-	  mSelectedPresentation(0)
+	  mOutControlSelected(0)
 {
 	resize(800,600);
 	setPalette( QPalette( QColor( 250, 250, 200 )));
@@ -59,9 +58,9 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
  	SlotSetOutControlClicked.Wrap( this, &Qt_NetworkPresentation::SetOutControlClicked);
 
 	SlotProcessingPresentationSelected.Wrap( this, &Qt_NetworkPresentation::ProcessingPresentationSelected );
-	SlotProcessingPresentationUnSelected.Wrap( this, &Qt_NetworkPresentation::ProcessingPresentationUnSelected );
+	SlotProcessingPresentatioAddedToSelection.Wrap( this, &Qt_NetworkPresentation::ProcessingPresentatioAddedToSelection );
 	SlotSendMessageToStatus.Wrap( this, &Qt_NetworkPresentation::SendMessageToStatus );
-
+	SlotMovingMouseWithButtonPressed.Wrap( this, &Qt_NetworkPresentation::MovingMouseWithButtonPressed );
 	setAcceptDrops(TRUE);
 }
 
@@ -117,9 +116,11 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
 	presentation->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
 	presentation->SignalProcessingPresentationSelected.Connect( SlotProcessingPresentationSelected );
-	presentation->SignalProcessingPresentationUnSelected.Connect( SlotProcessingPresentationUnSelected );
+//	presentation->SignalProcessingPresentationUnSelected.Connect( SlotProcessingPresentationUnSelected );
 	presentation->SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
-	
+	presentation->SignalMovingMouseWithButtonPressed.Connect( SlotMovingMouseWithButtonPressed );
+	presentation->SignalProcessingPresentatioAddedToSelection.Connect( SlotProcessingPresentatioAddedToSelection );
+		
 	SignalAcquireOutPortAfterClickInPort.Connect( presentation->SlotSetOutPortAfterClickInPort );
 	SignalAcquireInPortAfterClickOutPort.Connect( presentation->SlotSetInPortAfterClickOutPort );
 	SignalAcquireOutControlAfterClickInControl.Connect( presentation->SlotSetOutControlAfterClickInControl );
@@ -223,9 +224,14 @@ void Qt_NetworkPresentation::mouseMoveEvent( QMouseEvent *m)
 }
 void Qt_NetworkPresentation::mousePressEvent ( QMouseEvent * e )
 {
-	if(mSelectedPresentation)
-		mSelectedPresentation->UnSelectProcessingPresentation();
-	mSelectedPresentation = 0;
+	if(mSelectedPresentations.size())
+	{
+		QtProcessingList::iterator it;
+		for( it=mSelectedPresentations.begin(); it!=mSelectedPresentations.end(); it++ )
+			(*it)->UnSelectProcessingPresentation();
+
+		mSelectedPresentations.clear();
+	}
 }
 
 void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
@@ -373,14 +379,32 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 
 void Qt_NetworkPresentation::ProcessingPresentationSelected( Qt_ProcessingPresentation * proc )
 {
-	if( mSelectedPresentation )
-		mSelectedPresentation->UnSelectProcessingPresentation();
-	mSelectedPresentation = proc;
+	if(mSelectedPresentations.size())
+	{
+		
+		QtProcessingList::iterator it;
+		for( it=mSelectedPresentations.begin(); it!=mSelectedPresentations.end(); it++ )
+			(*it)->UnSelectProcessingPresentation();
+
+		mSelectedPresentations.clear();
+	}
+	mSelectedPresentations.push_back( proc );
 }
 
-void Qt_NetworkPresentation::ProcessingPresentationUnSelected()
+void Qt_NetworkPresentation::ProcessingPresentatioAddedToSelection( Qt_ProcessingPresentation * proc)
 {
-	mSelectedPresentation = 0;
+	mSelectedPresentations.push_back( proc );
+
+}
+
+void Qt_NetworkPresentation::MovingMouseWithButtonPressed( const QPoint & p)
+{
+	if(mSelectedPresentations.size())
+	{
+		QtProcessingList::iterator it;
+		for( it=mSelectedPresentations.begin(); it!=mSelectedPresentations.end(); it++ )
+			(*it)->Move(p);
+	}
 }
 
 

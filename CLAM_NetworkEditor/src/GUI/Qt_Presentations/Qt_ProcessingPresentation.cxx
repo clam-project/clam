@@ -31,6 +31,8 @@
 #include <qlineedit.h>
 #include <cmath>
 
+#include <iostream> // TODO: remove
+
 namespace NetworkGUI
 {
 
@@ -70,7 +72,7 @@ void Qt_ProcessingPresentation::UpdateSize()
 	QFontMetrics fm( font );
 	int pixelsWide = std::max( fm.width( name ), fm.width( className ) );
 	int pixelsHigh = fm.height();
-	setFixedSize(pixelsWide + 30, pixelsHigh*2 + 20);
+	setFixedSize(pixelsWide + 35, pixelsHigh*2 + 30);
 
 	int heightPorts = std::max( mInPortPresentations.size(), mOutPortPresentations.size() );
 	heightPorts = heightPorts*7+14;
@@ -302,6 +304,22 @@ void Qt_ProcessingPresentation::Hide()
 
 }
 
+void Qt_ProcessingPresentation::DrawSelectedRepresentation()
+{
+	QColor c(50, 220, 50);
+	QPainter p( this );
+        p.setBrush( c );
+		
+	p.drawRect( QRect( 12, 7, 5, 5 ));  // up left
+	p.drawRect( QRect( width()-17, 7, 5, 5 )); // up right
+	p.drawRect( QRect( 12, height()-12, 5, 5 )); // down left
+	p.drawRect( QRect( width()-17, height()-12, 5, 5 )); // down right
+	
+	p.drawRect( QRect( width()/2 - 5 , 7, 5, 5 )); // up center
+	p.drawRect( QRect( width()/2 - 5, height()-12, 5, 5 )); // down center
+	
+}
+
 void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 {
 
@@ -345,12 +363,13 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	
 	if(mSelected)
 	{
-		p.setFont( QFont( "Helvetica", 8, QFont::Light, true ));
+		DrawSelectedRepresentation();
+//		p.setFont( QFont( "Helvetica", 8, QFont::Light, true ));
 	}
-	else
-	{
+//	else
+//	{
 		p.setFont( QFont( "Helvetica" ,8) );
-	}
+//	}
 	p.drawText(  QRect(12,7,width()-24, height()/2 - 5 ),
 		    Qt::AlignCenter ,	
 		    QString( mName.c_str() ));
@@ -365,11 +384,21 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 
 void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 {
+	mClickPos = m->pos();
+	if(!mSelected) // already selected
+	{
+		mSelected = true;
+		if((m->button() & LeftButton) && (m->state() & ShiftButton))
+			SignalProcessingPresentatioAddedToSelection.Emit( this );
+		else
+			SignalProcessingPresentationSelected.Emit( this );
+		repaint();
+	}
+
 	if(m->button() == LeftButton )
 	{
-		grabKeyboard();
+//		grabKeyboard();
 		mDown = true;
-		mClickPos = m->pos();
 	}
 	else
 	{
@@ -379,21 +408,25 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 
 void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
 {
-	mSelected = true;
-	SignalProcessingPresentationSelected.Emit( this );
-	repaint();
 
 	mDown = false;
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 {
-	if(!mDown)
-		return;
+//	if(!mDown)
+//		return;
 
 	QPoint difference(mapFromGlobal(m->globalPos()));
-	difference = mapToParent(difference) - mClickPos;
-	move(difference);
+//	difference = mapToParent(difference) - mClickPos;
+
+	SignalMovingMouseWithButtonPressed.Emit( m->pos() - mClickPos );
+}
+
+void Qt_ProcessingPresentation::Move( const QPoint & difference)
+{
+	QPoint toMove = difference + pos();
+	move( toMove );
 	
 	// emit movement to update connections
 	ConnectionPointPresentationsList::iterator it;
@@ -402,31 +435,31 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->SignalAcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
+		in->SignalAcquirePos.Emit( toMove.x()+ posX, toMove.y()+posY);
 	}
 	for (it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end();it++)
 	{	
 		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->SignalAcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
+		out->SignalAcquirePos.Emit( toMove.x() + posX , toMove.y()+ posY );
 	}
 	for (it=mInControlPresentations.begin(); it!=mInControlPresentations.end();it++)
 	{
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->SignalAcquirePos.Emit( difference.x()+ posX +5  , difference.y()+posY -2 );
+		in->SignalAcquirePos.Emit( toMove.x()+ posX +5  , toMove.y()+posY -2 );
 	}
 	for (it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end();it++)
 	{	
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->SignalAcquirePos.Emit( difference.x() + posX - 4, difference.y()+ posY +2 );
+		out->SignalAcquirePos.Emit( toMove.x() + posX - 4, toMove.y()+ posY +2 );
 	}
 	QWidget * parent = parentWidget();
-	parent->repaint();
+	parent->repaint(); // TODO -> really ugly!
 }
 
 void Qt_ProcessingPresentation::EmitPositionOfChildren()
@@ -464,29 +497,29 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 
 void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
 {
-	switch ( k->key() ) 
+/*	switch ( k->key() ) 
 	{
 
 	case Key_Escape:
-		releaseKeyboard();
+//		releaseKeyboard();
 		if(mSelected) // editing finished
 		{
-			SignalProcessingPresentationUnSelected.Emit();
+			SignalProcessingPresentationUnSelected.Emit( this );
 			mSelected = false;
-			releaseKeyboard();
+//			releaseKeyboard();
 		}
 		break;
 			
         case Key_Delete: 
 		SignalRemoveProcessing.Emit( this );
 		Hide();
-		releaseKeyboard();
+//		releaseKeyboard();
 		break;
 	case Key_Return:
 		if(mSelected) // editing finished
 		{
-			SignalProcessingPresentationUnSelected.Emit();
-			releaseKeyboard();
+			SignalProcessingPresentationUnSelected.Emit( this );
+//			releaseKeyboard();
 			mSelected = false;
 		}
 		break;
@@ -494,11 +527,12 @@ void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
 		break;
 	}
 	repaint();
+	*/
 }
 
 void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 {
-	releaseKeyboard();
+//	releaseKeyboard();
 	QLineEdit * nameEdit = new QLineEdit( this );
 	nameEdit->setText( mName.c_str() );
 
@@ -510,9 +544,10 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 	connect( this, SIGNAL(SignalEmitGeometryChange( const QRect &)), nameEdit, SLOT( setGeometry( const QRect & )) );
 
 	nameEdit->setFont( QFont( "Helvetica" ,8) );
+	nameEdit->setFocus();
 	nameEdit->setGeometry( QRect(12,7,width()-24, height()-14) );
 	nameEdit->show();
-	nameEdit->grabKeyboard();
+//	nameEdit->grabKeyboard();
 
 	SignalSendMessageToStatus.Emit( "Edit the processing name" );
 }
@@ -532,8 +567,7 @@ void Qt_ProcessingPresentation::SlotTextChange( const QString & newName )
 
 void Qt_ProcessingPresentation::SlotExecuteChangeName()
 {
-
-	SignalProcessingNameChanged.Emit( mName );
+	SignalProcessingNameChanged.Emit( mName );	
 }
 
 void Qt_ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )

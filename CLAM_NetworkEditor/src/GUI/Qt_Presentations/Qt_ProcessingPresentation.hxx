@@ -52,6 +52,7 @@ public:
 	void EmitPositionOfChildren();
 
 	void UnSelectProcessingPresentation();
+	void Move( const QPoint & );
 protected:
 	virtual void SetObservedClassName(const std::string& name);
 
@@ -84,6 +85,7 @@ protected:
 
 	void UpdateSize();
 	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
+	void DrawSelectedRepresentation();
 
 
 // qt stuff
@@ -98,8 +100,10 @@ public: // signals
 	SigSlot::Signalv1< Qt_OutControlPresentation * > SignalAcquireOutControlClicked;
 
 	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationSelected;
+	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentatioAddedToSelection;
 	SigSlot::Signalv1< const std::string & > SignalSendMessageToStatus;
-	SigSlot::Signalv0 SignalProcessingPresentationUnSelected;
+//	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationUnSelected;
+	SigSlot::Signalv1< const QPoint & > SignalMovingMouseWithButtonPressed;
 
 public: // slots
 	// ports

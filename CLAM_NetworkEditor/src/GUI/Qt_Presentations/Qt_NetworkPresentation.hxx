@@ -53,6 +53,7 @@ class Qt_ProcessingPresentation;
 
 class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
+	typedef std::list<Qt_ProcessingPresentation * > QtProcessingList;
 	void AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * );
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
 	void SetName(const std::string& name); 
@@ -66,7 +67,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void SetOutControlClicked( Qt_OutControlPresentation *);
 
 	void ProcessingPresentationSelected( Qt_ProcessingPresentation * );
-	void ProcessingPresentationUnSelected();
+//	void ProcessingPresentationUnselected( Qt_ProcessingPresentation * );
+	void ProcessingPresentatioAddedToSelection( Qt_ProcessingPresentation * );
 	
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
@@ -74,6 +76,7 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void mousePressEvent ( QMouseEvent *); 
 	void dropEvent(QDropEvent* event);
 	void dragEnterEvent(QDragEnterEvent* event);
+	void MovingMouseWithButtonPressed( const QPoint & );
 
 	void SendMessageToStatus( const std::string & );		
 	
@@ -82,7 +85,7 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
-	Qt_ProcessingPresentation * mSelectedPresentation;
+	QtProcessingList mSelectedPresentations;
 public:
 	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
 	void Show();
@@ -95,9 +98,11 @@ public:
 	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
 
 	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentationSelected;
-	SigSlot::Slotv0 SlotProcessingPresentationUnSelected;
+	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentatioAddedToSelection;
+//	SigSlot::Slotv1< Qt_ProcessingPresentation *> SlotProcessingPresentationUnSelected;
 
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
+	SigSlot::Slotv1< const QPoint & > SlotMovingMouseWithButtonPressed;
 
 	// signals
 	SigSlot::Signalv1< const QPoint & > SignalAcquireOutPortAfterClickInPort;

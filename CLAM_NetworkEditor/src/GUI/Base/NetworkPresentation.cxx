@@ -28,8 +28,6 @@
 #include "ConnectionPointPresentation.hxx"
 #include "Processing.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace NetworkGUI
 {
 
