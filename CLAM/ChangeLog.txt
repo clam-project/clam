@@ -18,6 +18,15 @@
   * Processing - Analysis:
       ** New LPC_AutoCorrelation Processing object added to spectral analysis Processings
          set
+      ** The SpectralPeakDetect Processing class now no longer alters it's given ProcessingData 
+         if it's different than expected, but instead checks it using an assert. Also, a bug was 
+         fixed which tried to use an uninitialized index variable when setting the values for the 
+         last spectral peak.
+      ** The FFT_rfftw and FFT_ooura Processings were missing a return on SetPrototypes() which 
+         only generated a compiler error when CLAM_ASSERT was disabled.
+  * Processing - Synthesis:
+      ** The IFFT_rfftw Processing was missing a return on SetPrototypes() which only generated 
+         a compiler error when CLAM_ASSERT was disabled.
   * Processing - AudioFileIO:
       ** AudioFileIn should now be capable of loading PCM encoded files with sample formats
          of 8, 16, 24 or 32 bits/sample
