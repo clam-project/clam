@@ -24,6 +24,9 @@
 
 #include <string>
 
+#include "SerializationController.hxx"
+#include "VisualizationController.hxx"
+
 #include "SMSSynthesis.hxx"
 #include "SMSAnalysis.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
@@ -36,11 +39,8 @@
 #include "SDIFIn.hxx"
 #include "SDIFOut.hxx"
 
-
-
 namespace CLAM
 {
-
 	/** This is the base class for the Analysis Synthesis example. It implements
 	* all the necessary processing but it cannot be instantiated. To instantiate
 	* a particular analysis synthesis application you need to work directly with 
@@ -60,6 +60,8 @@ namespace CLAM
 		void SetTransformation(SMSTransformation* pTransformation);
 		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
+		CLAMVM::VisualizationController mVisualization;
+
 	protected:
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
@@ -70,36 +72,8 @@ namespace CLAM
 		void StoreConfig(const std::string& inputFileName);
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
-		/** Load previously stored analysis xml data */
 
-		void LoadXMLAnalysis();
-
-		/** This method should be overridden on subclasses to provide
-			further control on how the concrete process is performed */
-		virtual void DoLoadXMLAnalysis();
-		
-		void LoadSDIFAnalysis();
-
-		/** This method should be overridden on subclasses to provide
-			further control on how the concrete process is performed */
-
-		virtual void DoLoadSDIFAnalysis();
-
-		void LoadAnalysis(const std::string& inputFileName);
-
-		/** This method should be overridden on subclasses to provide
-		further control on how the concrete process is performed */
-
-		virtual void DoStoreXMLAnalysis();
-
-		void StoreXMLAnalysis();
-
-		virtual void DoStoreSDIFAnalysis();
-
-		/** This method should be overridden on subclasses to provide
-		further control on how the concrete process is performed */
-
-		void StoreSDIFAnalysis();
+		void LoadAnalysis(  );
 
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
@@ -144,20 +118,6 @@ namespace CLAM
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
 		void Transform(void);
 
-
-		/** Play Input Sound */
-		void PlayInputSound();
-		/** Play Output Synthesized Sound */
-		void PlayOutputSound();
-		/** Play Ouput Synthesized Sinusoidal Component */
-		void PlaySinusoidal();
-		/** Play Output Synthesized Residual Component */
-		void PlayResidual();
-
-		/** Method used by any other method that needs to play an audio */
-		void Play(const Audio& audio);
-
-
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
 		void AnalyzeMelody(void);
@@ -166,6 +126,8 @@ namespace CLAM
 
 		/** Stores previously analyzed melody into xml format */
 		void StoreMelody(void);
+
+		SerializationController mSerialization;
 
 		/** Input audio */
 		Audio mAudioIn;

@@ -8,19 +8,21 @@
 #include "Thread.hxx"
 using namespace CLAM;
 
+class UserInterface;
+
 namespace CLAMGUI
 {
 
 class AnalysisSynthesisExampleGUI
-	: public AnalysisSynthesisExampleBase
+	: public CLAM::AnalysisSynthesisExampleBase
 {
 public:
+
+	friend class UserInterface;
 
 	virtual ~AnalysisSynthesisExampleGUI()
 	{
 	}
-
-	friend class UserInterface;
 
 	void Run();
 
@@ -28,6 +30,7 @@ public:
 
 	WaitMessage* CreateWaitMessage(const char* title);
 
+	void SetCanvas( Fl_Smart_Tile* canvas );
 
 protected: // methods
 
@@ -37,13 +40,9 @@ protected: // methods
 
 	void DoTracksCleanup();
 
-	void DoLoadXMLAnalysis();
+	void DoLoadAnalysis();
 
-	void DoLoadSDIFAnalysis();
-
-	void DoStoreXMLAnalysis();
-
-	void DoStoreSDIFAnalysis();
+	void DoStoreAnalysis();
 
 private:
 

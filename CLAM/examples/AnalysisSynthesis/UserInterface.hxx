@@ -4,11 +4,9 @@
 #define UserInterface_hxx
 #include <FL/Fl.H>
 #include <FL/Fl_Tile.H>
-#include "Fl_Smart_Tile.H"
+#include "Fl_Smart_Tile.hxx"
 class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
-#include "AudioAdapter.hxx"
-#include "LogMagSpectrumAdapter.hxx"
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Counter.H>
@@ -18,7 +16,7 @@ class Fl_Smart_Tile;
 
 class UserInterface {
 public:
-  public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
+  public: CLAMGUI::AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
   Fl_Window *mWindow;
 private:
@@ -37,9 +35,6 @@ private:
   static Fl_Menu_Item *mDisplayInSpec;
   inline void cb_mDisplayInSpec_i(Fl_Menu_*, void*);
   static void cb_mDisplayInSpec(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mPlayInputSound;
-  inline void cb_mPlayInputSound_i(Fl_Menu_*, void*);
-  static void cb_mPlayInputSound(Fl_Menu_*, void*);
   static Fl_Menu_Item *mAnalyze;
   inline void cb_mAnalyze_i(Fl_Menu_*, void*);
   static void cb_mAnalyze(Fl_Menu_*, void*);
@@ -73,20 +68,13 @@ private:
   static void cb_Sinusoidal(Fl_Menu_*, void*);
   inline void cb_Residual_i(Fl_Menu_*, void*);
   static void cb_Residual(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mPlayOutputs;
+  static Fl_Menu_Item *mStoreOutputs;
   inline void cb_Sound1_i(Fl_Menu_*, void*);
   static void cb_Sound1(Fl_Menu_*, void*);
   inline void cb_Sinusoidal1_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal1(Fl_Menu_*, void*);
   inline void cb_Residual1_i(Fl_Menu_*, void*);
   static void cb_Residual1(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mStoreOutputs;
-  inline void cb_Sound2_i(Fl_Menu_*, void*);
-  static void cb_Sound2(Fl_Menu_*, void*);
-  inline void cb_Sinusoidal2_i(Fl_Menu_*, void*);
-  static void cb_Sinusoidal2(Fl_Menu_*, void*);
-  inline void cb_Residual2_i(Fl_Menu_*, void*);
-  static void cb_Residual2(Fl_Menu_*, void*);
   inline void cb_Exit_i(Fl_Menu_*, void*);
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
@@ -100,11 +88,12 @@ private:
   Fl_Window *mWindow2;
   inline void cb_mWindow2_i(Fl_Window*, void*);
   static void cb_mWindow2(Fl_Window*, void*);
+public:
+  void Init(void);
+private:
   void LoadConfiguration(void);
   void EditConfiguration(void);
   void StoreConfiguration(void);
-  void DisplayInputSound(void);
-  void DisplayInputSpectrum(void);
   void Analyze(void);
   void LoadAnalysisData(void);
   void StoreAnalysisData(void);
@@ -112,46 +101,20 @@ private:
   void AnalyzeMelody(void);
   void StoreMelody(void);
   void StoreOutputSound(void);
-  void DisplayOutputSound(void);
-  void DisplayOutputSpectrum(void);
   void StoreOutputSoundResidual(void);
-  void DisplayOutputSoundResidual(void);
   void StoreOutputSoundSinusoidal(void);
-  void DisplayOutputSoundSinusoidal(void);
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  Fl_Window* AttachInputSound( const char* title, CLAM::Audio* data );
-  Fl_Window* AttachOutputSound( const char* title, CLAM::Audio* data );
-  Fl_Window* AttachSynthSineSound( const char* title, CLAM::Audio* data );
-  Fl_Window* AttachSynthResidualSound( const char* title, CLAM::Audio* data );
-  Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );
-  static void _Detach(Fl_Window* buffer,UserInterface* ui);
-  void Detach(Fl_Window* buffer);
-  void PlayInputSound();
-  void PlayOutputSound();
-  void PlaySinusoidal();
-  void PlayResidual();
   void LoadSound();
-  void Init();
-  void Update();
-  void DetachDisplays();
   void ChangeFrame();
   void ChangeTimeTag(double tag);
-  Fl_Window* mAudioInputDisplay;
-  Fl_Window* mAudioOutputDisplay;
-  Fl_Window* mAudioOutputResidualDisplay;
-  Fl_Window* mAudioOutputSinusoidalDisplay;
-  Fl_Window* mInputSpectrum;
-  Fl_Window* mOutputSpectrum;
-  CLAMVM::AudioAdapter mSoundView;
-  CLAMVM::AudioAdapter mSynthesizedOutput;
-  CLAMVM::AudioAdapter mSynthSineOut;
-  CLAMVM::AudioAdapter mSynthResidualOut;
-  CLAMVM::LogMagSpectrumAdapter mInputSpectrumView;
-  CLAMVM::LogMagSpectrumAdapter mOutputSpectrumView;
-  Signalv1<TData> mFrameSignal;
-  Signalv1<bool> mPaintSignal;
-  Slotv1<double> mSlot;
+  void DisplayInputSound();
+  void DisplayInputSpectrum();
+  void DisplayOutputSound();
+  void DisplayOutputSpectrum();
+  void DisplayOutputSoundSinusoidal();
+  void DisplayOutputSoundResidual();
+  void Update();
 };
 #endif

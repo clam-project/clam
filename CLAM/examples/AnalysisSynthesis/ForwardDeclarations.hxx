@@ -1,6 +1,7 @@
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
 #include "DataTypes.hxx"
+#include "AnalysisSynthesisExampleGUI.hxx"
 
 using CLAM::TData;
 using SigSlot::Signalv1;
@@ -18,4 +19,4 @@ namespace CLAMGUI
 	class AnalysisSynthesisExampleGUI;
 }
 
-using namespace CLAMGUI;
+//using namespace CLAMGUI;

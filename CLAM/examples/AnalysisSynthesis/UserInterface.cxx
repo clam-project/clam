@@ -38,13 +38,6 @@ void UserInterface::cb_mDisplayInSpec(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mDisplayInSpec_i(o,v);
 }
 
-inline void UserInterface::cb_mPlayInputSound_i(Fl_Menu_*, void*) {
-  PlayInputSound();
-}
-void UserInterface::cb_mPlayInputSound(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_mPlayInputSound_i(o,v);
-}
-
 inline void UserInterface::cb_mAnalyze_i(Fl_Menu_*, void*) {
   Analyze();
 }
@@ -130,45 +123,24 @@ void UserInterface::cb_Residual(Fl_Menu_* o, void* v) {
 }
 
 inline void UserInterface::cb_Sound1_i(Fl_Menu_*, void*) {
-  PlayOutputSound();
+  StoreOutputSound();
 }
 void UserInterface::cb_Sound1(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Sound1_i(o,v);
 }
 
 inline void UserInterface::cb_Sinusoidal1_i(Fl_Menu_*, void*) {
-  PlaySinusoidal();
+  StoreOutputSoundSinusoidal();
 }
 void UserInterface::cb_Sinusoidal1(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Sinusoidal1_i(o,v);
 }
 
 inline void UserInterface::cb_Residual1_i(Fl_Menu_*, void*) {
-  PlayResidual();
+  StoreOutputSoundResidual();
 }
 void UserInterface::cb_Residual1(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Residual1_i(o,v);
-}
-
-inline void UserInterface::cb_Sound2_i(Fl_Menu_*, void*) {
-  StoreOutputSound();
-}
-void UserInterface::cb_Sound2(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_Sound2_i(o,v);
-}
-
-inline void UserInterface::cb_Sinusoidal2_i(Fl_Menu_*, void*) {
-  StoreOutputSoundSinusoidal();
-}
-void UserInterface::cb_Sinusoidal2(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_Sinusoidal2_i(o,v);
-}
-
-inline void UserInterface::cb_Residual2_i(Fl_Menu_*, void*) {
-  StoreOutputSoundResidual();
-}
-void UserInterface::cb_Residual2(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_Residual2_i(o,v);
 }
 
 inline void UserInterface::cb_Exit_i(Fl_Menu_*, void*) {
@@ -195,7 +167,6 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSound, 0, 1, 0, 0, 12, 0},
  {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSpec, 0, 1, 0, 0, 12, 0},
  {0},
- {"Play", 0,  (Fl_Callback*)UserInterface::cb_mPlayInputSound, 0, 1, 0, 0, 12, 0},
  {0},
  {"Analysis", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Analyze", 0x40061,  (Fl_Callback*)UserInterface::cb_mAnalyze, 0, 1, 0, 0, 12, 0},
@@ -220,15 +191,10 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal, 0, 0, 0, 0, 12, 0},
  {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual, 0, 0, 0, 0, 12, 0},
  {0},
- {"Play", 0,  0, 0, 65, 0, 0, 12, 0},
+ {"Store", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound1, 0, 0, 0, 0, 12, 0},
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal1, 0, 0, 0, 0, 12, 0},
  {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual1, 0, 0, 0, 0, 12, 0},
- {0},
- {"Store", 0,  0, 0, 64, 0, 0, 12, 0},
- {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound2, 0, 0, 0, 0, 12, 0},
- {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal2, 0, 0, 0, 0, 12, 0},
- {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual2, 0, 0, 0, 0, 12, 0},
  {0},
  {0},
  {"Exit", 0x40071,  (Fl_Callback*)UserInterface::cb_Exit, 0, 0, 0, 0, 12, 0},
@@ -238,18 +204,16 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
 Fl_Menu_Item* UserInterface::mDisplayInSM = UserInterface::menu_mMenuBar + 4;
 Fl_Menu_Item* UserInterface::mDisplayInSound = UserInterface::menu_mMenuBar + 5;
 Fl_Menu_Item* UserInterface::mDisplayInSpec = UserInterface::menu_mMenuBar + 6;
-Fl_Menu_Item* UserInterface::mPlayInputSound = UserInterface::menu_mMenuBar + 8;
-Fl_Menu_Item* UserInterface::mAnalyze = UserInterface::menu_mMenuBar + 11;
-Fl_Menu_Item* UserInterface::mStoreAnalysisData = UserInterface::menu_mMenuBar + 13;
-Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 14;
-Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 15;
-Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 16;
-Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 21;
-Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 23;
-Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 26;
-Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 27;
-Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 33;
-Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 38;
+Fl_Menu_Item* UserInterface::mAnalyze = UserInterface::menu_mMenuBar + 10;
+Fl_Menu_Item* UserInterface::mStoreAnalysisData = UserInterface::menu_mMenuBar + 12;
+Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 13;
+Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 14;
+Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 15;
+Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 20;
+Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 22;
+Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 25;
+Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 26;
+Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 32;
 
 inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
   ChangeFrame();
@@ -862,8 +826,6 @@ static Fl_Pixmap pixmap_mtg(image_mtg);
 
 UserInterface::UserInterface() {
   Fl_Window* w;
-  Init();
-  mSlot.Wrap( this, &UserInterface::ChangeTimeTag );
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));

@@ -88,6 +88,8 @@ namespace CLAMVM
 		mXAxis->maximum( spectralRange );
 		mYAxis->minimum( minMag );
 		mYAxis->maximum( maxMag );
+		mDisplay->invalidate();
+		redraw();
 	}
 
 	void Fl_SMS_Spectrum::Show()
