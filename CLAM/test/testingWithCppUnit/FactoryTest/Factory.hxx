@@ -107,14 +107,14 @@ private: // data
 
 class Factory
 {
-private:
+public:
 	typedef FactoryRegistry::RegistryKey RegistryKey;
 	typedef FactoryRegistry::CreatorMethod CreatorMethod;
-	// singleton and final class: so private ctr and dtr
+
+
 	Factory() {};
 	~Factory() {};
 	
-public:
 	static Factory& GetInstance()
 	{
 		static Factory theInstance;
