@@ -43,18 +43,17 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Item.H>
+#include "CBL.hxx"
 
 #define HorPos fl_width(name)+5+(mWidgetNum/20)*340
 #define VerPos 5+25*(mWidgetNum%20)
 
 namespace CLAM{
-	template<typename App=char>
 	class FLTKConfigurator : public Fl_Window {
 
 		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
 	public:
-		App* mApp;
 		FLTKConfigurator() 
 			: super(345, 40, "Edit the configuration")
 			
@@ -62,7 +61,6 @@ namespace CLAM{
 			mSetter = 0;
 			mGetter = 0;
 			mWidgetNum = 0;
-			mApp=NULL;
 		}
 
 		virtual ~FLTKConfigurator() {
@@ -70,14 +68,10 @@ namespace CLAM{
 			if (mGetter) delete mGetter;
 		}
 
-		template <class Config>
-		void SetConfig(Config & config, App* a) 
-		{
-			SetConfig(config);
-			mApp=a;
+		void SetApplyCallback(CBL::Functor0 functor) {
+			mApplyCallback=functor;
 		}
 
-		
 		template <class Config>
 		void SetConfig(Config & config) {
 			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
@@ -121,7 +115,6 @@ namespace CLAM{
 		void SetInfo() {
 			CLAM_ASSERT(mSetter,"Configurator: No config to set");
 			mSetter->VisitConfig();
-			if(mApp) mApp->Update();
 		}
 
 		Fl_Widget * GetWidget(const char * name) {
@@ -286,6 +279,7 @@ namespace CLAM{
 			FLTKConfigurator * owner = dynamic_cast<FLTKConfigurator*>(o->window());
 			CLAM_ASSERT(owner,"The given widget is not a FLTKConfigurator");
 			owner->SetInfo();
+			owner->mApplyCallback();
 		}
 		static void Discard(Fl_Widget* o, void* v) {
 			o->window()->hide();
@@ -309,6 +303,7 @@ namespace CLAM{
 		ConfigurationVisitor * mGetter;
 		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
+		CBL::Functor0 mApplyCallback;
 
 	};
 }
