@@ -150,8 +150,9 @@ private:
 	SpectrumSubstracter2		mPO_SpecSubstract;
 
 	//Internal DataObjects
-/** object only used for initializing frames */	
-	Spectrum mSpec;
+/** internal object used for convinience */	
+	Spectrum mResSpec;
+	Spectrum mSinSpec;
 /** object only used for initializing frames */	
 	Fundamental mFund;
 	/** Internal Circular Buffer Processing for overlap 
