@@ -116,7 +116,7 @@ protected:
 		{
 			bool not_finished = true;
 			Audio* synthbuffer = NULL;
-			char * midideviceStr = "alsa:hw:1,0";
+			char * midideviceStr = "default:default";
 			ConfigureSampleBasedIO();
 
 			pDSP->BindWithGUI( pGUI );
@@ -134,7 +134,11 @@ protected:
 			inPitchBendCfg.SetDevice(midideviceStr);
 			inPitchBendCfg.SetMessage(MIDI::ePitchbend);
 
-			MIDIInControl pitchBend( inPitchBendCfg );
+			MIDIInControl pitchBend;
+
+			bool configOk = pitchBend.Configure( inPitchBendCfg );
+			CLAM_ASSERT(configOk, pitchBend.GetStatus().c_str() );
+			
 
 			MIDIIOConfig inBreathNoteCfg;
 
