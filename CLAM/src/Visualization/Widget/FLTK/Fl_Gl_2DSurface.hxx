@@ -10,30 +10,35 @@ namespace CLAMVM
 	class Fl_Gl_2DSurface : public DrawingSurface2D, public Fl_Gl_Window
 	{
 	public:
-			Fl_Gl_2DSurface( int X, int Y, int W, int H, const char* label = 0 );
+		Fl_Gl_2DSurface( int X, int Y, int W, int H, const char* label = 0 );
 
-			~Fl_Gl_2DSurface();
+		~Fl_Gl_2DSurface();
 
-			virtual void draw();
-			void ResizeGL( );
-			void InitGL();
+		virtual void draw();
+		virtual void draw_overlay();
+		virtual void QueryScreenBoundBox( ScreenBoundBox& sbbox );
+		void ResizeGL( );
+		void InitGL();
 
-			void EnableIndexedMode();
-			void DisableIndexedMode();
-			bool IsIndexedModeEnabled() const;
-			void EnableDoubleBuffering();
-			void DisableDoubleBuffering();
-			bool IsDoubleBufferingEnabled() const;
+		void EnableIndexedMode();
+		void DisableIndexedMode();
+		bool IsIndexedModeEnabled() const;
+		void EnableDoubleBuffering();
+		void DisableDoubleBuffering();
+		bool IsDoubleBufferingEnabled() const;
+
+		virtual void RedrawOverlay();
 
 	protected:
-			virtual void WCSProject();
-			virtual void WindowProject();
-			virtual void Refresh();
-			virtual void resize( int X, int Y, int W, int H );
+		virtual void WCSProject();
+		virtual void WindowProject();
+		virtual void Refresh();
+		virtual void resize( int X, int Y, int W, int H );
+
 
 	private:
-			bool     mTimerLaunched;
-			unsigned mRefreshSlot;
+		bool        mTimerLaunched;
+		unsigned    mRefreshSlot;
 	};
 
 }

@@ -21,7 +21,7 @@ namespace CLAMVM
 			WCSProject();
 			DataBoundBox dataBBox;
 			QueryDataBoundBox( dataBBox );
-			ScreenBoundBox scrBBox = { w(), h() };
+			ScreenBoundBox scrBBox = { 0, 0, w(), h() };
 						
 			mRenderer->SetWorldBounds( dataBBox );
 			mRenderer->SetPixelBounds( scrBBox );

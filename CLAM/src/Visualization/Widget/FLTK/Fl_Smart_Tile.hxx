@@ -38,6 +38,7 @@ public:
 	int handle(int e);
 	int minsize(void) const { return minsize_; }
 	void minsize(int i) { minsize_ = i; }
+	void add_adjust(Fl_Widget* w);
 };
 
 #endif //FL_SMART_TILE

@@ -30,7 +30,7 @@ namespace CLAMVM
 						WCSProject();
 						DataBoundBox dataBBox;
 						QueryDataBoundBox( dataBBox );
-						ScreenBoundBox scrBBox = { w(), h() };
+						ScreenBoundBox scrBBox = { 0,0, w(), h() };
 
 						for ( i = mRenderers.begin(); i != end; i++ )
 						{

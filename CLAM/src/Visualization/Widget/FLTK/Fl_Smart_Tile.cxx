@@ -27,6 +27,8 @@
 
 #include "Fl_Smart_Tile.hxx"
 
+#include <iostream>
+
 static char *image_shade[] = {
 "11 11 2 1",
 ".\tc #000000",
@@ -73,6 +75,29 @@ Fl_Smart_Tile::Fl_Smart_Tile(int X,int Y,int W,int H,const char*l)
 	minsize_ = 50;
 }
 
+void Fl_Smart_Tile::add_adjust(Fl_Widget* widget)
+{
+/* resize the widget automatically to a size that will look good inside
+   the smart tile, before adding */
+	
+	if (children()==0)
+	{
+		widget->resize(0,0,w(),h());
+	}else
+	{
+	/* for new widgets, we use the size of the largest divided by 2 */
+		int max = 0;
+
+		for ( int i = 0; i < children(); i++ )
+			if ( child(i)->h() > max )
+				max = child(i)->h();
+
+		widget->resize( 0, 0, w(), max );
+	}
+	add(widget);
+}
+
+
 static int movingnewsize_ = 0; // TODO: this should be a member
 
 int Fl_Smart_Tile::handle(int e)
@@ -85,11 +110,13 @@ int Fl_Smart_Tile::handle(int e)
 		int i;
 		for (i=1;i<children();i++)
 		{
+
+			//child(i)->handle( e );
 			if (
 				Fl::event_x()<x()+w()-42 &&
 				Fl::event_y()>child(i)->y()-21 && Fl::event_y()<child(i)->y())
 			{
-				moving_ = i;
+				moving_ = -1;
 				closing_ = -1;
 				shading_ = -1;
 				if (!cursor) {
@@ -106,7 +133,12 @@ int Fl_Smart_Tile::handle(int e)
 			window()->cursor(FL_CURSOR_DEFAULT);
 			cursor = 0;
 		}
-		return 0;
+		return Fl_Group::handle(e);
+	}
+	if ( e == FL_LEAVE )
+	{
+		window()->cursor( FL_CURSOR_DEFAULT );
+		return Fl_Group::handle(e);
 	}
 	if (e==FL_DRAG)
 	{
@@ -193,6 +225,12 @@ int Fl_Smart_Tile::handle(int e)
 				shading_ = -1;
 				redraw();
 			}
+		}
+		if (moving_ != -1)
+		{
+			moving_ = -1;
+			redraw();
+			std::cerr << "moving set to -1 and redraw!" << std::endl;
 		}
 		return 1;
 	}
@@ -373,6 +411,8 @@ void Fl_Smart_Tile::draw(void)
 {
 	int i;
 	int n = children();
+
+
 	
 	int r = recalc();
 	int ty = y();
@@ -398,6 +438,19 @@ void Fl_Smart_Tile::draw(void)
 	
 	fl_color(color());
 	fl_rectf(x(),ty,w(),h()-(ty-y()));
-	Fl_Group::draw();
+	if (moving_==-1) 
+	{
+		Fl_Group::draw();
+		std::cerr << "Group drawn!" << std::endl;
+	}
+	else
+	{
+		for (i=0;i<n;i++)
+			fl_draw_box(FL_FLAT_BOX,child(i)->x(),child(i)->y(),child(i)->w(),child(i)->h(),color());
+
+		std::cerr << "Imposters drawn!" << std::endl;
+
+
+	}
 }
 		
