@@ -18,6 +18,8 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testGetInControl_WithOutOfRangeIndexThrowException );
 	CPPUNIT_TEST( testGetOutControl_WithOutOfRangeIndexThrowException );
 	CPPUNIT_TEST( testLinkAndSendControl_ChangesInControlState );
+
+	CPPUNIT_TEST( testLinkAndSendControl_LinkByName_ChangesInControlState );
 	// new controls/ports interface.
 	// todo: adapt the old tests:
 	CPPUNIT_TEST( testInControls_GetByNumber_GetTheRightControl );
@@ -102,6 +104,15 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 		LinkOutWithInControl(outId, this, inId);
 		SendControl(outId, 1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, GetInControl(inId)->GetLastValue() );
+	}
+
+	// free method LinkOutWithInControl()
+	
+	void testLinkAndSendControl_LinkByName_ChangesInControlState()
+	{
+		CLAM::LinkOutWithInControl( this, "out1",this, "in" );
+		GetOutControls().Get( "out1" ).SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, GetInControls().Get("in").GetLastValue() );
 	}
 	
 	//---------------------------------------
