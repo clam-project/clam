@@ -22,24 +22,24 @@ int main( int argc, char** argv )
 		
 		CLAM::DescriptionScheme scheme;
 		
-		scheme.AddAttribute<CLAM::Attribute<std::string> >              ( "Global", "Units.Onset.Position" );
-		scheme.AddAttribute<CLAM::Attribute<std::string> >              ( "Global", "Units.Beat.Position");
-		scheme.AddAttribute<CLAM::Attribute<std::string> >              ( "Global", "Units.Tick.Position");
-		scheme.AddAttribute<CLAM::Attribute<std::string> >              ( "Global", "Path" );
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >              ( "Global", "SampleRate" );
-		scheme.AddAttribute<CLAM::Attribute<unsigned> >                 ( "Global", "BeatsPerMinute" );
-		scheme.AddAttribute<CLAM::Attribute<unsigned> >                 ( "Global", "TicksPerMinute" );
-		scheme.AddAttribute<CLAM::Attribute<CLAM::RhythmDescription::Meter> > ( "Global", "Meter" );
+		scheme.AddAttribute<std::string>              ( "Global", "Units.Onset.Position" );
+		scheme.AddAttribute<std::string>              ( "Global", "Units.Beat.Position");
+		scheme.AddAttribute<std::string>              ( "Global", "Units.Tick.Position");
+		scheme.AddAttribute<std::string>              ( "Global", "Path" );
+		scheme.AddAttribute<CLAM::TData>              ( "Global", "SampleRate" );
+		scheme.AddAttribute<unsigned>                 ( "Global", "BeatsPerMinute" );
+		scheme.AddAttribute<unsigned>                 ( "Global", "TicksPerMinute" );
+		scheme.AddAttribute<CLAM::RhythmDescription::Meter> ( "Global", "Meter" );
 
 
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >              ( "Sample", "Value" );
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >              ( "Sample", "NormalizedValue" );
+		scheme.AddAttribute<CLAM::TData>              ( "Sample", "Value" );
+		scheme.AddAttribute<CLAM::TData>              ( "Sample", "NormalizedValue" );
 
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TTime> >              ( "Onset",  "Position" );
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >              ( "Onset",  "Weight" );
+		scheme.AddAttribute<CLAM::TTime>              ( "Onset",  "Position" );
+		scheme.AddAttribute<CLAM::TData>              ( "Onset",  "Weight" );
 
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TTime> >              ( "Beat",   "Position");
-		scheme.AddAttribute<CLAM::Attribute<CLAM::TTime> >              ( "Tick",   "Position");
+		scheme.AddAttribute<CLAM::TTime>              ( "Beat",   "Position");
+		scheme.AddAttribute<CLAM::TTime>              ( "Tick",   "Position");
 		
 		CLAM::DescriptionDataPool pool( scheme );
 
