@@ -57,6 +57,9 @@ class SMSAnalysisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
 	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
 	DYN_ATTRIBUTE(8,public, SynthSineSpectrumConfig,SynthSineSpectrum);
+	//DYN_ATTRIBUTE(9,protected, int, SinBufferSize);
+	//DYN_ATTRIBUTE(10,protected, int, ResBufferSize);
+
 	
 //Config shortcuts
 public:
@@ -126,10 +129,11 @@ public:
 	/** Unsupervised mode execution */
 	bool Do(Segment& in);
 	bool Do(Frame& in);
-	bool Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
 	bool Do(const Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 
-//private:
+	bool SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
+
+private:
 
 	// Configuration data
 	SMSAnalysisConfig mConfig;
@@ -150,6 +154,14 @@ public:
 	Spectrum mSpec;
 /** object only used for initializing frames */	
 	Fundamental mFund;
+	/** Internal Circular Buffer Processing for overlap 
+ *  @see AudioCircularBuffer  */
+	AudioCircularBuffer mSinCircularBuffer;
+	AudioCircularBuffer mResCircularBuffer;
+
+	//Internal audio objects used for convenience
+	Audio mSinAudioFrame;
+	Audio mResAudioFrame;
 
 
 #ifdef WITH_GUI
