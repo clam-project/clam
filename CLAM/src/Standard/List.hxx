@@ -78,6 +78,33 @@ public:
 		CLAM_DEBUG_ASSERT(FulfillsInvariant(),"List does not fulfill invariant");
 
 	}
+
+	operator = (const List& src)
+	{
+		int i;
+		if (mSize>0)
+		{
+			DoLast();
+			while(mpCurrent)
+			{
+				DeleteElem(mSize-1);
+			}
+
+		}
+		for(i=0;i<src.Size();i++)
+		{
+			AddElem(src[i]);
+		}
+	}
+	
+	List(const List& src)
+	{
+		mpFirst = mpLast = mpCurrent = NULL;
+		mCurrentIndex = 0;
+		mSize = 0;
+		int i;
+		*this=src;
+	}
 	
 	~List()
 	{
