@@ -1,5 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "Processing.hxx"
+
 #include "InPort.hxx"
 #include "InControl.hxx"
 #include "OutPort.hxx"
@@ -36,6 +37,7 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testInPorts_Size );
 	CPPUNIT_TEST( testOutPorts_Size );
 		
+	CPPUNIT_TEST( testConnectPorts );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -175,8 +177,29 @@ private:
 	{
 		CPPUNIT_ASSERT_EQUAL( 2, GetOutPorts().Size() );
 	}
-	
-	
+
+	class DummyIOProcessing : public CLAM::Processing
+	{
+	public:
+		CLAM::InPort<int> in;
+		CLAM::OutPort<int> out;
+		DummyIOProcessing() : in("In", this), out("Out", this)
+		{
+		}
+		bool Do() { return false; }
+		const char* GetClassName() const { return ""; }
+		bool ConcreteConfigure(const CLAM::ProcessingConfig & ) { return false; }
+		const CLAM::ProcessingConfig & GetConfig() const { throw 0;}
+
+		
+	};
+	void testConnectPorts()
+	{
+		DummyIOProcessing sender, receiver;
+		CLAM::ConnectPorts(sender, "Out", receiver, "In");
+		sender.out.GetData()=2;
+		CPPUNIT_ASSERT_EQUAL(2, receiver.in.GetData() );
+	}
 
 
 
