@@ -7,6 +7,9 @@
 #include "AudioFileIn.hxx"
 #include "AudioFileOut.hxx"
 
+#include "AudioFile.hxx"
+#include "MonoAudioFileWriter.hxx"
+
 #include <string>
 #include <fstream> // used for open(..) : we want to check if some file exists
 
@@ -38,16 +41,23 @@ namespace CLAMTest
 	}
 	
 	/// Saves audio to file using processig AudioFileOut
-	void helperSaveAudioToFile( const CLAM::Audio& audio, const std::string filename )
+	void helperSaveAudioToFile( CLAM::Audio& audio, const std::string filename )
 	{
-		CLAM::AudioFileConfig conf;
-		conf.SetFilename( filename );
-		conf.SetFiletype(CLAM::EAudioFileType::eWave);
-		CLAM::AudioFileOut out;
-		out.Configure(conf);
-		out.Start();
-		out.Do( audio );
-		out.Stop();
+		CLAM::AudioFile file;
+		file.SetLocation(filename);
+		CLAM::AudioFileHeader outputFileHeader;
+		outputFileHeader.SetValues( audio.GetSampleRate(), 1, "WAV" );
+		file.SetHeader(outputFileHeader);
+		CLAM::MonoAudioFileWriterConfig cfg;
+		CLAM::MonoAudioFileWriter writer;
+		cfg.AddAll();
+		cfg.UpdateData();
+		cfg.SetTargetFile(file);
+		writer.Configure( cfg );
+		writer.GetInPorts().GetByNumber(0).Attach(audio);
+		writer.Start();
+		writer.Do();
+		writer.Stop();
 	}
 
 	
@@ -62,11 +72,17 @@ namespace CLAMTest
 		{	
 			std::stringstream formatter;
 			formatter << "different audio sizes: first " << 
-				first.GetSize() << " second " << second.GetSize();
+				first.GetSize() << " second " << second.GetSize() << std::endl;
 			whyDifferents += formatter.str();
 			return false;
 		}
-
+		if (first.GetSampleRate() != second.GetSampleRate() )
+		{
+			std::stringstream formatter;
+			formatter << "compared audios have different sample-rates: first "<<
+				first.GetSampleRate() << " second " << second.GetSampleRate() << std::endl;
+			whyDifferents += formatter.str();
+		}
 		CLAM::DataArray& samplesFirst = first.GetBuffer();
 		CLAM::DataArray& samplesSecond = second.GetBuffer();
 		for (int i=0; i<samplesFirst.Size(); i++)
@@ -86,16 +102,23 @@ namespace CLAMTest
 	}
 	/// shorthand for loading an audio and then call
 	/// helperAudiosAreEqual
+	/// in case of not-equals, saves the result audio file
 	bool helperAudioIsEqualToAudioFile( 
 		CLAM::Audio& audio, 
 		const std::string& audioFile, 
 		std::string& whyDifferents,
 		double delta=0.0001 )
 	{
-		whyDifferents = "comparing with file: "+ audioFile+" ";
+		std::string resultAudioFile = audioFile+"_result.wav";
+		whyDifferents = "comparing with file: "+ audioFile +
+			"\nThe calculed audio has been saved in:  " + resultAudioFile +"\n";
 		CLAM::Audio loadedAudio;
 		helperLoadAudioFromFile( audioFile, loadedAudio);
 		bool result = helperAudiosAreEqual(audio, loadedAudio, whyDifferents, delta);
+		if (!result)
+		{
+			helperSaveAudioToFile(audio, resultAudioFile);
+		}
 				
 		return result;
 	}
