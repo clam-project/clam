@@ -40,15 +40,16 @@ namespace CLAMGUI
 
 		log << "##########################################################" << std::endl;
 		log << "################### ASSERTION FAILED #####################" << std::endl;
-		log << "######################std::cout####################################" << std::endl;
+		log << "##########################################################" << std::endl;
 		log << "At file " << filename << " line " << lineNumber << std::endl;
 		log << message << std::endl;
 		
 		log.close();
 
-		fl_message(	"Sorry, but SMSTools has crashed as much other software also do. You "
-					"may send you us a bug-report through our web (http://www.iua.upf.es/mtg/clam). Please,"
-					"do not forget to send us the SMSTools2_errors.log file that can be located in SMSTools 2 folder.");
+		fl_message( "Sorry, but SMSTools has crashed as much other software also do. You may send\n"
+			    "us a bug-report through our web (http://www.iua.upf.es/mtg/clam). Please, do not\n"
+			    "forget to send us the SMSTools2_errors.log file that can be located in SMSTools 2\n"
+			    "folder.");
 				
 	}
 
