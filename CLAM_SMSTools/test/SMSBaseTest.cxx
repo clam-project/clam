@@ -36,13 +36,12 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
 	CPPUNIT_TEST( testhelperLoadAudioFromFile );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
-/*	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
-*/	CPPUNIT_TEST_SUITE_END();
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
+	CPPUNIT_TEST_SUITE_END();
 
 
 
@@ -242,21 +241,9 @@ private:
 
 //-------------------------------------------------------------------------
 
-	void testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav()
-	{
-/*		mGlobalConfig.SetInputSoundFile( mPath+"sweep.wav");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
-	...
-*/
-		CPPUNIT_FAIL("TODO :testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav ");
-	}
-	
 	void testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav()
 	{
-
+		// TODO: make it with default config	
 		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
 		mGlobalConfig.SetInputSoundFile( mPath+"sine.wav");
 		InitConfigs();
@@ -264,7 +251,7 @@ private:
 		Analyze();
 		Synthesize();
 
-		const std::string expectedAudioFile = mPath+"/SMSTests/out_sine_loadedConfig";
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_sine_defaultConfig";		
 		double delta=0.09;
 		std::string diagnostic;
 		std::string diagnosticRes;
