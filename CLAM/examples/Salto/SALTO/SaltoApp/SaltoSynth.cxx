@@ -578,7 +578,7 @@ void SaltoSynth::DoInterpolatingReleaseSynthesis( CSaltoSynthFrame* pSynthFrame,
 									mIndividualGain/(currRelFrame*currRelFrame),
 									mpSynthFrame );
 */
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -739,7 +739,7 @@ void SaltoSynth::DoTransitionSynthesis( CSaltoSynthFrame *pSynthFrame)
 	mpInterpolPO->DoPitchMod(pSynthFrame,mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor);
 */
 
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -882,7 +882,7 @@ void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
 								 mIPFactor);
 */
 
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -1177,7 +1177,7 @@ void SaltoSynth::DoInterpolatingSynthesis(CSaltoSynthFrame *pSynthFrame)
 								   mIndividualGain,// magnitude gain
 								   pSynthFrame);
 */
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );

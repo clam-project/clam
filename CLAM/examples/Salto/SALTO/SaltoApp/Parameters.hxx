@@ -17,7 +17,7 @@ namespace CLAM
 
   class Parameters: public ProcessingData
   {
-    DYNAMIC_TYPE_USING_INTERFACE  (Parameters, 30, ProcessingData);
+    DYNAMIC_TYPE_USING_INTERFACE  (Parameters, 31, ProcessingData);
 
   public:
     DYN_ATTRIBUTE (0, public,bool,Play);
@@ -35,26 +35,26 @@ namespace CLAM
     DYN_ATTRIBUTE (12,public,bool,UseRandomDeviations);
     DYN_ATTRIBUTE (13,public,bool,InLoopSynthesis);
     DYN_ATTRIBUTE (14,public,bool,UseMidiKeyboard);
-    DYN_ATTRIBUTE (14,public,bool,UseBreathController);
-    DYN_ATTRIBUTE (15,public,bool,UseRandomLoop);
-    DYN_ATTRIBUTE (16,public,bool,BreathOnlySound);
-    DYN_ATTRIBUTE (17,public,TIndex,SynthesisFlow);
-    DYN_ATTRIBUTE (18,public,TIndex,CurrentStatTemplate);
-    DYN_ATTRIBUTE (19,public,double,RandomRange);
-    DYN_ATTRIBUTE (20,public,TIndex,Transpose);
-    DYN_ATTRIBUTE (21,public,TIndex,TransitionInterval);
-    DYN_ATTRIBUTE (22,public, double,InterPolFactor)
-    DYN_ATTRIBUTE (23,public, double,PitchModFactor);
-    DYN_ATTRIBUTE (24,public, double,TransitionFrequency);
-    DYN_ATTRIBUTE (25,public, double,StatResFreq);
+    DYN_ATTRIBUTE (15,public,bool,UseBreathController);
+    DYN_ATTRIBUTE (16,public,bool,UseRandomLoop);
+    DYN_ATTRIBUTE (17,public,bool,BreathOnlySound);
+    DYN_ATTRIBUTE (18,public,TIndex,SynthesisFlow);
+    DYN_ATTRIBUTE (19,public,TIndex,CurrentStatTemplate);
+    DYN_ATTRIBUTE (20,public,double,RandomRange);
+    DYN_ATTRIBUTE (21,public,TIndex,Transpose);
+    DYN_ATTRIBUTE (22,public,TIndex,TransitionInterval);
+    DYN_ATTRIBUTE (23,public, double,InterPolFactor)
+    DYN_ATTRIBUTE (24,public, double,PitchModFactor);
+    DYN_ATTRIBUTE (25,public, double,TransitionFrequency);
+    DYN_ATTRIBUTE (26,public, double,StatResFreq);
 //runtime synthesis parameters
 
-    DYN_ATTRIBUTE (26,public,double,StatResGain);
+    DYN_ATTRIBUTE (27,public,double,StatResGain);
 // runtime GUI Control
-    DYN_ATTRIBUTE (27,public, bool,DisplayedValuesChanged);
+    DYN_ATTRIBUTE (28,public, bool,DisplayedValuesChanged);
 // Salto SDIF Control Data Methods
-    DYN_ATTRIBUTE (28,public, bool,UseMelody);
-	DYN_ATTRIBUTE (29,public, bool,WriteToFile);
+    DYN_ATTRIBUTE (29,public, bool,UseMelody);
+	DYN_ATTRIBUTE (30,public, bool,WriteToFile);
 
 
 /////////////////////////// THESE CAN BE DINAMIC BUT CHECK FIRST ////////////////////////

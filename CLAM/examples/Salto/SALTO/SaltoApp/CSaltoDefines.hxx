@@ -14,7 +14,7 @@
 #ifdef WIN32
 	#define SALTO_DATA_DIR "c:"
 #else
-	#define SALTO_DATA_DIR ""
+	#define SALTO_DATA_DIR "../../.."
 #endif
 
   #ifdef ALTOSAX
@@ -110,3 +110,7 @@ enum
   DO_TRANSITION
 };
 #endif
+
+
+
+
