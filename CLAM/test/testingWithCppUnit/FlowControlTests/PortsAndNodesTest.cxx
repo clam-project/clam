@@ -50,22 +50,6 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testAttachPortsAndGetData_WithGeneralTemplatePorts_ReadsTheWrittenData );
 	CPPUNIT_TEST( testAttachPortsAndGetData_WithAudioPorts_ReadsTheWrittenData );
 
-/*	
-	CPPUNIT_TEST( testInPort_Attach_WithGeneralTemplateInPort_BadTypeAssertionFails );
-	CPPUNIT_TEST( testInPort_IsAttached_WithGeneralTemplateInPort_AfterConstruction );
-	CPPUNIT_TEST( testInPort_IsAttached_WithGeneralTemplateInPort_AfterAttach );
-	CPPUNIT_TEST( testInPort_IsAttached_WithGeneralTemplateInPort_AfterUnattach );
-	CPPUNIT_TEST( testInPort_UnAttach_WithGeneralTemplateInPort_WhenIsNotAttached );
-	
-	//OutPorts
-	CPPUNIT_TEST( testOutPort_Attach_WithGeneralTemplateOutPort_UpdatesConcretePortState );
-	CPPUNIT_TEST( testOutPort_Attach_WithGeneralTemplateOutPort_BadTypeAssertionFails );
-	CPPUNIT_TEST( testOutPort_IsAttached_WithGeneralTemplateOutPort_AfterConstruction );
-	CPPUNIT_TEST( testOutPort_IsAttached_WithGeneralTemplateOutPort_AfterAttach );
-	CPPUNIT_TEST( testOutPort_IsAttached_WithGeneralTemplateOutPort_AfterUnattach );
-	CPPUNIT_TEST( testOutPort_UnAttach_WithGeneralTemplateOutPort_WhenIsNotAttached );
-*/	
-
 	// Tests for the concrete PortTmpl classes
 	CPPUNIT_TEST_SUITE_END();
 
