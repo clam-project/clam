@@ -48,11 +48,7 @@ private:
 	std::vector<AudioDevice*> mDevices;
 
 	/** A Meyers-Singleton-style list of all DeviceList */
-	static std::vector<AudioDeviceList*>& DeviceLists(void)
-	{ 
-		static std::vector<AudioDeviceList*> sDeviceLists;
-		return sDeviceLists;
-	}
+	static std::vector<AudioDeviceList*>& DeviceLists(void);
 	
 	static AudioManager* _Current(bool set = 0,AudioManager* m = 0)
 	{

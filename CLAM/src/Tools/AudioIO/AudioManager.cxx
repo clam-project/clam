@@ -46,6 +46,12 @@ AudioManager::~AudioManager()
 	_Current(true,0);
 }
 
+std::vector<AudioDeviceList*>& AudioManager::DeviceLists(void)
+{ 
+	static std::vector<AudioDeviceList*> sDeviceLists;
+	return sDeviceLists;
+}
+
 AudioDevice* AudioManager::FindDevice(const std::string& name)
 {
 	unsigned int i;
@@ -163,7 +169,6 @@ AudioDeviceList* AudioManager::FindList(const std::string& arch)
 
 	if (tmp == "default")
 		tmp = DEFAULT_AUDIO_ARCH;
-
 	for (i=0;i<DeviceLists().size();i++)
 	{
 		if (DeviceLists()[i]->ArchName() == tmp)
