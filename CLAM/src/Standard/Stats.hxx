@@ -17,12 +17,21 @@ template <unsigned int x,unsigned int y> class GreaterThan
 
 template <unsigned int x,unsigned int y> StaticBool<(x>y)>  GreaterThan<x,y>::mIs;
 
+
+/**
+ * An StatMemory may hold a T value and remembers whether
+ * it has been set or is not initialized.
+ * It has two states, value memorized and no value memorized.
+ * By default is not memorized until it is assigned to a value that is copied.
+ * Then you can query the value using the call operator.
+ * By reseting it you are releasing the memory until a new assignement.
+ */
 template <typename T>
-class StatsMemory
+class StatMemory
 {
 public:
-	StatsMemory() : mMemorized(false) {}
-	const StatsMemory & operator = (const T & value)
+	StatMemory() : mMemorized(false) {}
+	const StatMemory & operator = (const T & value)
 	{
 		mMemorized=true;
 		mMemory=value;
@@ -49,11 +58,12 @@ private:
 
 
 /** Class to hold basic statistics related to an array of arbitrary data. Statistics are computed
- *	efficiently and reusing computations whenever possible.
+ *  efficiently and reusing computations whenever possible.
  *	@param abs whether the statistics are performed directly on the values (by default or template
  *	parameter=false) or on the absolute value of the array elements
  *	@param T the array type
  *	@param U the type of the resulting statistics
+ *	@pre Most stats are not tolerant to size 0 data sets
  */
 template <bool abs=false,class T=TData, class U=TData,int initOrder=5> class StatsTmpl
 {
@@ -109,7 +119,6 @@ public:
 	 *	This method just acts as a selector, if order is greater than init order, we cannot assure
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
-
 	template <int order> U GetMoment(const O<order>*)
 	{
 		return GetMoment((const O<order>*)(0),GreaterThan<order,initOrder>::mIs);
@@ -176,7 +185,13 @@ public:
 		pTmpArray=NULL;
 	}
 
-	/** Get mean, compute it if necessary*/
+	/**
+	 * Get mean, compute it if necessary.
+	 *
+	 * \f[
+	 * 	Mean(X) = \frac {\sum x_i} { Size(X) }
+	 * \f]
+	 */
 	U GetMean()
 	{
 		if (mData->Size()<=0) return U(.0);
@@ -184,7 +199,15 @@ public:
 		return GetMoment(FirstOrder);
 	}
 
-	/** Get centroid, compute it if necessary*/
+	/**
+	 * Get centroid, compute it if necessary.
+	 *
+	 * \f[
+	 * 	Centroid(X) = \frac 
+	 * 		{\sum i \cdot x_i }
+	 * 		{\sum x_i}
+	 * \f]
+	 * */
 	U GetCentroid()
 	{
 //		return GetCenterOfGravity(FirstOrder);
@@ -278,7 +301,7 @@ public:
 	 * The Skewness of a distribution gives an idea of 
 	 * the assimetry of the variance of the values.
 	 * @f[
-	 * Skew(X) = \frac
+	 * Skewness(X) = \frac
 	 * 	{\sum{\left( (x_i-Mean(X))^3\right)} } 
 	 * 	{\left(
 	 * 		\sum{\left(
@@ -323,7 +346,6 @@ public:
 	 * 	\right) ^2 }
 	 * @f]
 	 *
-	 * sum((xi-Mean(X))^4) / sum((xi-Mean(X))^2)^2 [Degree of peakness]
 	 * Tipical values:
 	 * - A normal distribution of \f$x_i\f$ values has a kurtosis near to 3.
 	 * - A constant distribution has a kurtosis of \f$\frac{-6(n^2+1)}{5(n^2-1)} + 3 \f$
@@ -356,12 +378,33 @@ public:
 
 	/**
 	 * Get energy, compute it if necessary.
+	 *
+	 * @f[
+	 * 	Energy(X) = \sum{{x_i}^2 }
+	 * @f]
 	 * 
 	 */
 	T GetEnergy()
 	{
 		return mEnergy(*mData);
 	}
+
+	/**
+	 * Get the Geometric mean, and computes it if necessary.
+	 *
+	 * The Geometric mean gives the mean magnitude order.
+	 * It converges with the mean when all the values \f$x_i\f$ are closer.
+	 *
+	 * @f[
+	 * 	GeometricMean(X) = {\left( \prod x_i \right)} ^ \frac{1}{Size(X) }
+	 * @f]
+	 * In order to make the computation cheap, For easy computation, logarithms are used.
+	 * @f[
+	 * 	\log (GeometricMean(X)) = \frac 
+	 * 		{ \sum \log_e x_i }
+	 * 		{ Size(X) }
+	 * @f]
+	 */
 
 	U GetGeometricMean()
 	{
@@ -464,16 +507,25 @@ public:
 	 * Get flatness, compute it if necessary.
 	 *
 	 * The flatness is the relation among the geometric mean and the arithmetic mean.
-	 * It gives the 
 	 *
-	 * 
+	 * \f[
+	 * 	Flatness(X) = \frac
+	 * 		{GeometricMean(X)}
+	 * 		{Mean(X)}
+	 * \f]
+	 *
+	 * Singularities and solution:
+	 * - When the mean is lower than 1e-20, it is set at 1e-20
+	 * - When the geometric mean is lower than 1e-20, it is set at 1e-20
+	 * @todo Explain why this is a mesure of the flatness
+	 * @bug Singularity solution don't work for non absolute stats
 	 */
 	U GetFlatness()
 	{
 		U mean = GetMean();
 		U geometricMean = GetGeometricMean();
-		if (mean<1e-20 || std::isnan(mean)) mean=TData(1e-20);
-		if (geometricMean<1e-20 || std::isnan(mean)) geometricMean=TData(1e-20);
+		if (mean<1e-20) mean=TData(1e-20);
+		if (geometricMean<1e-20 ) geometricMean=TData(1e-20);
 		return geometricMean/mean;
 	}
 
@@ -700,7 +752,7 @@ private:
 	GeometricMeanTmpl<T,U> mGeometricMean;
 	ComplexMaxElement<abs,T> mMaxElement;
 	ComplexMinElement<abs,T> mMinElement;
-	StatsMemory<U> mCentroid;
+	StatMemory<U> mCentroid;
 
 	const Array<T>* mData;
 
