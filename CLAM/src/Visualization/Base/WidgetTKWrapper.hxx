@@ -41,14 +41,11 @@ class EWidgetTK
 	: public CLAM::Enum
 {
 public:
-	EWidgetTK()
-		: CLAM::Enum( ValueTable(), FLTK ) { }
+	EWidgetTK() : CLAM::Enum( ValueTable(), FLTK ) { } 
+	EWidgetTK( tValue v ) : CLAM::Enum( ValueTable(), v ) { } 
+	EWidgetTK( std::string s ) : CLAM::Enum( ValueTable(), s ) { } 
+	~EWidgetTK() { }
 
-	EWidgetTK( tValue v )
-		: CLAM::Enum( ValueTable(), v ) { }
-
-	EWidgetTK( std::string s )
-		: CLAM::Enum( ValueTable(), s ) { }
 	CLAM::Component* Species() const
 	{
 		return new EWidgetTK;
@@ -58,9 +55,9 @@ public:
 		FLTK = 0,
 		Qt
 	} tEnum;
-	static Enum::tEnumValue * ValueTable()
+	static tEnumValue * ValueTable()
 	{
-		static Enum::tEnumValue sEnumValues[] =
+		static tEnumValue sEnumValues[] =
 		{
 			{ FLTK, "FLTK" },
 			{ Qt,   "Qt" },

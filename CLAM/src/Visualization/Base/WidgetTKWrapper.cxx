@@ -26,7 +26,6 @@
 namespace CLAMVM
 {
 
-
 WidgetTKWrapper::WidgetTKWrapper()
 {
 }
