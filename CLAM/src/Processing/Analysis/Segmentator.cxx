@@ -109,7 +109,7 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 		}
 		default:
 		{
-			myStream << "Unknown descriptor";
+			myStream << "UnknownDescriptor";
 			break;
 		}
 	}
