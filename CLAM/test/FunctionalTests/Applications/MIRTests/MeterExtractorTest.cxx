@@ -108,7 +108,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -136,7 +136,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -163,7 +163,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -192,7 +192,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -222,7 +222,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -251,7 +251,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -280,7 +280,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -308,7 +308,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -337,7 +337,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -367,7 +367,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -396,7 +396,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
@@ -424,7 +424,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
-			meterEstimator.Do( signal, extractedBeats.GetIndexes(), result );
+			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
