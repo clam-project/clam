@@ -8,7 +8,6 @@
 #include "TimeIndex.hxx"
 #include "GT_FilterBank.hxx"
 #include "OnsetDetectorConfig.hxx"
-#include "OD_AudioDecimation.hxx"
 #include <list>
 #include <map>
 
@@ -44,8 +43,6 @@ namespace CLAM
 		// Configuration data
 		OnsetDetectorConfig mConfig;       
 		GT_FilterBank	mFilterBank;
-		OnsetDetection::AudioDecimator  mDecimator;
-
 	
 		// Internal convenience methods.
 		void AttachChildren();
@@ -59,11 +56,11 @@ namespace CLAM
 	
 		bool CalcFilterBankOutput(  );
 		void Algorithm(Segment& s, Array<TimeIndex>& out );
-		void Smoothing(Array<double>& energy, Array<double> &smoothedEnergy );
+		void Smoothing(Array<float>& energy, Array<float> &smoothedEnergy );
 
-		void DetectPosition(Array<double>& in, Array<double> &ret);
+		void DetectPosition(Array<float>& in, Array<float> &ret);
 
-		void DetectCandidates( Array<double>& in, Array<double>& weight,
+		void DetectCandidates( Array<float>& in, Array<float>& weight,
 				       TData threshold, std::list<TimeIndex>& candidates );
 
 		void RemoveTooNearOnsetsFromCandidatesList( std::list<TimeIndex>& in );
@@ -76,9 +73,9 @@ namespace CLAM
 		void CheckOffset( Segment &s , Array<TimeIndex>& finalOnsets);
 		void CheckOffset( Segment& s, std::list<TimeIndex>& candidates );
 
-		void DecimationForEnvelopeComputation( Array<double>& envelope );
-		void ComputeSmoothingFilterCoeffs( Array<double>& coeffs );
-		void ExtractAudioEnvelope( Array<double>& envelope );
+		void DecimationForEnvelopeComputation( Array<float>& envelope );
+		void ComputeSmoothingFilterCoeffs( Array<float>& coeffs );
+		void ExtractAudioEnvelope( Array<float>& envelope );
 
 		//Member Data
 		Audio mAudio;
@@ -96,12 +93,12 @@ namespace CLAM
 		TData mOffsetThreshold;
 		bool mComputeOffsets;
 
-		Array<double> mWinCoef;						//Smoothing Filter Coefficients
+		Array<float> mWinCoef;						//Smoothing Filter Coefficients
 		//Rescaling factor
 		double        mWinCoefSummation;
-		Array< Array<double> > mFilterBankOutputs;
+		Array< Array<float> > mFilterBankOutputs;
 		Array<TimeIndex> mOnsets;
-		Array<double>    mRevSmoothedEnergy;
+		Array<float>    mRevSmoothedEnergy;
 	};
 
 

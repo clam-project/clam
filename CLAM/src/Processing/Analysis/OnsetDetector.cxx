@@ -23,6 +23,7 @@
 #include "Point.hxx"
 #include "OD_AudioDecimation.hxx"
 #include "CLAM_Math.hxx"
+#include <libresample.h>
 
 namespace CLAM
 {
@@ -98,14 +99,26 @@ namespace CLAM
 		CLAM_ASSERT( int(originalSegment.GetAudio().GetSampleRate()) == 44100,
 			     "This onset detection algorithm only works for signals sampled at a 44.1kHz rate" );
 
-		//Downsampling to 22.05 kHz
+		//Downsampling 1:2 factor
 
-		mAudio.SetSize(originalSegment.GetAudio().GetSize()/2);
+		TSize originalAudioSize = originalSegment.GetAudio().GetSize();
+		TSize downAudioSize = (originalSegment.GetAudio().GetSize()/2);
+
+		mAudio.SetSize( downAudioSize + 1000 );
 		mAudio.SetSampleRate(originalSegment.GetAudio().GetSampleRate()/2);
 
-		mDecimator.DecimateFrom44100To22050( originalSegment.GetAudio().GetBuffer(),
-						     mAudio.GetBuffer() );
-		
+		void* handle = resample_open( 1, 0.5, 0.5 );
+		int srcused;
+
+		resample_process( handle, 0.5,
+				  originalSegment.GetAudio().GetBuffer().GetPtr(),
+				  originalAudioSize,
+				  1, &srcused,
+				  mAudio.GetBuffer().GetPtr(), downAudioSize+1000 );
+				  
+		resample_close( handle );
+
+		mAudio.SetSize( downAudioSize );
 
 		//Filter bank output computation
 		mFilterBankOutputs.Resize(mnBands);
@@ -134,8 +147,8 @@ namespace CLAM
 
 		for ( int band = 0; band < mnBands; band++ )
 		{
-			mFilterBankOutputs[band].Resize(bandSize/90);
-			mFilterBankOutputs[band].SetSize(bandSize/90);			
+			mFilterBankOutputs[band].Resize((bandSize/90) + 1000);
+			mFilterBankOutputs[band].SetSize(( bandSize/90) + 1000);			
 		}
 
 		mFilterBank.Do( mAudio, mFilterBankOutputs );
@@ -152,7 +165,7 @@ namespace CLAM
 	void OnsetDetector::Algorithm( Segment& s , Array<TimeIndex>& finalOnsets )
 	{	
 	
-		Array< Array<double> > smoothedInput(mnBands);	//Smoothed Band Energy Array
+		Array< Array<float> > smoothedInput(mnBands);	//Smoothed Band Energy Array
 		smoothedInput.SetSize(mnBands);
 
 		for ( int i = 0; i < mnBands; i++ )
@@ -161,7 +174,7 @@ namespace CLAM
 			smoothedInput[i].SetSize( mnSamples );
 		}
 
-		Array< Array<double> > bandOnsetDetectData(mnBands);	//Data on which detection is performed 
+		Array< Array<float> > bandOnsetDetectData(mnBands);	//Data on which detection is performed 
 		bandOnsetDetectData.SetSize(mnBands);
 
 		for ( int i = 0; i < mnBands; i++ )
@@ -281,7 +294,7 @@ namespace CLAM
 	}
 
 
-	void OnsetDetector::Smoothing(Array<double>& energy, Array<double>& smoothedEnergy )
+	void OnsetDetector::Smoothing(Array<float>& energy, Array<float>& smoothedEnergy )
 	{
 		int i, j, k;
 		double temp;
@@ -350,7 +363,7 @@ namespace CLAM
 	}
 
 
-	void OnsetDetector::DetectPosition(Array<double>& in, Array<double>& ret)
+	void OnsetDetector::DetectPosition(Array<float>& in, Array<float>& ret)
 	{
 		int i;
 
@@ -382,7 +395,7 @@ namespace CLAM
 ////////////////////////////////
 ///////CANDIDATE DETECTION//////
 ////////////////////////////////
-	void OnsetDetector::DetectCandidates(Array<double>& in, Array<double>& weight, 
+	void OnsetDetector::DetectCandidates(Array<float>& in, Array<float>& weight, 
 					     TData threshold , std::list<TimeIndex>& ret)
 	{	
 	
@@ -579,23 +592,37 @@ namespace CLAM
 	//CHECK  FOR OFFSETS//
 	/////////////////////
 
-	void OnsetDetector::DecimationForEnvelopeComputation( Array<double>& envelope )
+	void OnsetDetector::DecimationForEnvelopeComputation( Array<float>& envelope )
 	{
-		envelope.Resize( mAudio.GetSize() / 90 );
-		envelope.SetSize( mAudio.GetSize() / 90 );
+		TSize originalAudioSize = mAudio.GetSize();
+		TSize downAudioSize = mAudio.GetSize() / 90;
+
+		envelope.Resize( downAudioSize + 1000 );
+		envelope.SetSize( downAudioSize + 1000 );
 
 		DataArray& samples = mAudio.GetBuffer();
-		TSize numSamples = mAudio.GetSize();
 
-		for ( int i = 0; i < numSamples; i++ )
+		for ( int i = 0; i < originalAudioSize; i++ )
 			samples[i] = fabsf( samples[i] );
 
-		// Decimation
-		mDecimator.DecimateFrom22050To245( samples, envelope );
+		// Decimation 
+		double factor = 245.0 / 22050.0;
+
+		void* handle = resample_open( 1, factor, factor );
+		int srcused;
+
+		resample_process( handle, factor,
+				  samples.GetPtr(), originalAudioSize,
+				  1, &srcused,
+				  envelope.GetPtr(), downAudioSize+1000 );
+
+		resample_close( handle );
+		
+		envelope.SetSize( downAudioSize );
 
 	}
 
-	void OnsetDetector::ComputeSmoothingFilterCoeffs( Array<double>& coeffs )
+	void OnsetDetector::ComputeSmoothingFilterCoeffs( Array<float>& coeffs )
 	{
 		TSize winSize = TSize(0.05 * mSampleRate);
 		coeffs.Resize( winSize );
@@ -605,15 +632,15 @@ namespace CLAM
 			coeffs[i] = 1.0;
 	}
 
-	void OnsetDetector::ExtractAudioEnvelope( Array<double>& envelope )
+	void OnsetDetector::ExtractAudioEnvelope( Array<float>& envelope )
 	{
 		// Extraction of amplitude envelope
 
-		Array<double> amplitude;
+		Array<float> amplitude;
 
 		DecimationForEnvelopeComputation( amplitude );
 
-		Array<double> winCoef;
+		Array<float> winCoef;
 
 		ComputeSmoothingFilterCoeffs( winCoef );
 		
@@ -623,7 +650,7 @@ namespace CLAM
 		//convolution
 		envelope.Resize(amplitude.Size());
 		envelope.SetSize(amplitude.Size());
-		Array<double> revenvelope(amplitude.Size());
+		Array<float> revenvelope(amplitude.Size());
 		revenvelope.SetSize(amplitude.Size());
 		
 
@@ -695,7 +722,7 @@ namespace CLAM
 		std::list< PointTmpl<int,int> > offsets;
 		typedef std::list< PointTmpl<int,int> >::iterator PLI;
 
-		Array<double> envelope;
+		Array<float> envelope;
 
 		ExtractAudioEnvelope( envelope );
 

@@ -26,7 +26,6 @@
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "GT_FilterBankConfig.hxx"
-#include "OD_AudioDecimation.hxx"
 
 namespace CLAM
 {
@@ -48,7 +47,6 @@ namespace CLAM
 		Array<double> mCentreFreq;
 		double A0, A2, B0;
 		Array<double> B1, B2, A11, A12, A13, A14, gain;
-		OnsetDetection::AudioDecimator mDecimator;
 
 	public:
 
@@ -60,7 +58,7 @@ namespace CLAM
 
 		bool Do(void);
 
-		bool Do(Audio &in, Array< Array<double> >& filterBankOut);
+		bool Do(Audio &in, Array< Array<float> >& filterBankOut);
 	
 		void MakeERBFilters();
 	

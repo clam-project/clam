@@ -26,6 +26,7 @@
 #include "GT_FilterBank.hxx"
 #include "Audio.hxx"
 #include "OSDefines.hxx"
+#include <libresample.h>
 
 namespace CLAM
 {
@@ -64,7 +65,7 @@ namespace CLAM
 		return false;
 	}
 	
-	bool GT_FilterBank::Do(Audio &in, Array< Array<double> >& filterBankOutputs )
+	bool GT_FilterBank::Do(Audio &in, Array< Array<float> >& filterBankOutputs )
 	{
 		CLAM_ASSERT( filterBankOutputs.Size() == mnChannels,
 			     "GT_FilterBank::Do() : filterBankOutputs array size is smaller than the number of bands setup on the configuration" );
@@ -72,7 +73,7 @@ namespace CLAM
 
 		const TSize audiosize = in.GetSize();
 	
-		Array<double> audioArray;
+		Array<float> audioArray;
 
 		audioArray.Resize( audiosize );
 		audioArray.SetSize( audiosize );
@@ -80,7 +81,10 @@ namespace CLAM
 
 		const DataArray & inputBuffer = in.GetBuffer();
 
-	
+		double factor = 245.0 / in.GetSampleRate();
+		TSize  downAudioSize = audioArray.Size()/90;
+
+		void* resamp_handle = resample_open( 1, factor, factor );
 
 		double tempBuffer0[4];
 		double tempBuffer1[4];
@@ -102,7 +106,7 @@ namespace CLAM
 
 		//Is that also true here?
 	
-		Array<double>& outputBuffer = audioArray;
+		Array<float>& outputBuffer = audioArray;
 
 		for ( int i = 0; i < mnChannels; i++ )
 		{
@@ -170,14 +174,22 @@ namespace CLAM
 
 				
 			//Decimation to 245 Hz
-			
-			mDecimator.DecimateFrom22050To245(audioArray, filterBankOutputs[i]);
+			int srcused;
+
+			resample_process( resamp_handle, factor,
+					  audioArray.GetPtr(), audioArray.Size(),
+					  1, &srcused,
+					  filterBankOutputs[i].GetPtr(), downAudioSize + 1000 );
+
+			filterBankOutputs[i].SetSize( downAudioSize );
 
 			for(int k=0 ; k< filterBankOutputs[i].Size() ; k++)
 				filterBankOutputs[i][k] = filterBankOutputs[i][k]*mCentreFreq[i];
 			
 
 		}
+
+		resample_close( resamp_handle );
 
 		return true;
 	}
