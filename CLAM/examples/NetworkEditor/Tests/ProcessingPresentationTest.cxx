@@ -8,10 +8,6 @@
 #include <string>
 #include "Signalv1.hxx"
 
-
-#include <iostream>
-#include <qevent.h> 
-
 namespace CLAMTest 
 {
 
@@ -25,7 +21,7 @@ class ProcessingPresentationTest : public CppUnit::TestFixture
 	
 	CPPUNIT_TEST( testProcessingPresentationIsCreatedCorrectly_afterAttached );
 	CPPUNIT_TEST( testSignalConfigureProcessingChangesProcessingConfiguration );
-			
+	
 	CPPUNIT_TEST_SUITE_END();
 
 	CLAM::Oscillator mProc;
