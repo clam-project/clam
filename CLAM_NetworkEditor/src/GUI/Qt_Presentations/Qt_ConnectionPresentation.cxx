@@ -18,7 +18,7 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 	  mDown(false)
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
-//	setAutoMask(true);
+
 	SetOutPos.Wrap( this, &Qt_ConnectionPresentation::OnNewOutPos);
 	SetInPos.Wrap( this, &Qt_ConnectionPresentation::OnNewInPos);
 	setFixedSize(0,0);
@@ -87,8 +87,6 @@ void Qt_ConnectionPresentation::UpdatePosition()
 
 	move (x,y);
 	setFixedSize(w + 1,h +1);
-//	updateMask();
-
 }
 
 
