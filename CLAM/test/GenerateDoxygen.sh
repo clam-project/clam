@@ -29,7 +29,7 @@ then
 	GenerateDoxygen "CLAM" "" "CLAM-doxygen"
 elif [ "$1" == "devel" ]
 then
-	GenerateDoxygen "CLAM development" "-r development-branch" "CLAM-devel-doxygen"
+	GenerateDoxygen "CLAM-development" "-r development-branch" "CLAM-devel-doxygen"
 else
 	echo "For main branch:  $0 main "  >&2
 	echo "For devel branch:  $0 devel "  >&2
