@@ -195,6 +195,7 @@ void NetworkController::LoadNetwork( const std::string & file)
 {
 	CLAM::XMLStorage storage;
 	storage.Restore( *mObserved, file );
+
 	BindTo( *mObserved );
 
 	ProcessingControllersMapIterator it;
@@ -209,9 +210,7 @@ void NetworkController::LoadNetwork( const std::string & file)
 
 void NetworkController::SaveNetwork( const std::string & file)
 {
-	CLAM::XMLStorage storage;
-	storage.UseIndentation(true);
-	storage.Dump( *mObserved, "network", file );
+	CLAM::XMLStorage::Dump( *mObserved, "network", file );
 }
 
 void NetworkController::RemoveProcessing(const std::string & name )

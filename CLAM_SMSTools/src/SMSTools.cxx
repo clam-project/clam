@@ -378,9 +378,7 @@ namespace CLAMGUI
 
 		melodyFilename = filename;
 
-		CLAM::XMLStorage x;
-		x.UseIndentation(true);
-		x.Dump( GetMelody(), "Analyzed_Melody", melodyFilename );
+		CLAM::XMLStorage::Dump( GetMelody(), "Analyzed_Melody", melodyFilename );
 	}
 
 	bool SMSTools::DoStoreAnalysis()
