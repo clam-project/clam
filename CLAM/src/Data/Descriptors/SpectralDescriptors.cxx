@@ -86,6 +86,17 @@ DataArray Multiply(TData &factor, DataArray &a) {
 	return result;
 }
 
+DataArray Multiply(DataArray &a, DataArray &b) {
+	TIndex i;
+	TSize size=a.Size(); 
+	DataArray result;
+	result.Resize(size);
+	result.SetSize(size);
+	for (i=0; i<size; i++)
+	 	result[i]=a[i]*b[i];
+	return result;
+}
+
 SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAttr)
 {
 	CLAM_ASSERT(pSpectrum->GetScale()==EScale::eLinear,

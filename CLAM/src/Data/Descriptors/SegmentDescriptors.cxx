@@ -85,7 +85,6 @@ void SegmentDescriptors::SetFramePrototype(const FrameDescriptors& proto, int nF
 		GetMinD().SetPrototype(proto);
 	if(HasVarianceD())
 		GetVarianceD().SetPrototype(proto);
-
 }
 
 void SegmentDescriptors::Compute()
@@ -110,8 +109,13 @@ void SegmentDescriptors::ConcreteCompute()
 		SetMaxD(mSegmentStats->GetMax());
 	if(HasMinD())
 		SetMinD(mSegmentStats->GetMin());
-	if(HasVarianceD())
+#include <iostream>
+	if(HasVarianceD()) {
+		std::cout << "computing variance:" <<  std::endl;
+		std::cout << 	GetVarianceD().GetSpectralPeakD().HasHPCP() << std::endl;
 		SetVarianceD(mSegmentStats->GetVariance());
+		std::cout << 	GetVarianceD().GetSpectralPeakD().HasHPCP() << std::endl;
+	}
 }
 
 } // namespace CLAM
