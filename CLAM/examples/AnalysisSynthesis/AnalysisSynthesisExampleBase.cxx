@@ -18,18 +18,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include "CLAM_Math.hxx"
 
+#include <FL/fl_file_chooser.H>
+#ifdef  GetClassName
+#undef GetClassName
+#endif
 
 #include "AnalysisSynthesisExampleBase.hxx"
 #include "SegmentDescriptors.hxx"
 #include "BasicStatistics.hxx"
 
-#include <FL/fl_file_chooser.H>
 
 #include "AudioFileIn.hxx"
 #include "AudioFileOut.hxx"
 #include <iostream>
-#include "CLAM_Math.hxx"
 
 #include "Segment.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
@@ -461,6 +464,11 @@ void AnalysisSynthesisExampleBase::DoAnalysis()
 	AnalysisProcessing();
 }
 
+void AnalysisSynthesisExampleBase::DoTransformation()
+{
+	TransformProcessing();
+}
+
 void AnalysisSynthesisExampleBase::DoTracksCleanup()
 {
 	TracksCleanupProcessing();
@@ -833,13 +841,32 @@ void AnalysisSynthesisExampleBase::LoadTransformationScore(const std::string& in
 	delete wm;
 }
 
-void AnalysisSynthesisExampleBase::Transform(void)
+void AnalysisSynthesisExampleBase::Transform()
+{
+	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
+	int nSynthFrames=size/mSynthConfig.GetFrameSize();
+
+	mCurrentProgressIndicator = CreateProgress("SMS Transformation Processing",0,float(nSynthFrames));
+
+	DoTransformation();
+
+	DestroyProgressIndicator();	
+
+}
+
+void AnalysisSynthesisExampleBase::TransformProcessing(void)
 {
 	bool def=false;
 	mTransformation.Configure(mTransformationScore);
 	mTransformation.Start();
-	while(mTransformation.Do()){}
+	int i = 0;
+	while(mTransformation.Do())
+	{
+		mCurrentProgressIndicator->Update(float(i++));
+	}
 	mTransformation.Stop();
+
+
 }
 
 void AnalysisSynthesisExampleBase::SetTransformation(SMSTransformation* pTransformation)

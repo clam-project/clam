@@ -113,7 +113,9 @@ namespace CLAM
 		void Synthesize(void);
 		/** Perform transformation according to previously set transformation 
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
+		virtual void DoTransformation();
 		void Transform(void);
+		void TransformProcessing();
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
