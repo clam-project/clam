@@ -32,13 +32,13 @@
 #include "PushFlowControl.hxx"
 #include "Err.hxx"
 #include "SimpleOscillator.hxx"
+#include "Oscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "AudioIO.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
-#include "MonoAudioFileReader.hxx" 
-#include "MonoAudioFileWriter.hxx" 
+
 #include "AudioFile.hxx"
 #include <iostream>
 #include <FL/fl_file_chooser.H>
@@ -55,46 +55,6 @@ int main( int argc, char** argv )
 		int size = 512;
 		int sampleRate = 44100;
 
-		// we will let the user choose file names for loading and saving audio.
-		
-		const char* fileName = fl_file_chooser( "Please, select a mono .wav file sampled to 44100 Hz", "*.wav", NULL );
-		if ( fileName == NULL )
-		{
-			std::cout << "User cancelled" << std::endl;
-			exit(0);
-		}
-		
-		CLAM::AudioFile file;
-		file.SetLocation( fileName );
-		CLAM::AudioFileHeader header;
-		CLAM::EAudioFileFormat inputFormat = 
-		CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
-		header.SetValues( sampleRate, 1, inputFormat );
-		file.SetHeader( header );
-		CLAM::MonoAudioFileReaderConfig configReader;
-		configReader.AddSourceFile();
-		configReader.UpdateData();
-		configReader.SetSourceFile( file );	
-		/*	
-		const char* outputFileName = fl_file_chooser(  "Please, specify the wav where result will be stored", "*.wav", NULL );
-		if ( outputFileName == NULL )
-		{
-			std::cout << "User cancelled" << std::endl;
-			exit(0);
-		}
-
-		CLAM::AudioFile file2;
-		file2.SetLocation( outputFileName );
-		CLAM::AudioFileHeader header2;
-		CLAM::EAudioFileFormat outputFormat = 
-		CLAM::EAudioFileFormat::FormatFromFilename( file2.GetLocation() );
-		header2.SetValues( sampleRate, 1, outputFormat );
-		file2.SetHeader( header2 );
-		CLAM::MonoAudioFileWriterConfig configWriter;
-		configWriter.AddTargetFile();
-		configWriter.UpdateData();
-		configWriter.SetTargetFile( file2 );
-*/
 		// network initialization
 
 		CLAM::AudioManager audioManager( sampleRate, size );
@@ -104,40 +64,41 @@ int main( int argc, char** argv )
 
 
 		CLAM::SimpleOscillatorConfig osc1Cfg;
-		osc1Cfg.SetFrequency(440.0);
+		osc1Cfg.SetFrequency(220.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::SimpleOscillatorConfig osc2Cfg;
-		osc2Cfg.SetFrequency(40.0);
+		osc2Cfg.SetFrequency(10.0);
+		osc2Cfg.SetPhase(0.5);
+		osc2Cfg.SetAmplitude(0.5);
 		osc2Cfg.SetSamplingRate( sampleRate );
 
-		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
+		CLAM::SimpleOscillatorConfig osc3Cfg;
+		osc3Cfg.SetFrequency(880.0);		
+		osc3Cfg.SetAmplitude(0.5);
+		osc3Cfg.SetSamplingRate( sampleRate );
 
-		CLAM::BinaryAudioOpConfig audioAdderCfg;
-			
+		CLAM::OscillatorConfig osc4Cfg;
+		osc4Cfg.SetFrequency(440.0);
+		
+
 		CLAM::AudioIOConfig audioOutCfg;
 		audioOutCfg.SetFrameSize( size );
 		audioOutCfg.SetSampleRate( sampleRate );
 		audioOutCfg.SetChannelID( 0 );
 
-		// in this example we will have an audio file signal added to an oscillator, the result
-		// multiplied in order to modulate it. Finally we will store the signal on another 
-		// audio file while we hear it.
-
-		network->AddProcessing( "File Reader", new CLAM::MonoAudioFileReader( configReader ) );
 		network->AddProcessing( "Generator", new CLAM::SimpleOscillator( osc1Cfg ) );
-		network->AddProcessing( "Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
-		network->AddProcessing( "Audio Multiplier", new CLAM::AudioMultiplier( audioMultiplierCfg ) );
-		network->AddProcessing( "Audio Adder", new CLAM::AudioAdder( audioAdderCfg ) );
-		network->AddProcessing( "Audio Mono Out", new CLAM::AudioOut( audioOutCfg ) );
-	//	network->AddProcessing( "File Writer", new CLAM::MonoAudioFileWriter( configWriter ) );
+		network->AddProcessing( "Modulated Generator", new CLAM::Oscillator( osc4Cfg ) );
+		network->AddProcessing( "Phase Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
+		network->AddProcessing( "Frequency Modulator", new CLAM::SimpleOscillator( osc3Cfg ) );
+		network->AddProcessing( "multiplier", new CLAM::AudioMultiplier );
+		network->AddProcessing( "audio out", new CLAM::AudioOut( audioOutCfg ) );
 
-		network->ConnectPorts( "Generator.Audio Output", "Audio Adder.First Audio Input" );
-		network->ConnectPorts( "File Reader.Samples read", "Audio Adder.Second Audio Input" );
-		network->ConnectPorts( "Audio Adder.Audio Output", "Audio Multiplier.First Audio Input" );
-		network->ConnectPorts( "Modulator.Audio Output", "Audio Multiplier.Second Audio Input" );
-		network->ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Audio Input" );
-	//	network->ConnectPorts( "Audio Multiplier.Audio Output", "File Writer.Samples to write" );
+		network->ConnectPorts( "Generator.Audio Output", "multiplier.First Audio Input" );
+		network->ConnectPorts( "Modulated Generator.Audio Output", "multiplier.Second Audio Input" );
+		network->ConnectPorts( "multiplier.Audio Output", "audio out.Audio Input" );
+		network->ConnectPorts( "Phase Modulator.Audio Output", "Modulated Generator.Input Phase Modulation" );
+		network->ConnectPorts( "Frequency Modulator.Audio Output", "Modulated Generator.Input Frequency Modulation" );
 
 		// Now that we have the network created with our desired processing and connections, we will store it to an xml file.
 
