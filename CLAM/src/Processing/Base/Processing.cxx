@@ -57,6 +57,7 @@ namespace CLAM {
 		// As we have no acces to the actual dynamic configuration object
 		// but via its abstract interface, we have no way to do apriori an
 		// ExistAttr check, so we have to catch the possible exceptions.
+/*
 		if (c.HasName())
 			config_name = c.GetName();
 
@@ -79,7 +80,7 @@ namespace CLAM {
 			// acceptable
 			if (!mpParent->NameChanged(*this,old_name)) 
 				mName = mpParent->InsertAndGiveName( *this );
-
+*/
 		mPreconfigureExecuted = true;
 
 	}
