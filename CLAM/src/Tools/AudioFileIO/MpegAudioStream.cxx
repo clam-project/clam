@@ -86,9 +86,7 @@ namespace AudioCodecs
 			
 				mBitstream.SynthesizeCurrent();
 				
-				for( int i = 0;
-				     i < mEncodedChannels;
-				     i++ )
+				for( int i = 0; i < mEncodedChannels; i++ )
 				{
 					mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
 								 mBitstream.CurrentSynthesis().pcm.samples[i],
@@ -119,7 +117,7 @@ namespace AudioCodecs
 			TIndex currOffset = 0;
 
 			for ( std::deque<mad_fixed_t>::iterator j = mDecodeBuffer[i].begin();
-			      j!=mDecodeBuffer[i].begin()+samplesToRead && currOffset < mInterleavedData.Size(); 
+			      currOffset < mInterleavedData.Size(); 
 			      j++, currOffset+=mEncodedChannels )
 				mInterleavedData[ currOffset + i ] = mad_f_todouble(*j);
 			
