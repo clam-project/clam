@@ -70,7 +70,6 @@ namespace CLAM {
 		{};
 
 		virtual ~Port() {}
-		virtual ProcessingData &GetProcessingData() = 0;
 		virtual void Accept(DataVisitor&) = 0;
 		unsigned int Length() const { return mLength; }
 		unsigned int Hop() const { return mHop; }
@@ -116,7 +115,6 @@ namespace CLAM {
 		ReadStreamRegion *mpRegion;
 		Node<T> *mpNode;
 		Array<T> mData;
-		ProcessingData &GetProcessingData() { return mData[0]; }
 	public:
 		inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
 		inline T &GetData();
@@ -134,7 +132,6 @@ namespace CLAM {
 		WriteStreamRegion *mpRegion;
 		Node<T> *mpNode;
 		Array<T> mData;
-		ProcessingData &GetProcessingData() { return mData[0]; }
 	public:
 		inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
 		inline T &GetData();

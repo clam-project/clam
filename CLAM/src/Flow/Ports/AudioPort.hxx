@@ -33,7 +33,6 @@ namespace CLAM {
 		Node<Audio> *mpNode;
 		Audio *mpData;
 		Audio mWrapper;
-		ProcessingData &GetProcessingData() { return *mpData; }
 	public:
 		inline InPortTmpl(std::string n, Processing *o, int length, int hop = 0, bool inplace=false);
 		inline Audio &GetData();
@@ -52,7 +51,6 @@ namespace CLAM {
 		Node<Audio> *mpNode;
 		Audio *mpData;
 		Audio mWrapper;
-		ProcessingData &GetProcessingData() { return *mpData; }
 	public:
 		inline OutPortTmpl(std::string n, Processing *o, int length, int hop = 0);
 		inline Audio &GetData();
