@@ -22,9 +22,9 @@
 #include <iostream>
 
 #include "SDIFSerializer.hxx"
-#include "SDIFIn.hxx"
-#include "SDIFOut.hxx"
-#include "Segment.hxx"
+#include <CLAM/IO/SDIFIn.hxx>
+#include <CLAM/IO/SDIFOut.hxx>
+#include <CLAM/Processing/Segment.hxx>
 
 
 using namespace CLAM;
@@ -47,11 +47,10 @@ bool SDIFSerializer::DoLoad( const char* fileName, Segment& segment )
 		
 	segment.AddAll(  );
 	segment.UpdateData(  );
-	mSDIFReader.Output.Attach( segment );
 
 	try{
 		mSDIFReader.Start(  );
-		while( mSDIFReader.Do() ) {  }
+		while( mSDIFReader.Do(segment) ) {  }
 		mSDIFReader.Stop(  );
 	} catch (Err e)
 	{
