@@ -89,11 +89,29 @@ namespace CLAM {
 		 */
 		virtual bool UpdateControlValueFromBPF(TData pos);
 
-		virtual bool IsLastFrame(){return mInput.GetData().mCurrentFrameIndex>mInput.GetData().GetnFrames();}
+		virtual bool IsLastFrame()
+		{
+			bool isLast=mInput.GetData().mCurrentFrameIndex>=mInput.GetData().GetnFrames();
+			if(isLast)
+			{
+				while(mOutput.GetData().GetnFrames()>=mOutput.GetData().mCurrentFrameIndex)
+				{
+					mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
+				}
+			}
+			return isLast;
 
+		}
 
+		bool ConcreteStart()
+		{
+			mCurrentInputFrame=0;
+			return true;
+		}
 
 	protected:
+		
+		int mCurrentInputFrame;
 
 /**@TODO: The UnwrapProcessingData methods could possibly be moved to a more
  *	generic place, like the Segment class (becoming a friend operation?). */
@@ -106,7 +124,7 @@ namespace CLAM {
 		 */
 		virtual const Frame& UnwrapProcessingData(const Segment& in,Frame*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex);
+			return in.GetFrame(mCurrentInputFrame);
 		}
 		/** Particular method for unwrapping a Frame from a given Segment
 		 *	@return: current Frame in the Segment returned as a non-constant reference.
@@ -116,9 +134,9 @@ namespace CLAM {
 		 */
 		virtual Frame& UnwrapProcessingData(Segment& out,Frame*)
 		{
-			if(out.mCurrentFrameIndex>out.GetnFrames()&&mInput.GetData().GetnFrames()>out.GetnFrames())
-				out.AddFrame(out.GetFrame(out.mCurrentFrameIndex-1));
-			return out.GetFrame(out.mCurrentFrameIndex);
+			if(mCurrentInputFrame==out.GetnFrames()&&mInput.GetData().GetnFrames()>out.GetnFrames())
+				out.AddFrame(out.GetFrame(out.GetnFrames()-1));
+			return out.GetFrame(mCurrentInputFrame);
 
 		}
 
@@ -238,12 +256,18 @@ namespace CLAM {
 		 */
 		virtual bool Do(const Segment& in, Segment& out)
 		{
-			
-			if(mUseTemporalBPF)
-				UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
-			return Do(UnwrapSegment(in),UnwrapSegment(out));
-			
+			while(mCurrentInputFrame<in.mCurrentFrameIndex)
+			{
+				if(mUseTemporalBPF)
+					UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
+				Do(UnwrapSegment(in),UnwrapSegment(out));
+				if(&in!=&out)
+					out.mCurrentFrameIndex++;
+				mCurrentInputFrame++;
+			}
+			return true;
 		}
+		
 
 	
 	protected:
@@ -269,7 +293,7 @@ namespace CLAM {
 			return UnwrapProcessingData(in,(UnwrappedProcessingData*)(0));
 		}
 
-		
+				
 	};
 
 
