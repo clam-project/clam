@@ -19,16 +19,25 @@
  *
  */
 
+// TODO: Symbolic operation
+
 
 #include "Flags.hxx"
-#include "mtgsstream.h" // An alias for <sstream>
+#include <cppunit/extensions/HelperMacros.h>
 #include <string>
-#include "Assert.hxx"
 #include "XMLTestHelper.hxx"
+
 
 using namespace CLAM;
 
+/////////////////////////////////////////////////////////////////////
+// Test Class
+/////////////////////////////////////////////////////////////////////
 namespace CLAMTest {
+
+	class FlagsTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( FlagsTest );
+
 	class MyFlags : public Flags<5> {
 	// Construction/Destruction
 	public:
@@ -54,7 +63,15 @@ namespace CLAMTest {
 		{
 			flag4=true;
 		};
-		template <class T> MyFlags(const T &t) : 
+		MyFlags (const MyFlags& someFlags) :
+			Flags<5>(sFlagValues,someFlags),
+			flag0(operator[](eFlag0)),
+			flag1(operator[](eFlag1)),
+			flag2(operator[](eFlag2)),
+			flag3(operator[](eFlag3)),
+			flag4(operator[](eFlag4))
+		{};
+		template <class T> MyFlags(const T &t) :
 			Flags<5>(sFlagValues,t),
 			flag0(operator[](eFlag0)),
 			flag1(operator[](eFlag1)),
@@ -62,7 +79,7 @@ namespace CLAMTest {
 			flag3(operator[](eFlag3)),
 			flag4(operator[](eFlag4))
 		{};
-		template <class T1, class T2> MyFlags(const T1 &t1, const T2 &t2) : 
+		template <class T1, class T2> MyFlags(const T1 &t1, const T2 &t2) :
 			Flags<5>(sFlagValues,t1,t2),
 			flag0(operator[](eFlag0)),
 			flag1(operator[](eFlag1)),
@@ -91,9 +108,9 @@ namespace CLAMTest {
 		bool ReportNotMatch(const int place, const bool expected, const bool found) {
 			const bool verbose = true;
 			if (verbose) {
-				std::cout 
-					<< "Flag at positon " << place 
-					<< " expected: " << expected 
+				std::cout
+					<< "Flag at positon " << place
+					<< " expected: " << expected
 					<< " and found: " << found
 					<< std::endl;
 			}
@@ -111,10 +128,10 @@ namespace CLAMTest {
 		bool ReportReferencesDoNotMatch(const int place, const bool ref, const bool op) {
 			const bool verbose = true;
 			if (verbose) {
-				std::cout 
+				std::cout
 					<< "Internal bit reference inconsistency"
-					<< " at positon " << place 
-					<< " by reference: " << ref 
+					<< " at positon " << place
+					<< " by reference: " << ref
 					<< " by [] operator: " << op << " "
 					<< std::endl;
 			}
@@ -133,93 +150,240 @@ namespace CLAMTest {
 		{0,NULL}
 	};
 
-	void MyFlags::TestOperations () {
-		std::cout << "--Testing Flags Operations" << std::endl;
-	
-		std::cout << ".Testing the default constructor" << std::endl;
-		MyFlags A;
-		CLAM_ASSERT(A.Matches(0,0,0,0,1),
-				"Failed: All but Flag4 must be off by default" );
-		
-		std::cout << ".Testing the int constructor" << std::endl;
-		MyFlags B=3;
-		CLAM_ASSERT(B.Matches(1,1,0,0,0),
-			"Failed: Only Flags0 and Flags1 must be on" );
-		
-		std::cout << ".Testing the copy constructor" << std::endl;
-		MyFlags C(3);
-		CLAM_ASSERT(C.Matches(1,1,0,0,0),
-			"Failed: Only Flags0, Flags2 and Flag3 mult be on" );
-
-		std::cout << ".Testing the or-assignment operation" << std::endl;
-		C|=A;
-		std::cout << A << B << C << std::endl;
-		CLAM_ASSERT(C.Matches(1,1,0,0,1),
-			"Failed: OR-Assignment operator" );
-
-		std::cout << ".Testing the bitset interface (reset)" << std::endl;
-		A.reset();
-		CLAM_ASSERT(A.Matches(0,0,0,0,0),
-			"Failed: Reset does not set all the flags to zero" );
-		
-		std::cout << ".Testing direct flag setting" << std::endl;
-		A.flag1=true;
-		CLAM_ASSERT(A.Matches(0,1,0,0,0),
-			"Failed: Setting flag1 to true failed" );
-		A.flag3=false;
-		CLAM_ASSERT(A.Matches(0,1,0,0,0),
-			"Failed: Setting flag0 to false failed" );
-
-		std::cout << ".Testing direct bit flip" << std::endl;
-		C.flag3.flip();
-		CLAM_ASSERT(C.Matches(1,1,0,1,1),
-			"Failed: Flip does not flip one single bit (3)" );
-		C.flag0.flip();
-		CLAM_ASSERT(C.Matches(0,1,0,1,1),
-			"Failed: Flip does not flip one single bit (0)" );
 
 
-		CLAM_ASSERT(XMLInputOutputMatches(A,"FlagA.xml"),
-			   "Failed: The loaded version of A stores differently than the original A");
-		CLAM_ASSERT(XMLInputOutputMatches(B,"FlagB.xml"),
-			   "Failed: The loaded version of B stores differently than the original B");
-		CLAM_ASSERT(XMLInputOutputMatches(C,"FlagC.xml"),
-			   "Failed: The loaded version of C stores differently than the original C");
-	}
+	/**
+	* @todo Symbolic operation
+	* @todo Remove console output
+	*/
+	class FlagsTest : public CppUnit::TestFixture {
 
-	void MyFlags::TestInputOutput () {
-		std::cout << "Testing formating with std streams" << std::endl;
-		char * inputstring[] = {
-			"{flag0 flag2 flag3}",
-			"{ flag0 flag2 flag3 }",
-			" { flag0 flag2 flag3 } ",
-			" { flag0 flag2 flag3 } ",
-			"{flag0 fla2 flag3 }",
-			"{fla0 flag2 flag3 }",
-			NULL
-		};
-		for (int i=0; inputstring[i]; i++) {
-			std::stringstream is(inputstring[i]);
-			MyFlags flag;
-			try {
-				is >> flag;
-				CLAM_ASSERT(flag.Matches(1,0,1,1,0), "Failed: Readed value does not match");
-				CLAM_ASSERT(i!=4 && i!=5, "Failed: A correct flag input did not fail");
-			}
-			catch(...) {
-				CLAM_ASSERT(i==4 || i==5, "Failed a correct flag input");
-				std::cerr << "Catching a expected exception" << std::endl;
-			}
-			std::cout << "'" << inputstring[i] << "' readed as '" << flag << "'" <<std::endl;
+		CPPUNIT_TEST_SUITE (CLAMTest::FlagsTest);
+
+		CPPUNIT_TEST (testDefaultConstructor);
+		CPPUNIT_TEST (testValueConstructor);
+		CPPUNIT_TEST (testEqualOperator_withEquivalentFlags);
+		CPPUNIT_TEST (testEqualOperator_withDifferentFlags);
+		CPPUNIT_TEST (testCopyConstructor_AdoptValuesValues);
+		CPPUNIT_TEST (testCopyConstructor_DoesNotCreateAliasingOnWriteCopy);
+		CPPUNIT_TEST (testCopyConstructor_DoesNotCreateAliasingOnWriteOriginal);
+		CPPUNIT_TEST (testOrAssignmentOperator);
+		CPPUNIT_TEST (testReset);
+		CPPUNIT_TEST (testDirectFlagSetting_withTrue_whenSet);
+		CPPUNIT_TEST (testDirectFlagSetting_withTrue_whenNotSet);
+		CPPUNIT_TEST (testDirectFlagSetting_withFalse_whenSet);
+		CPPUNIT_TEST (testDirectFlagSetting_withFalse_whenNotSet);
+		CPPUNIT_TEST (testFlip_whenSet);
+		CPPUNIT_TEST (testFlip_whenNotSet);
+		CPPUNIT_TEST (testExtraction_withCorrectInputs);
+		CPPUNIT_TEST (testExtraction_withIncorrectInputs);
+		CPPUNIT_TEST (testExtraction_withResetFlags);
+		CPPUNIT_TEST (testReloadingXML);
+//		CPPUNIT_TEST (testStringConstructor);
+//		CPPUNIT_TEST (testSetValue);
+//		CPPUNIT_TEST (testSetValue_WithString);
+//		CPPUNIT_TEST (testSetValueSafely_WithIllegalString);
+//		CPPUNIT_TEST (testSetValueSafely_WithIllegalValue);
+
+		CPPUNIT_TEST_SUITE_END();
+	private:
+		void testDefaultConstructor()
+		{
+			MyFlags defaultConstructedFlags;
+			CPPUNIT_ASSERT_MESSAGE("All but Flag4 must be off by default",
+				defaultConstructedFlags.Matches(0,0,0,0,1));
 		}
-	}
+		void testValueConstructor()
+		{
+			MyFlags flags1and2=3;
+			CPPUNIT_ASSERT_MESSAGE("Only Flags0 and Flags1 must be on",
+				flags1and2.Matches(1,1,0,0,0));
+		}
+
+		void testEqualOperator_withEquivalentFlags()
+		{
+			MyFlags flags1and2=3;
+			MyFlags flags1and2sibbling=3;
+			CPPUNIT_ASSERT_EQUAL(true, flags1and2 == flags1and2sibbling);
+		}
+		void testEqualOperator_withDifferentFlags()
+		{
+			MyFlags flags1and2=3;
+			MyFlags onlyFlag4;
+			CPPUNIT_ASSERT_EQUAL(false, flags1and2 == onlyFlag4);
+		}
+
+		void testCopyConstructor_AdoptValuesValues()
+		{
+			MyFlags original=7;
+			MyFlags copied(original);
+			CPPUNIT_ASSERT_EQUAL(original,copied);
+		}
+
+		void testCopyConstructor_DoesNotCreateAliasingOnWriteCopy()
+		{
+			MyFlags original=7;
+			MyFlags copied(original);
+			MyFlags expectedOriginal=7;
+			MyFlags expectedCopied=6;
+			copied.flag0=false;
+			CPPUNIT_ASSERT_EQUAL(expectedOriginal, original);
+			CPPUNIT_ASSERT_EQUAL(expectedCopied, copied);
+		}
+
+		void testCopyConstructor_DoesNotCreateAliasingOnWriteOriginal()
+		{
+			MyFlags original=7;
+			MyFlags copied(original);
+			MyFlags expectedOriginal=6;
+			MyFlags expectedCopied=7;
+			original.flag0=false;
+			CPPUNIT_ASSERT_EQUAL(expectedOriginal, original);
+			CPPUNIT_ASSERT_EQUAL(expectedCopied, copied);
+		}
+
+		void testOrAssignmentOperator()
+		{
+			MyFlags flags4=16;
+			MyFlags toBeOred=3;
+			MyFlags expected= (3|16);
+
+			toBeOred |= flags4;
+
+			CPPUNIT_ASSERT_EQUAL(expected, toBeOred);
+		}
+
+		void testReset()
+		{
+			MyFlags resetted=5;
+			MyFlags expected=0;
+			resetted.reset();
+			CPPUNIT_ASSERT_EQUAL(expected, resetted);
+		}
+
+		void testDirectFlagSetting_withTrue_whenNotSet()
+		{
+			MyFlags toBeSet=5;
+			MyFlags expected=(5|16);
+			toBeSet.flag4=true;
+			CPPUNIT_ASSERT_EQUAL(expected, toBeSet);
+		}
+
+		void testDirectFlagSetting_withTrue_whenSet()
+		{
+			MyFlags toBeSet=5;
+			MyFlags expected=5;
+			toBeSet.flag2=true;
+			CPPUNIT_ASSERT_EQUAL(expected, toBeSet);
+		}
+
+		void testDirectFlagSetting_withFalse_whenNotSet()
+		{
+			MyFlags toBeSet=5;
+			MyFlags expected=5;
+			toBeSet.flag3=false;
+			CPPUNIT_ASSERT_EQUAL(expected, toBeSet);
+		}
+
+		void testDirectFlagSetting_withFalse_whenSet()
+		{
+			MyFlags toBeSet=5;
+			MyFlags expected=5 & ~1;
+			toBeSet.flag0=false;
+			CPPUNIT_ASSERT_EQUAL(expected, toBeSet);
+		}
+
+		void testFlip_whenSet()
+		{
+			MyFlags toBeFlipped=5;
+			MyFlags expected=5 & ~4;
+			toBeFlipped.flag2.flip();
+			CPPUNIT_ASSERT_EQUAL(expected, toBeFlipped);
+		}
+
+		void testFlip_whenNotSet()
+		{
+			MyFlags toBeFlipped=5;
+			MyFlags expected=5 | 16;
+			toBeFlipped.flag4.flip();
+			CPPUNIT_ASSERT_EQUAL(expected, toBeFlipped);
+		}
+
+		void testReloadingXML()
+		{
+			MyFlags A=5;
+			MyFlags B=21;
+			MyFlags C=0;
+			CPPUNIT_ASSERT_MESSAGE(
+				"Failed: The loaded version of A stores differently than the original A",
+				XMLInputOutputMatches(A,"FlagA.xml"));
+			CPPUNIT_ASSERT_MESSAGE(
+				"Failed: The loaded version of B stores differently than the original B",
+				XMLInputOutputMatches(B,"FlagB.xml"));
+			CPPUNIT_ASSERT_MESSAGE(
+				"Failed: The loaded version of C stores differently than the original C",
+				XMLInputOutputMatches(C,"FlagC.xml"));
+		}
+
+		void testExtraction_withIncorrectInputs()
+		{
+			char * inputstring[] =
+			{
+				"{flag0 fla2 flag3 }",
+				"{fla0 flag2 flag3 }",
+				NULL
+			};
+
+			for (int i=0; inputstring[i]; i++) {
+				std::stringstream is(inputstring[i]);
+				MyFlags flag=16;
+				MyFlags expected=16;
+				try {
+					is >> flag;
+					CPPUNIT_FAIL("Incorrect input did not fail");
+				}
+				catch(...) {
+					CPPUNIT_ASSERT_EQUAL(expected, flag);
+				}
+			}
+		}
+
+		void testExtraction_withCorrectInputs() {
+			char * inputstring[] = {
+				"{flag0 flag2 flag3}",
+				"{ flag0 flag2 flag3 }",
+				" { flag0 flag2 flag3 } ",
+				" { flag0 flag2 flag3 } ",
+				NULL
+			};
+			MyFlags expected = 13;
+			for (int i=0; inputstring[i]; i++) {
+				std::stringstream is(inputstring[i]);
+				MyFlags read;
+				is >> read;
+				CPPUNIT_ASSERT_EQUAL(expected, read);
+			}
+		}
+
+		void testExtraction_withResetFlags() {
+			char * inputstring[] = {
+				"{}",
+				" {  } ",
+				" { } ",
+				NULL
+			};
+			MyFlags expected = 0;
+			for (int i=0; inputstring[i]; i++) {
+				std::stringstream is(inputstring[i]);
+				MyFlags read;
+				is >> read;
+				CPPUNIT_ASSERT_EQUAL(expected, read);
+			}
+		}
+	};
+
 }
 
 
-int main () {
-	CLAMTest::MyFlags::TestOperations();
-	CLAMTest::MyFlags::TestInputOutput();
-	return 0;
-}
 
 
