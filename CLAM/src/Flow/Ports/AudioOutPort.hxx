@@ -16,8 +16,15 @@ public:
 	Audio & GetAudio();
 	void SetSampleRate( TData sampleRate );
 	TData GetSampleRate();
+	
+	
+	static Audio & GetLastWrittenAudio( OutPortBase &, int offset = 0);
+
 protected:
-	Audio mAudio;		
+	Audio mAudio;
+	Audio mLastWrittenAudio;
+	Audio & GetLastWrittenAudio( int offset = 0 );
+	
 };
 
 } // namespace CLAM

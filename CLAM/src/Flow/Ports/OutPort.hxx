@@ -267,7 +267,7 @@ Token & OutPort<Token>::GetLastWrittenData( OutPortBase & out, int offset )
 	}
 	catch(...)
 	{
-		CLAM_ASSERT( false, "OutPort<Token>::DumpDataWithLastToken - Passed an outport of wrong type" );
+		CLAM_ASSERT( false, "OutPort<Token>::GetLastWrittenData - Passed an outport of wrong type" );
 	}
 	return *(Token *)NULL;
 		
