@@ -10,7 +10,7 @@ namespace MIDI
 	class TrackPlayer
 	/* a helper class for SongPlayerImpl to iterate through each track */
 	{
-	friend SongPlayerImpl;
+	friend class SongPlayerImpl;
 	private:
 		Track* mTrack;
 		std::list<Event*>::const_iterator mIterator;
