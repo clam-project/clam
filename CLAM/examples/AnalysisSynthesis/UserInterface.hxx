@@ -4,21 +4,20 @@
 #define UserInterface_hxx
 #include <FL/Fl.H>
 #include <FL/Fl_Tile.H>
-#include <FL/Fl_Menu_Window.H>
 #include "Fl_Smart_Tile.hxx"
 class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
+#include <FL/Fl_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Counter.H>
-#include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
 
 class UserInterface {
 public:
   public: CLAMGUI::AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
-  Fl_Menu_Window *mWindow;
+  Fl_Window *mWindow;
 private:
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];

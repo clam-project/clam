@@ -875,19 +875,10 @@ I.,+|+  {+9+6+1+O.6+4+|+>+0+/+a+B.b+c+{.$ $ $ $ $ $ M |             ",
 static Fl_Pixmap image_mtg(idata_mtg);
 
 UserInterface::UserInterface() {
-  Fl_Menu_Window* w;
-  { Fl_Menu_Window* o = mWindow = new Fl_Menu_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
+  Fl_Window* w;
+  { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
-    o->box(FL_FLAT_BOX);
-    o->color(49);
-    o->selection_color(49);
-    o->labeltype(FL_NO_LABEL);
-    o->labelfont(0);
-    o->labelsize(14);
-    o->labelcolor(56);
     o->user_data((void*)(this));
-    o->align(FL_ALIGN_TOP);
-    o->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 872, 21);
       o->end();
     }
