@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "parser.h"
+#include "config_parser.h"
 #include "list.h"
 #include "hash.h"
 #include "stack.h"
@@ -24,8 +25,8 @@
 
 int verbose = 0;
 
-/* hash with all defines during a parser_run */
-hash *defines = 0;
+/* hash with all cur_defines during a parser_run */
+hash *cur_defines = 0;
 
 /* list of include files found during a parser_run */
 list *includes = 0;
@@ -33,12 +34,12 @@ list *includes = 0;
 /* list of files to pre-include in each parser_run, 
 ** set with command line option -include 
 */
-list *preincludes = 0;
+list *pre_includes = 0;
 
 /* list of define to pre-define in each parser_run, 
 ** set with command line option -D 
 */
-list *predefines = 0;
+list *defines = 0;
 
 /* list of paths to search include files.
 ** set with command line options -I (add a single path)
@@ -46,17 +47,14 @@ list *predefines = 0;
 */
 list *includepaths = 0;
 
-/* list of sources to parse. specified on the command
-** line. if the recursesrc (command line option -r)
-** is set, all the estimated sources are added to this
-** list, and parsed as well
+/* list of the sources and estimated sources to parse
 */
-list *sources = 0;
+list *guessed_sources = 0;
 
-list *headers = 0;
+list *guessed_headers = 0;
 
 /* list of include paths that are actually needed to 
-** compile the sources
+** compile the guessed_sources
 */
 list *needed_includepaths = 0;
 
@@ -198,7 +196,7 @@ int parser_include(const char* filename)
 
 		list_add_str(includes_checked,tmp2);
 
-		list_add_str_once(headers,tmp);
+		list_add_str_once(guessed_headers,tmp);
 
 		if (recursesrcs)
 		{
@@ -237,7 +235,7 @@ int parser_include(const char* filename)
 				}
 				if (n==1)
 				{
-					list_add_str_once(sources,possible_impl_files->first->str);
+					list_add_str_once(guessed_sources,possible_impl_files->first->str);
 				}
 			}
 		}						
@@ -276,7 +274,7 @@ parse_include_filename:
 
 				{
 					/* this goto is a bit of a kludge to handing defines in includes */
-					const char* val = hash_value(defines,tmp);
+					const char* val = hash_value(cur_defines,tmp);
 					if (val)
 					{
 						strncpy(tmp,val,2048);
@@ -339,7 +337,7 @@ parse_include_filename:
 			ptr = strptr_skip_spaces(ptr);
 			ptr = strptr_copy_nonspaces(ptr,val,256);
 			if (verbose) fprintf(stderr,"defining %s = %s\n",key,val);
-			hash_set(defines,key,val);
+			hash_set(cur_defines,key,val);
 			return ptr;
 		}
 		if (strncmp(ptr,"undef",5)==0)
@@ -348,7 +346,7 @@ parse_include_filename:
 			ptr+=5;
 			ptr = strptr_skip_spaces(ptr);
 			ptr = strptr_copy_nonspaces(ptr,key,256);
-			hash_rmv(defines,key);
+			hash_rmv(cur_defines,key);
 			return ptr;
 		}
 	}
@@ -360,7 +358,7 @@ parse_include_filename:
 		ptr = strptr_skip_spaces(ptr);
 		ptr = strptr_copy_nonspaces(ptr,key,256);
 		
-		c = hash_value(defines,key)!=0;
+		c = hash_value(cur_defines,key)!=0;
 		conditions_push(c);
 		if (verbose) fprintf(stderr,"ifdef %s = %d\n",key,c);
 		return ptr;
@@ -373,7 +371,7 @@ parse_include_filename:
 		ptr = strptr_skip_spaces(ptr);
 		ptr = strptr_copy_nonspaces(ptr,key,256);
 
-		c = hash_value(defines,key)==0;
+		c = hash_value(cur_defines,key)==0;
 		conditions_push(c);
 		if (verbose) fprintf(stderr,"ifndef %s = %d\n",key,c);
 		return ptr;
@@ -481,36 +479,62 @@ int parser_recurse(const char* filename)
 
 void parser_init(void)
 {
-	sources = list_new();
+	guessed_sources = list_new();
 
-	headers = list_new();
+	guessed_headers = list_new();
 
 	includepaths = list_new();
-
-	libraries = list_new();
-
-	library_paths = list_new();
-
-	preincludes = list_new();
-
-	predefines = list_new();
 
 	includes_checked = list_new();
 
 	needed_includepaths = list_new();
 
+	{
+		listkey* k = listhash_find(config,"SOURCES");
+		list* sources = k->l;
+		item* i = sources->first;
+		while (i)
+		{
+			list_add_str_once(guessed_sources,i->str);
+			i = i->next;
+		}
+	}
+
+	pre_includes = listhash_find(config,"PRE_INCLUDES")->l;
+
+	defines = listhash_find(config,"DEFINES")->l;
+
 	extmap_init();
+
+	{
+		list* search_includes = listhash_find(config,"SEARCH_INCLUDES")->l;
+		list* search_recurse_includes = listhash_find(config,"SEARCH_RECURSE_INCLUDES")->l;
+
+		item* i;
+
+		i = search_includes->first;
+		while (i)
+		{
+			includepaths_add(i->str);
+			i = i->next;
+		}
+
+		i = search_recurse_includes->first;
+		while (i)
+		{
+			includepaths_add_rec(i->str);
+			i = i->next;
+		}
+	}
 }
 
 void parser_exit(void)
 {
-	list_free(sources);
+	list_free(guessed_sources);
 
-	list_free(headers);
+	list_free(guessed_headers);
 
 	list_free(includepaths);
-
-	list_free(preincludes);
 
 	list_free(includes_checked);
 
@@ -523,7 +547,7 @@ void parser_run(const char* filename)
 {
 	if (verbose) fprintf(stderr,"create defines hash\n");
 
-	defines = hash_new();
+	cur_defines = hash_new();
 
 	includes = list_new();
 
@@ -532,7 +556,7 @@ void parser_run(const char* filename)
 	conditions_start();
 
 	{
-		item* i = preincludes->first;
+		item* i = pre_includes->first;
 		while (i)
 		{
 			parser_recurse(i->str);
@@ -541,10 +565,10 @@ void parser_run(const char* filename)
 	}
 
 	{
-		item* i = predefines->first;
+		item* i = defines->first;
 		while (i)
 		{
-			hash_set(defines,i->str,"");
+			hash_set(cur_defines,i->str,"");
 			i = i->next;
 		}
 	}
@@ -650,7 +674,7 @@ void parser_run(const char* filename)
 		fprintf(stderr,"Could not open %s\n",filename);
 	}
 	if (verbose) fprintf(stderr,"free defines hash\n");
-	hash_free(defines);
+	hash_free(cur_defines);
 	
 	list_free(includes);
 	stack_free(filenamestack);

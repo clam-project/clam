@@ -1,168 +1,184 @@
 #include <stdio.h>
-#include "tree.h"
 #include "list.h"
+#include "listhash.h"
 #include "hash.h"
 #include "strfuncs.h"
-#include "includepaths.h"
-
 
 #include "parser.h"
+#include "config_parser.h"
 
-
-/* we use a tree for the config, though we'll just use it as a
-** list of lists, never decending deeper.
-*/
-
-tree* config = 0;
+listhash* config = 0;
 list* used_vars = 0;
 
 int config_parse(const char* filename);
 
-char* config_parse_var(char* b,int line)
+int var_true(char* subst,const char* filename,int line)
 {
-	char subst[4096];
-	char left[4096];
-	char right[4096];
-	int n = 4096;
-	char* c = subst;
-	char* s = b;
-	int cond = 0;
-	left[0] = 0;
-	right[0] = 0;
-
-	b++;
-	if (*b!='(')
-	{ 
-		fprintf(stderr,"Expected '(' after '$' in line %d\n",line);
+	listkey* n = listhash_find(config,subst);
+	if (n==0)
+	{
+		fprintf(stderr,
+		"Variable \"%s\" not found in line %s:%d\n",subst,filename,line);
 		exit(-1);
 	}
-	b++;
-	while (n-- && *b && *b!=')')
+	list_add_str_once(used_vars,n->str);
+
+
+	if (n->l && n->l->first && 
+		(
+			!strcmp(n->l->first->str,"1") ||
+			!strcmp(n->l->first->str,"yes") ||
+			!strcmp(n->l->first->str,"YES") ||
+			!strcmp(n->l->first->str,"true") ||
+			!strcmp(n->l->first->str,"TRUE")
+		)
+	)
 	{
-		if (*b=='$') b = config_parse_var(b,line);
-		else
-		if (*b=='?')
-		{
-			*c = 0;
-			cond = 1;
-			c = left;
-			n = 4096;
-			b++;
-		}
-		else
-		if (*b==':')
-		{
-			*c = 0;
-			c = right;
-			n = 4096;
-			b++;
-		}else{
-			*c++ = *b++;
-		}
+		return 1;
 	}
-	if (*b!=')') {
-		fprintf(stderr,"Expected ')' after \"%s\" in line %d\n",s,line);
+	return 0;
+}
+
+int decn(int n,const char* filename,int line)
+{
+	n--;
+	if (n<=0)
+	{
+		fprintf(stderr,
+		"Maximum variable length exceeded in line %s:%d\n",filename,line);
 		exit(-1);
 	}
-	b++;
-	*c = 0;
+	return n;
+}
 
+char* config_parse_var(char* b,const char* filename,int line,int insidecond,int cond,char** resptr,int n)
+{
+	int iscond = 0;
+	char* res = *resptr;
+	while (*b && (!insidecond || (*b!=':' && *b!=')')))
 	{
-		node* n = tree_find(config,subst);
-		if (n==0)
-		{
-			fprintf(stderr,"Variable \"%s\" not found in line %d\n",subst,line);
-			exit(-1);
-		}
-		list_add_str_once(used_vars,n->str);
-		if (cond)
-		{
-			if (n->sub && n->sub->first && 
-				(
-					!strcmp(n->sub->first->str,"1") ||
-					!strcmp(n->sub->first->str,"yes") ||
-					!strcmp(n->sub->first->str,"YES") ||
-					!strcmp(n->sub->first->str,"true") ||
-					!strcmp(n->sub->first->str,"TRUE")
-				)
-			)
-			{
-				if (left[0]!=0)
-					stradd(left);
-			}else{
-				if (right[0]!=0)
-					stradd(right);
+		if (*b=='$') {
+			char var[256];
+			char* a = var;
+			b++;
+			if (*b!='(')
+			{ 
+				fprintf(stderr,
+				"Expected '(' after '$' in line %s:%d\n",filename,line);
+				exit(-1);
 			}
-		}
-		else
-		{
-			if (n->sub)
+			b++;
+			while (*b && *b!=')')
 			{
-				n = n->sub->first;
-				while (n)
+				if (*b=='?')
 				{
-					stradd(n->str);
-					n = n->next;
-					if (n) stradd(" ");
+					int subcond = 0;
+					b++;
+					*a = 0;
+					iscond = 1;
+					subcond = var_true(var,filename,line);
+					b = config_parse_var(b,filename,line,1,cond&subcond,&res,n);
+					if (*b==':')
+					{
+						b++;
+						b = config_parse_var(b,filename,line,1,cond&(!subcond),&res,n);
+					}
+				}else{
+					*a++ = *b++;
 				}
 			}
+			if (*b!=')')
+			{
+				fprintf(stderr,
+				"Expected ')' after %s in line %s:%d\n",var,filename,line);
+				exit(-1);
+			}
+			*a = 0;
+			if (!iscond)
+			{
+				listkey* k = listhash_find(config,var);
+				if (k==0)
+				{
+					fprintf(stderr,
+						"Variable \"%s\" not found in line %s:%d\n",
+						var,filename,line);
+					exit(-1);
+				}
+				list_add_str_once(used_vars,k->str);
+				if (cond)
+				{
+					if (k->l)
+					{
+						item* i = k->l->first;
+						while (i)
+						{
+							char* c = i->str;
+							while (*c)
+							{
+								*res++ = *c++;
+								n=decn(n,filename,line);
+							}
+							i = i->next;
+							if (i) {
+								*res++=' ';
+								n=decn(n,filename,line);
+							}
+						}
+					}
+				}
+			}
+			b++;
+		}
+		else
+		{
+			if (cond)
+			{
+				*res++ = *b++;
+				n=decn(n,filename,line);
+				*res = 0;
+			}else{
+				b++;
+			}
 		}
 	}
-	
+	*res = 0;
+	*resptr = res;
 	return b;
 }
 
-void config_parse_handle(char* key,char** val,int nvals,int line,int is_include)
+void config_parse_handle(char* keystr,char** val,int nvals,const char* filename,int line,int is_include)
 {
 	int k;
-	node* i = 0;
+	listkey* i = 0;
 	if (!is_include)
-		i = node_new(key);
+		i = listhash_add_key_once(config,keystr);
 	for (k=0;k<nvals;k++)
 	{
 		char tmp[4096];
 		char* b = val[k];
-		strstart(tmp,4096);
 		while (*b)
 		{	
-			char tmp2[4096];
-			char* a = tmp2;
-
-			while (*b && *b!='$')
-			{
-				*a++ = *b++;
-			}
-			*a = 0;
-				
-			stradd(tmp2);
-		
-			if (*b=='$')
-			{
-				b = config_parse_var(b,line);
-			}
+			char* res = tmp;
+			b = config_parse_var(b,filename,line,0,1,&res,4096);
 		}
-		strend();
-
 		if (!is_include)
-			node_add_sub_str(i,tmp);
+			listkey_add_item_str(i,tmp);
 		else
 			config_parse(tmp);
 	}
-	if (!is_include)
-		tree_add(config,i);
 }
 
-void config_parse_line(char* ptr,int line)
+void config_parse_line(char* ptr,const char* filename,int line)
 {
-	char* key = 0;
+	char* keystr = 0;
 	char* val[1024];
 	int nvals = 0;
 	char* end = 0;
 	int is_include = 0;
-		
+
 	while (*ptr && (*ptr==' ' || *ptr=='\t')) ptr++;
 	if (!*ptr) return;
-	key = ptr;
+	keystr = ptr;
 	while (*ptr && *ptr!=' ' && *ptr!='\t' && *ptr!='=') ptr++;
 	end = ptr;
 	while (*ptr && (*ptr==' ' || *ptr=='\t')) ptr++;
@@ -170,7 +186,7 @@ void config_parse_line(char* ptr,int line)
 	{
 		char tmp = *end;
 		*end = 0;
-		if (strcmp(key,"include")==0)
+		if (strcmp(keystr,"include")==0)
 		{
 			is_include = 1;
 			*end = tmp;
@@ -179,7 +195,7 @@ void config_parse_line(char* ptr,int line)
 		{
 			*end = tmp;
 			*ptr = 0;
-			fprintf(stderr,"Expected '=' in line %d after \"%s\"\n",line,key);
+			fprintf(stderr,"Expected '=' in line %s:%d after \"%s\"\n",filename,line,keystr);
 			exit(-1);
 		}
 	}
@@ -189,7 +205,7 @@ void config_parse_line(char* ptr,int line)
 	{
 		if (*ptr!='=') {
 			*ptr = 0;
-			fprintf(stderr,"Expected '=' in line %d after \"%s\"\n",line,key);
+			fprintf(stderr,"Expected '=' in line %s:%d after \"%s\"\n",filename,line,keystr);
 			exit(-1);
 		}else{
 			*end = 0;
@@ -205,7 +221,7 @@ void config_parse_line(char* ptr,int line)
 		if (*ptr) val[nvals++] = ptr;
 		if (nvals==1024)
 		{
-			fprintf(stderr,"Error: limit of 1024 values per key reached\n");
+			fprintf(stderr,"Error: limit of 1024 values per key reached in line %s:%d\n",filename,line);
 			exit(-1);
 		}
 		ptr2 = ptr;
@@ -223,7 +239,7 @@ void config_parse_line(char* ptr,int line)
 			if (*ptr!='"')
 			{
 				*ptr2 = 0;
-				fprintf(stderr,"Expected '\"' in line %d after \"%s\"\n",line,start);
+				fprintf(stderr,"Expected '\"' in line %s:%d after \"%s\"\n",filename,line,start);
 				exit(-1);
 			}
 			end = ptr2;
@@ -231,18 +247,27 @@ void config_parse_line(char* ptr,int line)
 		}
 		else
 		{
+			int brackets = 0;
 			while (*ptr) 
 			{
-				if (*ptr==' ' || *ptr=='\t') break;
+				if (*ptr=='(') brackets++;
+				if (*ptr==')') brackets--;
+				if (brackets == 0 && (*ptr==' ' || *ptr=='\t'))
+					break;
 				if (*ptr=='\\') ptr++;
 				*ptr2++ = *ptr++;
+			}
+			if (brackets!=0)
+			{
+				fprintf(stderr,"Mismatch '(' ')' in line %s:%d\n",filename,line);
+				exit(-1);
 			}
 			end = ptr2;
 		}
 	}
 	if (end) *end = 0;
 
-	config_parse_handle(key,val,nvals,line,is_include);
+	config_parse_handle(keystr,val,nvals,filename,line,is_include);
 }
 
 int config_parse(const char* filename)
@@ -260,7 +285,8 @@ int config_parse(const char* filename)
 		line++;
 		if (buf[n+l-1]=='\n') l--;
 		else{
-			fprintf(stderr,"Error: maximum (multi)line length reached in line %d\n",line);
+			fprintf(stderr,"Error: maximum (multi)line length reached in line %s:%d\n",
+				filename,line);
 			exit(-1);
 		}
 		if (buf[n+l-1]=='\r') l--;
@@ -272,7 +298,7 @@ int config_parse(const char* filename)
 			n+=l;
 			buf[n] = 0;
 			if (buf[0]!='#')
-				config_parse_line(buf,line);
+				config_parse_line(buf,filename,line);
 			n = 0;
 		}
 	}
@@ -280,125 +306,42 @@ int config_parse(const char* filename)
 	{
 		buf[n] = 0;
 		if (buf[0]!='#')
-			config_parse_line(buf,line);
+			config_parse_line(buf,filename,line);
 	}
 	fclose(f);
 
 	return 0;
 }
 
-
-void config_apply(void)
-{
-	node* n;
-	
-	n = tree_find(config,"RECURSE_INCLUDE_PATHS");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			includepaths_add_rec(n->str);
-			n = n->next;
-		}
-	}
-
-	n = tree_find(config,"INCLUDE_PATHS");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			includepaths_add(n->str);
-			n = n->next;
-		}
-	}
-	
-	n = tree_find(config,"PRE_INCLUDES");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			list_add_str_once(preincludes,n->str);
-			n = n->next;
-		}
-	}
-
-	n = tree_find(config,"INCLUDE_PATHS");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			includepaths_add(n->str);
-			n = n->next;
-		}
-	}
-	
-	n = tree_find(config,"SOURCES");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			list_add_str_once(sources,n->str);
-			n = n->next;
-		}
-	}
-
-	n = tree_find(config,"DEFINES");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			list_add_str_once(predefines,n->str);
-			n = n->next;
-		}
-	}
-
-	n = tree_find(config,"LIBRARIES");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			list_add_str_once(libraries,n->str);
-			n = n->next;
-		}
-	}
-
-	n = tree_find(config,"LIBRARY_PATHS");
-	if (n) list_add_str_once(used_vars,n->str);
-	if (n && n->sub)
-	{
-		n = n->sub->first;
-		while (n)
-		{
-			list_add_str_once(library_paths,n->str);
-			n = n->next;
-		}
-	}
-	
-}
-
 void config_init(void)
 {
-	config = tree_new();
 	used_vars = list_new();
+
+	config = listhash_new();
+
+	listhash_add_key_once(config,"LIBRARIES")->l = list_new();
+	listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
+	listhash_add_key_once(config,"CXXFLAGS")->l = list_new();
+	listhash_add_key_once(config,"SOURCES")->l = list_new();
+	listhash_add_key_once(config,"PRE_INCLUDES")->l = list_new();
+	listhash_add_key_once(config,"DEFINES")->l = list_new();
+	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
+	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
+
+	list_add_str_once(used_vars,"LIBRARIES");
+	list_add_str_once(used_vars,"LIBRARY_PATHS");
+	list_add_str_once(used_vars,"CXXFLAGS");
+	list_add_str_once(used_vars,"SOURCES");
+	list_add_str_once(used_vars,"PRE_INCLUDES");
+	list_add_str_once(used_vars,"DEFINES");
+	list_add_str_once(used_vars,"SEARCH_INCLUDES");
+	list_add_str_once(used_vars,"SEARCH_RECURSE_INCLUDES");
 }
 
 void config_check(void)
 {
-	node* n = config->first;
+
+	listkey* n = config->first;
 	while (n)
 	{
 		if (!list_find(used_vars,n->str))
@@ -411,6 +354,6 @@ void config_check(void)
 
 void config_exit(void)
 {
-	tree_free(config);
+	listhash_free(config);
 	list_free(used_vars);
 }

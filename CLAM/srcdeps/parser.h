@@ -3,19 +3,18 @@
 
 #include "list.h"
 
-extern list* preincludes;
-extern list* sources;
-extern list* headers;
-extern list* predefines;
-extern list *includepaths;
+extern list* pre_includes;
+extern list* guessed_sources;
+extern list* guessed_headers;
+extern list* defines;
+extern list *includes;
 extern list *needed_includepaths;
-extern list* libraries;
-extern list* library_paths;
 
 extern int gendepend;
 extern int recursesrcs;
 
 void parser_init(void);
+void parser_init_includes(void);
 void parser_exit(void);
 
 void parser_run(const char* filename);

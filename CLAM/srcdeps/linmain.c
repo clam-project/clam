@@ -18,15 +18,9 @@ void usage(void)
 void makefilevars_generate(void)
 {
 	FILE* outfile = stdout;
-/*
-	if (!outfile)
+
 	{
-		fprintf(stderr,"Error: could not open %s\n",filename);
-		exit(-1);
-	}
-*/
-	{
-		item* i = sources->first;
+		item* i = guessed_sources->first;
 		fprintf(outfile,"SOURCES =");
 		while (i)
 		{
@@ -40,7 +34,7 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = sources->first;
+		item* i = guessed_sources->first;
 		fprintf(outfile,"OBJECTS =");
 		while (i)
 		{
@@ -54,7 +48,7 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = sources->first;
+		item* i = guessed_sources->first;
 		fprintf(outfile,"DEPENDS =");
 		while (i)
 		{
@@ -83,7 +77,8 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = library_paths->first;
+		listkey* k = listhash_find(config,"LIBRARY_PATHS");
+		item* i = (k && k->l) ? k->l->first : 0;
 		fprintf(outfile,"LIBRARY_PATHS =");
 		while (i)
 		{
@@ -96,7 +91,8 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = libraries->first;
+		listkey* k = listhash_find(config,"LIBRARIES");
+		item* i = (k && k->l) ? k->l->first : 0;
 		fprintf(outfile,"LIBRARIES =");
 		while (i)
 		{
@@ -109,7 +105,7 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = predefines->first;
+		item* i = defines->first;
 		fprintf(outfile,"DEFINES =");
 		while (i)
 		{
@@ -121,12 +117,26 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = preincludes->first;
+		item* i = pre_includes->first;
 		fprintf(outfile,"PRE_INCLUDES =");
 		while (i)
 		{
 			if (i->str && i->str[0]!=0)
 				fprintf(outfile,"\\\n -include %s",i->str);
+			i = i->next;
+		}
+		fprintf(outfile,"\n\n");
+	}
+
+	{
+		listkey* k = listhash_find(config,"CXXFLAGS");
+		item* i = (k && k->l) ? k->l->first : 0;
+		fprintf(outfile,"CXXFLAGS =");
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				fprintf(outfile,"\\\n %s",i->str);
+
 			i = i->next;
 		}
 		fprintf(outfile,"\n\n");
@@ -155,21 +165,20 @@ int main(int argc,char** argv)
 	if (gendepend==1)
 	{
 		recursesrcs = 0;
-		list_add_str(sources,argv[3]);
+		list_add_str(guessed_sources,argv[3]);
 	}else{
 		recursesrcs = 1;
 	}
 	
-	parser_init();
-	
 	config_init();
 	config_parse(argv[1]);
-	config_apply();
+	
+	parser_init();
+
 	config_check();
-	config_exit();
 
 	{
-		item* i = sources->first;
+		item* i = guessed_sources->first;
 		while (i)
 		{
 			parser_run(i->str);
@@ -184,6 +193,7 @@ int main(int argc,char** argv)
 	}
 
 	parser_exit();
+	config_exit();
 
 	return 0;
 }

@@ -1,9 +1,10 @@
 #ifndef __configparser__
 #define __configparser__
 
-#include "tree.h"
+#include "listhash.h"
 
-extern tree* config;
+extern listhash* config;
+extern list* used_vars;
 
 int config_parse(const char* filename);
 void config_apply(void);

@@ -76,9 +76,9 @@ void dsp_parse_add_needed_includepaths(void)
 	}
 }
 
-void dsp_parse_add_preincludes(void)
+void dsp_parse_add_pre_includes(void)
 {
-	item* i = preincludes->first;
+	item* i = pre_includes->first;
 	/* visual is stupid. /FI accepts a filename only, not a path,
 	** so we have to split this in /I and /FI
 	while (i)
@@ -123,9 +123,9 @@ void dsp_parse_add_preincludes(void)
 	}
 }
 
-void dsp_parse_add_predefines(void)
+void dsp_parse_add_defines(void)
 {
-	item* i = predefines->first;
+	item* i = defines->first;
 	while (i)
 	{
 		if (i->str && i->str[0]!=0)
@@ -351,8 +351,8 @@ void dsp_parse_line(const char* buf,int line)
 			stradd(tmp2);
 			/** add all needed_includepaths here **/
 
-			dsp_parse_add_predefines();
-			dsp_parse_add_preincludes();
+			dsp_parse_add_defines();
+			dsp_parse_add_pre_includes();
 			dsp_parse_add_needed_includepaths();
 
 			stradd("\n");
