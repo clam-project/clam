@@ -223,7 +223,7 @@ namespace CLAM {
 		SourceStreamRegion* source 
 	)
 	{
-		Node<Audio>::mInputs.AddElem(port);
+		Node<Audio>::mInputs.push_back(port);
 		return mStream.NewReader(hop,length,source);
 	}
 
