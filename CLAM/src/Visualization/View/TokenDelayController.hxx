@@ -5,7 +5,7 @@
 namespace CLAM
 {
 		class Spectrum;
-		class TokenDelay<Spectrum>;
+		class TokenDelay;
 };
 
 namespace CLAMVM
