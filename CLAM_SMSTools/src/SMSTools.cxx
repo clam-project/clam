@@ -34,9 +34,19 @@
 
 namespace CLAMGUI
 {
+	static bool gFirstTimeErrorLogOpened = false;
+	static bool gFirstTimeWarningLogOpened = false;
+
 	void RedirectAssertToLogFile( const char* message, const char* filename, int lineNumber)
 	{
-		std::ofstream log( "SMSTools2_errors.log", std::ios_base::out|std::ios_base::app );
+		std::ofstream log;
+		if ( !gFirstTimeErrorLogOpened )
+		{
+			log.open( "SMSTools2_errors.log", std::ios_base::out );
+			gFirstTimeErrorLogOpened = true;
+		}
+		else
+			log.open( "SMSTools2_errors.log", std::ios_base::out | std::ios_base::app );
 
 		log << "##########################################################" << std::endl;
 		log << "################### ASSERTION FAILED #####################" << std::endl;
@@ -55,7 +65,15 @@ namespace CLAMGUI
 
 	void RedirectWarningToLogFile( const char* message, const char* filename, int lineNumber)
 	{
-		std::ofstream log( "SMSTools2_warnings.log", std::ios_base::out|std::ios_base::app );
+		std::ofstream log;
+
+		if ( !gFirstTimeWarningLogOpened )
+		{
+			log.open( "SMSTools2_warnings.log", std::ios_base::out );
+			gFirstTimeWarningLogOpened = true;
+		}
+		else
+			log.open( "SMSTools2_warnings.log", std::ios_base::out|std::ios_base::app  );
 
 		log << "##########################################################" << std::endl;
 		log << "######################## WARNING #########################" << std::endl;
@@ -177,7 +195,7 @@ namespace CLAMGUI
 
 		while ( mThread.IsRunning() )
 		{
-			Fl::check(  );
+			Fl::wait(0.5);
 		}
 	}
 
