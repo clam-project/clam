@@ -76,6 +76,12 @@ public:
 		if (!name)
 		{
 			AddContentToElement(_currentElement, xmlable.XMLContent());
+			try { 
+				const Component & component = 
+					dynamic_cast<const Component &>(xmlable);
+				component.StoreOn(*this);
+			}
+			catch (std::bad_cast &) { }
 			return;
 		}
 		if (xmlable.IsXMLElement())
@@ -84,13 +90,16 @@ public:
 			xercesc::DOMElement * domElement = _document->createElement(X(name));
 			_currentElement->appendChild(domElement);
 			AddContentToElement(domElement,xmlable.XMLContent());
+			xercesc::DOMElement * oldElement = _currentElement;
+			_currentElement = domElement;
 			try { 
 				const Component & component = 
 					dynamic_cast<const Component &>(xmlable);
-				_currentElement = domElement;
 				component.StoreOn(*this);
 			}
 			catch (std::bad_cast &) { /* Do nothing */ }
+			_currentElement = oldElement;
+			_lastWasContent=false;
 			return;
 		}
 		if (xmlable.IsXMLAttribute())
@@ -101,7 +110,7 @@ public:
 		CLAM_ASSERT(false,"Component not used");
 	}
 
-	void AddContentToElement(xercesc::DOMElement * e, const std::string content)
+	void AddContentToElement(xercesc::DOMElement * e, const std::string & content)
 	{
 		if (content=="") return;
 		if (_lastWasContent)
