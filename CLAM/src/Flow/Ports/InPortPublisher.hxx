@@ -92,6 +92,11 @@ public:
 	void UnAttachRegion() 
 	{
 		SetAttachedOutPort( 0 );
+		typename ProperInPortsList::iterator it;
+		for(it=mPublishedInPortsList.begin(); it!=mPublishedInPortsList.end(); it++)
+		{
+			(*it)->UnAttachRegion();
+		}
 	}
 	
 	bool IsPublisherOf( InPortBase& in)
