@@ -34,11 +34,11 @@ private:
 public:
 	TData operator() (const TData arg) {
 
-		CLAM_ASSERT(arg>=mLowerBound && arg<=mUpperBound, "Tablulated functor argument out of bound")
+		CLAM_DEBUG_ASSERT(arg>=mLowerBound && arg<=mUpperBound, "Tablulated functor argument out of bound")
 		
 		int index = int((arg-mLowerBound) / mIncr);
 
-		CLAM_ASSERT(index<=mTableSize-1, "Bad index calculation");
+		CLAM_DEBUG_ASSERT(index<=mTableSize-1, "Bad index calculation");
 
 		TData x1 = mIncr*index;
 		TData yIncr = mTable[index+1]-mTable[index];
