@@ -43,7 +43,8 @@ public:
 	*/
 	bool CanConsume()
 	{
-		CLAM_ASSERT(mProducingRegion, "ReadingRegion::CanConsume() - Reading region should have a producer linked" );
+		if(!mProducingRegion)
+			return false;
 		return ProducerRegion()->Pos() >= Pos()+Size();
 	}
 	/**
