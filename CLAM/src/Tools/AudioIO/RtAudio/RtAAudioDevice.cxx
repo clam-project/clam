@@ -29,6 +29,10 @@
 
 namespace CLAM {
 
+#ifdef __MACOSX_CORE__
+#define MACOSX_WORKAROUND
+#endif
+
 	typedef signed short  MY_TYPE;
 	#define FORMAT RtAudio::RTAUDIO_SINT16
 	#define SCALE  32767.0
@@ -79,9 +83,10 @@ namespace CLAM {
 				int cnt = frames*mChannels;
 				int limit = mFrames*mChannels;
 				int i = mReadIndex*mChannels;
-				
+
+#ifndef DEBUG_RDWR_POS				
 				printf("copyto: r=%d %d\n",mReadIndex,frames);
-				
+#endif				
 				while (cnt--)
 				{
 					*ptr++ = (MY_TYPE)(mData[i++]*32767.);
@@ -98,8 +103,9 @@ namespace CLAM {
 				int limit = mFrames*mChannels;
 				int i = mWriteIndex*mChannels;
 				
+#ifndef DEBUG_RDWR_POS				
 				printf("copyfrom: w=%d %d\n",mWriteIndex,frames);
-				
+#endif				
 				while (cnt--)
 				{
 					mData[i++] = TData(*ptr++)/32767.;
@@ -115,7 +121,9 @@ namespace CLAM {
 				int n = size;
 				int limit = mChannels*mFrames;
 
+#ifndef DEBUG_RDWR_POS				
 				printf("ChannelCopyFrom: w=%d %d\n",mWriteIndex,size);
+#endif
 				fflush(stdout);
 				while (n--)
 				{
@@ -138,7 +146,9 @@ namespace CLAM {
 				int n = size;
 				int limit = mChannels*mFrames;
 				
+#ifndef DEBUG_RDWR_POS				
 				printf("ChannelCopyTo: r=%d %d\n",mReadIndex,size);
+#endif
 				while (n--)
 				{
 					*ptr++ = mData[i];
@@ -159,7 +169,7 @@ namespace CLAM {
 		int mRtAudioStream;
 		MY_TYPE *mRtAudioBuffer;
 		int mRtAudioBufferSize;
-#ifdef __MACOSX_CORE__
+#ifdef MACOSX_WORKAROUND
 		int mInternalRtAudioBufferSize;
 #endif
 		Buffer mWriteBuffer;
@@ -196,7 +206,7 @@ namespace CLAM {
 			int fs = SampleRate();
 			mRtAudioBufferSize = Latency();
 
-#ifdef __MACOSX_CORE__
+#ifdef MACOSX_WORKAROUND
 			mInternalRtAudioBufferSize = mRtAudioBufferSize;
 			if (mInternalRtAudioBufferSize>2048)
 			{
@@ -209,7 +219,7 @@ namespace CLAM {
 					mDevice, mOutputs.size(),
 					mDevice, mInputs.size(), 
 					FORMAT, fs, 
-#ifdef __MACOSX_CORE__
+#ifdef MACOSX_WORKAROUND
 					&mInternalRtAudioBufferSize,
 #else
 					&mRtAudioBufferSize, 
@@ -219,10 +229,8 @@ namespace CLAM {
   		catch (RtError &) {
     		exit(EXIT_FAILURE);
   		}
-#ifdef __MACOSX_CORE__
-		printf(">>>> %d %d %d\n",mInternalRtAudioBufferSize,mRtAudioBufferSize,((mRtAudioBufferSize+mInternalRtAudioBufferSize-1)/mInternalRtAudioBufferSize));
+#ifdef MACOSX_WORKAROUND
 		mRtAudioBufferSize = mInternalRtAudioBufferSize*((mRtAudioBufferSize+mInternalRtAudioBufferSize-1)/mInternalRtAudioBufferSize);
-		printf(">>>> %d %d %d\n",mInternalRtAudioBufferSize,mRtAudioBufferSize,((mRtAudioBufferSize+mInternalRtAudioBufferSize-1)/mInternalRtAudioBufferSize));
 #endif
 			mWriteBuffer.Alloc(mOutputs.size(),mRtAudioBufferSize*2);
 			mReadBuffer.Alloc(mInputs.size(),mRtAudioBufferSize*2);
@@ -234,7 +242,6 @@ namespace CLAM {
     		exit(EXIT_FAILURE);
   		}
 		}
-		printf("[%d]\n",mRtAudioBufferSize);
 		
 		mStarted = false;
 	}
@@ -257,7 +264,6 @@ namespace CLAM {
 
 	void RtAAudioDevice::Read(Audio& a,const int channelID)
 	{
-		printf("[%d]\n",mRtAudioBufferSize);
 		if (!mStarted)
 		{
 	    mRtAudio->startStream(mRtAudioStream);
@@ -282,7 +288,6 @@ namespace CLAM {
 	
 	void RtAAudioDevice::Write(const Audio& a,const int channelID)
 	{
-		printf("[%d]\n",mRtAudioBufferSize);
 		if (!mStarted)
 		{
 	    mRtAudio->startStream(mRtAudioStream);
@@ -300,11 +305,9 @@ namespace CLAM {
 	
 	void RtAAudioDevice::Tick(void)
 	{
-#ifdef __MACOSX_CORE__
-		printf("[%d]\n",mRtAudioBufferSize);
+#ifdef MACOSX_WORKAROUND
 		int i = mRtAudioBufferSize/mInternalRtAudioBufferSize;
 		i = 2;
-		printf("Tick: %d %d %d\n",mRtAudioBufferSize,mInternalRtAudioBufferSize,i);
 		while (i--)
 		{
 			mWriteBuffer.CopyTo(mRtAudioBuffer,mInternalRtAudioBufferSize);
