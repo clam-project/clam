@@ -39,11 +39,13 @@ public:
 	template <typename T>
 	T operator () (const T& x) const
 	{
-		return Implementation::power(x,(IsOdd*)0);
+		return Implementation::power(x,(IsOdd*)0,(IsTrivial*)0);
 	}
 
 	template <int n> struct IsOddSelector {};
-	typedef IsOddSelector<(0&1)> IsOdd;
+	template <int n> struct IsTrivialSelector {};
+	typedef IsOddSelector<(o&1)> IsOdd;
+	typedef IsTrivialSelector<(((o&~1)==0)?1:0)> IsTrivial;
 };
 
 namespace Implementation
@@ -53,25 +55,39 @@ namespace Implementation
 
 
 	template <unsigned n, typename T>
-	T power(const T & x, typename Pow<n>::IsOddSelector<0>* foo)
+	T power(const T & x, 
+			typename Pow<n>::IsOddSelector<0>* foo,
+			typename Pow<n>::IsTrivialSelector<0>*bar)
 	{
-		return square(power<(n>>1)>(x, (typename Pow<(n>>1)>::IsOdd*)0));
+		typedef Pow<(n>>1)> nextPow;
+		typedef typename nextPow::IsOdd nextOdd;
+		typedef typename nextPow::IsTrivial nextTrivial;
+		return square(power(x, (nextOdd*)0, (nextTrivial*)0));
 	}
 
 	template <unsigned n, typename T>
-	T power(const T & x, typename Pow<n>::IsOddSelector<1>* foo)
+	T power(const T & x, 
+			typename Pow<n>::IsOddSelector<1>* foo,
+			typename Pow<n>::IsTrivialSelector<0>*bar)
 	{
-		return square(power<(n>>1)>(x, (typename Pow<(n>>1)>::IsOdd*)0)) * x;
+		typedef Pow<(n>>1)> nextPow;
+		typedef typename nextPow::IsOdd nextOdd;
+		typedef typename nextPow::IsTrivial nextTrivial;
+		return square(power(x, (nextOdd*)0, (nextTrivial*)0)) * x;
 	}
 
 	template <typename T>
-	T power(const T & x, typename Pow<1>::IsOddSelector<1>* foo)
+	T power(const T & x, 
+			typename Pow<1>::IsOdd* foo,
+			typename Pow<1>::IsTrivial*bar)
 	{
 		return x;
 	}
 
 	template <typename T>
-	T power(const T & x, typename Pow<0>::IsOddSelector<0>* foo)
+	T power(const T & x, 
+			typename Pow<0>::IsOdd* foo,
+			typename Pow<0>::IsTrivial*bar)
 	{
 		return T(1.0);
 	}
