@@ -50,7 +50,7 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 	mOkButton->setText( tr( "Ok" ) );
 	mCancelButton->setText( tr( "Cancel" ) );
 
-	resize( QSize(209, 275).expandedTo(minimumSizeHint()) );
+	resize( QSize(400, 275).expandedTo(minimumSizeHint()) );
 
 	mOkButtonIsPressed.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
 	mCancelButtonIsPressed.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );

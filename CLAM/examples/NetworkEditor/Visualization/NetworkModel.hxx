@@ -37,6 +37,7 @@ namespace CLAM
 namespace CLAMVM
 {
 	class ProcessingController;
+	class ProcessingModel;
 	class ConnectionAdapter;
 
 	class NetworkModel
@@ -48,19 +49,22 @@ namespace CLAMVM
 		//signals
 		SigSlot::Signalv1< const std::string& >  AcquireName;
 		SigSlot::Signalv2< CLAMVM::ProcessingController* , const std::string& > AcquireProcessing;
+		SigSlot::Slotv2< CLAMVM::ProcessingModel *, const std::string & > CreateNewPresentation;
 		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquirePortConnection;
 		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquireControlConnection;
-
+		SigSlot::Signalv1< const std::string & > SignalRemoveProcessingToGUI;
 		//slots
 		SigSlot::Slotv1< bool > ChangeState;
 		SigSlot::Slotv1< const std::string & > RemoveProcessing;
 		SigSlot::Slotv2< const std::string &, const std::string & > RemovePortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string & > RemoveControlConnection;
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
+		SigSlot::Slotv1< CLAM::Processing * > RebuildProcessingStructure;
 		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewPortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewControlConnection;
 		SigSlot::Slotv1< const std::string & > LoadNetwork;
 		SigSlot::Slotv1< const std::string & > SaveNetwork;
+		SigSlot::Slotv1< CLAMVM::ProcessingModel * > RemoveProcessingModel;
 		SigSlot::Slotv0 Clear;
 		
 	};	

@@ -31,6 +31,8 @@
 #include "InControlPresentation.hxx"
 #include "Processing.hxx"
 
+// TODO: remove
+#include <iostream>
 namespace NetworkGUI
 {
 
@@ -44,6 +46,7 @@ NetworkPresentation::NetworkPresentation()
 	SetRemovePortConnection.Wrap( this, &NetworkPresentation::OnRemovePortConnection );
 	SetRemoveControlConnection.Wrap( this, &NetworkPresentation::OnRemoveControlConnection );
 	SetRemoveProcessing.Wrap( this, &NetworkPresentation::OnRemoveProcessing );
+	RemoveProcessingToGUI.Wrap( this, &NetworkPresentation::OnRemoveProcessingToGUI );
 	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
 	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
 	Clear.Wrap(this, &NetworkPresentation::OnClear );
@@ -72,6 +75,43 @@ void NetworkPresentation::OnRemoveControlConnection(  ConnectionPresentation * c
 	con->Hide();
 
 	RemoveControlConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
+}
+
+void NetworkPresentation::OnRemoveProcessingToGUI( const std::string & name )
+{
+	std::cout << "remove processing to gui: " << name << std::endl;
+
+	GetProcessingPresentation(name).Hide();
+	ProcessingPresentation * proc = &(GetProcessingPresentation(name));
+	std::list<ConnectionPresentation*> toRemove;
+	
+	ConnectionPresentationIterator it;
+	for(it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++)
+	{
+		const std::string & connection = (*it)->GetInName();
+		if( GetProcessingIdentifier(connection) == proc->GetNameFromNetwork() )
+		{
+ 			toRemove.push_back(*it);
+		}
+		else
+		{
+			const std::string & connection2 = (*it)->GetOutName();
+			if( GetProcessingIdentifier(connection2) == proc->GetNameFromNetwork() )
+			{
+				toRemove.push_back(*it);
+			}
+		}
+	}
+	for(it=toRemove.begin(); it!=toRemove.end(); it++)
+	{
+		if (proc->HasInPort(GetLastIdentifier((*it)->GetInName())) || proc->HasOutPort(GetLastIdentifier((*it)->GetOutName())))
+			OnRemovePortConnection( *it );
+		else
+			OnRemoveControlConnection(*it);
+		    
+	}
+	mProcessingPresentations.remove( proc );
+
 }
 
 void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
@@ -134,6 +174,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 	ClearSignal.Connect( model.Clear );
 	SaveNetworkTo.Connect( model.SaveNetwork );
 	LoadNetworkFrom.Connect( model.LoadNetwork );
+	model.SignalRemoveProcessingToGUI.Connect( RemoveProcessingToGUI );
 }
 
 

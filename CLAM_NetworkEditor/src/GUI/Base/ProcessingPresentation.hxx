@@ -30,6 +30,7 @@
 #include "ProcessingConfigPresentation.hxx"
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
+#include "Slotv0.hxx"
 
 namespace CLAM
 {
@@ -93,6 +94,7 @@ protected:
 	virtual void OnNewInControl( CLAMVM::InControlAdapter* ) = 0;
 	virtual void OnNewOutControl( CLAMVM::OutControlAdapter* ) = 0;
 
+	virtual void OnUpdatePresentation();
 public:	//slots
 	SigSlot::Signalv1< ProcessingPresentation* > RemoveProcessing;
 	SigSlot::Slotv1<const std::string &> SetObservedClassName;
@@ -105,6 +107,7 @@ public:	//slots
 	SigSlot::Signalv1< CLAM::ProcessingConfig * > UpdateConfig;
 	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfig;
 	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfigFromGUI;
+	SigSlot::Slotv0 UpdatePresentation;	
 };
 
 

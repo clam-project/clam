@@ -100,6 +100,11 @@ public:
 	void RetrieveValue(const char *name, CLAM::TData *foo, T& value);
 
 	template<typename T>
+	void AddWidget(const char *name, unsigned long *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, unsigned long *foo, T& value);
+
+	template<typename T>
 	void AddWidget(const char *name, CLAM::TSize *foo, T& value);
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::TSize *foo, T& value);
@@ -261,6 +266,28 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	std::stringstream s(readValue);
 	s >> value;
 }
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned long *foo, T& value) {
+	QHBox * cell = new QHBox(mLayout);
+	new QLabel(QString(name), cell);
+	std::stringstream val;
+	val << value << std::ends;
+	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
+	mInput->setValidator(new QDoubleValidator(mInput));
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, unsigned long *foo, T& value) {
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+	const char * readValue=mInput->text().latin1();
+	std::stringstream s(readValue);
+	s >> value;
+}
+
 
 template <class ConcreteConfig>
 template< typename T>
@@ -344,7 +371,6 @@ void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::F
 	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
 	QFileDialog * fd = new QFileDialog(0, "file dialog", FALSE );
 	fd->setMode( QFileDialog::ExistingFile );
-	fd->setFilter( "WAVE File (*.wav)" );
 	
 	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
 	connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));

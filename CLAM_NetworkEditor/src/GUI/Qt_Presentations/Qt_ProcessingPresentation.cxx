@@ -34,6 +34,8 @@
 #include <qpainter.h>
 #include <cmath>
 
+
+#include <iostream>
 namespace NetworkGUI
 {
 
@@ -267,6 +269,7 @@ void Qt_ProcessingPresentation::updateOutControlsPosition()
 
 void Qt_ProcessingPresentation::Show()
 {
+	Hide();
 
 	InPortPresentationIterator itInPort;
 	for ( itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end(); itInPort++)

@@ -75,7 +75,8 @@ namespace CLAMVM
 		void OnLoadNetwork( const std::string & );
 		void OnSaveNetwork( const std::string & );
 		void OnClear();
-
+		void OnCreateNewPresentation( ProcessingModel * , const std::string & );
+		void OnRemoveProcessingModel( ProcessingModel * );
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );
 		void ConnectControls( const std::string & , const std::string & );
@@ -91,6 +92,7 @@ namespace CLAMVM
 			return "NetworkController";
 		}
 		void AddProcessing( const std::string & , CLAM::Processing *  );
+		void OnRebuildProcessingStructure( CLAM::Processing *  );
 		void NewProcessingFromGUI( const std::string & , CLAM::Processing * );
 	
 		virtual bool Publish();

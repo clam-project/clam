@@ -49,8 +49,29 @@ ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwor
 	SetOutPort.Wrap( this, &ProcessingPresentation::OnNewOutPort );
 	SetInControl.Wrap( this, &ProcessingPresentation::OnNewInControl );
 	SetOutControl.Wrap( this, &ProcessingPresentation::OnNewOutControl );
-
+	UpdatePresentation.Wrap(this, &ProcessingPresentation::OnUpdatePresentation );
 	SetObservedClassName.Wrap( this, &ProcessingPresentation::OnNewObservedClassName );
+}
+
+void ProcessingPresentation::OnUpdatePresentation()
+{
+	std::cout << "updating presentation" << std::endl;
+	RemoveProcessing.Emit(this);
+//	Hide();
+	/*
+	InPortPresentationIterator itInPort;
+	for ( itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end(); itInPort++)
+		delete *itInPort;
+	OutPortPresentationIterator itOutPort;
+	for ( itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end(); itOutPort++)
+		delete *itOutPort;
+	InControlPresentationIterator itInControl;
+	for ( itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end(); itInControl++)
+		delete *itInControl;
+	OutControlPresentationIterator itOutControl;
+	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
+		delete *itOutControl;
+		*/
 }
 
 void ProcessingPresentation::OnNewConfig( CLAM::ProcessingConfig * cfg)
@@ -103,6 +124,9 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
 	m.AcquireInControl.Connect(SetInControl);
 	m.AcquireOutControl.Connect(SetOutControl);
 	m.AcquireConfig.Connect(SetConfig);
+
+	m.SignalUpdatePresentation.Connect(UpdatePresentation);
+
 	UpdateConfig.Connect( m.SetNewConfig );
 }
 

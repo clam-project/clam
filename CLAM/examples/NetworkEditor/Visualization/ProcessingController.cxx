@@ -158,8 +158,75 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 bool ProcessingController::Update()
 {
 	mObserved->Configure( *mConfig );
-	std::cout << "configuration updated" << std::endl;
+
+	CheckIfLadspaLoader();
 	return true;
+}
+
+void ProcessingController::CheckIfLadspaLoader()
+{
+	if(std::string(mObserved->GetClassName())=="LadspaLoader")
+	{
+		SignalRebuildProcessingStructure.Emit( mObserved );
+		SignalRemoveProcessingModel.Emit(this );
+//		SignalUpdatePresentation.Emit();
+//		SignalCreateNewPresentation.Emit(this, "test" ); 
+		// on add new processing de networkpresentation?
+
+//		Publish();
+/*		CLAM::Processing* proc = (CLAM::Processing*) mObserved;	
+		CLAM::PublishedInPorts::ConstIterator itPortIn;
+		for (itPortIn = proc->GetInPorts().Begin(); 
+		     itPortIn != proc->GetInPorts().End(); 
+		     itPortIn++)
+		{
+			InPortAdapter* adapter = new InPortAdapter;
+			CLAM::InPort* inport = *itPortIn;
+			adapter->BindTo(*inport);
+			mInPortAdapters.push_back(adapter);
+			AcquireInPort.Emit(adapter);
+		}
+		
+		CLAM::PublishedOutPorts::ConstIterator itPortOut;
+		for (itPortOut = proc->GetOutPorts().Begin(); 
+		     itPortOut != proc->GetOutPorts().End(); 
+		     itPortOut++)
+		{	
+			OutPortAdapter* adapter = new OutPortAdapter;
+			CLAM::OutPort* outport = *itPortOut;
+			adapter->BindTo(*outport);
+			mOutPortAdapters.push_back(adapter);
+			AcquireOutPort.Emit(adapter);
+		}
+	
+	
+		CLAM::PublishedInControls::ConstIterator itCtrlIn;
+		for (itCtrlIn = proc->GetInControls().Begin(); 
+		     itCtrlIn != proc->GetInControls().End(); 
+		     itCtrlIn++)
+		{
+			InControlAdapter* adapter = new InControlAdapter;
+			CLAM::InControl* incontrol = *itCtrlIn;
+			adapter->BindTo(*incontrol);
+			mInControlAdapters.push_back(adapter);
+			AcquireInControl.Emit(adapter);
+		}
+		
+		CLAM::PublishedOutControls::ConstIterator itCtrlOut;
+		for (itCtrlOut = proc->GetOutControls().Begin(); 
+		     itCtrlOut != proc->GetOutControls().End(); 
+		     itCtrlOut++)
+		{	
+			OutControlAdapter* adapter = new OutControlAdapter;
+			CLAM::OutControl* outcontrol = *itCtrlOut;
+			adapter->BindTo(*outcontrol);
+			mOutControlAdapters.push_back(adapter);
+			AcquireOutControl.Emit(adapter);
+		}
+		SignalShowPresentation.Emit();
+		*/
+	}
+	
 }
 
 } //namespace CLAMVM

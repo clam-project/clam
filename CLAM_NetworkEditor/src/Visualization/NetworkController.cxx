@@ -48,6 +48,10 @@ NetworkController::NetworkController()
 	SaveNetwork.Wrap( this, &NetworkController::OnSaveNetwork );
 	LoadNetwork.Wrap( this, &NetworkController::OnLoadNetwork );
 	Clear.Wrap( this, &NetworkController::OnClear );
+	CreateNewPresentation.Wrap( this, &NetworkController::OnCreateNewPresentation );
+	RemoveProcessingModel.Wrap( this, &NetworkController::OnRemoveProcessingModel );
+	RebuildProcessingStructure.Wrap( this, &NetworkController::OnRebuildProcessingStructure );
+
 }
 
 void NetworkController::ExecuteEvents()
@@ -112,6 +116,11 @@ void NetworkController::OnNewChangeState( bool state)
 		mThread.Stop();
 		mObserved->Stop();
 	}
+}
+
+void NetworkController::OnRemoveProcessingModel( ProcessingModel * proc )
+{
+	mProcessingControllers.remove((ProcessingController*)proc);
 }
 
 void NetworkController::OnNewPortConnectionFromGUI( const std::string & out, const std::string& in)
@@ -270,7 +279,6 @@ NetworkController::~NetworkController()
 {
 	mLoopCondition = false;
 	mThread.Stop();
-//	mObserved->Stop();
 
 	ProcessingControllerIterator it;
 	for ( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
@@ -281,6 +289,13 @@ NetworkController::~NetworkController()
 	
 }
 
+void NetworkController::OnRebuildProcessingStructure( CLAM::Processing * proc )
+{
+	std::string name = mObserved->GetNetworkId(proc);
+	SignalRemoveProcessingToGUI.Emit( name );
+	
+	AddProcessing( name, proc );
+}
 
 void NetworkController::NewProcessingFromGUI( const std::string & name, 
 					      CLAM::Processing * proc )
@@ -295,9 +310,18 @@ void NetworkController::AddProcessing( const std::string & name, CLAM::Processin
 	ProcessingController* controller = new ProcessingController;
 
 	controller->BindTo(*proc);
+	controller->SignalCreateNewPresentation.Connect(CreateNewPresentation);
+	controller->SignalRebuildProcessingStructure.Connect(RebuildProcessingStructure);
+	controller->SignalRemoveProcessingModel.Connect(RemoveProcessingModel);
 	mProcessingControllers.push_back(controller);
 	AcquireProcessing.Emit(controller, name);
 }
+
+void NetworkController::OnCreateNewPresentation( ProcessingModel * controller, const std::string & name )
+{
+	AcquireProcessing.Emit((ProcessingController*)controller, name);
+}
+
 	
 bool NetworkController::Publish()
 {
@@ -310,7 +334,6 @@ bool NetworkController::Publish()
 	{
 		CLAM::Processing * producer = it->second;
 		AddProcessing( it->first,  it->second );
-		CLAM::PublishedOutPorts::Iterator itOutPort;
 	}
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{

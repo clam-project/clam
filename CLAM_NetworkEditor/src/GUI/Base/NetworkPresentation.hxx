@@ -81,6 +81,7 @@ protected:
 	virtual void OnRemovePortConnection( ConnectionPresentation* );
 	virtual void OnRemoveControlConnection( ConnectionPresentation* );
 	virtual void OnRemoveProcessing( ProcessingPresentation* );
+	virtual void OnRemoveProcessingToGUI( const std::string & );
 	virtual void OnAddNewProcessing( const std::string & , CLAM::Processing * );
 	virtual void OnClear( );
 
@@ -117,6 +118,7 @@ public: //slots
 	SigSlot::Signalv2< const std::string &, const std::string & > RemovePortConnectionFromGUI;
 	SigSlot::Signalv2< const std::string &, const std::string & > RemoveControlConnectionFromGUI;
 	SigSlot::Signalv1< const std::string & > RemoveProcessingFromGUI;
+	SigSlot::Slotv1< const std::string & > RemoveProcessingToGUI;
 	SigSlot::Signalv1< const std::string & > LoadNetworkFrom;
 	SigSlot::Signalv1< const std::string & > SaveNetworkTo;
 	SigSlot::Signalv0 ClearSignal;

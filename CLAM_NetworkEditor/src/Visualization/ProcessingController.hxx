@@ -55,6 +55,7 @@ private:
 
 protected:
 	void OnUpdateConfigFromGUI( CLAM::ProcessingConfig* );
+	void CheckIfLadspaLoader();
 public:
 	ProcessingController();
 	virtual ~ProcessingController();
