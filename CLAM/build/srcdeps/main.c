@@ -7,6 +7,7 @@
 #include "includepaths.h"
 #include "config_parser.h"
 #include "dsp_parser.h"
+#include "vcproj_parser.h"
 #include "makegen.h"
 #include "verbose.h"
 
@@ -15,6 +16,7 @@ int verbose = 0;
 int main(int argc,char** argv)
 {
 	char dspFileToWrite[250];
+	char vcprojFileToWrite[250];
 
 	struct Cmd_options settings;
 	init_cmd_options( &settings );
@@ -64,6 +66,7 @@ int main(int argc,char** argv)
 
 	config_parse( settings.settingsfile );
 	sprintf(dspFileToWrite,"%s.dsp", program->first->str);
+	sprintf(vcprojFileToWrite, "%s.vcproj", program->first->str);
 
 	if (gendepend==1)
 	{
@@ -145,6 +148,7 @@ int main(int argc,char** argv)
 	listhash_add_item_str(config,"OS_WINDOWS","1");
 	listhash_add_item_str(config,"OS_LINUX","0");	
 	dsp_parse( dspFileToWrite );
+	vcproj_parse( vcprojFileToWrite);
 	
 	if (gendepend==2)
 	{
