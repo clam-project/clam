@@ -744,7 +744,7 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 	f.bComplex = HasComplexArray();
 }
 
-TIndex Spectrum::IndexFromFreq(TData freq)
+TIndex Spectrum::IndexFromFreq(TData freq) const
 {
 	return roundInt(freq*((GetSize()-1)/GetSpectralRange()));
 }

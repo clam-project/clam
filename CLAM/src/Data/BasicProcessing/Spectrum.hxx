@@ -294,7 +294,7 @@ private:
 	void PRSetType(const SpecTypeFlags& tmpFlags,int size,int bpfsize);
 
 	/** Returns index from a given frequency */
-	TIndex IndexFromFreq(TData freq);
+	TIndex IndexFromFreq(TData freq) const;
 
 // Converting routines
 public:
