@@ -73,9 +73,6 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
 	mSpectralRange=in.GetSinusoidalSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
-//	CLAM_ASSERT(mSpectralRange<20000,"Error");//test
-	//test
-	TData time=in.GetCenterTime();
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
 }
 
