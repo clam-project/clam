@@ -42,7 +42,7 @@ namespace CLAMTest {
 	 */
 	template <class T>
 	bool XMLInputOutputMatches(T & outObject, char * filename) {
-		std::ostringstream out;
+		std::stringstream out;
 		std::ostringstream in;
 		T inObject;
 #ifdef CLAM_USE_XML
@@ -50,14 +50,12 @@ namespace CLAMTest {
 			// Store the arg a file and on a string
 			XMLStorage storage;
 			storage.UseIndentation(true);
-			std::ofstream fout(filename);
 			storage.Dump(outObject, "Object", out);
-			storage.Dump(outObject, "Object", fout);
 		}
 		{
 			// Recover the objec on superIn
 			XMLStorage storage;
-			storage.Restore(inObject, filename);
+			storage.Restore(inObject, out);
 		}
 		{
 			// Store it on a string again
