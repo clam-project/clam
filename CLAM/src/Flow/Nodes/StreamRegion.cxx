@@ -37,6 +37,28 @@ namespace CLAM {
 	{
 	}
 
+	bool StreamRegion::CanActivate()
+	{
+	/*	//Activate:
+		mEnd = mPos+mLen;
+		//FulfilsInvariant:
+		{
+			// of ReadStreamRegion
+			if (!mSource)
+			return false;
+			if (!Follows(mSource))
+				return false;
+			return true;
+		}
+		{
+			// of WriteStreamRegion
+		}
+		//Leave:
+		mEnd = mPos;
+	*/
+		return true;
+	}
+
 	void StreamRegion::Activate()
 	{
 		mEnd = mPos+mLen;
@@ -55,21 +77,19 @@ namespace CLAM {
 
 	bool StreamRegion::Preceeds(const StreamRegion *r) const
 	{
-		if ( r->End() > Pos())
-			return false;
-		return true;
+		return r->End() <= Pos();
 	}
 
 	bool StreamRegion::Follows(const StreamRegion *r) const
 	{
-		if (End() > r->Pos())
-			return false;
-		return true;
+		return End() <= r->Pos();
 	}
 
 
 	bool StreamRegion::FulfilsInvariant() const
 	{
+		CLAM_ASSERT( false, "you just discovered that this method is used ;-). Please contatct pau or xavi rubio ");
+
 		if (mPos > mEnd)
 			return false;
 		if (mEnd != mPos + mLen &&
