@@ -76,7 +76,7 @@ namespace CLAM{
 
 			GetInfo();
 			
-			Fl_Pack * buttons = new Fl_Pack(w()-3*((w()-40)/3)-10,mWidgetNum*25+25,600,20);
+			Fl_Pack * buttons = new Fl_Pack(w()-3*((w()-40)/3)-10,(mWidgetNum-1)*20,600,20);
 			buttons->type(FL_HORIZONTAL);
 			buttons->spacing(4);
 
