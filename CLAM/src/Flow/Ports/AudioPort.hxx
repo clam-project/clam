@@ -20,20 +20,3 @@
  */
 
 #error AudioPort.hxx depracated. Use Audio[Out|In]PortTmpl.hxx
-
-#ifndef _AUDIO_PORT_HXX
-#define _AUDIO_PORT_HXX
-
-#include "Audio.hxx"
-#include <iostream>
-
-namespace CLAM {
-
-
-
-
-	
-
-}
-
-#endif
