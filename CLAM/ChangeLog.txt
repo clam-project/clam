@@ -1,3 +1,15 @@
+2004-XX-XX CLAM_0_6_1
+''
+
+  * XML:
+     ** Indentation is back
+  * Descriptors:
+     ** More fixes on SpectralFlatness, LowFrequencyEnergiRelation and Rolloff:
+        *** SpectralFlatness uses log10 instead log
+        *** LowFrequencyEnergiRelation doesn't modify the incoming data
+        *** RollOff uses Energy instead Moment<O1> and compares with the square
+
+
 2004-02-18 CLAM_0_6_0
 'Audio file formats: Reloaded'
 
@@ -10,37 +22,37 @@
   * Audio File I/O Support:
      ** Four new processings available for reading/writing from audio files:
         *** MonoAudioFileReader/Writer ( single channel reading and writing )
-		*** MultiChannelAudioFileReader/Writer ( multi channel reading and writing )
+        *** MultiChannelAudioFileReader/Writer ( multi channel reading and writing )
      ** New AudioFile class. This class models the concept of 'audio file' which has
         attached attributes as 'Location' ( the path to the file ), 'Header' ( the concrete
-		file header information such as length, samplerate, etc. ) and
-		'TextDescriptors' (text-based meta-data such as Artist, Title, Album, etc. )
+        file header information such as length, samplerate, etc. ) and
+        'TextDescriptors' (text-based meta-data such as Artist, Title, Album, etc. )
      ** New File formats supported:
-		*** Almost any PCM-based audio data storage scheme encoding/decoding is supported
-		    through libsndfile ( http://www.zip.com.au/~erikd/libsndfile )
-		*** Ogg/Vorbis encoding and decoding support
-		*** Mpeg Audio Layer 1/2/3 decoding support
+        *** Almost any PCM-based audio data storage scheme encoding/decoding is supported
+            through libsndfile ( http://www.zip.com.au/~erikd/libsndfile )
+        *** Ogg/Vorbis encoding and decoding support
+        *** Mpeg Audio Layer 1/2/3 decoding support
      ** New Feature: Partial retrieval of textual metadata embedded in files. For now
-		CLAM is just able to extract information such as Artist, Title, Album and Track number.
-		Support for a wider range of textual descriptors extraction will be available soon.
-		*** ID3 metadata frames retrieval from Mpeg bitstreams
-		*** Vorbis Comments retrieval from Vorbis bitstreams
-			MacOS X note: ID3 meta-data extraction only works for MacOS X 10.3 systems and above,
-			since Apple did not include Unicode ( wchar_t ) support in their libstdc++ binary
-			distribution.
+        CLAM is just able to extract information such as Artist, Title, Album and Track number.
+        Support for a wider range of textual descriptors extraction will be available soon.
+        *** ID3 metadata frames retrieval from Mpeg bitstreams
+        *** Vorbis Comments retrieval from Vorbis bitstreams
+            MacOS X note: ID3 meta-data extraction only works for MacOS X 10.3 systems and above,
+            since Apple did not include Unicode ( wchar_t ) support in their libstdc++ binary
+            distribution.
      ** Three new examples showing how to use the new Processing's and the AudioFile class:
-		*** examples/FileInfo_example.cxx
-		*** examples/AudioFileReading_example.cxx
-		*** examples/AudioFileWritiing_example.cxx
-		their build projects can be found on the build/Examples/Simple folder
+        *** examples/FileInfo_example.cxx
+        *** examples/AudioFileReading_example.cxx
+        *** examples/AudioFileWritiing_example.cxx
+        their build projects can be found on the build/Examples/Simple folder
   * FFT refactored:
-	** Removed duplicated code and unused functionality and improved efficiency.
+    ** Removed duplicated code and unused functionality and improved efficiency.
   * Salto:
-	** Fix: several potentially dangerous out-of-bounce array accesses in fltk G.interface
+    ** Fix: several potentially dangerous out-of-bounce array accesses in fltk G.interface
   * Processing Data:
-	** Documented (doxygen style) that the time unit is miliseconds in Audio, Frame and Segment
+    ** Documented (doxygen style) that the time unit is miliseconds in Audio, Frame and Segment
   * Processings:
-	** AudioFileIn stamps the sample-rate to the written audio
+    ** AudioFileIn stamps the sample-rate to the written audio
   * Descriptors:
     ** AttackTime is based on the envelope
     ** Fix: LogAttackTime recalculated the AttackTime always
@@ -49,8 +61,8 @@
     ** Functional tests added
     ** Fixes and precission enhancements
   * Tests:
-	** All unit and functional tests have been merged in only two executables (settings.cfg),
-	   namely: AllUnitTests and AllFunctionalTests
+    ** All unit and functional tests have been merged in only two executables (settings.cfg),
+       namely: AllUnitTests and AllFunctionalTests
 
 
 
@@ -167,7 +179,7 @@
         *** Generate from empty dsp
   * Standard/Misc:
      ** Text: Added to the standard as substitution for std::string on those 
-        case when we need multiword strings on XML. (XML loads only one word 
+        case when we need multiword strings on XML. (XML loads only one word
         for std::strings)
      ** BPF: Modified BPFTmpl<>::Insert() (both overloads) to return the 
         index at which the element was actually inserted (i.e. the inserted 
@@ -181,7 +193,7 @@
      ** Added a FileMIDIDevice
      ** SoundFileIO improvements ( support for more sample formats added, 
         better errors)
-     ** Declare template specializations in header inline ( gcc 3.x 
+     ** Declare template specializations in header inline ( gcc 3.x
         compatibility issue )
   * ProcessingData:
      ** SpectralPeakArray ProcessingData; when adding an IndexArray to an 
@@ -209,7 +221,7 @@
         processing configurations.
   * Testing:
      ** CLAMTEST_ASSERT_XML_EQUAL to compare XML canonically
-     ** Helpfull colors for finding differences on expected and obtained 
+     ** Helpfull colors for finding differences on expected and obtained
         strings
      ** Added CppUnit workspace
      ** Added a shell-script to generate the dsp's.
@@ -428,7 +440,7 @@
         and introduced a CopyChunk method, similar to GiveChunk but with 
         memory copying.
   * DynamicTypes:
-     ** Fix: Definition of DynamicTypes on foreign namespaces leaded to 
+     ** Fix: Definition of DynamicTypes on foreign namespaces leaded to
         compilation problems if you don't use the ugly 'using namespace 
         CLAM;'.
      ** Fix: dynamic type self-assignation doesn't modify the object.
@@ -465,7 +477,7 @@
     implementation of the C++ idiom of Signals & Slots
   * New plot's substitute the functionality offered by old snapshots
   * Most of VM code is now documented with Doxygen comments
-  * Several new FLTK widgets, such as the Fl_Axis, Fl_SmartTile, etc. 	
+  * Several new FLTK widgets, such as the Fl_Axis, Fl_SmartTile, etc.     
      ** Configurators: New type suported: 'Filename'
      ** 'Formal' documentation will be soon made publicly available
 
@@ -554,7 +566,7 @@
         misredeclarations
   * Unix build system:
      ** Better support for external projects
-     ** $(CLAM_PATH)/ prefix needs to be added on for each filename on 
+     ** $(CLAM_PATH)/ prefix needs to be added on for each filename on
         '.files' files
   * Spectral Analysis:
      ** Fix: WindowGenerator Enums symbols had illegal spaces on their inside
