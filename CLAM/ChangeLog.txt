@@ -1,3 +1,7 @@
+
+  * Build system:
+      ** Fix: 'configure' test for local sandbox fftw in linux, used wrong parameters order
+
 2003-07-25 CLAM_0_5_2
 'Processing bug-fixing, SMSTools update'
   * Processing - Transformation - SMS:
