@@ -27,12 +27,26 @@ namespace CLAM
 			}
 	};
 
-	std::istream operator >> (std::istream & stream, Text & text)
+	std::istream & operator >> (std::istream & stream, Text & text)
 	{
-		std::string temp(
+		
+#if 0
+		stream.unsetf(std::ios::skipws);
+		text.assign(
 			(std::istream_iterator<char>(stream)),
 			std::istream_iterator<char>());
-		text = temp;
+#elif 0
+		text.assign(
+			(std::istreambuf_iterator<char>(stream)),
+			std::istreambuf_iterator<char>());
+#elif 1
+		text="";
+		char c;
+		while (stream.get(c))
+			text.push_back(c);
+#endif
+		return stream;
+
 	}
 }
 
