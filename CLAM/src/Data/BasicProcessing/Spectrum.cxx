@@ -587,13 +587,10 @@ void Spectrum::MagPhase2Complex()
 	Array<Complex > &complexArray=GetComplexArray();
 	complexArray.Resize(size);
 	complexArray.SetSize(size);
-	Polar aux;
 	for (int i=0; i<size; i++) 
 	{
-		aux.SetMag(magBuffer[i]);
-		aux.SetAng(phaseBuffer[i]);
-		complexArray[i].SetReal(aux.Real());
-		complexArray[i].SetImag(aux.Imag());
+		complexArray[i].SetReal(magBuffer[i]*cos(phaseBuffer[i]));
+		complexArray[i].SetImag(magBuffer[i]*sin(phaseBuffer[i]));
 	}
 }
 
