@@ -6,7 +6,6 @@
 #include "Random.hxx"
 #include "FlagControl.hxx"
 #include "OneOverF.hxx"
-//#include "OutControlSender.hxx"
 #include "LadspaLoader.hxx"
 
 #include "MonoAudioFileReader.hxx"
@@ -20,7 +19,6 @@ typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
 static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" );
-//static ProcessingFactory::Registrator<CLAM::OutControlSender> regtOutControlSender( "OutControlSender" );
 
 static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
 static ProcessingFactory::Registrator<CLAM::MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );
