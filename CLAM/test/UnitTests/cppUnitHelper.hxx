@@ -28,6 +28,13 @@
 #include <cppunit/TestAssert.h>
 
 
+#ifndef CPPUNIT_NS_BEGIN
+#define CPPUNIT_NS_BEGIN namespace CppUnit {
+#endif
+#ifndef CPPUNIT_NS_END
+#define CPPUNIT_NS_END }
+#endif
+
 namespace CLAMTest
 {
 	class Helper
