@@ -159,7 +159,7 @@ void GLArrayRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, 
 void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_width )
 {
 	mCullingData.left = left*GetXConversionFactor();
-	mCullingData.right = (right*GetXConversionFactor())-1;
+	mCullingData.right = (right*GetXConversionFactor());
 	mCullingData.pixel_width = pixel_width;
 	mCullingRequested = true;
 	mMustGenerateIndexes = true;	
@@ -171,10 +171,14 @@ void GLArrayRenderer::GenerateElemIndexes()
 	GLuint start, end, range, step;
 	start = mCullingData.left;
 	end = mCullingData.right;
-	range = end - start;
+
 
 	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
-	CLAM_ASSERT( mElemIdxBuffer.size() > end, "End index is out of bonds!!!!" );
+
+	if ( end >= mElemIdxBuffer.size() )
+		end = mElemIdxBuffer.size()-1;
+
+	range = end - start;
 
 	unsigned k = 0;
 
