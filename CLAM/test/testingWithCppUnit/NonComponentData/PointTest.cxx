@@ -2,10 +2,22 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "Point.hxx"
-#include "Polar.hxx"
 
+// Kludge!!!!
+// DGG: I don't understand why cppunit headers look for this std
+// function in CLAM namespace
+#if defined __GNUC__ && __GNUC__ < 3
+namespace CLAM
+{
+	std::string operator + (const char * a, const std::string & b)
+	{
+		return std::operator+(a,b);
+	}
+}
+#endif
 namespace CLAMTest
 {
+
 
 
 class PointTest;
@@ -90,9 +102,9 @@ private:
 		CLAM::Point toBeModified(1,3);
 		std::string inputString("{5.3 7.3}");
 		CLAM::Point expected(5.3, 7.3);
-		std::stringstream ss(inputString);
+		std::stringstream s(inputString);
 
-		ss >> toBeModified;
+		s >> toBeModified;
 
 		CPPUNIT_ASSERT_EQUAL(expected, toBeModified);
 	}
@@ -102,9 +114,9 @@ private:
 		CLAM::Point toBeModified(1,3);
 		std::string inputString(" \n  { \n 5.3 \n  7.3 \t } ");
 		CLAM::Point expected(5.3, 7.3);
-		std::stringstream ss(inputString);
+		std::stringstream s(inputString);
 
-		ss >> toBeModified;
+		s >> toBeModified;
 
 		CPPUNIT_ASSERT_EQUAL(expected, toBeModified);
 	}
