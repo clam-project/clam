@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
@@ -19,17 +20,19 @@
  *
  */
 
+
 #include "MIDI2Melody.hxx"
 #include "MIDIManager.hxx"
 #include "MIDIInControl.hxx"
 #include "MIDIClocker.hxx"
 #include "MIDIMelody.hxx"
 #include "TraverseDirectory.hxx"
+#include "XMLStorage.hxx"
 
 #include "MIDIReader.hxx"
 #include <iostream>
 
-//using namespace CLAM;
+
 using MIDI::Reader;
 
 using CLAM::MIDIMelody;
@@ -42,6 +45,8 @@ using CLAM::MIDI2Melody;
 using CLAM::TTime;
 using CLAM::MIDIInControl;
 using CLAM::XMLStorage;
+
+
 
 /** Declaration of the concrete Traverse directory class to apply to all files*/
 class ConvertAllMidiFiles:public TraverseDirectory
@@ -164,8 +169,5 @@ int main(int argc,char** argv)
 	}
 	return 0;
 }
-
-
-
 
 

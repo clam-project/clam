@@ -27,7 +27,7 @@
  *      -> Activate an XML to get a fully functional network again.
  */
 
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include "Network.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
