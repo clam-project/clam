@@ -85,7 +85,7 @@ inline const Audio* AudioDescriptors::GetpAudio() const {
 	return mpAudio;
 }
 
-inline void AudioDescriptors::SetpAudio(Frame* pAudio) {
+inline void AudioDescriptors::SetpAudio(Audio* pAudio) {
 	mpAudio=pAudio;
 }
 
