@@ -178,6 +178,10 @@ SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SpectrumAndPeaks.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_FundFreq_Browser.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Gl_Single_Browsable_Display.cxx
 # End Source File
 # End Group
@@ -399,6 +403,10 @@ SOURCE=..\..\..\..\src\Visualization\View\SinTracksModel.cxx
 
 SOURCE=..\..\..\..\src\Visualization\View\SinTracksAdapter.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\View\FundamentalAdapter.cxx
+# End Source File
 # End Group
 # Begin Group "Util Sources"
 
@@ -464,6 +472,10 @@ SOURCE=..\..\..\..\src\Visualization\GL\GLPointsArrays.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\GL\PeaksRenderingManager.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\FundFreqRM.cxx
 # End Source File
 # End Group
 # Begin Group "Presentation Sources"
@@ -1393,6 +1405,10 @@ SOURCE=..\..\..\..\src\Visualization\View\SinTracksAdapter.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Visualization\View\FundamentalAdapter.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Visualization\View\ConfigurationVisitor.hxx
 # End Source File
 # Begin Source File
@@ -1472,6 +1488,10 @@ SOURCE=..\..\..\..\src\Visualization\GL\GLPointsArrays.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\GL\PeaksRenderingManager.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\GL\FundFreqRM.hxx
 # End Source File
 # End Group
 # Begin Group "Presentation Headers"
@@ -1741,6 +1761,10 @@ SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SinTracks_Browser.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SpectrumAndPeaks.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_FundFreq_Browser.hxx
 # End Source File
 # Begin Source File
 
