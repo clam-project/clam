@@ -171,13 +171,13 @@ class NetworkTest : public CppUnit::TestFixture
 
 	class LoggableDummyProcessing : public DummyProcessing
 	{
-		BaseLoggable& _log;
+		BaseLoggable& mLog;
 	public:
 		LoggableDummyProcessing( BaseLoggable& log ) :
-			_log(log)
+			mLog(log)
 		{}
 		~LoggableDummyProcessing() {
-			_log.ToLog() << this << " deleted\n";
+			mLog.ToLog() << this << " deleted\n";
 		}
 	};
 
