@@ -1,7 +1,7 @@
 
 
 2004-11-18 CLAM_0_7_0
-'Processing ports rewrite and clean up'
+'Easier deployment, better plots and Processing Networks'
   * Processing Ports Infrastructure Complete Rewrite:
      ** Now effectively works with any datatype (i.e. InPort<Spectrum>)
      ** Shortcut CLAM::ConnectPorts with either ports numbers and names
@@ -91,13 +91,15 @@
         used by srcdeps to make sure USE_<library> and HAS_<library> is 
         consistent. Using USE_<library>=$(HAS_<library> in settings.cfg can 
         be used to make usage conditional. On windows the user should make
-		  sure that the build/packages-win.cfg file is reflecting his system
+    sure that the build/packages-win.cfg file is reflecting his system
      ** configure has a new way to present the user with the possibity to 
         disable the use of specific libraries. If the user does not have a 
         specific library, it can tell configure not to use it. The generate 
         HAS_<library> value will be false, and if a settings.cfg tries to use 
         it, srcdeps will notice it. This allows to compile certain examples 
         that don't use libraries you don't have.
+  * MS Visual support:
+     ** MS Visual 6 is no longer supported.
 
 2004-04-13 CLAM_0_6_1
 'qt && Visual 7 support'
