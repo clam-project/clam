@@ -8,6 +8,7 @@
 #include "AudioBrowser.hxx"
 #include "CBL.hxx"
 
+
 using namespace CLAM;
 using namespace CLAMGUI;
 
@@ -355,7 +356,6 @@ void UserInterface::ChangeFrame()
 
 	TData nextcursorpos = mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetCenterTime();
 
-	cout<<nextcursorpos<<endl;
 	//Notify SigSlotted class to change
 	mSignal.Emit( nextcursorpos );
 
