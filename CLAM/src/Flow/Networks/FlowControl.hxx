@@ -37,9 +37,6 @@ protected:
 	
 	int _frameSize;
 	Network * _network;
-	
-//	std::list< NodeBase* > _unconfiguredNodes;
-
 
 };
 
