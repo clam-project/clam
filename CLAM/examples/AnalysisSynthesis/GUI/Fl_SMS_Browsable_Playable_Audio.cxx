@@ -171,6 +171,12 @@ int Fl_SMS_Browsable_Playable_Audio::handle( int event )
 		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
 		mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
 		ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+		mXAxis->resize( x(), y()+h()-50,w()-50, 30);
+		mYAxis->resize( x()+w()-50, y(), 30, h() - 50);
+		mXSlider->resize( x(), y() +h() -20, w() -50, 20);
+		mYSlider->resize( x()+w()-20, y(), 20, h() -50 );
+		mPlayButton->resize( x()+w()-40, y()+h()-20,20,20 );
+		mStopButton->resize( x()+w()-20, y()+h()-20,20,20 );
 	}
 	else if ( event == FL_HIDE )
 	{

@@ -123,6 +123,11 @@ namespace CLAMVM
 			mTooltipTracker.ForceText( "idle" );
 			mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
 			mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
+			mXAxis->resize( x(), y()+h()-50,w()-50, 30);
+			mYAxis->resize( x()+w()-50, y(), 30, h() - 50);
+			mXSlider->resize( x(), y() +h() -20, w() -50, 20);
+			mYSlider->resize( x()+w()-20, y(), 20, h() -50 );
+			mShowPeaksBtn->resize( x() + w() -40, y() + h() -20, 40, 20);
 	
 		}
 		else if ( evtCode == FL_HIDE )

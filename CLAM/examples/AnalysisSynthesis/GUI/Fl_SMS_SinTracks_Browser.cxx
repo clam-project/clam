@@ -146,6 +146,10 @@ namespace CLAMVM
 
 			mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
 			ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+			mXAxis->resize( x(), y()+h()-50,w()-50, 30);
+			mYAxis->resize( x()+w()-50, y(), 30, h() - 50);
+			mXSlider->resize( x(), y() +h() -20, w() -50, 20);
+			mYSlider->resize( x()+w()-20, y(), 20, h() -50 );
 
 
 		}
