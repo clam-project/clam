@@ -7,7 +7,7 @@ namespace CLAMTest
 class cppUnitHelperTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( cppUnitHelperTest );
 
-class cppUnitHelperTest : public CppUnit::TestFixture
+class cppUnitHelperTest : public CppUnit::TestFixture, public BaseLoggable
 {
 	CPPUNIT_TEST_SUITE( cppUnitHelperTest );
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoToString_NotEquals );
@@ -15,7 +15,9 @@ class cppUnitHelperTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_Equals );
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_DifferentUnrelatedClasses );
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_DifferentSuperAndSubClass );
-	
+	// tests for class BaseLoggable
+	CPPUNIT_TEST( testLoggable_InsertAndThenGetLog );
+	CPPUNIT_TEST( testLoggable_InsertAndThenGetLog_AfterClearLog );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -97,6 +99,20 @@ private:
 			"assertion_traits of type_info, method eq. should return false if dyn types are different",
 			!CppUnit::assertion_traits<std::type_info>::equal(
 			typeid(baseConcrete), typeid(concrete) ) );
+	}
+	
+	void testLoggable_InsertAndThenGetLog()
+	{
+		ToLog() << "text inserted to the log";
+		CPPUNIT_ASSERT_EQUAL( std::string("text inserted to the log"), GetLog() );
+	}
+
+	void testLoggable_InsertAndThenGetLog_AfterClearLog()
+	{
+		ToLog() << "first insertion";
+		ClearLog();
+		ToLog() << "text inserted to the log";
+		CPPUNIT_ASSERT_EQUAL( std::string("text inserted to the log"), GetLog() );
 	}
 };
 } // namespace
