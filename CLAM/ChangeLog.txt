@@ -1,9 +1,10 @@
 2003-12-XX  CLAM_0_4_2
 'Cuidado merge update'
-  * Spectral Processings:
+  * Spectral Analysis:
       ** Added Gaussian window to WindowGenerator
       ** Removed Synth window to WindowGenerator (not used)
       ** Added Maximizer Normalization to WindowGenerator
+      ** Segmentator algoritm changes merged from CUIDADO
 
 2003-01-23 CLAM_0_4_1
 'Analysis Synthesis debuggin'
