@@ -35,7 +35,7 @@ namespace AudioCodecs
 
 		memset( &vorbisFile, 0, sizeof(OggVorbis_File) );
 
-		fileHandle = fopen( uri.c_str(), "rb+" );
+		fileHandle = fopen( uri.c_str(), "rb" );
 		
 		if (  !fileHandle || ferror(fileHandle) != 0  )
 		{
