@@ -16,16 +16,24 @@ void SMSSynthesisConfig::DefaultValues()
 	SetSamplingRate(44100);
 
 	/** Default analysis window size corresponds to 512*/
-	GetSpectralSynth().SetAnalWindowSize(513);
+//	GetSpectralSynth().SetAnalWindowSize(513);
+//	TODO PA remove (hack for anal-synth in streaming)
+//	GetSpectralSynth().SetAnalWindowSize(1025);
+
+	
 	GetSpectralSynth().SetAnalWindowType(EWindowType::eBlackmanHarris92);
 	GetSpectralSynth().GetAnalWindowGenerator().SetInvert(true);
 
 	
 	/** WindowSize/2*/
-	SetHopSize((GetAnalWindowSize()-1)/2);
+//	SetHopSize((GetAnalWindowSize()i-1)/2);
+//	TODO PA remove hack...
+	SetAnalWindowSize(1025);	
+	SetHopSize(256);
+	SetFrameSize(256);
 
 	/* Default frame size is 256*/
-	SetFrameSize(GetHopSize());
+//	SetFrameSize(GetHopSize());
 
 
 }

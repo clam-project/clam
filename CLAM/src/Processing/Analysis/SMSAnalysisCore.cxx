@@ -65,6 +65,7 @@ SMSAnalysisCore::~SMSAnalysisCore()
 
 bool SMSAnalysisCore::ConcreteConfigure(const ProcessingConfig& cfg)
 {
+	std::cout << "SMSAnalysisCore::ConcreteConfigure() \n";
 	CopyAsConcreteConfig(mConfig,cfg);
 	ConfigureChildren();
 	ConfigureData();
@@ -86,8 +87,6 @@ bool SMSAnalysisCore::ConfigureChildren()
 	TSize frameSize=mConfig.GetHopSize();
 	TSize sinWindowSize=mConfig.GetSinWindowSize();
 	TSize resWindowSize=mConfig.GetResWindowSize();
-	mInputAudio.SetSize( frameSize );
-	mInputAudio.SetHop( frameSize );
 
 	mSinSpectralAnalysis.GetInPort("Input").SetSize( sinWindowSize - 1 );
 	mSinSpectralAnalysis.GetInPort("Input").SetHop( frameSize );
@@ -148,16 +147,36 @@ void SMSAnalysisCore::AttachChildren()
 
 bool SMSAnalysisCore::ConcreteStart()
 {
-	if( mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort() )
+	CLAM_ASSERT( mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort(), 
+			"SMSAnalysisCore::ConcreteStart in port 'Input' needs an attached out port, to start");
+
+	// TODO: port sizes negitiation should be managed by the flow control
+	if (mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->GetSize()%2!=0)
 	{
-		// TODO: it must be solved by the flow control
-		if(mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->GetSize()%2!=0)
-		{
-			mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetSize( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
-			mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetHop( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
-		}
-		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->CenterEvenRegions();
+		
+		int sinSize = mSinSpectralAnalysis.GetInPort("Input").GetSize();
+		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetSize( sinSize );
+		std::cout << "SMSAnalysisCore::ConcreteStart() Alert!! setting size mSinSpec... : "<< sinSize <<"\n";
+
+		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetHop( sinSize ); 
+
+//		mInputAudio.GetAttachedOutPort()->SetSize( mInputAudio.GetSize() );
+//		mInputAudio.GetAttachedOutPort()->SetHop( mInputAudio.GetSize() );
 	}
+
+//	mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->CenterEvenRegions();
+	mInputAudio.GetAttachedOutPort()->CenterEvenRegions();
+		
+	std::cout << "SMSAnalysisCore::ConcreteStart Regions Centered!"<< std::endl;
+	
+	std::cout << "SMSAnalysisCore::ConcreteStart "<< std::endl <<
+		"\tInput(not publisher) size : " << mSinSpectralAnalysis.GetInPort("Input").GetSize() << std::endl <<
+		"\tInput size : " << mSinSpectralAnalysis.GetInPort("Input").GetSize() << std::endl <<
+		"\tInput hop : " << mSinSpectralAnalysis.GetInPort("Input").GetHop() << std::endl <<
+		"\tOutput Res Spectrum size : " << mOutputResSpectrum.GetSize() << std::endl <<
+		"\tOutput Res Spectrum hop : " << mOutputResSpectrum.GetHop() << std::endl <<
+		"\tOutput Spectral peaks size : " << mOutputSpectralPeaks.GetSize() <<
+		"\tOutput Spectral peaks hop : " << mOutputSpectralPeaks.GetHop() << std::endl;
 	return ProcessingComposite::ConcreteStart();
 }
 
@@ -168,20 +187,24 @@ bool SMSAnalysisCore::Do()
 		mSinSpectralAnalysis.Do();
 		mResSpectralAnalysis.Do();
 		
-		CLAM_DEBUG_ASSERT( mPeakDetect.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mPeakDetect should have data feeded");
+		CLAM_DEBUG_ASSERT( mPeakDetect.CanConsumeAndProduce(), 
+			"SMSAnalysisCore::Do() mPeakDetect should have data feeded");
 		mPeakDetect.Do();
 	
-		CLAM_DEBUG_ASSERT( mFundDetect.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mFundDetect should have data feeded");
+		CLAM_DEBUG_ASSERT( mFundDetect.CanConsumeAndProduce(), 
+			"SMSAnalysisCore::Do() mFundDetect should have data feeded");
 		mFundDetect.Do();
 
-		CLAM_DEBUG_ASSERT( mSinTracking.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mSinTracking should have data feeded");
+		CLAM_DEBUG_ASSERT( mSinTracking.CanConsumeAndProduce(), 
+			"SMSAnalysisCore::Do() mSinTracking should have data feeded");
 		mSinTracking.Do();
 	
-		CLAM_DEBUG_ASSERT( mSynthSineSpectrum.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mSynthSineSpectrum should have data feeded");
+		CLAM_DEBUG_ASSERT( mSynthSineSpectrum.CanConsumeAndProduce(), 
+			"SMSAnalysisCore::Do() mSynthSineSpectrum should have data feeded");
 		mSynthSineSpectrum.Do();
 
-		
-		CLAM_DEBUG_ASSERT( mSpecSubstracter.CanConsumeAndProduce(), "SMSAnalysisCore::Do() specSubstracter should have data feeded");
+		CLAM_DEBUG_ASSERT( mSpecSubstracter.CanConsumeAndProduce(), 
+			"SMSAnalysisCore::Do() specSubstracter should have data feeded");
 		mSpecSubstracter.Do();
 
 		return true;
