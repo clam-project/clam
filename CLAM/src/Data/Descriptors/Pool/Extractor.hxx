@@ -11,7 +11,7 @@ template <typename AttributeType>
 class Hook 
 {
 public:
-	void Init(DescriptionDataPool & pool, 
+	void Init(const DescriptionDataPool & pool, 
 			const std::string & scope,
 			const std::string & attribute)
 	{
@@ -19,10 +19,10 @@ public:
 		_scope = scope;
 		_attribute = attribute;
 		_current = 0;
-		_data = _pool->template GetAttributePool<AttributeType>(_scope,_attribute);
+		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
 	}
 
-	const AttributeType & GetForReading()
+	const AttributeType & GetForReading() const
 	{
 		return _data [_current];
 	}
@@ -32,23 +32,17 @@ public:
 		_current++;
 	}
 
-	bool IsInsideScope()
+	bool IsInsideScope() const
 	{
 		return _current < _pool->GetNumberOfContexts(_scope);
 	}
 
 private:
 	unsigned _current;
-	DescriptionDataPool * _pool;
+	const DescriptionDataPool * _pool;
 	std::string _scope;
 	std::string _attribute;
-	AttributeType * _data;
-
-};
-template <typename AttributeName>
-class OutputHook : public Hook<AttributeName>
-{
-	
+	const AttributeType * _data;
 };
 
 
