@@ -19,7 +19,7 @@
  *
  */
 
-#include "DataTypes.hxx" 
+#include "DataTypes.hxx"
 #include "Normalization.hxx"
 #include "BasicStatistics.hxx"
 
@@ -75,7 +75,7 @@ bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
 	DataArray energy;
 	TData totEnergy=0;
 	TData scalFactor;
-	
+
 	do
 	{
 		in.GetAudioChunk(p, p+mFrameSize, chunk);
