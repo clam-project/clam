@@ -30,7 +30,7 @@ namespace CLAM
 	class SMSMorphConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSMorphConfig, 14,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (SMSMorphConfig, 15,ProcessingConfig);
 		/** Name of the SMSTransformation object*/
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/** FileName where pre-analyzed sound to morph is to be found */
@@ -63,7 +63,8 @@ namespace CLAM
 		/** BPF (envelope-like) Parameter. Hybridize Residual Spectral Shape */
 		DYN_ATTRIBUTE (12, public, BPF, HybResSpectralShape);
 		/** BPF (envelope-like) Parameter. Weight for Residual Spectral Shape */
-		DYN_ATTRIBUTE (13, public, BPF, HybResShapeW1);
+		DYN_ATTRIBUTE (13, public, BPF, HybResShapeW1 );
+		DYN_ATTRIBUTE (14, public, BPF, HybResShapeW2 );
 	protected:
 		void DefaultInit();
 
