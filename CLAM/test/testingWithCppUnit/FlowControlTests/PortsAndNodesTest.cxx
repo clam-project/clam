@@ -20,7 +20,8 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
-//#include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
+#include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
+
 #include "InPort.hxx"
 #include "InPortTmpl.hxx"
 #include "OutPort.hxx"
@@ -62,6 +63,24 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnectedWithNode );
 
 	CPPUNIT_TEST( testPortSetParams_WhenIsAlreadyAttached_AssertsWithRightMessage );
+
+	// tests related to IsReadyForReading / IsReadyForWriting methods of Inport/OutPort classes
+	/*
+	CPPUNIT_TEST( testInPort_IsReadyForReading_WithGeneralTemplatePorts_WhenThereIsDataReady );
+	CPPUNIT_TEST( testInPort_IsReadyForReading_WithGeneralTemplatePorts_WhenThereIsntDataReady );
+	CPPUNIT_TEST( testOutPort_IsReadyForWriting_WithGeneralTemplatePorts_WhenThereIsDataReady );
+	CPPUNIT_TEST( testOutPort_IsReadyForWriting_WithGeneralTemplatePorts_WhenThereIsntDataReady );
+	*/	
+	CPPUNIT_TEST( testInPort_IsReadyForReading_WithAudioPorts_WhenThereIsDataReady );
+	CPPUNIT_TEST( testInPort_IsReadyForReading_WithAudioPorts_WhenThereIsntDataReady );
+	CPPUNIT_TEST( testOutPort_IsReadyForWriting_WithAudioPorts_WhenThereIsDataReady );
+	CPPUNIT_TEST( testOutPort_IsReadyForWriting_WithAudioPorts_WhenThereIsntDataReady );
+
+	CPPUNIT_TEST( testInPort_IsReadyForReading_WithAudioPorts_WhenIsNotAttachedToNode );
+	CPPUNIT_TEST( testOutPort_IsReadyForWriting_WithAudioPorts_WhenIsNotAttachedToNode );
+	CPPUNIT_TEST( testInPort_IsReadyForReading_WithGeneralTemplatePorts_WhenIsNotAttachedToNode );
+	CPPUNIT_TEST( testOutPort_IsReadyForWriting_WithGeneralTemplatePorts_WhenIsNotAttachedToNode );
+
 
 	CPPUNIT_TEST( testUnattach_WithAudioInPort_AfterAttach );
 	CPPUNIT_TEST( testUnattach_WithGeneralTemplateInPort_AfterAttach );
@@ -161,11 +180,11 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
 			concreteNode;
 
-		const int samples=1; 
-		CLAM::InPortTmpl<CLAM::Audio> concreteIn("in", this, samples);
+		const int length=1; 
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("in", this, length);
 		CLAM::InPort& in = concreteIn;
 	
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, length);
 		CLAM::OutPort& out = concreteOut;
 		
 		// attach using generic interface
@@ -173,7 +192,7 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		in.Attach(concreteNode);
 		
 		// configure node before using its data
-		concreteNode.Configure(samples);
+		concreteNode.Configure(length);
 
 		// write with out port
 
@@ -187,8 +206,8 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testIsAttached_WithAudioOutPort_AfterAttachWithNode()
 	{
-		const int samples=1; 
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, length);
 
 		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
 			concreteNode;
@@ -199,9 +218,10 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testIsAttached_WithAudioInPort_AfterAttachWithNode()
 	{
-		const int samples=1; 
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
-		CLAM::InPortTmpl<CLAM::Audio> concreteIn("in", this, samples);
+
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("out", this, length);
 
 		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
 			concreteNode;
@@ -213,9 +233,8 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testIsAttached_WithGeneralTemplateOutPort_AfterAttachWithNode()
 	{
-		const int samples=1; 
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
-
+		const int length=1; 
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, length);
 		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
 			concreteNode;
 
@@ -225,10 +244,10 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testIsAttached_WithGeneralTemplateInPort_AfterAttachWithNode()
 	{
-		const int samples=1; 
+		const int length=1; 
 
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
-		CLAM::InPortTmpl<DummyProcessingData> concreteIn("in", this, samples);
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, length);
+		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, length);
 
 		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
 			concreteNode;
@@ -240,10 +259,9 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreConnectedWithNode()
 	{
-		const int samples=1; 
-
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
-		CLAM::InPortTmpl<CLAM::Audio> concreteIn("in", this, samples);
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("out", this, length);
 
 		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
 			concreteNode;
@@ -255,10 +273,9 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreConnectedWithNode()
 	{
-		const int samples=1; 
-
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
-		CLAM::InPortTmpl<DummyProcessingData> concreteIn("in", this, samples);
+		const int length=1; 
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, length);
+		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, length);
 
 		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
 			concreteNode;
@@ -270,9 +287,9 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnectedWithNode()
 	{
-		const int samples=1; 
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, samples);
-		CLAM::InPortTmpl<CLAM::Audio> concreteIn("in", this, samples);
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOut("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> concreteIn("out", this, length);
 
 		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
 			concreteNode;
@@ -283,21 +300,20 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnectedWithNode()
 	{
-		const int samples=1; 
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, samples);
-		CLAM::InPortTmpl<DummyProcessingData> concreteIn("in", this, samples);
-
+		const int length=1; 
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOut("out", this, length);
+		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, length);
 		CPPUNIT_ASSERT_EQUAL( false, concreteOut.IsConnectedTo(concreteIn) );
 	}
+
 	
 	void testPortSetParams_WhenIsAlreadyAttached_AssertsWithRightMessage()
 	{
-		const int samples=1; 
-		CLAM::OutPortTmpl<DummyProcessingData> out("out", this, samples);
+		const int length=1; 
+		CLAM::OutPortTmpl<DummyProcessingData> out("out", this, length);
 		// for this tests any kind of node and port suits us
 		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > node;
 		out.Attach(node);
-		const int length = 1;
 		try {
 			out.SetParams(length);
 			CPPUNIT_FAIL("an assert was supposed to happen. But nothing happened.");
@@ -308,6 +324,119 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		}
 	}
 
+	void testInPort_IsReadyForReading_WithAudioPorts_WhenIsNotAttachedToNode()
+	{
+		const int length=1;
+		CLAM::InPortTmpl< CLAM::Audio > in("in", this, length );
+		try{
+			in.IsReadyForReading();
+			CPPUNIT_FAIL( "Assertion expected but nothing happened" );
+		}
+		catch( CLAM::ErrAssertionFailed &)
+		{}
+	}
+
+	void testOutPort_IsReadyForWriting_WithAudioPorts_WhenIsNotAttachedToNode()
+	{
+		const int length=1;
+		CLAM::OutPortTmpl< DummyProcessingData > out("out", this, length );
+		try{
+			out.IsReadyForWriting();
+			CPPUNIT_FAIL( "Assertion expected but nothing happened" );
+		}
+		catch( CLAM::ErrAssertionFailed &)
+		{}
+	}
+
+	void testInPort_IsReadyForReading_WithGeneralTemplatePorts_WhenIsNotAttachedToNode()
+	{
+		const int length=1;
+		CLAM::InPortTmpl< CLAM::Audio > in("in", this, length );
+		try{
+			in.IsReadyForReading();
+			CPPUNIT_FAIL( "Assertion expected but nothing happened" );
+		}
+		catch( CLAM::ErrAssertionFailed &)
+		{}
+	}
+
+	void testOutPort_IsReadyForWriting_WithGeneralTemplatePorts_WhenIsNotAttachedToNode()
+	{
+		const int length=1;
+		CLAM::OutPortTmpl< DummyProcessingData > out("out", this, length );
+		try{
+			out.IsReadyForWriting();
+			CPPUNIT_FAIL( "Assertion expected but nothing happened" );
+		}
+		catch( CLAM::ErrAssertionFailed &)
+		{}
+	}
+
+	void testInPort_IsReadyForReading_WithAudioPorts_WhenThereIsDataReady()
+	{
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> out("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> in("out", this, length);
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  node;
+		
+		out.Attach(node);
+		in.Attach(node);
+		node.Configure(length);
+
+		out.GetData();
+		out.LeaveData();
+		
+		CPPUNIT_ASSERT_EQUAL( true, in.IsReadyForReading() );
+	}
+
+	void testInPort_IsReadyForReading_WithAudioPorts_WhenThereIsntDataReady()
+	{
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> out("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> in("out", this, length);
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  node;
+		
+		out.Attach(node);
+		in.Attach(node);
+		node.Configure(length);
+	
+		CPPUNIT_ASSERT_EQUAL( false, in.IsReadyForReading() );
+	}
+
+	void testOutPort_IsReadyForWriting_WithAudioPorts_WhenThereIsDataReady()
+	{
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> out("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> in("out", this, length);
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  node;
+		
+		out.Attach(node);
+		in.Attach(node);
+		node.Configure(length);
+	
+		CPPUNIT_ASSERT_EQUAL( true, out.IsReadyForWriting() );
+	}
+
+	void testOutPort_IsReadyForWriting_WithAudioPorts_WhenThereIsntDataReady()
+	{
+		const int length=1; 
+		CLAM::OutPortTmpl<CLAM::Audio> out("out", this, length);
+		CLAM::InPortTmpl<CLAM::Audio> in("out", this, length);
+		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  node;
+		
+		out.Attach(node);
+		in.Attach(node);
+		node.Configure(length);
+
+		out.GetData();
+		out.LeaveData();
+	
+		CPPUNIT_ASSERT_EQUAL_MESSAGE( 
+			"shouldn't be ReadyForWriting since node is size==1, and port already have LeaveData once",
+			false, out.IsReadyForWriting() );
+	}
+
+    
 	void testUnattach_WithAudioInPort_AfterAttach()
 	{
 		const int samples=1; 
@@ -379,7 +508,6 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		concreteIn.Attach(concreteNode2);
 		CPPUNIT_ASSERT_EQUAL( true, concreteOut2.IsConnectedTo(concreteIn) );	
 	}
-
 };
 
 } // namespace
