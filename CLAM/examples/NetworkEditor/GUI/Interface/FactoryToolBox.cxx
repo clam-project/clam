@@ -1,6 +1,7 @@
 
 #include "FactoryToolBox.hxx"
 #include "ProcessingLabel.hxx"
+#include <qpainter.h>
 #include <iostream>
 
 namespace NetworkGUI
@@ -9,13 +10,18 @@ namespace NetworkGUI
 FactoryToolBox::FactoryToolBox(  QWidget * parent , const char * name )
 	: QFrame( parent, name ),
 	  mDown(false),
-	  mNumProcessings(0)
-{
-	setFrameStyle( QFrame::ToolBarPanel | QFrame::Raised );
+	  mNumProcessings(0),
+	  mNormalSize(0,0),
+	  mMinimized(false)
+{	
+	setFrameStyle( QFrame::Box | QFrame::Raised );
 	setLineWidth( 1 );
-	setPalette( QPalette( QColor( 100, 100, 200 )));
+	setPalette( QPalette( QColor( 100, 100, 100 )));
 	AddProcessingLabel( "Oscillator" );
-	AddProcessingLabel( "Mixer" );
+//	AddProcessingLabel( "Mixer 2" );
+	AddProcessingLabel( "Multiplier" );
+	AddProcessingLabel( "Audio File In" );
+	AddProcessingLabel( "Audio File Out" );
 }
 
 FactoryToolBox::~FactoryToolBox()
@@ -28,21 +34,33 @@ FactoryToolBox::~FactoryToolBox()
 void FactoryToolBox::AddProcessingLabel( const std::string & name)
 {
 	ProcessingLabel * proc = new ProcessingLabel( name , this);
-	resize (140, 10+ (mProcessingLabels.size()+1)*30 );
-	proc->move(5, 5+ mProcessingLabels.size()*30 );
+	resize (140, 30+ (mProcessingLabels.size()+1)*30 );
+	mNormalSize = size();
+	proc->move(5, 25 + mProcessingLabels.size()*30 );
 	proc->show();
 	mProcessingLabels.push_back(proc);
 }
 
-
 void FactoryToolBox::mousePressEvent( QMouseEvent * m )
 {
-
-	if (m->button() == RightButton )
+	if (m->button() == MidButton )
 	{
 		mDown = true;
 		mClickPos = m->pos();
 		grabMouse();
+	}
+	if (m->button() == RightButton )
+	{
+		if (mMinimized)
+		{
+			mMinimized = false;
+			resize(mNormalSize);
+		}
+		else
+		{
+			mMinimized = true;
+			resize(140, 25);
+		}
 	}
 }
 
@@ -73,6 +91,15 @@ int FactoryToolBox::GetNumProcessings()
 {
 	return mNumProcessings;
 }
-
+void FactoryToolBox::paintEvent( QPaintEvent * )
+{
+	QColor c(255, 255, 255);
+	QPainter p( this );
+        p.setBrush( c );
+	p.drawText( QRect(0,0,140,30),
+		    Qt::AlignHCenter+Qt::AlignVCenter ,	
+		    QString( "CLAM Processings" ));
+	
+}
 
 } // namespace NetworkGUI

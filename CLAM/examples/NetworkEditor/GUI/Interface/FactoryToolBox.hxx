@@ -28,12 +28,15 @@ public:
 	
 
 protected:
+	void paintEvent( QPaintEvent * );
 	void        mousePressEvent( QMouseEvent *);
 	void        mouseReleaseEvent( QMouseEvent *);
 	void        mouseMoveEvent( QMouseEvent *);
 
 	bool        mDown;
+	bool        mMinimized;
 	QPoint     mClickPos;
+	QSize      mNormalSize;
 	unsigned int mNumProcessings;
 
 	std::vector< ProcessingLabel* > mProcessingLabels;

@@ -18,12 +18,12 @@
 
 #include <cmath>
 #include <time.h>
+#include "Factory.hxx"
 
 
 void ConfigureNetwork(CLAM::Network & net)
 
 {
-
 	int frameSize = 512;
 	std::string fileInName = "testin.wav";
 	std::string fileOutName = "testout.wav";
@@ -63,8 +63,7 @@ void ConfigureNetwork(CLAM::Network & net)
 	net.AddProcessing( "oscillator-generator", new CLAM::Oscillator(generatorCfg) );
 	net.AddProcessing( "mixer", new CLAM::AudioMixer<6>(mixerCfg) );
 	net.AddProcessing( "file-out", new CLAM::AudioFileOut(fileOutCfg));
-
-
+	
 	net.ConnectPorts( "file-in.Output", "multiplier.First Audio Input" );
 	net.ConnectPorts( "oscillator-modulator.Audio Output", 
 			  "multiplier.Second Audio Input" );
