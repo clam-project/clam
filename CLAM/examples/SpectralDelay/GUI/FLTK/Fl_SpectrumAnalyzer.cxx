@@ -15,12 +15,14 @@ namespace CLAMVM
 
 		mLayout->MakeHeightFixed();
 
-		Fl_Box * aLabelBox = new Fl_Box( 0,0,0,0, label );
+		const char * finalLabel = label? label : "Unnamed Presentation";
+
+		Fl_Box * aLabelBox = new Fl_Box( 0,0,0,0, finalLabel );
 		aLabelBox->align( FL_ALIGN_CENTER | FL_ALIGN_INSIDE );
 		aLabelBox->labelsize(10);
 		mLayout->AddMultiCellWidget( aLabelBox, 0,0, 4, 1 );
 
-		mDisplay = new Fl_Gl_Single_Display( 0,0,0,0 );
+		mDisplay = new Fl_Gl_Single_Display( 0,0,0,0, "Frequency" );
 		mDisplay->SetRenderer( mDrawMgr );
 		mDisplay->EnableDoubleBuffering();
 
