@@ -324,12 +324,12 @@ mWindow2=NULL;}
   decl {Fl_Window* mAudioOutputSinusoidalDisplay;} {}
   decl {Fl_Window* mInputSpectrum;} {}
   decl {Fl_Window* mOutputSpectrum;} {}
-  decl {CLAMVM::AudioAdapter* mSoundView;} {}
-  decl {CLAMVM::AudioAdapter* mSynthesizedOutput;} {}
-  decl {CLAMVM::AudioAdapter* mSynthSineOut;} {}
-  decl {CLAMVM::AudioAdapter* mSynthResidualOut;} {}
-  decl {CLAMVM::LogMagSpectrumAdapter* mInputSpectrumView;} {}
-  decl {CLAMVM::LogMagSpectrumAdapter* mOutputSpectrumView;} {}
+  decl {CLAMVM::AudioAdapter mSoundView;} {}
+  decl {CLAMVM::AudioAdapter mSynthesizedOutput;} {}
+  decl {CLAMVM::AudioAdapter mSynthSineOut;} {}
+  decl {CLAMVM::AudioAdapter mSynthResidualOut;} {}
+  decl {CLAMVM::LogMagSpectrumAdapter mInputSpectrumView;} {}
+  decl {CLAMVM::LogMagSpectrumAdapter mOutputSpectrumView;} {}
   decl {Signalv1<TData> mFrameSignal;} {}
   decl {Signalv1<bool> mPaintSignal;} {}
   decl {Slotv1<double> mSlot;} {}

@@ -144,12 +144,12 @@ private:
   Fl_Window* mAudioOutputSinusoidalDisplay;
   Fl_Window* mInputSpectrum;
   Fl_Window* mOutputSpectrum;
-  CLAMVM::AudioAdapter* mSoundView;
-  CLAMVM::AudioAdapter* mSynthesizedOutput;
-  CLAMVM::AudioAdapter* mSynthSineOut;
-  CLAMVM::AudioAdapter* mSynthResidualOut;
-  CLAMVM::LogMagSpectrumAdapter* mInputSpectrumView;
-  CLAMVM::LogMagSpectrumAdapter* mOutputSpectrumView;
+  CLAMVM::AudioAdapter mSoundView;
+  CLAMVM::AudioAdapter mSynthesizedOutput;
+  CLAMVM::AudioAdapter mSynthSineOut;
+  CLAMVM::AudioAdapter mSynthResidualOut;
+  CLAMVM::LogMagSpectrumAdapter mInputSpectrumView;
+  CLAMVM::LogMagSpectrumAdapter mOutputSpectrumView;
   Signalv1<TData> mFrameSignal;
   Signalv1<bool> mPaintSignal;
   Slotv1<double> mSlot;

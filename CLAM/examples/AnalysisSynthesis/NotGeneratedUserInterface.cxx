@@ -203,8 +203,8 @@ void UserInterface::DisplayInputSpectrum(void)
 		Frame& frame = localFrames[ mCounter->value() ];
 		Spectrum& spectrum = frame.GetSpectrum();
 
-		mInputSpectrumView->BindTo( &spectrum );
-		mInputSpectrumView->Publish();
+		mInputSpectrumView.BindTo( &spectrum );
+		mInputSpectrumView.Publish();
 //		mSmartTile->equalize();
 	}
 }
@@ -321,11 +321,11 @@ Fl_Window* UserInterface::AttachInputSound(const char* title, CLAM::Audio* data 
 {
 	AudioBrowser* localPresentation;
 
-	mSoundView->BindTo( data );
+	mSoundView.BindTo( data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( *mSoundView );
+	localPresentation->AttachTo( mSoundView );
 
 	//Link Signals with Slots
 	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
@@ -337,7 +337,7 @@ Fl_Window* UserInterface::AttachInputSound(const char* title, CLAM::Audio* data 
 	
 	// registering callback for notifying the ui the need of 'detaching'
 	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSoundView->Publish();
+	mSoundView.Publish();
 
 	mSmartTile->add( localPresentation );
 	localPresentation->Show();
@@ -350,11 +350,11 @@ Fl_Window* UserInterface::AttachOutputSound(const char* title, CLAM::Audio* data
 {
 	AudioBrowser* localPresentation;
 
-	mSynthesizedOutput->BindTo( data );
+	mSynthesizedOutput.BindTo( data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( *mSynthesizedOutput );
+	localPresentation->AttachTo( mSynthesizedOutput );
 
 	//Link Signals with Slots
 	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
@@ -366,7 +366,7 @@ Fl_Window* UserInterface::AttachOutputSound(const char* title, CLAM::Audio* data
 	
 	// registering callback for notifying the ui the need of 'detaching'
 	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSynthesizedOutput->Publish();
+	mSynthesizedOutput.Publish();
 
 	mSmartTile->add( localPresentation );
 	localPresentation->Show();
@@ -379,11 +379,11 @@ Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* d
 {
 	AudioBrowser* localPresentation;
 
-	mSynthResidualOut->BindTo( data );
+	mSynthResidualOut.BindTo( data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( *mSynthSineOut );
+	localPresentation->AttachTo( mSynthSineOut );
 
 	//Link Signals with Slots
 	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
@@ -395,7 +395,7 @@ Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* d
 	
 	// registering callback for notifying the ui the need of 'detaching'
 	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSynthResidualOut->Publish();
+	mSynthResidualOut.Publish();
 
 	mSmartTile->add( localPresentation );
 	localPresentation->Show();
@@ -408,11 +408,11 @@ Fl_Window* UserInterface::AttachSynthResidualSound(const char* title, CLAM::Audi
 {
 	AudioBrowser* localPresentation;
 
-	mSynthResidualOut->BindTo( data );
+	mSynthResidualOut.BindTo( data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( *mSynthResidualOut );
+	localPresentation->AttachTo( mSynthResidualOut );
 
 	//Link Signals with Slots
 	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
@@ -424,7 +424,7 @@ Fl_Window* UserInterface::AttachSynthResidualSound(const char* title, CLAM::Audi
 	
 	// registering callback for notifying the ui the need of 'detaching'
 	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSynthResidualOut->Publish();
+	mSynthResidualOut.Publish();
 
 	mSmartTile->add( localPresentation );
 	localPresentation->Show();
@@ -443,9 +443,9 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int ty
 	LogMagSpectrumAdapter* selectedView;
 
 	if( type == 0 )
-		selectedView = mInputSpectrumView;
+		selectedView = &mInputSpectrumView;
 	else
-		selectedView = mOutputSpectrumView;		
+		selectedView = &mOutputSpectrumView;		
 
 
 	SpectrumDisplay *localPresentation = 
@@ -492,8 +492,8 @@ void UserInterface::ChangeFrame()
 	//Change Spectrum Displayer
 	// InputSpectrum Displayer is yet cahnged
 		
-	mOutputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
-	mOutputSpectrumView->Publish();
+	mOutputSpectrumView.BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+	mOutputSpectrumView.Publish();
 //		mSmartTile->equalize();
 
 	Fl::redraw();
@@ -512,11 +512,11 @@ void UserInterface::ChangeTimeTag( double tag )
 	mFrameSignal.Emit( nextcursorpos );
 
 	//Change Spectrum Displayer
-	mInputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
-	mInputSpectrumView->Publish();
+	mInputSpectrumView.BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+	mInputSpectrumView.Publish();
 //		mSmartTile->equalize();
-	mOutputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
-	mOutputSpectrumView->Publish();
+	mOutputSpectrumView.BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+	mOutputSpectrumView.Publish();
 //		mSmartTile->equalize();
 
 	Fl::redraw();
