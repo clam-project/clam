@@ -34,10 +34,19 @@ char* stradd_range( const char* begin, const char* end )
 	return cur;
 }
 
-char* strend(void)
+void strend(void)
 {
-	char* ret = cur;
 	*cur = 0;
 	cur = 0;
-	return ret;
 }
+
+// change slashes to backslashes
+void winstyle(char* str)
+{
+	while (*str)
+	{
+		if (*str=='/') *str='\\';
+		str++;
+	}
+}
+

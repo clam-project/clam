@@ -10,6 +10,11 @@ char* stradd(const char* a);
 
 char* stradd_range( const char* begin, const char* end );
 
-char* strend(void);
+void strend(void);
+
+/* Converts a given path from the UNIX way: a/b/c into 
+ * Windows' way, namely a\b\c
+ */
+void winstyle(char* str);
 
 #endif
