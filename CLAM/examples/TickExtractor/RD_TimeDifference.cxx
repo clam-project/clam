@@ -118,26 +118,23 @@ namespace CLAM
 			for (int j=0;j < size-1;j++) 
 			{
 				int apos = (int) in[j].GetPosition();
+				int pos = labs((int)apos - (int)in[j+1].GetPosition()); 
 
-				for (int k = j+1; k<size;k++) 
-				{
-					int pos = labs((int)apos - in[k].GetPosition()); 
-				
-					if (pos+gsize<out.Size()) 
+				for ( int k = j+1; 
+				      (k < size) && pos+gsize < out.Size();
+				      k++ ) 
+				{		
+					pos = labs((int)apos - (int)in[k].GetPosition());
+					
+					TData* outw = outp + pos - gsize/2;
+					TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());
+					
+					// add the gaussian 
+					for (int i=0;
+					     (i<gsize) && (outw >= outp && outw < end);
+					     i++) 
 					{
-
-						TData* outw = outp + pos - gsize/2;
-						TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());
-
-						// add the gaussian 
-						for (int i=0;i<gsize;i++) 
-						{
-							if (outw >= outp && outw < end) 
-							{
-								*outw += (win[i]*weight);
-							}
-							outw++;
-						}
+						*(outw++) += (win[i]*weight);
 					}
 				}
 			}
