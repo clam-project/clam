@@ -32,43 +32,61 @@ namespace CLAM {
 
 	class StreamRegion {
 	protected:
+		/** Number of samples to advance the region in each "advance" operation */
 		unsigned int mHop;
+		/** Start position in number of elements of the beginning of the region */
 		unsigned int mPos;
+		/** Lenght of the region in number of elements */
 		unsigned int mLen;
+		/** End of the region. If region is not active it is equal to mPos */
 		unsigned int mEnd;
-		//XA
+		/** Offset in number of elements used to compute "virtual" center of the region.
+		 *	A region centered in zero is not actually centered around sample zero but around
+		 *	this value. */
 		unsigned int mOffset;
 	public:
 		StreamRegion(unsigned int hop,
 		             unsigned int length);
 
+		/** Accessor to region's hop size in number of elements. @see mHop */
 		unsigned int Hop() const {return mHop;}
+		/** Accessor to region's starting position in number of elements. @see mPos */
 		unsigned int Pos() const {return mPos;}
+		/** Accessor to region's ending position in number of elements. @see mEnd */
 		unsigned int End() const {return mEnd;}
+		/** Returns difference between mEnd and mPos, which is not the actual length of
+		 *	the region. Note that if the region is not active, Len()=0. @see RealLength */
 		unsigned int Len() const {return mEnd-mPos;}
-		unsigned int RealLength() const {return mLen;}
-		
-		//XA:
+				
+		/** Accessor to "virtual" center of region. @see mOffset*/
 		unsigned int Center() const {return Chop((mPos+mEnd)*0.5)-mOffset;} 
+		/** Returns the maximum length of the region. @see mLen. */
 		unsigned int MaxLength() const {return mLen;}
 
+		/** Sets the condition of the region being active, which is actually setting mEnd
+		 *	to mPos+mLen. */
 		void Activate();
+		/** Moves the starting position the number of elements specified by mHop. @see mHop. */
 		void LeaveAndAdvance();
 
-		//XA
+		/** Removes the activation condition without actually moving it*/
 		void Leave();
 
-		//XA
+		/** Set center of the region to specified value */
 		void SetCenter(unsigned int center){
 			mPos=center-mLen*0.5+mOffset;
 		}
-		//XA
+		/** Sets center of the region to the "virtual" zero. @see Center, SetCenter */
 		void CenterToZero() {SetCenter(0);}
-		void Init(unsigned int offset) {
+		/** Initializes offset member variable and centers region to zero. This method is
+		 *	overriden by some derived classes. @see CenterToZero*/
+		virtual void Init(unsigned int offset) {
 			mOffset=offset;
 			CenterToZero();}
 
+		/** Returns true if this region preceeds the region passed as argument */
 		bool Preceeds(const StreamRegion*) const;
+		/** Returns true if this region follows the region passed as argument */
 		bool Follows (const StreamRegion*) const;
 
 		virtual bool FulfilsInvariant() const;

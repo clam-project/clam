@@ -53,9 +53,16 @@ namespace CLAM {
 		virtual bool FulfilsInvariant() const;
 		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
 
-		//XA
-		void InitReaders();
-		void Init();
+		/** This method initializes the source region and all its associated
+		 *	readers. All readers are centered around 0 (or offset passed as a
+		 *	parameter if you need a different value). The source region is advanced
+		 *	so half of the biggest window size is written with zeros. */
+		void Init(unsigned int offset=0);
+		
+	protected:
+		/** Initializes associated reading regions*/
+		void InitReaders(unsigned int offset);
+		/** Helper function to compute the length of the largest reading region. */
 		unsigned int FindLargestReadRegionLength();
 
 		virtual ~SourceStreamRegion() {};

@@ -79,19 +79,17 @@ namespace CLAM {
 		return true;
 	}
 
-	//XA
-	void SourceStreamRegion::InitReaders() 
+	void SourceStreamRegion::InitReaders(unsigned int offset) 
 	{
-		unsigned int offset=Chop(FindLargestReadRegionLength()*0.5);
 		reader_iterator it;
 		for (it=readers_begin(); it!=readers_end(); it++)
 			(*it)->Init(offset);
 	}
 	
-	/** Ugly: base class also has an Init method with different signature, should change*/
-	void SourceStreamRegion::Init()
+	void SourceStreamRegion::Init(unsigned int offset)
 	{
-		unsigned int hopsInHalfWindow=Chop(FindLargestReadRegionLength()*0.5/mHop);
+		unsigned int realOffset=Chop(FindLargestReadRegionLength()*0.5)+offset;
+		unsigned int hopsInHalfWindow=Chop(realOffset/mHop);
 
 		int i;
 		for(i=0;i<hopsInHalfWindow;i++)
@@ -100,7 +98,8 @@ namespace CLAM {
 			//Would have to make sure that zeros are here
 			LeaveAndAdvance();
 		}
-		InitReaders();
+		mOffset= realOffset;
+		InitReaders(realOffset);
 	}
 
 	unsigned int SourceStreamRegion::FindLargestReadRegionLength()
@@ -110,7 +109,7 @@ namespace CLAM {
 		reader_const_iterator rit;
 
 		for (rit=readers_begin();  rit != readers_end();  rit++)
-				if ((*rit)->RealLength() >len) len=(*rit)->RealLength();
+				if ((*rit)->MaxLength() >len) len=(*rit)->MaxLength();
 		
 		return len;
 	}
