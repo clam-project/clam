@@ -18,35 +18,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "CLAM_Math.hxx"
+#include <CLAM/Core/CLAM_Math.hxx>
 
 
 #include "SMSBase.hxx"
-#include "SegmentDescriptors.hxx"
-#include "BasicOps.hxx"
+#include <CLAM/Processing/SegmentDescriptors.hxx>
+#include <CLAM/Core/BasicOps.hxx>
 
 
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include <CLAM/IO/AudioFileIn.hxx>
+#include <CLAM/IO/AudioFileOut.hxx>
 #include <iostream>
 
-#include "Segment.hxx"
+#include <CLAM/Processing/Segment.hxx>
 #include "SMSAnalysisSynthesisConfig.hxx"
-#include "SMSAnalysis.hxx"
-#include "SMSSynthesis.hxx"
-#include "CleanTracks.hxx"
-#include "Segmentator.hxx"
-#include "Normalization.hxx"
-#include "HeapDbg.hxx"
+#include <CLAM/SMS/SMSAnalysis.hxx>
+#include <CLAM/SMS/SMSSynthesis.hxx>
+#include <CLAM/Processing/CleanTracks.hxx>
+#include <CLAM/Processing/Segmentator.hxx>
+#include <CLAM/Processing/Normalization.hxx>
+#include <CLAM/Core/HeapDbg.hxx>
 
 #include <fstream>
-#include "XMLStorage.hxx"
+#include <CLAM/Core/XMLStorage.hxx>
 
-#include "AudioIO.hxx"
-#include "AudioOut.hxx"
-#include "AudioManager.hxx"
-#include "SMSMorphConfig.hxx"
-#include "SMSTimeStretchConfig.hxx"
+#include <CLAM/IO/AudioIO.hxx>
+#include <CLAM/IO/AudioOut.hxx>
+#include <CLAM/IO/AudioManager.hxx>
+#include <CLAM/SMS/SMSMorphConfig.hxx>
+#include <CLAM/SMS/SMSTimeStretchConfig.hxx>
 
 using namespace CLAMGUI;
 using namespace CLAM;
@@ -54,8 +54,10 @@ using namespace CLAM;
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mTransformation.mChainInput.Attach(mOriginalSegment);
-	mTransformation.mChainOutput.Attach(mTransformedSegment);
+	// MRJ: This is broken! 
+	// @TODO Fix this new InPort/OutPort issue
+	//mTransformation.mChainInput.Attach(mOriginalSegment);
+	//mTransformation.mChainOutput.Attach(mTransformedSegment);
 
 
 	mpAnalysis=new SMSAnalysis;

@@ -20,11 +20,11 @@
  */
 
 #include "SMSTools.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFile.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileWriter.hxx"
-#include "HeapDbg.hxx"
+#include <CLAM/IO/AudioFileIn.hxx>
+#include <CLAM/IO/AudioFile.hxx>
+#include <CLAM/IO/MonoAudioFileReader.hxx>
+#include <CLAM/IO/MonoAudioFileWriter.hxx>
+#include <CLAM/Core/HeapDbg.hxx>
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -33,7 +33,7 @@
 #include <FL/Fl_Tooltip.H>
 #include <FL/fl_file_chooser.H>
 #include <FL/fl_ask.H>
-#include "Assert.hxx"
+#include <CLAM/Core/Assert.hxx>
 #ifdef  GetClassName
 #undef GetClassName
 #endif
@@ -240,10 +240,12 @@ namespace CLAMGUI
 		segment.GetAudio().SetSize(samplesInFile);
 		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
 		
-		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
+		// MRJ: This is broken!
+		// @TODO: Fix this new InPort/Outport issue
+		//fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
 
 		//Read Audio File
-		fileReader.Do();
+		fileReader.Do(segment.GetAudio());
 
 		fileReader.Stop();
 
@@ -479,9 +481,7 @@ namespace CLAMGUI
 
 		proc.Start();
 
-		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
-
-		proc.Do();
+		proc.Do(audio);
 
 		proc.Stop();
 		

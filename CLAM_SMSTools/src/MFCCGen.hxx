@@ -1,8 +1,8 @@
 #ifndef __CLAM_MFCCGEN_H__
 #define __CLAM_MFCCGEN_H__
 
-#include <Processing.hxx>
-#include <Spectrum.hxx>
+#include <CLAM/Core/Processing.hxx>
+#include <CLAM/Processing/Spectrum.hxx>
 
 
 /**
