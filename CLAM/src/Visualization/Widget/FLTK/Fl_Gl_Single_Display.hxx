@@ -21,7 +21,7 @@ namespace CLAMVM
 
 	protected:
 
-			void DrawContents();
+			virtual void DrawContents();
 	private:
 			GLRenderingManager* mRenderer;
 	};
