@@ -24,5 +24,6 @@
 
 #include "PlotAudio.hxx"
 #include "PlotSpectrum.hxx"
+#include "PlotSinTracks.hxx"
 
 #endif // __CLAMVM_PLOT_HXX
