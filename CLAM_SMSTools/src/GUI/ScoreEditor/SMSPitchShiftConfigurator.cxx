@@ -13,9 +13,8 @@ namespace CLAMVM
 	{
 		mHelpWidget = new Fl_Help_View( 0, 0, 100, 100 );
 		mHelpWidget->textsize( 12 );
-		
+
 		mEditorWidget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
-		mEditorWidget->end();
 		mEditorWidget->SetHorizontalRange( 0.0, 1.0 );
 		mEditorWidget->SetVerticalRange( 0.5, 2.0 );
 		mEditorWidget->SetGridWidth( 0.1, 0.1 );

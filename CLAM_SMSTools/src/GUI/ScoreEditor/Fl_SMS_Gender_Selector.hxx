@@ -30,6 +30,9 @@ namespace CLAMVM
 		Fl_Round_Button*   mpMaleButton;
 		Fl_Round_Button*   mpFemaleButton;
 
+
+		static const char* mpMaleButtonLabel;
+		static const char* mpFemaleButtonLabel;
 	};
 
 }

@@ -3,18 +3,21 @@
 
 namespace CLAMVM
 {
+	const char* Fl_SMS_Gender_Selector::mpMaleButtonLabel= "Change a male voice into a female one";
+	const char* Fl_SMS_Gender_Selector::mpFemaleButtonLabel = "Change a female voice into a male one";
+
 	Fl_SMS_Gender_Selector::Fl_SMS_Gender_Selector( int X, int Y, int W, int H )
 		: Fl_Group( X, Y, W, H )
 	{
 		mpMaleButton = new Fl_Round_Button( X+(W/4), Y+(H/4), W/2, 20 );
-		mpMaleButton->label( "Change a male voice into a female one" );
+		mpMaleButton->label( mpMaleButtonLabel );
 		mpMaleButton->labelsize( 12 );
 		mpMaleButton->when( FL_WHEN_RELEASE );
 		mpMaleButton->callback( (Fl_Callback*)cbMaleFemale, this );
 		mpMaleButton->value(1);
 
 		mpFemaleButton = new Fl_Round_Button( X+(W/4), Y+(H/4)+25, W/2, 20 );
-		mpFemaleButton->label( "Change a female voice into a male one" );
+		mpFemaleButton->label( mpFemaleButtonLabel );
 		mpFemaleButton->labelsize( 12 );
 		mpFemaleButton->when( FL_WHEN_RELEASE );
 		mpFemaleButton->callback( (Fl_Callback*)cbMaleFemale, this );

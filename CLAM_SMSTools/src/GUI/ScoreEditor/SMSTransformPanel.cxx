@@ -273,16 +273,18 @@ SMSScoreEditor::SMSScoreEditor()
 			o->deactivate();
 			o->labelsize(12);
 		}
+		{
+			mNoConfigWidgetAvailable = new Fl_Box( 0, 0, 100, 100 );
+			mNoConfigWidgetAvailable->label( "Non-editable configuration" );
+			mNoConfigWidgetAvailable->align( FL_ALIGN_INSIDE );
+			mNoConfigWidgetAvailable->hide();
+		}
+
 
 		o->set_modal();
 		o->end();
 	}
 
-	{
-		mNoConfigWidgetAvailable = new Fl_Box( 0, 0, 100, 100 );
-		mNoConfigWidgetAvailable->label( "Non-editable configuration" );
-		mNoConfigWidgetAvailable->align( FL_ALIGN_INSIDE );
-	}
 
 	SetTransformationScore.Wrap( this, &SMSScoreEditor::OnSetTransformationScore );
 	ScoreWasChanged.Wrap( this, &SMSScoreEditor::OnScoreChanged );
@@ -363,6 +365,7 @@ void SMSScoreEditor::ShowScoreOnBrowser(  const CLAM::SMSTransformationChainConf
 		}
 		CLAMVM::SMSConfigurator* pCfg = CLAMVM::SMSConfiguratorFactory::GetInstance().Create( i->GetConcreteClassName().c_str() );
 		pCfg->SetConfig( i->GetConcreteConfig() );
+		pCfg->ConfigurationChanged.Connect( ScoreWasChanged );
 		mScoreContentsBox->data( mScoreContentsBox->size(), pCfg );
 		i++;
 	}
@@ -479,6 +482,8 @@ void SMSScoreEditor::ClearTransformationHelpWidget()
 		CLAM_ASSERT( currentHelpWidget != NULL, "Current help widget was NULL!" );
 		currentHelpWidget->hide();
 		mHelpWidgetContainer->remove( *currentHelpWidget );
+		mMainWindow->add(currentHelpWidget );
+		mHelpWidgetContainer->end();
 	}
 
 	mHelpWidgetContainer->deactivate();
@@ -494,6 +499,8 @@ void SMSScoreEditor::ClearTransformationEditWidget()
 		CLAM_ASSERT( currentConfigWidget !=NULL, "Current config widget was NULL!" );
 		currentConfigWidget->hide();
 		mConfigWidgetContainer->remove( *currentConfigWidget );
+		mMainWindow->add(currentConfigWidget);
+		mConfigWidgetContainer->end();
 		
 	}
 	mConfigWidgetContainer->deactivate();
@@ -507,7 +514,14 @@ void SMSScoreEditor::SetTransformationHelpWidget( CLAMVM::SMSConfigurator& conf 
 	
 	Fl_Widget* helpWidget = conf.GetHelpWidget();
 	
+	Fl_Group* currentParent = helpWidget->parent();
+	if ( currentParent )
+	{
+		currentParent->remove( helpWidget );
+		currentParent->end();
+	}
 	mHelpWidgetContainer->add( helpWidget );
+	mHelpWidgetContainer->end();
 	helpWidget->resize( mHelpWidgetContainer->x(), mHelpWidgetContainer->y()+5,
 			    mHelpWidgetContainer->w(), mHelpWidgetContainer->h()-5 );
 	helpWidget->show();
@@ -524,8 +538,15 @@ void SMSScoreEditor::SetTransformationEditWidget( CLAMVM::SMSConfigurator& conf 
 	{
 		configWidget = mNoConfigWidgetAvailable;
 	}
-	
+
+	Fl_Group* currentParent = configWidget->parent();
+	if ( currentParent )
+	{
+		currentParent->remove( configWidget );
+		currentParent->end();
+	}
 	mConfigWidgetContainer->add( configWidget );
+	mConfigWidgetContainer->end();
 	configWidget->resize( mConfigWidgetContainer->x(), mConfigWidgetContainer->y()+5,
 			      mConfigWidgetContainer->w(), mConfigWidgetContainer->h()-5 );
 
@@ -542,11 +563,26 @@ void SMSScoreEditor::RemoveConfiguratorFromScoreBox( int index )
 	if ( mHelpWidgetContainer->children() )
 		if ( cfg->GetHelpWidget() == mHelpWidgetContainer->child(0) )
 			ClearTransformationHelpWidget();
-	
+	Fl_Group* currentParent = cfg->GetHelpWidget()->parent();
+	if ( currentParent )
+	{
+		cfg->GetHelpWidget()->hide();
+		currentParent->remove( cfg->GetHelpWidget() );
+		currentParent->end();
+	}
+
 	CLAM_ASSERT( mConfigWidgetContainer->children() <=1, "Too many children for the config widget container" );
 	if ( mConfigWidgetContainer->children() )
 		if ( cfg->GetParametersWidget() == mConfigWidgetContainer->child(0) )
 			ClearTransformationEditWidget();
+	
+	currentParent =cfg->GetParametersWidget()->parent();
+	if ( currentParent)
+	{
+		cfg->GetParametersWidget()->hide();
+		currentParent->remove( cfg->GetParametersWidget() );
+		currentParent->end();
+	}
 
 	CLAM_ASSERT( cfg!=NULL, "The browser row did not have a configurator!" );
 	delete cfg;

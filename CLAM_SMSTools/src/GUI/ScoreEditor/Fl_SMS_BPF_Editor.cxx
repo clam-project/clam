@@ -108,9 +108,14 @@ namespace CLAMVM
 			editedBPF.DeleteIndex(0);
 		
 		
-		FLPOINT* p;
 		int i = 0;
-		while( ( p =mpFunctionEditor->envelope->point(i++))!=0 )
-			editedBPF.Insert( p->x, p->y );
+
+		for ( int i = 0; i < mpFunctionEditor->envelope->points(); i++ )
+		{
+			FLPOINT& p = mpFunctionEditor->envelope->point(i);
+			editedBPF.Insert( p.x, p.y );
+		}
+
+		
 	}
 }

@@ -19,7 +19,6 @@ namespace CLAMVM
 		mpGenderSelector = new Fl_SMS_Gender_Selector( 0, 0, 100, 100 );
 		CLAM_ASSERT( mpGenderSelector != NULL, "Allocation failed" );
 
-		mpGenderSelector->end();
 
 		SetGender.Wrap( this, &SMSGenderChangeConfigurator::OnGenderSet ); 
 
@@ -40,7 +39,7 @@ namespace CLAMVM
 		if ( mHelpWidget!=NULL && mHelpWidget->parent() != NULL )
 			delete mHelpWidget;
 
-		if ( mHelpWidget!=NULL && mpGenderSelector->parent() != NULL )
+		if ( mpGenderSelector!=NULL && mpGenderSelector->parent() != NULL )
 			delete mpGenderSelector;
 	}
 
