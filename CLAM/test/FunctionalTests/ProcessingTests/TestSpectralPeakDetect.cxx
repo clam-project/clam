@@ -87,12 +87,12 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			(*processing.GetInPorts().Begin())->Attach( smReferenceSpectrum );
-			(*processing.GetOutPorts().Begin())->Attach( detectedPeaks );
+	//		(*processing.GetInPorts().Begin())->Attach( smReferenceSpectrum );
+	//		(*processing.GetOutPorts().Begin())->Attach( detectedPeaks );
 			
 			processing.Start();
 
-			processing.Do();
+			processing.Do( smReferenceSpectrum, detectedPeaks );
 
 			processing.Stop();
 
