@@ -20,7 +20,8 @@
  */
 
 #include "Enum.hxx"
-#include <iostream>
+#include <cppunit/extensions/HelperMacros.h>
+
 
 using namespace CLAM;
 
@@ -28,6 +29,10 @@ using namespace CLAM;
 // Test Class
 /////////////////////////////////////////////////////////////////////
 namespace CLAMTest {
+	
+	class EnumTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( EnumTest );
+
 	class MyEnum : public Enum {
 	public:
 		static tEnumValue sEnumValues[];
@@ -54,76 +59,75 @@ namespace CLAMTest {
 
 	Enum::tValue MyEnum::sDefault = MyEnum::dos;
 
-	class EnumTest {
-	public:
-		int testAll() {
-			std::cout << "-- Testing Enum" << std::endl;
-			try 
-			{
-				{
-					std::cout << "+ Default constructor" << std::endl;
-					MyEnum e;
-					CLAM_ASSERT (e.GetString()=="dos", "Default constructor didn't get the expected value 'dos'");
-				}
-				{
-					std::cout << "+ Value constructor" << std::endl;
-					MyEnum e(MyEnum::cent);
-					CLAM_ASSERT (e.GetString()=="cent", "Value constructor didn't get the expected value 'cent'");
-				}
-				{
-					std::cout << "+ String constructor" << std::endl;
-					MyEnum e("cent");
-					CLAM_ASSERT (e.GetString()=="cent", "String constructor didn't get the expected value 'cent'");
-				}
-				{
-					std::cout << "+ Value Set" << std::endl;
-					MyEnum e;
-					e.SetValue(0);
-					CLAM_ASSERT (e.GetString()=="zero", "SetValue(enum) didn't change the value to 'zero'");
-				}
-				{
-					std::cout << "+ String Set" << std::endl;
-					MyEnum e;
-					e.SetValue("dos");
-					CLAM_ASSERT (e.GetString()=="dos", "SetValue(string) didn't change the value to 'dos'");
-				}
-				{
-					std::cout << "+ Illegal String Set" << std::endl;
-					MyEnum e;
-					try {
-						e.SetValueSafely("dros");
-						CLAM_ASSERT (false, "Exception not thrown, when setting an illegal string symbol");
-					} 
-					catch (IllegalValue e) {
-						// That's ok
-					}
-				}
-				{
-					std::cout << "+ Illegal Value Set" << std::endl;
-					MyEnum e;
-					try {
-						e.SetValueSafely(4);
-						CLAM_ASSERT (false, "Exception not thrown, when setting an illegal integer value");
-					} 
-					catch (IllegalValue e) {
-						// That's ok
-					}
-				}
+	class EnumTest : public CppUnit::TestFixture {
+
+		CPPUNIT_TEST_SUITE (CLAMTest::EnumTest);
+
+		CPPUNIT_TEST (testDefaultConstructor);
+		CPPUNIT_TEST (testValueConstructor);
+		CPPUNIT_TEST (testStringConstructor);
+		CPPUNIT_TEST (testSetValue);
+		CPPUNIT_TEST (testSetValueWithString);
+		CPPUNIT_TEST (testSetValueSafely_With_IllegalString);
+		CPPUNIT_TEST (testSetValueSafely_With_IllegalValue);
+
+		CPPUNIT_TEST_SUITE_END();
+	private:
+		void testDefaultConstructor()
+		{
+			MyEnum e;
+			CPPUNIT_ASSERT_EQUAL_MESSAGE("Default constructor didn't get the expected value 'dos'",
+					std::string("dos"),e.GetString());
+		}
+		void testValueConstructor()
+		{
+			MyEnum e(MyEnum::cent);
+			CLAM_ASSERT (e.GetString()=="cent", "Value constructor didn't get the expected value 'cent'");
+		}
+		void testStringConstructor()
+		{
+			MyEnum e("cent");
+			CLAM_ASSERT (e.GetString()=="cent", "String constructor didn't get the expected value 'cent'");
+		}
+		void testSetValue()
+		{
+			MyEnum e;
+			e.SetValue(0);
+			CLAM_ASSERT (e.GetString()=="zero", "SetValue(enum) didn't change the value to 'zero'");
+		}
+		void testSetValueWithString()
+		{
+			MyEnum e;
+			e.SetValue("dos");
+			CLAM_ASSERT (e.GetString()=="dos", "SetValue(string) didn't change the value to 'dos'");
+		}
+		void testSetValueSafely_With_IllegalString()
+		{
+			MyEnum e;
+			try {
+				e.SetValueSafely("dros");
+				CLAM_ASSERT (false, "Exception not thrown, when setting an illegal string symbol");
+			} 
+			catch (IllegalValue e) {
+				// That's ok
 			}
-			catch (...) {
-				std::cout << "Test Failed." << std::endl;
-				return -1;
+		}
+		void testSetValueSafely_With_IllegalValue()
+		{
+			MyEnum e;
+			try {
+				e.SetValueSafely(4);
+				CLAM_ASSERT (false, "Exception not thrown, when setting an illegal integer value");
+			} 
+			catch (IllegalValue e) {
+				// That's ok
 			}
-			std::cout << "Test Passed." << std::endl;
-			return 0;
 		}
 	};
+
+
 }
 
 
-int main () {
-	CLAMTest::EnumTest test;
-	return test.testAll();
-}
 
 
