@@ -109,20 +109,28 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 	server.quit()
 
 def checkPaths() :
+	global totalDetails, totalSummary, testsToRun
 	if not os.access(CLAM_SANDBOXES, os.F_OK) :
 		err = "Sorry can't access CLAM_SANDBOXES path : " + CLAM_SANDBOXES
 		sendError(err)
 		sys.exit(1)
-	report = ''
+	dirsExpected = setfilesExpected = ''
+	i=0
 	for name, path in testsToRun :
 		if not os.access(path, os.F_OK) :
-			report += "- can't access path: %s \n" % path
-		setfile = path+'settings.cfg'
-		if not os.access(setfile, os.F_OK) :
-			report += "- can't find this settings file: %s\n"%setfile
-	if report != '' :
-		sendError(report)
-		sys.exit(1)
+			dirsExpected += '\t- %s\n'%path
+			testsToRun[i] = ('','')
+		else :
+			setfile = path+'settings.cfg'
+			if not os.access(setfile, os.F_OK) :
+				setfilesExpected +='\t- %s\n'%setfile
+				testsToRun[i] = ('','')
+		i += 1
+	if dirsExpected!='' or setfilesExpected!='' :
+		msg = 'dirs not found:\n\n%s\n files not found\n%s\n'
+		totalSummary = msg % (dirsExpected,setfilesExpected)
+		print totalSummary
+	
 
 def parseCompilationWarnings(compilationOut) :
 	nwarnings = compilationOut.count('warning')
@@ -197,6 +205,9 @@ def formatSummary(name, configuration, result) :
 
 def compileAndRun(name, path) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures
+	if name == '' :
+		print 'found removed test (invalid dir or settings file)'
+		return '',''
 	os.chdir(path)
 	# compilation phase
 	summary = details = s = d = ''
@@ -245,13 +256,8 @@ mailTemplate = '''
 
 Status of CLAM on tag: %s 
 
-New: 
-  - included all the tests not-ported-to-cppUnit
-  - included all the Supervised Tests
-  - fixed the way to get CLAM path and CVSROOT var
-  - made easy to turn on/of sending mail
-  - moved to /build/
-
+New:
+  - robust on non existing dirs and settings files (5 March)
 TODO:
   - comand line options
   - default options in another file, maybe?
@@ -306,11 +312,11 @@ def sendError(usermsg='') :
 #-------------------------------------------------------------------------------------  
 #  Aplication Logic
 #
+totalSummary = totalDetails = ''
 def runTests() :
-#	executeMandatory('./setenv.sh') #TODO fix problem with env vars and remove this
+	global totalSummary, totalDetails		
 	subj = subject
 	report = []
-	totalSummary = totalDetails = ''
 	if thoroughtnessLevel <3 :
 		checkPaths()
 	# CVS phase
@@ -318,16 +324,17 @@ def runTests() :
 		if 'CVSROOT' not in os.environ :
 			print 'warning: CVSROOT not found in environ'
 			os.environ['CVSROOT'] = CVSROOT
+
+		checkPaths()
 		os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
 		os.chdir(CLAM_SANDBOXES)
 		#sanity check
-		if SANDBOX_NAME == 'devel' : 
+		if SANDBOX_NAME in ['devel','CLAM'] : 
 			sendError( 'ups, trying to remove devel sandbox !!' )
 			sys.exit(-1)
 		print 'checking out a clean repository'
 		getStatusOutput('rm -rf '+SANDBOX_NAME )
 		executeMandatory('cvs checkout -r %s -d %s CLAM' % (MODULE_TAG, SANDBOX_NAME) )
-		checkPaths()
 		os.chdir(BUILDPATH+'srcdeps/')
 		executeMandatory('make')
 		os.chdir(BUILDPATH)
