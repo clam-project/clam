@@ -65,7 +65,8 @@ bool XMLSerializer::DoStore( char* fileName, Segment& segment )
 	{
 		Frame& tmpFrame = segment.GetFrame( i );
 		tmpFrame.AddSpectrum(  );//this could be kept for direct IFFT
-		tmpFrame.UpdateData(  );			
+		tmpFrame.UpdateData(  );
+
 	}
 
 	return true;
