@@ -249,6 +249,11 @@ namespace CLAM
 					BlackmanHarrisLike(windowsize,table);
 					break;
 				}
+			case EWindowType::eSine:
+			        {
+				  Sine(windowsize, table);
+				  break;
+			        }
 
 			}
 	}
@@ -460,6 +465,20 @@ void WindowGenerator::Gaussian(long size,DataArray& window) const
 		window[i] = window[size-i-1]= scale * exp(-(x*x)/(2*s*s));
 	}
 }
+
+/* function to design a Sine window*/
+void WindowGenerator::Sine(long size,DataArray& window) const
+{
+	int     i;
+	
+	double tmp1 = PI/(2.0*float(size));
+	double tmp2 = 0.5*(2.0*float(size));
+
+	for (int i=0;i<size;i++) 
+	  window[i] = (float)(1+tmp2*sin(tmp1*(i+1)));
+
+}
+
 
 void WindowGenerator::InvertWindow(const DataArray& originalWindow,
 		DataArray& invertedWindow) const
