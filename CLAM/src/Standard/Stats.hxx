@@ -15,7 +15,6 @@ template <unsigned int x,unsigned int y> class GreaterThan
 };
 
 
-
 template <unsigned int x,unsigned int y> StaticBool<(x>y)>  GreaterThan<x,y>::mIs;
 
 
@@ -51,6 +50,8 @@ public:
 			mCenterOfGravities[i]= NULL;
 		}
 		InitMoment((O<initOrder>*)(0));
+		mCentroidComputed = false;
+		mCentroid = 0;
 	}
 	~StatsTmpl()
 	{
@@ -157,7 +158,82 @@ public:
 	/** Get centroid, compute it if necessary*/
 	U GetCentroid()
 	{
-		return GetCenterOfGravity(FirstOrder);
+//		return GetCenterOfGravity(FirstOrder);
+		if (mCentroidComputed) return mCentroid;
+		mCentroidComputed=true;
+		unsigned N = mData->Size();
+		U mean = GetMean();
+		if (mean < 1e-7 ) 
+		{
+			mCentroid = U(N-1)/2;
+			return mCentroid;
+		}
+		U centroid=0.0;
+		for (unsigned i = 0; i < N; i++)
+		{
+			centroid += (*mData)[i] * (i+1);
+		}
+		mCentroid=centroid/mean/U(N) - 1;
+		return mCentroid;
+	}
+
+	/**
+	 * Computes and returns the Spread arround the Centroid.
+	 * \f[
+	 * 	Spread(Y) =
+	 * 		\sum_{i=0}^{N-1}{(Centroid(Y)-x_i)^2 y_i} 
+	 * 		\over { \sum_{i=0}^{N-1}{y_i} }
+	 * \f]
+	 * The spread gives an idea on how much the distribution
+	 * is NOT concentrated over the distribution centroid.
+	 * Taking the array as a distribution and the values being probabilities,
+	 * the spread would be the variance of such distribution.
+	 * 
+	 * Significant values:
+	 * - For a full concentration on a single bin: 0.0
+	 * - For two balanced diracs on the extreme bins
+	 * \f[
+	 * 	Spread(BalancedDiracsDistribution) = {N^2 \over 4}
+	 * \f]
+	 * - For a uniform distribution the spread it's:
+	 * \f[
+	 * 	Spread(UniformDistribution) = {(N-1)(N+1)}\over{12}
+	 * \f]
+	 *
+	 * Singularities and solution:
+	 * - When \f$\sum{y_i}\f$ is less than 1e-14 it return the uniform distribution
+	 *   formula above.
+	 * - Centroid NaN silence NaN is solved inside GetCentroid
+	 * - When Centroid is less than 0.2, 0.2 is taken as the centroid value.
+	 *
+	 * Normalization: Multiply the result by the square of the gap between
+	 * arrays positions. ex. in an array representing a spectrum multiply by
+	 * \f$ BinFreq^2 \f$
+	 * 
+	 * @todo still not tested as stats but tested its usage for SpectralSpread
+	 * @todo should use other stats than centroid to save computations
+	 * @see GetCentroid
+	 */
+	U GetSpread()
+	{
+		const unsigned N = mData->Size();
+		const Array<T> & data = *mData;
+		const U centroid = GetCentroid();
+
+		// Compute spectrum variance around centroid frequency
+		TData variance = 0;
+		TData sumMags  = 0;
+		for (TIndex i=0; i<N; i++)
+		{
+			U centroidDistance = i - centroid;
+			centroidDistance *= centroidDistance;
+			variance += centroidDistance * data[i];
+			sumMags  += data[i];
+		}
+		// NaN solving: Silence is like a plain distribution
+		if (sumMags < 1e-14) return U(N+1) * (N-1) / 12;
+
+		return variance / sumMags;
 	}
 
 	/** Get standard deviation, compute it if necessary*/
@@ -390,8 +466,7 @@ private:
 			int previousSize=mMoments.Size();
 			mMoments.Resize(order);
 			mMoments.SetSize(order);
-			int i;
-			for(i=previousSize;i<order;i++) mMoments[i]=NULL;
+			for(int i=previousSize;i<order;i++) mMoments[i]=NULL;
 		}
 
 		if(mMoments[order-1]==NULL)
@@ -515,6 +590,8 @@ private:
 	GeometricMeanTmpl<T,U> mGeometricMean;
 	ComplexMaxElement<abs,T> mMaxElement;
 	ComplexMinElement<abs,T> mMinElement;
+	U mCentroid;
+	bool mCentroidComputed;
 
 	const Array<T>* mData;
 
