@@ -46,9 +46,10 @@ int main()
 		segmentDescriptors.SetFramePrototype(frameProto,segment.GetnFrames());
 		segmentDescriptors.SetpSegment(&segment);
 		
-
+		//we can directly call the compute operation on the descriptor
 		//segmentDescriptors.Compute();
 		
+		//or use an intermediate DescriptorComputation processing
 		DescriptorComputation processing;
 		processing.Do(segmentDescriptors);
 		
