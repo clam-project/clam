@@ -25,6 +25,7 @@
 #include "Audio.hxx"
 #include "Processing.hxx"
 #include "OutPortTmpl.hxx"
+#include "Enum.hxx"
 
 namespace CLAM {
 
