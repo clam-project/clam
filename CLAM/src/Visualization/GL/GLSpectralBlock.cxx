@@ -1,11 +1,11 @@
 #include "GLSpectralBlock.hxx"
-#include <iostream>
 
 using namespace CLAMGUI;
 
 GLSpectralBlock::GLSpectralBlock( int divs )
 	: mDivisions( divs ), mDLid( 0 ), mDLready(false), mSpectralRange( 0 ),
-	  mF0( 20.0f ), mFf( 20000.0f ), mMustCalculateIndexes(false)
+	  mF0( 20.0f ), mFf( 20000.0f ), mMustCalculateIndexes(false),
+	  Th(0.007f),A(0.45f), r(2)
 {
 	// int N = log(fMax/fInit)/log(octavePart); //num of bands
 	mDivisions = int(log10f(mFf/mF0)/log10f(4.0/3.0));
@@ -114,11 +114,11 @@ void GLSpectralBlock::CalculateBandRanges( int arraySize )
 void GLSpectralBlock::GenerateBlockHeights( const DataArray& array)
 {
 	// first we generate the sums "tal cual"
-	
+
 	tIndexList::iterator pItem = mRangesList.begin();
 	tIndexList::iterator pEnd = mRangesList.end();
 
-	CLAM_DEBUG_ASSERT( mBlockHeights.Size() == mRangesList.size(), "Check the nodes in the list boy!" );
+	CLAM_ASSERT( mBlockHeights.Size() == mRangesList.size(), "Check the nodes in the list boy!" );
 
 	float  accum=0;
 	const TData* dataPtr0, *dataPtr1;
@@ -138,7 +138,7 @@ void GLSpectralBlock::GenerateBlockHeights( const DataArray& array)
 					accum+= *dataPtr0++;
 				}
 
-			mBlockHeights[k] = quantize_dB_values( 20.0f*log10f( accum*invsize ) );
+			mBlockHeights[k] = compress( accum*invsize );
 			
 			accum = 0;
 			k++;

@@ -5,6 +5,8 @@
 #include "CLAMGL.hxx"
 #include "TabFunct.hxx"
 #include "CLAM_Math.hxx"
+#include "Assert.hxx"
+#include <iostream>
 #include <list>
 #include <utility>
 
@@ -60,19 +62,24 @@ protected:
 	void BuildDisplayList();
 
 private:	
-	inline float quantize_dB_values( float dB_value )
+	inline float compress( float x )
 	{
-		static float inv35db = 1.0f/35.0f;
+		CLAM_DEBUG_ASSERT( Th > 0.0f, "Threshold must be positive and greater thant zero" );
+		if ( x > A )
+			x = A;
 		
-		// value clamping
-		
-		if ( dB_value > 0.0f )
-			return 1.0f;
-		else if ( dB_value < -35.0f )
-			return 0.0f;
-		
-		return (dB_value +35.0f )*inv35db;
-		
+		float h = ( A - Th )/r;
+
+		if ( x < Th )
+			{
+
+				return x*((1.0f-h)/Th);
+			}
+		else if ( x >= Th )
+			{
+				std::cout << "G: " << (1.0f-h)+(x-Th)/r << std::endl;
+				return (1.0f-h)+(x-Th)/r;
+			}
 	}
 
 
@@ -95,6 +102,12 @@ private:
 	const float               mFf;
 	bool                      mMustCalculateIndexes;
 	tIndexList                mRangesList;
+
+	// Compressor variables
+	const float               Th; // threshold
+	const float               A;  // maximum input amplitude
+	const float               r;  // compression ratio [ 1, 10 ]
+
 };
 
 }
