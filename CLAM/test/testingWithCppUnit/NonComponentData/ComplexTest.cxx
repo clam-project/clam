@@ -137,4 +137,4 @@ private:
 
 
 
-} // namespace CLAMTes
+} // namespace CLAMTest
