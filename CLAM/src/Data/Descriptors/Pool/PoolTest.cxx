@@ -37,7 +37,6 @@ public:
 private:
 	void testGetIndex_whenEmpty()
 	{
-		std::string expected = "Not such descriptor name on this descriptor scope";
 		CLAM::PoolSpec spec;
 		try
 		{
@@ -46,6 +45,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
+			std::string expected = "Not such descriptor name on this descriptor scope";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
@@ -63,7 +63,6 @@ private:
 
 	void testGetIndex_withAWrongName()
 	{
-		std::string expected = "Not such descriptor name on this descriptor scope";
 		CLAM::PoolSpec spec;
 		spec.Add<CLAM::TData>("Lala");
 		try
@@ -73,6 +72,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
+			std::string expected = "Not such descriptor name on this descriptor scope";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
@@ -92,7 +92,6 @@ private:
 
 	void testAddAttribute_whenNameAlreadyAdded()
 	{
-		std::string expected = "ScopeSpec::Add, Attribute already present";
 		CLAM::PoolSpec spec;
 		spec.Add<CLAM::TData>("Lala");
 		try
@@ -102,6 +101,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
+			std::string expected = "ScopeSpec::Add, Attribute already present";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
@@ -168,13 +168,6 @@ public:
 	void tearDown() { }
 
 private:
-	void assertArrayEquals(unsigned size, CLAM::TData * expected, CLAM::TData * result)
-	{
-		for (unsigned int i = 0; i<size; i++)
-			CPPUNIT_ASSERT_DOUBLES_EQUAL(expected[i],result[i],.0001);
-
-	}
-
 	void testGet_ReturnsSameMemory()
 	{
 		const unsigned poolSize=5;
@@ -226,7 +219,6 @@ private:
 
 	void testGet_withWrongType()
 	{
-		const std::string expected = "Type Missmatch using a pool";
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
 		spec.Add<std::string>("Lala");
@@ -239,13 +231,13 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
+			const std::string expected = "Type Missmatch using a pool";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
 
 	void testGet_withWrongTypeAndConst()
 	{
-		const std::string expected = "Type Missmatch using a pool";
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
 		spec.Add<std::string>("Lala");
@@ -259,6 +251,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
+			const std::string expected = "Type Missmatch using a pool";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
