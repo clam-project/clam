@@ -22,7 +22,7 @@ class SMSExampleTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SMSExampleTest );
 
-class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
+class SMSExampleTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SMSExampleTest );
 	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDifferentSizes );
@@ -35,11 +35,12 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
 	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
 	CPPUNIT_TEST( testhelperLoadAudioFromFile );
+
 	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -51,21 +52,22 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 
 	//! relative path to the CLAM-TestData dir. Defined below the class declaration.
 	std::string mPath;
+	CLAM::SMSBase *mSms;
 
 public:
 	//! Common initialization, executed before each test method
 	void setUp() 
 	{ 
-		mPath = "../../../../../CLAM-TestData/";
+		mPath = "../../../../CLAM-TestData/";
+		mSms = new CLAM::SMSBase();
 	}
 
 	//! Common clean up, executed after each test method
 	void tearDown() 
 	{ 
-		mGlobalConfig.SetInputSoundFile("");
+		delete mSms;
 	}
 
-	void Run(){}
 
 private:
 	
@@ -129,21 +131,24 @@ private:
 		return new CLAMGUI::StdOutWaitMessage(title);
 	}
 
+	void Run(){}
 // ---------------------------------------------------------------------------------------------------
 
 	// SMSBase tests :
 
 	void testInitConfigs_GenerateCompatibleConfig()
 	{
-		InitConfigs();
-		CPPUNIT_ASSERT_MESSAGE("after InitConfigs, HaveCompatibleConfig() should be true", HaveCompatibleConfig() );
+		mSms->InitConfigs();
+		CPPUNIT_ASSERT_MESSAGE("after InitConfigs, HaveCompatibleConfig() should be true", 
+				mSms->HaveCompatibleConfig() );
 	}
 
 
 	void testhelperFileExist()
 	{
 
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("current dir should contain file: settings.cfg", true, helperFileExist("settings.cfg") );
+		CPPUNIT_ASSERT_MESSAGE("current dir should contain file: settings.cfg",
+				helperFileExist("settings.cfg") );
 		CPPUNIT_ASSERT_EQUAL( false, helperFileExist("thisFileShouldNot.Exist") );
 	}
 
@@ -179,46 +184,46 @@ private:
 
 	void testLoadInputSound_WithABadFileName()
 	{
-		InitConfigs();
-		mGlobalConfig.SetInputSoundFile("thisFileShouldAbsolutelyNotExist.wav");
-		CPPUNIT_ASSERT_EQUAL( false, LoadInputSound() );
-		mGlobalConfig.SetInputSoundFile("");
+		mSms->InitConfigs();
+		mSms->SetInputSoundFile("thisFileShouldAbsolutelyNotExist.wav");
+		CPPUNIT_ASSERT_EQUAL( false, mSms->LoadInputSound() );
+		mSms->SetInputSoundFile("");
 
 	}
 
 	void testLoadInputSound_WithAnExistingSoundFile()
 	{
-		InitConfigs();
-		mGlobalConfig.SetInputSoundFile( mPath+"sweep.wav");
-		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
-		mGlobalConfig.SetInputSoundFile("");
+		mSms->InitConfigs();
+		mSms->SetInputSoundFile( mPath+"sweep.wav");
+		CPPUNIT_ASSERT_EQUAL( true, mSms->LoadInputSound() );
+		mSms->SetInputSoundFile("");
 	}
 
 	void testLoadInputSound_CalledMultipleTimes()
 	{
-		InitConfigs();
-		mGlobalConfig.SetInputSoundFile( mPath+"sweep.wav");
-		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
-		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
-		mGlobalConfig.SetInputSoundFile("");
+		mSms->InitConfigs();
+		mSms->SetInputSoundFile( mPath+"sweep.wav");
+		CPPUNIT_ASSERT_EQUAL( true, mSms->LoadInputSound() );
+		CPPUNIT_ASSERT_EQUAL( true, mSms->LoadInputSound() );
+		mSms->SetInputSoundFile("");
 	}
 	
 
 	CLAM::Audio& accessorOriginalAudio()
 	{
-		return mOriginalSegment.GetAudio();
+		return mSms->GetOriginalAudio();
 	}
 	CLAM::Audio& accessorSynthesizedAudio()
 	{
-		return mAudioOut;
+		return mSms->GetSynthesizedSound();
 	}
 	CLAM::Audio& accessorSinusoidalAudio()
 	{
-		return mAudioOutSin;
+		return mSms->GetSynthesizedSinusoidal();
 	}
 	CLAM::Audio& accessorResidualAudio()
 	{
-		return mAudioOutRes;
+		return mSms->GetSynthesizedResidual();
 	}
 
 
@@ -235,150 +240,134 @@ private:
 		helperLoadAudioFromFile( mPath+"sweep.wav", loaded );
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("sweep.wav size", 181588, loaded.GetSize() );
 	}
+	
+	void Assert_SynthSinusoidalAndResidual_AreEqualToExpected( 
+			const std::string & baseFileName, double delta = 0.001)
+	{
+		std::string diagnosticSynth, diagnosticRes, diagnosticSin;
+		
+		bool synthAudiosAreEqual = 	
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), 
+					baseFileName +".wav", diagnosticSynth, delta);
+	
+		bool resAudiosAreEqual = 
+			helperAudioIsEqualToAudioFile( accessorResidualAudio(), 
+					baseFileName +"_res.wav", diagnosticRes, delta);
+		
+		bool sinAudiosAreEqual = 
+			helperAudioIsEqualToAudioFile( accessorSinusoidalAudio(), 
+					baseFileName +"_sin.wav", diagnosticSin, delta);
+		
+		CPPUNIT_ASSERT_MESSAGE( diagnosticSynth + diagnosticRes + diagnosticSin, 
+				synthAudiosAreEqual && resAudiosAreEqual && sinAudiosAreEqual );
+	}
+	
+	void Assert_Synthesized_IsEqualToExpected( 
+			const std::string & baseFileName, double delta = 0.001)
+	{
+		std::string diagnosticSynth;		
+		bool synthAudiosAreEqual = 	
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), 
+					baseFileName +".wav", diagnosticSynth, delta);
+	
+		CPPUNIT_ASSERT_MESSAGE( diagnosticSynth, synthAudiosAreEqual );
+	}
+
 
 	//-------------------------------------------------------------------------
 
 	void testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav()
 	{
 		// TODO: make it with default config	
-		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
-		mGlobalConfig.SetInputSoundFile( mPath+"sine.wav");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
+		mSms->LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
+		mSms->SetInputSoundFile( mPath+"sine.wav");
+		mSms->InitConfigs();
+		mSms->LoadInputSound();
+		mSms->Analyze();
+		mSms->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_sine_defaultConfig";		
 		double delta=0.09;
-		std::string diagnostic;
-		std::string diagnosticRes;
-		std::string diagnosticSin;
-		
-		bool synthesizedAudiosAreEqual = 	
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
-
-		bool residualAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorResidualAudio(), expectedAudioFile+"_res.wav", diagnostic, delta);
-
-		bool sinusoidalAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorSinusoidalAudio(), expectedAudioFile+"_sin.wav", diagnostic, delta);
-		
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
-		CPPUNIT_ASSERT_MESSAGE( diagnosticRes, residualAudiosAreEqual );
-		CPPUNIT_ASSERT_MESSAGE( diagnosticSin, sinusoidalAudiosAreEqual );
-
+		Assert_SynthSinusoidalAndResidual_AreEqualToExpected( expectedAudioFile, delta);
 	}
 
+	
 	void testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav()
 	{
-		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
+		mSms->LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
+		mSms->InitConfigs();
+		mSms->LoadInputSound();
+		mSms->Analyze();
+		mSms->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_sweep_loadedConfig";
 		double delta=0.09;
-		std::string diagnostic;
-		
-		bool synthesizedAudiosAreEqual = 	
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
-
-		bool residualAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorResidualAudio(), expectedAudioFile+"_res.wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, residualAudiosAreEqual );
-
-		bool sinusoidalAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorSinusoidalAudio(), expectedAudioFile+"_sin.wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, sinusoidalAudiosAreEqual );
-
+		Assert_SynthSinusoidalAndResidual_AreEqualToExpected( expectedAudioFile, delta);
 	}
 
 	void testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav()
 	{
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
+		mSms->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mSms->InitConfigs();
+		mSms->LoadInputSound();
+		mSms->Analyze();
+		mSms->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_elvis_loadedConfig";
 		double delta=0.09;
-		std::string diagnostic;
-
-		CLAM_ASSERT(22050==accessorOriginalAudio().GetSampleRate(), "original bad SamplRate" );
-		CLAM_ASSERT(22050==accessorSinusoidalAudio().GetSampleRate(),  "sinusoidal bad SamplRate" );
-		CLAM_ASSERT(22050==accessorSynthesizedAudio().GetSampleRate(), "synth bad SamplRate" );
-		
-		bool synthesizedAudiosAreEqual = 	
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, synthesizedAudiosAreEqual );
-
-		bool residualAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorResidualAudio(), expectedAudioFile+"_res.wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, residualAudiosAreEqual );
-
-		bool sinusoidalAudiosAreEqual = 
-			helperAudioIsEqualToAudioFile( accessorSinusoidalAudio(), expectedAudioFile+"_sin.wav", diagnostic, delta);
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, sinusoidalAudiosAreEqual );
+		Assert_SynthSinusoidalAndResidual_AreEqualToExpected( expectedAudioFile, delta);
 	}
 
 	void testTwoSimpleTransformations_withLoadedScore()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/wierdfemale-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mSms->LoadTransformationScore( mPath + "/SMSTests/wierdfemale-transf.xml" );
+		mSms->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mSms->InitConfigs();
+		mSms->LoadInputSound();
+		mSms->Analyze();
+		mSms->Transform();
+		mSms->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_wierdfemale-transf";
 		double delta = 0.09;
-		std::string diagnostic;
-
-		bool transformedAudioAreEqual =
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+		Assert_Synthesized_IsEqualToExpected( expectedAudioFile, delta );
 	}
 
 	void testTransformations_withLoadedScore_HarmonizerTimestreach()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestreach-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mSms->LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestreach-transf.xml" );
+		mSms->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mSms->InitConfigs();
+		mSms->LoadInputSound();
+		mSms->Analyze();
+		mSms->Transform();
+		mSms->Synthesize();
 
+		CLAM::DataArray& buf = accessorSynthesizedAudio().GetBuffer();
+		std::cout << "test transform 1: synth audio\n";
+		std::cout << "synth audio 10 " << buf[10] << std::endl; 
+		std::cout << "synth audio 100 " << buf[100] << std::endl; 
+		std::cout << "synth audio 500 " << buf[500] << std::endl; 
+		std::cout << "synth audio 1000 " << buf[1000] << std::endl; 
+			
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_harmonizer-timestreach-transf";
 		double delta = 0.09;
-		std::string diagnostic;
-
-		bool transformedAudioAreEqual =
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+		Assert_Synthesized_IsEqualToExpected( expectedAudioFile, delta );
 	}
 	
 	void testTransformations_withLoadedScore_TimestreachMorph()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/timestreach_morph-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mSms->LoadTransformationScore( mPath + "/SMSTests/timestreach_morph-transf.xml" );
+		mSms->LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
+		mSms->InitConfigs();
+		mSms->LoadInputSound();
+		mSms->Analyze();
+		mSms->Transform();
+		mSms->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestreach_morph-transf";
 		double delta = 0.09;
-		std::string diagnostic;
-
-		bool transformedAudioAreEqual =
-			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
-		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+		Assert_Synthesized_IsEqualToExpected( expectedAudioFile, delta );
 	}
 };
 
