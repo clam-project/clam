@@ -307,14 +307,12 @@ private:
 		}
 	}
 	void StoreBufferOn(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage) {
-		std::cout << mSize << std::endl;
 		XMLArrayAdapter<T> adapter(mpData,mSize);
 		storage.Store(&adapter);
 	}
 	void StoreBufferOn(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage) {
 		CLAM_ASSERT(false, 
 			"Trying to Store an object that is not neither a streamable nor a Component");
-		return false;
 	}
 /*
 	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) {
