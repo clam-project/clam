@@ -663,9 +663,9 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
  	Scfg.SetScale(EScale::eLinear);
 	SpecTypeFlags sflags;
    	sflags.bComplex = 1;
- 		sflags.bPolar = 0;
- 		sflags.bMagPhase = 0;
- 		sflags.bMagPhaseBPF = 0;
+	sflags.bPolar = 0;
+	sflags.bMagPhase = 0;
+	sflags.bMagPhaseBPF = 0;
  	Scfg.SetType(sflags);
  	Scfg.SetSize(mSynthSineSpectrum.Size());
  	Scfg.SetSpectralRange(residualSpectrumOut.GetSpectralRange());
