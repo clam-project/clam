@@ -162,7 +162,7 @@ namespace CLAM
 			
 			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
 				segments.AddElem(beats[i].GetPosition()*sampleRate
-						 - globalTempo);
+						 - offset);
 
 
 			mSegment.SetHoldsData(true);

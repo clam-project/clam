@@ -340,7 +340,7 @@ namespace CLAM
 			{
 				// MRJ: Concatenates previously found pulses with the new ones
 
-				int lastPosition = (int)mPulses[mPulses.Size()-1].GetPosition();
+				TTime lastPosition = mPulses[mPulses.Size()-1].GetPosition();
 
 
 				while ((pulsesArray[i].GetPosition() <

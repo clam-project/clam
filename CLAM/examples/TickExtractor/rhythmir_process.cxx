@@ -31,6 +31,10 @@ namespace RhythmIR
 			throw CLAM::Err( errStr.c_str() );
 		}
 
+
+		std::cerr << "File Location: " << file.GetLocation() << std::endl;
+		std::cerr << "File length(ms): " << file.GetHeader().GetLength() << std::endl;
+		std::cerr << "File sample rate: " << file.GetHeader().GetSampleRate() << std::endl;
 		// Pool setup
 		// MRJ: Length is in milliseconds :S
 		CLAM::TSize fileSize = int((file.GetHeader().GetLength()/1000.)*file.GetHeader().GetSampleRate());
