@@ -63,24 +63,31 @@ NetworkController::NetworkController()
 }
 
 void NetworkController::ExecuteEvents()
-{
+{	
+	ConnectionsMap::iterator it;
 	if ( mPortsToConnect.size() != 0)
 	{
-		ConnectionsMap::iterator it;
 		for (it=mPortsToConnect.begin(); it!=mPortsToConnect.end(); it++)
 			ExecuteCreatePortConnection( it->second, it->first );
 		mPortsToConnect.clear();
-
+	}
+	
+	if( mControlsToConnect.size() != 0 )
+	{
 		for (it=mControlsToConnect.begin(); it!=mControlsToConnect.end(); it++)
 			ExecuteCreateControlConnection( it->second, it->first );
 		mControlsToConnect.clear();
 	}
+	
 	if ( mPortsToDisconnect.size() != 0)
 	{
-		ConnectionsMap::iterator it;
 		for (it=mPortsToDisconnect.begin(); it!=mPortsToDisconnect.end(); it++)
 			ExecuteRemovePortConnection( it->second, it->first );
 		mPortsToDisconnect.clear();		
+	}
+	
+	if( mControlsToDisconnect.size() != 0 )
+	{
 
 		for (it=mControlsToDisconnect.begin(); it!=mControlsToDisconnect.end(); it++)
 			ExecuteRemoveControlConnection( it->second, it->first );
@@ -88,9 +95,9 @@ void NetworkController::ExecuteEvents()
 	}
 	if( mProcessingsToRemove.size() != 0)
 	{
-		ProcessingsList::iterator it;
-		for(it=mProcessingsToRemove.begin(); it!=mProcessingsToRemove.end(); it++)
-			ExecuteRemoveProcessing( *it );
+		ProcessingsList::iterator itp;
+		for(itp=mProcessingsToRemove.begin(); itp!=mProcessingsToRemove.end(); itp++)
+			ExecuteRemoveProcessing( *itp );
 		mProcessingsToRemove.clear();
 	}
 }
@@ -261,61 +268,6 @@ void NetworkController::LoadNetwork( const std::string & file)
 
 	BindTo( *mObserved );
 
-	ProcessingControllersMapIterator itp;
-	for (itp=BeginProcessingControllers(); itp!=EndProcessingControllers(); itp++)
-	{
-		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
-	}
-
-	CLAM::Network::ProcessingsMap::const_iterator it;
-	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
-	{
-		CLAM::Processing * producer = it->second;
-		CLAM::PublishedOutPorts::Iterator itOutPort;
-	
-		for (itOutPort=producer->GetOutPorts().Begin(); itOutPort!=producer->GetOutPorts().End(); itOutPort++)
-		{	
-			if (!(*itOutPort)->GetNode())
-				break;
-
-			std::string completeOutName( it->first );
-			completeOutName += ".";
-			completeOutName += (*itOutPort)->GetName();
-
-			CLAM::Network::NamesList connected = mObserved->GetInPortsConnectedTo( completeOutName );
-			CLAM::Network::NamesList::iterator namesIn;
-			for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
-			{
-				ConnectionAdapter * connection = CreatePortConnectionAdapter( mObserved->GetOutPortByCompleteName(completeOutName), 
-												 mObserved->GetInPortByCompleteName(*namesIn)); 
-				SignalCreatePortConnectionPresentation.Emit( (ConnectionAdapter*)connection );
-			}
-
-		}
-
-		CLAM::PublishedOutControls::Iterator itOutControl;
-	
-		for (itOutControl=producer->GetOutControls().Begin(); itOutControl!=producer->GetOutControls().End(); itOutControl++)
-		{	
-			if(!((*itOutControl)->IsConnected()))
-				break;
-
-			std::string completeOutName( it->first );
-			completeOutName += ".";
-			completeOutName += (*itOutControl)->GetName();
-
-			CLAM::Network::NamesList connected = mObserved->GetInControlsConnectedTo( completeOutName );
-			CLAM::Network::NamesList::iterator namesIn;
-			for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
-			{
-				ConnectionAdapter * connection = CreateControlConnectionAdapter( mObserved->GetOutControlByCompleteName(completeOutName), 
-												 mObserved->GetInControlByCompleteName(*namesIn)); 
-				SignalCreateControlConnectionPresentation.Emit( (ConnectionAdapter*)connection );
-			}
-
-		}
-
-	}
 	Publish();
 }
 
@@ -404,7 +356,6 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 		completeInName += name;
 		completeInName += ".";
 		completeInName += *namesIt;
-
 
 		// in controls should have references to its connected out controls
 		std::list< ConnectionAdapter* > connectionsToRemove;
@@ -568,6 +519,65 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 		CLAM::Processing * producer = it->second;
 		CreateProcessingController( it->first,  it->second );
 	}
+
+	ProcessingControllersMapIterator itp;
+	for (itp=BeginProcessingControllers(); itp!=EndProcessingControllers(); itp++)
+	{
+		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
+	}
+
+	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
+	{
+		CLAM::Processing * producer = it->second;
+		CLAM::PublishedOutPorts::Iterator itOutPort;
+	
+		for (itOutPort=producer->GetOutPorts().Begin(); itOutPort!=producer->GetOutPorts().End(); itOutPort++)
+		{	
+			if ((*itOutPort)->GetNode())
+			{
+				std::string completeOutName( it->first );
+				completeOutName += ".";
+				completeOutName += (*itOutPort)->GetName();
+
+				CLAM::Network::NamesList connected = mObserved->GetInPortsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator namesIn;
+				for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
+				{
+					ConnectionAdapter * connection = CreatePortConnectionAdapter( 
+							mObserved->GetOutPortByCompleteName(completeOutName), 
+							mObserved->GetInPortByCompleteName(*namesIn)); 			
+					SignalCreatePortConnectionPresentation.Emit( (ConnectionAdapter*)connection );
+				}
+			}
+
+		}
+
+		CLAM::PublishedOutControls::Iterator itOutControl;
+	
+		for (itOutControl=producer->GetOutControls().Begin(); itOutControl!=producer->GetOutControls().End(); itOutControl++)
+		{	
+			if((*itOutControl)->IsConnected())
+			{
+				std::string completeOutName( it->first );
+				completeOutName += ".";
+				completeOutName += (*itOutControl)->GetName();
+
+				CLAM::Network::NamesList connected = mObserved->GetInControlsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator namesIn;
+				for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
+				{
+					ConnectionAdapter * connection = CreateControlConnectionAdapter( 
+							mObserved->GetOutControlByCompleteName(completeOutName),  
+							mObserved->GetInControlByCompleteName(*namesIn)); 
+					SignalCreateControlConnectionPresentation.Emit( (ConnectionAdapter*)connection );
+				}
+			}
+
+		}
+
+	}
+
+	
 	return true;
 }
 
