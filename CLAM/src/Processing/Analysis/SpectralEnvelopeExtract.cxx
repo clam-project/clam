@@ -136,13 +136,16 @@ namespace CLAM {
 			phasePointArray[0].SetX(0);
 			phasePointArray[0].SetY(0);
 			nPeaks++;
-			//we will now add points until we reach the spectral range
+			
+			/* we keep adding points to bpf until magnitude is insignificant 
+			(note that we add points outside the spectral range) */
 			TData spectralRange=output.GetSpectralRange();
 			TData lastFreq=freqBuffer[nPeaks-2];
 			TData freqGap=lastFreq-freqBuffer[nPeaks-3];
 			TData currentFreq=lastFreq+freqGap;
 			TData currentMag=magBuffer[nPeaks-2];
-			while(currentFreq<spectralRange)
+
+			while(currentMag>-200)
 			{
 				currentMag-=(currentFreq/lastFreq-1)*12;
 				magPointArray.AddElem(Point(currentFreq,currentMag));
@@ -151,10 +154,7 @@ namespace CLAM {
 				nPeaks++;
 				
 			}
-			//we now add last point
-			magPointArray.AddElem(Point(spectralRange,currentMag-3));
-			phasePointArray.AddElem(Point(spectralRange,0));
-			nPeaks++;
+
 		}
 		else
 		{
@@ -165,13 +165,14 @@ namespace CLAM {
 			phasePointArray[0].SetY(0);
 			nPeaks++;
 			
-			//we will now add points until we reach the spectral range
+			/* we keep adding points to bpf until magnitude is insignificant 
+			(note that we add points outside the spectral range) */
 			TData spectralRange=output.GetSpectralRange();
 			TData lastFreq=freqBuffer[nPeaks-2];
 			TData freqGap=lastFreq-freqBuffer[nPeaks-3];
 			TData currentFreq=lastFreq+freqGap;
 			TData currentMag=magBuffer[nPeaks-2];
-			while(currentFreq<spectralRange)
+			while(currentMag<0.0000000001)
 			{
 				currentMag*=pow(0.06,(double)(currentFreq/lastFreq-1.0));
 				magPointArray.AddElem(Point(currentFreq,currentMag));
@@ -180,12 +181,6 @@ namespace CLAM {
 				nPeaks++;
 				
 			}
-			//we now add last point
-			magPointArray.AddElem(Point(spectralRange,currentMag*0.5));
-			phasePointArray.AddElem(Point(spectralRange,0));
-			nPeaks++;
-
-
 		}
 		
 		output.SetSize(nPeaks);
