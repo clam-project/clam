@@ -1,16 +1,13 @@
 import os, re, shelve
 
+def resetHeaderDB() :
+    try:
+        os.remove("CLAM_Headers")
+    except OSError, e:
+        pass
+
 class LibGenerator :
 
-    libName = None
-    settingsTmpl = ""
-    sourceFilenames = []
-    headers = dict()
-    libTopPath = "./"
-    libGenTop = "../.."
-    extraIncludes = []
-    extraLibPaths = []
-    extraLibs = []
 
     isCxxSourceRE = re.compile( r"[^\.#]+\.cxx\Z" )
     isCSourceRE = re.compile(r"[^\.#]+\.c\Z" )
@@ -30,8 +27,6 @@ class LibGenerator :
     setExtraLibPaths = re.compile( r"@extralibpaths@" )
     removeAllCmds = re.compile( r"@.+@" )
 
-    variables = dict()
-    blackBalled = dict()
 
     hdrNormRE = re.compile( r"#include \"(?P<hdr>.+)\"" )
 
@@ -44,7 +39,6 @@ class LibGenerator :
         tmplFile.close()
 
         [self.libTopPath] = re.search( r"TOP = (.+)", self.settingsTmpl ).groups()
-        print "TOP=%s"%self.libTopPath
 
         self.variables={
             'ALSA':"0",
@@ -54,6 +48,14 @@ class LibGenerator :
             'PTHREADS':"0",
             'XML':"0"
             }
+
+        self.sourceFilenames = []
+        self.headers = dict()
+        self.libGenTop = "../.."
+        self.extraIncludes = []
+        self.extraLibPaths = []
+        self.extraLibs = []
+        self.blackBalled = dict()
 
     def dependsOn( self, CLAMlibname ) :
         self.extraLibs.append( "CLAM%s"%CLAMlibname )
@@ -68,39 +70,92 @@ class LibGenerator :
         except KeyError :
             return False
 
-    def add( self, folder, rootFolder="src" ) :
+    def contents( self, basePath ) :
+        for item in os.listdir( basePath ) :
+            fullPath = "%s/%s"%(basePath,item)
+            if os.path.isdir( fullPath ) :
+                continue
+            if self.isBlackBalled( item.split(".")[0]) :
+                print "Rejecting %s : it has been black balled"%fullPath
+                continue        
+            yield item
+
+    def addFile( self, fname, folder, rootFolder="src" ) :
         if rootFolder != "src" :
             self.extraIncludes.append( "$(TOP)/%s"%(rootFolder,) )
+
         basePath = "%s/%s/%s"%(self.libGenTop, rootFolder, folder)
+
         if not os.path.exists( basePath ) or not os.path.isdir( basePath ) :
             raise TypeError, "%s is not a CLAM src folder !!"%(basePath,)
 
-        folderContents = os.listdir( basePath )
+        headerDB = shelve.open( "CLAM_Headers", "c" )
+        
+        def tryHeader( ) :
+            filename = "%s.hxx"%fname
+            fullPath = "%s/%s"%(basePath, filename )            
+            if not os.path.exists( fullPath ) :
+                filename = "%s.h"%fname
+                fullPath = "%s/%s"%(basePath, filename )            
+                if not os.path.exists( fullPath ) :
+                    raise TypeError, "%s does not exist!"%fullPath
+            self.accountHeader( headerDB, basePath, filename )
+
+        def trySource( ) :            
+            filename = "%s.cxx"%fname
+            fullPath = "%s/%s"%(basePath, filename )            
+            if not os.path.exists( fullPath ) :
+                filename = "%s.c"%fname
+                fullPath = "%s/%s"%(basePath, filename )            
+                if not os.path.exists( fullPath ) :
+                    raise TypeError, "%s does not exist!"%fullPath
+            self.sourceFilenames.append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, filename ) )
+
+        try:
+            trySource()
+        except TypeError, e:
+            pass
+
+        try:
+            tryHeader()
+        except TypeError, e:
+            raise e
+
+
+    def accountHeader( self, headerDB, basePath, fname ) :
+        try:
+            moduleName = headerDB[ fname ]
+            print "Skipping %s, already in module %s..."%(fname, moduleName)
+            
+        except KeyError, e :
+            try:
+                self.headers[basePath].append( fname )
+            except KeyError, e :
+                self.headers[ basePath ] = list()
+                self.headers[ basePath ].append( fname )
+                
+            headerDB[ fname ] = self.libName
+
+
+    def addFolder( self, folder, rootFolder="src" ) :
+        if rootFolder != "src" :
+            self.extraIncludes.append( "$(TOP)/%s"%(rootFolder,) )
+
+        basePath = "%s/%s/%s"%(self.libGenTop, rootFolder, folder)
+        
+        if not os.path.exists( basePath ) or not os.path.isdir( basePath ) :
+            raise TypeError, "%s is not a CLAM src folder !!"%(basePath,)
 
         headerDB = shelve.open( "CLAM_Headers", "c" )
-
-        for item in folderContents :
-            fullPath = "%s/%s"%(basePath,item)
-
-            if self.isBlackBalled( item.split(".")[0]) :
-                print "Rejecting %s : it has been black balled"%fullPath
+        
+        for fname in self.contents(basePath) :                    
+            if ( self.isCSourceRE.search( fname ) != None or
+                 self.isCxxSourceRE.search( fname ) != None ) :
+                self.sourceFilenames.append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, fname ) )
                 continue
-            
-            
-            if os.path.isdir( fullPath ) : continue
-
-            if ( self.isCSourceRE.search( item ) != None or
-                 self.isCxxSourceRE.search( item ) != None ) :
-                self.sourceFilenames.append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, item ) )
-                continue
-
-            if ( self.isCxxHeaderRE.search( item ) != None or
-                 self.isCHeaderRE.search( item ) != None ) :
-                if not basePath in self.headers.keys() :
-                    self.headers[ basePath ] = [item]
-                else :
-                    self.headers[ basePath ].append( item )
-                headerDB[ item ] = self.libName
+            if ( self.isCxxHeaderRE.search( fname ) != None or
+                 self.isCHeaderRE.search( fname ) != None ) :
+                self.accountHeader( headerDB, basePath, fname )
 
         headerDB.sync()
         headerDB.close()
@@ -113,7 +168,9 @@ class LibGenerator :
         self.variables[key] = "0"
 
     def generateFiles( self ) :
-        libFilesPath = self.libGenTop+"/build/Libs/"+self.libName
+        
+        libFilesPath = "%s/build/Libs/%s"%(self.libGenTop,self.libName)
+        
         if not os.path.exists( libFilesPath  ) :
             os.mkdir( libFilesPath )
 

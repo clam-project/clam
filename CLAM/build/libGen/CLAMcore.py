@@ -2,45 +2,46 @@
 
 import libGen, sys
 
-def main() :
+def makelib() :
     libCLAMCore = libGen.LibGenerator("Core")
 
-    libCLAMCore.add( "Base" )
-    libCLAMCore.add( "Data/Base" )
-    libCLAMCore.add( "Defines" )
-
-    #libCLAMCore.add( "Defines/Windows" )
-    
-    libCLAMCore.add( "Defines/Unix" )
-    libCLAMCore.add( "Errors" )
+    print "Generating libCLAM%s..."%libCLAMCore.libName
 
     # These files are blackballed since they depend on
-    # the Audio concrete ProcessingData
+    # some concrete ProcessingData
     libCLAMCore.blackBall( "AudioInPort" )
     libCLAMCore.blackBall( "AudioInPortPublisher" )
     libCLAMCore.blackBall( "AudioOutPort" )
-    libCLAMCore.blackBall( "AudioOutPortPublisher" ) 
-    libCLAMCore.add( "Flow/Ports" )
+    libCLAMCore.blackBall( "AudioOutPortPublisher" )
+    libCLAMCore.blackBall( "ScaleCnv" )
 
-    libCLAMCore.add( "Flow/Networks" )
-    libCLAMCore.add( "Flow/Controls" )
-    libCLAMCore.add( "Processing/Base" )
-    libCLAMCore.add( "Data/Base" )
+    libCLAMCore.addFolder( "Base" )
+
+    libCLAMCore.addFolder( "Data/Base" )
+
+    libCLAMCore.addFolder( "Defines" )
+    libCLAMCore.addFolder( "Defines/Windows" )    
+    libCLAMCore.addFolder( "Defines/Unix" )
+
+    libCLAMCore.addFolder( "Errors" )
+
+    libCLAMCore.addFolder( "Flow/Ports" )
+    libCLAMCore.addFolder( "Flow/Networks" )
+    libCLAMCore.addFolder( "Flow/Controls" )
+
+    libCLAMCore.addFolder( "Processing/Base" )
     
-    libCLAMCore.add( "Standard" )
-    libCLAMCore.add( "Storage/Base" )
-    libCLAMCore.add( "Storage/XML" )
-    libCLAMCore.add( "System/Threads" )
-    libCLAMCore.add( "CbLib", "externals" )
+    libCLAMCore.addFolder( "Standard" )
+    libCLAMCore.addFolder( "Storage/Base" )
+    libCLAMCore.addFolder( "Storage/XML" )
+    libCLAMCore.addFolder( "System/Threads" )
+    libCLAMCore.addFolder( "CbLib", "externals" )
 
     libCLAMCore.activate('XML')
     libCLAMCore.activate('PTHREADS')
 
     libCLAMCore.generateFiles()
-    print "Files are being generated on build/Libs..."
+    print "Files are being generated on build/Libs/%s..."%libCLAMCore.libName
 
 if __name__ == "__main__" :
-    main()
-else :
-    print "This is an executable script"
-    sys.exit(2)
+    makelib()

@@ -2,35 +2,31 @@
 
 import libGen, sys
 
-def main() :
+def makelib() :
     libCLAMProcessing = libGen.LibGenerator( "Processing" )
 
+    print "Generating libCLAM%s..."%libCLAMProcessing.libName
+    # Depends on CUIDADO code
     libCLAMProcessing.blackBall( "OnsetDetector" )
+    libCLAMProcessing.blackBall( "SMSAnalysis" )
+    libCLAMProcessing.blackBall( "SMSSynthesis" )
 
-    libCLAMProcessing.add( "Data/BasicProcessing" )
-    libCLAMProcessing.add( "Data/Descriptors" )
-    libCLAMProcessing.add( "Data/Descriptors/Melody" )
+    libCLAMProcessing.addFile( "ScaleCnv", "Standard" )
 
-    libCLAMProcessing.add( "Processing/Analysis" )
-    libCLAMProcessing.add( "Processing/ArithOps" )
-    libCLAMProcessing.add( "Processing/Controls" )
-    libCLAMProcessing.add( "Processing/Generators" )
-    libCLAMProcessing.add( "Processing/Plugins" )
-    libCLAMProcessing.add( "Processing/Synthesis" )
-    libCLAMProcessing.add( "Processing/Transformations" )
+    libCLAMProcessing.addFolder( "Data/BasicProcessing" )
+    libCLAMProcessing.addFolder( "Data/Descriptors" )
+    libCLAMProcessing.addFolder( "Data/Descriptors/Melody" )
 
-    # These are already on Core
-    libCLAMProcessing.blackBall( "InPort" )
-    libCLAMProcessing.blackBall( "InPortPublisher" )
-    libCLAMProcessing.blackBall( "OutPort" )
-    libCLAMProcessing.blackBall( "OutPortPublisher" )
-    libCLAMProcessing.blackBall( "PhantomBuffer" )
-    libCLAMProcessing.blackBall( "ReadingRegion" )
-    libCLAMProcessing.blackBall( "Region" )
-    libCLAMProcessing.blackBall( "StreamImpl" )
-    libCLAMProcessing.blackBall( "WritingRegion" )
-    libCLAMProcessing.add( "Flow/Ports")
-    libCLAMProcessing.add( "numrec", "externals")
+    libCLAMProcessing.addFolder( "Processing/Analysis" )
+    libCLAMProcessing.addFolder( "Processing/ArithOps" )
+    libCLAMProcessing.addFolder( "Processing/Controls" )
+    libCLAMProcessing.addFolder( "Processing/Generators" )
+    libCLAMProcessing.addFolder( "Processing/Plugins" )
+    libCLAMProcessing.addFolder( "Processing/Synthesis" )
+    libCLAMProcessing.addFolder( "Processing/Transformations" )
+    
+    libCLAMProcessing.addFolder( "Flow/Ports")
+    libCLAMProcessing.addFolder( "numrec", "externals")
 
     libCLAMProcessing.activate( 'XML' )
     libCLAMProcessing.activate( 'PTHREADS' )
@@ -39,10 +35,7 @@ def main() :
     libCLAMProcessing.dependsOn( "Core" )
 
     libCLAMProcessing.generateFiles()
-    print "Files are being generated on build/Libs..."
+    print "Files are being generated on build/Libs/%s..."%libCLAMProcessing.libName
 
 if __name__ == "__main__" :
-    main()
-else :
-    print "This is an executable script"
-    sys.exit(2)
+    makelib()

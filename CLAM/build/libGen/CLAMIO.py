@@ -2,14 +2,15 @@
 
 import libGen, sys
 
-def main( ) :
+def makelib( ) :
     libCLAMIO = libGen.LibGenerator( "IO" )
 
+    print "Generating libCLAM%s..."%libCLAMIO.libName
     libCLAMIO.activate( 'XML' )
     libCLAMIO.activate( 'PTHREADS' )
 
-    libCLAMIO.add( "Tools/AudioFileIO" )
-    libCLAMIO.add( "Processing/AudioFileIO" )
+    libCLAMIO.addFolder( "Tools/AudioFileIO" )
+    libCLAMIO.addFolder( "Processing/AudioFileIO" )
 
 
     if sys.platform == "linux2" :
@@ -17,39 +18,38 @@ def main( ) :
         libCLAMIO.blackBall( "RtAAudioDevice" )
         libCLAMIO.blackBall( "foo" )
         libCLAMIO.blackBall( "SndPcm" )
-        libCLAMIO.add( "Tools/AudioIO/Linux" )
+        libCLAMIO.addFolder( "Tools/AudioIO/Linux" )
         libCLAMIO.activate( 'ALSA' )
     else :
         libCLAMIO.blackBall( "ALSAAudioDevice" )
         libCLAMIO.blackBall( "foo" )
         libCLAMIO.blackBall( "SndPcm" )
-        libCLAMIO.add( "Tools/AudioIO/RtAudio" )
+        libCLAMIO.addFolder( "Tools/AudioIO/RtAudio" )
         libCLAMIO.activate( 'RTAUDIO' )
 
-    libCLAMIO.add( "Tools/AudioIO" )
-    libCLAMIO.add( "Processing/AudioIO" )
+    libCLAMIO.addFolder( "Tools/AudioIO" )
+    libCLAMIO.addFolder( "Processing/AudioIO" )
 
-    libCLAMIO.add( "Tools/MIDIIO" )
-    libCLAMIO.add( "Tools/MIDIIO/File" )
-    libCLAMIO.add( "Tools/MIDIIO/TextFile" )
+    libCLAMIO.addFolder( "Tools/MIDIIO" )
+    libCLAMIO.addFolder( "Tools/MIDIIO/File" )
+    libCLAMIO.addFolder( "Tools/MIDIIO/TextFile" )
     if sys.platform == "win32" :
-        libCLAMIO.add( "Tools/MIDIIO/Portmidi" )
+        libCLAMIO.addFolder( "Tools/MIDIIO/Portmidi" )
     else :
-        libCLAMIO.add( "Tools/MIDIIO/Linux" )
-    libCLAMIO.add( "Processing/MIDIIO" )
+        libCLAMIO.addFolder( "Tools/MIDIIO/Linux" )
+    libCLAMIO.addFolder( "Processing/MIDIIO" )
 
-    libCLAMIO.add( "Tools/SDIF" )
-    libCLAMIO.add( "Processing/SDIFIO" )
+    libCLAMIO.addFolder( "Tools/SDIF" )
+    libCLAMIO.addFolder( "Processing/SDIFIO" )
     
     libCLAMIO.dependsOn( "Core" )
 
     libCLAMIO.generateFiles( )
+
+    print "Files are being generated on build/Libs/%s..."%libCLAMIO.libName
     
 if __name__ == "__main__" :
-    main()
-else :
-    print "This is an executable script"
-    sys.exit(2)
+    makelib()
 
 
     
