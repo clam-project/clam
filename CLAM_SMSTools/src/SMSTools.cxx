@@ -23,7 +23,10 @@
 #include "AudioFileIn.hxx"
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
 #include <iostream>
+#include <string>
+#include <algorithm>
 #include <fstream>
 #include <FL/Fl.H>
 #include <FL/Fl_Tooltip.H>
@@ -443,12 +446,52 @@ namespace CLAMGUI
 
 	void SMSTools::StoreSound(const CLAM::Audio& audio)
 	{
-		char* fileName = fl_file_chooser("Choose file to store in...", "*.wav", "");
+		char* fileName = fl_file_chooser("Choose file to store in...", "{*.wav,*.ogg}", "");
 
 		if ( !fileName )
 			return;
+
+		std::string fmtString;
+
+		std::string selectedFile = fileName;
+		std::string selectedFmt;
+
+		std::string::iterator dotPos = std::find( selectedFile.begin(),
+							  selectedFile.end(), '.' );
+
+		selectedFmt.assign( dotPos+1, selectedFile.end() );
+
+		if ( selectedFmt == "wav" || selectedFmt == "WAV" )
+			fmtString = "WAV";
+		else if ( selectedFmt =="ogg" || selectedFmt == "OGG" )
+			fmtString = "VorbisMk1";
+		else
+			fmtString = "WAV";
+
+		CLAM::AudioFile outputFile;
+		outputFile.SetLocation( fileName );
+
+		CLAM::AudioFileHeader fileHeader;
+		fileHeader.SetValues( audio.GetSampleRate(), 1, fmtString.c_str() );
+
+		outputFile.SetHeader( fileHeader );
+
+		CLAM::MonoAudioFileWriterConfig cfgWriter;
+		cfgWriter.AddTargetFile();
+		cfgWriter.UpdateData();
+		cfgWriter.SetTargetFile(outputFile);
+
+		CLAM::MonoAudioFileWriter proc;
+		proc.Configure( cfgWriter );
+
+		proc.Start();
+
+		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
+
+		proc.Do();
+
+		proc.Stop();
 		
-		SMSBase::StoreSound(fileName,audio);
 	}
 
 	void SMSTools::StoreOutputSound()
