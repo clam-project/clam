@@ -785,6 +785,7 @@ UserInterface::UserInterface() {
         o->labelcolor(56);
         o->align(FL_ALIGN_CENTER);
         o->when(FL_WHEN_RELEASE);
+        Fl_Group::current()->resizable(o);
         o->minsize(80);
       }
       o->end();
@@ -804,9 +805,6 @@ UserInterface::UserInterface() {
       }
       o->end();
     }
-    { Fl_Box* o = new Fl_Box(530, 525, 340, 20);
-      Fl_Group::current()->resizable(o);
-    }
     mWindow2=NULL;
     o->end();
   }
@@ -820,10 +818,10 @@ void UserInterface::AboutWindow() {
     o->callback((Fl_Callback*)cb_mWindow2, (void*)(this));
     { Fl_Box* o = new Fl_Box(5, 5, 440, 30, "SMS Analysis/Synthesis Application");
       o->box(FL_FLAT_BOX);
-      o->color(1);
+      o->color(7);
       o->labelfont(1);
       o->labelsize(16);
-      o->labelcolor(7);
+      o->labelcolor(0);
     }
     new Fl_Box(110, 45, 230, 25, "MTG - IUA - UPF");
     { Fl_Box* o = new Fl_Box(345, 40, 100, 100);
@@ -840,9 +838,9 @@ void UserInterface::AboutWindow() {
     new Fl_Box(110, 115, 230, 20, "for more information");
     { Fl_Box* o = new Fl_Box(5, 145, 440, 30, "CLAM Release 0.5beta1");
       o->box(FL_FLAT_BOX);
-      o->color(1);
+      o->color(7);
       o->labelfont(3);
-      o->labelcolor(7);
+      o->labelcolor(0);
     }
     mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);
     mWindow2->show();

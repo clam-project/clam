@@ -248,8 +248,8 @@ Exit();}
       Fl_Group {} {
         xywh {0 25 870 495}
       } {
-        Fl_Box mSmartTile {
-          private xywh {0 30 870 490}
+        Fl_Box mSmartTile {selected
+          private xywh {0 30 870 490} resizable
           code0 {o->minsize(80);}
           class Fl_Smart_Tile
         }
@@ -266,9 +266,6 @@ Exit();}
           xywh {0 525 340 20} resizable
         }
       }
-      Fl_Box {} {
-        xywh {530 525 340 20} resizable
-      }
     }
   }
   Function {AboutWindow()} {open return_type void
@@ -276,14 +273,14 @@ Exit();}
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;} open selected
+mWindow2=NULL;} open
       private xywh {347 416 450 180} type Double labelsize 10
       code0 {mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);}
       code1 {mWindow2->show();} modal visible
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
-        private xywh {5 5 440 30} box FLAT_BOX color 1 labelfont 1 labelsize 16 labelcolor 7
+        private xywh {5 5 440 30} box FLAT_BOX color 7 labelfont 1 labelsize 16 labelcolor 0
       }
       Fl_Box {} {
         label {MTG - IUA - UPF}
@@ -309,7 +306,7 @@ mWindow2=NULL;} open selected
       }
       Fl_Box {} {
         label {CLAM Release 0.5beta1}
-        private xywh {5 145 440 30} box FLAT_BOX color 1 labelfont 3 labelcolor 7
+        private xywh {5 145 440 30} box FLAT_BOX color 7 labelfont 3 labelcolor 0
       }
     }
   }
