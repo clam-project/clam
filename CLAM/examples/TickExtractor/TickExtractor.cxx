@@ -121,20 +121,18 @@ namespace CLAM
 		
 		myTickSequenceTrackerConfig.SetSamplingRate(sampleRate);
 		
-		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);
-		
-		myTickSequenceTracker.Start();
+		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);		
 
 		Audio IOIHist;
-		IOIHist.SetSampleRate(sampleRate); //Don't really know if it's used, but just in case...
+		IOIHist.SetSampleRate( sampleRate );
 
 		Pulse tickSequence;
 		Pulse beatSequence;
 
+		myTickSequenceTracker.Start();
+		
 		//Use the transients computed in this main
 		myTickSequenceTracker.Do( transients, tickSequence, beatSequence, IOIHist );
-
-		//myTickSequenceTracker.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
 
 		myTickSequenceTracker.Stop();
 

@@ -27,7 +27,7 @@
  */
 #include "Complex.hxx"
 #include "RD_TimeDifference.hxx"
-#include <cmath>
+#include "CLAM_Math.hxx"
 
 namespace CLAM 
 {
@@ -59,10 +59,15 @@ namespace RhythmDescription
 	}
 
 	TimeDifference::~TimeDifference()
-	{}
+	{
+	}
 
+	const char* TimeDifference::GetClassName() const
+	{
+		return "TimeDifference";
+	}
 
-/* Configure the Processing Object according to the Config object */
+	/* Configure the Processing Object according to the Config object */
 
 	bool TimeDifference::ConcreteConfigure(const ProcessingConfig& c)
 	{
@@ -75,66 +80,65 @@ namespace RhythmDescription
 
 		mWindowGen.Configure(winconf);
 
+		mWindow.Resize(mConfig.GetGaussianSize());
 		mWindow.SetSize(mConfig.GetGaussianSize());
 
 		mWindowGen.Start();
 
-//		cerr << "audiosize " <<  mConfig.GetGaussianSize();
-//		cerr << " windowsize " <<  mWindowGen.GetSize() << endl;
-
 		mWindowGen.Do(mWindow);
 		mWindowGen.Stop();	    
 
-		//CLAM::ShowSnapshot(mWindow,"GGGaussian");
-	
 		//NB: full-width of gaussian at half max= s*2*sqrt(2)
 		//	where s is the standard dev
 		//	in WindowGenerator::Gaussian, s=0.15
 
+		//mWindowGen.SetParent( this );
+
 		return true;
 	}
 
-/* The supervised Do() function */
+	/* The supervised Do() function */
 	bool  TimeDifference::Do(void) 
 	{
 		return false;
 	}
 
-/* The  unsupervised Do() function */
-	bool  TimeDifference::Do(Array<TimeIndex>& in, Audio& out)
+	/* The  unsupervised Do() function */
+	bool  TimeDifference::Do(Array<TimeIndex>& in, DataArray& out)
 	{
 		int gsize = mConfig.GetGaussianSize();
 	
-		TData* outp = out.GetBuffer().GetPtr();
-		TData* end = outp + out.GetSize();
-		TData* win = mWindow.GetBuffer().GetPtr();
+		TData* outp = out.GetPtr();
+		TData* end = outp + out.Size();
+		TData* win = mWindow.GetPtr();
 		int  size = in.Size();
     
-		for (int i=0;i<out.GetSize();i++)
+		for (int i=0;i<out.Size();i++)
 			outp[i] = 0.;
 	
-		for (int j=0;j < size-1;j++) {
+		for (int j=0;j < size-1;j++) 
+		{
 			int apos = (int) in[j].GetPosition();
-			for (int k = j+1; k<size;k++) {
+
+			for (int k = j+1; k<size;k++) 
+			{
 				int pos = labs((int)apos - in[k].GetPosition()); 
-				if (pos+gsize<out.GetSize()) {
-#if 1
+				
+				if (pos+gsize<out.Size()) 
+				{
+
 					TData* outw = outp + pos - gsize/2;
 					TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());
+
 					// add the gaussian 
-					for (int i=0;i<gsize;i++) {
-						if (outw >= outp && outw < end) {
-							*outw+=(win[i]*weight);
+					for (int i=0;i<gsize;i++) 
+					{
+						if (outw >= outp && outw < end) 
+						{
+							*outw += (win[i]*weight);
 						}
 						outw++;
 					}
-#else
-					TData* outw = outp + pos;
-					TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());
-					if (outw >= outp && outw < end) {
-						*outw=weight;
-					}
-#endif
 				}
 			}
 		}

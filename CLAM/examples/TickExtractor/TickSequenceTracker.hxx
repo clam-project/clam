@@ -5,7 +5,7 @@
 #include "Array.hxx"
 #include "TimeIndex.hxx"
 #include "TickSequenceTrackerConfig.hxx"
-#include "AudioPeakDetect.hxx"
+#include "IOIHistPeakDetector.hxx"
 #include "Pulse.hxx"
 #include "RD_TimeDifference.hxx"
 #include "TemporalSeriesFinder.hxx"
@@ -37,10 +37,8 @@ namespace CLAM
 
 		///Method to use when the input is a list of note onsets
 		///(onsets already computed, or MIDI)
-		bool Do(const Array<TimeIndex>& transients, 
-			Pulse& tickSequence,
-			Pulse& beatSequence,
-			Audio& IOIHist );
+		bool Do(const Array<TimeIndex>& transients, Pulse& tickSequence,
+			Pulse& beatSequence, Audio& IOIHist );
 
 
 
@@ -60,10 +58,6 @@ namespace CLAM
 				       GridGen& pulseGridGen, Array<TimeIndex>& pulseArray);
 
 
-		void ComputeOnsets(Audio& readAudio, Array<TimeIndex>& transients, 
-				   TData samplingRate);
-
-
 		unsigned AdjustTickIntervalForSwing( Audio& IOIHistogram, unsigned previousTickInterval );
 
 		TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
@@ -71,7 +65,7 @@ namespace CLAM
 
 	private: // children Processing
 
-		AudioPeakDetect                          mAudioPeakDetector;
+		RhythmDescription::IOIHistPeakDetector   mAudioPeakDetector;
 		RhythmDescription::TimeDifference        mTemporalDiff;
 		TemporalSeriesFinder                     mTimeSeriesFinder;
 		TemporalSeriesFinderConfig               mTSFConfig;

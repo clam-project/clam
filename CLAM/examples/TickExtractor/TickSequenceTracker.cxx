@@ -52,7 +52,7 @@ namespace CLAM
 		CopyAsConcreteConfig( mConfig, c );
 
 		//For Hist peaks:
-		AudioPeakDetectConfig apdconf;
+		RhythmDescription::IOIHistPeakDetectorConfig apdconf;
 		apdconf.SetThreshold(mConfig.GetThreshold_IOIHistPeaks());
 
 		mAudioPeakDetector.Configure( apdconf );
@@ -184,7 +184,9 @@ namespace CLAM
 			
 			//put a maximum on the IOIHist length
 			TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
-			IOIHist.SetSize(CLAM::CLAM_min(windowSize,IOIHistLim));
+
+			TSize IOIhistSize = CLAM::CLAM_min(windowSize,IOIHistLim);
+			IOIHist.SetSize( IOIhistSize );
 
 			/// Compute the IOIHistogram
 			//Don't use weights for the building of the histogram:
@@ -199,7 +201,7 @@ namespace CLAM
 			}
 
 
-			mTemporalDiff.Do(transientsForHist,IOIHist);
+			mTemporalDiff.Do(transientsForHist,IOIHist.GetBuffer());
 
 
 			///IOI histogram Peak Detection
@@ -264,6 +266,7 @@ namespace CLAM
 				mTSFConfig.SetIntervalStep(10);
 				//Use of a single error:
 				mTSFConfig.SetOverSubdivisionPenalty(0);
+
 				mTimeSeriesFinder.Stop();
 				mTimeSeriesFinder.Configure(mTSFConfig);
 				mTimeSeriesFinder.Start();
@@ -311,6 +314,7 @@ namespace CLAM
 					mTimeSeriesFinder.Stop();
 					mTimeSeriesFinder.Configure(mTSFConfig);
 					mTimeSeriesFinder.Start();
+
 					//NB: Use of transients instead of transientsForHist
 					// i.e. making use of transient weights
 					mTimeSeriesFinder.Do(transients,mGoodTempo);
@@ -436,14 +440,17 @@ namespace CLAM
 						 const Array<TData> &forGlobalPulseCalc)
 	{
 		Audio pulseHist;
+		pulseHist.SetSampleRate( mConfig.GetSamplingRate() );
 		pulseHist.SetSize((int) (pulseLimSup +10000));//just for security
+		
 		gpulse.Start();
 		gpulse.Do(forGlobalPulseCalc,pulseHist);
 		gpulse.Stop();
-		Array<TimeIndex>  pulseHistPeaks;
-		pulseHistPeaks.Init();
 
-		AudioPeakDetectConfig apdconf;
+		Array<TimeIndex>  pulseHistPeaks;
+
+
+		RhythmDescription::IOIHistPeakDetectorConfig apdconf;
 		apdconf.SetThreshold(0.0);
 		mAudioPeakDetector.Stop();
 		mAudioPeakDetector.Configure(apdconf);

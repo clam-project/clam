@@ -42,8 +42,8 @@
  * @see TimeDifferenceConfig
  */
 
-#include "Processing.hxx"
-#include "Audio.hxx"
+#include "ProcessingComposite.hxx"
+#include "Array.hxx"
 #include "TimeIndex.hxx"
 #include "WindowGenerator.hxx"
 
@@ -65,9 +65,11 @@ namespace CLAM
 	class TimeDifference: public Processing 
 	{
 		TimeDifferenceConfig mConfig;
-		WindowGenerator mWindowGen;
-		Audio           mWindow;
-		const char *GetClassName() const {return "TimeDifference";}
+		WindowGenerator      mWindowGen;
+		DataArray            mWindow;
+
+		const char *GetClassName() const;
+		
 		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
@@ -78,7 +80,7 @@ namespace CLAM
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		bool Do(void);
-		bool Do(Array<TimeIndex>& input, Audio& out);
+		bool Do(Array<TimeIndex>& input, DataArray& out);
 	};
 
 	}
