@@ -421,9 +421,11 @@ namespace CLAM {
 		mDataPointers.Resize(size);
 		mDataPointers.SetSize(size);
 		for (int i=0; i<size; i++) {
-			std::stringstream str(n);
-			str << "_" << i;
-			mArray[i] = new InPortTmpl<T>(str.str(),o,length,hop,inplace);
+			std::stringstream sstr(i);
+			std::string nprima( n );
+			nprima+=std::string("_") + sstr.str();
+
+			mArray[i] = new InPortTmpl<T>(nprima,o,length,hop,inplace);
 		}
 	}
 
