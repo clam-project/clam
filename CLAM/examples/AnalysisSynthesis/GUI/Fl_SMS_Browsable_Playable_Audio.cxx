@@ -91,12 +91,15 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 
 	mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
 	ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+
+	mDisplay->SetPainting();
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )
 {
 	// towards the outer world
-	SelectedXValue.Emit( value );
+  double sampleTime = (value / mSampleRate ) + mAudioOffset;
+	SelectedXValue.Emit( sampleTime );
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnSetSelectedXValue( double value )
@@ -150,6 +153,8 @@ void Fl_SMS_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime 
 	mXAxis->maximum( begin+end );
 	mDisplay->invalidate();
 	redraw();
+	mAudioOffset = begin;
+	mSampleRate = srate;
 }
 	
 void Fl_SMS_Browsable_Playable_Audio::Show()
@@ -171,4 +176,12 @@ void Fl_SMS_Browsable_Playable_Audio::UnsetPaint()
 { 
 	mDisplay->UnsetPainting();
 }
+
+
+
+
+
+
+
+
 
