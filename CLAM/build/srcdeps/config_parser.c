@@ -271,13 +271,13 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 
 void config_parse_line(char* ptr,const char* filename,int line)
 {
-	char tmp[4096];
+	char tmp[8192];
 	config_data d;
 	d.filename = filename;
 	d.line = line;
 	d.in = ptr;
 	d.out = d.out_start = tmp;
-	d.n = 4096;
+	d.n = 8192;
 
 	equalsigncount = 0;
 
@@ -430,7 +430,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 
 int config_parse(const char* filename)
 {
-	char buf[4096];
+	char buf[8192];
 	int n;
 	int line = 0;
 		
@@ -444,20 +444,25 @@ int config_parse(const char* filename)
 	
 	n = 0;
 
-	while (fgets(buf+n,4096-n,f))
+	while (fgets(buf+n,8192-n,f))
 	{
 		int l = strlen(buf+n);
-		line++;
-		if (buf[n+l-1]=='\n') l--;
-		else{
+
+		if (n+l==8192) 
+		{
 			fprintf(stderr,"Error: maximum (multi)line length reached in line %s:%d\n",
 				filename,line);
 			exit(-1);
 		}
+
+		line++;
+		if (buf[n+l-1]=='\n') l--;
+		/* remove trailing whitespace */
+		while (buf[n+l-1]==' ' || buf[n+l-1]=='\t') l--;
 		if (buf[n+l-1]=='\r') l--;
 		if (buf[n+l-1]=='\\')
 		{
-			l--;
+			buf[n+l-1] = ' ';
 			n+=l;
 		}else{
 			n+=l;
@@ -466,6 +471,7 @@ int config_parse(const char* filename)
 				config_parse_line(buf,filename,line);
 			n = 0;
 		}
+
 	}
 	if (n)
 	{
