@@ -189,18 +189,28 @@ TData AudioDescriptors::ComputeDecrease()
 	energyEnv.Resize(dataSize);
 	energyEnv.SetSize(dataSize);
 
-	// Find maximum value index
-	TSize maxIdx = 0;
-	TData  maxVal    = log10(fabsf(mEpsilon));
+	// Compute 20Hz lowpass filter coefficients
+	const TData omega_c = 2*PI*20/mpAudio->GetSampleRate();
+	const TData alpha   = (1-sin(omega_c)) / cos(omega_c);
 
-	for (TIndex i=0; i<dataSize; i++)
+	const TData b0 = (1-alpha)/2;
+	const TData a1 = -alpha;
+
+	// Find maximum value
+	if (data[0] == 0) data[0] = mEpsilon;
+	energyEnv[0] = log10( b0*fabsf(data[0]) );
+
+	TData maxVal = energyEnv[0];
+	TSize maxIdx = 0;
+
+	for (TIndex i=1; i<dataSize; i++)
 	{
 
 		// Replace zeros with very small value due to log10
 		if (data[i] == 0) data[i] = mEpsilon;
 
-		// Base computation on base 10 logarithm of approx. signal envelope.
-		energyEnv[i] = log10(fabsf(data[i]));
+		// Base computation on base 10 logarithm of signal energy envelope.
+		energyEnv[i] = log10( b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*energyEnv[i-1] );
 		if (energyEnv[i] > maxVal)
 		{
 			maxVal = energyEnv[i];
