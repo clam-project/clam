@@ -52,6 +52,8 @@ namespace CLAMVM
 		void OnRemovePortConnectionFromGUI( const std::string &, const std::string & );
 		void OnRemoveControlConnectionFromGUI( const std::string &, const std::string & );
 		void OnRemoveProcessingFromGUI( const std::string & );
+		void OnLoadNetwork( const std::string & );
+		void OnSaveNetwork( const std::string & );
 
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );

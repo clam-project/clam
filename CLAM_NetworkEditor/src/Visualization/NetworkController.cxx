@@ -23,6 +23,8 @@ NetworkController::NetworkController()
 	RemoveProcessing.Wrap( this, &NetworkController::OnRemoveProcessingFromGUI );
 	AddNewProcessing.Wrap( this, &NetworkController::NewProcessingFromGUI );
 	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
+	SaveNetwork.Wrap( this, &NetworkController::OnSaveNetwork );
+	LoadNetwork.Wrap( this, &NetworkController::OnLoadNetwork );
 }
 
 void NetworkController::ExecuteEvents()
@@ -168,6 +170,15 @@ void NetworkController::OnRemoveControlConnectionFromGUI( const std::string & ou
 
 }
 
+void NetworkController::OnLoadNetwork( const std::string & file)
+{
+	std::cout << "loading network from: " << file << std::endl;
+}
+
+void NetworkController::OnSaveNetwork( const std::string & file)
+{
+	std::cout << "saving network to: " << file << std::endl;
+}
 
 void NetworkController::OnRemoveProcessingFromGUI(const std::string & proc)
 {

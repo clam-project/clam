@@ -38,6 +38,8 @@ namespace CLAMVM
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
 		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewPortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewControlConnection;
+		SigSlot::Slotv1< const std::string & > LoadNetwork;
+		SigSlot::Slotv1< const std::string & > SaveNetwork;
 		
 	};	
 }
