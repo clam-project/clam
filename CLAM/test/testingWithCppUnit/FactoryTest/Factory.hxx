@@ -23,6 +23,7 @@ class FactoryRegistry
 {	
 	typedef Processing* (*CreatorMethod)(void);
 	typedef std::string RegistryKey;
+	typedef std::map<std::string, CreatorMethod> CreatorMap;
 
 public:
 	CreatorMethod GetCreator(char*)
@@ -41,8 +42,12 @@ public:
 
 		return 0;
 	}
+	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
+	{
+		return; // fake impl.
+	}
 private:
-	std::map< RegistryKey, CreatorMethod> _creators;
+	CreatorMap _creators;
 };
 
 

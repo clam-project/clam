@@ -66,6 +66,8 @@ private:
 	void testRegistryAskTheWrongKey_WithASingleCreator()
 	{
 		CLAM::FactoryRegistry reg;
+		// set up:
+		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
 		
 		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
 	}
