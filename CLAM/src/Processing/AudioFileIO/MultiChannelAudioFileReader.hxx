@@ -42,7 +42,8 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do();
-		
+		bool ModifiesPortsAndControlsAtConfiguration();
+	
 	protected: // methods
 		
 		virtual bool ConcreteConfigure( const ProcessingConfig& cfgObject );
