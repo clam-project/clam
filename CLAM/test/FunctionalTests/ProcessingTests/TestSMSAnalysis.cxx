@@ -128,7 +128,7 @@ public: // TestFixture interface
 
 		mReader.GetOutPort("Samples read").SetSize( frameSize );
 		mReader.GetOutPort("Samples read").SetHop( frameSize );
-		mReader.GetOutPort("Samples read").CenterEvenRegions();
+		//mReader.GetOutPort("Samples read").CenterEvenRegions();
 	}
 	
 	void setUp()
