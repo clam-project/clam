@@ -76,13 +76,13 @@ def main() :
     inputFname = ""
     mustRecurse = False
 
-    for o,a in opts :
-        if o in ( "-h", "--help" ) :
+    for option,argument in opts :
+        if option in ( "-h", "--help" ) :
             usage()
             sys.exit(1)
-        if o in ( "-i", "--input" ) :
-            inputFname = a
-        if o in ( "-r", "--recurse" ) :
+        if option in ( "-i", "--input" ) :
+            inputFname = argument
+        if option in ( "-r", "--recurse" ) :
             mustRecurse = True
 
     if len(inputFname) == 0 :
