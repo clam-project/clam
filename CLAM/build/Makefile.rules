@@ -43,22 +43,22 @@ $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 uic/%.h:
 	@mkdir -p uic
 	@echo === Generating $@ from $<
-	uic $< -o $@
+	@uic $< -o $@
 
 uic/%.cxx:
 	@mkdir -p uic
 	@echo === Generating $@ from $<
-	uic -i $(@:uic/%.cxx=%.h) $< -o $@
+	@uic -i $(@:uic/%.cxx=%.h) $< -o $@
 
 moc/%_moc.cxx:
 	@mkdir -p moc
 	@echo == Generating moc file for $@
-	moc $< -o $@
+	@moc $< -o $@
 
 else
 
@@ -75,22 +75,22 @@ $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 uic/%.h:
 	@mkdir -p uic
 	@echo === Generating $@ from $<
-	uic $< -o $@
+	@uic $< -o $@
 
 uic/%.cxx:
 	@mkdir -p uic
 	@echo === Generating $@ from $<
-	uic -i $(@:uic/%.cxx=%.h) $< -o $@
+	@uic -i $(@:uic/%.cxx=%.h) $< -o $@
 
 moc/%_moc.cxx:
 	@mkdir -p moc
 	@echo == Generating moc file for $@
-	moc $< -o $@
+	@moc $< -o $@
 
 else
 
