@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<title>Flow control examples to-do's</title>
+		<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen">
+	</head>
+	<body>
+		<h1>
+			Flow control examples to-do's
+		</h1>
+		<h2>
+			General milestones
+		</h2>
+		<P>&nbsp;</P>
+		<h2><PRE><TABLE id=Table1 borderColor=#999999 cellSpacing=1 cellPadding=2 width=800 border=1><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 1</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Non-supervised processing system with AudioIn/Out + Time Domain processings</TD></TR><TR><TD width=161 bgColor=#996699><PRE><B><FONT color=#ffffff>    Sub milestone</FONT></B></PRE></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>First step with AudioFileIn/Out, instead (no multithreading)</TD></TR><TR><TD width=161 bgColor=#996699 height=21><B><FONT color=#ffffff>Milestone 2</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7 height=21>Only use supervised ::Do() and Ports to ProcessingDatas</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 3</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Use Nodes that wrapps ProcessingDatas. Connections between Ports and Nodes</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 4</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>Network class that holds (owns) Processings, Nodes and connections. It comunicates with an <I>stub</I> FlowControl (implements the ::Do() )</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 5</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>ProcessingFactories and Network with (de)serialization: XML definition, and Network activation using the ProcessingFactory</TD></TR><TR><TD width=161 bgColor=#996699 height=39><B><FONT color=#ffffff>Milestone 6</FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7 height=39>A true FlowControl that 1) sets up the Nodes during Network activation and 2) does the Do's firing scheduling.</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR><TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD><TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR></TABLE></PRE>
+			Non supervised system
+		</h2>
+		<h2>
+			Non supervised system with ports
+		</h2>
+		<ul>
+			<li class='todo'>
+			unify ports attribute nomenclature (audioout...)
+			<li class='todo'>
+				make ports private. Thus use the base ports for attaching
+			</li>
+		</ul>
+	</body>
+</html>
