@@ -102,7 +102,7 @@ namespace MTG {
 	class WindowGenerator: public ProcessingObject {
 		WindowGeneratorConfig mConfig;
 
-		const char *GetClassName() {return "WindowGenerator";}
+		const char *GetClassName() const {return "WindowGenerator";}
 
 		/** Config change method
 		 * @throw

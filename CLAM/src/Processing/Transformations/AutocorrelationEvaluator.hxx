@@ -51,7 +51,7 @@ namespace CLAM
 		/** Autocorrelation size */
 		int mSize;
 
-		const char *GetClassName() {return "Autocorrelation Evaluator";}
+		const char *GetClassName() const {return "Autocorrelation Evaluator";}
 
 		int GetSize() {return mSize;}
 

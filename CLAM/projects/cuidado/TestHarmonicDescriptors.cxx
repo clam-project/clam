@@ -39,7 +39,7 @@ namespace MTG {
 	class PeakDetectionSystem: public ProcessingObject {
 	  PeakDetectionSystemConfig mConfig;
 	  
-	  const char *GetClassName() {return "PeakDetectionSystem";}
+	  const char *GetClassName() const {return "PeakDetectionSystem";}
 
 	  bool ConcreteConfigure(const ProcessingObjectConfig&) throw(std::bad_cast);
 	  

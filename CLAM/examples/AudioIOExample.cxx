@@ -68,7 +68,7 @@ class Tremolo: public Processing {
 	TData mPhaseDelta;
 	TData mMidAmplitude;
 	TData mTremoloAmplitude;
-	const char* GetClassName() {return "Tremolo";}
+	const char* GetClassName() const {return "Tremolo";}
 	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig &cfg) throw(std::bad_cast);
 public:
@@ -178,7 +178,7 @@ class AudioIOExample : public ProcessingComposite {
 	bool ConfigureData();
 	void ConfigureAudio(Audio&);
 
-	const char* GetClassName() {return "AudioIOExample";}
+	const char* GetClassName() const {return "AudioIOExample";}
 
 	bool ConcreteStart() throw(ErrProcessingObj);
 	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);

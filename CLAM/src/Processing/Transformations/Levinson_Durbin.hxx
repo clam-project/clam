@@ -48,7 +48,7 @@ namespace CLAM
 		/** Order Filter */
 		int mOrder;
 
-		const char *GetClassName() { return "Levinson_Durbin"; }
+		const char *GetClassName() const { return "Levinson_Durbin"; }
 
 		int GetOrder() { return mOrder; }
 

@@ -128,6 +128,7 @@ public:
 	Segmentator();
 	Segmentator(const SegmentatorConfig& c);
 	~Segmentator();
+	const char * GetClassName() const {return "Segmentator";}
 	const ProcessingConfig& GetConfig() const {return mConfig;}
 	bool Do();
 	bool Do(Segment& originalSegment,SegmentDescriptors& descriptors); //for the time being only inplace processing is enabled

@@ -58,7 +58,7 @@ namespace CLAM
 		BinaryAudioOpConfig mConfig;
 		BinOp	     mOperation;
 		
-		const char *GetClassName() {return "BinaryAudioOperation";}
+		const char *GetClassName() const {return "BinaryAudioOperation";}
 
 		/** Config change method
 		 * @throw

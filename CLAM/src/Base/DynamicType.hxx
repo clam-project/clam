@@ -94,7 +94,7 @@ public:
 	DynamicType(const DynamicType& prototype);
 	virtual ~DynamicType();
 	
-	virtual char* GetClassName() const =0;
+	virtual const char* GetClassName() const =0;
 protected:
 	/**
 	* The concrete dynamic type constructor calls DefaultInit(). This allows user to initialize

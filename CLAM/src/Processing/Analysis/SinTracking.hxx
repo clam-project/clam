@@ -44,7 +44,7 @@ namespace CLAM {
 	{
 		mutable SinTrackingConfig mConfig;
 
-		virtual const char *GetClassName() {return "SinTracking";} 
+		const char *GetClassName() const {return "SinTracking";} 
 
 		/** Config change method
 		 * @throw

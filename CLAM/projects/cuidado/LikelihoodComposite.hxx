@@ -37,7 +37,7 @@ namespace MTG {
 		SpectrumProduct  prod;
 		PeakLikelihood   likelihood;
 
-		const char *GetClassName() {return "LikelihoodComposite";}
+		const char *GetClassName() const {return "LikelihoodComposite";}
 		
 		bool ConcreteConfigure(const ProcessingObjectConfig&) throw(std::bad_cast);
 

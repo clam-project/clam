@@ -24,7 +24,7 @@ namespace MTG {
 	class CircularShift: public ProcessingObject {
 		CircularShiftConfig mConfig;
 
-		const char *GetClassName() {return "CircularShift";}
+		const char *GetClassName() const {return "CircularShift";}
 
 		/** Config change method
 		 * @throw

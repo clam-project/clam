@@ -92,6 +92,10 @@ public:
 		mElementsName = elementName;
 	}
 	virtual ~XMLIterableAdapter() {};
+	const char * GetClassName() const {
+		CLAM_ASSERT(false, "You should never call XMLIterableAdapter::GetClassName");
+		return 0;
+	}
 
 // Accessors
 public:

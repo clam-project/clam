@@ -110,7 +110,7 @@ namespace CLAM {
 				
 	private:
 
-		const char *GetClassName() {return "OverlapAdd";}
+		const char *GetClassName() const {return "OverlapAdd";}
 
 		/** Configuration change method
 		 * @throw

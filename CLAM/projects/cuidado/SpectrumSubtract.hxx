@@ -98,7 +98,7 @@ namespace MTG {
 		/** OBSOLETE */
 		std::string NewUniqueName();
 
-		const char *GetClassName() {return "SpectrumSubtract";}
+		const char *GetClassName() const {return "SpectrumSubtract";}
 
 
 		/** Config change method

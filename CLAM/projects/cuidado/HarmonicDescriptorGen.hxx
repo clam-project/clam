@@ -24,7 +24,7 @@ namespace MTG {
 	class HarmonicDescriptorGen: public ProcessingObject {
 		HarmonicDescriptorGenConfig mConfig;
 
-		const char *GetClassName() {return "HarmonicDescriptorGen";}
+		const char *GetClassName() const {return "HarmonicDescriptorGen";}
 
 		/** Config change method
 		 * @throw

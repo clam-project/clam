@@ -71,7 +71,7 @@ namespace CLAM {
 	class FundFreqDetect: public Processing {
 		mutable FundFreqDetectConfig mConfig;
 
-		const char *GetClassName() {return "FundFreqDetect";}
+		const char *GetClassName() const {return "FundFreqDetect";}
 
 		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
 

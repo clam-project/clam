@@ -35,7 +35,7 @@ namespace CLAM{
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
-		const char *GetClassName() {return "SMSFreqShift";}
+		const char *GetClassName() const {return "SMSFreqShift";}
 
 
 	public:

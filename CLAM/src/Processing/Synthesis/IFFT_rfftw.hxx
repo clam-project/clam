@@ -86,6 +86,8 @@ namespace CLAM {
 
 		~IFFT_rfftw();
 
+		const char * GetClassName() const {return "IFFT_rfftw";}
+
 		bool Do();
 
 		void Attach(Spectrum& in, Audio &out);

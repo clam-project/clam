@@ -100,7 +100,7 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		const char* GetClassName() 
+		const char* GetClassName() const
 		{ 
 			return "FFT_rfftw"; 
 		}

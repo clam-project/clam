@@ -46,7 +46,7 @@ class SoundFileIO;
 
 	private:
 
-		const char *GetClassName() {return "AudioFileIn";}
+		const char *GetClassName() const {return "AudioFileIn";}
 
 		void AddSilence(Audio&, int length);
 
