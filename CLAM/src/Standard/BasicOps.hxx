@@ -64,11 +64,11 @@ public:
 	{
 		return (*this)(orig,num,(StaticBool<abs>*)(0));
 	}
-	T operator() (const T& orig,const T& num,StaticFalse* b)
+	T operator() (const T& orig,const T& num,StaticFalse* doAbsolute)
 	{
 		return orig+mP(num);
 	}
-	T operator() (const T& orig,const T& num,StaticTrue* b)
+	T operator() (const T& orig,const T& num,StaticTrue* doAbsolute)
 	{
 		return orig+Abs(mP(num));
 	}
@@ -149,7 +149,7 @@ typedef WeightedCubeTmpl<> WeightedCube;
 template <int s=1,bool abs=false,class T=TData,class U=TData> class BiasedPower
 {
 public:
-	BiasedPower(U imean){mean=imean;};
+	BiasedPower(U imean):mean(imean){}
 	U operator() (const U& orig,const T& num)
 	{
 		return (*this)(orig,num,(StaticBool<abs>*)(0));
@@ -200,7 +200,7 @@ template <int s,bool abs=false,class T=TData> class PoweredSum:public BaseMemOp
 {
 public:
 	PoweredSum():memory((T)0.0){}
-	T operator()(const Array<T>& a,StaticTrue* b=NULL)
+	T operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -243,7 +243,8 @@ public:
 
 typedef LogPlusTmpl<> LogSum;
 
-typedef ProductTmpl<> Product;
+// TODO: Remove it as it seems dupplicated
+//typedef ProductTmpl<> Product;
 
 
 /** Class Function for computing logarithmic sum of all data in vector using.
@@ -289,7 +290,6 @@ public:
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
 		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(1.0),std::multiplies<T>());
-		
 	}
 private:
 	T memory;
@@ -315,7 +315,7 @@ public:
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
-			return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(0.0),mWP);
+		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(0.0),mWP);
 	}
 private:
 	T memory;
@@ -324,29 +324,28 @@ private:
 };
 
 
-/** Class Function that computes Sum(x(i)*y(i)^n) using std::accumulate and WeightedPower<T,s> BinaryOp
+/** Class Function that computes Sum(x(i)^n * y(i)) using std::accumulate and WeightedPower<T,s> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
 template <int s,bool abs=false, class T=TData> class CrossWeightedPoweredSum:public BaseMemOp
 {
 public:
 	CrossWeightedPoweredSum():memory(0.0){}
-	T operator()(const Array<T>& a1,const Array<T>& a2,StaticTrue* b=NULL)
+	T operator()(const Array<T>& x,const Array<T>& y,StaticTrue* b=NULL)
 	{
 		if(!alreadyComputed)
 		{
-			memory=(*this)(a1,a2,(StaticFalse*)(0));
+			memory=(*this)(x,y,(StaticFalse*)(0));
 			alreadyComputed=true;
 		}
 		return memory;
 		
 	}
-	T operator()(const Array<T>& a1,const Array<T>& a2,StaticFalse*)
+	T operator()(const Array<T>& x,const Array<T>& y,StaticFalse*)
 	{
-		return inner_product(a1.GetPtr(),a1.GetPtr()+a1.Size(),a2.GetPtr(),T(1.0),std::plus<T>(),PoweredProduct<s,T>());	
+		return inner_product(x.GetPtr(),x.GetPtr()+x.Size(),y.GetPtr(),T(1.0),std::plus<T>(),PoweredProduct<s,T>());	
 	}
 private:
 	T memory;
-	WeightedPower<s,abs,T> mWP;
 
 };
 
@@ -615,8 +614,7 @@ public:
 	{
 		return (*this)(a,mBPS,(StaticFalse*)(0));
 	}
-	
-	
+
 	/** Compute central moments using raw moments*/
 	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,StaticTrue* b=NULL)
 	{
