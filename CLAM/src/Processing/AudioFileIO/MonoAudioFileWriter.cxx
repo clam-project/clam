@@ -58,7 +58,8 @@ namespace CLAM
 		Audio& data = mInput.GetData();
 
 		mOutStream->WriteData( 0, data.GetBuffer().GetPtr(), data.GetSize() );
-
+	
+		mInput.LeaveData();
 		return true;
 	}
 

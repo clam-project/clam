@@ -50,6 +50,11 @@ namespace CLAM
 		return "MultiChannelAudioFileReader";
 	}
 
+	bool MultiChannelAudioFileReader::ModifiesPortsAndControlsAtConfiguration()
+	{
+		return true;
+	}
+
 	const ProcessingConfig& MultiChannelAudioFileReader::GetConfig() const
 	{
 		return mConfig;
@@ -106,6 +111,15 @@ namespace CLAM
 
 		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
+
+		i = mOutputs.begin();
+		while( i != mOutputs.end() )
+		{	
+			(*i)->LeaveData();
+			i++;
+		}
+
+
 
 		return true;
 	}

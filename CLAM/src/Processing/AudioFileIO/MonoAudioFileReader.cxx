@@ -130,6 +130,7 @@ namespace CLAM
 		mCurrentBeginTime += mDeltaTime;
 		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 
+		mOutput.LeaveData();
 		return true;
 	}
 	
