@@ -66,6 +66,8 @@ namespace CLAM
 				void selPos(TData);
 				void toolTip(QString);
 
+				void leavingMouse();
+
 			protected:
 				View _view;
 				Viewport _viewport;

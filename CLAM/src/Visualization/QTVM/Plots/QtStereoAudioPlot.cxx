@@ -167,7 +167,6 @@ namespace CLAM
 			// sel pos sync
 			connect(_leftChannel,SIGNAL(selPos(TData)),_rightChannel,SLOT(setSelPos(TData)));
 			connect(_rightChannel,SIGNAL(selPos(TData)),_leftChannel,SLOT(setSelPos(TData)));
-			
 		}
 
 		void QtStereoAudioPlot::SetData(std::vector<Audio> data)
@@ -336,7 +335,6 @@ namespace CLAM
 			_leftChannel->switchColors();
 			_rightChannel->switchColors();
 		}
-
 	}	
 }
 

@@ -35,6 +35,7 @@ namespace CLAM
 			connect(_controller,SIGNAL(sendView(View)),this,SLOT(receivedView(View)));
 			connect(_controller,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
 			connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
+			connect(this,SIGNAL(leavingMouse()),_controller,SIGNAL(leavingMouse()));
 		}
 
 		void DisplaySurface::initializeGL()
@@ -128,6 +129,12 @@ namespace CLAM
 		{
 			QToolTip::remove(this);
 			QToolTip::add(this,s);
+		}
+
+		void DisplaySurface::leaveEvent(QEvent* e)
+		{
+			QWidget::leaveEvent(e);
+			emit leavingMouse();
 		}
 	}
 }

@@ -29,6 +29,9 @@ namespace CLAM
 				void SetBackgroundColor(double r, double g, double b);
 				void SetController(PlotController* controller);
 
+			signals:
+				void leavingMouse();
+
 			private slots:
 				void receivedView(View);
 				void updateToolTip(QString);
@@ -42,6 +45,8 @@ namespace CLAM
 				virtual void mouseMoveEvent(QMouseEvent* e);
 
 				virtual void resizeEvent(QResizeEvent *e);
+
+				virtual void leaveEvent(QEvent* e);
 
 			private:
 				View _view;
