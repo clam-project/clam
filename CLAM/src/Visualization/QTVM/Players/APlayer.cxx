@@ -38,8 +38,7 @@ namespace CLAM
 		}
 		
 		void APlayer::thread_code()
-		{
-			TSize nSamples = _leftChannel.GetSize();         
+		{       
 			TData sampleRate = _leftChannel.GetSampleRate(); 
 			TSize frameSize = 512;                    
 
