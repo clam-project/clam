@@ -23,7 +23,7 @@ distclean: clean
 	
 depend: .FORCE
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
-	$(SRCDEPS) -r -D \
+	$(SRCDEPS) -r -f \
 	$(PREINCL) $(SEARCHINCL) \
 	$(MAINSOURCES) > Makefile.vars
 
@@ -31,7 +31,7 @@ depend: .FORCE
 
 Makefile.vars: Makefile
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
-	@$(SRCDEPS) -r -D \
+	@$(SRCDEPS) -r -f \
 	$(PREINCL) $(SEARCHINCL) \
 	$(MAINSOURCES) > Makefile.vars
 
