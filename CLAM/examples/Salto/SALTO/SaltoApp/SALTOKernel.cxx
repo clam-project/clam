@@ -17,9 +17,9 @@ namespace SALTO
 
 	Kernel::Kernel()
 	{
-		mpParams = Parameters::GetInstance();
+		mpParams=&Parameters::GetInstance();
 		// SDIF database loading...
-		mDSPCfg.SetParams( *mpParams );
+		mDSPCfg.SetParams( Parameters::GetInstance() );
 		mpDSP = new SaltoSynth(mDSPCfg);
 	}
 
@@ -34,10 +34,11 @@ namespace SALTO
 
 	void Kernel::StartProcessing( std::string melodyFile, std::string outputToFile )
 	{
-		CSaltoDataManagment::InitSaltoDB( mpParams );
+		Parameters& refParams = Parameters::GetInstance();
+		CSaltoDataManagment::InitSaltoDB( &refParams );
 
 		MIDIHandlerConfig MIDIHandlerCfg;
-		MIDIHandlerCfg.SetTranspose( mpParams->GetTranspose() );
+		MIDIHandlerCfg.SetTranspose( refParams.GetTranspose() );
 		MIDIHandlerCfg.SetPitchModRange( mDSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
 
@@ -48,14 +49,15 @@ namespace SALTO
 /*		if ( melodyFile != "None" )
 			mpParams->SetUseMelody(true);
 */
-		mpParams->SetUseBreathController(true);
+		refParams.SetUseBreathController(true);
+		//refParams.SetUseMidiKeyboard(true);
 		mMelody.Configure( melodyCfg );
 		mMelody.LinkOutWithInControl( 0, &mMIDIHandler, 0);
 		mMelody.LinkOutWithInControl( 1, &mMIDIHandler, 1);
 		
 		mpDSP->ResetEventSample();
 		if ( outputToFile != "None" )
-			mpParams->SetWriteToFile(true);
+			refParams.SetWriteToFile(true);
 		ConfigureSampleBasedIO(  outputToFile );
 		ConfigureMIDIBasedIO();
 
@@ -67,20 +69,24 @@ namespace SALTO
 		Audio* synthbuffer = NULL;
 
 		mpDSP->Start();
-		try
+		if(mpParams->GetUseMelody())
 		{
-			mMelody.Start();
-		}
-		catch( CLAM::ErrDynamicType& e )
-		{
-			e.Print();
-			exit(-1);
+			try
+			{
+				mMelody.Start();
+			}
+			catch( CLAM::ErrDynamicType& e )
+			{
+				e.Print();
+				exit(-1);
+			}
 		}
 		mFileAudioOut.Start();
 		mMIDIManager.Start();
 		mAudioManager->Start();
 		mMIDIHandler.Start();
 
+		
 		while ( LoopCondition() )
 			{
 				ProcessMIDIMessages();
@@ -181,7 +187,6 @@ namespace SALTO
 
 		mBreathController = BreathController( inBreathNoteCfg, inCtrlCfg );
 
-		mPitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
 
 		mKeyboardNote.LinkOutWithInControl( 0, &mMIDIHandler, 1);
 		mKeyboardNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
@@ -193,8 +198,10 @@ namespace SALTO
 		mBreathController.mInNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
 		mBreathController.mInNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
 
+		mPitchBend.LinkOutWithInControl( 11, &mMIDIHandler, 2);
+
 		mBreathController.mAirSpeed.LinkOutWithInControl( 0, &mMIDIHandler, 3 );
-		
+	
 	}
 	void Kernel::ConfigureSampleBasedIO( std::string outputFile)
 	{
