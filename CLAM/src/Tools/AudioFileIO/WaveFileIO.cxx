@@ -18,7 +18,7 @@ void WaveFileIO::InitSelf(void)
 
 int WaveFileIO::ReadChunkHeader(ChunkHeader& h)
 {
-	int ret = fread(&h,1,sizeof(h),mFile);
+	int ret = int( fread(&h,1,sizeof(h),mFile) );
 	SWAP(h.len);
 	return ret;
 }
@@ -27,17 +27,17 @@ int WaveFileIO::WriteChunkHeader(const ChunkHeader& h)
 {
 	ChunkHeader cp = h;
 	SWAP(cp.len);
-	return fwrite(&cp,1,sizeof(cp),mFile);
+	return int( fwrite(&cp,1,sizeof(cp),mFile) );
 }
 
 int WaveFileIO::ReadID(ID& id)
 {
-	return fread(&id,1,sizeof(id),mFile);
+	return int( fread(&id,1,sizeof(id),mFile) );
 }
 
 int WaveFileIO::WriteID(ID& id)
 {
-	return fwrite(&id,1,sizeof(id),mFile);
+	return int( fwrite(&id,1,sizeof(id),mFile) );
 }
 
 bool WaveFileIO::CheckID(const ID& id,const ID& cmp)
@@ -66,7 +66,7 @@ void WaveFileIO::ReadHeader(void)
 		if (CheckID(h.id,"fmt ")) {
 			WaveFmtChunk fmt;
 			int j = 0;
-			j = fread(&fmt,1,sizeof(fmt),mFile);
+			j = int( fread(&fmt,1,sizeof(fmt),mFile) );
 			i += j;
 
 			SWAP(fmt.formatTag);
@@ -88,7 +88,7 @@ void WaveFileIO::ReadHeader(void)
 				char dum[256];
 				int n = (h.len-j);
 				if (n>256) n = 256;
-				j += fread(&dum,1,n,mFile);
+				j += int( fread(&dum,1,n,mFile) );
 			}
 		}
 		else
@@ -147,7 +147,7 @@ void WaveFileIO::WriteHeader(void)
 	SWAP(fmtChunk.blockAlign);
 	SWAP(fmtChunk.sampleWidth);
 	
-	mOffset += fwrite(&fmtChunk,1,sizeof(fmtChunk),mFile);
+	mOffset += int( fwrite(&fmtChunk,1,sizeof(fmtChunk),mFile) );
 
 	mOffset += WriteChunkHeader(dataHeader);
 }
