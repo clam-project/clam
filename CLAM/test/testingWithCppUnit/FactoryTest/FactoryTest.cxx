@@ -21,9 +21,9 @@ private:
 	
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
-	//	std::cout << typeid( 2 );
-	//	std::cout << std::typeid( (CLAM::Oscillator*) 0 );
 
+		CPPUNIT_ASSERT( typeid( CLAM::Oscillator*) == typeid(returned)  ); 
+	
 	}
 };
 
