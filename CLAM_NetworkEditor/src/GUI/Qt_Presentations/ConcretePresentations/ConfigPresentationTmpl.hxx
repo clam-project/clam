@@ -47,7 +47,6 @@
 #include <qpushbutton.h>
 #include <qfiledialog.h>
 
-
 namespace CLAM
 {
 	class CLAM::ProcessingConfig;
@@ -77,8 +76,6 @@ protected:
 public:
 	ConfigPresentationTmpl( QWidget * parent = 0 );
 	virtual ~ConfigPresentationTmpl();
-	virtual void Show();
-	virtual void Hide();	
 
 	template<typename T>
 	void AddWidget(const char *name, void *foo, T& value);
@@ -149,20 +146,9 @@ ConfigPresentationTmpl<ConcreteConfig>::~ConfigPresentationTmpl()
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::Show()
-{
-	show();
-}
-
-template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::Hide()
-{
-	hide();
-}
-
-template<class ConcreteConfig>
 void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( const CLAM::ProcessingConfig & cfg)
 {
+
 //	deep copy from abstract processing config to concrete
 	mConfig = static_cast<const ConcreteConfig &>(cfg);
 
@@ -404,7 +390,7 @@ void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::A
 	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
 	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 	QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
-	fd->setMode( QFileDialog::ExistingFile );
+	fd->setMode( QFileDialog::AnyFile );
 
 	mWidgets.insert(tWidgets::value_type(name, mInput));
 
@@ -418,33 +404,8 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 {	
 	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
 	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-//	value=mInput->text().latin1();
 	value.SetLocation( mInput->text().latin1());
 }
-
-
-/*	
-  template <class ConcreteConfig>
-	void AddWidget(const char *name, DynamicType *foo, T&value) {
-		QHBox * cell = new QHBox(mLayout);
-		new QLabel(QString(name), cell);
-		QPushButton * mInput = new QPushButton("Details...", cell);
-		mInput->setAutoDefault(false);
-		//QTConfigurator * subConfigurator = new QTConfigurator(this;)
-		ConfigPresentationTmpl * subConfigurator = new ConfigPresentationTmpl(this);
-
-		subConfigurator->SetConfig(value);
-		connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
-		mWidgets.insert(tWidgets::value_type(name, mInput));
-	}
-*/
-/*
-	template <class ConcreteConfig>
-	void RetrieveValue(const char *name, DynamicType *foo, T&value) {
-	}	
-*/
-
-
 
 } // namespace NetworkGUI
 
