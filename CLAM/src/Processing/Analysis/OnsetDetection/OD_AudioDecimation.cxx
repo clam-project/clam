@@ -94,9 +94,9 @@ namespace CLAM
 			int j=0;
 			double out = 0.0;
 
-			std::deque<float> inMemory;
+			std::deque<double> inMemory;
 
-			std::deque<float> outMemory;
+			std::deque<double> outMemory;
 
 
 			// The "difficult" part of the filtering loop has been stripmined
