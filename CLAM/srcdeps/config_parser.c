@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "list.h"
 #include "listhash.h"
 #include "hash.h"
@@ -228,28 +230,31 @@ void config_parse_line(char* ptr,const char* filename,int line)
 	** in tmp */	
 	config_parse_line_sub(&d,0,1);
 
-	/* we now have a token list */
-
-	{
+	if (tmp[0]) {
+		/* we now have a token list */
 		int k = 0;
 		char* ptr = tmp;
 		char* key = ptr;
 		listkey* i = 0;
-		int isinclude = 0;
+
+		int is_include = 0;
+		int need_assign = 1;
+		int had_assign = 0;
+		int had_filename = 0;
 
 		/* special case: the first token is include */
 		if (!strcmp(key,"include"))
 		{
-			isinclude = 1;
+			is_include = 1;
+			need_assign = 0;
 		}
 		
 		while (*ptr)
 		{
-			if (isinclude)
+			if (is_include)
 			{
 				if (k>0)
 				{
-				
 					int err;
 					char filename2[2048];
 					{
@@ -277,6 +282,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 							ptr,filename,line);
 						exit(-1);			
 					}
+					had_filename = 1;
 				}
 			}
 			else
@@ -287,6 +293,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 				{
 					if (!strcmp(ptr,"="))
 					{
+						had_assign = 1;
 						i = listhash_add_key_once(config,key);
 						if (i->l)
 						{
@@ -304,7 +311,25 @@ void config_parse_line(char* ptr,const char* filename,int line)
 			ptr++;
 			k++;
 		}
-	}
+
+		if (need_assign && !had_assign)
+		{
+			fprintf(stderr,
+					"Error: missing '=' in line %s:%d\n"
+					"(Maybe a missing '\' at an end of line?)\n",
+					filename,line);
+			exit(-1);			
+		}
+
+		if (is_include && !had_filename)
+		{
+			fprintf(stderr,
+					"Error: filename missing after include in line %s:%d\n"
+					"(Maybe a missing '\' at an end of line?)\n",
+					filename,line);
+			exit(-1);			
+		}
+}
 }
 
 int config_parse(const char* filename)
