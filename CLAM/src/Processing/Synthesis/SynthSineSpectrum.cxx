@@ -1,3 +1,5 @@
+#include "SpectrumConfig.hxx"
+#include "SpecTypeFlags.hxx"
 #include "SynthSineSpectrum.hxx"
 
 using namespace CLAM;
@@ -628,9 +630,9 @@ SynthSineSpectrum::SynthSineSpectrum(SynthSineSpectrumConfig& cfg)
 }
 
 
-bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const SynthSineSpectrumConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	WindowGeneratorConfig wcfg;
 	wcfg.SetNormalize(EWindowNormalize::eNone);
 	wcfg.SetSize(MAINLOBE_TABLE_SIZE);
@@ -663,12 +665,12 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
  	Scfg.SetScale(EScale::eLinear);
 	SpecTypeFlags sflags;
    	sflags.bComplex = 1;
- 		sflags.bPolar = 0;
- 		sflags.bMagPhase = 0;
- 		sflags.bMagPhaseBPF = 0;
+	sflags.bPolar = 0;
+	sflags.bMagPhase = 0;
+	sflags.bMagPhaseBPF = 0;
  	Scfg.SetType(sflags);
  	Scfg.SetSize(mSynthSineSpectrum.Size());
- 	Scfg.SetSpectralRange(22050);
+ 	Scfg.SetSpectralRange(residualSpectrumOut.GetSpectralRange());
  	residualSpectrumOut.Configure(Scfg);    
 
 	residualSpectrumOut.SetComplexArray(mSynthSineSpectrum); 
@@ -677,7 +679,7 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
 
 void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArray, double gain)
 {
-	TSize 		mainLobeBins = TData(8)*pow(2,mConfig.GetZeroPadding()) ; // Number of bins in the mainlope of a transformed BHarris92 window 
+	TSize 		mainLobeBins = TData(8)*pow(2.0,(double)mConfig.GetZeroPadding()) ; // Number of bins in the mainlope of a transformed BHarris92 window 
                            
 	TIndex 		b,i,k,l,Index,numPeaks = peakArray.GetnPeaks();
   					
@@ -697,14 +699,14 @@ void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArr
 	TData binPosFactor=2*(spectrumSize-1)/samplingRate;
 	TData firstBinFactor= 3* pow((TData)2,(TData)zeroPadding);
 
-	int incr=int(pow(2,9-mConfig.GetZeroPadding()));
+	int incr=int(pow(2.0,9.0-mConfig.GetZeroPadding()));
 	int lastBin=4096-incr;
 	/* loop thru all the peaks ...*/
 	for(i=0;i<numPeaks;i++)
 	{
 		if(peakArray.GetScale()==EScale::eLog)//if it is in dB
 		{
-			currMag = pow(10,(peakMagBuffer[i]/20));
+			currMag = pow(10.0,(peakMagBuffer[i]/20.0));
 		}
 		else	currMag = peakMagBuffer[i];
 		currFreq = peakFreqBuffer[i];

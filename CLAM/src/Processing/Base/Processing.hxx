@@ -20,16 +20,22 @@
  */
 
 
-#ifndef _PROCESING_OBJECT_H
-#define _PROCESING_OBJECT_H
+#ifndef _Processing_hxx_
+#define _Processing_hxx_
 
-// CLAM Processing Object prototype.
 
 #include "DynamicType.hxx"
 #include "Component.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
+#include "PublishedInControls.hxx"
+#include "PublishedOutControls.hxx"
+#include "PublishedInPorts.hxx"
+#include "PublishedOutPorts.hxx"
+#include "ProcessingConfig.hxx"
+
+
 #include <vector>
 #include <list>
 #include <typeinfo>
@@ -38,50 +44,15 @@
 namespace CLAM {
 
 	class Processing;
+	class Port;
 	class InPort;
 	class OutPort;
 	class ProcessingComposite;
 
 	/**
-	 * This is an abstract class which serves as interface for
-	 * configuration classes used as processing object construction
-	 * arguments, which must derive from it.
-	 * <p>
-	 * Note that the required virtual methods may be provided including
-	 * a "Name" dynamic attribute in the derived dynamic classes.
-	 * <p>
-	 * Note that processing objects constructors will take configuration
-	 * objects by value; further changes in a configuration object
-	 * will have no effect on the processing object constructed with it.
-	 */
-	class ProcessingConfig : public DynamicType {
-	public:
-				 
-		
-		virtual ~ProcessingConfig(){};
-
-		virtual const char * GetClassName() const {return "Processing";}
-
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @param n Name of the new processing object
-		 */
-		virtual void SetName(const std::string&) = 0;
-		
-		/// Implemented by the concrete DT macro
-		virtual bool HasName() const = 0;
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @return Name of the new processing object
-		 */
-		virtual std::string& GetName(void) const = 0;
-
-	};
-
-	/**
 	 * This is the base of all the CLAM processing object classes.
-	 * <p>
-	 * It holds information common to all objects: lists of ports,
+	 * 
+	 * It holds common information to all processings: lists of ports,
 	 * lists of controls, name, etc.  */
 	class Processing: public Component {
 	public:
@@ -302,6 +273,21 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteStart() {return true;};
 
+
+		/**
+		 * Helper template to convert a reference to a ProcessingConfig to the concrete
+		 * ProcessingConfig specified on the first parameter.
+		 * @param concrete The copy destination (it forces the runtime type for abstract)
+		 * @param abstract A reference to the configuration to be copied
+		 * @pre The object runtime type must be exactly the type required by the first parameter
+		 */
+		template <typename ConcreteConfig>
+		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const {
+			CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
+				"Configuring a Processing with a configuration not being the proper type.");
+			concrete = static_cast<const ConcreteConfig &>(abstract);
+		}
+
 		/**
 		 * Processing objects have to redefine this method when stoping
 		 * them implies some internal changes. ie: releasing resources.
@@ -311,7 +297,11 @@ namespace CLAM {
 
 		void SetOrphan();
 
-		bool ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj);
+		/**
+		 * An special Configure case for TopLevelProcessing.
+		 * @todo review its utility and refactor code duplication
+		 */
+		void ConfigureOrphan(const ProcessingConfig &c);
 
 		bool AbleToExecute(void) const
 		{
@@ -322,7 +312,7 @@ namespace CLAM {
 			 */
 			CLAM_BEGIN_DEBUG_CHECK
 				if (GetExecState() == Unconfigured ||
-			      GetExecState() == Ready)
+				    GetExecState() == Ready)
 				{
 					std::string err(GetClassName());
 					err += ": Do(): Not in execution mode - did you call Start on this "
@@ -343,19 +333,28 @@ namespace CLAM {
 
 		/** Method to turn the object into running state.
 		 * This method must be called before any call to Do() methods.
-		 * @throw ErrProcessingObj if the processing object is already
-		 * running (or disabled).
+		 * @asserts that the processing object is ready
 		 */
-		void Start(void) throw(ErrProcessingObj);
+		void Start(void);
 
 		/** Method to put the object out of running state When in
 		 * execution mode, this method must be called before any
 		 * further call to Configure() methods
-		 * @throw ErrProcessingObj if the processing object is not
+		 * @asserts that the processing object is
 		 * runnig (or disabled).
 		 */
-		void Stop(void) throw(ErrProcessingObj);
+		void Stop(void);
+	
 
+	public:
+		bool CanDoUsingPorts()
+		{	
+			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
+		}
+
+		/** Override this method if your processing cannot process inplace*/
+		virtual bool CanProcessInplace() {return true;}
+		
 
 		/**
 		 * Supervised mode execution method (using ports)
@@ -403,6 +402,7 @@ namespace CLAM {
 		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
 		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
 		InControl* GetInControl(unsigned inId) const;
+		OutControl* GetOutControl(unsigned inId) const;
 
 		/** Processing object composite iterator */
 		typedef std::list<Processing*>::iterator iterator;
@@ -436,6 +436,8 @@ namespace CLAM {
 
 		/** Configuration attribute access method */
 		const std::string &GetName() const {return mName;}
+
+		void SetName( const std::string& str ) { mName = str; }
 
 		/**
 		 * Builds the qualified name of the object.
@@ -502,7 +504,7 @@ namespace CLAM {
 		 */
 		virtual void StoreOn(Storage & store)
 		{
-
+			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
 		}
 
 		/**
@@ -519,11 +521,46 @@ namespace CLAM {
 		 */
 		virtual void LoadFrom(Storage & store)
 		{
-
+			CLAM_ASSERT(false, "Processing::LoadFrom() not yet implemented");
 		}
+
+		//---------
+		// refactoring ports/controls in progress
+		// begin
+	public:
+		
+		PublishedInControls& GetInControls()
+		{
+			return mInControls;
+		}
+		
+		PublishedOutControls& GetOutControls()
+		{
+			return mOutControls;
+		}
+	
+		PublishedInPorts& GetInPorts()
+		{
+			return mInPorts;
+		}
+		PublishedOutPorts& GetOutPorts()
+		{
+			return mOutPorts;
+		}
+
+	private:
+		PublishedInControls mInControls;
+		PublishedOutControls mOutControls;
+		PublishedInPorts mInPorts;
+		PublishedOutPorts mOutPorts;
+
+		// end refactoring in progress
+		// ---------
+
 	};
+
 
 };//namespace CLAM
 
-#endif//_PROCESING_OBJECT_H
+#endif
 

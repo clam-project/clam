@@ -8,45 +8,13 @@
 #include "Processing.hxx"
 
 
+#include "PhaseManagementConfig.hxx"
+
 namespace CLAM{
 
-/** PhaseGeneration
-*   Enumeration to use for specifying the type of phase generation used
-*/
-class EPhaseGeneration: public Enum
-{
-public:
-	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EPhaseGeneration() : Enum(sEnumValues, sDefault) {}
-	EPhaseGeneration(tValue v) : Enum(sEnumValues, v) {};
-	EPhaseGeneration(std::string s) : Enum(sEnumValues, s) {};
 
-	typedef enum {
-		eAlign,
-		eRandom,
-		eContinuation
-	} tEnum;
+	/* PhaseManagementConfig moved to PhaseManagementConfig.hxx */
 
-	virtual Component* Species() const
-	{
-		return (Component*) new EPhaseGeneration;
-	};
-};
-
-class PhaseManagementConfig:public ProcessingConfig
-{
-	DYNAMIC_TYPE_USING_INTERFACE (PhaseManagementConfig,4,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-	DYN_ATTRIBUTE(1,public,TSize,MaxSines);
-	DYN_ATTRIBUTE(2,public,TData,SamplingRate);
-	DYN_ATTRIBUTE(3,public,EPhaseGeneration,Type);
-public:
-	~PhaseManagementConfig(){};
-	void DefaultInit();
-	void DefaultValues();
-};
 
 
 /** 
@@ -68,6 +36,10 @@ public:
 	
 	bool Do(void){ return false;}
 	bool Do(Frame& currentFrame);
+	
+	/** Basic non-supervised Do.@todo: the way the algorithms are now, they just allow inplace
+	 *	processing. This should be changed.*/
+	bool Do(SpectralPeakArray& in);
 
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&);
@@ -76,17 +48,21 @@ public:
 
 	void Init();
 
+	//Controls
+	InControlTmpl<PhaseManagement> mCurrentTime;
+	InControlTmpl<PhaseManagement> mCurrentPitch;
 
-/* testing for SALTO!! private:*/
-	
 public:
 	void ResetPhaseAlignment();	
 
-	void DoPhaseAlignment (SpectralPeakArray& peakArray,double currentTime,double fundFreq);
+	void DoPhaseAlignment (SpectralPeakArray& peakArray);
 	void DoRandomPhases	(SpectralPeakArray& peakArray);
-	void DoPhaseContinuation(SpectralPeakArray& p,TData t);
+	void DoPhaseContinuation(SpectralPeakArray& p);
 	void SetLastPhasesAndFreqs (SpectralPeakArray& peakArray);
 	void GenerateRandomPhases(DataArray& a);
+
+
+
 
 private:
 	double	mFrameTime,
@@ -100,6 +76,7 @@ private:
 	
 	/* private configuration*/
 	PhaseManagementConfig mConfig;
+
 
 };
 

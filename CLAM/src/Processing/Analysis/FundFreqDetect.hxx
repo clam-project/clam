@@ -19,44 +19,19 @@
  *
  */
 
-#ifndef _FUNDFREQ_DETECT__
-#define _FUNDFREQ_DETECT__
+#ifndef _FundFreqDetect__
+#define _FundFreqDetect__
 
+#include "DataTypes.hxx"
 #include "Processing.hxx"
-#include "DynamicType.hxx"
-#include "Spectrum.hxx"
-#include "SpectralPeak.hxx"
-#include "SpectralPeakArray.hxx"
-#include "Fundamental.hxx"
+#include "FundFreqDetectConfig.hxx"
 
 namespace CLAM {
 
-	class FundFreqDetectConfig: public ProcessingConfig
-	{
-	public:
-	  DYNAMIC_TYPE_USING_INTERFACE (FundFreqDetectConfig, 18,ProcessingConfig);
-	  DYN_ATTRIBUTE (0, public, std::string, Name);
-	  DYN_ATTRIBUTE (1,public,TData, ReferenceFundFreq); 
-	  DYN_ATTRIBUTE (2,public,TData, LowestFundFreq); 
-	  DYN_ATTRIBUTE (3,public,TData, HighestFundFreq); 
-	  DYN_ATTRIBUTE (4,public,TData, MaxCandMagDiff); 
-	  DYN_ATTRIBUTE (5,public,TData, MaxFundFreqError); 				 
-	  DYN_ATTRIBUTE (6,public,TData, PMp); 
-	  DYN_ATTRIBUTE (7,public,TData, PMq );
-	  DYN_ATTRIBUTE (8,public,TData, PMr );
-	  DYN_ATTRIBUTE (9,public,TData, MPp );
-	  DYN_ATTRIBUTE (10,public,TData, MPq );
-	  DYN_ATTRIBUTE (11,public,TData, MPr);
-	  DYN_ATTRIBUTE (12,public,TSize, PMnPeaks); 
-	  DYN_ATTRIBUTE (13,public,TSize, MPnPeaks);
-	  DYN_ATTRIBUTE (14,public,TData, PMCont );
-	  DYN_ATTRIBUTE (15,public,TData, MPCont );
-	  DYN_ATTRIBUTE (16,public,TSize, NInt);
-	  DYN_ATTRIBUTE (17,public,TSize, NMaxCandidates); 
-	  void DefaultInit();
-	  void DefaultValues();
-	  ~FundFreqDetectConfig(){};
-	};
+	class Storage;
+	class ProcessingConfig;
+	class Fundamental;
+	class SpectralPeakArray;
 
 	/**    This class estimates a fundamental frequency value
 	*     in the spectral domain for one single spectral Frame.
@@ -73,7 +48,7 @@ namespace CLAM {
 
 		const char *GetClassName() const {return "FundFreqDetect";}
 
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		FundFreqDetect();
@@ -111,7 +86,7 @@ namespace CLAM {
 		TData mReferenceFundFreq;
 		TData mLowestFundFreq;
 		TData mHighestFundFreq;
-	  
+
 		/** Max magnitude offset allowed between candidates (30 dB default) */
 		TData mMaxCandMagDiff; 
 
@@ -127,6 +102,6 @@ namespace CLAM {
 		TData mPMCont, mMPCont; // Harmonic error contributions. Default: 1, 1
 	};
 
-};// namespace CLAM
+} // namespace CLAM
 
 #endif // _FUNFREQ_DETECT_

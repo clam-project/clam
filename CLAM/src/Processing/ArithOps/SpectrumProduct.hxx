@@ -24,7 +24,8 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Spectrum.hxx"
 
 namespace CLAM {
@@ -121,11 +122,9 @@ namespace CLAM {
 
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpectrumProductConfig
-		 * object.
+		 * @pre argument should be an SpectrumProductConfig
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 

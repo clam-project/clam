@@ -25,13 +25,19 @@
 #include "Audio.hxx"
 #include "AudioFile.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM {
 
 class SoundFileIO;
 
-	/** Class for audiofile Input */
+	/**
+	 * Processing for audio file input. It can be configured 
+	 * using an AudioFileConfig Config class. Only file name 
+	 * and optionally file type must be configured, other 
+	 * fields will be set by the Processing itself once 
+	 * Start() has been called.
+	 */
 	class AudioFileIn: public Processing
 	{
 	protected:
@@ -45,17 +51,16 @@ class SoundFileIO;
 		bool ConcreteStop();
 
 	private:
+		OutPortTmpl<Audio> mOutput;
 
 		const char *GetClassName() const {return "AudioFileIn";}
 
 		void AddSilence(Audio&, int length);
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an FFTConfig
-		 * object.
+		 * @pre argument should be a AudioFileInConfig
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
@@ -63,15 +68,13 @@ class SoundFileIO;
 
 		AudioFileIn(const AudioFileConfig &c);
 
-		OutPortTmpl<Audio> Output;
-
 		virtual ~AudioFileIn();
 
 		/** Configuration access:
 		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		void Attach(Audio& out) {Output.Attach(out);}
+		void Attach(Audio& out) {mOutput.Attach(out);}
 
 		/** Supervised-mode Do function.
 		 */

@@ -27,7 +27,7 @@
 #include "Processing.hxx"
 #include "Audio.hxx"
 #include "AudioDevice.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
 
 namespace CLAM{
 
@@ -41,9 +41,9 @@ friend class AudioDevice;
 private:
 	AudioIOConfig mConfig;
 	AudioDevice* mpDevice;
-public:
 
 	InPortTmpl<Audio> Input;
+public:
 
 	/** Configuration method interface. The Processing base class forces all the concrete classes derived from it to implement this method, which must actually perform the specific configuration tasks.  
 	 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
@@ -51,7 +51,7 @@ public:
 	 *  @param The related ProcessingConfig object
 	 *  @throws A bad_cast exception if the arguments is not the expected configuration class
 	 */
-	bool ConcreteConfigure(const ProcessingConfig& cfg)
+	bool ConcreteConfigure(const ProcessingConfig& c)
 	 throw(ErrProcessingObj);
 
 	/** Getter for the configuration of the class
@@ -79,7 +79,13 @@ public:
 	 */
 	bool Do(void);
 
-	/** Non supervised mode of Do function. The object writes in the device attached for the appropiate channel. Values selected to write are provided for the data chunk passed by parameter
+	/**
+	 * Non supervised mode of Do function. The object writes in the device attached for the appropiate channel. 
+	 * Values selected to write are provided for the data chunk passed by parameter. On current implementations 
+	 * Do() will return immediately when not all output channels of the device has been 'filled' yet. If this is 
+	 * last channel to be 'filled', Do() will block, until the device is ready to receive more data. The size of 
+	 * the data chunk passed has restrictions which are dependent on the implementation. Most will require the 
+	 * size to be a power-of-two somewhere in the region of 32 samples to 8192 samples.
 	 * @param data The Audio chunk that we want to pass to the selected Device
 	 * @return true if the method has been executed correctly
 	 */

@@ -22,6 +22,7 @@
 #ifndef _SMSSynthesis_
 #define _SMSSynthesis_
 
+#include "SMSSynthesisConfig.hxx"
 #include "ProcessingComposite.hxx"
 
 #include "Array.hxx"
@@ -34,7 +35,6 @@
 #include "Segment.hxx"
 #include "InControl.hxx"
 #include "Spectrum.hxx"
-#include "Port.hxx"
 #include "ProcessingData.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "Processing.hxx"
@@ -47,61 +47,6 @@
 #include <stdlib.h>
 
 namespace CLAM {
-
-
-class SMSSynthesisConfig:public ProcessingConfig
-{
-
-friend class SMSSynthesis;
-
-public:
-	
-	DYNAMIC_TYPE_USING_INTERFACE(SMSSynthesisConfig,5,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-/** Configuration for children Processing Objects*/
-	DYN_ATTRIBUTE(1,public, SynthSineSpectrumConfig,SynthSineSpectrum);
-	DYN_ATTRIBUTE(2,public, PhaseManagementConfig,PhaseMan);
-	DYN_ATTRIBUTE(3,public, SpectralSynthesisConfig,SpectralSynth);
-
-	DYN_ATTRIBUTE(4,protected,int,prSamplingRate);
-
-
-//Config shortcuts
-
-public:
-/** Analysis Window size in miliseconds. In num. of samples WindowSize/SR is forced to be odd*/	
-	void SetAnalWindowSize(TSize w);
-	TSize GetAnalWindowSize() const;
-/** Analysis Window type*/
-	void SetAnalWindowType(const EWindowType& t);
-	const EWindowType& GetAnalWindowType() const;
-/** Synthesis window size*/
-	void SetSynthWindowSize(TSize w);
-	TSize GetSynthWindowSize()const;
-
-/** Synthesis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
-	void SetHopSize(TSize h);
-	TSize GetHopSize() const;
-/** Sampling rate of the output audio*/
-	void SetSamplingRate(TData sr);
-	TData GetSamplingRate() const;
-/** Spectrum Size **/
-	void SetSpectrumSize(TSize specSize);
-	TSize GetSpectrumSize() const;
-/** Frame Size **/
-	void SetFrameSize(TSize f);
-	TSize GetFrameSize();
-
-	~SMSSynthesisConfig(){};
-
-private:
-
-	void DefaultInit();
-	void DefaultValues();
-
-	/** Ad-hoc routine for finding FFT Size*/
-	TInt32 PowerOfTwo(TInt32 size);
-};
 
 	/** This is the processing object class we are using to group several
 	 *  other processing objects. 
@@ -123,7 +68,15 @@ private:
 		SynthSineSpectrum		mPO_SynthSineSpectrum;
 		PhaseManagement			mPO_PhaseMan;
 		SpectrumAdder2			mPO_SpectrumAdder;
+		
+		OverlapAdd				mPO_OverlapAddSin;
+		OverlapAdd				mPO_OverlapAddRes;
+		OverlapAdd				mPO_OverlapAddGlobal;
 
+
+
+		/** internal data members used for convenience */
+		Audio mAudioFrame;
 
 		// Internal convenience methods.
 
@@ -133,7 +86,7 @@ private:
 
 		
 		/** Configuration method */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		TInt32 CalculatePowerOfTwo(TInt32 size);
 
@@ -149,17 +102,55 @@ private:
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}
 
+		/** Method used to attach a Processing Data to input and output ports */
+		void Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
+			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
+			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio);
+		
 		/** Supervised mode execution */
 		bool Do(void);
 
 		/** Sinusoidal synthesis, gives also the output spectrum */
-		bool Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio);
+		bool SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio);
 		/** Sinusoidal synthesis */
-		bool Do(SpectralPeakArray& in,Audio& out);
-		
-		bool Do(Frame& in);
+		bool SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out);
 
+		/** non-supervised Do method. Produces as output the sinusoidal spectrum, the global spectrum.
+		 *	and the sinusoidal, residual and globar audio frames. If this overload is used directly
+		 *	you must set the controls for current time and current pitch from the outside.*/
+		bool Do(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
+			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
+			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio);
+
+
+		/** non-supervised Do method. SMSSynthesis produces, as side effect, also some output Spectrums. 
+		 *	Use this overload if you do not care about these spectrums and just need the output audio. 
+		 *	If this overload is used directly you must set the controls for current time and current pitch from the outside.
+		 */
+		bool Do(SpectralPeakArray& inputSinusoidal, Spectrum& inputSpectrum, 
+			Audio& outputAudio, Audio& outputSinusoidal, Audio& outputResidual);
+		/** non-supervised Do method: works on a CLAM::Frame */
+		bool Do(Frame& in);
+		/** non-supervised Do method: works on a CLAM::Segment. Processes current frame in the 
+		 *	segment and increments segment internal counter. */
 		bool Do(Segment& in);
+	protected:
+
+		void InitFrame(Frame& in);
+
+		/** Ports */
+		InPortTmpl<SpectralPeakArray>     mInputSinSpectralPeaks;
+		InPortTmpl<Spectrum>     mInputResSpectrum;
+		OutPortTmpl<Spectrum>     mOutputSinSpectrum;
+		OutPortTmpl<Spectrum>     mOutputSpectrum;
+		OutPortTmpl<Audio> mOutputAudio;
+		OutPortTmpl<Audio> mOutputResAudio;
+		OutPortTmpl<Audio> mOutputSinAudio;
+
+	public:
+		//Controls
+		InControlTmpl<SMSSynthesis> mCurrentTime;
+		InControlTmpl<SMSSynthesis> mCurrentPitch;
 
 
 	};

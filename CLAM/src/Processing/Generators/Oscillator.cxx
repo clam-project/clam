@@ -20,10 +20,7 @@
  */
 
 #include "Oscillator.hxx"
-#include "AudioManager.hxx"
 #include <iostream>
-using std::cout;
-using std::endl;
 
 using namespace CLAM;
 
@@ -54,25 +51,20 @@ void OscillatorConfig::DefaultInit(void)
 	
 	SetFrequency(440.0);
 	SetAmplitude(1.0);
-	SetModIndex(0.0);
+	SetModIndex(1.0);
 	SetPhase(0.0);
-	try
-	{
-		SetSamplingRate( TData(AudioManager::Current().SampleRate()) );
-	}
-	catch (Err)
-	{
-		SetSamplingRate( 8000 );
-	}
+	SetSamplingRate( 44100 );
 }
 
 
 // Oscillator method definition
 Oscillator::Oscillator()
-:mFreqUpdated( false )
-,mPhaseUpdated( false )
-,mModIdxUpdated( false )
-,mAmpUpdated( false )
+	:mOutput("Audio Output",this,1)
+	,mFreqUpdated( false )
+	,mPhaseUpdated( false )
+	,mModIdxUpdated( false )
+	,mAmpUpdated( false )
+
 {
 	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
 	mAmpCtl = new OscillatorCtrl( "Amplitude", this, &Oscillator::UpdateAmp );
@@ -85,10 +77,12 @@ Oscillator::Oscillator()
 }
 
 Oscillator::Oscillator( const OscillatorConfig& cfg )
-:mFreqUpdated( false )
+:mOutput("Audio Output",this,1)
+,mFreqUpdated( false )
 ,mPhaseUpdated( false )
 ,mModIdxUpdated( false )
 ,mAmpUpdated( false )
+
 {
 	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
 	mAmpCtl = new OscillatorCtrl( "Amplitude", this, &Oscillator::UpdateAmp );
@@ -106,10 +100,10 @@ Oscillator::~Oscillator()
 	delete mPhaseCtl;
 }
 
-bool Oscillator::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast<const OscillatorConfig&>(cfg);
-	
+	CopyAsConcreteConfig(mConfig, c);
+
 
 	mAmp = mConfig.GetAmplitude();
 	mPhase = mConfig.GetPhase(); // TEMP HACK  (See also constructor
@@ -120,8 +114,17 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::ba
 	return true;
 }
 
+bool Oscillator::Do()
+{
+	bool res = Do(mOutput.GetData());
+	mOutput.LeaveData();
+	return res;
+}
+
 bool Oscillator::Do( Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+	
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -139,6 +142,8 @@ bool Oscillator::Do( Audio& out )
 
 bool Oscillator::Do( const Audio& pitchModIn, const Audio& phaseModIn, Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -162,6 +167,8 @@ bool Oscillator::Do( const Audio& pitchModIn, const Audio& phaseModIn, Audio& ou
 
 bool Oscillator::Do( const Audio& pitchModIn, const int& dum, Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -183,6 +190,8 @@ bool Oscillator::Do( const Audio& pitchModIn, const int& dum, Audio& out )
 
 bool Oscillator::Do( const int& dum, const Audio& phaseModIn, Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -207,17 +216,12 @@ int Oscillator::UpdateFreq( TControlData value )
 {
 	mFreqUpdated = true;
 
-	cout << "Pitch update request received" << endl;
-
 	return 0;
 }
 
 int Oscillator::UpdatePhase( TControlData value )
 {
 	mPhaseUpdated = true;
-
-	cout << "Phase update request received" << endl;
-
 
 	return 0;
 }
@@ -226,18 +230,12 @@ int Oscillator::UpdateModIdx( TControlData value )
 {
 	mModIdxUpdated = true;
 
-	cout << "ModIndex update request received" << endl;
-
-
 	return 0;
 }
 
 int Oscillator::UpdateAmp( TControlData value )
 {
 	mAmpUpdated = true;
-
-	cout << "Amplitude update request received" << endl;
-
 
 	return 0;
 }

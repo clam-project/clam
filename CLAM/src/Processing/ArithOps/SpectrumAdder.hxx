@@ -24,7 +24,9 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 #include "Spectrum.hxx"
 
 namespace CLAM {
@@ -81,10 +83,13 @@ namespace CLAM {
 		/** Number of inputs */
 		int mNInputs;
 
-		/** Input pointer vector */
+		/** Input pointer vector 
+		 * \todo should use InPortArrayTmpl
+		 */
 		InPortTmpl<Spectrum> **mInputs;
 
-		/** Aux. Structures */
+		/** Aux. Structures 
+		*/
 		Complex **complex_bufs;
 		Polar **polar_bufs;
 		TData **mag_bufs;
@@ -122,11 +127,9 @@ namespace CLAM {
 		const char *GetClassName() const {return "SpectrumAdder";}
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
+		 * @pre argument should be an SpectrumAdderConfig
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		SpectrumAdder();
@@ -141,7 +144,7 @@ namespace CLAM {
 
 		bool Do(Spectrum **inputs, Spectrum& out);
 
-		// Port interfaces.
+
 
 		/** Change the internal type state.  
 		 * Apart from prototype configuration, the Size, Scale and

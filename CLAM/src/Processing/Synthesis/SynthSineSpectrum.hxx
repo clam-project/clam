@@ -10,26 +10,24 @@
 #include "SpectralPeakArray.hxx"
 #include "Complex.hxx"
 #include "Processing.hxx"
+#include "SynthSineSpectrumConfig.hxx"
 
 namespace CLAM{
 
-class SynthSineSpectrumConfig:public ProcessingConfig
-{
-	DYNAMIC_TYPE_USING_INTERFACE (SynthSineSpectrumConfig,4,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-	DYN_ATTRIBUTE(1,public,TSize,SpectrumSize);
-	DYN_ATTRIBUTE(2,public,TData,SamplingRate);
-	DYN_ATTRIBUTE(3,public,TData,ZeroPadding);
-	
-public:
-	
-	~SynthSineSpectrumConfig(){};
-	void DefaultInit();
-	void DefaultValues();
-};
+/**
+ * Configuration class for the SynthSineSpectrum Processing.
+ */
+	/* SynthSineSpectrumConfig moved to SynthSineSpectrumConfig.hxx */
+
 	
 							
-
+/**
+ * Processing which can synthesize a spectrum out of an 
+ * array of spectral peaks.
+ * It does this by convolving the spectral peaks with the 
+ * significant part of the fourier transformed Blackman-Harris92 
+ * window, it's main lobe.
+ */
 class SynthSineSpectrum:public Processing
 {
 public:
@@ -45,7 +43,7 @@ public:
 	bool Do(void){ return false;}
 
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	const ProcessingConfig &GetConfig() const {return mConfig;}
 
@@ -66,6 +64,6 @@ private:
 	/* internal buffer for synthesized sinusoidal spectrum */
 	Array< Complex > mSynthSineSpectrum;
 };
-};// MTG namespace
+};// CLAM namespace
 #endif
 

@@ -1,16 +1,17 @@
 #ifndef _SDIFIn_
 #define _SDIFIn_
 
+#include "Segment.hxx"
 #include "IndexArray.hxx"
 #include "Processing.hxx"
 #include "Err.hxx"
-#include "Port.hxx"
-#include "Segment.hxx"
+#include "OutPortTmpl.hxx"
 #include <string.h>
 
-namespace SDIF{class File;};//forward declaration
+namespace SDIF { class File; } //forward declaration
 
-namespace CLAM{
+namespace CLAM
+{
 
 
 class SDIFInConfig:public ProcessingConfig
@@ -49,6 +50,8 @@ public:
 	
 	bool Do(void);
 
+	bool Do( CLAM::Segment& segment );
+
 	const ProcessingConfig &GetConfig() const;
 
 	SDIF::File* mpFile;
@@ -58,6 +61,8 @@ protected:
 	bool ConcreteStart();
 
 	bool ConcreteStop();
+
+	bool LoadSDIFDataIntoSegment( CLAM::Segment& s );
 
 private:
 	

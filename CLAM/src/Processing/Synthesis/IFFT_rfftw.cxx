@@ -19,21 +19,21 @@
  *
  */
 
-#include"IFFT_rfftw.hxx"
+#include "IFFT_rfftw.hxx"
+#include "SpecTypeFlags.hxx"
 
-#include<string>
+#include <string>
 #include "mtgsstream.h" // An alias for <sstream>
 
-#include"ErrProcessingObj.hxx"
+#include "ErrProcessingObj.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM {
 
-	SpecTypeFlags IFFT_rfftw::mComplexflags;
-
-
-	bool IFFT_rfftw::ConcreteConfigure(const ProcessingConfig& b) throw(std::bad_cast)
+	bool IFFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const IFFTConfig&>(b); // Configuration copy
+		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
 			CLAM_ASSERT (mConfig.GetAudioSize()>=0,"Wrong (negative) Size in IFFT Configuration.");
 			mSize = mConfig.GetAudioSize();
@@ -112,9 +112,9 @@ namespace CLAM {
 		switch(mState) {
 		case sOther:
 		case sComplex:
-			throw(ErrProcessingObj("IFFT_rfftw: Do(IFFTInputOutput&,IFFTInputOutput&): Not implemented",this));
+			CLAM_ASSERT(false,"IFFT_rfftw: Do(IFFTInputOutput&,IFFTInputOutput&): Not implemented");
 		default:
-			throw(ErrProcessingObj("IFFT_rfftw: Do(): Inconsistent state",this));
+			CLAM_ASSERT(false,"IFFT_rfftw: Do(): Inconsistent state");
 		}
 		return Do(mInput.GetData(),mOutput.GetData());
 	};
@@ -173,7 +173,7 @@ namespace CLAM {
 			rfftw_one(mpPlan, ifftbuffer, outbuffer);
 			break;
 		default:
-			throw(ErrProcessingObj("IFFT_rfftw: Do(): Inconsistent state",this));
+			CLAM_ASSERT(false,"IFFT_rfftw: Do(): Inconsistent state");
 		}
 		out.SetSampleRate(TData(in.GetSpectralRange()*2));
 		return true;
@@ -183,7 +183,8 @@ namespace CLAM {
 	{
 		// @todo Check port prototypes, and set the state (or de
 		// backup state if disabled) acordingly.
-		throw(ErrProcessingObj("IFFT_rfftw::SetPrototypes: Not implemented.",this));
+		CLAM_ASSERT(false,"IFFT_rfftw::SetPrototypes: Not implemented.");
+		return false;
 	}
 
 	inline void IFFT_rfftw::ComplexToRIFFTW(Spectrum &in) const

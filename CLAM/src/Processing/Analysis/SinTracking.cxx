@@ -16,7 +16,7 @@ using namespace CLAM;
 	void SinTrackingConfig::DefaultValues()
 	{
 		SetThreshold(20);//in percents
-		SetnMaxSines(50);
+		SetnMaxSines(250);
 		SetIsHarmonic(0);
 	}
 	
@@ -38,10 +38,10 @@ using namespace CLAM;
 
 /* Configure the Processing Object according to the Config object */
 
-	bool SinTracking::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool SinTracking::ConcreteConfigure(const ProcessingConfig& c)
 	{	    
 
-		mConfig = dynamic_cast<const SinTrackingConfig&>(c);	    
+		CopyAsConcreteConfig(mConfig, c);
 
 		mnMaxSines = mConfig.GetnMaxSines();
 
@@ -54,6 +54,7 @@ using namespace CLAM;
 		mNextTrackId=0;
 
 		mInitialized=false;
+		mLastHarmonic=false;
 		
 		int i;
 		//initializes guide array
@@ -77,7 +78,7 @@ using namespace CLAM;
 	//Supervised mode
 	bool  SinTracking::Do(void) 
 	{
-		throw(ErrProcessingObj("SinTracking::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false, "SinTracking::Do(): Supervised mode not implemented");
 		return false;
 	}
   
@@ -91,10 +92,13 @@ using namespace CLAM;
 		oPeakArray.AddBinPosBuffer();
 		oPeakArray.AddIsIndexUpToDate();
 		oPeakArray.UpdateData();
-		if(mHarmonic && fn>0)
-			return DoHarmonic(iPeakArray,oPeakArray,fn);
-		else
-			return DoInharmonic(iPeakArray,oPeakArray);
+		if(mHarmonic && fn>0){
+			mLastHarmonic=true;
+			return DoHarmonic(iPeakArray,oPeakArray,fn);}
+		else{
+			if(mLastHarmonic) KillAll();
+			mLastHarmonic=false;
+			return DoInharmonic(iPeakArray,oPeakArray);}
 	}
 
 	bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
@@ -138,11 +142,11 @@ using namespace CLAM;
 	  int candidatePos;
 	  TData distance;
 	  SpectralPeak currentPeak;		
-	  currentPeak=mpPreviousPeakArray->GetSpectralPeak(processedPeakPos);
+	  currentPeak=mPreviousPeakArray.GetSpectralPeak(processedPeakPos);
 	  if(!ThereIsCandidate(currentPeak,iPeakArray,oPeakArray))
 	  {
 		//Kill Track
-		KillTrack(mpPreviousPeakArray->GetIndex(processedPeakPos));
+		KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 	  }
 	  else
 	  {
@@ -151,10 +155,12 @@ using namespace CLAM;
 		SpectralPeak candidatePeak;
 		candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
 		//I added &&(candidatePeak.GetIndex()==-1) because it matched already matched peak
-		if(candidatePos<mnMaxSines&&(IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
+		if( candidatePos<oPeakArray.GetnPeaks()
+		    && (IsBestCandidate(candidatePeak,processedPeakPos))
+		    && (oPeakArray.GetIndex(candidatePos)==-1) )
 		{
 		  //Match
-		  Match(mpPreviousPeakArray->GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
+		  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
 		}
 		else
 		{
@@ -162,7 +168,7 @@ using namespace CLAM;
 		/*candidatePos--;//Try with previous peak in array
 		  if(candidatePos==-1)&&(candidatePeak.GetIndex()==-1)
 		  {
-			KillTrack(mpPreviousPeakArray.GetIndex(processedPeakPos));
+			KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 		  }
 		  else
 		  {
@@ -170,16 +176,16 @@ using namespace CLAM;
 			if(IsBestCandidate(candidatePeak,processedPeakPos))
 			{
 			 //Match
-			 Match(mpPreviousPeakArray.GetIndex(processedPeakPos),
+			 Match(mPreviousPeakArray.GetIndex(processedPeakPos),
 			   candidatePos,candidatePeak,oPeakArray);
 			}
 			else
 			{
 			 //Kill Track
-			 KillTrack(mpPreviousPeakArray.GetIndex(processedPeakPos));
+			 KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 			}
 		  }*/
-			KillTrack(mpPreviousPeakArray->GetIndex(processedPeakPos));
+			KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 		}
 	  }
 
@@ -188,8 +194,9 @@ using namespace CLAM;
 
 
 //true as soon as the distance between currentPeak and a Peak in iPeakArray is <mThreshold
-	bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak,
-										const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray) const
+	bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak, 
+					   const SpectralPeakArray& iPeakArray,
+					   SpectralPeakArray& oPeakArray) const
 	{
 	  int i;
 	  int dist;
@@ -239,7 +246,7 @@ using namespace CLAM;
 	  for (i=0;i<nPeaks;i++)
 	  {
 		tmpDistance=Abs(peakFreqBuffer[i]-currentFreq)*factor;
-		if((distance==-1)&&(tmpDistance<mThreshold) || 
+		if((distance==-1)/*test: XA &&(tmpDistance<mThreshold)*/ || 
 		  (tmpDistance < distance))
 		{
 		  distance=tmpDistance;
@@ -260,10 +267,10 @@ using namespace CLAM;
 	{
 	  int i;
 	  SpectralPeak tmpPeak;
-	  tmpPeak=mpPreviousPeakArray->GetSpectralPeak(nMatchedPeaksInPreviousFrame);
+	  tmpPeak=mPreviousPeakArray.GetSpectralPeak(nMatchedPeaksInPreviousFrame);
 	  double nextDistance=(tmpPeak|candidate);
-	  int nPeaks=mpPreviousPeakArray->GetnPeaks();
-	  DataArray& peakFreqBuffer=mpPreviousPeakArray->GetFreqBuffer();
+	  int nPeaks=mPreviousPeakArray.GetnPeaks();
+	  DataArray& peakFreqBuffer=mPreviousPeakArray.GetFreqBuffer();
 	  TData candidateFreq=candidate.GetFreq();
 	  for(i=0;i<nPeaks;i++)
 	  {
@@ -341,9 +348,18 @@ already been assigned)*/
 		{
 			AddNewTrack(i, iPeakArray.GetSpectralPeak(i), oPeakArray);
 		}
-		mpPreviousPeakArray=&oPeakArray;
+		mPreviousPeakArray=oPeakArray;
 	}
 
+	void SinTracking::KillAll()
+	{
+		int i;
+		for (i=0;i<mnMaxSines;i++)
+		{
+			mGuideArray[i].isDead=true;
+		}
+		mnActiveGuides=0;
+	}
 
 	bool SinTracking::DoInharmonic(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray)
 	{
@@ -365,12 +381,12 @@ already been assigned)*/
 		
 		int i;
 		oPeakArray.SetIsIndexUpToDate(true);
-		for(i=0;i<mpPreviousPeakArray->GetnPeaks();i++)
+		for(i=0;i<mPreviousPeakArray.GetnPeaks();i++)
 		{
 			Tracking(iPeakArray,oPeakArray,i);
 		}
 		CheckForNewBornTracks(iPeakArray,oPeakArray);
-		mpPreviousPeakArray=&oPeakArray;
+		mPreviousPeakArray=oPeakArray;
 		return true;
 	}
 
@@ -386,7 +402,7 @@ already been assigned)*/
 		InitHarmonicTracks(out,funFreq);
 		out.SetIsIndexUpToDate(true);
 		HarmonicTracking(in, out, funFreq);
-		mpPreviousPeakArray=&out;
+		mPreviousPeakArray=out;
 		return true;
 
 	}
@@ -428,7 +444,7 @@ already been assigned)*/
 				if(i==0 || iMagBuffer[pos]!=oMagBuffer[i-1])
 				{
 					oMagBuffer[i]=iMagBuffer[pos];
-					oFreqBuffer[i]=iFreqBuffer[pos];
+					//XA: oFreqBuffer[i]=iFreqBuffer[pos];
 					oPhaseBuffer[i]=iPhaseBuffer[pos];
 					i++;
 				}
@@ -454,10 +470,13 @@ already been assigned)*/
 		DataArray& magBuffer=peaks.GetMagBuffer();
 		
 		int i;
+		
+		TData currentFreq=funFreq;
 
 		for(i=0;i<mnMaxSines;i++)
 		{
-			freqBuffer[i]=funFreq*i;
+			freqBuffer[i]=currentFreq;
 			magBuffer[i]=-99;
+			currentFreq+=funFreq;
 		}
 	}

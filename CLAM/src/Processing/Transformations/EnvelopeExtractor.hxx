@@ -24,7 +24,8 @@
 
 #include "ControlConfig.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Envelope.hxx"
 #include "Audio.hxx"
 
@@ -184,7 +185,7 @@ namespace CLAM
 
 		bool Do(void);
 
-		bool Do(const Audio& inp, Envelope& env) throw(ErrProcessingObj);
+		bool Do(const Audio& inp, Envelope& env);
 
 		void StoreOn(Storage &s) {};
 
@@ -265,7 +266,7 @@ namespace CLAM
 		void SetNormalLevel(TData nlevel);
 		void SetSilenceLevel(TData slevel);
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 		bool ConcreteStart();
 

@@ -1,35 +1,22 @@
 #ifndef _SinTracking__
 #define _SinTracking__
 
+#include "DataTypes.hxx"
 #include "Processing.hxx"
-#include "DynamicType.hxx"
 #include "SpectralPeakArray.hxx"
-#include "SpectralPeak.hxx"
 #include "Array.hxx"
-
+#include "SinTrackingConfig.hxx"
 
 namespace CLAM {
 
-	
 	class Fundamental;	
+	class SpectralPeak;
+	class ProcessingConfig;
 	
-	class SinTrackingConfig: public ProcessingConfig
-	{
-	public:
-	  DYNAMIC_TYPE_USING_INTERFACE (SinTrackingConfig, 4,ProcessingConfig);
-	  DYN_ATTRIBUTE (0, public, std::string, Name);
-	  /** Frequency deviation in percentage allowed for a peak to be dontinued
-	  */
-	  DYN_ATTRIBUTE (1,public, TData, Threshold);
-	  DYN_ATTRIBUTE (2,public, TSize, nMaxSines);
-		
-	  DYN_ATTRIBUTE (3,public, bool, IsHarmonic);
-
-	  void DefaultInit();
-	  void DefaultValues();
-	  ~SinTrackingConfig(){};
-	};
-
+	/**
+	 * Config class for the SinTracking Processing.
+	 */
+	/* SinTrackingConfig moved to SinTrackingConfig.hxx */
 
 	typedef struct SGuide
 	{
@@ -40,18 +27,23 @@ namespace CLAM {
 	}TGuide;
 
 
+	/**
+	 * Processing which does sinusoidal peak tracking (or continuation).
+	 * In order for SinTracking to produce meaningful results, it must be called 
+	 * repeatively using SpectralPeakArrays generated from the different 'frames' 
+	 * of the same input material (ie, if you want to track two different sources, 
+	 * you must use two seperate SinTrackings).
+	 */
 	class SinTracking: public Processing
 	{
 		mutable SinTrackingConfig mConfig;
 
 		const char *GetClassName() const {return "SinTracking";} 
 
-		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
+		/** 
+		 * Config change method
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		virtual bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
@@ -119,6 +111,8 @@ namespace CLAM {
 		/** Kills track identified by trackId and assigns pPeakArray as its last peak array
 		* (spectral frame)*/
 		void KillTrack(int trackPosition) const;
+
+		void KillAll();
   
 		
   
@@ -141,12 +135,14 @@ namespace CLAM {
 	//Member variables
 		TData mThreshold;
 		mutable bool mInitialized;
-		SpectralPeakArray* mpPreviousPeakArray;
+		SpectralPeakArray mPreviousPeakArray;
 		mutable Array<TGuide> mGuideArray;
 		int mnMaxSines;
 		mutable int mnActiveGuides;		
 		mutable int mNextTrackId;
 		bool mHarmonic;//TODO: this should be a runtime modificable control
+
+		bool mLastHarmonic;
 
 	};
 

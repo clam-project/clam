@@ -1,5 +1,5 @@
 #include "SDIFIn.hxx"
-#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "SpectralPeakArray.hxx"
@@ -19,18 +19,18 @@ void SDIFInConfig::DefaultInit()
 /*	This may have to change to false but right now, Salto is the most important app that
 	uses it and needs it set to true.*/
 	SetRelativePeakIndices(true);
-
+	SetFileName( "nofile" );
 	SetEnableResidual(true);
 	SetEnablePeakArray(true);
 	SetEnableFundFreq(true);
 	SetSpectralRange(22050);
 	SetMaxNumPeaks(100);
-	SetFileName("nofile");
+
 }
 
 SDIFIn::SDIFIn():
-mPrevIndexArray(0),
-Output("Output",this,1)
+	Output("Output",this,1),
+	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -38,8 +38,8 @@ Output("Output",this,1)
 }
 
 SDIFIn::SDIFIn(const SDIFInConfig& c):
-mPrevIndexArray(0),
-Output("Output",this,1)
+	Output("Output",this,1),
+	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -54,16 +54,32 @@ SDIFIn::~SDIFIn()
 
 bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
+	CopyAsConcreteConfig(mConfig, c);
+	
+	if ( mConfig.GetFileName() == "nofile") // MRJ: default configuration provided, we just left the object "Unconfigured"
+	  return false;
+
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
+
+	try
+	  {
+	    mpFile->Open();
+	  }
+	catch( Err& e )
+	{
+	  e.Print();
+	  return false;
+	}
+
+	mpFile->Close();//must leave closed file ready to start()
+
 	return true;
 }
 
 bool SDIFIn::ConcreteStart()
 {
 	mpFile->Open();
-
 	return true;
 }
 
@@ -79,7 +95,7 @@ const ProcessingConfig& SDIFIn::GetConfig() const
 	return mConfig;
 }
 
-bool SDIFIn::Do(void)
+bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 {
 	if(!mpFile) return false;
 	if(mpFile->Done()) return false;
@@ -106,10 +122,10 @@ bool SDIFIn::Do(void)
 				
 		mLastCenterTime=frameTimeTag;
 		initFrame.SetCenterTime(frameTimeTag);
-		Output.GetData().AddFrame(initFrame);
+		segment.AddFrame(initFrame);
 	}
 
-	Frame& tmpFrame=Output.GetData().GetFrame(Output.GetData().GetnFrames()-1);
+	Frame& tmpFrame=segment.GetFrame(segment.GetnFrames()-1);
 	
 	SDIF::Frame::MatrixIterator frameIt = tmpSDIFFrame.Begin();
 
@@ -117,7 +133,7 @@ bool SDIFIn::Do(void)
 	
 	SDIF::ConcreteMatrix<TFloat32>* pMatrix=
 		dynamic_cast< SDIF::ConcreteMatrix<TFloat32>* >(*frameIt);
-	
+
 	/* its a fundamental frequency ..*/
 	if (tmpSDIFFrame.Type()=="1FQ0" && mConfig.GetEnableFundFreq())
 	{
@@ -128,6 +144,11 @@ bool SDIFIn::Do(void)
 	else if(tmpSDIFFrame.Type()=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
 	{
 		CLAM_ASSERT(pMatrix->Type() == "ISTF","SDIFIn::Add ISTF Header in Matrix expected");
+
+		// MRJ: We set the sampling rate for the segment
+		segment.SetSamplingRate( pMatrix->GetValue( 0, 0 ) );
+		
+		tmpFrame.GetResidualSpec().SetSpectralRange(pMatrix->GetValue(0,0)*0.5);
 		
 		// move pointer to next matrix in frame
 		frameIt++;
@@ -236,6 +257,22 @@ bool SDIFIn::Do(void)
 	}
 
 	return true;	
+	
+}
+
+bool SDIFIn::Do( CLAM::Segment& segment )
+{
+	bool thereIsMoreData = false;
+	
+	while( ( thereIsMoreData = LoadSDIFDataIntoSegment( segment ) ) );
+
+	return true;
+}
+
+bool SDIFIn::Do(void)
+{
+	return LoadSDIFDataIntoSegment( Output.GetData() );
+
 
 }
 

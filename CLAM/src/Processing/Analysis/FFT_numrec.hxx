@@ -24,9 +24,15 @@
 #define _FFT_numrec_
 
 #include "FFT.hxx"
+#include "DataTypes.hxx"
+#include "SpecTypeFlags.hxx"
 
 namespace CLAM {
 
+	struct FFTConfig;
+	class Spectrum;
+	class Audio;
+	class ProcessingConfig;
 
 	/** Implementation of the FFT using the algorithm in Numerical Recipies
 	 * in C.
@@ -62,11 +68,8 @@ namespace CLAM {
 		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an FFTConfig
-		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		// Output conversions
 

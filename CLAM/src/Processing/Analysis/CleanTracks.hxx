@@ -21,37 +21,21 @@
 #ifndef _CLEANTRACKS__
 #define _CLEANTRACKS__
 
-#include "Processing.hxx"
-#include "DynamicType.hxx"
+#include "Segment.hxx"
 #include "SpectralPeakArray.hxx"
-#include "SpectralPeak.hxx"
+#include "DataTypes.hxx"
+#include "Processing.hxx"
 #include "Array.hxx"
 #include "SearchArray.hxx"
-#include "Segment.hxx"
-
-
+#include "CleanTracksConfig.hxx"
 
 namespace CLAM {
 
-	
-	
-	
-	class CleanTracksConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE(CleanTracksConfig, 6,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1,public,TSize,MaxDropOut);
-		DYN_ATTRIBUTE (2,public,TSize,MinLength);
-		DYN_ATTRIBUTE (3,public,TData,FreqDev);
-		/** This attribute is necessary so that BinPosition can be recomputed*/
-		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
-		/** This attribute is necessary so that BinPosition can be recomputed*/
-		DYN_ATTRIBUTE (5, public, int, SpecSize);
+	class SpectralPeakArray;
+	class Segment;
+	class ProcessingConfig;
 
-		void DefaultInit();
-		~CleanTracksConfig(){};
-	};
+	/* CleanTracksConfig moved to CleanTracksConfig.hxx */
 
 	typedef struct STrajectory
 	{
@@ -73,20 +57,16 @@ namespace CLAM {
 		}
 	}TTrajectory;
 
-	
+
 
 	class CleanTracks: public Processing
 	{
 		mutable CleanTracksConfig mConfig;
 
-		const char *GetClassName() const {return "CleanTracks";} 
+		const char *GetClassName() const {return "CleanTracks";}
 
-		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
-		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		/** Config change method */
+		virtual bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
@@ -95,7 +75,7 @@ namespace CLAM {
 		~CleanTracks();
 
 		//Configuration accessor
-		const ProcessingConfig &GetConfig() const { return mConfig;};		
+		const ProcessingConfig &GetConfig() const { return mConfig;};
 
 		//Peak Continuation for one frame
 		bool Do(Array<SpectralPeakArray*>& peakArrayArray);
@@ -103,15 +83,14 @@ namespace CLAM {
         bool Do(void);
 
 		int GetnCleanedTracks() const {return mTrajectoryArray.Size();};
-		
+
 	private:
-		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
-		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
+		void LoadTracks(Array<SpectralPeakArray*>& peakArrayArray);
 		void AddTrajectory(TTrajectory& trajectory);
-		void DeleteTrajectory(int id);
+		void FindContinuations(void);
+		void JoinContinuations(Array<SpectralPeakArray*>& peakArrayArray);
+		void Clean(Array<SpectralPeakArray*>& peakArrayArray);
 		void UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray);
-		void Update(Array<SpectralPeakArray*>& peakArrayArray);
-		void ContinuedAt(void);
 		void InterpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
 
 		TIndex FindTrajectoryPosition(TIndex id);
@@ -125,7 +104,7 @@ namespace CLAM {
 		SearchArray<TTrajectory> mSearchTrajectories;
 
 
-			
+
 
 	};
 

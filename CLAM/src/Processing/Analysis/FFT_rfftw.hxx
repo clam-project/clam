@@ -24,6 +24,8 @@
 #define _FFT_rfftw_
 
 #include "FFT.hxx"
+#include "DataTypes.hxx"
+#include "SpecTypeFlags.hxx"
 #include "ErrDynamicType.hxx"
 
 extern "C" {
@@ -32,6 +34,10 @@ extern "C" {
 
 namespace CLAM {
 
+	struct FFTConfig;
+	class Spectrum;
+	class Audio;
+	class ProcessingConfig;
 
 	/** Implementation of the FFT using the Fastest Fourier in the West 
 	 * @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
@@ -56,11 +62,8 @@ namespace CLAM {
 		FFTState mState;
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an FFTConfig
-		 * object.  
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
@@ -80,7 +83,8 @@ namespace CLAM {
 
 		FFT_rfftw();
 
-		FFT_rfftw(const FFTConfig &c) throw(ErrDynamicType);
+		FFT_rfftw(const FFTConfig &c)
+			throw(ErrDynamicType);
 
 		~FFT_rfftw();
 

@@ -23,14 +23,20 @@
 #define _WINDOW_GENERATOR_
 
 #include <typeinfo> // std::bad_cast
+#include "DataTypes.hxx"
 #include "GlobalEnums.hxx"
 #include "Processing.hxx"
+#include "InControl.hxx"
+#include "Processing.hxx"
+#include "WindowGeneratorConfig.hxx"
 #include "Array.hxx"
-#include "Spectrum.hxx"
-#include "Audio.hxx"
 
 namespace CLAM {
 
+class Audio;
+class Spectrum;
+class Storage;
+class ProcessingConfig;
 
 /**
 * This class can be used for generating Windows and for zeropadding the 
@@ -51,59 +57,17 @@ namespace CLAM {
 * you have to create a window of size FFTSize+1. (if you care for correctness)
 */
 
-	class EWindowNormalize : public Enum {
-	public:
-		
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
-		EWindowNormalize() : Enum(sEnumValues, sDefault) {}
-		EWindowNormalize(tValue v) : Enum(sEnumValues, v) {};
-		EWindowNormalize(std::string s) : Enum(sEnumValues, s) {};
-		
-		typedef enum {
-			eNone,
-			eAnalysis,
-			eEnergy,
-			eSynthesis
-		};
-		
-		virtual Component* Species() const
-		{
-			return (Component*) new EWindowNormalize(eAnalysis);
-		};
-	};
-
-	class WindowGeneratorConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (WindowGeneratorConfig, 7,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, EWindowType, Type);
-		DYN_ATTRIBUTE (2, public, TSize, Size);
-		DYN_ATTRIBUTE (3, public, TSize, MaxSize);
-		DYN_ATTRIBUTE (4, public, bool, UseTable);
-		DYN_ATTRIBUTE (5, public, EWindowNormalize, Normalize);
-		DYN_ATTRIBUTE (6, public, bool, Invert);
-	public:
-		~WindowGeneratorConfig(){};
-		void DefaultValues();
-	protected:
-		void DefaultInit();
-
-	};
-
-
-        /**
-	 * This class can be used for generating Windows and for zeropadding the 
-	 * windowed data. The Do functions accept different types of data,  which 
+	/**
+	 * This class can be used for generating Windows and for zeropadding the
+	 * windowed data. The Do functions accept different types of data,  which
 	 * are simple Arrays, Audio and Spectrum.
 	 * <p>
-	 * If the window is smaller as the Data Array then the rest of the Array 
+	 * If the window is smaller as the Data Array then the rest of the Array
 	 * is filled with Zeroes.
 	 * <p>
-	 * The Size of the window can be changed via a control, the Type 
+	 * The Size of the window can be changed via a control, the Type
 	 * (Hamming,Kaiser, etc) is fixed.
-	 * A configuration option is to generate the window everytime  the  
+	 * A configuration option is to generate the window everytime  the
 	 * Do() function is called. This is settable via the UseTable element
 	 * of the configuration.
 	 *
@@ -118,11 +82,9 @@ namespace CLAM {
 		const char *GetClassName() const {return "WindowGenerator";}
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
+		 * @pre the argument should be an WindowGeneratorConfig object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
@@ -153,7 +115,7 @@ namespace CLAM {
 		void StoreOn(Storage &s) {};
 
 		void SetSize(TSize size) 
-		{ 
+		{
 			CLAM_DEBUG_ASSERT(size%2==1,"Window size must be odd");
 			mSize.DoControl((TControlData)size); 
 		}
@@ -173,9 +135,11 @@ namespace CLAM {
 		void BlackmanHarris70(long size,DataArray& window) const;
 		void BlackmanHarris74(long size,DataArray& window) const;
 		void BlackmanHarris92(long size,DataArray& window) const;
+		void BlackmanHarrisLike(long size,DataArray& window) const;
 		void Hamming(long size,DataArray& window) const;
 		void Triangular(long size,DataArray& window) const;
 		void BlackmanHarris92TransMainLobe(long size,DataArray& window) const;
+		void Gaussian(long size,DataArray& window) const;
 		void InvertWindow(const DataArray& originalWindow,
 		                  DataArray& invertedWindow) const;
 		void InvertWindow(DataArray& window) const;
@@ -186,4 +150,4 @@ namespace CLAM {
 
 };//namespace CLAM
 
-#endif // _SPECTRUM_ADDER_
+#endif //_WINDOW_GENERATOR_

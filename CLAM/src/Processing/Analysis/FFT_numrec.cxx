@@ -27,6 +27,9 @@
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
@@ -36,14 +39,15 @@ namespace CLAM {
 
 	SpecTypeFlags FFT_numrec::mComplexflags;
 
-	bool FFT_numrec::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FFT_numrec::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		int oldSize = mSize;
 
-		mConfig = dynamic_cast<const FFTConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
+
 		if (mConfig.HasAudioSize()) {
-			if (mConfig.GetAudioSize()<0)
-				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));
+			CLAM_ASSERT(mConfig.GetAudioSize()>=0, 
+				"Wrong (negative) Size in FFT Configuration.");
 			mSize = mConfig.GetAudioSize();
 		}
 
@@ -52,27 +56,34 @@ namespace CLAM {
 		mComplexflags.bMagPhase=0;
 
 		if (mSize>0) {
-			if (mSize != oldSize)
-				fftbuffer = new TData[mSize];
+		  if (mSize != oldSize) {
+			if (fftbuffer)
+			  delete[] fftbuffer;
+			fftbuffer = new TData[mSize];
+		  }
 			return true;
 		}
+		if (fftbuffer) delete[] fftbuffer;
 		fftbuffer = 0;
 		return false;
 	}
 
 	FFT_numrec::FFT_numrec()
+		: fftbuffer( NULL )
 	{
 		Configure(FFTConfig());
 	}
 
 	FFT_numrec::FFT_numrec(const FFTConfig &c) throw(ErrDynamicType)
+		: fftbuffer( NULL )
 	{ 
 		Configure(c);
 	};
 
 	FFT_numrec::~FFT_numrec()
 	{
-		delete fftbuffer;
+	  if (fftbuffer)
+		delete[] fftbuffer;
 	}
 
 	void FFT_numrec::CheckTypes(const Audio& in, const Spectrum &out) const

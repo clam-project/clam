@@ -25,9 +25,9 @@
 #define _TokenDelay_
 
 #include "Processing.hxx"
-//#include "ProcessingData.hxx"
 #include "InControl.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -62,7 +62,6 @@ protected:
 		AddDelay();
 		AddMaxDelay();
 		UpdateData();
-		SetName("");
 		SetDelay(0);
 		SetMaxDelay(0);  
 	}
@@ -106,9 +105,9 @@ public:
 	/**
 	* Concrete configuration change method. The generic  calls
 	* this one. It will accept such changes when not in running mode.
-	* @throw bad_cast exception when the argument is not a TokenDelayConfig object.
+	* @pre argument should be a TokenDelayConfig
 	*/
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 
 	/**
 	* Configuration access
@@ -150,6 +149,15 @@ public:
 	TSize RealDelay() const {
 		return mTokenQueue.size();
 	} 
+
+	unsigned MaxDelay() const {
+		return mCapacity;
+	}
+
+	unsigned GivenDelay() {
+
+		return CastDelayControlValue(mDelayControl.GetLastValue());
+	}	
 
 private:
 	/** This method is applyed to every token discarded when the decreasing the delay amount*
@@ -197,9 +205,9 @@ void TokenDelay<T>::Discard(T* toDiscard) {
 }
 	
 template <class T> 
-bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const TokenDelayConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 	mCapacity = mConfig.GetMaxDelay();
 	mDelayControl.DoControl(TControlData(mConfig.GetDelay()));
 	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
@@ -210,7 +218,7 @@ bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_
 template <class T> 
 bool TokenDelay<T>::Do(void)
 {
-	throw Err("TokenDelay : the Do() with parameters should be used instead of this one.");
+	CLAM_ASSERT(false,"TokenDelay : the Do() with parameters should be used instead of this one.");
 	return false;
 }
 

@@ -26,26 +26,26 @@
 #include "WaveFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
+
 using namespace CLAM;
 
 	AudioFileIn::AudioFileIn() :
 		mpSoundFileIO(0),
-		Output("Output",this,1)
+		mOutput("Output",this,1)
 	{
 		Configure(AudioFileConfig());
 	};
 
 	AudioFileIn::AudioFileIn(const AudioFileConfig &c) :
 		mpSoundFileIO(0),
-		Output("Output",this,1)
+		mOutput("Output",this,1)
 	{ 
 		Configure(c);
 	};
 
 	bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
-		throw(std::bad_cast)
 	{
-		mConfig = dynamic_cast<const AudioFileConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		
 		if (!mConfig.HasFilename()) {
 			mStatus += "No filename specified in config\n";
@@ -89,7 +89,7 @@ using namespace CLAM;
 
 		mKeepFrameSizes = mConfig.GetKeepFrameSizes();
 		
-		Output.SetParams(mConfig.GetFrameSize());
+		mOutput.SetParams(mConfig.GetFrameSize());
 
 		return true;
 	}
@@ -105,11 +105,9 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(Audio& in)
 	{
-		short tmp[256];
-
-		if ( GetExecState() == Unconfigured ||
-			 GetExecState() == Ready )
-			throw(ErrProcessingObj("AudioFileIn: Do(): Not in execution mode",this));
+		if( !AbleToExecute() ) return true;
+		
+		float tmp[256];
 
 		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==1,
 			"AudioFileIn: Do(): Not a mono file");
@@ -122,21 +120,26 @@ using namespace CLAM;
 		else
 			m=n;
 
+		int j = n;
+		if (j>256) j=256;
+
 		TData* ptr = in.GetBuffer().GetPtr();
-		while (n)
+		while (n > 0)
 		{			
-			int j = n;
-			if (j>256) j=256;
+			
+			// MRJ: Smart compiler will emit a CMOV or SLE
+			j = ( n<256 ) ? n : 256;
+			
 			try {
 				mpSoundFileIO->Read(tmp,j);
 			}
 			catch (ErrSoundFileIO e) {
 				throw ErrProcessingObj(e.mStr,this);
 			}
-			short* sptr = tmp;
+			float* sptr = tmp;
 			n -= j;
 			while (j--) {
-				*ptr++ = (*sptr++)/TData(32768.);
+				*ptr++ = (*sptr++);
 			}
 		}
 		
@@ -164,7 +167,7 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(Audio& inL,Audio& inR)
 	{
-		short tmp[256];
+		float tmp[256];
 
 		if ( GetExecState() == Unconfigured ||
 			 GetExecState() == Ready )
@@ -192,12 +195,12 @@ using namespace CLAM;
 			int j = n*2; /* n in number of frames, j in number of samples */
 			if (j>256) j=256;
 			mpSoundFileIO->Read(tmp,j);
-			short* sptr = tmp;
+			float* sptr = tmp;
 			j /= 2; /* j now also in number of frames */
 			n -= j;
 			while (j--) {
-				*ptrL++ = (*sptr++)/TData(32768.);
-				*ptrR++ = (*sptr++)/TData(32768.);
+				*ptrL++ = (*sptr++);
+				*ptrR++ = (*sptr++);
 			}
 		}
 
@@ -219,19 +222,20 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(void)
 	{
-		bool res = Do(Output.GetData());
-		Output.LeaveData();
+		bool res = Do(mOutput.GetData());
+		mOutput.LeaveData();
 		return res;
 	}
 
-	bool AudioFileIn::ConcreteStart()
+        bool AudioFileIn::ConcreteStart()
 	{
+	
 		if (!mpSoundFileIO)
 			return false;
 		try {	
-			mpSoundFileIO->Open(mConfig.GetFilename().c_str(),WaveFileIO::eRead);
+			mpSoundFileIO->Open(mConfig.GetFilename().c_str(),WaveFileIO::eRead);	
 		}
-		catch (ErrSoundFileIO err)
+		catch (ErrSoundFileIO& err)
 		{
 			mStatus += "Error opening file: ";
 			mStatus += err.mStr;
@@ -246,6 +250,15 @@ using namespace CLAM;
 			mStatus += "AudioFileIn: File does not have the requested number of channels";
 			return false;
 		}
+		try {	
+			mpSoundFileIO->SeekFrame(mConfig.GetStartFrame());
+//			printf("Seeking to %d\n",mConfig.GetStartFrame());
+		}
+		catch (ErrSoundFileIO& e)
+		{
+			mStatus = "Error seeking frame\n";
+			return false;
+		}	
 		return true;
 	}
 
