@@ -762,9 +762,10 @@ public:
 protected:
 	U MemoryLessCompute(const Array<T>& a,CentralMoment<2,abs,T,U>& var,CentralMoment<4,abs,T,U>& ctrMnt4)
 	{
-		U centerMoment4 = CLAM_max(U(1e-100), ctrMnt4(a));
-		U variance = CLAM_max(U(1e-10),var(a));
-		return centerMoment4/(variance*variance)-3;
+		U variance = var(a);
+		if (variance<U(1e-10)) return U(3.0);
+		U centerMoment4 = ctrMnt4(a);
+		return centerMoment4/(variance*variance);
 	}
 	U memory;
 	CentralMoment<2,abs,T,U> mCM2;
