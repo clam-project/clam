@@ -57,7 +57,7 @@ namespace CLAM
 
 		inline void CheckTypes(const Audio& in, const Correlation &out) const;
 
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		bool ConcreteStart();
 

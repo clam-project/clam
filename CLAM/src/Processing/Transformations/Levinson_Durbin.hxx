@@ -58,7 +58,7 @@ namespace CLAM
 
 		//inline void CalculateA( DataArray& A, const DataArrray& K, const int& i  );
 
-		bool ConcreteConfigure( const ProcessingConfig& ) throw( std::bad_cast );
+		bool ConcreteConfigure( const ProcessingConfig& );
 
 		bool ConcreteStart();
 

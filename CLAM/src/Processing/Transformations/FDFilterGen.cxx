@@ -102,10 +102,10 @@ namespace CLAM {
 
 
 	
-	bool FDFilterGen::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FDFilterGen::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const FDFilterGenConfig&>(c);
-		
+		CopyAsConcreteConfig(mConfig, c);
+
 		mControlChanged=true; //we want the next Do to perform an action
 		if (mConfig.HasSpectralRange())
 			SpectralRange=mConfig.GetSpectralRange();

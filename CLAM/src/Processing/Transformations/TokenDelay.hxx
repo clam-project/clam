@@ -108,7 +108,7 @@ public:
 	* this one. It will accept such changes when not in running mode.
 	* @throw bad_cast exception when the argument is not a TokenDelayConfig object.
 	*/
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 
 	/**
 	* Configuration access
@@ -197,9 +197,9 @@ void TokenDelay<T>::Discard(T* toDiscard) {
 }
 	
 template <class T> 
-bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const TokenDelayConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 	mCapacity = mConfig.GetMaxDelay();
 	mDelayControl.DoControl(TControlData(mConfig.GetDelay()));
 	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());

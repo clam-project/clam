@@ -50,13 +50,12 @@ namespace CLAM
 	{
 	}
 
-	bool LPC::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+	bool LPC::ConcreteConfigure( const ProcessingConfig& c )
 	{
 		bool  res = true;
 
+		CopyAsConcreteConfig(mConfig, c);
 		try{
-			mConfig = dynamic_cast< const LPCConfig& > ( cfg );
-
 			if( mConfig.HasOrder() )
 			{
 				if( mConfig.GetOrder() < 0 )

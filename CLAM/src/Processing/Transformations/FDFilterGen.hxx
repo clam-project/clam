@@ -187,7 +187,7 @@ private:
 	const char *GetClassName() const {return "FDFilterGen";}
 	
 	/** Private method called by the public Configure(cfg) method on the base class*/
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 
 	/** Auxiliary Function:*/
 	void SetFilterPoint(

@@ -58,7 +58,7 @@ namespace CLAM
 
 		TData Compress(TData);
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& cfg);
 
 	public:
 		EnvelopeModulator(const EnvModulatorConfig& c = EnvModulatorConfig());

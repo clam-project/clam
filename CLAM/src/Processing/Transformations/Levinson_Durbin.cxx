@@ -47,9 +47,9 @@ namespace CLAM
 	Levinson_Durbin::~Levinson_Durbin()
 	{}
 
-	bool Levinson_Durbin::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+	bool Levinson_Durbin::ConcreteConfigure( const ProcessingConfig& c )
 	{
-		mConfig = dynamic_cast< const Levinson_DurbinConfig& > ( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		if( mConfig.HasOrder() )
 		{

@@ -69,7 +69,7 @@ namespace CLAM {
 		 *  @throw bad_cast exception when the argument is not an SpectralEnvelopeApplyConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SpectralEnvelopeApplyConfig initialised by default*/

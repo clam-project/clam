@@ -265,7 +265,7 @@ namespace CLAM
 		void SetNormalLevel(TData nlevel);
 		void SetSilenceLevel(TData slevel);
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& cfg);
 
 		bool ConcreteStart();
 

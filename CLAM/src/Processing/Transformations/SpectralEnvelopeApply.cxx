@@ -62,10 +62,10 @@ namespace CLAM {
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool SpectralEnvelopeApply::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool SpectralEnvelopeApply::ConcreteConfigure(const ProcessingConfig& c)
 	{
 
-		mConfig = dynamic_cast<const SpectralEnvelopeApplyConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 

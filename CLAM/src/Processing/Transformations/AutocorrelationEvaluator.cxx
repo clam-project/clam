@@ -49,9 +49,9 @@ namespace CLAM
 	AutocorrelationEvaluator::~AutocorrelationEvaluator()
 	{}
 
-	bool AutocorrelationEvaluator::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool AutocorrelationEvaluator::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast< const AutocorrelationEvaluatorConfig& > (cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		if( mConfig.HasCorrelationSize() )
 		{
