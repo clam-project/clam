@@ -64,10 +64,15 @@ namespace CLAM
 
 	class XMLStorageImplementation {
 		public:
-			XMLStorageImplementation() {}
+			XMLStorageImplementation() {
+				mUseIndentation=false;
+			}
 			virtual ~XMLStorageImplementation() {}
 		// Write methods
 		public:
+			void UseIndentation(bool useIndentation) {
+				mUseIndentation=useIndentation;
+			}
 			/**
 			 * Starts a new Document Object Model for dumping contents on it
 			 * @param rootName The name of the root element
@@ -158,6 +163,9 @@ namespace CLAM
 
 		// Factory methods
 			static XMLStorageImplementation * NewDefaultXMLImplementation();
+		// members
+		protected:
+			bool mUseIndentation;
 	};
 
 	class XercesXMLStorageImplementation : public XMLStorageImplementation
@@ -234,6 +242,7 @@ namespace CLAM
 			}
 			virtual void WriteDOM(std::ostream & os) {
 				XercesDomPrinter printer;
+				printer.UseIndentation(mUseIndentation);
 				printer.Print(os,DOMDoc);
 			}
 			void AddAttribute(const char * name, const char * content) {
@@ -557,6 +566,12 @@ XMLStorage::~XMLStorage()
 	delete mPM;
 }
 
+
+void XMLStorage::UseIndentation(bool useIndentation) 
+{
+	mPM->UseIndentation(useIndentation);
+}
+	
 //////////////////////////////////////////////////////////////////////
 // Member Functions
 //////////////////////////////////////////////////////////////////////

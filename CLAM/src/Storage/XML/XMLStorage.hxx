@@ -57,6 +57,14 @@ public:
 	 * Retrieves the object from the current storage tree point.
 	 */
 	virtual bool Load(Storable * object);
+// Configuration
+	/**
+	 * Changes whether to output pretty formated XML or not.
+	 * By default, indentation and new lines are not inserted resulting
+	 * in compact XML but dificult for humans to read. Use this method,
+	 * to enable the indentation.
+	 */
+	void UseIndentation(bool useIndentation);
 // Operators
 public:
 	/**
