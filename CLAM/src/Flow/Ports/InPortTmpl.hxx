@@ -23,6 +23,7 @@ class InPortTmpl : public InPort
 public:
 
 	inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
+	virtual ~InPortTmpl();
 	inline T &GetData();
 	inline void LeaveData();
 	//! implementation of the virtual method declared in InPort
@@ -55,6 +56,14 @@ inline InPortTmpl<T>::InPortTmpl(const std::string &n,
 {
 	o->PublishInPort(this);
 }
+
+template<class T>
+InPortTmpl<T>::~InPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
+}
+
 
 template<class T>
 inline T &InPortTmpl<T>::GetData()	
