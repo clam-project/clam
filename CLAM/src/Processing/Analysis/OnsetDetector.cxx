@@ -182,9 +182,7 @@ namespace CLAM
 		}
 
 
-		Array< Array<TimeIndex> > bandCandidates(mnBands);		//Candidates positions per band
-		bandCandidates.SetSize(mnBands);
-
+		std::list< TimeIndex > candidates;
 	
 		TimeIndex tempOnset;
 		Array< Array<TimeIndex> > bandOnsets(mnBands);
@@ -193,6 +191,8 @@ namespace CLAM
 
 		DataArray onsetsArray(mnSamples);		//sum of cleaned onsets detected in each bands (Data)
 		onsetsArray.SetSize(mnSamples);	
+
+		std::map< TIndex, double > onsetsDetected;
 
 
 		mRevSmoothedEnergy.Resize( mnSamples );
@@ -212,35 +212,48 @@ namespace CLAM
 
 		
 			//Candidates Detection
-			DetectCandidates( bandOnsetDetectData[band] , smoothedInput[band], mBandThreshold , bandCandidates[band]);
+			DetectCandidates( bandOnsetDetectData[band] , smoothedInput[band], mBandThreshold , candidates);
 
 
 			//weak onsets deletion
-			DeleteWeakOnsets( bandCandidates[band] , 1 );
+			RemoveTooNearOnsetsFromCandidatesList( candidates );
 
 
 			//sums up band results
-			for (int j=0 ; j<bandCandidates[band].Size() ; j++)
-				onsetsArray[bandCandidates[band][j].GetPosition()] += bandCandidates[band][j].GetWeight();		
-		}
-	
+			for ( LI j = candidates.begin();
+			      j != candidates.end();
+			      j++ )
+				if ( onsetsDetected.find( (TIndex)j->GetPosition() ) != onsetsDetected.end() )
+					onsetsDetected[ (TIndex)j->GetPosition() ] += j->GetWeight();
+				else
+					onsetsDetected[ (TIndex)j->GetPosition() ] = j->GetWeight();
 
-		//Forms ordered array of onsets
-		for (int i=0 ; i<mnSamples ; i++)
-		{
-			if (onsetsArray[i] < 1e-7 ) continue;
-			tempOnset.SetPosition(i);
-			tempOnset.SetWeight(onsetsArray[i]);
-			mOnsets.AddElem(tempOnset);
+			candidates.clear();
 		}
+
+		if ( onsetsDetected.empty() )
+			return;
+
+
+		TimeIndex tmp;
+		for ( MI i = onsetsDetected.begin(); i != onsetsDetected.end();
+		      i++ )
+		{
+			tmp.SetPosition( i->first );
+			tmp.SetWeight( i->second );
+			candidates.push_back( tmp );
+		}
+
 	
 
 		//weak onsets deletion (weak onsets intensities are summed up
 		//and added to the highest peak in a mMinPeakDist long window)
-		DeleteWeakOnsets( mOnsets , 2 );
+		RemoveTooWeakOnsetsFromCandidatesList( candidates );
+		//DeleteWeakOnsets( mOnsets , 2 );
 
 		//final thresholding (deletes onsets with intensities lower than mGlobalThreshold)
 
+		/*
 		float maxWeight = 0.0;
 		for (int j=0 ; j<mOnsets.Size() ; j++)
 		{
@@ -251,11 +264,36 @@ namespace CLAM
 			if(mOnsets[j].GetWeight() >= maxWeight)
 				maxWeight = mOnsets[j].GetWeight();
 		}
+		*/
+		double maxWeight = 0.0;
+
+		for ( LI i = candidates.begin(); i != candidates.end(); i++ )
+		{
+			if ( i->GetWeight() <= mGlobalThreshold )
+			{
+				i = candidates.erase( i );
+				continue;
+			}
+
+			if ( i->GetWeight() >= maxWeight )
+				maxWeight = i->GetWeight();
+
+		}
 
 	
+		if ( candidates.empty() )
+			return;
+		
+
+		if ( mComputeOffsets )
+			CheckOffset( s, candidates );
+
+		
+
 		/////////////////////////////////
 		//Stores Boundaries Information//
 		/////////////////////////////////
+		/*
 		if(finalOnsets.Size()>0)
 		{
 			if(mComputeOffsets)
@@ -281,14 +319,29 @@ namespace CLAM
 				s.GetChildren().AddElem(tmpSegment);
 			}
 		}
+		*/
+		
+		finalOnsets.Resize( candidates.size() );
+		finalOnsets.SetSize( candidates.size() );
+
+		
+		int k = 0;
+		
+		for ( LI i = candidates.begin(); 
+		      i != candidates.end(); i++, k++ )
+		{
+			finalOnsets[k].SetPosition( i->GetPosition() / mSampleRate );			
+			finalOnsets[k].SetWeight( i->GetWeight() / maxWeight );			
+		}
 
 
+		/*
 		for(int j=0; j<(finalOnsets.Size()); j++) 
 		{
 			finalOnsets[j].SetPosition(finalOnsets[j].GetPosition() / mSampleRate);
 			finalOnsets[j].SetWeight(finalOnsets[j].GetWeight() / maxWeight);
 		}
-
+		*/
 
 	}
 
@@ -394,7 +447,8 @@ namespace CLAM
 ////////////////////////////////
 ///////CANDIDATE DETECTION//////
 ////////////////////////////////
-	void OnsetDetector::DetectCandidates(Array<double>& in, Array<double>& weight, TData threshold , Array<TimeIndex>& ret)
+	void OnsetDetector::DetectCandidates(Array<double>& in, Array<double>& weight, 
+					     TData threshold , std::list<TimeIndex>& ret)
 	{	
 	
 		//This function detect the positions and weights of candidates
@@ -404,7 +458,7 @@ namespace CLAM
 		//(instead, the derivative of the log smoothed energy or the "dynamic" can be taken)	
 	
 	
-		int i=1, length, begin, maxLogPos, maxLinPos;
+		int i=1, maxLogPos, maxLinPos;
 		TData maxLog, maxLin;	
 		TimeIndex candidate;
 
@@ -414,16 +468,13 @@ namespace CLAM
 		//takes peaks above the threshold
 		while(i < maxPosition)
 		{
-			length=maxLog=maxLin=0;		
+			maxLog=maxLin=0;		
 
-			if(in[i]>0)
+			if(in[i]>0 || in[i+1]>0 || in[i+2]>0 )
 			{
 
-
-				begin=i;
-
 				//while the derivative is positive (up to 2 negative values are allowed)
-				while(i < maxPosition  && (in[i]>0 || in[i+1]>0 || in[i+2]>0))
+				do
 				{
 				
 
@@ -444,26 +495,145 @@ namespace CLAM
 						maxLinPos = i;
 					}
 				
-					length++;
+
 					i++;
 				}
+				while(i < maxPosition  && (in[i]>0 || in[i+1]>0 || in[i+2]>0));
 			
-				//onset "dynamic" could also be used
-				//intDyn=(weight[i-1]-weight[begin]);
-
 				if(maxLog>threshold)
 				{
 					candidate.SetPosition(maxLogPos);
 					candidate.SetWeight(maxLin);
-					ret.AddElem(candidate);
+					ret.push_back( candidate );
 
 				}
 			}
-			else i++;
+			else 
+				i++;
 		}
 	}
 
+	void OnsetDetector::RemoveTooNearOnsetsFromCandidatesList( std::list<TimeIndex>& in )
+	{
+		TimeIndex newPeak;
+		
+		typedef std::list<TimeIndex>::iterator LI;
 
+		LI theLastOne = in.end();
+		theLastOne--;
+		LI j = in.begin();
+		LI k, knext, lastToRemove;
+
+
+		while ( j != theLastOne )
+		{
+			k = j;
+
+			knext = k; knext++;
+
+
+			while( k != theLastOne
+			       && ( knext->GetPosition() - k->GetPosition() ) < mMinPeakDist )
+			{
+				knext++;
+				k++;
+			}
+				
+			if ( j == k ) // No peaks were found to be "deleteable"
+				j++;
+			else
+			{
+				TimeIndex newPeak;
+				PeakDeletion( j, knext, newPeak );
+				*j = newPeak;
+				LI first = j; first++;
+				LI last = k; 
+				if ( last != in.end() ) last++;
+				in.erase( first, last ); 
+				theLastOne = in.end();
+				theLastOne--;
+
+			}
+			       
+		}
+	}
+
+	void OnsetDetector::PeakDeletion( LI first, LI last, TimeIndex& newPeak )
+	{
+		double max = -1.0;
+
+		for ( LI i = first; i != last; i++ )
+			if ( i->GetWeight() > max )
+			{
+				max = i->GetWeight();
+				newPeak.SetPosition( i->GetPosition() );
+				newPeak.SetWeight( i->GetWeight() );
+			}
+	}
+
+	void OnsetDetector::RemoveTooWeakOnsetsFromCandidatesList( std::list<TimeIndex>& in )
+	{
+		TimeIndex newPeak;
+
+		
+		typedef std::list<TimeIndex>::iterator LI;
+
+		LI theLastOne = in.end();
+		theLastOne--;
+		LI j = in.begin();
+		LI k, knext, lastToRemove;
+
+
+		while ( j != theLastOne )
+		{
+			k = j;
+
+			knext = k; knext++;
+
+
+			while( k != theLastOne
+			       && ( knext->GetPosition() - j->GetPosition() ) < mMinPeakDist )
+			{
+				knext++;
+				k++;
+			}
+				
+			if ( j == k ) // No peaks were found to be "deleteable"
+				j++;
+			else
+			{
+				TimeIndex newPeak;
+				PeakSummation( j, knext, newPeak );
+				*j = newPeak;
+				LI first = j; first++;
+				LI last = k; 
+				if ( last != in.end() ) last++;
+				in.erase( first, last ); 
+				theLastOne = in.end();
+				theLastOne--;
+			}
+			       
+		}
+
+	}
+
+	void OnsetDetector::PeakSummation( LI first, LI last, TimeIndex& newPeak )
+	{
+		double max = -1.0, sum = 0.0;
+		
+		for ( LI i = first; i != last; i++ )
+		{
+			sum += i->GetWeight();
+			
+			if ( i->GetWeight() > max )
+			{
+				max = i->GetWeight();
+				newPeak.SetPosition( i->GetPosition() );
+			}
+		}
+
+		newPeak.SetWeight( sum );
+	}
 
 //////////////////////////////////////////
 /////SMALL INTENSITY ONSETS DELETION//////
@@ -571,6 +741,7 @@ namespace CLAM
 /////////////////////
 //CHECK FOR OFFSETS//
 /////////////////////
+
 	void OnsetDetector::CheckOffset( Segment &s , Array<TimeIndex>& finalOnsets)
 	{
 
@@ -596,18 +767,22 @@ namespace CLAM
 
 		//Computes the smoothing filter coefficients
 		TSize winSize = 0.05*mSampleRate;
-		Array<TData> winCoef(winSize);
+		Array<double> winCoef(winSize);
 		winCoef.SetSize(winSize);
-		for(i=0; i<winSize; i++)	winCoef[i]=1;
+		for(i=0; i<winSize; i++)	
+			winCoef[i]=1.0;
 
 		//Rescaling factor
 		TData sum=winCoef.Size();
 
 		//convolution
-		DataArray envelope(amplitude.Size());
+		Array<double> envelope(amplitude.Size());
 		envelope.SetSize(amplitude.Size());
-		DataArray revenvelope(amplitude.Size());
+		Array<double> revenvelope(amplitude.Size());
 		revenvelope.SetSize(amplitude.Size());
+		
+		// :TODO: continua con el refactoring sustituyendo la lista
+
 		for(i=0; i<amplitude.Size();i++)
 		{	
 			TData temp=0;
@@ -751,5 +926,269 @@ namespace CLAM
 			}
 		}
 	}
+
+	void OnsetDetector::DecimationForEnvelopeComputation( Array<double>& envelope )
+	{
+		envelope.Resize( mAudio.GetSize() / 90 );
+		envelope.SetSize( mAudio.GetSize() / 90 );
+
+		DataArray& samples = mAudio.GetBuffer();
+		TSize numSamples = mAudio.GetSize();
+
+		for ( int i = 0; i < numSamples; i++ )
+			samples[i] = fabsf( samples[i] );
+
+		// Decimation
+		mDecimator.DecimateFrom22050To245( samples, envelope );
+
+	}
+
+	void OnsetDetector::ComputeSmoothingFilterCoeffs( Array<double>& coeffs )
+	{
+		TSize winSize = 0.05 * mSampleRate;
+		coeffs.Resize( winSize );
+		coeffs.SetSize( winSize );
+
+		for ( int i = 0; i < winSize; i++ )
+			coeffs[i] = 1.0;
+	}
+
+	void OnsetDetector::ExtractAudioEnvelope( Array<double>& envelope )
+	{
+		// Extraction of amplitude envelope
+
+		Array<double> amplitude;
+
+		DecimationForEnvelopeComputation( amplitude );
+
+		Array<double> winCoef;
+
+		ComputeSmoothingFilterCoeffs( winCoef );
+		
+		// rescaling factor
+		double sum = winCoef.Size();
+
+		//convolution
+		envelope.Resize(amplitude.Size());
+		envelope.SetSize(amplitude.Size());
+		Array<double> revenvelope(amplitude.Size());
+		revenvelope.SetSize(amplitude.Size());
+		
+
+		//convolution
+		double inverseWCSum = 1.0 / sum;
+		TSize  ampSize = amplitude.Size();
+		double temp;
+
+		int j = 0;
+		int i = 0;
+		
+		for ( i = 0; i < mWinSize; i++ )
+		{
+			temp = 0.0;
+			for ( j = -(i-mWinSize)-1; j < mWinSize; j++ )
+				temp+=amplitude[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+
+			envelope[i] = temp * inverseWCSum;
+
+			revenvelope[ampSize-i-1]=envelope[i];
+		}
+
+
+		for(; i<ampSize;i++)
+		{	
+			temp=0.0;
+
+			for(j = 0; j<mWinSize; j++)
+				temp+=amplitude[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+
+
+			envelope[i] = temp * inverseWCSum;
+
+			revenvelope[ampSize-i-1]=envelope[i];
+		}
+
+		//reverse convolution for zero-phase distortion
+		for ( i = 0; i < mWinSize; i++ )
+		{
+			temp=0.0;
+
+			for( j = -(i-mWinSize)-1; j<mWinSize; j++)
+			{
+				temp+=revenvelope[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+				
+			}
+			envelope[ampSize-i-1]=temp*inverseWCSum;		
+
+		}
+
+		for(; i<ampSize;i++)
+		{	
+			temp=0.0;
+
+			for(j=0; j<mWinSize; j++)
+			{
+				temp+=revenvelope[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+				
+			}
+			envelope[ampSize-i-1]=temp*inverseWCSum;		
+		}
+
+
+	}
+
+	void OnsetDetector::CheckOffset( Segment& s, std::list<TimeIndex>& candidates )
+	{
+		int i, j;
+		std::list< PointTmpl<int,int> > offsets;
+		typedef std::list< PointTmpl<int,int> >::iterator PLI;
+
+		Array<double> envelope;
+
+		ExtractAudioEnvelope( envelope );
+
+		// Actual Offset Checking
+
+		PointTmpl<int,int> temp;
+		double min = 0;
+		LI prev, next;
+		prev = candidates.begin();
+		next = prev;
+		next++;
+
+		for ( ; next != candidates.end() ; prev++, next++)
+		{
+			//onset position
+			i=next->GetPosition();
+			
+			temp.SetX(prev->GetPosition());
+
+			//looks for the first min before the onset
+			min = envelope[i];
+			
+			do
+			{
+				if(envelope[i]<min)
+					min = envelope[i];
+				i--;
+			} 
+			while (i>0  && envelope[i]>envelope[i-1]);
+			
+			//finds the point (going backwards) where the amplitude rises above the threshold 
+			
+			if (min < mOffsetThreshold && i>0) 
+			{
+				while (envelope[i] < mOffsetThreshold && i>prev->GetPosition())
+					i--;
+				
+				if(i>prev->GetPosition())
+				{
+					temp.SetY(i);
+					offsets.push_back(temp);
+				}
+			}
+		}
+		
+		//Checking for last offset
+		i=candidates.back().GetPosition();
+		
+		temp.SetX(candidates.back().GetPosition());
+		
+		bool found=false;
+		
+		do  
+		{
+			if (envelope[i]< mOffsetThreshold 
+			    && envelope[i]>envelope[i+1] 
+			    && envelope[i+1]>envelope[i+2] 
+			    && envelope[i+2]>envelope[i+3] )
+			{
+				temp.SetY(i);
+				offsets.push_back(temp);
+				found=true;
+			}
+			i++;
+		}
+		while(i<envelope.Size()-3 && !found);
+
+		// Onset/Offset information info
+		// A segment start is always an onset
+		// A segment end is either an offset ( if the amplitude goes below mOffsetThreshold )
+		// or the next onset
+
+		if ( candidates.empty() )
+			return;
+
+		bool hasOffset = false;
+		int  offsetNumber = offsets.size();
+		PLI  offsetIt = offsets.begin();
+		LI   last = candidates.end();
+		last--;
+
+		for ( LI candidateIt = candidates.begin(); candidateIt != last; candidateIt++ )
+		{
+			Segment tmpSegment;
+			int onset = candidateIt->GetPosition();
+
+			if ( offsetIt != offsets.end() )
+			{
+				int offOnset = offsetIt->GetX();
+				if ( onset == offOnset )
+					hasOffset = true;
+			}
+
+			if ( hasOffset )
+			{
+				tmpSegment.SetBeginTime( (TTime)offsetIt->GetX()/(TTime)mSampleRate );
+				tmpSegment.SetEndTime( (TTime)offsetIt->GetY()/(TTime)mSampleRate );
+				tmpSegment.SetpParent( &s );
+				s.GetChildren().AddElem( tmpSegment );
+				offsetIt++;
+				candidateIt++;
+				hasOffset = false;
+			}
+			else
+			{
+				tmpSegment.SetBeginTime( (TTime)candidateIt->GetPosition()/ (TTime) mSampleRate );
+				LI nextCandidateIt = candidateIt;
+				nextCandidateIt++;
+				tmpSegment.SetEndTime( (TTime)nextCandidateIt->GetPosition() / (TTime) mSampleRate );
+				tmpSegment.SetpParent( &s );
+				s.GetChildren().AddElem( tmpSegment );
+			}
+
+			
+		}
+			
+		// Last boundaries
+		Segment tmpSegment;
+		int onset = candidates.back().GetPosition();
+		
+		if ( offsetIt != offsets.end() )
+		{
+			int offOnset = offsetIt->GetX();
+			if ( onset == offOnset )
+				hasOffset = true;
+		}
+		
+		if (hasOffset)
+		{
+			tmpSegment.SetBeginTime((TTime)offsetIt->GetX()/(TTime)mSampleRate);
+			tmpSegment.SetEndTime((TTime)offsetIt->GetY()/(TTime)mSampleRate);
+			tmpSegment.SetpParent(&s);
+			s.GetChildren().AddElem(tmpSegment);
+		}
+		else
+		{
+			tmpSegment.SetBeginTime((TTime)candidates.back().GetPosition() / (TTime)mSampleRate);
+			tmpSegment.SetEndTime(s.GetEndTime());
+			tmpSegment.SetpParent(&s);
+			s.GetChildren().AddElem(tmpSegment);
+		}
+
+
+	}
+
+
 
 }
