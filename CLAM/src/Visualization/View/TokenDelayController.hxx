@@ -10,7 +10,8 @@ namespace CLAM
 
 namespace CLAMVM
 {
-		using CLAM::TokenDelay<Spectrum>;
+		using CLAM::TokenDelay;
+		using CLAM::Spectrum;
 		
 
 		class SpectralTokenDelayController 
