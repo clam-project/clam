@@ -232,7 +232,7 @@ protected:
 	inline void        SetPreAllocateAllAttributes() { bPreAllocateAllAttributes=true; }
 
 
-
+public:
 	// Developing tools:
 	void Debug();
 
