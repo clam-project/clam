@@ -105,11 +105,11 @@ namespace CLAM {
 		int GetnCleanedTracks() const {return mTrajectoryArray.Size();};
 
 	private:
-		void Update(Array<SpectralPeakArray*>& peakArrayArray);
+		void LoadTracks(Array<SpectralPeakArray*>& peakArrayArray);
 		void AddTrajectory(TTrajectory& trajectory);
+		void FindContinuations(void);
+		void JoinContinuations(Array<SpectralPeakArray*>& peakArrayArray);
 		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
-		void ContinuedAt(void);
-		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
 		void UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray);
 		void InterpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
 

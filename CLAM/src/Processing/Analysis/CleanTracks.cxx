@@ -87,8 +87,9 @@ namespace CLAM {
 	bool CleanTracks::Do(Array<SpectralPeakArray*>& peakArrayArray)
 	{
 
-		Update(peakArrayArray);
-		Continue(peakArrayArray);
+		LoadTracks(peakArrayArray);
+		FindContinuations();
+		JoinContinuations(peakArrayArray);
 		Clean(peakArrayArray);
 		UpdateTrackIds(peakArrayArray);
 		return true;
@@ -107,7 +108,7 @@ namespace CLAM {
 
 	}
 
-	void CleanTracks::Update(Array<SpectralPeakArray*>& peakArrayArray)
+	void CleanTracks::LoadTracks(Array<SpectralPeakArray*>& peakArrayArray)
 	{
 		for(int i=0;i<peakArrayArray.Size();i++)
 		{
@@ -123,10 +124,9 @@ namespace CLAM {
 				AddTrajectory(tmpTrajectory);
 			}
 		}
-		ContinuedAt();
 	}
 
-	void CleanTracks::ContinuedAt()
+	void CleanTracks::FindContinuations()
 	{
 		for(int i=0; i<mTrajectoryArray.Size(); i++)
 		{
@@ -201,7 +201,7 @@ namespace CLAM {
 		}
 	}
 
-	void CleanTracks::Continue(Array<SpectralPeakArray*>& peakArrayArray)
+	void CleanTracks::JoinContinuations(Array<SpectralPeakArray*>& peakArrayArray)
 	{
 		for(int i=0;i<mTrajectoryArray.Size();i++)
 		{
