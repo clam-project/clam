@@ -222,7 +222,8 @@ private:
 	{
 		DummyIOProcessing sender, receiver;
 		CLAM::ConnectControls(sender, "Out", receiver, "In");
-		CLAM::TControlData event(1.);
+		receiver.inControl.DoControl(666); // A previous value
+		CLAM::TControlData event(1.7);
 		sender.outControl.SendControl(event);
 		CPPUNIT_ASSERT_EQUAL(event, receiver.inControl.GetLastValue() );
 	}
@@ -231,8 +232,9 @@ private:
 
 		DummyIOProcessing sender, receiver;
 		CLAM::ConnectPorts(sender, 0, receiver, 0);
-		CLAM::TControlData event(1.);
-		sender.outControl.SendControl( event );
+		receiver.inControl.DoControl(666); // A previous value
+		CLAM::TControlData event(1.7);
+		sender.outControl.SendControl(event);
 		CPPUNIT_ASSERT_EQUAL(event, receiver.inControl.GetLastValue() );
 	}
 
