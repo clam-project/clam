@@ -39,14 +39,15 @@ namespace CLAM {
 		void Configure(int max_window_size=0) { mStream.Configure(max_window_size); }
 
 		WriteStreamRegion *NewWriter (OutPort *port,
-									  unsigned int hop,
-									  unsigned int length);
+					      unsigned int hop,
+					      unsigned int length);
 	
 		ReadStreamRegion  *NewReader (InPort *port,
-									  unsigned int hop,
-									  unsigned int length,
-									  SourceStreamRegion* source = 0);
+					      unsigned int hop,
+					      unsigned int length,
+					      SourceStreamRegion* source = 0);
 
+		void RemoveInPortConnection( InPort * port , ReadStreamRegion *  reader);	
 		void GetAndActivate(WriteStreamRegion* r, Array<DATA> &a);
 		void GetAndActivate(ReadStreamRegion* r, Array<DATA> &a);
 		void GetAndActivate(DelayStreamRegion* r, Array<DATA> &a);
@@ -80,10 +81,19 @@ namespace CLAM {
 							    unsigned int length,
 							    SourceStreamRegion* source)
 	{
-		Node<DATA>::mInputs.AddElem(port);
+		Node<DATA>::mInputs.push_back(port);
 		return mStream.NewReader(hop,length,source);
 	}
 
+	template<class DATA, class BUFFER>
+	void NodeTmpl<DATA,BUFFER>::RemoveInPortConnection(
+		InPort * port , ReadStreamRegion *  reader)
+	{
+		CLAM_ASSERT( port->GetNode() == this, "NodeTmpl::RemoveInPort() "
+			     "InPort to remove connection is not attached to the node" );
+//		Node<DATA>::mInputs.(port); // ??
+		mStream.RemoveReader( reader );
+	}
 
 	template<class DATA, class BUFFER>
 	void NodeTmpl<DATA,BUFFER>::GetAndActivate(WriteStreamRegion* r, Array<DATA> &a)

@@ -74,6 +74,8 @@ namespace CLAM {
 		WriteStreamRegion   *NewWriter (unsigned int hop,
 		                                unsigned int length);
 
+		void RemoveReader( ReadStreamRegion * reader);
+
 		ReadStreamRegion    *NewReader (unsigned int hop,
 		                                unsigned int length,
 		                                SourceStreamRegion* source = 0);
@@ -248,6 +250,14 @@ namespace CLAM {
  		ReadStreamRegion *reader = new ReadStreamRegion(hop,length,source);
 		mRegions.AddReader(reader,source);
 		return reader;
+	}
+
+	template<class D, class B>
+	void StreamBuffer<D,B>::RemoveReader( ReadStreamRegion * reader)
+	{
+		CLAM_ASSERT( mRegions.Contains( reader ) , "StreamBuffer::RemoveReader(): Invalid reader to remove." );
+		mRegions.RemoveReader( reader );
+
 	}
 
 	template<class D, class B>
