@@ -13,11 +13,22 @@ namespace AudioCodecs
 	{
 		mInputBuffer = new unsigned char[mInputBufferSize];
 	}
+
+	MpegBitstream::MpegBitstream()
+	{
+		mInputBuffer = new unsigned char[mInputBufferSize];
+	}
 	
 	MpegBitstream::~MpegBitstream()
 	{
 		if ( mInputBuffer )
 			delete [] mInputBuffer;
+	}
+
+	void MpegBitstream::Init( FILE* fp )
+	{
+		mpFile = fp;
+		Init();
 	}
 
 	void MpegBitstream::Init()

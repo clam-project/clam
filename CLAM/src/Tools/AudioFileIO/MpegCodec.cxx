@@ -3,6 +3,7 @@
 #include "AudioFile.hxx"
 #include "AudioFileHeader.hxx"
 #include "MpegBitstream.hxx"
+#include "MpegAudioStream.hxx"
 #include <mad.h>
 #include <cstdio>
 
@@ -65,7 +66,7 @@ namespace AudioCodecs
 
 	Stream* MpegCodec::GetStreamFor( const AudioFile& file )
 	{
-		return NULL;
+		return new MpegAudioStream(file);
 	}
 
 	void MpegCodec::RetrieveHeaderData( std::string uri, AudioFileHeader& hdr )

@@ -27,9 +27,11 @@ namespace AudioCodecs
 
 	public:
 		MpegBitstream( FILE* bitstream );
+		MpegBitstream();
 		~MpegBitstream();
 
 		void   Init();
+		void   Init(FILE*);
 		TTime  Finish();
 		bool   EOS();
 		bool   FatalError();
