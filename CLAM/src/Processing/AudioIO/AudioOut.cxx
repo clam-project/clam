@@ -24,7 +24,7 @@
 
 using namespace CLAM;
 
-bool AudioOut::ConcreteConfigure(const ProcessingConfig& cfg)
+bool AudioOut::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
 {
 	CopyAsConcreteConfig(mConfig, c);
