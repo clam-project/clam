@@ -578,7 +578,18 @@ else
 			break;
 		fi
 	done
+	
+	if test -d $QTDIR/include/; then
+		AC_MSG_RESULT(yes)
+		QT_INCLUDES="$QTDIR/include"
+		QT_LIB_PATH="$QTDIR/lib"
+		FLAG_QT_INCLUDES="-I$QTDIR/include"
+		FLAG_QT_LIB_PATH="-L$QTDIR/lib"
+		found_qt=yes
+		break;
+	fi
 fi
+
 if test $found_qt = yes; then
 	AC_MSG_CHECKING([for qt library (and other qt required)...])
 	OLD_FLAGS=$CXXFLAGS
