@@ -43,15 +43,7 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	  mSelected( false )
 {
 	QWidget * top = topLevelWidget();
-	QString s(mName.c_str());
-
-	//we calculate width of name
-	QFont font( "Helvetica" ,8 );
-	QFontMetrics fm( font );
-	int pixelsWide = fm.width( s );
-	int pixelsHigh = fm.height();
-	setFixedSize(pixelsWide + 30, pixelsHigh*3);
-
+	UpdateSize();
 	// now we position the processings in the gui with a random function
 	// we put them inside 3/4 of the network, in order to avoid processings in the borders
 	QPoint position(rand()%(3*top->width()/4), rand()%(3*top->height()/4));
@@ -68,6 +60,30 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	SlotSetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::SetOutControlClicked);
 	SlotSetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::SetOutControlAfterClickInControl);
 	SlotSetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::SetInControlAfterClickOutControl);
+}
+
+void Qt_ProcessingPresentation::UpdateSize()
+{
+	QString name(mName.c_str());
+	QString className(mObservedClassName.c_str() );
+
+	//we calculate width of name
+	QFont font( "Helvetica" ,8 );
+	QFontMetrics fm( font );
+	int pixelsWide = std::max( fm.width( name ), fm.width( className ) );
+	int pixelsHigh = fm.height();
+	setFixedSize(pixelsWide + 30, pixelsHigh*2 + 20);
+
+	int heightPorts = std::max( mInPortPresentations.size(), mOutPortPresentations.size() );
+	heightPorts = heightPorts*7+14;
+	if (height() < heightPorts)
+		setFixedSize(width(),heightPorts);
+	
+	int widthControls = std::max( mInControlPresentations.size(), mOutControlPresentations.size());
+	widthControls = widthControls*13+24;
+	if (width() < widthControls)
+		setFixedSize(widthControls, height());
+
 }
 
 void Qt_ProcessingPresentation::SetInPortAfterClickOutPort( const QPoint & p)
@@ -164,7 +180,6 @@ void Qt_ProcessingPresentation::SetOutControlClicked( Qt_OutControlPresentation 
 void Qt_ProcessingPresentation::SetObservedClassName(const std::string& name)
 {
 	mObservedClassName = name;
-	QToolTip::add( this, QString( mObservedClassName.c_str() ));
 }
 
 void Qt_ProcessingPresentation::SetInPort( const std::string & name )
@@ -335,9 +350,13 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	{
 		p.setFont( QFont( "Helvetica" ,8) );
 	}
-	p.drawText(  rect(), //QRect(12,7,width()-24, height()-14),
+	p.drawText(  QRect(12,7,width()-24, height()/2 - 5 ),
 		    Qt::AlignCenter ,	
 		    QString( mName.c_str() ));
+	p.drawText(  QRect(12,height()/2,width()-24, height()/2 - 5 ),
+		    Qt::AlignCenter ,	
+		    QString( mObservedClassName.c_str() ));
+
 	adjustSize();
  
 }
@@ -478,9 +497,8 @@ void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
 void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 {
 	releaseKeyboard();
-	std::cout << "editing" << std::endl;
 	QLineEdit * nameEdit = new QLineEdit( this );
-	nameEdit->setAlignment( Qt::AlignCenter ); 
+//	nameEdit->setAlignment( Qt::AlignCenter ); 
 	nameEdit->setText( mName.c_str() );
 
 	connect( nameEdit, SIGNAL( textChanged ( const QString & )),
@@ -488,6 +506,7 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 
 	connect( nameEdit, SIGNAL( returnPressed() ), nameEdit, SLOT( close() ) );
 	connect( nameEdit, SIGNAL( returnPressed() ), this, SLOT( SlotExecuteChangeName() ) );
+	connect( this, SIGNAL(SignalEmitGeometryChange( const QRect &)), nameEdit, SLOT( setGeometry( const QRect & )) );
 
 	nameEdit->setFont( QFont( "Helvetica" ,8) );
 	nameEdit->setGeometry( QRect(12,7,width()-24, height()-14) );
@@ -504,11 +523,20 @@ void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
 void Qt_ProcessingPresentation::SlotTextChange( const QString & newName )
 {
 	ChangeProcessingPresentationName( newName.latin1() );
+	emit SignalEmitGeometryChange( QRect(12,7,width()-24, height()-14) );
 }
 
 void Qt_ProcessingPresentation::SlotExecuteChangeName()
 {
 	SignalProcessingNameChanged.Emit( mName );
+}
+
+void Qt_ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )
+{
+	mName = name;
+	UpdateSize();
+	UpdateOutControlsPosition();
+	UpdateOutPortsPosition();
 }
 
 } // namespace NetworkGUI

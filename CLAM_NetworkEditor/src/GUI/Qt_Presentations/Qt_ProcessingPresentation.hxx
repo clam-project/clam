@@ -82,6 +82,8 @@ protected:
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
+	void UpdateSize();
+	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
 
 
 // qt stuff
@@ -114,6 +116,8 @@ public: // slots
 public slots: // qt slots
 	void SlotTextChange( const QString & );
 	void SlotExecuteChangeName();
+signals:
+	void SignalEmitGeometryChange( const QRect & );
 };
 
 
