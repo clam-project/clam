@@ -2,6 +2,7 @@
 #define __INPUTCONTROLMODEL__
 
 #include "Signalv1.hxx"
+#include "Signalv2.hxx"
 #include "Slotv1.hxx"
 #include "OutControl.hxx"
 
@@ -24,10 +25,11 @@ namespace CLAMVM
 				virtual ~InputControlModel();
 
 				// Signals
-				Signalv1< TControlData >          ValuePublished;
-
+				Signalv1< TControlData >                  ValuePublished;
+				Signalv1< TControlData, TControlData >    ValueRangePublished;
+				
 				// Slots
-				Slotv1< TControlData>             UpdateValue;
+				Slotv1< TControlData>                     UpdateValue;
 
 		};
 }

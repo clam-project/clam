@@ -25,11 +25,16 @@ namespace CLAMVM
 						bool                    mIsDirty;
 						
 						tManagedEmitter();
+						
+						void Emit(  );
 		
 				};
 		
 				tManagedEmitter         mEmitter;
 				bool                    mIsBound;
+				bool                    mValueRangeChanged;
+				TControlData            mMinValue;
+				TControlData            mMaxValue;
 		protected:
 		
 				void DispatchControlValue( TControlData value );
@@ -49,6 +54,13 @@ namespace CLAMVM
 				virtual bool Publish();
 
 				virtual bool Update();
+
+				void SetValueRange( TControlData min, TControlData max )
+				{
+						mMinValue = min;
+						mMaxValue = max;
+						mValueRangeChanged = true;
+				}
 
 				virtual bool BindTo( InControl&  adaptee );
 				

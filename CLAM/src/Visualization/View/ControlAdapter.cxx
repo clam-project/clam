@@ -1,14 +1,21 @@
 #include "ControlAdapter.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAMVM
 {
 		ControlAdapter::tManagedEmitter::tManagedEmitter()
-				: mControl("OutControl"), mValueToEmit(0), mIsDirty( false )
+				: mControl("OutControl"), mValueToEmit(0), mIsDirty( false )				  
 		{
 		}
 
+		void ControlAdapter::tManagedEmitter::Emit(  )
+		{
+				mControl.SendControl( mEmitter.mValueToEmit );										
+				mIsDirty = false;				
+		}
+
 		ControlAdapter::ControlAdapter()
-				: mEmitter(), mIsBound( false )
+				: mEmitter(), mIsBound( false ), mMinValue( 0 ), mMaxValue( 0 )
 		{
 			UpdateValue.Wrap( this, &InputControlModel::DispatchControlValue );
 		}
@@ -29,6 +36,11 @@ namespace CLAMVM
 		bool ControlAdapter::Publish()
 		{
 				ValuePublished.Emit( mEmitter.mValueToEmit );
+				if ( mValueRangeChanged )
+				{
+						ValueRangePublished.Emit( mMinValue, mMaxValue );
+						mValueRangeChanged = false;
+				}
 
 				return true;
 		}
@@ -37,6 +49,14 @@ namespace CLAMVM
 		{
 				if ( mEmitter.mIsDirty )
 				{
+						if ( fabs( mMinValue - mMaxValue) > 0 ) // range is not null								
+								if ( (mMinValue <= value) && (value <= mMaxValue) )
+										mEmitter.Emit( );
+								else 
+										return false;
+						
+						// if the range is null then no check is done
+
 						mEmitter.mControl.SendControl( mEmitter.mValueToEmit );
 						mEmitter.mIsDirty = false;
 				}
@@ -48,6 +68,7 @@ namespace CLAMVM
 		{
 				mEmitter.mIsDirty = true;
 				mEmitter.mValueToEmit = value;
+						
 		}
 
 }
