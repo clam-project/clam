@@ -45,7 +45,7 @@ using std::vector;
 #endif
 
 
-#ifdef CLAM_USE_XML 
+#ifdef CLAM_USE_XML
 	#include "XMLStorage.hxx"
 	#include "XMLAdapter.hxx"
 	#include "XMLArrayAdapter.hxx"
@@ -92,7 +92,7 @@ public:
 	}
 
 	~Array()
-	{	
+	{
 		DestroyDataBuffer();
 		mAllocSize=mSize=mStep=0;
 	}
@@ -139,7 +139,7 @@ public:
 				mpData=NULL;
 			}
 		}
-		
+
 		mAllocSize = newAllocSize;
 
 		if (mAllocSize<mSize)
@@ -175,15 +175,17 @@ public:
 	EDataFormat Format() { return eFmtDefault; }
 
 	const T& operator [](const int& i) const
-	{	
-		CLAM_DEBUG_ASSERT(i>=0 && i<mSize,msgIndexOutOfRange);
-		return mpData[i]; 
+	{
+		CLAM_DEBUG_ASSERT(i>=0,msgIndexOutOfRange);
+		CLAM_DEBUG_ASSERT(i<mSize,msgIndexOutOfRange);
+		return mpData[i];
 	}
 
-	T& operator [](const int& i) 
-	{	
-		CLAM_DEBUG_ASSERT(i>=0 && i<mSize,msgIndexOutOfRange);
-		return mpData[i]; 
+	T& operator [](const int& i)
+	{
+		CLAM_DEBUG_ASSERT(i>=0,msgIndexOutOfRange);
+		CLAM_DEBUG_ASSERT(i<mSize,msgIndexOutOfRange);
+		return mpData[i];
 	}
 	
 	void	AddElem(const T& elem)
