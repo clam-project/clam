@@ -135,6 +135,12 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 	return UpdateControlValueFromBPF(0);
 }
 
+bool SMSMorph::ConcreteStart()
+{
+	mPO_SpectrumInterpolator.Start();
+	return true;
+}
+
 bool SMSMorph::InterpolateSinusoidal(const Frame& in1,const Frame& in2, Frame& out, TData magFactor, TData freqFactor, TData pitchFactor)
 {
 		///////////////////////
@@ -168,7 +174,11 @@ bool SMSMorph::InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out
 	Spectrum &inRes2=in2.GetResidualSpec();
 	Spectrum &outRes=out.GetResidualSpec();
 	
-	TSize specSize=out.GetResidualSpec().GetSize();
+	outRes.SetSpectralRange(inRes1.GetSpectralRange());
+	//TODO: should set prototypes at the beginning to enhance speed
+	mPO_SpectrumInterpolator.Do(inRes1,inRes2,outRes);
+
+/*	TSize specSize=out.GetResidualSpec().GetSize();
 
 	int i;
 	for(i=0;i<specSize;i++)
@@ -176,6 +186,7 @@ bool SMSMorph::InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out
 	if(resFactor>0.5)
 		for(i=0;i<specSize;i++)
 			outRes.SetPhase(i,inRes2.GetPhase(i));
+*/
 	return true;
 }
 

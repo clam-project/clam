@@ -25,6 +25,7 @@
 
 #include "SMSTransformation.hxx"
 #include "SDIFIn.hxx"
+#include "SpectrumInterpolator.hxx"
 
 namespace CLAM{
 
@@ -117,7 +118,8 @@ namespace CLAM{
 			return mConfig;
 		}
 
-		virtual bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
+		bool ConcreteStart();
 		
 		/** Destructor of the class*/
  		~SMSMorph()
@@ -175,6 +177,10 @@ namespace CLAM{
 		bool mHaveInternalSegment;
 
 		Segment mSegment;
+
+
+		/** Child processings **/
+		SpectrumInterpolator mPO_SpectrumInterpolator;
 	};		
 };//namespace CLAM
 
