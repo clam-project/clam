@@ -106,13 +106,14 @@
 + Separate Pool init and binding
 + Move HookTests to their own tests
 + Create a test Extractor test
-* Indirect Binding
++ Indirect Binding
 	+ Init
 	+ Next
 	+ IsInsideScope
 	+ Invalid references
 	+ Refactor to base class
 	+ Use it with an extractor
+- Ranged Binding
 - Associar al schema durante el bind o antes
 - Comprobaciones de nombres en el bind
 - Read Accessing AttributeScopes that are not written
