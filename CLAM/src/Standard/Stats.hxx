@@ -33,7 +33,7 @@ public:
 /** Only constructor available. We do not want a default constructor because then we could not be sure
  *	that data is consisten and we would have to be constantly be doing checks.*/
 
-	StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5)
+		StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5),mCentroid(.0)
 	{
 		CLAM_ASSERT(data!=NULL,"Stats: A constructed array must be passed");
 		mData=data;
@@ -50,7 +50,6 @@ public:
 		}
 		InitMoment((O<initOrder>*)(0));
 		mCentroidComputed = false;
-		mCentroid = 0;
 	}
 	~StatsTmpl()
 	{
@@ -150,7 +149,7 @@ public:
 	/** Get mean, compute it if necessary*/
 	U GetMean()
 	{
-		if (mData->Size()<=0) return 0;
+		if (mData->Size()<=0) return U(.0);
 		//FirstOrder* first;
 		return GetMoment(FirstOrder);
 	}
