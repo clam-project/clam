@@ -7,6 +7,9 @@ int main()
 		512 /* frame size */, 
 		5000 /* iterations*/ );
 
-    s.DoProcessings();
+    //s.DoBatchProcessing(...);
+	
+	s.ProcessAllRegisteredIterations();
+
 	return 0;
 }

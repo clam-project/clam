@@ -8,6 +8,9 @@ System::System( std::string fileOut , int frameSize , int iterations) :
 	_frameSize(frameSize), 
 	_iterations(iterations)
 {
+	// registration of iteration methods:
+	Register( &System::OscillatorToFileOut );
+
 	ConfigureProcessings();
 	ConfigureData();
 
@@ -42,14 +45,34 @@ void System::StartProcessings()
 	_fileOut.Start();
 }
 
-void System::DoProcessings()
+bool System::OscillatorToFileOut() {
+	_oscillator.Do(_oscillatorOut);
+	_fileOut.Do(_oscillatorOut);
+	return false;
+}
+
+void System::DoProcessings( IterationMethod iterationDo )
 {
 	for (int i=0;i<_iterations;i++)
-	{
-		_oscillator.Do(_oscillatorOut);
-		_fileOut.Do(_oscillatorOut);
-	}
+		if ( (this->*iterationDo)() ) break;
 }
+
+void System::Register( IterationMethod im )
+{
+	_iterationsRegistry.push_back(im);
+}
+
+void System::ProcessAllRegisteredIterations()
+{
+	Iterations::iterator it, begin, end;
+
+	begin = _iterationsRegistry.begin();
+	end = _iterationsRegistry.end();
+	
+	for (it=begin; it!=end; it++)
+		DoProcessings( *it );
 
 
 }
+
+} // namespace
