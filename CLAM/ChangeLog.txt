@@ -3,6 +3,7 @@
 
   * XML:
      ** Indentation is back
+     ** Fix: Storing arrays with size 1 crashes
   * Descriptors:
      ** More fixes on SpectralFlatness, LowFrequencyEnergiRelation and Rolloff:
         *** SpectralFlatness uses log10 instead log
