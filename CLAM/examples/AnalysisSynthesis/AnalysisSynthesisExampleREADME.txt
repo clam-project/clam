@@ -168,13 +168,13 @@ bool MyTransformation::Do(const Audio& in, Audio& out)
 	return true;
 }
 
-2. Then go to the AnalysisSynthesisExampleGUI.cxx file and make the necessary include
-(in line 11).
+2. Then go to the AnalysisSynthesisExampleBase.cxx file and make the necessary include
+
 	ex. #include "MyTransformation.hxx"
 
-3. Finally, in the same file, go to line 477 and modify it to instantiate your particular
+3. Finally, in the same file, find the Transform() method and make a new of your particular
 transformation.
-	ex. MyTransformation myTrans;
+	ex. SetTransformation(new MyTransformation ());
 
 and that's all!
 
