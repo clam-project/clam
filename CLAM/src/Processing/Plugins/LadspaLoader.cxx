@@ -4,6 +4,7 @@
 #include "AudioOutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "Audio.hxx"
 
 namespace CLAM
 {
@@ -32,27 +33,39 @@ LadspaLoader::~LadspaLoader()
 		if(mInstance && mDescriptor)
 		mDescriptor->cleanup(mInstance);
 }
+void LadspaLoader::UpdatePointers()
+{
+	for(unsigned int i=0;i<mDescriptor->PortCount;i++)
+	{
+		int inPortIndex = 0;
+		int outPortIndex = 0;
+		if( LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && 
+		    LADSPA_IS_PORT_AUDIO(mDescriptor->PortDescriptors[i])) // in port
+			mDescriptor->connect_port(mInstance, i, mInputPorts[inPortIndex]->GetAudio().GetBuffer().GetPtr());
+		else if( LADSPA_IS_PORT_OUTPUT(mDescriptor->PortDescriptors[i]) && 
+		    LADSPA_IS_PORT_AUDIO(mDescriptor->PortDescriptors[i])) // in port
+			mDescriptor->connect_port(mInstance, i, mOutputPorts[outPortIndex]->GetAudio().GetBuffer().GetPtr());
+	}
+
+}
 
 bool LadspaLoader::Do()
-{
+{	
+	UpdatePointers();
+	
 	for(int i=0;i<mInputControlValues.size();i++)
 		mInputControlValues[i]=GetInControls().GetByNumber(i).GetLastValue();
-	// TODO refactor this and eliminate mInputAudio
-	for(int i=0;i<mInputAudio.size();i++)
-		mInputAudio[i].GetBuffer() = mInputPorts[i]->GetAudio().GetBuffer();
-		
+
 	mDescriptor->run(mInstance, mConfig.GetSize());
 
 	for(int i=0;i<mOutputControlValues.size();i++)
 		GetOutControls().GetByNumber(i).SendControl(mOutputControlValues[i]);
 
-	for(int i=0;i<mOutputAudio.size();i++)
-		mOutputPorts[i]->GetAudio().GetBuffer() = mOutputAudio[i].GetBuffer();
-
-	for(int i=0;i<mInputAudio.size();i++)
+	for(int i=0;i<mInputPorts.size();i++)
 		 mInputPorts[i]->Consume();
-	for(int i=0;i<mOutputAudio.size();i++)
+	for(int i=0;i<mOutputPorts.size();i++)
 		mOutputPorts[i]->Produce();
+	
 	return true;
 }
 	
@@ -72,9 +85,6 @@ bool LadspaLoader::ConcreteStart()
 	
 bool LadspaLoader::ConcreteConfigure( const ProcessingConfig & cfg)
 {
-	mInputAudio.clear();
-	mOutputAudio.clear();
-	
 	std::vector< AudioInPort* >::iterator itInPort;
 	for(itInPort=mInputPorts.begin(); itInPort!=mInputPorts.end(); itInPort++)
 		delete *itInPort;
@@ -133,11 +143,6 @@ void LadspaLoader::ConfigurePortsAndControls()
 		{
 			AudioInPort * port = new AudioInPort(mDescriptor->PortNames[i],this );
 			port->SetSize( mConfig.GetSize());
-			Audio audio;
-			audio.SetSize(mConfig.GetSize());
-			audio.SetSampleRate(mConfig.GetSampleRate());
-			mInputAudio.push_back(audio);
-			mDescriptor->connect_port(mInstance, i, mInputAudio[mInputAudio.size()-1].GetBuffer().GetPtr());
 			mInputPorts.push_back(port);
 		}
 		if(LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_CONTROL(mDescriptor->PortDescriptors[i])) // in control
@@ -151,11 +156,6 @@ void LadspaLoader::ConfigurePortsAndControls()
 		{
 			AudioOutPort * port = new AudioOutPort(mDescriptor->PortNames[i],this );
 			port->SetSize( mConfig.GetSize() );
-			Audio audio;
-			audio.SetSize(mConfig.GetSize());
-			audio.SetSampleRate(mConfig.GetSampleRate());
-			mOutputAudio.push_back(audio);
-			mDescriptor->connect_port(mInstance, i, mOutputAudio[mOutputAudio.size()-1].GetBuffer().GetPtr());
 			mOutputPorts.push_back(port);
 			
 		}

@@ -8,7 +8,6 @@
 #include <dlfcn.h>
 #include <string>
 #include "Filename.hxx"
-#include "Audio.hxx"
 
 namespace CLAM
 {
@@ -45,8 +44,6 @@ class LadspaLoader : public Processing
 	const LADSPA_Descriptor * mDescriptor;
 	SOPointer mSharedObject;
 
-	std::vector<Audio> mInputAudio;
-	std::vector<Audio> mOutputAudio;
 	std::vector< AudioInPort* > mInputPorts;
 	std::vector< AudioOutPort* > mOutputPorts;
 
@@ -56,6 +53,7 @@ class LadspaLoader : public Processing
 	std::vector< LADSPA_Data > mOutputControlValues;
 
 	void ConfigurePortsAndControls();
+	void UpdatePointers();
 	
 public:
 	LadspaLoader();
