@@ -107,6 +107,17 @@ namespace CLAM {
 		 * to the circular buffer implementation.
 		 */
 		bool FulfilsInvariant();
+		/**
+		 * Circular overlap checking method
+		 */
+		inline bool CanActivateSourceWithNoCircularOverlap( 
+			const SourceStreamRegion & sourceToBeActivated ) const;
+	private:
+		// helper methods:
+		inline bool ExistCircularOverlapWhenActivateSource( 
+			const ReadStreamRegion& read, 
+			const SourceStreamRegion& ) const;
+
 	};
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -201,7 +212,7 @@ namespace CLAM {
 	template<class T>
 	int CircularStreamImpl<T>::ComputePhantomLength() const
 	{
-		unsigned int max_length = mRegions.Writer()->MaxLength();
+		unsigned int max_length = mRegions.Writer()->Len();
 		SourceStreamRegion::reader_const_iterator rit;
 		StreamRegionContainer::source_const_iterator sit;
 		for (sit=mRegions.sources_begin();
@@ -210,8 +221,8 @@ namespace CLAM {
 			for (rit=(*sit)->readers_begin();
 			     rit != (*sit)->readers_end();
 			     rit++)
-				if ((*rit)->MaxLength() > max_length)
-					max_length = (*rit)->MaxLength();
+				if ((*rit)->Len() > max_length)
+					max_length = (*rit)->Len();
 
 		return max_length;
 	}
@@ -239,15 +250,15 @@ namespace CLAM {
 	}
 
 	template<class T>
-	bool CircularRegionCheck<T>::CircularOverlap(const StreamRegion& r1,
-	                                             const StreamRegion& r2) const
+	bool CircularRegionCheck<T>::CircularOverlap(const StreamRegion& first,
+	                                             const StreamRegion& second) const
 	{
-		unsigned int r1_start        = r1.Pos() % mStream.mLogicalSize;
-		unsigned int r2_start        = r2.Pos() % mStream.mLogicalSize;
-		unsigned int r1_end_phantom  = r1_start + r1.Len();
-		unsigned int r2_end_phantom  = r2_start + r2.Len();
-		return (r1_end_phantom > r2_start &&
-		        r1_start < r2_end_phantom );
+		unsigned int first_start        = first.Pos() % mStream.mLogicalSize;
+		unsigned int second_start        = second.Pos() % mStream.mLogicalSize;
+		unsigned int first_end_phantom  = first_start + first.ActiveLen();
+		unsigned int second_end_phantom  = second_start + second.ActiveLen();
+		return (first_end_phantom > second_start &&
+		        first_start < second_end_phantom );
 	}
 
 	template<class T>
@@ -270,11 +281,22 @@ namespace CLAM {
 		return true;
 	}
 
-}
+	template<class T>
+	bool CircularStreamImpl<T>::CanActivateSourceWithNoCircularOverlap( const SourceStreamRegion & source) const
+	{
+		return ExistCircularOverlapWhenActivateSource( source.GetLastReading(), source );
+	}
+	
+	template<class T>
+	bool CircularStreamImpl<T>::ExistCircularOverlapWhenActivateSource( 
+		const ReadStreamRegion& read, 
+		const SourceStreamRegion& source) const
+	{
+		unsigned int sourceEndWhenActive = source.Pos()+source.Len();
+		return sourceEndWhenActive - read.Pos() > MaxSize();
+	}
 
 
-
-
-
+} // namespace
 
 #endif
