@@ -454,14 +454,14 @@ void UserInterface::StoreAnalysisData(void)
 void UserInterface::DisplayInputSound(void)
 {
 	if(mAttachedPresentations[0]==NULL){
-		Geometry g(0, 20, 890, 490);
+		Geometry g(0, 0, 890, 490);
 		mAttachedViews[0] = new ProcDataView<Audio>;
 		mAttachedPresentations[0] = new ProcDataPresentation<Audio>(g, "Input Audio");
 		
 		mAttachedViews[0]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
 		mAttachedPresentations[0]->LinkWithView( mAttachedViews[0] );
 		
-//		Attach( mAttachedPresentations[0]->GetWindow() );
+		Attach( mAttachedPresentations[0]->GetWindow() );
 		mAttachedPresentations[0]->Show();
 		mAttachedViews[0]->Refresh();
 	}
@@ -631,30 +631,10 @@ void UserInterface::PlayResidual(void)
 
 void UserInterface::Attach(Fl_Window* canvas)
 {
-/*
-	MyGroup** aux = (MyGroup**) mT->array();
-	int n = mT->children();
-	int i;
-	for(i=0; i<n; i++)
-		if ((unsigned int)(aux[i]->mId) == mMenu->value()) 
-			return; // added
-*/
-/*
-	MyGroup* g = new MyGroup(0,0,mT->w(),mT->h(),strdup(mSettings->mName[mMenu->value()]),mMenu->value());    
-	g->SetData(mAudioSegment);
-	g->showPeaks = mPeaksButton->value();
-	
-	if (mMenu->value() == DISP_AUDIO)
-		g->showOnsets = mAudioSegment.HasChildren();
-*/
 	canvas->resizable();
 	mSmartTile->add(canvas);
+	mSmartTile->equalize();
 	canvas->show();
-
-/*
-	g->shade_button->callback((Fl_Callback *)shade_cb,mT);
-	g->close_button->callback((Fl_Callback *)close_cb,mT); 
-*/
 }
 
 int main(void)
