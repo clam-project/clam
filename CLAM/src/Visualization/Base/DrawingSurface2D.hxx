@@ -53,9 +53,9 @@ namespace CLAMVM
  *  by the left, right, bottom, top values; as well as the underlying framebuffer portion
  *  where you are going to draw on.
  */
-class DrawingSurface2D
-{
-public:
+	class DrawingSurface2D
+	{
+	public:
 		/** \brief  Default constructor
 		 *
 		 *  Initializes the canvas bounds.
@@ -67,7 +67,7 @@ public:
 		 */
 		virtual ~DrawingSurface2D();
 
-		/** \defgroup IndexedModeSupport Functions for enabling/disabling/querying indexed mode
+		/** \brief Enables indexed mode support 
 		 *
 		 *  "Indexed Mode" is a commonly used technique to reduce the memory necessary for
 		 *  representing an image, by mapping, typically, an integer value into (R,G,B) triplet. This
@@ -78,13 +78,24 @@ public:
 		 *  over this translation is usually offered by the OS ( thus being a OS-dependant interface ).
 		 *  Nowadays this technique is seldom used, but sometimes can come very in handy.
 		 */
-		/*@{*/
 		virtual void EnableIndexedMode() = 0;
-		virtual void DisableIndexedMode() = 0;
-		virtual bool IsIndexedModeEnabled() const = 0;
-		/*@}*/
 		
-		/** \defgroup DoubleBufferingSupport Functions for enabling/disabling/querying double-buffering support
+		/** \brief Disables Indexed Mode support
+		 * 
+		 *  Reverts the surface back into explicit color representation
+		 */
+		virtual void DisableIndexedMode() = 0;
+		
+		/** \brief Queries the surface about Indexed mode
+		 *
+		 *  This method returns a boolean telling if the surface is configured for
+		 *  for drawing in indexed mode.
+		 *
+		 *  \return True if indexed mode drawing is enabled. False otherwise.
+		 */
+		virtual bool IsIndexedModeEnabled() const = 0;
+		
+		/** \brief Enables double buffering for this surface
 		 *
 		 *  "Double buffering" is a common Computer Graphics for achieving smooth animations while drawing on the
 		 *  screen. In order to avoid images to flicker while refreshing the screen, this technique involves the usage
@@ -92,11 +103,22 @@ public:
 		 *  Graphics Device, one draws the next frame into the back-buffer. Good graphics APIs provide a clear, simple
 		 *  interface for using this technique - which can be critical when displaying data in real-time.
 		 */
-		/*@{*/		
 		virtual void EnableDoubleBuffering() = 0;
+		
+		/** \brief Disables doublebuffering
+		 *  
+		 *  This function disables double buffering for this surface
+		 */
 		virtual void DisableDoubleBuffering() = 0;
+
+		/** \brief Queries the surface about double-buffering status
+		 *
+		 *  This method returns a boolean whose value depends on the double-buffering status
+		 *  for this surface.
+		 *
+		 *  \return True if double buffering is enabled. False otherwise.
+		 */
 		virtual bool IsDoubleBufferingEnabled() const = 0;
-		/*@}*/
 
 		/** \brief Tells if the Canvas has to recalculate its projection matrix
 		 *
@@ -203,7 +225,7 @@ public:
 		 */
 		Slotv2< double, double>                  AdjustYAxis;
 
-protected:
+	protected:
 		void _SetWorldSpace( double xmax, double xmin, double ymax, double ymin );
 		void _AdjustXAxis( double offset, double scale );
 		void _AdjustYAxis( double offset, double scale );
@@ -220,15 +242,9 @@ protected:
 		 */
 		void DamageProjection()
 		{
-				mMustReproject = true;
+			mMustReproject = true;
 		}
 
-		/** \defgroup RequiredInterface Abstract methods to be implemented in concrete drawing surfaces
-		 *
-		 *  These abstract methods encapsulate the implementation details of a 2D Drawing surface
-		 *  and are left to subclasses to implement.
-		 */
-		/*@{*/		
 		/** \brief Applies WCS
 		 *  
 		 *  This method calculates the ortographic ( or other ) perspective projection matrix.
@@ -249,17 +265,17 @@ protected:
 		 * Redraws the canvas contents and updates the perspective and window-viewport matrixs
 		 */
 		virtual void Refresh() = 0;
-		/*@}*/
+
 		
-private:
+	private:
 		bool   mMustReproject;
 		double mxdist, mydist;
 
-protected:
+	protected:
 		
 		double mxmax, mxmin, mymax, mymin;
 		double mcxmax, mcxmin, mcymax, mcymin;
-};
+	};
 
 }
 

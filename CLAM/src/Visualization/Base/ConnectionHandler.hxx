@@ -52,10 +52,10 @@ namespace SigSlot
  *
  *  \sa Signalv1(SI), Signalv0(SI), Signalv2(SI), Signalv3(SI), Signalv4(SI) 
  */
-template < class SignalType >
-class ConnectionHandler
-{
-public:
+	template < class SignalType >
+	class ConnectionHandler
+	{
+	public:
 		/** The callback type definition */
 		typedef typename SignalType::tCallbackType                 tCallbackType;
 		/** The ConnectionID type definition */
@@ -82,18 +82,32 @@ public:
 			}
 		};
 
-		/** \defgroup MiscellaneousTypedefs Typedefs for making clear the Signal classes code.
+		/** \brief Helper typedef
 		 */
-		/*@{*/
 		typedef tCallbackType*                                     tCallbackPtr;
-		typedef std::list<tCallbackPtr>                            tCallList;
-		typedef typename std::list<tCallbackPtr >::iterator        tCallIterator;
-		typedef std::list<tCallback>                               tCallbackList;
-		typedef typename std::list<tCallback>::iterator            tCbListIterator;
-		typedef typename std::list<tCallback>::const_iterator      const_tCbListIterator;
-		/*}@*/
 
-public:
+		/** \brief Helper typedef
+		 */
+		typedef std::list<tCallbackPtr>                            tCallList;
+
+		/** \brief Helper typedef
+		 */
+		typedef typename std::list<tCallbackPtr >::iterator        tCallIterator;
+
+		/** \brief Helper typedef
+		 */
+		typedef std::list<tCallback>                               tCallbackList;
+
+		/** \brief Helper typedef
+		 */
+		typedef typename std::list<tCallback>::iterator            tCbListIterator;
+
+		/** \brief Helper typedef
+		 */
+		typedef typename std::list<tCallback>::const_iterator      const_tCbListIterator;
+
+
+	public:
 		/** Adds a callback to the Signal callback list
 		 *
 		 *  \param pConnection  The connection ID corresponding to the callback
@@ -102,7 +116,7 @@ public:
 		 */
 		void AddCallback( tConnectionId pConnection, Slot* slot, tCallbackType cb )
 		{
-				mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
+			mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
 		}
 		
 
@@ -112,7 +126,7 @@ public:
 		 */
 		bool HasNoCallbacks( ) const
 		{
-				return mCallbacks.empty();
+			return mCallbacks.empty();
 		}
 		
 		/** \brief Accessor to the "List of Calls"
@@ -125,18 +139,18 @@ public:
 		 */
 		tCallList& GetCalls( )
 		{
-				mCalls.clear();
+			mCalls.clear();
 				
-				tCbListIterator i   = mCallbacks.begin();
-				tCbListIterator end = mCallbacks.end();
+			tCbListIterator i   = mCallbacks.begin();
+			tCbListIterator end = mCallbacks.end();
 				
-				while ( i!=end)
-				{
-						mCalls.push_back( &(i->mCallback) );
-						i++;
-				}
+			while ( i!=end)
+			{
+				mCalls.push_back( &(i->mCallback) );
+				i++;
+			}
 				
-				return mCalls;
+			return mCalls;
 		}
 		
 		/** \brief Removes a call from the "List of Calls".
@@ -149,18 +163,18 @@ public:
 		 */
 		void RemoveCall(  tConnectionId id )
 		{
-				tCbListIterator i = mCallbacks.begin();
-				tCbListIterator end = mCallbacks.end();
+			tCbListIterator i = mCallbacks.begin();
+			tCbListIterator end = mCallbacks.end();
 
-				while ( i!=end )
+			while ( i!=end )
+			{
+				if ( i->mConnection == id )
 				{
-						if ( i->mConnection == id )
-						{
-								mCallbacks.erase( i );
-								break;
-						}
-						i++;
+					mCallbacks.erase( i );
+					break;
 				}
+				i++;
+			}
 		}
 		
 		/** \brief Destroys all Signals connections.
@@ -179,12 +193,12 @@ public:
 			}
 		}
 
-private:
+	private:
 		
 		tCallList       mCalls;      /**< The list of calls */
 		tCallbackList   mCallbacks;  /**< The list of connections */ 
 		
-};
+	};
 
 }
 
