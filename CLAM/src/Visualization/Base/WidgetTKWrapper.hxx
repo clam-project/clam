@@ -28,12 +28,6 @@
 
 #include <string>
 
-using std::string;
-
-using CLAM::Component;
-using CLAM::Enum;
-
-
 namespace CLAMVM
 {
 
@@ -44,24 +38,24 @@ namespace CLAMVM
  *  able to wrap. 
  */
 class EWidgetTK
-	: public Enum
+	: public CLAM::Enum
 {
 public:
 	static tEnumValue sEnumValues[];
 	static tValue     sDefault;
 
 	EWidgetTK()
-		: Enum( sEnumValues, sDefault )
+		: CLAM::Enum( sEnumValues, sDefault )
 	{
 	}
 
 	EWidgetTK( tValue v )
-		: Enum( sEnumValues, v )
+		: CLAM::Enum( sEnumValues, v )
 	{
 	}
 
-	EWidgetTK( string s )
-		: Enum( sEnumValues, s )
+	EWidgetTK( std::string s )
+		: CLAM::Enum( sEnumValues, s )
 	{
 	}
 
@@ -69,7 +63,7 @@ public:
 	{
 	}
 
-	Component* Species() const
+	CLAM::Component* Species() const
 	{
 		return new EWidgetTK;
 	}
