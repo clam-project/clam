@@ -16,6 +16,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( FactoryTest );
 	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
 	CPPUNIT_TEST( testRegistryGetCreatorUnsafe_WhenIsEmpty );
+	
 
 	CPPUNIT_TEST_SUITE_END();
 
