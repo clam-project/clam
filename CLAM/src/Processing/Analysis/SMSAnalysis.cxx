@@ -338,7 +338,7 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 	/* Input audio frame is writen onto circular buffer */
 	mSinCircularBuffer.WriteAudio(in);
 	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
-	mSinCircularBuffer.ReadAudio(mSinAudioFrame);
+	mSinCircularBuffer.NonCopyReadAudio(mSinAudioFrame);
 	/* Read index is then decreased according to hop size */
 	mSinCircularBuffer.DecreaseReadIndex(mConfig.GetSinSpectralAnalysis().GetWindowSize()-mConfig.GetSinSpectralAnalysis().GetHopSize()-1);
 
@@ -354,7 +354,7 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 	/* Input audio frame is writen onto circular buffer */
 	mResCircularBuffer.WriteAudio(in);
 	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
-	mResCircularBuffer.ReadAudio(mResAudioFrame);
+	mResCircularBuffer.NonCopyReadAudio(mResAudioFrame);
 	/* Read index is then decreased according to hop size */
 	mResCircularBuffer.DecreaseReadIndex(mConfig.GetResSpectralAnalysis().GetWindowSize()-mConfig.GetResSpectralAnalysis().GetHopSize()-1);
 	
