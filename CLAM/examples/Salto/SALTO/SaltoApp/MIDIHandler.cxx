@@ -206,6 +206,8 @@ namespace CLAM
            mNote -= 50;
      */    
          mLastPitch = mNote;
+		 float calculotmp = (440.0*pow(2,(mNote+48-69)/12.0));
+		 std::cout << "mNote= " << mNote << "StatResFreq:" << calculotmp << std::endl;
          // MidiNote to Frequency :: F=440*2^((P-69)/12)
          params.SetStatResFreq(440.0*pow(2,(mNote+48-69)/12.0));
          
@@ -510,7 +512,6 @@ namespace CLAM
 	{
 		if ( ( mStatus == eNoteOn )  && ( mLastPitch != mNote ) )
 		{
-			params.SetPitchModFactor( mPitchBend );
 			NoteOn( params );
 		}
 		else if ( mStatus == eNoteOff )
@@ -526,6 +527,11 @@ namespace CLAM
 				NoteOn( params );
 
 			CtrAirSpeed( params );
+		}
+		else if( mStatus == ePitchBend )
+		{
+			params.SetPitchModFactor( mPitchBend );
+			mStatus = eIdle;
 		}
 
 		return true;
@@ -581,7 +587,7 @@ namespace CLAM
             params.SetTransitionMode(false);
             params.SetTransitionInit(false);
 
-			//mStatusOut.SendControl( 4 );
+			mStatusOut.SendControl( 4 );
           } 
           
           params.SetDisplayedValuesChanged(true); // display needs update

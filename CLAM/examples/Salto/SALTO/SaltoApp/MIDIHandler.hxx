@@ -55,7 +55,8 @@ namespace CLAM
 			eNoteOff	 = 0,
 			eNoteOn		 = 1,
 			eCtrAirSpeed = 2,
-			eIdle		 = 3,
+			ePitchBend   = 3,
+			eIdle		 = 4,
 		}   mStatus;
 
 	protected:
@@ -88,9 +89,12 @@ namespace CLAM
 
 		int UpdateNote ( TControlData note )
 		{
+			std::cout << "note-update: " << note << std::endl;
+			std::cout << "status: " << mStatus << std::endl;
+
 			ScaleNote( note );
 
-			if( ( mStatus != eNoteOff ) && ( note != 0 ) ) // Processing new note
+			if( ( mStatus != eNoteOff ) && ( note != 0.0 ) ) // Processing new note
 			{
 				if( mVelocity == 0 )  // Note Off
 				{
@@ -116,10 +120,41 @@ namespace CLAM
 			return 0;
 		}
 
+
+/*		int UpdateNote ( TControlData note )
+		{
+			std::cout << "note-update: " << note << std::endl;
+			std::cout << "status: " << mStatus << std::endl;
+
+			ScaleNote( note );
+
+			if( mVelocity != 0 )  // Note Off
+			{
+				if (note != mNote)
+				{
+					mNote = note;
+				}
+
+			}
+			else
+			{
+				if (note == mNote)
+					mStatus = eNoteOff;
+			}
+			return 0;
+		}
+
+*/
+
+		
+		
+		
 		int UpdatePitchBend( TControlData value )
 		{
-	
-			mPitchBend = ((double) value - 70 ) / 70.0 * mPitchModRange + 1.0;
+			//mPitchBend = ((double) value - 70.0 ) / 70.0 * mPitchModRange + 1.0;
+			//mPitchBend = pow( 2. , ( ( 1 / 12. ) * ( ( value - 8192. ) / 8192. ) ) );
+			//mStatus = ePitchBend;
+			std::cout << "Pitch Bend updated: "<< mPitchBend <<std::endl;
 
 			return 0;
 		}
