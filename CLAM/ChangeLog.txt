@@ -12,6 +12,13 @@
       ** Uses FL_Pack  & FL_Scroll for managing the widgets position
   * Normalization:
       ** Moved from examples to src/Processing/Transformations
+  * AnalysisSynthesis:
+      ** Added Spectrum View
+      ** Added Signal/Slot facilities to coordinate Spectrum and Frame marker
+  * AudioBrowser:
+      ** New class added, derived from AudioPresentation, that includes a GLPortSigSlot and capabilities to get its Signals and its Slots
+  * GLPortSigSlot:
+      ** New class added, derived from GLPort, that includes Signals and Slots, and the methods to work with them, as well as an overlay that draws the Frame marker.
 
 2003-01-23 CLAM_0_4_1
 'Analysis Synthesis debuggin'
