@@ -46,7 +46,6 @@
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 #include "SMSMorphConfig.hxx"
-#include "SMSMorph.hxx"
 #include "SMSTimeStretchConfig.hxx"
 
 using namespace CLAMGUI;
@@ -55,8 +54,9 @@ using namespace CLAM;
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mTransformation.mpChainInput = &mOriginalSegment;
-	mTransformation.mpChainOutput = &mTransformedSegment;
+	mTransformation.mChainInput.Attach(mOriginalSegment);
+	mTransformation.mChainOutput.Attach(mTransformedSegment);
+
 
 	mpAnalysis=new SMSAnalysis;
 	mpSynthesis=new SMSSynthesis;
@@ -76,18 +76,6 @@ void SMSBase::DestroyProgressIndicator( )
 	mCurrentProgressIndicator = NULL;
 }
 
-
-
-CLAMGUI::Progress* SMSBase::CreateProgress(const char* title, float from, float to)
-{
-	return new CLAMGUI::NullProgress;
-}
-CLAMGUI::WaitMessage* SMSBase::CreateWaitMessage(const char * title)
-{
-	return new CLAMGUI::NullWaitMessage();
-}
-
-
 SMSBase::~SMSBase(void)
 {
 	delete mpAnalysis;
@@ -100,7 +88,6 @@ void SMSBase::InitConfigs(void)
 	/*global parameters*/
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
 	int resAnalWindowSize=mGlobalConfig.GetResAnalysisWindowSize();
-
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
@@ -142,7 +129,7 @@ void SMSBase::InitConfigs(void)
 	mSynthConfig.SetHopSize(synthFrameSize);
 
 	//Configure child Processings
-	GetAnalysis().Configure(mAnalConfig);	
+	GetAnalysis().Configure(mAnalConfig);
 	GetSynthesis().Configure(mSynthConfig);
 	
 }
@@ -287,8 +274,9 @@ void SMSBase::AnalysisProcessing()
 	int step=mAnalConfig.GetHopSize();
 	
 	GetAnalysis().Start();
+
 	while(GetAnalysis().Do(mOriginalSegment))
-	{   
+	{      
 		k=step*(mOriginalSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
@@ -382,8 +370,6 @@ void SMSBase::DoMorphTracksCleanup()
 
 void SMSBase::Analyze(void)
 {
-	CLAM_ASSERT(GetState().GetHasAudioIn(), "Bad file-name in configuration" );
-
 	CLAM_ACTIVATE_FAST_ROUNDING;
 	TSize size = mOriginalSegment.GetAudio().GetSize();
 	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
@@ -420,6 +406,9 @@ void SMSBase::Analyze(void)
 			DestroyWaitMessage();
 
 		}
+		std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
+		tempSdifFilename += "_tmp.sdif";
+		mSerialization.DoSerialization( mSerialization.Store, mMorphSegment, tempSdifFilename.c_str() );
 	}
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
@@ -497,9 +486,7 @@ void SMSBase::SynthesisProcessing()
 
 
 	mTransformedSegment.mCurrentFrameIndex=0;
-	
-	for(i=0;i<nSynthFrames;i++)
-	{
+	for(i=0;i<nSynthFrames;i++){
 		
 		if(GetSynthesis().Do(mTransformedSegment))
 		{
@@ -512,17 +499,17 @@ void SMSBase::SynthesisProcessing()
 		//else it is an analysis frame with negative center time and thus should not be used
 	}
 
+
 	GetState().SetHasAudioOut (true);
+
 	GetSynthesis().Stop();
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
-void SMSBase::CopySegmentExceptAudio(Segment& src, Segment& dest)
+void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
 {
-	dest.SetBeginTime(src.GetBeginTime());
-	dest.SetEndTime(src.GetEndTime());
-	dest.SetSamplingRate(src.GetSamplingRate());
-	dest.SetFramesArray(src.GetFramesArray());
-
+	dest=src;
+	dest.RemoveAudio();
+	dest.UpdateData();
 	dest.CopyInit(src);
 	dest.mCurrentFrameIndex=0;
 }
@@ -783,32 +770,28 @@ void SMSBase::Transform()
 	DoTransformation();
 
 	DestroyProgressIndicator();	
+
 }
 
-void SMSBase::ConfigureSMSMorph()
+
+void SMSBase::SetSMSMorphFileName()
 {
-	SMSTransformationChain::iterator transIt=mTransformation.composite_begin();
 	SMSTransformationChainConfig::iterator configIt;
 	if(mGlobalConfig.HasMorphSoundFile())
 	{
-		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++,transIt++)
+		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++)
 		{
 			//Note: we are supposing only one Morph is in the chain
 			if((*configIt).GetConcreteClassName()=="SMSMorph")
 			{
-				try{
-					SMSMorph* tmpMorph= dynamic_cast<SMSMorph*>(*transIt);
-					SMSMorphConfig& tmpMorphConfig= dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
-					tmpMorphConfig.SetSamplingRate(mMorphSegment.GetSamplingRate());
-					tmpMorph->Configure(tmpMorphConfig);
-					tmpMorph->SetSegmentToMorph(mMorphSegment);
-				}
-				catch (Err e)
-				{
-					e.Print();
-				}
+				SMSMorphConfig& morphCfg=dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
+				morphCfg.AddFileName();
+				morphCfg.UpdateData();
+				std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
+				tempSdifFilename+="_tmp.sdif";
+				morphCfg.SetFileName(tempSdifFilename);
+				break;
 			}
-
 		}
 	}
 }
@@ -817,19 +800,16 @@ void SMSBase::TransformProcessing(void)
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;
 	/* UNUSED: bool def=false; */
+	SetSMSMorphFileName();
 	UpdateDataInTimeStretch();
 	mTransformation.Configure(mTransformationScore);
-	ConfigureSMSMorph();
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
 
-	 mTransformation.Start();
+	mTransformation.Start();
 	int i = 0;
 	while(mTransformation.Do())
 	{
-		CLAM_ASSERT( mCurrentProgressIndicator, 
-				"SMSBase::TransformProcessing mCurrentProgressIndicator should't be NULL"
-				" Probably you din't call Transfrom()" );
 		mCurrentProgressIndicator->Update(float(i++));
 	}
 	mTransformation.Stop();
@@ -860,8 +840,9 @@ void SMSBase::UpdateDataInTimeStretch()
 			concreteConfig.SetHopSize(mGlobalConfig.GetAnalysisHopSize());
 			(*cfg).AddConcreteConfig();
 			(*cfg).SetConcreteConfig(concreteConfig);
-		}	
+		}
 	}
+
 }
 
 

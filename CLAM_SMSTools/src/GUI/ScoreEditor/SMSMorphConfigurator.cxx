@@ -99,11 +99,8 @@ namespace CLAMVM
 		  mUserDefinedResShapeW2Envelope( false ),
 		  mUserDefinedSinShapeEnvelope( false ),
 		  mUserDefinedResShapeEnvelope( false ),
-		  mOnlyGlobalEnvelope( true ),
-		  mUserActivatedUseSpectralShapes (false)
+		  mOnlyGlobalEnvelope( true )
 	{
-		UseSpectralShapesListener.Wrap( this, 
-						 &SMSMorphConfigurator::UserDefinedParams::OnUseSpectralShapesChanged );
 		FrameInterpolationListener.Wrap( this, 
 						 &SMSMorphConfigurator::UserDefinedParams::OnFrameInterpolationChanged );
 		GlobalEnvelopeListener.Wrap( this,
@@ -145,12 +142,6 @@ namespace CLAMVM
 	void SMSMorphConfigurator::UserDefinedParams::OnFrameInterpolationChanged( bool newState )
 	{
 		mUserActivatedFrameInterpolation = newState;
-		UserHasActed.Emit();
-	}
-
-	void SMSMorphConfigurator::UserDefinedParams::OnUseSpectralShapesChanged( bool newState )
-	{
-		mUserActivatedUseSpectralShapes = newState;
 		UserHasActed.Emit();
 	}
 
@@ -240,7 +231,6 @@ namespace CLAMVM
 	void SMSMorphConfigurator::UserDefinedParams::Reset()
 	{
 		mUserActivatedFrameInterpolation = false;
-		mUserActivatedUseSpectralShapes = false;
 		mUserDefinedGlobalEnvelope = false;
 		mUserDefinedSinAmpEnvelope = false;
 		mUserDefinedSinFreqEnvelope = false;
@@ -267,7 +257,6 @@ namespace CLAMVM
 		UserListener().UserHasActed.Connect( UserEditedParameters );
 
 		mpMorphEditor->FrameInterpolationChanged.Connect( UserListener().FrameInterpolationListener );
-		mpMorphEditor->UseSpectralShapesChanged.Connect( UserListener().UseSpectralShapesListener );
 		mpMorphEditor->GlobalEnvelopeChanged.Connect( UserListener().GlobalEnvelopeListener );
 		mpMorphEditor->PitchHybEnvelopeChanged.Connect( UserListener().PitchHybEnvelopeListener );
 		mpMorphEditor->SinAmpEnvelopeChanged.Connect( UserListener().SinAmpEnvelopeListener );
@@ -325,11 +314,6 @@ namespace CLAMVM
 			mpMorphEditor->ActivateFrameInterpolation();
 		else 
 			mpMorphEditor->DeactivateFrameInterpolation();
-		
-		if(mConfig.GetUseSpectralShapes())
-			mpMorphEditor->ActivateUseSpectralShapes();
-		else
-			mpMorphEditor->DeactivateUseSpectralShapes();
 
 		mpMorphEditor->SetGlobalEnvelope( mConfig.GetHybBPF() );
 
@@ -360,7 +344,7 @@ namespace CLAMVM
 	void SMSMorphConfigurator::SetupConfigObject()
 	{
 		mConfig.SetInterpolateFrame( UserListener().UserActivatedFrameInterpolation() );
-		mConfig.SetUseSpectralShapes( UserListener().UserActivatedUseSpectralShapes() );
+
 		// HybBPF ( Global envelope ) sync
 		
 		mpMorphEditor->RetrieveGlobalEnvelope( mConfig.GetHybBPF() );

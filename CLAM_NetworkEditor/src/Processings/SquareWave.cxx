@@ -20,6 +20,7 @@
  */
 
 #include "SquareWave.hxx"
+#include <iostream>
 
 namespace CLAM
 {
@@ -55,7 +56,7 @@ void SquareWaveConfig::DefaultInit(void)
 
 // SquareWave method definition
 SquareWave::SquareWave()
-	:mOutput("Audio Output",this),
+	:mOutput("Audio Output",this,1),
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
@@ -71,7 +72,7 @@ SquareWave::SquareWave()
 }
 
 SquareWave::SquareWave( const SquareWaveConfig& cfg )
-	:mOutput("Audio Output",this),
+	:mOutput("Audio Output",this,1),
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
@@ -105,8 +106,9 @@ bool SquareWave::ConcreteConfigure( const ProcessingConfig& c )
 
 bool SquareWave::Do()
 {
-	bool res = Do(mOutput.GetAudio());
-	mOutput.Produce();
+	bool res = false;
+	res = Do(mOutput.GetData());
+	mOutput.LeaveData();
 	return res;
 }
 

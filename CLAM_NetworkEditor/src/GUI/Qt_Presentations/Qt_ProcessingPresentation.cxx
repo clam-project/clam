@@ -327,15 +327,15 @@ QColor Qt_ProcessingPresentation::GetColorOfState()
 	switch( mProcessingState )
 	{
 		case CLAM::Processing::Ready:
-			c.setRgb( 180, 210, 180 );
+			c.setRgb( 30, 180, 50 );
 			QToolTip::add( this, "Processing is ready to run" );
 			break;
 		case CLAM::Processing::Unconfigured:
-			c.setRgb( 210, 150, 150 );
+			c.setRgb( 200, 10, 30 );
 			QToolTip::add( this, QString( mProcessingStatus.c_str() ));
 			break;	
 		case CLAM::Processing::Running:
-			c.setRgb( 180, 180, 210 );
+			c.setRgb( 0, 100, 200 );
 			QToolTip::add( this, "Processing running" );
 			break;
 

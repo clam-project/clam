@@ -21,6 +21,7 @@
 
 #include "NetworkController.hxx"
 #include "Network.hxx"
+#include "Node.hxx"
 #include "InPort.hxx"
 #include "Processing.hxx"
 #include "OutPort.hxx"
@@ -281,17 +282,18 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 	for(namesIt=proc->BeginInPortNames(); namesIt!=proc->EndInPortNames(); namesIt++)
 	{
 		std::string completeInName( name + "." + *namesIt );
-		CLAM::InPortBase & inPort = mObserved->GetInPortByCompleteName( completeInName );
-		if(inPort.GetAttachedOutPort())
+		CLAM::InPort & inPort = mObserved->GetInPortByCompleteName( completeInName );
+		if(inPort.IsAttached())
 		{
 			std::string outName("");
-			outName += mObserved->GetNetworkId( inPort.GetAttachedOutPort()->GetProcessing() );
+			outName += mObserved->GetNetworkId( inPort.GetNode()->GetWriter()->GetProcessing() );
 			outName += ".";
-			outName += inPort.GetAttachedOutPort()->GetName();
+			outName += inPort.GetNode()->GetWriter()->GetName();
 			
 			RemovePortConnection( outName, completeInName );
 			SignalRemoveConnectionPresentation.Emit( outName, completeInName );	
 		}
+
 	}	
 }
 
@@ -464,7 +466,7 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 		CLAM::PublishedOutPorts::Iterator itOutPort;
 		for (itOutPort=producer->GetOutPorts().Begin(); itOutPort!=producer->GetOutPorts().End(); itOutPort++)
 		{	
-			if ((*itOutPort)->HasConnections())
+			if ((*itOutPort)->GetNode())
 			{
 				std::string completeOutName( it->first + "." + (*itOutPort)->GetName() );
 

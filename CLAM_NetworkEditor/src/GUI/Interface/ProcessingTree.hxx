@@ -40,7 +40,6 @@ class ProcessingTree : public QListView
 {
 Q_OBJECT
 public:
-	/** TODO: this tree should be derived from the CLAM::Factory instance */
 	ProcessingTree( Qt_NetworkPresentation & network, QWidget * parent = 0, const char * name = 0 );
 	virtual ~ProcessingTree();
 

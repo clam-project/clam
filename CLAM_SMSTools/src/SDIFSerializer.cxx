@@ -27,8 +27,7 @@
 #include "Segment.hxx"
 
 
-namespace CLAM
-{
+using namespace CLAM;
 
 SDIFSerializer::SDIFSerializer(  )
 {
@@ -46,14 +45,13 @@ bool SDIFSerializer::DoLoad( const char* fileName, Segment& segment )
 	cfg.SetEnableResidual( true );
 	mSDIFReader.Configure( cfg );
 		
-	segment.AddAll();
-	segment.UpdateData();
-	
+	segment.AddAll(  );
+	segment.UpdateData(  );
+	mSDIFReader.Output.Attach( segment );
+
 	try{
-		mSDIFReader.Start();
-		while( mSDIFReader.Do(segment) ) 
-		{  
-		}
+		mSDIFReader.Start(  );
+		while( mSDIFReader.Do() ) {  }
 		mSDIFReader.Stop(  );
 	} catch (Err e)
 	{
@@ -88,6 +86,3 @@ bool SDIFSerializer::DoStore( const char* fileName, Segment& segment )
 
 	return true;
 }
-
-} // namespace CLAM
-

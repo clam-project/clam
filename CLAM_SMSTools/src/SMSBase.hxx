@@ -37,9 +37,6 @@
 #include "WaitMessage.hxx"
 #include "SDIFIn.hxx"
 #include "SDIFOut.hxx"
-#include "NullProgress.hxx"
-#include "NullWaitMessage.hxx"
-#include "StdOutWaitMessage.hxx"
 
 #include "SMSAppState.hxx"
 
@@ -63,7 +60,7 @@ namespace CLAM
 	public:
 		SMSBase(void);	
 		virtual ~SMSBase(void);
-		virtual void Run() {};
+		virtual void Run()=0;
 		
 		SMSTransformationChainConfig& GetCurrentTransformationScore() {
 			return mTransformationScore;
@@ -126,21 +123,12 @@ namespace CLAM
 			else
 				return mGlobalConfig.GetOutputAnalysisFile();
 		}
-		void SetInputSoundFile( const std::string& file )
-		{
-			mGlobalConfig.SetInputSoundFile(file);
-		}
 
 		SerializationController& GetSerializer()
 		{
 			return mSerialization;
 		}
 
-		//TODO should be const Audio&
-		Audio& GetOriginalAudio()
-		{
-			return mOriginalSegment.GetAudio();
-		}
 		Audio& GetSynthesizedSound()
 		{
 			return mAudioOut;
@@ -161,40 +149,24 @@ namespace CLAM
 			return mMelody;
 		}
 
-		/** Load global configuration */
-		void LoadConfig(const std::string& inputFileName);
-		
-		/** Initialize analysis and synthesis configuration from loaded
-		* global configuration */
-		void InitConfigs(void);
-		
-		/** Returns true if mGlobalConfig has the required elements.*/
-		bool HaveCompatibleConfig();
-		
-		/** Load input sound */
-		virtual bool LoadInputSound(void);
-
-		/** Perform analysis. Requires a valid configuration file to be loaded */
-		void Analyze(void);
-
-		void Synthesize(void);
-
-		/** Perform transformation according to previously set transformation 
-		* (PitchScale by default). Requires a valid transformation score to be loaded */
-		void Transform(void);
-
-		/** Load transformation score */
-		virtual void LoadTransformationScore(const std::string& inputFileName);
-
-	
 	protected:
 	
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);
 		/** Copies all content in src segment except Audio */
-		void CopySegmentExceptAudio(Segment& src, Segment& dest);
+		void CopySegmentExceptAudio(const Segment& src, Segment& dest);
+		/** Initialize analysis and synthesis configuration from loaded
+		* global configuration */
+		void InitConfigs(void);
+		/** Returns true if mGlobalConfig has the required elements.*/
+		bool HaveCompatibleConfig();
+		/** Load global configuration */
+		void LoadConfig(const std::string& inputFileName);
 		/** Store global configuration */
 		void StoreConfig(const std::string& inputFileName);
+		/** Load transformation score */
+		virtual void LoadTransformationScore(const std::string& inputFileName);
+
 		/** Store transformation score */
 		void StoreTransformationScore( const std::string& outputFileName );
 
@@ -216,6 +188,8 @@ namespace CLAM
 		/** General method for storing a sound*/
 		void StoreSound(const std::string& filename,const Audio& audio);
 		
+		/** Load input sound */
+		virtual bool LoadInputSound(void);
 		/** Load sound to morph*/
 		bool LoadMorphSound(void);
 
@@ -230,7 +204,7 @@ namespace CLAM
 
 		void AnalysisProcessing();
 		void MorphAnalysisProcessing();
-		void ConfigureSMSMorph();
+		void SetSMSMorphFileName();
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */
@@ -241,7 +215,8 @@ namespace CLAM
 		void TracksCleanupProcessing();
 		void MorphTracksCleanupProcessing();
 
-		
+		/** Perform analysis. Requires a valid configuration file to be loaded */
+		void Analyze(void);
 		/** Perform synthesis. Requires a valid configuration file to be loaded 
 		* and the analysis to be performed. */
 		void SynthesisProcessing();
@@ -251,9 +226,11 @@ namespace CLAM
 
 		virtual void DoSynthesis();
 
+		void Synthesize(void);
 		/** Perform transformation according to previously set transformation 
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
 		virtual void DoTransformation();
+		void Transform(void);
 		void TransformProcessing();
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
@@ -327,9 +304,9 @@ protected:
 
 
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
-		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to);
+		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
 		/** Creates a wait message. Implemented both in GUI and stdio versions */
-		virtual CLAMGUI::WaitMessage* CreateWaitMessage(const char* title);
+		virtual CLAMGUI::WaitMessage* CreateWaitMessage(const char* title) = 0;
 
 		void DestroyProgressIndicator();
 
@@ -352,6 +329,6 @@ protected:
 		void UpdateDataInTimeStretch();
 	};
 
-}; //namespace CLAM
+};
 
 #endif

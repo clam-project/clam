@@ -25,6 +25,7 @@
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
 #include "HeapDbg.hxx"
+#include <iostream>
 #include <string>
 #include <algorithm>
 #include <fstream>
@@ -226,8 +227,8 @@ namespace CLAMGUI
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
-		CLAM::TSize samplesInFile=CLAM::TSize((selectedFile.GetHeader().GetLength()/1000.)*
-			selectedFile.GetHeader().GetSampleRate());
+		CLAM::TSize samplesInFile=(selectedFile.GetHeader().GetLength()/1000.)*
+			selectedFile.GetHeader().GetSampleRate();
 
 		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
 		
@@ -239,10 +240,10 @@ namespace CLAMGUI
 		segment.GetAudio().SetSize(samplesInFile);
 		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
 		
-//		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
+		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
 
 		//Read Audio File
-		fileReader.Do( segment.GetAudio() );
+		fileReader.Do();
 
 		fileReader.Stop();
 
@@ -478,9 +479,9 @@ namespace CLAMGUI
 
 		proc.Start();
 
-//		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
+		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
 
-		proc.Do( const_cast<CLAM::Audio& >(audio) );
+		proc.Do();
 
 		proc.Stop();
 		

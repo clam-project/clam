@@ -1,6 +1,8 @@
 
 #include "Factory.hxx"
 #include "Processing.hxx"
+#include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
 #include "MultiChannelAudioFileReader.hxx"
 #include "MultiChannelAudioFileWriter.hxx"
 #include "LadspaLoader.hxx"
@@ -11,8 +13,6 @@
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
 #include "OutControlSender.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileWriter.hxx"
 
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;

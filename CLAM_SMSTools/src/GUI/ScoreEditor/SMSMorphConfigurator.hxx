@@ -21,7 +21,6 @@ namespace CLAMVM
 		{
 		protected:
 			bool   mUserActivatedFrameInterpolation;
-			bool   mUserActivatedUseSpectralShapes;
 			bool   mUserDefinedGlobalEnvelope;
 			bool   mUserDefinedSinAmpEnvelope;
 			bool   mUserDefinedSinFreqEnvelope;
@@ -35,7 +34,6 @@ namespace CLAMVM
 			bool   mUserDefinedSinShapeEnvelope;
 			bool   mUserDefinedResShapeEnvelope;
 			bool   mOnlyGlobalEnvelope;
-			
 
 		public:
 			UserDefinedParams(  );
@@ -51,11 +49,6 @@ namespace CLAMVM
 			bool UserActivatedFrameInterpolation() const
 			{
 				return mUserActivatedFrameInterpolation;
-			}
-
-			bool UserActivatedUseSpectralShapes() const
-			{
-				return mUserActivatedUseSpectralShapes;
 			}
 
 			bool UserDefinedGlobalEnvelope() const
@@ -119,7 +112,6 @@ namespace CLAMVM
 			}
 
 			SigSlot::Slotv1<bool> FrameInterpolationListener;
-			SigSlot::Slotv1<bool> UseSpectralShapesListener;
 			SigSlot::Slotv0       GlobalEnvelopeListener;
 			SigSlot::Slotv0       PitchHybEnvelopeListener;
 			SigSlot::Slotv0       SinAmpEnvelopeListener;
@@ -137,7 +129,6 @@ namespace CLAMVM
 		protected:
 
 			void OnFrameInterpolationChanged( bool newState );
-			void OnUseSpectralShapesChanged( bool newState );
 			void OnGlobalEnvelopeChanged();
 			void OnPitchHybEnvelopeChanged();
 			void OnSinAmpEnvelopeChanged();
