@@ -72,7 +72,7 @@ void Qt_ProcessingConfigPresentation::SlotOk()
 
 void Qt_ProcessingConfigPresentation::SlotCancel()
 {
-	SignalConfigurationUpdated.Emit( true );
+	SignalConfigurationUpdated.Emit( false );
 	close();
 }
 
