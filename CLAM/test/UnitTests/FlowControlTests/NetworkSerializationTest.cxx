@@ -191,7 +191,7 @@ private:
 
 		storage.Restore(foo, mPathToTestData+"networkwithportconnections.xml");
 		
-		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("oscillator").GetOutPorts().Get("Audio Output").IsConnectedTo( 
+		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("oscillator").GetOutPorts().Get("Audio Output").IsDirectlyConnectedTo( 
 					      foo.GetProcessing("multiplier").GetInPorts().Get("First Audio Input")));
 	}
 

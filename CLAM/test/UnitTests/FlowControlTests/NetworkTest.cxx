@@ -692,7 +692,7 @@ class NetworkTest : public CppUnit::TestFixture
 			new CLAM::InPort<DummyProcessingData>( std::string("inPortOfSecondProc"), secondProc );
 		
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
-		CPPUNIT_ASSERT_EQUAL( true, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+		CPPUNIT_ASSERT_EQUAL( true, outPortOfFirstProc->IsDirectlyConnectedTo(*inPortOfSecondProc) );
 	}
 
 	void testConnectPorts_WhenConnectionIsNotValid()
@@ -756,7 +756,7 @@ class NetworkTest : public CppUnit::TestFixture
 			
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
 		net.DisconnectPorts( "first.outPortOfFirstProc","second.inPortOfSecondProc");
-		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsDirectlyConnectedTo(*inPortOfSecondProc) );
 
 	}
 
