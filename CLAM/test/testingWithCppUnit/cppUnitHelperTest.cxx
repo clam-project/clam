@@ -10,7 +10,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( cppUnitHelperTest );
 class cppUnitHelperTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( cppUnitHelperTest );
-	CPPUNIT_TEST( testAssertionTraitsTypeInfoToString );
+	CPPUNIT_TEST( testAssertionTraitsTypeInfoToString_NotEquals );
+	CPPUNIT_TEST( testAssertionTraitsTypeInfoToString_Equals );
+	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_Equals );
+	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_NotEquals );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -24,10 +27,13 @@ private:
 	class ConcreteFoo : public Base{};
 	class ConcreteBar : public Base{};
 	class NothingToDo {};
-	
+	// fixture data
 	Base* baseConcrete;
 	Base* base;
 	ConcreteFoo *concrete;
+	NothingToDo *nothingToDo;
+
+	std::string baseConcreteStr, baseStr, concreteStr;
 
 public:
 	/// @name Fixture Implementation
@@ -37,53 +43,59 @@ public:
 		baseConcrete = new ConcreteFoo;
 		concrete = new ConcreteFoo;
 		base = new Base;
+		nothingToDo = new NothingToDo;
+		
+		baseConcreteStr = CppUnit::assertion_traits<std::type_info>::toString( typeid(*baseConcrete) );
+		baseStr = CppUnit::assertion_traits<std::type_info>::toString( typeid(*base) );
+		concreteStr = CppUnit::assertion_traits<std::type_info>::toString( typeid(*concrete) );
 	}
+
 	void tearDown()
 	{
 		delete baseConcrete;
 		delete concrete;
 		delete base;
+		delete nothingToDo;
 	}
 	/// @}
 
 private:
-	void testAssertionTraitsTypeInfoToString()
+	void testAssertionTraitsTypeInfoToString_NotEquals()
 	{
-		
-		std::string baseConcreteStr = 
-			CppUnit::assertion_traits<std::type_info>::toString( typeid(*baseConcrete) );
-		
-		std::string baseStr = 
-			CppUnit::assertion_traits<std::type_info>::toString( typeid(*base) );
-
-		std::string concreteStr = 
-			CppUnit::assertion_traits<std::type_info>::toString( typeid(*concrete) );
-
-
 		CPPUNIT_ASSERT_MESSAGE("typeid(...).name() of different classes should be differents",
 			concreteStr != baseStr );
+	}
 
+	void testAssertionTraitsTypeInfoToString_Equals()
+	{
 		CPPUNIT_ASSERT_EQUAL( concreteStr, baseConcreteStr );
 	}
-	
+
+	void testAssertionTraitsTypeInfoEqual_Equals()
+	{
+		bool eq = CppUnit::assertion_traits<std::type_info>::equal(
+			typeid(*baseConcrete), typeid(*concrete) );
+
+		CPPUNIT_ASSERT_MESSAGE(
+			"assertion_traits of type_info, method eq. should return true if dyn types are equal ",
+			eq );
+	}
+
+	void testAssertionTraitsTypeInfoEqual_NotEquals()
+	{
+		bool eq = CppUnit::assertion_traits<std::type_info>::equal(
+			typeid(*baseConcrete), typeid(*nothingToDo) );
+
+		eq |= CppUnit::assertion_traits<std::type_info>::equal(
+			typeid(*concrete), typeid(*nothingToDo) );
+
+		eq |= CppUnit::assertion_traits<std::type_info>::equal(
+			typeid(baseConcrete), typeid(concrete) );
+
+		CPPUNIT_ASSERT_MESSAGE(
+			"assertion_traits of type_info, method eq. should return false if dyn types are different",
+			!eq );
+	}
 };
 } // namespace
  
-/*
- template<>
- struct assertion_traits<std::string>   // specialization for the std::string type
- {
-   static bool equal( const std::string& x, const std::string& y )
-   {
-     return x == y;
-   }
- 
-   static std::string toString( const std::string& x )
-   {
-     std::string text = '"' + x + '"';    // adds quote around the string to see whitespace
-     OStringStream ost;
-     ost << text;
-     return ost.str();
-   }
- };
-*/
