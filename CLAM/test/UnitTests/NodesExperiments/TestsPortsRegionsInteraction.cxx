@@ -50,16 +50,7 @@ public:
 		out.ConnectToIn(in);
 		//TODO check that stream has been initialized (as soon as is implemented)
 
-		const bool existReadingRegion =
-			out.GetRegion().BeginReaders() != out.GetRegion().EndReaders();
-		CPPUNIT_ASSERT( existReadingRegion );
-
-		WritingRegion<int> & writer = out.GetRegion();
-		
-		Region & baseReader = **(writer.BeginReaders());
-		WritingRegion<int>::ProperReadingRegion & reader = 
-			(WritingRegion<int>::ProperReadingRegion &)baseReader;
-		CPPUNIT_ASSERT( &(writer.Stream()) == &(reader.Stream()) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo( in ) );
 	}
 
 	void testOutPortConnect_whenMoreThanOneInPort()
@@ -120,8 +111,8 @@ public:
 		out.ConnectToConcreteIn(in);
 
 		out.DisconnectFromConcreteIn( in );
-		CPPUNIT_ASSERT(0 ==  in.GetRegion().ProducerRegion() );
-		CPPUNIT_ASSERT( out.GetRegion().BeginReaders() == out.GetRegion().EndReaders() );
+		CPPUNIT_ASSERT(0 ==  in.GetAttachedOutPort() );
+		CPPUNIT_ASSERT( out.BeginConnectedInPorts() == out.EndConnectedInPorts() );
 	}
 
 	void testOutPortDisconnect_whenPortsAreConnected_usingBaseClass()
@@ -180,9 +171,9 @@ public:
 	{
 		OutPort<int> out;
 		int newSize = 5;
-		out.GetRegion().Size(5);
+		out.SetSize(5);
 
-		CPPUNIT_ASSERT_EQUAL( newSize, out.GetRegion().Size() );
+		CPPUNIT_ASSERT_EQUAL( newSize, out.GetSize() );
 	}
 
 	void testProduceAndConsume()
@@ -192,10 +183,10 @@ public:
 		int data = 4;
 
 		out.ConnectToIn(in);
-		out.GetRegion()[0] = 4;
-		out.GetRegion().Produce();
+		out[0] = 4;
+		out.Produce();
 		
-		CPPUNIT_ASSERT_EQUAL( data, in.GetRegion()[0] );
+		CPPUNIT_ASSERT_EQUAL( data, in[0] );
 	}
 
 	void testProduceAndConsume_whenMoreThanOneInPort()
@@ -210,24 +201,24 @@ public:
 		out.ConnectToConcreteIn(in2);
 		out.ConnectToConcreteIn(in3);
 
-		in1.GetRegion().Size(2);
-		in3.GetRegion().Size(3);
+		in1.SetSize(2);
+		in3.SetSize(3);
 
-		out.GetRegion()[0] = data1;
-		out.GetRegion().Produce();
-		out.GetRegion()[0] = data2;
-		out.GetRegion().Produce();
-		out.GetRegion()[0] = data3;
-		out.GetRegion().Produce();
+		out[0] = data1;
+		out.Produce();
+		out[0] = data2;
+		out.Produce();
+		out[0] = data3;
+		out.Produce();
 
-		CPPUNIT_ASSERT_EQUAL( data1, in1.GetRegion()[0] );
-		CPPUNIT_ASSERT_EQUAL( data2, in1.GetRegion()[1] );
+		CPPUNIT_ASSERT_EQUAL( data1, in1[0] );
+		CPPUNIT_ASSERT_EQUAL( data2, in1[1] );
 		
-		CPPUNIT_ASSERT_EQUAL( data1, in2.GetRegion()[0] );
+		CPPUNIT_ASSERT_EQUAL( data1, in2[0] );
 		
-		CPPUNIT_ASSERT_EQUAL( data1, in3.GetRegion()[0] );
-		CPPUNIT_ASSERT_EQUAL( data2, in3.GetRegion()[1] );
-		CPPUNIT_ASSERT_EQUAL( data3, in3.GetRegion()[2] );
+		CPPUNIT_ASSERT_EQUAL( data1, in3[0] );
+		CPPUNIT_ASSERT_EQUAL( data2, in3[1] );
+		CPPUNIT_ASSERT_EQUAL( data3, in3[2] );
 
 	}
 	void testOutPortGetConnectedInPorts_whenOneInPort()
