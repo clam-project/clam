@@ -1,14 +1,12 @@
 PROGRAMS = \
-	TestSnapshots \
-	BPFTest \
-	ListTest \
+	SegmentTest \
 	TestMIDIIO \
 	TestAudioIO \
 	TestControlMapper \
 	AudioPlayer \
 	TestPOComposite \
-	SegmentTest \
 	TestAudioFileIO \
+	TestSnapshots \
 
 TESTS = \
 	AllUnitTests \
@@ -18,6 +16,7 @@ TESTS = \
 	TestXMLAdapters \
 	TestConfig \
 	TestFlags \
+	TestSignalv1 \
 	TestArray \
 	TestArray2 \
 	TestDynamicType3 \
@@ -35,7 +34,8 @@ TESTS = \
 	TestWaveGenerator \
 	TestSpectrumAdder2 \
 	TestSpectrumProduct \
-	TestSignalv1 \
+	BPFTest \
+	ListTest \
 
 TOP=..
 
