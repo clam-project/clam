@@ -192,13 +192,23 @@ TSize SMSAnalysisConfig::GetHopsInBiggerWindow() const
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
-SMSAnalysis::SMSAnalysis()
+SMSAnalysis::SMSAnalysis():
+mInputAudio("InputAudio",this,1),
+mOutputSpectrum("OutputSpectrum",this,1),
+mOutputSpectralPeaks("OutputSpectralPeaks",this,1),
+mOutputFundamental("Fundamental",this,1),
+mOutputResSpectrum("OutputResSpectrum",this,1)
 {
 	AttachChildren();
 	Configure(SMSAnalysisConfig());
 }
 
-SMSAnalysis::SMSAnalysis(SMSAnalysisConfig& cfg)
+SMSAnalysis::SMSAnalysis(SMSAnalysisConfig& cfg):
+mInputAudio("InputAudio",this,1),
+mOutputSpectrum("OutputSpectrum",this,1),
+mOutputSpectralPeaks("OutputSpectralPeaks",this,1),
+mOutputFundamental("Fundamental",this,1),
+mOutputResSpectrum("OutputResSpectrum",this,1)
 {
 	AttachChildren();
 	Configure(cfg);
@@ -303,6 +313,23 @@ void SMSAnalysis::Start()
 	//we have to initialize internal counter
 	mAudioFrameIndex=0;
 	ProcessingComposite::Start();
+}
+
+void SMSAnalysis::Attach(Audio& inputAudio, Spectrum& outSpectrum,SpectralPeakArray& outPk,
+						 Fundamental& outFn,Spectrum& outResSpec)
+{
+	mInputAudio.Attach(inputAudio);
+	mOutputSpectrum.Attach(outSpectrum);
+	mOutputSpectralPeaks.Attach(outPk);
+	mOutputFundamental.Attach(outFn);
+	mOutputResSpectrum.Attach(outResSpec);
+}
+
+bool SMSAnalysis::Do()
+{
+	return Do(mInputAudio.GetData(),mOutputSpectrum.GetData(),mOutputSpectralPeaks.GetData(),
+		mOutputFundamental.GetData(),mOutputResSpectrum.GetData());
+
 }
 
 bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec)

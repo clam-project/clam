@@ -124,8 +124,12 @@ public:
 			
 	const ProcessingConfig &GetConfig() const {return mConfig;}
 
+	/** Method used to attach a Processing Data to input and output ports */
+	void Attach(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,
+		Fundamental& outFn,Spectrum& outResSpec);
+	
 	/** Supervised mode execution */
-	bool Do(void){return false;}
+	bool Do(void);
 
 	void Start();
 	
@@ -158,7 +162,8 @@ public:
 	 *	@param outResSpec: residual spectrum computed from substracting the synthesized sinusoidal
 	 *	spectrum from the original spectrum.
 	 */
-	bool Do(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec);
+	bool Do(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,Fundamental& outFn,
+		Spectrum& outResSpec);
 
 	/**	Auxiliary method to perform the analysis on the sinusoidal component. It computes the
 	 *	spectral peaks, the fundamental frequency and then performs sinusoidal tracking on the
@@ -244,6 +249,12 @@ private:
 	/** Internal convenience method used for initializing frames */
 	void InitFrame(Frame& in);
 
+	/** Ports */
+	InPortTmpl<Audio>				mInputAudio;
+	OutPortTmpl<Spectrum>			mOutputSpectrum;
+	OutPortTmpl<SpectralPeakArray>  mOutputSpectralPeaks;
+	OutPortTmpl<Fundamental>			mOutputFundamental;
+	OutPortTmpl<Spectrum>			mOutputResSpectrum;
 };
 
 };//namespace
