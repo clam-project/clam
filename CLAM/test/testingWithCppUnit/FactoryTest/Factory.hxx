@@ -25,15 +25,21 @@ class FactoryRegistry
 	typedef std::string RegistryKey;
 
 public:
-	void GetCreator(char*)
+	CreatorMethod GetCreator(char*)
 	{
+		CreatorMethod foo = 0;//CLAM::CreateOscillator;
+
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
+		
+		return 0;
 	}
-	void GetCreatorSafe(char*) throw (ErrFactory)
+	CreatorMethod GetCreatorSafe(char*) throw (ErrFactory)
 	{
 		if ( _creators.begin() == _creators.end() )
 			throw ErrFactory("GetCreatorSafe invoked on an empty registry");
+
+		return 0;
 	}
 private:
 	std::map< RegistryKey, CreatorMethod> _creators;

@@ -67,7 +67,7 @@ private:
 	{
 		CLAM::FactoryRegistry reg;
 		
-		CPPUNIT_ASSERT_EQUAL(NULL, reg.GetCreator("non existent key") );
+		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
 	}
 };
 
