@@ -12,13 +12,7 @@ const OutPort* NodeBase::GetWriter() const
 
 const std::list<InPort*> NodeBase::GetReaders() const
 {
-	std::list<InPort*> listReaders;
-	
-	for(int i=0; i<mInputs.size(); i++)
-	{
-		listReaders.push_back(mInputs[i]);
-	}
-	return listReaders;
+	return mInputs;
 }
 
 } // namespace CLAM

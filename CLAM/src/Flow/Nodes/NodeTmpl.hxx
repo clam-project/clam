@@ -99,7 +99,7 @@ namespace CLAM {
 	{
 		CLAM_ASSERT( port->GetNode() == this, "NodeTmpl::RemoveInPort() "
 			     "InPort to remove connection is not attached to the node" );
-//		Node<DATA>::mInputs.(port); // ??
+		Node<DATA>::mInputs.remove(port);
 		mStream.RemoveReader( reader );
 	}
 

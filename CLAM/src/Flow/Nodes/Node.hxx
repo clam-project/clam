@@ -25,7 +25,7 @@
 #include "ReadStreamRegion.hxx"
 #include "WriteStreamRegion.hxx"
 #include "Audio.hxx"
-#include <vector>
+#include <list>
 
 
 namespace CLAM {
@@ -39,7 +39,7 @@ namespace CLAM {
 	class NodeBase {
 	protected:
 		OutPort *mpDriver;
-		std::vector<InPort*> mInputs;
+		std::list<InPort*> mInputs;
 	public:
 		const OutPort * GetWriter() const;
 		const std::list<InPort*> GetReaders() const;
