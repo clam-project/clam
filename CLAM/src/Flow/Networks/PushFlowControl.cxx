@@ -84,7 +84,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 	     itOutPort!=producer->GetOutPorts().End(); 
 	     itOutPort++)
 	{
-		if (!(*itOutPort)->GetNode())
+		if (!(*itOutPort)->HasConnections())
 			break;
 
 		Network::InPortsList consumers;
@@ -108,10 +108,10 @@ bool PushFlowControl::AreAllProducersExecuted( Processing * son, std::list<Proce
 	     itInPort!=son->GetInPorts().End(); 
 	     itInPort++)
 	{
-		if (!(*itInPort)->GetNode())
+		if (!(*itInPort)->GetAttachedOutPort())
 			break;
 		
-		OutPort * oneWriter = (OutPort*)(*itInPort)->GetNode()->GetWriter();
+		OutPortBase * oneWriter = (*itInPort)->GetAttachedOutPort();
 		Processing * oneFather = (Processing*)oneWriter->GetProcessing();
 
 		std::list< Processing* >::iterator itProcessingDone;

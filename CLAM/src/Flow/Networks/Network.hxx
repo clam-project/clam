@@ -25,14 +25,10 @@
 #define _Network_hxx_
 
 #include "Processing.hxx"
-#include "Node.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
-#include "OutPortTmpl.hxx"
-#include "CircularStreamImpl.hxx"
-#include "NodeTmpl.hxx"
 #include <string>
 #include <list>
 #include <map>
@@ -50,9 +46,8 @@ class Network : public Component
 {
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
-	typedef std::list< NodeBase* > Nodes;
 	typedef std::list<std::string> NamesList;
-	typedef std::list<InPort *> InPortsList;
+	typedef std::list<InPortBase *> InPortsList;
 	
 	// constructor / destructor
 	Network();
@@ -69,13 +64,10 @@ public:
 	void Stop();
 	void DoProcessings();
 	void AddFlowControl( FlowControl* );
-	void ConfigureAllNodes();
 	void Clear();
 	// serialization methods
 	virtual void StoreOn( Storage & storage) const;
 	virtual void LoadFrom( Storage & storage);
-	
-
 
 	// methods related to connect/disconnect interface
 	bool ConnectPorts( const std::string &, const std::string & );
@@ -96,8 +88,6 @@ public:
 	void ChangeKeyMap( const std::string & oldName, const std::string & newName );	
 	
 	const std::string & GetNetworkId(const Processing * proc) const;
-
-	
 	
 	// accessors to nodes and processing
 	ProcessingsMap::iterator BeginProcessings();
@@ -105,31 +95,21 @@ public:
 	ProcessingsMap::const_iterator BeginProcessings() const;
 	ProcessingsMap::const_iterator EndProcessings() const;
 
-	InPort & GetInPortByCompleteName( const std::string& ) const;
-	OutPort & GetOutPortByCompleteName( const std::string& ) const;
+	InPortBase & GetInPortByCompleteName( const std::string& ) const;
+	OutPortBase & GetOutPortByCompleteName( const std::string& ) const;
 	InControl & GetInControlByCompleteName( const std::string& ) const;
 	OutControl & GetOutControlByCompleteName( const std::string& ) const;
 
 	NamesList GetInPortsConnectedTo( const std::string & ) const;
 	NamesList GetInControlsConnectedTo( const std::string & ) const;
-	InPortsList GetInPortsConnectedTo( OutPort & ) const;
+	InPortsList GetInPortsConnectedTo( OutPortBase & ) const;
 
-protected:
-	NodeBase & GetNodeAttachedTo(OutPort & );
 private:
 	
 	// fields
 	std::string mName;
 	ProcessingsMap mProcessings;
-	Nodes mNodes;
-	Nodes mNodesToConfigure;
-
-	// helpers
-	Nodes::iterator BeginNodes();
-	Nodes::iterator EndNodes();
-	Nodes::const_iterator BeginNodes() const;
-	Nodes::const_iterator EndNodes() const;
-
+	
 	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
@@ -137,16 +117,8 @@ private:
 	std::string GetProcessingIdentifier( const std::string& ) const;
 	static char NamesIdentifiersSeparator();
 	FlowControl* mFlowControl;
-
-	/**this method is provisional, because Network may need non-audio nodes.
-	 * Thus the factory method should be a (virtual) method of OutPort, implemented
-	 * in the concrete class.
-	 * \todo the motivation for this kludge is in order to avoid the coupling between
-	 * ports and the nodes stuff, since VC6 doesn't compiles all of it.
-	 */
-	NodeBase* CreateAudioNodeWithDefaultStreamBuffer();
-	
 };
 
 }// namespace
 #endif
+
