@@ -35,7 +35,7 @@ SystemWithNodes::SystemWithNodes( std::string fileIn, std::string fileOut , int 
 	_maxFramesToProcess(nFrames),
 	_hasAudioOut(hasAudioOut),
 	_oscillatorData(0),
-    _fileInData(0),
+	_fileInData(0),
 	_modulatorData(0),
 	_mixerData(0),
 	_multiplierData(0)
