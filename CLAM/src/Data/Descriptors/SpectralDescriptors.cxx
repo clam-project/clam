@@ -173,7 +173,7 @@ void SpectralDescriptors::ConcreteCompute()
 	if(HasMoment6())
 		SetMoment6(mpStats->GetMoment((O<6>*)(0)));
 	if (HasSpread())
-	        SetSpread(ComputeSpread());
+	        SetSpread(mpStats->GetSpread()*mDeltaFreq*mDeltaFreq);
 	if(HasSkewness())
 		SetSkewness(mpStats->GetSkew());
 	if(HasKurtosis())	
@@ -279,28 +279,6 @@ TData SpectralDescriptors::ComputeRolloff()
 	return 0.0;
 }
 
-
-TData SpectralDescriptors::ComputeSpread() 
-{ 
-	const DataArray& mags = mpSpectrum->GetMagBuffer();
-	const TSize      N    = mpSpectrum->GetSize();
-
-	const TData centroid = mpStats->GetCentroid(); // A 1 based centroid
-
-	// Compute spectrum variance around centroid frequency
-	TData variance = 0;
-	TData sumMags  = 0;
-	for (TIndex i=0; i<N; i++)
-	{
-		TData centroidDistance = i - centroid;
-		centroidDistance *= centroidDistance;
-		variance += centroidDistance * mags[i];
-		sumMags  += mags[i];
-	}
-	// Silence is like a plain distribution
-	if (sumMags < 1e-14) return mDeltaFreq * mDeltaFreq * (N+1) * (N-1) / 12;
-	return mDeltaFreq * mDeltaFreq * variance / sumMags;
-}
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 {
