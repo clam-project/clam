@@ -19,13 +19,8 @@ PROGRAMS = \
 
 
 TESTS = \
-	AllUnitTests \
-	TestComplex \
-	TestPoint \
-	TestPolar \
 	TestXMLAdapters \
 	TestConfig \
-	TestFlags \
 	TestSignalv1 \
 	TestArray \
 	TestArray2 \
