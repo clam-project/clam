@@ -3,6 +3,7 @@
 #include <typeinfo>
 
 #include "Oscillator.hxx"
+#include "Factory.hxx"
 
 namespace CLAMTest
 {
@@ -21,7 +22,7 @@ private:
 	
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
-
+		CLAM::Processing* returned = CLAM::CreateOscillator();
 		CPPUNIT_ASSERT( typeid( CLAM::Oscillator*) == typeid(returned)  ); 
 	
 	}
