@@ -415,14 +415,9 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 	}
 
 	if(m->button() == LeftButton )
-	{
-//		grabKeyboard();
 		mDown = true;
-	}
 	else
-	{
 		mConfig->Show();
-	}
 }
 
 void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
@@ -551,7 +546,6 @@ void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
 
 void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 {
-//	releaseKeyboard();
 	QLineEdit * nameEdit = new QLineEdit( this );
 	nameEdit->setText( mName.c_str() );
 
@@ -566,9 +560,9 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 	nameEdit->setFocus();
 	nameEdit->setGeometry( QRect(12,7,width()-24, height()-14) );
 	nameEdit->show();
-//	nameEdit->grabKeyboard();
 
 	SignalSendMessageToStatus.Emit( "Edit the processing name" );
+	nameEdit->grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
@@ -586,7 +580,8 @@ void Qt_ProcessingPresentation::SlotTextChange( const QString & newName )
 
 void Qt_ProcessingPresentation::SlotExecuteChangeName()
 {
-	SignalProcessingNameChanged.Emit( mName );	
+	SignalProcessingNameChanged.Emit( mName );
+	parentWidget()->grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )

@@ -62,6 +62,7 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	SlotSendMessageToStatus.Wrap( this, &Qt_NetworkPresentation::SendMessageToStatus );
 	SlotMovingMouseWithButtonPressed.Wrap( this, &Qt_NetworkPresentation::MovingMouseWithButtonPressed );
 	setAcceptDrops(TRUE);
+	grabKeyboard();
 }
 
 void Qt_NetworkPresentation::SendMessageToStatus( const std::string & message )
@@ -215,6 +216,22 @@ void Qt_NetworkPresentation::Show()
 		(*itc)->Show();
 
 	show();
+}
+void Qt_NetworkPresentation::keyPressEvent( QKeyEvent * k)
+{
+	switch ( k->key() ) 
+	{
+
+	case Key_Delete:
+		QtProcessingList::iterator it;
+		for( it=mSelectedPresentations.begin(); it!=mSelectedPresentations.end(); it++ )
+			(*it)->SignalRemoveProcessing.Emit( *it );
+		mSelectedPresentations.clear();
+		repaint();
+		break;
+
+	}
+
 }
 
 void Qt_NetworkPresentation::mouseMoveEvent( QMouseEvent *m)

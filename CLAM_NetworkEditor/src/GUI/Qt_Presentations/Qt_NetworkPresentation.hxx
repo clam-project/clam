@@ -69,7 +69,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void ProcessingPresentationSelected( Qt_ProcessingPresentation * );
 //	void ProcessingPresentationUnselected( Qt_ProcessingPresentation * );
 	void ProcessingPresentatioAddedToSelection( Qt_ProcessingPresentation * );
-	
+
+	void keyPressEvent( QKeyEvent * );
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *);
