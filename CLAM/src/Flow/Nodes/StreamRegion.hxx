@@ -54,17 +54,18 @@ namespace CLAM {
 		unsigned int Pos() const {return mPos;}
 		/** Accessor to region's ending position in number of elements. @see mEnd */
 		unsigned int End() const {return mEnd;}
-		/** Returns difference between mEnd and mPos, which is not the actual length of
-		 *	the region. Note that if the region is not active, Len()=0. @see RealLength */
-		unsigned int Len() const {return mEnd-mPos;}
+		
+		unsigned int Len() const {return mLen;}
+		unsigned int ActiveLen() const {return mEnd-mPos;}
 				
 		/** Accessor to "virtual" center of region. @see mOffset*/
 		unsigned int Center() const {return Chop((mPos+mEnd)*0.5f)-mOffset;} 
-		/** Returns the maximum length of the region. @see mLen. */
-		unsigned int MaxLength() const {return mLen;}
+		
 
+		/** \todo
+		 */
+		virtual bool CanActivate() const = 0;
 
-		bool CanActivate();
 		/** Sets the condition of the region being active, which is actually setting mEnd
 		 *	to mPos+mLen. */
 		void Activate();
@@ -87,10 +88,8 @@ namespace CLAM {
 			CenterToZero();}
 
 		/** Returns true if this region preceeds the region passed as argument */
-		bool Preceeds(const StreamRegion*) const;
-		/** Returns true if this region follows the region passed as argument */
-		bool Follows (const StreamRegion*) const;
-
+		bool PreceedsWithNoOverlap(const StreamRegion*) const;
+		
 		virtual bool FulfilsInvariant() const;
 		virtual bool Accept(RegionVisitor& v) const = 0;
 	};

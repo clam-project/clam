@@ -35,29 +35,11 @@ namespace CLAM {
 		  mLen(length),
 		  mEnd(0)
 	{
+		CLAM_ASSERT( length>0, "StreamRegion() ctr.: bad length size value");
+		CLAM_ASSERT( hop>0, "StreamRegion() ctr.: bad hopsize value");
 	}
 
-	bool StreamRegion::CanActivate()
-	{
-	/*	//Activate:
-		mEnd = mPos+mLen;
-		//FulfilsInvariant:
-		{
-			// of ReadStreamRegion
-			if (!mSource)
-			return false;
-			if (!Follows(mSource))
-				return false;
-			return true;
-		}
-		{
-			// of WriteStreamRegion
-		}
-		//Leave:
-		mEnd = mPos;
-	*/
-		return true;
-	}
+
 
 	void StreamRegion::Activate()
 	{
@@ -75,16 +57,10 @@ namespace CLAM {
 		mPos += mHop;
 	}
 
-	bool StreamRegion::Preceeds(const StreamRegion *r) const
+	bool StreamRegion::PreceedsWithNoOverlap(const StreamRegion *forwardRegion) const
 	{
-		return r->End() <= Pos();
+		return End() <= forwardRegion->Pos();
 	}
-
-	bool StreamRegion::Follows(const StreamRegion *r) const
-	{
-		return End() <= r->Pos();
-	}
-
 
 	bool StreamRegion::FulfilsInvariant() const
 	{
