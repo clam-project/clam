@@ -559,6 +559,7 @@ details.]
 	],[
 		AC_MSG_RESULT(yes)
 		DEFINE_HAVE_PORTMIDI=HAVE_PORTMIDI
+		HAVE_PORTMIDI=1
 		if test $portmidi_local = yes; then
 			PORTMIDI_INCLUDES="\$(CLAM_PATH)/../portmidi/include"
 			PORTMIDI_LIB_PATH="\$(CLAM_PATH)/../portmidi/lib"
@@ -576,8 +577,8 @@ your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH on Mac OS X) variable, or edit
 
 	CFLAGS=$OLD_FLAGS
 else
-	AC_MSG_ERROR([
-No portmidi headers found!]
+	AC_MSG_WARN([
+No portmidi headers found. Continuing anyway, as it is not required.]
 	)
 fi;
 ]
