@@ -52,6 +52,14 @@ PublishedInPorts::Iterator PublishedInPorts::End()
 	return mParent.LastInput();
 }
 
+bool PublishedInPorts::AreReadyForReading()
+{
+	Iterator in;
+	for ( in=Begin(); in!=End(); in++)
+		if (!(*in)->IsReadyForReading()) return false;
+
+	return true;
+}
 
 	
 } // namespace CLAM

@@ -23,6 +23,7 @@ public:
 	Iterator Begin();
 	Iterator End();
 	
+	bool AreReadyForReading();
 	
 private:
 	Processing& mParent;

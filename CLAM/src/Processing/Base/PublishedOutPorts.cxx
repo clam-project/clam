@@ -49,6 +49,13 @@ PublishedOutPorts::Iterator PublishedOutPorts::End()
 {
 	return mParent.LastOutput();
 }
-
+bool PublishedOutPorts::AreReadyForWriting()
+{
+	Iterator out;
+	for ( out=Begin(); out!=End(); out++)
+		if (!(*out)->IsReadyForWriting()) return false;
+	
+	return true;
+}
 
 }// namespace CLAM

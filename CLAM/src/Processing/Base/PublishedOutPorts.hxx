@@ -20,8 +20,9 @@ public:
 	OutPort& GetByNumber(int index) const;
 	OutPort& Get(std::string name) const;
 	int Size() const;
-        Iterator Begin();
+    Iterator Begin();
 	Iterator End();
+	bool AreReadyForWriting();
 
 private:
 	Processing& mParent;
