@@ -23,7 +23,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class Fl_SMS_Browsable_Playable_Audio;
+	class Fl_SMS_Audio_Browser;
 	class Fl_SMS_Spectrum;
 	class Fl_SMS_SinTracks;
 	class Fl_SMS_SpectrumAndPeaks;
@@ -98,10 +98,10 @@ namespace CLAMVM
 		AudioAdapter                 mSynthesizedResidualAdapter;
 
 		// Widgets
-		Fl_SMS_Browsable_Playable_Audio* mpOriginalAudioWidget;
-		Fl_SMS_Browsable_Playable_Audio* mpSynthesizedAudioWidget;
-		Fl_SMS_Browsable_Playable_Audio* mpSynthesizedResidualWidget;
-		Fl_SMS_Browsable_Playable_Audio* mpSynthesizedSinusoidalWidget;
+		Fl_SMS_Audio_Browser* mpOriginalAudioWidget;
+		Fl_SMS_Audio_Browser* mpSynthesizedAudioWidget;
+		Fl_SMS_Audio_Browser* mpSynthesizedResidualWidget;
+		Fl_SMS_Audio_Browser* mpSynthesizedSinusoidalWidget;
 		Fl_SMS_SpectrumAndPeaks*         mpSpectrumAndPeaksWidget;
 		Fl_SMS_Spectrum*                 mpSinusoidalSpectrum;
 		Fl_SMS_Spectrum*                 mpResidualSpectrum;

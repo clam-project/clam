@@ -50,7 +50,6 @@ namespace CLAMVM
 		Fl_Y_Axis*                        mYAxis;
 		Fl_ZoomSlider*                    mXSlider;
 		Fl_ZoomSlider*                    mYSlider;
-		Fl_SMS_Gl_Single_Browsable_Display*   mDisplay;
 		AudioRenderingManager             mDrawMgr;
 		Fl_Button*                        mPlayButton;
 		Fl_Button*                        mStopButton;
@@ -58,25 +57,19 @@ namespace CLAMVM
 		bool                              mIsThisPlaying;
 		CLAM::AudioPlayer*                mAudioPlayer;
 		// for transforming the sample index into sample time
-		CLAM::TData                       mAudioOffset;
-		CLAM::TData                       mSampleRate;
 
 		void Play(  );
 		void Stop(  );
-
-		void OnSelectedXValue( double place );
-		void OnNewFrame( CLAM::TData frameNum );
 
 		static void play( Fl_Widget*, void* data);
 		static void stop( Fl_Widget*, void* data);
 
 	protected:
 		void OnNewAudio( const DataArray&, TTime, TTime, TData );
-		void OnDisplaySelectedXValue( double value );
-		void OnSetSelectedXValue( double value );
+		Fl_SMS_Gl_Single_Browsable_Display*   mDisplay;
+		CLAM::TData                       mAudioOffset;
+		CLAM::TData                       mSampleRate;
 
-		Signalv1< double > ChangeSelectedXValue;
-		Slotv1< double >   HandleDisplaySelection;
 
 	public:
 		Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
@@ -86,8 +79,6 @@ namespace CLAMVM
 		void UnsetPaint(); 
 		void SetPos( CLAM::TData pos );
 
-		Slotv1<double>        SetSelectedXValue;
-		Signalv1<double>      SelectedXValue;
 
 
 		Slotv0                mStopSlot;

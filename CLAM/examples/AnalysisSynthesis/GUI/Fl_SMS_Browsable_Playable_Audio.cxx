@@ -87,28 +87,8 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 
 	mStopSlot.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::Stop );
 	
-	HandleDisplaySelection.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue );
-	SetSelectedXValue.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnSetSelectedXValue );
-
-	mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
-	ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
 
 	mDisplay->SetPainting();
-}
-
-void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )
-{
-	// towards the outer world
-	double sampleTime = (value / mSampleRate ) + mAudioOffset;
-	std::cerr << "Sample rate: " << mSampleRate << std::endl;
-	std::cerr << "Display selected new sample time: " << sampleTime << std::endl;
-	SelectedXValue.Emit( sampleTime );
-}
-
-void Fl_SMS_Browsable_Playable_Audio::OnSetSelectedXValue( double value )
-{
-	// towards the display
-	ChangeSelectedXValue.Emit( value );
 }
 
 

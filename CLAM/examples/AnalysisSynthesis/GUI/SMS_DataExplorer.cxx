@@ -5,7 +5,7 @@
 #include "Segment.hxx"
 #include "Assert.hxx"
 
-#include "Fl_SMS_Browsable_Playable_Audio.hxx"
+#include "Fl_SMS_Audio_Browser.hxx"
 #include "Fl_SMS_Spectrum.hxx"
 #include "Fl_SMS_SinTracks.hxx"
 #include "Fl_SMS_SpectrumAndPeaks.hxx"
@@ -130,7 +130,7 @@ namespace CLAMVM
 		
 		if ( !mpOriginalAudioWidget )
 		{
-			mpOriginalAudioWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,800,600, "Input Audio");
+			mpOriginalAudioWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Input Audio");
 			CLAM_ASSERT( mpOriginalAudioWidget!=NULL, "The widget could not be created");
 			mpOriginalAudioWidget->AttachTo( mOriginalAudioAdapter );
 			mpOriginalAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -146,7 +146,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedAudioWidget )
 		{
-			mpSynthesizedAudioWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,800,600, "Synthesized Audio");
+			mpSynthesizedAudioWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Synthesized Audio");
 			CLAM_ASSERT( mpSynthesizedAudioWidget!=NULL, "The widget could not be created");
 			mpSynthesizedAudioWidget->AttachTo( mSynthesizedAudioAdapter );
 			mpSynthesizedAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -163,7 +163,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedSinusoidalWidget )
 		{
-			mpSynthesizedSinusoidalWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,800,600, "Synthesized Sinusoidal Component");
+			mpSynthesizedSinusoidalWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Synthesized Sinusoidal Component");
 			CLAM_ASSERT( mpSynthesizedSinusoidalWidget!=NULL, "The widget could not be created");
 			mpSynthesizedSinusoidalWidget->AttachTo( mSynthesizedSinusoidalAdapter );
 			mpSynthesizedSinusoidalWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -180,7 +180,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedResidualWidget )
 		{
-			mpSynthesizedResidualWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,800,600, "Synthesized Residual Component");
+			mpSynthesizedResidualWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Synthesized Residual Component");
 			CLAM_ASSERT( mpSynthesizedResidualWidget!=NULL, "The widget could not be created");
 			mpSynthesizedResidualWidget->AttachTo( mSynthesizedResidualAdapter );
 			mpSynthesizedResidualWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -207,7 +207,7 @@ namespace CLAMVM
 		mpOriginalAudioWidget->resize( mpCanvas->x(), mpCanvas->y(), widgetWidth, widgetHeight );
 		mpOriginalAudioWidget->callback( (Fl_Callback*)sDetachCb, this );
 		
-		mpCanvas->add( *mpOriginalAudioWidget );
+		mpCanvas->add( *(mpOriginalAudioWidget) );
 		mpOriginalAudioWidget->Show();
 		mpCanvas->redraw();
 	}
@@ -311,7 +311,7 @@ namespace CLAMVM
 		mpSynthesizedAudioWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSynthesizedAudioWidget->callback( (Fl_Callback*)sDetachCb, this );
 		
-		mpCanvas->add( *mpSynthesizedAudioWidget );
+		mpCanvas->add( *(mpSynthesizedAudioWidget) );
 		mpSynthesizedAudioWidget->Show();
 		mpCanvas->redraw();
 
@@ -332,7 +332,7 @@ namespace CLAMVM
 		mpSynthesizedSinusoidalWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSynthesizedSinusoidalWidget->callback( (Fl_Callback*)sDetachCb, this );
 		
-		mpCanvas->add( *mpSynthesizedSinusoidalWidget );
+		mpCanvas->add( *(mpSynthesizedSinusoidalWidget) );
 		mpSynthesizedSinusoidalWidget->Show();
 		mpCanvas->redraw();
 
@@ -353,7 +353,7 @@ namespace CLAMVM
 		mpSynthesizedResidualWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSynthesizedResidualWidget->callback( (Fl_Callback*)sDetachCb, this );
 		
-		mpCanvas->add( *mpSynthesizedResidualWidget );
+		mpCanvas->add( *(mpSynthesizedResidualWidget) );
 		mpSynthesizedResidualWidget->Show();
 		mpCanvas->redraw();
 
