@@ -22,74 +22,76 @@ namespace CLAM
 	{
 		class GlobalPulseGenerator;
 		class PulseGridGenerator;
-	}
-
-	class TickSequenceTracker : public ProcessingComposite
-	{
-		TickSequenceTrackerConfig mConfig;
-		const char *GetClassName() const {return "TickSequenceTracker";}
-		bool ConcreteConfigure(const ProcessingConfig&);
-
-	public:
-		TickSequenceTracker();
-
-		TickSequenceTracker(const TickSequenceTrackerConfig &c);
-
-		~TickSequenceTracker() {}
-
-		const ProcessingConfig &GetConfig() const { return mConfig;}
-
-		bool Do(void);
-
-		///Method to use when the input is a list of note onsets
-		///(onsets already computed, or MIDI)
-		bool Do(const Array<TimeIndex>& transients, Pulse& tickSequence,
-			Pulse& beatSequence, RhythmDescription::IOIHistogram& interOnsetHist );
 
 
+		class TickSequenceTracker : public ProcessingComposite
+		{
+			TickSequenceTrackerConfig mConfig;
+			const char *GetClassName() const {return "TickSequenceTracker";}
+			bool ConcreteConfigure(const ProcessingConfig&);
+
+		public:
+			TickSequenceTracker();
+
+			TickSequenceTracker(const TickSequenceTrackerConfig &c);
+
+			~TickSequenceTracker() {}
+
+			const ProcessingConfig &GetConfig() const { return mConfig;}
+
+			bool Do(void);
+
+			///Method to use when the input is a list of note onsets
+			///(onsets already computed, or MIDI)
+			bool Do(const Array<TimeIndex>& transients, Pulse& tickSequence,
+				Pulse& beatSequence, IOIHistogram& interOnsetHist );
 
 
-	protected:
-		bool Compute(const Array<TimeIndex>& transients, 
-			     RhythmDescription::IOIHistogram& interOnsetHist,
-			     Array<TimeIndex>& ticks,
-			     Array<TimeIndex>& beats,
-			     TData& globalTick,
-			     TData& globalTempo);
-
-		TData CompGlobPulse( RhythmDescription::GlobalPulseGenerator& gpulse, 
-				     const int pulseLimSup, 
-				     const Array<TData> &forGlobalPulseCalc);
-
-		void StorePulseIndexes( const int nLoops, 
-					const Array<TimeIndex>& pulsesArray,
-				        Array<TimeIndex>& mPulses );
-
-		void GeneratePulseGrid( const TData start, const TData gap, const TData end, 
-					RhythmDescription::PulseGridGenerator& pulseGridGen, 
-					Array<TimeIndex>& pulseArray );
 
 
-		unsigned AdjustTickIntervalForSwing( RhythmDescription::IOIHistogram& ioiHistogram, 
-						     unsigned previousTickInterval );
+		protected:
+			bool Compute(const Array<TimeIndex>& transients, 
+				     IOIHistogram& interOnsetHist,
+				     Array<TimeIndex>& ticks,
+				     Array<TimeIndex>& beats,
+				     TData& globalTick,
+				     TData& globalTempo);
 
-		TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
+			TData CompGlobPulse( GlobalPulseGenerator& gpulse, 
+					     const int pulseLimSup, 
+					     const Array<TData> &forGlobalPulseCalc);
+
+			void StorePulseIndexes( const int nLoops, 
+						const Array<TimeIndex>& pulsesArray,
+						Array<TimeIndex>& mPulses );
+
+			void GeneratePulseGrid( const TData start, const TData gap, const TData end, 
+						PulseGridGenerator& pulseGridGen, 
+						Array<TimeIndex>& pulseArray );
+
+
+			unsigned AdjustTickIntervalForSwing( IOIHistogram& ioiHistogram, 
+							     unsigned previousTickInterval );
+
+			TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
 				       
 
-	private: // children Processing
+		private: // children Processing
 
-		RhythmDescription::IOIHistPeakDetector   mPeakDetector;
-		RhythmDescription::TimeDifference        mTemporalDiff;
-		RhythmDescription::TimeSeriesFinder                     mTimeSeriesFinder;
-		RhythmDescription::TimeSeriesFinderConfig               mTSFConfig;
+			IOIHistPeakDetector   mPeakDetector;
+			TimeDifference        mTemporalDiff;
+			TimeSeriesFinder                     mTimeSeriesFinder;
+			TimeSeriesFinderConfig               mTSFConfig;
 
-	private: // Internal PD's
+		private: // Internal PD's
 		
-		RhythmDescription::TimeSeriesSeed    mTickFirstGuess;
-		RhythmDescription::TimeSeriesSeed    mGoodTick;
-		RhythmDescription::TimeSeriesSeed    mGoodTempo;
+			TimeSeriesSeed    mTickFirstGuess;
+			TimeSeriesSeed    mGoodTick;
+			TimeSeriesSeed    mGoodTempo;
 
-	};
+		};
+
+	} // RhythmDescription
 
 } // namespace CLAM
 

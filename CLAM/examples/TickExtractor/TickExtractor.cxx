@@ -104,8 +104,8 @@ namespace CLAM
 		}
 		// Ticks ( and beats ) computation 
 
-		TickSequenceTrackerConfig myTickSequenceTrackerConfig;
-		TickSequenceTracker myTickSequenceTracker(myTickSequenceTrackerConfig);
+		RhythmDescription::TickSequenceTrackerConfig myTickSequenceTrackerConfig;
+		RhythmDescription::TickSequenceTracker myTickSequenceTracker(myTickSequenceTrackerConfig);
 		myTickSequenceTrackerConfig.SetComputeBeats(configuration.GetComputeBeats());
 		myTickSequenceTrackerConfig.SetThreshold_IOIHistPeaks(configuration.GetThreshold_IOIHistPeaks());
 		myTickSequenceTrackerConfig.SetTempoLimInf(configuration.GetTempoLimInf());
@@ -125,7 +125,6 @@ namespace CLAM
 		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);		
 
 		RhythmDescription::IOIHistogram ioiHistogram;
-
 
 		Pulse tickSequence;
 		Pulse beatSequence;

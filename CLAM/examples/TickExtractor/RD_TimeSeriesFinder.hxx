@@ -83,20 +83,20 @@ protected:
 class TimeSeriesFinder : public Processing
 {
 	TimeSeriesFinderConfig mConfig;
-	const char *GetClassName() const {return "TimeSeriesFinder";}
+
+protected:
 	bool ConcreteConfigure(const ProcessingConfig&);
 
 public:
 	TimeSeriesFinder();
-	TimeSeriesFinder(const TimeSeriesFinderConfig &c);
+
 	~TimeSeriesFinder();
 
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 
 	bool Do(void);
 	bool Do(const Array<TimeIndex>& indexes, TimeSeriesSeed& tss);
-
-	
+	const char* GetClassName() const;
 
 private:
 	InControl mOffsetMin;

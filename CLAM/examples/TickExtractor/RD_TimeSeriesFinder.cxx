@@ -55,18 +55,7 @@ namespace CLAM
 			mIntervalMax("IntervalMax",this),
 			mIntervalStep("IntervalStep",this)
 		{
-			Configure(TimeSeriesFinderConfig());
-		}
 
-		TimeSeriesFinder::TimeSeriesFinder(const TimeSeriesFinderConfig &c) :
-			mOffsetMin("OffsetMin",this),
-			mOffsetMax("OffsetMax",this),
-			mOffsetStep("OffsetStep",this),
-			mIntervalMin("IntervalMin",this),
-			mIntervalMax("IntervalMax",this),
-			mIntervalStep("IntervalStep",this)
-		{
-			Configure(c);
 		}
 
 		TimeSeriesFinder::~TimeSeriesFinder()
@@ -84,6 +73,11 @@ namespace CLAM
 			mIntervalMax.DoControl(mConfig.GetIntervalMax());
 			mIntervalStep.DoControl(mConfig.GetIntervalStep());
 			return true;
+		}
+
+		const char* TimeSeriesFinder::GetClassName() const
+		{
+			return "TimeSeriesFinder";
 		}
 
 		bool  TimeSeriesFinder::Do(void)
