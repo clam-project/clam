@@ -25,6 +25,7 @@
 #include "SpectrumConfig.hxx"
 #include "SMSAnalysis.hxx"
 
+
 using namespace CLAM;
 
 /////////////////////////////////////////////////////////////////////
@@ -351,13 +352,11 @@ bool SMSAnalysis::Do( Audio& in,
 	Audio tmpAudio;
 	mStreamBuffer->GetAndActivate(mWriter,tmpAudio);
 	CLAM_DEBUG_ASSERT( tmpAudio.GetSize() >= in.GetSize(), "SMSAnalysis::Do - Cannot copy an audio greater than the size of writer region" );
-	tmpAudio.GetBuffer()=in.GetBuffer();
+
+	tmpAudio.GetBuffer() = in.GetBuffer();
+
 	mStreamBuffer->LeaveAndAdvance(mWriter);
 	
-	//Temporal Sinusoidal spectrum used for substracting from the original to compute residual
-	//Note: we do not need to keep it here because it will have to be synthesized in the synthesis
-	//process anyway.
-	Spectrum tmpSpec;
 
 	// MRJ: I will comment the following DEBUG_ASSERTS, but the bug has not been
 	// fixed just walked around for now - waiting for some sort of tests to be
@@ -415,6 +414,7 @@ bool SMSAnalysis::Do( Audio& in,
 	
 	//we can now leave residual reader and advance it
 	mStreamBuffer->LeaveAndAdvance(mResReader);
+
 	
 	//Output global spectrum is that of the residual branch
 	outGlobalSpec=mResSpec;
@@ -478,8 +478,6 @@ bool SMSAnalysis::Do(Segment& in)
 	if(frameCenterTime>in.GetAudio().GetDuration()*0.001)
 		return false;
 
-	//We instantiate a temporal frame where all analysis will be performed
-	Frame tmpFrame;
 	tmpFrame.SetDuration(step/samplingRate);
 	tmpFrame.SetCenterTime(TData(frameCenterTime));
 	tmpFrame.AddAudioFrame();
@@ -514,8 +512,6 @@ bool SMSAnalysis::SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray
 	// Convert Spectrum to dB
 	outSp.ToDB();
 	
-	// Peak Detection
-	SpectralPeakArray tmpPk;
 	
 	// MRJ: Seems somebody forgot about the donuts here...
 	tmpPk.SetScale( EScale::eLog );
@@ -536,11 +532,18 @@ bool SMSAnalysis::SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray
 void SMSAnalysis::InitFrame(Frame& in)
 {
 	//We add necessary attributes to input frame
-	in.AddSpectrum();
-	in.AddSpectralPeakArray();
-	in.AddFundamental();
-	in.AddResidualSpec();
-	in.AddIsHarmonic();
-	in.AddSinusoidalAnalSpectrum();
+	if ( !in.HasSpectrum() )
+		in.AddSpectrum();
+	if ( !in.HasSpectralPeakArray() )
+		in.AddSpectralPeakArray();
+	if ( !in.HasFundamental() )
+		in.AddFundamental();
+	if ( !in.HasResidualSpec() )
+		in.AddResidualSpec();
+	if ( !in.HasIsHarmonic() )
+		in.AddIsHarmonic();
+	if ( !in.HasSinusoidalAnalSpectrum() )
+		in.AddSinusoidalAnalSpectrum();
+
 	in.UpdateData();
 }

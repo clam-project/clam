@@ -171,6 +171,17 @@ private:
 	
 /** Index that indicates how many audio frames have been processed until now*/
 	TSize mAudioFrameIndex;
+
+	/** Temporal objects for the various Do()'s in this Processing*/
+	//Temporal Sinusoidal spectrum used for substracting from the original to compute residual
+	//Note: we do not need to keep it here because it will have to be synthesized in the synthesis
+	//process anyway.
+	Spectrum tmpSpec; /** Used in the six parameter Do()*/
+	//We instantiate a temporal frame where all analysis will be performed
+	Frame tmpFrame;
+	// Peak Detection
+	SpectralPeakArray tmpPk;
+
 	
 
 // Internal convenience methods.
