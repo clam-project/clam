@@ -60,9 +60,9 @@ namespace CLAMTest
 
 		void LinkWith( Signaler& sig )
 		{
-			mSignalSlot = sig.GetNewIntegerSignal().Connect( this, &Slotted::React );
-			mStaticSignalSlot = sig.GetNewIntegerSignal().Connect( &Slotted::sReact );
-			mPureVirtualSignalSlot = sig.GetNewIntegerSignal().Connect( this, &Slotted::PureVirtualReact );
+				mSignalSlot.Bind( sig.GetNewIntegerSignal().Connect( this, &Slotted::React ) );
+				mStaticSignalSlot.Bind( sig.GetNewIntegerSignal().Connect( &Slotted::sReact ) );
+				mPureVirtualSignalSlot.Bind( sig.GetNewIntegerSignal().Connect( this, &Slotted::PureVirtualReact ) );
 		}
 
 		bool WasNotified()
