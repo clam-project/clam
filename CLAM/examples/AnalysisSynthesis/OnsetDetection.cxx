@@ -45,9 +45,9 @@ OnsetDetection::OnsetDetection(OnsetDetectionConfig& c)
 	Configure(c);
 }
 
-bool OnsetDetection::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool OnsetDetection::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const OnsetDetectionConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	mFrameSize = mConfig.GetFrameSize();
 	mFFTSize = mFrameSize * 2 ;

@@ -80,7 +80,7 @@ private:
 	const char *GetClassName() const {return "OnsetDetection";}
 
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	
 	bool DescriptorsCalculation( Audio &in );

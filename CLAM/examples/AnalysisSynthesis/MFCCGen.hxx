@@ -73,7 +73,7 @@ public:
 	Array<TData>& GetFilteredData();
 
 private:
-	bool ConcreteConfigure(const ProcessingConfig&  c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&  c);
 
 		
 	MFCCGenConfig    mConfig;

@@ -88,7 +88,7 @@ void UserInterface::LoadSound(void)
 			mPlayInputSound->deactivate();
 			mAnalysisSynthesisExample->mHaveConfig=false;
 		}
-		mSmartTile->equalize();
+//		mSmartTile->equalize();
 
 		mCounter->deactivate();
 		mCounter->value( 0 );
@@ -208,7 +208,7 @@ void UserInterface::DisplayInputSpectrum(void)
 
 		mInputSpectrumView->BindTo( &spectrum );
 		mInputSpectrumView->Refresh();
-		mSmartTile->equalize();
+//		mSmartTile->equalize();
 	}
 }
 
@@ -304,7 +304,8 @@ void UserInterface::Detach(Fl_Window *w)
 	** w2 should already take care of that (through a callback). mdeboer
 	** should edit SmartTile to do so.
 	*/
-	mSmartTile->close( w2 );
+	mSmartTile->remove( w2 );
+	mSmartTile->redraw();
 
 	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
 
@@ -326,7 +327,7 @@ void UserInterface::Detach(Fl_Window *w)
 	else if (w==mOutputSpectrum)
 		mOutputSpectrum = NULL;
 
-	mSmartTile->equalize();
+//	mSmartTile->equalize();
 }
 
 Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data )
@@ -350,9 +351,9 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data )
  	if (mAnalysisSynthesisExample->mHaveAnalysis)
  		localPresentation->setPainting( true );
 
-	mSmartTile->add_titled( localPresentation->GetWindow() );
+	mSmartTile->add( localPresentation->GetWindow() );
 	localPresentation->Show();
-	mSmartTile->equalize();
+	mSmartTile->redraw();
 	localPresentation->GetWindow()->callback((Fl_Callback*) _Detach,this);
 	localView->Refresh();
 
@@ -378,9 +379,9 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int ty
 	mSpectrumView->BindTo( data );
 	localPresentation->LinkWithView( mSpectrumView );
 
-	mSmartTile->add_titled( localPresentation->GetWindow() );
+	mSmartTile->add( localPresentation->GetWindow() );
 	localPresentation->Show();
-	mSmartTile->equalize();
+	mSmartTile->redraw();
 	localPresentation->GetWindow()->callback((Fl_Callback*) _Detach,this);
 	mSpectrumView->Refresh();
 
@@ -420,7 +421,7 @@ void UserInterface::ChangeFrame()
 	{
 		mOutputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
 		mOutputSpectrumView->Refresh();
-		mSmartTile->equalize();
+//		mSmartTile->equalize();
 	}
 
 	Fl::redraw();
@@ -443,13 +444,13 @@ void UserInterface::ChangeTimeTag( double tag )
 	{
 		mInputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
 		mInputSpectrumView->Refresh();
-		mSmartTile->equalize();
+//		mSmartTile->equalize();
 	}
 	if(mOutputSpectrumView != NULL)
 	{
 		mOutputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
 		mOutputSpectrumView->Refresh();
-		mSmartTile->equalize();
+//		mSmartTile->equalize();
 	}
 
 	Fl::redraw();

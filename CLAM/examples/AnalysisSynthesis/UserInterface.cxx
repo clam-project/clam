@@ -884,7 +884,9 @@ UserInterface::UserInterface() {
       o->deactivate();
     }
     { Fl_Group* o = new Fl_Group(5, 50, 860, 470);
-      mSmartTile = new Fl_Smart_Tile(5, 50, 860, 470);
+      { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(5, 50, 860, 470);
+        o->minsize(80);
+      }
       o->end();
       Fl_Group::current()->resizable(o);
     }
