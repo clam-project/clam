@@ -5,7 +5,7 @@ SRCDEPS=$(CLAM_PATH)/build/srcdeps/srcdeps
 all: program
 
 clean:
-	rm -rf obj/ dep/ moc/ Makefile.vars $(PROGRAM)
+	rm -rf obj/ dep/ moc/ uic/ Makefile.vars $(PROGRAM)
 
 distclean: clean
 	rm -rf dep/
@@ -45,6 +45,16 @@ $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 	@echo == compiling $<
 	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
+uic/%.h:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	uic $< -o $@
+
+uic/%.cxx:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	uic -i $(@:uic/%.cxx=%.h) $< -o $@
+
 moc/%_moc.cxx:
 	@mkdir -p moc
 	@echo == Generating moc file for $@
@@ -66,6 +76,16 @@ $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 	@mkdir -p obj
 	@echo == compiling $<
 	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+
+uic/%.h:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	uic $< -o $@
+
+uic/%.cxx:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	uic -i $(@:uic/%.cxx=%.h) $< -o $@
 
 moc/%_moc.cxx:
 	@mkdir -p moc
