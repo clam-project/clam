@@ -29,6 +29,13 @@
 + Resize del scope
 + ScopeSpecRegistry
 - Scope relations
+	- Same context binders
+		- Creating a binder
+		- Ask the binder for the data
+		- The binder adopting the final data type
+		- Checking the binder type maches the extractor binded hook
+	- Relative context binders
+	- Indirect same context binders
 - Consider using iterator/vector interface
 - Prepare: Determinar attributos necesarios
 - Multilevel pools
