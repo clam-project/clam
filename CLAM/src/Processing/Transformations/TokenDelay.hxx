@@ -32,8 +32,7 @@
 #include "Enum.hxx"
 #include <vector>
 #include <string>
-// @todo : debug header
-#include <iostream>
+#include <deque>
 
 using std::string;
 
@@ -99,10 +98,7 @@ public:
 		mInput ("In", this, 1),
 		mOutput ("Out", this, 1),
 		mDelayControl("Delay Control", this),
-		mLast(0),
-		mFirst(0),
-		mCapacity(0),
-		mInstantToken(0)
+		mCapacity(0)
 	{
 		Configure(cfg);
 	}
@@ -149,8 +145,12 @@ public:
 
 	const char *GetClassName() {return "TokenDelay";}
 
-	unsigned RealDelay() const;
-
+	/**
+	 * Informative value about the current delay applied (different from the requested)
+	 */
+	TSize RealDelay() const {
+		return mTokenQueue.size();
+	} 
 
 private:
 	/** This method is applyed to every token discarded when the decreasing the delay amount*
@@ -171,16 +171,11 @@ private:
 	void UpdateBuffersToDelay();
 
 
-// Circular buffer interface:
-	T* PopFirst();
-	void PushLast( T* in);
 // Implementation Details:
 
-	std::vector<T*> mVector;
-	unsigned mLast;
-	unsigned mFirst;
+	std::deque<T*> mTokenQueue;
+	/** The maximun number of elements in the queue. */
 	unsigned mCapacity;
-	T* mInstantToken;
 	/** The control value readed on the last started Do */
 	unsigned mGivenDelay;
 	/** The control value readed on the previous Do to the last started Do */
@@ -201,7 +196,6 @@ bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_
 {
 	mConfig = dynamic_cast<const TokenDelayConfig&>(c);
 	mCapacity = mConfig.GetMaxDelay();
-	mVector.resize(mCapacity);
 	mDelayControl.DoControl(TControlData(mConfig.GetDelay()));
 	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
 	return true;
@@ -226,30 +220,19 @@ template <class T>
 bool TokenDelay<T>::Do(T& in, T* & out)
 // implementation using the supervised-mode Do
 {
+	// @todo debug
 	mLastDelay = mGivenDelay;
 	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
 	// If the value is different make the difference efective
 	if (mLastDelay != mGivenDelay)
 		UpdateBuffersToDelay();
 
-	if (mGivenDelay>0 || RealDelay()>0) {
-		
-		CLAM_DEBUG_ASSERT(mGivenDelay>=RealDelay(),"Delay Tokens not eliminated when it was due")
-
-		out = PopFirst();
-		PushLast(&in);
-		
-		mInstantToken=0;
-		if (!out) mInstantToken=out=&in;
-	} 
-	else 
-		mInstantToken = out = &in;
-
-	//For debugging :
-	//Debug();
-	//FulfillsInvariant();
-
+	mTokenQueue.push_back(&in);
+	out=mTokenQueue.front();
+	if (mTokenQueue.size()>mGivenDelay)
+		mTokenQueue.pop_front();
 	return true;
+
 }
 
 
@@ -257,88 +240,20 @@ bool TokenDelay<T>::Do(T& in, T* & out)
 template <class T> 
 void TokenDelay<T>::UpdateBuffersToDelay()
 {
-	//@todo debug:
 	std::cout << mGivenDelay <<" "<<std::flush;
-	CLAM_ASSERT(mGivenDelay <= mCapacity, "Given delay have adopted a value it shouldn't");
-	unsigned int realDelay = RealDelay();
-	// Nothing to do if the delay is not decremented
-	if (mGivenDelay>=realDelay) return;
-	long incr = mGivenDelay-realDelay;
-	
-	//	if (incr + mLast < mCapacity) mLast += incr;
-	//	else mLast = incr - mCapacity - 1 + mLast;
-	// the delay has decremented. So it's necessary to delete some unusefull data
-	if ( int(mLast+incr) >= 0) // mLast >= decrement
-	{
-		for (unsigned i=mLast+incr; i<mLast; i++)  delete mVector[i];
-		mLast += incr;
+	while (mTokenQueue.size()>mGivenDelay) {
+		T* toDelete=mTokenQueue.front();
+		mTokenQueue.pop_front();
+		delete toDelete;
 	}
-	else
-	{ // the same, but turning the vector.
-		for (unsigned i=mLast; i>0; i--) delete mVector[i];
-		mLast = mCapacity + incr + mLast;
-		for (unsigned i=mCapacity-1; i>mLast; i--) delete mVector[i];
-	};
+	return;
 }
-
-// Circular buffer interface:
-template <class T> 
-T* TokenDelay<T>::PopFirst()
-{
-	unsigned realDelay = unsigned(RealDelay());
-	T* ret;
-	CLAM_ASSERT(mGivenDelay, "TokenDelay at PopFirst() : mGivenDelay==0");
-#ifdef HAVE_STANDARD_VECTOR_AT
-	if (mInstantToken) mVector.at(mFirst) = mInstantToken;
-	ret = mVector.at(mFirst);
-#else
-	if (mInstantToken) mVector[mFirst] = mInstantToken;
-	ret = mVector[mFirst];
-#endif
-
-	if (realDelay == mGivenDelay) 
-	{
-		if (mFirst < mCapacity-1) mFirst++; 
-		else mFirst = 0;
-		return ret;
-	}
-	else CLAM_ASSERT(realDelay <= mGivenDelay,"TokenDelay at PopFirst() : realDelay>mGivenDelay");
-	return ret;
-}
-
-template <class T> 
-void TokenDelay<T>::PushLast(T* in)
-{
-	// provisional test:
-	CLAM_ASSERT(mLast <= mCapacity-1, "TokenDelay at PushLast: mLast >= mCapacity")
-#		ifdef HAVE_STANDARD_VECTOR_AT
-			mVector.at(mLast) = in;
-#		else
-			mVector[mLast] = in;
-#		endif
-
-
-	if(mLast == mCapacity-1)
-	{ // making the turn of the circular buffer.
-		CLAM_ASSERT(mFirst, "Token Delay at PushLast : Limit delay");
-		mLast=0;
-	} 
-	else mLast++;
-}
-
-template <class T> 
-unsigned TokenDelay<T>::RealDelay() const
-{
-	// mLast points to the next place to write. and mFirst is the next element to be poped.
-	// Keep the order to avoid integer over/underflows
-	return (mFirst<=mLast) ? mLast - mFirst : (mCapacity - mFirst + mLast);
-}
-
 
 
 template <class T> 
 void TokenDelay<T>::Debug() const
 {
+	/*
 	unsigned real = RealDelay();
 	unsigned size = mVector.size();
 	unsigned cap = mVector.capacity();
@@ -347,12 +262,13 @@ void TokenDelay<T>::Debug() const
 		<< "(given,real delay)=("<< mGivenDelay <<"," << real << ")\n-- (vector size,capacity;mCapacity)=("\
 		<< size <<","<< cap <<";"<< mCapacity <<")\n-- (mInstantToken,mVector[mFirst])=("<< mInstantToken\
 		<<","<< mVector[mFirst] <<")\n";
+	*/
 
 }
 
 template <class T> 
 void TokenDelay<T>::FulfillsInvariant() const
-{
+{/*
 	unsigned real = RealDelay();
 	
 	if (mVector.capacity() < mCapacity) throw Err("TokenDelay : invariant not fullfilled!: vector capacity < req. capacity");
@@ -360,7 +276,7 @@ void TokenDelay<T>::FulfillsInvariant() const
 	if (real > mCapacity) throw Err("TokenDelay : invariant not fullfilled!: real delay > mCapacity");
 	if (mGivenDelay > mCapacity) throw Err("TokenDelay : invariant not fullfilled!: given (by control) delay > mCapacity");
 	if (mFirst <0 || mLast<0 || mCapacity <= 0)  throw Err("TokenDelay : invariant not fullfilled!: some very bad thing...");
-
+*/
 }
 
 // Control Enumeration
@@ -384,7 +300,7 @@ public:
 	}
 	
 	ETokenDelayControls( string s )
-			: Enum( sEnumValues, s )
+		: Enum( sEnumValues, s )
 	{
 	}
 
