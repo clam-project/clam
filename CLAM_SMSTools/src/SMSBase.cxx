@@ -508,7 +508,6 @@ void SMSBase::SynthesisProcessing()
 		
 		if(GetSynthesis().Do(mTransformedSegment))
 		{
-			std::cout << "true condition" << std::endl;
 			mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
 			mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
 			mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
@@ -517,12 +516,6 @@ void SMSBase::SynthesisProcessing()
 		}
 		//else it is an analysis frame with negative center time and thus should not be used
 	}
-
-
-	std::cout << "sample: " << mAudioOut.GetBuffer()[15] << std::endl;
-	std::cout << "sample: " << mAudioOut.GetBuffer()[100] << std::endl;
-	std::cout << "sample: " << mAudioOut.GetBuffer()[300] << std::endl;
-	std::cout << "sample: " << mAudioOut.GetBuffer()[500] << std::endl;
 	mHaveAudioOut = true;
 
 	GetSynthesis().Stop();
