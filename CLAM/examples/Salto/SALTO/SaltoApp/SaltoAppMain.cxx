@@ -14,12 +14,11 @@
 #include "AudioFileOut.hxx"
 #include "MIDIHandler.hxx"
 #include "MIDIBreathController.hxx"
+#include "CSaltoDataManagment.hxx"
 #include <iostream>
 
 using CLAMGUI::WidgetTKWrapper;
 using namespace CLAM;
-
-
 
 class SaltoApp:public GUIAudioApplication
 {
@@ -32,12 +31,12 @@ public:
 		pGUI=NULL;
 	}
 
-	~SaltoApp()
+	virtual ~SaltoApp()
 	{
-		delete pParams;
-		delete pDSP;
-		delete pMelody;
-		delete pGUI;
+		if (pParams) delete pParams;
+		if (pDSP) delete pDSP;
+		if (pMelody) delete pMelody;
+		if (pGUI) delete pGUI;
 	}
 
 	Fl_Window* CreateWindow(int argc,char** argv)
@@ -45,7 +44,9 @@ public:
 		pParams = Parameters::GetInstance();
 		if(pParams==NULL)
 			throw Err("OOM in MAIN cant construct params");
-		
+
+		CSaltoDataManagment::InitSaltoDB( pParams );
+
 		pMelody = new MelodyTranslator;
 		if( pMelody == NULL )
 			throw Err("OOM in MAIN cant construct melody");
@@ -67,14 +68,15 @@ public:
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
 
-		mMIDIHandler.LinkOutWithInControl( 0, pDSP, 0 ); 
+		mMIDIHandler.LinkOutWithInControl( 0, pDSP, 0 );
 
 		pMelody->LinkOutWithInControl( 0, &mMIDIHandler, 0);
 		pMelody->LinkOutWithInControl( 1, &mMIDIHandler, 1);
 
 		pGUI->mpEditorWindow->set_non_modal();
 		pGUI->mpEditorWindow->show(argc,argv);
-	
+
+
 		return pGUI->mpEditorWindow;
 	}
 
@@ -90,21 +92,16 @@ protected:
 	{
 		WidgetTKWrapper* tk = WidgetTKWrapper::GetWrapperFor("FLTK");
 
-		tk->Tick();
-
 		Start();
 
-		while ( !cancel && !tk->IsClosing() )
-		{
-			tk->Tick();
-		}
+		tk->Run();
 	}
 
 
 	void AudioMain(void)
 	{
 
-		try 
+		try
 		{
 			bool not_finished = true;
 			Audio* synthbuffer = NULL;
@@ -114,20 +111,10 @@ protected:
 			pDSP->BindWithGUI( pGUI );
 			pDSP->Start();
 
-					MIDIInConfig inNoteCfg;
+			MIDIInConfig inNoteCfg;
 
 			inNoteCfg.SetName("in");
 			inNoteCfg.SetDevice("default:default");
-			inNoteCfg.SetChannelMask( 
-										MIDI::ChannelMask(1) |
-										MIDI::ChannelMask(2)
-									);
-
-			inNoteCfg.SetMessageMask(
-				MIDI::MessageMask(MIDI::eNoteOn)|
-				MIDI::MessageMask(MIDI::eNoteOff)
-			);
-
 			MIDIInControl keyboardNote( inNoteCfg );
 
 			MIDIInConfig inPitchBendCfg;
@@ -144,9 +131,9 @@ protected:
 			inBreathNoteCfg.SetName("in2");
 			inBreathNoteCfg.SetDevice("default:default");
 			inBreathNoteCfg.SetChannelMask( 				
-											MIDI::ChannelMask(3) |
-											MIDI::ChannelMask(4)
-										  );
+				MIDI::ChannelMask(3) |
+				MIDI::ChannelMask(4)
+			);
 
 			inBreathNoteCfg.SetMessageMask(
 				MIDI::MessageMask(MIDI::eNoteOn)|
@@ -264,9 +251,9 @@ protected:
 		inNoteCfg.SetName("in");
 		inNoteCfg.SetDevice("default:default");
 		inNoteCfg.SetChannelMask( 
-									MIDI::ChannelMask(1) |
-									MIDI::ChannelMask(2)
-								);
+			MIDI::ChannelMask(1) |
+			MIDI::ChannelMask(2)
+		);
 
 		inNoteCfg.SetMessageMask(
 			MIDI::MessageMask(MIDI::eNoteOn)|
@@ -289,9 +276,9 @@ protected:
 		inBreathNoteCfg.SetName("in2");
 		inBreathNoteCfg.SetDevice("default:default");
 		inBreathNoteCfg.SetChannelMask( 				
-										MIDI::ChannelMask(3) |
-										MIDI::ChannelMask(4)
-									  );
+			MIDI::ChannelMask(3) |
+			MIDI::ChannelMask(4)
+		);
 
 		inBreathNoteCfg.SetMessageMask(
 			MIDI::MessageMask(MIDI::eNoteOn)|
