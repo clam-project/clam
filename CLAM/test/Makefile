@@ -11,10 +11,10 @@ PROGRAMS = \
            TestAudioFileIO \
 
 TESTS = \
+	AllUnitTests \
         TestComplex \
         TestPoint \
         TestPolar \
-        TestEnum \
         TestXMLAdapters \
         TestConfig \
         TestFlags \
@@ -26,7 +26,6 @@ TESTS = \
         TestFFT \
         TestIFFT \
         TestSpectrum \
-        TestControls \
         TestSpectrumAdder \
         TestWindowing \
         PhantomBufferTest \
