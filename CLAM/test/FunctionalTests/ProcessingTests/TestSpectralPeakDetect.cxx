@@ -7,6 +7,7 @@
 #include "SpectralPeakArray.hxx"
 #include "SpectralPeakDetect.hxx"
 #include "XMLStorage.hxx"
+#include "Plots.hxx"
 #include <fstream>
 
 namespace CLAMTest
@@ -70,15 +71,20 @@ namespace CLAMTest
 
 		void test_ProofOfConcept()
 		{
+			CLAM::XMLStorage storageIface;
+
 			CLAM::SpectralPeakArray detectedPeaks;
 			detectedPeaks.SetScale( CLAM::EScale::eLog );
 
 			CLAM::SpectralPeakDetectConfig processingConfig; // default
 			CLAM::SpectralPeakDetect       processing;
 
+			smReferenceSpectrum.ToDB();
+
 			processing.Configure( processingConfig );
 
-			processing.Attach( smReferenceSpectrum, detectedPeaks );
+			(*processing.FirstInput())->Attach( smReferenceSpectrum );
+			(*processing.FirstOutput())->Attach( detectedPeaks );
 			
 			processing.Start();
 
@@ -98,6 +104,34 @@ namespace CLAMTest
 			double similarity = evaluateSimilarity( flattenedReference,
 								flattenedResult );
 
+			// We dump the detected peaks if the similitude between
+			// the reference dataset and the detected peaks is outside
+			// our confidence interval
+			if ( smSimilarityThreshold > similarity )
+			{
+				/*
+				CLAMVM::SpectrumAndPeaksPlot refDataPlot( "plot_1" );
+				refDataPlot.SetPosition( 0, 100 );
+				refDataPlot.SetSize( 300, 300 );
+				refDataPlot.SetYRange( -80, 500 );
+				refDataPlot.SetLabel( "Reference dataset results" );
+				refDataPlot.SetData( smReferenceSpectrum, 
+						     smReferenceSpectralPeakArray );
+
+				CLAMVM::SpectrumAndPeaksPlot actualDataPlot( "plot_2" );
+				actualDataPlot.SetPosition( 320, 100 );
+				actualDataPlot.SetSize( 300, 300 );
+				actualDataPlot.SetYRange( -80, 500 );
+				actualDataPlot.SetLabel( "Obtained peaks" );
+				actualDataPlot.SetData( smReferenceSpectrum,
+							detectedPeaks );
+
+				CLAMVM::SystemPlots::DisplayAll();
+				*/
+				storageIface.Dump( detectedPeaks,
+						   "PeaksFailedToPassTest",
+						   "detectedPeaks_ProofOfConcept.xml" );
+			}
 			CPPUNIT_ASSERT( smSimilarityThreshold <= similarity );
 		}
 
