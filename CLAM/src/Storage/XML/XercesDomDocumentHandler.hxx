@@ -134,10 +134,10 @@ public:
 	void read(std::istream & stream)
 	{
 	}
-	void writeDocument(std::ostream & os)
+	void writeDocument(std::ostream & os, bool useIndentation=false)
 	{
 	}
-	void writeSelection(std::ostream & os)
+	void writeSelection(std::ostream & os, bool useIndentation=false)
 	{
 	}
 };
