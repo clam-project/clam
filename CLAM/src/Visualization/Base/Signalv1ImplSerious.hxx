@@ -37,7 +37,7 @@ public:
 	{
 		Connection c( AssignConnection(), this );
 
-		mSuper.AddCallback( c.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
+		mSuper.AddCallback( c.GetID(), &slot, CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
 
 		slot.Bind(c);
 	}
