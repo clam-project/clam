@@ -79,7 +79,7 @@ public:
 
 	}
 
-	operator = (const List& src)
+	List & operator = (const List& src)
 	{
 		int i;
 		if (mSize>0)
@@ -95,6 +95,7 @@ public:
 		{
 			AddElem(src[i]);
 		}
+		return *this;
 	}
 	
 	List(const List& src)
