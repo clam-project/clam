@@ -23,6 +23,7 @@
 #include "Assert.hxx"
 #include "PCMCodec.hxx"
 #include "OggVorbisCodec.hxx"
+#include "MpegCodec.hxx"
 
 namespace CLAM
 {
@@ -69,6 +70,12 @@ namespace CLAM
 			{
 				SetKind( EAudioFileKind::eOggVorbis );
 				mActiveCodec = & AudioCodecs::OggVorbisCodec::Instantiate();
+				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
+			}
+			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( uri ) )
+			{
+				SetKind( EAudioFileKind::eMpeg );
+				mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
 				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
 			}
 		

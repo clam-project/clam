@@ -41,7 +41,7 @@ namespace CLAM
 	Enum::tEnumValue EAudioFileKind::sEnumValues[] = {
 		{ ePCM,         "PCM" },
 		{ eOggVorbis,   "Ogg/Vorbis" },
-		{ eMP3,         "Mpeg-1 Audio Layer 3" },
+		{ eMpeg,        "Mpeg Audio" },
 		{ eUnknown,     "Unknown" },
 		{ 0,            NULL }
 	};
@@ -83,6 +83,9 @@ namespace CLAM
 		{ EAudioFileFormat::eMAT4,      "MAT4" },
 		{ EAudioFileFormat::eMAT5,      "MAT5" },
 		{ EAudioFileFormat::eVorbisMk1, "VorbisMk1"},
+		{ EAudioFileFormat::eMpegLayer1, "Mpeg Audio Layer 1"},
+		{ EAudioFileFormat::eMpegLayer2, "Mpeg Audio Layer 2"},
+		{ EAudioFileFormat::eMpegLayer3, "Mpeg Audio Layer 3"},
 		{ 0,                            NULL }
 	};
 
@@ -130,6 +133,8 @@ namespace CLAM
 		{ eDWVW_24, "DWVW 24-bit"},
 		{ eDWVW_N,  "DWVW N-bit"},
 		{ eDefault, "Format Default"},
+		{ e5015US, "Emphasis 50/15 US"},
+		{ eCCITTJ17, "Emphasis CCITT J.17"},
 		{ 0, NULL }
 	};
 

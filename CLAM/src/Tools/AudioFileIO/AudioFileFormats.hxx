@@ -43,7 +43,7 @@ namespace CLAM
 		typedef enum {
 			ePCM,  /* Some variant of good ol' Pulse Code Modulation */
 			eOggVorbis, /* Compressed with OggVorbis scheme */
-			eMP3,        /* Compressed with MPEG-1 Layer 3 scheme */			
+			eMpeg,        /* Compressed with MPEG-1 Layer 3 scheme */			
 			eUnknown /* For error handling */
 		};
 
@@ -74,7 +74,10 @@ namespace CLAM
 			eW64 = SF_FORMAT_W64,   /* Sonic Foundry's 64 RIFF/WAV */
 			eMAT4 = SF_FORMAT_MAT4,  /* MATLAB 4.2 - GNU Octave 2.0 */
 			eMAT5 = SF_FORMAT_MAT5,   /* MATLAB 5.2 - GNU Octave 2.1 */
-			eVorbisMk1 = 1000 + SF_FORMAT_MAT5
+			eVorbisMk1 = 1000 + SF_FORMAT_MAT5,
+			eMpegLayer1 = 1001 + SF_FORMAT_MAT5,
+			eMpegLayer2 = 1002 + SF_FORMAT_MAT5,
+			eMpegLayer3 = 1003 + SF_FORMAT_MAT5
 		};
 
 		virtual Component* Species() const;
@@ -114,6 +117,8 @@ namespace CLAM
 			eDWVW_24 = SF_FORMAT_DWVW_24,    /* 24-bit Delta Width Variable Word */
 			eDWVW_N  = SF_FORMAT_DWVW_N,    /* N-bit Delta Width Variable Word */
 			eDefault = 1000 + SF_FORMAT_DWVW_N,  /*Format's default encoding*/
+			e5015US = 1001 + SF_FORMAT_DWVW_N,
+			eCCITTJ17 = 1002 + SF_FORMAT_DWVW_N			
 		};
 
 		virtual Component* Species() const;
