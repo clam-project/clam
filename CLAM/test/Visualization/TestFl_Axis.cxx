@@ -8,7 +8,7 @@
 #include <exception>
 #include <iostream>
 
-using namespace CLAMGUI;
+using namespace CLAMVM;
 
 class TestWindow : public Fl_Window
 {
