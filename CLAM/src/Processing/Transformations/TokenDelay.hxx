@@ -245,7 +245,7 @@ bool TokenDelay<T>::Do(T& in, T* & out)
 template <class T> 
 void TokenDelay<T>::UpdateBuffersToDelay()
 {
-	std::cout << mGivenDelay <<" "<<std::flush;
+//	std::cout << mGivenDelay <<" "<<std::flush;
 	while (mTokenQueue.size()>mGivenDelay) {
 		T* toDelete=mTokenQueue.front();
 		mTokenQueue.pop_front();
