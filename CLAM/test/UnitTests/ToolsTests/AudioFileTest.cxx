@@ -157,7 +157,7 @@ namespace CLAMTest
 		void testSetLocation_FileExists_and_Is_OggVorbis()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "JannieJones-short-Stereo.ogg" ) );
+			file.SetLocation( mPathToTestData + std::string( "Elvis.ogg" ) );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Ogg/Vorbis"),
 					      file.GetKind().GetString() );			
@@ -199,15 +199,15 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_OggVorbis()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "JannieJones-short-Stereo.ogg" ) );
+			file.SetLocation( mPathToTestData + std::string( "Elvis.ogg" ) );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
-			CPPUNIT_ASSERT_EQUAL( int(44100.),
+			CPPUNIT_ASSERT_EQUAL( int(22050.),
 					      int(header.GetSampleRate()) );
-			CPPUNIT_ASSERT_EQUAL( 2,
+			CPPUNIT_ASSERT_EQUAL( 1,
 					      header.GetChannels() );
-			CPPUNIT_ASSERT_EQUAL( int(14818.7),
+			CPPUNIT_ASSERT_EQUAL( int(5427),
 					      int(header.GetLength()) );
 			CPPUNIT_ASSERT_EQUAL( std::string( "VorbisMk1" ),
 					      header.GetFormat().GetString() );
@@ -446,7 +446,7 @@ namespace CLAMTest
 		void testSetLocation_FileExists_and_Is_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
+			file.SetLocation( mPathToTestData + std::string( "trumpet.mp3" ) );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio"),
 					      file.GetKind().GetString() );			
@@ -465,10 +465,11 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
+			file.SetLocation( mPathToTestData + std::string( "trumpet.mp3" ) );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
+			
 			/*
 			std::cout << std::endl;
 			std::cout << header.GetSampleRate() << std::endl;
@@ -480,11 +481,12 @@ namespace CLAMTest
 			std::cout << std::endl;
 			*/
 
-			CPPUNIT_ASSERT_EQUAL( int(44100),
+
+			CPPUNIT_ASSERT_EQUAL( int(22050),
 					      (int)header.GetSampleRate() );
-			CPPUNIT_ASSERT_EQUAL( int(2),
+			CPPUNIT_ASSERT_EQUAL( int(1),
 					      (int)header.GetChannels() );
-			CPPUNIT_ASSERT_EQUAL( int(50703),
+			CPPUNIT_ASSERT_EQUAL( int(26),
 					      (int)header.GetLength() );
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio Layer 3"),
 					      header.GetFormat().GetString() );
@@ -492,6 +494,7 @@ namespace CLAMTest
 					      header.GetEncoding().GetString() );
 			CPPUNIT_ASSERT_EQUAL( std::string("Format Default"),
 					      header.GetEndianess().GetString() );
+
 		}
 
 		void testTextDescriptorsExtraction_From_OggVorbis()
@@ -535,7 +538,7 @@ namespace CLAMTest
 		void testTextDescriptorsExtraction_From_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + CLAM::Text( "PeopleSay.mp3" ) );
+			file.SetLocation( mPathToTestData + CLAM::Text( "trumpet.mp3" ) );
 
 			std::ofstream outputFile( "AudioFile_0001.xml" );
 			outputFile << "<?xml version=\"1.0\" ?>" << std::endl;
@@ -575,13 +578,13 @@ namespace CLAMTest
 			
 			
 
-			CPPUNIT_ASSERT_EQUAL( CLAM::Text("PAPAS FRITAS"),
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("The Trumpeteers"),
 					      txtDesc.GetArtist() );
-			CPPUNIT_ASSERT_EQUAL( CLAM::Text("People Say"),
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("A Trumpet"),
 					      txtDesc.GetTitle() );
-			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Buildings & Grounds"),
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Trumpets, Trumpets, Trumpets"),
 					      txtDesc.GetAlbum() );
-			CPPUNIT_ASSERT_EQUAL( CLAM::Text("02"),
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("1"),
 					      txtDesc.GetTrackNumber() );
 
 		}
