@@ -202,12 +202,9 @@ public:
 	PoweredSum():memory((T)0.0){}
 	T operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
@@ -255,12 +252,9 @@ public:
 	LogSumTmpl():memory(0.0){}
 	T operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
@@ -280,12 +274,9 @@ public:
 	InnerProductTmpl():memory(0.0){}
 	T operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
@@ -303,16 +294,14 @@ template <int s, bool abs=false, class T=TData> class WeightedPoweredSum:public 
 {
 public:
 	WeightedPoweredSum():memory(0.0){}
+	/// Memoryfull Computation
 	T operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
-		
+		if(alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
+	/// Memoryless Computation
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
 		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(0.0),mWP);
@@ -330,16 +319,14 @@ template <int s,bool abs=false, class T=TData> class CrossWeightedPoweredSum:pub
 {
 public:
 	CrossWeightedPoweredSum():memory(0.0){}
+	/// Memoryfull Computation
 	T operator()(const Array<T>& x,const Array<T>& y,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(x,y,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
-		
+		if(alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(x,y,(StaticFalse*)(0));
 	}
+	/// Memoryless Computation
 	T operator()(const Array<T>& x,const Array<T>& y,StaticFalse*)
 	{
 		return inner_product(x.GetPtr(),x.GetPtr()+x.Size(),y.GetPtr(),T(1.0),std::plus<T>(),PoweredProduct<s,T>());	
@@ -368,24 +355,24 @@ template<int o, bool abs=false, class T=TData,class U=TData> class Moment:public
 {
 public:
 	Moment():memory(0.0){}
-	U operator()(const Array<T>& a,PoweredSum<o,abs,T>& powSum,StaticTrue* b=NULL)
-	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,powSum,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
-	}
+	/// Memoryless Computation using external lower level functors
 	U operator()(const Array<T>& a,PoweredSum<o,abs,T>& powSum,StaticFalse*)
 	{
 		return static_cast<U>(powSum(a))/a.Size();
 	}
-	/**No powered sum previously computed, use member*/
+	/// Memoryfull Computation using external lower level functors
+	U operator()(const Array<T>& a,PoweredSum<o,abs,T>& powSum,StaticTrue* b=NULL)
+	{
+		if(alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,powSum,(StaticFalse*)(0));
+	}
+	/// Memoryless Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticFalse*)
 	{
 		return (*this)(a,mPs,(StaticFalse*)(0));
 	}
+	/// Memoryfull Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
 		return (*this)(a,mPs,(StaticTrue*)(0));
@@ -402,15 +389,14 @@ template<int o, bool abs=false, class T=TData,class U=TData> class CenterOfGravi
 {
 public:
 	CenterOfGravity():memory(0.0){}
+	/// Memoryfull Computation using external lower level functors
 	U operator()(const Array<T>& a,WeightedPoweredSum<o,abs,T>& wPowSum,PoweredSum<o,abs,T>& PowSum,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if(alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
+	/// Memoryless Computation using external lower level functors
 	U operator()(const Array<T>& a,WeightedPoweredSum<o,abs,T>& wPowSum,PoweredSum<o,abs,T>& PowSum,StaticFalse*)
 	{
 		U normFactor = PowSum( a );
@@ -422,11 +408,12 @@ public:
 		
 		return static_cast<U>(wPowSum(a))/normFactor;
 	}
-	/**No weighted powered sum and powered sum previously computed, use member*/
+	/// Memoryless Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticFalse*)
 	{
 		return (*this)(a,mWPS,mPS,(StaticFalse*)(0));
 	}
+	/// Memoryfull Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
 		return (*this)(a,mWPS,mPS,(StaticTrue*)(0));
@@ -443,24 +430,24 @@ template<int o, bool abs=false, class T=TData,class U=TData> class CrossCenterOf
 {
 public:
 	CrossCenterOfGravity():memory(0.0){}
-	U operator()(const Array<T>& a1,const Array<T>& a2,CrossWeightedPoweredSum<o,abs,T>& cwPowSum,PoweredSum<o,abs,T>& powSum,StaticTrue* b=NULL)
-	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a1,a2,cwPowSum,powSum,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
-	}
+	/// Memoryless Computation using external lower level functors
 	U operator()(const Array<T>& a1,const Array<T>& a2,CrossWeightedPoweredSum<o,abs,T>& cwPowSum,PoweredSum<o,abs,T>& powSum,StaticFalse*)
 	{
 		return static_cast<U>(cwPowSum(a1,a2))/powSum(a1);
 	}
-	/**No weighted powered sum and powered sum previously computed, use member*/
+	/// Memoryfull Computation using external lower level functors
+	U operator()(const Array<T>& a1,const Array<T>& a2,CrossWeightedPoweredSum<o,abs,T>& cwPowSum,PoweredSum<o,abs,T>& powSum,StaticTrue* b=NULL)
+	{
+		if(alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a1,a2,cwPowSum,powSum,(StaticFalse*)(0));
+	}
+	/// Memoryless Computation using internal lower level functors
 	U operator()(const Array<T>& a1,const Array<T>& a2,StaticFalse*)
 	{
 		return (*this)(a1,a2,mWPS,mPS,(StaticFalse*)(0));
 	}
+	/// Memoryfull Computation using internal lower level functors
 	U operator()(const Array<T>& a1,const Array<T>& a2,StaticTrue* b=NULL)
 	{
 		return (*this)(a1,a2,mWPS,mPS,(StaticTrue*)(0));
@@ -492,24 +479,27 @@ typedef EnergyTmpl<> Energy;
 template<class T=TData,class U=TData> class RMSTmpl:public BaseMemOp
 {
 public:
-	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticTrue* useMemory=NULL)
-	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
-	}
+	/// Memoryless Computation using external lower level functors
 	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticFalse* useMemory)
 	{
 		return sqrt(sqrSum(a,(StaticFalse*)(0)));
 	}
-	/**No squared sum previously computed, use member*/
+	/// Memoryfull Computation using external lower level functors
+	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticTrue* useMemory=NULL)
+	{
+		if(!alreadyComputed)
+		{
+			memory=(*this)(a, sqrSum, (StaticFalse*)(0));
+			alreadyComputed=true;
+		}
+		return memory;
+	}
+	/// Memoryfull Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
 	{
 		return (*this)(a,mSS,(StaticTrue*)(0));
 	}
+	/// Memoryless Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticFalse* useMemory)
 	{
 		return (*this)(a,mSS,(StaticFalse*)(0));
@@ -533,12 +523,9 @@ public:
 	}
 	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticTrue* useMemory=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,inProd, (StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a, inProd, (StaticFalse*)(0));
 	}
 	/**No inner product previously computed, use temporary*/
 	U operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
@@ -572,12 +559,9 @@ public:
 
 	U operator()(const Array<T>& a, MeanTmpl<abs,T,U>& imean, StaticTrue* useMemory=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 
 	/** if no mean functor is passed, used member functor*/
@@ -603,12 +587,9 @@ public:
 	CentralMoment():memory(){}
 	U operator()(const Array<T>& a, BiasedPoweredSum<o,abs,T,U>& bps, StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,bps,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,bps,(StaticFalse*)(0));
 	}
 	U operator()(const Array<T>& a, BiasedPoweredSum<o,abs,T,U>& bps, StaticFalse*)
 	{
@@ -627,12 +608,9 @@ public:
 	/** Compute central moments using raw moments*/
 	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,moments,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,moments,(StaticFalse*)(0));
 	}
 	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, StaticFalse*)
 	{
@@ -702,20 +680,11 @@ public:
 	StandardDeviationTmpl():memory(){}
 	U operator()(const Array<T>& a,CentralMoment<2,abs,T,U>& centralMoment2,bool useMemory=false)
 	{
-		if(!useMemory)
-		{
-			return sqrt(centralMoment2(a));
-		}
-		else
-		{
-			if(!alreadyComputed)
-			{
-				memory=(*this)(a,centralMoment2,false);
-				alreadyComputed=true;
-			}
-			return memory;
-		}
+		if(!useMemory) return sqrt(centralMoment2(a));
 
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,centralMoment2,false);
 	}
 	/**2nd order central moment is not available elsewhere, use member*/
 	U operator()(const Array<T>& a,bool useMemory=false)
@@ -746,13 +715,9 @@ public:
 	{
 		if(!useMemory) return MemorylessCompute(data, std, ctrMnt3);
 
-		if(!alreadyComputed)
-		{
-			memory=(*this)(data, std, ctrMnt3, false);
-			alreadyComputed=true;
-		}
-		return memory;
-
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(data, std, ctrMnt3, false);
 	}
 	/** Computation without using any existing statistics computaros for Standar deviation and CentralMoment<3>  */
 	U operator()(const Array<T>& data, bool useMemory=false)
@@ -782,29 +747,28 @@ template <bool abs=false,class T=TData,class U=TData> class KurtosisTmpl:public 
 {
 public:
 	KurtosisTmpl():memory(){}
+	/// Compute using external low level functors
 	U operator()(const Array<T>& a,CentralMoment<2,abs,T,U>& var,CentralMoment<4,abs,T,U>& ctrMnt4,bool useMemory=false)
 	{
-		if(!useMemory)
-		{
-			U centerMoment4 = CLAM_max(U(1e-100), ctrMnt4(a));
-			U variance = CLAM_max(U(1e-10),var(a));
-			return centerMoment4/(variance*variance)-3;
-		}
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,var,ctrMnt4,false);
-			alreadyComputed=true;
-		}
-		return memory;
+		if(!useMemory) return MemoryLessCompute(a, var, ctrMnt4);
 
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,var,ctrMnt4,false);
 	}
-	/**Variance and 4th order central moment are not available, use temporary*/
+	/// Compute using internal low level functors
 	U operator()(const Array<T>& a,bool useMemory=false)
 	{
 		return (*this)(a,mCM2,mCM4,useMemory);
 	}
 
 protected:
+	U MemoryLessCompute(const Array<T>& a,CentralMoment<2,abs,T,U>& var,CentralMoment<4,abs,T,U>& ctrMnt4)
+	{
+		U centerMoment4 = CLAM_max(U(1e-100), ctrMnt4(a));
+		U variance = CLAM_max(U(1e-10),var(a));
+		return centerMoment4/(variance*variance)-3;
+	}
 	U memory;
 	CentralMoment<2,abs,T,U> mCM2;
 	CentralMoment<4,abs,T,U> mCM4;
@@ -840,12 +804,9 @@ public:
 	ComplexMinElement():memory((T)0.0){}
 	T operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
@@ -883,12 +844,9 @@ public:
 	ComplexMaxElement():memory((T)0.0){}
 	T operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
-		if(!alreadyComputed)
-		{
-			memory=(*this)(a,(StaticFalse*)(0));
-			alreadyComputed=true;
-		}
-		return memory;
+		if (alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
