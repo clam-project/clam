@@ -102,11 +102,15 @@
 	+ It returns false when out of scope
 + Convert Binder into a template class
 + Convert current Binder into the Hook class
-- WriterHook
-- Read Accessing AttributeScopes that are not writen
++ WriterHook
++ Separate Pool init and binding
+- Associar al schema durante el bind o antes
+- Comprobaciones de nombres en el bind
+- Read Accessing AttributeScopes that are not written
 - Read Accessing AttributeScopes that are not populated
 - Extract search and retrieval from Hooks
 - Create an Extractor
+- Enhance exception message
 
 
 

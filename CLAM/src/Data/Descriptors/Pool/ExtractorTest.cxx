@@ -49,58 +49,63 @@ private:
 
 	void testInit_PointsToThePoolBegin()
 	{
-		CLAM::Hook<CLAM::TData> binder;
+		CLAM::Hook<CLAM::TData> hook;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
-		const CLAM::TData & result = binder.GetForReading();
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
+		const CLAM::TData & result = hook.GetForReading();
 
 		CPPUNIT_ASSERT_EQUAL(expected, &result);
 	}
 
 	void testNext_PointsToTheNextPoolData()
 	{
-		CLAM::Hook<CLAM::TData> binder;
+		CLAM::Hook<CLAM::TData> hook;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
-		binder.Next();
-		const CLAM::TData & result = binder.GetForReading();
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
+		hook.Next();
+		const CLAM::TData & result = hook.GetForReading();
 
 		CPPUNIT_ASSERT_EQUAL(expected+1, &result);
 	}
 
 	void testIsInsideScope_ReturnsTrueWhileInsideTheScope()
 	{
-		CLAM::Hook<CLAM::TData> binder;
+		CLAM::Hook<CLAM::TData> hook;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
 
-		CPPUNIT_ASSERT(binder.IsInsideScope());
-		binder.Next();
-		CPPUNIT_ASSERT(binder.IsInsideScope());
-		binder.Next();
-		CPPUNIT_ASSERT(binder.IsInsideScope());
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+		hook.Next();
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+		hook.Next();
+		CPPUNIT_ASSERT(hook.IsInsideScope());
 	}
 
 	void testIsInsideScope_ReturnsFalseBeyondTheScope()
 	{
-		CLAM::Hook<CLAM::TData> binder;
+		CLAM::Hook<CLAM::TData> hook;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
 
 		// Advance until the end
-		binder.Next();
-		binder.Next();
+		hook.Next();
+		hook.Next();
 		// Go Beyond
-		binder.Next();
+		hook.Next();
 
-		CPPUNIT_ASSERT(!binder.IsInsideScope());
+		CPPUNIT_ASSERT(!hook.IsInsideScope());
 	}
 
 	void testWriteInit_PointsToThePoolBegin()
 	{
-		CLAM::WriteHook<CLAM::TData> binder;
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
-		CLAM::TData & result = binder.GetForWriting();
+		CLAM::WriteHook<CLAM::TData> hook;
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
+		CLAM::TData & result = hook.GetForWriting();
 
 		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
 
@@ -109,40 +114,43 @@ private:
 
 	void testWriteNext_PointsToTheNextPoolData()
 	{
-		CLAM::WriteHook<CLAM::TData> binder;
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
-		binder.Next();
-		CLAM::TData & result = binder.GetForWriting();
-		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
+		CLAM::WriteHook<CLAM::TData> hook;
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
+		hook.Next();
+		CLAM::TData & result = hook.GetForWriting();
+		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute") + 1;
 
-		CPPUNIT_ASSERT_EQUAL(expected+1, &result);
+		CPPUNIT_ASSERT_EQUAL(expected, &result);
 	}
 
 	void testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope()
 	{
-		CLAM::WriteHook<CLAM::TData> binder;
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		CLAM::WriteHook<CLAM::TData> hook;
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
 
-		CPPUNIT_ASSERT(binder.IsInsideScope());
-		binder.Next();
-		CPPUNIT_ASSERT(binder.IsInsideScope());
-		binder.Next();
-		CPPUNIT_ASSERT(binder.IsInsideScope());
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+		hook.Next();
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+		hook.Next();
+		CPPUNIT_ASSERT(hook.IsInsideScope());
 	}
 
 	void testWriteIsInsideScope_ReturnsFalseBeyondTheScope()
 	{
-		CLAM::WriteHook<CLAM::TData> binder;
+		CLAM::WriteHook<CLAM::TData> hook;
 		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		hook.Bind("TestScope1","TDataAttribute");
+		hook.Init(*mPool);
 
 		// Advance until the end
-		binder.Next();
-		binder.Next();
+		hook.Next();
+		hook.Next();
 		// Go Beyond
-		binder.Next();
+		hook.Next();
 
-		CPPUNIT_ASSERT(!binder.IsInsideScope());
+		CPPUNIT_ASSERT(!hook.IsInsideScope());
 	}
 
 #ifdef NEVERDEFINED
