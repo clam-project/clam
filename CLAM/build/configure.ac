@@ -4643,11 +4643,10 @@ then
 Configure-checks for fftw failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of fftw altogther, running configure
+Note that you can disable the use of fftw altogether, running configure
 with the
   --without-fftw
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -4721,11 +4720,10 @@ then
 Configure-checks for sfftw failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of sfftw altogther, running configure
+Note that you can disable the use of sfftw altogether, running configure
 with the
   --without-sfftw
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -4794,11 +4792,10 @@ then
 Configure-checks for xerces failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of xerces altogther, running configure
+Note that you can disable the use of xerces altogether, running configure
 with the
   --without-xerces
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -4869,11 +4866,10 @@ then
 Configure-checks for fltk failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of fltk altogther, running configure
+Note that you can disable the use of fltk altogether, running configure
 with the
   --without-fltk
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -4943,11 +4939,10 @@ then
 Configure-checks for qt failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of qt altogther, running configure
+Note that you can disable the use of qt altogether, running configure
 with the
   --without-qt
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5017,11 +5012,10 @@ then
 Configure-checks for sndfile failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of sndfile altogther, running configure
+Note that you can disable the use of sndfile altogether, running configure
 with the
   --without-sndfile
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5097,11 +5091,10 @@ then
 Configure-checks for oggvorbis failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of oggvorbis altogther, running configure
+Note that you can disable the use of oggvorbis altogether, running configure
 with the
   --without-oggvorbis
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5171,11 +5164,10 @@ then
 Configure-checks for ladspa failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of ladspa altogther, running configure
+Note that you can disable the use of ladspa altogether, running configure
 with the
   --without-ladspa
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5243,11 +5235,10 @@ then
 Configure-checks for portmidi failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of portmidi altogther, running configure
+Note that you can disable the use of portmidi altogether, running configure
 with the
   --without-portmidi
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5316,11 +5307,10 @@ then
 Configure-checks for alsa failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of alsa altogther, running configure
+Note that you can disable the use of alsa altogether, running configure
 with the
   --without-alsa
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5389,11 +5379,10 @@ then
 Configure-checks for mad failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of mad altogther, running configure
+Note that you can disable the use of mad altogether, running configure
 with the
   --without-mad
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5461,11 +5450,10 @@ then
 Configure-checks for id3 failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of id3 altogther, running configure
+Note that you can disable the use of id3 altogether, running configure
 with the
   --without-id3
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
@@ -5484,9 +5472,9 @@ if test x$enabled_fftw = xno
 then
 	AC_MSG_WARN([without fftw
 ======================================================================
-You deactivated usage of package fftw. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package fftw. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_FFTW=1, but HAS_FFTW=0
 ======================================================================])
@@ -5506,9 +5494,9 @@ if test x$enabled_sfftw = xno
 then
 	AC_MSG_WARN([without sfftw
 ======================================================================
-You deactivated usage of package sfftw. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package sfftw. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_SFFTW=1, but HAS_SFFTW=0
 ======================================================================])
@@ -5528,9 +5516,9 @@ if test x$enabled_xerces = xno
 then
 	AC_MSG_WARN([without xerces
 ======================================================================
-You deactivated usage of package xerces. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package xerces. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_XERCES=1, but HAS_XERCES=0
 ======================================================================])
@@ -5550,9 +5538,9 @@ if test x$enabled_fltk = xno
 then
 	AC_MSG_WARN([without fltk
 ======================================================================
-You deactivated usage of package fltk. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package fltk. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_FLTK=1, but HAS_FLTK=0
 ======================================================================])
@@ -5572,9 +5560,9 @@ if test x$enabled_qt = xno
 then
 	AC_MSG_WARN([without qt
 ======================================================================
-You deactivated usage of package qt. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package qt. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_QT=1, but HAS_QT=0
 ======================================================================])
@@ -5594,9 +5582,9 @@ if test x$enabled_sndfile = xno
 then
 	AC_MSG_WARN([without sndfile
 ======================================================================
-You deactivated usage of package sndfile. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package sndfile. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_SNDFILE=1, but HAS_SNDFILE=0
 ======================================================================])
@@ -5616,9 +5604,9 @@ if test x$enabled_oggvorbis = xno
 then
 	AC_MSG_WARN([without oggvorbis
 ======================================================================
-You deactivated usage of package oggvorbis. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package oggvorbis. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_OGGVORBIS=1, but HAS_OGGVORBIS=0
 ======================================================================])
@@ -5638,9 +5626,9 @@ if test x$enabled_ladspa = xno
 then
 	AC_MSG_WARN([without ladspa
 ======================================================================
-You deactivated usage of package ladspa. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package ladspa. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_LADSPA=1, but HAS_LADSPA=0
 ======================================================================])
@@ -5660,9 +5648,9 @@ if test x$enabled_portmidi = xno
 then
 	AC_MSG_WARN([without portmidi
 ======================================================================
-You deactivated usage of package portmidi. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package portmidi. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_PORTMIDI=1, but HAS_PORTMIDI=0
 ======================================================================])
@@ -5682,9 +5670,9 @@ if test x$enabled_alsa = xno
 then
 	AC_MSG_WARN([without alsa
 ======================================================================
-You deactivated usage of package alsa. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package alsa. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_ALSA=1, but HAS_ALSA=0
 ======================================================================])
@@ -5704,9 +5692,9 @@ if test x$enabled_mad = xno
 then
 	AC_MSG_WARN([without mad
 ======================================================================
-You deactivated usage of package mad. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package mad. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_MAD=1, but HAS_MAD=0
 ======================================================================])
@@ -5726,9 +5714,9 @@ if test x$enabled_id3 = xno
 then
 	AC_MSG_WARN([without id3
 ======================================================================
-You deactivated usage of package id3. Note that this will very 
-likely cause that several examples and tests will not compile. Typically 
-make depend may give you an error that says:
+You deactivated usage of package id3. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
 
 srcdeps: configuration specifies USE_ID3=1, but HAS_ID3=0
 ======================================================================])
