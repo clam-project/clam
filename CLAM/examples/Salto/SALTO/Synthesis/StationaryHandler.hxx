@@ -159,39 +159,24 @@ namespace SALTO
 
 		InControlTmpl< StationaryHandler >		mInStatResFreq;
 
-		OutControl								mOut_InLoopSynthesis;
-
-		OutControl								mOutUseRandomDeviations;
-
-		OutControl								mOutUseRandomLoop;
-		
-		OutControl								mOutRandomRange;
-
-		OutControl								mOutTargetFreq;
-		
-		OutControl								mOutMagInterpolFactor;
-
-		OutControl								mOutMagGain;
-
-		OutControl								mOutMagInterpolFactor2;
-
-		OutControl								mOutFreqInterpolFactor;
-
-		OutControl								mOutPitchFactor;
-
 		OutControl								mOutBreathOnlySound;
-
 		OutControl								mOutAttackTimbreLevel;
-
 		OutControl								mOutUsePhaseAlignment;
-
 		OutControl								mOutLastAlignedFrame;
-
 		OutControl								mOutResGain;
-
 		OutControl								mOutResFreq;
-
+		OutControl								mOut_InLoopSynthesis;
+		OutControl								mOutUseRandomLoop;
+		OutControl								mOutUseRandomDeviations;
+		OutControl								mOutPitchFactor;		
+		OutControl								mOutRandomRange;
+		OutControl								mOutTargetFreq;
+ 		OutControl								mOutMagInterpolFactor;
+		OutControl								mOutMagGain;
+		OutControl								mOutFreqInterpolFactor;
+		OutControl								mOutMagInterpolFactor2;
 	};
 }
 
 #endif
+

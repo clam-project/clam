@@ -22,7 +22,7 @@ namespace SALTO
 		  mInMagInterpolFactor( "Magnitude Interpolation Factor" , this, &InterpolatingSynthesis::MagInterpolFactorCB),
 		  mInMagGain( "Magnitude Gain", this, &InterpolatingSynthesis::MagGainCB ),
 		  mInFreqInterpolFactor( "Frequency Interpolation Factor Control", this, &InterpolatingSynthesis::FreqInterpolFactorCB ),
-		  mInMagInterpolFactor2( "Magnitude Interpolation Factor 2 Control", this, InterpolatingSynthesis::MagInterpolFactor2CB )
+		  mInMagInterpolFactor2( "Magnitude Interpolation Factor 2 Control", this, &InterpolatingSynthesis::MagInterpolFactor2CB )
 	{
 		InterpolatingSynthesisConfig cfg;
 
@@ -43,7 +43,7 @@ namespace SALTO
 		  mInMagInterpolFactor( "Magnitude Interpolation Factor" , this, &InterpolatingSynthesis::MagInterpolFactorCB),
 		  mInMagGain( "Magnitude Gain", this, &InterpolatingSynthesis::MagGainCB ),
 		  mInFreqInterpolFactor( "Frequency Interpolation Factor Control", this, &InterpolatingSynthesis::FreqInterpolFactorCB ),
-		  mInMagInterpolFactor2( "Magnitude Interpolation Factor 2 Control", this, InterpolatingSynthesis::MagInterpolFactor2CB )
+		  mInMagInterpolFactor2( "Magnitude Interpolation Factor 2 Control", this, &InterpolatingSynthesis::MagInterpolFactor2CB )
 	{
 		Configure( cfg );
 	}
