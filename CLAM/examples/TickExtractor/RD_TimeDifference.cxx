@@ -119,13 +119,13 @@ namespace CLAM
 			for (int j=0;j < size-1;j++) 
 			{
 				int apos = (int) in[j].GetPosition();
-				int pos = labs((int)apos - (int)in[j+1].GetPosition()); 
+				int pos = (int)in[j+1].GetPosition() - (int)apos ; 
 
 				for ( int k = j+1; 
 				      (k < size) && pos+gsize < outSize;
 				      k++ ) 
 				{		
-					pos = labs((int)apos - (int)in[k].GetPosition());
+					pos = (int)in[k].GetPosition() - (int)apos;
 					
 					TData* outw = outp + pos - gsize/2;
 					TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());

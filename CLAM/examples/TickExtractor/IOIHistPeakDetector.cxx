@@ -37,14 +37,24 @@ namespace CLAM
 
 		void IOIHistPeakDetectorConfig::DefaultInit()
 		{
-			/* the dynamic type takes care if we add an existing attr .. */
-			AddThreshold();
-			AddNormalizeWeights();
-
-			/* All Attributes are added */
+			AddAll();
 			UpdateData();
-			SetThreshold(0);
+			// MRJ: This is the value achieved by the normal distribution
+			// (with mean=0 and stddev=0.15) at exactly stddev
+			const TData minPeakMagThreshold = (1.0 / sqrt(2.0 * M_PI * 0.15 * 0.15 ))*std::exp(-0.5);
+			SetThreshold(minPeakMagThreshold);
 			SetNormalizeWeights(true);
+			SetSampleRate( 0 );
+
+		}
+
+		void IOIHistPeakDetectorConfig::Check()
+		{
+			CLAM_ASSERT( GetThreshold() >= 0.0 && GetThreshold() <= 1.0,
+				     "IOIHistPeakDetectorConfig::Check(): Threshold param should be in the [0,1] range" );
+
+			CLAM_ASSERT( GetSampleRate() > 0,
+				     "IOIHistPeakDetectorConfig::Check(): SampleRate param was not set!" );
 
 		}
 
@@ -53,19 +63,20 @@ namespace CLAM
 
 		IOIHistPeakDetector::IOIHistPeakDetector()
 		{
-			Configure(IOIHistPeakDetectorConfig());
-		}
-
-		IOIHistPeakDetector::IOIHistPeakDetector(const IOIHistPeakDetectorConfig &c)
-		{
-			Configure(c);
 		}
 
 		/* Configure the Processing Object according to the Config object */
 		bool IOIHistPeakDetector::ConcreteConfigure(const ProcessingConfig& c)
 		{
 			CopyAsConcreteConfig( mConfig, c );
+			mConfig.Check();
+			
 			return true;
+		}
+		
+		const char* IOIHistPeakDetector::GetClassName() const
+		{
+			return "IOIHistPeakDetector";
 		}
 
 /* The supervised Do() function */
@@ -95,7 +106,7 @@ namespace CLAM
 			detectedPeaks.push_back( newPeak );
 
 			bool sameSlope=false;
-			TData fs = input.GetBinRate();
+			TData fs = mConfig.GetSampleRate();
 
 			// MRJ: 3 ms is the minimum allowed space between peaks
 			const int peaksMinDist = std::max(1,(int)(0.003*fs)); 
@@ -104,19 +115,20 @@ namespace CLAM
 
 			// MRJ: Actual peak detection loop. Peaks are stored onto
 			// a list for O(k) insertion
-			for( int i = twicePeaksMinDist;
-			     i < maxPeakPos;
-			     i++)
+			
+			int i = twicePeaksMinDist;
+
+			while( i < maxPeakPos )
 			{
 				if ( (arr[i+peaksMinDist]>arr[i])
-				     && (!sameSlope) ) 
+				     && (!sameSlope) )
 					sameSlope=true; 
-		
-				if ( (arr[i-twicePeaksMinDist] < arr[i-peaksMinDist]) 
+					
+				if ( (sameSlope) 
+				     && (arr[i-twicePeaksMinDist] < arr[i-peaksMinDist]) 
 				     && (arr[i-peaksMinDist] < arr[i]) 
 				     && (arr[i] >  arr[i+peaksMinDist]) 
-				     && (arr[i+peaksMinDist] > arr[i+twicePeaksMinDist]) 
-				     && (sameSlope) )
+				     && (arr[i+peaksMinDist] > arr[i+twicePeaksMinDist]) )
 				{
 					sameSlope=false;
 					
@@ -127,7 +139,15 @@ namespace CLAM
 					
 					if (arr[i] > max) 
 						max=arr[i];
+
+					// MRJ: If once we find a peak we advance the
+					// index by peaksMinDist, later there won't be the
+					// need to check wether peaks are inside this
+					// "minimum peak distance"
+					i+=peaksMinDist;
 				}
+				else
+					i++;
 			}
 
 
@@ -141,24 +161,23 @@ namespace CLAM
 			// MRJ: Unlikely peaks removal and weight normalization
 
 			LI prev = detectedPeaks.begin();
-			LI i = detectedPeaks.begin();
-			i++;
+			LI it = detectedPeaks.begin();
+			it++;
 			
-			for ( ; i != detectedPeaks.end();
-			      i++, prev++ )
+			for ( ; it != detectedPeaks.end();
+			      it++, prev++ )
 			{
-				const TData tmpWeight = i->GetWeight();
-				const TData tmpPosition = i->GetPosition();
+				const TData tmpWeight = it->GetWeight();
+				const TData tmpPosition = it->GetPosition();
 				const TData normWeight = tmpWeight * invMax;
 				
-				if ( (normWeight > minPeakMagThreshold)
-				     && std::fabs( tmpPosition - prev->GetPosition() ) > peaksMinDist )
+				if ( ( tmpWeight > minPeakMagThreshold) )
 				{
 					if ( mustNormalize )
-						i->SetWeight( normWeight );
+						it->SetWeight( normWeight );
 				}
 				else
-					i = detectedPeaks.erase( i );
+					it = detectedPeaks.erase( it );
 			}
 
 			out.Resize( detectedPeaks.size() );

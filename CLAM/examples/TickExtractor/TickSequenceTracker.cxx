@@ -53,7 +53,8 @@ namespace CLAM
 
 		//For Hist peaks:
 		RhythmDescription::IOIHistPeakDetectorConfig apdconf;
-		apdconf.SetThreshold(mConfig.GetThreshold_IOIHistPeaks());
+		apdconf.SetThreshold( mConfig.GetThreshold_IOIHistPeaks() );
+		apdconf.SetSampleRate( mConfig.GetSamplingRate() );
 
 		mPeakDetector.Configure( apdconf );
 
@@ -358,7 +359,9 @@ namespace CLAM
 		RhythmDescription::GlobalPulseConfig gpconf;
 		gpconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 		//This is bad, There should be a global attribute specifying this size
-		RhythmDescription::GlobalPulse gpulse(gpconf);
+		RhythmDescription::GlobalPulse gpulse;
+		gpulse.Configure(gpconf);
+		
 		if (computeBeats)
 			globalTempo = CompGlobPulse(gpulse,
 						    (mConfig.GetSamplingRate()*60.0)/tempoLimInf, forGlobalTempoCalc) / mConfig.GetSamplingRate();
@@ -442,7 +445,7 @@ namespace CLAM
 						 const Array<TData> &forGlobalPulseCalc)
 	{
 		RhythmDescription::IOIHistogram pulseHist;
-		pulseHist.SetBinRate( mConfig.GetSamplingRate() );
+
 		pulseHist.GetBins().Resize((int) (pulseLimSup +10000));//just for security
 		pulseHist.GetBins().SetSize((int) (pulseLimSup +10000));//just for security
 		
@@ -455,6 +458,8 @@ namespace CLAM
 
 		RhythmDescription::IOIHistPeakDetectorConfig apdconf;
 		apdconf.SetThreshold(0.0);
+		apdconf.SetSampleRate( mConfig.GetSamplingRate() );
+		
 		mPeakDetector.Stop();
 		mPeakDetector.Configure(apdconf);
 		mPeakDetector.Start();

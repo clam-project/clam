@@ -12,10 +12,9 @@ namespace CLAM
 		class IOIHistogram : public ProcessingData
 		{
 		public:
-			DYNAMIC_TYPE_USING_INTERFACE( IOIHistogram, 2, ProcessingData );
+			DYNAMIC_TYPE_USING_INTERFACE( IOIHistogram, 1, ProcessingData );
 			
 			DYN_ATTRIBUTE( 0, public, DataArray, Bins );
-			DYN_ATTRIBUTE( 1, public, TData,     BinRate );
 
 		protected:
 			

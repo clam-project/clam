@@ -44,17 +44,18 @@ namespace CLAM
 
 		GlobalPulse::GlobalPulse()
 		{
-			Configure(GlobalPulseConfig());
+
 		}
 
-		GlobalPulse::GlobalPulse(const GlobalPulseConfig &c)
-		{
-			Configure(c);
-		}
 
 		GlobalPulse::~GlobalPulse()
-		{}
+		{
+		}
 
+		const char* GlobalPulse::GetClassName() const
+		{
+			return "GlobalPulse";
+		}
 
 		bool GlobalPulse::ConcreteConfigure(const ProcessingConfig& c)
 		{
@@ -66,40 +67,39 @@ namespace CLAM
 			winconf.SetSize(mConfig.GetGaussianSize());
 
 			mWindowGen.Configure(winconf);
-
+			
+			mWindow.Resize(mConfig.GetGaussianSize());
 			mWindow.SetSize(mConfig.GetGaussianSize());
 
 			mWindowGen.Start();
 
-//		cerr << "audiosize " <<  mConfig.GetGaussianSize();
-//		cerr << " windowsize " <<  mWindowGen.GetSize() << endl;
 
 			mWindowGen.Do(mWindow);
 			mWindowGen.Stop();	    
+
 			return true;
 		}
 
-/* Setting Prototypes for faster processing */
+		/* Setting Prototypes for faster processing */
 
 		bool GlobalPulse::SetPrototypes(Array<TData>& in,const Audio& out)
 		{ return false;
 		}
 
-/* The supervised Do() function */
-
+		/* The supervised Do() function */
 		bool  GlobalPulse::Do(void) 
 		{
 			return false;
 		}
 
-/* The  unsupervised Do() function */
+		/* The  unsupervised Do() function */
 		bool  GlobalPulse::Do(const Array<TData>& in, IOIHistogram& out)
 		{
 			int gsize = mConfig.GetGaussianSize();
 	
 			TData* outp = out.GetBins().GetPtr();
 			TData* end = outp + out.GetBins().Size();
-			TData* win = mWindow.GetBuffer().GetPtr();
+			TData* win = mWindow.GetPtr();
 			
 			int i;
 			int j;
@@ -109,20 +109,22 @@ namespace CLAM
 			for (i=0;i<out.GetBins().Size();i++)
 				outp[i] = 0.0;
 
+			// convolution
 			for (j=0;j < size;j++) 
 			{
 				int apos = in[j];
 				TData* outw = outp + apos - gsize/2;
-				// add the gaussian
-				for (i=0;i<gsize;i++) 
+			
+				for ( i=0; 
+				      (i<gsize) ; i++) 
 				{
-					if (outw >= outp && outw < end) 
-					{
-						*outw += (win[i]);
-					}
+					if (outw >= outp && outw < end)
+						*outw += win[i];
+					
 					outw++;
 				}
 			}
+			
 			return true;
 		}
 

@@ -125,7 +125,7 @@ namespace CLAM
 		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);		
 
 		RhythmDescription::IOIHistogram ioiHistogram;
-		ioiHistogram.SetBinRate( sampleRate );
+
 
 		Pulse tickSequence;
 		Pulse beatSequence;

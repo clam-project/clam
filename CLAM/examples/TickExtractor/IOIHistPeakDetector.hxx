@@ -43,9 +43,13 @@ namespace CLAM
 		class IOIHistPeakDetectorConfig: public ProcessingConfig
 		{
 		public:
-			DYNAMIC_TYPE_USING_INTERFACE (IOIHistPeakDetectorConfig, 2,ProcessingConfig);
-			DYN_ATTRIBUTE (0,public, TData,Threshold); //from 0 to 1
-			DYN_ATTRIBUTE (1,public, bool,NormalizeWeights); //from 0 to 1
+			DYNAMIC_TYPE_USING_INTERFACE (IOIHistPeakDetectorConfig, 3, ProcessingConfig);
+			DYN_ATTRIBUTE (0,public, TData, Threshold); //from 0 to 1
+			DYN_ATTRIBUTE (1,public, bool,  NormalizeWeights);
+			DYN_ATTRIBUTE (2,public, TData, SampleRate );
+
+			void Check();
+
 		protected:
 			void DefaultInit();
 		};
@@ -54,11 +58,10 @@ namespace CLAM
 		class IOIHistPeakDetector : public Processing 
 		{
 			IOIHistPeakDetectorConfig mConfig;
-			const char *GetClassName() const {return "IOIHistPeakDetector";}
+			const char *GetClassName() const;
 			bool ConcreteConfigure(const ProcessingConfig&);
 		public:
 			IOIHistPeakDetector();
-			IOIHistPeakDetector(const IOIHistPeakDetectorConfig &c);
 
 			const ProcessingConfig &GetConfig() const { return mConfig;}
 

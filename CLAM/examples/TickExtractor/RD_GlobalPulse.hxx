@@ -49,14 +49,17 @@ namespace CLAM
 		class GlobalPulse: public Processing 
 		{
 			GlobalPulseConfig mConfig;
+
 			WindowGenerator mWindowGen;
-			Audio           mWindow;
-			const char *GetClassName() const {return "GlobalPulse";}
+			DataArray       mWindow;
+
+			const char *GetClassName() const;
+			
 			bool ConcreteConfigure(const ProcessingConfig&);
 
 		public:
 			GlobalPulse();
-			GlobalPulse(const GlobalPulseConfig &c);
+
 			~GlobalPulse();
 
 			const ProcessingConfig &GetConfig() const { return mConfig;}
