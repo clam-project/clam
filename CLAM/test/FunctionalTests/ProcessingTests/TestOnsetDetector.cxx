@@ -40,7 +40,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTests = "../../../../../CLAM-TestData/RhythmDescription";
+			mPathToTests = "../../../../CLAM-TestData/RhythmDescription";
 		}
 
 		void tearDown()

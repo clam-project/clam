@@ -131,7 +131,7 @@ namespace CLAMTest
 
 			if ( !pathToTestData )
 			{
-				mPathToTestData ="../../../../../CLAM-TestData/"; 
+				mPathToTestData ="../../../../CLAM-TestData/"; 
 			}
 			else
 				mPathToTestData = pathToTestData;
