@@ -34,9 +34,9 @@ Processing * InPortBase::GetProcessing()
 	return mProcessing;
 }
 
-void InPortBase::DisconnectAndUnAttach()
+void InPortBase::Disconnect()
 {	
-	CLAM_DEBUG_ASSERT(mAttachedOutPort, "InPortBase::DisconnectAndUnAttach() - InPort is not connected" );
+	CLAM_DEBUG_ASSERT(mAttachedOutPort, "InPortBase::Disconnect() - InPort is not connected" );
 	mAttachedOutPort->DisconnectFromIn( *this );
 }
 

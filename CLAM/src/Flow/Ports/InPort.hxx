@@ -24,12 +24,9 @@ public:
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
-	
+	void Disconnect();	
+
 protected:
-	// this method is called from the concrete class to call OutPort::DisconnectFromIn in .cxx, in order to
-	// avoid double referencing of headers
-	void DisconnectAndUnAttach();	
-	
 	OutPortBase * mAttachedOutPort;
 	std::string mName;
 	Processing * mProcessing;
@@ -52,7 +49,7 @@ public:
 	virtual ~InPort()
 	{
 		if(mAttachedOutPort)
-			DisconnectAndUnAttach();
+			Disconnect();
 	}
 
 	const Token & GetData(int offset=0)
