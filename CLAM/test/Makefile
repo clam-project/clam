@@ -50,6 +50,7 @@ TESTS = \
 TOP=..
 
 INCLUDE_DIRS+=$(CLAM_PATH)/test/testingWithCppUnit
+INCLUDE_DIRS+=$(CLAM_PATH)/test/testingWithCppUnit/CommonHelpers
 
 CLEANFILES=*.data
 
