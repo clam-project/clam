@@ -30,7 +30,8 @@
 
 #include "XercesDomPrinter.hxx"
 #include <string>
-#define CLAM_INDENT_XML
+
+//#define CLAM_INDENT_XML
 #define TRACEDUMP if (1); else std::cout
 
 class DOMPrintFormatTarget : public XMLFormatTarget
@@ -558,6 +559,7 @@ XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
 	return strm;
 }
 
+
 static unsigned int indentation=0;
 
 void Inspect (std::ostream& target, DOM_Node& toWrite)
@@ -572,23 +574,12 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 		case DOM_Node::TEXT_NODE:
 		{
 			target << "TEXT:"<<nodeValue<<std::endl;
-/*
-			gFormatter->formatBuf(nodeValue.rawBuffer(), 
-			           lent, XMLFormatter::CharEscapes);
-*/
 			break;
 		}
 
-	        case DOM_Node::PROCESSING_INSTRUCTION_NODE :
+		case DOM_Node::PROCESSING_INSTRUCTION_NODE :
 		{
 			target << "PROCINSTR"<<std::endl;
-/*
-			*gFormatter << XMLFormatter::NoEscapes << gStartPI  << nodeName;
-			if (lent > 0) {
-				*gFormatter << chSpace << nodeValue;
-			}
-			*gFormatter << XMLFormatter::NoEscapes << gEndPI;
-*/
 			break;
 		}
 
@@ -599,7 +590,6 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 			DOM_Node child = toWrite.getFirstChild();
 			while( child != 0)
 			{
-//                target << child << std::endl;
 				Inspect(target,child);
 				child = child.getNextSibling();
 			}
@@ -607,72 +597,29 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
         }
 
 
-        case DOM_Node::ELEMENT_NODE :
-        {
+		case DOM_Node::ELEMENT_NODE :
+		{
 			target << "ELEMENT:"<<nodeName<<std::endl;
-            // The name has to be representable without any escapes
-/*			*gFormatter  << XMLFormatter::NoEscapes
-			             << chOpenAngle << nodeName;
-*/
-			// Output the element start tag.
 
-			// Output any attributes on this element
 			DOM_NamedNodeMap attributes = toWrite.getAttributes();
 			int attrCount = attributes.getLength();
 			for (int i = 0; i < attrCount; i++)
 			{
-				DOM_Node  attribute = attributes.item(i);
 				for (unsigned int i=indentation++; i--; ) target << ". ";
+				DOM_Node  attribute = attributes.item(i);
 				target << "ATTRIBUTE:"<<attribute.getNodeName()<<"="<<attribute.getNodeValue()<< std::endl;
+				indentation--;  
+			}
 
-			//
-			//  Again the name has to be completely representable. But the
-			//  attribute can have refs and requires the attribute style
-			//  escaping.
-			//
-/*                *gFormatter  << XMLFormatter::NoEscapes
-                             << chSpace << attribute.getNodeName()
-                             << chEqual << chDoubleQuote
-                             << XMLFormatter::AttrEscapes
-                             << attribute.getNodeValue()
-                             << XMLFormatter::NoEscapes
-                             << chDoubleQuote;
-			     
-  */        indentation--;  
-	    }
-
-		//
-		//  Test for the presence of children, which includes both
-		//  text content and nested elements.
-		//
 			DOM_Node child = toWrite.getFirstChild();
 			if (child != 0)
 			{
-				// There are children. Close start-tag, and output children.
-				// No escapes are legal here
-//                *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
-
 				while( child != 0)
 				{
-//                    target << child;
 					Inspect(target, child);
-
 					child = child.getNextSibling();
 				}
 
-				//
-				// Done with children.  Output the end tag.
-				//
-//                *gFormatter << XMLFormatter::NoEscapes << gEndElement
-//                            << nodeName << chCloseAngle;
-			}
-			else
-			{
-				//
-				//  There were no children. Output the short form close of
-				//  the element start tag, making it an empty-element tag.
-				//
-//                *gFormatter << XMLFormatter::NoEscapes << chForwardSlash << chCloseAngle;
 			}
 			break;
 		}
@@ -681,25 +628,6 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 		case DOM_Node::ENTITY_REFERENCE_NODE:
 		{
 			target << "ENTITY"<<std::endl;
-			DOM_Node child;
-#if 0
-			for (child = toWrite.getFirstChild();
-			child != 0;
-			child = child.getNextSibling())
-			{
-				target << child;
-			}
-#else
-			//
-			// Instead of printing the refernece tree 
-			// we'd output the actual text as it appeared in the xml file.
-			// This would be the case when -e option was chosen
-			//
-/*
-			*gFormatter << XMLFormatter::NoEscapes << chAmpersand
-			            << nodeName << chSemiColon;
-*/
-#endif
 			break;
 		}
 
@@ -707,10 +635,6 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 		case DOM_Node::CDATA_SECTION_NODE:
 		{
 			target << "CDATA"<<std::endl;
-/*
-			*gFormatter << XMLFormatter::NoEscapes << gStartCDATA
-			            << nodeValue << gEndCDATA;
-*/
 			break;
 		}
 
@@ -718,78 +642,20 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 		case DOM_Node::COMMENT_NODE:
 		{
 			target << "COMMENT"<<std::endl;
-/*
-			*gFormatter << XMLFormatter::NoEscapes << gStartComment
-			            << nodeValue << gEndComment;
 			break;
-*/
 		}
 
 
 		case DOM_Node::DOCUMENT_TYPE_NODE:
 		{
-		target << "DOCUMENT TYPE"<<std::endl;
-			DOM_DocumentType doctype = (DOM_DocumentType &)toWrite;;
-/*
-			*gFormatter << XMLFormatter::NoEscapes  << gStartDoctype
-			            << nodeName;
-			DOMString id = doctype.getPublicId();
-			if (id != 0)
-			{
-				*gFormatter << XMLFormatter::NoEscapes << chSpace << gPublic
-						<< id << chDoubleQuote;
-				id = doctype.getSystemId();
-				if (id != 0)
-				{
-					*gFormatter << XMLFormatter::NoEscapes << chSpace 
-					            << chDoubleQuote << id << chDoubleQuote;
-				}
-			}
-			else
-			{
-				id = doctype.getSystemId();
-
-				if (id != 0)
-				{
-					*gFormatter << XMLFormatter::NoEscapes << chSpace << gSystem
-					            << id << chDoubleQuote;
-				}
-			}
-			id = doctype.getInternalSubset(); 
-			if (id !=0)
-				*gFormatter << XMLFormatter::NoEscapes << chOpenSquare
-				            << id << chCloseSquare;
-
-			*gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
-*/
+			target << "DOCUMENT TYPE"<<std::endl;
 			break;
 		}
 
 
 		case DOM_Node::ENTITY_NODE:
 		{
-		target << "ENTITYNODE"<<std::endl;
-/*
-			*gFormatter << XMLFormatter::NoEscapes << gStartEntity
-						<< nodeName;
-
-			DOMString id = ((DOM_Entity &)toWrite).getPublicId();
-			if (id != 0)
-				*gFormatter << XMLFormatter::NoEscapes << gPublic
-							<< id << chDoubleQuote;
-
-			id = ((DOM_Entity &)toWrite).getSystemId();
-			if (id != 0)
-				*gFormatter << XMLFormatter::NoEscapes << gSystem
-							<< id << chDoubleQuote;
-
-			id = ((DOM_Entity &)toWrite).getNotationName();
-			if (id != 0)
-				*gFormatter << XMLFormatter::NoEscapes << gNotation
-							<< id << chDoubleQuote;
-
-			*gFormatter << XMLFormatter::NoEscapes << chCloseAngle << chCR << chLF;
-*/
+			target << "ENTITYNODE"<<std::endl;
 			break;
 		}
 
@@ -797,19 +663,6 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 		case DOM_Node::XML_DECL_NODE:
 		{
 			target << "DECLNODE"<<std::endl;
-		/*
-			DOMString  str;
-
-			*gFormatter << gXMLDecl1 << ((DOM_XMLDecl &)toWrite).getVersion();
-
-			*gFormatter << gXMLDecl2 << gEncodingName;
-
-			str = ((DOM_XMLDecl &)toWrite).getStandalone();
-			if (str != 0)
-				*gFormatter << gXMLDecl3 << str;
-
-			*gFormatter << gXMLDecl4;
-*/
 			break;
 		}
 
