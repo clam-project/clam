@@ -70,7 +70,7 @@ namespace CLAM {
 		InPortTmpl<Audio>     mInput;
 		OutPortTmpl<Spectrum> mOutput;
 
-		const char *GetClassName() {return "FFT";}
+		const char *GetClassName() const {return "FFT";}
 
 		// Control change callback function
 		void ChangeSize(int n);
