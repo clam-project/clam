@@ -120,6 +120,8 @@ namespace CLAM
 			bool res = Do(mFirstInput.GetData(),
 				      mSecondInput.GetData(),
 				      mOutput.GetData());
+			mFirstInput.LeaveData();
+			mSecondInput.LeaveData();
 			mOutput.LeaveData();
 			return res;
 		}
