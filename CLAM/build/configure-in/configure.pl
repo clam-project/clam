@@ -278,7 +278,7 @@ sub ac_package_substs
 }
 
 # important: qt should come before qwt
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','qwt','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
+@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','qwt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3');
 
 if ($ARGV[0] eq '-u')
 {
@@ -474,6 +474,20 @@ $source{'portmidi'} = <<EOF;
 int main()
 {
 	Pm_CountDevices();
+	return 0;
+}
+EOF
+
+$sandbox{'portaudio'} = 'portaudio';
+$headers{'portaudio'} = 'portaudio.h';
+$libs{'portaudio'} = 'portaudio';
+$alt_libs{'portaudio'} = '';
+$ext_libs{'portaudio'} = '';
+$source{'portaudio'} = <<EOF;
+#include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
 	return 0;
 }
 EOF

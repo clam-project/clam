@@ -3883,6 +3883,361 @@ fi
 
 fi
 #####################################################################
+# Check if portaudio is going to be used
+#
+# source: acv/check_package_enable.acv 
+#####################################################################
+AC_MSG_CHECKING([portaudio usage specified])
+#
+AC_ARG_WITH(
+	[portaudio],AC_HELP_STRING([--with-portaudio],
+	[use portaudio (default is yes)]),[
+	if test x$enableval = xyes
+	then
+		AC_MSG_RESULT([yes])
+		enabled_portaudio=yes
+	else
+		AC_MSG_RESULT([no])
+		enabled_portaudio=no
+	fi
+],[
+	AC_MSG_RESULT([yes (default)])
+	enabled_portaudio=yes
+])
+found_portaudio=no
+#####################################################################
+
+#####################################################################
+# IF portaudio is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_portaudio = xyes
+then
+#####################################################################
+
+#####################################################################
+# Look for portaudio in the sandbox
+#
+# source: acv/package_in_sandbox.acv 
+#####################################################################
+AC_MSG_CHECKING([portaudio in sandbox])
+if test x$sandbox_location = x
+then
+	if test x$enabled_sandbox = xno
+	then
+		AC_MSG_RESULT([no - sandbox disabled])	
+	else
+		AC_MSG_RESULT([no - sandbox not found])	
+	fi
+else
+	AC_MSG_RESULT([searching headers])	
+	if test x$found_portaudio = xno
+	then
+		found=1
+		for file in portaudio.h
+		do
+			AC_MSG_CHECKING([$file for portaudio in sandbox])
+			if test -r $sandbox_location/portaudio/include/$file
+			then
+				AC_MSG_RESULT([yes])
+				include_dirs_portaudio="$sandbox_location/portaudio/include"
+			else
+				AC_MSG_RESULT([no])
+				found=0
+			fi
+		done
+		AC_MSG_CHECKING([[portaudio header(s) found in sandbox]])
+		if test $found = 1
+		then
+			AC_MSG_RESULT([yes])
+			sep=""
+			found=1
+			libdirset=no
+			for file in portaudio
+			do
+				AC_MSG_CHECKING([lib$file for portaudio in sandbox])
+				if test -r $sandbox_location/portaudio/lib/lib$file.$dllext
+					then
+					AC_MSG_RESULT([yes])
+					libs_in_sandbox_portaudio="$libs_in_sandbox_portaudio$sep$file"
+					if test x$libdirset = xno
+					then
+						lib_dirs_portaudio="$sandbox_location/portaudio/lib"
+						libdirset=yes
+					fi
+					sep=" "
+				else
+					AC_MSG_RESULT([no])
+					found=0
+				fi
+			done
+			AC_MSG_CHECKING([[all portaudio lib(s) found in sandbox]])
+			if test $found = 1
+			then
+				AC_MSG_RESULT([yes - adding to library path])
+				found_portaudio=yes
+				found_in_sandbox_portaudio=yes
+			else
+				AC_MSG_RESULT([no])
+				found_portaudio=no
+			fi
+		else
+			AC_MSG_RESULT([no])
+			found_portaudio=no
+		fi
+	fi
+fi
+if test x$found_in_sandbox_portaudio = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_portaudio"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_portaudio
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_portaudio
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for portaudio])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
+	return 0;
+}
+
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_portaudio 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_portaudio=$tmp_libs
+			found_portaudio=yes
+			AC_MSG_RESULT([$libs_portaudio])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
+#####################################################################
+# pkgconfig routine for finding portaudio
+#
+# source: acv/pkg_config_find.acv 
+#####################################################################
+if test x$enabled_portaudio = xyes
+    then
+    if test x$found_portaudio = xno
+	then
+	AC_MSG_CHECKING([portaudio has pkg-config])
+	if test x$pkg_config_status = xenabled
+	    then
+	    $pkg_config --exists portaudio
+	    if test $? = 0
+		then
+		AC_MSG_RESULT([yes])
+		found_portaudio=yes
+		include_dirs_portaudio=`$pkg_config portaudio --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
+		libs_portaudio=`$pkg_config portaudio --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
+		lib_dirs_portaudio=`$pkg_config portaudio --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
+	    else
+		AC_MSG_RESULT([no])
+		found_portaudio=no
+	    fi
+	else
+	    if test x$pkg_config_status = xdisabled
+		then
+		AC_MSG_RESULT([no: pkg-config disabled])
+	    else
+		AC_MSG_RESULT([no: pkg-config is not installed])
+	    fi
+	fi
+    fi
+fi
+#####################################################################
+
+#####################################################################
+# Standard routine for finding portaudio
+#
+# source: acv/standard_find.acv 
+#####################################################################
+if test x$enabled_portaudio = xyes
+then
+  if test x$found_portaudio = xno
+	then
+	found=1
+	for file in portaudio.h
+	do
+		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
+		AC_MSG_CHECKING([$file for portaudio in standard locations])
+		if test $filefound = 1
+		then
+			AC_MSG_RESULT([yes])
+		else
+	    AC_MSG_RESULT([no])
+	    found=0
+		fi
+	done
+	AC_MSG_CHECKING([[portaudio header(s) found in standard locations]])
+	if test $found = 1
+	then
+		AC_MSG_RESULT([yes])
+		if test x"portaudio" != x
+		then
+			LIBS=
+			old_CXXFLAGS=$CXXFLAGS
+			old_LDFLAGS=$LDFLAGS
+			for tmp in $include_dirs_portaudio
+			do
+				CXXFLAGS="$CXXFLAGS -I$tmp"
+			done
+			for tmp in $lib_dirs_portaudio
+			do
+				LDFLAGS="$LDFLAGS -L$tmp"
+			done
+			AC_MSG_CHECKING([libraries needed for portaudio])
+			AC_COMPILE_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
+	return 0;
+}
+
+]]	
+			)],[
+				links_ok=0
+				tmp_libs=""
+				sep=""
+				for tmp in portaudio 
+				do
+					LDFLAGS="$LDFLAGS -l$tmp"
+					tmp_libs="$tmp_libs$sep$tmp"
+					sep=" "
+					AC_LINK_IFELSE(
+					[
+						AC_LANG_SOURCE(
+[[
+#include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
+	return 0;
+}
+;
+]])	
+					],[
+						links_ok=yes
+					],[
+					]
+					)
+					if test x$links_ok = xyes; then
+						break 2
+					fi
+				done
+				if test x$links_ok = xyes; then
+					libs_portaudio=$tmp_libs
+					found_portaudio=yes
+					AC_MSG_RESULT([$libs_portaudio])
+				else
+					# trying alternative libs
+					LDFLAGS=$old_LDFLAGS
+					tmp_libs=""
+					sep=""
+					for tmp in 
+					do
+						LDFLAGS="$LDFLAGS -l$tmp"
+						tmp_libs="$tmp_libs$sep$tmp"
+						sep=" "
+						AC_LINK_IFELSE(
+						[
+							AC_LANG_SOURCE(
+[[
+#include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
+	return 0;
+}
+;
+]])	
+						],[
+							links_ok=yes
+						],[
+						]
+						)
+						if test x$links_ok = xyes; then
+							break 2
+						fi
+					done
+					if test x$links_ok = xyes; then
+						libs_portaudio=$tmp_libs
+						found_portaudio=yes
+						AC_MSG_RESULT([$libs_portaudio])
+					else
+						AC_MSG_RESULT([linking failed])
+					fi
+				fi
+			],[
+				AC_MSG_RESULT([compilation failed])
+			])
+			CXXFLAGS=$old_CXXFLAGS
+			LDFLAGS=$old_LDFLAGS
+		else
+			# no libs to checks
+			found_portaudio=yes
+		fi
+	else
+	    AC_MSG_RESULT([no])
+	    found_portaudio=no
+	fi
+    fi
+fi
+
+fi
+#####################################################################
 # Check if alsa is going to be used
 #
 # source: acv/check_package_enable.acv 
@@ -5713,6 +6068,77 @@ fi
 
 fi
 #####################################################################
+# IF portaudio is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_portaudio = xyes
+then
+#####################################################################
+
+#####################################################################
+# Default test, to test portaudio
+#
+# source: acv/default_test.acv 
+#####################################################################
+failure=no
+if test $found_portaudio
+then
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_portaudio
+	  do
+	  CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_portaudio
+	  do
+	  LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	for tmp in $libs_portaudio
+	  do
+	  LDFLAGS="$LDFLAGS -l$tmp"
+	done
+	AC_MSG_CHECKING([compiling, linking and running with portaudio])
+	AC_RUN_IFELSE(
+	    [
+		AC_LANG_SOURCE(
+		    [[
+			    #include<portaudio.h>
+int main()
+{
+	Pa_CountDevices();
+	return 0;
+}
+
+			    ]])	
+		],[
+		AC_MSG_RESULT(ok)
+		],[
+			AC_MSG_RESULT(failed)
+			failure=yes
+		]
+	)
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+else
+	failure=yes
+fi
+if test x$failure = xyes
+then
+	AC_MSG_FAILURE([
+Configure-checks for portaudio failed.
+Please check the configure output to see which checks failed, and the
+config.log file for more details.
+Note that you can disable the use of portaudio altogether, running configure
+with the
+  --without-portaudio
+option.
+])
+fi
+#####################################################################
+
+fi
+#####################################################################
 # IF alsa is enabled THEN
 #
 # source: acv/package_enabled_start.acv 
@@ -6148,6 +6574,28 @@ fi
 #####################################################################
 
 #####################################################################
+# Give a warning when portaudio is disabled
+#
+# source: acv/disabled_package_warning.acv 
+#####################################################################
+if test x$enabled_portaudio = x
+then
+	AC_MSG_ERROR('portaudio with/without checking not done')
+fi
+if test x$enabled_portaudio = xno
+then
+	AC_MSG_WARN([without portaudio
+======================================================================
+You deactivated usage of package portaudio. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
+
+srcdeps: configuration specifies USE_PORTAUDIO=1, but HAS_PORTAUDIO=0
+======================================================================])
+fi
+#####################################################################
+
+#####################################################################
 # Give a warning when alsa is disabled
 #
 # source: acv/disabled_package_warning.acv 
@@ -6373,6 +6821,22 @@ AC_SUBST(PORTMIDI_INCLUDES)
 AC_SUBST(PORTMIDI_LIB_PATH)
 AC_SUBST(PORTMIDI_LIBS)
 AC_SUBST(HAS_PORTMIDI)
+# substs for portaudio
+PORTAUDIO_INCLUDES=$include_dirs_portaudio
+PORTAUDIO_LIBS=$libs_portaudio
+PORTAUDIO_LIB_PATH=$lib_dirs_portaudio
+#echo PORTAUDIO_INCLUDES=$include_dirs_portaudio
+#echo PORTAUDIO_LIBS=$libs_portaudio
+#echo PORTAUDIO_LIB_PATH=$lib_dirs_portaudio
+if test x$found_portaudio = xyes; then
+	HAS_PORTAUDIO=1
+else
+	HAS_PORTAUDIO=0
+fi
+AC_SUBST(PORTAUDIO_INCLUDES)
+AC_SUBST(PORTAUDIO_LIB_PATH)
+AC_SUBST(PORTAUDIO_LIBS)
+AC_SUBST(HAS_PORTAUDIO)
 # substs for alsa
 ALSA_INCLUDES=$include_dirs_alsa
 ALSA_LIBS=$libs_alsa
