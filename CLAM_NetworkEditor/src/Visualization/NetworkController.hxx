@@ -9,6 +9,11 @@
 
 #include <list>
 #include <string>
+#include <map>
+
+#include "Thread.hxx"
+
+
 
 namespace CLAM
 {
@@ -19,7 +24,16 @@ namespace CLAMVM
 {
 	class NetworkController : public ModelController, public NetworkModel
 	{
+		typedef std::map< std::string , std::string  > ConnectionsMap;
 	private:		
+
+		// multithread related
+		CLAM::Thread mThread;
+		void ProcessingLoop();
+		bool mLoopCondition;
+		ConnectionsMap mToConnect;
+		ConnectionsMap mToDisconnect;
+
 		CLAM::Network* mObserved;
 		std::list<ProcessingAdapter*> mProcessingAdapters;
 		typedef std::list<ProcessingAdapter*>::iterator ProcessingAdapterIterator;
@@ -29,6 +43,11 @@ namespace CLAMVM
 		void OnNewConnectionFromGUI(const std::string &, const std::string &);
 		void OnNewChangeState( bool);
 		void OnRemoveConnectionFromGUI(const std::string &, const std::string &);
+
+		// helper methods
+		void ConnectPorts( const std::string & , const std::string & );
+		void DisconnectPorts( const std::string & , const std::string & );
+		void ExecuteConnections();
 	public:
 		NetworkController();
 		virtual ~NetworkController();

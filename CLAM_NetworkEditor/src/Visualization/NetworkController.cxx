@@ -10,41 +10,86 @@ namespace CLAMVM
 {
 	
 NetworkController::NetworkController()
-	: mObserved(0)
+	: mObserved(0),
+	  mLoopCondition(false)
 {
 	CreateNewConnection.Wrap( this, &NetworkController::OnNewConnectionFromGUI );
 	RemoveConnection.Wrap( this, &NetworkController::OnRemoveConnectionFromGUI );
 	AddNewProcessing.Wrap( this, &NetworkController::NewProcessingFromGUI );
 	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
 }
+
+void NetworkController::ExecuteConnections()
+{
+	if ( mToConnect.size() != 0)
+	{
+		ConnectionsMap::iterator it;
+		for (it=mToConnect.begin(); it!=mToConnect.end(); it++)
+			ConnectPorts( it->second, it->first );
+		mToConnect.clear();
+	}
+	if ( mToDisconnect.size() != 0)
+	{
+		ConnectionsMap::iterator it;
+		for (it=mToDisconnect.begin(); it!=mToDisconnect.end(); it++)
+			DisconnectPorts( it->second, it->first );
+		mToDisconnect.clear();
+		
+	}	
+}
 	
+void NetworkController::ProcessingLoop()
+{
+	while(mLoopCondition)
+	{
+		ExecuteConnections();
+		mObserved->DoProcessings();
+	}
+}
 
 void NetworkController::OnNewChangeState( bool state)
 {
 	if (state) // start the network
 	{
+
 		mObserved->Start();
+		mLoopCondition = true;
 		std::cout << "starting network" << std::endl;
-		for (int i=0; i<400; i++)
-		{
-			std::cout << "doing" << std::endl;
-			mObserved->DoProcessings();
-		}
+		mThread.SetThreadCode( makeMemberFunctor0( *this, NetworkController, ProcessingLoop ) );
+		
+		mThread.Start();
 
 	}
 	else // stop the network
 	{			
 		std::cout << "stopping network" << std::endl;
+		mLoopCondition = false;
+		mThread.Stop();
 		mObserved->Stop();
 	}
 }
 
 void NetworkController::OnNewConnectionFromGUI( const std::string & out, const std::string& in)
+{	
+	if (mLoopCondition)
+	{
+		if (!mToConnect.insert( ConnectionsMap::value_type( in, out ) ).second )
+			CLAM_ASSERT(false, "NetworkController::OnNewConnectionFromGUI() Trying to remove connection with repeated key" );
+	}
+	else
+	{
+		ConnectPorts(out, in);
+	}
+			
+}
+
+void NetworkController::ConnectPorts( const std::string & out , const std::string & in )
 {
+	std::cout << "add connection" << std::endl;
 	if(mObserved->ConnectPorts(out, in))
 	{
-
-	// now we must to create a new gui connection
+		
+		// now we must to create a new gui connection
 //	OutPort & outPort = mObserved->GetOutPortByCompleteName(out);
 //	InPort & inPort = mObserved->GetInPortByCompleteName(in);
 		ConnectionAdapter* conAdapter = new ConnectionAdapter;
@@ -57,6 +102,22 @@ void NetworkController::OnNewConnectionFromGUI( const std::string & out, const s
 
 void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , const std::string & in)
 {
+	if (mLoopCondition)
+	{
+		if (!mToDisconnect.insert( ConnectionsMap::value_type( in, out ) ).second )
+			CLAM_ASSERT(false, "NetworkController::OnRemoveConnectionFromGUI() Trying to remove connection with repeated key" );
+	}
+	else
+	{
+		DisconnectPorts(out, in);
+	}
+
+}
+
+
+void NetworkController::DisconnectPorts( const std::string & out , const std::string & in )
+{
+	std::cout << "remove connection" << std::endl;
 	if(mObserved->DisconnectPorts(out, in))
 	{
 		//remove connection from inport
