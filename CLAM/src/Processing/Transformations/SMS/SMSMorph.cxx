@@ -111,15 +111,15 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 	InitializeFactorsToUse();
 	
 	FrameInterpConfig frIntCfg;
-	frIntCfg.SetUseSpectralShape(mUseSinSpectralShape);
-	mPO_FrameInterpolator.Configure(frIntCfg);
-	
+
 	if(mUseSinSpectralShape)
 	{
 		frIntCfg.SetUseSpectralShape(true);
 		mPO_FrameInterpolator.mSpectralShape.Attach(mSpectralShape);
 	}
 
+	mPO_FrameInterpolator.Configure(frIntCfg);
+	
 	return UpdateControlValueFromBPF(0);
 }
 
