@@ -10,10 +10,10 @@ GenerateDoxygen()
 	Date=$4
 	cvs co $Branch -d CLAM-for-doxygen CLAM
 	pushd CLAM-for-doxygen
-		Version=`grep PROJECT_NUMBER .doxygen.cfg | (read var eq value; echo $value )`
+		Version=`grep PROJECT_NUMBER doxygen.cfg | (read var eq value; echo $value )`
 		echo Generating Doxygen, output will be on the DoxyLog file...
 		(
-			cat .doxygen.cfg
+			cat doxygen.cfg
 			echo "PROJECT_NAME = $Name"
 			echo "PROJECT_NUMBER = $Version $Date"
 		) | doxygen - >DoxyLog 2>&1 
