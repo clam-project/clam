@@ -86,11 +86,13 @@ static void generate_uic_dependencies( FILE* outfile )
 
 static void generate_moc_dependencies( FILE* outfile )
 {
+	list* moc_objects;
+	item* current;
 	assert( mocable_headers != NULL );
-	list* moc_objects = list_new();
 	
-	item* current = mocable_headers->first;
-	
+	moc_objects = list_new();
+	current = mocable_headers->first;
+		
 	while( current != NULL )
 	{
 		char mocname[2048];
