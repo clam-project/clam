@@ -4,7 +4,7 @@
 #include <qtoolbar.h>
 #include <qbutton.h>
 #include <qlayout.h> 
-
+#include <iostream>
 
 namespace NetworkGUI
 {

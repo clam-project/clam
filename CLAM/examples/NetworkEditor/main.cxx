@@ -62,7 +62,7 @@ void ConfigureNetwork(CLAM::Network & net)
 	net.AddProcessing( "oscillator-modulator", new CLAM::Oscillator( modulatorCfg) );
 	net.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
 	net.AddProcessing( "oscillator-generator", new CLAM::Oscillator(generatorCfg) );
-	net.AddProcessing( "mixer", new CLAM::AudioMixer<2>(mixerCfg) );
+	net.AddProcessing( "mixer", new CLAM::AudioMixer<3>(mixerCfg) );
 	net.AddProcessing( "file-out", new CLAM::AudioFileOut(fileOutCfg));
 	
 //	net.ConnectPorts( "file-in.Output", "file-out.Input" );
@@ -87,6 +87,7 @@ int main( int argc, char **argv )
 	controller.BindTo(net);
 
 	QApplication app( argc, argv );
+	app.setFont(QFont("Verdana", 9));
 	NetworkGUI::MainWindow *mw = new NetworkGUI::MainWindow;
 
 	mw->GetNetworkPresentation().AttachTo(controller);
