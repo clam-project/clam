@@ -5,8 +5,8 @@
 # 1: make depend and make clean
 # 2: cvs update
 # 3: remove & cvs checkout
-thoroughtnessLevel = 1  # at night we want 3
-enableSendMail = True
+thoroughtnessLevel = 3  # at night we want 3
+enableSendMail = False
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
@@ -34,8 +34,19 @@ functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/'
 spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 
-#TODO cvs checkout for examples outside clam module
 #TODO max time allowed for each test -
+
+sandboxes = [ # Module, Sandbox, Tag, Update level
+	( 'CLAM', SANDBOX_NAME, MODULE_TAG, 0),
+	( 'CLAM_SMSTools', 'CLAM_SMSTools', '', 2 ),
+	( 'CLAM_Salto', 'CLAM_Salto', '', 2 ),
+	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', 2 ),
+	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', 2 ),
+	( 'CLAM_Voice2MIDI', 'CLAM_Voice2MIDI', '', 2 ),
+	( 'CLAM-TestData', 'CLAM-TestData', '', 0 )
+]
+# update level: 0-Keep, 1-Update, 2-CleanCheckout
+# when the sandbox is not present always clean checkout
 
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
@@ -43,11 +54,16 @@ automaticTests = [
 ]
 
 externalApplications = [
-	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
-	( 'SaltoExample', CLAM_SANDBOXES+'CLAM_Salto/build/' ),
 	( 'SpectralDelay', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/'),
+	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
+	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
+	( 'SpectralDelay-DelayPoolTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/DelayPoolTest/'),
 	( 'NetworkEditor', CLAM_SANDBOXES+'CLAM_NetworkEditor/build/' ),
-	( 'Voice2MIDI', CLAM_SANDBOXES+'CLAM_Voice2MIDI/build/' )
+	( 'Voice2MIDI', CLAM_SANDBOXES+'CLAM_Voice2MIDI/build/' ),
+	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
+	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
+	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
+	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' )
 ]
 
 supervisedTests = [
@@ -90,9 +106,9 @@ testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
 testsToRun[-1:-1] = externalApplications 
-testsToRun[-1:-1] = supervisedTests
-testsToRun[-1:-1] = notPortedTests
-testsToRun[-1:-1] = automaticTests 
+#testsToRun[-1:-1] = supervisedTests
+#testsToRun[-1:-1] = notPortedTests
+#testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
@@ -268,7 +284,6 @@ mailTemplate = '''
 Status of CLAM on tag: %s 
 
 TODO:
-  - cvs checkouts for clam examples (now in different modules) 
   - behaviour: send public mail when a)something fails, or 
     b)everything ok, but last time something failed.
     
@@ -316,6 +331,53 @@ def sendError(usermsg='') :
 	print errormsg
 	if privateAddress != '' :
 		sendmail( sender, privateAddress, subject, errormsg )
+
+def checkoutSandbox (module, sandbox, tag) :
+	tagOption = ''
+	if tag!='' : tagOption = '-r '+tag
+	os.chdir(CLAM_SANDBOXES)
+	executeMandatory('cvs checkout %s -d %s %s' % (tagOption, sandbox, module) )
+
+
+
+
+def updateSandboxes() :
+	global sandboxes
+	for module, sandbox, tag, level in sandboxes :
+		if not os.access(sandbox, os.F_OK) :
+			checkoutSandbox(module, sandbox, tag)
+		elif level == 2 :
+			print 'The sandbox %s already exists, deleting it'%(sandbox)
+			getStatusOutput('rm -rf '+sandbox )
+			checkoutSandbox(module, sandbox, tag)
+		elif level == 1 :
+			print 'The sandbox %s already exists, updating it'%(sandbox)
+			os.chdir(sandbox)
+			ok, output = getStatusOutput( 'cvs update -dP' )
+			if output.find('\nC ')>=0 :
+				print 'CVS CONFLICT !!', output
+				# TODO: Inform about them
+		elif level == 0 :
+			print 'The sandbox %s already exists, keeping it'%(sandbox)
+
+def deployClamBuildSystem() :
+	# BuildSrcDeps
+	os.chdir(BUILDPATH+'srcdeps/')
+	executeMandatory('make')
+
+	# ConfigureClam
+	os.chdir(BUILDPATH)
+	executeMandatory('autoconf')
+	executeMandatory('./configure')
+
+	# Setting the clam location
+	global sandboxes
+	for module, sandbox, tag, level in sandboxes :
+		clamlocationfile = sandbox+'/build/clam-location.cfg'
+		if not os.access(clamlocationfile, os.F_OK) : continue
+		executeMandatory('echo \'CLAM_PATH = %s%s\' > %s' %(CLAM_SANDBOXES, SANDBOX_NAME, clamlocationfile))
+
+
 	
 #-------------------------------------------------------------------------------------  
 #  Aplication Logic
@@ -339,19 +401,14 @@ def runTests() :
 		if SANDBOX_NAME in ['devel','CLAM'] : 
 			sendError( 'ups, trying to remove devel sandbox !!' )
 			sys.exit(-1)
-		print 'checking out a clean repository'
-		getStatusOutput('rm -rf '+SANDBOX_NAME )
-		executeMandatory('cvs checkout -r %s -d %s CLAM' % (MODULE_TAG, SANDBOX_NAME) )
+
+		updateSandboxes()
 		checkPaths();
-		os.chdir(BUILDPATH+'srcdeps/')
-		executeMandatory('make')
-		os.chdir(BUILDPATH)
-		executeMandatory('autoconf')
-		executeMandatory('./configure')
-		executeMandatory('cd ../../CLAM-TestData')
-		executeMandatory('cvs update -d')
-		os.chdir(CLAM_SANDBOXES + SANDBOX_NAME+ '/build/Examples/Salto')
-		executeMandatory('ln -s ' + SALTO_DATA_FOLDER)
+		deployClamBuildSystem()
+
+		# LinkSaltoDataFolder
+#		os.chdir(CLAM_SANDBOXES + SANDBOX_NAME+ '/build/Examples/Salto')
+#		executeMandatory('ln -s ' + SALTO_DATA_FOLDER)
 	elif thoroughtnessLevel >= 2 :
 		os.chdir(BUILDPATH)
 		print 'updating repository: cvs update'
