@@ -73,12 +73,9 @@ namespace CLAM {
 
 	void ProcessingComposite::Insert(Processing& obj) throw(ErrProcessingObj)
 	{
-		CLAM_BEGIN_CHECK
 		iterator it;
 		for (it=mObjects.begin(); it!=mObjects.end(); it++)
-			CLAM_ASSERT( ((*it) != &obj) , "ProcessingComposite::Insert():"
-			                              "Object already inserted\n");
-		CLAM_END_CHECK
+			if((*it)==&obj) return;				
 		mObjects.push_back(&obj);
 	}
 }
