@@ -71,21 +71,30 @@ namespace CLAM{
 			CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 			mLayout = new QVBox(this);
 			mLayout->setSpacing(3);
+			mLayout->setMargin(5);
+//			mLayout->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
+			mLayout->setMinimumWidth(400);
+//			mLayout->setPaletteBackgroundColor(QColor(0xFF,0x00,0x00));
 			GetInfo();
 			
-			QFrame * frame = new QFrame(mLayout);
-			frame->setMinimumHeight(10);
-
 			QHBox * buttons = new QHBox(mLayout );
+			buttons->setMargin(5);
+			buttons->setSpacing(3);
 			
 			QPushButton * applyButton = new QPushButton("Apply", buttons, "apply");
+			applyButton->setAutoDefault(false);
 			connect( applyButton, SIGNAL(clicked()), this, SLOT(Apply()) );
 
 			QPushButton * discardButton = new QPushButton("Discard", buttons, "discard");
+			discardButton->setAutoDefault(false);
 			connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
-			
+
 			QPushButton * okButton = new QPushButton("Ok", buttons, "apply");
 			connect( okButton, SIGNAL(clicked()), this, SLOT(Ok()) );
+
+			buttons->setStretchFactor(applyButton,2);
+			buttons->setStretchFactor(discardButton,2);
+			buttons->setStretchFactor(okButton,2);
 
 			mLayout->adjustSize();
 		}
@@ -173,6 +182,7 @@ namespace CLAM{
 			QPushButton * mInput = new QPushButton(name, mLayout);
 			mInput->setToggleButton(true);
 			mInput->setOn(value);
+			mInput->setAutoDefault(false);
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
@@ -213,6 +223,7 @@ namespace CLAM{
 			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			QPushButton * mInput = new QPushButton("Details...", cell);
+			mInput->setAutoDefault(false);
 			QTConfigurator * subConfigurator = new QTConfigurator(this);
 			subConfigurator->SetConfig(value);
 			connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
