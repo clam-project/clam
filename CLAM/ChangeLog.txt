@@ -2,6 +2,11 @@
   * Build system:
       ** Fix: 'configure' test for local sandbox fftw in linux, used wrong parameters order
 
+2003-99-99 CLAM_0_5_3
+''
+  * Visualization Module:
+      ** New Plots available. Refer to online documentation for examples and documentation.
+
 2003-07-25 CLAM_0_5_2
 'Processing bug-fixing, SMSTools update'
   * Processing - Transformation - SMS:
