@@ -23,6 +23,7 @@ class FactoryRegistratorTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testConstructorPassingFactory_RegistersCreator );
 	CPPUNIT_TEST( testConstructorPassingKey_RegistersCreator );
 	CPPUNIT_TEST( testDefaultConstructor_RegistersCreator );
+	CPPUNIT_TEST( testRegistratorsAsStaticObjects_FactoryUnicity );
 	CPPUNIT_TEST( testRegistratorsAsStaticObjects_ProductsRegistered );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -115,6 +116,16 @@ private:
 		theFactory.GetRegisteredNames( keysInFactory );
 
 		CPPUNIT_ASSERT_EQUAL( keysInFactory.empty(), false );
+	}
+
+	void testRegistratorsAsStaticObjects_FactoryUnicity()
+	{
+		extern FactoryOfAs* gAddressOfFactoryUsedByRegistrator;
+
+		FactoryOfAs& theFactory = FactoryOfAs::GetInstance();
+
+		CPPUNIT_ASSERT_EQUAL( gAddressOfFactoryUsedByRegistrator == &theFactory,
+				      true );
 	}
 
 };
