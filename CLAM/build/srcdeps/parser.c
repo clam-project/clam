@@ -76,7 +76,7 @@ int recursesrcs = 0;
 ** dependencies
 ** 0 = don't generate depend (for visual dsp's)
 ** 1 = generate single file dependency
-** 2 = generate full dependencies (including seperate .d files) (option -f)
+** 2 = generate full dependencies (including seperate .d files) (option -d)
 */
 int gendepend = 0;
 
