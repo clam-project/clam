@@ -51,10 +51,13 @@ void UserInterface::Update()
 	// check if LoadSound operation could be carried
 	if(LoadSound())
 	{
+		//This should go to SMSAppState class
 		bool hadTransScore=mSMS->GetState().GetHasTransformationScore();
+		bool hadMorphSound=mSMS->GetState().GetHasAudioMorph();
 		mSMS->GetState().DefaultInit();
 		mSMS->GetState().SetHasAudioIn(true);
 		mSMS->GetState().SetHasTransformationScore(hadTransScore);
+		mSMS->GetState().SetHasAudioMorph(hadMorphSound);
 	}
 	mSMS->GetState().SetHasConfig(true);
 	UpdateState();
