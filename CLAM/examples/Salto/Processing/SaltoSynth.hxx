@@ -259,15 +259,17 @@ private:
 	
 	/*storage*/
 	Audio AudioOutBuffer;
+	Audio mOLABuffer; // used for overlap and add, passed to SpectalSynthesis::Do
 	Audio EmptyAudioBuffer;
 
 	DataArray           mDrawingBuffer;
 	CSaltoSynthFrame*   mpSynthFrame;
 	
 	/* processing objects */
+	OverlapAdd							mOverlapAdd;
 	SineSynthesis						mSineSynth;
-	SpectralSynthesis					mSpectralSynthesis;
-	SALTO::AttackResidualSynthesis		mAttackResSynth;
+	SpectralSynthesis				mSpectralSynthesis;
+	SALTO::AttackResidualSynthesis	mAttackResSynth;
 	SALTO::StationaryResidualSynthesis  mStatResSyhthesis;
 	InterpolatingSynthesis				mInterpol;
 
