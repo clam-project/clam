@@ -189,7 +189,7 @@ private:
 
 		std::map<std::string, CLAM::TData> data;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 473.268293;
-		data["Balance000.600.wav"] = 150.585366;
+		data["Balance000.600.wav"] = 250.585366;
 		data["Balance000.992.wav"] = 236.634146;
 		data["Balance001.988.wav"] = 925.024390;
 		data["Balance010.910.wav"] = 150.585366;
