@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include "TypeInfo.hxx"
 
 namespace CLAM
 {
@@ -27,7 +28,7 @@ namespace CLAM
 			}
 	};
 
-	std::istream & operator >> (std::istream & stream, Text & text)
+	inline std::istream & operator >> (std::istream & stream, Text & text)
 	{
 		
 #if 0
@@ -48,6 +49,9 @@ namespace CLAM
 		return stream;
 
 	}
+
+	CLAM_TYPEINFOGROUP(BasicCTypeInfo, Text);
+
 }
 
 
