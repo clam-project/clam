@@ -111,6 +111,8 @@ namespace CLAM {
 
 	bool  SpectralPeakDetect::Do(const Spectrum& input, SpectralPeakArray& out)
 	{
+		CLAM_ASSERT(CheckInputType(input), "SpectralPeakDetect::Do() - Type of input data doesn't match expected type.");
+		CLAM_ASSERT(CheckOutputType(out), "SpectralPeakDetect::Do() - Type of output data doesn't match expected type.");
 
 		int i;
 		TSize nSpectralPeaks = 0;
@@ -129,10 +131,8 @@ namespace CLAM {
 		const TSize nBins = input.GetSize();
 		const TData maxFreq= mConfig.GetMaxFreq();
 
-		CLAM_ASSERT(CheckOutputType(out),"SpectralPeakDetect::Do - Type of output data doesn't match ");
-		
-		DataArray& inMagBuffer=input.GetMagBuffer();
-		DataArray& inPhaseBuffer=input.GetPhaseBuffer();
+		const DataArray& inMagBuffer=input.GetMagBuffer();
+		const DataArray& inPhaseBuffer=input.GetPhaseBuffer();
 
 		TSize maxPeaks=mConfig.GetMaxPeaks();
 		if (out.GetnMaxPeaks() != maxPeaks)
@@ -280,8 +280,27 @@ namespace CLAM {
 	}
 
 
+	bool SpectralPeakDetect::CheckInputType(const Spectrum &in)
+	{
+		if (!in.HasScale())
+			return false;
 
-	bool SpectralPeakDetect::CheckOutputType(SpectralPeakArray& out) 
+		if (in.GetScale() != EScale::eLog)
+			return false;
+
+		if (!in.HasSpectralRange())
+			return false;
+
+		if (!in.HasMagBuffer())
+			return false;
+
+		if (!in.HasPhaseBuffer())
+			return false;
+
+		return true;
+	}
+
+	bool SpectralPeakDetect::CheckOutputType(const SpectralPeakArray &out) 
 	{
 		if (!out.HasScale())
 			return false;
@@ -304,14 +323,7 @@ namespace CLAM {
 		if (!out.HasPhaseBuffer())
 			return false;
 
-/*		out.SetScale(EScale::eLog);
-		out.AddBinWidthBuffer();
-		out.AddFreqBuffer();
-		out.AddBinPosBuffer();
-		out.AddMagBuffer();
-		out.AddPhaseBuffer();
-		out.UpdateData();*/
-
 		return true;
 	}
-};//namespace CLAM
+
+}

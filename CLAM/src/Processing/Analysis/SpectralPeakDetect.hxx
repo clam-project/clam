@@ -27,7 +27,8 @@
 #include "OutPortTmpl.hxx"
 #include "SpectralPeakDetectConfig.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 
 	class SpectralPeakArray;
 	class Storage;
@@ -117,15 +118,10 @@ namespace CLAM {
 		/** Not implemented yet*/
 		inline void Detect(Spectrum& inputs, Spectrum& out);
 
-		/** Checks if the output type has the correct size and attributes .
-		 *  If not, resize Buffers and changes control flags to set correctly the object
-		 *  @param out SpectrumSpectralPeakArray object to be checked
-		 *  @return true if success
-		 */
-		bool CheckOutputType(SpectralPeakArray& out);
-		
+		bool CheckInputType(const Spectrum &in);
+		bool CheckOutputType(const SpectralPeakArray &out);
  	}; 
 
-};//namespace CLAM
+} //namespace CLAM
 
 #endif // _SpectralPeak_Detect_
