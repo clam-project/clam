@@ -28,7 +28,7 @@ namespace CLAMVM
 
 				virtual const char* GetClassName() const
 				{
-						return "LogMagSpectrumAdapter";
+					return "LogMagSpectrumAdapter";
 				}
 
 				virtual bool Publish();
