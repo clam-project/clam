@@ -125,7 +125,7 @@ namespace CLAM {
 				return true;}
 		}
 
-		template <>
+
 		bool GetAndActivate(AddStreamRegion* r, Array<D> &a)
 		{
 			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
@@ -167,7 +167,7 @@ namespace CLAM {
 			r->LeaveAndAdvance();
 		}
 
-		template<>
+
 		void LeaveAndAdvance(AddStreamRegion*r)
 		{
 			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
