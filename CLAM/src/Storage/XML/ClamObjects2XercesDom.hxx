@@ -27,8 +27,8 @@
 #include "Assert.hxx"
 #include "Component.hxx"
 
-
 #include <vector>
+#include <fstream>
 
 namespace xercesc = XERCES_CPP_NAMESPACE;
 
@@ -52,7 +52,7 @@ public:
 	{
 	}
 
-// Final user interface
+// Final user interface (Atomic operations)
 public:
 	void Read(std::istream & is)
 	{
@@ -94,7 +94,10 @@ public:
 		CLAM_ASSERT(false,"XMLStorage::Select not implemented yet");
 	}
 
-// Final User static interface
+	void UseIndentation(bool useIndentation) {
+		// TODO: Not yet implemented
+	}
+// Final User static interface (Summary operations)
 public:
 
 	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os)
@@ -110,6 +113,12 @@ public:
 		XMLStorage storage;
 		storage.Read(is);
 		storage.RestoreObject(obj);
+	}
+
+	static void Restore(Component & obj, const std::string & filename)
+	{
+		std::fstream is(filename.c_str());
+		Restore(obj,is);
 	}
 
 	static void RestorePartialDocument(Component & obj, const std::string & path, std::istream & is)
@@ -128,8 +137,6 @@ public:
 		storage.DumpObject(obj);
 		storage.WriteDocument(str);
 	}
-
-	
 
 // Interface for Components to load/store their subitems
 public:
