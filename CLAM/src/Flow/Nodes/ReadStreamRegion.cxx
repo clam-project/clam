@@ -30,7 +30,9 @@ namespace CLAM {
 							   SourceStreamRegion *src)
 		: StreamRegion(hop,length),
 		  mSource(src)
-	{}
+	{ 
+		mPos = mEnd = src->Pos();
+	}
 	
 	bool ReadStreamRegion::FulfilsInvariant() const
 	{
