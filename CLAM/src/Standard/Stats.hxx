@@ -202,6 +202,9 @@ public:
 	/**
 	 * Get centroid, compute it if necessary.
 	 *
+	 * The centroid of a function returns the position \f$i\f$ 
+	 * around which most higher values are concentrated.
+	 *
 	 * \f[
 	 * 	Centroid(X) = \frac 
 	 * 		{\sum i \cdot x_i }
@@ -411,7 +414,13 @@ public:
 		return mGeometricMean(*mData);
 	}
 
-	/** Get rms, compute it if necessary*/
+	/**
+	 * Get the root means square (RMS), compute it if necessary.
+	 * \f[
+	 * 	\sqrt { \sum{{x_i}^2 }
+	 * \f]
+	 * @todo Is it a mean??
+	 * */
 	T GetRMS()
 	{
 		return mRMS(*mData);
