@@ -74,8 +74,7 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureNetworks()
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 {	
-	CLAM::FlowControl * flow = new CLAM::FlowControl( _oscillatorToFileOut, _frameSize );
-	_oscillatorToFileOut.AddFlowControl( flow );
+	_oscillatorToFileOut.AddFlowControl( new CLAM::FlowControl( _frameSize ));
 	// create the processing
 	_oscillatorToFileOut.AddProcessing("0_oscillator-generator", new CLAM::Oscillator(_generatorCfg) );
 
@@ -103,8 +102,7 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
 {
-	CLAM::FlowControl * flow = new CLAM::FlowControl( _fileInFileOut, _frameSize );
-	_fileInFileOut.AddFlowControl( flow );
+	_fileInFileOut.AddFlowControl( new CLAM::FlowControl( _frameSize ));
 
 	_fileInFileOut.AddProcessing("0_file-in", new CLAM::AudioFileIn(_fileInCfg));
 
@@ -130,8 +128,7 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn()
 {	
-	CLAM::FlowControl * flow = new CLAM::FlowControl( _modulatedFileIn, _frameSize );
-	_modulatedFileIn.AddFlowControl( flow );
+	_modulatedFileIn.AddFlowControl( new CLAM::FlowControl( _frameSize ));
 
 	_modulatedFileIn.AddProcessing("0_file-in", new CLAM::AudioFileIn(_fileInCfg));
 	_modulatedFileIn.AddProcessing("1_oscillator-modulator", new CLAM::Oscillator(_modulatorCfg) );
@@ -160,8 +157,7 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn()
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator()
 {
-	CLAM::FlowControl * flow = new CLAM::FlowControl( _modulatedOscillator, _frameSize );
-	_modulatedOscillator.AddFlowControl( flow );
+	_modulatedOscillator.AddFlowControl( new CLAM::FlowControl( _frameSize ));
 
 	_modulatedOscillator.AddProcessing( "0_oscillator-generator", new CLAM::Oscillator(_generatorCfg) );
 	_modulatedOscillator.AddProcessing( "1_oscillator-modulator", new CLAM::Oscillator(_modulatorCfg) );
@@ -188,8 +184,7 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator()
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn()
 {	
-	CLAM::FlowControl * flow = new CLAM::FlowControl(_modulatedFileInPlusFileIn, _frameSize );
-	_modulatedFileInPlusFileIn.AddFlowControl( flow );
+	_modulatedFileInPlusFileIn.AddFlowControl( new CLAM::FlowControl( _frameSize ));
 
 	_modulatedFileInPlusFileIn.AddProcessing("0_file-in", new CLAM::AudioFileIn(_fileInCfg));
 	_modulatedFileInPlusFileIn.AddProcessing("1_oscillator-modulator", new CLAM::Oscillator(_modulatorCfg) );
