@@ -44,6 +44,7 @@ class AudioManager
 private:
 	int mSampleRate, mLatency;
 	unsigned mInternalBuffersNumber;
+
 	std::vector<AudioDevice*> mDevices;
 
 	/** A Meyers-Singleton-style list of all DeviceList */
@@ -67,17 +68,6 @@ private:
 		return sCurrent;
 	}
 public:
-	AudioManager(int sampleRate,int latency);
-
-	static AudioManager& Current()
-	{
-		AudioManager* p = _Current();
-		
-		if (p==0) throw Err("No AudioManager current");
-		
-		return *p;
-	}
-
 	typedef std::vector<AudioDevice*>::const_iterator device_iterator;
 	typedef std::vector<AudioDeviceList*>::const_iterator list_iterator;
 
@@ -88,9 +78,19 @@ public:
 	 *  @param latency The latency that will be given to the
 	 *  AudioManager, and passed to the AudioDevice(s). The default is 512.
 	 */
+	AudioManager(int sampleRate,int latency);
 
 	/** Destructor of the class*/
 	~AudioManager();
+
+	static AudioManager& Current()
+	{
+		AudioManager* p = _Current();
+		
+		if (p==0) throw Err("No AudioManager current");
+		
+		return *p;
+	}
 
 	/** Find a created AudioDevice, or NULL when not found 
 	 *  @param name The name of the AudioDevice we want to get

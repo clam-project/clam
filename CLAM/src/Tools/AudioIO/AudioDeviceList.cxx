@@ -38,5 +38,3 @@ void AudioDeviceList::AddMe(void)
 {
 	AudioManager::DeviceLists().push_back(this);
 }
-
-
