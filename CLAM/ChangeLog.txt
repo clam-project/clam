@@ -10,6 +10,9 @@
       ** Provided  a  helper  template  function  'CopyAsConcreteConfig()' to be 
          used in ConcreteConfigure instead using slow dynamic_cast's.
       ** Most Processing in CLAM adapted to use 'CopyAsConcreteConfig'.
+  * Processing - Generator:
+      ** Oscillator had a heavy compilation dependency since it used AudioManager
+         for initializing sample-rate. Now it doesn't (uses 44100 as default)
   * Examples:
       ** Fix:  The Tutorial4 didn't compile  (used  Complex  in  a old fashioned 
          way).
