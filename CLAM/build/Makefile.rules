@@ -49,6 +49,8 @@ moc/%_moc.cxx:
 	@echo == Generating moc file for $@
 	moc $< -o $@
 
+else
+
 ifeq ($(CONFIG),release)
 LIBRARIES = $(LIBRARIES_RELEASE)
 LINK_FLAGS = $(LINK_FLAGS_RELEASE)
@@ -67,6 +69,8 @@ moc/%_moc.cxx:
 	@mkdir -p moc
 	@echo == Generating moc file for $@
 	moc $< -o $@
+
+else
 
 .FORCE:
 
