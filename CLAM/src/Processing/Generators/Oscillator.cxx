@@ -59,10 +59,12 @@ void OscillatorConfig::DefaultInit(void)
 
 // Oscillator method definition
 Oscillator::Oscillator()
-:mFreqUpdated( false )
-,mPhaseUpdated( false )
-,mModIdxUpdated( false )
-,mAmpUpdated( false )
+	:mOutput("Audio Output",this,1)
+	,mFreqUpdated( false )
+	,mPhaseUpdated( false )
+	,mModIdxUpdated( false )
+	,mAmpUpdated( false )
+
 {
 	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
 	mAmpCtl = new OscillatorCtrl( "Amplitude", this, &Oscillator::UpdateAmp );
@@ -75,10 +77,12 @@ Oscillator::Oscillator()
 }
 
 Oscillator::Oscillator( const OscillatorConfig& cfg )
-:mFreqUpdated( false )
+:mOutput("Audio Output",this,1)
+,mFreqUpdated( false )
 ,mPhaseUpdated( false )
 ,mModIdxUpdated( false )
 ,mAmpUpdated( false )
+
 {
 	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
 	mAmpCtl = new OscillatorCtrl( "Amplitude", this, &Oscillator::UpdateAmp );
@@ -108,6 +112,11 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 	mDeltaPhase = TData(2.*PI*mConfig.GetFrequency()/mSamplingRate);
 
 	return true;
+}
+
+bool Oscillator::Do()
+{
+	return Do(mOutput.GetData());
 }
 
 bool Oscillator::Do( Audio& out )
