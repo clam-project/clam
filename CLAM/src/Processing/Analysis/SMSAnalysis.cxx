@@ -50,9 +50,6 @@ void SMSAnalysisConfig::DefaultValues()
 	GetSinSpectralAnalysis().SetWindowType(EWindowType::eHamming);
 	GetResSpectralAnalysis().SetWindowType(EWindowType::eBlackmanHarris92);
 
-	GetPeakDetect().SetNumBands((GetSinWindowSize()-1)/2+1);
-
-	GetPeakDetect().SetMaxPeaks(50);
 	GetPeakDetect().SetMagThreshold(-60);
 	
 }
@@ -61,9 +58,6 @@ void SMSAnalysisConfig::DefaultValues()
 void SMSAnalysisConfig::SetSinWindowSize(TSize w)
 {
 	GetSinSpectralAnalysis().SetWindowSize(w);
-	GetPeakDetect().SetNumBands(GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
-	if(w<2*GetHopSize()+1)
-		SetHopSize((w-1)/2);
 }
 
 TSize SMSAnalysisConfig::GetSinWindowSize() const
@@ -86,7 +80,6 @@ const EWindowType& SMSAnalysisConfig::GetSinWindowType() const
 void SMSAnalysisConfig::SetSinZeroPadding(int z)
 {
 	GetSinSpectralAnalysis().SetZeroPadding(z);
-	GetPeakDetect().SetNumBands(GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
 }
 
 int SMSAnalysisConfig::GetSinZeroPadding() const
@@ -98,11 +91,7 @@ void SMSAnalysisConfig::SetHopSize(TSize h)
 {
 	GetSinSpectralAnalysis().SetHopSize(h);
 	GetResSpectralAnalysis().SetHopSize(h);
-	TSize w;
-	if (GetSinWindowSize()>GetResWindowSize()) w=GetSinWindowSize();
-	else w=GetResWindowSize();
-
- }
+}
 
 TSize SMSAnalysisConfig::GetHopSize() const
 {
@@ -115,8 +104,6 @@ void SMSAnalysisConfig::SetResWindowSize(TSize w)
 {
 	GetResSpectralAnalysis().SetWindowSize(w);
 	GetSynthSineSpectrum().SetSpectrumSize(GetResSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
-	if(w<2*GetHopSize()+1)
-		SetHopSize((w-1)/2);
 }
 
 TSize SMSAnalysisConfig::GetResWindowSize() const
