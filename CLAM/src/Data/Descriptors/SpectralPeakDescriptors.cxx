@@ -48,7 +48,6 @@ SpectralPeakDescriptors::SpectralPeakDescriptors(TData initVal):Descriptor(eNumA
 	
 	SetMagnitudeMean(initVal);
 	SetHarmonicCentroid(initVal);
-	SetSpectralTilt(initVal);
 	SetFirstTristimulus(initVal);
 	SetSecondTristimulus(initVal);
 	SetThirdTristimulus(initVal);
@@ -90,8 +89,6 @@ void SpectralPeakDescriptors::ConcreteCompute()
 		SetMagnitudeMean(mpStats->GetMean());
 	if (HasHarmonicCentroid())
 		SetHarmonicCentroid(ComputeCentroid());
-	if(HasSpectralTilt())
-		SetSpectralTilt(ComputeSpectralTilt());
 	if(HasFirstTristimulus())
 		SetFirstTristimulus(ComputeFirstTristimulus());
 	if(HasSecondTristimulus())
@@ -120,47 +117,6 @@ TData SpectralPeakDescriptors::ComputeCentroid()
 		crossProduct += magnitudes[i]*frequencies[i];
 	}
 	return crossProduct/(mpStats->GetMean()*size);
-}
-
-/*this has been mostly copied and pasted from cuidado and should be checked and some of
-it promoted into basicOps*/
-TData SpectralPeakDescriptors::ComputeSpectralTilt()
-{
-	if (mpSpectralPeakArray->GetnPeaks()<2) return 0;
-
-	/* TODO check me , this computation does not seem to work*/
-
-	TData d1=0;
-	TData d2=0;
-	TData ti=0;
-	TData SumTi2 = 0;
-	TData Tilt = 0;
-
-	SpectralPeakArray tmpSpectralPeakArray=*mpSpectralPeakArray;
-	const DataArray& mag=tmpSpectralPeakArray.GetMagBuffer();
-	const DataArray& pos=mpSpectralPeakArray->GetFreqBuffer();
-
-	const TData size=mag.Size();
-
-	const TData magnitudeMean = mpStats->GetMean();
-
-	for (unsigned i=0;i<size;i++)
-	{
-		d1 += pos[i]/mag[i];
-		d2 += 1/mag[i];
-	}
-
-	/* ti = magnitudeMean/ai *(n - (d1/d2)) */
-	/* SpecTilt = magnitudeMean²/ti² * SUM[1/ai *(i-d1/d2)]  */
-
-	for (unsigned i=0;i<size;i++) {
-		Tilt += (1/mag[i] *(pos[i]-d1/d2));
-		ti = magnitudeMean/mag[i]*(pos[i] - (d1/d2));
-		SumTi2 += ti*ti;
-	}
-
-	Tilt*= (magnitudeMean*magnitudeMean/SumTi2);
-	return Tilt;
 }
 
 TData SpectralPeakDescriptors::ComputeFirstTristimulus()
@@ -269,10 +225,6 @@ SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,TData mult)
 	{
 		tmpD.SetHarmonicCentroid(a.GetHarmonicCentroid()*mult);
 	}
-	if (a.HasSpectralTilt())
-	{
-		tmpD.SetSpectralTilt(a.GetSpectralTilt()*mult);
-	}
 	if (a.HasFirstTristimulus())
 	{
 		tmpD.SetFirstTristimulus(a.GetFirstTristimulus()*mult);
@@ -322,12 +274,6 @@ SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,const Spect
 		tmpD.AddHarmonicCentroid();
 		tmpD.UpdateData();
 		tmpD.SetHarmonicCentroid(a.GetHarmonicCentroid()*b.GetHarmonicCentroid());
-	}
-	if (a.HasSpectralTilt() && b.HasSpectralTilt())
-	{
-		tmpD.AddSpectralTilt();
-		tmpD.UpdateData();
-		tmpD.SetSpectralTilt(a.GetSpectralTilt()*b.GetSpectralTilt());
 	}
 	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
 	{
@@ -390,12 +336,6 @@ SpectralPeakDescriptors operator + (const SpectralPeakDescriptors& a,const Spect
 		tmpD.AddHarmonicCentroid();
 		tmpD.UpdateData();
 		tmpD.SetHarmonicCentroid(a.GetHarmonicCentroid()+b.GetHarmonicCentroid());
-	}
-	if (a.HasSpectralTilt() && b.HasSpectralTilt())
-	{
-		tmpD.AddSpectralTilt();
-		tmpD.UpdateData();
-		tmpD.SetSpectralTilt(a.GetSpectralTilt()+b.GetSpectralTilt());
 	}
 	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
 	{

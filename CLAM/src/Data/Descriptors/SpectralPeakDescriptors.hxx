@@ -38,7 +38,7 @@ namespace CLAM {
 
 	class SpectralPeakDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDescriptors, 11, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDescriptors, 10, Descriptor);
 		/**
 		* The average amplitude (arithmetic mean) of the spectral peaks.
 		* It is computed on linear scale.
@@ -58,15 +58,6 @@ namespace CLAM {
 		*/
 		DYN_ATTRIBUTE (1, public, TData, HarmonicCentroid);
 		/**
-		* NOT VERIFIED!
-		* The slope of the linear regression of the spectral peaks.
-		* Returns zero for flat peak profile and less than two peaks.
-		* Otherwise values are very small. 
-		* Positive values for increasing,
-		* negative values for decreasing amplitudes towards higher frequencies.
-		*/
-		DYN_ATTRIBUTE (2, public, TData, SpectralTilt);
-		/**
 		* Spectral deviation of magnitude components from spectral envelope.
 		* Descriptor is a MPEG7 LLD (HarmonicSpectralDeviation), see 
 		* ISO/IEC JTC 1/SC 29 N WXYZ from 2001-03-14.
@@ -84,30 +75,30 @@ namespace CLAM {
 		* ,where SE and PeakAmplitude were converted to logarithmic scale.
 		* Returns zero for array with less than 4 peaks.
 		*/
-		DYN_ATTRIBUTE (3, public, TData, HarmonicDeviation);
+		DYN_ATTRIBUTE (2, public, TData, HarmonicDeviation);
 		/**
 		* Energy ratio of the first harmonic to the energy of all peaks.
 		* 
 		* Returns zero for empty peak array.
 		*/
-		DYN_ATTRIBUTE (4, public, TData, FirstTristimulus);
+		DYN_ATTRIBUTE (3, public, TData, FirstTristimulus);
 		/**
 		* Energy ratio of the second, third and forth harmonic to the energy of all peaks.
 		* Returns zero for array with less than 2 peaks.
 		*/
-		DYN_ATTRIBUTE (5, public, TData, SecondTristimulus);
+		DYN_ATTRIBUTE (4, public, TData, SecondTristimulus);
 		/**
 		* Energy ratio of all the harmonics starting from the fifth to the energy of all peaks.
 		* Returns zero for array with less than 5 peaks.
 		*/
-		DYN_ATTRIBUTE (6, public, TData, ThirdTristimulus);
+		DYN_ATTRIBUTE (5, public, TData, ThirdTristimulus);
 		/**
 		* Energy ratio of odd harmonics (excluding the fundamental) to 
 		* the energy of all peaks.
 		* 
 		* Returns zero for array with less than 3 peaks.
 		*/
-		DYN_ATTRIBUTE (7, public, TData, OddHarmonics);
+		DYN_ATTRIBUTE (6, public, TData, OddHarmonics);
 		/**
 		* Energy ratio of even harmonics to the energy of all peaks.
 		*
@@ -116,7 +107,7 @@ namespace CLAM {
 		* 
 		* Returns zero for array with less than 2 peaks.
 		*/
-		DYN_ATTRIBUTE (8, public, TData, EvenHarmonics);
+		DYN_ATTRIBUTE (7, public, TData, EvenHarmonics);
 		/**
 		* Ratio of "OddHarmonics" to "EvenHarmonics".		
 		* Returns zero if both values are zero.
@@ -130,8 +121,8 @@ namespace CLAM {
 		* @see SpectralPeakDescriptors::DYN_ATTRIBUTE(OddHarmonics)
 		* @see SpectralPeakDescriptors::DYN_ATTRIBUTE(EvenHarmonics)
 		*/
-		DYN_ATTRIBUTE (9, public, TData, OddToEvenRatio);
-		DYN_ATTRIBUTE (10,public, Array<TData>, HPCP);  // Harmonic Pitch Class Profile
+		DYN_ATTRIBUTE (8, public, TData, OddToEvenRatio);
+		DYN_ATTRIBUTE (9,public, Array<TData>, HPCP);  // Harmonic Pitch Class Profile
 
 	public:
 		SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray);
