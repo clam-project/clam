@@ -12,23 +12,20 @@ namespace CLAM
 	class MelFilterBankConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( MelFilterBankConfig, 7, ProcessingConfig );
-		
-		/** Name of the Processing Object **/
-		DYN_ATTRIBUTE( 0, public, std::string, Name );
+		DYNAMIC_TYPE_USING_INTERFACE( MelFilterBankConfig, 6, ProcessingConfig );
 		/** Spectrum size **/
-		DYN_ATTRIBUTE( 1, public, TSize,       SpectrumSize );
+		DYN_ATTRIBUTE( 0, public, TSize,       SpectrumSize );
 		/** Spectral Range **/
-		DYN_ATTRIBUTE( 2, public, TData,       SpectralRange );
+		DYN_ATTRIBUTE( 1, public, TData,       SpectralRange );
 		/** Low cutoff frequency **/
-		DYN_ATTRIBUTE( 3, public, TData,       LowCutoff );
+		DYN_ATTRIBUTE( 2, public, TData,       LowCutoff );
 		/** High cutoff frequency **/
-		DYN_ATTRIBUTE( 4, public, TData,       HighCutoff );
+		DYN_ATTRIBUTE( 3, public, TData,       HighCutoff );
 		/** Number of Bands **/
-		DYN_ATTRIBUTE( 5, public, TSize,       NumBands );
+		DYN_ATTRIBUTE( 4, public, TSize,       NumBands );
 		/** Use square of the spectrum for computation (false by default) **/
-		DYN_ATTRIBUTE( 6, public, bool,        UsePower );
-		
+		DYN_ATTRIBUTE( 5, public, bool,        UsePower );
+
 	protected:
 		void DefaultInit();
 	};
@@ -90,7 +87,7 @@ namespace CLAM
 		 * Linear to Mel scale transformation.
 		 *
 		 * @param linFreq Frequency in Hz.
-		 * @return Frequency in	Mel.
+		 * @return Frequency in Mel.
 		 */
 		TData Mel( TData linFreq );
 
