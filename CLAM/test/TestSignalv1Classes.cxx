@@ -74,7 +74,7 @@ namespace CLAMTest
 			{
 				mSignalSlot.Bind( i->GetNewIntegerSignal().Connect( this, &Slotted::React ) );
 				mStaticSignalSlot.Bind( i->GetNewIntegerSignal().Connect( &Slotted::sReact ) );
-				mPureVirtualSignalSlot.Bind( i->GetNewIntegerSignal().Connect( this, &Slotted::PureVirtualReact ) );
+				mPureVirtualSignalSlot.Bind( i->GetNewIntegerSignal().Connect( this, &SlottedBase::PureVirtualReact ) );
 
 				i++;
 			}
