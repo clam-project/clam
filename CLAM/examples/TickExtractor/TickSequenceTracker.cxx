@@ -31,6 +31,7 @@
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
 #include <list>
+#include <algorithm>
 
 namespace CLAM
 {
@@ -130,6 +131,16 @@ namespace CLAM
 			mTempoEstimator.Configure( tempoEstCfg );
 
 			mTempoEstimator.SetParent( this );
+
+			GlobalPulseRateEstimatorConfig gpreCfg;
+
+			gpreCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			gpreCfg.SetRateLowerBound( mConfig.GetTickLimInf() );
+			gpreCfg.SetGaussianSize( mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize() );
+
+			mGlobalPREstimator.Configure( gpreCfg );
+
+			mGlobalPREstimator.SetParent( this );
 
 			return true;
 		}
@@ -302,7 +313,6 @@ namespace CLAM
 
 
 				unsigned int goodTickInterval,goodTickOffset;
-				PulseGridGenerator pulseGridGen;
 			
 				if (mConfig.GetAdjustWithOnsets()) 
 				{
@@ -380,20 +390,20 @@ namespace CLAM
 		
 			} //end of while loop
 
+
 			std::cerr << "Number of loops: " << nLoops;
+
 			///Compute Global tempo
-			GlobalPulseGeneratorConfig gpconf;
-			gpconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
-			//This is bad, There should be a global attribute specifying this size
-			GlobalPulseGenerator gpulse;
-			gpulse.Configure(gpconf);
-		
 			if (computeBeats)
-				globalTempo = CompGlobPulse(gpulse,
-							    (mConfig.GetSamplingRate()*60.0)/tempoLimInf, forGlobalTempoCalc) / mConfig.GetSamplingRate();
+			{
+				TData rateLowerBound = (mConfig.GetSamplingRate()*60.0)/tempoLimInf;
+				mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( rateLowerBound );
+				mGlobalPREstimator.Do( forGlobalTempoCalc, globalTempo );
+			}
+
 			///Compute Global tick
-			globalTick = CompGlobPulse(gpulse, tickLimInf, 
-						   forGlobalTickCalc) / mConfig.GetSamplingRate();
+			mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( tickLimInf );
+			mGlobalPREstimator.Do( forGlobalTickCalc, globalTick );
 
 
 			return true;
@@ -405,19 +415,31 @@ namespace CLAM
 		{
 			int i = 0;
 			if (nLoops == 1)
-				while (i<pulsesArray.Size())
-				{
-					mPulses.AddElem(pulsesArray[i]);
-					i+=1;
-				}
+			{
+
+				mPulses.Resize( pulsesArray.Size() );
+				mPulses.SetSize( pulsesArray.Size() );
+
+				std::copy( pulsesArray.GetPtr(), pulsesArray.GetPtr() + pulsesArray.Size(),
+					   mPulses.GetPtr() );
+
+			}
 			else
 			{
+				// MRJ: Concatenates previously found pulses with the new ones
+
+				int lastPosition = mPulses[mPulses.Size()-1].GetPosition();
+
+
 				while ((pulsesArray[i].GetPosition() <
-					mPulses[mPulses.Size()-1].GetPosition()) &&
+					lastPosition) &&
 				       (i<pulsesArray.Size()))
 				{
 					i+=1;
 				}
+
+
+
 				while (i<pulsesArray.Size())
 				{
 					mPulses.AddElem(pulsesArray[i]);
@@ -426,93 +448,7 @@ namespace CLAM
 			}
 		}
 
-		TData TickSequenceTracker::CompGlobPulse(GlobalPulseGenerator& gpulse,
-							 const int pulseLimSup, 
-							 const Array<TData> &forGlobalPulseCalc)
-		{
-			IOIHistogram pulseHist;
 
-			pulseHist.GetBins().Resize((int) (pulseLimSup +10000));//just for security
-			pulseHist.GetBins().SetSize((int) (pulseLimSup +10000));//just for security
-		
-			gpulse.Start();
-			gpulse.Do(forGlobalPulseCalc, pulseHist);
-			gpulse.Stop();
-
-			Array<TimeIndex>  pulseHistPeaks;
-
-
-			IOIHistPeakDetectorConfig apdconf;
-			apdconf.SetThreshold(0.0);
-			apdconf.SetSampleRate( mConfig.GetSamplingRate() );
-		
-			mPeakDetector.Stop();
-			mPeakDetector.Configure(apdconf);
-			mPeakDetector.Start();
-
-			mPeakDetector.Do(pulseHist,pulseHistPeaks);
-
-			CLAM_ASSERT( pulseHistPeaks.Size() != 0,
-				     "There should be some peak in the histogram!!!!" );
-
-			int max = 0;
-			int index = 0;
-			for (int i=1;i < pulseHistPeaks.Size() ;i++) //starts at 1 because there is a peak at 0 (with 0 weight)
-				if (pulseHistPeaks[i].GetWeight() > max)
-				{
-					max =  pulseHistPeaks[i].GetWeight();
-					index = i;
-				}
-			
-			return pulseHistPeaks[index].GetPosition();
-		}
-
-		TData TickSequenceTracker::ComputeTempo( Array<TimeIndex>& IOIHistPeaks )
-		{
-			TData tempo;
-			TData maxForTempo=0.0;
-			int indexForTempo=0;
-		
-			for (int i=1;i < IOIHistPeaks.Size() ;i++) //starts at 1 because there is a peak at 0 (with 0 weight)
-			{
-				//Tempo is between tempoLimInf and tempoLimSup BPM
-				if ((IOIHistPeaks[i].GetPosition() > mConfig.GetSamplingRate()*60.0/mConfig.GetTempoLimSup())
-				    && (IOIHistPeaks[i].GetPosition() < mConfig.GetSamplingRate()*60.0/mConfig.GetTempoLimInf())
-				    && (IOIHistPeaks[i].GetWeight() > maxForTempo))
-				{
-					maxForTempo = IOIHistPeaks[i].GetWeight();
-					indexForTempo = i;
-				}
-			}
-			if (indexForTempo==0)			
-				tempo = 60.0*mConfig.GetSamplingRate()/((mConfig.GetTempoLimSup()+mConfig.GetTempoLimInf())/2);
-			else
-				tempo=IOIHistPeaks[indexForTempo].GetPosition();
-
-			return tempo;
-		}
-
-
-		void TickSequenceTracker::GeneratePulseGrid(const TData start, const TData gap, 
-							    const TData end, PulseGridGenerator& pulseGridGen, 
-							    Array<TimeIndex>& pulseArray)
-		{
-			PulseGridGeneratorConfig pulseGridConf;
-			pulseGridConf.SetStart(start);
-			pulseGridConf.SetGap(gap);
-			pulseGridConf.SetEnd(end);
-
-			int nUnits = 1+(end-start)/gap; //cast to an integer
-
-			pulseArray.Resize( nUnits );
-			pulseArray.SetSize( nUnits );
-
-			pulseGridGen.Configure(pulseGridConf);
-
-			pulseGridGen.Start();
-			pulseGridGen.Do(pulseArray);
-			pulseGridGen.Stop();
-		}
 
 	} // namespace RhythmDescription
 

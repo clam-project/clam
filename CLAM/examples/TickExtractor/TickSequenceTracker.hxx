@@ -16,6 +16,7 @@
 #include "AdjustBeatWRTTick.hxx"
 #include "AdjustBeatWRTOnsets.hxx"
 #include "BeatIntervalEstimator.hxx"
+#include "GlobalPulseRateEstimator.hxx"
 
 namespace CLAM
 {
@@ -89,6 +90,7 @@ namespace CLAM
 			AdjustBeatWRTTick       mBeatTickAdjuster;
 			AdjustBeatWRTOnsets     mBeatOnsetsAdjuster;
 			BeatIntervalEstimator   mTempoEstimator;
+			GlobalPulseRateEstimator mGlobalPREstimator;
 
 		private: // Internal PD's
 		
