@@ -38,6 +38,9 @@
 #include "OnsetDetection.hxx"
 #include "Normalization.hxx"
 
+#include "SDIFIn.hxx"
+#include "SDIFOut.hxx"
+
 //Transformation class
 #include "SMSFreqShift.hxx"
 
@@ -151,8 +154,8 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	if(	
 	mGlobalConfig.HasInputSoundFile() &&
 	mGlobalConfig.HasOutputSoundFile() &&
-	mGlobalConfig.HasOutputXMLFile() &&
-	mGlobalConfig.HasInputXMLFile() &&
+	mGlobalConfig.HasOutputAnalysisFile() &&
+	mGlobalConfig.HasInputAnalysisFile() &&
 	mGlobalConfig.HasSamplingRate() &&
 	mGlobalConfig.HasAnalysisWindowSize() &&
 	mGlobalConfig.HasAnalysisHopSize() &&
@@ -183,28 +186,70 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName)
 {
 	WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
-	//Loading analysis
-	XMLStorage x;
-	x.Restore(mSegment,inputFileName);
-	mHaveAnalysis = true;
-	mHaveSpectrum = false;
+	
+	std::string ext=inputFileName.substr(inputFileName.length()-4,inputFileName.length());
+	if(ext=="sdif")
+	{
+		/* temporal SDIF Converter which reads in one pSpecSeg */
+		SDIFInConfig cfg;
+		cfg.SetMaxNumPeaks(100);
+		cfg.SetFileName(inputFileName);
+		cfg.SetEnableResidual(true);
+		SDIFIn SDIFReader(cfg);
+		
+		mSegment.AddAll();
+		mSegment.UpdateData();
+		SDIFReader.Output.Attach(mSegment);
+			
+		while(SDIFReader.Do()) {}
+		mHaveAnalysis = true;
+		mHaveSpectrum = false;
+	}
+	else if(ext==".xml")
+	{
+		//Loading analysis
+		XMLStorage x;
+		x.Restore(mSegment,inputFileName);
+		mHaveAnalysis = true;
+		mHaveSpectrum = false;
+	}
+	else throw Err("AnalysisSynthesisExampleBase::LoadAnalysis:wrong extension to load");
 	delete wm;
 }
 
 void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 {
-	CLAM_ASSERT(mGlobalConfig.GetOutputXMLFile()!="","Not a valid file name");
+	CLAM_ASSERT(mGlobalConfig.GetOutputAnalysisFile()!="","Not a valid file name");
 	
 	WaitMessage *wm = CreateWaitMessage("Storing xml file, please wait");
-	//first we have to get rid of not wanted data
-	mSegment.RemoveAudio();
-	mSegment.UpdateData();
-	int i=0;
-
 	
-	for(i=0;i<mSegment.GetnFrames();i++)
+	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
+	if(ext=="sdif")
+	{
+		int i;
+		SDIFOutConfig cfg;
+		cfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+		cfg.SetFileName(mGlobalConfig.GetOutputAnalysisFile());
+		cfg.SetEnableResidual(true);
+		SDIFOut SDIFWriter(cfg);
+		int nFrames=mSegment.GetnFrames();
+		for(i=0;i<nFrames;i++)
 		{
-			
+			SDIFWriter.Do(mSegment.GetFrame(i));
+		}
+	}
+	else if(ext==".xml")
+	{
+	
+		//first we have to get rid of not wanted data
+		mSegment.RemoveAudio();
+		mSegment.UpdateData();
+		int i=0;
+	
+		int nFrames=mSegment.GetnFrames();
+		for(i=0;i<nFrames;i++)
+		{
+		
 			Frame& tmpFrame=mSegment.GetFrame(i);
 			tmpFrame.RemoveAudioFrame();//windowed audio frame
 			tmpFrame.RemoveSinusoidalAudioFrame();
@@ -217,19 +262,18 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 			
 		}
 
-	//Now we add Spectrum back, it is needed for Melody analysis
-	for(i=0;i<mSegment.GetnFrames();i++)
+		XMLStorage x;
+		x.Dump(mSegment,"Analyzed_Segment",mGlobalConfig.GetOutputAnalysisFile());
+
+		//Now we add Spectrum back, it is needed for Melody analysis
+		for(i=0;i<mSegment.GetnFrames();i++)
 		{
 			
 			Frame& tmpFrame=mSegment.GetFrame(i);
 			tmpFrame.AddSpectrum();//this could be kept for direct IFFT
 			tmpFrame.UpdateData();			
 		}
-	
-	
-
-	XMLStorage x;
-	x.Dump(mSegment,"Analyzed_Segment",mGlobalConfig.GetOutputXMLFile());
+	}
 	delete wm;
 }
 
@@ -655,8 +699,8 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 void AnalysisSynthesisExampleBase::StoreMelody(void)
 {
 	std::string melodyFilename(
-	mGlobalConfig.GetOutputXMLFile().
-			substr(0,mGlobalConfig.GetOutputXMLFile().length()-4));
+	mGlobalConfig.GetOutputAnalysisFile().
+			substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
 	melodyFilename += "_melody.xml";
 
 	XMLStorage x;
