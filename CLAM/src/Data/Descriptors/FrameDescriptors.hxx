@@ -84,12 +84,6 @@ private:
 
 // Implementation
 
-inline FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
-{
-	MandatoryInit();
-	mpFrame=pFrame;
-}
-
 inline void FrameDescriptors::DefaultInit() {
 	mpFrame=0;
 }
