@@ -22,7 +22,7 @@
 #undef CreateWindow
 #endif
 using SALTO::CSaltoEditor;
-using CLAMGUI::WidgetTKWrapper;
+using CLAMVM::WidgetTKWrapper;
 using namespace CLAM;
 
 class SaltoApp:public GUIAudioApplication
