@@ -87,7 +87,7 @@ template<class WritingRegion>
 void ReadingRegion<WritingRegion>::Consume()
 {
 	CLAM_DEBUG_ASSERT( CanConsume(), "ReadingRegion::Consume() - region can't consume" );
-	Pos() += Hop();
+	Pos( Pos() + Hop() );
 	mAttachedStream->ReaderHasAdvanced( *this );
 }
 
