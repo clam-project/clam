@@ -974,6 +974,6 @@ const char* filetype_str(FileType type)
 	if ( type == qt ) 
 		return "Qt Files";
 	
-       	return "Unknown files :o";
+    return "Unknown files :o";
 }
 
