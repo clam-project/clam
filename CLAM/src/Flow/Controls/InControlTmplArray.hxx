@@ -22,8 +22,8 @@ public:
 		TPtrMemberFuncId f, const bool publish=true);
 	~InControlTmplArray();
 
-	inline TInControl& operator[](int i) { return *mControls.at(i); }
-	inline const TInControl& operator[](int i) const { return *mControls.at(i); }
+	inline TInControl& operator[](int i) { return *mControls[i]; }
+	inline const TInControl& operator[](int i) const { return *mControls[i]; }
 
 };
 
@@ -42,14 +42,14 @@ InControlTmplArray<TProcessing>::InControlTmplArray(
 		std::stringstream str;
 		str << name << "_" << i;
 		CLAM_ASSERT(parent, "InControlTmplArray must be published. Check ctr processing* parameter");
-		mControls.at(i) = new TInControl(i, str.str(), parent, f);	
+		mControls[i] = new TInControl(i, str.str(), parent, f);	
 	}
 }
 template <class TProcessing>
 InControlTmplArray<TProcessing>::~InControlTmplArray()
 {
 	for (int i=0; i<mControls.size(); i++)
-		delete mControls.at(i);
+		delete mControls[i];
 }
 
 } //namespace CLAM

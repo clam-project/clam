@@ -23,8 +23,8 @@ public:
 
 	inline ~InControlArray();
 
-	inline InControl       &operator[](int i)        { return *mControls.at(i); }
-	inline const InControl &operator[](int i) const  { return *mControls.at(i); }
+	inline InControl       &operator[](int i)        { return *mControls[i]; }
+	inline const InControl &operator[](int i) const  { return *mControls[i]; }
 };
 
 
@@ -37,9 +37,9 @@ InControlArray::InControlArray(int size,
 		std::stringstream str;
 		str << name << "_" << i;
 		if (parent)
-			mControls.at(i) = new InControl(str.str(),parent);
+			mControls[i] = new InControl(str.str(),parent);
 		else
-			mControls.at(i) = new InControl(str.str());
+			mControls[i] = new InControl(str.str());
 	}
 }
 
