@@ -4,7 +4,7 @@
 #include "Presentation.hxx"
 #include "Array.hxx"
 #include "DataTypes.hxx"
-#include "Slot.hxx"
+#include "Slotv1.hxx"
 
 namespace CLAMGUI
 {
@@ -19,21 +19,22 @@ namespace CLAMGUI
 				DataArray        mBinsPhase;
 				TData            mSpectralRange;
 
-				// slots
-				Slot             mBinsMagSlot;
-				Slot             mBinsPhaseSlot;
-				Slot             mBinsSpecRngSlot;
 
 				// Implementation details
 		protected:
 				virtual void Bind( Aspect& ) throw ( std::bad_cast );
 				
 				// callback methods to be called by the view
-				virtual void HandleIncomingMagBins( const DataArray& array );
-				virtual void HandleIncomingPhaseBins( const DataArray& array );
-				virtual void HandleIncomingSpecRng( TData specRange );
+				virtual void OnNewMagBins( const DataArray& array );
+				virtual void OnNewPhaseBins( const DataArray& array );
+				virtual void OnNewSpecRng( TData specRange );
 
 		public:
+				// slots
+				Slotv1<const DataArray&>         SetMagnitudeBins;
+				Slotv1<const DataArray&>         SetPhaseBins;
+				Slotv1<TData>                    SetSpectralRange;
+
 
 				StdioSpectrumPresentation();
 

@@ -1,5 +1,5 @@
 #include "StdioSpectrumPresentation.hxx"
-#include "SpectrumViewAspect.hxx"
+#include "SpectrumAspect.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -8,7 +8,9 @@ namespace CLAMGUI
 		StdioSpectrumPresentation::StdioSpectrumPresentation()
 				: mSpectralRange( 22050 )
 		{
-				
+				SetMagnitudeBins.Wrap( this, &StdioSpectrumPresentation::OnNewMagBins );
+				SetPhaseBins.Wrap( this, &StdioSpectrumPresentation::OnNewPhaseBins );
+				SetSpectralRange.Wrap( this, &StdioSpectrumPresentation::OnNewSpecRng );
 		}
 
 		StdioSpectrumPresentation::~StdioSpectrumPresentation()
@@ -19,25 +21,33 @@ namespace CLAMGUI
 		{
 				std::cout << "DATA RETRIEVED:" << std::endl;
 				
-				std::cout << "Highest magnitude value (dB): " << *std::max_element(mBinsMagnitude.GetPtr(),mBinsMagnitude.GetPtr()+mBinsMagnitude.Size() ) << std::endl;
-				std::cout << "Lowest magnitude value (dB): " << *std::min_element(mBinsMagnitude.GetPtr(),mBinsMagnitude.GetPtr()+mBinsMagnitude.Size() ) << std::endl;
+				std::cout << "Highest magnitude value (dB): ";
+				std::cout << *std::max_element(mBinsMagnitude.GetPtr(),mBinsMagnitude.GetPtr()+mBinsMagnitude.Size() );
+				std::cout << std::endl;
+				std::cout << "Lowest magnitude value (dB): ";
+				std::cout << *std::min_element(mBinsMagnitude.GetPtr(),mBinsMagnitude.GetPtr()+mBinsMagnitude.Size() );
+				std::cout << std::endl;
 
-				std::cout << "Highest phase angle ( radians ):" << *std::max_element( mBinsPhase.GetPtr(),mBinsPhase.GetPtr()+mBinsPhase.Size() ) << std::endl;				
-				std::cout << "Lowest phase angle ( radians ):"  << *std::max_element( mBinsPhase.GetPtr(),mBinsPhase.GetPtr()+mBinsPhase.Size() ) << std::endl;
+				std::cout << "Highest phase angle ( radians ):";
+				std::cout << *std::max_element( mBinsPhase.GetPtr(),mBinsPhase.GetPtr()+mBinsPhase.Size() );
+				std::cout << std::endl;				
+				std::cout << "Lowest phase angle ( radians ):";
+				std::cout << *std::max_element( mBinsPhase.GetPtr(),mBinsPhase.GetPtr()+mBinsPhase.Size() );
+				std::cout << std::endl;
 
 				std::cout << "Spectral range :" << mSpectralRange << std::endl;
  		}
 
 		void StdioSpectrumPresentation::Bind( Aspect& a ) throw ( std::bad_cast )
 		{
-				SpectrumViewAspect& viewAspect = dynamic_cast< SpectrumViewAspect& >( a );
+				SpectrumAspect& aspect = dynamic_cast< SpectrumAspect& >( a );
 				
-				viewAspect.AcquireMagnitude.Connect( this, &StdioSpectrumPresentation::HandleIncomingMagBins, mBinsMagSlot );
-				viewAspect.AcquirePhase.Connect( this, &StdioSpectrumPresentation::HandleIncomingPhaseBins, mBinsPhaseSlot );
-				viewAspect.AcquireSpectralRange.Connect( this, &StdioSpectrumPresentation::HandleIncomingSpecRng, mBinsSpecRngSlot );
+				aspect.AcquireMagnitude.Connect( SetMagnitudeBins );
+				aspect.AcquirePhase.Connect( SetPhaseBins );
+				aspect.AcquireSpectralRange.Connect( SetSpectralRange );
 		}
 
-		void StdioSpectrumPresentation::HandleIncomingMagBins( const DataArray& array )
+		void StdioSpectrumPresentation::OnNewMagBins( const DataArray& array )
 		{
 				mBinsMagnitude.Resize( array.Size() );
 				mBinsMagnitude.SetSize( array.Size() );
@@ -45,7 +55,7 @@ namespace CLAMGUI
 				std::copy( array.GetPtr(), array.GetPtr() + array.Size(), mBinsMagnitude.GetPtr() );
 		}
 
-		void StdioSpectrumPresentation::HandleIncomingPhaseBins( const DataArray& array )
+		void StdioSpectrumPresentation::OnNewPhaseBins( const DataArray& array )
 		{
 				mBinsPhase.Resize( array.Size() );
 				mBinsPhase.SetSize( array.Size() );
@@ -54,7 +64,7 @@ namespace CLAMGUI
 				
 		}
 		
-		void StdioSpectrumPresentation::HandleIncomingSpecRng( TData specRange )
+		void StdioSpectrumPresentation::OnNewSpecRng( TData specRange )
 		{
 				mSpectralRange = specRange;
 		}

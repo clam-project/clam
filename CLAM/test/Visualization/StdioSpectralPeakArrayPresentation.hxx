@@ -5,7 +5,7 @@
 #include "Array.hxx"
 #include "Partial.hxx"
 #include "DataTypes.hxx"
-#include "Slot.hxx"
+#include "Slotv1.hxx"
 
 
 namespace CLAMGUI
@@ -17,7 +17,6 @@ namespace CLAMGUI
 		private:
 				Array<Partial>         mPartialsToDraw;
 
-				Slot                   mPartialsSlot;
 
 		protected:
 
@@ -25,8 +24,10 @@ namespace CLAMGUI
 
 				// callback methods to be called by the view
 
-				virtual void HandleIncomingPartials( const Array<Partial>& array );
+				virtual void OnNewPartials( const Array<Partial>& array );
 		public:
+
+				Slotv1<const Array<Partial>& >            SetPartials;
 
 				StdioSpectralPeakArrayPresentation();
 				virtual ~StdioSpectralPeakArrayPresentation();

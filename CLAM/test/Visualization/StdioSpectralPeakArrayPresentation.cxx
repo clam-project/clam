@@ -1,5 +1,5 @@
 #include "StdioSpectralPeakArrayPresentation.hxx"
-#include "SpectralPeakArrayViewAspect.hxx"
+#include "SpectralPeakArrayAspect.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -8,6 +8,7 @@ namespace CLAMGUI
 {
 		StdioSpectralPeakArrayPresentation::StdioSpectralPeakArrayPresentation()
 		{
+				SetPartials.Wrap( this, &StdioSpectralPeakArrayPresentation::OnNewPartials );
 		}
 		
 		StdioSpectralPeakArrayPresentation::~StdioSpectralPeakArrayPresentation()
@@ -29,12 +30,12 @@ namespace CLAMGUI
 
 		void StdioSpectralPeakArrayPresentation::Bind( Aspect& a) throw( std::bad_cast )
 		{
-				SpectralPeakArrayViewAspect& viewAspect = dynamic_cast< SpectralPeakArrayViewAspect& >( a );
+				SpectralPeakArrayAspect& viewAspect = dynamic_cast< SpectralPeakArrayAspect& >( a );
 
-				viewAspect.AcquirePartials.Connect( this, &StdioSpectralPeakArrayPresentation::HandleIncomingPartials, mPartialsSlot );
+				viewAspect.AcquirePartials.Connect( SetPartials );
 		}
 
-		void StdioSpectralPeakArrayPresentation::HandleIncomingPartials( const Array<Partial>& array )
+		void StdioSpectralPeakArrayPresentation::OnNewPartials( const Array<Partial>& array )
 		{
 				mPartialsToDraw.Resize( array.Size() );
 				mPartialsToDraw.SetSize( array.Size() );

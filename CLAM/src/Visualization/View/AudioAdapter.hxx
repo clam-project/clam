@@ -1,5 +1,5 @@
-#ifndef __AUDIOVIEW__
-#define __AUDIOVIEW__
+#ifndef __AUDIOADAPTER__
+#define __AUDIOADAPTER__
 
 #include "ProcessingDataAdapter.hxx"
 #include "AudioAspect.hxx"

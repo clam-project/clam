@@ -1,5 +1,5 @@
 #include "StdioAudioPresentation.hxx"
-#include "AudioViewAspect.hxx"
+#include "AudioAspect.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -9,6 +9,10 @@ namespace CLAMGUI
 				: mMaximum( 0 ), mMinimum( 0 ), mAudioLen( 0 ),
 				  mAudioStart( 0 ), mSampleRate( 0 )
 		{
+				SetSamples.Wrap( this, &StdioAudioPresentation::OnNewSamples );
+				SetDuration.Wrap( this, &StdioAudioPresentation::OnNewDuration );
+				SetStartTime.Wrap( this, &StdioAudioPresentation::OnNewStartTime );
+				SetSampleRate.Wrap( this, &StdioAudioPresentation::OnNewSampleRate );
 		}
 		
 		StdioAudioPresentation::~StdioAudioPresentation()
@@ -29,32 +33,32 @@ namespace CLAMGUI
 		void StdioAudioPresentation::Bind( Aspect& a ) throw ( std::bad_cast )
 		{
 				// Here we go!
-				AudioViewAspect& viewAspect = dynamic_cast<AudioViewAspect& >( a );
+				AudioAspect& aspect = dynamic_cast<AudioAspect& >( a );
 				
-				viewAspect.AcquireSamples.Connect( this, &StdioAudioPresentation::HandleIncomingBuffer, mBufferSlot );
-				viewAspect.AcquireDuration.Connect( this, &StdioAudioPresentation::HandleIncomingDuration, mLenSlot );
-				viewAspect.AcquireStartTime.Connect( this, &StdioAudioPresentation::HandleIncomingStartTime, mStartSlot );
-				viewAspect.AcquireSampleRate.Connect( this, &StdioAudioPresentation::HandleIncomingSampleRate, mRateSlot );
+				aspect.AcquireSamples.Connect( SetSamples );
+				aspect.AcquireDuration.Connect( SetDuration );
+				aspect.AcquireStartTime.Connect( SetStartTime );
+				aspect.AcquireSampleRate.Connect( SetSampleRate );
 		}
 
-		void StdioAudioPresentation::HandleIncomingBuffer( const DataArray& array )
+		void StdioAudioPresentation::OnNewSamples( const DataArray& array )
 		{
 				mMaximum = *std::max_element( array.GetPtr(), array.GetPtr()+array.Size() );
 				mMinimum = *std::min_element( array.GetPtr(), array.GetPtr()+array.Size() );
 				
 		}
 
-		void StdioAudioPresentation::HandleIncomingDuration( TTime secs )
+		void StdioAudioPresentation::OnNewDuration( TTime secs )
 		{
 				mAudioLen = secs;
 		}
 
-		void StdioAudioPresentation::HandleIncomingStartTime( TTime secs )
+		void StdioAudioPresentation::OnNewStartTime( TTime secs )
 		{
 				mAudioStart = secs;
 		}
 
-		void StdioAudioPresentation::HandleIncomingSampleRate( TData rate )
+		void StdioAudioPresentation::OnNewSampleRate( TData rate )
 		{
 				mSampleRate = rate;
 		}

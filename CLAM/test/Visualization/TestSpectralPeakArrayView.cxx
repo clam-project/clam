@@ -1,5 +1,5 @@
 #include "SpectralPeakArray.hxx"
-#include "SpectralPeakArrayView.hxx"
+#include "SpectralPeakArrayAdapter.hxx"
 #include "StdioSpectralPeakArrayPresentation.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
@@ -9,12 +9,12 @@
 
 using CLAM::SpectralPeakArray;
 using CLAM::XMLStorage;
-using CLAMGUI::SpectralPeakArrayView;
+using CLAMGUI::SpectralPeakArrayAdapter;
 using CLAMGUI::StdioSpectralPeakArrayPresentation;
 
 static const char* sPathToData = "./DataSets/";
 
-bool TestBasicUseCase( SpectralPeakArrayView& view, StdioSpectralPeakArrayPresentation& presentation )
+bool TestBasicUseCase( SpectralPeakArrayAdapter& view, StdioSpectralPeakArrayPresentation& presentation )
 {
 		XMLStorage x;
 		SpectralPeakArray    specPeakArrayObj;
@@ -28,7 +28,7 @@ bool TestBasicUseCase( SpectralPeakArrayView& view, StdioSpectralPeakArrayPresen
 
 		view.BindTo( &specPeakArrayObj );
 
-		view.Refresh();
+		view.Publish();
 		presentation.Show();
 
 		return true;
@@ -38,7 +38,7 @@ int main( int argc, char** argv )
 {
 		try
 		{
-				SpectralPeakArrayView                view;
+				SpectralPeakArrayAdapter                view;
 				StdioSpectralPeakArrayPresentation   presentation;
 
 				presentation.AttachTo( view );

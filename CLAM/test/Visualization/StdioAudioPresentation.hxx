@@ -4,7 +4,7 @@
 #include "Presentation.hxx"
 #include "Array.hxx"
 #include "DataTypes.hxx"
-#include "Slot.hxx"
+#include "Slotv1.hxx"
 
 namespace CLAMGUI
 {
@@ -22,11 +22,6 @@ private:
 		TTime      mAudioStart;
 		TData      mSampleRate;
 
-		// slots
-		Slot       mBufferSlot;
-		Slot       mLenSlot;
-		Slot       mStartSlot;
-		Slot       mRateSlot;
 
 		// Implementation details
 protected:
@@ -35,15 +30,21 @@ protected:
 
 		// callback methods to retrieving data from the vie
 //public slots:
-		virtual void HandleIncomingBuffer( const DataArray& array );
-		virtual void HandleIncomingDuration(  TTime secs );
-		virtual void HandleIncomingStartTime(  TTime secs );
-		virtual void HandleIncomingSampleRate(  TData rate );
+		virtual void OnNewSamples( const DataArray& array );
+		virtual void OnNewDuration(  TTime secs );
+		virtual void OnNewStartTime(  TTime secs );
+		virtual void OnNewSampleRate(  TData rate );
 
 		// Public class interface
 public:
 		
 		StdioAudioPresentation();
+
+		// slots
+		Slotv1<const DataArray&>     SetSamples;
+		Slotv1<TTime>                SetDuration;
+		Slotv1<TTime>                SetStartTime;
+		Slotv1<TData>                SetSampleRate;
 
 		virtual ~StdioAudioPresentation();
 

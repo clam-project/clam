@@ -1,5 +1,5 @@
 #include "Spectrum.hxx"
-#include "LogMagSpectrumView.hxx"
+#include "LogMagSpectrumAdapter.hxx"
 #include "StdioSpectrumPresentation.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
@@ -8,14 +8,14 @@
 #include <string>
 
 using CLAM::Spectrum;
-using CLAMGUI::LogMagSpectrumView;
+using CLAMGUI::LogMagSpectrumAdapter;
 using CLAMGUI::StdioSpectrumPresentation;
 using CLAM::XMLStorage;
 
 static const char* sPathToData= "./DataSets/";
 
 
-bool TestPureComplexUseCase(LogMagSpectrumView& view, StdioSpectrumPresentation& presentation )
+bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, StdioSpectrumPresentation& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -30,14 +30,14 @@ bool TestPureComplexUseCase(LogMagSpectrumView& view, StdioSpectrumPresentation&
 		
 		view.BindTo( &specObj );
 
-		view.Refresh();
+		view.Publish();
 		presentation.Show();
 
 		return true;
 
 }
 
-bool TestPurePolarUseCase(LogMagSpectrumView& view, StdioSpectrumPresentation& presentation)
+bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, StdioSpectrumPresentation& presentation)
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -52,14 +52,14 @@ bool TestPurePolarUseCase(LogMagSpectrumView& view, StdioSpectrumPresentation& p
 		
 		view.BindTo( &specObj );
 
-		view.Refresh();
+		view.Publish();
 		presentation.Show();
 
 		return true;
 
 }
 
-bool TestPureBPFUseCase( LogMagSpectrumView& view, StdioSpectrumPresentation& presentation )
+bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, StdioSpectrumPresentation& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -74,13 +74,13 @@ bool TestPureBPFUseCase( LogMagSpectrumView& view, StdioSpectrumPresentation& pr
 		
 		view.BindTo( &specObj );
 
-		view.Refresh();
+		view.Publish();
 		presentation.Show();
 
 		return true;
 }
 
-bool TestBasicUseCase( LogMagSpectrumView& view, StdioSpectrumPresentation& presentation )
+bool TestBasicUseCase( LogMagSpectrumAdapter& view, StdioSpectrumPresentation& presentation )
 {
 		XMLStorage  x;
 		Spectrum    specObj;
@@ -95,7 +95,7 @@ bool TestBasicUseCase( LogMagSpectrumView& view, StdioSpectrumPresentation& pres
 		
 		view.BindTo( &specObj );
 
-		view.Refresh();
+		view.Publish();
 		presentation.Show();
 
 		return true;
@@ -105,7 +105,7 @@ int main( int argc, char** argv )
 {
 		try
 		{
-				LogMagSpectrumView        view;
+				LogMagSpectrumAdapter        view;
 				StdioSpectrumPresentation presentation;
 
 				presentation.AttachTo( view );

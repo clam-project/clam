@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef __PROCESSINGDATAVIEW__
-#define __PROCESSINGDATAVIEW__
+#ifndef __PROCESSINGDATAADPATER__
+#define __PROCESSINGDATAADPATER__
 
-#include "View.hxx"
+#include "ModelAdapter.hxx"
 
 namespace CLAM
 {
@@ -41,33 +41,33 @@ namespace CLAMGUI
  *  for all Views that observe CLAM ProcessingData's.
  */
 
-class ProcessingDataView : public View
+class ProcessingDataAdapter : public ModelAdapter
 {
 public:
 
-		virtual ~ProcessingDataView()
+		virtual ~ProcessingDataAdapter()
 		{
 		}
 
 		/**
-		 *  @see View::GetClassName
+		 *  @see ModelAdapter::GetClassName
 		 */	
 		virtual const char* GetClassName() const  = 0;
 
 		/**
-		 *  @see View::GetAspect
+		 *  @see ModelAdapter::GetAspect
 		 */
 		virtual Aspect& GetAspect() = 0;
 
 		/**
-		 *  @see View::Refresh
+		 *  @see ModelAdapter::Refresh
 		 */
-		virtual bool Refresh() = 0;
+		virtual bool Publish() = 0;
 
 		/**
 		 *  This method stores a reference to the observed model object,
 		 *  checking that the provided object is consistent ( from the
-		 *  view point of view, of course). Consistency is enforced depending
+		 *  model adapter point of view, of course). Consistency is enforced depending
 		 *  on the cost of the operations required to achieve such consistency.
 		 *  @param Pointer to the processing data to be observed
 		 *  @return A boolean telling us if it was possible to bind 
@@ -79,4 +79,4 @@ public:
 
 }
 
-#endif // ProcessingDataView.hxx
+#endif // ProcessingDataAdapter.hxx

@@ -1,6 +1,6 @@
 #include "StdioSinTracksPresentation.hxx"
-#include "SinTracksViewAspect.hxx"
-#include "SinTrackSegment.hxx"
+#include "SinTracksAspect.hxx"
+//#include "SinTrackSegment.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -41,6 +41,9 @@ namespace CLAMGUI
 		StdioSinTracksPresentation::StdioSinTracksPresentation()
 				: mTrackListBuilder( mSineTracks )
 		{
+				SetPartials.Wrap( this, &StdioSinTracksPresentation::OnNewPartials );
+				SetSpectralRange.Wrap( this, &StdioSinTracksPresentation::OnNewRange );
+				SetDuration.Wrap( this, &StdioSinTracksPresentation::OnNewDuration );
 		}
 
 		StdioSinTracksPresentation::~StdioSinTracksPresentation()
@@ -49,11 +52,11 @@ namespace CLAMGUI
 
 		void StdioSinTracksPresentation::Bind( Aspect& a ) throw( std::bad_cast )
 		{
-				SinTracksViewAspect& viewAspect = dynamic_cast< SinTracksViewAspect& >( a );
+				SinTracksAspect& viewAspect = dynamic_cast< SinTracksAspect& >( a );
 				
-				viewAspect.AcquirePartials.Connect( this, &StdioSinTracksPresentation::HandleIncomingPartials, mPartialsSlot );
-				viewAspect.AcquireSpectralRange.Connect( this, &StdioSinTracksPresentation::HandleIncomingRange, mSpectralRangeSlot );
-				viewAspect.AcquireDuration.Connect( this, &StdioSinTracksPresentation::HandleIncomingDuration, mDurationSlot );
+				viewAspect.AcquirePartials.Connect( SetPartials );
+				viewAspect.AcquireSpectralRange.Connect( SetSpectralRange );
+				viewAspect.AcquireDuration.Connect( SetDuration  );
 		}
 
 		void StdioSinTracksPresentation::Show()
@@ -72,19 +75,19 @@ namespace CLAMGUI
 				
 		}
 		
-		void StdioSinTracksPresentation::HandleIncomingRange( TData spec_rng )
+		void StdioSinTracksPresentation::OnNewRange( TData spec_rng )
 		{
 				mSpectralRange = spec_rng;
 		}
 
-		void StdioSinTracksPresentation::HandleIncomingDuration( TTime begin, TTime end )
+		void StdioSinTracksPresentation::OnNewDuration( TTime begin, TTime end )
 		{
 				mBeginTime = begin;
 				mEndTime = end;
 				mLen = end - begin;
 		}
 
-		void StdioSinTracksPresentation::HandleIncomingPartials( const Array<Partial>& array, TIndex frame_idx )
+		void StdioSinTracksPresentation::OnNewPartials( const Array<Partial>& array, TIndex frame_idx )
 		{
 				// ufff
 

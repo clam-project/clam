@@ -3,7 +3,8 @@
 
 #include "Presentation.hxx"
 #include "Array.hxx"
-#include "Slot.hxx"
+#include "Slotv1.hxx"
+#include "Slotv2.hxx"
 #include "DataTypes.hxx"
 #include "SinTrackListBuilder.hxx"
 #include <list>
@@ -73,13 +74,10 @@ namespace CLAMGUI
 				typedef SineTrackList::iterator iterator;
 
 				SineTrackList               mSineTracks;
-				Slot                        mPartialsSlot;
 				TData                       mSpectralRange;
-				Slot                        mSpectralRangeSlot;
 				TTime                       mBeginTime;
 				TTime                       mEndTime;
 				TTime                       mLen;
-				Slot                        mDurationSlot;
 
 				SinTrackBuilder             mTrackListBuilder;
 
@@ -87,12 +85,16 @@ namespace CLAMGUI
 
 				virtual void Bind( Aspect& ) throw( std::bad_cast );
 
-				virtual void HandleIncomingPartials( const Array<Partial>& array, TIndex frames_to_go );
+				virtual void OnNewPartials( const Array<Partial>& array, TIndex frames_to_go );
 
-				virtual void HandleIncomingRange ( TData spec_rng );
+				virtual void OnNewRange ( TData spec_rng );
 				
-				virtual void HandleIncomingDuration( TTime begin, TTime end );
+				virtual void OnNewDuration( TTime begin, TTime end );
 		public:
+				Slotv2< const Array<Partial>&, TIndex >           SetPartials;
+				Slotv1< TData >                                   SetSpectralRange;
+				Slotv2< TTime, TTime >                            SetDuration;
+
 
 				StdioSinTracksPresentation();
 

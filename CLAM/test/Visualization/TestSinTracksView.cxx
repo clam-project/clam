@@ -1,5 +1,5 @@
 #include "Segment.hxx"
-#include "SinTracksView.hxx"
+#include "SinTracksAdapter.hxx"
 #include "StdioSinTracksPresentation.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
@@ -9,12 +9,12 @@
 
 using CLAM::Segment;
 using CLAM::XMLStorage;
-using CLAMGUI::SinTracksView;
+using CLAMGUI::SinTracksAdapter;
 using CLAMGUI::StdioSinTracksPresentation;
 
 static const char* sPathToData = "./DataSets/";
 
-bool TestBasicUseCase( SinTracksView& view, StdioSinTracksPresentation& presentation )
+bool TestBasicUseCase( SinTracksAdapter& view, StdioSinTracksPresentation& presentation )
 {
 		XMLStorage x;
 		Segment    segmentObj;
@@ -30,7 +30,7 @@ bool TestBasicUseCase( SinTracksView& view, StdioSinTracksPresentation& presenta
 
 		view.BindTo( &segmentObj );
 
-		view.Refresh();
+		view.Publish();
 		std::cout << "DATA ACQUISITION DONE!" << std::endl;
 		presentation.Show();
 
@@ -41,7 +41,7 @@ int main( int argc, char** argv )
 {
 		try
 		{
-				SinTracksView                view;
+				SinTracksAdapter             view;
 				StdioSinTracksPresentation   presentation;
 
 				presentation.AttachTo( view );

@@ -1,5 +1,5 @@
 #include "Audio.hxx"
-#include "AudioView.hxx"
+#include "AudioAdapter.hxx"
 #include "XMLStorage.hxx"
 #include "StdioAudioPresentation.hxx"
 #include "Err.hxx"
@@ -8,12 +8,12 @@
 
 using CLAM::Audio;
 using CLAM::XMLStorage;
-using CLAMGUI::AudioView;
+using CLAMGUI::AudioAdapter;
 using CLAMGUI::StdioAudioPresentation;
 
 static const char* sPathToData="./DataSets/";
 
-bool TestBasicUseCase( AudioView& view, StdioAudioPresentation& presentation )
+bool TestBasicUseCase( AudioAdapter& view, StdioAudioPresentation& presentation )
 {
 		
 		XMLStorage  x;
@@ -30,7 +30,7 @@ bool TestBasicUseCase( AudioView& view, StdioAudioPresentation& presentation )
 
 		view.BindTo( &audioObj );
 
-		view.Refresh();
+		view.Publish();
 		presentation.Show();
 		
 		return true;
@@ -39,7 +39,7 @@ bool TestBasicUseCase( AudioView& view, StdioAudioPresentation& presentation )
 
 int main( int argc, char** argv )
 {
-		AudioView                   view;
+		AudioAdapter                view;
 		StdioAudioPresentation      presentation;
 
 		presentation.AttachTo( view );
