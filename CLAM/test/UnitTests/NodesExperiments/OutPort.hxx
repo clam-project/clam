@@ -20,8 +20,8 @@ public:
 	{
 		return mConnectedInPortsList.end();
 	}
-	virtual ~OutPortBase()
-	{}
+	virtual ~OutPortBase(){}
+
 protected:
 	InPortsList mConnectedInPortsList;
 };
@@ -36,6 +36,12 @@ class OutPort : public OutPortBase
 
 
 public:
+	virtual ~OutPort()
+	{
+		InPortsList::iterator it;
+		for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
+			DisconnectFromIn(**it);
+	}
 
 	void ConnectToIn( InPortBase& in)
 	{
@@ -45,7 +51,7 @@ public:
 		} catch (...) // could be std::bad_cast ?
 		{
 			CLAM_ASSERT( false,
-				"OutPort<Token>::connectToIn coudn't connect to inPort"
+				"OutPort<Token>::connectToIn coudn't connect to inPort "
 				"because was not templatized by the same Token type as outPort" );
 		}
 	}
@@ -58,14 +64,12 @@ public:
 		CLAM_ASSERT( !IsConnectedTo(in), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an in port "
 						"already connected to this out port" );
 		mConnectedInPortsList.push_back(&in);
-		in.AttachToOutPort(this);
-		mRegion.LinkRegions( in.GetRegion() );
+		in.AttachToOutPort(this, mRegion );
 	}
 
 	void DisconnectFromIn( InPortBase& in)
 	{
-		try
-		{
+		try{
 			DisconnectFromConcreteIn( dynamic_cast<ProperInPort&>(in) );
 		} catch (...) // could be std::bad_cast ?
 		{
@@ -79,16 +83,44 @@ public:
 	{
 		CLAM_ASSERT( true == IsConnectedTo(in), "OutPort::DisconnectFromConcreteIn() - Trying to disconnect a "
 							"non-connected region" );
-		mRegion.RemoveRegion( in.GetRegion() );
 		mConnectedInPortsList.remove(&in);
 		in.UnAttach();
 	}
-	
-	ProperWritingRegion & GetRegion()
+	Token & operator[](int offset)
 	{
-		return mRegion;
+		return mRegion[offset];
+	}
+	
+	void SetSize( int newSize )
+	{
+		mRegion.Size( newSize );
+	}
+	
+	int GetSize()
+	{
+		return mRegion.Size();
 	}
 
+	int GetHop()
+	{
+		return mRegion.Hop();
+	}
+	
+	void SetHop( int hop )
+	{
+		mRegion.Hop(hop);
+	}
+		
+	void Produce()
+	{
+		mRegion.Produce();
+	}
+
+	bool CanProduce()
+	{
+		return mRegion.CanProduce();
+	}
+		
 	bool IsConnectedTo(InPortBase & in)
 	{
 		InPortsList::iterator it;
