@@ -219,9 +219,16 @@ public:
 	Array<T>& operator = (const Array<T>& src)
 	{
 		int tocopy;
-		if (Size() != src.Size())
-			Resize(src.Size());
-		mStep = src.mStep;
+		if (OwnsMemory())
+		{
+			if (Size() != src.Size())
+				Resize(src.Size());
+			mStep = src.mStep;
+		} else {
+			CLAM_ASSERT(src.Size()<=mAllocSize,
+					"Cannot copy a larger array to an array that does not own it's memory!");
+			// important to leave mStep untouched: it indicates that the array !OwnsMemory
+		}
 		tocopy = (src.Size()<Size())?src.Size():Size();
 		CopyDataBlock(0,tocopy,src.mpData);
 		InitializeCopyDataBlock(tocopy,src.Size(),src.mpData);
