@@ -6,7 +6,12 @@
   * XML:
      ** Indentation is back
      ** Fix: Storing arrays with size 1 crashes
-	 ** Fix: IterableAdapter joined array elements when basics
+ 	  ** Fix: IterableAdapter joined array elements when basics
+  * MIDI I/O
+     ** Added MIDI output
+	  ** Added virtual devices for midi-to-text out
+	  ** PortMIDI now also works on Linux
+	  ** Simplified MIDI input (see documentation)
   * Descriptors:
      ** More fixes on SpectralFlatness, LowFrequencyEnergiRelation and Rolloff:
         *** SpectralFlatness uses log10 instead log
