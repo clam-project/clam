@@ -117,7 +117,7 @@ namespace CLAM
 		mOutput.LeaveData();
 	}
 
-	bool MonoAudioFileReader::Do( Audio & outputSample )		
+	bool MonoAudioFileReader::Do( Audio & outputSamples )		
 	{
 		if ( !AbleToExecute() )
 			return false;
