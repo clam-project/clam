@@ -19,153 +19,141 @@
  *
  */
 
-#include "FLTKConfigurator.hxx"
-#include "QTConfigurator.hxx"
-#include <qapplication.h>
-#include "HeapDbg.hxx"
-#include "DynamicType.hxx"
+/**
+ * @file
+ * This example shows how the diferent values inside a dinamic type
+ * can be shown and edited using the Qt and FLTK configurator widgets.
+ * The kind of attributes that are shown are:
+ * - Boolean
+ * - std::string and CLAM::Text (the latter allows spaces)
+ * - Integer numbers
+ * - Double numbers
+ * - Filenames
+ * - Another dynamic type
+ * - Enumerations (limited set of values)
+ */
 
-#include <sstream>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <exception>
 
-#include "Component.hxx"
-#include "TypeInfo.hxx"
-#include "TypeInfoStd.hxx"
-
-#include "Filename.hxx"
-#include "Enum.hxx"
-#include "Processing.hxx"
 #include "XMLStorage.hxx"
-
-using namespace CLAM;
-
-namespace CLAMTest {
-
-// Dummy Enum
-
-class EDummy : public Enum {
-public:
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EDummy() : Enum(sEnumValues, sDefault) {}
-	EDummy(tValue v) : Enum(sEnumValues, v) {};
-	EDummy(std::string s) : Enum(sEnumValues, s) {};
-	virtual ~EDummy() {};
-	Component * Species() const { return new EDummy;};
-
-	typedef enum {
-		zero=0,
-		dos=2,
-		cent=100,
-		mil=1000
-	} tEnum;
-	static void TestClass ();
-};
-Enum::tEnumValue EDummy::sEnumValues[] = {
-	{EDummy::zero,"zero"},
-	{EDummy::dos,"dos"},
-	{EDummy::cent,"cent"},
-	{EDummy::mil,"mil"},
-	{0,NULL}
-};
-
-Enum::tValue EDummy::sDefault = EDummy::dos;
+#include "ProcessingConfig.hxx"
+#include "Enum.hxx"
+#include "Filename.hxx"
 
 
-// Dummy Config
 
-class DummySubConfig : public ProcessingConfig
+
+namespace CLAMTest
 {
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (DummySubConfig,6,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-	DYN_ATTRIBUTE(1,public,std::string,ThatIsAString);
-	DYN_ATTRIBUTE(2,public,TData,ThatIsATData);
-	DYN_ATTRIBUTE(3,public,TSize,ThatIsATSize);
-	DYN_ATTRIBUTE(4,public,EDummy, ThatIsAEDummy);
-	DYN_ATTRIBUTE(5,public,bool, ThatIsABool);
-private:
 
-	void DefaultInit() {
-		AddAll();
-		UpdateData();
-		DefaultValues();
-	}
-	void DefaultValues() {
-	}
+	// Firstly we will define the objects that we want to modify.
 
-public:
-	~DummySubConfig(){};
-};
+	// The enumeration must be defined as a class.
+	class EDummy : public CLAM::Enum {
+	public:
+		static tEnumValue sEnumValues[];
+		static tValue sDefault;
+		EDummy() : Enum(sEnumValues, sDefault) {}
+		EDummy(tValue v) : Enum(sEnumValues, v) {};
+		EDummy(std::string s) : Enum(sEnumValues, s) {};
+		virtual ~EDummy() {};
+		Component * Species() const { return new EDummy;};
 
-class NotSupportedType : public Component {
-	void StoreOn(Storage &) const { }
-	void LoadFrom(Storage &) { }
-	const char * GetClassName() const { return "NotSupportedType"; }
-};
+		typedef enum {
+			zero=0,
+			dos=2,
+			cent=100,
+			mil=1000
+		} tEnum;
+		static void TestClass ();
+	};
+	CLAM::Enum::tEnumValue EDummy::sEnumValues[] = {
+		{EDummy::zero,"zero"},
+		{EDummy::dos,"dos"},
+		{EDummy::cent,"cent"},
+		{EDummy::mil,"mil"},
+		{0,NULL}
+	};
 
-class DummyConfig : public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,30,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
-	DYN_ATTRIBUTE(2,public,TData,ThisIsATData);
-	DYN_ATTRIBUTE(3,public,TSize,ThisIsATSize);
-	DYN_ATTRIBUTE(4,public,EDummy, ThisIsAEDummy);
-	DYN_ATTRIBUTE(5,public,NotSupportedType, ThisIsNotSupportedType);
-	DYN_ATTRIBUTE(6,public,DummySubConfig, ThisIsASubConfig);
-	DYN_ATTRIBUTE(7,public,bool, ThisIsABool);
-	DYN_ATTRIBUTE(8,public,DummySubConfig, ThisIsDifferentSubConfig);
-	DYN_ATTRIBUTE(9,public,Filename, ThisIsAFilename);
-	DYN_ATTRIBUTE(10,public,std::string,BName);
-	DYN_ATTRIBUTE(11,public,std::string,BThisisAString);
-	DYN_ATTRIBUTE(12,public,TData,BThisIsATData);
-	DYN_ATTRIBUTE(13,public,TSize,BThisIsATSize);
-	DYN_ATTRIBUTE(14,public,EDummy, BThisIsAEDummy);
-	DYN_ATTRIBUTE(15,public,NotSupportedType, BThisIsNotSupportedType);
-	DYN_ATTRIBUTE(16,public,DummySubConfig, BThisIsASubConfig);
-	DYN_ATTRIBUTE(17,public,bool, BThisIsABool);
-	DYN_ATTRIBUTE(18,public,DummySubConfig, BThisIsDifferentSubConfig);
-	DYN_ATTRIBUTE(19,public,Filename, BThisIsAFilename);
-	DYN_ATTRIBUTE(20,public,std::string,CName);
-	DYN_ATTRIBUTE(21,public,std::string,CThisisAString);
-	DYN_ATTRIBUTE(22,public,TData,CThisIsATData);
-	DYN_ATTRIBUTE(23,public,TSize,CThisIsATSize);
-	DYN_ATTRIBUTE(24,public,EDummy,CThisIsAEDummy);
-	DYN_ATTRIBUTE(25,public,NotSupportedType,CThisIsNotSupportedType);
-	DYN_ATTRIBUTE(26,public,DummySubConfig,CThisIsASubConfig);
-	DYN_ATTRIBUTE(27,public,bool,CThisIsABool);
-	DYN_ATTRIBUTE(28,public,DummySubConfig,CThisIsDifferentSubConfig);
-	DYN_ATTRIBUTE(29,public,Filename,CThisIsAFilename);
+	CLAM::Enum::tValue EDummy::sDefault = EDummy::dos;
 
-private:
 
-	void DefaultInit() {
-		AddAll();
-		UpdateData();
-		DefaultValues();
-	}
-	void DefaultValues() {
-	}
-public:
-	~DummyConfig(){};
-};
+	// Also the sub configuration, a configuration object
+	// inside the main one.
+
+	class DummySubConfig : public CLAM::ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (DummySubConfig,6,ProcessingConfig);
+		DYN_ATTRIBUTE(0,public,std::string,Name);
+		DYN_ATTRIBUTE(1,public,std::string,ThatIsAString);
+		DYN_ATTRIBUTE(2,public,CLAM::TData,ThatIsATData);
+		DYN_ATTRIBUTE(3,public,CLAM::TSize,ThatIsATSize);
+		DYN_ATTRIBUTE(4,public,EDummy, ThatIsAEDummy);
+		DYN_ATTRIBUTE(5,public,bool, ThatIsABool);
+	private:
+
+		void DefaultInit() {
+			AddAll();
+			UpdateData();
+			DefaultValues();
+		}
+		void DefaultValues() {
+		}
+
+	public:
+		~DummySubConfig(){};
+	};
+
+	// A not suported type, and see what is happening
+	class NotSupportedType : public CLAM::Component {
+		void StoreOn(CLAM::Storage &) const { }
+		void LoadFrom(CLAM::Storage &) { }
+		const char * GetClassName() const { return "NotSupportedType"; }
+	};
+
+	// And at last, the main configuration class
+	// including all the above and more
+	class DummyConfig : public CLAM::ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,10,ProcessingConfig);
+		DYN_ATTRIBUTE(0,public,std::string,Name);
+		DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
+		DYN_ATTRIBUTE(2,public,CLAM::TData,ThisIsATData);
+		DYN_ATTRIBUTE(3,public,CLAM::TSize,ThisIsATSize);
+		DYN_ATTRIBUTE(4,public,EDummy, ThisIsAEDummy);
+		DYN_ATTRIBUTE(5,public,NotSupportedType, ThisIsNotSupportedType);
+		DYN_ATTRIBUTE(6,public,DummySubConfig, ThisIsASubConfig);
+		DYN_ATTRIBUTE(7,public,bool, ThisIsABool);
+		DYN_ATTRIBUTE(8,public,DummySubConfig, ThisIsDifferentSubConfig);
+		DYN_ATTRIBUTE(9,public,CLAM::Filename, ThisIsAFilename);
+
+	private:
+
+		void DefaultInit() {
+			AddAll();
+			UpdateData();
+			DefaultValues();
+		}
+		void DefaultValues() {
+		}
+	public:
+		~DummyConfig(){};
+	};
 
 
 }
-//using namespace CLAM;
+
+#include "FLTKConfigurator.hxx"
+#include "QTConfigurator.hxx"
 
 #include <FL/Fl.H>
-//#include <qapplication.h>
+#include <qapplication.h>
 
 
 using namespace CLAMTest;
 
-int TryQTConfigurator(DummyConfig & config, int argc, char**argv)
+int DisplayQTConfigurator(DummyConfig & config, int argc, char**argv)
 {
 	QApplication a(argc,argv);
 	CLAM::QTConfigurator configurator;
@@ -175,7 +163,7 @@ int TryQTConfigurator(DummyConfig & config, int argc, char**argv)
 	return a.exec();
 }
 
-int TryFLTKConfigurator(DummyConfig & config)
+int DisplayFLTKConfigurator(DummyConfig & config)
 {
 	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
 	configurator->SetConfig(config);
@@ -183,48 +171,32 @@ int TryFLTKConfigurator(DummyConfig & config)
 	return Fl::run();
 }
 
-void TryDisplayXML(DummyConfig & config) 
-{
-	XMLStorage::Dump(config,"DummyConfig", std::cout);
-}
 
-void TryStoreXML(DummyConfig & config, char * xmlfilename) 
+int main(int argc, char** argv)
 {
-	XMLStorage::Dump(config,"DummyConfig", xmlfilename);
-}
+	const char * xmlfilename="config.xml";
+	DummyConfig config;
 
-void TryLoadXML(DummyConfig & config, char * xmlfilename) 
-{
-	try {
-		XMLStorage::Restore(config, xmlfilename);
-	} catch (...) {
+	// If it is present, load the xml file
+	try
+	{
+		CLAM::XmlStorage::Restore(config, xmlfilename);
+	}
+	catch (...)
+	{
 		std::cout 
 			<< "Could not read the file '" << xmlfilename <<  "'. " 
 			<< "Working with a default configuration." << std::endl;
 	}
-}
 
-int main(int argc, char** argv)
-{
-	int ret=0;
-	try {
-		DummyConfig config;
-		TryLoadXML(config,"configout.xml");
-		TryQTConfigurator(config,argc,argv);
-		TryFLTKConfigurator(config);
-		TryStoreXML(config,"configout.xml");
-	} catch (CLAM::Err e)
-	{
-		e.Print();
-		std::cout << "Failed!" << std::endl;
-		return 1;
-	} catch (std::exception e)
-	{
-		std::cout << e.what() << std::endl;
-	} catch (...)
-	{
-		std::cout << "catch (...)" << std::endl;
-	}
+	// Use the configurators
+	DisplayQTConfigurator(config,argc,argv);
+	DisplayFLTKConfigurator(config);
 
-	return ret;	
+	// Display and store the results
+	CLAM::XmlStorage::Dump(config,"DummyConfig", xmlfilename);
+	CLAM::XmlStorage::Dump(config,"DummyConfig", std::cout);
+	std::cout << std::endl;
+
+	return 0;	
 } 
