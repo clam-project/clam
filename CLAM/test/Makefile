@@ -33,9 +33,9 @@ TESTS = \
         TestStreamBuffer \
         TestEnvelopeExtractor \
         TestWaveGenerator \
-        TestSignalv1 \
         TestSpectrumAdder2 \
         TestSpectrumProduct \
+        TestSignalv1 \
 
 TOP=..
 
