@@ -72,11 +72,25 @@
       ** New method XMLStorage::UseIndentation to enable pretty XML formatting
       ** Obsoleted constructor receiving the root tag as parameter
       ** Obsoleted _restoreFrom and dumpOn, use Dump and Restore instead
-  * Visualizatiom:
-      ** Final Visualization Module design using SigSlot library. (see Documentation)
-      ** New FLTK presentations
-      ** Plots substitutes Snapshots
-      ** Configurators: New types suported: 'Filename', 'BPF'.
+  * Visualization Module:
+      ** Major rework in several areas:
+	 * View concept has now been mapped into two different classes, ModelAdapter's
+           whose mission is to wrap Core CLAM objects so they can have Visualization
+           Module components attached, and ModelController's whose mission consists in
+           allowing Visualization Module components to be controlled indirectly by the
+           user from the GUI. From now on VM interface will be kept stable ( at least until
+           CLAM 1.0 )
+         * Presentation semantics are preserved, but their nature of widgets is emphasized
+           in several ways
+         * Several new graphic representations of DSP concepts such as the sinusoidal tracks
+         * OpenGL data renderers optimized and debugged
+         * Old CbLib interface deprecated in favor of libSigSlot, CLAM own implementation of
+           the C++ idiom of Signals & Slots
+         * New plot's substitute the functionality offered by old snapshots
+         * Most of VM code is now documented with Doxygen comments
+         * Several new FLTK widgets, such as the Fl_Axis, Fl_SmartTile, etc. 	
+      ** Configurators: New type suported: 'Filename'
+      ** 'Formal' documentation will be soon made publicly available
 
 2003-03-05  CLAM_0_4_2
 'Cuidado merge update'
