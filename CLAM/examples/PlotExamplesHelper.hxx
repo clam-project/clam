@@ -17,4 +17,10 @@ extern void generateHighPassFilter( CLAM::Spectrum& spectrum );
 
 extern void measureRandRandomness( CLAM::Array< CLAM::TData >& measure );
 
+extern void generateSignalSpectrum( CLAM::Spectrum& spectrum );
+
+extern void filter( CLAM::Spectrum& signal,
+		    CLAM::Spectrum& filterResponse,
+		    CLAM::Spectrum& filteredSignal );
+
 #endif // PlotExamplesHelper.hxx
