@@ -20,12 +20,12 @@ public:
 		_attribute = attribute;
 	}
 
-	void Next()
+	virtual void Next()
 	{
 		_current++;
 	}
 
-	bool IsInsideScope() const
+	virtual bool IsInsideScope() const
 	{
 		return _current < GetIterationSize();
 	}
@@ -53,7 +53,6 @@ public:
 		return _data [GetCurrent()];
 	}
 
-protected:
 	virtual unsigned GetIterationSize() const
 	{
 		return _pool->GetNumberOfContexts(_scope);
@@ -77,8 +76,7 @@ public:
 		const std::string & scope, 
 		const std::string & attribute)
 	{
-		_indirectionScope = scope;
-		_indirectionAttribute = attribute;
+		_chained.Bind(scope,attribute);
 	}
 
 	void Init(const DescriptionDataPool & pool) 
@@ -86,7 +84,7 @@ public:
 		_pool = &pool;
 		_current = 0;
 		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
-		_indirections = _pool->template GetReadAttributePool<unsigned>(_indirectionScope,_indirectionAttribute);
+		_chained.Init(pool);
 		_targetScopeSize = _pool->GetNumberOfContexts(_scope);
 	}
 
@@ -94,26 +92,32 @@ public:
 	{
 		return _data[GetCurrent()];
 	}
-protected:
 	virtual unsigned GetIterationSize() const
 	{
-		return _pool->GetNumberOfContexts(_indirectionScope);
+		return _chained.GetIterationSize();
+	}
+	virtual void Next()
+	{
+		_chained.Next();
+	}
+
+	virtual bool IsInsideScope() const
+	{
+		return _chained.IsInsideScope();
 	}
 private:
 	unsigned GetCurrent() const
 	{
-		unsigned indirection = _indirections[_current];
+		unsigned indirection = _chained.GetForReading();
 		CLAM_ASSERT(indirection<_targetScopeSize,
 			"Invalid cross-scope reference");
 		return indirection;
 	}
 	
 	const DescriptionDataPool * _pool;
-	std::string _indirectionScope;
-	std::string _indirectionAttribute;
-	const unsigned * _indirections;
 	const AttributeType * _data;
 	unsigned _targetScopeSize;
+	ReadHook<unsigned> _chained;
 };
 
 
