@@ -43,7 +43,7 @@ endif
 
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) -lasound -L../xercesc/lib/ -lfltk -lfftw -lrfftw -lxerces-c $(OBJECTS) -o $@
+	@$(CXX) -lasound -L$(TOP)/../xercesc/lib/ -lfltk -lfftw -lrfftw -lxerces-c $(OBJECTS) -o $@
 
 %.o:	
 	@mkdir -p obj
