@@ -61,8 +61,10 @@ private:
 	void testMakeProcessingSafe_WithABadKey()
 	{
 		CLAM::Factory &factory = CLAM::Factory::GetInstance();
+		factory.Clear();
 		try{
 			factory.MakeProcessingSafe("Oscillator");
+			CPPUNIT_FAIL("Should throw an exception");
 		} catch ( CLAM::ErrFactory& ) {}
 	}
 
