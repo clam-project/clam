@@ -24,6 +24,8 @@ list *cxxflags_release = 0;
 
 list *library_paths = 0;
 
+list *ui_files = NULL;
+
 list *program = 0;
 
 static int equalsigncount = 0;
@@ -138,14 +140,32 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 				k = listhash_find(config,var);
 				if (k==0)
 				{
-					fprintf(stderr,
-						"Variable \"%s\" not found in line %s:%d\n",
-						var,d->filename,d->line);
-					exit(-1);
+					char* environmentVar = getenv(var);
+					/* Let's check wether it is an environment variable */
+					
+					if ( environmentVar )
+					{
+						list* l = listhash_add_key_once( config, var )->l = list_new();
+						list_add_str_once( l, environmentVar );
+						list_add_str_once( used_vars, var );
+						k = listhash_find( config, var );
+					}
+					else
+					{
+						if (cond)
+						{
+							fprintf(stderr,
+								"Variable \"%s\" not found in line %s:%d\n",
+								var,d->filename,d->line);
+							exit(-1);
+						}
+					}
 				}
-				
-				/* marked the variable as used */
-				list_add_str_once(used_vars,k->str);
+				else
+				{
+					/* marked the variable as used */
+					list_add_str_once(used_vars,k->str);
+				}
 
 				/* reset the token string pointer to where we encountered the 
 				** variable so we will overwrite it with it's value(s)
@@ -251,13 +271,13 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 
 void config_parse_line(char* ptr,const char* filename,int line)
 {
-	char tmp[4096];
+	char tmp[8192];
 	config_data d;
 	d.filename = filename;
 	d.line = line;
 	d.in = ptr;
 	d.out = d.out_start = tmp;
-	d.n = 4096;
+	d.n = 8192;
 
 	equalsigncount = 0;
 
@@ -410,7 +430,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 
 int config_parse(const char* filename)
 {
-	char buf[4096];
+	char buf[8192];
 	int n;
 	int line = 0;
 		
@@ -424,20 +444,25 @@ int config_parse(const char* filename)
 	
 	n = 0;
 
-	while (fgets(buf+n,4096-n,f))
+	while (fgets(buf+n,8192-n,f))
 	{
 		int l = strlen(buf+n);
-		line++;
-		if (buf[n+l-1]=='\n') l--;
-		else{
+
+		if (n+l==8192) 
+		{
 			fprintf(stderr,"Error: maximum (multi)line length reached in line %s:%d\n",
 				filename,line);
 			exit(-1);
 		}
+
+		line++;
+		if (buf[n+l-1]=='\n') l--;
+		/* remove trailing whitespace */
+		while (buf[n+l-1]==' ' || buf[n+l-1]=='\t') l--;
 		if (buf[n+l-1]=='\r') l--;
 		if (buf[n+l-1]=='\\')
 		{
-			l--;
+			buf[n+l-1] = ' ';
 			n+=l;
 		}else{
 			n+=l;
@@ -446,6 +471,7 @@ int config_parse(const char* filename)
 				config_parse_line(buf,filename,line);
 			n = 0;
 		}
+
 	}
 	if (n)
 	{
@@ -498,7 +524,12 @@ void config_init(void)
 	cxxflags_release = 
 		listhash_add_key_once(config,"CXXFLAGS_RELEASE")->l = list_new();
 	list_lock(cxxflags_release );
+
+	ui_files = 
+		listhash_add_key_once(config,"UI_FILES")->l = list_new();
 	
+	list_lock( ui_files );
+
 	program = 
 		listhash_add_key_once(config,"PROGRAM")->l = list_new();
 	list_lock(program );
@@ -509,6 +540,7 @@ void config_init(void)
 	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
 
+	list_add_str_once(used_vars,"UI_FILES");
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"LINK_FLAGS_DEBUG");
@@ -567,6 +599,7 @@ void config_exit(void)
 	list_unlock(link_flags_release );
 	list_unlock(cxxflags_debug );
 	list_unlock(cxxflags_release );
+	list_unlock(ui_files);
 	list_unlock(program );
 	
 	listhash_free(config);

@@ -79,7 +79,7 @@ const Spectrum* SpectralDescriptors::GetpSpectrum() const {
 void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
 	mpSpectrum=pSpectrum;
 	//TODO: we are asuming Spectrum is in MagBuffer
-    //TODO: it may give problems because pointer passed
+	//TODO: it may give problems because pointer passed
 	InitStats(&mpSpectrum->GetMagBuffer());
 
 	mDeltaFreq=mpSpectrum->GetSpectralRange()/mpSpectrum->GetSize();
@@ -97,15 +97,15 @@ void SpectralDescriptors::ConcreteCompute()
 	if (HasCentroid())
 		SetCentroid(mpStats->GetCentroid()*mDeltaFreq);
 	if(HasMoment2())
-		SetMoment2(mpStats->GetMoment(SecondOrder)*mDeltaFreq);
+		SetMoment2(mpStats->GetMoment(SecondOrder));
 	if(HasMoment3())
-		SetMoment3(mpStats->GetMoment(ThirdOrder)*mDeltaFreq);	
+		SetMoment3(mpStats->GetMoment(ThirdOrder));	
 	if(HasMoment4())
-		SetMoment4(mpStats->GetMoment(FourthOrder)*mDeltaFreq);
+		SetMoment4(mpStats->GetMoment(FourthOrder));
 	if(HasMoment5())
-		SetMoment5(mpStats->GetMoment(FifthOrder)*mDeltaFreq);
+		SetMoment5(mpStats->GetMoment(FifthOrder));
 	if(HasMoment6())
-		SetMoment6(mpStats->GetMoment((O<6>*)(0))*mDeltaFreq);
+		SetMoment6(mpStats->GetMoment((O<6>*)(0)));
 	if (HasSpread())
 	        SetSpread(ComputeSpread());
 	if(HasSkewness())
@@ -137,45 +137,35 @@ void SpectralDescriptors::ConcreteCompute()
 		SetHFC(0);
 }
 
-void SpectralDescriptors::SetPrototype(const SpectralDescriptors& p)
-{
-	*this=p;
-}
-
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeSpectralTilt()
 {
 
 	/* TODO check me check me check me check me check me check me check me */
-	TData m1;
-	int i;
+	DataArray& mag=mpSpectrum->GetMagBuffer();
+
+	const TData m1 = mpStats->GetMoment(FirstOrder);
+	const TData size = mag.Size();
 
 	TData d1=0;
 	TData d2=0;
-	TData ti=0;
+	for (unsigned i=0;i<size;i++)
+	{
+		d1 += i/mag[i];
+		d2 += 1/mag[i];
+	}
+
+	// ti = m1/ai *(n - (d1/d2))
+	// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
+
 	TData SumTi2 = 0;
 	TData Tilt = 0;
-
-	DataArray& mag=mpSpectrum->GetMagBuffer();
-
-	m1 = mpStats->GetMoment(FirstOrder);
-
-	TData size=mag.Size();
-
-	for (i=0;i<size;i++)
-	  {
-	d1 += i/mag[i];
-	d2 += 1/mag[i];
-	  }
-
-	/* ti = m1/ai *(n - (d1/d2)) */
-	/* SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]  */
-
-	for (i=0;i<size;i++) {
-	  Tilt += (1/mag[i] *(i-d1/d2));
-	  ti = m1/mag[i]*(i - (d1/d2));
-	  SumTi2 += ti*ti;
+	for (unsigned i=0;i<size;i++) 
+	{
+		Tilt += (1/mag[i] *(i-d1/d2));
+		TData ti = m1/mag[i]*(i - (d1/d2));
+		SumTi2 += ti*ti;
 	}
 
 	Tilt*= (m1*m1/SumTi2);
@@ -210,14 +200,14 @@ TData SpectralDescriptors::ComputeMaxMagFreq()
 { 
 	// Frequency of the spectrum maxima 
 	// Note: it is supposing the spectrum is in dB?
-	int i;
 	TData max = -1000.0;
 	TIndex index = -1;
 	
 	DataArray& data=mpSpectrum->GetMagBuffer();
 	int size=mpSpectrum->GetSize();
-	for(i=0; i<size; i++) 
-		if(data[i] > max ) {
+	for(unsigned i=0; i<size; i++) 
+		if(data[i] > max )
+		{
 			max = data[i];
 			index = i;
 		} 
@@ -372,6 +362,9 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 	if(a.HasBandEnergy())
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandEnergy(a.GetBandEnergy());
+	if(a.HasPCP())
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetPCP(a.GetPCP());
 	return tmpD;
 }
 
@@ -531,7 +524,13 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandEnergy(a.GetBandEnergy() /* * b.GetBandEnergy() */);
 	}
-		
+	if(a.HasPCP() && b.HasPCP() )
+	{
+		tmpD.AddPCP();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetPCP(a.GetPCP() /* * b.GetPCP() */);
+	}	
 	return tmpD;
 }
 
@@ -696,6 +695,13 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandEnergy(a.GetBandEnergy() /* + b.GetBandEnergy() */);
+	}
+	if(a.HasPCP() && b.HasPCP() )
+	{
+		tmpD.AddPCP();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetPCP(a.GetPCP() /* + b.GetPCP() */);
 	}
 		
 	return tmpD;
