@@ -593,4 +593,6 @@ void SMSScoreEditor::ApplyChangesToCurrentCfg()
 	mScoreContentsBox->select( mHighlightedConfig );
 
 	mUserChangedSomething = true;
+
+	fl_message("Score has been changed");
 }
