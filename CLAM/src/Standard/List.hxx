@@ -28,22 +28,12 @@
 #include "Component.hxx"
 #include "TypeInfo.hxx"
 
-#ifdef CLAM_USE_XML 
-	#include "XMLStorage.hxx"
-	#include "XMLAdapter.hxx"
-	#include "XMLComponentAdapter.hxx"
-	#include "DynamicType.hxx"
-#endif//CLAM_USE_XML 
+#include "XMLAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
 
 namespace CLAM {
 
-#ifdef CLAM_USE_XML 
 template <class T2> void StoreMemberOn(T2 &item, Storage & storage);
-#endif//CLAM_USE_XML 
-
-#ifndef NULL
-#define NULL (0L)
-#endif
 
 template <class T> class List:public Component
 {
@@ -57,7 +47,7 @@ template <class T> class List:public Component
 	public:
 		Node(const T& value)
 			{
-				mpNext=mpPrevious=NULL;
+				mpNext=mpPrevious=0;
 				mValue=value;
 			}
 		const T& Value(void) const{ return mValue; }
@@ -69,11 +59,11 @@ template <class T> class List:public Component
 
 
 public:
-	const char * GetClassName() const {return NULL;}
+	const char * GetClassName() const {return 0;}
 
 	List()
 	{
-		mpFirst = mpLast = mpCurrent = NULL;
+		mpFirst = mpLast = mpCurrent = 0;
 		mCurrentIndex = 0;
 		mSize = 0;
 
@@ -102,7 +92,7 @@ public:
 	
 	List(const List& src)
 	{
-		mpFirst = mpLast = mpCurrent = NULL;
+		mpFirst = mpLast = mpCurrent = 0;
 		mCurrentIndex = 0;
 		mSize = 0;
 		*this=src;
@@ -234,39 +224,28 @@ public:
 	void StoreOn(Storage & storage) const
 	{
 
-		#ifdef CLAM_USE_XML	 
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (! dynamic_cast < XMLStorage* > (&storage)) return;
 		if(mSize<=0) return;
 		// TODO: think if it's the best way to check if there is data.
 		typedef typename TypeInfo<T>::StorableAsLeaf IsStorableAsLeaf;
 		for (int i=0; i<mSize; i++) 
 		{
 			StoreMemberOn(
-				(IsStorableAsLeaf*)NULL, 
+				(IsStorableAsLeaf*)0, 
 				&(*this)[i], 
 				storage
 			);
 		}
-		#endif//CLAM_USE_XML
 	}
 
 	void LoadFrom(Storage & storage)
 	{
-		#ifdef CLAM_USE_XML 
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (!dynamic_cast < XMLStorage* > (&storage)) return;
 		typedef typename TypeInfo<T>::StorableAsLeaf IsStorableAsLeaf;
 		do AddElem(T());
-		while (LoadMemberFrom( (IsStorableAsLeaf *)NULL, &(Last()), storage));
+		while (LoadMemberFrom( (IsStorableAsLeaf *)0, &(Last()), storage));
 		DoLast();
 		DeleteNode();
-		#endif//CLAM_USE_XML
 	}
 private:
-#ifdef CLAM_USE_XML
 	void StoreMemberOn(StaticTrue* asLeave, const void * item, Storage & storage) const {
 		XMLAdapter<T> adapter(*(T*)item);
 		storage.Store(adapter);
@@ -295,7 +274,6 @@ private:
 		CLAM_ASSERT(false, "Trying to Load an object that is not neither a streamable nor a Component");
 		return false;
 	}
-#endif//CLAM_USE_XML
 };
 
 
@@ -360,13 +338,13 @@ template <class T> inline void List<T>::DeleteNode(Node* pNode)
 		{
 			mpFirst=pNode->mpNext;
 			if(mpFirst)
-				mpFirst->mpPrevious=NULL;;
+				mpFirst->mpPrevious=0;;
 		}
 		if(pNode==mpLast)
 		{
 			mpLast=pNode->mpPrevious;
 			if(mpLast)
-				mpLast->mpNext=NULL;
+				mpLast->mpNext=0;
 		}
 	}
 	delete pNode;
@@ -638,7 +616,7 @@ template <class T> inline bool List<T>::FulfillsInvariant(void) const
 	if(mSize>0)
 	{
 		if (mpFirst->mpPrevious || mpLast->mpNext || 
-			mSize<0 || (mCurrentIndex<0) || (mpCurrent==NULL)
+			mSize<0 || (mCurrentIndex<0) || (mpCurrent==0)
 			)
 		{
 			return false;
@@ -646,8 +624,7 @@ template <class T> inline bool List<T>::FulfillsInvariant(void) const
 		Node* pTmp=mpCurrent; 
 		for(i=mCurrentIndex;i>=0;i--)
 		{
-			if(pTmp->mpPrevious==NULL)
-				CLAM_ASSERT(i==0,"Current pointer not consistent");
+			CLAM_ASSERT(pTmp->mpPrevious || i==0, "Current pointer not consistent");
 			pTmp=pTmp->mpPrevious;
 		}
 	}
