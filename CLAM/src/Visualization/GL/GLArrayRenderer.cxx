@@ -49,14 +49,9 @@ void GLArrayRenderer::ResizeArray( unsigned int new_size )
 	InitArray( new_size );
 	
 	/** This resize should be done in the FindMaxMin method*/
-	mMaxElemIdxBuffer.resize( new_size );
-	mMinElemIdxBuffer.resize( new_size );
-	mLastMaxIndex = 0;
-	mLastMinIndex = 0;
-	mFirstMaxIndex = 0;
-	mFirstMinIndex = 0;
-	mFirstIndex=0;
-	mLastIndex=0;
+	mElemIdxBuffer.resize( new_size );
+	mLastIndex = 0;
+	mFirstIndex = 0;
 }
 
 void GLArrayRenderer::CacheData( const DataArray& array )
@@ -69,7 +64,8 @@ void GLArrayRenderer::CacheData( const DataArray& array )
 
 	DataTransform( array );
 	mDataChanged = true;
-	FindMaxMin();
+	if(nbins>mMinPointsToOptimize)
+		FindMaxMin();
 }
 
 void GLArrayRenderer::DataTransform( const DataArray& array )
@@ -88,30 +84,27 @@ void GLArrayRenderer::Draw()
 	glLoadIdentity();
 
 	if ( mDataChanged )
+	{
+		// caches the data on the video card ( if possible, otherwise it remains in 
+		// processor memory - bad luck boy)
+		glInterleavedArrays (GL_C3F_V3F, 0, &mIntertwined[0]);
+		mDataChanged = false;
+		
+	}
+	if(mCullingRequested && mCullingData.right-mCullingData.left>mMinPointsToOptimize)
+	{
+		if ( mMustUpdateBounds)
 		{
-			// caches the data on the video card ( if possible, otherwise it remains in 
-			// processor memory - bad luck boy)
-			glInterleavedArrays (GL_C3F_V3F, 0, &mIntertwined[0]);
-			mDataChanged = false;
-			
+			UpdateBounds();
+			mMustUpdateBounds= false;
 		}
-	//if ( mCullingRequested )
-	if(mCullingData.right-mCullingData.left>50000)
-		{
-			if ( mMustGenerateIndexes )
-				{
-					GenerateElemIndexes();
-					mMustGenerateIndexes = false;
-				}
-			
-			glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, &mElemIdxBuffer[0] );
-			//glDrawElements( GL_LINE_STRIP, mLastMaxIndex-mFirstMaxIndex, GL_UNSIGNED_INT, &mMaxElemIdxBuffer[mFirstMaxIndex] );
-			//glDrawElements( GL_LINE_STRIP, mLastMinIndex-mFirstMinIndex, GL_UNSIGNED_INT, &mMinElemIdxBuffer[mFirstMinIndex] );
-		}
+		
+		glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, &mElemIdxBuffer[0] );
+	}
 	else
-		{
-			glDrawArrays( GL_LINE_STRIP, 0, mIntertwined.size() );
-		}
+	{
+		glDrawArrays( GL_LINE_STRIP, 0, mIntertwined.size() );
+	}
 	glFlush();
 }
 
@@ -144,9 +137,9 @@ void GLArrayRenderer::DefineViewport( const DataArray& array, Viewport& view_spe
 	// :KLUDGE: let's pad the top and bottom when they are equal
 	
 	if ( fabs( top - bottom ) < 0.01 )
-		{
-			top += TData(1.0);
-		}
+	{
+		top += TData(1.0);
+	}
 
 	TData left   = 0;
 	TData right  = (TData) array.Size();
@@ -175,19 +168,16 @@ void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_wi
 	mCullingData.right = (right*GetXConversionFactor());
 	mCullingData.pixel_width = pixel_width;
 	mCullingRequested = true;
-	mMustGenerateIndexes = true;	
+	mMustUpdateBounds= true;	
 
 }
 
-void GLArrayRenderer::GenerateElemIndexes()
+void GLArrayRenderer::UpdateBounds()
 {
 	GLuint start, end, range, step;
 	start = mCullingData.left;
 	end = mCullingData.right;
 	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
-//	CLAM_ASSERT( mMaxElemIdxBuffer.size() > end, "End index is out of bonds!!!!" );
-//	CLAM_ASSERT( mMinElemIdxBuffer.size() > end, "End index is out of bonds!!!!" );
-
 
 	unsigned k;
 	
@@ -250,128 +240,6 @@ void GLArrayRenderer::GenerateElemIndexes()
 	}
 
 
-/*	if(mCullingData.left>mMaxElemIdxBuffer[mFirstMaxIndex])
-	{
-		for(k=mFirstMaxIndex;k<mnMax;k++)
-		{
-			if(mMaxElemIdxBuffer[k]>mCullingData.left)
-			{
-				mFirstMaxIndex=k;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mFirstMaxIndex=mnMax;
-	}
-	else if(mCullingData.left<mMaxElemIdxBuffer[mFirstMaxIndex])
-	{
-		for(k=mFirstMaxIndex;k>-1;k--)
-		{
-			if(mMaxElemIdxBuffer[k]<mCullingData.left)
-			{
-				mFirstMaxIndex=k+1;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mFirstMaxIndex=0;
-	}
-
-	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
-
-	if ( end >= mElemIdxBuffer.size() )
-		end = mElemIdxBuffer.size()-1;
-
-	range = end - start;
-
-	found=false;
-
-	if(mCullingData.left>mMinElemIdxBuffer[mFirstMinIndex])
-	{
-		for(k=mFirstMinIndex;k<mnMin;k++)
-		{
-			if(mMinElemIdxBuffer[k]>mCullingData.left)
-			{
-				mFirstMinIndex=k;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mFirstMinIndex=mnMin;
-	}
-	else if(mCullingData.left<mMinElemIdxBuffer[mFirstMinIndex])
-	{
-		for(k=mFirstMinIndex;k>-1;k--)
-		{
-			if(mMinElemIdxBuffer[k]<mCullingData.left)
-			{
-				mFirstMinIndex=k+1;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mFirstMinIndex=0;
-	}
-
-	found=false;
-
-	if(mCullingData.right>mMaxElemIdxBuffer[mLastMaxIndex])
-	{
-		for(k=mLastMaxIndex;k<mnMax;k++)
-		{
-			if(mMaxElemIdxBuffer[k]>mCullingData.right)
-			{
-				mLastMaxIndex=k-1;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mLastMaxIndex=mnMax;
-	}
-	else if(mCullingData.right<mMaxElemIdxBuffer[mLastMaxIndex])
-	{
-		for(k=mLastMaxIndex;k>-1;k--)
-		{
-			if(mMaxElemIdxBuffer[k]<mCullingData.right)
-			{
-				mLastMaxIndex=k;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mLastMaxIndex=0;
-	}
-
-	found=false;
-
-	if(mCullingData.right>mMinElemIdxBuffer[mLastMinIndex])
-	{
-		for(k=mLastMinIndex;k<mnMin;k++)
-		{
-			if(mMinElemIdxBuffer[k]>mCullingData.right)
-			{
-				mLastMinIndex=k-1;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mLastMinIndex=mnMin;
-	}
-	else if(mCullingData.right<mMinElemIdxBuffer[mLastMinIndex])
-	{
-		for(k=mLastMinIndex;k>-1;k--)
-		{
-			if(mMinElemIdxBuffer[k]<mCullingData.right)
-			{
-				mLastMinIndex=k;
-				found=true;
-				break;
-			}
-		}
-		if(!found) mLastMinIndex=0;
-	}
-		
-*/		
 	
 }
 
@@ -380,8 +248,9 @@ void GLArrayRenderer::GenerateElemIndexes()
 void GLArrayRenderer::FindMaxMin()
 {
 	//Minimum value that will be acknowledged as maximum or minimum
-	float minY=0.05;
-	
+	float minY=0.00001;
+	float threshold=0.0015;
+
 	unsigned int nElems=mIntertwined.size();
 	
 	float leftY,middleY,rightY;
@@ -389,99 +258,80 @@ void GLArrayRenderer::FindMaxMin()
 	int i;
 	
 	//We always add a start point at zero
-	mMinElemIdxBuffer[0]=0;
-	mMaxElemIdxBuffer[0]=0;
+	mElemIdxBuffer[0]=0;
 	mIntertwined[0].y=0;
 
-	mnMax=1;
-	mnMin=1;
-
-	for (i=2;i<nElems-2;i++) 
+	mnMaxMin=1;
+	
+	i=1;
+	bool firstZero=true;
+	while (i<nElems-2) 
 	{
-		
+		//constant area with low amplitude values (noise)
+		while(i<nElems-2&&mIntertwined[i].y<minY && mIntertwined[i].y > -minY)
+		{
+			if(firstZero)
+			{
+				mElemIdxBuffer[mnMaxMin]=i;
+				mnMaxMin++;
+				firstZero=false;
+				mIntertwined[i].y=0;
+			}				
+			i++;
+		}
+		if(!firstZero)
+		{
+			mElemIdxBuffer[mnMaxMin]=i-1;
+			mnMaxMin++;
+			mIntertwined[i-1].y=0;
+			firstZero=true;
+		}
+				
 		leftY 	= mIntertwined[i].y;
 		middleY	= mIntertwined[i+1].y;
 		rightY 	= mIntertwined[i+2].y;
 
-		// local constant detected 
-		if (middleY == leftY && leftY == rightY) 
-		{
-			//do nothing
-			continue;
-		}
-	
+		
 		// local Minimum detected 
-		if ((middleY <= leftY) && (middleY<= rightY)) 
+		if ((leftY-middleY > threshold) && (rightY-middleY> threshold)) 
 		{
-			if(middleY > -minY) mIntertwined[i+1].y=0;
-			
 			float interpolatedPosition;
 			
 			int pointPosition = i+1; 	// middleY has index i+1
-			// if we get to the end of a constant area then ... 
-			if ((middleY == leftY) && (middleY < rightY) && (mnMin > 0))
-			{
+			// quadratic interpolation
+			float diffFromMin =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
+			interpolatedPosition = pointPosition+diffFromMin;
+			mElemIdxBuffer[mnMaxMin]=(interpolatedPosition);
+							
+			mnMaxMin++;
 		
-				// update last PointPosition, it will be located in the middle of the constant area 
-				interpolatedPosition = (double) mMinElemIdxBuffer[mnMin-1] + (double) (i+1-mMinElemIdxBuffer[mnMin-1])/2; // center BinPos 
-				mMinElemIdxBuffer[mnMin-1]= interpolatedPosition; // interpolated BinPos is stored	
-			}
-
-			else 
-			{ 
-				// quadratic interpolation
-				float diffFromMin =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
-				interpolatedPosition = pointPosition+diffFromMin;
-				mMinElemIdxBuffer[mnMin]=(interpolatedPosition);
-								
-				mnMin++;
-			}
 		}
 
 			
 		// local maximum Detected ! 
-		if ((middleY >= leftY) && (middleY >= rightY)) 
+		if ((middleY-leftY > threshold) && (middleY-rightY > threshold)) 
 		{	
-			if(middleY < minY) mIntertwined[i+1].y=0;
+			//if(middleY < 2*minY) continue;
 			float diffFromMax;
 			float interpolatedPosition;
 			int pointPosition = i+1; 	// middleY has index i+1
-			// if we get to the end of a constant area then ... 
-			if ((middleY == leftY) && (middleY > rightY) && (mnMax > 0)){
-		
-				// update last PointPosition, it will be located in the middle of the constant area 
-				interpolatedPosition = (double) mMaxElemIdxBuffer[mnMax-1] + (double) (i+1-mMaxElemIdxBuffer[mnMax-1])/2; // center BinPos 
-				mMaxElemIdxBuffer[mnMax-1]= interpolatedPosition; // interpolated BinPos is stored	
-			}
-
-			else { 
-		
-				// quadratic interpolation
-				diffFromMax =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
-				interpolatedPosition = pointPosition+diffFromMax;
-				mMaxElemIdxBuffer[mnMax]=(interpolatedPosition);
-								
-				mnMax++;
-			}
+			// quadratic interpolation
+			diffFromMax =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
+			interpolatedPosition = pointPosition+diffFromMax;
+			mElemIdxBuffer[mnMaxMin]=(interpolatedPosition);
+							
+			mnMaxMin++;
 		}
+		i++;
 	}
-	mMinElemIdxBuffer.resize(mnMin);
-	mMaxElemIdxBuffer.resize(mnMax);
-	
-	//now we mix maximums and minimums and sort them
-	
-	mnMaxMin=mnMin+mnMax;
-	
+
+	//We always add an end point at zero
+	mElemIdxBuffer[mnMaxMin]=nElems-1;
+	mIntertwined[mnMaxMin].y=0;
+	mnMaxMin++;
+
 	mElemIdxBuffer.resize(mnMaxMin);
-	for(i=0;i<mnMax;i++)
-	{
-		mElemIdxBuffer[i]=mMaxElemIdxBuffer[i];
-	}
-	for(i=0;i<mnMin;i++)
-	{
-		mElemIdxBuffer[i+mnMax]=mMinElemIdxBuffer[i];
-	}
-	std::sort(&mElemIdxBuffer[0],&mElemIdxBuffer[mnMaxMin-1]);
+	
 }
 
 

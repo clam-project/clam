@@ -42,10 +42,13 @@ class GLArrayRenderer
 public:
 
 	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
-		: mLastMaxIndex(0), mLastMinIndex(0), mFirstMaxIndex(0), mFirstMinIndex(0),r( red ), g( gree ), b( blu ), mDataChanged( false ), 
-		mCullingRequested(false), mMustGenerateIndexes( true ), mFirstIndex(0),mLastIndex(0)
+		: r( red ), g( gree ), b( blu ), mDataChanged( false ), 
+		mCullingRequested(false), mMustUpdateBounds( true ), mFirstIndex(0),mLastIndex(0)
 	{
 		ResizeArray( 1024 );
+		/*This limit has been experimentally found to be correct but it depends on the
+		system and the amount of simultaneous views.*/
+		mMinPointsToOptimize=50000;
 	}
 
 	virtual ~GLArrayRenderer()
@@ -68,24 +71,30 @@ protected:
 	{
 		return 1;
 	}
-	virtual void GenerateElemIndexes();
+	/** If data reduction is used, everytime a zoom or change of view is done, we
+	 *	need to recompute the index boundaries 
+	 */
+	virtual void UpdateBounds();
+	/** Finds maximums and minimums in array, it is the core of the data reduction
+	 *	algorithm used when array size is more than @see mMinPointsToOptimize.
+	 */
 	virtual void FindMaxMin();
 
 protected:
 
 	std::valarray< c3f_v3f > mIntertwined;
 	std::valarray< GLuint >  mElemIdxBuffer;
-	std::valarray< GLuint >  mMaxElemIdxBuffer; // element index buffer for local maximums
-	std::valarray< GLuint >  mMinElemIdxBuffer; // element index buffer for local minimums
-	unsigned       mLastMaxIndex,mLastMinIndex,mFirstMaxIndex,mFirstMinIndex,mnMax,mnMin;
 	unsigned       mLastIndex,mFirstIndex,mnMaxMin;
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
 	bool          mDataChanged;
 	bool          mCullingRequested;
-	bool          mMustGenerateIndexes;
+	bool          mMustUpdateBounds;
 	tCullingData  mCullingData;
+	/** if array to visualize has more than mMinPointsToOptimize, a data reduction
+	 *	algorithm is used to visualize the array*/
+	unsigned mMinPointsToOptimize;
 };
 
 
