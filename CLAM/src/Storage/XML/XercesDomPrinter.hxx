@@ -51,6 +51,7 @@ private:
 private:
 	unsigned mIndentationLevel;
 	bool mLastWasContent;
+	bool mIndentXml;
 };
 
 }

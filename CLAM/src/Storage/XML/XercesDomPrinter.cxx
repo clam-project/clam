@@ -31,7 +31,7 @@
 #include "XercesDomPrinter.hxx"
 #include <string>
 
-#define CLAM_INDENT_XML
+//#define CLAM_INDENT_XML
 #define TRACEDUMP if (1); else std::cout
 
 class DOMPrintFormatTarget : public XMLFormatTarget
@@ -205,6 +205,12 @@ CLAM::XercesDomPrinter::XercesDomPrinter()
 {
 	mLastWasContent = true;
 	mIndentationLevel = 0;
+#ifdef CLAM_INDENT_XML
+	mIndentXml = true;
+#else
+	mIndentXml = false;
+#endif
+
 }
 CLAM::XercesDomPrinter::~XercesDomPrinter()
 {
@@ -250,12 +256,6 @@ void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 
 static const XMLCh endLine[] = { chCR, chLF, chNull };
 
-#ifdef CLAM_INDENT_XML
-static const bool gIndentXml = true;
-#else
-static const bool gIndentXml = false;
-#endif
-
 
 void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 {
@@ -270,7 +270,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 	{
 		case DOM_Node::TEXT_NODE:
 		{
-			if (gIndentXml && !mLastWasContent)
+			if (mIndentXml && !mLastWasContent)
 				*gFormatter
 					<< endLine << currentIndentation.c_str();
 			gFormatter->formatBuf(nodeValue.rawBuffer(), 
@@ -309,7 +309,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 		{
 			TRACEDUMP << std::string(mIndentationLevel++,'\t') << "Element: " << nodeName << std::endl;
 			// The name has to be representable without any escapes
-			if (gIndentXml)
+			if (mIndentXml)
 				*gFormatter
 					<< endLine << currentIndentation.c_str();
 			*gFormatter  << XMLFormatter::NoEscapes
@@ -360,7 +360,7 @@ void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
 				// Done with children.  Output the end tag.
 				//
 				mIndentationLevel--;
-				if (gIndentXml)
+				if (mIndentXml)
 					*gFormatter
 						<< endLine << currentIndentation.c_str();
 				*gFormatter
