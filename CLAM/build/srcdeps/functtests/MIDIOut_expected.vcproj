@@ -23,13 +23,12 @@
 				AdditionalOptions="/Zm1000 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\..\src\Defines,..\..\..\..\..\portmidi\include,..\..\..\..\src\Base,..\..\..\..\src\Errors,..\..\..\..\src\Flow\Controls,..\..\..\..\src\Flow\Ports,..\..\..\..\src\Processing\Base,..\..\..\..\src\Processing\MIDIIO,..\..\..\..\src\Standard,..\..\..\..\src\Storage\Base,..\..\..\..\src\Storage\XML,..\..\..\..\src\Tools\MIDIIO"
+				AdditionalIncludeDirectories="..\..\..\src\Defines,..\..\..\..\portmidi\include,..\..\..\src\Base,..\..\..\src\Errors,..\..\..\src\Flow\Controls,..\..\..\src\Flow\Ports,..\..\..\src\Processing\Base,..\..\..\src\Processing\MIDIIO,..\..\..\src\Standard,..\..\..\src\Storage\Base,..\..\..\src\Storage\XML,..\..\..\src\Tools\MIDIIO"
 				PreprocessorDefinitions="NDEBUG;HAVE_STANDARD_SSTREAM;HAVE_STANDARD_SSTREAM_STR;HAVE_STANDARD_VECTOR_AT;HAVE_STANDARD_UNICODE;WIN32;_CONSOLE;CLAM_FLOAT;ID3LIB_LINKOPTION=1"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\../VC7ReleaseFiles/obj/"
 				ObjectFile=".\../VC7ReleaseFiles/obj/"
 				ProgramDataBaseFileName=".\../VC7ReleaseFiles/obj/"
@@ -44,15 +43,11 @@
 				AdditionalDependencies="pthreadVC.lib portmidi.lib porttime.lib winmm.lib libsndfile.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib id3lib.lib libmad.lib"
 				OutputFile=".\../VC7ReleaseFiles/bin/MIDIOut.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\..\pthreads\lib,..\..\..\..\..\portmidi\lib,..\..\..\..\..\libsndfile\lib,..\..\..\..\..\oggvorbis\lib,..\..\..\..\..\libmad\lib,..\..\..\..\..\id3lib\lib"
+				AdditionalLibraryDirectories="..\..\..\..\pthreads\lib,..\..\..\..\portmidi\lib,..\..\..\..\libsndfile\lib,..\..\..\..\oggvorbis\lib,..\..\..\..\libmad\lib,..\..\..\..\id3lib\lib"
 				IgnoreDefaultLibraryNames="MSVCRTD"
 				ProgramDatabaseFile=".\../VC7ReleaseFiles/bin/MIDIOut.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../VC7ReleaseFiles/bin/MIDIOut.tlb"
-				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -86,12 +81,11 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm1000 "
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\src\Defines,..\..\..\..\..\portmidi\include,..\..\..\..\src\Base,..\..\..\..\src\Errors,..\..\..\..\src\Flow\Controls,..\..\..\..\src\Flow\Ports,..\..\..\..\src\Processing\Base,..\..\..\..\src\Processing\MIDIIO,..\..\..\..\src\Standard,..\..\..\..\src\Storage\Base,..\..\..\..\src\Storage\XML,..\..\..\..\src\Tools\MIDIIO"
+				AdditionalIncludeDirectories="..\..\..\src\Defines,..\..\..\..\portmidi\include,..\..\..\src\Base,..\..\..\src\Errors,..\..\..\src\Flow\Controls,..\..\..\src\Flow\Ports,..\..\..\src\Processing\Base,..\..\..\src\Processing\MIDIIO,..\..\..\src\Standard,..\..\..\src\Storage\Base,..\..\..\src\Storage\XML,..\..\..\src\Tools\MIDIIO"
 				PreprocessorDefinitions="_DEBUG;HAVE_STANDARD_SSTREAM;HAVE_STANDARD_SSTREAM_STR;HAVE_STANDARD_VECTOR_AT;HAVE_STANDARD_UNICODE;WIN32;_CONSOLE;CLAM_FLOAT;ID3LIB_LINKOPTION=1"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\../VC7DebugFiles/obj/"
 				ObjectFile=".\../VC7DebugFiles/obj/"
 				ProgramDataBaseFileName=".\../VC7DebugFiles/obj/"
@@ -107,16 +101,12 @@
 				AdditionalDependencies="pthreadVC.lib portmidid.lib porttimed.lib winmm.lib libsndfiled.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib id3libd.lib libmadd.lib"
 				OutputFile=".\../VC7DebugFiles/bin/MIDIOut.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\..\pthreads\lib,..\..\..\..\..\portmidi\lib,..\..\..\..\..\libsndfile\lib,..\..\..\..\..\oggvorbis\lib,..\..\..\..\..\libmad\lib,..\..\..\..\..\id3lib\lib"
+				AdditionalLibraryDirectories="..\..\..\..\pthreads\lib,..\..\..\..\portmidi\lib,..\..\..\..\libsndfile\lib,..\..\..\..\oggvorbis\lib,..\..\..\..\libmad\lib,..\..\..\..\id3lib\lib"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\../VC7DebugFiles/bin/MIDIOut.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../VC7DebugFiles/bin/MIDIOut.tlb"
-				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -151,7 +141,7 @@
 					Name="MIDIOut Sources"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\examples\MIDIOut\main.cxx">
+						RelativePath="..\..\..\examples\MIDIOut\main.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -181,7 +171,7 @@
 					Name="MIDIIO Sources"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIDevice.cxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIDevice.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -203,7 +193,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIDeviceList.cxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIDeviceList.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -225,7 +215,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIEnums.cxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIEnums.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -247,7 +237,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIManager.cxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIManager.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -272,7 +262,7 @@
 						Name="PortMIDI Sources"
 						Filter="">
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\PortMIDI\PortMIDIDevice.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\PortMIDI\PortMIDIDevice.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -298,7 +288,7 @@
 						Name="File Sources"
 						Filter="">
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\FileMIDIDevice.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\FileMIDIDevice.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -320,7 +310,7 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDIReader.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDIReader.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -342,7 +332,7 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDISong.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDISong.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -364,7 +354,7 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDISongPlayer.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDISongPlayer.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -386,7 +376,7 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDITempo.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDITempo.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -412,7 +402,7 @@
 						Name="TextFile Sources"
 						Filter="">
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\TextFile\TextFileMIDIDevice.cxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\TextFile\TextFileMIDIDevice.cxx">
 							<FileConfiguration
 								Name="Release|Win32">
 								<Tool
@@ -440,7 +430,7 @@
 				Name="Errors Sources"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Errors\Err.cxx">
+					RelativePath="..\..\..\src\Errors\Err.cxx">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -462,7 +452,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Errors\ErrDynamicType.cxx">
+					RelativePath="..\..\..\src\Errors\ErrDynamicType.cxx">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -484,7 +474,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Errors\ErrOutOfMemory.cxx">
+					RelativePath="..\..\..\src\Errors\ErrOutOfMemory.cxx">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -506,7 +496,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Errors\ErrProcessingObj.cxx">
+					RelativePath="..\..\..\src\Errors\ErrProcessingObj.cxx">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -532,7 +522,7 @@
 				Name="Defines Sources"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Defines\Assert.cxx">
+					RelativePath="..\..\..\src\Defines\Assert.cxx">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -561,7 +551,7 @@
 					Name="Controls Sources"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Flow\Controls\InControl.cxx">
+						RelativePath="..\..\..\src\Flow\Controls\InControl.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -583,7 +573,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Controls\OutControl.cxx">
+						RelativePath="..\..\..\src\Flow\Controls\OutControl.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -609,7 +599,7 @@
 					Name="Ports Sources"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Flow\Ports\InPort.cxx">
+						RelativePath="..\..\..\src\Flow\Ports\InPort.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -631,7 +621,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Ports\OutPort.cxx">
+						RelativePath="..\..\..\src\Flow\Ports\OutPort.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -653,7 +643,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Ports\Port.cxx">
+						RelativePath="..\..\..\src\Flow\Ports\Port.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -683,7 +673,7 @@
 					Name="XML Sources"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\BasicXMLable.cxx">
+						RelativePath="..\..\..\src\Storage\XML\BasicXMLable.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -705,7 +695,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLAdapter.cxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLAdapter.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -727,7 +717,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLComponentAdapter.cxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLComponentAdapter.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -749,7 +739,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLStorage.cxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLStorage.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -776,7 +766,7 @@
 				Name="Base Sources"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Base\DynamicType.cxx">
+					RelativePath="..\..\..\src\Base\DynamicType.cxx">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -805,7 +795,7 @@
 					Name="Base Sources No. 1"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\Processing.cxx">
+						RelativePath="..\..\..\src\Processing\Base\Processing.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -827,7 +817,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\ProcessingComposite.cxx">
+						RelativePath="..\..\..\src\Processing\Base\ProcessingComposite.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -849,7 +839,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedInControls.cxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedInControls.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -871,7 +861,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedInPorts.cxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedInPorts.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -893,7 +883,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedOutControls.cxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedOutControls.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -915,7 +905,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedOutPorts.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -937,7 +927,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx">
+						RelativePath="..\..\..\src\Processing\Base\TopLevelProcessing.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -963,7 +953,7 @@
 					Name="MIDIIO Sources No. 1"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIClocker.cxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIClocker.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -985,7 +975,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIIn.cxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIIn.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -1007,7 +997,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIInControl.cxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIInControl.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -1029,7 +1019,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIOut.cxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIOut.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -1051,7 +1041,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIOutControl.cxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIOutControl.cxx">
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
@@ -1082,50 +1072,47 @@
 				Name="Errors Headers"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Errors\Err.hxx">
+					RelativePath="..\..\..\src\Errors\Err.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Errors\ErrDynamicType.hxx">
+					RelativePath="..\..\..\src\Errors\ErrDynamicType.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Errors\ErrOutOfMemory.hxx">
+					RelativePath="..\..\..\src\Errors\ErrOutOfMemory.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Errors\ErrProcessingObj.hxx">
+					RelativePath="..\..\..\src\Errors\ErrProcessingObj.hxx">
 				</File>
 			</Filter>
 			<Filter
 				Name="Defines Headers"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Defines\Assert.hxx">
+					RelativePath="..\..\..\src\Defines\Assert.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\ByteOrder.hxx">
+					RelativePath="..\..\..\src\Defines\ByteOrder.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\CLAM_Math.hxx">
+					RelativePath="..\..\..\src\Defines\CLAM_Math.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\DataTypes.hxx">
+					RelativePath="..\..\..\src\Defines\DataTypes.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\EDataFormat.hxx">
+					RelativePath="..\..\..\src\Defines\EDataFormat.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\mtgsstream.h">
+					RelativePath="..\..\..\src\Defines\OSDefines.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\OSDefines.hxx">
+					RelativePath="..\..\..\src\Defines\StaticBool.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\StaticBool.hxx">
+					RelativePath="..\..\..\src\Defines\TypeInfo.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Defines\TypeInfo.hxx">
-				</File>
-				<File
-					RelativePath="..\..\..\..\src\Defines\TypeInfoStd.hxx">
+					RelativePath="..\..\..\src\Defines\TypeInfoStd.hxx">
 				</File>
 			</Filter>
 			<Filter
@@ -1135,26 +1122,26 @@
 					Name="Controls Headers"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Flow\Controls\ControlLinker.hxx">
+						RelativePath="..\..\..\src\Flow\Controls\ControlLinker.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Controls\InControl.hxx">
+						RelativePath="..\..\..\src\Flow\Controls\InControl.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Controls\OutControl.hxx">
+						RelativePath="..\..\..\src\Flow\Controls\OutControl.hxx">
 					</File>
 				</Filter>
 				<Filter
 					Name="Ports Headers"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Flow\Ports\InPort.hxx">
+						RelativePath="..\..\..\src\Flow\Ports\InPort.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Ports\OutPort.hxx">
+						RelativePath="..\..\..\src\Flow\Ports\OutPort.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Flow\Ports\Port.hxx">
+						RelativePath="..\..\..\src\Flow\Ports\Port.hxx">
 					</File>
 				</Filter>
 			</Filter>
@@ -1165,43 +1152,43 @@
 					Name="MIDIIO Headers"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIDevice.hxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIDevice.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIDeviceList.hxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIDeviceList.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIEnums.hxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIEnums.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Tools\MIDIIO\MIDIManager.hxx">
+						RelativePath="..\..\..\src\Tools\MIDIIO\MIDIManager.hxx">
 					</File>
 					<Filter
 						Name="File Headers"
 						Filter="">
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDIDataTypes.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDIDataTypes.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDIEvent.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDIEvent.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDIMessage.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDIMessage.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDIReader.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDIReader.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDISong.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDISong.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDISongPlayer.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDISongPlayer.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDITempo.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDITempo.hxx">
 						</File>
 						<File
-							RelativePath="..\..\..\..\src\Tools\MIDIIO\File\MIDITrack.hxx">
+							RelativePath="..\..\..\src\Tools\MIDIIO\File\MIDITrack.hxx">
 						</File>
 					</Filter>
 				</Filter>
@@ -1213,44 +1200,44 @@
 					Name="Base Headers"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Storage\Base\Storable.hxx">
+						RelativePath="..\..\..\src\Storage\Base\Storable.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\Base\Storage.hxx">
+						RelativePath="..\..\..\src\Storage\Base\Storage.hxx">
 					</File>
 				</Filter>
 				<Filter
 					Name="XML Headers"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\BasicXMLable.hxx">
+						RelativePath="..\..\..\src\Storage\XML\BasicXMLable.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XercesDomDocumentHandler.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XercesDomDocumentHandler.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XercesDomReadingContext.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XercesDomReadingContext.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XercesDomWritingContext.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XercesDomWritingContext.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLable.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLable.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLAdapter.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLAdapter.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLArrayAdapter.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLArrayAdapter.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLComponentAdapter.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLComponentAdapter.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLIterableAdapter.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLIterableAdapter.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Storage\XML\XMLStorage.hxx">
+						RelativePath="..\..\..\src\Storage\XML\XMLStorage.hxx">
 					</File>
 				</Filter>
 			</Filter>
@@ -1258,23 +1245,23 @@
 				Name="Base Headers No. 1"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Base\Component.hxx">
+					RelativePath="..\..\..\src\Base\Component.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Base\DynamicType.hxx">
+					RelativePath="..\..\..\src\Base\DynamicType.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Base\DynamicTypeMacros.hxx">
+					RelativePath="..\..\..\src\Base\DynamicTypeMacros.hxx">
 				</File>
 			</Filter>
 			<Filter
 				Name="Standard Headers"
 				Filter="">
 				<File
-					RelativePath="..\..\..\..\src\Standard\Array.hxx">
+					RelativePath="..\..\..\src\Standard\Array.hxx">
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\Standard\FastRounding.hxx">
+					RelativePath="..\..\..\src\Standard\FastRounding.hxx">
 				</File>
 			</Filter>
 			<Filter
@@ -1284,47 +1271,47 @@
 					Name="Base Headers No. 2"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\Processing.hxx">
+						RelativePath="..\..\..\src\Processing\Base\Processing.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\ProcessingComposite.hxx">
+						RelativePath="..\..\..\src\Processing\Base\ProcessingComposite.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\ProcessingConfig.hxx">
+						RelativePath="..\..\..\src\Processing\Base\ProcessingConfig.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedInControls.hxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedInControls.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedInPorts.hxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedInPorts.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedOutControls.hxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedOutControls.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx">
+						RelativePath="..\..\..\src\Processing\Base\PublishedOutPorts.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx">
+						RelativePath="..\..\..\src\Processing\Base\TopLevelProcessing.hxx">
 					</File>
 				</Filter>
 				<Filter
 					Name="MIDIIO Headers No. 1"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIClocker.hxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIClocker.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIIn.hxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIIn.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIInControl.hxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIInControl.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIOut.hxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIOut.hxx">
 					</File>
 					<File
-						RelativePath="..\..\..\..\src\Processing\MIDIIO\MIDIOutControl.hxx">
+						RelativePath="..\..\..\src\Processing\MIDIIO\MIDIOutControl.hxx">
 					</File>
 				</Filter>
 			</Filter>
@@ -1335,10 +1322,10 @@
 					Name="include Headers"
 					Filter="">
 					<File
-						RelativePath="..\..\..\..\..\portmidi\include\portmidi.h">
+						RelativePath="..\..\..\..\portmidi\include\portmidi.h">
 					</File>
 					<File
-						RelativePath="..\..\..\..\..\portmidi\include\porttime.h">
+						RelativePath="..\..\..\..\portmidi\include\porttime.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -1347,14 +1334,17 @@
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
+		<Filter
+			Name="Qt .ui Files"
+			Filter="">
+		</Filter>
 		<File
 			RelativePath="settings.cfg">
 			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="TRUE">
+				Name="Release|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="srcdeps.exe settings.cfg MIDIOut.dsp
+					CommandLine="srcdeps.exe settings.cfg
 "
 					Outputs="buildstamp"/>
 			</FileConfiguration>
@@ -1362,10 +1352,7 @@
 				Name="Debug|Win32"
 				ExcludedFromBuild="TRUE">
 				<Tool
-					Name="VCCustomBuildTool"
-					CommandLine="srcdeps.exe settings.cfg MIDIOut.dsp
-"
-					Outputs="buildstamp"/>
+					Name="VCCustomBuildTool"/>
 			</FileConfiguration>
 		</File>
 	</Files>
