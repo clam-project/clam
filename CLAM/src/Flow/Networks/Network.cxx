@@ -243,7 +243,8 @@ namespace CLAM
 	{
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
-			it->second->Start();
+			if (it->second->GetExecState() == Processing::Ready)
+				it->second->Start();		
 
 		ConfigureAllNodes(); // todo: provisional till refactoring of Nodes configuration finished.
 
@@ -252,7 +253,8 @@ namespace CLAM
 	{
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
-			it->second->Stop();
+			if (it->second->GetExecState() == Processing::Running)
+				it->second->Stop();
 	
 	}
 	void Network::DoProcessings()
