@@ -130,6 +130,8 @@ namespace CLAM
 
 		SoftSwitch(const SoftSwitchConfig& c = SoftSwitchConfig());
 
+		const char* GetClassName() const {return "SoftSwitch";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		bool Do(void);

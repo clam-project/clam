@@ -94,6 +94,8 @@ namespace CLAM
 
 		AudioCompressor(const AudioCompressorConfig& c = AudioCompressorConfig());
 
+		const char * GetClassName() const {return "AudioCompressor";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		bool Do(void);

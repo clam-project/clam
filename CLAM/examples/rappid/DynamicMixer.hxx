@@ -95,6 +95,8 @@ namespace CLAM
 
 		DynamicMixer(const DynamicMixerConfig& c = DynamicMixerConfig());
 
+		const char * GetClassName() const {return "DynamicMixer";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		bool Do(void);

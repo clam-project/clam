@@ -67,6 +67,8 @@ namespace CLAM
 
 		inline const ProcessingConfig &GetConfig() const { return mConfig;}
 
+		const char * GetClassName() const {return "AudioMixer";}
+
 		inline bool Do(void);
 
 		inline bool Do(Audio* inp[N], Audio& out);
