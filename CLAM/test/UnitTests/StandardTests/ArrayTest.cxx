@@ -13,19 +13,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ArrayTest );
 class ArrayTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ArrayTest );
-	CPPUNIT_TEST( testCreate_Array_As_NonMemoryOwning );
+
+	CPPUNIT_TEST( testArray_Constructing_NonMemoryOwning_With_Null_Pointer );
+	CPPUNIT_TEST( testArray_Constructing_NonMemoryOwning_With_Valid_Pointer );
+
 	CPPUNIT_TEST( testCopy_MemoryOwning_Into_MemoryOwning );
-	CPPUNIT_TEST( testCopy_MemoryOwning_Into_NonMemoryOwning );
-	//CPPUNIT_TEST( testCopy_NonMemoryOwning_Into_MemoryOwning );
-	//CPPUNIT_TEST( testCopy_NonMemoryOwning_Into_NonMemoryOwning );
-	CPPUNIT_TEST( test_SetPtr_OnNonMemoryOwning_without_SizeExpectations );
-	CPPUNIT_TEST( test_TwoSetPtrs_OnTheSameNonMemoryOwning_without_SizeExpectations );
-	CPPUNIT_TEST( test_SetPtr_OnNonMemoryOwning_with_SizeExpectations );
-	CPPUNIT_TEST( test_TwoSetPtrs_OnTheSameNonMemoryOwning_with_SizeExpectations );
-	CPPUNIT_TEST( test_SetPtr_OnMemoryOwningNonEmpty );
-	
+	CPPUNIT_TEST( testCopy_Being_The_Array_The_Placeholder_For_A_WriteStreamRegion );
+
 	CPPUNIT_TEST( test_SetPtr_OnEmptyArray );
-	CPPUNIT_TEST( test_TwoSetPtrs_OnEmptyArray );
+	CPPUNIT_TEST( test_TwoConsecutiveSetPtrs_OnEmptyArray );
+	CPPUNIT_TEST( test_SetPtr_OnNonEmptyArray );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -38,11 +35,11 @@ public:
 
 private:
 	
-	void test_SetPtr_OnNonMemoryOwning_without_SizeExpectations()
+	void test_SetPtr_OnEmptyArray()
 	{
 		int buffer[] = { 1, 2, 3, 4};
 
-		CLAM::Array<int> array( (int*)NULL );
+		CLAM::Array<int> array;
 
 		array.SetPtr( buffer, 4 );
 
@@ -51,11 +48,11 @@ private:
 		CPPUNIT_ASSERT( array.GetPtr() == buffer );
 	}
 
-	void test_TwoSetPtrs_OnTheSameNonMemoryOwning_without_SizeExpectations()
+	void test_TwoConsecutiveSetPtrs_OnEmptyArray()
 	{
 		int buffer[] = { 1, 2, 3, 4};
 
-		CLAM::Array<int> array( (int*)NULL );
+		CLAM::Array<int> array;
 
 		array.SetPtr( buffer, 4 );
 
@@ -69,39 +66,7 @@ private:
 
 	}
 
-	void test_SetPtr_OnNonMemoryOwning_with_SizeExpectations()
-	{
-		int buffer[] = { 1, 2, 3, 4};
-
-		CLAM::Array<int> array( (int*)NULL, 4 );
-
-		array.SetPtr( buffer, 4 );
-
-		CPPUNIT_ASSERT( !array.OwnsMemory() );
-		CPPUNIT_ASSERT( array.Size() == 4 );
-		CPPUNIT_ASSERT( array.GetPtr() == buffer );
-	}
-
-	void test_TwoSetPtrs_OnTheSameNonMemoryOwning_with_SizeExpectations()
-	{
-		int buffer[] = { 1, 2, 3, 4};
-
-		CLAM::Array<int> array( (int*)NULL, 4 );
-
-		array.SetPtr( buffer, 4 );
-
-		int buffer2[] = { 1, 2, 3, 4, 5, 6 };
-
-		array.SetPtr( buffer2, 6 );
-
-		CPPUNIT_ASSERT( !array.OwnsMemory() );
-		CPPUNIT_ASSERT( array.Size() == 6 );
-		CPPUNIT_ASSERT( array.GetPtr() == buffer2 );
-
-	}
-
-
-	void test_SetPtr_OnMemoryOwningNonEmpty()
+	void test_SetPtr_OnNonEmptyArray()
 	{
 		int buffer[] = { 1, 2, 3, 4};
 
@@ -123,44 +88,32 @@ private:
 
 	}
 
-	void test_SetPtr_OnEmptyArray()
+	void testArray_Constructing_NonMemoryOwning_With_Valid_Pointer()
 	{
 		int buffer[] = { 1, 2, 3, 4};
 
-		CLAM::Array<int> array;
+		CLAM::Array<int> array( buffer, 4 );
 
-		array.SetPtr( buffer, 4 );
-		
 		CPPUNIT_ASSERT( !array.OwnsMemory() );
 		CPPUNIT_ASSERT( array.Size() == 4 );
 		CPPUNIT_ASSERT( array.GetPtr() == buffer );
 
 	}
 
-	void test_TwoSetPtrs_OnEmptyArray()
+
+	void testArray_Constructing_NonMemoryOwning_With_Null_Pointer()
 	{
-		int buffer[] = { 1, 2, 3, 4};
+		try
+		{
+			CLAM::Array<int> array( (int*)NULL, 0 );
+		}
+		catch( CLAM::ErrAssertionFailed& e )
+		{
+			return;
+		}
 
-		CLAM::Array<int> array;
-
-		array.SetPtr( buffer, 4 );
-
-		int buffer2[] = { 1, 2, 3, 4, 5, 6 };
-
-		array.SetPtr( buffer2, 6 );
-
-		CPPUNIT_ASSERT( !array.OwnsMemory() );
-		CPPUNIT_ASSERT( array.Size() == 6 );
-		CPPUNIT_ASSERT( array.GetPtr() == buffer2 );
-
-
-	}
-
-	void testCreate_Array_As_NonMemoryOwning()
-	{
-		CLAM::Array<int> array( (int*)NULL, 0 );
-
-		CPPUNIT_ASSERT_EQUAL( array.OwnsMemory(), false );
+		CPPUNIT_FAIL("Invoking the Array::Array( T*, int) constructor passing a "
+			     "NULL pointer should have triggered an assertion failure!");
 	}
 
 
@@ -195,107 +148,38 @@ private:
 
 	}
 
-	void testCopy_MemoryOwning_Into_NonMemoryOwning()
+	void testCopy_Being_The_Array_The_Placeholder_For_A_WriteStreamRegion()
 	{
-		CLAM::DataArray src;
-		src.Resize( 10 );
-		src.SetSize( 10 );
 
-		for ( int i = 0; i < src.Size(); i++ )
-			src[i] = i;
+		CLAM::Array<int> streamBuffer;
+		streamBuffer.Resize(4);
+		streamBuffer.SetSize(4);
 
-		CLAM::DataArray dst( (CLAM::TData*)NULL, src.Size() );
-
-		dst = src;
-
-		bool sizeItsTheSame = ( src.Size() == dst.Size() );
-		bool dstDoesNotOwnMemory = !dst.OwnsMemory();
-		bool pointersMatch = ( src.GetPtr() == dst.GetPtr() );
-		bool allElemsEqual = true;
+		streamBuffer[0] = 1;
+		streamBuffer[1] = 2;
+		streamBuffer[2] = 3;
+		streamBuffer[3] = 4;
 		
-		for ( int i = 0; i < dst.Size(); i++ )
-		{
-			allElemsEqual &= ( dst[i] == i );
-		}
 
-		CPPUNIT_ASSERT( allElemsEqual );
-		CPPUNIT_ASSERT( sizeItsTheSame );
-		CPPUNIT_ASSERT( dstDoesNotOwnMemory );
-		CPPUNIT_ASSERT( pointersMatch );
-		CPPUNIT_ASSERT( allElemsEqual );
+
+		CLAM::Array<int> array;		
+		streamBuffer.GiveChunk( 1, 2, array );
+
+		CLAM::Array<int> data;
+		data.Resize(2);
+		data.SetSize(2);
+
+		array = data;
+
+
+		CPPUNIT_ASSERT( streamBuffer[0] == 1 );
+		CPPUNIT_ASSERT( streamBuffer[1] == 0 );
+		CPPUNIT_ASSERT( streamBuffer[2] == 0 );
+		CPPUNIT_ASSERT( streamBuffer[3] == 4 );
+
 		
 	}
 
-	void testCopy_NonMemoryOwning_Into_MemoryOwning()
-	{
-
-		CLAM::DataArray src;
-		src.Resize( 10 );
-		src.SetSize( 10 );
-
-		for ( int i = 0; i < src.Size(); i++ )
-			src[i] = i;
-
-		CLAM::DataArray dst( (CLAM::TData*)NULL, src.Size() );
-
-		dst = src;
-
-		CLAM::DataArray realDst;
-		realDst.Resize( dst.Size() );
-		realDst.SetSize( dst.Size() );
-
-		realDst = dst;
-		
-		bool sizeItsTheSame = ( src.Size() == realDst.Size() );
-		bool dstDoesOwnMemory = realDst.OwnsMemory();
-		bool allElemsEqual = true;
-		
-		for ( int i = 0; i < realDst.Size(); i++ )
-		{
-			allElemsEqual &= ( realDst[i] == i );
-		}
-
-		CPPUNIT_ASSERT( allElemsEqual );
-		CPPUNIT_ASSERT( sizeItsTheSame );
-		CPPUNIT_ASSERT( dstDoesOwnMemory );
-		CPPUNIT_ASSERT( allElemsEqual );
-		
-	}
-
-	void testCopy_NonMemoryOwning_Into_NonMemoryOwning()
-	{
-		CLAM::DataArray src;
-		src.Resize( 10 );
-		src.SetSize( 10 );
-
-		for ( int i = 0; i < src.Size(); i++ )
-			src[i] = i;
-
-		CLAM::DataArray dst( (CLAM::TData*)NULL, src.Size() );
-
-		dst = src;
-
-		CLAM::DataArray realDst( (CLAM::TData*)NULL, src.Size() );
-
-		realDst = dst;
-		
-		bool sizeItsTheSame = ( src.Size() == realDst.Size() );
-		bool dstDoesNotOwnMemory = !realDst.OwnsMemory();
-		bool pointersMatch = ( dst.GetPtr() == realDst.GetPtr());
-		bool allElemsEqual = true;
-		
-		for ( int i = 0; i < realDst.Size(); i++ )
-		{
-			allElemsEqual &= ( realDst[i] == i );
-		}
-
-		CPPUNIT_ASSERT( allElemsEqual );
-		CPPUNIT_ASSERT( sizeItsTheSame );
-		CPPUNIT_ASSERT( dstDoesNotOwnMemory );
-		CPPUNIT_ASSERT( pointersMatch );
-		CPPUNIT_ASSERT( allElemsEqual );
-
-	}
 };
 
 
