@@ -69,6 +69,16 @@ namespace CLAM
 			void DecimateFrom22050To245( const DataArray& signal,
 						     DataArray& decimatedSignal );
 			
+			// Convolutes input signal with the kernel of a
+			// low pass elliptic filter. Coefficients were
+			// generated for a signal sampled at a 22.05kHz rate.
+			// FPass point was set to 2000 Hz and FStop point to
+			// 2200 Hz.
+			// TODO: This seemed to be done for performing a 5:1 
+			// decimation afterwards filtering
+			void Convolute22050SignalWithLowPassEllipticFilter( const DataArray& signal,
+									    DataArray& filteredSignal );
+
 			const ProcessingConfig &GetConfig() const { return mConfig;}
 		
 		private: // attributes
