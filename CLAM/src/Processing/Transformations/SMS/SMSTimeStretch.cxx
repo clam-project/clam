@@ -28,49 +28,55 @@ SMSTimeStretch::SMSTimeStretch()
 {
 	mSynthesisTime=0;
 	mAnalysisTime=0;
-	mIndex=-1;
-	//@todo: this should not be hardwired!
-	mHopSize=256;
-	mSampleRate=22050;
+	mCurrentInputFrame=-1;
 }
 
 bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	SMSTransformationTmpl<Frame>::ConcreteConfigure(cfg);
+	CopyAsConcreteConfig(mConfig,cfg);
+	mUseTemporalBPF=false;
+	if(mConfig.HasAmount())
+		mAmountCtrl.DoControl(mConfig.GetAmount());
+	else if(mConfig.HasBPFAmount()){
+		mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
+		mUseTemporalBPF=true;}
+	else
+		mAmountCtrl.DoControl(0);
 	mPO_FrameInterpolator.Configure(FrameInterpConfig());
 	return true;
 }
 
 bool SMSTimeStretch::ConcreteStart()
 {
+	mSynthesisTime=0;
+	mAnalysisTime=0;
+	mCurrentInputFrame=-1;
 	mnSynthesisFrames=0;
 	mPO_FrameInterpolator.Start();
-	return true;
+	return SMSTransformationTmpl<Frame>::ConcreteStart();
 }
 
 bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 {
-	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mHopSize/mSampleRate);
+	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mConfig.GetHopSize()/mConfig.GetSamplingRate());
 	out.SetCenterTime(mSynthesisTime);
-	mSynthesisTime+=(TData)mHopSize/mSampleRate;
-	if(interpFactor>1.01)
+	mSynthesisTime+=(TData)mConfig.GetHopSize()/mConfig.GetSamplingRate();
+	mnSynthesisFrames++;
+	if(interpFactor>1)
 	{
-		out.GetSpectralPeakArray().SetnPeaks(0);
-		Spectrum& tmpSpec=out.GetResidualSpec();
-		int i;
-		int specSize=tmpSpec.GetSize();
-		TData value;
-		if(tmpSpec.GetScale()==EScale::eLinear)
-			value=0.000000001;
-		else value=-200;
-		for(i=0;i<specSize;i++)
-			tmpSpec.SetMag(i,value);
+		TData tmpCenterTime=out.GetCenterTime();
+		out=mLeftFrame;
+		out.SetCenterTime(tmpCenterTime);
 		return true;
 	}
-	else
+	if (interpFactor<0)
 	{
-		mnSynthesisFrames++;
+		TData tmpCenterTime=out.GetCenterTime();
+		out=in;
+		out.SetCenterTime(tmpCenterTime);
+		return true;
 	}
+
 	mPO_FrameInterpolator.mFrameInterpolationFactorCtl.DoControl(interpFactor);
 	mPO_FrameInterpolator.Do(in,mLeftFrame,out);
 	
@@ -80,43 +86,55 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 
 bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 {
-	if(mIndex>-1)
+	if(mCurrentInputFrame>-1)
 	{
-		while(mIndex<in.mCurrentFrameIndex&&!HaveFinished())
+		while(mCurrentInputFrame<in.mCurrentFrameIndex&&!HaveFinished())
 		{
-			SMSTransformationTmpl<Frame>::Do(in,out);
+			UpdateControlValueFromBPF(((TData)mCurrentInputFrame)/in.GetnFrames());
+			TData previousAnalysisTime=mAnalysisTime;
+			UpdateTimeAndIndex(in);
+			if(mCurrentInputFrame>=in.mCurrentFrameIndex)
+			{
+				mCurrentInputFrame=in.mCurrentFrameIndex-2;
+				mLeftFrame=in.GetFrame(mCurrentInputFrame);
+				mAnalysisTime=previousAnalysisTime;
+				return true;
+			}
+			Do(UnwrapSegment(in),UnwrapSegment(out));
+			CLAM_DEBUG_ASSERT(mCurrentInputFrame<in.mCurrentFrameIndex,"Error");
+			out.mCurrentFrameIndex++;
 		}
 	}
-	else mIndex++;
+	else mCurrentInputFrame++;
 	return true;
 }
 
 void SMSTimeStretch::UpdateTimeAndIndex(const Segment& in)
 {
-	mAnalysisTime+=(TData)mHopSize*mAmountCtrl.GetLastValue()/mSampleRate;
-	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mHopSize/mSampleRate&&mIndex<=in.GetnFrames())
+	mAnalysisTime+=(TData)mConfig.GetHopSize()*mAmountCtrl.GetLastValue()/mConfig.GetSamplingRate();
+	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mConfig.GetHopSize()/mConfig.GetSamplingRate()&&mCurrentInputFrame<=in.GetnFrames())
 	{
-		mLeftFrame=in.GetFrame(mIndex);
-		mIndex++;
+		mLeftFrame=in.GetFrame(mCurrentInputFrame);
+		mCurrentInputFrame++;
 	}
 }
 
 const Frame& SMSTimeStretch::UnwrapProcessingData(const Segment& in,Frame*)
 {
-	UpdateTimeAndIndex(in);	
-	return in.GetFrame(mIndex);
+	return in.GetFrame(mCurrentInputFrame);
 }
+
 
 Frame& SMSTimeStretch::UnwrapProcessingData(Segment& out,Frame*)
 {
-	if(mnSynthesisFrames>out.GetnFrames())
-		out.AddFrame(out.GetFrame(mnSynthesisFrames-1));
+	if(mnSynthesisFrames==out.GetnFrames())
+		out.AddFrame(out.GetFrame(out.GetnFrames()-1));
 	return out.GetFrame(mnSynthesisFrames);
 }
 
 bool SMSTimeStretch::HaveFinished()
 {
-	return mIndex>mInput.GetData().GetnFrames();
+	return mCurrentInputFrame>mInput.GetData().GetnFrames();
 }
 
 bool SMSTimeStretch::IsLastFrame()
@@ -124,9 +142,9 @@ bool SMSTimeStretch::IsLastFrame()
 	bool isLast=HaveFinished();
 	if(isLast)
 	{
-		while(mOutput.GetData().GetnFrames()>mnSynthesisFrames)
+		while(mOutput.GetData().GetnFrames()>mnSynthesisFrames-1)
 		{
-					mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
+			mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
 		}
 	}
 	return isLast;
