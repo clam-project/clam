@@ -8,6 +8,7 @@ namespace CLAM
 {
 
 class Processing;
+class OutPort;
 
 /** Input port */
 class InPort: public Port
@@ -22,21 +23,10 @@ public:
 	virtual ~InPort() {}
 
 	bool CanDoInplace(void)  {return mCanDoInplace;}
-
+	
+	bool IsConnectedTo( OutPort& out );
 };
 
-
-// Implementation:
-//-------------------------------------------------------
-
-inline InPort::InPort(const std::string &n,
-			   Processing *o,
-			   int length,
-			   int hop,
-			   bool inplace) : 
-	Port(n,o,length,hop),
-	mCanDoInplace(inplace)
-{}
 
 
 } // namespace CLAM
