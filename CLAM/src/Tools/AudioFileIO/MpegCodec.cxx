@@ -9,6 +9,7 @@
 #include <id3/tag.h>
 #endif
 #include <cstdio>
+#include <iostream>
 
 namespace CLAM
 {
@@ -94,21 +95,18 @@ namespace AudioCodecs
 
 		int frameCount = 0;
 		
-		while ( !bitstream.EOS() && !bitstream.FatalError() )
+		while ( !bitstream.FatalError() && bitstream.NextFrame() )
 		{
-			if ( bitstream.NextFrame()  )
+			if ( frameCount == 0 ) // first frame
 			{
-				if ( frameCount == 0 ) // first frame
-				{
-					RetrieveMPEGFrameInfo( bitstream.CurrentFrame(),
-							       hdr );
-				}
-				frameCount++;
+				RetrieveMPEGFrameInfo( bitstream.CurrentFrame(),
+						       hdr );
 			}
+			frameCount++;
 		}
 
 		TTime length = bitstream.Finish();
-		
+
 		hdr.SetLength( length );
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 

@@ -83,33 +83,30 @@ namespace AudioCodecs
 		TSize samplesToRead = mInterleavedData.Size()/mEncodedChannels;
 
 		while( mDecodeBuffer[0].size() < samplesToRead
-		       && !mBitstream.EOS() )
+		       && mBitstream.NextFrame() )
 		{
-			if ( mBitstream.NextFrame() )
-			{
+			mBitstream.SynthesizeCurrent();
 			
-				mBitstream.SynthesizeCurrent();
+			CLAM_ASSERT( mEncodedChannels == MAD_NCHANNELS( &mBitstream.CurrentFrame().header ),
+				     "This frame hasn't mEncodedChannels channels!" );
+			
+			CLAM_ASSERT( mEncodedChannels == mBitstream.CurrentSynthesis().pcm.channels,
+				     "Synthesis result does not have the expected number of channels" );
+			
+			TSize samplesDecodedThisTime = mBitstream.CurrentSynthesis().pcm.length;
+			
+			for( int i = 0; i < mEncodedChannels; i++ )
+			{
+				mad_fixed_t* channelData = mBitstream.CurrentSynthesis().pcm.samples[i];
 				
-				CLAM_ASSERT( mEncodedChannels == MAD_NCHANNELS( &mBitstream.CurrentFrame().header ),
-					     "This frame hasn't mEncodedChannels channels!" );
-
-				CLAM_ASSERT( mEncodedChannels == mBitstream.CurrentSynthesis().pcm.channels,
-					     "Synthesis result does not have the expected number of channels" );
-				
-				TSize samplesDecodedThisTime = mBitstream.CurrentSynthesis().pcm.length;
-
-				for( int i = 0; i < mEncodedChannels; i++ )
-				{
-					mad_fixed_t* channelData = mBitstream.CurrentSynthesis().pcm.samples[i];
-
-					mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
-								 channelData,
-								 channelData + samplesDecodedThisTime );
-				}
-
-
-				mSamplesDecoded += mBitstream.CurrentSynthesis().pcm.length;
+				mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
+							 channelData,
+							 channelData + samplesDecodedThisTime );
 			}
+			
+			
+			mSamplesDecoded += mBitstream.CurrentSynthesis().pcm.length;
+
 		}
 
 
