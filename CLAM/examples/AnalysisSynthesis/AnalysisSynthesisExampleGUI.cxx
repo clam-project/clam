@@ -33,7 +33,7 @@
 #include "AudioSnapshot.hxx"
 
 /******* TRANSFORMATION *******/
-#include "SMSPitchShift.hxx"
+#include "SMSFreqShift.hxx"
 
 #include <iostream>
 
@@ -664,9 +664,7 @@ int main(void)
 	try{
 		AnalysisSynthesisExampleGUI example;
 		/******* TRANSFORMATION *******/
-		/*SMSFreqShift myTrans;*/
-
-		SMSPitchShift myTrans;
+		SMSFreqShift myTrans;
 
 		example.SetTransformation(&myTrans);
 		/******* TRANSFORMATION *******/
