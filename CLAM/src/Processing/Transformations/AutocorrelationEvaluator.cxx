@@ -29,6 +29,7 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
+		SetCorrelationSize( 0 );
 	}
 
 	AutocorrelationEvaluator::AutocorrelationEvaluator() :
@@ -114,6 +115,8 @@ namespace CLAM
 				else
 					outBuffer[ k ] += inBuffer[ n ] * inBuffer[ n - k ] ;
 			}
+
+			outBuffer[ k ] /= in.GetSize() ;
 		}
 */
 
@@ -143,6 +146,7 @@ namespace CLAM
 			while( inBuffer != endInBuffer )
 				( *outBuffer ) += ( *inBuffer++ ) * ( *inBuffer2++ );
 
+			( *outBuffer ) /= in.GetSize();
 			inBuffer = in.GetBuffer().GetPtr();
 			outBuffer++;
 			k++;
