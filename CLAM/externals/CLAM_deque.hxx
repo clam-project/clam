@@ -1,6 +1,6 @@
 // deque standard header
 
-#if _MSC_VER < 1300 /* VC6 */
+#if WIN32 && _MSC_VER < 1300 /* VC6 */
 
 #if     _MSC_VER > 1000
 #pragma once
@@ -8,6 +8,7 @@
 
 #ifndef _DEQUE_
 #define _DEQUE_
+
 #include <iterator>
 #include <memory>
 #include <stdexcept>
