@@ -279,7 +279,7 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 			XERCESC_INCLUDES=$XERCESCROOT/include
 		elif test -d $XERCESCROOT/include/xercesc/dom; then
 			found_dom=yes
-			XERCESC_INCLUDES="$XERCESCROOT/include $XERCESCROOT/include/xercesc"
+			XERCESC_INCLUDES="$XERCESCROOT/include"
 		else
 			AC_MSG_ERROR([
 				No xerces header directories found! 
@@ -295,7 +295,7 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 		if test -d ../../xercesc/include/xercesc/dom; then
 			AC_MSG_RESULT(yes)
 			found_dom=yes
-			export XERCESC_INCLUDES="`cd ../../xercesc/include/xercesc; pwd` `cd ../../xercesc/include; pwd`"
+			export XERCESC_INCLUDES="`cd ../../xercesc/include; pwd`"
 			export XERCESC_LIB_PATH="-L`cd ../../xercesc/lib; pwd`"
 			xerces_local=yes
 		elif test -d ../../xercesc/include/dom; then
@@ -334,7 +334,7 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 		CXXFLAGS="$CXXFLAGS $XERCESC_LIBS $XERCESC_LIB_PATH"
 		export CPLUS_INCLUDE_PATH=${XERCESC_INCLUDES// /\:}
 		AC_TRY_RUN([
-			#include<dom/DOM_Document.hpp>
+			#include<xercesc/dom/DOM_Document.hpp>
 			int main()
 			{
 				DOM_Document::createDocument();
@@ -345,7 +345,7 @@ AC_DEFUN(CLAM_LIB_XERCESC,
 			DEFINE_HAVE_XERCESC=HAVE_XERCESC
 		],[
 			AC_TRY_LINK([
-					#include<dom/DOM_Document.hpp>
+					#include<xercesc/dom/DOM_Document.hpp>
 				],[
 					DOM_Document::createDocument();
 					return 0;
