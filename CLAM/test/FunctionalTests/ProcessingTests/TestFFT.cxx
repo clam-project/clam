@@ -107,12 +107,11 @@ namespace CLAMTest
 		{
 			if ( !smBack2BackDataLoaded )
 			{
-				CLAM::XMLStorage storageIface;
 
-				storageIface.Restore( smReferenceP2Spectrum,
-						      pathToTestData + "OneSineSpectrum_RectWindow_P2.xml" );
-				storageIface.Restore( smReferenceNP2Spectrum,
-						      pathToTestData + "OneSineSpectrum_RectWindow_NP2.xml" );
+				CLAM::XMLStorage::Restore( smReferenceP2Spectrum,
+							   pathToTestData + "OneSineSpectrum_RectWindow_P2.xml" );
+				CLAM::XMLStorage::Restore( smReferenceNP2Spectrum,
+							   pathToTestData + "OneSineSpectrum_RectWindow_NP2.xml" );
 
 				smBack2BackDataLoaded = true;
 			}
@@ -121,7 +120,7 @@ namespace CLAMTest
 	public:
 		void setUp()
 		{
-			mPathToTestData = "../../../../CLAM-TestData/spectralData/";
+			mPathToTestData = "../../../../../CLAM-TestData/spectralData/";
 			loadBack2BackDataset( mPathToTestData );
 		}
 
