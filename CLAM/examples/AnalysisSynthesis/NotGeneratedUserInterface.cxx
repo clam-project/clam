@@ -338,7 +338,8 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data )
 	localView = new ProcDataView<Audio>;
 	localView->BindTo( data );
 
-	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h());
+	//TODO: Calculate h() in a correct way
+	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1));
 
 	localPresentation = new AudioBrowser(g, title);
 	localPresentation->LinkWithView( localView );
@@ -362,7 +363,8 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data )
 
 Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int type )
 {
-	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h());
+	//TODO: Calculate h() in a correct way
+	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1));
 
 	ProcDataView<Spectrum>* mSpectrumView;
 
