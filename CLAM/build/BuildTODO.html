@@ -186,6 +186,47 @@
 	<TD></TD>
 </TR>
 <TR>
+	<TD>FltkNetworkGUI</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>Filename clash between draft/FltkNetworkGUI/connection.cxx and src/Visualization/Base/Connection.cxx</TD>
+</TR>
+<TR>
+	<TD>NonSupervisedSystemExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>NonSupervisedSystemWithPortsExample</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>Compiler complains about accesses to private members. Pau and Xavi R. should review the code.</TD>
+</TR>
+<TR>
+	<TD>NonSupervisedSystemWithNodesExample</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>Two problems: the issue with AudioNodeTmpl.hxx which is not compiling under VC6 and again, problems
+	with accesses to private members. Xavi R. and Pau should review the code.</TD>
+</TR>
+<TR>
 	<TD>ArrayTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
@@ -399,17 +440,17 @@
 	<TD>ControlMapperTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Not very informative.</TD>
 </TR>
 <TR>
 	<TD>ControlsTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
@@ -419,73 +460,113 @@
 	<TD>PhantomBufferTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>Not very informative.</TD>
 </TR>
 <TR>
 	<TD>AssertTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD></TD>
+	<TD>The message 'casca el false' is not meaningful for all foreeseable users ( I don't think finns know anything about Spanish slang)</TD>
 </TR>
 <TR>
 	<TD>ErrorTest</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
-	<TD>No</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD></TD>
 </TR>
 <TR>
-	<TD>FltkNetworkGUI</TD>
+	<TD>AudioPresentationTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD>No</TD>
-	<TD>Filename clash between draft/FltkNetworkGUI/connection.cxx and src/Visualization/Base/Connection.cxx</TD>
+	<TD>Supervised test.</TD>
 </TR>
 <TR>
-	<TD>NonSupervisedSystemExample</TD>
+	<TD>ControlAdapterTest</TD>
+	<TD>Yes</TD>
 	<TD>Yes</TD>
 	<TD>Yes</TD>
 	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>Should be easily converted into a CppUnit Unit Test</TD>
+</TR>
+<TR>
+	<TD>FDFilterControllerTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>The test fails</TD>
+</TR>
+<TR>
+	<TD>ModelControllerTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD></TD>
 </TR>
 <TR>
-	<TD>NonSupervisedSystemWithPortsExample</TD>
+	<TD>TestSignalv1</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD>No</TD>
-	<TD>Compiler complains about accesses to private members. Pau and Xavi R. should review the code.</TD>
+	<TD></TD>
 </TR>
 <TR>
-	<TD>NonSupervisedSystemWithNodesExample</TD>
+	<TD>SpectralPeaksPresentationTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>Supervised. There is a problem with the regression datasets, since newer XML cannot load them well. They should be regenerated ASAP.</TD>
+</TR>
+<TR>
+	<TD>SpectrumPresentationTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
 	<TD>Yes</TD>
 	<TD>No</TD>
 	<TD>No</TD>
 	<TD>No</TD>
-	<TD>No</TD>
-	<TD>No</TD>
-	<TD>Two problems: the issue with AudioNodeTmpl.hxx which is not compiling under VC6 and again, problems
-	with accesses to private members. Xavi R. and Pau should review the code.</TD>
+	<TD>Supervised.</TD>
 </TR>
+<TR>
+	<TD>TestTokenDelayController</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD></TD>
+</TR>
+
 
 
 <TR>
