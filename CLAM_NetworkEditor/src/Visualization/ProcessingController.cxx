@@ -52,7 +52,6 @@ void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & c
 	}
 
 	SignalConfigureProcessing.Emit( mObserved, cfg );
-//	mObserved->Configure(cfg);
 	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetStatus() );
 
 	if(mObserved->ModifiesPortsAndControlsAtConfiguration())
@@ -113,24 +112,7 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 	
 	if ( !mObserved )
 		return false;
-
-	CLAM::PublishedInPorts::ConstIterator itPortIn;
-	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
-		mInPortNames.push_back((*itPortIn)->GetName());
-		
-	CLAM::PublishedOutPorts::ConstIterator itPortOut;
-	for (itPortOut = mObserved->GetOutPorts().Begin(); itPortOut != mObserved->GetOutPorts().End(); itPortOut++)
-		mOutPortNames.push_back((*itPortOut)->GetName());
-
-
-	CLAM::PublishedInControls::ConstIterator itCtrlIn;
-	for (itCtrlIn = mObserved->GetInControls().Begin(); itCtrlIn != mObserved->GetInControls().End(); itCtrlIn++)
-		mInControlNames.push_back((*itCtrlIn)->GetName());
-	
-	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
-	for (itCtrlOut = mObserved->GetOutControls().Begin(); itCtrlOut != mObserved->GetOutControls().End(); itCtrlOut++)
-		mOutControlNames.push_back((*itCtrlOut)->GetName());
-
+	UpdateListOfPortsAndControls();
 	return true;
 }
 
