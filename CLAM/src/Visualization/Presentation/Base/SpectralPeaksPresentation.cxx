@@ -1,40 +1,32 @@
 #include "SpectralPeaksPresentation.hxx"
-#include "SpectrumAspect.hxx"
-#include "SpectralPeakArrayAspect.hxx"
+#include "SpectrumModel.hxx"
+#include "SpectralPeaksModel.hxx"
 
 namespace CLAMVM
 {
 
-		SpectralPeaksPresentation::SpectralPeaksPresentation()
+		SpectrumPlusPeaksPresentation::SpectrumPlusPeaksPresentation()
 		{
-				SetSpectrum.Wrap( this, &SpectralPeaksPresentation::OnNewSpectrum );
-				SetPartials.Wrap( this, &SpectralPeaksPresentation::OnNewPeakArray );
+				SetSpectrum.Wrap( this, &SpectrumPlusPeaksPresentation::OnNewSpectrum );
+				SetPartials.Wrap( this, &SpectrumPlusPeaksPresentation::OnNewPeakArray );
 		}
 
-		SpectralPeaksPresentation::~SpectralPeaksPresentation()
+		SpectrumPlusPeaksPresentation::~SpectrumPlusPeaksPresentation()
 		{
 		}
 
-		void SpectralPeaksPresentation::Bind( Aspect& givenAspect )
+		void SpectrumPlusPeaksPresentation::AttachTo( SpectrumModel& specModel, SpectralPeaksModel& peaksModel )
 		{
-				Aspect* a = &givenAspect;
+				specModel.ObjectPublished.Connect( SetSpectrum );
 
-				SpectrumAspect* sa = NULL;
-				SpectralPeakArrayAspect* spa = NULL;
+				peaksModel.ObjectPublished.Connect( SetPartials );
 
-				sa = dynamic_cast< SpectrumAspect* >( a );
-				if ( sa != NULL )
-				{
-						sa->AcquireSpectrum.Connect( SetSpectrum );
-						return;
-				}
-				spa = dynamic_cast< SpectralPeakArrayAspect* >( a );
-				if ( spa != NULL )
-				{
-						spa->AcquirePartials.Connect( SetPartials );
-						return;
-				}
-				CLAM_ASSERT(false, "Unwanted aspect provided" );
+		}
+		
+		void SpectrumPlusPeaksPresentation::Detach()
+		{
+				SetSpectrum.Unbind();
+				SetPartials.Unbind();
 		}
 
 }

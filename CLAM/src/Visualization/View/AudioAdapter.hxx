@@ -2,7 +2,7 @@
 #define __AUDIOADAPTER__
 
 #include "ProcessingDataAdapter.hxx"
-#include "AudioAspect.hxx"
+#include "AudioModel.hxx"
 
 namespace CLAM
 {
@@ -15,11 +15,11 @@ namespace CLAMVM
 		using CLAM::Audio;
 		using CLAM::ProcessingData;
 
-		class AudioAdapter : public ProcessingDataAdapter
+		class AudioAdapter 
+				: public ProcessingDataAdapter, public AudioModel
 		{
 				// attributes
 		private:
-				AudioAspect          mAspect;
 				const Audio*         mObserved;
 
 		protected:
@@ -34,14 +34,9 @@ namespace CLAMVM
 						return "AudioAdapter";
 				}
 
-				virtual Aspect& GetAspect()
-				{
-						return mAspect;
-				}
-
 				virtual bool Publish();
 
-				virtual bool BindTo( const ProcessingData* audioObj );
+				virtual bool BindTo( const ProcessingData& audioObj );
 
 		};
 }

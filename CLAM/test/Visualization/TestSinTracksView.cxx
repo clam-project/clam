@@ -28,7 +28,7 @@ bool TestBasicUseCase( SinTracksAdapter& view, StdioSinTracksPresentation& prese
 
 		std::cout << "SEGMENT RESTORED" << std::endl;
 
-		view.BindTo( &segmentObj );
+		view.BindTo( segmentObj );
 
 		view.Publish();
 		std::cout << "DATA ACQUISITION DONE!" << std::endl;

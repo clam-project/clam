@@ -1,5 +1,5 @@
 #include "AudioPresentation.hxx"
-#include "AudioAspect.hxx"
+#include "AudioModel.hxx"
 
 namespace CLAMVM
 {
@@ -12,11 +12,14 @@ namespace CLAMVM
 		{
 		}
 
-		void AudioPresentation::Bind( Aspect& a ) throw ( std::bad_cast )
+		void AudioPresentation::AttachTo( AudioModel& model )
 		{
-			AudioAspect& asp = dynamic_cast<AudioAspect& >( a );
-
-			asp.AcquireAudio.Connect( SetAudio );
+				model.ObjectPublished.Connect( SetAudio );
 		}
 
+		void AudioPresentation::Detach()
+		{
+				SetAudio.Unbind();
+		}
+		
 }

@@ -5,9 +5,8 @@ namespace CLAMVM
 {
 		using CLAM::TSize;
 		
-		
 		AudioAdapter::AudioAdapter()
-				: mAspect( *this ), mObserved( NULL )
+				: mObserved( NULL )
 		{
 		}
 
@@ -15,9 +14,9 @@ namespace CLAMVM
 		{
 		}
 
-		bool AudioAdapter::BindTo( const ProcessingData* audioObj ) 
+		bool AudioAdapter::BindTo( const ProcessingData& audioObj ) 
 		{
-				mObserved = dynamic_cast< const Audio* >( audioObj );
+				mObserved = dynamic_cast< const Audio* >( &audioObj );
 			
 				if ( !mObserved ) 
 						return false;
@@ -33,11 +32,18 @@ namespace CLAMVM
 				TData obsSR = 1.0f / mObserved->GetSampleRate();
 				TSize nSamples = mObserved->GetBuffer().Size();
 
-				mAspect.AcquireSamples.Emit( mObserved->GetBuffer() );
-				mAspect.AcquireDuration.Emit( nSamples * obsSR );
-				mAspect.AcquireStartTime.Emit( mObserved->GetBeginTime() );
-				mAspect.AcquireSampleRate.Emit( mObserved->GetSampleRate() );
-				mAspect.AcquireAudio.Emit( mObserved->GetBuffer(), mObserved->GetBeginTime(), nSamples * obsSR, mObserved->GetSampleRate()   ); 
+				SamplesPublished.Emit( mObserved->GetBuffer() );
+
+				DurationPublished.Emit( nSamples * obsSR );
+
+				StartTimePublished.Emit( mObserved->GetBeginTime() );
+
+				SampleRatePublished.Emit( mObserved->GetSampleRate() );
+
+				ObjectPublished.Emit( mObserved->GetBuffer(), 
+									  mObserved->GetBeginTime(), 
+									  nSamples * obsSR, 
+									  mObserved->GetSampleRate()   ); 
 
 				return true;
 		}

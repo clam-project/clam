@@ -7,6 +7,7 @@
 #include "DataTypes.hxx"
 #include "Slotv2.hxx"
 #include "Slotv1.hxx"
+#include "SineTracksDef.hxx"
 
 namespace CLAMVM
 {
@@ -17,13 +18,12 @@ namespace CLAMVM
 		using CLAM::TTime;
 		using CLAM::TSize;
 
+		class SinTracksModel;
 		class SinTracksPresentation : public Presentation
 		{
 		protected:
-
-				virtual void Bind( Aspect& ) throw ( std::bad_cast );
 				
-				virtual void OnNewPartials( const Array<Partial>&, TIndex ) = 0; 
+				virtual void OnNewTrackList( SineTrackList& , TSize ) = 0; 
 				
 				virtual void OnNewRange( TData ) = 0;
 
@@ -33,11 +33,15 @@ namespace CLAMVM
 				SinTracksPresentation();
 				~SinTracksPresentation();
 
-				virtual void Show() = 0;
+				virtual void AttachTo( SinTracksModel& );
+				virtual void Detach();
 
-				Slotv2<const Array<Partial>&, TIndex > AddPartials;
-				Slotv1<TData>                     SetSpectralRange;
-				Slotv2<TTime, TTime>              SetTimeInterval;
+				virtual void Show() = 0;
+				virtual void Hide() = 0;
+
+				Slotv2<SineTrackList&, TSize >          SetTrackList;
+				Slotv1<TData>                           SetSpectralRange;
+				Slotv2<TTime, TTime>                    SetTimeInterval;
 		};
 }
 

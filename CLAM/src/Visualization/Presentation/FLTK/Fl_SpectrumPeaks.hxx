@@ -14,7 +14,8 @@ namespace CLAMVM
 		class Fl_GridLayout;
 		class Fl_Gl_Multi_Display;
 
-		class Fl_SpectrumPeaks : public SpectralPeaksPresentation, public Fl_Window
+		class Fl_SpectrumPeaks 
+			: public SpectrumPlusPeaksPresentation, public Fl_Window
 		{
 		private:
 				Fl_GridLayout*               mLayout;
@@ -38,7 +39,7 @@ namespace CLAMVM
 
 				virtual void resize( int X, int Y, int W, int H );
 				virtual void Show();
-
+				virtual void Hide();
 
 		};
 }

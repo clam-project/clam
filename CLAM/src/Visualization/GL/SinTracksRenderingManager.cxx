@@ -4,10 +4,9 @@
 namespace CLAMVM
 {
 		SinTracksRM::SinTracksRM()
-				: mTrackBuilder(  ), mHorClipper(  ), mMustProcessData( false ), mPalette( 0.0f ), mColorsAssigned( false )
+				: mHorClipper(  ), mMustProcessData( false ), mPalette( 0.0f ), mColorsAssigned( false )
 		{
-			mTrackBuilder.SetTrackList( mCachedTracks );
-			mHorClipper.SetTrackList( mCachedTracks );
+				mCachedTracks = NULL;
 		}
 
 		SinTracksRM::~SinTracksRM()
@@ -29,12 +28,10 @@ namespace CLAMVM
 
 		}
 
-		void SinTracksRM::CacheData( const Array<Partial>& partArray, TIndex frameIdx )
+		void SinTracksRM::CacheData( SineTrackList& list )
 		{
-				if ( frameIdx == 0 )
-					mTrackBuilder.Flush();
-
-				mTrackBuilder.AddFrame( partArray, frameIdx );
+				mCachedTracks = &list;
+				mHorClipper.SetTrackList( *mCachedTracks );
 
 				mMustProcessData = true;
 				mColorsAssigned = false;
@@ -85,8 +82,8 @@ namespace CLAMVM
 
 		void SinTracksRM::Colorize()
 		{
-				SineTrackList::iterator i = mCachedTracks.begin();
-				SineTrackList::iterator end = mCachedTracks.end();
+				SineTrackList::iterator i = mCachedTracks->begin();
+				SineTrackList::iterator end = mCachedTracks->end();
 
 				while ( i != end )
 				{

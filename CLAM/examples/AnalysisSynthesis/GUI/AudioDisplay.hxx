@@ -28,6 +28,8 @@ namespace CLAMVM
 				
 				void Show();
 
+				void Hide();
+
 		protected:
 			
 				void OnNewAudio( const DataArray& samples, TTime begin, TTime end, TData srate );

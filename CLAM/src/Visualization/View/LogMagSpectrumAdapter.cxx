@@ -103,10 +103,10 @@ namespace CLAMVM
 
 				TranslateSpectralData();
 
-				mAspect.AcquireMagnitude.Emit( mMagBuffer );
-				mAspect.AcquirePhase.Emit( mPhaseBuffer );
-				mAspect.AcquireSpectralRange.Emit( mObserved->GetSpectralRange() );
-				mAspect.AcquireSpectrum.Emit( mMagBuffer,  mObserved->GetSpectralRange() );
+				MagnitudePublished.Emit( mMagBuffer );
+				PhasePublished.Emit( mPhaseBuffer );
+				SpectralRangePublished.Emit( mObserved->GetSpectralRange() );
+				ObjectPublished.Emit( mMagBuffer,  mObserved->GetSpectralRange() );
 
 				return true;
 		}

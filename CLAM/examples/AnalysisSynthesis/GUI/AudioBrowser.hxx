@@ -54,6 +54,7 @@ namespace CLAMVM
 		
 
 		virtual void Show();
+		virtual void Hide();
 				
 			void setPainting(bool painting); 
 			Slotv1<CLAM::TData>* GetFrameSlot();

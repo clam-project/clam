@@ -1,5 +1,5 @@
 #include "StdioAudioPresentation.hxx"
-#include "AudioAspect.hxx"
+#include "AudioModel.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -30,15 +30,26 @@ namespace CLAMVM
 				std::cout << "END OF DATA RETRIEVED SO FAR" << std::endl;
 		}
 
-		void StdioAudioPresentation::Bind( Aspect& a ) throw ( std::bad_cast )
+		void StdioAudioPresentation::Hide()
+		{
+		}
+
+		void StdioAudioPresentation::AttachTo( AudioModel& model ) 
 		{
 				// Here we go!
-				AudioAspect& aspect = dynamic_cast<AudioAspect& >( a );
 				
-				aspect.AcquireSamples.Connect( SetSamples );
-				aspect.AcquireDuration.Connect( SetDuration );
-				aspect.AcquireStartTime.Connect( SetStartTime );
-				aspect.AcquireSampleRate.Connect( SetSampleRate );
+				model.SamplesPublished.Connect( SetSamples );
+				model.DurationPublished.Connect( SetDuration );
+				model.StartTimePublished.Connect( SetStartTime );
+				model.SampleRatePublished.Connect( SetSampleRate );
+		}
+
+		void StdioAudioPresentation::Detach( )
+		{
+			SetSamples.Unbind();
+			SetDuration.Unbind();
+			SetStartTime.Unbind();
+			SetSampleRate.Unbind();
 		}
 
 		void StdioAudioPresentation::OnNewSamples( const DataArray& array )

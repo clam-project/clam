@@ -26,7 +26,7 @@ bool TestBasicUseCase( SpectralPeakArrayAdapter& view, StdioSpectralPeakArrayPre
 
 		x.Restore( specPeakArrayObj, pathToFile );
 
-		view.BindTo( &specPeakArrayObj );
+		view.BindTo( specPeakArrayObj );
 
 		view.Publish();
 		presentation.Show();

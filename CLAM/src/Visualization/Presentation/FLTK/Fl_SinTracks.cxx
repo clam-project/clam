@@ -71,11 +71,11 @@ namespace CLAMVM
 				
 		}
 
-		void Fl_SinTracks::OnNewPartials ( const Array<Partial>& newPartials, TIndex frame_index )
+		void Fl_SinTracks::OnNewTrackList( SineTrackList& list, TSize framelen )
 		{
-				mDrawMgr.CacheData( newPartials, frame_index );
+				mDrawMgr.CacheData( list );
 				mDisplay->SetLeft( 0 );
-				mDisplay->SetRight( frame_index );
+				mDisplay->SetRight( framelen );
 		}
 
 		void Fl_SinTracks::OnNewRange( TData specRange )
@@ -108,5 +108,10 @@ namespace CLAMVM
 		void Fl_SinTracks::Show()
 		{
 				show();
+		}
+
+		void Fl_SinTracks::Hide()
+		{
+				hide();
 		}
 }

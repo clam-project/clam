@@ -12,7 +12,10 @@ namespace CLAMVM
 		using CLAM::DataArray;
 		using CLAM::TData;
 		
-		class StdioSpectrumPresentation : public Presentation
+		class SpectrumModel;
+
+		class StdioSpectrumPresentation 
+			: public Presentation
 		{
 				// attributes
 		private:
@@ -23,7 +26,6 @@ namespace CLAMVM
 
 				// Implementation details
 		protected:
-				virtual void Bind( Aspect& ) throw ( std::bad_cast );
 				
 				// callback methods to be called by the view
 				virtual void OnNewMagBins( const DataArray& array );
@@ -41,7 +43,14 @@ namespace CLAMVM
 
 				virtual ~StdioSpectrumPresentation();
 
+				virtual void AttachTo( SpectrumModel& );
+
+				virtual void Detach();
+
 				void Show();
+
+				void Hide(); 
+
 		};
 		
 }

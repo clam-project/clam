@@ -12,6 +12,7 @@ namespace CLAMVM
 	using CLAM::DataArray;
 	using CLAM::TData;
 	using CLAM::TTime;
+	class AudioModel;
 
 class StdioAudioPresentation : public Presentation
 {
@@ -27,7 +28,6 @@ private:
 		// Implementation details
 protected:
 
-		virtual void Bind( Aspect& ) throw (std::bad_cast);
 
 		// callback methods to retrieving data from the vie
 //public slots:
@@ -50,6 +50,10 @@ public:
 		virtual ~StdioAudioPresentation();
 
 		void Show();
+		void Hide();
+		virtual void AttachTo( AudioModel& );
+		void Detach();
+
 };
 
 }

@@ -54,10 +54,6 @@ public:
 		 */	
 		virtual const char* GetClassName() const  = 0;
 
-		/**
-		 *  @see ModelAdapter::GetAspect
-		 */
-		virtual Aspect& GetAspect() = 0;
 
 		/**
 		 *  @see ModelAdapter::Refresh
@@ -73,7 +69,7 @@ public:
 		 *  @return A boolean telling us if it was possible to bind 
 		 *          the view with the ProcessingData provided
 		 */
-		virtual bool BindTo( const ProcessingData* procDataObj ) = 0;
+		virtual bool BindTo( const ProcessingData& procDataObj ) = 0;
 
 };
 

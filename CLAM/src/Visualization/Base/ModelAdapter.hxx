@@ -66,7 +66,7 @@ public:
 		 *   @see Presentation
 		 */
 
-		virtual Aspect& GetAspect() = 0;
+		//virtual Aspect& GetAspect() = 0;
 		
 		/**
 		 *   The main message to be send to any view. Its purpose is the same

@@ -1,5 +1,5 @@
 #include "StdioSpectrumPresentation.hxx"
-#include "SpectrumAspect.hxx"
+#include "SpectrumModel.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -38,13 +38,24 @@ namespace CLAMVM
 				std::cout << "Spectral range :" << mSpectralRange << std::endl;
  		}
 
-		void StdioSpectrumPresentation::Bind( Aspect& a ) throw ( std::bad_cast )
+		void StdioSpectrumPresentation::Hide()
 		{
-				SpectrumAspect& aspect = dynamic_cast< SpectrumAspect& >( a );
+		}
+
+		void StdioSpectrumPresentation::AttachTo( SpectrumModel& model )
+		{
 				
-				aspect.AcquireMagnitude.Connect( SetMagnitudeBins );
-				aspect.AcquirePhase.Connect( SetPhaseBins );
-				aspect.AcquireSpectralRange.Connect( SetSpectralRange );
+				model.MagnitudePublished.Connect( SetMagnitudeBins );
+				model.PhasePublished.Connect( SetPhaseBins );
+				model.SpectralRangePublished.Connect( SetSpectralRange );
+		}
+
+		void StdioSpectrumPresentation::Detach()
+		{
+				SetMagnitudeBins.Unbind();
+				SetPhaseBins.Unbind();
+				SetSpectralRange.Unbind();
+
 		}
 
 		void StdioSpectrumPresentation::OnNewMagBins( const DataArray& array )

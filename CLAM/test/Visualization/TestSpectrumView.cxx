@@ -28,7 +28,7 @@ bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, StdioSpectrumPresentati
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -50,7 +50,7 @@ bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, StdioSpectrumPresentation
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -72,7 +72,7 @@ bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, StdioSpectrumPresentation&
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -93,7 +93,7 @@ bool TestBasicUseCase( LogMagSpectrumAdapter& view, StdioSpectrumPresentation& p
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();

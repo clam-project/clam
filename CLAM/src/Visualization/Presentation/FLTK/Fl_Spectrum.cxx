@@ -100,4 +100,9 @@ namespace CLAMVM
 		{
 				show();
 		}
+
+		void Fl_Spectrum::Hide()
+		{
+				hide();
+		}
 }

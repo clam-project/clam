@@ -11,7 +11,7 @@ namespace CLAMVM
 		using CLAM::TSize;
 
 		SpectralPeakArrayAdapter::SpectralPeakArrayAdapter()
-				: mAspect( *this ), mObserved( NULL )
+				: mObserved( NULL )
 		{
 		}
 
@@ -19,9 +19,9 @@ namespace CLAMVM
 		{
 		}
 
-		bool SpectralPeakArrayAdapter::BindTo( const ProcessingData* obj )
+		bool SpectralPeakArrayAdapter::BindTo( const ProcessingData& obj )
 		{
-				mObserved = dynamic_cast< const SpectralPeakArray* >( obj );
+				mObserved = dynamic_cast< const SpectralPeakArray* >( &obj );
 
 				if ( !mObserved ) return false;
 
@@ -36,7 +36,7 @@ namespace CLAMVM
 				if ( !TranscribePeakArray( *mObserved ) )
 					return false;
 
-				mAspect.AcquirePartials.Emit( mPartialBuffer );
+				ObjectPublished.Emit( mPartialBuffer );
 
 				return true;
 		}

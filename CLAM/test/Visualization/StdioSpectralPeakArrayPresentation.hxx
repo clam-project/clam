@@ -13,6 +13,8 @@ namespace CLAMVM
 		using SigSlot::Slotv1;
 		using CLAM::Array;
 		
+		class SpectralPeaksModel;
+
 		class StdioSpectralPeakArrayPresentation : public Presentation
 		{
 		private:
@@ -21,7 +23,6 @@ namespace CLAMVM
 
 		protected:
 
-				virtual void Bind( Aspect& ) throw ( std::bad_cast );
 
 				// callback methods to be called by the view
 
@@ -33,7 +34,11 @@ namespace CLAMVM
 				StdioSpectralPeakArrayPresentation();
 				virtual ~StdioSpectralPeakArrayPresentation();
 				
+				virtual void AttachTo( SpectralPeaksModel& );
+				virtual void Detach();
+
 				void Show();
+				void Hide();
 		};	
 }
 

@@ -2,8 +2,9 @@
 #define __FL_SINTRACKS__
 
 #include <FL/Fl_Window.H>
-#include "Base/SinTracksPresentation.hxx"
+#include "SinTracksPresentation.hxx"
 #include "SinTracksRenderingManager.hxx"
+#include "SineTracksDef.hxx"
 
 namespace CLAMVM
 {
@@ -26,7 +27,7 @@ namespace CLAMVM
 				SinTracksRM               mDrawMgr;
 
 		protected:
-				virtual void OnNewPartials( const Array<Partial>&, TIndex ); 
+				virtual void OnNewTrackList( SineTrackList& list, TSize framelen ); 
 				
 				virtual void OnNewRange( TData );
 
@@ -39,6 +40,7 @@ namespace CLAMVM
 
 				virtual void resize( int X, int Y, int W, int H );
 				virtual void Show();
+				virtual void Hide();
 
 		};
 

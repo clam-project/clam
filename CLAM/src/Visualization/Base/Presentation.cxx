@@ -20,12 +20,11 @@
  */
 
 #include "Presentation.hxx"
-#include "ModelAdapter.hxx"
 
 namespace CLAMVM
 {
-		void Presentation::AttachTo( ModelAdapter& view ) throw ( std::bad_cast )
-		{
-				Bind( view.GetAspect() );
-		}
+	Presentation::~Presentation()
+	{
+	}
+
 }

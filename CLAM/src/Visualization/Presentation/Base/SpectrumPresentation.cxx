@@ -1,5 +1,5 @@
 #include "SpectrumPresentation.hxx"
-#include "SpectrumAspect.hxx"
+#include "SpectrumModel.hxx"
 
 namespace CLAMVM
 {
@@ -12,10 +12,13 @@ namespace CLAMVM
 		{
 		}
 
-		void SpectrumPresentation::Bind( Aspect& a ) throw( std::bad_cast )
+		void SpectrumPresentation::AttachTo( SpectrumModel& model )
+		{				
+				model.ObjectPublished.Connect( SetSpectrum );
+		}
+
+		void SpectrumPresentation::Detach()
 		{
-				SpectrumAspect& asp = dynamic_cast<SpectrumAspect& >( a );
-				
-				asp.AcquireSpectrum.Connect( SetSpectrum );
+				SetSpectrum.Unbind();
 		}
 }

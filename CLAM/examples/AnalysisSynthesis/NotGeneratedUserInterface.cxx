@@ -203,7 +203,7 @@ void UserInterface::DisplayInputSpectrum(void)
 		Frame& frame = localFrames[ mCounter->value() ];
 		Spectrum& spectrum = frame.GetSpectrum();
 
-		mInputSpectrumView.BindTo( &spectrum );
+		mInputSpectrumView.BindTo( spectrum );
 		mInputSpectrumView.Publish();
 //		mSmartTile->equalize();
 	}
@@ -325,7 +325,7 @@ Fl_Window* UserInterface::AttachInputSound(const char* title, CLAM::Audio* data 
 {
 	AudioBrowser* localPresentation;
 
-	mSoundView.BindTo( data );
+	mSoundView.BindTo( *data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
@@ -354,7 +354,7 @@ Fl_Window* UserInterface::AttachOutputSound(const char* title, CLAM::Audio* data
 {
 	AudioBrowser* localPresentation;
 
-	mSynthesizedOutput.BindTo( data );
+	mSynthesizedOutput.BindTo( *data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
@@ -383,7 +383,7 @@ Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* d
 {
 	AudioBrowser* localPresentation;
 
-	mSynthResidualOut.BindTo( data );
+	mSynthResidualOut.BindTo( *data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
@@ -412,7 +412,7 @@ Fl_Window* UserInterface::AttachSynthResidualSound(const char* title, CLAM::Audi
 {
 	AudioBrowser* localPresentation;
 
-	mSynthResidualOut.BindTo( data );
+	mSynthResidualOut.BindTo( *data );
 
 	//TODO: Calculate h() in a correct way
 	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
@@ -458,7 +458,7 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int ty
 	// registering callback for notifying the ui the need of 'detaching'
 	localPresentation->callback( (Fl_Callback*)_Detach, this );
 
-	selectedView->BindTo( data );
+	selectedView->BindTo( *data );
 	localPresentation->AttachTo( *selectedView );
 	selectedView->Publish();
 	
@@ -496,7 +496,7 @@ void UserInterface::ChangeFrame()
 	//Change Spectrum Displayer
 	// InputSpectrum Displayer is yet cahnged
 		
-	mOutputSpectrumView.BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+	mOutputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
 	mOutputSpectrumView.Publish();
 //		mSmartTile->equalize();
 
@@ -516,10 +516,10 @@ void UserInterface::ChangeTimeTag( double tag )
 	mFrameSignal.Emit( nextcursorpos );
 
 	//Change Spectrum Displayer
-	mInputSpectrumView.BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+	mInputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
 	mInputSpectrumView.Publish();
 //		mSmartTile->equalize();
-	mOutputSpectrumView.BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+	mOutputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
 	mOutputSpectrumView.Publish();
 //		mSmartTile->equalize();
 

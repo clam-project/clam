@@ -6,7 +6,7 @@ namespace CLAMVM
 		using CLAM::TSize;
 
 		SpectrumAdapter::SpectrumAdapter()
-				: mAspect( *this ), mObserved( NULL )
+				: mObserved( NULL )
 		{
 		}
 
@@ -14,9 +14,9 @@ namespace CLAMVM
 		{
 		}
 
-		bool SpectrumAdapter::BindTo( const ProcessingData* specObj )
+		bool SpectrumAdapter::BindTo( const ProcessingData& specObj )
 		{
-				mObserved = dynamic_cast< const Spectrum* >( specObj );
+				mObserved = dynamic_cast< const Spectrum* >( &specObj );
 
 				if ( !mObserved ) return false;
 

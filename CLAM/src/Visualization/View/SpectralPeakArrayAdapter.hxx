@@ -2,7 +2,7 @@
 #define __SPECTRALPEAKARRAYADAPTER__
 
 #include "ProcessingDataAdapter.hxx"
-#include "SpectralPeakArrayAspect.hxx"
+#include "SpectralPeaksModel.hxx"
 
 namespace CLAM
 {
@@ -16,12 +16,12 @@ namespace CLAMVM
 		using CLAM::ProcessingData;
 		using CLAM::Array;
 
-		class SpectralPeakArrayAdapter : public ProcessingDataAdapter
+		class SpectralPeakArrayAdapter 
+				: public ProcessingDataAdapter, public SpectralPeaksModel
 		{
 				// attributes
 		private:
 				const SpectralPeakArray*        mObserved;
-				SpectralPeakArrayAspect         mAspect;
 
 		protected:
 				Array< Partial >  mPartialBuffer;
@@ -42,14 +42,9 @@ namespace CLAMVM
 						return "SpectralPeakArrayAdapter";
 				}
 				
-				virtual Aspect& GetAspect()
-				{
-						return mAspect;
-				}
-
 				virtual bool Publish();
 
-				virtual bool BindTo( const ProcessingData* procDataObj );
+				virtual bool BindTo( const ProcessingData& procDataObj );
 		};
 }
 

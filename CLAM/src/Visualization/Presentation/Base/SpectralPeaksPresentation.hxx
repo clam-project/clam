@@ -16,25 +16,30 @@ namespace CLAMVM
 		using CLAM::DataArray;
 		using CLAM::TData;
 
-		class SpectralPeaksPresentation : public Presentation
+		class SpectralPeaksModel;
+		class SpectrumModel;
+
+		class SpectrumPlusPeaksPresentation : public Presentation
 		{
 		private:
 		protected:
-				virtual void Bind( Aspect& );
-
 				virtual void OnNewSpectrum( const DataArray&, TData ) = 0; 
 				virtual void OnNewPeakArray( const Array<Partial>& ) = 0;
 
 		public:
 
-				SpectralPeaksPresentation();
-				~SpectralPeaksPresentation();
+				SpectrumPlusPeaksPresentation();
+				~SpectrumPlusPeaksPresentation();
+
+				virtual void AttachTo( SpectrumModel& , SpectralPeaksModel& );
+				virtual void Detach();
 
 				virtual void Show() = 0;
+				virtual void Hide() = 0;
 
 				Slotv2< const DataArray&, TData >   SetSpectrum;
 				Slotv1< const Array<Partial>& >     SetPartials;
 		};
 }
 
-#endif // SpectralPeaksPresentation.hxx
+#endif // SpectrumPlusPeaksPresentation.hxx

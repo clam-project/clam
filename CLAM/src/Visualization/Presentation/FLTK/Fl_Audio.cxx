@@ -96,4 +96,9 @@ namespace CLAMVM
 		{
 				show();
 		}
+
+		void Fl_Audio::Hide()
+		{
+				hide();
+		}
 }

@@ -1,11 +1,11 @@
 #include "SinTracksPresentation.hxx"
-#include "SinTracksAspect.hxx"
+#include "SinTracksModel.hxx"
 
 namespace CLAMVM
 {
 		SinTracksPresentation::SinTracksPresentation()
 		{
-				AddPartials.Wrap( this, &SinTracksPresentation::OnNewPartials );
+				SetTrackList.Wrap( this, &SinTracksPresentation::OnNewTrackList );
 				SetSpectralRange.Wrap( this, &SinTracksPresentation::OnNewRange );
 				SetTimeInterval.Wrap( this, &SinTracksPresentation::OnNewDuration );
 		}
@@ -14,12 +14,17 @@ namespace CLAMVM
 		{
 		}
 
-		void SinTracksPresentation::Bind( Aspect& givenAspect ) throw ( std::bad_cast )
+		void SinTracksPresentation::AttachTo( SinTracksModel& stmodel )
 		{
-				SinTracksAspect& concrete = dynamic_cast< SinTracksAspect& >( givenAspect );
+				stmodel.TrackListPublished.Connect( SetTrackList );
+				stmodel.SpectralRangePublished.Connect( SetSpectralRange );
+				stmodel.DurationPublished.Connect( SetTimeInterval );
+		}
 
-				concrete.AcquirePartials.Connect( AddPartials );
-				concrete.AcquireSpectralRange.Connect( SetSpectralRange );
-				concrete.AcquireDuration.Connect( SetTimeInterval );
+		void SinTracksPresentation::Detach()
+		{
+				SetTrackList.Unbind();
+				SetSpectralRange.Unbind();
+				SetTimeInterval.Unbind();
 		}
 }

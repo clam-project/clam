@@ -65,6 +65,11 @@ namespace CLAMVM
 				show();
 		}
 
+		void SpectrumDisplay::Hide()
+		{
+			hide();
+		}
+
 		void SpectrumDisplay::OnNewSpectrum( const DataArray& samples, TData specRange )
 		{
 				

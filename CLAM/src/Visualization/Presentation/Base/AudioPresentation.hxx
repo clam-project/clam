@@ -33,16 +33,13 @@ namespace CLAMVM
 		using CLAM::TData;
 		using CLAM::TTime;
 
-		class AudioPresentation : public Presentation
+		// forward declaration
+		class AudioModel;
+
+		class AudioPresentation 
+				: public Presentation
 		{
-		private:
-				TData mMaximum;
-				TData mMinimum;
-				
-		protected:
-
-				virtual void Bind( Aspect& ) throw( std::bad_cast );
-
+		protected:				
 //slots functions:
 				virtual void OnNewAudio( const DataArray&, TTime, TTime, TData ) = 0;
 // Accessors to received data
@@ -53,12 +50,16 @@ namespace CLAMVM
 
 				~AudioPresentation();
 
+				virtual void AttachTo( AudioModel&  );
+
+				virtual void Detach();
+
 				virtual void Show() = 0;
+				
+				virtual void Hide() = 0;
 
 				Slotv4<const DataArray&, TTime, TTime, TData> SetAudio;
 		};
-
 }
-
 
 #endif // AudioPresentation.hxx

@@ -72,7 +72,7 @@ bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& present
 		wndSpecGen.Start();
 		wndSpecGen.Do( myaudio, myspectrum );
 		
-		view.BindTo( &myspectrum );
+		view.BindTo( myspectrum );
 
 		view.Publish();
 		presentation.Show();
@@ -99,7 +99,7 @@ bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation 
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -127,7 +127,7 @@ bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentati
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -154,7 +154,7 @@ bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 
@@ -182,7 +182,7 @@ bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation 
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -207,7 +207,7 @@ bool TestBasicUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 
 		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
-		view.BindTo( &specObj );
+		view.BindTo( specObj );
 
 		view.Publish();
 		presentation.Show();
@@ -251,6 +251,7 @@ int main( int argc, char** argv )
 						std::cerr << "Observing spectrum with only BPF buffers use case Test...... FAILED!" << std::endl;
 				else
 						std::cerr << "Observing spectrum with only BPF buffers use case Test...... Passed!" << std::endl;
+
 				if ( !TestWindowedUseCase( view, presentation ) )
 						std::cerr << "Observing windowed spectrum  use case Test...... FAILED!" << std::endl;
 				else

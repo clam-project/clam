@@ -11,7 +11,7 @@ void CLAMVM::plot(const CLAM::Audio &model, const char *label)
 	AudioAdapter ma;
 
 	// Bind model to the model adapter:
-	ma.BindTo(&model);
+	ma.BindTo( model);
 
 	// Create widget to serve as the presentation of the model:
 	Fl_Audio presentation(100, 100, 640, 480, label);

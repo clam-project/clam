@@ -36,6 +36,7 @@ namespace CLAMVM
 				
 				void resize( int X, int Y, int W, int H );
 				void Show();
+				void Hide();
 			
 
 		};

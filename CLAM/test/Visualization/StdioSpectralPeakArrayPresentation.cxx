@@ -1,5 +1,5 @@
 #include "StdioSpectralPeakArrayPresentation.hxx"
-#include "SpectralPeakArrayAspect.hxx"
+#include "SpectralPeaksModel.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -28,11 +28,19 @@ namespace CLAMVM
 				}
 		}
 
-		void StdioSpectralPeakArrayPresentation::Bind( Aspect& a) throw( std::bad_cast )
+		void StdioSpectralPeakArrayPresentation::Hide()
 		{
-				SpectralPeakArrayAspect& viewAspect = dynamic_cast< SpectralPeakArrayAspect& >( a );
+		}
 
-				viewAspect.AcquirePartials.Connect( SetPartials );
+		void StdioSpectralPeakArrayPresentation::AttachTo( SpectralPeaksModel& peakModel )
+		{
+
+				peakModel.ObjectPublished.Connect( SetPartials );
+		}
+
+		void StdioSpectralPeakArrayPresentation::Detach()
+		{
+			SetPartials.Unbind();
 		}
 
 		void StdioSpectralPeakArrayPresentation::OnNewPartials( const Array<Partial>& array )

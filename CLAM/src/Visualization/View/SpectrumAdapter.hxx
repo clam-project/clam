@@ -2,7 +2,7 @@
 #define __SPECTRUMADAPTER__
 
 #include "ProcessingDataAdapter.hxx"
-#include "SpectrumAspect.hxx"
+#include "SpectrumModel.hxx"
 
 namespace CLAM
 {
@@ -16,11 +16,11 @@ namespace CLAMVM
 		using CLAM::Spectrum;
 		using CLAM::ProcessingData;
 
-		class SpectrumAdapter : public ProcessingDataAdapter
+		class SpectrumAdapter 
+				: public ProcessingDataAdapter, public SpectrumModel
 		{
 				// attributes
 		protected:
-				SpectrumAspect      mAspect;
 				const Spectrum*     mObserved;
 
 				// Implementation Details
@@ -51,14 +51,10 @@ namespace CLAMVM
 						return "SpectrumAdapter";
 				}
 
-				virtual Aspect& GetAspect()
-				{
-						return mAspect;
-				}
 
 				virtual bool Publish() = 0;
 
-				virtual bool BindTo( const ProcessingData* procDataObj );
+				virtual bool BindTo( const ProcessingData& procDataObj );
 		};
 
 }

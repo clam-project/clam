@@ -42,8 +42,8 @@ bool TestBasicUseCase( LogMagSpectrumAdapter& specView, SpectralPeakArrayAdapter
 
 		x.Restore( spec, pathToFile1 ); // The frame has been incorporated into the system
 
-		specView.BindTo( &spec );
-		peaksView.BindTo( &peaks );
+		specView.BindTo( spec );
+		peaksView.BindTo( peaks );
 
 		specView.Publish();
 		peaksView.Publish();
@@ -65,9 +65,8 @@ int main( int argc, char** argv )
 				SpectralPeakArrayAdapter                peaksView;
 				Fl_SpectrumPeaks                        presentation( 100, 100, 640, 480, "Spectrum + peaks" );
 
-				presentation.AttachTo( spectrumView );
-				presentation.AttachTo( peaksView );
-
+				presentation.AttachTo( spectrumView, peaksView );
+				
 				std::cerr << "BASIC SPECTRAL PEAK ARRAY USE CASE TEST LAUNCHED" << std::endl;
 				if ( !TestBasicUseCase( spectrumView, peaksView, presentation ) )
 						std::cerr << "Basic Use case Test...... FAILED!" << std::endl;

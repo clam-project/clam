@@ -1,5 +1,5 @@
 #include "StdioSinTracksPresentation.hxx"
-#include "SinTracksAspect.hxx"
+#include "SinTracksModel.hxx"
 //#include "SinTrackSegment.hxx"
 #include <algorithm>
 #include <iostream>
@@ -39,10 +39,9 @@ namespace CLAMVM
 
 		
 		StdioSinTracksPresentation::StdioSinTracksPresentation()
-				: mTrackListBuilder( )
+			: mSineTracks( NULL )
 		{
-				mTrackListBuilder.SetTrackList( mSineTracks );
-				SetPartials.Wrap( this, &StdioSinTracksPresentation::OnNewPartials );
+				SetPartials.Wrap( this, &StdioSinTracksPresentation::OnNewTrackList );
 				SetSpectralRange.Wrap( this, &StdioSinTracksPresentation::OnNewRange );
 				SetDuration.Wrap( this, &StdioSinTracksPresentation::OnNewDuration );
 		}
@@ -51,13 +50,19 @@ namespace CLAMVM
 		{
 		}
 
-		void StdioSinTracksPresentation::Bind( Aspect& a ) throw( std::bad_cast )
+		void StdioSinTracksPresentation::AttachTo( SinTracksModel& model )
 		{
-				SinTracksAspect& viewAspect = dynamic_cast< SinTracksAspect& >( a );
 				
-				viewAspect.AcquirePartials.Connect( SetPartials );
-				viewAspect.AcquireSpectralRange.Connect( SetSpectralRange );
-				viewAspect.AcquireDuration.Connect( SetDuration  );
+				model.TrackListPublished.Connect( SetPartials );
+				model.SpectralRangePublished.Connect( SetSpectralRange );
+				model.DurationPublished.Connect( SetDuration  );
+		}
+
+		void StdioSinTracksPresentation::Detach()
+		{
+			SetPartials.Unbind();
+			SetSpectralRange.Unbind();
+			SetDuration.Unbind();
 		}
 
 		void StdioSinTracksPresentation::Show()
@@ -68,12 +73,16 @@ namespace CLAMVM
 
 			std::cout << "DECIMATION... ";
 	
-			Decimate( mSineTracks );
+			Decimate( *mSineTracks );
 
 			std::cout << "DONE!" << std::endl;
 	
-			std::for_each( mSineTracks.begin(), mSineTracks.end(), dump_to_stdout() );
+			std::for_each( mSineTracks->begin(), mSineTracks->end(), dump_to_stdout() );
 				
+		}
+
+		void StdioSinTracksPresentation::Hide()
+		{
 		}
 		
 		void StdioSinTracksPresentation::OnNewRange( TData spec_rng )
@@ -88,12 +97,12 @@ namespace CLAMVM
 				mLen = end - begin;
 		}
 
-		void StdioSinTracksPresentation::OnNewPartials( const Array<Partial>& array, TIndex frame_idx )
+		void StdioSinTracksPresentation::OnNewTrackList( SineTrackList& list, TSize framelen )
 		{
 				// ufff
 
-				mTrackListBuilder.AddFrame( array, frame_idx );
-				std::cout << ".";
+				mSineTracks = &list;
+				
 		}
 		
 		

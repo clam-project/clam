@@ -18,6 +18,8 @@ namespace CLAMVM
 		using CLAM::TTime;
 		using CLAM::TSize;
 
+		class SinTracksModel;
+
 		class StdioSinTracksPresentation : public Presentation
 		{
 		private:
@@ -75,25 +77,23 @@ namespace CLAMVM
 				
 				typedef SineTrackList::iterator iterator;
 
-				SineTrackList               mSineTracks;
+				SineTrackList*              mSineTracks;
 				TData                       mSpectralRange;
 				TTime                       mBeginTime;
 				TTime                       mEndTime;
 				TTime                       mLen;
 
-				SinTrackBuilder             mTrackListBuilder;
 
 		protected:
 
-				virtual void Bind( Aspect& ) throw( std::bad_cast );
 
-				virtual void OnNewPartials( const Array<Partial>& array, TIndex frames_to_go );
+				virtual void OnNewTrackList( SineTrackList& array, TSize framelen );
 
 				virtual void OnNewRange ( TData spec_rng );
 				
 				virtual void OnNewDuration( TTime begin, TTime end );
 		public:
-				Slotv2< const Array<Partial>&, TIndex >           SetPartials;
+				Slotv2< SineTrackList&, TSize >           SetPartials;
 				Slotv1< TData >                                   SetSpectralRange;
 				Slotv2< TTime, TTime >                            SetDuration;
 
@@ -102,7 +102,13 @@ namespace CLAMVM
 
 				virtual ~StdioSinTracksPresentation();
 
+				virtual void AttachTo( SinTracksModel& );
+
+				virtual void Detach();
+
 				virtual void Show();
+
+				virtual void Hide();
 		};
 }
 

@@ -2,7 +2,9 @@
 #define __SINTRACKSADAPTER__
 
 #include "SpectralPeakArrayAdapter.hxx"
-#include "SinTracksAspect.hxx"
+#include "SinTracksModel.hxx"
+#include "SineTracksDef.hxx"
+#include "SinTrackListBuilder.hxx"
 
 namespace CLAM
 {
@@ -16,13 +18,15 @@ namespace CLAMVM
 		using CLAM::ProcessingData;
 		using CLAM::Array;
 
-		class SinTracksAdapter : public SpectralPeakArrayAdapter
+		class SinTracksAdapter 
+				: public SpectralPeakArrayAdapter, public SinTracksModel
 		{
 				// attributes
 		private:
 				const Segment*                  mObserved;
-		protected:				
-				SinTracksAspect             mThisAspect;
+				SineTrackList                   mExtractedList;
+				SinTrackBuilder                 mTrackBuilder;
+
 				// implementation details
 		protected:
 				
@@ -40,14 +44,10 @@ namespace CLAMVM
 						return "SinTracksAdapter";
 				}
 
-				virtual Aspect& GetAspect()
-				{
-						return mThisAspect;
-				}
 
 				virtual bool Publish();
 			
-				virtual bool BindTo( const ProcessingData* procDataObj );
+				virtual bool BindTo( const ProcessingData& procDataObj );
 		};
 
 }

@@ -3,7 +3,6 @@
 
 #include "GLRenderingManager.hxx"
 #include "SineTracksDef.hxx"
-#include "SinTrackListBuilder.hxx"
 #include "SinTrackHorClipper.hxx"
 #include "SinTrackVerClipper.hxx"
 #include "GLSineTracks.hxx"
@@ -27,7 +26,7 @@ namespace CLAMVM
 
 				virtual void SetWorldBounds( const DataBoundBox& );
 				virtual void SetPixelBounds( const ScreenBoundBox& );
-				virtual void CacheData( const Array<Partial>& array, TIndex frameIndex );
+				virtual void CacheData( SineTrackList& );
 				virtual void RenderData();
 
 		protected:
@@ -38,18 +37,17 @@ namespace CLAMVM
 				inline float ClampToRange( TData value );
 				
 		private:
-				SineTrackList       mCachedTracks;
-				SinTrackBuilder     mTrackBuilder;
-				SinTrackHorClipper  mHorClipper;
-				SinTrackVerClipper  mVerClipper;
-				GLSineTracks        mRenderer;
-				bool                mMustProcessData;
-				DataBoundBox        mDataBBox;
-				ScreenBoundBox      mScreenBBox;
-				SineTrackSpanEnds   mStarts;
-				SineTrackSpanEnds   mEnds;
-				Fl_Palette          mPalette;
-				bool                mColorsAssigned;
+				SineTrackList*       mCachedTracks;
+				SinTrackHorClipper   mHorClipper;
+				SinTrackVerClipper   mVerClipper;
+				GLSineTracks         mRenderer;
+				bool                 mMustProcessData;
+				DataBoundBox         mDataBBox;
+				ScreenBoundBox       mScreenBBox;
+				SineTrackSpanEnds    mStarts;
+				SineTrackSpanEnds    mEnds;
+				Fl_Palette           mPalette;
+				bool                 mColorsAssigned;
 		};
 }
 

@@ -86,6 +86,11 @@ namespace CLAMVM
 		{
 				show();
 		}
+
+		void AudioBrowser::Hide()
+		{
+			hide();
+		}
 		
 		void AudioBrowser::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
 		{

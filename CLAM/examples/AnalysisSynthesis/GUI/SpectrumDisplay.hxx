@@ -31,6 +31,7 @@ namespace CLAMVM
 		
 			virtual ~SpectrumDisplay();
 			void Show();
+			void Hide();
 	
 	protected:
 

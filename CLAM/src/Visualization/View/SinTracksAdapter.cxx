@@ -10,23 +10,28 @@ namespace CLAMVM
 		using CLAM::TSize;
 		
 		SinTracksAdapter::SinTracksAdapter()
-				: mObserved( NULL ), mThisAspect( *this )
+				: mObserved( NULL )
 		{
+				mTrackBuilder.SetTrackList( mExtractedList );
+
 		}
 
 		SinTracksAdapter::~SinTracksAdapter()
 		{
 		}
 
-		bool SinTracksAdapter::BindTo( const ProcessingData* obj )
+		bool SinTracksAdapter::BindTo( const ProcessingData& obj )
 		{
-				mObserved = dynamic_cast< const Segment* >( obj );
+				mObserved = dynamic_cast< const Segment* >( &obj );
 
 				CLAM_ASSERT( mObserved->HasSamplingRate(), "Not a valid segment: it doesn't know its sampling rate " );
 				CLAM_ASSERT( mObserved->HasBeginTime(), "Not a valid segment: it doesn't know its begin time " );
 				CLAM_ASSERT( mObserved->HasEndTime(), "Not a valid segment: it doesn't know its end time " );
 
 				if ( !mObserved ) return false;
+
+				// new object, new list
+				mTrackBuilder.Flush();
 
 				return true;
 		}
@@ -38,8 +43,8 @@ namespace CLAMVM
 
 				TransmitPeakArrays();
 				
-				mThisAspect.AcquireSpectralRange.Emit( mObserved->GetSamplingRate()/2 );
-				mThisAspect.AcquireDuration.Emit( mObserved->GetBeginTime(), mObserved->GetEndTime() );
+				SpectralRangePublished.Emit( mObserved->GetSamplingRate()/2 );
+				DurationPublished.Emit( mObserved->GetBeginTime(), mObserved->GetEndTime() );
 
 				return true;
 		}
@@ -54,10 +59,12 @@ namespace CLAMVM
 						const Frame& f = mObserved->GetFrame( idx );
 						
 						if ( TranscribePeakArray( f.GetSpectralPeakArray() ) )
-							mThisAspect.AcquirePartials.Emit( mPartialBuffer, idx );
+							mTrackBuilder.AddFrame( mPartialBuffer, idx );
 						
 						idx++;
 				}
+				
+				TrackListPublished.Emit( mExtractedList, numFrames );
 				
 		}
 }

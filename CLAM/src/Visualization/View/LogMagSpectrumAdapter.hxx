@@ -7,7 +7,8 @@
 namespace CLAMVM
 {
 
-		class LogMagSpectrumAdapter : public SpectrumAdapter
+		class LogMagSpectrumAdapter 
+				: public SpectrumAdapter
 		{
 				// attributes
 		private:
@@ -20,11 +21,6 @@ namespace CLAMVM
 		public:
 				
 				virtual ~LogMagSpectrumAdapter();
-
-				virtual Aspect& GetAspect()
-				{
-					return mAspect;
-				}
 
 				virtual const char* GetClassName() const
 				{

@@ -111,4 +111,9 @@ namespace CLAMVM
 		{
 				show();
 		}
+
+		void Fl_SpectrumPeaks::Hide()
+		{
+				hide();
+		}
 }

@@ -11,7 +11,7 @@ void CLAMVM::plot(const CLAM::Spectrum &model, const char *label)
 	LogMagSpectrumAdapter ma;
 
 	// Bind model to the model adapter:
-	ma.BindTo(&model);
+	ma.BindTo(model);
 
 	// Create widget to serve as the presentation of the model:
 	Fl_Spectrum presentation(100, 100, 640, 480, label);

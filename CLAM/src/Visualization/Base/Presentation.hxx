@@ -22,14 +22,8 @@
 #ifndef __PRESENTATION__
 #define __PRESENTATION__
 
-#include <typeinfo>
-
-
 namespace CLAMVM
 {
-
-class ModelAdapter;
-class Aspect;
 
 /**
  *   This is the interface required to all Visualization Module presentations.
@@ -43,30 +37,23 @@ class Aspect;
  */
 class Presentation
 {
-
 public:
-		/**
-		 *  Presentation users should use this method to attach a given presentation
-		 *  with an arbitrary View. The concrete association between the concrete
-		 *  presentation and the concrete view is resolved in the Presentation::Bind
-		 *  method.
-		 */
-		virtual void AttachTo( ModelAdapter& ) throw ( std::bad_cast );
+		
+		//@todo: the destructor should not be present in the header, so I should move it
+		//       down to the implementation file ( broking several makefiles and dsp's :/ )
+		virtual ~Presentation();
 
-		virtual ~Presentation()
-		{
-		}
-
-protected:
 		/**
-		 *  The Presentation base class forces all concrete classes derived from it
-		 *  to implement this method, which should perform the concrete binding
-		 *  between the Presentation and the attached view. 
-		 *  @param Reference to the Aspect supported by the attached view
-		 *  @throw This method must throw a bad_cast exception if the Aspect provided
-		 *  by the view is not the one the Presentation expects
+		 *   Calling this method makes the widget to appear on the screen
 		 */
-		virtual void Bind( Aspect& ) = 0;
+		virtual void Show() = 0;
+
+		/**
+		 *   Calling this method makes the widget to disappear from the screen,
+		 *   so it should not be confused with concepts such as 'minimize' or
+		 *   'iconify'.
+		 */
+		virtual void Hide() = 0;
 
 };
 

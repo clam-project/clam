@@ -99,7 +99,7 @@ bool TestBasicUseCase( AudioAdapter& view, Fl_Audio& presentation ) throw ( Err 
 
 		// View and Presentation now talk with each other
 
-		view.BindTo( &audioObj );
+		view.BindTo( audioObj );
 
 		view.Publish();
 		presentation.Show();

@@ -34,13 +34,14 @@ namespace CLAMVM
 		using CLAM::DataArray;
 		using CLAM::TData;
 		using CLAM::TTime;
+
+		// forward declaration
+		class SpectrumModel;
 		
 		class SpectrumPresentation : public Presentation
 		{
-		private:
 				
 		protected:
-				virtual void Bind( Aspect& ) throw ( std::bad_cast );
 
 				virtual void OnNewSpectrum( const DataArray&, TData ) = 0;
 		public:
@@ -49,7 +50,13 @@ namespace CLAMVM
 
 				~SpectrumPresentation();
 
+				virtual void AttachTo( SpectrumModel& );
+
+				virtual void Detach();
+
 				virtual void Show() = 0;
+
+				virtual void Hide() = 0;
 
 				Slotv2< const DataArray&, TData >       SetSpectrum;
 				

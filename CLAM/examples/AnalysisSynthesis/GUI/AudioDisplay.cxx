@@ -66,6 +66,11 @@ namespace CLAMVM
 				show();
 		}
 
+		void AudioDisplay::Hide()
+		{
+			hide();
+		}
+
 		void AudioDisplay::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
 		{
 				Viewport view_specs;

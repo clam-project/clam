@@ -49,11 +49,6 @@ public:
 		virtual const char* GetClassName() const = 0;
 
 		/**
-		 *  @see ModelAdapter::GetAspect
-		 */
-		virtual Aspect& GetAspect() = 0;
-
-		/**
 		 *  ModelControllers are also able to Publish
 		 *  @see ModelAdapter::Publish
 		 */
