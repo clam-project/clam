@@ -43,7 +43,8 @@ public:
 
 	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
 		: r( red ), g( gree ), b( blu ), mDataChanged( false ), 
-		mCullingRequested(false), mMustUpdateBounds( true ), mFirstIndex(0),mLastIndex(0)
+		mCullingRequested(false), mMustUpdateBounds( true ), mFirstIndex(0),mLastIndex(0),
+		mElemIdxBuffer(0,100)
 	{
 		ResizeArray( 1024 );
 		/*This limit has been experimentally found to be correct but it depends on the
@@ -83,7 +84,7 @@ protected:
 protected:
 
 	std::valarray< c3f_v3f > mIntertwined;
-	std::valarray< GLuint >  mElemIdxBuffer;
+	CLAM::Array< GLuint >  mElemIdxBuffer;
 	unsigned       mLastIndex,mFirstIndex,mnMaxMin;
 	unsigned char r;
 	unsigned char g;

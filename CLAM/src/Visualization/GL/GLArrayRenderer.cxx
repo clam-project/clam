@@ -48,8 +48,6 @@ void GLArrayRenderer::ResizeArray( unsigned int new_size )
 	mIntertwined.resize( new_size );
 	InitArray( new_size );
 	
-	/** This resize should be done in the FindMaxMin method*/
-	mElemIdxBuffer.resize( new_size );
 	mLastIndex = 0;
 	mFirstIndex = 0;
 }
@@ -99,7 +97,7 @@ void GLArrayRenderer::Draw()
 			mMustUpdateBounds= false;
 		}
 		
-		glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, &mElemIdxBuffer[mFirstIndex] );
+		glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, mElemIdxBuffer.GetPtr()+mFirstIndex );
 	}
 	else
 	{
@@ -194,7 +192,7 @@ void GLArrayRenderer::UpdateBounds()
 				break;
 			}
 		}
-		if(!found) mFirstIndex=mnMaxMin;
+		if(!found) mFirstIndex=mnMaxMin-1;
 	}
 	else if(mCullingData.left<mElemIdxBuffer[mFirstIndex])
 	{
@@ -210,11 +208,6 @@ void GLArrayRenderer::UpdateBounds()
 		if(!found) mFirstIndex=0;
 	}
 	
-	else
-	{
-		std::cout<<"I'm here";
-	}
-
 	found=false;
 
 	if(mCullingData.right>mElemIdxBuffer[mLastIndex])
@@ -228,7 +221,7 @@ void GLArrayRenderer::UpdateBounds()
 				break;
 			}
 		}
-		if(!found) mLastIndex=mnMaxMin;
+		if(!found) mLastIndex=mnMaxMin-1;
 	}
 	else if(mCullingData.right<mElemIdxBuffer[mLastIndex])
 	{
@@ -244,13 +237,6 @@ void GLArrayRenderer::UpdateBounds()
 		if(!found) mLastIndex=0;
 	}
 
-	else
-	{
-		std::cout<<"I'm here";
-	}
-
-
-	
 }
 
 
@@ -268,7 +254,7 @@ void GLArrayRenderer::FindMaxMin()
 	unsigned int i;
 	
 	//We always add a start point at zero
-	mElemIdxBuffer[0]=0;
+	mElemIdxBuffer.AddElem(0);
 	mIntertwined[0].y=0;
 
 	mnMaxMin=1;
@@ -282,7 +268,7 @@ void GLArrayRenderer::FindMaxMin()
 		{
 			if(firstZero)
 			{
-				mElemIdxBuffer[mnMaxMin]=i;
+				mElemIdxBuffer.AddElem(i);
 				mnMaxMin++;
 				firstZero=false;
 				mIntertwined[i].y=0;
@@ -291,7 +277,7 @@ void GLArrayRenderer::FindMaxMin()
 		}
 		if(!firstZero)
 		{
-			mElemIdxBuffer[mnMaxMin]=i-1;
+			mElemIdxBuffer.AddElem(i-1);
 			mnMaxMin++;
 			mIntertwined[i-1].y=0;
 			firstZero=true;
@@ -311,7 +297,7 @@ void GLArrayRenderer::FindMaxMin()
 			// quadratic interpolation
 			float diffFromMin =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
 			interpolatedPosition = pointPosition+diffFromMin;
-			mElemIdxBuffer[mnMaxMin]=(unsigned)(interpolatedPosition);
+			mElemIdxBuffer.AddElem((unsigned)(interpolatedPosition));
 							
 			mnMaxMin++;
 		
@@ -328,7 +314,7 @@ void GLArrayRenderer::FindMaxMin()
 			// quadratic interpolation
 			diffFromMax =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
 			interpolatedPosition = pointPosition+diffFromMax;
-			mElemIdxBuffer[mnMaxMin]=(unsigned)(interpolatedPosition);
+			mElemIdxBuffer.AddElem((unsigned)(interpolatedPosition));
 							
 			mnMaxMin++;
 		}
@@ -336,11 +322,9 @@ void GLArrayRenderer::FindMaxMin()
 	}
 
 	//We always add an end point at zero
-	mElemIdxBuffer[mnMaxMin]=nElems-1;
+	mElemIdxBuffer.AddElem(nElems-1);
 	mIntertwined[mnMaxMin].y=0;
 	mnMaxMin++;
-
-//	mElemIdxBuffer.resize(mnMaxMin);
 	
 }
 
