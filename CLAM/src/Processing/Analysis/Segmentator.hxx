@@ -52,7 +52,6 @@ enum {
 	SpectralTiltId = SpectralDescBase+9,
 	SpectralFlatnessId = SpectralDescBase+10,
 	SpectralKurtosisId = SpectralDescBase+11,
-	SpectralStrongPeakId = SpectralDescBase+12,
 
 	FrameDescBase = 175, //for example
 	FundamentalId = FrameDescBase,

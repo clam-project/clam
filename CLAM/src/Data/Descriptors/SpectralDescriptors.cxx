@@ -56,8 +56,6 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetLowFreqEnergyRelation(initVal);
 	SetRolloff(initVal);
 	SetSlope(initVal);
-	SetIrregularity(initVal);
-	SetStrongPeak(initVal);
 	SetHFC(initVal);
 }
 
@@ -135,12 +133,6 @@ void SpectralDescriptors::ConcreteCompute()
 		SetRolloff(ComputeRolloff());
 	if(HasSlope())
 		SetSlope(mpStats->GetSlope()/mDeltaFreq);
-	if(HasIrregularity())
-		//not implemented
-		SetIrregularity(0);
-	if(HasStrongPeak())
-		//not implemented
-		SetStrongPeak(0);
 	if(HasHFC())
 		//not implemented
 		SetHFC(0);
@@ -270,16 +262,12 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetMoment5(a.GetMoment5()*mult);
 	if(a.HasMoment6())
 		tmpD.SetMoment6(a.GetMoment6()*mult);
-	if(a.HasIrregularity())
-		tmpD.SetIrregularity(a.GetIrregularity()*mult);
 	if(a.HasTilt())
 		tmpD.SetTilt(a.GetTilt()*mult);
 	if(a.HasFlatness())
 		tmpD.SetFlatness(a.GetFlatness()*mult);
 	if(a.HasKurtosis())
 		tmpD.SetKurtosis(a.GetKurtosis()*mult);
-	if(a.HasStrongPeak())
-		tmpD.SetStrongPeak(a.GetStrongPeak()*mult);
 	if(a.HasHFC())
 		tmpD.SetHFC(a.GetHFC()*mult);
 	if(a.HasMaxMagFreq())
@@ -368,12 +356,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetMoment6(a.GetMoment6()*b.GetMoment6());
 	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		tmpD.AddIrregularity();
-		tmpD.UpdateData();
-		tmpD.SetIrregularity(a.GetIrregularity()*b.GetIrregularity());
-	}
 	if(a.HasTilt() && b.HasTilt() )
 	{
 		tmpD.AddTilt();
@@ -391,12 +373,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.AddKurtosis();
 		tmpD.UpdateData();
 		tmpD.SetKurtosis(a.GetKurtosis()*b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		tmpD.AddStrongPeak();
-		tmpD.UpdateData();
-		tmpD.SetStrongPeak(a.GetStrongPeak()*b.GetStrongPeak());
 	}
 	if(a.HasHFC() && b.HasHFC() )
 	{
@@ -540,12 +516,6 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetMoment6(a.GetMoment6()+b.GetMoment6());
 	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		tmpD.AddIrregularity();
-		tmpD.UpdateData();
-		tmpD.SetIrregularity(a.GetIrregularity()+b.GetIrregularity());
-	}
 	if(a.HasTilt() && b.HasTilt() )
 	{
 		tmpD.AddTilt();
@@ -563,12 +533,6 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.AddKurtosis();
 		tmpD.UpdateData();
 		tmpD.SetKurtosis(a.GetKurtosis()+b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		tmpD.AddStrongPeak();
-		tmpD.UpdateData();
-		tmpD.SetStrongPeak(a.GetStrongPeak()+b.GetStrongPeak());
 	}
 	if(a.HasHFC() && b.HasHFC() )
 	{

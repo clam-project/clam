@@ -51,7 +51,6 @@ namespace CLAM {
 		DYN_ATTRIBUTE (9,public, TData, Tilt);
 		DYN_ATTRIBUTE (10,public, TData, Flatness);
 		DYN_ATTRIBUTE (11,public, TData, Kurtosis);
-		DYN_ATTRIBUTE (12,public, TData, StrongPeak);
 		DYN_ATTRIBUTE (13,public, TData, HFC);
 		DYN_ATTRIBUTE (14,public, Array<TData>, MFCC);
 		DYN_ATTRIBUTE (15,public, Array<TData>, BandEnergy);
@@ -181,11 +180,6 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetKurtosis()>a.GetKurtosis())
 			tmpD.SetKurtosis(b.GetKurtosis());
 	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		if(b.GetStrongPeak()>a.GetStrongPeak())
-			tmpD.SetStrongPeak(b.GetStrongPeak());
-	}
 	if(a.HasHFC() && b.HasHFC() )
 	{
 		if(b.GetHFC()>a.GetHFC())
@@ -313,11 +307,6 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 	{
 		if(b.GetKurtosis()<a.GetKurtosis())
 			tmpD.SetKurtosis(b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		if(b.GetStrongPeak()<a.GetStrongPeak())
-			tmpD.SetStrongPeak(b.GetStrongPeak());
 	}
 	if(a.HasHFC() && b.HasHFC() )
 	{
