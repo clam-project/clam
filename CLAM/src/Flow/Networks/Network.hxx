@@ -22,9 +22,12 @@ class Network
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
 	typedef std::list< NodeBase* > NodesList;
-	// destructor
+	// constructor / destructor
+	Network();
+	Network( const std::string& );
 	~Network();
-
+	
+	std::string& GetName() { return _name; }
 	Processing& GetProcessing( const std::string & name );
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
@@ -44,6 +47,7 @@ protected:
 
 private:
 	// fields
+	std::string _name;
 	ProcessingsMap _processings;
 	NodesList _nodes;
 	// helpers

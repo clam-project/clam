@@ -15,12 +15,17 @@ namespace CLAM
 		void StopProcessing( Network::ProcessingsMap::value_type& mapElem ) {
 			mapElem.second->Stop();
 		}
-		void DoProcessing( Network::ProcessingsMap::value_type& mapElem ) {
-
-			mapElem.second->Do();
-		}
 	}
-	// destructor
+	// constructor / destructor
+
+	Network::Network( const std::string& name ) :
+		_name( name )
+	{}
+
+	Network::Network() :
+		_name("Unnamed Network")
+	{}
+	
 	Network::~Network()
 	{
 		std::for_each( 	_processings.begin(), _processings.end(), HelperFunctions::DeleteProcessing );
@@ -144,7 +149,9 @@ namespace CLAM
 	}
 	void Network::DoProcessings()
 	{
-		std::for_each( _processings.begin(), _processings.end(), HelperFunctions::DoProcessing );
+		ProcessingsMap::iterator it;
+		for ( it=_processings.begin(); it!=_processings.end(); it++ )
+				it->second->Do();
 	}
 
 	void Network::ConfigureNodes( int frameSize )
