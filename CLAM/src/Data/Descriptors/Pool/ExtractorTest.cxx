@@ -8,33 +8,72 @@
 namespace CLAMTest
 {
 
-class HookTest;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( HookTest );
-
-class HookTest : public CppUnit::TestFixture
+class MyExtractor
 {
-	CPPUNIT_TEST_SUITE( HookTest );
-	CPPUNIT_TEST(testInit_PointsToThePoolBegin);
-	CPPUNIT_TEST(testNext_PointsToTheNextPoolData);
-	CPPUNIT_TEST(testIsInsideScope_ReturnsTrueWhileInsideTheScope);
-	CPPUNIT_TEST(testIsInsideScope_ReturnsFalseBeyondTheScope);
+public:
+	void SetHooks(CLAM::ReadHook<char> & inputHook, CLAM::WriteHook<char> & outputHook)
+	{
+		_inputHook = &inputHook;
+		_outputHook = &outputHook;
+	}
 
-	CPPUNIT_TEST(testWriteInit_PointsToThePoolBegin);
-	CPPUNIT_TEST(testWriteNext_PointsToTheNextPoolData);
-	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope);
-	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsFalseBeyondTheScope);
+	void Extract()
+	{
+		char & output = _outputHook->GetForWriting();
+		const char  & input = _inputHook->GetForReading();
+		output = input;
+	}
+	bool IsInsideScope()
+	{
+		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
+	}
+		
+	void Next()
+	{
+		_inputHook->Next();
+		_outputHook->Next();
+	}
+
+	void Init(CLAM::DescriptionDataPool & pool)
+	{
+		_inputHook->Init(pool);
+		_outputHook->Init(pool);
+	}
+private:
+	CLAM::ReadHook<char> * _inputHook;
+	CLAM::WriteHook<char> * _outputHook;
+};
+
+
+	
+class ExtractorTest;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( ExtractorTest );
+
+class ExtractorTest : public CppUnit::TestFixture
+{
+	CPPUNIT_TEST_SUITE( ExtractorTest );
+	CPPUNIT_TEST(test);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Common initialization, executed before each test method
 	void setUp()
 	{
-		mScheme.AddAttribute< CLAM::Attribute<CLAM::TData> >(
-				"TestScope1","TDataAttribute");
+		mScheme.AddAttribute< CLAM::Attribute<char> >(
+				"TestScope1","InputData");
+		mScheme.AddAttribute< CLAM::Attribute<char> >(
+				"TestScope1","OutputData");
 
 		mPool = new CLAM::DescriptionDataPool(mScheme);
 		mPool->SetNumberOfContexts("TestScope1",3);
+
+		char * inputBuffer = mPool->GetAttributePool<char>("TestScope1","InputData");
+		for (unsigned i = 0; i<3; i++)
+			inputBuffer[i]='a'+i;
+
+		mInputBuffer = inputBuffer;
 	}
 
 	/// Common clean up, executed after each test method
@@ -46,128 +85,12 @@ public:
 private:
 	CLAM::DescriptionScheme mScheme;
 	CLAM::DescriptionDataPool * mPool;
+	const char * mInputBuffer;
 
-	void testInit_PointsToThePoolBegin()
+	void test()
 	{
-		CLAM::Hook<CLAM::TData> hook;
-		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-		const CLAM::TData & result = hook.GetForReading();
-
-		CPPUNIT_ASSERT_EQUAL(expected, &result);
+		CPPUNIT_FAIL("Joder!!");
 	}
-
-	void testNext_PointsToTheNextPoolData()
-	{
-		CLAM::Hook<CLAM::TData> hook;
-		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-		hook.Next();
-		const CLAM::TData & result = hook.GetForReading();
-
-		CPPUNIT_ASSERT_EQUAL(expected+1, &result);
-	}
-
-	void testIsInsideScope_ReturnsTrueWhileInsideTheScope()
-	{
-		CLAM::Hook<CLAM::TData> hook;
-		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-	}
-
-	void testIsInsideScope_ReturnsFalseBeyondTheScope()
-	{
-		CLAM::Hook<CLAM::TData> hook;
-		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-
-		// Advance until the end
-		hook.Next();
-		hook.Next();
-		// Go Beyond
-		hook.Next();
-
-		CPPUNIT_ASSERT(!hook.IsInsideScope());
-	}
-
-	void testWriteInit_PointsToThePoolBegin()
-	{
-		CLAM::WriteHook<CLAM::TData> hook;
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-		CLAM::TData & result = hook.GetForWriting();
-
-		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-
-		CPPUNIT_ASSERT_EQUAL(expected, &result);
-	}
-
-	void testWriteNext_PointsToTheNextPoolData()
-	{
-		CLAM::WriteHook<CLAM::TData> hook;
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-		hook.Next();
-		CLAM::TData & result = hook.GetForWriting();
-		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute") + 1;
-
-		CPPUNIT_ASSERT_EQUAL(expected, &result);
-	}
-
-	void testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope()
-	{
-		CLAM::WriteHook<CLAM::TData> hook;
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-	}
-
-	void testWriteIsInsideScope_ReturnsFalseBeyondTheScope()
-	{
-		CLAM::WriteHook<CLAM::TData> hook;
-		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		hook.Bind("TestScope1","TDataAttribute");
-		hook.Init(*mPool);
-
-		// Advance until the end
-		hook.Next();
-		hook.Next();
-		// Go Beyond
-		hook.Next();
-
-		CPPUNIT_ASSERT(!hook.IsInsideScope());
-	}
-
-#ifdef NEVERDEFINED
-	void testSquareRootExtractor()
-	{
-		CLAM::SquareExtractor extractor(mScheme,"TestScope1");
-		extractor.Hook("Squared").Attribute("TDataAttribute2");
-		extractor.Hook("ToBeSquared").Attribute("TDataAttribute");
-		for (extractor.Init(mPool);
-			extractor.IsInsideScope();
-			extractor.Next())
-		{
-			extractor.Extract();
-		}
-	}
-#endif
-
 
 };
 
