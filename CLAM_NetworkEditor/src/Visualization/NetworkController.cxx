@@ -38,11 +38,6 @@ NetworkController::NetworkController()
 	  mLoopCondition(false),
 	  mThread( true ) // realtime
 {
-<<<<<<< NetworkController.cxx
-	SlotCreateNewPortConnection.Wrap( this, &NetworkController::CreateNewPortConnection );
-	SlotCreateNewControlConnection.Wrap( this, &NetworkController::CreateNewControlConnection );
-	SlotRemovePortConnection.Wrap( this, &NetworkController::RemovePortConnection );
-
 	SlotCreatePortConnection.Wrap( this, &NetworkController::CreatePortConnection );
 	SlotRemovePortConnection.Wrap( this, &NetworkController::RemovePortConnection );
 	
