@@ -164,6 +164,7 @@ int parser_include(const char* filename)
 	const char* path;
 	char tmp[2048];
 	char tmp2[2048];
+	char currentPath[2048];
 	char* pathend = 0;
 	int inlocalpath = 0;
 
@@ -189,37 +190,25 @@ int parser_include(const char* filename)
 		
 	{
 		/* first, check local path */
-		const char* a = curFilename;
-		char* b = tmp;
-		char* c = tmp2;
-		char* qb = 0;
-		char* qc = 0;
-		int n = 2032; /* leave room for possible extension change */
-		while (*a && n)
-		{
-			if (*a=='/' || *a=='\\')
-			{
-				qb = b;
-				qc = c;
-			}
-			*b++ = *a;
-			*c++ = *a;
-			a++;
-			n--;
-		}
-		*b = 0;
-		*c = 0;
-		if (qb)
-		{
-			pathend = qc;
-			qb++;
-			qc++;
-			*qc++ = ':';
-			*qc++ = '/';
-			strncpy(qb,filename,n);
-			strncpy(qc,filename,n-2);
-		}
+	
+		/* We extract the path from the name of the file we are currently parsing*/
+		/* NOTE: the extract path puts at currentPath the full path e.g. for /home/momonga/foo.txt
+		 * currentPath would be '/home/momonga/'
+		 */
+		extract_path( currentPath, 2048, curFilename );
 		
+		/*And we build the tmp and tmp2 stuff as explained above*/
+		strstart( tmp, 2048 );
+		stradd( currentPath );
+		stradd( filename );
+		strend();
+
+		strstart( tmp2, 2048 );
+		pathend = stradd( currentPath );
+		stradd( ":/" );
+		stradd( filename );
+		strend();
+
 		f = fopen(tmp, openmode);
 	}
 

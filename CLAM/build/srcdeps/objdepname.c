@@ -22,13 +22,8 @@ char* extension( char* filename)
 
 void convert_to_objname(char* objname,int maxlen,const char* filename)
 {
-	const char* ptr = filename;
-	ptr = strptr_skip_end(ptr);
-	while (ptr!=filename)
-	{
-		ptr--;
-		if (*ptr=='/') { ptr++; break; }
-	}
+	const char* ptr = split_path( filename );
+
 	strstart(objname,maxlen-3); /* leave space for extension */
 	stradd("obj/");
 	stradd(ptr);
@@ -40,21 +35,39 @@ void convert_to_objname(char* objname,int maxlen,const char* filename)
 	}
 }
 
-void convert_to_mocname(char* mocname, int maxlen, const char* filename )
+const char* split_path( const char* filename )
 {
-	const char* ptr = filename;
-	char* extPos = extension( (char*)filename );
+	const char * ptr = filename;
 	ptr = strptr_skip_end( ptr );
 
 	while( ptr != filename )
 	{
 		ptr--;
-		if ( *ptr=='/')
+		if ( *ptr == '/' )
 		{
 			ptr++;
 			break;
 		}
 	}
+	
+	return ptr;
+}
+
+void extract_path( char* path, int maxLen, const char* filename )
+{
+
+	const char* ptr = split_path( filename );
+	
+	strstart( path, maxLen );
+	stradd_range( filename, ptr );
+	strend();
+}
+
+void convert_to_mocname(char* mocname, int maxlen, const char* filename )
+{
+	char* extPos = extension( (char*)filename );
+	
+	const char* ptr = split_path( filename );
 
 	assert( extPos - ptr > 0 );
 	
@@ -70,13 +83,8 @@ void convert_to_mocname(char* mocname, int maxlen, const char* filename )
 
 void discard_path( char* newName, int maxlen, const char* filename )
 {
-	const char* ptr = filename;
-	ptr = strptr_skip_end(ptr);
-	while (ptr!=filename)
-	{
-		ptr--;
-		if (*ptr=='/') { ptr++; break; }
-	}
+	const char* ptr = split_path( filename );
+
 	strstart( newName, maxlen );
 	stradd( ptr );
 	strend();
@@ -84,13 +92,9 @@ void discard_path( char* newName, int maxlen, const char* filename )
 
 void convert_to_depname(char* depname,int maxlen,const char* filename)
 {
-	const char* ptr = filename;
-	ptr = strptr_skip_end(ptr);
-	while (ptr!=filename)
-	{
-		ptr--;
-		if (*ptr=='/') { ptr++; break; }
-	}
+	
+	const char* ptr = split_path( filename );
+
 	strstart(depname,maxlen-3); /* leave space for extension */
 	stradd("dep/");
 	stradd(ptr);
@@ -104,13 +108,8 @@ void convert_to_depname(char* depname,int maxlen,const char* filename)
 
 void convert_to_uicname(char* uiname,int maxlen,const char* filename, const char* ext)
 {
-	const char* ptr = filename;
-	ptr = strptr_skip_end(ptr);
-	while (ptr!=filename)
-	{
-		ptr--;
-		if (*ptr=='/') { ptr++; break; }
-	}
+	const char* ptr = split_path( filename );
+	
 	strstart(uiname,maxlen-3); /* leave space for extension */
 	stradd("uic/");
 	stradd_range( ptr, extension((char*)ptr) );
