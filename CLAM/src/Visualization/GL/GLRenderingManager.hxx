@@ -2,6 +2,7 @@
 #define __GLRENDERINGMANAGER__
 
 #include "BoundingBoxes.hxx"
+#include <cstdlib>
 
 namespace CLAMVM
 {

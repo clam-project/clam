@@ -1,5 +1,6 @@
 #include "PeaksRenderingManager.hxx"
 #include "Assert.hxx"
+#include <algorithm>
 
 namespace CLAMVM
 {

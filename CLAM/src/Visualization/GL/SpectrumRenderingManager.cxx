@@ -1,5 +1,6 @@
 #include "SpectrumRenderingManager.hxx"
 #include "Assert.hxx"
+#include <algorithm>
 
 namespace CLAMVM
 {

@@ -1,5 +1,6 @@
 #include "Fl_Y_Axis.hxx"
 #include <cmath>
+#include <cstdio>
 
 namespace CLAMVM
 {
