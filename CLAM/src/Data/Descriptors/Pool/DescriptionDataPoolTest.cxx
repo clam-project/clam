@@ -25,13 +25,9 @@ class DescriptionDataPoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testInstanciateAttribute_whenTheAttributeDoesNotExistButTheScopeIsNotPopulated );
 	CPPUNIT_TEST( testGetAttribute_withDifferentAttributes );
 	CPPUNIT_TEST( testGetAttribute_withTheSameAttributeTwice );
-	CPPUNIT_TEST( testGetAttribute_withNonInstantiatedAttribute );
-//	CPPUNIT_TEST( testPopulateScope_withAnExistingScope );
-//	CPPUNIT_TEST( testPopulateScop_withSeveralScopes );
-//	CPPUNIT_TEST( testInstantiateAttribute_fromANonPopulatedScope );
-//	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingAttribute );
-//	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingScope );
-//	CPPUNIT_TEST( testInstantiateAttribute_withAnExistingScope );
+	CPPUNIT_TEST( testGetAttribute_fromAUnpopulatedScope );
+	CPPUNIT_TEST( testGetAttribute_fromUnexistingScope );
+//	CPPUNIT_TEST( testGetAttribute_withNonInstantiatedAttribute );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -157,22 +153,57 @@ private:
 		CPPUNIT_ASSERT_EQUAL(centers,centers2);
 	}
 
+	void testGetAttribute_fromAUnpopulatedScope()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+
+		try
+		{
+			unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Accessing attribute data inside an unpopulated scope";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testGetAttribute_fromUnexistingScope()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+
+		try
+		{
+			unsigned * centers = data.GetAttributePool<unsigned>("UnexistingScope","Center");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "No scope registered with that name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	/*
+
 	void testGetAttribute_withNonInstantiatedAttribute()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
 		data.PopulateScope("Frame",30);
 
-		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
 		try
 		{
 			unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
+			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Accessing an unexisting attribute inside a scope";
+			const std::string expected = "Accessing a non instanciated attribute inside a scope";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
+	*/
 
 };
 
