@@ -10,6 +10,7 @@ namespace CLAM
 namespace CLAMVM
 {
 	void plot( const CLAM::Spectrum& s, const CLAM::SpectralPeakArray& speaks, const char* label = NULL );
+	void deferredPlot( const CLAM::Spectrum& s, const CLAM::SpectralPeakArray& speaks, const char* label = NULL );
 }
 
 #endif // PlotSpectralPeaks.hxx

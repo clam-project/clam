@@ -14,6 +14,7 @@ namespace CLAMVM
 	 */
 	void plot(const CLAM::Audio &model, const char *label = "");
 
+	void deferredPlot( const CLAM::Audio& model, const char* label = NULL );
 
 } // namespace CLAMVM
 

@@ -13,6 +13,8 @@ namespace CLAMVM
 	 * Overload of plot() for CLAM::Spectrum.
 	 */
 	void plot(const CLAM::Spectrum &model, const char *label = "");
+	
+	void deferredPlot( const CLAM::Spectrum& model, const char* label = NULL );
 
 
 } // namespace CLAMVM

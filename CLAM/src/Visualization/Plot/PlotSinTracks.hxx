@@ -13,6 +13,7 @@ namespace CLAMVM
 	 *  Overload of plot() for CLAM::Segment
 	 */
 	void plot( const CLAM::Segment& model, const char* label = NULL );
+	void deferredPlot( const CLAM::Segment& model, const char* label = NULL );
 }
 
 

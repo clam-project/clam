@@ -27,4 +27,9 @@
 #include "PlotSinTracks.hxx"
 #include "PlotSpectralPeaks.hxx"
 
+namespace CLAMVM
+{
+	void showPendingPlots();
+}
+
 #endif // __CLAMVM_PLOT_HXX
