@@ -36,7 +36,7 @@ using MIDI::Reader;
 
 using CLAM::MIDIMelody;
 using CLAM::MIDIManager;
-using CLAM::MIDIInConfig;
+using CLAM::MIDIIOConfig;
 using CLAM::MIDIIn;
 using CLAM::MIDIClockerConfig;
 using CLAM::MIDIClocker;
@@ -79,18 +79,18 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	std::string midiDeviceStr="file:"+filename;
 	MIDIManager manager;
 	// Control for handling MIDI notes		
-	MIDIInConfig inNoteCfg;	
+	MIDIIOConfig inNoteCfg;	
 	inNoteCfg.SetDevice(midiDeviceStr);
-	inNoteCfg.SetChannelMask(CLAM::MIDI::ChannelMask(-1)); //all
-	inNoteCfg.SetMessageMask(CLAM::MIDI::MessageMask(CLAM::MIDI::eNoteOn)|CLAM::MIDI::MessageMask(CLAM::MIDI::eNoteOff));
+//	inNoteCfg.SetChannelMask(CLAM::MIDI::ChannelMask(-1)); //all
+	inNoteCfg.SetMessage(CLAM::MIDI::eNoteOnOff);
 		
 	MIDIInControl inNote(inNoteCfg);
   
 	//control for stoping at eof 
-	MIDIInConfig inStopCfg;
+	MIDIIOConfig inStopCfg;
 	inStopCfg.SetDevice(midiDeviceStr);
-	inStopCfg.SetChannelMask(CLAM::MIDI::SysMsgMask(CLAM::MIDI::eStop)); //it is a sys message that uses channel byte for actual data
-	inStopCfg.SetMessageMask(CLAM::MIDI::MessageMask(CLAM::MIDI::eSystem));
+	inStopCfg.SetChannel(CLAM::MIDI::eStop); //it is a sys message that uses channel byte for actual data
+	inStopCfg.SetMessage(CLAM::MIDI::eSystem);
 	
 	MIDIInControl inStop(inStopCfg);
 
