@@ -110,7 +110,7 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetMoment6(initVal);
 	SetSpread(initVal);
 	SetMagnitudeSkewness(initVal);
-	SetKurtosis(initVal);
+	SetMagnitudeKurtosis(initVal);
 	SetFlatness(initVal);
 	SetHighFrequencyCoefficient(initVal);
 	SetMaxMagFreq(initVal);
@@ -179,8 +179,8 @@ void SpectralDescriptors::ConcreteCompute()
 	        SetSpread(mpStats->GetSpread()*mDeltaFreq*mDeltaFreq);
 	if(HasMagnitudeSkewness())
 		SetMagnitudeSkewness(mpStats->GetSkew());
-	if(HasKurtosis())	
-		SetKurtosis(mpStats->GetKurtosis());
+	if(HasMagnitudeKurtosis())	
+ 		SetMagnitudeKurtosis(mpStats->GetKurtosis());
 	if(HasFlatness())
 		SetFlatness(ComputeSpectralFlatness());
 	if(HasHighFrequencyCoefficient())
@@ -301,8 +301,8 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetMoment6(a.GetMoment6()*mult);
 	if(a.HasFlatness())
 		tmpD.SetFlatness(a.GetFlatness()*mult);
-	if(a.HasKurtosis())
-		tmpD.SetKurtosis(a.GetKurtosis()*mult);
+	if(a.HasMagnitudeKurtosis())
+		tmpD.SetMagnitudeKurtosis(a.GetMagnitudeKurtosis()*mult);
 	if(a.HasMaxMagFreq())
 		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()*mult);
 	if(a.HasLowFreqEnergyRelation())
@@ -392,11 +392,11 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetFlatness(a.GetFlatness()*b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		tmpD.AddKurtosis();
+		tmpD.AddMagnitudeKurtosis();
 		tmpD.UpdateData();
-		tmpD.SetKurtosis(a.GetKurtosis()*b.GetKurtosis());
+		tmpD.SetMagnitudeKurtosis(a.GetMagnitudeKurtosis()*b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -533,11 +533,11 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetFlatness(a.GetFlatness()+b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		tmpD.AddKurtosis();
+		tmpD.AddMagnitudeKurtosis();
 		tmpD.UpdateData();
-		tmpD.SetKurtosis(a.GetKurtosis()+b.GetKurtosis());
+		tmpD.SetMagnitudeKurtosis(a.GetMagnitudeKurtosis()+b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{

@@ -204,10 +204,10 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetFlatness()>a.GetFlatness())
 			tmpD.SetFlatness(b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		if(b.GetKurtosis()>a.GetKurtosis())
-			tmpD.SetKurtosis(b.GetKurtosis());
+		if(b.GetMagnitudeKurtosis()>a.GetMagnitudeKurtosis())
+			tmpD.SetMagnitudeKurtosis(b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -315,10 +315,10 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetFlatness()<a.GetFlatness())
 			tmpD.SetFlatness(b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		if(b.GetKurtosis()<a.GetKurtosis())
-			tmpD.SetKurtosis(b.GetKurtosis());
+		if(b.GetMagnitudeKurtosis()<a.GetMagnitudeKurtosis())
+			tmpD.SetMagnitudeKurtosis(b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
