@@ -36,14 +36,14 @@ namespace CLAM {
 		: mpParent(0),
 		mPreconfigureExecuted( false )
 	{
-		mState = Unconfigured;
+		mExecState = Unconfigured;
 	}
 
 	void Processing::PreConcreteConfigure( const ProcessingConfig& c )
 	{
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-		mStatus = "";
+		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mExecState != Disabled, "Configuring a disabled Processing.");
+		mConfigErrorMessage = "";
 
 		if (!mpParent) 
 			TopLevelProcessing::GetInstance().Insert(*this);
@@ -53,12 +53,12 @@ namespace CLAM {
 
 	void Processing::PostConcreteConfigure()
 	{
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
+		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mExecState != Disabled, "Configuring a disabled Processing.");
 		CLAM_ASSERT(mPreconfigureExecuted, "PreConcreteConfigure was not being called" );
 
-		mState=Ready;
-		mStatus="Ready to be started";
+		mExecState=Ready;
+		mConfigErrorMessage="Ready to be started";
 
 	}
 
@@ -71,21 +71,21 @@ namespace CLAM {
 
 			if (!ConcreteConfigure(c)) 
 			{
-				mState=Unconfigured;
+				mExecState=Unconfigured;
 				mPreconfigureExecuted = false;
-				mStatus+=" Configuration failed.";
-				mState = Unconfigured;
+				mConfigErrorMessage+=" Configuration failed.";
+				mExecState = Unconfigured;
 				return false;
 			}
 		}
 		catch( CLAM::Err& error )
 		{
-			mState = Unconfigured;
+			mExecState = Unconfigured;
 			mPreconfigureExecuted = false;
-			mStatus += "Exception thrown during ConcreteConfigure:\n";
-			mStatus += error.what();
-			mStatus += "\n";
-			mStatus += "Configuration failed.";
+			mConfigErrorMessage += "Exception thrown during ConcreteConfigure:\n";
+			mConfigErrorMessage += error.what();
+			mConfigErrorMessage += "\n";
+			mConfigErrorMessage += "Configuration failed.";
 
 			return false;
 		}
@@ -94,19 +94,6 @@ namespace CLAM {
 		
 		return true;
 	}
-
-	void Processing::ConfigureOrphan(const ProcessingConfig &c)
-	{
-
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-
-		if (ConcreteConfigure(c))
-			mState=Ready;
-		else
-			mState=Unconfigured;
-	}
-
 
 	Processing::~Processing()
 	{
@@ -117,29 +104,30 @@ namespace CLAM {
 
 	void Processing::Start(void) 
 	{
-		CLAM_ASSERT(mState==Ready,
-			    ComposeAssertMessage(AddStatus( "Start(): Object not ready" )).c_str() );
+		AddConfigErrorMessage( GetClassName() );
+		AddConfigErrorMessage( "::Start() Object not ready" );
+		CLAM_ASSERT( mExecState==Ready, GetConfigErrorMessage().c_str() );
 		try {
 			if (ConcreteStart())
-				mState = Running;
+				mExecState = Running;
 		}
 		catch (Err &e) {
-			mStatus += "Start(): Object failed to start properly.\n";
-			mStatus += e.what();
+			mConfigErrorMessage += "Start(): Object failed to start properly.\n";
+			mConfigErrorMessage += e.what();
 		}
 	}
 	
 	void Processing::Stop(void)
 	{
-		CLAM_ASSERT( mState==Running ||	mState==Disabled, "Stop(): Object not running." );
+		CLAM_ASSERT( mExecState==Running ||	mExecState==Disabled, "Stop(): Object not running." );
 
 		try {
 			if(ConcreteStop())
-				mState = Ready;
+				mExecState = Ready;
 		}
 		catch (Err &e) {
-			mStatus += "Stop(): Object failed to stop properly.\n";
-			mStatus += e.what();
+			mConfigErrorMessage += "Stop(): Object failed to stop properly.\n";
+			mConfigErrorMessage += e.what();
 		}
 	}
 
@@ -165,55 +153,18 @@ namespace CLAM {
 		mpParent->Insert(*this);
 	}
 
-	void Processing::SetOrphan()
+	void Processing::AddConfigErrorMessage( const std::string& msg )
 	{
-		if (mpParent==0)
-			return;
-
-		if (mpParent)
-			mpParent->Remove(*this);
-
-		mpParent=0;
+		mConfigErrorMessage += msg;
+	}
+	
+	bool Processing::CanConsumeAndProduce()
+	{	
+		if(GetExecState()!=Running)
+			return false;
+		return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 	}
 
-	std::string Processing::ComposeAssertMessage( std::string msg )
-	{
-		std::string assertMessage = GetClassName();
-		assertMessage += "::";
-		assertMessage += msg;
 
-		return assertMessage;
-	}
-
-	const char* Processing::AddStatus(const std::string& a)
-	{
-		return AddStatus(a.c_str());
-	}
-
-	const char* Processing::AddStatus(const char* a)
-	{
-		static char ret[256];
-		int len_a = strlen(a);
-		int len_b = mStatus.length();
-		char* truncated_str = "[truncated]...";
-		int space_left = 255-strlen(truncated_str);
-		bool truncated = false;
-		if (len_a > space_left) {
-			len_a = space_left;
-			truncated = true;
-		}
-		space_left -= len_a; 
-		strncpy(ret,a,len_a);
-		if (len_b > space_left) {
-			len_b = space_left;
-			truncated = true;
-		}
-		strncpy(ret + len_a,mStatus.c_str(),len_b);
-		if (truncated)
-		{
-			strcpy(ret + len_a + len_b,truncated_str);
-		}
-		return ret;
-	}
 };//namespace CLAM
 
