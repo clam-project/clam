@@ -19,15 +19,15 @@ public:
 
 		void Cull( TData f_lower, TData f_upper, SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e );
 
-		void SetMiniumFreqRange( TData f )
+		void SetMinimumFreqRange( TData f )
 		{
 				mMinFreqRange = f;
 		}
 
 protected:
 		
-		void ClipSpans( TData f_lower, TData f_upper, peak_iterator si, peak_iterator ei, 
-						SineTrackSpanEnds pl_s&, SineTrackSpanEnds& pl_e  );
+		void ClipSpans( TData f_lower, TData f_upper, peak_iterator& si, peak_iterator& ei, 
+						SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e  );
 private:
 		inline outcode in_out_test( TData lower, TData upper, TData f )
 		{
@@ -36,7 +36,9 @@ private:
 				
 				return Inside;
 		}
-
+		
+		TData mLowFreq;
+		TData mHiFreq;
 		TData mMinFreqRange;
 };
 

@@ -15,15 +15,15 @@ namespace CLAMGUI
 
 		void SinTrackVerClipper::Cull( TData f_lower, TData f_upper, SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e )
 		{
-				CLAM_ASSERT( f_upper - f_lower < mMinFreqRange, "Given bounds distance is below the minimum displayable freq range" );
+				CLAM_ASSERT( f_upper - f_lower > mMinFreqRange, "Given bounds distance is below the minimum displayable freq range" );
 				
 				if ( pl_s.empty() && pl_e.empty() )
 						return;
 				
-				CLAM_ASSERT( pl_s.empty(), "Polyline starts table was empty but the ends table was not" );
-				CLAM_ASSERT( pl_e.empty(), "Polyline ends table was empty but the starts table was not" );
+				CLAM_ASSERT( !pl_s.empty(), "Polyline starts table was empty but the ends table was not" );
+				CLAM_ASSERT( !pl_e.empty(), "Polyline ends table was empty but the starts table was not" );
 
-				CLAM_ASSERT( pl_s.size() != pl_e.size(), "Starts table and ends table sizes differ" );
+				CLAM_ASSERT( pl_s.size() == pl_e.size(), "Starts table and ends table sizes differ" );
 				
 				
 				// Basic algorithm idea: to check if every node in a given Span is inside the given
@@ -57,19 +57,19 @@ namespace CLAMGUI
 		}
 
 		void SinTrackVerClipper::ClipSpans( TData f_lower, TData f_upper, peak_iterator& si, peak_iterator& ei, 
-											SineTrackSpanEnds pl_s&, SineTrackSpanEnds& pl_e  )
+											SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e  )
 		{
 				peak_iterator curr_p0 = si;
-				peak_iterator curr_p1 = curr_p0;
+				peak_iterator curr_p1 = si;
 				peak_iterator old_ei = ei;
-				si--;
+
 
 				bool new_span_start = false;
 				bool current_span_finished = false;
 				
 				outcode outcode0, outcode1;
 
-				outcode0 = in_out_test( f_lower, f_upper, curr_p0->mFreq )
+				outcode0 = in_out_test( f_lower, f_upper, curr_p0->mFreq );
 
 				while ( !current_span_finished && curr_p1!=ei )
 				{
