@@ -12,7 +12,7 @@ namespace AudioCodecs
 {
 	class MpegBitstream
 	{
-		struct mad_stream  mStreamBuffer;
+		struct mad_stream  mBitstream;
 		struct mad_frame   mCurrentFrame;
 		struct mad_synth   mMpegSynth;
 		mad_timer_t        mStreamTimer;

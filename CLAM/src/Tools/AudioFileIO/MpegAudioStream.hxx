@@ -46,6 +46,8 @@ namespace AudioCodecs
 
 		static const TSize                    mMaxDecodedBlockSize;
 		std::vector<std::deque<mad_fixed_t> > mDecodeBuffer;
+		TSize                                 mSamplesDecoded;
+		TSize                                 mSamplesTransferred;
 	};
 }
 
