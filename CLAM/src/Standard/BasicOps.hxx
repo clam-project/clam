@@ -527,7 +527,7 @@ typedef RMSTmpl<> RMS;
 template<class T=TData,class U=TData> class GeometricMeanTmpl:public BaseMemOp
 {
 public:
-	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticTrue* useMemory=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -536,16 +536,16 @@ public:
 		}
 		return memory;
 	}
-	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticFalse*)
+	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticFalse * useMemory)
 	{
 		return exp(inProd(a,(StaticFalse*)(0))*1.0/(double)a.Size());
 	}
 	/**No inner product previously computed, use temporary*/
-	U operator()(const Array<T>& a,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
 	{
 		return (*this)(a,mIP,(StaticTrue*)(0));
 	}
-	U operator()(const Array<T>& a,StaticFalse*)
+	U operator()(const Array<T>& a,StaticFalse* useMemory)
 	{
 		return (*this)(a,mIP,(StaticFalse*)(0));
 	}
@@ -578,18 +578,18 @@ public:
 		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),U(),BiasedPower<s,abs,T,U>(imean(a)));
 	}
 
-	/** if no mean is passed, used member functor*/
+	/** if no mean functor is passed, used member functor*/
 	U operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
-		return (*this)(a,mM,(StaticTrue*)(0));
+		return (*this)(a,mMean,(StaticTrue*)(0));
 	}
 	U operator()(const Array<T>& a,StaticFalse*)
 	{
-		return (*this)(a,mM,(StaticFalse*)(0));
+		return (*this)(a,mMean,(StaticFalse*)(0));
 	}
 private:
 	U memory;
-	MeanTmpl<abs,T,U> mM;
+	MeanTmpl<abs,T,U> mMean;
 };
 
 /** Class Function that computes 'oth' order CentralMoment using BiasedPoweredSum Class Function.
@@ -599,7 +599,7 @@ template<int o,bool abs=false,class T=TData,class U=TData> class CentralMoment:p
 {
 public:
 	CentralMoment():memory(){}
-	U operator()(const Array<T>& a,BiasedPoweredSum<o,abs,T,U>& bps,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a, BiasedPoweredSum<o,abs,T,U>& bps, StaticTrue* b=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -608,22 +608,22 @@ public:
 		}
 		return memory;
 	}
-	U operator()(const Array<T>& a,BiasedPoweredSum<o,abs,T,U>& bps,StaticFalse*)
+	U operator()(const Array<T>& a, BiasedPoweredSum<o,abs,T,U>& bps, StaticFalse*)
 	{
 		return static_cast<U>(bps(a))/a.Size();
 	}
 	/** No BiasedPoweredSum passed, use member*/
-	U operator()(const Array<T>& a,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a, StaticTrue* b=NULL)
 	{
-		return (*this)(a,mBPS,(StaticTrue*)(0));
+		return (*this)(a,mBPS, (StaticTrue*)(0));
 	}
-	U operator()(const Array<T>& a,StaticFalse*)
+	U operator()(const Array<T>& a, StaticFalse*)
 	{
-		return (*this)(a,mBPS,(StaticFalse*)(0));
+		return (*this)(a,mBPS, (StaticFalse*)(0));
 	}
 
 	/** Compute central moments using raw moments*/
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, StaticTrue* b=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -632,18 +632,18 @@ public:
 		}
 		return memory;
 	}
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,StaticFalse*)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, StaticFalse*)
 	{
 		CLAM_DEBUG_ASSERT(moments.Size()>=o,"Central Moment: you need as many raw moments as the order of the central moment you want to compute");
 		return (*this)(a,moments,(O<o>*)(0));
 	}
 	
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<1>*)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, O<1>*)
 	{
 		return 0;
 	}
 
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<2>*)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, O<2>*)
 	{
 		// -m1² + m2
 		U m1 = (*(dynamic_cast<Moment<1,abs,T,U>*>(moments[0])))(a);
@@ -651,7 +651,7 @@ public:
 		return (-1)*m1*m1 + m2;
 	}
 
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<3>*)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, O<3>*)
 	{
 		// 2*m1³ - 3*m1*m2 + m3 =   ... 5 Mult  
 		// m1*(2*m1² - 3*m2) + m3   ... 4 Mult
@@ -661,7 +661,7 @@ public:
 		return m1*(2*m1*m1 - 3*m2) + m3;
 	}
 
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<4>*)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, O<4>*)
 	{
 		// -3*m1^4 + 6*m1²*m2 - 4*m1*m3 + m4     ... 9 Mult
 		// m1*(m1*((-3)*m1² + 6*m2) - 4*m3) + m4 ... 6 Mult
@@ -672,7 +672,7 @@ public:
 		return m1*(m1*((-3)*m1*m1 + 6*m2) - 4*m3) + m4;
 	}
 
-	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<5>*)
+	U operator()(const Array<T>& a, Array<BaseMemOp*>& moments, O<5>*)
 	{
 		// 4*u1^5 - 10*u1³*u2 + 10*u1²*u3 - 5*u1*u4+u5    = .... 14 Mult
 		// u1*(u1*(u1*(4*u1² - 10*u2) + 10*u3) - 5*u4) + u5 .... 8 Mult
@@ -708,7 +708,7 @@ public:
 		{
 			if(!alreadyComputed)
 			{
-				memory=(*this)(a,false);
+				memory=(*this)(a,centralMoment2,false);
 				alreadyComputed=true;
 			}
 			return memory;
@@ -736,33 +736,37 @@ typedef StandardDeviationTmpl<> StandardDeviation;
  *	It also has associated memory so operation is not performed more than necessary. */
 template <bool abs=false,class T=TData,class U=TData> class SkewTmpl:public BaseMemOp
 {
+	
 public:
 	SkewTmpl():memory(){}
-	U operator()(const Array<T>& a,StandardDeviationTmpl<abs,T,U>& std,CentralMoment<3,abs,T,U>& ctrMnt3,bool useMemory=false)
+	/** Computation using existing statistics computaros for Standar deviation and CentralMoment<3>  */
+	U operator()(const Array<T>& data, StandardDeviationTmpl<abs,T,U>& std, CentralMoment<3,abs,T,U>& ctrMnt3, bool useMemory=false)
 	{
-		if(!useMemory)
+		if(!useMemory) return MemorylessCompute(data, std, ctrMnt3);
+
+		if(!alreadyComputed)
 		{
-			U tmpStd=std(a);
-			return ctrMnt3(a)/(tmpStd*tmpStd*tmpStd);
+			memory=(*this)(data, std, ctrMnt3, false);
+			alreadyComputed=true;
 		}
-		else
-		{
-			if(!alreadyComputed)
-			{
-				memory=(*this)(a,false);
-				alreadyComputed=true;
-			}
-			return memory;
-		}
+		return memory;
 
 	}
-	/**Standard deviation and 3rd order central moment are not available, use members*/
-	U operator()(const Array<T>& a,bool useMemory=false)
+	/** Computation without using any existing statistics computaros for Standar deviation and CentralMoment<3>  */
+	U operator()(const Array<T>& data, bool useMemory=false)
 	{
-		return (*this)(a,mSD,mCM3,useMemory);
+		/**Standard deviation and 3rd order central moment are not available, use members*/
+		return (*this)(data, mSD, mCM3, useMemory);
 	}
 
 protected:
+	U MemorylessCompute(const Array<T>& data, StandardDeviationTmpl<abs,T,U>& std, CentralMoment<3,abs,T,U>& ctrMnt3)
+	{
+		// When the values tend to be the same, skew tends to be 0 (simetric)
+		U tmpStd = CLAM_max(U(1e-10),std(data));
+		U tmpCentralMoment3 = ctrMnt3(data);
+		return tmpCentralMoment3/(tmpStd*tmpStd*tmpStd);
+	}
 	U memory; 
 	StandardDeviationTmpl<abs,T,U> mSD;
 	CentralMoment<3,abs,T,U> mCM3;
@@ -770,7 +774,7 @@ protected:
 
 typedef SkewTmpl<> Skew;
 
-/** Class Function that computes Skewness using Variance and 4th order central moment.
+/** Class Function that computes Kurtosis Excess using Variance and 4th order central moment.
  *	It also has associated memory so operation is not performed more than necessary. */
 template <bool abs=false,class T=TData,class U=TData> class KurtosisTmpl:public BaseMemOp
 {
@@ -780,18 +784,16 @@ public:
 	{
 		if(!useMemory)
 		{
-			U tmpVar=var(a);
-			return ctrMnt4(a)/(tmpVar*tmpVar)-3;
+			U centerMoment4 = CLAM_max(U(1e-100), ctrMnt4(a));
+			U variance = CLAM_max(U(1e-10),var(a));
+			return centerMoment4/(variance*variance)-3;
 		}
-		else
+		if(!alreadyComputed)
 		{
-			if(!alreadyComputed)
-			{
-				memory=(*this)(a,false);
-				alreadyComputed=true;
-			}
-			return memory;
+			memory=(*this)(a,var,ctrMnt4,false);
+			alreadyComputed=true;
 		}
+		return memory;
 
 	}
 	/**Variance and 4th order central moment are not available, use temporary*/
