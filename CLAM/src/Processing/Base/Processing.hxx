@@ -418,6 +418,7 @@ namespace CLAM {
 		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
 		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
 		InControl* GetInControl(unsigned inId) const;
+		OutControl* GetOutControl(unsigned inId) const;
 
 		/** Processing object composite iterator */
 		typedef std::list<Processing*>::iterator iterator;
