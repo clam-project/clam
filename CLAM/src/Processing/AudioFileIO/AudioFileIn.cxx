@@ -105,11 +105,9 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(Audio& in)
 	{
+		if( !AbleToExecute() ) return true;
+		
 		short tmp[256];
-
-		if ( GetExecState() == Unconfigured ||
-			 GetExecState() == Ready )
-			throw(ErrProcessingObj("AudioFileIn: Do(): Not in execution mode",this));
 
 		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==1,
 			"AudioFileIn: Do(): Not a mono file");
