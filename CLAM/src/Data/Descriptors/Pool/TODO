@@ -1,0 +1,7 @@
+- Construcció del frame a partir de una definició
+- centerOfGravity<n>(X) = div( sum( mult(index(X),pow<n>(X))), sum(pow<n>(X)) )
+- SV summatory(X) = accomulate(sum,X)
+- VV powered<n>(X) = vectorize(pow<b>,X)
+- ponderedSum(X) = accomulate(sum, productindex(I),I))
+
+
