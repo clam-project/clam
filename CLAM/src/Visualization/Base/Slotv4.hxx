@@ -1,5 +1,5 @@
-#ifndef __SLOTV2__
-#define __SLOTV2__
+#ifndef __SLOTV4__
+#define __SLOTV4__
 
 #include "Slot.hxx"
 #include "CBL.hxx"
