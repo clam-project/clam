@@ -64,7 +64,7 @@ protected:
 		UpdateData();
 		SetName("");
 		SetDelay(0);
-		SetMaxDelay(1000);  //this value has no importance. It should be re-set by the user.	
+		SetMaxDelay(0);  
 	}
 
 };
@@ -102,7 +102,8 @@ public:
 		mDelayControl("Delay Control", this, &CLAM::TokenDelay<T>::ChangeDelay),
 		mLast(0),
 		mFirst(0),
-		mInstantToken(0)
+		mInstantToken(0),
+		mCapacity(0)
 	{
 		Configure(cfg);
 	}
@@ -153,6 +154,13 @@ public:
 
 
 private:
+	/** This method is applyed to every token discarted when the decreasing the delay amount*
+	 *  In this class the implementation is just "delete toDiscart"  <br/>
+	 *  But we can take different approaches by deriving from TokenDelay<T> and overriding 
+	 *  this method. For example we could use a token pool for reusing them.
+	 */
+	Discart(T* toDiscart);
+
 // Circular buffer interface:
 	T* PopFirst();
 	void PushLast( T* in);
@@ -179,13 +187,14 @@ template <class T>
 int TokenDelay<T>::ChangeDelay(TControlData d)
 {
 	unsigned i;
-
-	if (d >= mCapacity) {
-		d = TControlData(mCapacity);
+	//@todo debug:
+	std::cout << d <<" "<<std::flush;
+	if (d >= mCapacity-3) {
+		mDelayControl.InControl::DoControl(mCapacity? mCapacity-3 : mCapacity);
 //		std::cout << "Token Delay: Maximum delay reached. Can't delay more than "<< d << " tokens.\n";
 		return -1;
 	}
-	long incr =(long int) d-RealDelay();
+	long incr = int(d)-RealDelay();
 	if (incr > 0) ;// mLast will increment step by step and mFirst will keep the same till the delay is reached.
 	//	if (incr + mLast < mCapacity) mLast += incr;
 	//	else mLast = incr - mCapacity - 1 + mLast;
@@ -203,7 +212,7 @@ int TokenDelay<T>::ChangeDelay(TControlData d)
 			for (i=mCapacity-1; i>mLast; i--) delete mVector[i];
 		};
 
-	return 0;
+	return true;
 }
 
 template <class T> 
@@ -228,8 +237,12 @@ template <class T>
 bool TokenDelay<T>::Do(T& in, T* & out)
 // implementation using the supervised-mode Do
 {
+	mGivenDelay = mDelayControl.GetLastValue();
+
 	if (mDelayControl.GetLastValue()>0 || RealDelay()>0) {
 		
+		CLAM_DEBUG_ASSERT(mDelayControl.GetLastValue()>=RealDelay(),"Delay Tokens not eliminated when it was due")
+
 		out = PopFirst();
 		PushLast(&in);
 		
@@ -252,15 +265,13 @@ T* TokenDelay<T>::PopFirst()
 	unsigned givenDelay = unsigned(mDelayControl.GetLastValue());
 	unsigned realDelay = unsigned(RealDelay());
 	T* ret;
-
+	CLAM_ASSERT(givenDelay, "TokenDelay at PopFirst() : givenDelay==0");
 #ifdef HAVE_STANDARD_VECTOR_AT
 	if (mInstantToken) mVector.at(mFirst) = mInstantToken;
-	if (givenDelay) ret = mVector.at(mFirst);
-	else throw Err("TokenDelay at PopFirst() : givenDelay==0");
+	ret = mVector.at(mFirst);
 #else
 	if (mInstantToken) mVector[mFirst] = mInstantToken;
-	if (givenDelay) ret = mVector[mFirst];
-	else throw Err("TokenDelay at PopFirst() : givenDelay==0");
+	ret = mVector[mFirst];
 #endif
 
 	if (realDelay == givenDelay) 
@@ -269,7 +280,7 @@ T* TokenDelay<T>::PopFirst()
 		else mFirst = 0;
 		return ret;
 	}
-	else if (realDelay > givenDelay) throw Err("TokenDelay at PopFirst() : realDelay>givenDelay");
+	else CLAM_ASSERT(realDelay <= givenDelay,"TokenDelay at PopFirst() : realDelay>givenDelay");
 	return ret;
 }
 
@@ -277,26 +288,26 @@ template <class T>
 void TokenDelay<T>::PushLast(T* in)
 {
 	// provisional test:
-	if(mLast <= mCapacity-1) 
+	CLAM_ASSERT(mLast <= mCapacity-1, "TokenDelay at PushLast: mLast >= mCapacity")
 #		ifdef HAVE_STANDARD_VECTOR_AT
 			mVector.at(mLast) = in;
 #		else
 			mVector[mLast] = in;
 #		endif
-	else throw Err("TokenDelay at PushLast: mLast >= mCapacity");
 
-		if(mLast == mCapacity-1)
-		{ // making the turn of the circular buffer.
-			if( mFirst==0 ) throw Err("Token Delay at PushLast : Limit delay");
-			mLast=0;
-		} 
-		else mLast++;
+
+	if(mLast == mCapacity-1)
+	{ // making the turn of the circular buffer.
+		CLAM_ASSERT(mFirst, "Token Delay at PushLast : Limit delay");
+		mLast=0;
+	} 
+	else mLast++;
 }
 
 template <class T> 
 unsigned TokenDelay<T>::RealDelay() const
 {
-	/** mLast points to the next place to write. and mFirst is the next element to be pop.
+	/** mLast points to the next place to write. and mFirst is the next element to be poped.
 	*/
 	return (mLast>=mFirst) ? mLast - mFirst : (mCapacity - mFirst + mLast);
 }
