@@ -92,8 +92,9 @@ namespace CLAM{
 		~SMSMorphConfig(){}
 	};
 	
-	/////TODO: Don't know if it has to derive from Transformation or Processing
-	class SMSMorph: public Processing
+	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
+	 *	extracted to external Processing's*/
+	class SMSMorph: public SMSTransformationTmpl<Frame>
 	{
 		
 		typedef InControlTmpl<SMSMorph> SMSMorphCtrl;	
@@ -123,9 +124,9 @@ namespace CLAM{
 		{}
 
 		
-		bool Do();
 		bool Do(const Segment& in1, Segment& out);
-		bool Do(const Segment& in1,const Segment& in2, Segment& out);
+		bool Do(const Segment& in1,Segment& in2, Segment& out);
+		bool Do(const Frame& in1, Frame& out);
 		
 		virtual bool UpdateControlValueFromBPF(TData pos);
 	
@@ -145,15 +146,17 @@ namespace CLAM{
 		SMSMorphCtrl  mHybResPhase;
 	protected:
 		
-		void UpdateMorphFactors();
+		bool InterpolateFrames(const Frame& f1, const Frame& f2, Frame& fout,TData frameFactor);
 		
-		bool MorphFrames(const Frame& f1, const Frame& f2, Frame& fout);
-		
-		bool ResidualMorph(const Frame& in1,const Frame& in2, Frame& out);
-		bool SinusoidalMorph(const Frame& in1,const Frame& in2, Frame& out);
+		bool InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out, TData resFactor);
+		bool InterpolateSinusoidal(const Frame& in1,const Frame& in2, Frame& out, TData magFactor, TData freqFactor, TData pitchFactor);
 
-		bool InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, SpectralPeakArray& out, TData pitch1, TData pitch2);
-				
+		bool InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, SpectralPeakArray& out, 
+			TData magFactor, TData freqFactor, TData pitchFactor,
+			TData pitch1, TData pitch2);
+		
+		bool FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame);
+
 		bool FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition);
 
 		bool LoadSDIF( std::string fileName, Segment& segment );
@@ -164,27 +167,11 @@ namespace CLAM{
 
 		/** Input Port. Note that all SMSTransformations will have segment as input and output, 
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
-		 *	transformation*/
-		InPortTmpl<Segment> mInput1;
+		 *	transformation. Here we add a second segment for the sound to morph.*/
 		InPortTmpl<Segment> mInput2;
-		/** Output Port. Note that all SMSTransformations will have segment as input and output, 
-		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
-		 *	transformation*/
-		OutPortTmpl<Segment> mOutput;
-
-		TData mPitch1;
-		TData mPitch2;
-		TData mNewPitch;
+		
 		bool mHarmonicMorph;
 		bool mHarmSpectralShapeMorph;
-		
-		//Morph Factors
-		TData mPitchFactor;
-		TData mMagFactor;
-		TData mFreqFactor;
-		TData mFrameFactor;
-		TData mResMagFactor;
-
 		bool mHaveInternalSegment;
 
 		Segment mSegment;

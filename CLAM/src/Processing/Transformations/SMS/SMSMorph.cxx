@@ -39,14 +39,9 @@ SMSMorph::SMSMorph():
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW("ResShapeW", this),
 	mHybResPhase("ResPhase", this),
-	mInput1("Input1",this,1),mInput2("Input2",this,1),mOutput("Output",this,1)
+	mInput2("Input2",this,1)
 {
 		mHaveInternalSegment=false;
-
-		mFrameFactor=-1;
-		mMagFactor=-1;
-		mFreqFactor=-1;
-		mPitchFactor=-1;
 }
 
 SMSMorph::SMSMorph(const SMSMorphConfig &c):
@@ -63,13 +58,9 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW("ResShapeW", this),
 	mHybResPhase("ResPhase", this),
-	mInput1("Input1",this,1),mInput2("Input2",this,1),mOutput("Output",this,1)
+	mInput2("Input2",this,1)
 {
 	mHaveInternalSegment=false;
-	mFrameFactor=-1;
-	mMagFactor=-1;
-	mFreqFactor=-1;
-	mPitchFactor=-1;
 	Configure(c);
 }
 
@@ -115,8 +106,8 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 		mConfig.UpdateData();
 		mConfig.SetHybSinAmp(mConfig.GetHybBPF());
 	}
-	if(mConfig.HasHybSinSpectralShape())
-		mHarmSpectralShapeMorph=true;
+//	if(mConfig.HasHybSinSpectralShape())
+//		mHarmSpectralShapeMorph=true;
 	if(!mConfig.HasHybPitch())
 	{
 		mConfig.AddHybPitch();
@@ -144,24 +135,7 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 	return UpdateControlValueFromBPF(0);
 }
 
-
-void SMSMorph::UpdateMorphFactors()
-{
-	if(mFrameFactor==-1)//No Frame Interpolation
-	{
-		mFrameFactor=mHybBPF.GetLastValue();
-		mMagFactor=mHybSinAmp.GetLastValue();
-		mFreqFactor=mHybSinFreq.GetLastValue();
-		mPitchFactor=mHybPitch.GetLastValue();
-	}
-	else
-	{
-		mMagFactor=mFreqFactor=mPitchFactor=mFrameFactor;
-	}
-	mResMagFactor=mHybResAmp.GetLastValue();
-}
-
-bool SMSMorph::SinusoidalMorph(const Frame& in1,const Frame& in2, Frame& out)
+bool SMSMorph::InterpolateSinusoidal(const Frame& in1,const Frame& in2, Frame& out, TData magFactor, TData freqFactor, TData pitchFactor)
 {
 		///////////////////////
 	/*Sinusoidal Morphing*/
@@ -169,9 +143,9 @@ bool SMSMorph::SinusoidalMorph(const Frame& in1,const Frame& in2, Frame& out)
 	TData pitch1=in1.GetFundamentalFreq();
 	TData pitch2=in2.GetFundamentalFreq();
 
-	TData newPitch=pitch1*(1-mPitchFactor)+pitch2*mPitchFactor;
+	TData newPitch=pitch1*(1-pitchFactor)+pitch2*pitchFactor;
 
-	InterpolateSpectralPeaks(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray(),pitch1,pitch2);
+	InterpolateSpectralPeaks(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray(), magFactor, freqFactor, pitchFactor, pitch1,pitch2);
 	//Sets new fund freq
 	if(mHarmonicMorph)
 		out.SetFundamentalFreq(0,newPitch);
@@ -181,7 +155,7 @@ bool SMSMorph::SinusoidalMorph(const Frame& in1,const Frame& in2, Frame& out)
 	return true;
 }
 
-bool SMSMorph::ResidualMorph(const Frame& in1,const Frame& in2, Frame& out)
+bool SMSMorph::InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out,TData resFactor)
 {
 	///////////////////////
 	/**Residual Morphing**/
@@ -198,86 +172,103 @@ bool SMSMorph::ResidualMorph(const Frame& in1,const Frame& in2, Frame& out)
 
 	int i;
 	for(i=0;i<specSize;i++)
-		outRes.SetMag(i,inRes1.GetMag(i)*(1-mResMagFactor)+inRes2.GetMag(i)*mResMagFactor);
-	if(mFrameFactor>0.5)
+		outRes.SetMag(i,inRes1.GetMag(i)*(1-resFactor)+inRes2.GetMag(i)*resFactor);
+	if(resFactor>0.5)
 		for(i=0;i<specSize;i++)
 			outRes.SetPhase(i,inRes2.GetPhase(i));
 	return true;
 }
 
 
-bool SMSMorph::MorphFrames(const Frame& in1,const Frame& in2, Frame& out)
+bool SMSMorph::InterpolateFrames(const Frame& in1,const Frame& in2, Frame& out, TData frameFactor=-1)
 {
 	if(in1.GetFundamentalFreq()!=0 && in2.GetFundamentalFreq()!=0 )
 		mHarmonicMorph=true;
 	else mHarmonicMorph=false;
 
-	UpdateMorphFactors();
-	SinusoidalMorph(in1,in2,out);
-	ResidualMorph(in1,in2,out);
+	TData magFactor,freqFactor,pitchFactor,resFactor;
+	
+	if(frameFactor==-1)//No Frame Interpolation
+	{
+		frameFactor=mHybBPF.GetLastValue();
+		magFactor=mHybSinAmp.GetLastValue();
+		freqFactor=mHybSinFreq.GetLastValue();
+		pitchFactor=mHybPitch.GetLastValue();
+	}
+	else
+	{
+		magFactor=freqFactor=pitchFactor=frameFactor;
+	}
+	
+	InterpolateSinusoidal(in1,in2,out,magFactor, freqFactor, pitchFactor);
+	
+	resFactor=mHybResAmp.GetLastValue();
+	InterpolateResidual(in1,in2,out,resFactor);
 	
 	return true;
 }
 
-
-bool SMSMorph::Do()
+bool SMSMorph::Do(const Frame& in1, Frame& out)
 {
-	return Do(mInput1.GetData(),mInput2.GetData(),mOutput.GetData());
+	TSize nFrames2=mInput2.GetData().GetnFrames();
+	
+	TData synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
+	
+	Frame tempFrame2;
 
+	//With Frame Interpolation
+	if(mConfig.GetInterpolateFrame())
+	{
+		FindInterpolatedFrameFromSegment2Morph(tempFrame2);
+		//Morphing
+		InterpolateFrames(in1,tempFrame2,out);
+	}
+	//Without Frame Interpolation
+	else
+	{
+		InterpolateFrames(in1,mInput2.GetData().GetFrame(int(synchroTimeFactor)),out);
+	}
+					
+	return true;
+
+
+}
+
+bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
+{
+	TSize nFrames2=mInput2.GetData().GetnFrames();
+	TData synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
+	
+	//Initializes interpolated frame 
+	interpolatedFrame=mInput2.GetData().GetFrame(mInput2.GetData().mCurrentFrameIndex);
+	//Interpolation data
+	int frameNo1=floor(synchroTimeFactor);
+	int frameNo2=ceil(synchroTimeFactor);
+	
+	if(mInput2.GetData().GetFrame(frameNo1).GetFundamentalFreq()!=0 && mInput2.GetData().GetFrame(frameNo2).GetFundamentalFreq()!=0 ) 
+		mHarmonicMorph=true;
+
+	//Interpolating
+	TData frameFactor=synchroTimeFactor-frameNo1;
+	return InterpolateFrames(mInput2.GetData().GetFrame(frameNo1) , mInput2.GetData().GetFrame(frameNo2) , interpolatedFrame, frameFactor);			
 }
 
 bool SMSMorph::Do(const Segment& in1, Segment& out)
 {
 	CLAM_ASSERT(mHaveInternalSegment, "SMSMorph::Do: you cannot call this overload if internal segment has not been previously lodade");
-	return Do(in1,mInput2.GetData(),out);
-}
+	TSize nFrames=in1.GetnFrames();
+	int currentFrameIndex=in1.mCurrentFrameIndex;
 
-bool SMSMorph::Do(const Segment& in1,const Segment& in2, Segment& out)
-{
-	int i=in1.mCurrentFrameIndex;
-	
-	TSize nFrames1=in1.GetnFrames();
-	TSize nFrames2=in2.GetnFrames();
-	TSize nFrames;
-	nFrames=nFrames1;
-
-	TData synchroTimeFactor; 
-
-	UpdateControlValueFromBPF((TData)i/nFrames);
-	synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
+	UpdateControlValueFromBPF((TData)currentFrameIndex/nFrames);
 	mHarmonicMorph=false;
 	
-	//With Frame Interpolation
-	if(mConfig.GetInterpolateFrame())
-	{
-		//Initializes interpolated frame 
-		Frame tempFrame2=in1.GetFrame(i);
-		//Interpolation data
-		int frameNo1=floor(synchroTimeFactor);
-		int frameNo2=ceil(synchroTimeFactor);
-		
-		if(in2.GetFrame(frameNo1).GetFundamentalFreq()!=0 && in2.GetFrame(frameNo2).GetFundamentalFreq()!=0 ) 
-			mHarmonicMorph=true;
+	return Do(in1.GetFrame(currentFrameIndex),out.GetFrame(currentFrameIndex));
+}
 
-		//Interpolating
-		mFrameFactor=synchroTimeFactor-frameNo1;
-		MorphFrames(in2.GetFrame(frameNo1) , in2.GetFrame(frameNo2) , tempFrame2);			
-	
-		//Morphing
-		const Frame& frame1=in1.GetFrame(i);
-		mFrameFactor=-1; //we don't want to interpolate
-		MorphFrames(frame1,tempFrame2,out.GetFrame(i));
-	}
-	//Without Frame Interpolation
-	else
-	{
-		const Frame& frame1=in1.GetFrame(i);
-		const Frame& frame2=in2.GetFrame(int(synchroTimeFactor));
-		mFrameFactor=-1; //we don't want to interpolate
-		MorphFrames(frame1,frame2,out.GetFrame(i));
-	}
-					
-	return true;
+bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)
+{
+	mInput2.Attach(in2);
+	return Do(in1,out);
 }
 
 
@@ -300,7 +291,10 @@ bool SMSMorph::FindHarmonic(const IndexArray& indexArray,int index,int& lastPosi
 }
 
 
-bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, SpectralPeakArray& out,TData pitch1/*=0*/, TData pitch2/*=0*/)
+bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, 
+										SpectralPeakArray& out,
+										TData magFactor, TData freqFactor, TData pitchFactor, 
+										TData pitch1=0, TData pitch2=0)
 {
 	//we need to copy input peak arrays to convert them to linear
 	SpectralPeakArray tmpIn1=in1;
@@ -308,14 +302,12 @@ bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const Spect
 	tmpIn1.ToLinear();
 	tmpIn2.ToLinear();
 
-	//We initialize out with in1
-	out=tmpIn1;
-	
 	int nPeaks1=in1.GetnPeaks();
 	int nPeaks2=in2.GetnPeaks();
 
 	if(nPeaks1==0)
 	{
+		out=in1;
 		return true;
 	}
 	if(nPeaks2==0)
@@ -324,6 +316,9 @@ bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const Spect
 		return true;
 	}
 
+	//We initialize out with tmpIn1
+	out=tmpIn1;
+	
 	DataArray& in1Mag=tmpIn1.GetMagBuffer();
 	DataArray& in2Mag=tmpIn2.GetMagBuffer();
 	DataArray& outMag=out.GetMagBuffer();
@@ -336,7 +331,7 @@ bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const Spect
 	IndexArray& in2Index=tmpIn2.GetIndexArray();
 	
 	//TODO: this computation is duplicated
-	TData newPitch=pitch1*(1-mPitchFactor)+pitch2*mPitchFactor;
+	TData newPitch=pitch1*(1-pitchFactor)+pitch2*pitchFactor;
 	
 	TData factor2=nPeaks2/nPeaks1;
 	int pos=0,i=0;
@@ -344,14 +339,14 @@ bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const Spect
 	{
 		if(!mHarmonicMorph)
 		{
-			outMag[i]=in1Mag[i]*(1-mMagFactor)+in2Mag[i*factor2]*mMagFactor;
-			outFreq[i]=in1Freq[i]*(1-mFreqFactor)+in2Freq[i*factor2]*mFreqFactor;
+			outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
+			outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[i*factor2]*freqFactor;
 		}
 		else if(FindHarmonic(in2Index,in1Index[i],pos))
 		{
 			//Morphing Using Harmonic No*/
-			outMag[i]=in1Mag[i]*(1-mMagFactor)+in2Mag[pos]*mMagFactor;
-			outFreq[i]=((in1Freq[i]/pitch1)*(1-mFreqFactor)+(in2Freq[pos]/pitch2)*mFreqFactor)*newPitch;
+			outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[pos]*magFactor;
+			outFreq[i]=((in1Freq[i]/pitch1)*(1-freqFactor)+(in2Freq[pos]/pitch2)*freqFactor)*newPitch;
 		}
 		else
 		{
