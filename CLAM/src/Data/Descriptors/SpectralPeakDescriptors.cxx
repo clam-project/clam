@@ -29,6 +29,8 @@
 
 namespace CLAM{
 
+	DataArray Add(DataArray &a, DataArray &b);
+	DataArray Multiply(TData &factor, DataArray &a);
 
 SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): Descriptor(eNumAttr)
 {
@@ -274,7 +276,9 @@ SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,TData mult)
 	{
 		tmpD.SetOddToEvenRatio(a.GetOddToEvenRatio()*mult);
 	}
-	
+	if(a.HasHPCP())
+		tmpD.SetHPCP(Multiply(mult,a.GetHPCP()));
+
 	return tmpD;
 }
 
@@ -410,6 +414,13 @@ SpectralPeakDescriptors operator + (const SpectralPeakDescriptors& a,const Spect
 		tmpD.UpdateData();
 		tmpD.SetOddToEvenRatio(a.GetOddToEvenRatio()+b.GetOddToEvenRatio());
 	}
+	if(a.HasHPCP() && b.HasHPCP() )
+	{
+		tmpD.AddHPCP();
+		tmpD.UpdateData();
+		tmpD.SetHPCP(Add(a.GetHPCP(),b.GetHPCP()));
+	}
+
 	
 	return tmpD;
 }
