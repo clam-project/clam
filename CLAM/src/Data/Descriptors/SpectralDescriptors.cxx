@@ -266,6 +266,17 @@ TData SpectralDescriptors::ComputeRolloff()
 }
 
 
+TData SpectralDescriptors::ComputeSpread() 
+{ 
+	return 0;
+}
+
+
+TData SpectralDescriptors::ComputeSlope() 
+{ 
+	return 0;
+}
+
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 {
