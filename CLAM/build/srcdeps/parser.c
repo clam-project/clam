@@ -913,6 +913,7 @@ void parser_run(const char* filename)
 		}
 	}else{
 		fprintf(stderr,"Could not open %s\n",filename);
+		exit(-1);
 	}
 	if (verbose) fprintf(stderr,"free defines hash\n");
 	hash_free(cur_defines);
