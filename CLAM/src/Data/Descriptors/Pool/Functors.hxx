@@ -1,3 +1,6 @@
+#ifndef _Functors_hxx_
+#define _Functors_hxx_
+
 #include <cmath>
 //#include "StaticBool.hxx"
 
@@ -218,4 +221,5 @@ namespace CLAM
 }
 
 
+#endif// _Functors_hxx_
 
