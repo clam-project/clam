@@ -394,6 +394,8 @@ namespace CLAM {
 		 */
 		ExecState GetExecState() const {return mState;}
 
+		void SetExecState( const ExecState& s ) { mState = s; }
+
 		void PublishOutPort(OutPort* out);
 		void PublishInPort(InPort* in);
 		void PublishOutControl(OutControl* out);
