@@ -49,7 +49,7 @@ namespace CLAM
 		if (mFlowControl)
 			delete mFlowControl;
 
-		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
+		Clear();
 	}
 
 	void Network::StoreOn( Storage & storage) const
