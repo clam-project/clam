@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __FLTK_GUI_BUILDER__
-#define __FLTK_GUI_BUILDER__
+#ifndef __FLTKCONFIGURATOR__
+#define __FLTKCONFIGURATOR__
 
 #include <map>
 #include <string>
@@ -71,7 +71,6 @@ namespace CLAM{
 			CLAM_ASSERT(mConfig,"Configurator: Config not set")
 			VisitorSetter setter(this);
 			mConfig->VisitAll(setter);
-			mConfig->Debug();
 		}
 
 		Fl_Widget * GetWidget(const char * name) {
@@ -305,4 +304,4 @@ namespace CLAM{
 		};
 	};
 }
-#endif
+#endif//__FLTKCONFIGURATOR__
