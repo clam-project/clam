@@ -171,7 +171,7 @@ private:
 		std::map<std::string, CLAM::TData>::const_iterator it;
 		for (it = expected.begin(); it != expected.end(); it++) {
 			peaks = helperGetData(it->first);
-//			CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + it->first + "-Peaks.xml");
+//			CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + "/SpectralPeaks/" + it->first + "-Peaks.xml");
 			mDescriptors->SetpSpectralPeakArray(&peaks);
 			mDescriptors->Compute();
 			if (
