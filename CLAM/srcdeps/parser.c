@@ -592,7 +592,6 @@ void parser_init(void)
 
 	defines = listhash_find(config,"DEFINES")->l;
 
-
 	extmap_init();
 
 	{
@@ -648,15 +647,6 @@ void parser_run(const char* filename)
 	conditions_start();
 
 	{
-		item* i = pre_includes->first;
-		while (i)
-		{
-			parser_recurse(i->str);
-			i = i->next;
-		}
-	}
-
-	{
 		item* i = defines->first;
 		while (i)
 		{
@@ -665,6 +655,15 @@ void parser_run(const char* filename)
 		}
 	}
 	
+	{
+		item* i = pre_includes->first;
+		while (i)
+		{
+			parser_recurse(i->str);
+			i = i->next;
+		}
+	}
+
 	if (parser_recurse(filename))
 	{
 		/* {	
