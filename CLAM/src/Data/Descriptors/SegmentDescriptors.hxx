@@ -31,6 +31,7 @@
 
 #include "AudioDescriptors.hxx"
 #include "FrameDescriptors.hxx"
+#include "List.hxx"
 
 namespace CLAM {
 
