@@ -91,9 +91,10 @@ protected:
 	
 class Oscillator: public Processing
 {
-public:
-	OutPortTmpl<Audio> mOutput;
+
 private:
+	OutPortTmpl<Audio> mOutput;
+
 	OscillatorConfig mConfig;
 	TData mModIndex;
 	TData mAmp;

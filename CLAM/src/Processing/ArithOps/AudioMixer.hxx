@@ -33,14 +33,12 @@ namespace CLAM
 	template<unsigned int N>
 	class AudioMixer: public Processing
 	{
-	public:
+	private:
 
 		InPortArrayTmpl<Audio> mInput;
 		OutPortTmpl<Audio>     mOutput;
 		
 		InControlArray mGain;
-
-	private:
 
 		AudioMixerConfig  mConfig;
 		unsigned int mFrameSize;
@@ -69,7 +67,7 @@ namespace CLAM
 	AudioMixer<N>::AudioMixer(const AudioMixerConfig& c)
 		: mInput(N,"Input Audio",this,1),
 		  mOutput("Output Audio",this,1),
-		  mGain(N,"Input Gain Controls",this)
+		  mGain(N,"Input Gain",this)
 	{
 		Configure(c);
 	}

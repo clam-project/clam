@@ -75,12 +75,13 @@ namespace CLAM
 			
 		}
 		
-	public:
-
 		InPortTmpl<Audio> mFirstInput;
 		InPortTmpl<Audio> mSecondInput;
 		OutPortTmpl<Audio> mOutput;
 		
+
+	public:
+
 		BinaryAudioOp()
 			:mFirstInput("First Audio Input",this,1)
 			 ,mSecondInput("Second Audio Input",this,1)

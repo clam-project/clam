@@ -41,9 +41,9 @@ friend class AudioDevice;
 private:
 	AudioIOConfig mConfig;
 	AudioDevice* mpDevice;
-public:
 
 	InPortTmpl<Audio> Input;
+public:
 
 	/** Configuration method interface. The Processing base class forces all the concrete classes derived from it to implement this method, which must actually perform the specific configuration tasks.  
 	 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
