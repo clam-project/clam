@@ -81,12 +81,12 @@ int main(int argc,char** argv)
 	
 	// TODO: decide can settings file have path ?
 	//str_copy_path_from_file(dspFileToWrite, settingsFile, 250);
-	sprintf(dspFileToWrite + strlen(dspFileToWrite),"%s.dsp", program->first->str);
+	sprintf(dspFileToWrite,"%s.dsp", program->first->str);
 	
 	printf("\n\t settingsFile: \t%s \n", settingsFile);
 	printf("\t dspFileToRead: \t%s \n", dspFileToRead);
 	printf("\t dspFileToWrite: \t%s \n", dspFileToWrite);
-	
+
 	parser_init();
 
 	config_check();
@@ -110,7 +110,10 @@ int main(int argc,char** argv)
 //		if (files is equal to dspFileToWrite)
 //			dsp_parse_inline(dspFileToWrite);
 //		else
-			dsp_parse_from_file(dspFileToRead, dspFileToWrite);
+//			dsp_parse_from_file(dspFileToRead, dspFileToWrite);
+		
+		//provisionally, since is thw way Visual use it:
+		dsp_parse_inplace(dspFileToRead);
 	}
 	else
 		dsp_parse_from_empty(dspFileToWrite);
