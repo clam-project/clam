@@ -465,7 +465,6 @@ void SMSBase::StoreSound(const std::string& fileName,const Audio& audio)
 	AudioFileOut myAudioFileOut;
 	AudioFileConfig outfilecfg;
 	outfilecfg.SetChannels(1);
-	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetSampleRate(mSamplingRate);	
 
