@@ -145,7 +145,7 @@ void DynamicTypeAdvancedTest::VisitorsToPlainDTs()
 	Dyn p;
 	p.Populate(); p.Modify(4);
 	MyVisitorToInt visitorToInt;
-	p.VisitAll(visitorToInt);	
+	p.VisitAll(visitorToInt);
 
 	CPPUNIT_ASSERT_EQUAL( std::string(
 		"ToInt Visiting 'Int' Type int Value: 4\n"
@@ -202,7 +202,7 @@ void DynamicTypeAdvancedTest::VisitorsToDTTrees()
 	
 
 	MyVisitorToInt visitorToInt;
-	o.VisitAll(visitorToInt);	
+	o.VisitAll(visitorToInt);
 
 	CPPUNIT_ASSERT_EQUAL( std::string(
 		"ToInt Visiting 'Int' Type int Value: 0\n"
