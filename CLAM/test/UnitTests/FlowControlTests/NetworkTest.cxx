@@ -118,6 +118,7 @@ class NetworkTest : public CppUnit::TestFixture
 
 	class DummyProcessing : public CLAM::Processing
 	{
+		CLAM::InPort<int> mIn;
 		const char* GetClassName() const
 		{
 			return "DummyProcessing";
@@ -134,6 +135,11 @@ class NetworkTest : public CppUnit::TestFixture
 		{
 			return false;
 		}
+	public:
+		DummyProcessing() : mIn("Dummy In", this)
+		{
+		}
+		
 
 	};
 
@@ -295,7 +301,8 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InPorts collection: NonExistingPort" ), 
+				std::string( "name not found in InPorts collection: NonExistingPort. "
+					"In ports availables: Dummy In"),
 				std::string( expected.what() ) );
 
 		}

@@ -29,7 +29,7 @@ InPortBase& PublishedInPorts::Get(const std::string & name) const
 			return **it;
 
 	std::string error( "name not found in InPorts collection: " );
-	error += name;
+	error += name + std::string(". In ports availables: ") + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(InPortBase*)NULL; // just to get rid of warnings
@@ -75,5 +75,21 @@ void PublishedInPorts::Publish( InPortBase * in )
 	mInPorts.push_back( in );
 }
 	
+std::string PublishedInPorts::AvailableNames() const
+{
+	std::string result;
+	ConstIterator it;
+	bool first=true;
+	for (it=mInPorts.begin(); it!=mInPorts.end(); it++)
+	{
+		if (!first) 
+			result += ", ";
+		else 
+			first = false;
+		InPortBase & port = *(*it);
+		result += port.GetName();
+	}
+	return result;
+}
 } // namespace CLAM
 
