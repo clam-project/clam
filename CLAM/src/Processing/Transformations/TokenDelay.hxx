@@ -30,7 +30,6 @@
 #include "Port.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
-#include <vector>
 #include <string>
 #include <deque>
 
@@ -158,7 +157,7 @@ private:
 	 *  But we can take different approaches by deriving from TokenDelay<T> and overriding 
 	 *  this method. For example we could use a token pool for reusing them.
 	 */
-	Discard(T* toDiscard);
+	virtual void Discard(T* toDiscard);
 
 	/**
 	 * Returns a valid delay value given a control data value
@@ -190,6 +189,12 @@ private:
 
 
 #include "Err.hxx"
+
+template <class T> 
+void TokenDelay<T>::Discard(T* toDiscard) {
+	CLAM_ASSERT(toDiscard, "TokenDelay: Discarding a null pointer");
+	delete toDiscard;
+}
 	
 template <class T> 
 bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
@@ -244,7 +249,7 @@ void TokenDelay<T>::UpdateBuffersToDelay()
 	while (mTokenQueue.size()>mGivenDelay) {
 		T* toDelete=mTokenQueue.front();
 		mTokenQueue.pop_front();
-		delete toDelete;
+		this->Discard(toDelete);
 	}
 	return;
 }
