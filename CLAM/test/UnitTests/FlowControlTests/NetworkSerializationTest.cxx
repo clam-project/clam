@@ -151,8 +151,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 			"<processing id=\"fftw\" type=\"FFT_rfftw\">"
 			"<AudioSize>0</AudioSize>"
 			"</processing>"
-			"<processing id=\"multiplier\" type=\"AudioMultiplier\">"
-			"</processing>"
+			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
@@ -197,8 +196,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		
 		std::string result(
 			"<network id=\"FooNetworkWithPortsConnection\">"
-			"<processing id=\"multiplier\" type=\"AudioMultiplier\">"
-			"</processing>"
+			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
