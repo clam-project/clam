@@ -22,34 +22,35 @@
 #ifndef __CONNECTION__
 #define __CONNECTION__
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-	class Signal;
+class Signal;
 
-	class Connection
+class Connection
+{
+public:
+	typedef unsigned tConnectionId;
+
+	Connection();
+	Connection( tConnectionId id, Signal* connectedSignal );
+	Connection& operator=( Connection& s );
+	Connection( const Connection& s );
+
+	tConnectionId GetID() const
 	{
-	public:
-		typedef unsigned tConnectionId;
+		return mID;
+	}
 
-		Connection();
-		Connection( tConnectionId id, Signal* connectedSignal );
-		Connection& operator=( Connection& s );
-		Connection( const Connection& s );
+	~Connection();
 
-		tConnectionId GetID() const
-		{
-			return mID;
-		}
-
-		~Connection();
-
-	private:
-		mutable bool  mMustFreeSignal;
-		tConnectionId mID;
-		Signal*       mConnectedSignal;
-	};
+private:
+	mutable bool  mMustFreeSignal;
+	tConnectionId mID;
+	Signal*       mConnectedSignal;
+};
 
 }
 
 #endif // Connection.hxx
+

@@ -26,7 +26,7 @@
 #include <map>
 #include <stack>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 	class Connection;

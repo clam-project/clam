@@ -33,6 +33,9 @@
 namespace CLAMGUI
 {
 	
+	using SigSlot::Signalv1;
+	using SigSlot::Slotv1;
+
 	class GLPortSigSlot : public GLPort
 	{
 		
