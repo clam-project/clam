@@ -48,7 +48,7 @@ InControlTmplArray<TProcessing>::InControlTmplArray(
 template <class TProcessing>
 InControlTmplArray<TProcessing>::~InControlTmplArray()
 {
-	for (int i=0; i<mControls.size(); i++)
+	for (std::size_t i=0; i<mControls.size(); i++)
 		delete mControls[i];
 }
 
