@@ -55,7 +55,7 @@ void Fl_Progress::s_timeout(void* ptr) {
 void Fl_Progress::timeout(void) 
 {
 	CLAM::Mutex::ScopedLock lock( smInstanceGuard );
-	if ( mWindow == NULL ) 
+	if ( mWindow != NULL ) 
 	{
 		Fl::add_timeout(0.03,s_timeout,this);
 		if ( mSlider != NULL )
