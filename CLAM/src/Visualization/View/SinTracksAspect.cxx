@@ -1,7 +1,7 @@
 #include "SinTracksAspect.hxx"
 #include "SinTracksAdapter.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		SinTracksAspect::SinTracksAspect( SinTracksAdapter& view )
 				: mAdapter( view )

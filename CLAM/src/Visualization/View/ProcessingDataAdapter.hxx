@@ -31,7 +31,7 @@ class ProcessingData;
 
 }
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 	using CLAM::ProcessingData;

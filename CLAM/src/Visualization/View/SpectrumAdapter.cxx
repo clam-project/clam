@@ -1,7 +1,7 @@
 #include "SpectrumAdapter.hxx"
 #include "Spectrum.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::TSize;
 

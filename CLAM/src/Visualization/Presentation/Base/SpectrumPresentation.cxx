@@ -1,7 +1,7 @@
 #include "SpectrumPresentation.hxx"
 #include "SpectrumAspect.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		SpectrumPresentation::SpectrumPresentation()
 		{

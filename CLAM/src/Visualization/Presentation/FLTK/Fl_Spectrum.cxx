@@ -6,7 +6,7 @@
 #include "Fl_Gl_Single_Display.hxx"
 #include <algorithm>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		Fl_Spectrum::Fl_Spectrum( int X, int Y, int W, int H, const char* label )
 				: Fl_Window( X, Y, W, H, label )

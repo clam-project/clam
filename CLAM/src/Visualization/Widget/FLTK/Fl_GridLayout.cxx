@@ -1,7 +1,7 @@
 #include "Fl_GridLayout.hxx"
 #include <iostream>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 Fl_GridLayout::Fl_GridLayout( int rows, int cols )

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		StdioAudioPresentation::StdioAudioPresentation()
 				: mMaximum( 0 ), mMinimum( 0 ), mAudioLen( 0 ),

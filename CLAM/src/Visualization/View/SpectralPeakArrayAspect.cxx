@@ -1,7 +1,7 @@
 #include "SpectralPeakArrayAspect.hxx"
 #include "SpectralPeakArrayAdapter.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		SpectralPeakArrayAspect::SpectralPeakArrayAspect( SpectralPeakArrayAdapter& view )
 				: mAdapter( view )

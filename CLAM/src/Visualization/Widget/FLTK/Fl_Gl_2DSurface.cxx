@@ -3,7 +3,7 @@
 #include "FLTKWrapper.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 	Fl_Gl_2DSurface::Fl_Gl_2DSurface( int X, int Y, int W, int H, const char* label )
 				: Fl_Gl_Window( X, Y, W, H, label ), mTimerLaunched( false )

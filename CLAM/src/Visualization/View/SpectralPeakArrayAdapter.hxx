@@ -10,7 +10,7 @@ namespace CLAM
 		class ProcessingData;
 }
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::SpectralPeakArray;
 		using CLAM::ProcessingData;

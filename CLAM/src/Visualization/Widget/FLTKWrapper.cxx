@@ -24,7 +24,7 @@
 #include <FL/Fl_Widget.H>
 #include <algorithm>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 FLTKWrapper& FLTKWrapper::GetInstance()

@@ -1,7 +1,7 @@
 #include "Fl_Gl_Single_Display.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		Fl_Gl_Single_Display::Fl_Gl_Single_Display( int X, int Y, int W, int H, const char* label)
 				: Fl_Gl_2DSurface( X, Y, W, H, label ), mRenderer( NULL )

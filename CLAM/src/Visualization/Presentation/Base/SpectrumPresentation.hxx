@@ -6,9 +6,9 @@
 #include "DataTypes.hxx"
 #include "Slotv2.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
-
+		using SigSlot::Slotv2;
 		using CLAM::DataArray;
 		using CLAM::TData;
 		using CLAM::TTime;

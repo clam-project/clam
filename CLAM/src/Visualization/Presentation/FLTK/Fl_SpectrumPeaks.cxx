@@ -6,7 +6,7 @@
 #include "Fl_Gl_Multi_Display.hxx"
 #include <algorithm>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		Fl_SpectrumPeaks::Fl_SpectrumPeaks( int X, int Y, int W, int H, const char* label )

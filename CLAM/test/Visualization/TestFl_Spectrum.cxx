@@ -9,9 +9,9 @@
 #include <string>
 
 using CLAM::Spectrum;
-using CLAMGUI::WidgetTKWrapper;
-using CLAMGUI::LogMagSpectrumAdapter;
-using CLAMGUI::Fl_Spectrum;
+using CLAMVM::WidgetTKWrapper;
+using CLAMVM::LogMagSpectrumAdapter;
+using CLAMVM::Fl_Spectrum;
 using CLAM::XMLStorage;
 
 static const char* sPathToData= "./DataSets/";

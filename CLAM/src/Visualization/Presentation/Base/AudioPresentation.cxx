@@ -1,7 +1,7 @@
 #include "AudioPresentation.hxx"
 #include "AudioAspect.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		AudioPresentation::AudioPresentation()
 		{

@@ -3,7 +3,7 @@
 
 #include "Fl_Axis.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class Fl_X_Axis: public Fl_Axis

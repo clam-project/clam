@@ -7,9 +7,9 @@
 #include "Partial.hxx"
 #include "Signalv1.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
-	
+	using SigSlot::Signalv1;
 	using CLAM::Array;
 
 		class SpectralPeakArrayAdapter;

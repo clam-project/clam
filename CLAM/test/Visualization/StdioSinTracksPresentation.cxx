@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		void StdioSinTracksPresentation::dump_to_stdout::operator()( const SinusoidalTrack& st )
 		{
@@ -39,8 +39,9 @@ namespace CLAMGUI
 
 		
 		StdioSinTracksPresentation::StdioSinTracksPresentation()
-				: mTrackListBuilder( mSineTracks )
+				: mTrackListBuilder( )
 		{
+				mTrackListBuilder.SetTrackList( mSineTracks );
 				SetPartials.Wrap( this, &StdioSinTracksPresentation::OnNewPartials );
 				SetSpectralRange.Wrap( this, &StdioSinTracksPresentation::OnNewRange );
 				SetDuration.Wrap( this, &StdioSinTracksPresentation::OnNewDuration );

@@ -1,7 +1,7 @@
 #include "AudioAdapter.hxx"
 #include "Audio.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::TSize;
 		

@@ -8,8 +8,9 @@
 #include "Slotv1.hxx"
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+		using SigSlot::Slotv1;
 		using CLAM::Array;
 		
 		class StdioSpectralPeakArrayPresentation : public Presentation

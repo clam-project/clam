@@ -1,7 +1,7 @@
 #ifndef __FL_AXIS_ENUMERATIONS__
 #define __FL_AXIS_ENUMERATIONS__
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 #define DEFAULT_POINT_SIZE 4

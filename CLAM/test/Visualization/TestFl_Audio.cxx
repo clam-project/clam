@@ -18,9 +18,9 @@ using CLAM::XMLStorage;
 using CLAM::AudioFileIn;
 using CLAM::AudioFileConfig;
 using CLAM::EAudioFileType;
-using CLAMGUI::AudioAdapter;
-using CLAMGUI::Fl_Audio;
-using CLAMGUI::WidgetTKWrapper;
+using CLAMVM::AudioAdapter;
+using CLAMVM::Fl_Audio;
+using CLAMVM::WidgetTKWrapper;
 
 static const char* sPathToData="./DataSets/";
 static std::string sFilename;

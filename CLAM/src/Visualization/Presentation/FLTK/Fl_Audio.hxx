@@ -5,7 +5,7 @@
 #include "AudioPresentation.hxx"
 #include "AudioRenderingManager.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		// forward declarations
 		class Fl_X_Axis;

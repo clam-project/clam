@@ -1,7 +1,7 @@
 #include "SpectrumAspect.hxx"
 #include "SpectrumAdapter.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		SpectrumAspect::SpectrumAspect( SpectrumAdapter& view )
 				: mAdapter( view )

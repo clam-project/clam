@@ -5,7 +5,7 @@
 #include "Fl_GridLayout.hxx"
 #include "Fl_Gl_Single_Display.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		Fl_Audio::Fl_Audio( int X, int Y, int W, int H, const char* label )
 				: Fl_Window( X, Y, W, H, label )

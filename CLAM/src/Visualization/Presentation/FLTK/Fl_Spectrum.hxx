@@ -5,7 +5,7 @@
 #include "SpectrumPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		// forwards declarations
 		class Fl_X_Axis;

@@ -10,7 +10,7 @@ namespace CLAM
 };
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::Segment;
 		using CLAM::ProcessingData;

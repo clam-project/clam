@@ -8,8 +8,8 @@
 
 using CLAM::Audio;
 using CLAM::XMLStorage;
-using CLAMGUI::AudioAdapter;
-using CLAMGUI::StdioAudioPresentation;
+using CLAMVM::AudioAdapter;
+using CLAMVM::StdioAudioPresentation;
 
 static const char* sPathToData="./DataSets/";
 
@@ -19,7 +19,7 @@ bool TestBasicUseCase( AudioAdapter& view, StdioAudioPresentation& presentation 
 		XMLStorage  x;
 		Audio       audioObj;
 
-		std::string filename = "Audio_2.xml";
+		std::string filename = "Audio.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;

@@ -4,7 +4,7 @@
 #include "DrawingSurface2D.hxx"
 #include <FL/Fl_Gl_Window.H>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 	class Fl_Gl_2DSurface : public DrawingSurface2D, public Fl_Gl_Window

@@ -9,8 +9,8 @@
 
 using CLAM::Segment;
 using CLAM::XMLStorage;
-using CLAMGUI::SinTracksAdapter;
-using CLAMGUI::StdioSinTracksPresentation;
+using CLAMVM::SinTracksAdapter;
+using CLAMVM::StdioSinTracksPresentation;
 
 static const char* sPathToData = "./DataSets/";
 

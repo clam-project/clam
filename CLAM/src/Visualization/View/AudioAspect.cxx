@@ -1,7 +1,7 @@
 #include "AudioAspect.hxx"
 #include "AudioAdapter.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		AudioAspect::AudioAspect( AudioAdapter& view )
 				: mAdapter( view )

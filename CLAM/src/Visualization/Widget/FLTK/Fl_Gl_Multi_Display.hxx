@@ -4,7 +4,7 @@
 #include "Fl_Gl_2DSurface.hxx"
 #include <vector>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		class GLRenderingManager;
 

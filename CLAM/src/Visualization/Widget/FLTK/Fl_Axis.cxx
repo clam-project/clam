@@ -1,7 +1,7 @@
 #include "Fl_Axis.hxx"
 #include <cmath>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 const int		Fl_Axis::CANVAS_BORDER = 0;                //gap between the graphics and surrounding"box"

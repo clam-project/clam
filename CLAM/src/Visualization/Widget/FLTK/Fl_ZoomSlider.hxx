@@ -7,8 +7,9 @@
 #include "Signalv2.hxx"
 #include <cmath>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+		using SigSlot::Signalv2;
 
 		class Fl_ZoomSlider : public Fl_Widget
 		{

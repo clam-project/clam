@@ -8,8 +8,9 @@
 #include "Slotv2.hxx"
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+	using SigSlot::Slotv2;
 
 inline void fl_axis_rect(double x, double y, double w, double h)
 {

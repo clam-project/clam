@@ -3,7 +3,7 @@
 
 #include "DataTypes.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::TData;
 		using CLAM::TIndex;

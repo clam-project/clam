@@ -3,7 +3,7 @@
 #include <FL/Fl.H>
 #include <iostream>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		Fl_ZoomSlider::Fl_ZoomSlider( int X, int Y, int W, int H, int orientation )

@@ -1,35 +1,48 @@
-#include "SpectralPeakArray.hxx"
-#include "SpectralPeakArrayAdapter.hxx"
-#include "StdioSpectralPeakArrayPresentation.hxx"
+#include "Segment.hxx"
+#include "SinTracksAdapter.hxx"
+#include "Fl_SinTracks.hxx"
+#include "WidgetTKWrapper.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
 #include <iostream>
 #include <exception>
 #include <string>
+#include <Fl/fl_file_chooser.H>
 
-using CLAM::SpectralPeakArray;
+using CLAM::Segment;
 using CLAM::XMLStorage;
-using CLAMVM::SpectralPeakArrayAdapter;
-using CLAMVM::StdioSpectralPeakArrayPresentation;
+using CLAMVM::SinTracksAdapter;
+using CLAMVM::Fl_SinTracks;
+using CLAMVM::WidgetTKWrapper;
 
 static const char* sPathToData = "./DataSets/";
+static const char* sFilename = 0;
 
-bool TestBasicUseCase( SpectralPeakArrayAdapter& view, StdioSpectralPeakArrayPresentation& presentation )
+bool TestBasicUseCase( SinTracksAdapter& view, Fl_SinTracks& presentation )
 {
 		XMLStorage x;
-		SpectralPeakArray    specPeakArrayObj;
+		Segment    segmentObj;
 		
-		std::string filename = "SpectralPeakArray.xml";
+/*		std::string filename = "Segment.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;
+*/
+		x.Restore( segmentObj, sFilename );
 
-		x.Restore( specPeakArrayObj, pathToFile );
+		std::cout << "SEGMENT RESTORED" << std::endl;
 
-		view.BindTo( &specPeakArrayObj );
+		view.BindTo( &segmentObj );
 
 		view.Publish();
+		std::cout << "DATA ACQUISITION DONE!" << std::endl;
 		presentation.Show();
+
+		WidgetTKWrapper& tk = WidgetTKWrapper::GetWrapperFor("FLTK");
+
+		tk.Run();
+
+		
 
 		return true;
 }
@@ -38,8 +51,16 @@ int main( int argc, char** argv )
 {
 		try
 		{
-				SpectralPeakArrayAdapter                view;
-				StdioSpectralPeakArrayPresentation   presentation;
+				sFilename = fl_file_chooser( "Please, select analysis data", "*.xml", NULL );
+
+				if ( sFilename == NULL )
+				{
+					std::cout << "Quitting!" << std::endl;
+					exit(0);
+				}
+
+				SinTracksAdapter             view;
+				Fl_SinTracks   presentation(100,100,640,480, "Some sinusoidal tracks...");
 
 				presentation.AttachTo( view );
 

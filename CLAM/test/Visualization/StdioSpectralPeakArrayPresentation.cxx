@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		StdioSpectralPeakArrayPresentation::StdioSpectralPeakArrayPresentation()
 		{

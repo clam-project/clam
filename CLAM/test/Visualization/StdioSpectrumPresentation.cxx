@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		StdioSpectrumPresentation::StdioSpectrumPresentation()
 				: mSpectralRange( 22050 )

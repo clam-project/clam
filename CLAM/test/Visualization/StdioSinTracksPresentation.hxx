@@ -9,8 +9,10 @@
 #include "SinTrackListBuilder.hxx"
 #include <list>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+		using SigSlot::Slotv1;
+		using SigSlot::Slotv2;
 		using CLAM::Array;
 		using CLAM::TData;
 		using CLAM::TTime;

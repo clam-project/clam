@@ -2,7 +2,7 @@
 #include "GLRenderingManager.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		Fl_Gl_Multi_Display::Fl_Gl_Multi_Display( int X, int Y, int W, int H, const char* label )

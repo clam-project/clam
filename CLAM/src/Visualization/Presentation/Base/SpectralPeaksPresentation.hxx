@@ -8,8 +8,10 @@
 #include "Slotv2.hxx"
 #include "Slotv1.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+		using SigSlot::Slotv1;
+		using SigSlot::Slotv2;
 		using CLAM::Array;
 		using CLAM::DataArray;
 		using CLAM::TData;

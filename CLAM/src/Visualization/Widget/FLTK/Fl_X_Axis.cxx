@@ -1,6 +1,6 @@
 #include "Fl_X_Axis.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 int Fl_X_Axis::min_pos() const

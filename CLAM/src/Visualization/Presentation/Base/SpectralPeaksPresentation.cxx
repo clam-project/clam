@@ -2,7 +2,7 @@
 #include "SpectrumAspect.hxx"
 #include "SpectralPeakArrayAspect.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		SpectralPeaksPresentation::SpectralPeaksPresentation()

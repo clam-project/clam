@@ -6,7 +6,7 @@
 #include "SpectrumRenderingManager.hxx"
 #include "PeaksRenderingManager.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		class Fl_X_Axis;
 		class Fl_Y_Axis;

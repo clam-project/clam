@@ -4,7 +4,7 @@
 #include <FL/Fl_Group.H>
 #include <list>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class Fl_GridLayout 

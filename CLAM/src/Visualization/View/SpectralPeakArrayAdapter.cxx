@@ -4,7 +4,7 @@
 #include "GlobalEnums.hxx"
 #include <cmath>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::EScale;
 		using CLAM::DataArray;

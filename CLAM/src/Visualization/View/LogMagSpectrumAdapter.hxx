@@ -4,7 +4,7 @@
 #include "SpectrumAdapter.hxx"
 #include "Array.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		class LogMagSpectrumAdapter : public SpectrumAdapter

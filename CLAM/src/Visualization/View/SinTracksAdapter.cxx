@@ -3,7 +3,7 @@
 #include "Frame.hxx"
 #include "SpectralPeakArray.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::Frame;
 		using CLAM::SpectralPeakArray;

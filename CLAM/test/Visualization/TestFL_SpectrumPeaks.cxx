@@ -15,10 +15,10 @@ using CLAM::SpectralPeakArray;
 using CLAM::Spectrum;
 using CLAM::Frame;
 using CLAM::XMLStorage;
-using CLAMGUI::LogMagSpectrumAdapter;
-using CLAMGUI::SpectralPeakArrayAdapter;
-using CLAMGUI::Fl_SpectrumPeaks;
-using CLAMGUI::WidgetTKWrapper;
+using CLAMVM::LogMagSpectrumAdapter;
+using CLAMVM::SpectralPeakArrayAdapter;
+using CLAMVM::Fl_SpectrumPeaks;
+using CLAMVM::WidgetTKWrapper;
 
 static const char* sPathToData="./DataSets/";
 

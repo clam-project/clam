@@ -7,8 +7,10 @@
 #include "DataTypes.hxx"
 #include "Array.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+		using SigSlot::Signalv1;
+		using SigSlot::Signalv4;
 		using CLAM::TData;
 		using CLAM::TTime;
 		using CLAM::DataArray;

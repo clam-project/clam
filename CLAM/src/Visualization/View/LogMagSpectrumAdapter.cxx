@@ -4,7 +4,7 @@
 #include "Spectrum.hxx"
 #include <algorithm>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::SpecTypeFlags;
 		using CLAM::EScale;

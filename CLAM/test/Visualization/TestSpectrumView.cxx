@@ -8,8 +8,8 @@
 #include <string>
 
 using CLAM::Spectrum;
-using CLAMGUI::LogMagSpectrumAdapter;
-using CLAMGUI::StdioSpectrumPresentation;
+using CLAMVM::LogMagSpectrumAdapter;
+using CLAMVM::StdioSpectrumPresentation;
 using CLAM::XMLStorage;
 
 static const char* sPathToData= "./DataSets/";

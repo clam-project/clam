@@ -1,7 +1,7 @@
 #include "Fl_Y_Axis.hxx"
 #include <cmath>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 int Fl_Y_Axis::min_pos() const
