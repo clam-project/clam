@@ -19,46 +19,36 @@
  *
  */
 
-#include <iostream>
-#include "Enum.hxx"
-#include "XMLAdapter.hxx"
-#include "Text.hxx"
+#ifndef __MONOAUDIOFILEWRITERCONFIG__
+#define __MONOAUDIOFILEWRITERCONFIG__
 
-namespace CLAM {
+#include "ProcessingConfig.hxx"
+#include "AudioFile.hxx"
+#include "DataTypes.hxx"
 
-	void Enum::StoreOn( Storage& storage ) const
+namespace CLAM
+{
+	/**
+	 *  Configuration class for the CLAM::MonoAudioFileWriter processing
+	 *  object.
+	 *
+	 *  @see MonoAudioFileWriter
+	 */
+	class MonoAudioFileWriterConfig
+		: public ProcessingConfig
 	{
-		std::string s = GetString();
-		XMLAdapter<std::string> adapter(s);
-		storage.Store(adapter);
-	}
+		DYNAMIC_TYPE_USING_INTERFACE
+		( MonoAudioFileWriterConfig, 1, ProcessingConfig );
+		
+		/** 
+		 *  The file where samples will be stored
+		 */
+		DYN_ATTRIBUTE( 0, public, AudioFile, TargetFile );
 
-	void Enum::LoadFrom( Storage& storage )
-	{
-		Text s;
-		//XMLAdapter<std::string> adapter(s);
-		XMLAdapter<Text> adapter(s);
-		storage.Load(adapter);
-		SetValueSafely(s);
-	
-	}
-
-std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue) {
-	os << e.GetString();
-	return os;
+	protected:
+		
+		void DefaultInit();
+	};
 }
 
-/**
- * Loads a symbolic value from the input stream onto an Enum.
- * @param os The input stream
- * @param e The Enum
- * @returns The input stream
- */
-std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
-	std::string s;
-	os >> s;
-	e.SetValue(s);
-	return os;
-}
-
-}
+#endif // MonoAudioFileWriterConfig.hxx

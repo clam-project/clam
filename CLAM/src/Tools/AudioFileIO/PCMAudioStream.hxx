@@ -19,46 +19,47 @@
  *
  */
 
-#include <iostream>
-#include "Enum.hxx"
-#include "XMLAdapter.hxx"
-#include "Text.hxx"
+#ifndef __PCMAudioStream__
+#define __PCMAudioStream__
 
-namespace CLAM {
+#include "AudioCodecs_Stream.hxx"
+#include <sndfile.h>
+#include <string>
 
-	void Enum::StoreOn( Storage& storage ) const
+namespace CLAM
+{
+
+namespace AudioCodecs
+{
+
+	class PCMAudioStream : public Stream
 	{
-		std::string s = GetString();
-		XMLAdapter<std::string> adapter(s);
-		storage.Store(adapter);
-	}
+	public:
+		PCMAudioStream();
+		PCMAudioStream( const AudioFile& file );
 
-	void Enum::LoadFrom( Storage& storage )
-	{
-		Text s;
-		//XMLAdapter<std::string> adapter(s);
-		XMLAdapter<Text> adapter(s);
-		storage.Load(adapter);
-		SetValueSafely(s);
-	
-	}
+		~PCMAudioStream();
 
-std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue) {
-	os << e.GetString();
-	return os;
-}
+		void SetFOI( const AudioFile& file );
 
-/**
- * Loads a symbolic value from the input stream onto an Enum.
- * @param os The input stream
- * @param e The Enum
- * @returns The input stream
- */
-std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
-	std::string s;
-	os >> s;
-	e.SetValue(s);
-	return os;
+		void PrepareReading();
+		void PrepareWriting();
+		void PrepareReadWrite();
+		void Dispose();
+
+	protected:
+		
+		void AudioFileToNative( const AudioFile& file );
+		void DiskToMemoryTransfer();
+		void MemoryToDiskTransfer();		
+
+	protected:
+		SNDFILE*            mFileHandle;
+		SF_INFO             mNativeFileParams;
+		std::string         mName;
+	};
+
 }
 
 }
+#endif // PCMAudioStream.hxx

@@ -19,46 +19,31 @@
  *
  */
 
-#include <iostream>
-#include "Enum.hxx"
-#include "XMLAdapter.hxx"
-#include "Text.hxx"
+#include "AudioFileConfig.hxx"
+#include "ErrProcessingObj.hxx"
 
 namespace CLAM {
 
-	void Enum::StoreOn( Storage& storage ) const
+	Enum::tEnumValue EAudioFileType::sEnumValues[] = {
+		{EAudioFileType::eRaw,"Raw"},
+		{EAudioFileType::eWave,"Wave"},
+		{EAudioFileType::eAIFF,"AIFF"},
+		{EAudioFileType::eAuto,"Auto"},
+		{EAudioFileType::eUnknown,"Unknown"},
+		{0,NULL}
+	};
+
+	Enum::tValue EAudioFileType::sDefault = EAudioFileType::eRaw;
+
+	void AudioFileConfig::DefaultInit(void)
 	{
-		std::string s = GetString();
-		XMLAdapter<std::string> adapter(s);
-		storage.Store(adapter);
+		AddAll();
+		UpdateData();
+
+		SetSampleRate(44100);
+		SetChannels(0);
+		SetKeepFrameSizes(false);
+		SetFrameSize(512);
+		SetStartFrame(0);
 	}
-
-	void Enum::LoadFrom( Storage& storage )
-	{
-		Text s;
-		//XMLAdapter<std::string> adapter(s);
-		XMLAdapter<Text> adapter(s);
-		storage.Load(adapter);
-		SetValueSafely(s);
-	
-	}
-
-std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue) {
-	os << e.GetString();
-	return os;
-}
-
-/**
- * Loads a symbolic value from the input stream onto an Enum.
- * @param os The input stream
- * @param e The Enum
- * @returns The input stream
- */
-std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
-	std::string s;
-	os >> s;
-	e.SetValue(s);
-	return os;
-}
-
-}
+};//namespace CLAM

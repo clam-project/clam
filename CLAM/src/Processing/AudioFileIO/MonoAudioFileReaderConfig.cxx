@@ -19,46 +19,14 @@
  *
  */
 
-#include <iostream>
-#include "Enum.hxx"
-#include "XMLAdapter.hxx"
-#include "Text.hxx"
+#include "MonoAudioFileReaderConfig.hxx"
 
-namespace CLAM {
-
-	void Enum::StoreOn( Storage& storage ) const
+namespace CLAM
+{
+	void MonoAudioFileReaderConfig::DefaultInit()
 	{
-		std::string s = GetString();
-		XMLAdapter<std::string> adapter(s);
-		storage.Store(adapter);
+		AddAll();
+		UpdateData();
+		SetSelectedChannel( 0 );
 	}
-
-	void Enum::LoadFrom( Storage& storage )
-	{
-		Text s;
-		//XMLAdapter<std::string> adapter(s);
-		XMLAdapter<Text> adapter(s);
-		storage.Load(adapter);
-		SetValueSafely(s);
-	
-	}
-
-std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue) {
-	os << e.GetString();
-	return os;
-}
-
-/**
- * Loads a symbolic value from the input stream onto an Enum.
- * @param os The input stream
- * @param e The Enum
- * @returns The input stream
- */
-std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
-	std::string s;
-	os >> s;
-	e.SetValue(s);
-	return os;
-}
-
 }
