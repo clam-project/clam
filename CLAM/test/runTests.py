@@ -8,15 +8,18 @@ updateLevelForTestData = 1
 
 # When false keeps already compiled objects
 doCleanMake = True
-# When false does nothing
-doAutoconf = False
+# When false does not run autoconf and configure unless a new checkout
+doAutoconf = True
 doAutoconf = doAutoconf or updateLevelForCLAM == 2
-
-enableSendMail = False
-publicAddress = 'clam-devel@iua.upf.es'
-privateAddress = 'parumi@iua.upf.es'
-subject = 'nightly tests report'
+# Non-test are runned those seconds and then killed
 executionTime = 15 
+
+# Mail report settings
+enableSendMail = True
+publicAddress = 'clam-devel@iua.upf.es' # To use only when fails
+privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
+subject = 'nightly tests report'
+
 #TODO: this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
 configurations = ['release'] #['debug', 'release'] 
@@ -43,10 +46,13 @@ simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
 sandboxes = [ # Module, Sandbox, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
+#	( 'CLAM_DescriptorsGUI', 'CLAM_DescriptorsGUI', '', updateLevelForExamples ),
+	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', updateLevelForExamples ),
+#	( 'CLAM_Rappid', 'CLAM_Rappid', '', updateLevelForExamples ),
+#	( 'CLAM_SDIFDisplay', 'CLAM_SDIFDisplay', '', updateLevelForExamples ),
+	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', updateLevelForExamples ),
 	( 'CLAM_SMSTools', 'CLAM_SMSTools', '', updateLevelForExamples ),
 	( 'CLAM_Salto', 'CLAM_Salto', '', updateLevelForExamples ),
-	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', updateLevelForExamples ),
-	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', updateLevelForExamples ),
 	( 'CLAM_Voice2MIDI', 'CLAM_Voice2MIDI', '', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
@@ -68,6 +74,9 @@ externalApplications = [
 	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
 	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
 #	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
+#	( 'Rappid', CLAM_SANDBOXES+'CLAM_Rappid/build/' ),
+#	( 'SDIF_Display', CLAM_SANDBOXES+'SDIF_Display/build/' ),
+#	( 'DescriptorsGUI', CLAM_SANDBOXES+'DescriptorsGUI/build/' ),
 	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' )
 ]
 
@@ -107,33 +116,40 @@ notPortedTests = [
 ]
 
 simpleExamples = [
-        ( 'AudioApplication', simpleExamplesPath+'AudioApplication/'),
+        ( 'AudioApplicationExample', simpleExamplesPath+'AudioApplication/'),
         ( 'AudioFileReading', simpleExamplesPath+'AudioFileReading/'),
         ( 'AudioFileWriting', simpleExamplesPath+'AudioFileWriting/'),
-        ( 'Configurator', simpleExamplesPath+'Configurator/'),
-        ( 'ControlArrays', simpleExamplesPath+'ControlArrays/'),
-        ( 'Controls', simpleExamplesPath+'Controls/'),
-        ( 'DescriptorsComputation', simpleExamplesPath+'DescriptorsComputation/'),
-        ( 'FDFilter', simpleExamplesPath+'FDFilter/'),
-        ( 'FFT', simpleExamplesPath+'FFT/'),
+        ( 'ConfiguratorExample', simpleExamplesPath+'Configurator/'),
+	( 'ControlArraysExample', simpleExamplesPath+'ControlArrays/'),
+        ( 'ControlsExample', simpleExamplesPath+'Controls/'),
+        ( 'DescriptorsComputationExample', simpleExamplesPath+'DescriptorsComputation/'),
+        ( 'FDFilterExample', simpleExamplesPath+'FDFilter/'),
+        ( 'FFTExample', simpleExamplesPath+'FFT/'),
         ( 'FileInfo', simpleExamplesPath+'FileInfo/'),
         ( 'FilePlayback', simpleExamplesPath+'FilePlayback/'),
-        ( 'LPC', simpleExamplesPath+'LPC/'),
-        ( 'MIDI2XML', simpleExamplesPath+'MIDI2XML/'),
+        ( 'LPCExample', simpleExamplesPath+'LPC/'),
+        ( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/'),
+        ( 'midi2xml', simpleExamplesPath+'MIDI2XML/'),
         ( 'MIDIIO', simpleExamplesPath+'MIDIIO/'),
         ( 'MIDIOut', simpleExamplesPath+'MIDIOut/'),
         ( 'MultiPlot', simpleExamplesPath+'MultiPlot/'),
         ( 'NetworkPersistence', simpleExamplesPath+'NetworkPersistence/'),
         ( 'NetworkUsage', simpleExamplesPath+'NetworkUsage/'),
-        ( 'POComposite', simpleExamplesPath+'POComposite/'),
+        ( 'POCompositeExample', simpleExamplesPath+'POComposite/'),
         ( 'PersistenceThroughDTs', simpleExamplesPath+'PersistenceThroughDTs/'),
-        ( 'PortsAndControlUsage', simpleExamplesPath+'PortsAndControlUsage/'),
+        ( 'PortsAndControlsUsage', simpleExamplesPath+'PortsAndControlUsage/'),
         ( 'ProcessingLifeCycle', simpleExamplesPath+'ProcessingLifeCycle/'),
-        ( 'QtPlots', simpleExamplesPath+'QtPlots/'),
+	( 'DPAudio', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPAudioExample/'),
+	( 'DPFundamental', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPFundamentalExample/'),
+	( 'DPSpectrumAndPeaks', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample/'),
+	( 'DPAudioStereo', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPAudioStereoExample/'),
+	( 'ListPlot', simpleExamplesPath+'QtPlots/ListPlotExample/'),
+	( 'AudioPlot', simpleExamplesPath+'QtPlots/QtPlotsExamples/AudioPlotExample/'),
+	( 'SpectrumPlot', simpleExamplesPath+'QtPlots/QtPlotsExamples/SpectrumPlotExample/'),
         ( 'SDIF_And_Segment', simpleExamplesPath+'SDIF_And_Segment/'),
         ( 'SimplePortsUsage', simpleExamplesPath+'SimplePortsUsage/'),
         ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
-        ( 'Spectrum', simpleExamplesPath+'Spectrum/'),
+        ( 'SpectrumExample', simpleExamplesPath+'Spectrum/'),
         ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/')
 ]
 
@@ -141,11 +157,11 @@ simpleExamples = [
 testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
-#testsToRun[-1:-1] = externalApplications 
+testsToRun[-1:-1] = externalApplications 
 testsToRun[-1:-1] = simpleExamples
-#testsToRun[-1:-1] = supervisedTests
-#testsToRun[-1:-1] = notPortedTests
-#testsToRun[-1:-1] = automaticTests 
+testsToRun[-1:-1] = supervisedTests
+testsToRun[-1:-1] = notPortedTests
+testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
@@ -164,15 +180,14 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 		print msg
 		return
 	
-	file(CLAM_SANDBOXES + 'testslog.txt','w').write(msg)
-	
 	server = smtplib.SMTP('iua-mail.upf.es')
 	server.set_debuglevel(1)
 	server.sendmail(fromaddr, toaddrs, msg)
 	server.quit()
 
 def checkPaths() :
-	global totalDetails, totalSummary, testsToRun
+	global testsToRun
+	out = ""
 	if not os.access(CLAM_SANDBOXES, os.F_OK) :
 		err = "Sorry can't access CLAM_SANDBOXES path : " + CLAM_SANDBOXES
 		sendError(err)
@@ -191,8 +206,9 @@ def checkPaths() :
 		i += 1
 	if dirsExpected!='' or setfilesExpected!='' :
 		msg = 'dirs not found:\n\n%s\n files not found\n%s\n'
-		totalSummary = msg % (dirsExpected,setfilesExpected)
-		print totalSummary
+		out = msg % (dirsExpected,setfilesExpected)
+		# print out
+	return out
 	
 
 def parseCompilationWarnings(compilationOut) :
@@ -200,7 +216,7 @@ def parseCompilationWarnings(compilationOut) :
 	warnings = ''
 	if nwarnings > 0 :
 		warnings = ' - found %d warnings !'% (nwarnings)
-		print warnings
+		# print warnings
 	return warnings
 
 def parseTestsFailures( testsOut ) :
@@ -210,23 +226,23 @@ def parseTestsFailures( testsOut ) :
 	for line in testsOut.split('\n') :
 		if state == 'TESTS_INFO' :
 			if line.find('!!!FAILURES!!!') >=0 :
-				print 'found !!!FAILURES!!!'
+				# print 'found !!!FAILURES!!!'
 				details = line + '\n'
 				summary +=  line
 				state = 'FAILURES'
 			if line.find('OK (') == 0 :
-				print 'found OK'
+				# print 'found OK'
 				details = ''
 				summary += line
 		elif state == 'FAILURES' :
 			details +=  line + '\n'
 		else :
 			assert(false)
-	print 'in parseTestsFailures :', summary, ' details: ',details
+	# print 'in parseTestsFailures :', summary, ' details: ',details
 	return summary, details
 
 def parseExecutionErrors( executionOut ) :
-	print 'executed non test\n', executionOut
+	# print 'executed non test\n', executionOut
 	if executionOut.find('# ASSERTION FAILED #')>=0 :
 		return 'execution: assertion failed!', executionOut
 	if executionOut.find('aborted')>=0:
@@ -249,7 +265,7 @@ def getStatusOutput(cmd) :
 	if stat != 0 : 
 		print output
 	else :
-		print cmd,' OK'
+		print ' OK'
 	return (stat == 0), output
 
 def executeMandatory(cmd) :
@@ -273,28 +289,29 @@ def formatSummary(name, configuration, result) :
 def compileAndRun(name, path) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures, configurations
 	if name == '' :
-		print 'found removed test (invalid dir or settings file)'
+		# print 'found removed test (invalid dir or settings file)'
 		return '',''
 	os.chdir(path)
 	# compilation phase
-	summary = details = d = ''
+	summary = ''
+	details = ''
 	for configuration in configurations :
 		if doCleanMake :
 			getStatusOutput('make clean')
-			getStatusOutput('make depend')
+		getStatusOutput('make depend')
 		makecmd = 'make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
-			compilationMessages = 'COMPILATION ERRORS'
+			compilationSumary = 'COMPILATION ERRORS'
 		else :
-			compilationMessages = 'compilation OK'
-		compilationMessages += parseCompilationWarnings( output )
-		summary += formatSummary(name, configuration, compilationMessages)
+			compilationSumary = 'compilation OK'
+		compilationSumary += parseCompilationWarnings( output )
+		summary += formatSummary(name, configuration, compilationSumary)
 		detailsFormat = '\n\n%s\n-----------------------------\n%s\n'
 		if not ok :
 			details += detailsFormat % (name, output)
-		print 'summary: ',summary
+		# print 'summary: ',summary
 
 		if not ok : 
 			continue
@@ -303,16 +320,16 @@ def compileAndRun(name, path) :
 		execcmd = './'+name
 		
 		if not os.access(execcmd, os.X_OK) :
-			print 'file should exist: ', execcmd
+			# print 'file should exist: ', execcmd
 			assert(False)
 
 		if isTest(path) :
-			print 'isTest yes\nrunning tests'
+			# print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
 			foundTestsFailues = foundTestsFailures or not ok
 			runMessages, d = parseTestsFailures( output )
 		else :
-			print 'isTest no\nexecuting application for a while'
+			# print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
 			runMessages, d = parseExecutionErrors( output )
 			foundExecutionErrors =  foundExecutionErrors or not ok or runMessages.find('OK')==-1
@@ -320,6 +337,8 @@ def compileAndRun(name, path) :
 		summary += formatSummary(name, configuration, runMessages)
 		if d != '' :
 			details += detailsFormat % (name, d)
+	os.chdir(CLAM_SANDBOXES)
+
 	return summary, details
 
 
@@ -354,18 +373,19 @@ def runInBackgroundForAWhile(path, command, sleeptime=10) :
 	#file(out, 'w')
 	#file(err, 'w')
 	fullcmd = '%s > %s 2> %s &' % (command, out, err)
-	print fullcmd
-	print 'result ',os.system( fullcmd )
+	# print fullcmd
+	# print 'result ',os.system( fullcmd )
 	time.sleep( sleeptime )
 	withoutSlash = command[command.find('/')+1 : ]
 
 	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
 	
-	print 'kill status ', status, dummy
+	# print 'kill status ', status, dummy
 	result = string.join( file('/tmp/removeme.out').readlines() )
 	result += string.join( file('/tmp/removeme.err').readlines() )
 	#os.remove(out)
 	#os.remove(err)
+	os.chdir(CLAM_SANDBOXES)
 	return True, result #TODO status
 
 
@@ -404,6 +424,7 @@ def updateSandboxes() :
 			if output.find('\nC ')>=0 :
 				print 'CVS CONFLICT !!', output
 				# TODO: Inform about them
+			os.chdir(CLAM_SANDBOXES)
 		elif level == 0 :
 			print 'The sandbox %s already exists, keeping it'%(sandbox)
 
@@ -416,7 +437,7 @@ def deployClamBuildSystem() :
 	os.chdir(BUILDPATH)
 	if doAutoconf:
 		executeMandatory('autoconf')
-		executeMandatory('./configure')
+		executeMandatory('./configure --without-portmidi')
 
 	# Setting the clam location
 	global sandboxes
@@ -432,9 +453,9 @@ def deployClamBuildSystem() :
 #-------------------------------------------------------------------------------------  
 #  Aplication Logic
 #
-totalSummary = totalDetails = ['']
 def runTests() :
-	global totalSummary, totalDetails		
+	totalSummary = ['']
+	totalDetails = ['']
 	subj = [subject]
 	if 'CVSROOT' not in os.environ :
 		print 'warning: CVSROOT not found in environ'
@@ -448,7 +469,7 @@ def runTests() :
 		sys.exit(-1)
 
 	updateSandboxes()
-	checkPaths();
+	totalSummary.append(checkPaths())
 	deployClamBuildSystem()
 
 	# LinkSaltoDataFolder
@@ -461,10 +482,14 @@ def runTests() :
 		summary, details  = compileAndRun(name, path)
 		totalSummary.append(summary)
 		totalDetails.append(details)
-
 		print "".join(totalSummary)
 
 
+	results = file(CLAM_SANDBOXES + "RunTestResults.txt", "w")
+	results.write("".join(totalSummary))
+	results.write("".join(totalDetails))
+	results.close()
+	
 	mailBody = mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
 	if foundCompilationErrors : 
 		subj.append(' - compilation err!')
@@ -483,6 +508,7 @@ def runTests() :
 		print 'nowbody to send report'
 		print 'subject: ', "".join(subj)
 		print mailBody
+
 
 #--------------------------------------------------------------
 #
