@@ -57,7 +57,7 @@ namespace CLAMVM
 		// first we create the necessary widgets 
 		if ( !mpSegmentSinTracks )
 		{
-			mpSegmentSinTracks = new Fl_SMS_SinTracks_Browser( 0,0,800,600, "Sinusoidal Tracks");
+			mpSegmentSinTracks = new Fl_SMS_SinTracks_Browser( 0,0,100,100, "Sinusoidal Tracks");
 			CLAM_ASSERT( mpSegmentSinTracks != NULL, "Unable to create widget");
 			mpSegmentSinTracks->AttachTo( mSinusoidalTracksAdapter );
 			mpSegmentSinTracks->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -83,19 +83,19 @@ namespace CLAMVM
 		// now we create the necessary widgets
 		if ( !mpSpectrumAndPeaksWidget )
 		{
-			mpSpectrumAndPeaksWidget = new Fl_SMS_SpectrumAndPeaks( 0,0,800,600, "Frame spectrum and spectral peaks" );
+			mpSpectrumAndPeaksWidget = new Fl_SMS_SpectrumAndPeaks( 0,0,100,100, "Frame spectrum and spectral peaks" );
 			CLAM_ASSERT( mpSpectrumAndPeaksWidget!=NULL, "The widget could not be created" );
 			mpSpectrumAndPeaksWidget->AttachTo( mSpectrumAdapter, mPeakArrayAdapter );
 		}
 		if ( !mpSinusoidalSpectrum )
 		{
-			mpSinusoidalSpectrum = new Fl_SMS_Spectrum( 0,0,800,600, "Sinusoidal Spectrum ");
+			mpSinusoidalSpectrum = new Fl_SMS_Spectrum( 0,0,100,100, "Sinusoidal Spectrum ");
 			CLAM_ASSERT( mpSinusoidalSpectrum!=NULL, "The widget could not be created");
 			mpSinusoidalSpectrum->AttachTo( mSinusoidalSpectrumAdapter );
 		}
 		if ( !mpResidualSpectrum )
 		{
-			mpResidualSpectrum = new Fl_SMS_Spectrum( 0,0,800,600, "Residual Spectrum");
+			mpResidualSpectrum = new Fl_SMS_Spectrum( 0,0,100,100, "Residual Spectrum");
 			CLAM_ASSERT( mpResidualSpectrum!=NULL, "The widget could not be created");
 			mpResidualSpectrum->AttachTo( mResidualSpectrumAdapter );
 		}
@@ -140,7 +140,7 @@ namespace CLAMVM
 		
 		if ( !mpOriginalAudioWidget )
 		{
-			mpOriginalAudioWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Input Audio");
+			mpOriginalAudioWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Input Audio");
 			CLAM_ASSERT( mpOriginalAudioWidget!=NULL, "The widget could not be created");
 			mpOriginalAudioWidget->AttachTo( mOriginalAudioAdapter );
 			mpOriginalAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -156,7 +156,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedAudioWidget )
 		{
-			mpSynthesizedAudioWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Synthesized Audio");
+			mpSynthesizedAudioWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Synthesized Audio");
 			CLAM_ASSERT( mpSynthesizedAudioWidget!=NULL, "The widget could not be created");
 			mpSynthesizedAudioWidget->AttachTo( mSynthesizedAudioAdapter );
 			mpSynthesizedAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -173,7 +173,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedSinusoidalWidget )
 		{
-			mpSynthesizedSinusoidalWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Synthesized Sinusoidal Component");
+			mpSynthesizedSinusoidalWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Synthesized Sinusoidal Component");
 			CLAM_ASSERT( mpSynthesizedSinusoidalWidget!=NULL, "The widget could not be created");
 			mpSynthesizedSinusoidalWidget->AttachTo( mSynthesizedSinusoidalAdapter );
 			mpSynthesizedSinusoidalWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -190,7 +190,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedResidualWidget )
 		{
-			mpSynthesizedResidualWidget = new Fl_SMS_Audio_Browser( 0,0,800,600, "Synthesized Residual Component");
+			mpSynthesizedResidualWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Synthesized Residual Component");
 			CLAM_ASSERT( mpSynthesizedResidualWidget!=NULL, "The widget could not be created");
 			mpSynthesizedResidualWidget->AttachTo( mSynthesizedResidualAdapter );
 			mpSynthesizedResidualWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -211,7 +211,7 @@ namespace CLAMVM
      		     
 		mpOriginalAudioWidget->callback( (Fl_Callback*)sDetachCb, this );
 
-		mpCanvas->add( *(mpOriginalAudioWidget) );
+		mpCanvas->add_adjust( mpOriginalAudioWidget );
 		//TODO: this is a HACK!
 		mpOriginalAudioWidget->hide();
 		Fl::flush();
@@ -231,7 +231,7 @@ namespace CLAMVM
 		     
 		mpSegmentSinTracks->callback( (Fl_Callback*)sDetachCb, this );
 
-		mpCanvas->add( *mpSegmentSinTracks );
+		mpCanvas->add_adjust ( mpSegmentSinTracks );
 		//TODO: this is a HACK!
 		mpSegmentSinTracks->hide();
 		Fl::flush();
@@ -252,8 +252,9 @@ namespace CLAMVM
 			return;
 		     
 		mpSpectrumAndPeaksWidget->callback( (Fl_Callback*)sDetachCb, this );
+		
+		mpCanvas->add_adjust( mpSpectrumAndPeaksWidget );
 
-		mpCanvas->add( *mpSpectrumAndPeaksWidget );
 		//TODO: this is a HACK!
 		mpSpectrumAndPeaksWidget->hide();
 		Fl::flush();
@@ -295,7 +296,7 @@ namespace CLAMVM
 		     
 		mpResidualSpectrum->callback( (Fl_Callback*)sDetachCb, this );
 		
-		mpCanvas->add( *mpResidualSpectrum );
+		mpCanvas->add_adjust( mpResidualSpectrum );
 		//TODO: this is a HACK!
 		mpResidualSpectrum->hide();
 		Fl::flush();
@@ -316,7 +317,7 @@ namespace CLAMVM
 		     
 		mpSynthesizedAudioWidget->callback( (Fl_Callback*)sDetachCb, this );
 		
-		mpCanvas->add( *(mpSynthesizedAudioWidget) );
+		mpCanvas->add_adjust(mpSynthesizedAudioWidget );
 		//TODO: this is a HACK!
 		mpSynthesizedAudioWidget->hide();
 		Fl::flush();
@@ -337,7 +338,7 @@ namespace CLAMVM
 		     
 		mpSynthesizedSinusoidalWidget->callback( (Fl_Callback*)sDetachCb, this );
 
-		mpCanvas->add( *(mpSynthesizedSinusoidalWidget) );
+		mpCanvas->add_adjust(mpSynthesizedSinusoidalWidget );
 		//TODO: this is a HACK!
 		mpSynthesizedSinusoidalWidget->hide();
 		Fl::flush();
@@ -359,7 +360,7 @@ namespace CLAMVM
 		mpSynthesizedResidualWidget->callback( (Fl_Callback*)sDetachCb, this );
 
 
-		mpCanvas->add( *(mpSynthesizedResidualWidget) );
+		mpCanvas->add_adjust(mpSynthesizedResidualWidget );
 		//TODO: this is a HACK!
 		mpSynthesizedResidualWidget->hide();
 		Fl::flush();

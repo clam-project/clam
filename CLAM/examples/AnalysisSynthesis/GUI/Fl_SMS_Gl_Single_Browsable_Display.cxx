@@ -73,7 +73,10 @@ namespace CLAMVM
 		return Fl_Gl_2DSurface::handle( event );
 	}
 
-	void Fl_SMS_Gl_Single_Browsable_Display::draw_overlay(  ) {
+	void Fl_SMS_Gl_Single_Browsable_Display::draw_overlay(  ) 
+	{
+		Fl_Gl_2DSurface::draw_overlay();
+
 		DataBoundBox dataBBox;
 		QueryDataBoundBox( dataBBox );
 
@@ -81,14 +84,18 @@ namespace CLAMVM
 	    {
 			
 			glColor3f( 1.0, 0.0, 0.0 );
+			glEnable( GL_LINE_STIPPLE );
 			glLineWidth(2);
-		
+			//glLineStipple( 1, 0xfc3f );
+			//glLineStipple( 1, 0xe83e );
 			glBegin( GL_LINES );
 			glVertex2d( mPos, dataBBox.mTop );
 			glVertex2d( mPos, dataBBox.mBottom );
 			glEnd();
 			glLineWidth( 1 );
+			glDisable( GL_LINE_STIPPLE );
 		}
+
 	}
 
 	void Fl_SMS_Gl_Single_Browsable_Display::DrawContents()

@@ -4,6 +4,7 @@
 #include "Fl_ZoomSlider.hxx"
 #include "Fl_Gl_Multi_Display.hxx"
 #include <algorithm>
+#include <FL/Fl_Light_Button.H>
 
 namespace CLAMVM
 {
@@ -45,6 +46,9 @@ namespace CLAMVM
 
 		resizable( mDisplay );
 
+		mTooltipTracker.Track( mDisplay );
+		mTooltipTracker.ForceText( "idle" );
+		mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_SpectrumAndPeaks::OnRefreshTooltip );
 
 		// Signal and Slot connections
 
@@ -52,11 +56,59 @@ namespace CLAMVM
 		mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
 		mYSlider->SpanChanged.Connect( mYAxis->AdjustRange );
 		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
-				
+		
+		mShowPeaksBtn = new Fl_Light_Button( X+W-40, Y+H-20, 40, 20, "Peaks" );
+		mShowPeaksBtn->labelsize( 9 );
+		mShowPeaksBtn->set();
+		mShowPeaksBtn->selection_color(FL_RED);
+		mShowPeaksBtn->when( FL_WHEN_CHANGED );
+		mShowPeaksBtn->callback( &sShowPeaksBtn_cb, this );
+
 		end();
 				
 		mSpectrumDrawMgr.SetDetailThreshold( 50 );				
 
+	}
+
+	void Fl_SMS_SpectrumAndPeaks::OnRefreshTooltip( int sx, int sy, char* txtBuffer, int maxLen )
+	{
+		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
+		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
+
+		snprintf( txtBuffer, maxLen,  "power %g dB freq %g Hz",  wY, wX );	
+
+	}
+
+	void Fl_SMS_SpectrumAndPeaks::sShowPeaksBtn_cb( Fl_Widget* w, void* data )
+	{
+		Fl_SMS_SpectrumAndPeaks* pContainer = ( Fl_SMS_SpectrumAndPeaks* )data;
+		if ( pContainer->mPeaksDrawMgr.IsEnabled() )
+			pContainer->mPeaksDrawMgr.Disable();
+		else
+			pContainer->mPeaksDrawMgr.Enable();
+		pContainer->mDisplay->redraw();
+	}
+
+	int Fl_SMS_SpectrumAndPeaks::handle( int evtCode )
+	{
+		if ( evtCode == FL_ENTER  )
+		{
+			
+			if ( !mTooltipTracker.HandleMotion( Fl::event_x(), Fl::event_y() ) )
+				mTooltipTracker.ForceText( "idle" );
+			
+			return 1;
+		}
+		else if (  evtCode == FL_MOVE )
+		{
+			if ( !mTooltipTracker.HandleMotion( Fl::event_x(), Fl::event_y() ) )
+				mTooltipTracker.ForceText( "idle" );
+			
+			return 1;
+			
+		}
+	
+		return Fl_Group::handle( evtCode );
 	}
 
 	Fl_SMS_SpectrumAndPeaks::~Fl_SMS_SpectrumAndPeaks( )

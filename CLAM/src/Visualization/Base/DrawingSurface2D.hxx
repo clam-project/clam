@@ -141,6 +141,25 @@ namespace CLAMVM
 		 */
 		void QueryDataBoundBox( DataBoundBox& bbox);
 
+		/**
+		 *  \brief  Queries the canvas screen coordinates
+		 *
+		 *  Returns ( by parameter ) the current screen space bounding box for the canvas
+		 *  \see    ScreenBoundBox
+		 *  \param  sbbox          The current canvans screen space bounding box
+		 */
+		virtual void QueryScreenBoundBox( ScreenBoundBox& sbbox ) = 0;
+		
+		void SetTooltipText( const char* text ) {
+			mTooltipText = text;
+		}
+
+		const char* TooltipText() const {
+			return mTooltipText;
+		}
+
+		virtual void RedrawOverlay() = 0;
+
 		/** \brief  Sets the World Space Coordinates Bounding box
 		 *  
 		 *  This slot takes four parameters ( right, left, top, bottom ) which defines
@@ -268,8 +287,9 @@ namespace CLAMVM
 
 		
 	private:
-		bool   mMustReproject;
-		double mxdist, mydist;
+		bool        mMustReproject;
+		double      mxdist, mydist;
+		const char* mTooltipText;
 
 	protected:
 		

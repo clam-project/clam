@@ -25,6 +25,7 @@
 #include <FL/Fl_Group.H>
 #include "SpectrumPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
+#include "TooltipTracker2D.hxx"
 
 namespace CLAMVM
 {
@@ -44,15 +45,20 @@ namespace CLAMVM
 		Fl_ZoomSlider*              mYSlider;
 		Fl_Gl_Single_Display*       mDisplay;
 		SpectrumRenderingManager    mDrawMgr;
-		
+		TooltipTracker2D            mTooltipTracker;
+
 	protected:
 		
 		virtual void OnNewSpectrum( const DataArray&, TData );
 		
+		void OnRefreshTooltip( int sx, int sy, char* txtBuff, int maxLen );
+
 	public:
 		Fl_SMS_Spectrum( int X, int Y, int W, int H, const char* label = 0 );
 				~Fl_SMS_Spectrum();
 		
+		int handle( int eventCode );
+
 		void Show();
 		void Hide();
 	};

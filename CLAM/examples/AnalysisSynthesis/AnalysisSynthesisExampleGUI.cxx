@@ -22,6 +22,7 @@
 #include "AnalysisSynthesisExampleGUI.hxx"
 #include <iostream>
 #include <FL/Fl.H>
+#include <FL/Fl_Tooltip.H>
 
 namespace CLAMGUI
 {
@@ -44,9 +45,17 @@ namespace CLAMGUI
 		mUI = new UserInterface;
 		mUI->mAnalysisSynthesisExample = this;
 		mUI->Init(  );
+
+		// FLTK look and feel ( and tooltip ) settings
+
 		Fl::get_system_colors();
 		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
 		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
+
+		Fl_Tooltip::delay( 0.01 );
+		Fl_Tooltip::size( 10 );
+		Fl_Tooltip::enable();
+
 		mUI->mWindow->show();
 	
 		Fl::run();
@@ -54,6 +63,8 @@ namespace CLAMGUI
 	
 	void AnalysisSynthesisExampleGUI::OnNewTime( double value )
 	{
+		if (!mHaveAnalysis)
+			return;
 		//Change mCounter
 		TTime time( value  );
 		TIndex nframe = mSegment.FindFrame( time );

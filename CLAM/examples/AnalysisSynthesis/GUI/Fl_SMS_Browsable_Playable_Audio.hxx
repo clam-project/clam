@@ -29,6 +29,7 @@
 #include "Signalv1.hxx"
 #include "Slotv0.hxx"
 #include "Slotv1.hxx"
+#include "TooltipTracker2D.hxx"
 
 class Fl_Button;
 
@@ -66,17 +67,21 @@ namespace CLAMVM
 		static void play( Fl_Widget*, void* data);
 		static void stop( Fl_Widget*, void* data);
 
+		int handle( int event );
+
 	protected:
 		void OnNewAudio( const DataArray&, TTime, TTime, TData );
 		Fl_SMS_Gl_Single_Browsable_Display*   mDisplay;
 		CLAM::TData                       mAudioOffset;
 		CLAM::TData                       mSampleRate;
+		TooltipTracker2D                  mTooltipTracker;
 
-
+		char                              mDisplayText[1024];
 	public:
 		Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
 		~Fl_SMS_Browsable_Playable_Audio();
-				
+		
+		void OnRefreshTooltip( int x, int y, char* txtBuffer, int maxLen );
 		void SetPaint(); 
 		void UnsetPaint(); 
 		void SetPos( CLAM::TData pos );
@@ -87,6 +92,8 @@ namespace CLAMVM
 
 		void Show();
 		void Hide();
+
+		
 	};
 
 }

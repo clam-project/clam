@@ -9,6 +9,7 @@
 #include "Signalv1.hxx"
 #include "Slotv0.hxx"
 #include "Slotv1.hxx"
+#include "TooltipTracker2D.hxx"
 
 namespace CLAMVM
 {
@@ -45,6 +46,9 @@ namespace CLAMVM
 		SigSlot::Signalv1< double > ChangeSelectedXValue;
 		SigSlot::Slotv1< double >   HandleDisplaySelection;
 
+		void OnRefreshTooltip( int sx, int sy, char* txtBuffer, int maxLen ); 
+
+		TooltipTracker2D   mTooltipTracker;
 
 	public:
 		
@@ -52,6 +56,8 @@ namespace CLAMVM
 		~Fl_SMS_SinTracks_Browser();
 		virtual void Show();
 		virtual void Hide();
+
+		int handle( int event );
 
 		SigSlot::Slotv1<double>        SetSelectedXValue;
 		SigSlot::Signalv1<double>      SelectedXValue;

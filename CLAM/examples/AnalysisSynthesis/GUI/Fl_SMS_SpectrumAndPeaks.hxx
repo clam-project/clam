@@ -5,6 +5,9 @@
 #include "SpectralPeaksPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 #include "PeaksRenderingManager.hxx"
+#include "TooltipTracker2D.hxx"
+
+class Fl_Light_Button;
 
 namespace CLAMVM
 {
@@ -23,18 +26,26 @@ namespace CLAMVM
 		Fl_ZoomSlider*               mXSlider;
 		Fl_ZoomSlider*               mYSlider;
 		Fl_Gl_Multi_Display*         mDisplay;
+		Fl_Light_Button*             mShowPeaksBtn;
 		SpectrumRenderingManager     mSpectrumDrawMgr;
 		PeaksRenderingManager        mPeaksDrawMgr;
+		TooltipTracker2D             mTooltipTracker;
 
 	protected:
 
 		virtual void OnNewSpectrum( const DataArray&, TData spectralRange );
 		virtual void OnNewPeakArray( const Array<Partial>& );
 
+		void OnRefreshTooltip( int sx, int sy, char* txtBuffer, int maxLen );
+
+		static void sShowPeaksBtn_cb( Fl_Widget* w, void* data );
+
 	public:
 
 		Fl_SMS_SpectrumAndPeaks( int X, int Y, int W, int H, const char* label = 0 );
 		~Fl_SMS_SpectrumAndPeaks();
+
+		int handle( int evtCode );
 
 		virtual void Show();
 		virtual void Hide();

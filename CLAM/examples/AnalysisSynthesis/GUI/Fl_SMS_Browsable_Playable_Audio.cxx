@@ -68,14 +68,19 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	mDisplay->EnableDoubleBuffering();
 	mDisplay->end();
 	resizable( mDisplay );
+	mTooltipTracker.Track( mDisplay );
+	mTooltipTracker.ForceText( "idle" );
+	mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip );
 	
 	mPlayButton = new Fl_Button ( X+W-40, Y+H-20, 20, 20, "@>" );
 	mPlayButton->callback( play, this );
 	mPlayButton->labeltype(FL_SYMBOL_LABEL);
+	mPlayButton->tooltip( "Play sound" );
 
 	mStopButton = new Fl_Button ( X+W-20, Y+H-20, 20, 20, "@square" );
 	mStopButton->callback( stop, this );
 	mStopButton->labeltype(FL_SYMBOL_LABEL);
+	mStopButton->tooltip( "Stop playing" );
 
 	// Signal and Slot connections
 	mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
@@ -90,6 +95,38 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	
 
 	mDisplay->SetPainting();
+}
+
+void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* textBuffer, int maxLen )
+{
+	double wX = (((double)x / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
+	double wY = mYAxis->maximum() - (((double)y / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
+
+	snprintf( textBuffer, maxLen,  "amp. %.2g time %.4g secs",  wY, wX );
+}
+
+int Fl_SMS_Browsable_Playable_Audio::handle( int event )
+{
+
+	if ( event == FL_ENTER  )
+	{
+
+		if ( !mTooltipTracker.HandleMotion( Fl::event_x(), Fl::event_y() ) )
+			mTooltipTracker.ForceText( "idle" );
+
+		return 1;
+	}
+	else if (  event == FL_MOVE )
+	{
+		if ( !mTooltipTracker.HandleMotion( Fl::event_x(), Fl::event_y() ) )
+			mTooltipTracker.ForceText( "idle" );
+
+		return 1;
+
+	}
+
+	return Fl_Group::handle( event );
+
 }
 
 void Fl_SMS_Browsable_Playable_Audio::draw()

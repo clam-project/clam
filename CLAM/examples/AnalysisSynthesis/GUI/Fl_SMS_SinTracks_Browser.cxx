@@ -63,6 +63,10 @@ namespace CLAMVM
 		mDisplay->end();
 		resizable( mDisplay );
 
+		mTooltipTracker.Track( mDisplay );
+		mTooltipTracker.ForceText( "idle" );
+		mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_SinTracks_Browser::OnRefreshTooltip );
+
 		// Signal and Slot connections
 
 		mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
@@ -95,6 +99,36 @@ namespace CLAMVM
 		double frameIndex = ( centerTime / ( mEndTime - mBeginTime ) ) * (mFrames-1);
 		ChangeSelectedXValue.Emit( frameIndex + 0.5 );
 
+	}
+
+	void Fl_SMS_SinTracks_Browser::OnRefreshTooltip( int sx, int sy, char* txtBuffer, int maxLen )
+	{
+		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
+		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
+
+		snprintf( txtBuffer, maxLen,  "freq. %g Hz time %.3g secs",  wY, wX );	
+	}
+
+	int Fl_SMS_SinTracks_Browser::handle( int event )
+	{
+		if ( event == FL_ENTER  )
+		{
+			
+			if ( !mTooltipTracker.HandleMotion( Fl::event_x(), Fl::event_y() ) )
+				mTooltipTracker.ForceText( "idle" );
+			
+			return 1;
+		}
+		else if (  event == FL_MOVE )
+		{
+			if ( !mTooltipTracker.HandleMotion( Fl::event_x(), Fl::event_y() ) )
+				mTooltipTracker.ForceText( "idle" );
+			
+			return 1;
+			
+		}
+	
+		return Fl_Group::handle( event );
 	}
 
 	void Fl_SMS_SinTracks_Browser::OnNewTrackList( SineTrackList& list, TSize framelen )
