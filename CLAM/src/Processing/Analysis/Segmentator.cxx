@@ -243,13 +243,12 @@ bool Segmentator::Do(Segment& originalSegment,SegmentDescriptors& descriptors)
 
 void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescriptors& descriptors,Matrix& descriptorsValues)
 {
-	int z=0;
 	int nFrames=originalSegment.GetnFrames();
 	int nDescriptors=mConfig.GetDescriptorsParams().Size();
 	for(int i=0;i<nFrames;i++)
 	{
 /*This looks ugly but right now is the only way to deal with it*/
-		z=0;
+		int z=0;
 		TData value;
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMeanId)
 		{
@@ -499,11 +498,10 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 void Segmentator::DataFusion(Segment& s,const SegmentBoundaries& segmentBoundaries)
 {
 
-	int n,m,z;
 	// DATA FUSION (of the segmentation parameters), taken from Rossignol's Thesis
 	// DoNothing,1) Generate probability functions for both parameters
-	int nFrames=s.GetnFrames();
-	int nDescriptors=mConfig.GetDescriptorsParams().Size();
+	const int nFrames=s.GetnFrames();
+	const int nDescriptors=mConfig.GetDescriptorsParams().Size();
 	TData duration=s.GetFrame(0).GetDuration();/*BEWARE!Assuming equal lengthed frames*/
 	TData sampleRate=s.GetSamplingRate();
 
@@ -512,19 +510,18 @@ void Segmentator::DataFusion(Segment& s,const SegmentBoundaries& segmentBoundari
 	memset(probabilityMatrix.GetBuffer().GetPtr(),0,nFrames*nDescriptors*sizeof(TData));
 
 	/*Setting probability to one wherever a segment boundary was found*/
-	for(z=0;z<nDescriptors;z++)
+	for (int z=0;z<nDescriptors;z++)
 	{
-		for(n=0;n<segmentBoundaries.mArray[z].Size();n++)
+		for (int n=0;n<segmentBoundaries.mArray[z].Size();n++)
 			probabilityMatrix.SetAt(segmentBoundaries.mArray[z][n].GetX(),z,segmentBoundaries.mArray[z][n].GetY());
 	}
 
 	// Adding probability values of different descriptors
 	Array<TData> globalProb;
-	TData tmpProb=0;
-	for(n=0; n<nFrames; n++)
+	for (int n=0; n<nFrames; n++)
 	{
-		tmpProb=0;
-		for(z=0;z<nDescriptors;z++)
+		TData tmpProb=0;
+		for(int z=0;z<nDescriptors;z++)
 		{
 			tmpProb+=probabilityMatrix.GetAt(n,z);
 		}
@@ -536,72 +533,65 @@ void Segmentator::DataFusion(Segment& s,const SegmentBoundaries& segmentBoundari
 	// 3) Fusion of too near marks (separated less than the minSegmentLength)
 	// Also compute maximun (to re-use the loop)
 	Array<TData> prob_fusion(globalProb);
-
-	n=m=0;
-	TData max=0;
-
-	TData mag, gcenter;
-	while(globalProb[n]<=0) // Find first frame with prob>0
-		n++;
-	mag=globalProb[n];
-	gcenter=n*globalProb[n];
-	prob_fusion[n]=0;
-	m=n+1;
-	while(m<globalProb.Size()) {
-		while((m<globalProb.Size())&&(globalProb[m]<=0)) // Find next frame with prob>0
-			m++;
-		if(m<globalProb.Size()) {
-			if((m-n)<=mConfig.GetMinSegmentLength())
-			{ // They are separated less than the maximun
-				mag+=globalProb[m];
-				gcenter+=m*globalProb[m];
-				prob_fusion[m]=0;
-				n=m; m+=1;
-			}
-			else 
+	{
+		int n=0;
+		while(globalProb[n]<=0) // Find first frame with prob>0
+			n++;
+		TData mag=globalProb[n];
+		TData gcenter=n*globalProb[n];
+		prob_fusion[n]=0;
+		for (int m=n+1; m<globalProb.Size(); m++)
+		{
+			if (globalProb[m]<=0) continue;
+			if ((m-n)>mConfig.GetMinSegmentLength())
 			{
-				// Store information
+				// Store information and begin another search
 				prob_fusion[(int)(gcenter/mag)]=mag;
-				// Begin another search
-				mag=globalProb[m];
-				gcenter=m*globalProb[m];
-				prob_fusion[m]=0;
-				n=m; m+=1;
+				mag=0;
+				gcenter=0;
 			}
+			mag+=globalProb[m];
+			gcenter+=m*globalProb[m];
+			prob_fusion[m]=0;
+			n=m;
 		}
 	}
 	// 4) DELETE SMALL MARKS (1/7 of the max value, parameter that should be optimized...) 
-	for(n=0; n<prob_fusion.Size(); n++)
-		if(prob_fusion[n]>max)
+	TData max=0;
+	for (int n=0; n<prob_fusion.Size(); n++)
+		if (prob_fusion[n]>max)
 			max=prob_fusion[n];
-	for(n=0; n<prob_fusion.Size(); n++)
+	for (int n=0; n<prob_fusion.Size(); n++)
 		// MERGE: cuidado max/100 vs. CLAM04 max/7
-		if(prob_fusion[n]<=(max/100))
+		if (prob_fusion[n]<=(max/100))
 			prob_fusion[n]=0;
 
 	Array<TData> finalSegments; // final segment boundaries in samples
-	for(n=0; n<prob_fusion.Size(); n++){
-		if(prob_fusion[n]>0)
-			finalSegments.AddElem(n*duration*sampleRate);}
+	for (int n=0; n<prob_fusion.Size(); n++)
+	{
+		if (prob_fusion[n]>0)
+			finalSegments.AddElem(n*duration*sampleRate);
+	}
 
 	// Store segment boundaries information
 
-	if(finalSegments.Size()>0){
-		for(n=0; n<(finalSegments.Size()-1); n++) {
-			Segment tmpSegment;
-			tmpSegment.SetBeginTime(finalSegments[n]  /sampleRate);
-			tmpSegment.SetEndTime  (finalSegments[n+1]/sampleRate);
-			tmpSegment.SetpParent(&s);
-			tmpSegment.SetHoldsData( false );
-			s.GetChildren().AddElem(tmpSegment);
-		}
+	if (finalSegments.Size()<=0) return;
 
+	for (int n=0; n<(finalSegments.Size()-1); n++)
+	{
 		Segment tmpSegment;
-		tmpSegment.SetBeginTime(finalSegments[finalSegments.Size()-1] /sampleRate);
-		tmpSegment.SetEndTime(s.GetAudio().GetEndTime());
+		tmpSegment.SetBeginTime(finalSegments[n]  /sampleRate);
+		tmpSegment.SetEndTime  (finalSegments[n+1]/sampleRate);
 		tmpSegment.SetpParent(&s);
+		tmpSegment.SetHoldsData( false );
 		s.GetChildren().AddElem(tmpSegment);
 	}
+
+	Segment tmpSegment;
+	tmpSegment.SetBeginTime(finalSegments[finalSegments.Size()-1] /sampleRate);
+	tmpSegment.SetEndTime(s.GetAudio().GetEndTime());
+	tmpSegment.SetpParent(&s);
+	s.GetChildren().AddElem(tmpSegment);
 
 }
 
