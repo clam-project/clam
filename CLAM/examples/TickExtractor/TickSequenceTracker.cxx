@@ -202,7 +202,7 @@ namespace CLAM
 			}
 
 
-			mTemporalDiff.Do(transientsForHist,IOIHist.GetBins());
+			mTemporalDiff.Do(transientsForHist,IOIHist);
 
 
 			///IOI histogram Peak Detection

@@ -103,16 +103,17 @@ namespace CLAM
 		}
 
 		/* The  unsupervised Do() function */
-		bool  TimeDifference::Do(Array<TimeIndex>& in, DataArray& out)
+		bool  TimeDifference::Do(const Array<TimeIndex>& in, IOIHistogram& out)
 		{
 			int gsize = mConfig.GetGaussianSize();
 	
-			TData* outp = out.GetPtr();
-			TData* end = outp + out.Size();
-			TData* win = mWindow.GetPtr();
-			int  size = in.Size();
+			TData* outp = out.GetBins().GetPtr();
+			const TData* end = outp + out.GetBins().Size();
+			const TData* win = mWindow.GetPtr();
+			const int  size = in.Size();
+			const TSize outSize = out.GetBins().Size();
     
-			for (int i=0;i<out.Size();i++)
+			for (int i=0;i<outSize;i++)
 				outp[i] = 0.;
 	
 			for (int j=0;j < size-1;j++) 
@@ -121,7 +122,7 @@ namespace CLAM
 				int pos = labs((int)apos - (int)in[j+1].GetPosition()); 
 
 				for ( int k = j+1; 
-				      (k < size) && pos+gsize < out.Size();
+				      (k < size) && pos+gsize < outSize;
 				      k++ ) 
 				{		
 					pos = labs((int)apos - (int)in[k].GetPosition());

@@ -46,6 +46,7 @@
 #include "Array.hxx"
 #include "TimeIndex.hxx"
 #include "WindowGenerator.hxx"
+#include "IOIHistogram.hxx"
 
 namespace CLAM 
 {
@@ -80,7 +81,7 @@ namespace CLAM
 			const ProcessingConfig &GetConfig() const { return mConfig;}
 
 			bool Do(void);
-			bool Do(Array<TimeIndex>& input, DataArray& out);
+			bool Do(const Array<TimeIndex>& input, IOIHistogram& out);
 		};
 
 	}
