@@ -1,8 +1,27 @@
-This is the CHANGELOG file for SMS Tools 2, a CLAM application.
+This is the CHANGELOG file for SMS Tools 2, a CLAM application. For a CHANGELOG of SMS Tools before version 0.1, please
+refer to CLAM own CHANGELOG.
 
-20003-07-25
+TODOs:
+     ** Main application GUI:
+	*** Bug fixing: last data display window closed is not being completely 
+	    erased from main UI ( X-Windows only )
+
+	
+	
+9999-99-99
 'Bug fixing and SMS Morph editor improvements'
-  * SMSTools - v.0.1.1
+  * SMS Tools 2 - v.0.1.2
+      ** General issues:
+	  *** Bug fixed: DOS console should not appear  ( Windows only )
+	  *** Bug fixed: when storing/loading SMS analysis results into XML
+	      the "wait" message that appears on screen was not being updated
+
+      ** GUI - Score Editor:
+	  *** Added several more parameters to the SMS Morph transformation widget
+	
+2003-07-25
+'Bug fixing and SMS Morph editor improvements'
+  * SMS Tools 2 - v.0.1.1
       ** GUI - Score Editor:
 	  *** UI screen texts tweaked so they result more informative
 	  *** Added new and improved SMS Morph transformation control widget, 
