@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="FltkNetworkGUI" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="StdioNetwork" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=FltkNetworkGUI - Win32 Debug
+CFG=StdioNetwork - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "FltkNetworkGUI.mak".
+!MESSAGE NMAKE /f "StdioNetwork.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "FltkNetworkGUI.mak" CFG="FltkNetworkGUI - Win32 Debug"
+!MESSAGE NMAKE /f "StdioNetwork.mak" CFG="StdioNetwork - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FltkNetworkGUI - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "FltkNetworkGUI - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "StdioNetwork - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "StdioNetwork - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=FltkNetworkGUI - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "FltkNetworkGUI - Win32 Release"
+!IF  "$(CFG)" == "StdioNetwork - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\fltk\include" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\draft\FltkNetworkGUI\Visualization" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Controls" /I "..\..\..\examples\FlowControlExamples\NonSupervisedSystemWithPorts" /I "..\..\..\src\Defines\Windows" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\System\Threads" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Flow\Networks" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\draft\FltkNetworkGUI\GUI\Base" /I "..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations" /I "..\..\..\draft\FltkNetworkGUI\Visualization" /I "..\..\..\draft\FltkNetworkGUI\GUI\Qt_Presentations" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Defines\Windows" /I "..\..\..\..\dxsdk\include" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Processing\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,10 +50,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\dxsdk\lib" RFFTW2st.lib FFTW2st.lib fltk.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib dsound.lib dxerr8.lib pthreadVC.lib portmidi.lib porttime.lib winmm.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\dxsdk\lib" dsound.lib dxerr8.lib user32.lib gdi32.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
-!ELSEIF  "$(CFG)" == "FltkNetworkGUI - Win32 Debug"
+!ELSEIF  "$(CFG)" == "StdioNetwork - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\fltk\include" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\draft\FltkNetworkGUI\Visualization" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Controls" /I "..\..\..\examples\FlowControlExamples\NonSupervisedSystemWithPorts" /I "..\..\..\src\Defines\Windows" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\System\Threads" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Flow\Networks" /I "..\..\..\src\Visualization\Base" /I "..\..\..\externals\CbLib" /I "..\..\..\draft\FltkNetworkGUI\GUI\Base" /I "..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations" /I "..\..\..\draft\FltkNetworkGUI\Visualization" /I "..\..\..\draft\FltkNetworkGUI\GUI\Qt_Presentations" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Defines\Windows" /I "..\..\..\..\dxsdk\include" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Processing\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,15 +75,15 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\dxsdk\lib" FFTW2std.lib RFFTW2std.lib fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib dsound.lib dxerr8.lib pthreadVC.lib portmidid.lib porttimed.lib winmm.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\dxsdk\lib" dsound.lib dxerr8.lib user32.lib gdi32.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
 
 # Begin Target
 
-# Name "FltkNetworkGUI - Win32 Release"
-# Name "FltkNetworkGUI - Win32 Debug"
+# Name "StdioNetwork - Win32 Release"
+# Name "StdioNetwork - Win32 Debug"
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -94,46 +94,67 @@ LINK32=link.exe
 
 # Begin Group "FltkNetworkGUI Sources"
 
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\main.cxx
+# End Source File
 # Begin Group "GUI Sources"
 
+# Begin Group "Base Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\canvas.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\NetworkPresentation.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\LinkElementPresentation.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\ProcessingPresentation.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\PortPresentation.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\InPortPresentation.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\ControlPresentation.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\OutPortPresentation.cxx
+# End Source File
+# End Group
+# Begin Group "Stdio_Presentations Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations\Stdio_NetworkPresentation.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\ProcessingPresentation.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations\Stdio_ProcessingPresentation.cxx
 # End Source File
+# End Group
+# Begin Group "Qt_Presentations Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\connection.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Qt_Presentations\Qt_NetworkPresentation.cxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\NetworkPresentationContainer.cxx
-# End Source File
+# End Group
 # End Group
 # Begin Group "Visualization Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingModel.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingAdapter.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingAdapter.cxx
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\NetworkAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\InPortAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\OutPortAdapter.cxx
 # End Source File
 # End Group
 # End Group
@@ -202,32 +223,6 @@ SOURCE=..\..\..\src\Tools\AudioFileIO\extended.cxx
 # End Source File
 # End Group
 # End Group
-# Begin Group "Visualization Sources No. 1"
-
-# Begin Group "Base Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Presentation.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signal.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Connection.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Slot.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\ModelAdapter.cxx
-# End Source File
-# End Group
-# End Group
 # Begin Group "Errors Sources"
 
 # Begin Source File
@@ -244,11 +239,11 @@ SOURCE=..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrSystem.cxx
+SOURCE=..\..\..\src\Errors\ErrDynamicType.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrDynamicType.cxx
+SOURCE=..\..\..\src\Errors\ErrSystem.cxx
 # End Source File
 # End Group
 # Begin Group "Defines Sources"
@@ -257,36 +252,6 @@ SOURCE=..\..\..\src\Errors\ErrDynamicType.cxx
 
 SOURCE=..\..\..\src\Defines\Assert.cxx
 # End Source File
-# End Group
-# Begin Group "Storage Sources"
-
-# Begin Group "XML Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\BasicXMLable.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLAdapter.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLStorage.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XercesDomPrinter.cxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "Base Sources No. 1"
 
@@ -306,13 +271,6 @@ SOURCE=..\..\..\src\Flow\Controls\InControl.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Controls\OutControl.cxx
-# End Source File
-# End Group
-# Begin Group "Ports Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
 # End Group
 # Begin Group "Nodes Sources"
@@ -339,7 +297,41 @@ SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Flow\Nodes\AddStreamRegion.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.cxx
+# End Source File
+# End Group
+# Begin Group "Ports Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\Port.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
+# End Source File
+# End Group
+# Begin Group "Networks Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Networks\Network.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Networks\FlowControl.cxx
 # End Source File
 # End Group
 # End Group
@@ -376,13 +368,6 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.cxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
-# Begin Group "Generators Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Generators\Oscillator.cxx
-# End Source File
-# End Group
 # Begin Group "AudioFileIO Sources No. 1"
 
 # Begin Source File
@@ -398,29 +383,15 @@ SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
 SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
 # End Source File
 # End Group
-# Begin Group "ArithOps Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
-# End Source File
-# End Group
 # Begin Group "AudioIO Sources No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioIO\AudioOut.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Processing\AudioIO\AudioIn.cxx
 # End Source File
-# End Group
-# Begin Group "Controls Sources No. 1"
-
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.cxx
+SOURCE=..\..\..\src\Processing\AudioIO\AudioOut.cxx
 # End Source File
 # End Group
 # End Group
@@ -445,17 +416,30 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
 # End Source File
 # End Group
 # End Group
-# Begin Group "examples Sources"
+# Begin Group "Visualization Sources No. 1"
 
-# Begin Group "FlowControlExamples Sources"
-
-# Begin Group "NonSupervisedSystemWithPorts Sources"
+# Begin Group "Base Sources No. 3"
 
 # Begin Source File
 
-SOURCE=..\..\..\examples\FlowControlExamples\NonSupervisedSystemWithPorts\NonSupervisedSystemWithPorts.cxx
+SOURCE=..\..\..\src\Visualization\Base\Presentation.cxx
 # End Source File
-# End Group
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Connection.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Slot.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ModelAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signal.cxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "System Sources"
@@ -471,203 +455,6 @@ SOURCE=..\..\..\src\System\Threads\Mutex.cxx
 # End Group
 # Begin Group "Header Files"
 
-# Begin Group "draft Headers"
-
-# Begin Group "FltkNetworkGUI Headers"
-
-# Begin Group "GUI Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\canvas.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\enums.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\LinkElementPresentation.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\PortPresentation.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\ControlPresentation.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\ProcessingPresentation.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\connection.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\NetworkPresentationContainer.hxx
-# End Source File
-# End Group
-# Begin Group "Visualization Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingModel.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingAdapter.hxx
-# End Source File
-# End Group
-# End Group
-# End Group
-# Begin Group "fltk Headers"
-
-# Begin Group "include Headers"
-
-# Begin Group "FL Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Enumerations.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\fl_draw.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Widget.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Input_.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Input.H
-# End Source File
-# End Group
-# End Group
-# End Group
-# Begin Group "Visualization Headers No. 1"
-
-# Begin Group "Base Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Presentation.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signal.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Connection.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Slot.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Slotv1.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\ConnectionHandler.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signalv1ImplSerious.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signalv1.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Slotv4.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signalv4ImplSerious.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signalv4.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\ModelAdapter.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "externals Headers"
-
-# Begin Group "CbLib Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor1.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor4.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor0.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor2.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor3.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor0R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor1R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor2R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor3R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor4R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\CBLMacros.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\CBL.hxx
-# End Source File
-# End Group
-# End Group
 # Begin Group "Errors Headers"
 
 # Begin Source File
@@ -684,11 +471,11 @@ SOURCE=..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrSystem.hxx
+SOURCE=..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrDynamicType.hxx
+SOURCE=..\..\..\src\Errors\ErrSystem.hxx
 # End Source File
 # Begin Source File
 
@@ -700,10 +487,6 @@ SOURCE=..\..\..\src\Errors\ErrSoundFileIO.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\Assert.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\mtgsstream.h
 # End Source File
 # Begin Source File
 
@@ -727,15 +510,15 @@ SOURCE=..\..\..\src\Defines\DataTypes.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Defines\ByteOrder.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\EDataFormat.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\OSDefines.hxx
 # End Source File
 # Begin Group "Windows Headers"
 
@@ -744,6 +527,25 @@ SOURCE=..\..\..\src\Defines\OSDefines.hxx
 SOURCE=..\..\..\src\Defines\Windows\CLAM_windows.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\OSDefines.hxx
+# End Source File
+# End Group
+# Begin Group "Base Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Base\DynamicTypeMacros.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Base\Component.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Base\DynamicType.hxx
+# End Source File
 # End Group
 # Begin Group "Storage Headers"
 
@@ -758,60 +560,6 @@ SOURCE=..\..\..\src\Storage\Base\Storable.hxx
 SOURCE=..\..\..\src\Storage\Base\Storage.hxx
 # End Source File
 # End Group
-# Begin Group "XML Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLable.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\BasicXMLable.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLAdapter.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLStorage.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLArrayAdapter.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XercesDomPrinter.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "Base Headers No. 2"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\Component.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\DynamicType.hxx
-# End Source File
 # End Group
 # Begin Group "Flow Headers"
 
@@ -828,45 +576,6 @@ SOURCE=..\..\..\src\Flow\Controls\InControl.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Controls\OutControl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Controls\InControlArray.hxx
-# End Source File
-# End Group
-# Begin Group "Ports Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\Port.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\OutPort.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\OutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\InPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\InPortArrayTmpl.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
@@ -897,7 +606,77 @@ SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Flow\Nodes\AddStreamRegion.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\CircularStreamImpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\AudioStreamBuffer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\StreamBuffer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\AudioNodeTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\NodeTmpl.hxx
+# End Source File
+# End Group
+# Begin Group "Ports Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\Port.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPortTmpl.hxx
+# End Source File
+# End Group
+# Begin Group "Networks Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Networks\Network.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Networks\FlowControl.hxx
 # End Source File
 # End Group
 # End Group
@@ -917,12 +696,12 @@ SOURCE=..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\CommonOps.hxx
+SOURCE=..\..\..\src\Standard\PhantomBuffer.hxx
 # End Source File
 # End Group
 # Begin Group "Processing Headers"
 
-# Begin Group "Base Headers No. 3"
+# Begin Group "Base Headers No. 2"
 
 # Begin Source File
 
@@ -953,13 +732,6 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
-# Begin Group "Generators Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Generators\Oscillator.hxx
-# End Source File
-# End Group
 # Begin Group "AudioFileIO Headers"
 
 # Begin Source File
@@ -975,21 +747,6 @@ SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
 SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
 # End Source File
 # End Group
-# Begin Group "ArithOps Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioMixer.hxx
-# End Source File
-# End Group
 # Begin Group "AudioIO Headers"
 
 # Begin Source File
@@ -998,24 +755,17 @@ SOURCE=..\..\..\src\Processing\AudioIO\AudioIO.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioIO\AudioOut.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Processing\AudioIO\AudioIn.hxx
 # End Source File
-# End Group
-# Begin Group "Controls Headers No. 1"
-
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
+SOURCE=..\..\..\src\Processing\AudioIO\AudioOut.hxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Data Headers"
 
-# Begin Group "Base Headers No. 4"
+# Begin Group "Base Headers No. 3"
 
 # Begin Source File
 
@@ -1034,6 +784,147 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
 # End Source File
 # End Group
 # End Group
+# Begin Group "Visualization Headers"
+
+# Begin Group "Base Headers No. 4"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Presentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Connection.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Slot.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Slotv1.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ModelAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signal.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ConnectionHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signalv1ImplSerious.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signalv1.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "externals Headers"
+
+# Begin Group "CbLib Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor1.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "draft Headers"
+
+# Begin Group "FltkNetworkGUI Headers"
+
+# Begin Group "GUI Headers"
+
+# Begin Group "Base Headers No. 5"
+
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\NetworkPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\ProcessingPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\InPortPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Base\OutPortPresentation.hxx
+# End Source File
+# End Group
+# Begin Group "Stdio_Presentations Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations\Stdio_NetworkPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations\Stdio_ProcessingPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations\Stdio_InPortPresentation.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Stdio_Presentations\Stdio_OutPortPresentation.hxx
+# End Source File
+# End Group
+# Begin Group "Qt_Presentations Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\GUI\Qt_Presentations\Qt_NetworkPresentation.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "Visualization Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\NetworkModel.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingModel.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\ProcessingAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\NetworkAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\PortModel.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\InPortAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\draft\FltkNetworkGUI\Visualization\OutPortAdapter.hxx
+# End Source File
+# End Group
+# End Group
+# End Group
 # Begin Group "Tools Headers"
 
 # Begin Group "AudioIO Headers No. 1"
@@ -1041,10 +932,6 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Tools\AudioIO\AudioManager.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Tools\AudioIO\AudioDevice.hxx
 # End Source File
 # Begin Group "Windows Headers No. 1"
 
@@ -1061,6 +948,10 @@ SOURCE=..\..\..\src\Tools\AudioIO\Windows\RtAudio.h
 SOURCE=..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.hxx
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioIO\AudioDevice.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Tools\AudioIO\AudioDeviceList.hxx
@@ -1090,22 +981,9 @@ SOURCE=..\..\..\src\Tools\AudioFileIO\extended.hxx
 # End Source File
 # End Group
 # End Group
-# Begin Group "examples Headers"
-
-# Begin Group "FlowControlExamples Headers"
-
-# Begin Group "NonSupervisedSystemWithPorts Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\examples\FlowControlExamples\NonSupervisedSystemWithPorts\NonSupervisedSystemWithPorts.hxx
-# End Source File
-# End Group
-# End Group
-# End Group
 # Begin Group "dxsdk Headers"
 
-# Begin Group "include Headers No. 1"
+# Begin Group "include Headers"
 
 # Begin Source File
 
@@ -1122,16 +1000,6 @@ SOURCE=..\..\..\..\dxsdk\include\dinput.h
 # Begin Source File
 
 SOURCE=..\..\..\..\dxsdk\include\basetsd.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "pthreads Headers"
-
-# Begin Group "include Headers No. 2"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\pthreads\include\pthread.h
 # End Source File
 # End Group
 # End Group
@@ -1153,177 +1021,28 @@ SOURCE=..\..\..\src\System\Threads\Mutex.hxx
 # End Source File
 # End Group
 # End Group
-# Begin Group "xercesc Headers"
-
-# Begin Group "include Headers No. 3"
-
-# Begin Group "xercesc Headers No. 1"
-
-# Begin Group "util Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XercesDefs.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\PlatformUtils.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMLString.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMLUniDefs.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\TranscodingException.hpp
-# End Source File
-# End Group
-# Begin Group "parsers Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\parsers\DOMParser.hpp
-# End Source File
-# End Group
-# Begin Group "dom Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMString.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Node.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Element.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Attr.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_CharacterData.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Text.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_CDATASection.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Comment.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DocumentType.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DOMImplementation.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DocumentFragment.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_ProcessingInstruction.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Entity.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_EntityReference.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NodeList.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Notation.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NodeFilter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NodeIterator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_TreeWalker.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_XMLDecl.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Range.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Document.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DOMException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NamedNodeMap.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM.hpp
-# End Source File
-# End Group
-# Begin Group "framework Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\framework\XMLFormatter.hpp
-# End Source File
-# End Group
-# End Group
-# End Group
-# End Group
 # End Group
 # Begin Source File
 
 SOURCE=settings.cfg
 
-!IF  "$(CFG)" == "FltkNetworkGUI - Win32 Release"
+!IF  "$(CFG)" == "StdioNetwork - Win32 Release"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "FltkNetworkGUI.dsp"
-	srcdeps.exe settings.cfg FltkNetworkGUI.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "StdioNetwork.dsp"
+	srcdeps.exe settings.cfg StdioNetwork.dsp
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "FltkNetworkGUI - Win32 Debug"
+!ELSEIF  "$(CFG)" == "StdioNetwork - Win32 Debug"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "FltkNetworkGUI.dsp"
-	srcdeps.exe settings.cfg FltkNetworkGUI.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "StdioNetwork.dsp"
+	srcdeps.exe settings.cfg StdioNetwork.dsp
 
 # End Custom Build
 
