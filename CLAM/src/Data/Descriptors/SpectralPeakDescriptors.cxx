@@ -143,7 +143,7 @@ TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 {
 	if (mpSpectralPeakArray->GetnPeaks()<=4) return 0;
 	const DataArray& a=mpSpectralPeakArray->GetMagBuffer();
-	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2,false,TData>())/mpStats->GetEnergy();	
+	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2>())/mpStats->GetEnergy();	
 }
 
 TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
