@@ -32,7 +32,10 @@ public:
 	}
 
 	/// Common clean up, executed after each test method
-	void tearDown() { }
+	void tearDown()
+	{ 
+		delete mPool;
+	}
 
 private:
 	CLAM::DescriptionScheme mScheme;
