@@ -25,7 +25,7 @@
 #include "InControl.hxx" // TControlData defined there.
 #include <list>
 #include <string>
-#include <Array.hxx>
+#include "Array.hxx"
 
 
 namespace CLAM {
