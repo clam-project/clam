@@ -8,7 +8,7 @@ namespace CLAM
 {
 
 template <typename AttributeType>
-class Binder 
+class Hook 
 {
 public:
 	void Init(DescriptionDataPool & pool, 
@@ -36,6 +36,7 @@ public:
 	{
 		return _current < _pool->GetNumberOfContexts(_scope);
 	}
+
 private:
 	unsigned _current;
 	DescriptionDataPool * _pool;
@@ -43,6 +44,11 @@ private:
 	std::string _attribute;
 	AttributeType * _data;
 
+};
+template <typename AttributeName>
+class OutputHook : public Hook<AttributeName>
+{
+	
 };
 
 
