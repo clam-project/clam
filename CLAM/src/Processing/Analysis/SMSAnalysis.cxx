@@ -100,9 +100,12 @@ bool SMSAnalysis::Do(Frame& in)
 
 	bool result=false;
 
-	mAudioProvider.SetSampleRate( in.GetAudioFrame().GetSampleRate() );
-	mAudioProvider.GetAudio().GetBuffer() = in.GetAudioFrame().GetBuffer();
-	mAudioProvider.Produce();
+	if(mAudioProvider.CanProduce())
+	{
+		mAudioProvider.SetSampleRate( in.GetAudioFrame().GetSampleRate() );
+		mAudioProvider.GetAudio().GetBuffer() = in.GetAudioFrame().GetBuffer();
+		mAudioProvider.Produce();
+	}
 
 	if(mCore.CanConsumeAndProduce())
 		result = mCore.Do();
