@@ -23,6 +23,7 @@ LIBRARIES_DEBUG = \
 	$(USE_QT?@QT_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@) \
 	$(USE_CPPUNIT?cppunit) \
+	$(USE_PTHREADS?pthread) \
 
 LIBRARIES_RELEASE = \
 	$(USE_FFTW?$(CLAM_DOUBLE?fftw rfftw:sfftw srfftw)) \
@@ -31,6 +32,7 @@ LIBRARIES_RELEASE = \
 	$(USE_QT?@QT_LIBS@) \
 	$(USE_XERCESC?@XERCESC_LIBS@) \
 	$(USE_CPPUNIT?cppunit) \
+	$(USE_PTHREADS?pthread) \
 
 SOURCES_AUDIODEVICE = \
 	$(USE_ALSA?$(CLAM_PATH)/src/Tools/AudioIO/Linux/ALSAAudioDevice.cxx) \
