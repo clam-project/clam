@@ -62,7 +62,10 @@ public:
 	
 	bool CanConsume()
 	{
-	//	return mPublishedInPort->CanConsume();
+		typename ProperInPortsList::iterator it;
+		for(it=mPublishedInPortsList.begin(); it!=mPublishedInPortsList.end(); it++)
+			if(!(*it)->CanConsume())
+				return false;
 		return true;	
 	}
 	
