@@ -24,6 +24,7 @@
 #include "XercesDomReader.hxx"
 #include "XercesDomWriter.hxx"
 #include "XercesEncodings.hxx"
+#include "XercesInitializer.hxx"
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
@@ -78,6 +79,7 @@ public:
 	}
 	void create(const char * rootName)
 	{
+		XercesInitializer::require();
 		releaseIfAnyDocument();
 		xercesc::DOMImplementation * imp =
 			xercesc::DOMImplementation::getImplementation();
@@ -243,7 +245,8 @@ public:
 		os << "Unexpected content: '";
 		for (int c=_plainContentToParse.get(); c!=EOF; c=_plainContentToParse.get())
 			os.put(c);
-		os << "'";
+		os << "' at position ";
+		os << getPath();
 		_errors.push_back(os.str());
 	}
 
@@ -261,7 +264,8 @@ public:
 		std::ostringstream os;
 		os << "Unexpected Element: '";
 		os << L(child->getNodeName());
-		os << "'";
+		os << "' at position ";
+		os << getPath();
 
 		_errors.push_back(os.str());
 	}
@@ -318,6 +322,15 @@ public:
 	std::list<std::string> errors()
 	{
 		return _errors;
+	}
+
+	std::string getPath()
+	{
+		std::string path;
+		if (_parentContext) path=_parentContext->getPath();
+		path += '/';
+		path += L(_context->getNodeName());
+		return path;
 	}
 
 };
