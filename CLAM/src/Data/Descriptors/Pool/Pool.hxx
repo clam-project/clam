@@ -189,7 +189,7 @@ namespace CLAM
 	 * will compute such attributes and where the extractors
 	 * are feeded from.
 	 */
-	class ScopeRegistry
+	class DescriptionScheme
 	{
 	private:
 		typedef std::map<std::string, unsigned> SpecMap;
@@ -198,11 +198,11 @@ namespace CLAM
 		Specs _specs;
 		SpecMap _specMap;
 	public:
-		ScopeRegistry()
+		DescriptionScheme()
 		{
 		}
 
-		~ScopeRegistry()
+		~DescriptionScheme()
 		{
 			Specs::iterator it = _specs.begin();
 			Specs::iterator end = _specs.end();

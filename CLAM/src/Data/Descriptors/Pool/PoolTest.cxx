@@ -232,10 +232,10 @@ public:
 private:
 	void testPoolBuilder_withNoScopeRegistered()
 	{
-		CLAM::ScopeRegistry registry;
+		CLAM::DescriptionScheme scheme;
 		try
 		{
-			registry.GetSpec("NonExistent");
+			scheme.GetSpec("NonExistent");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -247,11 +247,11 @@ private:
 
 	void testPoolBuilder_withARegisteredAttribute()
 	{
-		CLAM::ScopeRegistry registry;
-		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
+		CLAM::DescriptionScheme scheme;
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
 
-		const CLAM::DescriptionScope & spec = registry.GetSpec("MyScope");
+		const CLAM::DescriptionScope & spec = scheme.GetSpec("MyScope");
 
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("MyOtherAttribute"));
@@ -259,13 +259,13 @@ private:
 
 	void testPoolBuilder_withTwoScopes()
 	{
-		CLAM::ScopeRegistry registry;
-		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
-		registry.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
+		CLAM::DescriptionScheme scheme;
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
+		scheme.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
 
-		const CLAM::DescriptionScope & mySpec = registry.GetSpec("MyScope");
-		const CLAM::DescriptionScope & yourSpec = registry.GetSpec("YourScope");
+		const CLAM::DescriptionScope & mySpec = scheme.GetSpec("MyScope");
+		const CLAM::DescriptionScope & yourSpec = scheme.GetSpec("YourScope");
 
 		CPPUNIT_ASSERT_EQUAL(0u,mySpec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(0u,yourSpec.GetIndex("YourAttribute"));
