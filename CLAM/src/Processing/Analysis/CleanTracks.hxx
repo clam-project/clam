@@ -85,11 +85,7 @@ namespace CLAM {
 
 		const char *GetClassName() const {return "CleanTracks";}
 
-		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
-		 */
+		/** Config change method */
 		virtual bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
@@ -112,7 +108,6 @@ namespace CLAM {
 		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
 		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
 		void AddTrajectory(TTrajectory& trajectory);
-		void DeleteTrajectory(int id);
 		void UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray);
 		void Update(Array<SpectralPeakArray*>& peakArrayArray);
 		void ContinuedAt(void);
