@@ -41,13 +41,13 @@ public:
 	~XercesDomPrinter ();
 // Operations
 public:
+	void UseIndentation(bool);
 	void Print(std::ostream & os, DOM_Node & toWrite);
 
 
 // Implementation Details
 private:
 	void PrintNode(ostream & os, DOM_Node & toWrite);
-	void UseIndentation(bool);
 // Attributes
 private:
 	unsigned mIndentationLevel;
