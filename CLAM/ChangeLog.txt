@@ -88,7 +88,8 @@
      ** configure generates HAS_<library> values (in packages.cfg), which is 
         used by srcdeps to make sure USE_<library> and HAS_<library> is 
         consistent. Using USE_<library>=$(HAS_<library> in settings.cfg can 
-        be used to make usage conditional.
+        be used to make usage conditional. On windows the user should make
+		  sure that the build/packages-win.cfg file is reflecting his system
      ** configure has a new way to present the user with the possibity to 
         disable the use of specific libraries. If the user does not have a 
         specific library, it can tell configure not to use it. The generate 
