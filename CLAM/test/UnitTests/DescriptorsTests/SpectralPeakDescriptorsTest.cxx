@@ -417,14 +417,17 @@ private:
 		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetOddToEvenRatio);
 	}
 		
-		void testSpectralTilt()
+	void testSpectralTilt()
 	{
-		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 1e-23;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
 		data["No-Peaks.xml"] = 0;
 		data["Single-Peaks.xml"] =0;
-		data["5FlatSloped-Peaks.xml"] = 0;
+		data["5FlatSloped-Peaks.xml"] = -4.32389e-19;
+		data["Serie1To5-Peaks.xml"] = -1.11172e-18;
+		data["Serie5To1-Peaks.xml"] = -2.60335e-18;
+		data["bell_A3.wav-Peaks.xml"] = -3.73177e-21;
 
 		
 		mDescriptors->AddSpectralTilt();
