@@ -148,42 +148,34 @@ namespace CLAM {
 		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
 			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
 			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			throw(ErrProcessingObj("SpectrumSubstracter2s:"
-								   " Spectrum object with no attributes"));
+			CLAM_ASSERT(false,"SpectrumSubstracter2s: Spectrum object with no attributes");
 
 		// Substracter size. "pure" BPFs are not considered here.
 		mSize = 0;
 		if (t1.bMagPhase || t1.bComplex || t1.bPolar) {
 			mSize = in1.GetSize();
 			if (!mSize) 
-				throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-									   " Zero size spectrum",this));
+				CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes: Zero size spectrum");
 		}
 		if (t2.bMagPhase || t2.bComplex || t2.bPolar)
 			if (mSize) {
 				if (mSize != in2.GetSize())
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   "Size mismatch in spectrum sum"
-										   ,this));
+					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Size mismatch in spectrum sum");
 			}
 			else {
 				mSize = in2.GetSize();
 				if (!mSize) 
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   " Zero size spectrum",this));
+					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Zero size spectrum");
 			}
 		if (to.bMagPhase || to.bComplex || to.bPolar)
 			if (mSize) {
 				if (mSize != out.GetSize())
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   "Size mismatch in spectrum sum"
-										   ,this));
+					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Size mismatch in spectrum sum");
 			}
 			else {
 				mSize = out.GetSize();
 				if (!mSize)
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   " Zero size spectrum",this));
+					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Zero size spectrum");
 			}
 
 		// Spectral Range.  
@@ -193,9 +185,7 @@ namespace CLAM {
 		// we always force range matching
 		if (in1.GetSpectralRange() != in2.GetSpectralRange() ||
 			in1.GetSpectralRange() != out.GetSpectralRange() )
-			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-								   "Spectral range mismatch in spectrum sum"
-								   ,this));
+			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes: Spectral range mismatch in spectrum sum");
 
 		// Scale.
 		if (in1.GetScale() == EScale::eLinear)
@@ -211,8 +201,7 @@ namespace CLAM {
 		// Log scale output might be useful, for example when working
 		// with BPF objects at the three ports. But right for now...
 		if (out.GetScale() == EScale::eLog)
-			throw(ErrProcessingObj("SpectrumSubstracter2:"
-								   " Log Scale Output not implemented",this));
+			CLAM_ASSERT(false,"SpectrumSubstracter2: Log Scale Output not implemented");
 
 		// Prototypes.
 
@@ -258,8 +247,7 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-								   " Data flags internal inconsistency",this));
+			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes: Data flags internal inconsistency");
 		}
 		if (i2BPF) {
 			// States with direct BPF implementation.
@@ -289,8 +277,7 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-								   " invalid data flags",this));
+			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:invalid data flags");
 		}
 		// Direct non-BPF states.
 		if (t1.bMagPhase && t2.bMagPhase &&	to.bMagPhase) {
