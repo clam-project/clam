@@ -7,7 +7,7 @@
 #include "includepaths.h"
 #include "config_parser.h"
 #include "dsp_parser.h"
-
+#include "makegen.h"
 #include "verbose.h"
 
 int verbose = 0;
@@ -20,8 +20,8 @@ int main(int argc,char** argv)
 	init_cmd_options( &settings );
 
 	if (!cmdline_parse(argc, argv, &settings ) )
-	{	
-		print_cmd_options( &settings );
+	{
+		print_cmd_usage( &settings );
 		exit(-1);
 	}
 		
@@ -65,9 +65,21 @@ int main(int argc,char** argv)
 	config_parse( settings.settingsfile );
 	sprintf(dspFileToWrite,"%s.dsp", program->first->str);
 
+	if (gendepend==1)
+	{
+		// important to the this before parser_init !
+		listkey* k = listhash_find(config,"SOURCES");
+		// clear list, we only want to process the src file given on the cmd line
+		list_clear(k->l);
+		list_add_str(k->l, settings.srcfile);
+		fprintf(stderr, "in gendepend==1 : added file: %s recurse: %i\n", settings.srcfile, recursesrcs);
+	}
+
+	
 	parser_init();
 	config_check();
 
+	// .cxx list loop
 	{
 		int cnt = 0;
 		item* i = guessed_sources->first;
@@ -87,9 +99,10 @@ int main(int argc,char** argv)
 	}
 
 
-
 #ifdef WIN32
-	/*Create moc-generated and uic-generated files folders*/	
+	// TODO refactor merciless!
+	
+	//Create moc-generated and uic-generated files folders
 	{
 		listkey* h = NULL;
 		h = listhash_find( config, "USE_QT" );
@@ -129,7 +142,16 @@ int main(int argc,char** argv)
 		}
 	}
 	
+	listhash_add_item_str(config,"OS_WINDOWS","1");
+	listhash_add_item_str(config,"OS_LINUX","0");	
 	dsp_parse( dspFileToWrite );
+	
+	if (gendepend==2)
+	{
+		listhash_add_item_str(config,"OS_WINDOWS","0");
+		listhash_add_item_str(config,"OS_LINUX","1");
+		makefilevars_generate();		
+	}
 
 
 	parser_exit();
