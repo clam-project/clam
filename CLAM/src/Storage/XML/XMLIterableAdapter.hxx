@@ -74,7 +74,7 @@ private:
 public:
 	/**
 	 * Constructs a XMLIterableAdapter
-	 * @param adaptee The object to be adapted (where the 
+	 * @param anAdaptee The object to be adapted (where the 
 	 * XML content will be extracted from)
 	 * @param name A pointer to a 0 terminated string 
 	 * containing the xml name (for elements and attributes)
