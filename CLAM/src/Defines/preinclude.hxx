@@ -22,7 +22,11 @@
 #ifdef CLAM_DOUBLE
 #define FFTW_HEADER <rfftw.h>
 #else
+#ifdef WIN32
+#define FFTW_HEADER <rfftw.h>
+#else
 #define FFTW_HEADER <srfftw.h>
+#endif
 #endif
 
 /*
