@@ -40,6 +40,10 @@ public:
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withIncorrectOutPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withSomeInPorts );
+
+	CPPUNIT_TEST( testGetLastWrittenData_whenPortIsWrongType_throwsException );
+	CPPUNIT_TEST( testGetLastWrittenData_fillsWithCorrectData );
+	
 	CPPUNIT_TEST_SUITE_END();
 
 	void testOutPortConnectToIn_usingBaseClass()
@@ -408,6 +412,34 @@ public:
 		CPPUNIT_ASSERT_EQUAL( data, in2.GetData() );
 		CPPUNIT_ASSERT_EQUAL( data, in3.GetData() );
 
+	}
+
+	void testGetLastWrittenData_whenPortIsWrongType_throwsException()
+	{
+		CLAM::OutPort<char> out;
+		out.GetData() = 'a';
+		out.Produce();
+
+		try
+		{
+			int result = CLAM::OutPort<int>::GetLastWrittenData( out );
+			CPPUNIT_FAIL( "Assertion should be failed" );
+		}
+		catch( CLAM::ErrAssertionFailed &  )
+		{
+		}
+	}
+	
+	void testGetLastWrittenData_fillsWithCorrectData()
+	{
+		CLAM::OutPort<int> out;
+		int data = 5;
+		out.GetData() = data;
+		out.Produce();
+
+		int result = CLAM::OutPort<int>::GetLastWrittenData( out );
+
+		CPPUNIT_ASSERT_EQUAL( data, result );
 	}
 	
 };

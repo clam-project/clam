@@ -50,7 +50,7 @@ public:
 	CPPUNIT_TEST( testPhantomZoneGetsUpdated_whenInsertedInLogicalZone );
 	CPPUNIT_TEST( testIntegrityAfterBufferResize );
 	CPPUNIT_TEST( testWriterResizes_whenRearmostReaderHasSameBeginDistance );
-
+	CPPUNIT_TEST( testReadingRegion_canReadInPhantomZone );
 	CPPUNIT_TEST_SUITE_END();
 	/*
 	 *
@@ -351,6 +351,33 @@ public:
 		
 		writer.Size(5);   // buff size = 16
 		CPPUNIT_ASSERT( oldBeginDistance != reader.BeginDistance() );
+	}
+
+	void testReadingRegion_canReadInPhantomZone()
+	{
+		CLAM::WritingRegion<char,CLAM::PhantomBuffer> writer;
+		writer.Size(3);
+		writer.Hop(3);
+
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		writer.LinkRegions(reader);
+		reader.Size(3);
+		reader.Hop(3);
+
+		writer.Produce();
+		reader.Consume();
+		
+		writer.Produce();
+		reader.Consume();
+		
+		writer[0] = 'g';
+		writer[1] = 'h';
+		writer[2] = 'i';
+		writer.Produce();
+
+		CPPUNIT_ASSERT_EQUAL( 'g', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( 'h', reader[1] );
+		CPPUNIT_ASSERT_EQUAL( 'i', reader[2] );
 	}
 };
 

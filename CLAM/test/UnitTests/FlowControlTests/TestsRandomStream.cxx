@@ -86,8 +86,8 @@ private:
 
 	bool ChanceOf(double chance)
 	{
-		//double rand = std::rand() / float(RAND_MAX);
-		//return rand < chance;
+		double rand = std::rand() / float(RAND_MAX);
+		return rand < chance;
 		return true;
 	}
 
@@ -132,16 +132,31 @@ private:
 		mOutputReader.Hop(newSize);
 	}
 
-	void MaybeCreateOtherReader()
+	void CreateOtherReader()
 	{
-		if(ChanceOf(1-0.3))
-			return;
-
+		int newSize = RandomIntFromTo(1, 40);
 		RRegion * newRegion = new RRegion; 
+		newRegion->Size(newSize);
+		newRegion->Hop(newSize);
 		mWriter.LinkRegions( *newRegion );
 		mOtherReaders.push_back( newRegion );
-	}
 
+	}
+	void CreateOtherReadersRandomly()
+	{
+		int nreaders = RandomIntFromTo(3, 25);
+		for( int i=0; i<nreaders; i++)
+		{
+			CreateOtherReader();
+		}
+	}
+	void MaybeCreateOtherReader()
+	{
+		if (ChanceOf(0.5))
+			return;
+		CreateOtherReader();
+	}
+	
 	void MaybeRemoveOtherReader()
 	{	
 		std::list< RRegion * >::iterator it;
@@ -193,7 +208,13 @@ private:
 		std::list< RRegion * >::iterator it;
 		for(it=mOtherReaders.begin(); it!=mOtherReaders.end(); it++)
 			if( (*it)->CanConsume() )
+			{
+				for(int i=0;i<(*it)->Size();i++)
+				{
+					(*it)->operator[](i);
+				}
 				(*it)->Consume();
+			}
 	}
 
 	void test()
@@ -202,12 +223,14 @@ private:
 		mWriter.Hop(2);
 		mWriter.LinkRegions(mOutputReader);
 		bool endOfFile = false;
+		CreateOtherReadersRandomly();
 
 		while(true)
 		{	
 			if ( mWriter.CanProduce() && !endOfFile )
 			{
 				endOfFile =  !FillWriterFromInputFile();
+				CLAM_ASSERT(mWriter.CanProduce(), "mWriter should be able to produce");
 				mWriter.Produce();
 			}
 								

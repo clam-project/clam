@@ -38,7 +38,9 @@ public:
 	CPPUNIT_TEST( testWritingRegion_CenterRegion_assertsWithUnevenRegion );
 	CPPUNIT_TEST( testWritingRegion_CenterRegion_withOneReaderAndBiggerWriter );
 	CPPUNIT_TEST( testTDataConstructorInitializesToZero );
-
+	CPPUNIT_TEST( testWritingRegion_GetLastWrittenData_withoutOverlap );
+	CPPUNIT_TEST( testWritingRegion_GetLastWrittenData_withOverlap );
+	CPPUNIT_TEST( testWritingRegion_GetLastWrittenData_withDifferentHopAndSize );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testWritingRegion_constructor()
@@ -457,6 +459,51 @@ public:
 				
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( zero, defaultValue, delta );
 	}
+	void testWritingRegion_GetLastWrittenData_withoutOverlap()
+	{
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(2);
+		writer.Hop(2);
+		writer[0] = 'a';
+		writer[1] = 'i';
+		writer.Produce();
+
+		CPPUNIT_ASSERT_EQUAL( 'a', writer.GetLastWrittenData(0) );
+		CPPUNIT_ASSERT_EQUAL( 'i', writer.GetLastWrittenData(1) );
+	}
+	
+	void testWritingRegion_GetLastWrittenData_withOverlap()
+	{
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(3);
+		writer.Hop(3);
+		writer.Produce();
+		writer.Produce();
+		writer[0] = 'g';
+		writer[1] = 'h';
+		writer[2] = 'i';
+		writer.Produce();
+
+		CPPUNIT_ASSERT_EQUAL( 'g', writer.GetLastWrittenData(0) );
+		CPPUNIT_ASSERT_EQUAL( 'h', writer.GetLastWrittenData(1) );
+		CPPUNIT_ASSERT_EQUAL( 'i', writer.GetLastWrittenData(2) );
+
+	}
+
+	void testWritingRegion_GetLastWrittenData_withDifferentHopAndSize()
+	{
+		CLAM::WritingRegion<char,DataStructure> writer;
+		writer.Size(2);
+		writer.Hop(1);
+		writer[0] = 'a';
+		writer[1] = 'i';
+		writer.Produce();
+		
+		CPPUNIT_ASSERT_EQUAL( 'a', writer.GetLastWrittenData(0) );
+		CPPUNIT_ASSERT_EQUAL( 'i', writer.GetLastWrittenData(1) );
+	
+	}
+	
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::PhantomBuffer> );
