@@ -156,16 +156,6 @@ public:
 */
 	void SetBinWidth(TIndex pos,int newBinWidth){GetBinWidthBuffer()[pos]=TData(newBinWidth);}
 
-
-/** Additional interface
-* @deprecated use GetMaxMagPos or GetMaxMagIndex instead
-* @todo Remove this method in next releases
-* @return the position of the peak array where the maximum amplitude is found
-*/
-	TIndex GetMaxMagPosition(bool processOnlyIndexedPeaks=false)
-	{
-		CLAM_ASSERT(false, "SpectralPeakArray::method GetMaxMagPosition has been substituted by GetMaxMagPos and GetMaxMagIndex, please update your code");
-	}
 /** Additional interface
 * @return the position of the peak array where the maximum amplitude is found
 */
