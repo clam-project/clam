@@ -39,9 +39,11 @@ public:
 	virtual void Hide();
 protected:
 	void AttachConnectionToPortPresentations( Qt_ConnectionPresentation * );
+	void AttachConnectionToControlPresentations( Qt_ConnectionPresentation * );
 	virtual void OnNewName(const std::string& name); 
 	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & name );
-	virtual void OnNewConnection(CLAMVM::ConnectionAdapter* );
+	virtual void OnNewPortConnection(CLAMVM::ConnectionAdapter* );
+	virtual void OnNewControlConnection(CLAMVM::ConnectionAdapter* );
 
 	virtual void OnNewInPortClicked( Qt_InPortPresentation *);
 	virtual void OnNewOutPortClicked( Qt_OutPortPresentation *);

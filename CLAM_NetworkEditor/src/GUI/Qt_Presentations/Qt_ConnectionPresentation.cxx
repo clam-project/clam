@@ -193,7 +193,7 @@ void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
 	switch ( tolower(k->ascii()) ) 
 	{
         case 'x': 
-		RemoveConnection.Emit( this );
+		RemovePortConnection.Emit( this );
 		Hide();
 		mDown = false;
 		releaseKeyboard();

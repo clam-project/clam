@@ -5,6 +5,8 @@
 #include "InPort.hxx"
 #include "Processing.hxx"
 #include "OutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 #include <iostream>
 
 namespace CLAMVM
@@ -14,8 +16,9 @@ NetworkController::NetworkController()
 	: mObserved(0),
 	  mLoopCondition(false)
 {
-	CreateNewConnection.Wrap( this, &NetworkController::OnNewConnectionFromGUI );
-	RemoveConnection.Wrap( this, &NetworkController::OnRemoveConnectionFromGUI );
+	CreateNewPortConnection.Wrap( this, &NetworkController::OnNewPortConnectionFromGUI );
+	CreateNewControlConnection.Wrap( this, &NetworkController::OnNewControlConnectionFromGUI );
+	RemovePortConnection.Wrap( this, &NetworkController::OnRemovePortConnectionFromGUI );
 	RemoveProcessing.Wrap( this, &NetworkController::OnRemoveProcessingFromGUI );
 	AddNewProcessing.Wrap( this, &NetworkController::NewProcessingFromGUI );
 	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
@@ -23,19 +26,27 @@ NetworkController::NetworkController()
 
 void NetworkController::ExecuteEvents()
 {
-	if ( mToConnect.size() != 0)
+	if ( mPortsToConnect.size() != 0)
 	{
 		ConnectionsMap::iterator it;
-		for (it=mToConnect.begin(); it!=mToConnect.end(); it++)
+		for (it=mPortsToConnect.begin(); it!=mPortsToConnect.end(); it++)
 			ConnectPorts( it->second, it->first );
-		mToConnect.clear();
+		mPortsToConnect.clear();
+		for (it=mControlsToConnect.begin(); it!=mControlsToConnect.end(); it++)
+			ConnectControls( it->second, it->first );
+		mControlsToConnect.clear();
 	}
-	if ( mToDisconnect.size() != 0)
+	if ( mPortsToDisconnect.size() != 0)
 	{
 		ConnectionsMap::iterator it;
-		for (it=mToDisconnect.begin(); it!=mToDisconnect.end(); it++)
+		for (it=mPortsToDisconnect.begin(); it!=mPortsToDisconnect.end(); it++)
 			DisconnectPorts( it->second, it->first );
-		mToDisconnect.clear();		
+		mPortsToDisconnect.clear();		
+		for (it=mControlsToDisconnect.begin(); it!=mControlsToDisconnect.end(); it++)
+		{
+//			DisconnectControls( it->second, it->first );
+		}
+		mControlsToDisconnect.clear();		
 	}
 	if( mProcessingsToRemove.size() != 0)
 	{
@@ -77,17 +88,26 @@ void NetworkController::OnNewChangeState( bool state)
 	}
 }
 
-void NetworkController::OnNewConnectionFromGUI( const std::string & out, const std::string& in)
+void NetworkController::OnNewPortConnectionFromGUI( const std::string & out, const std::string& in)
 {	
 	if (mLoopCondition)
-		mToConnect.insert( ConnectionsMap::value_type( in, out ) );
+		mPortsToConnect.insert( ConnectionsMap::value_type( in, out ) );
 	else
 		ConnectPorts(out, in);
 }
 
+void NetworkController::OnNewControlConnectionFromGUI( const std::string & out, const std::string& in)
+{	
+	if (mLoopCondition)
+		mControlsToConnect.insert( ConnectionsMap::value_type( in, out ) );
+	else
+		ConnectControls(out, in);
+}
+
 void NetworkController::ConnectPorts( const std::string & out , const std::string & in )
 {
-	std::cout << "add connection" << std::endl;
+	std::cout << "add port connection" << std::endl;
+	
 	if(mObserved->ConnectPorts(out, in))
 	{
 		ConnectionAdapterTmpl< CLAM::OutPort, CLAM::InPort> * 
@@ -96,16 +116,32 @@ void NetworkController::ConnectPorts( const std::string & out , const std::strin
 		conAdapter->BindTo( mObserved->GetOutPortByCompleteName(out), 
 				    mObserved->GetInPortByCompleteName(in), (const CLAM::Network&)*mObserved );
 		mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
-		AcquireConnection.Emit( (ConnectionAdapter*)conAdapter );
+		AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
 	}
 }
 
-void NetworkController::OnRemoveConnectionFromGUI( const std::string & outPort, 
-						   const std::string & inPort )
+void NetworkController::ConnectControls( const std::string & out , const std::string & in )
+{
+	std::cout << "add control connection" << std::endl;
+	
+	if(mObserved->ConnectControls(out, in))
+	{
+		ConnectionAdapterTmpl< CLAM::OutControl, CLAM::InControl> * 
+			conAdapter = new ConnectionAdapterTmpl< CLAM::OutControl, CLAM::InControl >;
+		
+		conAdapter->BindTo( mObserved->GetOutControlByCompleteName(out), 
+				    mObserved->GetInControlByCompleteName(in), (const CLAM::Network&)*mObserved );
+		mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
+		AcquireControlConnection.Emit( (ConnectionAdapter*)conAdapter );
+	}
+}
+
+void NetworkController::OnRemovePortConnectionFromGUI( const std::string & outPort, 
+						       const std::string & inPort )
 {
 	if (mLoopCondition)
 	{
-		if (!mToDisconnect.insert( ConnectionsMap::value_type( inPort, outPort ) ).second )
+		if (!mPortsToDisconnect.insert( ConnectionsMap::value_type( inPort, outPort ) ).second )
 			CLAM_ASSERT(false, "NetworkController::OnRemoveConnectionFromGUI() Trying to remove connection with repeated key" );
 	}
 	else
@@ -208,11 +244,14 @@ bool NetworkController::Publish()
 			const CLAM::InPort* in = *itInPort;
 			conAdapter->BindTo( *out, *in, (const CLAM::Network&)*mObserved);
 			mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
-			AcquireConnection.Emit( (ConnectionAdapter*)conAdapter );
+			AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
 		}
 
 
 	}	
+
+	// TODO: Is possible to detect the network of control connections?
+
 	return true;
 }
 

@@ -27,14 +27,16 @@ namespace CLAMVM
 		//signals
 		SigSlot::Signalv1< const std::string& >  AcquireName;
 		SigSlot::Signalv2< CLAMVM::ProcessingController* , const std::string& > AcquireProcessing;
-		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquireConnection;
+		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquirePortConnection;
+		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquireControlConnection;
 
 		//slots
 		SigSlot::Slotv1< bool > ChangeState;
 		SigSlot::Slotv1< const std::string & > RemoveProcessing;
-		SigSlot::Slotv2< const std::string &, const std::string & > RemoveConnection;
+		SigSlot::Slotv2< const std::string &, const std::string & > RemovePortConnection;
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
-		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewConnection;
+		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewPortConnection;
+		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewControlConnection;
 		
 	};	
 }

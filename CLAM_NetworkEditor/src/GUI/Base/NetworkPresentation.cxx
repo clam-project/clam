@@ -19,8 +19,9 @@ NetworkPresentation::NetworkPresentation()
 {
 	SetName.Wrap( this, &NetworkPresentation::OnNewName );
 	SetProcessing.Wrap( this, &NetworkPresentation::OnNewProcessing );
-	SetConnection.Wrap( this, &NetworkPresentation::OnNewConnection );
-	SetRemoveConnection.Wrap( this, &NetworkPresentation::OnRemoveConnection );
+	SetPortConnection.Wrap( this, &NetworkPresentation::OnNewPortConnection );
+	SetControlConnection.Wrap( this, &NetworkPresentation::OnNewControlConnection );
+	SetRemovePortConnection.Wrap( this, &NetworkPresentation::OnRemovePortConnection );
 	SetRemoveProcessing.Wrap( this, &NetworkPresentation::OnRemoveProcessing );
 	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
 	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
@@ -35,12 +36,12 @@ void NetworkPresentation::OnNewChangeState( bool newState )
 	}
 }
 
-void NetworkPresentation::OnRemoveConnection(  ConnectionPresentation * con)
+void NetworkPresentation::OnRemovePortConnection(  ConnectionPresentation * con)
 {
 	mConnectionPresentations.remove(con);
 	con->Hide();
 
-	RemoveConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
+	RemovePortConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
 }
 
 void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
@@ -66,7 +67,7 @@ void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
 	}
 	for(it=toRemove.begin(); it!=toRemove.end(); it++)
 	{
-		OnRemoveConnection( *it );
+		OnRemovePortConnection( *it );
 	}
 	mProcessingPresentations.remove( proc );
 	RemoveProcessingFromGUI.Emit( proc->GetNameFromNetwork() );
@@ -86,12 +87,14 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 {
 	model.AcquireName.Connect( SetName );
 	model.AcquireProcessing.Connect( SetProcessing );
-	model.AcquireConnection.Connect( SetConnection );
+	model.AcquirePortConnection.Connect( SetPortConnection );
+	model.AcquireControlConnection.Connect( SetControlConnection );
 	SChangeState.Connect( model.ChangeState );
 	AddProcessing.Connect( model.AddNewProcessing );
 	
-	CreateNewConnectionFromGUI.Connect( model.CreateNewConnection );
-	RemoveConnectionFromGUI.Connect( model.RemoveConnection );
+	CreateNewPortConnectionFromGUI.Connect( model.CreateNewPortConnection );
+	CreateNewControlConnectionFromGUI.Connect( model.CreateNewControlConnection );
+	RemovePortConnectionFromGUI.Connect( model.RemovePortConnection );
 	RemoveProcessingFromGUI.Connect( model.RemoveProcessing );
 }
 

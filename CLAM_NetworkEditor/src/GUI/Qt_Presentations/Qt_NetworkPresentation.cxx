@@ -110,15 +110,40 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* cont
 	SendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
 }
 
-void Qt_NetworkPresentation::OnNewConnection( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::OnNewPortConnection( CLAMVM::ConnectionAdapter* adapter)
 {
 	Qt_ConnectionPresentation* presentation = new Qt_ConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->RemoveConnection.Connect(SetRemoveConnection);
+	presentation->RemovePortConnection.Connect(SetRemovePortConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
 	AttachConnectionToPortPresentations(presentation);
+	mConnectionPresentations.push_back(presentation);
+
+	ProcessingPresentationIterator it;
+	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+	{
+		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
+		proc->EmitPositionOfChildren();
+		
+	}	
+	presentation->Show();
+
+	SendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
+				     " to " + presentation->GetInName() );
+}
+
+
+void Qt_NetworkPresentation::OnNewControlConnection( CLAMVM::ConnectionAdapter* adapter)
+{
+	Qt_ConnectionPresentation* presentation = new Qt_ConnectionPresentation(this);
+	presentation->AttachTo(*adapter);
+	presentation->RemovePortConnection.Connect(SetRemovePortConnection);
+	adapter->Publish();
+	// connectar presentation a outport i inport signals
+
+	AttachConnectionToControlPresentations(presentation);
 	mConnectionPresentations.push_back(presentation);
 
 	ProcessingPresentationIterator it;
@@ -140,6 +165,18 @@ void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_ConnectionP
 		GetOutPortPresentationByCompleteName( con->GetOutName() );
 	Qt_InPortPresentation & in = (Qt_InPortPresentation&)
 		GetInPortPresentationByCompleteName( con->GetInName() );
+
+	out.AcquirePos.Connect(con->SetOutPos);	
+	in.AcquirePos.Connect(con->SetInPos);	
+}
+
+
+void Qt_NetworkPresentation::AttachConnectionToControlPresentations( Qt_ConnectionPresentation * con)
+{
+	Qt_OutControlPresentation & out = (Qt_OutControlPresentation&)
+		GetOutControlPresentationByCompleteName( con->GetOutName() );
+	Qt_InControlPresentation & in = (Qt_InControlPresentation&)
+		GetInControlPresentationByCompleteName( con->GetInName() );
 
 	out.AcquirePos.Connect(con->SetOutPos);	
 	in.AcquirePos.Connect(con->SetInPos);	
@@ -179,7 +216,7 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
-		CreateNewConnectionFromGUI.Emit( outPort, inPort );
+		CreateNewPortConnectionFromGUI.Emit( outPort, inPort );
 	}
 
 	mInPortSelected = 0;
@@ -198,8 +235,8 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-//		CreateNewConnectionFromGUI.Emit( outControl, inControl );
 		// TODO: It must create a connection between controls
+		CreateNewControlConnectionFromGUI.Emit( outControl, inControl );
 	}
 
 	mInControlSelected = 0;
