@@ -113,7 +113,7 @@ namespace CLAM
 	 * A container for the attributes values along the differents
 	 * contexts of a single scope.
 	 */
-	class Pool
+	class ScopePool
 	{
 	public:
 		typedef std::vector<void*> AttributesData;
@@ -122,13 +122,13 @@ namespace CLAM
 		AttributesData _attributes;
 		const DescriptionScope & _spec;
 	public:
-		Pool(const DescriptionScope & spec, unsigned size=0)
+		ScopePool(const DescriptionScope & spec, unsigned size=0)
 			: _size(0), _spec(spec)
 		{
 			_attributes.resize(_spec.GetNAttributes());
 			Allocate(size);
 		}
-		~Pool()
+		~ScopePool()
 		{
 			Deallocate();
 		}
@@ -239,11 +239,26 @@ namespace CLAM
 			return *_specs[it->second];
 		}
 
-		Pool * CreatePool(const std::string & scope)
+		ScopePool * CreatePool(const std::string & scope)
 		{
-			return new Pool(GetSpec(scope));
+			return new ScopePool(GetSpec(scope));
 			
 		}
+	};
+
+	/**
+	 * Contains the extracted data for a given description target.
+	 * It conforms to 
+	 */
+	class DescriptionDataPool
+	{
+	public:
+		void InstantiateAttribute(const std::string & scope, const std::string & attribute);
+		void PopulateScope(const std::string & name, unsigned size);
+		template <typename AttributeType>
+		AttributeType * GetAttributeData(const std::string & scope, const std::string & attribute);
+		unsigned GetScopeSize();
+	private:
 	};
 
 
