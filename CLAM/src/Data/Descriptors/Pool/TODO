@@ -66,13 +66,21 @@
 - Prepare: Determinar attributos necesarios
 + Multilevel pools
 - XML for the Pool
-	- Attribute dump
-	- Multitype XML loading
+	+ Dumping an empty scope
+	+ Dumping a zero size scope
+	+ Dumping sized scope with one attribute
+		- Create a proxy object
+	+ Removing the number of attributes attribute
+	+ Attribute dump
+	+ Multitype XML loading
+	- Component type attribute
+	- Consider a solution for the helper classes
+	- Adding the scope name attribute
 - Getting names from index
 	+ Getting valid scope indexes names
 	+ Getting invalid scope indexes names
-	- getting valid attribute indexes names
-	- getting invalid attribute indexes names
+	+ getting valid attribute indexes names
+	+ getting invalid attribute indexes names
 - XML for the Scheme
 - Selecting which attributes should be serialized
 
@@ -85,7 +93,6 @@
 	+ Write a dummy audio
 	+ Write the centers 
 	+ Make the spectrum
-	- Dump XML
 
 
 - Mirar especificaciones MyDMS

@@ -7,6 +7,8 @@
 #include "DataTypes.hxx"
 #include "Component.hxx"
 #include "XMLAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
+#include "XMLArrayAdapter.hxx"
 
 
 /**
@@ -84,6 +86,12 @@ namespace CLAM
 				if (it->second == attribute)
 					return it->first;
 			CLAM_ASSERT(false,"GetAttributeName: Using a wrong index to look up an attribute name");
+		}
+		void DumpAttributeData(Storage & storage, unsigned attribute, void * data, unsigned size) const
+		{
+			XMLAdapter<std::string> nameAdapter(GetAttributeName(attribute),"name",false);
+			storage.Store(nameAdapter);
+			_attributes[attribute]->XmlDumpData(storage, data, size);
 		}
 	};
 
@@ -181,6 +189,26 @@ namespace CLAM
 		unsigned _size;
 		AttributesData _attributes;
 		const DescriptionScope & _spec;
+		class AttributeAdapter : public Component
+		{
+		public:
+			AttributeAdapter(const DescriptionScope & scope, unsigned attribute, void * data, unsigned size)
+				: _scope(scope), _attribute(attribute), _data(data), _size(size) { }
+			const char * GetClassName() const { return "TODO"; }
+			void StoreOn(Storage & storage) const
+			{
+				_scope.DumpAttributeData(storage,_attribute,_data,_size);
+			}
+			void LoadFrom(Storage & storage)
+			{
+			}
+		private:
+			const DescriptionScope & _scope;
+			unsigned _attribute;
+			void * _data;
+			unsigned _size;
+		};
+
 	public:
 		ScopePool(const DescriptionScope & spec, unsigned size=0)
 			: _size(size), _spec(spec), _attributes(spec.GetNAttributes(),(void*)0)
@@ -201,14 +229,13 @@ namespace CLAM
 		const char * GetClassName() const { return "DescriptionDataPool"; }
 		void StoreOn(Storage & storage) const
 		{
-			CLAM::XMLAdapter<unsigned> sizeAdapter(_size,"size",false);
+			XMLAdapter<unsigned> sizeAdapter(_size,"size",false);
 			storage.Store(sizeAdapter);
-			CLAM::XMLAdapter<unsigned> numberOfAttributes(_spec.GetNAttributes(),"numberOfAttributes",false);
-			storage.Store(numberOfAttributes);
 			for (unsigned attribute=0; attribute<_attributes.size(); attribute++)
 			{
-				CLAM::XMLAdapter<std::string> attributeNameAdapter(_spec.GetAttributeName(attribute),"AttributePool",true);
-				storage.Store(attributeNameAdapter);
+				AttributeAdapter attributeAdapter(_spec, attribute, _attributes[attribute], _size);
+				XMLComponentAdapter adapter(attributeAdapter,"AttributePool",true);
+				storage.Store(adapter);
 			}
 
 		}

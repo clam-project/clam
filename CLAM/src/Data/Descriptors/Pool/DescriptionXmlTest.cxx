@@ -25,6 +25,7 @@ class DescriptionXmlTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testDumpScopePool_withNoAttributes);
 	CPPUNIT_TEST(testDumpScopePool_withAttributesAndZeroSize);
 	CPPUNIT_TEST(testDumpScopePool_withAttributes);
+	CPPUNIT_TEST(testDumpScopePool_withIntegerAttributes);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,7 +54,7 @@ private:
 
 		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"<ScopePool numberOfAttributes=\"0\" size=\"20\"/>"
+			"<ScopePool size=\"20\"/>"
 			),_targetStream.str());
 	}
 	void testDumpScopePool_withAttributesAndZeroSize()
@@ -64,8 +65,9 @@ private:
 
 		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"<ScopePool numberOfAttributes=\"1\" size=\"0\">"
-			"<AttributePool name=\"MyAttribute\"/>"
+			"<ScopePool size=\"0\">"
+			"<AttributePool name=\"MyAttribute\">"
+			"</AttributePool>"
 			"</ScopePool>"
 			),_targetStream.str());
 	}
@@ -81,9 +83,28 @@ private:
 
 		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"<ScopePool numberOfAttributes=\"1\" size=\"3\">"
+			"<ScopePool size=\"3\">"
 			"<AttributePool name=\"MyAttribute\">"
 				"value0 value1 value2"
+			"</AttributePool>"
+			"</ScopePool>"
+			),_targetStream.str());
+	}
+	void testDumpScopePool_withIntegerAttributes()
+	{
+		CLAM::DescriptionScope scope;
+		scope.Add<unsigned>("MyAttribute");
+		CLAM::ScopePool pool(scope,3);
+		unsigned * values = pool.GetWritePool<unsigned>("MyAttribute");
+		values[0]=1;
+		values[1]=2;
+		values[2]=3;
+
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"<ScopePool size=\"3\">"
+			"<AttributePool name=\"MyAttribute\">"
+				"1 2 3"
 			"</AttributePool>"
 			"</ScopePool>"
 			),_targetStream.str());
