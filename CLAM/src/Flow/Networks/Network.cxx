@@ -191,7 +191,7 @@ namespace CLAM
 	std::size_t Network::PositionOfLastIdentifier( const std::string & str ) 
 	{
 		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
-		CLAM_ASSERT( result!=std::string::npos, "Malformed port name. It should be ProcessingName.[Port/Control]Name");
+		CLAM_ASSERT( result!=std::string::npos, "Malformed port/control name. It should be ProcessingName.[Port/Control]Name");
 		return result;
 	}
 	std::size_t Network::PositionOfProcessingIdentifier( const std::string& str )
