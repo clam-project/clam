@@ -66,6 +66,13 @@ namespace CLAMGUI
 	
 		Fl::run();
 	}
+
+	void SMSTools::OnNewScore( const SMSTransformationChainConfig& cfg )
+	{
+		SMSBase::OnNewScore( cfg );
+		mUI->ApplyTransformationReadyState();
+	}
+
 	
 	void SMSTools::OnNewTime( double value )
 	{

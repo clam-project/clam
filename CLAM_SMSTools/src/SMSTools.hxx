@@ -38,6 +38,8 @@ public:
 
 protected: // methods
 
+	virtual void OnNewScore( const SMSTransformationChainConfig& cfg );
+
 	void DoAnalysis();
 
 	void DoSynthesis();

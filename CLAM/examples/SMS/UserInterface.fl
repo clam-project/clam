@@ -322,7 +322,8 @@ mWindow2=NULL;}
   decl {void ApplyReadyToAnalyzeState();} {}
   decl {void ApplyAnalysisAvailableState();} {}
   decl {void ApplyMelodyAvailableState();} {}
-  decl {void ApplyTransformationReadyState();} {}
+  decl {void ApplyTransformationReadyState();} {selected public
+  }
   decl {void ApplySynthesisAvailableState();} {}
   decl {void ApplyTransformationPerformedState();} {}
   decl {void DeactivateFrameDataMenuItems();} {}
@@ -333,6 +334,5 @@ mWindow2=NULL;}
   decl {void DisplayFundFreqTrajectory();} {}
   decl {void EditTransformScore();} {}
   decl {void SaveTransformScore();} {}
-  decl {SMSScoreEditor* mScoreEditor;} {selected
-  }
+  decl {SMSScoreEditor* mScoreEditor;} {}
 } 

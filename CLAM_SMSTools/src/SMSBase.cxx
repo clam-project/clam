@@ -99,6 +99,7 @@ SMSBase::~SMSBase(void)
 void SMSBase::OnNewScore( const SMSTransformationChainConfig& cfg )
 {
 	mTransformationScore = cfg;
+	mHaveTransformationScore = true;
 	ScoreChanged.Emit( mTransformationScore );
 }
 

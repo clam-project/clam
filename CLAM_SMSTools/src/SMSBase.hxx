@@ -70,7 +70,7 @@ namespace CLAM
 	protected:
 		
 		/** callback for the SetScore slot */
-		void OnNewScore( const SMSTransformationChainConfig& cfg );
+		virtual void OnNewScore( const SMSTransformationChainConfig& cfg );
 	
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);

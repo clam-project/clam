@@ -164,7 +164,9 @@ private:
   void ApplyReadyToAnalyzeState();
   void ApplyAnalysisAvailableState();
   void ApplyMelodyAvailableState();
+public:
   void ApplyTransformationReadyState();
+private:
   void ApplySynthesisAvailableState();
   void ApplyTransformationPerformedState();
   void DeactivateFrameDataMenuItems();
