@@ -39,8 +39,6 @@ namespace CLAM {
 	
 	void SpectralPeakDetectConfig::DefaultValues()
 	{
-		SetName("SpectralPeakDetect");
-		
 		SetNumBands(513);
 		SetMagThreshold(-80);
 		SetMaxPeaks(100);

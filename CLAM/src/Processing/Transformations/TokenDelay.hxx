@@ -62,7 +62,6 @@ protected:
 		AddDelay();
 		AddMaxDelay();
 		UpdateData();
-		SetName("");
 		SetDelay(0);
 		SetMaxDelay(0);  
 	}
