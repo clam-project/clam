@@ -27,6 +27,7 @@
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"
 #include "Enum.hxx"
+#include "Filename.hxx"
 
 namespace CLAM {
 
@@ -63,7 +64,7 @@ namespace CLAM {
 		DYNAMIC_TYPE_USING_INTERFACE
 			(AudioFileConfig, 8, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, std::string, Filename);
+		DYN_ATTRIBUTE (1, public, Filename, Filename);
 		DYN_ATTRIBUTE (2, public, EAudioFileType, Filetype);
 		DYN_ATTRIBUTE (3, public, TData, SampleRate);
 		DYN_ATTRIBUTE (4, public, short, Channels);
