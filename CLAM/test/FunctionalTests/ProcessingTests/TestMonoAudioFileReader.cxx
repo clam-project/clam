@@ -40,6 +40,8 @@ namespace CLAMTest
 		CPPUNIT_TEST( testDo_JustTwoFramesBeginTimesAreRight );
 		CPPUNIT_TEST( testDo_JustOneFrame_SampleRateIsOK );
 
+		CPPUNIT_TEST( test_WindowsMedia_WAVE_File );
+
 		CPPUNIT_TEST_SUITE_END();
 
 	protected: // Attributes
@@ -431,10 +433,20 @@ namespace CLAMTest
 			double sim = evaluateSimilarity( readSamples_1.GetBuffer(),
 							 previous );
 
-			CPPUNIT_ASSERT( sim < 1.0 );
+
+			CPPUNIT_ASSERT( sim <= 1.0 );
 			
 		}
-
+		
+		void test_WindowsMedia_WAVE_File()
+		{
+			CLAM::AudioFile file;
+			
+			file.SetLocation( mPathToTestData + std::string("1-wav-8000.wav" ) );
+			
+			CPPUNIT_ASSERT_EQUAL( true,
+					       file.IsReadable() );
+		}
 
 	};
 

@@ -40,7 +40,8 @@ namespace AudioCodecs
 		void WriteBitstreamHeader();
 
 		void DoVorbisAnalysis();
-
+		void PushAnalysisBlocksOntoOggStream();
+		void ConsumeDecodedSamples();
 		
 	protected:
 		std::string      mName;
@@ -68,7 +69,10 @@ namespace AudioCodecs
 		static const TSize      mAnalysisWindowSize;
 		Array<TInt16>           mBlockBuffer;
 		std::vector<std::deque<TData> >       mEncodeBuffer;
-		TSize                   mRemainderOffset;
+		std::deque<TInt16>      mDecodeBuffer;
+		TSize                   mLastBytesRead;
+		TSize                   mTotalSamplesRead;
+		TSize                   mTotalSamplesEncoded;
   	};
 }
 

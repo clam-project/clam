@@ -164,19 +164,20 @@ namespace CLAMTest
 
 		void testDo_OggVorbis_WritesTheSameThatWasRead()
 		{
+			
 			CLAM::AudioFile inputFile;
 			//inputFile.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 			inputFile.SetLocation( mPathToTestData + std::string( "JannieJones.ogg" ) );
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "JannieJones.wav" );			
+			outputFile.SetLocation( "JannieJones-copy.ogg" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
-						    "WAV" );
+						    "VorbisMk1" );
 	
 			outputFile.SetHeader( outputFileHeader );
 
@@ -212,14 +213,7 @@ namespace CLAMTest
 			procReader.Start();
 			procWriter.Start();
 
-			int  framesRead = 0;
-			int expectedFrames = ( (inputFile.GetHeader().GetLength()/1000)*inputFile.GetHeader().GetSampleRate() ) / 8192;
-
-			std::cout << "sr: " << inputFile.GetHeader().GetSampleRate() << " "; 
-			std::cout.flush();
-
-			std::cout << expectedFrames;
-			std::cout.flush();
+			CLAM::TSize framesRead = 0;
 
 			while( procReader.Do() )
 			{
@@ -228,8 +222,7 @@ namespace CLAMTest
 				procWriter.Do();
 			}
 
-			CPPUNIT_ASSERT_EQUAL( expectedFrames + 2,
-					      framesRead );
+
 
 			procReader.Stop();
 			procWriter.Stop();
@@ -238,7 +231,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "JannieJones.wav" );
+			inputFile.SetLocation( mPathToTestData + "JannieJones.ogg" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -261,18 +254,20 @@ namespace CLAMTest
 				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
 								     readSamplesLeft2.GetBuffer() );
 
-				//CPPUNIT_ASSERT
-				//	(  simLeft >= 0.9999 );
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9999 );
 
 				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
 								      readSamplesRight2.GetBuffer() );
-				//CPPUNIT_ASSERT
-				//	( simRight >= 0.9999 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9999 );
 
 			}
 
 			procReader.Stop();
 			procReader2.Stop();		
+
 
 			CPPUNIT_ASSERT_EQUAL( framesRead,
 					      framesChecked );

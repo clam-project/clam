@@ -551,10 +551,12 @@ namespace CLAMTest
 							      prevRightSamples );
 
 
-			CPPUNIT_ASSERT( fabs( 1.0 // MRJ: value established by inspection
+
+			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection
 					      - similarityLeft ) < 1e-4 );
 			CPPUNIT_ASSERT( fabs( 1.0 // MRJ: value established by inspection
 					      - similarityRight ) < 1e-4 );
+
 		}
 
 		

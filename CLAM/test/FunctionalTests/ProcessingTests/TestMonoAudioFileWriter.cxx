@@ -6,6 +6,7 @@
 #include "MonoAudioFileWriter.hxx"
 #include "Audio.hxx"
 #include "similarityHelper.hxx"
+#include <deque>
 
 namespace CLAMTest
 {
@@ -21,6 +22,8 @@ namespace CLAMTest
 		CPPUNIT_TEST( testConfigure_ReturnsFalse_WithJustFilename );
 		CPPUNIT_TEST( testDo_PCM_WritesTheSameItWasRead );
 		CPPUNIT_TEST( testDo_OggVorbis_WritesTheSameItWasRead );
+
+		CPPUNIT_TEST( testDequeUsage );
 
 		CPPUNIT_TEST_SUITE_END();
 
@@ -40,6 +43,63 @@ namespace CLAMTest
 
 	private:
 		
+		void testDequeUsage()
+		{
+			int buffer[] = { 3, 4, 5, 6, 7, 8, 9, 10 };
+			std::deque<int> mydeque;
+
+			std::cout << std::endl;
+
+			for ( int i = 0; i < 8; i++ )
+				mydeque.push_front( buffer[i] );
+
+			// Let's see 
+
+			std::cout << "Front poping ( using as a LIFO queue ): ";
+			while( !mydeque.empty() )
+			{
+				std::cout << mydeque.front() << " ";
+				mydeque.pop_front();
+			}
+
+			std::cout << std::endl;
+
+			for ( int i = 0; i < 8; i++ )
+				mydeque.push_front( buffer[i] );
+
+			// Let's see 
+
+			std::cout << "Back poping ( using as a FIFO queue ): ";
+			while( !mydeque.empty() )
+			{
+				std::cout << mydeque.back() << " ";
+				mydeque.pop_back();
+			}
+
+			std::cout << "Range insertion ( on the beginning ): ";
+			
+
+			mydeque.insert( mydeque.end(), (int*)buffer, buffer+8 );
+			mydeque.insert( mydeque.end(), (int*)buffer, buffer+8 );
+
+			std::cout << "deque size (after block insertion) is: " << mydeque.size();
+
+			std::cout << "Range popping: ";
+
+			std::copy( mydeque.begin(), mydeque.begin()+8, buffer );
+			mydeque.erase( mydeque.begin(), mydeque.begin()+8 );
+
+			std::cout << "Buffer contents: ";
+			
+			for ( int i= 0; i < 8; i++ )
+				std::cout << buffer[i] << " ";
+			
+			std::cout << "and deque size is: " << mydeque.size();
+			
+			std::cout << std::endl;
+			
+		}
+
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
 			CLAM::AudioFile file;
@@ -151,9 +211,15 @@ namespace CLAMTest
 
 		void testDo_OggVorbis_WritesTheSameItWasRead()
 		{
+
+
 			CLAM::AudioFile inputFile;
 			inputFile.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
 
+
+			std::cout << "\n Original wave file sample count: ";
+			std::cout << (inputFile.GetHeader().GetLength()/1000) * inputFile.GetHeader().GetSampleRate();
+			std::cout << std::endl;
 
 			CLAM::AudioFile outputFile;
 			outputFile.SetLocation( "CopyOfElvis.ogg" );
@@ -210,9 +276,16 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader procReader2;
 			inputFile.SetLocation( "CopyOfElvis.ogg" );
 			cfgReader.SetSourceFile( inputFile );
+
+			std::cout << "\n CLAM-encoded OggVorbis file sample count: ";
+			std::cout << (inputFile.GetHeader().GetLength()/1000) * inputFile.GetHeader().GetSampleRate();
+			std::cout << std::endl;
+
+
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamples2;
+
 			readSamples2.SetSize( 256 );
 
 			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamples2 );
@@ -228,6 +301,9 @@ namespace CLAMTest
 
 				framesChecked++;
 
+				std::cout << "# " << framesChecked << " s(i)= " << sim;
+				std::cout.flush();
+
 				// MRJ: Note that due to decoding/encoding approximation errors
 				// correlation is not as higher as in the PCM case
 				//CPPUNIT_ASSERT
@@ -241,6 +317,8 @@ namespace CLAMTest
 
 			CPPUNIT_ASSERT_EQUAL( framesRead,
 					      framesChecked );
+
+
 		}
 
 
