@@ -33,7 +33,11 @@ class DescriptionXmlTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testDumpScopePool_withIntegerAttributes);
 	CPPUNIT_TEST(testDumpScopePool_withComponentAttributes);
 	CPPUNIT_TEST(testDumpScopePool_withNonInstantiatedAttributes);
+	CPPUNIT_TEST(testRestoreScopePool_withSingleAttribute);
+	CPPUNIT_TEST(testRestoreScopePool_withSeveralAttributes);
+	CPPUNIT_TEST(testRestoreScopePool_withBadScopeName);
 	CPPUNIT_TEST(testDumpDescriptionDataPool_withAllKindsOfData);
+	CPPUNIT_TEST(testRestoreDescriptionDataPool_withAllKindsOfData);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -204,6 +208,87 @@ private:
 		//TODO:
 	}
 
+	void testRestoreScopePool_withSingleAttribute()
+	{
+		std::istringstream input(
+			"<ScopePool name=\"TestScope\" size=\"3\">"
+			"<AttributePool name=\"MyAttribute\">"
+				"value0 value1 value2"
+			"</AttributePool>"
+			"</ScopePool>");
+		CLAM::DescriptionScope scope("TestScope");
+		scope.Add<std::string>("MyAttribute");
+		CLAM::ScopePool pool(scope);
+
+		CLAM::XmlStorage::Restore(pool, input);
+
+		CPPUNIT_ASSERT_EQUAL(3u, pool.GetSize());
+
+		const std::string * data = pool.GetWritePool<std::string>("MyAttribute");
+		const std::string value0("value0"), value1("value1"), value2("value2");
+		CPPUNIT_ASSERT_EQUAL(value0, data[0]);
+		CPPUNIT_ASSERT_EQUAL(value1, data[1]);
+		CPPUNIT_ASSERT_EQUAL(value2, data[2]);
+	}
+
+	void testRestoreScopePool_withSeveralAttributes()
+	{
+		std::istringstream input(
+			"<ScopePool name=\"TestScope\" size=\"3\">"
+			"<AttributePool name=\"MyAttribute\">"
+				"value0 value1 value2"
+			"</AttributePool>"
+			"<AttributePool name=\"MyOtherAttribute\">"
+				"0 -1 -2"
+			"</AttributePool>"
+			"</ScopePool>");
+		CLAM::DescriptionScope scope("TestScope");
+		scope.Add<std::string>("MyAttribute");
+		scope.Add<int>("MyOtherAttribute");
+		CLAM::ScopePool pool(scope);
+
+		CLAM::XmlStorage::Restore(pool, input);
+
+		CPPUNIT_ASSERT_EQUAL(3u, pool.GetSize());
+		{
+			const std::string * data = pool.GetReadPool<std::string>("MyAttribute");
+			const std::string value0("value0"), value1("value1"), value2("value2");
+			CPPUNIT_ASSERT_EQUAL(value0, data[0]);
+			CPPUNIT_ASSERT_EQUAL(value1, data[1]);
+			CPPUNIT_ASSERT_EQUAL(value2, data[2]);
+		}
+		{
+			const int * data = pool.GetReadPool<int>("MyOtherAttribute");
+			for (unsigned int i = 0; i<3; i++)
+				CPPUNIT_ASSERT_EQUAL((const int)-i, data[i]);
+		}
+
+	}
+
+	void testRestoreScopePool_withBadScopeName()
+	{
+		CLAM::DescriptionScope scope("TestScope");
+		scope.Add<std::string>("MyAttribute");
+		CLAM::ScopePool pool(scope);
+
+		std::istringstream input(
+			"<ScopePool name=\"BadName\" size=\"3\">"
+			"<AttributePool name=\"MyAttribute\">"
+				"value0 value1 value2"
+			"</AttributePool>"
+			"</ScopePool>");
+		try
+		{
+			CLAM::XmlStorage::Restore(pool, input);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Loading an scope pool for a different attribute";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
 	void testDumpScopePool_withNoAttributes()
 	{
 		CLAM::DescriptionScope scope("TestScope");
@@ -349,6 +434,61 @@ private:
 			"</ScopePool>"
 		"</DescriptionData>"
 			),_targetStream.str());
+	}
+
+	void testRestoreDescriptionDataPool_withAllKindsOfData()
+	{
+		CLAM::DescriptionScheme scheme;
+		scheme.AddAttribute< CLAM::Attribute<DummyComponent> >("TestScope1","DummyComponentAttribute");
+		scheme.AddAttribute< CLAM::Attribute<unsigned> >("TestScope2","UnsignedAttribute");
+		scheme.AddAttribute< CLAM::Attribute<std::string> >("TestScope2","StringAttribute");
+
+		CLAM::DescriptionDataPool pool(scheme);
+
+		std::istringstream input(
+		"<DescriptionData>"
+			"<ScopePool name=\"TestScope1\" size=\"3\">"
+			"<AttributePool name=\"DummyComponentAttribute\">"
+				"<DummyComponent DummyMember=\"value0\"/>"
+				"<DummyComponent DummyMember=\"value1\"/>"
+				"<DummyComponent DummyMember=\"value2\"/>"
+			"</AttributePool>"
+			"</ScopePool>"
+			"<ScopePool name=\"TestScope2\" size=\"4\">"
+			"<AttributePool name=\"UnsignedAttribute\">"
+				"0 1 2 3"
+			"</AttributePool>"
+			"<AttributePool name=\"StringAttribute\">"
+				"value0 value1 value2 value3"
+			"</AttributePool>"
+			"</ScopePool>"
+		"</DescriptionData>");
+
+		CLAM::XmlStorage::Restore(pool, input);
+
+		CPPUNIT_ASSERT_EQUAL(3u,pool.GetNumberOfContexts("TestScope1"));
+		CPPUNIT_ASSERT_EQUAL(4u,pool.GetNumberOfContexts("TestScope2"));
+		{
+			DummyComponent * data = pool.GetAttributePool<DummyComponent>("TestScope1","DummyComponentAttribute");
+			const std::string value0("value0"), value1("value1"), value2("value2");
+			CPPUNIT_ASSERT_EQUAL(value0, data[0].GetValue());
+			CPPUNIT_ASSERT_EQUAL(value1, data[1].GetValue());
+			CPPUNIT_ASSERT_EQUAL(value2, data[2].GetValue());
+		}
+		{
+			const std::string * data = pool.GetAttributePool<std::string>("TestScope2","StringAttribute");
+			const std::string value0("value0"), value1("value1"), value2("value2"), value3("value3");
+			CPPUNIT_ASSERT_EQUAL(value0, data[0]);
+			CPPUNIT_ASSERT_EQUAL(value1, data[1]);
+			CPPUNIT_ASSERT_EQUAL(value2, data[2]);
+			CPPUNIT_ASSERT_EQUAL(value3, data[3]);
+		}
+		{
+			const unsigned * data = pool.GetAttributePool<unsigned>("TestScope2","UnsignedAttribute");
+			for (unsigned int i = 0; i<4; i++)
+				CPPUNIT_ASSERT_EQUAL((const unsigned)i, data[i]);
+		}
+
 	}
 
 };

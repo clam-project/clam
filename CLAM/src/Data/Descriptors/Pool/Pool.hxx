@@ -112,20 +112,23 @@ namespace CLAM
 		}
 		void LoadFrom(Storage & storage)
 		{
-#ifdef NEVERDEFINED	
-			XMLAdapter<std::string> nameAdapter(_spec.GetName(),"name",false);
+			std::string name;
+			XMLAdapter<std::string> nameAdapter(name,"name",false);
 			storage.Load(nameAdapter);
-			XMLAdapter<unsigned> sizeAdapter(_size,"size",false);
+			CLAM_ASSERT(name==_spec.GetName(),"Loading an scope pool for a different attribute");
+
+			unsigned newSize;
+			XMLAdapter<unsigned> sizeAdapter(newSize,"size",false);
 			storage.Load(sizeAdapter);
+			Reallocate(newSize);
 			for (unsigned attribute=0; attribute<_attributePools.size(); attribute++)
 			{
 				_attributePools[attribute].Deallocate();
 				_attributePools[attribute].Allocate(_size);
-				if (_size && !_attributePools[attribute].GetData()) continue;
+//				if (_size && !_attributePools[attribute].GetData()) continue;
 				XMLComponentAdapter adapter(_attributePools[attribute],"AttributePool",true);
 				storage.Load(adapter);
 			}
-#endif
 		}
 	private:
 		void Reallocate(unsigned newSize)
@@ -258,8 +261,14 @@ namespace CLAM
 		}
 		void LoadFrom(Storage & storage)
 		{
+			for (unsigned i = 0; i<_scopePools.size(); i++)
+			{
+				const DescriptionScope & scope = _scheme.GetScope(i);
+				_scopePools[i] = new ScopePool(scope,0);
+				XMLComponentAdapter adapter(*(_scopePools[i]), "ScopePool", true);
+				storage.Load(adapter);
+			}
 		}
-
 
 		/*
 		unsigned GetScopeSize(const std::string & scopeName)
