@@ -27,6 +27,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "TakingSnapshots_3"=".\VMTutorials\TakingSnapshots_3\TakingSnapshots_3.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Global:
 
 Package=<5>
