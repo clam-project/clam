@@ -99,12 +99,13 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testAttachPortsToNode_WithGeneralTemplatePorts_GetsAttachedToConcreteNode()
 	{
+		const int dummyLength = 1;
 		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
 			concreteNode;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in", this, 0/*dummy length*/);
+		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in", this, dummyLength );
 		CLAM::InPort& in = concreteInPort;
 
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out", this, 0/*dummy length*/);
+		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out", this, dummyLength );
 		CLAM::OutPort& out = concreteOutPort;
 
 		out.Attach(concreteNode);
@@ -117,9 +118,10 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	
 	void testAttachOutPortToNode_WithWrongNodeTypeAsserts()
 	{
+		const int dummyLength = 1;
 		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > 
 			concreteNode;
-		CLAM::OutPortTmpl<CLAM::Audio> audioOutPort("out", this, 0/*dummy length*/);
+		CLAM::OutPortTmpl<CLAM::Audio> audioOutPort("out", this, dummyLength );
 		CLAM::OutPort& out = audioOutPort;
 		
 		try {
@@ -133,7 +135,7 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > 
 			concreteNode;
 
-		const int dummyLength=0; 
+		const int dummyLength=1; 
 		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in", this, dummyLength);
 		CLAM::InPort& in = concreteInPort;
 
