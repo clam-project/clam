@@ -16,7 +16,7 @@
 namespace CLAMTest
 {
 	/// checks that a given filename exists
-	bool helperFileExist(const std::string& filename)
+	inline bool helperFileExist(const std::string& filename)
 	{
 		std::fstream file;
 		file.open( filename.c_str() );
@@ -24,9 +24,9 @@ namespace CLAMTest
 	}
 	
 	/// Loads audio from file using processing AudioFileIn
-	void helperLoadAudioFromFile(const std::string filename, CLAM::Audio& audioToWrite )
+	inline void helperLoadAudioFromFile(const std::string filename, CLAM::Audio& audioToWrite )
 	{
-		CPPUNIT_ASSERT( helperFileExist(filename) );
+		CLAM_ASSERT( helperFileExist(filename), "helperLoadAudioFromFile(..) received a non existing file" );
 		CLAM::AudioFileConfig conf;
 		conf.SetFilename(filename);
 		conf.SetFiletype(CLAM::EAudioFileType::eWave);
@@ -41,7 +41,7 @@ namespace CLAMTest
 	}
 	
 	/// Saves audio to file using processig AudioFileOut
-	void helperSaveAudioToFile( CLAM::Audio& audio, const std::string filename )
+	inline void helperSaveAudioToFile( CLAM::Audio& audio, const std::string filename )
 	{
 		CLAM::AudioFile file;
 		file.SetLocation(filename);
@@ -61,7 +61,7 @@ namespace CLAMTest
 
 	
 	/// this helper func. should result in the future in a processing or assert. 
-	bool helperAudiosAreEqual(
+	inline bool helperAudiosAreEqual(
 			CLAM::Audio& first, 
 			CLAM::Audio& second, 
 			std::string& whyDifferents, 
@@ -102,7 +102,7 @@ namespace CLAMTest
 	/// shorthand for loading an audio and then call
 	/// helperAudiosAreEqual
 	/// in case of not-equals, saves the result audio file
-	bool helperAudioIsEqualToAudioFile( 
+	inline bool helperAudioIsEqualToAudioFile( 
 		CLAM::Audio& audio, 
 		const std::string& audioFile, 
 		std::string& whyDifferents,
@@ -110,7 +110,7 @@ namespace CLAMTest
 	{
 		std::string resultAudioFile = audioFile+"_result.wav";
 		whyDifferents = "comparing with file: "+ audioFile +
-			"\nThe calculed audio has been saved in:  " + resultAudioFile +"\n";
+			"\nThe calculated audio has been saved in:  " + resultAudioFile +"\n";
 		if( !helperFileExist(audioFile) )
 		{
 			helperSaveAudioToFile(audio, resultAudioFile);
