@@ -45,7 +45,7 @@ public: \
 	virtual const char* GetClassName() const { \
 		return #SUB_CLASS; \
 	}\
-	CLAM::DynamicType& GetDynamicTypeCopy(const bool deep=false) const\
+	CLAM::DynamicType& GetDynamicTypeCopy() const\
 	{ \
 		return *new _Sub(*this); \
 	}\
