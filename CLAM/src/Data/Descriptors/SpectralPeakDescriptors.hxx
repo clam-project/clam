@@ -137,7 +137,6 @@ namespace CLAM {
 		void CopyInit(const SpectralPeakDescriptors & copied);
 		
 		TData ComputeCentroid();
-		TData ComputeSpectralTilt();
 		TData ComputeFirstTristimulus();
 		TData ComputeSecondTristimulus();
 		TData ComputeThirdTristimulus();
@@ -172,11 +171,6 @@ inline SpectralPeakDescriptors CLAM_max (const SpectralPeakDescriptors& a,const 
 	{
 		if(b.GetHarmonicCentroid()>a.GetHarmonicCentroid())
 			tmpD.SetHarmonicCentroid(b.GetHarmonicCentroid());
-	}
-	if (a.HasSpectralTilt() && b.HasSpectralTilt())
-	{
-		if(b.GetSpectralTilt()>a.GetSpectralTilt())
-			tmpD.SetSpectralTilt(b.GetSpectralTilt());
 	}
 	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
 	{
@@ -231,11 +225,6 @@ inline SpectralPeakDescriptors CLAM_min (const SpectralPeakDescriptors& a,const 
 	{
 		if(b.GetHarmonicCentroid()<a.GetHarmonicCentroid())
 			tmpD.SetHarmonicCentroid(b.GetHarmonicCentroid());
-	}
-	if (a.HasSpectralTilt() && b.HasSpectralTilt())
-	{
-		if(b.GetSpectralTilt()<a.GetSpectralTilt())
-			tmpD.SetSpectralTilt(b.GetSpectralTilt());
 	}
 	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
 	{
