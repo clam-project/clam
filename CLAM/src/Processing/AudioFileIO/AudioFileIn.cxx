@@ -133,8 +133,13 @@ using namespace CLAM;
 			try {
 				mpSoundFileIO->Read(tmp,j);
 			}
-			catch (ErrSoundFileIO e) {
-				throw ErrProcessingObj(e.mStr,this);
+			catch (ErrSoundFileIO& e) {
+				ErrProcessingObj error( "An inner exception was thrown!", this );
+				error.Embed( e );
+
+				throw error;
+					
+				
 			}
 			float* sptr = tmp;
 			n -= j;
@@ -235,13 +240,35 @@ using namespace CLAM;
 		try {	
 			mpSoundFileIO->Open(mConfig.GetFilename().c_str(),WaveFileIO::eRead);	
 		}
+		catch ( UnavailableSoundFile& err )
+		{
+			mStatus += "An UnavailableSoundFile exception was thrown\n";
+			SetExecState( Unconfigured );
+			throw err;
+		}
+		catch ( UnsupportedSoundFileSampleEncoding& err )
+		{
+			mStatus += "An UnsupportedSoundFileSampleEncoding exception was thrown\n";
+			SetExecState( Unconfigured );
+			throw err;
+		}
+		catch ( UnsupportedSoundFileFormat& err )
+		{
+			mStatus += "An UnsupportedSoundFileFormat exception was thrown\n";
+			SetExecState( Unconfigured );
+			throw err;
+		}
 		catch (ErrSoundFileIO& err)
 		{
-			mStatus += "Error opening file: ";
-			mStatus += err.mStr;
+			mStatus += "Unknown file error exception was thrown  ";
+			mStatus += err.what();
 			mStatus += "\n";
-			return false;
+			
+			SetExecState( Unconfigured );
+
+			throw err;
 		}
+		
 		if (
 			mConfig.GetChannels() && 
 			mConfig.GetChannels()!=mpSoundFileIO->Header().mChannels
@@ -250,14 +277,17 @@ using namespace CLAM;
 			mStatus += "AudioFileIn: File does not have the requested number of channels";
 			return false;
 		}
-		try {	
+		
+		try 
+		{	
 			mpSoundFileIO->SeekFrame(mConfig.GetStartFrame());
-//			printf("Seeking to %d\n",mConfig.GetStartFrame());
 		}
 		catch (ErrSoundFileIO& e)
 		{
 			mStatus = "Error seeking frame\n";
-			return false;
+			SetExecState( Unconfigured );
+
+			throw e;
 		}	
 		return true;
 	}
