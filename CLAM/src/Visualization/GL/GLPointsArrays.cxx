@@ -5,7 +5,7 @@
 namespace CLAMVM
 {
 		GLPointsArrays::GLPointsArrays()
-				: mXDataArray( NULL ), mYDataArray( NULL ), mXDataLen( NULL ), mYDataLen( NULL ), mMinY( 0 )
+				: mXDataArray( NULL ), mYDataArray( NULL ), mXDataLen( 0 ), mYDataLen( 0 ), mMinY( 0 )
 		{
 		}
 
