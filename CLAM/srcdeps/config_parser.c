@@ -46,6 +46,27 @@ int var_true(char* subst,const char* filename,int line)
 	{
 		return 1;
 	}
+
+	if (n->l && n->l->first && 
+		(
+			!strcmp(n->l->first->str,"0") ||
+			!strcmp(n->l->first->str,"no") ||
+			!strcmp(n->l->first->str,"NO") ||
+			!strcmp(n->l->first->str,"false") ||
+			!strcmp(n->l->first->str,"FALSE")
+		)
+	)
+	{
+		return 0;
+	}
+
+	fprintf(stderr,
+	"Variable \"%s\" has not a valid boolean value %s in line %s:%d\n",
+		subst,
+		(n->l && n->l->first) ? n->l->first->str : "undef",
+		filename,line);
+	exit(-1);
+
 	return 0;
 }
 
@@ -238,6 +259,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 		listkey* i = 0;
 
 		int is_include = 0;
+		int is_echo = 0;
 		int need_assign = 1;
 		int had_assign = 0;
 		int had_filename = 0;
@@ -248,10 +270,24 @@ void config_parse_line(char* ptr,const char* filename,int line)
 			is_include = 1;
 			need_assign = 0;
 		}
+		/* special case: the first token is echo */
+		if (!strcmp(key,"echo"))
+		{
+			is_echo = 1;
+			need_assign = 0;
+		}
 		
 		while (*ptr)
 		{
-			if (is_include)
+			if (is_echo)
+			{
+				if (k>0)
+				{
+					if (k>1) fputs(" ",stderr);
+					fputs(ptr,stderr);
+				}
+			}
+			else if (is_include)
 			{
 				if (k>0)
 				{
@@ -324,6 +360,11 @@ void config_parse_line(char* ptr,const char* filename,int line)
 					"(Maybe a missing '\' at an end of line?)\n",
 					filename,line);
 			exit(-1);			
+		}
+
+		if (is_echo)
+		{
+			fputs("\n",stderr);
 		}
 
 		if (is_include && !had_filename)
