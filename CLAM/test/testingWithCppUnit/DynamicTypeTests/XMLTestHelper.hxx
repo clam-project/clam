@@ -64,6 +64,7 @@ namespace CLAMTest {
 			storage.Dump(inObject, "Object", in);
 		}
 #endif//CLAM_USE_XML
+//debug:	std::cout << "debuging in:\n" << in.str() <<"out:\n" << out.str() << "\n\n";
 		return in.str()==out.str();
 
 	}

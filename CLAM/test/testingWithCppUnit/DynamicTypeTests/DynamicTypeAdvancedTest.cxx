@@ -41,8 +41,8 @@ void DynamicTypeAdvancedTest::SimpleXMLSupport()
 {
 	Dyn p;
 	p.Populate(); p.Modify( 4 );
-	bool match = XMLInputOutputMatches( p,__FILE__"Dyn.xml" );
-	CPPUNIT_ASSERT( match );
+	bool matchesXML = XMLInputOutputMatches( p,__FILE__"Dyn.xml" );
+	CPPUNIT_ASSERT( matchesXML );
 }
 
 void DynamicTypeAdvancedTest::XMLCustomizationByRedefinition()
@@ -51,8 +51,8 @@ void DynamicTypeAdvancedTest::XMLCustomizationByRedefinition()
 	o.AddAll(); o.UpdateData();
 	Dyn & p = o.GetSubDyn();
 	p.AddAll(); p.UpdateData();
-	bool match = XMLInputOutputMatches( o,__FILE__"DynAlt.xml" );
-	CPPUNIT_ASSERT_MESSAGE("this test should be reworked (pau)", match );
+	bool matchesXML = XMLInputOutputMatches( o,__FILE__"DynAlt.xml" );
+	CPPUNIT_ASSERT(matchesXML );
 }
 
 void DynamicTypeAdvancedTest::XMLCustomizationBySubclassing()
@@ -61,8 +61,8 @@ void DynamicTypeAdvancedTest::XMLCustomizationBySubclassing()
 	o.AddAll(); o.UpdateData();
 	Dyn & p = o.GetSubDyn();
 	p.AddAll(); p.UpdateData();
-	bool match = XMLInputOutputMatches(o,__FILE__"DynAlt.xml");
-	CPPUNIT_ASSERT( match );
+	bool matchesXML = XMLInputOutputMatches(o,__FILE__"DynAlt.xml");
+	CPPUNIT_ASSERT( matchesXML );
 }
 
 void DynamicTypeAdvancedTest::XMLWithArrayAttribute()
@@ -88,8 +88,8 @@ void DynamicTypeAdvancedTest::XMLWithArrayAttribute()
 	ad.AddElem(d1);
 	ad.AddElem(d1);
 	ad.AddElem(d1);
-	bool match = XMLInputOutputMatches( o,__FILE__"DynWithArrays.xml" );
-	CPPUNIT_ASSERT( match );
+	bool matchesXML = XMLInputOutputMatches( o,__FILE__"DynWithArrays.xml" );
+	CPPUNIT_ASSERT( matchesXML );
 
 }
 
@@ -98,8 +98,8 @@ void DynamicTypeAdvancedTest::XMLWithIterableAttribute()
 	DynWithIterables o;
 	o.Populate();
 	o.Modify(5);
-	bool match = XMLInputOutputMatches(o,__FILE__"DynWithIterables.xml");
-	CPPUNIT_ASSERT( match );
+	bool matchesXML = XMLInputOutputMatches(o,__FILE__"DynWithIterables.xml");
+	CPPUNIT_ASSERT( matchesXML );
 }
 
 class Loggable

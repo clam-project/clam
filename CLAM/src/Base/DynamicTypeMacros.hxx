@@ -33,20 +33,21 @@
 // * DYNAMIC_TYPE_USING_INTERFACE
 // * DYN_ATTRIBUTE
 // * DYN_CONTAINER_ATTRIBUTE
+// * SUB_DYNAMIC_TYPE    (incorported on Febr 2003)
 //////////////////////////////////////////////////////////////////////
 
-
-#define __COMMON_DYNAMIC_TYPE(CLASS_NAME,N) \
+#define SUB_DYNAMIC_TYPE( SUB_CLASS, SUPER_CLASS, NATTRS ) \
 public: \
-	/* \todo two args macro typedef SuperClassName _Super; */\
-	typedef CLAM::DynamicType _Super; \
+	typedef SUB_CLASS _Sub; \
+	typedef SUPER_CLASS _Super; \
+	enum { BaseAttributeNumber = _Super::InheritanceFollowNumber }; \
+	enum { InheritanceFollowNumber = BaseAttributeNumber+NATTRS} ; \
 	virtual const char* GetClassName() const { \
-		return #CLASS_NAME; \
+		return #SUB_CLASS; \
 	}\
-	enum { eNumAttr= N }; \
 	CLAM::DynamicType& GetDynamicTypeCopy(const bool deep=false) const\
 	{ \
-		return *new CLASS_NAME(*this); \
+		return *new _Sub(*this); \
 	}\
 	virtual CLAM::StaticInfo& GetStaticInfo() const { \
 		static CLAM::StaticInfo* p=0; \
@@ -55,44 +56,48 @@ public: \
 		} \
 		return *p;\
 	} \
-public: \
 	/** Visit all Dynamic Attributes */ \
 	template <typename Visitor> \
+	/* non virtual, because is template */ \
 	void VisitAll (Visitor & visitor) { \
-		VisitChainedAttr((AttributePosition<0>*)NULL, visitor); \
+		_Super::VisitAll( visitor ); \
+		VisitChainedAttr((AttributePosition< BaseAttributeNumber >*)NULL, visitor); \
 	} \
 	/** Remove all Dynamic Attributes */ \
-	void RemoveAll () { \
-		RemoveChainedAttr((AttributePosition<0>*)NULL); \
+	virtual void RemoveAll () { \
+		_Super::RemoveAll(); \
+		RemoveChainedAttr((AttributePosition< BaseAttributeNumber >*)NULL); \
 	} \
 	/** Add all Dynamic Attributes */ \
-	void AddAll () { \
-		AddChainedAttr((AttributePosition<0>*)NULL); \
-	} \
-private: \
-	/** Add all Dynamic Attributes */ \
-	void InformAll () const { \
-		GetStaticInfo().AddClassName( #CLASS_NAME ); \
-		InformChainedAttr((AttributePosition<0>*)NULL); \
-		DynamicType::InformAll(); \
+	virtual void AddAll () { \
+		_Super::AddAll(); \
+		AddChainedAttr((AttributePosition< BaseAttributeNumber >*)NULL); \
 	} \
 protected: \
+	/** Add all Dynamic Attributes */ \
+	virtual void InformAll() const { \
+		_Super::InformAll(); \
+		GetStaticInfo().AddClassName( #SUB_CLASS ); \
+		InformChainedAttr((AttributePosition< BaseAttributeNumber >*)NULL); \
+	} \
 	/** Store all Dynamic Attributes */ \
 	virtual void StoreDynAttributes(CLAM::Storage & s) { \
-		StoreChainedAttr((AttributePosition<0>*)NULL,s); \
+		_Super::StoreDynAttributes( s ); \
+		StoreChainedAttr((AttributePosition< BaseAttributeNumber >*)NULL,s); \
 	} \
 	/** Load all Dynamic Attributes */ \
 	virtual void LoadDynAttributes(CLAM::Storage & s) { \
+		_Super::LoadDynAttributes( s ); \
 		AddAll(); \
 		UpdateData(); \
-		LoadChainedAttr((AttributePosition<0>*)NULL,s); \
+		LoadChainedAttr((AttributePosition< BaseAttributeNumber >*)NULL,s); \
 		UpdateData(); \
 	} \
 private: \
 	template <unsigned int NAttrib> \
 		class AttributePosition : public CLAM::DynamicType::AttributePositionBase<NAttrib> { \
 		public: \
-			typedef StaticBool<!(NAttrib>=N)> InboundsCheck; \
+			typedef StaticBool<!(NAttrib>=NATTRS)> InboundsCheck; \
 	}; \
 	/** Instantiated whenever a Attribute number is out of range. 
 	 * Gives a compilation error message.
@@ -150,37 +155,39 @@ private: \
 private: \
 	/** Method chain terminator */ \
 	template <typename Visitor> \
-	void VisitChainedAttr (AttributePosition<N>*, Visitor & visitor) { \
+	void VisitChainedAttr (AttributePosition< InheritanceFollowNumber >*, Visitor & visitor) { \
 	} \
 	/** Method chain terminator */ \
-	void RemoveChainedAttr (AttributePosition<N>*) { \
+	void RemoveChainedAttr (AttributePosition< InheritanceFollowNumber>*) { \
 	} \
 	/** Method chain terminator */ \
-	void AddChainedAttr (AttributePosition<N>*) { \
+	void AddChainedAttr (AttributePosition< InheritanceFollowNumber>*) { \
 	} \
 	/** Method chain terminator */ \
-	void InformChainedAttr (AttributePosition<N>*) const { \
+	void InformChainedAttr (AttributePosition< InheritanceFollowNumber>*) const { \
 	} \
 	/** Method chain terminator */ \
-	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
+	void StoreChainedAttr (AttributePosition< InheritanceFollowNumber>*pos, CLAM::Storage &s) { \
 	} \
 	/** Method chain terminator */ \
-	void LoadChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
+	void LoadChainedAttr (AttributePosition< InheritanceFollowNumber>*pos, CLAM::Storage &s) { \
 	} \
 
 
-
-#define DYNAMIC_TYPE(CLASS_NAME, N)\
+#define DYNAMIC_TYPE(CLASS_NAME, NATTRS)\
 public: \
-	__COMMON_DYNAMIC_TYPE(CLASS_NAME,N); \
+	SUB_DYNAMIC_TYPE( CLASS_NAME, CLAM::DynamicType, NATTRS ); \
 
 
+
+
+///// ----------------->>> old 
 #define DYNAMIC_TYPE_USING_INTERFACE(CLASS_NAME, N, INTERFACE_NAME) \
 public: \
 	__COMMON_DYNAMIC_TYPE(CLASS_NAME,N); \
 
 
-#define __COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
+#define __COMMON_DYN_ATTRIBUTE(ID_ATTR, ACCESS, TYPE,NAME) \
 private: \
 	static void* _new_##NAME(void* p) { \
 		return static_cast<void*> (new(p) TYPE());\
@@ -195,39 +202,25 @@ private: \
 	}\
 	\
 	/* \todo remove if we can do the same with templates (VC6 can be a problem) */ \
-	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
+	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##ID_ATTR;\
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
-		CLAM_DEBUG_ASSERT( (N<NumAttr()), \
-			"There are more registered Attributes than the number " \
-		        "defined in the DYNAMIC_TYPE macro.");\
-		CLAM_ASSERT( ExistAttr(N),\
-			"You are trying to access attribute " #NAME \
-			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT( HasData(), \
-			"No data allocated for the accessed dynamic type:" #NAME );\
-		void *p=_data + GetAttrOffs(N);\
+		CheckBeforeDynamicAttributeAccessor( BaseAttributeNumber+ID_ATTR ); \
+		void *p=_data + GetAttrOffs( BaseAttributeNumber+ID_ATTR );\
 		return *static_cast<TYPE*>(p); \
 	}\
 	\
 	/*  already exist an object of the type in that position (that will be deleted)*/\
 	inline void Set##NAME(TYPE const & arg) {\
-		CLAM_DEBUG_ASSERT( ( N<NumAttr() ), \
-			"There are more registered Attributes than the number " \
-		        "defined in the DYNAMIC_TYPE macro.");\
-		CLAM_ASSERT( ExistAttr(N),\
-			"You are trying to access attribute " #NAME \
-			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT( HasData(), \
-			"No data allocated for the accessed dynamic type." #NAME ); \
+		CheckBeforeDynamicAttributeAccessor( BaseAttributeNumber+ID_ATTR ); \
 		void* orig = (void*)(&arg); \
-		char* pos = _data + GetAttrOffs(N); \
+		char* pos = _data + GetAttrOffs( BaseAttributeNumber+ID_ATTR ); \
 		_destructor_##NAME(pos); \
 		_new_##NAME(pos, orig); \
 	} \
 	inline void Add##NAME() { \
-		_AddAttr( N, sizeof(TYPE) ); \
+		_AddAttr(  BaseAttributeNumber+ID_ATTR , sizeof(TYPE) ); \
 	} \
 	template <typename Visitor> \
 	inline void Visit##NAME(Visitor & visitor) { \
@@ -235,30 +228,26 @@ ACCESS: \
 			visitor.Accept(#NAME,Get##NAME()); \
 	}\
 	inline void Remove##NAME() { \
-		_RemoveAttr( N, sizeof(TYPE) ); \
+		_RemoveAttr(  BaseAttributeNumber+ID_ATTR , sizeof(TYPE) ); \
 	}\
 	inline bool Has##NAME() const { \
-		return ExistAttr(N); \
+		return ExistAttr( BaseAttributeNumber+ID_ATTR ); \
 	} \
-private: \
-	static inline int GetSize##NAME() { return sizeof(TYPE); } \
-	static inline char* GetType##NAME() { return #TYPE; } \
-	static inline int GetId##NAME() { return N;}\
 private: \
 	template <typename Visitor> \
-	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
+	void VisitChainedAttr(AttributePosition<BaseAttributeNumber+ID_ATTR>*, Visitor & visitor) { \
 		Visit##NAME(visitor); \
-		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
+		VisitChainedAttr((AttributePosition<(BaseAttributeNumber+ID_ATTR)+1>*)NULL, visitor); \
 	} \
-	void RemoveChainedAttr(AttributePosition<N>*) { \
+	void RemoveChainedAttr(AttributePosition<BaseAttributeNumber+ID_ATTR>*) { \
 		Remove##NAME(); \
-		RemoveChainedAttr((AttributePosition<(N)+1>*)NULL); \
+		RemoveChainedAttr((AttributePosition<(BaseAttributeNumber+ID_ATTR)+1>*)NULL); \
 	} \
-	void AddChainedAttr(AttributePosition<N>*) { \
+	void AddChainedAttr(AttributePosition<BaseAttributeNumber+ID_ATTR>*) { \
 		Add##NAME(); \
-		AddChainedAttr((AttributePosition<(N)+1>*)NULL); \
+		AddChainedAttr((AttributePosition<(BaseAttributeNumber+ID_ATTR)+1>*)NULL); \
 	} \
-	void InformChainedAttr(AttributePosition<N>*) const { \
+	void InformChainedAttr(AttributePosition<BaseAttributeNumber+ID_ATTR>*) const { \
 		AttrStaticInfo attr; \
 		CLAM::StaticInfo::DeduceTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
 		attr.name= #NAME; \
@@ -268,20 +257,20 @@ private: \
 		attr.newObjCopy= _new_##NAME; \
 		attr.destructObj= _destructor_##NAME; \
 		GetStaticInfo().AddAttr( attr ); \
-		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
+		InformChainedAttr((AttributePosition<(BaseAttributeNumber+ID_ATTR)+1>*)NULL); \
 	} \
-	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
+	void StoreChainedAttr(AttributePosition<BaseAttributeNumber+ID_ATTR>*, CLAM::Storage & s) { \
 		Store##NAME(s); \
-		StoreChainedAttr((AttributePosition<(N)+1>*)NULL,s); \
+		StoreChainedAttr((AttributePosition<(BaseAttributeNumber+ID_ATTR)+1>*)NULL,s); \
 	} \
-	void LoadChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
+	void LoadChainedAttr(AttributePosition<BaseAttributeNumber+ID_ATTR>*, CLAM::Storage & s) { \
 		Load##NAME(s); \
-		LoadChainedAttr((AttributePosition<(N)+1>*)NULL,s); \
+		LoadChainedAttr((AttributePosition<(BaseAttributeNumber+ID_ATTR)+1>*)NULL,s); \
 	} \
 
 
-#define DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
-	__COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
+#define DYN_ATTRIBUTE(ID_ATTR, ACCESS, TYPE, NAME) \
+	__COMMON_DYN_ATTRIBUTE(ID_ATTR, ACCESS, TYPE, NAME) \
 protected: \
 	void Store##NAME(CLAM::Storage & s) { \
 		if (Has##NAME()) { \
@@ -300,8 +289,8 @@ protected: \
 ACCESS: \
 
 
-#define DYN_CONTAINER_ATTRIBUTE(N,ACCESS,TYPE,NAME,ENAME) \
-	__COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
+#define DYN_CONTAINER_ATTRIBUTE( ID_ATTR, ACCESS, TYPE, NAME, ENAME) \
+	__COMMON_DYN_ATTRIBUTE(ID_ATTR, ACCESS, TYPE, NAME) \
 protected: \
 	void Store##NAME(CLAM::Storage & s) { \
 		if (Has##NAME()) { \

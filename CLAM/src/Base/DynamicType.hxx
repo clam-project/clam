@@ -152,36 +152,6 @@ public:
 	bool HasData() const { return _data != 0; }
 
 
-protected:
-	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
-	void DefaultInit();
-	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
-	void CopyInit(const DynamicType & dt);
-	
-	/// \todo change macros InformAll implementation with inheritance.
-	virtual void InformAll() const {
-		GetStaticInfo().AddClassName( "DynamicType" );
-	};
-
-	// Import of types to be accessible from sub-classes
-	typedef StaticInfo::AttrStaticInfo AttrStaticInfo;
-	typedef StaticInfo::AttrStaticInfo::NewInplaceFn NewInplaceFn;
-	typedef StaticInfo::AttrStaticInfo::NewCopyInplaceFn NewCopyInplaceFn;
-	typedef StaticInfo::AttrStaticInfo::DestructorInplaceFn DestructorInplaceFn;
-	
-	/** Called from the virtual GetStaticInfo, which passes its static pointer
-	 * to StaticInfo. And only calls this method when its pointer is not 
-	 * initialized. This InformAll is called only once per class.
-	 */
-	void InitStaticInfo(StaticInfo* & pStaticInfo) const;
-
-private:
-	bool DynamicInfoIsInit() const { return _dynInfo._parentDT != 0; }
-
-public:
-
-protected:
-	
 public:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
@@ -207,26 +177,44 @@ public:
 	/// Developing/testing method
 	void FullfilsInvariant() const;
 	
-	/// This inline method contains actual code only if preprocessor flag: 
-	/// CLAM_EXTRA_CHECKS_ON_DT is set.
-	/// This method is called at the end of some other class methods, for consistency
-	/// checks. It needs to be public because DynamicInfo alse calls it.
+	/** This inline method contains actual code only if preprocessor flag: 
+	 * CLAM_EXTRA_CHECKS_ON_DT is set.
+	 * This method is called at the end of some other class methods, for consistency
+	 * checks. It needs to be public because DynamicInfo alse calls it. 
+	 */
 	void CheckInvariantIfExtraChecksIsSet();
 
 protected:
+// Inferface for the macro expanded code:
+
+
+	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
+	void DefaultInit();
+	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
+	void CopyInit(const DynamicType & dt);
+	
+	// Import of types to be accessible from sub-classes
+	typedef StaticInfo::AttrStaticInfo AttrStaticInfo;
+	typedef StaticInfo::AttrStaticInfo::NewInplaceFn NewInplaceFn;
+	typedef StaticInfo::AttrStaticInfo::NewCopyInplaceFn NewCopyInplaceFn;
+	typedef StaticInfo::AttrStaticInfo::DestructorInplaceFn DestructorInplaceFn;
+	
+	/** Called from the virtual GetStaticInfo, which passes its static pointer
+	 * to StaticInfo. And only calls this method when its pointer is not 
+	 * initialized. This InformAll is called only once per class.
+	 */
+	void InitStaticInfo(StaticInfo* & pStaticInfo) const;
+
+
 	bool ExistAttr(unsigned id) const;
 	int NumAttr() const;
-
 	/// Used in macro expanded AddXxx(). Hence, this _protected_ name.
 	void _AddAttr( int idAttr, int attrSize ) {	GetDynamicInfo().AddAttr( idAttr, attrSize ); }
-
 	/// Used in macro expanded RemoveXxx(). Hence, this _protected_ name.
 	void _RemoveAttr( int idAttr, int attrSize ) { GetDynamicInfo().RemoveAttr( idAttr, attrSize ); }
 
 	int GetAttrOffs( int idAttr ) const;
-	virtual void StoreDynAttributes(CLAM::Storage & s) = 0;
-	virtual void LoadDynAttributes(CLAM::Storage & s) = 0;
-
+	
 	template <typename AttribType>
 	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name);
 	template <typename AttribType>
@@ -247,8 +235,21 @@ protected:
 	public:
 		static const int value;
 	};
+	void CheckBeforeDynamicAttributeAccessor(int idAttr) const; 
+	//Long name! so minimizing chances of name collision
+	
+	enum {InheritanceFollowNumber=0};
+	virtual void AddAll() {}
+	virtual void RemoveAll() {}
+	virtual void InformAll() const { GetStaticInfo().AddClassName( "CLAM::DynamicType" ); };
 
+	template <typename Visitor>	void VisitAll(Visitor & ) {}
+	virtual void StoreDynAttributes( Storage& ) {}
+	virtual void LoadDynAttributes( Storage& ) {}
+
+	
 private:
+	bool DynamicInfoIsInit() const { return _dynInfo._parentDT != 0; }
 	virtual void RemoveAllMem();
 	void* GetPtrToData_(const int id) const;
 	void* GetDataAsPtr_(const int id) const;
@@ -285,10 +286,9 @@ protected:
 private:
 	bool _preAllocateAllAttributes;
 	mutable DynamicInfo _dynInfo; // can't never be const because it's accessed via GetDynamicInfo
-
-
-
 };
+
+
 
 
 //////////////////////////////////////////////////////////////////
@@ -330,6 +330,17 @@ inline void* DynamicType::GetPtrToData_(const int idAttr) const
 inline void DynamicType::SetDataAsPtr_(const int idAttr, void* p)
 {
 	*(void**)&_data[ GetAttrOffs(idAttr) ] = p;
+}
+inline void DynamicType::CheckBeforeDynamicAttributeAccessor(int idAttr) const
+{
+	CLAM_DEBUG_ASSERT( idAttr<NumAttr(),
+		"There are more registered Attributes than the number "
+        "defined in the DYNAMIC_TYPE macro.");
+	CLAM_ASSERT( ExistAttr(idAttr),
+		"You are trying to access a dynamic attribute "
+		" that is not Added or not Updated.");
+	CLAM_DEBUG_ASSERT( HasData(),
+		"No data allocated for the accessed dynamic type attribute" );
 }
 
 inline void DynamicType::CheckInvariantIfExtraChecksIsSet()

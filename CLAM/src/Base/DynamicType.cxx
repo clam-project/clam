@@ -542,11 +542,13 @@ void DynamicType::FullfilsInvariant() const
 		}
 		if ( attrHasData ) 
 		{
-			if ( attrRemoved ) decData += attrSize;
+			if ( attrRemoved ) 
+				decData += attrSize;
 			if (!_data) throw ErrDynamicType("in FullfilsInvariant: An attr. has data but data==0");
 		}
 		else 
-			if ( attrAdded ) incData += attrSize;
+			if ( attrAdded ) 
+				incData += attrSize;
 		
 		else if ( attrOffs != -1) 
 			throw ErrDynamicType(" in FullfilsInvariant: attribute not informed with dynamic offset <> -1");
