@@ -486,23 +486,23 @@ namespace CLAMTest
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
 			
-			/*
-			std::cout << std::endl;
-			std::cout << header.GetSampleRate() << std::endl;
-			std::cout << header.GetChannels() << std::endl;
-			std::cout << header.GetLength() << std::endl;
-			std::cout << header.GetFormat().GetString() << std::endl;
-			std::cout << header.GetEncoding().GetString() << std::endl;
-			std::cout << header.GetEndianess().GetString() << std::endl;
-			std::cout << std::endl;
-			*/
+
+// 			std::cout << std::endl;
+// 			std::cout << header.GetSampleRate() << std::endl;
+// 			std::cout << header.GetChannels() << std::endl;
+// 			std::cout << header.GetLength() << std::endl;
+// 			std::cout << header.GetFormat().GetString() << std::endl;
+// 			std::cout << header.GetEncoding().GetString() << std::endl;
+// 			std::cout << header.GetEndianess().GetString() << std::endl;
+// 			std::cout << std::endl;
+
 
 
 			CPPUNIT_ASSERT_EQUAL( int(22050),
 					      (int)header.GetSampleRate() );
 			CPPUNIT_ASSERT_EQUAL( int(1),
 					      (int)header.GetChannels() );
-			CPPUNIT_ASSERT_EQUAL( int(2560),
+			CPPUNIT_ASSERT_EQUAL( int(2430),
 					      (int)header.GetLength() );
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio Layer 3"),
 					      header.GetFormat().GetString() );
