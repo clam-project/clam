@@ -110,8 +110,16 @@ namespace CLAM
 		
 		return true;
 	}
-
+	
 	bool MonoAudioFileReader::Do()
+	{
+		bool result = Do( mOutput.GetAudio() );
+		mOutput.Produce();
+
+		return result;
+	}
+
+	bool MonoAudioFileReader::Do( Audio & outputSamples )		
 	{
 		if ( !AbleToExecute() )
 			return false;
@@ -121,13 +129,11 @@ namespace CLAM
 
 	
 		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(), &(mOutput.GetData()), mOutput.GetSize() );
-		Audio& outputSamples = mOutput.GetAudio();
 		outputSamples.SetBeginTime( mCurrentBeginTime );
 		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
 		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 
-		mOutput.Produce();
 		return true;
 	}
 	
