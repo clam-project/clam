@@ -11,7 +11,58 @@
 #include "makegen.h"
 #include "verbose.h"
 
+typedef enum {windows, linux, apple} Platform;
+Platform platform;
+
 int verbose = 0;
+
+//Create moc-generated and uic-generated files folders
+void createQtGenDirsIfNecessary()
+{
+	listkey* h = NULL;
+
+	if (platform != windows)
+		return;
+
+	h = listhash_find( config, "USE_QT" );
+	if (!h) 
+		return;
+	
+	if ( !strcmp(h->l->first->str,"1") )
+	{
+		fprintf( stderr, "Creating .\\moc folder...\n" );
+		system( "mkdir moc" );
+		fprintf( stderr, "Creating .\\uic folder...\n" );
+		system( "mkdir uic" );
+	}
+}
+
+void addQtGenDirsToIncludepaths()
+{
+	listkey* h = NULL;
+	item* current = NULL;
+	h = listhash_find( config, "UI_FILES" );
+	if (!h) return;
+	
+	current = h->l->first;
+	if ( current )
+	{
+		list_add_str_once( includepaths, "./uic" );
+		list_add_str_once( needed_includepaths, "./uic");
+	}
+
+	if (verbose)
+	{
+		printf( stderr, "Files that need to be uic'ed\n" );
+		while( current != NULL )
+		{
+			fprintf( stderr, "%s \n", current->str );
+			current = current->next;
+		}
+	}
+}
+
+
 
 int main(int argc,char** argv)
 {
@@ -19,8 +70,6 @@ int main(int argc,char** argv)
 	char vcprojFileToWrite[250];
 
 	struct Cmd_options settings;
-	init_cmd_options( &settings );
-
 	if (!cmdline_parse(argc, argv, &settings ) )
 	{
 		print_cmd_usage( &settings );
@@ -45,19 +94,21 @@ int main(int argc,char** argv)
 		recursesrcs = 1;
 	}
 	
-	
 	config_init();
 
 #ifdef __APPLE__
+	platform = apple;
 	listhash_add_item_str(config,"OS_WINDOWS","0");
 	listhash_add_item_str(config,"OS_LINUX","0");
 	listhash_add_item_str(config,"OS_MACOSX","1");
 #else
 #	ifdef WIN32
+	platform = windows;
 	listhash_add_item_str(config,"OS_WINDOWS","1");
 	listhash_add_item_str(config,"OS_LINUX","0");
 	listhash_add_item_str(config,"OS_MACOSX","0");
 #	else // Linux
+	platform = linux;
 	listhash_add_item_str(config,"OS_WINDOWS","0");
 	listhash_add_item_str(config,"OS_LINUX","1");
 	listhash_add_item_str(config,"OS_MACOSX","0");
@@ -70,7 +121,7 @@ int main(int argc,char** argv)
 
 	if (gendepend==1)
 	{
-		// important to the this before parser_init !
+		// important to do this before parser_init !
 		listkey* k = listhash_find(config,"SOURCES");
 		// clear list, we only want to process the src file given on the cmd line
 		list_clear(k->l);
@@ -78,7 +129,6 @@ int main(int argc,char** argv)
 		fprintf(stderr, "in gendepend==1 : added file: %s recurse: %i\n", settings.srcfile, recursesrcs);
 	}
 
-	
 	parser_init();
 	config_check();
 
@@ -86,82 +136,37 @@ int main(int argc,char** argv)
 	{
 		int cnt = 0;
 		item* i = guessed_sources->first;
+		if (settings.progress) fprintf(stderr, "Searching for needed source files:\n");
 		while (i)
 		{
 			if (settings.progress)
 			{
-				fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+				fprintf(stderr,"%d of %d done\t%s\n",cnt,list_size(guessed_sources), i->str);
 				fflush(stderr);
 			}
 
 			parser_run(i->str);
-			
+
 			i = i->next;
 			cnt++;
 		}
 	}
 
-
-#ifdef WIN32
-	// TODO refactor merciless!
+	createQtGenDirsIfNecessary();
 	
-	//Create moc-generated and uic-generated files folders
-	{
-		listkey* h = NULL;
-		h = listhash_find( config, "USE_QT" );
-		if ( h )
-		{
-			if ( !strcmp(h->l->first->str,"1") )
-			{
-				fprintf( stderr, "Creating .\\moc folder...\n" );
-				system( "mkdir moc" );
-				fprintf( stderr, "Creating .\\uic folder...\n" );
-				system( "mkdir uic" );
-			}
-						
-		}
-	}
-#endif
+	addQtGenDirsToIncludepaths();
 
-	{
-		listkey* h = NULL;
-		h = listhash_find( config, "UI_FILES" );
-		if ( h )
-		{
-			item* current = h->l->first;
-			fprintf( stderr, "Files that need to be uic'ed\n" );
 
-			if ( current )
-			{
-				list_add_str_once( includepaths, "./uic" );
-				list_add_str_once( needed_includepaths, "./uic");
-			}
-			
-			while( current != NULL )
-			{
-				fprintf( stderr, "%s \n", current->str );
-				current = current->next;
-			}
-		}
+	if (platform != windows && gendepend==2)
+	{
+		makefilevars_generate();
 	}
 
-	//TODO multiple platform config parsing
-	if (gendepend==2)
+	if (platform == windows )
 	{
-	//	listhash_add_item_str(config,"OS_WINDOWS","0");
-	//	listhash_add_item_str(config,"OS_LINUX","1");
-		makefilevars_generate();		
+		dsp_parse( dspFileToWrite );
+		vcproj_parse( vcprojFileToWrite);
 	}
-//	listhash_add_item_str(config,"PROGRAM","MIDIOut"); // TODO CLUDGE !!!
-
-	listhash_add_item_str(config,"OS_WINDOWS","1");
-	listhash_add_item_str(config,"OS_LINUX","0");
-
-	// config_init ?	
-	config_parse( settings.settingsfile );
-	dsp_parse( dspFileToWrite );
-	vcproj_parse( vcprojFileToWrite);
-	
 
 	parser_exit();
 	config_exit();
