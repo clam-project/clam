@@ -54,9 +54,7 @@ void UserInterface::LoadConfiguration(void)
 void UserInterface::DetachDisplays()
 {
 	if( mAudioInputDisplay!=NULL ){
-//			mSmartTile->close( mAudioInputDisplay );
 		Detach( mAudioInputDisplay );
-//			mSmartTile->equalize();
 	}
 	if( mAudioOutputDisplay!=NULL )
 		Detach( mAudioOutputDisplay );

@@ -371,7 +371,7 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	TSize fileSize=myAudioFileIn.Size();
 
 	mAudioIn.SetSize(fileSize);
-
+	mAudioIn.SetSampleRate(mGlobalConfig.GetSamplingRate());
 	//Read Audio File
 	myAudioFileIn.Start();
 	myAudioFileIn.Do(mAudioIn);
