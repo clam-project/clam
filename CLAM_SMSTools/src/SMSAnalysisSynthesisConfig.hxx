@@ -22,10 +22,10 @@
 #ifndef _SMSAnalysisSynthesisConfig_
 #define _SMSAnalysisSynthesisConfig_
 
-#include "SMSAnalysis.hxx"
-#include "SMSSynthesis.hxx"
+#include "ProcessingConfig.hxx"
+#include "EPhaseGeneration.hxx"
 #include "Filename.hxx"
-//#include "Flags.hxx"
+#include "GlobalEnums.hxx"
 
 namespace CLAM{
 

@@ -20,6 +20,7 @@
  */
 
 #include "IFFT_rfftw.hxx"
+#include "SpecTypeFlags.hxx"
 
 #include <string>
 #include "mtgsstream.h" // An alias for <sstream>

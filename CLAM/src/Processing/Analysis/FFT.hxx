@@ -25,39 +25,24 @@
 
 #include <typeinfo> // for bad_cast definition
 #include "Processing.hxx"
-#include "ProcessingData.hxx"
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
-#include "DataTypes.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include <string>
+#include "FFTConfig.hxx"
 
 namespace CLAM {
 
 	class FFT_rfftw;
-
+	class Storage;
+	class ProcessingConfig;
+	
 	/** Default FFT implemntation. 
 	 * In order to use it, only the FFT.hxx file needs to be included;
 	 * it will include any other necesary header.
 	 */
 	typedef FFT_rfftw FFT;
-
-
-	/** Configuration class for FFT classes
-	 */
-	struct FFTConfig: public ProcessingConfig {
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (FFTConfig, 2, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, int, AudioSize);
-	protected:
-		/** Dynamic type initialization: All attributes are
-		 *   instantiated.
-		 */
-		void DefaultInit(void);
-	};
-
 
 	/** Abstract base class for FFT classes */
 	class FFT_base: public Processing

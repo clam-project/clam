@@ -20,6 +20,8 @@
  */
 
 #include "Complex.hxx"
+#include "Spectrum.hxx"
+#include "SpectralPeakArray.hxx"
 #include "SpectralPeakDetect.hxx"
 #include "ErrProcessingObj.hxx"
 

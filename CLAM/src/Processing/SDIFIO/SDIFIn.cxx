@@ -1,5 +1,5 @@
 #include "SDIFIn.hxx"
-#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "SpectralPeakArray.hxx"

@@ -24,9 +24,15 @@
 #define _FFT_numrec_
 
 #include "FFT.hxx"
+#include "DataTypes.hxx"
+#include "SpecTypeFlags.hxx"
 
 namespace CLAM {
 
+	class FFTConfig;
+	class Spectrum;
+	class Audio;
+	class ProcessingConfig;
 
 	/** Implementation of the FFT using the algorithm in Numerical Recipies
 	 * in C.

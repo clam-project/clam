@@ -26,8 +26,8 @@
 
 #include "SerializationController.hxx"
 
-#include "SMSSynthesis.hxx"
-#include "SMSAnalysis.hxx"
+#include "SMSSynthesisConfig.hxx"
+#include "SMSAnalysisConfig.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
 #include "SMSTransformationChain.hxx"

@@ -23,6 +23,7 @@
 #include "XMLSerializer.hxx"
 
 #include "Segment.hxx"
+#include "SpecTypeFlags.hxx"
 
 using namespace CLAM;
 

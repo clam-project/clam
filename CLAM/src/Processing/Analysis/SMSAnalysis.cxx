@@ -19,6 +19,10 @@
  *
  */
 
+#include "Frame.hxx"
+#include "Segment.hxx"
+#include "Fundamental.hxx"
+#include "SpectrumConfig.hxx"
 #include "SMSAnalysis.hxx"
 
 using namespace CLAM;
