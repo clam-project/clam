@@ -47,7 +47,7 @@ public:
 
 // Implementation Details
 private:
-	void PrintNode(ostream & os, DOM_Node & toWrite);
+	void PrintNode(std::ostream & os, DOM_Node & toWrite);
 // Attributes
 private:
 	unsigned mIndentationLevel;

@@ -30,6 +30,8 @@
 
 #include "XercesDomPrinter.hxx"
 #include <string>
+#include <iostream>
+
 
 //#define CLAM_INDENT_XML
 #define TRACEDUMP if (1); else std::cout
@@ -210,7 +212,7 @@ void CLAM::XercesDomPrinter::UseIndentation(bool shouldI)
 
 
 
-void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
+void CLAM::XercesDomPrinter::Print(std::ostream & os, DOM_Node & toWrite)
 {
 	mIndentationLevel = 0;
 	mLastWasContent = false;
@@ -251,7 +253,7 @@ void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 }
 
 
-void CLAM::XercesDomPrinter::PrintNode(ostream & os, DOM_Node & toWrite)
+void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 {
 	// Get the name and value out for convenience
 	DOMString   nodeName = toWrite.getNodeName();
@@ -594,7 +596,7 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 			int attrCount = attributes.getLength();
 			for (int i = 0; i < attrCount; i++)
 			{
-				for (unsigned int i=indentation++; i--; ) target << ". ";
+				for (unsigned int i=indentation++; i--;) target << ". ";
 				DOM_Node  attribute = attributes.item(i);
 				target << "ATTRIBUTE:"<<attribute.getNodeName()<<"="<<attribute.getNodeValue()<< std::endl;
 				indentation--;  
