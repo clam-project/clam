@@ -51,11 +51,8 @@ protected:
 		const int wireThickness, const int torsionResistence);
 	void mousePressEvent( QMouseEvent *);	
 	void mouseMoveEvent( QMouseEvent *);
-	void mouseReleaseEvent( QMouseEvent *);
-	void keyPressEvent( QKeyEvent * );
 	QPoint origin;
 	QPoint end;
-	bool mDown;
 	QPointArray mPositions;
 	QPoint     mPrevPos;
 	bool mSelected;

@@ -135,7 +135,6 @@ void NetworkPresentation::RebuildProcessingPresentationAttachedTo( const std::st
 		{
 			(*it)->UpdateListOfPortsAndControls( *controller );
 			(*it)->Show();
-//			mProcessingPresentationsToRemove.push_back(*it);
 			return;
 		}
 	}

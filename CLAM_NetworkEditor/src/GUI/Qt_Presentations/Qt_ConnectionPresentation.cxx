@@ -23,11 +23,8 @@
 
 
 #include <qpixmap.h>
-#include <iostream>
 #include <qpainter.h>
 #include <qbitmap.h>
-
-#include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
@@ -37,7 +34,6 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 	  origin(-1,-1),
 	  end(-1,-1),
 	  mPositions(4),
-	  mDown(false),
 	  mSelected(false)
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
@@ -122,7 +118,6 @@ void Qt_ConnectionPresentation::mouseMoveEvent( QMouseEvent *m)
 void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 {
 	mPrevPos = m->globalPos();
-	mDown = true;
 	if(!mSelected) // already selected
 	{
 		mSelected = true;
@@ -131,40 +126,12 @@ void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 		else
 			SignalConnectionPresentationSelected.Emit( this );
 		repaint();
-		std::cout << "selected" << std::endl;
 	}
-
-
-//	grabKeyboard();
-//	repaint();
-}
-
-void Qt_ConnectionPresentation::mouseReleaseEvent( QMouseEvent *)
-{
-	mDown = false;
-//	releaseKeyboard();
-//	repaint();
-}
-
-
-void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
-{
-	/*
-	switch ( tolower(k->ascii()) )
-	{
-        case 'x':
-		SignalRemoveConnection.Emit( this );
-		Hide();
-		mDown = false;
-		releaseKeyboard();
-		break;
-	}*/
 }
 
 void Qt_ConnectionPresentation::UnSelectConnectionPresentation()
 {
 	mSelected = false;
-	std::cout << "unselect" << std::endl;
 	repaint();
 }
 

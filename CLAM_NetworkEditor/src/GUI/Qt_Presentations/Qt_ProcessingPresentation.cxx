@@ -33,15 +33,12 @@
 #include <qlineedit.h>
 #include <cmath>
 
-#include <iostream> // TODO: remove
-
 namespace NetworkGUI
 {
 
 Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent, const char *name)
 	: QWidget( parent, name ),
 	  ProcessingPresentation(nameFromNetwork),
-	  mDown(false),
 	  mSelected( false )
 {
 	QWidget * top = topLevelWidget();
@@ -62,6 +59,8 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	SlotSetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::SetOutControlClicked);
 	SlotSetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::SetOutControlAfterClickInControl);
 	SlotSetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::SetInControlAfterClickOutControl);
+
+	SlotConfigurationUpdated.Wrap( this, &Qt_ProcessingPresentation::ConfigurationUpdated );
 }
 
 void Qt_ProcessingPresentation::UpdateSize()
@@ -86,6 +85,12 @@ void Qt_ProcessingPresentation::UpdateSize()
 	if (width() < widthControls)
 		setFixedSize(widthControls, height());
 
+}
+
+void Qt_ProcessingPresentation::ConfigurationUpdated( bool ok )
+{
+	parentWidget()->setFocus();
+	parentWidget()->grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::SetInPortAfterClickOutPort( const QPoint & p)
@@ -414,16 +419,16 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 		repaint();
 	}
 
-	if(m->button() == LeftButton )
-		mDown = true;
-	else
+	if(m->button() == RightButton )
+	{
+		if(SlotConfigurationUpdated.ActiveConnections() == 0) // not connected yet
+		{
+			Qt_ProcessingConfigPresentation * cfg = (Qt_ProcessingConfigPresentation*)mConfig;
+			cfg->SignalConfigurationUpdated.Connect( SlotConfigurationUpdated );
+		}
+		parentWidget()->releaseKeyboard();
 		mConfig->Show();
-}
-
-void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
-{
-
-	mDown = false;
+	}
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
@@ -467,8 +472,6 @@ void Qt_ProcessingPresentation::Move( const QPoint & difference)
 		int posY = out->pos().y() + out->height()/2;
 		out->SignalAcquirePos.Emit( toMove.x() + posX - 4, toMove.y()+ posY +2 );
 	}
-	QWidget * parent = parentWidget();
-	//parent->repaint(); // TODO -> really ugly!
 }
 
 void Qt_ProcessingPresentation::EmitPositionOfChildren()
@@ -502,41 +505,6 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 		int posY = out->pos().y() + out->height()/2;
 		out->SignalAcquirePos.Emit( pos().x() + posX - 4 , pos().y() + posY +2);
 	}
-}
-
-void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
-{
-/*	switch ( k->key() ) 
-	{
-
-	case Key_Escape:
-//		releaseKeyboard();
-		if(mSelected) // editing finished
-		{
-			SignalProcessingPresentationUnSelected.Emit( this );
-			mSelected = false;
-//			releaseKeyboard();
-		}
-		break;
-			
-        case Key_Delete: 
-		SignalRemoveProcessing.Emit( this );
-		Hide();
-//		releaseKeyboard();
-		break;
-	case Key_Return:
-		if(mSelected) // editing finished
-		{
-			SignalProcessingPresentationUnSelected.Emit( this );
-//			releaseKeyboard();
-			mSelected = false;
-		}
-		break;
-	default:
-		break;
-	}
-	repaint();
-	*/
 }
 
 void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
@@ -577,6 +545,12 @@ void Qt_ProcessingPresentation::SlotExecuteChangeName()
 {
 	SignalProcessingNameChanged.Emit( mName );
 	parentWidget()->grabKeyboard();
+	parentWidget()->setFocus();
+}
+
+void Qt_ProcessingPresentation::UpdatePresentation()
+{
+	repaint();
 }
 
 void Qt_ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )

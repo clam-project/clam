@@ -76,22 +76,17 @@ protected:
 
 	virtual void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent * );
-	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
 	void mouseDoubleClickEvent ( QMouseEvent * );
 
-	void keyPressEvent( QKeyEvent * );
+	void ConfigurationUpdated( bool );
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
 	virtual void UpdateSize();
 	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
 	void DrawSelectedRepresentation();
-	void  UpdatePresentation(){ repaint(); }
-
-
-// qt stuff
-	bool        mDown;
+	void  UpdatePresentation();
 	bool	    mSelected;
 	QPoint     mPrevPos;
 
@@ -104,7 +99,6 @@ public: // signals
 	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationSelected;
 	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationAddedToSelection;
 	SigSlot::Signalv1< const std::string & > SignalSendMessageToStatus;
-//	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationUnSelected;
 	SigSlot::Signalv1< const QPoint & > SignalMovingMouseWithButtonPressed;
 
 public: // slots
@@ -119,6 +113,9 @@ public: // slots
 	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
 	SigSlot::Slotv1< const QPoint & > SlotSetOutControlAfterClickInControl;
 	SigSlot::Slotv1< const QPoint & > SlotSetInControlAfterClickOutControl;
+
+	// configure related
+	SigSlot::Slotv1< bool > SlotConfigurationUpdated;
 
 public slots: // qt slots
 	void SlotTextChange( const QString & );
