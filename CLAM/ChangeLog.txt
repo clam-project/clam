@@ -1,5 +1,18 @@
-2003-10-?? CLAM_0_5_4
+2003-11-?? CLAM_0_5_4
 
+  * Build system:
+     ** Configuration:
+        *** Use fltk-config to get the paths to fltk includes/paths
+        *** QTDIR support
+     ** Added rules to pre-process headers with moc (QT)
+     ** Add .dsp files for many CLAM programs
+     ** Fixed many settings.cfg files under Windows
+     ** srcdeps:
+        *** Run srcdeps when settings.cfg has changed
+        *** Don't look through xerces include directories recursively
+        *** Performance improvements
+        *** Bugfixes
+        *** Generate from empty dsp
   * Standard/Misc:
      ** Text: Added to the standard as substitution for std::string on those 
         case when we need multiword strings on XML. (XML loads only one word 
@@ -10,7 +23,12 @@
      ** CLAMMath: Fixed a bug in Round() and Chop() which caused the fpu 
         control word to be changed when calling these functions (but only in 
         debug build).
-
+     ** Moved some includes from hxx's to cxx's and doing forward decl to 
+        improve compilation speed
+     ** Working towards supporting MacOSX/PPC (including byte order issues)
+     ** Added a FileMIDIDevice
+     ** SoundFileIO improvements (data types, better errors)
+     ** Declare template specializations in header inline
   * ProcessingData:
      ** SpectralPeakArray ProcessingData; when adding an IndexArray to an 
         already existing SpectralPeakArray and calling InitIndices(), the 
@@ -29,14 +47,38 @@
      ** Spectrum Conversions: Added a method called Complex2LogMagPhase() 
         which efficiently converts a complex spectrum to a log. magnitude 
         (i.e. in dB's)/phase spectrum.
-
   * Processing:
      ** SMSAnalysis: fixed a bug that lead to divisions by zero
-
   * Testing:
      ** CLAMTEST_ASSERT_XML_EQUAL to compare XML canonically
      ** Helpfull colors for finding differences on expected and obtained 
         strings
+     ** Added CppUnit workspace
+     ** Added a shell-script to generate the dsp's.
+     ** Created a project for all functional tests
+     ** Several tests moved to "SupervisedTests"
+     ** Visualization (Plots)
+     ** XMLAdapters
+     ** Threading
+     ** PersistenceThroughDTs
+     ** SMS Application FunctionalTests
+     ** Morphing
+     ** Several processing tests
+     ** Network Serialization
+     ** Text
+     ** ProcessingController
+     ** ControlAdapter
+     ** Fl_FundFreq (supervised)
+  * SMS: **Removed MaxSines from peak detection configuration and replaced it 
+    with the much more useful MaxFreq
+     ** Several bugfixes and code cleanups
+     ** New transformations
+  * New examples:
+     ** FilePlayback
+     ** Fl_Playable_Audio
+     ** ProcessingLifeCycle
+     ** ThreadedProcessing
+     ** StereoToMonoFile
 
 2003-10-4 CLAM_0_5_3 'Starting the new course'
 
@@ -59,28 +101,28 @@
      ** New LPC_AutoCorrelation Processing object added to spectral analysis 
         Processings set
      ** The SpectralPeakDetect Processing class now no longer alters it's 
-        given ProcessingData  if it's different than expected, but instead 
-        checks it using an assert. Also, a bug was  fixed which tried to use 
-        an uninitialized index variable when setting the values for the  last 
+        given ProcessingData if it's different than expected, but instead 
+        checks it using an assert. Also, a bug was fixed which tried to use 
+        an uninitialized index variable when setting the values for the last 
         spectral peak.
      ** The FFT_rfftw and FFT_ooura Processings were missing a return on 
-        SetPrototypes() which  only generated a compiler error when 
+        SetPrototypes() which only generated a compiler error when 
         CLAM_ASSERT was disabled.
   * Processing - Synthesis:
      ** The IFFT_rfftw Processing was missing a return on SetPrototypes() 
-        which only generated  a compiler error when CLAM_ASSERT was disabled.
+        which only generated a compiler error when CLAM_ASSERT was disabled.
   * Processing - AudioFileIO:
      ** AudioFileIn should now be capable of loading PCM encoded files with 
         sample formats of 8, 16, 24 or 32 bits/sample
   * ProcessingData - BasicProcessing:
      ** New LPModel (Linear Predicitve Model) ProcessingData object added to 
-        basic  Processing data objects. Allows conversions to CLAM::Spectrum.
+        basic Processing data objects. Allows conversions to CLAM::Spectrum.
   * Standard:
      ** Bug fixed in BPF that caused applications to crash when trying to use 
         the Spline value interpolation method
   * Examples - Miscellaneous:
      ** Usage example of FDFilterGen (Frequency Domain Filter Generator ) 
-        Processing  object added to examples/ folder
+        Processing object added to examples/ folder
      ** Usage example of FFT_rfftw Processing object updated
      ** Usage example of LPC_AutoCorrelation Processing object added to 
         examples/
@@ -104,17 +146,17 @@
      ** Library generation for both Linux and Windows. (Still not CLAM 
         binaries but user libraries)
   * Examples - Miscellaneous:
-     ** AudioFileIO example, explaining how to load and save a sound file is  
+     ** AudioFileIO example, explaining how to load and save a sound file is 
         available
   * SMSTools - v.0.1.1
      ** GUI - Score Editor:
         *** UI screen texts tweaked so they result more informative
-        *** Added new and improved SMS Morph transformation control widget,  
+        *** Added new and improved SMS Morph transformation control widget, 
             allowing user a finer grain level of control on that SMS 
             transformation. Also SMS Morph transformation description has 
             been completely rewritten.
         *** Bug fixed: under some circumstances configuration widgets might 
-            be  unadvertendly duplicated, leading to invalid transformation 
+            be unadvertendly duplicated, leading to invalid transformation 
             scores
         *** Editor widget layout tweaked a bit to make bigger the screen area 
             devoted to transformation parameters edition
@@ -164,10 +206,10 @@
      ** See the documentation for more details
      ** Depends on FLTK 1.1.3 instead 1.0.X
   * Processing - All:
-     ** Concreteconfigure should  asserts false instead throwing bad_cast 
+     ** Concreteconfigure should asserts false instead throwing bad_cast 
         exceptions when a wrong type of configuration is provided.
-     ** Provided  a  helper  template  function  'CopyAsConcreteConfig()' to 
-        be used in ConcreteConfigure instead using slow dynamic_cast's.
+     ** Provided a helper template function 'CopyAsConcreteConfig()' to be 
+        used in ConcreteConfigure instead using slow dynamic_cast's.
      ** Most Processing in CLAM adapted to use 'CopyAsConcreteConfig'.
   * Processing - Generator:
      ** Oscillator had a heavy compilation dependency since it used 
@@ -187,9 +229,9 @@
   * Flow - Network & FlowControl:
      ** New Network and FlowControls classes that works quite together: 
         Network manages processings ownership, nodes, gives simple interface 
-        for  stablishing processing topologies. FlowControls gets the 
-        topology from the associated network and does its processing-firing 
-        scheadule. The scheaduling algorithm is reimplementable now we have a 
+        for stablishing processing topologies. FlowControls gets the topology 
+        from the associated network and does its processing-firing scheadule. 
+        The scheaduling algorithm is reimplementable now we have a 
         pull-scheadule implementation
      ** Limitation: only tested for fixed buffer size.
   * Flow - Nodes:
@@ -218,8 +260,8 @@
         and introduced a CopyChunk method, similar to GiveChunk but with 
         memory copying.
   * DynamicTypes:
-     ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  
-        to compilation problems if you don't use the ugly 'using namespace 
+     ** Fix: Definition of DynamicTypes on foreign namespaces leaded to 
+        compilation problems if you don't use the ugly 'using namespace 
         CLAM;'.
      ** Fix: dynamic type self-assignation doesn't modify the object.
   * Examples - SMS (old AnalysisSynthesisExample):
@@ -232,7 +274,7 @@
      ** Frame navigator
      ** Fixes and performance enhancements
   * Examples - Other:
-     ** Fix:  The Tutorial4 didn't compile (used Complex in an old fashioned 
+     ** Fix: The Tutorial4 didn't compile (used Complex in an old fashioned 
         way).
   * XML:
      ** New method XMLStorage::UseIndentation to enable pretty XML formatting
@@ -259,7 +301,7 @@
      ** Configurators: New type suported: 'Filename'
      ** 'Formal' documentation will be soon made publicly available
 
-2003-03-05  CLAM_0_4_2 'Cuidado merge update'
+2003-03-05 CLAM_0_4_2 'Cuidado merge update'
 
   * General
      ** Most classes ported to the GetClassName contsness
@@ -277,8 +319,8 @@
      ** Added SpectralEnvelopeApply, FDCombFilter, LPC, Levinstong_Durbin and 
         AutocorrelationEvaluator
      ** SMS transformations added and refactored: SMSPitchShift, 
-        SMSFreqShift,  and SMSOddEvenHarmonicRatio.
-  * Processing - Analysis:    
+        SMSFreqShift, and SMSOddEvenHarmonicRatio.
+  * Processing - Analysis: 
      ** SpectralEnvelopeExtract deprecates ExpectralEnvelopeExtractor
   * Processing - ArithOps:
      ** Fix: BinOps threw 'this' (the processing) on error instead exceptions
@@ -309,14 +351,14 @@
      ** Added new custom FLTK widgets: Fl_ZoomSlider and Fl_Range
      ** libsigslot added
   * FLTKConfigurator:
-     ** Uses FL_Pack  & FL_Scroll for managing the widgets position
+     ** Uses FL_Pack & FL_Scroll for managing the widgets position
   * AudioBrowser:
-     ** New class added, derived from AudioPresentation, that includes a  
+     ** New class added, derived from AudioPresentation, that includes a 
         GLPortSigSlot and capabilities to get its Signals and its Slots.
   * GLPortSigSlot:
      ** New class added, derived from GLPort, that includes Signals and 
-        Slots,  and the methods to work with them, as well as an overlay that 
-        draws  the Frame marker.
+        Slots, and the methods to work with them, as well as an overlay that 
+        draws the Frame marker.
   * MSVisualC++ build system
      ** Changed extended.c to extended.cxx. Used by 
         Tools/AudioFileIO/AIFFFileIO
@@ -331,7 +373,7 @@
      ** Better (non-cppunit) XMLAdapters tests
   * Misc:
      ** Modified boost::dir_it added as external included library (Only works 
-         for Windows... by now)
+        for Windows... by now)
 
 2003-01-23 CLAM_0_4_1 'Analysis Synthesis debuggin'
 
@@ -375,7 +417,7 @@
      ** Did a little modification in the GUI so Audio displays are closed 
         when editing configuration
 
-2002-11-26  CLAM_0_4_0-rel 'Fly examples, fly to seattle' release
+2002-11-26 CLAM_0_4_0-rel 'Fly examples, fly to seattle' release
   * General:
      ** Directory reorganization
      ** CLAM_WARNING macros with customizable behaviour
@@ -426,7 +468,7 @@
 
 
 
-2002-04-26  CLAM_0_3_0-rel
+2002-04-26 CLAM_0_3_0-rel
 
   * General:
      ** CLAM code is now released under GPL license.
@@ -473,7 +515,7 @@
         sure for Spectrum's, Audio's and Segment's.
      ** New GUI folder organisation: now it contains several subfolders
         *** src/GUI/Core - Visualization Module Core Classes
-        *** src/GUI/GL  - OpenGL renderers
+        *** src/GUI/GL - OpenGL renderers
         *** src/GUI/View - Set of actually implemented System Views ( Views 
             Processings and PDs offered by CLAM )
         *** src/GUI/Presentation - Set of presentations for representing 
@@ -491,7 +533,7 @@
      ** Tests projects now share .obj files between them, thus making faster 
         the build process
 
-2002-04-19  CLAM_0_2_2-rel
+2002-04-19 CLAM_0_2_2-rel
 
   * DynamicType class:
      ** Dynamic type accessor checks are now only done in debug mode.
@@ -528,13 +570,13 @@
         document and the User tutorial.
 
 
-2002-02-27  CLAM_0_2_1-rel
+2002-02-27 CLAM_0_2_1-rel
 
   * Array class:
      ** Changed the Resize/SetSize semantics, fixing some remaining bugs. 
         This has important consequences:
         *** Order is now important! Do Resize() first, then SetSize().
-        *** You need to do SetSize() with a proper value before trying  to 
+        *** You need to do SetSize() with a proper value before trying to 
             access an element in the array.
      ** Added a STL based implementation (_MTG_USE_STL_ARRAY flag)
      ** Empty arrays do not dump an "Empty" string when Storing.
@@ -567,7 +609,7 @@
         inconsistencies.
   * Updated the GUI Snapshot code.
 
-2002-02-19  CLAM_0_2_0-rel
+2002-02-19 CLAM_0_2_0-rel
 
   * Array class:
      ** Fixed bug in memory reallocation and movement.
@@ -591,6 +633,6 @@
      ** Fixed minor compilation problems in several source files.
      ** Fixed some missing binary dependencies in the UNIX build system.
 
-2001-02-07  development-root cuidado-root salto-root time_machine-root
+2001-02-07 development-root cuidado-root salto-root time_machine-root
 
   * Branches created.
