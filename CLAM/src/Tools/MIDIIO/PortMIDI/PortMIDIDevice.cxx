@@ -193,7 +193,12 @@ namespace CLAM {
 
 		if(m == 0xf0) // SysEx
 		{
+#ifdef WIN32
+			Pm_WriteSysEx(mHandleOut,0,(char*) msg);
+#else
 			Pm_WriteSysEx(mHandleOut,0,msg);
+#endif
+
 		}
 		else
 		{
