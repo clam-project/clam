@@ -361,11 +361,6 @@
       ** Automatic Generic Snapshot Generation first attempt. It works
          for sure for Spectrum's, Audio's and Segment's.
       ** New GUI folder organisation: now it contains several subfolders
-        *** 
-        *** 
-        *** 
-        *** 
-        *** 
         *** src/GUI/Core - Visualization Module Core Classes
         *** src/GUI/GL  - OpenGL renderers
         *** src/GUI/View - Set of actually implemented System Views
