@@ -23,7 +23,8 @@
 #include "ProcessingConfigPresentation.hxx"
 
 // concrete configs
-#include "OscillatorConfigPresentation.hxx"
+#include "MonoAudioFileWriterConfigPresentation.hxx"
+#include "MultiChannelAudioFileWriterConfigPresentation.hxx"
 #include "ConfigPresentationTmpl.hxx"
 #include "AudioFileConfig.hxx"
 #include "AutoPanner.hxx"
@@ -43,9 +44,7 @@
 #include "OutControlSender.hxx"
 
 #include "MonoAudioFileReaderConfig.hxx"
-#include "MonoAudioFileWriterConfig.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
-#include "MultiChannelAudioFileWriterConfig.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -68,9 +67,7 @@ typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> OneOverFConfigP
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> OutControlSenderConfigPresentation;
 
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileReaderConfig> MonoAudioFileReaderConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileWriterConfig> MonoAudioFileWriterConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> MultiChannelAudioFileReaderConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileWriterConfig> MultiChannelAudioFileWriterConfigPresentation;
 
 
 static ProcessingConfigPresentationFactory::Registrator<SimpleOscillatorConfigPresentationTmpl> regtSimpleOscillatorCfg( "SimpleOscillatorConfig" );
@@ -91,9 +88,9 @@ static ProcessingConfigPresentationFactory::Registrator<OneOverFConfigPresentati
 static ProcessingConfigPresentationFactory::Registrator<OutControlSenderConfigPresentation> regtOutControlSenderCfg( "OutControlSenderConfig" );
 
 static ProcessingConfigPresentationFactory::Registrator<MonoAudioFileReaderConfigPresentation> regtMonoAudioFileReaderCfg( "MonoAudioFileReaderConfig" );
-static ProcessingConfigPresentationFactory::Registrator<MonoAudioFileWriterConfigPresentation> regtMonoAudioFileWriterCfg( "MonoAudioFileWriterConfig" );
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MonoAudioFileWriterConfigPresentation> regtMonoAudioFileWriterCfg( "MonoAudioFileWriterConfig" );
 static ProcessingConfigPresentationFactory::Registrator<MultiChannelAudioFileReaderConfigPresentation> regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
-static ProcessingConfigPresentationFactory::Registrator<MultiChannelAudioFileWriterConfigPresentation> regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
 
 
 
