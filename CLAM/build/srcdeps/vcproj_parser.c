@@ -6,7 +6,7 @@
 #include "list.h"
 #include "strfuncs.h"
 #include "listhash.h"
-
+#include "objdepname.h"
 
 extern char* empty_vcproj_lines[];
 
@@ -259,6 +259,7 @@ extern void vcproj_parse(const char* outFilename)
 
 			vcproj_parse_insert( source );
 			vcproj_parse_insert( header );
+			vcproj_parse_insert( qt );
 			//TODO uics qt
 			
 			fprintf(outfile, line);
@@ -305,7 +306,7 @@ void vcproj_parse_insert(FileType type)
 	}
 	else if ( type == qt ) 
 	{
-		typestr = "Qt .ui Files";
+		typestr = "Qt ui Files";
 		filelist = ui_files;
 	}
 	else
@@ -415,6 +416,7 @@ static void vcproj_parse_insert_ui_file( const char* file, int depth)
 {
 	char* project_name = 0;
 	char winfile[1024];
+
 	strncpy(winfile,file,1024);
 	winstyle(winfile);
 	indent(depth);
@@ -426,34 +428,20 @@ static void vcproj_parse_insert_ui_file( const char* file, int depth)
 	indent(depth+3);
 	fprintf(outfile, "Name=\"VCCustomBuildTool\"\n");
 	indent(depth+3);
-	fprintf(outfile, "Description=\"UICing %s\"", winfile);
+	fprintf(outfile, "Description=\"UICing %s\"\n", winfile);
 	indent(depth+3);
-	fprintf(outfile, "CommandLine=\"uic.exe %s\"", winfile);
-	
-	
-//TODO continuar per icí
-/*
-	fprintf( outfile, "<>" );
-	fprintf( outfile, "#Begin Source File\n");
-	fprintf( outfile, "\n" );
-	fprintf( outfile, "SOURCE=\"%s\"\n", winfile );
-	fprintf( outfile, "\n" );
-	//Custom build - release mode 
-	fprintf( outfile, "!IF \"$(CFG)\" == \"%s - Win32 Release \"\n", project_name );
-	fprintf( outfile, "\n" );
-	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
-	dsp_parse_insert_ui_custom_build_rule(  file );
-	fprintf( outfile, "\n" );
-	//Custom build - debug mode 
-	fprintf( outfile, "!ELSEIF \"$(CFG)\" == \"%s - Win32 Debug\"\n", project_name );
-	fprintf( outfile, "\n" );
-	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
-	dsp_parse_insert_ui_custom_build_rule(  file );
-	fprintf( outfile, "\n" );
-	fprintf( outfile, "!ENDIF\n" );
-	fprintf( outfile, "\n" );
-	fprintf( outfile, "#End Source File\n");
-*/
+	fprintf(outfile, "CommandLine=\"uic.exe ${InputFile} -o .\\uic\\${InputName}.h\n");
+	indent(depth+4);
+	fprintf(outfile, "uic.exe ${InputFile} -i ${InputName}.h -o .\\uic\\${InputName}.cxx\n");
+	indent(depth+4);
+	fprintf(outfile, "moc.exe ${InputFile} -i ${InputName}.h -o .\\moc\\${InputName}_moc.cxx\"\n");
+	indent(depth+3);
+	fprintf(outfile, "Outputs=\".\\uic\\${InputName}.h;.\\uic\\${InputName}.cxx;.\\moc\\${InputName}_moc.cxx\" />\n");
+	indent(depth+1);
+	fprintf(outfile, "</FileConfiguration>\n");
+	indent(depth);
+	fprintf(outfile, "</File>\n");
+
 }
 
 void vcproj_parse_insert_mocable_header( char*a) {}
