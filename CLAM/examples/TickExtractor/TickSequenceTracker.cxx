@@ -461,6 +461,8 @@ namespace CLAM
 
 		mPeakDetector.Do(pulseHist,pulseHistPeaks);
 
+		CLAM_ASSERT( pulseHistPeaks.Size() != 0,
+			     "There should be some peak in the histogram!!!!" );
 
 		int max = 0;
 		int index = 0;
