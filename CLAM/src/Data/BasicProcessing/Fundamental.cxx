@@ -84,8 +84,9 @@ namespace CLAM
 	void Fundamental::AddElem (TData freq, TData err)
 	{
 		CLAM_DEBUG_ASSERT(HasCandidatesFreq(),"Fundamental::AddElem(): Fundamental not initialized");
-		CLAM_ASSERT(GetnCandidates()<GetnMaxCandidates(),
-				   "Fundamental::AddElem(): Number of Candidates exceeds maximum");
+		// MRJ: Does this assert make sense any longer after Merlijn changes?
+		//CLAM_ASSERT(GetnCandidates()<GetnMaxCandidates(),
+		//		   "Fundamental::AddElem(): Number of Candidates exceeds maximum");
 		GetCandidatesFreq().AddElem(freq);
 		GetCandidatesErr().AddElem(err);
 	//	SetnCandidates(GetnCandidates()+1);
