@@ -88,7 +88,7 @@ private:
 	XMLStorageImplementation * NewXMLImplementation();
 
 // Deprecated
-public:
+private:
 	/**
 	 * @deprecated Use the default constructor
 	 */
