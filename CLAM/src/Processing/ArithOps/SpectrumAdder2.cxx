@@ -858,7 +858,7 @@ namespace CLAM {
 			AddBPFPolarLog(in1,in2,out);
 			break;
 		case Slinlog:
-			CLAM_ASSERT("SpectrumAdder2::AddBPFPolar(LinLog): Not implemented");
+			CLAM_ASSERT(false,"SpectrumAdder2::AddBPFPolar(LinLog): Not implemented");
 			break;
 		case Sloglin:
 			AddBPFPolarLogLin(in1,in2,out);
