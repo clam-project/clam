@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vorbis/codec.h>
 #include <iostream>
+#include <algorithm>
 
 #if defined ( __powerpc__ ) || defined ( __POWERPC__ )
 #define HOST_ENDIANESS 1
@@ -17,15 +18,23 @@ namespace CLAM
 
 namespace AudioCodecs
 {
+	const TSize OggVorbisAudioStream::mMaxBlockSize = 4096 / sizeof(TInt16); // Seems to be the 'reference' value
+	
 	OggVorbisAudioStream::OggVorbisAudioStream()
 		: mFileHandle( NULL ), mValidFileParams( false ), mEncoding( false )
 	{
+		mBlockBuffer.Resize( mMaxBlockSize );
+		mBlockBuffer.SetSize( mMaxBlockSize );
+		mCBuffer.SetBufferSize( 4 * mMaxBlockSize );
 	}
 
 	OggVorbisAudioStream::OggVorbisAudioStream( const AudioFile& file )
 		: mFileHandle( NULL ), mValidFileParams( false ), mEncoding( false )
 	{
 		SetFOI( file );
+		mBlockBuffer.Resize( mMaxBlockSize );
+		mBlockBuffer.SetSize( mMaxBlockSize );
+		mCBuffer.SetBufferSize( 4 * mMaxBlockSize );
 	}
 
 	OggVorbisAudioStream::~OggVorbisAudioStream()
@@ -83,6 +92,7 @@ namespace AudioCodecs
 		// having this the effect of reading several frames of zeros
 		// at the beginning
 		ov_pcm_seek( &mNativeFileParams, 0 );		
+		mRemainderOffset = 0;
 	}
 
 	void OggVorbisAudioStream::PrepareWriting()
@@ -180,6 +190,7 @@ namespace AudioCodecs
 	{
 		if ( !mEncoding )
 		{
+			mCBuffer.Init();
 			ov_clear( &mNativeFileParams );
 			mValidFileParams = false;
 		}
@@ -205,48 +216,55 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::DiskToMemoryTransfer()
 	{
+
 		static const double norm = 1.0/32768.0;
 
-		if ( mIntegerSamples.Size() < mInterleavedData.Size() )
-		{
-			mIntegerSamples.Resize( mInterleavedData.Size() );
-			mIntegerSamples.SetSize( mInterleavedData.Size() );
-		}		
+		TSize currentOffset = 0;
+		TSize nBytes = 0;		
+		TSize samplesRead = 0;
 
-		int bytesRead = ov_read( &mNativeFileParams, (char*)mIntegerSamples.GetPtr(), 
-					mIntegerSamples.Size()*sizeof(TInt16), HOST_ENDIANESS,
-					2, 1, &mCurrentSection );
-
-
-
-		CLAM_ASSERT( bytesRead >= 0, "Malformed OggVorbis file!" );
-
-		// We get the number of samples we have extracted from the file
-		int samplesRead = bytesRead / sizeof(TInt16);
-
+		TIndex i = 0;
 
 		TData* pSamplesFP = mInterleavedData.GetPtr();
-		TInt16* pSamplesInt = mIntegerSamples.GetPtr();
-
-		CLAM_ASSERT( samplesRead <= mIntegerSamples.Size(), "Too many samples!" );
-
 		const TData* pSamplesFPEnd = pSamplesFP + mInterleavedData.Size();
-		const TInt16* pSamplesIntEnd = pSamplesInt + samplesRead;
+		
+		if ( mRemainderOffset )		
+			for ( i = mRemainderOffset; i < mBlockBuffer.Size(); i++ )
+				*pSamplesFP++ = TData(mBlockBuffer[i])*norm;
+		
+		mBlockBuffer.SetSize( mMaxBlockSize );
 
-		while ( pSamplesInt != pSamplesIntEnd )
+		do
 		{
-			*pSamplesFP++ = TData(*pSamplesInt++)*norm;
-		}
+			nBytes = ov_read( &mNativeFileParams, 
+					  (char*)mBlockBuffer.GetPtr(), 
+					  mBlockBuffer.Size()*sizeof(TInt16),
+					  HOST_ENDIANESS,
+					  2, 1, &mCurrentSection );
+			
+			CLAM_ASSERT( nBytes >= 0, "Malformed OggVorbis file!" );
+			CLAM_ASSERT( nBytes % mEncodedChannels == 0, "BIG Whoops!" );
 
-		// If the number of samples read is less than expected
-		// then we zero the rest of the fp buffer
-		while ( pSamplesFP != pSamplesFPEnd )
+			samplesRead = nBytes / sizeof( TInt16);
+			mBlockBuffer.SetSize( samplesRead );
+			
+			for ( i = 0; 
+			      i < samplesRead && currentOffset < mInterleavedData.Size();
+			      i++, currentOffset++ )
+				*pSamplesFP++ = TData( mBlockBuffer[i] )*norm;
+
+			
+		} while( nBytes > 0 && currentOffset < mInterleavedData.Size() );
+
+
+		while ( pSamplesFP < pSamplesFPEnd )
 		{
 			*pSamplesFP++ = 0.0;
 		}
 
-		mEOFReached = (bytesRead == 0 ) || ( mCurrentSection != 0 );
-
+		mEOFReached = (nBytes <= 0 );
+		mRemainderOffset = (samplesRead -i? i : 0 );
+		
 	}
 
 	void OggVorbisAudioStream::MemoryToDiskTransfer()

@@ -7,6 +7,8 @@
 #include <vorbis/vorbisenc.h>
 #include "DataTypes.hxx"
 #include "Array.hxx"
+#include "CircularBuffer.hxx"
+#include <deque>
 
 namespace CLAM
 {
@@ -15,6 +17,7 @@ namespace AudioCodecs
 {
 	class OggVorbisAudioStream : public Stream
 	{
+
 	public:
 		OggVorbisAudioStream();
 		OggVorbisAudioStream( const AudioFile& file );
@@ -35,6 +38,7 @@ namespace AudioCodecs
 
 		void VorbisI_EncoderSetup();
 		void WriteBitstreamHeader();
+
 		
 	protected:
 		std::string      mName;
@@ -58,7 +62,14 @@ namespace AudioCodecs
 		int                mEncodedChannels;
 		bool               mEncoding;
 		int                mOffset;
-	};
+
+		static const TSize      mMaxBlockSize;
+		Array<TInt16>           mBlockBuffer;
+		Array<TInt16>           mMiddleBuffer;
+		CircularBuffer<TInt16>  mCBuffer;
+		std::deque<TInt16>      mAltBuffer;
+		TSize                   mRemainderOffset;
+  	};
 }
 
 }
