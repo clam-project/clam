@@ -52,7 +52,7 @@ bool MyProcessingWithPortsAndControls::Do(const Audio & in, Audio & out)
 // the automatic Do gets the data from the ports and process it. After this, notify the ports that it is finished (with Consume and Produce methods)
 bool MyProcessingWithPortsAndControls::Do()
 {
-	bool res = Do( mInput.GetData(), mOutput.GetData() );
+	bool res = Do( mInput.GetAudio(), mOutput.GetAudio() );
 	mInput.Consume();
 	mOutput.Produce();
 	return res;
