@@ -36,9 +36,9 @@ class Oscillator : public SimpleOscillator
 
 	typedef InControlTmpl<Oscillator> OscillatorCtrl;
 
+	bool mModIdxUpdated;
 	Oscillator::OscillatorCtrl * mModIdxCtl;
 
-	bool           mModIdxUpdated;
 	
 	inline void ApplyControls()
 	{
