@@ -27,7 +27,7 @@
 #include "AudioMultiplier.hxx"
 #include "AutoPanner.hxx"
 #include "FFT_rfftw.hxx"
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include "BasicFlowControl.hxx"
 
 namespace CLAMTest {
