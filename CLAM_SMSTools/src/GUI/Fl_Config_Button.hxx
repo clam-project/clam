@@ -1,31 +1,20 @@
-#include <FL/fl_draw.H>
-#include <FL/Fl_Button.H>
-
 #ifndef __FL_CONFIG_BUTTON__
 #define __FL_CONFIG_BUTTON__
 
+#include <FL/Fl_Button.H>
+
+// @todo: substitute this by static const Fl_Config_Button::FL_CURSOR_PENCIL
 #define FL_CURSOR_PENCIL (enum Fl_Cursor)44
 
-class Fl_Config_Button : public  Fl_Button {
-
+class Fl_Config_Button : public  Fl_Button 
+{
 public:
-	Fl_Config_Button( int x, int y, int w, int h, char* label = "" ) : Fl_Button( x, y, w, h, label ) {
-		box( FL_NO_BOX );
-	}
+	Fl_Config_Button( int x, int y, int w, int h, char* label = "" );
 
-	int handle( int event )
-	{
-		if( active( ) ) {
-			if ( event == FL_ENTER  ) {
-				fl_cursor( FL_CURSOR_PENCIL, FL_BLACK, FL_WHITE );			
-			}
-			else if ( event == FL_LEAVE  ) {
-				fl_cursor( FL_CURSOR_DEFAULT, FL_BLACK, FL_WHITE );			
-			}
-		}
-		return Fl_Button::handle( event );
-	}
+	virtual ~Fl_Config_Button();
+
+	virtual int handle( int event );
 
 };
 
-#endif //__FL_BUTTON__
+#endif // Fl_Config_Button.hxx
