@@ -155,7 +155,6 @@ namespace CLAM{
 		/** Default Constructor */
 		ProcessingChain():mChainInput("Input",this,1),mChainOutput("Output",this,1)
 		{
-//			mpTmpData=NULL;
 			mpConfig=NULL;
 			mpOnCtrlArray=NULL;
 		}
@@ -165,7 +164,6 @@ namespace CLAM{
 		 */
 		virtual ~ProcessingChain()
 		{
-//			if (mpTmpData) delete mpTmpData;
 			int i;
 			for(i=0;i<mpTmpDataArray.Size();i++)
 				if(mpTmpDataArray[i]) delete mpTmpDataArray[i];
@@ -198,12 +196,6 @@ namespace CLAM{
 		{
 			iterator obj;
 			
-/*			if(mpTmpData)
-			{
-				delete mpTmpData;
-			}
-			mpTmpData=new U(mChainInput.GetData());
-*/						
 			int i;
 			for(i=0;i<mpTmpDataArray.Size();i++)
 				if(mpTmpDataArray[i]){
@@ -217,7 +209,6 @@ namespace CLAM{
 			{
 				//connecting ports for non-supervised mode
 				(*obj)->GetInPorts().GetByNumber(0).Attach(*pCurrentData);
-//test
 				if(!(*obj)->CanProcessInplace())
 				{
 					pCurrentData=new U(mChainInput.GetData());
@@ -268,14 +259,7 @@ namespace CLAM{
 					}
 					
 				}
-			/*	else
-				{
-					iterator last=obj;
-					last++;
-					if (obj==composite_begin()||last==composite_end())
-						throw(ErrProcessingObj("ProcessingChain::Do(): first and last processing in the chain must be active",this));
-				}*/
-				
+					
 			}
 			return result;
 		}
@@ -348,14 +332,11 @@ protected:
 			
 		}
 		/** Temporal ProcessingData used as an internal node for intermediate Processing */
-		//U* mpTmpData;
 		Array<U*> mpTmpDataArray;
 		/** Internal configuration. A pointer is used because polymorphism may be used on it */
 		ProcessingChainConfig* mpConfig;
 
-		//InControlArray a;
 		InControlTmplArray<ThisProc> *mpOnCtrlArray;
-
 		
 };
 
