@@ -63,12 +63,12 @@ void CSaltoSineSynthesis::DoSineSynthesis(CSaltoSynthFrame &synthFrame,double ga
 			mSwitchToRandomPhases = true;
 		}
 	}
-	else
+/*	else
 	{
 		// .. the phases of synthFrame.PeakArray get changed here ..
 		mpPhaseManagerPO->DoRandomPhases(*synthFrame.GetPeakArrayPtr());		
 	}																									
-		
+*/		
 	mpSpecSynthPO->Do(*(synthFrame.GetPeakArrayPtr()),*(synthFrame.GetSpectrumPtr()),gain);
 	
 	synthFrame.SetSynthTime(synthFrame.GetSynthTime()+mFrameTime);
