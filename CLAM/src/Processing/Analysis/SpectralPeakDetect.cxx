@@ -207,7 +207,10 @@ namespace CLAM {
 
 				else { //  add SpectralPeak... BinWidth will be updated in the next turn
 			
-					// quadratic SpectralPeak interpolation ( taken from old SMS) 
+					// Curve-fitting a parabola using 3 points, using 
+					// Brent method for estimating the maximum of the parabola.
+					// The idea is that the shape of the main lobe of most analysis windows look
+					// like a parabola in the dB scale.
 					diffFromMax =  TData(0.5) * ((leftMag-rightMag) / (leftMag- 2*middleMag + rightMag));
 					interpolatedBin = SpectralPeakPosition+diffFromMax;
 			
