@@ -55,9 +55,9 @@ namespace CLAM
 		RhythmDescription::IOIHistPeakDetectorConfig apdconf;
 		apdconf.SetThreshold(mConfig.GetThreshold_IOIHistPeaks());
 
-		mAudioPeakDetector.Configure( apdconf );
+		mPeakDetector.Configure( apdconf );
 
-		mAudioPeakDetector.SetParent( this );
+		mPeakDetector.SetParent( this );
 
 		RhythmDescription::TimeDifferenceConfig tconf;
 		tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
@@ -155,6 +155,10 @@ namespace CLAM
 
 		Array<TimeIndex>  transientsForHist(numbTrans);
 		transientsForHist.SetSize(numbTrans);
+		//Don't use weights for the building of the histogram:
+		transientsForHist[0].SetWeight(0); //because the 1st transient is added manually			
+		transientsForHist[0].SetPosition(0);
+
 
 		Array<TimeIndex>  IOIHistPeaks;
 
@@ -172,7 +176,9 @@ namespace CLAM
 		Array<TData> forGlobalTempoCalc;
 
 		Array<TData> forGlobalTickCalc;
-
+		
+		//put a maximum on the IOIHist length
+		const TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
 
 		int nLoops = 0;
 
@@ -182,17 +188,11 @@ namespace CLAM
 			posTrans2 = transients[indTrans2].GetPosition();
 			windowSize = posTrans2-posTrans1;
 			
-			//put a maximum on the IOIHist length
-			TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
-
 			TSize IOIhistSize = CLAM::CLAM_min(windowSize,IOIHistLim);
 			IOIHist.GetBins().Resize( IOIhistSize );
 			IOIHist.GetBins().SetSize( IOIhistSize );
 
 			/// Compute the IOIHistogram
-			//Don't use weights for the building of the histogram:
-			transientsForHist[0].SetWeight(0); //because the 1st transient is added manually			
-			transientsForHist[0].SetPosition(0);
 			
 			for (int i=1;i<transientsForHist.Size();i++)
 			{
@@ -207,7 +207,7 @@ namespace CLAM
 
 			///IOI histogram Peak Detection
 
-			mAudioPeakDetector.Do(IOIHist,IOIHistPeaks);
+			mPeakDetector.Do(IOIHist,IOIHistPeaks);
 
 
 			///Compute Tempo (optional)
@@ -353,6 +353,7 @@ namespace CLAM
 		
 		} //end of while loop
 
+		std::cerr << "Number of loops: " << nLoops;
 		///Compute Global tempo
 		RhythmDescription::GlobalPulseConfig gpconf;
 		gpconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
@@ -454,11 +455,11 @@ namespace CLAM
 
 		RhythmDescription::IOIHistPeakDetectorConfig apdconf;
 		apdconf.SetThreshold(0.0);
-		mAudioPeakDetector.Stop();
-		mAudioPeakDetector.Configure(apdconf);
-		mAudioPeakDetector.Start();
+		mPeakDetector.Stop();
+		mPeakDetector.Configure(apdconf);
+		mPeakDetector.Start();
 
-		mAudioPeakDetector.Do(pulseHist,pulseHistPeaks);
+		mPeakDetector.Do(pulseHist,pulseHistPeaks);
 
 
 		int max = 0;

@@ -75,7 +75,7 @@ namespace CLAM
 
 	private: // children Processing
 
-		RhythmDescription::IOIHistPeakDetector   mAudioPeakDetector;
+		RhythmDescription::IOIHistPeakDetector   mPeakDetector;
 		RhythmDescription::TimeDifference        mTemporalDiff;
 		TemporalSeriesFinder                     mTimeSeriesFinder;
 		TemporalSeriesFinderConfig               mTSFConfig;

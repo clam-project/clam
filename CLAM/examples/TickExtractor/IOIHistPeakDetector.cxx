@@ -28,124 +28,150 @@
 #include "IOIHistPeakDetector.hxx"
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
+#include <list>
 
 namespace CLAM
 {
 	namespace RhythmDescription
 	{
 
-	void IOIHistPeakDetectorConfig::DefaultInit()
-	{
-		/* the dynamic type takes care if we add an existing attr .. */
-		AddThreshold();
-		AddNormalizeWeights();
+		void IOIHistPeakDetectorConfig::DefaultInit()
+		{
+			/* the dynamic type takes care if we add an existing attr .. */
+			AddThreshold();
+			AddNormalizeWeights();
 
-		/* All Attributes are added */
-		UpdateData();
-		SetThreshold(0);
-		SetNormalizeWeights(true);
+			/* All Attributes are added */
+			UpdateData();
+			SetThreshold(0);
+			SetNormalizeWeights(true);
 
-	}
+		}
 
 
 /* Processing  object Method  implementations */
 
-	IOIHistPeakDetector::IOIHistPeakDetector()
-	{
-		Configure(IOIHistPeakDetectorConfig());
-	}
+		IOIHistPeakDetector::IOIHistPeakDetector()
+		{
+			Configure(IOIHistPeakDetectorConfig());
+		}
 
-	IOIHistPeakDetector::IOIHistPeakDetector(const IOIHistPeakDetectorConfig &c)
-	{
-		Configure(c);
-	}
+		IOIHistPeakDetector::IOIHistPeakDetector(const IOIHistPeakDetectorConfig &c)
+		{
+			Configure(c);
+		}
 
-/* Configure the Processing Object according to the Config object */
-
-	bool IOIHistPeakDetector::ConcreteConfigure(const ProcessingConfig& c)
-	{
-		CopyAsConcreteConfig( mConfig, c );
-		return true;
-	}
+		/* Configure the Processing Object according to the Config object */
+		bool IOIHistPeakDetector::ConcreteConfigure(const ProcessingConfig& c)
+		{
+			CopyAsConcreteConfig( mConfig, c );
+			return true;
+		}
 
 /* The supervised Do() function */
-	bool  IOIHistPeakDetector::Do(void) 
-	{
-		return false;
-	}
+		bool  IOIHistPeakDetector::Do(void) 
+		{
+			return false;
+		}
 
 /* The  unsupervised Do() function */
-	bool  IOIHistPeakDetector::Do( IOIHistogram& input, Array<TimeIndex>& out)
-	{
-		int  size = input.GetBins().Size();
-		int i;
-		TData* arr = input.GetBins().GetPtr();
-
-
-		//Add a peak of weight 0 at 0
-		out.Resize(1);
-		out.SetSize(1);
-		out[0].SetPosition(0);
-		out[0].SetWeight(0);
-
-		//int maxpeaks = out.Size(); //mConfig.GetnPeaks();
-		int nPeaks=1;
-		TData max=0;
-		Array<TimeIndex> tmpArray;
-		tmpArray.Resize(1);
-		tmpArray.SetSize(1);
-		tmpArray[0].SetPosition(0);
-		tmpArray[0].SetWeight(0);
-
-		bool sameSlope=false;
-		TData fs = input.GetBinRate();
-		int toto=std::max(1,(int)(0.003*fs));
-
-//		int toto=4;
-		for(i=2*toto;i<size-2*toto;i++)
+		bool  IOIHistPeakDetector::Do( IOIHistogram& input, Array<TimeIndex>& out)
 		{
-			if ((arr[i+toto]>arr[i])&&(sameSlope==false)) 
-				sameSlope=true; 
-			if ((arr[i-2*toto] < arr[i-toto]) &&
-			    (arr[i-toto] < arr[i]) && (arr[i] >  arr[i+toto]) &&
-			    (arr[i+toto] > arr[i+2*toto]) &&
-			    (sameSlope==true))
+			int  size = input.GetBins().Size();
+			TData* arr = input.GetBins().GetPtr();
+
+
+			//int maxpeaks = out.Size(); //mConfig.GetnPeaks();
+			int nPeaks=1;
+			TData max=0;
+			
+			std::list<TimeIndex> detectedPeaks;
+			typedef std::list<TimeIndex>::iterator LI;
+
+			TimeIndex newPeak;
+			newPeak.SetPosition(0);
+			newPeak.SetWeight(0);
+
+			detectedPeaks.push_back( newPeak );
+
+			bool sameSlope=false;
+			TData fs = input.GetBinRate();
+
+			// MRJ: 3 ms is the minimum allowed space between peaks
+			const int peaksMinDist = std::max(1,(int)(0.003*fs)); 
+			const int twicePeaksMinDist = 2 * peaksMinDist;
+			const int maxPeakPos = size - twicePeaksMinDist;
+
+			// MRJ: Actual peak detection loop. Peaks are stored onto
+			// a list for O(k) insertion
+			for( int i = twicePeaksMinDist;
+			     i < maxPeakPos;
+			     i++)
 			{
-				sameSlope=false;
-				tmpArray.Resize(nPeaks+1);
-				tmpArray.SetSize(nPeaks+1);
-				tmpArray[nPeaks].SetPosition(i);
-				tmpArray[nPeaks].SetWeight(arr[i]); 			  
-				nPeaks++;
-				if (arr[i] > max) 
-					max=arr[i];
+				if ( (arr[i+peaksMinDist]>arr[i])
+				     && (!sameSlope) ) 
+					sameSlope=true; 
+		
+				if ( (arr[i-twicePeaksMinDist] < arr[i-peaksMinDist]) 
+				     && (arr[i-peaksMinDist] < arr[i]) 
+				     && (arr[i] >  arr[i+peaksMinDist]) 
+				     && (arr[i+peaksMinDist] > arr[i+twicePeaksMinDist]) 
+				     && (sameSlope) )
+				{
+					sameSlope=false;
+					
+					newPeak.SetPosition( i );
+					newPeak.SetWeight( arr[i] );
+					
+					detectedPeaks.push_back( newPeak );
+					
+					if (arr[i] > max) 
+						max=arr[i];
+				}
 			}
-		}
 
 
-		//int peaksDistMin = 100;
-		int peaksDistMin = std::max(1,(int)(0.003*fs));
-		TData tmpWeight, tmpPosition;
-		int nActualPeaks=1;
-		for (i=0;i<nPeaks;i++)
-		{
-			tmpWeight=tmpArray[i].GetWeight();
-			tmpPosition=tmpArray[i].GetPosition();
-			if (tmpWeight/max > mConfig.GetThreshold() &&
-			    std::fabs(tmpPosition-out[nActualPeaks-1].GetPosition()) > peaksDistMin)
+
+			int nActualPeaks=1;
+			const TData invMax = 1.0 / (double)max;
+			const TData minPeakMagThreshold = mConfig.GetThreshold();
+			const bool mustNormalize = mConfig.GetNormalizeWeights();
+
+
+			// MRJ: Unlikely peaks removal and weight normalization
+
+			LI prev = detectedPeaks.begin();
+			LI i = detectedPeaks.begin();
+			i++;
+			
+			for ( ; i != detectedPeaks.end();
+			      i++, prev++ )
 			{
-				out.Resize(nActualPeaks+1);
-				out.SetSize(nActualPeaks+1);
-				if (mConfig.GetNormalizeWeights())
-					out[nActualPeaks].SetWeight(tmpWeight/max);
+				const TData tmpWeight = i->GetWeight();
+				const TData tmpPosition = i->GetPosition();
+				const TData normWeight = tmpWeight * invMax;
+				
+				if ( (normWeight > minPeakMagThreshold)
+				     && std::fabs( tmpPosition - prev->GetPosition() ) > peaksMinDist )
+				{
+					if ( mustNormalize )
+						i->SetWeight( normWeight );
+				}
 				else
-					out[nActualPeaks].SetWeight(tmpWeight);
-				out[nActualPeaks].SetPosition(tmpPosition);
-				nActualPeaks++;
+					i = detectedPeaks.erase( i );
 			}
+
+			out.Resize( detectedPeaks.size() );
+			out.SetSize( detectedPeaks.size() );
+
+			int j = 0;
+
+			for ( LI k = detectedPeaks.begin();
+			      k != detectedPeaks.end(); k++, j++ )
+				out[j] = *k;
+			
+			return true;
 		}
-		return true;
-	}
 
 	} // namespace RhythmDescription
 } // namespace CLAM
