@@ -22,9 +22,6 @@
 #include "SpectrumConfig.hxx"
 #include "SMSSynthesis.hxx"
 
-// TODO: remove
-#include "XMLStorage.hxx"
-
 namespace CLAM
 {
 
@@ -78,7 +75,7 @@ SMSSynthesis::~SMSSynthesis()
 
 bool SMSSynthesis::ConfigureChildren()
 {
-	mConfig.SetSpectrumSize( mAudioFrame.GetSize()/2+1 );
+//	mConfig.SetSpectrumSize( mAudioFrame.GetSize()/2+1 );
 
 	//configure global spectral synthesis
 	if(!mPO_SpectralSynthesis.Configure(mConfig.GetSpectralSynth()))
@@ -122,13 +119,16 @@ bool SMSSynthesis::ConfigureChildren()
 void SMSSynthesis::ConfigureData()
 {
 	mAudioFrame.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
-	mOutputAudio.SetSize( mConfig.GetHopSize() );
-	mOutputSinAudio.SetSize( mConfig.GetHopSize() );
-	mOutputResAudio.SetSize( mConfig.GetHopSize() );
+	mOutputAudio.SetSize( mAudioFrame.GetSize()/2 );
+	mOutputSinAudio.SetSize( mAudioFrame.GetSize()/2 );
+	mOutputResAudio.SetSize( mAudioFrame.GetSize()/2 );
 
 	mOutputAudio.SetHop( mConfig.GetHopSize() );
 	mOutputSinAudio.SetHop( mConfig.GetHopSize() );
 	mOutputResAudio.SetHop( mConfig.GetHopSize() );
+
+	mOutputSpectrum.GetData().SetSize( mAudioFrame.GetSize()/2+1);
+	mOutputSinSpectrum.GetData().SetSize( mAudioFrame.GetSize()/2+1);
 }
 
 
@@ -155,7 +155,7 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out)
 /** Sinusoidal synthesis, gives also the output spectrum */
 bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 {
-	outSpec.SetSize(mConfig.GetSpectrumSize());
+//	outSpec.SetSize(mConfig.GetSpectrumSize());
 	mPO_SynthSineSpectrum.Do(in,outSpec);
 
 	mPO_SinSpectralSynthesis.Do(outSpec,mAudioFrame);
@@ -168,26 +168,12 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& out
 
 bool SMSSynthesis::Do(void)
 {
-	std::cout << "doing synth" << std::endl;
+	bool result =  Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+		mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
+		mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
 
 
-
-	static int i=0;
-	if(!i)
-	{
-		std::stringstream prova1("");
-		prova1 << "peaks_synth.xml_" << i;
-		std::stringstream prova2("");
-		prova2 << "spec_synth.xml_" << i;
-		XmlStorage::Dump( mInputSinSpectralPeaks.GetData(), "prova", prova1.str() );
-		XmlStorage::Dump( mInputResSpectrum.GetData(), "prova", prova2.str() );
-		i++;
-	}
 	
-	bool result =  Do( mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
-			   mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
-			   mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
-
 	mInputSinSpectralPeaks.Consume();
 	mInputResSpectrum.Consume();
 
@@ -224,7 +210,7 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 	mPO_PhaseMan.mCurrentTime.DoControl(mCurrentTime.GetLastValue());
 	mPO_PhaseMan.mCurrentPitch.DoControl(mCurrentPitch.GetLastValue());
 	mPO_PhaseMan.Do(inputSinusoidalPeaks);
-	
+
 	//We synthesize the sinusoidal component 	
 	SinusoidalSynthesis(inputSinusoidalPeaks,outputSinusoidalSpectrum,outputSinusoidalAudio);
 	

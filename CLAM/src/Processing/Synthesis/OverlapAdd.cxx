@@ -52,7 +52,6 @@ bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 
-	int hopSize=mConfig.GetHopSize();
 	int frameSize=mConfig.GetFrameSize();
 
 	mInput.SetSize( frameSize*2 );

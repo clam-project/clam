@@ -670,7 +670,7 @@ bool SynthSineSpectrum::Do()
 bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut, double gain)
 {
 	CLAM_DEBUG_ASSERT( AbleToExecute(), "SynthSineSpectrum::Do - processing is not running" );
-		
+
 	InitSynthSpec(mConfig.GetSpectrumSize());		// could be optimised with memset
 	FillSynthSineSpectrum(peakArray,gain);
 
@@ -764,14 +764,14 @@ void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArr
 		{
 			if (l > 0 && l < mConfig.GetSpectrumSize()-1) // we are inside the spectrum limits
 			{
-	            mSynthSineSpectrum[l] += SpecPeakEnvelope[k]; 
-		    }    
+		        	mSynthSineSpectrum[l] += SpecPeakEnvelope[k]; 
+			}    
         
 			else if (l < 0) // part of peaklobe is below zero frequency, mirror it back 
 			{
-	            b = -l;
-		        mSynthSineSpectrum[b].SetReal(mSynthSineSpectrum[b].Real()+SpecPeakEnvelope[k].Real());
-			    mSynthSineSpectrum[b].SetImag(mSynthSineSpectrum[b].Imag()-SpecPeakEnvelope[k].Imag());
+				b = -l;
+			        mSynthSineSpectrum[b].SetReal(mSynthSineSpectrum[b].Real()+SpecPeakEnvelope[k].Real());
+				mSynthSineSpectrum[b].SetImag(mSynthSineSpectrum[b].Imag()-SpecPeakEnvelope[k].Imag());
 			}
         
 			else if (l == 0) //  only real part, no phase
