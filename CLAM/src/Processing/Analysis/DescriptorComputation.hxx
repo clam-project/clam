@@ -22,15 +22,12 @@
 #ifndef _DESCRIPTOR_COMPUTATION_H_
 #define _DESCRIPTOR_COMPUTATION_H_
 
-#include "DataTypes.hxx"
 #include "Processing.hxx"
-#include "Descriptor.hxx"
 #include "DescriptorComputationConfig.hxx"
-#include "InControl.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
 
 namespace CLAM {
+
+	class Descriptor;
 
 	
 	/** This Processing class only calls the Compute operation of Descriptor passed to the Do 
@@ -39,38 +36,29 @@ namespace CLAM {
 		: public Processing {
 	
 	protected:
-
-
-		const char *GetClassName() const {return "CircularShift";}
+		const char *GetClassName() const;
 
 		/** Config change method
 		 */
-		bool ConcreteConfigure(const ProcessingConfig& c){CopyAsConcreteConfig(mConfig,c);}
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 	public:
-		DescriptorComputation(){Configure(DescriptorComputationConfig());}
+		DescriptorComputation();
 
-		DescriptorComputation(const DescriptorComputationConfig &c){Configure(c);}
+		DescriptorComputation(const DescriptorComputationConfig &c);
 
-		~DescriptorComputation(){};
+		~DescriptorComputation();
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		bool Do(void){/*not implemented*/ return false;}
+		bool Do(void);
 
-		bool Do(Descriptor& input)
-		{
-			input.Compute();
-			return true;
-		}
-	
-		
-		void StoreOn(Storage &s) {};
+		bool Do(Descriptor& input);
+			
+		void StoreOn(Storage &s);
 	protected:
 		DescriptorComputationConfig mConfig;
-
-
-		
+	
 	};
 
 }

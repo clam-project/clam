@@ -22,7 +22,6 @@
 #ifndef _DescriptorComputationConfig_
 #define _DescriptorComputationConfig_
 
-#include "DataTypes.hxx"
 #include "ProcessingConfig.hxx"
 
 namespace CLAM {
@@ -32,15 +31,10 @@ namespace CLAM {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (DescriptorComputationConfig, 1,ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
-	
-
-		~DescriptorComputationConfig(){};
+		
+		~DescriptorComputationConfig();
 	protected:
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-		}
+		void DefaultInit();
 	};
 
 }
