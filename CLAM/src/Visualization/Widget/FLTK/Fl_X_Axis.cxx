@@ -1,4 +1,5 @@
 #include "Fl_X_Axis.hxx"
+#include <Fl/Fl_Group.H>
 #include <cstdio>
 
 namespace CLAMVM

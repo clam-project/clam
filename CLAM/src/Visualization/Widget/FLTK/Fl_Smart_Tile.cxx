@@ -381,6 +381,8 @@ void Fl_Smart_Tile::draw(void)
 	{
 		fl_draw_box(FL_THIN_UP_BOX,x(),ty,w()-42,21,color());
 		fl_color(labelcolor());
+		// children don't show their labels when inside a Smart_Tile
+		child(i)->labeltype( FL_NO_LABEL );
 		fl_font(labelfont(),labelsize());
 		fl_draw(child(i)->label(),x()+5,ty,w()-35,21,
 			Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE));
