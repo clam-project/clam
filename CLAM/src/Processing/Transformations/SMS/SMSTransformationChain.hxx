@@ -68,7 +68,6 @@ namespace CLAM {
 		{
 			if(IsLastFrame())
 			{
-				std::cout << "SMSTransformationChain::Do: IsLastFrame\n";
 				return false;
 			}
 			NextFrame();
@@ -79,11 +78,15 @@ namespace CLAM {
 			iterator obj;
 			
 			int i;
+			// init temp data
 			for(i=0;i<mpTmpDataArray.Size();i++)
-				if(mpTmpDataArray[i]){
+				if(mpTmpDataArray[i])
+				{
 					delete mpTmpDataArray[i];
-					mpTmpDataArray[i]=NULL;}
+					mpTmpDataArray[i]=NULL;
+				}
 			mpTmpDataArray.SetSize(0);
+			
 			Segment* pCurrentData;
 			pCurrentData=new Segment(mChainInput.GetData());
 			mpTmpDataArray.AddElem(pCurrentData);
@@ -102,19 +105,18 @@ namespace CLAM {
 				}
 //				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
 				concreteObj.AttachOut(*pCurrentData);
-				std::cout << "attaching: "<< concreteObj.GetClassName() << std::endl;
 			}
 			obj=composite_begin();
-			Processing& processing = *(*(obj));
-			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>(processing);
+			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>( *(*(obj)) );
 			concreteObj.AttachIn(mChainInput.GetData());
 //			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
 			obj=composite_end();
 			obj--;
-			processing = *(*(obj));
-			concreteObj = dynamic_cast<SMSTransformation&>(processing);
+			SMSTransformation& concreteObj2 = dynamic_cast<SMSTransformation&>( *(*(obj)) );
+
+
 //			(*obj)->GetOutPorts().GetByNumber(0).Attach(mChainOutput.GetData());
-			concreteObj.AttachOut(mChainOutput.GetData() );
+			concreteObj2.AttachOut(mChainOutput.GetData() );
 			
 			return ProcessingComposite::ConcreteStart();
 
@@ -137,7 +139,6 @@ namespace CLAM {
 		void NextFrame()
 		{
 			mChainInput.GetData().mCurrentFrameIndex++;
-			std::cout << "NextFrame() " <<  mChainInput.GetData().mCurrentFrameIndex << std::endl;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment
@@ -145,7 +146,8 @@ namespace CLAM {
 		bool IsLastFrame()
 		{
 			iterator obj;
-			for(obj=composite_begin();obj!=composite_end();obj++)
+			int i=0;
+			for(obj=composite_begin(); obj!=composite_end(); i++, obj++)
 			{
 				SMSTransformation* transf=static_cast<SMSTransformation*>((*obj));
 				if(!transf->IsLastFrame()) return false;

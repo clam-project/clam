@@ -44,6 +44,7 @@ namespace CLAM
 	bool SMSTransformation::IsLastFrame()
 	{
 		bool isLast=mInput.GetData().mCurrentFrameIndex>=mInput.GetData().GetnFrames();
+		
 		if(isLast)
 		{
 			while(mOutput.GetData().GetnFrames()>=mOutput.GetData().mCurrentFrameIndex)

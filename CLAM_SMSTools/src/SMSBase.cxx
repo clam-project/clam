@@ -534,7 +534,6 @@ void SMSBase::Synthesize(void)
 {
 	if(!mHaveTransformation)
 	{
-		std::cout << "NOOO!!" << std::endl;
 		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
 		mHaveTransformation=true;
 	}

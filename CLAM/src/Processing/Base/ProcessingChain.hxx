@@ -257,7 +257,6 @@ namespace CLAM{
 					}
 					
 				}
-					
 			}
 			return result;
 		}
