@@ -41,6 +41,8 @@
 #include "IFFTConfig.hxx"
 #include "MonoAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
+#include "SMSAnalysisConfig.hxx"
+#include "SMSSynthesisConfig.hxx"
 
 // local processings
 #include "FlagControl.hxx"
@@ -98,6 +100,12 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 	
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> 
 	regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSAnalysisConfig> > 
+	regtSMSAnalysisCfg( "SMSAnalysisConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSynthesisConfig> > 
+	regtSMSSynthesisCfg( "SMSSynthesisConfig" );
 
 // in draft
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> > 

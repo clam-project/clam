@@ -50,4 +50,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 	regtSquareWave( "SquareWave" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_OutControlSenderPresentation > 
 	regtOutControlSender( "OutControlSender" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
+	regtSMSAnalysisCore( "SMSAnalysisCore" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
+	regtSMSSynthesis( "SMSSynthesis" );
 

@@ -68,8 +68,10 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	QListViewItem * analysis= new QListViewItem( this,"Analysis" );	
 	ProcessingItem * fft = new ProcessingItem( analysis, "FFT_rfftw" );	
+	ProcessingItem * smsanalysiscore = new ProcessingItem( analysis, "SMSAnalysisCore" );	
 	QListViewItem * synthesis = new QListViewItem( this,"Synthesis" );
 	ProcessingItem * ifft = new ProcessingItem( synthesis, "IFFT_rfftw" );	
+	ProcessingItem * smssynthesis = new ProcessingItem( synthesis, "SMSSynthesis" );	
 	
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
 	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
