@@ -1,6 +1,7 @@
 #include "DrawingSurface2D.hxx"
 #include <cmath>
 
+
 namespace CLAMGUI
 {
 		DrawingSurface2D::DrawingSurface2D()
@@ -31,6 +32,7 @@ namespace CLAMGUI
 				mydist = fabs( mymax - mymin );
 				
 				DamageProjection();
+				Refresh();
 		}
 
 		void DrawingSurface2D::QueryDataBoundBox( DataBoundBox& bbox )
