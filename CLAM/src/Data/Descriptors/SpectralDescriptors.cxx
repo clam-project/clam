@@ -278,8 +278,8 @@ TData SpectralDescriptors::ComputeSpread()
 
 TData SpectralDescriptors::ComputeSlope() 
 { 
-	DataArray& mags     = mpSpectrum->GetMagBuffer();
-	TSize      magsSize = mpSpectrum->GetSize();
+	const DataArray& mags = mpSpectrum->GetMagBuffer();
+	const TSize magsSize  = mpSpectrum->GetSize();
 
 	// Compute means and gradient of decay part
 	TData meanX = 0;
