@@ -29,6 +29,11 @@
 class QGroupBox;
 class QLabel;
 
+namespace CLAM
+{
+	class ProcessingConfig;
+}
+
 namespace NetworkGUI
 {
 
@@ -43,8 +48,8 @@ protected:
 
 	virtual void Ok( bool );
 	virtual void Cancel( bool );
-	virtual void ApplyChangesToConfig() = 0;
-	virtual void SetConfig( CLAM::ProcessingConfig* ) = 0;
+	virtual void ConfigureProcessing() = 0;
+	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
 	virtual ~Qt_ProcessingConfigPresentation();

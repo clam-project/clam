@@ -70,9 +70,9 @@ protected:
 
 
 
-	ConcreteConfig * mConfig;
-	virtual void SetConfig( CLAM::ProcessingConfig* );
-	virtual void ApplyChangesToConfig();
+	ConcreteConfig mConfig;
+	virtual void SetConfig( const CLAM::ProcessingConfig & );
+	virtual void ConfigureProcessing();
 	void GetInfo();
 	void SetInfo();
 	QWidget * GetWidget(const char * name);
@@ -130,8 +130,7 @@ public:
 
 template<class ConcreteConfig>
 ConfigPresentationTmpl<ConcreteConfig>::ConfigPresentationTmpl( QWidget * parent )
-	: Qt_ProcessingConfigPresentation( parent ),
-	  mConfig(0)
+	: Qt_ProcessingConfigPresentation( parent )
 {
 	mSetter = 0;
 	mGetter = 0;
@@ -160,16 +159,17 @@ void ConfigPresentationTmpl<ConcreteConfig>::Hide()
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( CLAM::ProcessingConfig* cfg)
+void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( const CLAM::ProcessingConfig & cfg)
 {
-	mConfig = (ConcreteConfig*)cfg;
+//	deep copy from abstract processing config to concrete
+	mConfig = static_cast<const ConcreteConfig &>(cfg);
 
 
 	CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
 	CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
 	typedef ConfigPresentationTmpl<ConcreteConfig> ConcreteConfigPresentation;
-	mSetter = new CLAM::ConfigurationSetter<ConcreteConfig,ConcreteConfigPresentation>(mConfig, this);
-	mGetter = new CLAM::ConfigurationGetter<ConcreteConfig,ConcreteConfigPresentation>(mConfig, this);
+	mSetter = new CLAM::ConfigurationSetter<ConcreteConfig,ConcreteConfigPresentation>(&mConfig, this);
+	mGetter = new CLAM::ConfigurationGetter<ConcreteConfig,ConcreteConfigPresentation>(&mConfig, this);
 	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 
 
@@ -189,10 +189,10 @@ void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( CLAM::ProcessingConfig* 
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::ApplyChangesToConfig()
+void ConfigPresentationTmpl<ConcreteConfig>::ConfigureProcessing()
 {
 	SetInfo();
-	SignalApplyConfig.Emit(mConfig);
+	SignalConfigureProcessing.Emit(mConfig);
 }
 
 template<class ConcreteConfig>

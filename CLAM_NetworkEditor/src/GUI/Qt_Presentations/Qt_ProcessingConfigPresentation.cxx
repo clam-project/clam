@@ -66,7 +66,7 @@ Qt_ProcessingConfigPresentation::~Qt_ProcessingConfigPresentation()
 
 void Qt_ProcessingConfigPresentation::Ok( bool )
 {
-	ApplyChangesToConfig();
+	ConfigureProcessing();
 	close();
 }
 

@@ -33,14 +33,6 @@ namespace CLAM
 	class ProcessingConfig;
 }
 
-namespace CLAMVM
-{
-	class InPortAdapter;
-	class OutPortAdapter;
-	class InControlAdapter;
-	class OutControlAdapter;
-}
-
 namespace NetworkGUI
 {
 
@@ -61,8 +53,6 @@ protected:
 	virtual void SetObservedClassName(const std::string& name);
 
 	// port methods
-//	virtual void SetInPort( CLAMVM::InPortAdapter* );
-//	virtual void SetOutPort( CLAMVM::OutPortAdapter* );	
 	void SetInPort( const std::string & );
 	void SetOutPort( const std::string & );
 	virtual void SetInPortClicked( Qt_InPortPresentation *);
@@ -73,8 +63,6 @@ protected:
 	// control methods
 	void SetInControl( const std::string & );
 	void SetOutControl( const std::string & );
-//	virtual void SetInControl( CLAMVM::InControlAdapter* );
-//	virtual void SetOutControl( CLAMVM::OutControlAdapter* );	
 	virtual void SetInControlClicked( Qt_InControlPresentation *);
 	virtual void SetOutControlClicked( Qt_OutControlPresentation *);
 	virtual void SetOutControlAfterClickInControl(const QPoint &);
