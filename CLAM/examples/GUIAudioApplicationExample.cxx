@@ -47,7 +47,7 @@ void MyAudioApplication::AudioMain(void)
 	try
 	{
 		unsigned int buffersize = 512;
-		AudioManager audioManager(44100, 512 );
+		AudioManager audioManager(44100, 4096 );
 
 
 		AudioIOConfig inCfgL;
@@ -121,7 +121,7 @@ void MyAudioApplication::AudioMain(void)
 			oscR.Do(bufOsc);
 			mul.Do(bufR,bufOsc,bufR);
 
-#if 1
+#if 0
 			/* just play a test tone at 440 hz instead of doing the realtime I/O with LFO */
 			testtone.Do(bufOsc);
 			outL.Do(bufOsc);
