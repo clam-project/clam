@@ -15,9 +15,9 @@ public:
 	Region();
 	virtual ~Region();
 
-	long& Pos();
-	int& Size();
-	int& Hop();
+	const long& Pos() const;
+	const int& Size() const;
+	const int& Hop() const;
 	
 	int& BeginDistance();
 	void BeginDistance(int &dist);

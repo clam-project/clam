@@ -14,17 +14,17 @@ Region::~Region()
 {
 }
 
-long & Region::Pos()
+const long & Region::Pos() const 
 {
 	return mPos;
 }
 
-int & Region::Size()
+const int & Region::Size() const
 {
 	return mSize;
 }
 
-int & Region::Hop()
+const int & Region::Hop() const
 {
 	return mHop;
 }
