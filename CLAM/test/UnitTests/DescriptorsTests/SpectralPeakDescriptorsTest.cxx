@@ -30,6 +30,7 @@
 #include "SpecTypeFlags.hxx"
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
+#include "XMLStorage.hxx"
 
 
 
@@ -80,8 +81,9 @@ private:
 	CLAM::SpectralPeakDescriptors *mDescriptors;
 	std::string mPathToTestData;
 
-	CLAM::Spectrum ComputeSpectrum(const CLAM::Audio& audioData, CLAM::TSize spectrumSize)
+	CLAM::Spectrum ComputeSpectrum(const CLAM::Audio& audioData)
 	{
+		const CLAM::TSize spectrumSize = audioData.GetSize()/2 + 1;
 		// Configure and create the spectrum
 		CLAM::SpecTypeFlags specFlags;
 		specFlags.bMagPhase = 1;
@@ -107,26 +109,25 @@ private:
 
 	CLAM::SpectralPeakArray ComputeSpectralPeaks(const CLAM::Spectrum& spectrum)
 	{
-		// Define peak detection class
 		CLAM::SpectralPeakDetect peakDetect;
-		// Define spectral peak data class
 		CLAM::SpectralPeakArray  myPeakArray;
-		myPeakArray.SetScale(CLAM::EScale(CLAM::EScale::eLog));
-		// Convert spectrum to dB
-		CLAM::Spectrum auxSpectrum(spectrum);
-		auxSpectrum.ToDB();
-		// Perform peak detection
-		peakDetect.Do(auxSpectrum,myPeakArray);
-		// Convert peaks to linear
+	
+		CLAM::Spectrum dbSpectrum(spectrum);
+		dbSpectrum.ToDB();
+
+		myPeakArray.SetScale(CLAM::EScale::eLog);
+
+		peakDetect.Do(dbSpectrum,myPeakArray);
+
 		myPeakArray.ToLinear();
 
 		return myPeakArray;
 	}
-	
-	CLAM::SpectralPeakArray helperGetData(const std::string & fileName)
+
+	CLAM::Audio ReadAudio(const std::string & fileName)
 	{
 		CLAM::AudioFile audioFile;
-		audioFile.SetLocation(mPathToTestData+fileName);
+		audioFile.SetLocation(fileName);
 		CPPUNIT_ASSERT_MESSAGE( 
 			"Unable to load file "+ audioFile.GetLocation(),
 			audioFile.IsReadable());
@@ -145,8 +146,19 @@ private:
 		reader.Do( buf );
 		reader.Stop();
 
-		return ComputeSpectralPeaks(
-			ComputeSpectrum(buf, buf.GetSize()/2 + 1));
+		return buf;
+
+	}
+	
+	CLAM::SpectralPeakArray helperGetData(const std::string & fileName)
+	{
+		std::string extension = fileName.substr(fileName.size()-4,fileName.size());
+		std::string fullPath = mPathToTestData+fileName;
+		if (extension!=".xml")
+			return ComputeSpectralPeaks(ComputeSpectrum(ReadAudio(fullPath)));
+		CLAM::SpectralPeakArray peaks;
+		CLAM::XMLStorage::Restore(peaks,fullPath); 
+		return peaks;
 	}
 
 	void assertDescriptorExtractionInsideTolerance(const std::map<std::string, CLAM::TData> & expected, 
@@ -158,7 +170,8 @@ private:
 		CLAM::SpectralPeakArray peaks;
 		std::map<std::string, CLAM::TData>::const_iterator it;
 		for (it = expected.begin(); it != expected.end(); it++) {
-			peaks = helperGetData((*it).first);
+			peaks = helperGetData(it->first);
+//			CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + it->first + "-Peak.xml");
 			mDescriptors->SetpSpectralPeakArray(&peaks);
 			mDescriptors->Compute();
 			if (
