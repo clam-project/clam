@@ -19,15 +19,17 @@ namespace CLAMGUI
 		class SpectralPeakArrayView : public ProcessingDataView
 		{
 				// attributes
-		protected:
-				SpectralPeakArrayViewAspect     mAspect;
+		private:
 				const SpectralPeakArray*        mObserved;
+				SpectralPeakArrayViewAspect     mAspect;
 
-				// implementation details
 		protected:
 				Array< Partial >  mPartialBuffer;
 
-				virtual void TranscribePeakArray();
+				// implementation details
+		protected:
+
+				virtual bool TranscribePeakArray( const SpectralPeakArray& );
 				
 				//class interface
 		public:
