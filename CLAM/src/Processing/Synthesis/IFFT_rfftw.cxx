@@ -97,17 +97,18 @@ namespace CLAM {
 			}
 		CLAM_END_CHECK
 	}
-
+/*
 	void IFFT_rfftw::Attach(Spectrum &in, Audio& out)
 	{
 		mInput.Attach(in);
 		mOutput.Attach(out);
 	}
-
+*/
+	
 	bool IFFT_rfftw::Do()
 	{
 
-/*		if (GetExecState() == Disabled)
+/*	if (GetExecState() == Disabled)
 			return true;
 
 		switch(mState) {
@@ -117,8 +118,13 @@ namespace CLAM {
 		default:
 			CLAM_ASSERT(false,"IFFT_rfftw: Do(): Inconsistent state");
 		}
-*/
-		return Do(mInput.GetData(),mOutput.GetData());
+
+		
+*/	
+		bool toReturn = Do(mInput.GetData(),mOutput.GetAudio());
+		mInput.Consume();
+		mOutput.Produce();
+		return toReturn;
 	};
 
 
@@ -148,8 +154,10 @@ namespace CLAM {
 	}
 
 
-	bool IFFT_rfftw::Do(Spectrum& in, Audio &out) const
+	bool IFFT_rfftw::Do( const Spectrum& inFoo, Audio &out) const
 	{
+		// TODO: Avoid copy, this solution is provisional
+		Spectrum in = inFoo;
 		if (GetExecState() == Disabled)
 			return true;
 		CLAM_ASSERT(GetExecState()!=Unconfigured&&GetExecState()!=Ready,"IFFT_rfftw: Do(): Not in execution mode");

@@ -57,7 +57,7 @@ void SimpleOscillatorConfig::DefaultInit(void)
 
 // Oscillator method definition
 SimpleOscillator::SimpleOscillator()
-	:mOutput("Audio Output",this,1),
+	:mOutput("Audio Output", this),
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
@@ -73,7 +73,7 @@ SimpleOscillator::SimpleOscillator()
 }
 
 SimpleOscillator::SimpleOscillator( const SimpleOscillatorConfig& cfg )
-	:mOutput("Audio Output",this,1),
+	:mOutput("Audio Output", this),
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
@@ -106,8 +106,8 @@ bool SimpleOscillator::ConcreteConfigure( const ProcessingConfig& c )
 bool SimpleOscillator::Do()
 {
 	bool res = false;
-	res = Do(mOutput.GetData());
-	mOutput.LeaveData();
+	res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 }
 

@@ -40,8 +40,8 @@ namespace CLAM {
 
 	FFT_base::FFT_base() :
 		mSize(0),
-		mInput("Input",this,1),
-		mOutput("Output",this,1),
+		mInput("Audio Input",this),
+		mOutput("Spectrum Output",this),
 		fftbuffer( NULL )
 	{
 	};
@@ -145,12 +145,6 @@ namespace CLAM {
 		return true;
 	}
 
-	void FFT_base::Attach(Audio& in, Spectrum &out)
-	{
-		mInput.Attach(in);
-		mOutput.Attach(out);
-	}
-	
 	void FFT_base::ToOther(Spectrum &out)
 	{
 		if(out.HasComplexArray()) {
@@ -161,8 +155,5 @@ namespace CLAM {
 			ToComplex(mComplexSpectrum);
 			out.SynchronizeTo(mComplexSpectrum);
 		}
-
 	}	
-		
-
 };//namespace CLAM

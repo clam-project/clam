@@ -26,8 +26,7 @@
 
 #include "DynamicType.hxx"
 #include "Component.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
+
 #include "ErrProcessingObj.hxx"
 #include "PublishedInControls.hxx"
 #include "PublishedOutControls.hxx"
@@ -44,9 +43,10 @@
 namespace CLAM {
 
 	class Processing;
-	class Port;
-	class InPort;
-	class OutPort;
+	class InPortBase;
+	class OutPortBase;
+	class InControl;
+	class OutControl;
 	class ProcessingComposite;
 
 	/**
@@ -241,8 +241,8 @@ namespace CLAM {
 
 		void SetExecState( const ExecState& s ) { mState = s; }
 
-		void PublishOutPort(OutPort* out);
-		void PublishInPort(InPort* in);
+		void PublishOutPort(OutPortBase* out);
+		void PublishInPort(InPortBase* in);
 		void PublishOutControl(OutControl* out);
 		void PublishInControl(InControl* in);
 //		void LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const;// throw out_of_range;
