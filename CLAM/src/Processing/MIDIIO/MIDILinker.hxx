@@ -25,6 +25,9 @@
 #include "Processing.hxx"
 #include "MIDIInControl.hxx"
 #include "ControlMapper.hxx"
+#include "MIDIManager.hxx"
+
+#include <algorithm>
 
 using std::for_each;
 using std::string;
@@ -41,6 +44,11 @@ namespace CLAM
 		void StoreOn (Storage & store);
 		void LoadFrom (Storage & store);
 		bool operator== (MIDIRelation  r);
+
+		const char* GetClassName() const
+		{
+			return "MIDIRelation";
+		}
 
 //	private:
 
