@@ -95,7 +95,6 @@ private: // Attributes	CLAM::SMSAnalysisCore mAnalysis;
 
 	std::string StringFromFile( const std::string & nameOfFile )
 	{
-		std::stringstream stream;
 		std::ifstream file( nameOfFile.c_str() );
 		return std::string(  (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() );
 	}
