@@ -21,6 +21,8 @@
 	      allowing user a finer grain level of control on that SMS transformation
 	  *** Bug fixed: under some circumstances configuration widgets might be 
               unadvertendly duplicated, leading to invalid transformation scores
+	  *** Editor widget layout tweaked a bit to make bigger the screen area devoted
+	      to transformation parameters edition
 
 
 2003-07-03 CLAM_0_5_1
