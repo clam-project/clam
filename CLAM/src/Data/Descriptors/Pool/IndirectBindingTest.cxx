@@ -239,7 +239,7 @@ private:
 
 	void testRangeInit_PointsToTheFirstRange()
 	{
-		CLAM::ReadIndirectRangedHook<char> hook;
+		CLAM::ReadRangedHook<char> hook;
 		hook.Range(4);
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","Reference");
@@ -257,7 +257,7 @@ private:
 
 	void testGetRangeForReading_failsWhenInvalidReference()
 	{
-		CLAM::ReadIndirectRangedHook<char> hook;
+		CLAM::ReadRangedHook<char> hook;
 		hook.Range(4);
 		hook.Bind("Referenced","Input");
 		hook.Indirect("Referencer","BadReference");
@@ -278,7 +278,7 @@ private:
 
 	void testRangeExtraction_usingHooks()
 	{
-		CLAM::ReadIndirectRangedHook<char> inputHook;
+		CLAM::ReadRangedHook<char> inputHook;
 		inputHook.Range(4);
 		inputHook.Bind("Referenced","Input");
 		inputHook.Indirect("Referencer","Reference");
@@ -308,7 +308,7 @@ private:
 
 	void testRangeExtraction_usingExtractor()
 	{
-		CLAM::ReadIndirectRangedHook<char> inputHook;
+		CLAM::ReadRangedHook<char> inputHook;
 		inputHook.Range(4);
 		inputHook.Bind("Referenced","Input");
 		inputHook.Indirect("Referencer","Reference");

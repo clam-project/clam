@@ -46,7 +46,7 @@ private:
 class CharJoinExtractor
 {
 public:
-	void SetHooks(CLAM::ReadIndirectRangedHook<char> & inputHook, CLAM::WriteHook<std::string> & outputHook)
+	void SetHooks(CLAM::ReadRangedHook<char> & inputHook, CLAM::WriteHook<std::string> & outputHook)
 	{
 		_inputHook = &inputHook;
 		_outputHook = &outputHook;
@@ -78,7 +78,7 @@ public:
 		_outputHook->Init(pool);
 	}
 private:
-	CLAM::ReadIndirectRangedHook<char> * _inputHook;
+	CLAM::ReadRangedHook<char> * _inputHook;
 	CLAM::WriteHook<std::string> * _outputHook;
 };
 

@@ -112,7 +112,7 @@ private:
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
-class ReadIndirectRangedHook : public ReadHook<AttributeType>
+class ReadRangedHook : public ReadHook<AttributeType>
 {
 public:
 	void GetRangeForReading(
