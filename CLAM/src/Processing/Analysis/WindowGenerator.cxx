@@ -19,11 +19,8 @@
  *
  */
 
-#include "Processing.hxx"
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"
-#include "Enum.hxx"
-#include "Array.hxx"
 #include "Spectrum.hxx"
 #include "Audio.hxx"
 #include "WindowGenerator.hxx"
