@@ -105,7 +105,7 @@ void SMSBatch::Run(void)
 						{
 							LoadInputSound();
 							Analyze();
-							StoreAnalysis();			
+							StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
 							break;
 						}
 						case 3://Synthesize previously analyzed .sdif or .xml files
