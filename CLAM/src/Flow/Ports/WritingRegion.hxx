@@ -24,6 +24,12 @@ public:
 	void RemoveRegion( Region & region );
 
 	/**
+	 * As a precondition all the regions must be even (in order to center them correctly).
+	 * Otherways the method gives an assertion
+	 */
+	void CenterEvenRegions();
+
+	/**
 		returns the underlying stream. Useful for testing.
 	*/
 	ProperStream& Stream();
@@ -43,11 +49,24 @@ public:
 	bool FulfilsInvariant();
 	int LogicalStreamSize();
 	Region* ProducerRegion();
+
+	/**
+	 * Initializes all the data contained inside the region ( to the Token's default constructor)
+	 */
+	void ClearData();
 private:
 	/** Don't allow copies. Thus copy contructor made private */
 	WritingRegion(const WritingRegion<Token>& original){}
 	void SizeChanged(const int & newSize);
-	
+	int GetGreatestReaderRegionSize();
+
+	/*
+	 * This method checks that all the regions have even size and are located at the correct position (the beginning of the buffer )
+	 */
+	void CheckRegionsAreEven();
+	void PositionWritingRegion( int centralIndex );
+	void CenterReadingRegions( int centralIndex );
+
 	ReadingRegionsList mReadingRegions;
 	ProperStream  mStream;
 };
@@ -90,6 +109,84 @@ void WritingRegion< Token, DataStructure >::LinkRegions( ProperReadingRegion &  
 }
 
 template< typename Token, template <class> class DataStructure>
+int WritingRegion< Token, DataStructure >::GetGreatestReaderRegionSize()
+{
+	int maxSize = 0;
+	
+	ReadingRegionsIterator it;
+	for(it=BeginReaders(); it!=EndReaders(); it++)
+	{
+		if(((*it)->Size())>maxSize) 
+			maxSize = (*it)->Size();
+	}
+
+	return maxSize;
+}
+
+template< typename Token, template <class> class DataStructure>
+void WritingRegion<Token, DataStructure >::CheckRegionsAreEven()
+{
+	// XR TODO: writer must be even?	
+	CLAM_ASSERT( Pos() == 0, "WritingRegion::CheckRegionsAreEven - Writer's position must be zero." );
+	CLAM_ASSERT( Size()%2==0, "WritingRegion::CheckRegionsAreEven - Writer's size must be even for centering." );
+	
+	ReadingRegionsIterator it;
+	for(it=BeginReaders(); it!=EndReaders(); it++)
+	{
+		CLAM_ASSERT( (*it)->Size()%2==0, "WritingRegion::CheckRegionsAreEven - Reader's size must be even for centering.");
+		CLAM_ASSERT( (*it)->Pos() == 0, "WritingRegion::CheckRegionsAreEven - Reader's pos must be zero");
+	}
+
+}
+	
+template< typename Token, template <class> class DataStructure>
+void WritingRegion< Token, DataStructure >::ClearData()
+{
+	for( int i=0; i<Size(); i++ )		
+		operator[](i) = Token();
+}
+
+template< typename Token, template <class> class DataStructure>
+void WritingRegion< Token, DataStructure >::PositionWritingRegion( int centralIndex )
+{
+
+	int currentHop = Hop();
+	int currentSize = Size();
+
+	Size( centralIndex);	
+	Hop( centralIndex );
+
+	ClearData();	
+	
+	Produce();
+
+	Size( currentSize );
+	Hop( currentHop );
+}
+
+template< typename Token, template <class> class DataStructure>
+void WritingRegion< Token, DataStructure >::CenterReadingRegions( int centralIndex )
+{
+	ReadingRegionsIterator it;
+	for(it=BeginReaders(); it!=EndReaders(); it++)
+	{
+		int hopToMove = centralIndex - (*it)->Size()/2; 
+		(*it)->Pos( hopToMove );
+		(*it)->BeginDistance( hopToMove );
+	}
+}
+
+template< typename Token, template <class> class DataStructure>
+void WritingRegion< Token, DataStructure >::CenterEvenRegions()
+{
+	CheckRegionsAreEven();
+	int centralIndex = GetGreatestReaderRegionSize()/2;
+
+	PositionWritingRegion( centralIndex );	
+	CenterReadingRegions( centralIndex );
+}
+
+template< typename Token, template <class> class DataStructure>
 void WritingRegion< Token, DataStructure >::RemoveRegion( Region & region )
 {
 	CLAM_ASSERT( region.ProducerRegion()==this, "Region::RemoveRegion() - Trying to remove an unlinked region");
@@ -126,7 +223,7 @@ template< typename Token, template <class> class DataStructure>
 void WritingRegion< Token, DataStructure >::Produce()
 {
 	CLAM_DEBUG_ASSERT( CanProduce(), "WritingRegion::produce() - WritingRegion can't produce" );
-	Pos() += Hop();
+	Pos( Pos() + Hop());
 	// reserve stream tokens for next position
 	mStream.WriterHasAdvanced( *this );
 }
