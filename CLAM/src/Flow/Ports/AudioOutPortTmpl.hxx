@@ -31,6 +31,7 @@ public:
 	
 	ProcessingData* GetProcessingData();
 	bool IsAttached();
+	bool IsReadyForWriting();
 	void Unattach();
 	bool IsConnectableTo(InPort & );
 
@@ -133,6 +134,12 @@ inline NodeBase* OutPortTmpl<Audio>::GetNode()
 inline bool OutPortTmpl<Audio>::IsAttached()
 {
 	return  mpData || mpNode ;
+}
+
+inline bool OutPortTmpl<Audio>::IsReadyForWriting()
+{
+	CLAM_ASSERT( GetNode()!=0, "OutPortTmpl<Audio>::IsReadyForWriting() only makes sense when Port attached to Node" );
+	return mpNode->CanActivateRegion(*mpRegion);
 }
 
 inline void OutPortTmpl<Audio>::Unattach()

@@ -34,6 +34,7 @@ public:
 	ProcessingData* GetProcessingData();
 	NodeBase* GetNode();
 	bool IsAttached();
+	bool IsReadyForWriting();
 	void Unattach();
 	bool IsConnectableTo(InPort & );
 };
@@ -139,6 +140,14 @@ inline bool OutPortTmpl<T>::IsAttached()
 {
 	return  mData.Size()>0 || mpNode ;
 }
+
+template<class T>
+inline bool OutPortTmpl<T>::IsReadyForWriting()
+{
+	CLAM_ASSERT( GetNode()!=0, "OutPortTmpl<T>::IsReadyForWriting() only makes sense when Port attached to Node" );
+	return mpNode->CanActivateRegion(*mpRegion);
+}
+
 
 template<class T>
 inline void OutPortTmpl<T>::Unattach()

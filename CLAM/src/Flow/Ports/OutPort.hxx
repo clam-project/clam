@@ -16,7 +16,7 @@ public:
 	OutPort(const std::string &n, Processing *o, int length, int hop = 0);
 	virtual bool IsConnectableTo(InPort & ) = 0;
 	bool IsConnectedTo( InPort &in );
-
+	virtual bool IsReadyForWriting() = 0;
 	virtual ~OutPort() {}
 	
 };
