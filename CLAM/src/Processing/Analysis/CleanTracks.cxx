@@ -144,7 +144,6 @@ namespace CLAM {
 	}
 
 
-
 	void CleanTracks::Clean(Array<SpectralPeakArray*>& peakArrayArray)
 	{
 		for(int i=0;i<peakArrayArray.Size();i++)
@@ -164,7 +163,7 @@ namespace CLAM {
 				peakArrayArray[i]->DeleteIndex(id);
 				mTrajectoryArray[trajectoryPosition].length--;//update length
 				if(mTrajectoryArray[trajectoryPosition].length==0)
-					DeleteTrajectory(id);
+					mTrajectoryArray.DeleteElem(trajectoryPosition);
 				nDeleted++;
 			}
 		}
@@ -206,14 +205,6 @@ namespace CLAM {
 			mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
 			mTrajectoryArray[pos].finalMag=trajectory.finalMag;
 		}
-	}
-
-
-	void CleanTracks::DeleteTrajectory(int id)
-	{
-		const int pos=FindTrajectoryPosition(id);
-		CLAM_ASSERT(pos!=-1, "CleanTracks: Deleting a non-existent trajectory");
-		mTrajectoryArray.DeleteElem(pos);
 	}
 
 	void CleanTracks::ContinuedAt()
@@ -328,27 +319,26 @@ namespace CLAM {
 
 	}
 
-
-TIndex CleanTracks::FindTrajectoryPosition(TIndex id)
-{
-	// For Empty arrays return not found
-	if (mTrajectoryArray.Size()==0)
-		return -1;
-	//we have to check whether it is first or last track
-	if (id == mTrajectoryArray[0].id)
-		return 0;
-	if (id == mTrajectoryArray[mTrajectoryArray.Size()-1].id)
-		return mTrajectoryArray.Size()-1;
-
-	TTrajectory tmpTrajectory;
-	tmpTrajectory.id=id;
-	TIndex trajectoryPosition = mSearchTrajectories.Find(tmpTrajectory);
-
-	//note that Find returns the closest index and that does not guarantee that is the exact one
-	if (trajectoryPosition!=-1)
-		if (mTrajectoryArray[trajectoryPosition].id!=id)
+	TIndex CleanTracks::FindTrajectoryPosition(TIndex id)
+	{
+		// For Empty arrays return not found
+		if (mTrajectoryArray.Size()==0)
 			return -1;
-	return trajectoryPosition;
-}
+		//we have to check whether it is first or last track
+		if (id == mTrajectoryArray[0].id)
+			return 0;
+		if (id == mTrajectoryArray[mTrajectoryArray.Size()-1].id)
+			return mTrajectoryArray.Size()-1;
+
+		TTrajectory tmpTrajectory;
+		tmpTrajectory.id=id;
+		TIndex trajectoryPosition = mSearchTrajectories.Find(tmpTrajectory);
+
+		//note that Find returns the closest index and that does not guarantee that is the exact one
+		if (trajectoryPosition!=-1)
+			if (mTrajectoryArray[trajectoryPosition].id!=id)
+				return -1;
+		return trajectoryPosition;
+	}
 
 };//namespace
