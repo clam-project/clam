@@ -662,17 +662,7 @@ void Spectrum::MagPhase2BPF(const DataArray& magBuffer, const DataArray& phaseBu
 		"Spectrum::MagPhase2BPF(): BPFSize and MagPhase size differ.");
 
 	DataArray freqBuffer(size);
-	int i;
 	TData delta = GetSpectralRange()/(size-1);
-
-	/*
-	  ArrayToBPFCnv_ convert;
-	  for (i=0; i<size ;i++)
-		freqBuffer.AddElem(i*delta); // set frequency points
-	
-	convert.ConvertToBPF(magBPF, freqBuffer, magBuffer);
-	convert.ConvertToBPF(phaseBPF, freqBuffer, phaseBuffer);
-	*/
 
 	ConvertToBPF( magBPF, TData(0), delta, magBuffer );
 	ConvertToBPF( phaseBPF, TData(0), delta, phaseBuffer );
