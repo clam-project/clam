@@ -3,6 +3,8 @@
 
 #include <FL/Fl_Group.H>
 #include "BPF.hxx"
+#include "Signalv0.hxx"
+#include "Slotv2.hxx"
 
 class Fl_Envelope_Scroll;
 class Fl_Check_Button;
@@ -24,7 +26,17 @@ namespace CLAMVM
 		void SetHorizontalRange( double xmin, double xmax );
 		void SetVerticalRange( double ymin, double ymax );
 
+		SigSlot::Signalv0   PointsChanged;		
+
 	protected:
+
+		SigSlot::Slotv2<double,double>  NewPoint;
+		SigSlot::Slotv0                 PointRemoved;
+		SigSlot::Slotv0                 PointMoved;
+
+		void OnNewPoint( double x, double y );
+		void OnPointRemoved();
+		void OnPointMoved();
 
 		static void cbSnapToGrid( Fl_Check_Button* btn, void* data );
 

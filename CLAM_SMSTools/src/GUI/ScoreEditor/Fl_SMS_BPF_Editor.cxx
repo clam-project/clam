@@ -10,10 +10,10 @@ namespace CLAMVM
 		: Fl_Group( X, Y, W, H), mpFunctionEditor( NULL )
 	{
 		mpFunctionEditor = new Fl_Envelope_Scroll( X+5, Y+5, W-10, H-30 );
-		mpFunctionEditor->envelope.grid( 0.1f, 0.1f );
-		mpFunctionEditor->control.hvalue( 0.0, 1.0, 0.0, 1.0 );
-		mpFunctionEditor->control.vvalue( 0.0, 1.0, 0.0, 1.0 );
-		mpFunctionEditor->envelope.margin( 20, 10, 0, 0 );
+		mpFunctionEditor->envelope->grid( 0.1f, 0.1f );
+		mpFunctionEditor->control->hvalue( 0.0, 1.0, 0.0, 1.0 );
+		mpFunctionEditor->control->vvalue( 0.0, 1.0, 0.0, 1.0 );
+		mpFunctionEditor->envelope->margin( 20, 10, 0, 0 );
 		//mpFunctionEditor->margin_adjust();
 		mpFunctionEditor->end();
 
@@ -26,21 +26,44 @@ namespace CLAMVM
 		end();
 		resizable( mpFunctionEditor );
 
+		NewPoint.Wrap( this, &Fl_SMS_BPF_Editor::OnNewPoint );
+		PointRemoved.Wrap( this, &Fl_SMS_BPF_Editor::OnPointRemoved );
+		PointMoved.Wrap( this, &Fl_SMS_BPF_Editor::OnPointMoved );
+
+		mpFunctionEditor->envelope->PointAdded.Connect( NewPoint );
+		mpFunctionEditor->envelope->PointMoved.Connect( PointMoved );
+		mpFunctionEditor->envelope->PointRemoved.Connect( PointRemoved );
+	}
+
+	
+	void Fl_SMS_BPF_Editor::OnNewPoint( double x, double y )
+	{
+		PointsChanged.Emit();
+	}
+
+	void Fl_SMS_BPF_Editor::OnPointRemoved()
+	{
+		PointsChanged.Emit();
 	}
 	
+	void Fl_SMS_BPF_Editor::OnPointMoved()
+	{
+		PointsChanged.Emit();
+	}
+
 	void Fl_SMS_BPF_Editor::SetHorizontalRange( double xmin, double xmax )
 	{
-		mpFunctionEditor->control.hvalue( xmin, fabs(xmax-xmin), xmin, fabs(xmax-xmin) );
+		mpFunctionEditor->control->hvalue( xmin, fabs(xmax-xmin), xmin, fabs(xmax-xmin) );
 	}
 
 	void Fl_SMS_BPF_Editor::SetVerticalRange( double ymin, double ymax )
 	{
-		mpFunctionEditor->control.vvalue( ymax, fabs( ymax-ymin), ymin, fabs(ymax-ymin) );
+		mpFunctionEditor->control->vvalue( ymax, fabs( ymax-ymin), ymin, fabs(ymax-ymin) );
 	}
 
 	void Fl_SMS_BPF_Editor::SetGridWidth( double xwidth, double ywidth )
 	{
-		mpFunctionEditor->envelope.grid( xwidth, ywidth );
+		mpFunctionEditor->envelope->grid( xwidth, ywidth );
 	}
 
 	void Fl_SMS_BPF_Editor::cbSnapToGrid( Fl_Check_Button* btn, void* data )
@@ -48,9 +71,9 @@ namespace CLAMVM
 		Fl_SMS_BPF_Editor* pThis = (Fl_SMS_BPF_Editor*)data;
 
 		if ( btn->value() )
-			pThis->mpFunctionEditor->envelope.snap( SNAPBOTH );
+			pThis->mpFunctionEditor->envelope->snap( SNAPBOTH );
 		else
-			pThis->mpFunctionEditor->envelope.snap( 0 );
+			pThis->mpFunctionEditor->envelope->snap( 0 );
 
 	}
 
@@ -60,34 +83,34 @@ namespace CLAMVM
 
 	void Fl_SMS_BPF_Editor::InitPoints( double yvalue )
 	{
-		mpFunctionEditor->envelope.add_point( 0.0, yvalue );
-		mpFunctionEditor->envelope.add_point( 1.0, yvalue );
+		mpFunctionEditor->envelope->add_point( 0.0, yvalue );
+		mpFunctionEditor->envelope->add_point( 1.0, yvalue );
 	}
 
 	void Fl_SMS_BPF_Editor::InitPoints( const CLAM::BPF& originalBPF )
 	{
 		for ( int i = 0; i < originalBPF.Size(); i++ )
-			mpFunctionEditor->envelope.add_point( originalBPF.GetXValue( i ), 
+			mpFunctionEditor->envelope->add_point( originalBPF.GetXValue( i ), 
 							      originalBPF.GetValueFromIndex( i ) );
 		
 	}
 
 	void Fl_SMS_BPF_Editor::Clear()
 	{
-		mpFunctionEditor->envelope.clear();
+		mpFunctionEditor->envelope->clear();
 	}
 
 	void Fl_SMS_BPF_Editor::InsertPointsIntoBPF( CLAM::BPF& editedBPF )
 	{
 
-
+		
 		while( editedBPF.Size() )
 			editedBPF.DeleteIndex(0);
-
+		
 		
 		FLPOINT* p;
 		int i = 0;
-		while( ( p =mpFunctionEditor->envelope.point(i++))!=0 )
+		while( ( p =mpFunctionEditor->envelope->point(i++))!=0 )
 			editedBPF.Insert( p->x, p->y );
 	}
 }
