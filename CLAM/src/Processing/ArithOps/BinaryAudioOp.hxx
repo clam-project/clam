@@ -117,7 +117,11 @@ namespace CLAM
 
 		bool Do(void)
 		{
-			return (Do(mFirstInput.GetData(),mSecondInput.GetData(),mOutput.GetData()));
+			bool res = Do(mFirstInput.GetData(),
+				      mSecondInput.GetData(),
+				      mOutput.GetData());
+			mOutput.LeaveData();
+			return res;
 		}
 
 		bool Do(const Audio& in1, const Audio& in2, Audio& out)
