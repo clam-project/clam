@@ -819,6 +819,9 @@ void SMSBase::TransformProcessing(void)
 	int i = 0;
 	while(mTransformation.Do())
 	{
+		CLAM_ASSERT( mCurrentProgressIndicator, 
+				"SMSBase::TransformProcessing mCurrentProgressIndicator should't be NULL"
+				" Probably you din't call Transfrom()" );
 		mCurrentProgressIndicator->Update(float(i++));
 	}
 	mTransformation.Stop();
