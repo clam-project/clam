@@ -78,6 +78,7 @@ namespace CLAM {
 				mState=Unconfigured;
 				mPreconfigureExecuted = false;
 				mStatus+=" Configuration failed.";
+				mState = Unconfigured;
 				return false;
 			}
 		}
