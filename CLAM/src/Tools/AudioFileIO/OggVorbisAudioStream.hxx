@@ -7,8 +7,8 @@
 #include <vorbis/vorbisenc.h>
 #include "DataTypes.hxx"
 #include "Array.hxx"
-#include "CircularBuffer.hxx"
 #include <deque>
+#include <vector>
 
 namespace CLAM
 {
@@ -39,12 +39,13 @@ namespace AudioCodecs
 		void VorbisI_EncoderSetup();
 		void WriteBitstreamHeader();
 
+		void DoVorbisAnalysis();
+
 		
 	protected:
 		std::string      mName;
 		FILE*            mFileHandle;
 		OggVorbis_File   mNativeFileParams;
-		Array<TInt16>    mIntegerSamples;
 		int              mCurrentSection;
 		bool             mValidFileParams;
 
@@ -64,10 +65,9 @@ namespace AudioCodecs
 		int                mOffset;
 
 		static const TSize      mMaxBlockSize;
+		static const TSize      mAnalysisWindowSize;
 		Array<TInt16>           mBlockBuffer;
-		Array<TInt16>           mMiddleBuffer;
-		CircularBuffer<TInt16>  mCBuffer;
-		std::deque<TInt16>      mAltBuffer;
+		std::vector<std::deque<TData> >       mEncodeBuffer;
 		TSize                   mRemainderOffset;
   	};
 }

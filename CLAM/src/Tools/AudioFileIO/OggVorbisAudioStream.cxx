@@ -19,13 +19,14 @@ namespace CLAM
 namespace AudioCodecs
 {
 	const TSize OggVorbisAudioStream::mMaxBlockSize = 4096 / sizeof(TInt16); // Seems to be the 'reference' value
+	const TSize OggVorbisAudioStream::mAnalysisWindowSize = 1024;
 	
 	OggVorbisAudioStream::OggVorbisAudioStream()
 		: mFileHandle( NULL ), mValidFileParams( false ), mEncoding( false )
 	{
 		mBlockBuffer.Resize( mMaxBlockSize );
 		mBlockBuffer.SetSize( mMaxBlockSize );
-		mCBuffer.SetBufferSize( 4 * mMaxBlockSize );
+
 	}
 
 	OggVorbisAudioStream::OggVorbisAudioStream( const AudioFile& file )
@@ -34,7 +35,7 @@ namespace AudioCodecs
 		SetFOI( file );
 		mBlockBuffer.Resize( mMaxBlockSize );
 		mBlockBuffer.SetSize( mMaxBlockSize );
-		mCBuffer.SetBufferSize( 4 * mMaxBlockSize );
+
 	}
 
 	OggVorbisAudioStream::~OggVorbisAudioStream()
@@ -56,6 +57,9 @@ namespace AudioCodecs
 		mName = file.GetLocation();
 		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
 		mEncodedChannels = (int)file.GetHeader().GetChannels();
+		
+		mEncodeBuffer.resize( mEncodedChannels ); // as many stream buffers as channels
+
 	}
 
 
@@ -190,12 +194,16 @@ namespace AudioCodecs
 	{
 		if ( !mEncoding )
 		{
-			mCBuffer.Init();
 			ov_clear( &mNativeFileParams );
 			mValidFileParams = false;
 		}
 		else
 		{
+			// if there are yet samples to be processed we assure
+			// they are encoded
+			if ( !mEncodeBuffer[0].empty() )
+				DoVorbisAnalysis();
+
 			// We tell the Vorbis encoder that we are 
 			// finished with encoding frames
 			vorbis_analysis_wrote( &mDSPState, 0 );
@@ -229,8 +237,18 @@ namespace AudioCodecs
 		const TData* pSamplesFPEnd = pSamplesFP + mInterleavedData.Size();
 		
 		if ( mRemainderOffset )		
-			for ( i = mRemainderOffset; i < mBlockBuffer.Size(); i++ )
+		{
+			for ( i = mRemainderOffset; pSamplesFP < pSamplesFPEnd && i < mBlockBuffer.Size(); i++ )
 				*pSamplesFP++ = TData(mBlockBuffer[i])*norm;
+
+			mRemainderOffset = i;
+
+			if ( pSamplesFP == pSamplesFPEnd )
+			{
+				mRemainderOffset = 0;
+				return; // buffer completed
+			}
+		}
 		
 		mBlockBuffer.SetSize( mMaxBlockSize );
 
@@ -274,24 +292,54 @@ namespace AudioCodecs
 		
 		// We expose the buffer for submitting data to the encoder
 
-		int frameSize = mInterleavedDataOut.Size()/mEncodedChannels;
+		TIndex currentOffset = 0;
+		int i;
 
+		do
+		{
+			for ( i = mEncodeBuffer[0].size(); 
+			      i < mAnalysisWindowSize && currentOffset < mInterleavedDataOut.Size(); 
+			      i++ )
+			{
+				for ( int j = 0; j < mEncodedChannels; j++ )
+					mEncodeBuffer[j].push_front( mInterleavedDataOut[ currentOffset + j ] );
+
+				currentOffset += mEncodedChannels;
+			}
+
+			if ( i == mAnalysisWindowSize ) // enough samples acquired
+				DoVorbisAnalysis();
+			
+		} while ( currentOffset < mInterleavedDataOut.Size() );
+
+	}
+
+	void OggVorbisAudioStream::DoVorbisAnalysis()
+	{
 		float** encBuffer = vorbis_analysis_buffer( &mDSPState, 
-							    frameSize );
+							    mAnalysisWindowSize );
 		
 		int samplesWrote = 0;
+		int i = 0;
 
 		for ( int j = 0; j < mEncodedChannels; j++ )
 		{
-			int k = j;
-			for( int i = 0; i < frameSize; i++, k+=mEncodedChannels )
+			while( !mEncodeBuffer[j].empty() )
 			{
-				encBuffer[j][i] = mInterleavedDataOut[ k ];
+				encBuffer[j][i] = mEncodeBuffer[j].back();
+				mEncodeBuffer[j].pop_back();				
+				i++;
+			}
+
+			while( i < mAnalysisWindowSize )
+			{
+				encBuffer[j][i] = 0.0;
+				i++;
 			}
 		}
-			
-		vorbis_analysis_wrote( &mDSPState, frameSize );
 
+		vorbis_analysis_wrote( &mDSPState, mAnalysisWindowSize );
+			
 		while( vorbis_analysis_blockout( &mDSPState, &mVorbisBlock ) == 1 )
 		{
 			// we assume we want bitrate management
@@ -321,7 +369,6 @@ namespace AudioCodecs
 
 			}
 		}
-
 
 	}
 }	
