@@ -24,9 +24,10 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetCreatorSafe_CorrectKeyWithTwoCreators );
 	CPPUNIT_TEST( testAddCreator_RepeatedKey );
 	CPPUNIT_TEST( testAddCreatorSafe_RepeatedKey );
-	CPPUNIT_TEST( testRemoveCreator_WhenIsEmpty );
-	CPPUNIT_TEST( testRemoveCreator_WhenNotEmtpy );
-	CPPUNIT_TEST( testCount );
+	CPPUNIT_TEST( testRemoveCreators_WhenIsEmpty );
+	CPPUNIT_TEST( testRemoveCreators_WhenNotEmtpy );
+	CPPUNIT_TEST( testCount_WhenEmpty );
+	CPPUNIT_TEST( testCount_WithTwoCreators );
 	CPPUNIT_TEST_SUITE_END();
 
 	
@@ -172,7 +173,7 @@ private:
 		}
 	}
 
-	void testRemoveCreator_WhenIsEmpty()
+	void testRemoveCreators_WhenIsEmpty()
 	{
 		CLAM::FactoryRegistry reg;
 		reg.RemoveAllCreators();
@@ -181,7 +182,7 @@ private:
 			std::size_t(0), reg.Count() );
 	}
 
-	void testRemoveCreator_WhenNotEmtpy()
+	void testRemoveCreators_WhenNotEmtpy()
 	{
 		CLAM::FactoryRegistry reg;
 		reg.AddCreator("osc", CLAM::CreateOscillator );
@@ -193,11 +194,15 @@ private:
 			std::size_t(0), reg.Count() );
 	}
 	
-	void testCount()
+	void testCount_WhenEmpty()
 	{
 		CLAM::FactoryRegistry reg;
 		CPPUNIT_ASSERT_EQUAL( std::size_t(0), reg.Count() );
+	}
 
+	void testCount_WithTwoCreators()
+	{
+		CLAM::FactoryRegistry reg;
 		reg.AddCreator("osc", CLAM::CreateOscillator );
 		reg.AddCreator("adder", CLAM::CreateAudioAdder );
 		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );
