@@ -238,6 +238,12 @@ void SoundFileIO::Seek(int pos)
 {
 	mPos = pos;
 
+	if (mPos==0)
+	{
+		rewind(mFile);
+		return;
+	}
+
 	if (mPos<0 || mPos>mSize)
 		throw ErrSoundFileIO("Position out of range");
 	
