@@ -93,9 +93,10 @@ AC_DEFUN(CLAM_CHECK_UNICODE_SUPPORT,
 	#include <string>
 	],
 	[	
-		const char[] str = "Four";
-		std::char_traits<wchar_t> theString;
-		theString.assign( str, str+2); 
+		const wchar_t str[] = {0xFABB,0x0000,0x12FF,0x33FF};
+		std::basic_string<wchar_t> theString;
+		theString.assign( (wchar_t*)str, 2);      
+
 		return 0;
 	],[UNICODE_SUPPORT_AVAILABLE="yes"],[UNICODE_SUPPORT_AVAILABLE="no"])
 
