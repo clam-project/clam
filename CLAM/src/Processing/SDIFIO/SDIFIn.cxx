@@ -29,8 +29,8 @@ void SDIFInConfig::DefaultInit()
 }
 
 SDIFIn::SDIFIn():
-mPrevIndexArray(0),
-Output("Output",this,1)
+	Output("Output",this,1),
+	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -38,8 +38,8 @@ Output("Output",this,1)
 }
 
 SDIFIn::SDIFIn(const SDIFInConfig& c):
-mPrevIndexArray(0),
-Output("Output",this,1)
+	Output("Output",this,1),
+	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
