@@ -31,8 +31,9 @@
 
 namespace CLAM {
 
-#if !defined (_MSC_VER)//this class does not compile under Visual 6!
+#if !defined _MSC_VER || _MSC_VER >= 1310 // MSVC++ 6 this class does not compile under Visual 6!
 	
+
 	template<class B>
 	class StreamBuffer<Audio,B> : public StreamBuffer<TData,B> {
 
