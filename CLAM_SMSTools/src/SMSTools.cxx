@@ -74,15 +74,15 @@ namespace CLAMGUI
 		//Change mCounter
 		TTime time( value  );
 		TIndex nframe;
-		Segment tmpSegment;
+		Segment* tmpSegment = NULL ;
 
 		if( mDataState.Query( DataState::HaveTransformation ) ) 
-			tmpSegment = mTransformedSegment;
+			tmpSegment = &mTransformedSegment;
 		else
-			tmpSegment = mOriginalSegment;
+			tmpSegment = &mOriginalSegment;
 
-		nframe = tmpSegment.FindFrame( time );
-		mExplorer.NewFrame( tmpSegment.GetFramesArray()[nframe], mUI->FrameDataAvailable() );
+		nframe = tmpSegment->FindFrame( time );
+		mExplorer.NewFrame( tmpSegment->GetFramesArray()[nframe], mUI->FrameDataAvailable() );
 		
 		mUI->mCounter->value( (int) nframe );		
 	}
