@@ -587,11 +587,16 @@ void SMSScoreEditor::RemoveConfiguratorFromScoreBox( int index )
 		if ( cfg->GetParametersWidget() == mConfigWidgetContainer->child(0) )
 			ClearTransformationEditWidget();
 	
-	currentParent =cfg->GetParametersWidget()->parent();
+	Fl_Widget* currentWidget = cfg->GetParametersWidget();
+
+	if ( currentWidget == NULL ) // No parameters widget
+		currentWidget = mNoConfigWidgetAvailable;
+
+	currentParent =currentWidget->parent();
 	if ( currentParent)
 	{
-		cfg->GetParametersWidget()->hide();
-		currentParent->remove( cfg->GetParametersWidget() );
+		currentWidget->hide();
+		currentParent->remove( currentWidget );
 		currentParent->end();
 	}
 
