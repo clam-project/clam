@@ -2,8 +2,7 @@
 #include <typeinfo>
 #include "cppUnitHelper.hxx"
 
-#include "Oscillator.hxx"
-#include "AudioAdder.hxx"
+#include "DummyProducts.hxx"
 
 #include "Factory.hxx"
 
@@ -35,17 +34,17 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	typedef CLAM::Factory<CLAM::Processing> MyFactoryType;
+	typedef CLAM::Factory<DummyProduct> MyFactoryType;
 
 private:
 
 	// helper methods:
-	MyFactoryType::CreatorMethod OscillatorCreator() {
-		return MyFactoryType::Registrator<CLAM::Oscillator>::Create;
+	MyFactoryType::CreatorMethod FooCreator() {
+		return MyFactoryType::Registrator<DummyProductFoo>::Create;
 	}
 
-	MyFactoryType::CreatorMethod AudioAdderCreator() {
-		return MyFactoryType::Registrator<CLAM::AudioAdder>::Create;
+	MyFactoryType::CreatorMethod BarCreator() {
+		return MyFactoryType::Registrator<DummyProductBar>::Create;
 	}
 
 	// tests definition
@@ -80,7 +79,7 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up:
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
 
 		try{
 			reg.GetCreator("non existent key");
@@ -92,7 +91,7 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up:
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
 
 		try{
 			reg.GetCreatorSafe("non existent key");
@@ -105,10 +104,10 @@ private:
 		MyFactoryType::Registry reg;
 		// set up:
 		MyFactoryType::CreatorMethod inserted;
-		inserted = OscillatorCreator();
+		inserted = FooCreator();
 
-		reg.AddCreator( "Oscillator", inserted);
-		CPPUNIT_ASSERT( inserted == reg.GetCreator("Oscillator") );
+		reg.AddCreator( "DummyProductFoo", inserted);
+		CPPUNIT_ASSERT( inserted == reg.GetCreator("DummyProductFoo") );
 	}
 
 	void testGetCreatorSafe_CorrectKeyWithASingleCreator()
@@ -116,40 +115,40 @@ private:
 		MyFactoryType::Registry reg;
 		// set up:
 		MyFactoryType::CreatorMethod inserted;
-		inserted = OscillatorCreator();
+		inserted = FooCreator();
 
-		reg.AddCreator( "Oscillator", inserted);
-		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("Oscillator") );
+		reg.AddCreator( "DummyProductFoo", inserted);
+		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("DummyProductFoo") );
 	}
 
 	void testGetCreator_CorrectKeyWithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
-		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductBar", BarCreator() );
 
-		MyFactoryType::CreatorMethod oscillatorCreator = OscillatorCreator();
-		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreator("Oscillator") );
+		MyFactoryType::CreatorMethod fooCreator = FooCreator();
+		CPPUNIT_ASSERT( fooCreator == reg.GetCreator("DummyProductFoo") );
 	}
 
 	void testGetCreatorSafe_CorrectKeyWithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
-		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductBar", BarCreator() );
 
-		MyFactoryType::CreatorMethod oscillatorCreator = OscillatorCreator();
-		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreatorSafe("Oscillator") );
+		MyFactoryType::CreatorMethod fooCreator = FooCreator();
+		CPPUNIT_ASSERT( fooCreator == reg.GetCreatorSafe("DummyProductFoo") );
 	}
 
 	void testGetCreator_WrongKeyWithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
-		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductBar", BarCreator() );
 		try{
 			reg.GetCreator("wrong name");
 			CPPUNIT_FAIL( "Assert expected to happen" );
@@ -160,8 +159,8 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
-		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductBar", BarCreator() );
 
 		try{
 			reg.GetCreatorSafe("incorrect as well");
@@ -172,10 +171,10 @@ private:
 	void testAddCreator_RepeatedKey()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
 
 		try {
-			reg.AddCreator( "Oscillator", AudioAdderCreator() );
+			reg.AddCreator( "DummyProductFoo", BarCreator() );
 			CPPUNIT_FAIL( "Assert expected to happen" );
 
 		} catch (CLAM::ErrAssertionFailed& ) {}
@@ -184,10 +183,10 @@ private:
 	void testAddCreatorSafe_RepeatedKey()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator( "Oscillator", OscillatorCreator() );
+		reg.AddCreator( "DummyProductFoo", FooCreator() );
 
 		try {
-			reg.AddCreatorSafe( "Oscillator", AudioAdderCreator() );
+			reg.AddCreatorSafe( "DummyProductFoo", BarCreator() );
 			CPPUNIT_FAIL( "CLAM::ErrFactory expected" );
 
 		} catch (CLAM::ErrFactory& expected) {
@@ -209,8 +208,8 @@ private:
 	void testRemoveCreators_WhenNotEmtpy()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator("osc", OscillatorCreator() );
-		reg.AddCreator("adder", AudioAdderCreator() );
+		reg.AddCreator("foo", FooCreator() );
+		reg.AddCreator("bar", BarCreator() );
 
 		reg.RemoveAllCreators();
 		CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -227,8 +226,8 @@ private:
 	void testCount_WithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator("osc", OscillatorCreator() );
-		reg.AddCreator("adder", AudioAdderCreator() );
+		reg.AddCreator("foo", FooCreator() );
+		reg.AddCreator("bar", BarCreator() );
 		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );
 	}
 

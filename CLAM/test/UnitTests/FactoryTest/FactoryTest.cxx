@@ -1,8 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "Oscillator.hxx"
-#include "AudioAdder.hxx"
+#include "DummyProducts.hxx"
 
 #include "Factory.hxx"
 
@@ -17,8 +16,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FactoryTest );
 class FactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( FactoryTest );
-	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
-	CPPUNIT_TEST( testCreate_ReturnsAnOscillator );
+	CPPUNIT_TEST( testCreateFooReturnsAFoo );
+	CPPUNIT_TEST( testCreate_ReturnsAFoo );
 	CPPUNIT_TEST( testCreateSafe_WithABadKey );
 	CPPUNIT_TEST( testAddCreator_WithRepeatedKey );
 	CPPUNIT_TEST( testAddCreatorSafe_WithRepeatedKey );
@@ -26,7 +25,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	typedef CLAM::Factory<CLAM::Processing> MyFactoryType;
+	typedef CLAM::Factory<DummyProduct> MyFactoryType;
 
 	MyFactoryType* _theFactory;
 
@@ -41,29 +40,29 @@ public:
 	}
 
 	// helper methods:
-	MyFactoryType::CreatorMethod OscillatorCreator() {
-		return MyFactoryType::Registrator<CLAM::Oscillator>::Create;
+	MyFactoryType::CreatorMethod FooCreator() {
+		return MyFactoryType::Registrator<DummyProductFoo>::Create;
 	}
 
-	MyFactoryType::CreatorMethod AudioAdderCreator() {
-		return MyFactoryType::Registrator<CLAM::AudioAdder>::Create;
+	MyFactoryType::CreatorMethod BarCreator() {
+		return MyFactoryType::Registrator<DummyProductBar>::Create;
 	}
 	// Tests definition :
 protected:
-	void testCreateOscillatorReturnsAnOscillator()
+	void testCreateFooReturnsAFoo()
 	{
-		CLAM::Processing* returned = OscillatorCreator()();
+		DummyProduct* returned = FooCreator()();
 
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *returned );
 		delete returned;
 	}
 
-	void testCreate_ReturnsAnOscillator()
+	void testCreate_ReturnsAFoo()
 	{
-		_theFactory->AddCreator( "Oscillator", OscillatorCreator() );
+		_theFactory->AddCreator( "DummyProductFoo", FooCreator() );
 
-		CLAM::Processing* returned = _theFactory->Create("Oscillator");
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
+		DummyProduct* returned = _theFactory->Create("DummyProductFoo");
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *returned );
 
 		// tear down:
 		delete returned;
@@ -74,7 +73,7 @@ protected:
 	void testCreateSafe_WithABadKey()
 	{
 		try{
-			_theFactory->CreateSafe("Oscillator");
+			_theFactory->CreateSafe("DummyProductFoo");
 			CPPUNIT_FAIL("Should throw an exception");
 		} catch ( CLAM::ErrFactory& ) {}
 	}
@@ -82,9 +81,9 @@ protected:
 
 	void testAddCreator_WithRepeatedKey()
 	{
-		_theFactory->AddCreator("Oscillator", OscillatorCreator() );
+		_theFactory->AddCreator("DummyProductFoo", FooCreator() );
 		try{
-			_theFactory->AddCreator("Oscillator", OscillatorCreator());
+			_theFactory->AddCreator("DummyProductFoo", FooCreator());
 			CPPUNIT_FAIL("an assertion should happen");
 		} catch ( CLAM::ErrAssertionFailed& )
 		{}
@@ -92,9 +91,9 @@ protected:
 
 	void testAddCreatorSafe_WithRepeatedKey()
 	{
-		_theFactory->AddCreator("Oscillator", AudioAdderCreator() );
+		_theFactory->AddCreator("DummyProductFoo", BarCreator() );
 		try{
-			_theFactory->AddCreatorSafe("Oscillator", OscillatorCreator());
+			_theFactory->AddCreatorSafe("DummyProductFoo", FooCreator());
 			CPPUNIT_FAIL("an ErrFactory should be rised");
 		} catch (CLAM::ErrFactory&) {
 
@@ -114,8 +113,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FactorySingletonTest );
 class FactorySingletonTest : public FactoryTest
 {
 	CPPUNIT_TEST_SUITE( FactorySingletonTest );
-	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
-	CPPUNIT_TEST( testCreate_ReturnsAnOscillator );
+	CPPUNIT_TEST( testCreateFooReturnsAFoo );
+	CPPUNIT_TEST( testCreate_ReturnsAFoo );
 	CPPUNIT_TEST( testCreateSafe_WithABadKey );
 	CPPUNIT_TEST( testFactoryIsSingleton );
 

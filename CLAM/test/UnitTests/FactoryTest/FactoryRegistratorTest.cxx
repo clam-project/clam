@@ -1,7 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "Oscillator.hxx"
+#include "DummyProducts.hxx"
+
 #include "Factory.hxx"
 
 namespace CLAMTest
@@ -22,46 +23,46 @@ class FactoryRegistratorTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	typedef CLAM::Factory<CLAM::Processing> MyFactoryType;
+	typedef CLAM::Factory<DummyProduct> MyFactoryType;
 
 private:
 	void testCreate_ReturnsAnObjectOfTheTemplateType()
 	{
-		 MyFactoryType::AbstractProduct* created =
-			 MyFactoryType::Registrator<CLAM::Oscillator>::Create();
+		 DummyProduct* created =
+			 MyFactoryType::Registrator<DummyProductFoo>::Create();
 
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created );
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 		delete created;
 	}
 
 	void testConstructorPassingKeyAndFactory_RegistersCreator()
 	{
 		MyFactoryType fact;
-		const char* oscillatorClassName = "Oscilator";
+		const char* fooClassName = "DummyProduct";
 
-		MyFactoryType::Registrator<CLAM::Oscillator> regt( oscillatorClassName, fact );
+		MyFactoryType::Registrator<DummyProductFoo> regt( fooClassName, fact );
 
-		CLAM::Processing *created =
-			fact.Create( oscillatorClassName );
+		DummyProduct *created =
+			fact.Create( fooClassName );
 
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created );
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 		delete created;
 	}
 
 	void testConstructorPassingFactory_RegistersCreator()
 	{
-		CLAM::Oscillator dummy; //needed for calling GetClassName()
+		DummyProductFoo dummy; //needed for calling GetClassName()
 		// here we use the name just for creating. Not for registrating
-		const char* oscillatorClassName = dummy.GetClassName();
+		const char* fooClassName = dummy.GetClassName();
 
 		MyFactoryType fact;
 		// passing just the factory to the constructor
-		MyFactoryType::Registrator<CLAM::Oscillator> regt( fact );
+		MyFactoryType::Registrator<DummyProductFoo> regt( fact );
 
-		MyFactoryType::AbstractProduct *created =
-			fact.Create( oscillatorClassName );
+		DummyProduct *created =
+			fact.Create( fooClassName );
 
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created );
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 		delete created;
 	}
 
@@ -70,13 +71,13 @@ private:
 		MyFactoryType &theFactory = MyFactoryType::GetInstance();
 		theFactory.Clear();
 
-		CLAM::Oscillator dummy;
-		MyFactoryType::Registrator<CLAM::Oscillator> regt( dummy.GetClassName() );
+		DummyProductFoo dummy;
+		MyFactoryType::Registrator<DummyProductFoo> regt( dummy.GetClassName() );
 
-		MyFactoryType::AbstractProduct *created =
+		DummyProduct *created =
 			theFactory.Create( dummy.GetClassName() );
 
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created );
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 
 		// tear down
 		delete created;
@@ -89,13 +90,13 @@ private:
 		MyFactoryType &theFactory = MyFactoryType::GetInstance();
 		theFactory.Clear();
 
-		MyFactoryType::Registrator<CLAM::Oscillator> DummyRegt;
+		MyFactoryType::Registrator<DummyProductFoo> DummyRegt;
 
-		CLAM::Oscillator dummy;
-		MyFactoryType::AbstractProduct *created =
+		DummyProductFoo dummy;
+		DummyProduct *created =
 			theFactory.Create( dummy.GetClassName() );
 
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created );
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 
 		// tear down
 		delete created;
