@@ -35,20 +35,20 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 namespace CLAM
 {
 
-class ClamObject2XercesDom : public Storage
+class XMLStorage : public Storage
 {
 	XercesDomDocumentHandler _documentHandler;
 	XercesDomWritingContext * _writeContext;
 	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
 public:
-	ClamObject2XercesDom()
+	XMLStorage()
 	{
+		_readContext = 0;
 		_writeContext = 0;
 		_lastWasContent = true;
-		_readContext = 0;
 	}
-	~ClamObject2XercesDom()
+	~XMLStorage()
 	{
 	}
 
@@ -97,32 +97,32 @@ public:
 // Final User static interface
 public:
 
-	static void Dump(std::ostream & os, const Component & obj, const std::string & rootName)
+	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os)
 	{
-		ClamObject2XercesDom storage;
+		XMLStorage storage;
 		storage.Create(rootName);
 		storage.DumpObject(obj);
 		storage.WriteDocument(os);
 	}
 
-	static void Restore(std::istream & is, Component & obj)
+	static void Restore(Component & obj, std::istream & is)
 	{
-		ClamObject2XercesDom storage;
+		XMLStorage storage;
 		storage.Read(is);
 		storage.RestoreObject(obj);
 	}
 
-	static void RestorePartialDocument(std::istream & is, Component & obj, const std::string & path)
+	static void RestorePartialDocument(Component & obj, const std::string & path, std::istream & is)
 	{
-		ClamObject2XercesDom storage;
+		XMLStorage storage;
 		storage.Read(is);
 		storage.Select(path);
 		storage.RestoreObject(obj);
 	}
 
-	static void AppendToDocument(std::iostream & str, Component & obj, const std::string & path)
+	static void AppendToDocument(Component & obj, const std::string & path, std::iostream & str)
 	{
-		ClamObject2XercesDom storage;
+		XMLStorage storage;
 		storage.Read(str);
 		storage.Select(path);
 		storage.DumpObject(obj);
@@ -223,8 +223,7 @@ private:
 
 };
 
-//typedef ClamObject2XercesDom XercesDom2ClamObjects;
-	
+
 }
 
 
