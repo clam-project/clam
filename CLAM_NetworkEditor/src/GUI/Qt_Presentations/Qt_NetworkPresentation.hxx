@@ -49,51 +49,73 @@ class Qt_InPortPresentation;
 class Qt_OutPortPresentation;
 class Qt_InControlPresentation;
 class Qt_OutControlPresentation;
+class Qt_ProcessingPresentation;
 
 class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
-public:
-	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
-	virtual void Show();
-	virtual void Hide();
-protected:
+	typedef std::list<Qt_ProcessingPresentation * > QtProcessingList;
+
 	void AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * );
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
-	virtual void SetName(const std::string& name); 
-	virtual void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * );
-	virtual void SetPortConnection(CLAMVM::ConnectionAdapter* );
-	virtual void SetControlConnection(CLAMVM::ConnectionAdapter* );
 
-	virtual void SetInPortClicked( Qt_InPortPresentation *);
-	virtual void SetOutPortClicked( Qt_OutPortPresentation *);
-	virtual void SetInControlClicked( Qt_InControlPresentation *);
-	virtual void SetOutControlClicked( Qt_OutControlPresentation *);
+	void SetName(const std::string& name); 
+	void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * );
+	void CreatePortConnectionPresentation(CLAMVM::ConnectionAdapter* );
+	void CreateControlConnectionPresentation(CLAMVM::ConnectionAdapter* );
+	
+	void SetInPortClicked( Qt_InPortPresentation *);
+	void SetOutPortClicked( Qt_OutPortPresentation *);
+	void SetInControlClicked( Qt_InControlPresentation *);
+	void SetOutControlClicked( Qt_OutControlPresentation *);
 
+	void ProcessingPresentationSelected( Qt_ProcessingPresentation * );
+//	void ProcessingPresentationUnselected( Qt_ProcessingPresentation * );
+	void ProcessingPresentatioAddedToSelection( Qt_ProcessingPresentation * );
+
+
+	void keyPressEvent( QKeyEvent * );
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
-	void mouseReleaseEvent( QMouseEvent *m);
+	void mouseReleaseEvent( QMouseEvent *);
+	void mousePressEvent ( QMouseEvent *); 
 	void dropEvent(QDropEvent* event);
 	void dragEnterEvent(QDragEnterEvent* event);
+	void MovingMouseWithButtonPressed( const QPoint & );
+
+	void SendMessageToStatus( const std::string & );		
 	
 	Qt_InPortPresentation* mInPortSelected;
 	Qt_OutPortPresentation* mOutPortSelected;
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
+	QtProcessingList mSelectedPresentations;
+public:
+	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
+	void Show();
+	void Hide();
 
-public: // slots
+	// slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SlotSetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SlotSetOutPortClicked;
 	SigSlot::Slotv1< Qt_InControlPresentation * > SlotSetInControlClicked;
 	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
+
+	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentationSelected;
+	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentatioAddedToSelection;
+//	SigSlot::Slotv1< Qt_ProcessingPresentation *> SlotProcessingPresentationUnSelected;
+
+	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
+	SigSlot::Slotv1< const QPoint & > SlotMovingMouseWithButtonPressed;
+
 	// signals
 	SigSlot::Signalv1< const QPoint & > SignalAcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInPortAfterClickOutPort;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireOutControlAfterClickInControl;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInControlAfterClickOutControl;
-	SigSlot::Signalv1< const std::string& > SignalSendNewMessageToStatus;
+	SigSlot::Signalv1< const std::string& > SignalSendMessageToStatus;
 	SigSlot::Signalv0 SignalProcessingCreated;
-
+	SigSlot::Signalv0 SignalUnselectProcessingPresentation;
 
 private:
 	const std::string GetCompleteNameFromInPortSelected();

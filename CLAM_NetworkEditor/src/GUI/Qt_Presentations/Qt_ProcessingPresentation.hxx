@@ -26,6 +26,7 @@
 #include <qwidget.h>
 #include "ProcessingPresentation.hxx"
 #include "Signalv1.hxx"
+#include "Signalv0.hxx"
 #include "Slotv1.hxx"
 
 namespace CLAM
@@ -43,11 +44,16 @@ class Qt_OutControlPresentation;
 
 class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
+	Q_OBJECT
 public:
 	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
+	virtual ~Qt_ProcessingPresentation(){}
 	void Show();
 	void Hide();
 	void EmitPositionOfChildren();
+
+	void UnSelectProcessingPresentation();
+	void Move( const QPoint & );
 protected:
 	virtual void SetObservedClassName(const std::string& name);
 
@@ -71,19 +77,35 @@ protected:
 	void mousePressEvent( QMouseEvent * );
 	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
+	void mouseDoubleClickEvent ( QMouseEvent * );
+
 	void keyPressEvent( QKeyEvent * );
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
+	void UpdateSize();
+	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
+	void DrawSelectedRepresentation();
+	void  UpdatePresentation(){ repaint(); }
+
+
 // qt stuff
 	bool        mDown;
+	bool	    mSelected;
 	QPoint     mClickPos;
 
 public: // signals
+
 	SigSlot::Signalv1< Qt_InPortPresentation * > SignalAcquireInPortClicked;
 	SigSlot::Signalv1< Qt_OutPortPresentation * > SignalAcquireOutPortClicked;
 	SigSlot::Signalv1< Qt_InControlPresentation * > SignalAcquireInControlClicked;
 	SigSlot::Signalv1< Qt_OutControlPresentation * > SignalAcquireOutControlClicked;
+
+	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationSelected;
+	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentatioAddedToSelection;
+	SigSlot::Signalv1< const std::string & > SignalSendMessageToStatus;
+//	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationUnSelected;
+	SigSlot::Signalv1< const QPoint & > SignalMovingMouseWithButtonPressed;
 
 public: // slots
 	// ports
@@ -97,6 +119,12 @@ public: // slots
 	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
 	SigSlot::Slotv1< const QPoint & > SlotSetOutControlAfterClickInControl;
 	SigSlot::Slotv1< const QPoint & > SlotSetInControlAfterClickOutControl;
+
+public slots: // qt slots
+	void SlotTextChange( const QString & );
+	void SlotExecuteChangeName();
+signals:
+	void SignalEmitGeometryChange( const QRect & );
 
 };
 

@@ -109,41 +109,10 @@ void ProcessingController::UpdateListOfPortsAndControls()
 		mOutControlNames.push_back((*itCtrlOut)->GetName());
 }
 
-ProcessingController::NamesList::iterator ProcessingController::BeginInPortNames()
+bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
-	return mInPortNames.begin();
-}
-	
-ProcessingController::NamesList::iterator ProcessingController::EndInPortNames()
-{
-	return mInPortNames.end();
-}
-	
-ProcessingController::NamesList::iterator ProcessingController::BeginOutPortNames()
-{
-	return mOutPortNames.begin();
-}
-	
-ProcessingController::NamesList::iterator ProcessingController::EndOutPortNames()
-{
-	return mOutPortNames.end();
-}
+	mObserved = dynamic_cast<CLAM::Processing*>(&obj);
 
-ProcessingController::NamesList::iterator ProcessingController::BeginInControlNames()
-{
-	return mInControlNames.begin();
-}
-	
-ProcessingController::NamesList::iterator ProcessingController::EndInControlNames()
-{
-	return mInControlNames.end();
-}
-	
-ProcessingController::NamesList::iterator ProcessingController::BeginOutControlNames()
-{
-	return mOutControlNames.begin();
-}
-	
 	if ( !mObserved )
 		return false;
 
