@@ -149,9 +149,10 @@ namespace CLAM
     /* Table of filterbank centre frequencies. */
     const TSize maxBands = mConfig.GetNumBands() + 1;
 
-    TData centreFreq[maxBands];
+    TData* centreFreq = new TData[maxBands];
 
-    for (TIndex i=0; i<maxBands; i++) {
+    for (TIndex i=0; i<maxBands; i++) 
+	{
       centreFreq[i] = ((i+1)/(TData)maxBands)*melFreqRange + melLowCutoff;
     }
 
@@ -162,48 +163,62 @@ namespace CLAM
 
     TData  melFreq = 0;
     TIndex bandIdx = 0;
-    for (TIndex i=0; i<specSize; i++) {
+    for (TIndex i=0; i<specSize; i++) 
+	{
 
-      if (i<mLowIdx || i>mHighIdx) {
+      if (i<mLowIdx || i>mHighIdx) 
+	  {
 
-	// Index is outside the desired range.
-	mMelBand[i] = -1;
-      } else {
+		// Index is outside the desired range.
+		mMelBand[i] = -1;
+      } 
+	  else 
+	  {
 
-	melFreq = Mel(i*deltaFreq);
+		melFreq = Mel(i*deltaFreq);
 
-	// Select the band of the closest centre frequency beneath.
+		// Select the band of the closest centre frequency beneath.
 
-	// NOTE: The condition bandIdx<maxBands may cause an index out
-	// of range error in Do(...)!!!
+		// NOTE: The condition bandIdx<maxBands may cause an index out
+		// of range error in Do(...)!!!
 
-	while (centreFreq[bandIdx]<melFreq && bandIdx<maxBands) bandIdx++;
-	mMelBand[i] = bandIdx-1;
+		while (centreFreq[bandIdx]<melFreq && bandIdx<maxBands) 
+			bandIdx++;
+		mMelBand[i] = bandIdx-1;
       }
     }
+
 
 
     /* Table of triangular filterbank window weights. */
     mFilterWeights.Resize( specSize );
     mFilterWeights.SetSize( specSize );
     
-    for (TIndex i=0; i<specSize; i++) {
+    for (TIndex i=0; i<specSize; i++) 
+	{
       bandIdx = mMelBand[i];
 
-      if (i<mLowIdx || i>mHighIdx) {
-	mFilterWeights[i] = 0.0;
-      } else {
+      if (i<mLowIdx || i>mHighIdx) 
+	  {
+		mFilterWeights[i] = 0.0;
+      } 
+	  else 
+	  {
 
-	if (bandIdx >= 0) {
-	  mFilterWeights[i] = (centreFreq[bandIdx+1] - Mel(i*deltaFreq))
-	    / (centreFreq[bandIdx+1] - centreFreq[bandIdx]);
-	} else {
-	  mFilterWeights[i] = (centreFreq[0] - Mel(i*deltaFreq))
-	    / (centreFreq[0] - melLowCutoff);
-	}
+		if (bandIdx >= 0) 
+		{
+			mFilterWeights[i] = (centreFreq[bandIdx+1] - Mel(i*deltaFreq))
+			/ (centreFreq[bandIdx+1] - centreFreq[bandIdx]);
+		} 
+		else 
+		{
+			mFilterWeights[i] = (centreFreq[0] - Mel(i*deltaFreq))
+			/ (centreFreq[0] - melLowCutoff);
+		}
       }
     } // End for
-    
+   	delete [] centreFreq;
+
   }
   
 }
