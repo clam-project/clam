@@ -65,7 +65,7 @@
 - Consider Using the type instead the Attribute<type> as template
 - Prepare: Determinar attributos necesarios
 + Multilevel pools
-- XML for the Pool
++ XML for the Pool
 	+ Dumping an empty scope
 	+ Dumping a zero size scope
 	+ Dumping sized scope with one attribute
@@ -76,12 +76,13 @@
 	+ Component type attribute
 	+ Consider a solution for the helper classes
 	+ Adding the scope name attribute
-	- Full data pool
-- Getting names from index
+	+ Full data pool
++ Getting names from index
 	+ Getting valid scope indexes names
 	+ Getting invalid scope indexes names
 	+ getting valid attribute indexes names
 	+ getting invalid attribute indexes names
+	+ Refactor to include the name inside as spec member
 - XML for the Scheme
 - Selecting which attributes should be serialized
 
