@@ -7,7 +7,7 @@
 #include "Err.hxx"
 
 namespace CLAM {
-class Processing;	
+class Processing;
 
 /// Error type thrown by Factory classes (Factory, FactoryRegistry)
 class ErrFactory : public Err
@@ -17,18 +17,19 @@ public:
 	{}
 
 };
-	
+
 
 class Factory
 {
 public:
 
-	typedef Processing* (*CreatorMethod)(void);
+	typedef Processing AbstractProduct;
+	typedef AbstractProduct* (*CreatorMethod)(void);
 	typedef std::string RegistryKey;
 
 	Factory() {};
 	~Factory() {};
-	
+
 	static Factory& GetInstance()	{
 		static Factory theInstance;
 		return theInstance;
@@ -36,51 +37,51 @@ public:
 
 
 	/**
-	 * Gives ownership of the new created Processing registered with
+	 * Gives ownership of the new created Product registered with
 	 * the given name.
 	 * It asserts that the name is in the registry.
 	 */
-	Processing* Create( const RegistryKey name );
+	AbstractProduct* Create( const RegistryKey name );
 
-	/** Gives ownership of the new created Processing registered with
+	/** Gives ownership of the new created Product registered with
 	 * the given name.
 	 * It throws an ErrFactory if the name isn't found in the registry.
 	 */
-	Processing* CreateSafe( const RegistryKey name ) throw (ErrFactory);
+	AbstractProduct* CreateSafe( const RegistryKey name ) throw (ErrFactory);
 
 	void Clear();
 
 	void AddCreator(const RegistryKey name, CreatorMethod creator);
-	
+
 	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory);
-	
+
 
 public: // Inner classes. Public for better testing
 
 	class Registry
-	{	
+	{
 	private:
 		typedef std::map<std::string, CreatorMethod> CreatorMap;
 
 	public:
 		CreatorMethod GetCreator( RegistryKey creatorId);
 		CreatorMethod GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory);
-		
+
 		void AddCreator( RegistryKey creatorId, CreatorMethod creator );
 		void AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory);
-		
+
 		void RemoveAllCreators();
 		std::size_t Count();
-				
+
 	private: // data
 		CreatorMap _creators;
-		
+
 		// helper methods:
 		CreatorMethod CommonGetCreator( RegistryKey& creatorId );
 		bool CommonAddCreator( RegistryKey& creatorId, CreatorMethod creator);
 	};
 
-	template< typename ConcreteProcessingType>
+	template< typename ConcreteProductType>
 	class Registrator
 	{
 	public:
@@ -89,7 +90,7 @@ public: // Inner classes. Public for better testing
 		}
 
 		Registrator( Factory& fact ) {
-			ConcreteProcessingType dummy;
+			ConcreteProductType dummy;
 			fact.AddCreator( dummy.GetClassName(), Create );
 		}
 
@@ -98,12 +99,12 @@ public: // Inner classes. Public for better testing
 		}
 
 		Registrator( ) {
-			ConcreteProcessingType dummy;
+			ConcreteProductType dummy;
 			Factory::GetInstance().AddCreator( dummy.GetClassName(), Create );
 		}
 
-		static Processing* Create() {
-			return new ConcreteProcessingType;
+		static AbstractProduct* Create() {
+			return new ConcreteProductType;
 		}
 	};
 
@@ -118,7 +119,7 @@ private:
 
 
 
-inline Processing* Factory::Create( const RegistryKey name )
+inline Factory::AbstractProduct* Factory::Create( const RegistryKey name )
 {
 	// it asserts that name is in the registry
 	CreatorMethod creator =
@@ -127,7 +128,7 @@ inline Processing* Factory::Create( const RegistryKey name )
 }
 
 
-inline Processing* Factory::CreateSafe( const RegistryKey name ) throw (ErrFactory)
+inline Factory::AbstractProduct* Factory::CreateSafe( const RegistryKey name ) throw (ErrFactory)
 {
 	return  _registry.GetCreatorSafe(name)();
 }
@@ -148,7 +149,7 @@ inline void Factory::AddCreatorSafe(const RegistryKey name, CreatorMethod creato
 
 inline Factory::CreatorMethod Factory::Registry::GetCreator( RegistryKey creatorId)
 {
-	CLAM_ASSERT(_creators.begin() != _creators.end(), 
+	CLAM_ASSERT(_creators.begin() != _creators.end(),
 		"the Factory Registry shouldn't be empty");
 
 	CreatorMethod res = CommonGetCreator(creatorId);
@@ -171,7 +172,7 @@ inline Factory::CreatorMethod Factory::Registry::GetCreatorSafe( RegistryKey cre
 
 inline void Factory::Registry::AddCreator( RegistryKey creatorId, CreatorMethod creator )
 {
-	if( !CommonAddCreator( creatorId, creator ) ) { 
+	if( !CommonAddCreator( creatorId, creator ) ) {
 		// repeated key
 		CLAM_ASSERT( false, "creatorId was already a key in the registry" );
 	}
@@ -179,13 +180,13 @@ inline void Factory::Registry::AddCreator( RegistryKey creatorId, CreatorMethod 
 
 inline void Factory::Registry::AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory)
 {
-	if( !CommonAddCreator( creatorId, creator ) ) { 
+	if( !CommonAddCreator( creatorId, creator ) ) {
 		// repeated key
 		throw ErrFactory("A repeated key was passed");
 	}
 }
 
-inline void Factory::Registry::RemoveAllCreators() 
+inline void Factory::Registry::RemoveAllCreators()
 {
 	_creators.clear();
 }
@@ -202,7 +203,7 @@ inline Factory::CreatorMethod Factory::Registry::CommonGetCreator( RegistryKey& 
 	if ( i==_creators.end() ) {
 		// not found
 		return NULL;
-	} else 
+	} else
 	return i->second;
 }
 
