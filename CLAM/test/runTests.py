@@ -29,7 +29,7 @@ subject = 'nightly tests report'
 MODULE_TAG = 'development-branch'
 
 #this will be used only when it's not set in the environment
-CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
+CVSROOT = ':ext:parumi@iua-share.upf.es:/mnt/cvsroot'
 
 
 
