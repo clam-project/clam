@@ -113,13 +113,17 @@ namespace CLAM
 
 	bool MonoAudioFileReader::Do()
 	{
+		Do( mOutput.GetData() );
+		mOutput.LeaveData();
+	}
+
+	bool MonoAudioFileReader::Do( Audio & outputSample )		
+	{
 		if ( !AbleToExecute() )
 			return false;
 
 		if ( mEOFReached )
 			return false;
-
-		Audio& outputSamples = mOutput.GetData();
 
 		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
 						       outputSamples.GetBuffer().GetPtr(),
@@ -133,8 +137,6 @@ namespace CLAM
 			outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 		}
 
-		mOutput.LeaveData();
-		
 		return mNativeStream->WasSomethingRead();
 		
 	}
