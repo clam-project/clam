@@ -20,7 +20,6 @@
  */
 
 #include "AnalysisSynthesisExampleBase.hxx"
-#include "SpectrumSnapshot.hxx"
 #include <iostream>
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
