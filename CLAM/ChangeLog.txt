@@ -1,5 +1,11 @@
 2003-10-?? CLAM_0_5_4
 
+  * Standard/Misc:
+      ** BPF: Modified BPFTmpl<>::Insert() (both overloads) to return the index at which 
+         the element was actually inserted (i.e. the inserted element's index).
+      ** CLAMMath: Fixed a bug in Round() and Chop() which caused the fpu control word to 
+         be changed when calling these functions (but only in debug build).
+
   * ProcessingData:
       ** SpectralPeakArray ProcessingData; when adding an IndexArray to an already 
          existing SpectralPeakArray and calling InitIndices(), the IndexArray would be 
@@ -13,6 +19,8 @@
          instance.
       ** Audio ProcessingData: bug fixed in GetAudioChunk method that left extracted chunks
          with uninitialized Sample Rate and Begin Time
+      ** Spectrum Conversions: Added a method called Complex2LogMagPhase() which efficiently 
+         converts a complex spectrum to a log. magnitude (i.e. in dB's)/phase spectrum.
 
    * Processing:
       ** SMSAnalysis: fixed a bug that lead to divisions by zero 
