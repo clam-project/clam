@@ -47,10 +47,10 @@ simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
 sandboxes = [ # Module, Sandbox, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
-#	( 'CLAM_DescriptorsGUI', 'CLAM_DescriptorsGUI', '', updateLevelForExamples ),
+	( 'CLAM_DescriptorsGUI', 'CLAM_DescriptorsGUI', '', updateLevelForExamples ),
 	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', updateLevelForExamples ),
-#	( 'CLAM_Rappid', 'CLAM_Rappid', '', updateLevelForExamples ),
-#	( 'CLAM_SDIFDisplay', 'CLAM_SDIFDisplay', '', updateLevelForExamples ),
+	( 'CLAM_Rappid', 'CLAM_Rappid', '', updateLevelForExamples ),
+	( 'CLAM_SDIFDisplay', 'CLAM_SDIFDisplay', '', updateLevelForExamples ),
 	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', updateLevelForExamples ),
 	( 'CLAM_SMSTools', 'CLAM_SMSTools', '', updateLevelForExamples ),
 	( 'CLAM_Salto', 'CLAM_Salto', '', updateLevelForExamples ),
@@ -74,11 +74,11 @@ externalApplications = [
 	( 'Voice2MIDI', CLAM_SANDBOXES+'CLAM_Voice2MIDI/build/' ),
 	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
 	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
-#	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
+	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
 #	( 'Rappid', CLAM_SANDBOXES+'CLAM_Rappid/build/' ),
-	( 'SDIF_Display', CLAM_SANDBOXES+'SDIF_Display/build/' ),
+	( 'SDIF_Display', CLAM_SANDBOXES+'SDIF_Display/build/' )
 #	( 'DescriptorsGUI', CLAM_SANDBOXES+'DescriptorsGUI/build/' ),
-	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' )
+#	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' ),
 ]
 
 supervisedTests = [
