@@ -41,6 +41,7 @@
 #include <FL/Fl_Int_Input.H>
 #include <FL/Fl_Light_Button.H>
 #include <FL/Fl_Choice.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Item.H>
 
 #define HorPos fl_width(name)+5+(mWidgetNum/20)*340
@@ -92,7 +93,7 @@ namespace CLAM{
 			Fl_Return_Button *okButton=new Fl_Return_Button(1,1,(w()-40)/3,20);
 			okButton->label( "Ok" );
 			okButton->labelsize(12);
-			okButton->callback(Discard, this);
+			okButton->callback(Ok, this);
 
 			buttons->end();
 
@@ -201,6 +202,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, bool *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
 			Fl_Light_Button * mInput = new Fl_Light_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
 			mInput->label( name );
 			mInput->labelsize(12);
@@ -250,9 +252,11 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, DynamicType *foo, T&value) {
-			Fl_Button * mInput = new Fl_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20, "Details...");
-			mInput->label( name );
+			fl_font(FL_HELVETICA,12);
+			Fl_Button * mInput = new Fl_Button( /* 70+(mWidgetNum/20)*340*/ HorPos, VerPos, 330-fl_width(name), 20, "Details...");
+			Fl_Box * mBox = new Fl_Box(3+(mWidgetNum/20)*340, VerPos, fl_width(name), 20, name);
 			mInput->labelsize(12);
+			mBox->labelsize(12);
 			mInput->callback(ShowSubConfig);
 			FLTKConfigurator * subConfigurator = new FLTKConfigurator;
 			subConfigurator->SetConfig(value);
