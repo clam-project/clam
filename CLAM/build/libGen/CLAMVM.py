@@ -3,7 +3,7 @@
 import libGen, sys
 
 def makelib() :
-    libCLAMVM = libGen.LibGenerator( "VM_fl" )
+    libCLAMVM = libGen.LibGenerator( "VM" )
 
     print "Generating libCLAM%s..."%libCLAMVM.libName
 
