@@ -22,6 +22,7 @@
 #ifndef __QTCONFIGURATOR__
 #define __QTCONFIGURATOR__
 
+#include "ConfigurationVisitor.hxx"
 #include <map>
 #include <string>
 
@@ -40,65 +41,7 @@
 #include <qvalidator.h>
 #include <qcombobox.h>
 
-#define HorPos fl_width(name)+5+(mWidgetNum/20)*340
-#define VerPos 5+25*(mWidgetNum%20)
-
 namespace CLAM{
-	class Visitor {
-	public:
-		virtual ~Visitor() {}
-		virtual void VisitConfig()=0;
-	};
-
-	template <typename Configuration, typename Builder>
-	class VisitorGetter : public Visitor {
-	public:
-		VisitorGetter(Configuration * config, Builder* builder) {
-			mBuilder = builder;
-			mConfig = config;
-		}
-
-		virtual ~VisitorGetter() {}
-		
-		template <typename T>
-		void Accept(const char *name, T &value) { 
-			mBuilder->AddWidget(name, &value, value); 
-		}
-
-		virtual void VisitConfig() {
-			mConfig->VisitAll(*this);
-		}
-
-	private:
-		Builder * mBuilder;
-		Configuration * mConfig;
-		
-	};
-	template <typename Configuration, typename Builder>
-	class VisitorSetter : public Visitor {
-	public:
-		VisitorSetter(Configuration * config, Builder* builder) {
-			mBuilder = builder;
-			mConfig = config;
-		}
-
-		virtual ~VisitorSetter() {}
-		
-		template <typename T>
-		void Accept(const char *name, T &value) { 
-			mBuilder->RetrieveValue(name, &value, value); 
-		}
-
-		virtual void VisitConfig() {
-			mConfig->VisitAll(*this);
-		}
-
-	private:
-		Builder * mBuilder;
-		Configuration * mConfig;
-		
-	};
-
 	class QTConfigurator : public QDialog {
 		Q_OBJECT
 		typedef QDialog super;
@@ -109,7 +52,6 @@ namespace CLAM{
 			: super(parent, name)
 			
 		{
-			mWidgetNum = 0;
 			mSetter = 0;
 			mGetter = 0;
 			mLayout = 0;
@@ -125,8 +67,8 @@ namespace CLAM{
 			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
 			CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
 			CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
-			mSetter = new VisitorSetter<Config,QTConfigurator>(&config, this);
-			mGetter = new VisitorGetter<Config,QTConfigurator>(&config, this);
+			mSetter = new ConfigurationSetter<Config,QTConfigurator>(&config, this);
+			mGetter = new ConfigurationGetter<Config,QTConfigurator>(&config, this);
 
 			mLayout = new QVBox(this);
 			mLayout->setSpacing(3);
@@ -177,7 +119,6 @@ namespace CLAM{
 			QHBox * cell = new QHBox(mLayout);
 			new QLabel(QString(name), cell);
 			QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
-			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
@@ -195,7 +136,6 @@ namespace CLAM{
 			val << value << std::ends;
 			QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
 			mInput->setValidator(new QDoubleValidator(mInput));
-			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
@@ -216,7 +156,6 @@ namespace CLAM{
 			validator->setBottom(0);
 			mInput->setValidator(validator);
 			mInput->setValue(value);
-			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
@@ -231,7 +170,6 @@ namespace CLAM{
 			QPushButton * mInput = new QPushButton(name, mLayout);
 			mInput->setToggleButton(true);
 			mInput->setOn(value);
-			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
@@ -252,7 +190,6 @@ namespace CLAM{
 				mChoice->insertItem( mapping[i].name );
 				if (mapping[i].value==value.GetValue()) mChoice->setCurrentItem(i);
 			}
-			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mChoice));
 		}
 		template <typename T>
@@ -275,9 +212,7 @@ namespace CLAM{
 			QPushButton * mInput = new QPushButton("Details...", cell);
 			QTConfigurator * subConfigurator = new QTConfigurator(this);
 			subConfigurator->SetConfig(value);
-			mSubConfigurators.insert(tSubConfigurators::value_type(name, subConfigurator));
 			connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
-			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
@@ -300,11 +235,9 @@ namespace CLAM{
 		}
 
 	private:
-		Visitor * mGetter;
-		Visitor * mSetter;
+		ConfigurationVisitor * mGetter;
+		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
-		tSubConfigurators mSubConfigurators;
-		int mWidgetNum;
 
 	};
 }
