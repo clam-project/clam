@@ -4,6 +4,7 @@
 #include "Processing.hxx"
 #include "XMLStorage.hxx"
 #include "Melody.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM
 {

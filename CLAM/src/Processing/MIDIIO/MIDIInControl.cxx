@@ -1,4 +1,6 @@
+
 #include "MIDIInControl.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM {
 
