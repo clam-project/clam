@@ -21,6 +21,7 @@ class RegionsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testReadStreamRegion_CanActivate_WhenWriterIsJustInitialized );
 	CPPUNIT_TEST( testWriteStreamRegion_CanActivate_WhenWriterIsJustInitialized );
 	CPPUNIT_TEST( testWriteStreamRegion_CanActivate_WhenWriterIsOutOfBufferSpace );
+	// todo: test ReadSR and WriteSR CanActivate when not in initial state and activating implies overlap.
 	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithoutReadersThrowsException );
 	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithoutCorrectReaderThrowsException );
 	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithCorrectReader );
