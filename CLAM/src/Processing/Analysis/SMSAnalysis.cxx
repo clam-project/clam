@@ -483,7 +483,7 @@ bool SMSAnalysis::Do(Segment& in)
 	tmpFrame.SetCenterTime(TData(frameCenterTime));
 	tmpFrame.AddAudioFrame();
 	tmpFrame.UpdateData();
-	tmpFrame.GetAudioFrame().SetBeginTime(frameIndex*step);
+	tmpFrame.GetAudioFrame().SetBeginTime(((float)frameIndex - 0.5f)*step/samplingRate);
 	tmpFrame.GetAudioFrame().SetSampleRate(in.GetAudio().GetSampleRate());
 	
 	/*	Note: Here we are just taking the "new" audio belonging to each frame. That is, the
