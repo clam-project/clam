@@ -50,7 +50,7 @@ OutPortTmpl<Audio>::OutPortTmpl(std::string n,
 	  mpNode(0),
 	  mpData(0)
 {
-	o->PublishOutPort(this);
+	o->GetOutPorts().Publish(this);
 }
 
 inline OutPortTmpl<Audio>::~OutPortTmpl()

@@ -143,24 +143,6 @@ namespace CLAM {
 		}
 	}
 
-	void Processing::PublishOutPort(OutPort* out) 
-	{
-		mPublishedOutPorts.Publish(out);
-	}
-	void Processing::PublishInPort(InPort* in)
-	{
-		mPublishedInPorts.Publish(in);
-	}
-
-	void Processing::PublishOutControl(OutControl* out) 
-	{
-		mPublishedOutControls.Publish(out);
-	}
-	void Processing::PublishInControl(InControl* in)
-	{
-		mPublishedInControls.Publish(in);
-	}
-	
 	void Processing::SetParent(Processing *o)
 	{
 		ProcessingComposite *p;

@@ -53,7 +53,7 @@ inline InPortTmpl<T>::InPortTmpl(const std::string &n,
 	  mpRegion(0),
 	  mpNode(0)
 {
-	o->PublishInPort(this);
+	o->GetInPorts().Publish(this);
 }
 
 template<class T>

@@ -250,15 +250,6 @@ namespace CLAM {
 
 		void SetExecState( const ExecState& s ) { mState = s; }
 
-		/** @todo To be moved to the publish helper classes */
-		void PublishOutPort(OutPort* out);
-		/** @todo To be moved to the publish helper classes */
-		void PublishInPort(InPort* in);
-		/** @todo To be moved to the publish helper classes */
-		void PublishOutControl(OutControl* out);
-		/** @todo To be moved to the publish helper classes */
-		void PublishInControl(InControl* in);
-
 		/** Returns the current parent of the processing */
 		ProcessingComposite *GetParent() const {return mpParent;}
 		/** Sets the given processing as the current parent */

@@ -53,7 +53,7 @@ inline OutPortTmpl<T>::OutPortTmpl(const std::string &n,
 	  mpRegion(0),
 	  mpNode(0)
 {
-	o->PublishOutPort(this);
+	o->GetOutPorts().Publish(this);
 }
 
 template<class T>

@@ -47,7 +47,7 @@ InPortTmpl<Audio>::InPortTmpl(std::string n,
 	  mpNode(0),
 	  mpData(0)
 {
-	o->PublishInPort(this);
+	o->GetInPorts().Publish(this);
 }
 
 InPortTmpl<Audio>::~InPortTmpl()
