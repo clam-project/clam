@@ -7,6 +7,17 @@
 #include <list>
 #include "XercesDomWriter.hxx"
 #include <xercesc/dom/DOMElement.hpp>
+#include <xercesc/dom/DOMComment.hpp>
+#include <xercesc/dom/DOMProcessingInstruction.hpp>
+/*
+TOTEST:
+- A comment doesn't break content
+- An element does break content
+- Any non-comment node does break content
+- Spaces at the begining of content are eaten
+- Comment loading
+   
+*/
 
 namespace CLAM
 {
@@ -21,8 +32,37 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 {
 	CPPUNIT_TEST_SUITE( XercesDomToClamObjectsTest );
 
+	CPPUNIT_TEST(testFetchContent_withASingleWordContent);
+	CPPUNIT_TEST(testFetchContent_withTwoJointContents);
+	CPPUNIT_TEST(testFetchContent_withTwoContentsSeparatedByElement);
+	CPPUNIT_TEST(testFetchContent_withTwoContentsSeparatedByComment);
+	CPPUNIT_TEST(testFetchContent_withNoNode);
+	CPPUNIT_TEST(testFetchContent_withElementFirst);
+	CPPUNIT_TEST(testContentLeft_withNoNode_returnsFalse);
+	CPPUNIT_TEST(testContentLeft_withNonSpaceReturnsTrue);
+	CPPUNIT_TEST(testContentLeft_withStartingSpacesAndNonSpace_chopsAndReturnsTrue);
+	CPPUNIT_TEST(testContentLeft_withOnlySpaces_chopsAndReturnsFalse);
+	CPPUNIT_TEST(testFindElement_withThatElementFirst);
+	CPPUNIT_TEST(testFindElement_withWrongNameFails);
+	CPPUNIT_TEST(testFindElement_withCommentBefore);
+	CPPUNIT_TEST(testFindElement_withNoElement);
+	CPPUNIT_TEST(testFindElement_withTextFirst);
+	CPPUNIT_TEST(testFindElement_withReadedTextFirst);
+	CPPUNIT_TEST(testFindElement_withHalfReadedTextFirst);
+	CPPUNIT_TEST(testFindElement_withSpacesToReadFirst);
+	CPPUNIT_TEST(testFindElement_withStillNonElement_asserts);
+	CPPUNIT_TEST(testFetchElement_withThatElementFirst);
+	CPPUNIT_TEST(testFetchElement_withSecondElementFirst);
+
+
+	CPPUNIT_TEST(testLoadingAWordOnBasicAsContent);
+	CPPUNIT_TEST(testLoadingTwoWordsOnTwoBasicsAsContent);
+	CPPUNIT_TEST(testLoadingOneWordsOnTwoBasicsAsContent_secondLoadFails);
+	CPPUNIT_TEST(testLoadingSplittedPlainContent_getJoined);
+//	CPPUNIT_TEST(testEmptyElement_WithRightLabel);
+//	CPPUNIT_TEST(testEmptyElement_WithWrongLabel);
 	// TODO: All those tests are useless!!
-	CPPUNIT_TEST(testEmptyDocument);
+#if 0
 	CPPUNIT_TEST(testBasicAsPlainContent);
 	CPPUNIT_TEST(testBasicAsElement_withoutContent);
 	CPPUNIT_TEST(testBasicAsElement_withContent);
@@ -47,57 +87,509 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testComponentAsContent_containingBasicAsAttribute);
 	CPPUNIT_TEST(testComponentAsContent_containingBasicAsElement);
 	CPPUNIT_TEST(testComponentAsAttribute_containingAnything_childrenHaveNoEffect);
+#endif
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
+		xercesc::XMLPlatformUtils::Initialize();
+		mTargetStream.str("");
+		xercesc::DOMImplementation * imp = 
+			xercesc::DOMImplementation::getImplementation();
+		mDocument = imp->createDocument(
+			X("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
+			X("TestDoc"), // root element name
+			0  // document type object (DTD).
+		);
 	}
 
 	/// Common clean up, executed after each test method
 	void tearDown()
 	{
+		mDocument->release();
+		xercesc::XMLPlatformUtils::Terminate();
 	}
 
 private:
 	std::stringstream mTargetStream;
+	xercesc::DOMDocument * mDocument;
 
-	void testComponentMockUpTraceStructure_withComponentsInside()
+	void testFetchContent_withASingleWordContent()
 	{
-		XmlMockUpComponent component;
-		XmlMockUpComponent innerComponent;
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		contextElement->appendChild(domContent);
+
+		XercesDomReadingContext context(contextElement);
+		std::string content;
+		std::getline(context.reachableContent(), content);
+		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content);
+	}
+
+	void testFetchContent_withTwoJointContents()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		contextElement->appendChild(domContent1);
+		contextElement->appendChild(domContent2);
+
+		XercesDomReadingContext context(contextElement);
+		std::string content;
+		std::istream & stream = context.reachableContent();
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(std::string("Content1Content2"),content);
+	}
+
+	void testFetchContent_withTwoContentsSeparatedByElement()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
+		xercesc::DOMElement * separator = mDocument->createElement(X("Separator"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		contextElement->appendChild(domContent1);
+		contextElement->appendChild(separator);
+		contextElement->appendChild(domContent2);
+
+		XercesDomReadingContext context(contextElement);
+		std::string content;
+		std::istream & stream = context.reachableContent();
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(std::string("Content1"),content);
+	}
+
+	void testFetchContent_withTwoContentsSeparatedByComment()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
+		xercesc::DOMComment * separator = mDocument->createComment(X("Separator"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		contextElement->appendChild(domContent1);
+		contextElement->appendChild(separator);
+		contextElement->appendChild(domContent2);
+
+		XercesDomReadingContext context(contextElement);
+		std::string content;
+		std::istream & stream = context.reachableContent();
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(std::string("Content1Content2"),content);
+	}
+
+	void testFetchContent_withNoNode()
+	{
+
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		XercesDomReadingContext context(contextElement);
+		std::string content="lala";
+
+		std::istream & stream = context.reachableContent();
+		
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(true,stream.fail());
+		CPPUNIT_ASSERT_EQUAL(std::string(""),content);
+	}
+
+	void testFetchContent_withElementFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * unexpectedElement = mDocument->createElement(X("UnexpectedElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		contextElement->appendChild(unexpectedElement);
+		contextElement->appendChild(domContent);
+
+		XercesDomReadingContext context(contextElement);
+		std::string content="lala";
+		std::istream & stream = context.reachableContent();
+		
+		std::getline(stream, content);
+		CPPUNIT_ASSERT(stream.fail());
+		CPPUNIT_ASSERT_EQUAL(std::string(""),content);
+	}
+
+	void testContentLeft_withNoNode_returnsFalse()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+
+		XercesDomReadingContext context(contextElement);
+		std::string content="lala";
+
+		bool charactersLeft = context.contentLeft();
+		CPPUNIT_ASSERT(!charactersLeft);
+	}
+
+	void testContentLeft_withNonSpaceReturnsTrue()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		contextElement->appendChild(domContent);
+
+		XercesDomReadingContext context(contextElement);
+		bool charactersLeft = context.contentLeft();
+		CPPUNIT_ASSERT(charactersLeft);
+		std::string content="lala";
+		std::istream & stream = context.reachableContent();
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content);
+	}
+
+	void testContentLeft_withStartingSpacesAndNonSpace_chopsAndReturnsTrue()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("  \t  \n Content"));
+		contextElement->appendChild(domContent);
+
+		XercesDomReadingContext context(contextElement);
+		bool charactersLeft = context.contentLeft();
+		CPPUNIT_ASSERT(charactersLeft);
+		std::string content="lala";
+		std::istream & stream = context.reachableContent();
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content);
+	}
+
+	void testContentLeft_withOnlySpaces_chopsAndReturnsFalse()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X(" \t \n  "));
+		contextElement->appendChild(domContent);
+
+		XercesDomReadingContext context(contextElement);
+		bool charactersLeft = context.contentLeft();
+		CPPUNIT_ASSERT(!charactersLeft);
+		std::string content="lala";
+		std::istream & stream = context.reachableContent();
+		std::getline(stream, content);
+		CPPUNIT_ASSERT_EQUAL(std::string(""),content);
+	}
+
+	void testFindElement_withThatElementFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(foundElement);
+	}
+
+	void testFindElement_withWrongNameFails()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement1 = mDocument->createElement(X("Wrong"));
+		xercesc::DOMElement * domElement2 = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domElement1);
+		contextElement->appendChild(domElement2);
+
+		XercesDomReadingContext context(contextElement);
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(!foundElement);
+	}
+
+	void testFindElement_withCommentBefore()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMComment * separator = mDocument->createComment(X("Separator"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(separator);
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(foundElement);
+	}
+
+	void testFindElement_withNoElement()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+
+		XercesDomReadingContext context(contextElement);
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(!foundElement);
+	}
+
+	void testFindElement_withTextFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("ContentLeft"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domContent);
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(!foundElement);
+	}
+
+	void testFindElement_withReadedTextFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("ReadingContent"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domContent);
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+
+		std::string content;
+		context.reachableContent() >> content;
+
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(foundElement);
+		CPPUNIT_ASSERT_EQUAL(std::string("ReadingContent"), content);
+	}
+
+	void testFindElement_withHalfReadedTextFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Reading Content"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domContent);
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+
+		std::string content;
+		context.reachableContent() >> content;
+
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(!foundElement);
+		CPPUNIT_ASSERT_EQUAL(std::string("Reading"), content);
+	}
+
+	void testFindElement_withSpacesToReadFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("    \n \t \t \r "));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domContent);
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+
+		char c;
+		context.reachableContent().get(c);;
+
+		bool foundElement = context.findElement("Element");
+		CPPUNIT_ASSERT(foundElement);
+		CPPUNIT_ASSERT_EQUAL(' ', c);
+	}
+
+	void testFindElement_withStillNonElement_asserts()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMProcessingInstruction * domProcessingInstruction = 
+			mDocument->createProcessingInstruction(X("ProcessingInstruction"),X("Content"));
+		contextElement->appendChild(domProcessingInstruction);
+
+		XercesDomReadingContext context(contextElement);
+
+		try
+		{
+			bool foundElement = context.findElement("Element");
+			CPPUNIT_FAIL("Should have failed an assertion");
+		}
+		catch (ErrAssertionFailed & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("Can't change the context to a non element node"),
+				std::string(e.what()));
+		}
+	}
+
+	void testFetchElement_withThatElementFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+		xercesc::DOMElement * foundElement = context.fetchElement("Element");
+		CPPUNIT_ASSERT_EQUAL(domElement, foundElement);
+	}
+
+	void testFetchElement_withSecondElementFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement1 = mDocument->createElement(X("Element1"));
+		xercesc::DOMElement * domElement2 = mDocument->createElement(X("Element2"));
+		contextElement->appendChild(domElement1);
+		contextElement->appendChild(domElement2);
+
+		XercesDomReadingContext context(contextElement);
+		xercesc::DOMElement * foundElement1 = context.fetchElement("Element1");
+		xercesc::DOMElement * foundElement2 = context.fetchElement("Element2");
+		CPPUNIT_ASSERT_EQUAL(domElement2, foundElement2);
+		CPPUNIT_ASSERT_EQUAL(domElement1, foundElement1);
+	}
+
+	void testFetchElement_withTextFirst()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("ContentLeft"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domContent);
+		contextElement->appendChild(domElement);
+
+		XercesDomReadingContext context(contextElement);
+		try 
+		{
+			xercesc::DOMElement * foundElement = context.fetchElement("Element");
+			CPPUNIT_FAIL("Should have failed an assertion");
+		} 
+		catch (ErrAssertionFailed & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("Can't change the context to a non element node"),
+				std::string(e.what()));
+		}
+	}
+
+	void testFetchContent_afterElement()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("ContentLeft"));
+		contextElement->appendChild(domElement);
+		contextElement->appendChild(domContent);
+
+		XercesDomReadingContext context(contextElement);
+		xercesc::DOMElement * foundElement = context.fetchElement("Element");
+	}
+	void testFetchElement_whenSecondElement()
+	{
+	}
+
+
+
+
+
+
+	void testLoadingAWordOnBasicAsContent()
+	{
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		mDocument->getDocumentElement()->appendChild(domContent);
+		
+		XmlMockUpBasic basic;
+		basic.setContent("PreviousValue");
+
+		XercesDom2ClamObjects loader;
+		loader.setDocument(mDocument);
+		bool result = loader.Load(basic);
+
+		CPPUNIT_ASSERT_EQUAL(true, result);
+
+		std::string expected= "B'Content'\n";
+
+		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+	}
+
+	void testLoadingTwoWordsOnTwoBasicsAsContent()
+	{
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content1 Content2"));
+		mDocument->getDocumentElement()->appendChild(domContent);
+		
 		XmlMockUpBasic basic1;
+		basic1.setContent("PreviousValue1");
 		XmlMockUpBasic basic2;
-		component.setContent("ComponentContent");
-		innerComponent.setContent("InnerComponentContent");
-		basic1.setContent("Basic1Content");
-		basic2.setContent("Basic2Content");
-		component.add(innerComponent);
-		innerComponent.add(basic1);
-		innerComponent.add(basic2);
-		std::string expected=
-			"C'ComponentContent'\n"
-			"{\n"
-			".C'InnerComponentContent'\n"
-			".{\n"
-			"..B'Basic1Content'\n"
-			"..B'Basic2Content'\n"
-			".}\n"
-			"}\n";
+		basic2.setContent("PreviousValue2");
 
-		CPPUNIT_ASSERT_EQUAL(expected, component.structureTrace(0));
+		XercesDom2ClamObjects loader;
+		loader.setDocument(mDocument);
+		bool result1 = loader.Load(basic1);
+		bool result2 = loader.Load(basic2);
+
+		CPPUNIT_ASSERT_EQUAL(true, result1);
+		CPPUNIT_ASSERT_EQUAL(true, result2);
+
+		std::string expected1= "B'Content1'\n"; 
+		CPPUNIT_ASSERT_EQUAL(expected1, basic1.structureTrace(0));
+		std::string expected2= "B'Content2'\n"; 
+		CPPUNIT_ASSERT_EQUAL(expected2, basic2.structureTrace(0));
 	}
 
-	void testEmptyDocument()
+	void testLoadingOneWordsOnTwoBasicsAsContent_secondLoadFails()
 	{
-		XercesDom2ClamObjects dumper("Doc");
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content1"));
+		mDocument->getDocumentElement()->appendChild(domContent);
+		
+		XmlMockUpBasic basic1;
+		basic1.setContent("PreviousValue1");
+		XmlMockUpBasic basic2;
+		basic2.setContent("PreviousValue2");
 
-		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
+		XercesDom2ClamObjects loader;
+		loader.setDocument(mDocument);
+		bool result1 = loader.Load(basic1);
+		bool result2 = loader.Load(basic2);
+
+		CPPUNIT_ASSERT_EQUAL(true, result1);
+		CPPUNIT_ASSERT_EQUAL(false, result2);
+
+		std::string expected1= "B'Content1'\n"; 
+		CPPUNIT_ASSERT_EQUAL(expected1, basic1.structureTrace(0));
+		std::string expected2= "B'PreviousValue2'\n"; 
+		CPPUNIT_ASSERT_EQUAL(expected2, basic2.structureTrace(0));
 	}
+
+	void testLoadingSplittedPlainContent_getJoined()
+	{
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		mDocument->getDocumentElement()->appendChild(domContent1);
+		mDocument->getDocumentElement()->appendChild(domContent2);
+		
+		XmlMockUpBasic basic;
+		basic.setContent("PreviousValue");
+
+		XercesDom2ClamObjects loader;
+		loader.setDocument(mDocument);
+		bool result = loader.Load(basic);
+
+		CPPUNIT_ASSERT_EQUAL(true, result);
+
+		std::string expected= "B'Content1Content2'\n";
+
+		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+	}
+
+	void testEmptyElement_WithRightLabel()
+	{
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		
+		XmlMockUpBasic basic("Element",true);
+		basic.setContent("PreviousValue");
+
+		XercesDom2ClamObjects loader;
+		loader.setDocument(mDocument);
+		bool result = loader.Load(basic);
+
+		CPPUNIT_ASSERT_EQUAL(true, result);
+
+		std::string expected= "B'PreviousValue'\n{\n}\n";
+
+		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+	}
+	void testEmptyElement_WithWrongLabel()
+	{
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Other"));
+		
+		XmlMockUpBasic basic("Element",true);
+		basic.setContent("PreviousValue");
+
+		XercesDom2ClamObjects loader;
+		loader.setDocument(mDocument);
+		bool result = loader.Load(basic);
+
+		CPPUNIT_ASSERT_EQUAL(false, result);
+
+		std::string expected= "B'PreviousValue'\n";
+
+		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+	}
+#if 0
 
 	void testBasicAsPlainContent()
 	{
@@ -472,6 +964,7 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc componentAttribute=\"ComponentContent\"/>"), mTargetStream.str());
 	}
+#endif
 
 };
 
