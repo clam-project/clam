@@ -1,4 +1,5 @@
 #include <qevent.h>
+#include <qtooltip.h>
 #include "PlotController.hxx"
 #include "DisplaySurface.hxx"
 
@@ -13,6 +14,7 @@ namespace CLAM
 			InitView();
 
 			_controller = NULL;
+			setMouseTracking(true);
 		}
 
 		DisplaySurface::~DisplaySurface()
@@ -32,6 +34,7 @@ namespace CLAM
 			_controller = controller;
 			connect(_controller,SIGNAL(sendView(View)),this,SLOT(receivedView(View)));
 			connect(_controller,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
+			connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
 		}
 
 		void DisplaySurface::initializeGL()
@@ -73,9 +76,27 @@ namespace CLAM
 					xcoord += left;
 					if(xcoord >= left && xcoord <= right)
 					{
-						_controller->SetSelPos(xcoord);
+						_controller->SetSelPos(TData(xcoord));
 						updateGL();
 					}
+				}
+			}
+		}
+
+		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
+		{
+			if(_controller)
+			{
+				float left = float(_controller->GetLeftBound());
+				float right = float(_controller->GetRightBound());
+				float xcoord = float(e->x());
+				xcoord *= float(_view.right);
+				xcoord /= float(width());
+				xcoord += left;
+				float ycoord = float(-e->y())+float(height());
+				if(xcoord >= left && xcoord <= right)
+				{
+					_controller->SetMousePos(TData(xcoord),TData(ycoord));
 				}
 			}
 		}
@@ -101,6 +122,12 @@ namespace CLAM
 		{
 			QGLWidget::resizeEvent(e);
 			_controller->SurfaceDimensions(e->size().width(),e->size().height());
+		}
+
+		void DisplaySurface::updateToolTip(QString s)
+		{
+			QToolTip::remove(this);
+			QToolTip::add(this,s);
 		}
 	}
 }

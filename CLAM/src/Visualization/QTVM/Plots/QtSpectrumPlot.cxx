@@ -7,7 +7,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		QtSpectrumPlot::QtSpectrumPlot(QWidget* parent) : QtPlot(parent)
+		QtSpectrumPlot::QtSpectrumPlot(QWidget* parent) : QtPresentation(parent)
 		{
 			SetPlotController();
 			InitSpectrumPlot();

@@ -10,7 +10,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		QtAudioPlot::QtAudioPlot(QWidget* parent) : PlayablePlot(parent)
+		QtAudioPlot::QtAudioPlot(QWidget* parent) : QtPresentation(parent)
 		{
 			SetPlotController();
 			InitAudioPlot();	
@@ -23,35 +23,35 @@ namespace CLAM
 
 		void QtAudioPlot::InitAudioPlot()
 		{
-			QHBoxLayout* panel = new QHBoxLayout;
+			_panel = new QHBoxLayout;
 			
-			QFrame* lefthole = new QFrame(this);
+			lefthole = new QFrame(this);
 			lefthole->setFixedSize(50,30);
-			panel->addWidget(lefthole);
+			_panel->addWidget(lefthole);
 
 			_player = new QtAudioPlayer(this);
 			_player->setFixedSize(75,30);
-			panel->addWidget(_player);
+			_panel->addWidget(_player);
 
-			panel->addStretch(1);
+			_panel->addStretch(1);
 
 			_leftAmpLab = new SingleLabel(this,"","Amplitude");
 			_rightAmpLab = new SingleLabel(this,"","Amplitude Right");
 
-			panel->addWidget(_leftAmpLab);
-			panel->addWidget(_rightAmpLab);
+			_panel->addWidget(_leftAmpLab);
+			_panel->addWidget(_rightAmpLab);
 
-			panel->addStretch(1);
+			_panel->addStretch(1);
 
 			_labelsGroup = new TimeSegmentLabelsGroup(this);
 			_labelsGroup->setFixedSize(186,25);
-			panel->addWidget(_labelsGroup);
+			_panel->addWidget(_labelsGroup);
 
-			QFrame* righthole = new QFrame(this);
+			righthole = new QFrame(this);
 			righthole->setFixedSize(20,30);
-			panel->addWidget(righthole);
+			_panel->addWidget(righthole);
 
-			AddToMainLayout(panel);			
+			AddToMainLayout(_panel);	
 		}
 
 		void QtAudioPlot::SetData(const Audio& audio)
@@ -158,6 +158,22 @@ namespace CLAM
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
+		}
+
+		void QtAudioPlot::closeEvent(QCloseEvent *e)
+		{
+			RemoveFromPlayList();
+			QtPlot::closeEvent(e);
+		}
+
+		void QtAudioPlot::RemovePlayPanel()
+		{
+			RemoveFromMainLayout(_panel);
+			lefthole->hide();
+			_player->hide();
+			_leftAmpLab->hide();
+			_rightAmpLab->hide();
+			_labelsGroup->hide();
 		}
 
 	}	

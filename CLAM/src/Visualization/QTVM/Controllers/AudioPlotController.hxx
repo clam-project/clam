@@ -23,7 +23,11 @@ namespace CLAM
 				void SurfaceDimensions(int w,int h);
 				void Draw();
 
+				void SetMousePos(TData x,TData y);
+
 				TData GetAmp(TData t) const;
+
+				Audio& GetAudioData();
 
 			signals:
 				void xRulerScaleDiv(QwtScaleDiv);

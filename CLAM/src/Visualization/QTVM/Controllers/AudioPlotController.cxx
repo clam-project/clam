@@ -60,7 +60,7 @@ namespace CLAM
 			_mustProcessData = true;
 			
 			double lBound = double(GetLeftBound()/_sampleRate);
-		    double hBound = double(GetRightBound()/_sampleRate);
+			double hBound = double(GetRightBound()/_sampleRate);
 			QwtScaleDiv div; 
 			div.rebuild(lBound,hBound,GetXMaxMajStep(_viewport.w),3,false);
 			emit xRulerScaleDiv(div);	
@@ -213,6 +213,27 @@ namespace CLAM
 		bool AudioPlotController::MustProcessData() const
 		{
 			return _mustProcessData;
+		}
+
+		Audio& AudioPlotController::GetAudioData()
+		{
+			return _audio;
+		}
+
+		void AudioPlotController::SetMousePos(TData x,TData y)
+		{
+			TData tbound = GetTopBound()-GetBottomBound();
+			TData bBound = GetBottomBound()-TData(1.0);
+			TData ycoord=y;
+			ycoord *= tbound;
+			ycoord /= TData(_viewport.h);
+			ycoord += bBound;
+			PlotController::SetMousePos(x,ycoord);
+			TData t=GetMouseXPos()/_sampleRate;
+			TData amp=GetMouseYPos();
+			QString s;
+			s = "t="+(s.setNum(t,'f',3))+"s amp="+(s.setNum(amp,'f',3));
+			emit toolTip(s);
 		}
 	}
 }

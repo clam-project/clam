@@ -25,6 +25,8 @@ namespace CLAM
 
 				TData GetFreq(TData t) const;
 
+				void SetMousePos(TData x,TData y);
+
 			signals:
 				void xRulerScaleDiv(QwtScaleDiv);
 				void yRulerScaleDiv(QwtScaleDiv);

@@ -159,6 +159,22 @@ namespace CLAM
 			time.SetBegin(TData(0.0));
 			emit selectedRegion(time);
 		}
+
+		void FundPlotController::SetMousePos(TData x,TData y)
+		{
+			TData tbound = GetTopBound()-GetBottomBound();
+			TData bBound = GetBottomBound();
+			TData ycoord=y;
+			ycoord *= tbound;
+			ycoord /= TData(_viewport.h);
+			ycoord += bBound;
+			PlotController::SetMousePos(x,ycoord);
+			TData t=GetMouseXPos()/_sampleRate;
+			TData freq=GetMouseYPos();
+			QString s;
+			s = "t="+(s.setNum(t,'f',3))+"s freq="+(s.setNum(freq,'f',3))+"Hz";
+			emit toolTip(s);
+		}
 	}
 }
 

@@ -1,13 +1,13 @@
 #ifndef __QTSPECTRUMPLOT__
 #define __QTSPECTRUMPLOT__
 #include "Spectrum.hxx"
-#include "QtPlot.hxx"
+#include "QtPresentation.hxx"
 namespace CLAM
 {
 	namespace VM
 	{
 		class SingleLabel;		
-		class QtSpectrumPlot : public QtPlot
+		class QtSpectrumPlot : public QtPresentation
 		{
 			Q_OBJECT
 			public:

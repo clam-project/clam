@@ -30,7 +30,8 @@ namespace CLAM
 				void SetController(PlotController* controller);
 
 			private slots:
-				void receivedView(View v);
+				void receivedView(View);
+				void updateToolTip(QString);
 
 			protected:
 				virtual void initializeGL(); 
@@ -38,8 +39,7 @@ namespace CLAM
 				virtual void paintGL(); 
 
 				virtual void mousePressEvent(QMouseEvent* e);
-				// TODO
-				// other mouse events are needed
+				virtual void mouseMoveEvent(QMouseEvent* e);
 
 				virtual void resizeEvent(QResizeEvent *e);
 

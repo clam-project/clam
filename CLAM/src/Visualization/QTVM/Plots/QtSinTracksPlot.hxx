@@ -4,7 +4,7 @@
 #include "Segment.hxx"
 #include "SpectralPeakArray.hxx"
 #include "MediaTime.hxx"
-#include "QtPlot.hxx"
+#include "QtPresentation.hxx"
 
 namespace CLAM
 {
@@ -12,7 +12,7 @@ namespace CLAM
 	{
 		class TimeSegmentLabelsGroup;
 
-		class QtSinTracksPlot : public QtPlot
+		class QtSinTracksPlot : public QtPresentation
 		{
 			Q_OBJECT
 

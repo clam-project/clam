@@ -3,6 +3,7 @@
 
 #include "Segment.hxx"
 #include "MediaTime.hxx"
+#include "QtPresentation.hxx"
 #include "PlayablePlot.hxx"
 
 namespace CLAM
@@ -12,7 +13,7 @@ namespace CLAM
 		class TimeSegmentLabelsGroup;
 		class SingleLabel;
 	
-		class QtFundFreqPlot : public PlayablePlot
+		class QtFundFreqPlot : public QtPresentation, public PlayablePlot
 		{
 			Q_OBJECT
 
@@ -33,6 +34,8 @@ namespace CLAM
 			protected:
 				virtual void keyPressEvent(QKeyEvent* e);
 				virtual void keyReleaseEvent( QKeyEvent* e);
+
+				virtual void closeEvent(QCloseEvent* e);
 
 				virtual void SetPlotController();
 				virtual void Connect();

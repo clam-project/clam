@@ -3,6 +3,7 @@
 
 #include "Audio.hxx"
 #include "MediaTime.hxx"
+#include "QtPresentation.hxx"
 #include "PlayablePlot.hxx"
 
 namespace CLAM
@@ -12,7 +13,7 @@ namespace CLAM
 		class TimeSegmentLabelsGroup;
 		class SingleLabel;
 	
-		class QtAudioPlot : public PlayablePlot
+		class QtAudioPlot : public QtPresentation, public PlayablePlot
 		{
 			Q_OBJECT
 
@@ -27,12 +28,16 @@ namespace CLAM
 				void SetDialColor(Color c);
 				void SetRegionColor(Color c);
 
+				void RemovePlayPanel();
+
 			protected slots:
 				void updateRegion(MediaTime);
 
 			protected:
 				virtual void keyPressEvent(QKeyEvent* e);
 				virtual void keyReleaseEvent( QKeyEvent* e);
+
+				virtual void closeEvent(QCloseEvent* e);
 
 				virtual void SetPlotController();
 				virtual void Connect();
@@ -41,10 +46,14 @@ namespace CLAM
 				virtual void DisplayBackgroundWhite();
 
 				void SetPData(const Audio& audio);
-				
+
 			private:
+				QBoxLayout* _panel;
 				TimeSegmentLabelsGroup* _labelsGroup;
 				SingleLabel *_leftAmpLab, *_rightAmpLab;
+
+				// holes
+				QFrame *lefthole,*righthole;
 				
 				void UpdateAmpLabels(MediaTime time);
 				void InitAudioPlot();

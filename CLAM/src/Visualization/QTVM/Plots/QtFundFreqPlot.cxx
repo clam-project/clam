@@ -10,7 +10,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		QtFundFreqPlot::QtFundFreqPlot(QWidget* parent) : PlayablePlot(parent)
+		QtFundFreqPlot::QtFundFreqPlot(QWidget* parent) : QtPresentation(parent)
 		{
 			SetPlotController();
 			InitFundFreqPlot();
@@ -160,6 +160,12 @@ namespace CLAM
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
+		}
+
+		void QtFundFreqPlot::closeEvent(QCloseEvent *e)
+		{
+			RemoveFromPlayList();
+			QtPlot::closeEvent(e);
 		}
 	}	
 }

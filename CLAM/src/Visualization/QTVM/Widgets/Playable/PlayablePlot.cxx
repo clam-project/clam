@@ -6,8 +6,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		PlayablePlot::PlayablePlot(QWidget* parent) 
-			: QtPlot(parent)
+		PlayablePlot::PlayablePlot() 
 		{
 			_player = NULL;
 			PlayableList::Add(this);
@@ -15,6 +14,7 @@ namespace CLAM
 
 		PlayablePlot::~PlayablePlot()
 		{
+			if(_player) delete _player;
 		}
 				
 		void PlayablePlot::Play()
@@ -38,10 +38,9 @@ namespace CLAM
 			return false;
 		}
 
-		void PlayablePlot::closeEvent(QCloseEvent *e)
+		void PlayablePlot::RemoveFromPlayList()
 		{
 			PlayableList::Remove(this);
-			QtPlot::closeEvent(e);
 		}
 	}
 }

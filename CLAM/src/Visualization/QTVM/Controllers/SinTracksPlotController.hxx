@@ -25,6 +25,8 @@ namespace CLAM
 				void SurfaceDimensions(int w,int h);
 				void Draw();
 
+				void SetMousePos(TData x,TData y);
+
 			signals:
 				void xRulerScaleDiv(QwtScaleDiv);
 				void yRulerScaleDiv(QwtScaleDiv);

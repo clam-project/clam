@@ -179,6 +179,26 @@ namespace CLAM
 		{
 			return _mustProcessData;
 		}
+        
+		void SpectrumPlotController::SetMousePos(TData x,TData y)
+		{
+			TData xcoord=x;
+			xcoord *= _spectralRange;
+			xcoord /= TData(GetnSamples());
+			TData tbound = GetTopBound()-GetBottomBound();
+			TData bBound = GetBottomBound()-TData(150.0);
+			TData ycoord=y;
+			ycoord *= tbound;
+			ycoord /= TData(_viewport.h);
+			ycoord += bBound;
+			PlotController::SetMousePos(xcoord,ycoord);
+			TData freq=GetMouseXPos();
+			TData dB=GetMouseYPos();
+			QString s;
+			s = "freq="+(s.setNum(freq,'f',3))+"Hz amp="+(s.setNum(dB,'f',3))+"dB";
+			emit toolTip(s);
+		}
+		
 	}
 }
 

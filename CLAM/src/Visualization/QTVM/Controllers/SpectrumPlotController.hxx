@@ -19,6 +19,8 @@ namespace CLAM
 				void SurfaceDimensions(int w,int h);
 
 				virtual void Draw();
+				void SetMousePos(TData x,TData y);
+
 				virtual void SetSelPos(const TData& value);
 			signals:
 				void mag(TData);

@@ -63,7 +63,11 @@ namespace CLAM
 
 		void PlotController::SetSelPos(const TData& value)
 		{
-			_selPos = value;
+			if(value != _selPos)
+			{
+				_selPos = value;
+				emit selPos(_selPos);
+			}
 		}
 
 		TData PlotController::GetSelPos() const
@@ -329,8 +333,6 @@ namespace CLAM
 			int vsv = GetVScrollValue();
 			emit vScrollMaxValue(GetnyPixels());
 			emit vScrollValue(vsv);
-
-			emit requestRefresh();
 		}
 
 		void PlotController::UpdateHViewport(int value)
@@ -396,6 +398,21 @@ namespace CLAM
 			return (pos >= GetLeftBound() && pos <= GetRightBound());
 		}
 
+		void PlotController::SetMousePos(TData x,TData y)
+		{
+			_mouseXPos=x;
+			_mouseYPos=y;
+		}
+
+		TData PlotController::GetMouseXPos() const
+		{
+			return _mouseXPos;
+		}
+
+		TData PlotController::GetMouseYPos() const
+		{
+			return _mouseYPos;
+		}
 	}
 }
 

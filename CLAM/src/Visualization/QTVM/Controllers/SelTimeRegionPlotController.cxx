@@ -18,43 +18,46 @@ namespace CLAM
 
 		void SelTimeRegionPlotController::SetSelPos(const TData& value)
 		{
-			if(_keyShiftPressed)
+			if(GetSelPos() != value)
 			{
-				if(value > GetBeginRegion() && value < GetEndRegion())
+				if(_keyShiftPressed)
 				{
-					if(value > GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)))
+					if(value > GetBeginRegion() && value < GetEndRegion())
 					{
-						SetEndRegion(value);
-						UpdateDial(value);
+						if(value > GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)))
+						{
+							SetEndRegion(value);
+							UpdateDial(value);
+						}
+						else
+						{
+							SetBeginRegion(value);
+							UpdateDial(value);
+						}
 					}
 					else
 					{
-						SetBeginRegion(value);
-						UpdateDial(value);
+						if(value > GetEndRegion())
+						{
+							SetEndRegion(value);
+							UpdateDial(value);
+						}
+						if(value < GetBeginRegion())
+						{
+							SetBeginRegion(value);
+							UpdateDial(value);
+						}
 					}
+					PlotController::SetSelPos(GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)));
 				}
 				else
 				{
-					if(value > GetEndRegion())
-					{
-						SetEndRegion(value);
-						UpdateDial(value);
-					}
-					if(value < GetBeginRegion())
-					{
-						SetBeginRegion(value);
-						UpdateDial(value);
-					}
+					SelPosPlotController::SetSelPos(value);
+					SetBeginRegion(GetSelPos());
+					SetEndRegion(GetSelPos());
 				}
-				PlotController::SetSelPos(GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)));
+				emit selectedRegion(GetRegionTime());
 			}
-			else
-			{
-				SelPosPlotController::SetSelPos(value);
-				SetBeginRegion(GetSelPos());
-				SetEndRegion(GetSelPos());
-			}
-			emit selectedRegion(GetRegionTime());
 		}
 		
 		void SelTimeRegionPlotController::Draw()

@@ -8,7 +8,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		QtSinTracksPlot::QtSinTracksPlot(QWidget* parent) : QtPlot(parent)
+		QtSinTracksPlot::QtSinTracksPlot(QWidget* parent) : QtPresentation(parent)
 		{
 			SetPlotController();
 			InitSinTracksPlot();

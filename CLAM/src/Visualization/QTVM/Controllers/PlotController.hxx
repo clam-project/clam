@@ -2,6 +2,7 @@
 #define __PLOTCONTROLLER__
 
 #include <qobject.h>
+#include <qstring.h>
 #include "DataTypes.hxx"
 
 namespace CLAM
@@ -35,10 +36,12 @@ namespace CLAM
 				virtual void Draw() = 0;
 				virtual void SetSelPos(const TData& value);
 				virtual void SurfaceDimensions(int w,int h);
-				virtual void HZoomIn();
-				virtual void HZoomOut();
-				virtual void VZoomIn();
-				virtual void VZoomOut();
+				virtual void SetMousePos(TData x,TData y);
+
+				void HZoomIn();
+				void HZoomOut();
+				void VZoomIn();
+				void VZoomOut();
 
 				void UpdateHViewport(int value);
 				TData GetLeftBound() const;
@@ -60,6 +63,9 @@ namespace CLAM
 				void vScrollValue(int);
 				void vScrollMaxValue(int);
 
+				void selPos(TData);
+				void toolTip(QString);
+
 			protected:
 				View _view;
 				Viewport _viewport;
@@ -75,13 +81,17 @@ namespace CLAM
 				void SetvRange(const TData& vr);
 				TData GetvRange() const;
 
-				TData GetCurrent() const;
 				void SetHMin(const TData& min);
 				TData GetHMin() const;
 
 				TData GetVCur() const;
 				void SetVMin(const TData& min);
 				TData GetVMin() const;
+
+				TData GetCurrent() const;
+
+				TData GetMouseXPos() const;
+				TData GetMouseYPos() const;
 
 			private:
 				TData _lBound;
@@ -101,6 +111,9 @@ namespace CLAM
 
 				int _hzRatio;
 				int _vzRatio;
+
+				TData _mouseXPos;
+				TData _mouseYPos;
 
 				void InitView();
 				

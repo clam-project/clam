@@ -14,8 +14,11 @@ namespace CLAM
 
 		void SelPosPlotController::SetSelPos(const TData& value)
 		{
-			PlotController::SetSelPos(value);
-			UpdateDial(GetSelPos());
+			if(GetSelPos() != value)
+			{
+				PlotController::SetSelPos(value);
+				UpdateDial(GetSelPos());
+			}
 		}
 
 		void SelPosPlotController::Draw()
