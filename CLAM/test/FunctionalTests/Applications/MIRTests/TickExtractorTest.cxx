@@ -182,9 +182,9 @@ namespace CLAMTest
 		{
 			RythmDescriptionTests::RythmEventsB2B inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/drums_electronic_guit_Ticks.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/drums-electronic-guit_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/drums_electronic_guit_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/drums-electronic-guit_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -201,9 +201,9 @@ namespace CLAMTest
 		{
 			RythmDescriptionTests::RythmEventsB2B inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/elecpiano_drums_Ticks.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/elecpiano-drums_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/elecpiano_drums_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/elecpiano-drums_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
