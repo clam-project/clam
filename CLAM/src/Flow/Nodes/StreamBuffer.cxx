@@ -105,6 +105,12 @@ namespace CLAM {
 
 		mBuffer.Configure(max_window_size);
 
+/*  Warning: This initialization here suposes that the Configure is always performed 
+	after having instantiated the regions. I don't know if that is a smart
+	thing to suppose. Another thing that could be done is to initialize Regions
+	every time a new one is instantiated. */
+		mRegions.Init();
+
 		CLAM_ASSERT(mBuffer.FulfilsInvariant(),
 		            "StreamBuffer::Configure(): "
 		            "Inconsistent buffer after configuration.");

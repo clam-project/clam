@@ -108,6 +108,10 @@ namespace CLAM {
 
 
 		bool FulfilsInvariant() const;
+
+		//XA:
+		void Init();
+		unsigned int FindLargestReadRegionLenght();
 	};
 };
 

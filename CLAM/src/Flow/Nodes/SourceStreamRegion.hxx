@@ -36,8 +36,7 @@ namespace CLAM {
 	protected:
 
 		SourceStreamRegion(unsigned int hop,
-		                   unsigned int length,
-		                   unsigned int offset = 0);
+		                   unsigned int length);
 	public:
 
 		typedef std::list<ReadStreamRegion*>::iterator reader_iterator;
@@ -53,6 +52,12 @@ namespace CLAM {
 
 		virtual bool FulfilsInvariant() const;
 		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
+
+		//XA
+		void InitReaders();
+		void Init();
+		unsigned int FindLargestReadRegionLength();
+
 		virtual ~SourceStreamRegion() {};
 	};
 

@@ -179,6 +179,31 @@ namespace CLAM {
 	}
 
 
+	//XA
+	void StreamRegionContainer::Init()
+	{
+		source_iterator sit;
+		for (sit=sources_begin(); sit!=sources_end(); sit++)
+			(*sit)->Init();
+	}
+
+	unsigned int StreamRegionContainer::FindLargestReadRegionLenght()
+	{
+		if (mSources.size() == 0)
+			return 0;
+
+		unsigned int len=0;
+
+		source_const_iterator sit;
+		SourceStreamRegion::reader_const_iterator rit;
+
+		for (sit=sources_begin(); sit!=sources_end();  sit++)
+			for (rit=(*sit)->readers_begin();  rit != (*sit)->readers_end();  rit++)
+				if ((*rit)->Len() >len) len=(*rit)->Len();
+		
+		return len;
+	}
+
 	bool RegionFinder::Visit(const WriteStreamRegion& src)
 	{
 		if (&src == static_cast<const WriteStreamRegion*>(mContainer.Writer()))
@@ -222,6 +247,8 @@ namespace CLAM {
 		return Visit(static_cast<const SourceStreamRegion&>(inplace));
 	}
 
+
+	
 
 
 }

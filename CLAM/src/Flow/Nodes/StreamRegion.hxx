@@ -19,6 +19,9 @@
  *
  */
 
+#include "Assert.hxx"
+#include "CLAM_Math.hxx"
+
 #ifndef _STREAM_REGION_H
 #define _STREAM_REGION_H
 
@@ -33,19 +36,34 @@ namespace CLAM {
 		unsigned int mPos;
 		unsigned int mLen;
 		unsigned int mEnd;
+		//XA
+		unsigned int mOffset;
 	public:
 		StreamRegion(unsigned int hop,
-		             unsigned int length,
-					 unsigned int offset=0);
+		             unsigned int length);
 
 		unsigned int Hop() const {return mHop;}
 		unsigned int Pos() const {return mPos;}
 		unsigned int End() const {return mEnd;}
 		unsigned int Len() const {return mEnd-mPos;}
+		unsigned int RealLength() const {return mLen;}
+		
+		//XA:
+		unsigned int Center() const {return Chop((mPos+mEnd)*0.5)-mOffset;} 
 		unsigned int MaxLength() const {return mLen;}
 
 		void Activate();
 		void LeaveAndAdvance();
+
+		//XA
+		void SetCenter(unsigned int center){
+			mPos=center-mLen*0.5+mOffset;
+		}
+		//XA
+		void CenterToZero() {SetCenter(0);}
+		void Init(unsigned int offset) {
+			mOffset=offset;
+			CenterToZero();}
 
 		bool Preceeds(const StreamRegion*) const;
 		bool Follows (const StreamRegion*) const;

@@ -29,9 +29,8 @@ namespace CLAM {
 	class WriteStreamRegion : public SourceStreamRegion {
 	public:
 		WriteStreamRegion(unsigned int hop,
-		                  unsigned int length,
-		                  unsigned int offset = 0)
-			: SourceStreamRegion(hop,length,offset)
+		                  unsigned int length)
+			: SourceStreamRegion(hop,length)
 		{}
 
 		virtual bool FulfilsInvariant() const;

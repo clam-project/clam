@@ -29,13 +29,14 @@
 namespace CLAM {
 
 	StreamRegion::StreamRegion(unsigned int hop,
-	                           unsigned int length,
-	                           unsigned int offset)
+	                           unsigned int length)
 		: mHop(hop),
-		  mPos(offset),
+		  mPos(0),
 		  mLen(length),
-		  mEnd(offset)
-	{}
+		  mEnd(0)
+	{
+		CLAM_ASSERT(mLen%2==0, "StreamRegion:: size of stream region always has to be even");
+	}
 
 	void StreamRegion::Activate()
 	{
