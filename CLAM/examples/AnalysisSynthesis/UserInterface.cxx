@@ -182,7 +182,7 @@ void UserInterface::cb_About(Fl_Menu_* o, void* v) {
 Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Input", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Load Configure...", 0,  (Fl_Callback*)UserInterface::cb_Load, 0, 0, 0, 0, 12, 0},
- {"Edit Configure...", 0,  (Fl_Callback*)UserInterface::cb_Edit, 0, 16, 0, 0, 12, 0},
+ {"Edit Configure...", 0,  (Fl_Callback*)UserInterface::cb_Edit, 0, 0, 0, 0, 12, 0},
  {"Store Configure...", 0,  (Fl_Callback*)UserInterface::cb_Store, 0, 16, 0, 0, 12, 0},
  {"Analysis Data", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load1, 0, 0, 0, 0, 12, 0},
@@ -861,7 +861,7 @@ UserInterface::UserInterface() {
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
-    { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(5, 50, 860, 490);
+    { Fl_Tile* o = mSmartTile = new Fl_Tile(5, 50, 860, 490);
       o->color(23);
       Fl_Group::current()->resizable(o);
     }

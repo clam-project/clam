@@ -3,6 +3,7 @@
 #ifndef UserInterface_hxx
 #define UserInterface_hxx
 #include <FL/Fl.H>
+#include "FL/Fl_Tile.H"
 #include "Fl_Smart_Tile.H"
 class Fl_Smart_Tile;
 #include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"
@@ -88,7 +89,7 @@ private:
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
-  Fl_Smart_Tile *mSmartTile;
+  Fl_Tile *mSmartTile;
   void AboutWindow();
   Fl_Window *mWindow2;
   inline void cb_mWindow2_i(Fl_Window*, void*);

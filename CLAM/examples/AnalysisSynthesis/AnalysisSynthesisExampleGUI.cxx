@@ -26,13 +26,11 @@
 #include "Fl_WaitMessage.cxx"
 #include "AnalysisSynthesisExampleBase.hxx"
 #include "pthread.h"
+#include "FLTKConfigurator.hxx"
 #include "CLAMViews.hxx"
 #include "CLAMPresentations.hxx"
 #include "DebugSnapshots.hxx"
 #include "AudioSnapshot.hxx"
-
-//#include "ConfigVisitorGetter.hxx"
-//#include "FLTK_GUI_Builder.hxx"
 
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
@@ -327,18 +325,10 @@ public:
 
 void UserInterface::EditConfiguration(void)
 {
-// 	FLTK_GUI_Builder guibuilder;
-// 	ConfigVisitorGetter<FLTK_GUI_Builder> getter(&guibuilder);
-	
-// 	mAnalysisSynthesisExample->mGlobalConfig.VisitAll(getter);
-// 	guibuilder.Show();
-	
-// // 	if(!guibuilder){
-// // 		
-// // 		visitor = new ConfigVisitorGetter<FLTK_GUI_Builder>(guibuilder);
-// // 		
-// // 		visitor->Show();
-// // 	}
+	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
+	configurator->SetConfig(mAnalysisSynthesisExample->mGlobalConfig);
+	configurator->show();
+	Fl::run();
 }
 
 void UserInterface::LoadConfiguration(void)
@@ -366,6 +356,15 @@ void UserInterface::LoadConfiguration(void)
 			}
 			else 
 				mAnalysisSynthesisExample->mHaveConfig=false;
+			for(int i=0;i<4;i++){
+				if(mAttachedPresentations[0]!=NULL){
+					Detach( mAttachedPresentations[i]->GetWindow() );
+					delete mAttachedPresentations[i];
+					mAttachedPresentations[i]=NULL;
+					delete mAttachedViews[i];
+					mAttachedViews[i]=NULL;
+				}
+			}
 		}
 		
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
@@ -458,23 +457,24 @@ void UserInterface::StoreAnalysisData(void)
 void UserInterface::DisplayInputSound(void)
 {
 	if(mAttachedPresentations[0]==NULL){
-		Geometry g(0, 0, 890, 490);
+		Geometry g(0, 20, 890, 490);
 		mAttachedViews[0] = new ProcDataView<Audio>;
 		mAttachedPresentations[0] = new ProcDataPresentation<Audio>(g, "Input Audio");
 		
 		mAttachedViews[0]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
 		mAttachedPresentations[0]->LinkWithView( mAttachedViews[0] );
 		
-		Attach( mAttachedPresentations[0]->GetWindow() );
+//		Attach( mAttachedPresentations[0]->GetWindow() );
 		mAttachedPresentations[0]->Show();
 		mAttachedViews[0]->Refresh();
 	}
  	else{
- 		Detach( mAttachedPresentations[0]->GetWindow() );
- 		delete mAttachedPresentations[0];
- 		mAttachedPresentations[0]=NULL;
- 		delete mAttachedViews[0];
- 		mAttachedViews[0]=NULL;
+		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
+			mAttachedPresentations[0]->GetWindow()->hide();
+		}
+		else {
+			mAttachedPresentations[0]->GetWindow()->show();
+		}
  	}
 	Fl::redraw();
 }
@@ -644,7 +644,6 @@ void UserInterface::Attach(Fl_Window* canvas)
 */
 	canvas->resizable();
 	mSmartTile->add(canvas);
-	mSmartTile->equalize();
 	canvas->show();
 
 /*
@@ -656,8 +655,8 @@ void UserInterface::Attach(Fl_Window* canvas)
 void UserInterface::Detach(Fl_Window* canvas)
 {
 	canvas->hide();
-	mSmartTile->close(canvas);
-	mSmartTile->equalize();
+//	mSmartTile->close(canvas);
+//	mSmartTile->equalize();
 }
 
 int main(void)

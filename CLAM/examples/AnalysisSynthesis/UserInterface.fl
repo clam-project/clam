@@ -5,6 +5,9 @@ code_name {.cxx}
 gridx 5 
 gridy 5 
 snap 3
+decl {\#include "FL/Fl_Tile.H"} {selected public
+} 
+
 decl {\#include "Fl_Smart_Tile.H"} {public
 } 
 
@@ -29,11 +32,10 @@ class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {open
-  } {
+  Function {UserInterface()} {} {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
-      xywh {182 512 872 548} color 23 resizable
+      xywh {186 604 872 548} color 23 resizable
       code0 {mWindow2=NULL;} visible
     } {
       Fl_Input mConfigurationText {
@@ -44,7 +46,7 @@ class UserInterface {open
         private xywh {0 0 905 20} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input open selected
+          label Input open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -55,7 +57,7 @@ class UserInterface {open
           menuitem {} {
             label {Edit Configure...}
             callback {EditConfiguration();}
-            private xywh {15 15 100 20} labelsize 12 hide
+            private xywh {15 15 100 20} labelsize 12
           }
           menuitem {} {
             label {Store Configure...}
@@ -217,7 +219,7 @@ Exit();}
       }
       Fl_Box mSmartTile {
         private xywh {5 50 860 490} color 23 resizable
-        class Fl_Smart_Tile
+        class Fl_Tile
       }
     }
     code {for(int i=0; i<4; i++){
@@ -231,7 +233,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {433 325 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      private xywh {437 329 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {
