@@ -25,7 +25,7 @@
 #include <iostream>
 
 // CLAM supports two ways of representing an audio signal:
-// i)  As a buffer containing the signals samples as well as 'metadata' such as
+// i)  As a buffer containing the signal samples as well as 'metadata' such as
 //     the sampling rate and the time ( in ms ) beginning and ending offsets,
 //     represented either in memory as a CLAM::Audio object or encoded in a
 //     well-formed XML document

@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="SDIF_FilePlayback" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="SDIF_And_Segment" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=SDIF_FilePlayback - Win32 Debug
+CFG=SDIF_And_Segment - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "SDIF_FilePlayback.mak".
+!MESSAGE NMAKE /f "SDIF_And_Segment.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "SDIF_FilePlayback.mak" CFG="SDIF_FilePlayback - Win32 Debug"
+!MESSAGE NMAKE /f "SDIF_And_Segment.mak" CFG="SDIF_And_Segment - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "SDIF_FilePlayback - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "SDIF_FilePlayback - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "SDIF_And_Segment - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "SDIF_And_Segment - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=SDIF_FilePlayback - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "SDIF_FilePlayback - Win32 Release"
+!IF  "$(CFG)" == "SDIF_And_Segment - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,7 +53,7 @@ LINK32=link.exe
 # ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" RFFTW2st.lib FFTW2st.lib fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
-!ELSEIF  "$(CFG)" == "SDIF_FilePlayback - Win32 Debug"
+!ELSEIF  "$(CFG)" == "SDIF_And_Segment - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -82,8 +82,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "SDIF_FilePlayback - Win32 Release"
-# Name "SDIF_FilePlayback - Win32 Debug"
+# Name "SDIF_And_Segment - Win32 Release"
+# Name "SDIF_And_Segment - Win32 Debug"
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -885,23 +885,23 @@ SOURCE=..\..\..\..\src\Tools\SDIF\SDIFFile.hxx
 
 SOURCE=settings.cfg
 
-!IF  "$(CFG)" == "SDIF_FilePlayback - Win32 Release"
+!IF  "$(CFG)" == "SDIF_And_Segment - Win32 Release"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "SDIF_FilePlayback.dsp"
-	srcdeps.exe settings.cfg SDIF_FilePlayback.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "SDIF_And_Segment.dsp"
+	srcdeps.exe settings.cfg SDIF_And_Segment.dsp
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "SDIF_FilePlayback - Win32 Debug"
+!ELSEIF  "$(CFG)" == "SDIF_And_Segment - Win32 Debug"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "SDIF_FilePlayback.dsp"
-	srcdeps.exe settings.cfg SDIF_FilePlayback.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "SDIF_And_Segment.dsp"
+	srcdeps.exe settings.cfg SDIF_And_Segment.dsp
 
 # End Custom Build
 
