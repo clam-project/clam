@@ -63,13 +63,31 @@ private:
 
 	//! Deprecated method
 	void InitConfigurations();
-	//! to refactor
+
+	void ConfigureAndAddProcessingsToNetwork();
+	void RegisterAllNetworkConfigurationMethods();
+	
+	// ConfigureAndAddProcessingsToNetwork helper methods
+	CLAM::AudioFileConfig CreateFileInCfg();
+	CLAM::OscillatorConfig CreateGeneratorCfg();
+	CLAM::OscillatorConfig CreateModulatorCfg();
+	CLAM::AudioMixerConfig CreateMixerCfg();
+	CLAM::AudioFileConfig CreateFileOutCfg();
+	CLAM::AudioIOConfig CreateAudioOutCfg();
+
+	//! Deprecated methods
 	void ConfigureOscillatorToFileOut();
 	void ConfigureFileInFileOut();
 	void ConfigureModulatedFileIn();
 	void ConfigureModulatedOscillator();
 	void ConfigureModulatedFileInPlusFileIn();
-	//! end to refactor
+	//! end
+
+	void ConfigureOscillatorToFileOut( CLAM::Network& );
+	void ConfigureFileInFileOut( CLAM::Network& );
+	void ConfigureModulatedFileIn( CLAM::Network& );
+	void ConfigureModulatedOscillator( CLAM::Network& );
+	void ConfigureModulatedFileInPlusFileIn( CLAM::Network& );
 
 	//other system parameters
 	std::string _fileInName;

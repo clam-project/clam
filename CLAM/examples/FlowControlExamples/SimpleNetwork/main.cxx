@@ -10,7 +10,7 @@ int main()
 		250 /* frames to compute*/,
 		false /* audio output*/);
 
-	s.ProcessAllNetworks();
+	s.ProcessAllNetworkTopologies();
 
 	return 0;
 }
