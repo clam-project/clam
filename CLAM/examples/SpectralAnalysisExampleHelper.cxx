@@ -37,12 +37,13 @@ namespace CLAMExamples
 	}
 
 	SpectralFourierAnalyzer::SpectralFourierAnalyzer( )
-		: mInput( "Input audio samples", this, 1 ),
-		  mOutput( "Output frames", this, 1 ),
-		  mpFFTAlgorithm( NULL ),
-		  mStreamingBuffer( NULL ),
-		  mDataProvider( NULL ),
-		  mDataConsumer( NULL )
+		: mInput( "Input audio samples", this ),
+		  mOutput( "Output frames", this ),
+		  mpFFTAlgorithm( NULL )
+			  //,
+//		  mStreamingBuffer( NULL ),
+//		  mDataProvider( NULL ),
+//		  mDataConsumer( NULL )
 		  
 	{
 		SetExecState( CLAM::Processing::Unconfigured );		
@@ -52,29 +53,20 @@ namespace CLAMExamples
 	{
 		if ( mpFFTAlgorithm )
 			delete mpFFTAlgorithm;
-		if ( mStreamingBuffer )
-			delete mStreamingBuffer;
-		if ( mDataProvider )
-			delete mDataProvider;
-		if ( mDataConsumer )
-			delete mDataConsumer;
+//		if ( mStreamingBuffer )
+//			delete mStreamingBuffer;
+//		if ( mDataProvider )
+//			delete mDataProvider;
+//		if ( mDataConsumer )
+//			delete mDataConsumer;
 	}
 
 	bool SpectralFourierAnalyzer::Do()
 	{
 		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
 
-		CLAM::Audio tmpAudio;
-
-		mStreamingBuffer->GetAndActivate( mDataProvider, tmpAudio );
-		tmpAudio.GetBuffer() = mInput.GetData().GetBuffer();
-		mStreamingBuffer->LeaveAndAdvance( mDataProvider );
-
-		if ( !mStreamingBuffer->GetAndActivate( mDataConsumer, mAcquiredSamples ) )
-		{
-			mStreamingBuffer->Leave( mDataConsumer );
+		if(!mInput.CanProduce())
 			return false;
-		}
 
 		do
 		{
@@ -89,12 +81,11 @@ namespace CLAMExamples
 
 			mOutput.GetData().GetResultingFrames().push_back( mResultingSpectrum );
 
-			mStreamingBuffer->LeaveAndAdvance( mDataConsumer );
+			mOutput.Consume();
 
-		} while( mStreamingBuffer->GetAndActivate( mDataConsumer, mAcquiredSamples ) );
+		} while( mOutput.CanConsume() )
 
-		mStreamingBuffer->Leave( mDataConsumer );
-
+		mInput.Produce();
 		return true;
 	}
 
@@ -187,7 +178,7 @@ namespace CLAMExamples
 
 		mAnalysisWindowSamples.SetSize( mSamplesToAcquire );
 		mAnalysisWindowSamples.SetSampleRate( sampleRate );
-
+		
 		(*mWindowGen.GetOutPorts().Begin())->Attach( mAnalysisWindowSamples );
 
 
@@ -243,12 +234,12 @@ namespace CLAMExamples
 
 		mStreamingBuffer = new CLAM::AudioStreamBuffer< CLAM::CircularStreamImpl< CLAM::TData> >();
 		mStreamingBuffer->SetSampleRate( mConfig.GetSampleRate() );
-		
-		mDataProvider=mStreamingBuffer->NewWriter( mHopSize, mHopSize );
-		mDataConsumer=mStreamingBuffer->NewReader( mHopSize, mSamplesToAcquire-1 );
-		mStreamingBuffer->Configure( mSamplesToAcquire * 2 );
-		
 
+		mInput.SetSize( mHopSize );
+		mInput.SetHop( mHopSize );
+		mOutput.SetSize( mSamplesToAcquire - 1 );
+		mOutput.SetHop( mHopSize );
+		
 		SpectralAnalysis& outputData = mOutput.GetData();
 
 		outputData.AddAnalysisSettings();

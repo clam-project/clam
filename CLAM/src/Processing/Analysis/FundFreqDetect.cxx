@@ -118,6 +118,8 @@ namespace CLAM {
   /* The supervised Do() function */
 	bool  FundFreqDetect::Do(void) 
 	{
+		mOutput.GetData().SetnMaxCandidates(1);
+
 		bool result = Do( mInput.GetData(), mOutput.GetData() );
 		mInput.Consume();
 		mOutput.Produce();
@@ -128,7 +130,7 @@ namespace CLAM {
 	bool  FundFreqDetect::Do(SpectralPeakArray& peaks,Fundamental& outFreq)
 	{
 		outFreq.Init();
-		
+
 		// Check Number of Candidates required
 		CLAM_ASSERT (outFreq.GetnMaxCandidates() > 0, 
 			"FundFreqDet::Detection: negative number of candidates wanted");

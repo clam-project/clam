@@ -228,6 +228,7 @@ void SpectralAnalysis::AttachChildren()
 bool SpectralAnalysis::Do(void)
 {
 	mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+	mOutput.GetData().SetSpectralRange( mInput.GetAudio().GetSampleRate()/2);
 	bool result =  Do(mInput.GetAudio(),mOutput.GetData());
 	mInput.Consume();
 	mOutput.Produce();
@@ -238,7 +239,6 @@ bool SpectralAnalysis::Do(void)
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
-	
 	in.GetAudioChunk(0,in.GetSize()-1 ,mAudioFrame,true );
 
 	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);
@@ -255,6 +255,7 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	
 	/* and now the FFT can be performed */
 	mPO_FFT.Do(mAudioFrame, outSp);
+
 
 	return true;
 }

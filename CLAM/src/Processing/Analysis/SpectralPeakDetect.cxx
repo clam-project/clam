@@ -103,8 +103,14 @@ namespace CLAM {
 
 	bool  SpectralPeakDetect::Do(void)
 	{
+		if (mInput.GetData().GetScale() != EScale::eLog)
+		{
+			mInput.GetData().ToDB();
+		}
+		mOutput.GetData().SetScale( EScale::eLog );
 
 		bool result = Do( mInput.GetData(), mOutput.GetData() );
+		mInput.GetData().ToLinear();
 		mInput.Consume();
 		mOutput.Produce();
 		return result;
@@ -116,7 +122,7 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(CheckInputType(input), "SpectralPeakDetect::Do() - Type of input data doesn't match expected type.");
 		CLAM_ASSERT(CheckOutputType(out), "SpectralPeakDetect::Do() - Type of output data doesn't match expected type.");
-
+		
 		int i;
 		TSize nSpectralPeaks = 0;
 		TSize binWidth = 0;	 // BinWidth is in NumBins

@@ -120,6 +120,7 @@ namespace CLAM {
 
 	bool SpectrumSubstracter2::Do(void)
 	{
+		mOut.GetData().SetSize( mIn1.GetData().GetSize() );
 		bool result = Do( mIn1.GetData(), mIn2.GetData(), mOut.GetData() );
 		
 		mIn1.Consume();

@@ -69,7 +69,6 @@ namespace CLAM {
 	bool FFT_rfftw::Do()
 	{
 		mOutput.GetData().SetSize( mInput.GetSize()/2+1);
-		std::cout << mOutput.GetData().GetSize() << std::endl;
 		bool toReturn = Do(mInput.GetAudio(), mOutput.GetData());
 		mInput.Consume();
 		mOutput.Produce();
