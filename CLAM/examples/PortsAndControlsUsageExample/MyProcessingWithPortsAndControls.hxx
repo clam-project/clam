@@ -45,8 +45,6 @@ public:
 	bool Do(const Audio & in, Audio & out);
 	bool Do();
 
-	void StoreOn(Storage &s) {};	
-
 };
 
 } // namespace CLAM

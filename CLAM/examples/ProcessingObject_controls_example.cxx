@@ -91,7 +91,6 @@ public:
 	const ProcessingConfig &GetConfig() const { return mConfig;};
 	virtual bool Start(void) {return true;};
 	virtual bool Stop(void) {return true;};
-	void StoreOn(Storage & store) {};
 };
 
 #endif // _MyProcObj_
