@@ -1,21 +1,23 @@
- #include "UserInterface.hxx"
+#include "UserInterface.hxx"
 #include "AnalysisSynthesisExampleGUI.hxx"
 #include <FL/fl_file_chooser.H>
 #include <FL/Fl.H>
 #include "FLTKConfigurator.hxx"
 #include "DebugSnapshots.hxx"
 #include "AudioSnapshot.hxx"
+#include "CBL.hxx"
 
 using namespace CLAM;
 using namespace CLAMGUI;
 
 void UserInterface::EditConfiguration(void)
 {
-	CLAM::FLTKConfigurator<UserInterface> * configurator = new CLAM::FLTKConfigurator<UserInterface>;
-	configurator->SetConfig(mAnalysisSynthesisExample->mGlobalConfig,this);
+	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
+	configurator->SetConfig(mAnalysisSynthesisExample->mGlobalConfig);
+	configurator->SetApplyCallback(makeMemberFunctor0((*this), UserInterface, Update ));
 	configurator->show();
-	Fl::run();
 }
+
 
 
 void UserInterface::Update()
@@ -23,6 +25,7 @@ void UserInterface::Update()
 	mAnalysisSynthesisExample->InitConfigs();
 	LoadSound();
 }
+
 
 void UserInterface::LoadConfiguration(void)
 {
