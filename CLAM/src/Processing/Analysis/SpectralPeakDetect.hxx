@@ -84,7 +84,7 @@ namespace CLAM {
 		 *  @param out An SpectralPeakArray object where will be setted the SpectralPeaks of Spectrum in.
 		 *  @return Boolean value, true if all has been executed correctly.
 		 */
-		bool Do(Spectrum& input, SpectralPeakArray& out);
+		bool Do(const Spectrum& input, SpectralPeakArray& out);
 
 		/** Change the internal type state.  
 		 * Apart from prototype configuration, the Size, Scale and

@@ -99,7 +99,7 @@ namespace CLAM {
 
 	/* The  unsupervised Do() function */
 
-	bool  SpectralPeakDetect::Do(Spectrum& input, SpectralPeakArray& out)
+	bool  SpectralPeakDetect::Do(const Spectrum& input, SpectralPeakArray& out)
 	{
 
 		int i;
