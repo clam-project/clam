@@ -345,10 +345,9 @@ namespace CLAM {
 			TData Incr = std::max(TData(1.0),tmpFreq2.GetFreq(i)*TData(.008)); 
 			TData FinalPitch = tmpFreq2.GetFreq(i);
 			TData FinalError = tmpFreq2.GetErr(i);
-			TData lPitch,lErr;
-			for(lPitch = Low; lPitch <=High; lPitch += Incr)
+			for(TData lPitch = Low; lPitch <=High; lPitch += Incr)
 			{
-				lErr = WeightCandidate(double(lPitch),maxMag,peaks);
+				TData lErr = WeightCandidate(double(lPitch),maxMag,peaks);
 				if (lPitch > peaks.GetThruIndexFreq(nMaxMagPeak)*1.1)
 					lErr +=10;
 				if (lErr < FinalError)
@@ -395,6 +394,7 @@ namespace CLAM {
 		
 		TData Harmonic = TData(freq);
 		TSize nPM = MaxNPM;
+		int Peak =0;
 		TData lastFreq=TData(peaks.GetThruIndexFreq(nPeaks-1));
 		if (nPeaks > 0)
 			for (int i=0; i<MaxNPM; i++)
@@ -404,7 +404,7 @@ namespace CLAM {
 					nPM = i+1;
 					break;	
 				}
-				const int Peak = GetClosestPeak(Harmonic,Peak,peaks);
+				Peak = GetClosestPeak(Harmonic,Peak,peaks);
 				TData Freq = TData(peaks.GetThruIndexFreq(Peak));
 				TData Mag  = TData(peaks.GetThruIndexMag(Peak));
 				TData FreqDistance = fabs(Freq - Harmonic);
