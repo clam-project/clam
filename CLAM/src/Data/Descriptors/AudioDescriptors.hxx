@@ -24,7 +24,7 @@
 
 
 #include "Descriptor.hxx"
-
+#include "DataTypes.hxx"
 /*
  * This class holds Descriptors computed from Audio data
  *
@@ -61,10 +61,15 @@ namespace CLAM {
 //		void DefaultInit();
 //		void CopyInit(const AudioDescriptors & copied);
 		
+		TData ComputeZeroCrossingRate();
+		TData ComputeAttackTime();
+		TData ComputeLogAttackTime();
+
 		
 	private:
 		Audio* mpAudio;
-
+		
+		TData mComputedAttackTime;
 	};
 
 

@@ -61,7 +61,7 @@ public:
 	DYN_ATTRIBUTE (6, public, AudioDescriptors, ResidualAudioFrameD);
 	/** Global synthesized Audio */
 	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
-
+	//Note: some specific frame descriptors should be added
 public:
 	FrameDescriptors(Frame* pFrame);
 

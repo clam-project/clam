@@ -193,6 +193,46 @@ typedef SumTmpl<> Sum;
 typedef SquaredSumTmpl<> SquaredSum;
 typedef CubedSumTmpl<> CubedSum;
 
+/**Binary Operator for use with std::accumulate, for computing Product(x(i))*/
+template <class T=TData> class LogPlusTmpl
+{
+public:
+	T operator()(const T& orig,const T& num)
+	{
+		return orig+log(Abs(num));
+	}
+};
+
+typedef LogPlusTmpl<> LogSum;
+
+typedef ProductTmpl<> Product;
+
+
+/** Class Function for computing logarithmic sum of all data in vector using.
+ *	It also has associated memory so operation is not performed more than necessary. */
+template <class T=TData> class LogSumTmpl:public BaseMemOp
+{
+public:
+	LogSumTmpl():memory(0){}
+	T operator()(const Array<T>& a,StaticTrue* b=NULL)
+	{
+		if(!alreadyComputed)
+		{
+			memory=(*this)(a,(StaticFalse*)(0));
+			alreadyComputed=true;
+		}
+		return memory;
+	}
+	T operator()(const Array<T>& a,StaticFalse*)
+	{
+		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(1),LogPlusTmpl<T>());
+		
+	}
+private:
+	T memory;
+};
+
+
 /** Class Function for computing product of all data in vector.
  *	It also has associated memory so operation is not performed more than necessary. */
 template <class T=TData> class InnerProductTmpl:public BaseMemOp
@@ -264,7 +304,6 @@ public:
 	T operator()(const Array<T>& a1,const Array<T>& a2,StaticFalse*)
 	{
 		return inner_product(a1.GetPtr(),a1.GetPtr()+a1.Size(),a2.GetPtr(),T(),std::plus<T>(),PoweredProduct<s,T>());	
-		//return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(),mWP);
 	}
 private:
 	T memory;
@@ -444,7 +483,7 @@ typedef RMSTmpl<> RMS;
 template<class T=TData,class U=TData> class GeometricMeanTmpl:public BaseMemOp
 {
 public:
-	U operator()(const Array<T>& a,InnerProductTmpl<T>& inProd,StaticTrue* b=NULL)
+	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticTrue* b=NULL)
 	{
 		if(!alreadyComputed)
 		{
@@ -453,9 +492,9 @@ public:
 		}
 		return memory;
 	}
-	U operator()(const Array<T>& a,InnerProductTmpl<T>& inProd,StaticFalse*)
+	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticFalse*)
 	{
-		return pow(inProd(a,(StaticFalse*)(0)),1.0/(double)a.Size());
+		return exp(inProd(a,(StaticFalse*)(0))*1.0/(double)a.Size());
 	}
 	/**No inner product previously computed, use temporary*/
 	U operator()(const Array<T>& a,StaticTrue* b=NULL)
@@ -469,7 +508,7 @@ public:
 	
 private:
 	U memory;
-	InnerProductTmpl<T> mIP;
+	LogSumTmpl<T> mIP;
 
 };
 

@@ -39,28 +39,16 @@ namespace CLAM {
  */
 class SegmentDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 17, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 4, Descriptor);
 		/*All these attributes refer to mean values of spectrum descriptors across
 		frames in the segment*/
-		DYN_ATTRIBUTE (0, public, TData, SpectralMean);
-		DYN_ATTRIBUTE (1, public, TData, SpectralGeometricMean);
-		DYN_ATTRIBUTE (2, public, TData, SpectralEnergy);
-		DYN_ATTRIBUTE (3, public, TData, SpectralCentroid);
-		DYN_ATTRIBUTE (4, public, TData, SpectralMoment2);
-		DYN_ATTRIBUTE (5, public, TData, SpectralMoment3);
-		DYN_ATTRIBUTE (6, public, TData, SpectralMoment4);
-		DYN_ATTRIBUTE (7, public, TData, SpectralMoment5);
-		DYN_ATTRIBUTE (8, public, TData, SpectralMoment6);
-		DYN_ATTRIBUTE (9, public, TData, SpectralIrregularity);
-		DYN_ATTRIBUTE (10, public, TData, SpectralTilt);
-		DYN_ATTRIBUTE (11, public, TData, SpectralFlatness);
-		DYN_ATTRIBUTE (12, public, TData, SpectralKurtosis);
-		DYN_ATTRIBUTE (13, public, TData, SpectralStrongPeak);
+		DYN_ATTRIBUTE (0, public, FrameDescriptors, MeanD);
+	
 		/** Mean value for fundamental across all frames */
-		DYN_ATTRIBUTE (14,public, TData, Fundamental);
+		DYN_ATTRIBUTE (1,public, TData, Fundamental);
 
-		DYN_ATTRIBUTE (15,public, AudioDescriptors, AudioD);
-		DYN_ATTRIBUTE (16,public, List<FrameDescriptors>, FramesD);
+		DYN_ATTRIBUTE (2,public, AudioDescriptors, AudioD);
+		DYN_ATTRIBUTE (3,public, List<FrameDescriptors>, FramesD);
 
 	public:
 

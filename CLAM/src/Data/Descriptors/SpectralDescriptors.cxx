@@ -21,6 +21,7 @@
 
 #include "SpectralDescriptors.hxx"
 #include "Spectrum.hxx"
+#include "Array.hxx"
 
 using namespace CLAM;
 
@@ -81,25 +82,151 @@ void SpectralDescriptors::ConcreteCompute()
 		SetKurtosis(mpStats->GetKurtosis());
 	if(HasSkewness())
 	   SetSkewness(mpStats->GetSkew());
-
-/*The computation for the following descriptors is still to be implemented
-
-		DYN_ATTRIBUTE (9, public, TData, Irregularity);
-		DYN_ATTRIBUTE (10,public, TData, Tilt);
-		DYN_ATTRIBUTE (11,public, TData, Flatness);
-		DYN_ATTRIBUTE (13,public, TData, StrongPeak);
-		DYN_ATTRIBUTE (14,public, TData, HFC);
-		DYN_ATTRIBUTE (15,public, Array<TData>, MFCC);
-		DYN_ATTRIBUTE (16,public, Array<TData>, BandEnergy);
-		//for this I may have to use the CLAM::Search
-		  DYN_ATTRIBUTE (17,public, TData, MaxMagFreq); 
-		// Frequency of the maximun of the spectrum normalized by the spectral range
-		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
-		DYN_ATTRIBUTE (20,public, TData, Rolloff); 
-*/
+	if(HasTilt())
+		SetTilt(ComputeSpectralTilt());
+	if(HasFlatness())
+		SetFlatness(ComputeSpectralFlatness());
+	if(HasHighFrequencyCoefficient())
+		SetHighFrequencyCoefficient(ComputeHighFrequencyCoefficient());
+	if(HasMaxMagFreq())
+		SetMaxMagFreq(ComputeMaxMagFreq());
+	if(HasLowFreqEnergyRelation())
+		SetLowFreqEnergyRelation(ComputeLowFreqEnergyRelation());
+	if(HasRolloff())
+		SetRolloff(ComputeRolloff());
+	if(HasIrregularity())
+		//not implemented
+		SetIrregularity(0);
+	if(HasStrongPeak())
+		//not implemented
+		SetStrongPeak(0);
+	if(HasHFC())
+		//not implemented
+		SetHFC(0);
 }
 
 void SpectralDescriptors::SetPrototype(const SpectralDescriptors& p)
 {
 	*this=p;
+}
+
+/*this has been mostly copied and pasted from cuidado and should be checked and some of
+it promoted into basicOps*/
+TData SpectralDescriptors::ComputeSpectralTilt()
+{
+
+	/* TODO check me check me check me check me check me check me check me */
+	TData m1;
+	int i;
+
+	TData d1=0;
+	TData d2=0;
+	TData ti=0;
+	TData SumTi2 = 0;
+	TData Tilt = 0;
+
+	DataArray& mag=mpSpectrum->GetMagBuffer();
+
+	m1 = mpStats->GetMoment(FirstOrder);
+
+	TData size=mag.Size();
+
+	for (i=0;i<size;i++)
+	  {
+	d1 += i/mag[i];
+	d2 += 1/mag[i];
+	  }
+
+	/* ti = m1/ai *(n - (d1/d2)) */
+	/* SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]  */
+
+	for (i=0;i<size;i++) {
+	  Tilt += (1/mag[i] *(i-d1/d2));
+	  ti = m1/mag[i]*(i - (d1/d2));
+	  SumTi2 += ti*ti;
+	}
+
+	Tilt*= (m1*m1/SumTi2);
+	return Tilt;
+}
+
+/*this has been mostly copied and pasted from cuidado and should be checked and some of
+it promoted into basicOps*/
+TData SpectralDescriptors::ComputeSpectralFlatness()
+{
+	TData  mean = mpStats->GetMean();;
+
+	TData geomean = mpStats->GetGeometricMean();
+
+	return 10*log(geomean/mean);
+}
+
+/*this has been mostly copied and pasted from cuidado and should be checked and some of
+it promoted into basicOps*/
+TData SpectralDescriptors::ComputeHighFrequencyCoefficient()
+{
+	/*int i;
+	TData temp = 0;
+	for (i=1;i<size;i++)
+	  temp += pow(mag[i],2)*i;*/ 
+	return WeightedPoweredSum<2>()(mpSpectrum->GetMagBuffer());
+}
+
+/*this has been mostly copied and pasted from cuidado and should be checked and some of
+it promoted into basicOps*/
+TData SpectralDescriptors::ComputeMaxMagFreq()
+{ 
+	// Frequency of the spectrum maxima 
+	// Note: it is supposing the spectrum is in dB?
+	int i;
+	TData max = -1000.0;
+	TIndex index = -1;
+	
+	DataArray& data=mpSpectrum->GetMagBuffer();
+	int size=mpSpectrum->GetSize();
+	for(i=0; i<size; i++) 
+		if(data[i] > max ) {
+			max = data[i];
+			index = i;
+		} 
+	// Normalized by the spectral range
+	return (TData) index* (mpSpectrum->GetSpectralRange()/(TData)(size-1));
+}
+
+/*this has been mostly copied and pasted from cuidado and should be checked and some of
+it promoted into basicOps*/
+TData SpectralDescriptors::ComputeLowFreqEnergyRelation() 
+{ 
+	// Energy(0-100 Hz) / Total Energy
+	int size=mpSpectrum->GetSize();
+	TIndex index = Round(100.0/(mpSpectrum->GetSpectralRange()/(TData)size));
+	
+	DataArray& data=mpSpectrum->GetMagBuffer();
+	
+	data.SetSize(index);
+
+	TData result=(Energy()(data)/mpStats->GetEnergy() );
+	data.SetSize(size);
+	return result;
+}
+
+/*this has been mostly copied and pasted from cuidado and should be checked and some of
+it promoted into basicOps*/
+TData SpectralDescriptors::ComputeRolloff() 
+{ 
+	// Frequency f below which 85% of the magnitude distribution is concentrated
+	TIndex i = 0;
+	TData m = fabsf(data[0]);
+
+	TData zeroMoment=mpStats->GetMoment(FirstOrder);
+	zeroMoment*=0.85;
+	int size=mpSpectrum->GetSize();
+	DataArray& data=mpSpectrum->GetMagBuffer();
+
+	for ( i = 0; ( m < zeroMoment ) && ( i < size ); i++ )
+	{
+		m += fabsf(data[i]);
+	}
+	 
+	return i;
 }

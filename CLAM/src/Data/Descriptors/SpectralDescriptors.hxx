@@ -39,7 +39,7 @@ namespace CLAM {
 
 	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 22, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 23, Descriptor);
 		
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
@@ -63,7 +63,8 @@ namespace CLAM {
 		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
 		DYN_ATTRIBUTE (19,public, TData, Skewness); 
 		DYN_ATTRIBUTE (20,public, TData, Rolloff); 
-		DYN_ATTRIBUTE (21,public, Array<SpectralDescriptors>, BandDescriptors);
+		DYN_ATTRIBUTE (21,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (22,public, Array<SpectralDescriptors>, BandDescriptors);
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
@@ -80,6 +81,13 @@ namespace CLAM {
 		void DefaultInit();
 		void CopyInit(const SpectralDescriptors & copied);
 		
+		TData ComputeSpectralTilt();
+		TData ComputeSpectralFlatness();
+		TData ComputeHighFrequencyCoefficient();
+		TData ComputeMaxMagFreq();
+		TData ComputeLowFreqEnergyRelation();
+		TData ComputeRolloff();
+
 	private:
 		Spectrum* mpSpectrum;
 		
