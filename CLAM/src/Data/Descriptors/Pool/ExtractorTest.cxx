@@ -55,7 +55,42 @@ private:
 		const std::string & value = abstract.TakeValue<std::string>();
 		CPPUNIT_ASSERT_EQUAL(expected, value);
 	}
+#ifdef NEVERDEFINED
+	void testSubGoal()
+	{
+		CLAM::DescriptionScheme scheme;
+		scheme.AddScope("Frame");
+		scheme.AddSignalScope("AudioSample");
+		scheme.AddAttribute<SignalLevel>   ("AudioSample","Level");
+		scheme.AddAttribute<SampleDuration>("Frame","Center");
+		scheme.AddAttribute<Spectrum>      ("Frame","SpectralDistribution");
 
+		CLAM::Scoper * loader = CLAM::Extractor::Create("SoundLoader");
+		loader.BindOutputHook("AudioSample",);
+
+		CLAM::Scoper * frametizer = CLAM::Extractor::Create("Frametizer");
+		frametizer.BindOutputHook("Output","Frame");
+		frametizer.BindOutputHook("Center","");
+		frametizer.BindInputHook("Output")
+
+		
+		CLAM::Extractor * fft = CLAM::Extractor::Create("SpectralAnalysis");
+		fft.BindOutputHook("Output","Frame","SpectralDistribution");
+		fft.BindInputHook("Input",
+			Attribute("Level",RelativeRange(-frameSize/2,+frame/2,Indirect("AudioSample",Select("Center",MyContext()))))
+			);
+	}
+
+	void testGoal()
+	{
+		CLAM::DescriptionScheme scheme("DescriptionScheme.xml");
+		scheme.AddPlugin("DescriptionSchemeExtension.xml");
+		scheme.SetParameter("FrameSize",256);
+		CLAM::DescriptionDataPool pool(scheme);
+		pool.ExtractFrom("mysong.mp3");
+		CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
+	}
+#endif
 
 };
 
