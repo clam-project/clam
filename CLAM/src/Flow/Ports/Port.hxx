@@ -25,7 +25,6 @@
 #include <string>
 #include "mtgsstream.h"
 #include "Processing.hxx"
-#include "ProcessingData.hxx"
 #include "Assert.hxx"
 #include "ReadStreamRegion.hxx"
 #include "WriteStreamRegion.hxx"
