@@ -6,6 +6,7 @@
 #include "Processing.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
+#include "Processing.hxx"
 #include "OutControl.hxx"
 #include "Storage.hxx"
 #include <iostream>
@@ -287,31 +288,32 @@ bool NetworkController::Publish()
 	CLAM::Network::ProcessingsMap::const_iterator it;
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{
+		CLAM::Processing * producer = it->second;
 		AddProcessing( it->first,  it->second );
-	}
+		CLAM::Processing::OutPortIterator itOutPort;
+	
+		for (itOutPort= producer->GetOutPorts().Begin(); 
+		     itOutPort!= producer->GetOutPorts().End(); 
+		     itOutPort++)
 
-	CLAM::Network::Nodes::const_iterator itNodes;
-	for(itNodes=mObserved->BeginNodes(); itNodes!=mObserved->EndNodes(); itNodes++)
-	{
-		CLAM::NodeBase * node = *itNodes;
-		const CLAM::OutPort* out = node->GetWriter();
-//		std::list<CLAM::InPort*> inPortList = node->GetReaders();
-//		std::list<CLAM::InPort*>::iterator itInPort;
-		CLAM::NodeBase::ReaderIterator it;
-		for (it=node->BeginReaders(); it!=node->EndReaders(); it++)
-		{
-			ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>* conAdapter = new ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>;
-			const CLAM::InPort* in = *it;
-			conAdapter->BindTo( *out, *in, (const CLAM::Network&)*mObserved);
-			mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
-			AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
+		{	
+			if (!(*itOutPort)->GetNode())
+				break;
+
+			CLAM::Network::InPortsList consumers;
+			consumers = mObserved->GetInPortsConnectedTo( **itOutPort );
+			CLAM::Network::InPortsList::iterator itInPort;
+			
+			for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
+			{
+				ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>* conAdapter = new ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>;
+				conAdapter->BindTo(  **itOutPort, **itInPort, (const CLAM::Network&)*mObserved);
+				mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
+				AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
+			}		
 		}
-
-
-	}	
-
-	// TODO: Is possible to detect the network of control connections?
-
+	}
+	// TODO: Get Control Connections
 	return true;
 }
 
