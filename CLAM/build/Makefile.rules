@@ -39,7 +39,7 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@ 
+	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@ 
 
 $(LIBRARY): $(OBJECTS)
 	@echo == linking $@
@@ -58,7 +58,7 @@ CXXFLAGS = $(CXXFLAGS_RELEASE)
 
 $(PROGRAM): $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@ 
+	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@ 
 
 
 $(LIBRARY): $(OBJECTS)
