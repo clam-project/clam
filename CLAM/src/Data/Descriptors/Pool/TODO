@@ -104,13 +104,16 @@
 + Convert current Binder into the Hook class
 + WriterHook
 + Separate Pool init and binding
++ Move HookTests to their own tests
++ Create a test Extractor test
+
 - Associar al schema durante el bind o antes
 - Comprobaciones de nombres en el bind
 - Read Accessing AttributeScopes that are not written
 - Read Accessing AttributeScopes that are not populated
+- Different sizes of Binders
 - Extract search and retrieval from Hooks
-- Create an Extractor
-- Enhance exception message
+- Enhance exception messages with names
 
 
 
