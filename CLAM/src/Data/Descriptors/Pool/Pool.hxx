@@ -76,10 +76,10 @@ namespace CLAM
 			_attributes[attributeIndex]->CheckType<AttributeType>();
 		}
 
-		const std::string & GetAttributeName(unsigned attribute)
+		const std::string & GetAttributeName(unsigned attribute) const
 		{
-			NamesMap::iterator it = _nameMap.begin();
-			NamesMap::iterator end = _nameMap.end();
+			NamesMap::const_iterator it = _nameMap.begin();
+			NamesMap::const_iterator end = _nameMap.end();
 			for (; it!=end; it++)
 				if (it->second == attribute)
 					return it->first;
@@ -158,10 +158,10 @@ namespace CLAM
 			return _scopes.size();
 		}
 
-		const std::string & GetScopeName(unsigned scope)
+		const std::string & GetScopeName(unsigned scope) const
 		{
-			ScopeMap::iterator it = _scopeNameMap.begin();
-			ScopeMap::iterator end = _scopeNameMap.end();
+			ScopeMap::const_iterator it = _scopeNameMap.begin();
+			ScopeMap::const_iterator end = _scopeNameMap.end();
 			for (; it!=end; it++)
 				if (it->second == scope)
 					return it->first;
@@ -205,13 +205,11 @@ namespace CLAM
 			storage.Store(sizeAdapter);
 			CLAM::XMLAdapter<unsigned> numberOfAttributes(_spec.GetNAttributes(),"numberOfAttributes",false);
 			storage.Store(numberOfAttributes);
-			/*
 			for (unsigned attribute=0; attribute<_attributes.size(); attribute++)
 			{
-				CLAM::XMLAdapter<std::string> attributeNameAdapter(_spec.GetScopeName(attribute),"Scope",false);
+				CLAM::XMLAdapter<std::string> attributeNameAdapter(_spec.GetAttributeName(attribute),"AttributePool",true);
 				storage.Store(attributeNameAdapter);
 			}
-			*/
 
 		}
 		void LoadFrom(Storage & storage)
