@@ -62,6 +62,7 @@ namespace CLAM {
 		void Init(unsigned int offset=0);
 		
 		const ReadStreamRegion& GetLastReading() const;
+		bool HasReaders() const { return !mReaders.empty(); }
 
 	protected:
 		/** Initializes associated reading regions*/
@@ -72,7 +73,7 @@ namespace CLAM {
 		virtual ~SourceStreamRegion() {}
 	private:
 		bool AllReadersPreceedsThisWithNoOverlap() const;
-		bool HasReaders() const { return !mReaders.empty(); }
+
 	};
 
 }
