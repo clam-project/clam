@@ -77,15 +77,14 @@ namespace CLAMVM
 		QueryDataBoundBox( dataBBox );
 
 		if( dataBBox.mLeft < mPos && mPos < dataBBox.mRight ) 
-		{
-			//glClear(GL_COLOR_BUFFER_BIT );
-		
+	    {
+			
 			glColor3f( 1.0, 0.0, 0.0 );
 			glLineWidth(2);
 		
 			glBegin( GL_LINES );
-			glVertex2i( mPos, y() );
-			glVertex2i( mPos, y()+h() );
+			glVertex2d( mPos, 10000 );
+			glVertex2d( mPos, -10000 );
 			glEnd();
 			glLineWidth( 1 );
 		}
@@ -101,3 +100,9 @@ namespace CLAMVM
 
 	}
 }
+
+
+
+
+
+
