@@ -148,34 +148,42 @@ namespace CLAM {
 		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
 			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
 			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			CLAM_ASSERT(false,"SpectrumSubstracter2s: Spectrum object with no attributes");
+			throw(ErrProcessingObj("SpectrumSubstracter2s:"
+								   " Spectrum object with no attributes"));
 
 		// Substracter size. "pure" BPFs are not considered here.
 		mSize = 0;
 		if (t1.bMagPhase || t1.bComplex || t1.bPolar) {
 			mSize = in1.GetSize();
 			if (!mSize) 
-				CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes: Zero size spectrum");
+				throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+									   " Zero size spectrum",this));
 		}
 		if (t2.bMagPhase || t2.bComplex || t2.bPolar)
 			if (mSize) {
 				if (mSize != in2.GetSize())
-					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Size mismatch in spectrum sum");
+					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+										   "Size mismatch in spectrum sum"
+										   ,this));
 			}
 			else {
 				mSize = in2.GetSize();
 				if (!mSize) 
-					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Zero size spectrum");
+					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+										   " Zero size spectrum",this));
 			}
 		if (to.bMagPhase || to.bComplex || to.bPolar)
 			if (mSize) {
 				if (mSize != out.GetSize())
-					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Size mismatch in spectrum sum");
+					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+										   "Size mismatch in spectrum sum"
+										   ,this));
 			}
 			else {
 				mSize = out.GetSize();
 				if (!mSize)
-					CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:Zero size spectrum");
+					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+										   " Zero size spectrum",this));
 			}
 
 		// Spectral Range.  
@@ -185,7 +193,9 @@ namespace CLAM {
 		// we always force range matching
 		if (in1.GetSpectralRange() != in2.GetSpectralRange() ||
 			in1.GetSpectralRange() != out.GetSpectralRange() )
-			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes: Spectral range mismatch in spectrum sum");
+			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+								   "Spectral range mismatch in spectrum sum"
+								   ,this));
 
 		// Scale.
 		if (in1.GetScale() == EScale::eLinear)
@@ -201,7 +211,8 @@ namespace CLAM {
 		// Log scale output might be useful, for example when working
 		// with BPF objects at the three ports. But right for now...
 		if (out.GetScale() == EScale::eLog)
-			CLAM_ASSERT(false,"SpectrumSubstracter2: Log Scale Output not implemented");
+			throw(ErrProcessingObj("SpectrumSubstracter2:"
+								   " Log Scale Output not implemented",this));
 
 		// Prototypes.
 
@@ -247,7 +258,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes: Data flags internal inconsistency");
+			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+								   " Data flags internal inconsistency",this));
 		}
 		if (i2BPF) {
 			// States with direct BPF implementation.
@@ -277,7 +289,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:invalid data flags");
+			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
+								   " invalid data flags",this));
 		}
 		// Direct non-BPF states.
 		if (t1.bMagPhase && t2.bMagPhase &&	to.bMagPhase) {
@@ -694,7 +707,7 @@ namespace CLAM {
 		TData *mo = out.GetMagBuffer().GetPtr();
 		TData *fo = out.GetPhaseBuffer().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			Polar po = Polar(pow(TData(10),m1.GetValue(pos)/TData(10.0)),f1.GetValue(pos)) - 
+			Polar po = Polar(log2lin(m1.GetValue(pos)),f1.GetValue(pos)) - 
 			            Polar(m2[i],f2[i]);
 			mo[i]=po.Mag();
 			fo[i]=po.Ang();
@@ -840,8 +853,8 @@ namespace CLAM {
 		Complex *c2 = in2.GetComplexArray().GetPtr();
 		Complex *co = out.GetComplexArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BRe = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * cos(f1.GetValue(pos));
-			TData BIm = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * sin(f1.GetValue(pos));
+			TData BRe = log2lin(fabs(m1.GetValue(pos)) * cos(f1.GetValue(pos));
+			TData BIm = log2lin(fabs(m1.GetValue(pos)) * sin(f1.GetValue(pos));
 			co[i]= Complex(BRe,BIm) - c2[i];
 			pos+=delta;
 		}
@@ -980,7 +993,7 @@ namespace CLAM {
 		Polar *p2 = in2.GetPolarArray().GetPtr();
 		Polar *po = out.GetPolarArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BMag = pow(TData(10),m1.GetValue(pos)/TData(10.0));
+			TData BMag = log2lin(m1.GetValue(pos));
 			TData BPha = f1.GetValue(pos);
 			po[i]=Polar(BMag,BPha)-p2[i];
 			pos+=delta;
