@@ -63,6 +63,8 @@ namespace CLAM {
 		/** Returns the maximum length of the region. @see mLen. */
 		unsigned int MaxLength() const {return mLen;}
 
+
+		bool CanActivate();
 		/** Sets the condition of the region being active, which is actually setting mEnd
 		 *	to mPos+mLen. */
 		void Activate();
