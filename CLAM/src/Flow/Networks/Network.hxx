@@ -67,6 +67,7 @@ private:
 	ProcessingsMap _processings;
 	NodesList _nodes;
 	// helpers
+	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
 	std::string GetLastIdentifier( const std::string& );

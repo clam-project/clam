@@ -19,18 +19,19 @@ namespace CLAM
 	{}   
 
 	Network::Network() :
-		_name("Unnamed Network")
+		_name("Unnamed Network"),
+		_flowControl(0)
 	{}
 	
 	Network::~Network()
 	{
 		if (_flowControl)
-		{
 			delete _flowControl;
-		}
+
 		std::for_each( 	_processings.begin(), _processings.end(), HelperFunctions::DeleteProcessing );
 	}
 
+	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{
 		_flowControl = flowControl;
@@ -44,8 +45,17 @@ namespace CLAM
 		return *it->second;
 	}
 
+	void Network::AssertFlowControlNotNull() const
+	{
+		CLAM_ASSERT( 
+			_flowControl, 
+			"the Network should have a FlowControl. Use Network::AddFlowControl(FlowControl*)");
+	}
+
 	void Network::AddProcessing( const std::string & name, Processing* proc)
 	{
+		AssertFlowControlNotNull();
+
 		// returns false if the key was repeated.
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
@@ -61,6 +71,8 @@ namespace CLAM
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
+		AssertFlowControlNotNull();
+
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
 
@@ -142,33 +154,36 @@ namespace CLAM
 	NodeBase* Network::CreateAudioNodeWithDefaultStreamBuffer()
 	{
 		//@todo
-		//typedef CircularStreamImpl<TData> DefaultStreamBuffer;
-		// return new NodeTmpl<Audio, DefaultStreamBuffer>;
-		return new AudioNodeTmpl;
+		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
+		return new NodeTmpl<Audio, DefaultStreamBuffer>;
+		//return new AudioNodeTmpl;
 	}
 
 	void Network::Start()
 	{
+		AssertFlowControlNotNull();
 		_flowControl->StartNetwork();
 	}
 	void Network::Stop()
 	{
+		AssertFlowControlNotNull();
 		_flowControl->StopNetwork();
 	}
 	void Network::DoProcessings()
 	{
+		AssertFlowControlNotNull();
 		_flowControl->DoProcessings();
 	}
 
 	void Network::ConfigureNodes( int frameSize )
 	{
-		CLAM_ASSERT(_flowControl, "Error: this network hasn't FlowControl attached");
+		AssertFlowControlNotNull();
 		_flowControl->ConfigureNodes();
 	}
 
 	void Network::ConfigurePorts( int frameSize )
 	{
-		CLAM_ASSERT(_flowControl, "Error: this network hasn't FlowControl attached");
+		AssertFlowControlNotNull();
 		_flowControl->ConfigurePorts();	
 	}
 
