@@ -518,7 +518,13 @@ namespace CLAMVM
 			}
 		}
 
-		mpCanvas->redraw();
+		if ( mpCanvas->children() > 0 )
+		  mpCanvas->redraw();
+		else
+		  {
+		    mpCanvas->hide();
+		    mpCanvas->show();
+		  }
 
 	}
 	

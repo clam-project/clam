@@ -10,7 +10,8 @@
 
 namespace SDIF { class File; } //forward declaration
 
-namespace CLAM{
+namespace CLAM
+{
 
 
 class SDIFInConfig:public ProcessingConfig

@@ -1,10 +1,8 @@
 #ifndef __SDIFType__
 #define __SDIFType__
 
-#ifndef linux
-	#include <string.h>
-#endif
 
+#include <string.h>
 #include "DataTypes.hxx"
 
 using namespace CLAM;

@@ -83,7 +83,7 @@ public: // Inner classes. Public for better testing
 	class Registry
 	{
 	private:
-		typedef std::map<std::string, CreatorMethod> CreatorMap;
+		typedef typename std::map<std::string, CreatorMethod> CreatorMap;
 
 	public:
 		CreatorMethod GetCreator( RegistryKey creatorId) 
@@ -130,7 +130,7 @@ public: // Inner classes. Public for better testing
 
 		void GetRegisteredNames( std::list<RegistryKey>& namesList )
 		{
-			CreatorMap::const_iterator i;
+			typename CreatorMap::const_iterator i;
 
 			for ( i = _creators.begin(); i != _creators.end(); i++ )
 			{

@@ -79,6 +79,8 @@ namespace CLAMVM
 
 	void Fl_SMS_BPF_Editor::InsertPointsIntoBPF( CLAM::BPF& editedBPF )
 	{
+
+
 		while( editedBPF.Size() )
 			editedBPF.DeleteIndex(0);
 

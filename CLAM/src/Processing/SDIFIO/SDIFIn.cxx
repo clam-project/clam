@@ -19,13 +19,13 @@ void SDIFInConfig::DefaultInit()
 /*	This may have to change to false but right now, Salto is the most important app that
 	uses it and needs it set to true.*/
 	SetRelativePeakIndices(true);
-
+	SetFileName( "nofile" );
 	SetEnableResidual(true);
 	SetEnablePeakArray(true);
 	SetEnableFundFreq(true);
 	SetSpectralRange(22050);
 	SetMaxNumPeaks(100);
-	SetFileName("nofile");
+
 }
 
 SDIFIn::SDIFIn():
@@ -55,12 +55,25 @@ SDIFIn::~SDIFIn()
 bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
+	
+	if ( mConfig.GetFileName() == "nofile") // MRJ: default configuration provided, we just left the object "Unconfigured"
+	  return false;
+
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
-	try{mpFile->Open();}
-	catch(Err)
-	{ return false;}
+
+	try
+	  {
+	    mpFile->Open();
+	  }
+	catch( Err& e )
+	{
+	  e.Print();
+	  return false;
+	}
+
 	mpFile->Close();//must leave closed file ready to start()
+
 	return true;
 }
 

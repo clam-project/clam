@@ -207,6 +207,7 @@ SMSScoreEditor::SMSScoreEditor()
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->shortcut(0x80064);
 			o->callback((Fl_Callback*)cb_mDiscardChangesButton);
+      o->labelsize(12);
 		}
 
 		{

@@ -70,6 +70,7 @@ namespace CLAMVM
 
 	const CLAM::ProcessingConfig& SMSPitchShiftConfigurator::GetConfig()
 	{
+
 		mEditorWidget->InsertPointsIntoBPF( mConfig.GetBPFAmount() );
 
 		return mConfig;

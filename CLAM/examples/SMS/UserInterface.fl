@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0103 
 header_name {.hxx} 
 code_name {.cxx}
 decl {\#include <FL/Fl_Tile.H>} {public
@@ -24,12 +24,9 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {358 388 870 550} type Double resizable
+      xywh {280 51 870 550} type Double resizable
       code0 {mWindow2=NULL;} visible
     } {
-      Fl_Group {} {
-        xywh {0 0 872 21}
-      } {}
       Fl_Menu_Bar mMenuBar {
         private xywh {0 0 872 25} labelsize 13 textsize 12
       } {
@@ -245,17 +242,8 @@ Exit();}
           }
         }
       }
-      Fl_Group {} {
-        xywh {0 25 870 495}
-      } {
-        Fl_Box mSmartTile {selected
-          private xywh {0 30 870 490} resizable
-          code0 {o->minsize(80);}
-          class Fl_Smart_Tile
-        }
-      }
       Fl_Group {} {open
-        xywh {0 525 870 25}
+        xywh {0 520 870 30}
       } {
         Fl_Counter mCounter {
           label {Frame }
@@ -263,7 +251,16 @@ Exit();}
           xywh {340 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
         }
         Fl_Box {} {
-          xywh {0 525 340 20} resizable
+          xywh {0 520 340 30} resizable
+        }
+      }
+      Fl_Group {} {open selected
+        xywh {0 25 870 495} resizable
+      } {
+        Fl_Box mSmartTile {
+          private xywh {0 30 870 490} resizable
+          code0 {o->minsize(80);}
+          class Fl_Smart_Tile
         }
       }
     }
@@ -279,8 +276,8 @@ mWindow2=NULL;} open
       code1 {mWindow2->show();} modal visible
     } {
       Fl_Box {} {
-        label {SMS Analysis/Synthesis Application}
-        private xywh {5 5 440 30} box FLAT_BOX color 7 labelfont 1 labelsize 16 labelcolor 0
+        label {SMS Tools 2}
+        private xywh {5 5 440 30} box FLAT_BOX labelfont 1 labelsize 16 labelcolor 0
       }
       Fl_Box {} {
         label {MTG - IUA - UPF}
@@ -306,7 +303,7 @@ mWindow2=NULL;} open
       }
       Fl_Box {} {
         label {CLAM Release 0.5beta1}
-        private xywh {5 145 440 30} box FLAT_BOX color 7 labelfont 3 labelcolor 0
+        private xywh {5 145 440 30} box FLAT_BOX labelfont 3 labelcolor 0
       }
     }
   }
