@@ -144,8 +144,7 @@ namespace CLAM {
 		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
 			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
 			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			throw(ErrProcessingObj("SpectrumAdder2s:"
-								   " Spectrum object with no attributes"));
+			throw(ErrProcessingObj("SpectrumAdder2s: Spectrum object with no attributes"));
 
 		// Adder size. "pure" BPFs are not considered here.
 		mSize = 0;
