@@ -24,7 +24,7 @@
 //#include <cstring>
 //#include <string>
 
-#include <iostream>  // needed for Debug() method
+#include <iostream>  // used in Debug and (depracated) MandatoryInit
 #ifdef CLAM_USE_XML
 #	include <fstream>  // idem
 #endif
@@ -51,11 +51,10 @@ namespace CLAM {
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-DynamicType::DynamicType(const int nAttr)
+
+DynamicType::DynamicType()
 {
-	// the typeDescTable is initialized into the concrete dynamic type. 
-	// because we want that table to be static.(one per concrete class)
-	numAttr = nAttr;
+	numAttr = GetDynamicInfo().NumAttr();
 	dynamicTable = new TDynInfo[numAttr + 1];
 	dynamicTable[numAttr].hasBeenAdded = dynamicTable[numAttr].hasBeenRemoved = false; // global modification flags.
 	for ( unsigned i=0; i < numAttr; i++)
@@ -73,12 +72,10 @@ DynamicType::DynamicType(const int nAttr)
 	InitDynTableRefCounter();
 }
 
-DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, const bool deepCopy=true)
-// no need of checking the concret class of the prototype, because always is called the the copy-constructor of
-// the concrete class. So if you try to pass a prototype of a different concrete class the compiler will complain!
+/// \todo fix deepCopy appereances
+DynamicType::DynamicType(const DynamicType& prototype)
 {
-	typeDescTable = prototype.typeDescTable;
-
+	bool deepCopy = true; // cludge 
 	numActiveAttr = 0;
 	data = 0;
 	dynamicTable=0;
@@ -98,29 +95,6 @@ DynamicType::DynamicType(const DynamicType& prototype, const bool shareData, con
 		SelfCopyPrototype(prototype);
 }
 
-DynamicType::DynamicType(const DynamicType& prototype)
-{
-	typeDescTable = prototype.typeDescTable;
-
-	numActiveAttr = 0;
-	data = 0;
-	dynamicTable=0;
-	dataSize = 0;
-	allocatedDataSize = 0;
-	bPreAllocateAllAttributes = prototype.bPreAllocateAllAttributes;
-
-
-	if (prototype.IsInstanciate())
-		SelfDeepCopy(prototype);
-	else
-		SelfCopyPrototype(prototype);
-
-#	ifdef CLAM_EXTRA_CHECKS_ON_DT
-		FullfilsInvariant();
-#	endif //CLAM_EXTRA_CHECKS_ON_DT
-}
-
-
 DynamicType::~DynamicType()
 {
 	RemoveAllMem();
@@ -137,7 +111,7 @@ void DynamicType::RemoveAllMem()
 		for (unsigned i=0; i<numAttr; i++) 
 			if (AttrHasData(i))
 			{
-				DestructorInplaceFn dest = typeDescTable[i].destructObj;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(i).destructObj;
 				dest (data+dynamicTable[i].offs);
 			}
 		delete [] data;
@@ -150,39 +124,6 @@ void DynamicType::RemoveAllMem()
 }
 
 
-void DynamicType::InformAttr_(unsigned val, char* name, unsigned size, char* type, const bool isPtr,
-                            const NewInplaceFn fnew, const NewCopyInplaceFn fcopy, const DestructorInplaceFn fdestr)
-{
-CLAM_BEGIN_CHECK
-	if (val >= numAttr)
-	{
-		throw ErrDynamicType("There are more registered Attributes than the "
-		                     "number defined in DYN_CLASS_TABLE macro. In class:",
-		                     GetClassName());
-	}
-CLAM_END_CHECK
-
-	CLAM_DEBUG_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
-	CLAM_DEBUG_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
-
-	typeDescTable[val].id = name;
-	typeDescTable[val].type = type;
-	typeDescTable[val].isPointer = isPtr;
-	typeDescTable[val].size = size;
-	// default value. This field is used in UpdateData in Fixed offsets mode.
-	typeDescTable[val].offset = -1;  
-	// references to creation/destruction fuctions of the type/class
-	typeDescTable[val].newObj = fnew;
-	typeDescTable[val].newObjCopy = fcopy;
-	typeDescTable[val].destructObj = fdestr;
-	// informative flags:
-	// flags that will be set at the AddTypedAttr_ 
-	// (the overloaded function that calls this one)
-	typeDescTable[val].isComponent = false;
-	typeDescTable[val].isStorable = false;
-	typeDescTable[val].isDynamicType = false;
-
-}
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Main memory management methods: AddAttr_, RemoveAttr_ and UpdateData
 
@@ -253,7 +194,7 @@ void DynamicType::RemoveAttr_(const unsigned i)
 	{
 		inf.hasBeenAdded=false;
 		--numActiveAttr;
-		dataSize -= typeDescTable[i].size;
+		dataSize -= GetStaticInfo().GetAttrInfo(i).size;
 		
 		// check if we can unset the global some-added flag.
 		dynamicTable[numAttr].hasBeenAdded = false;
@@ -285,7 +226,7 @@ void DynamicType::RemoveAttr_(const unsigned i)
 	}
 
 	--numActiveAttr;
-	dataSize -= typeDescTable[i].size;
+	dataSize -= GetStaticInfo().GetAttrInfo(i).size;
 	dynamicTable[i].hasBeenRemoved = 1;
 	dynamicTable[numAttr].hasBeenRemoved = 1; // global flag that means Update necessary;
 
@@ -295,6 +236,20 @@ void DynamicType::RemoveAttr_(const unsigned i)
 
 }
 
+
+void DynamicType::MandatoryInit() {
+	std::cerr << "MandatoryInit is not Not longer useful. Users of DTs can write its normal C++ constructors";	
+}
+
+void DynamicType::DefaultInit() {
+	std::cerr << "DynamicType::DefaultInit depracated: \n"
+		"No more need of pseudo-constructors. Concrete DTs can define its constructors";
+}
+
+void DynamicType::CopyInit(const DynamicType & dt) {
+		std::cerr << "DynamicType::DefaultInit depracated: \n"
+		"No more need of pseudo-constructors. Concrete DTs can define its constructors";
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////7
 // return whether some update has been made.
@@ -373,11 +328,11 @@ void DynamicType::UpdateDataByShrinking()
 			{
 				if (unsigned(dynamicTable[j].offs) != offs) // only move data if necessary
 				{
-					NewCopyInplaceFn   newc  = typeDescTable[j].newObjCopy;
-					DestructorInplaceFn dest  = typeDescTable[j].destructObj;
+					const NewCopyInplaceFn   newc  = GetStaticInfo().GetAttrInfo(j).newObjCopy;
+					const DestructorInplaceFn dest  = GetStaticInfo().GetAttrInfo(j).destructObj;
 					/** @todo: optimize for the case in which the intermediate
 					 *Copy is not needed. */
-					char* aux = new char[typeDescTable[j].size];
+					char* aux = new char[GetStaticInfo().GetAttrInfo(j).size];
 					newc(aux,data+dynamicTable[j].offs);
 					dest(data+dynamicTable[j].offs);
 					newc(data+offs,aux);
@@ -385,11 +340,11 @@ void DynamicType::UpdateDataByShrinking()
 					delete [] aux;
 					dynamicTable[j].offs = offs;
 				}
-				offs += typeDescTable[j].size;
+				offs += GetStaticInfo().GetAttrInfo(j).size;
 			}
 			else if (AttrHasData(j) && dynamicTable[j].hasBeenRemoved)
 			{
-				DestructorInplaceFn dest = typeDescTable[j].destructObj;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(j).destructObj;
 				dest (data+dynamicTable[j].offs);
 				
 				dynamicTable[j].offs = -1;
@@ -401,10 +356,10 @@ void DynamicType::UpdateDataByShrinking()
 		{
 			if (dynamicTable[i].hasBeenAdded)
 			{
-				NewInplaceFn fnew=typeDescTable[i].newObj;
+				const NewInplaceFn fnew = GetStaticInfo().GetAttrInfo(i).newObj;
 				fnew(data+offs);
 				dynamicTable[i].offs = offs;
-				offs += typeDescTable[i].size;
+				offs += GetStaticInfo().GetAttrInfo(i).size;
 				dynamicTable[i].hasBeenAdded = false;
 			}
 		}
@@ -427,30 +382,30 @@ void DynamicType::UpdateDataByStandardMode ()
 		{
 			if (dynamicTable[i].hasBeenRemoved) 
 			{
-				DestructorInplaceFn dest = typeDescTable[i].destructObj;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(i).destructObj;
 				dest (olddata+inf.offs);
 				inf.hasBeenRemoved = false;
 				inf.offs = -1;
 			}
 			else 
 			{
-				NewCopyInplaceFn   newc = typeDescTable[i].newObjCopy;
-				DestructorInplaceFn dest = typeDescTable[i].destructObj;
+				const NewCopyInplaceFn   newc = GetStaticInfo().GetAttrInfo(i).newObjCopy;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(i).destructObj;
 				newc(data+offs,olddata+inf.offs);
 				dest(olddata+inf.offs);
 				inf.offs = offs;
-				offs += typeDescTable[i].size;
+				offs += GetStaticInfo().GetAttrInfo(i).size;
 			}
 		}
 		else  // !AttrHasData(i)
 		{
 			if (inf.hasBeenAdded)
 			{
-				NewInplaceFn fnew=typeDescTable[i].newObj;
+				NewInplaceFn fnew=GetStaticInfo().GetAttrInfo(i).newObj;
 				fnew(data+offs);
 				inf.hasBeenAdded = false;
 				inf.offs = offs;
-				offs += typeDescTable[i].size;
+				offs += GetStaticInfo().GetAttrInfo(i).size;
 			}
 
 		}
@@ -474,20 +429,20 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 	for (i=0; i<numAttr; i++)
 	{
 		TDynInfo & inf = dynamicTable[i];
-		int offs = typeDescTable[i].offset;
+		int offs = GetStaticInfo().GetAttrInfo(i).offset;
 		if (AttrHasData(i)) 
 		{
 			if (dynamicTable[i].hasBeenRemoved) 
 			{
-				DestructorInplaceFn dest = typeDescTable[i].destructObj;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(i).destructObj;
 				dest (olddata+inf.offs);
 				inf.hasBeenRemoved = false;
 				inf.offs = -1;
 			}
 			else 
 			{
-				NewCopyInplaceFn   newc = typeDescTable[i].newObjCopy;
-				DestructorInplaceFn dest = typeDescTable[i].destructObj;
+				const NewCopyInplaceFn   newc = GetStaticInfo().GetAttrInfo(i).newObjCopy;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(i).destructObj;
 				
 				newc(data+offs,olddata+inf.offs);
 				dest(olddata+inf.offs);
@@ -498,7 +453,7 @@ void DynamicType::UpdateDataGoingToPreAllocatedMode()
 		{
 			if (inf.hasBeenAdded)
 			{
-				NewInplaceFn fnew=typeDescTable[i].newObj;
+				const NewInplaceFn fnew = GetStaticInfo().GetAttrInfo(i).newObj;
 				fnew(data+offs);
 				inf.hasBeenAdded = false;
 				inf.offs = offs;
@@ -521,12 +476,12 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 	for (unsigned int i=0; i<numAttr; i++)
 	{
 		TDynInfo & inf = dynamicTable[i];
-		int offs = typeDescTable[i].offset;
+		const int offs = GetStaticInfo().GetAttrInfo(i).offset;
 		if (AttrHasData(i)) 
 		{
 			if (dynamicTable[i].hasBeenRemoved) 
 			{
-				DestructorInplaceFn dest = typeDescTable[i].destructObj;
+				const DestructorInplaceFn dest = GetStaticInfo().GetAttrInfo(i).destructObj;
 				dest (data+inf.offs);
 				inf.hasBeenRemoved = false;
 				inf.offs = -1;
@@ -537,7 +492,7 @@ void DynamicType::UpdateDataInPreAllocatedMode()
 		{
 			if (inf.hasBeenAdded)
 			{
-				NewInplaceFn fnew=typeDescTable[i].newObj;
+				const NewInplaceFn fnew = GetStaticInfo().GetAttrInfo(i).newObj;
 				fnew(data+offs);
 				inf.hasBeenAdded = false;
 				inf.offs = offs;
@@ -583,7 +538,7 @@ int DynamicType::IncrementDynTableRefCounter()
 
 Component* DynamicType::ShallowCopy() const
 {
-	DynamicType* selfCopy = &(GetDynamicTypeCopy(false,false));
+	DynamicType* selfCopy = &(GetDynamicTypeCopy(false));
 
 	return selfCopy;
 }
@@ -591,7 +546,7 @@ Component* DynamicType::ShallowCopy() const
 
 Component* DynamicType::DeepCopy() const
 {	
-	DynamicType* selfCopy = &(GetDynamicTypeCopy(false,true));
+	DynamicType* selfCopy = &(GetDynamicTypeCopy(true));
 
 	return selfCopy;
 };
@@ -630,7 +585,7 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 	{
 		if (!ExistAttr(i)) continue;
 		void* pos = GetPtrToData_(i);
-		NewCopyInplaceFn fcopy = typeDescTable[i].newObjCopy;
+		const NewCopyInplaceFn fcopy = GetStaticInfo().GetAttrInfo(i).newObjCopy;
 		fcopy(pos, prototype.GetPtrToData_(i));
 	}
 }
@@ -655,7 +610,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 	unsigned int i;
 	for (i = 0; i < numAttr; i++)
 	{
-		if (prototype.ExistAttr(i) && typeDescTable[i].isComponent && typeDescTable[i].isPointer)
+		if (prototype.ExistAttr(i) && GetStaticInfo().GetAttrInfo(i).isComponent && GetStaticInfo().GetAttrInfo(i).isPointer)
 			copyChildren[i] = static_cast<Component*>(prototype.GetDataAsPtr_(i))->DeepCopy();
 		else
 			copyChildren[i] = 0;
@@ -671,7 +626,7 @@ void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 		{
 			//now a nested object must be replaced. It maight be a pointer not registered as it.
 			//the nested object will be copied from the nested object at "this"
-			NewCopyInplaceFn fcopy = typeDescTable[i].newObjCopy;
+			const NewCopyInplaceFn fcopy = GetStaticInfo().GetAttrInfo(i).newObjCopy;
 			fcopy(pos, prototype.GetPtrToData_(i));
 		}
 	}
@@ -691,110 +646,11 @@ DynamicType& DynamicType::operator=(const DynamicType& source)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////
-void DynamicType::StoreDynAttributes(Storage & storage)
-{
-	int tableSize = GetNumAttr();
-	for (int i = 0; i < tableSize; i++)
-	{
-		if (!ExistAttr(i))
-			continue;
-#ifdef CLAM_USE_XML
-
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			XMLable * adapter = 0;
-			if (!typeDescTable[i].isPointer && !typeDescTable[i].isComponent)
-
-			{   //TODO: provisional (or not...)
-				char * type = typeDescTable[i].type;
-				if (!strcmp(type, "int"))
-				{
-					int value = *static_cast<int*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "float"))
-				{
-					float value = *static_cast<float*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				} 
-				else if (!strcmp(type, "TData"))
-				{
-					TData value = *static_cast<TData*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "double"))
-				{
-					double value = *static_cast<double*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "unsigned"))
-				{
-					unsigned value = *static_cast<unsigned*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "std::string"))
-				{
-					std::string value = *static_cast<std::string*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else if (!strcmp(type, "bool"))
-				{
-					bool value = *static_cast<bool*>(GetPtrToData_(i));
-					adapter = new XMLStaticAdapter(value, typeDescTable[i].id, true);
-				}
-				else
-					adapter = new XMLStaticAdapter("nested object that is not basic nor component", typeDescTable[i].id, true);
-			}
-			else
-			{
-				if (typeDescTable[i].isComponent)
-				{
-					Component *component = 
-						(!typeDescTable[i].isPointer)? static_cast<Component*>(GetPtrToData_(i)) :
-						static_cast<Component*>(GetDataAsPtr_(i));
-
-					if (component)
-					{
-						adapter = new XMLComponentAdapter(*component, typeDescTable[i].id, true);
-						//	 		storage.Store(adapter);
-						//			delete adapter;
-						//			adapter = 0;
-					}
-				}
-				else
-					if (typeDescTable[i].isPointer)
-						adapter = new XMLStaticAdapter("pointer to a non-component", typeDescTable[i].id, true);
-
-			}
-			if (adapter)
-			{
-				storage.Store(adapter);
-				delete adapter;
-			}
-		}
-#endif//CLAM_USE_XML
-	}
-
-}
-
-void DynamicType::LoadDynAttributes(Storage & storage) {
-	CLAM_ASSERT(false, "Using Loading with deprecated DynamicType macros");
-}
-
 /////////////////////////////////////////////////////////////////////////////////////77
 // Developing aids methods: FullfilsInvariant and Debug
 
 void DynamicType::FullfilsInvariant() const
 {
-	if (!typeDescTable) 
-		throw ErrDynamicType("in FullfilsInvariant: there's no typeDescTable. "
-							 "The most likely thing is that the object	is "
-							 "created with a non-macro-expanded-constructor."
-							 "In that case the constructor MUST call the"
-							 "MandatoryInit() method (called from constructor). Check it !");
 
 	if (!dynamicTable)
 		return;
@@ -827,20 +683,21 @@ void DynamicType::FullfilsInvariant() const
 			throw ErrDynamicType(" in FullfilsInvariant: an attribute has\
 				data (offs>0) but do has the hasBeenAdded flag set. Class: ", GetClassName() );
 		// data size calculation
+		const int attrSize = GetStaticInfo().GetAttrInfo(i).size;
 		if (dyninfo.offs >= 0) 
 		{
-			auxAllocatedSize += typeDescTable[i].size;
-			for (unsigned j=unsigned(dyninfo.offs); j<unsigned(dyninfo.offs+typeDescTable[i].size); j++)
+			auxAllocatedSize += attrSize;
+			for (unsigned j=unsigned(dyninfo.offs); j<unsigned( dyninfo.offs+attrSize ); j++)
 				if (usedblock[j]) throw ErrDynamicType("in FullfilsInvariant: overlaped area in data table");
 				else usedblock[j]=true;
 		}
 		if (AttrHasData(i)) 
 		{
-			if (dyninfo.hasBeenRemoved) decData += typeDescTable[i].size;
+			if (dyninfo.hasBeenRemoved) decData += attrSize;
 			if (!data) throw ErrDynamicType("in FullfilsInvariant: An attr. has data but data==0");
 		}
 		else 
-			if (dyninfo.hasBeenAdded) incData += typeDescTable[i].size;
+			if (dyninfo.hasBeenAdded) incData += attrSize;
 		
 		else if (dyninfo.offs != -1) 
 			throw ErrDynamicType(" in FullfilsInvariant: attribute not informed with dynamic offset <> -1");
@@ -865,7 +722,7 @@ void DynamicType::FullfilsInvariant() const
 
 void DynamicType::Debug()
 {
-	TAttr * attr = 0;
+	AttrStaticInfo  attr;
 	std::cout <<std::endl<<"Class Name: "<< GetClassName() << " at: " << this <<std::endl << "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr"\
 		<< std::endl << "------------------------------------------------------------------------------"<<std::endl;
 	std::cout << "{ size, allocatedSize, maxAttrsSize } = { " << dataSize << " , " << allocatedDataSize << " , "
@@ -874,7 +731,7 @@ void DynamicType::Debug()
 	{
 		TDynInfo & dyninf = dynamicTable[i];
 
-		attr = &typeDescTable[i];
+		attr = GetStaticInfo().GetAttrInfo(i);
 		std::cout << std::endl;
 		if (dyninf.hasBeenAdded) std::cout << " A";
 		else std::cout << " -";
@@ -884,14 +741,14 @@ void DynamicType::Debug()
 
 		std::cout << " [" <<i<<"] ";
 
-		std::cout << dyninf.offs << " , "<<attr->offset<<" , "<<attr->id<<" , "<<attr->type<<" , {"\
-			<<attr->isComponent<<","<<attr->isDynamicType<<","<<attr->isPointer<<","\
-			<<attr->isStorable<<"} , "<<ExistAttr(i)<<" , "<<attr->size\
+		std::cout << dyninf.offs << " , "<<attr.offset<<" , "<<attr.name<<" , "<<attr.type<<" , {"\
+			<<attr.isComponent<<","<<attr.isDynamicType<<","<<attr.isPointer<<","\
+			<< "} , "<<ExistAttr(i)<<" , "<<attr.size\
 			<<" , ";
 		if(ExistAttr(i)) 
 			std::cout << GetPtrToData_(i);
 		
-		if(attr->isPointer && ExistAttr(i)) std::cout << " points -> " << GetDataAsPtr_(i);
+		if(attr.isPointer && ExistAttr(i)) std::cout << " points -> " << GetDataAsPtr_(i);
 	}
 	std::cout<<std::endl;
 

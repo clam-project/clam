@@ -56,21 +56,8 @@ namespace CLAM {
 	 */
 	class ProcessingConfig : public DynamicType {
 	public:
-		/**
-		 * Constructor. Must be called from the initialization list
-		 * of the derived classes.
-		 * @param n Number of dynamic attributes
-		 */
-		ProcessingConfig(const int n) : DynamicType(n) {};
-
-		/** Copy constructor.
-		 * @param prototype copy source.
-		 * @param shareData true if the new object is to share its data with the source */
-		ProcessingConfig(const ProcessingConfig& prototype, bool shareData=false, bool deep=true)
-			: DynamicType(prototype, shareData, deep)
-			{};
-
-
+				 
+		
 		virtual ~ProcessingConfig(){};
 
 		virtual const char * GetClassName() const {return "Processing";}

@@ -38,27 +38,23 @@
 
 #define __COMMON_DYNAMIC_TYPE(CLASS_NAME,N) \
 public: \
+	/* \todo two args macro typedef SuperClassName _Super; */\
+	typedef CLAM::DynamicType _Super; \
 	virtual const char* GetClassName() const { \
 		return #CLASS_NAME; \
 	}\
 	enum { eNumAttr= N }; \
-	CLAM::DynamicType& GetDynamicTypeCopy(const bool shareData=false, const bool deep=false) const\
+	CLAM::DynamicType& GetDynamicTypeCopy(const bool deep=false) const\
 	{ \
-		return *new CLASS_NAME(*this, shareData, deep); \
+		return *new CLASS_NAME(*this); \
 	}\
-protected: \
-	void MandatoryInit()\
-	{\
-		static TAttr *staticTypeDescTable = NULL;\
-		if(!staticTypeDescTable)\
-		{\
-			staticTypeDescTable = new TAttr[N];\
-			typeDescTable = staticTypeDescTable;\
-			InformAll();\
-		}else{\
-			typeDescTable = staticTypeDescTable;\
-			maxAttrSize = typeDescTable[N-1].offset+typeDescTable[N-1].size;\
-		}\
+	virtual StaticInfo& GetStaticInfo() const { \
+		/*static StaticInfo* p=0;*/ \
+		StaticInfo* p=0; \
+		if (!p) { \
+			InitStaticInfo( p ); \
+		} \
+		return *p;\
 	} \
 public: \
 	/** Visit all Dynamic Attributes */ \
@@ -76,7 +72,8 @@ public: \
 	} \
 private: \
 	/** Add all Dynamic Attributes */ \
-	void InformAll () { \
+	void InformAll () const { \
+		GetStaticInfo().AddClassName( #CLASS_NAME ); \
 		InformChainedAttr((AttributePosition<0>*)NULL); \
 		DynamicType::InformAll(); \
 	} \
@@ -102,7 +99,7 @@ private: \
 	 * Gives a compilation error message.
 	 */ \
 	template <unsigned int NAttrib> \
-	void CheckAttribute (StaticFalse*inRange,AttributePosition<NAttrib>*a) { \
+	void CheckAttribute (StaticFalse*inRange,AttributePosition<NAttrib>*a) const { \
 		AttributePosition<(NAttrib)-1>* previous; \
 		previous->CompilationError_AttributePositionOutOfBounds(); \
 	}\
@@ -111,7 +108,7 @@ private: \
 	 * Gives a compilation error message.
 	 */ \
 	template <unsigned int NAttrib> \
-	void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) { \
+	void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) const { \
 		a->CompilationError_AttributeNotDefined(); \
 	}\
 	/** Undefined link for the Visit method chain (Visit)*/  \
@@ -135,7 +132,7 @@ private: \
 	}\
 	/** Undefined link for the Inform method chain (Inform) */ \
 	template <unsigned int NAttrib> \
-	void InformChainedAttr (AttributePosition<NAttrib>*a) { \
+	void InformChainedAttr (AttributePosition<NAttrib>*a) const { \
 		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
@@ -163,7 +160,7 @@ private: \
 	void AddChainedAttr (AttributePosition<N>*) { \
 	} \
 	/** Method chain terminator */ \
-	void InformChainedAttr (AttributePosition<N>*) { \
+	void InformChainedAttr (AttributePosition<N>*) const { \
 	} \
 	/** Method chain terminator */ \
 	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
@@ -176,29 +173,11 @@ private: \
 
 #define DYNAMIC_TYPE(CLASS_NAME, N)\
 public: \
-	CLASS_NAME() : CLAM::DynamicType(N)\
-	{\
-		MandatoryInit(); \
-		DefaultInit();\
-	}\
-	CLASS_NAME(const CLASS_NAME& prototype, const bool shareData=false, const bool deep=true)\
-		: CLAM::DynamicType(prototype, shareData, deep) { \
-		CopyInit(prototype);\
-		}\
 	__COMMON_DYNAMIC_TYPE(CLASS_NAME,N); \
 
 
-#define DYNAMIC_TYPE_USING_INTERFACE(CLASS_NAME, N, INTERFACE_NAME)\
+#define DYNAMIC_TYPE_USING_INTERFACE(CLASS_NAME, N, INTERFACE_NAME) \
 public: \
-	CLASS_NAME() : INTERFACE_NAME(N)\
-	{\
-		MandatoryInit(); \
-		DefaultInit();\
-	}\
-	CLASS_NAME(const CLASS_NAME& prototype, const bool shareData=false, const bool deep=true)\
-		: INTERFACE_NAME(prototype, shareData, deep) { \
-		CopyInit(prototype); \
-		}\
 	__COMMON_DYNAMIC_TYPE(CLASS_NAME,N); \
 
 
@@ -221,7 +200,7 @@ private: \
 		static_cast<__Ty*>(p)->~__Ty();\
 	}\
 	\
-/* This declaration to detect compile-time-err of repeated attribute IDs(num), without having to relay in templates*/\
+	/* \todo remove if we can do the same with templates (VC6 can be a problem) */ \
 	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
 	\
 ACCESS: \
@@ -268,14 +247,9 @@ ACCESS: \
 		return ExistAttr(N); \
 	} \
 private: \
-	inline void Inform##NAME() {\
-		InformTypedAttr_(N, #NAME, sizeof(TYPE), #TYPE, false, _new_##NAME, _new_##NAME, _destructor_##NAME, (TYPE*)0);\
-	}\
 	static inline int GetSize##NAME() { return sizeof(TYPE); } \
 	static inline char* GetType##NAME() { return #TYPE; } \
 	static inline int GetId##NAME() { return N;}\
-public: \
-	/*inline TYPE* Get##NAME##Vector(unsigned n) { return Get_##TYPE##Vector(n); }*/ \
 private: \
 	template <typename Visitor> \
 	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
@@ -290,8 +264,10 @@ private: \
 		Add##NAME(); \
 		AddChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
-	void InformChainedAttr(AttributePosition<N>*) { \
-		Inform##NAME(); \
+	void InformChainedAttr(AttributePosition<N>*) const { \
+		AttrStaticInfo attr; \
+		StaticInfo::GetTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
+		GetStaticInfo().AddAttr( attr ); \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
