@@ -48,11 +48,6 @@ namespace CLAM {
 	class OutPort;
 	class ProcessingComposite;
 
-	//! Free function that checks whether two ports are connected with a common 
-	//! ProcessingData
-	bool PortsAreConnected(Port &p1, Port &p2);
-
-
 	/**
 	 * This is an abstract class which serves as interface for
 	 * configuration classes used as processing object construction
