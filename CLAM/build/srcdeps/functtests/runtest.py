@@ -2,10 +2,20 @@
 
 logfile = 'timesLog.txt'
 
-import os, sys, commands, time
+import os, sys, commands, time, shutil
 
-settingsToTest = ['FilePlayback', 'SMSTools']
+settingsToTest = ['MIDIOut','FilePlayback', 'SMSTools']
 
+if sys.platform in ['cygwin', 'win32'] :
+	isWindows = True
+	extension = '.dsp'
+	diffcmd = 'vimdiff'
+else :
+	isWindows = False
+	print 'in linux'
+	extension = '.vars'
+	diffcmd = 'xxdiff'
+	
 def timeToExecute(cmd) :
 	_,_,beforeUserTime,beforeSysTime,_ = os.times()
 	os.system(cmd )
@@ -17,25 +27,32 @@ def appendTimesLog(testname, usrtime, systime) :
 	line = '%s\t%s\t%s\t%s\n' % (testname, usrtime, systime, date)
 	file(logfile, 'a').write( line )
 
+def windowsRenameResult(test) :
+	if not isWindows :
+		return
+	target = test + '_result' + extension
+	shutil.copy(test+extension, target)
 	
 for test in settingsToTest :
 	config = test + '.cfg'
 	if not os.path.exists(config) :
 		print 'missing %s' % config
 		continue
-	expected = test + '_expected.vars'
-	result = test + '_result.vars'
+	expected = test + '_expected' + extension
+	result = test + '_result' + extension
 	if not os.path.exists(expected) :
 		print expected, 'created void'
 		file(expected,'w')
 	print 'testing', test
 	usrtime, systime = timeToExecute('../srcdeps %s > %s ' % (config, result))
-	print "User time: %s\nSys time: %s" % (usrtime, systime)
+	windowsRenameResult(test)
+	
+	print "user time: %s\nsys time: %s" % (usrtime, systime)
 	appendTimesLog(test, usrtime, systime)
 
-	toCompare = expected, result
-	if commands.getoutput('diff -q %s %s' % toCompare) :
-		os.system('xxdiff %s %s' % toCompare)
+	tocompare = expected, result
+	if commands.getoutput('diff -q %s %s' % tocompare) :
+		os.system( diffcmd+' %s %s' % tocompare)
 	else :
 		print 'test %s ok' % test
 
