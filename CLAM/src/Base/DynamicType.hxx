@@ -61,7 +61,7 @@
 	GetStaticInfo()                   <------------·
 	  if static local p DON'T exist                |
 	    Create _staticInfo // of type StaticInfo   |
-		InformAll()  // chained method             |
+		InformAll()  // chained method ------------^
 	  endif                                        |
 	  return *p                                    |
                                                    |
@@ -73,7 +73,7 @@
 	  endif
 	  return _dynamicInfo
 
-	  /todo InformAll also calls GetStaticInfo (for adding attr)
+	 Note: InformAll needs to calls GetStaticInfo for adding attr info  to it.
         
 	The first call to GetDynamicInfo will perform a susequent call  to 
 	StaticInfo. The first call to StaticInfo will perform the unique 
@@ -89,9 +89,7 @@
 
   - Removed flag for deep/shallow copy
   
- 
- 
- */
+*/
 
 namespace CLAM {
 
@@ -104,9 +102,7 @@ namespace CLAM {
  * All the dynamic attributes interface is strongly typed. So the compiler
  * can garant the type consistency in every access to the dynamic attributes.
  * It also allows herarchic structures and implements de Component interface
- * so it can be stored all the tree (to XML format, for example)
- * and can be copied (swallow or deep copy). (see the methods: SwallowCopy, 
- * DeepCopy and StoreOn )
+ * so it can be stored all the tree (i.e. to XML format)
  * 
  * This class holds all the implementation of the memory management and is an abstract
  * class: is necessary to define a concrete dynamic type (subclass). 
@@ -157,10 +153,10 @@ public:
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
 		
-	/// \todo why no call it clone? (make all components clonable?)
-	virtual DynamicType& GetDynamicTypeCopy( const bool deep = false ) const =0;
-	/// \todo we really need this now?
+	virtual DynamicType& GetDynamicTypeCopy() const =0;
+	/// Clones the object. Its dynamic attributes are copied bia their copy constructor.
 	virtual Component* ShallowCopy() const;
+	/// DeepCopy of DT is the same as (actually deferres to) shallow copy. 
 	virtual Component* DeepCopy() const;
 	DynamicType& operator= (const DynamicType& source);
 	
@@ -281,7 +277,6 @@ private:
 	
 // Atributes:
 protected:
-	///\todo make private
 	char* _data;
 private:
 	bool _preAllocateAllAttributes;
