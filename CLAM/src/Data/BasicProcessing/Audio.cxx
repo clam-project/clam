@@ -124,7 +124,10 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 		chunk.SetSize(size);
 	}
 	
-	if(beginIndex>=GetSize()) return;
+	if(beginIndex>=GetSize()){
+		if(configureChunk) chunk.SetSize(0);
+		return;
+	}
 	
 	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized") 
 	
