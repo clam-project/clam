@@ -334,6 +334,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSound(void)
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
+	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
 
 	myAudioFileOut.Configure(outfilecfg);
 
