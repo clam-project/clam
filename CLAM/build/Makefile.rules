@@ -5,7 +5,7 @@ SRCDEPS=$(CLAM_PATH)/build/srcdeps/srcdeps
 all: program
 
 clean:
-	rm -rf obj/ dep/ Makefile.vars $(PROGRAM)
+	rm -rf obj/ dep/ moc/ Makefile.vars $(PROGRAM)
 
 distclean: clean
 	rm -rf dep/
