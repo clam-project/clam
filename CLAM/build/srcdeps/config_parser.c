@@ -152,10 +152,13 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 					}
 					else
 					{
-						fprintf(stderr,
-							"Variable \"%s\" not found in line %s:%d\n",
-							var,d->filename,d->line);
-						exit(-1);
+						if (cond)
+						{
+							fprintf(stderr,
+								"Variable \"%s\" not found in line %s:%d\n",
+								var,d->filename,d->line);
+							exit(-1);
+						}
 					}
 				}
 				else
