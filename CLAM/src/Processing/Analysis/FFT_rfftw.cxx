@@ -71,7 +71,9 @@ namespace CLAM {
 		TData *inbuffer;
 
 		if (!AbleToExecute()) return true; // object was disabled
-
+		
+		out.SetSpectralRange(in.GetSampleRate()/2);
+		
 		switch(mState) {
 		case sComplex:
 			inbuffer = in.GetBuffer().GetPtr();
@@ -93,7 +95,6 @@ namespace CLAM {
 		default:
 			CLAM_ASSERT(false, "FFT_rfftw: Do(): Inconsistent state");
 		}
-		out.SetSpectralRange(in.GetSampleRate()/2);
 		return true;
 	}
 

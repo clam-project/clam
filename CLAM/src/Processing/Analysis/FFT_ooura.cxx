@@ -101,6 +101,8 @@ namespace CLAM {
 	if (GetExecState() == Disabled)
 	  return true;
 
+	out.SetSpectralRange(in.GetSampleRate()/2);
+
 	switch(mState) {
 	case sComplex:
 	  inbuffer = in.GetBuffer().GetPtr();
@@ -137,7 +139,7 @@ namespace CLAM {
 	default:
 	  throw(ErrProcessingObj("FFT_ooura: Do(): Inconsistent state",this));
 	}
-	out.SetSpectralRange(in.GetSampleRate()/2);
+
 	return true;
   }
 
