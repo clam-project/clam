@@ -1,9 +1,12 @@
 
-  * Build system:
-      ** Fix: 'configure' test for local sandbox fftw in linux, used wrong parameters order
 
 2003-10-4? CLAM_0_5_3
 ''
+
+  * Build system:
+      ** Fix: 'configure' test for local sandbox fftw in linux, used wrong parameters order
+      ** Added support to fltk-config in order to get fltk paths and flags
+      ** Changed "release" flag compilation in gcc from -O6 to -O3
   * Visualization Module:
       ** Next generation VM Plots available. Check the examples for indications on how to
          use them.
