@@ -7,19 +7,12 @@ namespace CLAMGUI
 
 	Signal::tConnectionId Signal::AssignConnection()
 	{
-		tConnectionId id;
 		if ( smFreeIdStack.empty() )
-			{
-				id = smLastConnectionId;
-				smLastConnectionId++;
-				return id;
-			}
-		else
-			{
-				id = smFreeIdStack.top();
-				smFreeIdStack.pop();
-				return id;
-			}
+			return smLastConnectionId++;
+
+		tConnectionId id = smFreeIdStack.top();
+		smFreeIdStack.pop();
+		return id;
 	}
 
 	void Signal::FreeConnectionId( Signal::tConnectionId freedConnectionId )
