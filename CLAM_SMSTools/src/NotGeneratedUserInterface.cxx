@@ -45,12 +45,16 @@ void UserInterface::EditConfiguration(void)
 
 void UserInterface::Update()
 {
-	mSMS->GetState().DefaultInit();
+	
 	mSMS->GetState().SetHasConfig(true);
  	mSMS->InitConfigs();
 	// check if LoadSound operation could be carried
-	if ( !LoadSound() )
-		return;
+	if(LoadSound())
+	{
+		mSMS->GetState().DefaultInit();
+		mSMS->GetState().SetHasAudioIn(true);
+	}
+	mSMS->GetState().SetHasConfig(true);
 	UpdateState();
 	mSMS->SegmentExplorer().CloseAll();
 	mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
@@ -67,8 +71,7 @@ void UserInterface::LoadConfiguration(void)
 		std::string inputXMLFileName(str);
 
 		mSMS->LoadConfig(inputXMLFileName);
-		if (! LoadSound() )
-			return;	
+		LoadSound();
 		UpdateState();
 	
 		if (mSMS->GetState().GetHasAnalysis() &&	mSMS->GetState().GetHasConfig())
@@ -89,7 +92,6 @@ bool UserInterface::LoadSound(void)
 	mSMS->LoadInputSound();
 	if ( !mSMS->GetState().GetHasAudioIn() )
 	{
-		ApplyInitialState();
 		return false;
 	}
 
@@ -145,8 +147,6 @@ void UserInterface::LoadAnalysisData(void)
 	if ( !mSMS->DoLoadAnalysis(  ) )
 		return;
 	mSMS->GetState().SetHasAnalysis (true);
-	// @todo: Check this is true...
-	mSMS->GetState().SetHasConfig (false);
 	UpdateState();
 	InitCounter();
 	DeactivateFrameDataMenuItems();
@@ -480,6 +480,8 @@ void UserInterface::UpdateState()
 	
 	if(appState.GetHasTransformation())
 		mUndoTransMenuItem->activate();
+	if(!mFrameDataAvailable)
+		DeactivateFrameDataMenuItems();
 		
 	mWindow->redraw();
 }

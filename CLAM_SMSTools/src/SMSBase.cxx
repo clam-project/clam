@@ -519,7 +519,7 @@ void SMSBase::Synthesize(void)
 	if(!GetState().GetHasTransformation())
 	{
 		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
-		GetState().SetHasTransformation(true);
+//		GetState().SetHasTransformation(true);
 	}
 
 	TSize size=TSize((mTransformedSegment.GetEndTime()-
