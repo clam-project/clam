@@ -57,7 +57,7 @@ public:
 	ProcessingController();
 	std::string GetObservedClassName();
 	const CLAM::ProcessingConfig & GetObservedConfig();
-	virtual const char* GetClassName() const
+	const char* GetClassName() const
 	{
 		return "ProcessingController";
 	}
@@ -65,8 +65,8 @@ public:
 	{
 		return true;
 	}
-	virtual bool Publish();
-	virtual bool BindTo( CLAM::Processing& obj );
+	bool Publish();
+	bool BindTo( CLAM::Processing& obj );
 
 	NamesList::iterator BeginInPortNames();
 	NamesList::iterator EndInPortNames();

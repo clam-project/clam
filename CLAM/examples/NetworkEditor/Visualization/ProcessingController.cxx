@@ -51,8 +51,7 @@ void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & c
 
 bool ProcessingController::Publish()
 {
-	if ( !mObserved )  // there is no object being observed
-		return false;
+	CLAM_ASSERT( mObserved, "Trying to publish an unbinded processing controller" );
 	return true;
 }
 

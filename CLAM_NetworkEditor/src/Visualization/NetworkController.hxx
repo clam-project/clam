@@ -84,14 +84,14 @@ namespace CLAMVM
 		void LoadNetwork( const std::string & );
 		void SaveNetwork( const std::string & );
 		void Clear();
-		void CreateNewPresentation( ProcessingController * , const std::string & );
-		void RemoveProcessingController( ProcessingController * );
+	//	void CreateNewPresentation( ProcessingController * , const std::string & );
+	//	void RemoveProcessingController( ProcessingController * );
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );
 		void ConnectControls( const std::string & , const std::string & );
 		void DisconnectPorts( const std::string & , const std::string & );
 		void DisconnectControls( const std::string & , const std::string & );
-		void RemoveProcessingFromNetwork( const std::string & );
+		void ExecuteRemoveProcessing( const std::string & );
 		void ExecuteEvents();
 	public:
 		NetworkController();
@@ -100,34 +100,43 @@ namespace CLAMVM
 		{
 			return "NetworkController";
 		}
-		void CreateProcessingController( const std::string & , CLAM::Processing *  );
-		void OnRebuildProcessingStructure( CLAM::Processing *  );
+		std::string GetName();
+		ProcessingController* CreateProcessingController( const std::string & , CLAM::Processing *  );
+//		void OnRebuildProcessingStructure( CLAM::Processing *  );
 		void AddProcessing( const std::string & , CLAM::Processing * );
-	
+		ProcessingControllersMapIterator BeginProcessingControllers()
+		{
+			return mProcessingControllers.begin();
+		}
+		ProcessingControllersMapIterator EndProcessingControllers()
+		{
+			return mProcessingControllers.end();
+		}
+
 		virtual bool Publish();
 		virtual bool Update();
 		virtual bool BindTo( CLAM::Network&  );
 
 	public:
 		//signals
-		SigSlot::Signalv1< const std::string& >  SignalAcquireName;
-		SigSlot::Signalv2< CLAMVM::ProcessingController* , const std::string& > SignalAcquireProcessing;
-		SigSlot::Slotv2< CLAMVM::ProcessingController *, const std::string & > SlotCreateNewPresentation;
+	//	SigSlot::Signalv1< const std::string& >  SignalAcquireName;
+		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;
+	//	SigSlot::Slotv2< CLAMVM::ProcessingController *, const std::string & > SlotCreateNewPresentation;
 		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > SignalAcquirePortConnection;
 		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > SignalAcquireControlConnection;
-		SigSlot::Signalv1< const std::string & > SignalRemoveProcessingToGUI;
+		SigSlot::Signalv1< const std::string & > SignalRemoveProcessingPresentation;
 		//slots
 		SigSlot::Slotv1< bool > SlotChangeState;
 		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemovePortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemoveControlConnection;
-		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddNewProcessing;
-		SigSlot::Slotv1< CLAM::Processing * > SlotRebuildProcessingStructure;
+		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
+//		SigSlot::Slotv1< CLAM::Processing * > SlotRebuildProcessingStructure;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateNewPortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateNewControlConnection;
 		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
 		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
-		SigSlot::Slotv1< CLAMVM::ProcessingController * > SlotRemoveProcessingController;
+//		SigSlot::Slotv1< CLAMVM::ProcessingController * > SlotRemoveProcessingController;
 		SigSlot::Slotv0 SlotClear;
 	};
 } // namespace CLAMVM
