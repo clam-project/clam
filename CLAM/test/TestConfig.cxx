@@ -225,15 +225,15 @@ int main(void)
 
 	} catch (CLAM::Err e)
 	{
-			e.Print();
-			std::cout << "Failed!" << std::endl;
-			return 1;
+		e.Print();
+		std::cout << "Failed!" << std::endl;
+		return 1;
 	} catch (std::exception e)
 	{
-			std::cout << e.what() << std::endl;
+		std::cout << e.what() << std::endl;
 	} catch (...)
 	{
-			std::cout << "catch (...)" << std::endl;
+		std::cout << "catch (...)" << std::endl;
 	}
 
 	std::cout << "Passed." << std::endl;
