@@ -335,7 +335,7 @@ namespace CLAM {
 		 * This method must be called before any call to Do() methods.
 		 * @asserts that the processing object is ready
 		 */
-		void Start(void);
+		void Start(void) throw( ErrProcessingObj );
 
 		/** Method to put the object out of running state When in
 		 * execution mode, this method must be called before any
@@ -375,7 +375,17 @@ namespace CLAM {
 		 *  an object of the configuration class matching the concrete
 		 *  processing class of the processing object.
 		 */
-		bool Configure(const ProcessingConfig&) throw(ErrProcessingObj);
+		bool Configure(const ProcessingConfig&);
+
+		/**
+		 *  These two methods, are temporary, very prone to disappear
+		 *  soon, for enabling clients that know concrete Processing object
+		 *  type to call safely the ConcreteConfigure(). See the functional
+		 *  test of AudioFileIn and and its usage example for more details
+		 *  on when and how to use them.
+		 */
+		void PreConcreteConfigure( const ProcessingConfig& c);
+		void PostConcreteConfigure();
 
 		/** Configuration getter.
 		 * Gets the configuration parameters used to create the object.
@@ -566,6 +576,7 @@ namespace CLAM {
 		*/
 		const char* AddStatus(const char* a);
 		const char* AddStatus(const std::string& a);
+		bool  mPreconfigureExecuted;
 	};
 
 

@@ -39,20 +39,20 @@ namespace CLAM {
 		: mpParent(0),
 		mInControls(this),
 		mOutControls(this),
+		  mInPorts(this),
 		mOutPorts(this),
-		mInPorts(this)
+		  mPreconfigureExecuted( false )
 	{
 		mState = Unconfigured;
 	}
 
-	bool Processing::Configure(const ProcessingConfig &c) throw(ErrProcessingObj)
+	void Processing::PreConcreteConfigure( const ProcessingConfig& c )
 	{
+		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
 		std::string config_name;
 		std::string old_name = mName;
 		mStatus = "";
-
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
 
 		// As we have no acces to the actual dynamic configuration object
 		// but via its abstract interface, we have no way to do apriori an
@@ -74,17 +74,56 @@ namespace CLAM {
 			else
 				mpParent->Insert(*this);
 		}
-		else if (name_change_requested)
-			if (!mpParent->NameChanged(*this,old_name))
-				throw ErrProcessingObj("Duplicated Processing Name Requested",this);
+		else if (name_change_requested) 
+			// if Processing name is duplicated it is changed silently to something
+			// acceptable
+			if (!mpParent->NameChanged(*this,old_name)) 
+				mName = mpParent->InsertAndGiveName( *this );
 
-		if (!ConcreteConfigure(c)) {
-			mState=Unconfigured;
-			mStatus+=" Configuration failed.";
+		mPreconfigureExecuted = true;
+
+	}
+
+	void Processing::PostConcreteConfigure()
+	{
+		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
+		CLAM_ASSERT(mPreconfigureExecuted, "PreConcreteConfigure was not being called" );
+
+		mState=Ready;
+		mStatus="Ready to be started";
+
+	}
+
+	bool Processing::Configure(const ProcessingConfig &c)
+	{
+		PreConcreteConfigure( c );
+		
+		try
+		{
+
+			if (!ConcreteConfigure(c)) 
+			{
+				mState=Unconfigured;
+				mPreconfigureExecuted = false;
+				mStatus+=" Configuration failed.";
+				return false;
+			}
+		}
+		catch( CLAM::Err& error )
+		{
+			mState = Unconfigured;
+			mPreconfigureExecuted = false;
+			mStatus += "Exception thrown during ConcreteConfigure:\n";
+			mStatus += error.what();
+			mStatus += "\n";
+			mStatus += "Configuration failed.";
+
 			return false;
 		}
-		mState=Ready;
-		mStatus="";
+		
+		PostConcreteConfigure();
+		
 		return true;
 	}
 
@@ -122,21 +161,28 @@ namespace CLAM {
 		
 	}
 
-	void Processing::Start(void)
+	void Processing::Start(void) throw ( ErrProcessingObj )
 	{
 		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
-		mState=Running;
 		
 		try {
 			if (!ConcreteStart())
 				mState=Unconfigured;
 		}
 		catch (Err &e) {
-			ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
+			//ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
+			//new_e.Embed(e);
+			//CLAM_ASSERT( false, AddStatus(new_e.what()) );
+			
 			mState=Unconfigured;
-			new_e.Embed(e);
-			CLAM_ASSERT( false, AddStatus(new_e.what()) );
+
+			AddStatus( "Start(): Object failed to start properly.\n" );
+			AddStatus( e.what() );
+			throw e; // Propagate exception
 		}
+
+		mState = Running;
+
 	}
 	
 	void Processing::Stop(void)
