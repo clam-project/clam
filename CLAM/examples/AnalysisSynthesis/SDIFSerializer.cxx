@@ -19,12 +19,13 @@
  *
  */
 
-#include "SDIFSerializer.hxx"
+#include <iostream>
 
+#include "SDIFSerializer.hxx"
 #include "SDIFIn.hxx"
 #include "SDIFOut.hxx"
-
 #include "Segment.hxx"
+
 
 using namespace CLAM;
 
@@ -54,8 +55,10 @@ bool SDIFSerializer::DoLoad( char* fileName, Segment& segment )
 	mSDIFReader.Stop(  );
 	} catch (Err e)
 	{
-		cout<<"caca:: "<<e.what()<<endl;
+		std::cout<<"caca:: "<<e.what()<< std::endl;
 	}
+
+	return true;
 }
 
 bool SDIFSerializer::DoStore( char* fileName, Segment& segment )
@@ -75,4 +78,6 @@ bool SDIFSerializer::DoStore( char* fileName, Segment& segment )
 		mSDIFWriter.Do( segment.GetFrame( i ) );
 	}
 	mSDIFWriter.Stop(  );
+
+	return true;
 }
