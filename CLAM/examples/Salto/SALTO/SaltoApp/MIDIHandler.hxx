@@ -27,7 +27,6 @@ namespace CLAM
 		virtual ~MIDIHandler();
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
-
 		bool Do(void) { return true; }
 
 		void SetParams(Parameters* params) { mParams = params; }
@@ -41,7 +40,6 @@ namespace CLAM
 
 		OutControl mStatusOut;
 
-		int mLastPitch;
 		TControlData mVelocity;
 		
 		Parameters* mParams;
@@ -53,7 +51,7 @@ namespace CLAM
 
 		int UpdateVelocity( TControlData velocity )
 		{
-			std::cout << "velocity = " << velocity << endl;
+			//std::cout << "velocity = " << velocity << std::endl;
 			mVelocity = velocity;
 
 			return 0;
