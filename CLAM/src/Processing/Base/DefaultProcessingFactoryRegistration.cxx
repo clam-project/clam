@@ -10,11 +10,15 @@
 #include "FFT_rfftw.hxx"
 #include "AudioOut.hxx"
 #include "Controller.hxx"
-
+#include "ADSR.hxx"
 // VC6 needs to see the whole types
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 
+// processings in draft directory
+#include "OscillatorWithModulation.hxx"
+#include "Random.hxx"
+#include "FlagControl.hxx"
 
 /**
  * In this cxx are defined the objects that will be in the factory by default. Including it 
@@ -36,3 +40,9 @@ static ProcessingFactory::Registrator<CLAM::AudioOut> regtAudioOut( "AudioOut" )
 static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Controller" );
 static ProcessingFactory::Registrator<CLAM::AudioFileIn> regtAudioFileIn( "AudioFileIn" );
 static ProcessingFactory::Registrator<CLAM::AudioFileOut> regtAudioFileOut( "AudioFileOut" );
+static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
+// processings in draft directory
+static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
+static ProcessingFactory::Registrator<CLAM::OscillatorWithModulation> regtOscillatorWithModulation( "OscillatorWithModulation" );
+static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
+
