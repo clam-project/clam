@@ -15,13 +15,15 @@
 #include <map>
 
 #include "Audio.hxx"
+#include "Component.hxx"
+#include "Storage.hxx"
 
 namespace CLAM
 {
 
 class FlowControl;
 
-class Network
+class Network : public Component
 {
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
@@ -64,6 +66,15 @@ public:
 	OutPort & GetOutPortByCompleteName( const std::string& );
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
+
+	// serialization methods
+	virtual void StoreOn( Storage & storage);
+	virtual void LoadFrom( Storage & storage);
+	virtual const char * GetClassName() const
+	{
+		return "Network";
+	}
+	
 
 protected:
 	NodeBase & GetNodeAttachedTo(OutPort & );

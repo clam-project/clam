@@ -26,6 +26,15 @@ namespace CLAM
 		std::for_each( 	_processings.begin(), _processings.end(), HelperFunctions::DeleteProcessing );
 	}
 
+	void Network::StoreOn( Storage & storage)
+	{
+		
+	}
+
+	void Network::LoadFrom( Storage & storage)
+	{
+	}
+
 	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{		
