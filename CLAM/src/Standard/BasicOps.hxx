@@ -695,7 +695,7 @@ public:
 	{
 		if(!useMemory)
 		{
-			return pow(centralMoment2(a),0.5);
+			return sqrt(centralMoment2(a));
 		}
 		else
 		{
