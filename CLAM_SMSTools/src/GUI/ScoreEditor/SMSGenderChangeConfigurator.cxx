@@ -43,8 +43,9 @@ namespace CLAMVM
 		return mHelpWidget;
 	}
 
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
-
-	static SMSConfiguratorFactory::Registrator<CLAMVM::SMSGenderChangeConfigurator> regtPitchShiftCfg( "SMSGenderChange" );
+	static SMSConfiguratorFactory::Registrator<SMSGenderChangeConfigurator> regtPitchShiftCfg( "SMSGenderChange" );
 
 }
+
+
+

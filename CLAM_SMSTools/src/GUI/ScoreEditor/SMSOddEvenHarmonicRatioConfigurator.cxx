@@ -41,9 +41,10 @@ namespace CLAMVM
 	{
 		return mHelpWidget;
 	}
-
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
-
-	static SMSConfiguratorFactory::Registrator<CLAMVM::SMSOddEvenHarmonicRatioConfigurator> regtPitchShiftCfg( "SMSOddEvenHarmonicRatio" );
+	
+	static SMSConfiguratorFactory::Registrator<SMSOddEvenHarmonicRatioConfigurator> regtPitchShiftCfg( "SMSOddEvenHarmonicRatio" );
 
 }
+
+
+

@@ -50,9 +50,10 @@ namespace CLAMVM
 	{
 		return mHelpWidget;
 	}
+	
+	static SMSConfiguratorFactory::Registrator<SMSPitchShiftConfigurator> regtPitchShiftCfg( "SMSPitchShift" );
 
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
-
-	static SMSConfiguratorFactory::Registrator<CLAMVM::SMSPitchShiftConfigurator> regtPitchShiftCfg( "SMSPitchShift" );
 
 }
+
+

@@ -2,6 +2,7 @@
 #define __SMSCONFIGURATOR__
 
 #include <FL/Fl_Widget.H>
+#include "Factory.hxx"
 
 namespace CLAM
 {
@@ -19,6 +20,9 @@ namespace CLAMVM
 		virtual Fl_Widget* GetHelpWidget() = 0;
 		virtual const CLAM::ProcessingConfig& GetConfig() = 0;
 	};
+
+	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
+
 }
 
 #endif // SMSConfigurator.hxx

@@ -13,9 +13,10 @@
 #include "SMS_Configurator.hxx"
 #include <iostream>
 
-namespace CLAMVM
+
+CLAMVM::SMSConfigurator* Mimonga()
 {
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
+	return NULL;
 }
 
 inline void SMSScoreEditor::cb_mMoveTransUpInScoreButton_i(Fl_Button*, void*) {
@@ -77,6 +78,7 @@ inline void SMSScoreEditor::cb_mRepositoryBrowser_i(Fl_Select_Browser* b, void*)
 	mHighlightedConfig = 0;
 	ActivateConfigurator( b->text( b->value() ) );
 	ShowActiveConfiguratorHelp();
+	mTransTabs->redraw();
 }
 
 void SMSScoreEditor::cb_mRepositoryBrowser(Fl_Select_Browser* o, void* v) 
@@ -104,6 +106,7 @@ inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 	ShowActiveConfiguratorEditWidget();
 
 	mScoreContentsBox->select( mHighlightedConfig );
+	mTransTabs->redraw();
 
 }
 
@@ -371,7 +374,10 @@ void SMSScoreEditor::ShowFactoryProductsOnBrowser()
 	std::list< std::string >::const_iterator i = availableTransformationsList.begin();
 
 	for ( ; i != availableTransformationsList.end(); i++ )
+	{
 		mRepositoryBox->add( i->c_str() );
+	}
+
 }
 
 void SMSScoreEditor::ShowScoreOnBrowser( )
@@ -454,6 +460,9 @@ void SMSScoreEditor::ApplyChangesAndClose()
 
 void SMSScoreEditor::AddHighlightedToScore( )
 {
+	if ( mRepositoryBox->size() == 0 )
+		return;
+
 	int insertedTransformation = mRepositoryBox->value();
 
 	mScoreContentsBox->add( mRepositoryBox->text( insertedTransformation ) ); 

@@ -43,8 +43,10 @@ namespace CLAMVM
 		return mHelpWidget;
 	}
 
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
 
-	static SMSConfiguratorFactory::Registrator<CLAMVM::SMSFreqShiftConfigurator> regtFreqShiftCfg( "SMSFreqShift" );
+static SMSConfiguratorFactory::Registrator<SMSFreqShiftConfigurator> regtFreqShiftCfg( "SMSFreqShift" );
+
+
 
 }
+

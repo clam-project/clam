@@ -43,8 +43,8 @@ namespace CLAMVM
 		return mHelpWidget;
 	}
 
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
-
-	static SMSConfiguratorFactory::Registrator<CLAMVM::SMSPitchDiscretizationConfigurator> regtPitchShiftCfg( "SMSPitchDiscretization" );
+	static SMSConfiguratorFactory::Registrator<SMSPitchDiscretizationConfigurator> regtPitchShiftCfg( "SMSPitchDiscretization" );
 
 }
+
+

@@ -40,8 +40,8 @@ namespace CLAMVM
 		return mHelpWidget;
 	}
 
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
-
-	static SMSConfiguratorFactory::Registrator<CLAMVM::SMSMorphConfigurator> regtPitchShiftCfg( "SMSMorph" );
+	static SMSConfiguratorFactory::Registrator<SMSMorphConfigurator> regtPitchShiftCfg( "SMSMorph" );
 
 }
+
+
