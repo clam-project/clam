@@ -2,7 +2,6 @@
 #include "Network.hxx"
 #include "FlowControl.hxx"
 #include <algorithm>
-#include <iostream>
 
 namespace CLAM
 {
@@ -196,7 +195,9 @@ namespace CLAM
 	{
 		//@todo
 		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
-		return new NodeTmpl<Audio, DefaultStreamBuffer>;
+		NodeBase * node = new NodeTmpl<Audio, DefaultStreamBuffer>;
+		_nodesToConfigure.push_back( node );
+		return node;
 		//return new AudioNodeTmpl;
 	}
 	
@@ -204,11 +205,11 @@ namespace CLAM
 	{
 		AssertFlowControlNotNull();
 
-		Nodes::iterator it = _nodes.begin();
-		while ( it!=_nodes.end() )
+		Nodes::iterator it = _nodesToConfigure.begin();
+		while ( it!=_nodesToConfigure.end() )
 			_flowControl->ConfigureNode(**it++);
 		
-		
+		_nodesToConfigure.clear();
 	}
 
 	void Network::Start()
