@@ -49,10 +49,11 @@ public: \
 protected: \
 	void MandatoryInit()\
 	{\
-		static TAttr *staticTypeDescTable = NULL;\
-		if(!staticTypeDescTable)\
+		static bool staticTableInitialized = false;\
+		static TAttr staticTypeDescTable[N];\
+		if(!staticTableInitialized)\
 		{\
-			staticTypeDescTable = new TAttr[N];\
+			staticTableInitialized=true;\
 			typeDescTable = staticTypeDescTable;\
 			InformAll();\
 		}else{\
