@@ -4,7 +4,6 @@
 #include "Normalization.hxx"
 #include "Segment.hxx"
 #include "OnsetDetector.hxx"
-#include "AubioOnsetDetector.hxx"
 #include "Pulse.hxx"
 #include "TickSequenceTracker.hxx"
 #include "RD_MeterEstimator.hxx"
@@ -12,16 +11,12 @@
 
 namespace RhythmIR
 {
-	// Internal methods
-	static void ExtractOnsetsWithMTGAlgorithm( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config );
-	static void ExtractOnsetsWithAubioAlgorithms( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config );
-
 
 	void LoadInputAudio( CLAM::DescriptionDataPool& pool,
 			     std::string filename )
 	{
 		CLAM::AudioFile file;
-		file.SetLocation( filename );
+		file.OpenExisting( filename );
 
 		if ( !file.IsReadable() )
 		{
@@ -62,45 +57,34 @@ namespace RhythmIR
 	void NormalizeInputAudio( CLAM::DescriptionDataPool& pool, 
 				  const CLAM::TickExtractorConfig& cfg )
 	{
-		if ( cfg.GetOnsetDetection().GetString() == "MTG" )
-		{
-			CLAM::Normalization       audioNormalizer;
-			CLAM::NormalizationConfig audioNormalizerConfig;
+		CLAM::Normalization       audioNormalizer;
+		CLAM::NormalizationConfig audioNormalizerConfig;
 
-			// Scaling factor is computed from the "dominant" energy level
-			audioNormalizerConfig.SetType( 3 ); 
+		// Scaling factor is computed from the "dominant" energy level
+		audioNormalizerConfig.SetType( 3 ); 
 
-			// Building the dummy Audio objects from the pool
-			CLAM::Audio dummyAudioOrig;
-			CLAM::Audio dummyAudioNorm;
+		// Building the dummy Audio objects from the pool
+		CLAM::Audio dummyAudioOrig;
+		CLAM::Audio dummyAudioNorm;
 
-			dummyAudioOrig.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"),
-							   pool.GetNumberOfContexts( "Sample") );
+		dummyAudioOrig.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"),
+						   pool.GetNumberOfContexts( "Sample") );
 
-			dummyAudioNorm.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","NormalizedValue"),
-							   pool.GetNumberOfContexts( "Sample") );
+		dummyAudioNorm.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","NormalizedValue"),
+						   pool.GetNumberOfContexts( "Sample") );
 
-			dummyAudioOrig.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
-			dummyAudioNorm.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
+		dummyAudioOrig.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
+		dummyAudioNorm.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
 
-			// Configuration and execution
-			audioNormalizer.Configure( audioNormalizerConfig );
-			audioNormalizer.Start();
-			audioNormalizer.Do( dummyAudioOrig, dummyAudioNorm );
-			audioNormalizer.Stop();
-		}
+		// Configuration and execution
+		audioNormalizer.Configure( audioNormalizerConfig );
+		audioNormalizer.Start();
+		audioNormalizer.Do( dummyAudioOrig, dummyAudioNorm );
+		audioNormalizer.Stop();
 	}
 
 
 	void ExtractOnsets( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
-	{
-		if ( config.GetOnsetDetection().GetString() == "MTG" )
-			ExtractOnsetsWithMTGAlgorithm( pool, config );
-		else
-			ExtractOnsetsWithAubioAlgorithms( pool, config );
-	}
-
-	void ExtractOnsetsWithMTGAlgorithm( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
 	{
 		CLAM::Segment seg;
 		seg.AddAudio();
@@ -152,58 +136,6 @@ namespace RhythmIR
 				onsetWeights[k] = transients[k-1].GetWeight();
 			}
 		}
-	}
-	
-	void ExtractOnsetsWithAubioAlgorithms( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
-	{
-		CLAM::TData sampleRate = *pool.GetWritePool<CLAM::TData>("Global","SampleRate");
-		
-		CLAM::Audio dummyAudio;
-		dummyAudio.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"),
-					       pool.GetNumberOfContexts( "Sample") );
-		dummyAudio.SetSampleRate( *pool.GetWritePool<CLAM::TData>("Global","SampleRate") );
-
-		// The array to leave the transients detected
-		CLAM::Array<CLAM::TimeIndex> transients;
-
-
-		CLAM::RhythmDescription::AubioOnsetDetectorConfig odCfg;
-		
-		CLAM::RhythmDescription::AubioOnsetDetector onsetDetector;
-		
-		odCfg.SetMethod(  config.GetOnsetDetection().GetValue() - 1);
-		CLAM::TSize windowSize = CLAM::TSize(sampleRate*0.02); // 20ms window
-		CLAM::TSize hopSize = (windowSize%2==0) ? windowSize/2 : (windowSize+1) / 2 ; // 50% overlap
-		odCfg.SetWindowSize( windowSize );
-		odCfg.SetHopSize( hopSize );
-		
-		onsetDetector.Configure( odCfg );
-		
-		onsetDetector.Start();
-		
-		onsetDetector.Do( dummyAudio, transients );
-		
-		onsetDetector.Stop();
-		
-		// the dummy transient
-		if ( transients.Size() > 0 )
-		{
-			pool.SetNumberOfContexts( "Onset", transients.Size()+1 );
-
-			CLAM::TTime* onsetPositions = pool.GetWritePool<CLAM::TTime>("Onset","Position");
-			CLAM::TData* onsetWeights = pool.GetWritePool<CLAM::TData>("Onset","Weight");
-
-			onsetPositions[0] = 0.0;
-			onsetWeights[0] = 0.0;
-			
-			for ( int k = 1; k < transients.Size()+1; k++ )
-			{
-				onsetPositions[k] = transients[k-1].GetPosition();
-				onsetWeights[k] = transients[k-1].GetWeight();
-			}
-
-		}
-
 	}
 
 	void ExtractTicksAndBeats( CLAM::DescriptionDataPool& pool,
