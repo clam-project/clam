@@ -3,29 +3,33 @@
 
 #include "AudioManager.hxx"
 #include "Network.hxx"
+#include <list>
 
 namespace FlowControlExample
 {
 
 class SupervisedSystemWithoutTrueFlowControl
 {
-
+	typedef std::list<CLAM::Network*> NetworkList;
 public:	
-	SupervisedSystemWithoutTrueFlowControl
-	( std::string fileIn, std::string fileOut , int frameSize, int maxFramesToProcess, bool hasAudioOut );
+	SupervisedSystemWithoutTrueFlowControl( 
+		std::string fileIn, 
+		std::string fileOut, 
+		int frameSize, 
+		int maxFramesToProcess, 
+		bool hasAudioOut );
 
 	virtual ~SupervisedSystemWithoutTrueFlowControl(){}
 
 	void ConfigureNetworks();
 	void ProcessAllNetworks();
-private:
 
+private:
 	void  ConfigureOscillatorToFileOut();
 	void  ConfigureFileInFileOut();
 	void  ConfigureModulatedFileIn();
 	void  ConfigureModulatedOscillator();
 	void  ConfigureModulatedFileInPlusFileIn();
-
 
 
 	//other system parameters
@@ -41,6 +45,8 @@ private:
 	CLAM::Network _modulatedFileIn;
 	CLAM::Network _modulatedOscillator;
 	CLAM::Network _modulatedFileInPlusFileIn;
+
+	NetworkList _networks;
 
 	CLAM::AudioManager _audioManager;
 
