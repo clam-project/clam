@@ -1,4 +1,6 @@
 #include <Oscillator.hxx>
+#include <map>
+#include <string>
 
 namespace CLAM {
 	
@@ -8,12 +10,17 @@ namespace CLAM {
 
 class FactoryRegistry
 {	
-public:
-	void GetCreator(char* id)
-	{
-		CLAM_ASSERT(false, "id should be in the registry");
+	typedef Processing* (*CreatorMethod)(void);
+	typedef std::string RegistryKey;
 
+public:
+	void GetCreator(char*)
+	{
+		CLAM_ASSERT(_creators.begin() != _creators.end(), 
+			"the Factory Registry shouldn't be empty");
 	}
+private:
+	std::map< RegistryKey, CreatorMethod> _creators;
 };
 
 } // namespace
