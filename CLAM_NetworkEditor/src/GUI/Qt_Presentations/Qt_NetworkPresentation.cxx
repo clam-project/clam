@@ -67,6 +67,7 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	SlotSendMessageToStatus.Wrap( this, &Qt_NetworkPresentation::SendMessageToStatus );
 	SlotMovingMouseWithButtonPressed.Wrap( this, &Qt_NetworkPresentation::MovingMouseWithButtonPressed );
 	setAcceptDrops(TRUE);
+	setFocus();
 	grabKeyboard();
 }
 
@@ -150,6 +151,8 @@ void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::Connectio
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
 	presentation->SignalRemoveConnection.Connect( SlotRemovePortConnection);
+	presentation->SignalConnectionPresentationSelected.Connect( SlotConnectionPresentationSelected );
+	presentation->SignalConnectionPresentationAddedToSelection.Connect( SlotConnectionPresentationAddedToSelection );
 
 	AttachConnectionToPortPresentations(presentation);
 	mConnectionPresentations.push_back(presentation);
@@ -173,7 +176,9 @@ void Qt_NetworkPresentation::CreateControlConnectionPresentation( CLAMVM::Connec
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
 	presentation->SignalRemoveConnection.Connect( SlotRemoveControlConnection);
-
+	presentation->SignalConnectionPresentationSelected.Connect( SlotConnectionPresentationSelected );
+	presentation->SignalConnectionPresentationAddedToSelection.Connect( SlotConnectionPresentationAddedToSelection );
+	
 	AttachConnectionToControlPresentations(presentation);
 	mConnectionPresentations.push_back(presentation);
 
@@ -408,6 +413,7 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 		Qt_ProcessingPresentation & proc = (Qt_ProcessingPresentation&)GetProcessingPresentation(concreteName);
 		proc.move(event->pos());
 	}
+	setFocus();
 }
 
 void Qt_NetworkPresentation::ProcessingPresentationSelected( Qt_ProcessingPresentation * proc )
