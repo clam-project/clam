@@ -86,6 +86,10 @@ void FlProgress::initWindow( bool more )
 
 
 //-------------------------------------------------------
+// ProgressGUIAdapter implementation
+//-------------------------------------------------------
+
+
 
 ProgressGUIAdapter::ProgressGUIAdapter( int argc, char **argv, bool more/*default true*/ ) : 
 	_progress(more),
@@ -101,54 +105,32 @@ ProgressGUIAdapter::ProgressGUIAdapter( int argc, char **argv, bool more/*defaul
 void ProgressGUIAdapter::process()
 {
 
-	gendepend = 0;
-	recursesrcs = 1;
+	setUp(_argv);
 	
-	config_init();
-	
-	listhash_add_item_str(config,"OS_WINDOWS","1");
-	listhash_add_item_str(config,"OS_LINUX","0");
-
-	config_parse(_argv[1]);
-
-	parser_init();
-
-	config_check();
-	
+	// begin srcdeps common code
+	int cnt = 0;
+	item* i = guessed_sources->first;
+	while (i)
 	{
-		int cnt = 0;
-		item* i = guessed_sources->first;
-		while (i)
-		{
-			fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
-			parser_run(i->str);
-			
-			i = i->next;
-			cnt++;
-
-			setGuessed( list_size(guessed_sources) );
-			setFound(cnt);
-			ProgressGUIAdapter::refresh();
-
-		}
+		fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+		parser_run(i->str);
+		
+		i = i->next;
+		cnt++;
+		
+		updateProgressBar(cnt, list_size(guessed_sources) );
 	}
+	// end srcdeps common code 
 
-	dsp_parse(_argv[2]);
-	parser_exit();
-	config_exit();
-	
-	{
-		FILE* f = fopen( "buildstamp", "w" );
-		if ( !f ) 
-		{
-			fprintf( stderr, "Error: failed to create build stamp!" );
-			exit( -1 );
-		}
-		fclose( f );
-	}
-	
-
+	finish(_argv);
 	removeIdleProcess( *this );
+}
+
+void ProgressGUIAdapter::updateProgressBar(int found, int guessed)
+{
+	setGuessed( guessed );
+	setFound( found);
+	refresh();
 }
 
 void ProgressGUIAdapter::addIdleProcess( ProgressGUIAdapter &process )

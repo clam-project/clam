@@ -64,10 +64,16 @@ public:
 	static void removeIdleProcess( ProgressGUIAdapter &process );
 	static int runEventsLoop();
 
+	void updateProgressBar(int found, int guessed);
+	
+private:
 	void setFound(int val) { _progress.setFound( val ); }
 	void setGuessed(int val) { _progress.setGuessed( val ); }
 	
-private:
+	/** static Template Methods use by process. To be defined in the main filed */
+	static void setUp(char **argv);
+	static void finish(char **argv);
+
 
 	static void staticProcess( void* thisObject );
 	static void refresh();
