@@ -24,6 +24,15 @@ namespace CLAM
 			return static_cast<QtSegAudioPlot*> (create(audio,marks,label,x,y,w,h,sc));
 		}
 
+		QtStereoAudioPlot* PlotFactory::GetStereoAudioPlot(	std::vector<Audio> data,
+															const std::string& label,
+															int x, int y, int w, int h,
+															bool sc)
+		{
+			QtAppWrapper::Init();
+			return static_cast<QtStereoAudioPlot*> (create(data,label,x,y,w,h,sc));
+		}
+
 		QtFundFreqPlot* PlotFactory::GetFundFreqPlot(const Segment& segment,
 													const std::string& label,
 													int x, int y, int w, int h,
@@ -91,6 +100,16 @@ namespace CLAM
 		{
 			QtAppWrapper::Init();
 			return static_cast<QtSegAudioPlot*> (create(audio,marks,label,x,y,w,h,sc,parent));
+		}
+
+		QtStereoAudioPlot* PlotFactory::GetStereoAudioPlot(	QWidget* parent,
+															std::vector<Audio> data,
+															const std::string& label,
+															int x, int y, int w, int h,
+															bool sc )
+		{
+			QtAppWrapper::Init();
+			return static_cast<QtStereoAudioPlot*> (create(data,label,x,y,w,h,sc,parent));
 		}
 
 		QtFundFreqPlot* PlotFactory::GetFundFreqPlot(QWidget* parent,
@@ -165,8 +184,21 @@ namespace CLAM
 									int x, int y, int w, int h,
 									bool sc, QWidget* parent)
 		{
-			QtSegAudioPlot* plot = new QtSegAudioPlot();
+			QtSegAudioPlot* plot = new QtSegAudioPlot(parent);
 			plot->SetData(audio,marks);
+			plot->Label(label);
+			plot->Geometry(x,y,w,h);
+			plot->SwitchDisplayColors(sc);
+			return plot;
+		}
+
+		QtPlot* PlotFactory::create(std::vector<Audio> data,
+									const std::string& label,
+									int x, int y, int w, int h,
+									bool sc, QWidget* parent)
+		{
+			QtStereoAudioPlot* plot = new QtStereoAudioPlot(parent);
+			plot->SetData(data);
 			plot->Label(label);
 			plot->Geometry(x,y,w,h);
 			plot->SwitchDisplayColors(sc);

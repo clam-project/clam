@@ -9,18 +9,29 @@ namespace CLAM
 	{
 		APlayer::APlayer()
 		{
+			_muteLeft=false;
+			_muteRight=false;
 		}
 		
 		APlayer::~APlayer()
 		{
 		}
 		
-		void APlayer::SetData(const Audio& audio)
+		void APlayer::SetData(std::vector<Audio> data)
 		{
-			_audio = audio;
+			if(data.size()==1)
+			{
+				_leftChannel = data[0];
+				_rightChannel = data[0];
+			}
+			else
+			{
+				_leftChannel = data[0];
+				_rightChannel = data[1];
+			}
 			MediaTime time;
 			time.SetBegin(TData(0.0));
-			time.SetEnd(TData(_audio.GetSize())/_audio.GetSampleRate());
+			time.SetEnd(TData(_leftChannel.GetSize())/_leftChannel.GetSampleRate());
 			SetBounds(time);
 			_thread.SetThreadCode(makeMemberFunctor0((*this), APlayer, thread_code));
 			HaveData(true);
@@ -28,8 +39,8 @@ namespace CLAM
 		
 		void APlayer::thread_code()
 		{
-			TSize nSamples = _audio.GetSize();         
-			TData sampleRate = _audio.GetSampleRate(); 
+			TSize nSamples = _leftChannel.GetSize();         
+			TData sampleRate = _leftChannel.GetSampleRate(); 
 			TSize frameSize = 512;                    
 
 			AudioManager manager((int)sampleRate,(int)frameSize);  
@@ -45,8 +56,13 @@ namespace CLAM
 			channelL.Start();              
 			channelR.Start();
     
-			Audio samples;                
-			samples.SetSize(frameSize);
+			Audio samplesL;  
+			Audio samplesR;
+			samplesL.SetSize(frameSize);
+			samplesR.SetSize(frameSize);
+
+			Audio silence;
+			silence.SetSize(frameSize);
 								
 		    TIndex leftIndex = TIndex(_time.GetBegin()*sampleRate);        
 			TIndex rightIndex = leftIndex+frameSize;
@@ -59,15 +75,50 @@ namespace CLAM
 					SetPlaying(false);
 				}
 				if(!IsPlaying()) break;
-			    _audio.GetAudioChunk(leftIndex,rightIndex,samples);
-				channelL.Do(samples);
-				channelR.Do(samples);
+			    _leftChannel.GetAudioChunk(leftIndex,rightIndex,samplesL);
+				_rightChannel.GetAudioChunk(leftIndex,rightIndex,samplesR);
+				if(!isMutedLChannel())
+				{
+					channelL.Do(samplesL);
+				}
+				else
+				{
+					channelL.Do(silence);
+				}
+				if(!isMutedRChannel())
+				{
+					channelR.Do(samplesR);
+				}
+				else
+				{
+					channelR.Do(silence);
+				}
 				leftIndex += frameSize;
 				rightIndex += frameSize;
 			 }
 			 channelL.Stop(); 
 			 channelR.Stop();
 			 if(!IsPaused()) _time.SetBegin(GetBeginTime());
+		}
+
+		void APlayer::SetLeftChannelMuted(bool b)
+		{
+			_muteLeft=b;
+		}
+
+		void APlayer::SetRightChannelMuted(bool b)
+		{
+			_muteRight=b;
+		}
+
+		bool APlayer::isMutedLChannel()
+		{
+			return _muteLeft;
+		}
+
+		bool APlayer::isMutedRChannel()
+		{
+			return _muteRight;
 		}
 	}
 }

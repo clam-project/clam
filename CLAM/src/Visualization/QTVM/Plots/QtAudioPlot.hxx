@@ -34,7 +34,6 @@ namespace CLAM
 				void SetKeyReleased(QKeyEvent* e);
 
 				void UpdateRegion(MediaTime);
-				Audio& GetAudioData();
 
 			signals:
 				void regionTime(MediaTime);

@@ -1,6 +1,7 @@
 #ifndef _AUDIOFILELOADER_
 #define _AUDIOFILELOADER_
 
+#include <vector>
 #include "Audio.hxx"
 
 using CLAM::Audio;
@@ -12,6 +13,7 @@ public:
 	~AudioFileLoader();
 
 	int Load(const char* fileName,Audio& out);
+	int LoadST(const char* fileName,std::vector<Audio>& outputs);
 };
 
 #endif

@@ -216,11 +216,6 @@ namespace CLAM
 			return _mustProcessData;
 		}
 
-		Audio& AudioPlotController::GetAudioData()
-		{
-			return _audio;
-		}
-
 		void AudioPlotController::SetMousePos(TData x,TData y)
 		{
 			TData tbound = GetTopBound()-GetBottomBound();

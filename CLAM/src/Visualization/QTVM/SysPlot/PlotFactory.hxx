@@ -27,6 +27,14 @@ namespace CLAM
 														int h=225,
 														bool sc=true);
 
+				static QtStereoAudioPlot* GetStereoAudioPlot(	std::vector<Audio> data,
+																const std::string& label="",
+																int x=100,
+																int y=100,
+																int w=660,
+																int h=250,
+																bool sc=true);
+
 				static QtFundFreqPlot* GetFundFreqPlot(const Segment& segment,
 														const std::string& label="",
 														int x=100,
@@ -89,6 +97,15 @@ namespace CLAM
 														int h=225,
 														bool sc=true);
 
+				static QtStereoAudioPlot* GetStereoAudioPlot(	QWidget* parent,
+																std::vector<Audio> data,
+																const std::string& label="",
+																int x=100,
+																int y=100,
+																int w=660,
+																int h=250,
+																bool sc=true);
+
 				static QtFundFreqPlot* GetFundFreqPlot(QWidget* parent,
 														const Segment& segment,
 														const std::string& label="",
@@ -146,6 +163,12 @@ namespace CLAM
 
 				static QtPlot* create( const Audio& audio,
 										std::list<unsigned>& marks,
+										const std::string& label,
+										int x, int y, int w, int h,
+										bool sc=true,
+										QWidget* parent=0);
+
+				static QtPlot* create( std::vector<Audio> data,
 										const std::string& label,
 										int x, int y, int w, int h,
 										bool sc=true,

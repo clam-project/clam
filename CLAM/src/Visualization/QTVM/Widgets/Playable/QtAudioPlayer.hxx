@@ -1,6 +1,7 @@
 #ifndef __QTAUDIOPLAYER__
 #define __QTAUDIOPLAYER__
 
+#include <vector>
 #include "Audio.hxx"
 #include "QtPlayer.hxx"
 
@@ -14,7 +15,10 @@ namespace CLAM
 				QtAudioPlayer(QWidget* parent=0);
 				virtual ~QtAudioPlayer();
 
-				void SetData(const Audio& audio);
+				void SetData(std::vector<Audio> data);
+
+				void SetLeftChannelMuted(bool b);
+				void SetRightChannelMuted(bool b);
 		};
 	}
 }

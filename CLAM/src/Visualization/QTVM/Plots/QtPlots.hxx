@@ -3,6 +3,7 @@
 
 #include "QtAudioPlot.hxx"
 #include "QtSegAudioPlot.hxx"
+#include "QtStereoAudioPlot.hxx"
 #include "QtFundFreqPlot.hxx"
 #include "QtSpectrumPlot.hxx"
 #include "QtSpectrumAndPeaksPlot.hxx"

@@ -1,3 +1,4 @@
+#include <vector>
 #include <qlayout.h>
 #include <qframe.h>
 #include "AudioPlotController.hxx"
@@ -152,7 +153,10 @@ namespace CLAM
 
 		void QtAudioPlot::SetPData(const Audio& audio)
 		{
-			((QtAudioPlayer*)_player)->SetData(audio);
+			std::vector<Audio> data;
+			data.resize(1);
+			data[0]=audio;
+			((QtAudioPlayer*)_player)->SetData(data);
 		}
 
 		void QtAudioPlot::DisplayBackgroundBlack()
@@ -186,11 +190,6 @@ namespace CLAM
 			_rightAmpLab->hide();
 			_labelsGroup->hide();
 			showRightAmp=false;
-		}
-
-		Audio& QtAudioPlot::GetAudioData()
-		{
-			return ((AudioPlotController*)_controller)->GetAudioData();
 		}
 
 		void QtAudioPlot::SetKeyPressed(QKeyEvent* e)

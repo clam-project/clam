@@ -27,7 +27,6 @@ namespace CLAM
 				void SetMousePos(TData x,TData y);
 
 				TData GetAmp(TData t) const;
-				Audio& GetAudioData();
 
 			signals:
 				void xRulerScaleDiv(QwtScaleDiv);
