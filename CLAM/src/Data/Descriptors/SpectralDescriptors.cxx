@@ -117,7 +117,6 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetLowFreqEnergyRelation(initVal);
 	SetRolloff(initVal);
 	SetSlope(initVal);
-	SetHFC(initVal);
 }
 
 void SpectralDescriptors::DefaultInit() {
@@ -194,9 +193,6 @@ void SpectralDescriptors::ConcreteCompute()
 		SetRolloff(ComputeRolloff());
 	if(HasSlope())
 		SetSlope(mpStats->GetSlope()/mDeltaFreq);
-	if(HasHFC())
-		//not implemented
-		SetHFC(0);
 }
 
 
@@ -307,8 +303,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetFlatness(a.GetFlatness()*mult);
 	if(a.HasKurtosis())
 		tmpD.SetKurtosis(a.GetKurtosis()*mult);
-	if(a.HasHFC())
-		tmpD.SetHFC(a.GetHFC()*mult);
 	if(a.HasMaxMagFreq())
 		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()*mult);
 	if(a.HasLowFreqEnergyRelation())
@@ -403,12 +397,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.AddKurtosis();
 		tmpD.UpdateData();
 		tmpD.SetKurtosis(a.GetKurtosis()*b.GetKurtosis());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		tmpD.AddHFC();
-		tmpD.UpdateData();
-		tmpD.SetHFC(a.GetHFC()*b.GetHFC());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -550,12 +538,6 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.AddKurtosis();
 		tmpD.UpdateData();
 		tmpD.SetKurtosis(a.GetKurtosis()+b.GetKurtosis());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		tmpD.AddHFC();
-		tmpD.UpdateData();
-		tmpD.SetHFC(a.GetHFC()+b.GetHFC());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{

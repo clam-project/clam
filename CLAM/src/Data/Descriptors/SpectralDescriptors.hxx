@@ -37,7 +37,7 @@ namespace CLAM {
 
   	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 22, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 21, Descriptor);
 		
 		/** The spectral power mean value.
 		 *  The unit of this measure can be dB
@@ -83,21 +83,20 @@ namespace CLAM {
 		DYN_ATTRIBUTE (8, public, TData, Moment6);
 		DYN_ATTRIBUTE (9, public, TData, Flatness);
 		DYN_ATTRIBUTE (10,public, TData, Kurtosis);
-		DYN_ATTRIBUTE (11,public, TData, HFC);
-		DYN_ATTRIBUTE (12,public, Array<TData>, MFCC);
-		DYN_ATTRIBUTE (13,public, TData, MaxMagFreq); 
+		DYN_ATTRIBUTE (11,public, Array<TData>, MFCC);
+		DYN_ATTRIBUTE (12,public, TData, MaxMagFreq); 
 		/**
 		 * Frequency of the maximum magnitude of the spectrum 
 		 * normalized by the spectral range
 		 */
-		DYN_ATTRIBUTE (14,public, TData, LowFreqEnergyRelation); 
+		DYN_ATTRIBUTE (13,public, TData, LowFreqEnergyRelation); 
 		/**
 		 * The spectral spread is the variation of the spectrum
 		 * around its mean value. It's computed from the second
 		 * order moment.
 		 */
-		DYN_ATTRIBUTE (15,public, TData, Spread);
-		DYN_ATTRIBUTE (16,public, TData, Skewness);
+		DYN_ATTRIBUTE (14,public, TData, Spread);
+		DYN_ATTRIBUTE (15,public, TData, Skewness);
 		/**
 		 * The spectral roll-off point is the frequency value 
 		 * so that the 85% of the spectral energy is contained below 
@@ -107,17 +106,17 @@ namespace CLAM {
 		 * Rolloff / \sum_{f=0}^{RollOff} {a_f^2} = 0.85 \times \sum_{f=0}^{SpectralRange} {a_f^2}
 		 * \f]
 		 */
-		DYN_ATTRIBUTE (17,public, TData, Rolloff); 
+		DYN_ATTRIBUTE (16,public, TData, Rolloff); 
 		/**
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
 		 * @see Stats::Slope
 		 */
-		DYN_ATTRIBUTE (18,public, TData, Slope); 
-		DYN_ATTRIBUTE (19,public, TData, HighFrequencyCoefficient);
-		DYN_ATTRIBUTE (20,public, Array<SpectralDescriptors>, BandDescriptors);
+		DYN_ATTRIBUTE (17,public, TData, Slope); 
+		DYN_ATTRIBUTE (18,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (19,public, Array<SpectralDescriptors>, BandDescriptors);
 
-		DYN_ATTRIBUTE (21,public, Array<TData>,PCP);
+		DYN_ATTRIBUTE (20,public, Array<TData>,PCP);
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
@@ -209,11 +208,6 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 	{
 		if(b.GetKurtosis()>a.GetKurtosis())
 			tmpD.SetKurtosis(b.GetKurtosis());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		if(b.GetHFC()>a.GetHFC())
-			tmpD.SetHFC(b.GetHFC());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -325,11 +319,6 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 	{
 		if(b.GetKurtosis()<a.GetKurtosis())
 			tmpD.SetKurtosis(b.GetKurtosis());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		if(b.GetHFC()<a.GetHFC())
-			tmpD.SetHFC(b.GetHFC());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
