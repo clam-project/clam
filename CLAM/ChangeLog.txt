@@ -9,10 +9,20 @@
      ** Processing::LostData removed until needed
      ** Processing::StoreOn/LoadFrom removed until needed
      ** Processing::composite_begin/end moved to the ProcessingComposite
+  * Low Level Descriptors Revision (Audio, Spectral and SpectralPeaks):
+     ** Full doxygen documentation.
+     ** Formulas revised and corrected.
+     ** Most NaN singularities has ben solved. Check doxygen.
+     ** Unit testing and back-to-back testing for every descriptor.
+     ** Asserts that source data is in linear format
   * Standard:
      ** FormatData.hxx removed, also their useless uses
      ** Vector removed
      ** QSort removed, use stl's qsort instead
+  * Test Framework:
+     ** Qt testing GUI for Linux (activate USE_QT)
+     ** Infrastructure for reading basic Data (wav,xml)
+     ** Back to back testing infrastructure
 
 2004-04-13 CLAM_0_6_1
 'qt && Visual 7 support'
