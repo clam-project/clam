@@ -30,7 +30,6 @@
 
 namespace CLAM {
 
-class InPort;
 class Processing;
 
 //free method to link two Processing
