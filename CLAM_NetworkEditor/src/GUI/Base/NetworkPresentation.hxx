@@ -87,8 +87,8 @@ protected:
 	void CreatePortConnection( const std::string &, const std::string & );
 	void CreateControlConnection( const std::string &, const std::string & );
 
-	void RemoveConnectionPresentation( 	const std::string &, const std::string & );
-
+	void RemoveConnectionPresentation( const std::string &, const std::string & );
+	
 	virtual void Clear( );
 	
 	ConnectionPointPresentation & GetOutPortPresentationByCompleteName(const std::string &);

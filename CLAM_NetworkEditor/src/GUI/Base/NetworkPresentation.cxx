@@ -28,8 +28,6 @@
 #include "ConnectionPointPresentation.hxx"
 #include "Processing.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace NetworkGUI
 {
 
@@ -66,8 +64,6 @@ void NetworkPresentation::ChangeState( bool newState )
 
 void NetworkPresentation::RemoveConnectionPresentation( const std::string & out, const std::string & in)
 {
-	std::cout << "here we are" << std::endl;
-	std::cout << out << " " << in << std::endl;
 	ConnectionPresentationIterator it;
 	ConnectionPresentation * con = 0;
 	for( it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++)
