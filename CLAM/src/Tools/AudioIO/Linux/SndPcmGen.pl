@@ -41,22 +41,22 @@ print HXX<<EOF;
 DON'T EDIT THIS FILE BY HAND, IT IS GENERATED 
 BY THE SCRIPT SndPcmGen.pl FROM
 alsa-lib/test/latency.c
-SndPcm.cxx.in.head
-SndPcm.cxx.in.tail
-SndPcm.hxx.in.head
-SndPcm.hxx.in.tail
+SndPcm.in.head.cxx
+SndPcm.in.tail.cxx
+SndPcm.in.head.hxx
+SndPcm.in.tail.hxx
 */
 
 EOF
 
-open IN,"SndPcm.cxx.in.head";
+open IN,"SndPcm.in.head.cxx";
 while (<IN>)
 {
 	print CXX;
 }
 close IN;
 
-open IN,"SndPcm.hxx.in.head";
+open IN,"SndPcm.in.head.hxx";
 while (<IN>)
 {
 	print HXX;
@@ -104,7 +104,17 @@ while (<LAT>)
 		s/.*\*max.*//;
 		s/exit\(.*\)/return -1;/;
 		s/printf/cat_error/;
+		if (m/snd_pcm_hw_params_set_rate_near/)
+		{
+			print CXX "setrate:\n";
+		}
 		print CXX $_;
+		if (m/err != rate/)
+		{
+			print CXX<<EOF;
+		if (abs(err-rate)<3) { rate = err; goto setrate; }
+EOF
+		}
 	}
 	if (m/^{/ && $inproto)
 	{
@@ -123,14 +133,14 @@ while (<LAT>)
 	}
 }
 
-open IN,"SndPcm.cxx.in.tail";
+open IN,"SndPcm.in.tail.cxx";
 while (<IN>)
 {
 	print CXX;
 }
 close IN;
 
-open IN,"SndPcm.hxx.in.tail";
+open IN,"SndPcm.in.tail.hxx";
 while (<IN>)
 {
 	print HXX;
