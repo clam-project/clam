@@ -1,13 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-//#include "XercesDomWriter.hxx"
-//#include "XercesEncodings.hxx"
-//#include <xercesc/dom/DOMElement.hpp>
-//#include <xercesc/dom/DOMText.hpp>
-#include "ClamObjects2XercesDom.hxx"
+#include "XercesDom2ClamObjects.hxx"
 #include "XmlMockUpObjects.hxx"
-#include "BasicXMLable.hxx"
 #include "Component.hxx"
 #include <list>
 #include "XercesDomWriter.hxx"
@@ -18,13 +13,15 @@ namespace CLAM
 namespace Test
 {
 
-class ClamObjectsToXercesDomTest;
+class XercesDomToClamObjectsTest;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ClamObjectsToXercesDomTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( XercesDomToClamObjectsTest );
 
-class ClamObjectsToXercesDomTest : public CppUnit::TestCase
+class XercesDomToClamObjectsTest : public CppUnit::TestCase
 {
-	CPPUNIT_TEST_SUITE( ClamObjectsToXercesDomTest );
+	CPPUNIT_TEST_SUITE( XercesDomToClamObjectsTest );
+
+	// TODO: All those tests are useless!!
 	CPPUNIT_TEST(testEmptyDocument);
 	CPPUNIT_TEST(testBasicAsPlainContent);
 	CPPUNIT_TEST(testBasicAsElement_withoutContent);
@@ -66,9 +63,35 @@ public:
 private:
 	std::stringstream mTargetStream;
 
+	void testComponentMockUpTraceStructure_withComponentsInside()
+	{
+		XmlMockUpComponent component;
+		XmlMockUpComponent innerComponent;
+		XmlMockUpBasic basic1;
+		XmlMockUpBasic basic2;
+		component.setContent("ComponentContent");
+		innerComponent.setContent("InnerComponentContent");
+		basic1.setContent("Basic1Content");
+		basic2.setContent("Basic2Content");
+		component.add(innerComponent);
+		innerComponent.add(basic1);
+		innerComponent.add(basic2);
+		std::string expected=
+			"C'ComponentContent'\n"
+			"{\n"
+			".C'InnerComponentContent'\n"
+			".{\n"
+			"..B'Basic1Content'\n"
+			"..B'Basic2Content'\n"
+			".}\n"
+			"}\n";
+
+		CPPUNIT_ASSERT_EQUAL(expected, component.structureTrace(0));
+	}
+
 	void testEmptyDocument()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
 		writer.write(node);
@@ -80,7 +103,7 @@ private:
 	{
 		XmlMockUpBasic basic;
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(basic);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -92,7 +115,7 @@ private:
 	void testBasicAsPlainContent_withoutContent()
 	{
 		XmlMockUpBasic basic;
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(basic);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -104,7 +127,7 @@ private:
 	void testBasicAsElement_withoutContent()
 	{
 		XmlMockUpBasic basic("Element",true);
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(basic);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -117,7 +140,7 @@ private:
 	{
 		XmlMockUpBasic basic("Element",true);
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(basic);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -130,7 +153,7 @@ private:
 	{
 		XmlMockUpBasic basic("at",false);
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(basic);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -143,7 +166,7 @@ private:
 	{
 		XmlMockUpComponent component;
 		component.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(component);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -155,7 +178,7 @@ private:
 	void testComponentAsPlainContent_withoutContent()
 	{
 		XmlMockUpComponent component;
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(component);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -167,7 +190,7 @@ private:
 	void testComponentAsElement_withoutContent()
 	{
 		XmlMockUpComponent component("Element",true);
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(component);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -180,7 +203,7 @@ private:
 	{
 		XmlMockUpComponent component("Element",true);
 		component.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(component);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -193,7 +216,7 @@ private:
 	{
 		XmlMockUpComponent component("at",false);
 		component.setContent("Content");
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		dumper.Store(component);
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
@@ -206,7 +229,7 @@ private:
 
 	void testSibblingsContentsAndAttributes_getOrderedAsInserted()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic oneElement("OneElement",true);
 		XmlMockUpBasic otherElement("OtherElement",true);
 		XmlMockUpBasic content;
@@ -224,7 +247,7 @@ private:
 
 	void testConsecutiveContents_getSpaceSeparation()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic content1;
 		content1.setContent("Content1");
 		XmlMockUpBasic content2;
@@ -240,7 +263,7 @@ private:
 
 	void testNonConsecutiveContents_dontGetSpaceSeparation()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic content1;
 		content1.setContent("Content1");
 		XmlMockUpBasic content2;
@@ -259,7 +282,7 @@ private:
 	void testSibblingsAttributes_getReordered()
 	{
 		// Not a requirement, just to check the behabiour
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic attribute1("zFirst");
 		attribute1.setContent("Content1");
 		XmlMockUpBasic attribute2("aSecond");
@@ -276,7 +299,7 @@ private:
 
 	void testComponentAsElement_containingBasicAsPlainContent()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
@@ -292,7 +315,7 @@ private:
 
 	void testElementContents_getPrintedBeforeSiblingContent()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
@@ -309,7 +332,7 @@ private:
 
 	void testNodesInsertionAfterComponentElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
@@ -328,7 +351,7 @@ private:
 
 	void testComponentAsElement_containingBasicAsAttribute()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent element("Element",true);
 		XmlMockUpBasic attribute("at");
 		attribute.setContent("atContent");
@@ -344,7 +367,7 @@ private:
 
 	void testComponentAsElement_containingBasicAsElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent componentElement("Component",true);
 		componentElement.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("Basic",true);
@@ -361,7 +384,7 @@ private:
 
 	void testComponentAsElement_containingComponentAsElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent outsideElement("Outside",true);
 		outsideElement.setContent("ComponentContent");
 		XmlMockUpComponent insideElement("Inside",true);
@@ -378,7 +401,7 @@ private:
 
 	void testComponentAsContent_containingBasicAsPlainContent()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicContent;
@@ -395,7 +418,7 @@ private:
 
 	void testComponentAsContent_containingBasicAsAttribute()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicAttribute("at");
@@ -412,7 +435,7 @@ private:
 
 	void testComponentAsContent_containingBasicAsElement()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("Basic",true);
@@ -429,7 +452,7 @@ private:
 
 	void testComponentAsAttribute_containingAnything_childrenHaveNoEffect()
 	{
-		ClamObject2XercesDom dumper("Doc");
+		XercesDom2ClamObjects dumper("Doc");
 		XmlMockUpComponent componentAttribute("componentAttribute");
 		componentAttribute.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("BasicElement",true);
