@@ -2,10 +2,13 @@
 #define _OutPortTmpl_hxx_
 
 #include "OutPort.hxx"
+#include "InPortTmpl.hxx"
 #include "Node.hxx"
 #include "ProcessingData.hxx"
 #include "WriteStreamRegion.hxx"
 #include "Processing.hxx"
+#include "NodeTmpl.hxx"
+#include "CircularStreamImpl.hxx"
 
 #include <string>
 
@@ -19,8 +22,7 @@ class OutPortTmpl : public OutPort
 	Node<T> *mpNode;
 	Array<T> mData;
 public:
-	typedef T PortType;
-
+	
 	inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
 	inline T &GetData();
 	inline void LeaveData();
@@ -35,7 +37,8 @@ public:
 	NodeBase* GetNode();
 	bool IsAttached();
 	void Unattach();
-
+	bool IsConnectableTo(InPort & );
+	NodeBase* CreateNodeWithDefaultStreamBuffer();
 };
 
 // Implementation
@@ -43,7 +46,7 @@ public:
 
 
 template<class T>
-OutPortTmpl<T>::OutPortTmpl(const std::string &n,
+inline OutPortTmpl<T>::OutPortTmpl(const std::string &n,
                             Processing *o,
                             int length,
                             int hop)
@@ -55,7 +58,7 @@ OutPortTmpl<T>::OutPortTmpl(const std::string &n,
 }
 
 template<class T>
-void OutPortTmpl<T>::Attach(ProcessingData& data)
+inline void OutPortTmpl<T>::Attach(ProcessingData& data)
 {
 	try { 
 		Attach(dynamic_cast<T&>(data));
@@ -66,13 +69,13 @@ void OutPortTmpl<T>::Attach(ProcessingData& data)
 }	
 
 template<class T>
-void OutPortTmpl<T>::Attach(T& data)
+inline void OutPortTmpl<T>::Attach(T& data)
 {
 	mData.SetPtr(&data,1);
 }	
 
 template<class T>
-void OutPortTmpl<T>::Attach(Node<T>& node)
+inline void OutPortTmpl<T>::Attach(Node<T>& node)
 {
 	mData.SetPtr(0);
 	mpNode = &node;
@@ -80,7 +83,7 @@ void OutPortTmpl<T>::Attach(Node<T>& node)
 }
 
 template<class T>
-void OutPortTmpl<T>::Attach(OutPortTmpl<T>& port)
+inline void OutPortTmpl<T>::Attach(OutPortTmpl<T>& port)
 {
 	if (port.mpNode)
 		Attach(*port.mpNode);
@@ -89,7 +92,7 @@ void OutPortTmpl<T>::Attach(OutPortTmpl<T>& port)
 }	
 
 template<class T>
-T &OutPortTmpl<T>::GetData()	
+inline T &OutPortTmpl<T>::GetData()	
 { 
 	CLAM_ASSERT(mData.Size() || (mpNode && mpRegion),
 	            "OutPortTmpl::GetData(): No data atached to the port.");
@@ -99,7 +102,7 @@ T &OutPortTmpl<T>::GetData()
 }
 
 template<class T>
-void OutPortTmpl<T>::Attach( NodeBase& node)
+inline void OutPortTmpl<T>::Attach( NodeBase& node)
 {
 	try {
 		Attach( dynamic_cast< Node<T>& >(node) );
@@ -110,14 +113,14 @@ void OutPortTmpl<T>::Attach( NodeBase& node)
 }
 
 template<class T>
-void OutPortTmpl<T>::LeaveData()	
+inline void OutPortTmpl<T>::LeaveData()	
 {
 	if (mpNode)
 		mpNode->LeaveAndAdvance(mpRegion);
 }
 
 template<class T>
-void OutPortTmpl<T>::Accept(DataVisitor& v)
+inline void OutPortTmpl<T>::Accept(DataVisitor& v)
 {
 	int i;
 	for (i=0; i<mData.Size(); i++)
@@ -125,7 +128,7 @@ void OutPortTmpl<T>::Accept(DataVisitor& v)
 }
 
 template<class T>
-ProcessingData* OutPortTmpl<T>::GetProcessingData()
+inline ProcessingData* OutPortTmpl<T>::GetProcessingData()
 {
 	if (IsAttached())
 	{
@@ -135,13 +138,13 @@ ProcessingData* OutPortTmpl<T>::GetProcessingData()
 }
 
 template<class T>
-bool OutPortTmpl<T>::IsAttached()
+inline bool OutPortTmpl<T>::IsAttached()
 {
-	return mData.Size()>0;
+	return  mData.Size()>0 || mpNode ;
 }
 
 template<class T>
-void OutPortTmpl<T>::Unattach()
+inline void OutPortTmpl<T>::Unattach()
 {
 	mpNode = 0;
 	mData.SetPtr(NULL);
@@ -149,9 +152,22 @@ void OutPortTmpl<T>::Unattach()
 
 	
 template<class T>
-NodeBase* OutPortTmpl<T>::GetNode()
+inline NodeBase* OutPortTmpl<T>::GetNode()
 {
 	return mpNode;
+}
+
+template <class T>
+inline bool OutPortTmpl<T>::IsConnectableTo(InPort & in)
+{
+	return ((dynamic_cast< InPortTmpl<T>* >(&in)) != 0);
+}
+
+template <class T>
+inline NodeBase* OutPortTmpl<T>::CreateNodeWithDefaultStreamBuffer()
+{
+	typedef CircularStreamImpl<T> DefaultStreamBuffer;
+	return new NodeTmpl<T, DefaultStreamBuffer>;
 }
 
 

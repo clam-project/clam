@@ -21,8 +21,6 @@ class InPortTmpl : public InPort
 	Node<T> *mpNode;
 	Array<T> mData;
 public:
-	
-	typedef T PortType;
 
 	inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
 	inline T &GetData();
@@ -46,7 +44,7 @@ public:
 // Template method implementations
 
 template<class T>
-InPortTmpl<T>::InPortTmpl(const std::string &n,
+inline InPortTmpl<T>::InPortTmpl(const std::string &n,
                           Processing *o,
                           int length,
                           int hop,
@@ -59,7 +57,7 @@ InPortTmpl<T>::InPortTmpl(const std::string &n,
 }
 
 template<class T>
-T &InPortTmpl<T>::GetData()	
+inline T &InPortTmpl<T>::GetData()	
 { 
 	CLAM_ASSERT(mData.Size() || (mpNode && mpRegion),
 	            "InPortTmpl::GetData(): No data atached to the port.");
@@ -69,14 +67,14 @@ T &InPortTmpl<T>::GetData()
 }
 
 template<class T>
-void InPortTmpl<T>::LeaveData()	
+inline void InPortTmpl<T>::LeaveData()	
 {
 	if (mpNode)
 		mpNode->LeaveAndAdvance(mpRegion);
 }
 
 template<class T>
-void InPortTmpl<T>::Attach(ProcessingData& data)
+inline void InPortTmpl<T>::Attach(ProcessingData& data)
 {
 	try { 
 		Attach(dynamic_cast<T&>(data));
@@ -87,7 +85,7 @@ void InPortTmpl<T>::Attach(ProcessingData& data)
 }	
 
 template<class T>
-void InPortTmpl<T>::Attach( NodeBase& node)
+inline void InPortTmpl<T>::Attach( NodeBase& node)
 {
 	try {
 		Attach( dynamic_cast< Node<T>& >(node) );
@@ -99,14 +97,14 @@ void InPortTmpl<T>::Attach( NodeBase& node)
 
 
 template<class T>
-void InPortTmpl<T>::Attach(T& data)
+inline void InPortTmpl<T>::Attach(T& data)
 {
 	mData.SetPtr(&data,1);
 }	
 
 
 template<class T>
-void InPortTmpl<T>::Attach(Node<T>& node)
+inline void InPortTmpl<T>::Attach(Node<T>& node)
 {
 	mData.SetPtr(0);
 	mpNode = &node;
@@ -114,7 +112,7 @@ void InPortTmpl<T>::Attach(Node<T>& node)
 }	
 
 template<class T>
-void InPortTmpl<T>::Attach(InPortTmpl<T>& port)
+inline void InPortTmpl<T>::Attach(InPortTmpl<T>& port)
 {
 	if (port.mpNode)
 		Attach(*port.mpNode);
@@ -123,7 +121,7 @@ void InPortTmpl<T>::Attach(InPortTmpl<T>& port)
 }	
 
 template<class T>
-void InPortTmpl<T>::Accept(DataVisitor& v)
+inline void InPortTmpl<T>::Accept(DataVisitor& v)
 {
 	int i;
 	for (i=0; i<mData.Size(); i++)
@@ -131,7 +129,7 @@ void InPortTmpl<T>::Accept(DataVisitor& v)
 }
 
 template<class T>
-ProcessingData* InPortTmpl<T>::GetProcessingData()
+inline ProcessingData* InPortTmpl<T>::GetProcessingData()
 {
 	if (IsAttached())
 	{
@@ -141,19 +139,19 @@ ProcessingData* InPortTmpl<T>::GetProcessingData()
 }
 
 template<class T>
-NodeBase* InPortTmpl<T>::GetNode()
+inline NodeBase* InPortTmpl<T>::GetNode()
 {
 	return mpNode;
 }
 
 template<class T>
-bool InPortTmpl<T>::IsAttached()
+inline bool InPortTmpl<T>::IsAttached()
 {
 	return mData.Size()>0;
 }
 
 template<class T>
-void InPortTmpl<T>::Unattach()
+inline void InPortTmpl<T>::Unattach()
 {
 	mpNode = 0;
 	mData.SetPtr(NULL);

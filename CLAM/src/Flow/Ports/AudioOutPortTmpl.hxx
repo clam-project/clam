@@ -2,6 +2,7 @@
 #define _AudioOutPortTmpl_hxx_
 
 #include "Audio.hxx"
+#include "AudioInPortTmpl.hxx"
 #include "OutPort.hxx"
 #include "Node.hxx"
 
@@ -16,7 +17,6 @@ class OutPortTmpl<Audio> : public OutPort
 	Audio *mpData;
 	Audio mWrapper;
 public:
-	typedef Audio PortType;
 
 	inline OutPortTmpl(std::string n, Processing *o, int length, int hop = 0);
 	inline Audio &GetData();
@@ -32,6 +32,8 @@ public:
 	ProcessingData* GetProcessingData();
 	bool IsAttached();
 	void Unattach();
+	bool IsConnectableTo(InPort & );
+	NodeBase* CreateNodeWithDefaultStreamBuffer();
 
 };
 
@@ -137,6 +139,18 @@ inline void OutPortTmpl<Audio>::Unattach()
 {
 	mpNode = 0;
 	mpData = 0;
+}
+
+
+inline bool OutPortTmpl<Audio>::IsConnectableTo(InPort & in)
+{
+	return ((dynamic_cast< InPortTmpl<Audio>* >(&in)) != 0);
+}
+
+inline NodeBase* OutPortTmpl<Audio>::CreateNodeWithDefaultStreamBuffer()
+{
+	typedef CircularStreamImpl<TData> DefaultStreamBuffer;
+	return new NodeTmpl<Audio, DefaultStreamBuffer>;
 }
 
 
