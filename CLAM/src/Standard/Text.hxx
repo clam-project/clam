@@ -18,7 +18,6 @@ namespace CLAM
 	// was issuing this error ( pure nonsense BTW ):
 	// src\Standard\Text.hxx(29) : error C2614: 'Text' : illegal member initialization: 'string' is not a base or member
 	// src\Standard\Text.hxx(33) : error C2614: 'Text' : illegal member initialization: 'string' is not a base or member
-	// I don't like this much, but AFAIK there's no way of 'undoing' a using statement.
 
 	class Text : public std::basic_string<char>
 	{
@@ -68,10 +67,11 @@ namespace CLAM
 
 	}
 
-#if 1
 	/**
 	* This is a kludge to make windows work
 	*/
+
+#if defined( _MSC_VER ) && ( _MSC_VER < 1310 )
 	inline std::istream& operator>>( std::istringstream& stream, CLAM::Text& text )
 	{
 		std::istream & basestream = stream;
