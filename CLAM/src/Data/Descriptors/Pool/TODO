@@ -113,7 +113,16 @@
 	+ Invalid references
 	+ Refactor to base class
 	+ Use it with an extractor
++ Move the current up
++ Remove the GetIterationSize
 - Ranged Binding
+	+ A fast implementation deriving from ReadIndirectHook
+	- Check for outside access (though the begining is inside)
+- Ranged Bindings with variable range
+- Ortogonalize hocks
+- Named hooks
+- Hide Hooks building inside extractors
+- Relative Bindings
 - Associar al schema durante el bind o antes
 - Comprobaciones de nombres en el bind
 - Read Accessing AttributeScopes that are not written
@@ -121,7 +130,6 @@
 - Different sizes of Binders
 - Extract search and retrieval from Hooks
 - Enhance exception messages with names
-- Hook::_current is not shared
 
 
 
