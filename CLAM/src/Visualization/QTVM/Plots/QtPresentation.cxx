@@ -152,7 +152,7 @@ namespace CLAM
 
 		void QtPresentation::hScrollValue(int value)
 		{
-			if(_controller && _hs->GetScrollValue() != value)
+			if(_controller)
 			{
 				_controller->UpdateHViewport(value);
 				emit HScrollValue(value);
