@@ -115,6 +115,10 @@ namespace CLAM
 			CLAM_ASSERT(data || !size, "Dumping data from a non instantiated attribute");
 			_attributes[attribute]->XmlDumpData(storage, data, size);
 		}
+		const AbstractAttribute & GetAttribute(unsigned int attribute) const
+		{
+			return * _attributes[attribute];
+		}
 	};
 
 	/**
