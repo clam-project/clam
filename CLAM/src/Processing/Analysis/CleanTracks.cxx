@@ -217,9 +217,14 @@ namespace CLAM {
 			int bestCandidate;
 
 			// Get the best 'candidate' to be followed by the track 'toBeAppended'
-			for(int k=0; k<mTrajectoryArray.Size(); k++)
+			for(int k=0; k<i; k++)
 			{
 				const TTrajectory & candidate = mTrajectoryArray[k];
+
+				// Suposing that they are ordered by start frame,
+				// there is a point from which all the candidates are invalid
+				if (candidate.beginPos>=toBeAppended.beginPos) break;
+
 				const TSize dropOut=
 					toBeAppended.beginPos-
 						(candidate.beginPos+candidate.length);
@@ -247,11 +252,15 @@ namespace CLAM {
 			// Check that the best candidate for 'toBeAppended'
 			// is not the best one to another
 
-			bool isBetterForAnother=false;
 			const TSize candidateEnd =
 				candidateTrajectory.beginPos+candidateTrajectory.length;
 
-			for(int j=0; j<mTrajectoryArray.Size(); j++)
+			// Candidate has already has been attached?
+			if (candidateTrajectory.continuedAtId != -1) continue;
+
+			// Candidate will have a better one
+			bool isBetterForAnother=false;
+			for(int j=i; j<mTrajectoryArray.Size(); j++)
 			{
 				const TTrajectory & another = mTrajectoryArray[j];
 				const TSize dropOut=another.beginPos-candidateEnd;
