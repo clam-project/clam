@@ -39,10 +39,9 @@ namespace CLAM
 	
 	Network::~Network()
 	{
+		Clear();
 		if (mFlowControl)
 			delete mFlowControl;
-
-		Clear();
 	}
 
 	void Network::StoreOn( Storage & storage) const
@@ -217,6 +216,9 @@ namespace CLAM
 
 	void Network::RemoveProcessing ( const std::string & name)
 	{
+		CLAM_ASSERT( mFlowControl, 
+			     "Network::RemoveProcessing() - Network should have an attached flow control at this state.");
+
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		if(i==mProcessings.end())
 			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing that is not included in the network" );
@@ -239,6 +241,7 @@ namespace CLAM
 		{
 			(*itOutPort)->Unattach();
 		}
+
 		mFlowControl->ProcessingRemovedFromNetwork(*proc);
 		delete proc;
 		
