@@ -78,8 +78,7 @@ public:
 		const char * name = xmlable.XMLName();
 		if (!name)
 		{
-			AddContentToElement(xmlable.XMLContent());
-			StoreSibblingsIfComponent(xmlable);
+			StoreContentAndSibblings(xmlable);
 			return;
 		}
 		if (xmlable.IsXMLElement())
@@ -101,6 +100,11 @@ public:
 			return;
 		}
 		CLAM_ASSERT(false,"Component not used");
+	}
+	void StoreContentAndChildren(const XMLable & xmlable)
+	{
+		AddContentToElement(xmlable.XMLContent());
+		StoreSibblingsIfComponent(xmlable);
 	}
 
 	void StoreSibblingsIfComponent(const XMLable & xmlable)
