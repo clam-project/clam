@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSMorphConfigurator::mHelpText = "<html><body><p>Here should go a nice description of what does the SMS Morph do</p></body></html>";
+	const char* SMSMorphConfigurator::mHelpText = "<html><body><h2>Morph</h2><p><strong>Usage:</strong> Morphing between two different sounds. Introduce interpolation value, 0 meaning original sound and 1 sound to morph (X axis = time). Note: More parameters can be controlled from the xml score. You must have a morph file specified in your configuration file in order to use this transformation.</p><p><strong>Explanation:</strong> All frames of the sound (sinusoidal and residual components plus pitch) are interpolated in the frequency domain.</p></body></html>";
 
 	SMSMorphConfigurator::SMSMorphConfigurator()
 	{

@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSSpectralShapeShiftConfigurator::mHelpText = "<html><body><p>Here should go some nice description of what does this transformation do</p></body></html>";
+	const char* SMSSpectralShapeShiftConfigurator::mHelpText = "<html><body><h2>Spectral Shape Shift</h2><p><strong>Usage:</strong> Introduce frequency shift applied to the sinusoidal spectral shape expressed in Hz (X axis = time).</p><p><strong>Explanation:</strong> Spectral shape of the sinusoidal component is extracted and then shifted in frequency according to the value specified.</p></body></html>";
 
 	SMSSpectralShapeShiftConfigurator::SMSSpectralShapeShiftConfigurator()
 	{

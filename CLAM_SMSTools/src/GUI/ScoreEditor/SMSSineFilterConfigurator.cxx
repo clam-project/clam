@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSSineFilterConfigurator::mHelpText = "<html><body><p>The <bf>Frequency Shift</bf> SMS transformation, is an operator over the results of an SMS Analysis, that allows to offset all detected partials by the same frequency differential.</p></body></html>";
+	const char* SMSSineFilterConfigurator::mHelpText = "<html><body><h2>Sinusoidal Filter</h2><p><strong>Usage:</strong> Introduce the frequency response of the filter you want to apply to the sinusoidal component. (X axis = frequency, Y axis = gain in dB's)</p><p><strong>Explanation:</strong> Sinusoidal component is filtered according to   the frequency response introduced.</p></body></html>";
 
 	SMSSineFilterConfigurator::SMSSineFilterConfigurator()
 	{

@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSResidualGainConfigurator::mHelpText = "<html><body><p>Here should go a nice description of what does the SMS Residual Gain transformation do</p></body></html>";
+	const char* SMSResidualGainConfigurator::mHelpText = "<html><body><h2>Residual Gain</h2><p><strong>Usage:</strong> Introduce the gain in dB's you want to apply to the residual component. (X axis = time)</p><p><strong>Explanation:</strong> Gain is applied to residual component </p></body></html>";
 
 	SMSResidualGainConfigurator::SMSResidualGainConfigurator()
 	{

@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSPitchDiscretizationConfigurator::mHelpText = "<html><body><p>The <bf>Frequency Shift</bf> SMS transformation, is an operator over the results of an SMS Analysis, that allows to offset all detected partials by the same frequency differential.</p></body></html>";
+	const char* SMSPitchDiscretizationConfigurator::mHelpText = "<html><body><h2>Pitch Discretization to Temperate Scale</h2><p><strong>Usage:</strong> If active it rounds the pitch to nearest note according to temperate musical scale.</p><p><strong>Explanation:</strong> It is just a particular case of pitch shift with timbre preservation where the pitch is quantified to one of the 12 semitones of an octave.</p></body></html>";
 
 	SMSPitchDiscretizationConfigurator::SMSPitchDiscretizationConfigurator()
 	{

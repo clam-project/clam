@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSFreqShiftConfigurator::mHelpText = "<html><body><p>Here should go some nice description of what does this transformation do.</p></body></html>";
+	const char* SMSFreqShiftConfigurator::mHelpText = "<html><body><h2>Frequency Shift</h2><p><strong>Usage:</strong> Frequency shift applied to all partials expressed in   Hz.(X axis = time)</p><p><strong>Explanation:</strong> All components are shifted the amount expressed in Hz in the score.</p></body></html>";
 
 	SMSFreqShiftConfigurator::SMSFreqShiftConfigurator()
 	{

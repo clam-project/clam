@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSSinusoidalGainConfigurator::mHelpText = "<html><body><p>Here should go a nice description of what does the SMS Sinusoidal Gain transformation do</p></body></html>";
+	const char* SMSSinusoidalGainConfigurator::mHelpText = "<html><body><h2>sinusoidal Gain</h2><p><strong>Usage:</strong> Introduce the gain in dB's you want to apply to the sinusoidal component. (X axis = time)</p><p><strong>Explanation:</strong> Gain is applied to sinusoidal component </p></body></html>";
 
 	SMSSinusoidalGainConfigurator::SMSSinusoidalGainConfigurator()
 	{

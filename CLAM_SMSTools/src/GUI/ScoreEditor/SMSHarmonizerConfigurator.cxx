@@ -6,7 +6,7 @@
 
 namespace CLAMVM
 {
-	const char* SMSHarmonizerConfigurator::mHelpText = "<html><body><p>Here should go some nice description about what does this SMS transformation do.</p></body></html>";
+	const char* SMSHarmonizerConfigurator::mHelpText = "<html><body><h2>Harmonizer</h2><p><strong>Usage:</strong> Each point in the BPF defines a new voice added to the harmonization. The X value is the gain in relation to the original one and the Y value the pitch transposition factor.</p><p><strong>Explanation:</strong> Pitch transposed (with timbre preservation) versions of the original are added applying the gain factor specified.</p></body></html>";
 
 	SMSHarmonizerConfigurator::SMSHarmonizerConfigurator()
 	{
