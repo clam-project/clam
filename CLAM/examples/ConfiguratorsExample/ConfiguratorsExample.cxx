@@ -144,8 +144,7 @@ int TryQTConfigurator(DummyConfig & config, int argc, char**argv)
 
 int TryFLTKConfigurator(DummyConfig & config) 
 {
-	CLAM::FLTKConfigurator<DummyConfig> * configurator = 
-		new CLAM::FLTKConfigurator<DummyConfig>;
+	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
 	configurator->SetConfig(config);
 	configurator->Show();
 	return Fl::run();

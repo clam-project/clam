@@ -22,12 +22,14 @@
 #ifndef __FLTKCONFIGURATOR__
 #define __FLTKCONFIGURATOR__
 
+#include "ConfigurationVisitor.hxx"
 #include <map>
 #include <string>
 
 #include "Assert.hxx"
 #include "Enum.hxx"
 #include "DataTypes.hxx"
+#include "DynamicType.hxx"
 
 #include <FL/fl_draw.H>
 #include <FL/Fl_Window.H>
@@ -43,34 +45,59 @@
 #define VerPos 5+25*(mWidgetNum%20)
 
 namespace CLAM{
-	template <typename Configuration>
 	class FLTKConfigurator : public Fl_Window {
+
+		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
 	public:
 		FLTKConfigurator() 
-			: Fl_Window(345, 40, "Edit the configuration")
+			: super(345, 40, "Edit the configuration")
 			
 		{
+			mSetter = 0;
+			mGetter = 0;
 			mWidgetNum = 0;
-			mConfig = 0;
 		}
 
-		virtual ~FLTKConfigurator() {}
-
-		/** @todo Clear previously related configs */
-		void SetConfig(Configuration & config) {
-			mConfig =&config;
+		virtual ~FLTKConfigurator() {
+			if (mSetter) delete mSetter;
+			if (mGetter) delete mGetter;
 		}
+
+		template <class Config>
+		void SetConfig(Config & config) {
+			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
+			CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
+			mSetter = new ConfigurationSetter<Config,FLTKConfigurator>(&config, this);
+			mGetter = new ConfigurationGetter<Config,FLTKConfigurator>(&config, this);
+
+			GetInfo();
+			
+			Fl_Button *applyButton=new Fl_Button((345+(mWidgetNum/20)*340)/2-110,25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1),100,20);
+			applyButton->label( "Apply" );
+			applyButton->labelsize(12);
+			applyButton->callback(Apply,this);
+			add(*applyButton);
+
+			Fl_Button *discardButton=new Fl_Button((345+(mWidgetNum/20)*340)/2+70, 25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1),100,20);
+			discardButton->label( "Discard" );
+			discardButton->labelsize(12);
+			discardButton->callback(Discard, this);
+			add(*discardButton);
+
+			size(345+(mWidgetNum/20)*340,35+25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1));
+
+			end();
+		}
+	private:
 
 		void GetInfo() {
-			CLAM_ASSERT(mConfig,"Configurator: Config not set")
-			VisitorGetter getter(this);
-			mConfig->VisitAll(getter);
+			CLAM_ASSERT(mGetter,"Configurator: No config to set");
+			mGetter->VisitConfig();
 		}
 		void SetInfo() {
-			CLAM_ASSERT(mConfig,"Configurator: Config not set")
-			VisitorSetter setter(this);
-			mConfig->VisitAll(setter);
+			CLAM_ASSERT(mSetter,"Configurator: No config to set");
+			mSetter->VisitConfig();
 		}
 
 		Fl_Widget * GetWidget(const char * name) {
@@ -79,7 +106,8 @@ namespace CLAM{
 			return found->second;
 		}
 
-		
+	public:
+
 		/** Default implementation, do nothing */
 		template <typename T>
 		void AddWidget(const char *name, void *foo, T& value) {
@@ -211,7 +239,7 @@ namespace CLAM{
 
 #if 0 // SubConfigs still not supported
 		template <typename T>
-		virtual void Accept(const char *name, DynamicType *foo, T&value) {
+		virtual void AddWidget(const char *name, DynamicType *foo, T&value) {
 			Fl_Button * mButton = new Fl_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
 			mButton->label( name );
 			mButton->labelsize(12);
@@ -222,7 +250,7 @@ namespace CLAM{
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
 		template <typename T>
-		virtual void Accept(const char *name, DynamicType *foo, T&value) {
+		virtual void RetrieveValue(const char *name, DynamicType *foo, T&value) {
 			Fl_Button * mButton = new Fl_Button(70+(mWidgetNum/20)*340, VerPos, 200, 20);
 			mButton->label( name );
 			mButton->labelsize(12);
@@ -240,68 +268,21 @@ namespace CLAM{
 			owner->SetInfo();
 		}
 		static void Discard(Fl_Widget* o, void* v) {
+			o->window()->hide();
 			delete o->window();	
 		}
 
 		void FLTKConfigurator::Show() {
-			GetInfo();
-			
-			Fl_Button *applyButton=new Fl_Button((345+(mWidgetNum/20)*340)/2-110,25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1),100,20);
-			applyButton->label( "Apply" );
-			applyButton->labelsize(12);
-			applyButton->callback(Apply,this);
-			add(*applyButton);
-
-			Fl_Button *discardButton=new Fl_Button((345+(mWidgetNum/20)*340)/2+70, 25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1),100,20);
-			discardButton->label( "Discard" );
-			discardButton->labelsize(12);
-			discardButton->callback(Discard, this);
-			add(*discardButton);
-
-			size(345+(mWidgetNum/20)*340,35+25*(mWidgetNum>20 ? 21 : mWidgetNum%20+1));
-
-			end();
 			set_modal();
-			show();
+			super::show();
 		}
 
 	private:
-		tWidgets mWidgets;
 		int mWidgetNum;
-		Configuration * mConfig;
+		ConfigurationVisitor * mGetter;
+		ConfigurationVisitor * mSetter;
+		tWidgets mWidgets;
 
-		class VisitorGetter{
-		public:
-			VisitorGetter(FLTKConfigurator* otherBuilder) {
-				mBuilder = otherBuilder;
-			}
-
-			virtual ~VisitorGetter() {}
-			
-			template <typename T>
-			void Accept(const char *name, T &value) { 
-				mBuilder->AddWidget(name, &value, value); 
-			}
-
-		private:
-			FLTKConfigurator* mBuilder;
-		};
-		class VisitorSetter{
-		public:
-			VisitorSetter(FLTKConfigurator* otherBuilder) {
-				mBuilder = otherBuilder;
-			}
-
-			virtual ~VisitorSetter() {}
-			
-			template <typename T>
-			void Accept(const char *name, T &value) { 
-				mBuilder->RetrieveValue(name, &value, value); 
-			}
-
-		private:
-			FLTKConfigurator* mBuilder;
-		};
 	};
 }
 #endif//__FLTKCONFIGURATOR__
