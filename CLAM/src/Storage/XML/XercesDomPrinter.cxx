@@ -92,7 +92,7 @@ static const XMLCh  gEndPI[] =
 static const XMLCh  gStartPI[] = 
 // "<?"
 {
-	chOpenAngle, chQuestion, chNull 
+	chOpenAngle, chQuestion, chNull
 };
 static const XMLCh  gXMLDecl1[] =
 // "<?xml version=\""
@@ -160,7 +160,7 @@ static const XMLCh  gPublic[] =
 };
 static const XMLCh  gSystem[] =
 // "SYSTEM \""
-{ 
+{
     chLatin_S, chLatin_Y, chLatin_S, chLatin_T, chLatin_E,
     chLatin_M, chSpace, chDoubleQuote, chNull
 };
@@ -267,10 +267,12 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 	{
 		case DOM_Node::TEXT_NODE:
 		{
+#if 0
 			if (mIndentXml && !mLastWasContent)
 				*gFormatter
 					<< endLine << currentIndentation.c_str();
-			gFormatter->formatBuf(nodeValue.rawBuffer(), 
+#endif
+			gFormatter->formatBuf(nodeValue.rawBuffer(),
 				lent, XMLFormatter::CharEscapes);
 			thisWasContent=true;
 			break;
@@ -291,7 +293,6 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 
 		case DOM_Node::DOCUMENT_NODE :
 		{
-
 			DOM_Node child = toWrite.getFirstChild();
 			while( child != 0)
 			{
@@ -305,14 +306,14 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 		case DOM_Node::ELEMENT_NODE :
 		{
 			TRACEDUMP << std::string(mIndentationLevel++,'\t') << "Element: " << nodeName << std::endl;
-			// The name has to be representable without any escapes
 			if (mIndentXml)
 				*gFormatter
 					<< endLine << currentIndentation.c_str();
-			*gFormatter  << XMLFormatter::NoEscapes
-						<< chOpenAngle << nodeName;
 
 			// Output the element start tag.
+			// The name has to be representable without any escapes
+			*gFormatter  << XMLFormatter::NoEscapes
+						<< chOpenAngle << nodeName;
 
 			// Output any attributes on this element
 			DOM_NamedNodeMap attributes = toWrite.getAttributes();
@@ -357,13 +358,13 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 				// Done with children.  Output the end tag.
 				//
 				mIndentationLevel--;
-				if (mIndentXml)
+				if (mIndentXml && !mLastWasContent)
 					*gFormatter
 						<< endLine << currentIndentation.c_str();
 				*gFormatter
 					<< XMLFormatter::NoEscapes
 					<< gEndElement
-					<< nodeName 
+					<< nodeName
 					<< chCloseAngle;
 			}
 			else
@@ -372,9 +373,9 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 				//  There were no children. Output the short form close of
 				//  the element start tag, making it an empty-element tag.
 				//
-				*gFormatter 
-					<< XMLFormatter::NoEscapes 
-					<< chForwardSlash 
+				*gFormatter
+					<< XMLFormatter::NoEscapes
+					<< chForwardSlash
 					<< chCloseAngle;
 			}
 			TRACEDUMP << currentIndentation << "tnemelE: " << nodeName << std::endl;
@@ -384,23 +385,12 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 
 		case DOM_Node::ENTITY_REFERENCE_NODE:
 		{
-			DOM_Node child;
-#if 0
-			for (child = toWrite.getFirstChild();
-			child != 0;
-			child = child.getNextSibling())
-			{
-				PrintNode(os, child);
-			}
-#else
-			//
-			// Instead of printing the refernece tree 
+			// Instead of printing the refernece tree
 			// we'd output the actual text as it appeared in the xml file.
 			// This would be the case when -e option was chosen
 			//
 			*gFormatter << XMLFormatter::NoEscapes << chAmpersand
 				<< nodeName << chSemiColon;
-#endif
 			break;
 		}
 
@@ -437,7 +427,7 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 				id = doctype.getSystemId();
 				if (id != 0)
 				{
-					*gFormatter << XMLFormatter::NoEscapes << chSpace 
+					*gFormatter << XMLFormatter::NoEscapes << chSpace
 					<< chDoubleQuote << id << chDoubleQuote;
 				}
 			}
@@ -451,7 +441,7 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 				}
 			}
 
-			id = doctype.getInternalSubset(); 
+			id = doctype.getInternalSubset();
 			if (id !=0)
 				*gFormatter << XMLFormatter::NoEscapes << chOpenSquare
 				            << id << chCloseSquare;
@@ -519,7 +509,7 @@ void CLAM::XercesDomPrinter::PrintNode(std::ostream & os, DOM_Node & toWrite)
 //  Stream out a DOM string. Doing this requires that we first transcode
 //  to char * form in the default code page for the system
 // ---------------------------------------------------------------------------
- 
+
 std::ostream& operator<< (std::ostream& target, const XMLCh* s)
 {
 	char *p = XMLString::transcode(s);
@@ -555,7 +545,7 @@ XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
 static unsigned int indentation=0;
 
 void Inspect (std::ostream& target, DOM_Node& toWrite)
-{  
+{
 	for (unsigned int i=indentation++; i--; ) target << ". ";
 	// Get the name and value out for convenience
 	DOMString   nodeName = toWrite.getNodeName();
@@ -600,7 +590,7 @@ void Inspect (std::ostream& target, DOM_Node& toWrite)
 				for (unsigned int j=indentation++; j--;) target << ". ";
 				DOM_Node  attribute = attributes.item(i);
 				target << "ATTRIBUTE:"<<attribute.getNodeName()<<"="<<attribute.getNodeValue()<< std::endl;
-				indentation--;  
+				indentation--;
 			}
 
 			DOM_Node child = toWrite.getFirstChild();
