@@ -15,7 +15,7 @@ enableSendMail = False
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
-executionTime = 15 #sec  30 by default 
+executionTime = 15 
 #TODO: this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
 configurations = ['release'] #['debug', 'release'] 
@@ -38,8 +38,6 @@ unitTestsPath = BUILDPATH+'Tests/UnitTests/'
 functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/'
 spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
-
-#TODO max time allowed for each test -
 
 sandboxes = [ # Module, Sandbox, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
@@ -111,8 +109,8 @@ testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
 testsToRun[-1:-1] = externalApplications 
-#testsToRun[-1:-1] = supervisedTests
-#testsToRun[-1:-1] = notPortedTests
+testsToRun[-1:-1] = supervisedTests
+testsToRun[-1:-1] = notPortedTests
 testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
@@ -203,7 +201,7 @@ def parseExecutionErrors( executionOut ) :
 
 
 def isTest(path) :
-	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/') or path.find('build/Tests/') >= 0  
+	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')>=0 or path.find('build/Tests/')>= 0  
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
@@ -310,21 +308,22 @@ import time, string, signal
 def runInBackgroundForAWhile(path, command, sleeptime=10) :
 	os.chdir(path)
 	out, err = '/tmp/removeme.out', '/tmp/removeme.err'
-	file(out, 'w')
-	file(err, 'w')
+	#file(out, 'w')
+	#file(err, 'w')
 	fullcmd = '%s > %s 2> %s &' % (command, out, err)
 	print fullcmd
 	print 'result ',os.system( fullcmd )
 	time.sleep( sleeptime )
 	withoutSlash = command[command.find('/')+1 : ]
+
 	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
+	
 	print 'kill status ', status, dummy
 	result = string.join( file('/tmp/removeme.out').readlines() )
 	result += string.join( file('/tmp/removeme.err').readlines() )
-	os.remove(out)
-	os.remove(err)
+	#os.remove(out)
+	#os.remove(err)
 	return True, result #TODO status
-
 
 
 def sendError(usermsg='') :
