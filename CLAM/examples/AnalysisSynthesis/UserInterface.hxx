@@ -9,19 +9,22 @@ class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
+#include "AudioBrowser.hxx"
+#include "Signalv1.hxx"
+#include "Slotv1.hxx"
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
-#include <FL/Fl_Output.H>
 #include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Counter.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Output.H>
+#include <FL/Fl_Box.H>
 
 class UserInterface {
 public:
   public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
   Fl_Window *mWindow;
-  Fl_Box *mResizable;
 private:
-  Fl_Output *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
   inline void cb_Load_i(Fl_Menu_*, void*);
@@ -89,7 +92,11 @@ private:
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
+  Fl_Counter *mCounter;
+  inline void cb_mCounter_i(Fl_Counter*, void*);
+  static void cb_mCounter(Fl_Counter*, void*);
   Fl_Smart_Tile *mSmartTile;
+  Fl_Output *mConfigurationText;
   void AboutWindow();
   Fl_Window *mWindow2;
   inline void cb_mWindow2_i(Fl_Window*, void*);
@@ -114,7 +121,7 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  Fl_Window* Attach( const char* title, CLAM::Audio* data );
+  AudioBrowser* Attach( const char* title, CLAM::Audio* data, int pos );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
   void PlayInputSound();
@@ -123,12 +130,15 @@ private:
   void PlayResidual();
   void LoadSound();
   void Init();
-  Fl_Window* mAudioInputDisplay;
-  Fl_Window* mAudioOutputDisplay;
-  Fl_Window* mAudioOutputResidualDisplay;
-  Fl_Window* mAudioOutputSinusoidalDisplay;
-public:
   void Update();
   void DetachDisplays();
+  void ChangeFrame();
+  void ChangeTimeTag(double tag);
+  AudioBrowser* mAudioInputDisplay;
+  AudioBrowser* mAudioOutputDisplay;
+  AudioBrowser* mAudioOutputResidualDisplay;
+  AudioBrowser* mAudioOutputSinusoidalDisplay;
+  Signalv1<TData> mSignal;
+  Slotv1<double> mSlot;
 };
 #endif

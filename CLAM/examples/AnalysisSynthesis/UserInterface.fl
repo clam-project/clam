@@ -25,30 +25,32 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
+decl {\#include "AudioBrowser.hxx"} {public
+} 
+
+decl {\#include "Signalv1.hxx"} {public
+} 
+
+decl {\#include "Slotv1.hxx"} {public
+} 
+
 class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {open
-  } {
+  Function {UserInterface()} {} {
     code {Init();} {}
+    code {mSlot.Wrap( this, &UserInterface::ChangeTimeTag );} {}
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {551 322 872 548} resizable
+      xywh {491 671 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
-      Fl_Box mResizable {
-        xywh {505 50 360 490} hide resizable
-      }
-      Fl_Output mConfigurationText {
-        label {Configuration File}
-        private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
-      }
-      Fl_Menu_Bar mMenuBar {open selected
+      Fl_Menu_Bar mMenuBar {
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input open
+          label Input
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -224,9 +226,29 @@ Exit();}
           private xywh {10 10 100 20} labelsize 12
         }
       }
-      Fl_Box mSmartTile {
-        private xywh {5 50 860 490}
-        class Fl_Smart_Tile
+      Fl_Counter mCounter {
+        label {Frame }
+        callback {ChangeFrame();}
+        private xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+      }
+      Fl_Group {} {open
+        xywh {5 50 860 470} resizable
+      } {
+        Fl_Box mSmartTile {
+          private xywh {5 50 860 470}
+          class Fl_Smart_Tile
+        }
+      }
+      Fl_Group {} {open
+        xywh {0 20 872 30}
+      } {
+        Fl_Output mConfigurationText {
+          label {Configuration File}
+          private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
+        }
+        Fl_Box {} {
+          xywh {505 20 367 30} resizable
+        }
       }
     }
   }
@@ -235,9 +257,9 @@ Exit();}
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;}
-      private xywh {453 345 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
-      code0 {mWindow2->show();} modal noborder visible
+mWindow2=NULL;} selected
+      private xywh {516 493 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
+      code0 {mWindow2->show();} modal visible
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
@@ -281,7 +303,7 @@ mWindow2=NULL;}
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {Fl_Window* Attach( const char* title, CLAM::Audio* data );} {}
+  decl {AudioBrowser* Attach( const char* title, CLAM::Audio* data, int pos );} {}
   decl {static void _Detach(Fl_Window* buffer,UserInterface* ui);} {}
   decl {void Detach(Fl_Window* buffer);} {}
   decl {void PlayInputSound();} {}
@@ -290,12 +312,14 @@ mWindow2=NULL;}
   decl {void PlayResidual();} {}
   decl {void LoadSound();} {}
   decl {void Init();} {}
-  decl {Fl_Window* mAudioInputDisplay;} {}
-  decl {Fl_Window* mAudioOutputDisplay;} {}
-  decl {Fl_Window* mAudioOutputResidualDisplay;} {}
-  decl {Fl_Window* mAudioOutputSinusoidalDisplay;} {}
-  decl {void Update();} {public
-  }
-  decl {void DetachDisplays();} {public
-  }
+  decl {void Update();} {}
+  decl {void DetachDisplays();} {}
+  decl {void ChangeFrame();} {}
+  decl {void ChangeTimeTag(double tag);} {}
+  decl {AudioBrowser* mAudioInputDisplay;} {}
+  decl {AudioBrowser* mAudioOutputDisplay;} {}
+  decl {AudioBrowser* mAudioOutputResidualDisplay;} {}
+  decl {AudioBrowser* mAudioOutputSinusoidalDisplay;} {}
+  decl {Signalv1<TData> mSignal;} {}
+  decl {Slotv1<double> mSlot;} {}
 } 

@@ -243,6 +243,13 @@ Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 
 Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 32;
 Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 37;
 
+inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
+  ChangeFrame();
+}
+void UserInterface::cb_mCounter(Fl_Counter* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mCounter_i(o,v);
+}
+
 inline void UserInterface::cb_mWindow2_i(Fl_Window*, void*) {
   delete mWindow2;
 mWindow2=NULL;
@@ -848,26 +855,43 @@ static Fl_Pixmap pixmap_mtg(image_mtg);
 UserInterface::UserInterface() {
   Fl_Window* w;
   Init();
+  mSlot.Wrap( this, &UserInterface::ChangeTimeTag );
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
-    { Fl_Box* o = mResizable = new Fl_Box(505, 50, 360, 490);
-      o->hide();
-      Fl_Group::current()->resizable(o);
-    }
-    { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
-      o->box(FL_THIN_DOWN_BOX);
-      o->labelsize(12);
-      o->textsize(12);
-      o->align(132);
-    }
     { Fl_Menu_Bar* o = mMenuBar = new Fl_Menu_Bar(0, 0, 872, 21);
       o->box(FL_THIN_UP_BOX);
       o->labelsize(13);
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
-    mSmartTile = new Fl_Smart_Tile(5, 50, 860, 490);
+    { Fl_Counter* o = mCounter = new Fl_Counter(330, 525, 190, 20, "Frame ");
+      o->box(FL_THIN_UP_BOX);
+      o->labelsize(12);
+      o->minimum(0);
+      o->maximum(0);
+      o->step(1);
+      o->callback((Fl_Callback*)cb_mCounter);
+      o->align(FL_ALIGN_LEFT);
+      o->deactivate();
+    }
+    { Fl_Group* o = new Fl_Group(5, 50, 860, 470);
+      mSmartTile = new Fl_Smart_Tile(5, 50, 860, 470);
+      o->end();
+      Fl_Group::current()->resizable(o);
+    }
+    { Fl_Group* o = new Fl_Group(0, 20, 872, 30);
+      { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
+        o->box(FL_THIN_DOWN_BOX);
+        o->labelsize(12);
+        o->textsize(12);
+        o->align(132);
+      }
+      { Fl_Box* o = new Fl_Box(505, 20, 367, 30);
+        Fl_Group::current()->resizable(o);
+      }
+      o->end();
+    }
     mWindow2=NULL;
     o->end();
   }
@@ -901,7 +925,6 @@ void UserInterface::AboutWindow() {
     }
     mWindow2->show();
     o->set_modal();
-    o->clear_border();
     o->end();
   }
 }
