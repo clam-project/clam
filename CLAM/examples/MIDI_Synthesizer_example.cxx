@@ -51,9 +51,9 @@ private:
 public:
 	void AudioMain(void);	
 	MyAudioApplication(const char* midiDeviceStr,const char* audioDeviceStr)
-	:	mMidiDeviceStr(midiDeviceStr),
-		mAudioDeviceStr(audioDeviceStr),
-		AudioApplication()
+	:	AudioApplication(),
+		mMidiDeviceStr(midiDeviceStr),
+		mAudioDeviceStr(audioDeviceStr)
 	{
 	}
 };
@@ -96,17 +96,16 @@ public:
 
 		void LinkControls(void)
 		{
-			mADSR.GetOutControls().GetByNumber(0).AddLink(&GetInControls().GetByNumber(0));
+			ConnectControls(mADSR, 0, *this, 0);
 
-			GetOutControls().GetByNumber(1).AddLink(&mMapperNote.GetInControls().GetByNumber(0));
-			GetOutControls().GetByNumber(2).AddLink(&mMapperVel.GetInControls().GetByNumber(0));
-			GetOutControls().GetByNumber(3).AddLink(&mMapperPitchBend.GetInControls().GetByNumber(0));
+			ConnectControls(*this, 1, mMapperNote, 0);
+			ConnectControls(*this, 2, mMapperVel, 0);
+			ConnectControls(*this, 3, mMapperPitchBend, 0);
 
-			mMapperNote.GetOutControls().GetByNumber(0).AddLink(&mFreqMultiplier.GetInControls().GetByNumber(0));
-			mMapperPitchBend.GetOutControls().GetByNumber(0).AddLink(&mFreqMultiplier.GetInControls().GetByNumber(1));
-
-			mFreqMultiplier.GetOutControls().GetByNumber(0).AddLink(&mOscillator.GetInControls().GetByNumber(0));
-			mMapperVel.GetOutControls().GetByNumber(0).AddLink(&mADSR.GetInControls().GetByNumber(0));
+			ConnectControls(mMapperNote, 0, mFreqMultiplier, 0);
+			ConnectControls(mMapperPitchBend, 0, mFreqMultiplier, 1);
+			ConnectControls(mFreqMultiplier, 0, mOscillator, 0);
+			ConnectControls(mMapperVel, 0, mADSR, 0);
 		}
 
 	public:
@@ -131,7 +130,7 @@ public:
 
 		bool ConcreteConfigure( const ProcessingConfig& c );
 	
-	bool ConcreteStart();
+		bool ConcreteStart();
 
 		bool Do(Audio& out) ;
 };
@@ -318,8 +317,7 @@ void MyAudioApplication::AudioMain(void)
 
 		// Instrument
 		MyInstrumentConfig instrumentCfg[ nVoices ];
-		int i;
-		for (i=0;i<nVoices;i++)
+		for (int i=0;i<nVoices;i++)
 		{
 			char tmp[10];
 			sprintf(tmp,"instrument%d",i);
@@ -331,7 +329,7 @@ void MyAudioApplication::AudioMain(void)
 
 		Array< Instrument* > instruments( nVoices );
 
-		for (i=0;i<nVoices;i++)
+		for (int i=0;i<nVoices;i++)
 		{
 			instruments.AddElem( new MyInstrument( instrumentCfg[i] ) );
 		}
@@ -350,7 +348,7 @@ void MyAudioApplication::AudioMain(void)
 		Audio bufOsc;
 		bufOsc.SetSize(buffersize);
 
-		for( i = 0; i < nVoices; i++ )
+		for( int i = 0; i < nVoices; i++ )
 		{
 			audioArray.AddElem( bufOsc );
 		}
@@ -369,12 +367,10 @@ void MyAudioApplication::AudioMain(void)
 
 		/* Connecting audio inputs / outputs
 		 * TODO port-names should be homogenic! */
-		for ( i=0;i<nVoices;i++)
+		for ( int i=0;i<nVoices;i++)
 		{
-			std::stringstream sstr;
-			sstr.str("");
-			std::string name("Input");
-			sstr << name << " " << i;
+			std::ostringstream sstr;
+			sstr << "Input " << i;
 			ConnectPorts(*instruments[i],"AudioOut", mixer, sstr.str());
 		}
 		ConnectPorts(mixer,"Output Audio", outR, "Audio Input");
@@ -383,12 +379,12 @@ void MyAudioApplication::AudioMain(void)
 		/** Ignoring channel, which is OutControl 0 */
 		
 		/** Key for Note On/Off */
-		inNote.GetOutControls().GetByNumber(1).AddLink(&dispatcher.GetInControls().GetByNumber(1));
+		ConnectControls(inNote, 1, dispatcher, 1);
 		/** Velocity for Note On/Off */
-		inNote.GetOutControls().GetByNumber(2).AddLink(&dispatcher.GetInControls().GetByNumber(2));
+		ConnectControls(inNote, 2, dispatcher, 2);
 		
-		for( i = 0; i < nVoices; i++ )
-			inPitchBend.GetOutControls().GetByNumber(1).AddLink(&instruments[i]->GetInControls().GetByNumber(3));
+		for( int i = 0; i < nVoices; i++ )
+			ConnectControls(inPitchBend, 1, *instruments[i], 3);
 		
 		mixer.Start();
 
@@ -401,7 +397,7 @@ void MyAudioApplication::AudioMain(void)
 
 		audioManager.Start();
 
-		for ( i = 0; i < nVoices; i++ )
+		for ( int i = 0; i < nVoices; i++ )
 		{
 			instruments[ i ]->Start();
 		}
@@ -418,7 +414,7 @@ void MyAudioApplication::AudioMain(void)
 			
 			midiManager.Check();
 		
-			for ( i = 0; i < nVoices; i++ )
+			for ( int i = 0; i < nVoices; i++ )
 			{
 				instruments[ i ]->Do();
 			}
@@ -429,7 +425,7 @@ void MyAudioApplication::AudioMain(void)
 			outR.Do();
 		} while (!Canceled()) ;
 
-		for ( i = 0; i < nVoices; i++ )
+		for ( int i = 0; i < nVoices; i++ )
 			delete instruments[ i ];
 
 	}
