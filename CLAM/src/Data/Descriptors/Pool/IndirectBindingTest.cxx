@@ -3,6 +3,7 @@
 
 #include "Extractor.hxx"
 #include "DataTypes.hxx"
+#include "CharCopierExtractor.hxx"
 
 
 namespace CLAMTest
@@ -21,6 +22,8 @@ class IndirectBindingTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testIsInsideScope_returnsTrueBeforeEnd);
 	CPPUNIT_TEST(testIsInsideScope_returnsFalseAfterLastReference);
 	CPPUNIT_TEST(testGetForReading_failsWhenInvalidReference);
+	CPPUNIT_TEST(testExtraction_usingHooks);
+	CPPUNIT_TEST(testExtraction_usingExtractor);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -145,134 +148,24 @@ private:
 
 
 	}
-
-	
-/*
-	void testInit_PointsToThePoolBegin()
-	{
-		const char * expected = mInputBuffer;
-		CLAM::ReadHook<char> hook;
-		hook.Bind("TestScope1","InputData");
-		hook.Init(*mPool);
-		const char & result = hook.GetForReading();
-
-		CPPUNIT_ASSERT_EQUAL(expected, &result);
-	}
-
-	void testNext_PointsToTheNextPoolData()
-	{
-		const char * expected = mInputBuffer;
-		CLAM::ReadHook<char> hook;
-		hook.Bind("TestScope1","InputData");
-		hook.Init(*mPool);
-		hook.Next();
-		const char & result = hook.GetForReading();
-
-		CPPUNIT_ASSERT_EQUAL(expected+1, &result);
-	}
-
-	void testIsInsideScope_ReturnsTrueWhileInsideTheScope()
-	{
-		const char * expected = mInputBuffer;
-		CLAM::ReadHook<char> hook;
-		hook.Bind("TestScope1","InputData");
-		hook.Init(*mPool);
-
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-	}
-
-	void testIsInsideScope_ReturnsFalseBeyondTheScope()
-	{
-		const char * expected = mInputBuffer;
-		CLAM::ReadHook<char> hook;
-		hook.Bind("TestScope1","InputData");
-		hook.Init(*mPool);
-
-		// Advance until the end
-		hook.Next();
-		hook.Next();
-		// Go Beyond
-		hook.Next();
-
-		CPPUNIT_ASSERT(!hook.IsInsideScope());
-	}
-
-	void testWriteInit_PointsToThePoolBegin()
-	{
-		CLAM::WriteHook<char> hook;
-		hook.Bind("TestScope1","OutputData");
-		hook.Init(*mPool);
-		char & result = hook.GetForWriting();
-
-		char * expected = mPool->GetAttributePool<char>("TestScope1","OutputData");
-
-		CPPUNIT_ASSERT_EQUAL(expected, &result);
-	}
-
-	void testWriteNext_PointsToTheNextPoolData()
-	{
-		CLAM::WriteHook<char> hook;
-		hook.Bind("TestScope1","OutputData");
-		hook.Init(*mPool);
-		hook.Next();
-		char & result = hook.GetForWriting();
-		char * expected = mPool->GetAttributePool<char>("TestScope1","OutputData") + 1;
-
-		CPPUNIT_ASSERT_EQUAL(expected, &result);
-	}
-
-	void testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope()
-	{
-		CLAM::WriteHook<char> hook;
-		hook.Bind("TestScope1","OutputData");
-		hook.Init(*mPool);
-
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-		hook.Next();
-		CPPUNIT_ASSERT(hook.IsInsideScope());
-	}
-
-	void testWriteIsInsideScope_ReturnsFalseBeyondTheScope()
-	{
-		CLAM::WriteHook<char> hook;
-		hook.Bind("TestScope1","OutputData");
-		hook.Init(*mPool);
-
-		// Advance until the end
-		hook.Next();
-		hook.Next();
-		// Go Beyond
-		hook.Next();
-
-		CPPUNIT_ASSERT(!hook.IsInsideScope());
-	}
-
-	void testTransformUsingHooks()
+	void testExtraction_usingHooks()
 	{
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadHook<char> inputHook;
-		inputHook.Bind("TestScope1","InputData");
-		outputHook.Bind("TestScope1","OutputData");
-		inputHook.Init(*mPool);
-		outputHook.Init(*mPool);
+		CLAM::ReadIndirectHook<char> inputHook;
+		inputHook.Bind("Referenced","Input");
+		inputHook.Indirect("Referencer","Reference");
+		outputHook.Bind("Referencer","Output");
 
-		for (; inputHook.IsInsideScope() && outputHook.IsInsideScope(); outputHook.Next(), inputHook.Next())
+		for (inputHook.Init(*mPool),outputHook.Init(*mPool); 
+			inputHook.IsInsideScope() && outputHook.IsInsideScope();
+			outputHook.Next(),inputHook.Next())
 		{
+			const char & input = inputHook.GetForReading();
 			char & output = outputHook.GetForWriting();
-			const char  & input = inputHook.GetForReading();
 			output = input;
 		}
-		
-		std::string expected(mPool->GetAttributePool<char>("TestScope1","InputData"),3);
-		std::string result(mPool->GetAttributePool<char>("TestScope1","OutputData"),3);
-		
-
+		std::string expected("adg",3);
+		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
 
@@ -281,22 +174,20 @@ private:
 		CharCopierExtractor extractor;
 
 		CLAM::WriteHook<char> outputHook;
-		CLAM::ReadHook<char> inputHook;
-		inputHook.Bind("TestScope1","InputData");
-		outputHook.Bind("TestScope1","OutputData");
+		CLAM::ReadIndirectHook<char> inputHook;
+		inputHook.Bind("Referenced","Input");
+		inputHook.Indirect("Referencer","Reference");
+		outputHook.Bind("Referencer","Output");
 		extractor.SetHooks(inputHook,outputHook);
 
 		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
 		{
 			extractor.Extract();
 		}
-		
-		std::string expected(mPool->GetAttributePool<char>("TestScope1","InputData"),3);
-		std::string result(mPool->GetAttributePool<char>("TestScope1","OutputData"),3);
-		
+		std::string expected("adg",3);
+		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
-*/
 
 };
 
