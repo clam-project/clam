@@ -123,60 +123,21 @@ namespace CLAM {
 class DynamicType : public Component
 {
 public:
-	
 	DynamicType();
 	/**
-	* Copy constructor of a dynamic Type.
-	* <B>This constructor must be only used from the concrete dyn. type constructor.</B> 
-	* The created object will use the dynamic type description of anotyer dynamic Type.
+	* The created object will use the attribute instantiation of the copied DT.
 	* @param prototype Another dynamic type from which the dynamic info is taken.
 	*/
-	/// \todo remove?
 	DynamicType(const DynamicType& prototype);
 
 	virtual ~DynamicType();
 	
 	virtual const char* GetClassName() const =0;
-protected:
-	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
-	void DefaultInit();
-	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
-	void CopyInit(const DynamicType & dt);
 	
-	/**
-	* Used by macros
-	*/
-	/// \todo document why we need a void implementation
-	virtual void InformAll() const {};
-
-	
-
-
-
-protected:
-
-	/// \todo document: redefinition why
-	typedef StaticInfo::AttrStaticInfo AttrStaticInfo;
-	typedef StaticInfo::AttrStaticInfo::NewInplaceFn NewInplaceFn;
-	typedef StaticInfo::AttrStaticInfo::NewCopyInplaceFn NewCopyInplaceFn;
-	typedef StaticInfo::AttrStaticInfo::DestructorInplaceFn DestructorInplaceFn;
-	
-	/** Called from the virtual GetStaticInfo, which passes its static pointer
-	 * to StaticInfo. And only calls this method when its pointer is not 
-	 * initialized. This InformAll is called only once per class.
-	 */
-	void InitStaticInfo(StaticInfo* & pStaticInfo) const {
-		pStaticInfo = new StaticInfo; 
-		InformAll();
-	}
-
-public:
-	DynamicInfo& GetDynamicInfo() const { 
-		_dynInfo.Init( const_cast<DynamicType*>(this) );
-		return _dynInfo;
-	}
 	virtual StaticInfo& GetStaticInfo() const = 0;
 
+	DynamicInfo& GetDynamicInfo() const;
+	
 	/**
 	* Method used to resize the data space of the dynamic type, necessary when some
 	* AddXxx() / RemoveXxx() (where Xxx is an attribute name) has been done.
@@ -186,11 +147,38 @@ public:
 	*
 	* \return whether some modification has ocurred or not.
 	*/
-	/// \todo update :-)
 	bool UpdateData();
 	
-	bool HasData() { return data!= 0; }
+	bool HasData() const { return _data != 0; }
 
+
+protected:
+	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
+	void DefaultInit();
+	/// \depracated no more need of pseudo-constructors. Concrete DTs can define its constructors
+	void CopyInit(const DynamicType & dt);
+	
+	/// \todo change macros InformAll implementation with inheritance.
+	virtual void InformAll() const {
+		GetStaticInfo().AddClassName( "DynamicType" );
+	};
+
+	// Import of types to be accessible from sub-classes
+	typedef StaticInfo::AttrStaticInfo AttrStaticInfo;
+	typedef StaticInfo::AttrStaticInfo::NewInplaceFn NewInplaceFn;
+	typedef StaticInfo::AttrStaticInfo::NewCopyInplaceFn NewCopyInplaceFn;
+	typedef StaticInfo::AttrStaticInfo::DestructorInplaceFn DestructorInplaceFn;
+	
+	/** Called from the virtual GetStaticInfo, which passes its static pointer
+	 * to StaticInfo. And only calls this method when its pointer is not 
+	 * initialized. This InformAll is called only once per class.
+	 */
+	void InitStaticInfo(StaticInfo* & pStaticInfo) const;
+
+private:
+	bool DynamicInfoIsInit() const { return _dynInfo._parentDT != 0; }
+
+public:
 
 protected:
 	
@@ -199,39 +187,32 @@ public:
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
 		
-
-	// item of the dynamicTable, that holds the dynamic information of the dynamic type
-	/// \todo move to DynInfo
-/*	struct TDynInfo
-	{
-		int offs;  // attribute offset of the data table. Has a -1 value when
-		           // the attr is not instantiated (have no entry at the data table).
-		bool hasBeenAdded : 1;
-		bool hasBeenRemoved : 1;
-	};
-*/
 	/// \todo why no call it clone? (make all components clonable?)
 	virtual DynamicType& GetDynamicTypeCopy( const bool deep = false ) const =0;
 	/// \todo we really need this now?
 	virtual Component* ShallowCopy() const;
 	virtual Component* DeepCopy() const;
 	DynamicType& operator= (const DynamicType& source);
+	
+	/// \depracated Not longer useful. Users of DTs can write its normal C++ constructors
+	void MandatoryInit();
 
+	virtual void StoreOn(CLAM::Storage & s);
+	virtual void LoadFrom(CLAM::Storage & s);
 
-private:
-/*
-	/// \todo move to StaticInfo
-	inline unsigned    GetNumAttr() const { return numAttr; };
-	/// \todo move to DynInfo
-	inline unsigned    GetNumActiveAttr() const { return numActiveAttr; }
-	inline char*       GetData() const { return data; }
-	inline void        SetData(char* srcData) { data = srcData;}
-	/// \todo remove
-	inline TDynInfo*   GetDynamicTable() const { return dynamicTable; }
-	/// \todo move to StaticInfo
-	inline unsigned    GetDataSize() const { return dataSize; }
-	inline bool        IsInstanciate() const { return (data != 0); }
-*/		
+	void SetPreAllocateAllAttributes() { _bPreAllocateAllAttributes=true; }
+
+	/// Developing/testing method
+	void Debug();
+	/// Developing/testing method
+	void FullfilsInvariant() const;
+	
+	/// This inline method contains actual code only if preprocessor flag: 
+	/// CLAM_EXTRA_CHECKS_ON_DT is set.
+	/// This method is called at the end of some other class methods, for consistency
+	/// checks. It needs to be public because DynamicInfo alse calls it.
+	void CheckInvariantIfExtraChecksIsSet();
+
 protected:
 	bool ExistAttr(unsigned id) const;
 	int NumAttr() const;
@@ -242,51 +223,55 @@ protected:
 	/// Used in macro expanded RemoveXxx(). Hence, this _protected_ name.
 	void _RemoveAttr( int idAttr, int attrSize ) { GetDynamicInfo().RemoveAttr( idAttr, attrSize ); }
 
+	int GetAttrOffs( int idAttr ) const;
+	virtual void StoreDynAttributes(CLAM::Storage & s) = 0;
+	virtual void LoadDynAttributes(CLAM::Storage & s) = 0;
 
-	/**
-	 * 
-	 */
-public:
-	void SetPreAllocateAllAttributes() { bPreAllocateAllAttributes=true; }
+	template <typename AttribType>
+	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name);
+	template <typename AttribType>
+	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name);
+	template <typename AttribType>
+	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName);
+	template <typename AttribType>
+	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name);
+	template <typename AttribType>
+	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name);
+	template <typename AttribType>
+	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName);
 
-
-
-	// Developing tools:
-	void Debug();
-	void FullfilsInvariant() const;
-
-protected:
-/// \todo move almost all attributes	
-	char            *data;
+	/// helper nested-class used in macro expanded code.
+	template <unsigned int NAttrib> 
+	class AttributePositionBase 
+	{ 
+	public:
+		static const int value;
+	};
 
 private:
 	mutable DynamicInfo _dynInfo; // can't never be const because it's accessed via GetDynamicInfo
 
-//	inline bool   AttrHasData(unsigned i) const { return (dynamicTable[i].offs > -1); };
-	inline void   RemoveAllMem();
-	inline void*  GetPtrToData_(const int id) const;
-	inline void*  GetDataAsPtr_(const int id) const;
-	inline void   SetDataAsPtr_(const int id, void* p);
+	virtual void RemoveAllMem();
+	void* GetPtrToData_(const int id) const;
+	void* GetDataAsPtr_(const int id) const;
+	void SetDataAsPtr_(const int id, void* p);
 	
-	/** support method for UpdateData(). @see UpdateData() 
+	/** Helper method for UpdateData(). @see UpdateData() 
 	 *  SHRINK MODE: now we'll reuse the allocated data table deleting the gaps.
 	 *  two traversals: the first one is for moving the existing attributes:
 	 *  the second one for allocating the new attributes
 	 */
 	void UpdateDataByShrinking();
-
-	/** support method for UpdateData(). @see UpdateData() 
+	/** Helper method for UpdateData(). @see UpdateData() 
 	 *  STANDARD MODE: a new reallocation of data table is done.
 	 *  and all existing attributes copies (copy constructor)
 	 */
 	void UpdateDataByStandardMode();
-	
-	/** support method for UpdateData(). @see UpdateData() 
+	/** Helper method for UpdateData(). @see UpdateData() 
 	 *  Going to Pre Allocated Mode: the last reallocation is done, and the fixed offs are used.
 	 */
 	void UpdateDataGoingToPreAllocatedMode();
-	
-	/** support method for UpdateData(). @see UpdateData() Fixed offs (taken from
+	/** Helper method for UpdateData(). @see UpdateData() Fixed offs (taken from
 	 * typeDescTable are used.
 	 */
 	void UpdateDataInPreAllocatedMode();
@@ -295,102 +280,36 @@ private:
 	void SelfSharedCopy(const DynamicType &orig);
 	void SelfShallowCopy(const DynamicType &orig);
 //	void SelfDeepCopy(const DynamicType &orig);
-	bool bPreAllocateAllAttributes;
-
-
-public:
-	/// \depracated Not longer useful. Users of DTs can write its normal C++ constructors
-	void MandatoryInit();
-
-	virtual void StoreOn(CLAM::Storage & s) {
-		this->StoreDynAttributes(s);
-	}
-	virtual void LoadFrom(CLAM::Storage & s) {
-		this->LoadDynAttributes(s);
-	}
-	template <unsigned int NAttrib> 
-	class AttributePositionBase { 
-	public:
-		static const int value;
-	};
-	void CheckInvariantIfExtraChecksIsSet();
 	
+// Atributes:
 protected:
-	int GetAttrOffs( int idAttr ) const;
-	virtual void StoreDynAttributes(CLAM::Storage & s) = 0;
-	virtual void LoadDynAttributes(CLAM::Storage & s) = 0;
-	template <typename AttribType>
-	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#		ifdef CLAM_USE_XML
-			CLAM::XMLAdapter<AttribType> adapter(object, name, true);
-			s.Store (&adapter);
-#		endif//CLAM_USE_XML
-	}
-	template <typename AttribType>
-	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#		ifdef CLAM_USE_XML
-			CLAM::XMLComponentAdapter adapter(object, name, true);
-			s.Store (&adapter);
-#		endif//CLAM_USE_XML
-	} 
-	template <typename AttribType>
-	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
-#		ifdef CLAM_USE_XML
-			CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
-			s.Store (&adapter);
-#		endif//CLAM_USE_XML
-	} 
+	///\todo make private
+	char* _data;
+private:
+	bool _bPreAllocateAllAttributes;
 
-	template <typename AttribType>
-	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#		ifdef CLAM_USE_XML
-			CLAM::XMLAdapter<AttribType> adapter(object, name, true);
-			return s.Load (&adapter);	
-#		else 
-			return false;
-#		endif//CLAM_USE_XML
-	}
 
-	template <typename AttribType>
-	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#		ifdef CLAM_USE_XML
-			CLAM::XMLComponentAdapter adapter(object, name, true);
-			return s.Load (&adapter);	
-#		else 
-			return false;
-#		endif//CLAM_USE_XML
-	} 
-
-	template <typename AttribType>
-	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
-#		ifdef CLAM_USE_XML
-			CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
-		return s.Load (&adapter);
-#	else 
-		return false;
-#	endif//CLAM_USE_XML
-	} 
 };
 
 
 //////////////////////////////////////////////////////////////////
-// STATIC MEMBERS DEFINITION
+// Static members definitions
 
 template <unsigned int NAttrib> const int DynamicType::AttributePositionBase<NAttrib>::value = NAttrib;
 
 //////////////////////////////////////////////////////////////////
-// IMPLEMENTATION OF INLINE FUNCTIONS
+// Implementation of inline methods
 
-/*
-inline bool DynamicType::ExistAttr(unsigned id) const 
-{ 
-
-	if (!data) return false;
-
-	TDynInfo &inf = dynamicTable[id];
-	return (inf.offs != -1 && !inf.hasBeenAdded && !inf.hasBeenRemoved); 
+inline DynamicInfo& DynamicType::GetDynamicInfo() const { 
+	_dynInfo.Init( const_cast<DynamicType*>(this) );
+	return _dynInfo;
 }
-*/
+
+inline void DynamicType::InitStaticInfo(StaticInfo* & pStaticInfo) const {
+	pStaticInfo = new StaticInfo; 
+	InformAll();
+}
+
 inline int DynamicType::NumAttr() const {
 	return GetDynamicInfo().NumAttr();
 }
@@ -401,17 +320,17 @@ inline int DynamicType::GetAttrOffs( int idAttr ) const {
 
 inline void* DynamicType::GetDataAsPtr_(const int idAttr ) const
 {
-	return *(void**)&data[ GetAttrOffs(idAttr) ];
+	return *(void**)&_data[ GetAttrOffs(idAttr) ];
 }
 
 inline void* DynamicType::GetPtrToData_(const int idAttr) const
 {
-	return (void*)&data[ GetAttrOffs(idAttr) ];
+	return (void*)&_data[ GetAttrOffs(idAttr) ];
 }
 
 inline void DynamicType::SetDataAsPtr_(const int idAttr, void* p)
 {
-	*(void**)&data[ GetAttrOffs(idAttr) ] = p;
+	*(void**)&_data[ GetAttrOffs(idAttr) ] = p;
 }
 
 inline void DynamicType::CheckInvariantIfExtraChecksIsSet()
@@ -420,6 +339,62 @@ inline void DynamicType::CheckInvariantIfExtraChecksIsSet()
 		FullfilsInvariant();
 #	endif //CLAM_EXTRA_CHECKS_ON_DT
 }
+
+template <typename AttribType>
+inline void DynamicType::StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+#	ifdef CLAM_USE_XML
+		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
+		s.Store (&adapter);
+#	endif//CLAM_USE_XML
+}
+
+template <typename AttribType>
+inline void DynamicType::StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+#	ifdef CLAM_USE_XML
+		CLAM::XMLComponentAdapter adapter(object, name, true);
+		s.Store (&adapter);
+#	endif//CLAM_USE_XML
+} 
+
+template <typename AttribType>
+inline void DynamicType::StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
+#	ifdef CLAM_USE_XML
+		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
+		s.Store (&adapter);
+#	endif//CLAM_USE_XML
+} 
+
+template <typename AttribType>
+inline bool DynamicType::LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+#	ifdef CLAM_USE_XML
+		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
+		return s.Load (&adapter);	
+#	else 
+		return false;
+#	endif//CLAM_USE_XML
+}
+
+template <typename AttribType>
+inline bool DynamicType::LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+#	ifdef CLAM_USE_XML
+		CLAM::XMLComponentAdapter adapter(object, name, true);
+		return s.Load (&adapter);	
+#	else 
+		return false;
+#	endif//CLAM_USE_XML
+} 
+
+template <typename AttribType>
+inline bool DynamicType::LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
+#	ifdef CLAM_USE_XML
+		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
+	return s.Load (&adapter);
+#	else 
+	return false;
+#	endif//CLAM_USE_XML
+} 
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

@@ -6,8 +6,7 @@
 namespace CLAM
 {
 DynamicInfo::~DynamicInfo() {
-	CLAM_ASSERT( _dynInfoImpl, "destructor of DynamicInfo: _dynInfoImpl=0");
-	if (RefCount()==0) {
+	if (_dynInfoImpl && RefCount()==0) {
 		delete [] _dynInfoImpl;
 	}
 }
@@ -15,7 +14,8 @@ DynamicInfo::~DynamicInfo() {
 void DynamicInfo::Init(DynamicType* p) {
 	if (_parentDT) return;
 		_parentDT = p;
-		_numAttr = _parentDT->GetStaticInfo().NumAttr();
+		_cachedStaticInfo = &_parentDT->GetStaticInfo();
+		_numAttr = _cachedStaticInfo->NumAttr();
 		_dynInfoImpl = new AttrDynamicInfo[_numAttr+1]; // the last element doesn't describe
 		                                                // an attribute, but the whole DT
 		InitRefCount();
@@ -33,7 +33,7 @@ void DynamicInfo::DecrementRefCount() {
 	_dynInfoImpl[NumAttr()].SetOffs( RefCount()-1 );
 }
 
-int DynamicInfo::RefCount() {
+int DynamicInfo::RefCount() const {
 	return _dynInfoImpl[NumAttr()].GetOffs();
 }
 
@@ -71,11 +71,11 @@ void DynamicInfo::AttrDynamicInfo::SetRemoved() {
 }
 
 void DynamicInfo::AttrDynamicInfo::UnsetAdded() { 
-	_added = true;
+	_added = false;
 }
 
 void DynamicInfo::AttrDynamicInfo::UnsetRemoved() { 
-	_removed = true; 
+	_removed = false; 
 }
 
 bool DynamicInfo::AnyRemoved() {
@@ -95,11 +95,23 @@ void DynamicInfo::UnsetAnyAdded() {
 }
 
 void DynamicInfo::TryToUnsetAnyRemoved() {
-	///\todo
+	// search for a Removed attribute. If not found
+	// unset AnyRemoved
+	for (int i=0; i<NumAttr(); i++) {
+		if ( _dynInfoImpl[i].Removed() ) 
+			return;
+	}
+	UnsetAnyRemoved();
 }
 
 void DynamicInfo::TryToUnsetAnyAdded() {
-	///\todo
+	// search for an Added attribute. In not found,
+	// unset AnyAdded
+	for (int i=0; i<NumAttr(); i++) {
+		if ( _dynInfoImpl[i].Added() )
+			return;
+	}
+	UnsetAnyAdded();
 }
 
 void DynamicInfo::SetAnyRemoved() {

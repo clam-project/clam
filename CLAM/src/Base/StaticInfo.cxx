@@ -5,7 +5,7 @@ namespace CLAM
 {
 
 const char* StaticInfo::GetClassName(int i) const { 
-	CLAM_ASSERT( i>=0 && i<NumAttr(), "DT::StaticInfo::GetClassName bad index" );
+	CLAM_ASSERT( i>=0 && i<CountClassNames(), "DT::StaticInfo::GetClassName bad index" );
 	return _classNames[i];
 }
 
@@ -19,17 +19,17 @@ void StaticInfo::AddAttr( StaticInfo::AttrStaticInfo& info ) {
 	_attributes.push_back( info );
 }
 
-void StaticInfo::GetTypeInfo( const void* ptr, bool& isComponent, bool& isDynamicType  ) {
+void StaticInfo::DeduceTypeInfo( const void* ptr, bool& isComponent, bool& isDynamicType  ) {
 	isComponent = false;
 	isDynamicType = false;
 }
 
-void StaticInfo::GetTypeInfo( const Component* ptr, bool& isComponent, bool& isDynamicType ) {
+void StaticInfo::DeduceTypeInfo( const Component* ptr, bool& isComponent, bool& isDynamicType ) {
 	isComponent = true;
 	isDynamicType = false;
 }
 
-void StaticInfo::GetTypeInfo(const DynamicType* ptr, bool& isComponent, bool& isDynamicType ) {
+void StaticInfo::DeduceTypeInfo(const DynamicType* ptr, bool& isComponent, bool& isDynamicType ) {
 	isComponent = true;
 	isDynamicType = true;
 }

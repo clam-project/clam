@@ -7,6 +7,7 @@ namespace CLAM
 
 // forward declaration
 class DynamicType;
+class StaticInfo;
 
 
 // Inner classes declaration
@@ -22,7 +23,7 @@ class DynamicInfo
 	{
 		friend DynamicInfo;
 	public:
-		AttrDynamicInfo() : _added(false), _removed(false) {}
+		AttrDynamicInfo() : _added(false), _removed(false), _offs(-1) {}
 
 		/// \todo put definitions after the class. Maybe after the nested class?
 		void SetAdded();
@@ -40,33 +41,44 @@ class DynamicInfo
 		bool _removed;
 		int _offs;
 	};
+public:
+	// Public interface:
+	int NumAttr() const{ return _numAttr; }
+	int NumInstantiatedAttr() const { return _numInstantiatedAttr; }
+	AttrDynamicInfo& GetAttrInfo (int idAttr );
+	bool AnyRemoved();
+	bool AnyAdded();
 
+private:
 	// interface for the friendly DynamicType :
 	//   constructor/destructor:
-	DynamicInfo() : _numInstantiatedAttr(0), _parentDT(0) {}
+	DynamicInfo() : 
+		_numInstantiatedAttr(0), 
+		_parentDT(0), 
+		_dataSize(0),
+		_allocatedDataSize(0), 
+		_dynInfoImpl(0),
+		_cachedStaticInfo(0)
+	   {}
+
 	~DynamicInfo();
 
 	void Init( DynamicType *parent );
-	AttrDynamicInfo& GetAttrInfo (int idAttr );
-	int NumAttr() { return _numAttr; }
-	int NumInstantiatedAttr() { return _numInstantiatedAttr; }
-
-	int GetDataSize() { return _dataSize; }
+	int GetDataSize() const { return _dataSize; }
 	void SetDataSize( int s ) { _dataSize = s; }
-	int GetAllocatedDataSize() { return _allocatedDataSize; }
+	int GetAllocatedDataSize() const { return _allocatedDataSize; }
 	void SetAllocatedDataSize( int s ) { _allocatedDataSize=s; }
 	bool ExistAttr( int idAttr );
 	
 	void IncrementRefCount();
 	void DecrementRefCount();
-	int RefCount();
+	int RefCount() const;
 	void InitRefCount();	
 
 	void AddAttr( int idAttr, int attrSize );
 	void RemoveAttr( int idAttr, int attrSize );
 
-	bool AnyRemoved();
-	bool AnyAdded();
+	
 	void TryToUnsetAnyRemoved();
 	void TryToUnsetAnyAdded();
 	void UnsetAnyRemoved();
@@ -74,6 +86,8 @@ class DynamicInfo
 	void SetAnyRemoved();
 	void SetAnyAdded();
 	void CreateASeparatedDynInfoImpl();
+
+	StaticInfo& GetCachedStaticInfo() { return *_cachedStaticInfo; }
 
 	DynamicInfo& operator= (const DynamicInfo& arg);
 
@@ -84,6 +98,7 @@ class DynamicInfo
 	int _dataSize;
 	int _allocatedDataSize;
 	AttrDynamicInfo* _dynInfoImpl; //C array
+	StaticInfo* _cachedStaticInfo;
 }; // DynamicInfo
 
 } // namespace CLAM

@@ -90,7 +90,7 @@ protected: \
 	} \
 private: \
 	template <unsigned int NAttrib> \
-	class AttributePosition : public DynamicType::AttributePositionBase<NAttrib> { \
+		class AttributePosition : public CLAM::DynamicType::AttributePositionBase<NAttrib> { \
 		public: \
 			typedef StaticBool<!(NAttrib>=N)> InboundsCheck; \
 	}; \
@@ -202,27 +202,27 @@ ACCESS: \
 		CLAM_DEBUG_ASSERT( (N<NumAttr()), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
-		CLAM_ASSERT(ExistAttr(N),\
+		CLAM_ASSERT( ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT(data, \
+		CLAM_DEBUG_ASSERT( HasData(), \
 			"No data allocated for the accessed dynamic type:" #NAME );\
-		void *p=data + GetAttrOffs(N);\
+		void *p=_data + GetAttrOffs(N);\
 		return *static_cast<TYPE*>(p); \
 	}\
 	\
 	/*  already exist an object of the type in that position (that will be deleted)*/\
 	inline void Set##NAME(TYPE const & arg) {\
-		CLAM_DEBUG_ASSERT(( N<NumAttr() ), \
+		CLAM_DEBUG_ASSERT( ( N<NumAttr() ), \
 			"There are more registered Attributes than the number " \
 		        "defined in the DYNAMIC_TYPE macro.");\
-		CLAM_ASSERT(ExistAttr(N),\
+		CLAM_ASSERT( ExistAttr(N),\
 			"You are trying to access attribute " #NAME \
 			" that is not Added or not Updated.");\
-		CLAM_DEBUG_ASSERT(data, \
+		CLAM_DEBUG_ASSERT( HasData(), \
 			"No data allocated for the accessed dynamic type." #NAME ); \
 		void* orig = (void*)(&arg); \
-		char* pos = data + GetAttrOffs(N); \
+		char* pos = _data + GetAttrOffs(N); \
 		_destructor_##NAME(pos); \
 		_new_##NAME(pos, orig); \
 	} \
@@ -260,7 +260,7 @@ private: \
 	} \
 	void InformChainedAttr(AttributePosition<N>*) const { \
 		AttrStaticInfo attr; \
-		CLAM::StaticInfo::GetTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
+		CLAM::StaticInfo::DeduceTypeInfo((TYPE*)NULL, attr.isComponent, attr.isDynamicType); \
 		attr.name= #NAME; \
 		attr.type= #TYPE; \
 		attr.size= sizeof(TYPE); \

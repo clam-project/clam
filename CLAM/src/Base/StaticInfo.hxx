@@ -71,9 +71,9 @@ public:
 	}
 	
 	/// \todo should be private: (accessed through protected interface of DT) OR NOT!
-	static void GetTypeInfo( const void* ptr, bool& isComponent, bool& isDynamicType  );
-	static void GetTypeInfo( const Component* ptr, bool& isComponent, bool& isDynamicType  );
-	static void GetTypeInfo( const DynamicType* ptr, bool& isComponent, bool& isDynamicType  );
+	static void DeduceTypeInfo( const void* ptr, bool& isComponent, bool& isDynamicType  );
+	static void DeduceTypeInfo( const Component* ptr, bool& isComponent, bool& isDynamicType  );
+	static void DeduceTypeInfo( const DynamicType* ptr, bool& isComponent, bool& isDynamicType  );
 
 private:
 	int _totalSize;
