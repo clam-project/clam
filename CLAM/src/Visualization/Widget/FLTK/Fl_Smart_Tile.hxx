@@ -26,12 +26,11 @@
 
 class Fl_Smart_Tile : public Fl_Group {
 private:
-	int closing_;
-	int shading_;
-	int moving_;
-	int buttondown_;
+	int current_;
+	char action_;
+	char buttondown_;
 	int minsize_;
-	int recalc(void);
+	void recalc(void);
 public:
 	Fl_Smart_Tile(int X,int Y,int W,int H,const char*l=0);
 	void draw(void);

@@ -27,7 +27,14 @@
 
 #include "Fl_Smart_Tile.hxx"
 
-#include <iostream>
+#define FL_DAMAGE_CUSTOM 64
+#define TITLE_H 21
+
+// TODO: these should be a member
+static int movingnewsize_ = 0; 
+static int movement_ = 0;
+#define MAX_CHILDREN 256 /* more than 256 in a smart tile is crazy */
+static char visible_[MAX_CHILDREN]; 
 
 static char *image_shade[] = {
 "11 11 2 1",
@@ -68,26 +75,24 @@ Fl_Pixmap pixmapClose(image_close);
 Fl_Smart_Tile::Fl_Smart_Tile(int X,int Y,int W,int H,const char*l)
 :Fl_Group(X,Y,W,H,l)
 {
-	moving_ = -1;	
-	closing_ = -1;
-	shading_ = -1;
+	current_ = -1;	
+	action_ = ' '; // 's'==shade; 'c'==close; 'm'==move
 	buttondown_ = 0;
 	minsize_ = 50;
 }
 
 void Fl_Smart_Tile::add_adjust(Fl_Widget* widget)
 {
-/* resize the widget automatically to a size that will look good inside
-   the smart tile, before adding */
-	
+	/* resize the widget automatically to a size that will look good 
+	** inside the smart tile, before adding */
 	if (children()==0)
 	{
-		widget->resize(0,0,w(),h());
-	}else
+		widget->resize(0,0,w(),h()-TITLE_H);
+	}
+	else
 	{
-	/* for new widgets, we use the size of the largest divided by 2 */
+		/* for new widgets, we use the size of the largest divided by 2 */
 		int max = 0;
-
 		for ( int i = 0; i < children(); i++ )
 			if ( child(i)->h() > max )
 				max = child(i)->h();
@@ -97,8 +102,6 @@ void Fl_Smart_Tile::add_adjust(Fl_Widget* widget)
 	add(widget);
 }
 
-
-static int movingnewsize_ = 0; // TODO: this should be a member
 
 int Fl_Smart_Tile::handle(int e)
 {
@@ -110,15 +113,10 @@ int Fl_Smart_Tile::handle(int e)
 		int i;
 		for (i=1;i<children();i++)
 		{
-
-			//child(i)->handle( e );
 			if (
-				Fl::event_x()<x()+w()-42 &&
-				Fl::event_y()>child(i)->y()-21 && Fl::event_y()<child(i)->y())
+				Fl::event_x()<x()+w()-TITLE_H-TITLE_H &&
+				Fl::event_y()>child(i)->y()-TITLE_H && Fl::event_y()<child(i)->y())
 			{
-				moving_ = -1;
-				closing_ = -1;
-				shading_ = -1;
 				if (!cursor) {
 					window()->cursor(FL_CURSOR_NS);
 					cursor = 1;
@@ -126,155 +124,178 @@ int Fl_Smart_Tile::handle(int e)
 				return 1;
 			}
 		}
-		moving_ = -1;
-		closing_ = -1;
-		shading_ = -1;
 		if (cursor) {
 			window()->cursor(FL_CURSOR_DEFAULT);
 			cursor = 0;
 		}
 		return Fl_Group::handle(e);
 	}
-	if ( e == FL_LEAVE )
+	
+	if (e==FL_LEAVE )
 	{
 		window()->cursor( FL_CURSOR_DEFAULT );
 		return Fl_Group::handle(e);
 	}
+	
 	if (e==FL_DRAG)
 	{
-		if (moving_!=-1)
+		switch (action_)
 		{
-			movingnewsize_ = child(moving_)->h()-Fl::event_y()+prevy;
-			recalc();
-			prevy = Fl::event_y();
+			case 's':
+				{
+					if (
+						Fl::event_y()>child(current_)->y()-TITLE_H && 
+						Fl::event_y()<child(current_)->y() &&
+						Fl::event_x()>=x()+w()-TITLE_H-TITLE_H && 
+						Fl::event_x()<x()+w()-TITLE_H)
+					{
+						if (!buttondown_)
+						{
+							buttondown_ = 1;
+							damage(FL_DAMAGE_CUSTOM);
+						}
+					}else{
+						if (buttondown_)
+						{
+							buttondown_ = 0;			
+							damage(FL_DAMAGE_CUSTOM);
+						}
+					}
+				}
+				break;
+			case 'c':
+				if (
+					Fl::event_y()>child(current_)->y()-TITLE_H &&
+					Fl::event_y()<child(current_)->y() &&
+					Fl::event_x()>=x()+w()-TITLE_H &&
+					Fl::event_x()<x()+w())
+				{
+					if (!buttondown_)
+					{
+						buttondown_ = 1;			
+						damage(FL_DAMAGE_CUSTOM);
+					}
+				}else{
+					if (buttondown_)
+					{
+						buttondown_ = 0;			
+						damage(FL_DAMAGE_CUSTOM);
+					}
+				}
+				break;
+			case 'm':
+				{
+					movingnewsize_ = child(current_)->h()-Fl::event_y()+prevy;
+					movement_ = 1;
+					for (int j=0;j<children();j++)
+						if (visible_[j] && child(j)->visible()) 
+							child(j)->hide();
+					recalc();
+					prevy = Fl::event_y();
+				}
+				break;
+			return 1;
 		}
-		if (shading_!=-1)
-		{
-			if (
-				Fl::event_y()>child(shading_)->y()-21 && Fl::event_y()<child(shading_)->y() &&
-				Fl::event_x()>=x()+w()-42 && Fl::event_x()<x()+w()-21)
-			{
-				if (!buttondown_)
-				{
-					buttondown_ = 1;			
-					damage(FL_DAMAGE_CHILD);
-				}
-			}else{
-				if (buttondown_)
-				{
-					buttondown_ = 0;			
-					damage(FL_DAMAGE_CHILD);
-				}
-			}
-		}
-		if (closing_!=-1)
-		{
-			if (
-				Fl::event_y()>child(closing_)->y()-21 && Fl::event_y()<child(closing_)->y() &&
-				Fl::event_x()>=x()+w()-21 && Fl::event_x()<x()+w())
-			{
-				if (!buttondown_)
-				{
-					buttondown_ = 1;			
-					damage(FL_DAMAGE_CHILD);
-				}
-			}else{
-				if (buttondown_)
-				{
-					buttondown_ = 0;			
-					damage(FL_DAMAGE_CHILD);
-				}
-			}
-		}
-		return 1;
 	}
+	
 	if (e==FL_RELEASE)
 	{
-		if (shading_!=-1)
+		switch (action_)
 		{
-			if (
-				Fl::event_y()>child(shading_)->y()-21 && Fl::event_y()<child(shading_)->y() &&
-				Fl::event_x()>=x()+w()-42 && Fl::event_x()<x()+w()-21)
+			case 's': // shading
 			{
-				if (child(shading_)->visible())
-					child(shading_)->hide();
-				else
+				if (
+					Fl::event_y()>child(current_)->y()-TITLE_H && 
+					Fl::event_y()<child(current_)->y() &&
+					Fl::event_x()>=x()+w()-TITLE_H-TITLE_H && 
+					Fl::event_x()<x()+w()-TITLE_H)
 				{
-					child(shading_)->show();
-				}
-				moving_ = shading_; 
-				// to force reuse of the size the child had when it 
-				// was hidden
+					/* released inside the shading button */
 
-				recalc();
-				closing_ = -1;
-				shading_ = -1;
+					/* toggle shading, using standard FLTK visibility */
+					if (child(current_)->visible())
+						child(current_)->hide();
+					else
+						child(current_)->show();
+
+					recalc();
+				}
+				break;
 			}
-		}
-		if (closing_!=-1)
-		{
-			if (
-				Fl::event_y()>child(closing_)->y()-21 && Fl::event_y()<child(closing_)->y() &&
-				Fl::event_x()>=x()+w()-21 && Fl::event_x()<x()+w())
+			case 'c': // closing
 			{
-				Fl_Widget* w = child(closing_);
-				remove(w);
-				w->do_callback(); // SHOULD THIS CALL THE CALLBACK??
-				//delete w;	
-				closing_ = -1;
-				shading_ = -1;
+				if (
+					Fl::event_y()>child(current_)->y()-TITLE_H && 
+					Fl::event_y()<child(current_)->y() &&
+					Fl::event_x()>=x()+w()-TITLE_H && 
+					Fl::event_x()<x()+w())
+				{
+					/* released inside the closing button */
+					Fl_Widget* w = child(current_);
+					remove(w);
+					w->do_callback(); // SHOULD THIS CALL THE CALLBACK??
+					//delete w;	
+					redraw();
+				}
+				break;
+			}
+			case 'm':
+			{
+				for (int j=0;j<children();j++)
+				{
+					if (visible_[j]) child(j)->show();
+				}
 				redraw();
+				break;
 			}
 		}
-		if (moving_ != -1)
-		{
-			moving_ = -1;
-			redraw();
-			std::cerr << "moving set to -1 and redraw!" << std::endl;
-		}
+		action_ = ' ';
 		return 1;
 	}
+	
 	if (e==FL_PUSH)
 	{
-		moving_ = -1;
-		closing_ = -1;
-		shading_ = -1;
+		action_ = ' ';
 		int i;
 		for (i=0;i<children();i++)
 		{
-			if (Fl::event_y()>child(i)->y()-21 && Fl::event_y()<child(i)->y())
+			if (Fl::event_y()>child(i)->y()-TITLE_H && Fl::event_y()<child(i)->y())
 			{
-				if (i>0 && Fl::event_x()<x()+w()-42)
+				current_ = i;
+				if (i>0 && Fl::event_x()<x()+w()-TITLE_H-TITLE_H)
 				{
-					moving_ = i;
+					action_ = 'm';
+					for (int j=0;j<children();j++)
+					{
+						visible_[j] = child(j)->visible();
+					}
 					prevy = Fl::event_y();
 				}
-				if (Fl::event_x()>=x()+w()-42)
+				if (Fl::event_x()>=x()+w()-TITLE_H-TITLE_H)
 				{
-					if (Fl::event_x()<x()+w()-21)
+					if (Fl::event_x()<x()+w()-TITLE_H)
 					{
-						shading_ = i;
+						action_ = 's';
 						buttondown_ = 1;
-						damage(FL_DAMAGE_CHILD);
+						damage(FL_DAMAGE_CUSTOM);
 					}else{
-						closing_ = i;
+						action_ = 'c';
 						buttondown_ = 1;
-						damage(FL_DAMAGE_CHILD);
+						damage(FL_DAMAGE_CUSTOM);
 					}
 				}
 				return 1;
 			}
 		}
-	
 	}
 	return Fl_Group::handle(e);
 }
 
-int Fl_Smart_Tile::recalc(void)
+void Fl_Smart_Tile::recalc(void)
 {
 	int ty = y();
 	int n = children();
-	int rh = h()-n*21;
+	int rh = h()-n*TITLE_H;
 	int mh = 0;
 	int i;
 	int m = 0;
@@ -284,16 +305,22 @@ int Fl_Smart_Tile::recalc(void)
 	
 	int *sizes = new int[n];
 	
+	if (action_!='m')
+	  for (i = 0; i < n; i++)
+			visible_[i] = child(i)->visible();
+	
   for (i = 0; i < n; i++)
 	{
-		sizes[i] = i==moving_ ? movingnewsize_ : child(i)->h();
-		if (child(i)->visible())
+		sizes[i] = 
+			(action_=='m' && i==current_) ? 
+			movingnewsize_ : child(i)->h();
+		if (visible_[i])
 		{
 			th += sizes[i];
 			m++;
 		}
 	}
-	
+
 	if (m*minsize>rh)
 	{
 		minsize = rh/m;
@@ -302,8 +329,67 @@ int Fl_Smart_Tile::recalc(void)
 	if (th!=rh)
 	{	
 		int d = rh-th;
-		if (moving_==-1)
+		if (action_=='m')
 		{
+			int i;
+			
+			i = current_;
+			if (sizes[i]<minsize)
+			{
+				int d2 = sizes[i]-minsize;
+				sizes[i]=(minsize);
+				i++;
+				while (d2!=0 && i!=n)
+				{
+					if (visible_[i])
+					{
+						int ch = sizes[i];
+						int nh = ch+d2;
+						if (nh<minsize) nh = minsize;
+						sizes[i]=nh;
+						d2 -= (nh-ch);
+					}
+					i++;
+				}
+				d += d2;
+			}
+			
+			i = current_;
+			while (d!=0 && i)
+			{
+				i--;
+				if (visible_[i])
+				{
+					int ch = sizes[i];
+					int nh = ch+d;
+					if (nh<minsize) nh = minsize;
+					sizes[i]=nh;
+					d -= (nh-ch);
+				}
+			}
+			i = current_ + 1;
+			while (d!=0 && i!=n)
+			{
+				if (visible_[i])
+				{
+					int ch = sizes[i];
+					int nh = ch+d;
+					if (nh<minsize) nh = minsize;
+					sizes[i]=nh;
+					d -= (nh-ch);
+				}
+				i++;
+			}
+			if (d)
+			{
+				sizes[current_] = sizes[current_]+d;
+			}
+		}
+		else
+		{
+			if (action_=='s' && child(current_)->visible()) m--;
+			// avoid resizing the just unshaded
+
 			while (d&&m)
 			{
 				int dh = d/m;
@@ -311,7 +397,7 @@ int Fl_Smart_Tile::recalc(void)
 				if (dh==0) dh = d<0 ? -1 : 1;
 				for (i=0;i<n && d;i++)
 				{
-					if (child(i)->visible())
+					if (!(action_=='s' && i==current_) && visible_[i])
 					{
 						int ch = sizes[i];
 						int nh = ch+dh;
@@ -325,61 +411,6 @@ int Fl_Smart_Tile::recalc(void)
 				}
 			}
 		}
-		else
-		{
-			int i = moving_;
-			if (sizes[i]<minsize)
-			{
-				int d2 = sizes[i]-minsize;
-				sizes[i]=(minsize);
-				i++;
-				while (d2!=0 && i!=n)
-				{
-					if (child(i)->visible())
-					{
-						int ch = sizes[i];
-						int nh = ch+d2;
-						if (nh<minsize) nh = minsize;
-						sizes[i]=nh;
-						d2 -= (nh-ch);
-					}
-					i++;
-				}
-				d += d2;
-			}
-			
-			i = moving_;
-			
-			while (d!=0 && i)
-			{
-				i--;
-				if (child(i)->visible())
-				{
-					int ch = sizes[i];
-					int nh = ch+d;
-					if (nh<minsize) nh = minsize;
-					sizes[i]=nh;
-					d -= (nh-ch);
-				}
-			}
-			i = moving_+1;
-			while (d!=0 && i!=n)
-			{
-				if (child(i)->visible())
-				{
-					int ch = sizes[i];
-					int nh = ch+d;
-					if (nh<minsize) nh = minsize;
-					sizes[i]=nh;
-					d -= (nh-ch);
-				}
-				i++;
-			}
-			if (d)
-			{
-				sizes[moving_] = sizes[moving_]+d;
-			}
-		}
 	}
 
 	ty = y();	
@@ -388,23 +419,21 @@ int Fl_Smart_Tile::recalc(void)
 
 	for (i=0;i<n;i++)
 	{
-		ty += 21;
+		ty += TITLE_H;
 		if (ty!=child(i)->y() || sizes[i]!=child(i)->h())
 		{
 			changed = 1; child(i)->redraw();
 		}
 		child(i)->resize(x(),ty,w(),sizes[i]);
-		if (child(i)->visible())
+		if (visible_[i])
 		{
 			ty += sizes[i];
 		}
 	}
-	
+		
 	if (changed) damage(FL_DAMAGE_CHILD);
 
 	delete sizes;
-	
-	return changed;
 }
 
 void Fl_Smart_Tile::draw(void)
@@ -412,45 +441,59 @@ void Fl_Smart_Tile::draw(void)
 	int i;
 	int n = children();
 
-
-	
-	int r = recalc();
+	recalc();
 	int ty = y();
 	
+	if (action_!='m') 
+	{
+	  for (i = 0; i < n; i++)
+		{
+			visible_[i] = child(i)->visible();
+		}
+	}
+
 	for (i=0;i<n;i++)
 	{
-		fl_draw_box(FL_THIN_UP_BOX,x(),ty,w()-42,21,color());
+		fl_draw_box(FL_THIN_UP_BOX,x(),ty,w()-TITLE_H-TITLE_H,TITLE_H,color());
 		fl_color(labelcolor());
 		// children don't show their labels when inside a Smart_Tile
 		child(i)->labeltype( FL_NO_LABEL );
 		fl_font(labelfont(),labelsize());
-		fl_draw(child(i)->label(),x()+5,ty,w()-35,21,
+		fl_draw(child(i)->label(),x()+5,ty,w()-35,TITLE_H,
 			Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE));
-		fl_draw_box(shading_==i && buttondown_ ? FL_THIN_DOWN_BOX : FL_THIN_UP_BOX,
-			x()+w()-42,ty,21,21,color());
-		pixmapShade.draw(x()+w()-42+5,ty+5);
-		fl_draw_box(closing_==i && buttondown_ ? FL_THIN_DOWN_BOX : FL_THIN_UP_BOX,
-			x()+w()-21,ty,21,21,color());
-		pixmapClose.draw(x()+w()-21+5,ty+5);
-		ty += 21;
-		if (child(i)->visible()) ty += child(i)->h();
+		fl_draw_box(action_=='s' && current_==i && buttondown_ 
+			? FL_THIN_DOWN_BOX : FL_THIN_UP_BOX,
+			x()+w()-TITLE_H-TITLE_H,ty,TITLE_H,TITLE_H,color());
+		pixmapShade.draw(x()+w()-TITLE_H-TITLE_H+5,ty+5);
+		fl_draw_box(action_=='c' && current_==i && buttondown_ 
+			? FL_THIN_DOWN_BOX : FL_THIN_UP_BOX,
+			x()+w()-TITLE_H,ty,TITLE_H,TITLE_H,color());
+		pixmapClose.draw(x()+w()-TITLE_H+5,ty+5);
+		ty += TITLE_H;
+		if (visible_[i]) ty += child(i)->h();
 	}
 	
-	fl_color(color());
-	fl_rectf(x(),ty,w(),h()-(ty-y()));
-	if (moving_==-1) 
+	
+//	fl_color(color());
+//	fl_rectf(x(),ty,w(),h()-(ty-y()));
+	if (action_=='m') 
 	{
-		Fl_Group::draw();
-		std::cerr << "Group drawn!" << std::endl;
+		if (movement_)
+		{
+			for (i=0;i<n;i++)
+				if (visible_[i])
+					fl_draw_box(FL_FLAT_BOX,child(i)->x(),child(i)->y(),child(i)->w(),child(i)->h(),color());
+
+			movement_ = 0;
+		}
 	}
 	else
 	{
-		for (i=0;i<n;i++)
-			fl_draw_box(FL_FLAT_BOX,child(i)->x(),child(i)->y(),child(i)->w(),child(i)->h(),color());
-
-		std::cerr << "Imposters drawn!" << std::endl;
-
-
+		if (damage()!=FL_DAMAGE_CUSTOM)
+		{
+			Fl_Group::draw();
+		}
+		// else: only a button was changed, no full redraw required
 	}
 }
 		
