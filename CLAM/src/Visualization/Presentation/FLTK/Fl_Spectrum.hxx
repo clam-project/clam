@@ -2,7 +2,7 @@
 #define __FL_SPECTRUM__
 
 #include <FL/Fl_Window.H>
-#include "SpectrumPresentation.hxx"
+#include "Base/SpectrumPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 
 namespace CLAMVM

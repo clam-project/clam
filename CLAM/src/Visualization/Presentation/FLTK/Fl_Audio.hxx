@@ -2,7 +2,7 @@
 #define __FL_AUDIO__
 
 #include <FL/Fl_Window.H>
-#include "AudioPresentation.hxx"
+#include "Base/AudioPresentation.hxx"
 #include "AudioRenderingManager.hxx"
 
 namespace CLAMVM

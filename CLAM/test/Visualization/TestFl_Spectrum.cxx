@@ -1,6 +1,6 @@
 #include "Spectrum.hxx"
 #include "LogMagSpectrumAdapter.hxx"
-#include "Fl_Spectrum.hxx"
+#include "FLTK/Fl_Spectrum.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
 #include "WidgetTKWrapper.hxx"

@@ -1,7 +1,7 @@
 #include "Audio.hxx"
 #include "AudioAdapter.hxx"
 #include "XMLStorage.hxx"
-#include "Fl_Audio.hxx"
+#include "FLTK/Fl_Audio.hxx"
 #include "Err.hxx"
 #include <iostream>
 #include <exception>
