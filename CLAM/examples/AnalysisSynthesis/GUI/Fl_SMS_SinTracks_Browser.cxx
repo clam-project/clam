@@ -29,7 +29,7 @@
 namespace CLAMVM
 {
 	Fl_SMS_SinTracks_Browser::Fl_SMS_SinTracks_Browser( int X, int Y, int W, int H, const char* label )
-		: Fl_Group( X, Y, W, H, label )
+		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), mImposterBox( NULL )
 	{
 		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
@@ -57,32 +57,28 @@ namespace CLAMVM
 				
 		mYSlider = new Fl_ZoomSlider( X+W-20,Y,20,H-50, FL_VERTICAL );
 
-		mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( X,Y,W-50,H-50 );
-		mDisplay->SetRenderer( mDrawMgr );
-		mDisplay->EnableDoubleBuffering();
-		mDisplay->end();
-		resizable( mDisplay );
+		mImposterBox = new Fl_Box( X,Y,W-50,H-50 );
+		resizable( mImposterBox );
 
-		mTooltipTracker.Track( mDisplay );
-		mTooltipTracker.ForceText( "idle" );
 		mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_SinTracks_Browser::OnRefreshTooltip );
 
 		// Signal and Slot connections
 
 		mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
-		mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
 		mYSlider->SpanChanged.Connect( mYAxis->AdjustRange );
-		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
 				
 		end();
 			
-		mDisplay->SetPainting();
 
 		HandleDisplaySelection.Wrap( this, &Fl_SMS_SinTracks_Browser::OnDisplaySelectedXValue );
 		SetSelectedXValue.Wrap( this, &Fl_SMS_SinTracks_Browser::OnSetSelectedXValue );
 
-		mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
-		ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+
+		mWorldSpaceCoords.mLeft = -1.0;
+		mWorldSpaceCoords.mRight = 1.0;
+		mWorldSpaceCoords.mTop = 1.0;
+		mWorldSpaceCoords.mBottom = -1.0;
+
 
 	}
 
@@ -127,6 +123,41 @@ namespace CLAMVM
 			return 1;
 			
 		}
+		else if ( event == FL_SHOW )
+		{
+			mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( x(),y(),w()-50,h()-50 );
+			mDisplay->SetRenderer( mDrawMgr );
+			mDisplay->EnableDoubleBuffering();
+			mDisplay->SetPainting();
+			mDisplay->SetWorldSpace( mWorldSpaceCoords.mRight,
+								mWorldSpaceCoords.mLeft,
+								mWorldSpaceCoords.mTop, 
+								mWorldSpaceCoords.mBottom );
+
+			mDisplay->end();
+			
+			add(mDisplay);
+			resizable( mDisplay );
+			mTooltipTracker.Track( mDisplay );
+			mTooltipTracker.ForceText( "idle" );
+
+			mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
+			mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
+
+			mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
+			ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+
+
+		}
+		else if ( event == FL_HIDE )
+		{
+			if ( mDisplay )
+			{
+				remove( mDisplay );
+				delete mDisplay;
+				mDisplay = NULL;
+			}
+		}
 	
 		return Fl_Group::handle( event );
 	}
@@ -134,17 +165,26 @@ namespace CLAMVM
 	void Fl_SMS_SinTracks_Browser::OnNewTrackList( SineTrackList& list, TSize framelen )
 	{
 		mDrawMgr.CacheData( list );
-		mDisplay->SetLeft( 0 );
-		mDisplay->SetRight( framelen );
+		mWorldSpaceCoords.mRight = framelen;
+		mWorldSpaceCoords.mLeft = 0;
 		mFrames = framelen;
+
+		if ( mDisplay )
+			mDisplay->redraw();
 	}
 
 	void Fl_SMS_SinTracks_Browser::OnNewRange( TData specRange )
 	{
 		mYAxis->minimum( 0 );
 		mYAxis->maximum( specRange );
-		mDisplay->SetBottom( 0 );
-		mDisplay->SetTop( specRange );
+		mWorldSpaceCoords.mTop = specRange;
+		mWorldSpaceCoords.mBottom = 0;
+		
+		if ( mDisplay )
+			mDisplay->redraw();
+
+		redraw();
+
 	}
 
 	void Fl_SMS_SinTracks_Browser::OnNewDuration( TTime begin, TTime end )
@@ -153,6 +193,11 @@ namespace CLAMVM
 		mXAxis->maximum( end );
 		mBeginTime = begin;
 		mEndTime = end;
+		if ( mDisplay )
+			mDisplay->redraw();
+
+		redraw();
+
 	}
 
 	Fl_SMS_SinTracks_Browser::~Fl_SMS_SinTracks_Browser( )

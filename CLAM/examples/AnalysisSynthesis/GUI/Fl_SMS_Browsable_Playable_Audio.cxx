@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#include <FL/Fl_Box.H>
 #include "Fl_SMS_Browsable_Playable_Audio.hxx"
 #include "Fl_X_Axis.hxx"
 #include "Fl_Y_Axis.hxx"
@@ -35,9 +35,14 @@ using namespace CLAMVM;
 using CLAM::AudioPlayer;
 using CLAM::Audio;
 
+
 Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false )
+	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false ), mDisplay( NULL )
 {
+	mImposterBox = new Fl_Box( X, Y, W-50, H-50 );
+
+	resizable( mImposterBox );
+
 	mXAxis = new Fl_X_Axis( X, Y+H-50, W-50, 30 );
 	mXAxis->align( FL_ALIGN_BOTTOM );
 	mXAxis->scale( FL_AXIS_LIN );
@@ -63,14 +68,6 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	mXSlider = new Fl_ZoomSlider( X, Y + H-20, W-50, 20, FL_HORIZONTAL );
 	mYSlider = new Fl_ZoomSlider( X + W-20, Y, 20, H-50, FL_VERTICAL );
 
-	mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( X, Y, W-50, H-50 );
-	mDisplay->SetRenderer( mDrawMgr );
-	mDisplay->EnableDoubleBuffering();
-	mDisplay->end();
-	resizable( mDisplay );
-	mTooltipTracker.Track( mDisplay );
-	mTooltipTracker.ForceText( "idle" );
-	mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip );
 	
 	mPlayButton = new Fl_Button ( X+W-40, Y+H-20, 20, 20, "@>" );
 	mPlayButton->callback( play, this );
@@ -84,17 +81,30 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 
 	// Signal and Slot connections
 	mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
-	mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
 	mYSlider->SpanChanged.Connect( mYAxis->AdjustRange );
-	mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
 				
 	end();
 	mDrawMgr.SetDetailThreshold( 500 );
 
 	mStopSlot.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::Stop );
+	mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip );
 	
 
-	mDisplay->SetPainting();
+				
+	end();
+	mDrawMgr.SetDetailThreshold( 500 );
+
+	mStopSlot.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::Stop );
+	mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip );
+	HandleDisplaySelection.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue );
+	SetSelectedXValue.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnSetSelectedXValue );
+
+
+	mWorldSpaceCoords.mLeft = -1.0;
+	mWorldSpaceCoords.mRight = 1.0;
+	mWorldSpaceCoords.mTop = 1.0;
+	mWorldSpaceCoords.mBottom = -1.0;
+
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* textBuffer, int maxLen )
@@ -104,6 +114,21 @@ void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* text
 
 	snprintf( textBuffer, maxLen,  "amp. %.2g time %.4g secs",  wY, wX );
 }
+
+void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )
+{
+	// towards the outer world
+	double sampleTime = (value / mSampleRate ) + mAudioOffset;
+	SelectedXValue.Emit( sampleTime );
+}
+
+void Fl_SMS_Browsable_Playable_Audio::OnSetSelectedXValue( double value )
+{
+	// towards the display
+	double sampleIndex = ( value * mSampleRate );
+	ChangeSelectedXValue.Emit( sampleIndex );
+}
+
 
 int Fl_SMS_Browsable_Playable_Audio::handle( int event )
 {
@@ -124,6 +149,39 @@ int Fl_SMS_Browsable_Playable_Audio::handle( int event )
 		return 1;
 
 	}
+	else if ( event == FL_SHOW )
+	{
+		CLAM_ASSERT( mDisplay == NULL, "Precondition violation" );
+		mImposterBox->hide();
+		begin();
+		mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( x(), y(), w()-50, h()-50 );
+		mDisplay->SetRenderer( mDrawMgr );
+		mDisplay->EnableDoubleBuffering();
+		mDisplay->SetPainting();
+		mDisplay->SetWorldSpace( mWorldSpaceCoords.mRight,
+								mWorldSpaceCoords.mLeft,
+								mWorldSpaceCoords.mTop, 
+								mWorldSpaceCoords.mBottom );
+		mDisplay->end();
+		end();//add( mDisplay );
+		resizable( mDisplay );
+		mTooltipTracker.Track( mDisplay );
+		mTooltipTracker.ForceText( "idle" );
+		mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
+		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
+		mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
+		ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+	}
+	else if ( event == FL_HIDE )
+	{
+		if ( mDisplay )
+		{
+			remove( mDisplay );
+			delete mDisplay;
+			mDisplay = NULL;
+		}
+	}
+	
 
 	return Fl_Group::handle( event );
 
@@ -176,10 +234,14 @@ void Fl_SMS_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime 
 {
 	tAudioTimeInfo timeNfo = { begin, begin+end, srate };
 	mDrawMgr.CacheData( array, timeNfo );
-	mDisplay->SetWorldSpace( array.Size() - 2, 0, 1.0, -1.0f );
+	mWorldSpaceCoords.mRight = array.Size() - 2;
+	mWorldSpaceCoords.mLeft = 0;
+	mWorldSpaceCoords.mTop = 1.0;
+	mWorldSpaceCoords.mBottom = -1.0;
 	mXAxis->minimum( begin );
 	mXAxis->maximum( begin+end );
-	mDisplay->invalidate();
+	if ( mDisplay )
+		mDisplay->invalidate();
 	redraw();
 	mAudioOffset = begin;
 	mSampleRate = srate;

@@ -26,6 +26,7 @@
 #include "SpectrumPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 #include "TooltipTracker2D.hxx"
+#include <FL/Fl_Box.H>
 
 namespace CLAMVM
 {
@@ -35,7 +36,7 @@ namespace CLAMVM
 	class Fl_ZoomSlider;
 	class Fl_Gl_Single_Display;
 	class Fl_GridLayout;
-	
+
 	class Fl_SMS_Spectrum : public SpectrumPresentation, public Fl_Group
 	{
 	private:
@@ -46,6 +47,8 @@ namespace CLAMVM
 		Fl_Gl_Single_Display*       mDisplay;
 		SpectrumRenderingManager    mDrawMgr;
 		TooltipTracker2D            mTooltipTracker;
+		Fl_Box*                     mImposterBox;
+		DataBoundBox                mWorldSpaceCoords;
 
 	protected:
 		

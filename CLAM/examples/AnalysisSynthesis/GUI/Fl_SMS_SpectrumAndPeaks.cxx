@@ -10,7 +10,7 @@ namespace CLAMVM
 {
 
 	Fl_SMS_SpectrumAndPeaks::Fl_SMS_SpectrumAndPeaks( int X, int Y, int W, int H, const char* label )
-		: Fl_Group( X, Y, W, H, label )
+		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), mImposterBox( NULL )
 	{
 
 		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30  );
@@ -38,24 +38,15 @@ namespace CLAMVM
 		mXSlider = new Fl_ZoomSlider( X,Y+H-20,W-50,20, FL_HORIZONTAL );
 		mYSlider = new Fl_ZoomSlider( X+W-20,Y,20,H-50, FL_VERTICAL );
 
-		mDisplay = new Fl_Gl_Multi_Display( X,Y,W-50,H-50 );
-		mDisplay->AddRenderer( mSpectrumDrawMgr );
-		mDisplay->AddRenderer( mPeaksDrawMgr );
-		mDisplay->EnableDoubleBuffering();
-		mDisplay->end();
-
-		resizable( mDisplay );
-
-		mTooltipTracker.Track( mDisplay );
-		mTooltipTracker.ForceText( "idle" );
 		mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_SpectrumAndPeaks::OnRefreshTooltip );
+
+		mImposterBox = new Fl_Box( X, Y, W-50, H-50 );
+		resizable( mImposterBox );
 
 		// Signal and Slot connections
 
 		mXSlider->SpanChanged.Connect( mXAxis->AdjustRange );
-		mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
 		mYSlider->SpanChanged.Connect( mYAxis->AdjustRange );
-		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
 		
 		mShowPeaksBtn = new Fl_Light_Button( X+W-40, Y+H-20, 40, 20, "Peaks" );
 		mShowPeaksBtn->labelsize( 9 );
@@ -67,6 +58,10 @@ namespace CLAMVM
 		end();
 				
 		mSpectrumDrawMgr.SetDetailThreshold( 50 );				
+		mWorldSpaceCoords.mLeft = -1.0;
+		mWorldSpaceCoords.mRight = 1.0;
+		mWorldSpaceCoords.mTop = 1.0;
+		mWorldSpaceCoords.mBottom = -1.0;
 
 	}
 
@@ -107,6 +102,39 @@ namespace CLAMVM
 			return 1;
 			
 		}
+		else if ( evtCode == FL_SHOW )
+		{
+			CLAM_ASSERT( mDisplay == NULL, "Precondition violation" );
+			mImposterBox->hide();
+			
+			mDisplay = new Fl_Gl_Multi_Display( x(), y(), w()-50, h()-50 );
+		
+			mDisplay->AddRenderer( mSpectrumDrawMgr );
+			mDisplay->AddRenderer(mPeaksDrawMgr);
+			mDisplay->EnableDoubleBuffering();
+			mDisplay->SetWorldSpace( mWorldSpaceCoords.mRight,
+						 mWorldSpaceCoords.mLeft,
+						 mWorldSpaceCoords.mTop, 
+						 mWorldSpaceCoords.mBottom );
+			mDisplay->end();
+			add( mDisplay );
+			resizable( mDisplay );
+			mTooltipTracker.Track( mDisplay );
+			mTooltipTracker.ForceText( "idle" );
+			mXSlider->SpanChanged.Connect( mDisplay->AdjustXAxis );				
+			mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
+	
+		}
+		else if ( evtCode == FL_HIDE )
+		{
+			if ( mDisplay )
+			{
+				remove( mDisplay );
+				delete mDisplay;
+				mDisplay = NULL;
+			}
+
+		}
 	
 		return Fl_Group::handle( evtCode );
 	}
@@ -118,7 +146,10 @@ namespace CLAMVM
 	void Fl_SMS_SpectrumAndPeaks::OnNewSpectrum( const DataArray& array, TData spectralRange )
 	{
 		mSpectrumDrawMgr.CacheData( array );
-		mDisplay->SetWorldSpace( array.Size() - 2, 0, 0, -150 );
+		mWorldSpaceCoords.mRight = array.Size() - 2;
+		mWorldSpaceCoords.mLeft = 0;
+		mWorldSpaceCoords.mTop = 0;
+		mWorldSpaceCoords.mBottom = -150;
 		mXAxis->minimum( 0 );
 		mXAxis->maximum( spectralRange );
 
@@ -128,6 +159,8 @@ namespace CLAMVM
 		mYAxis->maximum( 0 );
 		mPeaksDrawMgr.SetBinNumber( array.Size() );
 		mPeaksDrawMgr.SetSpectralRange ( spectralRange );
+		if ( mDisplay )
+			mDisplay->redraw();
 		redraw();
 	}
 

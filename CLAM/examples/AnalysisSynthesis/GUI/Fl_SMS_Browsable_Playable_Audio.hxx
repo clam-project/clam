@@ -32,6 +32,7 @@
 #include "TooltipTracker2D.hxx"
 
 class Fl_Button;
+class Fl_Box;
 
 namespace CLAMVM
 {
@@ -75,8 +76,9 @@ namespace CLAMVM
 		CLAM::TData                       mAudioOffset;
 		CLAM::TData                       mSampleRate;
 		TooltipTracker2D                  mTooltipTracker;
-
-		char                              mDisplayText[1024];
+		DataBoundBox                      mWorldSpaceCoords;
+		Fl_Box*                           mImposterBox;
+		
 	public:
 		Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
 		~Fl_SMS_Browsable_Playable_Audio();
@@ -92,6 +94,19 @@ namespace CLAMVM
 
 		void Show();
 		void Hide();
+
+		Slotv1<double>        SetSelectedXValue;
+		Signalv1<double>      SelectedXValue;
+
+
+	protected:
+		virtual void OnDisplaySelectedXValue( double value );
+		virtual void OnSetSelectedXValue( double value );
+
+
+		Signalv1< double > ChangeSelectedXValue;
+		Slotv1< double >   HandleDisplaySelection;
+
 
 		
 	};

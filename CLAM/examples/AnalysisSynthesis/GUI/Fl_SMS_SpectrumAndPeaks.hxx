@@ -2,10 +2,12 @@
 #define __FL_SMS_SPECTRUMANDPEAKS__
 
 #include <FL/Fl_Group.H>
+#include <FL/Fl_Box.H>
 #include "SpectralPeaksPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 #include "PeaksRenderingManager.hxx"
 #include "TooltipTracker2D.hxx"
+
 
 class Fl_Light_Button;
 
@@ -27,9 +29,11 @@ namespace CLAMVM
 		Fl_ZoomSlider*               mYSlider;
 		Fl_Gl_Multi_Display*         mDisplay;
 		Fl_Light_Button*             mShowPeaksBtn;
+		Fl_Box*                      mImposterBox;
 		SpectrumRenderingManager     mSpectrumDrawMgr;
 		PeaksRenderingManager        mPeaksDrawMgr;
 		TooltipTracker2D             mTooltipTracker;
+		DataBoundBox                 mWorldSpaceCoords;
 
 	protected:
 

@@ -2,6 +2,7 @@
 #define __FL_SMS_SINTRACKS_BROWSER__
 
 #include <FL/Fl_Group.H>
+#include <FL/Fl_Box.H>
 #include "DataTypes.hxx"
 #include "SinTracksPresentation.hxx"
 #include "SinTracksRenderingManager.hxx"
@@ -31,6 +32,8 @@ namespace CLAMVM
 		CLAM::TTime                         mBeginTime;
 		CLAM::TTime                         mEndTime;
 		CLAM::TSize                         mFrames;
+		Fl_Box*                             mImposterBox;
+		DataBoundBox                        mWorldSpaceCoords;
 
 	protected:
 

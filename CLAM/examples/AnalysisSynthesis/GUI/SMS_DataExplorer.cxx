@@ -5,7 +5,7 @@
 #include "Segment.hxx"
 #include "Assert.hxx"
 
-#include "Fl_SMS_Audio_Browser.hxx"
+#include "Fl_SMS_Browsable_Playable_Audio.hxx"
 #include "Fl_SMS_Spectrum.hxx"
 #include "Fl_SMS_SinTracks_Browser.hxx"
 #include "Fl_SMS_SpectrumAndPeaks.hxx"
@@ -140,7 +140,7 @@ namespace CLAMVM
 		
 		if ( !mpOriginalAudioWidget )
 		{
-			mpOriginalAudioWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Input Audio");
+			mpOriginalAudioWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,100,100, "Input Audio");
 			CLAM_ASSERT( mpOriginalAudioWidget!=NULL, "The widget could not be created");
 			mpOriginalAudioWidget->AttachTo( mOriginalAudioAdapter );
 			mpOriginalAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -156,7 +156,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedAudioWidget )
 		{
-			mpSynthesizedAudioWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Synthesized Audio");
+			mpSynthesizedAudioWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,100,100, "Synthesized Audio");
 			CLAM_ASSERT( mpSynthesizedAudioWidget!=NULL, "The widget could not be created");
 			mpSynthesizedAudioWidget->AttachTo( mSynthesizedAudioAdapter );
 			mpSynthesizedAudioWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -173,7 +173,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedSinusoidalWidget )
 		{
-			mpSynthesizedSinusoidalWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Synthesized Sinusoidal Component");
+			mpSynthesizedSinusoidalWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,100,100, "Synthesized Sinusoidal Component");
 			CLAM_ASSERT( mpSynthesizedSinusoidalWidget!=NULL, "The widget could not be created");
 			mpSynthesizedSinusoidalWidget->AttachTo( mSynthesizedSinusoidalAdapter );
 			mpSynthesizedSinusoidalWidget->SetSelectedXValue( mCurrentFrameCenterTime );
@@ -190,7 +190,7 @@ namespace CLAMVM
 		
 		if ( !mpSynthesizedResidualWidget )
 		{
-			mpSynthesizedResidualWidget = new Fl_SMS_Audio_Browser( 0,0,100,100, "Synthesized Residual Component");
+			mpSynthesizedResidualWidget = new Fl_SMS_Browsable_Playable_Audio( 0,0,100,100, "Synthesized Residual Component");
 			CLAM_ASSERT( mpSynthesizedResidualWidget!=NULL, "The widget could not be created");
 			mpSynthesizedResidualWidget->AttachTo( mSynthesizedResidualAdapter );
 			mpSynthesizedResidualWidget->SetSelectedXValue( mCurrentFrameCenterTime );
