@@ -357,12 +357,9 @@ void UserInterface::LoadConfiguration(void)
 			else 
 				mAnalysisSynthesisExample->mHaveConfig=false;
 			for(int i=0;i<4;i++){
-				if(mAttachedPresentations[0]!=NULL){
-					Detach( mAttachedPresentations[i]->GetWindow() );
-					delete mAttachedPresentations[i];
-					mAttachedPresentations[i]=NULL;
-					delete mAttachedViews[i];
-					mAttachedViews[i]=NULL;
+				if(mAttachedPresentations[i]!=NULL){
+					if( mAttachedPresentations[i]->GetWindow()->shown() ) 
+						mAttachedPresentations[i]->GetWindow()->hide();
 				}
 			}
 		}
@@ -658,13 +655,6 @@ void UserInterface::Attach(Fl_Window* canvas)
 	g->shade_button->callback((Fl_Callback *)shade_cb,mT);
 	g->close_button->callback((Fl_Callback *)close_cb,mT); 
 */
-}
-
-void UserInterface::Detach(Fl_Window* canvas)
-{
-	canvas->hide();
-//	mSmartTile->close(canvas);
-//	mSmartTile->equalize();
 }
 
 int main(void)
