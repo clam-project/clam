@@ -59,6 +59,8 @@ public:
 	virtual bool IsXMLAttribute() const =0;
 	//* @return Whether the object represents an XML element or not
 	virtual bool IsXMLElement() const =0;
+	//* @return Whether the object represents an XML text or not
+	virtual bool IsXMLText() const =0;
 };
 
 }

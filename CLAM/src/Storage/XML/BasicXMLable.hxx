@@ -83,6 +83,10 @@ public:
 	{
 		return myXMLName && !amIXMLElement;
 	}
+	bool IsXMLText() const
+	{
+		return myXMLName==0;
+	}
 	//* @return A string with the XML content
 	virtual std::string XMLContent() const=0;
 // Testing
