@@ -24,9 +24,7 @@ void makefilevars_generate(void)
 	FILE* outfile = stdout;
 
 	{
-		listkey* k = listhash_find( config, "MOCABLE_HEADERS" );
-		assert( k != NULL );
-		list* mocable_headers = k->l;
+
 		assert( mocable_headers != NULL );
 		list* moc_objects = list_new();
 

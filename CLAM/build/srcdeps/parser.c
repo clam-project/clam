@@ -69,6 +69,9 @@ list *needed_includepaths = 0;
 list* ui_headers = NULL;
 listhash* ui_outputs = NULL;
 
+
+list* mocable_headers = NULL;
+
 /* list of all includes checked when building the
 ** needed_includepaths, for efficiency.
 */
@@ -532,12 +535,6 @@ static void parser_mark_as_mocable( )
 	
 	if ( !strstr( currentFilename, "/include" ) )	/*Ignoring external library headers*/	
 	{
-		list* mocable_headers = NULL;
-		listkey* k = listhash_find( config, "MOCABLE_HEADERS" );
-		assert( k != NULL );
-		mocable_headers = k->l;
-		assert( mocable_headers != NULL );
-		
 		list_add_str_once( mocable_headers, currentFilename );		
 	}
 }
@@ -715,6 +712,8 @@ void parser_init(void)
 	ui_headers = list_new();
 	ui_outputs = listhash_new();
 
+	mocable_headers = list_new();
+
 	generate_outputs_for_ui_files();
 
 	includepaths = list_new();
@@ -775,6 +774,8 @@ void parser_exit(void)
 	list_free(guessed_headers);
 
 	list_free(ui_headers);
+
+	list_free( mocable_headers );
 
 	list_free(includepaths);
 

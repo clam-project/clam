@@ -271,9 +271,6 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 		}else{
 			if ( type == 1 )
 			{
-				listkey *k = listhash_find( config, "MOCABLE_HEADERS" );
-				list* mocable_headers = k->l;
-				assert( k!= NULL );
 				assert( mocable_headers != NULL );
 				
 				if ( list_find( mocable_headers, n->str ) )
@@ -886,14 +883,10 @@ void dsp_parse_line(const char* buf,int line)
 			{
 				char tmpname[2048];
 				char tmpname2[2048];
-				list* mocable_headers = NULL;
-				item* current = NULL;
-				listkey *k = listhash_find( config, "MOCABLE_HEADERS" );
-				assert( k!= NULL );
-				mocable_headers = k->l;
+
 				if ( mocable_headers)
 				{
-					current = mocable_headers->first;				
+					item* current = mocable_headers->first;				
 					while ( current != NULL )
 					{		
 						convert_to_mocname( tmpname, 2048, current->str );

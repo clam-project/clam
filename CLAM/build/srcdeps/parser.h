@@ -12,6 +12,7 @@ extern list *includes;
 extern list *includepaths;
 extern list *needed_includepaths;
 extern listhash *ui_outputs;
+extern list* mocable_headers;
 
 extern int gendepend;
 extern int recursesrcs;
