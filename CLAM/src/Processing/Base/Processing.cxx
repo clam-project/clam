@@ -23,7 +23,6 @@
 #include "Processing.hxx"
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
-#include "ErrDynamicType.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
@@ -81,7 +80,7 @@ namespace CLAM {
 				return false;
 			}
 		}
-		catch( CLAM::Err& error )
+		catch( ErrProcessingObj& error ) ///TODO we should use here an ErrConfiguring class. PA
 		{
 			mExecState = Unconfigured;
 			mPreconfigureExecuted = false;
@@ -114,7 +113,7 @@ namespace CLAM {
 			if (ConcreteStart())
 				mExecState = Running;
 		}
-		catch (Err &e) {
+		catch (ErrProcessingObj &e) {
 			mConfigErrorMessage += "Start(): Object failed to start properly.\n";
 			mConfigErrorMessage += e.what();
 		}
@@ -128,7 +127,7 @@ namespace CLAM {
 			if(ConcreteStop())
 				mExecState = Ready;
 		}
-		catch (Err &e) {
+		catch (ErrProcessingObj &e) {
 			mConfigErrorMessage += "Stop(): Object failed to stop properly.\n";
 			mConfigErrorMessage += e.what();
 		}
