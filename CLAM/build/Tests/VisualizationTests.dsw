@@ -27,6 +27,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "FDFilterControllerTest"=".\TestFDFilterController\FDFilterControllerTest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "ModelControllerTest"=".\ModelController\ModelController.dsp" - Package Owner=<4>
 
 Package=<5>
