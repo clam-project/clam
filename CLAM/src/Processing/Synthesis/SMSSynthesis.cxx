@@ -136,7 +136,6 @@ bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 
-	std::cout << "SMSSynthesis::ConcreteConfigure()" << std::endl;
 	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();
 
@@ -227,9 +226,6 @@ bool SMSSynthesis::Do(
 	SinusoidalSynthesis(inputSinusoidalPeaks,outputSinusoidalSpectrum,outputSinusoidalAudio);
 	
 	outputSpectrum.SetSize( inputResidualSpectrum.GetSize() );
-
-	std::cout << "SMSSynthesis::Do(...) spectrum sizes\nsin : " << outputSinusoidalSpectrum.GetSize()
-		<< "\nres : " << inputResidualSpectrum.GetSize() << "\nout: " << outputSpectrum.GetSize() << std::endl;
 
 	//We add Residual spectrum in the input frame plus the synthesized sinusoidal spectrum
 	mSpectrumAdder.Do(outputSinusoidalSpectrum, inputResidualSpectrum, outputSpectrum);
