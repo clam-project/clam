@@ -491,8 +491,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			std::cout << "MonoFileReader Test 256 samples readsize" << std::endl;
-
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 

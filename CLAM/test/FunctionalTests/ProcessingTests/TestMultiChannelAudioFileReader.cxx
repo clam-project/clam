@@ -603,7 +603,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
@@ -774,8 +773,6 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
-
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
@@ -948,8 +945,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
-
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
 			CLAM::Audio readSamplesRight;
@@ -1119,8 +1114,6 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
-
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
@@ -1292,8 +1285,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
-
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
 			CLAM::Audio readSamplesRight;
@@ -1463,8 +1454,6 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
-
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
@@ -1636,8 +1625,6 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
-
-			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
