@@ -560,8 +560,8 @@ namespace CLAMVM
 		widget->hide();
 		
 		CLAM::BPF tmpBPF;
-		tmpBPF.Insert( 0.0, 1.0 );
-		tmpBPF.Insert( 1.0, 1.0 );
+		tmpBPF.Insert( 0.0, 0.5 );
+		tmpBPF.Insert( 1.0, 0.5 );
 
 		widget->InitPoints( tmpBPF );
 
@@ -585,8 +585,8 @@ namespace CLAMVM
 		widget->hide();
 		
 		CLAM::BPF tmpBPF;
-		tmpBPF.Insert( 0.0, 1.0 );
-		tmpBPF.Insert( 1.0, 1.0 );
+		tmpBPF.Insert( 0.0, 0.5 );
+		tmpBPF.Insert( 1.0, 0.5 );
 
 		widget->InitPoints( tmpBPF );
 
@@ -610,8 +610,8 @@ namespace CLAMVM
 		widget->hide();
 		
 		CLAM::BPF tmpBPF;
-		tmpBPF.Insert( 0.0, 1.0 );
-		tmpBPF.Insert( 1.0, 1.0 );
+		tmpBPF.Insert( 0.0, 0.5 );
+		tmpBPF.Insert( 1.0, 0.5 );
 
 		widget->InitPoints( tmpBPF );
 
@@ -635,8 +635,8 @@ namespace CLAMVM
 		widget->hide();
 		
 		CLAM::BPF tmpBPF;
-		tmpBPF.Insert( 0.0, 1.0 );
-		tmpBPF.Insert( 1.0, 1.0 );
+		tmpBPF.Insert( 0.0, 0.5 );
+		tmpBPF.Insert( 1.0, 0.5 );
 
 		widget->InitPoints( tmpBPF );
 

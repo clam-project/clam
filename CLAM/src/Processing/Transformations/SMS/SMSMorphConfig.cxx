@@ -32,8 +32,8 @@ namespace CLAM
 		SetSynchronizeTime(tmpBPF);
 
 		BPF defaultWeights;
-		defaultWeights.Insert( 0.0, 1.0 );
-		defaultWeights.Insert( 1.0, 1.0 );
+		defaultWeights.Insert( 0.0, 0.5 );
+		defaultWeights.Insert( 1.0, 0.5 );
 
 		SetHybSinShapeW1( defaultWeights );
 		SetHybSinShapeW2( defaultWeights );
@@ -41,7 +41,12 @@ namespace CLAM
 		SetHybResShapeW1( defaultWeights );
 		SetHybResShapeW2( defaultWeights );
 
-		SetHybSinSpectralShape( defaultWeights );
-		SetHybResSpectralShape( defaultWeights );
+		BPF defaultShapeWeights;
+		defaultShapeWeights.Insert( 0.0, 1.0 );
+		defaultShapeWeights.Insert( 1.0, 1.0 );
+
+
+		SetHybSinSpectralShape( defaultShapeWeights );
+		SetHybResSpectralShape( defaultShapeWeights );
 	}
 }
