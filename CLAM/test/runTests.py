@@ -10,7 +10,7 @@ disableMail = False
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
-executionTime = 5 #sec  30 by default TODO
+executionTime = 15 #sec  30 by default 
 #TODO: this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
 
