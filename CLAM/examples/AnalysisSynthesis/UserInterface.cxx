@@ -847,6 +847,7 @@ static Fl_Pixmap pixmap_mtg(image_mtg);
 
 UserInterface::UserInterface() {
   Fl_Window* w;
+  Init();
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
@@ -868,10 +869,6 @@ UserInterface::UserInterface() {
     mWindow2=NULL;
     o->end();
   }
-  for(int i=0; i<4; i++){
-	mAttachedViews[i]=NULL;
-	mAttachedPresentations[i]=NULL;
-}
 }
 
 void UserInterface::AboutWindow() {

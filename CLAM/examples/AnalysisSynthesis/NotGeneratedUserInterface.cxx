@@ -66,13 +66,6 @@ void UserInterface::LoadSound(void)
 			mPlayInputSound->deactivate();
 			mAnalysisSynthesisExample->mHaveConfig=false;
 		}
-		for(int i=0;i<4;i++){
-			if(mAttachedPresentations[i]!=NULL){
-				if( mAttachedPresentations[i]->GetWindow()->shown() ) 
-					mSmartTile->close(mAttachedPresentations[i]->GetWindow());
-					mAttachedPresentations[i]->GetWindow()->hide();
-			}
-		}
 		mSmartTile->equalize();
 
 		mSynthesize->deactivate();
@@ -164,22 +157,42 @@ void UserInterface::StoreAnalysisData(void)
 
 void UserInterface::DisplayInputSound(void)
 {
-	if(mAttachedPresentations[0]==NULL){
-		Attach(0, &mAnalysisSynthesisExample->mAudioIn); 
+	if(mAudioInputDisplay==NULL){
+		ProcDataView<Audio>* localView;
+		ProcDataPresentation<Audio>* localPresentation;
+
+		localView = new ProcDataView<Audio>;
+		localView->BindTo( &mAnalysisSynthesisExample->mAudioIn );
+
+		Geometry g(0, 0, 860, 490);
+		localPresentation = new ProcDataPresentation<Audio>(g, "Audio Input");
+		localPresentation->LinkWithView( localView );
+		
+		Attach( localPresentation->GetWindow() );
+		
+		mAudioInputDisplay=localPresentation->GetWindow();
+		localView->Refresh();
+		localPresentation->Show();
+		mSmartTile->equalize();
+		Fl::redraw();
 	}
  	else{
-		//MRJ: Don't forget to always refresh associated views!
-		mAttachedViews[0]->Refresh();
-		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
-			mSmartTile->close(mAttachedPresentations[0]->GetWindow());
-			mAttachedPresentations[0]->GetWindow()->hide();
-			mSmartTile->equalize();
-		}
-		else {
-			mSmartTile->add(mAttachedPresentations[0]->GetWindow());
-			mAttachedPresentations[0]->GetWindow()->show();
-			mSmartTile->equalize();
-		}
+//              MRJ: Don't forget to always refresh associated views!
+// 		mAttachedViews[0]->Refresh();
+// 		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
+// 		mSmartTile->close(mAttachedPresentations[0]->GetWindow());
+// 		mSmartTile->equalize();
+// 		delete mAttachedPresentations[0];
+// 		mAttachedPresentations[0]=NULL;
+//  			mSmartTile->close(mAttachedPresentations[0]->GetWindow());
+//  			mAttachedPresentations[0]->GetWindow()->hide();
+//  			mSmartTile->equalize();
+// 		}
+//  		else {
+//  			mSmartTile->add(mAttachedPresentations[0]->GetWindow());
+//  			mAttachedPresentations[0]->GetWindow()->show();
+//  			mSmartTile->equalize();
+//  		}
  	}
 	Fl::redraw();
 }
@@ -204,6 +217,7 @@ void UserInterface::DisplayInputSpectrum(void)
 
 void UserInterface::DisplayOutputSound(void)
 {
+/*
 	if(mAttachedPresentations[1]==NULL){
 		Attach(1, &mAnalysisSynthesisExample->mAudioOut); 
 	}
@@ -221,10 +235,12 @@ void UserInterface::DisplayOutputSound(void)
 		}
 	}
 	Fl::redraw();
+*/
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
+/*
 	if(mAttachedPresentations[2]==NULL){
 		Attach(2, &mAnalysisSynthesisExample->mAudioOutRes); 
 	}
@@ -242,10 +258,12 @@ void UserInterface::DisplayOutputSoundResidual(void)
 		}
 	}
 	Fl::redraw();
+*/
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
+/*
 	if(mAttachedPresentations[3]==NULL){
 		Attach(3, &mAnalysisSynthesisExample->mAudioOutSin);
 	}
@@ -263,6 +281,7 @@ void UserInterface::DisplayOutputSoundSinusoidal(void)
 		}
 	}
 	Fl::redraw();
+*/
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -321,22 +340,32 @@ void UserInterface::PlayResidual(void)
 }
 
 
-void UserInterface::Attach(int i, Audio* obj)
+void UserInterface::Attach(Fl_Window* buffer)
 {
-	Geometry g(0, 0, 860, 490);
-	mAttachedViews[i] = new ProcDataView<Audio>;
-	mAttachedPresentations[i] = new ProcDataPresentation<Audio>(g, "");
+// 	Geometry g(0, 0, 860, 490);
+// 	if(mAttachedViews[i]==NULL){
+// 		mAttachedViews[i] = new ProcDataView<Audio>;
+// 		mAttachedViews[i]->BindTo( obj );
+// 	}
+
+// 	mAttachedPresentations[i] = new ProcDataPresentation<Audio>(g, "");
+// 	mAttachedPresentations[i]->LinkWithView( mAttachedViews[i] );
+// 	mAttachedPresentations[i]->GetWindow()->resizable();
 	
-	mAttachedViews[i]->BindTo( obj );
-	mAttachedPresentations[i]->LinkWithView( mAttachedViews[i] );
+	buffer->resizable();
+ 	mSmartTile->add_titled(buffer);
 	
-	mAttachedPresentations[i]->GetWindow()->resizable();
-	
-	mSmartTile->add(mAttachedPresentations[i]->GetWindow());
-	mAttachedPresentations[i]->GetWindow()->show();
-	
-	mAttachedPresentations[i]->Show();
-	mAttachedViews[i]->Refresh();
-	mSmartTile->equalize();
-	Fl::redraw();
+// 	mAttachedViews[i]->Refresh();
+// 	mAttachedPresentations[i]->Show();
+// 	mSmartTile->equalize();
+// 	Fl::redraw();
+}
+
+void UserInterface::Detach(Fl_Window* buffer)
+{
+}
+
+void UserInterface::Init()
+{
+	mAudioInputDisplay=NULL; 
 }

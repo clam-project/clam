@@ -113,14 +113,18 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  void Attach(int i, CLAM::Audio* obj);
+  void Attach(Fl_Window* buffer);
+  void Detach(Fl_Window* buffer);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();
   void PlayResidual();
   void LoadSound();
-  CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];
-  CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];
+  void Init();
+  Fl_Window* mAudioInputDisplay;
+  Fl_Window* mAudioOutputDisplay;
+  Fl_Window* mAudioOutputResidualDisplay;
+  Fl_Window* mAudioOutputSinusoidalDisplay;
 public:
   void Update();
 };
