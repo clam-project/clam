@@ -232,8 +232,6 @@ public:
 		Fl::add_idle(WaitMessageGUI::Idle);
 		Fl::add_idle(ProgressGUI::Idle);
 
-
-
 		Fl::run();
 	}
 	
@@ -471,13 +469,13 @@ void UserInterface::DisplayInputSound(void)
 		mAttachedPresentations[0]->Show();
 		mAttachedViews[0]->Refresh();
 	}
-// 	else{
-// 		Detach( mAttachedPresentations[0]->GetWindow() );
-// 		delete mAttachedPresentations[0];
-// 		mAttachedPresentations[0]=NULL;
-// 		delete mAttachedViews[0];
-// 		mAttachedViews[0]=NULL;
-// 	}
+ 	else{
+ 		Detach( mAttachedPresentations[0]->GetWindow() );
+ 		delete mAttachedPresentations[0];
+ 		mAttachedPresentations[0]=NULL;
+ 		delete mAttachedViews[0];
+ 		mAttachedViews[0]=NULL;
+ 	}
 	Fl::redraw();
 }
 
@@ -513,14 +511,14 @@ void UserInterface::DisplayOutputSound(void)
 		mAttachedPresentations[1]->Show();
 		mAttachedViews[1]->Refresh();
 	}
-// 	else{
-// 		Detach( mAttachedPresentations[1]->GetWindow() );
-// 		delete mAttachedPresentations[1];
-// 		mAttachedPresentations[1]=NULL;
-// 		delete mAttachedViews[1];
-// 		mAttachedViews[1]=NULL;
-// 	}
-// 	Fl::redraw();
+	else{
+		Detach( mAttachedPresentations[1]->GetWindow() );
+		delete mAttachedPresentations[1];
+		mAttachedPresentations[1]=NULL;
+		delete mAttachedViews[1];
+		mAttachedViews[1]=NULL;
+	}
+	Fl::redraw();
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
@@ -537,14 +535,14 @@ void UserInterface::DisplayOutputSoundResidual(void)
 		mAttachedPresentations[2]->Show();
 		mAttachedViews[2]->Refresh();
 	}
-// 	else{
-// 		Detach( mAttachedPresentations[2]->GetWindow() );
-// 		delete mAttachedPresentations[2];
-// 		mAttachedPresentations[2]=NULL;
-// 		delete mAttachedViews[2];
-// 		mAttachedViews[2]=NULL;
-// 	}
-// 	Fl::redraw();
+	else{
+		Detach( mAttachedPresentations[2]->GetWindow() );
+		delete mAttachedPresentations[2];
+		mAttachedPresentations[2]=NULL;
+		delete mAttachedViews[2];
+		mAttachedViews[2]=NULL;
+	}
+	Fl::redraw();
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
@@ -561,15 +559,14 @@ void UserInterface::DisplayOutputSoundSinusoidal(void)
 		mAttachedPresentations[3]->Show();
 		mAttachedViews[3]->Refresh();
 	}
-// 	else{
-// 		Detach( mAttachedPresentations[3]->GetWindow() );
-// 		delete mAttachedPresentations[3];
-// 		mAttachedPresentations[3]=NULL;
-// 		delete mAttachedViews[3];
-// 		mAttachedViews[3]=NULL;
-// 	}
+	else{
+		Detach( mAttachedPresentations[3]->GetWindow() );
+		delete mAttachedPresentations[3];
+		mAttachedPresentations[3]=NULL;
+		delete mAttachedViews[3];
+		mAttachedViews[3]=NULL;
+	}
 	Fl::redraw();
-
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -658,6 +655,7 @@ void UserInterface::Attach(Fl_Window* canvas)
 
 void UserInterface::Detach(Fl_Window* canvas)
 {
+	canvas->hide();
 	mSmartTile->close(canvas);
 	mSmartTile->equalize();
 }
