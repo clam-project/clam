@@ -1,0 +1,58 @@
+
+HOWTO Create, configure and compile a project using CLAM
+
+1.- Copy the example project located in CLAM_PATH/build/ at the same level that CLAM:
+
+'cp -ar CLAM/build/needed_built_files_for_using_CLAM myproject'
+
+As you can see if go inside 'needed_built_files_for_using_CLAM' directory, it contains an small example using clam, and a build directory with the basic files to compile it.
+
+2.- Go inside build directory of the new project:
+
+'cd myproject/build'
+
+3.- Modify, if needed, the file clam-location-cfg, and change CLAM_PATH to your CLAM directory 
+
+4.- The last command will create the dependencies and compile the program:
+
+'make CONFIG=debug'
+
+5.- You will have a binary named 'program_using_clam' that creates an run a CLAM object (an FFT) and stores the results in a xml (FFT_example.xml).
+
+Now that we have created and compiled a simple application, we will see the files that we would modify in order to use the same build system with another
+projects (with different sources, options, name...).
+
+First of all, we will have to create a directory project (like 'myproject' in the example above), and copy inside this the same build directory we have in 
+ 'CLAM/build/needed_built_files_for_using_CLAM'. It has 6 files:
+
+clam-location.cfg
+defaults.cfg
+Makefile
+Makefile.rules
+settings.cfg
+system.cfg
+
+You should put all your files inside the root project directory (as program_using_clam.cxx was).
+
+The only we need to change are clam-location.cfg, Makefile and settings.cfg.
+
+1.- As the example above, change CLAM_PATH variable in clam-location.cfg file to point at the CLAM directory.
+
+2.- Open Makefile. You will see two lines, one defining TOP variable and another including the Makefile.rules file. You must change TOP to point your root
+project directory (as myproject). Note that the next line uses this variable to get where your Makefile.rules is.
+
+3.- Modify the most important file: settings.cfg
+First of all, you must edit inside settings.cfg the TOP variable (to point the same directory that you indicated in the second step) and the binary name (changing the value of PROGRAM variable).
+After this, you can change the differents options in order to set the options of your project (use float/double, the libraries you need link against, etc.).
+
+4.- In the PRJ_SEARCH_RECURSE_INCLUDES you will need to add the directories where you have headers you want to include in your project. Note that CLAM directory are not necessary, because they are included by default.
+
+5.- Finally, add in SOURCES the entry points of the program you want to compile. Basically is the file where is the main function.
+
+6.- After modifying these files, you will have a project ready to compile.
+With the 'make CONFIG=debug' instruction to command to generate dependencies and compile the needed files.
+This order will execute 'make depend' if you have changed the dependencies (adding includes, modifying flags in settings.cfg...). 
+It's a call to srcdeps program, generating automatically the dependencies needed by the files you specify in step 5, and put them in Makefile.vars file.
+Next, it will compile them following the rules of Makefile.rules and the variables created in Makefile.vars.
+
+7.- Hopefully we will have a binary inside the build directory.
