@@ -273,28 +273,39 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 	}
 	else
 		ret=false;
-	if(mConfig.HasSynchronizeTime())
+	if(mConfig.HasSynchronizeTime() && mConfig.GetSynchronizeTime().Size() )
 		mSynchronizeTime.DoControl(mConfig.GetSynchronizeTime().GetValue(pos));
-	if(mConfig.HasHybSinAmp())
+
+	if(mConfig.HasHybSinAmp() && mConfig.GetHybSinAmp().Size())
 		mHybSinAmp.DoControl(mConfig.GetHybSinAmp().GetValue(pos));
-	if(mConfig.HasHybSinSpectralShape())
+
+	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size())
 		mHybSinSpectralShape.DoControl(mConfig.GetHybSinSpectralShape().GetValue(pos));
-	if(mConfig.HasHybSinShapeW1())
+
+	if(mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size())
 		mHybSinShapeW1.DoControl(mConfig.GetHybSinShapeW1().GetValue(pos));
-	if(mConfig.HasHybSinShapeW2())
+
+	if(mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
 		mHybSinShapeW2.DoControl(mConfig.GetHybSinShapeW2().GetValue(pos));	
-	if(mConfig.HasHybPitch())
+
+	if(mConfig.HasHybPitch() && mConfig.GetHybPitch().Size() )
 		mHybPitch.DoControl(mConfig.GetHybPitch().GetValue(pos));
-	if(mConfig.HasHybSinFreq())
+
+	if(mConfig.HasHybSinFreq() && mConfig.GetHybSinFreq().Size())
 		mHybSinFreq.DoControl(mConfig.GetHybSinFreq().GetValue(pos));
-	if(mConfig.HasHybResAmp())
+
+	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
 		mHybResAmp.DoControl(mConfig.GetHybResAmp().GetValue(pos));
-	if(mConfig.HasHybResSpectralShape())
+
+	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size())
 		mHybResSpectralShape.DoControl(mConfig.GetHybResSpectralShape().GetValue(pos));
-	if(mConfig.HasHybResShapeW1())
+
+	if(mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size())
 		mHybResShapeW.DoControl(mConfig.GetHybResShapeW1().GetValue(pos));
-	if(mConfig.HasHybResPhase())
+
+	if(mConfig.HasHybResPhase() && mConfig.GetHybResPhase().Size())
 		mHybResPhase.DoControl(mConfig.GetHybResPhase().GetValue(pos));
+
 	return ret;
 }
 
