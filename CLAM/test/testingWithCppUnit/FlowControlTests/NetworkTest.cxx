@@ -76,7 +76,10 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetOutControlByCompleteName_WithThreeIdentifiers );
 
 	CPPUNIT_TEST( testConnectPorts_WhenConnectionIsValid );
-//	CPPUNIT_TEST( testConnectPorts_WhenConnectionIsNotValid );
+	CPPUNIT_TEST( testConnectPorts_WhenConnectionIsNotValid );
+	CPPUNIT_TEST( testRemovePortsConnection_WhenPortsAreNotConnected );
+	CPPUNIT_TEST( testRemovePortsConnection_WhenPortsAreConnected );
+	
 //	CPPUNIT_TEST( testConnectControls_WhenConnectionIsValid );
 //	CPPUNIT_TEST( testConnectControls_WhenConnectionIsNotValid );
 
@@ -640,6 +643,75 @@ class NetworkTest : public CppUnit::TestFixture
 		
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+	}
+
+	void testConnectPorts_WhenConnectionIsNotValid()
+	{
+		CLAM::Network net;
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutPort* outPortOfFirstProc = 
+			new CLAM::OutPortTmpl<DummyProcessingData>
+			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
+
+		CLAM::InPort* inPortOfSecondProc = 
+			new CLAM::InPortTmpl<CLAM::Audio>
+			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+
+		
+		CPPUNIT_ASSERT_EQUAL( false, net.ConnectPorts(
+					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
+	}
+
+	void testRemovePortsConnection_WhenPortsAreNotConnected()
+	{
+		CLAM::Network net;
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutPort* outPortOfFirstProc = 
+			new CLAM::OutPortTmpl<CLAM::Audio>
+			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
+
+		CLAM::InPort* inPortOfSecondProc = 
+			new CLAM::InPortTmpl<CLAM::Audio>
+			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+
+		
+		CPPUNIT_ASSERT_EQUAL( false, net.RemovePortsConnection(
+					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
+	}
+
+	void testRemovePortsConnection_WhenPortsAreConnected()
+	{
+		CLAM::Network net;
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutPort* outPortOfFirstProc = 
+			new CLAM::OutPortTmpl<CLAM::Audio>
+			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
+
+		CLAM::InPort* inPortOfSecondProc = 
+			new CLAM::InPortTmpl<CLAM::Audio>
+			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+		
+		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
+		net.RemovePortsConnection( "first.outPortOfFirstProc","second.inPortOfSecondProc");
+		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
 	}
 
 };
