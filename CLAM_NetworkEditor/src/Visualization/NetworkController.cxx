@@ -138,8 +138,12 @@ void NetworkController::DisconnectPorts( const std::string & out , const std::st
 
 NetworkController::~NetworkController()
 {
-	ProcessingAdapterIterator it;
-	for ( it=mProcessingAdapters.begin(); it!=mProcessingAdapters.end(); it++)
+	mLoopCondition = false;
+	mThread.Stop();
+//	mObserved->Stop();
+
+	ProcessingControllerIterator it;
+	for ( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
 		delete *it;
 	ConnectionAdapterIterator itc;
 	for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
@@ -158,11 +162,11 @@ void NetworkController::NewProcessingFromGUI( const std::string & name,
 void NetworkController::AddProcessing( const std::string & name, CLAM::Processing * proc )
 {
 
-	ProcessingAdapter* adapter = new ProcessingAdapter;
+	ProcessingController* controller = new ProcessingController;
 
-	adapter->BindTo(*proc);
-	mProcessingAdapters.push_back(adapter);
-	AcquireProcessing.Emit(adapter, name);
+	controller->BindTo(*proc);
+	mProcessingControllers.push_back(controller);
+	AcquireProcessing.Emit(controller, name);
 }
 	
 bool NetworkController::Publish()

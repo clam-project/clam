@@ -4,7 +4,7 @@
 
 #include "ModelController.hxx"
 #include "NetworkModel.hxx"
-#include "ProcessingAdapter.hxx"
+#include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 
 #include <list>
@@ -35,8 +35,8 @@ namespace CLAMVM
 		ConnectionsMap mToDisconnect;
 
 		CLAM::Network* mObserved;
-		std::list<ProcessingAdapter*> mProcessingAdapters;
-		typedef std::list<ProcessingAdapter*>::iterator ProcessingAdapterIterator;
+		std::list<ProcessingController*> mProcessingControllers;
+		typedef std::list<ProcessingController*>::iterator ProcessingControllerIterator;
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 

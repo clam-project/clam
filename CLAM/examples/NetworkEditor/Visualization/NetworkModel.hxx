@@ -15,7 +15,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class ProcessingAdapter;
+	class ProcessingController;
 	class ConnectionAdapter;
 
 	class NetworkModel
@@ -26,7 +26,7 @@ namespace CLAMVM
 
 		//signals
 		SigSlot::Signalv1< const std::string& >  AcquireName;
-		SigSlot::Signalv2< CLAMVM::ProcessingAdapter* , const std::string& > AcquireProcessing;
+		SigSlot::Signalv2< CLAMVM::ProcessingController* , const std::string& > AcquireProcessing;
 		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquireConnection;
 
 		//slots
