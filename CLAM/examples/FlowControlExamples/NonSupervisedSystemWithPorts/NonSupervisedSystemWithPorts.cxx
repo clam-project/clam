@@ -101,7 +101,6 @@ bool System::ModulatedFileInPlusFileIn()
 	_fileIn.Do();
 	_modulator.Do();
 	_multiplier.Do();
-	_oscillator.Do();
 	_adder.Do();
 	_fileOut.Do();
 	return false;
@@ -126,21 +125,46 @@ bool System::StablishConnectionsOscillatorToFileOut()
 
 bool System::StablishConnectionsModulatedFileIn()
 {
+	std::cout << "attaching modulated file in" << std::endl;
+	_fileIn.mOutput.Attach(_fileInData);
+	_modulator.mOutput.Attach(_modulatorData);
+	_multiplier.mFirstInput.Attach(_fileInData);
+	_multiplier.mSecondInput.Attach(_modulatorData);
+	_multiplier.mOutput.Attach(_multiplierData);
+	_fileOut.Input.Attach(_multiplierData);
+
 	return true;
 }
 
 bool System::StablishConnectionsModulatedOscillator()
 {
+	_oscillator.mOutput.Attach(_oscillatorData);
+	_modulator.mOutput.Attach(_modulatorData);
+	_multiplier.mFirstInput.Attach(_oscillatorData);
+	_multiplier.mSecondInput.Attach(_modulatorData);
+	_multiplier.mOutput.Attach(_multiplierData);
+	_fileOut.Input.Attach(_multiplierData);
 	return true;
 }
 
 bool System::StablishConnectionsModulatedFileInPlusFileIn()
 {
+	_fileIn.mOutput.Attach(_fileInData);
+	_modulator.mOutput.Attach(_modulatorData);
+	_multiplier.mFirstInput.Attach(_fileInData);
+	_multiplier.mSecondInput.Attach(_modulatorData);
+	_multiplier.mOutput.Attach(_multiplierData);
+	_adder.mFirstInput.Attach(_multiplierData);
+	_adder.mSecondInput.Attach(_fileInData);
+	_adder.mOutput.Attach(_adderData);
+	_fileOut.Input.Attach(_adderData);
 	return true;
 }
 
 bool System::StablishConnectionsFileInFileOut()
 {
+	_fileIn.mOutput.Attach(_fileInData);
+	_fileOut.Input.Attach(_fileInData);
 	return true;
 }
 
@@ -164,23 +188,29 @@ void System::DoProcessings( IterationMethod iterationDo )
 void System::ProcessAllIterations()
 {
 	std::cout << "oscillatortofileout" << std::endl;
+	StablishConnections( &System::StablishConnectionsOscillatorToFileOut );
 	DoProcessings( &System::OscillatorToFileOut );
 
 	std::cout << "modulatedoscillator" << std::endl;
+	StablishConnections( &System::StablishConnectionsModulatedOscillator );
 	DoProcessings( &System::ModulatedOscillator );
 
 	std::cout << "fileinfileout" << std::endl;
+	StablishConnections( &System::StablishConnectionsFileInFileOut );
 	DoProcessings( &System::FileInFileOut );
 
 	_fileIn.Stop();
 	_fileIn.Start();
 	std::cout << "modulatedfilein" << std::endl;
+	StablishConnections( &System::StablishConnectionsModulatedFileIn );
 	DoProcessings( &System::ModulatedFileIn );
 
 	_fileIn.Stop();
 	_fileIn.Start();
 	std::cout << "modulatedfileinplusfilein" << std::endl;
-	DoProcessings( &System::ModulatedFileInPlusFileIn);
+	StablishConnections( &System::StablishConnectionsModulatedFileInPlusFileIn );
+	DoProcessings( &System::ModulatedFileInPlusFileIn );
+	
 }
 
 } // namespace
