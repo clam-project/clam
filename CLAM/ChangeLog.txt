@@ -1,4 +1,9 @@
-2002-11-26  CLAM_0_4_0-rel 
+XXXX-XX-XX  CLAM_0_4_1??
+  * Fix: WindowGenerator Enums symbols had illegal spaces on their inside
+
+  
+  
+2002-11-26  CLAM_0_4_0-rel
 'Fly examples, fly to seattle' release
   * General:
       ** Directory reorganization
