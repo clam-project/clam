@@ -193,33 +193,28 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 {
 	const unsigned size=mpSpectralPeakArray->GetnPeaks();
 	if (size<4) return 0.0; //is it really necessary to have 4 or with 2 is enough
-	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
+	const DataArray & data=mpSpectralPeakArray->GetMagBuffer();
 
-	DataArray SE;
-	SE.Resize(size);
-	SE.SetSize(size);
-
-	SE[0] = log10((data[0]+data[1])/2);
-	
-	for (unsigned i=1; i<size-1; i++)
-	{
-		SE[i]=log10((data[i-1]+data[i]+data[i+1])/3);
-		data[i-1] = log10(data[i-1]);
-	}
-
-	SE[size-1]=log10((data[size-2]+data[size-1])/2);
-
-	data[size-2] = log10(data[size-2]);
-	data[size-1] = log10(data[size-1]);
-
-	TData nom = 0;
 	TData denom = 0;
+	TData nom = 0;
 
-	for (unsigned i=0;i<size;i++)
+	const TData tmp0 = log10((data[0]+data[1])/2);
+	const TData logdata0=log10(data[0]);
+	denom += logdata0;
+	nom +=	CLAM::Abs(logdata0 - tmp0);
+	
+	for (unsigned i=1;i<size-1;i++)
 	{
-		nom +=	CLAM::Abs(data[i] - SE[i]);
-		denom += data[i];
+		const TData tmpi = log10((data[i-1]+data[i]+data[i+1])/3);
+		const TData logdatai=log10(data[i]);
+		denom += logdatai;
+		nom +=	CLAM::Abs(logdatai - tmpi);
 	}
+
+	const TData tmpN = log10((data[size-2]+data[size-1])/2);
+	const TData logdataN=log10(data[size-1]);
+	denom += logdataN;
+	nom +=	CLAM::Abs(logdataN - tmpN);
 
 	return nom/denom;	
 }
