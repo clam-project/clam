@@ -88,6 +88,8 @@ DataArray Multiply(TData &factor, DataArray &a) {
 
 SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAttr)
 {
+	CLAM_ASSERT(pSpectrum->GetScale()==EScale::eLinear,
+		"Spectral Descriptors require a linear magnitude Spectrum");
 	MandatoryInit();
 	mpSpectrum=pSpectrum;
 }
@@ -138,6 +140,8 @@ const Spectrum* SpectralDescriptors::GetpSpectrum() const
 void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) 
 {
 	
+	CLAM_ASSERT(pSpectrum->GetScale()==EScale::eLinear,
+		"Spectral Descriptors require a linear magnitude Spectrum");
 	mpSpectrum=pSpectrum;
 	//TODO: we are asuming Spectrum is in MagBuffer
 	//TODO: it may give problems because pointer passed
