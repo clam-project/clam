@@ -96,6 +96,36 @@ namespace CLAM
 	}
 
 
+	bool Normalization::Do(const Audio& unnorm, Audio& norm)
+	{
+		CLAM_ASSERT( unnorm.GetSize() == norm.GetSize(),
+			     "Normalization::Do() : input and output audio sizes must match" );
+
+		TData scaleFactor = 0;
+
+		//Type #1: normalizes according to the max energy 
+		//Type #2: normalizes according to the average energy
+		//Type #3: normalizes according to the threshold under which lies percent% of
+		//the energy values that are not silence
+
+		if ( mType == 1 ) 
+			scaleFactor = ComputeScaleFactorFromMaxEnergy( unnorm.GetBuffer() );
+		else if ( mType == 2 )
+			scaleFactor = ComputeScaleFactorFromAvgEnergy( unnorm.GetBuffer() );
+		else if ( mType == 3 )
+			scaleFactor = ComputeScaleFactorFromDominantEnergy( unnorm.GetBuffer() );
+
+		const TData invScaleFactor = 1.0 / scaleFactor;
+		DataArray& outBufferSamples = norm.GetBuffer();
+		const DataArray& inBufferSamples = unnorm.GetBuffer();
+
+		for (int n=0; n<norm.GetSize(); n++)
+			outBufferSamples[n]=inBufferSamples[n]*invScaleFactor;
+		
+		return true;
+	}
+
+
 	TData Normalization::ComputeScaleFactorFromMaxEnergy( DataArray& inAudio )
 	{
 		TIndex    p = 0;

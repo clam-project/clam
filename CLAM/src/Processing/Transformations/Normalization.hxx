@@ -103,7 +103,7 @@ namespace CLAM
 		bool Do(void);
 
 		bool Do(Audio &in);
-
+		bool Do( const Audio& unnorm, Audio& norm );
 		
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
