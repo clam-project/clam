@@ -4,11 +4,13 @@
 #include "NetworkController.hxx"
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingPresentation.hxx"
+#include "ConnectionPresentation.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 
 #include "Oscillator.hxx"
 #include "AudioMultiplier.hxx"
+#include "AutoPanner.hxx"
 
 #include <iostream> // TODO: remove
 
@@ -30,7 +32,8 @@ class NetworkPresentationTest : public CppUnit::TestFixture, public NetworkGUI::
 	CPPUNIT_TEST( testRemoveProcessingDeletesPresentationAndController );
 	CPPUNIT_TEST( testClearDeletesPresentationsAndControllers );
 	CPPUNIT_TEST( testProcessingNameChangedCancelsModificationIfNotValidName );
-//	CPPUNIT_TEST( testProcessingNameChangedModifiesConnectionPresentationsNames );
+	CPPUNIT_TEST( testProcessingNameChangedModifiesControlConnectionPresentationsName );
+	CPPUNIT_TEST( testProcessingNameChangedModifiesPortConnectionPresentationsName );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -189,6 +192,62 @@ public:
 		std::string newName(processingPresentation->GetName());	
 		CPPUNIT_ASSERT_EQUAL( oldName, newName );
 		
+	}
+	
+	void testProcessingNameChangedModifiesPortConnectionPresentationsName()
+	{
+		mNetwork.AddProcessing( "oscillator", new CLAM::Oscillator );
+		mNetwork.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
+
+		mController.BindTo( mNetwork );
+		AttachTo( mController );
+
+		SignalCreatePortConnection.Emit(  "oscillator.Audio Output", "multiplier.First Audio Input" );
+
+		ProcessingPresentationIterator it = mProcessingPresentations.begin();
+		for( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++ )
+		{
+			if( (*it)->GetName() == "oscillator")
+			{
+				break;
+			}
+		}
+
+		(*it)->ChangeProcessingPresentationName( "mynewname" );
+		(*it)->SignalProcessingNameChanged.Emit( "mynewname" );
+		
+		ConnectionPresentationIterator itc;
+		itc = mConnectionPresentations.begin();
+		std::string newName( "mynewname.Audio Output" );
+		CPPUNIT_ASSERT_EQUAL( newName, (*itc)->GetOutName() );
+	}
+	
+	void testProcessingNameChangedModifiesControlConnectionPresentationsName()
+	{
+		mNetwork.AddProcessing( "oscillator", new CLAM::Oscillator );
+		mNetwork.AddProcessing( "panner", new CLAM::AutoPanner );
+
+		mController.BindTo( mNetwork );
+		AttachTo( mController );
+
+		SignalCreateControlConnection.Emit( "panner.Left Control", "oscillator.Amplitude" );
+
+		ProcessingPresentationIterator it = mProcessingPresentations.begin();
+		for( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++ )
+		{
+			if( (*it)->GetName() == "oscillator")
+			{
+				break;
+			}
+		}
+
+		(*it)->ChangeProcessingPresentationName( "mynewname" );
+		(*it)->SignalProcessingNameChanged.Emit( "mynewname" );
+		
+		ConnectionPresentationIterator itc;
+		itc = mConnectionPresentations.begin();
+		std::string newName ("mynewname.Amplitude");
+		CPPUNIT_ASSERT_EQUAL( newName, (*itc)->GetInName() );
 	}
 };
 
