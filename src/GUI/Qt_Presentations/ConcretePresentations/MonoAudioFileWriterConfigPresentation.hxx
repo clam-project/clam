@@ -19,16 +19,14 @@
  *
  */
 
-#ifndef __QT_PROCESSINGCONFIGPRESENTATION_HXX__
-#define __QT_PROCESSINGCONFIGPRESENTATION_HXX__
+#ifndef __MonoAudioFileWriterConfigPresentation_hxx__
+#define __MonoAudioFileWriterConfigPresentation_hxx__
 
-#include <qdialog.h>
-#include <qvbox.h>
-#include "Signalv1.hxx"
-#include "ProcessingConfigPresentation.hxx"
+#include "MonoAudioFileWriterConfig.hxx"
+#include "Qt_ProcessingConfigPresentation.hxx"
 
-class QGroupBox;
-class QLabel;
+class QLineEdit;
+class QComboBox;
 
 namespace CLAM
 {
@@ -38,26 +36,28 @@ namespace CLAM
 namespace NetworkGUI
 {
 
-class Qt_ProcessingConfigPresentation : public QDialog, public ProcessingConfigPresentation
+class MonoAudioFileWriterConfigPresentation : public Qt_ProcessingConfigPresentation
 {
-	Q_OBJECT
 protected:
-	QVBox * mAttributeContainer;
+	CLAM::MonoAudioFileWriterConfig mConfig;
+	QVBox * mLayout;
 
-	virtual void ConfigureProcessing() = 0;
-	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
+	QLineEdit * mLocation;
+	QLineEdit * mSampleRate;
+	QComboBox * mFormat;
+
+	void SetConfig( const CLAM::ProcessingConfig & cfg);
+	virtual void ConfigureProcessing();
+	virtual void CreateGUI();
+	void CreateLocation();
+	void CreateSampleRate();
+	void CreateFormat();
 public:
-	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
-	void Show();
-	void Hide();
-
-public slots:
-	void SlotOk();
-	void SlotCancel();
-public: // signals
-	SigSlot::Signalv1<bool> SignalConfigurationUpdated;
+	MonoAudioFileWriterConfigPresentation( QWidget * parent = 0 );
+	virtual ~MonoAudioFileWriterConfigPresentation();
 };
 
 } // namespace NetworkGUI
 
-#endif // __QT_PROCESSINGCONFIGPRESENTATION_HXX__
+#endif  // __MonoAudioFileWriterConfigPresentation_hxx__
+

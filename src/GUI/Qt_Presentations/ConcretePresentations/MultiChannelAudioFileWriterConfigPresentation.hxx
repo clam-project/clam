@@ -19,38 +19,36 @@
  *
  */
 
-#include "ConnectionPresentation.hxx"
-#include "ConnectionAdapter.hxx"
-#include "Processing.hxx"
+#ifndef __MultiChannelAudioFileWriterConfigPresentation_hxx__
+#define __MultiChannelAudioFileWriterConfigPresentation_hxx__
+
+#include "MultiChannelAudioFileWriterConfig.hxx"
+#include "MonoAudioFileWriterConfigPresentation.hxx"
+
+class QSpinBox;
+
+namespace CLAM
+{
+	class ProcessingConfig;
+}
 
 namespace NetworkGUI
 {
 
-ConnectionPresentation::ConnectionPresentation()
-	: mInName( "unnamed inport" ),
-	  mOutName( "unnamed outport" )
+class MultiChannelAudioFileWriterConfigPresentation : public MonoAudioFileWriterConfigPresentation
 {
-	SlotSetOutName.Wrap( this, &ConnectionPresentation::SetOutName );
-	SlotSetInName.Wrap( this, &ConnectionPresentation::SetInName );
-}
-
-ConnectionPresentation::~ConnectionPresentation()
-{
-}
-
-void ConnectionPresentation::AttachTo( CLAMVM::ConnectionAdapter & adapter )
-{
-	SetOutName( adapter.GetOutName() );
-	SetInName( adapter.GetInName() );
-}
-
-void ConnectionPresentation::SetOutName( const std::string & out )
-{
-	mOutName = out;
-}
-void ConnectionPresentation::SetInName( const std::string & in )
-{
-	mInName = in;
-}
+	CLAM::MultiChannelAudioFileWriterConfig mMultiConfig;
+	QSpinBox * mChannels;
+protected:
+	void ConfigureProcessing();
+	void CreateGUI();
+	void CreateChannels();
+public:
+	MultiChannelAudioFileWriterConfigPresentation( QWidget * parent = 0 );
+	virtual ~MultiChannelAudioFileWriterConfigPresentation();
+};
 
 } // namespace NetworkGUI
+
+#endif  // __MultiChannelAudioFileWriterConfigPresentation_hxx__
+
