@@ -27,7 +27,21 @@
 	+ Size 0 by default
 	+ Assert on Getting attributes when 0 size
 + Resize del scope
-+ ScopeSpecRegistry
+- DescriptionScheme
+	+ Indexed interface
+- DescriptionDataPool
+	+ Populate Unexisting Scope -> Fail
+	+ Instanciating Attribute inside Unexisting -> Fail
+	+ Instanciating Attribute inside Unpopulated -> Fail
+	+ Instanciating Unexisting Attribute -> Fail
+	+ Instanciating Unexisting Attribute inside populated -> Fail
+	- Getting with different type
+	- Populate an already populated Scope -> ??
+	- ScopePool::InstantiateAttribute
+	- ScopePool::Get(index)
+	- Const getter
+	- Accessing an uninstantiated attribute -> Fail
+	- Populate a defined scope -> Instanciating attribute -> Accessing -> 
 - Scope relations
 	- Same context binders
 		- Creating a binder
@@ -37,25 +51,64 @@
 	- Relative context binders
 	- Indirect same context binders
 - Consider using iterator/vector interface
+- Consider Using the type instead the Attribute<type> as template
 - Prepare: Determinar attributos necesarios
 - Multilevel pools
 - XML for the Pool
 - XML for the Pool Spec
 - Multitype XML loading
 
-
-- Instanciar attributos on demand
-
-
-
-CreatePoolFrame("nom")
+- Errors en l'ús d'identificadors irregulars.
 
 
 
-PoolFactory::CreateScope("FrameA200mx");
-PoolFactory::AddAttribute("Nota","fundamental",);
-PoolFactory::CreateScope("FrameA400mx");
-PoolFactory::AddAttribute("Nota","fundamental",);
+
+void testSubGoal()
+{
+	CLAM::DescriptionScheme scheme;
+	scheme.AddScope("Frame");
+	scheme.AddSignalScope("AudioSample");
+	scheme.AddAttribute<SignalLevel>   ("AudioSample","Level");
+	scheme.AddAttribute<SampleDuration>("Frame","Center");
+	scheme.AddAttribute<Spectrum>      ("Frame","SpectralDistribution");
+
+	CLAM::Scoper * loader = CLAM::Extractor::Create("SoundLoader");
+	loader.BindOutputHook("AudioSample",);
+
+	CLAM::Scoper * frametizer = CLAM::Extractor::Create("Frametizer");
+	frametizer.BindOutputHook("Output","Frame");
+	frametizer.BindOutputHook("Center","");
+	frametizer.BindInputHook("Output")
+
+	
+	CLAM::Extractor * fft = CLAM::Extractor::Create("SpectralAnalysis");
+	fft.BindOutputHook("Output","Frame","SpectralDistribution");
+	fft.BindInputHook("Input",
+		CurrentContext().Attribute("Center").Indirect("AudioSample")
+			.RelativeRange(-framesize/2,+framesize/2).Attribute("Level")
+		);
+
+	scheme.AddExtractor(fft);
+}
+
+void testExtractionGoal()
+{
+	std::string fileName("mysong.mpg");
+	
+
+
+	
+}
+
+void testGoal()
+{
+	CLAM::DescriptionScheme scheme("DescriptionScheme.xml");
+	scheme.AddPlugin("DescriptionSchemeExtension.xml");
+	scheme.SetParameter("FrameSize",256);
+	CLAM::DescriptionDataPool pool(scheme);
+	pool.ExtractFrom("mysong.mp3");
+	CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
+}
 
 
 
