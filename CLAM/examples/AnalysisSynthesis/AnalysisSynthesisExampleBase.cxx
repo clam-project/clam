@@ -185,11 +185,11 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 
 void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName)
 {
-	WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
-	
 	std::string ext=inputFileName.substr(inputFileName.length()-4,inputFileName.length());
 	if(ext=="sdif")
 	{
+		WaitMessage *wm = CreateWaitMessage("Loading analysis data sdif file, please wait");
+		
 		/* temporal SDIF Converter which reads in one pSpecSeg */
 		SDIFInConfig cfg;
 		cfg.SetMaxNumPeaks(100);
@@ -204,28 +204,30 @@ void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName
 		while(SDIFReader.Do()) {}
 		mHaveAnalysis = true;
 		mHaveSpectrum = false;
+		delete wm;
 	}
 	else if(ext==".xml")
 	{
+		WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
 		//Loading analysis
 		XMLStorage x;
 		x.Restore(mSegment,inputFileName);
 		mHaveAnalysis = true;
 		mHaveSpectrum = false;
+		delete wm;
 	}
 	else throw Err("AnalysisSynthesisExampleBase::LoadAnalysis:wrong extension to load");
-	delete wm;
+	
 }
 
 void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 {
 	CLAM_ASSERT(mGlobalConfig.GetOutputAnalysisFile()!="","Not a valid file name");
 	
-	WaitMessage *wm = CreateWaitMessage("Storing xml file, please wait");
-	
 	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
 	if(ext=="sdif")
 	{
+		WaitMessage *wm = CreateWaitMessage("Storing sdif file, please wait");
 		int i;
 		SDIFOutConfig cfg;
 		cfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
@@ -237,10 +239,11 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 		{
 			SDIFWriter.Do(mSegment.GetFrame(i));
 		}
+		delete wm;
 	}
 	else if(ext==".xml")
 	{
-	
+		WaitMessage *wm = CreateWaitMessage("Storing xml file, please wait");
 		//first we have to get rid of not wanted data
 		mSegment.RemoveAudio();
 		mSegment.UpdateData();
@@ -273,8 +276,9 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 			tmpFrame.AddSpectrum();//this could be kept for direct IFFT
 			tmpFrame.UpdateData();			
 		}
+		delete wm;
 	}
-	delete wm;
+	
 }
 
 bool AnalysisSynthesisExampleBase::LoadInputSound(void)
