@@ -1,14 +1,14 @@
 #ifndef __OGGVORBISAUDIOSTREAM__
 #define __OGGVORBISAUDIOSTREAM__
 
-#include "AudioCodecs_Stream.hxx"
 #include <string>
 #include <vorbis/vorbisfile.h>
 #include <vorbis/vorbisenc.h>
-#include "DataTypes.hxx"
-#include "Array.hxx"
 #include <deque>
 #include <vector>
+#include "AudioCodecs_Stream.hxx"
+#include "DataTypes.hxx"
+#include "Array.hxx"
 
 namespace CLAM
 {

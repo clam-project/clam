@@ -1,12 +1,12 @@
-#include "AudioFileFormats.hxx"
-#include "AudioFile.hxx"
-#include "OggVorbisCodec.hxx"
-#include "OggVorbisAudioStream.hxx"
 #include <cstdio>
 #include <string>
 #include <algorithm>
 #include <vorbis/vorbisfile.h>
 #include <iostream>
+#include "AudioFileFormats.hxx"
+#include "AudioFile.hxx"
+#include "OggVorbisCodec.hxx"
+#include "OggVorbisAudioStream.hxx"
 
 namespace CLAM
 {
