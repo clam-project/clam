@@ -22,7 +22,8 @@ void UserInterface::EditConfiguration(void)
 
 void UserInterface::Update()
 {
-	mAnalysisSynthesisExample->InitConfigs();
+	mAnalysisSynthesisExample->SetHaveConfig(true);
+ 	mAnalysisSynthesisExample->InitConfigs();
 	LoadSound();
 }
 
@@ -43,6 +44,18 @@ void UserInterface::LoadConfiguration(void)
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
 			mSynthesize->activate();
 		Fl::redraw();
+
+		if( mAudioInputDisplay!=NULL ){
+			mSmartTile->close( mAudioInputDisplay );
+			Detach( mAudioInputDisplay );
+			mSmartTile->equalize();
+		}
+		if( mAudioOutputDisplay!=NULL )
+			Detach( mAudioOutputDisplay );
+		if( mAudioOutputResidualDisplay!=NULL )
+			Detach( mAudioOutputResidualDisplay );
+		if( mAudioOutputSinusoidalDisplay!=NULL )
+			Detach( mAudioOutputSinusoidalDisplay );
 	}		
 }
 
@@ -276,7 +289,6 @@ void UserInterface::Detach(Fl_Window *w)
 
 Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
 {
-	printf("ATTACH %s\n",title);
 	ProcDataView<Audio>* localView;
 	ProcDataPresentation<Audio>* localPresentation;
 
