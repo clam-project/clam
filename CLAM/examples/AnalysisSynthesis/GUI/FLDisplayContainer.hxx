@@ -41,7 +41,7 @@ class FLDisplayContainer:public Fl_Group
 	Range mHorRange;
 
 public:
-	GLPort*     mpDisplay;
+	GLPort*          mpDisplay;
 	MRuler*          mpHorRuler;
 	Fl_Scrollbar*    mpHorScrollbar;
 	Fl_Slider*       mpHorSlider;
