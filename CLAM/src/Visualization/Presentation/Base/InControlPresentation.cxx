@@ -1,4 +1,5 @@
 #include "InControlPresentation.hxx"
+#include "InputControlModel.hxx"
 
 namespace CLAMVM
 {
