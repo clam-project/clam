@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <title>How to set up your own programs using CLAM</title>
+  </head>
+
+  <body>
+    <p>This directory provides the user with an example of using CLAM for
+    her own programs. So it is ment to be copied somewhere out of CLAM
+    dir tree and it will be ready to compile with a little adjustment
+    in one file </p>
+
+    <h1>How to set up your own programs using CLAM</h1>
+
+
+    <p>This chapter is a little tutorial for setting up an example
+    application using CLAM and its build system. In first place we're
+    going to compile a given simple application --very straight. And
+    in second place we're going to go through all possible
+    customizations in the build settings that the user might need to
+    set up more complicated projects.</p>
+    
+    <h2>An out-of-the-box example</h2>
+    
+    <p>Following this steps you'll get an application which performs
+    an FFT of a random generated audio and stores its spectral
+    equivalent in a file in XML</p>
+
+    <ol>
+      <li>Copy this directory (TODO: two versions!) outside the CLAM
+      dir tree. We recommend to place it just in the same level as the
+      CLAM root. (in the same parent dir)
+	<br />
+      Note that this directory, apart from the .cxx file with a main
+      function, contains a subdir named <tt>build/</tt> with the
+      configuration files necessary to use the automatic CLAM build
+      system. <pre>$ cp -ar CLAM/build/external_program_using_CLAM 
+(TODO: provisionalname) 
+	</pre>
+      </li>  
+
+      <li>Edit the build/clam-location.cfg and change CLAM_PATH so it
+      points to the CLAM dir --maybe you'll find that this value is
+      already properly set.</li> 
+
+      <li>At this point we  need to have srcdeps already
+      compiled. How to do this is explained in this section [?] of the
+      documentation.</li> 
+
+      <li>Now our way forks depending on the choosed compiler 
+	<ul>
+	  <li><b>gcc</b>
+	    <br />
+	    Just call make with 'debug' or 'release' as argument:
+	    <pre>$ make CONFIG=debug</pre>
+	    This will generate the needed dependencies and compile the
+	    program
+	  </li>
+	  <li><b>MS Visual 6</b>
+	    <br />
+	    The first time we'll need to generate the .dsp file. For
+	    that we'll need to use the command line.
+	    <ul>
+	      <li>change your current dir to the <tt>buid</tt> subdir
+	      of our example directory</li>
+	      <li>from here (this is important) execute the srcdeps
+	      which is in the <tt>CLAM/build/srcdeps</tt> dir passing
+		the <tt>settings.cfg</tt> as argument. For example:
+		<pre>$ ../../CLAM/build/srcdeps/srcdeps settings.cfg</pre>
+	      <li>srdeps generate a .dsp file with which you can
+	      compile the example.</li>
+
+	    </ul>
+
+	</ul>
+      </li>
+    </ol>
+    <p>Hopefully we've been able to run the example and play with
+    spectral data in XML. From here we'll see how to customize the
+    build options and to create more complex projects</p>
+
+    <h2>Customizing your project</h2>
+
+TODO
+    <ul>
+      <li>quins fitxers cal copiar </li>
+      <li>com organizar els subdirectoris</li>
+      <li>clam_location.cfg</li>
+      <li>Makefile</li>
+      <li>
+	settings.cfg
+	<ul>
+	  <li>sources</li>
+	  <li>include dirs</li>
+      </li>
+      <li>Point to the build system documentation</li>
+
+
+    </ul>
+
+
+    
+
+
+
+  </body>
+</html>
+
