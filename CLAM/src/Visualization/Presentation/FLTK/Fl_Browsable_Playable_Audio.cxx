@@ -23,7 +23,6 @@
 #include "Fl_X_Axis.hxx"
 #include "Fl_Y_Axis.hxx"
 #include "Fl_ZoomSlider.hxx"
-#include "Fl_GridLayout.hxx"
 #include "Fl_Gl_Single_Browsable_Display.hxx"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>

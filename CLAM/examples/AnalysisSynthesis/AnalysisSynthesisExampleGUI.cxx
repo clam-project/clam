@@ -26,77 +26,74 @@
 namespace CLAMGUI
 {
 
-void AnalysisSynthesisExampleGUI::Run(void)
-{
-	Fl::get_system_colors();
-
-	UserInterface userinterface;
-	userinterface.mAnalysisSynthesisExample = this;
-	Fl::get_system_colors();
-	Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
-	Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
-	userinterface.mWindow->show();
-	
-	Fl::run();
-}
-	
-Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 
-{
-	ProgressGUI* tmp = new ProgressGUI(title,from,to);
-	return tmp;
-}
-
-WaitMessage* AnalysisSynthesisExampleGUI::CreateWaitMessage(const char* title) 
-{
-	WaitMessageGUI* tmp = new WaitMessageGUI(title);
-	return tmp;
-}
-
-void AnalysisSynthesisExampleGUI::ExecuteMethodOnThreadKeepingScreenUpToDate( 
-	CBL::Functor0 method )
-{
-	mThread.SetThreadCode( method );
-
-	mThread.Start();
-
-	while ( mThread.IsRunning() )
+	void AnalysisSynthesisExampleGUI::Run(void)
 	{
-		Fl::wait( 0.1 );
+		Fl::get_system_colors();
+
+		UserInterface userinterface;
+		userinterface.mAnalysisSynthesisExample = this;
+		Fl::get_system_colors();
+		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
+		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
+		userinterface.mWindow->show();
+	
+		Fl::run();
 	}
-}
+	
+	Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 
+	{
+		ProgressGUI* tmp = new ProgressGUI(title,from,to);
+		return tmp;
+	}
 
-void AnalysisSynthesisExampleGUI::DoAnalysis()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
+	WaitMessage* AnalysisSynthesisExampleGUI::CreateWaitMessage(const char* title) 
+	{
+		WaitMessageGUI* tmp = new WaitMessageGUI(title);
+		return tmp;
+	}
+
+	void AnalysisSynthesisExampleGUI::ExecuteMethodOnThreadKeepingScreenUpToDate( 
+		CBL::Functor0 method )
+	{
+		mThread.SetThreadCode( method );
+
+		mThread.Start();
+
+		while ( mThread.IsRunning() )
+		{
+			Fl::wait( 0.1 );
+		}
+	}
+
+	void AnalysisSynthesisExampleGUI::DoAnalysis()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
 			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, AnalysisProcessing ) );
-}
+	}
 
-void AnalysisSynthesisExampleGUI::DoTracksCleanup()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, TracksCleanupProcessing ) );
-}
+	void AnalysisSynthesisExampleGUI::DoTracksCleanup()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, TracksCleanupProcessing ) );
+	}
 
-void AnalysisSynthesisExampleGUI::DoSynthesis()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, SynthesisProcessing ) );
-}
+	void AnalysisSynthesisExampleGUI::DoSynthesis()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, SynthesisProcessing ) );
+	}
 
-void AnalysisSynthesisExampleGUI::DoLoadAnalysis()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, LoadAnalysis ) );
+	void AnalysisSynthesisExampleGUI::DoLoadAnalysis()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, LoadAnalysis ) );
 
-}
+	}
 
-void AnalysisSynthesisExampleGUI::DoStoreAnalysis()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, StoreAnalysis ) );
+	void AnalysisSynthesisExampleGUI::DoStoreAnalysis()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, StoreAnalysis ) );
 
-}
-
-
-
+	}
 }

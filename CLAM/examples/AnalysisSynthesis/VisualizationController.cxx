@@ -29,7 +29,7 @@
 #include "LogMagSpectrumAdapter.hxx"
 
 #include "Fl_Browsable_Playable_Audio.hxx"
-#include "Fl_Spectrum.hxx"
+#include "Fl_SMS_Spectrum.hxx"
 
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
@@ -49,7 +49,7 @@ CLAM::Enum::tEnumValue VisualizationController::sDisplayName[] = {
 VisualizationController::VisualizationController(  )
 	: mAudioAdapters( eAudioDisplays ), mSpectrumAdapters( eSpectrumDisplays ),
 	  mAudioPresentations( eAudioDisplays, 0 ), mSpectrumPresentations( eSpectrumDisplays, 0 ),
-	mDetachCallbackData( eNumDisplays ), mOpenDisplays( eNumDisplays, false ), mCanvas( 0 )
+	  mDetachCallbackData( eNumDisplays ), mOpenDisplays( eNumDisplays, false ), mCanvas( 0 )
 {
 	for( int i = 0; i < eAudioDisplays; i++ )
 	{
@@ -150,15 +150,13 @@ void VisualizationController::Display ( enum DisplayList view, Audio& data )
 		mAudioPresentations[ view ] = new Fl_Browsable_Playable_Audio( 0, 0, width, height );
 		mAudioPresentations[ view ]->label( sDisplayName[ view ].name );
 		mAudioPresentations[ view ]->callback( (Fl_Callback*)_Detach, &mDetachCallbackData[ view ] );
-
-//		mAudioPresentations[ view ]->setAudioPlayer( new AudioPlayer( data ) );
-
 		mAudioPresentations[ view ]->AttachTo( mAudioAdapters[ view ] );
 
 		//Link Signals with Slots
 		mFrameSignal.Connect( *mAudioPresentations[ view ]->GetFrameSlot() );
 		mPaintSignal.Connect( mAudioPresentations[ view ]->GetPaintSlot() );
 		mAudioPresentations[ view ]->GetSignal()->Connect( mSlot );
+
 		mAudioAdapters[ view ].Publish();
 
 		if( mCanvas )
@@ -184,11 +182,11 @@ void VisualizationController::Display ( enum DisplayList view, Spectrum& data )
 			width = mCanvas->w();
 			height = mCanvas->h()/(mCanvas->children()+1);
 		}
-		mSpectrumPresentations[ view-eAudioDisplays ] = new Fl_Spectrum( 0, 0, width, height );
+		mSpectrumPresentations[ view-eAudioDisplays ] = new Fl_SMS_Spectrum( 0, 0, width, height );
 		mSpectrumPresentations[ view-eAudioDisplays ]->label( sDisplayName[ view ].name );
 		mSpectrumPresentations[ view-eAudioDisplays ]->callback( (Fl_Callback*)_Detach, &mDetachCallbackData[ view ] );
-
 		mSpectrumPresentations[ view-eAudioDisplays ]->AttachTo( mSpectrumAdapters[ view-eAudioDisplays ] );
+
 		mSpectrumAdapters[ view-eAudioDisplays ].Publish();
 
 		if( mCanvas )

@@ -47,7 +47,7 @@ namespace CLAMVM
 	class AudioAdapter;
 	class LogMagSpectrumAdapter;
 	class Fl_Browsable_Playable_Audio;
-	class Fl_Spectrum;
+	class Fl_SMS_Spectrum;
 
 	class VisualizationController
 	{
@@ -94,7 +94,7 @@ namespace CLAMVM
 		std::vector<AudioAdapter> mAudioAdapters;
 		std::vector<Fl_Browsable_Playable_Audio*> mAudioPresentations;
 		std::vector<LogMagSpectrumAdapter> mSpectrumAdapters;
-		std::vector<Fl_Spectrum*> mSpectrumPresentations;
+		std::vector<Fl_SMS_Spectrum*> mSpectrumPresentations;
 
 		std::vector<bool> mOpenDisplays;
 

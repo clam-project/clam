@@ -64,4 +64,5 @@ bool XMLSerializer::DoStore( char* fileName, Segment& segment )
 		tmpFrame.AddSpectrum(  );//this could be kept for direct IFFT
 		tmpFrame.UpdateData(  );			
 	}
+	cout<< "caca"<<endl;
 }

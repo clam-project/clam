@@ -22,8 +22,11 @@
 #include <iostream>
 #include <string>
 
+#include <FL/Fl.H>
+#include <FL/fl_file_chooser.H>
+
 #include "AudioPlayer.hxx"
-#include "Fl_Playable_Audio.hxx"
+#include "Fl_Browsable_Playable_Audio.hxx"
 
 #include "AudioFileIn.hxx"
 #include "Audio.hxx"
@@ -34,14 +37,11 @@ using namespace CLAM;
 int main ()
 {
 	try {
-		std::string fileName;
-
-		std::cout << "Enter your audio filename: " << std::endl;
-		std::cin >> fileName;
+		std::string fileName( fl_file_chooser("Choose file to load...", "*.wav", "") );
 
 		std::cout << "Loading " << fileName.c_str() << " contents..." << std::endl;
 
-		//The File In PO
+		//The FileIn PO
 		AudioFileConfig infilecfg;
 		infilecfg.SetName( "FileIn" );
 		infilecfg.SetFilename( fileName.c_str() );
@@ -63,15 +63,12 @@ int main ()
 
 		std::cout << "Displaying " << fileName.c_str() << " contents..." << std::endl;
 
-		CLAMVM::Fl_Playable_Audio localPresentation( 0, 0, 600, 400, fileName.c_str() );
+		CLAMVM::Fl_Browsable_Playable_Audio localPresentation( 0, 0, 600, 400, fileName.c_str() );
 		CLAMVM::AudioAdapter soundView;
 
 		soundView.BindTo( myAudioIn );
 		localPresentation.AttachTo( soundView );
 		
-		//Link Visualization Module & Playable Module
-		localPresentation.setAudioPlayer( new AudioPlayer( myAudioIn ) );
-
 		soundView.Publish();
 		localPresentation.Show();
 

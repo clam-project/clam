@@ -45,8 +45,6 @@ void UserInterface::EditConfiguration(void)
 	configurator->show();
 }
 
-
-
 void UserInterface::Update()
 {
 	mAnalysisSynthesisExample->SetHaveConfig(true);
@@ -55,10 +53,8 @@ void UserInterface::Update()
 	mVC.CloseAll();
 }
 
-
 void UserInterface::LoadConfiguration(void)
 {
-	
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	
 	if ( str )
@@ -149,9 +145,11 @@ void UserInterface::LoadAnalysisData(void)
 
 	mAnalysisSynthesisExample->LoadAnalysis(  );
 	mStoreAnalysisData->deactivate(  );
-	if (
-		mAnalysisSynthesisExample->mHaveAnalysis &&
-		mAnalysisSynthesisExample->mHaveConfig )
+//	if (
+	mAnalysisSynthesisExample->mHaveAnalysis = true;
+// &&
+	mAnalysisSynthesisExample->mHaveConfig = true;
+// )
 	{
 		mSynthesize->activate(  );
 	}
@@ -209,56 +207,31 @@ void UserInterface::StoreAnalysisData(void)
 void UserInterface::DisplayInputSpectrum(void)
 {
 	mVC.Display ( mVC.eSpectrumIn, mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ mCounter->value() ).GetSpectrum() );
-
-// 	if (mInputSpectrum == NULL)
-// 		mInputSpectrum = Attach( "Input Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFrame()[ (int) mCounter->value() ].GetSpectrum(), 0 );
-// 	else {
-// 		List<Frame>& localFrames = mAnalysisSynthesisExample->mSegment.GetFramesArray();
-// 		Frame& frame = localFrames[ mCounter->value() ];
-// 		Spectrum& spectrum = frame.GetSpectrum();
-
-// 		mInputSpectrumView.BindTo( spectrum );
-// 		mInputSpectrumView.Publish();
-// 	}
 }
 
 void UserInterface::DisplayInputSound(void)
 {
 	mVC.Display ( mVC.eAudioIn, mAnalysisSynthesisExample->mAudioIn );
-
-//	if ( mAudioInputDisplay == NULL )
-//		mAudioInputDisplay = AttachInputSound( "Audio Input" , &mAnalysisSynthesisExample->mAudioIn );
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
 	mVC.Display ( mVC.eAudioOut, mAnalysisSynthesisExample->mAudioOut );
-
-// 	if ( mAudioOutputDisplay == NULL )
-// 		mAudioOutputDisplay = AttachOutputSound( "Audio Output" , &mAnalysisSynthesisExample->mAudioOut );
 }
 
 void UserInterface::DisplayOutputSpectrum(void)
 {
 	mVC.Display ( mVC.eSpectrumOut, mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ mCounter->value() ).GetOutSpec() );
-
-// 	if ( mOutputSpectrum == NULL )
-// 		mOutputSpectrum = Attach( "Output Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ (int) mCounter->value() ].GetSpectrum(), 1 );
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
 	mVC.Display ( mVC.eAudioResidual, mAnalysisSynthesisExample->mAudioOutRes );
-
-// 	if ( mAudioOutputResidualDisplay == NULL )
-// 		mAudioOutputResidualDisplay = AttachSynthSineSound( "Residual" , &mAnalysisSynthesisExample->mAudioOutRes );
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
 	mVC.Display ( mVC.eAudioSinusoidal, mAnalysisSynthesisExample->mAudioOutSin );
-// 	if ( mAudioOutputSinusoidalDisplay == NULL )
-// 		mAudioOutputSinusoidalDisplay = AttachSynthResidualSound( "Sinusoidal" , &mAnalysisSynthesisExample->mAudioOutSin );
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -292,190 +265,6 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
-/*
-void UserInterface::Detach(Fl_Window *w)
-{
-	
-	mSmartTile->remove( w );
-	mSmartTile->redraw();
-	w->hide();
-	
-	if (w==mAudioInputDisplay) 
-		mAudioInputDisplay = NULL;
-	else if (w==mAudioOutputDisplay)
-		mAudioOutputDisplay = NULL;
-	else if (w==mAudioOutputResidualDisplay)
-		mAudioOutputResidualDisplay = NULL;
-	else if (w==mAudioOutputSinusoidalDisplay)
-		mAudioOutputSinusoidalDisplay = NULL;
-	else if (w==mInputSpectrum) 
-		mInputSpectrum = NULL;
-	else if (w==mOutputSpectrum)
-		mOutputSpectrum = NULL;
-	
-//	mSmartTile->equalize();
-}
-
-Fl_Window* UserInterface::AttachInputSound(const char* title, CLAM::Audio* data )
-{
-	Fl_Browsable_Playable_Audio* localPresentation;
-
-	mSoundView.BindTo( *data );
-
-	//TODO: Calculate h() in a correct way
-	localPresentation = new Fl_Browsable_Playable_Audio( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( mSoundView );
-
-	localPresentation->setAudioPlayer( new AudioPlayer( *data ) );
-
-	//Link Signals with Slots
-	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
-	mPaintSignal.Connect( *localPresentation->GetPaintSlot() );
-	localPresentation->GetSignal()->Connect( mSlot );
-
- 	if (mAnalysisSynthesisExample->mHaveAnalysis)
- 		localPresentation->SetPainting( true );
-	
-	// registering callback for notifying the ui the need of 'detaching'
-	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSoundView.Publish();
-
-	mSmartTile->add( localPresentation );
-	localPresentation->Show();
-	mSmartTile->redraw();
-
-	return localPresentation;
-}
-
-Fl_Window* UserInterface::AttachOutputSound(const char* title, CLAM::Audio* data )
-{
-	AudioBrowser* localPresentation;
-
-	mSynthesizedOutput.BindTo( *data );
-
-	//TODO: Calculate h() in a correct way
-	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( mSynthesizedOutput );
-
-	//Link Signals with Slots
-	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
-	mPaintSignal.Connect( *localPresentation->GetPaintSlot() );
-	localPresentation->GetSignal()->Connect( mSlot );
-
- 	if (mAnalysisSynthesisExample->mHaveAnalysis)
- 		localPresentation->setPainting( true );
-	
-	// registering callback for notifying the ui the need of 'detaching'
-	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSynthesizedOutput.Publish();
-
-	mSmartTile->add( localPresentation );
-	localPresentation->Show();
-	mSmartTile->redraw();
-
-	return localPresentation;
-}
-
-Fl_Window* UserInterface::AttachSynthSineSound(const char* title, CLAM::Audio* data )
-{
-	AudioBrowser* localPresentation;
-
-	mSynthResidualOut.BindTo( *data );
-
-	//TODO: Calculate h() in a correct way
-	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( mSynthSineOut );
-
-	//Link Signals with Slots
-	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
-	mPaintSignal.Connect( *localPresentation->GetPaintSlot() );
-	localPresentation->GetSignal()->Connect( mSlot );
-
- 	if (mAnalysisSynthesisExample->mHaveAnalysis)
- 		localPresentation->setPainting( true );
-	
-	// registering callback for notifying the ui the need of 'detaching'
-	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSynthResidualOut.Publish();
-
-	mSmartTile->add( localPresentation );
-	localPresentation->Show();
-	mSmartTile->redraw();
-
-	return localPresentation;
-}
-
-Fl_Window* UserInterface::AttachSynthResidualSound(const char* title, CLAM::Audio* data )
-{
-	AudioBrowser* localPresentation;
-
-	mSynthResidualOut.BindTo( *data );
-
-	//TODO: Calculate h() in a correct way
-	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
-	localPresentation->AttachTo( mSynthResidualOut );
-
-	//Link Signals with Slots
-	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
-	mPaintSignal.Connect( *localPresentation->GetPaintSlot() );
-	localPresentation->GetSignal()->Connect( mSlot );
-
- 	if (mAnalysisSynthesisExample->mHaveAnalysis)
- 		localPresentation->setPainting( true );
-	
-	// registering callback for notifying the ui the need of 'detaching'
-	localPresentation->callback( (Fl_Callback*)_Detach, this );
-	mSynthResidualOut.Publish();
-
-	mSmartTile->add( localPresentation );
-	localPresentation->Show();
-	mSmartTile->redraw(); 
-
-	return localPresentation;
-}
-
-
-Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int type )
-{
-	//TODO: Calculate h() in a correct way
-	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1));
-
-
-	LogMagSpectrumAdapter* selectedView;
-
-	if( type == 0 )
-		selectedView = &mInputSpectrumView;
-	else
-		selectedView = &mOutputSpectrumView;		
-
-
-	SpectrumDisplay *localPresentation = 
-		new SpectrumDisplay(g.GetX(), g.GetY(), g.GetW(), g.GetH(), title);
-
-	// registering callback for notifying the ui the need of 'detaching'
-	localPresentation->callback( (Fl_Callback*)_Detach, this );
-
-	selectedView->BindTo( *data );
-	localPresentation->AttachTo( *selectedView );
-	selectedView->Publish();
-	
-	mSmartTile->add( localPresentation );
-	localPresentation->Show();
-	mSmartTile->redraw();
-	
-	return localPresentation;
-}
-
-void UserInterface::Init()
-{
-//	mAudioInputDisplay=NULL; 
-//	mAudioOutputDisplay=NULL; 
-//	mAudioOutputResidualDisplay=NULL; 
-//	mAudioOutputSinusoidalDisplay=NULL;
-//	mInputSpectrum=NULL;
-//	mOutputSpectrum=NULL;
-}
-*/
 void UserInterface::ChangeFrame()
 {
 	DisplayInputSound();

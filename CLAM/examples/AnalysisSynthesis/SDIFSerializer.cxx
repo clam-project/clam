@@ -48,9 +48,14 @@ bool SDIFSerializer::DoLoad( char* fileName, Segment& segment )
 	segment.UpdateData(  );
 	mSDIFReader.Output.Attach( segment );
 
+	try{
 	mSDIFReader.Start(  );
 	while( mSDIFReader.Do() ) {  }
 	mSDIFReader.Stop(  );
+	} catch (Err e)
+	{
+		cout<<"caca:: "<<e.what()<<endl;
+	}
 }
 
 bool SDIFSerializer::DoStore( char* fileName, Segment& segment )

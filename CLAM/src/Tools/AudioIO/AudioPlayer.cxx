@@ -32,10 +32,6 @@
 
 using namespace CLAM;
 
-//bool AudioPlayer::sCancel = false;
-//void AudioPlayer::SetCancel( bool value ) { sCancel = value; }
-//bool AudioPlayer::GetCancel(  ) { return sCancel; }
-
 AudioPlayer* AudioPlayer::sCurrentPlayer = NULL;
 
 AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot ) : mAudioReference( audio )
