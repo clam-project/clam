@@ -25,7 +25,7 @@
 // concrete configs
 #include "OscillatorConfigPresentation.hxx"
 #include "ConfigPresentationTmpl.hxx"
-#include "AudioFile.hxx"
+#include "AudioFileConfig.hxx"
 #include "AutoPanner.hxx"
 #include "AudioIO.hxx"
 #include "AudioMultiplier.hxx"
@@ -34,12 +34,18 @@
 #include "SimpleOscillator.hxx"
 #include "Oscillator.hxx"
 #include "ADSR.hxx"
+#include "LadspaLoader.hxx"
 
 // in draft/NewProcessings
 #include "FlagControl.hxx"
 #include "Random.hxx"
 #include "OneOverF.hxx"
-#include "LadspaLoader.hxx"
+#include "OutControlSender.hxx"
+
+#include "MonoAudioFileReaderConfig.hxx"
+#include "MonoAudioFileWriterConfig.hxx"
+#include "MultiChannelAudioFileReaderConfig.hxx"
+#include "MultiChannelAudioFileWriterConfig.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -54,11 +60,18 @@ typedef NetworkGUI::ConfigPresentationTmpl<CLAM::ADSRConfig> ADSRConfigPresentat
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> AutoPannerConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioMultiplierConfig> AudioMultiplierConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> AudioAdderConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::LadspaLoaderConfig> LadspaLoaderConfigPresentation;
 // in draft
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> FlagControlConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::RandomConfig> RandomConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> OneOverFConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::LadspaLoaderConfig> LadspaLoaderConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> OutControlSenderConfigPresentation;
+
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileReaderConfig> MonoAudioFileReaderConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileWriterConfig> MonoAudioFileWriterConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> MultiChannelAudioFileReaderConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileWriterConfig> MultiChannelAudioFileWriterConfigPresentation;
+
 
 static ProcessingConfigPresentationFactory::Registrator<SimpleOscillatorConfigPresentationTmpl> regtSimpleOscillatorCfg( "SimpleOscillatorConfig" );
 static ProcessingConfigPresentationFactory::Registrator<OscillatorConfigPresentationTmpl> regtOscillatorCfg( "OscillatorConfig" );
@@ -69,12 +82,19 @@ static ProcessingConfigPresentationFactory::Registrator<AudioAdderConfigPresenta
 static ProcessingConfigPresentationFactory::Registrator<BinaryAudioOpConfigPresentation> regtBinaryAudioOpCfg( "BinaryAudioOpConfig" );
 static ProcessingConfigPresentationFactory::Registrator<ADSRConfigPresentation> regtADSRCfg( "ADSRConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AudioMultiplierConfigPresentation> regtAudioMultiplierCfg( "AudioMultiplierConfig" );
+static ProcessingConfigPresentationFactory::Registrator<LadspaLoaderConfigPresentation> regtLadspaLoaderCfg( "LadspaLoaderConfig" );
 
 // in draft
 static ProcessingConfigPresentationFactory::Registrator<FlagControlConfigPresentation> regtFlagControlCfg( "FlagControlConfig" );
 static ProcessingConfigPresentationFactory::Registrator<RandomConfigPresentation> regtRandomCfg( "RandomConfig" );
 static ProcessingConfigPresentationFactory::Registrator<OneOverFConfigPresentation> regtOneOverFCfg( "OneOverFConfig" );
-static ProcessingConfigPresentationFactory::Registrator<LadspaLoaderConfigPresentation> regtLadspaLoaderCfg( "LadspaLoaderConfig" );
+static ProcessingConfigPresentationFactory::Registrator<OutControlSenderConfigPresentation> regtOutControlSenderCfg( "OutControlSenderConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<MonoAudioFileReaderConfigPresentation> regtMonoAudioFileReaderCfg( "MonoAudioFileReaderConfig" );
+static ProcessingConfigPresentationFactory::Registrator<MonoAudioFileWriterConfigPresentation> regtMonoAudioFileWriterCfg( "MonoAudioFileWriterConfig" );
+static ProcessingConfigPresentationFactory::Registrator<MultiChannelAudioFileReaderConfigPresentation> regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
+static ProcessingConfigPresentationFactory::Registrator<MultiChannelAudioFileWriterConfigPresentation> regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
+
 
 
 // manual config presentation
