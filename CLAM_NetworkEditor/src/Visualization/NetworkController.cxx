@@ -30,8 +30,6 @@
 #include "OutControl.hxx"
 #include "XMLStorage.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace CLAMVM
 {
 	
@@ -229,7 +227,6 @@ void NetworkController::LoadNetwork( const std::string & file)
 			CLAM::Network::NamesList::iterator namesIn;
 			for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 			{
-				std::cout << "creating port connection: " << completeOutName << "->" << *namesIn << std::endl;
 				ConnectionAdapter * connection = CreatePortConnectionAdapter( mObserved->GetOutPortByCompleteName(completeOutName), 
 												 mObserved->GetInPortByCompleteName(*namesIn)); 
 				SignalCreatePortConnectionPresentation.Emit( (ConnectionAdapter*)connection );
@@ -252,7 +249,6 @@ void NetworkController::LoadNetwork( const std::string & file)
 			CLAM::Network::NamesList::iterator namesIn;
 			for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 			{
-				std::cout << "creating control connection: " << completeOutName << "->" << *namesIn << std::endl;
 				ConnectionAdapter * connection = CreateControlConnectionAdapter( mObserved->GetOutControlByCompleteName(completeOutName), 
 												 mObserved->GetInControlByCompleteName(*namesIn)); 
 				SignalCreateControlConnectionPresentation.Emit( (ConnectionAdapter*)connection );
