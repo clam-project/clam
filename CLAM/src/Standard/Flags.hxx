@@ -31,6 +31,12 @@
 
 namespace CLAM {
 
+
+/**
+* Abstract class from which any Flag<N> instantiation is derived.
+* It provides some clever pure virtual functions and shared
+* implementations for the symbol managing.
+*/
 class FlagsBase : public Component {
 // Internal Types
 public:
@@ -41,8 +47,8 @@ public:
 
 // Attributes
 protected:
-	/** 
-	* A pointer to the user specific flag class table of 
+	/**
+	* A pointer to the user specific flag class table of
 	* value-symbol pairs for the flag.
 	*/
 	const tFlagValue * mFlagValues;
@@ -52,22 +58,22 @@ public:
 	/**
 	 * @returns the number of flags contained
 	 */
-	virtual unsigned int GetNFlags()=0;
+	virtual unsigned int GetNFlags() const=0;
 	virtual void SetFlag(unsigned int whichOne, bool value)=0;
-	virtual bool IsSetFlag(unsigned int whichOne)=0;
-	/** 
+	virtual bool IsSetFlag(unsigned int whichOne) const =0;
+	/**
 	* Retrieves the name of the flag at a position
 	* @param whichOne The position of the selected flag
 	* @returns The symbolic name of the selected flag as stream
 	*/
-	std::string GetFlagString(unsigned int whichOne) throw (IllegalValue);
+	std::string GetFlagString(unsigned int whichOne) const throw (IllegalValue);
 
-	/** 
+	/**
 	* Retrieves the position of the named flag
 	* @param whichOne The string containing the simbolic name
 	* @returns The symbolic name of the selected flag as stream
 	*/
-	unsigned int GetFlagPosition(const std::string & whichOne) throw (IllegalValue);
+	unsigned int GetFlagPosition(const std::string & whichOne) const throw (IllegalValue);
 
 	/* 
 	 * Stores component's subitems on the given Storage
@@ -103,7 +109,7 @@ public:
 };
 
 std::istream & operator >> (std::istream & is, FlagsBase & f);
-std::ostream & operator << (std::ostream & os, FlagsBase & f);
+std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 
 /**
 * Instances of this class represents objects containing a set
@@ -186,6 +192,12 @@ protected:
 		mFlagValues=names;
 	};
 	/** 
+	* The derived copy constructor will use this
+	*/
+	Flags(tFlagValue * names, const Flags<N> &t) : std::bitset<N>() {
+		mFlagValues=names;
+	};
+	/** 
 	* A lazy way to redefine all unary constructors in bitset 
 	* by forwarding it.
 	* @see std::bitset To obtain the complete set of available 
@@ -216,11 +228,11 @@ public:
 
 // Operators
 public:
-	virtual unsigned int GetNFlags () {
+	virtual unsigned int GetNFlags () const {
 		return N;
 	}
 protected:
-	virtual bool IsSetFlag(unsigned int whichOne) {
+	virtual bool IsSetFlag(unsigned int whichOne) const {
 		return test(whichOne);
 	}
 	virtual void SetFlag(unsigned int whichOne, bool value=true) {
@@ -268,7 +280,7 @@ std::istream & operator >> (std::istream & is, Flags<N> & f) {
 }
 
 template <unsigned int N>
-std::ostream & operator << (std::ostream & os, Flags<N> & f){
+std::ostream & operator << (std::ostream & os, const Flags<N> & f){
 	return (os << static_cast<FlagsBase&>(f));
 }
 #endif //_MSC_VER
