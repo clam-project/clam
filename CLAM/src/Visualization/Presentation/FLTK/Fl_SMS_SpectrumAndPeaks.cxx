@@ -170,6 +170,23 @@ namespace CLAMVM
 		redraw();
 	}
 
+	void Fl_SMS_SpectrumAndPeaks::SetSpectralRange( double spectralRange )
+	{
+		// MRJ: This is not the way it is meant to... but we want it drawn
+		// right?
+		mXAxis->minimum( 0 );
+		mXAxis->maximum( spectralRange );
+		// We check here for -1.0INFs, clamping the magnitude to -200 dB
+		mYAxis->minimum( -150 );
+		mYAxis->maximum( 0 );
+		mWorldSpaceCoords.mRight = 510;
+		mWorldSpaceCoords.mLeft = 0;
+		mWorldSpaceCoords.mTop = 0;
+		mWorldSpaceCoords.mBottom = -150;
+
+		mPeaksDrawMgr.SetSpectralRange( spectralRange );
+	}
+
 	void Fl_SMS_SpectrumAndPeaks::OnNewPeakArray( const Array<Partial>& partArray )
 	{
 		mPeaksDrawMgr.CacheData( partArray );

@@ -57,7 +57,7 @@ namespace CLAMVM
 		virtual void Hide();
 
 		void SetTooltipFormat( const char* fmtStr );
-
+		void SetSpectralRange( double spectralRange );
 	};
 
 	// inlines 

@@ -32,7 +32,7 @@ namespace CLAMVM
 		mpSpectrumAdapter->ObjectPublished.Connect( mpWidget->SetSpectrum );
 		mpPeakArrayAdapter->ObjectPublished.Connect( mpWidget->SetPartials );
 		
-		SetName( SystemPlots::GenerateNewUniqueName() );
+		SetName( name );
 		SystemPlots::RegisterWidget( GetName(), mpWidget );
 	}
 
@@ -84,9 +84,10 @@ namespace CLAMVM
 		mpSpectrumAdapter->Publish();
 	}
 
-	void SpectrumAndPeaksPlot::SetData( const CLAM::SpectralPeakArray& p )
+	void SpectrumAndPeaksPlot::SetData( const CLAM::SpectralPeakArray& p, double spectralRange  )
 	{
 		mpPeakArrayAdapter->BindTo( p );
 		mpPeakArrayAdapter->Publish();
+		mpWidget->SetSpectralRange( spectralRange );
 	}
 }

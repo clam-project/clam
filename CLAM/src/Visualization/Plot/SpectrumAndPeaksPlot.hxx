@@ -30,7 +30,7 @@ namespace CLAMVM
 		
 		void SetData( const CLAM::Spectrum& s, const CLAM::SpectralPeakArray& p );
 		void SetData( const CLAM::Spectrum& s );
-		void SetData( const CLAM::SpectralPeakArray& p );
+		void SetData( const CLAM::SpectralPeakArray& p, double spectralRange  );
 
 	protected:
 		LogMagSpectrumAdapter*     mpSpectrumAdapter;
