@@ -70,6 +70,8 @@ void Qt_ProcessingPresentation::Initialize( const std::string & nameFromNetwork,
 void Qt_ProcessingPresentation::UpdateSize( bool hasToResize )
 {
 	std::cout << "updating size" << std::endl;
+	int maxWidth;
+	int maxHeight;
 	QString name(mName.c_str());
 	QString className(mObservedClassName.c_str() );
 
@@ -78,27 +80,23 @@ void Qt_ProcessingPresentation::UpdateSize( bool hasToResize )
 	QFontMetrics fm( font );
 	int pixelsWide = std::max( fm.width( name ), fm.width( className ) );
 	int pixelsHigh = fm.height();
-	setMinimumSize(pixelsWide + 35, pixelsHigh*2 + 30);
-	if(hasToResize)
-		resize(pixelsWide + 35, pixelsHigh*2 + 30);
+
+	maxWidth = pixelsWide + 35;
+	maxHeight = pixelsHigh*2 + 30;
 
 	int heightPorts = std::max( mInPortPresentations.size(), mOutPortPresentations.size() );
 	heightPorts = heightPorts*7+14;
 	if (height() < heightPorts)
-	{
-		setMinimumSize(width(),heightPorts);
-		if(hasToResize)
-			resize(width(),heightPorts);
-	}
+		maxHeight = heightPorts;
 	
 	int widthControls = std::max( mInControlPresentations.size(), mOutControlPresentations.size());
 	widthControls = widthControls*13+24;
 	if (width() < widthControls)
-	{
-		setMinimumSize(widthControls, height());
-		if(hasToResize)
-			resize(widthControls, height());
-	}
+		maxWidth = widthControls;
+	
+	setMinimumSize( maxWidth, maxHeight );
+	if(hasToResize)
+		resize( maxWidth, maxHeight );
 
 }
 
@@ -212,13 +210,8 @@ void Qt_ProcessingPresentation::SetInPort( const std::string & name )
 	presentation->SetName(name);
 	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
 	mInPortPresentations.push_back(presentation);
-	int heightPorts = mInPortPresentations.size()*7+14;
-	if (height() < heightPorts)
-	{
-		setMinimumSize(width(),heightPorts);
-		resize(width(),heightPorts);
-		UpdateOutControlsPosition();
-	}
+
+	UpdateSize();
 }
 
 void Qt_ProcessingPresentation::SetOutPort( const std::string & name )
@@ -229,13 +222,8 @@ void Qt_ProcessingPresentation::SetOutPort( const std::string & name )
 	presentation->SetName(name);
 	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
 	mOutPortPresentations.push_back(presentation);
-	int heightPorts = mOutPortPresentations.size()*7+14;
-	if (height() < heightPorts)
-	{
-		setMinimumSize(width(),heightPorts);
-		resize(width(),heightPorts);
-		UpdateOutControlsPosition();
-	}
+	
+	UpdateSize();
 }
 
 
@@ -248,13 +236,7 @@ void Qt_ProcessingPresentation::SetInControl( const std::string & name )
 	presentation->SetName(name);
 	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
 	mInControlPresentations.push_back(presentation);
-	int widthControls = mInControlPresentations.size()*13+24;
-	if (width() < widthControls)
-	{
-		setMinimumSize(widthControls, height());
-		resize(widthControls, height());
-		UpdateOutPortsPosition();
-	}
+	UpdateSize();
 }
 
 void Qt_ProcessingPresentation::SetOutControl(  const std::string & name )
@@ -265,13 +247,7 @@ void Qt_ProcessingPresentation::SetOutControl(  const std::string & name )
 	presentation->SetName(name);
 	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
 	mOutControlPresentations.push_back(presentation);
-	int widthControls = mOutControlPresentations.size()*13+24;
-	if (width() < widthControls)
-	{
-		setMinimumSize(widthControls, height());
-		resize(widthControls, height());
-		UpdateOutPortsPosition();
-	}
+	UpdateSize();
 }
 
 void Qt_ProcessingPresentation::UpdateOutPortsPosition()
@@ -397,9 +373,10 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		reg += out->GetRegion();
 	}
+	
 
 	setMask(reg);
-	
+
 	p.setPen( QPen( blue, 1 ));
 	p.drawRect( 12,7, width()-24,height()-14); // draw a rectangle
 	p.drawLine( QPoint( 12, height()/2), QPoint( width()-12, height()/2 )); 
