@@ -182,16 +182,16 @@ TData AudioDescriptors::ComputeLogAttackTime()
 
 TData AudioDescriptors::ComputeDecrease()
 {
-	DataArray& data     = mpAudio->GetBuffer();
-	TSize      dataSize = mpAudio->GetSize();
+	DataArray&  data     = mpAudio->GetBuffer();
+	const TSize dataSize = mpAudio->GetSize();
 
 	DataArray energyEnv;
 	energyEnv.Resize(dataSize);
 	energyEnv.SetSize(dataSize);
 
 	// Find maximum value index
-	TIndex maxRSind = 0;
-	TData  maxRS    = log10(fabsf(mEpsilon));
+	TSize maxIdx = 0;
+	TData  maxVal    = log10(fabsf(mEpsilon));
 
 	for (TIndex i=0; i<dataSize; i++)
 	{
@@ -201,10 +201,10 @@ TData AudioDescriptors::ComputeDecrease()
 
 		// Base computation on base 10 logarithm of approx. signal envelope.
 		energyEnv[i] = log10(fabsf(data[i]));
-		if (energyEnv[i] > maxRS) 
+		if (energyEnv[i] > maxVal)
 		{
-			maxRS    = energyEnv[i];
-			maxRSind = i;
+			maxVal = energyEnv[i];
+			maxIdx = i;
 		}
 	}
 
@@ -213,9 +213,9 @@ TData AudioDescriptors::ComputeDecrease()
 	TData meanY = 0;
 	TData num   = 0;
 	TData denum = 0;
-	const TData N = dataSize - maxRSind;
+	const TData N = dataSize - maxIdx;
 
-	for (TIndex i=maxRSind; i<dataSize; i++) 
+	for (TIndex i=maxIdx; i<dataSize; i++)
 	{
 		meanX += i;
 		meanY += energyEnv[i];
