@@ -2,25 +2,46 @@
 #include "Factory.hxx"
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
-
+#include "Fl_SMS_Gender_Selector.hxx"
 
 namespace CLAMVM
 {
-	const char* SMSGenderChangeConfigurator::mHelpText = "<html><body><p>The <bf>Frequency Shift</bf> SMS transformation, is an operator over the results of an SMS Analysis, that allows to offset all detected partials by the same frequency differential.</p></body></html>";
+	const char* SMSGenderChangeConfigurator::mHelpText = "<html><body><p>Here should go a nice description about what does the SMS Gender Change transformation do</p></body></html>";
 
 	SMSGenderChangeConfigurator::SMSGenderChangeConfigurator()
 	{
 		mHelpWidget = new Fl_Help_View( 0, 0, 100, 100 );
 		mHelpWidget->textsize( 12 );
 		
+		mpGenderSelector = new Fl_SMS_Gender_Selector( 0, 0, 100, 100 );
+		mpGenderSelector->end();
+
+		SetGender.Wrap( this, &SMSGenderChangeConfigurator::OnGenderSet ); 
+
+		mpGenderSelector->GenderSelected.Connect( SetGender );
+		GenderChanged.Connect( mpGenderSelector->SetSelectedGender );
+
 		SetHelpWidgetText();
 		mConfig.AddType();
+		mConfig.AddAmount();
 		mConfig.UpdateData();
 		mConfig.SetType( "SMSGenderChange" );
+		mConfig.SetAmount( 0 );
+		GenderChanged.Emit( mConfig.GetAmount() );
 	}
 
 	SMSGenderChangeConfigurator::~SMSGenderChangeConfigurator()
 	{
+		if ( mHelpWidget->parent() == NULL )
+			delete mHelpWidget;
+
+		if ( mpGenderSelector->parent() == NULL )
+			delete mpGenderSelector;
+	}
+
+	void SMSGenderChangeConfigurator::OnGenderSet( int gender )
+	{
+		mConfig.SetAmount( gender );
 	}
 
 	void SMSGenderChangeConfigurator::SetHelpWidgetText()
@@ -30,12 +51,21 @@ namespace CLAMVM
 
 	Fl_Widget* SMSGenderChangeConfigurator::GetParametersWidget()
 	{
-		return NULL;
+		return mpGenderSelector;
 	}
 
 	void SMSGenderChangeConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+		
+		if ( !mConfig.HasAmount() )
+		{
+			mConfig.AddAmount();
+			mConfig.UpdateData();
+		}
+
+		mConfig.SetAmount( 0 );
+		GenderChanged.Emit( mConfig.GetAmount() );
 
 	}
 
