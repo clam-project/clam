@@ -17,10 +17,9 @@ namespace NetworkGUI
 class ProcessingConfigPresentation : public CLAMVM::Presentation
 {
 protected:
-	CLAM::ProcessingConfig * mConfig;
+//	CLAM::ProcessingConfig * mConfig;
 
-	void OnNewConfig( CLAM::ProcessingConfig* );
-	
+	virtual void OnNewConfig( CLAM::ProcessingConfig* ) = 0;
 public:
 	ProcessingConfigPresentation();       
 	virtual ~ProcessingConfigPresentation(){}
