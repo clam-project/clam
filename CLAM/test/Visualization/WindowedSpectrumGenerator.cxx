@@ -1,6 +1,4 @@
 #include "WindowedSpectrumGenerator.hxx"
-#include "Spectrum.hxx"
-#include "SpectrumConfig.hxx"
 #include <iostream>
 
 namespace CLAMTest

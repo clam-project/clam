@@ -93,9 +93,7 @@ namespace CLAMVM
 				TData minMag = *std::min_element( array.GetPtr(), array.GetPtr()+array.Size() );
 				const TData offsetPercentil = 0.2f; // 20%
 				TData maxOffset = fabs( maxMag - minMag ) * offsetPercentil;
-				// MRJ: mystery values search
-				//mDisplay->SetWorldSpace( array.Size() - 2, 0, maxMag + maxOffset, minMag );
-				mDisplay->SetWorldSpace( array.Size() - 2, 0, 0, -150 );
+				mDisplay->SetWorldSpace( array.Size() - 2, 0, maxMag + maxOffset, minMag );
 				mXAxis->minimum( 0 );
 				mXAxis->maximum( spectralRange );
 

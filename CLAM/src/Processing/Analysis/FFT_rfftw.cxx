@@ -41,28 +41,25 @@ namespace CLAM {
 		
 		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
-			CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
+			if (mConfig.GetAudioSize()<0)
+				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));
 			mSize = mConfig.GetAudioSize();
 		}
-
-		CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
 
 		mState=sOther;
 		mComplexflags.bComplex=1;
 		mComplexflags.bMagPhase=0;
-		if (mSize == 0) 
-		{
-			fftbuffer = 0;
-			mpPlan=0;
-			return false;
-		}
-		if (mSize == oldSize)
+		if (mSize > 0) {
+			if (mSize != oldSize) {
+				delete [] fftbuffer;
+				fftbuffer = new TData[mSize];
+				mpPlan = rfftw_create_plan (mSize , FFTW_REAL_TO_COMPLEX, FFTW_ESTIMATE);
+			}
 			return true;
-
-		delete [] fftbuffer;
-		fftbuffer = new TData[mSize];
-		mpPlan = rfftw_create_plan (mSize , FFTW_REAL_TO_COMPLEX, FFTW_ESTIMATE);
-		return true;
+		}
+		fftbuffer = 0;
+		mpPlan=0;
+		return false;
 	}
 
 	FFT_rfftw::FFT_rfftw()
@@ -125,7 +122,7 @@ namespace CLAM {
 			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
 				mState=sOther;
 			else
-				CLAM_ASSERT(false, "FFT_rfftw: SetPrototypes(...): No Spectrum Attributes!");
+				throw(ErrProcessingObj("FFT_rfftw: SetPrototypes(...): No Spectrum Attributes!",this));
 
 		return true;
 	}
@@ -173,7 +170,7 @@ namespace CLAM {
 			RFFTWToOther(out);
 			break;
 		default:
-			CLAM_ASSERT(false, "FFT_rfftw: Do(): Inconsistent state");
+			throw(ErrProcessingObj("FFT_rfftw: Do(): Inconsistent state",this));
 		}
 		out.SetSpectralRange(in.GetSampleRate()/2);
 		return true;
@@ -183,7 +180,7 @@ namespace CLAM {
 	{
 		// @todo Check port prototypes, and set the state (or de
 		// backup state if disabled) acordingly.
-		CLAM_ASSERT(false,"FFT_rfftw::SetPrototypes: Not implemented.");
+		throw(ErrProcessingObj("FFT_rfftw::SetPrototypes: Not implemented.",this));
 	}
 
 

@@ -75,12 +75,10 @@ namespace CLAM {
 
 	void ProcessingComposite::Insert(Processing& obj) throw(ErrProcessingObj)
 	{
-		CLAM_BEGIN_CHECK
 		iterator it;
 		for (it=mObjects.begin(); it!=mObjects.end(); it++)
 			CLAM_ASSERT( ((*it) != &obj) , "ProcessingComposite::Insert():"
 			                              "Object already inserted\n");
-		CLAM_END_CHECK
 		try {
 			mNames.Add(obj.GetName());
 		}
@@ -104,30 +102,30 @@ namespace CLAM {
 		return name;
 	}
 
-	bool ProcessingComposite::NameChanged(Processing& obj, const std::string &old_name) 
+	void ProcessingComposite::NameChanged(Processing& obj,
+												const std::string &old_name) 
+		throw(ErrProcessingObj)
 	{
-		CLAM_BEGIN_CHECK
-			iterator it;
-			for (it=composite_begin(); it!=composite_end(); it++)
-				if ( (*it) == &obj)
-					break;
-			CLAM_ASSERT(it != composite_end(),
-				"ProcessingComposite::NameChanged(): Object not in composite");
-		CLAM_END_CHECK
+		iterator it;
+		for (it=composite_begin(); it!=composite_end(); it++)
+			if ( (*it) == &obj)
+				break;
+		if (it == composite_end())
+			throw(ErrProcessingObj("ProcessingComposite::NameChanged():"
+								   " Object not in composite",&obj));
 
 		if (obj.GetName() == old_name)
-			return true;
+			return;
 		
-		try 
-		{
+		try {
 			mNames.Add(obj.GetName());
 		}
 		catch (NameTable::DuplicatedName)
 		{
-			return false;
+			throw(ErrProcessingObj("ProcessingComposite::NameChanged():"
+								   " Duplicated Name",&obj));
 		}
 		mNames.Remove(old_name);
-		return true;
 	}
 
 	NameTable::NameTable()

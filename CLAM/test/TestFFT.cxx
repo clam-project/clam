@@ -33,9 +33,6 @@
 #include "FFT_rfftw.hxx"
 #include "FFT_numrec.hxx"
 #include "OctaveVector.hxx"
-#include "Spectrum.hxx"
-#include "SpectrumConfig.hxx"
-#include "Audio.hxx"
 
 using namespace CLAM;
 

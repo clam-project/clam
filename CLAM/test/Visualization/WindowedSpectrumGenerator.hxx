@@ -6,6 +6,7 @@
 #include "WindowGenerator.hxx"
 #include "FFT_rfftw.hxx"
 #include "Audio.hxx"
+#include "Spectrum.hxx"
 
 using namespace CLAM;
 

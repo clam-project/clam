@@ -4,10 +4,7 @@
 
 #include "SMSBase.hxx"
 #include "StdOutProgress.hxx"
-#include "StdOutWaitMessage.hxx"
-
 #include "Audio.hxx"
-#include "AudioFileIn.hxx"
 
 #include <fstream> // used for open(..) : we want to check if some file exists
 
@@ -31,9 +28,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testLoadInputSound_WithABadFileName );
 	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
 	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
-	CPPUNIT_TEST( testhelperLoadSynthesizedAudio );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
-	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -101,8 +96,8 @@ private:
 		b.SetSize(size);
 		CLAM::DataArray& aBuff= a.GetBuffer();
 		CLAM::DataArray& bBuff= b.GetBuffer();
-		const CLAM::TData _1 = (CLAM::TData) 1.0;
-		const CLAM::TData _0_9 = (CLAM::TData) 0.9;
+		const CLAM::TData _1(1.0);
+		const CLAM::TData _0_9(0.9);
 		for (int i=0; i<size; i++)
 		{
 			aBuff[i]=CLAM::TData(1.0);
@@ -138,7 +133,7 @@ private:
 	}
 	CLAMGUI::WaitMessage* CreateWaitMessage(const char * title)
 	{
-		return new CLAMGUI::StdOutWaitMessage(title);
+		return 0;
 	}
 
 // ---------------------------------------------------------------------------------------------------
@@ -176,20 +171,16 @@ private:
 			helperFileExist( path+"sweep.wav" ) );
 
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/out_sweep_defConfig.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening /SMSTests/out_sweep_defconfig.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( path+"/SMSTests/out_sweep_defconfig.wav") );
 		
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/out_sweep_defConfig_res.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening /SMSTests/out_sweep_defconfig_res.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( path+"/SMSTests/out_sweep_defconfig_res.wav") );
 		
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/out_sweep_defConfig_sin.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
-			helperFileExist( path+"/SMSTests/out_sweep_defConfig_sin.wav") );
-
-		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/config.xml. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
-			helperFileExist( path+"/SMSTests/config.xml") );
+			"file not found when opening /SMSTests/out_sweep_defconfig_sin.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			helperFileExist( path+"/SMSTests/out_sweep_defconfig_sin.wav") );
 		
 	}
 
@@ -218,16 +209,16 @@ private:
 		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
 		mGlobalConfig.SetInputSoundFile("");
 	}
-	
-	// TODO
+
 	void testAnalysisSynthesis_OriginalAudioDiffersFromProcessedAudio()
 	{
 	}
 	
 	void testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav()
 	{
-		mGlobalConfig.SetInputSoundFile(std::string(testDataPath)+"sweep.wav");
 		InitConfigs();
+		mGlobalConfig.SetInputSoundFile(std::string(testDataPath)+"sweep.wav");
+		
 		LoadInputSound(); 
 
 		Analyze();
@@ -238,77 +229,6 @@ private:
 		std::string diagnostic;
 
 		bool audiosAreEquals = helperAudiosAreEqual(audioIn, synAudio, diagnostic);
-		CPPUNIT_ASSERT_EQUAL(std::string(), diagnostic);
-		CPPUNIT_ASSERT( audiosAreEquals );
-
-		mGlobalConfig.SetInputSoundFile("");
-	}
-	
-	CLAM::Audio& accessorOriginalAudio()
-	{
-		return mOriginalSegment.GetAudio();
-	}
-	CLAM::Audio& accessorSynthesizedAudio()
-	{
-		return mAudioOut;
-	}
-	CLAM::Audio& accessorSinusoidalAudio()
-	{
-		return mAudioOutSin;
-	}
-	CLAM::Audio& accessorResidualAudio()
-	{
-		return mAudioOutRes;
-	}
-
-
-	// TODO re-order attributes and methods:
-	
-	CLAM::Audio mLoadedTestAudio;
-
-	CLAM::Audio& accessorLoadedTestAudio()
-	{
-		return mLoadedTestAudio;
-	}
-
-	void helperLoadSynthesizedAudio(const std::string filename )
-	{
-		CPPUNIT_ASSERT( helperFileExist(filename) );
-		CLAM::AudioFileConfig conf;
-		conf.SetFilename(filename);
-		conf.SetFiletype(CLAM::EAudioFileType::eWave);
-
-		CLAM::AudioFileIn in;
-		in.Configure(conf);
-		in.Start();
-		
-		mLoadedTestAudio.SetSize( in.Size() );
-		in.Do( accessorLoadedTestAudio() );
-		in.Stop();
-	}
-
-	
-	void testhelperLoadSynthesizedAudio()
-	{
-		helperLoadSynthesizedAudio( std::string(testDataPath)+"sweep.wav" );
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("sweep.wav size", 181588, accessorLoadedTestAudio().GetSize() );
-	}
-
-	void testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav()
-	{
-		const std::string path(testDataPath);
-		LoadConfig( path + "/SMSTests/config.xml");
-		mGlobalConfig.SetInputSoundFile( path + "sweep.wav");
-		InitConfigs();
-		LoadInputSound();
-
-		Analyze();
-		Synthesize();
-
-		helperLoadSynthesizedAudio( path+"/SMSTests/out_sweep_loadedConfig.wav" );
-		std::string diagnostic;
-		bool audiosAreEquals = helperAudiosAreEqual( accessorLoadedTestAudio(), accessorSynthesizedAudio(), diagnostic, 0.1);
-	
 		CPPUNIT_ASSERT_EQUAL(std::string(), diagnostic);
 		CPPUNIT_ASSERT( audiosAreEquals );
 
