@@ -9,6 +9,7 @@
 #include "GTFilterbank.hxx"
 #include "Normalization.hxx"
 #include "OnsetDetectorConfig.hxx"
+#include "OD_AudioDecimation.hxx"
 
 namespace CLAM
 {
@@ -43,6 +44,7 @@ namespace CLAM
 	
 		Normalization	mNorm;
 		GTFilterbank	mFilterBank;
+		OnsetDetection::AudioDecimator  mDecimator;
 
 	
 		// Internal convenience methods.
@@ -58,13 +60,13 @@ namespace CLAM
 		bool CalcFilterBankOutput( Audio &in );
 		//void Algorithm(Segment& s, Array< Array<TData> >& values);
 		void Algorithm(Segment& s, Array< Array<TData> >& values, Array<TimeIndex>& out, bool weightsOut);
-		void Smoothing(DataArray energy, DataArray &smoothedEnergy );
-		void DetectPosition(DataArray in, DataArray &ret);
-		void DetectCandidates(DataArray in, DataArray weight, TData threshold , Array<TimeIndex> &ret);
+		void Smoothing(DataArray& energy, DataArray &smoothedEnergy );
+		void DetectPosition(DataArray& in, DataArray &ret);
+		void DetectCandidates(DataArray& in, DataArray& weight, TData threshold , Array<TimeIndex> &ret);
 		void DeleteWeakOnsets(Array<TimeIndex> &in , int type );
-		void PeakDeletion( Array<TimeIndex> in , TimeIndex &ret );
-		void PeakSummation( Array<TimeIndex> in , TimeIndex &ret );
-		void CheckOffset( Segment &s , Array<TimeIndex> finalOnsets);
+		void PeakDeletion( Array<TimeIndex>& in , TimeIndex &ret );
+		void PeakSummation( Array<TimeIndex>& in , TimeIndex &ret );
+		void CheckOffset( Segment &s , Array<TimeIndex>& finalOnsets);
 
 		//Member Data
 		Audio mAudio;

@@ -74,8 +74,8 @@ namespace CLAM
 		
 		private: // attributes
 			AudioDecimatorConfig mConfig;
-			DataArray            mOutput;
-			DataArray            mOutputRev;
+			Array<double>            mOutput;
+			Array<double>            mOutputRev;
 		};
 		
 	} // namespace OnsetDetection

@@ -103,13 +103,13 @@ namespace CLAM
 		//Normalization and downsampling to 22.05 kHz
 		mNorm.Do(originalSegment.GetAudio());
 
-		OnsetDetection::AudioDecimator decim44100to22050;
+
 
 		mAudio.SetSize(originalSegment.GetAudio().GetSize()/2);
 		mAudio.SetSampleRate(originalSegment.GetAudio().GetSampleRate()/2);
 
-		decim44100to22050.DecimateFrom44100To22050( originalSegment.GetAudio().GetBuffer(),
-							    mAudio.GetBuffer() );
+		mDecimator.DecimateFrom44100To22050( originalSegment.GetAudio().GetBuffer(),
+						     mAudio.GetBuffer() );
 		
 
 		//Filter bank output computation
@@ -144,7 +144,6 @@ namespace CLAM
 
 		//OnsetDetection::AudioDecimator Initialization
 
-		OnsetDetection::AudioDecimator decim22500to245;
 
 		for(int band=0 ; band<mnBands ; band++)
 		{
@@ -160,7 +159,7 @@ namespace CLAM
 					
 			//Decimation to 245 Hz
 
-			decim22500to245.Do(mFilterBankOutput[band] , 22050 , 2 );
+			mDecimator.DecimateFrom22050To245(mFilterBankOutput[band], mFilterBankOutput[band]);
 
 			for(int i=0 ; i<mFilterBankOutput[band].Size() ; i++)
 				mFilterBankOutput[band][i] = mFilterBankOutput[band][i]*cf[band];
@@ -304,7 +303,7 @@ namespace CLAM
 ////////////////////////////////
 ///////////SMOOTHING////////////
 ////////////////////////////////
-	void OnsetDetector::Smoothing(DataArray energy, DataArray &smoothedEnergy )
+	void OnsetDetector::Smoothing(DataArray& energy, DataArray& smoothedEnergy )
 	{
 		int i, j, k;
 		TData temp;
@@ -357,7 +356,7 @@ namespace CLAM
 ////////////////////////////////
 //////ONSET TIME DETECTION//////
 ////////////////////////////////
-	void OnsetDetector::DetectPosition(DataArray in, DataArray &ret)
+	void OnsetDetector::DetectPosition(DataArray& in, DataArray& ret)
 	{
 		int i;
 
@@ -375,7 +374,7 @@ namespace CLAM
 ////////////////////////////////
 ///////CANDIDATE DETECTION//////
 ////////////////////////////////
-	void OnsetDetector::DetectCandidates(DataArray in, DataArray weight, TData threshold , Array<TimeIndex> &ret)
+	void OnsetDetector::DetectCandidates(DataArray& in, DataArray& weight, TData threshold , Array<TimeIndex>& ret)
 	{	
 	
 		//This function detect the positions and weights of candidates
@@ -533,7 +532,7 @@ namespace CLAM
 
 
 //PEAK DELETION
-	void OnsetDetector::PeakDeletion( Array<TimeIndex> in , TimeIndex &ret )
+	void OnsetDetector::PeakDeletion( Array<TimeIndex>& in , TimeIndex& ret )
 	{
 		TData max=-1;
 		int pos , j;
@@ -550,7 +549,7 @@ namespace CLAM
 
 
 //PEAK SUMMATION
-	void OnsetDetector::PeakSummation( Array<TimeIndex> in , TimeIndex &ret )
+	void OnsetDetector::PeakSummation( Array<TimeIndex>& in , TimeIndex &ret )
 	{
 		TData max=-1 , sum=0;
 		int pos , j;
@@ -572,7 +571,7 @@ namespace CLAM
 /////////////////////
 //CHECK FOR OFFSETS//
 /////////////////////
-	void OnsetDetector::CheckOffset( Segment &s , Array<TimeIndex> finalOnsets)
+	void OnsetDetector::CheckOffset( Segment &s , Array<TimeIndex>& finalOnsets)
 	{
 
 		int i , j;
@@ -582,12 +581,17 @@ namespace CLAM
 		//Extracts Amplitude Enveloppe//
 		////////////////////////////////
 		DataArray amplitude;
-		for(i=0;i<mAudio.GetBuffer().Size();i++)
-			amplitude.AddElem(fabsf(mAudio.GetBuffer()[i]));
+		amplitude.Resize( mAudio.GetSize() );
+		amplitude.SetSize( mAudio.GetSize() );
+		DataArray& samples = mAudio.GetBuffer();
+		TSize numSamples = mAudio.GetSize();
+
+		for( i=0; i< numSamples ; i++)
+			amplitude[i] = fabsf(samples[i]);
 
 		//Decimation
-		OnsetDetection::AudioDecimator decim22;
-		decim22.Do(amplitude , 22050 , 2);
+
+		mDecimator.DecimateFrom22050To245(amplitude, amplitude);
 
 		//Computes the smoothing filter coefficients
 		TSize winSize = 0.05*mSampleRate;

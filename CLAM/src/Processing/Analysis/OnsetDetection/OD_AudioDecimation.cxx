@@ -244,16 +244,20 @@ namespace CLAM
 			
 			TSize decimatedSize = size/90;
 			
-			decimatedSignal.Resize(decimatedSize);
-			decimatedSignal.SetSize(decimatedSize);
+			if ( decimatedSignal.Size() != decimatedSize )
+			{
+				decimatedSignal.Resize(decimatedSize);
+				decimatedSignal.SetSize(decimatedSize);
+			}
 			
 			i=0;
-			
+			int j=0;
 			//decimation
 			while(i<decimatedSize)
 			{
-				decimatedSignal[i] = mOutputRev[i*90];
+				decimatedSignal[i] = mOutputRev[j];
 				i++;
+				j+=90;
 			}
 			
 
