@@ -78,18 +78,18 @@ public:
 		const char * name = xmlable.XMLName();
 		if (!name)
 		{
-			StoreContentAndSibblings(xmlable);
+			StoreContentAndChildren(xmlable);
 			return;
 		}
 		if (xmlable.IsXMLElement())
 		{
 			_lastWasContent=false;
-			xercesc::DOMElement * domElement = _document->createElement(X(name));
-			_currentElement->appendChild(domElement);
 			xercesc::DOMElement * oldElement = _currentElement;
-			_currentElement = domElement;
-			AddContentToElement(xmlable.XMLContent());
-			StoreSibblingsIfComponent(xmlable);
+			_currentElement = _document->createElement(X(name));
+			oldElement->appendChild(_currentElement);
+
+			StoreContentAndChildren(xmlable);
+
 			_currentElement = oldElement;
 			_lastWasContent=false;
 			return;
@@ -101,13 +101,14 @@ public:
 		}
 		CLAM_ASSERT(false,"Component not used");
 	}
+
 	void StoreContentAndChildren(const XMLable & xmlable)
 	{
 		AddContentToElement(xmlable.XMLContent());
-		StoreSibblingsIfComponent(xmlable);
+		StoreChildrenIfComponent(xmlable);
 	}
 
-	void StoreSibblingsIfComponent(const XMLable & xmlable)
+	void StoreChildrenIfComponent(const XMLable & xmlable)
 	{
 		try { 
 			const Component & component = 
