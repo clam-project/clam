@@ -73,7 +73,6 @@ namespace CLAMVM
 			ActivateStraightRenderer();
 			mLineRenderer.SetStartAndHopSize( mStart_x, mVisible_dx );
 			mLineRenderer.SetDataPtr( mProcessedData.GetPtr(), mProcessedData.Size() );
-						
 		}
 				
 		mMustProcessData = false;
@@ -115,41 +114,58 @@ namespace CLAMVM
 
 	void SequenceRenderingManager::DetermineVisibleSamples()
 	{
-		TData dataSpan = fabs( mDataBounds.mRight - mDataBounds.mLeft );
-		TData visibleSpan = fabs(mDataBBox.mRight - mDataBBox.mLeft);
+		// Trivial rendering rejection
 
 		mCulledAway = false;
 		
-		if ( mDataBBox.mLeft < mDataBounds.mLeft )
+		if ( mDataBounds.mRight <= mDataBBox.mLeft 
+		     || mDataBounds.mLeft >= mDataBBox.mRight)
+		{
+			mCulledAway = true;
+			return;
+		}
+		
+		// Data culling 
+		TData dataSpan = fabs( mDataBounds.mRight - mDataBounds.mLeft );
+		TData visibleSpan = fabs(mDataBBox.mRight - mDataBBox.mLeft);
+		TData shownSpan = 0.0;
+
+		if ( mDataBounds.mLeft >= mDataBBox.mLeft 
+		     && mDataBounds.mRight <= mDataBBox.mRight ) // data is included in visible span
 		{
 			mOffset = 0;
-			mStart_x = mDataBounds.mLeft;			
+			mStart_x = mDataBounds.mLeft;
+			mLen = mDataCached.Size();
+			shownSpan = dataSpan;
 		}
-		else if ( mDataBBox.mLeft > mDataBounds.mRight ) // Totally culled away
+		else if ( mDataBounds.mLeft <= mDataBBox.mLeft
+			  && mDataBounds.mRight >= mDataBBox.mRight ) // inverse inclusion
 		{
-			mCulledAway = true;
-			return;
-		}
-		else
-		{
-			mOffset = ( fabs( mDataBounds.mLeft - mDataBBox.mLeft)/dataSpan )* mDataCached.Size();
+			mOffset = ( fabs( mDataBounds.mLeft - mDataBBox.mLeft )/dataSpan ) * mDataCached.Size();
 			mStart_x = mDataBBox.mLeft;
+			mLen = ( 1.0 - ( fabs( mDataBounds.mRight - mDataBBox.mRight ) / dataSpan ) ) * mDataCached.Size();
+			mLen -= mOffset;
+			shownSpan = visibleSpan;
 		}
-
-		if ( mDataBBox.mRight < mDataBounds.mLeft ) // totally culled away
+		else if ( mDataBounds.mLeft >= mDataBBox.mLeft 
+			  && mDataBounds.mRight >= mDataBBox.mRight ) // left partial inclusion
 		{
-			mCulledAway = true;
-			return;
+			mOffset = 0;
+			mStart_x = mDataBounds.mLeft;
+			mLen = ( fabs( mDataBBox.mRight - mDataBounds.mLeft ) / dataSpan ) * mDataCached.Size();
+			shownSpan = fabs( mDataBounds.mLeft - mDataBBox.mRight );
 		}
-		else if ( mDataBBox.mRight > mDataBounds.mRight )
+		else if ( mDataBounds.mLeft <= mDataBBox.mLeft 
+			  && mDataBounds.mRight <= mDataBBox.mRight ) // right partial inclusion
 		{
+			mOffset = ( fabs( mDataBounds.mLeft - mDataBBox.mLeft )/dataSpan ) * mDataCached.Size();
+			mStart_x = mDataBBox.mLeft;
 			mLen = mDataCached.Size() - mOffset;
+			shownSpan = fabs( mDataBounds.mRight - mDataBBox.mLeft );
 		}
 		else
 		{
-			mLen = (fabs(mDataBBox.mRight - mDataBounds.mLeft) / dataSpan)*mDataCached.Size();
-			mLen -= mOffset;
-			
+			CLAM_ASSERT( false, "Should never happen!" );
 		}
 
 		if ( mProcessedData.Size() < mLen )
@@ -159,7 +175,7 @@ namespace CLAMVM
 
 		std::copy( mDataCached.GetPtr()+mOffset, mDataCached.GetPtr()+mOffset+mLen, mProcessedData.GetPtr() );
 		
-		mVisible_dx = dataSpan / TData(mProcessedData.Size()-1);
+		mVisible_dx = shownSpan / TData(mProcessedData.Size()-1);
 				
 	}
 }
