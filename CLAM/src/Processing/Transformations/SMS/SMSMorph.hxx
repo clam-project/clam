@@ -27,8 +27,6 @@
 #include "SMSMorphConfig.hxx"
 #include "SDIFIn.hxx"
 #include "FrameInterpolator.hxx"
-#include "SpectrumInterpolator.hxx"
-#include "SpectralPeakArrayInterpolator.hxx"
 
 namespace CLAM{
 
