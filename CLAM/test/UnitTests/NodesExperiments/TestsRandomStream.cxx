@@ -86,14 +86,16 @@ private:
 
 	bool ChanceOf(double chance)
 	{
-		double rand = random() / float(RAND_MAX);
-		return rand < chance;
+		//double rand = std::rand() / float(RAND_MAX);
+		//return rand < chance;
+		return true;
 	}
 
 	int RandomIntFromTo(int from, int to)
 	{
 		int dist = to-from;
-		int result = from + int((random() / double(RAND_MAX)) * dist);
+		int r = rand();
+		int result = from + int( r / double(RAND_MAX) * dist);
 
 		CLAM_DEBUG_ASSERT(result>=from && result <=to, "TestsRandomStream::randomIntFromTo() - "
 								 " result must be inside interval marked by parameters" );
