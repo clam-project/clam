@@ -34,6 +34,15 @@
 
 namespace CLAM {
 
+	 void ConnectPorts(
+			Processing & sender, const std::string & outPortName, 
+			Processing & receiver, const std::string & inPortName )
+	{
+		OutPortBase & out = sender.GetOutPort(outPortName);
+		InPortBase & in = receiver.GetInPort(inPortName);
+		out.ConnectToIn(in);
+	}
+	
 	Processing::Processing() 
 		: mpParent(0),
 		mPreconfigureExecuted( false )

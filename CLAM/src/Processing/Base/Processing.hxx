@@ -46,6 +46,14 @@ namespace CLAM {
 	class ProcessingComposite;
 
 	/**
+	 * Free function that connects two ports.
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 */
+	void ConnectPorts(
+			Processing & sender, const std::string & outPortName, 
+			Processing & receiver, const std::string & inPortName );
+		
+	/**
 	 * The base class for all the CLAM processing object classes.
 	 *
 	 * Processing is the base class for all the CLAM processing object classes.
