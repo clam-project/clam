@@ -119,10 +119,10 @@ int main() {
 No standard c++ library String Streams header file found!]
 			)
 		fi
-	fi 
+	fi
 
 
-	dnl It seems we have an lod string stream implementation. Lets check 
+	dnl It seems we have an lod string stream implementation. Lets check
 	dnl if it has any peculiarity...
 	AC_MSG_CHECKING([if stringstream::str() returns std::string in libstdc++])
     AC_TRY_RUN([
@@ -189,23 +189,23 @@ if test $found_fltk = yes; then
 
 	link_ok=no
 
-	for lib in fltk GL pthreads
+	FLTK_LIBS="fltk GL fltk_gl"
+	for lib in $FLTK_LIBS
 	do
-		FLTK_LIBS="$FLTK_LIBS $lib"
 		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
-		CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
-		AC_TRY_LINK([
-			#include<FL/Fl_Window.H>
-			#include<FL/Fl.H>
-		],[
-			Fl_Window w(100,100);
-			Fl::run();
-			return 0;
-		],[
-			link_ok=yes
-		],[])
-		test $link_ok = yes && break;
 	done
+
+	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
+	AC_TRY_LINK([
+		#include<FL/Fl_Window.H>
+		#include<FL/Fl.H>
+	],[
+		Fl_Window w(100,100);
+		Fl::run();
+		return 0;
+	],[
+		link_ok=yes
+	],[])
 
 	if test $link_ok = no; then
 		AC_MSG_ERROR([
@@ -215,7 +215,7 @@ details.]
 	else
 		AC_MSG_RESULT(yes: [$FLTK_LIBS])
 	fi
-	 
+
 	AC_TRY_RUN([
 		#include<FL/Fl_Window.H>
 		#include<FL/Fl.H>
@@ -276,7 +276,7 @@ No xerces header directories found!  If you don't want to compile with XML suppo
 configure with the --disable-xml option.]
 			)
 		fi
-	else # XERCESCROOT 
+	else # XERCESCROOT
 		AC_MSG_RESULT(no)
 		AC_MSG_CHECKING([for xercesc headers; looking relative to CLAM])
 		xerces_local=no
@@ -553,7 +553,7 @@ else
 	found_qt=no
 	for base in "/usr" \
 	            "/usr/local" \
-	            "/opt" 
+	            "/opt"
 	do
 		if test -d $base/include/qt3; then
 			AC_MSG_RESULT(yes)
@@ -623,7 +623,7 @@ point to the right location.]
 	],[
 		echo $ac_n "cross compiling; assumed OK... $ac_c"
 	])
-	 
+
 	CXXFLAGS=$OLD_FLAGS
 else
 	AC_MSG_WARN([
