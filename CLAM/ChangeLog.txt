@@ -1,6 +1,9 @@
 2003-03-12  CLAM_0_4_3
 'Fast clean up'
 
+  * Standard:
+      ** Added the Filename type to be used in configurations instead of 
+         std::string. Configurators detect them and use a suited widget.
   * DynamicTypes:
       ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  to
          compilation problems if you don't use the ugly 'using namespace CLAM;'.
