@@ -3,9 +3,6 @@
 #include "ErrSoundFileIO.hxx"
 
 
-extern	int tenbytefloat2int (unsigned char *bytes);
-extern 	void uint2tenbytefloat (unsigned int num, unsigned char *bytes);
-
 using namespace CLAM;
 
 void AIFFFileIO::InitSelf(void)
