@@ -28,6 +28,7 @@
 #include "TraverseDirectory.hxx"
 #include "XMLStorage.hxx"
 #include "OutControl.hxx"
+#include "InPort.hxx"
 
 #include <iostream>
 
@@ -129,8 +130,9 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	TTime curTime=0;
 
 	//We attach our melody object to the output of the converter
-	MIDIMelody outputMelody;
-	converter.mOutput.Attach(outputMelody);
+	CLAM::InPort<MIDIMelody> outputMelodyWrapper;
+	converter.mOutput.ConnectToIn( outputMelodyWrapper );
+	
 
 	do{//Converter loop
 		
@@ -143,12 +145,14 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 			//we send the timing control to converter
 			converter.mTime.DoControl(curTime);
 	}while (converter.Do());//we call the converter
-
+	
+	converter.mOutput.Produce();
+	MIDIMelody & outputMelody = outputMelodyWrapper.GetData();
+	
 	//we change the extension of the filename to .xml
 	std::string outputFilename=ChangeExtension(filename,"xml");
 	//we store the output melody
-	XMLStorage s;
-	s.Dump(outputMelody,"MidiMelody",outputFilename);
+	XMLStorage::Dump(outputMelody,"MidiMelody",outputFilename);
 	std::cout<<"Wrote succesfully "<<outputFilename<<"\n";
 
 }
