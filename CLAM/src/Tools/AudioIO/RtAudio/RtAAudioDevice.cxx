@@ -155,6 +155,9 @@ namespace CLAM {
 		int mRtAudioStream;
 		MY_TYPE *mRtAudioBuffer;
 		int mRtAudioBufferSize;
+#ifdef __MACOSX_CORE__
+		int mInternalRtAudioBufferSize;
+#endif
 		Buffer mWriteBuffer;
 		Buffer mReadBuffer;
 		bool mStarted;
@@ -187,13 +190,29 @@ namespace CLAM {
 		if (!mRtAudio)
 		{
 			int fs = SampleRate();
+			int 
 			mRtAudioBufferSize = Latency();
+
+#ifdef __MACOSX_CORE__
+			mInternalRtAudioBufferSize = mRtAudioBufferSize;
+			if (mInternalRtAudioBufferSize>2048)
+			{
+				mInternalRtAudioBufferSize = 2048;
+				mRtAudioBufferSize = 2048*((mRtAudioBufferSize+2047)/2048)
+			}
+#endif
 
   		try {
     		mRtAudio = new RtAudio(&mRtAudioStream, 
 					mDevice, mOutputs.size(),
 					mDevice, mInputs.size(), 
-					FORMAT, fs, &mRtAudioBufferSize, 2);
+					FORMAT, fs, 
+#ifdef __MACOSX_CORE__
+					&mInternalRtAudioBufferSize,
+#else
+					&mRtAudioBufferSize, 
+#endif
+				2);
   		}
   		catch (RtError &) {
     		exit(EXIT_FAILURE);
@@ -272,9 +291,19 @@ namespace CLAM {
 	
 	void RtAAudioDevice::Tick(void)
 	{
+#ifdef __MACOSX_CORE__
+		int i = mRtAudioBufferSize/mInternalRtAudioBufferSize;
+		while (i--)
+		{
+			mWriteBuffer.CopyTo(mRtAudioBuffer,mInternalRtAudioBufferSize);
+			mRtAudio->tickStream(mRtAudioStream);
+			mReadBuffer.CopyFrom(mRtAudioBuffer,mInternalRtAudioBufferSize);
+		}
+#else
 		mWriteBuffer.CopyTo(mRtAudioBuffer,mRtAudioBufferSize);
 		mRtAudio->tickStream(mRtAudioStream);
 		mReadBuffer.CopyFrom(mRtAudioBuffer,mRtAudioBufferSize);
+#endif
 	}
 
 	class RtAAudioDeviceList : public AudioDeviceList
