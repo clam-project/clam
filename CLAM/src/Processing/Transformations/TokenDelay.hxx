@@ -151,6 +151,15 @@ public:
 		return mTokenQueue.size();
 	} 
 
+	unsigned MaxDelay() const {
+		return mCapacity;
+	}
+
+	unsigned GivenDelay() {
+
+		return CastDelayControlValue(mDelayControl.GetLastValue());
+	}	
+
 private:
 	/** This method is applyed to every token discarded when the decreasing the delay amount*
 	 *  In this class the implementation is just "delete toDiscard"  <br/>
