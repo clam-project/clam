@@ -123,7 +123,7 @@ private:
 			extractor.BaseScope(pool,"Frame");
 			extractor.OutputHook("Squared").Attribute("RMS");
 			extractor.InputHook("ToBeSquared").Attribute("Energy");
-			while  (extractor.NextContext())
+			while  (extractor.Init(pool); !extractor.BeyondLastContext(); extractor.NextContext())
 			{
 				extractor.Compute();
 			}
