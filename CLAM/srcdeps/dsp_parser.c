@@ -303,6 +303,52 @@ void dsp_parse_insert(int type)
 	tree_free(t);
 }
 
+void dsp_parse_insert_settings_rule(void)
+{
+	char* project_name = 0;
+	if (program && program->first && program->first->str)
+	{
+		project_name = program->first->str;
+	}
+	else
+	{
+		fprintf(stderr,"Error: variable PROGRAM not defined\n");	
+	}
+	fprintf(outfile,"# Begin Source File\n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"SOURCE=settings.cfg\n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"!IF  \"$(CFG)\" == \"%s - Win32 Release\"\n",
+		project_name);
+	fprintf(outfile,"\n");
+	fprintf(outfile,"# Begin Custom Build\n");
+	fprintf(outfile,"InputPath=settings.cfg\n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"\"%s.dsp\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n",
+		project_name);
+	fprintf(outfile,"	srcdeps.exe settings.cfg %s.dsp\n",
+		project_name);
+	fprintf(outfile,"\n");
+	fprintf(outfile,"# End Custom Build\n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"!ELSEIF  \"$(CFG)\" == \"%s - Win32 Debug\"\n",
+		project_name);
+	fprintf(outfile,"\n");
+	fprintf(outfile,"# Begin Custom Build\n");
+	fprintf(outfile,"InputPath=settings.cfg\n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"\"%s.dsp\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n",
+		project_name);
+	fprintf(outfile,"	srcdeps.exe settings.cfg %s.dsp\n",
+		project_name);
+	fprintf(outfile,"\n");
+	fprintf(outfile,"# End Custom Build\n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"!ENDIF \n");
+	fprintf(outfile,"\n");
+	fprintf(outfile,"# End Source File\n");
+}
+
 void dsp_parse_insert_sources()
 {
 	dsp_parse_insert(0);
@@ -621,6 +667,7 @@ void dsp_parse_line(const char* buf,int line)
 			{
 				dsp_parse_insert_sources();
 				dsp_parse_insert_headers();
+				dsp_parse_insert_settings_rule();
 			}	
 			fputs(buf,outfile);
 		}
