@@ -97,9 +97,7 @@ Token& StreamImpl<Token,DataStructure>::operator[](int physicalIndex)
 	CLAM_DEBUG_ASSERT( physicalIndex < int(mDataImpl.size()), "StreamImpl operator[] - Index out of bounds" );
 	typename DataStructure<Token>::iterator it;
 	int i;
-	for(i=0, it = mDataImpl.begin();
-		i<physicalIndex;
-		it++, i++);
+	for(i=0, it = mDataImpl.begin(); i<physicalIndex; it++, i++);
 	return (*it);
 }
 
