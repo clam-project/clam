@@ -25,7 +25,7 @@ class SystemWithNodes;
 class NetworkConfiguration
 {
 public: 
-	NetworkConfiguration( SystemWithNodes* sys, std::string name) : 
+	NetworkConfiguration( SystemWithNodes* sys, std::string name ) : 
 	  _system(sys),
 	  _name(name)
 	{}
@@ -66,8 +66,8 @@ public:
 	void RemoveAllNetworkConfigurations();
 	void AddNetworkConfiguration( NetworkConfiguration* );
 	void RegisterProcessings();
-	void ClearAttachPorts();
-
+	void ResetAllNodes();
+	
 	int GetMaxFramesToProcess() const {
 		return _maxFramesToProcess;
 	}
@@ -137,11 +137,12 @@ private:
 
 	void StartProcessings();
 	void ConfigureProcessings();
-
+	void ConfigurePorts();
+	void DeleteAllNodes();
 
 //methods relative to audio out
 	bool AudioOutDo();
-	bool AudioOutAttach( AudioNode& a);
+	bool ConditionalAudioOutAttach( AudioNode& a);
 
 	// audio manager
 	CLAM::AudioManager _audioManager;
@@ -157,11 +158,11 @@ private:
 	CLAM::AutoPanner _controlSender;	
 
 
-	AudioNode _oscillatorData;
-	AudioNode _fileInData;
-	AudioNode _modulatorData;
-	AudioNode _mixerData;
-	AudioNode _multiplierData;
+	AudioNode* _oscillatorData;
+	AudioNode* _fileInData;
+	AudioNode* _modulatorData;
+	AudioNode* _mixerData;
+	AudioNode* _multiplierData;
 	
 	//other system parameters
 	std::string _fileInName;
