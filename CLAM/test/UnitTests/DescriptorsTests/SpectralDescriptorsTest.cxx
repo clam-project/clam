@@ -84,6 +84,7 @@ public:
 
 private:
 	CLAM::SpectralDescriptors *mDescriptors;
+	CLAM::Spectrum             mHelperDataSpec;
 	std::string mPathToTestData;
 
 	CLAM::Spectrum ComputeSpectrum(const CLAM::Audio& audioData, CLAM::TSize spectrumSize)
@@ -145,8 +146,8 @@ private:
 		CLAM::Spectrum spectrum;
 		std::map<std::string, CLAM::TData>::const_iterator it;
 		for (it = expected.begin(); it != expected.end(); it++) {
-			spectrum = helperGetData((*it).first);
-			mDescriptors->SetpSpectrum(&spectrum);
+			mHelperDataSpec = helperGetData((*it).first);
+			mDescriptors->SetpSpectrum(&mHelperDataSpec);
 			mDescriptors->Compute();
 			if (
 				(std::isnan((mDescriptors->*getter)()) && !std::isnan(it->second)) ||
@@ -252,10 +253,11 @@ private:
 		data["bell_A3.wav"] = 3686.122991;
 		data["gamelan-gong.wav"] = 1263.962139;
 		data["gt_E4.wav"] = 4403.107081;
-		data["pno_Eb1.wav"] = 0.000000;
-		data["silence.wav"] = 0.000000;
-		data["vln_A3.wav"] = 0.000000;
-		data["vln_D5.wav"] = 0.000000;
+		// Silences
+		data["pno_Eb1.wav"] = mHelperDataSpec.GetSpectralRange()/2;
+		data["silence.wav"] = mHelperDataSpec.GetSpectralRange()/2;
+		data["vln_A3.wav"] = mHelperDataSpec.GetSpectralRange()/2;
+		data["vln_D5.wav"] = mHelperDataSpec.GetSpectralRange()/2;
 		data["whitenoise.wav"] = 11072.758057;
 
 		mDescriptors->AddCentroid();
