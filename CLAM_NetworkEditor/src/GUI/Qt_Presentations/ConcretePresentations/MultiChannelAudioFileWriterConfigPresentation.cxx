@@ -22,6 +22,9 @@
 #include "MultiChannelAudioFileWriterConfigPresentation.hxx"
 #include "ProcessingConfig.hxx"
 #include "AudioFileHeader.hxx"
+
+#include <limits>
+
 #include <qlabel.h>
 #include <qspinbox.h>
 #include <string>
@@ -37,8 +40,12 @@ namespace NetworkGUI
 {
 
 MultiChannelAudioFileWriterConfigPresentation::MultiChannelAudioFileWriterConfigPresentation( QWidget * parent )
-	: MonoAudioFileWriterConfigPresentation( parent ),
-	mChannels(0)
+	: Qt_ProcessingConfigPresentation( parent , "config"  ),
+	  mLocation(),
+	  mLayout(0),
+	  mSampleRate(0),
+	  mFormat(0),
+	  mChannels(0)
 {
 }
 
@@ -46,14 +53,63 @@ MultiChannelAudioFileWriterConfigPresentation::~MultiChannelAudioFileWriterConfi
 {
 }
 
+void MultiChannelAudioFileWriterConfigPresentation::CreateSampleRate()
+{
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	new QLabel("SampleRate", cell);
+	std::stringstream val;
+	val << mMultiConfig.GetTargetFile().GetHeader().GetSampleRate() << std::ends;
+	mSampleRate = new QLineEdit(QString(val.str().c_str()), cell);
+	mSampleRate->setAlignment(Qt::AlignRight);
+	mSampleRate->setValidator(new QDoubleValidator(mSampleRate));
+
+}
+
+void MultiChannelAudioFileWriterConfigPresentation::CreateFormat()
+{
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	new QLabel("Format", cell);
+	mFormat = new QComboBox(false, cell); // false editable
+	
+	const CLAM::Enum::tEnumValue * mapping = mMultiConfig.GetTargetFile().GetHeader().GetFormat().GetSymbolMap();
+	for (unsigned i = 0; mapping[i].name; i++) 
+	{
+		mFormat->insertItem( mapping[i].name );
+		if (mapping[i].value==mMultiConfig.GetTargetFile().GetHeader().GetFormat().GetValue()) 
+			mFormat->setCurrentItem(i);
+	}
+
+}
+
+void MultiChannelAudioFileWriterConfigPresentation::SetConfig( const CLAM::ProcessingConfig& cfg )
+{
+	mMultiConfig = static_cast<const CLAM::MultiChannelAudioFileWriterConfig &>(cfg);
+	CLAM::AudioFileHeader header;
+	header.AddAll();
+	header.UpdateData();
+	
+
+	if (!mLocation )
+		mMultiConfig.GetTargetFile().CreateNew( "", header);
+	else
+		mMultiConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header);
+	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
+
+	mLayout = mAttributeContainer;
+	mLayout->setSpacing(5);
+	mLayout->setMargin(5);
+	mLayout->setMinimumWidth(120);
+	CreateGUI();
+	adjustSize();
+}
 
 void MultiChannelAudioFileWriterConfigPresentation::ConfigureProcessing()
 {
 	CLAM::AudioFileHeader header;
 	header.AddAll();
 	header.UpdateData();
-
-	mConfig.GetTargetFile().SetLocation( mLocation->text().latin1() );
 	
 	CLAM::TData convertedValue = 0;
 	const char * readValueSampleRate = mSampleRate->text().latin1();
@@ -65,14 +121,10 @@ void MultiChannelAudioFileWriterConfigPresentation::ConfigureProcessing()
 
 	const CLAM::Enum::tEnumValue * mapping = header.GetFormat().GetSymbolMap();
 	header.SetFormat( mapping[mFormat->currentItem()].value );
-
-	mConfig.GetTargetFile().SetHeader( header );
-
+	
+	mMultiConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header );
 
 	// finally we add all of the information to the multi config and pass it to the processing 
-	mMultiConfig.AddAll();
-	mMultiConfig.UpdateData();
-	mMultiConfig.SetTargetFile( mConfig.GetTargetFile() );
 	SignalConfigureProcessing.Emit(mMultiConfig);
 }
 
@@ -85,6 +137,24 @@ void MultiChannelAudioFileWriterConfigPresentation::CreateGUI()
 	CreateFormat();
 }
 
+void MultiChannelAudioFileWriterConfigPresentation::CreateLocation()
+{	
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	QLabel * label = new QLabel("TargetFile", cell);
+	
+	mLocation = new QLineEdit(QString(mMultiConfig.GetTargetFile().GetLocation().c_str()), cell); 
+	mLocation->setMinimumWidth(300);
+	mLocation->setText( "" );
+
+	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
+	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+	QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
+	fd->setMode( QFileDialog::AnyFile );
+
+	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+	connect( fd, SIGNAL(fileSelected( const QString & )), mLocation, SLOT( setText( const QString & )));
+}
 
 void MultiChannelAudioFileWriterConfigPresentation::CreateChannels()
 {
@@ -94,7 +164,7 @@ void MultiChannelAudioFileWriterConfigPresentation::CreateChannels()
 	mChannels = new QSpinBox(cell);
 	mChannels->setMaxValue(std::numeric_limits<CLAM::TSize>::max());
 	mChannels->setMinValue(std::numeric_limits<CLAM::TSize>::min());
-	mChannels->setValue( mConfig.GetTargetFile().GetHeader().GetChannels() );
+	mChannels->setValue( mMultiConfig.GetTargetFile().GetHeader().GetChannels() );
 }
 
 } // namespace NetworkGUI

@@ -81,10 +81,8 @@ public:
 		return mObserved->GetExecState();
 	}
 
-	const std::string & GetProcessingStatus()
-	{
-		return mObserved->GetConfigErrorMessage();
-	}
+
+	const std::string & GetProcessingStatus();
 	
 
 	void SetName( const std::string & );

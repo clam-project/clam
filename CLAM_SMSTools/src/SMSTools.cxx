@@ -25,6 +25,7 @@
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
 #include "HeapDbg.hxx"
+#include <iostream>
 #include <string>
 #include <algorithm>
 #include <fstream>
@@ -184,7 +185,7 @@ namespace CLAMGUI
 			return false;
 		
 		CLAM::AudioFile selectedFile;
-		selectedFile.SetLocation( filename );
+		selectedFile.OpenExisting( filename );
 
 		if ( !selectedFile.IsReadable() )
 		{
@@ -226,8 +227,8 @@ namespace CLAMGUI
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
-		CLAM::TSize samplesInFile=CLAM::TSize((selectedFile.GetHeader().GetLength()/1000.)*
-			selectedFile.GetHeader().GetSampleRate());
+		CLAM::TSize samplesInFile=int( (selectedFile.GetHeader().GetLength()/1000.)*
+			selectedFile.GetHeader().GetSampleRate() );
 
 		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
 		
@@ -239,10 +240,11 @@ namespace CLAMGUI
 		segment.GetAudio().SetSize(samplesInFile);
 		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
 		
-//		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
+		// @TODO: Broken because Ports!
+		//fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
 
 		//Read Audio File
-		fileReader.Do( segment.GetAudio() );
+		fileReader.Do(segment.GetAudio());
 
 		fileReader.Stop();
 
@@ -461,16 +463,12 @@ namespace CLAMGUI
 			CLAM::EAudioFileFormat::FormatFromFilename( fileName );
 
 		CLAM::AudioFile outputFile;
-		outputFile.SetLocation( fileName );
-
 		CLAM::AudioFileHeader fileHeader;
 		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
 
-		outputFile.SetHeader( fileHeader );
+		outputFile.CreateNew( fileName, fileHeader );
 
 		CLAM::MonoAudioFileWriterConfig cfgWriter;
-		cfgWriter.AddTargetFile();
-		cfgWriter.UpdateData();
 		cfgWriter.SetTargetFile(outputFile);
 
 		CLAM::MonoAudioFileWriter proc;
@@ -478,9 +476,10 @@ namespace CLAMGUI
 
 		proc.Start();
 
-//		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
+		// @TODO: Broken because of Ports
+		//proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
 
-		proc.Do( const_cast<CLAM::Audio& >(audio) );
+		proc.Do(audio);
 
 		proc.Stop();
 		

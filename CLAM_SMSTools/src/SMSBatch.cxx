@@ -21,7 +21,6 @@
 
 #include "SMSBase.hxx"
 #include <iostream>
-#include <stdio.h>
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
 #include "TraverseDirectory.hxx"
@@ -46,7 +45,6 @@ public:
 	}
 	void OnFile(const std::string& filename);
 	void Run(void);
-		void Run(const char* folder,const char* option);
 
 private:
 	std::string ChangeExtension(const std::string& filename,const std::string& newExtension);
@@ -67,7 +65,6 @@ std::string SMSBatch::ChangeExtension(const std::string& filename,const std::str
 void SMSBatch::OnFile(const std::string& filename)
 {      
 	std::string xml("xml");
-	std::string tr("tr");
 	
 	//First we ensure that it is an XML file looking at the extension
 	if(GetExtension(filename)!=xml) 
@@ -78,28 +75,6 @@ void SMSBatch::OnFile(const std::string& filename)
 	{
 		case 1://Analyze, synthesize and store output sound + sinusoidal componet + residual component
 		{
-			std::string transformationScore(filename);
-			transformationScore+=tr;
-			FILE *f;
-			bool haveTransformationScore=true;
-			if((f = fopen(transformationScore.c_str(),"rt")) == NULL)
-			{
-				std::cout<<"Transformation score does not exist on specified directory.";
-				haveTransformationScore=false;
-			}
-			fclose(f);
-			if(haveTransformationScore)	LoadTransformationScore(transformationScore);
-			LoadInputSound();
-			Analyze();
-			if(haveTransformationScore) Transform();
-			Synthesize();
-			StoreOutputSound();
-			StoreOutputSoundSinusoidal();
-			StoreOutputSoundResidual();
-			break;
-		}
-	    case 2://Analyze, synthesize and store output sound + sinusoidal componet + residual component
-		{
 			LoadInputSound();
 			Analyze();
 			Synthesize();
@@ -108,14 +83,14 @@ void SMSBatch::OnFile(const std::string& filename)
 			StoreOutputSoundResidual();
 			break;
 		}
-		case 3://Analyze content of a given folder and store output .sdif or .xml files
+		case 2://Analyze content of a given folder and store output .sdif or .xml files
 		{
 			LoadInputSound();
 			Analyze();
 			StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
 			break;
 		}
-		case 4://Synthesize previously analyzed .sdif or .xml files
+		case 3://Synthesize previously analyzed .sdif or .xml files
 		{
 			LoadAnalysis(mGlobalConfig.GetInputAnalysisFile());
 			Synthesize();
@@ -133,20 +108,6 @@ void SMSBatch::OnFile(const std::string& filename)
 }
 
 
-void SMSBatch::Run(const char* folder,const char* option)
-{
-	int nOption=atoi(option);
-	if(nOption<5)
-		mOption=nOption;	
-	else mOption=0;
-
-	if (!mOption) return;
-		
-	std::string folderName(folder);
-	Traverse(folderName);
-
-}
-
 void SMSBatch::Run(void)
 {
 	bool finish = false;
@@ -155,10 +116,9 @@ void SMSBatch::Run(void)
 		std::cout << "SMS Analysis/Synthesis Batch Aplication" << "\n";
 		std::cout << "MTG - UPF (Barcelona, Spain)"<<"\n" << "\n";
 		std::cout << "Please choose one of the following options:" << "\n" << "\n";
-		std::cout << "1. Analyze, Transform, and Synthesize" << "\n";
-		std::cout << "2. Analyze and Synthesize" << "\n";
-		std::cout << "3. Only Analyze" << "\n";
-		std::cout << "4. Only Synthesize" << "\n";
+		std::cout << "1. Analyze and Synthesize" << "\n";
+		std::cout << "2. Only Analyze" << "\n";
+		std::cout << "3. Only Synthesize" << "\n";
 		std::cout << "0. Finish" << "\n" << "\n";
 
 		mOption=0;
@@ -181,10 +141,7 @@ int main(int argc,char** argv)
 {
 	try{
 		CLAM::SMSBatch example;
-		if(argc!=3)
-			example.Run();
-		else
-			example.Run(argv[1],argv[2]);	
+		example.Run();
 	}
 	catch(CLAM::Err error)
 	{

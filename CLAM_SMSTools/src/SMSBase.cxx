@@ -49,8 +49,8 @@
 #include "SMSMorph.hxx"
 #include "SMSTimeStretchConfig.hxx"
 
-using namespace CLAMGUI;
-using namespace CLAM;
+namespace CLAM
+{
 
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
@@ -104,15 +104,23 @@ void SMSBase::InitConfigs(void)
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
-		mGlobalConfig.SetAnalysisHopSize((resAnalWindowSize-1)/2);
+	{
+		analHopSize= (resAnalWindowSize-1)/2 ;
+		mGlobalConfig.SetAnalysisHopSize( analHopSize );
 	
-	analHopSize=mGlobalConfig.GetAnalysisHopSize();
+	}
+	else
+		analHopSize = mGlobalConfig.GetAnalysisHopSize();
+			
 	
 	int synthFrameSize;
 	if(mGlobalConfig.GetSynthesisFrameSize()<0)
-		mGlobalConfig.SetSynthesisFrameSize(analHopSize);
-	
-	synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
+	{
+		synthFrameSize = analHopSize;
+		mGlobalConfig.SetSynthesisFrameSize(synthFrameSize);
+	}
+	else
+		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
 	// SMS Analysis configuration
@@ -501,15 +509,14 @@ void SMSBase::SynthesisProcessing()
 	for(i=0;i<nSynthFrames;i++)
 	{
 		
-		if(GetSynthesis().Do(mTransformedSegment))
-		{
-			mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
-			mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
-			mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
-			beginIndex+=synthFrameSize;
-			mCurrentProgressIndicator->Update(float(i));
-		}
-		//else it is an analysis frame with negative center time and thus should not be used
+		if( !GetSynthesis().Do(mTransformedSegment) )
+			continue; // it is an analysis frame with negative center time and thus should not be used
+		
+		mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
+		mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
+		mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
+		beginIndex+=synthFrameSize;
+		mCurrentProgressIndicator->Update(float(i));
 	}
 
 	GetState().SetHasAudioOut (true);
@@ -911,3 +918,5 @@ void SMSBase::SetSamplingRate(TSize samplingRate)
 	mAudioOutSin.SetSampleRate(samplingRate);
 
 }
+
+} //namespace CLAM

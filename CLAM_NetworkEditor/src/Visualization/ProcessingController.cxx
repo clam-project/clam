@@ -38,6 +38,12 @@ ProcessingController::ProcessingController()
 	SlotSendOutControlValue.Wrap( this, &ProcessingController::SendOutControlValue );
 }
 
+const std::string & ProcessingController::GetProcessingStatus()
+{
+	return mObserved->GetConfigErrorMessage();
+}
+
+
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
 {
 	// HasMutableInterface!
