@@ -61,11 +61,6 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 }
 
 
-Qt_NetworkPresentation::~Qt_NetworkPresentation()
-{
-}
-
-
 void Qt_NetworkPresentation::SetInPortClicked( Qt_InPortPresentation * inport)
 {
 	mInPortSelected = inport;	
@@ -103,7 +98,7 @@ void Qt_NetworkPresentation::SetName(const std::string& name)
 
 }
 
-void Qt_NetworkPresentation::SetProcessing( CLAMVM::ProcessingController* controller, const std::string & name)
+void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
 {
 	Qt_ProcessingPresentation* presentation = new Qt_ProcessingPresentation(name, this);
 	presentation->AttachTo(*controller);
@@ -112,7 +107,7 @@ void Qt_NetworkPresentation::SetProcessing( CLAMVM::ProcessingController* contro
 	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
 	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
 	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
-	presentation->SignalRemoveProcessing.Connect( SlotSetRemoveProcessing );
+	presentation->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
 
 	SignalAcquireOutPortAfterClickInPort.Connect( presentation->SlotSetOutPortAfterClickInPort );
 	SignalAcquireInPortAfterClickOutPort.Connect( presentation->SlotSetInPortAfterClickOutPort );
@@ -121,6 +116,7 @@ void Qt_NetworkPresentation::SetProcessing( CLAMVM::ProcessingController* contro
 
 	controller->Publish();
 	mProcessingPresentations.push_back(presentation);
+
 	presentation->Show();
 
 	SignalSendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
@@ -350,7 +346,7 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 		
 		std::string className(GetProcessingIdentifier(completeName));
 		std::string concreteName(GetLastIdentifier(completeName));
-		AddNewProcessing( concreteName, factory.Create(className) );
+		AddProcessing( concreteName, factory.Create(className) );
 		SignalProcessingCreated.Emit();
 
 		Qt_ProcessingPresentation & proc = (Qt_ProcessingPresentation&)GetProcessingPresentation(concreteName);

@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __QT_PROCESSINGPRESENTATION_HXX__
-#define __QT_PROCESSINGPRESENTATION_HXX__
+#ifndef __Qt_ProcessingPresentation_hxx__
+#define __Qt_ProcessingPresentation_hxx__
 
 #include <string>
 #include <qwidget.h>
@@ -45,9 +45,8 @@ class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
 public:
 	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_ProcessingPresentation();
-	virtual void Show();
-	virtual void Hide();
+	void Show();
+	void Hide();
 	void EmitPositionOfChildren();
 protected:
 	virtual void SetObservedClassName(const std::string& name);
@@ -55,19 +54,18 @@ protected:
 	// port methods
 	void SetInPort( const std::string & );
 	void SetOutPort( const std::string & );
-	virtual void SetInPortClicked( Qt_InPortPresentation *);
-	virtual void SetOutPortClicked( Qt_OutPortPresentation *);
-	virtual void SetOutPortAfterClickInPort(const QPoint &);
-	virtual void SetInPortAfterClickOutPort(const QPoint &);
+	void SetInPortClicked( Qt_InPortPresentation *);
+	void SetOutPortClicked( Qt_OutPortPresentation *);
+	void SetOutPortAfterClickInPort(const QPoint &);
+	void SetInPortAfterClickOutPort(const QPoint &);
 
 	// control methods
 	void SetInControl( const std::string & );
 	void SetOutControl( const std::string & );
-	virtual void SetInControlClicked( Qt_InControlPresentation *);
-	virtual void SetOutControlClicked( Qt_OutControlPresentation *);
-	virtual void SetOutControlAfterClickInControl(const QPoint &);
-	virtual void SetInControlAfterClickOutControl(const QPoint &);
-
+	void SetInControlClicked( Qt_InControlPresentation *);
+	void SetOutControlClicked( Qt_OutControlPresentation *);
+	void SetOutControlAfterClickInControl(const QPoint &);
+	void SetInControlAfterClickOutControl(const QPoint &);
 
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent * );
@@ -105,4 +103,5 @@ public: // slots
 
 } // namespace NetworkGUI
 
-#endif // __QT_PROCESSINGPRESENTATION_HXX__
+#endif // __Qt_ProcessingPresentation_hxx__
+

@@ -30,8 +30,6 @@
 #include <qpainter.h>
 #include <cmath>
 
-
-#include <iostream>
 namespace NetworkGUI
 {
 
@@ -66,10 +64,6 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	SlotSetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::SetOutControlClicked);
 	SlotSetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::SetOutControlAfterClickInControl);
 	SlotSetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::SetInControlAfterClickOutControl);
-}
-
-Qt_ProcessingPresentation::~Qt_ProcessingPresentation()
-{
 }
 
 void Qt_ProcessingPresentation::SetInPortAfterClickOutPort( const QPoint & p)

@@ -54,14 +54,13 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
 public:
 	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_NetworkPresentation();
 	virtual void Show();
 	virtual void Hide();
 protected:
 	void AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * );
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
 	virtual void SetName(const std::string& name); 
-	virtual void SetProcessing(CLAMVM::ProcessingController*, const std::string & name );
+	virtual void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * );
 	virtual void SetPortConnection(CLAMVM::ConnectionAdapter* );
 	virtual void SetControlConnection(CLAMVM::ConnectionAdapter* );
 

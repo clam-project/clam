@@ -60,10 +60,6 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 
 }
 	
-Qt_ProcessingConfigPresentation::~Qt_ProcessingConfigPresentation()
-{
-}
-
 void Qt_ProcessingConfigPresentation::Ok( bool )
 {
 	ConfigureProcessing();

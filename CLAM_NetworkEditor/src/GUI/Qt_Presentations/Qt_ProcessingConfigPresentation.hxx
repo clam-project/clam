@@ -46,15 +46,14 @@ protected:
 	ActionButton * mOkButton;
 	ActionButton * mCancelButton;
 
-	virtual void Ok( bool );
-	virtual void Cancel( bool );
-	virtual void ConfigureProcessing() = 0;
-	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
+	void Ok( bool );
+	void Cancel( bool );
+	void ConfigureProcessing() = 0;
+	void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_ProcessingConfigPresentation();
-	virtual void Show();
-	virtual void Hide();
+	void Show();
+	void Hide();
 
 public: // slots
 	SigSlot::Slotv1< bool > SlotOk;
