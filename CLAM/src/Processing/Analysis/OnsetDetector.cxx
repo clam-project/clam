@@ -120,7 +120,7 @@ namespace CLAM
 		mnSamples = mFilterBankOutputs[0].Size();
 
 		//Onset detection	
-		Algorithm( originalSegment , mFilterBankOutputs, out, true);
+		Algorithm( originalSegment, out );
 	
 		return true;
 
@@ -187,8 +187,7 @@ namespace CLAM
 ////////////////////////////////////////
 ////////SEGMENTATION ALGORITHM//////////
 ////////////////////////////////////////
-	void OnsetDetector::Algorithm( Segment& s , Array< Array<TData> >& input , 
-					Array<TimeIndex>& out, bool weightsOut)
+	void OnsetDetector::Algorithm( Segment& s , Array<TimeIndex>& finalOnsets )
 	{
 	
 		//cout << "\nOnset Detection per band...\n";
@@ -221,7 +220,7 @@ namespace CLAM
 		
 		
 			//smoothing
-			Smoothing( input[band] , smoothedInput[band] );
+			Smoothing( mFilterBankOutputs[band] , smoothedInput[band] );
 
 						
 			//Detection Function Calculation
@@ -257,7 +256,7 @@ namespace CLAM
 		DeleteWeakOnsets( mOnsets , 2 );
 
 		//final thresholding (deletes onsets with intensities lower than mGlobalThreshold)
-		Array<TimeIndex> finalOnsets;
+
 		float maxWeight = 0.0;
 		for (int j=0 ; j<mOnsets.Size() ; j++)
 		{
@@ -299,13 +298,13 @@ namespace CLAM
 			}
 		}
 
-		if(weightsOut) {
-			for(int j=0; j<(finalOnsets.Size()); j++) {
-				finalOnsets[j].SetPosition(finalOnsets[j].GetPosition() / mSampleRate);
-				finalOnsets[j].SetWeight(finalOnsets[j].GetWeight() / maxWeight);
-			}
-			out = finalOnsets;
+
+		for(int j=0; j<(finalOnsets.Size()); j++) 
+		{
+			finalOnsets[j].SetPosition(finalOnsets[j].GetPosition() / mSampleRate);
+			finalOnsets[j].SetWeight(finalOnsets[j].GetWeight() / maxWeight);
 		}
+
 
 	}
 

@@ -58,8 +58,7 @@ namespace CLAM
 
 	
 		bool CalcFilterBankOutput( Audio &in );
-		//void Algorithm(Segment& s, Array< Array<TData> >& values);
-		void Algorithm(Segment& s, Array< Array<TData> >& values, Array<TimeIndex>& out, bool weightsOut);
+		void Algorithm(Segment& s, Array<TimeIndex>& out );
 		void Smoothing(DataArray& energy, DataArray &smoothedEnergy );
 		void DetectPosition(DataArray& in, DataArray &ret);
 		void DetectCandidates(DataArray& in, DataArray& weight, TData threshold , Array<TimeIndex> &ret);
