@@ -2,11 +2,11 @@
 
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface have changed.
-        Check the documentation and update your code.
+        Check 'Migration Guidelines' on the documentation and update your code.
      ** Ported to XercesC 2.4. Library dependant code is more isolated and structured
         so libxml or expat ports will be easy.
      ** Atomical operations are available so partial loading or document updating is now
-        feasible.
+        more feasible.
      ** One statement calls using static methods XMLStorage::Dump and XMLStorage::Restore
      ** Trapable error notification using exceptions.
      ** API Change: XMLStorage::Store and XMLStorage::Load receives a const-ref and a ref
@@ -510,7 +510,7 @@
   * LADSPA
      ** Added support for writing LASDPA plug-ins
   * Examples
-     ** The following examples are now running and fairly debugged: SALTO, 
+     ** The following examples are now running and fairly debugged: SALTO,
         AnalysisSynthesis, SpectralDelay and Rappid
   * Unix build system
      ** Selective clean
@@ -533,10 +533,10 @@
   * Dynamic Types:
      ** New DT macros
      ** AddAll, RemoveAll
-     ** User init-methods: DefaultInit, CopyInit. Macro-expanded-init: 
+     ** User init-methods: DefaultInit, CopyInit. Macro-expanded-init:
         MandatoryInit
      ** InformAll, all dyn attributes are informed at construction time.
-     ** SetPreallocateAllAttributes, to enhance time performance vs space 
+     ** SetPreallocateAllAttributes, to enhance time performance vs space
         performance.
   * Basic Types:
      ** TypeInfo, a template class to get static information from a type.
@@ -546,7 +546,7 @@
      ** BPF now allows setting the lateral derivatives.
      ** Array initializes numeric data to zero again.
   * Processing Data classes
-     ** Most ProcessingDataConfig classes have been removed, and their 
+     ** Most ProcessingDataConfig classes have been removed, and their
         attirbutes are now in the processing data classes.
   * Processing classes
      ** Completed "EnvelopeExtractor", which calculates audio envelopes.
@@ -559,31 +559,31 @@
      ** XML Load for Arrays, BPFs...
      ** Some XML Store formats changed to allow Loading: Array, BPF,
   * Documentation
-     ** The documentation has been updated with all the changes in the 
+     ** The documentation has been updated with all the changes in the
         library.
   * Visualization Module( GUI )
      ** Major reworking of most of GUI classes
      ** Model-View-Presentation Architecture introduced
-     ** Automatic Generic Snapshot Generation first attempt. It works for 
+     ** Automatic Generic Snapshot Generation first attempt. It works for
         sure for Spectrum's, Audio's and Segment's.
      ** New GUI folder organisation: now it contains several subfolders
         *** src/GUI/Core - Visualization Module Core Classes
         *** src/GUI/GL - OpenGL renderers
-        *** src/GUI/View - Set of actually implemented System Views ( Views 
+        *** src/GUI/View - Set of actually implemented System Views ( Views
             Processings and PDs offered by CLAM )
-        *** src/GUI/Presentation - Set of presentations for representing 
+        *** src/GUI/Presentation - Set of presentations for representing
             standard CLAM concepts ( Processing's and PDs )
-        *** src/GUI/Widget - Some custom widgets, as well as wrappers for 
+        *** src/GUI/Widget - Some custom widgets, as well as wrappers for
             different Toolkits
         *** src/GUI/Util - Miscellaneous stuff
-     ** Some old snapshots have been eliminated and is a TODO to port them to 
+     ** Some old snapshots have been eliminated and is a TODO to port them to
         the new interface
   * Unix build system
      ** New configure arguments to set some compilation flags.
      ** External library dependencies can be tuned with autoconf.
   * Windows Build system:
      ** More reliable projects have been provided
-     ** Tests projects now share .obj files between them, thus making faster 
+     ** Tests projects now share .obj files between them, thus making faster
         the build process
 
 2002-04-19 CLAM_0_2_2-rel
@@ -591,7 +591,7 @@
   * DynamicType class:
      ** Dynamic type accessor checks are now only done in debug mode.
   * Spectrum class:
-     ** Removed again the old kludge for BPF self-references, and a related 
+     ** Removed again the old kludge for BPF self-references, and a related
         memory leak.
      ** Updated obsolete assertion condition macros.
      ** Fixed bug in SetType/Configure logic.
@@ -606,7 +606,7 @@
   * Array class:
      ** GetPtr has now a pure-const and a non-const versions.
      ** Fixed the STL implementation so that it compiles again.
-     ** Implementing stream operators for your objects is no more needed if 
+     ** Implementing stream operators for your objects is no more needed if
         you don't want to use XML.
   * BPF class:
      ** Fixed a couple of initialization bugs.
