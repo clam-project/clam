@@ -121,6 +121,16 @@ namespace CLAM
 
 			mBeatOnsetsAdjuster.SetParent( this );
 
+			BeatIntervalEstimatorConfig tempoEstCfg;
+
+			tempoEstCfg.SetSampleRate( mConfig.GetSamplingRate() );
+			tempoEstCfg.SetTempoLimSup( mConfig.GetTempoLimSup() );
+			tempoEstCfg.SetTempoLimInf( mConfig.GetTempoLimInf() );
+
+			mTempoEstimator.Configure( tempoEstCfg );
+
+			mTempoEstimator.SetParent( this );
+
 			return true;
 		}
 
@@ -258,11 +268,13 @@ namespace CLAM
 
 				mPeakDetector.Do(IOIHist,IOIHistPeaks);
 
+				TimeSeriesSeed initialBeatParams;
 
 				///Compute Tempo (optional)
 				if (computeBeats)
 				{
-					tempo = ComputeTempo( IOIHistPeaks );
+					mTempoEstimator.Do( IOIHistPeaks, initialBeatParams );
+					tempo = initialBeatParams.GetInterval();
 				}
 
 				///Tick Estimation
@@ -315,59 +327,32 @@ namespace CLAM
 
 				if (computeBeats) 
 				{
-					/*
-					///Tempo adjustment (optional)
-
-					//set the tempo to the closest exact multiple of the tick
-					tempo = ((int)(tempo+goodTickInterval/2)/goodTickInterval)
-						*goodTickInterval;
-					while (tempo<mConfig.GetSamplingRate()*60.0/tempoLimSup)
-						tempo += goodTickInterval;
-					while (tempo>mConfig.GetSamplingRate()*60.0/tempoLimInf)
-						tempo -= goodTickInterval;
-
-					if(tempo==0) 
-						tempo = goodTickInterval;
-					*/
 					unsigned int goodTempoInterval, goodTempoOffset;
-					TimeSeriesSeed oldBeatParams;
-					oldBeatParams.SetInterval( unsigned( tempo ) );
-					TimeSeriesSeed newBeatParams;
 
-					mBeatTickAdjuster.Do( mGoodTick, oldBeatParams, newBeatParams );
+					TimeSeriesSeed tickAdjustedBeatParams;
+					mBeatTickAdjuster.Do( mGoodTick, initialBeatParams, tickAdjustedBeatParams );
 
-					tempo = newBeatParams.GetInterval();
+					tempo = tickAdjustedBeatParams.GetInterval();
 
 					if (mConfig.GetAdjustWithOnsets()) 
 					{
+						//get the best phase
+						// Computing best beat phase
+
 						mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
 						mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
 
-						mBeatOnsetsAdjuster.Do( transients, mGoodTick, newBeatParams,
+						mBeatOnsetsAdjuster.Do( transients, mGoodTick, tickAdjustedBeatParams,
 									tempoArray, mGoodTempo );
 
-						//get the best phase
-						// Computing best beat phase
-						/*
- 						mTimeSeriesFinder.GetInControl("OffsetMin").DoControl(goodTickOffset);			
-						mTimeSeriesFinder.GetInControl("OffsetStep").DoControl(goodTickInterval);
-						mTimeSeriesFinder.GetInControl("IntervalMin").DoControl(tempo);
-						mTimeSeriesFinder.GetInControl("IntervalMax").DoControl(tempo+1);
-						mTimeSeriesFinder.GetInControl("IntervalStep").DoControl(2);
-						*/
 
 						//NB: Use of transients instead of transientsForHist
 						// i.e. making use of transient weights
-						mTimeSeriesFinder.Do(transients,mGoodTempo);
 
+						
 						goodTempoInterval = mGoodTempo.GetInterval();
 						goodTempoOffset = mGoodTempo.GetOffset();
 						///Generate beat indexes array
-						/*
-						GeneratePulseGrid((posTrans1+goodTempoOffset)/mConfig.GetSamplingRate(),
-								  goodTempoInterval/mConfig.GetSamplingRate(), posTrans2/mConfig.GetSamplingRate(),
-								  pulseGridGen,tempoArray);
-						*/
 					}
 					else 
 						goodTempoInterval = tempo;
