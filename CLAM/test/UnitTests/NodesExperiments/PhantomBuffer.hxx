@@ -24,30 +24,14 @@
 
 
 #include <vector>
-
-// begin TODO upgrade to CLAM
+#include "Assert.hxx"
 #include <iostream>
-#include <cassert>
-#define CLAM_DEBUG_ASSERT(cond, msg) \
-	if (!(cond)) \
-	{ \
-		std::cout << msg << std::endl; \
-		assert(cond); \
-	}
-#define CLAM_ASSERT(cond, msg) \
-	if (!(cond)) \
-	{ \
-		std::cout << msg << std::endl; \
-		assert(cond); \
-	}
-// end upgrade
 
 namespace CLAM {
 
 	template<class T>
-	class PhantomBuffer {
-
-
+	class PhantomBuffer 
+	{
 	public:
 		PhantomBuffer();
 		T*   Read(unsigned int pos, unsigned int size);
@@ -136,15 +120,8 @@ namespace CLAM {
 
 
 	template<class T>
-	void PhantomBuffer<T>::Resize(unsigned newLogicalSize,
-								  unsigned newPhantomSize,
-								  unsigned insertionPos)
+	void PhantomBuffer<T>::Resize(unsigned newLogicalSize, unsigned newPhantomSize, unsigned insertionPos)
 	{
-		if(insertionPos > LogicalSize())
-		{
-//			std::cout << "insertion pos: " << insertionPos << " logical size: " << LogicalSize() << std::endl;
-		}
-		
 		CLAM_ASSERT(insertionPos <= LogicalSize(),
 		           "PhantomBuffer::Resize(): "
 		           "Insertion position can not be greater than previous size.");
