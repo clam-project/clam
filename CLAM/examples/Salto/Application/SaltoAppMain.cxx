@@ -104,11 +104,11 @@ protected:
 
 	void UserMain(void)
 	{
-		WidgetTKWrapper* tk = WidgetTKWrapper::GetWrapperFor("FLTK");
+		WidgetTKWrapper& tk = WidgetTKWrapper::GetWrapperFor("FLTK");
 
 		Start();
 
-		tk->Run();
+		tk.Run();
 
 		Stop();
 	}
