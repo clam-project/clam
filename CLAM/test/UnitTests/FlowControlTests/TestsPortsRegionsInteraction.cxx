@@ -1,6 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "InPort.hxx"
 #include "OutPort.hxx"
+#include "InPortPublisher.hxx"
+#include "OutPortPublisher.hxx"
 
 namespace CLAMTest {
 
@@ -33,7 +35,10 @@ public:
 	CPPUNIT_TEST( testOutPortDisconnectFromAll );	
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WhenInPortIsTheSameType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WhenInPortIsDifferentType );
-
+	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withIncorrectInPort );
+	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withProperInPort );
+	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withIncorrectOutPort );
+	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -314,6 +319,75 @@ public:
 		CPPUNIT_ASSERT_EQUAL( false, baseOutPort.IsConnectableTo(baseInPort) );
 	}
 
+	void testInPortPublisher_PublishInPort_withIncorrectInPort()
+	{
+		CLAM::InPort<int> in;
+		CLAM::InPortPublisher<char> inPublisher;
+
+		try
+		{
+			inPublisher.PublishInPort( in );
+			CPPUNIT_FAIL( "Assertion should fail" ); 
+		}
+		catch( CLAM::ErrAssertionFailed & )
+		{
+		}
+	}
+	
+	void testInPortPublisher_PublishInPort_withProperInPort()
+	{
+		
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
+		CLAM::InPortPublisher<int> inPublisher;
+
+		inPublisher.PublishInPort( in );
+		int data = 4;
+
+		out.ConnectToIn(inPublisher);
+		out.GetData() = 4;
+		out.Produce();
+		
+		CPPUNIT_ASSERT_EQUAL( data, inPublisher.GetData() );
+		CPPUNIT_ASSERT_EQUAL( data, in.GetData() );
+
+	}
+	
+	void testOutPortPublisher_PublishOutPort_withIncorrectOutPort()
+	{
+		CLAM::OutPort<int> out;
+		CLAM::OutPortPublisher<char> outPublisher;
+
+		try
+		{
+			outPublisher.PublishOutPort( out );
+			CPPUNIT_FAIL( "Assertion should fail" ); 
+		}
+		catch( CLAM::ErrAssertionFailed & )
+		{
+		}
+	}
+	
+	void testOutPortPublisher_PublishOutPort_withProperOutPort()
+	{
+		
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
+		CLAM::OutPortPublisher<int> outPublisher;
+		outPublisher.PublishOutPort( out );
+
+		int data = 4;
+
+		outPublisher.ConnectToIn(in);
+		out.GetData() = 4;
+
+		CPPUNIT_ASSERT_EQUAL( data, outPublisher.GetData() );
+		
+		out.Produce();
+		CPPUNIT_ASSERT_EQUAL( data, in.GetData() );
+
+	}
 };
 
 } // namespace CLAMTest 
+
