@@ -3,6 +3,7 @@
 
 #include "XercesDomWriter.hxx"
 #include "XercesEncodings.hxx"
+#include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMText.hpp>
 
