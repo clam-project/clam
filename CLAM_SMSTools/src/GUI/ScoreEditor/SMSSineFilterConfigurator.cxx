@@ -68,9 +68,6 @@ namespace CLAMVM
 		
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 
-		mConfig.Debug();
-
-
 	}
 
 	const CLAM::ProcessingConfig& SMSSineFilterConfigurator::GetConfig()

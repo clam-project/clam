@@ -9,6 +9,8 @@ class Fl_Help_View;
 
 namespace CLAMVM
 {
+	class Fl_SMS_BPF_Editor;
+
 	class SMSOddEvenHarmonicRatioConfigurator : public SMSConfigurator
 	{
 	public:
@@ -28,6 +30,7 @@ namespace CLAMVM
 	protected:
 		
 		Fl_Help_View*                 mHelpWidget;
+		Fl_SMS_BPF_Editor*            mEditorWidget;
 		CLAM::SMSTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
