@@ -75,7 +75,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "XMLAdaptersTest"=".\XMLAdapters\XMLAdaptersTest.dsp" - Package Owner=<4>
+Project: "TokenDelayControllerTest"=".\TokenDelayController\TokenDelayController.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
