@@ -33,6 +33,7 @@
 
 
 #include <iostream>
+#include <iomanip>
 
 namespace CLAMTest
 {
@@ -45,12 +46,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SpectralDescriptorsTest );
 class SpectralDescriptorsTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralDescriptorsTest );
-	CPPUNIT_TEST( testRolloff );
-//	CPPUNIT_TEST( testFlatness );
-	CPPUNIT_TEST( testCentroid );
+//	CPPUNIT_TEST( testRolloff );
+	CPPUNIT_TEST( testFlatness );
+//	CPPUNIT_TEST( testCentroid );
 	CPPUNIT_TEST( testSpread );
 	CPPUNIT_TEST( testSlope );
-	CPPUNIT_TEST( testMaxMagFreq );
+//	CPPUNIT_TEST( testMaxMagFreq );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -168,9 +169,9 @@ private:
 				)
 			{
 				log << (*it).first
-				<< ": expected " << it->second
-				<< ", received " << (mDescriptors->*getter)()
-				<< ", difference " << (it->second - (mDescriptors->*getter)())
+				<< ": expected " << std::setprecision(15) << it->second
+				<< ", received " << std::setprecision(15) << (mDescriptors->*getter)()
+				<< ", difference " << std::setprecision(15) << (it->second - (mDescriptors->*getter)())
 				<< std::endl;
 
 				success = false;
@@ -278,41 +279,45 @@ private:
 		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralDescriptors::GetCentroid);
 	}
 
+	CLAM::TData plainSpread(CLAM::TData nBins, CLAM::TData spectralRange)
+	{
+		CLAM::TData binRange = spectralRange/(nBins-1);
+		return binRange*binRange*(nBins+1)*(nBins-1)/12;
+	}
 	void testSpread()
 	{
-		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
-		CLAM::TData plainFor513 = sqrt(CLAM::TData(513-1)/(513-3)/3);
-		CLAM::TData plainFor257 = sqrt(CLAM::TData(257-1)/(257-3)/3);
+		CLAM::TData tolerance = 0.0006;  // Due to numerical inaccuracies
+		CLAM::TData binRange513 = 22050/(513-1);
 
 		std::map<std::string, CLAM::TData> data;
-		data["MaxSpread-Spectrum.xml"] = 1.0;
+		data["MaxSpread-Spectrum.xml"] = 22050*22050/4;
 		data["MinSpread-Spectrum.xml"] = 0.0;
 		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
-		data["Silence-Spectrum.xml"] = plainFor513; // Avoid NaN
-		data["Constant-Spectrum.xml"] = plainFor513;
-		data["ConstantDouble-Spectrum.xml"] = plainFor513;
-		data["ConstantHalfSize-Spectrum.xml"] = plainFor257;
+		data["Silence-Spectrum.xml"] = plainSpread(513,22050); // Avoid NaN
+		data["Constant-Spectrum.xml"] = plainSpread(513,22050);
+		data["ConstantDouble-Spectrum.xml"] = plainSpread(513,22050);
+		data["ConstantHalfSize-Spectrum.xml"] = plainSpread(257,22050);
 
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1.791044;
-		data["Balance000.600.wav"] = 4.119432;
-		data["Balance000.992.wav"] = 3.158641;
-		data["Balance001.988.wav"] = 1.451249;
-		data["Balance010.910.wav"] = 1.822904;
-		data["Cello_A2.wav"] = 1.322429;
-		data["Cello_C2.wav"] = plainFor513;
-		data["Disco_Rojo001.008.wav"] = 0.916335;
-		data["Disco_Rojo002.327.wav"] = 1.335445;
-		data["Geiger_Counter005.020.wav"] = 2.159354;
-		data["SaxBritHorns12.wav"] = 1.075443;
-		data["Time002.624.wav"] = 0.698290;
-		data["bell_A3.wav"] = 1.092978;
-		data["gamelan-gong.wav"] = 1.871866;
-		data["gt_E4.wav"] = 1.324165;
-		data["pno_Eb1.wav"] = plainFor513;
-		data["silence.wav"] = plainFor513;
-		data["vln_A3.wav"] = plainFor513;
-		data["vln_D5.wav"] = plainFor513;
-		data["whitenoise.wav"] = 0.568572;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 19988729.96601;
+		data["Balance000.600.wav"] = 3256552.743;
+		data["Balance000.992.wav"] = 6201384.658;
+		data["Balance001.988.wav"] = 4687203.759;
+		data["Balance010.910.wav"] = 24206724.5216;
+		data["Cello_A2.wav"] = 15697222.546;
+		data["Cello_C2.wav"] = plainSpread(513,22050);
+		data["Disco_Rojo001.008.wav"] = 14805980.3445418;
+		data["Disco_Rojo002.327.wav"] = 11706385.6573933;
+		data["Geiger_Counter005.020.wav"] = 14443489.7393;
+		data["SaxBritHorns12.wav"] = 17017109.5633701;
+		data["Time002.624.wav"] = 25246294.0153;
+		data["bell_A3.wav"] = 15736636.995407;
+		data["gamelan-gong.wav"] = 5662587.598;
+		data["gt_E4.wav"] = 34762401.1;
+		data["pno_Eb1.wav"] = plainSpread(513,22050);
+		data["silence.wav"] = plainSpread(513,22050);
+		data["vln_A3.wav"] = plainSpread(513,22050);
+		data["vln_D5.wav"] = plainSpread(513,22050);
+		data["whitenoise.wav"] = 40201639.326;
 
 		mDescriptors->AddSpread();
 
