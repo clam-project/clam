@@ -21,7 +21,7 @@ public:
 
 	SDToolTip* mSDToolTip;
 
-	int SetPtr(DataArray& displayPeakArray);
+	int SetPtr(Array<float>& displayPeakArray);
 	int handle(int);
 	void draw(void);
 	

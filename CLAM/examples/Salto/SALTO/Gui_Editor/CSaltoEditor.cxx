@@ -939,7 +939,7 @@ void CSaltoEditor::DisplayPeakArray(const SpectralPeakArray& peakArray/*Par*/) /
 	double sampleFrequency = mSamplingRate;
 	int i;
 	
-	DataArray displayPeakArray(spectralFrameSize);
+	Array<float> displayPeakArray(spectralFrameSize);
 	displayPeakArray.Resize(spectralFrameSize); //BUG??
 	displayPeakArray.SetSize(spectralFrameSize);
 	
@@ -991,7 +991,7 @@ void CSaltoEditor::DisplayAttackResidual(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumSize " << spectrumSize << "\n";
 
-	DataArray displaySpecArray(spectrumSize);
+	Array<float> displaySpecArray(spectrumSize);
 	displaySpecArray.Resize(spectrumSize);
 	displaySpecArray.SetSize(spectrumSize);
 	
@@ -1024,7 +1024,7 @@ void CSaltoEditor::DisplaySynthesizedSpectrum(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumTestSize " << spectrumSize << "\n";
 
-	DataArray displayTestSpecArray(spectrumSize);
+	Array<float> displayTestSpecArray(spectrumSize);
 	displayTestSpecArray.Resize(spectrumSize);
 	displayTestSpecArray.SetSize(spectrumSize);
 	
@@ -1057,7 +1057,7 @@ void CSaltoEditor::FillDisplayPeakArray(const SpectralPeakArray& peakArray) //pa
 	double sampleFrequency = mSamplingRate;
 	int i;
 	
-	DataArray displayPeakArray(spectralFrameSize);
+	Array<float> displayPeakArray(spectralFrameSize);
 	displayPeakArray.Resize(spectralFrameSize); //BUG??
 	displayPeakArray.SetSize(spectralFrameSize);
 		
@@ -1107,7 +1107,7 @@ void CSaltoEditor::FillDisplayAttackResidual(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumSize " << spectrumSize << "\n";
 
-	DataArray displaySpecArray(spectrumSize);
+	Array<float> displaySpecArray(spectrumSize);
 	displaySpecArray.Resize(spectrumSize);
 	displaySpecArray.SetSize(spectrumSize);
 	
@@ -1139,7 +1139,7 @@ void CSaltoEditor::FillDisplayStationaryResidual(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumSize " << spectrumSize << "\n";
 
-	DataArray displaySpecArray(spectrumSize);
+	Array<float> displaySpecArray(spectrumSize);
 	displaySpecArray.Resize(spectrumSize);
 	displaySpecArray.SetSize(spectrumSize);
 	
@@ -1171,7 +1171,7 @@ void CSaltoEditor::FillDisplaySynthesizedSpectrum(const Spectrum& spec/*Par*/)
 //	TSize spectrumSize = 511;
 //  std::cout << "spectrumTestSize " << spectrumSize << "\n";
 
-	DataArray displaySynthSpecArray(spectrumSize);
+	Array<float> displaySynthSpecArray(spectrumSize);
 	displaySynthSpecArray.Resize(spectrumSize);
 	displaySynthSpecArray.SetSize(spectrumSize);
 	

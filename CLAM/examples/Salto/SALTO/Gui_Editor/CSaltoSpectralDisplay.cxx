@@ -26,7 +26,7 @@ CSaltoSpectralDisplay::~CSaltoSpectralDisplay()
 	delete mSDToolTip;
 }
 
-int CSaltoSpectralDisplay::SetPtr(DataArray& displayPeakArray)
+int CSaltoSpectralDisplay::SetPtr(Array<float>& displayPeakArray)
 {
   int max = displayPeakArray.Size();
   memcpy(ptr,displayPeakArray.GetPtr(),max*sizeof(float));
@@ -129,3 +129,14 @@ int CSaltoSpectralDisplay::handle(int e)
 }
 
 } // end of namespace CLAM
+
+
+
+
+
+
+
+
+
+
+

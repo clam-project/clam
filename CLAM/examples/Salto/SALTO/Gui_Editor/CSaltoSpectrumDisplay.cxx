@@ -27,7 +27,7 @@ CSaltoSpectrumDisplay::~CSaltoSpectrumDisplay()
 }
 
 
-int CSaltoSpectrumDisplay::SetPtr(DataArray& displaySpecArray)
+int CSaltoSpectrumDisplay::SetPtr(Array<float>& displaySpecArray)
 {
   int max = displaySpecArray.Size();
   memcpy(ptr,displaySpecArray.GetPtr(),max*sizeof(float));
