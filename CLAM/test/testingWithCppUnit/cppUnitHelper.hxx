@@ -24,6 +24,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <cppunit/TestSuite.h>
+#include <cppunit/TestAssert.h>
 
 
 namespace CLAMTest
@@ -57,10 +58,8 @@ namespace CLAMTest
 } //namespace CLAMTest
 
 // Helper traits for assertions
-namespace CppUnit
-{
 	template<>
-	struct assertion_traits< std::type_info >
+	struct ::CppUnit::assertion_traits< std::type_info >
 	{
 		static bool equal( const std::type_info& x, const std::type_info& y )
 		{
@@ -75,6 +74,6 @@ namespace CppUnit
 			return ost.str();
 		}
 	};
-} //namespace CppUnit
+
 
 #endif
