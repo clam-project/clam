@@ -7,7 +7,7 @@
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileReaderConfig.hxx"
 #include "AudioFile.hxx"
-#include "SimacOnsetDetection.hxx"
+#include "OnsetDetector.hxx"
 #include "TransientGen.hxx"
 #include "TickFromOnsets.hxx"
 
@@ -50,13 +50,17 @@ namespace CLAM
 				   CLAM::Pulse& ticksList )
 	{
 		TickExtractorConfig configuration; // we will be using default config
-		configuration.SetFromAudio( false );
-		
-		CLAM::Audio readAudio;
+		configuration.SetFromAudio( false );		
+
+		Segment seg;
+		seg.AddAudio();
+		seg.UpdateData();
+		seg.SetHoldsData(true);
+
 
 		try
 		{
-			LoadAudioFile( readAudio, pathToFile );
+			LoadAudioFile( seg.GetAudio(), pathToFile );
 		}
 		catch( Err& e )
 		{
@@ -66,43 +70,35 @@ namespace CLAM
 			throw propErr;
 		}
 		
-		TData sampleRate = readAudio.GetSampleRate();
-		TTime duration = readAudio.GetSize()/sampleRate;
+		TData sampleRate = seg.GetAudio().GetSampleRate();
+		TTime duration = seg.GetAudio().GetSize()/sampleRate;
+		seg.SetEndTime(duration);
 		
 		Array< TimeIndex > transients;
 
-		if ( !configuration.GetFromAudio() )
+		
+		OnsetDetectorConfig onsetconfig;
+		OnsetDetector onset(onsetconfig);
+		onsetconfig.SetComputeOffsets(false);
+		onsetconfig.SetGlobalThreshold(25);
+		
+		onset.Configure(onsetconfig);
+		
+		onset.Start();
+		onset.Do(seg, transients);
+		
+		transients.Resize(transients.Size()+1);
+		transients.SetSize(transients.Size()+1);
+		
+		for(int i=transients.Size()-1;i>0;i--)
 		{
-			Segment seg;
-			seg.AddAudio();
-			seg.UpdateData();
-			seg.SetAudio(readAudio);
-			seg.SetHoldsData(true);
-			seg.SetEndTime(duration);
-
-			OnsetDetectionConfig onsetconfig;
-			OnsetDetection onset(onsetconfig);
-			onsetconfig.SetComputeOffsets(false);
-			onsetconfig.SetGlobalThreshold(25);
-
-			onset.Configure(onsetconfig);
-
-			onset.Start();
-			onset.Do(seg, transients);
-
-			transients.Resize(transients.Size()+1);
-			transients.SetSize(transients.Size()+1);
-
-			for(int i=transients.Size()-1;i>0;i--)
-			{
-				transients[i].SetPosition(transients[i-1].GetPosition()*sampleRate);
-				transients[i].SetWeight(transients[i-1].GetWeight());
-			}
-
-			transients[0].SetPosition(0.0);
-			transients[0].SetWeight(0.0);
-
+			transients[i].SetPosition(transients[i-1].GetPosition()*sampleRate);
+			transients[i].SetWeight(transients[i-1].GetWeight());
 		}
+
+		transients[0].SetPosition(0.0);
+		transients[0].SetWeight(0.0);
+
 
 		// Ticks ( and beats ) computation 
 
@@ -137,16 +133,8 @@ namespace CLAM
 		IOIHist.SetSampleRate(sampleRate); //Don't really know if it's used, but just in case...
 
 
-		if (!configuration.GetFromAudio()) 
-		{
-			//Use the transients computed in this main
-			myTickFromOnsets.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
-		}
-		else 
-		{
-			//Compute the transients in the Do
-			myTickFromOnsets.Do(readAudio, allTicks, allBeats, globalTick, globalTempo, IOIHist);
-		}
+		//Use the transients computed in this main
+		myTickFromOnsets.Do(transients, allTicks, allBeats, globalTick, globalTempo, IOIHist);
 
 		myTickFromOnsets.Stop();
 
