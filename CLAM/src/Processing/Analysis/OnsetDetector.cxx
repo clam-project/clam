@@ -370,9 +370,18 @@ namespace CLAM
 		ret[0] = 0.0;
 		ret[mnSamples-1] = 0.0;
 
-		for (i=1; i<mnSamples-1; i++) 
+		double a = log( in[0] );
+		double b = log( in[1] );
+		double c = log( in[2] );
+
+		ret[1] = c - a;
+
+		for (i=2; i<mnSamples-1; i++) 
 		{
-			ret[i] = log( in[i+1] ) - log( in[i-1] );
+			a = b; b = c; c = log( in[i+1] );
+			
+			ret[i] = c - a;
+
 		}
 	}
 
