@@ -24,10 +24,10 @@ namespace SDIF
 		typedef std::list<Frame*>::const_iterator iterator;
 
 		//* The list of Frames
-		list<Frame*> mFrameList;
+		std::list<Frame*> mFrameList;
 
 		//* The list of Streams
-		list<Stream*> mStreamList;
+		std::list<Stream*> mStreamList;
 
 		//* Whether or not to create the Streams on the fly
 		bool mAutoStreamAdding;

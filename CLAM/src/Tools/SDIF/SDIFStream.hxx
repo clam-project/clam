@@ -19,8 +19,8 @@ namespace SDIF
 	*/
 	class Stream
 	{
-	public:
-		list<Frame*> mFrameList;
+	private:
+		std::list<Frame*> mFrameList;
 		TInt32 mStreamId;
 	public:
 		/** Create a Stream
@@ -31,10 +31,8 @@ namespace SDIF
 		* @param pFrame The Frame that this stream starts with.
 		*/
 		void Add(Frame* pFrame);
-		/** Parse all frames after the starting frame that have the same
-		* stream ID into the streams list 
-		*/
-		//!!! void Parse(void);
+
+		TInt32 StreamId(void) { return mStreamId; }		
 	};
 
 }
