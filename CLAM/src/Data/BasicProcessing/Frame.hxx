@@ -69,7 +69,7 @@ public:
 	DYN_ATTRIBUTE (4, public, Fundamental, Fundamental);
 	/** Output global spectrum*/
 	DYN_ATTRIBUTE (5, public, Spectrum, OutSpec);
-		/** Residual spectrum of the Audio  */
+	/** Residual spectrum of the Audio  */
 	DYN_ATTRIBUTE (6, public, Spectrum, ResidualSpec);
 	/** Sinusoidal spectrum of the Audio  */
 	DYN_ATTRIBUTE (7, public, Spectrum, SinusoidalSpec);
