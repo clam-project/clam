@@ -1,4 +1,4 @@
-PROGRAMS=Salto
+PROGRAMS=Salto SaltoConsole
 
 TOP=../..
 
