@@ -86,7 +86,12 @@ namespace CLAM {
 		void SetParams(unsigned int length,
 		               unsigned int hop = 0)
 		{
-			CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
+			//CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
+
+			// PA: todo: allow attach before a SetParams. For this we need to finish the Nodes refactoring
+			// by now I comment this assert because it doesn't allows SpectralDelay to work.
+			// a cludge (which is not rapid) would be to add a new virtual IsAttachedToNode() which would
+			// be a better assert.
 			mLength = length;
 			mHop = hop?hop:length;
 		}
