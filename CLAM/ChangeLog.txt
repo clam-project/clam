@@ -49,6 +49,8 @@
 	-> examples/AudioFileReading_example.cxx
 	-> examples/AudioFileWritiing_example.cxx
 	their build projects can be found on the build/Examples/Simple folder
+  * FFT refactored:
+	-> removed duplicated code and unused functionality and improved efficiency.
 	
 
 2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
