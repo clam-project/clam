@@ -1,5 +1,6 @@
 #include "strfuncs.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 char* cur;
 int curn;
