@@ -127,7 +127,7 @@ private:
 		std::string diagnostic;
 		const bool resultEquals = helperAudiosAreEqual(a, b, diagnostic);
 		CPPUNIT_ASSERT_EQUAL( std::string(
-			"found a different sampler in position 9 first value is 1 second value is 0.9 with delta = 1e-006"),
+			"found a different sampler in position 9 first value is 1 second value is 0.9 with delta = 1e-06"),
 			diagnostic );
 
 		CPPUNIT_ASSERT_EQUAL( false, resultEquals );
@@ -138,7 +138,7 @@ private:
 		CLAM::Audio a,b;
 		std::string diagnostic;
 		CPPUNIT_ASSERT_EQUAL( true, helperAudiosAreEqual(a, b, diagnostic) );
-		CPPUNIT_ASSERT_EQUAL( std::string(), diagnostic );
+		CPPUNIT_ASSERT_EQUAL( std::string(""), diagnostic );
 	}
 	// TODO:
 	// testhelperAudiosAreEqual_WhenDifferentSamplingRate
@@ -190,11 +190,11 @@ private:
 
 		CPPUNIT_ASSERT_MESSAGE( 
 			"file not found when opening /SMSTests/out_sweep_defConfig.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
-			helperFileExist( mPath+"/SMSTests/out_sweep_defconfig.wav") );
+			helperFileExist( mPath+"/SMSTests/out_sweep_defConfig.wav") );
 		
 		CPPUNIT_ASSERT_MESSAGE( 
 			"file not found when opening /SMSTests/out_sweep_defConfig_res.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
-			helperFileExist( mPath+"/SMSTests/out_sweep_defconfig_res.wav") );
+			helperFileExist( mPath+"/SMSTests/out_sweep_defConfig_res.wav") );
 		
 		CPPUNIT_ASSERT_MESSAGE( 
 			"file not found when opening /SMSTests/out_sweep_defConfig_sin.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
