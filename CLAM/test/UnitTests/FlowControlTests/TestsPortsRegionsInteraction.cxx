@@ -5,6 +5,7 @@
 #include "OutPortPublisher.hxx"
 
 #include "AudioInPortPublisher.hxx"
+#include "AudioOutPortPublisher.hxx"
 #include "AudioInPort.hxx"
 #include "AudioOutPort.hxx"
 
@@ -45,6 +46,11 @@ public:
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withSomeInPorts );
 	CPPUNIT_TEST( testOutPort_GetConnectedInPorts_whenConnectedToInPortPublisher );
+	CPPUNIT_TEST( testOutPortPublisher_SetSize_assertsWhenDoesntPublishAnyPort );
+	CPPUNIT_TEST( testAudioOutPortPublisher_SetSize_assertsWhenDoesntPublishAnyPort );
+	CPPUNIT_TEST( testAudioOutPort_DefaultSize );
+	CPPUNIT_TEST( testAudioInPort_DefaultSize );
+	
 	CPPUNIT_TEST( testOutPort_IsPhysicallyConnectedToIn_withOneInPort );
 	CPPUNIT_TEST( testGetLastWrittenData_whenPortIsWrongType_throwsException );
 	CPPUNIT_TEST( testGetLastWrittenData_fillsWithCorrectData );
@@ -453,7 +459,58 @@ public:
 		CPPUNIT_ASSERT( it == out.EndConnectedInPorts() );
 		
 	}
-		
+	void testOutPortPublisher_SetSize_assertsWhenDoesntPublishAnyPort()
+	{
+		CLAM::OutPortPublisher<int> pubOut;
+		try
+		{
+			pubOut.GetSize();
+			CPPUNIT_FAIL("as assertion was expected from OutPortPublisher::GetSize()");
+		}
+		catch( CLAM::ErrAssertionFailed& )
+		{
+		}
+		try 
+		{
+			pubOut.GetHop();
+			CPPUNIT_FAIL("as assertion was expected from OutPortPublisher::GetHop()");
+		}
+		catch( CLAM::ErrAssertionFailed& )
+		{
+		}
+	}
+	void testAudioOutPortPublisher_SetSize_assertsWhenDoesntPublishAnyPort()
+	{
+		CLAM::AudioOutPortPublisher pubOut;
+		try
+		{
+			pubOut.GetSize();
+			CPPUNIT_FAIL("as assertion was expected from OutPortPublisher::GetSize()");
+		}
+		catch( CLAM::ErrAssertionFailed& )
+		{
+		}
+		try 
+		{
+			pubOut.GetHop();
+			CPPUNIT_FAIL("as assertion was expected from OutPortPublisher::GetHop()");
+		}
+		catch( CLAM::ErrAssertionFailed& )
+		{
+		}
+	}
+	void testAudioOutPort_DefaultSize()
+	{
+		CLAM::AudioOutPort out;
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Size not expected", 256, out.GetSize() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not expected", 256, out.GetHop() );
+	}
+	void testAudioInPort_DefaultSize()
+	{
+		CLAM::AudioInPort in;
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Size not expected", 256, in.GetSize() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not exptected", 256, in.GetHop() );
+	}
 	
 	void testGetLastWrittenData_whenPortIsWrongType_throwsException()
 	{
