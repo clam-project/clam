@@ -133,11 +133,11 @@ TData AudioDescriptors::ComputeAttackTime()
 	const TData a1 = -alpha;
 
 	// Find maximum value
-	energyEnv[0] = b0*fabsf(data[0]);
+	energyEnv[0] = b0*CLAM::Abs(data[0]);
 	TData maxVal = energyEnv[0];
 
 	for (TIndex i=1; i<dataSize; i++) {
-		energyEnv[i] = b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*energyEnv[i-1];
+		energyEnv[i] = b0*(CLAM::Abs(data[i]) + CLAM::Abs(data[i-1])) - a1*energyEnv[i-1];
 		if (energyEnv[i] > maxVal) maxVal = energyEnv[i];
 	}
 
@@ -183,7 +183,7 @@ TData AudioDescriptors::ComputeDecrease()
 	const double a1 = -alpha;
 
 	// Find maximum value
-	double y = b0*fabsf(data[0]);
+	double y = b0*CLAM::Abs(data[0]);
 	TData correctedY = y<mEpsilon ? mEpsilon : y;
 	double logEnv = log10(correctedY);
 
@@ -195,7 +195,7 @@ TData AudioDescriptors::ComputeDecrease()
 
 	for (TIndex i=1; i<dataSize; i++)
 	{
-		y = b0*(fabsf(data[i-1]) + fabsf(data[i])) - a1*y;
+		y = b0*(CLAM::Abs(data[i-1]) + CLAM::Abs(data[i])) - a1*y;
 		correctedY = y<mEpsilon ? mEpsilon : y;
 		const double logEnv = log10(correctedY);
 
