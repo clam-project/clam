@@ -91,7 +91,7 @@ int main( int argc, char** argv )
 	//  + Composer name
 	//  + Performer name
 	//
-	//  Obviously, it will be strange that all these attributes are available, so we must be
+	//  Obviously, it will be strange that all (or any) of these attributes are available, so we must be
 	// careful before accessing each attribute:
 	if ( txtDesc.HasArtist() )
 		std::cout << "Artist name: " << txtDesc.GetArtist() << std::endl;
