@@ -26,6 +26,7 @@ int main(int argc,char** argv)
 	
 	listhash_add_item_str(config,"OS_WINDOWS","1");
 	listhash_add_item_str(config,"OS_LINUX","0");
+	listhash_add_item_str(config,"OS_MACOSX","0");
 
 	config_parse(argv[1]);
 
@@ -38,8 +39,8 @@ int main(int argc,char** argv)
 		item* i = guessed_sources->first;
 		while (i)
 		{
-/*			fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
-*/
+			fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+
 			parser_run(i->str);
 			
 			i = i->next;
