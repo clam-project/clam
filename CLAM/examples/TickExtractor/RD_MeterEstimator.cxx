@@ -50,7 +50,7 @@ namespace CLAM
 		MeterEstimator::MeterEstimator()
 		{
 			AttachChildren();
-			Configure(MeterEstimatorConfig());
+
 		}
 
 		MeterEstimator::~MeterEstimator()
@@ -80,7 +80,7 @@ namespace CLAM
 
 		bool MeterEstimator::ConfigureChildren()
 		{
-			AutocorrelationTDConfig myACFcfg;
+			AutoCorrelationTDConfig myACFcfg;
 			myACFcfg.AddAll();
 			myACFcfg.UpdateData();
 			myACFcfg.SetUpperLimit(mConfig.GetACFUpperLimit());
@@ -98,9 +98,11 @@ namespace CLAM
 		}
 
 
-		bool MeterEstimator::Do(Audio& audioIn, const Array<TimeIndex>& beats, 
+		bool MeterEstimator::Do(Audio& audioIn, const Pulse& beatData, 
 					Meter& dataOut)
 		{
+			const Array<TimeIndex>& beats = beatData.GetIndexes();
+			
 			if ( beats.Size() == 0 )
 			{
 				dataOut.SetNumerator(0);
@@ -109,27 +111,29 @@ namespace CLAM
 				return true;
 			}
 
-			TData globalTempo, globalTick;
+			TData globalTempo;
+			TData sampleRate = audioIn.GetSampleRate();
 
 			//Beat centering method 3 (mean IBI)
+
 			globalTempo = .0; 
 			for (int i=0;i<beats.Size()-1;i++) 
 				globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
 			globalTempo /= beats.Size()-1;
-			
-			TData sampleRate = audioIn.GetSampleRate();
+			globalTempo *= sampleRate/2;
+
 
 			//-------Remove audio DC component------------------
 			//TODO
 
 			
-			
 			//-------Compute beat descriptors----
-			Array<TData> segments; segments.Init();
+			Array<TData> segments; 
 			//Beat index recentering method 1 & 3
+
 			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
 				segments.AddElem(beats[i].GetPosition()*sampleRate
-						 -globalTempo*sampleRate/2);
+						 - globalTempo);
 
 			//mSegment.SetAudio(audioIn);
 			mSegment.SetHoldsData(true);
@@ -186,13 +190,17 @@ namespace CLAM
 			for(int i=0;i<acf.Size()-1;i++) 
 				std::cout<<	acf[i]<<"\n";
 #endif
+			// MRJ: Not a clue about where this does come from
 			//TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[6]+acf[9])/3;
+			// MRJ: Almost the one on the paper ( coefficient #9 is used instead of #6 )
 			TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[9])/2;
+			// MRJ: The one on the paper
+			//TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[6])/2;
 			std::cout<<"Feature M = "<<M<<std::endl;
 			
 			//--------Final decision--------------
 			dataOut.SetDenominator(4);
-			if(M<-0.000665) 
+			if ( M < -0.000665 ) 
 			{
 				dataOut.SetNumerator(3);
 				std::cout<<"Triple meter"<<std::endl;

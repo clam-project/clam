@@ -25,15 +25,14 @@
  *
  */
 
-#ifndef _MeterEstimator_
-#define _MeterEstimator_
+#ifndef _RD_MeterEstimator_
+#define _RD_MeterEstimator_
 
 #include "ProcessingComposite.hxx"
-#include "TimeIndex.hxx"
-#include "TickFromOnsets.hxx"
+#include "Pulse.hxx"
 #include "Segment.hxx"
 #include "SegmentDescriptors.hxx"
-#include "AutocorrelationTD.hxx"
+#include "RD_AutoCorrelationTD.hxx"
 #include "DescriptorComputation.hxx"
 
 namespace CLAM
@@ -51,9 +50,9 @@ namespace CLAM
 			DYNAMIC_TYPE_USING_INTERFACE (MeterEstimatorConfig, 5 ,ProcessingConfig);
 			DYN_ATTRIBUTE ( 0, public, TData, TempoLimInf);
 			DYN_ATTRIBUTE ( 1, public, TData, TempoLimSup);
-			DYN_ATTRIBUTE ( 2, public, int, ACFUpperLimit);
+			DYN_ATTRIBUTE ( 2, public, int,   ACFUpperLimit);
 			DYN_ATTRIBUTE ( 3, public, bool , AutomaticIntegTime);
-			DYN_ATTRIBUTE ( 4, public, int, ACFIntegrationTime);
+			DYN_ATTRIBUTE ( 4, public, int,   ACFIntegrationTime);
 		protected:
 			void DefaultInit();
 		};
@@ -68,7 +67,7 @@ namespace CLAM
 			const char *GetClassName() const;
 			
 			bool Do(void);
-			bool Do(Audio& audioIn, const Array<TimeIndex>& beats, Meter& dataOut);
+			bool Do(Audio& audioIn, const Pulse& beats, Meter& dataOut);
 
 		protected:
 			bool ConcreteConfigure(const ProcessingConfig&);
@@ -78,7 +77,7 @@ namespace CLAM
 			MeterEstimatorConfig mConfig;
 
 			//Internal POs
-			AutocorrelationTD mACF;
+			AutoCorrelationTD mACF;
 
 			DescriptorComputation mAudioDescGen;
 
