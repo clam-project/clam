@@ -27,13 +27,14 @@
 #include "Assert.hxx"
 #include "Component.hxx"
 #include <xercesc/dom/DOMDocument.hpp>
-#include <xercesc/dom/DOMText.hpp>
+//#include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNodeList.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 
 
-#include <vector>
+#include <list>
+#include <string>
 
 namespace xercesc = XERCES_CPP_NAMESPACE;
 
@@ -45,12 +46,13 @@ namespace CLAM
  */
 class XercesDomReadingContext
 {
-//	std::list<std::string> _errors;
 	xercesc::DOMElement * _context;
 	xercesc::DOMNodeList * _children;
 	std::stringstream _plainContentToParse;
 	unsigned int _currentChild;
 	XercesDomReadingContext * _parentContext;
+	std::list<std::string> _errors;
+
 //	std::list<std::string> & _currentPath;
 public:
 	XercesDomReadingContext(xercesc::DOMElement * element)
@@ -116,9 +118,39 @@ public:
 
 	XercesDomReadingContext * release()
 	{
-//		checkNoContentLeftOrError();
-//		checkNoElementLeftOrError();
+		checkNoContentLeftOrError();
+		checkNoElementLeftOrError();
 		return _parentContext;
+	}
+
+	void checkNoContentLeftOrError()
+	{
+		if (!contentLeft()) return;
+		std::ostringstream os;
+		os << "Unexpected content: '";
+		for (int c=_plainContentToParse.get(); c!=EOF; c=_plainContentToParse.get())
+			os.put(c);
+		os << "'";
+		_errors.push_back(os.str());
+	}
+
+	void checkNoElementLeftOrError()
+	{
+		if (_currentChild>=_children->getLength()) return;
+		xercesc::DOMNode * child = _children->item(_currentChild);
+		/*
+		if (child->getNodeType() != xercesc::DOMNode::ELEMENT_NODE)
+		{
+			_errors.push_back("Unexpected node type");
+		}
+		*/
+
+		std::ostringstream os;
+		os << "Unexpected Element: '";
+		os << L(child->getNodeName());
+		os << "'";
+			
+		_errors.push_back(os.str());
 	}
 
 	std::istream & reachableContent()
@@ -161,6 +193,10 @@ public:
 		_plainContentToParse.clear();
 		return false;
 	}
+	std::list<std::string> errors()
+	{
+		return _errors;
+	}
 
 };
 
@@ -199,6 +235,7 @@ public:
 		for (; _currentChild<_contextChildren->getLength(); _currentChild++)
 			_plainContentToParse << L(_contextChildren->item(_currentChild)->getNodeValue());
 	}
+#ifdef NEVERDEFINED
 	bool Load(Storable & storable)
 	{
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
@@ -212,11 +249,11 @@ public:
 		}
 		return xmlable->XMLContent(_plainContentToParse);
 	}
+#endif
 	void Store(const Storable & storable)
 	{
 	}
-#ifdef NEVERDEFINED
-	bool Load2(Storable & storable)
+	bool Load(Storable & storable)
 	{
 		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
 		if (!xmlable) return false;
@@ -239,7 +276,6 @@ public:
 		Component * component = dynamic_cast<Component*>(xmlable);
 		if (component) component->LoadFrom(*this);
 	}
-#endif
 };
 
 	
