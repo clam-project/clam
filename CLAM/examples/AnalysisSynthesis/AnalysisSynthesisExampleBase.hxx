@@ -80,6 +80,8 @@ namespace CLAM
 		void InitConfigs(void);
 		/** Load global configuration */
 		void LoadConfig(const std::string& inputFileName);
+		/** Store global configuration */
+		void StoreConfig(const std::string& inputFileName);
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
 		/** Load previously stored analysis xml data */

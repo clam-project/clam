@@ -31,6 +31,9 @@
 #include "DebugSnapshots.hxx"
 #include "AudioSnapshot.hxx"
 
+//#include "ConfigVisitorGetter.hxx"
+//#include "FLTK_GUI_Builder.hxx"
+
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
 
@@ -326,7 +329,18 @@ public:
 
 void UserInterface::EditConfiguration(void)
 {
-	new Configuration(&mAnalysisSynthesisExample->mGlobalConfig);
+// 	FLTK_GUI_Builder guibuilder;
+// 	ConfigVisitorGetter<FLTK_GUI_Builder> getter(&guibuilder);
+	
+// 	mAnalysisSynthesisExample->mGlobalConfig.VisitAll(getter);
+// 	guibuilder.Show();
+	
+// // 	if(!guibuilder){
+// // 		
+// // 		visitor = new ConfigVisitorGetter<FLTK_GUI_Builder>(guibuilder);
+// // 		
+// // 		visitor->Show();
+// // 	}
 }
 
 void UserInterface::LoadConfiguration(void)
@@ -362,6 +376,17 @@ void UserInterface::LoadConfiguration(void)
 	}		
 }
 
+void UserInterface::StoreConfiguration(void)
+{
+	char* str = fl_file_chooser("Select configuration file","*.xml","");
+	if ( str )
+	{
+		mConfigurationText->value(str);
+		std::string inputXMLFileName(str);
+		mAnalysisSynthesisExample->StoreConfig(inputXMLFileName);
+	}		
+}
+
 void UserInterface::LoadTransformation(void)
 {
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
@@ -376,7 +401,6 @@ void UserInterface::LoadTransformation(void)
 		Fl::redraw();
 	}
 }
-
 void UserInterface::LoadAnalysisData(void)
 {
 	char* str = fl_file_chooser("Select analysis data file","{*.xml|*.sdif}","");
@@ -435,25 +459,31 @@ void UserInterface::StoreAnalysisData(void)
 
 void UserInterface::DisplayInputSound(void)
 {
-	Geometry g(0, 0, 1095, 725);
-	ProcDataView<Audio> *view = new ProcDataView<Audio>;
-	ProcDataPresentation<Audio> *presentation = 
-		new ProcDataPresentation<Audio>(g, "Input Audio");
-
-	view->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-	presentation->LinkWithView( view );
-
-	Attach( presentation->GetWindow() );
-
-	presentation->Show();
-	view->Refresh();
-
-//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioIn, "Input Audio");
+	if(mAttachedPresentations[0]==NULL){
+		Geometry g(0, 0, 890, 490);
+		mAttachedViews[0] = new ProcDataView<Audio>;
+		mAttachedPresentations[0] = new ProcDataPresentation<Audio>(g, "Input Audio");
+		
+		mAttachedViews[0]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
+		mAttachedPresentations[0]->LinkWithView( mAttachedViews[0] );
+		
+		Attach( mAttachedPresentations[0]->GetWindow() );
+		mAttachedPresentations[0]->Show();
+		mAttachedViews[0]->Refresh();
+	}
+// 	else{
+// 		Detach( mAttachedPresentations[0]->GetWindow() );
+// 		delete mAttachedPresentations[0];
+// 		mAttachedPresentations[0]=NULL;
+// 		delete mAttachedViews[0];
+// 		mAttachedViews[0]=NULL;
+// 	}
+	Fl::redraw();
 }
 
 void UserInterface::DisplayInputSpectrum(void)
 {
-	Geometry g(0, 0, 1095, 725);
+	Geometry g(0, 0, 890, 490);
 	ProcDataView<Spectrum> *view = new ProcDataView<Spectrum>;
 	ProcDataPresentation<Spectrum> *presentation = 
 		new ProcDataPresentation<Spectrum>(g,"Input Audio Spectrum");
@@ -466,61 +496,80 @@ void UserInterface::DisplayInputSpectrum(void)
 	presentation->Show();
 	view->Refresh();
 
-//	showSnapshotSpectrum(mAnalysisSynthesisExample->);//, "Input Audio Spectrum");
+	Fl::redraw();
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
-	Geometry g(0, 0, 1095, 725);
-	ProcDataView<Audio> *view = new ProcDataView<Audio>;
-	ProcDataPresentation<Audio> *presentation = 
-		new ProcDataPresentation<Audio>(g,"Output Audio");
-
-	view->BindTo( &mAnalysisSynthesisExample->mAudioOut );
-	presentation->LinkWithView( view );
-
-	Attach(presentation->GetWindow());
-
-	presentation->Show();
-	view->Refresh();
-
-//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOut, "Output Audio");
+	if(mAttachedPresentations[1]==NULL){
+		Geometry g(0, 0, 890, 490);
+		mAttachedViews[1] = new ProcDataView<Audio>;
+		mAttachedPresentations[1] = new ProcDataPresentation<Audio>(g, "Output Audio");
+		
+		mAttachedViews[1]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
+		mAttachedPresentations[1]->LinkWithView( mAttachedViews[1] );
+		
+		Attach( mAttachedPresentations[1]->GetWindow() );
+		mAttachedPresentations[1]->Show();
+		mAttachedViews[1]->Refresh();
+	}
+// 	else{
+// 		Detach( mAttachedPresentations[1]->GetWindow() );
+// 		delete mAttachedPresentations[1];
+// 		mAttachedPresentations[1]=NULL;
+// 		delete mAttachedViews[1];
+// 		mAttachedViews[1]=NULL;
+// 	}
+// 	Fl::redraw();
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-	Geometry g(0, 0, 1095, 725);
-	ProcDataView<Audio> *view = new ProcDataView<Audio>;
-	ProcDataPresentation<Audio> *presentation = 
-		new ProcDataPresentation<Audio>(g,"Output Audio Residual");
-
-	view->BindTo( &mAnalysisSynthesisExample->mAudioOutRes );
-	presentation->LinkWithView( view );
-
-	Attach(presentation->GetWindow());
-
-	presentation->Show();
-	view->Refresh();
-
-//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
+	if(mAttachedPresentations[2]==NULL){
+		Geometry g(0, 0, 890, 490);
+		mAttachedViews[2] = new ProcDataView<Audio>;
+		mAttachedPresentations[2] = new ProcDataPresentation<Audio>(g, "Output Residual");
+		
+		mAttachedViews[2]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
+		mAttachedPresentations[2]->LinkWithView( mAttachedViews[2] );
+		
+		Attach( mAttachedPresentations[2]->GetWindow() );
+		mAttachedPresentations[2]->Show();
+		mAttachedViews[2]->Refresh();
+	}
+// 	else{
+// 		Detach( mAttachedPresentations[2]->GetWindow() );
+// 		delete mAttachedPresentations[2];
+// 		mAttachedPresentations[2]=NULL;
+// 		delete mAttachedViews[2];
+// 		mAttachedViews[2]=NULL;
+// 	}
+// 	Fl::redraw();
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-	Geometry g(0, 0, 1095, 725);
-	ProcDataView<Audio> *view = new ProcDataView<Audio>;
-	ProcDataPresentation<Audio> *presentation = 
-		new ProcDataPresentation<Audio>(g,"Output Audio Sinusoidal");
+	if(mAttachedPresentations[3]==NULL){
+		Geometry g(0, 0, 890, 490);
+		mAttachedViews[3] = new ProcDataView<Audio>;
+		mAttachedPresentations[3] = new ProcDataPresentation<Audio>(g, "Output Sinusoidal");
+		
+		mAttachedViews[3]->BindTo( &mAnalysisSynthesisExample->mAudioIn );
+		mAttachedPresentations[3]->LinkWithView( mAttachedViews[3] );
+		
+		Attach( mAttachedPresentations[3]->GetWindow() );
+		mAttachedPresentations[3]->Show();
+		mAttachedViews[3]->Refresh();
+	}
+// 	else{
+// 		Detach( mAttachedPresentations[3]->GetWindow() );
+// 		delete mAttachedPresentations[3];
+// 		mAttachedPresentations[3]=NULL;
+// 		delete mAttachedViews[3];
+// 		mAttachedViews[3]=NULL;
+// 	}
+	Fl::redraw();
 
-	view->BindTo( &mAnalysisSynthesisExample->mAudioOutSin );
-	presentation->LinkWithView( view );
-
-	Attach(presentation->GetWindow());
-
-	presentation->Show();
-	view->Refresh();
-
-//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -578,8 +627,6 @@ void UserInterface::PlayResidual(void)
 	mAnalysisSynthesisExample->PlayResidual();
 }
 
-
-
 void UserInterface::Attach(Fl_Window* canvas)
 {
 /*
@@ -607,6 +654,12 @@ void UserInterface::Attach(Fl_Window* canvas)
 	g->shade_button->callback((Fl_Callback *)shade_cb,mT);
 	g->close_button->callback((Fl_Callback *)close_cb,mT); 
 */
+}
+
+void UserInterface::Detach(Fl_Window* canvas)
+{
+	mSmartTile->close(canvas);
+	mSmartTile->equalize();
 }
 
 int main(void)
