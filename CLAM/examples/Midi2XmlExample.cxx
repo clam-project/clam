@@ -28,11 +28,7 @@
 #include "TraverseDirectory.hxx"
 #include "XMLStorage.hxx"
 
-#include "MIDIReader.hxx"
 #include <iostream>
-
-
-using MIDI::Reader;
 
 using CLAM::MIDIMelody;
 using CLAM::MIDIManager;
@@ -44,7 +40,6 @@ using CLAM::MIDI2Melody;
 using CLAM::TTime;
 using CLAM::MIDIInControl;
 using CLAM::XMLStorage;
-
 
 
 /** Declaration of the concrete Traverse directory class to apply to all files*/
@@ -78,13 +73,20 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	//We configure MIDIManager and controls
 	std::string midiDeviceStr="file:"+filename;
 	MIDIManager manager;
-	// Control for handling MIDI notes		
-	MIDIIOConfig inNoteCfg;	
-	inNoteCfg.SetDevice(midiDeviceStr);
-//	inNoteCfg.SetChannelMask(CLAM::MIDI::ChannelMask(-1)); //all
-	inNoteCfg.SetMessage(CLAM::MIDI::eNoteOnOff);
+
+	// Controls for handling MIDI notes		
+	MIDIIOConfig inNoteOnCfg;	
+	inNoteOnCfg.SetDevice(midiDeviceStr);
+	inNoteOnCfg.SetMessage(CLAM::MIDI::eNoteOn);
 		
-	MIDIInControl inNote(inNoteCfg);
+	MIDIInControl inNoteOn(inNoteOnCfg);
+
+	// Controls for handling MIDI notes		
+	MIDIIOConfig inNoteOffCfg;	
+	inNoteOffCfg.SetDevice(midiDeviceStr);
+	inNoteOffCfg.SetMessage(CLAM::MIDI::eNoteOff);
+		
+	MIDIInControl inNoteOff(inNoteOffCfg);
   
 	//control for stoping at eof 
 	MIDIIOConfig inStopCfg;
@@ -104,16 +106,21 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	//We instantiate our MIDI2Melody converter and link MIDi controls to its input controls
 	MIDI2Melody converter;
 
-	/** Key for Note Off */
-	inNote.GetOutControls().GetByNumber(0).AddLink(&converter.GetInControls().GetByNumber(2));
+	/** Key for Note Off*/
+	inNoteOff.GetOutControls().GetByNumber(1).AddLink(
+		&converter.GetInControls().GetByNumber(2));
 	/** Velocity for Note Off */
-	inNote.GetOutControls().GetByNumber(1).AddLink(&converter.GetInControls().GetByNumber(3));
+	inNoteOff.GetOutControls().GetByNumber(1).AddLink(
+		&converter.GetInControls().GetByNumber(3));
 	/** Key for Note On */
-	inNote.GetOutControls().GetByNumber(2).AddLink(&converter.GetInControls().GetByNumber(4));
+	inNoteOn.GetOutControls().GetByNumber(1).AddLink(
+		&converter.GetInControls().GetByNumber(4));
 	 /** Velocity for Note On */
-	inNote.GetOutControls().GetByNumber(3).AddLink(&converter.GetInControls().GetByNumber(5));
+	inNoteOn.GetOutControls().GetByNumber(2).AddLink(
+		&converter.GetInControls().GetByNumber(5));
   
-	inStop.GetOutControls().GetByNumber(0).AddLink(&converter.GetInControls().GetByNumber(0));
+	inStop.GetOutControls().GetByNumber(0).AddLink(
+		&converter.GetInControls().GetByNumber(0));
   
 	//We start the MIDI manager and initialize loop variables	
 	manager.Start();
