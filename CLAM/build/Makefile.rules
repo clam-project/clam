@@ -54,7 +54,7 @@ endif
 program: $(PROGRAMPATH)$(PROGRAM)
 
 tags: .FORCE
-	ctags $(SOURCES) -h `cat dep/*.d | grep -v \.o: | grep -v \.d: | sed -e 's/\\\\//' | sort | uniq`
+	ctags $(SOURCES) `cat dep/*.d | grep -v \.o: | grep -v \.d: | sed -e 's/\\\\//' | sort | uniq`
 
 ifeq ($(CONFIG),debug)
 LIBRARIES = $(LIBRARIES_DEBUG)
