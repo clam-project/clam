@@ -121,11 +121,6 @@ public:
 		return theInstance;
 	}
 
-	FactoryRegistry& GetRegistry() 
-	{
-		return _registry;
-	}
-	
 	/// Gives ownership of the new created Processing registered with
 	/// the given name.
 	/// It asserts that the name is in the registry.
@@ -133,7 +128,7 @@ public:
 	{
 		// it asserts that name is in the registry
 		CreatorMethod creator =
-			GetRegistry().GetCreator( name );
+			_registry.GetCreator( name );
 		return (*creator)();
 	}
 
@@ -142,18 +137,18 @@ public:
 	/// It throws an ErrFactory if the name isn't found in the registry.
 	Processing* CreateSafe( const RegistryKey name ) throw (ErrFactory)
 	{
-		return ( *GetRegistry().GetCreatorSafe(name) )();
+		return  _registry.GetCreatorSafe(name)();
 	}
 	void Clear()
 	{
-		GetRegistry().RemoveAllCreators();
+		_registry.RemoveAllCreators();
 	}
 	void AddCreator(const RegistryKey name, CreatorMethod creator) {
-		GetRegistry().AddCreator(name, creator);
+		_registry.AddCreator(name, creator);
 	}
 
 	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory) {
-		GetRegistry().AddCreatorSafe(name, creator);
+		_registry.AddCreatorSafe(name, creator);
 	}
 
 private:
@@ -161,15 +156,18 @@ private:
 
 };
 
-template< typename ProcessingType>
-class AutomaticRegistrator
+template< typename ConcreteProcessingType>
+class FactoryRegistrator
 {
 public:
-	AutomaticRegistrator()
+	FactoryRegistrator( Factory& fact )
 	{
-		//fake impl! don't use the template type.
-		Factory::GetInstance().GetRegistry().AddCreator(
-			"Oscillator", CreateOscillator );
+		fact.AddCreator( "Oscillator", CreateAudioAdder );
+	}
+
+	static Processing* Create()
+	{
+		return new ConcreteProcessingType;
 	}
 };
 

@@ -54,7 +54,7 @@ protected:
 	
 	void testCreate_ReturnsAnOscillator()
 	{
-		_theFactory->GetRegistry().AddCreator( "Oscillator", CLAM::CreateOscillator );
+		_theFactory->AddCreator( "Oscillator", CLAM::CreateOscillator );
 		
 		CLAM::Processing* returned = _theFactory->Create("Oscillator");
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
