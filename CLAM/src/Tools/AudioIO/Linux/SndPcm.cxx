@@ -172,12 +172,42 @@ void SndPcm::RecoverXRun(short* data)
 	putchar('.');
 
 	latency = latency_min - 4;
+	
 	if (setparams(phandle, chandle, &latency) < 0)
 		throw SndPcmError(error_str);
 
-	Start();
-}
+	if (phandle)
+	{
+		if (writebuf(phandle,(char*) data, latency) < 0) {
+			cat_error("write error\n");
+			throw SndPcmError(error_str);
+		}
+		if (writebuf(phandle,(char*) data, latency) < 0) {
+			cat_error("write error\n");
+			throw SndPcmError(error_str);
+		}
+	}
+	
 
+	if (chandle)
+	{
+		int err;
+
+		if ((err = snd_pcm_start(chandle)) < 0) {
+			cat_error("Go error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
+	else
+	{
+		int err;
+
+		if ((err = snd_pcm_start(phandle)) < 0) {
+			cat_error("Go error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
+}
 
 void SndPcm::Poll(void)
 {
@@ -266,8 +296,6 @@ int SndPcm::setparams_bufsize(snd_pcm_t *handle,
 {
 	int err;
 	snd_pcm_uframes_t periodsize;
-
-	if (handle==0) return 0;
 
 	snd_pcm_hw_params_copy(params, tparams);
 	err = snd_pcm_hw_params_set_buffer_size_near(handle, params, bufsize * 2);
@@ -358,16 +386,20 @@ int SndPcm::setparams(snd_pcm_t *phandle, snd_pcm_t *chandle, int *bufsize)
 	snd_pcm_sw_params_t *p_swparams = 0, *c_swparams = 0;
 	snd_pcm_sframes_t size;
 
-	snd_pcm_hw_params_alloca(&p_params);
+	if (phandle)
+	{
+		snd_pcm_hw_params_alloca(&p_params);
+		snd_pcm_hw_params_alloca(&pt_params);
+		snd_pcm_sw_params_alloca(&p_swparams);
+	}
+	
 	if (chandle)
+	{
 		snd_pcm_hw_params_alloca(&c_params);
-	snd_pcm_hw_params_alloca(&pt_params);
-	if (chandle)
 		snd_pcm_hw_params_alloca(&ct_params);
-	snd_pcm_sw_params_alloca(&p_swparams);
-	if (chandle)
 		snd_pcm_sw_params_alloca(&c_swparams);
-		
+	}
+	
 	if (phandle && (err = setparams_stream(phandle, pt_params, channels_out, "playback")) < 0) {
 		cat_error("Unable to set parameters for playback stream: %s\n", snd_strerror(err));
 		return -1;;
