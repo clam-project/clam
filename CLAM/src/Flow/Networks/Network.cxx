@@ -2,6 +2,7 @@
 #include "Network.hxx"
 #include "FlowControl.hxx"
 #include <algorithm>
+#include <iostream>
 
 namespace CLAM
 {
@@ -85,6 +86,7 @@ namespace CLAM
 
 		inport.Attach(GetNodeAttachedTo(outport));
 		_flowControl->ConnectionAddedToNetwork();
+
 		return true;
 	}
 
@@ -152,6 +154,7 @@ namespace CLAM
 			}
 			return *out.GetNode();
 	}
+
 	NodeBase* Network::CreateAudioNodeWithDefaultStreamBuffer()
 	{
 		//@todo
@@ -216,5 +219,16 @@ namespace CLAM
 	{
 		return _nodes.end();
 	}
+
+	Network::ConstNodesIterator Network::BeginNodes() const
+	{
+		return _nodes.begin();
+	}
+
+	Network::ConstNodesIterator Network::EndNodes() const
+	{
+		return _nodes.end();
+	}
+
 
 }
