@@ -66,18 +66,45 @@ public:
 	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
 
 public:
-	void DefaultInit();
-
 	FrameDescriptors(Frame* pFrame);
-		
-	const Frame* GetpFrame() const{return mpFrame;}
-	void SetpFrame(Frame* pFrame) {mpFrame=pFrame;}
 
-	
+	inline const Frame* GetpFrame() const;
+	inline void SetpFrame(Frame* pFrame);
+
+private:
+	inline void DefaultInit();
+	inline void CopyInit(const FrameDescriptors & copied);
+
 private:
 	Frame* mpFrame;
 
 };
+
+
+
+
+FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
+{
+	MandatoryInit();
+	mpFrame=pFrame;
+}
+
+void FrameDescriptors::DefaultInit() {
+	mpFrame=0;
+}
+
+void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
+	mpFrame=copied.mpFrame;
+}
+
+const Frame* FrameDescriptors::GetpFrame() const {
+	return mpFrame;
+}
+
+void FrameDescriptors::SetpFrame(Frame* pFrame) {
+	mpFrame=pFrame;
+}
+
 
 
 };//CLAM
