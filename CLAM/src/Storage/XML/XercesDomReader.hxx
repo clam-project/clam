@@ -27,6 +27,7 @@
 #include <xercesc/sax/HandlerBase.hpp>
 #include <string>
 #include <list>
+#include <sstream>
 #include "Assert.hxx"
 
 namespace xercesc = XERCES_CPP_NAMESPACE;
