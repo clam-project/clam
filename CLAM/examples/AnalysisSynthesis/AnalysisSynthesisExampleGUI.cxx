@@ -83,31 +83,17 @@ void AnalysisSynthesisExampleGUI::DoSynthesis()
 		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, SynthesisProcessing ) );
 }
 
-void AnalysisSynthesisExampleGUI::DoLoadXMLAnalysis()
+void AnalysisSynthesisExampleGUI::DoLoadAnalysis()
 {
 	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, LoadXMLAnalysis ) );
+		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, LoadAnalysis ) );
 
 }
 
-void AnalysisSynthesisExampleGUI::DoLoadSDIFAnalysis()
+void AnalysisSynthesisExampleGUI::DoStoreAnalysis()
 {
 	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, LoadSDIFAnalysis ) );
-
-}
-
-void AnalysisSynthesisExampleGUI::DoStoreXMLAnalysis()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, StoreXMLAnalysis ) );
-
-}
-
-void AnalysisSynthesisExampleGUI::DoStoreSDIFAnalysis()
-{
-	ExecuteMethodOnThreadKeepingScreenUpToDate( 
-		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, StoreSDIFAnalysis ) );
+		makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, StoreAnalysis ) );
 
 }
 

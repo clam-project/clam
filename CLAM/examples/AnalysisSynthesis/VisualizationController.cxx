@@ -145,13 +145,13 @@ void VisualizationController::Display ( enum DisplayList view, Audio& data )
 		if( mCanvas )
 		{
 			width = mCanvas->w();
-			height = mCanvas->h()/(mCanvas->children()+1)
+			height = mCanvas->h()/(mCanvas->children()+1);
 		}
 		mAudioPresentations[ view ] = new Fl_Browsable_Playable_Audio( 0, 0, width, height );
 		mAudioPresentations[ view ]->label( sDisplayName[ view ].name );
 		mAudioPresentations[ view ]->callback( (Fl_Callback*)_Detach, &mDetachCallbackData[ view ] );
 
-		mAudioPresentations[ view ]->setAudioPlayer( new AudioPlayer( data ) );
+//		mAudioPresentations[ view ]->setAudioPlayer( new AudioPlayer( data ) );
 
 		mAudioPresentations[ view ]->AttachTo( mAudioAdapters[ view ] );
 
@@ -182,7 +182,7 @@ void VisualizationController::Display ( enum DisplayList view, Spectrum& data )
 		if( mCanvas )
 		{
 			width = mCanvas->w();
-			height = mCanvas->h()/(mCanvas->children()+1)
+			height = mCanvas->h()/(mCanvas->children()+1);
 		}
 		mSpectrumPresentations[ view-eAudioDisplays ] = new Fl_Spectrum( 0, 0, width, height );
 		mSpectrumPresentations[ view-eAudioDisplays ]->label( sDisplayName[ view ].name );
@@ -197,4 +197,9 @@ void VisualizationController::Display ( enum DisplayList view, Spectrum& data )
 		if( mCanvas )
 			mCanvas->redraw();
 	}
+}
+
+void VisualizationController::SetCanvas( Fl_Smart_Tile* canvas )
+{
+	mCanvas = canvas;
 }

@@ -24,6 +24,8 @@
 #include "SegmentDescriptors.hxx"
 #include "BasicStatistics.hxx"
 
+#include <FL/fl_file_chooser.H>
+
 #include "AudioFileIn.hxx"
 #include "AudioFileOut.hxx"
 #include <iostream>
@@ -152,8 +154,8 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 		mHaveMelody = false;
 		mHaveSpectrum = false;
 	}
-	
-	mCurrentWaitMessage = CreateWaitMessage( "Loading configuration xml file, please wait." );
+
+	mCurrentWaitMessage = CreateWaitMessage( "Loading XML configuration file, please wait." );
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
@@ -198,7 +200,7 @@ void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 
 	delete wm;
 }
-
+/*
 void AnalysisSynthesisExampleBase::DoLoadSDIFAnalysis()
 {
 	LoadSDIFAnalysis();
@@ -206,7 +208,6 @@ void AnalysisSynthesisExampleBase::DoLoadSDIFAnalysis()
 
 void AnalysisSynthesisExampleBase::LoadSDIFAnalysis()
 {
-		
 	mSDIFReader.Start();
 	while(mSDIFReader.Do()) {}
 	mSDIFReader.Stop();
@@ -227,40 +228,48 @@ void AnalysisSynthesisExampleBase::LoadXMLAnalysis()
 	mHaveSpectrum = false;
 
 }
-
-void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName)
+*/
+void AnalysisSynthesisExampleBase::LoadAnalysis()
 {
-	std::string ext=inputFileName.substr(inputFileName.length()-4,inputFileName.length());
-	if(ext=="sdif")
-	{
-		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data sdif file, please wait");
+// 	std::string ext=inputFileName.substr(inputFileName.length()-4,inputFileName.length());
+// 	if(ext=="sdif")
+// 	{
+// 		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data sdif file, please wait");
 
-		SDIFInConfig cfg;
-		cfg.SetMaxNumPeaks(100);
-		cfg.SetFileName(inputFileName);
-		cfg.SetEnableResidual(true);
-		mSDIFReader.Configure(cfg);
+// 		SDIFInConfig cfg;
+// 		cfg.SetMaxNumPeaks(100);
+// 		cfg.SetFileName(inputFileName);
+// 		cfg.SetEnableResidual(true);
+// 		mSDIFReader.Configure(cfg);
 		
-		mSegment.AddAll();
-		mSegment.UpdateData();
-		mSDIFReader.Output.Attach(mSegment);
-		DoLoadSDIFAnalysis();
+// 		mSegment.AddAll();
+// 		mSegment.UpdateData();
+// 		mSDIFReader.Output.Attach(mSegment);
+// 		DoLoadSDIFAnalysis();
 
-		DestroyWaitMessage();
-	}
-	else if(ext==".xml")
-	{
-		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data xml file, please wait");
-		//Loading analysis
+// 		DestroyWaitMessage();
+// 	}
+// 	else if(ext==".xml")
+// 	{
+// 		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data xml file, please wait");
+// 		//Loading analysis
 
-		DoLoadXMLAnalysis();
+// 		DoLoadXMLAnalysis();
 
-		DestroyWaitMessage();
-	}
-	else throw Err("AnalysisSynthesisExampleBase::LoadAnalysis:wrong extension to load");
-	
+// 		DestroyWaitMessage();
+// 	}
+// 	else throw Err("AnalysisSynthesisExampleBase::LoadAnalysis:wrong extension to load");
+
+	char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
+
+	mCurrentWaitMessage = CreateWaitMessage("Loading analysis data, please wait");
+
+	mSerialization.DoSerialization( mSerialization.Load, mSegment, fileName );
+
+	DestroyWaitMessage();
 }
 
+/*
 void AnalysisSynthesisExampleBase::StoreSDIFAnalysis()
 {
 	int i;
@@ -325,29 +334,34 @@ void AnalysisSynthesisExampleBase::DoStoreXMLAnalysis()
 {
 	StoreXMLAnalysis();
 }
-
+*/
 void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 {
-	CLAM_ASSERT(mGlobalConfig.GetOutputAnalysisFile()!="","Not a valid file name");
-	
-	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
-	if(ext=="sdif")
-	{
-		mCurrentWaitMessage = CreateWaitMessage("Storing sdif file, please wait");
+//	CLAM_ASSERT(mGlobalConfig.GetOutputAnalysisFile()!="","Not a valid file name");
+// 	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
+// 	if(ext=="sdif")
+// 	{
+// 		mCurrentWaitMessage = CreateWaitMessage("Storing sdif file, please wait");
 		
-		DoStoreSDIFAnalysis();
+// 		DoStoreSDIFAnalysis();
 
-		DestroyWaitMessage();
-	}
-	else if(ext==".xml")
-	{
-		mCurrentWaitMessage = CreateWaitMessage("Storing xml file, please wait");
+// 		DestroyWaitMessage();
+// 	}
+// 	else if(ext==".xml")
+// 	{
+// 		mCurrentWaitMessage = CreateWaitMessage("Storing xml file, please wait");
 
-		DoStoreXMLAnalysis();
+// 		DoStoreXMLAnalysis();
 
-		DestroyWaitMessage();
-	}
-	
+// 		DestroyWaitMessage();
+// 	}
+	char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
+
+	mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
+
+	mSerialization.DoSerialization( mSerialization.Store, mSegment, fileName );	
+
+	DestroyWaitMessage();
 }
 
 bool AnalysisSynthesisExampleBase::LoadInputSound(void)

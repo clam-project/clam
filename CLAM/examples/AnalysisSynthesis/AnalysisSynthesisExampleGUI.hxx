@@ -24,9 +24,9 @@ public:
 
 	void Run();
 
-	Progress* CreateProgress(const char* title,float from,float to);
+	CLAMGUI::Progress* CreateProgress(const char* title,float from,float to);
 
-	WaitMessage* CreateWaitMessage(const char* title);
+	CLAMGUI::WaitMessage* CreateWaitMessage(const char* title);
 
 
 protected: // methods
@@ -37,13 +37,9 @@ protected: // methods
 
 	void DoTracksCleanup();
 
-	void DoLoadXMLAnalysis();
+	void DoLoadAnalysis();
 
-	void DoLoadSDIFAnalysis();
-
-	void DoStoreXMLAnalysis();
-
-	void DoStoreSDIFAnalysis();
+	void DoStoreAnalysis();
 
 private:
 

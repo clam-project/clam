@@ -230,9 +230,8 @@ void UserInterface::cb_mWindow2(Fl_Window* o, void* v) {
   ((UserInterface*)(o->user_data()))->cb_mWindow2_i(o,v);
 }
 
-UserInterface::UserInterface():mVC(mSmartTile) {
+UserInterface::UserInterface() {
   Fl_Window* w;
-  mVC.mSlot.Wrap( this, &UserInterface::ChangeTimeTag );
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
@@ -274,6 +273,8 @@ UserInterface::UserInterface():mVC(mSmartTile) {
     mWindow2=NULL;
     o->end();
   }
+  mVC.SetCanvas( mSmartTile );
+  mVC.mSlot.Wrap( this, &UserInterface::ChangeTimeTag );
 }
 
 void UserInterface::AboutWindow() {

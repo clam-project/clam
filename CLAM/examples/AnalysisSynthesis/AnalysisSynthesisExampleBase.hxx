@@ -24,6 +24,8 @@
 
 #include <string>
 
+#include "SerializationController.hxx"
+
 #include "SMSSynthesis.hxx"
 #include "SMSAnalysis.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
@@ -72,34 +74,34 @@ namespace CLAM
 		void LoadTransformationScore(const std::string& inputFileName);
 		/** Load previously stored analysis xml data */
 
-		void LoadXMLAnalysis();
+//		void LoadXMLAnalysis();
 
 		/** This method should be overridden on subclasses to provide
 			further control on how the concrete process is performed */
-		virtual void DoLoadXMLAnalysis();
+//		virtual void DoLoadXMLAnalysis();
 		
-		void LoadSDIFAnalysis();
+//		void LoadSDIFAnalysis();
 
 		/** This method should be overridden on subclasses to provide
 			further control on how the concrete process is performed */
 
-		virtual void DoLoadSDIFAnalysis();
+//		virtual void DoLoadSDIFAnalysis();
 
-		void LoadAnalysis(const std::string& inputFileName);
-
-		/** This method should be overridden on subclasses to provide
-		further control on how the concrete process is performed */
-
-		virtual void DoStoreXMLAnalysis();
-
-		void StoreXMLAnalysis();
-
-		virtual void DoStoreSDIFAnalysis();
+		void LoadAnalysis(  );
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */
 
-		void StoreSDIFAnalysis();
+//		virtual void DoStoreXMLAnalysis();
+
+//		void StoreXMLAnalysis();
+
+//		virtual void DoStoreSDIFAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+//		void StoreSDIFAnalysis();
 
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
@@ -153,6 +155,8 @@ namespace CLAM
 		/** Stores previously analyzed melody into xml format */
 		void StoreMelody(void);
 
+
+		SerializationController mSerialization;
 		/** Input audio */
 		Audio mAudioIn;
 		/** Output audio */

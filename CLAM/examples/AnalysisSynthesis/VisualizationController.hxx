@@ -75,6 +75,7 @@ namespace CLAMVM
 		void CloseAll ( );
 		void Display ( enum DisplayList view, Audio& data );
 		void Display ( enum DisplayList view, Spectrum& data );
+		void SetCanvas( Fl_Smart_Tile* canvas );
 
 	private:
 		struct DetachCallbackData

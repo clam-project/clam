@@ -131,21 +131,31 @@ void UserInterface::LoadTransformation(void)
 }
 void UserInterface::LoadAnalysisData(void)
 {
-	char* str = fl_file_chooser("Select analysis data file","{*.xml|*.sdif}","");
-	if (str)
+// 	char* str = fl_file_chooser("Select analysis data file","{*.xml|*.sdif}","");
+// 	if (str)
+// 	{
+// 		//mAnalysisDataText->value(str);
+// 		std::string inputXMLFileName(str);
+// 		mAnalysisSynthesisExample->LoadAnalysis(inputXMLFileName);
+// 		mStoreAnalysisData->deactivate();
+// 		if (
+// 			mAnalysisSynthesisExample->mHaveAnalysis &&
+// 			mAnalysisSynthesisExample->mHaveConfig)
+// 		{
+// 			mSynthesize->activate();
+// 		}
+// 		Fl::redraw();
+// 	}
+
+	mAnalysisSynthesisExample->LoadAnalysis(  );
+	mStoreAnalysisData->deactivate(  );
+	if (
+		mAnalysisSynthesisExample->mHaveAnalysis &&
+		mAnalysisSynthesisExample->mHaveConfig )
 	{
-		//mAnalysisDataText->value(str);
-		std::string inputXMLFileName(str);
-		mAnalysisSynthesisExample->LoadAnalysis(inputXMLFileName);
-		mStoreAnalysisData->deactivate();
-		if (
-			mAnalysisSynthesisExample->mHaveAnalysis &&
-			mAnalysisSynthesisExample->mHaveConfig)
-		{
-			mSynthesize->activate();
-		}
-		Fl::redraw();
+		mSynthesize->activate(  );
 	}
+	Fl::redraw(  );
 }
 
 void UserInterface::Analyze(void)
@@ -474,8 +484,8 @@ void UserInterface::ChangeFrame()
 	int nframe = (int) mCounter->value();
 
 	List<Frame>& localFrames = mAnalysisSynthesisExample->mSegment.GetFramesArray();
-	
-	TData nextcursorpos = localFrames[ nframe ].GetCenterTime();
+
+	TData nextcursorpos = localFrames[ nframe ].GetCenterTime() * mAnalysisSynthesisExample->mSegment.GetSamplingRate();
 	
 	//Notify SigSlotted class to change
 	mVC.mFrameSignal.Emit( nextcursorpos );
@@ -493,7 +503,7 @@ void UserInterface::ChangeFrame()
 void UserInterface::ChangeTimeTag( double tag )
 {
 	//Change mCounter
-	TTime time(tag);
+	TTime time( tag / mAnalysisSynthesisExample->mSegment.GetSamplingRate() );
 	TIndex nframe = mAnalysisSynthesisExample->mSegment.FindFrame( time );
 
 	mCounter->value( (int) nframe );
