@@ -1,6 +1,5 @@
 <SMSAnalysisSynthesisConfig>
 	<InputSoundFile>./3.wav</InputSoundFile>
-
 	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
@@ -8,7 +7,7 @@
 	<ResAnalysisWindowType>BlackmanHarris92</ResAnalysisWindowType>
 	<AnalysisZeroPaddingFactor>2</AnalysisZeroPaddingFactor>
 	<AnalysisPeakDetectMagThreshold>-150</AnalysisPeakDetectMagThreshold>
-	<AnalysisMaxSines>100</AnalysisMaxSines>
+	<AnalysisPeakDetectMaxFreq>8000</AnalysisPeakDetectMaxFreq>
 	<AnalysisSinTrackingFreqDeviation>20</AnalysisSinTrackingFreqDeviation>
 	<AnalysisReferenceFundFreq>1000</AnalysisReferenceFundFreq>
 	<AnalysisLowestFundFreq>100</AnalysisLowestFundFreq>
@@ -19,4 +18,3 @@
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
 	<MorphSoundFile/>
 </SMSAnalysisSynthesisConfig>
-

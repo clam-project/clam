@@ -127,10 +127,9 @@ void SMSBase::InitConfigs(void)
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
 
 	mAnalConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
-	
-	mAnalConfig.GetSinTracking().SetnMaxSines(mGlobalConfig.GetAnalysisMaxSines());
+	mAnalConfig.GetPeakDetect().SetMaxFreq(mGlobalConfig.GetAnalysisPeakDetectMaxFreq());
+
 	mAnalConfig.GetSinTracking().SetIsHarmonic(mGlobalConfig.GetAnalysisHarmonic());
-	mAnalConfig.GetPeakDetect().SetMaxPeaks(mGlobalConfig.GetAnalysisMaxSines());
 
 
 	mAnalConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
@@ -185,7 +184,7 @@ bool SMSBase::HaveCompatibleConfig()
 	mGlobalConfig.HasResAnalysisWindowType() &&
 	mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
 	mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
-	mGlobalConfig.HasAnalysisMaxSines() &&
+	mGlobalConfig.HasAnalysisPeakDetectMaxFreq() &&
 	mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
 	mGlobalConfig.HasAnalysisReferenceFundFreq() && 
 	mGlobalConfig.HasAnalysisLowestFundFreq() && 
@@ -529,15 +528,6 @@ void SMSBase::DoSynthesis()
 
 void SMSBase::SynthesisProcessing()
 {
-	//The output Audio 
-	TSize size=TSize((mTransformedSegment.GetEndTime()-
-		mTransformedSegment.GetBeginTime())*mTransformedSegment.GetSamplingRate());
-	mAudioOutSin.SetSize(size);
-	mAudioOutRes.SetSize(size);
-	mAudioOut.SetSize(size);
-
-	//The system that contains all synthesis PO
-	
 	GetSynthesis().Start();
 	/////////////////////////////////////////////////////////////////////////////
 	// The main synthesis processing loop.
@@ -552,6 +542,14 @@ void SMSBase::SynthesisProcessing()
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
 	
+	//test
+	TSize size=synthFrameSize*nSynthFrames;
+
+	mAudioOutSin.SetSize(size);
+	mAudioOutRes.SetSize(size);
+	mAudioOut.SetSize(size);
+
+
 	mTransformedSegment.mCurrentFrameIndex=0;
 	for(i=0;i<nSynthFrames;i++){
 		

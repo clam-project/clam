@@ -31,7 +31,7 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	
 	SetAnalysisZeroPaddingFactor(2);
 	SetAnalysisPeakDetectMagThreshold(-150);//in dB
-	SetAnalysisMaxSines(50);
+	SetAnalysisPeakDetectMaxFreq(10000);
 	SetAnalysisSinTrackingFreqDeviation(20);//in percetage
 	SetAnalysisReferenceFundFreq(1000); 
 	SetAnalysisLowestFundFreq(40); 

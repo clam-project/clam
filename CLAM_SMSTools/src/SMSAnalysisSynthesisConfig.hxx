@@ -50,7 +50,7 @@ class SMSAnalysisSynthesisConfig:public ProcessingConfig
 
 	DYN_ATTRIBUTE(10,public,TSize,AnalysisZeroPaddingFactor);
 	DYN_ATTRIBUTE(11,public,TData,AnalysisPeakDetectMagThreshold);
-	DYN_ATTRIBUTE(12,public,TSize,AnalysisMaxSines);
+	DYN_ATTRIBUTE(12,public,TSize,AnalysisPeakDetectMaxFreq);
 	DYN_ATTRIBUTE(13,public,TData,AnalysisSinTrackingFreqDeviation);
 	DYN_ATTRIBUTE(14,public,TData,AnalysisReferenceFundFreq); 
 	DYN_ATTRIBUTE(15,public,TData,AnalysisLowestFundFreq); 
