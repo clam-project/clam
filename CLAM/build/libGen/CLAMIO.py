@@ -97,7 +97,7 @@ int main( int argc, char** argv )
         
         script.addLibrary( libALSA )
     
-    libPortmidi = AutoconfTools.Library( "portmidi", "C" )
+    libPortmidi = AutoconfTools.Library( "portmidi", "C", False )
     libPortmidi.sandboxName = "portmidi"
     libPortmidi.headers = "portmidi.h"
     libPortmidi.libs = "portmidi"
