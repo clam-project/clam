@@ -185,61 +185,58 @@ TData AudioDescriptors::ComputeDecrease()
 	DataArray&  data     = mpAudio->GetBuffer();
 	const TSize dataSize = mpAudio->GetSize();
 
-	DataArray energyEnv;
-	energyEnv.Resize(dataSize);
-	energyEnv.SetSize(dataSize);
+	DataArray logEnv;
+	logEnv.Resize(dataSize);
+	logEnv.SetSize(dataSize);
 
 	// Compute 20Hz lowpass filter coefficients
-	const TData omega_c = 2*PI*20/mpAudio->GetSampleRate();
-	const TData alpha   = (1-sin(omega_c)) / cos(omega_c);
+	const double omega_c = 2*PI*20/mpAudio->GetSampleRate();
+	const double alpha   = (1-sin(omega_c)) / cos(omega_c);
 
-	const TData b0 = (1-alpha)/2;
-	const TData a1 = -alpha;
+	const double b0 = (1-alpha)/2;
+	const double a1 = -alpha;
 
 	// Find maximum value
-	if (data[0] == 0) data[0] = mEpsilon;
-	energyEnv[0] = log10( b0*fabsf(data[0]) );
+	double y = b0*fabsf(data[0]);
+	TData correctedY = y<mEpsilon ? mEpsilon : y;
+	logEnv[0] = log10(correctedY);
 
-	TData maxVal = energyEnv[0];
+	TData maxVal = logEnv[0];
 	TSize maxIdx = 0;
 
 	for (TIndex i=1; i<dataSize; i++)
 	{
+		y = b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*y;
+		correctedY = y<mEpsilon ? mEpsilon : y;
+		logEnv[i] = log10(correctedY);
 
-		// Replace zeros with very small value due to log10
-		if (data[i] == 0) data[i] = mEpsilon;
-
-		// Base computation on base 10 logarithm of signal energy envelope.
-		energyEnv[i] = log10( b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*energyEnv[i-1] );
-		if (energyEnv[i] > maxVal)
+		if (logEnv[i] > maxVal)
 		{
-			maxVal = energyEnv[i];
+			maxVal = logEnv[i];
 			maxIdx = i;
 		}
 	}
 
 	// Compute means and gradient of decay part
-	TData meanX = 0;
-	TData meanY = 0;
-	TData num   = 0;
-	TData denum = 0;
-	const TData N = dataSize - maxIdx;
+	TData sumX = 0;
+	TData sumXX = 0;
+	TData sumY = 0;
+	TData sumXY = 0;
+	const long N = dataSize - maxIdx;
 
 	for (TIndex i=maxIdx; i<dataSize; i++)
 	{
-		meanX += i;
-		meanY += energyEnv[i];
+		sumX += i;
+		sumY += logEnv[i];
 
-		num   += i*energyEnv[i];
-		denum += i*i;
+		sumXY += i*logEnv[i];
+		sumXX += i*i;
 	}
-	meanX /= N;
-	meanY /= N;
+	sumX = N*(N + 2*maxIdx - 1)/2;
+	TData num = N * sumXY - sumX * sumY;
+	TData den = N * sumXX - sumX * sumX;
 
-	num   -= N*meanX*meanY;
-	denum -= N*meanX*meanX;
-
-	return (num / denum) * mpAudio->GetSampleRate();
+	return (num / den) * mpAudio->GetSampleRate();
 }
 
 
