@@ -15,7 +15,11 @@ class InControlArray
 	Array<InControl*> mArray;
 public:
 
-	inline InControlArray(int size, const std::string &name, Processing* whereToPublish=0);
+	inline InControlArray(
+		int size, 
+		const std::string &name, 
+		Processing* parent = 0);
+
 	inline ~InControlArray();
 
 	inline InControl       &operator[](int i)        { return *mArray[i]; }
@@ -25,7 +29,7 @@ public:
 
 InControlArray::InControlArray(int size,
                                const std::string &name,
-                               Processing *parent)
+                               Processing *parent /*0 by default. See decl above*/)
 {
 	mArray.Resize(size);
 	mArray.SetSize(size);
