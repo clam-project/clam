@@ -121,6 +121,24 @@ namespace CppUnit
 		}
 	};
 
+	// traits for type bool
+	template<>
+	struct assertion_traits< bool >
+	{
+		static bool equal( const bool& x, const bool& y )
+		{
+			return (x==y);
+		}
+		static std::string toString( const bool& x)
+		{
+			CppUnit::OStringStream ost;
+			if (x) 
+				ost << "true";
+			else 
+				ost << "false";
+			return ost.str();
+		}
+	};
 } //namespace CppUnit
 
 #endif
