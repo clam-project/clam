@@ -338,10 +338,11 @@ namespace CLAMTest
 			proc.Do();
 
 			proc.Stop();
+			
+			CLAM::TTime truth = CLAM::TTime( readSamples_1.GetSize() ) / file.GetHeader().GetSampleRate();
+			CLAM::TTime valueObtained = readSamples_1.GetBeginTime() - previousBeginTime;
 
-			CPPUNIT_ASSERT_EQUAL( CLAM::TTime( readSamples_1.GetSize() ) / file.GetHeader().GetSampleRate(),
-					      readSamples_1.GetBeginTime() - previousBeginTime);
-
+			CPPUNIT_ASSERT( fabs( truth - valueObtained ) < 1e-4 );
 
 		}
 

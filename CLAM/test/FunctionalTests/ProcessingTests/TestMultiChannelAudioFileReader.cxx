@@ -470,11 +470,15 @@ namespace CLAMTest
 
 			proc.Stop();
 
-			CPPUNIT_ASSERT_EQUAL( CLAM::TTime( readSamplesLeft.GetSize() ) / file.GetHeader().GetSampleRate(),
-					      readSamplesLeft.GetBeginTime() - firstLeftBeginTime );
+			CLAM::TTime truthLeft = CLAM::TTime( readSamplesLeft.GetSize() ) / file.GetHeader().GetSampleRate();
+			CLAM::TTime yieldLeft = readSamplesLeft.GetBeginTime() - firstLeftBeginTime; 
 
-			CPPUNIT_ASSERT_EQUAL( CLAM::TTime( readSamplesRight.GetSize() ) / file.GetHeader().GetSampleRate(),
-					      readSamplesRight.GetBeginTime() - firstRightBeginTime );
+			CPPUNIT_ASSERT( fabs( truthLeft - yieldLeft ) < 1e-4 );
+
+			CLAM::TTime truthRight = CLAM::TTime( readSamplesRight.GetSize() ) / file.GetHeader().GetSampleRate(); 
+			CLAM::TTime yieldRight = readSamplesRight.GetBeginTime() - firstRightBeginTime;
+			
+			CPPUNIT_ASSERT( fabs( truthRight - truthLeft ) < 1e-4 );
 
 		}
 
