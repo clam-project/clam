@@ -43,12 +43,18 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	setRootIsDecorated( TRUE );
 	QListViewItem * gen = new QListViewItem( this,"Generators" );
 	ProcessingItem * osc = new ProcessingItem( gen, "Oscillator");
+	ProcessingItem * osc2 = new ProcessingItem( gen, "OscillatorWithModulation");
+	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
+
 	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
 	ProcessingItem * multiplier = new ProcessingItem( binops, "AudioMultiplier" );
 	ProcessingItem * adder = new ProcessingItem( binops, "AudioAdder" );
-//	ProcessingItem * mixer_2 = new ProcessingItem( binops, "Mixer 2" );
-	QListViewItem * analysis = new QListViewItem( this,"Analysis" );
-	ProcessingItem * fft_rfftw = new ProcessingItem( analysis, "FFT_rfftw" );
+	
+	QListViewItem * controls = new QListViewItem( this, "Controls" );
+	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
+	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
+	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
+	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
 	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );

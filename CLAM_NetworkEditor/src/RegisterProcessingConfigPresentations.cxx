@@ -25,35 +25,47 @@
 // concrete configs
 #include "OscillatorConfigPresentation.hxx"
 #include "ConfigPresentationTmpl.hxx"
-#include "Controller.hxx"
 #include "AudioFile.hxx"
 #include "AutoPanner.hxx"
 #include "AudioIO.hxx"
-//#include "AudioMixer.hxx"
+#include "AudioMultiplier.hxx"
+#include "AudioAdder.hxx"
 #include "BinaryAudioOp.hxx"
 #include "Oscillator.hxx"
-#include "FFTConfig.hxx"
+#include "ADSR.hxx"
+
+// in draft/NewProcessings
+#include "FlagControl.hxx"
+#include "Random.hxx"
+#include "OscillatorWithModulation.hxx"
+
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
 
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OscillatorConfig> OscillatorConfigPresentationTmpl;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::ControllerConfig> ControllerConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> AutoPannerConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioFileConfig> AudioFileConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioIOConfig> AudioIOConfigPresentation;
-//typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioMixerConfig> AudioMixerConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::BinaryAudioOpConfig> BinaryAudioOpConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::FFTConfig> FFTConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::ADSRConfig> ADSRConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> AutoPannerConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioMultiplierConfig> AudioMultiplierConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> AudioAdderConfigPresentation;
+// in draft
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> FlagControlConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::RandomConfig> RandomConfigPresentation;
 
 static ProcessingConfigPresentationFactory::Registrator<OscillatorConfigPresentationTmpl> regtOscillatorCfg( "OscillatorConfig" );
-static ProcessingConfigPresentationFactory::Registrator<ControllerConfigPresentation> regtControllerCfg( "ControllerConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AutoPannerConfigPresentation> regtAutoPannerCfg( "AutoPannerConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AudioFileConfigPresentation> regtAudioFileInCfg( "AudioFileConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AudioIOConfigPresentation> regtAudioOutCfg( "AudioIOConfig" );
-//static ProcessingConfigPresentationFactory::Registrator<AudioMixerConfigPresentation> regAudioMixerCfg( "AudioMixerConfig" );
+static ProcessingConfigPresentationFactory::Registrator<AudioAdderConfigPresentation> regAudioAdderCfg( "AudioAdderConfig" );
 static ProcessingConfigPresentationFactory::Registrator<BinaryAudioOpConfigPresentation> regtBinaryAudioOpCfg( "BinaryAudioOpConfig" );
-static ProcessingConfigPresentationFactory::Registrator<FFTConfigPresentation> regtFFTCfg( "FFTConfig" );
+static ProcessingConfigPresentationFactory::Registrator<ADSRConfigPresentation> regtADSRCfg( "ADSRConfig" );
+static ProcessingConfigPresentationFactory::Registrator<AudioMultiplierConfigPresentation> regtAudioMultiplierCfg( "AudioMultiplierConfig" );
+static ProcessingConfigPresentationFactory::Registrator<FlagControlConfigPresentation> regtFlagControlCfg( "FlagControlConfig" );
+static ProcessingConfigPresentationFactory::Registrator<RandomConfigPresentation> regtRandomCfg( "RandomConfig" );
 
 
 // manual config presentation
