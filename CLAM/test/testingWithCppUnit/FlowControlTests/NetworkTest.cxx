@@ -687,7 +687,7 @@ class NetworkTest : public CppUnit::TestFixture
 			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
 
 		
-		CPPUNIT_ASSERT_EQUAL( false, net.RemovePortsConnection(
+		CPPUNIT_ASSERT_EQUAL( false, net.DisconnectPorts(
 					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
 	}
 
@@ -710,7 +710,7 @@ class NetworkTest : public CppUnit::TestFixture
 			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
 		
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
-		net.RemovePortsConnection( "first.outPortOfFirstProc","second.inPortOfSecondProc");
+		net.DisconnectPorts( "first.outPortOfFirstProc","second.inPortOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
 	}
 
