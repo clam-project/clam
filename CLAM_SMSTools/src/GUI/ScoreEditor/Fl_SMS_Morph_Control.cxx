@@ -36,6 +36,16 @@ namespace CLAMVM
 		mpFrameInterpSelector->callback( (Fl_Callback*)sFrameInterpolationCb, this );
 		mpFrameInterpSelector->down_box(FL_DOWN_BOX);
 		mpFrameInterpSelector->value(0);
+
+		mpSpecShapeSelector = new Fl_Check_Button( X+200, Y+5, 80, 20 );
+		mpSpecShapeSelector->label( "User-defined Spectral Shapes" );
+		mpSpecShapeSelector->labelsize( 12 );
+		mpSpecShapeSelector->tooltip( "Interpolate sounds using user-defined "
+						"spectral shapes" );
+		mpSpecShapeSelector->when( FL_WHEN_CHANGED );
+		mpSpecShapeSelector->callback( (Fl_Callback*)sSpecShapeCb, this );
+		mpSpecShapeSelector->down_box(FL_DOWN_BOX);
+		mpSpecShapeSelector->value(0);
   		
 		mpEnvelopeSelector = new Fl_Choice( X+5, Y+45, 150, 20, "Sound hybridization controls"  );
 		mpEnvelopeSelector->labelsize( 12 );
@@ -109,6 +119,17 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::DeactivateFrameInterpolation()
 	{
 		mpFrameInterpSelector->value(0);
+	}
+
+	void Fl_SMS_Morph_Control::ActivateUseSpectralShapes()
+	{
+		mpSpecShapeSelector->value(1);
+		mpSpecShapeSelector->redraw();
+	}
+
+	void Fl_SMS_Morph_Control::DeactivateUseSpectralShapes()
+	{
+		mpSpecShapeSelector->value(0);
 	}
 
 	void Fl_SMS_Morph_Control::RetrieveGlobalEnvelope( CLAM::BPF& bpf )
@@ -803,7 +824,7 @@ namespace CLAMVM
 		else
 			obj->FrameInterpolationActivated();
 	}
-
+	
 	void Fl_SMS_Morph_Control::FrameInterpolationActivated()
 	{
 		FrameInterpolationChanged.Emit( true );
@@ -812,6 +833,24 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::FrameInterpolationDeactivated()
 	{
 		FrameInterpolationChanged.Emit( false );
+	}
+
+	void Fl_SMS_Morph_Control::sSpecShapeCb( Fl_Check_Button* b, Fl_SMS_Morph_Control* obj )
+	{
+		if ( b->value() == 0 )
+			obj->UseSpectralShapesDeactivated();
+		else
+			obj->UseSpectralShapesActivated();
+	}
+
+	void Fl_SMS_Morph_Control::UseSpectralShapesActivated()
+	{
+		UseSpectralShapesChanged.Emit( true );
+	}
+
+	void Fl_SMS_Morph_Control::UseSpectralShapesDeactivated()
+	{
+		UseSpectralShapesChanged.Emit( false );
 	}
 
 	void Fl_SMS_Morph_Control::InitEnvelopeSelectorContents()
@@ -848,6 +887,7 @@ namespace CLAMVM
 		Fl_Group::resize( X, Y, W, H );
 		
 		mpFrameInterpSelector->resize( x()+5, y()+5, 80, 20 );
+		mpSpecShapeSelector->resize( x()+200, y()+5, 80, 20 );
 		mpEnvelopeSelector->resize( x()+5, y()+45, W - 10, 20 );
 		mpEnvelopeContainer->resize( x()+10, y()+80, w()-20, h()-85 );
 		

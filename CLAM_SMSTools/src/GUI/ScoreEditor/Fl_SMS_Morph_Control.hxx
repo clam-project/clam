@@ -41,6 +41,7 @@ namespace CLAMVM
 		SigSlot::Signalv0        SinShapeEnvelopeChanged;
 		SigSlot::Signalv0        ResShapeEnvelopeChanged;
 		SigSlot::Signalv1<bool>  FrameInterpolationChanged;   
+		SigSlot::Signalv1<bool>  UseSpectralShapesChanged;   
 
 		void RetrieveGlobalEnvelope( CLAM::BPF& );
 		void SetGlobalEnvelope( const CLAM::BPF& );
@@ -81,6 +82,9 @@ namespace CLAMVM
 		void ActivateFrameInterpolation();
 		void DeactivateFrameInterpolation();
 
+		void ActivateUseSpectralShapes();
+		void DeactivateUseSpectralShapes();
+
 	protected:
 
 		
@@ -114,6 +118,7 @@ namespace CLAMVM
 
 		static void sMenuItemSelectedCb( Fl_Choice*, Fl_SMS_Morph_Control* );
 		static void sFrameInterpolationCb( Fl_Check_Button*, Fl_SMS_Morph_Control* );
+		static void sSpecShapeCb( Fl_Check_Button*, Fl_SMS_Morph_Control* );
 
 		void CreateEnvelopeEditors();
 		
@@ -124,6 +129,10 @@ namespace CLAMVM
 		void FrameInterpolationActivated( );
 		
 		void FrameInterpolationDeactivated();
+
+		void UseSpectralShapesActivated( );
+		
+		void UseSpectralShapesDeactivated();
 
 		void DestroyEnvelopeEditors();
 
@@ -190,6 +199,7 @@ namespace CLAMVM
 		
 		Fl_Choice*        mpEnvelopeSelector;
 		Fl_Check_Button*  mpFrameInterpSelector;
+		Fl_Check_Button*  mpSpecShapeSelector;
 		Fl_Group*         mpEnvelopeContainer;
 		
 		const std::string mGlobalControlKey;
