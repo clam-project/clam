@@ -129,7 +129,7 @@ public:
 	bool Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
 	bool Do(const Audio& in,Spectrum& inGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 
-//private:
+private:
 
 	// Configuration data
 	SMSAnalysisConfig mConfig;
