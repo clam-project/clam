@@ -126,7 +126,7 @@ TData SpectralPeakDescriptors::ComputeCentroid()
 it promoted into basicOps*/
 TData SpectralPeakDescriptors::ComputeSpectralTilt()
 {
-	if (mpSpectralPeakArray->GetnPeaks()<=1) return 0;
+	if (mpSpectralPeakArray->GetnPeaks()<2) return 0;
 
 	/* TODO check me , this computation does not seem to work*/
 
