@@ -367,6 +367,8 @@ void MyAudioApplication::AudioMain(void)
 		AudioMixer mixer;
 		mixer.Configure(mixerCfg);
 
+		/* Connecting audio inputs / outputs
+		 * TODO port-names should be homogenic! */
 		for ( i=0;i<nVoices;i++)
 		{
 			std::stringstream sstr;
@@ -374,14 +376,7 @@ void MyAudioApplication::AudioMain(void)
 			std::string name("Input");
 			sstr << name << " " << i;
 			ConnectPorts(*instruments[i],"AudioOut", mixer, sstr.str());
-			// TODO: connect
-			//mixer.GetInPorts().Get(sstr.str()).Attach(audioArray[i]);
 		}
-		// TODO: connect
-		//mixer.GetOutPorts().Get("Output Audio").Attach(out);
-		//ConnectPorts(*instruments[0],"AudioOut", outL, "Audio Input");
-		//ConnectPorts(inL,"Audio Output", outL, "Audio Input");
-		//ConnectPorts(*instruments[0],"AudioOut", outR, "Audio Input");
 		ConnectPorts(mixer,"Output Audio", outR, "Audio Input");
 		ConnectPorts(mixer,"Output Audio", outL, "Audio Input");
 		
@@ -395,7 +390,7 @@ void MyAudioApplication::AudioMain(void)
 		for( i = 0; i < nVoices; i++ )
 			inPitchBend.GetOutControls().GetByNumber(1).AddLink(&instruments[i]->GetInControls().GetByNumber(3));
 		
-		//mixer.Start();
+		mixer.Start();
 
 		inL.Start();
 		inR.Start();
@@ -453,7 +448,7 @@ void MyAudioApplication::AudioMain(void)
 
 int main(int argc,char** argv)
 {
-	//char* midiDeviceStr = "alsa:hw:1,0"; // TODO: but back to default
+	//char* midiDeviceStr = "alsa:hw:1,0";
 	char* midiDeviceStr = "file:test.mid";
 	char* audioDeviceStr = "default";
 	
