@@ -206,8 +206,9 @@ int Fl_Smart_Tile::handle(int e)
 				return 1;
 			}
 		}
-		Fl_Group::handle(e);
+	
 	}
+	return Fl_Group::handle(e);
 }
 
 int Fl_Smart_Tile::recalc(void)
