@@ -10,6 +10,7 @@
 #include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMComment.hpp>
 #include <xercesc/dom/DOMProcessingInstruction.hpp>
+#include "XercesInitializer.hxx"
 /*
 TOTEST:
 - A comment doesn't break content
@@ -67,6 +68,7 @@ class XercesDomReadingContextTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testExtractAttribute_whenNone);
 	CPPUNIT_TEST(testExtractAttribute_whenPresent);
 	CPPUNIT_TEST(testExtractAttribute_withDifferentAttributeName);
+	CPPUNIT_TEST(testGetPath);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -74,7 +76,7 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		xercesc::XMLPlatformUtils::Initialize();
+		XercesInitializer::require();
 		mTargetStream.str("");
 		xercesc::DOMImplementation * imp = 
 			xercesc::DOMImplementation::getImplementation();
@@ -89,7 +91,6 @@ public:
 	void tearDown()
 	{
 		mDocument->release();
-		xercesc::XMLPlatformUtils::Terminate();
 	}
 
 private:
@@ -597,7 +598,7 @@ private:
 			result+= *it + '\n';
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"Unexpected content: 'Offending input\none line more'\n"),
+			"Unexpected content: 'Offending input\none line more' at position /ContextElement\n"),
 			result
 			);
 	}
@@ -622,7 +623,7 @@ private:
 			result+= *it + '\n';
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"Unexpected Element: 'Offender'\n"),
+			"Unexpected Element: 'Offender' at position /ContextElement\n"),
 			result
 			);
 	}
@@ -671,6 +672,29 @@ private:
 		
 		CPPUNIT_ASSERT_MESSAGE("Should have been false",!result);
 	}
+
+	void testGetPath()
+	{
+		XercesDomReader reader;
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * element1 = mDocument->createElement(X("Element1"));
+		xercesc::DOMElement * element2 = mDocument->createElement(X("Element2"));
+		xercesc::DOMElement * element3 = mDocument->createElement(X("Element3"));
+		contextElement->appendChild(element1);
+		element1->appendChild(element2);
+		element2->appendChild(element3);
+
+		XercesDomReadingContext context0(contextElement);
+		XercesDomReadingContext context1(&context0,"Element1");
+		XercesDomReadingContext context2(&context1,"Element2");
+		XercesDomReadingContext context3(&context2,"Element3");
+
+		std::string path = context3.getPath();
+
+		CPPUNIT_ASSERT_EQUAL(std::string("/ContextElement/Element1/Element2/Element3"),path);
+	}
+
+
 
 
 };
