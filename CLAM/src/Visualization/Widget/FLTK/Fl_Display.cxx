@@ -20,7 +20,6 @@
  */
 
 #include "Fl_Display.hxx"
-#include "FLMultiDisplay.hxx"
 
 #include <FL/fl_draw.H>
 
