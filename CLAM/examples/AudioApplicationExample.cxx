@@ -46,7 +46,7 @@ void MyIOAudioApplication::AudioMain(void)
 	{
 		unsigned int buffersize = 4096;
 
-		AudioManager audioManager(48000,4096);
+		AudioManager audioManager(44100,4096);
 
 		AudioIOConfig inCfgL;
 		AudioIOConfig inCfgR;
@@ -155,11 +155,13 @@ void MyOutAudioApplication::AudioMain(void)
 		AudioManager audioManager(samplerate,2048);
 
 		AudioIOConfig outLCfg;
+		outLCfg.SetDevice("rtaudio:default");
 		outLCfg.SetName("left out");
 		outLCfg.SetChannelID(0);
 		outLCfg.SetSampleRate(samplerate);
 
 		AudioIOConfig outRCfg;
+		outRCfg.SetDevice("rtaudio:default");
 		outRCfg.SetName("right out");
 		outRCfg.SetChannelID(1);
 		outRCfg.SetSampleRate(samplerate);
@@ -173,6 +175,7 @@ void MyOutAudioApplication::AudioMain(void)
 		OscillatorConfig testtoneCfg;
 
 		testtoneCfg.SetFrequency(440);
+		testtoneCfg.SetSamplingRate(audioManager.SampleRate());
 
 		Oscillator testtone(testtoneCfg);
 
