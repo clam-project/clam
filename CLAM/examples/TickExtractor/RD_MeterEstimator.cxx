@@ -121,13 +121,18 @@ namespace CLAM
 			for (int i=0;i<beats.Size()-1;i++) 
 				globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
 			globalTempo /= beats.Size()-1;
-			globalTempo *= sampleRate;
-			globalTempo /= 2;
+			std::cerr << "Ad-hoc tempo: " << 60.0/globalTempo << std::endl;
+			std::cerr << "Max IOI tempo: " << beatData.GetRate() << std::endl;
 
 			/*
+			  globalTempo *= sampleRate;
+			  globalTempo /= 2;
+			*/
+
+			
 			globalTempo = (60.0 * sampleRate)/beatData.GetRate();
 			TData offset = globalTempo / 2.0;
-			*/
+			
 
 			//-------Remove audio DC component------------------
 			//TODO
