@@ -94,7 +94,7 @@ LINK32=link.exe
 
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\LPC_example.cxx
+SOURCE=..\..\..\..\examples\LPCAnalysis_example.cxx
 # End Source File
 # End Group
 # Begin Group "Errors Sources"
