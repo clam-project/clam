@@ -24,6 +24,8 @@
 #include "Network.hxx"
 #include "NetworkController.hxx"
 #include "SimpleOscillator.hxx"
+#include "AutoPanner.hxx"
+#include "AudioMultiplier.hxx"
 #include "PushFlowControl.hxx"
 #include "Processing.hxx"
 #include "Signalv1.hxx"
@@ -45,6 +47,12 @@ class NetworkControllerTest : public CppUnit::TestFixture, public CLAMVM::Networ
 	CPPUNIT_TEST( testAddProcessingThrowsException_WhenDuplicatedName );
 	CPPUNIT_TEST( testRemoveProcessingDeletesProcessingController );
 	CPPUNIT_TEST( testRemoveProcessingThrowsException_WhenProcessingControllerDoesntExist );
+	CPPUNIT_TEST( testProcessingNameChangedModifiesProcessingControllerMap );
+	CPPUNIT_TEST( testProcessingNameChangedModifiesPortConnectionControllerMap );
+	CPPUNIT_TEST( testProcessingNameChangedModifiesControlConnectionControllerMap );
+	CPPUNIT_TEST( testChangeKeyMapDoesntModify_WhenRepeatedKey );
+
+	
 	CPPUNIT_TEST_SUITE_END();
 
 	CLAM::Network * mNetwork;
@@ -133,6 +141,67 @@ public:
 		{
 		}
 	}
+
+	void testProcessingNameChangedModifiesProcessingControllerMap()
+	{	
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		AddProcessing( "oscillator", oscillator );
+		ProcessingControllersMapIterator it = mProcessingControllers.find("oscillator");
+		ProcessingNameChanged( "mynewname", it->second );
+		CPPUNIT_ASSERT_EQUAL( it->second, mProcessingControllers.find( "mynewname" )->second );
+	}
+
+	void testProcessingNameChangedModifiesPortConnectionControllerMap()
+	{
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::AudioMultiplier * multiplier = new CLAM::AudioMultiplier;
+		
+		AddProcessing( "oscillator", oscillator );
+		AddProcessing( "multiplier", multiplier );
+		
+		CreatePortConnection( "oscillator.Audio Output", "multiplier.First Audio Input" );
+
+		ProcessingControllersMapIterator it = mProcessingControllers.find("oscillator");
+		ProcessingNameChanged( "mynewname", it->second );
+
+		ConnectionAdapterIterator itc;
+		itc = mConnectionAdapters.begin();
+		std::string newName( "mynewname.Audio Output" );
+		CPPUNIT_ASSERT_EQUAL( newName, (*itc)->GetOutName() );
+	}
+	void testProcessingNameChangedModifiesControlConnectionControllerMap()
+	{
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::AutoPanner * panner = new CLAM::AutoPanner;
+		
+		AddProcessing( "oscillator", oscillator );
+		AddProcessing( "panner", panner );
+		
+		CreateControlConnection( "panner.Left Control", "oscillator.Amplitude" );
+
+		ProcessingControllersMapIterator it = mProcessingControllers.find("oscillator");
+		ProcessingNameChanged( "mynewname", it->second );
+
+		ConnectionAdapterIterator itc;
+		itc = mConnectionAdapters.begin();
+		std::string newName ("mynewname.Amplitude");
+		CPPUNIT_ASSERT_EQUAL( newName, (*itc)->GetInName() );
+	}
+
+
+
+	void testChangeKeyMapDoesntModify_WhenRepeatedKey()
+	{	
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::SimpleOscillator * oscillator2 = new CLAM::SimpleOscillator;
+		AddProcessing( "oscillator", oscillator );
+		AddProcessing( "repeated name", oscillator2 );
+		
+		CPPUNIT_ASSERT_EQUAL( false, ChangeKeyMap( "oscillator", "repeated name") );
+	}
+
+
+			
 
 };
 

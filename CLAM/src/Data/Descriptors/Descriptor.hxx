@@ -31,8 +31,11 @@
 namespace CLAM{
 
 
-/** Abstract class for all descriptors */
-//todo: this class could abstract more common behaviour from subclasses by becoming template
+/**
+* Abstract class for all descriptors
+* @param Whether to calculate the descriptors over absolute values or not (signed).
+* @todo This class could abstract more common behaviour from subclasses by becoming template
+*/
 template <bool abs>
 class DescriptorTmpl:public ProcessingData
 {
@@ -66,7 +69,7 @@ protected:
 	}
 protected:
 	StatsTmpl<abs>* mpStats;
-	
+
 };
 
 typedef DescriptorTmpl<false> Descriptor;

@@ -29,9 +29,13 @@
 #include "BasicXMLable.hxx"
 #include "mtgsstream.h" // An alias for <sstream>
 
+#if defined( __GNUC__ )
+#warning XMLStaticAdapter class is deprecated and will be obsoleted on next release
+#endif
 namespace CLAM {
 
 /**
+ * @deprecated Use XMLAdapter instead. This class will be removed in next releases
  * This class adapts to the XMLable interface any object that has 
  * the insertion (&lt;&lt;) operator defined to an ostream, and
  * calculates the XML content with such operator on construction time.

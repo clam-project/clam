@@ -10,3 +10,10 @@ moc/MainWindow_moc.cxx: ../../../examples/NetworkEditor/GUI/Interface/MainWindow
 moc/ProcessingTree_moc.o: moc/ProcessingTree_moc.cxx ../../../examples/NetworkEditor/GUI/Interface/ProcessingTree.hxx
 
 moc/ProcessingTree_moc.cxx: ../../../examples/NetworkEditor/GUI/Interface/ProcessingTree.hxx
+
+moc/Qt_ProcessingPresentation_moc.o: moc/Qt_ProcessingPresentation_moc.cxx ../../../examples/NetworkEditor/GUI/Qt_Presentations/Qt_ProcessingPresentation.hxx
+
+moc/Qt_ProcessingPresentation_moc.cxx: ../../../examples/NetworkEditor/GUI/Qt_Presentations/Qt_ProcessingPresentation.hxx
+
+
+
