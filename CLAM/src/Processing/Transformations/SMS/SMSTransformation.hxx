@@ -274,7 +274,7 @@ namespace CLAM {
 		 *	SpectralPeakArray) from a given Segment. For doing so it uses the concrete
 		 *	implementations  of the UnwrapProcessingData implemented in the base class.
 		 *	@return a const reference to the desired ProcessingData
-		 *	@param a const reference to a Segment.
+		 *	@param in a const reference to a Segment.
 		 */
 		const UnwrappedProcessingData& UnwrapSegment(const Segment& in)
 		{
@@ -284,7 +284,7 @@ namespace CLAM {
 		 *	SpectralPeakArray) from a given Segment. For doing so it uses the concrete
 		 *	implementations  of the UnwrapProcessingData implemented in the base class.
 		 *	@return a non-const reference to the desired ProcessingData
-		 *	@param a non-const reference to a Segment.
+		 *	@param in a non-const reference to a Segment.
 		 */
 		UnwrappedProcessingData& UnwrapSegment( Segment& in)
 		{
