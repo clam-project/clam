@@ -11,10 +11,17 @@ using namespace CLAMGUI;
 
 void UserInterface::EditConfiguration(void)
 {
-	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
-	configurator->SetConfig(mAnalysisSynthesisExample->mGlobalConfig);
+	CLAM::FLTKConfigurator<UserInterface> * configurator = new CLAM::FLTKConfigurator<UserInterface>;
+	configurator->SetConfig(mAnalysisSynthesisExample->mGlobalConfig,this);
 	configurator->show();
 	Fl::run();
+}
+
+
+void UserInterface::Update()
+{
+	mAnalysisSynthesisExample->InitConfigs();
+	LoadSound();
 }
 
 void UserInterface::LoadConfiguration(void)
@@ -28,34 +35,38 @@ void UserInterface::LoadConfiguration(void)
 		std::string inputXMLFileName(str);
 
 		mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
-		
-
-		if (mAnalysisSynthesisExample->mHaveConfig)
-		{	
-			mAnalysisSynthesisExample->LoadInputSound();
-			if (mAnalysisSynthesisExample->mHaveAudioIn)
-			{
-				mAnalyze->activate();
-				mDisplayInSM->activate();
-				mDisplayInSound->activate();
-				mPlayInputSound->activate();
-			}
-			else 
-				mAnalysisSynthesisExample->mHaveConfig=false;
-			for(int i=0;i<4;i++){
-				if(mAttachedPresentations[i]!=NULL){
-					if( mAttachedPresentations[i]->GetWindow()->shown() ) 
-						mAttachedPresentations[i]->GetWindow()->hide();
-				}
-			}
-			mSynthesize->deactivate();
-			mOutputSM->deactivate();
-		}
-		
+		LoadSound();	
+	
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
 			mSynthesize->activate();
 		Fl::redraw();
 	}		
+}
+
+void UserInterface::LoadSound(void)
+{
+	if (mAnalysisSynthesisExample->mHaveConfig)
+	{	
+		mAnalysisSynthesisExample->LoadInputSound();
+		if (mAnalysisSynthesisExample->mHaveAudioIn)
+		{
+			mAnalyze->activate();
+			mDisplayInSM->activate();
+			mDisplayInSound->activate();
+			mPlayInputSound->activate();
+		}
+		else 
+			mAnalysisSynthesisExample->mHaveConfig=false;
+		for(int i=0;i<4;i++){
+			if(mAttachedPresentations[i]!=NULL){
+				if( mAttachedPresentations[i]->GetWindow()->shown() ) 
+					mAttachedPresentations[i]->GetWindow()->hide();
+			}
+		}
+		mSynthesize->deactivate();
+		mOutputSM->deactivate();
+	}
+
 }
 
 void UserInterface::StoreConfiguration(void)
