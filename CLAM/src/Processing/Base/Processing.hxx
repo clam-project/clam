@@ -210,13 +210,20 @@ namespace CLAM {
 		bool Configure(const ProcessingConfig&);
 
 		/**
-		 *  These two methods, are temporary, very prone to disappear
+		 *  This method, is temporary, very prone to disappear
 		 *  soon, for enabling clients that know concrete Processing object
 		 *  type to call safely the ConcreteConfigure(). See the functional
 		 *  test of AudioFileIn and and its usage example for more details
 		 *  on when and how to use them.
 		 */
 		void PreConcreteConfigure( const ProcessingConfig& c);
+		/**
+		 *  This method, is temporary, very prone to disappear
+		 *  soon, for enabling clients that know concrete Processing object
+		 *  type to call safely the ConcreteConfigure(). See the functional
+		 *  test of AudioFileIn and and its usage example for more details
+		 *  on when and how to use them.
+		 */
 		void PostConcreteConfigure();
 
 		/** Configuration getter.
@@ -238,42 +245,21 @@ namespace CLAM {
 
 		void SetExecState( const ExecState& s ) { mState = s; }
 
+		/** @todo To be moved to the publish helper classes */
 		void PublishOutPort(OutPort* out);
+		/** @todo To be moved to the publish helper classes */
 		void PublishInPort(InPort* in);
+		/** @todo To be moved to the publish helper classes */
 		void PublishOutControl(OutControl* out);
+		/** @todo To be moved to the publish helper classes */
 		void PublishInControl(InControl* in);
-//		void LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const;// throw out_of_range;
-//		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
-//		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
-//		InControl* GetInControl(unsigned inId) const;
-//		OutControl* GetOutControl(unsigned inId) const;
 
-		/** Processing object composite iterator */
-		typedef std::list<Processing*>::iterator iterator;
-
-		/** Null iterator, returned by default by non-composite POs. */
-		static const iterator null_iterator;
-
-		/** Processing object agregate iterator interface.
-		 * <p> Default "leaf" implementation.
-		 * <p> This method is overriden in the ProcessingComposite
-		 * class.
-		 */
-		virtual iterator composite_begin() {return null_iterator;}
-
-		/** Processing object agregate iterator interface.
-		 * <p> Default "leaf" implementation.
-		 * <p> This method is overriden in the ProcessingComposite
-		 * class.
-		 */
-		virtual iterator composite_end() {return null_iterator;}
-
-		/** Attribute access method */
+		/** Returns the current parent of the processing */
 		ProcessingComposite *GetParent() const {return mpParent;}
-		/** Attribute access method */
+		/** Sets the given processing as the current parent */
 		void SetParent(Processing *p);
 
-		/** Accesor */
+		/** Returns a string describing configuration errors if any */
 		const std::string &GetStatus() const {return mStatus;}
 
 	public:

@@ -32,9 +32,6 @@
 
 namespace CLAM {
 
-	const Processing::iterator 
-	Processing::null_iterator = Processing::iterator(0);
-
 	Processing::Processing() 
 		: mpParent(0),
 		mPreconfigureExecuted( false )
