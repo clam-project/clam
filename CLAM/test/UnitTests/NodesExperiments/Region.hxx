@@ -1,7 +1,6 @@
 #ifndef Region_hxx
 #define Region_hxx
 
-#include <cassert>
 #include <list>
 
 class Region
@@ -50,7 +49,7 @@ public:
 
 	void hop( const int & hop )
 	{
-		assert(hop <= _size); //TODO assert. comment
+		CLAM_ASSERT( hop <= _size, "Region::hop() - hop can't be greater than size" );
 		_hop = hop;
 	}
 

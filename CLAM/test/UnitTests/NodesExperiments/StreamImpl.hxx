@@ -3,11 +3,18 @@
 #define StreamImpl_hxx
 
 #include "Region.hxx"
+#include <list>
+#include <vector>
 
 /** This declaration is necessary for VC7 compatibility */
 template <typename T>
 class StdList : public std::list<T>
 {};
+
+template <typename T>
+class StdVector : public std::vector<T>
+{};
+
 
 
 template< typename Token, template <class> class DataStructure >

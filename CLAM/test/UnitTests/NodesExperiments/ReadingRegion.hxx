@@ -4,8 +4,6 @@
 #include "Region.hxx"
 #include "StreamImpl.hxx"
 
-#include <vector>
-#include <list>
 #include <iostream> // TODO: push down to the cxx
 
 template<class WritingRegion>
@@ -36,7 +34,7 @@ public:
 	*/
 	bool canConsume()
 	{
-		assert(_producingRegion);
+		CLAM_ASSERT(_producingRegion, "ReadingRegion::CanConsume() - Reading region should have a producer linked" );
 		return producerRegion()->pos() >= pos()+size();
 	}
 	/**
@@ -46,7 +44,7 @@ public:
 	*/
 	void consume()
 	{
-		assert( canConsume() ); // TODO: it should be a CLAM_DEBUG_ASSERT
+		CLAM_DEBUG_ASSERT( canConsume(), "ReadingRegion::Consume() - region can't consume" );
 		pos() += hop();
 		_attachedStream->readerHasAdvanced( *this );
 	}
@@ -61,12 +59,13 @@ public:
 	
 	const Token& operator[](int offset)
 	{
-		assert( _attachedStream );
-		assert( canConsume() ); // TODO should be CLAM_DEBUG_ASSERT: msg:region is still not completely produced
+		CLAM_DEBUG_ASSERT( _attachedStream, "ReadingRegion operator[] - No attached stream" );
+		CLAM_DEBUG_ASSERT( canConsume(), "ReadingRegion operator[] - region can't consume" );
+		// TODO msg:region is still not completely produced
 
 		int physicalIndex = beginDistance() + offset;
 
-		assert( physicalIndex < _attachedStream->logicalSize());
+		CLAM_ASSERT( physicalIndex < _attachedStream->logicalSize(), "ReadingRegion operator[] - Out of bounds access" );
 
 		return _attachedStream->operator[](physicalIndex);
 	}
