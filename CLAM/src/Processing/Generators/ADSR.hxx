@@ -25,7 +25,7 @@
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
 #include "Audio.hxx"
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
 #include "OSDefines.hxx"
 #include "InControl.hxx"
 
