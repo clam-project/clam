@@ -91,6 +91,7 @@ public:
 
 	void Select(const std::string & path)
 	{
+		CLAM_ASSERT(false,"XMLStorage::Select not implemented yet");
 	}
 
 // Final User static interface
@@ -222,7 +223,7 @@ private:
 
 };
 
-typedef ClamObject2XercesDom XercesDom2ClamObjects;
+//typedef ClamObject2XercesDom XercesDom2ClamObjects;
 	
 }
 
