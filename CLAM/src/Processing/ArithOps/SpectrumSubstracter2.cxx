@@ -853,8 +853,8 @@ namespace CLAM {
 		Complex *c2 = in2.GetComplexArray().GetPtr();
 		Complex *co = out.GetComplexArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BRe = log2lin(fabs(m1.GetValue(pos)) * cos(f1.GetValue(pos));
-			TData BIm = log2lin(fabs(m1.GetValue(pos)) * sin(f1.GetValue(pos));
+			TData BRe = log2lin(fabs(m1.GetValue(pos)) * cos(f1.GetValue(pos)));
+			TData BIm = log2lin(fabs(m1.GetValue(pos)) * sin(f1.GetValue(pos)));
 			co[i]= Complex(BRe,BIm) - c2[i];
 			pos+=delta;
 		}
