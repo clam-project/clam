@@ -25,8 +25,20 @@ namespace AudioCodecs
 
 	MpegAudioStream::~MpegAudioStream()
 	{
-	}
+		
+		if ( mpHandle )
+		{
+			if ( fclose(mpHandle) )
+			{
+				std::string msgString = "Could not close ";
+				msgString += mName;
 
+				CLAM_ASSERT( false, msgString.c_str() );
+			}			
+		}
+		
+	}
+	
 	void MpegAudioStream::SetFOI( const AudioFile& file )
 	{
 		AudioFileToNative( file );		
