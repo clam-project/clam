@@ -11,7 +11,6 @@
      ** Integration of all the platforms code ( linux and mac Makefiles,
      windows .dsp and .vcproj generated from the same program).
   * XML:
-     ** Indentation is back
      ** Fix: Storing arrays with size 1 crashes
  	  ** Fix: IterableAdapter joined array elements when basics
   * MIDI I/O
