@@ -8,7 +8,7 @@
 #include "NetworkPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
-#include "QTConfigurator.hxx"
+//#include "QTConfigurator.hxx"
 
 namespace CLAM
 {
@@ -51,7 +51,7 @@ protected:
 	virtual void OnNewInControlClicked( Qt_InControlPresentation *);
 	virtual void OnNewOutControlClicked( Qt_OutControlPresentation *);
 
-	virtual void OnNewConfiguration( CLAM::ProcessingConfig * );
+//	virtual void OnNewConfiguration( CLAM::ProcessingConfig * );
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *m);
@@ -62,14 +62,14 @@ protected:
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
-	CLAM::QTConfigurator mConfigurator;
+//	CLAM::QTConfigurator mConfigurator;
 
 public: // slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;
 	SigSlot::Slotv1< Qt_InControlPresentation * > SetInControlClicked;
 	SigSlot::Slotv1< Qt_OutControlPresentation * > SetOutControlClicked;
-	SigSlot::Slotv1< CLAM::ProcessingConfig * > SetConfigurator;
+//	SigSlot::Slotv1< CLAM::ProcessingConfig * > SetConfigurator;
 	// signals
 	SigSlot::Signalv1< const QPoint & > AcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > AcquireInPortAfterClickOutPort;

@@ -4,18 +4,18 @@
 #include "OutPortAdapter.hxx"
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
+#include "Qt_ProcessingConfigPresentation.hxx"
 
 #include "InControlAdapter.hxx"
 #include "OutControlAdapter.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
-
-
 #include <qtooltip.h> 
 #include <qpainter.h>
 #include <cmath>
 
 #include <iostream>
+
 
 namespace NetworkGUI
 {
@@ -51,7 +51,6 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	SetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::OnNewOutControlClicked);
 	SetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl);
 	SetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl);
-
 }
 
 Qt_ProcessingPresentation::~Qt_ProcessingPresentation()
@@ -273,10 +272,8 @@ void Qt_ProcessingPresentation::Show()
 	OutControlPresentationIterator itOutControl;
 	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
 		(*itOutControl)->Show();
-
-
-
 	show();
+
 }
 
 void Qt_ProcessingPresentation::Hide()
@@ -298,6 +295,10 @@ void Qt_ProcessingPresentation::Hide()
 		(*itOutControl)->Hide();
 
 	hide();
+
+	if(mConfig)
+		mConfig->Hide();
+
 }
 
 void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
@@ -358,7 +359,7 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 	}
 	else
 	{
-		EditConfiguration.Emit( mConfig );
+		mConfig->Show();
 	}
 	grabKeyboard();
 }

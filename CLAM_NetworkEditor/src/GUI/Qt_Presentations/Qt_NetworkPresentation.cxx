@@ -33,7 +33,6 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
  	SetInControlClicked.Wrap( this, &Qt_NetworkPresentation::OnNewInControlClicked);
  	SetOutControlClicked.Wrap( this, &Qt_NetworkPresentation::OnNewOutControlClicked);
 
-	SetConfigurator.Wrap( this, &Qt_NetworkPresentation::OnNewConfiguration );
 }
 
 
@@ -41,11 +40,6 @@ Qt_NetworkPresentation::~Qt_NetworkPresentation()
 {
 }
 
-void Qt_NetworkPresentation::OnNewConfiguration( CLAM::ProcessingConfig *cfg )
-{
-//	mConfigurator.SetConfig(*cfg);
-	mConfigurator.show();
-}
 
 void Qt_NetworkPresentation::OnNewInPortClicked( Qt_InPortPresentation * inport)
 {
@@ -96,7 +90,7 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* cont
 	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
 	presentation->AcquireInControlClicked.Connect( SetInControlClicked );
 	presentation->AcquireOutControlClicked.Connect( SetOutControlClicked );
-	presentation->EditConfiguration.Connect( SetConfigurator );
+//	presentation->EditConfiguration.Connect( SetConfigurator );
 	presentation->RemoveProcessing.Connect( SetRemoveProcessing );
 
 	AcquireOutPortAfterClickInPort.Connect( presentation->SetOutPortAfterClickInPort );
@@ -115,7 +109,7 @@ void Qt_NetworkPresentation::OnNewPortConnection( CLAMVM::ConnectionAdapter* ada
 {
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->RemovePortConnection.Connect(SetRemovePortConnection);
+	presentation->RemoveConnection.Connect(SetRemovePortConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
@@ -140,7 +134,7 @@ void Qt_NetworkPresentation::OnNewControlConnection( CLAMVM::ConnectionAdapter* 
 {
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->RemovePortConnection.Connect(SetRemovePortConnection);
+	presentation->RemoveConnection.Connect(SetRemoveControlConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
@@ -193,7 +187,6 @@ void Qt_NetworkPresentation::Show()
 	for ( itc=mConnectionPresentations.begin(); itc!=mConnectionPresentations.end(); itc++)
 		(*itc)->Show();
 
-	mConfigurator.hide();
 	show();
 }
 
@@ -236,7 +229,6 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-		// TODO: It must create a connection between controls
 		CreateNewControlConnectionFromGUI.Emit( outControl, inControl );
 	}
 
