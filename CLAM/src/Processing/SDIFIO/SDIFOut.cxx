@@ -22,7 +22,6 @@ void SDIFOutConfig::DefaultInit()
 	SetEnableFundFreq(true);
 	SetSpectralRange(22050);
 	SetMaxNumPeaks(100);
-	printf("SDIFOutConfig::DefaultInit setting filename to nofile\n");
 	SetFileName("nofile");
 
 	SetSamplingRate(44100);
@@ -69,10 +68,6 @@ bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
-
-	printf("SDIFOutConfig::ConcreteConfigure GetFilename returns %s\n"
-	, mConfig.GetFileName().c_str()
-	);
 
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eOutput);
 
