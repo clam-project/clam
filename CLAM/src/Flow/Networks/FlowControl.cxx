@@ -63,6 +63,11 @@ void FlowControl::ProcessingAddedToNetwork( Processing& added )
 	NetworkTopologyChanged();
 }
 
+void FlowControl::ProcessingRemovedFromNetwork( Processing& removed )
+{
+	NetworkTopologyChanged();
+}
+
 void FlowControl::ConfigureNode( NodeBase& toConfigure ) const
 {
 	toConfigure.Configure( mFrameSize );

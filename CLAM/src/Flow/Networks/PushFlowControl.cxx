@@ -44,6 +44,13 @@ void PushFlowControl::ProcessingAddedToNetwork( Processing & added )
 		mGenerators.push_back( &added );
 }
 
+void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
+{
+	NetworkTopologyChanged();
+
+	if (removed.GetInPorts().Size() == 0) // if it's a generator
+		mGenerators.remove( &removed );
+}
 void PushFlowControl::DoProcessings()
 {
 	std::list< Processing* > toDo(mGenerators);

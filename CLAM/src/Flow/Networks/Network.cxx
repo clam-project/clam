@@ -246,6 +246,7 @@ namespace CLAM
 		{
 			(*itOutPort)->Unattach();
 		}
+		mFlowControl->ProcessingRemovedFromNetwork(*proc);
 		delete proc;
 		
 	}
