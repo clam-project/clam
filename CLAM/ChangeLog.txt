@@ -57,7 +57,7 @@
       ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  to
          compilation problems if you don't use the ugly 'using namespace CLAM;'.
       ** Fix: dynamic type self-assignation doesn't modify the object.
-  * Examples - SMS (old SMSAnalysisSynthesis):
+  * Examples - SMS (old AnalysisSynthesisExample):
       ** FlowControlExamples. Gives examples of use of networks and flow-control.
       ** Renamed as SMS. GUI is now SMSTools.
       ** Applies chained SMS transformations
