@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Network.hxx"
 #include "Processing.hxx"
+#include "Node.hxx"
 
 namespace CLAM
 {
@@ -23,29 +24,28 @@ void FlowControl::AttachToNetwork( Network* network)
 
 void FlowControl::ConfigureNodes()
 {
-	//added new connection to network
-	if(_state != SomeNodesNotConfigured )
+	// added new processing to network
+	if(_unconfiguredNodes.empty())
 		return;
 
 	Network::Nodes::iterator it;
-	for (it = _network->BeginNodes(); it != _network->EndNodes(); it++ )
+	for ( it=_unconfiguredNodes.begin(); it!=_unconfiguredNodes.end(); it++ )
 	{
 		(*it)->Configure(_frameSize);
 	}
-	_state = Ready;
-
+	_unconfiguredNodes.clear();
 }
 
 void FlowControl::ConfigurePorts()
 {
 	// added new processing to network
-	if(_state != SomePortsNotConfigured )
+	if(_unconfiguredProcessings.empty())
 		return;
 
-	Network::ProcessingsMap::iterator it;
-	for( it=_network->BeginProcessings(); it!= _network->EndProcessings(); it++)
+	std::list< Processing* >::iterator it;
+	for( it=_unconfiguredProcessings.begin(); it!= _unconfiguredProcessings.end(); it++)
 	{
-		Processing* proc = it->second;
+		Processing* proc = (*it);
 		Processing::InPortIterator itin;
 		for (itin = proc->GetInPorts().Begin(); 
 		     itin != proc->GetInPorts().End(); 
@@ -58,17 +58,17 @@ void FlowControl::ConfigurePorts()
 		     itout++)
 			(*itout)->SetParams(_frameSize);		
 	}
-	_state = Ready;
+	_unconfiguredProcessings.clear();
 }
 
-void FlowControl::ProcessingAddedToNetwork()
+void FlowControl::ProcessingAddedToNetwork( Processing* proc )
 {
-	_state = SomePortsNotConfigured;
+	_unconfiguredProcessings.push_back(proc);
 }
 
-void FlowControl::ConnectionAddedToNetwork()
+void FlowControl::NodeAddedToNetwork( NodeBase * node )
 {
-	_state = SomeNodesNotConfigured;
+	_unconfiguredNodes.push_back(node);
 }
 
 void FlowControl::StartNetwork()
@@ -85,7 +85,7 @@ void FlowControl::StartNetwork()
 
 void FlowControl::StopNetwork()
 {
-	//CLAM_ASSERT(_state == Running , "FlowControl cannot Stop a Network that is not running");
+	CLAM_ASSERT(_state == Running , "FlowControl cannot Stop a Network that is not running");
 
 	Network::ProcessingsMap::iterator it;
 	for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
@@ -97,10 +97,7 @@ void FlowControl::StopNetwork()
 
 void FlowControl::DoProcessings()
 {
-	//CLAM_ASSERT(_state == Running , "FlowControl not started");		
-	CLAM_ASSERT(_state == Running || _state == Ready , "FlowControl not started");		
-	// todo: rethink FlowControl states. and test.
-
+	CLAM_ASSERT(_state == Running , "FlowControl not started");		
 
 	Network::ProcessingsMap::iterator it;
 	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
@@ -109,5 +106,6 @@ void FlowControl::DoProcessings()
 			it->second->Do();
 	}
 }
+
 
 }

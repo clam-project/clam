@@ -63,7 +63,7 @@ namespace CLAM
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 
 		if(_flowControl)
-			_flowControl->ProcessingAddedToNetwork();
+			_flowControl->ProcessingAddedToNetwork(proc);
 	}
 
 	bool Network::HasProcessing( const std::string & name )
@@ -91,9 +91,6 @@ namespace CLAM
 
 		inport.Attach(GetNodeAttachedTo(outport));
 		
-		if(_flowControl)
-			_flowControl->ConnectionAddedToNetwork();
-
 		return true;
 	}
 
@@ -189,7 +186,8 @@ namespace CLAM
 			{
 				NodeBase * node = CreateAudioNodeWithDefaultStreamBuffer();
 				out.Attach(*node);
-				_nodes.push_back(node);				
+				_nodes.push_back(node);
+				_flowControl->NodeAddedToNetwork(node);
 			}
 			return *out.GetNode();
 	}
