@@ -4,6 +4,7 @@
 
 #include "Signalv1.hxx"
 #include "Signalv2.hxx"
+#include "Slotv0.hxx"
 #include "Slotv1.hxx"
 #include "Slotv2.hxx"
 #include <string>
@@ -40,6 +41,7 @@ namespace CLAMVM
 		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewControlConnection;
 		SigSlot::Slotv1< const std::string & > LoadNetwork;
 		SigSlot::Slotv1< const std::string & > SaveNetwork;
+		SigSlot::Slotv0 Clear;
 		
 	};	
 }

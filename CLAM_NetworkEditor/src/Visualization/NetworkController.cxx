@@ -7,6 +7,7 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "Storage.hxx"
 #include <iostream>
 
 namespace CLAMVM
@@ -25,6 +26,7 @@ NetworkController::NetworkController()
 	ChangeState.Wrap( this, &NetworkController::OnNewChangeState );
 	SaveNetwork.Wrap( this, &NetworkController::OnSaveNetwork );
 	LoadNetwork.Wrap( this, &NetworkController::OnLoadNetwork );
+	Clear.Wrap( this, &NetworkController::OnClear );
 }
 
 void NetworkController::ExecuteEvents()
@@ -172,12 +174,20 @@ void NetworkController::OnRemoveControlConnectionFromGUI( const std::string & ou
 
 void NetworkController::OnLoadNetwork( const std::string & file)
 {
+	OnClear();
 	std::cout << "loading network from: " << file << std::endl;
+	CLAM::XMLStorage storage;
+	storage.Restore( *mObserved, file );
+	Publish();
+	
 }
 
 void NetworkController::OnSaveNetwork( const std::string & file)
 {
 	std::cout << "saving network to: " << file << std::endl;
+	CLAM::XMLStorage storage;
+	storage.UseIndentation(true);
+	storage.Dump( *mObserved, "network", file );
 }
 
 void NetworkController::OnRemoveProcessingFromGUI(const std::string & proc)
@@ -285,12 +295,13 @@ bool NetworkController::Publish()
 	{
 		CLAM::NodeBase * node = *itNodes;
 		const CLAM::OutPort* out = node->GetWriter();
-		std::list<CLAM::InPort*> inPortList = node->GetReaders();
-		std::list<CLAM::InPort*>::iterator itInPort;
-		for (itInPort=inPortList.begin(); itInPort!=inPortList.end(); itInPort++)
+//		std::list<CLAM::InPort*> inPortList = node->GetReaders();
+//		std::list<CLAM::InPort*>::iterator itInPort;
+		CLAM::NodeBase::ReaderIterator it;
+		for (it=node->BeginReaders(); it!=node->EndReaders(); it++)
 		{
 			ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>* conAdapter = new ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>;
-			const CLAM::InPort* in = *itInPort;
+			const CLAM::InPort* in = *it;
 			conAdapter->BindTo( *out, *in, (const CLAM::Network&)*mObserved);
 			mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
 			AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
@@ -316,6 +327,23 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 bool NetworkController::Update()
 {
 	return true;
+}
+
+void NetworkController::OnClear()
+{	
+	mLoopCondition = false;
+	mThread.Stop();
+
+	ProcessingControllerIterator it;
+	for ( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
+		delete *it;
+	mProcessingControllers.clear();
+
+	ConnectionAdapterIterator itc;
+	for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
+		delete *itc;
+	mConnectionAdapters.clear();
+	mObserved->Clear();
 }
 
 } //namespace CLAMVM
