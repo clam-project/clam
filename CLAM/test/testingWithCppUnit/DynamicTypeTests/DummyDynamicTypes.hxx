@@ -103,7 +103,7 @@ public:
 #endif//CLAM_USE_XML
 	}
 
-
+	const char* GetClassName() const { return "CompWithBasics8"; }
 };
 
 //////////////////////////////////////////////////////////////////////
