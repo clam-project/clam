@@ -99,7 +99,7 @@ void GLArrayRenderer::Draw()
 			mMustUpdateBounds= false;
 		}
 		
-		glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, &mElemIdxBuffer[0] );
+		glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, &mElemIdxBuffer[mFirstIndex] );
 	}
 	else
 	{
@@ -179,7 +179,7 @@ void GLArrayRenderer::UpdateBounds()
 	end = mCullingData.right;
 	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
 
-	unsigned k;
+	int k;
 	
 	bool found=false;
 
@@ -209,6 +209,11 @@ void GLArrayRenderer::UpdateBounds()
 		}
 		if(!found) mFirstIndex=0;
 	}
+	
+	else
+	{
+		std::cout<<"I'm here";
+	}
 
 	found=false;
 
@@ -237,6 +242,11 @@ void GLArrayRenderer::UpdateBounds()
 			}
 		}
 		if(!found) mLastIndex=0;
+	}
+
+	else
+	{
+		std::cout<<"I'm here";
 	}
 
 
