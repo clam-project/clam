@@ -3,6 +3,7 @@
 #include "StreamBuffer.hxx"
 #include "ReadStreamRegion.hxx"
 #include "WriteStreamRegion.hxx"
+#include "StreamRegionContainer.hxx"
 #include "Audio.hxx"
 #include "CircularStreamImpl.hxx"
 
@@ -19,6 +20,9 @@ class RegionsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( RegionsTest );
 	CPPUNIT_TEST( testReadStreamRegion_CanActivate_WhenWriterIsJustInitialized );
 	CPPUNIT_TEST( testWriteStreamRegion_CanActivate_WhenWriterIsJustInitialized );
+	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithoutReadersThrowsException );
+	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithoutCorrectReaderThrowsException );
+	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithCorrectReader );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -65,6 +69,64 @@ private:
 		delete write;
 		delete read;
 	}
+
+	void testStreamRegionContainer_RemoveReader_WithoutReadersThrowsException ()
+	{
+		const int hop = 0;
+		const int length = 1;
+		CLAM::StreamRegionContainer container;
+		CLAM::WriteStreamRegion * writer = 
+			new CLAM::WriteStreamRegion( hop, length );
+		CLAM::ReadStreamRegion * reader = 
+			new CLAM::ReadStreamRegion( hop, length, writer );
+		container.SetWriter( writer );
+		try{
+			container.RemoveReader( reader );
+			CPPUNIT_FAIL("Assert expected but nothing happened");
+		} catch ( CLAM::ErrAssertionFailed& ) {}
+
+		delete writer;
+		delete reader;
+	}
+
+	void testStreamRegionContainer_RemoveReader_WithoutCorrectReaderThrowsException ()
+	{
+		const int hop = 0;
+		const int length = 1;
+		CLAM::StreamRegionContainer container;
+		CLAM::WriteStreamRegion * writer = new CLAM::WriteStreamRegion( hop, length );
+		CLAM::ReadStreamRegion * reader = new CLAM::ReadStreamRegion( hop, length, writer );
+		CLAM::ReadStreamRegion * reader2 = new CLAM::ReadStreamRegion( hop, length, writer );
+		container.SetWriter( writer );
+		container.AddReader( reader );
+		try{
+			container.RemoveReader( reader2 );
+			CPPUNIT_FAIL("Assert expected but nothing happened");
+		} catch ( CLAM::ErrAssertionFailed& ) {}
+		
+		delete writer;
+		delete reader;
+		delete reader2;
+
+	}
+
+	void testStreamRegionContainer_RemoveReader_WithCorrectReader()
+	{
+		const int hop = 0;
+		const int length = 1;
+		CLAM::StreamRegionContainer container;
+		CLAM::WriteStreamRegion * writer = new CLAM::WriteStreamRegion( hop, length );
+		CLAM::ReadStreamRegion * reader = new CLAM::ReadStreamRegion( hop, length, writer );
+		container.SetWriter( writer );
+		container.AddReader( reader );
+		container.RemoveReader( reader );
+		
+		CPPUNIT_ASSERT_EQUAL( false, writer->IsSourceOf( reader ));
+
+		delete writer;
+		delete reader;
+	}
+
 };
 
 
