@@ -46,12 +46,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SpectralDescriptorsTest );
 class SpectralDescriptorsTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralDescriptorsTest );
-//	CPPUNIT_TEST( testRolloff );
+	CPPUNIT_TEST( testRolloff );
 	CPPUNIT_TEST( testFlatness );
-//	CPPUNIT_TEST( testCentroid );
+	CPPUNIT_TEST( testCentroid );
 	CPPUNIT_TEST( testSpread );
 	CPPUNIT_TEST( testSlope );
-//	CPPUNIT_TEST( testMaxMagFreq );
+	CPPUNIT_TEST( testMaxMagFreq );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -251,6 +251,14 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
+		data["MaxSpread-Spectrum.xml"] = 11025;
+		data["MinSpread-Spectrum.xml"] = 0.0;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
+		data["Silence-Spectrum.xml"] = 11025; // Avoid NaN
+		data["Constant-Spectrum.xml"] = 11025;
+		data["ConstantDouble-Spectrum.xml"] = 11025;
+		data["ConstantHalfSize-Spectrum.xml"] = 11025;
+
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 2546.840064;
 		data["Balance000.600.wav"] = 416.676904;
 		data["Balance000.992.wav"] = 795.851545;
@@ -272,7 +280,6 @@ private:
 		data["vln_A3.wav"] = 11025.;
 		data["vln_D5.wav"] = 11025.;
 		data["whitenoise.wav"] = 11072.758057;
-		data["Constant-Spectrum.xml"]= 11025;
 
 		mDescriptors->AddCentroid();
 
@@ -287,7 +294,6 @@ private:
 	void testSpread()
 	{
 		CLAM::TData tolerance = 0.0006;  // Due to numerical inaccuracies
-		CLAM::TData binRange513 = 22050/(513-1);
 
 		std::map<std::string, CLAM::TData> data;
 		data["MaxSpread-Spectrum.xml"] = 22050*22050/4;
