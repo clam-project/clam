@@ -23,13 +23,16 @@ def parse_acv_file( filename, **args ) :
 
     return fragment
 
-def ac_check_feature_enabled( featName, defaultState="yes" ) :
+def ac_check_feature_enabled( featName, defaultState="yes",
+                              effectsEnable="", effectsDisable="" ) :
     eFeatName = re.sub( "-", "_", featName )
     return parse_acv_file( "acv/check_feature_enable.acv",
                            feature=featName,
                            feature_esc=eFeatName,
                            uc_feature_esc=eFeatName.upper(),
-                           default=defaultState )
+                           default=defaultState,
+                           effectsEnabled=effectsEnable,
+                           effectsDisabled=effectsDisable )
 
 def ac_disabled_feature_warning( featName ) :
     eFeatName = re.sub( "-", "_", featName )
@@ -54,22 +57,14 @@ def ac_disabled_package_warning( featName ) :
                            uc_feature = featName.upper() )
 
 
-checked_sandbox_location = False
-def ac_sandbox_location( ) :
-    global checked_sandbox_location
-    if checked_sandbox_location : return ""
-    checked_sandbox_location = True
-    
+
+def ac_sandbox_location( ) :    
     frag1 = ac_check_feature_enabled( 'sandbox' )
 
     return "\n".join( [ frag1, parse_acv_file("acv/sandbox_location.acv") ] )
 
-checked_pkg_config_availability = False
-def ac_pkg_config_availability() :
-    global checked_pkg_config_availability
-    if checked_pkg_config_availability : return ""
-    checked_pkg_config_availability = True
 
+def ac_pkg_config_availability() :
     return "\n".join( [ ac_check_feature_enabled('pkg-config'),
                         parse_acv_file( 'acv/pkg_config_availability.acv') ] )
 
@@ -94,9 +89,26 @@ class Feature:
             self.default = 'yes'
         else :
             self.default = 'no'
+        self.effectsEnabled = []
+        self.effectsDisabled = []
 
     def check( self ) :
-        return ac_check_feature_enabled( self.name, self.default )
+        return ac_check_feature_enabled( self.name,
+                                         self.default,
+                                         self.getEffectsWhenEnabled(),
+                                         self.getEffectsWhenDisabled() )
+
+    def addEffectWhenEnabled( self, effectString ) :
+        self.effectsEnabled.append( effectString )
+
+    def addEffectWhenDisabled( self, effectString ) :
+        self.effectsDisabled.append( effectString )
+
+    def getEffectsWhenEnabled( self ) :
+        return " ".join( self.effectsEnabled )
+
+    def getEffectsWhenDisabled( self ) :
+        return " ".join( self.effectsDisabled )
 
 
 class Library:
@@ -125,8 +137,7 @@ int main( void )
         eFeatName = re.sub( "-","_", self.name )
         if len( self.headers ) == 0 :
             raise TypeError, "No headers were specified for %s"%self.name
-        return "\n".join( [ ac_sandbox_location(),
-                            parse_acv_file( 'acv/feature_in_sandbox.acv',
+        return "\n".join( [ parse_acv_file( 'acv/feature_in_sandbox.acv',
                                             feature=self.name,
                                             feature_esc=eFeatName,
                                             headers=self.headers,
@@ -153,8 +164,7 @@ int main( void )
 
     def pkg_config_find( self ) :
         eFeatName = re.sub( "-", "_", self.name )
-        return "\n".join( [ ac_pkg_config_availability(),
-                            parse_acv_file( 'acv/pkg_config_find.acv',
+        return "\n".join( [ parse_acv_file( 'acv/pkg_config_find.acv',
                                             feature=self.name,                                           
                                             feature_esc=eFeatName) ] )
 
@@ -192,11 +202,20 @@ int main( void )
 
 class AutoconfScript :
     # Autoconf script container
-    def __init__( self ) :
+    def __init__( self, packageName, packageVersion, bugReporting = "clam@iua.upf.es" ) :
+        self.packageName = packageName
+        self.packageVersion = packageVersion
+        self.bugReporting = bugReporting
         self.scriptLines = []
         self.featureList = []
         self.librariesList = []
         self.defaults = None
+        self.descriptionText = ""
+        self.packageDeps = []
+        self.preinclude = ""
+
+    def dependsOn( self, name ) :
+        self.packageDeps.append( name )
 
     def __lshift__( self, line ) :
         # Inserts a new line in the script
@@ -215,7 +234,7 @@ class AutoconfScript :
 
     def fillLines( self ) :
         self.scriptLines = []
-        self << ac( 'INIT', 'test', '0.1', 'clam@iua.upf.es' )
+        self << ac( 'INIT', '%s'%self.packageName, '%s'%self.packageVersion, '%s'%self.bugReporting )
         self << ac( 'PROG_CC' )
         self << ac( 'PROG_CPP' )
         self << ac( 'PROG_CXX' )
@@ -226,6 +245,14 @@ class AutoconfScript :
         self << 'include_dirs=""\n'
         self << 'lib_dirs=""\n'
         self << 'libs=""\n'
+        self << ac( 'SUBST','PACKAGE_DEFINES')
+        self << 'PACKAGE_DEFINES=""\n'
+        self << ac( 'SUBST','PACKAGE_PRE_INCLUDE')
+        self << 'PACKAGE_PRE_INCLUDE="%s"\n'%self.preinclude
+        self << ac( 'SUBST','PACKAGE_DESCRIPTION')
+        self << 'PACKAGE_DESCRIPTION="%s"\n'%self.descriptionText
+        self << ac( 'SUBST','PACKAGE_DEPS')
+        self << 'PACKAGE_DEPS="%s"'%",".join( self.packageDeps )
         # Check install
         self << ac( 'PROG_INSTALL')
         self << ac( 'PATH_PROG', 'LDDCONFIG','ldconfig','','$PATH:/usr/sbin:/sbin:/bin' )
@@ -258,7 +285,8 @@ class AutoconfScript :
                 self << ac_disabled_package_warning( lib.name )
                 self.defaults.addLibrary( lib.name )
 
-        self << ac('OUTPUT','defaults.cfg system-linux.cfg Makefile.rules')
+        self << 'outpkgconf="$PACKAGE_NAME.pc"'
+        self << ac('OUTPUT','defaults.cfg system-linux.cfg Makefile.rules $outpkgconf')
 #        self << ac('OUTPUT','system-linux.cfg')
 #        self << ac('OUTPUT','Makefile.rules' )
 
@@ -274,14 +302,15 @@ class AutoconfScript :
         del self.defaults
 
 
-def copySupportFiles( path ) :
-    os.system("cp system-common.cfg %s/"%path )
-    os.system("cp system-linux.cfg.in %s/"%path )
-    os.system("cp system-macosx.cfg.in %s/"%path )
-    os.system("cp system.cfg %s/"%path )
-    os.system("cp system-win.cfg %s/"%path )
-    os.system("cp install-sh %s/"%path )
-    os.system("cp Makefile.rules.in %s/"%path )
+    def copySupportFiles( self, path ) :
+        os.system("cp system-common.cfg %s/"%path )
+        os.system("cp system-linux.cfg.in %s/"%path )
+        os.system("cp system-macosx.cfg.in %s/"%path )
+        os.system("cp system.cfg %s/"%path )
+        os.system("cp system-win.cfg %s/"%path )
+        os.system("cp install-sh %s/"%path )
+        os.system("cp Makefile.rules.in %s/"%path )
+        os.system("cp CLAMlib.pc.in.tpl %s/%s.pc.in"%(path,self.packageName ))
 
 
 class DefaultsFile :
