@@ -27,6 +27,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FunctionalTestWithCLAM );
  *
  * WARNING: they maight take some time to run. So it is likely you'd want to take it
  * out of the srcdeps test suite while developing it.
+ * And of course this test suite doesn't have sense if srcdeps is used independently
+ * of CLAM.
  *
  */
 class FunctionalTestWithCLAM : public CppUnit::TestFixture, public FileHelper
