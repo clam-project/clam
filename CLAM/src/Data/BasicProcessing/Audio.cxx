@@ -65,7 +65,9 @@ void Audio::SetDuration(TTime duration)
 
 TTime Audio::GetTimeFromIndex(TIndex index) const
 {
-	return (TTime)(index*1000/GetSampleRate());
+		double sampleOffset = index;
+		sampleOffset *= 1000.;
+		return (TTime)( sampleOffset / GetSampleRate() );
 }
 
 TIndex Audio::GetIndexFromTime(TTime time) const
