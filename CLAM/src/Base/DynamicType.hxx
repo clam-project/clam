@@ -176,12 +176,13 @@ public:
 	void FullfilsInvariant() const;
 
 	virtual Component* DeepCopy() const;
+public:
+	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
+
 protected:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
-	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
-
 	// item of the typeDescTable, that is static created only once in the concrete class constructor
 	struct TAttr
 	{
