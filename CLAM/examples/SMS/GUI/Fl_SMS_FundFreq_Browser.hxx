@@ -22,6 +22,7 @@
 #ifndef __FL_SMS_FUNDFREQ_BROWSER__
 #define __FL_SMS_FUNDFREQ_BROWSER__
 
+#include <string>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
 #include "Presentation.hxx"
@@ -59,6 +60,7 @@ namespace CLAMVM
 		CLAM::TSize                         mFrames;
 		CLAM::TTime                         mBeginTime;
 		CLAM::TTime                         mEndTime;
+		std::string                         mTooltipFmtStr;
 		
 	protected:
 
@@ -90,9 +92,15 @@ namespace CLAMVM
 		SigSlot::Slotv1<double>        SetSelectedXValue;
 		SigSlot::Signalv1<double>      SelectedXValue;
 		
+		void SetTooltipFormat( const char* fmtStr );
 
 	};
 
+	// inlines
+	inline void Fl_SMS_FundFreq_Browser::SetTooltipFormat( const char* fmtStr )
+	{
+		mTooltipFmtStr = fmtStr;
+	}
 	
 }
 

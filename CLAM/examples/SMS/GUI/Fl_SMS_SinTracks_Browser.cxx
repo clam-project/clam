@@ -29,7 +29,8 @@
 namespace CLAMVM
 {
 	Fl_SMS_SinTracks_Browser::Fl_SMS_SinTracks_Browser( int X, int Y, int W, int H, const char* label )
-		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), mImposterBox( NULL )
+		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), mImposterBox( NULL ),
+		mTooltipFmtStr( "time %.3f s, freq %.2f Hz " )
 	{
 		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
@@ -102,7 +103,7 @@ namespace CLAMVM
 		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-		snprintf( txtBuffer, maxLen,  "freq. %.2f Hz time %.3f secs",  wY, wX );	
+		snprintf( txtBuffer, maxLen,  mTooltipFmtStr.c_str(),  wX, wY );	
 	}
 
 	int Fl_SMS_SinTracks_Browser::handle( int event )

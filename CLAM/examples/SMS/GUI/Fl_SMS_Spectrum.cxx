@@ -30,7 +30,8 @@
 namespace CLAMVM
 {
 	Fl_SMS_Spectrum::Fl_SMS_Spectrum( int X, int Y, int W, int H, const char* label )
-		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL )
+		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), 
+		  mTooltipFmtStr( "f=%6.f Hz, amp(f)=%4.2f dB" )
 	{
 		mXAxis = new Fl_X_Axis( X, Y + H-50, W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
@@ -84,7 +85,7 @@ namespace CLAMVM
 		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-		snprintf( txtBuffer, maxLen,  "amp. %4.2f dB freq %6.f Hz",  wY, wX );	
+		snprintf( txtBuffer, maxLen,  mTooltipFmtStr.c_str(),  wX, wY );	
 
 	}
 

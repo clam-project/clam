@@ -22,6 +22,7 @@
 #ifndef __FL_SMS_SPECTRUM__
 #define __FL_SMS_SPECTRUM__
 
+#include <string>
 #include <FL/Fl_Group.H>
 #include "SpectrumPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
@@ -48,6 +49,7 @@ namespace CLAMVM
 		TooltipTracker2D            mTooltipTracker;
 		Fl_Box*                     mImposterBox;
 		DataBoundBox                mWorldSpaceCoords;
+		std::string                 mTooltipFmtStr;
 
 	protected:
 		
@@ -63,7 +65,16 @@ namespace CLAMVM
 
 		void Show();
 		void Hide();
+
+		void SetTooltipFormat( const char* fmtStr );
 	};
+
+	// inlines
+
+	inline void Fl_SMS_Spectrum::SetTooltipFormat( const char* fmtStr )
+	{
+		mTooltipFmtStr = fmtStr;
+	}
 }
 
 #endif // Fl_SMS_Spectrum.hxx

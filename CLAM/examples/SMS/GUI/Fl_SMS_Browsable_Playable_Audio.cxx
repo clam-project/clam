@@ -37,7 +37,8 @@ using CLAM::Audio;
 
 
 Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false ), mDisplay( NULL ), mSelectedSampleTime( 0 )
+	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false ), mDisplay( NULL ), mSelectedSampleTime( 0 ),
+	  mTooltipFormat( "t=%.4f s, x(t)=%.2f" )
 {
 	mImposterBox = new Fl_Box( X, Y, W-50, H-50 );
 
@@ -110,7 +111,7 @@ void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* text
 	double wX = (((double)x / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 	double wY = mYAxis->maximum() - (((double)y / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-	snprintf( textBuffer, maxLen,  "amp. %.2f time %.4f secs",  wY, wX );
+	snprintf( textBuffer, maxLen,  mTooltipFormat.c_str(),  wX, wY );
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )

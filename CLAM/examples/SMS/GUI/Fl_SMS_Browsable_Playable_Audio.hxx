@@ -23,6 +23,7 @@
 #define __FL_BROWSABLE_PLAYABLE_AUDIO__
 
 #include <FL/Fl_Group.H>
+#include <string>
 #include "AudioRenderingManager.hxx"
 #include "AudioPresentation.hxx"
 #include "AudioPlayer.hxx"
@@ -56,6 +57,46 @@ namespace CLAMVM
 	class Fl_SMS_Browsable_Playable_Audio 
 		: public Fl_Group, public AudioPresentation
 	{
+	public:
+		Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
+		~Fl_SMS_Browsable_Playable_Audio();
+		
+		void OnRefreshTooltip( int x, int y, char* txtBuffer, int maxLen );
+		void SetPaint(); 
+		void UnsetPaint(); 
+		void SetPos( CLAM::TData pos );
+
+		Slotv0                mStopSlot;
+		void Show();
+		void Hide();
+
+		Slotv1<double>        SetSelectedXValue;
+		Signalv1<double>      SelectedXValue;
+
+		void SetTooltipFormat( const char* fmtStr );
+
+	protected:
+		virtual void OnDisplaySelectedXValue( double value );
+		virtual void OnSetSelectedXValue( double value );
+		Signalv1< double > ChangeSelectedXValue;
+		Slotv1< double >   HandleDisplaySelection;
+
+		void Play(  );
+		void Stop(  );
+
+		void draw();
+
+		static void play( Fl_Widget*, void* data);
+		static void stop( Fl_Widget*, void* data);
+
+		int handle( int event );
+		virtual void OnNewAudio( const DataArray&, TTime, TTime, TData );
+
+	protected:
+		Fl_SMS_Gl_Single_Browsable_Display*   mDisplay;
+		TooltipTracker2D                      mTooltipTracker;
+		DataBoundBox                          mWorldSpaceCoords;
+		Fl_Box*                               mImposterBox;
 		Fl_X_Axis*                        mXAxis;
 		Fl_Y_Axis*                        mYAxis;
 		Fl_ZoomSlider*                    mXSlider;
@@ -68,56 +109,15 @@ namespace CLAMVM
 		CLAM::AudioPlayer*                mAudioPlayer;
 		CLAM::TTime                       mSelectedSampleTime;
 		tAudioTimeInfo                    mAudioProperties;
-		// for transforming the sample index into sample time
-
-		void Play(  );
-		void Stop(  );
-
-		void draw();
-
-		static void play( Fl_Widget*, void* data);
-		static void stop( Fl_Widget*, void* data);
-
-		int handle( int event );
-
-	protected:
-		void OnNewAudio( const DataArray&, TTime, TTime, TData );
-		Fl_SMS_Gl_Single_Browsable_Display*   mDisplay;
-		TooltipTracker2D                  mTooltipTracker;
-		DataBoundBox                      mWorldSpaceCoords;
-		Fl_Box*                           mImposterBox;
-		
-	public:
-		Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
-		~Fl_SMS_Browsable_Playable_Audio();
-		
-		void OnRefreshTooltip( int x, int y, char* txtBuffer, int maxLen );
-		void SetPaint(); 
-		void UnsetPaint(); 
-		void SetPos( CLAM::TData pos );
-
-
-
-		Slotv0                mStopSlot;
-
-		void Show();
-		void Hide();
-
-		Slotv1<double>        SetSelectedXValue;
-		Signalv1<double>      SelectedXValue;
-
-
-	protected:
-		virtual void OnDisplaySelectedXValue( double value );
-		virtual void OnSetSelectedXValue( double value );
-
-
-		Signalv1< double > ChangeSelectedXValue;
-		Slotv1< double >   HandleDisplaySelection;
-
-
-		
+		// for transforming the sample index into sample time	
+		std::string                       mTooltipFormat;
 	};
+
+	// inlines 
+	inline void Fl_SMS_Browsable_Playable_Audio::SetTooltipFormat( const char* fmtStr )
+	{
+		mTooltipFormat = fmtStr;
+	}
 
 }
 

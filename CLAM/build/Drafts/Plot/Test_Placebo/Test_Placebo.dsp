@@ -103,6 +103,14 @@ SOURCE=..\..\..\..\draft\Plot\test\test_placebo.cxx
 # End Group
 # Begin Source File
 
+SOURCE=..\..\..\..\draft\Plot\src\PlotBase.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\draft\Plot\src\GenericPlot.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\draft\Plot\src\Plotv2.cxx
 # End Source File
 # Begin Source File
@@ -425,6 +433,14 @@ SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\draft\Plot\src\Color.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\draft\Plot\src\PlotBase.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\draft\Plot\src\GenericPlot.hxx
 # End Source File
 # Begin Source File
 

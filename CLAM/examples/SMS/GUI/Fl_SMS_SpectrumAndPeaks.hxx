@@ -1,6 +1,7 @@
 #ifndef __FL_SMS_SPECTRUMANDPEAKS__
 #define __FL_SMS_SPECTRUMANDPEAKS__
 
+#include <string>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
 #include "SpectralPeaksPresentation.hxx"
@@ -34,6 +35,7 @@ namespace CLAMVM
 		PeaksRenderingManager        mPeaksDrawMgr;
 		TooltipTracker2D             mTooltipTracker;
 		DataBoundBox                 mWorldSpaceCoords;
+		std::string                  mTooltipFmtStr;
 
 	protected:
 
@@ -54,7 +56,15 @@ namespace CLAMVM
 		virtual void Show();
 		virtual void Hide();
 
+		void SetTooltipFormat( const char* fmtStr );
+
 	};
+
+	// inlines 
+	inline void Fl_SMS_SpectrumAndPeaks::SetTooltipFormat( const char* fmtStr )
+	{
+		mTooltipFmtStr = fmtStr;
+	}
 }
 
 #endif // Fl_SpectrumPeaks.hxx

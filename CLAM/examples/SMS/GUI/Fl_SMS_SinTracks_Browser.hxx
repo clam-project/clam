@@ -1,6 +1,7 @@
 #ifndef __FL_SMS_SINTRACKS_BROWSER__
 #define __FL_SMS_SINTRACKS_BROWSER__
 
+#include <string>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
 #include "DataTypes.hxx"
@@ -34,6 +35,7 @@ namespace CLAMVM
 		CLAM::TSize                         mFrames;
 		Fl_Box*                             mImposterBox;
 		DataBoundBox                        mWorldSpaceCoords;
+		std::string                         mTooltipFmtStr;
 
 	protected:
 
@@ -65,8 +67,15 @@ namespace CLAMVM
 		SigSlot::Slotv1<double>        SetSelectedXValue;
 		SigSlot::Signalv1<double>      SelectedXValue;
 
+		void SetTooltipFormat( const char* fmtStr );
 		
 	};
+
+	// inlines
+	inline void Fl_SMS_SinTracks_Browser::SetTooltipFormat( const char* fmtStr )
+	{
+		mTooltipFmtStr = fmtStr;
+	}
 }
 
 #endif // Fl_SMS_SinTracks_Browser.hxx
