@@ -4,7 +4,7 @@
 #include "Processing.hxx"
 #include "OutPort.hxx"
 #include "InPort.hxx"
-#include "Node.hxx"
+#include "Network.hxx"
 #include <iostream>
 
 namespace CLAM
@@ -53,25 +53,25 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 {
 	
 	// for each out port of the processing already executed
-	Processing::OutPortIterator itOutPort;		
+	Processing::OutPortIterator itOutPort;
+	
 	for (itOutPort=producer->GetOutPorts().Begin(); 
 	     itOutPort!=producer->GetOutPorts().End(); 
 	     itOutPort++)
 	{
 		if (!(*itOutPort)->GetNode())
 			break;
+
+		Network::InPortsList consumers;
+		consumers = mNetwork->GetInPortsConnectedTo( **itOutPort );
 		
-		// for each processing connected as a consumer to the node
-//		std::list<InPort*> consumers = (*itOutPort)->GetNode()->GetReaders();
-		NodeBase::ReaderIterator consumers;
-//		std::list< InPort* >::iterator itInPort;
-		for (consumers=(*itOutPort)->GetNode()->BeginReaders(); 
-		     consumers!=(*itOutPort)->GetNode()->EndReaders(); 
-		     consumers++)
+		Network::InPortsList::iterator itInPort;
+
+		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
 		{
-			Processing * consumer = (Processing*)(*consumers)->GetProcessing();
-			if (AreAllProducersExecuted( consumer, executed ))
-				toDo.push_back( consumer );
+			Processing * proc = (*itInPort)->GetProcessing();
+			if (AreAllProducersExecuted( proc, executed ))
+				toDo.push_back( proc );
 		}
 	}
 }
