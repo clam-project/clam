@@ -4,67 +4,14 @@
 #include "Functor1.hxx"
 #include "Signal.hxx"
 #include "Slot.hxx"
-#include "CallbackHandler.hxx"
-#include <list>
 
-namespace CLAMGUI
-{
+// MRJ: Argh! I hate this, but I hope at least this is a
+// quite clear way to differentiate both implementations
+#if (_MSC_VER > 1310)||defined( __GNUC__ )
+#include "Signalv1ImplSerious.hxx"
+#else
+#include "Signalv1ImplVC6.hxx"
+#endif
 
-template < typename ParmType1 >
-	class Signalv1 : public Signal
-{
-public:
-	typedef CBL::Functor1<ParmType1>                  tCallbackType;
-	typedef CallbackHandler<Signalv1<ParmType1> >     tSuperType;
-
-public:
-	
-	template < class RefType, typename PtrMember >
-		Slot Connect( RefType thisRef, PtrMember pMember )
-	{
-		Slot s( AssignSlot(), this );
-
-		mSuper.AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
-
-		return s;
-	}
-
-	template < typename PtrFunction >
-		Slot Connect( PtrFunction pMember )
-	{
-		Slot s( AssignSlot(), this );
-
-		mSuper.AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
-
-		return s;
-	}
-	
-	void Emit( ParmType1 parm )
-	{
-		if ( mSuper.HasNoCallbacks() )
-			return;
-		
-		tSuperType::tCallList calls = mSuper.GetCalls();
-		tSuperType::tCallList::iterator i = calls.begin();
-		tSuperType::tCallList::iterator end = calls.end();
-
-		while ( i != end )
-			{
-				(*(*i))( parm );
-				i++;
-			}
-		
-	}
-
-	void FreeSlot( Slot* pSlot )
-	{
-		mSuper.RemoveCall( pSlot->GetID() );
-		FreeSlotId( pSlot->GetID() );
-	}
-private:
-	tSuperType  mSuper;
-};
-
-}
 
 #endif // Signalv1.hxx
