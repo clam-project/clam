@@ -20,8 +20,6 @@
  */
 
 #include "AnalysisSynthesisExampleBase.hxx"
-#include "DebugSnapshots.hxx"
-#include "AudioSnapshot.hxx"
 #include "SpectrumSnapshot.hxx"
 #include <iostream>
 #include "StdOutProgress.hxx"
