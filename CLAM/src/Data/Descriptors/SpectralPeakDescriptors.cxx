@@ -129,7 +129,6 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 	if (mpSpectralPeakArray->GetnPeaks()<=1) return 0;
 
 	/* TODO check me , this computation does not seem to work*/
-	TData m1;
 
 	TData d1=0;
 	TData d2=0;
@@ -143,7 +142,7 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 	const TData size=mag.Size();
 
-	m1 = Mean()(mag);
+	const TData magnitudeMean = mpStats->GetMean();
 
 	for (unsigned i=0;i<size;i++)
 	{
@@ -151,16 +150,16 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 		d2 += 1/mag[i];
 	}
 
-	/* ti = m1/ai *(n - (d1/d2)) */
-	/* SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]  */
+	/* ti = magnitudeMean/ai *(n - (d1/d2)) */
+	/* SpecTilt = magnitudeMean²/ti² * SUM[1/ai *(i-d1/d2)]  */
 
 	for (unsigned i=0;i<size;i++) {
 		Tilt += (1/mag[i] *(pos[i]-d1/d2));
-		ti = m1/mag[i]*(pos[i] - (d1/d2));
+		ti = magnitudeMean/mag[i]*(pos[i] - (d1/d2));
 		SumTi2 += ti*ti;
 	}
 
-	Tilt*= (m1*m1/SumTi2);
+	Tilt*= (magnitudeMean*magnitudeMean/SumTi2);
 	return Tilt;
 }
 
