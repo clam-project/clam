@@ -95,7 +95,7 @@ const ProcessingConfig& SDIFIn::GetConfig() const
 	return mConfig;
 }
 
-bool SDIFIn::Do(void)
+bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 {
 	if(!mpFile) return false;
 	if(mpFile->Done()) return false;
@@ -122,10 +122,10 @@ bool SDIFIn::Do(void)
 				
 		mLastCenterTime=frameTimeTag;
 		initFrame.SetCenterTime(frameTimeTag);
-		Output.GetData().AddFrame(initFrame);
+		segment.AddFrame(initFrame);
 	}
 
-	Frame& tmpFrame=Output.GetData().GetFrame(Output.GetData().GetnFrames()-1);
+	Frame& tmpFrame=segment.GetFrame(segment.GetnFrames()-1);
 	
 	SDIF::Frame::MatrixIterator frameIt = tmpSDIFFrame.Begin();
 
@@ -254,6 +254,18 @@ bool SDIFIn::Do(void)
 	}
 
 	return true;	
+	
+}
+
+bool SDIFIn::Do( CLAM::Segment& segment )
+{
+	return LoadSDIFDataIntoSegment( segment );
+}
+
+bool SDIFIn::Do(void)
+{
+	return LoadSDIFDataIntoSegment( Output.GetData() );
+
 
 }
 
