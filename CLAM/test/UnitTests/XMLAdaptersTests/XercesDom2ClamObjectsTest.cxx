@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "XercesDom2ClamObjects.hxx"
+#include "ClamObjects2XercesDom.hxx"
 #include "XmlMockUpObjects.hxx"
 #include "Component.hxx"
 #include <list>
@@ -55,6 +55,17 @@ public:
 	}
 
 private:
+
+	void assertComponentsLoaded(const std::string & expected, CompositeOfXmlables & toLoad, std::istream & xml)
+	{
+		XMLStorage loader;
+		loader.Read(xml);
+		loader.RestoreObject(toLoad);
+
+		CPPUNIT_ASSERT_EQUAL(expected, toLoad.childStructureTrace(0));
+	}
+	
+	
 	std::stringstream mTargetStream;
 
 	void testLoadingAWordOnBasicAsContent()
@@ -65,18 +76,14 @@ private:
 			"</Doc>"
 			);
 		
+		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic;
 		basic.setContent("PreviousValue");
-
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result = loader.Load(basic);
-
-		CPPUNIT_ASSERT_EQUAL(true, result);
+		toLoad.add(basic);
 
 		std::string expected= "B'Content'\n";
 
-		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testLoadingTwoWordsOnTwoBasicsAsContent()
@@ -87,23 +94,18 @@ private:
 			"</Doc>"
 			);
 		
+		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic1;
 		basic1.setContent("PreviousValue1");
 		XmlMockUpBasic basic2;
 		basic2.setContent("PreviousValue2");
+		toLoad.add(basic1);
+		toLoad.add(basic2);
 
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result1 = loader.Load(basic1);
-		bool result2 = loader.Load(basic2);
-
-		CPPUNIT_ASSERT_EQUAL(true, result1);
-		CPPUNIT_ASSERT_EQUAL(true, result2);
-
-		std::string expected1= "B'Content1'\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected1, basic1.structureTrace(0));
-		std::string expected2= "B'Content2'\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected2, basic2.structureTrace(0));
+		std::string expected= 
+			"B'Content1'\n"
+			"B'Content2'\n"; 
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testLoadingOneWordsOnTwoBasicsAsContent_secondLoadFails()
@@ -114,23 +116,18 @@ private:
 			"</Doc>"
 			);
 		
+		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic1;
 		basic1.setContent("PreviousValue1");
 		XmlMockUpBasic basic2;
 		basic2.setContent("PreviousValue2");
+		toLoad.add(basic1);
+		toLoad.add(basic2);
 
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result1 = loader.Load(basic1);
-		bool result2 = loader.Load(basic2);
-
-		CPPUNIT_ASSERT_EQUAL(true, result1);
-		CPPUNIT_ASSERT_EQUAL(false, result2);
-
-		std::string expected1= "B'Content1'\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected1, basic1.structureTrace(0));
-		std::string expected2= "B''\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected2, basic2.structureTrace(0));
+		std::string expected= 
+			"B'Content1'\n"
+			"B''[unloaded]\n"; 
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testEmptyElement_WithRightLabel()
@@ -141,17 +138,13 @@ private:
 			"</Doc>"
 			);
 
+		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic("Element",true);
-
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result = loader.Load(basic);
-
-		CPPUNIT_ASSERT_EQUAL(true, result);
+		toLoad.add(basic);
 
 		std::string expected= "B''\n";
 
-		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 	void testEmptyElement_WithWrongLabel()
 	{
@@ -161,18 +154,14 @@ private:
 			"</Doc>"
 			);
 
+		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic("Element",true);
 		basic.setContent("PreviousValue");
+		toLoad.add(basic);
 
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result = loader.Load(basic);
+		std::string expected= "B'PreviousValue'[unloaded]\n";
 
-		CPPUNIT_ASSERT_EQUAL(false, result);
-
-		std::string expected= "B'PreviousValue'\n";
-
-		CPPUNIT_ASSERT_EQUAL(expected, basic.structureTrace(0));
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testLoadingElementContent()
@@ -183,16 +172,13 @@ private:
 			"</Doc>"
 			);
 		
+		CompositeOfXmlables toLoad;
 		XmlMockUpComponent component("Element",true);
-		component.setContent("PreviousValue1");
+		component.setContent("PeviousValue1");
+		toLoad.add(component);
 
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result = loader.Load(component);
-
-		CPPUNIT_ASSERT_EQUAL(true, result);
 		std::string expected= "C'ElementContent'\n{\n}\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected, component.structureTrace(0));
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testLoadingContentAfterElement()
@@ -204,24 +190,18 @@ private:
 			"</Doc>"
 			);
 		
+		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic1("Element",true);
 		basic1.setContent("PreviousValue1");
 		XmlMockUpBasic basic2;
 		basic2.setContent("PreviousValue2");
+		toLoad.add(basic1);
+		toLoad.add(basic2);
 
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result1 = loader.Load(basic1);
-		bool result2 = loader.Load(basic2);
-
-		CPPUNIT_ASSERT_EQUAL(true, result1);
-		CPPUNIT_ASSERT_EQUAL(true, result2);
-
-		std::string expected1= "B''\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected1, basic1.structureTrace(0));
-
-		std::string expected2= "B'AfterElementContent'\n"; 
-		CPPUNIT_ASSERT_EQUAL(expected2, basic2.structureTrace(0));
+		std::string expected=
+			"B''\n"
+			"B'AfterElementContent'\n"; 
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testLoadingSubobjects()
@@ -234,6 +214,8 @@ private:
 			"</Element>"
 			"</Doc>"
 			);
+
+		CompositeOfXmlables toLoad;
 		XmlMockUpComponent component("Element",true);
 		component.setContent("PreviousElementContent");
 		XmlMockUpBasic basic1("SubElement",true);
@@ -242,12 +224,7 @@ private:
 		basic2.setContent("PreviousValue2");
 		component.add(basic1);
 		component.add(basic2);
-
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result = loader.Load(component);
-
-		CPPUNIT_ASSERT_EQUAL(true, result);
+		toLoad.add(component);
 
 		std::string expected= 
 			"C''\n"
@@ -256,7 +233,7 @@ private:
 			".B'AfterElementContent'\n"
 			"}\n";
 
-		CPPUNIT_ASSERT_EQUAL(expected, component.structureTrace(0));
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 	void testLoadingSubobjects_whenComponentIsContent()
@@ -267,6 +244,7 @@ private:
 			"AfterElementContent"
 			"</Doc>"
 			);
+		CompositeOfXmlables toLoad;
 		XmlMockUpComponent component;
 		component.setContent("PreviousElementContent");
 		XmlMockUpBasic basic1("SubElement",true);
@@ -275,21 +253,16 @@ private:
 		basic2.setContent("PreviousValue2");
 		component.add(basic1);
 		component.add(basic2);
-
-		XercesDom2ClamObjects loader;
-		loader.Read(xml);
-		bool result = loader.Load(component);
-
-		CPPUNIT_ASSERT_EQUAL(false, result); // because the component content is empty
+		toLoad.add(component);
 
 		std::string expected= 
-			"C''\n"
+			"C''[unloaded]\n" // because the component content is empty
 			"{\n"
 			".B''\n" 
 			".B'AfterElementContent'\n"
 			"}\n";
 
-		CPPUNIT_ASSERT_EQUAL(expected, component.structureTrace(0));
+		assertComponentsLoaded(expected, toLoad, xml);
 	}
 
 };
