@@ -259,17 +259,10 @@ public:
 		// onto a non XML storage has no effect but it enhances performance.
 		if (!dynamic_cast < XMLStorage* > (&storage)) return;
 		typedef typename TypeInfo<T>::StorableAsLeaf IsStorableAsLeaf;
-		while (true) 
-		{
-			T elem;
-			if (!LoadMemberFrom(
-				(IsStorableAsLeaf *)NULL, 
-				&(elem), 
-				storage
-			))
-				return;
-			AddElem(elem);
-		}
+		do AddElem(T());
+		while (LoadMemberFrom( (IsStorableAsLeaf *)NULL, &(Last()), storage));
+		DoLast();
+		DeleteNode();
 		#endif//CLAM_USE_XML
 	}
 private:
