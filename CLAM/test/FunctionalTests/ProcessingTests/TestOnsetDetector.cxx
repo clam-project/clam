@@ -6,6 +6,7 @@
 #include "Normalization.hxx"
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
+#include "AubioOnsetDetector.hxx"
 
 namespace CLAMTest
 {
@@ -85,6 +86,22 @@ namespace CLAMTest
 			CLAM::TData sampleRate = readAudio.GetSampleRate();
 			float duration=readAudio.GetSize()/sampleRate;
 
+			/*
+			CLAM::RhythmDescription::AubioOnsetDetectorConfig odCfg;
+
+			CLAM::RhythmDescription::AubioOnsetDetector onsetDetector;
+
+			odCfg.SetMethod( CLAM::RhythmDescription::EODAlgorithms::ePhase );
+			onsetDetector.Configure( odCfg );
+
+			onsetDetector.Start();
+
+			onsetDetector.Do( readAudio, transients );
+
+			onsetDetector.Stop();
+			*/
+
+			
 			CLAM::Segment seg;
 			seg.AddAudio();
 			seg.UpdateData();
