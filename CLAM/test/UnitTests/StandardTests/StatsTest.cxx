@@ -18,6 +18,7 @@ class StatsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCentroid );
 	CPPUNIT_TEST( testCentroid_withSingleDelta );
 	CPPUNIT_TEST( testCentroid_withDeltasAtExtremes );
+	CPPUNIT_TEST( testCentroid_withZeros );
 	CPPUNIT_TEST( testMoment1 );
 	CPPUNIT_TEST( testMoment2 );
 	CPPUNIT_TEST( testMoment3 );
@@ -29,6 +30,17 @@ class StatsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testSlope_withConstant );
 	CPPUNIT_TEST( testSlope_withInvertedUp );
 	CPPUNIT_TEST_SUITE_END();
+
+
+	//@TODO: MRJ: Move to CppUnitHelper???
+	void assertDoublesEqual( double given, double expected, double eps )
+	{
+		CPPUNIT_ASSERT( std::isnan(given) == std::isnan( expected ) );
+		CPPUNIT_ASSERT( std::isinf( given ) == std::isinf( expected ) );
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( given, expected, eps);
+	}
+
 
 public:
 	/// Common initialization, executed before each test method
@@ -112,22 +124,37 @@ private:
 	{
 		fillPrimesUp();
 		CLAM::Stats stats(&_array);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(2.09091), stats.GetCentroid(), 0.000001);
+		assertDoublesEqual( CLAM::TData(2.09091), stats.GetCentroid(), 0.000001);
 	}
 	void testCentroid_withSingleDelta()
 	{
 		fillZeros(50);
 		_array[40]=CLAM::TData(1.0);
 		CLAM::Stats stats(&_array);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(40.0), stats.GetCentroid(), 0.000001);
+		assertDoublesEqual( CLAM::TData(40.0), stats.GetCentroid(), 0.000001);
 	}
+	
+
+	void testCentroid_withZeros()
+	{
+		fillZeros(50);
+		CLAM::Stats stats(&_array);
+		CLAM::TData value = stats.GetCentroid();
+
+
+
+		CPPUNIT_ASSERT( !std::isnan(value) && !std::isinf(value) );
+
+		assertDoublesEqual( CLAM::TData(25.0), stats.GetCentroid(), 0.000001);
+	}
+
 	void testCentroid_withDeltasAtExtremes()
 	{
 		fillZeros(50);
 		_array[0]=CLAM::TData(1.0);
 		_array[49]=CLAM::TData(1.0);
 		CLAM::Stats stats(&_array);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
+		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
 	}
 	void testMoment1()
 	{
@@ -169,13 +196,13 @@ private:
 	{
 		fillPrimesUp();
 		CLAM::Stats stats(&_array);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(0.118182), stats.GetSlope(), .000001);
+		assertDoublesEqual( CLAM::TData(0.118182), stats.GetSlope(), .000001);
 	}
 	void testSlope_withPrimesDown()
 	{
 		fillPrimesDown();
 		CLAM::Stats stats(&_array);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(-0.118182), stats.GetSlope(), .000001);
+		assertDoublesEqual( CLAM::TData(-0.118182), stats.GetSlope(), .000001);
 	}
 	void testSlope_withConstant()
 	{
@@ -187,7 +214,7 @@ private:
 	{
 		fillPrimesUpInverted();
 		CLAM::Stats stats(&_array);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(-0.126229), stats.GetSlope(), .000001);
+		assertDoublesEqual( CLAM::TData(-0.126229), stats.GetSlope(), .000001);
 	}
 };
 
