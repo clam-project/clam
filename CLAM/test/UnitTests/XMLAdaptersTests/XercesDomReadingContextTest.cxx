@@ -11,6 +11,8 @@
 #include <xercesc/dom/DOMComment.hpp>
 #include <xercesc/dom/DOMProcessingInstruction.hpp>
 #include "XercesInitializer.hxx"
+#include "XercesDomReadingContext.hxx"
+
 /*
 TOTEST:
 - A comment doesn't break content
