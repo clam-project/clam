@@ -28,9 +28,9 @@ namespace CLAMTest
 				Configure( cfg );
 		}
 
-	bool WindowedSpectrumGenerator::ConcreteConfigure( const ProcessingConfig& cfg )
+	bool WindowedSpectrumGenerator::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast )
 	{
-		CopyAsConcreteConfig(mConfig,cfg );
+		mConfig = dynamic_cast< const WindowedSpectrumGeneratorConfig&>( cfg );
 
 		mWindowedAudio.SetSize( mConfig.GetFrameSize() );
 		mWindow.SetSize( mConfig.GetFrameSize() );

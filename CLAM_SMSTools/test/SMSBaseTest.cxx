@@ -65,7 +65,7 @@ private:
 	
 
 	/// this helper func. should result in the future in a processing or assert. 
-	bool helperAudiosAreEqual(CLAM::Audio& first, CLAM::Audio& second, std::string& whyDifferents, double delta = 1e-6)
+	bool helperAudiosAreEqual(CLAM::Audio& first, CLAM::Audio& second, std::string& whyDifferents, double delta=0.000001 )
 	{
 		if (first.GetSize() != second.GetSize() )
 		{	

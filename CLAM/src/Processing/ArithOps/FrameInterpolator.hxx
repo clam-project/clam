@@ -67,7 +67,9 @@ namespace CLAM {
 
 
 		/** Config change method
-		 * @pre argument should be an SpecInterpConfig
+		 * @throw
+		 * bad_cast exception when the argument is not an SpecInterpConfig
+		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
