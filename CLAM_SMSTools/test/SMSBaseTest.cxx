@@ -38,7 +38,11 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
+	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
 	CPPUNIT_TEST_SUITE_END();
+
 
 
 //  TestFixture atributes:
@@ -149,23 +153,28 @@ private:
 	{
 		
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening sweep.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening sweep.wav."
+			" All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( mPath+"sweep.wav" ) );
 
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/out_sweep_defConfig.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening /SMSTests/out_sweep_defConfig.wav."
+			" All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( mPath+"/SMSTests/out_sweep_defConfig.wav") );
 		
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/out_sweep_defConfig_res.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening /SMSTests/out_sweep_defConfig_res.wav."
+			" All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( mPath+"/SMSTests/out_sweep_defConfig_res.wav") );
 		
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/out_sweep_defConfig_sin.wav. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening /SMSTests/out_sweep_defConfig_sin.wav."
+			" All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( mPath+"/SMSTests/out_sweep_defConfig_sin.wav") );
 
 		CPPUNIT_ASSERT_MESSAGE( 
-			"file not found when opening /SMSTests/config.xml. All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
+			"file not found when opening /SMSTests/config.xml."
+			" All files are searched in a dir named CLAM-TestData/ in CLAM-Sandboxes", 
 			helperFileExist( mPath+"/SMSTests/sweepConfig.xml") );
 		
 	}
@@ -305,9 +314,63 @@ private:
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, sinusoidalAudiosAreEqual );
 	}
 
-	// TODO
-	//void testMorfing_WithLoadedConfig_ElvisToTrumpet_Wav()
+	void testTwoSimpleTransformations_withLoadedScore()
+	{ 
+		LoadTransformationScore( mPath + "/SMSTests/wierdfemale-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_wierdfemale-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
+
+	void testTransformations_withLoadedScore_HarmonizerTimestreach()
+	{ 
+		LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestreach-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_harmonizer-timestreach-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
 	
+	void testTransformations_withLoadedScore_TimestreachMorph()
+	{ 
+		LoadTransformationScore( mPath + "/SMSTests/timestreach_morph-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestreach_morph-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
+
 };
 
 
