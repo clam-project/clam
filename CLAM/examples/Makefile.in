@@ -8,6 +8,7 @@ PROGRAMS=\
 	AudioIOExample\
 	MIDI_Synthesizer_example\
 	AudioApplicationExample\
+	GUIAudioApplicationExample\
 	FundamentalDetect\
 	XMLViewExample\
 	SIViewExample\
