@@ -18,16 +18,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "Fl_SMS_SinTracks.hxx"
+#include "Fl_SMS_SinTracks_Browser.hxx"
 #include "Fl_X_Axis.hxx"
 #include "Fl_Y_Axis.hxx"
 #include "Fl_ZoomSlider.hxx"
-#include "Fl_Gl_Single_Display.hxx"
+#include "Fl_SMS_Gl_Single_Browsable_Display.hxx"
 #include <algorithm>
+#include <iostream>
 
 namespace CLAMVM
 {
-	Fl_SMS_SinTracks::Fl_SMS_SinTracks( int X, int Y, int W, int H, const char* label )
+	Fl_SMS_SinTracks_Browser::Fl_SMS_SinTracks_Browser( int X, int Y, int W, int H, const char* label )
 		: Fl_Group( X, Y, W, H, label )
 	{
 		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30 );
@@ -56,7 +57,7 @@ namespace CLAMVM
 				
 		mYSlider = new Fl_ZoomSlider( X+W-20,Y,20,H-50, FL_VERTICAL );
 
-		mDisplay = new Fl_Gl_Single_Display( X,Y,W-50,H-50 );
+		mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( X,Y,W-50,H-50 );
 		mDisplay->SetRenderer( mDrawMgr );
 		mDisplay->EnableDoubleBuffering();
 		mDisplay->end();
@@ -70,17 +71,41 @@ namespace CLAMVM
 		mYSlider->SpanChanged.Connect( mDisplay->AdjustYAxis );
 				
 		end();
-				
+			
+		mDisplay->SetPainting();
+
+		HandleDisplaySelection.Wrap( this, &Fl_SMS_SinTracks_Browser::OnDisplaySelectedXValue );
+		SetSelectedXValue.Wrap( this, &Fl_SMS_SinTracks_Browser::OnSetSelectedXValue );
+
+		mDisplay->SelectedXValue.Connect( HandleDisplaySelection );
+		ChangeSelectedXValue.Connect( mDisplay->SetSelectedXValue );
+
 	}
 
-	void Fl_SMS_SinTracks::OnNewTrackList( SineTrackList& list, TSize framelen )
+	void Fl_SMS_SinTracks_Browser::OnDisplaySelectedXValue( double value )
+	{
+		// towards the outer world
+		double sampleTime = ( value/(double)mFrames) * (mEndTime - mBeginTime) + mBeginTime;
+		SelectedXValue.Emit( sampleTime );
+	}
+
+	void Fl_SMS_SinTracks_Browser::OnSetSelectedXValue( double centerTime )
+	{
+		// towards the display
+		double frameIndex = ( centerTime / ( mEndTime - mBeginTime ) ) * (mFrames-1);
+		ChangeSelectedXValue.Emit( frameIndex + 0.5 );
+
+	}
+
+	void Fl_SMS_SinTracks_Browser::OnNewTrackList( SineTrackList& list, TSize framelen )
 	{
 		mDrawMgr.CacheData( list );
 		mDisplay->SetLeft( 0 );
 		mDisplay->SetRight( framelen );
+		mFrames = framelen;
 	}
 
-	void Fl_SMS_SinTracks::OnNewRange( TData specRange )
+	void Fl_SMS_SinTracks_Browser::OnNewRange( TData specRange )
 	{
 		mYAxis->minimum( 0 );
 		mYAxis->maximum( specRange );
@@ -88,22 +113,24 @@ namespace CLAMVM
 		mDisplay->SetTop( specRange );
 	}
 
-	void Fl_SMS_SinTracks::OnNewDuration( TTime begin, TTime end )
+	void Fl_SMS_SinTracks_Browser::OnNewDuration( TTime begin, TTime end )
 	{
 		mXAxis->minimum( begin );
 		mXAxis->maximum( end );
+		mBeginTime = begin;
+		mEndTime = end;
 	}
 
-	Fl_SMS_SinTracks::~Fl_SMS_SinTracks( )
+	Fl_SMS_SinTracks_Browser::~Fl_SMS_SinTracks_Browser( )
 	{
 	}
 
-	void Fl_SMS_SinTracks::Show()
+	void Fl_SMS_SinTracks_Browser::Show()
 	{
 		show();
 	}
 
-	void Fl_SMS_SinTracks::Hide()
+	void Fl_SMS_SinTracks_Browser::Hide()
 	{
 		hide();
 	}

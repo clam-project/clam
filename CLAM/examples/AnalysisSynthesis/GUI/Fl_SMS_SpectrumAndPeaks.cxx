@@ -9,10 +9,10 @@ namespace CLAMVM
 {
 
 	Fl_SMS_SpectrumAndPeaks::Fl_SMS_SpectrumAndPeaks( int X, int Y, int W, int H, const char* label )
-		: Fl_Window( X, Y, W, H, label )
+		: Fl_Group( X, Y, W, H, label )
 	{
 
-		mXAxis = new Fl_X_Axis( X,H-50,W-50, 30  );
+		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30  );
 		mXAxis->align( FL_ALIGN_BOTTOM );
 		mXAxis->scale( FL_AXIS_LIN );
 		mXAxis->minimum( 0.0f );
@@ -23,7 +23,7 @@ namespace CLAMVM
 		mXAxis->axis_color( FL_BLACK );
 		mXAxis->axis_align( FL_AXIS_BOTTOM|FL_AXIS_LINE);
 
-		mYAxis = new Fl_Y_Axis( W-50,Y,30,H-50 );
+		mYAxis = new Fl_Y_Axis( X+W-50,Y,30,H-50 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
 		mYAxis->minimum( -1.0 );
@@ -34,15 +34,17 @@ namespace CLAMVM
 		mYAxis->axis_color( FL_BLACK );
 		mYAxis->axis_align( FL_AXIS_RIGHT | FL_AXIS_LINE );
 
-		mXSlider = new Fl_ZoomSlider( X,H-20,W-50,20, FL_HORIZONTAL );
-		mYSlider = new Fl_ZoomSlider( W-20,Y,20,H-50, FL_VERTICAL );
+		mXSlider = new Fl_ZoomSlider( X,Y+H-20,W-50,20, FL_HORIZONTAL );
+		mYSlider = new Fl_ZoomSlider( X+W-20,Y,20,H-50, FL_VERTICAL );
 
 		mDisplay = new Fl_Gl_Multi_Display( X,Y,W-50,H-50 );
 		mDisplay->AddRenderer( mSpectrumDrawMgr );
 		mDisplay->AddRenderer( mPeaksDrawMgr );
 		mDisplay->EnableDoubleBuffering();
-		
+		mDisplay->end();
+
 		resizable( mDisplay );
+
 
 		// Signal and Slot connections
 

@@ -21,7 +21,7 @@
 #ifndef __FL_SMS_SINTRACKS__
 #define __FL_SMS_SINTRACKS__
 
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Group.H>
 #include "SinTracksPresentation.hxx"
 #include "SinTracksRenderingManager.hxx"
 #include "SineTracksDef.hxx"
@@ -33,7 +33,7 @@ namespace CLAMVM
 	class Fl_ZoomSlider;
 	class Fl_Gl_Single_Display;
 
-	class Fl_SMS_SinTracks : public SinTracksPresentation, public Fl_Window
+	class Fl_SMS_SinTracks : public SinTracksPresentation, public Fl_Group
 	{
 	private:
 		Fl_X_Axis* mXAxis;

@@ -1,7 +1,7 @@
 #ifndef __FL_SMS_SPECTRUMANDPEAKS__
 #define __FL_SMS_SPECTRUMANDPEAKS__
 
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Group.H>
 #include "SpectralPeaksPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 #include "PeaksRenderingManager.hxx"
@@ -15,7 +15,7 @@ namespace CLAMVM
 	class Fl_Gl_Multi_Display;
 
 	class Fl_SMS_SpectrumAndPeaks 
-		: public SpectrumPlusPeaksPresentation, public Fl_Window
+		: public SpectrumPlusPeaksPresentation, public Fl_Group
 	{
 	private:
 		Fl_X_Axis*                   mXAxis;

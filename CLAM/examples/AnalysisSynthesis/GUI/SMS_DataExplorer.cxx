@@ -7,13 +7,15 @@
 
 #include "Fl_SMS_Audio_Browser.hxx"
 #include "Fl_SMS_Spectrum.hxx"
-#include "Fl_SMS_SinTracks.hxx"
+#include "Fl_SMS_SinTracks_Browser.hxx"
 #include "Fl_SMS_SpectrumAndPeaks.hxx"
-
 #include "Fl_Smart_Tile.hxx"
+
+#include <iostream>
 
 namespace CLAMVM
 {
+
 	SMS_DataExplorer::SMS_DataExplorer()
 		: mpOriginalAudioWidget( NULL ), mpSynthesizedAudioWidget( NULL ), mpSynthesizedResidualWidget( NULL ),
 		  mpSynthesizedSinusoidalWidget( NULL ), mpSpectrumAndPeaksWidget( NULL ), mpSinusoidalSpectrum( NULL ),
@@ -35,6 +37,7 @@ namespace CLAMVM
 		ShowSynthesizedAudio.Wrap( this, &SMS_DataExplorer::OnShowSynthesizedAudio );
 		ShowSynthesizedSinusoidal.Wrap( this, &SMS_DataExplorer::OnShowSynthesizedSinusoidal );
 		ShowSynthesizedResidual.Wrap( this, &SMS_DataExplorer::OnShowSynthesizedResidual );
+		
 	}
 	
 	SMS_DataExplorer::~SMS_DataExplorer()
@@ -54,9 +57,12 @@ namespace CLAMVM
 		// first we create the necessary widgets 
 		if ( !mpSegmentSinTracks )
 		{
-			mpSegmentSinTracks = new Fl_SMS_SinTracks( 0,0,800,600, "Sinusoidal Tracks");
+			mpSegmentSinTracks = new Fl_SMS_SinTracks_Browser( 0,0,800,600, "Sinusoidal Tracks");
 			CLAM_ASSERT( mpSegmentSinTracks != NULL, "Unable to create widget");
 			mpSegmentSinTracks->AttachTo( mSinusoidalTracksAdapter );
+			mpSegmentSinTracks->SetSelectedXValue( mCurrentFrameCenterTime );
+			mpSegmentSinTracks->SelectedXValue.Connect( SelectedTimeChanged );
+
 		}
 
 		mSinusoidalTracksAdapter.Publish();
@@ -103,6 +109,10 @@ namespace CLAMVM
 		if ( mpOriginalAudioWidget )
 		{
 			mpOriginalAudioWidget->SetSelectedXValue( frame.GetCenterTime() );
+		}
+		if ( mpSegmentSinTracks )
+		{
+			mpSegmentSinTracks->SetSelectedXValue( frame.GetCenterTime() );
 		}
 		if ( mpSynthesizedAudioWidget )
 		{
@@ -198,18 +208,15 @@ namespace CLAMVM
 		// already in the canvas
 		if ( mpCanvas->contains( mpOriginalAudioWidget ) )
 			return;
-		     
-		int widgetWidth, widgetHeight;
-		     
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-		     
-		mpOriginalAudioWidget->resize( mpCanvas->x(), mpCanvas->y(), widgetWidth, widgetHeight );
+     		     
 		mpOriginalAudioWidget->callback( (Fl_Callback*)sDetachCb, this );
-		
+
 		mpCanvas->add( *(mpOriginalAudioWidget) );
-		mpOriginalAudioWidget->Show();
+		//TODO: this is a HACK!
+		mpOriginalAudioWidget->handle( FL_SHOW );
+
 		mpCanvas->redraw();
+		mpOriginalAudioWidget->redraw();
 	}
 
 	void SMS_DataExplorer::OnShowSinTracks( )
@@ -219,15 +226,12 @@ namespace CLAMVM
 		if ( mpCanvas->contains( mpSegmentSinTracks ) ) // already in the canvas
 			return;
 		     
-		int widgetWidth, widgetHeight;
-
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-
-		mpSegmentSinTracks->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSegmentSinTracks->callback( (Fl_Callback*)sDetachCb, this );
-		
+
 		mpCanvas->add( *mpSegmentSinTracks );
+		//TODO: this is a HACK!
+		mpSegmentSinTracks->handle( FL_SHOW );
+
 		mpSegmentSinTracks->Show();
 		mpCanvas->redraw();
 
@@ -240,15 +244,12 @@ namespace CLAMVM
 		if ( mpCanvas->contains( mpSpectrumAndPeaksWidget ) ) // already in the canvas
 			return;
 		     
-		int widgetWidth, widgetHeight;
-
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-
-		mpSpectrumAndPeaksWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSpectrumAndPeaksWidget->callback( (Fl_Callback*)sDetachCb, this );
-		
+
 		mpCanvas->add( *mpSpectrumAndPeaksWidget );
+		//TODO: this is a HACK!
+		mpSpectrumAndPeaksWidget->handle( FL_SHOW );
+
 		mpSpectrumAndPeaksWidget->Show();
 		mpCanvas->redraw();
 
@@ -282,15 +283,12 @@ namespace CLAMVM
 		if ( mpCanvas->contains( mpResidualSpectrum ) )// already in the canvas
 			return;
 		     
-		int widgetWidth, widgetHeight;
-
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-
-		mpResidualSpectrum->resize( 0, 0, widgetWidth, widgetHeight );
 		mpResidualSpectrum->callback( (Fl_Callback*)sDetachCb, this );
 		
 		mpCanvas->add( *mpResidualSpectrum );
+		//TODO: this is a HACK!
+		mpResidualSpectrum->handle( FL_SHOW );
+
 		mpResidualSpectrum->Show();
 		mpCanvas->redraw();
 
@@ -303,15 +301,12 @@ namespace CLAMVM
 		if ( mpCanvas->contains( mpSynthesizedAudioWidget ) ) // already in the canvas
 			return;
 		     
-		int widgetWidth, widgetHeight;
-
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-
-		mpSynthesizedAudioWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSynthesizedAudioWidget->callback( (Fl_Callback*)sDetachCb, this );
 		
 		mpCanvas->add( *(mpSynthesizedAudioWidget) );
+		//TODO: this is a HACK!
+		mpSynthesizedAudioWidget->handle( FL_SHOW );
+
 		mpSynthesizedAudioWidget->Show();
 		mpCanvas->redraw();
 
@@ -324,15 +319,12 @@ namespace CLAMVM
 		if ( mpCanvas->contains( mpSynthesizedSinusoidalWidget ) ) // already in the canvas
 			return;
 		     
-		int widgetWidth, widgetHeight;
-
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-
-		mpSynthesizedSinusoidalWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSynthesizedSinusoidalWidget->callback( (Fl_Callback*)sDetachCb, this );
-		
+
 		mpCanvas->add( *(mpSynthesizedSinusoidalWidget) );
+		//TODO: this is a HACK!
+		mpSynthesizedSinusoidalWidget->handle( FL_SHOW );
+		
 		mpSynthesizedSinusoidalWidget->Show();
 		mpCanvas->redraw();
 
@@ -345,15 +337,13 @@ namespace CLAMVM
 		if ( mpCanvas->contains( mpSynthesizedResidualWidget ) )// already in the canvas
 			return;
 		     
-		int widgetWidth, widgetHeight;
-
-		widgetWidth = mpCanvas->w();
-		widgetHeight = mpCanvas->h() / ( mpCanvas->children() + 1 );
-
-		mpSynthesizedResidualWidget->resize( 0, 0, widgetWidth, widgetHeight );
 		mpSynthesizedResidualWidget->callback( (Fl_Callback*)sDetachCb, this );
-		
+
+
 		mpCanvas->add( *(mpSynthesizedResidualWidget) );
+		//TODO: this is a HACK!
+		mpSynthesizedResidualWidget->handle( FL_SHOW );
+
 		mpSynthesizedResidualWidget->Show();
 		mpCanvas->redraw();
 
@@ -367,9 +357,6 @@ namespace CLAMVM
 	{
 		SMS_DataExplorer* pExplorer = ( SMS_DataExplorer* )cbData;
 		w->hide();
-		CLAM_ASSERT( pExplorer->mpCanvas !=NULL , "It can't be");
-		pExplorer->mpCanvas->remove( w );
-		pExplorer->mpCanvas->redraw();
 	}
 
 	void SMS_DataExplorer::CloseAll()
@@ -439,7 +426,7 @@ namespace CLAMVM
 				mpCanvas->remove( mpSegmentSinTracks );
 			}
 		}
-
+		mpCanvas->redraw();
 
 	}
 	

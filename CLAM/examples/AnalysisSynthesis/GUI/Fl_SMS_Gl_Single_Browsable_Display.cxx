@@ -24,6 +24,7 @@
 #include "Fl_SMS_Gl_Single_Browsable_Display.hxx"
 #include "Assert.hxx"
 #include "AudioRenderingManager.hxx"
+#include <iostream>
 
 namespace CLAMVM
 {
@@ -83,8 +84,8 @@ namespace CLAMVM
 			glLineWidth(2);
 		
 			glBegin( GL_LINES );
-			glVertex2d( mPos, 10000 );
-			glVertex2d( mPos, -10000 );
+			glVertex2d( mPos, dataBBox.mTop );
+			glVertex2d( mPos, dataBBox.mBottom );
 			glEnd();
 			glLineWidth( 1 );
 		}

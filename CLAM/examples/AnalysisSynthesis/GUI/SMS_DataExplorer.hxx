@@ -25,7 +25,7 @@ namespace CLAMVM
 {
 	class Fl_SMS_Audio_Browser;
 	class Fl_SMS_Spectrum;
-	class Fl_SMS_SinTracks;
+	class Fl_SMS_SinTracks_Browser;
 	class Fl_SMS_SpectrumAndPeaks;
 
 	class SMS_DataExplorer
@@ -98,14 +98,14 @@ namespace CLAMVM
 		AudioAdapter                 mSynthesizedResidualAdapter;
 
 		// Widgets
-		Fl_SMS_Audio_Browser* mpOriginalAudioWidget;
-		Fl_SMS_Audio_Browser* mpSynthesizedAudioWidget;
-		Fl_SMS_Audio_Browser* mpSynthesizedResidualWidget;
-		Fl_SMS_Audio_Browser* mpSynthesizedSinusoidalWidget;
+		Fl_SMS_Audio_Browser*            mpOriginalAudioWidget;
+		Fl_SMS_Audio_Browser*            mpSynthesizedAudioWidget;
+		Fl_SMS_Audio_Browser*            mpSynthesizedResidualWidget;
+		Fl_SMS_Audio_Browser*            mpSynthesizedSinusoidalWidget;
 		Fl_SMS_SpectrumAndPeaks*         mpSpectrumAndPeaksWidget;
 		Fl_SMS_Spectrum*                 mpSinusoidalSpectrum;
 		Fl_SMS_Spectrum*                 mpResidualSpectrum;
-		Fl_SMS_SinTracks*                mpSegmentSinTracks;
+		Fl_SMS_SinTracks_Browser*        mpSegmentSinTracks;
 		Fl_Smart_Tile*                   mpCanvas;
 
 		double                           mCurrentFrameCenterTime;

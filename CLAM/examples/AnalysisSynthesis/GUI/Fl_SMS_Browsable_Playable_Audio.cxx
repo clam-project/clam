@@ -36,9 +36,9 @@ using CLAM::AudioPlayer;
 using CLAM::Audio;
 
 Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Window( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false )
+	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false )
 {
-	mXAxis = new Fl_X_Axis( 0, H-40, W-40, 20 );
+	mXAxis = new Fl_X_Axis( X, Y+H-50, W-50, 30 );
 	mXAxis->align( FL_ALIGN_BOTTOM );
 	mXAxis->scale( FL_AXIS_LIN );
 	mXAxis->minimum( 0.0f );
@@ -49,7 +49,7 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	mXAxis->axis_color( FL_BLACK );
 	mXAxis->axis_align( FL_AXIS_BOTTOM|FL_AXIS_LINE);
 		
-	mYAxis = new Fl_Y_Axis( W-50, 0, 30, H-40 );
+	mYAxis = new Fl_Y_Axis( X+W-50, Y, 30, H-50 );
 	mYAxis->align( FL_ALIGN_LEFT );
 	mYAxis->scale( FL_AXIS_LIN );
 	mYAxis->minimum( -1.0 );
@@ -60,19 +60,20 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	mYAxis->axis_color( FL_BLACK );
 	mYAxis->axis_align( FL_AXIS_RIGHT | FL_AXIS_LINE );
 
-	mXSlider = new Fl_ZoomSlider( 0, H-20, W-40, 20, FL_HORIZONTAL );
-	mYSlider = new Fl_ZoomSlider( W-20, 0, 20, H-40, FL_VERTICAL );
+	mXSlider = new Fl_ZoomSlider( X, Y + H-20, W-50, 20, FL_HORIZONTAL );
+	mYSlider = new Fl_ZoomSlider( X + W-20, Y, 20, H-50, FL_VERTICAL );
 
-	mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( 0, 0, W-50, H-40 );
-	resizable( mDisplay );
+	mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( X, Y, W-50, H-50 );
 	mDisplay->SetRenderer( mDrawMgr );
 	mDisplay->EnableDoubleBuffering();
-		
-	mPlayButton = new Fl_Button ( W-40, H-20, 20, 20, "@>" );
+	mDisplay->end();
+	resizable( mDisplay );
+	
+	mPlayButton = new Fl_Button ( X+W-40, Y+H-20, 20, 20, "@>" );
 	mPlayButton->callback( play, this );
 	mPlayButton->labeltype(FL_SYMBOL_LABEL);
 
-	mStopButton = new Fl_Button ( W-20, H-20, 20, 20, "@square" );
+	mStopButton = new Fl_Button ( X+W-20, Y+H-20, 20, 20, "@square" );
 	mStopButton->callback( stop, this );
 	mStopButton->labeltype(FL_SYMBOL_LABEL);
 
@@ -91,6 +92,13 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	mDisplay->SetPainting();
 }
 
+void Fl_SMS_Browsable_Playable_Audio::draw()
+{
+	for ( int i = 0; i < children(); i++ )
+	{
+		child(i)->draw();
+	}
+}
 
 Fl_SMS_Browsable_Playable_Audio::~Fl_SMS_Browsable_Playable_Audio( )
 {

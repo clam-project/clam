@@ -22,7 +22,7 @@
 #ifndef __FL_BROWSABLE_PLAYABLE_AUDIO__
 #define __FL_BROWSABLE_PLAYABLE_AUDIO__
 
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Group.H>
 #include "AudioRenderingManager.hxx"
 #include "AudioPresentation.hxx"
 #include "AudioPlayer.hxx"
@@ -44,7 +44,7 @@ namespace CLAMVM
 	using SigSlot::Slotv0;
 
 	class Fl_SMS_Browsable_Playable_Audio 
-		: public Fl_Window, public AudioPresentation
+		: public Fl_Group, public AudioPresentation
 	{
 		Fl_X_Axis*                        mXAxis;
 		Fl_Y_Axis*                        mYAxis;
@@ -60,6 +60,8 @@ namespace CLAMVM
 
 		void Play(  );
 		void Stop(  );
+
+		void draw();
 
 		static void play( Fl_Widget*, void* data);
 		static void stop( Fl_Widget*, void* data);

@@ -22,7 +22,7 @@
 #ifndef __FL_SMS_SPECTRUM__
 #define __FL_SMS_SPECTRUM__
 
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Group.H>
 #include "SpectrumPresentation.hxx"
 #include "SpectrumRenderingManager.hxx"
 
@@ -35,7 +35,7 @@ namespace CLAMVM
 	class Fl_Gl_Single_Display;
 	class Fl_GridLayout;
 	
-	class Fl_SMS_Spectrum : public SpectrumPresentation, public Fl_Window
+	class Fl_SMS_Spectrum : public SpectrumPresentation, public Fl_Group
 	{
 	private:
 		Fl_X_Axis*                  mXAxis;
