@@ -350,6 +350,7 @@ bool SMSAnalysis::Do( Audio& in,
 	/* First we write new samples into stream buffer*/
 	Audio tmpAudio;
 	mStreamBuffer->GetAndActivate(mWriter,tmpAudio);
+	CLAM_DEBUG_ASSERT( tmpAudio.GetSize() >= in.GetSize(), "SMSAnalysis::Do - Cannot copy an audio greater than the size of writer region" );
 	tmpAudio.GetBuffer()=in.GetBuffer();
 	mStreamBuffer->LeaveAndAdvance(mWriter);
 	
