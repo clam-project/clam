@@ -2,9 +2,21 @@
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "Normalization.hxx"
+#include "Segment.hxx"
+#include "OnsetDetector.hxx"
+#include "AubioOnsetDetector.hxx"
+#include "Pulse.hxx"
+#include "TickSequenceTracker.hxx"
+#include "RD_MeterEstimator.hxx"
+#include "Meter.hxx"
 
 namespace RhythmIR
 {
+	// Internal methods
+	static void ExtractOnsetsWithMTGAlgorithm( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config );
+	static void ExtractOnsetsWithAubioAlgorithms( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config );
+
+
 	void LoadInputAudio( CLAM::DescriptionDataPool& pool,
 			     std::string filename )
 	{
@@ -27,10 +39,8 @@ namespace RhythmIR
 
 		*pool.GetAttributePool<CLAM::TData>("Global", "SampleRate" ) = file.GetHeader().GetSampleRate();
 
-		CLAM::DataArray tempMemory;
-		tempMemory.SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"), fileSize );
 		CLAM::Audio     tempAudio;
-		tempAudio.SetBuffer( tempMemory );
+		tempAudio.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"), fileSize  );
 		tempAudio.SetSampleRate( file.GetHeader().GetSampleRate() );
 
 		CLAM::MonoAudioFileReaderConfig cfg;
@@ -57,19 +67,15 @@ namespace RhythmIR
 			audioNormalizerConfig.SetType( 3 ); 
 
 			// Building the dummy Audio objects from the pool
-			CLAM::DataArray dummyArrayOrig;
-			CLAM::DataArray dummyArrayNorm;
-			
-			dummyArrayOrig.SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
-					       pool.GetNumberOfContexts( "Sample") );
-			dummyArrayNorm.SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","NormalizedValue"),
-					       pool.GetNumberOfContexts( "Sample") );
-
 			CLAM::Audio dummyAudioOrig;
 			CLAM::Audio dummyAudioNorm;
 
-			dummyAudioOrig.SetBuffer( dummyArrayOrig );
-			dummyAudioNorm.SetBuffer( dummyArrayNorm );
+			dummyAudioOrig.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
+							   pool.GetNumberOfContexts( "Sample") );
+
+			dummyAudioNorm.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","NormalizedValue"),
+							   pool.GetNumberOfContexts( "Sample") );
+
 			dummyAudioOrig.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
 			dummyAudioNorm.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
 
@@ -81,5 +87,249 @@ namespace RhythmIR
 		}
 	}
 
+
+	void ExtractOnsets( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
+	{
+		if ( config.GetOnsetDetection().GetString() == "MTG" )
+			ExtractOnsetsWithMTGAlgorithm( pool, config );
+		else
+			ExtractOnsetsWithAubioAlgorithms( pool, config );
+	}
+
+	void ExtractOnsetsWithMTGAlgorithm( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
+	{
+		CLAM::Segment seg;
+		seg.AddAudio();
+		seg.UpdateData();
+		seg.SetHoldsData(true);
+
+		// Building dummy objects from pool
+		CLAM::Audio dummyAudio;
+		dummyAudio.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","NormalizedValue"),
+					       pool.GetNumberOfContexts( "Sample") );
+
+		dummyAudio.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+
+		// The array to leave the transients detected
+		CLAM::Array<CLAM::TimeIndex> transients;
+
+		seg.SetAudio( dummyAudio );	
+
+		CLAM::TTime duration = seg.GetAudio().GetSize()/seg.GetAudio().GetSampleRate();			
+		CLAM::TData sampleRate = seg.GetAudio().GetSampleRate();
+
+		seg.SetEndTime(duration);		
+		
+		CLAM::OnsetDetectorConfig onsetconfig;
+		CLAM::OnsetDetector onset;
+		
+		onsetconfig.SetComputeOffsets(false);
+		onsetconfig.SetGlobalThreshold(25);
+			
+		onset.Configure(onsetconfig);
+		
+		onset.Start();
+		onset.Do(seg, transients);
+		onset.Stop();
+		
+		if ( transients.Size() > 0 )
+		{
+			pool.SetNumberOfContexts( "Onset", transients.Size()+1 );
+
+			CLAM::TTime* onsetPositions = pool.GetAttributePool<CLAM::TTime>("Onset","Position");
+			CLAM::TData* onsetWeights = pool.GetAttributePool<CLAM::TData>("Onset","Weight");
+
+			onsetPositions[0] = 0.0;
+			onsetWeights[0] = 0.0;
+			
+			for ( int k = 1; k < transients.Size()+1; k++ )
+			{
+				onsetPositions[k] = transients[k-1].GetPosition()*sampleRate;
+				onsetWeights[k] = transients[k-1].GetWeight();
+			}
+		}
+	}
+	
+	void ExtractOnsetsWithAubioAlgorithms( CLAM::DescriptionDataPool& pool, const CLAM::TickExtractorConfig& config )
+	{
+		CLAM::TData sampleRate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+		
+		CLAM::Audio dummyAudio;
+		dummyAudio.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
+					       pool.GetNumberOfContexts( "Sample") );
+		dummyAudio.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+
+		// The array to leave the transients detected
+		CLAM::Array<CLAM::TimeIndex> transients;
+
+
+		CLAM::RhythmDescription::AubioOnsetDetectorConfig odCfg;
+		
+		CLAM::RhythmDescription::AubioOnsetDetector onsetDetector;
+		
+		odCfg.SetMethod(  config.GetOnsetDetection().GetValue() - 1);
+		CLAM::TSize windowSize = CLAM::TSize(sampleRate*0.02); // 20ms window
+		CLAM::TSize hopSize = (windowSize%2==0) ? windowSize/2 : (windowSize+1) / 2 ; // 50% overlap
+		odCfg.SetWindowSize( windowSize );
+		odCfg.SetHopSize( hopSize );
+		
+		onsetDetector.Configure( odCfg );
+		
+		onsetDetector.Start();
+		
+		onsetDetector.Do( dummyAudio, transients );
+		
+		onsetDetector.Stop();
+		
+		// the dummy transient
+		if ( transients.Size() > 0 )
+		{
+			pool.SetNumberOfContexts( "Onset", transients.Size()+1 );
+
+			CLAM::TTime* onsetPositions = pool.GetAttributePool<CLAM::TTime>("Onset","Position");
+			CLAM::TData* onsetWeights = pool.GetAttributePool<CLAM::TData>("Onset","Weight");
+
+			onsetPositions[0] = 0.0;
+			onsetWeights[0] = 0.0;
+			
+			for ( int k = 1; k < transients.Size()+1; k++ )
+			{
+				onsetPositions[k] = transients[k-1].GetPosition();
+				onsetWeights[k] = transients[k-1].GetWeight();
+			}
+
+		}
+
+	}
+
+	void ExtractTicksAndBeats( CLAM::DescriptionDataPool& pool,
+				   const CLAM::TickExtractorConfig& config )
+	{
+		CLAM::TData sampleRate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+		
+		// building the transients from the pool
+
+		CLAM::Array<CLAM::TimeIndex> transients;
+
+		transients.Resize( pool.GetNumberOfContexts( "Onset" ) );
+		transients.SetSize( pool.GetNumberOfContexts( "Onset" ) );
+
+		CLAM::TTime* transientPosVec = pool.GetAttributePool<CLAM::TTime>( "Onset", "Position");
+		CLAM::TData* transientWeiVec = pool.GetAttributePool<CLAM::TData>( "Onset", "Weight");
+
+		for ( int k = 0; k < transients.Size(); k++ )
+		{
+			transients[k].SetPosition( transientPosVec[k] );
+			transients[k].SetWeight( transientWeiVec[k] );
+		}
+
+		CLAM::Pulse beatSequence;
+		CLAM::Pulse tickSequence;
+
+		// Ticks ( and beats ) computation 
+
+		CLAM::RhythmDescription::TickSequenceTracker myTickSequenceTracker;
+		
+		CLAM::RhythmDescription::TickSequenceTrackerConfig myTickSequenceTrackerConfig;
+
+		myTickSequenceTrackerConfig.SetComputeBeats( config.GetComputeBeats() );
+		myTickSequenceTrackerConfig.SetThreshold_IOIHistPeaks( config.GetThreshold_IOIHistPeaks() );
+		myTickSequenceTrackerConfig.SetTempoLimInf( config.GetTempoLimInf() );
+		myTickSequenceTrackerConfig.SetTempoLimSup( config.GetTempoLimSup() );
+		myTickSequenceTrackerConfig.SetTickLimInf( config.GetTickLimInf() );
+		myTickSequenceTrackerConfig.SetTickLimSup( config.GetTickLimSup() );
+		myTickSequenceTrackerConfig.SetDeviationPenalty( config.GetDeviationPenalty() );
+		myTickSequenceTrackerConfig.SetOverSubdivisionPenalty( config.GetOverSubdivisionPenalty() );
+		myTickSequenceTrackerConfig.SetGaussianWindowSize( config.GetGaussianWindowSize() );
+		myTickSequenceTrackerConfig.SetScope( config.GetScope() );
+		myTickSequenceTrackerConfig.SetAdjustWithOnsets( config.GetAdjustWithOnsets() );
+		myTickSequenceTrackerConfig.SetNTrans( config.GetNTrans() );
+		myTickSequenceTrackerConfig.SetTransHop( config.GetTransHop() );
+		
+		myTickSequenceTrackerConfig.SetSampleRate(sampleRate);
+		
+		myTickSequenceTracker.Configure(myTickSequenceTrackerConfig);		
+
+		CLAM::RhythmDescription::IOIHistogram ioiHistogram;
+
+
+		myTickSequenceTracker.Start();
+		
+		//Use the transients computed in this main
+		myTickSequenceTracker.Do( transients, tickSequence, beatSequence, ioiHistogram );
+
+		myTickSequenceTracker.Stop();	
+
+		// Storing the obtained beat and tick sequences into the pool
+		
+		{
+			*pool.GetAttributePool<unsigned>( "Global","BeatsPerMinute" ) = unsigned( beatSequence.GetRate() );
+			*pool.GetAttributePool<unsigned>( "Global","TicksPerMinute" ) = unsigned( tickSequence.GetRate() );
+
+			pool.SetNumberOfContexts( "Tick", tickSequence.GetIndexes().Size() );
+
+			CLAM::TTime* tickPositions = pool.GetAttributePool<CLAM::TTime>("Tick","Position");
+
+			for ( int k = 0; k < tickSequence.GetIndexes().Size(); k++ )
+			{
+				tickPositions[k] = tickSequence.GetIndexes()[k].GetPosition();
+			}
+
+			pool.SetNumberOfContexts( "Beat", beatSequence.GetIndexes().Size() );
+
+			CLAM::TTime* beatPositions = pool.GetAttributePool<CLAM::TTime>("Beat","Position");
+
+			for ( int k = 0; k < beatSequence.GetIndexes().Size(); k++ )
+			{
+				beatPositions[k] = beatSequence.GetIndexes()[k].GetPosition();
+			}
+			
+		}
+	}
+
+	void ExtractMeter( CLAM::DescriptionDataPool& pool,
+			   const CLAM::TickExtractorConfig& config )
+	{
+		// Building the dummy audio
+
+		CLAM::Audio signal;
+		signal.GetBuffer().SetPtr( pool.GetAttributePool<CLAM::TData>("Sample","Value"),
+					   pool.GetNumberOfContexts( "Sample") );
+
+		signal.SetSampleRate( *pool.GetAttributePool<CLAM::TData>("Global","SampleRate") );
+
+		// Building the beat sequence for the Meter estimation processing
+		
+		CLAM::Pulse extractedBeats;
+		extractedBeats.SetRate( *pool.GetAttributePool<unsigned>( "Global","BeatsPerMinute" ) );
+		extractedBeats.GetIndexes().Resize( pool.GetNumberOfContexts( "Beat" ) );
+		extractedBeats.GetIndexes().SetSize( pool.GetNumberOfContexts( "Beat" ) );
+
+		CLAM::TTime* beatPositions = pool.GetAttributePool<CLAM::TTime>("Beat","Position");
+		
+		for ( int k = 0; k < extractedBeats.GetIndexes().Size(); k++ )
+		{
+			extractedBeats.GetIndexes()[k].SetPosition(beatPositions[k] );
+			extractedBeats.GetIndexes()[k].SetWeight( 1.0 );
+		}
+		
+
+		CLAM::RhythmDescription::MeterEstimatorConfig meterEstCfg;
+		meterEstCfg.SetTempoLimInf( 50 );
+		meterEstCfg.SetTempoLimSup( 200 );
+		meterEstCfg.SetAutomaticIntegTime( true );
+		meterEstCfg.SetACFIntegrationTime( 40 );
+		
+		CLAM::RhythmDescription::MeterEstimator meterEstimator;
+		meterEstimator.Configure( meterEstCfg );
+		meterEstimator.Start();
+		meterEstimator.Log() << "Processing " <<  *pool.GetAttributePool<std::string>("Global","Path") << std::endl;
+		meterEstimator.Do( signal, 
+				   extractedBeats, 
+				   *pool.GetAttributePool<CLAM::RhythmDescription::Meter>("Global", "Meter") );
+		
+		meterEstimator.Stop();
+
+	}
 	
 }

@@ -4,7 +4,7 @@
 #include "Array.hxx"
 #include <fstream>
 #include <iostream>
-#include "Pulse.hxx"
+#include "Meter.hxx"
 
 using namespace CLAM;
 
@@ -16,66 +16,154 @@ std::ostream& operator<<( std::ostream& os, const DataArray& array )
 	return os;
 }
 
-void DumpExtractedData( std::string filename,
-			std::string analyzedFile,
-			const CLAM::Pulse& ticksData,
-			const CLAM::Pulse& beatsData )
+namespace RhythmIR
 {
-	std::ofstream fileStream( filename.c_str() );
 
-	DataArray listTicks;
-	DataArray listBeats;
-
-	listTicks.Resize( ticksData.GetIndexes().Size() );
-	listTicks.SetSize( ticksData.GetIndexes().Size() );
-	
-	for ( int i = 0; i < listTicks.Size(); i++ )
+	void DumpToSimacXML( CLAM::DescriptionDataPool& pool,
+			     std::string filename )
 	{
-		listTicks[i] = ticksData.GetIndexes()[i].GetPosition();
-	}
+		std::ofstream fileStream( filename.c_str() );
 
-	listBeats.Resize( beatsData.GetIndexes().Size() );
-	listBeats.SetSize( beatsData.GetIndexes().Size() );
-	
-	for ( int i = 0; i < listBeats.Size(); i++ )
-	{
-		listBeats[i] = beatsData.GetIndexes()[i].GetPosition();
-	}
 	
 
-	XmlFragment frag( fileStream );
-	{
-		XmlElement element( "Simac:RhythmDescription" );
+		XmlFragment frag( fileStream );
 		{
-			XmlElement element( "Simac:MediaDigitalFile" );
-			XmlAttribute attrib( "path", analyzedFile );
-		}		
-		{
-			XmlElement element( "Simac:BeatsPerMinute" );
-			XmlAttribute attrib( "value", beatsData.GetRate() );
-		}
-		{
-			XmlElement   element( "Simac:BeatSequence" );
-			XmlAttribute attrib( "size", beatsData.GetIndexes().Size() );
-			XmlAttribute attrib1( "timeunit", "seconds" );
-			XmlContent   content( listBeats );
+			XmlElement element( "Simac:RhythmDescription" );
+			{
+				XmlElement element( "Simac:MediaDigitalFile" );
+				XmlAttribute attrib( "path", *pool.GetAttributePool<std::string>("Global","Path") );
+			}		
+			{
+				XmlElement element( "Simac:BeatsPerMinute" );
+				XmlAttribute attrib( "value", *pool.GetAttributePool<unsigned>("Global","BeatsPerMinute") );
+			}
+			{
+				XmlElement   element( "Simac:BeatSequence" );
+				int nBeats = pool.GetNumberOfContexts( "Beat" );
+
+				XmlAttribute attrib( "size", nBeats );
+				XmlAttribute attrib1( "timeunit", *pool.GetAttributePool<std::string>("Global", "Units.Beat.Position") );
+
+				if ( nBeats > 0 )
+				{
+					CLAM::TTime* beatPtr = pool.GetAttributePool<CLAM::TTime>("Beat", "Position" );
+				
+					for ( int k = 0; k < nBeats-1; k++ )
+					{
+						XmlContent conel( beatPtr[k] );
+						XmlContent blank( " " );
+					}
+					XmlContent conel( beatPtr[nBeats-1] );
+				}
 			
-		}
-		{
-			XmlElement element( "Simac:TicksPerMinute" );
-			XmlAttribute attrib( "value", ticksData.GetRate() );
-		}
-		{
-			XmlElement   element( "Simac:TicksSequence" );
-			XmlAttribute attrib( "size", ticksData.GetIndexes().Size() );
-			XmlAttribute attrib1( "timeunit", "seconds" );
-			XmlContent   content( listTicks );
+			}
+			{
+				XmlElement element( "Simac:TicksPerMinute" );
+				XmlAttribute attrib( "value", *pool.GetAttributePool<unsigned>("Global","TicksPerMinute") );
+			}
+			{
+				XmlElement   element( "Simac:TicksSequence" );
+
+				int nTicks = pool.GetNumberOfContexts( "Tick" );
+
+				XmlAttribute attrib( "size", nTicks );
+				XmlAttribute attrib1( "timeunit", *pool.GetAttributePool<std::string>("Global", "Units.Tick.Position")  );
+
+				if ( nTicks > 0 )
+				{
+					CLAM::TTime* tickPtr = pool.GetAttributePool<CLAM::TTime>("Tick", "Position" );
+				
+					for ( int k = 0; k < nTicks; k++ )
+					{
+						XmlContent conel( tickPtr[k] );
+						XmlContent blank( " " );
+					}
+					XmlContent conel( tickPtr[nTicks-1] );
+				}
 			
+			}
+			{
+				XmlElement element( "Simac:Meter");
+
+				const CLAM::RhythmDescription::Meter& value = *pool.GetAttributePool<CLAM::RhythmDescription::Meter>("Global","Meter");
+
+				XmlAttribute attr_num( "numerator", value.GetNumerator() );
+				XmlAttribute attr_den( "denominator", value.GetDenominator() );
+			}
+
 		}
+
+
+		fileStream.close();
+	
+	}
+
+	void DumpToWavesurferLabs( CLAM::DescriptionDataPool& pool, std::string outputFilename )
+	{
+		// Onsets dumping
+		{
+			std::string filename = outputFilename;
+			filename.replace( filename.find(".xml"), 4, "_onsets.lab" );
+
+			std::ofstream file( filename.c_str() );
+
+			int   nOnsets = pool.GetNumberOfContexts( "Onset" );
+			CLAM::TData srate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+
+			if ( nOnsets > 0 )
+			{
+				CLAM::TTime* onsetPositions = pool.GetAttributePool<CLAM::TTime>("Onset", "Position" );
+				for ( int k = 1; k < nOnsets; k++ )
+					file << onsetPositions[k-1]/srate<< " " << onsetPositions[k]/srate<< " " << "onset" << std::endl;
+			}
+
+			file.close();
+		}
+
+		// Beats dumping
+		{
+			std::string filename = outputFilename;
+			filename.replace( filename.find(".xml"), 4, "_beats.lab" );
+
+			std::ofstream file( filename.c_str() );
+
+			int   nBeats = pool.GetNumberOfContexts( "Beat" );
+			CLAM::TData srate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+
+			if ( nBeats > 0 )
+			{
+				CLAM::TTime* beatPositions = pool.GetAttributePool<CLAM::TTime>("Beat", "Position" );
+				file << 0.0 << " " << beatPositions[0] << " " << "beat" << std::endl;
+				for ( int k = 1; k < nBeats; k++ )
+					file << beatPositions[k-1]<< " " << beatPositions[k]<< " " << "beat" << std::endl;
+			}
+
+			file.close();
+		}
+
+		// Ticks dumping
+		{
+			std::string filename = outputFilename;
+			filename.replace( filename.find(".xml"), 4, "_ticks.lab" );
+
+			std::ofstream file( filename.c_str() );
+
+			int   nTicks = pool.GetNumberOfContexts( "Tick" );
+			CLAM::TData srate = *pool.GetAttributePool<CLAM::TData>("Global","SampleRate");
+
+			if ( nTicks > 0 )
+			{
+				CLAM::TTime* tickPositions = pool.GetAttributePool<CLAM::TTime>("Tick", "Position" );
+				file << 0.0 << " " << tickPositions[0] << " " << "tick" << std::endl;
+				for ( int k = 1; k < nTicks; k++ )
+					file << tickPositions[k-1]<< " " << tickPositions[k]<< " " << "tick" << std::endl;
+			}
+
+			file.close();
+		}
+
+
 
 	}
 
-
-	fileStream.close();
-	
 }

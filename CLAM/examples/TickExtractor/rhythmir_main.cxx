@@ -51,33 +51,33 @@ int main( int argc, char** argv )
 		*pool.GetAttributePool<std::string>("Global", "Path" ) = parms.GetInputFilename();
 
 
+		/* Description extraction*/		  		  
+
 		RhythmIR::LoadInputAudio( pool, parms.GetInputFilename() );
 
 		RhythmIR::NormalizeInputAudio( pool, parms.GetConfig() );
-		/* Description extraction
 
+		RhythmIR::ExtractOnsets( pool, parms.GetConfig() );
 
+		RhythmIR::ExtractTicksAndBeats( pool, parms.GetConfig() );
 
-		  RhythmIR::ExtractOnsets( pool, parms.GetConfig() );
-		  
-		  RhythmIR::ExtractTicksAndBeats( pool, parms.GetConfig() );
-		  
-		  RhythmIR::ExtractMeter( pool, parms.GetConfig() );
-		*/
+		RhythmIR::ExtractMeter( pool, parms.GetConfig() );
 		
-		/* Description storage		  
-		  RhythmIR::DumpToSimacXML( pool, parms.GetOutputFilename() );
-		
-		  RhythmIR::DumpToWavesurferLabs( pool, parms.GetOutputFilename() );
-		*/
+		/* Description storage*/
 
+		std::cout << "Dumping data on " << parms.GetOutputFilename() << "..." << std::endl;
+	
+		RhythmIR::DumpToSimacXML( pool, parms.GetOutputFilename() );		
+		RhythmIR::DumpToWavesurferLabs( pool, parms.GetOutputFilename() );
+
+		/*
 		CLAM::ExtractTicksSequence( parms.GetInputFilename(), 
 					    parms.GetConfig(), 
 					    tickData, beatData );
 		
-		std::cout << "Dumping data on " << parms.GetOutputFilename() << "..." << std::endl;
 		DumpExtractedData( parms.GetOutputFilename(), parms.GetInputFilename(), 
 				   tickData, beatData );
+		*/
 		
 	}
 	catch( CLAM::Err& e )

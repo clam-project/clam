@@ -8,7 +8,6 @@
 #include "MonoAudioFileReaderConfig.hxx"
 #include "AudioFile.hxx"
 #include "OnsetDetector.hxx"
-#include "TransientGen.hxx"
 #include "TickSequenceTracker.hxx"
 #include "IOIHistogram.hxx"
 #include "Normalization.hxx"
