@@ -60,6 +60,10 @@ list *headers = 0;
 */
 list *needed_includepaths = 0;
 
+list *libraries = 0;
+
+list *library_paths = 0;
+
 /* list of all includes checked when building the
 ** needed_includepaths, for efficiency.
 */
@@ -482,6 +486,10 @@ void parser_init(void)
 	headers = list_new();
 
 	includepaths = list_new();
+
+	libraries = list_new();
+
+	library_paths = list_new();
 
 	preincludes = list_new();
 

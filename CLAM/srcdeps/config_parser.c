@@ -18,6 +18,100 @@ list* used_vars = 0;
 
 int config_parse(const char* filename);
 
+char* config_parse_var(char* b,int line)
+{
+	char subst[4096];
+	char left[4096];
+	char right[4096];
+	int n = 4096;
+	char* c = subst;
+	char* s = b;
+	int cond = 0;
+	left[0] = 0;
+	right[0] = 0;
+
+	b++;
+	if (*b!='(')
+	{ 
+		fprintf(stderr,"Expected '(' after '$' in line %d\n",line);
+		exit(-1);
+	}
+	b++;
+	while (n-- && *b && *b!=')')
+	{
+		if (*b=='$') b = config_parse_var(b,line);
+		else
+		if (*b=='?')
+		{
+			*c = 0;
+			cond = 1;
+			c = left;
+			n = 4096;
+			b++;
+		}
+		else
+		if (*b==':')
+		{
+			*c = 0;
+			c = right;
+			n = 4096;
+			b++;
+		}else{
+			*c++ = *b++;
+		}
+	}
+	if (*b!=')') {
+		fprintf(stderr,"Expected ')' after \"%s\" in line %d\n",s,line);
+		exit(-1);
+	}
+	b++;
+	*c = 0;
+
+	{
+		node* n = tree_find(config,subst);
+		if (n==0)
+		{
+			fprintf(stderr,"Variable \"%s\" not found in line %d\n",subst,line);
+			exit(-1);
+		}
+		list_add_str_once(used_vars,n->str);
+		if (cond)
+		{
+			if (n->sub && n->sub->first && 
+				(
+					!strcmp(n->sub->first->str,"1") ||
+					!strcmp(n->sub->first->str,"yes") ||
+					!strcmp(n->sub->first->str,"YES") ||
+					!strcmp(n->sub->first->str,"true") ||
+					!strcmp(n->sub->first->str,"TRUE")
+				)
+			)
+			{
+				if (left[0]!=0)
+					stradd(left);
+			}else{
+				if (right[0]!=0)
+					stradd(right);
+			}
+		}
+		else
+		{
+			if (n->sub)
+			{
+				n = n->sub->first;
+				while (n)
+				{
+					stradd(n->str);
+					n = n->next;
+					if (n) stradd(" ");
+				}
+			}
+		}
+	}
+	
+	return b;
+}
+
 void config_parse_handle(char* key,char** val,int nvals,int line,int is_include)
 {
 	int k;
@@ -44,89 +138,7 @@ void config_parse_handle(char* key,char** val,int nvals,int line,int is_include)
 		
 			if (*b=='$')
 			{
-				char subst[4096];
-				char left[4096];
-				char right[4096];
-				int n = 4096;
-				char* c = subst;
-				char* s = b;
-
-				left[0] = 0;
-				right[0] = 0;
-
-				b++;
-				if (*b!='(')
-				{ 
-					fprintf(stderr,"Expected '(' after '$' in line %d\n",line);
-					exit(-1);
-				}
-				b++;
-				while (n-- && *b && *b!=')')
-				{
-					if (*b=='?')
-					{
-						*c = 0;
-						c = left;
-						n = 4096;
-						b++;
-					}
-					else
-					if (*b==':')
-					{
-						*c = 0;
-						c = right;
-						n = 4096;
-						b++;
-					}else{
-						*c++ = *b++;
-					}
-				}
-				if (*b!=')') {
-					fprintf(stderr,"Expected ')' after \"%s\" in line %d\n",s,line);
-					exit(-1);
-				}
-				b++;
-				*c = 0;
-				
-				{
-					node* n = tree_find(config,subst);
-					list_add_str_once(used_vars,n->str);
-					if (n==0)
-					{
-						fprintf(stderr,"Variable \"%s\" not found in line %d\n",subst,line);
-						exit(-1);
-					}
-					if (left[0]!=0 && right[0]!=0)
-					{
-						if (n->sub && n->sub->first && 
-							(
-								!strcmp(n->sub->first->str,"1") ||
-								!strcmp(n->sub->first->str,"yes") ||
-								!strcmp(n->sub->first->str,"YES") ||
-								!strcmp(n->sub->first->str,"true") ||
-								!strcmp(n->sub->first->str,"TRUE")
-							)
-						)
-						{
-							stradd(left);
-						}else{
-							stradd(right);
-						}
-					}
-					else
-					{
-						if (n->sub)
-						{
-							n = n->sub->first;
-							while (n)
-							{
-								stradd(n->str);
-								n = n->next;
-								if (n) stradd(" ");
-							}
-						}
-					}
-				}
+				b = config_parse_var(b,line);
 			}
 		}
 		strend();
@@ -303,7 +315,7 @@ void config_apply(void)
 			n = n->next;
 		}
 	}
-
+	
 	n = tree_find(config,"PRE_INCLUDES");
 	if (n) list_add_str_once(used_vars,n->str);
 	if (n && n->sub)
@@ -312,6 +324,18 @@ void config_apply(void)
 		while (n)
 		{
 			list_add_str_once(preincludes,n->str);
+			n = n->next;
+		}
+	}
+
+	n = tree_find(config,"INCLUDE_PATHS");
+	if (n) list_add_str_once(used_vars,n->str);
+	if (n && n->sub)
+	{
+		n = n->sub->first;
+		while (n)
+		{
+			includepaths_add(n->str);
 			n = n->next;
 		}
 	}
@@ -336,6 +360,30 @@ void config_apply(void)
 		while (n)
 		{
 			list_add_str_once(predefines,n->str);
+			n = n->next;
+		}
+	}
+
+	n = tree_find(config,"LIBRARIES");
+	if (n) list_add_str_once(used_vars,n->str);
+	if (n && n->sub)
+	{
+		n = n->sub->first;
+		while (n)
+		{
+			list_add_str_once(libraries,n->str);
+			n = n->next;
+		}
+	}
+
+	n = tree_find(config,"LIBRARY_PATHS");
+	if (n) list_add_str_once(used_vars,n->str);
+	if (n && n->sub)
+	{
+		n = n->sub->first;
+		while (n)
+		{
+			list_add_str_once(library_paths,n->str);
 			n = n->next;
 		}
 	}

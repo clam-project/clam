@@ -9,6 +9,8 @@ extern list* headers;
 extern list* predefines;
 extern list *includepaths;
 extern list *needed_includepaths;
+extern list* libraries;
+extern list* library_paths;
 
 extern int gendepend;
 extern int recursesrcs;

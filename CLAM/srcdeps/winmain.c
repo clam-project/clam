@@ -9,9 +9,6 @@
 
 int main(int argc,char** argv)
 {
-	system("cp SimpleMain.dsp.orig SimpleMain.dsp");
-
-
 	if (argc<3)
 	{
 		fprintf(stderr,"Usage srcdeps SETTINGSFILE DSPFILE\n");

@@ -1,4 +1,4 @@
-OBJECTS=objdepname.o dsp_parser.o parser.o config_parser.o strptr.o includepaths.o recursedir.o list.o tree.o strfuncs.o hash.o stack.o conditions.o main.o
+OBJECTS=objdepname.o dsp_parser.o parser.o config_parser.o strptr.o includepaths.o recursedir.o list.o tree.o strfuncs.o hash.o stack.o conditions.o linmain.o
 DEPENDS=$(OBJECTS:.o=.d)
 PROGRAM=srcdeps
 CFLAGS=-Wall -g

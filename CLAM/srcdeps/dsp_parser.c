@@ -63,12 +63,15 @@ void dsp_parse_add_needed_includepaths(void)
 	item* i = needed_includepaths->first;
 	while (i)
 	{
-		char tmp[1024];
-		strncpy(tmp,i->str,1024);
-		winstyle(tmp);
-		stradd(" /I \"");
-		stradd(tmp);
-		stradd("\"" );
+		if (i->str && i->str[0]!=0)
+		{
+			char tmp[1024];
+			strncpy(tmp,i->str,1024);
+			winstyle(tmp);
+			stradd(" /I \"");
+			stradd(tmp);
+			stradd("\"" );
+		}
 		i = i->next;
 	}
 }
@@ -91,28 +94,31 @@ void dsp_parse_add_preincludes(void)
 	*/
 	while (i)
 	{
-		char tmp[1024];
-		char* ptr;
-		char* filename = tmp;
-		strncpy(tmp,i->str,1024);
-		winstyle(tmp);
-		ptr = tmp;
-		while (*ptr)
+		if (i->str && i->str[0]!=0)
 		{
-			if (*ptr=='\\') filename = ptr;
-			ptr++;
-		}
-		if (*filename=='\\')
-		{
-			*filename = 0;
-			filename++;
-			stradd(" /I \"");
-			stradd(tmp);
+			char tmp[1024];
+			char* ptr;
+			char* filename = tmp;
+			strncpy(tmp,i->str,1024);
+			winstyle(tmp);
+			ptr = tmp;
+			while (*ptr)
+			{
+				if (*ptr=='\\') filename = ptr;
+				ptr++;
+			}
+			if (*filename=='\\')
+			{
+				*filename = 0;
+				filename++;
+				stradd(" /I \"");
+				stradd(tmp);
+				stradd("\"" );
+			}
+			stradd(" /FI\"");
+			stradd(filename);
 			stradd("\"" );
 		}
-		stradd(" /FI\"");
-		stradd(filename);
-		stradd("\"" );
 		i = i->next;
 	}
 }
@@ -122,11 +128,14 @@ void dsp_parse_add_predefines(void)
 	item* i = predefines->first;
 	while (i)
 	{
-		char tmp[1024];
-		strncpy(tmp,i->str,1024);
-		stradd(" /D \"");
-		stradd(tmp);
-		stradd("\"" );
+		if (i->str && i->str[0]!=0)
+		{
+			char tmp[1024];
+			strncpy(tmp,i->str,1024);
+			stradd(" /D \"");
+			stradd(tmp);
+			stradd("\"" );
+		}
 		i = i->next;
 	}
 }
