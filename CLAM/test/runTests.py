@@ -77,7 +77,7 @@ externalApplications = [
 	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
 	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
 #	( 'Rappid', CLAM_SANDBOXES+'CLAM_Rappid/build/' ),
-	( 'SDIFDisplay', CLAM_SANDBOXES+'SDIFDisplay/build/' )
+	( 'SDIFDisplay', CLAM_SANDBOXES+'CLAM_SDIFDisplay/build/' )
 #	( 'DescriptorsGUI', CLAM_SANDBOXES+'DescriptorsGUI/build/' ),
 #	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' ),
 ]
