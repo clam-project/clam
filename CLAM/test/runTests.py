@@ -3,11 +3,13 @@
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 0
-updateLevelForExamples = 2
+updateLevelForExamples = 0
 updateLevelForTestData = 0
 
 # When false keeps already compiled objects
-doCleanMake = True
+doCleanMake = False
+# When false does nothing
+doAutoconf = False
 
 enableSendMail = False
 publicAddress = 'clam-devel@iua.upf.es'
@@ -111,7 +113,7 @@ testsToRun = []
 testsToRun[-1:-1] = externalApplications 
 #testsToRun[-1:-1] = supervisedTests
 #testsToRun[-1:-1] = notPortedTests
-#testsToRun[-1:-1] = automaticTests 
+testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
@@ -201,8 +203,7 @@ def parseExecutionErrors( executionOut ) :
 
 
 def isTest(path) :
-	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')
-	or path.find('build/Tests/') >= 0  
+	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/') or path.find('build/Tests/') >= 0  
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
@@ -370,8 +371,9 @@ def deployClamBuildSystem() :
 
 	# ConfigureClam
 	os.chdir(BUILDPATH)
-	executeMandatory('autoconf')
-	executeMandatory('./configure')
+	if doAutoconf:
+		executeMandatory('autoconf')
+		executeMandatory('./configure')
 
 	# Setting the clam location
 	global sandboxes
@@ -418,7 +420,7 @@ def runTests() :
 		totalSummary.append(summary)
 		totalDetails.append(details)
 
-		print totalSummary
+		print "".join(totalSummary)
 		report.append( (name, summary, details) )
 
 
