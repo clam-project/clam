@@ -186,7 +186,7 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to load...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return false;
@@ -196,7 +196,7 @@ namespace CLAMGUI
 
 	void SMSTools::StoreAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return;
