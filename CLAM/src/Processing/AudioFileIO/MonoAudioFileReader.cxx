@@ -128,7 +128,7 @@ namespace CLAM
 			return false;
 
 	
-		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(), &(mOutput.GetData()), mOutput.GetSize() );
+		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(), outputSamples.GetBuffer().GetPtr(), outputSamples.GetSize() );
 		outputSamples.SetBeginTime( mCurrentBeginTime );
 		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
