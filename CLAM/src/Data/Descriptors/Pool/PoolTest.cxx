@@ -3,16 +3,19 @@
 
 #include "Pool.hxx"
 #include "DataTypes.hxx"
+#include "Component.hxx"
 
 
 namespace CLAMTest
 {
 
 class PoolTest;
+class PoolBuilderTest;
 class PoolSpecTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( PoolSpecTest );
 CPPUNIT_TEST_SUITE_REGISTRATION( PoolTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( PoolBuilderTest );
 
 class PoolSpecTest : public CppUnit::TestFixture
 {
@@ -40,7 +43,7 @@ private:
 		CLAM::PoolSpec spec;
 		try
 		{
-			spec.GetIndex("Lala");
+			spec.GetIndex("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -56,15 +59,15 @@ private:
 	void testGetIndex_withOneInserted()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
-		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("Lala"));
+		spec.Add<CLAM::TData>("MyAttribute");
+		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetNAttributes());
 	}
 
 	void testGetIndex_withAWrongName()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
 			spec.GetIndex("Foo");
@@ -83,9 +86,9 @@ private:
 	void testGetIndex_withSecondInsertedArray()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		spec.Add<CLAM::TData>("Foo");
-		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("Lala"));
+		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("Foo"));
 		CPPUNIT_ASSERT_EQUAL(2u,spec.GetNAttributes());
 	}
@@ -93,10 +96,10 @@ private:
 	void testAddAttribute_whenNameAlreadyAdded()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
-			spec.Add<CLAM::TData>("Lala");
+			spec.Add<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -112,9 +115,9 @@ private:
 	void testAdding_DifferentTypes()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		spec.Add<CLAM::TIndex>("Foo");
-		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("Lala"));
+		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("Foo"));
 		CPPUNIT_ASSERT_EQUAL(2u,spec.GetNAttributes());
 	}
@@ -123,7 +126,7 @@ private:
 	{
 		std::string expected = "Type Missmatch using a pool";
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
 			spec.CheckType(0,(CLAM::TIndex*)0);
@@ -140,7 +143,7 @@ private:
 	void testCheckType_withSameType()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		spec.CheckType(0,(CLAM::TData*)0);
 	}
 
@@ -163,7 +166,6 @@ class PoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testConstruction_givesSizeZeroByDefault );
 	CPPUNIT_TEST( testSetSize_overAZeroSizePool );
 	CPPUNIT_TEST( testSetSize_overANonZeroSizePool );
-	CPPUNIT_TEST( testPoolBuilder_withNoScopeRegistered );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -178,13 +180,13 @@ private:
 	{
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 		
 		CLAM::Pool pool(spec,poolSize);
-		CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		CLAM::TData * data2 = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data2 = pool.Get<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
@@ -192,14 +194,14 @@ private:
 	{
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
-		CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
 		const CLAM::Pool & pool2 = pool;
-		const CLAM::TData * data2 = pool2.Get<CLAM::TData>("Lala");
+		const CLAM::TData * data2 = pool2.Get<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(const_cast<const CLAM::TData*>(data),data2);
 	}
 
@@ -207,10 +209,10 @@ private:
 	{
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
-		spec.Add<std::string>("Lala");
+		spec.Add<std::string>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
-		std::string * data = pool.Get<std::string>("Lala");
+		std::string * data = pool.Get<std::string>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 		{
 			std::ostringstream os;
@@ -218,7 +220,7 @@ private:
 			data[i] += os.str();
 		}
 		const CLAM::Pool & pool2 = pool;
-		const std::string * data2 = pool2.Get<std::string>("Lala");
+		const std::string * data2 = pool2.Get<std::string>("MyAttribute");
 		const std::string expected = "Hola 16";
 		CPPUNIT_ASSERT_EQUAL(expected,data2[4]);
 	}
@@ -227,12 +229,12 @@ private:
 	{
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
-		spec.Add<std::string>("Lala");
+		spec.Add<std::string>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
 		try
 		{
-			int * data = pool.Get<int>("Lala");
+			int * data = pool.Get<int>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -246,13 +248,13 @@ private:
 	{
 		const unsigned poolSize=5;
 		CLAM::PoolSpec spec;
-		spec.Add<std::string>("Lala");
+		spec.Add<std::string>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
 		const CLAM::Pool & pool2 = pool;
 		try
 		{
-			const int * data = pool2.Get<int>("Lala");
+			const int * data = pool2.Get<int>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -265,14 +267,14 @@ private:
 	void testConstruction_withoutSize()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
 		const CLAM::Pool & constPool = pool;
 
 		try
 		{
-			const CLAM::TData * data = constPool.Get<CLAM::TData>("Lala");
+			const CLAM::TData * data = constPool.Get<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -285,13 +287,13 @@ private:
 	void testConstruction_withoutSizeGettingNoConst()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
 
 		try
 		{
-			CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+			CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -304,7 +306,7 @@ private:
 	void testConstruction_givesSizeZeroByDefault()
 	{
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
 		CPPUNIT_ASSERT_EQUAL(0u,pool.GetSize());
@@ -316,16 +318,16 @@ private:
 		const unsigned poolSize=5;
 
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
 
 		pool.SetSize(poolSize);
 
-		CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		CLAM::TData * data2 = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data2 = pool.Get<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
@@ -334,25 +336,44 @@ private:
 		const unsigned poolSize=5;
 
 		CLAM::PoolSpec spec;
-		spec.Add<CLAM::TData>("Lala");
+		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec,7);
 
 		pool.SetSize(poolSize);
 
-		CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		CLAM::TData * data2 = pool.Get<CLAM::TData>("Lala");
+		CLAM::TData * data2 = pool.Get<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
+
+};
+
+class PoolBuilderTest : public CppUnit::TestFixture
+{
+	CPPUNIT_TEST_SUITE( PoolBuilderTest );
+	CPPUNIT_TEST( testPoolBuilder_withNoScopeRegistered );
+	CPPUNIT_TEST( testPoolBuilder_withARegisteredAttribute );
+	CPPUNIT_TEST( testPoolBuilder_withTwoScopes );
+	CPPUNIT_TEST_SUITE_END();
+
+public:
+	/// Common initialization, executed before each test method
+	void setUp() { }
+
+	/// Common clean up, executed after each test method
+	void tearDown() { }
+
+private:
 	void testPoolBuilder_withNoScopeRegistered()
 	{
 		CLAM::ScopeRegistry registry;
 		try
 		{
-			registry.Get("NonExistent");
+			registry.GetSpec("NonExistent");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -360,6 +381,33 @@ private:
 			const std::string expected = "No scope registered with that name";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
+	}
+
+	void testPoolBuilder_withARegisteredAttribute()
+	{
+		CLAM::ScopeRegistry registry;
+		registry.AddAttribute< CLAM::PoolAttribute<CLAM::TData> >("MyScope","MyAttribute");
+		registry.AddAttribute< CLAM::PoolAttribute<CLAM::TData> >("MyScope","MyOtherAttribute");
+
+		const CLAM::PoolSpec & spec = registry.GetSpec("MyScope");
+
+		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
+		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("MyOtherAttribute"));
+	}
+
+	void testPoolBuilder_withTwoScopes()
+	{
+		CLAM::ScopeRegistry registry;
+		registry.AddAttribute< CLAM::PoolAttribute<CLAM::TData> >("MyScope","MyAttribute");
+		registry.AddAttribute< CLAM::PoolAttribute<CLAM::TData> >("YourScope","YourAttribute");
+		registry.AddAttribute< CLAM::PoolAttribute<int> >("YourScope","YourIntAttribute");
+
+		const CLAM::PoolSpec & mySpec = registry.GetSpec("MyScope");
+		const CLAM::PoolSpec & yourSpec = registry.GetSpec("YourScope");
+
+		CPPUNIT_ASSERT_EQUAL(0u,mySpec.GetIndex("MyAttribute"));
+		CPPUNIT_ASSERT_EQUAL(0u,yourSpec.GetIndex("YourAttribute"));
+		CPPUNIT_ASSERT_EQUAL(1u,yourSpec.GetIndex("YourIntAttribute"));
 	}
 
 };

@@ -3,6 +3,7 @@
 #include <typeinfo>
 
 #include "Assert.hxx"
+#include "DataTypes.hxx"
 
 /**
  * @group Descriptors Pool
@@ -32,6 +33,7 @@ namespace CLAM
 	class PoolAttribute : public AbstractPoolAttribute
 	{
 	public:
+		typedef TData DataType;
 		virtual void * Allocate(unsigned size)
 		{
 			return new AttributeType[size];
@@ -44,30 +46,6 @@ namespace CLAM
 		virtual const std::type_info & TypeInfo() const
 		{
 			return typeid(AttributeType);
-		}
-	};
-
-	class PoolSubPoolAttribute : public AbstractPoolAttribute
-	{
-		std::string _specName;
-	public:
-		PoolSubPoolAttribute(const std::string & specName):
-			_specName(specName)
-		{
-		}
-		virtual void * Allocate(unsigned size)
-		{
-			return 0;
-//			return new Pool[size];
-		}
-		virtual void Deallocate(void * data)
-		{
-//			delete [] (Pool*)data;
-		}
-	protected:
-		virtual const std::type_info & TypeInfo() const
-		{
-			return typeid(int);
 		}
 	};
 
@@ -197,24 +175,61 @@ namespace CLAM
 		}
 	};
 
-
 	class ScopeRegistry
 	{
+	private:
+		typedef std::map<std::string, unsigned> SpecMap;
+		typedef std::vector<PoolSpec *> Specs;
+	private:
+		Specs _specs;
+		SpecMap _specMap;
 	public:
 		ScopeRegistry()
 		{
 		}
 
-		template <typename AttributeSpec>
+		~ScopeRegistry()
+		{
+			Specs::iterator it = _specs.begin();
+			Specs::iterator end = _specs.end();
+			for (; it!=end; it++)
+				delete *it;
+		}
+
+		template < typename AttributeSpec >
 		void AddAttribute(const std::string &scope, const std::string & name)
 		{
+			typedef typename AttributeSpec::DataType DataType;
+			PoolSpec & theSpec = SearchScopeOrAdd(scope);
+			theSpec.template Add<DataType>(name);
 		}
 
-		void Get(const std::string & name)
+		PoolSpec & SearchScopeOrAdd(const std::string scopeName)
 		{
-			CLAM_ASSERT(false,"No scope registered with that name");
+			const unsigned nSpecs = _specs.size();
+			std::pair<SpecMap::iterator,bool> result = 
+				_specMap.insert(std::make_pair(scopeName,nSpecs));
+
+			// Already inserted
+			if (!result.second) return *_specs[result.first->second];
+
+			PoolSpec * theSpec = new PoolSpec;
+			_specs.push_back(theSpec);
+			return *theSpec;
 		}
 
+		const PoolSpec & GetSpec(const std::string & name) const
+		{
+			SpecMap::const_iterator it = _specMap.find(name);
+			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
+			return *_specs[it->second];
+		}
+
+		Pool * CreatePool(const std::string & scope)
+		{
+			return new Pool(GetSpec(scope));
+			
+		}
 	};
 }
 
