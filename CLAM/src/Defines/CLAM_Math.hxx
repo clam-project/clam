@@ -15,12 +15,14 @@
 inline int Chop(float a) {
 #if defined (_MSC_VER)
             int i;
+			CLAM_DEBUG_ASSERT(a>=0,"Chop function only for positive numbers");
 #ifdef _DEBUG
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
 	You must do so outside the loop that actually calls the loop */
-			CLAM_ASSERT(a>=0,"Chop function only for positive numbers");
 			unsigned int saved = _controlfp(0, 0);
 			_controlfp(_RC_CHOP, _MCW_RC);
+#else
+		CLAM_ASSERT((_controlfp(0, 0) & _MCW_RC) == _RC_CHOP, "Rounding mode of FPU control word must be set to CHOP for Chop().");
 #endif //_DEBUG
             __asm {
                         fld   a
@@ -40,15 +42,17 @@ inline int Chop(float a) {
 inline int Round(float a)
 {
 #if defined (_MSC_VER)
+	CLAM_DEBUG_ASSERT(a>=0,"Round function only for positive numbers");
 	int i;
 	static const float half = 0.5f;
 #ifdef _DEBUG
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
 	You must do so outside the loop that actually calls the loop */
-	CLAM_ASSERT(a>=0,"Round function only for positive numbers");
 	unsigned int saved = _controlfp(0, 0);
 	_controlfp(_RC_CHOP, _MCW_RC);
-#endif //_DEBUG
+#else //_DEBUG
+		CLAM_ASSERT((_controlfp(0, 0) & _MCW_RC) == _RC_CHOP, "Rounding mode of FPU control word must be set to CHOP for Round().");
+#endif
     __asm {
 			fld   a
 			fadd  half
