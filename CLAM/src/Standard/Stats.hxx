@@ -293,9 +293,7 @@ public:
 	/** Get standard deviation, compute it if necessary*/
 	U GetStandardDeviation()
 	{
-		if(!mCentralMoments[2])//instantiate second central moment if not present: we will like to reuse its value
-			mCentralMoments[2]=new CentralMoment<2,abs,T,U>();
-		return mStdDev(*mData,*dynamic_cast<CentralMoment<2,abs,T,U>*> (mCentralMoments[2]),true);
+		return mStdDev(*mData,GetCentralMomentFunctor<2>(),true);
 	}
 
 	/**
@@ -329,9 +327,7 @@ public:
 	 */
 	U GetSkew()
 	{
-		if(!mCentralMoments[3])//instantiate second central moment if not present: we will like to reuse its value
-			mCentralMoments[3]=new CentralMoment<3,abs,T,U>();
-		return mSkew(*mData,mStdDev,*dynamic_cast<CentralMoment<3,abs,T,U>*>(mCentralMoments[3]),true);
+		return mSkew(*mData,mStdDev,GetCentralMomentFunctor<3>(),true);
 	}
 
 	/**
@@ -359,9 +355,7 @@ public:
 	 */
 	U GetKurtosis()
 	{
-		if(!mCentralMoments[4])//instantiate second central moment if not present: we will like to reuse its value
-			mCentralMoments[4]=new CentralMoment<4,abs,T,U>();
-		return mKurtosis(*mData,*dynamic_cast<CentralMoment<2,abs,T,U>*>(mCentralMoments[2]),*dynamic_cast<CentralMoment<4,abs,T,U>*>(mCentralMoments[4]),true);
+		return mKurtosis(*mData,GetCentralMomentFunctor<2>(),GetCentralMomentFunctor<4>(),true);
 	}
 
 	/**
@@ -475,7 +469,6 @@ public:
 	{
 		// TODO: Sums where Y is used can be taken from Mean and Centroid
 
-		const Array<T>& Y = *mData;
 		const TSize size  = mData->Size();
 
 		// \sum^{i=0}_{N-1}(x_i)
@@ -664,18 +657,18 @@ private:
 	/** Get order-th central moment, order is smaller than init order*/
 	template<int order> U GetCentralMoment(const O<order>*,StaticFalse&)
 	{
-		CentralMoment<order,abs,T,U>* tmpMoment= dynamic_cast<CentralMoment<order,abs,T,U>*> (mCentralMoments[order-1]);
+		CentralMoment<order,abs,T,U> & tmpMoment = GetCentralMomentFunctor<order>();
 
 		//first we see if we already have corresponding Raw Moments up to the order demanded
 		for(int i=0;i<order;i++)
 		{
 			//if we don't, we will have to compute them
 			if(mMoments[i]==NULL)
-				return (*tmpMoment)(*mData);
+				return tmpMoment(*mData);
 		}
 
 		// if we do, we will use formula that relates Central Moments with Raw Moments
-		return (*tmpMoment)(*mData,mMoments);
+		return tmpMoment(*mData,mMoments);
 	}
 
 	/** Get order-th central moment, order is greater than init order*/
@@ -683,15 +676,14 @@ private:
 	{
 		if(order>mCentralMoments.Size())
 		{
-			int previousSize=mCentralMoments.Size();
+			const int previousSize=mCentralMoments.Size();
 			mCentralMoments.Resize(order+1);
 			mCentralMoments.SetSize(order+1);
-			int i;
-			for(i=previousSize;i<order;i++) mCentralMoments[i]=NULL;
+			for(int i=previousSize; i<order; i++) mCentralMoments[i]=NULL;
 		}
 		if(mCentralMoments[order-1]==NULL)
 		{
-			mCentralMoments[order-1]=new CentralMoment<order,abs,T,U>;
+			mCentralMoments[order-1] = new CentralMoment<order,abs,T,U>;
 		}
 
 		return GetCentralMoment((const O<order>*)(0),StaticFalse());
@@ -747,6 +739,19 @@ private:
 	void GetChainedCenterOfGravity(O<1>* )
 	{
 		(*pTmpArray)[0]=GetCenterOfGravity((O<1>*)(0));
+	}
+
+	template <unsigned order>
+	CentralMoment<order,abs,T,U> & GetCentralMomentFunctor()
+	{
+		CLAM_ASSERT( (order-1) < mCentralMoments.Size(),
+			"Calling for a Central Moment order above the configured one");
+
+		typedef CentralMoment<order,abs,T,U> CentralMomentN;
+		const unsigned int position = order-1;
+		if (!mCentralMoments[position])
+			mCentralMoments[position] = new CentralMomentN;
+		return *dynamic_cast<CentralMomentN*>(mCentralMoments[position]);
 	}
 
 
