@@ -73,7 +73,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	SlotProcessingCreated.Wrap( this, &ProcessingTree::IncreaseNumProc );
 
-	SignalAddNewProcessing.Connect( network.SlotAddNewProcessing );	
+	SignalAddNewProcessing.Connect( network.SlotAddProcessing );	
 	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
 }
 
