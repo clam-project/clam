@@ -75,7 +75,7 @@ protected: // methods
 	void StoreOutputSound();
 	void StoreOutputSoundResidual();
 	void StoreOutputSoundSinusoidal();
-
+	void StoreMelody();
 
 private:
 

@@ -262,6 +262,23 @@ namespace CLAMGUI
 
 		return true;
 	}
+	
+	void SMSTools::StoreMelody(void)
+	{
+		const char* filename = fl_file_chooser( "Choose file to store the extracted melody...",
+												"*.xml", "" );
+
+		if ( !filename )
+			return;
+
+		std::string melodyFilename;
+
+		melodyFilename = filename;
+
+		CLAM::XMLStorage x;
+		x.UseIndentation(true);
+		x.Dump(mMelody,"Analyzed_Melody",melodyFilename);
+	}
 
 	bool SMSTools::DoStoreAnalysis()
 	{

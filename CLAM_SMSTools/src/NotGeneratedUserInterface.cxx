@@ -220,6 +220,7 @@ void UserInterface::AnalyzeMelody(void)
 {
 	mSMS->AnalyzeMelody();
 	ApplyMelodyAvailableState();
+	fl_message( "Melody extracted successfully!");
 }
 
 void UserInterface::StoreMelody(void)
