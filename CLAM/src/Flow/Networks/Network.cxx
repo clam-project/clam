@@ -141,8 +141,10 @@ namespace CLAM
 	}
 	NodeBase* Network::CreateAudioNodeWithDefaultStreamBuffer()
 	{
-		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
-		return new NodeTmpl<Audio, DefaultStreamBuffer>;
+		//@todo
+		//typedef CircularStreamImpl<TData> DefaultStreamBuffer;
+		// return new NodeTmpl<Audio, DefaultStreamBuffer>;
+		return new AudioNodeTmpl;
 	}
 
 	void Network::Start()
