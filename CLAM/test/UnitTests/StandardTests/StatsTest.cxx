@@ -19,6 +19,8 @@ class StatsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testMoment2 );
 	CPPUNIT_TEST( testMoment3 );
 	CPPUNIT_TEST( testMoment4 );
+	CPPUNIT_TEST( testMoment5 );
+	CPPUNIT_TEST( testMoment6 );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -62,6 +64,18 @@ private:
 		CLAM::Stats stats(&_primeArray);
 
 		CPPUNIT_ASSERT_EQUAL( CLAM::TData(180.75), stats.GetMoment((CLAM::O<4>*)0));
+	}
+	void testMoment5()
+	{
+		CLAM::Stats stats(&_primeArray);
+
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(850.25), stats.GetMoment((CLAM::O<5>*)0));
+	}
+	void testMoment6()
+	{
+		CLAM::Stats stats(&_primeArray);
+
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(4104.75), stats.GetMoment((CLAM::O<6>*)0));
 	}
 };
 
