@@ -147,7 +147,7 @@ void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum)
 	//TODO: it may give problems because pointer passed
 	InitStats(&mpSpectrum->GetMagBuffer());
 
-	mDeltaFreq=mpSpectrum->GetSpectralRange()/(mpSpectrum->GetSize()-1);
+	mDeltaFreq=double(mpSpectrum->GetSpectralRange())/(mpSpectrum->GetSize()-1);
 	
 }
 
@@ -265,8 +265,6 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 	return result;
 }
 
-/*this has been mostly copied and pasted from cuidado and should be checked and some of
-it promoted into basicOps*/
 TData SpectralDescriptors::ComputeRolloff() 
 { 
 	DataArray& mags     = mpSpectrum->GetMagBuffer();
