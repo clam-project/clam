@@ -13,7 +13,8 @@
 
 //optimized positive integer chopping routine for Windows, is equivalent to int(a) but much more efficient
 inline int Chop(float a) {
-#if defined (_MSC_VER)
+
+#if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
             int i;
 #ifdef _DEBUG
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
@@ -31,15 +32,15 @@ inline int Chop(float a) {
 			_controlfp(saved, _MCW_RC);
 #endif //_DEBUG
             return i;
-#else //not WIN32
+#else //not MSVC++ 6
             return int(a); // just hope it's an intrinsic.
-#endif //WIN32
+#endif //MSVC++ 6
 }
 
 /* optimized roundInt implementation valid only for positive integers*/
 inline int Round(float a)
 {
-#if defined (_MSC_VER)
+#if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
 	int i;
 	static const float half = 0.5f;
 #ifdef _DEBUG
@@ -58,13 +59,13 @@ inline int Round(float a)
 			_controlfp(saved, _MCW_RC);
 #endif //_DEBUG
             return i;
-#else
+#else // not MSVC++ 6
 	#ifdef __USE_ISOC99
 		return lrint(a);
 	#else
 		return int(rint(a));
 	#endif
-#endif
+#endif // MSVC++ 6
 }
 
 
