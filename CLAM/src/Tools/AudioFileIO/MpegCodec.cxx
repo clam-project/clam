@@ -5,9 +5,7 @@
 #include "MpegBitstream.hxx"
 #include "MpegAudioStream.hxx"
 #include <mad.h>
-#ifdef HAVE_STANDARD_UNICODE
 #include <id3/tag.h>
-#endif
 #include <cstdio>
 #include <iostream>
 
@@ -317,7 +315,7 @@ namespace AudioCodecs
 
 	void   MpegCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& txt )
 	{
-#ifdef HAVE_STANDARD_UNICODE
+
 		ID3_Tag fileTag;
 
 		fileTag.Link( uri.c_str() );
@@ -404,7 +402,7 @@ namespace AudioCodecs
 				if ( performerStr->GetRawText() != NULL )
 					txt.SetPerformer( performerStr->GetRawText() );
 		}
-#endif
+
 	}
 
 }
