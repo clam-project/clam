@@ -370,13 +370,11 @@ namespace CLAMVM
 
 	void Fl_SMS_Morph_Control::FrameInterpolationActivated()
 	{
-		std::cout << "Frame interpolation activated!" << std::endl;
 		FrameInterpolationChanged.Emit( true );
 	}
 
 	void Fl_SMS_Morph_Control::FrameInterpolationDeactivated()
 	{
-		std::cout << "Frame interpolation deactivated!" << std::endl;
 		FrameInterpolationChanged.Emit( false );
 	}
 
