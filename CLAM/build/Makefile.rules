@@ -35,31 +35,38 @@ LIBRARIES = $(LIBRARIES_DEBUG)
 LINK_FLAGS = $(LINK_FLAGS_DEBUG)
 CXXFLAGS = $(CXXFLAGS_DEBUG)
 
-$(PROGRAM): $(OBJECTS)
+$(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
 
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
 	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
-else
+moc/%_moc.cxx:
+	@mkdir -p moc
+	@echo == Generating moc file for $@
+	moc $< -o $@
+
 ifeq ($(CONFIG),release)
 LIBRARIES = $(LIBRARIES_RELEASE)
 LINK_FLAGS = $(LINK_FLAGS_RELEASE)
 CXXFLAGS = $(CXXFLAGS_RELEASE)
 
-$(PROGRAM): $(OBJECTS)
+$(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) $(OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
 
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
 	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
-else
+moc/%_moc.cxx:
+	@mkdir -p moc
+	@echo == Generating moc file for $@
+	moc $< -o $@
 
 .FORCE:
 
