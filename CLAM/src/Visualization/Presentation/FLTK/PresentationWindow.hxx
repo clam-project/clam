@@ -23,8 +23,8 @@ namespace CLAMGUI
 	class PresentationWindow:public Fl_Double_Window
 	{
 	protected:
-		friend ProcDataPresentation<Audio>; 
-		friend ProcDataPresentation<Spectrum>; 
+		friend class ProcDataPresentation<Audio>; 
+		friend class ProcDataPresentation<Spectrum>; 
 	
 		Presentation* mPresentation;
 

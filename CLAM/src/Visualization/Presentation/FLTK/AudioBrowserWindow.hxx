@@ -21,7 +21,7 @@ namespace CLAMGUI
 	class PresentationWindow:public Fl_Double_Window
 	{
 	protected:
-		friend AudioBrowser; 
+		friend class AudioBrowser; 
 	
 		Presentation* mPresentation;
 
