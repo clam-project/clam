@@ -175,10 +175,6 @@ namespace CLAM
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
 
-		/** Audio Out Processing object*/
-		AudioOut* mpOutputL;
-		AudioOut* mpOutputR;
-
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAM::Progress* CreateProgress(const char* title,float from,float to) = 0;
 		/** Creates a wait message. Implemented both in GUI and stdio versions */

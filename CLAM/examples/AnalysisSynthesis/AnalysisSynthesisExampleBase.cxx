@@ -102,16 +102,7 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 
 AnalysisSynthesisExampleBase::~AnalysisSynthesisExampleBase(void)
 {
-	if(mpOutputL) 
-	{
-		delete mpOutputL;
-		mpOutputL=NULL;
-	}
-	if(mpOutputR)
-	{ 
-		delete mpOutputR;
-		mpOutputR=NULL;
-	}
+
 }
 
 void AnalysisSynthesisExampleBase::InitConfigs(void)
