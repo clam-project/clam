@@ -35,7 +35,11 @@ namespace CLAM {
 	Processing::null_iterator = Processing::iterator(0);
 
 	Processing::Processing() 
-		: mpParent(0)
+		: mpParent(0),
+		mInControls(this),
+		mOutControls(this),
+		mOutPorts(this),
+		mInPorts(this)
 	{
 		mState = Unconfigured;
 	}
