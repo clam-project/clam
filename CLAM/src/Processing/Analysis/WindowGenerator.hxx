@@ -173,6 +173,7 @@ namespace CLAM {
 		void BlackmanHarris70(long size,DataArray& window) const;
 		void BlackmanHarris74(long size,DataArray& window) const;
 		void BlackmanHarris92(long size,DataArray& window) const;
+		void BlackmanHarrisLike(long size,DataArray& window) const;
 		void Hamming(long size,DataArray& window) const;
 		void Triangular(long size,DataArray& window) const;
 		void BlackmanHarris92TransMainLobe(long size,DataArray& window) const;

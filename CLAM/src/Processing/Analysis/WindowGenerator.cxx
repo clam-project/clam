@@ -277,6 +277,11 @@ using namespace CLAM;
 					Gaussian(windowsize,table);
 					break;
 				}
+			case EWindowType::eBlackmanHarrisLike:
+				{
+					BlackmanHarrisLike(windowsize,table);
+					break;
+				}
 
 			}
 	}
@@ -409,6 +414,19 @@ void WindowGenerator::BlackmanHarris92(long size,DataArray& window) const
 	BlackmanHarrisX(size,window,a0,a1,a2,a3);
 }
 
+void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
+{
+	int i;
+	TData fSum=0;
+	float a0 = .51, a1 = .42, a2 = -0.04, a3 = .03, a4=0.03, a5=0.05;
+	for(i=0; i<size; i++)
+		fSum += window[i] = 
+			0.47 - 0.45*cos(TData(TWO_PI/(size-1.0)*i)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*2.0)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*3.0));
+	fSum = fSum/2;
+	for (i = 0; i < size; i++)
+		window[i] = window[i] / fSum;
+	return;
+}
 
 
 /* function to design a Hamming window*/

@@ -111,6 +111,7 @@ public:
 		eTriangular,
 		eBlackmanHarris92TransMainLobe,
 		eGaussian,
+		eBlackmanHarrisLike
 	};
 
 	virtual Component* Species() const
