@@ -31,6 +31,7 @@ namespace CLAMVM
 			bool   mUserDefinedSinShapeW2Envelope;
 			bool   mUserDefinedResShapeW1Envelope;
 			bool   mUserDefinedResShapeW2Envelope;
+			bool   mUserDefinedSinShapeEnvelope;
 			bool   mOnlyGlobalEnvelope;
 
 		public:
@@ -99,6 +100,11 @@ namespace CLAMVM
 				return mUserDefinedResShapeW2Envelope;
 			}
 
+			bool UserDefinedSinShapeEnvelope() const
+			{
+				return mUserDefinedSinShapeEnvelope;
+			}
+
 			SigSlot::Slotv1<bool> FrameInterpolationListener;
 			SigSlot::Slotv0       GlobalEnvelopeListener;
 			SigSlot::Slotv0       PitchHybEnvelopeListener;
@@ -110,6 +116,7 @@ namespace CLAMVM
 			SigSlot::Slotv0       SinShapeW2EnvelopeListener;
 			SigSlot::Slotv0       ResShapeW1EnvelopeListener;
 			SigSlot::Slotv0       ResShapeW2EnvelopeListener;
+			SigSlot::Slotv0       SinShapeEnvelopeListener;
 			SigSlot::Signalv0     UserHasActed;
 
 		protected:
@@ -126,6 +133,8 @@ namespace CLAMVM
 			void OnSinShapeW2EnvelopeChanged();
 			void OnResShapeW1EnvelopeChanged();
 			void OnResShapeW2EnvelopeChanged();
+
+			void OnSinShapeEnvelopeChanged();
 		};
 		
 

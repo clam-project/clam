@@ -17,10 +17,11 @@ namespace CLAMVM
 		  mSinFreqControlKey( "Sinusoidal component frequency hybridization" ),
 		  mResAmpControlKey( "Residual component amplitude hybridization" ),
 		  mTimeSyncControlKey( "Time synchronization" ),
-		  mSinShapeW1ControlKey( "Initial Sinusoidal shape weight" ),
-		  mSinShapeW2ControlKey( "Final Sinusoidal shape weight" ),
-		  mResShapeW1ControlKey( "Initial Residual shape weight" ),
-		  mResShapeW2ControlKey( "Final Residual shape weight" ),
+		  mSinShapeW1ControlKey( "Sinusoidal spectral shape weight A" ),
+		  mSinShapeW2ControlKey( "Sinusoidal spectral shape weight B" ),
+		  mResShapeW1ControlKey( "Residual spectral shape weight A" ),
+		  mResShapeW2ControlKey( "Residual spectral shape weight B" ),
+		  mSinShapeControlKey( "Sinusoidal spectral shape interpolation" ),
 		  mFirstTimeShown( true ),
 		  mSynchSinAmpEditorWithGlobal( true ), mSynchSinFreqEditorWithGlobal( true ),
 		  mSynchPitchHybEditorWithGlobal( true ), mSynchResAmpEditorWithGlobal( true )
@@ -58,6 +59,7 @@ namespace CLAMVM
 		SinShapeW2EnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnSinShapeW2EnvelopeEdition );
 		ResShapeW1EnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResShapeW1EnvelopeEdition );
 		ResShapeW2EnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnResShapeW2EnvelopeEdition );
+		SinShapeEnvelopeEdited.Wrap( this, &Fl_SMS_Morph_Control::OnSinShapeEnvelopeEdition );
 
 		ChangeSinAmpSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForSinAmpEditorChanged );
 		ChangeSinFreqSynchState.Wrap( this, &Fl_SMS_Morph_Control::OnSynchStateForSinFreqEditorChanged );
@@ -81,6 +83,7 @@ namespace CLAMVM
 		mEnvelopeEditors[ mSinShapeW2ControlKey ] = BuildSinShapeW2Editor();
 		mEnvelopeEditors[ mResShapeW1ControlKey ] = BuildResShapeW1Editor();
 		mEnvelopeEditors[ mResShapeW2ControlKey ] = BuildResShapeW2Editor();
+		mEnvelopeEditors[ mSinShapeControlKey ] = BuildSinShapeEditor();
 	}
 	
 	void Fl_SMS_Morph_Control::DestroyEnvelopeEditors()
@@ -266,6 +269,22 @@ namespace CLAMVM
 		editor->damage( FL_DAMAGE_ALL );
 	}
 
+	void Fl_SMS_Morph_Control::RetrieveSinShapeEnvelope( CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mSinShapeControlKey ] );
+
+		editor->InsertPointsIntoBPF( bpf );
+	}
+
+	void Fl_SMS_Morph_Control::SetSinShapeEnvelope( const CLAM::BPF& bpf )
+	{
+		Fl_SMS_BPF_Editor* editor = static_cast<Fl_SMS_BPF_Editor*>( mEnvelopeEditors[ mSinShapeControlKey ] );
+		
+		editor->Clear();
+		editor->InitPoints( bpf );
+		editor->damage( FL_DAMAGE_ALL );
+	}
+
 
 	void Fl_SMS_Morph_Control::OnSynchStateForSinAmpEditorChanged( bool state )
 	{
@@ -347,6 +366,11 @@ namespace CLAMVM
 	void Fl_SMS_Morph_Control::OnResShapeW2EnvelopeEdition()
 	{
 		ResShapeW2EnvelopeChanged.Emit();
+	}
+
+	void Fl_SMS_Morph_Control::OnSinShapeEnvelopeEdition()
+	{
+		SinShapeEnvelopeChanged.Emit();
 	}
 
 	Fl_Widget* Fl_SMS_Morph_Control::BuildGlobalEditor()
@@ -599,6 +623,31 @@ namespace CLAMVM
 		return widget;
 	}
 
+	Fl_Widget* Fl_SMS_Morph_Control::BuildSinShapeEditor()
+	{
+		Fl_SMS_BPF_Editor* widget = new Fl_SMS_BPF_Editor( 0, 0, 100, 100 );
+		widget->label( mSinShapeControlKey.c_str() );
+		widget->SetHorizontalRange( 0.0, 1.0 );
+		widget->SetVerticalRange( 0.0, 1.0 );
+		widget->SetGridWidth( 0.1, 0.1 );
+		widget->tooltip( 
+				 "TODO: please, write me!");
+
+		widget->hide();
+		
+		CLAM::BPF tmpBPF;
+		tmpBPF.Insert( 0.0, 1.0 );
+		tmpBPF.Insert( 1.0, 1.0 );
+
+		widget->InitPoints( tmpBPF );
+
+		widget->PointsChanged.Connect( SinShapeEnvelopeEdited );
+
+		add( widget );
+
+		return widget;
+	}
+
 
 	void Fl_SMS_Morph_Control::ShowEnvelopeEditorFor( const char* name )
 	{
@@ -695,6 +744,9 @@ namespace CLAMVM
 		mpEnvelopeSelector->add( mResShapeW1ControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 		mpEnvelopeSelector->add( mResShapeW2ControlKey.c_str(), NULL,
+					 (Fl_Callback*)sMenuItemSelectedCb, this );
+
+		mpEnvelopeSelector->add( mSinShapeControlKey.c_str(), NULL,
 					 (Fl_Callback*)sMenuItemSelectedCb, this );
 	}
 	

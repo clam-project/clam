@@ -38,6 +38,7 @@ namespace CLAMVM
 		SigSlot::Signalv0        SinShapeW2EnvelopeChanged;
 		SigSlot::Signalv0        ResShapeW1EnvelopeChanged;
 		SigSlot::Signalv0        ResShapeW2EnvelopeChanged;
+		SigSlot::Signalv0        SinShapeEnvelopeChanged;
 		SigSlot::Signalv1<bool>  FrameInterpolationChanged;   
 
 		void RetrieveGlobalEnvelope( CLAM::BPF& );
@@ -70,6 +71,9 @@ namespace CLAMVM
 		void RetrieveResShapeW2Envelope( CLAM::BPF& );
 		void SetResShapeW2Envelope( const CLAM::BPF& );
 
+		void RetrieveSinShapeEnvelope( CLAM::BPF& );
+		void SetSinShapeEnvelope( const CLAM::BPF& );
+
 		void ActivateFrameInterpolation();
 		void DeactivateFrameInterpolation();
 
@@ -86,6 +90,7 @@ namespace CLAMVM
 		SigSlot::Slotv0       SinShapeW2EnvelopeEdited;
 		SigSlot::Slotv0       ResShapeW1EnvelopeEdited;
 		SigSlot::Slotv0       ResShapeW2EnvelopeEdited;
+		SigSlot::Slotv0       SinShapeEnvelopeEdited;
 
 		void OnGlobalEnvelopeEdition();
 		void OnSinAmpEnvelopeEdition();
@@ -97,6 +102,7 @@ namespace CLAMVM
 		void OnSinShapeW2EnvelopeEdition();
 		void OnResShapeW1EnvelopeEdition();
 		void OnResShapeW2EnvelopeEdition();
+		void OnSinShapeEnvelopeEdition();
 
 		void InitEnvelopeSelectorContents();
 
@@ -137,6 +143,7 @@ namespace CLAMVM
 		Fl_Widget* BuildSinShapeW2Editor();
 		Fl_Widget* BuildResShapeW1Editor();
 		Fl_Widget* BuildResShapeW2Editor();
+		Fl_Widget* BuildSinShapeEditor();
 
 	
 	protected: // "dynamic widgets"
@@ -189,6 +196,8 @@ namespace CLAMVM
 		const std::string mSinShapeW2ControlKey;
 		const std::string mResShapeW1ControlKey;
 		const std::string mResShapeW2ControlKey;
+
+		const std::string mSinShapeControlKey;
 		
 		bool  mFirstTimeShown;
 
