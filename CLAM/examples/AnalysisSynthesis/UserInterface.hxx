@@ -6,9 +6,9 @@
 #include "FL/Fl_Tile.H"
 #include "Fl_Smart_Tile.H"
 class Fl_Smart_Tile;
+#include "ForwardDeclarations.hxx"
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
-#include "ForwardDeclarations.hxx"
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Menu_Bar.H>

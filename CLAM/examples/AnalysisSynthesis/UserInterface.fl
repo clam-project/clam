@@ -32,7 +32,7 @@ class UserInterface {open
   Function {UserInterface()} {} {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
-      xywh {89 185 872 548} color 50 hide resizable
+      xywh {89 185 872 548} hide resizable
       code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
@@ -40,7 +40,7 @@ class UserInterface {open
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
       Fl_Menu_Bar mMenuBar {
-        private xywh {0 0 872 21} box THIN_UP_BOX color 50 labelsize 13 textsize 12
+        private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
           label Input
@@ -220,7 +220,7 @@ Exit();}
         }
       }
       Fl_Box mSmartTile {
-        private xywh {5 50 860 490} color 23 resizable
+        private xywh {5 50 860 490} resizable
         class Fl_Smart_Tile
       }
     }
@@ -234,8 +234,8 @@ Exit();}
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;}
-      private xywh {444 336 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+mWindow2=NULL;} selected
+      private xywh {444 336 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {
@@ -248,7 +248,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/iua.xpm}
-        private xywh {360 15 50 60}
+        private xywh {360 15 50 60} labeltype image
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -256,7 +256,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55}
+        private xywh {10 20 75 55} labeltype image
       }
     }
   }

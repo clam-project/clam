@@ -28,6 +28,8 @@ namespace CLAMGUI
 
 void AnalysisSynthesisExampleGUI::Run(void)
 {
+	Fl::get_system_colors();
+
 	UserInterface userinterface;
 	userinterface.mAnalysisSynthesisExample = this;
 	Fl::get_system_colors();
@@ -40,21 +42,22 @@ void AnalysisSynthesisExampleGUI::Run(void)
 	
 Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 
 {
-	std::cout << "Creating progress indicator " << std::endl;
+	//std::cout << "Creating progress indicator " << std::endl;
 	ProgressGUI* tmp = new ProgressGUI(title,from,to);
-	std::cout << "ProgressGUI constructor OK!" << std::endl;
+	//std::cout << "ProgressGUI constructor OK!" << std::endl;
 	return tmp;
 }
 
 WaitMessage* AnalysisSynthesisExampleGUI::CreateWaitMessage(const char* title) 
 {
-	std::cout << "Creating WaitMessage" << std::endl;
+	//std::cout << "Creating WaitMessage" << std::endl;
 	WaitMessageGUI* tmp = new WaitMessageGUI(title);
-	std::cout << "WaitMessage constructor OK!" << std::endl;
+	//std::cout << "WaitMessage constructor OK!" << std::endl;
 	return tmp;
 }
 
-void AnalysisSynthesisExampleGUI::ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method )
+void AnalysisSynthesisExampleGUI::ExecuteMethodOnThreadKeepingScreenUpToDate( 
+	CBL::Functor0 method )
 {
 	mThread.SetThreadCode( method );
 
