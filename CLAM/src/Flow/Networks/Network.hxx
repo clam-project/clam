@@ -22,6 +22,9 @@ public:
 
 protected:
 	InPort & GetInPortByCompleteName( const std::string& );
+	OutPort & GetOutPortByCompleteName( const std::string& );
+	InControl & GetInControlByCompleteName( const std::string& );
+	OutControl & GetOutControlByCompleteName( const std::string& );
 private:
 	// fields
 	ProcessingsMap _processings;

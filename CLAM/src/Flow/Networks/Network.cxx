@@ -45,7 +45,7 @@ namespace CLAM
 	std::size_t Network::PositionOfLastIdentifier( const std::string & str ) 
 	{
 		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
-		CLAM_ASSERT( result!=std::string::npos, "Malformed port name. It should be ProcessingName.PortName");
+		CLAM_ASSERT( result!=std::string::npos, "Malformed port name. It should be ProcessingName.[Port/Control]Name");
 		return result;
 	}
 	std::size_t Network::PositionOfProcessingIdentifier( const std::string& str )
@@ -62,7 +62,8 @@ namespace CLAM
 
 	std::string Network::GetProcessingIdentifier( const std::string& str )
 	{
-		return str.substr( PositionOfProcessingIdentifier(str), PositionOfLastIdentifier(str) );
+		std::size_t length = PositionOfLastIdentifier(str)  - PositionOfProcessingIdentifier(str);
+		return str.substr( PositionOfProcessingIdentifier(str), length);
 	}
 
 	InPort & Network::GetInPortByCompleteName( const std::string & name )
@@ -70,5 +71,24 @@ namespace CLAM
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInPorts().Get( GetLastIdentifier(name) );
 	}
+
+	OutPort & Network::GetOutPortByCompleteName( const std::string & name )
+	{
+		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
+		return proc.GetOutPorts().Get( GetLastIdentifier(name) );
+	}
+
+	InControl & Network::GetInControlByCompleteName( const std::string & name )
+	{
+		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
+		return proc.GetInControls().Get( GetLastIdentifier(name) );
+	}
+
+	OutControl & Network::GetOutControlByCompleteName( const std::string & name )
+	{
+		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
+		return proc.GetOutControls().Get( GetLastIdentifier(name) );
+	}
+
 
 }
