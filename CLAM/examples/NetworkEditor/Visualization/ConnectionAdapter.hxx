@@ -115,12 +115,16 @@ namespace CLAMVM
 						    const IN & in, 
 						    const CLAM::Network & net )
 	{
-		mOutObserved = dynamic_cast< const OUT * > (&out);
+/*		mOutObserved = dynamic_cast< const OUT * > (&out);
 		mInObserved = dynamic_cast< const IN * > (&in);
 		mNetworkObserved = dynamic_cast< const CLAM::Network *> (&net);
 		
 		if ((!mOutObserved)  || (!mInObserved) || (!mNetworkObserved))
 			return false;
+*/
+		mOutObserved = &out;
+		mInObserved = &in;
+		mNetworkObserved = &net;
 		return true;
 	}
 
