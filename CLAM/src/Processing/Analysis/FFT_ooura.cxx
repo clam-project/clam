@@ -141,7 +141,7 @@ namespace CLAM {
 	  ToOther(out);
 	  break;
 	default:
-	  CLAM_ASSERT("FFT_ooura: Do(): Inconsistent state");
+	  CLAM_ASSERT(false, "FFT_ooura: Do(): Inconsistent state");
 	}
 
 	return true;
