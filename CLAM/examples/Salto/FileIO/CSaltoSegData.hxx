@@ -3,7 +3,6 @@
 #define _CSaltoSegData_
 
 #include "DataTypes.hxx"
-#include "EDataFormat.hxx"
 
 namespace CLAM
 {
@@ -61,9 +60,6 @@ private:
 	double mStatResVolume;
 };
 
-
-inline EDataFormat DataFormat(class CSaltoSegData&) { return eFmtDefault; }
-inline EDataFormat DataFormat(class CSaltoSegData*&) { return eFmtDefault; }
 
  
 } // end of namespace CLAM

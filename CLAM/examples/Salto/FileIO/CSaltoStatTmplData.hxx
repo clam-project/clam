@@ -49,9 +49,6 @@ double mFundFreq;
 
 };
 
-/* operator */
- inline EDataFormat DataFormat(class CSaltoStatTmplData&) { return eFmtDefault; }
- inline EDataFormat DataFormat(class CSaltoStatTmplData*&) { return eFmtDefault; }
 
 //----------------------------------------------------------------------------//
 } // end of namespace CLAM

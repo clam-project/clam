@@ -363,16 +363,6 @@ protected:
 
 };
 
-template <class T> inline EDataFormat DataFormat(Vector<T> &)
-{
-	return eFmtDefault;
-}
-
-template <class T> inline EDataFormat DataFormat(Vector<T>* &)
-{
-	return eFmtDefault;
-}
-
 }
 
 #endif

@@ -30,7 +30,6 @@
 #include "Err.hxx"
 #include "Assert.hxx"
 #include "ErrOutOfMemory.hxx"
-#include "EDataFormat.hxx"
 #include "Storage.hxx"
 #include "Component.hxx"
 #include "TypeInfo.hxx"
@@ -171,8 +170,6 @@ public:
 	inline void GiveChunk(int pos, int size, Array<T>&) const;
 
 	inline void CopyChunk(int pos, int size, Array<T>&) const;
-
-	EDataFormat Format() { return eFmtDefault; }
 
 	const T& operator [](const int& i) const
 	{
@@ -582,14 +579,6 @@ CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed short)
 CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(signed char)
 CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(double)
 CLAM_FAST_ARRAY_SPECIALIZATIONS_DECL(float)
-
-
-// Format specializations. Based on EDataFormat.hxx
-// Warning: This should be architecture dependent code.
-template<> inline EDataFormat Array<int>::Format() { return eFmtS32L; }
-template<> inline EDataFormat Array<short>::Format() { return eFmtS16L; }
-template<> inline EDataFormat Array<float>::Format() { return eFmtF32B; }
-template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 
 typedef Array<TData> DataArray;
