@@ -83,6 +83,7 @@ namespace CLAM
 			SetBackgroundColor(VMColor::Black());
 			SetForegroundColor(VMColor::Green());
 			SetVLineColor(VMColor::Red());
+			SetMarksColor(VMColor::Orange());
 		}
 
 		void QtSpectrumPlot::DisplayBackgroundWhite()
@@ -90,6 +91,7 @@ namespace CLAM
 			SetBackgroundColor(VMColor::White());
 			SetForegroundColor(VMColor::Blue());
 			SetVLineColor(VMColor::Black());
+			SetMarksColor(VMColor::Red());
 		}
 
 		void QtSpectrumPlot::SetMarks(std::list<unsigned>& marks)

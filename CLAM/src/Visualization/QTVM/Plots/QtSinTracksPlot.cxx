@@ -110,6 +110,7 @@ namespace CLAM
 			SetBackgroundColor(VMColor::Black());
 			SetDialColor(VMColor::Red());
 			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Orange());
 		}
 
 		void QtSinTracksPlot::DisplayBackgroundWhite()
@@ -117,6 +118,7 @@ namespace CLAM
 			SetBackgroundColor(VMColor::White());
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Red());
 		}
 
 		void QtSinTracksPlot::SetMarks(std::list<unsigned>& marks)

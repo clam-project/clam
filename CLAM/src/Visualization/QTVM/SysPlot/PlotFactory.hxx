@@ -18,15 +18,6 @@ namespace CLAM
 													int h=225, // height
 													bool sc=true ); // switch display colors automatically 
 
-				static QtSegAudioPlot* GetSegAudioPlot(const Audio& audio,
-														std::list<unsigned>& marks,
-														const std::string& label="",
-														int x=100,
-														int y=100,
-														int w=500,
-														int h=225,
-														bool sc=true);
-
 				static QtStereoAudioPlot* GetStereoAudioPlot(	std::vector<Audio> data,
 																const std::string& label="",
 																int x=100,
@@ -86,16 +77,6 @@ namespace CLAM
 													int w=500,
 													int h=225,
 													bool sc=true);
-
-				static QtSegAudioPlot* GetSegAudioPlot(QWidget* parent,
-														const Audio& audio,
-														std::list<unsigned>& marks,
-														const std::string& label="",
-														int x=100,
-														int y=100,
-														int w=500,
-														int h=225,
-														bool sc=true);
 
 				static QtStereoAudioPlot* GetStereoAudioPlot(	QWidget* parent,
 																std::vector<Audio> data,
@@ -160,13 +141,6 @@ namespace CLAM
 									   int x, int y, int w, int h,
 									   bool sc=true,
 									   QWidget* parent=0);
-
-				static QtPlot* create( const Audio& audio,
-										std::list<unsigned>& marks,
-										const std::string& label,
-										int x, int y, int w, int h,
-										bool sc=true,
-										QWidget* parent=0);
 
 				static QtPlot* create( std::vector<Audio> data,
 										const std::string& label,

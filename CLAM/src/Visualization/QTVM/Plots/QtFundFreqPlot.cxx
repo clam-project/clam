@@ -152,6 +152,7 @@ namespace CLAM
 			SetForegroundColor(VMColor::Green());
 			SetDialColor(VMColor::Red());
 			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Orange());
 		}
 
 		void QtFundFreqPlot::DisplayBackgroundWhite()
@@ -160,6 +161,7 @@ namespace CLAM
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Red());
 		}
 
 		void QtFundFreqPlot::closeEvent(QCloseEvent *e)
