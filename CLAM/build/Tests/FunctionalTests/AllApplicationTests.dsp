@@ -252,6 +252,10 @@ SOURCE=..\..\..\..\examples\SMS\SMSBase.cxx
 
 SOURCE=..\..\..\..\examples\SMS\StdOutProgress.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\StdOutWaitMessage.cxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "Base Sources"
@@ -785,15 +789,15 @@ SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Errors\ErrSoundFileIO.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Errors\ErrOpenFile.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\ErrFormat.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrSoundFileIO.hxx
 # End Source File
 # End Group
 # Begin Group "Defines Headers"
@@ -1097,6 +1101,10 @@ SOURCE=..\..\..\..\examples\SMS\SMSBase.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\StdOutProgress.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\StdOutWaitMessage.hxx
 # End Source File
 # End Group
 # End Group
