@@ -103,7 +103,7 @@ public:
 
 	~GLPort()
 	{
-		FLTKWrapper& tk = dynamic_cast<FLTKWrapper&>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		CLAMVM::FLTKWrapper& tk = dynamic_cast<CLAMVM::FLTKWrapper&>(CLAMVM::WidgetTKWrapper::GetWrapperFor("FLTK" ));
 		
 		tk.CancelAsynchronousRefresh( mRefreshSlot );
 		

@@ -6,7 +6,7 @@ namespace CLAMGUI
 
 void showSnapshotArray( const CLAM::DataArray& array )
 {
-	WidgetTKWrapper& toolkit = WidgetTKWrapper::GetWrapperFor( "FLTK" );
+	CLAMVM::WidgetTKWrapper& toolkit = CLAMVM::WidgetTKWrapper::GetWrapperFor( "FLTK" );
 	
 	ArrayPresentation pres( "Snapshot" );
 
@@ -22,7 +22,7 @@ void showSnapshotArray( const CLAM::DataArray& array )
 
 void showSnapshotArray( CLAM::DataArray& array )
 {
-	WidgetTKWrapper& toolkit = WidgetTKWrapper::GetWrapperFor( "FLTK" );
+	CLAMVM::WidgetTKWrapper& toolkit = CLAMVM::WidgetTKWrapper::GetWrapperFor( "FLTK" );
 	
 	ArrayPresentation pres( "Snapshot" );
 

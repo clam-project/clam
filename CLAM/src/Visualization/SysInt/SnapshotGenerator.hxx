@@ -42,7 +42,7 @@ namespace CLAMGUI
 template < typename ProcObjType > 
 void showPOSnapshot( ProcObjType* obj, const char* label = 0 )
 {
-	WidgetTKWrapper& toolkit = WidgetTKWrapper::GetWrapperFor( "FLTK" );
+	CLAMVM::WidgetTKWrapper& toolkit = CLAMVM::WidgetTKWrapper::GetWrapperFor( "FLTK" );
 
 	ProcObjView< ProcObjType > view;
 	ProcObjPresentation< ProcObjType > presentation( label );
@@ -65,7 +65,7 @@ void showPOSnapshot( ProcObjType* obj, const char* label = 0 )
 template < typename ProcDataType >
 void showPDSnapshot( ProcDataType* obj, const char* label = 0 )
 {
-	WidgetTKWrapper& toolkit = WidgetTKWrapper::GetWrapperFor( "FLTK" );
+	CLAMVM::WidgetTKWrapper& toolkit = CLAMVM::WidgetTKWrapper::GetWrapperFor( "FLTK" );
 
 	ProcDataView< ProcDataType > view;
 	ProcDataPresentation< ProcDataType > presentation ( label );

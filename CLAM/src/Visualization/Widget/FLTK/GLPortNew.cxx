@@ -44,7 +44,7 @@ void GLPort::draw()
 	
 	if ( !mTimerLaunched )
 	{
-		FLTKWrapper& tk = dynamic_cast<FLTKWrapper&>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		CLAMVM::FLTKWrapper& tk = dynamic_cast<CLAMVM::FLTKWrapper&>(CLAMVM::WidgetTKWrapper::GetWrapperFor("FLTK" ));
 		mRefreshSlot = tk.RequestAsynchronousRefresh( this );
 	
 		mTimerLaunched = true;
