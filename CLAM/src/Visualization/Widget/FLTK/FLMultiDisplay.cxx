@@ -36,35 +36,19 @@ void FLMultiDisplay::draw(void)
 {
 
 	//fl_flush_clip( x(), y(), w(), h());
-	//fl_color(color());
-	//fl_rectf(x(),y(),w(),h());
+	fl_color(color());
+	fl_rectf(x(),y(),w(),h());
 	for (int i=0;i<mChildren.children();i++)
 	{
 		FLDisplay* d = dynamic_cast< FLDisplay* > ( mChildren.child(i) );
 
-		if (d == NULL )
-		{
-			CLAMGUI::GLPort* port = dynamic_cast < CLAMGUI::GLPort* >( mChildren.child(i) );
+		d->mInMultiDisplay = this;
 
-			if ( port == NULL )
-				throw ( GUIException( "Pointer was messed up "  ) );
-			else
-			{
-				port->mInMultiDisplay = this;
-				port->mHorRange = mHorRange;
-				port->mVerRange = mVerRange;
-				port->DrawSelf();
-			}
-		}
-		else
-		{
-			d->mInMultiDisplay = this;
+		d->mHorRange = mHorRange;
+		d->mVerRange = mVerRange;
 
-			d->mHorRange = mHorRange;
-			d->mVerRange = mVerRange;
+		d->DrawSelf();
 
-			d->DrawSelf();
-		}
 	}
 	fl_pop_clip();
 }

@@ -24,7 +24,6 @@
 
 #include "ProcDataPresentation.hxx"
 #include "FLDisplayContainer.hxx"
-#include <FL/Fl_Double_Window.H>
 #include "GLPortNew.hxx"
 #include "GLWaveRenderer.hxx"
 #include "GLState.hxx"
@@ -33,6 +32,7 @@
 #include "CLAMGL.hxx"
 #include "CBL.hxx"
 #include "GeometryKit.hxx"
+#include "PresentationWindow.hxx" // TODO this should be a forward declaration!
 
 using CLAM::DataArray;
 using CLAM::TData;
@@ -95,6 +95,10 @@ namespace CLAMGUI
 			mPort->redraw();
 		}
 
+		// TODO: there should be a class in between Presentation and the 
+		//  FLTK Presentations, where this method goes.
+		Fl_Window* GetWindow() { return mWindow; } 
+
 	protected:
 
 		void Init(const Geometry& g, const char* label );
@@ -114,8 +118,7 @@ namespace CLAMGUI
 		GLPort*                             mPort;
 		GLWaveRenderer*                     mRenderer;
 		FLDisplayContainer*                 mDispContainer;
-		Fl_Double_Window*                   mWindow;
-
+		PresentationWindow*                 mWindow;
 	};
 
 }

@@ -35,9 +35,9 @@
 using namespace CLAM;
 
 	Enum::tEnumValue EWindowNormalize::sEnumValues[] = {
-		{EWindowNormalize::eNone,"No Normalization"},
-		{EWindowNormalize::eAnalysis,"Normalization for Analysis"},
-		{EWindowNormalize::eEnergy,"Normalization for constant Energy"},
+		{EWindowNormalize::eNone,"NoNormalization"},
+		{EWindowNormalize::eAnalysis,"NormalizationForAnalysis"},
+		{EWindowNormalize::eEnergy,"NormalizationForConstantEnergy"},
 		{0,NULL}
 	};
 
@@ -97,12 +97,6 @@ using namespace CLAM;
 		
 		
 		/* Fill the table */
-		
-		// We force the size to odd, because the last point in the window is
-		// needed for interpolation in the table
-
-		/*if (mConfig.GetSize()%2 == 0) 
-			mConfig.SetSize(mConfig.GetSize()+1);*/
 		
 		mTable.Resize(mConfig.GetSize());
 		mTable.SetSize(mConfig.GetSize());
@@ -439,7 +433,7 @@ void WindowGenerator::Triangular(long size,DataArray& window) const
 void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window) const
 {
 	short N = 512, i, m;
-	TData fA[4] = {.35875, .48829, .14128, .01168},
+	TData fA[4] = {TData(.35875), TData(.48829), TData(.14128), TData(.01168)},
 		fMax = 0;
 	TData fTheta = -TData(4.0) * TData(TWO_PI) / N, 
 	       fThetaIncr = (TData(8.0) * TData(TWO_PI) / N) / (size);

@@ -40,8 +40,8 @@ Fl_Pixmap Fl_Smart_Tile::pixmapClose(image_close);
 Fl_Smart_Tile::Fl_Smart_Tile(int X,int Y,int W,int H)
 :Fl_Group(X,Y,W,H) {
 	Fl_Group::resizable();
-	init(40,20);
-	color(FL_BLACK);
+	init(50,24);
+	end();
 }
 
 void Fl_Smart_Tile::draw(void)
@@ -50,7 +50,7 @@ void Fl_Smart_Tile::draw(void)
 	fl_color(color());
 	if (children())
 		fl_rectf(x(),child(children()-1)->y()+child(children()-1)->h(),w(),
-			h()-(child(children()-1)->y()+child(children()-1)->h()));
+			h()-(y()+child(children()-1)->y()+child(children()-1)->h()));
 	else
 		fl_rectf(x(),y(),w(),h());
 }
