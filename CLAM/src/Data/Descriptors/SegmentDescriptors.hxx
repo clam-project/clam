@@ -70,13 +70,14 @@ class SegmentDescriptors : public ProcessingData {
 
 		SegmentDescriptors(Segment* pSegment);
 
-		void DefaultInit();
-				
-		const Segment* GetpSegment() const{return mpSegment;}
-		void SetpSegment(Segment* pSegment) {mpSegment=pSegment;}
+		void SetpSegment(Segment* pSegment);
+		const Segment* GetpSegment() const;
 		FrameDescriptors& GetFrameD(TIndex pos) {return GetFramesD()[pos];}
 
-		
+	private:
+		void DefaultInit();
+		void CopyInit(const SegmentDescriptors & copied);
+
 	private:
 		Segment* mpSegment;
 
@@ -84,6 +85,26 @@ class SegmentDescriptors : public ProcessingData {
 
 
 };
+
+
+// Implementation
+
+inline void SegmentDescriptors::DefaultInit() {
+	mpSegment=0;
+}
+
+inline void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
+	mpSegment=copied.mpSegment;
+}
+
+inline const Frame* SegmentDescriptors::GetpSegment() const {
+	return mpSegment;
+}
+
+inline void SegmentDescriptors::SetpSegment(Frame* pSegment) {
+	mpSegment=pSegment;
+}
+
 
 
 #endif /* __SegmentDescriptors_H__ */
