@@ -31,9 +31,9 @@
 #include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
 #include <vector>
-#include <string>
 #include <list>
 #include <typeinfo>
+#include <string>
 
 namespace CLAM {
 
@@ -326,15 +326,27 @@ namespace CLAM {
 
 		bool ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj);
 
-		bool AbleToExecute(void)
+		bool AbleToExecute(void) const
 		{
-			CLAM_DEBUG_ASSERT(
-				GetExecState() != Unconfigured &&
-			  GetExecState() != Ready,
-				string(GetClassName()+string(
+			/* this looks more complicated than what it is, but that's because
+			 * we have to work around a gcc bug where the running operator +
+			 * is called for string + string. ideally, we would just use
+			 * CLAM_DEBUG_ASSERT
+			 */
+			CLAM_BEGIN_DEBUG_CHECK
+				if (GetExecState() == Unconfigured ||
+			      GetExecState() == Ready)
+				{
+					// this const_cast is Ugly, but i do not have time to make
+					// all GetClassName's const
+					std::string err(const_cast<Processing*>(this)->GetClassName());
+					err +=
 ": Do(): Not in execution mode - did you call Start on this "
-"object, the composite it is in, or the ToplevelProcessing singleton?")
-).c_str());
+"object, the composite it is in, or the ToplevelProcessing singleton?";
+
+					CLAM_DEBUG_ASSERT( false, err.c_str() );
+				}
+			CLAM_END_DEBUG_CHECK
 
 			return GetExecState() != Disabled;
 		}
