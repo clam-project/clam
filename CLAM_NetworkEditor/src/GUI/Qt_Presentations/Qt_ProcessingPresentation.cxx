@@ -401,7 +401,7 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
+		in->AcquirePos.Emit( difference.x()+ posX +5  , difference.y()+posY -2 );
 	}
 	OutControlPresentationIterator itOutControl;
 	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
@@ -409,7 +409,7 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
+		out->AcquirePos.Emit( difference.x() + posX - 4, difference.y()+ posY +2 );
 	}
 	QWidget * parent = parentWidget();
 	parent->repaint();
@@ -439,7 +439,7 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( pos().x() + posX, pos().y() + posY);
+		in->AcquirePos.Emit( pos().x() + posX + 5, pos().y() + posY - 2 );
 	}
 	OutControlPresentationIterator itOutControl;
 	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
@@ -447,7 +447,7 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( pos().x() + posX , pos().y() + posY );
+		out->AcquirePos.Emit( pos().x() + posX - 4 , pos().y() + posY +2);
 	}
 }
 
