@@ -276,7 +276,7 @@ mWindow2=NULL;} open
       code1 {mWindow2->show();} modal visible
     } {
       Fl_Box {} {
-        label {SMS Tools 2 v.0.1.1} selected
+        label {SMS Tools 2 v.0.1.2} selected
         private xywh {5 5 440 30} box FLAT_BOX labelfont 1 labelsize 16 labelcolor 0
       }
       Fl_Box {} {
