@@ -1,4 +1,3 @@
-PROGRAM = NonSupervisedSystemWithNodesExample
-TOP=../../..
+SRCDEPS = ../../../../srcdeps/srcdeps
 
-include $(TOP)/build/Makefile.rules
+include ../../../Makefile.rules
