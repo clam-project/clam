@@ -91,15 +91,16 @@ namespace CLAM
 
 		void Check(Audio& in1,Audio& in2, Audio& out)
 		{
-			
-			if (in1.GetSize() != in2.GetSize() || in1.GetSize() != out.GetSize())
-				throw(ErrProcessingObj("BinaryAudioOperation::Do(): invalid Audio Data Size"),this);
+			CLAM_ASSERT(in1.GetSize() != in2.GetSize(),
+				"BinaryAudioOperation::Do(): Incompatible Input Audio Data Sizes");
+			CLAM_ASSERT(in1.GetSize() != out.GetSize(),
+				"BinaryAudioOperation::Do(): Incompatible Output Audio Data Size");
 			
 		}
 
 		bool Do(void)
 		{
-			throw ( ErrProcessingObj( "BinaryAudioOperation::Do() : Supervised mode not implemented" ), this );
+			CLAM_ASSERT ( false,  "BinaryAudioOperation::Do() : Supervised mode not implemented" );
 			return false;
 		}
 
