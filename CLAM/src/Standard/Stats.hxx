@@ -26,6 +26,8 @@ public:
 	{
 		mMemorized=true;
 		mMemory=value;
+
+		return *this;
 	}
 	bool HasValue()
 	{
@@ -80,15 +82,15 @@ public:
 	}
 	~StatsTmpl()
 	{
-		for (unsigned i=0;i<mMoments.Size();i++)
+		for (int i=0;i<mMoments.Size();i++)
 		{
 			if(mMoments[i]) delete mMoments[i];
 		}
-		for (unsigned i=0;i<mCentralMoments.Size();i++)
+		for (int i=0;i<mCentralMoments.Size();i++)
 		{
 			if(mCentralMoments[i]) delete mCentralMoments[i];
 		}
-		for (unsigned i=0;i<mCenterOfGravities.Size();i++)
+		for (int i=0;i<mCenterOfGravities.Size();i++)
 		{
 			if(mCenterOfGravities[i]) delete mCenterOfGravities[i];
 		}
@@ -249,7 +251,7 @@ public:
 		// Compute spectrum variance around centroid frequency
 		TData variance = 0;
 		TData sumMags  = 0;
-		for (TIndex i=0; i<N; i++)
+		for (unsigned i=0; i<N; i++)
 		{
 			U centroidDistance = i - centroid;
 			centroidDistance *= centroidDistance;
@@ -432,8 +434,8 @@ public:
 	{
 		U mean = GetMean();
 		U geometricMean = GetGeometricMean();
-		if (mean<1e-100) mean=1e-100;
-		if (geometricMean<1e-100) geometricMean=1e-100;
+		if (mean<1e-100) mean=TData(1e-100);
+		if (geometricMean<1e-100) geometricMean=TData(1e-100);
 		return geometricMean/mean;
 	}
 
