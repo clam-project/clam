@@ -22,13 +22,13 @@ main()
 		printf("%s\n",(*it).c_str());
 	}
 	
-	inNoteCfg.SetDevice("portmidi:input:VirMIDI 1-0");
+	inNoteCfg.SetDevice("portmidi:input:UART MIDI SB Live!");
 	inNoteCfg.SetMessageMask(
 			MIDI::MessageMask(MIDI::eNoteOn)|
 			MIDI::MessageMask(MIDI::eNoteOff));
 	inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1));
 	
-	outNoteCfg.SetDevice("textfile:-");
+	outNoteCfg.SetDevice("portmidi:output:Mapeador Microsoft MIDI");
 	outNoteCfg.SetMessage(MIDI::eNoteOn);
 	outNoteCfg.SetChannel(1);
 
