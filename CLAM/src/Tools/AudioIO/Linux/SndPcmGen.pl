@@ -28,10 +28,10 @@ print CXX<<EOF;
 DON'T EDIT THIS FILE BY HAND, IT IS GENERATED 
 BY THE SCRIPT SndPcmGen.pl FROM
 alsa-lib/test/latency.c
-SndPcm.cxx.in.head
-SndPcm.cxx.in.tail
-SndPcm.hxx.in.head
-SndPcm.hxx.in.tail
+SndPcmFullDuplex.cxx.in.head
+SndPcmFullDuplex.cxx.in.tail
+SndPcmFullDuplex.hxx.in.head
+SndPcmFullDuplex.hxx.in.tail
 */
 
 EOF
@@ -41,10 +41,10 @@ print HXX<<EOF;
 DON'T EDIT THIS FILE BY HAND, IT IS GENERATED 
 BY THE SCRIPT SndPcmGen.pl FROM
 alsa-lib/test/latency.c
-SndPcm.in.head.cxx
-SndPcm.in.tail.cxx
-SndPcm.in.head.hxx
-SndPcm.in.tail.hxx
+SndPcmFullDuplex.in.head.cxx
+SndPcmFullDuplex.in.tail.cxx
+SndPcmFullDuplex.in.head.hxx
+SndPcmFullDuplex.in.tail.hxx
 */
 
 EOF
@@ -89,7 +89,7 @@ while (<LAT>)
 {
 	foreach $f (@functions)
 	{
-		if (s/^(\w+ +)$f/$1SndPcm::$f/)
+		if (s/^(\w+ +)$f/$1SndPcmFullDuplex::$f/)
 		{
 			$infunction = $f;
 			$inproto = $f;
@@ -122,7 +122,7 @@ EOF
 	}
 	if ($inproto)
 	{
-		s/SndPcm:://;
+		s/SndPcmFullDuplex:://;
 		s/\)/\);/;
 		print HXX "\t".$_;
 	}

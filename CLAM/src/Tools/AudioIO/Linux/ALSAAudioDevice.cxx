@@ -19,7 +19,7 @@
  *
  */
 
-#include "SndPcm.hxx"
+#include "SndPcmFullDuplex.hxx"
 #include "AudioIO.hxx"
 #include "AudioIn.hxx"
 #include "AudioOut.hxx"
@@ -142,11 +142,15 @@ namespace CLAM {
 				}
 				else if (mNReadChannels)
 				{
-					sndpcm = new ::SndPcmInput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+					throw(Err("ALSAAudioDevice::Start(): "
+						"mdeboer is implementing half duplex now"));
+//					sndpcm = new ::SndPcmInput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 				}
 				else if (mNWriteChannels)
 				{
-					sndpcm = new ::SndPcmOutput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+					throw(Err("ALSAAudioDevice::Start(): "
+						"mdeboer is implementing half duplex now"));
+//					sndpcm = new ::SndPcmOutput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 				}
 			}
 			catch (SndPcmError &e) {
