@@ -53,16 +53,12 @@ void MyIOAudioApplication::AudioMain(void)
 		AudioIOConfig outCfgL;
 		AudioIOConfig outCfgR;
 
-		inCfgL.SetName("left in");
 		inCfgL.SetChannelID(0);
 
-		inCfgR.SetName("right in");
 		inCfgR.SetChannelID(1);
 
-		outCfgL.SetName("left out");
 		outCfgL.SetChannelID(0);
 
-		outCfgR.SetName("right out");
 		outCfgR.SetChannelID(1);
 
 		Audio bufL;
@@ -156,13 +152,11 @@ void MyOutAudioApplication::AudioMain(void)
 
 		AudioIOConfig outLCfg;
 		outLCfg.SetDevice("rtaudio:default");
-		outLCfg.SetName("left out");
 		outLCfg.SetChannelID(0);
 		outLCfg.SetSampleRate(samplerate);
 
 		AudioIOConfig outRCfg;
 		outRCfg.SetDevice("rtaudio:default");
-		outRCfg.SetName("right out");
 		outRCfg.SetChannelID(1);
 		outRCfg.SetSampleRate(samplerate);
 
