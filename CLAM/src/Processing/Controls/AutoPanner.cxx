@@ -1,5 +1,4 @@
 #include "AutoPanner.hxx"
-#include <iostream>
 #include "OSDefines.hxx"
 #include "CLAM_Math.hxx"
 
@@ -57,9 +56,7 @@ bool AutoPanner::Do()
 
 	mLeft.SendControl(firstValue);
 	mRight.SendControl(secondValue);
-	std::cout << firstValue << "  " << secondValue << "  " << mFreq << "  " << mPhase << "  " << mDeltaPhase << std::endl;
-	       
-	return true;
+       	return true;
 }
 
 bool AutoPanner::ConcreteConfigure(const ProcessingConfig& c)
