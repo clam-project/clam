@@ -126,7 +126,7 @@ public:
 
 	/** Method used to attach a Processing Data to input and output ports */
 	void Attach(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,
-		Fundamental& outFn,Spectrum& outResSpec);
+		Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 	
 	/** Supervised mode execution */
 	bool Do(void);
@@ -162,7 +162,7 @@ public:
 	 *	@param outResSpec: residual spectrum computed from substracting the synthesized sinusoidal
 	 *	spectrum from the original spectrum.
 	 */
-	bool Do(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,Fundamental& outFn,
+	bool Do(Audio& in, Spectrum& outSpectrum,Spectrum& sinGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,
 		Spectrum& outResSpec);
 
 	/**	Auxiliary method to perform the analysis on the sinusoidal component. It computes the
@@ -255,6 +255,7 @@ private:
 	OutPortTmpl<SpectralPeakArray>  mOutputSpectralPeaks;
 	OutPortTmpl<Fundamental>			mOutputFundamental;
 	OutPortTmpl<Spectrum>			mOutputResSpectrum;
+	OutPortTmpl<Spectrum>			mOutputSinSpectrum;
 };
 
 };//namespace

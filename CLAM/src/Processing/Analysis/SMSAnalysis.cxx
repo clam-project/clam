@@ -197,7 +197,8 @@ mInputAudio("InputAudio",this,1),
 mOutputSpectrum("OutputSpectrum",this,1),
 mOutputSpectralPeaks("OutputSpectralPeaks",this,1),
 mOutputFundamental("Fundamental",this,1),
-mOutputResSpectrum("OutputResSpectrum",this,1)
+mOutputResSpectrum("OutputResSpectrum",this,1),
+mOutputSinSpectrum("OutputSinSpectrum",this,1)
 {
 	AttachChildren();
 	Configure(SMSAnalysisConfig());
@@ -208,7 +209,8 @@ mInputAudio("InputAudio",this,1),
 mOutputSpectrum("OutputSpectrum",this,1),
 mOutputSpectralPeaks("OutputSpectralPeaks",this,1),
 mOutputFundamental("Fundamental",this,1),
-mOutputResSpectrum("OutputResSpectrum",this,1)
+mOutputResSpectrum("OutputResSpectrum",this,1),
+mOutputSinSpectrum("OutputSinSpectrum",this,1)
 {
 	AttachChildren();
 	Configure(cfg);
@@ -316,23 +318,24 @@ void SMSAnalysis::Start()
 }
 
 void SMSAnalysis::Attach(Audio& inputAudio, Spectrum& outSpectrum,SpectralPeakArray& outPk,
-						 Fundamental& outFn,Spectrum& outResSpec)
+						 Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
 {
 	mInputAudio.Attach(inputAudio);
 	mOutputSpectrum.Attach(outSpectrum);
 	mOutputSpectralPeaks.Attach(outPk);
 	mOutputFundamental.Attach(outFn);
 	mOutputResSpectrum.Attach(outResSpec);
+	mOutputSinSpectrum.Attach(outSinSpec);
 }
 
 bool SMSAnalysis::Do()
 {
-	return Do(mInputAudio.GetData(),mOutputSpectrum.GetData(),mOutputSpectralPeaks.GetData(),
+	return Do(mInputAudio.GetData(),mOutputSpectrum.GetData(),mOutputSinSpectrum.GetData(),mOutputSpectralPeaks.GetData(),
 		mOutputFundamental.GetData(),mOutputResSpectrum.GetData());
 
 }
 
-bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec)
+bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec)
 {
 	/* First we write new samples into stream buffer*/
 	Audio tmpAudio;
@@ -343,12 +346,12 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk
 	//Temporal Sinusoidal spectrum used for substracting from the original to compute residual
 	//Note: we do not need to keep it here because it will have to be synthesized in the synthesis
 	//process anyway.
-	Spectrum tmpSinSpec;
+	Spectrum tmpSpec;
 	
 	//Synchronizing spectral ranges of other spectrums
 	outGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
 	outResSpec.SetSpectralRange(mResSpec.GetSpectralRange());
-	tmpSinSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+	sinGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
 	
 	//first we try to get and activate both readers
 	if(!mStreamBuffer.GetAndActivate(mSinReader,mSinAudioFrame)||
@@ -374,7 +377,7 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk
 	//We are now ready to analyze residual component
 	
 	//First we synthesize Sinusoidal Spectrum
-	mPO_SynthSineSpectrum.Do(outPk,tmpSinSpec);
+	mPO_SynthSineSpectrum.Do(outPk,tmpSpec);
 	
 	//Then we analyze the spectrum of the whole audio using residual config
 	 mPO_ResSpectralAnalysis.Do();
@@ -384,10 +387,11 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk
 	
 	//Output global spectrum is that of the residual branch
 	outGlobalSpec=mResSpec;
+	sinGlobalSpec=mSinSpec;
 
 	//Finally we substract mResSpec-SinusoidalSpectrum
 	outResSpec.SetSize(mResSpec.GetSize());
-	mPO_SpecSubstract.Do(mResSpec,tmpSinSpec,outResSpec);
+	mPO_SpecSubstract.Do(mResSpec,tmpSpec,outResSpec);
 
 	return true;
 
@@ -407,7 +411,7 @@ bool SMSAnalysis::Do(Frame& in)
 
 	bool result=false;
 	//If we have written enough samples as to do the first processing result will be true
-	result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec());
+	result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSinusoidalAnalSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec());
 	if (result)
 		//if we have been able to analyze something we set whether frame is voiced or not
 		in.SetIsHarmonic(in.GetFundamental().GetFreq(0)>0);
@@ -493,5 +497,6 @@ void SMSAnalysis::InitFrame(Frame& in)
 	in.AddFundamental();
 	in.AddResidualSpec();
 	in.AddIsHarmonic();
+	in.AddSinusoidalAnalSpectrum();
 	in.UpdateData();
 }

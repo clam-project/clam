@@ -112,12 +112,9 @@ namespace CLAM {
 		TData  SpectralPeakPhase;
 		TData  SpectralPeakMag;
 		TData  diffFromMax;
-		TData  SamplingRate = input.GetSpectralRange() * TData(2.0);
+ 		TData  SamplingRate = input.GetSpectralRange() * TData(2.0);
 		TSize  MagThreshold = mConfig.GetMagThreshold();
-		TSize  NumBands = mConfig.GetNumBands();
-
-		// check for correct framesize
-		CLAM_ASSERT(input.GetSize() == NumBands,"SpectralPeakDetect::Do - Number of Mags does not match instantiated Number "); 
+		TSize  NumBands = input.GetSize();
 
 		CLAM_ASSERT(CheckOutputType(out),"SpectralPeakDetect::Do - Type of output data doesn't match "); 
 		
