@@ -2,6 +2,9 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "Extractor.hxx"
+#include "Pool.hxx"
+#include "Spectrum.hxx"
+#include "DataTypes.hxx"
 
 
 namespace CLAMTest
@@ -55,6 +58,8 @@ private:
 		const std::string & value = abstract.TakeValue<std::string>();
 		CPPUNIT_ASSERT_EQUAL(expected, value);
 	}
+
+	
 #ifdef NEVERDEFINED
 	void testSubGoal()
 	{
@@ -77,8 +82,20 @@ private:
 		CLAM::Extractor * fft = CLAM::Extractor::Create("SpectralAnalysis");
 		fft.BindOutputHook("Output","Frame","SpectralDistribution");
 		fft.BindInputHook("Input",
-			Attribute("Level",RelativeRange(-frameSize/2,+frame/2,Indirect("AudioSample",Select("Center",MyContext()))))
+			CurrentContext().Attribute("Center").Indirect("AudioSample")
+				.RelativeRange(-framesize/2,+framesize/2).Attribute("Level")
 			);
+
+		scheme.AddExtractor(fft);
+	}
+
+	void testExtractionGoal()
+	{
+		std::string fileName("mysong.mpg");
+		
+
+
+		
 	}
 
 	void testGoal()
