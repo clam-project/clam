@@ -63,16 +63,17 @@ void Audio::SetDuration(TTime duration)
 	SetSize(GetIndexFromTime(duration));
 }
 
-TTime Audio::GetTimeFromIndex(TIndex index) const
+TTime Audio::GetTimeFromIndex(TLongIndex index) const
 {
-		double sampleOffset = index;
-		sampleOffset *= 1000.;
-		return (TTime)( sampleOffset / GetSampleRate() );
+//	double sampleOffset = index;
+//	sampleOffset *= 1000.;
+//	return (TTime)( sampleOffset / GetSampleRate() );
+	return (TTime)( index*1000 / GetSampleRate() );
 }
 
-TIndex Audio::GetIndexFromTime(TTime time) const
+TLongIndex Audio::GetIndexFromTime(TTime time) const
 {
-	return (TIndex) (time/1000*GetSampleRate());
+	return (TLongIndex) (time/1000*GetSampleRate());
 }
 
 void Audio::GetAudioChunk(TTime beginTime, TTime endTime,Audio& chunk, bool configureChunk) const
@@ -87,13 +88,13 @@ void Audio::GetAudioSlice(TTime beginTime, TTime endTime,Audio& slice, bool conf
 
 
 
-void Audio::GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, bool configureChunk ) const
+void Audio::GetAudioSlice( TLongIndex beginIndex, TLongIndex endIndex, Audio& slice, bool configureChunk ) const
 {
 	CLAM_ASSERT( beginIndex >=0, "Negative indexes are not allowed for audio slices" );
 	CLAM_ASSERT( endIndex <= GetSize(), "Slices are not allowed to surpass audio size" );
 
 
-	TIndex size=endIndex-beginIndex;
+	TLongIndex size=endIndex-beginIndex;
 
 	DataArray tmpArray;
 	tmpArray.SetPtr( GetBuffer().GetPtr() + beginIndex );
@@ -110,7 +111,7 @@ void Audio::GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, boo
 	
 }
 
-void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool configureChunk) const
+void Audio::GetAudioChunk(TLongIndex beginIndex,TLongIndex endIndex,Audio& chunk, bool configureChunk) const
 {
 	
 	/*Note that begin index is allowed to be less than zero and the end index to be beyond the end*/
@@ -120,7 +121,7 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	TSize nBytesToCopy,offset=0;
 	
 	if(beginIndex>=GetSize()){
-		TIndex size=endIndex-beginIndex;
+		TLongIndex size=endIndex-beginIndex;
 		if(configureChunk) chunk.SetSize(size);
 		//make sure that 0's are set in non written part of audio
 		memset(chunk.GetBuffer().GetPtr(),0,size*sizeof(TData));
@@ -132,7 +133,7 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	if(configureChunk)
 	{
 		chunk.SetSampleRate( GetSampleRate() );
-		TIndex size=endIndex-beginIndex;
+		TLongIndex size=endIndex-beginIndex;
 		chunk.SetSize(size);
 		chunk.SetSampleRate( GetSampleRate() );
 		chunk.SetBeginTime( GetTimeFromIndex(beginIndex) );
@@ -175,11 +176,11 @@ void Audio::SetAudioChunk(TTime beginTime,const Audio& chunk)
 	SetAudioChunk(GetIndexFromTime(beginTime),chunk);
 }
 
-void Audio::SetAudioChunk(TIndex beginIndex,const Audio& chunk)
+void Audio::SetAudioChunk(TLongIndex beginIndex,const Audio& chunk)
 {
 	CLAM_ASSERT(beginIndex<GetSize(),"Audio::SetAudioChunk: Incorrect begin index");
 	TSize nBytesToCopy,offset=0;
-	TIndex endIndex=beginIndex+chunk.GetSize();
+	TLongIndex endIndex=beginIndex+chunk.GetSize();
 	if(endIndex>GetSize()) endIndex=GetSize();
 	if(beginIndex<0){ 
 		offset=-beginIndex;

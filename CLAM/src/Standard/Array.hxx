@@ -50,18 +50,26 @@ template <class T> class Array:public Component
 {
 private:
 	T *mpData;
-	TSize mAllocSize;
-	TSize mSize;
+	TLongSize mAllocSize;
+	TLongSize mSize;
 	int mStep;
 public:
-	Array(TSize size = 0,TSize step = 1)
+/*	Array(TLongSize size = 0,TSize step = 1)
 	{
 		mSize = mAllocSize = 0;
 		mStep = step;
 		mpData = NULL;
 		Resize(size);
 	}
-
+*/
+	Array (TSize size = 0, TSize step = 1)
+	{
+		mSize = mAllocSize = 0;
+		mStep = step;
+		mpData = NULL;
+		Resize(size);
+	}
+	
 	void Init(){
 		Resize(0);
 		SetSize(0);}
@@ -94,12 +102,12 @@ public:
 	bool OwnsMemory() const {return mStep>=0; }
 	bool Empty() const { return mSize==0; }
 
-	TSize Size(void) const { return mSize; }
-	TSize SizeInBytes(void) const { return mSize*sizeof(T); }
-	TSize AllocatedSize(void) const { return mAllocSize; }
-	TSize AllocatedSizeInBytes(void) const { return mAllocSize*sizeof(T); }
+	TLongSize Size(void) const { return mSize; }
+	TLongSize SizeInBytes(void) const { return mSize*sizeof(T); }
+	TLongSize AllocatedSize(void) const { return mAllocSize; }
+	TLongSize AllocatedSizeInBytes(void) const { return mAllocSize*sizeof(T); }
 
-	void SetSize(TSize size)
+	void SetSize(TLongSize size)
 	{
 		CLAM_ASSERT(size <= AllocatedSize() || !OwnsMemory(), msgSetSizeOutOfRange);
 		if (OwnsMemory())
@@ -116,7 +124,7 @@ public:
 
 	TSize GetStep() const {return mStep;}
 
-	void Resize(TSize newAllocSize)
+	void Resize(TLongSize newAllocSize)
 	{
 		CLAM_ASSERT(OwnsMemory(),
 			    "Array::Resize(): You cannot invoke this method on an array that "

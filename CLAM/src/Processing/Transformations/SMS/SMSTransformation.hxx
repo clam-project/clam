@@ -101,7 +101,7 @@ namespace CLAM {
 	protected:
 		
 		/** Input frame counter */
-		int mCurrentInputFrame;
+		TIndex mCurrentInputFrame;
 
 /**@TODO: The UnwrapProcessingData methods could possibly be moved to a more
  *	generic place, like the Segment class (becoming a friend operation?). */
@@ -125,7 +125,7 @@ namespace CLAM {
 		virtual Frame& UnwrapProcessingData(Segment& out,Frame*)
 		{
 			if(mCurrentInputFrame==out.GetnFrames() && mInput->GetnFrames()>out.GetnFrames())
-				out.AddFrame(out.GetFrame(out.GetnFrames()-1));
+				out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
 			return out.GetFrame(mCurrentInputFrame);
 
 		}

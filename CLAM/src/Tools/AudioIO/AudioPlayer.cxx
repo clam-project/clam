@@ -74,7 +74,7 @@ void AudioPlayer::PlayingThreadSafe(  )
 	AudioManager::Current().Start();
 	
 	// first sample calculation
-	TIndex firstSample = 
+	TLongIndex firstSample = 
 		((mT0*1000. - mAudioReference->GetBeginTime())/(mAudioReference->GetEndTime()-mAudioReference->GetBeginTime()))*((TTime)mAudioReference->GetSize()-1.);
 
 	CLAM_ASSERT( firstSample >= 0, "Bad sample index!" );
@@ -82,7 +82,7 @@ void AudioPlayer::PlayingThreadSafe(  )
 
 	mOutputL.Start();
 	mOutputR.Start();
-	for( TIndex i=firstSample; i<dataSize && !mCancel; i+=bufferSize )
+	for( TLongIndex i=firstSample; i<dataSize && !mCancel; i+=bufferSize )
 	{
 		mAudioReference->GetAudioChunk( i, i + tmpAudioBuffer.GetSize(), tmpAudioBuffer, false );
 		mOutputR.Do( tmpAudioBuffer );
