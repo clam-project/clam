@@ -51,6 +51,10 @@ namespace CLAMVM
 				int handle( int evt );
 
 				Signalv2<double, double> SpanChanged;
+				/**
+				   Resize the slider, and update the thumb positions
+				 */
+				void resize( int X, int Y, int W, int H );
 
 		protected:
 				/**
@@ -101,10 +105,6 @@ namespace CLAMVM
 						
 				}
 
-				/**
-				   Resize the slider, and update the thumb positions
-				 */
-				void resize( int X, int Y, int W, int H );
 
 		private:
 				float scale_;
