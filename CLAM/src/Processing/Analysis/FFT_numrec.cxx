@@ -27,6 +27,9 @@
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
