@@ -246,13 +246,18 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 
 	SetSamplingRate(myAudioFileIn.SampleRate());
 	
-	
-	mAudioIn.SetSize(fileSize);
+	// Spectral Segment that will actually hold data
+	float duration=fileSize/mSamplingRate;
+	mOriginalSegment.SetEndTime(duration);
+	mOriginalSegment.SetSamplingRate(mSamplingRate);
+	mOriginalSegment.mCurrentFrameIndex=0;
+	mOriginalSegment.GetAudio().SetSize(fileSize);
+	mOriginalSegment.GetAudio().SetSampleRate(mSamplingRate);
 	
 
 	//Read Audio File
 	myAudioFileIn.Start();
-	myAudioFileIn.Do(mAudioIn);
+	myAudioFileIn.Do(mOriginalSegment.GetAudio());
 	myAudioFileIn.Stop();
 
 	//Normalization is not needed for the time being
@@ -269,24 +274,26 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	return mHaveAudioIn;
 }
 
+
+void AnalysisSynthesisExampleBase::Flush(Segment& seg)
+{
+	seg.RemoveFramesArray();
+	seg.RemoveChildren();
+	seg.UpdateData();
+	seg.mCurrentFrameIndex=0;
+	seg.AddFramesArray();
+	seg.AddChildren();
+	seg.UpdateData();
+}
+
 void AnalysisSynthesisExampleBase::AnalysisProcessing()
 {
 
-	TSize size = mAudioIn.GetSize();
+	TSize size = mOriginalSegment.GetAudio().GetSize();
 	
 	SMSAnalysis myAnalysis(mAnalConfig);
 
-	mOriginalSegment.RemoveAll();
-	mOriginalSegment.UpdateData();
-	mOriginalSegment.DefaultInit();
-
-	// Spectral Segment that will actually hold data
-	float duration=size/mSamplingRate;
-	mOriginalSegment.SetHoldsData(true);
-	mOriginalSegment.SetAudio(mAudioIn);
-	mOriginalSegment.SetEndTime(duration);
-	mOriginalSegment.SetSamplingRate(mSamplingRate);
-	mOriginalSegment.mCurrentFrameIndex=0;
+	Flush(mOriginalSegment);
 	
 	/////////////////////////////////////////////////////////////////////////////
 	// The main analysis processing loop.
@@ -337,7 +344,7 @@ void AnalysisSynthesisExampleBase::DoTracksCleanup()
 
 void AnalysisSynthesisExampleBase::Analyze(void)
 {
-	TSize size = mAudioIn.GetSize();
+	TSize size = mOriginalSegment.GetAudio().GetSize();
 
 	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
 
@@ -783,7 +790,6 @@ void AnalysisSynthesisExampleBase::SetSamplingRate(TSize samplingRate)
 	mSynthConfig.SetSamplingRate(TData(samplingRate));
 
 	//Initialize audios sample rate
-	mAudioIn.SetSampleRate(samplingRate);
 	mAudioOut.SetSampleRate(samplingRate);
 	mAudioOutRes.SetSampleRate(samplingRate);
 	mAudioOutSin.SetSampleRate(samplingRate);

@@ -58,6 +58,10 @@ namespace CLAM
 		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
 	protected:
+		
+	
+		/** Cleans up segment from pre-existing data*/ 
+		void Flush(Segment& seg);
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
 		void InitConfigs(void);
@@ -127,7 +131,7 @@ namespace CLAM
 		SerializationController mSerialization;
 
 		/** Input audio */
-		Audio mAudioIn;
+//		Audio mAudioIn;
 		/** Output audio */
 		Audio mAudioOut;
 		/** Output audio, only sinusoidal component */

@@ -84,7 +84,7 @@ bool UserInterface::LoadSound(void)
 		return false;
 	}
 
-	mAnalysisSynthesisExample->mExplorer.NewInputAudio( mAnalysisSynthesisExample->mAudioIn );
+	mAnalysisSynthesisExample->mExplorer.NewInputAudio( mAnalysisSynthesisExample->mOriginalSegment.GetAudio());
 	
 	return true;
 }
@@ -220,6 +220,7 @@ void UserInterface::UndoTransform()
 	ApplyReadyToAnalyzeState();
 	ApplyAnalysisAvailableState();
 	mFrameDataAvailable = true;
+	
 	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mOriginalSegment );
 	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mOriginalSegment.GetFramesArray()[0],
 													   FrameDataAvailable());
