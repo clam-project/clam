@@ -4,6 +4,7 @@
 #include "CSaltoDataManagment.hxx"
 #include "DataTypes.hxx"
 #include "Assert.hxx"
+#include "ErrDynamicType.hxx"
 
 namespace SALTO
 {
@@ -44,8 +45,10 @@ namespace SALTO
 
 		MelodyTranslatorConfig melodyCfg;
 		melodyCfg.SetFileName( melodyFile );
-		if ( melodyFile != "None" )
+/*		if ( melodyFile != "None" )
 			mpParams->SetUseMelody(true);
+*/
+		mpParams->SetUseBreathController(true);
 		mMelody.Configure( melodyCfg );
 		mMelody.LinkOutWithInControl( 0, &mMIDIHandler, 0);
 		mMelody.LinkOutWithInControl( 1, &mMIDIHandler, 1);
@@ -64,7 +67,15 @@ namespace SALTO
 		Audio* synthbuffer = NULL;
 
 		mpDSP->Start();
-		mMelody.Start();
+		try
+		{
+			mMelody.Start();
+		}
+		catch( CLAM::ErrDynamicType& e )
+		{
+			e.Print();
+			exit(-1);
+		}
 		mFileAudioOut.Start();
 		mMIDIManager.Start();
 		mAudioManager->Start();
@@ -164,9 +175,9 @@ namespace SALTO
 		
 		inCtrlCfg.SetName("inctrl");
 		inCtrlCfg.SetDevice("default:default");
-		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(2));
+		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-		inCtrlCfg.SetFilter(0x02);
+		inCtrlCfg.SetFilter(11);
 
 		mBreathController = BreathController( inBreathNoteCfg, inCtrlCfg );
 
@@ -176,6 +187,13 @@ namespace SALTO
 		mKeyboardNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
 		mKeyboardNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
 		mKeyboardNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
+
+		mBreathController.mInNote.LinkOutWithInControl( 0, &mMIDIHandler, 1);
+		mBreathController.mInNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
+		mBreathController.mInNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
+		mBreathController.mInNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
+
+		mBreathController.mAirSpeed.LinkOutWithInControl( 0, &mMIDIHandler, 3 );
 		
 	}
 	void Kernel::ConfigureSampleBasedIO( std::string outputFile)
