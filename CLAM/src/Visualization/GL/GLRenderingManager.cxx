@@ -3,7 +3,7 @@
 namespace CLAMVM
 {
 	GLRenderingManager::GLRenderingManager()
-		: mSurface ( NULL )
+		: mEnabled( true ), mSurface ( NULL )
 	{
 	}
 

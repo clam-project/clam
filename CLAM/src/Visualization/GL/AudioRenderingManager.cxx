@@ -102,6 +102,8 @@ namespace CLAMVM
 
 	void AudioRenderingManager::RenderData()
 	{
+		if ( mDataCached.Size() == 0 )
+			return;
 		if ( mMustProcessData )
 		{
 			ProcessData();

@@ -33,11 +33,23 @@ namespace CLAMVM
 			return mSurface;
 		}
 
+		void Enable() {
+			mEnabled = true;
+		}
+
+		void Disable() {
+			mEnabled = false;
+		}
+
+		bool IsEnabled() {
+			return mEnabled;
+		}
+
 	protected:
 
 
 	private:
-
+		bool               mEnabled;
 		DrawingSurface2D*  mSurface;
 	};
 
