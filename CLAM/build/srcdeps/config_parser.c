@@ -391,7 +391,11 @@ int config_parse(const char* filename)
 		
 	FILE* f = fopen(filename,"r");
 	
-	if (f==0) return -1;
+	if (f==0) 
+	{
+		fprintf(stderr, "Could not open config file: %s for reading\n", filename);
+		return -1;
+	}
 	
 	n = 0;
 
