@@ -136,6 +136,7 @@ private:
 	{
 		fillPrimesUp();
 		CLAM::Stats stats(&_array);
+
 		assertDoublesEqual( CLAM::TData(2.09091), stats.GetCentroid(), 0.000001);
 	}
 
@@ -144,6 +145,7 @@ private:
 		fillZeros(50);
 		_array[40]=CLAM::TData(1.0);
 		CLAM::Stats stats(&_array);
+
 		assertDoublesEqual( CLAM::TData(40.0), stats.GetCentroid(), 0.000001);
 	}
 	
@@ -152,6 +154,7 @@ private:
 		fillZeros(50);
 		_array[0]=CLAM::TData(1.0);
 		CLAM::Stats stats(&_array);
+
 		assertDoublesEqual( CLAM::TData(0.0), stats.GetCentroid(), 0.000001);
 	}
 	
@@ -160,7 +163,6 @@ private:
 	{
 		fillZeros(50);
 		CLAM::Stats stats(&_array);
-		CLAM::TData value = stats.GetCentroid();
 
 		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
 	}
@@ -169,7 +171,6 @@ private:
 	{
 		fillZeros(51);
 		CLAM::Stats stats(&_array);
-		CLAM::TData value = stats.GetCentroid();
 
 		assertDoublesEqual( CLAM::TData(25.0), stats.GetCentroid(), 0.000001);
 	}
@@ -178,7 +179,6 @@ private:
 	{
 		fillWith(50,2.0);
 		CLAM::Stats stats(&_array);
-		CLAM::TData value = stats.GetCentroid();
 
 		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
 	}
@@ -187,7 +187,6 @@ private:
 	{
 		fillWith(51,2.0);
 		CLAM::Stats stats(&_array);
-		CLAM::TData value = stats.GetCentroid();
 
 		assertDoublesEqual( CLAM::TData(25.0), stats.GetCentroid(), 0.000001);
 	}
@@ -198,6 +197,7 @@ private:
 		_array[0]=CLAM::TData(1.0);
 		_array[49]=CLAM::TData(1.0);
 		CLAM::Stats stats(&_array);
+
 		assertDoublesEqual( CLAM::TData(24.5), stats.GetCentroid(), 0.000001);
 	}
 	void testMean_withNoElements()
