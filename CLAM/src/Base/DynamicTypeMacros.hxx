@@ -61,6 +61,11 @@ protected: \
 		}\
 	} \
 public: \
+	/** Visit all Dynamic Attributes */ \
+	template <typename Visitor> \
+	void VisitAll (Visitor & visitor) { \
+		VisitChainedAttr((AttributePosition<0>*)NULL, visitor); \
+	} \
 	/** Remove all Dynamic Attributes */ \
 	void RemoveAll () { \
 		RemoveChainedAttr((AttributePosition<0>*)NULL); \
@@ -68,10 +73,6 @@ public: \
 	/** Add all Dynamic Attributes */ \
 	void AddAll () { \
 		AddChainedAttr((AttributePosition<0>*)NULL); \
-	} \
-	/** Do all Dynamic Attributes */ \
-	void DoAll () { \
-		DoChainedAttr((AttributePosition<0>*)NULL); \
 	} \
 private: \
 	/** Add all Dynamic Attributes */ \
@@ -113,6 +114,13 @@ private: \
 	void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) { \
 		a->CompilationError_AttributeNotDefined(); \
 	}\
+	/** Undefined link for the Visit method chain (Visit)*/  \
+	/* \
+	template <unsigned int NAttrib, typename Visitor> \
+	void VisitChainedAttr (AttributePosition<NAttrib>*a, Visitor & visitor) { \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		                (AttributePosition<NAttrib>*)NULL); \
+	}*/\
 	/** Undefined link for the Remove method chain (Remove) */ \
 	template <unsigned int NAttrib> \
 	void RemoveChainedAttr (AttributePosition<NAttrib>*a) { \
@@ -131,12 +139,6 @@ private: \
 		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
-	/** Undefined link for the Do method chain (Do) */ \
-	template <unsigned int NAttrib> \
-	void DoChainedAttr (AttributePosition<NAttrib>*a) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
-	}\
 	/** Undefined link on the method chain (Store) */ \
 	template <unsigned int NAttrib> \
 	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
@@ -151,6 +153,10 @@ private: \
 	}\
 private: \
 	/** Method chain terminator */ \
+	template <typename Visitor> \
+	void VisitChainedAttr (AttributePosition<N>*, Visitor & visitor) { \
+	} \
+	/** Method chain terminator */ \
 	void RemoveChainedAttr (AttributePosition<N>*) { \
 	} \
 	/** Method chain terminator */ \
@@ -158,9 +164,6 @@ private: \
 	} \
 	/** Method chain terminator */ \
 	void InformChainedAttr (AttributePosition<N>*) { \
-	} \
-	/** Method chain terminator */ \
-	void DoChainedAttr (AttributePosition<N>*) { \
 	} \
 	/** Method chain terminator */ \
 	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
@@ -218,6 +221,9 @@ private: \
 		static_cast<__Ty*>(p)->~__Ty();\
 	}\
 	\
+/** This declaration to detect compile-time-err of repeated attribute IDs(num), without having to relay in templates*/\
+	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
+	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
 		CLAM_DEBUG_ASSERT((N<numAttr), \
@@ -250,6 +256,11 @@ ACCESS: \
 	inline void Add##NAME() {\
 		AddAttr_(N, sizeof(TYPE));\
 	}\
+	template <typename Visitor> \
+	inline void Visit##NAME(Visitor & visitor) { \
+		if (Has##NAME()) \
+			visitor.Accept(#NAME,Get##NAME()); \
+	}\
 	inline void Remove##NAME() { \
 		RemoveAttr_(N); \
 	}\
@@ -264,10 +275,13 @@ private: \
 	static inline char* GetType##NAME() { return #TYPE; } \
 	static inline int GetId##NAME() { return N;}\
 public: \
-	void Do##NAME() { \
-	} \
 	/*inline TYPE* Get##NAME##Vector(unsigned n) { return Get_##TYPE##Vector(n); }*/ \
 private: \
+	template <typename Visitor> \
+	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
+		Visit##NAME(visitor); \
+		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
+	} \
 	void RemoveChainedAttr(AttributePosition<N>*) { \
 		Remove##NAME(); \
 		RemoveChainedAttr((AttributePosition<(N)+1>*)NULL); \
@@ -279,10 +293,6 @@ private: \
 	void InformChainedAttr(AttributePosition<N>*) { \
 		Inform##NAME(); \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
-	} \
-	void DoChainedAttr(AttributePosition<N>*) { \
-		Do##NAME(); \
-		DoChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
 		Store##NAME(s); \
@@ -307,10 +317,9 @@ protected: \
 		if (!LoadAttribute((CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, s, obj, #NAME)) { \
 			Remove##NAME(); \
 			return false; \
-		} else {\
-			Set##NAME(obj); \
-			return true; \
-		}\
+		} \
+		Set##NAME(obj); \
+		return true; \
 	} \
 ACCESS: \
 

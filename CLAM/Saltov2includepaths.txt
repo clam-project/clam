@@ -1,0 +1,3 @@
+../../examples/SALTOv2
+
+../../examples/SALTOv2/Application, ../../examples/SALTOv2/Application/MIDIIO, ../../examples/SALTOv2/Base, ../../examples/SALTOv2/Data, ../../examples/SALTOv2/Defines, ../../examples/SALTOv2/FileIO, ../../examples/SALTOv2/GUI, ../../examples/SALTOv2/Processing, ../../examples/SALTOv2/Processing/SynthesisControl, ../../examples/SALTOv2/Processing/SynthesisAudio, ../../examples/SALTOv2/Storage, ../../examples/SALTOv2/Storage/SDIF
