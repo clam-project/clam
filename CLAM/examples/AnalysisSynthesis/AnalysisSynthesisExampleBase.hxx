@@ -88,20 +88,27 @@ namespace CLAM
 		void StoreOutputSoundSinusoidal(void);
 		/** Load input sound */
 		bool LoadInputSound(void);
+		/** Load sound to morph*/
+		bool LoadMorphSound(void);
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */
 
 		virtual void DoAnalysis();
+		virtual void DoMorphAnalysis();
 
 		void AnalysisProcessing();
+		void MorphAnalysisProcessing();
+		void SetSMSMorphFileName();
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */
 
 		virtual void DoTracksCleanup();
+		virtual void DoMorphTracksCleanup();
 
 		void TracksCleanupProcessing();
+		void MorphTracksCleanupProcessing();
 
 		/** Perform analysis. Requires a valid configuration file to be loaded */
 		void Analyze(void);
@@ -146,6 +153,8 @@ namespace CLAM
 		Segment mOriginalSegment;
 		Segment mTransformedSegment;
 
+		Segment mMorphSegment;
+
 		SegmentDescriptors mOriginalSegmentDescriptors;
 		SegmentDescriptors mTransformedSegmentDescriptors;
 		
@@ -172,6 +181,8 @@ namespace CLAM
 		bool mHaveAnalysis;
 		/** Indicates whether there is a valid input audio */
 		bool mHaveAudioIn;
+		/** Indicates whether there is a valid audio to morph*/
+		bool mHaveAudioMorph;
 		/** Indicates whether there is a valid output audio */
 		bool mHaveAudioOut;
 		/** Indicates whether there is a valid analyzed melody */

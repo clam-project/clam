@@ -41,7 +41,7 @@ namespace CLAM
 		SerializationController(  );
 		virtual ~SerializationController(  );
 
-		bool DoSerialization( enum eAction action, Segment& segment, char* fileName );
+		bool DoSerialization( enum eAction action, Segment& segment, const char* fileName );
 
 	private:
  		enum eFileType {
@@ -49,7 +49,7 @@ namespace CLAM
  			SDIF
  		};
 
-		int GetExtension( char* fileName );
+		int GetExtension( const char* fileName );
 
 		XMLSerializer mXMLSer;
 		SDIFSerializer mSDIFSer;

@@ -29,7 +29,7 @@ SerializationController::SerializationController(  ) { }
 
 SerializationController::~SerializationController(  ) { }
 
-bool SerializationController::DoSerialization( enum eAction action, Segment& segment, char* fileName )
+bool SerializationController::DoSerialization( enum eAction action, Segment& segment, const char* fileName )
 {
 	switch( action ) {
 	case Load:
@@ -57,7 +57,7 @@ bool SerializationController::DoSerialization( enum eAction action, Segment& seg
 	}
 }
 
-int SerializationController::GetExtension( char* fileName )
+int SerializationController::GetExtension(const char* fileName )
 {
 	std::string strFileName( fileName );
 	std::string ext = strFileName.substr( strFileName.length()-4, strFileName.length(  ) );

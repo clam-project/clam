@@ -41,8 +41,8 @@ namespace CLAM {
 		SDIFSerializer(  );
 		virtual ~SDIFSerializer(  );
 
-		bool DoLoad( char* fileName, Segment& segment );
-		bool DoStore( char* fileName, Segment& segment );
+		bool DoLoad( const char* fileName, Segment& segment );
+		bool DoStore( const char* fileName, Segment& segment );
 	};
 
 }

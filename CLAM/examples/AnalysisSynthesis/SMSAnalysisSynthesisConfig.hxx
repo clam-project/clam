@@ -33,7 +33,7 @@ namespace CLAM{
 class SMSAnalysisSynthesisConfig:public ProcessingConfig
 {
 
-	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisSynthesisConfig,24,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisSynthesisConfig,25,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 
 /** General	**/
@@ -63,6 +63,9 @@ class SMSAnalysisSynthesisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(21,public,TSize,SynthesisFrameSize);
 	DYN_ATTRIBUTE(22,public,EWindowType,SynthesisWindowType);
 	DYN_ATTRIBUTE(23,public,EPhaseGeneration,SynthesisPhaseManagementType);
+
+/** File To Morph **/
+	DYN_ATTRIBUTE(24,public, Filename, MorphSoundFile);
 
 private:
 

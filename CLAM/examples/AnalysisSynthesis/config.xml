@@ -1,6 +1,7 @@
+<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
 	<Name/>
-	<InputSoundFile>./1.wav</InputSoundFile>
+	<InputSoundFile>e:/sounds/3.wav</InputSoundFile>
 	<OutputSoundFile>./1_out.wav</OutputSoundFile>
 	<OutputAnalysisFile/>
 	<InputAnalysisFile/>
@@ -23,4 +24,5 @@
 	<SynthesisFrameSize>-1</SynthesisFrameSize>
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
 	<SynthesisPhaseManagementType>Continuation</SynthesisPhaseManagementType>
+	<MorphSoundFile>e:/sounds/1.wav</MorphSoundFile>
 </SMSAnalysisSynthesisConfig>

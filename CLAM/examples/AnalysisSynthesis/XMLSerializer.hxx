@@ -38,8 +38,8 @@ namespace CLAM {
 		XMLSerializer(  );
 		virtual ~XMLSerializer(  );
 
-		bool DoLoad( char* fileName, Segment& segment );
-		bool DoStore( char* fileName, Segment& segment );
+		bool DoLoad( const char* fileName, Segment& segment );
+		bool DoStore( const char* fileName, Segment& segment );
 	};
 
 }

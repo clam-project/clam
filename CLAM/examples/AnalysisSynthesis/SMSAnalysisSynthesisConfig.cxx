@@ -44,5 +44,7 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetSynthesisFrameSize(256);
 	SetSynthesisWindowType(EWindowType::eTriangular);
 	SetSynthesisPhaseManagementType(EPhaseGeneration::eContinuation);
+/** Morph **/
+	SetMorphSoundFile("");
 
 }

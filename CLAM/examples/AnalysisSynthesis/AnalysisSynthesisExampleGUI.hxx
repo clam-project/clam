@@ -52,6 +52,9 @@ protected: // methods
 
 	void OnNewTime( double time );
 
+	void DoMorphAnalysis();
+	void DoMorphTracksCleanup();
+
 private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );

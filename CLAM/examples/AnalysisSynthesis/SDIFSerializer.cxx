@@ -37,7 +37,7 @@ SDIFSerializer::~SDIFSerializer(  )
 {
 }
 
-bool SDIFSerializer::DoLoad( char* fileName, Segment& segment )
+bool SDIFSerializer::DoLoad( const char* fileName, Segment& segment )
 {
 	SDIFInConfig cfg;
 	cfg.SetMaxNumPeaks( 100 );
@@ -61,7 +61,7 @@ bool SDIFSerializer::DoLoad( char* fileName, Segment& segment )
 	return true;
 }
 
-bool SDIFSerializer::DoStore( char* fileName, Segment& segment )
+bool SDIFSerializer::DoStore( const char* fileName, Segment& segment )
 {
 	int i;
 	int nFrames = segment.GetnFrames();

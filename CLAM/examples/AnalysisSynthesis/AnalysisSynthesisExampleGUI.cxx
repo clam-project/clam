@@ -121,6 +121,19 @@ namespace CLAMGUI
 		ExecuteMethodOnThreadKeepingScreenUpToDate( 
 			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, TracksCleanupProcessing ) );
 	}
+	
+	void AnalysisSynthesisExampleGUI::DoMorphAnalysis()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, MorphAnalysisProcessing ) );
+	}
+
+	void AnalysisSynthesisExampleGUI::DoMorphTracksCleanup()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, MorphTracksCleanupProcessing ) );
+	}
+
 
 	void AnalysisSynthesisExampleGUI::DoSynthesis()
 	{

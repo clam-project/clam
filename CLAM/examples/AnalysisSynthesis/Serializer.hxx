@@ -32,8 +32,8 @@ namespace CLAM {
 		Serializer(  ) { }
 		virtual ~Serializer(  ) { }
 
-		virtual bool DoLoad( char* fileName, Segment& segment ) = 0;
-		virtual bool DoStore( char* fileName, Segment& segment ) = 0;
+		virtual bool DoLoad( const char* fileName, Segment& segment ) = 0;
+		virtual bool DoStore( const char* fileName, Segment& segment ) = 0;
 	};
 
 }

@@ -74,7 +74,7 @@ namespace CLAMVM
 		if ( fullAnalysisData )
 		{
 			CLAM_ASSERT( frame.HasSpectrum(), "The given frame did not have the Spectrum field");
-			mSpectrumAdapter.BindTo( frame.GetSpectrum() );
+			mSpectrumAdapter.BindTo( frame.GetSinusoidalAnalSpectrum() );
 			// @todo: AnalysisSynthesis does not keep a SinusoidalSpec in the Frames
 			//CLAM_ASSERT( frame.HasSinusoidalSpec(), "The given frame did not have the Sinusoidal Spectrum field" );
 			//mSinusoidalSpectrumAdapter.BindTo( frame.GetSinusoidalSpec() );

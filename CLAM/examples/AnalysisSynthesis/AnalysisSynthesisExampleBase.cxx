@@ -67,6 +67,7 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 	mHaveMelody = false;
 	mHaveSpectrum = false;
 	mHaveTransformation = false;
+	mHaveAudioMorph = false;
 
 	mTransformation.mChainInput.Attach(mOriginalSegment);
 	mTransformation.mChainOutput.Attach(mTransformedSegment);
@@ -154,6 +155,7 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 		mHaveTransformationScore = false;
 		mHaveMelody = false;
 		mHaveSpectrum = false;
+		mHaveAudioMorph = false;
 	}
 
 	mCurrentWaitMessage = CreateWaitMessage( "Loading XML configuration file, please wait." );
@@ -239,7 +241,6 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	//The File In PO
 	AudioFileIn myAudioFileIn;
 	AudioFileConfig infilecfg;
-	infilecfg.SetName("FileIn");
 	infilecfg.SetFilename(mGlobalConfig.GetInputSoundFile());
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	if(!myAudioFileIn.Configure(infilecfg))
@@ -268,30 +269,57 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	myAudioFileIn.Do(mOriginalSegment.GetAudio());
 	myAudioFileIn.Stop();
 
-	//Normalization is not needed for the time being
-	/*
-	  NormalizationConfig NCfg;
-	  NCfg.SetType(3);
-	  Normalization mNorm(NCfg);
-
-	  mNorm.Do(mAudioIn);
-	*/
-	
 	mHaveAudioIn = true;
 
+	//TODO: this should be called from elsewhere and both methods should be refactored to reduce duplication
+	LoadMorphSound();
+
 	return mHaveAudioIn;
+}
+
+bool AnalysisSynthesisExampleBase::LoadMorphSound(void)
+{
+	//The File In PO
+	AudioFileIn myAudioFileIn;
+	AudioFileConfig infilecfg;
+	infilecfg.SetFilename(mGlobalConfig.GetMorphSoundFile());
+	infilecfg.SetFiletype(EAudioFileType::eWave);
+	if(!myAudioFileIn.Configure(infilecfg))
+	{
+		mHaveAudioMorph = false;
+		return mHaveAudioMorph;
+	}
+			
+	/////////////////////////////////////////////////////////////////////////////
+	// Initialization of the processing data objects :
+	TSize fileSize=myAudioFileIn.Size();
+
+	// Spectral Segment that will hold data to morph
+	float duration=fileSize/mSamplingRate;
+	mMorphSegment.SetEndTime(duration);
+	mMorphSegment.SetSamplingRate(myAudioFileIn.SampleRate());
+	mMorphSegment.mCurrentFrameIndex=0;
+	mMorphSegment.GetAudio().SetSize(fileSize);
+	mMorphSegment.GetAudio().SetSampleRate(mSamplingRate);
+	
+
+	//Read Audio File
+	myAudioFileIn.Start();
+	myAudioFileIn.Do(mMorphSegment.GetAudio());
+	myAudioFileIn.Stop();
+
+	mHaveAudioMorph = true;
+
+	return mHaveAudioMorph;
 }
 
 
 void AnalysisSynthesisExampleBase::Flush(Segment& seg)
 {
-	seg.RemoveFramesArray();
-	seg.RemoveChildren();
-	seg.UpdateData();
+	seg.SetFramesArray(List<Frame>());
+	seg.SetChildren(List<Segment>());
 	seg.mCurrentFrameIndex=0;
-	seg.AddFramesArray();
-	seg.AddChildren();
-	seg.UpdateData();
+	
 }
 
 void AnalysisSynthesisExampleBase::AnalysisProcessing()
@@ -318,6 +346,32 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	}
 
  	myAnalysis.Stop();
+}
+
+void AnalysisSynthesisExampleBase::MorphAnalysisProcessing()
+{
+
+	TSize size = mMorphSegment.GetAudio().GetSize();
+	
+	SMSAnalysis myAnalysis(mAnalConfig);
+
+	Flush(mMorphSegment);
+	
+	/////////////////////////////////////////////////////////////////////////////
+	// The main analysis processing loop.
+	int k=0;
+	int step=mAnalConfig.GetHopSize();
+	int initialOffset=mAnalConfig.GetInitialOffset();	
+
+	myAnalysis.Start();
+
+	while(myAnalysis.Do(mMorphSegment))
+	{      
+		k=step*(mMorphSegment.mCurrentFrameIndex+1);
+		mCurrentProgressIndicator->Update(float(k));
+	}
+
+ 	myAnalysis.Stop();
 
 
 }
@@ -335,9 +389,27 @@ void AnalysisSynthesisExampleBase::TracksCleanupProcessing()
 
 }
 
+void AnalysisSynthesisExampleBase::MorphTracksCleanupProcessing()
+{
+	CleanTracksConfig clcfg;
+	clcfg.SetSamplingRate(mSamplingRate);
+	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
+	CleanTracks myCleanTracks;
+	myCleanTracks.Configure(clcfg);
+	myCleanTracks.Start();
+	myCleanTracks.Do(mMorphSegment);
+	myCleanTracks.Stop();	
+
+}
+
 void AnalysisSynthesisExampleBase::DoAnalysis()
 {
 	AnalysisProcessing();
+}
+
+void AnalysisSynthesisExampleBase::DoMorphAnalysis()
+{
+	MorphAnalysisProcessing();
 }
 
 void AnalysisSynthesisExampleBase::DoTransformation()
@@ -350,16 +422,17 @@ void AnalysisSynthesisExampleBase::DoTracksCleanup()
 	TracksCleanupProcessing();
 }
 
+void AnalysisSynthesisExampleBase::DoMorphTracksCleanup()
+{
+	MorphTracksCleanupProcessing();
+}
+
 void AnalysisSynthesisExampleBase::Analyze(void)
 {
 	TSize size = mOriginalSegment.GetAudio().GetSize();
-
 	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
-
 	DoAnalysis();
-
 	DestroyProgressIndicator();
-
 	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
 	and included in SMSAnalysis*/
 	if ( HasToDoTracksCleaning() )
@@ -374,6 +447,25 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
 	mHaveTransformation = false;
+	if(mHaveAudioMorph)
+	{
+		TSize size = mMorphSegment.GetAudio().GetSize();
+		mCurrentProgressIndicator = CreateProgress("Morph Analysis Processing",0,float(size));
+		DoMorphAnalysis();
+		DestroyProgressIndicator();
+		/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
+		and included in SMSAnalysis*/
+		if ( HasToDoTracksCleaning() )
+		{	
+			mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
+
+			DoMorphTracksCleanup();
+
+			DestroyWaitMessage();
+
+		}
+		mSerialization.DoSerialization( mSerialization.Store, mMorphSegment, (mGlobalConfig.GetMorphSoundFile()+"_tmp.sdif").c_str() );	
+	}
 }
 
 void AnalysisSynthesisExampleBase::StoreOutputSound(void)
@@ -748,9 +840,31 @@ void AnalysisSynthesisExampleBase::Transform()
 
 }
 
+
+void AnalysisSynthesisExampleBase::SetSMSMorphFileName()
+{
+	SMSTransformationChainConfig::iterator configIt;
+	if(mGlobalConfig.HasMorphSoundFile())
+	{
+		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++)
+		{
+			//Note: we are supposing only one Morph is in the chain
+			if((*configIt).GetConcreteClassName()=="SMSMorph")
+			{
+				SMSMorphConfig& morphCfg=dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
+				morphCfg.AddFileName();
+				morphCfg.UpdateData();
+				morphCfg.SetFileName((mGlobalConfig.GetMorphSoundFile()+"_tmp.sdif").c_str());
+				break;
+			}
+		}
+	}
+}
+
 void AnalysisSynthesisExampleBase::TransformProcessing(void)
 {
 	bool def=false;
+	SetSMSMorphFileName();
 	mTransformation.Configure(mTransformationScore);
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	

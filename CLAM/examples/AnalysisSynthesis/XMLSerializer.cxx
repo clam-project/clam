@@ -30,14 +30,14 @@ XMLSerializer::XMLSerializer(  ) {  }
 
 XMLSerializer::~XMLSerializer(  ) {  }
 
-bool XMLSerializer::DoLoad( char* fileName, Segment& segment )
+bool XMLSerializer::DoLoad( const char* fileName, Segment& segment )
 {
 	mXMLStorage.Restore( segment, fileName );
 
 	return true;
 }
 
-bool XMLSerializer::DoStore( char* fileName, Segment& segment )
+bool XMLSerializer::DoStore( const char* fileName, Segment& segment )
 {
 	segment.RemoveAudio();
 	segment.UpdateData();
