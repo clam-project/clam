@@ -20,6 +20,12 @@ void SMSAnalysisConfig::DefaultValues()
 	GetResSpectralAnalysis().SetWindowType(EWindowType::eBlackmanHarris92);
 
 	GetPeakDetect().SetMagThreshold(-60);
+
+	//TODO PA  remove these values (aiming to analy-synt streaming) ?
+	SetSinWindowSize(2049);
+	SetHopSize(256);
+	SetSinZeroPadding(2);
+	SetResWindowSize(1025);
 	
 }
 
