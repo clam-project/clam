@@ -75,6 +75,11 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetOutControlByCompleteName_WhithMalformedName_WithNoDot );
 	CPPUNIT_TEST( testGetOutControlByCompleteName_WithThreeIdentifiers );
 
+	CPPUNIT_TEST( testConnectPorts_WhenConnectionIsValid );
+//	CPPUNIT_TEST( testConnectPorts_WhenConnectionIsNotValid );
+//	CPPUNIT_TEST( testConnectControls_WhenConnectionIsValid );
+//	CPPUNIT_TEST( testConnectControls_WhenConnectionIsNotValid );
+
 	CPPUNIT_TEST( testUseOfString_substr );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -614,6 +619,45 @@ class NetworkTest : public CppUnit::TestFixture
 		std::string today("today it rains");
 		CPPUNIT_ASSERT_EQUAL( std::string("it"), today.substr(6,2) );
 	}
+
+	void testConnectPorts_WhenConnectionIsValid()
+	{
+		CLAM::Network net;
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutPort* outPortOfFirstProc = 
+			new CLAM::OutPortTmpl<DummyProcessingData>( std::string("outPortOfFirstProc"), 
+								   firstProc, dummyLength );
+
+		CLAM::InPort* inPortOfSecondProc = 
+			new CLAM::InPortTmpl<DummyProcessingData>( std::string("inPortOfSecondProc"), 
+								   secondProc, dummyLength );
+		
+		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
+		CPPUNIT_ASSERT_EQUAL( true, PortsAreConnected( *outPortOfFirstProc, *inPortOfSecondProc ));
+	}
+
+
+/*
+		
+		DummyProcessingData attached;
+		attached.SetState(1);
+		outPortOfFirstProc.Attach( attached );
+		inPortOfSecondProc.Attach( attached );
+
+		outPortOfFirstProc.GetData().SetState(1);
+		outPortOfFirstProc.LeaveData();
+
+		DummyProcessingData& returned = inPortOfSecondProc.GetData();
+		CPPUNIT_ASSERT_EQUAL( 1, returned.GetState() );
+	
+*/
+
 };
    
 } // namespace 

@@ -87,7 +87,7 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out", this, 0/*dummy length*/);
 		CLAM::OutPort& out = concreteOutPort;
 
-        out.Attach(concreteNode);
+		out.Attach(concreteNode);
 		in.Attach(concreteNode);
 
 		CLAM::NodeBase* theNode = &concreteNode;
