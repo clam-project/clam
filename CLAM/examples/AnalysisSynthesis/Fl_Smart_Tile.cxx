@@ -40,7 +40,7 @@ Fl_Pixmap Fl_Smart_Tile::pixmapClose(image_close);
 Fl_Smart_Tile::Fl_Smart_Tile(int X,int Y,int W,int H)
 :Fl_Group(X,Y,W,H) {
 	Fl_Group::resizable();
-	init(40,20);
+	init(50,24);
 	//color(FL_BLACK);
 }
 
