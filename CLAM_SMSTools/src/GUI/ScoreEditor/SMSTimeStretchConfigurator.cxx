@@ -52,7 +52,7 @@ namespace CLAMVM
 
 	void SMSTimeStretchConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+		mConfig = static_cast<const CLAM::SMSTimeStretchConfig& >(cfg);
 		mEditorWidget->Clear();
 
 		if ( !mConfig.HasBPFAmount() )
@@ -72,6 +72,10 @@ namespace CLAMVM
 		}
 		else
 		{
+			mConfig.RemoveAmount();
+			mConfig.UpdateData();
+
+
 			for ( int i = 0; i < mConfig.GetBPFAmount().Size(); i++ )
 			{
 				if ( mConfig.GetBPFAmount().GetValueFromIndex( i ) < 0.5 )
@@ -79,6 +83,14 @@ namespace CLAMVM
 				else if ( mConfig.GetBPFAmount().GetValueFromIndex(i) > 2.0 )
 					mConfig.GetBPFAmount().GetValue( i, 2.0 );
 			}
+
+			if ( mConfig.GetBPFAmount().Size() == 0 )
+			{
+				mConfig.GetBPFAmount().Insert( 0, 1.0 );
+				mConfig.GetBPFAmount().Insert( 1, 1.0 );
+
+			}
+
 		}
 
 		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
