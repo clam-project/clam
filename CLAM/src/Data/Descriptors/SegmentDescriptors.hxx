@@ -84,8 +84,6 @@ class SegmentDescriptors : public ProcessingData {
 	};
 
 
-};
-
 
 // Implementation
 
@@ -103,6 +101,8 @@ inline const Frame* SegmentDescriptors::GetpSegment() const {
 
 inline void SegmentDescriptors::SetpSegment(Frame* pSegment) {
 	mpSegment=pSegment;
+}
+
 }
 
 
