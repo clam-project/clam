@@ -55,7 +55,7 @@ OutPortTmpl<T>::OutPortTmpl(const std::string &n,
 template<class T>
 void OutPortTmpl<T>::Attach(ProcessingData& data)
 {
-	try{ 
+	try { 
 		Attach(dynamic_cast<T&>(data));
 	}
 	catch (std::bad_cast){
