@@ -68,7 +68,7 @@ namespace CLAMTest
 
 		static std::string toString( const std::type_info& x )
 		{
-			std::string text = '"' + x.name() + '"';    // adds quote around the string to see whitespace
+			std::string text = std::string("'") + x.name() + "'";    // adds quote around the string to see whitespace
 			CppUnit::OStringStream ost;
 			ost << text;
 			return ost.str();

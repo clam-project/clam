@@ -16,6 +16,7 @@ class cppUnitHelperTest : public CppUnit::TestFixture
 
 private:
 	
+	// fixture definitions
 	class Base { 
 	public:
 		virtual ~Base(){} 
@@ -23,22 +24,46 @@ private:
 	class ConcreteFoo : public Base{};
 	class ConcreteBar : public Base{};
 	class NothingToDo {};
+	
+	Base* baseConcrete;
+	Base* base;
+	ConcreteFoo *concrete;
+
+public:
+	/// @name Fixture Implementation
+	/// @{
+	void setUp()
+	{	
+		baseConcrete = new ConcreteFoo;
+		concrete = new ConcreteFoo;
+		base = new Base;
+	}
+	void tearDown()
+	{
+		delete baseConcrete;
+		delete concrete;
+		delete base;
+	}
+	/// @}
+
+private:
 	void testAssertionTraitsTypeInfoToString()
 	{
 		
-		Base* concrete = new ConcreteFoo;
-		Base* base = new Base;
-
-		std::string concreteStr = 
-			CppUnit::assertion_traits<std::type_info>::toString( typeid(concrete) );
+		std::string baseConcreteStr = 
+			CppUnit::assertion_traits<std::type_info>::toString( typeid(*baseConcrete) );
 		
 		std::string baseStr = 
-			CppUnit::assertion_traits<std::type_info>::toString( typeid(base) );
-				
+			CppUnit::assertion_traits<std::type_info>::toString( typeid(*base) );
+
+		std::string concreteStr = 
+			CppUnit::assertion_traits<std::type_info>::toString( typeid(*concrete) );
+
+
 		CPPUNIT_ASSERT_MESSAGE("typeid(...).name() of different classes should be differents",
 			concreteStr != baseStr );
-		
 
+		CPPUNIT_ASSERT_EQUAL( concreteStr, baseConcreteStr );
 	}
 	
 };
