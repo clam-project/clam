@@ -28,6 +28,7 @@
 
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
+#include "CLAM_Math.hxx"
 #include <qtooltip.h> 
 #include <qpainter.h>
 #include <qlineedit.h>

@@ -30,12 +30,13 @@
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
+#include "ProcessingConfig.hxx"
+
+#include "CLAM_Math.hxx"
 
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qdragobject.h> 
-
-#include "ProcessingConfig.hxx"
 
 #include <iostream> // TODO: remove
 
