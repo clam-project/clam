@@ -35,9 +35,8 @@ namespace CLAM {
 	class SpecAdderConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpecAdderConfig, 2,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, int, NInputs);
+		DYNAMIC_TYPE_USING_INTERFACE (SpecAdderConfig, 1,ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, int, NInputs);
 	protected:
 		void DefaultInit();
 
@@ -127,9 +126,7 @@ namespace CLAM {
 		const char *GetClassName() const {return "SpectrumAdder";}
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
+		 * @pre argument should be an SpectrumAdderConfig
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
@@ -161,8 +158,6 @@ namespace CLAM {
 		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
-
-		void StoreOn(Storage &s) {};
 
 	private:
 

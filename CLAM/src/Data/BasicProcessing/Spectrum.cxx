@@ -20,6 +20,10 @@
  */
 
 #include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
+#include "SpecTypeFlags.hxx"
+#include "ArrayToBPFCnv.hxx"
+#include "ComplexToPolarCnv.hxx"
 
 using namespace CLAM;
 
@@ -72,6 +76,12 @@ void SpectrumConfig::DefaultValues()
 //
 //////////////////////////////////////////////////////////////////////
 
+
+Spectrum::Spectrum(const SpectrumConfig &newConfig) : ProcessingData(eNumAttr)
+{
+	MandatoryInit(); // Macro-expanded function. Necessary for some dynamic type initialization.
+	Configure(newConfig);
+}
 
 void Spectrum::GetConfig(SpectrumConfig& c) const
 {

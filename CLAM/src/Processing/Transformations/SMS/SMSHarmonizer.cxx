@@ -20,8 +20,10 @@
  */
 
 #include "SMSHarmonizer.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
+
 
 
 bool SMSHarmonizer::Do(const Frame& in, Frame& out)
@@ -73,10 +75,13 @@ void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
 
 	for(i=0;i<nPeaks;i++)
 	{
-		peakMag[i]=MIN(peakMag[i]+gain,0);
+		peakMag[i]=std::min(peakMag[i]+gain,TData(0));
 	}
 	for(i=0;i<specSize;i++)
 	{
 		residual.SetMag(i,residual.GetMag(i)*linGain);
 	}
 }
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSHarmonizer> regtSMSHarmonizer( "SMSHarmonizer" );

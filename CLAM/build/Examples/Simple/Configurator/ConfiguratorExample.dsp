@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\Standard" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\..\xercesc\include" /I "..\..\..\..\src\Flow\Ports"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\xercesc\lib" fltk.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\xercesc\lib" fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "ConfiguratorExample - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\Standard" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\..\xercesc\include" /I "..\..\..\..\src\Flow\Ports"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\xercesc\lib" fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\xercesc\lib" fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -188,6 +188,14 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
 # End Source File
 # End Group
 # End Group
@@ -399,6 +407,10 @@ SOURCE=..\..\..\..\src\Standard\Array.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Export.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Enumerations.H
 # End Source File
 # Begin Source File
@@ -467,6 +479,10 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Light_Button.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Image.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_Item.H
 # End Source File
 # Begin Source File
@@ -483,11 +499,59 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Box.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\fl_file_chooser.H
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl.H
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Preferences.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Tile.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Browser_.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_File_Icon.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\filename.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\dirent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_File_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Check_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_File_Input.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\fl_ask.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\fl_file_chooser.H
 # End Source File
 # End Group
 # End Group

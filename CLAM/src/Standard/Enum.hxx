@@ -26,9 +26,6 @@
 #include <string>
 #include "Assert.hxx"
 #include "Component.hxx"
-#ifdef CLAM_USE_XML
-	#include "XMLAdapter.hxx"
-#endif//CLAM_USE_XML
 
 namespace CLAM {
 
@@ -296,14 +293,7 @@ public:
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
-	virtual void StoreOn (Storage & storage) {
-		#ifdef CLAM_USE_XML 
-			std::string s = GetString();
-			XMLAdapter<std::string> adapter(s);
-			storage.Store(&adapter);
-		#endif//CLAM_USE_XML 
-
-	}
+	virtual void StoreOn (Storage & storage) const;
 
 	/** 
 	 * Loads component's subitems from the given Storage
@@ -311,15 +301,7 @@ public:
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
-	virtual void LoadFrom (Storage & storage) {
-		#ifdef CLAM_USE_XML 
-			std::string s;
-			XMLAdapter<std::string> adapter(s);
-			storage.Load(&adapter);
-			SetValueSafely(s);
-		#endif//CLAM_USE_XML 
-
-	}
+	virtual void LoadFrom (Storage & storage);
 
 };
 

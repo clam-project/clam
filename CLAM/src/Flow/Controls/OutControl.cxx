@@ -20,25 +20,26 @@
  */
 
 #include "OutControl.hxx"
+#include "InControl.hxx"
 #include "ControlLinker.hxx"
 #include "Processing.hxx"
 
 namespace CLAM {
 
 
-	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
-				  Processing* inProc, std::string inControl)
-	{
-		OutControl* out = &(outProc->GetOutControls().Get(outControl));
-		InControl* in = &(inProc->GetInControls().Get(inControl));
-		
-		out->AddLink(in);
-	}
+//	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
+//				  Processing* inProc, std::string inControl)
+//	{
+//		OutControl* out = &(outProc->GetOutControls().Get(outControl));
+//		InControl* in = &(inProc->GetInControls().Get(inControl));
+//		
+//		out->AddLink(in);
+//	}
 
 // Creation/Destruction
 
 OutControl::OutControl(std::string name, Processing* parent, const bool publish) :
-	mName(name)
+	mName(name), mParent(parent)
 {
 	if (parent && publish) 	parent->PublishOutControl(this);
 }
@@ -54,6 +55,18 @@ OutControl::~OutControl() {}
 }
 */
 // Methods
+
+std::list<InControl*>::iterator OutControl::BeginInControlsConnected()
+{
+	return mLinks.begin();
+}
+
+std::list<InControl*>::iterator OutControl::EndInControlsConnected()
+{
+	return mLinks.end();
+}
+
+
 
 void OutControl::AddLink(InControl* in)
 {
@@ -74,6 +87,22 @@ int OutControl::SendControl(TControlData val)
 	// TODO: depracate controls with return value.
 	return ret;
 }
+
+bool OutControl::IsConnected()
+{
+	return (mLinks.size()!=0);
+}
+
+bool OutControl::IsConnectedTo( InControl & in)
+{
+	std::list<InControl*>::iterator it;
+	for (it=mLinks.begin(); it!=mLinks.end(); it++) 
+		if ((*it) == &in)
+			return true;
+
+	return false;
+}
+
 
 //Redefined Methods
 //  OutControl::OutControlIterator OutControl::GetOutControls() const

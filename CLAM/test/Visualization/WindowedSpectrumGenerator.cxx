@@ -1,4 +1,6 @@
 #include "WindowedSpectrumGenerator.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 #include <iostream>
 
 namespace CLAMTest
@@ -26,9 +28,9 @@ namespace CLAMTest
 				Configure( cfg );
 		}
 
-	bool WindowedSpectrumGenerator::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast )
+	bool WindowedSpectrumGenerator::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
-		mConfig = dynamic_cast< const WindowedSpectrumGeneratorConfig&>( cfg );
+		CopyAsConcreteConfig(mConfig,cfg );
 
 		mWindowedAudio.SetSize( mConfig.GetFrameSize() );
 		mWindow.SetSize( mConfig.GetFrameSize() );

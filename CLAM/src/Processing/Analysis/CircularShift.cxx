@@ -19,6 +19,8 @@
  *
  */
 
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 #include "Complex.hxx"
 #include "CircularShift.hxx"
 #include "ErrProcessingObj.hxx"
@@ -32,7 +34,6 @@ namespace CLAM {
 	void CircularShiftConfig::DefaultInit()
 	{
 		/* the dynamic type takes care if we add an existing attr .. */
-		AddName();
 		AddAmount();
 		/* All Attributes are added */
 		UpdateData();
@@ -44,13 +45,18 @@ namespace CLAM {
 	/* Processing  object Method  implementations */
 
 	CircularShift::CircularShift()
-		: mAmount("Amount",this)
+		: mAmount("Amount",this),
+		  mInput( "Input samples", this, 1 ),
+		  mOutput( "Shifted samples", this, 1 )
+		
 	{
 		Configure(CircularShiftConfig());
 	}
 
 	CircularShift::CircularShift(const CircularShiftConfig &c)
-		: mAmount("Amount",this)
+		: mAmount("Amount",this),
+		  mInput( "Input samples", this, 1 ),
+		  mOutput( "Shifted samples", this, 1 )
 	{
 		Configure(c);
 	}
@@ -90,7 +96,8 @@ namespace CLAM {
 
 	bool CircularShift::Do(void)
 	{
-		return false;
+		return Do( mInput.GetData(), mOutput.GetData() );
+
 	}
 
 	/* The  unsupervised Do() function */

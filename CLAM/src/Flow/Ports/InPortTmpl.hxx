@@ -9,7 +9,6 @@
 
 #include <string>
 
-
 namespace CLAM
 {
 
@@ -23,6 +22,7 @@ class InPortTmpl : public InPort
 public:
 
 	inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
+	inline ~InPortTmpl();
 	inline T &GetData();
 	inline void LeaveData();
 	//! implementation of the virtual method declared in InPort
@@ -57,6 +57,14 @@ inline InPortTmpl<T>::InPortTmpl(const std::string &n,
 }
 
 template<class T>
+InPortTmpl<T>::~InPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
+}
+
+
+template<class T>
 inline T &InPortTmpl<T>::GetData()	
 { 
 	CLAM_ASSERT(mData.Size() || (mpNode && mpRegion),
@@ -79,7 +87,9 @@ inline void InPortTmpl<T>::Attach(ProcessingData& data)
 	try { 
 		Attach(dynamic_cast<T&>(data));
 	}
-	catch (std::bad_cast){
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception){
 		CLAM_ASSERT(false,"You are trying to attach a processing data that is not suitable for this port");
 	}
 }	
@@ -90,7 +100,9 @@ inline void InPortTmpl<T>::Attach( NodeBase& node)
 	try {
 		Attach( dynamic_cast< Node<T>& >(node) );
 	}
-	catch (std::bad_cast) {
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception) {
 		CLAM_ASSERT(false,"You are trying to attach a node that is not suitable for this port");
 	}
 }

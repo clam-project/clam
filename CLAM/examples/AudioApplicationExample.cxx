@@ -44,25 +44,21 @@ void MyIOAudioApplication::AudioMain(void)
 {
 	try
 	{
-		unsigned int buffersize = 256;
+		unsigned int buffersize = 4096;
 
-		AudioManager audioManager(48000,4096);
+		AudioManager audioManager(44100,4096);
 
 		AudioIOConfig inCfgL;
 		AudioIOConfig inCfgR;
 		AudioIOConfig outCfgL;
 		AudioIOConfig outCfgR;
 
-		inCfgL.SetName("left in");
 		inCfgL.SetChannelID(0);
 
-		inCfgR.SetName("right in");
 		inCfgR.SetChannelID(1);
 
-		outCfgL.SetName("left out");
 		outCfgL.SetChannelID(0);
 
-		outCfgR.SetName("right out");
 		outCfgR.SetChannelID(1);
 
 		Audio bufL;
@@ -116,14 +112,14 @@ void MyIOAudioApplication::AudioMain(void)
 			mul.Do(bufL,bufOsc,bufL);
 
 			oscR.Do(bufOsc);
-			mul.Do(bufTesttone,bufOsc,bufTesttone);
-
-			add.Do(bufTesttone,bufL,bufL);
+			mul.Do(bufR,bufOsc,bufR);
 
 			outL.Do(bufL);
 			outR.Do(bufR);
 
 		} while (!Canceled());
+		
+		TopLevelProcessing::GetInstance().Stop();
 	}
 	catch(Err error)
 	{
@@ -149,17 +145,20 @@ void MyOutAudioApplication::AudioMain(void)
 {
 	try
 	{
-		unsigned int buffersize = 256;
-
-		AudioManager audioManager(48000,4096);
+		unsigned int buffersize = 1024;
+		int samplerate = 44100;
+		
+		AudioManager audioManager(samplerate,2048);
 
 		AudioIOConfig outLCfg;
-		outLCfg.SetName("left out");
+		outLCfg.SetDevice("rtaudio:default");
 		outLCfg.SetChannelID(0);
+		outLCfg.SetSampleRate(samplerate);
 
 		AudioIOConfig outRCfg;
-		outRCfg.SetName("right out");
+		outRCfg.SetDevice("rtaudio:default");
 		outRCfg.SetChannelID(1);
+		outRCfg.SetSampleRate(samplerate);
 
 		Audio bufOsc;
 		bufOsc.SetSize(buffersize);
@@ -170,6 +169,7 @@ void MyOutAudioApplication::AudioMain(void)
 		OscillatorConfig testtoneCfg;
 
 		testtoneCfg.SetFrequency(440);
+		testtoneCfg.SetSamplingRate(audioManager.SampleRate());
 
 		Oscillator testtone(testtoneCfg);
 
@@ -183,6 +183,9 @@ void MyOutAudioApplication::AudioMain(void)
 			outL.Do(bufOsc);
 			outR.Do(bufOsc);
 		} while (!Canceled());
+		
+		TopLevelProcessing::GetInstance().Stop();
+
 	}
 	catch(Err error)
 	{
@@ -203,12 +206,11 @@ int main(int argc,char** argv)
 	{
 
 		{
-			MyIOAudioApplication app;
+			MyOutAudioApplication app;
 			app.Run(argc,argv);
 		}
-		getchar();
 		{
-			MyOutAudioApplication app;
+			MyIOAudioApplication app;
 			app.Run(argc,argv);
 		}
 

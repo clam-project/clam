@@ -13,7 +13,7 @@
 #ifndef __FL_PALETTE__
 #define __FL_PALETTE__
 
-#include <FL/Fl.h>
+#include <FL/Fl.H>
 #include <FL/fl_draw.H>
 #include "Assert.hxx"
 

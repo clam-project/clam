@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "AnalysisSynthesis_Batch"=".\AnalysisSynthesis\Batch\AnalysisSynthesis_Batch.dsp" - Package Owner=<4>
+Project: "SMSBatch"=".\SMS\Batch\SMSBatch.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AnalysisSynthesis_Console"=".\AnalysisSynthesis\Console\AnalysisSynthesis_Console.dsp" - Package Owner=<4>
+Project: "SMSConsole"=".\SMS\Console\SMSConsole.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -27,19 +27,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AnalysisSynthesis_GUI"=".\AnalysisSynthesis\GUI\AnalysisSynthesis_GUI.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "FltkNetworkGUI"=".\FltkNetworkGUI\FltkNetworkGUI.dsp" - Package Owner=<4>
+Project: "SMSTools"=".\SMS\Tools\SMSTools.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

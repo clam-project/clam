@@ -2,10 +2,11 @@
 #define __SoundFileIO__
 
 #include "SoundHeader.hxx"
+#include "ErrSoundFileIO.hxx"
 #include <stdio.h>
 #include <string.h>
 
-#ifdef LINUX
+#ifdef linux
 #include <byteswap.h>
 #endif
 
@@ -34,7 +35,7 @@ public:
 	virtual ~SoundFileIO();
 	void Init(void);
 
-	void Open(const char* filename,EMode mode);
+	void Open(const char* filename,EMode mode) throw ( ErrSoundFileIO );
 	void Create(const char* filename,EMode mode,const SoundHeader& header);
 	void Close(void);
 
@@ -42,7 +43,7 @@ public:
 	int Tell(void);
 	void SeekFrame(int frame);
 	int TellFrame(void);
-	virtual int Read(short *data,int size);
+	virtual int Read(float *data,int& size);
 	virtual int Write(const short *data,int size);
 	virtual int Read(int *data,int size);
 	virtual int Write(const int *data,int size);
@@ -68,7 +69,7 @@ protected:
 
 	void Swap(unsigned short& val)
 	{
-	#ifdef LINUX
+	#ifdef linux
 		val = bswap_16(val);
 	#else
 		unsigned char* ptr=(unsigned char*) &val;
@@ -84,7 +85,7 @@ protected:
 
 	void Swap(unsigned int& val)
 	{
-	#ifdef LINUX
+	#ifdef linux
 		val = bswap_32(val);
 	#else
 		unsigned char* ptr=(unsigned char*) &val;
@@ -92,6 +93,15 @@ protected:
 		tmp=ptr[0]; ptr[0]=ptr[3]; ptr[3]=tmp;
 		tmp=ptr[1]; ptr[1]=ptr[2]; ptr[2]=tmp;
 	#endif
+	}
+
+	void Swap( float& val )
+	{
+		unsigned char* ptr=(unsigned char*) &val;
+		static unsigned char tmp;
+		tmp=ptr[0]; ptr[0]=ptr[3]; ptr[3]=tmp;
+		tmp=ptr[1]; ptr[1]=ptr[2]; ptr[2]=tmp;
+
 	}
 
 	void Swap(int& val)

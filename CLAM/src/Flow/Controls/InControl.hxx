@@ -25,12 +25,12 @@
 #include "ControlLinker.hxx"
 #include "mtgsstream.h"
 #include <string>
-#include "Array.hxx"
 
 namespace CLAM {
 
 // Forward Declaration:
 class Processing;
+class OutControl;
 
 typedef float TControlData;
 
@@ -44,6 +44,7 @@ class InControl
 private:
 	TControlData mLastValue;
 	std::string mName;
+	Processing * mParent;
 
 // Methods:
 public:
@@ -54,6 +55,8 @@ public:
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
 	TControlData GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
+	bool IsConnectedTo( OutControl & );
+	Processing * GetProcessing() const { return mParent;}
 
 //Constructor/Destructor
 	/**
@@ -101,7 +104,7 @@ public:
 	* <b>Important:</b> notice that if the out control object is going to suffer a copy
 	* (i.e.creating controls that will be copied inside an STL container)
 	* the original pointer published will be no longer . For avoiding this
-	* case we recommend using the flag publish=true. And invoque the PublishInControl
+	* case we recommend using the flag publish=true. And invoke the PublishInControl
 	* method of the processing object, once the copy is made.
 	* @param f The member function that will act as a service funtion each time
 	* the DoControl method is invoqued.
@@ -109,23 +112,23 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	*/
 	InControlTmpl(const std::string &name, ProcObj* parent, TPtrMemberFunc f = 0,const bool publish=true )	:
-		InControl(name),
+		InControl(name,parent,publish),
 		mFunc(f),
 		mFuncId(0),
 		mProcObj(parent)
 
 		{
-			if (publish) mProcObj->PublishInControl(this);
+//			if (publish) mProcObj->PublishInControl(this);
 		};
 
 	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
-		InControl(name),
+		InControl(name,parent,publish),
 		mFunc(0),
 		mFuncId(f),
 		mProcObj(parent),
 		mId(id)
 		{
-			if (publish && mProcObj) mProcObj->PublishInControl(this);
+//			if (publish && mProcObj) mProcObj->PublishInControl(this);
 		};
 
 	~InControlTmpl(){};
@@ -151,6 +154,6 @@ int InControlTmpl<ProcObj>::DoControl(TControlData val)
 
 
 
-}; // namespace CLAM
+} // namespace CLAM
 
 #endif //_InControl_

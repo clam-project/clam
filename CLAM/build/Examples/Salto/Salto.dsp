@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\examples\Salto\FileIO" /I "..\..\..\examples\Salto\Defines" /I "..\..\..\examples\Salto\Data" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Processing\Controls" /I "..\..\..\examples\Salto\Application" /I "..\..\..\examples\Salto\Processing\SynthesisAudio" /I "..\..\..\examples\Salto\Processing" /I "..\..\..\examples\Salto\GUI" /I "..\..\..\..\fltk\include" /I "..\..\..\src\System\Application" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Tools\MIDIIO" /I "..\..\..\src\Processing\MIDIIO" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\examples\Salto\Application\MIDIIO" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\examples\Salto\Storage" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\portmidi\include" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\examples\Salto\Base" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Tools\SDIF" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\src\Defines" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\portmidi\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\examples\Salto\Application" /I "..\..\..\examples\Salto\Application\MIDIIO" /I "..\..\..\examples\Salto\Base" /I "..\..\..\examples\Salto\Data" /I "..\..\..\examples\Salto\Defines" /I "..\..\..\examples\Salto\FileIO" /I "..\..\..\examples\Salto\GUI" /I "..\..\..\examples\Salto\Processing" /I "..\..\..\examples\Salto\Processing\SynthesisAudio" /I "..\..\..\examples\Salto\Storage" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\MIDIIO" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Application" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Tools\MIDIIO" /I "..\..\..\src\Tools\SDIF" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\..\xercesc\include" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 RFFTW2st.lib FFTW2st.lib fltk.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib dsound.lib dxerr8.lib pthreadVC.lib portmidi.lib porttime.lib winmm.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\dxsdk\lib"
+# ADD LINK32 RFFTW2st.lib FFTW2st.lib fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib portmidi.lib porttime.lib winmm.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\dxsdk\lib"
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "SaltoExample - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\examples\Salto\FileIO" /I "..\..\..\examples\Salto\Defines" /I "..\..\..\examples\Salto\Data" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Processing\Controls" /I "..\..\..\examples\Salto\Application" /I "..\..\..\examples\Salto\Processing\SynthesisAudio" /I "..\..\..\examples\Salto\Processing" /I "..\..\..\examples\Salto\GUI" /I "..\..\..\..\fltk\include" /I "..\..\..\src\System\Application" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Tools\MIDIIO" /I "..\..\..\src\Processing\MIDIIO" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\examples\Salto\Application\MIDIIO" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\examples\Salto\Storage" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\portmidi\include" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\examples\Salto\Base" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Tools\SDIF" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /GZ /Zm1000 /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\src\Defines" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\portmidi\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\examples\Salto\Application" /I "..\..\..\examples\Salto\Application\MIDIIO" /I "..\..\..\examples\Salto\Base" /I "..\..\..\examples\Salto\Data" /I "..\..\..\examples\Salto\Defines" /I "..\..\..\examples\Salto\FileIO" /I "..\..\..\examples\Salto\GUI" /I "..\..\..\examples\Salto\Processing" /I "..\..\..\examples\Salto\Processing\SynthesisAudio" /I "..\..\..\examples\Salto\Storage" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\MIDIIO" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Application" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Tools\MIDIIO" /I "..\..\..\src\Tools\SDIF" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\..\xercesc\include" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /GZ /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 FFTW2std.lib RFFTW2std.lib fltkd.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib dsound.lib dxerr8.lib pthreadVC.lib portmidid.lib porttimed.lib winmm.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\dxsdk\lib"
+# ADD LINK32 FFTW2std.lib RFFTW2std.lib fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_1d.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib portmidid.lib porttimed.lib winmm.lib /subsystem:console /debug /machine:I386 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\dxsdk\lib"
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -115,6 +115,10 @@ SOURCE=..\..\..\examples\Salto\Application\Parameters.cxx
 # Begin Source File
 
 SOURCE=..\..\..\examples\Salto\Application\SaltoAppMain.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\Salto\Application\SaltoConfig.cxx
 # End Source File
 # End Group
 # Begin Group "FileIO Sources"
@@ -507,6 +511,14 @@ SOURCE=..\..\..\src\Flow\Controls\OutControl.cxx
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
 # End Group
@@ -524,6 +536,10 @@ SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\Node.cxx
 # End Source File
 # Begin Source File
 
@@ -1504,6 +1520,10 @@ SOURCE=..\..\..\examples\Salto\Application\Parameters.hxx
 
 SOURCE=..\..\..\examples\Salto\Application\Parameters.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\Salto\Application\SaltoConfig.hxx
+# End Source File
 # End Group
 # Begin Group "Processing Headers No. 1"
 
@@ -1551,6 +1571,10 @@ SOURCE=..\..\..\examples\Salto\GUI\CSaltoSpectralDisplay.hxx
 # Begin Source File
 
 SOURCE=..\..\..\examples\Salto\GUI\CSaltoSpectrumDisplay.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\Salto\GUI\EditorCallbacks.hxx
 # End Source File
 # Begin Source File
 
@@ -1666,7 +1690,15 @@ SOURCE=..\..\..\src\System\Application\GUIAudioApplication.hxx
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\dirent.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\Enumerations.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\filename.H
 # End Source File
 # Begin Source File
 
@@ -1678,11 +1710,31 @@ SOURCE=..\..\..\..\fltk\include\FL\Fl_Adjuster.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\fl_ask.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\Fl_Box.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Browser_.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\Fl_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Check_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Choice.H
 # End Source File
 # Begin Source File
 
@@ -1702,11 +1754,35 @@ SOURCE=..\..\..\..\fltk\include\FL\fl_draw.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Export.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_File_Browser.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\fl_file_chooser.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\Fl_File_Icon.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_File_Input.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\Fl_Group.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Image.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Input.H
 # End Source File
 # Begin Source File
 
@@ -1718,7 +1794,27 @@ SOURCE=..\..\..\..\fltk\include\FL\Fl_Light_Button.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_Item.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\fltk\include\FL\Fl_Output.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Preferences.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Return_Button.H
 # End Source File
 # Begin Source File
 
@@ -1727,6 +1823,10 @@ SOURCE=..\..\..\..\fltk\include\FL\Fl_Scrollbar.H
 # Begin Source File
 
 SOURCE=..\..\..\..\fltk\include\FL\Fl_Slider.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\fltk\include\FL\Fl_Tile.H
 # End Source File
 # Begin Source File
 

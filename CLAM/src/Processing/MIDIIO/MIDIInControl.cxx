@@ -47,7 +47,7 @@ namespace CLAM {
 					*/
 #ifdef DEBUGGING_MIDIIO
 					printf("adding %s:Value port\n",
-						MIDI::GetMessageInfo(status).name,
+						MIDI::GetMessageInfo(status).name);
 #endif
 					char tmp[256];
 					sprintf(tmp,"%s:Value",
@@ -57,21 +57,29 @@ namespace CLAM {
 				}
 				else
 				{
-					for (int i=firstRelevant;i<MIDI::GetMessageInfo(status).length-1;i++)
+					if(MIDI::GetMessageInfo(status).length<=1)
+				    {
+						mOutControls.AddElem(new OutControl("non-data byte",this));
+						mOutControlInfos.AddElem(new OutControlInfo((MIDI::Message)status,0));
+					}
+					else
 					{
-						if (MIDI::GetMessageInfo(status).field[i])
+						for (int i=firstRelevant;i<MIDI::GetMessageInfo(status).length-1;i++)
 						{
+							if (MIDI::GetMessageInfo(status).field[i])
+							{
 	#ifdef DEBUGGING_MIDIIO
-							printf("adding %s:%s port\n",
-								MIDI::GetMessageInfo(status).name,
-								MIDI::GetMessageInfo(status).field[i]);
+								printf("adding %s:%s port\n",
+									   MIDI::GetMessageInfo(status).name,
+									   MIDI::GetMessageInfo(status).field[i]);
 	#endif							
-							char tmp[256];
-							sprintf(tmp,"%s:%s",
-								MIDI::GetMessageInfo(status).name,
-								MIDI::GetMessageInfo(status).field[i]);
-							mOutControls.AddElem(new OutControl(tmp,this));
-							mOutControlInfos.AddElem(new OutControlInfo((MIDI::Message)status,i));
+								char tmp[256];
+								sprintf(tmp,"%s:%s",
+										MIDI::GetMessageInfo(status).name,
+										MIDI::GetMessageInfo(status).field[i]);
+								mOutControls.AddElem(new OutControl(tmp,this));
+								mOutControlInfos.AddElem(new OutControlInfo((MIDI::Message)status,i));
+							}
 						}
 					}
 				}
@@ -105,14 +113,18 @@ namespace CLAM {
 					   out to values (LSB, MSB), we prefer 1 14bit value.
 						 see also the code in ConcreteConfigure
 					*/
-					SendControl(i,
+					GetOutControls().GetByNumber(i).SendControl(
 						msg[mOutControlInfos[i]->mField+1]+
 						(msg[mOutControlInfos[i]->mField+2]<<7)
 					);
 				}
+				else if (mOutControlInfos[i]->mMessage == MIDI::eSystem)
+				{
+					GetOutControls().GetByNumber(i).SendControl(1);
+				}
 				else
 				{
-					SendControl(i,msg[mOutControlInfos[i]->mField+1]);
+					GetOutControls().GetByNumber(i).SendControl(msg[mOutControlInfos[i]->mField+1]);
 				}
 			}
 		}

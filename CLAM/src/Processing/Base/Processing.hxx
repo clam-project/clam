@@ -33,6 +33,7 @@
 #include "PublishedOutControls.hxx"
 #include "PublishedInPorts.hxx"
 #include "PublishedOutPorts.hxx"
+#include "ProcessingConfig.hxx"
 
 
 #include <vector>
@@ -47,57 +48,6 @@ namespace CLAM {
 	class InPort;
 	class OutPort;
 	class ProcessingComposite;
-
-	/**
-	 * This is an abstract class which serves as interface for
-	 * configuration classes used as processing object construction
-	 * arguments, which must derive from it.
-	 * <p>
-	 * Note that the required virtual methods may be provided including
-	 * a "Name" dynamic attribute in the derived dynamic classes.
-	 * <p>
-	 * Note that processing objects constructors will take configuration
-	 * objects by value; further changes in a configuration object
-	 * will have no effect on the processing object constructed with it.
-	 */
-	class ProcessingConfig : public DynamicType {
-	public:
-		/**
-		 * Constructor. Must be called from the initialization list
-		 * of the derived classes.
-		 * @param n Number of dynamic attributes
-		 */
-		ProcessingConfig(const int n) : DynamicType(n) {};
-
-		/** Copy constructor.
-		 * @param prototype copy source.
-		 * @param shareData true if the new object is to share its data with the source */
-		ProcessingConfig(const ProcessingConfig& prototype, bool shareData=false, bool deep=true)
-			: DynamicType(prototype, shareData, deep)
-			{};
-
-
-		virtual ~ProcessingConfig(){};
-
-		virtual const char * GetClassName() const {return "Processing";}
-
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @param n Name of the new processing object
-		 */
-		virtual void SetName(const std::string&) = 0;
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @return Name of the new processing object
-		 */
-		virtual std::string& GetName(void) const = 0;
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @return Name of the new processing object
-		 */
-		virtual bool HasName(void) const = 0;
-
-	};
 
 	/**
 	 * This is the base of all the CLAM processing object classes.
@@ -117,9 +67,6 @@ namespace CLAM {
 
 // Attributes:
 	private:
-		/** Processing object name */
-		std::string mName;
-
 		/** Pointer to the parent (composite) processing object, or 0 */
 		ProcessingComposite *mpParent;
 
@@ -131,167 +78,167 @@ namespace CLAM {
 		/** Status description, for debugging */
 		std::string mStatus;
 
-		std::vector<InPort*> mPublishedInPorts;
-		std::vector<OutPort*> mPublishedOutPorts;
-		std::vector<OutControl*> mPublishedOutControls;
-		std::vector<InControl*> mPublishedInControls;
+//		std::vector<InPort*> mPublishedInPorts;
+//		std::vector<OutPort*> mPublishedOutPorts;
+//		std::vector<OutControl*> mPublishedOutControls;
+//		std::vector<InControl*> mPublishedInControls;
 
 	public:
 		/**
 		 *   Processing Object Input Interator
 		 */
-		typedef std::vector<InPort*>::iterator InPortIterator;
+//		typedef std::vector<InPort*>::iterator InPortIterator;
 		/**
 		 *   Processing Object Output Interator
 		 */
-		typedef std::vector<OutPort*>::iterator OutPortIterator;
+//		typedef std::vector<OutPort*>::iterator OutPortIterator;
 		/**
 		 *   Processing Object Published In-Controls Interator
 		 */
-		typedef std::vector<InControl*>::iterator InControlIterator;
+//		typedef std::vector<InControl*>::iterator InControlIterator;
 		/**
 		 *   Processing Object Published Out-Controls Interator
 		 */
-		typedef std::vector<OutControl*>::iterator OutControlIterator;
+//		typedef std::vector<OutControl*>::iterator OutControlIterator;
 
 
 		/**
 		 *   Processing Object Constant Input Iterator
 		 */
-		typedef std::vector<InPort*>::const_iterator ConstInPortIterator;
+//		typedef std::vector<InPort*>::const_iterator ConstInPortIterator;
 		/**
 		 *   Processing Object Constant Output Iterator
 		 */
-		typedef std::vector<OutPort*>::const_iterator ConstOutPortIterator;
+//		typedef std::vector<OutPort*>::const_iterator ConstOutPortIterator;
 		/**
 		 *   Processing Object Published In-Controls Interator
 		 */
-		typedef std::vector<InControl*>::const_iterator ConstInControlIterator;
+//		typedef std::vector<InControl*>::const_iterator ConstInControlIterator;
 		/**
 		 *   Processing Object Published Out-Controls Interator
 		 */
-		typedef std::vector<OutControl*>::const_iterator ConstOutControlIterator;
+//		typedef std::vector<OutControl*>::const_iterator ConstOutControlIterator;
 
 
 		/**
 		 *  Accessor to the first of the Processing Object Inputs
 		 */
-		InPortIterator FirstInput()
-		{
-			return mPublishedInPorts.begin();
-		}
+//		InPortIterator FirstInput()
+//		{
+//			return mPublishedInPorts.begin();
+//		}
 
 		/**
 		 *  Accessor to the last of the Processing Object Inputs
 		 */
-		InPortIterator LastInput()
-		{
-			return mPublishedInPorts.end();
-		}
+//		InPortIterator LastInput()
+//		{
+//			return mPublishedInPorts.end();
+//		}
 
 		/**
 		 *  Accessor to the first of the Processing Object Ouputs
 		 */
-		OutPortIterator FirstOutput()
-		{
-			return mPublishedOutPorts.begin();
-		}
+//		OutPortIterator FirstOutput()
+//		{
+//			return mPublishedOutPorts.begin();
+//		}
 
 		/**
 		 *  Accessor to the last of the Processing Object Outputs
 		 */
-		OutPortIterator LastOutput()
-		{
-			return mPublishedOutPorts.end();
-		}
+//		OutPortIterator LastOutput()
+//		{
+//			return mPublishedOutPorts.end();
+//		}
 
 		/**
 		 *  Accessor to the first of the published In-Controls
 		 */
-		InControlIterator FirstInControl()
-		{
-			return mPublishedInControls.begin();
-		}
+//		InControlIterator FirstInControl()
+//		{
+//			return mPublishedInControls.begin();
+//		}
 		/**
 		 *  Accessor to the last of the published In-Controls
 		 */
-		InControlIterator LastInControl()
-		{
-			return mPublishedInControls.end();
-		}
+//		InControlIterator LastInControl()
+//		{
+//			return mPublishedInControls.end();
+//		}
 		/**
 		 *  Accessor to the first of the published Out-Controls
 		 */
-		OutControlIterator FirstOutControl()
-		{
-			return mPublishedOutControls.begin();
-		}
+//		OutControlIterator FirstOutControl()
+//		{
+//			return mPublishedOutControls.begin();
+//		}
 		/**
 		 *  Accessor to the last of the published Out-Controls
 		 */
-		OutControlIterator LastOutControl()
-		{
-			return mPublishedOutControls.end();
-		}
+//		OutControlIterator LastOutControl()
+//		{
+//			return mPublishedOutControls.end();
+//		}
 
 
 
 		/**
 		 *  Accessor to the first of the Processing Object Inputs (const)
 		 */
-		ConstInPortIterator FirstInput() const
-		{
-			return mPublishedInPorts.begin();
-		}
+//		ConstInPortIterator FirstInput() const
+//		{
+//			return mPublishedInPorts.begin();
+//		}
 		/**
 		 *  Accessor to the last of the Processing Object inputs (const )
 		 */
-		ConstInPortIterator LastInput() const
-		{
-			return mPublishedInPorts.end();
-		}
+//		ConstInPortIterator LastInput() const
+//		{
+//			return mPublishedInPorts.end();
+//		}
 		/**
 		 *  Accessor to the first of the Processing Object Outputs ( const )
 		 */
-		ConstOutPortIterator FirstOutput() const
-		{
-			return mPublishedOutPorts.begin();
-		}
+//		ConstOutPortIterator FirstOutput() const
+//		{
+//			return mPublishedOutPorts.begin();
+//		}
 		/**
 		 *  Accessor to the last of the Processing Object Outputs ( const )
 		 */
-		ConstOutPortIterator LastOutput() const
-		{
-			return mPublishedOutPorts.end();
-		}
+//		ConstOutPortIterator LastOutput() const
+//		{
+//			return mPublishedOutPorts.end();
+//		}
 		/**
 		 *  Accessor to the first of the published In-Controls (const)
 		 */
-		ConstInControlIterator FirstInControl() const
-		{
-			return mPublishedInControls.begin();
-		}
+//		ConstInControlIterator FirstInControl() const
+//		{
+//			return mPublishedInControls.begin();
+//		}
 		/**
 		 *  Accessor to the last of the published In-Controls (const)
 		 */
-		ConstInControlIterator LastInControl() const
-		{
-			return mPublishedInControls.end();
-		}
+//		ConstInControlIterator LastInControl() const
+//		{
+//			return mPublishedInControls.end();
+//		}
 		/**
 		 *  Accessor to the first of the published Out-Controls (const)
 		 */
-		ConstOutControlIterator FirstOutControl() const
-		{
-			return mPublishedOutControls.begin();
-		}
+//		ConstOutControlIterator FirstOutControl() const
+//		{
+//			return mPublishedOutControls.begin();
+//		}
 		/**
 		 *  Accessor to the last of the published Out-Controls (const)
 		 */
-		ConstOutControlIterator LastOutControl() const
-		{
-			return mPublishedOutControls.end();
-		}
+//		ConstOutControlIterator LastOutControl() const
+//		{
+//			return mPublishedOutControls.end();
+//		}
 
 
 	protected:
@@ -347,7 +294,11 @@ namespace CLAM {
 
 		void SetOrphan();
 
-		bool ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj);
+		/**
+		 * An special Configure case for TopLevelProcessing.
+		 * @todo review its utility and refactor code duplication
+		 */
+		void ConfigureOrphan(const ProcessingConfig &c);
 
 		bool AbleToExecute(void) const
 		{
@@ -379,18 +330,17 @@ namespace CLAM {
 
 		/** Method to turn the object into running state.
 		 * This method must be called before any call to Do() methods.
-		 * @throw ErrProcessingObj if the processing object is already
-		 * running (or disabled).
+		 * @asserts that the processing object is ready
 		 */
-		void Start(void) throw(ErrProcessingObj);
+		void Start(void);
 
 		/** Method to put the object out of running state When in
 		 * execution mode, this method must be called before any
 		 * further call to Configure() methods
-		 * @throw ErrProcessingObj if the processing object is not
+		 * @asserts that the processing object is
 		 * runnig (or disabled).
 		 */
-		void Stop(void) throw(ErrProcessingObj);
+		void Stop(void);
 	
 
 	public:
@@ -398,6 +348,9 @@ namespace CLAM {
 		{	
 			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 		}
+
+		/** Override this method if your processing cannot process inplace*/
+		virtual bool CanProcessInplace() {return true;}
 		
 
 		/**
@@ -419,7 +372,17 @@ namespace CLAM {
 		 *  an object of the configuration class matching the concrete
 		 *  processing class of the processing object.
 		 */
-		bool Configure(const ProcessingConfig&) throw(ErrProcessingObj);
+		bool Configure(const ProcessingConfig&);
+
+		/**
+		 *  These two methods, are temporary, very prone to disappear
+		 *  soon, for enabling clients that know concrete Processing object
+		 *  type to call safely the ConcreteConfigure(). See the functional
+		 *  test of AudioFileIn and and its usage example for more details
+		 *  on when and how to use them.
+		 */
+		void PreConcreteConfigure( const ProcessingConfig& c);
+		void PostConcreteConfigure();
 
 		/** Configuration getter.
 		 * Gets the configuration parameters used to create the object.
@@ -438,15 +401,17 @@ namespace CLAM {
 		 */
 		ExecState GetExecState() const {return mState;}
 
+		void SetExecState( const ExecState& s ) { mState = s; }
+
 		void PublishOutPort(OutPort* out);
 		void PublishInPort(InPort* in);
 		void PublishOutControl(OutControl* out);
 		void PublishInControl(InControl* in);
-		void LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const;// throw out_of_range;
-		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
-		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
-		InControl* GetInControl(unsigned inId) const;
-		OutControl* GetOutControl(unsigned inId) const;
+//		void LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const;// throw out_of_range;
+//		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
+//		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
+//		InControl* GetInControl(unsigned inId) const;
+//		OutControl* GetOutControl(unsigned inId) const;
 
 		/** Processing object composite iterator */
 		typedef std::list<Processing*>::iterator iterator;
@@ -477,16 +442,6 @@ namespace CLAM {
 
 		/** Accesor */
 		const std::string &GetStatus() const {return mStatus;}
-
-		/** Configuration attribute access method */
-		const std::string &GetName() const {return mName;}
-
-		/**
-		 * Builds the qualified name of the object.
-		 * @return Name of the processing object, after appending to it
-		 *	the full path of the compound objects containing this one.
-		 */
-		virtual std::string GetFullName() const;
 
 		// Input Output related methods.
 		// They are not mandatory; a default implementation is given.
@@ -544,7 +499,7 @@ namespace CLAM {
 		 * @see Storage
 		 * @see Component::StoreOn
 		 */
-		virtual void StoreOn(Storage & store)
+		virtual void StoreOn(Storage & store) const
 		{
 			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
 		}
@@ -573,32 +528,40 @@ namespace CLAM {
 		
 		PublishedInControls& GetInControls()
 		{
-			return mInControls;
+			return mPublishedInControls;
 		}
 		
 		PublishedOutControls& GetOutControls()
 		{
-			return mOutControls;
+			return mPublishedOutControls;
 		}
 	
 		PublishedInPorts& GetInPorts()
 		{
-			return mInPorts;
+			return mPublishedInPorts;
 		}
 		PublishedOutPorts& GetOutPorts()
 		{
-			return mOutPorts;
+			return mPublishedOutPorts;
 		}
 
 	private:
-		PublishedInControls mInControls;
-		PublishedOutControls mOutControls;
-		PublishedInPorts mInPorts;
-		PublishedOutPorts mOutPorts;
+		PublishedInControls mPublishedInControls;
+		PublishedOutControls mPublishedOutControls;
+		PublishedInPorts mPublishedInPorts;
+		PublishedOutPorts mPublishedOutPorts;
 
 		// end refactoring in progress
 		// ---------
-
+		
+	private:
+		/* Methods to prepend a message to mStatus, truncate if necesary,
+		** and return a static char [] , used for passing the status to
+		** CLAM_ASSERT 
+		*/
+		const char* AddStatus(const char* a);
+		const char* AddStatus(const std::string& a);
+		bool  mPreconfigureExecuted;
 	};
 
 

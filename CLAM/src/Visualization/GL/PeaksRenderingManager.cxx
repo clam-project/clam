@@ -1,11 +1,13 @@
 #include "PeaksRenderingManager.hxx"
 #include "Assert.hxx"
 #include <algorithm>
+#include <iostream>
 
 namespace CLAMVM
 {
 	PeaksRenderingManager::PeaksRenderingManager()
-		: mMustProcessData( false ), mNoPeaksToShow( false ), mSpecRange( 22050 ), mNumBins( 513 )
+		: mMustProcessData( false ), mNoPeaksToShow( false ), mSpecRange( 22050 ), mNumBins( 513 ),
+		  mLeftMostPeak( 0 )
 	{
 		mPeakRenderer.SetLineColor( 0, 0, 255 );
 	}
@@ -44,6 +46,9 @@ namespace CLAMVM
 			mDataCached.Resize( array.Size() );
 		mDataCached.SetSize( array.Size() );
 
+		mLeftMostPeak = 0;
+		mRightMostPeak = mDataCached.Size() - 1;
+
 		std::copy( array.GetPtr(), array.GetPtr()+array.Size(), mDataCached.GetPtr() );
 
 		if ( mProcessedX.Size() < array.Size() )
@@ -65,7 +70,7 @@ namespace CLAMVM
 				
 		DetermineVisibleSamples();
 
-		TSize processedLen = (mRightMostPeak - mLeftMostPeak) + 1;				
+		TSize processedLen = (mRightMostPeak - mLeftMostPeak);				
 
 
 		mPeakRenderer.SetXArray( mProcessedX.GetPtr()+mLeftMostPeak, processedLen );
@@ -78,9 +83,8 @@ namespace CLAMVM
 
 	void PeaksRenderingManager::ConvertPartialsToArrays()
 	{
-		TIndex peakIndex = mLeftMostPeak;
 
-		for ( peakIndex = 0; peakIndex < mProcessedX.Size(); peakIndex++ )
+		for ( TIndex peakIndex = 0; peakIndex < mProcessedX.Size(); peakIndex++ )
 		{
 			mProcessedX[peakIndex]= mDataCached[peakIndex].mFreq * ( mNumBins / mSpecRange );
 			mProcessedY[peakIndex]= mDataCached[peakIndex].mMag;
@@ -102,22 +106,15 @@ namespace CLAMVM
 		}
 		mNoPeaksToShow = false;
 
-		while ( i < mDataCached.Size() )
-		{
-			if ( mDataCached[i].mFreq >= minFreq )
-				break;
-			i++;
-		}
+		for ( ; (i < mDataCached.Size() ) 
+				&& ( mDataCached[i].mFreq < minFreq ); i++ );
+
 		mLeftMostPeak = i;
 
-		while ( i <= mDataCached.Size()-1 )
-		{
-			if ( mDataCached[i].mFreq > maxFreq )
-				break;
-			i++;
-		}
-		mRightMostPeak = i;
+		for ( ; ( i < mDataCached.Size() ) 
+				&& ( mDataCached[i].mFreq < maxFreq ); i++ );
 
+		mRightMostPeak = i;
 				
 	}
 		

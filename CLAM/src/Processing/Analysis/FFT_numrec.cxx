@@ -27,6 +27,10 @@
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
+#include "CLAM_Math.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
@@ -43,9 +47,17 @@ namespace CLAM {
 		CopyAsConcreteConfig(mConfig, c);
 
 		if (mConfig.HasAudioSize()) {
-			if (mConfig.GetAudioSize()<0)
-				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));
+			CLAM_ASSERT(mConfig.GetAudioSize()>=0, 
+				"Wrong (negative) Size in FFT Configuration.");
 			mSize = mConfig.GetAudioSize();
+		}
+
+		if ( !isPowerOfTwo( mSize ) )
+		{
+			mStatus = "Configure failed: Numerical Recipes FFT algorithm does not\n";
+			mStatus += "accept non power of two buffers";
+
+			return false;
 		}
 
 		mState=sOther;
@@ -53,27 +65,34 @@ namespace CLAM {
 		mComplexflags.bMagPhase=0;
 
 		if (mSize>0) {
-			if (mSize != oldSize)
-				fftbuffer = new TData[mSize];
+		  if (mSize != oldSize) {
+			if (fftbuffer)
+			  delete[] fftbuffer;
+			fftbuffer = new TData[mSize];
+		  }
 			return true;
 		}
+		if (fftbuffer) delete[] fftbuffer;
 		fftbuffer = 0;
 		return false;
 	}
 
 	FFT_numrec::FFT_numrec()
+		: fftbuffer( NULL )
 	{
 		Configure(FFTConfig());
 	}
 
 	FFT_numrec::FFT_numrec(const FFTConfig &c) throw(ErrDynamicType)
+		: fftbuffer( NULL )
 	{ 
 		Configure(c);
 	};
 
 	FFT_numrec::~FFT_numrec()
 	{
-		delete fftbuffer;
+	  if (fftbuffer)
+		delete[] fftbuffer;
 	}
 
 	void FFT_numrec::CheckTypes(const Audio& in, const Spectrum &out) const
