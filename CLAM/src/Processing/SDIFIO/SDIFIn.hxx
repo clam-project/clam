@@ -61,7 +61,6 @@ private:
 // member variables
 	TTime mLastCenterTime;
 	IndexArray mPrevIndexArray;
-	bool mFileInit;
 	
 };
 

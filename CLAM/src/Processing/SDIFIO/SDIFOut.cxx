@@ -32,8 +32,6 @@ SDIFOut::SDIFOut():
 mPrevIndexArray(0)
 { 
 	mpFile=NULL;
-	mFileInit=false;
-
 	Configure(SDIFOutConfig());
 }
 
@@ -41,7 +39,6 @@ SDIFOut::SDIFOut(const SDIFOutConfig& c):
 mPrevIndexArray(0)
 { 
 	mpFile=NULL;
-	mFileInit=false;
 
 	Configure(c);
 }
@@ -70,12 +67,7 @@ const ProcessingConfig& SDIFOut::GetConfig() const
 bool SDIFOut::Do(const Frame& frame)
 {
 	if(!mpFile) return false;
-	if(!mFileInit)
-	{
-		mpFile->WriteInit();
-		mFileInit=true;
-	}
-
+	
 //If enabled, first frame will contain fundamental frequency
 	if(mConfig.GetEnableFundFreq())
 	{
@@ -83,7 +75,7 @@ bool SDIFOut::Do(const Frame& frame)
 		//Note: other Frame Header values could be set but are not available in segment data
 				
 		//First matrix to add to frame
-		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::Type::sDefault,SDIF::eFloat32,1,1);
+		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::TypeId::sDefault,SDIF::eFloat32,1,1);
 		
 		//We add fundamental frequency
 		pMatrix->SetValue(0,0,frame.GetFundamental().GetFreq());
@@ -131,7 +123,7 @@ bool SDIFOut::Do(const Frame& frame)
 		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime());
 		
 		int nElems=tmpPeakArray.GetnPeaks();
-		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::Type::sDefault,SDIF::eFloat32,nElems,4);
+		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::TypeId::sDefault,SDIF::eFloat32,nElems,4);
 		pMatrix->mHeader.mnRows=nElems;
 	
 		DataArray& pkfreqBuffer=tmpPeakArray.GetFreqBuffer();

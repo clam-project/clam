@@ -9,7 +9,7 @@
 #include "SDIFMatrix.hxx"
 
 using namespace CLAM;
-
+using std::iterator;
 
 void SDIFInConfig::DefaultInit()
 {
@@ -34,8 +34,6 @@ Output("Output",this,1)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
-	mFileInit=false;
-
 	Configure(SDIFInConfig());
 }
 
@@ -45,7 +43,6 @@ Output("Output",this,1)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
-	mFileInit=false;
 
 	Configure(c);
 }
@@ -60,7 +57,7 @@ bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
 	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
 	if(mpFile) delete mpFile;
-	mpFile = new SDIFFile(mConfig.GetFileName().c_str(),eInput);
+	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),DataFileIO::eInput);
 	mpFile->Open();
 	return true;
 }
@@ -76,17 +73,11 @@ bool SDIFIn::Do(void)
 	if(!mpFile) return false;
 	if(mpFile->Done()) return false;
 	
-	if(!mFileInit)
-	{
-		mpFile->ReadInit();
-		mFileInit=true;
-	}
-
-	SDIFFrame tmpSDIFFrame;
+	SDIF::Frame tmpSDIFFrame;
 	mpFile->Read(tmpSDIFFrame);
 	
 
-	double frameTimeTag	= tmpSDIFFrame.mHeader.mTime;
+	double frameTimeTag	= tmpSDIFFrame.Time();
 	if (frameTimeTag != mLastCenterTime)	// new SpectralFrame, need to add it to segment
 	{
 		Frame initFrame;
@@ -107,21 +98,29 @@ bool SDIFIn::Do(void)
 
 	Frame& tmpFrame=Output.GetData().GetFrame(Output.GetData().GetnFrames()-1);
 	
-	SDIFMatrix* pMatrix = tmpSDIFFrame.mpFirst;
+	SDIF::Frame::MatrixIterator frameIt = tmpSDIFFrame.Begin();
+
+	//SDIF::Matrix* pMatrix = tmpSDIFFrame.mpFirst;
 	
+	SDIF::Matrix* pMatrix=*frameIt;
+	
+
 	/* its a fundamental frequency ..*/
-	if (tmpSDIFFrame.mHeader.mType=="1FQ0" && mConfig.GetEnableFundFreq())
+	if (tmpSDIFFrame.Type()=="1FQ0" && mConfig.GetEnableFundFreq())
 	{
  		tmpFrame.GetFundamental().AddElem(pMatrix->GetValue(0,0));
 	}	
 	
 	/* it is residual data ..*/
-	else if(tmpSDIFFrame.mHeader.mType=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
+	else if(tmpSDIFFrame.Type()=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
 	{
 		if(!(pMatrix->mHeader.mType =="ISTF"))	
 			throw Err("SDIFIn::Add ISTF Header in Matrix expected");	
 		
-		pMatrix=pMatrix->mpNext;	// move pointer to next matrix in frame
+		// move pointer to next matrix in frame
+		frameIt++;
+		pMatrix=*frameIt;
+		//pMatrix=pMatrix->mpNext;	
 		
 		if(!(pMatrix->mHeader.mType=="1STF"))	
 			throw Err("SDIFIn::Add 1STF Headerin Matrix expected");
@@ -136,7 +135,7 @@ bool SDIFIn::Do(void)
 	}	
 	
 	/* its sinusoidal track data */ 
-	else if(tmpSDIFFrame.mHeader.mType=="1TRC" && mConfig.GetEnablePeakArray())
+	else if(tmpSDIFFrame.Type()=="1TRC" && mConfig.GetEnablePeakArray())
 	{				
 		TIndex nElems = pMatrix->mHeader.mnRows;
 	

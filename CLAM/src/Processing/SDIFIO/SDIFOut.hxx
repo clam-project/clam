@@ -59,8 +59,7 @@ private:
 
 // member variables
 	IndexArray mPrevIndexArray;
-	bool mFileInit;
-	
+		
 };
 
 
