@@ -146,7 +146,7 @@ namespace CLAM
 
 					mDevice = new RtAudio();
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
-										   RtAudio::RTAUDIO_SINT16, SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
+										   RtAudio::RTAUDIO_SINT16, SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
 											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 
