@@ -130,7 +130,7 @@ void ProcessingTree::startDrag()
 
 	completeName << className << "_" << mNumProc;
 
-	QDragObject *d = new QTextDrag( completeName.str() , this );
+	QDragObject *d = new QTextDrag( completeName.str().c_str(), this );
 	d->dragCopy();
 }
 
