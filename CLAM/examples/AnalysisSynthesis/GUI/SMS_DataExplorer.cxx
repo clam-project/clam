@@ -213,7 +213,10 @@ namespace CLAMVM
 
 		mpCanvas->add( *(mpOriginalAudioWidget) );
 		//TODO: this is a HACK!
-		mpOriginalAudioWidget->handle( FL_SHOW );
+		mpOriginalAudioWidget->hide();
+		Fl::flush();
+		mpOriginalAudioWidget->show();
+		Fl::flush();
 
 		mpCanvas->redraw();
 		mpOriginalAudioWidget->redraw();
@@ -230,7 +233,11 @@ namespace CLAMVM
 
 		mpCanvas->add( *mpSegmentSinTracks );
 		//TODO: this is a HACK!
-		mpSegmentSinTracks->handle( FL_SHOW );
+		mpSegmentSinTracks->hide();
+		Fl::flush();
+		mpSegmentSinTracks->show();
+		Fl::flush();
+
 
 		mpSegmentSinTracks->Show();
 		mpCanvas->redraw();
@@ -248,7 +255,10 @@ namespace CLAMVM
 
 		mpCanvas->add( *mpSpectrumAndPeaksWidget );
 		//TODO: this is a HACK!
-		mpSpectrumAndPeaksWidget->handle( FL_SHOW );
+		mpSpectrumAndPeaksWidget->hide();
+		Fl::flush();
+		mpSpectrumAndPeaksWidget->show();
+		Fl::flush();
 
 		mpSpectrumAndPeaksWidget->Show();
 		mpCanvas->redraw();
@@ -287,7 +297,10 @@ namespace CLAMVM
 		
 		mpCanvas->add( *mpResidualSpectrum );
 		//TODO: this is a HACK!
-		mpResidualSpectrum->handle( FL_SHOW );
+		mpResidualSpectrum->hide();
+		Fl::flush();
+		mpResidualSpectrum->show();
+		Fl::flush();
 
 		mpResidualSpectrum->Show();
 		mpCanvas->redraw();
@@ -305,7 +318,10 @@ namespace CLAMVM
 		
 		mpCanvas->add( *(mpSynthesizedAudioWidget) );
 		//TODO: this is a HACK!
-		mpSynthesizedAudioWidget->handle( FL_SHOW );
+		mpSynthesizedAudioWidget->hide();
+		Fl::flush();
+		mpSynthesizedAudioWidget->show();
+		Fl::flush();
 
 		mpSynthesizedAudioWidget->Show();
 		mpCanvas->redraw();
@@ -323,7 +339,10 @@ namespace CLAMVM
 
 		mpCanvas->add( *(mpSynthesizedSinusoidalWidget) );
 		//TODO: this is a HACK!
-		mpSynthesizedSinusoidalWidget->handle( FL_SHOW );
+		mpSynthesizedSinusoidalWidget->hide();
+		Fl::flush();
+		mpSynthesizedSinusoidalWidget->show();
+		Fl::flush();
 		
 		mpSynthesizedSinusoidalWidget->Show();
 		mpCanvas->redraw();
@@ -342,7 +361,10 @@ namespace CLAMVM
 
 		mpCanvas->add( *(mpSynthesizedResidualWidget) );
 		//TODO: this is a HACK!
-		mpSynthesizedResidualWidget->handle( FL_SHOW );
+		mpSynthesizedResidualWidget->hide();
+		Fl::flush();
+		mpSynthesizedResidualWidget->show();
+		Fl::flush();
 
 		mpSynthesizedResidualWidget->Show();
 		mpCanvas->redraw();
