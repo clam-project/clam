@@ -28,7 +28,7 @@
 #include "InControl.hxx"
 #include "Processing.hxx"
 #include "OutControl.hxx"
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include <iostream>
 
 namespace CLAMVM
