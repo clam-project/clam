@@ -31,28 +31,52 @@ namespace CLAM{
  *	should be computed on the absolute value
  */
 
+namespace Implementation {}
+
 template <int o> struct Pow
 {
 public:
-	template <class T>
-	T operator () (const T& n) const {return n*next(n);}
-	Pow<o-1> next;
+	template <typename T>
+	T operator () (const T& x) const
+	{
+		return Implementation::power(x,(IsOdd*)0);
+	}
+
+	template <int n> struct IsOddSelector {};
+	typedef IsOddSelector<(0&1)> IsOdd;
 };
 
-template<> struct Pow<1>
+namespace Implementation
 {
-public:
-	template<class T>
-	T operator() (const T& n) const {return n;}
-};
 
-template<> struct Pow<0>
-{
-public:
-	template<class T>
-	T operator() (const T& n) const {return T(1.0);}
-};
+	template <typename T> T square(const T & x) {return x*x;}
 
+
+	template <unsigned n, typename T>
+	T power(const T & x, typename Pow<n>::IsOddSelector<0>* foo)
+	{
+		return square(power<(n>>1)>(x, (typename Pow<(n>>1)>::IsOdd*)0));
+	}
+
+	template <unsigned n, typename T>
+	T power(const T & x, typename Pow<n>::IsOddSelector<1>* foo)
+	{
+		return square(power<(n>>1)>(x, (typename Pow<(n>>1)>::IsOdd*)0)) * x;
+	}
+
+	template <typename T>
+	T power(const T & x, typename Pow<1>::IsOddSelector<1>* foo)
+	{
+		return x;
+	}
+
+	template <typename T>
+	T power(const T & x, typename Pow<0>::IsOddSelector<0>* foo)
+	{
+		return T(1.0);
+	}
+
+}
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^n)*/
