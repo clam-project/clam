@@ -31,11 +31,6 @@
 #include "DebugSnapshots.hxx"
 #include "AudioSnapshot.hxx"
 
-#include "AudioIO.hxx"
-#include "AudioIn.hxx"
-#include "AudioOut.hxx"
-#include "AudioManager.hxx"
-
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
 
@@ -355,6 +350,7 @@ void UserInterface::LoadConfiguration(void)
 				mAnalyze->activate();
 				mDisplayInSM->activate();
 				mDisplayInSound->activate();
+				mPlayInputSound->activate();
 			}
 			else 
 				mAnalysisSynthesisExample->mHaveConfig=false;
@@ -422,6 +418,7 @@ void UserInterface::Synthesize(void)
 	{
 		mSynthesize->activate();
 		mOutputSM->activate();
+		mPlayOutputs->activate();
 		Fl::redraw();
 	}
 }
@@ -557,6 +554,32 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
+void UserInterface::PlayInputSound(void)
+{
+
+	mAnalysisSynthesisExample->PlayInputSound();
+}
+
+void UserInterface::PlayOutputSound(void)
+{
+
+	mAnalysisSynthesisExample->PlayOutputSound();
+}
+
+void UserInterface::PlaySinusoidal(void)
+{
+
+	mAnalysisSynthesisExample->PlaySinusoidal();
+}
+
+void UserInterface::PlayResidual(void)
+{
+
+	mAnalysisSynthesisExample->PlayResidual();
+}
+
+
+
 void UserInterface::Attach(Fl_Window* canvas)
 {
 /*
@@ -595,42 +618,6 @@ int main(void)
 		example.SetTransformation(&myTrans);
 		/******* TRANSFORMATION *******/
 
-		AudioManager audioManager(48000,4096);
-
-		AudioIOConfig inCfgL;
-		AudioIOConfig inCfgR;
-		AudioIOConfig outCfgL;
-		AudioIOConfig outCfgR;
-
-		inCfgL.SetName("left in");
-		inCfgL.SetChannelID(0);
-		inCfgR.SetName("right in");
-		inCfgR.SetChannelID(1);
-
-		outCfgL.SetName("left out");
-		outCfgL.SetChannelID(0);
-		outCfgR.SetName("right out");
-		outCfgR.SetChannelID(1);
-
-		AudioIn inL(inCfgL);
-		AudioIn inR(inCfgR);
-		AudioOut outL(outCfgL);
-		AudioOut outR(outCfgR);
-
-		audioManager.Start();
-/*
-  unsigned int buffersize = 256;
-
-  Audio bufL;
-  bufL.SetSize(buffersize);
-  Audio bufR;
-  bufR.SetSize(buffersize);
-  
-  inL.Do(bufL);
-  inR.Do(bufR);
-  outL.Do(bufL);
-  outR.Do(bufR);
-*/
 		example.Run();
 	}
 	catch(Err error)

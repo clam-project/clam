@@ -30,6 +30,7 @@
 #include "Melody.hxx"
 #include "SMSTransformation.hxx"
 #include "SegmentDescriptors.hxx"
+#include "AudioOut.hxx"
 
 namespace CLAM
 {
@@ -69,7 +70,7 @@ namespace CLAM
 	{
 	public:
 		AnalysisSynthesisExampleBase(void);	
-		virtual ~AnalysisSynthesisExampleBase(void) { }
+		virtual ~AnalysisSynthesisExampleBase(void);
 		void Run(void);
 		/** Using this method a user-defined transformation can be set*/
 		void SetTransformation(SMSTransformation* pTransformation);
@@ -104,6 +105,20 @@ namespace CLAM
 		/** Perform transformation according to previously set transformation 
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
 		void Transform(void);
+
+
+		/** Play Input Sound */
+		void PlayInputSound();
+		/** Play Output Synthesized Sound */
+		void PlayOutputSound();
+		/** Play Ouput Synthesized Sinusoidal Component */
+		void PlaySinusoidal();
+		/** Play Output Synthesized Residual Component */
+		void PlayResidual();
+
+		/** Method used by any other method that needs to play an audio */
+		void Play(const Audio& audio);
+
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
@@ -159,6 +174,10 @@ namespace CLAM
 		bool mHaveTransformationScore;
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
+
+		/** Audio Out Processing object*/
+		AudioOut* mpOutputL;
+		AudioOut* mpOutputR;
 
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAM::Progress* CreateProgress(const char* title,float from,float to) = 0;

@@ -62,6 +62,8 @@ private:
   static Fl_Menu_Item menu_mMenuBar[];
   inline void cb_Configure_i(Fl_Menu_*, void*);
   static void cb_Configure(Fl_Menu_*, void*);
+  inline void cb_Edit_i(Fl_Menu_*, void*);
+  static void cb_Edit(Fl_Menu_*, void*);
   inline void cb_Load_i(Fl_Menu_*, void*);
   static void cb_Load(Fl_Menu_*, void*);
   static Fl_Menu_Item *mStoreAnalysisData;
@@ -86,6 +88,9 @@ private:
   static Fl_Menu_Item *mDisplayInSpec;
   inline void cb_mDisplayInSpec_i(Fl_Menu_*, void*);
   static void cb_mDisplayInSpec(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mPlayInputSound;
+  inline void cb_mPlayInputSound_i(Fl_Menu_*, void*);
+  static void cb_mPlayInputSound(Fl_Menu_*, void*);
   static Fl_Menu_Item *mAnalyze;
   inline void cb_mAnalyze_i(Fl_Menu_*, void*);
   static void cb_mAnalyze(Fl_Menu_*, void*);
@@ -107,6 +112,13 @@ private:
   static void cb_Sinusoidal1(Fl_Menu_*, void*);
   inline void cb_Residual2_i(Fl_Menu_*, void*);
   static void cb_Residual2(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mPlayOutputs;
+  inline void cb_Sound2_i(Fl_Menu_*, void*);
+  static void cb_Sound2(Fl_Menu_*, void*);
+  inline void cb_Sinusoidal2_i(Fl_Menu_*, void*);
+  static void cb_Sinusoidal2(Fl_Menu_*, void*);
+  inline void cb_Residual3_i(Fl_Menu_*, void*);
+  static void cb_Residual3(Fl_Menu_*, void*);
   inline void cb_Exit_i(Fl_Menu_*, void*);
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
@@ -136,5 +148,9 @@ private:
   void Transform(void);
   void Exit(void);
   void Attach(Fl_Window* canvas);
+  void PlayInputSound();
+  void PlayOutputSound();
+  void PlaySinusoidal();
+  void PlayResidual();
 };
 #endif

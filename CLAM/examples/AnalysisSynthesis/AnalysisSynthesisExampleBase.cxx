@@ -50,6 +50,10 @@
 #include "XMLComponentAdapter.hxx"
 #include "XMLable.hxx"
 
+#include "AudioIO.hxx"
+//#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "AudioManager.hxx"
 
 #define MIN(a,b) ((a<=b)?(a):(b))
 #define MAX(a,b) ((a>=b)?(a):(b))
@@ -95,6 +99,21 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 	mHaveSpectrum = false;
 
 	mpTransformation=NULL;
+
+}
+
+AnalysisSynthesisExampleBase::~AnalysisSynthesisExampleBase(void)
+{
+	if(mpOutputL) 
+	{
+		delete mpOutputL;
+		mpOutputL=NULL;
+	}
+	if(mpOutputR)
+	{ 
+		delete mpOutputR;
+		mpOutputR=NULL;
+	}
 }
 
 void AnalysisSynthesisExampleBase::InitConfigs(void)
@@ -768,4 +787,67 @@ void AnalysisSynthesisExampleBase::ComputeLowLevelDescriptors()
 		frameDesc.AddElem(tmpFrameD);
 	}
 
+}
+
+void AnalysisSynthesisExampleBase::PlayOutputSound()
+{
+	if(mHaveAudioOut)
+	{
+		Play(mAudioOut);
+	}
+}
+
+void AnalysisSynthesisExampleBase::PlayInputSound()
+{
+	if(mHaveAudioIn)
+	{
+		Play(mAudioIn);
+	}
+}
+
+void AnalysisSynthesisExampleBase::PlaySinusoidal()
+{
+	if(mHaveAudioIn)
+	{
+		Play(mAudioOutSin);
+	}
+}
+
+void AnalysisSynthesisExampleBase::PlayResidual()
+{
+	if(mHaveAudioIn)
+	{
+		Play(mAudioOutRes);
+	}
+}
+
+void AnalysisSynthesisExampleBase::Play(const Audio& audio)
+{
+	AudioManager audioManager(44100,2048);
+
+	AudioIOConfig outCfgL;
+	AudioIOConfig outCfgR;
+
+	outCfgL.SetName("left out");
+	outCfgL.SetChannelID(0);
+	outCfgR.SetName("right out");
+	outCfgR.SetChannelID(1);
+
+	AudioOut outputL(outCfgL);
+	AudioOut outputR(outCfgR);
+	
+	TSize outBufferSize=1024;
+	Audio  tmpAudioBuffer;
+	tmpAudioBuffer.SetSize(outBufferSize);
+	TSize size=audio.GetSize();
+	AudioManager::Singleton().Start();
+	outputL.Start();
+	outputR.Start();
+	int i;
+	for(i=0;i<size;i+=outBufferSize)
+	{
+		audio.GetAudioChunk(i,i+outBufferSize,tmpAudioBuffer,false);
+		outputR.Do(tmpAudioBuffer);
+		outputL.Do(tmpAudioBuffer);
+	}
 }

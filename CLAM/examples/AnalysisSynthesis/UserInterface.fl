@@ -400,7 +400,7 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {40 125 1104 779} type Double color 23 hide resizable
+      xywh {0 18 1028 746} type Double color 23 hide resizable
       code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
@@ -422,11 +422,11 @@ class UserInterface {open
           }
           menuitem {} {
             label {Edit Configure...}
-            callback {EditConfiguration();} selected
+            callback {EditConfiguration();}
             private xywh {15 15 100 20} labelsize 12
           }
           submenu {} {
-            label {Analysis Data}
+            label {Analysis Data} open
             private xywh {35 35 100 20} labelsize 12
           } {
             menuitem {} {
@@ -485,6 +485,11 @@ class UserInterface {open
               private xywh {45 45 100 20} labelsize 12 deactivate
             }
           }
+          menuitem mPlayInputSound {
+            label Play
+            callback {PlayInputSound();}
+            private xywh {0 0 100 20} labelsize 12 deactivate
+          }
         }
         menuitem mAnalyze {
           label Analyze
@@ -497,7 +502,7 @@ class UserInterface {open
           private xywh {25 25 100 20} shortcut 0x40073 labelsize 12 deactivate
         }
         submenu mOutputSM {
-          label Output
+          label Output open
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mStoreOutputs {
@@ -521,7 +526,7 @@ class UserInterface {open
             }
           }
           submenu mVisualizeOutputs {
-            label Display
+            label Display open
             private xywh {5 5 100 20} labelsize 12
           } {
             menuitem {} {
@@ -538,6 +543,26 @@ class UserInterface {open
               label Residual
               callback {DisplayOutputSoundResidual();}
               private xywh {50 50 100 20} labelsize 12
+            }
+          }
+          submenu mPlayOutputs {
+            label Play open
+            private xywh {0 0 100 20} labelsize 12 deactivate
+          } {
+            menuitem {} {
+              label Sound
+              callback {PlayOutputSound();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem {} {
+              label Sinusoidal
+              callback {PlaySinusoidal();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem {} {
+              label Residual
+              callback {PlayResidual();}
+              private xywh {0 0 100 20} labelsize 12
             }
           }
         }
@@ -578,7 +603,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/iua.xpm}
-        private xywh {360 15 50 60} labeltype image
+        private xywh {360 15 50 60}
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -586,7 +611,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55} labeltype image
+        private xywh {10 20 75 55}
       }
     }
   }
@@ -610,4 +635,9 @@ mWindow2=NULL;}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
   decl {void Attach(Fl_Window* canvas);} {}
+  decl {void PlayInputSound();} {}
+  decl {void PlayOutputSound();} {}
+  decl {void PlaySinusoidal();} {selected
+  }
+  decl {void PlayResidual();} {}
 } 
