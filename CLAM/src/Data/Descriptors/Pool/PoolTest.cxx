@@ -16,11 +16,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ScopePoolTest );
 class ScopePoolTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ScopePoolTest );
-	CPPUNIT_TEST( testGet_ReturnsSameMemory );
-	CPPUNIT_TEST( testGet_ReturnsConstMemory );
-	CPPUNIT_TEST( testGet_withStrings );
-	CPPUNIT_TEST( testGet_withWrongType );
-	CPPUNIT_TEST( testGet_withWrongTypeAndConst );
+	CPPUNIT_TEST( testGetWritePool_ReturnsSameMemory );
+	CPPUNIT_TEST( testGetReadPool_ReturnsConstMemory );
+	CPPUNIT_TEST( testGetWritePool_withStrings );
+	CPPUNIT_TEST( testGetWritePool_withWrongType );
+	CPPUNIT_TEST( testGetReadPool_withWrongType );
+	CPPUNIT_TEST( testGetReadPool_withoutGetWritePoolFirst );
 	CPPUNIT_TEST( testConstruction_withoutSize );
 	CPPUNIT_TEST( testConstruction_withoutSizeGettingNoConst );
 	CPPUNIT_TEST( testConstruction_givesSizeZeroByDefault );
@@ -36,43 +37,43 @@ public:
 	void tearDown() { }
 
 private:
-	void testGet_ReturnsSameMemory()
+	void testGetWritePool_ReturnsSameMemory()
 	{
 		const unsigned poolSize=5;
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		
 		CLAM::ScopePool pool(spec,poolSize);
-		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		CLAM::TData * data2 = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data2 = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
-	void testGet_ReturnsConstMemory()
+	void testGetReadPool_ReturnsConstMemory()
 	{
 		const unsigned poolSize=5;
 		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,poolSize);
-		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
 		const CLAM::ScopePool & pool2 = pool;
-		const CLAM::TData * data2 = pool2.Get<CLAM::TData>("MyAttribute");
+		const CLAM::TData * data2 = pool2.GetReadPool<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(const_cast<const CLAM::TData*>(data),data2);
 	}
 
-	void testGet_withStrings()
+	void testGetWritePool_withStrings()
 	{
 		const unsigned poolSize=5;
 		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,poolSize);
-		std::string * data = pool.Get<std::string>("MyAttribute");
+		std::string * data = pool.GetWritePool<std::string>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 		{
 			std::ostringstream os;
@@ -80,12 +81,12 @@ private:
 			data[i] += os.str();
 		}
 		const CLAM::ScopePool & pool2 = pool;
-		const std::string * data2 = pool2.Get<std::string>("MyAttribute");
+		const std::string * data2 = pool2.GetReadPool<std::string>("MyAttribute");
 		const std::string expected = "Hola 16";
 		CPPUNIT_ASSERT_EQUAL(expected,data2[4]);
 	}
 
-	void testGet_withWrongType()
+	void testGetWritePool_withWrongType()
 	{
 		const unsigned poolSize=5;
 		CLAM::DescriptionScope spec;
@@ -94,7 +95,7 @@ private:
 		CLAM::ScopePool pool(spec,poolSize);
 		try
 		{
-			int * data = pool.Get<int>("MyAttribute");
+			int * data = pool.GetWritePool<int>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -104,7 +105,7 @@ private:
 		}
 	}
 
-	void testGet_withWrongTypeAndConst()
+	void testGetReadPool_withWrongType()
 	{
 		const unsigned poolSize=5;
 		CLAM::DescriptionScope spec;
@@ -114,7 +115,7 @@ private:
 		const CLAM::ScopePool & pool2 = pool;
 		try
 		{
-			const int * data = pool2.Get<int>("MyAttribute");
+			const int * data = pool2.GetReadPool<int>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -134,7 +135,7 @@ private:
 
 		try
 		{
-			const CLAM::TData * data = constPool.Get<CLAM::TData>("MyAttribute");
+			const CLAM::TData * data = constPool.GetReadPool<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -153,12 +154,32 @@ private:
 
 		try
 		{
-			CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
+			CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
 			const std::string expected = "Getting an attribute from a zero size pool";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testGetReadPool_withoutGetWritePoolFirst()
+	{
+		CLAM::DescriptionScope spec;
+		spec.Add<CLAM::TData>("MyAttribute");
+
+		CLAM::ScopePool pool(spec,20);
+		const CLAM::ScopePool & constPool = pool;
+
+		try
+		{
+			const CLAM::TData * data = constPool.GetReadPool<CLAM::TData>("MyAttribute");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Getting data from a non instanciated attribute";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -184,10 +205,10 @@ private:
 
 		pool.SetSize(poolSize);
 
-		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		CLAM::TData * data2 = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data2 = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
@@ -202,10 +223,10 @@ private:
 
 		pool.SetSize(poolSize);
 
-		CLAM::TData * data = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		for (unsigned i = 0; i < poolSize; i++)
 			data[i] = i*i;
-		CLAM::TData * data2 = pool.Get<CLAM::TData>("MyAttribute");
+		CLAM::TData * data2 = pool.GetWritePool<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
