@@ -1,0 +1,9 @@
+This is the CHANGELOG file for SMS Tools 2, a CLAM application.
+
+9999-99-99 SMS Tools 2, version 0.1.1
+'GUI bug fixing and feature addition'
+	* GUI - Score Editor:
+	  ** Added new and improved SMS Morph transformation control widget
+	
+2003-07-23 SMS Tools 2, version 0.1
+'First SMS Tools 2 public release'
