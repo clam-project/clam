@@ -161,8 +161,11 @@ int parser_include(const char* filename)
 	*/
 
 	const char* curFilename = stack_top(filenamestack);
-	FILE* f = 0;
 	
+	FILE* f = 0;
+
+//	fprintf(stderr,"INCLUDING %s FROM %s\n",filename,curFilename);
+		
 	{
 		/* first, check local path */
 		const char* a = curFilename;
@@ -247,8 +250,11 @@ int parser_include(const char* filename)
 		
 		list* possible_impl_files = list_new();
 
-		list_add_str(includes_checked,tmp2);
-		
+		if (!inlocalpath)
+		{
+			list_add_str(includes_checked,tmp2);
+		}
+			
 		/* remove filename from tmp2 */
 		*pathend = 0;
 
