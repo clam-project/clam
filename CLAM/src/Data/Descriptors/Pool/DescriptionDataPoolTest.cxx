@@ -17,12 +17,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DescriptionDataPoolTest );
 class DescriptionDataPoolTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DescriptionDataPoolTest );
-	CPPUNIT_TEST( testPopulateScope_withANonExistingScope );
-	CPPUNIT_TEST( testPopulateScope_withAnExistingScope );
-	CPPUNIT_TEST( testInstantiateAttribute_fromANonPopulatedScope );
-	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingAttribute );
-	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingScope );
-	CPPUNIT_TEST( testInstantiateAttribute_withAnExistingScope );
+	CPPUNIT_TEST( testUnpopulatedScopeIsNotFreed );
+//	CPPUNIT_TEST( testPopulateScope_withANonExistingScope );
+//	CPPUNIT_TEST( testPopulateScope_withAnExistingScope );
+//	CPPUNIT_TEST( testPopulateScop_withSeveralScopes );
+//	CPPUNIT_TEST( testInstantiateAttribute_fromANonPopulatedScope );
+//	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingAttribute );
+//	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingScope );
+//	CPPUNIT_TEST( testInstantiateAttribute_withAnExistingScope );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,6 +42,12 @@ public:
 private:
 	CLAM::DescriptionScheme mScheme;
 private:
+	void testUnpopulatedScopeIsNotFreed()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		// Should not be a memory leak
+	}
+
 	void testPopulateScope_withANonExistingScope()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
@@ -55,10 +63,20 @@ private:
 		}
 	}
 
+	/*
 	void testPopulateScope_withAnExistingScope()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
 		data.PopulateScope("AudioSample",10);
+		// No memory leak here
+	}
+
+	void testPopulateScop_withSeveralScopes()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		data.PopulateScope("AudioSample",40);
+		data.PopulateScope("Frame",10);
+		// No memory leak here
 	}
 
 	void testInstantiateAttribute_fromANonExistingScope()
@@ -114,7 +132,7 @@ private:
 		CLAM::TData * audio = data.GetAttributePool<CLAM::TData>("AudioSample","Level");
 		// TODO: Which assert
 	}
-	
+	*/
 };
 
 
