@@ -1,15 +1,21 @@
 
 #include "SupervisedSystemWithoutTrueFlowControl.hxx"
 
-FlowControlExample
+namespace FlowControlExample
 {
-SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl
-	( std::string fileIn, std::string fileOut , int frameSize, int maxFramesToProcess, bool hasAudioOut ):
+
+// constructor
+SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl ( 
+	std::string fileIn, 
+	std::string fileOut , 
+	int frameSize, 
+	int maxFramesToProcess, 
+	bool hasAudioOut 
+)	:
 	_audioManager(44100, frameSize),
 	_frameSize(frameSize), 
 	_maxFramesToProcess(nFrames),
 	_hasAudioOut(hasAudioOut),
-
 {
 	ConfigureNetworks();
 }
@@ -30,7 +36,6 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 	CLAM::OscillatorConfig oscilCfg;
 	oscilCfg.SetFrequency(440.0);
 	oscilCfg.SetAmplitude(0.5);
-	oscilCfg.SetName("Oscillator0");
 
 	CLAM::AudioFileConfig fileCfg;
 	fileCfg.SetFilename( _fileOutName );
@@ -38,19 +43,17 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 	fileCfg.SetFiletype( CLAM::EAudioFileType::eWave );
 	fileCfg.SetFrameSize( _frameSize );
 	fileCfg.SetKeepFrameSizes(true);
-	fileCfg.SetName("File Out");
 
-	_oscillatorToFileOut.AddProcessing(new CLAM::Oscillator(oscilCfg));
-	_oscillatorToFileOut.AddProcessing(new CLAM::AudioFileOut(fileCfg));
+	_oscillatorToFileOut.AddProcessing("oscillator-generator", new CLAM::Oscillator(oscilCfg) );
+	_oscillatorToFileOut.AddProcessing("file-out", new CLAM::AudioFileOut(fileCfg));
 
 	//link them
-	_oscillatorToFileOut.AddConnection( "Oscillator0", "Audio Output", "File Out", "Input" );
+	_oscillatorToFileOut.ConnectPorts( "oscillator-generator:Audio Output", "file-out:Input" );
 
 	if (_hasAudioOut)
 	{
-		fileCfg.SetName("Audio Out");
-		_oscillatorToFileOut.AddProcessing(new CLAM::AudioOut(fileCfg));
-		_oscillatorToFileOut.AddConnection( "Oscillator0", "Audio Output", "Audio Out", "Input" );
+		_oscillatorToFileOut.AddProcessing( "audio-out", new CLAM::AudioOut(fileCfg) );
+		_oscillatorToFileOut.ConnectPorts( "Oscillator0.Audio Output", "Audio Out.Input" );
 	}
 
 }
