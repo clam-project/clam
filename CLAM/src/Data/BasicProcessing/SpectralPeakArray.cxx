@@ -156,7 +156,7 @@ SpectralPeak SpectralPeakArray::GetSpectralPeak(TIndex pos) const
 }
 
 
-void SpectralPeakArray::SetSpectralPeak(int pos,const SpectralPeak& spectralPeak,TIndex index)
+void SpectralPeakArray::SetSpectralPeak(TIndex pos,const SpectralPeak& spectralPeak,TIndex index)
 {
 	CLAM_ASSERT(spectralPeak.GetScale()==GetScale(),"SpectralPeakArray::SetSpectralPeak:Incorrect scale in input SpectralPeak");
 	CLAM_ASSERT(pos<GetnPeaks(),"SpectralPeakArray::SetSpectralPeak:Out of bounds in peak array");
