@@ -1,6 +1,3 @@
-#ifndef __RTAAUDIODEVICE__
-#define __RTAAUDIODEVICE__
-
 #include "AudioDevice.hxx"
 #include "AudioDeviceList.hxx"
 #include "RtAudio.h"
