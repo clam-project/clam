@@ -95,54 +95,35 @@ namespace AudioCodecs
 					remaining = 0;
 				}
 				
-				readSize = fread( readStart, 1, readSize, mpFile );
+				TSize readbytes = fread( readStart, sizeof(unsigned char), readSize, mpFile );
 			
-				
-				if ( readSize == 0 )
+				if ( readbytes < readSize ) // Less bytes than expected were read
 				{
-				  // MRJ:Last frame handling. The reason for this can
-				  // be traced to libmad-dev mailing list. It seems
-				  // that one should add MAD_BUFFER_GUARD bytes worth of
-				  // padding if you want to see the last frame decoded...
-					CLAM_DEBUG_ASSERT( mInputBufferSize - readSize >= MAD_BUFFER_GUARD,
-							   "Whoops! no room left for buffer guard bytes!");
-					while ( readSize < MAD_BUFFER_GUARD )
-						readStart[ readSize++ ] = 0;
-					
+					CLAM_DEBUG_ASSERT( readStart + readbytes + MAD_BUFFER_GUARD <=
+							   mInputBuffer + mInputBufferSize,
+							   "Whoops! no room left for buffer guard bytes" );
+					unsigned char* startPadding = readStart + readbytes;
+
+					for ( int i = 0; i < MAD_BUFFER_GUARD; i++ )
+						startPadding[i] = 0;
+
+					readSize = readbytes + MAD_BUFFER_GUARD;
 				}
-				
-				// some I/O error occurred
-				if ( readSize < 0 )
-					continue;
-			
+				else
+					readSize = readbytes;
+
 			
 				mad_stream_buffer( &mBitstream, mInputBuffer, readSize+remaining );
-				mBitstream.error = mad_error(0);
+				mBitstream.error = MAD_ERROR_NONE;
 			}
 			
 			
-			if (mad_frame_decode( &mCurrentFrame, &mBitstream ) ) // error
+			if (mad_frame_decode( &mCurrentFrame, &mBitstream )==-1 ) // error
 			{
 				// some *recoverable* error occured
-				if ( MAD_RECOVERABLE( mBitstream.error ) )
-				{
-					switch( mBitstream.error )
-					{
-					case MAD_ERROR_LOSTSYNC:
-						// we try to sync again
-						mad_stream_sync( &mBitstream );
-						break;
-					default:
-						std::cerr << "\n " << mad_stream_errorstr( &mBitstream ) << " \n";
-					}
-					
-				}
-				// something bad - like a CRC check failure has happened
-				else if ( mBitstream.error != MAD_ERROR_BUFLEN )					
-					mFatalError = true;
-				
-				continue;
-				
+				if ( !MAD_RECOVERABLE( mBitstream.error ) )
+					if ( mBitstream.error != MAD_ERROR_BUFLEN )					
+						mFatalError = true;								
 			}
 			else // frame was decoded right
 			{
@@ -152,8 +133,8 @@ namespace AudioCodecs
 				mad_timer_add( &mStreamTimer, mCurrentFrame.header.duration );
 			}
 
-		}
 
+		}
 
 		return validFrameFound;
 

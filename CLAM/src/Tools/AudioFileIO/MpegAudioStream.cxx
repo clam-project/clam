@@ -93,13 +93,23 @@ namespace AudioCodecs
 			
 				mBitstream.SynthesizeCurrent();
 				
+				CLAM_ASSERT( mEncodedChannels == MAD_NCHANNELS( &mBitstream.CurrentFrame().header ),
+					     "This frame hasn't mEncodedChannels channels!" );
+
+				CLAM_ASSERT( mEncodedChannels == mBitstream.CurrentSynthesis().pcm.channels,
+					     "Synthesis result does not have the expected number of channels" );
+				
+				TSize samplesDecodedThisTime = mBitstream.CurrentSynthesis().pcm.length;
+
 				for( int i = 0; i < mEncodedChannels; i++ )
 				{
+					mad_fixed_t* channelData = mBitstream.CurrentSynthesis().pcm.samples[i];
+
 					mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
-								 mBitstream.CurrentSynthesis().pcm.samples[i],
-								 mBitstream.CurrentSynthesis().pcm.samples[i]+
-								 mBitstream.CurrentSynthesis().pcm.length );
+								 channelData,
+								 channelData + samplesDecodedThisTime );
 				}
+
 
 				mSamplesDecoded += mBitstream.CurrentSynthesis().pcm.length;
 			}
@@ -120,6 +130,7 @@ namespace AudioCodecs
 				mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
 							 samplesToRead - mDecodeBuffer[i].size(),
 							 mad_fixed_t(0) );
+
 			}
 
 		ConsumeDecodedSamples();

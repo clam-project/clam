@@ -139,7 +139,7 @@ namespace AudioCodecs
 			// mark channel as consumed
 			*(cIt + channelIndex ) = true;
 			const int stride = channelCount;
-			TData* pSamples = *(samples);
+			TData* pSamples = *(samples + channelIndex);
 
 			for ( const TData* i = mInterleavedData.GetPtr() + channelIndex;
 			      i<end;
@@ -212,7 +212,7 @@ namespace AudioCodecs
 			// mark channel as consumed
 			*(cIt + channelIndex ) = true;
 			const int stride = channelCount;
-			const TData* pSamples = *(samples);
+			const TData* pSamples = *(samples + channelIndex);
 
 			for ( TData* i = mInterleavedDataOut.GetPtr() + channelIndex;
 			      i<end;
