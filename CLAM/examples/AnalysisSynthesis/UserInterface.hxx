@@ -8,10 +8,9 @@
 class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
 #include <FL/Fl_Window.H>
+#include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Counter.H>
-#include <FL/Fl_Group.H>
-#include <FL/Fl_Output.H>
 #include <FL/Fl_Box.H>
 
 class UserInterface {
@@ -28,13 +27,8 @@ private:
   static void cb_Edit(Fl_Menu_*, void*);
   inline void cb_Store_i(Fl_Menu_*, void*);
   static void cb_Store(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mDisplayInSM;
-  static Fl_Menu_Item *mDisplayInSound;
-  inline void cb_mDisplayInSound_i(Fl_Menu_*, void*);
-  static void cb_mDisplayInSound(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mDisplayInSpec;
-  inline void cb_mDisplayInSpec_i(Fl_Menu_*, void*);
-  static void cb_mDisplayInSpec(Fl_Menu_*, void*);
+  inline void cb_Exit_i(Fl_Menu_*, void*);
+  static void cb_Exit(Fl_Menu_*, void*);
   static Fl_Menu_Item *mAnalyze;
   inline void cb_mAnalyze_i(Fl_Menu_*, void*);
   static void cb_mAnalyze(Fl_Menu_*, void*);
@@ -61,32 +55,51 @@ private:
   static Fl_Menu_Item *mSynthesize;
   inline void cb_Synthesize_i(Fl_Menu_*, void*);
   static void cb_Synthesize(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mOutputSM;
-  static Fl_Menu_Item *mVisualizeOutputs;
+  static Fl_Menu_Item *mStoreOutputs;
   inline void cb_Sound_i(Fl_Menu_*, void*);
   static void cb_Sound(Fl_Menu_*, void*);
-  inline void cb_Spectrum_i(Fl_Menu_*, void*);
-  static void cb_Spectrum(Fl_Menu_*, void*);
   inline void cb_Sinusoidal_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal(Fl_Menu_*, void*);
   inline void cb_Residual_i(Fl_Menu_*, void*);
   static void cb_Residual(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mStoreOutputs;
-  inline void cb_Sound1_i(Fl_Menu_*, void*);
-  static void cb_Sound1(Fl_Menu_*, void*);
-  inline void cb_Sinusoidal1_i(Fl_Menu_*, void*);
-  static void cb_Sinusoidal1(Fl_Menu_*, void*);
-  inline void cb_Residual1_i(Fl_Menu_*, void*);
-  static void cb_Residual1(Fl_Menu_*, void*);
-  inline void cb_Exit_i(Fl_Menu_*, void*);
-  static void cb_Exit(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mViewMenuItem;
+  static Fl_Menu_Item *mShowOriginalAudioItem;
+  inline void cb_mShowOriginalAudioItem_i(Fl_Menu_*, void*);
+  static void cb_mShowOriginalAudioItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mShowSinTracksItem;
+  inline void cb_mShowSinTracksItem_i(Fl_Menu_*, void*);
+  static void cb_mShowSinTracksItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mShowSpectrumAndPeaksItem;
+  inline void cb_mShowSpectrumAndPeaksItem_i(Fl_Menu_*, void*);
+  static void cb_mShowSpectrumAndPeaksItem(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *mShowSinusoidalSpectrumItem;
+private:
+  inline void cb_mShowSinusoidalSpectrumItem_i(Fl_Menu_*, void*);
+  static void cb_mShowSinusoidalSpectrumItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mShowResidualSpectrumItem;
+  inline void cb_mShowResidualSpectrumItem_i(Fl_Menu_*, void*);
+  static void cb_mShowResidualSpectrumItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mSynthesizedAudioItem;
+  inline void cb_mSynthesizedAudioItem_i(Fl_Menu_*, void*);
+  static void cb_mSynthesizedAudioItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mSynthesizedSinusoidalItem;
+  inline void cb_mSynthesizedSinusoidalItem_i(Fl_Menu_*, void*);
+  static void cb_mSynthesizedSinusoidalItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mSynthesizedResidualItem;
+  inline void cb_mSynthesizedResidualItem_i(Fl_Menu_*, void*);
+  static void cb_mSynthesizedResidualItem(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *mHelpItem;
+private:
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
+public:
   Fl_Counter *mCounter;
+private:
   inline void cb_mCounter_i(Fl_Counter*, void*);
   static void cb_mCounter(Fl_Counter*, void*);
   Fl_Smart_Tile *mSmartTile;
-  Fl_Output *mConfigurationText;
   void AboutWindow();
   Fl_Window *mWindow2;
   inline void cb_mWindow2_i(Fl_Window*, void*);
@@ -113,12 +126,13 @@ private:
   void ChangeFrame();
   void ChangeTimeTag(double tag);
   void DisplayInputSound();
-  void DisplayInputSpectrum();
-  void DisplayOutputSound();
-  void DisplayOutputSpectrum();
-  void DisplayOutputSoundSinusoidal();
-  void DisplayOutputSoundResidual();
   void Update();
   void DisplaySinusoidalTracks();
+  void DisplaySpectrumAndPeaks();
+  void DisplaySinusoidalSpectrum();
+  void DisplayResidualSpectrum();
+  void DisplaySynthesizedAudio();
+  void DisplaySynthesizedSinusoidal();
+  void DisplaySynthesizedResidual();
 };
 #endif

@@ -25,7 +25,6 @@
 #include <string>
 
 #include "SerializationController.hxx"
-#include "VisualizationController.hxx"
 
 #include "SMSSynthesis.hxx"
 #include "SMSAnalysis.hxx"
@@ -60,8 +59,6 @@ namespace CLAM
 		void SetTransformation(SMSTransformation* pTransformation);
 		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
-		CLAMVM::VisualizationController mVisualization;
-
 	protected:
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */

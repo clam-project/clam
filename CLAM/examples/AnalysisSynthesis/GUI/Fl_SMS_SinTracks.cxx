@@ -30,7 +30,7 @@ namespace CLAMVM
 	Fl_SMS_SinTracks::Fl_SMS_SinTracks( int X, int Y, int W, int H, const char* label )
 		: Fl_Window( X, Y, W, H, label )
 	{
-		mXAxis = new Fl_X_Axis( X,H-50,W-50, 30, "Time (sec)" );
+		mXAxis = new Fl_X_Axis( X,H-50,W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
 		mXAxis->scale( FL_AXIS_LIN );
 		mXAxis->minimum( 0.0f );
@@ -41,7 +41,7 @@ namespace CLAMVM
 		mXAxis->axis_color( FL_BLACK );
 		mXAxis->axis_align( FL_AXIS_BOTTOM|FL_AXIS_LINE);
 
-		mYAxis = new Fl_Y_Axis( W-50,Y,30,H-50, "Frequency (Hz)" );
+		mYAxis = new Fl_Y_Axis( W-50,Y,30,H-50 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
 		mYAxis->minimum( -1.0 );

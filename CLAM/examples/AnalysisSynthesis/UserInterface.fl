@@ -27,14 +27,17 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {514 237 872 548} resizable
+      xywh {154 173 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
+      Fl_Group {} {open
+        xywh {0 0 872 21}
+      } {}
       Fl_Menu_Bar mMenuBar {open
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input open
+          label File open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -52,24 +55,15 @@ class UserInterface {open
             callback {StoreConfiguration();}
             private xywh {15 15 100 20} labelsize 12
           }
-          submenu mDisplayInSM {
-            label Display open
-            private xywh {10 10 100 20} labelsize 12 deactivate
-          } {
-            menuitem mDisplayInSound {
-              label Sound
-              callback {DisplayInputSound();}
-              private xywh {35 35 100 20} labelsize 12 deactivate
-            }
-            menuitem mDisplayInSpec {
-              label Spectrum
-              callback {DisplayInputSpectrum();}
-              private xywh {45 45 100 20} labelsize 12 deactivate
-            }
+          menuitem {} {
+            label Exit
+            callback {if(mWindow2!=NULL) delete mWindow2;
+Exit();}
+            private xywh {20 20 100 20} shortcut 0x40071 labelsize 12
           }
         }
         submenu {} {
-          label Analysis open
+          label {SMS Analysis} open
           xywh {0 0 100 20} labelsize 12
         } {
           menuitem mAnalyze {
@@ -88,7 +82,7 @@ class UserInterface {open
             private xywh {45 45 100 20} labelsize 12 deactivate
           }
           submenu mMelodySM {
-            label Melody
+            label Melody open
             private xywh {25 25 100 20} labelsize 12 deactivate
           } {
             menuitem mMelodyAnalyze {
@@ -109,7 +103,7 @@ class UserInterface {open
           }
         }
         submenu {} {
-          label Transformation
+          label {SMS Transformation}
           private xywh {20 20 100 20} labelsize 12
         } {
           menuitem {} {
@@ -124,100 +118,118 @@ class UserInterface {open
           }
         }
         submenu mSynthesize {
-          label Synthesis open
-          private xywh {0 0 100 20} labelsize 12 deactivate
+          label {SMS Synthesis} open
+          private xywh {0 0 100 20} labelsize 12
         } {
           menuitem {} {
             label Synthesize
             callback {Synthesize();}
             private xywh {30 30 100 20} shortcut 0x40073 labelsize 12
           }
-        }
-        submenu mOutputSM {
-          label Output open
-          private xywh {10 10 100 20} labelsize 12 deactivate
-        } {
-          submenu mVisualizeOutputs {
-            label Display open
-            private xywh {5 5 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label Sound
-              callback {DisplayOutputSound();}
-              private xywh {25 25 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Spectrum
-              callback {DisplayOutputSpectrum();}
-              private xywh {55 55 100 20} labelsize 12 hide
-            }
-            menuitem {} {
-              label Sinusoidal
-              callback {DisplayOutputSoundSinusoidal();}
-              private xywh {45 45 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Residual
-              callback {DisplayOutputSoundResidual();}
-              private xywh {50 50 100 20} labelsize 12
-            }
-          }
           submenu mStoreOutputs {
-            label Store
-            private xywh {10 10 100 20} labelsize 12
+            label {Store Results} open
+            private xywh {15 15 100 20} labelsize 12
           } {
             menuitem {} {
               label Sound
               callback {StoreOutputSound();}
-              private xywh {30 30 100 20} labelsize 12
+              private xywh {35 35 100 20} labelsize 12
             }
             menuitem {} {
               label Sinusoidal
               callback {StoreOutputSoundSinusoidal();}
-              private xywh {60 60 100 20} labelsize 12
+              private xywh {65 65 100 20} labelsize 12
             }
             menuitem {} {
               label Residual
               callback {StoreOutputSoundResidual();}
-              private xywh {65 65 100 20} labelsize 12
+              private xywh {70 70 100 20} labelsize 12
             }
           }
         }
-        menuitem {} {
-          label Exit
-          callback {if(mWindow2!=NULL) delete mWindow2;
-Exit();}
-          private xywh {15 15 100 20} shortcut 0x40071 labelsize 12
+        submenu mViewMenuItem {
+          label View open
+          private xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem mShowOriginalAudioItem {
+            label {Original Audio}
+            callback {DisplayInputSound();}
+            private xywh {0 0 100 20} labelsize 12
+          }
+          submenu {} {
+            label {Analysis Results} open
+            xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mShowSinTracksItem {
+              label SinusoidalTracks
+              callback {DisplaySinusoidalTracks();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            submenu {} {
+              label {Frame Data} open
+              xywh {0 0 100 20} labelsize 12
+            } {
+              menuitem mShowSpectrumAndPeaksItem {
+                label {Spectrum and Peaks}
+                callback {DisplaySpectrumAndPeaks();}
+                private xywh {0 0 100 20} labelsize 12
+              }
+              menuitem mShowSinusoidalSpectrumItem {
+                label {Sinusoidal Spectrum}
+                callback {DisplaySinusoidalSpectrum();}
+                xywh {0 0 100 20} labelsize 12
+              }
+              menuitem mShowResidualSpectrumItem {
+                label {Residual Spectrum}
+                callback {DisplayResidualSpectrum();}
+                private xywh {0 0 100 20} labelsize 12
+              }
+            }
+          }
+          submenu {} {
+            label {Synthesis Results} open
+            xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mSynthesizedAudioItem {
+              label {Synthesized Audio}
+              callback {DisplaySynthesizedAudio();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mSynthesizedSinusoidalItem {
+              label {Synthesized Sinusoidal}
+              callback {DisplaySynthesizedSinusoidal();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mSynthesizedResidualItem {
+              label {Synthesized Residual Sound}
+              callback {DisplaySynthesizedResidual();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+          }
         }
-        menuitem {} {
-          label About
-          callback {AboutWindow()}
-          private xywh {10 10 100 20} labelsize 12
+        submenu mHelpItem {
+          label Help
+          xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem {} {
+            label About
+            callback {AboutWindow()}
+            private xywh {15 15 100 20} labelsize 12
+          }
         }
       }
       Fl_Counter mCounter {
         label {Frame }
-        callback {ChangeFrame();}
-        private xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+        callback {ChangeFrame();} selected
+        xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1
       }
       Fl_Group {} {open
-        xywh {5 50 860 470} resizable
+        xywh {0 25 870 495} resizable
       } {
         Fl_Box mSmartTile {
-          private xywh {5 50 860 470}
+          private xywh {0 25 870 495}
           code0 {o->minsize(80);}
           class Fl_Smart_Tile
-        }
-      }
-      Fl_Group {} {
-        xywh {0 20 872 30}
-      } {
-        Fl_Output mConfigurationText {
-          label {Configuration File}
-          private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
-        }
-        Fl_Box {} {
-          xywh {505 20 367 30} resizable
         }
       }
     }
@@ -274,12 +286,12 @@ mWindow2=NULL;}
   decl {void ChangeFrame();} {}
   decl {void ChangeTimeTag(double tag);} {}
   decl {void DisplayInputSound();} {}
-  decl {void DisplayInputSpectrum();} {}
-  decl {void DisplayOutputSound();} {}
-  decl {void DisplayOutputSpectrum();} {}
-  decl {void DisplayOutputSoundSinusoidal();} {}
-  decl {void DisplayOutputSoundResidual();} {}
   decl {void Update();} {}
-  decl {void DisplaySinusoidalTracks();} {selected
-  }
+  decl {void DisplaySinusoidalTracks();} {}
+  decl {void DisplaySpectrumAndPeaks();} {}
+  decl {void DisplaySinusoidalSpectrum();} {}
+  decl {void DisplayResidualSpectrum();} {}
+  decl {void DisplaySynthesizedAudio();} {}
+  decl {void DisplaySynthesizedSinusoidal();} {}
+  decl {void DisplaySynthesizedResidual();} {}
 } 

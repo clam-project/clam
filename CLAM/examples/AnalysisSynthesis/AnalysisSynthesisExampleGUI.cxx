@@ -25,22 +25,43 @@
 
 namespace CLAMGUI
 {
+	AnalysisSynthesisExampleGUI::AnalysisSynthesisExampleGUI()
+		: mUI( NULL )
+	{
+		TimeSelected.Wrap( this, &AnalysisSynthesisExampleGUI::OnNewTime );
+		mExplorer.SelectedTime.Connect( TimeSelected );
+	}
+
+	AnalysisSynthesisExampleGUI::~AnalysisSynthesisExampleGUI()
+	{
+		delete mUI;
+	}
 
 	void AnalysisSynthesisExampleGUI::Run(void)
 	{
 		Fl::get_system_colors();
 
-		UserInterface userinterface;
-		userinterface.mAnalysisSynthesisExample = this;
-		userinterface.Init(  );
+		mUI = new UserInterface;
+		mUI->mAnalysisSynthesisExample = this;
+		mUI->Init(  );
 		Fl::get_system_colors();
 		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
 		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
-		userinterface.mWindow->show();
+		mUI->mWindow->show();
 	
 		Fl::run();
 	}
 	
+	void AnalysisSynthesisExampleGUI::OnNewTime( double value )
+	{
+		//Change mCounter
+		TTime time( value / mSegment.GetSamplingRate() );
+		TIndex nframe = mSegment.FindFrame( time );
+		
+		mUI->mCounter->value( (int) nframe );
+		mExplorer.NewFrame( mSegment.GetFramesArray()[nframe] );
+	}
+
 	Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 
 	{
 		ProgressGUI* tmp = new ProgressGUI(title,from,to);
@@ -68,7 +89,7 @@ namespace CLAMGUI
 
 	void AnalysisSynthesisExampleGUI::SetCanvas( Fl_Smart_Tile* canvas )
 	{
-		mVisualization.SetCanvas( canvas );
+		mExplorer.SetCanvas( canvas );
 	}
 
 	void AnalysisSynthesisExampleGUI::DoAnalysis()

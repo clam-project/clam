@@ -32,7 +32,7 @@ namespace CLAMVM
 	Fl_SMS_Spectrum::Fl_SMS_Spectrum( int X, int Y, int W, int H, const char* label )
 		: Fl_Window( X, Y, W, H )
 	{
-		mXAxis = new Fl_X_Axis( X, H-40, W-40, 20, "Frequency (Hz)" );
+		mXAxis = new Fl_X_Axis( X, H-40, W-40, 20 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
 		mXAxis->scale( FL_AXIS_LIN );
 		mXAxis->minimum( 0.0f );
@@ -43,7 +43,7 @@ namespace CLAMVM
 		mXAxis->axis_color( FL_BLACK );
 		mXAxis->axis_align( FL_AXIS_BOTTOM | FL_AXIS_LINE );
 
-		mYAxis = new Fl_Y_Axis( W-50, Y, 30, H-40, "Amplitude" );
+		mYAxis = new Fl_Y_Axis( W-50, Y, 30, H-40 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
 		mYAxis->minimum( -1.0 );
@@ -79,15 +79,12 @@ namespace CLAMVM
 	void Fl_SMS_Spectrum::OnNewSpectrum( const DataArray& array, TData spectralRange )
 	{
 		mDrawMgr.CacheData( array );
-		TData maxMag = *std::max_element( array.GetPtr(), array.GetPtr()+array.Size() );
-		TData minMag = *std::min_element( array.GetPtr(), array.GetPtr()+array.Size() );
 		const TData offsetPercentil = 0.2f; // 20%
-		TData maxOffset = fabs( maxMag - minMag ) * offsetPercentil;
-		mDisplay->SetWorldSpace( array.Size() - 2, 0, maxMag + maxOffset, minMag );
+		mDisplay->SetWorldSpace( array.Size() - 2, 0, 0, -150 );
 		mXAxis->minimum( 0 );
 		mXAxis->maximum( spectralRange );
-		mYAxis->minimum( minMag );
-		mYAxis->maximum( maxMag );
+		mYAxis->minimum( -150 );
+		mYAxis->maximum( 0 );
 		mDisplay->invalidate();
 		redraw();
 	}

@@ -6,6 +6,8 @@
 #include "ProgressGUI.hxx"
 #include "AnalysisSynthesisExampleBase.hxx"
 #include "Thread.hxx"
+#include "SMS_DataExplorer.hxx"
+#include "Slotv1.hxx"
 using namespace CLAM;
 
 class UserInterface;
@@ -20,9 +22,9 @@ public:
 
 	friend class UserInterface;
 
-	virtual ~AnalysisSynthesisExampleGUI()
-	{
-	}
+	AnalysisSynthesisExampleGUI();
+
+	virtual ~AnalysisSynthesisExampleGUI();
 
 	void Run();
 
@@ -31,6 +33,8 @@ public:
 	WaitMessage* CreateWaitMessage(const char* title);
 
 	void SetCanvas( Fl_Smart_Tile* canvas );
+
+	SigSlot::Slotv1<double>        TimeSelected;
 
 protected: // methods
 
@@ -44,14 +48,18 @@ protected: // methods
 
 	void DoStoreAnalysis();
 
+	void OnNewTime( double time );
+
 private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
 protected:
-	int mThreadState;
-	std::string mFilename;
-	Thread      mThread;
+	int                       mThreadState;
+	std::string               mFilename;
+	Thread                    mThread;
+	CLAMVM::SMS_DataExplorer  mExplorer;
+	UserInterface*            mUI;
 };
 
 }
