@@ -43,7 +43,10 @@ public:
 	InPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
 	virtual ~InPort();
 
-	const Token & GetData(int offset=0);
+	// XR: BIG TODO: make this method const!
+	/*const*/ Token & GetData(int offset=0);
+	
+	
 	void SetSize( int newSize );
 	int GetSize();
 	int GetHop();
@@ -83,7 +86,8 @@ InPort<Token>::~InPort()
 }
 
 template<class Token>
-const Token & InPort<Token>::GetData( int offset )
+// XR BIG TODO: make this method const!
+/*const*/ Token & InPort<Token>::GetData( int offset )
 {
 	return mRegion[offset];
 }
