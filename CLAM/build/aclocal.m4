@@ -161,10 +161,16 @@ fltk_local=no
 if test -d ../../fltk/include/FL/; then
 	AC_MSG_RESULT(yes)
 	found_fltk=yes
-	FLTK_INCLUDES="../../fltk/include"
-	FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
-	FLAG_FLTK_INCLUDES="-I../../fltk/include"
-	FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
+	FLTK_VERSION=`../../fltk/fltk-config --api-version`
+	if test $FLTK_VERSION = 1.1; then
+	    FLAG_FLTK_INCLUDES=`../../fltk/fltk-config --use-gl --use-images --cxxflags`
+	    FLAG_FLTK_LIBS=`../../fltk/fltk-config --use-gl --use-images --ldflags`
+	else
+	    FLTK_INCLUDES="../../fltk/include"
+	    FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
+	    FLAG_FLTK_INCLUDES="-I../../fltk/include"
+	    FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
+	fi
 	fltk_local=yes
 else
 	AC_MSG_RESULT(no)
