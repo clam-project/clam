@@ -1,4 +1,4 @@
-SUBDIRS=DescriptorsGUI Salto SpectralDelay PFC_SpectralDelay
+SUBDIRS=Salto SpectralDelay 
 PROGRAMS=\
 	Spectrum_example\
 	FFT_example\
