@@ -175,6 +175,13 @@ namespace CLAM
 		Array< Array<double> > bandOnsetDetectData(mnBands);	//Data on which detection is performed 
 		bandOnsetDetectData.SetSize(mnBands);
 
+		for ( int i = 0; i < mnBands; i++ )
+		{
+			bandOnsetDetectData[i].Resize( mnSamples );
+			bandOnsetDetectData[i].SetSize( mnSamples );
+		}
+
+
 		Array< Array<TimeIndex> > bandCandidates(mnBands);		//Candidates positions per band
 		bandCandidates.SetSize(mnBands);
 
@@ -355,20 +362,17 @@ namespace CLAM
 	}
 
 
-////////////////////////////////
-//////ONSET TIME DETECTION//////
-////////////////////////////////
 	void OnsetDetector::DetectPosition(Array<double>& in, Array<double>& ret)
 	{
 		int i;
 
-		for (i=0 ; i<mnSamples ; i++) 
+		//Sets first and last values to zero
+		ret[0] = 0.0;
+		ret[mnSamples-1] = 0.0;
+
+		for (i=1; i<mnSamples-1; i++) 
 		{
-			if (i==0 || i==mnSamples-1)	//Sets first and last values to zero
-			{ret.AddElem(0);}
-			else
-			{ret.AddElem(log(in[i+1])-log(in[i-1]));}
-		
+			ret[i] = log( in[i+1] ) - log( in[i-1] );
 		}
 	}
 
