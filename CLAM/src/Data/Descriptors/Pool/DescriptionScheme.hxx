@@ -5,8 +5,8 @@
 #include "DescriptionScope.hxx"
 
 /*
- * You can find the doxygen of the SemanticalAnalysis group
- * at the end of this file.
+ You can find the doxygen of the SemanticalAnalysis group
+ at the end of this file.
  */
 
 namespace CLAM
