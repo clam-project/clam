@@ -144,7 +144,9 @@ inline bool OutPortTmpl<T>::IsAttached()
 template<class T>
 inline bool OutPortTmpl<T>::IsReadyForWriting()
 {
-	CLAM_ASSERT( GetNode()!=0, "OutPortTmpl<T>::IsReadyForWriting() only makes sense when Port attached to Node" );
+	if( !GetNode() ) //only is "ready" when  Port attached to Node
+		return false;
+	
 	return mpNode->CanActivateRegion(*mpRegion);
 }
 

@@ -138,7 +138,9 @@ inline bool OutPortTmpl<Audio>::IsAttached()
 
 inline bool OutPortTmpl<Audio>::IsReadyForWriting()
 {
-	CLAM_ASSERT( GetNode()!=0, "OutPortTmpl<Audio>::IsReadyForWriting() only makes sense when Port attached to Node" );
+	if( !GetNode() ) //only is "ready" when  Port attached to Node
+		return false;
+
 	return mpNode->CanActivateRegion(*mpRegion);
 }
 

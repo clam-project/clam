@@ -157,7 +157,9 @@ inline bool InPortTmpl<T>::IsAttached()
 template<class T>
 inline bool InPortTmpl<T>::IsReadyForReading()
 {
-	CLAM_ASSERT( GetNode()!=0, "InPortTmpl<T>::IsReadyForReading() only makes sense when Port attached to Node" );
+	if( !GetNode() ) //only is "ready" when  Port attached to Node
+		return false;
+	
 	return mpNode->CanActivateRegion( *mpRegion );
 }
 
