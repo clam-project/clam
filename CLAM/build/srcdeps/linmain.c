@@ -7,7 +7,9 @@
 #include "config_parser.h"
 #include "objdepname.h"
 #include "config_parser.h"
+#include "verbose.h"
 
+int verbose = 0;
 
 void usage(void)
 {
@@ -231,35 +233,61 @@ void makefilevars_generate(void)
 
 int main(int argc,char** argv)
 {
+	char* settingsfile = 0;
+	char* srcfile = 0;
+	int progress = 0;
 	gendepend = 2;
+
+	{
+		int i;
+		for (i=1;i<argc;i++)
+		{
+			if (argv[i][0]=='-')
+				if (argv[i][1]=='d' && argv[i][2]==0)
+					gendepend=1;
+				else if (argv[i][1]=='p' && argv[i][2]==0)
+					progress=1;
+				else if (argv[i][1]=='v' && argv[i][2]==0)
+					verbose=1;
+				else
+					usage();
+			else
+				if (settingsfile==0) settingsfile = argv[i];
+				else if (srcfile==0) srcfile = argv[i];
+				else
+					usage();
+		}
+	}
 	
-	if (argc<2) usage();
-	if (strcmp(argv[1],"-d")==0)
-		gendepend=1;
-
-	config_init();
-
-	listhash_add_item_str(config,"OS_WINDOWS","0");
-	listhash_add_item_str(config,"OS_LINUX","1");
-
-
+	
 	if (gendepend==1)
 	{
-		if (argc!=4) usage();
-		config_parse(argv[2]);
+		if (srcfile==0) usage();
 	}
 	else
 	{
-		if (argc!=2) usage();
-		config_parse(argv[1]);
+		if (settingsfile==0) usage();
 	}
+	
+	config_init();
 
+#ifdef __APPLE__
+	listhash_add_item_str(config,"OS_WINDOWS","0");
+	listhash_add_item_str(config,"OS_LINUX","0");
+	listhash_add_item_str(config,"OS_MACOSX","1");
+#else
+	listhash_add_item_str(config,"OS_WINDOWS","0");
+	listhash_add_item_str(config,"OS_LINUX","1");
+	listhash_add_item_str(config,"OS_MACOSX","0");
+#endif
+
+	config_parse(settingsfile);
 
 	if (gendepend==1)
 	{
 		listkey* k = listhash_find(config,"SOURCES");
 		list* sources = k->l;
-		list_add_str(sources,argv[3]);
+		list_add_str(sources,srcfile);
 		recursesrcs = 0;
 	}else{
 		recursesrcs = 1;
@@ -274,8 +302,10 @@ int main(int argc,char** argv)
 		item* i = guessed_sources->first;
 		while (i)
 		{
-/*		 fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
-*/
+			if (progress)
+			{
+				fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
+			}
 		 parser_run(i->str);
 
 		 i = i->next;

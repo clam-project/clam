@@ -13,6 +13,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 #ifdef WIN32
 int _recursedir(

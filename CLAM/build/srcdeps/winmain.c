@@ -7,6 +7,10 @@
 #include "config_parser.h"
 #include "dsp_parser.h"
 
+#include "verbose.h"
+
+int verbose = 0;
+
 int main(int argc,char** argv)
 {
 	if (argc!=3)
