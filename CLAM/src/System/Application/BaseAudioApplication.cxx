@@ -129,7 +129,7 @@ namespace CLAM {
 		*/
 		//pThis->AppCleanup();
 
-		while (AudioManager::pSingleton)
+		while (&(AudioManager::Current()))
 		{
 			printf("!\n");
 		}
