@@ -24,6 +24,7 @@
 #include <cmath>
 #include "AudioDescriptors.hxx"
 #include "Audio.hxx"
+#include "OSDefines.hxx"
 
 namespace CLAM {
 
@@ -127,28 +128,44 @@ TData AudioDescriptors::ComputeAttackTime()
 {
 	if(mIsAttackTimeComputed) return mComputedAttackTime;
 
-	TData max = 0.;
-	TIndex maxindex = -1,offset;
+	const DataArray& data     = mpAudio->GetBuffer();
+	const TSize      dataSize = mpAudio->GetSize();
 
-	//this algorithm is not the first time I see it, should be generalized and optimized
-	int i;
-	int size=mpAudio->GetSize();
-	for (i=0;i<size;i++)
-		if (data[i] > max) {
-			max = data[i];
-			maxindex = i;
-		}
-	i=0;
-	TData offsetMag=0.02*max;
-	while(true)
-	{
-		if(data[i]>offsetMag){ 
-			offset=i;
-			break;}
-		i++;
+	DataArray energyEnv;
+	energyEnv.Resize(dataSize);
+	energyEnv.SetSize(dataSize);
+
+	// Compute 20Hz lowpass filter coefficients
+	const TData omega_c = 2*PI*20/mpAudio->GetSampleRate();
+	const TData alpha   = (1-sin(omega_c)) / cos(omega_c);
+
+	const TData b0 = (1-alpha)/2;
+	const TData a1 = -alpha;
+
+	// Find maximum value
+	energyEnv[0] = b0*fabsf(data[0]);
+	TData maxVal = energyEnv[0];
+
+	for (TIndex i=1; i<dataSize; i++) {
+		energyEnv[i] = b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*energyEnv[i-1];
+		if (energyEnv[i] > maxVal) maxVal = energyEnv[i];
 	}
 
-	mComputedAttackTime=maxindex-offset;
+	// Locate start and stop of attack
+	const TData startThreshold = 0.02*maxVal;
+	const TData stopThreshold  = 0.80*maxVal;
+
+	TIndex startIdx;
+	for (startIdx=0; startIdx<dataSize; startIdx++) {
+		if (energyEnv[startIdx] > startThreshold) break;
+	}
+
+	TIndex stopIdx;
+	for (stopIdx=startIdx; stopIdx<dataSize; stopIdx++) {
+		if (energyEnv[stopIdx] > stopThreshold) break;
+	}
+
+	mComputedAttackTime=(stopIdx - startIdx) / mpAudio->GetSampleRate();
 	mIsAttackTimeComputed=true;
 	return mComputedAttackTime;
 }
@@ -168,9 +185,9 @@ TData AudioDescriptors::ComputeDecrease()
 	DataArray& data     = mpAudio->GetBuffer();
 	TSize      dataSize = mpAudio->GetSize();
 
-	DataArray RS;
-	RS.Resize(dataSize);
-	RS.SetSize(dataSize);
+	DataArray energyEnv;
+	energyEnv.Resize(dataSize);
+	energyEnv.SetSize(dataSize);
 
 	// Find maximum value index
 	TIndex maxRSind = 0;
@@ -183,10 +200,10 @@ TData AudioDescriptors::ComputeDecrease()
 		if (data[i] == 0) data[i] = mEpsilon;
 
 		// Base computation on base 10 logarithm of approx. signal envelope.
-		RS[i] = log10(fabsf(data[i]));
-		if (RS[i] > maxRS) 
+		energyEnv[i] = log10(fabsf(data[i]));
+		if (energyEnv[i] > maxRS) 
 		{
-			maxRS    = RS[i];
+			maxRS    = energyEnv[i];
 			maxRSind = i;
 		}
 	}
@@ -196,14 +213,14 @@ TData AudioDescriptors::ComputeDecrease()
 	TData meanY = 0;
 	TData num   = 0;
 	TData denum = 0;
-	TData N     = (dataSize - maxRSind);
+	const TData N = dataSize - maxRSind;
 
 	for (TIndex i=maxRSind; i<dataSize; i++) 
 	{
 		meanX += i;
-		meanY += RS[i];
+		meanY += energyEnv[i];
 
-		num   += i*RS[i];
+		num   += i*energyEnv[i];
 		denum += i*i;
 	}
 	meanX /= N;
