@@ -12,11 +12,9 @@
 /*
 TOTEST:
 - A comment doesn't break content
-- An element does break content
 - Any non-comment node does break content
 - Spaces at the begining of content are eaten
-- Comment loading
-   
+- Attributes support
 */
 
 namespace CLAM
@@ -60,6 +58,9 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testFetchContent_afterElement);
 	CPPUNIT_TEST(testFetchContent_whenSecondElement);
 	CPPUNIT_TEST(testFetchContent_afterElementWithSpaces);
+	CPPUNIT_TEST(testReleaseContext_atRootReturnsNull);
+	CPPUNIT_TEST(testReleaseContext_whenIsChildContext);
+	CPPUNIT_TEST(testRecursiveConstructor_initializesTheContext);
 
 
 	CPPUNIT_TEST(testLoadingAWordOnBasicAsContent);
@@ -570,11 +571,58 @@ private:
 		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content2);
 	}
 
+	void testReleaseContext_atRootReturnsNull()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+
+		XercesDomReadingContext context(contextElement);
+		XercesDomReadingContext * previous = context.release();
+		
+		CPPUNIT_ASSERT_EQUAL((XercesDomReadingContext*)0, previous);
+	}
+
+	void testReleaseContext_whenIsChildContext()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		contextElement->appendChild(domElement);
+		XercesDomReadingContext context1(contextElement);
+		XercesDomReadingContext context2(&context1,"Element");
+
+		XercesDomReadingContext * previous = context2.release();
+		
+		CPPUNIT_ASSERT_EQUAL(&context1, previous);
+	}
+
+
+	void testRecursiveConstructor_initializesTheContext()
+	{
+		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * outerElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * innerElement = mDocument->createElement(X("InnerElement"));
+		contextElement->appendChild(outerElement);
+		outerElement->appendChild(innerElement);
+		XercesDomReadingContext contextRoot(contextElement);
+		XercesDomReadingContext contextInner(&contextRoot,"Element");
+		xercesc::DOMElement * foundElement = contextInner.fetchElement("InnerElemen");
+
+		CPPUNIT_ASSERT_EQUAL(innerElement, foundElement);
+	}
+
+	void testReleaseContext_whenContentLeft()
+	{
+	}
+
+	void testReleaseContext_whenElementLeft()
+	{
+	}
 
 
 
 
 
+
+	
 	void testLoadingAWordOnBasicAsContent()
 	{
 		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
