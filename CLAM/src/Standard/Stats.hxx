@@ -17,6 +17,34 @@ template <unsigned int x,unsigned int y> class GreaterThan
 
 template <unsigned int x,unsigned int y> StaticBool<(x>y)>  GreaterThan<x,y>::mIs;
 
+template <typename T>
+class StatsMemory
+{
+public:
+	StatsMemory() : mMemorized(false) {}
+	const StatsMemory & operator = (const T & value)
+	{
+		mMemorized=true;
+		mMemory=value;
+	}
+	bool HasValue()
+	{
+		return mMemorized;
+	}
+	void Reset()
+	{
+		mMemorized=false;
+	}
+	operator T()
+	{
+		CLAM_ASSERT(mMemorized,"Using a value that has not been memorized");
+		return mMemory;
+	}
+private:
+	T mMemory;
+	bool mMemorized;
+};
+
 
 /** Class to hold basic statistics related to an array of arbitrary data. Statistics are computed
  *	efficiently and reusing computations whenever possible.
@@ -33,7 +61,7 @@ public:
 /** Only constructor available. We do not want a default constructor because then we could not be sure
  *	that data is consisten and we would have to be constantly be doing checks.*/
 
-		StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5),mCentroid(.0)
+		StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5)
 	{
 		CLAM_ASSERT(data!=NULL,"Stats: A constructed array must be passed");
 		mData=data;
@@ -49,7 +77,6 @@ public:
 			mCenterOfGravities[i]= NULL;
 		}
 		InitMoment((O<initOrder>*)(0));
-		mCentroidComputed = false;
 	}
 	~StatsTmpl()
 	{
@@ -72,6 +99,7 @@ public:
 	{
 		Reset();
 		mData=data;
+		mCentroid.Reset();
 	}
 
 	/**
@@ -158,8 +186,7 @@ public:
 	U GetCentroid()
 	{
 //		return GetCenterOfGravity(FirstOrder);
-		if (mCentroidComputed) return mCentroid;
-		mCentroidComputed=true;
+		if (mCentroid.HasValue()) return mCentroid;
 		unsigned N = mData->Size();
 		U mean = GetMean();
 		if (mean < 1e-7 ) 
@@ -398,12 +425,24 @@ public:
 		return Tilt;
 	}
 
+	/**
+	 * This statistic gives the sense on how many
+	 */
 	U GetFlatness()
 	{
-		return 10*log10(GetGeometricMean()/GetMean());
+		U mean = GetMean();
+		U geometricMean = GetGeometricMean();
+		if (mean<1e-100) mean=1e-100;
+		if (geometricMean<1e-100) geometricMean=1e-100;
+		return geometricMean/mean;
 	}
 
-	/** Reset all previously computed values */
+	/**
+	 * Reset all the cached computations.
+	 * This method is called automatically if you change the data pointer 
+	 * using the SetData method, but it should be called explicitly whenever
+	 * the values on that array changes externally.
+	 */
 	void Reset()
 	{
 		//Note: we keep previously allocated data, we just reset computations
@@ -422,6 +461,7 @@ public:
 		mGeometricMean.Reset();
 		mMaxElement.Reset();
 		mMinElement.Reset();
+		mCentroid.Reset();
 	}
 
 private:
@@ -589,8 +629,7 @@ private:
 	GeometricMeanTmpl<T,U> mGeometricMean;
 	ComplexMaxElement<abs,T> mMaxElement;
 	ComplexMinElement<abs,T> mMinElement;
-	U mCentroid;
-	bool mCentroidComputed;
+	StatsMemory<U> mCentroid;
 
 	const Array<T>* mData;
 
