@@ -77,6 +77,8 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectrumSubstracter2::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
+		CLAM_ASSERT(in1.GetSize()==in2.GetSize()&&in1.GetSize()==out.GetSize(), "SpectrumSubstracter2::Do():sizes of the spectrums are not equal");
+		
 		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
 		                  GetExecState() != Ready,
 		                  "SpectrumSubstracter2::Do(): Not in execution mode");
