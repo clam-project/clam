@@ -3,13 +3,13 @@
 
 #include "VMColor.hxx"
 #include "Dial.hxx"
-#include "PlotController.hxx"
+#include "SegmentationMarksPlotController.hxx"
 
 namespace CLAM
 {
 	namespace VM
 	{
-		class SelPosPlotController : public PlotController
+		class SelPosPlotController : public SegmentationMarksPlotController
 		{
 			Q_OBJECT
 			

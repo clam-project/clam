@@ -91,6 +91,16 @@ namespace CLAM
 			SetForegroundColor(VMColor::Blue());
 			SetVLineColor(VMColor::Black());
 		}
+
+		void QtSpectrumPlot::SetMarks(std::list<unsigned>& marks)
+		{
+			((SpectrumPlotController*)_controller)->SetMarks(marks);
+		}
+
+		void QtSpectrumPlot::SetMarksColor(Color c)
+		{
+			((SpectrumPlotController*)_controller)->SetMarksColor(c);
+		}
 	}
 }
 

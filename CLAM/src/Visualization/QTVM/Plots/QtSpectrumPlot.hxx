@@ -15,6 +15,9 @@ namespace CLAM
 				virtual ~QtSpectrumPlot();
 
 				virtual void SetData(const Spectrum& spec);
+
+				void SetMarks(std::list<unsigned>& marks);
+				void SetMarksColor(Color c);
 				void SetForegroundColor(Color c);
 				void SetVLineColor(Color c);
 			protected slots:

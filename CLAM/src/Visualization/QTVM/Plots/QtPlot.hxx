@@ -2,6 +2,7 @@
 #define __QTPLOT__
 
 #include <string>
+#include <list>
 #include <qwidget.h>
 #include "VMColor.hxx"
 
@@ -19,6 +20,9 @@ namespace CLAM
 				virtual void Geometry(int x,int y,int w,int h)=0;
 				virtual void Show()=0;
 				virtual void Hide()=0;
+
+				virtual void SetMarks(std::list<unsigned>& marks)=0;
+				virtual void SetMarksColor(Color c)=0;
 
 			protected:
 				virtual void closeEvent(QCloseEvent *);

@@ -20,9 +20,12 @@ namespace CLAM
 				QtSinTracksPlot(QWidget* parent=0);
 				virtual ~QtSinTracksPlot();
 
-				virtual void SetData(const Segment& segment);
-				virtual void SetData(const Array< SpectralPeakArray >& peakMtx, 
-										const TData& sr, const TData& dur);
+				void SetData(const Segment& segment);
+				void SetData(	const Array< SpectralPeakArray >& peakMtx, 
+								const TData& sr, const TData& dur	);
+
+				void SetMarks(std::list<unsigned>& marks);
+				void SetMarksColor(Color c);
 
 				void SetDialColor(Color c);
 				void SetRegionColor(Color c);

@@ -20,6 +20,7 @@ namespace CLAM
 
 		void SelPosPlotController::Draw()
 		{
+			SegmentationMarksPlotController::Draw();
 			_dial.Render();
 		}
 
@@ -30,13 +31,13 @@ namespace CLAM
 				
 		void SelPosPlotController::SetHBounds(const TData& left,const TData& right)
 		{
-			PlotController::SetHBounds(left,right);
+			SegmentationMarksPlotController::SetHBounds(left,right);
 			_dial.SetHBounds(GetLeftBound(),GetRightBound());
 		}
 
 		void SelPosPlotController::SetVBounds(const TData& bottom,const TData& top)
 		{
-			PlotController::SetVBounds(bottom,top);
+			SegmentationMarksPlotController::SetVBounds(bottom,top);
 			_dial.SetVBounds(GetBottomBound(),GetTopBound());
 		}
 

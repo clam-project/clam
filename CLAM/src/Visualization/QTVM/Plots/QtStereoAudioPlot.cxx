@@ -335,6 +335,18 @@ namespace CLAM
 			_leftChannel->switchColors();
 			_rightChannel->switchColors();
 		}
+
+		void QtStereoAudioPlot::SetMarks(std::list<unsigned>& marks)
+		{
+			_leftChannel->SetMarks(marks);
+			_rightChannel->SetMarks(marks);
+		}
+
+		void QtStereoAudioPlot::SetMarksColor(Color c)
+		{
+			_leftChannel->SetMarksColor(c);
+			_leftChannel->SetMarksColor(c);
+		}
 	}	
 }
 

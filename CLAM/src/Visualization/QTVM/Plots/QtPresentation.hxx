@@ -36,6 +36,9 @@ namespace CLAM
 				QtPresentation(QWidget* parent = 0);
 				virtual ~QtPresentation();
 			
+				virtual void SetMarks(std::list<unsigned>& marks)=0;
+				virtual void SetMarksColor(Color c)=0;
+
 				void SetBackgroundColor(Color c);
 				void Label(const std::string& label);
 				void Geometry(int x,int y,int w,int h);

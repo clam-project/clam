@@ -6,13 +6,13 @@
 #include <qwt/qwt_scldiv.h>
 #include "BPF.hxx"
 #include "MPDataRenderer.hxx"
-#include "PlotController.hxx"
+#include "SegmentationMarksPlotController.hxx"
 
 namespace CLAM
 {
 	namespace VM
 	{
-		class MultiPlotController : public PlotController
+		class MultiPlotController : public SegmentationMarksPlotController
 		{
 			Q_OBJECT
 

@@ -22,7 +22,10 @@ namespace CLAM
 				QtAudioPlot(QWidget* parent=0);
 				virtual ~QtAudioPlot();
 
-				virtual void SetData(const Audio& audio);
+				void SetData(const Audio& audio);
+
+				void SetMarks(std::list<unsigned>& marks);
+				void SetMarksColor(Color c);
 
 				void SetForegroundColor(Color c);
 				void SetDialColor(Color c);

@@ -32,6 +32,9 @@ namespace CLAM
 				void SetXRange(const TData& xmin, const TData& xmax);
 				void SetYRange(const TData& ymin, const TData& ymax);
 
+				void SetMarks(std::list<unsigned>& marks);
+				void SetMarksColor(Color c);
+
 			private slots:
 				void updateXLabel(TData);
 				void updateYLabel(TData);

@@ -165,6 +165,7 @@ namespace CLAM
 			SetForegroundColor(VMColor::Green());
 			SetDialColor(VMColor::Red());
 			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Orange());
 		}
 
 		void QtAudioPlot::DisplayBackgroundWhite()
@@ -173,6 +174,7 @@ namespace CLAM
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Red());
 		}
 
 		void QtAudioPlot::closeEvent(QCloseEvent *e)
@@ -200,6 +202,16 @@ namespace CLAM
 		void QtAudioPlot::SetKeyReleased(QKeyEvent* e)
 		{
 			keyReleaseEvent(e);
+		}
+
+		void QtAudioPlot::SetMarks(std::list<unsigned>& marks)
+		{
+			((AudioPlotController*)_controller)->SetMarks(marks);
+		}
+
+		void QtAudioPlot::SetMarksColor(Color c)
+		{
+			((AudioPlotController*)_controller)->SetMarksColor(c);
 		}
 	}	
 }

@@ -123,6 +123,16 @@ namespace CLAM
 			_xLabel->setText("");
 			_yLabel->setText("");
 		}
+
+		void QtMultiPlot::SetMarks(std::list<unsigned>& marks)
+		{
+			((MultiPlotController*)_controller)->SetMarks(marks);
+		}
+
+		void QtMultiPlot::SetMarksColor(Color c)
+		{
+			((MultiPlotController*)_controller)->SetMarksColor(c);
+		}
 	}
 }
 

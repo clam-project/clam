@@ -22,7 +22,10 @@ namespace CLAM
 				QtFundFreqPlot(QWidget* parent=0);
 				virtual ~QtFundFreqPlot();
 
-				virtual void SetData(const Segment& segment);
+				void SetData(const Segment& segment);
+
+				void SetMarks(std::list<unsigned>& marks);
+				void SetMarksColor(Color c);
 
 				void SetForegroundColor(Color c);
 				void SetDialColor(Color c);

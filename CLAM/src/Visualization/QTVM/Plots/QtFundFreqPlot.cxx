@@ -167,6 +167,16 @@ namespace CLAM
 			RemoveFromPlayList();
 			QtPlot::closeEvent(e);
 		}
+
+		void QtFundFreqPlot::SetMarks(std::list<unsigned>& marks)
+		{
+			((FundPlotController*)_controller)->SetMarks(marks);
+		}
+
+		void QtFundFreqPlot::SetMarksColor(Color c)
+		{
+			((FundPlotController*)_controller)->SetMarksColor(c);
+		}
 	}	
 }
 

@@ -28,7 +28,10 @@ namespace CLAM
 				QtStereoAudioPlot(QWidget* parent=0);
 				virtual ~QtStereoAudioPlot();
 
-				virtual void SetData(std::vector<Audio> data);
+				void SetData(std::vector<Audio> data);
+
+				void SetMarks(std::list<unsigned>& marks);
+				void SetMarksColor(Color c);
 
 				void SetBackgroundColor(Color c);
 				void SetForegroundColor(Color c);

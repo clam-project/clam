@@ -118,6 +118,16 @@ namespace CLAM
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
 		}
+
+		void QtSinTracksPlot::SetMarks(std::list<unsigned>& marks)
+		{
+			((SinTracksPlotController*)_controller)->SetMarks(marks);
+		}
+
+		void QtSinTracksPlot::SetMarksColor(Color c)
+		{
+			((SinTracksPlotController*)_controller)->SetMarksColor(c);
+		}
 	}
 }
 
