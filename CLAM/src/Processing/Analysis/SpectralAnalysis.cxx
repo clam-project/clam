@@ -191,7 +191,7 @@ void SpectralAnalysis::ConfigureData()
 	TData samplingRate=mConfig.GetSamplingRate();
 		  
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
-	mAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
+	mAudioFrame.SetSampleRate(samplingRate);
 	mWindow.SetSize(mConfig.GetWindowSize());
 	
 	/*Window is generated and data is kept in internal member mWindow*/

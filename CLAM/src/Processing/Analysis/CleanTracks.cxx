@@ -183,7 +183,6 @@ namespace CLAM {
 	void CleanTracks::UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray)
 	{
 		int i,z;
-		int nMissingTracks=0,greatestTrackid=0;
 		int currentTrackid;
 		int newTrackid;
 		for(i=0;i<peakArrayArray.Size();i++)
