@@ -33,6 +33,16 @@ namespace CLAMVM
 		mMustProcessData = true;
 	}
 
+	const tAudioTimeInfo& AudioRenderingManager::GetTimeInfo(  )
+	{
+		return mCachedTimeInfo;
+	}
+
+	const DataArray& AudioRenderingManager::GetDataCached(  )
+	{
+		return mDataCached;
+	}
+
 	void AudioRenderingManager::CacheData( const DataArray& data, const tAudioTimeInfo& timenfo )
 	{
 		mDataCached.Resize( data.Size() );
