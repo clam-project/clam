@@ -277,7 +277,7 @@ def compileAndRun(name, path) :
 		return '',''
 	os.chdir(path)
 	# compilation phase
-	summary = details = s = d = ''
+	summary = details = d = ''
 	for configuration in configurations :
 		if doCleanMake :
 			getStatusOutput('make clean')
@@ -286,11 +286,11 @@ def compileAndRun(name, path) :
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
-			s = 'COMPILATION ERRORS'
+			compilationMessages = 'COMPILATION ERRORS'
 		else :
-			s = 'compilation OK'
-		s += parseCompilationWarnings( output )
-		summary += formatSummary(name, configuration, s)
+			compilationMessages = 'compilation OK'
+		compilationMessages += parseCompilationWarnings( output )
+		summary += formatSummary(name, configuration, compilationMessages)
 		detailsFormat = '\n\n%s\n-----------------------------\n%s\n'
 		if not ok :
 			details += detailsFormat % (name, output)
@@ -310,14 +310,14 @@ def compileAndRun(name, path) :
 			print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
 			foundTestsFailues = foundTestsFailures or not ok
-			s, d = parseTestsFailures( output )
+			runMessages, d = parseTestsFailures( output )
 		else :
 			print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
-			s, d = parseExecutionErrors( output )
-			foundExecutionErrors =  foundExecutionErrors or not ok or s.find('OK')==-1
+			runMessages, d = parseExecutionErrors( output )
+			foundExecutionErrors =  foundExecutionErrors or not ok or runMessages.find('OK')==-1
 		
-		summary += formatSummary(name, configuration, s)
+		summary += formatSummary(name, configuration, runMessages)
 		if d != '' :
 			details += detailsFormat % (name, d)
 	return summary, details
@@ -436,7 +436,6 @@ totalSummary = totalDetails = ['']
 def runTests() :
 	global totalSummary, totalDetails		
 	subj = [subject]
-	report = []
 	if 'CVSROOT' not in os.environ :
 		print 'warning: CVSROOT not found in environ'
 		os.environ['CVSROOT'] = CVSROOT
@@ -464,7 +463,6 @@ def runTests() :
 		totalDetails.append(details)
 
 		print "".join(totalSummary)
-		report.append( (name, summary, details) )
 
 
 	mailBody = mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
