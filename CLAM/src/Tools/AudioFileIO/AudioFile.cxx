@@ -112,7 +112,7 @@ namespace CLAM
 		return mHeaderData;
 	}
 
-	const std::string& AudioFile::GetLocation() const
+	const std::string & AudioFile::GetLocation() const
 	{
 		return mLocation;
 	}
@@ -221,7 +221,7 @@ namespace CLAM
 	void AudioFile::LoadFrom( Storage& storage )
 	{
 
-		CLAM::XMLAdapter< std::string > xmlLocation( mLocation, "URI", true );
+		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
 		storage.Load( xmlLocation );
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
@@ -236,7 +236,7 @@ namespace CLAM
 
 	void AudioFile::StoreOn( Storage& storage ) const
 	{
-		CLAM::XMLAdapter< std::string > xmlLocation( mLocation, "URI", true );
+		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
 		storage.Store( xmlLocation );
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
