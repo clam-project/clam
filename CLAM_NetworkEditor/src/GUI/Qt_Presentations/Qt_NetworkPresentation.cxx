@@ -3,7 +3,8 @@
 #include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 #include "Qt_ProcessingPresentation.hxx"
-#include "Qt_ConnectionPresentation.hxx"
+#include "Qt_PortConnectionPresentation.hxx"
+#include "Qt_ControlConnectionPresentation.hxx"
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_InControlPresentation.hxx"
@@ -112,7 +113,7 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* cont
 
 void Qt_NetworkPresentation::OnNewPortConnection( CLAMVM::ConnectionAdapter* adapter)
 {
-	Qt_ConnectionPresentation* presentation = new Qt_ConnectionPresentation(this);
+	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
 	presentation->RemovePortConnection.Connect(SetRemovePortConnection);
 	adapter->Publish();
@@ -137,7 +138,7 @@ void Qt_NetworkPresentation::OnNewPortConnection( CLAMVM::ConnectionAdapter* ada
 
 void Qt_NetworkPresentation::OnNewControlConnection( CLAMVM::ConnectionAdapter* adapter)
 {
-	Qt_ConnectionPresentation* presentation = new Qt_ConnectionPresentation(this);
+	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
 	presentation->RemovePortConnection.Connect(SetRemovePortConnection);
 	adapter->Publish();
@@ -159,7 +160,7 @@ void Qt_NetworkPresentation::OnNewControlConnection( CLAMVM::ConnectionAdapter* 
 				     " to " + presentation->GetInName() );
 }
 
-void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_ConnectionPresentation * con)
+void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * con)
 {
 	Qt_OutPortPresentation & out = (Qt_OutPortPresentation&)
 		GetOutPortPresentationByCompleteName( con->GetOutName() );
@@ -171,7 +172,7 @@ void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_ConnectionP
 }
 
 
-void Qt_NetworkPresentation::AttachConnectionToControlPresentations( Qt_ConnectionPresentation * con)
+void Qt_NetworkPresentation::AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * con)
 {
 	Qt_OutControlPresentation & out = (Qt_OutControlPresentation&)
 		GetOutControlPresentationByCompleteName( con->GetOutName() );

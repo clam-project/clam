@@ -24,7 +24,8 @@ namespace CLAMVM
 namespace NetworkGUI
 {
 
-class Qt_ConnectionPresentation;
+class Qt_PortConnectionPresentation;
+class Qt_ControlConnectionPresentation;
 class Qt_InPortPresentation;
 class Qt_OutPortPresentation;
 class Qt_InControlPresentation;
@@ -38,8 +39,8 @@ public:
 	virtual void Show();
 	virtual void Hide();
 protected:
-	void AttachConnectionToPortPresentations( Qt_ConnectionPresentation * );
-	void AttachConnectionToControlPresentations( Qt_ConnectionPresentation * );
+	void AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * );
+	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
 	virtual void OnNewName(const std::string& name); 
 	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & name );
 	virtual void OnNewPortConnection(CLAMVM::ConnectionAdapter* );
