@@ -735,5 +735,5 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 
 TIndex Spectrum::IndexFromFreq(TData freq) const
 {
-	return roundInt(freq*((GetSize()-1)/GetSpectralRange()));
+	return Round(freq*((GetSize()-1)/GetSpectralRange()));
 }
