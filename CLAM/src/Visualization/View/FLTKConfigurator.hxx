@@ -64,6 +64,7 @@ namespace CLAM{
 			mWidgetPack = NULL;
 			mScrollGroup = NULL;
 			mWidgetNum = 0;
+			mApplyCallback= makeMemberFunctor0((*this),FLTKConfigurator,noAction);
 			end();
 		}
 
@@ -356,6 +357,9 @@ namespace CLAM{
 		void show() {
 			set_modal();
 			super::show();
+		}
+
+		void noAction() {
 		}
 
 	private:
