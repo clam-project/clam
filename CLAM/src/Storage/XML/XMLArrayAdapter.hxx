@@ -109,7 +109,7 @@ public:
 		for (unsigned int i=0; i<size; i++) {
 			str >> mAdaptee[i];
 		}
-		return bool(str);
+		return bool(str.good());
 	}
 
 // Testing
