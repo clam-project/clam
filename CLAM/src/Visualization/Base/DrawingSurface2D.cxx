@@ -15,6 +15,10 @@ namespace CLAMGUI
 				SetWorldSpace.Wrap( this, &DrawingSurface2D::_SetWorldSpace );
 				AdjustXAxis.Wrap( this, &DrawingSurface2D::_AdjustXAxis );
 				AdjustYAxis.Wrap( this, &DrawingSurface2D::_AdjustYAxis );
+				SetLeft.Wrap( this, &DrawingSurface2D::_SetLeft );
+				SetRight.Wrap( this, &DrawingSurface2D::_SetRight );
+				SetBottom.Wrap( this, &DrawingSurface2D::_SetBottom );
+				SetTop.Wrap( this, &DrawingSurface2D::_SetTop );
 		}
 
 		DrawingSurface2D::~DrawingSurface2D()
@@ -31,6 +35,38 @@ namespace CLAMGUI
 				mxdist = fabs( mxmax - mxmin );
 				mydist = fabs( mymax - mymin );
 				
+				DamageProjection();
+				Refresh();
+		}
+
+		void DrawingSurface2D::_SetLeft( double xmin )
+		{
+				mxmin = mcxmin = xmin;
+				mxdist = fabs( mxmax - mxmin );
+				DamageProjection();
+				Refresh();
+		}
+
+		void DrawingSurface2D::_SetRight( double xmax )
+		{
+				mxmax = mcxmax = xmax;
+				mxdist = fabs( mxmax - mxmin );
+				DamageProjection();
+				Refresh();
+		}
+
+		void DrawingSurface2D::_SetBottom( double ymin )
+		{
+				mymin = mcymin = ymin;
+				mydist = fabs( mymax - mymin );
+				DamageProjection();
+				Refresh();
+		}
+
+		void DrawingSurface2D::_SetTop( double ymax )
+		{
+				mymax = mcymax = ymax;
+				mydist = fabs( mymax-mymin );
 				DamageProjection();
 				Refresh();
 		}

@@ -1,6 +1,7 @@
 #ifndef __DRAWINGSURFACE2D__
 #define __DRAWINGSURFACE2D__
 
+#include "Slotv1.hxx"
 #include "Slotv2.hxx"
 #include "Slotv4.hxx"
 #include "BoundingBoxes.hxx"
@@ -32,6 +33,10 @@ public:
 		void QueryDataBoundBox( DataBoundBox& );
 
 		Slotv4< double, double, double, double>  SetWorldSpace;
+		Slotv1< double >                         SetLeft;
+		Slotv1< double >                         SetRight;
+		Slotv1< double >                         SetTop;
+		Slotv1< double >                         SetBottom;
 		Slotv2< double, double>                  AdjustXAxis;
 		Slotv2< double, double>                  AdjustYAxis;
 
@@ -39,6 +44,10 @@ protected:
 		void _SetWorldSpace( double xmax, double xmin, double ymax, double ymin );
 		void _AdjustXAxis( double offset, double scale );
 		void _AdjustYAxis( double offset, double scale );
+		void _SetLeft( double left );
+		void _SetRight( double right );
+		void _SetTop( double top );
+		void _SetBottom( double bottom );
 
 		void DamageProjection()
 		{
