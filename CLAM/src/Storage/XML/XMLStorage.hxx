@@ -175,49 +175,52 @@ typedef XmlStorage XMLStorage;
 
 
 /**
- * @defgroup XmlDump Dumping and Restoring objects on XML
- * @ingroup Xml
- * @brief How to dump or restore a CLAM::Component in XML format.
- *
- * Any class that derives from Component can be dumped and
- * restored in XML (http://www.w3.org/XML) format.
- * Components includes Arrays, DynamicType, ProcessingConfig,
- * ProcessingData...
- *
- * @warning XML storage is a very expensive task when dealing
- * 	with big amounts of numeric data.
- *
- * 
- * @section XMLStaticInterface Dumping and restoring a component in XML
- * 
- * In its simplest usage, you can use the static functions
- * Dump and Restore.
- * @code
- * MyComponent myComponent;
- *
- * // Here you can modify your Component
- *
- * CLAM::XmlStorage::Dump(myComponent, "Document", "MyComponent.xml")
- * @endcode
- *
- * Later you can restore the component:
- * @code
- * // An unmodified default constructed object!!!
- * MyComponent comp;
- * CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
- * @endcode
- *
- * Dump and Restore are overloaded to accept any C++ stream instead of a filename.
- *
- * Although is not implemented yet, you could use the AppendToDocument
- * static function to add an object in a given path of an existing XML file,
- * or using RestorePartialDocument to restore the object taking an XML fragment.
- * Vote for them in the CLAM stories if you are interested in such functionality
- * to be prioritized.
- *
- *
- *
- * 
+ @defgroup XmlDump Dumping and Restoring objects on XML
+ @ingroup Xml
+ @brief How to dump or restore a CLAM::Component in XML format.
+
+ Any class that derives from Component can be dumped and
+ restored in XML (http://www.w3.org/XML) format.
+ Components includes Arrays, DynamicType, ProcessingConfig,
+ ProcessingData...
+
+ @warning XML storage is a very expensive task when dealing
+ 	with big amounts of numeric data.
+
+ 
+ @section XMLStaticInterface Dumping and restoring a component in XML
+ 
+ In its simplest usage, you can use the static functions
+ Dump and Restore.
+ @code
+ MyComponent myComponent;
+
+ // Here you can modify your Component
+
+ CLAM::XmlStorage::Dump(myComponent, "Document", "MyComponent.xml")
+ @endcode
+
+ Later you can restore the component:
+ @code
+ // An unmodified default constructed object!!!
+ MyComponent comp;
+ CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
+ @endcode
+
+ Dump and Restore are overloaded to accept any C++ stream instead of a filename.
+ So, you can also write: 
+ @code
+ MyComponent myComponent;
+ CLAM::XmlStorage::Dump(myComponent, "Document", std::cout)
+ @endcode
+
+ Although is not implemented yet, you could use the AppendToDocument
+ static function to add an object in a given path of an existing XML file,
+ or using RestorePartialDocument to restore the object taking an XML fragment.
+ Vote for them in the CLAM stories if you are interested in such functionality
+ to be prioritized.
+
+ @author David Garcia.
  */
 
 /**
@@ -301,6 +304,7 @@ typedef XmlStorage XMLStorage;
  * and you can combine them in order to obtain some concrete behaviour. 
  *    For example, if you want to update an xml document by adding an object on XPath /Doc/element/subElement, you can use the sequence Read-Select-DumpObject-WriteDocument.
  * 
+ * @author David Garcia.
  */
 
 /**
@@ -320,6 +324,7 @@ typedef XmlStorage XMLStorage;
  *   define an object to be dumped, see @link XmlScoped XmlScoped @endlink.
  *   This method works only for writing.
  * 
+ * @author David Garcia.
  */
 
 /**
@@ -541,13 +546,19 @@ void ConcreteDT::LoadOn(CLAM::Storage & storage)
  * @section XmlChangeTypeXmlOrTagName Storing not as XML elements or changing the tag name
  *
  *
- * Of course, we can also use Adapters with the dynamic attributes instead of using StoreXXX and LoadXXX. This is useful to store a dynamic attribute as XML attribute or XML plain content or to change the name from the one the attribute has. Again, refer to the XML developer guide.
+ * Of course, we can also use Adapters with the dynamic attributes
+ * instead of using StoreXXX and LoadXXX.
+ * This is useful to store a dynamic attribute as XML attribute
+ * or XML plain content or to change the name from the one the attribute has.
+ * Again, refer to the XML developer guide.
  *
  *
  * When using adapters with dynamic attributes you must take care of some dynamic attributes tasks:
  *
- * When storing a dynamic attribute XXX you must check that it is instantiated using the function HasXXX.
- * When loading you must check that the Storage::Load returns true. When it returns false it is advisable to mark it as removed.
+ * When storing a dynamic attribute XXX you must check
+ * that it is instantiated using the function HasXXX.
+ * When loading you must check that the Storage::Load returns true.
+ * When it returns false it is advisable to mark it as removed.
  * @code
 void ConcreteDT::StoreOn(CLAM::Storage & storage)
 {
@@ -589,33 +600,58 @@ void ConcreteDT::LoadOn(CLAM::Storage & storage)
  * But sometimes, you want to keep the default implementation o several customized implementations.
  * A good way of doing this is by subclassing the concrete Dynamic Type
  * and redefining the storage related methods as above but in the subclasses.
+ *
+ * @author David Garcia.
  */
 
 /**
- * @defgroup XmlAdapters XML Adapters
- * @ingroup Xml
+ * @defgroup XmlAdapters Using XML Adapters to implement StoreOn and LoadFrom
+ * @author David Garcia.
+ * @ingroup XmlCustomize
  * @brief How to use XmlAdapters to implement Load and Store methods for a CLAM::Component.
  *
+ * When you are implementing StoreOn and LoadFrom for a given
+ * Component, you should choose one of those adapters to wrap
+ * the subitems to be stored on, or loaded from, the XmlStorage.
+ *
+ * When you create an adapter, the adaptee is specified by the 
+ * the first constructor parameters, so they are adapter dependant.
+ * The later two constructor parameters are always to indicate in which
+ * XML form the subitem will be stored or loaded.
  * @code
- * void MyComponent::StoreOn(CLAM::Storage & storage )
- * {
- * 	MyAdapterClass adapter( // Here goes the adaptee info 
+ * 	MyAdapterClass( // Here goes the adaptee info 
  * 		, char * name = NULL, bool beElement = false );
+ * @endcode
+ * - As plain content (name = null, beElement = false)
+ * - As XML attribute (name = "yourAttributeName", beElement = false)
+ * - As XML element   (name = "yourElementName", beElement = true)
+ *
+ * You can use them in the following form:
+ * @code
+ * void StoreOn(CLAM::Storage & storage) const
+ * {
+ * 	SelectedAdapter adapter(subitem, "ElementName", true);
  * 	storage.Store(adapter);
  * }
- * bool MyComponent::LoadFrom(CLAM::Storage & storage )
+ * void LoadFrom(CLAM::Storage & storage)
  * {
- * 	MyAdapterClass adapter( // Here goes the adaptee info 
- * 		, char * name = NULL, bool beElement = false );
+ * 	SelectedAdapter adapter(subitem, "ElementName", true);
  * 	if (!storage.Load(adapter))
+ * 	{
  * 		// error handling
+ * 	}
  * }
  * @endcode
+ *
  * @warning The adapter only copies the pointer to
  * the the null-terminated string, not a copy of it.
  * So it is dangerous to delete or modify this string 
  * until the adapter has been stored on the Storage.
  *
+ * For more information see the documentation for any
+ * concrete adapter class.
+ *
+ * @author David Garcia.
  */
 
 #endif//_XMLStorage_
