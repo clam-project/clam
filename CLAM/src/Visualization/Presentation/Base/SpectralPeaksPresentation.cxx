@@ -15,7 +15,7 @@ namespace CLAMVM
 		{
 		}
 
-		void SpectralPeaksPresentation::Bind( Aspect& givenAspect ) throw(  )
+		void SpectralPeaksPresentation::Bind( Aspect& givenAspect )
 		{
 				Aspect* a = &givenAspect;
 
@@ -34,7 +34,7 @@ namespace CLAMVM
 						spa->AcquirePartials.Connect( SetPartials );
 						return;
 				}
-				CLAM_ASSERT( false, "Unwanted aspect provided" );
+				CLAM_ASSERT(false, "Unwanted aspect provided" );
 		}
 
 }

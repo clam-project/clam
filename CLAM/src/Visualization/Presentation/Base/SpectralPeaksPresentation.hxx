@@ -20,7 +20,7 @@ namespace CLAMVM
 		{
 		private:
 		protected:
-				virtual void Bind( Aspect& ) throw( std::bad_cast );
+				virtual void Bind( Aspect& );
 
 				virtual void OnNewSpectrum( const DataArray&, TData ) = 0; 
 				virtual void OnNewPeakArray( const Array<Partial>& ) = 0;
