@@ -407,9 +407,6 @@ void SMSBase::Analyze(void)
 			DestroyWaitMessage();
 
 		}
-		std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
-		tempSdifFilename += "_tmp.sdif";
-		mSerialization.DoSerialization( mSerialization.Store, mMorphSegment, tempSdifFilename.c_str() );
 	}
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
