@@ -87,6 +87,7 @@ namespace CLAM {
 		DYN_ATTRIBUTE (3, public, TData, HarmonicDeviation);
 		/**
 		* Energy ratio of the first harmonic to the energy of all peaks.
+		* 
 		* Returns zero for empty peak array.
 		*/
 		DYN_ATTRIBUTE (4, public, TData, FirstTristimulus);
@@ -101,12 +102,18 @@ namespace CLAM {
 		*/
 		DYN_ATTRIBUTE (6, public, TData, ThirdTristimulus);
 		/**
-		* Energy ratio of odd harmonics (excluding the fundamental) to the energy of all peaks.
+		* Energy ratio of odd harmonics (excluding the fundamental) to 
+		* the energy of all peaks.
+		* 
 		* Returns zero for array with less than 3 peaks.
 		*/
 		DYN_ATTRIBUTE (7, public, TData, OddHarmonics);
 		/**
 		* Energy ratio of even harmonics to the energy of all peaks.
+		*
+		* @pre The peaks represents an ordered list of harmonics starting 
+		* at the fundamental.
+		* 
 		* Returns zero for array with less than 2 peaks.
 		*/
 		DYN_ATTRIBUTE (8, public, TData, EvenHarmonics);
@@ -114,6 +121,9 @@ namespace CLAM {
 		* Ratio of "OddHarmonics" to "EvenHarmonics".		
 		* Returns zero if both values are zero.
 		*
+		* @pre The peaks represents an ordered list of harmonics starting 
+		* at the fundamental.
+		* 
 		* Range: [0, 1]
 		*
 		* Formula: \f[ \frac{OddHarmonics}{EvenHarmonics+OddHarmonics} \f]
