@@ -34,10 +34,10 @@ namespace CLAM
 	{
 	public:
 
-		InPortArrayTmpl<Audio> Input;
-		OutPortTmpl<Audio>     Output;
+		InPortArrayTmpl<Audio> mInput;
+		OutPortTmpl<Audio>     mOutput;
 		
-		InControlArray Volumes;
+		InControlArray mGain;
 
 	private:
 
@@ -66,9 +66,9 @@ namespace CLAM
 
 	template<unsigned int N>
 	AudioMixer<N>::AudioMixer(const AudioMixerConfig& c)
-		: Input(N,"Input Audio",this,1),
-		  Output("Output Audio",this,1),
-		  Volumes(N,"Input Volume Controls",this)
+		: mInput(N,"Input Audio",this,1),
+		  mOutput("Output Audio",this,1),
+		  mGain(N,"Input Gain Controls",this)
 	{
 		Configure(c);
 	}
@@ -80,9 +80,9 @@ namespace CLAM
 		
 		mFrameSize = mConfig.GetFrameSize();
 
-		Input.SetParams(mFrameSize);
+		mInput.SetParams(mFrameSize);
 
-		Output.SetParams(mFrameSize);
+		mOutput.SetParams(mFrameSize);
 
 		return true;
 	}
@@ -90,10 +90,10 @@ namespace CLAM
 	template<unsigned int N>
 	bool AudioMixer<N>::Do()
 	{
-		bool res = Do(Input.GetDataArray().GetPtr(),
-					  Output.GetData());
-		Input.LeaveDataArray();
-		Output.LeaveData();	  
+		bool res = Do(mInput.GetDataArray().GetPtr(),
+					  mOutput.GetData());
+		mInput.LeaveDataArray();
+		mOutput.LeaveData();	  
 		return res;
 	}
 
@@ -106,7 +106,7 @@ namespace CLAM
 			sum=0.0;
 			for (unsigned a=0; a<N; a++)
 			{
-				sum += ((*in_array[a])[i])*(Volumes[a].GetLastValue());
+				sum += ((*in_array[a])[i])*(mGain[a].GetLastValue());
 			}
 			out_array[i] = sum / TData(N);
 		}
@@ -141,7 +141,7 @@ namespace CLAM
 	{
 		for (unsigned int i=0;i<N;i++)
 		{
-			Volumes[i].DoControl(1);
+			mGain[i].DoControl(1);
 		}
 	}
 

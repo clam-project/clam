@@ -234,8 +234,8 @@ void SystemWithPorts::FileInFileOut::Stop()
 void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 {
 	// linking ControlSender with AudioMixer volumes.
-	System()._controlSender._outControl1.AddLink(&(System()._mixer.Volumes[0]));
-	System()._controlSender._outControl2.AddLink(&(System()._mixer.Volumes[1]));
+	System()._controlSender._outControl1.AddLink(&(System()._mixer.mGain[0]));
+	System()._controlSender._outControl2.AddLink(&(System()._mixer.mGain[1]));
 
 
 
@@ -244,9 +244,9 @@ void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 	System()._multiplier.mFirstInput.Attach( System()._fileInData );
 	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
 	System()._multiplier.mOutput.Attach( System()._multiplierData );
-	System()._mixer.Input[0].Attach( System()._multiplierData );
-	System()._mixer.Input[1].Attach( System()._fileInData );
-	System()._mixer.Output.Attach( System()._mixerData );
+	System()._mixer.mInput[0].Attach( System()._multiplierData );
+	System()._mixer.mInput[1].Attach( System()._fileInData );
+	System()._mixer.mOutput.Attach( System()._mixerData );
 	System()._fileOut.Input.Attach( System()._mixerData );
 	if (_hasAudioOut)
 	{
