@@ -40,13 +40,12 @@ namespace CLAM
 class XercesDomWriter
 {
 	public:
-		XercesDomWriter(std::ostream & stream)
-			: mTarget(stream)
+		XercesDomWriter()
 		{
 			mShouldIndent=false;
 			mShouldCanonicalize=false;
 		}
-		void write(xercesc::DOMNode * node)
+		void write(std::ostream & target, xercesc::DOMNode * node)
 		{
 			const XMLCh * propertyCanonical = xercesc::XMLUni::fgDOMWRTCanonicalForm;
 			const XMLCh * propertyPrettyPrint = xercesc::XMLUni::fgDOMWRTFormatPrettyPrint;
@@ -64,7 +63,7 @@ class XercesDomWriter
 			xercesWriter->writeNode(xercesTarget, *node);
 			const char * buffer = (char *) xercesTarget->getRawBuffer();
 			const unsigned bufferLen = xercesTarget->getLen();
-			mTarget << std::string(buffer,bufferLen);
+			target << std::string(buffer,bufferLen);
 			delete xercesWriter;
 			delete xercesTarget;
 		}
@@ -77,7 +76,6 @@ class XercesDomWriter
 			mShouldIndent=shouldDo;
 		}
 	private:
-		std::ostream & mTarget;
 		bool mShouldIndent;
 		bool mShouldCanonicalize;
 };
