@@ -23,7 +23,6 @@ public:
 
 	virtual void Next() = 0;
 	virtual bool IsInsideScope() const = 0;
-	virtual unsigned GetIterationSize() const = 0;
 
 protected:
 
@@ -47,10 +46,6 @@ public:
 		_current = 0;
 		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
 	}
-	virtual unsigned GetIterationSize() const
-	{
-		return _pool->GetNumberOfContexts(_scope);
-	}
 
 	virtual void Next()
 	{
@@ -59,7 +54,7 @@ public:
 
 	virtual bool IsInsideScope() const
 	{
-		return _current < GetIterationSize();
+		return _current < _pool->GetNumberOfContexts(_scope);
 	}
 
 protected:
@@ -103,10 +98,7 @@ public:
 	{
 		return _chained.IsInsideScope();
 	}
-	virtual unsigned GetIterationSize() const
-	{
-		return _chained.GetIterationSize();
-	}
+
 protected:
 	unsigned GetCurrent() const
 	{
