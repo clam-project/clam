@@ -45,9 +45,11 @@ void SpectralPeakArray::DefaultInit()
 	AddFreqBuffer();
 	AddMagBuffer();
 	AddScale();
+	AddMinimizeResizes();
 	UpdateData();
 	SetScale(EScale(EScale::eLinear));
 	SetnPeaks(0);
+	SetMinimizeResizes(1);
 }
  
 
@@ -303,8 +305,10 @@ void SpectralPeakArray::ResetIndices() // reset all indices
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::ResetIndices: Index array is not instantiated");
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks();
+	//Resize will only be done once
+	if(indexArray.AllocatedSize()!=GetnMaxPeaks())
+		indexArray.Resize(GetnMaxPeaks());
 	// set size to the number of Peaks
-	indexArray.Resize(nPeaks);
 	indexArray.SetSize(nPeaks);
 
 	indexArray.Reset();
@@ -499,7 +503,7 @@ void SpectralPeakArray::ToLinear()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= pow(10,mag[i]/20); 
+			mag[i]= pow(TData(10),TData(mag[i]/20)); 
 		}
 		SetScale(EScale::eLinear);
 	}

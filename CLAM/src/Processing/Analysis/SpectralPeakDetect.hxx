@@ -80,14 +80,14 @@ namespace CLAM {
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
-		const char *GetClassName() {return "SpectralPeakDetect";}
+		const char *GetClassName() const {return "SpectralPeakDetect";}
 
 		/** Config change method
 		 *  @param The ProcessingConfig object
 		 *  @throw bad_cast exception when the argument is not an SpectralPeakDetectConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SpectralPeakDetectConfig initialised by default*/

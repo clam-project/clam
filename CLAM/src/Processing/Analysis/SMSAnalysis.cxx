@@ -58,9 +58,14 @@ void SMSAnalysisConfig::SetSinWindowSize(TSize w)
 {
 	GetSinSpectralAnalysis().SetWindowSize(w);
 	GetPeakDetect().SetNumBands(GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
-	GetSynthSineSpectrum().SetSpectrumSize(GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
 	if(w<2*GetHopSize()+1)
 		SetHopSize((w-1)/2);
+	if(w>GetResWindowSize())
+	{
+		GetResSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+		GetSinSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+	}
+
 }
 
 TSize SMSAnalysisConfig::GetSinWindowSize() const
@@ -95,6 +100,12 @@ void SMSAnalysisConfig::SetHopSize(TSize h)
 {
 	GetSinSpectralAnalysis().SetHopSize(h);
 	GetResSpectralAnalysis().SetHopSize(h);
+	TSize w;
+	if (GetSinWindowSize()>GetResWindowSize()) w=GetSinWindowSize();
+	else w=GetResWindowSize();
+
+	GetSinSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+	GetResSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
 }
 
 TSize SMSAnalysisConfig::GetHopSize() const
@@ -110,6 +121,12 @@ void SMSAnalysisConfig::SetResWindowSize(TSize w)
 	GetSynthSineSpectrum().SetSpectrumSize(GetResSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
 	if(w<2*GetHopSize()+1)
 		SetHopSize((w-1)/2);
+	if(w>GetSinWindowSize())
+	{
+		GetResSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+		GetSinSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+	}
+
 }
 
 TSize SMSAnalysisConfig::GetResWindowSize() const
@@ -168,6 +185,15 @@ TInt32 SMSAnalysisConfig::PowerOfTwo(TInt32 size)
 	return outputSize;
 }
 
+TSize SMSAnalysisConfig::GetInitialOffset()
+{
+	TSize largerWindowSize;
+	if(GetSinWindowSize()>GetResWindowSize()) largerWindowSize=GetSinWindowSize();
+	else largerWindowSize=GetResWindowSize();
+			
+	return -(largerWindowSize-1)/2+GetHopSize();
+}
+
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 /*							SMSANALYSIS 							*/
@@ -190,9 +216,9 @@ SMSAnalysis::~SMSAnalysis()
 {
 }
 
-bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const SMSAnalysisConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	ConfigureChildren();
 	ConfigureData();
 	return true;
@@ -214,6 +240,8 @@ bool SMSAnalysis::ConfigureChildren()
 
 void SMSAnalysis::ConfigureData()
 {
+	TData samplingRate=mConfig.GetSamplingRate();
+
 	// Objects used only for initializing a frame
 	// Spectrum used for temporary residual analysis, it may be possible to get rid of
 	SpectrumConfig scfg;
@@ -259,12 +287,14 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 {
 	//Analyzing sinusoidal component
 	mPO_SinSpectralAnalysis.Do(in,outGlobalSpec);
+	
 	Do(outGlobalSpec,outPk,outFn);
 
 	
 	//Analyzing residual component
 	//First we synthesize Sinusoidal Spectrum
 	mPO_SynthSineSpectrum.Do(outPk,outSinSpec);
+	
 	//Then we analyze the spectrum of the whole audio using residual config
 	    
 	outResSpec.SetSize(mSpec.GetSize());
@@ -273,6 +303,10 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 
 	//Finally we substract mSpectrum-SinusoidalSpectrum
 	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
+
+	//Synchronizing spectral ranges of other spectrums
+	outSinSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
+	outResSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
 
 	return true;
 
@@ -288,6 +322,10 @@ bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& ou
 	// Peak Detection
 	SpectralPeakArray tmpPk;
 	mPO_PeakDetect.Do(outSp,tmpPk);
+
+	// If not possible to detect anything with this peak information, FundDetect will return a false
+	bool fundFreqFound = mPO_FundDetect.Do(tmpPk,outFn);
+
 	// Sinusoidal Tracking
 	mPO_SinTracking.Do(tmpPk,pkArray,outFn.GetFreq(0));
 	
@@ -299,7 +337,23 @@ bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& ou
 
 bool SMSAnalysis::Do(Frame& in)
 {
-	return Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	in.AddResidualAudioFrame();
+	in.AddSpectrum();
+	in.AddSpectralPeakArray();
+	in.AddFundamental();
+	in.AddSinusoidalSpec();
+	in.AddResidualSpec();
+	in.AddIsHarmonic();
+	in.UpdateData();
+
+	Spectrum tmpSpec;
+	tmpSpec.SetSize(mConfig.GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
+	in.SetSpectrum(tmpSpec);
+	in.SetFundamental(mFund);
+
+	bool result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	in.SetIsHarmonic(in.GetFundamental().GetFreq(0)>0);
+	return result;
 }
 
 bool SMSAnalysis::Do(Segment& in)
@@ -307,35 +361,35 @@ bool SMSAnalysis::Do(Segment& in)
 	int frameIndex=in.mCurrentFrameIndex;
 
 	int step=mConfig.GetHopSize();
+	int sinFrameSize=mConfig.GetSinSpectralAnalysis().GetWindowSize()-1;
+	int resFrameSize=mConfig.GetResSpectralAnalysis().GetWindowSize()-1;
+
 
 	TData samplingRate=mConfig.GetSamplingRate();
-	TSize centerSample=(frameIndex*step);
+	
+	TSize initialOffset=mConfig.GetInitialOffset();
+	
+	TSize centerSample=initialOffset+(frameIndex*step);
 	TTime centerTime=centerSample/samplingRate;
 	
 	//Adding a new frame to segment, this frame will have the audiochunk as audioframe
 	Frame tmpFrame;
-	tmpFrame.SetDuration(step/samplingRate);	
+	tmpFrame.SetDuration(step/samplingRate);
+	
+	/*	Note: if center time is negative, it should not be used in synthesis. Here the frame
+		is passed just for filling up the analysis input circular buffer. */
 	tmpFrame.SetCenterTime(TData(centerTime));
 	tmpFrame.AddAudioFrame();
-	tmpFrame.AddResidualAudioFrame();
-	tmpFrame.AddSpectrum();
-	tmpFrame.AddSpectralPeakArray();
-	tmpFrame.AddFundamental();
-	tmpFrame.AddSinusoidalSpec();
-	tmpFrame.AddResidualSpec();
 	tmpFrame.UpdateData();
-	Audio tmpAudio,tmpAudio2;
+	Audio tmpAudio;
 	tmpAudio.SetBeginTime(frameIndex*step);
-	tmpAudio2.SetBeginTime(frameIndex*step);
-
-	in.GetAudio().GetAudioChunk(centerSample-step/2,centerSample+step/2,tmpAudio,true);
+	
+	/*	Note: Here we are just taking the "new" audio belonging to each frame. That is, the
+	HopSize samples centered around CenterTime (without initial offset) */
+	in.GetAudio().GetAudioChunk(-initialOffset+centerSample-step/2,-initialOffset+centerSample+step/2,tmpAudio,true);
 
 	tmpFrame.SetAudioFrame(tmpAudio);
 
-	Spectrum tmpSpec;
-	tmpSpec.SetSize(mConfig.GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
-	tmpFrame.SetSpectrum(tmpSpec);
-	tmpFrame.SetFundamental(mFund);
 	in.AddFrame(tmpFrame);
 	
 	return Do(in.GetFrame(frameIndex));

@@ -63,9 +63,9 @@ namespace CLAM {
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool CircularShift::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool CircularShift::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const CircularShiftConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		mAmount.DoControl(TData(mConfig.GetAmount()));
 
 		return true;

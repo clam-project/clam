@@ -33,6 +33,8 @@ public:
 	MFCCGen(MFCCGenConfig&);
 	~MFCCGen();
 
+	const char * GetClassName() const {return "MFCCGen";}
+
 	/**
 	 * GetFilterCoeff can be used to change
 	 * the filters in a derived class.
@@ -71,7 +73,7 @@ public:
 	Array<TData>& GetFilteredData();
 
 private:
-	bool ConcreteConfigure(const ProcessingConfig&  c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&  c);
 
 		
 	MFCCGenConfig    mConfig;

@@ -87,6 +87,10 @@ public:
 	void SetSamplingRate(TData sr);
 	TData GetSamplingRate() const;
 
+/** Initial offset that is applied to analysis frame computed from windowSize and hopSize*/
+	TSize GetInitialOffset();
+
+
 private:
 
 	
@@ -159,7 +163,7 @@ public:
 
 	
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 };
 

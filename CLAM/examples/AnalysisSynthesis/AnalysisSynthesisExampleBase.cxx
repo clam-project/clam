@@ -40,6 +40,7 @@
 #include "HeapDbg.hxx"
 
 //Transformation class
+#include "SMSPitchShift.hxx"
 #include "SMSFreqShift.hxx"
 
 #include <fstream>
@@ -51,9 +52,6 @@
 #include "AudioIO.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
-
-//#define MIN(a,b) ((a<=b)?(a):(b))
-//#define MAX(a,b) ((a>=b)?(a):(b))
 
 using namespace CLAMGUI;
 using namespace CLAM;
@@ -100,25 +98,18 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
-		analHopSize=(analWindowSize-1)/2;
+		analHopSize=(resAnalWindowSize-1)/2;
 	else
 		analHopSize=mGlobalConfig.GetAnalysisHopSize();
 	
 	int synthFrameSize;
 	if(mGlobalConfig.GetSynthesisFrameSize()<0)
-		synthFrameSize=(resAnalWindowSize-1)/2;
+		synthFrameSize=analHopSize;
 	else
 		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
-	int synthHopSize;
-	if(mGlobalConfig.GetSynthesisHopSize()<0)
-		synthHopSize=synthFrameSize;
-	else
-		synthHopSize=mGlobalConfig.GetSynthesisHopSize();
-		
 	int samplingRate=int(mGlobalConfig.GetSamplingRate());
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
-	int synthZeroPaddingFactor=mGlobalConfig.GetSynthesisZeroPaddingFactor();
 	// SMS Analysis configuration
 	mAnalConfig.SetSinWindowSize(analWindowSize);
 	mAnalConfig.SetSamplingRate(TData(samplingRate));
@@ -128,12 +119,25 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetResWindowSize(resAnalWindowSize);
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
 
+	mAnalConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
+	
+	mAnalConfig.GetSinTracking().SetnMaxSines(mGlobalConfig.GetAnalysisMaxSines());
+	mAnalConfig.GetSinTracking().SetIsHarmonic(mGlobalConfig.GetAnalysisHarmonic());
+	mAnalConfig.GetPeakDetect().SetMaxPeaks(mGlobalConfig.GetAnalysisMaxSines());
+
+
+	mAnalConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
+	mAnalConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
+	mAnalConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
+	mAnalConfig.GetFundFreqDetect().SetMaxFundFreqError(mGlobalConfig.GetAnalysisMaxFundFreqError());
+	mAnalConfig.GetFundFreqDetect().SetNMaxCandidates(mGlobalConfig.GetAnalysisMaxFundCandidates());
+	
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
-	mSynthConfig.SetHopSize(synthHopSize);
+	mSynthConfig.SetHopSize(synthFrameSize);
 	mSynthConfig.SetSamplingRate(TData(samplingRate));
-	mSynthConfig.SetZeroPadding(synthZeroPaddingFactor);
+	mSynthConfig.GetPhaseMan().SetType(mGlobalConfig.GetSynthesisPhaseManagementType());
 }
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
@@ -154,30 +158,28 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	x.Restore(mGlobalConfig,inputFileName);
 	mHaveConfig = false;
 	if(	
-	mGlobalConfig.HasInputSoundFile() &&
-	mGlobalConfig.HasOutputSoundFile() &&
-	mGlobalConfig.HasOutputAnalysisFile() &&
-	mGlobalConfig.HasInputAnalysisFile() &&
-	mGlobalConfig.HasSamplingRate() &&
-	mGlobalConfig.HasAnalysisWindowSize() &&
-	mGlobalConfig.HasAnalysisHopSize() &&
-	mGlobalConfig.HasAnalysisWindowType() &&
-	mGlobalConfig.HasResAnalysisWindowSize() &&
-	mGlobalConfig.HasResAnalysisWindowType() &&
-	mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
-	mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
-	mGlobalConfig.HasAnalysisMaxSines() &&
-	mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
-	mGlobalConfig.HasAnalysisReferenceFundFreq() && 
-	mGlobalConfig.HasAnalysisLowestFundFreq() && 
-	mGlobalConfig.HasAnalysisHighestFundFreq() && 
-	mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
-	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
-	mGlobalConfig.HasSynthesisFrameSize() &&
-	mGlobalConfig.HasSynthesisWindowType() &&
-	mGlobalConfig.HasSynthesisHopSize() &&
-	mGlobalConfig.HasSynthesisZeroPaddingFactor() &&
-	mGlobalConfig.HasSynthesisPhaseManagementType())
+		mGlobalConfig.HasInputSoundFile() &&
+		mGlobalConfig.HasOutputSoundFile() &&
+		mGlobalConfig.HasOutputAnalysisFile() &&
+		mGlobalConfig.HasInputAnalysisFile() &&
+		mGlobalConfig.HasSamplingRate() &&
+		mGlobalConfig.HasAnalysisWindowSize() &&
+		mGlobalConfig.HasAnalysisHopSize() &&
+		mGlobalConfig.HasAnalysisWindowType() &&
+		mGlobalConfig.HasResAnalysisWindowSize() &&
+		mGlobalConfig.HasResAnalysisWindowType() &&
+		mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
+		mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
+		mGlobalConfig.HasAnalysisMaxSines() &&
+		mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
+		mGlobalConfig.HasAnalysisReferenceFundFreq() && 
+		mGlobalConfig.HasAnalysisLowestFundFreq() && 
+		mGlobalConfig.HasAnalysisHighestFundFreq() && 
+		mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
+		mGlobalConfig.HasAnalysisMaxFundCandidates() &&
+		mGlobalConfig.HasSynthesisFrameSize() &&
+		mGlobalConfig.HasSynthesisWindowType() &&
+		mGlobalConfig.HasSynthesisPhaseManagementType())
 	{	
 		mHaveConfig = true;
 		InitConfigs();
@@ -279,7 +281,7 @@ void AnalysisSynthesisExampleBase::StoreSDIFAnalysis()
 
 void AnalysisSynthesisExampleBase::StoreXMLAnalysis()
 {
-		//first we have to get rid of not wanted data
+	//first we have to get rid of not wanted data
 	mSegment.RemoveAudio();
 	mSegment.UpdateData();
 	int i=0;
@@ -369,7 +371,7 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	TSize fileSize=myAudioFileIn.Size();
 
 	mAudioIn.SetSize(fileSize);
-
+	mAudioIn.SetSampleRate(mGlobalConfig.GetSamplingRate());
 	//Read Audio File
 	myAudioFileIn.Start();
 	myAudioFileIn.Do(mAudioIn);
@@ -377,10 +379,10 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 
 	//Normalization is not needed for the time being
 	/*NormalizationConfig NCfg;
-	NCfg.SetType(3);
-	Normalization mNorm(NCfg);
+	  NCfg.SetType(3);
+	  Normalization mNorm(NCfg);
 
-	mNorm.Do(mAudioIn);*/
+	  mNorm.Do(mAudioIn);*/
 	
 	mHaveAudioIn = true;
 
@@ -410,7 +412,7 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	
+	int initialOffset=mAnalConfig.GetInitialOffset();	
 
 	myAnalysis.Start();
 
@@ -418,9 +420,9 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	{      
 		myAnalysis.Do(mSegment);
 		mSegment.mCurrentFrameIndex++;
-	    k+=step;
+		k+=step;
 		mCurrentProgressIndicator->Update(float(k));
-	}  while(k<=size-step);
+	}  while(k<=size-step-initialOffset);
 
 	myAnalysis.Stop();
 
@@ -461,16 +463,16 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	DestroyProgressIndicator();
 
 	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
-	and included in SMSAnalysis*/
+	  and included in SMSAnalysis*/
 	if ( HasToDoTracksCleaning() )
-		{	
-			mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
-
-			DoTracksCleanup();
-
-			DestroyWaitMessage();
-
-		}
+	{	
+		mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
+		
+		DoTracksCleanup();
+		
+		DestroyWaitMessage();
+		
+	}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
 }
@@ -502,7 +504,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundSinusoidal(void)
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
-			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
+		substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_sin.wav";
 	outfilecfg.SetFilename(filename);
 	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
@@ -524,7 +526,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundResidual(void)
 	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
-			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
+		substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_res.wav";
 	
 	outfilecfg.SetFilename(filename);
@@ -545,8 +547,11 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	//The output Audio 
 	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
 	mAudioOutSin.SetSize(size);
+	mAudioOutSin.SetSampleRate(mSegment.GetSamplingRate());
 	mAudioOutRes.SetSize(size);
+	mAudioOutRes.SetSampleRate(mSegment.GetSamplingRate());
 	mAudioOut.SetSize(size);
+	mAudioOut.SetSampleRate(mSegment.GetSamplingRate());
 
 	//The system that contains all synthesis PO
 	
@@ -564,23 +569,19 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
+	
+	mSegment.mCurrentFrameIndex=0;
 	for(i=0;i<nSynthFrames;i++){
 		
-		mSegment.GetFramesArray()[i].AddSinusoidalAudioFrame();
-		mSegment.GetFramesArray()[i].AddResidualAudioFrame();
-		mSegment.GetFramesArray()[i].AddSynthAudioFrame();
-		mSegment.GetFramesArray()[i].UpdateData();
-
-		mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		mSegment.GetFramesArray()[i].GetResidualAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		mSegment.GetFramesArray()[i].GetSynthAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		
-		mySynthesis.Do(mSegment.GetFramesArray()[i]);
-		mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
-		mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
-		mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
-		beginIndex+=synthFrameSize;
-		mCurrentProgressIndicator->Update(float(i));
+		if(mySynthesis.Do(mSegment))
+		{
+			mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
+			mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
+			mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
+			beginIndex+=synthFrameSize;
+			mCurrentProgressIndicator->Update(float(i));
+		}
+		//else it is an analysis frame with negative center time and thus should not be used
 	}
 
 
@@ -607,20 +608,20 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 {
 	
 /* This function is just an example of the kind of things you are able to do departing from this
-Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
-in metadata extraction from an input sound.*/	
+   Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
+   in metadata extraction from an input sound.*/	
 	
 	
 	ComputeLowLevelDescriptors();
 	
 	TData frequencies[85]={32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55.000, 58.270, 61.735,
-												 65.406, 69.296, 73.416, 77.782, 82.407, 87.307, 92.499, 97.999, 103.83, 110.00, 116.00, 123.47,
-												 130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
-												 261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392.00, 415.30, 440.00, 466.16, 493.88,
-												 523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.00, 932.33, 987.77,
-												 1046.5, 1108.7, 1174.7, 1244.5, 1318.5, 1396.9, 1480.0, 1568.0, 1661.2, 1760.0, 1864.7, 1975.5,
-												 2093.0, 2217.5, 2349.3, 2489.0, 2637.0, 2793.8, 2960.0, 3136.0, 3322.4, 3520.0, 3729.3, 3951.1,
-												 4186.0};
+			       65.406, 69.296, 73.416, 77.782, 82.407, 87.307, 92.499, 97.999, 103.83, 110.00, 116.00, 123.47,
+			       130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
+			       261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392.00, 415.30, 440.00, 466.16, 493.88,
+			       523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.00, 932.33, 987.77,
+			       1046.5, 1108.7, 1174.7, 1244.5, 1318.5, 1396.9, 1480.0, 1568.0, 1661.2, 1760.0, 1864.7, 1975.5,
+			       2093.0, 2217.5, 2349.3, 2489.0, 2637.0, 2793.8, 2960.0, 3136.0, 3322.4, 3520.0, 3729.3, 3951.1,
+			       4186.0};
 
 	TData analysisFrameSize, smoothFiltSize, bandThreshold, minPeakDist, globalThreshold, difSize;
 
@@ -677,7 +678,7 @@ in metadata extraction from an input sound.*/
 	mySegmentator.Do(mSegment,mSegmentDescriptors);
 
 
-		////////////////
+	////////////////
 	//Segmentation//
 	////////////////
 			
@@ -741,25 +742,25 @@ in metadata extraction from an input sound.*/
 			if(fund[j]>100&&fund[j]<1000)
 			{
 				if(j<e-3){
-				if(Abs(fund[j]-fund[j+1])<offsetTh&&Abs(fund[j]-fund[j+2])<offsetTh)//offset detected
-				{
-					aux+=fund[j];
-					count++;
-					if(!onset)
+					if(Abs(fund[j]-fund[j+1])<offsetTh&&Abs(fund[j]-fund[j+2])<offsetTh)//offset detected
 					{
-						onset=true;
-						b=j;
-					}
-				}}
+						aux+=fund[j];
+						count++;
+						if(!onset)
+						{
+							onset=true;
+							b=j;
+						}
+					}}
 			}
 			if(j<e-3){
-			if(Abs(fund[j]-fund[j+1])>offsetTh&&Abs(fund[j]-fund[j+2])>offsetTh)//offset detected
-			{
-				if(onset){
-				e=j;
-				time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mGlobalConfig.GetSamplingRate()));
-				break;}
-			}}
+				if(Abs(fund[j]-fund[j+1])>offsetTh&&Abs(fund[j]-fund[j+2])>offsetTh)//offset detected
+				{
+					if(onset){
+						e=j;
+						time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mGlobalConfig.GetSamplingRate()));
+						break;}
+				}}
 		}
 		aux/=count;
 		// Not use the values >2*mean o<2*mean to compute the mean
@@ -814,8 +815,8 @@ in metadata extraction from an input sound.*/
 void AnalysisSynthesisExampleBase::StoreMelody(void)
 {
 	std::string melodyFilename(
-	mGlobalConfig.GetOutputAnalysisFile().
-			substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
+		mGlobalConfig.GetOutputAnalysisFile().
+		substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
 	melodyFilename += "_melody.xml";
 
 	XMLStorage x;
@@ -836,7 +837,7 @@ void AnalysisSynthesisExampleBase::Transform(void)
 	bool def=false;
 	if(!mpTransformation)
 	{
-		SetTransformation(new SMSFreqShift);
+		SetTransformation(new SMSPitchShift());
 		def=true;
 	}
 	mpTransformation->Configure(mTransformationScore);

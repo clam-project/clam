@@ -35,7 +35,8 @@ class Processing;
 typedef float TControlData;
 
 /**
-* @todo Document!
+* \brief Processing in control class.
+* 
 */
 class InControl : public ControlLinker
 {
@@ -47,7 +48,8 @@ private:
 // Methods:
 public:
 	/**
-	 *   TODO: document why is implemented here.
+	 * Stores the incoming control value. It can be retrieved
+	 * using \c GetLastValue
 	 */
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
 	TControlData GetLastValue() const { return mLastValue; };
@@ -58,23 +60,28 @@ public:
 	InControlIterator GetInControls() const;
 //Constructor/Destructor
 	/**
-	 * TODO: document when to use one or the other constructor.
+	 * \todo constructor rework. 
+	 * \argument \c parent Optional. If present, is the processing where to be published.
 	 */
-	InControl(const std::string &name, Processing* whereToPublish);
-	InControl(const std::string &name);
+	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
 	virtual ~InControl();
 	
 };
 
 /**
-* @todo Document!
+* Subclass of InControl that provides the incontrol with a callback method
+* The method must be defined inside the parent \c Processing class.
+* See the \c InControlTmpl constructors for learn how to provide
+* the callback to the \c InControlTmpl
 */
 template<class ProcObj>
 class InControlTmpl : public InControl
 {
-private:
+public:
 	typedef int (ProcObj::*TPtrMemberFunc)(TControlData);
 	typedef int (ProcObj::*TPtrMemberFuncId)(int,TControlData);
+
+private:
 	TPtrMemberFunc   mFunc;
 	TPtrMemberFuncId mFuncId;
 	ProcObj* mProcObj;
@@ -115,7 +122,7 @@ public:
 			if (publish) mProcObj->PublishInControl(this);
 		};
 
-	InControlTmpl(int mId,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
+	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
 		InControl(name),
 		mFunc(0),
 		mFuncId(f),
@@ -186,6 +193,55 @@ InControlArray::~InControlArray()
 	for (int i=0; i<size; i++)
 		delete mArray[i];
 }
+
+//////////////////////////////////////////////////
+// 
+template <class Processing>
+class InControlTmplArray
+{
+	typedef InControlTmpl<Processing> TInControl;
+	typedef typename TInControl::TPtrMemberFuncId TPtrMemberFuncId;
+
+	Array<TInControl*> mArray;
+
+public:
+	InControlTmplArray(int size, const std::string &name, Processing* parent,
+		TPtrMemberFuncId f, const bool publish=true);
+	~InControlTmplArray();
+
+	inline TInControl& operator[](int i) { return *mArray[i]; }
+	inline const TInControl& operator[](int i) const { return *mArray[i]; }
+
+};
+/////////////////////////////////////////////
+// Implementation
+template <class Processing>
+InControlTmplArray<Processing>::InControlTmplArray(
+		int size, 
+		const std::string &name,
+		Processing *parent, 
+		TPtrMemberFuncId f,
+		const bool publish)
+{
+	mArray.Resize(size);
+	mArray.SetSize(size);
+	for (int i=0; i<size; i++) {
+		std::stringstream str;
+		str << name << "_" << i;
+		CLAM_ASSERT(parent, "ArrayControls not being published. TODO: check ctr parameters");
+		mArray[i] = new TInControl(i, str.str(), parent, f);
+		
+	}
+}
+template <class Processing>
+InControlTmplArray<Processing>::~InControlTmplArray()
+{
+	int size = mArray.Size();
+	for (int i=0; i<size; i++)
+		delete mArray[i];
+}
+
+
 
 }; // namespace CLAM
 

@@ -104,20 +104,6 @@ TSize SMSSynthesisConfig::GetSynthWindowSize() const
 	return GetSpectralSynth().GetSynthWindowSize();
 }
 
-/** Zero padding factor*/
-void SMSSynthesisConfig::SetZeroPadding(int z)
-{
-	GetSpectralSynth().SetZeroPadding(z);
-	GetSynthSineSpectrum().SetSpectrumSize(GetSpectralSynth().GetIFFT().GetAudioSize()/2+1);
-}
-
-int SMSSynthesisConfig::GetZeroPadding() const
-{
-	return int(GetSynthSineSpectrum().GetZeroPadding());
-}
-
-
-
 /** Synthesis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
 void SMSSynthesisConfig::SetHopSize(TSize h)
 {
@@ -277,6 +263,17 @@ bool SMSSynthesis::Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 
 bool SMSSynthesis::Do(Frame& in)
 {
+	in.AddSinusoidalAudioFrame();
+	in.AddResidualAudioFrame();
+	in.AddSynthAudioFrame();
+	in.UpdateData();
+
+	in.GetSinusoidalAudioFrame().SetSize(mConfig.GetFrameSize());
+	in.GetResidualAudioFrame().SetSize(mConfig.GetFrameSize());
+	in.GetSynthAudioFrame().SetSize(mConfig.GetFrameSize());
+		
+	if(in.GetCenterTime()<0) return false;//such frames should not be synthesized
+
 	mPO_PhaseMan.Do(in);
 
 	SpectrumConfig tmpcfg;
@@ -284,8 +281,11 @@ bool SMSSynthesis::Do(Frame& in)
 	Spectrum tmpSpec(tmpcfg),tmpSpec2(tmpcfg);
 	tmpSpec.SetSize(mConfig.GetSpectrumSize());
 	tmpSpec2.SetSize(mConfig.GetSpectrumSize());
-
+	
+	tmpSpec.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
+	tmpSpec2.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
 	Do(in.GetSpectralPeakArray(),tmpSpec,in.GetSinusoidalAudioFrame());
+	
 	mPO_SpectrumAdder.Do(tmpSpec,in.GetResidualSpec(),tmpSpec2);
 	mPO_SpectralSynthesis.Do(tmpSpec2,in.GetSynthAudioFrame());
 

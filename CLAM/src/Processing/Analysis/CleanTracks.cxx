@@ -20,7 +20,7 @@
  */
 #include "CleanTracks.hxx"
 #include "ErrProcessingObj.hxx"
-#include <iostream.h>
+#include <iostream>
 
 
 namespace CLAM {
@@ -40,12 +40,12 @@ namespace CLAM {
 		SetSpecSize(22050);
 	}
 	
-	CleanTracks::CleanTracks():mSearchTrajectories(mTrajectoryArray)
+	CleanTracks::CleanTracks():mTrajectoryArray(100,100),mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(CleanTracksConfig());
 	}
 
-	CleanTracks::CleanTracks(const CleanTracksConfig &c ):mSearchTrajectories(mTrajectoryArray)
+	CleanTracks::CleanTracks(const CleanTracksConfig &c ):mTrajectoryArray(100,100),mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(c);
 	}
@@ -58,10 +58,10 @@ namespace CLAM {
 
 /* Configure the Processing Object according to the Config object */
 
-	bool CleanTracks::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
-	{	    
+	bool CleanTracks::ConcreteConfigure(const ProcessingConfig& c)
+	{
 
-		mConfig = dynamic_cast<const CleanTracksConfig&>(c);	    
+		CopyAsConcreteConfig(mConfig, c);	    
 
 		mMaxDropOut = mConfig.GetMaxDropOut();
 		mMinLength= mConfig.GetMinLength();
@@ -80,7 +80,7 @@ namespace CLAM {
 	//Supervised mode
 	bool  CleanTracks::Do(void) 
 	{
-		throw(ErrProcessingObj("CleanTracks::Do(): Supervised mode not implemented"),this);
+		throw(ErrProcessingObj("CleanTracks::Do(): Supervised mode not implemented",this));
 		return false;
 	}  
 
@@ -100,6 +100,7 @@ namespace CLAM {
 		int i;
 		int nFrames=segment.GetnFrames();
 		Array<SpectralPeakArray*> spectralPeakArrayArray;
+		spectralPeakArrayArray.Resize(nFrames);
 		for(i=0;i<nFrames;i++)
 		{
 			spectralPeakArrayArray.AddElem(&segment.GetFrame(i).GetSpectralPeakArray());

@@ -14,16 +14,10 @@ using CLAMGUI::AnalysisSynthesisExampleGUI;
 int main(void)
 {
 	try
-		{
-			AnalysisSynthesisExampleGUI example;
-			/******* TRANSFORMATION *******/
-			SMSFreqShift myTrans;
-			
-			example.SetTransformation(&myTrans);
-			/******* TRANSFORMATION *******/
-			
-			example.Run();
-		}
+	{
+		AnalysisSynthesisExampleGUI example;
+		example.Run();
+	}
 	catch(Err& error)
 	{
 		error.Print();
@@ -39,10 +33,10 @@ int main(void)
 		std::cout << e.what() << std::endl; 
 	}
 	catch ( ... )
-		{
-			std::cerr << "If you are under windows this can be a major memory corruption... DEBUG!" << std::endl;
-			abort();
-		}
+	{
+		std::cerr << "If you are under windows this can be a major memory corruption... DEBUG!" << std::endl;
+		abort();
+	}
 	
 	std::clog << "Finished successfully!"<<std::endl;
 	return 0;

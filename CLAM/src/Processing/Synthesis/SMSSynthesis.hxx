@@ -75,9 +75,6 @@ public:
 /** Analysis Window type*/
 	void SetAnalWindowType(const EWindowType& t);
 	const EWindowType& GetAnalWindowType() const;
-/** Analysis Zero padding factor*/
-	void SetZeroPadding(int z);
-	int GetZeroPadding() const;
 /** Synthesis window size*/
 	void SetSynthWindowSize(TSize w);
 	TSize GetSynthWindowSize()const;
@@ -147,7 +144,7 @@ private:
 		
 		// Processing Object compliance methods.
 
-		const char *GetClassName() {return "SMSSynthesis";}
+		const char *GetClassName() const {return "SMSSynthesis";}
 
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}

@@ -24,6 +24,7 @@
 #define _FFT_rfftw_
 
 #include "FFT.hxx"
+#include "ErrDynamicType.hxx"
 
 extern "C" {
 #include FFTW_HEADER
@@ -59,7 +60,7 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an FFTConfig
 		 * object.  
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
@@ -99,7 +100,7 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		const char* GetClassName() 
+		const char* GetClassName() const
 		{ 
 			return "FFT_rfftw"; 
 		}

@@ -79,14 +79,14 @@ namespace CLAM {
 	{
 		mutable CleanTracksConfig mConfig;
 
-		virtual const char *GetClassName() {return "CleanTracks";} 
+		const char *GetClassName() const {return "CleanTracks";} 
 
 		/** Config change method
 		 * @throw
 		 * bad_cast exception when the argument is not an SpecAdderConfig
 		 * object.
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		virtual bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 

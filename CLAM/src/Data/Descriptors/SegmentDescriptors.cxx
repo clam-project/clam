@@ -30,8 +30,7 @@ using namespace CLAM;
 
 
 
-	
-SegmentDescriptors::SegmentDescriptors(Segment* pSegment=NULL): ProcessingData(eNumAttr)
+SegmentDescriptors::SegmentDescriptors(Segment* pSegment): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
 	mpSegment=pSegment;

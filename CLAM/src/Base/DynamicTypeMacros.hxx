@@ -38,7 +38,7 @@
 
 #define __COMMON_DYNAMIC_TYPE(CLASS_NAME,N) \
 public: \
-	virtual char* GetClassName() const { \
+	virtual const char* GetClassName() const { \
 		return #CLASS_NAME; \
 	}\
 	enum { eNumAttr= N }; \

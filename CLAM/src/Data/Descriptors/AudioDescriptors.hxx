@@ -29,8 +29,8 @@
 
 
 /*
- * This class holds Descriptors computed from Audio data 
- * 
+ * This class holds Descriptors computed from Audio data
+ *
  *
  */
 
@@ -56,16 +56,41 @@ namespace CLAM {
 	public:
 
 		AudioDescriptors(Audio* pAudio);
-		
-		const Audio* GetpAudio() const{return mpAudio;}
-		void SetpAudio(Audio* pAudio) {mpAudio=pAudio;}
+
+		const Audio* GetpAudio() const;
+		void SetpAudio(Audio* pAudio);
+
+	private:
+		void DefaultInit();
+		void CopyInit(const AudioDescriptors & copied);
 
 	private:
 		Audio* mpAudio;
 
 	};
 
-};
+
+
+// Implementation
+
+inline void AudioDescriptors::DefaultInit() {
+	mpAudio=0;
+}
+
+inline void AudioDescriptors::CopyInit(const AudioDescriptors & copied) {
+	mpAudio=copied.mpAudio;
+}
+
+inline const Audio* AudioDescriptors::GetpAudio() const {
+	return mpAudio;
+}
+
+inline void AudioDescriptors::SetpAudio(Audio* pAudio) {
+	mpAudio=pAudio;
+}
+
+
+}
 
 
 #endif /* __AUDIODescriptors_H__ */
