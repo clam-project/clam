@@ -27,6 +27,7 @@ namespace AudioCodecs
 		virtual bool     IsWritable( std::string uri, const AudioFileHeader& ) const;
 		virtual Stream*  GetStreamFor( const AudioFile& );
 		virtual void     RetrieveHeaderData( std::string uri, AudioFileHeader& );
+		virtual void     RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& );
 
 	protected:
 

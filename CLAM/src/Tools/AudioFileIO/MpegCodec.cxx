@@ -5,6 +5,7 @@
 #include "MpegBitstream.hxx"
 #include "MpegAudioStream.hxx"
 #include <mad.h>
+#include <id3/tag.h>
 #include <cstdio>
 
 namespace CLAM
@@ -148,6 +149,88 @@ namespace AudioCodecs
 		
 		header.SetSampleRate( MPEGFrame.header.samplerate );
 		header.SetChannels( MAD_NCHANNELS(&MPEGFrame.header) );
+	}
+
+	void   MpegCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& txt )
+	{
+		ID3_Tag fileTag;
+
+		fileTag.Link( uri.c_str() );
+
+		ID3_Frame* artistFrame = fileTag.Find( ID3FID_LEADARTIST );
+
+		if ( artistFrame != NULL )
+		{
+			txt.AddArtist();
+			txt.UpdateData();
+			ID3_Field* artistStr = artistFrame->GetField( ID3FN_TEXT );
+			
+			if ( artistStr != NULL )
+				txt.SetArtist( artistStr->GetRawText() );
+		}
+
+		ID3_Frame* titleFrame = fileTag.Find( ID3FID_TITLE );
+
+		if ( titleFrame != NULL )
+		{
+			txt.AddTitle();
+			txt.UpdateData();
+			ID3_Field* titleStr = titleFrame->GetField( ID3FN_TEXT );
+
+			if ( titleStr!=NULL )
+				txt.SetTitle( titleStr->GetRawText() );
+		}
+
+		ID3_Frame* albumFrame = fileTag.Find( ID3FID_ALBUM );
+
+		if ( albumFrame != NULL )
+		{
+			txt.AddAlbum();
+			txt.UpdateData();
+			ID3_Field* albumStr = albumFrame->GetField( ID3FN_TEXT );
+
+			if ( albumStr != NULL )
+				txt.SetAlbum( albumStr->GetRawText() );
+		}
+
+		ID3_Frame* tracknumFrame = fileTag.Find( ID3FID_TRACKNUM );
+
+		if ( tracknumFrame != NULL )
+		{
+			txt.AddTrackNumber();
+			txt.UpdateData();
+
+			ID3_Field* tracknumStr = tracknumFrame->GetField( ID3FN_TEXT );
+			
+			if ( tracknumStr != NULL )
+				txt.SetTrackNumber( tracknumStr->GetRawText() );
+		}
+
+		ID3_Frame* composerFrame = fileTag.Find( ID3FID_COMPOSER );
+
+		if ( composerFrame != NULL )
+		{
+			txt.AddComposer();
+			txt.UpdateData();
+
+			ID3_Field* composerStr = composerFrame->GetField( ID3FN_TEXT );
+
+			if ( composerStr != NULL )
+				txt.SetComposer( composerStr->GetRawText() );
+		}
+
+		ID3_Frame* performerFrame = fileTag.Find( ID3FID_CONDUCTOR );
+
+		if ( performerFrame != NULL )
+		{
+			txt.AddPerformer();
+			txt.UpdateData();
+
+			ID3_Field* performerStr = performerFrame->GetField( ID3FN_TEXT );
+
+			if ( performerStr != NULL )
+				txt.SetPerformer( performerStr->GetRawText() );
+		}
 	}
 }
 
