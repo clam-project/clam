@@ -389,13 +389,6 @@ template<int o, bool abs=false, class T=TData,class U=TData> class CenterOfGravi
 {
 public:
 	CenterOfGravity():memory(0.0){}
-	/// Memoryfull Computation using external lower level functors
-	U operator()(const Array<T>& a,WeightedPoweredSum<o,abs,T>& wPowSum,PoweredSum<o,abs,T>& PowSum,StaticTrue* b=NULL)
-	{
-		if(alreadyComputed) return memory;
-		alreadyComputed=true;
-		return memory=(*this)(a,(StaticFalse*)(0));
-	}
 	/// Memoryless Computation using external lower level functors
 	U operator()(const Array<T>& a,WeightedPoweredSum<o,abs,T>& wPowSum,PoweredSum<o,abs,T>& PowSum,StaticFalse*)
 	{
@@ -407,6 +400,13 @@ public:
 			return (a.Size()%2==0)? a.Size()/2 : (a.Size()+1)/2;
 		
 		return static_cast<U>(wPowSum(a))/normFactor;
+	}
+	/// Memoryfull Computation using external lower level functors
+	U operator()(const Array<T>& a,WeightedPoweredSum<o,abs,T>& wPowSum,PoweredSum<o,abs,T>& PowSum,StaticTrue* b=NULL)
+	{
+		if(alreadyComputed) return memory;
+		alreadyComputed=true;
+		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 	/// Memoryless Computation using internal lower level functors
 	U operator()(const Array<T>& a,StaticFalse*)
@@ -527,7 +527,6 @@ public:
 		alreadyComputed=true;
 		return memory=(*this)(a, inProd, (StaticFalse*)(0));
 	}
-	/**No inner product previously computed, use temporary*/
 	U operator()(const Array<T>& a,StaticTrue* useMemory=NULL)
 	{
 		return (*this)(a,mIP,(StaticTrue*)(0));
@@ -564,7 +563,6 @@ public:
 		return memory=(*this)(a,(StaticFalse*)(0));
 	}
 
-	/** if no mean functor is passed, used member functor*/
 	U operator()(const Array<T>& a,StaticTrue* b=NULL)
 	{
 		return (*this)(a,mMean,(StaticTrue*)(0));
@@ -595,7 +593,6 @@ public:
 	{
 		return static_cast<U>(bps(a))/a.Size();
 	}
-	/** No BiasedPoweredSum passed, use member*/
 	U operator()(const Array<T>& a, StaticTrue* b=NULL)
 	{
 		return (*this)(a,mBPS, (StaticTrue*)(0));
