@@ -86,15 +86,15 @@ cannot handle g++ version ($CXXVERSION)]
 
 AC_DEFUN(CLAM_CHECK_UNICODE_SUPPORT,
 [
-	AC_MSG_CHECKING([for wchar_t support in listdc++])
+	AC_MSG_CHECKING([for wchar_t support in libstdc++])
 
+	dnl	UNICODE_SUPPORT_AVAILABLE="yes"
 	AC_TRY_LINK([
 	#include <string>
-	int main( int argc, char** argv )
-	{
+	],
+	[	
 		std::char_traits<wchar_t> theString;
 		return 0;
-	}
 	],[UNICODE_SUPPORT_AVAILABLE="yes"],[UNICODE_SUPPORT_AVAILABLE="no"])
 
 	if test $UNICODE_SUPPORT_AVAILABLE = "yes"
