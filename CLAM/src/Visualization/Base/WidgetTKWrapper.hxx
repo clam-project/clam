@@ -34,7 +34,7 @@ using CLAM::Component;
 using CLAM::Enum;
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class EWidgetTK
