@@ -13,7 +13,9 @@ class cppUnitHelperTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoToString_NotEquals );
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoToString_Equals );
 	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_Equals );
-	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_NotEquals );
+	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_DifferentUnrelatedClasses );
+	CPPUNIT_TEST( testAssertionTraitsTypeInfoEqual_DifferentSuperAndSubClass );
+	
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -81,20 +83,20 @@ private:
 			eq );
 	}
 
-	void testAssertionTraitsTypeInfoEqual_NotEquals()
+	void testAssertionTraitsTypeInfoEqual_DifferentUnrelatedClasses()
 	{
-		bool eq = CppUnit::assertion_traits<std::type_info>::equal(
-			typeid(*baseConcrete), typeid(*nothingToDo) );
-
-		eq |= CppUnit::assertion_traits<std::type_info>::equal(
-			typeid(*concrete), typeid(*nothingToDo) );
-
-		eq |= CppUnit::assertion_traits<std::type_info>::equal(
-			typeid(baseConcrete), typeid(concrete) );
-
 		CPPUNIT_ASSERT_MESSAGE(
 			"assertion_traits of type_info, method eq. should return false if dyn types are different",
-			!eq );
+			!CppUnit::assertion_traits<std::type_info>::equal(
+			typeid(*baseConcrete), typeid(*nothingToDo) ) );
+	}
+
+	void testAssertionTraitsTypeInfoEqual_DifferentSuperAndSubClass()
+	{
+		CPPUNIT_ASSERT_MESSAGE(
+			"assertion_traits of type_info, method eq. should return false if dyn types are different",
+			!CppUnit::assertion_traits<std::type_info>::equal(
+			typeid(baseConcrete), typeid(concrete) ) );
 	}
 };
 } // namespace
