@@ -21,23 +21,60 @@
 
 #include "SMSTools.hxx"
 #include <iostream>
+#include <fstream>
 #include <FL/Fl.H>
 #include <FL/Fl_Tooltip.H>
 #include <FL/fl_file_chooser.H>
+#include <FL/fl_ask.H>
+#include "Assert.hxx"
 #ifdef  GetClassName
 #undef GetClassName
 #endif
 
 
-
 namespace CLAMGUI
 {
+	void RedirectAssertToLogFile( const char* message, const char* filename, int lineNumber)
+	{
+		std::ofstream log( "SMSTools2_errors.log", std::ios_base::out|std::ios_base::app );
+
+		log << "##########################################################" << std::endl;
+		log << "################### ASSERTION FAILED #####################" << std::endl;
+		log << "######################std::cout####################################" << std::endl;
+		log << "At file " << filename << " line " << lineNumber << std::endl;
+		log << message << std::endl;
+		
+		log.close();
+
+		fl_message(	"Sorry, but SMSTools has crashed as much other software also do. You "
+					"may send you us a bug-report through our web (http://www.iua.upf.es/mtg/clam). Please,"
+					"do not forget to send us the SMSTools2_errors.log file that can be located in SMSTools 2 folder.");
+				
+	}
+
+	void RedirectWarningToLogFile( const char* message, const char* filename, int lineNumber)
+	{
+		std::ofstream log( "SMSTools2_warnings.log", std::ios_base::out|std::ios_base::app );
+
+		log << "##########################################################" << std::endl;
+		log << "######################## WARNING #########################" << std::endl;
+		log << "##########################################################" << std::endl;
+		log << "At file " << filename << " line " << lineNumber << std::endl;
+		log << message << std::endl;
+
+		log.close();
+	}
+
 	SMSTools::SMSTools()
 		: mUI( NULL )
 	{
 		TimeSelected.Wrap( this, &SMSTools::OnNewTime );
 		mExplorer.SelectedTime.Connect( TimeSelected );
 		SetScore.Wrap( this, &SMSTools::OnNewScore );
+
+		CLAM::SetAssertFailedHandler( RedirectAssertToLogFile );
+		CLAM::SetWarningHandler( RedirectWarningToLogFile );
+
 	}
 
 	SMSTools::~SMSTools()
@@ -79,6 +116,7 @@ namespace CLAMGUI
 		mUI->mWindow->position(20,40);
 		mUI->AboutWindow();
 
+		Fl::lock(); // To enable FLTK thread-safe mode
 		Fl::run();
 	}
 
@@ -138,7 +176,7 @@ namespace CLAMGUI
 
 		while ( mThread.IsRunning() )
 		{
-			Fl::wait( 0.1 );
+			Fl::check(  );
 		}
 	}
 
@@ -184,41 +222,64 @@ namespace CLAMGUI
 			makeMemberFunctor0( *this, SMSTools, TransformProcessing ) );
 	}
 	
-	void SMSTools::DoLoadAnalysis()
+	bool SMSTools::DoLoadAnalysis()
 	{
 
-		ExecuteMethodOnThreadKeepingScreenUpToDate( 
-			makeMemberFunctor0( *this, SMSTools, LoadAnalysis ) );
-	
-
-	}
-
-	void SMSTools::DoStoreAnalysis()
-	{
-		ExecuteMethodOnThreadKeepingScreenUpToDate( 
-			makeMemberFunctor0( *this, SMSTools, StoreAnalysis ) );
-
-	}
-
-	bool SMSTools::LoadAnalysis()
-	{
 		char* fileName = fl_file_chooser("Choose file to load...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return false;
 
-		return SMSBase::LoadAnalysis(fileName);
+
+		mAnalysisInputFile = fileName;
+
+		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data, please wait");
+
+
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, SMSTools, LoadAnalysis ) );
+	
+		DestroyWaitMessage();
+
+		return true;
 	}
 
-	void SMSTools::StoreAnalysis()
+	bool SMSTools::DoStoreAnalysis()
 	{
 		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
-			return;
-		
-		SMSBase::StoreAnalysis(fileName);
+			return false;
 
+		mAnalysisOutputFile = fileName;
+
+		mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
+
+
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, SMSTools, StoreAnalysis ) );
+
+		DestroyWaitMessage();
+	
+
+		return true;
+	}
+
+	bool SMSTools::LoadAnalysis()
+	{
+		mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, mAnalysisInputFile.c_str() );
+
+		mHaveTransformation=false;
+
+		return true;
+	}
+
+	void SMSTools::StoreAnalysis()
+	{
+
+	mSerialization.DoSerialization( mSerialization.Store, mOriginalSegment, mAnalysisOutputFile.c_str() );	
+
+		
 	}
 
 	void SMSTools::StoreSound(const Audio& audio)

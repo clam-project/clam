@@ -211,10 +211,13 @@ bool SMSBase::LoadAnalysis(const char* fileName)
 {
 	mCurrentWaitMessage = CreateWaitMessage("Loading analysis data, please wait");
 
+
 	mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, fileName );
 
-	DestroyWaitMessage();
 	mHaveTransformation=false;
+
+	DestroyWaitMessage();
+
 
 	return true;
 }

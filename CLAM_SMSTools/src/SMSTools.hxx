@@ -9,6 +9,7 @@
 #include "SMS_DataExplorer.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include <string>
 using namespace CLAM;
 
 class UserInterface;
@@ -56,9 +57,9 @@ protected: // methods
 
 	void DoTracksCleanup();
 
-	void DoLoadAnalysis();
+	bool DoLoadAnalysis();
 
-	void DoStoreAnalysis();
+	bool DoStoreAnalysis();
 	
 	void DoTransformation();
 
@@ -80,9 +81,12 @@ private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
+
 protected:
 	int                       mThreadState;
 	std::string               mFilename;
+	std::string               mAnalysisInputFile;
+	std::string               mAnalysisOutputFile;
 	Thread                    mThread;
 	CLAMVM::SMS_DataExplorer  mExplorer;
 	UserInterface*            mUI;

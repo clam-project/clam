@@ -139,7 +139,7 @@ void UserInterface::SaveTransformScore()
 void UserInterface::LoadAnalysisData(void)
 {
 
-	if ( !mSMS->LoadAnalysis(  ) )
+	if ( !mSMS->DoLoadAnalysis(  ) )
 		return;
 	mSMS->mHaveAnalysis = true;
 	// @todo: Check this is true...
@@ -197,7 +197,7 @@ void UserInterface::Exit(void)
 
 void UserInterface::StoreAnalysisData(void)
 {
-	mSMS->StoreAnalysis();
+	mSMS->DoStoreAnalysis();
 }
 
 void UserInterface::StoreOutputSound(void)
