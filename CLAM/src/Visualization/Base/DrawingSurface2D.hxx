@@ -19,7 +19,7 @@ public:
 
 		DrawingSurface2D();
 
-		~DrawingSurface2D();
+		virtual ~DrawingSurface2D();
 
 
 		virtual void EnableIndexedMode() = 0;
@@ -31,7 +31,7 @@ public:
 
 		bool MustReproject() const
 		{
-				return mMustReproject;
+			return mMustReproject;
 		}
 
 		void QueryDataBoundBox( DataBoundBox& );
