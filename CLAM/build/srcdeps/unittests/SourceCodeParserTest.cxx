@@ -1,6 +1,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace CLAMTest
+extern "C"
+{
+#	include "parser.h"
+#	include "includepaths.h"
+//#	include "config_parser.h"
+//#	include "dsp_parser.h"
+}
+
+namespace srcdepsTest
 {
 
 
@@ -11,29 +19,49 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SourceCodeParserTest );
 class SourceCodeParserTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SourceCodeParserTest );
-	CPPUNIT_TEST( testSomeMethod_WhenSomeConditionsMeet );
+
+	CPPUNIT_TEST( test_guessed_sources_SizeInitially );
+	CPPUNIT_TEST( test_HeaderFoundFromASource_InTheSameDir );
 	CPPUNIT_TEST_SUITE_END();
+
+	char* src_test_path;
 
 public:
 	/// Common initialization, executed before each test method
-	void setUp() { }
+	void setUp() 
+	{ 
+		src_test_path = "./source_files_for_testing/";
+	}
 
 	/// Common clean up, executed after each test method
 	void tearDown() { }
 
 private:
-
-	void testSomeMethod_WhenSomeConditionsMeet()
+	void test_guessed_sources_SizeInitially()
 	{
-		// Setup
-
-		// Exercise
-
-		// Verification
-		CPPUNIT_ASSERT_EQUAL( std::string("expected"), std::string("non expected") );
+		guessed_sources = list_new();
 		
-		// Tear down
+		CPPUNIT_ASSERT_EQUAL( 0, list_size(guessed_sources) );
+
+		list_free( guessed_sources );
 	}
+
+
+	//	item* i = guessed_sources->first;
+	//	CPPUNIT_ASSERT_EQUAL( std::string(""), std::string( i->str ) );
+	
+	void test_HeaderFoundFromASource_InTheSameDir()
+	{
+		guessed_sources = list_new();
+		guessed_headers = list_new();
+		parser_run("a.cxx");
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("guessed_sources size", 0, list_size(guessed_sources) );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("guessed_headers size", 1, list_size(guessed_headers) );
+		
+		item* i = guessed_headers->first;
+		CPPUNIT_ASSERT_EQUAL( std::string("a.h"), std::string(i->str) );
+	}
+
 };
 
 
@@ -41,4 +69,7 @@ private:
 
 
 
-} // namespace CLAMTest
+
+
+
+} // namespace srcdepsTest
