@@ -79,8 +79,8 @@ namespace CLAM {
 		size_t n;
 		do
 		{
-			int err = snd_rawmidi_read(mHandleIn,&ch,1)!=-EAGAIN)
-			if (err!=_EAGAIN)
+			int err = snd_rawmidi_read(mHandleIn,&ch,1);
+			if (err!=-EAGAIN)
 			{
 				HandleRawByte(ch);
 			}
