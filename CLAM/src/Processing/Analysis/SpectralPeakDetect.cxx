@@ -207,10 +207,28 @@ namespace CLAM {
 
 				else { //  add SpectralPeak... BinWidth will be updated in the next turn
 			
-					// Curve-fitting a parabola using 3 points, using 
-					// Brent method for estimating the maximum of the parabola.
-					// The idea is that the shape of the main lobe of most analysis windows look
-					// like a parabola in the dB scale.
+					// Estimating the ``true'' maximum peak (frequency and magnitude) of the detected local maximum 
+					// using a parabolic cure-fitting. The idea is that the main-lobe of spectrum of most analysis 
+					// windows on a dB scale looks like a parabola and therefore the maximum of a parabola fitted 
+					// through a local maxima bin and it's two neighboring bins will give a good approximation 
+					// of the actual frequency and magnitude of a sinusoid in the input signal.
+					//
+					// The parabola f(x) = a(x-n)^2 + b(x-n) + c can be completely described using 3 points; 
+					// f(n-1) = A1, f(n) = A2 and f(n+1) = A3, where 
+					// A1 = 20log10(|X(n-1)|), A2 = 20log10(|X(n)|), A3 = 20log10(|X(n+1)|).
+					//
+					// Solving these equation yields: a = 1/2*A1 + A2 + 1/2*A3, b = 1/2*A3 - 1/2*A1 and 
+					// c = A2.
+					//
+					// As the 3 bins are known to be a maxima, solving d/dx f(x) = 0, yields (fractional) bin 
+					// position x of the estimated peak. Substituting delta_x for (x-n) in this equation yields 
+					// the fractional offset in bins from n where the peak's maximum is.
+					//
+					// Solving this equation yields: delta_x = 1/2 * (A1 - A3)/(A1 + 2*A2 + A3).
+					// 
+					// Computing f(n+delta_x) will estimate the peak's magnitude (in dB's):
+					// f(n+delta_x) = A2 - 1/4*(A1-A3)*delta_x.
+
 					diffFromMax =  TData(0.5) * ((leftMag-rightMag) / (leftMag- 2*middleMag + rightMag));
 					interpolatedBin = SpectralPeakPosition+diffFromMax;
 			
