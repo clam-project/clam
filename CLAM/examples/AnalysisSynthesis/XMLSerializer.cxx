@@ -19,6 +19,7 @@
  *
  */
 
+#include <iostream>
 #include "XMLSerializer.hxx"
 
 #include "Segment.hxx"
@@ -32,6 +33,8 @@ XMLSerializer::~XMLSerializer(  ) {  }
 bool XMLSerializer::DoLoad( char* fileName, Segment& segment )
 {
 	mXMLStorage.Restore( segment, fileName );
+
+	return true;
 }
 
 bool XMLSerializer::DoStore( char* fileName, Segment& segment )
@@ -64,5 +67,7 @@ bool XMLSerializer::DoStore( char* fileName, Segment& segment )
 		tmpFrame.AddSpectrum(  );//this could be kept for direct IFFT
 		tmpFrame.UpdateData(  );			
 	}
-	cout<< "caca"<<endl;
+	std::cout<< "caca"<< std::endl;
+
+	return true;
 }
