@@ -5,6 +5,7 @@
 #include "Processing.hxx"
 #include "Port.hxx"
 #include "Audio.hxx"
+#include "InControlArray.hxx"
 #include <string>
 
 namespace CLAM
