@@ -60,7 +60,7 @@ namespace CLAM
 		EAudioFileKind                GetKind() const;
 
 		void                          OpenExisting( const std::string& uri );
-		void                          CreateNew( const std::string& uri, const AudioFileHeader& );
+		bool                          CreateNew( const std::string& uri, const AudioFileHeader& );
 
 		bool                          IsValid() const;
 		bool                          IsReadable() const;

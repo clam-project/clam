@@ -63,10 +63,10 @@ namespace CLAM
 
 	}
 
-	void AudioFile::CreateNew( const std::string& uri, const AudioFileHeader& header ) 
+	bool AudioFile::CreateNew( const std::string& uri, const AudioFileHeader& header ) 
 	{
 		mLocation = uri;
-		SetHeader( header );
+		return SetHeader( header );
 	}
 
 	void AudioFile::ResolveCodec()
