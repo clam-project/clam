@@ -87,6 +87,13 @@ namespace CLAMVM
 				mDrawMgr.CacheData( array );
 				TData maxMag = *std::max_element( array.GetPtr(), array.GetPtr()+array.Size() );
 				TData minMag = *std::min_element( array.GetPtr(), array.GetPtr()+array.Size() );
+
+				if ( minMag < -200. )
+				{
+					minMag = -200;
+					maxMag = 0;
+				}
+
 				const TData offsetPercentil = 0.2f; // 20%
 				TData maxOffset = fabs( maxMag - minMag ) * offsetPercentil;
 				mDisplay->SetWorldSpace( array.Size() - 2, 0, maxMag + maxOffset, minMag );
