@@ -50,8 +50,11 @@ namespace CLAM {
 		* Only the frequency value (in Hz) of the centroid is computed.
 		* Amplitude and frequency scale are linear for this operation.
 		*
-		* Range: [0, Nyquist frequency]
-		* Returns zero for empty peak array.
+		* - Units: Hz
+		* - Range: [0, Nyquist frequency]
+		* - Singularities
+		*   - Returns zero for empty peak array.
+		* @todo Peaks at 0Hz are not counted
 		*/
 		DYN_ATTRIBUTE (1, public, TData, HarmonicCentroid);
 		/**
@@ -68,13 +71,16 @@ namespace CLAM {
 		* Descriptor is a MPEG7 LLD (HarmonicSpectralDeviation), see 
 		* ISO/IEC JTC 1/SC 29 N WXYZ from 2001-03-14.
 		* 
-		* The local spectral envelopes (SE) are computed on linear scale as the mean of
-		* three consecutive peak amplitudes. For the first and the last peak only 
-		* two peak amplitudes are used. 
+		* The local spectral envelopes (SE) are computed on linear scale as
+		* the mean of three consecutive peak amplitudes.
+		* For the first and the last peak only two peak amplitudes are used. 
 		*
 		* The spectral HarmonicDeviation is then defined
 		* as 
-		* \f[ \sum_{i=1}^{Num. of Peaks} \left| PeakAmplitude(i) - SE(i)\right| \over{\sum_{i=1}^{Num. of Peaks}PeakAmplitude(i)} \f]
+		* \f[ \sum_{i=1}^{Num. of Peaks} 
+		* 	\left| PeakAmplitude(i) - SE(i)\right| 
+		* 	\over
+		* 	{\sum_{i=1}^{Num. of Peaks}PeakAmplitude(i)} \f]
 		* ,where SE and PeakAmplitude were converted to logarithmic scale.
 		* Returns zero for array with less than 4 peaks.
 		*/
@@ -140,7 +146,7 @@ namespace CLAM {
 		TData ComputeOddToEvenRatio();
 
 	private:
-		SpectralPeakArray* mpSpectralPeakArray;
+		const SpectralPeakArray* mpSpectralPeakArray;
 		CrossCenterOfGravity<1> mCentroid;
 
 	};
