@@ -8,8 +8,17 @@
 namespace CLAM
 {
 	/**
-	 * A description scope defines a set of attributes which change
-	 * their values along a given dimension.
+	 * A description scope defines a set of attributes which have 
+	 * the same ocurrences.
+	 * For example,
+	 * some attributes will have one occurrence by each note, 
+	 * while some others will have one occurrence by each frame.
+	 * Thus, we talk about Frame scope, Note scope...
+	 *
+	 * At least that you were modifying the DescriptionScheme
+	 * and DescriptionDataPool implementations, or something related,
+	 * you shouldn't use this class directly, use DescriptionScheme instead.
+	 * @see SemanticalAnalysis module, for more information on that.
 	 * @ingroup SemanticalAnalysis
 	 */
 	class DescriptionScope

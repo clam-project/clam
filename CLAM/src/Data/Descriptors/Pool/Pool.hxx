@@ -7,13 +7,23 @@
 namespace CLAM
 {
 	/**
-	 * Contains the extracted data for a given description target.
-	 * It conforms to a given DescriptionScheme
 	 * @ingroup SemanticalAnalysis
+	 * Contains the extracted data for a given description process.
+	 * Its structure conforms the one defined by a DescriptionScheme
+	 * specified when constructed.
+	 *
+	 * Data is stored for each attribute as a C array.
+	 *
+	 * The values can be dumped and restored to and from an XML file.
 	 */
 	class DescriptionDataPool : public Component
 	{
 	public:
+		/**
+		 * Constructs a desciption data pool.
+		 * By default all the scopes are size 0 and no attributes are instanciated.
+		 * @param scheme the DescriptionScheme to be taken as specification.
+		 */
 		DescriptionDataPool(const DescriptionScheme & scheme)
 			: _scheme(scheme), _scopePools(_scheme.GetNScopes(),(ScopePool*)0)
 		{
@@ -27,11 +37,10 @@ namespace CLAM
 		}
 
 		/**
-		 * Sets the number of contexts (ie. Notes) for the given Scope (Note), 
-		 * so that every attribute registered for the scope will have a value 
-		 * for every one of those contexts.
-		 *
-		 * Scopes are like Classes, Contexts are like Class Instances.
+		 * Sets how many values will the attributes on the specified scope have.
+		 * Sets the number of contexts (ie. number of notes) for the given Scope (Note), 
+		 * so that every attribute registered for that scope will have a single value 
+		 * for each context.
 		 */
 		void SetNumberOfContexts(const std::string & scopeName, unsigned size)
 		{
@@ -47,7 +56,7 @@ namespace CLAM
 			return _scopePools[scopeIndex]->GetSize();
 		}
 
-		/** @todo Should be deprecated?? */
+		/** @todo Should this method be deprecated?? */
 		void InstantiateAttribute(const std::string & scopeName, const std::string & attributeName)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
@@ -55,6 +64,13 @@ namespace CLAM
 			unsigned attributeIndex = scope.GetIndex(attributeName);
 			CLAM_ASSERT(_scopePools[scopeIndex], "Instantianting an attribute inside an unpopulated scope");
 		}
+		/**
+		 * Returns a pointer to the C array of data
+		 * with all the values for the specified attribute.
+		 * The C array lenght will be the GetScopeSize(scope) long.
+		 * This methods allocates the array value the first time is invoqued for an attribute.
+		 * @pre Such attribute in such scope exists and the type is the one in the template.
+		 */
 		template <typename AttributeType>
 		AttributeType * GetAttributePool(const std::string & scopeName, const std::string & attributeName)
 		{
@@ -65,6 +81,14 @@ namespace CLAM
 
 			return _scopePools[scopeIndex]->template GetWritePool<AttributeType>(attributeName);
 		}
+		/**
+		 * Returns a pointer to the C array of data
+		 * with all the values for the specified attribute.
+		 * The C array lenght will be the GetScopeSize(scope) long.
+		 * @pre Such attribute in such scope exists and the type is the one in the template.
+		 * @pre GetAttributePool, which allocates the data,
+		 * 	has been previously called for this attribute and pool object.
+		 */
 		template <typename AttributeType>
 		const AttributeType * GetReadAttributePool(const std::string & scopeName, const std::string & attributeName) const
 		{
@@ -97,14 +121,6 @@ namespace CLAM
 			}
 		}
 
-		/*
-		unsigned GetScopeSize(const std::string & scopeName)
-		{
-			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
-			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
-			return scope.GetSize();
-		}
-		*/
 	private:
 		const DescriptionScheme & _scheme;
 		typedef std::vector<ScopePool*> ScopePools;

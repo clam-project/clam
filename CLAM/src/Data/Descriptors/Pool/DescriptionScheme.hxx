@@ -4,9 +4,123 @@
 
 #include "DescriptionScope.hxx"
 
+/**
+ * You can find the doxygen of the SemanticalAnalysis group
+ * at the end of this file.
+ */
+
+namespace CLAM
+{
+
+
+	/**
+	 * @ingroup SemanticalAnalysis
+	 * The description scheme defines the set of attributes (Attribute)
+	 * to be used for feature extraction systems.
+	 *
+	 * A DescriptionScheme is only an specification.
+	 * The real data is held in a DescriptionDataPool,
+	 * a container that fits its structure to the one defined on
+	 * the DescriptionScheme specification.
+	 * 
+	 * Attributes in a DescriptionScheme have a name and a type
+	 * and they are organized in scopes.
+	 * Each  scope (see DescriptionScope) defines a kind of target for the attributes:
+	 * (note scope, sample scope, frame scope, phrase scope, sample scope...)
+	 *
+	 * You can add Attributes to the DescriptionScheme by
+	 * using the DescriptionScheme::AddAttribute method.
+	 * The rest of the methods are utility for the pool classes.
+	 *
+	 * @see SemanticalAnalysis module, that describes
+	 * 	the full usage of those classes.
+	 * @see DescriptionDataPool class, which instanciates a DescriptionScheme
+	 * 
+	 */
+	class DescriptionScheme
+	{
+	private:
+		typedef std::map<std::string, unsigned> ScopeMap;
+		typedef std::vector<DescriptionScope *> Scopes;
+	private:
+		Scopes _scopes;
+		ScopeMap _scopeNameMap;
+	public:
+		DescriptionScheme()
+		{
+		}
+
+		~DescriptionScheme()
+		{
+			Scopes::iterator it = _scopes.begin();
+			Scopes::iterator end = _scopes.end();
+			for (; it!=end; it++)
+				delete *it;
+		}
+
+		/**
+		 * Adds a new attribute to the description scheme.
+		 * If the scope does not exist it will be added.
+		 * @pre The name is alphanumeric
+		 * @pre The scope has no other attribute with the same name
+		 * @param DataType The type of the argument to be added
+		 * @param scope    The scope where the attributes applies to
+		 * @param name     The name for the attribute
+		 */
+		template < typename DataType >
+		void AddAttribute(const std::string &scope, const std::string & name)
+		{
+			DescriptionScope & theScope = SearchScopeOrAdd(scope);
+			theScope.template Add<DataType>(name);
+		}
+
+		DescriptionScope & SearchScopeOrAdd(const std::string scopeName)
+		{
+			const unsigned nScopes = _scopes.size();
+			std::pair<ScopeMap::iterator,bool> result = 
+				_scopeNameMap.insert(std::make_pair(scopeName,nScopes));
+
+			if (!result.second) return *_scopes[result.first->second];
+
+			DescriptionScope * theScope = new DescriptionScope(scopeName);
+			_scopes.push_back(theScope);
+			return *theScope;
+		}
+
+		unsigned GetScopeIndex(const std::string & name) const
+		{
+			ScopeMap::const_iterator it = _scopeNameMap.find(name);
+			CLAM_ASSERT(it!=_scopeNameMap.end(), "No scope registered with that name");
+			return it->second;
+		}
+
+		const DescriptionScope & GetScope(unsigned scopeIndex) const
+		{
+			CLAM_ASSERT(scopeIndex < _scopes.size(), "Accessing an illegal scope index for the description scheme");
+			return *_scopes[scopeIndex];
+		}
+
+		const DescriptionScope & GetScope(const std::string & name) const
+		{
+			unsigned scopeIndex = GetScopeIndex(name);
+			return GetScope(scopeIndex);
+		}
+		unsigned GetNScopes() const 
+		{
+			return _scopes.size();
+		}
+
+		const std::string & GetScopeName(unsigned scopeIndex) const
+		{
+			const DescriptionScope & scope = GetScope(scopeIndex);
+			return scope.GetName();
+		}
+	};
+}
 
 /**
  * @defgroup SemanticalAnalysis Semantical Analysis
+ *
  * This module explains how to use CLAM to handle audio description
  * extraction using the DescriptionScheme object and its relatives.
  * They will allow you to do the extraction in a modular and incremental way
@@ -96,12 +210,12 @@
  * Some checking between the usage and the real type 
  * for the attribute is done on run-time.
  * So if you use a different value type an assertion will fail.
- * 
+ *
  * @section XML
- *   
+ *
  * Description data pools can be loaded or stored in XML, as any
  * other CLAM::Component, by using an CLAM::XmlStorage.
- * 
+ *
  * @code
  * // Storing a description in XML
  * CLAM::XmlStorage::Dump(pool, "DescriptionPool", "mysong.xml");
@@ -112,27 +226,34 @@
  * CLAM::XmlStorage::Restore(pool, "mysong.xml");
  * @endcode
  *
- * 
+ *
  * @section ExtractorBinding Binding extractors 
  *
- * This part of the module is work on progress.
- *
- * You may use the data pool directly as a container of your extraction process.
- * But CLAM offers a functionality to encapsulate the extraction process
- * in an encapsulated object (CLAM::Extractor).
- * You can bind the extractor to compute a given attribute by
- * binding its output hook.
- * and bind it to compute a given attribute and obtaining data for the rest of attributes.
- *
- * Current implemented binding operations are Bindings on the same context, 
+ * While you can use the pool simply as a container, 
+ * like it has been explained above,
+ * the aim of this system is to be able to deploy the extraction
+ * system from an XML file that describes the Description Scheme and the Extraction Scheme.
+ * This would be done by encapsulating algorithms that compute 
+ * attributes on an abstraction called CLAM::Extractors.
+ * They should be something very close to what a CLAM::Processing is
+ * and, in fact, they will likely converge as the iterations go on.
+ * An extractor has hooks for input and output data that are
+ * fetched from the data pool.
+ * The way data is fetched and droped is determined by the binding.
+ * 
+ * So, this part of the module is work on progress but
+ * there are some parts already implemented and usable.
+ * By now, what we have is some kinds of hook binding.
+ * Current implemented binding operations are bindings on the same context, 
  * and indirection, that is, using an attribute to point another one even on a different scope.
  *
  * By now, there is no such abstract CLAM::Extractor but you can take a look
- * to some Extractors CLAMTest::CharCopierExtractor and CLAMTest::CharJoinExtractor
+ * to some Extractors CLAMTest::CharCopierExtractor and CLAMTest::CharJoinExtractor.
+ * Also you can see how binding is done by looking at the ExtractorTest.cxx file.
  *
  * @section DescriptionPoolTodo What is left to implement
  *
- * - An abstract cLAM::Extractor to derive from
+ * - An abstract CLAM::Extractor to derive from
  * - An special kind of extractor for scope population (how many items in a scope?)
  * - Bindings extension: relative position
  * - Solving Range and Relative bindings when outside the scope space
@@ -143,108 +264,6 @@
  * - Exploring new hook binding functionalities driven by real cases
  * 
  */
-namespace CLAM
-{
-
-
-	/**
-	 * @ingroup SemanticalAnalysis
-	 * Represents a description schema for feature extraction.
-	 * The description scheme defines the set of attributes (Attribute)
-	 * to work with.
-	 *
-	 * A DescriptionScheme is only an specification.
-	 * The real data is held in a DescriptionDataPool,
-	 * a container that fits its structure to the one defined on
-	 * the DescriptionScheme specification.
-	 * 
-	 * Attributes in a DescriptionScheme have a name and a type
-	 * and they are organized in scopes.
-	 * Each  scope (see DescriptionScope) defines a kind of target for the attributes:
-	 * (note scope, sample scope, frame scope, phrase scope, sample scope...)
-	 *
-	 * You can add Attributes to the DescriptionScheme by
-	 * using the Add method.
-	 *
-	 * @todo The DescriptionSchema should also contain
-	 * which Extractors are used to compute the attributes and
-	 * where the Extractors takes the data from.
-	 *
-	 * @see DescriptionDataPool
-	 * 
-	 */
-	class DescriptionScheme
-	{
-	private:
-		typedef std::map<std::string, unsigned> ScopeMap;
-		typedef std::vector<DescriptionScope *> Scopes;
-	private:
-		Scopes _scopes;
-		ScopeMap _scopeNameMap;
-	public:
-		DescriptionScheme()
-		{
-		}
-
-		~DescriptionScheme()
-		{
-			Scopes::iterator it = _scopes.begin();
-			Scopes::iterator end = _scopes.end();
-			for (; it!=end; it++)
-				delete *it;
-		}
-
-		template < typename DataType >
-		void AddAttribute(const std::string &scope, const std::string & name)
-		{
-			DescriptionScope & theScope = SearchScopeOrAdd(scope);
-			theScope.template Add<DataType>(name);
-		}
-
-		DescriptionScope & SearchScopeOrAdd(const std::string scopeName)
-		{
-			const unsigned nScopes = _scopes.size();
-			std::pair<ScopeMap::iterator,bool> result = 
-				_scopeNameMap.insert(std::make_pair(scopeName,nScopes));
-
-			if (!result.second) return *_scopes[result.first->second];
-
-			DescriptionScope * theScope = new DescriptionScope(scopeName);
-			_scopes.push_back(theScope);
-			return *theScope;
-		}
-
-		unsigned GetScopeIndex(const std::string & name) const
-		{
-			ScopeMap::const_iterator it = _scopeNameMap.find(name);
-			CLAM_ASSERT(it!=_scopeNameMap.end(), "No scope registered with that name");
-			return it->second;
-		}
-
-		const DescriptionScope & GetScope(unsigned scopeIndex) const
-		{
-			CLAM_ASSERT(scopeIndex < _scopes.size(), "Accessing an illegal scope index for the description scheme");
-			return *_scopes[scopeIndex];
-		}
-
-		const DescriptionScope & GetScope(const std::string & name) const
-		{
-			unsigned scopeIndex = GetScopeIndex(name);
-			return GetScope(scopeIndex);
-		}
-		unsigned GetNScopes() const 
-		{
-			return _scopes.size();
-		}
-
-		const std::string & GetScopeName(unsigned scopeIndex) const
-		{
-			const DescriptionScope & scope = GetScope(scopeIndex);
-			return scope.GetName();
-		}
-	};
-}
-
 
 #endif// _DescriptionScheme_hxx_
 
