@@ -35,6 +35,14 @@ template <typename AttributeType>
 class ReadHook : public Hook<AttributeType>
 {
 public:
+	ReadHook()
+	{
+		_chained=0;
+	}
+	~ReadHook()
+	{
+		if (_chained) delete _chained;
+	}
 	const AttributeType & GetForReading() const
 	{
 		return _data [GetCurrent()];
@@ -66,6 +74,7 @@ protected:
 protected:
 	const DescriptionDataPool * _pool;
 	const AttributeType * _data;
+	ReadHook<unsigned> * _chained;
 private:
 	unsigned _current;
 };
@@ -79,10 +88,6 @@ public:
 	ReadIndirectHook()
 	{
 		_chained= new ReadHook<unsigned>;
-	}
-	~ReadIndirectHook()
-	{
-		delete _chained;
 	}
 	void Indirect(
 		const std::string & scope, 
@@ -115,8 +120,6 @@ protected:
 			"Invalid cross-scope reference");
 		return indirection;
 	}
-private:
-	ReadHook<unsigned> * _chained;
 };
 
 /** @ingroup SemanticalAnalysis */
