@@ -42,7 +42,7 @@ namespace CLAM {
 class Spectrum;
 class SpectrumConfig;
 
-class SpecTypeFlags;
+struct SpecTypeFlags;
 
 /** 
  *	Spectrum is a ProcessingData class that allows the following representations: 
