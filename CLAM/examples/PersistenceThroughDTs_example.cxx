@@ -26,6 +26,7 @@
 #include "XMLIterableAdapter.hxx"
 #include "Err.hxx"
 #include "List.hxx"
+#include "Text.hxx"
 #include <string>
 #include <list>
 #include <fstream>
@@ -72,11 +73,11 @@ class Book : public CLAM::DynamicType
 {
 public:
 	DYNAMIC_TYPE( Book, 5 );
-	DYN_ATTRIBUTE( 0, public, std::string,             Title );
-	DYN_ATTRIBUTE( 1, public, std::string,             Author );
-	DYN_ATTRIBUTE( 2, public, std::string,             Date );
-	DYN_ATTRIBUTE( 3, public, std::string,             ISBN );
-	DYN_ATTRIBUTE( 4, public, std::string,             Publisher );
+	DYN_ATTRIBUTE( 0, public, CLAM::Text,             Title );
+	DYN_ATTRIBUTE( 1, public, CLAM::Text,             Author );
+	DYN_ATTRIBUTE( 2, public, CLAM::Text,             Date );
+	DYN_ATTRIBUTE( 3, public, CLAM::Text,             ISBN );
+	DYN_ATTRIBUTE( 4, public, CLAM::Text,             Publisher );
 
 	// Let's define a DefaultInit() for this dynamic type
 	void DefaultInit();
