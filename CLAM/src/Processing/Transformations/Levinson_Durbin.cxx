@@ -127,11 +127,12 @@ namespace CLAM
 		Ki /= E ;
 	}
 */
+
 	bool Levinson_Durbin::Do( const Correlation& in , DataArray& a, DataArray& k, TData& E )
 	{
-/*		int j, i = 1;
+		int j, i = 1;
 		DataArray ap;
-		TData *A, *K, *R, *Ap;
+		TData *A, *K, *R;
 
 		if( !AbleToExecute() ) return true;
 		
@@ -141,34 +142,27 @@ namespace CLAM
 		ap.SetSize( mOrder );
 
 		A = a.GetPtr();
-		Ap = ap.GetPtr();
 		K = k.GetPtr();
 		R = in.GetBuffer().GetPtr();
 
 		E = R[ 0 ];
-		A[ 0 ] = K[ 0 ] = 1;
-
+		A[ 0 ] = 1;
 
 		while( i < mOrder )		
 		{
-			K[ i ] = R[ i ];
+			for( j = 0; j <= i - 1; j++ )
+				K[ i ] += A[ j ] * R[ i - j ] ;
 
-			for( j = 1; j <= i - 1; j++ )
-				K[ i ] -= Ap[ j ] * R[ i - j ] ;
-
-			K[ i ] /= E;
+			K[ i ] /= -E;
 			A[ i ] = K[ i ];
 
 			for( j = 1 ; j <= i - 1 ; j++ )
-				A[ j ] = Ap[ j ] + K[ i ] * Ap[ i - j ];
+				A[ j ] = A[ j ] + K[ i ] * A[ i - j ];
 
 			E = ( 1 - K[ i ] * K[ i ] ) * E;
-
-			ap = a;
 			i++;
-		}
+		}	
 
-*/		
 		return true;
 	}
 	
