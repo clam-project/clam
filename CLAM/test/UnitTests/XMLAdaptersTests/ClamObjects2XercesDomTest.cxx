@@ -66,13 +66,23 @@ public:
 private:
 	std::stringstream mTargetStream;
 
-	void testEmptyDocument()
+	void writeRootDocumentElement(ClamObject2XercesDom & dumper)
 	{
-		ClamObject2XercesDom dumper("Doc");
 		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
 		XercesDomWriter writer(mTargetStream);
 		writer.write(node);
+	}
+	void assertRootDocumentStoresAs(const std::string & expected, ClamObject2XercesDom & dumper)
+	{
+		writeRootDocumentElement(dumper);
+		CPPUNIT_ASSERT_EQUAL(expected, mTargetStream.str());
+	}
 
+	void testEmptyDocument()
+	{
+		ClamObject2XercesDom dumper("Doc");
+
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
 	}
 
@@ -82,10 +92,8 @@ private:
 		basic.setContent("Content");
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content</Doc>"), mTargetStream.str());
 	}
 
@@ -94,10 +102,8 @@ private:
 		XmlMockUpBasic basic;
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
 	}
 
@@ -106,10 +112,8 @@ private:
 		XmlMockUpBasic basic("Element",true);
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element/></Doc>"), mTargetStream.str());
 	}
 
@@ -119,10 +123,8 @@ private:
 		basic.setContent("Content");
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element></Doc>"), mTargetStream.str());
 	}
 	
@@ -132,10 +134,8 @@ private:
 		basic.setContent("Content");
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(basic);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc at=\"Content\"/>"), mTargetStream.str());
 	}
 
@@ -145,10 +145,8 @@ private:
 		component.setContent("Content");
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content</Doc>"), mTargetStream.str());
 	}
 
@@ -157,10 +155,8 @@ private:
 		XmlMockUpComponent component;
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc/>"), mTargetStream.str());
 	}
 
@@ -169,10 +165,8 @@ private:
 		XmlMockUpComponent component("Element",true);
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element/></Doc>"), mTargetStream.str());
 	}
 
@@ -182,10 +176,8 @@ private:
 		component.setContent("Content");
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element></Doc>"), mTargetStream.str());
 	}
 	
@@ -195,10 +187,8 @@ private:
 		component.setContent("Content");
 		ClamObject2XercesDom dumper("Doc");
 		dumper.Store(component);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc at=\"Content\"/>"), mTargetStream.str());
 	}
 
@@ -214,10 +204,8 @@ private:
 		dumper.Store(oneElement);
 		dumper.Store(content);
 		dumper.Store(otherElement);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><OneElement/>Content<OtherElement/></Doc>"), mTargetStream.str());
 	}
 	
@@ -231,10 +219,8 @@ private:
 		content2.setContent("Content2");
 		dumper.Store(content1);
 		dumper.Store(content2);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content1 Content2</Doc>"), mTargetStream.str());
 	}
 
@@ -249,10 +235,8 @@ private:
 		dumper.Store(content1);
 		dumper.Store(element);
 		dumper.Store(content2);
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>Content1<Element/>Content2</Doc>"), mTargetStream.str());
 	}
 
@@ -267,10 +251,7 @@ private:
 		dumper.Store(attribute1);
 		dumper.Store(attribute2);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc aSecond=\"Content2\" zFirst=\"Content1\"/>"), mTargetStream.str());
 	}
 
@@ -283,10 +264,8 @@ private:
 		element.add(content);
 		dumper.Store(element);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element></Doc>"), mTargetStream.str());
 	}
 
@@ -300,10 +279,8 @@ private:
 		element.add(content);
 		dumper.Store(element);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>ElementContent Content</Element></Doc>"), mTargetStream.str());
 	}
 
@@ -319,10 +296,8 @@ private:
 		dumper.Store(element);
 		dumper.Store(afterContent);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element>Content</Element>AfterContent</Doc>"), mTargetStream.str());
 	}
 
@@ -335,10 +310,8 @@ private:
 		element.add(attribute);
 		dumper.Store(element);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
 
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Element at=\"atContent\"/></Doc>"), mTargetStream.str());
 	}
 
@@ -352,10 +325,7 @@ private:
 		componentElement.add(basicElement);
 		dumper.Store(componentElement);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Component>ComponentContent<Basic>BasicContent</Basic></Component></Doc>"), mTargetStream.str());
 	}
 
@@ -369,10 +339,7 @@ private:
 		outsideElement.add(insideElement);
 		dumper.Store(outsideElement);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc><Outside>ComponentContent<Inside>InsideContent</Inside></Outside></Doc>"), mTargetStream.str());
 	}
 
@@ -386,10 +353,7 @@ private:
 		componentContent.add(basicContent);
 		dumper.Store(componentContent);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>ComponentContent BasicContent</Doc>"), mTargetStream.str());
 	}
 
@@ -403,10 +367,7 @@ private:
 		componentContent.add(basicAttribute);
 		dumper.Store(componentContent);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc at=\"BasicContent\">ComponentContent</Doc>"), mTargetStream.str());
 	}
 
@@ -420,10 +381,7 @@ private:
 		componentContent.add(basicElement);
 		dumper.Store(componentContent);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc>ComponentContent<Basic>BasicContent</Basic></Doc>"), mTargetStream.str());
 	}
 
@@ -443,10 +401,7 @@ private:
 		componentAttribute.add(basicContent);
 		dumper.Store(componentAttribute);
 
-		xercesc::DOMNode * node = dumper.getDom()->getDocumentElement();
-		XercesDomWriter writer(mTargetStream);
-		writer.write(node);
-
+		writeRootDocumentElement(dumper);
 		CPPUNIT_ASSERT_EQUAL(std::string("<Doc componentAttribute=\"ComponentContent\"/>"), mTargetStream.str());
 	}
 
