@@ -13,7 +13,6 @@ public:
 	Connection();
 	Connection( tConnectionId id, Signal* connectedSignal );
 	Connection& operator=( Connection& s );
-//	Connection( Connection& s );
 	Connection( const Connection& s );
 
 	tConnectionId GetID() const

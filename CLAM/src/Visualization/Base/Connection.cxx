@@ -20,14 +20,6 @@ namespace CLAMGUI
 	{
 	}
 
-	Connection::Connection( Connection& s )
-	{
-		mMustFreeSignal = s.mMustFreeSignal;
-		mID = s.mID;
-		mConnectedSignal = s.mConnectedSignal;
-		s.mMustFreeSignal = false;
-	}
-
 	Connection::Connection( const Connection& c )
 	{
 		mMustFreeSignal = c.mMustFreeSignal;
