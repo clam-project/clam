@@ -403,6 +403,8 @@ namespace CLAM {
 		*/
 		const char* AddStatus(const char* a);
 		const char* AddStatus(const std::string& a);
+		std::string ComposeAssertMessage( std::string msg );
+
 		bool  mPreconfigureExecuted;
 	};
 
