@@ -172,8 +172,8 @@ private:
 		scheme.AddAttribute< CLAM::Attribute<std::string> >("TestScope2","StringAttribute");
 
 		CLAM::DescriptionDataPool pool(scheme);
-		pool.PopulateScope("TestScope1",3);
-		pool.PopulateScope("TestScope2",4);
+		pool.SetNumberOfContexts("TestScope1",3);
+		pool.SetNumberOfContexts("TestScope2",4);
 		{
 			DummyComponent * values = pool.GetAttributePool<DummyComponent>("TestScope1","DummyComponentAttribute");
 			values[0].SetValue("value0");

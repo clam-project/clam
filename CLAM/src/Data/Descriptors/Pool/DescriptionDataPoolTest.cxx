@@ -18,7 +18,7 @@ class DescriptionDataPoolTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DescriptionDataPoolTest );
 	CPPUNIT_TEST( testUnpopulatedScopeIsNotFreed );
-	CPPUNIT_TEST( testPopulateScope_withANonExistingScope );
+	CPPUNIT_TEST( testSetNumberOfContexts_withANonExistingScope );
 	CPPUNIT_TEST( testInstanciateAttribute_withinUnexistingScope );
 	CPPUNIT_TEST( testInstanciateAttribute_withinUnpopulatedScope );
 	CPPUNIT_TEST( testInstanciateAttribute_whenTheAttributeDoesNotExist );
@@ -52,12 +52,12 @@ private:
 		// Should not be a memory leak
 	}
 
-	void testPopulateScope_withANonExistingScope()
+	void testSetNumberOfContexts_withANonExistingScope()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
 		try
 		{
-			data.PopulateScope("NonExistingScope",10);
+			data.SetNumberOfContexts("NonExistingScope",10);
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -100,7 +100,7 @@ private:
 	void testInstanciateAttribute_whenTheAttributeDoesNotExist()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("Frame",10);
+		data.SetNumberOfContexts("Frame",10);
 		try
 		{
 			data.InstantiateAttribute("Frame","UnexistingAttribute");
@@ -131,7 +131,7 @@ private:
 	void testGetAttribute_withDifferentAttributes()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("Frame",30);
+		data.SetNumberOfContexts("Frame",30);
 		data.InstantiateAttribute("Frame","Center");
 		data.InstantiateAttribute("Frame","Size");
 
@@ -144,7 +144,7 @@ private:
 	void testGetAttribute_withTheSameAttributeTwice()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("Frame",30);
+		data.SetNumberOfContexts("Frame",30);
 		data.InstantiateAttribute("Frame","Center");
 
 		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
@@ -188,7 +188,7 @@ private:
 	void testGetAttribute_withNonInstantiatedAttribute()
 	{
 		CLAM::DescriptionDataPool data(mScheme);
-		data.PopulateScope("Frame",30);
+		data.SetNumberOfContexts("Frame",30);
 
 		try
 		{
