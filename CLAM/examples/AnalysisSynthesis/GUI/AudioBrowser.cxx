@@ -31,104 +31,104 @@
 
 namespace CLAMVM
 {
-		using CLAMGUI::GLState;
-		using CLAMGUI::Viewport;
-		using CLAMGUI::Rect;
+	using CLAMGUI::GLState;
+	using CLAMGUI::Viewport;
+	using CLAMGUI::Rect;
 
-		class AudioBrowserGLState : public GLState
-		{
-		public:
+	class AudioBrowserGLState : public GLState
+	{
+	public:
 				
-				void Apply()
-				{
-						glClearColor( 0.0, 0.0, 0.0, 0.0 );
-						glDisable( GL_CULL_FACE );
-						glDisable( GL_DEPTH_TEST );
-						glShadeModel( GL_FLAT );
-				}
+		void Apply()
+		{
+			glClearColor( 0.0, 0.0, 0.0, 0.0 );
+			glDisable( GL_CULL_FACE );
+			glDisable( GL_DEPTH_TEST );
+			glShadeModel( GL_FLAT );
+		}
 				
-		};
+	};
 
 
-		AudioBrowser::AudioBrowser( int X, int Y, int W, int H, const char* label )
-				: AudioPresentation(), Fl_Window( X,Y,W,H, label )
-		{
-				Init( W, H );
-		}
+	AudioBrowser::AudioBrowser( int X, int Y, int W, int H, const char* label )
+		: AudioPresentation(), Fl_Window( X,Y,W,H, label )
+	{
+		Init( W, H );
+	}
 		
-		AudioBrowser::~AudioBrowser()
-		{
+	AudioBrowser::~AudioBrowser()
+	{
 				
-		}
+	}
 		
-		void AudioBrowser::setPainting(bool painting) 
-		{ 
-				mGLsurface->setPainting(painting); 
-		}
+	void AudioBrowser::setPainting(bool painting) 
+	{ 
+		mGLsurface->setPainting(painting); 
+	}
 		
-		Slotv1<TData>* AudioBrowser::GetFrameSlot()
-		{
-				return mGLsurface->getFrameSlot();
+	Slotv1<TData>* AudioBrowser::GetFrameSlot()
+	{
+		return mGLsurface->getFrameSlot();
 
-		}
+	}
 
-		Slotv1<bool>* AudioBrowser::GetPaintSlot() 
-		{ 
-				return mGLsurface->getPaintSlot(); 
-		} 
+	Slotv1<bool>* AudioBrowser::GetPaintSlot() 
+	{ 
+		return mGLsurface->getPaintSlot(); 
+	} 
 
-		Signalv1<double>* AudioBrowser::GetSignal() 
-		{ 
-				return mGLsurface->getSignal(); 
-		}
+	Signalv1<double>* AudioBrowser::GetSignal() 
+	{ 
+		return mGLsurface->getSignal(); 
+	}
  		
-		void AudioBrowser::Show()
-		{
-				show();
-		}
+	void AudioBrowser::Show()
+	{
+		show();
+	}
 
-		void AudioBrowser::Hide()
-		{
-			hide();
-		}
+	void AudioBrowser::Hide()
+	{
+		hide();
+	}
 		
-		void AudioBrowser::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
-		{
-				Viewport view_specs;
-				mRenderer->SetSamplingRate( srate );
+	void AudioBrowser::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
+	{
+		Viewport view_specs;
+		mRenderer->SetSamplingRate( srate );
 			
-				mRenderer->DefineViewport( array, view_specs );
+		mRenderer->DefineViewport( array, view_specs );
 				
-				mDispContainer->SetHorRange( view_specs.left, view_specs.right );
-				mDispContainer->SetVerRange( view_specs.top, -fabs(view_specs.top-view_specs.bottom));//-( view_specs.top - view_specs.bottom ) );
+		mDispContainer->SetHorRange( view_specs.left, view_specs.right );
+		mDispContainer->SetVerRange( view_specs.top, -fabs(view_specs.top-view_specs.bottom));//-( view_specs.top - view_specs.bottom ) );
 				
-				mDispContainer->mpHorRuler->mInteger = view_specs.isIntX;
-				mDispContainer->mpVerRuler->mInteger = view_specs.isIntY;
+		mDispContainer->mpHorRuler->mInteger = view_specs.isIntX;
+		mDispContainer->mpVerRuler->mInteger = view_specs.isIntY;
 				
-				mRenderer->CacheData( array );
-		}
+		mRenderer->CacheData( array );
+	}
 		
-		void AudioBrowser::Init( int W, int H )
-		{
-				// FLTK thingies initialization			   
-				mDispContainer = new FLDisplayContainer( 0, 0, W, H);
+	void AudioBrowser::Init( int W, int H )
+	{
+		// FLTK thingies initialization			   
+		mDispContainer = new FLDisplayContainer( 0, 0, W, H);
 				
 
-				mGLsurface = new GLPortSigSlot( Rect<int>( 0, 0, W, H ) );
-				mRenderer = new GLWaveRenderer( 0, 200, 0 );
+		mGLsurface = new GLPortSigSlot( Rect<int>( 0, 0, W, H ) );
+		mRenderer = new GLWaveRenderer( 0, 200, 0 );
 				
-				mDispContainer->Add( mGLsurface );
+		mDispContainer->Add( mGLsurface );
 				
-				resizable( mDispContainer );
+		resizable( mDispContainer );
 				
-				end();
+		end();
 				
-				// Linking the port and the renderer...
+		// Linking the port and the renderer...
 				
-				mGLsurface->SetCullingCallback( 
-						makeMemberFunctor4( float, float, unsigned, unsigned, *mRenderer, GLWaveRenderer, PerformCulling ) );
-				mGLsurface->SetDrawingCallback( makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
-				mGLsurface->Configure( new AudioBrowserGLState, makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
-}
+		mGLsurface->SetCullingCallback( 
+			makeMemberFunctor4( float, float, unsigned, unsigned, *mRenderer, GLWaveRenderer, PerformCulling ) );
+		mGLsurface->SetDrawingCallback( makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
+		mGLsurface->Configure( new AudioBrowserGLState, makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
+	}
 
 } // namespace CLAMVM
