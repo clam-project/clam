@@ -52,7 +52,9 @@ namespace CLAMTest
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( std::string( "NewFile.wav" ) );
+			CLAM::AudioFileHeader header;
+
+			file.CreateNew( std::string( "NewFile.wav" ), header );
 
 			CLAM::MonoAudioFileWriterConfig cfg;
 			cfg.AddTargetFile();
@@ -69,13 +71,14 @@ namespace CLAMTest
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "twosines-stereo.wav" );			
+
 
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 1, "WAV" );
 
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
+
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.AddTargetFile();
@@ -99,11 +102,10 @@ namespace CLAMTest
 		void testDo_PCM_WritesTheSameItWasRead()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "CopyOfElvis.wav.wav" );
 
 			CLAM::AudioFileHeader outputFileHeader;
 
@@ -116,7 +118,7 @@ namespace CLAMTest
 			outputFileHeader.SetEncoding( inputFile.GetHeader().GetEncoding() );
 			outputFileHeader.SetEndianess( inputFile.GetHeader().GetEndianess() );
 
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "CopyOfElvis.wav.wav", outputFileHeader );
 
 			CLAM::MonoAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
@@ -156,7 +158,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.SetLocation( "CopyOfElvis.wav.wav" );
+			inputFile.OpenExisting( "CopyOfElvis.wav.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -187,20 +189,17 @@ namespace CLAMTest
 
 
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "CopyOfElvis.ogg" );
-
 			CLAM::AudioFileHeader outputFileHeader;
 
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "VorbisMk1" );
 
-			outputFile.SetHeader( outputFileHeader );
-
+			outputFile.CreateNew( "CopyOfElvis.ogg", outputFileHeader );
 
 			CLAM::MonoAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
@@ -240,7 +239,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.SetLocation( "CopyOfElvis.ogg" );
+			inputFile.OpenExisting( "CopyOfElvis.ogg" );
 			cfgReader.SetSourceFile( inputFile );
 
 

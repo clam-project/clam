@@ -47,7 +47,8 @@ namespace CLAMTest
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( std::string( "NewFile.wav" ) );
+			CLAM::AudioFileHeader header;
+			file.CreateNew( std::string( "NewFile.wav" ), header );
 
 
 			CLAM::MultiChannelAudioFileWriterConfig cfg;
@@ -66,13 +67,13 @@ namespace CLAMTest
 		void testDo_PCM_WritesRightAKnownSignal()
 		{
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "twosines-stereo.wav" );			
+
 
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 2, "WAV" );
 
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.AddTargetFile();
@@ -141,13 +142,11 @@ namespace CLAMTest
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "twosines-stereo.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 2, "WAV" );
 
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.SetLocation( "twosines-stereo.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.AddTargetFile();
@@ -173,8 +172,6 @@ namespace CLAMTest
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-stereo-decoding-copy.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.AddAll();
@@ -187,6 +184,8 @@ namespace CLAMTest
 			outputFileHeader.SetEndianess( inputFile.GetHeader().GetEndianess() );
 
 			outputFile.SetHeader( outputFileHeader );
+
+			outputFile.SetLocation( "test-stereo-decoding-copy.wav", outputFileHeader);						
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
@@ -236,7 +235,7 @@ namespace CLAMTest
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
 			inputFile.SetLocation( "test-stereo-decoding-copy.wav" );
-			cfgReader.SetSourceFile( inputFile );
+			cfgReader.OpenExisting( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamplesLeft2;
@@ -283,7 +282,7 @@ namespace CLAMTest
 			inputFile.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "ElvisStereo-copy.ogg" );			
+
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -291,7 +290,7 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "VorbisMk1" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "ElvisStereo-copy.ogg", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
@@ -341,7 +340,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "ElvisStereo-copy.ogg" );
+			inputFile.OpenExisting( "ElvisStereo-copy.ogg" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
