@@ -1,22 +1,20 @@
 <html>
 	<head>
 		<title>Test Driven Development example</title>
-		<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen" />
+		<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen">
 	</head>
 	<body>
 		<h1>
-			Example of TDD to-do list
+			xample of TDD to-do list
 		</h1>
 		<h2>
 			Developing a Processing Factory</h2>
 		<ul>
-			<li class='to-do'>
-				Query "Oscillator" to the factory and the returned Processing* type_id == 
-				Oscillator
-			</li>
 			<li class='done'>
-				Processing* p = CreateOscillator(); type_id of p is Oscillator
-			</li>
+			Query "Oscillator" to the factory and the returned Processing* type_id == 
+			Oscillator
+			<li class='done'>
+			Processing* p = CreateOscillator(); type_id of p is Oscillator
 			<li class='to-do'>
 				Registry :
 				<ul>
@@ -24,49 +22,55 @@
 						Get a creator method when registry is empty
 						<ul>
 							<li class='done'>
-								Unsafe version with CLAM_ASSERT</li>
+							Unsafe version with CLAM_ASSERT
 							<li class='done'>
 								Safe version rises Err</li>
 						</ul>
-					</li>
 					<li class='done'>
-						Having added a single creator method, ask for the correct key
-					</li>
+					Having added a single creator method, ask for the correct key
 					<li class='done'>
-						Having added a single creator method, ask for the wrong key</li>
+					Having added a single creator method, ask for the wrong key
 					<li class='done'>
-						Having added two elements, ask for one of the keys</li>
+					Having added two elements, ask for one of the keys
 					<li class='done'>
-						Having added two elements, ask for an incorrect key</li>
+					Having added two elements, ask for an incorrect key
 					<li class='done'>
-						Add a repeated key</li>
-					<ul>
-						<li class='done'>
-							Unsafe version: CLAM_ASSERT</li>
-						<li class='done'>
-							Safe version: rises ErrFactory</li>
-					</ul>
+						Add a repeated key
+						<ul>
+							<li class='done'>
+							Unsafe version: CLAM_ASSERT
+							<li class='done'>
+								Safe version: rises ErrFactory</li>
+						</ul>
 					<li class='to-do'>
-						Automatic registry
-					</li>
+					Automatic registry
 					<li class='done'>
 						AddCreator should return bool ? <b>No</b>. do it evident
-					</li>
 					<li class='done'>
 						separate FactoryRegistry tests. Thus simplifying the names
 					</li>
 				</ul>
-			</li>
 			<li class='to-do'>
-				Avoid #include bottleneck in Factory</li>
+			Avoid #include bottleneck in Factory
 			<li class='done'>
-				Create custom assert for typeid
-			</li>
+			Create custom assert for typeid
+			<li class='current'>
+			ProcessingFactory singleton
 			<li class='to-do'>
-				ProcessingFactory singleton
+			Arrange documentation
+			<li class="to-do">
+				Split into hxx and cxx
 			</li>
-			<li class='to-do'>
-				arrange documentation
+			<li class="to-do">
+				Make Factory::GetRegistry private.
+				<ul>
+					<li class="to-do">
+						Pass RegistryKey (string) params by ref.
+					</li>
+				</ul>
+			</li>
+			<li class='done'>
+				ProcessingFactory::MakeProcessingSafe with a bad key
 			</li>
 		</ul>
 	</body>

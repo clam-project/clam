@@ -31,8 +31,8 @@ class FactoryRegistry
 {	
 public:
 	typedef Processing* (*CreatorMethod)(void);
-private:
 	typedef std::string RegistryKey;
+private:
 	typedef std::map<std::string, CreatorMethod> CreatorMap;
 
 public:
@@ -95,6 +95,53 @@ private: // data
 	
 };
 
+
+
+class Factory
+{
+private:
+	typedef FactoryRegistry::RegistryKey RegistryKey;
+	// singleton and final class: so private ctr and dtr
+	Factory() {};
+	~Factory() {};
+	
+public:
+	static Factory& GetInstance()
+	{
+		static Factory theInstance;
+		return theInstance;
+	}
+
+	FactoryRegistry& GetRegistry() 
+	{
+		return _registry;
+	}
+	
+	/// Gives ownership of the new created Processing registered with
+	/// the given name.
+	/// It asserts that the name is in the registry.
+	Processing* MakeProcessing( RegistryKey name )
+	{
+		// it asserts that name is in the registry
+		FactoryRegistry::CreatorMethod creator =
+			GetRegistry().GetCreator( name );
+		return (*creator)();
+	}
+
+	/// Gives ownership of the new created Processing registered with
+	/// the given name.
+	/// It throws an ErrFactory if the name isn't found in the registry.
+	Processing* MakeProcessingSafe( RegistryKey name ) throw (ErrFactory)
+	{
+		return ( *GetRegistry().GetCreatorSafe(name) )();
+	}
+
+private:
+	FactoryRegistry _registry;
+	
+	
+
+};
 
 
 
