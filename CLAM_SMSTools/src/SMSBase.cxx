@@ -20,10 +20,6 @@
  */
 #include "CLAM_Math.hxx"
 
-#include <FL/fl_file_chooser.H>
-#ifdef  GetClassName
-#undef GetClassName
-#endif
 
 #include "SMSBase.hxx"
 #include "SegmentDescriptors.hxx"
@@ -205,15 +201,6 @@ void SMSBase::StoreConfig(const std::string& inputFileName)
 	delete wm;
 }
 
-bool SMSBase::LoadAnalysis()
-{
-	char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
-
-	if ( !fileName )
-		return false;
-
-	return LoadAnalysis(fileName);
-}
 
 bool SMSBase::LoadAnalysis(const char* fileName)
 {
@@ -227,19 +214,16 @@ bool SMSBase::LoadAnalysis(const char* fileName)
 	return true;
 }
 
-void SMSBase::StoreAnalysis(void)
+
+void SMSBase::StoreAnalysis(const char* fileName)
 {
-	char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
-
-	if ( !fileName )
-		return;
-
 	mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
 
 	mSerialization.DoSerialization( mSerialization.Store, mOriginalSegment, fileName );	
 
 	DestroyWaitMessage();
 }
+
 
 bool SMSBase::LoadInputSound(void)
 {

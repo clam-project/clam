@@ -23,6 +23,12 @@
 #include <iostream>
 #include <FL/Fl.H>
 #include <FL/Fl_Tooltip.H>
+#include <FL/fl_file_chooser.H>
+#ifdef  GetClassName
+#undef GetClassName
+#endif
+
+
 
 namespace CLAMGUI
 {
@@ -160,4 +166,26 @@ namespace CLAMGUI
 			makeMemberFunctor0( *this, SMSTools, StoreAnalysis ) );
 
 	}
+
+	bool SMSTools::LoadAnalysis()
+	{
+		char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
+
+		if ( !fileName )
+			return false;
+
+		return SMSBase::LoadAnalysis(fileName);
+	}
+
+	void SMSTools::StoreAnalysis()
+	{
+		char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
+
+		if ( !fileName )
+			return;
+		
+		SMSBase::StoreAnalysis(fileName);
+
+	}
+
 }

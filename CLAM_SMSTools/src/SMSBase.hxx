@@ -74,13 +74,13 @@ namespace CLAM
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
 
-		bool LoadAnalysis(  );
 		bool LoadAnalysis(const char* filename);
 		bool LoadAnalysis(const std::string& filename){return LoadAnalysis(filename.c_str());}
 
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
-		void StoreAnalysis(void);
+		void StoreAnalysis(const char* filename);
+		void StoreAnalysis(const std::string& filename) {StoreAnalysis(filename.c_str());}
 
 		/** Store synthesized sound */
 		void StoreOutputSound(void);

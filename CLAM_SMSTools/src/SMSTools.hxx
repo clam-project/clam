@@ -55,6 +55,10 @@ protected: // methods
 	void DoMorphAnalysis();
 	void DoMorphTracksCleanup();
 
+	bool LoadAnalysis();
+	void StoreAnalysis();
+
+
 private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
