@@ -81,20 +81,17 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testPort_GetProcessingData_WithGeneralTemplatePort_AfterConstruction );
 
 	// Testing of AreConnected() method
-	CPPUNIT_TEST( testAreConnected_WithAudioPorts_WhenPortsAreConnected );
-	CPPUNIT_TEST( testAreConnected_WithAudioPorts_WhenPortsAreConnected );
-	CPPUNIT_TEST( testAreConnected_WithAudioPorts_WhenPortsAreNotConnected );
-	CPPUNIT_TEST( testAreConnected_WithGeneralTemplatePorts_WhenPortsAreNotConnected );
-	CPPUNIT_TEST( testAreConnected_WithAudioPorts_WhenPortsAreWrongType );
-	CPPUNIT_TEST( testAreConnected_WithGeneralTemplatetPorts_WhenPortsAreWrongType );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreConnected );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreConnected );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnected );
+	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnected );
+	CPPUNIT_TEST( testInPort_IsConnectedTo_DelegatesToOutPort );
 
 	// Testing OutPort interface
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WithAudioOutPort_WhenInPortIsTheSameType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WithGeneralTemplate_WhenInPortIsTheSameType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WithAudioOutPort_WhenInPortIsDifferentType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WithGeneralTemplate_WhenInPortIsDifferentType );
-	CPPUNIT_TEST( testOutPort_CreateNode_WithGeneralTemplate );
-	CPPUNIT_TEST( testOutPort_CreateNode_WithAudioPort );
 
 	// Tests for the concrete PortTmpl classes
 	CPPUNIT_TEST_SUITE_END();
@@ -399,9 +396,9 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 		CPPUNIT_ASSERT_EQUAL( p , basePort.GetProcessingData() );
 	}
 
-	//////////// AreConnected testing //////////////
+	//////////// Connectability testing //////////////
 
-	void testAreConnected_WithAudioPorts_WhenPortsAreConnected()
+	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreConnected()
 	{
 		const int dummyLength = 0;
 		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
@@ -412,10 +409,10 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::Audio attached;
 		baseInPort.Attach( attached );
 		baseOutPort.Attach( attached );	
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::PortsAreConnected( baseInPort,baseOutPort ));
+		CPPUNIT_ASSERT_EQUAL( true, baseOutPort.IsConnectedTo( baseInPort ) );
 
 	}
-	void testAreConnected_WithGeneralTemplatePorts_WhenPortsAreConnected()
+	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreConnected()
 	{
 		const int dummyLength = 0;
 		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
@@ -426,10 +423,10 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 		DummyProcessingData attached;
 		baseInPort.Attach( attached );
 		baseOutPort.Attach( attached );	
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::PortsAreConnected( baseInPort,baseOutPort ));
+		CPPUNIT_ASSERT_EQUAL( true, baseInPort.IsConnectedTo(baseOutPort) );
 	
 	}
-	void testAreConnected_WithAudioPorts_WhenPortsAreNotConnected()
+	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnected()
 	{
 		const int dummyLength = 0;
 		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
@@ -437,10 +434,21 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
-		CPPUNIT_ASSERT_EQUAL( false, CLAM::PortsAreConnected( baseInPort,baseOutPort ));
+		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsConnectedTo(baseOutPort) );
 
 	}
-	void testAreConnected_WithGeneralTemplatePorts_WhenPortsAreNotConnected()
+	void testInPort_IsConnectedTo_DelegatesToOutPort()
+	{
+		const int dummyLength = 0;
+		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort &baseInPort = concreteInPort;
+		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort &baseOutPort = concreteOutPort;
+
+		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsConnectedTo(baseOutPort) );
+	}
+
+	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnected()
 	{
 		const int dummyLength = 0;
 		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
@@ -448,36 +456,8 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
-		CPPUNIT_ASSERT_EQUAL( false, CLAM::PortsAreConnected( baseInPort,baseOutPort ));
+		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsConnectedTo(baseOutPort) );
 
-	}
-	void testAreConnected_WithAudioPorts_WhenPortsAreWrongType()
-	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
-		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort2("in-port2", this, dummyLength);
-		CLAM::InPort &baseInPort2 = concreteInPort2;
-
-		CLAM::Audio attached;
-		baseInPort.Attach( attached );
-		baseInPort2.Attach( attached );	
-		try {
-			CLAM::PortsAreConnected( baseInPort,baseInPort2);
-			CPPUNIT_FAIL("assertion failed expected, but nothing happened");
-		} catch(CLAM::ErrAssertionFailed& )	{}
-	}
-	void testAreConnected_WithGeneralTemplatetPorts_WhenPortsAreWrongType()
-	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
-		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort2("in-port", this, dummyLength);
-		CLAM::InPort &baseInPort2 = concreteInPort2;
-		try {
-			CLAM::PortsAreConnected( baseInPort,baseInPort2);
-			CPPUNIT_FAIL("assertion failed expected, but nothing happened");
-		} catch(CLAM::ErrAssertionFailed& )    {}
 	}
 
 	void testOutPort_IsConnectableTo_WithAudioOutPort_WhenInPortIsTheSameType()
@@ -526,22 +506,6 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::InPort & baseInPort = in;
 
 		CPPUNIT_ASSERT_EQUAL( false, baseOutPort.IsConnectableTo(baseInPort) );
-	}
-
-	void testOutPort_CreateNode_WithGeneralTemplate()
-	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> out("out-port", this, dummyLength );
-		CLAM::OutPort & baseOutPort = out;
-		CPPUNIT_ASSERT( 0!=baseOutPort.CreateNodeWithDefaultStreamBuffer() );
-	}
-
-	void testOutPort_CreateNode_WithAudioPort()
-	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> out("out-port", this, dummyLength );
-		CLAM::OutPort & baseOutPort = out;
-		CPPUNIT_ASSERT( 0!=baseOutPort.CreateNodeWithDefaultStreamBuffer() );
 	}
 	
 

@@ -631,32 +631,16 @@ class NetworkTest : public CppUnit::TestFixture
 
 		const int dummyLength = 1;
 		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<DummyProcessingData>
+			new CLAM::OutPortTmpl<CLAM::Audio>
 			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
 
 		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<DummyProcessingData>
+			new CLAM::InPortTmpl<CLAM::Audio>
 			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
 		
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
-		CPPUNIT_ASSERT_EQUAL( true, PortsAreConnected( *outPortOfFirstProc, *inPortOfSecondProc ));
+		CPPUNIT_ASSERT_EQUAL( true, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
 	}
-
-
-/*
-		
-		DummyProcessingData attached;
-		attached.SetState(1);
-		outPortOfFirstProc.Attach( attached );
-		inPortOfSecondProc.Attach( attached );
-
-		outPortOfFirstProc.GetData().SetState(1);
-		outPortOfFirstProc.LeaveData();
-
-		DummyProcessingData& returned = inPortOfSecondProc.GetData();
-		CPPUNIT_ASSERT_EQUAL( 1, returned.GetState() );
-	
-*/
 
 };
    
