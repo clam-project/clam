@@ -10,6 +10,7 @@
 #include <FL/fl_ask.H>
 #include "Factory.hxx"
 #include "SMS_Configurator.hxx"
+#include <iostream>
 
 namespace CLAMVM
 {
@@ -168,7 +169,8 @@ SMSScoreEditor::SMSScoreEditor()
 	}
 	{ Fl_Button* o = mApplyChangesToScoreButton = new Fl_Button(5, 450, 230, 25, "&Apply Changes to Score");
 	o->box(FL_PLASTIC_UP_BOX);
-	o->down_box(FL_PLASTIC_DOWN_BOX);
+	o->down_box(FL_PLASTIC_DOWN_BOX);	CLAM::SMSTransformationChainConfig::const_iterator i = mChainConfig.ConfigList_begin_const();
+
 	o->shortcut(0x80061);
 	o->callback( (Fl_Callback*)cb_mApplyChangesButton );
 	}
@@ -216,6 +218,7 @@ SMSScoreEditor::SMSScoreEditor()
 void SMSScoreEditor::OnSetTransformationScore( const CLAM::SMSTransformationChainConfig& cfg ) 
 {
 	mChainConfig = cfg;
+	std::cout << "Transformation score in editor changed!" << std::endl;
 }
 
 SMSScoreEditor::~SMSScoreEditor()
@@ -344,7 +347,21 @@ void SMSScoreEditor::ApplyChangesAndClose()
 
 void SMSScoreEditor::AddHighlightedToScore( )
 {
-	mScoreContentsBox->add( mRepositoryBox->text(mRepositoryBox->value()) );
+	int insertedTransformation = mRepositoryBox->value();
+
+	mScoreContentsBox->add( mRepositoryBox->text( insertedTransformation ) ); 
+
+	CLAM::ProcessingChaineeConfig cfg;
+	cfg.SetConcreteClassName( mRepositoryBox->text( insertedTransformation ) );
+	cfg.AddConcreteConfig();
+
+	CLAM::SMSTransformationChainConfig::iterator i = mChainConfig.ConfigList_begin();
+	std::advance( i, mChainConfig.ConfigList_size()-1 );
+	mChainConfig.GetConfigurations().insert( i, cfg );
+	//mChainConfig.GetConfigurations().push_back( cfg );
+	mChainConfig.GetOnArray().AddElem( 1 );
+	mUserChangedSomething = true;
+
 }
 
 void SMSScoreEditor::RemoveHighlightedFromScore( )
