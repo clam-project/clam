@@ -20,6 +20,7 @@
  */
 
 #include "AudioDeviceList.hxx"
+#include "AudioManager.hxx"
 
 using namespace CLAM;
 
@@ -32,4 +33,10 @@ AudioDeviceList::AudioDeviceList(const std::string& arch)
 AudioDeviceList::~AudioDeviceList()
 {
 }
+
+void AudioDeviceList::AddMe(void)
+{
+	AudioManager::DeviceLists().push_back(this);
+}
+
 
