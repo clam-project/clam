@@ -71,8 +71,7 @@ public:
 	// already 'expand' two constructors - the default constructor and the copy constructor. 
 	// Macro-generated default constructor will call a method named 'DefaultInit': as its name
 	// implies, that method is meant to provide you with an entry-point for adding the necessary
-	// initialization routines. Note also that if you don't declare it your code won't compile. If
-	// you don't define it, it won't link.
+	// initialization routines. Note that it is *not* mandatory to declare/define this method.
 	void DefaultInit();
 };
 
@@ -275,12 +274,11 @@ int main( int argc, char** argv )
 		DummyProcessing procObj;
 
 		// And now, let's see what happens if we try to call procObj Do method
-		// ( you should run this in a debugger to see clearly what's happening )
 
 		// First uncomment the following line, compile and execute
 		// procObj.Do( in, out );
 		
-		// Nice message huh? Now comment the previous line, and uncomment the
+		// Nice message, isn't it? Now comment the previous line, and uncomment the
 		// following two
 		// procObj.Start();
 		// procObj.Do( in, out );
@@ -291,8 +289,26 @@ int main( int argc, char** argv )
 		// procObj.Configure( cfg );
 		// procObj.Start();
 		// procObj.Do( in, out );
-		// procObj.Stop();		
-		// std::cout << "Have you got the message?" << std::endl;
+		// procObj.Stop();
+
+		// And you will be wondering by now when you can Configure() a Processing. It will
+		// be easier to explain this, showing when you *cannot* do so
+		// Uncomment the following lines, compile, link and execute
+		// procObj.Start();
+		// procObj.Configure( cfg );
+		// procObj.Do( in, out );
+		// procObj.Stop();
+		
+		// and uncomment, compile, link and run
+		// procObj.Start();
+		// procObj.Do( in, out );
+		// procObj.Configure( cfg );
+		// procObj.Stop();
+
+		// In a nutshell, you cannot Configure() a Processing if it has
+		// been previously started ( when you instantiate a Processing it is 'stopped' ). Also, you
+		// should have noticed that you cannot call a Processing Do() method before it is Configure()'d
+		// or Start()'ed, or after it has been Stop()'ped. 
 
 	}
 	catch( CLAM::Err& e )
