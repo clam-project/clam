@@ -25,7 +25,6 @@
 
 #include "ProcessingData.hxx"
 #include "ProcessingDataConfig.hxx"
-#include "DynamicType.hxx"
 #include "Array.hxx"
 
 
