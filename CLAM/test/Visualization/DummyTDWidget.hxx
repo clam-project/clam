@@ -12,7 +12,7 @@ namespace CLAMVM
 		DummyTDWidget();
 		~DummyTDWidget();
 
-		void SendValue( TControlData value );
+		void EmitValue( TControlData value );
 
 		virtual void Show();
 		virtual void Hide();

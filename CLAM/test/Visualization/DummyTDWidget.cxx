@@ -11,8 +11,9 @@ namespace CLAMVM
 	{
 	}
 
-	void DummyTDWidget::SendValue( TControlData value )
+	void DummyTDWidget::EmitValue( TControlData value )
 	{
+		SendValue.Emit( value );	
 	}
 
 	void DummyTDWidget::Show()
