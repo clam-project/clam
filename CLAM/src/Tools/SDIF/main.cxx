@@ -1,5 +1,5 @@
-#include "Collection.hxx"
-#include "File.hxx"
+#include "SDIFCollection.hxx"
+#include "SDIFFile.hxx"
 
 using namespace SDIF;
 

@@ -1,4 +1,4 @@
-#include "File.hxx"
+#include "SDIFFile.hxx"
 
 using namespace CLAM;
 

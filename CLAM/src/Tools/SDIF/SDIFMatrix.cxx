@@ -1,4 +1,4 @@
-#include "Matrix.hxx"
+#include "SDIFMatrix.hxx"
 
 namespace SDIF
 {

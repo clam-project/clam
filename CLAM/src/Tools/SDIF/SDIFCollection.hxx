@@ -2,7 +2,7 @@
 #define __SDIFCollection__
 
 #include "DataTypes.hxx"
-#include "Storage.hxx"
+#include "SDIFStorage.hxx"
 
 namespace SDIF
 {

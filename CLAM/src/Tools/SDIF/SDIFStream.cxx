@@ -1,5 +1,5 @@
-#include "Stream.hxx"
-#include "Frame.hxx"
+#include "SDIFStream.hxx"
+#include "SDIFFrame.hxx"
 
 namespace SDIF
 {

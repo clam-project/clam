@@ -1,4 +1,4 @@
-#include "Header.hxx"
+#include "SDIFHeader.hxx"
 
 namespace SDIF
 {

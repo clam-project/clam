@@ -1,7 +1,7 @@
-#include "Collection.hxx"
-#include "Frame.hxx"
-#include "Stream.hxx"
-#include "Matrix.hxx"
+#include "SDIFCollection.hxx"
+#include "SDIFFrame.hxx"
+#include "SDIFStream.hxx"
+#include "SDIFMatrix.hxx"
 
 namespace SDIF
 {

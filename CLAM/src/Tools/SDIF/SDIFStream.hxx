@@ -1,8 +1,8 @@
 #ifndef __SDIFStream__
 #define __SDIFStream__
 
-#include "Type.hxx"
 #include <list>
+#include "SDIFType.hxx"
 
 namespace SDIF
 {

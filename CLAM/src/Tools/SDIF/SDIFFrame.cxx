@@ -1,5 +1,5 @@
-#include "Frame.hxx"
-#include "Matrix.hxx"
+#include "SDIFFrame.hxx"
+#include "SDIFMatrix.hxx"
 
 using namespace SDIF;
 

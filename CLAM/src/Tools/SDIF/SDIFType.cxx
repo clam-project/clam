@@ -1,4 +1,4 @@
-#include "Type.hxx"
+#include "SDIFType.hxx"
 
 namespace SDIF
 {

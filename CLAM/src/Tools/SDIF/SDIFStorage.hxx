@@ -1,7 +1,7 @@
 #ifndef __SDIFStorage__
 #define __SDIFStorage__
 
-#include "Frame.hxx"
+#include "SDIFFrame.hxx"
 
 namespace SDIF
 {
