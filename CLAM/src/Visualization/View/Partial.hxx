@@ -6,12 +6,14 @@
 namespace CLAMGUI
 {
 		using CLAM::TData;
+		using CLAM::TIndex;
 
 		struct Partial
 		{
 				TData    mMag;
 				TData    mFreq;
 				TData    mPhase;
+				TIndex   mTrackId;
 		};
 }
 
