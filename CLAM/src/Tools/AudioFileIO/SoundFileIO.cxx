@@ -133,7 +133,7 @@ int SoundFileIO::Read(float *out,int& size)
 	{
 		if ( mHeader.mSampleWidth == 8 )
 		{
-			char* data = new char[size];
+			unsigned char* data = new unsigned char[size];
 			n = int( fread(data,1,size,mFile) );
 			mPos += n;
 			if (n!=size) 
@@ -141,9 +141,11 @@ int SoundFileIO::Read(float *out,int& size)
 			//throw ErrSoundFileIO("Could not read requested size");
 
 			for ( int j = 0; j < size; j++ )
-			{
-				out[j] = data[j]/128.0f;
-			}
+			  {
+			    // MRJ: According to some dox found in http://www.wotsit.org
+			    // 8-bit PCM WAV samples are always unsigned!
+				out[j] = float( short(data[j])-128)/128.0f;
+			  }
 
 			delete [] data;
 		}
