@@ -29,6 +29,7 @@
 #endif//CLAM_USE_XML
 #include "Array.hxx"
 #include <list>
+#include "XMLTestHelper.hxx"
 
 #include <iostream>
 #include <fstream>
@@ -37,6 +38,94 @@
 using namespace CLAM;
 
 namespace CLAMTest {
+	class SimpleAdaptersTester : public Component {
+		class TestCase {
+		public:
+			int i;
+			double d;
+			char c;
+			std::string s;
+			TestCase(int kind) {
+				switch (kind) {
+					case 0:
+						i = 3;
+						d = 3.5;
+						c = 'a';
+						s = "Hola";
+					break;
+					case 1:
+					default:
+						i = 6;
+						d = 6.5;
+						c = 'b';
+						s = "Adios";
+					break;
+				}
+			}
+			char * DiferenceCause(const TestCase & other) const {
+				if (i!=other.i) return "Int value mismatch";
+				if (d!=other.d) return "Double value mismatch";
+				if (c!=other.c) return "Char value mismatch";
+				if (std::string(s)!=std::string(other.s)) 
+					return "Char value mismatch";
+				return 0;
+			}
+			void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
+				CLAM_ASSERT(!(asContent && asElement),
+					"Testing logic calling in AdaptToStore");
+				XMLAdapter<int> intAdapter(i, asContent?0:"myInt", asElement);
+				storer.Store(&intAdapter);
+				XMLAdapter<double> doubleAdapter(d, asContent?0:"myDouble", asElement);
+				storer.Store(&doubleAdapter);
+				XMLAdapter<char> charAdapter(c, asContent?0:"myChar", asElement);
+				storer.Store(&charAdapter);
+				XMLAdapter<std::string> strAdapter(s, asContent?0:"myString", asElement);
+				storer.Store(&strAdapter);
+			}
+			void AdaptToLoad(Storage & storer, bool asContent, bool asElement) {
+				CLAM_ASSERT(!(asContent && asElement),
+					"Testing logic calling in AdaptToStore");
+				XMLAdapter<int> intAdapter(i, asContent?0:"myInt", asElement);
+				storer.Load(&intAdapter);
+				XMLAdapter<double> doubleAdapter(d, asContent?0:"myDouble", asElement);
+				storer.Load(&doubleAdapter);
+				XMLAdapter<char> charAdapter(c, asContent?0:"myChar", asElement);
+				storer.Load(&charAdapter);
+				XMLAdapter<std::string> strAdapter(s, asContent?0:"myString", asElement);
+				storer.Load(&strAdapter);
+			}
+		};
+			
+
+	public:
+		void StoreOn(Storage & storer) {
+			TestCase a(0), b(0), c(0);
+			a.AdaptToStore(storer,true,false); // Content
+			b.AdaptToStore(storer,false,false); // Attribute
+			c.AdaptToStore(storer,false,true); // Element
+		}
+		void LoadFrom(Storage & storer) 
+		{
+			{
+				TestCase a(1), b(0);
+				a.AdaptToLoad(storer,true,false); // Content
+				char * failed = a.DiferenceCause(b);
+				CLAM_ASSERT(!failed, "Loading Content basic adapters");
+			}
+			{
+				TestCase a(1), b(0);
+				a.AdaptToLoad(storer,false,false); // Attribute
+				char * failed = a.DiferenceCause(b);
+				CLAM_ASSERT(!failed, "Loading Attribute basic adapters");
+			}
+			{
+				TestCase a(1), b(0);
+				a.AdaptToLoad(storer,false,true); // Element
+				char * failed = a.DiferenceCause(b);
+				CLAM_ASSERT(!failed, "Loading Element basic adapter");
+			}
+		}
+	};
 	
 /**
  * Tests the XMLAdapter class
@@ -44,109 +133,15 @@ namespace CLAMTest {
 void XMLAdapterClassTest() {
 	std::cout << "-- Testing XMLAdapter" << std::endl;
 	{
-		int i = 3;
-		double d = 3.5;
-		char c = 'a';
-		char * s = "Hola";
-		XMLStorage storer("MyPrueba");
-		{ 
-			XMLAdapter<int> intAdapter(i);
-			storer.Store(&intAdapter);
-			XMLAdapter<double> doubleAdapter(d);
-			storer.Store(&doubleAdapter);
-			XMLAdapter<char> charAdapter(c);
-			storer.Store(&charAdapter);
-			XMLAdapter<char*> strAdapter(s);
-			storer.Store(&strAdapter);
-		}
-		{
-			XMLAdapter<int> intAdapter(i, "myInt");
-			storer.Store(&intAdapter);
-			XMLAdapter<double> doubleAdapter(d, "myDouble");
-			storer.Store(&doubleAdapter);
-			XMLAdapter<char> charAdapter(c, "myChar");
-			storer.Store(&charAdapter);
-			XMLAdapter<char*> strAdapter(s, "myString");
-			storer.Store(&strAdapter);
-		}
-		{ 
-			XMLAdapter<int> intAdapter(i, "myInt", true);
-			storer.Store(&intAdapter);
-			XMLAdapter<double> doubleAdapter(d, "myDouble", true);
-			storer.Store(&doubleAdapter);
-			XMLAdapter<char> charAdapter(c, "myChar", true);
-			storer.Store(&charAdapter);
-			XMLAdapter<char*> strAdapter(s, "myString", true);
-			storer.Store(&strAdapter);
-		}
-		storer.dumpOn(std::cout);
-		std::ofstream f("testxml.xml");
-		storer.dumpOn(f);
+		SimpleAdaptersTester tester;
+		bool match = XMLInputOutputMatches(tester,__FILE__"Simple.xml");
+		CLAM_ASSERT(match, "Store/Load mismatch using basic types adapters");
 	}
-	{
-		XMLStorage storer("MyPrueba");
-		storer._restoreFrom("testxml.xml");
-		{
-			int i = 6;
-			double d = 6.214;
-			char c = 'b';
-			char buffer[512] = "Adios";
-			char *s = buffer;
-			std::cout << "Reading content" << std::endl;
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-			{
-				XMLAdapter<int> intAdapter(i);
-				storer.Load(&intAdapter);
-				XMLAdapter<double> doubleAdapter(d);
-				storer.Load(&doubleAdapter);
-				XMLAdapter<char> charAdapter(c);
-				storer.Load(&charAdapter);
-				XMLAdapter<char*> strAdapter(s);
-				storer.Load(&strAdapter);
-			}
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-		}
-		{
-			int i = 6;
-			double d = 6.214;
-			char c = 'b';
-			char buffer[512] = "Adios";
-			char *s = buffer;
-			std::cout << "Reading attributes" << std::endl;
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-			{
-				XMLAdapter<int> intAdapter(i, "myInt");
-				storer.Load(&intAdapter);
-				XMLAdapter<double> doubleAdapter(d, "myDouble");
-				storer.Load(&doubleAdapter);
-				XMLAdapter<char> charAdapter(c, "myChar");
-				storer.Load(&charAdapter);
-				XMLAdapter<char*> strAdapter(s, "myString");
-				storer.Load(&strAdapter);
-			}
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-		}
-		{
-			int i = 6;
-			double d = 6.214;
-			char c = 'b';
-			char buffer[512] = "Adios";
-			char *s = buffer;
-			std::cout << "Reading elements" << std::endl;
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-			{ 
-				XMLAdapter<int> intAdapter(i, "myInt", true);
-				storer.Load(&intAdapter);
-				XMLAdapter<double> doubleAdapter(d, "myDouble", true);
-				storer.Load(&doubleAdapter);
-				XMLAdapter<char> charAdapter(c, "myChar", true);
-				storer.Load(&charAdapter);
-				XMLAdapter<char*> strAdapter(s, "myString", true);
-				storer.Load(&strAdapter);
-			}
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-		}
-	}
+}
+
+template <typename T>
+unsigned ArraySize(T & t) {
+	return sizeof(t)/sizeof(T);
 }
 
 /**
@@ -534,6 +529,9 @@ void XMLComponentAdapterClassTest() {
  */
 class MyComponent : public CLAM::Component {
 	public:
+		virtual const char * GetClassName() {
+			return "MyComponent";
+		}
 		virtual ~MyComponent() {};
 		void StoreOn(CLAM::Storage & s) {
 			std::string text("Content");
