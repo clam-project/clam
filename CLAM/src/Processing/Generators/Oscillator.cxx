@@ -20,7 +20,6 @@
  */
 
 #include "Oscillator.hxx"
-#include "AudioManager.hxx"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -56,14 +55,7 @@ void OscillatorConfig::DefaultInit(void)
 	SetAmplitude(1.0);
 	SetModIndex(0.0);
 	SetPhase(0.0);
-	try
-	{
-		SetSamplingRate( TData(AudioManager::Current().SampleRate()) );
-	}
-	catch (Err)
-	{
-		SetSamplingRate( 8000 );
-	}
+	SetSamplingRate( 44100 );
 }
 
 
