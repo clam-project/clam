@@ -44,7 +44,7 @@ void MyIOAudioApplication::AudioMain(void)
 {
 	try
 	{
-		unsigned int buffersize = 256;
+		unsigned int buffersize = 4096;
 
 		AudioManager audioManager(48000,4096);
 
@@ -116,9 +116,7 @@ void MyIOAudioApplication::AudioMain(void)
 			mul.Do(bufL,bufOsc,bufL);
 
 			oscR.Do(bufOsc);
-			mul.Do(bufTesttone,bufOsc,bufTesttone);
-
-			add.Do(bufTesttone,bufL,bufL);
+			mul.Do(bufR,bufOsc,bufR);
 
 			outL.Do(bufL);
 			outR.Do(bufR);
@@ -149,7 +147,7 @@ void MyOutAudioApplication::AudioMain(void)
 {
 	try
 	{
-		unsigned int buffersize = 256;
+		unsigned int buffersize = 4096;
 
 		AudioManager audioManager(48000,4096);
 
@@ -183,6 +181,9 @@ void MyOutAudioApplication::AudioMain(void)
 			outL.Do(bufOsc);
 			outR.Do(bufOsc);
 		} while (!Canceled());
+		
+		TopLevelProcessing::GetInstance().Stop();
+
 	}
 	catch(Err error)
 	{
@@ -203,12 +204,13 @@ int main(int argc,char** argv)
 	{
 
 		{
-			MyIOAudioApplication app;
+			MyOutAudioApplication app;
 			app.Run(argc,argv);
 		}
+		printf("Press enter to continue with next test\n");
 		getchar();
 		{
-			MyOutAudioApplication app;
+			MyIOAudioApplication app;
 			app.Run(argc,argv);
 		}
 
