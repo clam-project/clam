@@ -3,67 +3,81 @@
 #include "XMLStorage.hxx"
 #include "SegmentDescriptors.hxx"
 #include "DescriptorComputation.hxx"
+#include "FileChooser.hxx"
 
-using namespace CLAM;
-
-
-int main()
+int main( int argc, char** argv )
 {
-		XMLStorage s;
-		Segment segment;
-		std::cout<<"Please enter name of your xml analysis file"<<"\n";
-		std::string filename;
-		std::cin>>filename;
-		std::cout<<"Loading Analysis File. Please Wait."<<"\n";
-		s.Restore(segment,filename);
-		std::cout<<"Analysis File Loaded Successfully"<<"\n";
+	CLAM::XMLStorage s;
+	CLAM::Segment segment;
 
-		std::cout<<"Computing Descriptors. Please Wait."<<"\n";
-		
-		
-		
-		SegmentDescriptors segmentDescriptors;
+	CLAMVM::FileChooserDialog dlg;
 
-		SpectralDescriptors specProto;
-		specProto.AddMean();
-		specProto.AddCentroid();
-		specProto.AddEnergy();
-		specProto.UpdateData();
+	dlg.SetTitle( "Please select an XML analysis file" );
+	dlg.AddFileType( "*.xml" );
+	
+	if ( !dlg.Show() )
+	{
+		std::cerr << "No analuysis file was selected!" << std::endl;
+		exit(0);
+	}
 
-		SpectralPeakDescriptors peakProto;
-		peakProto.AddMagnitudeMean();
-		peakProto.AddHarmonicCentroid();
-		peakProto.UpdateData();
+	
+	std::cout<<"Loading Analysis File. Please Wait."<<"\n";
+	s.Restore(segment, dlg.GetSelectedFilename() );
+	std::cout<<"Analysis File Loaded Successfully"<<"\n";
 
-		FrameDescriptors frameProto;
-		frameProto.AddSpectralPeakD();
-		frameProto.AddResidualSpecD();
-		frameProto.UpdateData();
-		
-		frameProto.GetSpectralPeakD().SetPrototype(peakProto);
-		frameProto.GetResidualSpecD().SetPrototype(specProto);
-		
-		segmentDescriptors.SetFramePrototype(frameProto,segment.GetnFrames());
-		segmentDescriptors.SetpSegment(&segment);
-		
-		//we can directly call the compute operation on the descriptor
-		//segmentDescriptors.Compute();
-		
-		//or use an intermediate DescriptorComputation processing
-		DescriptorComputation processing;
-		processing.Do(segmentDescriptors);
-		
-		std::cout<<"Descriptors Computed Successfully"<<"\n";
-		
-		std::cout<<"Please enter name of where you want your output descriptors to be stored"<<"\n";
-		std::string outFilename;
-		std::cin>>outFilename;
+	std::cout<<"Computing Descriptors. Please Wait."<<"\n";
+				
+	CLAM::SegmentDescriptors segmentDescriptors;
 
-		std::cout<<"Storing Results into xml file. Please Wait."<<"\n";
-		s.Dump(segmentDescriptors,"segmentDescriptors",outFilename);
+	CLAM::SpectralDescriptors specProto;
+	specProto.AddMean();
+	specProto.AddCentroid();
+	specProto.AddEnergy();
+	specProto.UpdateData();
+
+	CLAM::SpectralPeakDescriptors peakProto;
+	peakProto.AddMagnitudeMean();
+	peakProto.AddHarmonicCentroid();
+	peakProto.UpdateData();
+
+	CLAM::FrameDescriptors frameProto;
+	frameProto.AddSpectralPeakD();
+	frameProto.AddResidualSpecD();
+	frameProto.UpdateData();
 		
-		std::cout<<"Program finished Successfully"<<"\n";
-		return 0;
+	frameProto.GetSpectralPeakD().SetPrototype(peakProto);
+	frameProto.GetResidualSpecD().SetPrototype(specProto);
+		
+	segmentDescriptors.SetFramePrototype(frameProto,segment.GetnFrames());
+	segmentDescriptors.SetpSegment(&segment);
+		
+	//we can directly call the compute operation on the descriptor
+	//segmentDescriptors.Compute();
+		
+	//or use an intermediate DescriptorComputation processing
+	CLAM::DescriptorComputation processing;
+	processing.Do(segmentDescriptors);
+		
+	std::cout<<"Descriptors Computed Successfully"<<"\n";
+		
+	dlg.SetTitle( "Please enter name of where you want your output descriptors to be stored" );
+	std::string outFilename;
+	
+	if ( !dlg.Show() )
+	{
+		std::cerr << "No file was specified defaulting to: 'Descriptors.xml'" << std::endl;
+		outFilename = "Descriptors.xml";
+	}
+	else
+		outFilename = dlg.GetSelectedFilename();
+	
+
+	std::cout<<"Storing Results into xml file. Please Wait."<<"\n";
+	s.Dump(segmentDescriptors,"segmentDescriptors",outFilename);
+		
+	std::cout<<"Program finished Successfully"<<"\n";
+	return 0;
 }
 
   
