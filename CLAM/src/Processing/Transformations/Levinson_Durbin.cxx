@@ -27,6 +27,7 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
+		SetOrder( 0 );
 	}
 
 	Levinson_Durbin::Levinson_Durbin() :
@@ -70,7 +71,7 @@ namespace CLAM
 		return true;
 	}
 
-	void Levinson_Durbin::CheckTypes( const Correlation& in, const DataArray& A, const DataArray& K, DataArray& E ) const
+	void Levinson_Durbin::CheckTypes( const Correlation& in, const DataArray& A, const DataArray& K ) const
 	{
 		CLAM_BEGIN_CHECK
 
@@ -92,34 +93,81 @@ namespace CLAM
 			CLAM_ASSERT( 0, s.str().c_str() );
 		}
 
-		if( E.Size() != mOrder )
+		if( !in.HasBuffer() )
+		{
+			CLAM_ASSERT( 0, "Levinson_Durbin Do: Float attribute required for Correlation object. " );
+		}
+		else if( in.GetSize() != mOrder )
 		{
 			std::stringstream s;
 
-			s << "Levinson_Durbin::Do: Wrong size in array of the average mean squared error\n"
-			  << "	Expected: " << mOrder << "	, used " << E.Size();
-			CLAM_ASSERT( 0, s.str().c_str() );
+			s << "Levinson_Durbin::Do: Wrong size in array of autocorrelation\n"
+			  << "	Expected: " << mOrder << "	, used " << in.GetSize();
+			CLAM_ASSERT( 0, s.str().c_str() );		
 		}
-
-		if( !in.HasBuffer() )
-			CLAM_ASSERT( 0, "Levinson_Durbin Do: Float attribute required for Correlation object. " );
 
 		CLAM_END_CHECK
-
 	}
 
-	bool Levinson_Durbin::Do( const Correlation& in , DataArray& A, DataArray& K, DataArray& E )
+/*	void Levinson_Durbin::CalculateA( DataArray& A, const DataArrray& K, const int& i  )
 	{
-/*		int i = 0;
-		A[ 0 ] = 1 ;
-		E[ 0 ] = in[ 0 ];
+		int j;
 
-		while( i < mOrder )
+		for( j = 0; j < i - 1 ; j++ )
+			A[ j ] = A[ j ] + k[ i ] * A[ i - j ];
+	}
+
+	void Levinson_Durbin::CalculateK( TData& Ki, const DataArrray& A, const Correlation& R, const TData& E, const int& i  )
+	{
+		int j;
+
+		for( j = 0; j < i - 1 ; j++ )
+			Ki += A[ j ] * R[ i - j + 1 ] - R[ i ];
+
+		Ki /= E ;
+	}
+*/
+	bool Levinson_Durbin::Do( const Correlation& in , DataArray& a, DataArray& k, TData& E )
+	{
+/*		int j, i = 1;
+		DataArray ap;
+		TData *A, *K, *R, *Ap;
+
+		if( !AbleToExecute() ) return true;
+		
+		CheckTypes( in, a, k );
+
+		ap.Resize( mOrder );
+		ap.SetSize( mOrder );
+
+		A = a.GetPtr();
+		Ap = ap.GetPtr();
+		K = k.GetPtr();
+		R = in.GetBuffer().GetPtr();
+
+		E = R[ 0 ];
+		A[ 0 ] = K[ 0 ] = 1;
+
+
+		while( i < mOrder )		
 		{
+			K[ i ] = R[ i ];
+
+			for( j = 1; j <= i - 1; j++ )
+				K[ i ] -= Ap[ j ] * R[ i - j ] ;
+
+			K[ i ] /= E;
+			A[ i ] = K[ i ];
+
+			for( j = 1 ; j <= i - 1 ; j++ )
+				A[ j ] = Ap[ j ] + K[ i ] * Ap[ i - j ];
+
+			E = ( 1 - K[ i ] * K[ i ] ) * E;
+
+			ap = a;
 			i++;
-			CalculateK( K[ i ], A, in, E[ i - 1 ], i ) ;
-			A[  ]
 		}
+
 */		
 		return true;
 	}

@@ -52,7 +52,11 @@ namespace CLAM
 
 		int GetOrder() { return mOrder; }
 
-		inline void CheckTypes( const Correlation& in, const DataArray& A, const DataArray& K, DataArray& E ) const;
+		inline void CheckTypes( const Correlation& in, const DataArray& A, const DataArray& K ) const;
+
+		//inline void CalculateK( TData& Ki, const DataArrray& A, const Correlation& R, const TData& E, const int& i  );
+
+		//inline void CalculateA( DataArray& A, const DataArrray& K, const int& i  );
 
 		bool ConcreteConfigure( const ProcessingConfig& ) throw( std::bad_cast );
 
@@ -80,7 +84,7 @@ namespace CLAM
 		/** Standard Levinson-Durbin Do function
 		*/
 
-		bool Do( const Correlation& in, DataArray& A, DataArray& K, DataArray& E );
+		bool Do( const Correlation& in, DataArray& A, DataArray& K, TData& E );
 
 	};
 }
