@@ -143,7 +143,7 @@ void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum)
 	//TODO: it may give problems because pointer passed
 	InitStats(&mpSpectrum->GetMagBuffer());
 
-	mDeltaFreq=mpSpectrum->GetSpectralRange()/(mpSpectrum->GetSize()+1);
+	mDeltaFreq=mpSpectrum->GetSpectralRange()/(mpSpectrum->GetSize()-1);
 	
 }
 
@@ -239,7 +239,7 @@ TData SpectralDescriptors::ComputeMaxMagFreq()
 		} 
 
 	// Convert from index to frequency value in Hz
-	return (TData) index * (mpSpectrum->GetSpectralRange()/(TData)(size-1));
+	return (TData) index * mDeltaFreq;
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
@@ -248,7 +248,7 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 { 
 	// Energy(0-100 Hz) / Total Energy
 	int size=mpSpectrum->GetSize();
-	TIndex index = Round(100.0/(mpSpectrum->GetSpectralRange()/(TData)size));
+	TIndex index = Round(100.0/mDeltaFreq);
 	
 	DataArray data=mpSpectrum->GetMagBuffer();
 	
@@ -273,11 +273,10 @@ TData SpectralDescriptors::ComputeRolloff()
 	for (TIndex i=0; i<magsSize; i++)
 	{
 		cumEnergy += mags[i]*mags[i];
-		if (cumEnergy < eThreshold) continue;
-		return (i * mpSpectrum->GetSpectralRange() / (TData)magsSize);
+		if (cumEnergy <= eThreshold) continue;
+		return i * mDeltaFreq;
 	}
-	// Return -1 if no rolloff point could be found (e.g. digital silence)
-	return -1;
+	return 0.0;
 }
 
 
@@ -286,17 +285,23 @@ TData SpectralDescriptors::ComputeSpread()
 	DataArray& mags     = mpSpectrum->GetMagBuffer();
 	TSize      magsSize = mpSpectrum->GetSize();
 
-	TData centroid = mpStats->GetCentroid()*mDeltaFreq;
+	TData centroid = mpStats->GetCentroid(); // A 1 based centroid
 
 	// Compute spectrum variance around centroid frequency
 	TData variance = 0;
 	TData sumMags  = 0;
 	for (TIndex i=0; i<magsSize; i++)
 	{
-		variance += pow((i*mDeltaFreq - centroid), 2) * mags[i];
+		TData centroidDistance = i - centroid;
+		centroidDistance *= centroidDistance;
+		variance += centroidDistance * mags[i];
 		sumMags  += mags[i];
 	}
+	if (sumMags < 1e-14) return sqrt(TData(magsSize-1)/(magsSize-3)/3);
 	variance /= sumMags;
+
+	// Avoiding NaN for centroid = 0
+	if (centroid<0.2) centroid = 0.2;
 
 	// Return std.dev. normalized by centroid frequency
 	return sqrt(variance) / centroid;
