@@ -62,8 +62,6 @@ namespace CLAM
 		BinaryAudioOpConfig mConfig;
 		BinOp	     mOperation;
 		
-		const char *GetClassName() const {return "BinaryAudioOperation";}
-
 		/** Config change method
 		 * @pre argument should be an SpecAdderConfig object.
 		 */
@@ -110,6 +108,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
+		const char *GetClassName() const {return "BinaryAudioOperation";}
 		void Check(const Audio& in1, const Audio& in2, const Audio& out)
 		{
 			CLAM_ASSERT(in1.GetSize() <= in2.GetSize(),
