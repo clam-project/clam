@@ -19,8 +19,29 @@ class SupervisedSystemWithoutTrueFlowControl
 	//! Deprecated type	
 	typedef std::list<CLAM::Network*> NetworkList;
 
+
 	typedef void (SupervisedSystemWithoutTrueFlowControl::*NetworkConfigurationMethod) (CLAM::Network & );
-	typedef std::list<NetworkConfigurationMethod> NetworkConfigurationMethods;
+
+	class NetworkConfigurationMethodWrapper
+	{
+		SupervisedSystemWithoutTrueFlowControl* _parent;
+		NetworkConfigurationMethod _configurationMethod;
+	public:
+		NetworkConfigurationMethodWrapper(
+			SupervisedSystemWithoutTrueFlowControl* parent,
+			NetworkConfigurationMethod confMethod ) :
+			_parent(parent),
+			_configurationMethod(confMethod)
+		{}
+		
+		void Configure( CLAM::Network& net)
+		{ 
+			(_parent->*_configurationMethod)( net );
+		}
+	};
+
+	typedef std::list<NetworkConfigurationMethodWrapper> NetworkConfigurationMethods;
+
 public:	
 	SupervisedSystemWithoutTrueFlowControl( 
 		std::string fileIn, 

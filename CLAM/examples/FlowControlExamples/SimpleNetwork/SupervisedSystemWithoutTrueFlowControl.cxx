@@ -236,10 +236,8 @@ void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworkTopologies()
 		  currentConfigMethod++ )
 	{
 		_network.DisconnectAllPorts();
-		//NetworkConfigurationMethod actual=*currentConfigMethod;
-		//(this->*actual)(_network);
-
-		(this->**currentConfigMethod)(_network);
+		
+		currentConfigMethod->Configure(_network);
 
 		_network.Start();
 
