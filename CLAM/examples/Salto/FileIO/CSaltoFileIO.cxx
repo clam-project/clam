@@ -28,8 +28,12 @@ void CSaltoFileIO::ReadSDIFFile(const char* fileName,Segment *pSpecSeg,bool load
 	//mSegment.AddAll();
 	//mSegment.UpdateData();
 	SDIFReader.Output.Attach(*pSpecSeg);
-		
+	
+	SDIFReader.Start();
+	
 	while(SDIFReader.Do()) {}
+
+	SDIFReader.Stop();
 
 /*  SDIFIn SDIFIn(pSpecSeg,MAX_SINES);
 
