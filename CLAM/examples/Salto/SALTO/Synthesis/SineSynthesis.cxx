@@ -160,15 +160,15 @@ bool SineSynthesis::Do( CSaltoSynthFrame& synthFrame )
 			mPhaseManagerPO.SetLastPhasesAndFreqs(*synthFrame.GetPeakArrayPtr());
 			mLastAlignedFrame = false;
 			mOutLAFrameCtl.SendControlAsBoolean( false );
-			mSwitchToRandomPhases = true;
+			// XA oopsla demo klutch mSwitchToRandomPhases = true;
 		}
 	}
-	else
+/*	XA oopsla demo klutch else
 	{
 		// .. the phases of synthFrame.PeakArray get changed here ..
 		mPhaseManagerPO.DoRandomPhases(*synthFrame.GetPeakArrayPtr());		
 	}																									
-		
+*/		
 	mSpecSynthPO.Do(*(synthFrame.GetPeakArrayPtr()),*(synthFrame.GetSpectrumPtr()),mGain);
 
 	mCurrentTime += mFrameTime;
@@ -211,15 +211,15 @@ void SineSynthesis::DoSineSynthesis( CSaltoSynthFrame &synthFrame, Parameters* m
 			
 			mPhaseManagerPO.SetLastPhasesAndFreqs(*synthFrame.GetPeakArrayPtr());
 			mpParameter->SetLastAlignedFrame(false);
-			mSwitchToRandomPhases = true;
+			//XA oopsla demo klutch mSwitchToRandomPhases = true;
 		}
 	}
-	else
+/*	XA oopsla demo klutch else
 	{
 		// .. the phases of synthFrame.PeakArray get changed here ..
 		mPhaseManagerPO.DoRandomPhases(*synthFrame.GetPeakArrayPtr());		
 	}																									
-		
+*/		
 	mSpecSynthPO.Do(*(synthFrame.GetPeakArrayPtr()),*(synthFrame.GetSpectrumPtr()),gain);
 	
 	synthFrame.SetSynthTime(synthFrame.GetSynthTime()+mFrameTime);

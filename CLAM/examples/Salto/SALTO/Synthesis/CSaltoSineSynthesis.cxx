@@ -60,10 +60,10 @@ void CSaltoSineSynthesis::DoSineSynthesis(CSaltoSynthFrame &synthFrame,double ga
 			
 			mpPhaseManagerPO->SetLastPhasesAndFreqs(*synthFrame.GetPeakArrayPtr());
 			mpParameter->SetLastAlignedFrame(false);
-			mSwitchToRandomPhases = true;
+		//XA oopsla demo klutch	mSwitchToRandomPhases = true;
 		}
 	}
-/*	else
+/*XA oopsla demo 	else
 	{
 		// .. the phases of synthFrame.PeakArray get changed here ..
 		mpPhaseManagerPO->DoRandomPhases(*synthFrame.GetPeakArrayPtr());		
