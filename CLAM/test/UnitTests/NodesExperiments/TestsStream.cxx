@@ -1,52 +1,60 @@
 #include "WritingRegion.hxx"
 #include "ReadingRegion.hxx"
 
-#include "MiniCppUnit.hxx"
+#include <cppunit/extensions/HelperMacros.h>
+#include <vector>
+#include <list>
+#include "PhantomBuffer.hxx"
 
+namespace CLAMTest {
+
+// Test suite registration at the end of file
+// That's due to the fact that we register template specialization of the suite tmpl class
+//
 template <template <class> class DataStructure>
-class TestsStream : public GrupDeTests< TestsStream<DataStructure> >
+class TestsStream : public CppUnit::TestFixture
 {
 public:
-	// GRUP_DE_TESTS( TestsStream<DataStructure> )
-	TestsStream() : GrupDeTests< TestsStream<DataStructure> >( "TestsStream<DataStructure>" )
-	{
-		CAS_DE_TEST( testWritingRegion_constructor );
-		CAS_DE_TEST( testReadingRegion_constructor );
-		CAS_DE_TEST( testWritingRegion_canProduce_withNoReaders );
-		CAS_DE_TEST( testWritingRegion_canProduce_withOneReader );
-		CAS_DE_TEST( testWritingRegion_fulfilsInvariant_whenRegionsAreOverlapped );
-		CAS_DE_TEST( testWritingRegion_fulfilsInvariant_whenReaderOverlapsAndSurpassesWriter );
-		CAS_DE_TEST( testWritingRegion_fulfilsInvariant_whenReaderSurpassesWriterWithoutOverlapping );
-		CAS_DE_TEST( testReadingRegion_canConsume_whenRegionsAreOverlapped );
-		CAS_DE_TEST( testReadingRegion_canConsume_when2ReadingRegionsBehindAndNonOverlap );
-		CAS_DE_TEST( testWritingRegion_produce_movesRegion );
-		CAS_DE_TEST( testReadingRegion_consume_whenIsLegal_movesRegion );
-		CAS_DE_TEST( testProduceConsumeData_withUnitaryRegions );
-		CAS_DE_TEST( testProduceConsumeData_withSizedRegions );
-		CAS_DE_TEST( testProduceConsumeData_withSizedRegions_writerProducesMultipleTimes );
-		CAS_DE_TEST( testStreamImplementation_avancingALongWay_semiStressTest );
-	}
+	CPPUNIT_TEST_SUITE( TestsStream );
+	
+	CPPUNIT_TEST( testWritingRegion_constructor );
+	CPPUNIT_TEST( testReadingRegion_constructor );
+	CPPUNIT_TEST( testWritingRegion_canProduce_withNoReaders );
+	CPPUNIT_TEST( testWritingRegion_canProduce_withOneReader );
+	CPPUNIT_TEST( testWritingRegion_fulfilsInvariant_whenRegionsAreOverlapped );
+	CPPUNIT_TEST( testWritingRegion_fulfilsInvariant_whenReaderOverlapsAndSurpassesWriter );
+	CPPUNIT_TEST( testWritingRegion_fulfilsInvariant_whenReaderSurpassesWriterWithoutOverlapping );
+	CPPUNIT_TEST( testReadingRegion_canConsume_whenRegionsAreOverlapped );
+	CPPUNIT_TEST( testReadingRegion_canConsume_when2ReadingRegionsBehindAndNonOverlap );
+	CPPUNIT_TEST( testWritingRegion_produce_movesRegion );
+	CPPUNIT_TEST( testReadingRegion_consume_whenIsLegal_movesRegion );
+	CPPUNIT_TEST( testProduceConsumeData_withUnitaryRegions );
+	CPPUNIT_TEST( testProduceConsumeData_withSizedRegions );
+	CPPUNIT_TEST( testProduceConsumeData_withSizedRegions_writerProducesMultipleTimes );
+	CPPUNIT_TEST( testStreamImplementation_avancingALongWay_semiStressTest );
+
+	CPPUNIT_TEST_SUITE_END();
 
 	void testWritingRegion_constructor()
 	{
 		WritingRegion<int,DataStructure> writer;
-		ASSERT(0 == writer.pos());
-		ASSERT(1 == writer.size());
-		ASSERT(1 == writer.hop());
+		CPPUNIT_ASSERT(0 == writer.pos());
+		CPPUNIT_ASSERT(1 == writer.size());
+		CPPUNIT_ASSERT(1 == writer.hop());
 	}
 
 	void testReadingRegion_constructor()
 	{
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
-		ASSERT(0 == reader.pos());
-		ASSERT(1 == reader.size());
-		ASSERT(1 == reader.hop());
+		CPPUNIT_ASSERT(0 == reader.pos());
+		CPPUNIT_ASSERT(1 == reader.size());
+		CPPUNIT_ASSERT(1 == reader.hop());
 	}
 
 	void testWritingRegion_canProduce_withNoReaders()
 	{
 		WritingRegion<int,DataStructure> writer;
-		ASSERT( true == writer.canProduce() );
+		CPPUNIT_ASSERT( true == writer.canProduce() );
 	}
 
 	void testWritingRegion_canProduce_withOneReader()
@@ -54,7 +62,7 @@ public:
 		WritingRegion<int,DataStructure> writer;
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.linkRegions( reader );
-		ASSERT( true == writer.canProduce() );
+		CPPUNIT_ASSERT( true == writer.canProduce() );
 	}
 
 	void testWritingRegion_fulfilsInvariant_whenRegionsAreOverlapped()
@@ -68,7 +76,7 @@ public:
 
 		writer.linkRegions( reader );
 
-		ASSERT( true == writer.fulfilsInvariant() );
+		CPPUNIT_ASSERT( true == writer.fulfilsInvariant() );
 	}
 
 	void testWritingRegion_fulfilsInvariant_whenReaderOverlapsAndSurpassesWriter()
@@ -85,7 +93,7 @@ public:
 		reader.pos(1);
 		reader.size(4);
 
-		ASSERT( true == writer.fulfilsInvariant() );
+		CPPUNIT_ASSERT( true == writer.fulfilsInvariant() );
 	}
 
 	void testWritingRegion_fulfilsInvariant_whenReaderSurpassesWriterWithoutOverlapping()
@@ -102,7 +110,7 @@ public:
 		reader.size(4);
 		reader.pos(4);
 
-		ASSERT( false == writer.fulfilsInvariant() );
+		CPPUNIT_ASSERT( false == writer.fulfilsInvariant() );
 	}
 
 
@@ -116,7 +124,7 @@ public:
 		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.linkRegions( reader );
 
-		ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT( false == reader.canConsume() );
 	}
 
 	void testReadingRegion_canConsume_when2ReadingRegionsBehindAndNonOverlap()
@@ -135,8 +143,8 @@ public:
 		reader2.size(3);
 		writer.pos(3);
 
-		ASSERT( true == reader2.canConsume() );
-		ASSERT( true == reader1.canConsume() );
+		CPPUNIT_ASSERT( true == reader2.canConsume() );
+		CPPUNIT_ASSERT( true == reader1.canConsume() );
 	}
 
 
@@ -146,7 +154,7 @@ public:
 		writer.size(4);
 		writer.hop(3);
 		writer.produce();
-		ASSERT_IGUALS( long(3), writer.pos() );
+		CPPUNIT_ASSERT_EQUAL( long(3), writer.pos() );
 	}
 
 	void testReadingRegion_consume_whenIsLegal_movesRegion()
@@ -169,8 +177,8 @@ public:
 
 		reader.consume();
 
-		ASSERT_IGUALS( long(2), reader.pos() );
-		ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT_EQUAL( long(2), reader.pos() );
+		CPPUNIT_ASSERT( false == reader.canConsume() );
 	}
 
 	void testProduceConsumeData_withUnitaryRegions()
@@ -181,9 +189,9 @@ public:
 
 		writer[0] = 'a';
 		writer.produce();
-		ASSERT_IGUALS( 'a', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( 'a', reader[0] );
 		reader.consume();
-		ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT( false == reader.canConsume() );
 	}
 
 	void testProduceConsumeData_withSizedRegions()
@@ -194,7 +202,7 @@ public:
 
 		writer.size(5);
 		writer.hop(5);
-		ASSERT_IGUALS( 0, int(writer.pos()) );
+		CPPUNIT_ASSERT_EQUAL( 0, int(writer.pos()) );
 
 
 		writer[0] = 'h';
@@ -206,17 +214,17 @@ public:
 
 		reader.size(3);
 		reader.hop(2);
-		ASSERT_IGUALS( 'h', reader[0] );
-		ASSERT_IGUALS( 'e', reader[1] );
-		ASSERT_IGUALS( 'l', reader[2] );
+		CPPUNIT_ASSERT_EQUAL( 'h', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( 'e', reader[1] );
+		CPPUNIT_ASSERT_EQUAL( 'l', reader[2] );
 
 		reader.consume();
-		ASSERT_IGUALS( 'l', reader[0] );
-		ASSERT_IGUALS( 'l', reader[1] );
-		ASSERT_IGUALS( 'o', reader[2] );
+		CPPUNIT_ASSERT_EQUAL( 'l', reader[0] );
+		CPPUNIT_ASSERT_EQUAL( 'l', reader[1] );
+		CPPUNIT_ASSERT_EQUAL( 'o', reader[2] );
 
 		reader.consume();
-		ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT( false == reader.canConsume() );
 	}
 
 	void testProduceConsumeData_withSizedRegions_writerProducesMultipleTimes()
@@ -252,7 +260,7 @@ public:
 
 		reader.consume();  // 1
 		reader.consume();  // 2
-		ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT( false == reader.canConsume() );
 
 		writer[0] = ' ';
 		writer[1] = 'w';
@@ -265,11 +273,11 @@ public:
 		reader.consume(); // 3
 		reader.consume(); // 4
 
-		ASSERT( false == reader.canConsume() );
+		CPPUNIT_ASSERT( false == reader.canConsume() );
 		writer.produce();  // without producing here, the following indexed acceses
-		ASSERT_IGUALS( 'r', reader[0] );  // to the reader would fail an assert
-		ASSERT_IGUALS( 'l', reader[1] );
-		ASSERT_IGUALS( 'd', reader[2] );
+		CPPUNIT_ASSERT_EQUAL( 'r', reader[0] );  // to the reader would fail an assert
+		CPPUNIT_ASSERT_EQUAL( 'l', reader[1] );
+		CPPUNIT_ASSERT_EQUAL( 'd', reader[2] );
 	}
 
 	void testStreamImplementation_avancingALongWay_semiStressTest()
@@ -283,7 +291,7 @@ public:
 			writer[0] = actual;
 			writer.produce();
 
-			ASSERT_IGUALS( actual, reader[0] );
+			CPPUNIT_ASSERT_EQUAL( actual, reader[0] );
 			reader.consume();
 		}
 	}
@@ -299,3 +307,9 @@ public:
 
 
 };
+
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<CLAM::PhantomBuffer> );
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<std::vector> );
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStream<std::list> );
+
+} // namespace CLAMTest 
