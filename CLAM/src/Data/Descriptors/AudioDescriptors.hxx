@@ -117,7 +117,7 @@ namespace CLAM {
 
 		
 	private:
-		Audio* mpAudio;
+		const Audio* mpAudio;
 		static const TData mEpsilon;
 		
 		bool mIsAttackTimeComputed;
