@@ -207,18 +207,13 @@ CLAM::XercesDomPrinter::XercesDomPrinter()
 CLAM::XercesDomPrinter::~XercesDomPrinter()
 {
 }
-void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
-{
-		PrintDoc(os,toWrite);
-}
 
 unsigned tabPosition = 0;
 bool gLastWasContent = true;
 
 
-std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite)
+void CLAM::XercesDomPrinter::Print(ostream & os, DOM_Node & toWrite)
 {
-  
 	tabPosition = 0;
 	gLastWasContent = true;
 	DOMString encNameStr("UTF-8");
@@ -233,12 +228,12 @@ std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite)
 	gEncodingName = new XMLCh[lent + 1];
 	XMLString::copyNString(gEncodingName, encNameStr.rawBuffer(), lent);
 	gEncodingName[lent] = 0;
-	DOMPrintFormatTarget* formatTarget = new DOMPrintFormatTarget(target);    
+	DOMPrintFormatTarget* formatTarget = new DOMPrintFormatTarget(os);
 	try
 	{
 		gFormatter = new XMLFormatter(gEncodingName, formatTarget, 
 			XMLFormatter::NoEscapes, gUnRepFlags);
-		target << toWrite << std::endl;
+		os << toWrite << std::endl;
 	}
 	catch (XMLException& e)
 	{
@@ -251,8 +246,8 @@ std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite)
 	delete gFormatter;
 	delete gEncodingName;
 
-	return target;
 }
+
 
 static const XMLCh endLine[] = { chCR, chLF, chNull };
 
