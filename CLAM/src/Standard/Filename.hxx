@@ -26,7 +26,6 @@
 #include <string>
 #include "Assert.hxx"
 #include "Component.hxx"
-#include <string>
 #ifdef CLAM_USE_XML
 	#include "XMLAdapter.hxx"
 #endif//CLAM_USE_XML
