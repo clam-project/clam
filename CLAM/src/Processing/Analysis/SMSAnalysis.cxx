@@ -214,8 +214,6 @@ bool SMSAnalysis::ConfigureChildren()
 
 void SMSAnalysis::ConfigureData()
 {
-	TData samplingRate=mConfig.GetSamplingRate();
-
 	// Objects used only for initializing a frame
 	// Spectrum used for temporary residual analysis, it may be possible to get rid of
 	SpectrumConfig scfg;
@@ -290,8 +288,6 @@ bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& ou
 	// Peak Detection
 	SpectralPeakArray tmpPk;
 	mPO_PeakDetect.Do(outSp,tmpPk);
-	// If not possible to detect anything with this peak information, FundDetect will return a false
-	bool fundFreqFound = mPO_FundDetect.Do(tmpPk,outFn);
 	// Sinusoidal Tracking
 	mPO_SinTracking.Do(tmpPk,pkArray,outFn.GetFreq(0));
 	
@@ -311,8 +307,6 @@ bool SMSAnalysis::Do(Segment& in)
 	int frameIndex=in.mCurrentFrameIndex;
 
 	int step=mConfig.GetHopSize();
-	int sinFrameSize=mConfig.GetSinSpectralAnalysis().GetWindowSize()-1;
-	int resFrameSize=mConfig.GetResSpectralAnalysis().GetWindowSize()-1;
 
 	TData samplingRate=mConfig.GetSamplingRate();
 	TSize centerSample=(frameIndex*step);

@@ -52,8 +52,8 @@
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 
-#define MIN(a,b) ((a<=b)?(a):(b))
-#define MAX(a,b) ((a>=b)?(a):(b))
+//#define MIN(a,b) ((a<=b)?(a):(b))
+//#define MAX(a,b) ((a>=b)?(a):(b))
 
 using namespace CLAMGUI;
 using namespace CLAM;

@@ -4,8 +4,6 @@
 
 #define CLASS "FundFreqDetect"
 
-#define MIN(a,b) ((a<=b)?(a):(b))
-#define MAX(a,b) ((a>=b)?(a):(b))
 #define INFINITE_MAGNITUD 1000000
 
 namespace CLAM {
