@@ -23,7 +23,7 @@ CFG=EnvelopeExtractorTest - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "CLAM_Skeleton_project"
+# PROP Scc_ProjName "empty"
 # PROP Scc_LocalPath "."
 CPP=cl.exe
 RSC=rc.exe
@@ -37,20 +37,20 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\ReleaseFiles\bin"
-# PROP Intermediate_Dir "..\ReleaseFiles\obj"
+# PROP Output_Dir "../ReleaseFiles/bin"
+# PROP Intermediate_Dir "../ReleaseFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO"
+# ADD CPP -O3 -fomit-frame-pointer -pipe /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Controls" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\pthreads\lib" pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD BASE LINK32
+# ADD LINK32 pthread.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib id3.lib z.lib
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "EnvelopeExtractorTest - Win32 Debug"
@@ -62,20 +62,20 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\DebugFiles\bin"
-# PROP Intermediate_Dir "..\DebugFiles\obj"
+# PROP Output_Dir "../DebugFiles/bin"
+# PROP Intermediate_Dir "../DebugFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\pthreads\include" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO"
+# ADD CPP -g -fno-inline -pipe -D_DEBUG /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Controls" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
-# ADD RSC /l 0xc0a /d "_DEBUG"
+# ADD RSC /l 0xc0a
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\pthreads\lib" pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
+# ADD BASE LINK32
+# ADD LINK32 pthread.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib id3.lib z.lib -rdynamic
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -92,46 +92,75 @@ LINK32=link.exe
 
 # Begin Group "test Sources"
 
+# Begin Group "NonPortedTests Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\test\TestEnvelopeExtractor.cxx
+SOURCE=..\..\..\..\test\NonPortedTests\TestEnvelopeExtractor.cxx
 # End Source File
+# End Group
 # End Group
 # Begin Group "Errors Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\Err.cxx
+SOURCE=..\..\..\..\src\Errors\Err.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrOutOfMemory.cxx
+SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrProcessingObj.cxx
+SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrSystem.cxx
+SOURCE=..\..\..\..\src\Errors\ErrSystem.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrDynamicType.cxx
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Errors\ErrSoundFileIO.cxx
 # End Source File
 # End Group
 # Begin Group "Defines Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\Assert.cxx
+SOURCE=..\..\..\..\src\Defines\Assert.cxx
 # End Source File
+# End Group
+# Begin Group "Storage Sources"
+
+# Begin Group "XML Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.cxx
+# End Source File
+# End Group
 # End Group
 # Begin Group "Base Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Base\DynamicType.cxx
+SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Source File
 # End Group
 # Begin Group "Flow Sources"
@@ -140,65 +169,65 @@ SOURCE=..\..\..\src\Base\DynamicType.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Controls\InControl.cxx
+SOURCE=..\..\..\..\src\Flow\Controls\InControl.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Controls\OutControl.cxx
+SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
 # End Source File
 # End Group
 # Begin Group "Ports Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\Port.cxx
+SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
+SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
 # End Source File
 # End Group
 # Begin Group "Nodes Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\StreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\ReadStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\ReadStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\Node.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\AddStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\AddStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegionContainer.cxx
 # End Source File
 # End Group
 # End Group
@@ -208,63 +237,63 @@ SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedInControls.cxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedOutControls.cxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedInPorts.cxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedOutPorts.cxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\Processing.cxx
+SOURCE=..\..\..\..\src\Processing\Base\Processing.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.cxx
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
+SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
 # Begin Group "Transformations Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Transformations\EnvelopeExtractor.cxx
+SOURCE=..\..\..\..\src\Processing\Transformations\EnvelopeExtractor.cxx
 # End Source File
 # End Group
 # Begin Group "Generators Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Generators\WaveGenerator.cxx
+SOURCE=..\..\..\..\src\Processing\Generators\WaveGenerator.cxx
 # End Source File
 # End Group
 # Begin Group "AudioFileIO Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileConfig.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
 # End Source File
 # End Group
 # Begin Group "Controls Sources No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Controls\Controller.cxx
+SOURCE=..\..\..\..\src\Processing\Controls\Controller.cxx
 # End Source File
 # End Group
 # End Group
@@ -274,11 +303,11 @@ SOURCE=..\..\..\src\Processing\Controls\Controller.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\BasicProcessing\Envelope.cxx
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Envelope.cxx
 # End Source File
 # End Group
 # End Group
@@ -286,19 +315,23 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Envelope.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Enum.cxx
+SOURCE=..\..\..\..\src\Standard\Enum.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\GlobalEnums.cxx
+SOURCE=..\..\..\..\src\Standard\GlobalEnums.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Point.cxx
+SOURCE=..\..\..\..\src\Standard\Point.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\BPF.cxx
+SOURCE=..\..\..\..\src\Standard\BPF.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Text.cxx
 # End Source File
 # End Group
 # Begin Group "System Sources"
@@ -307,7 +340,7 @@ SOURCE=..\..\..\src\Standard\BPF.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\System\Threads\Mutex.cxx
+SOURCE=..\..\..\..\src\System\Threads\Mutex.cxx
 # End Source File
 # End Group
 # End Group
@@ -317,134 +350,321 @@ SOURCE=..\..\..\src\System\Threads\Mutex.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\SoundFileIO.cxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\AIFFFileIO.cxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\extended.cxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\extended.cxx
 # End Source File
 # End Group
 # End Group
 # End Group
 # Begin Group "Header Files"
 
+# Begin Group "Storage Headers"
+
+# Begin Group "Base Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
+# End Source File
+# End Group
+# Begin Group "XML Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLArrayAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomDocumentHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomWritingContext.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomReadingContext.hxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Errors Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\Err.hxx
+SOURCE=..\..\..\..\src\Errors\Err.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrOutOfMemory.hxx
+SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrProcessingObj.hxx
+SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrSystem.hxx
+SOURCE=..\..\..\..\src\Errors\ErrSystem.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrDynamicType.hxx
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\ErrSoundFileIO.hxx
+SOURCE=..\..\..\..\src\Errors\ErrSoundFileIO.hxx
 # End Source File
 # End Group
 # Begin Group "Defines Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\Assert.hxx
+SOURCE=..\..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\StaticBool.hxx
+SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\TypeInfo.hxx
+SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\TypeInfoStd.hxx
+SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\CLAM_Math.hxx
+SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\DataTypes.hxx
+SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\mtgsstream.h
+SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\ByteOrder.hxx
+SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\EDataFormat.hxx
+SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
+# End Source File
+# End Group
+# Begin Group " Headers"
+
+# Begin Group "usr Headers"
+
+# Begin Group "include Headers"
+
+# Begin Group "sys Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\sys\cdefs.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\OSDefines.hxx
+SOURCE=\usr\include\sys\time.h
 # End Source File
-# Begin Group "Windows Headers"
+# Begin Source File
+
+SOURCE=\usr\include\sys\select.h
+# End Source File
+# End Group
+# Begin Group "gnu Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\Windows\CLAM_windows.h
+SOURCE=\usr\include\gnu\stubs.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\features.h
+# End Source File
+# Begin Group "bits Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\bits\wordsize.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\typesizes.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sched.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sigset.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\pthreadtypes.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\initspin.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sigthread.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\select.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\errno.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ctype.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sched.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\signal.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\pthread.h
+# End Source File
+# Begin Group "asm-generic Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\asm-generic\errno-base.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\asm-generic\errno.h
+# End Source File
+# End Group
+# Begin Group "asm Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\asm\errno.h
+# End Source File
+# End Group
+# Begin Group "linux Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\linux\errno.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\errno.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\stdio.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\string.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\stdlib.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\memory.h
 # End Source File
 # End Group
 # End Group
-# Begin Group "Base Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\Component.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\DynamicType.hxx
-# End Source File
 # End Group
-# Begin Group "Storage Headers"
-
 # Begin Group "Base Headers No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\Base\Storable.hxx
+SOURCE=..\..\..\..\src\Base\Component.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\Base\Storage.hxx
+SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
 # End Source File
-# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\DynamicType.hxx
+# End Source File
 # End Group
 # Begin Group "Flow Headers"
 
@@ -452,109 +672,109 @@ SOURCE=..\..\..\src\Storage\Base\Storage.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Controls\ControlConfig.hxx
+SOURCE=..\..\..\..\src\Flow\Controls\ControlConfig.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Controls\ControlLinker.hxx
+SOURCE=..\..\..\..\src\Flow\Controls\ControlLinker.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Controls\InControl.hxx
+SOURCE=..\..\..\..\src\Flow\Controls\InControl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Controls\OutControl.hxx
+SOURCE=..\..\..\..\src\Flow\Controls\OutControl.hxx
 # End Source File
 # End Group
 # Begin Group "Ports Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\Port.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\Port.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\InPortTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\InPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\OutPort.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\OutPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\StreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\ReadStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\ReadStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\SourceStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\WriteStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\Node.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\AddStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\AddStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegionContainer.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\AudioStreamBuffer.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\AudioStreamBuffer.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\StreamBuffer.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamBuffer.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\CircularStreamImpl.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\CircularStreamImpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\AudioNodeTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\AudioNodeTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\NodeTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\NodeTmpl.hxx
 # End Source File
 # End Group
 # End Group
@@ -562,55 +782,67 @@ SOURCE=..\..\..\src\Flow\Nodes\NodeTmpl.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Array.hxx
+SOURCE=..\..\..\..\src\Standard\Array.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PointTmplDec.hxx
+SOURCE=..\..\..\..\src\Standard\FastRounding.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PointTmplDef.hxx
+SOURCE=..\..\..\..\src\Standard\PointTmplDec.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PointTmpl.hxx
+SOURCE=..\..\..\..\src\Standard\PointTmplDef.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\SearchArray.hxx
+SOURCE=..\..\..\..\src\Standard\PointTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Enum.hxx
+SOURCE=..\..\..\..\src\Standard\SearchArray.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\GlobalEnums.hxx
+SOURCE=..\..\..\..\src\Standard\Enum.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\BPFTmplDec.hxx
+SOURCE=..\..\..\..\src\Standard\GlobalEnums.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Point.hxx
+SOURCE=..\..\..\..\src\Standard\BPFTmplDec.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\BPF.hxx
+SOURCE=..\..\..\..\src\Standard\Point.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PhantomBuffer.hxx
+SOURCE=..\..\..\..\src\Standard\BPF.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\BPFTmplDef.hxx
+SOURCE=..\..\..\..\src\Standard\PhantomBuffer.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\BPFTmpl.hxx
+SOURCE=..\..\..\..\src\Standard\Text.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Filename.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
 # End Source File
 # End Group
 # Begin Group "Processing Headers"
@@ -619,71 +851,71 @@ SOURCE=..\..\..\src\Standard\BPFTmpl.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedInControls.hxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedOutControls.hxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedInPorts.hxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\PublishedOutPorts.hxx
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\ProcessingConfig.hxx
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingConfig.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\Processing.hxx
+SOURCE=..\..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
+SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
 # Begin Group "Transformations Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Transformations\EnvelopeExtractor.hxx
+SOURCE=..\..\..\..\src\Processing\Transformations\EnvelopeExtractor.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Transformations\EnvelopeGenerator.hxx
+SOURCE=..\..\..\..\src\Processing\Transformations\EnvelopeGenerator.hxx
 # End Source File
 # End Group
 # Begin Group "Generators Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Generators\WaveGenerator.hxx
+SOURCE=..\..\..\..\src\Processing\Generators\WaveGenerator.hxx
 # End Source File
 # End Group
 # Begin Group "AudioFileIO Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.hxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileConfig.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
 # End Source File
 # End Group
 # Begin Group "Controls Headers No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Controls\Controller.hxx
+SOURCE=..\..\..\..\src\Processing\Controls\Controller.hxx
 # End Source File
 # End Group
 # End Group
@@ -693,32 +925,22 @@ SOURCE=..\..\..\src\Processing\Controls\Controller.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\Base\ProcessingDataConfig.hxx
+SOURCE=..\..\..\..\src\Data\Base\ProcessingDataConfig.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\Base\ProcessingData.hxx
+SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
 # End Source File
 # End Group
 # Begin Group "BasicProcessing Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\BasicProcessing\Envelope.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "pthreads Headers"
-
-# Begin Group "include Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\pthreads\include\pthread.h
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Envelope.hxx
 # End Source File
 # End Group
 # End Group
@@ -728,15 +950,15 @@ SOURCE=..\..\..\..\pthreads\include\pthread.h
 
 # Begin Source File
 
-SOURCE=..\..\..\src\System\Threads\xtime.hxx
+SOURCE=..\..\..\..\src\System\Threads\xtime.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\System\Threads\Lock.hxx
+SOURCE=..\..\..\..\src\System\Threads\Lock.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\System\Threads\Mutex.hxx
+SOURCE=..\..\..\..\src\System\Threads\Mutex.hxx
 # End Source File
 # End Group
 # End Group
@@ -746,26 +968,29 @@ SOURCE=..\..\..\src\System\Threads\Mutex.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\SoundFileIO.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\AIFFFileIO.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\WaveFileIO.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioFileIO\extended.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\extended.hxx
 # End Source File
 # End Group
 # End Group
+# End Group
+# Begin Group "Qt .ui Files"
+
 # End Group
 # Begin Source File
 
@@ -773,21 +998,23 @@ SOURCE=settings.cfg
 
 !IF  "$(CFG)" == "EnvelopeExtractorTest - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "EnvelopeExtractorTest.dsp"
-	srcdeps.exe settings.cfg EnvelopeExtractorTest.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "EnvelopeExtractorTest - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "EnvelopeExtractorTest.dsp"
-	srcdeps.exe settings.cfg EnvelopeExtractorTest.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
 

@@ -23,7 +23,7 @@ CFG=ListTest - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "CLAM_Skeleton_project"
+# PROP Scc_ProjName "empty"
 # PROP Scc_LocalPath "."
 CPP=cl.exe
 RSC=rc.exe
@@ -37,20 +37,20 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\ReleaseFiles\bin"
-# PROP Intermediate_Dir "..\ReleaseFiles\obj"
+# PROP Output_Dir "../ReleaseFiles/bin"
+# PROP Intermediate_Dir "../ReleaseFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base"
+# ADD CPP -O3 -fomit-frame-pointer -pipe /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\cppunit\lib" cppunit_vc6.lib /nologo /subsystem:console /machine:I386
+# ADD BASE LINK32
+# ADD LINK32 xerces-c.lib pthread.lib cppunit.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib id3.lib z.lib
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "ListTest - Win32 Debug"
@@ -62,20 +62,20 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\DebugFiles\bin"
-# PROP Intermediate_Dir "..\DebugFiles\obj"
+# PROP Output_Dir "../DebugFiles/bin"
+# PROP Intermediate_Dir "../DebugFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base"
+# ADD CPP -g -fno-inline -pipe -D_DEBUG /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
-# ADD RSC /l 0xc0a /d "_DEBUG"
+# ADD RSC /l 0xc0a
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\cppunit\lib" cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
+# ADD BASE LINK32
+# ADD LINK32 xerces-c.lib pthread.lib cppunit.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib id3.lib z.lib -rdynamic
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -92,56 +92,91 @@ LINK32=link.exe
 
 # Begin Group "test Sources"
 
+# Begin Group "NonPortedTests Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\test\ListTest.cxx
+SOURCE=..\..\..\..\test\NonPortedTests\ListTest.cxx
 # End Source File
+# End Group
+# Begin Group "UnitTests Sources"
+
+# Begin Group "CommonHelpers Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\test\UnitTests\CommonHelpers\XMLTestHelper.cxx
+# End Source File
+# End Group
+# End Group
 # End Group
 # Begin Group "Errors Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Errors\Err.cxx
+SOURCE=..\..\..\..\src\Errors\Err.cxx
 # End Source File
 # End Group
 # Begin Group "Defines Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\Assert.cxx
+SOURCE=..\..\..\..\src\Defines\Assert.cxx
 # End Source File
+# End Group
+# Begin Group "Storage Sources"
+
+# Begin Group "XML Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomWriter.cxx
+# End Source File
+# End Group
 # End Group
 # End Group
 # Begin Group "Header Files"
 
-# Begin Group "Errors Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Errors\Err.hxx
-# End Source File
-# End Group
 # Begin Group "Defines Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\Assert.hxx
+SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\CLAM_Math.hxx
+SOURCE=..\..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\DataTypes.hxx
+SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\StaticBool.hxx
+SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
 # End Source File
+# End Group
+# Begin Group "Errors Headers"
+
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\TypeInfo.hxx
+SOURCE=..\..\..\..\src\Errors\Err.hxx
 # End Source File
 # End Group
 # Begin Group "Storage Headers"
@@ -150,11 +185,62 @@ SOURCE=..\..\..\src\Defines\TypeInfo.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\Base\Storable.hxx
+SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\Base\Storage.hxx
+SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
+# End Source File
+# End Group
+# Begin Group "XML Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesEncodings.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesInitializer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomReader.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomWriter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomDocumentHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomWritingContext.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomReadingContext.hxx
 # End Source File
 # End Group
 # End Group
@@ -162,91 +248,301 @@ SOURCE=..\..\..\src\Storage\Base\Storage.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Base\Component.hxx
+SOURCE=..\..\..\..\src\Base\Component.hxx
 # End Source File
 # End Group
-# Begin Group "Standard Headers"
+# Begin Group " Headers"
 
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\List.hxx
-# End Source File
-# End Group
-# Begin Group "cppunit Headers"
+# Begin Group "usr Headers"
 
 # Begin Group "include Headers"
 
-# Begin Group "cppunit Headers No. 1"
+# Begin Group "sys Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\Portability.h
+SOURCE=\usr\include\sys\cdefs.h
+# End Source File
+# End Group
+# Begin Group "gnu Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\gnu\stubs.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\features.h
+# End Source File
+# Begin Group "bits Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\bits\wordsize.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\typesizes.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\endian.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ctype.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\time.h
+# End Source File
+# Begin Group "cppunit Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\cppunit\config-auto.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\cppunit\Portability.h
 # End Source File
 # Begin Group "extensions Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestFactory.h
+SOURCE=\usr\include\cppunit\extensions\TestFactory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestSuiteFactory.h
+SOURCE=\usr\include\cppunit\extensions\TestSuiteFactory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestFactoryRegistry.h
+SOURCE=\usr\include\cppunit\extensions\TestFactoryRegistry.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\AutoRegisterSuite.h
+SOURCE=\usr\include\cppunit\extensions\AutoRegisterSuite.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestSuiteBuilder.h
+SOURCE=\usr\include\cppunit\extensions\TestSuiteBuilder.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\HelperMacros.h
+SOURCE=\usr\include\cppunit\extensions\HelperMacros.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\Test.h
+SOURCE=\usr\include\cppunit\Test.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\TestSuite.h
+SOURCE=\usr\include\cppunit\TestSuite.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\SourceLine.h
+SOURCE=\usr\include\cppunit\SourceLine.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\Exception.h
+SOURCE=\usr\include\cppunit\Exception.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\Asserter.h
+SOURCE=\usr\include\cppunit\Asserter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\TestAssert.h
+SOURCE=\usr\include\cppunit\TestAssert.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\TestFixture.h
+SOURCE=\usr\include\cppunit\TestFixture.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\TestCase.h
+SOURCE=\usr\include\cppunit\TestCase.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\cppunit\include\cppunit\TestCaller.h
+SOURCE=\usr\include\cppunit\TestCaller.h
+# End Source File
+# End Group
+# Begin Group "xercesc Headers"
+
+# Begin Group "util Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XMLString.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XercesDefs.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XMLUni.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XMemory.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\PlatformUtils.hpp
+# End Source File
+# End Group
+# Begin Group "parsers Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\parsers\XercesDOMParser.hpp
+# End Source File
+# End Group
+# Begin Group "framework Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\framework\MemBufInputSource.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\framework\XMLFormatter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\framework\MemBufFormatTarget.hpp
+# End Source File
+# End Group
+# Begin Group "sax Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\DocumentHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\DTDHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\EntityResolver.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\ErrorHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\SAXException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\SAXParseException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\HandlerBase.hpp
+# End Source File
+# End Group
+# Begin Group "dom Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMImplementationLS.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMRangeException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMImplementation.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMImplementationRegistry.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNode.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNodeFilter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMWriterFilter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMErrorHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMWriter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMDocumentRange.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMDocumentTraversal.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMDocument.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMElement.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMCharacterData.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMText.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNamedNodeMap.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNodeList.hpp
 # End Source File
 # End Group
 # End Group
+# End Group
+# End Group
+# End Group
+# Begin Group "Standard Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\List.hxx
+# End Source File
 # End Group
 # Begin Group "test Headers"
 
@@ -256,11 +552,14 @@ SOURCE=..\..\..\..\cppunit\include\cppunit\TestCaller.h
 
 # Begin Source File
 
-SOURCE=..\..\..\test\UnitTests\CommonHelpers\XMLTestHelper.hxx
+SOURCE=..\..\..\..\test\UnitTests\CommonHelpers\XMLTestHelper.hxx
 # End Source File
 # End Group
 # End Group
 # End Group
+# End Group
+# Begin Group "Qt .ui Files"
+
 # End Group
 # Begin Source File
 
@@ -268,21 +567,23 @@ SOURCE=settings.cfg
 
 !IF  "$(CFG)" == "ListTest - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "ListTest.dsp"
-	srcdeps.exe settings.cfg ListTest.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "ListTest - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "ListTest.dsp"
-	srcdeps.exe settings.cfg ListTest.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
 
