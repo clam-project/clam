@@ -58,6 +58,7 @@ NetworkController::NetworkController()
 
 
 	mThread.SetThreadCode( makeMemberFunctor0( *this, NetworkController, ProcessingLoop ) );
+	mThread.SetupPriorityPolicy();
 }
 
 void NetworkController::ExecuteEvents()
