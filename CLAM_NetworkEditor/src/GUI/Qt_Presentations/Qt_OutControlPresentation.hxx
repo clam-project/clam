@@ -1,21 +1,21 @@
 
-#ifndef __QT_OUTPORTPRESENTATION_HXX__
-#define __QT_OUTPORTPPRESENTATION_HXX__
+#ifndef __QT_OUTCONTROLPRESENTATION_HXX__
+#define __QT_OUTCONTROLPPRESENTATION_HXX__
 
 #include <string>
 #include <qwidget.h>
-#include "OutPortPresentation.hxx"
+#include "OutControlPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
 
 namespace NetworkGUI
 {
 
-class Qt_OutPortPresentation : public QWidget, public OutPortPresentation
+class Qt_OutControlPresentation : public QWidget, public OutControlPresentation
 {
 public:
-	Qt_OutPortPresentation( int id, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_OutPortPresentation();
+	Qt_OutControlPresentation( int id, QWidget *parent = 0, const char *name = 0);
+	virtual ~Qt_OutControlPresentation();
 	virtual void Show();
 	virtual void Hide();
 	void updatePosition();
@@ -27,7 +27,7 @@ protected:
 
 public: // signals
 	SigSlot::Signalv2< int , int >  AcquirePos;
-	SigSlot::Signalv1< Qt_OutPortPresentation * > AcquireOutPortClicked;
+	SigSlot::Signalv1< Qt_OutControlPresentation * > AcquireOutControlClicked;
 // qt stuff
 	int   mId;
 	bool        mDown;
@@ -36,4 +36,4 @@ public: // signals
 
 } // namespace NetworkGUI
 
-#endif // __QT_OUTPORTPRESENTATION_HXX__
+#endif // __QT_OUTCONTROLPRESENTATION_HXX__
