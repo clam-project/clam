@@ -18,17 +18,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef _XERCES_DOM_WRITER_HXX_
+#define _XERCES_DOM_WRITER_HXX_
 
 #include "XmlWriteContext.hxx"
 #include "XercesEncodings.hxx"
 
-#include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
 #include <xercesc/dom/DOMWriter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
-#include <xercesc/util/XMLUni.hpp>
 #include <string>
 
 
@@ -85,3 +85,5 @@ class XercesDomWriter
 
 
 }
+#endif//_XERCES_DOM_WRITER_HXX_
+
