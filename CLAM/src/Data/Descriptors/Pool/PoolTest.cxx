@@ -158,6 +158,12 @@ class PoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGet_withStrings );
 	CPPUNIT_TEST( testGet_withWrongType );
 	CPPUNIT_TEST( testGet_withWrongTypeAndConst );
+	CPPUNIT_TEST( testConstruction_withoutSize );
+	CPPUNIT_TEST( testConstruction_withoutSizeGettingNoConst );
+	CPPUNIT_TEST( testConstruction_givesSizeZeroByDefault );
+	CPPUNIT_TEST( testSetSize_overAZeroSizePool );
+	CPPUNIT_TEST( testSetSize_overANonZeroSizePool );
+	CPPUNIT_TEST( testPoolBuilder_withNoScopeRegistered );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -255,6 +261,107 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
+
+	void testConstruction_withoutSize()
+	{
+		CLAM::PoolSpec spec;
+		spec.Add<CLAM::TData>("Lala");
+
+		CLAM::Pool pool(spec);
+		const CLAM::Pool & constPool = pool;
+
+		try
+		{
+			const CLAM::TData * data = constPool.Get<CLAM::TData>("Lala");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Getting an attribute from a zero size pool";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testConstruction_withoutSizeGettingNoConst()
+	{
+		CLAM::PoolSpec spec;
+		spec.Add<CLAM::TData>("Lala");
+
+		CLAM::Pool pool(spec);
+
+		try
+		{
+			CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Getting an attribute from a zero size pool";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testConstruction_givesSizeZeroByDefault()
+	{
+		CLAM::PoolSpec spec;
+		spec.Add<CLAM::TData>("Lala");
+
+		CLAM::Pool pool(spec);
+		CPPUNIT_ASSERT_EQUAL(0u,pool.GetSize());
+
+	}
+
+	void testSetSize_overAZeroSizePool()
+	{
+		const unsigned poolSize=5;
+
+		CLAM::PoolSpec spec;
+		spec.Add<CLAM::TData>("Lala");
+
+		CLAM::Pool pool(spec);
+
+		pool.SetSize(poolSize);
+
+		CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+		for (unsigned i = 0; i < poolSize; i++)
+			data[i] = i*i;
+		CLAM::TData * data2 = pool.Get<CLAM::TData>("Lala");
+		CPPUNIT_ASSERT_EQUAL(data,data2);
+	}
+
+	void testSetSize_overANonZeroSizePool()
+	{
+		const unsigned poolSize=5;
+
+		CLAM::PoolSpec spec;
+		spec.Add<CLAM::TData>("Lala");
+
+		CLAM::Pool pool(spec,7);
+
+		pool.SetSize(poolSize);
+
+		CLAM::TData * data = pool.Get<CLAM::TData>("Lala");
+		for (unsigned i = 0; i < poolSize; i++)
+			data[i] = i*i;
+		CLAM::TData * data2 = pool.Get<CLAM::TData>("Lala");
+		CPPUNIT_ASSERT_EQUAL(data,data2);
+	}
+
+	void testPoolBuilder_withNoScopeRegistered()
+	{
+		CLAM::ScopeRegistry registry;
+		try
+		{
+			registry.Get("NonExistent");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "No scope registered with that name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
 };
 
 
