@@ -9,6 +9,7 @@
 #include "CircularStreamImpl.hxx"
 #include "NodeTmpl.hxx"
 #include <string>
+#include <list>
 #include <map>
 
 #include "Audio.hxx"
@@ -26,6 +27,7 @@ public:
 	typedef ProcessingsMap::const_iterator ConstProcessingsMapIterator;
 	typedef std::list< NodeBase* > NodesList;
 	typedef NodesList::iterator NodesIterator;
+	typedef NodesList::const_iterator ConstNodesIterator;
 	
 	// constructor / destructor
 	Network();
@@ -53,14 +55,14 @@ public:
 	ConstProcessingsMapIterator EndProcessings() const;
 	NodesIterator BeginNodes();
 	NodesIterator EndNodes();
-
+	ConstNodesIterator BeginNodes() const;
+	ConstNodesIterator EndNodes() const;
 protected:
 	InPort & GetInPortByCompleteName( const std::string& );
 	OutPort & GetOutPortByCompleteName( const std::string& );
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
 	NodeBase & GetNodeAttachedTo(OutPort & );
-
 private:
 	// fields
 	std::string _name;
