@@ -138,15 +138,15 @@ namespace CLAM {
 						throw(Err("ALSAAudioDevice::Start(): "
 							"Number of inputs and outputs must match"));
 					}
-					sndpcm = new ::SndPcmFullDuplex(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+					sndpcm = new ::SndPcm(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 				}
 				else if (mNReadChannels)
 				{
-					sndpcm = new ::SndPcmInput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+//					sndpcm = new ::SndPcmInput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 				}
 				else if (mNWriteChannels)
 				{
-					sndpcm = new ::SndPcmOutput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+//					sndpcm = new ::SndPcmOutput(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 				}
 			}
 			catch (SndPcmError &e) {
