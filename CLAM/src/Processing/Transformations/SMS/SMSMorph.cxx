@@ -350,7 +350,7 @@ bool SMSMorph::InterpolateSpectralPeaks(const SpectralPeakArray& in1,const Spect
 		}
 		else
 		{
-			outMag[i]=0.000001;
+			outMag[i]=0.0000000001;
 		}
 		i++;
 	}while(i<nPeaks1);
