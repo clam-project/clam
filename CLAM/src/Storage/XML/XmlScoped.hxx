@@ -171,9 +171,8 @@ class XmlElement
 		}
 
 	private:
-		const std::string mName;
-
 		XmlWriteContext & context;
+		const std::string mName;
 		
 };
 
