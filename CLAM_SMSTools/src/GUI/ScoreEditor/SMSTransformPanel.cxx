@@ -102,6 +102,9 @@ inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 	ActivateConfigurator( purifiedString );
 	ShowActiveConfiguratorHelp();
 	ShowActiveConfiguratorEditWidget();
+
+	mScoreContentsBox->select( mHighlightedConfig );
+
 }
 
 void SMSScoreEditor::cb_mScoreBrowser(Fl_Select_Browser* o, void* v) 
@@ -421,6 +424,14 @@ void SMSScoreEditor::AddHighlightedToScore( )
 	mChainConfig.GetConfigurations().insert( i, cfg );
 	//mChainConfig.GetConfigurations().push_back( cfg );
 	mChainConfig.GetOnArray().AddElem( 1 );
+	mHighlightedConfig = mScoreContentsBox->size();
+
+	ActivateConfigurator( mScoreContentsBox->text( mHighlightedConfig ) );
+	ShowActiveConfiguratorHelp();
+	ShowActiveConfiguratorEditWidget();
+
+
+	mScoreContentsBox->select( mHighlightedConfig );
 	mUserChangedSomething = true;
 
 }
@@ -437,6 +448,7 @@ void SMSScoreEditor::RemoveHighlightedFromScore( )
 	mChainConfig.GetConfigurations().erase( it );//mChainConfig.GetConfigurations().begin()+removedTransformation );
 	mChainConfig.GetOnArray().DeleteElem( removedTransformation );
 	mUserChangedSomething = true;
+	mHighlightedConfig = 0;
 }
 
 void SMSScoreEditor::MoveHighlightedDown()
@@ -471,8 +483,9 @@ void SMSScoreEditor::MoveHighlightedDown()
 	mChainConfig.GetOnArray()[source] = mChainConfig.GetOnArray()[destination];
 	mChainConfig.GetOnArray()[destination] = tmpFlag;
 
-	mScoreContentsBox->selected( destination );
+	mScoreContentsBox->select( destination );
 	mUserChangedSomething = true;	
+	mHighlightedConfig++;
 }
 
 void SMSScoreEditor::MoveHighlightedUp() 
@@ -508,8 +521,8 @@ void SMSScoreEditor::MoveHighlightedUp()
 	mChainConfig.GetOnArray()[destination] = tmpFlag;
 
 
-	mScoreContentsBox->selected( destination );
-
+	mScoreContentsBox->select( destination );
+	mHighlightedConfig--;
 	mUserChangedSomething = true;
 }
 
@@ -523,6 +536,8 @@ void SMSScoreEditor::ApplyChangesToCurrentCfg()
 	std::advance( it, mHighlightedConfig );
 	
 	it->SetConcreteConfig( mpCurrentConfigurator->GetConfig() );
+
+	mScoreContentsBox->select( mHighlightedConfig );
 
 	mUserChangedSomething = true;
 }
