@@ -67,11 +67,17 @@ namespace CLAMGUI
 			return;
 		//Change mCounter
 		TTime time( value  );
-		TIndex nframe = mSegment.FindFrame( time );
+		TIndex nframe;
+		if(mHaveTransformation)
+			nframe = mTransformedSegment.FindFrame( time );
+		else
+			nframe = mOriginalSegment.FindFrame( time );
 		
 		mUI->mCounter->value( (int) nframe );
-
-		mExplorer.NewFrame( mSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
+		if(mHaveTransformation)
+			mExplorer.NewFrame( mTransformedSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
+		else
+			mExplorer.NewFrame( mOriginalSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
 	}
 
 	Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 

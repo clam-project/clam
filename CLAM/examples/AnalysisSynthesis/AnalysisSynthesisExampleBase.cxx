@@ -66,9 +66,10 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 	mHaveTransformationScore = false;
 	mHaveMelody = false;
 	mHaveSpectrum = false;
+	mHaveTransformation = false;
 
-	mTransformation.mChainInput.Attach(mSegment);
-	mTransformation.mChainOutput.Attach(mSegment);
+	mTransformation.mChainInput.Attach(mOriginalSegment);
+	mTransformation.mChainOutput.Attach(mTransformedSegment);
 
 }
 
@@ -208,9 +209,10 @@ void AnalysisSynthesisExampleBase::LoadAnalysis()
 
 	mCurrentWaitMessage = CreateWaitMessage("Loading analysis data, please wait");
 
-	mSerialization.DoSerialization( mSerialization.Load, mSegment, fileName );
+	mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, fileName );
 
 	DestroyWaitMessage();
+	mHaveTransformation=false;
 }
 
 void AnalysisSynthesisExampleBase::StoreAnalysis(void)
@@ -219,7 +221,7 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 
 	mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
 
-	mSerialization.DoSerialization( mSerialization.Store, mSegment, fileName );	
+	mSerialization.DoSerialization( mSerialization.Store, mOriginalSegment, fileName );	
 
 	DestroyWaitMessage();
 }
@@ -274,17 +276,17 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	
 	SMSAnalysis myAnalysis(mAnalConfig);
 
-	mSegment.RemoveAll();
-	mSegment.UpdateData();
-	mSegment.DefaultInit();
+	mOriginalSegment.RemoveAll();
+	mOriginalSegment.UpdateData();
+	mOriginalSegment.DefaultInit();
 
 	// Spectral Segment that will actually hold data
 	float duration=size/mSamplingRate;
-	mSegment.SetHoldsData(true);
-	mSegment.SetAudio(mAudioIn);
-	mSegment.SetEndTime(duration);
-	mSegment.SetSamplingRate(mSamplingRate);
-	mSegment.mCurrentFrameIndex=0;
+	mOriginalSegment.SetHoldsData(true);
+	mOriginalSegment.SetAudio(mAudioIn);
+	mOriginalSegment.SetEndTime(duration);
+	mOriginalSegment.SetSamplingRate(mSamplingRate);
+	mOriginalSegment.mCurrentFrameIndex=0;
 	
 	/////////////////////////////////////////////////////////////////////////////
 	// The main analysis processing loop.
@@ -294,9 +296,9 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 
 	myAnalysis.Start();
 
-	while(myAnalysis.Do(mSegment))
+	while(myAnalysis.Do(mOriginalSegment))
 	{      
-		k=step*(mSegment.mCurrentFrameIndex+1);
+		k=step*(mOriginalSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
 	}
 
@@ -313,7 +315,7 @@ void AnalysisSynthesisExampleBase::TracksCleanupProcessing()
 	CleanTracks myCleanTracks;
 	myCleanTracks.Configure(clcfg);
 	myCleanTracks.Start();
-	myCleanTracks.Do(mSegment);
+	myCleanTracks.Do(mOriginalSegment);
 	myCleanTracks.Stop();	
 
 }
@@ -356,6 +358,7 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 		}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
+	mHaveTransformation = false;
 }
 
 void AnalysisSynthesisExampleBase::StoreOutputSound(void)
@@ -426,7 +429,8 @@ void AnalysisSynthesisExampleBase::DoSynthesis()
 void AnalysisSynthesisExampleBase::SynthesisProcessing()
 {
 	//The output Audio 
-	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
+	TSize size=TSize((mTransformedSegment.GetEndTime()-
+		mTransformedSegment.GetBeginTime())*mTransformedSegment.GetSamplingRate());
 	mAudioOutSin.SetSize(size);
 	mAudioOutRes.SetSize(size);
 	mAudioOut.SetSize(size);
@@ -441,21 +445,21 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	Audio tmpAudioFrame,tmpAudioFrame2;
 	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
 		
-	int nSynthFrames=mSegment.GetnFrames();
+	int nSynthFrames=mTransformedSegment.GetnFrames();
 	int i;
 
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
 	
-	mSegment.mCurrentFrameIndex=0;
+	mTransformedSegment.mCurrentFrameIndex=0;
 	for(i=0;i<nSynthFrames;i++){
 		
-		if(mySynthesis.Do(mSegment))
+		if(mySynthesis.Do(mTransformedSegment))
 		{
-			mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
-			mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
-			mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
+			mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
+			mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
+			mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
 			beginIndex+=synthFrameSize;
 			mCurrentProgressIndicator->Update(float(i));
 		}
@@ -471,7 +475,13 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 
 void AnalysisSynthesisExampleBase::Synthesize(void)
 {
-	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
+	if(!mHaveTransformation)
+	{
+		mTransformedSegment=mOriginalSegment;
+		mHaveTransformation=true;
+	}
+	TSize size=TSize((mTransformedSegment.GetEndTime()-
+		mTransformedSegment.GetBeginTime())*mTransformedSegment.GetSamplingRate());
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
 
 	mCurrentProgressIndicator = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
@@ -557,7 +567,7 @@ in metadata extraction from an input sound.*/
 	mySegmentator.Start();
 
 	//Segmentate
-	mySegmentator.Do(mSegment,mSegmentDescriptors);
+	mySegmentator.Do(mOriginalSegment,mOriginalSegmentDescriptors);
 
 
 	////////////////
@@ -571,34 +581,36 @@ in metadata extraction from an input sound.*/
 	/***************************************/
 	/*****Compute Melody Description********/
 	/***************************************/
-	for(i=0; i<mSegment.GetnFrames(); i++)
+	int nFrames=mOriginalSegment.GetnFrames();
+	for(i=0; i<nFrames; i++)
 	{
-		fund.AddElem(mSegment.GetFrame(i).GetFundamental().GetFreq());
-		if(mSegmentDescriptors.GetFrameD(i).GetSpectrumD().GetEnergy()>eThr)
-			energy.AddElem(mSegmentDescriptors.GetFrameD(i).GetSpectrumD().GetEnergy());
+		fund.AddElem(mOriginalSegment.GetFrame(i).GetFundamental().GetFreq());
+		if(mOriginalSegmentDescriptors.GetFrameD(i).GetSpectrumD().GetEnergy()>eThr)
+			energy.AddElem(mOriginalSegmentDescriptors.GetFrameD(i).GetSpectrumD().GetEnergy());
 		else
 			energy.AddElem(0);
 	}
 	TData ff,aux,number =0,noteEnergy=0,lastFF=0,lastEnergy=0;
-	for(i=0;i<mSegment.GetChildren().Size();i++)
+	int nChildren=mOriginalSegment.GetChildren().Size();
+	for(i=0;i<nChildren;i++)
 	{
 		ff=0; aux=0; number=0,noteEnergy=0; 
-		mSegment.GetChildren()[i].SetHoldsData(false);
+		mOriginalSegment.GetChildren()[i].SetHoldsData(false);
 		MediaTime time;
-		time.SetBegin(mSegment.GetChildren()[i].GetBeginTime());
-		time.SetEnd(mSegment.GetChildren()[i].GetEndTime());
+		time.SetBegin(mOriginalSegment.GetChildren()[i].GetBeginTime());
+		time.SetEnd(mOriginalSegment.GetChildren()[i].GetEndTime());
 	
 		Note myNote;
 		myNote.AddPitchNote();
 		myNote.UpdateData();
 
 		// Compute Fundamental frequency mean
-		TIndex b=Round(2*mSegment.GetChildren()[i].GetBeginTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());
+		TIndex b=Round(2*mOriginalSegment.GetChildren()[i].GetBeginTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());
 		TIndex e;
-		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())
-			e=Round(2*mSegment.GetChildren()[i].GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
+		if(mOriginalSegment.GetChildren()[i].GetEndTime()<mOriginalSegment.GetEndTime())
+			e=Round(2*mOriginalSegment.GetChildren()[i].GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 		else
-			e=Round(2*mSegment.GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
+			e=Round(2*mOriginalSegment.GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 
 		int j;
 		// Compute mean
@@ -702,7 +714,7 @@ void AnalysisSynthesisExampleBase::LoadTransformationScore(const std::string& in
 
 void AnalysisSynthesisExampleBase::Transform()
 {
-	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
+	TSize size=TSize((mOriginalSegment.GetEndTime()-mOriginalSegment.GetBeginTime())*mOriginalSegment.GetSamplingRate());
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
 
 	mCurrentProgressIndicator = CreateProgress("SMS Transformation Processing",0,float(nSynthFrames));
@@ -717,6 +729,11 @@ void AnalysisSynthesisExampleBase::TransformProcessing(void)
 {
 	bool def=false;
 	mTransformation.Configure(mTransformationScore);
+	
+	//test
+	mTransformedSegment=mOriginalSegment;
+	mTransformedSegment.mCurrentFrameIndex=0;
+
 	mTransformation.Start();
 	int i = 0;
 	while(mTransformation.Do())
@@ -724,25 +741,22 @@ void AnalysisSynthesisExampleBase::TransformProcessing(void)
 		mCurrentProgressIndicator->Update(float(i++));
 	}
 	mTransformation.Stop();
+	mHaveTransformation=true;
 
 
 }
 
-void AnalysisSynthesisExampleBase::SetTransformation(SMSTransformation* pTransformation)
-{
-//	mpTransformation=pTransformation;
-}
 
 void AnalysisSynthesisExampleBase::ComputeLowLevelDescriptors()
 {
 	// Energy Computation, note that this should be done inside a PO, added here as example
-	mSegmentDescriptors.AddFramesD();
-	mSegmentDescriptors.UpdateData();
+	mOriginalSegmentDescriptors.AddFramesD();
+	mOriginalSegmentDescriptors.UpdateData();
 	
 	int i=0;
-	List<FrameDescriptors> &frameDesc=mSegmentDescriptors.GetFramesD();
-	List<Frame> &frames=mSegment.GetFramesArray();
-	int nFrames=mSegment.GetnFrames();
+	List<FrameDescriptors> &frameDesc=mOriginalSegmentDescriptors.GetFramesD();
+	List<Frame> &frames=mOriginalSegment.GetFramesArray();
+	int nFrames=mOriginalSegment.GetnFrames();
 	FrameDescriptors tmpFrameD;
 	tmpFrameD.AddSpectrumD();
 	tmpFrameD.UpdateData();

@@ -122,7 +122,7 @@ void UserInterface::LoadAnalysisData(void)
 	mAnalysisSynthesisExample->mHaveConfig = true;
 	ApplyAnalysisAvailableState();
 	DeactivateFrameDataMenuItems();
-	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
+	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mOriginalSegment );
 	// @todo: determine what has to do the UserInterface for obtaining frame data when it is being loaded
 	// so that one cannot rely on the fact that it is available in the segment object
 	// mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0]);
@@ -143,8 +143,8 @@ void UserInterface::Analyze(void)
 
 		ApplyAnalysisAvailableState();
 		mFrameDataAvailable = true;
-		mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
-		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0],
+		mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mOriginalSegment );
+		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mOriginalSegment.GetFramesArray()[0],
 													   FrameDataAvailable());
 		mWindow->redraw();
 	}
@@ -218,8 +218,8 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 	ApplyTransformationPerformedState();
 	mAnalysisSynthesisExample->mExplorer.CloseAll();
-	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
-	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0],
+	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mTransformedSegment );
+	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mTransformedSegment.GetFramesArray()[0],
 												   FrameDataAvailable() );
 	mWindow->redraw();
 
@@ -230,8 +230,14 @@ void UserInterface::ChangeFrame()
 	int nframe = (int) mCounter->value();
 
 	if ( mFrameDataAvailable )
-		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[nframe],
+	{
+		if(mAnalysisSynthesisExample->mHaveTransformation)
+			mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mTransformedSegment.GetFramesArray()[nframe],
 													   FrameDataAvailable() );
+		else
+			mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mOriginalSegment.GetFramesArray()[nframe],
+													   FrameDataAvailable() );
+	}
 }
 
 void UserInterface::ChangeTimeTag( TTime tag )
@@ -358,9 +364,9 @@ void UserInterface::ApplyAnalysisAvailableState()
 {
 	ApplyReadyToAnalyzeState();
 	mCounter->activate();
-	mCounter->range( 0, mAnalysisSynthesisExample->mSegment.GetnFrames() );
+	mCounter->range( 0, mAnalysisSynthesisExample->mOriginalSegment.GetnFrames() );
 	mCounter->step( 1 );
-	mCounter->lstep( mAnalysisSynthesisExample->mSegment.GetnFrames()/10 );
+	mCounter->lstep( mAnalysisSynthesisExample->mOriginalSegment.GetnFrames()/10 );
 
 	mStoreAnalysisMenuItem->activate();
 	mMelodyExtractionMenuItem->activate();

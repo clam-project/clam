@@ -55,8 +55,6 @@ namespace CLAM
 		AnalysisSynthesisExampleBase(void);	
 		virtual ~AnalysisSynthesisExampleBase(void);
 		void Run(void);
-		/** Using this method a user-defined transformation can be set*/
-		void SetTransformation(SMSTransformation* pTransformation);
 		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
 	protected:
@@ -139,8 +137,11 @@ namespace CLAM
 		
 		/** Internal structure used for analysis and synthesis, contains all.
 		* @see Segment.hxx */
-		Segment mSegment;
-		SegmentDescriptors mSegmentDescriptors;
+		Segment mOriginalSegment;
+		Segment mTransformedSegment;
+
+		SegmentDescriptors mOriginalSegmentDescriptors;
+		SegmentDescriptors mTransformedSegmentDescriptors;
 		
 		/** Analyzed melody */
 		Melody mMelody;
@@ -173,6 +174,8 @@ namespace CLAM
 		bool mHaveTransformationScore;
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
+		/** Indicates whether there a transformation has been performed */
+		bool mHaveTransformation;
 
 		CLAMGUI::Progress* mCurrentProgressIndicator;
 		CLAMGUI::WaitMessage* mCurrentWaitMessage;
