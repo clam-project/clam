@@ -23,6 +23,8 @@
 #define _CLAM_OBJECTS_2_XERCES_DOM_HXX_
 
 #include "XercesEncodings.hxx"
+#include "XercesInitializer.hxx"
+#include "XercesDomDocumentHandler.hxx"
 #include "XMLable.hxx"
 #include "Assert.hxx"
 #include "Component.hxx"
@@ -49,6 +51,11 @@ public:
 	{
 		_parent = 0;
 		_currentElement = element;
+	}
+	XercesDomWritingContext(XercesDomDocumentHandler & docHandler)
+	{
+		_parent=0;
+		_currentElement = docHandler.getSelection();
 	}
 
 	XercesDomWritingContext(XercesDomWritingContext * parent, const char * name)
@@ -77,34 +84,31 @@ public:
 
 class ClamObject2XercesDom : public Storage
 {
-	XercesDomWritingContext * _context;
+	XercesDomDocumentHandler _documentHandler;
+	XercesDomWritingContext * _writeContext;
 	XercesDomWritingContext * _rootContext;
-	xercesc::DOMDocument * _document;
 	bool _lastWasContent;
 public:
-	ClamObject2XercesDom(const std::string name)
+	ClamObject2XercesDom()
 	{
-		xercesc::XMLPlatformUtils::Initialize();
-		xercesc::DOMImplementation * imp = 
-			xercesc::DOMImplementation::getImplementation();
-		_document = imp->createDocument(
-			0, //X("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
-			X(name.c_str()), // root element name
-			0  // document type object (DTD).
-		);
-		_lastWasContent=false;
-		_rootContext= new XercesDomWritingContext(_document->getDocumentElement());
-		_context = _rootContext;
+		_writeContext = 0;
+		_rootContext = 0;
+		_lastWasContent = true;
 	}
 	~ClamObject2XercesDom()
 	{
 		delete _rootContext;
-		_document->release();
-		xercesc::XMLPlatformUtils::Terminate();
 	}
-	xercesc::DOMDocument * getDom()
+	void Create(const std::string name)
 	{
-		return _document;
+		_documentHandler.create(name.c_str());
+		_lastWasContent=false;
+		_rootContext= new XercesDomWritingContext(_documentHandler);
+		_writeContext = _rootContext;
+	}
+	xercesc::DOMElement * getSelection()
+	{
+		return _documentHandler.getSelection();
 	}
 	bool Load(Storable & storable)
 	{
@@ -121,16 +125,16 @@ public:
 		}
 		if (xmlable->IsXMLAttribute())
 		{
-			_context->addAttribute(name,xmlable->XMLContent().c_str());
+			_writeContext->addAttribute(name,xmlable->XMLContent().c_str());
 			return;
 		}
 		if (xmlable->IsXMLElement())
 		{
 			_lastWasContent=false;
-			XercesDomWritingContext newContext(_context, name);
-			_context = & newContext;
+			XercesDomWritingContext newContext(_writeContext, name);
+			_writeContext = & newContext;
 			StoreContentAndChildren(xmlable);
-			_context = newContext.release();
+			_writeContext = newContext.release();
 			_lastWasContent=false;
 			return;
 		}
@@ -153,9 +157,14 @@ public:
 	{
 		if (content=="") return;
 		if (_lastWasContent)
-			_context->addContent(" ");
-		_context->addContent(content.c_str());
+			_writeContext->addContent(" ");
+		_writeContext->addContent(content.c_str());
 		_lastWasContent = true;
+	}
+
+	void WriteSelection(std::ostream & os)
+	{
+		_documentHandler.writeSelection(os);
 	}
 
 };
