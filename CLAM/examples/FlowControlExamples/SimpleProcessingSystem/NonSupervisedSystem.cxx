@@ -8,9 +8,6 @@ System::System( std::string fileOut , int frameSize , int iterations) :
 	_frameSize(frameSize), 
 	_iterations(iterations)
 {
-	// registration of iteration methods:
-	Register( &System::OscillatorToFileOut );
-
 	ConfigureProcessings();
 	ConfigureData();
 
@@ -57,21 +54,10 @@ void System::DoProcessings( IterationMethod iterationDo )
 		if ( (this->*iterationDo)() ) break;
 }
 
-void System::Register( IterationMethod im )
+void System::ProcessAllIterations()
 {
-	_iterationsRegistry.push_back(im);
-}
-
-void System::ProcessAllRegisteredIterations()
-{
-	Iterations::iterator it, begin, end;
-
-	begin = _iterationsRegistry.begin();
-	end = _iterationsRegistry.end();
-	
-	for (it=begin; it!=end; it++)
-		DoProcessings( *it );
-
+	// DoProcessings for each iteration method:
+	DoProcessings( &System::OscillatorToFileOut );
 
 }
 

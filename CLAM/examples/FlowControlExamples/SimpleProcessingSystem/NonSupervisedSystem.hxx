@@ -21,7 +21,7 @@ public:
 	
 	void DoProcessings( IterationMethod );
 	
-	void ProcessAllRegisteredIterations();
+	void ProcessAllIterations();
 	
 private:
 	void StartProcessings();
@@ -43,13 +43,6 @@ private:
 	std::string _fileOutName;
 	int _frameSize;
 	int _iterations;
-
-	// registry of iterations
-	void Register( IterationMethod );
-
-	typedef std::list<IterationMethod> Iterations;
-	Iterations _iterationsRegistry;
-	
 
 };
 
