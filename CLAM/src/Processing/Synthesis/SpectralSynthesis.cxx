@@ -121,7 +121,7 @@ void SpectralSynthesisConfig::SetHopSize(TSize h)
 
 TSize SpectralSynthesisConfig::GetHopSize() const
 {
-	return (GetSynthWindowGenerator().GetSize()-1)*0.5;
+	return (GetSynthWindowGenerator().GetSize()-1)>>1;
 }
 
 void SpectralSynthesisConfig::SetSamplingRate(TData sr)
