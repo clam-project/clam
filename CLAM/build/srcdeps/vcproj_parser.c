@@ -19,21 +19,14 @@ static FILE* outfile = 0;
  */
 
 static void vcproj_parse_insert( FileType filetype );
-static void vcproj_parse_insert_recurse( tree* t, list* repeatCheck, FileType type );
+static void vcproj_parse_insert_recurse( tree* t, list* repeatCheck, FileType type, int depth );
 
-/* Shorthand functions for calling vcproj_parse_insert() function
- * passing the adequate value for type
- */
-static void vcproj_parse_insert_sources();
-static void vcproj_parse_insert_headers();
-static void vcproj_parse_insert_ui_rules();
-
-
-static void vcproj_parse_insert_regular_file( char* );
+static void vcproj_parse_insert_regular_file( const char*, FileType type, int depth );
 static void vcproj_parse_insert_ui_file( char* );
 static void vcproj_parse_insert_mocable_header( char*);
 
 
+static void indent( int numTabs );
 
 void vcproj_parse_add_needed_includepaths(void)
 {
@@ -113,16 +106,16 @@ void vcproj_parse_add_library_paths(void)
 /** The public function to be called from the main */
 extern void vcproj_parse(const char* outFilename)
 {
-	typedef enum { header, configRelease, configDebug, files, theRest } ParserStates;
+	typedef enum { visualStudioProject, configRelease, configDebug, files, theRest } ParserStates;
 	ParserStates state;
 	int nline = 0;
 
 	outfile = fopen(outFilename, "w");
-	state = header;
+	state = visualStudioProject;
 	while(empty_vcproj_lines[nline])
 	{
 		const char* line = empty_vcproj_lines[nline]; 
-		if(state==header)
+		if(state==visualStudioProject)
 		{
 			if ( strstr(line, "\tName=") )
 			{
@@ -218,12 +211,16 @@ extern void vcproj_parse(const char* outFilename)
 		}
 		else if(state == files)
 		{
-			// TODO
+
 			vcproj_parse_insert( source );
-			//fprintf(outfile, line);
+			vcproj_parse_insert( header );
+			//TODO uics qt
+			
+			fprintf(outfile, line);
+			state = theRest;
 
 		}
-		else
+		else // state == theRest
 		{
 			fprintf(outfile, line);
 		}
@@ -232,20 +229,6 @@ extern void vcproj_parse(const char* outFilename)
 	fclose(outfile);
 }
 
-void vcproj_parse_insert_sources()
-{
-	vcproj_parse_insert(source);
-}
-
-void vcproj_parse_insert_headers()
-{
-	vcproj_parse_insert(header);
-}
-
-void vcproj_parse_insert_ui_rules()
-{
-	vcproj_parse_insert(qt);
-}
 
 void vcproj_parse_insert(FileType type)
 {
@@ -278,15 +261,24 @@ void vcproj_parse_insert(FileType type)
 
 	generate_files_tree(filelist, filetree);
 
-	fprintf(outfile,"# Begin Group \"%s\"\n\n",typestr);
-	vcproj_parse_insert_recurse(filetree,repeatcheck,type);
-	fprintf(outfile,"# End Group\n");
+	indent(2);
+	fprintf(outfile,"<Filter Name=\"%s\" Filter=\"\">\n", typestr);
+	vcproj_parse_insert_recurse(filetree,repeatcheck,type,3);
+	indent(2);
+	fprintf(outfile,"</Filter>\n");
 
 	list_free(repeatcheck);
 	tree_free(filetree);
 }
 
-void vcproj_parse_insert_recurse(tree* t,list* repeatcheck, FileType type)
+void indent( int numTabs )
+{
+	int i;	
+	for(i=0;i<numTabs;i++)
+		fprintf(outfile, "\t");
+}
+
+void vcproj_parse_insert_recurse(tree* t,list* repeatcheck, FileType type, int depth)
 {
 	node * n = t->first;
 	const char* typestr = filetype_str(type);
@@ -303,15 +295,19 @@ void vcproj_parse_insert_recurse(tree* t,list* repeatcheck, FileType type)
 				i = i->next;
 			}
 			list_add_str(repeatcheck,n->str);
+			
+			indent(depth);
 			if (cnt>0)
 			{
-				fprintf(outfile,"# Begin Group \"%s %s No. %d\"\n\n",n->str,typestr,cnt);
+				fprintf(outfile,"<Filter Name=\"%s %s No. %d\" Filter=\"\">\n",n->str,typestr,cnt);
 			}else{
-				fprintf(outfile,"# Begin Group \"%s %s\"\n\n",n->str,typestr);
+				fprintf(outfile,"<Filter Name=\"%s %s\" Filter=\"\">\n",n->str,typestr);
 			}
-			vcproj_parse_insert_recurse(n->sub,repeatcheck,type);
-			fprintf(outfile,"# End Group\n");
-		}else{
+			//recursive call
+			vcproj_parse_insert_recurse(n->sub,repeatcheck,type, depth+1 );
+			indent(depth);
+			fprintf(outfile,"</Filter>\n");
+		}else{ // parsing node content (files in a subdir)
 			if ( type == header )
 			{
 				assert( mocable_headers != NULL );
@@ -319,22 +315,46 @@ void vcproj_parse_insert_recurse(tree* t,list* repeatcheck, FileType type)
 				if ( list_find( mocable_headers, n->str ) )
 					vcproj_parse_insert_mocable_header( n->str );
 				else
-					vcproj_parse_insert_regular_file( n->str );
+					vcproj_parse_insert_regular_file( n->str, type, depth );
 			}
 			else if ( type == qt )
 			{
 				vcproj_parse_insert_ui_file( n->str );
 			}
 			else
-				vcproj_parse_insert_regular_file( n->str );
+				vcproj_parse_insert_regular_file( n->str, type, depth );
 		}
 		n = n->next;
 	}
 }
 
 
-// BIG TODO
-void vcproj_parse_insert_regular_file( char* a) {}
+void vcproj_parse_insert_regular_file( const char* filename, FileType type, int depth) 
+{
+	static char tmp[1024];
+	strncpy(tmp,filename,1024);
+	winstyle(tmp);
+	indent(depth);
+	fprintf(outfile, "<File RelativePath=\"%s\">\n", tmp);
+	if (type==source)
+	{
+		indent(depth+1);
+ 		fprintf(outfile, "<FileConfiguration Name=\"Release|Win32\">\n");
+		indent(depth+2);
+		fprintf(outfile, "<Tool Name=\"VCCLCompilerTool\" />\n");
+		indent(depth+1);
+		fprintf(outfile, "</FileConfiguration>\n");
+		indent(depth+1);
+		fprintf(outfile, "<FileConfiguration Name=\"Debug|Win32\">\n");
+		indent(depth+2);
+		fprintf(outfile, "<Tool Name=\"VCCLCompilerTool\" />\n");
+		indent(depth+1);
+		fprintf(outfile, "</FileConfiguration>\n");
+	}
+	indent(depth);
+	fprintf(outfile, "</File>\n");
+}
+
 void vcproj_parse_insert_ui_file( char* a) {}
 void vcproj_parse_insert_mocable_header( char*a) {}
 
