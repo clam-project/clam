@@ -50,12 +50,12 @@ bool SDIFSerializer::DoLoad( char* fileName, Segment& segment )
 	mSDIFReader.Output.Attach( segment );
 
 	try{
-	mSDIFReader.Start(  );
-	while( mSDIFReader.Do() ) {  }
-	mSDIFReader.Stop(  );
+		mSDIFReader.Start(  );
+		while( mSDIFReader.Do() ) {  }
+		mSDIFReader.Stop(  );
 	} catch (Err e)
 	{
-		std::cout<<"caca:: "<<e.what()<< std::endl;
+		std::cout << e.what() << std::endl;
 	}
 
 	return true;
