@@ -47,6 +47,8 @@ protected: // methods
 	void DoLoadAnalysis();
 
 	void DoStoreAnalysis();
+	
+	void DoTransformation();
 
 	void OnNewTime( double time );
 

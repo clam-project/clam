@@ -110,6 +110,12 @@ namespace CLAMGUI
 			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, SynthesisProcessing ) );
 	}
 
+	void AnalysisSynthesisExampleGUI::DoTransformation()
+	{
+		ExecuteMethodOnThreadKeepingScreenUpToDate( 
+			makeMemberFunctor0( *this, AnalysisSynthesisExampleGUI, TransformProcessing ) );
+	}
+	
 	void AnalysisSynthesisExampleGUI::DoLoadAnalysis()
 	{
 		ExecuteMethodOnThreadKeepingScreenUpToDate( 
