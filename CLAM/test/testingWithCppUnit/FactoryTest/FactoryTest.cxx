@@ -44,14 +44,13 @@ private:
 		CLAM::FactoryRegistry reg; // an empty factory register
 		try {
 			reg.GetCreator("bla");
+			CPPUNIT_FAIL( "Assert was expected to happen");
 
 		} catch( CLAM::ErrAssertionFailed& e ) {
 			CPPUNIT_ASSERT_EQUAL( 
 				std::string("the Factory Registry shouldn't be empty"),
 				std::string( e.what() ) );
-			return;
 		}
-		CPPUNIT_FAIL( "Assert was expected to happen");
 	}
 
 	void testRegistryGetCreatorSafe_WhenIsEmpty()
@@ -59,13 +58,12 @@ private:
 		CLAM::FactoryRegistry reg; // an  empty factor y register
 		try {
 			reg.GetCreatorSafe("foo");
+			CPPUNIT_FAIL( "it was expected to catch a CLAM::ErrFactory" );
 		} catch (CLAM::ErrFactory e) {
 			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:", 
 				std::string("GetCreatorSafe invoked on an empty registry"), 
 				std::string( e.what() ) );
-			return;
 		}
-		CPPUNIT_FAIL( "it was expected to catch a CLAM::ErrFactory" );
 	}
 
 	void testRegistryAskTheWrongKey_WithASingleCreator()
