@@ -33,16 +33,16 @@ public:
 	{
 		CLAM::AudioOutPort out;
 		int frameSize = 64;
-		out.SetAudioSize( frameSize );
-		CPPUNIT_ASSERT_EQUAL( frameSize, out.GetAudioSize() );
+		out.SetSize( frameSize );
+		CPPUNIT_ASSERT_EQUAL( frameSize, out.GetSize() );
 	}
 
 	void testAccessAudioOutPortDataReturnsAudioInsteadOfTData()
 	{
 		CLAM::AudioOutPort out;
 		int frameSize = 64;
-		out.SetAudioSize( frameSize );
-		CLAM::Audio & myAudio = out[0];
+		out.SetSize( frameSize );
+		CLAM::Audio & myAudio = out.GetAudio();
 	}
 
 	void testAudioPortsProduceAndConsume_whenInPortHasEqualSizeOfOne()
@@ -53,13 +53,13 @@ public:
 		CLAM::TData data = 0.5;
 		
 		out.ConnectToConcreteIn(in);		
-		out.SetAudioSize( frameSize );
-		in.SetAudioSize( frameSize );
+		out.SetSize( frameSize );
+		in.SetSize( frameSize );
 		
-		CLAM::Audio & toProduce = out[0];
+		CLAM::Audio & toProduce = out.GetAudio();
 			toProduce.GetBuffer()[0] = data;
 		out.Produce();
-		const CLAM::Audio & toConsume = in[0];
+		const CLAM::Audio & toConsume = in.GetAudio();
 		CPPUNIT_ASSERT_EQUAL( data, toConsume.GetBuffer()[0] );
 
 	}
@@ -71,15 +71,15 @@ public:
 		int frameSize = 8;
 		
 		out.ConnectToConcreteIn(in);		
-		out.SetAudioSize( frameSize );
+		out.SetSize( frameSize );
 		out.SetHop( frameSize );
-		in.SetAudioSize( frameSize );
+		in.SetSize( frameSize );
 		
-		CLAM::Audio & toProduce = out[0];
+		CLAM::Audio & toProduce = out.GetAudio();
 		for(int i=0;i<frameSize;i++)
 			toProduce.GetBuffer()[i] = i;
 		out.Produce();
-		const CLAM::Audio & toConsume = in[0];
+		const CLAM::Audio & toConsume = in.GetAudio();
 		
 		for(int i=0;i<frameSize;i++)
 			CPPUNIT_ASSERT_EQUAL( (CLAM::TData)i, toConsume.GetBuffer()[i] );
@@ -92,22 +92,22 @@ public:
 		int frameSize = 4;
 		
 		out.ConnectToConcreteIn(in);		
-		out.SetAudioSize( frameSize );
+		out.SetSize( frameSize );
 		out.SetHop( frameSize );
-		in.SetAudioSize( frameSize );
+		in.SetSize( frameSize );
 		in.SetHop( frameSize );
 		
-		CLAM::Audio & toProduce = out[0];
+		CLAM::Audio & toProduce = out.GetAudio();
 		for(int i=0;i<frameSize;i++)
 			toProduce.GetBuffer()[i] = i;
 		out.Produce();
 		in.Consume();
 
-		CLAM::Audio & toProduce2 = out[0];
+		CLAM::Audio & toProduce2 = out.GetAudio();
 		for(int i=0;i<frameSize;i++)
 			toProduce2.GetBuffer()[i] = i+frameSize;
 		out.Produce();
-		const CLAM::Audio & toConsume = in[0];
+		const CLAM::Audio & toConsume = in.GetAudio();
 		
 		for(int i=0;i<frameSize;i++)
 			CPPUNIT_ASSERT_EQUAL( (CLAM::TData)(i+frameSize), toConsume.GetBuffer()[i] );
@@ -122,24 +122,24 @@ public:
 		int readerFrameSize = 6;
 		
 		out.ConnectToConcreteIn(in);		
-		out.SetAudioSize( writerFrameSize );
+		out.SetSize( writerFrameSize );
 		out.SetHop( writerFrameSize );
-		in.SetAudioSize( readerFrameSize );
+		in.SetSize( readerFrameSize );
 		in.SetHop( readerFrameSize );
 		
-		CLAM::Audio & toProduce = out[0];
+		CLAM::Audio & toProduce = out.GetAudio();
 		for(int i=0;i<writerFrameSize;i++)
 			toProduce.GetBuffer()[i] = i;
 		out.Produce();
 		
 		CPPUNIT_ASSERT_EQUAL( false, in.CanConsume() );
 		
-		CLAM::Audio & toProduce2 = out[0];
+		CLAM::Audio & toProduce2 = out.GetAudio();
 		for(int i=0;i<writerFrameSize;i++)
 			toProduce2.GetBuffer()[i] = i+writerFrameSize;
 		out.Produce();
 		
-		const CLAM::Audio & toConsume = in[0];
+		const CLAM::Audio & toConsume = in.GetAudio();
 		for(int i=0;i<readerFrameSize;i++)
 			CPPUNIT_ASSERT_EQUAL( (CLAM::TData)i, toConsume.GetBuffer()[i] );
 	}
@@ -152,19 +152,19 @@ public:
 		
 		out.ConnectToConcreteIn(in1);		
 		out.ConnectToConcreteIn(in2);		
-		out.SetAudioSize( frameSize );
+		out.SetSize( frameSize );
 		out.SetHop( frameSize );
-		in1.SetAudioSize( frameSize );
+		in1.SetSize( frameSize );
 		in1.SetHop( frameSize );
-		in2.SetAudioSize( frameSize );
+		in2.SetSize( frameSize );
 		in2.SetHop( frameSize );
 
-		CLAM::Audio & toProduce = out[0];
+		CLAM::Audio & toProduce = out.GetAudio();
 		for(int i=0;i<frameSize;i++)
 			toProduce.GetBuffer()[i] = i;
 		out.Produce();
-		const CLAM::Audio & toConsume1 = in1[0];
-		const CLAM::Audio & toConsume2 = in2[0];
+		const CLAM::Audio & toConsume1 = in1.GetAudio();
+		const CLAM::Audio & toConsume2 = in2.GetAudio();
 		
 		for(int i=0;i<frameSize;i++)
 		{

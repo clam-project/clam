@@ -37,7 +37,7 @@ public:
 
 	void testWritingRegion_constructor()
 	{
-		WritingRegion<int,DataStructure> writer;
+		CLAM::WritingRegion<int,DataStructure> writer;
 		CPPUNIT_ASSERT(0 == writer.Pos());
 		CPPUNIT_ASSERT(1 == writer.Size());
 		CPPUNIT_ASSERT(1 == writer.Hop());
@@ -45,7 +45,7 @@ public:
 
 	void testReadingRegion_constructor()
 	{
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		CPPUNIT_ASSERT(0 == reader.Pos());
 		CPPUNIT_ASSERT(1 == reader.Size());
 		CPPUNIT_ASSERT(1 == reader.Hop());
@@ -53,14 +53,14 @@ public:
 
 	void testWritingRegion_canProduce_withNoReaders()
 	{
-		WritingRegion<int,DataStructure> writer;
+		CLAM::WritingRegion<int,DataStructure> writer;
 		CPPUNIT_ASSERT( true == writer.CanProduce() );
 	}
 
 	void testWritingRegion_canProduce_withOneReader()
 	{
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 		CPPUNIT_ASSERT( true == writer.CanProduce() );
 	}
@@ -71,8 +71,8 @@ public:
 		//    |012345678901234567890
 		// R:  ^
 		// W:  ^
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 
 		writer.LinkRegions( reader );
 
@@ -85,8 +85,8 @@ public:
 		//    |012345678901234567890
 		// R:   ^--^
 		// W:  ^^
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		writer.Size(2);
@@ -102,8 +102,8 @@ public:
 		//    |012345678901234567890
 		// R:      ^--^
 		// W:  ^--^
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		writer.Size(4);
@@ -120,8 +120,8 @@ public:
 		//    |012345678901234567890
 		// R:  ^
 		// W:  ^
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		CPPUNIT_ASSERT( false == reader.CanConsume() );
@@ -134,9 +134,9 @@ public:
 		// R1: ^
 		// R2: ^-^
 		// W:     ^
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader1;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader2;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader1;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader2;
 		writer.LinkRegions( reader1 );
 		writer.LinkRegions( reader2 );
 
@@ -150,7 +150,7 @@ public:
 
 	void testWritingRegion_produce_movesRegion()
 	{
-		WritingRegion<int,DataStructure> writer;
+		CLAM::WritingRegion<int,DataStructure> writer;
 		writer.Size(4);
 		writer.Hop(3);
 		writer.Produce();
@@ -166,8 +166,8 @@ public:
 		// W:           ^-^
 		//
 
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		writer.Size(3);
@@ -183,8 +183,8 @@ public:
 
 	void testProduceConsumeData_withUnitaryRegions()
 	{
-		WritingRegion<char,DataStructure> writer;
-		typename WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char,DataStructure> writer;
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		writer[0] = 'a';
@@ -196,8 +196,8 @@ public:
 
 	void testProduceConsumeData_withSizedRegions()
 	{
-		WritingRegion<char,DataStructure> writer;
-		typename WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char,DataStructure> writer;
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		writer.Size(5);
@@ -229,8 +229,8 @@ public:
 
 	void testProduceConsumeData_withSizedRegions_writerProducesMultipleTimes()
 	{
-		WritingRegion<char,DataStructure> writer;
-		typename WritingRegion<char,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char,DataStructure> writer;
+		typename CLAM::WritingRegion<char,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 
 		//       	|hello world
@@ -283,8 +283,8 @@ public:
 	void testStreamImplementation_avancingALongWay_semiStressTest()
 	{
 		const int lastTokenToConsume = 500;
-		WritingRegion<int,DataStructure> writer;
-		typename WritingRegion<int,DataStructure>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int,DataStructure> writer;
+		typename CLAM::WritingRegion<int,DataStructure>::ProperReadingRegion reader;
 		writer.LinkRegions( reader );
 		for (int actual=0; actual < lastTokenToConsume; actual++)
 		{

@@ -26,7 +26,7 @@ public:
 	// tests of size of stream
 	void testStreamIncreasesSizeAfterProducing()
 	{
-		WritingRegion<char,std::list> writer;
+		CLAM::WritingRegion<char,std::list> writer;
 		writer.Size(5);
 		writer.Hop(2);
 		CPPUNIT_ASSERT_EQUAL(5, writer.LogicalStreamSize() );

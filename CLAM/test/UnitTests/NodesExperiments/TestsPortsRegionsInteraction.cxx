@@ -28,15 +28,16 @@ public:
 	CPPUNIT_TEST( testProduceAndConsume_whenMoreThanOneInPort ); 
 	CPPUNIT_TEST( testOutPortGetConnectedInPorts_whenOneInPort ); 
 	CPPUNIT_TEST( testOutPortGetConnectedInPorts_whenMoreThanOneInPort );
-	CPPUNIT_TEST( testInPortGetConnectedOutPort ); 
+	CPPUNIT_TEST( testInPortGetConnectedOutPort );
+	CPPUNIT_TEST( testDestructOutPortAfterInPort );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testOutPortConnectToIn_usingBaseClass()
 	{
-		OutPort<int> out;
-		InPort<int> in;
-		OutPortBase& outBase = out;
-		InPortBase& inBase = in;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
+		CLAM::OutPortBase& outBase = out;
+		CLAM::InPortBase& inBase = in;
 
 		outBase.ConnectToIn(inBase);
 
@@ -45,8 +46,8 @@ public:
 	
 	void testOutPortConnect()
 	{
-		OutPort<int> out;
-		InPort<int> in;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
 		out.ConnectToIn(in);
 		//TODO check that stream has been initialized (as soon as is implemented)
 
@@ -55,8 +56,8 @@ public:
 
 	void testOutPortConnect_whenMoreThanOneInPort()
 	{	
-		OutPort<int> out;
-		InPort<int> in1, in2;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in1, in2;
 		out.ConnectToIn(in1);
 		out.ConnectToIn(in2);
 
@@ -66,8 +67,8 @@ public:
 
 	void testOutPortConnect_whenPortsAlreadyConnected()
 	{
-		OutPort<int> out;
-		InPort<int> in;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
 		out.ConnectToIn(in);
 
 		try
@@ -82,8 +83,8 @@ public:
 		
 	void testOutPortConnect_whenInPortAlreadyConnectedToAnotherOutPort()
 	{
-		OutPort<int> out, out2;
-		InPort<int> in;
+		CLAM::OutPort<int> out, out2;
+		CLAM::InPort<int> in;
 		out.ConnectToIn(in);
 
 		try
@@ -98,16 +99,16 @@ public:
 
 	void testOutPortConnectNotifiesInPort()
 	{
-		OutPort<int> out;
-		InPort<int> in; 
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in; 
 		CPPUNIT_ASSERT( 0 == in.GetAttachedOutPort() );
 		out.ConnectToConcreteIn(in);
 		CPPUNIT_ASSERT( &out == in.GetAttachedOutPort() );
 	}
 	void testOutPortDisconnect_whenPortsAreConnected()
 	{
-		OutPort<int> out;
-		InPort<int> in;		
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;		
 		out.ConnectToConcreteIn(in);
 
 		out.DisconnectFromConcreteIn( in );
@@ -117,10 +118,10 @@ public:
 
 	void testOutPortDisconnect_whenPortsAreConnected_usingBaseClass()
 	{
-		OutPort<int> out;
-		InPort<int> in;
-		OutPortBase& outBase = out;
-		InPortBase& inBase = in;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
+		CLAM::OutPortBase& outBase = out;
+		CLAM::InPortBase& inBase = in;
 		outBase.ConnectToIn(inBase);
 
 		outBase.DisconnectFromIn(inBase);
@@ -130,8 +131,8 @@ public:
 
 	void testOutPortDisconnect_whenPortsAreNotConnected_throwsException()
 	{
-		OutPort<int> out;
-		InPort<int> in;		
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;		
 
 		try
 		{
@@ -145,8 +146,8 @@ public:
 
 	void testOutPortDisconnect_whenMoreThanOneInPort()
 	{
-		OutPort<int> out;
-		InPort<int> in1, in2, in3;		
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in1, in2, in3;		
 		out.ConnectToConcreteIn(in1);
 		out.ConnectToConcreteIn(in2);
 		out.ConnectToConcreteIn(in3);
@@ -158,8 +159,8 @@ public:
 
 	void testOutPortDisconnectNotifiesInPort()
 	{
-		OutPort<int> out;
-		InPort<int> in; 
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in; 
 		out.ConnectToConcreteIn(in);
 
 		out.DisconnectFromConcreteIn(in);
@@ -169,7 +170,7 @@ public:
 
 	void testPortChangeSizeResizesRegion()
 	{
-		OutPort<int> out;
+		CLAM::OutPort<int> out;
 		int newSize = 5;
 		out.SetSize(5);
 
@@ -178,21 +179,21 @@ public:
 
 	void testProduceAndConsume()
 	{
-		OutPort<int> out;
-		InPort<int> in;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
 		int data = 4;
 
 		out.ConnectToIn(in);
-		out[0] = 4;
+		out.GetData() = 4;
 		out.Produce();
 		
-		CPPUNIT_ASSERT_EQUAL( data, in[0] );
+		CPPUNIT_ASSERT_EQUAL( data, in.GetData() );
 	}
 
 	void testProduceAndConsume_whenMoreThanOneInPort()
 	{
-		OutPort<int> out;
-		InPort<int> in1, in2, in3;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in1, in2, in3;
 		int data1 = 1;
 		int data2 = 2;
 		int data3 = 3;
@@ -204,30 +205,30 @@ public:
 		in1.SetSize(2);
 		in3.SetSize(3);
 
-		out[0] = data1;
+		out.GetData() = data1;
 		out.Produce();
-		out[0] = data2;
+		out.GetData() = data2;
 		out.Produce();
-		out[0] = data3;
+		out.GetData() = data3;
 		out.Produce();
 
-		CPPUNIT_ASSERT_EQUAL( data1, in1[0] );
-		CPPUNIT_ASSERT_EQUAL( data2, in1[1] );
+		CPPUNIT_ASSERT_EQUAL( data1, in1.GetData() );
+		CPPUNIT_ASSERT_EQUAL( data2, in1.GetData(1) );
 		
-		CPPUNIT_ASSERT_EQUAL( data1, in2[0] );
+		CPPUNIT_ASSERT_EQUAL( data1, in2.GetData() );
 		
-		CPPUNIT_ASSERT_EQUAL( data1, in3[0] );
-		CPPUNIT_ASSERT_EQUAL( data2, in3[1] );
-		CPPUNIT_ASSERT_EQUAL( data3, in3[2] );
+		CPPUNIT_ASSERT_EQUAL( data1, in3.GetData() );
+		CPPUNIT_ASSERT_EQUAL( data2, in3.GetData(1) );
+		CPPUNIT_ASSERT_EQUAL( data3, in3.GetData(2) );
 
 	}
 	void testOutPortGetConnectedInPorts_whenOneInPort()
 	{
-		OutPort<int> out;
-		InPort<int> in;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
 		out.ConnectToIn( in );
 		
-		OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
 		CPPUNIT_ASSERT( it != out.EndConnectedInPorts() );
 		CPPUNIT_ASSERT( *(it++) = &in );
 		CPPUNIT_ASSERT( it == out.EndConnectedInPorts() );
@@ -236,13 +237,13 @@ public:
 	
 	void testOutPortGetConnectedInPorts_whenMoreThanOneInPort()
 	{	
-		OutPort<int> out;
-		InPort<int> in1, in2, in3;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in1, in2, in3;
 		out.ConnectToIn( in1 );
 		out.ConnectToIn( in2 );
 		out.ConnectToIn( in3 );
 		
-		OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
 		CPPUNIT_ASSERT( it != out.EndConnectedInPorts() );
 		CPPUNIT_ASSERT( *(it++) = &in1 );
 		CPPUNIT_ASSERT( *(it++) = &in2 );
@@ -252,14 +253,25 @@ public:
 	}
 	void testInPortGetConnectedOutPort()
 	{
-		OutPort<int> out;
-		InPort<int> in1, in2;
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in1, in2;
 		out.ConnectToIn( in1 );
 		out.ConnectToIn( in2 );
 
 		CPPUNIT_ASSERT( &out == in1.GetAttachedOutPort() );
 		CPPUNIT_ASSERT( &out == in2.GetAttachedOutPort() );
 	}
+
+	void testDestructOutPortAfterInPort()
+	{
+		CLAM::InPort<int> * in = new CLAM::InPort<int>;
+		CLAM::OutPort<int> * out = new CLAM::OutPort<int>;
+		out->ConnectToIn( *in );
+
+		delete out;
+		delete in;
+	}
+	
 };
 
 } // namespace CLAMTest 

@@ -58,7 +58,7 @@ public:
 	 */
 	void testStreamDontIncreasesSizeAfterProducing()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size(5);
 		writer.Hop(2);
 		int initialLogicalSize = writer.LogicalStreamSize();
@@ -70,8 +70,8 @@ public:
 	//tests of logicalSize changed when link with a bigger reading region
 	void testStreamIncreasesSizeAfterLinkingWithBiggerRegion()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(5);
 		writer.Hop(2);
@@ -87,8 +87,8 @@ public:
 	// test phantom buffer increases after linking with bigger reading region
 	void testPhantomBufferIncreasesAfterLinkingWithBiggerRegion()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(5);
 		writer.Hop(2);
@@ -105,8 +105,8 @@ public:
 	// here we want to test the insertion point.
 	void testInsertionPositionInLogicalZone_afterLinkingWithBiggerRegion()
 	{
-	WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+	CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(5);
 		writer.Hop(2);
@@ -130,8 +130,8 @@ public:
 
 	void testLogicalSizeIncreases_whenWriterIncreasesItsSize()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(5);
 		writer.Hop(2);
@@ -142,8 +142,8 @@ public:
 
 	void testLogicalSizeRemainsTheSame_whenWriterDecreasesItsSize()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(5);
 		writer.Hop(2);
@@ -155,8 +155,8 @@ public:
 	//tests of logicalSize changed when reader changes its size
 	void testLogicalSizeIncreases_whenReaderIncreasesItsSize()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(5);
 		writer.Hop(2);
@@ -175,8 +175,8 @@ public:
 	//tests of !canProduce (circular overlap)
 	void testWriterRegionCantProduce_whenOverlapsReadingRegion()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 
 		writer.Size(4);
 		writer.Hop(1); // so we can position it at the conflictive point
@@ -192,9 +192,9 @@ public:
 
 	void testWriting_rearmostPos_when2ReadingRegions()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion firstReader;
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion lastReader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion firstReader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion lastReader;
 		writer.Size(6);
 		writer.Hop(6);
 		firstReader.Size(4);
@@ -213,14 +213,14 @@ public:
 	{
 		int powOfNine = 512; // 512 == 2^9  (2^8 == 256)
 
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size( 258 / 2 ); // logical size will be the power of 2 greater and closer to size*2
 		CPPUNIT_ASSERT_EQUAL( powOfNine, writer.Stream().LogicalSize() );
 	}
 
 	void testPhantomZoneGetsUpdated_whenWroteInBeginningZone()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size(5); // logical size == 16  (tbe pow of 2 > 5*2)
 		writer.Hop(5);
 		//  food          |phan|
@@ -250,7 +250,7 @@ public:
 	void testBeginningZoneGetsUpdated_whenWroteInPhantomZone()
 	{	
 
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size(6); // logical size == 16  (tbe pow of 2 > 6*2)
 		writer.Hop(6);
 		//             goodbye
@@ -271,14 +271,14 @@ public:
 		toWrite[4] = 'b';  // buffer[16] -- first position of phantom buffer
 		toWrite[5] = 'y';
 		writer.Produce();
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 		CPPUNIT_ASSERT_EQUAL('b', bufferbase[0] );
 		CPPUNIT_ASSERT_EQUAL('y', bufferbase[1] );
 	}
 
 	void testPhantomZoneGetsUpdated_whenInsertedInLogicalZone()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size(5); // logical size == 16  (tbe pow of 2 > 5*2)
 		writer.Hop(5);
 		//  goodbye
@@ -316,7 +316,7 @@ public:
 	}
 	void testIntegrityAfterBufferResize()
 	{
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size(1); // buff size == 2
 		writer.Hop(1);
 		writer[0]='A';
@@ -333,11 +333,11 @@ public:
 	
 	void testWriterResizes_whenRearmostReaderHasSameBeginDistance()
 	{	
-		WritingRegion<char, CLAM::PhantomBuffer> writer;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.Size(3); // buff size = 8
 		writer.Hop(3);
 	
-		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
+		CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
 		writer.LinkRegions(reader);
 		reader.Size(1);
 		reader.Hop(1);

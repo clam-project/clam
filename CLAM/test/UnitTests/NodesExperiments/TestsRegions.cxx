@@ -20,17 +20,17 @@ public:
 
 	void testWritingRegion_addRegion()
 	{
-		WritingRegion<int> writer;
-		WritingRegion<int>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int> writer;
+		CLAM::WritingRegion<int>::ProperReadingRegion reader;
 
 		writer.LinkRegions( reader );
-		Region & baseReader = (Region &)reader;
+		CLAM::Region & baseReader = (CLAM::Region &)reader;
 		CPPUNIT_ASSERT_EQUAL( &baseReader, *(writer.BeginReaders()) );
 	}
 	void testWritingRegion_removeRegion()
 	{
-		WritingRegion<int> writer;
-		WritingRegion<int>::ProperReadingRegion reader;
+		CLAM::WritingRegion<int> writer;
+		CLAM::WritingRegion<int>::ProperReadingRegion reader;
 
 		writer.LinkRegions( reader );
 		writer.RemoveRegion( reader );
@@ -38,20 +38,20 @@ public:
 	}
 	void testWritingRegion_removeRegion_withTwoReadingRegions()
 	{
-		WritingRegion<int> writer;
-		WritingRegion<int>::ProperReadingRegion reader1, reader2;
+		CLAM::WritingRegion<int> writer;
+		CLAM::WritingRegion<int>::ProperReadingRegion reader1, reader2;
 		writer.LinkRegions( reader1 );
 		writer.LinkRegions( reader2 );
 		writer.RemoveRegion( reader1 );
 
-		Region & baseReader2 = (Region &)reader2;
+		CLAM::Region & baseReader2 = (CLAM::Region &)reader2;
 		CPPUNIT_ASSERT_EQUAL( &baseReader2, *writer.BeginReaders() );
 	}
 
 	void testWritingRegion_RemoveRegion_NotifiesReader()
 	{	
-		WritingRegion<int> writer;
-		WritingRegion<int>::ProperReadingRegion reader;	
+		CLAM::WritingRegion<int> writer;
+		CLAM::WritingRegion<int>::ProperReadingRegion reader;	
 		writer.LinkRegions( reader );
 		CPPUNIT_ASSERT( &(writer) == reader.ProducerRegion() );
 

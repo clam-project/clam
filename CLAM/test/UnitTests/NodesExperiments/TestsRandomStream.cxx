@@ -17,8 +17,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestsRandomStream );
 
 class TestsRandomStream : public CppUnit::TestFixture
 {
-	typedef WritingRegion<char, CLAM::PhantomBuffer > WRegion;
-	typedef WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion RRegion;
+	typedef CLAM::WritingRegion<char, CLAM::PhantomBuffer > WRegion;
+	typedef CLAM::WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion RRegion;
 
 	WRegion mWriter;
 	RRegion mOutputReader;
