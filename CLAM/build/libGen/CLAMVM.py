@@ -8,18 +8,28 @@ def makeAutoconf( outPath ) :
     if not os.path.exists( outPath ) :
         os.makedirs( outPath )
     
-    script = AutoconfTools.AutoconfScript()
+    script = AutoconfTools.AutoconfScript("CLAMVM","0.7")
+
+    script.descriptionText = "The CLAM Framework Visualization Module"
+    script.preinclude = "preinclude.hxx"
+    script.dependsOn( "CLAMProcessing" )
+    script.dependsOn( "CLAMIO" )
 
     xml = AutoconfTools.Feature( "xml" )
+    xml.addEffectWhenEnabled( "-DCLAM_USE_XML" )
     script.addFeature( xml )
 
     double = AutoconfTools.Feature( "double", False )
+    double.addEffectWhenEnabled( "-DCLAM_DOUBLE" )
+    double.addEffectWhenDisabled( "-DCLAM_FLOAT" )
     script.addFeature( double )
 
     checks = AutoconfTools.Feature( "checks" )
+    checks.addEffectWhenDisabled( "-DCLAM_DISABLE_CHECKS" )
     script.addFeature( checks )
 
     releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    releaseAsserts.addEffectWhenEnabled( "-DCLAM_USE_RELEASE_ASSERTS" )
     script.addFeature( releaseAsserts )
 
     libfltk = AutoconfTools.Library("fltk", "C++")
@@ -40,7 +50,7 @@ int main( )
     script.addLibrary( libfltk )
 
     script.commitToFile( outPath )
-    AutoconfTools.copySupportFiles( outPath )
+    script.copySupportFiles( outPath )
 
 
 def makeSettings( outPath ) :

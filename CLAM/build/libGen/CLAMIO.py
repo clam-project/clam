@@ -8,19 +8,28 @@ def makeAutoconf( outPath ) :
     if not os.path.exists( outPath ) :
         os.makedirs( outPath )
 
-    script = AutoconfTools.AutoconfScript()
+    script = AutoconfTools.AutoconfScript("CLAMIO","0.7")
+    script.descriptionText = "The CLAM Framework Input/Output facilities"
+    script.preinclude = "preinclude.hxx"
+    script.dependsOn( "CLAMCore" )
 
     xml = AutoconfTools.Feature( "xml" )
+    xml.addEffectWhenEnabled( "-DCLAM_USE_XML" )
     script.addFeature( xml )
 
     double = AutoconfTools.Feature( "double", False )
+    double.addEffectWhenEnabled( "-DCLAM_DOUBLE" )
+    double.addEffectWhenDisabled( "-DCLAM_FLOAT" )
     script.addFeature( double )
 
     checks = AutoconfTools.Feature( "checks" )
+    checks.addEffectWhenDisabled( "-DCLAM_DISABLE_CHECKS" )
     script.addFeature( checks )
 
     releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    releaseAsserts.addEffectWhenEnabled( "-DCLAM_USE_RELEASE_ASSERTS" )
     script.addFeature( releaseAsserts )
+
 
     libSndFile = AutoconfTools.Library( "sndfile", "C" )
     libSndFile.sandboxName = "sndfile"
@@ -116,7 +125,7 @@ int main( )
 
     script.commitToFile( outPath )
    
-    AutoconfTools.copySupportFiles( outPath )
+    script.copySupportFiles( outPath )
 
 
 
