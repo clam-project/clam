@@ -1,5 +1,6 @@
 #include "Fl_Smart_Tile.H"
 #include <FL/Fl_Window.H>
+#include <stdio.h>
 
 static char *image_shade[] = {
 "11 11 2 1",
@@ -41,7 +42,7 @@ Fl_Smart_Tile::Fl_Smart_Tile(int X,int Y,int W,int H)
 :Fl_Group(X,Y,W,H) {
 	Fl_Group::resizable();
 	init(50,24);
-	//color(FL_BLACK);
+	end();
 }
 
 void Fl_Smart_Tile::draw(void)
@@ -50,7 +51,7 @@ void Fl_Smart_Tile::draw(void)
 	fl_color(color());
 	if (children())
 		fl_rectf(x(),child(children()-1)->y()+child(children()-1)->h(),w(),
-			h()-(child(children()-1)->y()+child(children()-1)->h()));
+			h()-(y()+child(children()-1)->y()+child(children()-1)->h()));
 	else
 		fl_rectf(x(),y(),w(),h());
 }
@@ -107,6 +108,7 @@ void Fl_Smart_Tile::shade(Fl_Widget* c)
 				newsizetotal+=newsize;
 				int inewsize = int(newsizetotal)-inewsizetotal;
 				inewsizetotal+=inewsize;
+				printf("smarttile: sizing child %d to %d\n",i,inewsize);
 				child(i)->size(child(i)->w(),inewsize);
 			}
 		}

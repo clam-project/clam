@@ -851,6 +851,10 @@ UserInterface::UserInterface() {
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
+    { Fl_Box* o = mResizable = new Fl_Box(505, 50, 360, 490);
+      o->hide();
+      Fl_Group::current()->resizable(o);
+    }
     { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
       o->box(FL_THIN_DOWN_BOX);
       o->labelsize(12);
@@ -863,9 +867,7 @@ UserInterface::UserInterface() {
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
-    { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(5, 50, 860, 490);
-      Fl_Group::current()->resizable(o);
-    }
+    mSmartTile = new Fl_Smart_Tile(5, 50, 860, 490);
     mWindow2=NULL;
     o->end();
   }

@@ -34,9 +34,12 @@ class UserInterface {open
     code {Init();} {}
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {301 235 872 548} resizable
+      xywh {192 296 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
+      Fl_Box mResizable {selected
+        xywh {505 50 360 490} hide resizable
+      }
       Fl_Output mConfigurationText {
         label {Configuration File}
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
@@ -130,11 +133,11 @@ class UserInterface {open
           }
         }
         submenu mOutputSM {
-          label Output
+          label Output open
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mVisualizeOutputs {
-            label Display
+            label Display open
             private xywh {5 5 100 20} labelsize 12
           } {
             menuitem {} {
@@ -222,7 +225,7 @@ Exit();}
         }
       }
       Fl_Box mSmartTile {
-        private xywh {5 50 860 490} resizable
+        private xywh {5 50 860 490}
         class Fl_Smart_Tile
       }
     }
@@ -278,15 +281,15 @@ mWindow2=NULL;}
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {void Attach(Fl_Window* buffer);} {}
+  decl {Fl_Window* Attach( const char* title, CLAM::Audio* data );} {}
+  decl {static void _Detach(Fl_Window* buffer,UserInterface* ui);} {}
   decl {void Detach(Fl_Window* buffer);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
   decl {void LoadSound();} {}
-  decl {void Init();} {selected
-  }
+  decl {void Init();} {}
   decl {Fl_Window* mAudioInputDisplay;} {}
   decl {Fl_Window* mAudioOutputDisplay;} {}
   decl {Fl_Window* mAudioOutputResidualDisplay;} {}

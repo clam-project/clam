@@ -157,49 +157,13 @@ void UserInterface::StoreAnalysisData(void)
 
 void UserInterface::DisplayInputSound(void)
 {
-	if(mAudioInputDisplay==NULL){
-		ProcDataView<Audio>* localView;
-		ProcDataPresentation<Audio>* localPresentation;
-
-		localView = new ProcDataView<Audio>;
-		localView->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-
-		Geometry g(0, 0, 860, 490);
-		localPresentation = new ProcDataPresentation<Audio>(g, "Audio Input");
-		localPresentation->LinkWithView( localView );
-		
-		Attach( localPresentation->GetWindow() );
-		
-		mAudioInputDisplay=localPresentation->GetWindow();
-		localView->Refresh();
-		localPresentation->Show();
-		mSmartTile->equalize();
-		Fl::redraw();
-	}
- 	else{
-//              MRJ: Don't forget to always refresh associated views!
-// 		mAttachedViews[0]->Refresh();
-// 		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
-// 		mSmartTile->close(mAttachedPresentations[0]->GetWindow());
-// 		mSmartTile->equalize();
-// 		delete mAttachedPresentations[0];
-// 		mAttachedPresentations[0]=NULL;
-//  			mSmartTile->close(mAttachedPresentations[0]->GetWindow());
-//  			mAttachedPresentations[0]->GetWindow()->hide();
-//  			mSmartTile->equalize();
-// 		}
-//  		else {
-//  			mSmartTile->add(mAttachedPresentations[0]->GetWindow());
-//  			mAttachedPresentations[0]->GetWindow()->show();
-//  			mSmartTile->equalize();
-//  		}
- 	}
-	Fl::redraw();
+	if (mAudioInputDisplay==NULL)
+		mAudioInputDisplay = Attach( "Audio Input" , &mAnalysisSynthesisExample->mAudioIn );
 }
 
 void UserInterface::DisplayInputSpectrum(void)
 {
-	Geometry g(0, 0, 890, 490);
+	Geometry g(0, 0, 860, 490);
 	ProcDataView<Spectrum> *view = new ProcDataView<Spectrum>;
 	ProcDataPresentation<Spectrum> *presentation = 
 		new ProcDataPresentation<Spectrum>(g,"Input Audio Spectrum");
@@ -217,71 +181,20 @@ void UserInterface::DisplayInputSpectrum(void)
 
 void UserInterface::DisplayOutputSound(void)
 {
-/*
-	if(mAttachedPresentations[1]==NULL){
-		Attach(1, &mAnalysisSynthesisExample->mAudioOut); 
-	}
-	else{
-		mAttachedViews[1]->Refresh();
-		if( mAttachedPresentations[1]->GetWindow()->shown() ) {
-			mSmartTile->close(mAttachedPresentations[1]->GetWindow());
-			mAttachedPresentations[1]->GetWindow()->hide();
-			mSmartTile->equalize();
-		}
-		else {
-			mSmartTile->add(mAttachedPresentations[1]->GetWindow());
-			mAttachedPresentations[1]->GetWindow()->show();
-			mSmartTile->equalize();
-		}
-	}
-	Fl::redraw();
-*/
+	if (mAudioOutputDisplay==NULL)
+		mAudioOutputDisplay = Attach( "Audio Output" , &mAnalysisSynthesisExample->mAudioOut );
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-/*
-	if(mAttachedPresentations[2]==NULL){
-		Attach(2, &mAnalysisSynthesisExample->mAudioOutRes); 
-	}
-	else{
-		mAttachedViews[2]->Refresh();
-		if( mAttachedPresentations[2]->GetWindow()->shown() ) {
-			mSmartTile->close(mAttachedPresentations[2]->GetWindow());
-			mAttachedPresentations[2]->GetWindow()->hide();
-			mSmartTile->equalize();
-		}
-		else {
-			mSmartTile->add(mAttachedPresentations[2]->GetWindow());
-			mAttachedPresentations[2]->GetWindow()->show();
-			mSmartTile->equalize();
-		}
-	}
-	Fl::redraw();
-*/
+	if (mAudioOutputResidualDisplay==NULL)
+		mAudioOutputResidualDisplay = Attach( "Residual" , &mAnalysisSynthesisExample->mAudioOutRes );
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-/*
-	if(mAttachedPresentations[3]==NULL){
-		Attach(3, &mAnalysisSynthesisExample->mAudioOutSin);
-	}
-	else{
-		mAttachedViews[3]->Refresh();
-		if( mAttachedPresentations[3]->GetWindow()->shown() ) {
-			mSmartTile->close(mAttachedPresentations[3]->GetWindow());
-			mAttachedPresentations[3]->GetWindow()->hide();
-			mSmartTile->equalize();
-		}
-		else {
-			mSmartTile->add(mAttachedPresentations[3]->GetWindow());
-			mAttachedPresentations[3]->GetWindow()->show();
-			mSmartTile->equalize();
-		}
-	}
-	Fl::redraw();
-*/
+	if (mAudioOutputSinusoidalDisplay==NULL)
+		mAudioOutputSinusoidalDisplay = Attach( "Sinusoidal" , &mAnalysisSynthesisExample->mAudioOutSin );
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -335,37 +248,63 @@ void UserInterface::PlaySinusoidal(void)
 
 void UserInterface::PlayResidual(void)
 {
-
 	mAnalysisSynthesisExample->PlayResidual();
 }
 
-
-void UserInterface::Attach(Fl_Window* buffer)
+void UserInterface::_Detach(Fl_Window *w,UserInterface* ui)
 {
-// 	Geometry g(0, 0, 860, 490);
-// 	if(mAttachedViews[i]==NULL){
-// 		mAttachedViews[i] = new ProcDataView<Audio>;
-// 		mAttachedViews[i]->BindTo( obj );
-// 	}
-
-// 	mAttachedPresentations[i] = new ProcDataPresentation<Audio>(g, "");
-// 	mAttachedPresentations[i]->LinkWithView( mAttachedViews[i] );
-// 	mAttachedPresentations[i]->GetWindow()->resizable();
-	
-	buffer->resizable();
- 	mSmartTile->add_titled(buffer);
-	
-// 	mAttachedViews[i]->Refresh();
-// 	mAttachedPresentations[i]->Show();
-// 	mSmartTile->equalize();
-// 	Fl::redraw();
+	ui->Detach(w);
 }
 
-void UserInterface::Detach(Fl_Window* buffer)
+void UserInterface::Detach(Fl_Window *w)
 {
+	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
+
+	View* v = p->GetPresentation()->GetLinkedView();
+	delete p->GetPresentation();
+	delete v;
+		
+	if (w==mAudioInputDisplay) 
+		mAudioInputDisplay = NULL;
+	else if (w==mAudioOutputDisplay)
+		mAudioOutputDisplay = NULL;
+	else if (w==mAudioOutputResidualDisplay)
+		mAudioOutputResidualDisplay = NULL;
+	else if (w==mAudioOutputSinusoidalDisplay)
+		mAudioOutputSinusoidalDisplay = NULL;
+}
+
+Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
+{
+	printf("ATTACH %s\n",title);
+	ProcDataView<Audio>* localView;
+	ProcDataPresentation<Audio>* localPresentation;
+
+	localView = new ProcDataView<Audio>;
+	localView->BindTo( data );
+
+	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h());
+
+	localPresentation = new ProcDataPresentation<Audio>(g, title);
+	localPresentation->LinkWithView( localView );
+
+	mSmartTile->add_titled( localPresentation->GetWindow() );
+	
+	localPresentation->Show();
+
+	mSmartTile->equalize();
+
+	localPresentation->GetWindow()->callback((Fl_Callback*) _Detach,this);
+
+	localView->Refresh();
+	
+	return localPresentation->GetWindow();
 }
 
 void UserInterface::Init()
 {
 	mAudioInputDisplay=NULL; 
+	mAudioOutputDisplay=NULL; 
+	mAudioOutputResidualDisplay=NULL; 
+	mAudioOutputSinusoidalDisplay=NULL; 
 }

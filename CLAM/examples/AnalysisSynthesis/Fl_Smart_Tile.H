@@ -16,6 +16,7 @@ private:
 	{
 	public:
 		Fl_Widget* sub;
+		Fl_Group* title;
 		Fl_Box* box;
 		Fl_Button* shade;
 		Fl_Button* close;
@@ -30,6 +31,8 @@ private:
 			sub = s;
 			s->resize(x()+2,y()+22,w()-4,h()-24);
 
+			title = new Fl_Group(x()+2,y()+2,w()-4,20);
+
 			box = new Fl_Box(x()+2,y()+2,w()-44,20,s->label());
 
 			box->box(FL_THIN_UP_BOX);
@@ -41,6 +44,7 @@ private:
 			shade = new Fl_Button(x()+w()-42,y()+2,20,20);
 			shade->box(FL_THIN_UP_BOX);
 			shade->color(FL_DARK2);
+			
 			Fl_Smart_Tile::pixmapShade.label(shade);		
 
 			shade->callback(shade_cb);
@@ -52,6 +56,10 @@ private:
 
 			close->callback(close_cb);
 
+			title->resizable(box);
+			title->end();
+			
+
 			Fl_Group::box(FL_THIN_UP_FRAME);
 
 			add_resizable(*s);
@@ -60,14 +68,14 @@ private:
 		}
 		static void shade_cb(Fl_Widget* w)
 		{
-			Fl_Smart_Tile* s = (Fl_Smart_Tile*) (w->parent()->parent());
-			s->shade(w->parent());
+			Fl_Smart_Tile* s = (Fl_Smart_Tile*) (w->parent()->parent()->parent());
+			s->shade(w->parent()->parent());
 		}
 		static void close_cb(Fl_Widget* w)
 		{
-			Fl_Smart_Tile* s = (Fl_Smart_Tile*) (w->parent()->parent());
-			s->close(w->parent());
-			((TitledWidget*)(w->parent()))->sub->do_callback();
+			Fl_Smart_Tile* s = (Fl_Smart_Tile*) (w->parent()->parent()->parent());
+			s->close(w->parent()->parent());
+			((TitledWidget*)(w->parent()->parent()))->sub->do_callback();
 		}
 		void draw(void)
 		{

@@ -10,15 +10,16 @@ class Fl_Smart_Tile;
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
 #include <FL/Fl_Window.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Menu_Bar.H>
-#include <FL/Fl_Box.H>
 
 class UserInterface {
 public:
   public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
   Fl_Window *mWindow;
+  Fl_Box *mResizable;
 private:
   Fl_Output *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
@@ -113,7 +114,8 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  void Attach(Fl_Window* buffer);
+  Fl_Window* Attach( const char* title, CLAM::Audio* data );
+  static void _Detach(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
   void PlayInputSound();
   void PlayOutputSound();
