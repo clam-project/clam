@@ -12,27 +12,36 @@ def contains( line, pattern ):
 	return re.search( pattern, line )
 
 def changeMethods(aLine) :
-	method = '([a-z])(\S+)\((.*)\)'
+	changed = False
+	method = '(\s+)([a-z])([a-zA-Z0-9]+)\((.*)\)'
 	matchMethod = re.search( method, aLine )
 	if matchMethod :
 		changed = True
-		print 'method', matchMethod.group(1), matchMethod.group(2) 
-		if matchMethod.group(2).find('\.'):
-				print 'call'
-		newMethod = '%s%s(%s)' % (matchMethod.group(1).upper(),matchMethod.group(2), matchMethod.group(3) )
+		newMethod = '%s%s%s(%s)' % (matchMethod.group(1), matchMethod.group(2).upper(),matchMethod.group(3), matchMethod.group(4) )
 		aLine = re.sub( method, newMethod, aLine )
-	return aLine
+
+	call= '(\.|->)([a-z])([a-zA-Z0-9]+)\((.*)\)'
+	matchCall = re.search( call, aLine )
+	if matchCall:
+		change = True
+		print 'call'
+		newCall = '%s%s%s(%s)' % (matchCall.group(1), matchCall.group(2).upper(), matchCall.group(3), matchCall.group(4))
+		aLine = re.sub( call, newCall, aLine )
+	
+	return changed, aLine
 
 def processLine(aLine) :
 	changed = False
-	attribute = '_([a-z])\S*'
+	attribute = '([^a-zA-Z0-9])_([a-z])\S*'
 	matchAttribute = re.search( attribute, aLine )
 	
 	include = contains( aLine, '_hxx' )
 	if matchAttribute and not include:
 		changed = True
-		newAttribute = 'm%s%s' % ( matchAttribute.group(0)[1].upper(), matchAttribute.group(0)[2:] )
+		newAttribute = '%sm%s%s' % ( matchAttribute.group(1), matchAttribute.group(0)[2].upper(), matchAttribute.group(0)[3:] )
 		aLine = re.sub( attribute, newAttribute, aLine )
+	
+	changed, aLine = changeMethods(aLine)
 		
 	return changed, aLine
 
