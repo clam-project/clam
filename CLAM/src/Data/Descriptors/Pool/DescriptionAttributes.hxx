@@ -25,6 +25,7 @@ namespace CLAM
 		virtual void * Allocate(unsigned size) const = 0;
 		virtual void Deallocate(void * data) const = 0;
 		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) const = 0;
+		virtual void XmlRestoreData(Storage & storage, void * data, unsigned size ) const = 0;
 		template <typename TypeToCheck>
 		void CheckType() const
 		{
@@ -61,6 +62,13 @@ namespace CLAM
 			storage.Store(nameAdapter);
 			XmlDumpConcreteData(storage,(AttributeType*)data,size,(AttributeType*)0);
 		}
+		virtual void XmlRestoreData(Storage & storage, void * data, unsigned size ) const
+		{
+//			std::string name;
+//			XMLAdapter<std::string> nameAdapter(name,"name",false);
+//			storage.Load(nameAdapter);
+			XmlRestoreConcreteData(storage,(AttributeType*)data,size,(AttributeType*)0);
+		}
 	private:
 		template <typename T>
 		void XmlDumpConcreteData(Storage & storage, const T * data, unsigned size, void * discriminator ) const
@@ -75,6 +83,21 @@ namespace CLAM
 			{
 				XMLComponentAdapter componentAdapter(data[i],data[i].GetClassName(),true);
 				storage.Store(componentAdapter);
+			}
+		}
+		template <typename T>
+		void XmlRestoreConcreteData(Storage & storage, T * data, unsigned size, void * discriminator ) const
+		{
+			XMLArrayAdapter<AttributeType> dataAdapter(data, size);
+			storage.Load(dataAdapter);
+		}
+		template <typename T>
+		void XmlRestoreConcreteData(Storage & storage, T * data, unsigned size, Component * discriminator ) const
+		{
+			for (unsigned i=0 ; i < size ; i++ )
+			{
+				XMLComponentAdapter componentAdapter(data[i],data[i].GetClassName(),true);
+				storage.Load(componentAdapter);
 			}
 		}
 	protected:
