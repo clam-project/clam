@@ -755,7 +755,7 @@ AC_DEFUN(CLAM_LIB_RESAMPLE,
 			[HDRRESAMPLE_PRESENT="no"] )
 	
 	
-	if test $LIBRESAMPLE_PRESENT = no || test $HDRRESAMPLE_PRESENT = no;
+	if test "$LIBRESAMPLE_PRESENT" = no || test "$HDRRESAMPLE_PRESENT" = no;
 	then
 		AC_MSG_NOTICE([libresample seems not to be present on your system.])
 	fi
@@ -771,7 +771,7 @@ AC_DEFUN(CLAM_LIB_RESAMPLE,
 
 	RESAMPLE_LIB_PATH=${RESAMPLE_LIB_PATH%/libresample.a}
 
-	if test $RESAMPLE_LIB_PATH = "/usr/lib";
+	if test "$RESAMPLE_LIB_PATH" = "/usr/lib";
 	then
 		RESAMPLE_LIB_PATH=""
 	fi
@@ -783,7 +783,7 @@ AC_DEFUN(CLAM_LIB_RESAMPLE,
 
 	RESAMPLE_INCLUDES=${RESAMPLE_INCLUDES%/libresample.h}
 	
-	if test $RESAMPLE_INCLUDES = "/usr/include" || test $RESAMPLE_INCLUDES = "/usr/local/include";
+	if test "$RESAMPLE_INCLUDES" = "/usr/include" || test "$RESAMPLE_INCLUDES" = "/usr/local/include";
 	then
 		RESAMPLE_INCLUDES=""
 	fi
