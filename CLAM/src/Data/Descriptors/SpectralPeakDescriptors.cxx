@@ -34,6 +34,8 @@ namespace CLAM{
 
 SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): Descriptor(eNumAttr)
 {
+	CLAM_ASSERT(pSpectralPeakArray->GetScale()==EScale::eLinear,
+		"Spectral Peak Descriptors require a linear magnitude SpectralPeakArray");
 	MandatoryInit();
 	mpSpectralPeakArray=pSpectralPeakArray;
 }
@@ -136,11 +138,10 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 	TData Tilt = 0;
 
 	SpectralPeakArray tmpSpectralPeakArray=*mpSpectralPeakArray;
-	tmpSpectralPeakArray.ToLinear();
-	DataArray& mag=tmpSpectralPeakArray.GetMagBuffer();
-	DataArray& pos=mpSpectralPeakArray->GetFreqBuffer();
+	const DataArray& mag=tmpSpectralPeakArray.GetMagBuffer();
+	const DataArray& pos=mpSpectralPeakArray->GetFreqBuffer();
 
-	TData size=mag.Size();
+	const TData size=mag.Size();
 
 	m1 = Mean()(mag);
 
