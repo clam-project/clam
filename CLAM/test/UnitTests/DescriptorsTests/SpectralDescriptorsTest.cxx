@@ -50,6 +50,7 @@ class SpectralDescriptorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCentroid );
 	CPPUNIT_TEST( testSpread );
 	CPPUNIT_TEST( testSlope );
+	CPPUNIT_TEST( testMaxMagFreq );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -335,6 +336,37 @@ private:
 		mDescriptors->AddSlope();
 
 		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralDescriptors::GetSlope);
+	}
+
+	void testMaxMagFreq()
+	{
+		CLAM::TData tolerance = 1;  // Due to numerical inaccuracies, 1 Hz
+
+		std::map<std::string, CLAM::TData> data;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 258.3984;
+		data["Balance000.600.wav"] = 129.1992;
+		data["Balance000.992.wav"] = 215.3320;
+		data["Balance001.988.wav"] = 602.9296;
+		data["Balance010.910.wav"] = 86.1328;
+		data["Cello_A2.wav"] = 861.3280;
+		data["Cello_C2.wav"] = 0;
+		data["Disco_Rojo001.008.wav"] = 43.06647;
+		data["Disco_Rojo002.327.wav"] = 86.1328;
+		data["Geiger_Counter005.020.wav"] = 129.1992;
+		data["SaxBritHorns12.wav"] =  1981.1;
+		data["Time002.624.wav"] = 6373.8;
+		data["bell_A3.wav"] = 2153.3;
+		data["gamelan-gong.wav"] = 129.199;
+		data["gt_E4.wav"] = 43.0664;
+		data["pno_Eb1.wav"] = 0;
+		data["silence.wav"] = 0;
+		data["vln_A3.wav"] = 0;
+		data["vln_D5.wav"] = 0;
+		data["whitenoise.wav"] = 12791;
+
+		mDescriptors->AddMaxMagFreq();
+
+		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralDescriptors::GetMaxMagFreq);
 	}
 
 
