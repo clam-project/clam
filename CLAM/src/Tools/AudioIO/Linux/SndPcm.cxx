@@ -50,7 +50,7 @@ void SndPcm::cat_error(const char* fmt,...)
 SndPcm::SndPcm(int irate,int ichannels_in,int ichannels_out,int ilatency,
 	const char* pdevice,const char* cdevice)
 {
-	format = SND_PCM_FORMAT_S16_LE;
+	format = SND_PCM_FORMAT_S16;
 	rate = irate;
 	channels_in = ichannels_in;
 	channels_out = ichannels_out;
