@@ -161,6 +161,7 @@ namespace CLAMVM
 		Fl::run();
 
 		CleanupActiveWindows();
+		sCurrentDisplayList.clear();
 	}
 
 	void SystemPlots::CreateWindowsInCascade()
