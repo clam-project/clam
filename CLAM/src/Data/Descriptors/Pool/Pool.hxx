@@ -348,7 +348,7 @@ namespace CLAM
 			_scopePools[scopeIndex] = new ScopePool(scope, size);
 		}
 
-		unsigned GetNumberOfContexts(const std::string & scopeName)
+		unsigned GetNumberOfContexts(const std::string & scopeName) const
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 			CLAM_ASSERT(_scopePools[scopeIndex],"Getting the Scope size but it is not populated");
