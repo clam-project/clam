@@ -49,7 +49,6 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetSpread(initVal);
 	SetSkewness(initVal);
 	SetKurtosis(initVal);
-	SetTilt(initVal);
 	SetFlatness(initVal);
 	SetHighFrequencyCoefficient(initVal);
 	SetMaxMagFreq(initVal);
@@ -119,8 +118,6 @@ void SpectralDescriptors::ConcreteCompute()
 		SetSkewness(mpStats->GetSkew());
 	if(HasKurtosis())	
 		SetKurtosis(mpStats->GetKurtosis());
-	if(HasTilt())
-		SetTilt(mpStats->GetTilt());
 	if(HasFlatness())
 		SetFlatness(ComputeSpectralFlatness());
 	if(HasHighFrequencyCoefficient())
@@ -262,8 +259,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetMoment5(a.GetMoment5()*mult);
 	if(a.HasMoment6())
 		tmpD.SetMoment6(a.GetMoment6()*mult);
-	if(a.HasTilt())
-		tmpD.SetTilt(a.GetTilt()*mult);
 	if(a.HasFlatness())
 		tmpD.SetFlatness(a.GetFlatness()*mult);
 	if(a.HasKurtosis())
@@ -355,12 +350,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.AddMoment6();
 		tmpD.UpdateData();
 		tmpD.SetMoment6(a.GetMoment6()*b.GetMoment6());
-	}
-	if(a.HasTilt() && b.HasTilt() )
-	{
-		tmpD.AddTilt();
-		tmpD.UpdateData();
-		tmpD.SetTilt(a.GetTilt()*b.GetTilt());
 	}
 	if(a.HasFlatness() && b.HasFlatness() )
 	{
@@ -515,12 +504,6 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.AddMoment6();
 		tmpD.UpdateData();
 		tmpD.SetMoment6(a.GetMoment6()+b.GetMoment6());
-	}
-	if(a.HasTilt() && b.HasTilt() )
-	{
-		tmpD.AddTilt();
-		tmpD.UpdateData();
-		tmpD.SetTilt(a.GetTilt()+b.GetTilt());
 	}
 	if(a.HasFlatness() && b.HasFlatness() )
 	{

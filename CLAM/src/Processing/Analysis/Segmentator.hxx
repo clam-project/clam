@@ -49,9 +49,8 @@ enum {
 	SpectralMoment4Id = SpectralDescBase+6,
 	SpectralMoment5Id = SpectralDescBase+7,
 	SpectralMoment6Id = SpectralDescBase+8,
-	SpectralTiltId = SpectralDescBase+9,
-	SpectralFlatnessId = SpectralDescBase+10,
-	SpectralKurtosisId = SpectralDescBase+11,
+	SpectralFlatnessId = SpectralDescBase+9,
+	SpectralKurtosisId = SpectralDescBase+10,
 
 	FrameDescBase = 175, //for example
 	FundamentalId = FrameDescBase,
