@@ -49,6 +49,8 @@ void Segment::DefaultValues()
 	SetBeginTime(0);
 	SetEndTime(0);
 	SetSamplingRate(44100);
+	SetHoldsData( true );
+
 }
  
 void Segment::CopyInit(const Segment& prototype)
