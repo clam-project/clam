@@ -4,11 +4,11 @@
 #include "ErrProcessingObj.hxx"
 #include "SpectralPeakArray.hxx"
 
-#define CLASS "FundFreqDetect"
 
 #define INFINITE_MAGNITUD 1000000
 
-namespace CLAM {
+namespace CLAM 
+{
 
   /* The  Configuration object has at least to have a name */
 
@@ -123,6 +123,7 @@ namespace CLAM {
 		bool result = Do( mInput.GetData(), mOutput.GetData() );
 		mInput.Consume();
 		mOutput.Produce();
+
 		return result;
 	}
   
@@ -540,4 +541,5 @@ bool FundFreqDetect::IsGoodCandidate(double freq) const
     return true;
 }
 
-}; // namespace CLAM
+} // namespace CLAM
+

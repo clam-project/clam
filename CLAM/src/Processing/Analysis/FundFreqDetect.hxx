@@ -110,3 +110,4 @@ namespace CLAM {
 } // namespace CLAM
 
 #endif // _FUNFREQ_DETECT_
+

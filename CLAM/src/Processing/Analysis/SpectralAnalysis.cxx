@@ -24,7 +24,8 @@
 #include "SpectrumConfig.hxx"
 #include "SpectralAnalysis.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -193,7 +194,7 @@ bool SpectralAnalysis::ConfigureChildren()
 void SpectralAnalysis::ConfigureData()
 {
 	TData samplingRate=mConfig.GetSamplingRate();
-		  
+	
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
 	mAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
 	mWindow.SetSize(mConfig.GetWindowSize());
@@ -215,6 +216,7 @@ void SpectralAnalysis::ConfigureData()
 	
 	/*Setting prototypes in the FFT*/
 	mPO_FFT.SetPrototypes (mWindow, mSpec);
+	mInput.SetSampleRate( samplingRate );
 }
 
 void SpectralAnalysis::AttachChildren()
@@ -229,7 +231,9 @@ bool SpectralAnalysis::Do(void)
 {
 	mOutput.GetData().SetSize( mInput.GetSize()/2+1);
 	mOutput.GetData().SetSpectralRange( mInput.GetAudio().GetSampleRate()/2);
+	
 	bool result =  Do(mInput.GetAudio(),mOutput.GetData());
+
 	mInput.Consume();
 	mOutput.Produce();
 
@@ -241,6 +245,7 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
 	in.GetAudioChunk(0,in.GetSize()-1 ,mAudioFrame,true );
 
+	// TODO: it is wrong
 	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);
 
 	/* Zero padding is added to audioframe */
@@ -252,7 +257,6 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	/* Finally, we do the circular shift */
 	mPO_CShift.Do(mAudioFrame,mAudioFrame);
 
-	
 	/* and now the FFT can be performed */
 	mPO_FFT.Do(mAudioFrame, outSp);
 
@@ -270,4 +274,6 @@ bool SpectralAnalysis::Do(Segment& in)
 {
 	return Do(in.GetFrame(in.mCurrentFrameIndex++));
 }
+
+} // namespace CLAM
 
