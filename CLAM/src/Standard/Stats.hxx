@@ -60,10 +60,10 @@ template <bool abs=false,class T=TData, class U=TData,int initOrder=5> class Sta
 
 public:
 
-/** Only constructor available. We do not want a default constructor because then we could not be sure
- *	that data is consisten and we would have to be constantly be doing checks.*/
+/* @internal Only constructor available. We do not want a default constructor because then we could not be sure
+ * that data is consisten and we would have to be constantly be doing checks.*/
 
-		StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5)
+	StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5)
 	{
 		CLAM_ASSERT(data!=NULL,"Stats: A constructed array must be passed");
 		mData=data;
@@ -208,9 +208,9 @@ public:
 	/**
 	 * Computes and returns the Spread arround the Centroid.
 	 * \f[
-	 * 	Spread(Y) =
-	 * 		\sum_{i=0}^{N-1}{(Centroid(Y)-x_i)^2 y_i} 
-	 * 		\over { \sum_{i=0}^{N-1}{y_i} }
+	 * 	Spread(Y) = \frac
+	 * 		{\sum_{i=0}^{N-1}{(Centroid(Y)-x_i)^2 y_i} }
+	 * 		{ \sum_{i=0}^{N-1}{y_i} }
 	 * \f]
 	 * The spread gives an idea on how much the distribution
 	 * is NOT concentrated over the distribution centroid.
@@ -225,7 +225,7 @@ public:
 	 * \f]
 	 * - For a uniform distribution the spread it's:
 	 * \f[
-	 * 	Spread(UniformDistribution) = {(N-1)(N+1)}\over{12}
+	 * 	Spread(UniformDistribution) = \frac{(N-1)(N+1)}{12}
 	 * \f]
 	 *
 	 * Singularities and solution:
@@ -272,7 +272,35 @@ public:
 		return mStdDev(*mData,*dynamic_cast<CentralMoment<2,abs,T,U>*> (mCentralMoments[2]),true);
 	}
 
-	/** Get skewness coefficient, compute it if necessary*/
+	/**
+	 * Get skewness coefficient, compute it if necessary.
+	 *
+	 * The Skewness of a distribution gives an idea of 
+	 * the assimetry of the variance of the values.
+	 * @f[
+	 * Skew(X) = \frac
+	 * 	{\sum{\left( (x_i-Mean(X))^3\right)} } 
+	 * 	{\left(
+	 * 		\sum{\left(
+	 * 			x_i-Mean(X)
+	 * 		\right)^2}
+	 * 	\right) ^\frac{3}{2} }
+	 * @f]
+	 * Tipical values:
+	 * - This function returns greater positive values when
+	 *   there are more extreme values above the median than below.
+	 * - Returns negative values when 
+	 *   there are more extreme values below the median than above.
+	 * - Returns zero when the distribution of the \f$x_i\f$ 
+	 *   values around the Median is equilibrated.
+	 *
+	 * Singularities and solutions:
+	 * - Constant functions: Currently returns NaN but, in the future,
+	 *   it should return 0 because it can be considered an 
+	 *   equilibrated function.
+	 *
+	 * @todo Give an order of magnitude, limits or something
+	 */
 	U GetSkew()
 	{
 		if(!mCentralMoments[3])//instantiate second central moment if not present: we will like to reuse its value
@@ -280,7 +308,30 @@ public:
 		return mSkew(*mData,mStdDev,*dynamic_cast<CentralMoment<3,abs,T,U>*>(mCentralMoments[3]),true);
 	}
 
-	/** Get kurtosis, compute it if necessary*/
+	/**
+	 * Get kurtosis, compute it if necessary.
+	 *
+	 * The Kurtosis of a distribution gives an idea 
+	 * of the degree of pickness of the distribution.
+	 * @f[
+	 * Kurtosis(X) = \frac
+	 * 	{\sum{\left( (x_i-Mean(X))^4\right)} } 
+	 * 	{\left(
+	 * 		\sum{\left(
+	 * 			x_i-Mean(X)
+	 * 		\right)^2}
+	 * 	\right) ^2 }
+	 * @f]
+	 *
+	 * sum((xi-Mean(X))^4) / sum((xi-Mean(X))^2)^2 [Degree of peakness]
+	 * Tipical values:
+	 * - A normal distribution of \f$x_i\f$ values has a kurtosis near to 3.
+	 * - A constant distribution has a kurtosis of \f$\frac{-6(n^2+1)}{5(n^2-1)} + 3 \f$
+	 *
+	 * Singularities and solutions:
+	 * - Constant functions: Currently returns NaN but, in the future,
+	 *   it should return the value for a constant distribution.
+	 */
 	U GetKurtosis()
 	{
 		if(!mCentralMoments[4])//instantiate second central moment if not present: we will like to reuse its value
@@ -288,13 +339,25 @@ public:
 		return mKurtosis(*mData,*dynamic_cast<CentralMoment<2,abs,T,U>*>(mCentralMoments[2]),*dynamic_cast<CentralMoment<4,abs,T,U>*>(mCentralMoments[4]),true);
 	}
 
-	/** Get variance, compute it if necessary*/
+	/**
+	 * Get variance, compute it if necessary.
+	 *
+	 * The variance is the mean cuadratic distance from the mean.
+	 * @f[
+	 * Variance(X) = \frac
+	 * 	{\sum{\left( (x_i-Mean(X))^2\right)} } 
+	 * 	{Size(X)}
+	 * @f]
+	 */
 	U GetVariance()
 	{
 		return GetCentralMoment(SecondOrder);
 	}
 
-	/** Get energy, compute it if necessary*/
+	/**
+	 * Get energy, compute it if necessary.
+	 * 
+	 */
 	T GetEnergy()
 	{
 		return mEnergy(*mData);
@@ -397,45 +460,20 @@ public:
 		return 6*(2*GetCentroid() - size + 1) / (size * (size-1) * (size+1));
 
 	}
-	U GetTilt()
-	{
-		const Array<T>& Y = *mData;
-		const TSize size  = mData->Size();
-		const U m1 = GetMean();
-
-		TData d1=0;
-		TData d2=0;
-		for (unsigned i=0;i<size;i++)
-		{
-			d1 += i/Y[i];
-			d2 += 1/Y[i];
-		}
-
-		// ti = m1/ai *(n - (d1/d2))
-		// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
-
-		TData SumTi2 = 0;
-		TData Tilt = 0;
-		for (unsigned i=0;i<size;i++) 
-		{
-			Tilt += (1/Y[i] *(i-d1/d2));
-			TData ti = m1/Y[i]*(i - (d1/d2));
-			SumTi2 += ti*ti;
-		}
-
-		Tilt*= (m1*m1/SumTi2);
-		return Tilt;
-	}
-
 	/**
-	 * This statistic gives the sense on how many
+	 * Get flatness, compute it if necessary.
+	 *
+	 * The flatness is the relation among the geometric mean and the arithmetic mean.
+	 * It gives the 
+	 *
+	 * 
 	 */
 	U GetFlatness()
 	{
 		U mean = GetMean();
 		U geometricMean = GetGeometricMean();
-		if (mean<1e-100) mean=TData(1e-100);
-		if (geometricMean<1e-100) geometricMean=TData(1e-100);
+		if (mean<1e-20 || std::isnan(mean)) mean=TData(1e-20);
+		if (geometricMean<1e-20 || std::isnan(mean)) geometricMean=TData(1e-20);
 		return geometricMean/mean;
 	}
 
@@ -467,8 +505,39 @@ public:
 	}
 
 private:
+	/**
+	 * @warning The implementation of this statistic is numerically unstable.
+	 * Don't use it.
+	 */
+	U GetTilt()
+	{
+		const Array<T>& Y = *mData;
+		const TSize size  = mData->Size();
+		const U m1 = GetMean();
 
+		TData d1=0;
+		TData d2=0;
+		for (unsigned i=0;i<size;i++)
+		{
+			d1 += i/Y[i];
+			d2 += 1/Y[i];
+		}
 
+		// ti = m1/ai *(n - (d1/d2))
+		// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
+
+		TData SumTi2 = 0;
+		TData Tilt = 0;
+		for (unsigned i=0;i<size;i++) 
+		{
+			Tilt += (1/Y[i] *(i-d1/d2));
+			TData ti = m1/Y[i]*(i - (d1/d2));
+			SumTi2 += ti*ti;
+		}
+
+		Tilt*= (m1*m1/SumTi2);
+		return Tilt;
+	}
 
 	/** Chained method for initializing moments*/
 	template<int order> void InitMoment(const O<order>*)
