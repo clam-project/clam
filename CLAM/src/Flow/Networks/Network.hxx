@@ -16,12 +16,16 @@
 namespace CLAM
 {
 
+class FlowControl;
 
 class Network
 {
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
+	typedef ProcessingsMap::iterator ProcessingsMapIterator;
 	typedef std::list< NodeBase* > NodesList;
+	typedef NodesList::iterator NodesIterator;
+	
 	// constructor / destructor
 	Network();
 	Network( const std::string& );
@@ -37,6 +41,15 @@ public:
 	void Stop();
 	void DoProcessings();
 	void ConfigureNodes( int frameSize );
+	void ConfigurePorts( int frameSize );
+
+	void AddFlowControl( FlowControl* );
+
+	// accessors to nodes and processing
+	ProcessingsMapIterator BeginProcessings();
+	ProcessingsMapIterator EndProcessings();
+	NodesIterator BeginNodes();
+	NodesIterator EndNodes();
 
 protected:
 	InPort & GetInPortByCompleteName( const std::string& );
@@ -56,6 +69,9 @@ private:
 	std::string GetLastIdentifier( const std::string& );
 	std::string GetProcessingIdentifier( const std::string& );
 	static char NamesIdentifiersSeparator();
+
+
+	FlowControl* _flowControl;
 
 	/**this method is provisional, because Network may need non-audio nodes.
 	 * Thus the factory method should be a (virtual) method of OutPort, implemented

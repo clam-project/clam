@@ -1,5 +1,6 @@
 
 #include "Network.hxx"
+#include "FlowControl.hxx"
 #include <algorithm>
 
 namespace CLAM
@@ -9,18 +10,13 @@ namespace CLAM
 		void DeleteProcessing( Network::ProcessingsMap::value_type& mapElem ) {
 			delete mapElem.second;
 		}
-		void StartProcessing( Network::ProcessingsMap::value_type& mapElem ) {
-			mapElem.second->Start();
-		}
-		void StopProcessing( Network::ProcessingsMap::value_type& mapElem ) {
-			mapElem.second->Stop();
-		}
 	}
 	// constructor / destructor
 
 	Network::Network( const std::string& name ) :
-		_name( name )
-	{}
+		_name( name ),
+		_flowControl(0)
+	{}   
 
 	Network::Network() :
 		_name("Unnamed Network")
@@ -28,7 +24,16 @@ namespace CLAM
 	
 	Network::~Network()
 	{
+		if (_flowControl)
+		{
+			delete _flowControl;
+		}
 		std::for_each( 	_processings.begin(), _processings.end(), HelperFunctions::DeleteProcessing );
+	}
+
+	void Network::AddFlowControl(FlowControl* flowControl)
+	{
+		_flowControl = flowControl;
 	}
 
 	Processing& Network::GetProcessing( const std::string & name )
@@ -44,6 +49,7 @@ namespace CLAM
 		// returns false if the key was repeated.
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
+		_flowControl->ProcessingAddedToNetwork();
 	}
 
 	bool Network::HasProcessing( const std::string & name )
@@ -65,6 +71,7 @@ namespace CLAM
 			return false;
 
 		inport.Attach(GetNodeAttachedTo(outport));
+		_flowControl->ConnectionAddedToNetwork();
 		return true;
 	}
 
@@ -140,27 +147,47 @@ namespace CLAM
 
 	void Network::Start()
 	{
-		
-		std::for_each( _processings.begin(), _processings.end(), HelperFunctions::StartProcessing );
+		_flowControl->StartNetwork();
 	}
 	void Network::Stop()
 	{
-		std::for_each( _processings.begin(), _processings.end(), HelperFunctions::StopProcessing );
+		_flowControl->StopNetwork();
 	}
 	void Network::DoProcessings()
 	{
-		ProcessingsMap::iterator it;
-		for ( it=_processings.begin(); it!=_processings.end(); it++ )
-				it->second->Do();
+		_flowControl->DoProcessings();
 	}
 
 	void Network::ConfigureNodes( int frameSize )
 	{
-		NodesList::iterator it;
-		for (it = _nodes.begin(); it != _nodes.end(); it++ )
-		{
-			(*it)->Configure(frameSize);
-		}
+		CLAM_ASSERT(_flowControl, "Error: this network hasn't FlowControl attached");
+		_flowControl->ConfigureNodes();
+	}
+
+	void Network::ConfigurePorts( int frameSize )
+	{
+		CLAM_ASSERT(_flowControl, "Error: this network hasn't FlowControl attached");
+		_flowControl->ConfigurePorts();	
+	}
+
+	Network::ProcessingsMapIterator Network::BeginProcessings()
+	{
+		return _processings.begin();
+	}
+
+	Network::ProcessingsMapIterator Network::EndProcessings()
+	{
+		return _processings.end();
+	}
+
+	Network::NodesIterator Network::BeginNodes()
+	{
+		return _nodes.begin();
+	}
+
+	Network::NodesIterator Network::EndNodes()
+	{
+		return _nodes.end();
 	}
 
 }
