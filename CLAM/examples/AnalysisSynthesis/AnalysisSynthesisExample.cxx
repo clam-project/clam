@@ -20,9 +20,7 @@
  */
 
 #include "AnalysisSynthesisExampleBase.hxx"
-#include "DebugSnapshots.hxx"
-#include "AudioSnapshot.hxx"
-#include "SpectrumSnapshot.hxx"
+#include "Plot.hxx"
 #include <iostream>
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
@@ -95,7 +93,7 @@ void AnalysisSynthesisExampleStdio::Run(void)
 				       	break;
 				}
 				LoadInputSound();
-				showSnapshotAudio(mAudioIn,"Input Audio");
+				CLAMVM::plot(mAudioIn, "Input Audio");
 				Analyze();
 				break;
 			}
@@ -197,9 +195,9 @@ void AnalysisSynthesisExampleStdio::Run(void)
 				}
 				Synthesize();
 				
-				showSnapshotAudio(mAudioOut,"Output Sound");
-				showSnapshotAudio(mAudioOutSin,"Sinusoidal Component");
-				showSnapshotAudio(mAudioOutRes,"Residual Component");
+				CLAMVM::plot(mAudioOut, "Output Sound");
+				CLAMVM::plot(mAudioOutSin, "Sinusoidal Component");
+				CLAMVM::plot(mAudioOutRes, "Residual Component");
 				break;
 			}
 			case 0://Exit
