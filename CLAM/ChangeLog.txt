@@ -1,7 +1,7 @@
 
 
-2003-10-4? CLAM_0_5_3
-''
+2003-10-4 CLAM_0_5_3
+'Starting the new course'
 
   * Build system:
       ** Bug fix in srcdeps: uninitialized var in emptydsp.c
