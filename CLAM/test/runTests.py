@@ -5,15 +5,15 @@
 # 1: make depend and make clean
 # 2: cvs update
 # 3: remove & cvs checkout
-thoroughtnessLevel = 3  # at night we want 3
-disableMail = False
+thoroughtnessLevel = 1  # at night we want 3
+enableSendMail = True
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
 executionTime = 15 #sec  30 by default 
 #TODO: this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
-
+configurations = ['release'] #['debug', 'release'] 
 
 import commands
 import os
@@ -29,20 +29,27 @@ SANDBOX_NAME = 'clean-'+MODULE_TAG
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
 SALTO_DATA_FOLDER = CLAM_SANDBOXES + 'SaltoDataFolder/'
 
-unitTestsPath = BUILDPATH+'Tests/AllUnitTests/'
-functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/AllFunctionalTests/'
+unitTestsPath = BUILDPATH+'Tests/UnitTests/'
+functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/'
 spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 
+#TODO cvs checkout for examples outside clam module
 #TODO max time allowed for each test -
-testsToRun = [
-	( 'AllUnitTests', unitTestsPath ),
-	( 'AllApplicationlTests', functionalTestsPath ),
-	( 'SMSTools', BUILDPATH+'Examples/SMS/Tools/' ),
-	( 'SaltoExample',BUILDPATH + 'Examples/Salto/' ),
-	( 'SpectralDelay', BUILDPATH+'Examples/SpectralDelay/' ),
-	( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/' )
+
+automaticTests = [
+	( 'UnitTests', unitTestsPath ),
+	( 'FunctionalTests', functionalTestsPath )
 ]
+
+externalApplications = [
+	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
+	( 'SaltoExample', CLAM_SANDBOXES+'CLAM_Salto/build/' ),
+	( 'SpectralDelay', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/'),
+	( 'NetworkEditor', CLAM_SANDBOXES+'CLAM_NetworkEditor/build/' ),
+	( 'Voice2MIDI', CLAM_SANDBOXES+'CLAM_Voice2MIDI/build/' )
+]
+
 supervisedTests = [
 	('SpectralPeaksPresentation', spvTestsPath+'SpectralPeaksPresentation/' ), 
 	('SpectrumPresentation', spvTestsPath+'SpectrumPresentation/' ),
@@ -79,12 +86,17 @@ notPortedTests = [
 ]
 
 
-# insert sub-lists to the main list:
+testsToRun = []
+# insert sub-lists to the main list: 
+#    this makes debugging easier
+testsToRun[-1:-1] = externalApplications 
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
+testsToRun[-1:-1] = automaticTests 
 
-sender = '"automatic tests script" <pau.arumi@iua.upf.es>'
+sender = '"automatic tests script" <parumi@iua.upf.es>'
 
+# global vars. ugly, yes.
 foundCompilationErrors = False 
 foundTestsFailures = False
 foundExecutionErrors = False
@@ -95,7 +107,7 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 
 	# Add the From: and To: headers at the start!
 	msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n" % (fromaddr, toaddrs, subject) + body
-	if disableMail :
+	if not enableSendMail :
 		print msg
 		return
 	
@@ -203,14 +215,14 @@ def formatSummary(name, configuration, result) :
 	return nameConfig + points + result+'\n'
 
 def compileAndRun(name, path) :
-	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures
+	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures, configurations
 	if name == '' :
 		print 'found removed test (invalid dir or settings file)'
 		return '',''
 	os.chdir(path)
 	# compilation phase
 	summary = details = s = d = ''
-	for configuration in ['debug', 'release'] :
+	for configuration in configurations :
 		if thoroughtnessLevel >= 1 :
 			getStatusOutput('make clean')
 			getStatusOutput('make depend')
@@ -255,11 +267,8 @@ mailTemplate = '''
 
 Status of CLAM on tag: %s 
 
-New:
-  - robust on non existing dirs and settings files (5 March)
 TODO:
-  - comand line options
-  - default options in another file, maybe?
+  - cvs checkouts for clam examples (now in different modules) 
   - behaviour: send public mail when a)something fails, or 
     b)everything ok, but last time something failed.
     
@@ -311,10 +320,10 @@ def sendError(usermsg='') :
 #-------------------------------------------------------------------------------------  
 #  Aplication Logic
 #
-totalSummary = totalDetails = ''
+totalSummary = totalDetails = ['']
 def runTests() :
 	global totalSummary, totalDetails		
-	subj = subject
+	subj = [subject]
 	report = []
 	if thoroughtnessLevel <3 :
 		checkPaths()
@@ -357,20 +366,20 @@ def runTests() :
 		print '\n\nname\t\t %s \npath \t\t%s \n' % (name, path)
 		summary, details  = compileAndRun(name, path)
 		#TODO a refactoring this huge line -> create class
-		totalSummary += summary
-		totalDetails += details
+		totalSummary.append(summary)
+		totalDetails.append(details)
 
 		print totalSummary
 		report.append( (name, summary, details) )
 
 
-	mailBody = mailTemplate  % ( MODULE_TAG, totalSummary, totalDetails )
+	mailBody = mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
 	if foundCompilationErrors : 
-		subj += ' - compilation err!'
+		subj.append(' - compilation err!')
 	if foundTestsFailures :
-		subj += ' - tests failures!'
+		subj.append(' - tests failures!')
 	if foundExecutionErrors :
-		subj += ' - execution errs!'
+		subj.append(' - execution errs!')
 
 	if foundCompilationErrors or foundTestsFailures or foundExecutionErrors :
 		sendReportTo = publicAddress
@@ -380,7 +389,7 @@ def runTests() :
 		sendmail( sender, sendReportTo, subj, mailBody )
 	else :
 		print 'nowbody to send report'
-		print 'subject: ', subj
+		print 'subject: ', "".join(subj)
 		print mailBody
 
 #--------------------------------------------------------------
