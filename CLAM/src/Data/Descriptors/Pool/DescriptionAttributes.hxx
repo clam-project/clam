@@ -9,12 +9,6 @@
 #include "XMLComponentAdapter.hxx"
 #include "Component.hxx"
 
-/**
- * @group Descriptors Pool
- */
-
-
-
 namespace CLAM
 {
 	class AbstractAttribute
