@@ -97,11 +97,18 @@ namespace CLAM
 	void XmlStorage::Restore(Component & obj, const std::string & filename)
 	{
 		std::ifstream is(filename.c_str());
-		CLAM_WARNING(is.is_open(),"Restoring a unopened file");
+		CLAM_WARNING(is.is_open(),"Restoring from an unopened file");
 		Restore(obj,is);
 	}
 
-	void XmlStorage::AppendToDocument(Component & obj, const std::string & path, std::iostream & str)
+	void XmlStorage::Dump(const Component & obj, const std::string & rootName, const std::string & filename)
+	{
+		std::ofstream os(filename.c_str());
+		CLAM_WARNING(os.is_open(),"Dumping on an unopened file");
+		Dump(obj,rootName,os);
+	}
+
+	void XmlStorage::AppendToDocument(const Component & obj, const std::string & path, std::iostream & str)
 	{
 		XmlStorage storage;
 		storage.Read(str);
@@ -169,6 +176,7 @@ namespace CLAM
 		}
 
 		CLAM_ASSERT(false, "A weird XMLable inserted");
+		return false;
 	}
 
 // Private helper functions

@@ -112,12 +112,12 @@ public:
 	 * on the given xpath of an existing i/o stream
 	 * @todo Not implemented
 	 */
-	static void AppendToDocument(Component & obj, const std::string & path, std::iostream & str);
+	static void AppendToDocument(const Component & obj, const std::string & path, std::iostream & str);
 
 	/**
 	 * Dump a Component from the named XML file
 	 */
-	static void Dump(Component & obj, std::string rootName, const std::string & filename);
+	static void Dump(const Component & obj, const std::string & rootName, const std::string & filename);
 
 	/**
 	 * Restore a Component from the named XML file
