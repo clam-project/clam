@@ -69,21 +69,22 @@ namespace CLAMGUI
 	
 	void SMSTools::OnNewTime( double value )
 	{
-		if (!mHaveAnalysis)
+		if ( ! mDataState.Query( DataState::HaveAnalysis ) )
 			return;
 		//Change mCounter
 		TTime time( value  );
 		TIndex nframe;
-		if(mHaveTransformation)
-			nframe = mTransformedSegment.FindFrame( time );
+		Segment tmpSegment;
+
+		if( mDataState.Query( DataState::HaveTransformation ) ) 
+			tmpSegment = mTransformedSegment;
 		else
-			nframe = mOriginalSegment.FindFrame( time );
+			tmpSegment = mOriginalSegment;
+
+		nframe = tmpSegment.FindFrame( time );
+		mExplorer.NewFrame( tmpSegment.GetFramesArray()[nframe], mUI->FrameDataAvailable() );
 		
-		mUI->mCounter->value( (int) nframe );
-		if(mHaveTransformation)
-			mExplorer.NewFrame( mTransformedSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
-		else
-			mExplorer.NewFrame( mOriginalSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
+		mUI->mCounter->value( (int) nframe );		
 	}
 
 	Progress* SMSTools::CreateProgress(const char* title,float from,float to) 
@@ -169,7 +170,7 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to load...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return false;
@@ -179,12 +180,23 @@ namespace CLAMGUI
 
 	void SMSTools::StoreAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return;
 		
 		SMSBase::StoreAnalysis(fileName);
+
+	}
+
+	void SMSTools::StoreTransformation()
+	{
+		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
+
+		if ( !fileName )
+			return;
+		
+		SMSBase::StoreTransformation(fileName);
 
 	}
 

@@ -55,19 +55,8 @@ using namespace CLAM;
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mHaveConfig = false;
-	mHaveAnalysis = false;
-	mHaveAudioIn = false;
-	mHaveAudioOut = false;
-	mHaveTransformationScore = false;
-	mHaveMelody = false;
-	mHaveSpectrum = false;
-	mHaveTransformation = false;
-	mHaveAudioMorph = false;
-
 	mTransformation.mChainInput.Attach(mOriginalSegment);
 	mTransformation.mChainOutput.Attach(mTransformedSegment);
-
 }
 
 void SMSBase::DestroyWaitMessage( )
@@ -89,7 +78,7 @@ SMSBase::~SMSBase(void)
 
 void SMSBase::InitConfigs(void)
 {
-	if (!mHaveConfig) return;
+	if ( !mDataState.Query(DataState::HaveConfig) ) return;
 
 	/*global parameters*/
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
@@ -143,46 +132,43 @@ void SMSBase::InitConfigs(void)
 
 void SMSBase::LoadConfig(const std::string& inputFileName)
 {
-	if(mHaveConfig)//This means we had a previous configuration
+	if( mDataState.Query( DataState::HaveConfig) )//This means we had a previous configuration
 	{
-		mHaveAnalysis = false;
-		mHaveAudioIn = false;
-		mHaveAudioOut = false;
-		mHaveTransformationScore = false;
-		mHaveMelody = false;
-		mHaveSpectrum = false;
-		mHaveAudioMorph = false;
+		mDataState.Abandoned( DataState::HaveAnalysis );
+		mDataState.Abandoned( DataState::HaveAudioIn );
+		mDataState.Abandoned( DataState::HaveAudioOut );
+		mDataState.Abandoned( DataState::HaveTransformationScore );
+		mDataState.Abandoned( DataState::HaveMelody );
+		mDataState.Abandoned( DataState::HaveSpectrum );
+		mDataState.Abandoned( DataState::HaveAudioMorph );
 	}
 
 	mCurrentWaitMessage = CreateWaitMessage( "Loading XML configuration file, please wait." );
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
-	mHaveConfig = false;
-	if(	
-	mGlobalConfig.HasInputSoundFile() &&
-	mGlobalConfig.HasOutputSoundFile() &&
-	mGlobalConfig.HasOutputAnalysisFile() &&
-	mGlobalConfig.HasInputAnalysisFile() &&
-	mGlobalConfig.HasAnalysisWindowSize() &&
-	mGlobalConfig.HasAnalysisHopSize() &&
-	mGlobalConfig.HasAnalysisWindowType() &&
-	mGlobalConfig.HasResAnalysisWindowSize() &&
-	mGlobalConfig.HasResAnalysisWindowType() &&
-	mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
-	mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
-	mGlobalConfig.HasAnalysisMaxSines() &&
-	mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
-	mGlobalConfig.HasAnalysisReferenceFundFreq() && 
-	mGlobalConfig.HasAnalysisLowestFundFreq() && 
-	mGlobalConfig.HasAnalysisHighestFundFreq() && 
-	mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
-	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
-	mGlobalConfig.HasSynthesisFrameSize() &&
-	mGlobalConfig.HasSynthesisWindowType() &&
-	mGlobalConfig.HasSynthesisPhaseManagementType())
+	mDataState.Abandoned(DataState::HaveConfig );
+	if(
+		mGlobalConfig.HasInputSoundFile() &&
+		mGlobalConfig.HasAnalysisWindowSize() &&
+		mGlobalConfig.HasAnalysisHopSize() &&
+		mGlobalConfig.HasAnalysisWindowType() &&
+		mGlobalConfig.HasResAnalysisWindowSize() &&
+		mGlobalConfig.HasResAnalysisWindowType() &&
+		mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
+		mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
+		mGlobalConfig.HasAnalysisMaxSines() &&
+		mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
+		mGlobalConfig.HasAnalysisReferenceFundFreq() && 
+		mGlobalConfig.HasAnalysisLowestFundFreq() && 
+		mGlobalConfig.HasAnalysisHighestFundFreq() && 
+		mGlobalConfig.HasAnalysisMaxFundFreqError() &&
+		mGlobalConfig.HasAnalysisMaxFundCandidates() &&
+		mGlobalConfig.HasSynthesisFrameSize() &&
+		mGlobalConfig.HasSynthesisWindowType() &&
+		mGlobalConfig.HasSynthesisPhaseManagementType() )
 	{	
-		mHaveConfig = true;
+		mDataState.Reached( DataState::HaveConfig );
 		InitConfigs();
 	}
 	DestroyWaitMessage();
@@ -209,7 +195,7 @@ bool SMSBase::LoadAnalysis(const char* fileName)
 	mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, fileName );
 
 	DestroyWaitMessage();
-	mHaveTransformation=false;
+	mDataState.Abandoned( DataState::HaveTransformation );
 
 	return true;
 }
@@ -219,23 +205,36 @@ void SMSBase::StoreAnalysis(const char* fileName)
 {
 	mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
 
-	mSerialization.DoSerialization( mSerialization.Store, mOriginalSegment, fileName );	
+	mSerialization.DoSerialization( mSerialization.Store, mOriginalSegment, fileName );
 
 	DestroyWaitMessage();
 }
 
+void SMSBase::StoreTransformation(const char* fileName)
+{
+	mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
 
-bool SMSBase::LoadInputSound(void)
+	mSerialization.DoSerialization( mSerialization.Store, mTransformedSegment, fileName );
+
+	DestroyWaitMessage();
+}
+
+bool SMSBase::LoadInputSound( )
+{
+	return LoadInputSound( mGlobalConfig.GetInputSoundFile().c_str() );
+}
+
+bool SMSBase::LoadInputSound( const char* fileName )
 {
 	//The File In PO
 	AudioFileIn myAudioFileIn;
 	AudioFileConfig infilecfg;
-	infilecfg.SetFilename(mGlobalConfig.GetInputSoundFile());
+	infilecfg.SetFilename( fileName );
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	if(!myAudioFileIn.Configure(infilecfg))
 	{
-		mHaveAudioIn = false;
-		return mHaveAudioIn;
+		mDataState.Abandoned( DataState::HaveAudioIn );
+		return false;
 	}
 			
 	/////////////////////////////////////////////////////////////////////////////
@@ -258,12 +257,12 @@ bool SMSBase::LoadInputSound(void)
 	myAudioFileIn.Do(mOriginalSegment.GetAudio());
 	myAudioFileIn.Stop();
 
-	mHaveAudioIn = true;
+	mDataState.Reached( DataState::HaveAudioIn );
 
 	//TODO: this should be called from elsewhere and both methods should be refactored to reduce duplication
 	LoadMorphSound();
 
-	return mHaveAudioIn;
+	return mDataState.Query( DataState::HaveAudioIn );
 }
 
 bool SMSBase::LoadMorphSound(void)
@@ -275,8 +274,8 @@ bool SMSBase::LoadMorphSound(void)
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	if(!myAudioFileIn.Configure(infilecfg))
 	{
-		mHaveAudioMorph = false;
-		return mHaveAudioMorph;
+		mDataState.Abandoned( DataState::HaveAudioMorph );
+		return false;
 	}
 			
 	/////////////////////////////////////////////////////////////////////////////
@@ -297,9 +296,9 @@ bool SMSBase::LoadMorphSound(void)
 	myAudioFileIn.Do(mMorphSegment.GetAudio());
 	myAudioFileIn.Stop();
 
-	mHaveAudioMorph = true;
+	mDataState.Reached( DataState::HaveAudioMorph );
 
-	return mHaveAudioMorph;
+	return true;
 }
 
 
@@ -433,10 +432,10 @@ void SMSBase::Analyze(void)
 			DestroyWaitMessage();
 
 		}
-	mHaveAnalysis = true;
-	mHaveSpectrum = true;
-	mHaveTransformation = false;
-	if(mHaveAudioMorph)
+	mDataState.Reached( DataState::HaveAnalysis );
+	mDataState.Reached( DataState::HaveSpectrum );
+	mDataState.Abandoned( DataState::HaveTransformation );
+	if( mDataState.Query(DataState::HaveAudioMorph) )
 	{
 		TSize size = mMorphSegment.GetAudio().GetSize();
 		mCurrentProgressIndicator = CreateProgress("Morph Analysis Processing",0,float(size));
@@ -459,14 +458,14 @@ void SMSBase::Analyze(void)
 	}
 }
 
-void SMSBase::StoreOutputSound(void)
+void SMSBase::StoreOutputSound( const char* fileName )
 {
 	AudioFileOut myAudioFileOut;
 	AudioFileConfig outfilecfg;
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
+	outfilecfg.SetFilename( fileName );
 	outfilecfg.SetSampleRate(mSamplingRate);
 
 	myAudioFileOut.Configure(outfilecfg);
@@ -477,18 +476,14 @@ void SMSBase::StoreOutputSound(void)
 }
 
 
-void SMSBase::StoreOutputSoundSinusoidal(void)
+void SMSBase::StoreOutputSoundSinusoidal( const char* fileName )
 {
 	AudioFileOut myAudioFileOut;
 	AudioFileConfig outfilecfg;
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	std::string filename(
-		mGlobalConfig.GetOutputSoundFile().
-			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
-	filename += "_sin.wav";
-	outfilecfg.SetFilename(filename);
+	outfilecfg.SetFilename( fileName );
 	outfilecfg.SetSampleRate(mSamplingRate);
 	
 	myAudioFileOut.Configure(outfilecfg);
@@ -498,7 +493,7 @@ void SMSBase::StoreOutputSoundSinusoidal(void)
 	myAudioFileOut.Stop();
 }
 
-void SMSBase::StoreOutputSoundResidual(void)
+void SMSBase::StoreOutputSoundResidual( const char* fileName )
 {
 	AudioFileOut myAudioFileOut;
 	AudioFileConfig outfilecfg;
@@ -506,12 +501,7 @@ void SMSBase::StoreOutputSoundResidual(void)
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetSampleRate(mSamplingRate);
-	std::string filename(
-		mGlobalConfig.GetOutputSoundFile().
-			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
-	filename += "_res.wav";
-	
-	outfilecfg.SetFilename(filename);
+	outfilecfg.SetFilename( fileName );
 	
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -566,7 +556,7 @@ void SMSBase::SynthesisProcessing()
 	}
 
 
-	mHaveAudioOut = true;
+	mDataState.Reached( DataState::HaveAudioOut );
 
 	mySynthesis.Stop();
 
@@ -582,10 +572,10 @@ void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
 
 void SMSBase::Synthesize(void)
 {
-	if(!mHaveTransformation)
+	if(!mDataState.Query( DataState::HaveTransformation) )
 	{
 		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
-		mHaveTransformation=true;
+		mDataState.Reached( DataState::HaveTransformation );
 	}
 
 	TSize size=TSize((mTransformedSegment.GetEndTime()-
@@ -800,16 +790,11 @@ in metadata extraction from an input sound.*/
 
 }
 
-void SMSBase::StoreMelody(void)
+void SMSBase::StoreMelody( const char* str )
 {
-	std::string melodyFilename(
-	mGlobalConfig.GetOutputAnalysisFile().
-			substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
-	melodyFilename += "_melody.xml";
-
 	XMLStorage x;
 	x.UseIndentation(true);
-	x.Dump(mMelody,"Analyzed_Melody",melodyFilename);
+	x.Dump(mMelody,"Analyzed_Melody", str);
 }
 
 void SMSBase::LoadTransformationScore(const std::string& inputFileName)
@@ -872,7 +857,7 @@ void SMSBase::TransformProcessing(void)
 		mCurrentProgressIndicator->Update(float(i++));
 	}
 	mTransformation.Stop();
-	mHaveTransformation=true;
+	mDataState.Reached( DataState::HaveTransformation );
 
 
 }
@@ -917,5 +902,4 @@ void SMSBase::SetSamplingRate(TSize samplingRate)
 	mAudioOut.SetSampleRate(samplingRate);
 	mAudioOutRes.SetSampleRate(samplingRate);
 	mAudioOutSin.SetSampleRate(samplingRate);
-
 }

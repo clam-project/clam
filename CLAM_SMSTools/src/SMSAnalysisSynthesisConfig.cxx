@@ -17,9 +17,6 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 
 /** General	**/
 	SetInputSoundFile("");
-	SetOutputSoundFile("");
-	SetInputAnalysisFile("");
-	SetOutputAnalysisFile("");
 /** Analysis **/
 	SetAnalysisWindowSize(513);
 	/* by default (if -1) will take (WindowSize-1)/2*/

@@ -1,20 +1,103 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0103 
 header_name {.hxx} 
 code_name {.cxx}
+decl {\#include "Fl_Config_Button.hxx"} {public
+} 
+
+decl {\#include "Fl_Data_Button.hxx"} {public
+} 
+
+decl {\#include "Fl_Display_Button.hxx"} {public
+} 
+
+decl {\#include "Fl_File_Button.hxx"} {public
+} 
+
 decl {\#include <FL/Fl_Tile.H>} {public
 } 
 
 decl {\#include "Fl_Smart_Tile.hxx"} {public
 } 
 
-decl {class Fl_Smart_Tile;} {public
-} 
-
 decl {\#include "ForwardDeclarations.hxx"} {public
 } 
 
+decl {\#include <FL/fl_file_chooser.H>} {} 
+
 decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {} 
+
+decl {\#include "Fl_SMS_Arrow.hxx"} {} 
+
+decl {\#include "Fl_SMS_Group.hxx"} {} 
+
+decl {\#include <FL/fl_message.H>} {} 
+
+decl {class Fl_Smart_Tile;} {public
+} 
+
+decl {class Fl_Config_Button;} {public
+} 
+
+decl {class Fl_Display_Button;} {public
+} 
+
+decl {class Fl_File_Button;} {public
+} 
+
+decl {class Fl_SMS_Arrow;} {public
+} 
+
+decl {class Fl_SMS_Group;} {} 
+
+decl {class Fl_Smart_Tile;} {public
+} 
+
+class SMSBrowser {} {
+  Function {SMSBrowser()} {open
+  } {
+    Fl_Window mWindow {
+      label {SMSBrowser | MTG-UPF (Barcelona)} open
+      xywh {574 541 870 545} hide resizable
+    } {
+      Fl_Counter mCounter {
+        label {Frame }
+        callback {//FrameClick();
+mNewPosition.Emit( );}
+        xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+      }
+      Fl_Box mSmartTile {
+        xywh {5 5 860 515}
+        class Fl_Smart_Tile
+      }
+    }
+  }
+  Function {h()} {return_type short
+  } {
+    code {return mSmartTile->h();} {}
+  }
+  Function {w()} {return_type short
+  } {
+    code {return mSmartTile->w();} {}
+  }
+  Function {show()} {} {
+    code {mWindow->show();} {}
+  }
+  Function {redraw()} {} {
+    code {mSmartTile->redraw();} {}
+  }
+  Function {add( Fl_Widget* widget )} {} {
+    code {mSmartTile->add(widget);} {}
+  }
+  Function {add( Fl_Widget& widget )} {} {
+    code {mSmartTile->add(widget);} {}
+  }
+  Function {remove( Fl_Widget* widget )} {} {
+    code {mSmartTile->remove(widget);} {}
+  }
+  decl {SigSlot::Signalv0 mNewPosition;} {public
+  }
+} 
 
 class UserInterface {open
 } {
@@ -23,255 +106,252 @@ class UserInterface {open
   Function {UserInterface()} {open
   } {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {276 191 872 548} resizable
-      code0 {mWindow2=NULL;} visible
+      label {SMSTools. An analysis/synthesis application | MTG-UPF (Barcelona)} open
+      xywh {487 386 880 470} resizable visible
     } {
-      Fl_Group {} {open
-        xywh {0 0 872 21}
-      } {}
-      Fl_Menu_Bar mMenuBar {open
-        private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
+      Fl_Group {} {
+        label {Project Box}
+        private xywh {5 5 870 210} box BORDER_FRAME color 0 labeltype NO_LABEL
+        class Fl_SMS_Group
       } {
-        submenu mFileMenuItem {
-          label File
-          private xywh {5 5 100 20} labelsize 12
+        Fl_Box {} {
+          label Project
+          private xywh {10 10 50 20} labelsize 12
+        }
+        Fl_Button {} {
+          label {Open...}
+          callback {LoadConfiguration();}
+          private tooltip {Opens a global configuration file} xywh {60 10 70 20} box THIN_UP_BOX labelsize 12
+        }
+        Fl_Button {} {
+          label {Edit...}
+          callback {EditConfiguration();}
+          private tooltip {Edits the current configuration} xywh {130 10 70 20} box THIN_UP_BOX labelsize 12
+        }
+        Fl_Button {} {
+          label {Save...}
+          callback {StoreConfiguration();}
+          private tooltip {Saves the current configuration} xywh {200 10 70 20} box THIN_UP_BOX labelsize 12
+        }
+        Fl_Group {} {
+          private xywh {245 90 70 85} color 0
         } {
-          submenu mConfigurationOpsMenuItem {
-            label Configuration open
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem mLoadCfgMenuItem {
-              label Load
-              callback {LoadConfiguration();}
-              private xywh {10 10 100 20} labelsize 12
-            }
-            menuitem mEditCfgMenuItem {
-              label Edit
-              callback {EditConfiguration();}
-              private xywh {20 20 100 20} labelsize 12
-            }
-            menuitem mStoreCfgMenuItem {
-              label Save
-              callback {StoreConfiguration();}
-              private xywh {20 20 100 20} labelsize 12
-            }
+          Fl_Button mAnalysisDataFromProcess {
+            label {\\>}
+            xywh {245 90 70 35} type Radio box THIN_UP_BOX
+            class Fl_SMS_Arrow
           }
-          submenu mAnalysisFileOpsMenuItem {
-            label {SMS Analysis}
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem mLoadAnalysisMenuItem {
-              label {Load Analysis Data...}
-              callback {LoadAnalysisData();}
-              private xywh {50 50 100 20} labelsize 12
-            }
-            menuitem mStoreAnalysisMenuItem {
-              label {Store Analysis Data...}
-              callback {StoreAnalysisData();}
-              private xywh {50 50 100 20} labelsize 12 deactivate
-            }
-          }
-          submenu mMelodyFileOpsMenuItem {
-            label Melody
-            private xywh {30 30 100 20} labelsize 12
-          } {
-            menuitem mStoreMelodyMenuItem {
-              label {Save Extracted Melody...}
-              callback {StoreMelody();}
-              private xywh {80 80 100 20} labelsize 12
-            }
-          }
-          submenu mSMSTransFileOpsMenuItem {
-            label {SMS Transformation}
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem mLoadSMSTransScoreMenuItem {
-              label {Load Score...}
-              callback {LoadTransformation();}
-              private xywh {65 65 100 20} labelsize 12
-            }
-          }
-          submenu mSMSSynthesisFileOpsMenuItem {
-            label {SMS Synthesis} open
-            private xywh {20 20 100 20} labelsize 12
-          } {
-            menuitem mStoreSMSSynthSoundMenuItem {
-              label {Save synthesized sound...}
-              callback {StoreOutputSound();}
-              private xywh {40 40 100 20} labelsize 12
-            }
-            menuitem mStoreSMSSynthSinusoidalMenuItem {
-              label {Save synthesized sinusoidal...}
-              callback {StoreOutputSoundSinusoidal();}
-              private xywh {70 70 100 20} labelsize 12
-            }
-            menuitem mStoreSMSSynthResidualMenuItem {
-              label {Save synthesized residual...}
-              callback {StoreOutputSoundResidual();}
-              private xywh {75 75 100 20} labelsize 12
-            }
-          }
-          menuitem mAppExitMenuItem {
-            label Exit
-            callback {if(mWindow2!=NULL) delete mWindow2;
-Exit();}
-            private xywh {20 20 100 20} shortcut 0x40071 labelsize 12
+          Fl_Button mAnalysisDataFromFile {
+            label {/>}
+            xywh {245 125 70 35} type Radio box THIN_UP_BOX
+            class Fl_SMS_Arrow
           }
         }
-        submenu mSMSAnalysisMenuItem {
-          label {SMS Analysis}
-          private xywh {0 0 100 20} labelsize 12
-        } {
-          menuitem mDoSMSAnalysisMenuItem {
-            label Analyze
-            callback {Analyze();}
-            private xywh {40 40 100 20} shortcut 0x40061 labelsize 12 deactivate
-          }
-          menuitem mMelodyExtractionMenuItem {
-            label {Melody Extraction}
-            callback {AnalyzeMelody();}
-            private xywh {80 80 100 20} labelsize 12
-          }
-        }
-        submenu mSMSTransformationMenuItem {
-          label {SMS Transformation} open
-          private xywh {20 20 100 20} labelsize 12
-        } {
-          menuitem mDoSMSTransMenuItem {
-            label Apply
-            callback {Transform();}
-            private xywh {60 60 100 20} labelsize 12 deactivate
-          }
-          menuitem mUndoTransMenuItem {
-            label {Undo Transformation}
-            callback {UndoTransform();} selected
-            private xywh {0 0 100 20} labelsize 12
-          }
-        }
-        submenu mSMSSynthesisMenuItem {
-          label {SMS Synthesis}
-          private xywh {0 0 100 20} labelsize 12
-        } {
-          menuitem mDoSMSSynthesisMenuItem {
-            label Synthesize
-            callback {Synthesize();}
-            private xywh {30 30 100 20} shortcut 0x40073 labelsize 12
-          }
-        }
-        submenu mViewMenuItem {
-          label View
-          private xywh {0 0 100 20} labelsize 12
-        } {
-          menuitem mShowOriginalAudioMenuItem {
-            label {Original Audio}
-            callback {DisplayInputSound();}
-            private xywh {0 0 100 20} labelsize 12
-          }
-          submenu mShowAnalysisResultsMenuItem {
-            label {Analysis Results} open
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem mShowSinTracksMenuItem {
-              label SinusoidalTracks
-              callback {DisplaySinusoidalTracks();}
-              private xywh {0 0 100 20} labelsize 12
-            }
-            submenu mViewFrameDataMenuItem {
-              label {Frame Data}
-              private xywh {0 0 100 20} labelsize 12
-            } {
-              menuitem mShowSpectrumAndPeaksMenuItem {
-                label {Spectrum and Peaks}
-                callback {DisplaySpectrumAndPeaks();}
-                private xywh {0 0 100 20} labelsize 12
-              }
-              menuitem mShowSinusoidalSpectrumMenuItem {
-                label {Sinusoidal Spectrum}
-                callback {DisplaySinusoidalSpectrum();}
-                private xywh {0 0 100 20} labelsize 12 deactivate
-              }
-              menuitem mShowResidualSpectrumMenuItem {
-                label {Residual Spectrum}
-                callback {DisplayResidualSpectrum();}
-                private xywh {0 0 100 20} labelsize 12
-              }
-            }
-          }
-          submenu mViewSynthesisResultsMenuItem {
-            label {Synthesis Results} open
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem mShowSynthesizedAudioMenuItem {
-              label {Synthesized Audio}
-              callback {DisplaySynthesizedAudio();}
-              private xywh {0 0 100 20} labelsize 12
-            }
-            menuitem mShowSynthesizedSinusoidalMenuItem {
-              label {Synthesized Sinusoidal}
-              callback {DisplaySynthesizedSinusoidal();}
-              private xywh {0 0 100 20} labelsize 12
-            }
-            menuitem mShowSynthesizedResidualMenuItem {
-              label {Synthesized Residual Sound}
-              callback {DisplaySynthesizedResidual();}
-              private xywh {0 0 100 20} labelsize 12
-            }
-          }
-        }
-        submenu mHelpMenuItem {
-          label Help
-          xywh {0 0 100 20} labelsize 12
+        Fl_Menu_Button mSegmentButton {
+          xywh {315 115 25 25} box THIN_UP_BOX color 48 hide
         } {
           menuitem {} {
-            label About
-            callback {AboutWindow()}
-            private xywh {15 15 100 20} labelsize 12
+            label {Show spectrum with peaks}
+            callback {DisplaySpectrumAndPeaks();}
+            xywh {30 30 100 20}
+          }
+          menuitem {} {
+            label {Show sinusoidal tracks}
+            callback {DisplaySinusoidalTracks();}
+            xywh {40 40 100 20}
+          }
+          menuitem {} {
+            label {Show residual spectrum}
+            callback {DisplayResidualSpectrum();}
+            xywh {50 50 100 20}
           }
         }
-      }
-      Fl_Counter mCounter {
-        label {Frame }
-        callback {ChangeFrame();}
-        xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
-      }
-      Fl_Group {} {open
-        xywh {0 25 870 495} resizable
-      } {
-        Fl_Box mSmartTile {
-          private xywh {0 25 870 495}
-          code0 {o->minsize(80);}
-          class Fl_Smart_Tile
+        Fl_Box mFirstSegmentButton {
+          callback {mSegmentButton->popup();}
+          private image {logos/minidata.xpm} xywh {315 115 25 25} color 0 labelsize 12 align 16 deactivate
+          class Fl_File_Button
+        }
+        Fl_Button {} {
+          label {\\>}
+          private xywh {340 130 40 30} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {/>}
+          private xywh {340 90 40 40} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {\\>}
+          private xywh {500 90 40 40} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Box mSecondSegmentButton {
+          private image {logos/minidata.xpm} xywh {540 115 20 25} color 0 labelsize 12 deactivate
+          class Fl_Box
+        }
+        Fl_Button {} {
+          label {\\>}
+          private xywh {560 130 45 30} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {/>}
+          private xywh {560 90 45 40} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {->}
+          private xywh {340 125 200 10} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Box mStoreSMSSynthSound {
+          callback {StoreOutputSound();}
+          private tooltip {Saves the audio to a file} image {logos/minidirectory.xpm} xywh {845 50 25 20} color 0 labelsize 12 deactivate
+          class Fl_File_Button
+        }
+        Fl_Box mStoreSMSSynthSinusoidal {
+          callback {StoreOutputSoundSinusoidal();}
+          private tooltip {Saves the audio to a file} image {logos/minidirectory.xpm} xywh {845 85 25 20} color 0 labelsize 12 deactivate
+          class Fl_File_Button
+        }
+        Fl_Box mStoreSMSSynthResidual {
+          callback {StoreOutputSoundResidual();}
+          private tooltip {Saves the audio to a file} image {logos/minidirectory.xpm} xywh {845 115 25 20} color 0 labelsize 12 deactivate
+          class Fl_File_Button
+        }
+        Fl_Button {} {
+          label {-}
+          private xywh {120 95 15 10} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {\\>}
+          private xywh {705 95 40 35} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {/>}
+          private xywh {705 60 40 35} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button {} {
+          label {->}
+          private xywh {705 90 40 10} box NO_BOX labelsize 12
+          class Fl_SMS_Arrow
+        }
+        Fl_Button mSMSTransformationButton {
+          label {SMS Transformation}
+          callback {Transform();}
+          private tooltip {Orders the SMSTransformation} xywh {380 80 130 35} labelfont 1 labelsize 12 deactivate
+        }
+        Fl_Button mStoreAnalysis {
+          label {Save to file...}
+          callback {StoreAnalysisData();}
+          tooltip {Saves the analyzed data to a file} xywh {380 140 95 30} labelsize 12 deactivate
+        }
+        Fl_Button mSMSSynthesisButton {
+          label {SMS Synthesis}
+          callback {Synthesize( );}
+          private tooltip {Orders the SMSSynthesis} xywh {605 80 100 35} labelfont 1 labelsize 12 deactivate
+        }
+        Fl_Button mStoreTransformation {
+          label {Save to file...}
+          callback {StoreTransformationData();}
+          tooltip {Saves the transformed data to a file} xywh {605 140 100 30} labelsize 12 deactivate
+        }
+        Fl_Button mSMSAnalysisButton {
+          label {SMS Analysis}
+          callback {Analyze();}
+          private tooltip {Orders the SMSAnalysis} xywh {135 80 110 35} labelfont 1 labelsize 12 deactivate
+        }
+        Fl_Button {} {
+          label {Open from file...}
+          callback {LoadAnalysisData( );}
+          tooltip {Opens the analyzed data from a file} xywh {140 140 105 30} labelsize 12
+        }
+        Fl_Button mAudioInButton {
+          label {Input Audio}
+          callback {DisplayInputSound( );}
+          private tooltip {Shows the input audio} xywh {40 80 85 35} box THIN_UP_BOX color 48 labelsize 12 deactivate
+          class Fl_Display_Button
+        }
+        Fl_Button mShowSynthesizedAudio {
+          label {Output Audio}
+          callback {DisplaySynthesizedAudio();}
+          private tooltip {Shows the output audio} xywh {745 50 95 25} box THIN_UP_BOX color 48 labelsize 12 deactivate
+          class Fl_Display_Button
+        }
+        Fl_Button mShowSynthesizedSinusoidal {
+          label {Sinusoidal part}
+          callback {DisplaySynthesizedSinusoidal();}
+          private tooltip {Shows the sinusoidal audio part} xywh {745 80 95 25} box THIN_UP_BOX color 48 labelsize 12 deactivate
+          class Fl_Display_Button
+        }
+        Fl_Button mShowSynthesizedResidual {
+          label {Residual part}
+          callback {DisplaySynthesizedResidual();}
+          private tooltip {Shows the residual audio part} xywh {745 110 95 25} box THIN_UP_BOX color 48 labelsize 12 deactivate
+          class Fl_Display_Button
+        }
+        Fl_Button mExtractMelody {
+          label {Extract melody}
+          callback {AnalyzeMelody();}
+          private tooltip {Calculates the melody of the audio} xywh {225 180 105 30} labelsize 12 deactivate
+        }
+        Fl_Box mStoreMelodyButton {
+          callback {StoreMelody();}
+          private tooltip {Saves the melody to a file} image {logos/minidirectory.xpm} xywh {330 180 25 20} color 0 labelsize 12
+          class Fl_File_Button
+        }
+        Fl_Box {} {
+          callback {LoadSelectedSound();}
+          private tooltip {Opens an audio file} image {logos/minidirectory.xpm} xywh {10 80 25 20} color 0 labelsize 12
+          class Fl_File_Button
+        }
+        Fl_Group {} {
+          label {About box}
+          private xywh {320 10 405 55} labeltype NO_LABEL
+        } {
+          Fl_Box {} {
+            private image {logos/mtg.xpm} xywh {380 15 70 40}
+          }
+          Fl_Box {} {
+            label {SMS Analysis/Synthesis Application}
+            private xywh {450 20 200 15} labelfont 3 labelsize 11
+          }
+          Fl_Box {} {
+            label {by MTG - IUA - UPF (Barcelona, Spain)}
+            private xywh {455 35 190 15} labelfont 2 labelsize 11
+          }
+          Fl_Box {} {
+            label {please visit us at http://www.iua.upf.es/mtg for more info}
+            private xywh {420 50 265 15} labelfont 2 labelsize 10
+          }
+          Fl_Box {} {
+            private image {logos/iua.xpm} xywh {645 10 50 40}
+          }
+        }
+        Fl_Button mSMSTransformationLoad {
+          label {Open...}
+          callback {LoadTransformation();}
+          private tooltip {Orders the SMSTransformation} xywh {435 65 40 15} labelsize 10 deactivate
+        }
+        Fl_Button mSMSTransformationUndo {
+          label Undo
+          callback {UndoTransform();}
+          private tooltip {Undoes the SMSTransformation} xywh {475 65 35 15} labelsize 10 deactivate
         }
       }
-    }
-  }
-  Function {AboutWindow()} {private return_type void
-  } {
-    Fl_Window mWindow2 {
-      label {About this program...}
-      callback {delete mWindow2;
-mWindow2=NULL;} open
-      private xywh {837 547 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
-      code0 {mWindow2->show();} modal
-    } {
-      Fl_Box {} {
-        label {SMS Analysis/Synthesis Application}
-        private xywh {85 15 265 20} labelfont 3 labelsize 12
-      }
-      Fl_Box {} {
-        label {by MTG - IUA - UPF (Barcelona, Spain)}
-        private xywh {85 40 265 20} labelfont 2 labelsize 12
-      }
-      Fl_Box {} {
-        private image {logos/iua.xpm} xywh {360 15 50 60}
-      }
-      Fl_Box {} {
-        label {please visit us at http://www.iua.upf.es/mtg for more info}
-        private xywh {90 65 260 20} labelfont 2 labelsize 11
-      }
-      Fl_Box {} {
-        private image {logos/mtg.xpm} xywh {10 20 75 55}
+      Fl_Group mSmartTile {selected
+        private xywh {5 220 870 225} align 0 resizable
+        code0 {o->minsize(80);}
+        class Fl_Smart_Tile
+      } {}
+      Fl_Counter mCounter {
+        label {Frame:}
+        callback {ChangeFrame();}
+        tooltip {Shows and changes the selected frame number} xywh {395 450 135 20} box THIN_UP_BOX labelsize 12 align 4 deactivate
       }
     }
   }
@@ -283,6 +363,7 @@ mWindow2=NULL;} open
   decl {void Analyze(void);} {}
   decl {void LoadAnalysisData(void);} {}
   decl {void StoreAnalysisData(void);} {}
+  decl {void StoreTransformationData(void);} {}
   decl {void Synthesize(void);} {}
   decl {void AnalyzeMelody(void);} {}
   decl {void StoreMelody(void);} {}
@@ -293,6 +374,8 @@ mWindow2=NULL;} open
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
   decl {bool LoadSound();} {}
+  decl {bool LoadSelectedSound();} {public
+  }
   decl {void ChangeFrame();} {}
   decl {void ChangeTimeTag(double tag);} {}
   decl {void DisplayInputSound();} {}
