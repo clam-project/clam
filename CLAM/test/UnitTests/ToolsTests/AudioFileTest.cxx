@@ -5,6 +5,9 @@
 #include "AudioFileHeader.hxx"
 #include "AudioFileFormats.hxx"
 
+#include "XMLStorage.hxx"
+#include <fstream>
+
 namespace CLAMTest
 {
 	class AudioFileTest;
@@ -46,6 +49,9 @@ namespace CLAMTest
 		CPPUNIT_TEST( testIsWritable_ReturnsTrue_PCM_WithReasonableHeader );
 		CPPUNIT_TEST( testIsWritable_ReturnsFalse_PCM_TooManyChannels );
 		CPPUNIT_TEST( testIsWritable_ReturnsFalse_PCM_TooFewChannels );
+
+		CPPUNIT_TEST( testTextDescriptorsExtraction_From_OggVorbis );
+		CPPUNIT_TEST( testTextDescriptorsExtraction_From_Mpeg );
 
 		CPPUNIT_TEST_SUITE_END();
 	public:
@@ -481,7 +487,98 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( std::string("Format Default"),
 					      header.GetEndianess().GetString() );
 		}
+
+		void testTextDescriptorsExtraction_From_OggVorbis()
+		{
+			CLAM::AudioFile file;
+			file.SetLocation( mPathToTestData + std::string( "Elvis.ogg" ) );
+
+			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
+			
+			/**
+			std::cout << std::endl;
+			if ( txtDesc.HasArtist() )
+				std::cout << "Artist: " << txtDesc.GetArtist() << std::endl;
+			if ( txtDesc.HasTitle() )
+				std::cout << "Title: " << txtDesc.GetTitle() << std::endl;
+			if ( txtDesc.HasAlbum() )
+				std::cout << "Album: " << txtDesc.GetAlbum() << std::endl;
+			if ( txtDesc.HasTrackNumber() )
+				std::cout << "Track Number: " << txtDesc.GetTrackNumber() << std::endl;
+			if ( txtDesc.HasComposer() )
+				std::cout << "Composer: " << txtDesc.GetComposer() << std::endl;
+			if ( txtDesc.HasPerformer() )
+				std::cout << "Performer: " << txtDesc.GetPerformer() << std::endl;
+			std::cout << std::endl;
+			*/
+
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Elvis Presley"),
+					      txtDesc.GetArtist() );
+
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("My Love Complete"),
+					      txtDesc.GetTitle() );
+					      
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Unknown"),
+					      txtDesc.GetAlbum() );
+
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("1"),
+					      txtDesc.GetTrackNumber() );
+
+		}
 		
+		void testTextDescriptorsExtraction_From_Mpeg()
+		{
+			CLAM::AudioFile file;
+			file.SetLocation( mPathToTestData + CLAM::Text( "PeopleSay.mp3" ) );
+
+			std::ofstream outputFile( "AudioFile_0001.xml" );
+			outputFile << "<?xml version=\"1.0\" ?>" << std::endl;
+
+			CLAM::XMLStorage::Dump( file, "AudioFile", outputFile );
+
+			outputFile.close();
+
+			CLAM::AudioFile file2;
+
+			CLAM::XMLStorage::Restore( file2, "AudioFile_0001.xml" );
+
+			std::ofstream outputFile2( "CopyOf_AudioFile_0001.xml" );
+			outputFile2 << "<?xml version=\"1.0\" ?>" << std::endl;
+			
+			CLAM::XMLStorage::Dump( file2, file2.GetClassName(), outputFile2 );
+			outputFile2.close();
+			
+			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
+			
+			/*
+			std::cout << std::endl;
+			if ( txtDesc.HasArtist() )
+				std::cout << "Artist: " << txtDesc.GetArtist() << std::endl;
+			if ( txtDesc.HasTitle() )
+				std::cout << "Title: " << txtDesc.GetTitle() << std::endl;
+			if ( txtDesc.HasAlbum() )
+				std::cout << "Album: " << txtDesc.GetAlbum() << std::endl;
+			if ( txtDesc.HasTrackNumber() )
+				std::cout << "Track Number: " << txtDesc.GetTrackNumber() << std::endl;
+			if ( txtDesc.HasComposer() )
+				std::cout << "Composer: " << txtDesc.GetComposer() << std::endl;
+			if ( txtDesc.HasPerformer() )
+				std::cout << "Performer: " << txtDesc.GetPerformer() << std::endl;
+			std::cout << std::endl;
+			*/
+			
+			
+
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("PAPAS FRITAS"),
+					      txtDesc.GetArtist() );
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("People Say"),
+					      txtDesc.GetTitle() );
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Buildings & Grounds"),
+					      txtDesc.GetAlbum() );
+			CPPUNIT_ASSERT_EQUAL( CLAM::Text("02"),
+					      txtDesc.GetTrackNumber() );
+
+		}
 
 	};
 	
