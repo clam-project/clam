@@ -879,7 +879,7 @@ void SMSBase::ComputeLowLevelDescriptors()
 	mOriginalSegmentDescriptors.UpdateData();
 	
 	int i=0;
-	List<FrameDescriptors> &frameDesc=mOriginalSegmentDescriptors.GetFramesD();
+	Array<FrameDescriptors> &frameDesc=mOriginalSegmentDescriptors.GetFramesD();
 	List<Frame> &frames=mOriginalSegment.GetFramesArray();
 	int nFrames=mOriginalSegment.GetnFrames();
 	FrameDescriptors tmpFrameD;
