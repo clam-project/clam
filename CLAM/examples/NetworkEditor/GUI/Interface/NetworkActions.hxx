@@ -5,24 +5,22 @@
 #include <qframe.h> 
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include "ActionButton.hxx"
 #include <qbuttongroup.h>
 #include <qpushbutton.h>
 
 namespace NetworkGUI
 {
 
-class NetworkButton : public QPushButton
+class NetworkButton : public ActionButton
 {
 public:
 	NetworkButton(  bool condition = true, QWidget *parent = 0, const char *name = 0 );
 protected:
-	void mousePressEvent ( QMouseEvent * );
 	bool mCondition;
-
-public: //signals
-	SigSlot::Signalv1 < bool > Pressed;
-// void mouseReleaseEvent ( QMouseEvent * e )
+	void mousePressEvent ( QMouseEvent * );
 };
+
 
 class NetworkActions : public QFrame
 {

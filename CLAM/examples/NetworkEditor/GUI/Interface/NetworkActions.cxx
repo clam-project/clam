@@ -6,12 +6,9 @@ namespace NetworkGUI
 {
 
 NetworkButton::NetworkButton(  bool condition, QWidget *parent , const char *name )
-	: QPushButton(parent, name),
+	: ActionButton(parent, name),
 	  mCondition(condition)
 {
-	setPalette( QPalette( QColor( 200, 200, 200 )));
-	setToggleButton(TRUE);
-	setText(name);
 }
 
 void NetworkButton::mousePressEvent ( QMouseEvent * )
