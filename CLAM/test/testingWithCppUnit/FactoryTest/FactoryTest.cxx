@@ -17,6 +17,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testMakeProcessing_ReturnsAnOscillator );
 	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
 	CPPUNIT_TEST( testAddCreator_WithRepeatedKey );
+	CPPUNIT_TEST( testAddCreatorSafe_WithRepeatedKey );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -86,8 +87,8 @@ protected:
 	{
 		_theFactory->AddCreator("Oscillator", CLAM::CreateAudioAdder );
 		try{
-			_theFactory->AddCreator("Oscillator", CLAM::CreateOscillator);
-			CPPUNIT_FAIL("");
+			_theFactory->AddCreatorSafe("Oscillator", CLAM::CreateOscillator);
+			CPPUNIT_FAIL("an ErrFactory should be rised");
 		} catch (CLAM::ErrFactory&) {
 			
 		}

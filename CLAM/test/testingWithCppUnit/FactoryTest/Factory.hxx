@@ -151,11 +151,11 @@ public:
 	void AddCreator(const RegistryKey name, CreatorMethod creator) {
 		GetRegistry().AddCreator(name, creator);
 	}
-/*
+
 	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory) {
 		GetRegistry().AddCreatorSafe(name, creator);
 	}
-*/
+
 private:
 	FactoryRegistry _registry;
 
