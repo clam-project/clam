@@ -56,6 +56,18 @@ OutControl::~OutControl() {}
 */
 // Methods
 
+std::list<InControl*>::iterator OutControl::BeginInControlsConnected()
+{
+	return mLinks.begin();
+}
+
+std::list<InControl*>::iterator OutControl::EndInControlsConnected()
+{
+	return mLinks.end();
+}
+
+
+
 void OutControl::AddLink(InControl* in)
 {
 	mLinks.push_back(in);

@@ -66,6 +66,9 @@ public:
 	void AddLink(InControl* in);
 	void RemoveLink(InControl* in);
 
+	std::list<InControl*>::iterator BeginInControlsConnected();
+	std::list<InControl*>::iterator EndInControlsConnected();
+
 	int SendControl(TControlData val);
 	/**
 	 *  See comments on InControl.hxx about InControl::GetLastValueAsBoolean
