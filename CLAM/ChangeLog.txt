@@ -19,7 +19,7 @@
   * XML:
       ** Obsoleted constructor receiving the root tag as parameter
       ** Obsoleted _restoreFrom and dumpOn, use Dump and Restore instead  
-      ** You can enable globally XML indentation by defining CLAM_INDENT_XML
+      ** New method XMLStorage::UseIndentation to enable pretty XML formatting
 
 2003-03-05  CLAM_0_4_2
 'Cuidado merge update'
