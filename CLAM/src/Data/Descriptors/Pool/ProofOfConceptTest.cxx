@@ -110,7 +110,7 @@ private:
 			spectralAnalysis.Stop();
 		}
 
-//		CLAM::XmlStorage::Dump(pool, "Data", std::cout);
+		CLAM::XmlStorage::Dump(pool, "DescriptionData", "ProofOfConcept.xml");
 	}
 
 	
