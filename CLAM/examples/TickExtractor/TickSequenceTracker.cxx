@@ -62,6 +62,19 @@ namespace CLAM
 
 		mAudioPeakDetector.SetParent( this );
 
+		TimeDifferenceConfig tconf;
+		tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
+
+		mTemporalDiff.Configure( tconf );
+		
+		mTemporalDiff.SetParent( this );
+		
+		TemporalSeriesFinderConfig tsfConfig;
+
+		mTimeSeriesFinder.Configure( tsfConfig );
+
+		mTimeSeriesFinder.SetParent( this );
+
 		return true;
 	}
 
@@ -141,9 +154,7 @@ namespace CLAM
 		Audio readAudioBuf;
 		TData* tdataBuf;
 
-		TimeDifferenceConfig tconf;
-		tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
-		TimeDifference tdiff(tconf);
+
 
 		Array<TimeIndex>  transientsForHist(numbTrans);
 		transientsForHist.SetSize(numbTrans);
@@ -157,8 +168,7 @@ namespace CLAM
 		tickFirstGuess.SetOffset(0); tickFirstGuess.SetInterval(1);
 		goodTick.SetOffset(0); goodTick.SetInterval(1);
 		goodTempo.SetOffset(0); goodTempo.SetInterval(1);
-		TemporalSeriesFinderConfig myTemporalSeriesFinderConfig;
-		TemporalSeriesFinder myTemporalSeriesFinder(myTemporalSeriesFinderConfig);
+
 
 		const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
 		const TData tempoLimSup = mConfig.GetTempoLimSup();
@@ -196,9 +206,9 @@ namespace CLAM
 				transientsForHist[i].SetWeight(1); //All weights to 1
 			}
 
-			tdiff.Start();
-			tdiff.Do(transientsForHist,IOIHist);
-			tdiff.Stop();
+
+			mTemporalDiff.Do(transientsForHist,IOIHist);
+
 
 			///IOI histogram Peak Detection
 
@@ -235,21 +245,22 @@ namespace CLAM
 			//Here the offset is set to 0 as the computation is done
 			// over the histogram peaks
 			//Thus, OffsetStep=tickLimInf ==> no offset seeking
-			myTemporalSeriesFinderConfig.SetOffsetMin(0);
-			myTemporalSeriesFinderConfig.SetOffsetStep(tickLimInf);
-			myTemporalSeriesFinderConfig.SetIntervalMin(tickLimSup);
-			myTemporalSeriesFinderConfig.SetIntervalMax(tickLimInf);
-			myTemporalSeriesFinderConfig.SetIntervalStep(10);
+			mTSFConfig.SetOffsetMin(0);
+			mTSFConfig.SetOffsetStep(tickLimInf);
+			mTSFConfig.SetIntervalMin(tickLimSup);
+			mTSFConfig.SetIntervalMax(tickLimInf);
+			mTSFConfig.SetIntervalStep(10);
 			//Use of both errors:
-			myTemporalSeriesFinderConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
-			myTemporalSeriesFinderConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
+			mTSFConfig.SetDeviationPenalty(mConfig.GetDeviationPenalty());
+			mTSFConfig.SetOverSubdivisionPenalty(mConfig.GetOverSubdivisionPenalty());
 			// default value: 2
 			// bigger --> favor large ticks
-			myTemporalSeriesFinder.Configure(myTemporalSeriesFinderConfig);
-			myTemporalSeriesFinder.Start();
+			mTimeSeriesFinder.Stop();
+			mTimeSeriesFinder.Configure(mTSFConfig);
+			mTimeSeriesFinder.Start();
 			//Use of histogram peak weights
-			myTemporalSeriesFinder.Do(IOIHistPeaks,tickFirstGuess);
-			myTemporalSeriesFinder.Stop();
+			mTimeSeriesFinder.Do(IOIHistPeaks,tickFirstGuess);
+
 			unsigned int tickFirstGuessInterval = tickFirstGuess.GetInterval();
 
 
@@ -288,22 +299,23 @@ namespace CLAM
 
 				unsigned int scope = CLAM::CLAM_min(TData(mConfig.GetScope()*mConfig.GetSamplingRate()),
 								    TData(tickFirstGuessInterval*0.5));
-				myTemporalSeriesFinderConfig.SetOffsetMin(0);
-				myTemporalSeriesFinderConfig.SetOffsetStep(50);
-				myTemporalSeriesFinderConfig.SetIntervalMin(
+				mTSFConfig.SetOffsetMin(0);
+				mTSFConfig.SetOffsetStep(50);
+				mTSFConfig.SetIntervalMin(
 					CLAM::CLAM_max(TData(tickFirstGuessInterval-scope*0.5),TData(tickLimSup)));
-				myTemporalSeriesFinderConfig.SetIntervalMax(
+				mTSFConfig.SetIntervalMax(
 					tickFirstGuessInterval+scope/2);
-				myTemporalSeriesFinderConfig.SetIntervalStep(10);
+				mTSFConfig.SetIntervalStep(10);
 				//Use of a single error:
-				myTemporalSeriesFinderConfig.SetOverSubdivisionPenalty(0);
-				myTemporalSeriesFinder.Configure(myTemporalSeriesFinderConfig);
-				myTemporalSeriesFinder.Start();
+				mTSFConfig.SetOverSubdivisionPenalty(0);
+				mTimeSeriesFinder.Stop();
+				mTimeSeriesFinder.Configure(mTSFConfig);
+				mTimeSeriesFinder.Start();
 				//Use of transientsForHist or transients???
 				// i.e. use of weights or not???
 				//myTemporalSeriesFinder.Do(transientsForHist,goodTick);
-				myTemporalSeriesFinder.Do(transients,goodTick);		
-				myTemporalSeriesFinder.Stop();
+				mTimeSeriesFinder.Do(transients,goodTick);		
+
 				goodTickInterval = goodTick.GetInterval();
 				goodTickOffset = goodTick.GetOffset();
 				///Generate tick indexes array
@@ -332,17 +344,18 @@ namespace CLAM
 				{
 					//get the best phase
 					// Computing best beat phase
-					myTemporalSeriesFinderConfig.SetOffsetMin(goodTickOffset);			
-					myTemporalSeriesFinderConfig.SetOffsetStep(goodTickInterval);
-					myTemporalSeriesFinderConfig.SetIntervalMin(tempo);
-					myTemporalSeriesFinderConfig.SetIntervalMax(tempo+1);
-					myTemporalSeriesFinderConfig.SetIntervalStep(2);
-					myTemporalSeriesFinder.Configure(myTemporalSeriesFinderConfig);
-					myTemporalSeriesFinder.Start();
+					mTSFConfig.SetOffsetMin(goodTickOffset);			
+					mTSFConfig.SetOffsetStep(goodTickInterval);
+					mTSFConfig.SetIntervalMin(tempo);
+					mTSFConfig.SetIntervalMax(tempo+1);
+					mTSFConfig.SetIntervalStep(2);
+					mTimeSeriesFinder.Stop();
+					mTimeSeriesFinder.Configure(mTSFConfig);
+					mTimeSeriesFinder.Start();
 					//NB: Use of transients instead of transientsForHist
 					// i.e. making use of transient weights
-					myTemporalSeriesFinder.Do(transients,goodTempo);
-					myTemporalSeriesFinder.Stop();
+					mTimeSeriesFinder.Do(transients,goodTempo);
+
 					goodTempoInterval = goodTempo.GetInterval();
 					goodTempoOffset = goodTempo.GetOffset();
 					///Generate beat indexes array

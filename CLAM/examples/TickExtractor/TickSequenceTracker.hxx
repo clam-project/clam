@@ -7,6 +7,8 @@
 #include "TickSequenceTrackerConfig.hxx"
 #include "AudioPeakDetect.hxx"
 #include "Pulse.hxx"
+#include "TimeDifference.hxx"
+#include "TemporalSeriesFinder.hxx"
 
 namespace CLAM
 {
@@ -65,7 +67,10 @@ namespace CLAM
 
 	private: // children Processing
 
-		AudioPeakDetect   mAudioPeakDetector;
+		AudioPeakDetect       mAudioPeakDetector;
+		TimeDifference        mTemporalDiff;
+		TemporalSeriesFinder  mTimeSeriesFinder;
+		TemporalSeriesFinderConfig mTSFConfig;
 
 	};
 
