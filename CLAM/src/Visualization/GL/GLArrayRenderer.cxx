@@ -164,8 +164,8 @@ void GLArrayRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, 
 
 void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_width )
 {
-	mCullingData.left = left*GetXConversionFactor();
-	mCullingData.right = (right*GetXConversionFactor());
+	mCullingData.left = (unsigned)(left*GetXConversionFactor());
+	mCullingData.right = (unsigned)(right*GetXConversionFactor());
 	mCullingData.pixel_width = pixel_width;
 	mCullingRequested = true;
 	mMustUpdateBounds= true;	
@@ -174,12 +174,12 @@ void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_wi
 
 void GLArrayRenderer::UpdateBounds()
 {
-	GLuint start, end, range, step;
+	GLuint start, end;
 	start = mCullingData.left;
 	end = mCullingData.right;
 	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
 
-	int k;
+	unsigned int k;
 	
 	bool found=false;
 
@@ -198,7 +198,7 @@ void GLArrayRenderer::UpdateBounds()
 	}
 	else if(mCullingData.left<mElemIdxBuffer[mFirstIndex])
 	{
-		for(k=mFirstIndex;k>-1;k--)
+		for(k=mFirstIndex;k>0;k--)
 		{
 			if(mElemIdxBuffer[k]<mCullingData.left)
 			{
@@ -232,7 +232,7 @@ void GLArrayRenderer::UpdateBounds()
 	}
 	else if(mCullingData.right<mElemIdxBuffer[mLastIndex])
 	{
-		for(k=mLastIndex;k>-1;k--)
+		for(k=mLastIndex;k>0;k--)
 		{
 			if(mElemIdxBuffer[k]<mCullingData.right)
 			{
@@ -265,7 +265,7 @@ void GLArrayRenderer::FindMaxMin()
 	
 	float leftY,middleY,rightY;
 	// detection loop 
-	int i;
+	unsigned int i;
 	
 	//We always add a start point at zero
 	mElemIdxBuffer[0]=0;
@@ -311,7 +311,7 @@ void GLArrayRenderer::FindMaxMin()
 			// quadratic interpolation
 			float diffFromMin =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
 			interpolatedPosition = pointPosition+diffFromMin;
-			mElemIdxBuffer[mnMaxMin]=(interpolatedPosition);
+			mElemIdxBuffer[mnMaxMin]=(unsigned)(interpolatedPosition);
 							
 			mnMaxMin++;
 		
@@ -328,7 +328,7 @@ void GLArrayRenderer::FindMaxMin()
 			// quadratic interpolation
 			diffFromMax =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
 			interpolatedPosition = pointPosition+diffFromMax;
-			mElemIdxBuffer[mnMaxMin]=(interpolatedPosition);
+			mElemIdxBuffer[mnMaxMin]=(unsigned)(interpolatedPosition);
 							
 			mnMaxMin++;
 		}
