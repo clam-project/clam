@@ -19,10 +19,10 @@ decl {\#include "ForwardDeclarations.hxx"} {public
 
 decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {} 
 
-decl {\#include "CLAMPresentations.hxx"} {public
+decl {\#include "AudioAdapter.hxx"} {public
 } 
 
-decl {\#include "CLAMViews.hxx"} {public
+decl {\#include "SpectrumAdapter.hxx"} {public
 } 
 
 class UserInterface {open
@@ -301,7 +301,10 @@ mWindow2=NULL;}
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {Fl_Window* Attach( const char* title, CLAM::Audio* data );} {}
+  decl {Fl_Window* AttachInputSound( const char* title, CLAM::Audio* data );} {}
+  decl {Fl_Window* AttachOutputSound( const char* title, CLAM::Audio* data );} {}
+  decl {Fl_Window* AttachSynthSineSound( const char* title, CLAM::Audio* data );} {}
+  decl {Fl_Window* AttachSynthResidualSound( const char* title, CLAM::Audio* data );} {}
   decl {Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );} {}
   decl {static void _Detach(Fl_Window* buffer,UserInterface* ui);} {}
   decl {void Detach(Fl_Window* buffer);} {}
@@ -321,8 +324,12 @@ mWindow2=NULL;}
   decl {Fl_Window* mAudioOutputSinusoidalDisplay;} {}
   decl {Fl_Window* mInputSpectrum;} {}
   decl {Fl_Window* mOutputSpectrum;} {}
-  decl {ProcDataView<Spectrum>* mInputSpectrumView;} {}
-  decl {ProcDataView<Spectrum>* mOutputSpectrumView;} {}
+  decl {CLAMVM::AudioAdapter* mSoundView;} {}
+  decl {CLAMVM::AudioAdapter* mSynthesizedOutput;} {}
+  decl {CLAMVM::AudioAdapter* mSynthSineOut;} {}
+  decl {CLAMVM::AudioAdapter* mSynthResidualOut;} {}
+  decl {CLAMVM::LogMagSpectrumAdapter* mInputSpectrumView;} {}
+  decl {CLAMVM::LogMagSpectrumAdapter* mOutputSpectrumView;} {}
   decl {Signalv1<TData> mFrameSignal;} {}
   decl {Signalv1<bool> mPaintSignal;} {}
   decl {Slotv1<double> mSlot;} {}
