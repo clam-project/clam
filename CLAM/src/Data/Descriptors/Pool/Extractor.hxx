@@ -136,14 +136,10 @@ public:
 
 	virtual bool IsInsideScope() const
 	{
-		return _current < GetIterationSize();
+		return _current < _pool->GetNumberOfContexts(_scope);
 	}
 
 protected:
-	virtual unsigned GetIterationSize() const
-	{
-		return _pool->GetNumberOfContexts(_scope);
-	}
 	unsigned GetCurrent() const
 	{
 		return _current;
