@@ -65,24 +65,24 @@ class IllegalValue : public std::exception {
  * // EMyEnum.hxx
  *	class EMyEnum : public CLAM::Enum {
  *	public:
- *		EMyEnum() : CLAM::Enum(ValueTable(), MyEnum::two) {}
+ *		EMyEnum() : CLAM::Enum(ValueTable(), eTwo) {}
  *		EMyEnum(tValue v) : CLAM::Enum(ValueTable(), v) {};
  *		EMyEnum(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
  *
  *		virtual CLAM::Component * Species() const {return new EMyEnum();}
  *
  *		typedef enum {
- *			zero=0,
- *			two=2,
- *			hundred=100
+ *			eZero=0,
+ *			eTwo=2,
+ *			eHundred=100
  *		} tEnum;
- *		static CLAM::Enum::tEnumValue * ValueTable()
+ *		static tEnumValue * ValueTable()
  *		{
- *			static CLAM::Enum::tEnumValue sValueTable[] = 
+ *			static tEnumValue sValueTable[] = 
  *			{
- *				{EMyEnum::zero,"zero"},
- *				{EMyEnum::two,"two"},
- *				{EMyEnum::hundred,"hundred"},
+ *				{eZero,"zero"},
+ *				{eTwo,"two"},
+ *				{eHundred,"hundred"},
  *				{0,NULL}
  *			};
  *			return sValueTable;
