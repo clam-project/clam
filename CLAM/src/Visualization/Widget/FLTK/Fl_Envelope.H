@@ -98,6 +98,8 @@ public:
 	void add_point(float px,float py,void* puser_data = 0);
 	void remove_point(int id);
 	void remove_points(int id,int n);
+	void clear();
+	int  points() const { return npoints_;}
 	
 	void xscale(float min,float max);
 	void yscale(float min,float max);
@@ -105,7 +107,10 @@ public:
 	void xbound(float min,float max);
 	void ybound(float min,float max);
 
-	FLPOINT* point(int id) { return id>=0 && id<npoints_ ? &points_[id] : 0; }
+	FLPOINT* point(int id) 
+	{ 
+		return id>=0 && id<npoints_ ? &points_[id] : 0; 
+	}
 
 	float xmin(void) { return xmin_; }
 	float xmax(void) { return xmax_; }

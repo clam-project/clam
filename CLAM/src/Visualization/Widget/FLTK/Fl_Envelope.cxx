@@ -142,6 +142,16 @@ void Fl_PointMover::remove_points(int id,int n)
 	npoints_-=n;
 }
 
+void Fl_PointMover::clear()
+{
+	if ( points_ )
+	{		
+		free( points_ );
+		points_ = NULL;
+	}
+	npoints_ = 0;
+}
+
 
 void Fl_PointMover::drawselect(void)
 {
