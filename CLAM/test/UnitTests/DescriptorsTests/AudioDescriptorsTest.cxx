@@ -49,6 +49,7 @@ class AudioDescriptorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testEnergy );
 //	CPPUNIT_TEST( testDecrease );
 
+
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -58,14 +59,7 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-		if ( !pathToTestData )
-			mPathToTestData = "../../../../CLAM-TestData/";
-		else
-			mPathToTestData = pathToTestData;
-
-		mPathToTestData += "descriptorsData/";
+		mPathToTestData = GetTestDataDirectory() + "descriptorsData/";
 
 		mDescriptors = new CLAM::AudioDescriptors();
 		mDescriptors->RemoveAll();
