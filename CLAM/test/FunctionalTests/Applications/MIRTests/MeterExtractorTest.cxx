@@ -108,6 +108,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing 02_alles.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 
@@ -138,6 +139,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing 12_cubic.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 
@@ -167,6 +169,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing blue_monday.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 
@@ -198,6 +201,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing ALoCubano.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
@@ -230,6 +234,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing AmourEnPoudre.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
@@ -261,6 +266,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing Amsterdam.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
@@ -292,6 +298,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing clicseq.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 
@@ -322,6 +329,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing drums-electronic-guit.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 
@@ -353,6 +361,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing elecpiano-drums.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
@@ -385,6 +394,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing test1.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
@@ -416,6 +426,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing test2.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
@@ -446,6 +457,7 @@ namespace CLAMTest
 			CLAM::RhythmDescription::MeterEstimator meterEstimator;
 			meterEstimator.Configure( mMeterEstCfg );
 			meterEstimator.Start();
+			meterEstimator.Log() << "Processing test.wav" << std::endl;
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 
