@@ -77,7 +77,7 @@ void Fl_DisplayContainer::HorSliderCB(Fl_Slider* slider)
 {
 	Fl_DisplayContainer* c = dynamic_cast< Fl_DisplayContainer* > (slider->parent());
 
-	if (c == NULL ) throw ( ErrGUI( "Pointer was messed" )  );
+	if (c == NULL ) throw ( CLAMVM::ErrGUI( "Pointer was messed" )  );
 
 	SliderCB( c->mpHorSlider, c->mpHorScrollbar );
 	c->redraw();
