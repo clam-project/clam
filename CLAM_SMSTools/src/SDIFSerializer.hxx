@@ -23,8 +23,8 @@
 #define __SDIFSERIALIZER__
 
 #include "Serializer.hxx"
-#include "SDIFIn.hxx"
-#include "SDIFOut.hxx"
+#include <CLAM/IO/SDIFIn.hxx>
+#include <CLAM/IO/SDIFOut.hxx>
 
 namespace CLAM {
 

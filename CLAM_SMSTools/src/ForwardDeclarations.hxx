@@ -1,6 +1,6 @@
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv1.hxx>
+#include <CLAM/Core/DataTypes.hxx>
 #include "SMSTools.hxx"
 
 using CLAM::TData;

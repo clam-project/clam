@@ -19,7 +19,7 @@
  *
  */
 
-#include "Enum.hxx"
+#include <CLAM/Core/Enum.hxx>
 #include "XMLSerializer.hxx"
 #include "SDIFSerializer.hxx"
 

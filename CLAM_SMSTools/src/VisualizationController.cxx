@@ -21,18 +21,18 @@
 
 #include "VisualizationController.hxx"
 
-#include "Segment.hxx"
-#include "Audio.hxx"
-#include "Spectrum.hxx"
-#include "AudioAdapter.hxx"
-#include "LogMagSpectrumAdapter.hxx"
+#include <CLAM/Processing/Segment.hxx>
+#include <CLAM/Processing/Audio.hxx>
+#include <CLAM/Processing/Spectrum.hxx>
+#include <CLAM/VM/AudioAdapter.hxx>
+#include <CLAM/VM/LogMagSpectrumAdapter.hxx>
 
 #include "Fl_Browsable_Playable_Audio.hxx"
-#include "Fl_SMS_Spectrum.hxx"
+#include <CLAM/VM/Fl_SMS_Spectrum.hxx>
 #include "Fl_SMS_SinTracks.hxx"
 
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv1.hxx>
 
 using namespace CLAMVM;
 

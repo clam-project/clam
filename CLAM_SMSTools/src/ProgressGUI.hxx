@@ -1,7 +1,7 @@
 #ifndef __PROGRESSGUI__
 #define __PROGRESSGUI__
 
-#include "Fl_Progress.hxx"
+#include <CLAM/VM/Fl_Progress.hxx>
 #include "Progress.hxx"
 #include <pthread.h>
 
@@ -17,7 +17,7 @@ public:
 	
 	void Update(float val)
 	{
-		mProgressBar->mValue = val;
+		mProgressBar->setValue(val);
 	}
 
 	ProgressGUI( const char* title, float from, float to );

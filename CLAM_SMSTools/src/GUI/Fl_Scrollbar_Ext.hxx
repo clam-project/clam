@@ -1,8 +1,8 @@
 #ifndef __FL_SCROLLBAR_EXT__
 #define __FL_SCROLLBAR_EXT__
 
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv1.hxx>
 #include <FL/Fl_Scrollbar.H>
 
 namespace CLAMVM

@@ -5,7 +5,7 @@
 #endif
 
 #ifdef WIN32
-#include "CLAM_windows.h"
+#include <CLAM/Core/CLAM_windows.h>
 #endif
 
 #include <iostream>

@@ -20,7 +20,7 @@
  */
 
 #include "SMSTools.hxx"
-#include "Err.hxx"
+#include <CLAM/Core/Err.hxx>
 #include <exception>
 #include <iostream>
 #include <cstdlib>

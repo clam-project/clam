@@ -1,10 +1,10 @@
 #include "Fl_SMS_BPF_Editor.hxx"
-#include "Fl_Envelope_Scroll.H"
+#include <CLAM/VM/Fl_Envelope_Scroll.H>
 #include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Box.H>
-#include "CLAM_Math.hxx"
-#include "BPF.hxx"
-#include "Assert.hxx"
+#include <CLAM/Core/CLAM_Math.hxx>
+#include <CLAM/Core/BPF.hxx>
+#include <CLAM/Core/Assert.hxx>
 #include "SMS_ScoreEditor_Helper.hxx"
 
 namespace CLAMVM

@@ -24,12 +24,12 @@
 
 #include <vector>
 
-#include "Fl_Smart_Tile.hxx"
-#include "DataTypes.hxx"
-#include "Enum.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
-#include "SinTracksAdapter.hxx"
+#include <CLAM/VM/Fl_Smart_Tile.hxx>
+#include <CLAM/Core/DataTypes.hxx>
+#include <CLAM/Core/Enum.hxx>
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv1.hxx>
+#include <CLAM/VM/SinTracksAdapter.hxx>
 
 class Fl_Window;
 class Fl_Smart_Tile;

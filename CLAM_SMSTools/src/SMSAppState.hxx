@@ -23,7 +23,7 @@
 #define _SMSAppState_
 
 
-#include "DynamicType.hxx"
+#include <CLAM/Core/DynamicType.hxx>
 
 namespace CLAM{
 

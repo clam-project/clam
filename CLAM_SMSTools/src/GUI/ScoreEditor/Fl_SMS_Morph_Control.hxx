@@ -4,10 +4,10 @@
 #include <FL/Fl_Group.H>
 #include <string>
 #include <map>
-#include "BPF.hxx"
-#include "Signalv0.hxx"
-#include "Signalv1.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/Core/BPF.hxx>
+#include <CLAM/Core/Signalv0.hxx>
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv0.hxx>
 
 class  Fl_Choice;
 class  Fl_Check_Button;

@@ -3,10 +3,10 @@
 #ifndef SMSTransformPanel_hxx
 #define SMSTransformPanel_hxx
 
-#include "SMSTransformationChain.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/SMS/SMSTransformationChain.hxx>
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv1.hxx>
+#include <CLAM/Core/Slotv0.hxx>
 
 namespace CLAMVM
 {

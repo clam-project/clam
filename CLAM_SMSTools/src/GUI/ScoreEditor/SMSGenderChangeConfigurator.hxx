@@ -3,9 +3,9 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SMSTransformationConfig.hxx"
-#include "Slotv1.hxx"
-#include "Signalv1.hxx"
+#include <CLAM/SMS/SMSTransformationConfig.hxx>
+#include <CLAM/Core/Slotv1.hxx>
+#include <CLAM/Core/Signalv1.hxx>
 
 class Fl_Widget;
 class Fl_Help_View;

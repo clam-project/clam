@@ -1,16 +1,16 @@
 #include "SMS_DataExplorer.hxx"
-#include "Audio.hxx"
-#include "Spectrum.hxx"
-#include "Frame.hxx"
-#include "Segment.hxx"
-#include "Assert.hxx"
+#include <CLAM/Processing/Audio.hxx>
+#include <CLAM/Processing/Spectrum.hxx>
+#include <CLAM/Processing/Frame.hxx>
+#include <CLAM/Processing/Segment.hxx>
+#include <CLAM/Core/Assert.hxx>
 
-#include "Fl_SMS_Browsable_Playable_Audio.hxx"
-#include "Fl_SMS_Spectrum.hxx"
-#include "Fl_SMS_SinTracks_Browser.hxx"
-#include "Fl_SMS_SpectrumAndPeaks.hxx"
-#include "Fl_SMS_FundFreq_Browser.hxx"
-#include "Fl_Smart_Tile.hxx"
+#include <CLAM/VM/Fl_SMS_Browsable_Playable_Audio.hxx>
+#include <CLAM/VM/Fl_SMS_Spectrum.hxx>
+#include <CLAM/VM/Fl_SMS_SinTracks_Browser.hxx>
+#include <CLAM/VM/Fl_SMS_SpectrumAndPeaks.hxx>
+#include <CLAM/VM/Fl_SMS_FundFreq_Browser.hxx>
+#include <CLAM/VM/Fl_Smart_Tile.hxx>
 
 #include <iostream>
 

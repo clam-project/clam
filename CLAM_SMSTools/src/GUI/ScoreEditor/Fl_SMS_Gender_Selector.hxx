@@ -2,8 +2,8 @@
 #define __FL_SMS_GENDER_SELECTOR__
 
 #include <FL/Fl_Group.H>
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Core/Signalv1.hxx>
+#include <CLAM/Core/Slotv1.hxx>
 
 class Fl_Round_Button;
 

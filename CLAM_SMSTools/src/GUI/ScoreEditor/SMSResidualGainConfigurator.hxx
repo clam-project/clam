@@ -3,7 +3,7 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SMSTransformationConfig.hxx"
+#include <CLAM/SMS/SMSTransformationConfig.hxx>
 
 class Fl_Widget;
 class Fl_Help_View;

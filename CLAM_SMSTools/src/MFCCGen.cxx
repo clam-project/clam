@@ -1,5 +1,5 @@
 	
-#include "CLAM_Math.hxx"
+#include <CLAM/Core/CLAM_Math.hxx>
 #include <iostream>
 #include <Processing.hxx>
 #include "MFCCGen.hxx"
