@@ -88,6 +88,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\cmdline_parser.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\conditions.c
 # End Source File
 # Begin Source File
@@ -148,6 +152,10 @@ SOURCE=.\listhash.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\main.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\mystrdup.c
 # End Source File
 # Begin Source File
@@ -205,10 +213,6 @@ SOURCE=.\tree.c
 # Begin Source File
 
 SOURCE=.\tree.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\winmain.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
