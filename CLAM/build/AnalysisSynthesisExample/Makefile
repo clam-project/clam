@@ -1,4 +1,4 @@
-PROGRAM = MIDISynthExample
+PROGRAM = AnalysisSynthesisExampleGUI
 TOP=../..
 SRCDEPS = $(TOP)/srcdeps/srcdeps
 
