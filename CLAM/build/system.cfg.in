@@ -40,7 +40,7 @@ DEFINES = \
 	$(USE_DEBUG_CHECKS?_DEBUG) \
 	$(USE_XML?CLAM_USE_XML)
 
-CXXFLAGS_DEBUG = -g -fno_inline
+CXXFLAGS_DEBUG = -g -fno-inline
 CXXFLAGS_OPTIMIZE = -O6 -fomit-frame-pointer
 
 CXXFLAGS = \
