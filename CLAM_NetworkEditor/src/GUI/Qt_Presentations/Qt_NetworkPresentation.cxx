@@ -2,6 +2,7 @@
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
+#include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
 #include "Qt_ControlConnectionPresentation.hxx"
@@ -12,10 +13,14 @@
 
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qdragobject.h> 
+
 #include "ProcessingConfig.hxx"
 
 namespace NetworkGUI
 {
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *name)
 	: QWidget( parent, name ),	  
@@ -32,6 +37,7 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
  	SetInControlClicked.Wrap( this, &Qt_NetworkPresentation::OnNewInControlClicked);
  	SetOutControlClicked.Wrap( this, &Qt_NetworkPresentation::OnNewOutControlClicked);
 
+	setAcceptDrops(TRUE);
 }
 
 
@@ -307,5 +313,31 @@ void Qt_NetworkPresentation::paintEvent( QPaintEvent * e)
 	}
 
 }
+
+void Qt_NetworkPresentation::dragEnterEvent(QDragEnterEvent* event)
+{
+	event->accept( QTextDrag::canDecode(event) );
+}
+
+void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
+{
+	QString text;
+	
+	if ( QTextDrag::decode(event, text) ) 
+	{
+		ProcessingFactory & factory = ProcessingFactory::GetInstance();
+		std::string completeName(text.ascii());
+		
+		std::string className(GetProcessingIdentifier(completeName));
+		std::string concreteName(GetLastIdentifier(completeName));
+		OnAddNewProcessing( concreteName, factory.Create(className) );
+		ProcessingCreated.Emit();
+
+		Qt_ProcessingPresentation & proc = (Qt_ProcessingPresentation&)GetProcessingPresentation(concreteName);
+		proc.move(event->pos());
+	}
+}
+
+ 
 
 } // namespace NetworkGUI

@@ -6,6 +6,7 @@
 #include <qwidget.h>
 #include "NetworkPresentation.hxx"
 #include "Signalv1.hxx"
+#include "Signalv0.hxx"
 #include "Slotv1.hxx"
 
 namespace CLAM
@@ -53,7 +54,9 @@ protected:
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *m);
-
+	void dropEvent(QDropEvent* event);
+	void dragEnterEvent(QDragEnterEvent* event);
+	
 	Qt_InPortPresentation* mInPortSelected;
 	Qt_OutPortPresentation* mOutPortSelected;
 	Qt_InControlPresentation* mInControlSelected;
@@ -72,6 +75,7 @@ public: // slots
 	SigSlot::Signalv1< const QPoint & > AcquireOutControlAfterClickInControl;
 	SigSlot::Signalv1< const QPoint & > AcquireInControlAfterClickOutControl;
 	SigSlot::Signalv1< const std::string& > SendNewMessageToStatus;
+	SigSlot::Signalv0 ProcessingCreated;
 
 
 private:
