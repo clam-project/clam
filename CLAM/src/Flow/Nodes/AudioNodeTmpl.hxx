@@ -41,14 +41,11 @@ namespace CLAM {
 
 		void Configure(int max_window_size=0) { mStream.Configure(max_window_size); }
 
-		WriteStreamRegion *NewWriter (OutPort *port,
-									  unsigned int hop,
-									  unsigned int length);
+		WriteStreamRegion *NewWriter (OutPort *port, unsigned int hop,
+					      unsigned int length);
 	
-		ReadStreamRegion  *NewReader (InPort *port,
-									  unsigned int hop,
-									  unsigned int length,
-									  SourceStreamRegion* source = 0);
+		ReadStreamRegion  *NewReader (InPort *port, unsigned int hop,
+					      unsigned int length, SourceStreamRegion* source = 0);
 
 		void GetAndActivate(WriteStreamRegion* r, Audio &a);
 		void GetAndActivate(ReadStreamRegion* r, Audio &a);
@@ -72,10 +69,9 @@ namespace CLAM {
 	
 	
 	template<class BUFFER>
-	ReadStreamRegion *NodeTmpl<Audio,BUFFER>::NewReader (InPort *port,
-														unsigned int hop,
-														unsigned int length,
-														SourceStreamRegion* source = 0)
+	ReadStreamRegion *NodeTmpl<Audio,BUFFER>::NewReader (InPort *port, unsigned int hop,
+							     unsigned int length,
+							     SourceStreamRegion* source )
 	{
 		mInputs.AddElem(port);
 		return mStream.NewReader(hop,length,source);

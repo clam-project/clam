@@ -66,9 +66,8 @@ namespace CLAM {
 
 
 	template<class DATA, class BUFFER>
-	WriteStreamRegion *NodeTmpl<DATA,BUFFER>::NewWriter (OutPort *port,
-														 unsigned int hop,
-														 unsigned int length)
+	WriteStreamRegion *NodeTmpl<DATA,BUFFER>::NewWriter (OutPort *port, unsigned int hop,
+							     unsigned int length)
 	{
 	
 		Node<DATA>::mpDriver = port;
@@ -77,10 +76,9 @@ namespace CLAM {
 	
 	
 	template<class DATA, class BUFFER>
-	ReadStreamRegion *NodeTmpl<DATA,BUFFER>::NewReader (InPort *port,
-														unsigned int hop,
-														unsigned int length,
-														SourceStreamRegion* source = 0)
+	ReadStreamRegion *NodeTmpl<DATA,BUFFER>::NewReader (InPort *port, unsigned int hop,
+							    unsigned int length,
+							    SourceStreamRegion* source)
 	{
 		Node<DATA>::mInputs.AddElem(port);
 		return mStream.NewReader(hop,length,source);
