@@ -70,6 +70,13 @@ namespace CLAMTest
 		}
 	};
 
+	inline std::string GetTestDataDirectory(std::string postfix = "")
+	{
+		char* pathToTestData = getenv("CLAM_TEST_DATA");
+		if ( pathToTestData ) return std::string(pathToTestData)+postfix;
+		return std::string("../../../../CLAM-TestData/")+postfix;
+	}
+
 } //namespace CLAMTest
 
 
