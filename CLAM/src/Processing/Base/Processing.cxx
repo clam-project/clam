@@ -30,6 +30,7 @@
 #include <cstring>
 #include <string>
 
+
 namespace CLAM {
 
 	const Processing::iterator 
@@ -49,10 +50,7 @@ namespace CLAM {
 		mStatus = "";
 
 		if (!mpParent) 
-		{
-			mpParent =  &(TopLevelProcessing::GetInstance());
-			mpParent->Insert(*this);
-		}
+			TopLevelProcessing::GetInstance().Insert(*this);
 		mPreconfigureExecuted = true;
 
 	}
