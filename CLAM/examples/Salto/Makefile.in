@@ -6,6 +6,7 @@ INCLUDES += \
 -I$(TOP)/examples/Salto/Base \
 -I$(TOP)/examples/Salto/File \
 -I$(TOP)/examples/Salto/MIDI \
+-I$(TOP)/examples/Salto/melodyDescription \
 -I$(TOP)/examples/Salto/SALTO/FileIO \
 -I$(TOP)/examples/Salto/SALTO/Gui_Editor \
 -I$(TOP)/examples/Salto/SALTO/Interpolation \
