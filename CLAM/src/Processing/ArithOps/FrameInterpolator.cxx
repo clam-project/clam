@@ -97,7 +97,7 @@ namespace CLAM {
 		//todo: using interpolator with ports is still not available!!
 		if(mConfig.GetUseSpectralShape())
 		{
-			mPO_PeaksInterpolator.mSpectralShape.Attach(mSpectralShape);
+			mPO_PeaksInterpolator.mSpectralShape.Attach(mSpectralShape.GetData() ); //TODO
 		}
 
 		SpecInterpConfig spInterpConfig;

@@ -27,6 +27,7 @@
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
 #include "Spectrum.hxx"
+#include "InControl.hxx"
 
 namespace CLAM {
 

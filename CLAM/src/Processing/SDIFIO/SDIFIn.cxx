@@ -274,7 +274,7 @@ bool SDIFIn::Do( CLAM::Segment& segment )
 bool SDIFIn::Do(void)
 {
 	bool result = LoadSDIFDataIntoSegment( mOutput.GetData() );
-	mOutput.Produce();
+	//mOutput.Produce();
 	return result;
 }
 

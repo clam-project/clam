@@ -54,7 +54,7 @@ namespace CLAM {
 	 */
 	class SMSTransformationChain:public ProcessingChain<Segment>
 	{
-	public:
+		public:
 				
 		/** Default constructor. */
 		SMSTransformationChain(){}
@@ -68,6 +68,7 @@ namespace CLAM {
 		{
 			if(IsLastFrame())
 			{
+				std::cout << "SMSTransformationChain::Do: IsLastFrame\n";
 				return false;
 			}
 			NextFrame();
@@ -101,6 +102,7 @@ namespace CLAM {
 				}
 //				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
 				concreteObj.AttachOut(*pCurrentData);
+				std::cout << "attaching: "<< concreteObj.GetClassName() << std::endl;
 			}
 			obj=composite_begin();
 			Processing& processing = *(*(obj));
@@ -112,9 +114,8 @@ namespace CLAM {
 			processing = *(*(obj));
 			concreteObj = dynamic_cast<SMSTransformation&>(processing);
 //			(*obj)->GetOutPorts().GetByNumber(0).Attach(mChainOutput.GetData());
+			concreteObj.AttachOut(mChainOutput.GetData() );
 			
-			
-
 			return ProcessingComposite::ConcreteStart();
 
 		}
@@ -136,6 +137,7 @@ namespace CLAM {
 		void NextFrame()
 		{
 			mChainInput.GetData().mCurrentFrameIndex++;
+			std::cout << "NextFrame() " <<  mChainInput.GetData().mCurrentFrameIndex << std::endl;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment

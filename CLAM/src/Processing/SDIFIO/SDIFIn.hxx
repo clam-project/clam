@@ -7,6 +7,7 @@
 #include "Err.hxx"
 #include "OutPort.hxx"
 #include "Filename.hxx"
+#include "OutPortTmpl.hxx" //TODO
 
 namespace SDIF { class File; } //forward declaration
 
@@ -54,7 +55,7 @@ public:
 	const ProcessingConfig &GetConfig() const;
 
 	SDIF::File* mpFile;
-	OutPort<Segment> mOutput;
+	OutPortTmpl<Segment> mOutput;
 protected:
 
 	bool ConcreteStart();

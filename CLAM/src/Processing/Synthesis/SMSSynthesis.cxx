@@ -161,7 +161,7 @@ bool SMSSynthesis::Do(void)
 	
 	mInputSinSpectralPeaks.Consume();
 	mInputResSpectrum.Consume();
-	
+
 	mOutputSinSpectrum.Produce();
 	mOutputSpectrum.Produce();
 	mOutputAudio.Produce();
@@ -188,7 +188,6 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 		Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
 		Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
 {
-	
 	//First we do the phase managing. Note that if the Do(frame) overload is not used,
 	//the time and pitch controls in this processing should be set by hand before this
 	//method is used
@@ -204,20 +203,23 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 	
 	//We synthesize to audio the resulting summed spectrum
 	mPO_SpectralSynthesis.Do(outputSpectrum,mAudioFrame);
+
+		
 	//We do the overlap and add
 	mPO_OverlapAddGlobal.Do(mAudioFrame, outputAudio);
+
 
 
 	//Now we synthesize only the residual spectrum
 	mPO_ResSpectralSynthesis.Do(inputResidualSpectrum,mAudioFrame);
 	//And we do the overlap and add process for the residual
-	return mPO_OverlapAddRes.Do(mAudioFrame, outputResidualAudio);
+	mPO_OverlapAddRes.Do(mAudioFrame, outputResidualAudio);
 
 	/* Note: although sinusoidal spectrum is already available from the analysis phase, we 
 	need to store it again in the frame because the original peak array may have been
 	transformed
 	*/
-
+	return true;
 }
 
 bool SMSSynthesis::Do(Frame& in)

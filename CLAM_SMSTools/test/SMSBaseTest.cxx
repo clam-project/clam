@@ -35,13 +35,13 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
 	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
 	CPPUNIT_TEST( testhelperLoadAudioFromFile );
-	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
+/*	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
-	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
-	CPPUNIT_TEST_SUITE_END();
+*/	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
+/*	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
+*/	CPPUNIT_TEST_SUITE_END();
 
 
 

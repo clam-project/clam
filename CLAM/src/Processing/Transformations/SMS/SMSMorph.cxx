@@ -355,7 +355,7 @@ bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 		
 	segment.AddAll(  );
 	segment.UpdateData(  );
-	mSDIFReader.Output.Attach( segment );
+	mSDIFReader.mOutput.Attach( segment );
 
 	try{
 		mSDIFReader.Start(  );}

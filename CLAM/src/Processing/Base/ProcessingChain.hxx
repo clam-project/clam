@@ -233,8 +233,7 @@ namespace CLAM{
 		                  "ProcessingChain: Do(): Not in execution mode");
 
 			if (GetExecState() == Disabled)
-		
-		return true;
+				return true;
 			
 			bool result=true;
 			iterator obj;

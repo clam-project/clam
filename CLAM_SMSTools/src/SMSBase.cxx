@@ -64,8 +64,8 @@ SMSBase::SMSBase()
 	mHaveTransformation = false;
 	mHaveAudioMorph = false;
 
-//TODO		mTransformation.mChainInput.Attach(mOriginalSegment);
-//TODO		mTransformation.mChainOutput.Attach(mTransformedSegment);
+	mTransformation.mChainInput.Attach(mOriginalSegment);
+	mTransformation.mChainOutput.Attach(mTransformedSegment);
 
 
 	mpAnalysis=new SMSAnalysis;
@@ -534,6 +534,7 @@ void SMSBase::Synthesize(void)
 {
 	if(!mHaveTransformation)
 	{
+		std::cout << "NOOO!!" << std::endl;
 		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
 		mHaveTransformation=true;
 	}
@@ -816,17 +817,17 @@ void SMSBase::TransformProcessing(void)
 	/* UNUSED: bool def=false; */
 	SetSMSMorphFileName();
 	UpdateDataInTimeStretch();
-//TODO	mTransformation.Configure(mTransformationScore);
+	mTransformation.Configure(mTransformationScore);
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
 
-	//TODO mTransformation.Start();
+	 mTransformation.Start();
 	int i = 0;
-	//TODO while(mTransformation.Do())
-	//TODO {
-	//TODO 	mCurrentProgressIndicator->Update(float(i++));
-	//TODO }
-	//TODO mTransformation.Stop();
+	while(mTransformation.Do())
+	{
+	 	mCurrentProgressIndicator->Update(float(i++));
+	}
+	mTransformation.Stop();
 	mHaveTransformation=true;
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 
@@ -834,29 +835,28 @@ void SMSBase::TransformProcessing(void)
 
 void SMSBase::UpdateDataInTimeStretch()
 {
-//TODO SMSTransformationChainConfig::iterator cfg;
-//TODO	for(cfg=mTransformationScore.ConfigList_begin();cfg!=mTransformationScore.ConfigList_end();cfg++)
-//TODO	{
-//TODO	if((*cfg).GetConcreteClassName()=="SMSTimeStretch")
-//TODO	{
-//TODO		SMSTimeStretchConfig& baseConfig=static_cast<SMSTimeStretchConfig&>((*cfg).GetConcreteConfig());
-//TODO		SMSTimeStretchConfig concreteConfig;
-//TODO		if(baseConfig.HasAmount()) 
-//TODO			concreteConfig.SetAmount(baseConfig.GetAmount());
-//TODO		else 
-//TODO			concreteConfig.RemoveAmount();
-//TODO		if(baseConfig.HasBPFAmount())
-//TODO			concreteConfig.SetBPFAmount(baseConfig.GetBPFAmount());
-//TODO		else
-//TODO			concreteConfig.RemoveBPFAmount();
-//TODO		concreteConfig.UpdateData();
-//TODO		concreteConfig.SetSamplingRate(mSamplingRate);
-//TODO		concreteConfig.SetHopSize(mGlobalConfig.GetAnalysisHopSize());
-//TODO		(*cfg).AddConcreteConfig();
-//TODO		(*cfg).SetConcreteConfig(concreteConfig);
-//TODO	}
-//TODO}
-
+	SMSTransformationChainConfig::iterator cfg;
+	for(cfg=mTransformationScore.ConfigList_begin();cfg!=mTransformationScore.ConfigList_end();cfg++)
+	{
+		if((*cfg).GetConcreteClassName()=="SMSTimeStretch")
+		{
+			SMSTimeStretchConfig& baseConfig=static_cast<SMSTimeStretchConfig&>((*cfg).GetConcreteConfig());
+			SMSTimeStretchConfig concreteConfig;
+			if(baseConfig.HasAmount()) 
+				concreteConfig.SetAmount(baseConfig.GetAmount());
+			else 
+				concreteConfig.RemoveAmount();
+			if(baseConfig.HasBPFAmount())
+				concreteConfig.SetBPFAmount(baseConfig.GetBPFAmount());
+			else
+				concreteConfig.RemoveBPFAmount();
+			concreteConfig.UpdateData();
+			concreteConfig.SetSamplingRate(mSamplingRate);
+			concreteConfig.SetHopSize(mGlobalConfig.GetAnalysisHopSize());
+			(*cfg).AddConcreteConfig();
+			(*cfg).SetConcreteConfig(concreteConfig);
+		}	
+	}
 }
 
 

@@ -296,7 +296,7 @@ namespace CLAM
 
 
 		/** Actual transformation to be used*/
-	//TODO		SMSTransformationChain mTransformation;
+		SMSTransformationChain mTransformation;
 
 
 		/** Internal Processings used for analysis and synthesis */
@@ -356,6 +356,6 @@ namespace CLAM
 		void UpdateDataInTimeStretch();
 	};
 
-};
+}; //namespace CLAM
 
 #endif
