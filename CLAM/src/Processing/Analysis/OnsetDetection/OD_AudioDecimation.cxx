@@ -58,6 +58,10 @@ namespace CLAM
 		void AudioDecimator::DecimateFrom44100To22050( const DataArray& signal,
 							       DataArray& decimatedSignal )
 		{
+			CLAM_ASSERT( decimatedSignal.Size() == signal.Size()/2,
+				     "OnsetDetection::AudioDecimator::DecimateFrom44100To22050(): the decimatedSignal array"
+				     " is required to have half the size of the input signal" );
+
 			TSize size = signal.Size();
 
 			if ( mOutput.Size() < signal.Size() )
@@ -127,13 +131,10 @@ namespace CLAM
 				
 			}
 									
-			TSize decimatedSize = signal.Size() / 2;
-			decimatedSignal.Resize(decimatedSize);
-			decimatedSignal.SetSize(decimatedSize);
-			
 			i=0;
 			
 			//decimation
+			TSize decimatedSize = decimatedSignal.Size();
 			while(i<decimatedSize)
 			{
 				decimatedSignal[i] = mOutput[i*2];
