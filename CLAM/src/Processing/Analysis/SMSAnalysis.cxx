@@ -21,7 +21,6 @@
 
 #include "SMSAnalysis.hxx"
 
-
 using namespace CLAM;
 
 /////////////////////////////////////////////////////////////////////
@@ -51,6 +50,10 @@ void SMSAnalysisConfig::DefaultValues()
 
 	GetPeakDetect().SetMaxPeaks(50);
 	GetPeakDetect().SetMagThreshold(-60);
+	
+	/** Buffer size for circular buffers **/
+	//SetSinBufferSize(-1); //by default, it will be taken as windowSize-1+hopsize
+	//SetResBufferSize(-1); //by default, it will be taken as windowSize-1+hopsize
 }
 
 
@@ -60,12 +63,12 @@ void SMSAnalysisConfig::SetSinWindowSize(TSize w)
 	GetPeakDetect().SetNumBands(GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
 	if(w<2*GetHopSize()+1)
 		SetHopSize((w-1)/2);
-	if(w>GetResWindowSize())
+/*	if(w>GetResWindowSize())
 	{
-		GetResSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
-		GetSinSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+		SetResBufferSize(w-1+GetHopSize());
+		SetSinBufferSize(w-1+GetHopSize());
 	}
-
+*/
 }
 
 TSize SMSAnalysisConfig::GetSinWindowSize() const
@@ -104,9 +107,10 @@ void SMSAnalysisConfig::SetHopSize(TSize h)
 	if (GetSinWindowSize()>GetResWindowSize()) w=GetSinWindowSize();
 	else w=GetResWindowSize();
 
-	GetSinSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
-	GetResSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
-}
+/*	SetSinBufferSize(w-1+GetHopSize());
+	SetResBufferSize(w-1+GetHopSize());
+*/
+ }
 
 TSize SMSAnalysisConfig::GetHopSize() const
 {
@@ -121,12 +125,13 @@ void SMSAnalysisConfig::SetResWindowSize(TSize w)
 	GetSynthSineSpectrum().SetSpectrumSize(GetResSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
 	if(w<2*GetHopSize()+1)
 		SetHopSize((w-1)/2);
+/*
 	if(w>GetSinWindowSize())
 	{
-		GetResSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
-		GetSinSpectralAnalysis().SetBufferSize(w-1+GetHopSize());
+		SetResBufferSize(w-1+GetHopSize());
+		SetSinBufferSize(w-1+GetHopSize());
 	}
-
+*/
 }
 
 TSize SMSAnalysisConfig::GetResWindowSize() const
@@ -246,6 +251,7 @@ void SMSAnalysis::ConfigureData()
 	// Spectrum used for temporary residual analysis, it may be possible to get rid of
 	SpectrumConfig scfg;
 	scfg.SetSize(mConfig.GetResSpectralAnalysis().GetFFT().GetAudioSize()/2+1); // s.AudioFrameSize is the size of the generated frames
+	scfg.SetSpectralRange(mConfig.GetSamplingRate()*0.5);
 	mSpec.Configure(scfg);
 	
 	/* Now we set prototype of SpectrumSubstracter: we want to substract two spectrums: 
@@ -260,7 +266,7 @@ void SMSAnalysis::ConfigureData()
  		sflags.bMagPhaseBPF = 0;
  	Scfg.SetType(sflags);
  	Scfg.SetSize(mSpec.GetSize());
- 	Scfg.SetSpectralRange(22050);
+ 	Scfg.SetSpectralRange(mConfig.GetSamplingRate()*0.5);
  	Spectrum tmpSpecIn(Scfg);    
 
 	mPO_SpecSubstract.SetPrototypes(mSpec,tmpSpecIn,mSpec);
@@ -271,6 +277,39 @@ void SMSAnalysis::ConfigureData()
 	mFund.AddCandidatesErr();
 	mFund.UpdateData();
 	mFund.SetnMaxCandidates(1); // number of candidates wanted
+
+	/*Initializing and configuring member circular buffers*/
+	//First sinusoidal circular buffer
+	//if(mConfig.GetSinBufferSize()==-1) mConfig.SetSinBufferSize(mConfig.GetSinSpectralAnalysis().GetWindowSize()-1+mConfig.GetSinSpectralAnalysis().GetHopSize());
+	
+	TSize sinBufferSize=mConfig.GetSinSpectralAnalysis().GetWindowSize()-1+mConfig.GetSinSpectralAnalysis().GetHopSize();
+	TSize resBufferSize=mConfig.GetResSpectralAnalysis().GetWindowSize()-1+mConfig.GetResSpectralAnalysis().GetHopSize();
+
+	TSize bufferSize;
+	if(sinBufferSize>resBufferSize) bufferSize=sinBufferSize;
+	else	bufferSize=resBufferSize;
+
+	mSinCircularBuffer.SetBufferSize(bufferSize);
+	mSinCircularBuffer.SetReadSize(mConfig.GetSinSpectralAnalysis().GetWindowSize()-1);
+	mSinCircularBuffer.SetWriteSize(mConfig.GetSinSpectralAnalysis().GetHopSize());
+	mSinCircularBuffer.Init();
+	mSinCircularBuffer.IncreaseWriteIndex(bufferSize-2*mConfig.GetSinSpectralAnalysis().GetHopSize());
+	mSinCircularBuffer.IncreaseReadIndex(((bufferSize-mConfig.GetSinSpectralAnalysis().GetHopSize()+1)-(mConfig.GetSinSpectralAnalysis().GetWindowSize()))/2);
+
+	//now residual circular buffer
+	//if(mConfig.GetResBufferSize()==-1) mConfig.SetResBufferSize(mConfig.GetResSpectralAnalysis().GetWindowSize()-1+mConfig.GetResSpectralAnalysis().GetHopSize());
+	mResCircularBuffer.SetBufferSize(bufferSize);
+	mResCircularBuffer.SetReadSize(mConfig.GetResSpectralAnalysis().GetWindowSize()-1);
+	mResCircularBuffer.SetWriteSize(mConfig.GetResSpectralAnalysis().GetHopSize());
+	mResCircularBuffer.Init();
+	mResCircularBuffer.IncreaseWriteIndex(bufferSize-2*mConfig.GetResSpectralAnalysis().GetHopSize());
+	mResCircularBuffer.IncreaseReadIndex(((bufferSize-mConfig.GetResSpectralAnalysis().GetHopSize()+1)-(mConfig.GetResSpectralAnalysis().GetWindowSize()))/2);
+
+	//configure internal audio members used for convinience
+	mSinAudioFrame.SetSize(mConfig.GetSinSpectralAnalysis().GetWindowSize()-1);
+	mSinAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
+	mResAudioFrame.SetSize(mConfig.GetResSpectralAnalysis().GetWindowSize()-1);
+	mResAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
 }
 
 void SMSAnalysis::AttachChildren()
@@ -285,13 +324,33 @@ void SMSAnalysis::AttachChildren()
 
 bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
 {
-	//Analyzing sinusoidal component
-	mPO_SinSpectralAnalysis.Do(in,outGlobalSpec);
+	//Synchronizing spectral ranges of other spectrums
+	outGlobalSpec.SetSpectralRange(mSpec.GetSpectralRange());
+	outSinSpec.SetSpectralRange(mSpec.GetSpectralRange());
+	outResSpec.SetSpectralRange(mSpec.GetSpectralRange());
 	
-	Do(outGlobalSpec,outPk,outFn);
+	/* Input audio frame is writen onto circular buffer */
+	mSinCircularBuffer.WriteAudio(in);
+	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
+	mSinCircularBuffer.ReadAudio(mSinAudioFrame);
+	/* Read index is then decreased according to hop size */
+	mSinCircularBuffer.DecreaseReadIndex(mConfig.GetSinSpectralAnalysis().GetWindowSize()-mConfig.GetSinSpectralAnalysis().GetHopSize()-1);
+
+	//Analyzing sinusoidal component
+	mPO_SinSpectralAnalysis.Do(mSinAudioFrame,outGlobalSpec);
+	
+	SinusoidalAnalysis(outGlobalSpec,outPk,outFn);
 
 	
 	//Analyzing residual component
+	
+	/* Input audio frame is writen onto circular buffer */
+	mResCircularBuffer.WriteAudio(in);
+	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
+	mResCircularBuffer.ReadAudio(mResAudioFrame);
+	/* Read index is then decreased according to hop size */
+	mResCircularBuffer.DecreaseReadIndex(mConfig.GetResSpectralAnalysis().GetWindowSize()-mConfig.GetResSpectralAnalysis().GetHopSize()-1);
+	
 	//First we synthesize Sinusoidal Spectrum
 	mPO_SynthSineSpectrum.Do(outPk,outSinSpec);
 	
@@ -299,21 +358,20 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 	    
 	outResSpec.SetSize(mSpec.GetSize());
 
-	mPO_ResSpectralAnalysis.Do(in/*Res*/,mSpec);
+	mPO_ResSpectralAnalysis.Do(mResAudioFrame,mSpec);
 
 	//Finally we substract mSpectrum-SinusoidalSpectrum
+	
 	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
 
-	//Synchronizing spectral ranges of other spectrums
-	outSinSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
-	outResSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
+
 
 	return true;
 
 }
 
 
-bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn)
+bool SMSAnalysis::SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn)
 {
 	      
 	// Convert Spectrum to dB
@@ -383,6 +441,7 @@ bool SMSAnalysis::Do(Segment& in)
 	tmpFrame.UpdateData();
 	Audio tmpAudio;
 	tmpAudio.SetBeginTime(frameIndex*step);
+	tmpAudio.SetSampleRate(in.GetAudio().GetSampleRate());
 	
 	/*	Note: Here we are just taking the "new" audio belonging to each frame. That is, the
 	HopSize samples centered around CenterTime (without initial offset) */
