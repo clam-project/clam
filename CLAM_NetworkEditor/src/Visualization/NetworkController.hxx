@@ -75,6 +75,11 @@ namespace CLAMVM
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
+		ProcessingController* CreateProcessingController( const std::string & , CLAM::Processing *  );
+		ConnectionAdapter * CreatePortConnectionAdapter( const CLAM::OutPort & out, const CLAM::InPort & in );
+		ConnectionAdapter * CreateControlConnectionAdapter( const CLAM::OutControl & out, const CLAM::InControl & in );
+
+
 		void CreatePortConnection( const std::string &, const std::string & );
 		void ExecuteCreatePortConnection( const std::string & , const std::string & );
 		void ExecuteRemovePortConnection( const std::string & , const std::string & );
@@ -103,7 +108,7 @@ namespace CLAMVM
 			return "NetworkController";
 		}
 		std::string GetName();
-		ProcessingController* CreateProcessingController( const std::string & , CLAM::Processing *  );
+
 		void AddProcessing( const std::string & , CLAM::Processing * );
 		ProcessingControllersMapIterator BeginProcessingControllers()
 		{
