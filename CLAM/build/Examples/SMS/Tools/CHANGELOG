@@ -16,10 +16,21 @@ TODOs:
 	  *** Bug fixed: when storing/loading SMS analysis results into XML
 	      the "wait" message that appears on screen was not being updated
 	  *** New feature: now SMSTools 2 license can be read from within the application ( menu Help->License... )
-	  *** New feature: whenever SMSTools 2 crashes a log file ( SMSTools2_errors.log ) is created
+	  *** New feature: almost always SMSTools 2 crashes a log file ( SMSTools2_errors.log ) is created with
+	      information about the causes of the application crash
+	  
+      ** Processing - SMS Transformations:
+	  *** Bug fixed: sometimes transformations were not being applied properly ( or at all )
+
+      ** GUI - Main Window:
+   	 *** Bug fixed: pressing 'SMS Analysis->Store Melody' button crashed application
+	 *** New feature: message box added telling the user that the melody extraction was successfully performed
+
 	
       ** GUI - Score Editor:
 	  *** Added several more parameters to the SMS Morph transformation widget
+	  *** Bug fixed: pressing 'Apply configuration' button while being visible the Pitch Discretization control
+	      widget caused SMSTools 2 to crash
 	
 2003-07-25
 'Bug fixing and SMS Morph editor improvements'
