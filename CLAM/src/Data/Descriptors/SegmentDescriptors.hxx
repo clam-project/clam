@@ -23,11 +23,7 @@
 #define __SegmentDescriptors_H__
 
 
-#include "DynamicType.hxx"
-#include "ProcessingData.hxx"
-#include "DataTypes.hxx"
-
-#include "Melody.hxx"
+#include "Descriptor.hxx"
 
 #include "AudioDescriptors.hxx"
 #include "FrameDescriptors.hxx"
@@ -41,9 +37,9 @@ namespace CLAM {
  * This class holds Descriptors computed from Segment data
  *
  */
-class SegmentDescriptors : public ProcessingData {
+class SegmentDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 18, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 17, Descriptor);
 		/*All these attributes refer to mean values of spectrum descriptors across
 		frames in the segment*/
 		DYN_ATTRIBUTE (0, public, TData, SpectralMean);
@@ -62,10 +58,9 @@ class SegmentDescriptors : public ProcessingData {
 		DYN_ATTRIBUTE (13, public, TData, SpectralStrongPeak);
 		/** Mean value for fundamental across all frames */
 		DYN_ATTRIBUTE (14,public, TData, Fundamental);
-		DYN_ATTRIBUTE (15,public, Melody, Melody);
 
-		DYN_ATTRIBUTE (16,public, AudioDescriptors, AudioD);
-		DYN_ATTRIBUTE (17,public, List<FrameDescriptors>, FramesD);
+		DYN_ATTRIBUTE (15,public, AudioDescriptors, AudioD);
+		DYN_ATTRIBUTE (16,public, List<FrameDescriptors>, FramesD);
 
 	public:
 
@@ -74,6 +69,11 @@ class SegmentDescriptors : public ProcessingData {
 		void SetpSegment(Segment* pSegment);
 		const Segment* GetpSegment() const;
 		FrameDescriptors& GetFrameD(TIndex pos) {return GetFramesD()[pos];}
+		void Compute();
+		void ConcreteCompute();
+		void SetFramePrototype(const FrameDescriptors& proto,int nFrames);
+
+
 
 	private:
 		void DefaultInit();
@@ -90,19 +90,21 @@ class SegmentDescriptors : public ProcessingData {
 
 inline void SegmentDescriptors::DefaultInit() {
 	mpSegment=0;
+	mpStats=0;
+	AddFramesD();
+	//AddAudioD();
+	UpdateData();
 }
 
 inline void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
 	mpSegment=copied.mpSegment;
+	mpStats=0;
 }
 
 inline const Segment* SegmentDescriptors::GetpSegment() const {
 	return mpSegment;
 }
 
-inline void SegmentDescriptors::SetpSegment(Segment* pSegment) {
-	mpSegment=pSegment;
-}
 
 }
 

@@ -4,6 +4,8 @@
 #include <numeric>
 #include <functional>
 #include "StaticBool.hxx"
+#include "DataTypes.hxx"
+#include "Array.hxx"
 
 using std::accumulate;
 using std::inner_product;
@@ -93,6 +95,20 @@ protected:
 	TIndex i;
 	TmplPow<s> mP;
 };
+
+/**Binary Operator for use with std::inner_product*/
+template <int s=1,class T=TData> class PoweredProduct
+{
+public:
+	PoweredProduct(){}
+	T operator() (const T& i1,const T& i2)
+	{
+		return mP(i1)*i2;
+	}
+protected:
+	TmplPow<s> mP;
+};
+
 
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^1)*/
 template<class T=TData> class WeightedNoPower:public WeightedPower<1,T>{};
@@ -194,11 +210,11 @@ public:
 	}
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
-		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(),mP);
+		return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(1),std::multiplies<T>());
+		
 	}
 private:
 	T memory;
-	ProductTmpl<T> mP;
 };
 
 typedef InnerProductTmpl<> InnerProduct;
@@ -222,6 +238,33 @@ public:
 	T operator()(const Array<T>& a,StaticFalse*)
 	{
 			return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(),mWP);
+	}
+private:
+	T memory;
+	WeightedPower<s,T> mWP;
+
+};
+
+/** Class Function that computes Sum(i*x(i)^n) using std::accumulate and WeightedPower<T,s> BinaryOp
+ *	It also has associated memory so operation is not performed more than necessary. */
+template <int s, class T=TData> class CrossWeightedPoweredSum:public BaseMemOp
+{
+public:
+	CrossWeightedPoweredSum():memory(0){}
+	T operator()(const Array<T>& a1,const Array<T>& a2,StaticTrue* b=NULL)
+	{
+		if(!alreadyComputed)
+		{
+			memory=(*this)(a1,a2,(StaticFalse*)(0));
+			alreadyComputed=true;
+		}
+		return memory;
+		
+	}
+	T operator()(const Array<T>& a1,const Array<T>& a2,StaticFalse*)
+	{
+		return inner_product(a1.GetPtr(),a1.GetPtr()+a1.Size(),a2.GetPtr(),T(),std::plus<T>(),PoweredProduct<s,T>());	
+		//return accumulate(a.GetPtr(),a.GetPtr()+a.Size(),T(),mWP);
 	}
 private:
 	T memory;
@@ -311,6 +354,40 @@ protected:
 	PoweredSum<o,T> mPS;
 };
 
+/** Special CenterOfGravity using 2ond sequence as indexing sequence */
+template<int o, class T=TData,class U=TData> class CrossCenterOfGravity:public BaseMemOp
+{
+public:
+	CrossCenterOfGravity():memory(0){}
+	U operator()(const Array<T>& a1,const Array<T>& a2,CrossWeightedPoweredSum<o,T>& cwPowSum,PoweredSum<o,T>& powSum,StaticTrue* b=NULL)
+	{
+		if(!alreadyComputed)
+		{
+			memory=(*this)(a1,a2,cwPowSum,powSum,(StaticFalse*)(0));
+			alreadyComputed=true;
+		}
+		return memory;
+	}
+	U operator()(const Array<T>& a1,const Array<T>& a2,CrossWeightedPoweredSum<o,T>& cwPowSum,PoweredSum<o,T>& powSum,StaticFalse*)
+	{
+		return static_cast<U>(cwPowSum(a1,a2))/powSum(a1);
+	}
+	/**No weighted powered sum and powered sum previously computed, use member*/
+	U operator()(const Array<T>& a1,const Array<T>& a2,StaticFalse*)
+	{
+		return (*this)(a1,a2,mWPS,mPS,(StaticFalse*)(0));
+	}
+	U operator()(const Array<T>& a1,const Array<T>& a2,StaticTrue* b=NULL)
+	{
+		return (*this)(a1,a2,mWPS,mPS,(StaticTrue*)(0));
+	}
+
+protected:
+	U memory;
+	CrossWeightedPoweredSum<o,T> mWPS;
+	PoweredSum<o,T> mPS;
+};
+
 
 /** Centroid is 1st order center of gravity
  *	@see: CenterOfGravity */
@@ -378,7 +455,7 @@ public:
 	}
 	U operator()(const Array<T>& a,InnerProductTmpl<T>& inProd,StaticFalse*)
 	{
-		return pow(inProd(a,(StaticFalse*)(0)),1/a.Size());
+		return pow(inProd(a,(StaticFalse*)(0)),1.0/(double)a.Size());
 	}
 	/**No inner product previously computed, use temporary*/
 	U operator()(const Array<T>& a,StaticTrue* b=NULL)

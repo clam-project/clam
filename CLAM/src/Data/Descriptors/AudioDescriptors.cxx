@@ -22,18 +22,42 @@
 
 
 
-#include "ProcessingData.hxx"
 #include "AudioDescriptors.hxx"
-
+#include "Audio.hxx"
 
 using namespace CLAM;
 
-AudioDescriptors::AudioDescriptors(Audio* pAudio): ProcessingData(eNumAttr)
+AudioDescriptors::AudioDescriptors(Audio* pAudio): Descriptor(eNumAttr)
 {
 	MandatoryInit();
 	mpAudio=pAudio;
 }
 
 
+void AudioDescriptors::SetpAudio(Audio* pAudio) {
+	mpAudio=pAudio;
+    //TODO: it may give problems because pointer passed
+	InitStats(&mpAudio->GetBuffer());
+	
+}
 
+void AudioDescriptors::ConcreteCompute()
+{
+	if (HasMean())
+		SetMean(mpStats->GetMean());
+	if (HasTemporalCentroid())
+		SetTemporalCentroid(mpStats->GetCentroid()*mpAudio->GetDuration()/mpAudio->GetSize());
+	if (HasEnergy())
+		SetEnergy(mpStats->GetEnergy());
+	if(HasVariance())
+		SetVariance(mpStats->GetVariance());
 
+/*		DYN_ATTRIBUTE (3, public, TData, Attack);
+		DYN_ATTRIBUTE (4, public, TData, Decay);
+		DYN_ATTRIBUTE (5, public, TData, Sustain);
+		DYN_ATTRIBUTE (6, public, TData, Release);
+		DYN_ATTRIBUTE (7, public, TData, LogAttackTime);
+		DYN_ATTRIBUTE (9, public, TData, ZeroCrossingRate);
+		DYN_ATTRIBUTE (10,public, TData, RiseTime);
+*/
+}

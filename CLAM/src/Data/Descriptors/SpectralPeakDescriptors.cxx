@@ -24,15 +24,42 @@
 
 #include "ProcessingData.hxx"
 #include "SpectralPeakDescriptors.hxx"
-
+#include "SpectralPeakArray.hxx"
 
 using namespace CLAM;
 
 
-SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): ProcessingData(eNumAttr)
+SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): Descriptor(eNumAttr)
 {
 	MandatoryInit();
 	mpSpectralPeakArray=pSpectralPeakArray;
 }
-		
 
+void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {
+	mpSpectralPeakArray=pSpectralPeakArray;
+    //TODO: it may give problems because pointer passed
+	InitStats(&mpSpectralPeakArray->GetMagBuffer());
+
+}
+
+
+void SpectralPeakDescriptors::ConcreteCompute()
+{
+
+	if (HasMagnitudeMean())
+		SetMagnitudeMean(mpStats->GetMean());
+	if (HasHarmonicCentroid())
+		SetHarmonicCentroid(mCentroid(mpSpectralPeakArray->GetMagBuffer(),
+							mpSpectralPeakArray->GetFreqBuffer()));
+/*
+		DYN_ATTRIBUTE (2, public, TData, SpectralTilt);
+		DYN_ATTRIBUTE (3, public, TData, HarmonicDeviation);
+		DYN_ATTRIBUTE (4, public, TData, FirstTristimulus);
+		DYN_ATTRIBUTE (5, public, TData, SecondTristimulus);
+		DYN_ATTRIBUTE (6, public, TData, ThirdTristimulus);
+		DYN_ATTRIBUTE (7, public, TData, Brightness);
+		DYN_ATTRIBUTE (8, public, TData, OddHarmonics);
+		DYN_ATTRIBUTE (9, public, TData, EvenHarmonics);
+		DYN_ATTRIBUTE (10,public, TData, OddToEvenRatio);
+*/
+}

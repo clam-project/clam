@@ -176,12 +176,29 @@ public:
 		return mEnergy(*mData);
 	}
 
+	U GetGeometricMean()
+	{
+		return mGeometricMean(*mData);
+	}
+
 	/** Get rms, compute it if necessary*/
 	T GetRMS()
 	{
 		return mRMS(*mData);
 	}
 
+	/** Get maximum value */
+	T GetMax()
+	{
+		return max_element(mData.GetPtr(),mData.GetPtr()+mData.Size());
+	}
+
+	/** Get minimum value */
+	T GetMin()
+	{
+		return min_element(mData.GetPtr(),mData.GetPtr()+mData.Size());
+	}
+	
 	/** Reset all previously computed values */
 	void Reset()
 	{
@@ -199,7 +216,10 @@ public:
 		mSkew.Reset();
 		mEnergy.Reset();
 		mRMS.Reset();
+		mGeometricMean.Reset();
 	}
+
+
 
 private:
 
@@ -248,7 +268,8 @@ private:
 		{
 			mMoments[order-1]=new Moment<order,T,U>;
 		}
-		return GetMoment((O<order>*)(0),StaticFalse());
+		//return GetMoment((O<order>*)(0),StaticFalse());
+		return (*(dynamic_cast<Moment<order,T,U>*> (mMoments[order-1])))(*mData);
 	}
 
 	/** Chained method to return moment indicated by order and previous*/
@@ -303,7 +324,7 @@ private:
 			mCentralMoments[order-1]=new CentralMoment<order,T,U>;
 		}
 		
-		return GetCentralMoment((O<order>*)(0),StaticFalse());
+		//return GetCentralMoment((O<order>*)(0),StaticFalse());
 	}
 
 	/** Chained method to return central moment indicated by order and previous*/
@@ -341,6 +362,7 @@ private:
 			mCenterOfGravities[order-1]=new CenterOfGravity<order,T,U>;
 		}
 
+		//todo: this may not compile on gcc
 		return GetCenterOfGravity((O<order>*)(0),StaticFalse());
 	}
 
@@ -367,6 +389,7 @@ private:
 	StandardDeviationTmpl<T,U> mStdDev;
 	EnergyTmpl<T> mEnergy;
 	RMSTmpl<T> mRMS;
+	GeometricMeanTmpl<T,U> mGeometricMean;
 
 	const Array<T>* mData;
 

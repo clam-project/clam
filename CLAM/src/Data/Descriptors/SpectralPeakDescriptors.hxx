@@ -22,10 +22,7 @@
 #ifndef __SpectralPeakDescriptors_H__
 #define __SpectralPeakDescriptors_H__
 
-#include "DynamicType.hxx"
-#include "ProcessingData.hxx"
-#include "DataTypes.hxx"
-
+#include "Descriptor.hxx"
 
 /*
  * This class holds Descriptors computed from SpectralPeak data 
@@ -39,9 +36,9 @@ namespace CLAM {
 	class SpectralPeakArray;
 
 
-	class SpectralPeakDescriptors : public ProcessingData {
+	class SpectralPeakDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDescriptors, 11, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDescriptors, 11, Descriptor);
 		DYN_ATTRIBUTE (0, public, TData, MagnitudeMean);
 		DYN_ATTRIBUTE (1, public, TData, HarmonicCentroid);
 		DYN_ATTRIBUTE (2, public, TData, SpectralTilt);
@@ -59,8 +56,7 @@ namespace CLAM {
 
 		const SpectralPeakArray* GetpSpectralPeakArray() const;
 		void SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray);
-
-		friend class SpectralPeakDescriptorsGen;
+		void ConcreteCompute();
 
 	private:
 		void DefaultInit();
@@ -68,6 +64,7 @@ namespace CLAM {
 
 	private:
 		SpectralPeakArray* mpSpectralPeakArray;
+		CrossCenterOfGravity<1,TData> mCentroid;
 
 	};
 
@@ -77,19 +74,18 @@ namespace CLAM {
 
 inline void SpectralPeakDescriptors::DefaultInit() {
 	mpSpectralPeakArray=0;
+	mpStats=0;
 }
 
 inline void SpectralPeakDescriptors::CopyInit(const SpectralPeakDescriptors & copied) {
 	mpSpectralPeakArray=copied.mpSpectralPeakArray;
+	mpStats=0;
 }
 
 inline const SpectralPeakArray* SpectralPeakDescriptors::GetpSpectralPeakArray() const {
 	return mpSpectralPeakArray;
 }
 
-inline void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {
-	mpSpectralPeakArray=pSpectralPeakArray;
-}
 
 
 }

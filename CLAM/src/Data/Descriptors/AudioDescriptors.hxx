@@ -23,10 +23,7 @@
 #define __AUDIODescriptors_H__
 
 
-#include "ProcessingData.hxx"
-#include "ProcessingDataConfig.hxx"
-#include "DataTypes.hxx"
-
+#include "Descriptor.hxx"
 
 /*
  * This class holds Descriptors computed from Audio data
@@ -38,9 +35,9 @@ namespace CLAM {
 
 	class Audio;
 
-	class AudioDescriptors : public ProcessingData {
+	class AudioDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 11, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 11, Descriptor);
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, Variance);
 		DYN_ATTRIBUTE (2, public, TData, TemporalCentroid);
@@ -59,11 +56,12 @@ namespace CLAM {
 
 		const Audio* GetpAudio() const;
 		void SetpAudio(Audio* pAudio);
-
+		void ConcreteCompute();
 	private:
-		void DefaultInit();
-		void CopyInit(const AudioDescriptors & copied);
-
+//		void DefaultInit();
+//		void CopyInit(const AudioDescriptors & copied);
+		
+		
 	private:
 		Audio* mpAudio;
 
@@ -73,7 +71,7 @@ namespace CLAM {
 
 // Implementation
 
-inline void AudioDescriptors::DefaultInit() {
+/*inline void AudioDescriptors::DefaultInit() {
 	mpAudio=0;
 }
 
@@ -83,14 +81,10 @@ inline void AudioDescriptors::CopyInit(const AudioDescriptors & copied) {
 
 inline const Audio* AudioDescriptors::GetpAudio() const {
 	return mpAudio;
-}
-
-inline void AudioDescriptors::SetpAudio(Audio* pAudio) {
-	mpAudio=pAudio;
-}
+}*/
 
 
-}
+};
 
 
 #endif /* __AUDIODescriptors_H__ */
