@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
 	RappidConfig cfg;
 
-//	cfg.parse_command_line(argc,argv);
+	cfg.parse_command_line(argc,argv);
 
 	Rappid app(cfg);
 
