@@ -23,7 +23,10 @@
 	+ Multitype Pool::Get
 	+ Spec::AssertType
 	+ Pool::Get check for type
-- Include ScopeDivision attributes
+- Select the scope specification by name
+	- ScopeSpecFactory
+- Consider using a iterator/vector interface
+- Multilevel pools
 - XML for the Pool
 - XML for the Pool Spec
 - Multitype XML loading
