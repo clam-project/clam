@@ -99,6 +99,7 @@ namespace AudioCodecs
 			hdr.SetEndianess( fileHeaderInfo.format & SF_FORMAT_ENDMASK );
 			hdr.SetLength( TTime(fileHeaderInfo.frames/fileHeaderInfo.channels) / hdr.GetSampleRate() );
 			hdr.SetLength( hdr.GetLength() * 1000. );
+			sf_close(fileHandle);
 		}
 
 	}
