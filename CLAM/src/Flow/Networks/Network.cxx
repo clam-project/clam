@@ -6,20 +6,14 @@ namespace CLAM
 {
 	namespace Helper
 	{
-		void DeleteSecond( Network::ProcessingsMap::value_type& mapElem ) {
+		void DeleteProcessing( Network::ProcessingsMap::value_type& mapElem ) {
 			delete mapElem.second;
 		}
 	}
 	// destructor
 	Network::~Network()
 	{
-		std::for_each(_processings.begin(),	_processings.end(),	Helper::DeleteSecond );
-
-	/*	ProcessingsMap::const_iterator it;
-		for (it=_processings.begin(); it!=_processings.end(); it++ )
-			delete it->second;
-	*/
-
+		std::for_each(_processings.begin(),	_processings.end(),	Helper::DeleteProcessing );
 	}
 
 	Processing& Network::GetProcessing( const std::string & name )
@@ -41,6 +35,40 @@ namespace CLAM
 	{
 		ProcessingsMap::const_iterator i = _processings.find( name );
 		return i!=_processings.end();
+	}
+
+	const char Network::NamesIdentifiersSeparator()
+	{ 	
+		return '.'; 	
+	}
+
+	std::size_t Network::PositionOfLastIdentifier( const std::string & str ) 
+	{
+		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
+		CLAM_ASSERT( result!=std::string::npos, "Malformed port name. It should be ProcessingName.PortName");
+		return result;
+	}
+	std::size_t Network::PositionOfProcessingIdentifier( const std::string& str )
+	{
+		std::size_t endPos = PositionOfLastIdentifier(str)-1;
+		std::size_t	last_ofResult = str.find_last_of( NamesIdentifiersSeparator(), endPos );
+		return last_ofResult == std::string::npos ? 0 : last_ofResult+1;
+	}
+
+	std::string Network::GetLastIdentifier( const std::string& str )
+	{
+		return str.substr( PositionOfLastIdentifier(str)+1 );
+	}
+
+	std::string Network::GetProcessingIdentifier( const std::string& str )
+	{
+		return str.substr( PositionOfProcessingIdentifier(str), PositionOfLastIdentifier(str) );
+	}
+
+	InPort & Network::GetInPortByCompleteName( const std::string & name )
+	{
+		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
+		return proc.GetInPorts().Get( GetLastIdentifier(name) );
 	}
 
 }

@@ -20,8 +20,18 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
 
+protected:
+	InPort & GetInPortByCompleteName( const std::string& );
 private:
+	// fields
 	ProcessingsMap _processings;
+	// helpers
+	static std::size_t PositionOfLastIdentifier( const std::string& );
+	static std::size_t PositionOfProcessingIdentifier( const std::string& );
+	std::string GetLastIdentifier( const std::string& );
+	std::string GetProcessingIdentifier( const std::string& );
+	static const char NamesIdentifiersSeparator();
+	
 };
 
 }// namespace
