@@ -31,7 +31,7 @@ namespace CLAM
 		
 
 		template<>
-		const char* BinaryAudioOp< Add<TData> >::GetClassName() const
+		inline const char* BinaryAudioOp< Add<TData> >::GetClassName() const
 		{
 				return "BinaryAudioOperation_Add";
 		}
