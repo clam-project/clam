@@ -84,7 +84,7 @@ public:
 	InControlTmpl<PhaseManagement> mCurrentTime;
 	InControlTmpl<PhaseManagement> mCurrentPitch;
 
-private:
+public:
 	void ResetPhaseAlignment();	
 
 	void DoPhaseAlignment (SpectralPeakArray& peakArray);
