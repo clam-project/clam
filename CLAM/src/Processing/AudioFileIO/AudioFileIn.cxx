@@ -247,7 +247,7 @@ using namespace CLAM;
 			mpSoundFileIO->SeekFrame(mConfig.GetStartFrame());
 //			printf("Seeking to %d\n",mConfig.GetStartFrame());
 		}
-		catch (ErrSoundFileIO err)
+		catch (ErrSoundFileIO&)
 		{
 			mStatus = "Error seeking frame\n";
 			return false;
