@@ -73,7 +73,7 @@ public:
 		 *  @return A boolean telling us if it was possible to bind 
 		 *          the view with the ProcessingData provided
 		 */
-		virtual bool BindTo( ProcessingData* procDataObj ) = 0;
+		virtual bool BindTo( const ProcessingData* procDataObj ) = 0;
 
 };
 

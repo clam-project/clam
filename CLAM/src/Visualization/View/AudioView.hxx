@@ -1,7 +1,7 @@
 #ifndef __AUDIOVIEW__
 #define __AUDIOVIEW__
 
-#include "View.hxx"
+#include "ProcessingDataView.hxx"
 #include "AudioViewAspect.hxx"
 
 namespace CLAM
@@ -15,7 +15,7 @@ namespace CLAMGUI
 		using CLAM::Audio;
 		using CLAM::ProcessingData;
 
-		class AudioView : public View
+		class AudioView : public ProcessingDataView
 		{
 				// attributes
 		private:

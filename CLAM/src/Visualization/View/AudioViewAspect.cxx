@@ -1,7 +1,5 @@
 #include "AudioViewAspect.hxx"
 #include "AudioView.hxx"
-#include "Array.hxx"
-#include "DataTypes.hxx"
 
 namespace CLAMGUI
 {
