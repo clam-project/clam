@@ -1,7 +1,6 @@
 #ifndef OutPort_hxx
 #define OutPort_hxx
 
-#include "Node.hxx"
 #include "WritingRegion.hxx"
 
 
