@@ -3,7 +3,8 @@
 #include "BoundingBoxes.hxx"
 #include "Assert.hxx"
 #include "CLAM_Math.hxx"
-#include <cstring>
+//#include <cstring>
+#include <cstdio>
 
 namespace CLAMVM
 {
@@ -61,7 +62,7 @@ namespace CLAMVM
 		double wX = ((double)x / (double)screenBox.pixel_width)* ( fabs( worldBox.mRight - worldBox.mLeft ) ) + worldBox.mLeft;
 		double wY = ((double)y / (double)screenBox.pixel_height) * ( fabs( worldBox.mTop - worldBox.mBottom ) );
 
-		snprintf( textBuffer, maxLength, "X=%.3g, Y=%.3g", wX, wY);
+		std::snprintf( textBuffer, maxLength, "X=%.3g, Y=%.3g", wX, wY);
 		
 	}
 
