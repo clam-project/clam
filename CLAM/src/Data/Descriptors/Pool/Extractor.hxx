@@ -7,6 +7,7 @@
 namespace CLAM
 {
 
+/** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
 class Hook 
 {
@@ -37,6 +38,7 @@ protected:
 	unsigned _current;
 };
 
+/** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
 class ReadHook : public Hook<AttributeType>
 {
@@ -69,6 +71,7 @@ protected:
 };
 
 
+/** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
 class ReadIndirectHook : public ReadHook<AttributeType>
 {
@@ -112,6 +115,7 @@ private:
 };
 
 
+/** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
 class WriteHook : public Hook<AttributeType>
 {
