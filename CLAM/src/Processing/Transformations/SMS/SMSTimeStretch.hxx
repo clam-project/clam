@@ -59,7 +59,7 @@ namespace CLAM{
 		bool Do(const Segment& in, Segment& out);
 		bool CanProcessInplace() {return false;}
 		bool IsLastFrame();
-		
+		bool UpdateControlValueFromBPF(TData pos);
 
 			
 	protected:
@@ -74,7 +74,7 @@ namespace CLAM{
 		
 		Frame mLeftFrame;
 
-		SMSTimeStretchConfig mConfig;
+		SMSTimeStretchConfig mConcreteConfig;
 
 		/** Child processings **/
 		FrameInterpolator mPO_FrameInterpolator;

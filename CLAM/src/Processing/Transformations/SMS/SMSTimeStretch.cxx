@@ -33,12 +33,12 @@ SMSTimeStretch::SMSTimeStretch()
 
 bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	CopyAsConcreteConfig(mConfig,cfg);
+	CopyAsConcreteConfig(mConcreteConfig,cfg);
 	mUseTemporalBPF=false;
-	if(mConfig.HasAmount())
-		mAmountCtrl.DoControl(mConfig.GetAmount());
-	else if(mConfig.HasBPFAmount()){
-		mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
+	if(mConcreteConfig.HasAmount())
+		mAmountCtrl.DoControl(mConcreteConfig.GetAmount());
+	else if(mConcreteConfig.HasBPFAmount()){
+		mAmountCtrl.DoControl(mConcreteConfig.GetBPFAmount().GetValue(0));
 		mUseTemporalBPF=true;}
 	else
 		mAmountCtrl.DoControl(0);
@@ -58,9 +58,9 @@ bool SMSTimeStretch::ConcreteStart()
 
 bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 {
-	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mConfig.GetHopSize()/mConfig.GetSamplingRate());
+	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate());
 	out.SetCenterTime(mSynthesisTime);
-	mSynthesisTime+=(TData)mConfig.GetHopSize()/mConfig.GetSamplingRate();
+	mSynthesisTime+=(TData)mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate();
 	mnSynthesisFrames++;
 	if(interpFactor>1)
 	{
@@ -111,8 +111,8 @@ bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 
 void SMSTimeStretch::UpdateTimeAndIndex(const Segment& in)
 {
-	mAnalysisTime+=(TData)mConfig.GetHopSize()*mAmountCtrl.GetLastValue()/mConfig.GetSamplingRate();
-	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mConfig.GetHopSize()/mConfig.GetSamplingRate()&&mCurrentInputFrame<=in.GetnFrames())
+	mAnalysisTime+=(TData)mConcreteConfig.GetHopSize()*mAmountCtrl.GetLastValue()/mConcreteConfig.GetSamplingRate();
+	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate()&&mCurrentInputFrame<=in.GetnFrames())
 	{
 		mLeftFrame=in.GetFrame(mCurrentInputFrame);
 		mCurrentInputFrame++;
@@ -148,6 +148,16 @@ bool SMSTimeStretch::IsLastFrame()
 		}
 	}
 	return isLast;
+}
+
+bool SMSTimeStretch::UpdateControlValueFromBPF(TData pos)
+{
+	if(mConcreteConfig.HasBPFAmount())
+	{
+		mAmountCtrl.DoControl(mConcreteConfig.GetBPFAmount().GetValue(pos));
+		return true;
+	}
+	else return false;
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
