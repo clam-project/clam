@@ -15,8 +15,8 @@
 	+ remove Pool::GetIndex
 	+ remove Pool::Add
 	+ posar el atributo spec com a const
-* duplicated attribute names
-- Separate Pool and PoolSpec tests in two fixtures
++ duplicated attribute names
++ Separate Pool and PoolSpec tests in two fixtures
 - Move attribute pool allocation and deallocation to the spec
 - Introduce multiple types
 - Include ScopeDivision attributes
