@@ -7,7 +7,6 @@
 #include "Array.hxx"
 #include "TimeIndex.hxx"
 #include "GT_FilterBank.hxx"
-#include "Normalization.hxx"
 #include "OnsetDetectorConfig.hxx"
 #include "OD_AudioDecimation.hxx"
 #include <list>
@@ -43,9 +42,7 @@ namespace CLAM
 	private:
 	
 		// Configuration data
-		OnsetDetectorConfig mConfig;
-	
-		Normalization	mNorm;
+		OnsetDetectorConfig mConfig;       
 		GT_FilterBank	mFilterBank;
 		OnsetDetection::AudioDecimator  mDecimator;
 

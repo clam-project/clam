@@ -84,11 +84,6 @@ namespace CLAM
 		bankcfg.SetSampleRate(22050);
 		mFilterBank.Configure(bankcfg);
 
-		//Normalisation Configuration
-		NormalizationConfig NCfg;
-		NCfg.SetType(3);
-		mNorm.Configure(NCfg);	
-
 		return true;
 	}
 
@@ -96,7 +91,6 @@ namespace CLAM
 	void OnsetDetector::AttachChildren()
 	{
 		mFilterBank.SetParent(this);
-		mNorm.SetParent( this );
 	}
 
 	bool OnsetDetector::Do(Segment &originalSegment, Array<TimeIndex>& out)
@@ -104,10 +98,7 @@ namespace CLAM
 		CLAM_ASSERT( int(originalSegment.GetAudio().GetSampleRate()) == 44100,
 			     "This onset detection algorithm only works for signals sampled at a 44.1kHz rate" );
 
-		//Normalization and downsampling to 22.05 kHz
-		mNorm.Do(originalSegment.GetAudio());
-
-
+		//Downsampling to 22.05 kHz
 
 		mAudio.SetSize(originalSegment.GetAudio().GetSize()/2);
 		mAudio.SetSampleRate(originalSegment.GetAudio().GetSampleRate()/2);

@@ -11,6 +11,7 @@
 #include "TransientGen.hxx"
 #include "TickSequenceTracker.hxx"
 #include "IOIHistogram.hxx"
+#include "Normalization.hxx"
 
 
 namespace CLAM
@@ -35,7 +36,7 @@ namespace CLAM
 		CLAM::MonoAudioFileReader reader;
 		reader.Configure( cfg );
 		
-		CLAM::TSize fileSize = file.GetHeader().GetSamples();
+		CLAM::TSize fileSize = int((file.GetHeader().GetLength()/1000.)*file.GetHeader().GetSampleRate());
 		
 		audio.SetSize(fileSize);
 		audio.SetSampleRate(file.GetHeader().GetSampleRate());
@@ -67,11 +68,11 @@ namespace CLAM
 		seg.AddAudio();
 		seg.UpdateData();
 		seg.SetHoldsData(true);
-
+		Audio   audioFromFile;
 
 		try
 		{
-			LoadAudioFile( seg.GetAudio(), pathToFile );
+			LoadAudioFile( audioFromFile, pathToFile );
 		}
 		catch( Err& e )
 		{
@@ -80,7 +81,26 @@ namespace CLAM
 			
 			throw propErr;
 		}
+
+		seg.GetAudio().SetSize( audioFromFile.GetSize() );
+		seg.GetAudio().SetSampleRate( audioFromFile.GetSampleRate() );
 		
+		// Audio normalization pass
+
+		Normalization audioNormalizer;
+		NormalizationConfig audioNormCfg;
+		
+		audioNormCfg.SetType( 3 ); // Scaling factor computed from "dominant energy"
+		
+		audioNormalizer.Configure( audioNormCfg );
+
+		audioNormalizer.Start();
+
+		audioNormalizer.Do( audioFromFile, seg.GetAudio() );
+
+		audioNormalizer.Stop();
+
+
 		TData sampleRate = seg.GetAudio().GetSampleRate();
 		TTime duration = seg.GetAudio().GetSize()/sampleRate;
 		seg.SetEndTime(duration);

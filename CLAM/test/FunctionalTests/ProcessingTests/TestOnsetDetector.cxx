@@ -3,6 +3,7 @@
 #include "RhythmDescriptionHelpers.hxx"
 #include "XMLStorage.hxx"
 #include "OnsetDetector.hxx"
+#include "Normalization.hxx"
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
 
@@ -40,7 +41,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTests = "../../../../CLAM-TestData/RhythmDescription";
+			mPathToTests = "../../../../../CLAM-TestData/RhythmDescription";
 		}
 
 		void tearDown()
@@ -87,9 +88,24 @@ namespace CLAMTest
 			CLAM::Segment seg;
 			seg.AddAudio();
 			seg.UpdateData();
-			seg.SetAudio(readAudio);
 			seg.SetHoldsData(true);
 			seg.SetEndTime(duration);
+
+			seg.GetAudio().SetSize( readAudio.GetSize() );
+			seg.GetAudio().SetSampleRate( readAudio.GetSampleRate() );
+
+			CLAM::NormalizationConfig ncfg;
+			ncfg.SetType( 3 ); // scaling factor computed from "dominant energy"
+
+			CLAM::Normalization audioNorm;
+
+			audioNorm.Configure( ncfg );
+
+			audioNorm.Start();
+
+			audioNorm.Do( readAudio, seg.GetAudio() );
+
+			audioNorm.Stop();
 			
 			CLAM::OnsetDetectorConfig onsetconfig;
 			CLAM::OnsetDetector onset(onsetconfig);
