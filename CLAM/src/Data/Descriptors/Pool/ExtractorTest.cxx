@@ -19,6 +19,11 @@ class HookTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testNext_PointsToTheNextPoolData);
 	CPPUNIT_TEST(testIsInsideScope_ReturnsTrueWhileInsideTheScope);
 	CPPUNIT_TEST(testIsInsideScope_ReturnsFalseBeyondTheScope);
+
+	CPPUNIT_TEST(testWriteInit_PointsToThePoolBegin);
+	CPPUNIT_TEST(testWriteNext_PointsToTheNextPoolData);
+	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope);
+	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsFalseBeyondTheScope);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -90,6 +95,71 @@ private:
 
 		CPPUNIT_ASSERT(!binder.IsInsideScope());
 	}
+
+	void testWriteInit_PointsToThePoolBegin()
+	{
+		CLAM::WriteHook<CLAM::TData> binder;
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		CLAM::TData & result = binder.GetForWriting();
+
+		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
+
+		CPPUNIT_ASSERT_EQUAL(expected, &result);
+	}
+
+	void testWriteNext_PointsToTheNextPoolData()
+	{
+		CLAM::WriteHook<CLAM::TData> binder;
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		binder.Next();
+		CLAM::TData & result = binder.GetForWriting();
+		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
+
+		CPPUNIT_ASSERT_EQUAL(expected+1, &result);
+	}
+
+	void testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope()
+	{
+		CLAM::WriteHook<CLAM::TData> binder;
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
+
+		CPPUNIT_ASSERT(binder.IsInsideScope());
+		binder.Next();
+		CPPUNIT_ASSERT(binder.IsInsideScope());
+		binder.Next();
+		CPPUNIT_ASSERT(binder.IsInsideScope());
+	}
+
+	void testWriteIsInsideScope_ReturnsFalseBeyondTheScope()
+	{
+		CLAM::WriteHook<CLAM::TData> binder;
+		CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
+
+		// Advance until the end
+		binder.Next();
+		binder.Next();
+		// Go Beyond
+		binder.Next();
+
+		CPPUNIT_ASSERT(!binder.IsInsideScope());
+	}
+
+#ifdef NEVERDEFINED
+	void testSquareRootExtractor()
+	{
+		CLAM::SquareExtractor extractor(mScheme,"TestScope1");
+		extractor.Hook("Squared").Attribute("TDataAttribute2");
+		extractor.Hook("ToBeSquared").Attribute("TDataAttribute");
+		for (extractor.Init(mPool);
+			extractor.IsInsideScope();
+			extractor.Next())
+		{
+			extractor.Extract();
+		}
+	}
+#endif
+
 
 };
 

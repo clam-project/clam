@@ -45,6 +45,47 @@ private:
 	const AttributeType * _data;
 };
 
+template <typename AttributeType>
+class WriteHook 
+{
+public:
+	void Init(DescriptionDataPool & pool, 
+			const std::string & scope,
+			const std::string & attribute)
+	{
+		_pool = &pool;
+		_scope = scope;
+		_attribute = attribute;
+		_current = 0;
+		_data = _pool->template GetAttributePool<AttributeType>(_scope,_attribute);
+	}
+
+	AttributeType & GetForWriting() const
+	{
+		return _data [_current];
+	}
+
+	void Next()
+	{
+		_current++;
+	}
+
+	bool IsInsideScope() const
+	{
+		return _current < _pool->GetNumberOfContexts(_scope);
+	}
+
+private:
+	std::string _scope;
+	std::string _attribute;
+	unsigned _current;
+	DescriptionDataPool * _pool;
+	AttributeType * _data;
+};
+
+
+
+
 
 }
 
