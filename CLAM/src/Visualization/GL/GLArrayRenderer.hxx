@@ -42,8 +42,8 @@ class GLArrayRenderer
 public:
 
 	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
-		: mLastIndex(0), r( red ), g( gree ), b( blu ), mDataChanged( false ), 
-		mCullingRequested(false), mMustGenerateIndexes( true )
+		: mLastMaxIndex(0), mLastMinIndex(0), mFirstMaxIndex(0), mFirstMinIndex(0),r( red ), g( gree ), b( blu ), mDataChanged( false ), 
+		mCullingRequested(false), mMustGenerateIndexes( true ), mFirstIndex(0),mLastIndex(0)
 	{
 		ResizeArray( 1024 );
 	}
@@ -69,12 +69,16 @@ protected:
 		return 1;
 	}
 	virtual void GenerateElemIndexes();
+	virtual void FindMaxMin();
 
 protected:
 
 	std::valarray< c3f_v3f > mIntertwined;
-	std::valarray< GLuint >  mElemIdxBuffer; // element index buffer
-	unsigned       mLastIndex;
+	std::valarray< GLuint >  mElemIdxBuffer;
+	std::valarray< GLuint >  mMaxElemIdxBuffer; // element index buffer for local maximums
+	std::valarray< GLuint >  mMinElemIdxBuffer; // element index buffer for local minimums
+	unsigned       mLastMaxIndex,mLastMinIndex,mFirstMaxIndex,mFirstMinIndex,mnMax,mnMin;
+	unsigned       mLastIndex,mFirstIndex,mnMaxMin;
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
