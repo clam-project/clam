@@ -63,7 +63,7 @@ namespace CLAM
 	{
 		ProcessingsMap::const_iterator i = _processings.find( name );
 		if(i==_processings.end())
-			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing with a repeated name (key)" );
+			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing that is not included in the network" );
 		
 		Processing * proc = i->second;
 		_processings.erase( name );
@@ -83,6 +83,7 @@ namespace CLAM
 		{
 			(*itOutPort)->Unattach();
 		}
+		delete proc;
 		
 	}
 
