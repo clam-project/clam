@@ -77,6 +77,12 @@
 #		define for if (0) {} else for
 #	endif
 
+#if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
+	namespace std
+	{	
+		typedef ::size_t size_t;
+	} // namespace
+#endif // MSVC++ 6
 
 // Needed for getting RtAudio to compile right for Windoze
 #define __WINDOWS_DS__
