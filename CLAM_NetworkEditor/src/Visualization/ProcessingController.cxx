@@ -24,8 +24,6 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
-
-
 #include <iostream> // TODO: remove
 
 
@@ -42,33 +40,20 @@ ProcessingController::ProcessingController()
 
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
 {
+
 	// HasMutableInterface!
 	if(mObserved->ModifiesPortsAndControlsAtConfiguration())
 		SignalRemoveAllConnections.Emit( mObserved );
 
 	bool wasRunning = false;
-
 	if (mObserved->GetExecState() == CLAM::Processing::Running)
+
 	{
 		wasRunning = true;
 		mObserved->Stop();
 	}
 
-<<<<<<< ProcessingController.cxx
-bool ProcessingController::Publish()
-{
-	CLAM_ASSERT( mObserved, "Trying to publish an unbinded processing controller" );
-	return true;
-}
 
-std::string ProcessingController::GetObservedClassName()
-{
-	if(mObserved)
-		return mObserved->GetClassName();
-	return "unbinded processing controller";
-}
-bool ProcessingController::BindTo( CLAM::Processing& obj )
-{
 
 	mObserved->Configure(cfg);
 	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetStatus() );
@@ -79,7 +64,6 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 		SignalRebuildProcessingPresentationAttachedTo.Emit( this, mObserved );
 	}
 
-
 	if(wasRunning)
 		mObserved->Start();
 }
@@ -88,15 +72,11 @@ void ProcessingController::ProcessingNameChanged( const std::string & newName )
 {
 	SignalProcessingNameChanged.Emit( newName, this );
 }
-
-	
-
 bool ProcessingController::Publish()
 {
 	CLAM_ASSERT( mObserved, "Trying to publish an unbinded processing controller" );
 	return true;
 }
-
 
 std::string ProcessingController::GetObservedClassName()
 {
@@ -129,11 +109,6 @@ void ProcessingController::UpdateListOfPortsAndControls()
 		mOutControlNames.push_back((*itCtrlOut)->GetName());
 }
 
-const CLAM::ProcessingConfig & ProcessingController::GetObservedConfig()
-{
-	return mObserved->GetConfig();
-}
-
 ProcessingController::NamesList::iterator ProcessingController::BeginInPortNames()
 {
 	return mInPortNames.begin();
@@ -147,6 +122,26 @@ ProcessingController::NamesList::iterator ProcessingController::EndInPortNames()
 ProcessingController::NamesList::iterator ProcessingController::BeginOutPortNames()
 {
 	return mOutPortNames.begin();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::EndOutPortNames()
+{
+	return mOutPortNames.end();
+}
+
+ProcessingController::NamesList::iterator ProcessingController::BeginInControlNames()
+{
+	return mInControlNames.begin();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::EndInControlNames()
+{
+	return mInControlNames.end();
+}
+	
+ProcessingController::NamesList::iterator ProcessingController::BeginOutControlNames()
+{
+	return mOutControlNames.begin();
 }
 	
 	if ( !mObserved )
@@ -220,8 +215,8 @@ ProcessingController::NamesList::iterator ProcessingController::EndOutControlNam
 
 void ProcessingController::SetName( const std::string & name )
 {
-
 	SignalChangeProcessingPresentationName.Emit( name );
+
 }
 
 } //namespace CLAMVM
