@@ -239,7 +239,7 @@ namespace CLAM{
 			//We iterate through all chainees and call their Do()
 			for (obj=composite_begin(); obj!=composite_end(); obj++,i++)
 			{
-				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==composite_size()-1)
+				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
 				//Note: First and last chainee's will always be active regartheless the value
 				//of their On control.
 				{
@@ -290,7 +290,7 @@ namespace CLAM{
 			CLAM_ASSERT(mpConfig->GetConfigurations().size()==composite_size(),"Number of configurations should be the same as number of children");
 		
 			//TODO: right now there is no way to add or remove controls than to instantiate control array again
-			CLAM_ASSERT(mpConfig->GetOnArray().Size()==composite_size(),"ProcessingChain::ConcreteConfigure: On array does not have same size as number of configurations");
+			CLAM_ASSERT(mpConfig->GetOnArray().Size()==(int)composite_size(),"ProcessingChain::ConcreteConfigure: On array does not have same size as number of configurations");
 			TSize nControls=composite_size();
 			if(mpOnCtrlArray) delete mpOnCtrlArray;
 			mpOnCtrlArray= new InControlTmplArray<ProcessingChain>(nControls,"OnControlArray",this,NULL);
