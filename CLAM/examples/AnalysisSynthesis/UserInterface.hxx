@@ -71,6 +71,9 @@ private:
   static Fl_Menu_Item *mDoSMSTransMenuItem;
   inline void cb_mDoSMSTransMenuItem_i(Fl_Menu_*, void*);
   static void cb_mDoSMSTransMenuItem(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mUndoTransMenuItem;
+  inline void cb_mUndoTransMenuItem_i(Fl_Menu_*, void*);
+  static void cb_mUndoTransMenuItem(Fl_Menu_*, void*);
   static Fl_Menu_Item *mSMSSynthesisMenuItem;
   static Fl_Menu_Item *mDoSMSSynthesisMenuItem;
   inline void cb_mDoSMSSynthesisMenuItem_i(Fl_Menu_*, void*);
@@ -159,5 +162,7 @@ private:
   bool mFrameDataAvailable;
 public:
   bool FrameDataAvailable();
+private:
+  void UndoTransform();
 };
 #endif

@@ -203,18 +203,6 @@ void UserInterface::StoreMelody(void)
 void UserInterface::Transform(void)
 {
 
-	int userSelection = fl_choice( "Applying the SMS Transformation will destroy the current Analysis data. You may",
-				       "Save Analysis and Apply Transformation", "Apply Transformation", "Cancel" );
-
-	if ( userSelection == 0 )
-	{
-		mAnalysisSynthesisExample->StoreAnalysis();
-	}
-	else if ( userSelection == 2 )
-	{
-		return;
-	}
-
 	mAnalysisSynthesisExample->Transform();
 	ApplyTransformationPerformedState();
 	mAnalysisSynthesisExample->mExplorer.CloseAll();
@@ -223,6 +211,20 @@ void UserInterface::Transform(void)
 												   FrameDataAvailable() );
 	mWindow->redraw();
 
+}
+
+void UserInterface::UndoTransform()
+{
+	mAnalysisSynthesisExample->mHaveTransformation = false;
+	ApplyInitialState();
+	ApplyReadyToAnalyzeState();
+	ApplyAnalysisAvailableState();
+	mFrameDataAvailable = true;
+	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mOriginalSegment );
+	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mOriginalSegment.GetFramesArray()[0],
+													   FrameDataAvailable());
+
+	mWindow->redraw();
 }
 
 void UserInterface::ChangeFrame()
@@ -308,6 +310,8 @@ void UserInterface::DisplaySinusoidalTracks()
 void UserInterface::ApplyInitialState()
 {
 	mAnalysisSynthesisExample->mExplorer.CloseAll();
+	
+
 	mFileMenuItem->activate();
 	mConfigurationOpsMenuItem->activate();
 	mEditCfgMenuItem->activate();
@@ -329,6 +333,7 @@ void UserInterface::ApplyInitialState()
 	mMelodyExtractionMenuItem->deactivate();
 	mSMSTransformationMenuItem->activate();
 	mDoSMSTransMenuItem->deactivate();
+	mUndoTransMenuItem->deactivate();
 	mSMSSynthesisMenuItem->activate();
 	mDoSMSSynthesisMenuItem->deactivate();
 	mViewMenuItem->activate();
@@ -421,5 +426,6 @@ void UserInterface::ApplySynthesisAvailableState()
 
 void UserInterface::ApplyTransformationPerformedState()
 {
+	mUndoTransMenuItem->activate();
 	mWindow->redraw();
 }

@@ -20,7 +20,8 @@ class UserInterface {open
 } {
   decl {public: CLAMGUI::AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {} {
+  Function {UserInterface()} {open
+  } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
       xywh {276 191 872 548} resizable
@@ -33,7 +34,7 @@ class UserInterface {open
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu mFileMenuItem {
-          label File open
+          label File
           private xywh {5 5 100 20} labelsize 12
         } {
           submenu mConfigurationOpsMenuItem {
@@ -134,13 +135,18 @@ Exit();}
           }
         }
         submenu mSMSTransformationMenuItem {
-          label {SMS Transformation}
+          label {SMS Transformation} open
           private xywh {20 20 100 20} labelsize 12
         } {
           menuitem mDoSMSTransMenuItem {
             label Apply
             callback {Transform();}
             private xywh {60 60 100 20} labelsize 12 deactivate
+          }
+          menuitem mUndoTransMenuItem {
+            label {Undo Transformation}
+            callback {UndoTransform();} selected
+            private xywh {0 0 100 20} labelsize 12
           }
         }
         submenu mSMSSynthesisMenuItem {
@@ -307,6 +313,7 @@ mWindow2=NULL;} open
   decl {void ApplyTransformationPerformedState();} {}
   decl {void DeactivateFrameDataMenuItems();} {}
   decl {bool mFrameDataAvailable;} {}
-  decl {bool FrameDataAvailable();} {selected public
+  decl {bool FrameDataAvailable();} {public
   }
+  decl {void UndoTransform();} {}
 } 

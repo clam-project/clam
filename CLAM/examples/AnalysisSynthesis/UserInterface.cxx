@@ -102,6 +102,13 @@ void UserInterface::cb_mDoSMSTransMenuItem(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mDoSMSTransMenuItem_i(o,v);
 }
 
+inline void UserInterface::cb_mUndoTransMenuItem_i(Fl_Menu_*, void*) {
+  UndoTransform();
+}
+void UserInterface::cb_mUndoTransMenuItem(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mUndoTransMenuItem_i(o,v);
+}
+
 inline void UserInterface::cb_mDoSMSSynthesisMenuItem_i(Fl_Menu_*, void*) {
   Synthesize();
 }
@@ -202,6 +209,7 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {0},
  {"SMS Transformation", 0,  0, 0, 64, 0, 0, 12, 56},
  {"Apply", 0,  (Fl_Callback*)UserInterface::cb_mDoSMSTransMenuItem, 0, 1, 0, 0, 12, 56},
+ {"Undo Transformation", 0,  (Fl_Callback*)UserInterface::cb_mUndoTransMenuItem, 0, 0, 0, 0, 12, 56},
  {0},
  {"SMS Synthesis", 0,  0, 0, 64, 0, 0, 12, 56},
  {"Synthesize", 0x40073,  (Fl_Callback*)UserInterface::cb_mDoSMSSynthesisMenuItem, 0, 0, 0, 0, 12, 56},
@@ -249,21 +257,22 @@ Fl_Menu_Item* UserInterface::mDoSMSAnalysisMenuItem = UserInterface::menu_mMenuB
 Fl_Menu_Item* UserInterface::mMelodyExtractionMenuItem = UserInterface::menu_mMenuBar + 25;
 Fl_Menu_Item* UserInterface::mSMSTransformationMenuItem = UserInterface::menu_mMenuBar + 27;
 Fl_Menu_Item* UserInterface::mDoSMSTransMenuItem = UserInterface::menu_mMenuBar + 28;
-Fl_Menu_Item* UserInterface::mSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 30;
-Fl_Menu_Item* UserInterface::mDoSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 31;
-Fl_Menu_Item* UserInterface::mViewMenuItem = UserInterface::menu_mMenuBar + 33;
-Fl_Menu_Item* UserInterface::mShowOriginalAudioMenuItem = UserInterface::menu_mMenuBar + 34;
-Fl_Menu_Item* UserInterface::mShowAnalysisResultsMenuItem = UserInterface::menu_mMenuBar + 35;
-Fl_Menu_Item* UserInterface::mShowSinTracksMenuItem = UserInterface::menu_mMenuBar + 36;
-Fl_Menu_Item* UserInterface::mViewFrameDataMenuItem = UserInterface::menu_mMenuBar + 37;
-Fl_Menu_Item* UserInterface::mShowSpectrumAndPeaksMenuItem = UserInterface::menu_mMenuBar + 38;
-Fl_Menu_Item* UserInterface::mShowSinusoidalSpectrumMenuItem = UserInterface::menu_mMenuBar + 39;
-Fl_Menu_Item* UserInterface::mShowResidualSpectrumMenuItem = UserInterface::menu_mMenuBar + 40;
-Fl_Menu_Item* UserInterface::mViewSynthesisResultsMenuItem = UserInterface::menu_mMenuBar + 43;
-Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu_mMenuBar + 44;
-Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 45;
-Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 46;
-Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 49;
+Fl_Menu_Item* UserInterface::mUndoTransMenuItem = UserInterface::menu_mMenuBar + 29;
+Fl_Menu_Item* UserInterface::mSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 31;
+Fl_Menu_Item* UserInterface::mDoSMSSynthesisMenuItem = UserInterface::menu_mMenuBar + 32;
+Fl_Menu_Item* UserInterface::mViewMenuItem = UserInterface::menu_mMenuBar + 34;
+Fl_Menu_Item* UserInterface::mShowOriginalAudioMenuItem = UserInterface::menu_mMenuBar + 35;
+Fl_Menu_Item* UserInterface::mShowAnalysisResultsMenuItem = UserInterface::menu_mMenuBar + 36;
+Fl_Menu_Item* UserInterface::mShowSinTracksMenuItem = UserInterface::menu_mMenuBar + 37;
+Fl_Menu_Item* UserInterface::mViewFrameDataMenuItem = UserInterface::menu_mMenuBar + 38;
+Fl_Menu_Item* UserInterface::mShowSpectrumAndPeaksMenuItem = UserInterface::menu_mMenuBar + 39;
+Fl_Menu_Item* UserInterface::mShowSinusoidalSpectrumMenuItem = UserInterface::menu_mMenuBar + 40;
+Fl_Menu_Item* UserInterface::mShowResidualSpectrumMenuItem = UserInterface::menu_mMenuBar + 41;
+Fl_Menu_Item* UserInterface::mViewSynthesisResultsMenuItem = UserInterface::menu_mMenuBar + 44;
+Fl_Menu_Item* UserInterface::mShowSynthesizedAudioMenuItem = UserInterface::menu_mMenuBar + 45;
+Fl_Menu_Item* UserInterface::mShowSynthesizedSinusoidalMenuItem = UserInterface::menu_mMenuBar + 46;
+Fl_Menu_Item* UserInterface::mShowSynthesizedResidualMenuItem = UserInterface::menu_mMenuBar + 47;
+Fl_Menu_Item* UserInterface::mHelpMenuItem = UserInterface::menu_mMenuBar + 50;
 
 inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
   ChangeFrame();
