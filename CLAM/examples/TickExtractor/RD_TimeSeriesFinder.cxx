@@ -88,12 +88,12 @@ namespace CLAM
 
 		bool TimeSeriesFinder::Do(const Array<TimeIndex>& diracs, TimeSeriesSeed& tss)
 		{
-			const unsigned int offsetMin = mOffsetMin.GetLastValue()+0.5;
-			unsigned int offsetMax = mOffsetMax.GetLastValue()+0.5;
-			const unsigned int offsetStep = mOffsetStep.GetLastValue()+0.5;
-			const unsigned int intervalMin = mIntervalMin.GetLastValue()+0.5;
-			const unsigned int intervalMax = mIntervalMax.GetLastValue()+0.5;
-			const unsigned int intervalStep = mIntervalStep.GetLastValue()+0.5;
+			const unsigned int offsetMin = (unsigned int)(mOffsetMin.GetLastValue()+0.5);
+			unsigned int offsetMax = (unsigned int) (mOffsetMax.GetLastValue()+0.5);
+			const unsigned int offsetStep = (unsigned int)(mOffsetStep.GetLastValue()+0.5);
+			const unsigned int intervalMin = (unsigned int)(mIntervalMin.GetLastValue()+0.5);
+			const unsigned int intervalMax = (unsigned int)(mIntervalMax.GetLastValue()+0.5);
+			const unsigned int intervalStep = (unsigned int)(mIntervalStep.GetLastValue()+0.5);
 			const TData deviationPenalty = mConfig.GetDeviationPenalty();
 			const TData overSubdivisionPenalty = mConfig.GetOverSubdivisionPenalty();
 
@@ -106,7 +106,7 @@ namespace CLAM
 			CLAM_BEGIN_DEBUG_CHECK
 				unsigned lastDiracPosition=0;
 			for (int j=0; j < nDiracs; j++) {
-				unsigned currentDiracPosition=diracs[j].GetPosition();
+				unsigned currentDiracPosition= (unsigned)diracs[j].GetPosition();
 				CLAM_DEBUG_ASSERT(currentDiracPosition>=lastDiracPosition,
 						  "Dirac are not sorted");
 				lastDiracPosition=currentDiracPosition;
@@ -117,65 +117,57 @@ namespace CLAM
 			unsigned int selectedInterval=intervalMin;
 			TData selectedPenalty = mInfinite;
 
-			//The 3 following lines have to be commented except when using GUI
-			DataArray diracDev;diracDev.Init();
-			DataArray unusedIntval;unusedIntval.Init();
-			DataArray ovPen; ovPen.Init();
-			
 			//version 1
 			const bool useOM = mConfig.GetUseOffsetMax();
 			
 			for(unsigned int interval=intervalMin; interval<intervalMax; interval+=intervalStep)
 			{
 				const unsigned int halfInterval=interval>>1;
-				//			cout<<"interval "<<interval<<endl;
-				//			cout<<"halfinterval "<<halfInterval<<endl;
+
 				if (!useOM)
 					offsetMax = interval;
 				else 
-					offsetMax = mOffsetMax.GetLastValue()+0.5;
+					offsetMax = (unsigned int)(mOffsetMax.GetLastValue()+0.5);
 				
-				CLAM_ASSERT(offsetMin<offsetMax, "No valid interval range");
+				CLAM_ASSERT(offsetMin < offsetMax, "TimeSeriesFinder::Do() : No valid interval range");
 				
 				for( unsigned int offset=offsetMin; 
 				     offset < offsetMax; 
 				     offset+=offsetStep )
 				{
+
 					TData diracDeviation=0;
 					unsigned int nUnusedIntervals=0;
 					signed int lastInterval=0;
-					//				cout <<"\toffset "<<offset<<endl;
+
 					for (unsigned int diracIndex=0; diracIndex<nDiracs; diracIndex++)
 					{
-						const unsigned diracPosition = diracs[diracIndex].GetPosition();
+						const unsigned diracPosition = (unsigned)(diracs[diracIndex].GetPosition());
 						const TData diracWeight = diracs[diracIndex].GetWeight();
 						const int relativePosition
 							= signed(diracPosition+halfInterval)-offset;
 						const int currentInterval=(relativePosition)/signed(interval);
+
 						CLAM_DEBUG_ASSERT(currentInterval>=lastInterval, "Dirac are not sorted");
+
 						// In the following we substract 1 in order not to penalize
 						// diracs corresponding to successive intervals and penalize
 						// with Abs(-1)=1 diracs corresponding to the same interval
-						const signed toto=(signed(currentInterval-lastInterval)-1);
-						if (toto>0)
-							nUnusedIntervals+=std::abs(toto);
+						const signed decision =(signed(currentInterval-lastInterval)-1);
+
+						if ( decision > 0)
+							nUnusedIntervals+=std::abs(decision);
 						//nUnusedIntervals+=Abs(signed(currentInterval-lastInterval)-1);
+
 						lastInterval=currentInterval;
+
 						diracDeviation += diracWeight * std::abs(signed(relativePosition%interval-halfInterval));
 					}
-					//cout <<"\t\tdiracDeviation "<< diracDeviation << " " << diracDeviation * nDiracs<<endl;
-					//cout <<"\t\tnUnusedIntervals "<<nUnusedIntervals<<" "<< nUnusedIntervals * halfInterval<<endl;
 
 					const TData overallPenalty = deviationPenalty*diracDeviation * nDiracs / 20
 						+overSubdivisionPenalty*nUnusedIntervals* halfInterval;
+
 					//+overSubdivisionPenalty*nUnusedIntervals * halfInterval;//no use of the 2d error function
-					//The 6 following lines have to be commented except when using GUI
-					if (useOM) //if (offset==offsetMin)
-					{
-						diracDev.AddElem(deviationPenalty*diracDeviation * nDiracs / 20);
-						unusedIntval.AddElem(overSubdivisionPenalty*nUnusedIntervals* halfInterval);
-						ovPen.AddElem(overallPenalty);
-					}
 
 					if (selectedPenalty>=overallPenalty)
 					{
@@ -185,11 +177,6 @@ namespace CLAM
 					}
 				}
 			}
-			//The 3 following lines have to be commented except when using GUI
-			//		if (useOM) {
-			//		CLAM::ShowSnapshot(diracDev,"diracDeviation");
-			//		CLAM::ShowSnapshot(unusedIntval,"nUnusedIntervals");
-			//		CLAM::ShowSnapshot(ovPen,"overalPenalty");}
 			
 			tss.SetOffset(selectedOffset);
 			tss.SetInterval(selectedInterval);
