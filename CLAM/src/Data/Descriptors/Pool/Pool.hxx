@@ -49,6 +49,10 @@ namespace CLAM
 		}
 	};
 
+	/**
+	 * A description scope defines a set of attributes which change
+	 * their values along a given dimension.
+	 */
 	class DescriptionScope
 	{
 	public:
@@ -106,7 +110,8 @@ namespace CLAM
 	};
 
 	/**
-	 * A container for the data attached to a description scope
+	 * A container for the attributes values along the differents
+	 * contexts of a single scope.
 	 */
 	class Pool
 	{
@@ -178,6 +183,12 @@ namespace CLAM
 		}
 	};
 
+	/**
+	 * Represents a description schema, that is which scopes
+	 * will be used, which attributes they have, which extractors
+	 * will compute such attributes and where the extractors
+	 * are feeded from.
+	 */
 	class ScopeRegistry
 	{
 	private:
