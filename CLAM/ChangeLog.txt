@@ -1,7 +1,19 @@
 2003-07-03 CLAM_0_5_1
-  * Examples - SMS
+'Mac compilation issues'
+  * Examples - SMS:
       ** Improved stability and performance.
       ** SMSMorph transformation is now usable.
+      ** SMSEdu (from amora's career final project project) available as 'draft'
+  * Examples - Misc:
+      ** NetworkEditor (from xrubio's career final project) available on 'examples'
+  * Processing - All:
+      ** Configs has been separated from their processings in a separate 
+         header to lower memory usage during SMSTools compilation in Mac.
+  * Testing:
+      ** Some more test has been moved to cppunit framework
+  * Doxygen:
+      ** Few doxygen inline documentation fixes
+
 2003-06-11 CLAM_0_5_0
 'flashing new build system and SMSTools'
   * Build system:
