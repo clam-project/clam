@@ -18,6 +18,7 @@ class SpectrumConversionsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testDefaultSpectrum );
 	CPPUNIT_TEST( testMagPhase2BPF2MagPhase );
 	CPPUNIT_TEST( testComplex2BPF2Complex );
+	CPPUNIT_TEST( testComplex2BPF2ComplexWithDifferentSpectrums );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -154,7 +155,7 @@ private:
 		BPFSpec.SynchronizeTo(complexSpec);
 
 			
-		CPPUNIT_ASSERT_EQUAL(22050, complexSpec.GetBPFSize() );
+		CPPUNIT_ASSERT_EQUAL(22050, BPFSpec.GetBPFSize() );
 
 		CLAM::BPF & magBpf = BPFSpec.GetMagBPF();
 		CLAM::BPF & phaseBpf = BPFSpec.GetPhaseBPF();
