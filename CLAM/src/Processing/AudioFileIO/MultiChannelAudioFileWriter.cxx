@@ -63,25 +63,42 @@ namespace CLAM
 		bool  allInputsSameSize = true;
 		TSize inputsSize = 0;
 
-		VectorOfInputs::iterator i = mInputs.begin();
+		InputsRefVector inputsRef;
 
-		inputsSize = (*i)->GetData().GetSize();
+		for ( VectorOfInputs::iterator i = mInputs.begin();
+		      i!= mInputs.end(); i++ )
+		  {
+		    inputsRef.push_back( &((*i)->GetData()) );
+		  }
 
-		while( i != mInputs.end() && allInputsSameSize )
-			allInputsSameSize = ( inputsSize == (*i++)->GetData().GetSize() );
+		inputsSize = inputsRef[0]->GetSize();
+
+		for ( InputsRefVector::iterator i = inputsRef.begin();
+		      i!= inputsRef.end() && allInputsSameSize;
+		      i++ )
+		  {
+		    allInputsSameSize = ( inputsSize == (*i)->GetSize() );
+		  }
+
 
 		CLAM_ASSERT( allInputsSameSize, "Input sizes differ!" );
 
 		// Now, let's build the samples matrix
 
-		i = mInputs.begin();
 		int j = 0;
 
-		while( i != mInputs.end() )
-			mSamplesMatrix[ j++ ] = (*i++)->GetData().GetBuffer().GetPtr();
+		for( InputsRefVector::iterator i = inputsRef.begin();
+		     i != inputsRef.end(); i++ )
+		  mSamplesMatrix[ j++ ] = (*i)->GetBuffer().GetPtr();
 
 		mNativeStream->WriteData( mChannelsToWrite.GetPtr(), mChannelsToWrite.Size(),
 					 mSamplesMatrix.GetPtr(), inputsSize );
+
+		for( VectorOfInputs::iterator i = mInputs.begin();
+		     i!=mInputs.end(); i++ )
+		  {
+		    (*i)->LeaveData();
+		  }
 
 		return true;
 	}

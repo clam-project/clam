@@ -55,6 +55,7 @@ namespace CLAM
 	protected: // attributes
 
 		typedef std::vector< OutPortTmpl<Audio>* >  OutputVector;
+	  typedef std::vector< Audio* > OutRefsVector;
 
 		MultiChannelAudioFileReaderConfig   mConfig;
 		OutputVector                        mOutputs;

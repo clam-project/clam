@@ -73,23 +73,37 @@ namespace CLAM
 		
 		TSize sizeTmp = 0;
 
-		OutputVector::iterator i = mOutputs.begin();
+		// MRJ: We have to keep internally references to
+		// the Audio objects yield by Flow Control, since
+		// the GetData operation not just returns a reference
+		// to writable/readable data, but also performs
+		// several checks ( as well as advancing reading/writing
+		// zones, etc. )
+		OutRefsVector outRefs;
 
-		sizeTmp = (*i)->GetData().GetSize();	
+		for ( OutputVector::iterator i = mOutputs.begin();
+		      i!= mOutputs.end();
+		      i++ )
+		  outRefs.push_back( &((*i)->GetData()) );
 		
-		while ( i != mOutputs.end() && allOutputsSameSize )
-		{
-			allOutputsSameSize = ( sizeTmp == (*i++)->GetData().GetSize() );
-		}
+		
+		sizeTmp = outRefs[0]->GetSize();	
+		
+		for( OutRefsVector::iterator i = outRefs.begin();
+		     i!= outRefs.end(); i++ )
+		  {
+		    allOutputsSameSize = ( sizeTmp == (*i)->GetSize() );
+		  }
+
 
 		CLAM_ASSERT( allOutputsSameSize, "Outputs sizes differ!" );
 
 		// build the samples matrix
 
-		i = mOutputs.begin();
 		int j = 0;
-		while ( i != mOutputs.end() )
-			mSamplesMatrix[ j++ ] = (*i++)->GetData().GetBuffer().GetPtr();
+		for ( OutRefsVector::iterator i = outRefs.begin();
+		      i != outRefs.end(); i++ )
+			mSamplesMatrix[ j++ ] = (*i)->GetBuffer().GetPtr();
 
 		// read the data
 		
@@ -100,23 +114,21 @@ namespace CLAM
 
 		// Audio 'simple meta-data' setup
 		
-		i = mOutputs.begin();
+		for ( OutRefsVector::iterator i = outRefs.begin();
+		      i != outRefs.end(); i++ )
+		  {
+			(*i)->SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+			(*i)->SetBeginTime( mCurrentBeginTime );
+		  }
 
-		while( i != mOutputs.end() )
-		{
-			(*i)->GetData().SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
-			(*i)->GetData().SetBeginTime( mCurrentBeginTime );
-			i++;
-		}
 
 		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
 
-		i = mOutputs.begin();
-		while( i != mOutputs.end() )
+		for ( OutputVector::iterator i = mOutputs.begin();
+		      i!= mOutputs.end(); i++ )
 		{	
 			(*i)->LeaveData();
-			i++;
 		}
 
 

@@ -52,6 +52,7 @@ namespace CLAM
 
 	protected:
 		typedef std::vector< InPortTmpl<Audio>* > VectorOfInputs;
+	  typedef std::vector< Audio* > InputsRefVector;
 		
 		MultiChannelAudioFileWriterConfig    mConfig;
 		VectorOfInputs                       mInputs;
