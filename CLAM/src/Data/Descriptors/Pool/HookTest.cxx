@@ -3,46 +3,12 @@
 
 #include "Extractor.hxx"
 #include "DataTypes.hxx"
+#include "CharCopierExtractor.hxx"
 
 
 namespace CLAMTest
 {
 
-class CharCopierExtractor
-{
-public:
-	void SetHooks(CLAM::ReadHook<char> & inputHook, CLAM::WriteHook<char> & outputHook)
-	{
-		_inputHook = &inputHook;
-		_outputHook = &outputHook;
-	}
-
-	void Extract()
-	{
-		char & output = _outputHook->GetForWriting();
-		const char  & input = _inputHook->GetForReading();
-		output = input;
-	}
-	bool IsInsideScope()
-	{
-		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
-	}
-		
-	void Next()
-	{
-		_inputHook->Next();
-		_outputHook->Next();
-	}
-
-	void Init(CLAM::DescriptionDataPool & pool)
-	{
-		_inputHook->Init(pool);
-		_outputHook->Init(pool);
-	}
-private:
-	CLAM::ReadHook<char> * _inputHook;
-	CLAM::WriteHook<char> * _outputHook;
-};
 
 class HookTest;
 
