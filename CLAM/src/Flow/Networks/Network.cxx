@@ -116,6 +116,20 @@ namespace CLAM
 		return true;
 	}
 
+	bool Network::ConnectControls( const std::string & producer, const std::string & consumer )
+	{
+		OutControl & outcontrol = GetOutControlByCompleteName(producer);
+		InControl & incontrol = GetInControlByCompleteName(consumer);
+
+		if ( outcontrol.IsConnectedTo(incontrol) ) 
+			return false;
+			
+
+		outcontrol.AddLink( &incontrol );
+		return true;
+	}
+
+
 	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
 		AssertFlowControlNotNull();
@@ -130,6 +144,21 @@ namespace CLAM
 		inport.Unattach();
 		
 
+		return true;
+	}
+
+
+
+	bool Network::DisconnectControls( const std::string & producer, const std::string & consumer)
+	{
+
+		OutControl & outcontrol = GetOutControlByCompleteName(producer);
+		InControl & incontrol = GetInControlByCompleteName(consumer);
+
+		if ( !outcontrol.IsConnectedTo( incontrol )) 
+			return false;
+
+		outcontrol.RemoveLink( &incontrol );
 		return true;
 	}
 
