@@ -7,6 +7,8 @@ extern "C"
 #	include "config_parser.h"
 }
 
+#include "FileHelper.hxx"
+
 namespace srcdepsTest
 {
 
@@ -15,7 +17,7 @@ class SourceCodeParserTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SourceCodeParserTest );
 
-class SourceCodeParserTest : public CppUnit::TestFixture
+class SourceCodeParserTest : public CppUnit::TestFixture, public FileHelper
 {
 	CPPUNIT_TEST_SUITE( SourceCodeParserTest );
 
@@ -31,13 +33,12 @@ class SourceCodeParserTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( test_needed_includepaths_when_added_recursive_dir );
 	CPPUNIT_TEST( test_including_with_relative_path );
 	CPPUNIT_TEST( test_sorce_file_path_have_more_priority_than_include_paths );
+	CPPUNIT_TEST( test_find_recursive_includes );
 	CPPUNIT_TEST_SUITE_END();
 
-	std::string mTestPath;
-	std::string mCurrentFileName;
 
 public:
-	SourceCodeParserTest() : mTestPath("unittests/source_files_for_testing/")
+	SourceCodeParserTest() : FileHelper("unittests/source_files_for_testing/")
 	{
 	}
 	/// Common initialization, executed before each test method
@@ -83,13 +84,6 @@ private:
 
 	}
 
-	//! updates and returns the c_str of the mCurrentFileName. This member string contains all the path
-	const char* helper_filename( const std::string nameWithoutPath )
-	{
-		mCurrentFileName = mTestPath + nameWithoutPath;
-		return mCurrentFileName.c_str();
-
-	}
 
 /** 
   test files map:
@@ -122,7 +116,7 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("guessed_sources size", 1, list_size(guessed_sources) );
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("guessed_headers size", 1, list_size(guessed_headers) );
 		
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"a.hxx", std::string(guessed_headers->first->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"a.hxx", std::string(guessed_headers->first->str) );
 	}
 
 
@@ -137,8 +131,8 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 		CPPUNIT_ASSERT_EQUAL( 2, list_size(guessed_headers) );	
 		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_sources) );
 
-		CPPUNIT_ASSERT_EQUAL(mTestPath+"b.hxx" , std::string( guessed_headers->first->str ) );	
-		CPPUNIT_ASSERT_EQUAL(mTestPath+"with_no_impl.hxx" , std::string( guessed_headers->last->str ) );	
+		CPPUNIT_ASSERT_EQUAL(TestPath()+"b.hxx" , std::string( guessed_headers->first->str ) );	
+		CPPUNIT_ASSERT_EQUAL(TestPath()+"with_no_impl.hxx" , std::string( guessed_headers->last->str ) );	
 	}
 	
 	void test_parser_init_fills_includepath()
@@ -148,7 +142,7 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 
 		parser_init();
 		CPPUNIT_ASSERT_EQUAL( 1, list_size(includepaths) );
-		CPPUNIT_ASSERT_EQUAL( std::string(mTestPath+"subdir"), std::string(includepaths->first->str)  );
+		CPPUNIT_ASSERT_EQUAL( std::string(TestPath()+"subdir"), std::string(includepaths->first->str)  );
 	}
 
 	
@@ -162,7 +156,7 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 		parser_run( helper_filename("d.cxx") );
 		
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("should find only subdir/c.cxx", 1, list_size(guessed_sources) );
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/c.cxx", std::string( guessed_sources->first->str ) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/c.cxx", std::string( guessed_sources->first->str ) );
 
 
 	}
@@ -186,29 +180,29 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 		parser_run( helper_filename("j.cxx") );
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("querying needed_includepaths size", 2, list_size(needed_includepaths) );
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir", std::string(needed_includepaths->last->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir", std::string(needed_includepaths->last->str) );
 		// TODO: "\" instead of "/" is a bug.
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir\\subsubdir", std::string(needed_includepaths->first->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir\\subsubdir", std::string(needed_includepaths->first->str) );
 
 		
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("querying guessed_sources size", 3, list_size(guessed_sources) );
 		
 		item* i = guessed_sources->first;
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"j.cxx", std::string(i->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"j.cxx", std::string(i->str) );
 		i = i->next;
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir\\subsubdir/i.cxx", std::string(i->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir\\subsubdir/i.cxx", std::string(i->str) );
 		i = i->next;
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/h.cxx", std::string(i->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/h.cxx", std::string(i->str) );
 		
 
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("querying guessed_headers size", 3, list_size(guessed_headers) );
 		i = guessed_headers->first;
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"j.hxx", std::string(i->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"j.hxx", std::string(i->str) );
 		i = i->next;
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir\\subsubdir/i.hxx", std::string(i->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir\\subsubdir/i.hxx", std::string(i->str) );
 		i = i->next;
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/h.hxx", std::string(i->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/h.hxx", std::string(i->str) );
 
 	}
 
@@ -218,8 +212,8 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 
 		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_headers) );
 		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_sources) );
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.hxx", std::string(guessed_headers->first->str) );
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.cxx", std::string(guessed_sources->last->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/subsubdir/i.hxx", std::string(guessed_headers->first->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/subsubdir/i.cxx", std::string(guessed_sources->last->str) );
 	}
 
 	void test_sorce_file_path_have_more_priority_than_include_paths()
@@ -229,11 +223,25 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 
 		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_headers) );
 		CPPUNIT_ASSERT_EQUAL( 1, list_size(guessed_sources) );
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.hxx", std::string(guessed_headers->first->str) );
-		CPPUNIT_ASSERT_EQUAL( mTestPath+"subdir/subsubdir/i.cxx", std::string(guessed_sources->last->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/subsubdir/i.hxx", std::string(guessed_headers->first->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"subdir/subsubdir/i.cxx", std::string(guessed_sources->last->str) );
 	}
-	// void test_priority_finding_headers()
-	// begins looking at the .cxx file dir
+
+	void test_find_recursive_includes()
+	{
+		parser_run( helper_filename("e.cxx") );
+		
+		CPPUNIT_ASSERT_EQUAL( 3, list_size(guessed_headers) );
+		CPPUNIT_ASSERT_EQUAL( 2, list_size(guessed_sources) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"g.hxx", std::string(guessed_headers->first->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"f.hxx", std::string(guessed_headers->first->next->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"e.hxx", std::string(guessed_headers->last->str) );
+		
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"g.cxx", std::string(guessed_sources->first->str) );
+		CPPUNIT_ASSERT_EQUAL( TestPath()+"e.cxx", std::string(guessed_sources->last->str) );
+
+
+	}
 
 	// void test_exits_with_error_if_finds_duplicated_header_name()
 	// this test is not likely to pass with actual code (pau)
@@ -241,15 +249,6 @@ j.cxx - subdir/h.cxx      subdir/subsubdir/i.cxx            k.cxx
 	// test(s) of #define #ifdef
 
 	// test(s) of warnings emitted when facing complicated #ifdef logic
-
-	// void test_recursive_includepath
-	
-	// void test_nonrecursive_inlcudepath
-
-	// void efficiencytest_a_CLAM_real_case()
-	// take a test that now have a duplicated-source-file bug
-	
-
 
 
 
