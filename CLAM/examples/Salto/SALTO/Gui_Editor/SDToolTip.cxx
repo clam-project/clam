@@ -1,4 +1,4 @@
-#include "SDTooltip.hxx"
+#include "SDToolTip.hxx"
 #include <cstring>
 
 SDToolTip::SDToolTip( int x, int y, int w, int h )
