@@ -41,11 +41,6 @@ int main( int argc, char** argv )
 		
 		exit( -1 );
 	}
-	
-	// As we can be quite sure that we have one parameter at argv[1] we can
-	// set the Audio file location:
-	CLAM::AudioFile file;
-	file.SetLocation( argv[1] );
 
 	// When we write on to an audio file it is our responsability to define
 	// its header: the output format, the number of channels in the file, etc.
@@ -58,7 +53,7 @@ int main( int argc, char** argv )
 	// a CLAM::AudioFileFormat object.
 
 	CLAM::EAudioFileFormat outputFormat = 
-		CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
+		CLAM::EAudioFileFormat::FormatFromFilename( argv[1] );
 
 	std::cout << "Desired output format: " << outputFormat << std::endl;
 
@@ -73,8 +68,12 @@ int main( int argc, char** argv )
 
 	header.SetValues( sampleRate, nChannels, outputFormat );
 
-	// And now we set the file header to the one we have just defines
-	file.SetHeader( header );
+	
+	// As we can be quite sure that we have one parameter at argv[1] we can
+	// set the Audio file location, as well as the header we want the new
+	// file to feature.
+	CLAM::AudioFile file;
+	file.CreateNew( argv[1], header );
 
 	// Finally, we must check if the header settings are compatible with the
 	// output format we specified:
@@ -128,11 +127,6 @@ int main( int argc, char** argv )
 		inputs[i].SetSize( writeSize );
 	}
 
-	// We attach both Audio objects to our writer input ports
-
-	for ( int i = 0; i < inputs.size(); i++ )
-		writer.GetInPorts().GetByNumber( i ).Attach( inputs[i] );
-
 	// Now we want to synthesize approx. 1s
 
 	writer.Start();
@@ -148,7 +142,7 @@ int main( int argc, char** argv )
 
 		// Once both input buffers have been generated we call
 		// the writer Do()
-		writer.Do();
+		writer.Do( inputs );
 	}
 	
 	writer.Stop();
