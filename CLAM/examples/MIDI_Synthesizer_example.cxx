@@ -33,7 +33,7 @@ CLAM-Docs/MIDI_Synthesizer_example (development-branch)
 #include "MIDIInControl.hxx"
 #include "MIDIClocker.hxx"
 #include "Dispatcher.hxx"
-#include "Mixer.hxx"
+#include "AudioMixer.hxx"
 #include "AudioManager.hxx"
 #include "TopLevelProcessing.hxx"
 #include <vector>
@@ -212,7 +212,7 @@ void MyAudioApplication::AudioMain(void)
 	TControlData curTimeInc = 0.;
 	try
 	{
-		int nVoices = 4;
+		const int nVoices = 4;
 		unsigned int buffersize = 256;
 
 		// Audio and MIDI managers
@@ -341,13 +341,24 @@ void MyAudioApplication::AudioMain(void)
 		out.SetSize( buffersize );
 
 		// Mixer Declaration
-		Mixer mixer;
+		AudioMixerConfig mixerCfg;
+		mixerCfg.SetFrameSize(buffersize);
+		mixerCfg.SetSampleRate(audioManager.SampleRate());
+
+		AudioMixer<nVoices> mixer;
+		mixer.Configure(mixerCfg);
+
+		for ( i=0;i<nVoices;i++)
+		{
+			mixer.Input[i].Attach(audioArray[i]);
+		}
+		mixer.Output.Attach(out);
 
 		inNote.LinkOutWithInControl( 0, &dispatcher, 1 );   /** Key for Note Off */
 		inNote.LinkOutWithInControl( 1, &dispatcher, 2 );   /** Velocity for Note Off */
 		inNote.LinkOutWithInControl( 2, &dispatcher, 1 );   /** Key for Note On */
 		inNote.LinkOutWithInControl( 3, &dispatcher, 2 );   /** Velocity for Note On */
-
+		
 		for( i = 0; i < nVoices; i++ )
 		{
 			inPitchBend.LinkOutWithInControl( 0, instruments[ i ] , 3 );
@@ -356,6 +367,8 @@ void MyAudioApplication::AudioMain(void)
 		midiManager.Start();
 
 		audioManager.Start();
+
+		mixer.Start();
 
 		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
 
@@ -376,7 +389,7 @@ void MyAudioApplication::AudioMain(void)
 				instruments[ i ]->Do( audioArray[ i ] );
 			}
 
-			mixer.Do( audioArray, out );
+			mixer.Do();
 
 			outL.Do( out );
 			outR.Do( out );
