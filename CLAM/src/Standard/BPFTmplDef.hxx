@@ -623,7 +623,7 @@ namespace CLAM
 		(const TX& x,const Array<TIndex>& closestPointsIndex, TData &errorEstimate)
 		const
 	{
-		int iClosest=1;
+		int iClosest=0;
 		TX dif=Abs(x-GetXValue(closestPointsIndex[0]));
 
 		for(int i=0;i<mOrder+1;i++)
@@ -631,7 +631,7 @@ namespace CLAM
 			TX dift=Abs(x-GetXValue(closestPointsIndex[i]));
 			if(dift<dif)
 			{
-				iClosest=i+1;
+				iClosest=i;
 				dif=dift;
 			}
 
@@ -639,8 +639,8 @@ namespace CLAM
 
 		}
 
-		TY y=GetValueFromIndex(closestPointsIndex[iClosest-1]);
-		iClosest--;
+		TY y=GetValueFromIndex(closestPointsIndex[iClosest]);
+  
 		for(int m=0; m<mOrder; m++)
 		{
 			for(int i=0;i<mOrder-m;i++)
