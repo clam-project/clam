@@ -32,7 +32,8 @@ import sys
 CLAM_SANDBOXES = os.path.abspath( os.path.dirname(sys.argv[0])+'/../..' ) + '/'
 print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
-MODULE_TAG = 'development-branch'
+MODULE_TAG = 'CLAM-0_7_0-pre1-rel'
+#MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
 
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
@@ -75,7 +76,7 @@ externalApplications = [
 	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
 #	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
 #	( 'Rappid', CLAM_SANDBOXES+'CLAM_Rappid/build/' ),
-#	( 'SDIF_Display', CLAM_SANDBOXES+'SDIF_Display/build/' ),
+	( 'SDIF_Display', CLAM_SANDBOXES+'SDIF_Display/build/' ),
 #	( 'DescriptorsGUI', CLAM_SANDBOXES+'DescriptorsGUI/build/' ),
 	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' )
 ]
@@ -298,8 +299,7 @@ def compileAndRun(name, path) :
 	for configuration in configurations :
 		if doCleanMake :
 			getStatusOutput('make clean')
-		getStatusOutput('make depend')
-		makecmd = 'make CONFIG=%s' % (configuration)
+		makecmd = 'make depend && make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
