@@ -61,6 +61,11 @@ protected: \
 		}\
 	} \
 public: \
+	/** Visit all Dynamic Attributes */ \
+	template <typename Visitor> \
+	void VisitAll (Visitor & visitor) { \
+		VisitChainedAttr((AttributePosition<0>*)NULL, visitor); \
+	} \
 	/** Remove all Dynamic Attributes */ \
 	void RemoveAll () { \
 		RemoveChainedAttr((AttributePosition<0>*)NULL); \
@@ -113,6 +118,12 @@ private: \
 	void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) { \
 		a->CompilationError_AttributeNotDefined(); \
 	}\
+	/** Undefined link for the Visit method chain (Visit) */ \
+	template <unsigned int NAttrib, typename Visitor> \
+	void VisitChainedAttr (AttributePosition<NAttrib>*a, Visitor & visitor) { \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		                (AttributePosition<NAttrib>*)NULL); \
+	}\
 	/** Undefined link for the Remove method chain (Remove) */ \
 	template <unsigned int NAttrib> \
 	void RemoveChainedAttr (AttributePosition<NAttrib>*a) { \
@@ -150,6 +161,10 @@ private: \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 private: \
+	/** Method chain terminator */ \
+	template <typename Visitor> \
+	void VisitChainedAttr (AttributePosition<N>*, Visitor & visitor) { \
+	} \
 	/** Method chain terminator */ \
 	void RemoveChainedAttr (AttributePosition<N>*) { \
 	} \
@@ -250,6 +265,10 @@ ACCESS: \
 	inline void Add##NAME() {\
 		AddAttr_(N, sizeof(TYPE));\
 	}\
+	inline void Visit##NAME() { \
+		if (Has##NAME()) \
+			visitor.Accept(#NAME,Get##NAME()); \
+	}\
 	inline void Remove##NAME() { \
 		RemoveAttr_(N); \
 	}\
@@ -268,6 +287,11 @@ public: \
 	} \
 	/*inline TYPE* Get##NAME##Vector(unsigned n) { return Get_##TYPE##Vector(n); }*/ \
 private: \
+	template <typename Visitor> \
+	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
+		Visit##NAME(visitor); \
+		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
+	} \
 	void RemoveChainedAttr(AttributePosition<N>*) { \
 		Remove##NAME(); \
 		RemoveChainedAttr((AttributePosition<(N)+1>*)NULL); \
