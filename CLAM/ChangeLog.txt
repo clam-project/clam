@@ -19,6 +19,7 @@
   * XML:
       ** Obsoleted constructor receiving the root tag as parameter
       ** Obsoleted _restoreFrom and dumpOn, use Dump and Restore instead  
+      ** You can enable globally XML indentation by defining CLAM_INDENT_XML
 
 2003-03-05  CLAM_0_4_2
 'Cuidado merge update'
@@ -83,7 +84,7 @@
   * SpectralDelay
       ** QT dependencies removed from the .dsp. That includes build configurations and .cxx files.
   * Tests:
-      ** New cppunit based infraestructured enabled and some tests ported
+      ** New cppunit based infraestructure enabled and some tests ported
       ** Better DynamicType tests
       ** Better (non-cppunit) XMLAdapters tests
   * Misc:
