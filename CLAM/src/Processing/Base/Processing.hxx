@@ -24,8 +24,6 @@
 #define _Processing_hxx_
 
 
-#include "DynamicType.hxx"
-#include "Component.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
@@ -36,7 +34,6 @@
 #include "ProcessingConfig.hxx"
 
 
-#include <vector>
 #include <list>
 #include <typeinfo>
 #include <string>
@@ -54,7 +51,7 @@ namespace CLAM {
 	 * 
 	 * It holds common information to all processings: lists of ports,
 	 * lists of controls, name, etc.  */
-	class Processing: public Component {
+	class Processing {
 	public:
 		/* Processing Object possible execution states.
 		 */
@@ -176,7 +173,8 @@ namespace CLAM {
 		 * @pre The processing object is in runnig state (or disabled).
 		 */
 		void Stop(void);
-	
+
+		virtual const char * GetClassName() const = 0;
 
 	public:
 		bool CanDoUsingPorts()
@@ -270,8 +268,6 @@ namespace CLAM {
 		 */
 		virtual iterator composite_end() {return null_iterator;}
 
-		virtual void FlattenObjects(std::list<Processing*> &l) {l.push_back(this);}
-
 		/** Attribute access method */
 		ProcessingComposite *GetParent() const {return mpParent;}
 		/** Attribute access method */
@@ -279,84 +275,6 @@ namespace CLAM {
 
 		/** Accesor */
 		const std::string &GetStatus() const {return mStatus;}
-
-		// Input Output related methods.
-		// They are not mandatory; a default implementation is given.
-		// Most of them need only be implemented to allow certain
-		// optimisations in the processing object code.
-
-		/** Method used by ports to notify an externally requested
-		 * change in their prototype.
-		 */
-		virtual bool SetPrototypes() {return false;}
-
-		/** Method which tells the object to forget all the input/output
-		 * prototypes, and to revert to the default unoptimised state.
-		 */
-		virtual bool UnsetPrototypes() {return false;}
-
-		/** This method returns true if the processing object may be
-		 * disabled for a certain amount of time. This usually happens
-		 * if the object execution methods do not change its
-		 * internal state.
-		 * @todo: Ports will use this method to know if they may
-		 * propagate the disable request to other objects connected to
-		 * the inputs of this one.
-		 */
-		virtual bool MayDisableExecution() const {return false;}
-
-		/** Method used by output ports to notify an external
-		 *  execution-disable message.
-		 */
-		bool DisableExecution() {return false;}
-
-		/** Method used by output ports to notify an external
-		    execution-enable message. */
-		bool EnableExecution() {return false;}
-
-		/** This is just a  DRAFT.
-		 * For some reason the last written data was lost and someone
-		 * has requested it to be re-sent. The processing object may:
-		 *   - Resend the previous data
-		 *   - Ask its inputs for their previous outputs
-		 *   - Ignore the request.
-		 *   - throw an exception
-		 */
-		virtual bool LostData(int PortID) {return false;}
-
-		/**
-		 * Processings must redefine this function in order to save
-		 * its running state.
-		 * By defining StoreOn and LoadFrom properly in every Processing
-		 * of your system you can freeze the whole processing network
-		 * execution status onto an Storage in order to later resume its
-		 * execution.
-		 * You must to store any variable that is kept as status inside
-		 * the processing: ie. control values, history buffers...
-		 * @see Storage
-		 * @see Component::StoreOn
-		 */
-		virtual void StoreOn(Storage & store) const
-		{
-			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
-		}
-
-		/**
-		 * Processings must redefine this function in order to restore
-		 * its running state.
-		 * By defining StoreOn and LoadFrom properly in every Processing
-		 * of your system you can freeze the whole processing network
-		 * execution status onto an Storage in order to later resume its
-		 * execution.
-		 * You must to load any variable that is kept as status inside
-		 * the processing: ie. control values, history buffers...
-		 * @see Storage
-		 * @see Component::LoadFrom
-		 */
-		virtual void LoadFrom(Storage & store)
-		{
-			CLAM_ASSERT(false, "Processing::LoadFrom() not yet implemented");
-		}
 
 	public:
 		/**
