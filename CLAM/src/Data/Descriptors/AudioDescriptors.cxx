@@ -71,7 +71,7 @@ void AudioDescriptors::SetpAudio(Audio* pAudio) {
 	mpAudio=pAudio;
 	//TODO: it may give problems because pointer passed
 	InitStats(&mpAudio->GetBuffer());
-	mComputedAttackTime=0;	
+	mIsAttackTimeComputed=false;
 }
 
 void AudioDescriptors::ConcreteCompute()
@@ -118,7 +118,7 @@ TData AudioDescriptors::ComputeZeroCrossingRate()
 
 TData AudioDescriptors::ComputeAttackTime()
 {
-	if(mComputedAttackTime) return mComputedAttackTime;
+	if(mIsAttackTimeComputed) return mComputedAttackTime;
 
 	TData max = 0.;
 	TIndex maxindex = -1,offset;
@@ -142,6 +142,7 @@ TData AudioDescriptors::ComputeAttackTime()
 	}
 
 	mComputedAttackTime=maxindex-offset;
+	mIsAttackTimeComputed=true;
 	return mComputedAttackTime;
 }
 
