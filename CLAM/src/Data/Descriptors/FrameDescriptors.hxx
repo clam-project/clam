@@ -68,12 +68,12 @@ public:
 public:
 	FrameDescriptors(Frame* pFrame);
 
-	inline const Frame* GetpFrame() const;
-	inline void SetpFrame(Frame* pFrame);
+	const Frame* GetpFrame() const;
+	void SetpFrame(Frame* pFrame);
 
 private:
-	inline void DefaultInit();
-	inline void CopyInit(const FrameDescriptors & copied);
+	void DefaultInit();
+	void CopyInit(const FrameDescriptors & copied);
 
 private:
 	Frame* mpFrame;
@@ -83,25 +83,25 @@ private:
 
 
 
-FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
+inline FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
 	mpFrame=pFrame;
 }
 
-void FrameDescriptors::DefaultInit() {
+inline void FrameDescriptors::DefaultInit() {
 	mpFrame=0;
 }
 
-void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
+inline void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
 	mpFrame=copied.mpFrame;
 }
 
-const Frame* FrameDescriptors::GetpFrame() const {
+inline const Frame* FrameDescriptors::GetpFrame() const {
 	return mpFrame;
 }
 
-void FrameDescriptors::SetpFrame(Frame* pFrame) {
+inline void FrameDescriptors::SetpFrame(Frame* pFrame) {
 	mpFrame=pFrame;
 }
 
