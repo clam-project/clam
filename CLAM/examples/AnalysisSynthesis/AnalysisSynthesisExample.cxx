@@ -239,6 +239,7 @@ void GenerateXML()
 {
 	SMSAnalysisSynthesisConfig c;
 	XMLStorage x;
+	x.UseIndentation(true);
 	x.Dump(c,"SMSAnalysisSynthesisConfig","c:\\config.xml");
 }
 
