@@ -36,7 +36,7 @@ namespace CLAM
 	{
 	}
 	
-	UnavailableSoundFile::~UnavailableSoundFile()
+	UnavailableSoundFile::~UnavailableSoundFile() throw()
 	{
 	}
 
@@ -55,7 +55,7 @@ namespace CLAM
 	{
 	}
 	
-	UnsupportedSoundFileSampleEncoding::~UnsupportedSoundFileSampleEncoding()
+	UnsupportedSoundFileSampleEncoding::~UnsupportedSoundFileSampleEncoding() throw()
 	{
 	}
 
@@ -75,7 +75,7 @@ namespace CLAM
 	{
 	}
 	
-	UnsupportedSoundFileFormat::~UnsupportedSoundFileFormat()
+	UnsupportedSoundFileFormat::~UnsupportedSoundFileFormat() throw()
 	{
 	}
 
