@@ -9,44 +9,6 @@ namespace CLAMTest
 {
 
 
-class MyExtractor
-{
-public:
-	void SetHooks(CLAM::ReadHook<char> & inputHook, CLAM::WriteHook<char> & outputHook)
-	{
-		_inputHook = &inputHook;
-		_outputHook = &outputHook;
-	}
-
-	void Extract()
-	{
-		char & output = _outputHook->GetForWriting();
-		const char  & input = _inputHook->GetForReading();
-		output = input;
-	}
-	bool IsInsideScope()
-	{
-		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
-	}
-		
-	void Next()
-	{
-		_inputHook->Next();
-		_outputHook->Next();
-	}
-
-	void Init(CLAM::DescriptionDataPool & pool)
-	{
-		_inputHook->Init(pool);
-		_outputHook->Init(pool);
-	}
-private:
-	CLAM::ReadHook<char> * _inputHook;
-	CLAM::WriteHook<char> * _outputHook;
-};
-
-
-	
 class ExtractorTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ExtractorTest );
@@ -54,7 +16,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ExtractorTest );
 class ExtractorTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ExtractorTest );
-	CPPUNIT_TEST(test);
+//	CPPUNIT_TEST(test);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -86,11 +48,12 @@ private:
 	CLAM::DescriptionScheme mScheme;
 	CLAM::DescriptionDataPool * mPool;
 	const char * mInputBuffer;
-
+/*
 	void test()
 	{
 		CPPUNIT_FAIL("Joder!!");
 	}
+*/
 
 };
 

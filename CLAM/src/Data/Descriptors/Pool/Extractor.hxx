@@ -57,6 +57,47 @@ private:
 	const AttributeType * _data;
 };
 
+
+template <typename AttributeType>
+class ReadIndirectHook : public Hook<AttributeType>
+{
+public:
+	void Indirect(
+		const std::string & scope, 
+		const std::string & attribute)
+	{
+		_indirectionScope = scope;
+		_indirectionAttribute = attribute;
+	}
+
+	void Init(const DescriptionDataPool & pool) 
+	{
+		_pool = &pool;
+		_current = 0;
+		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
+		_indirections = _pool->template GetReadAttributePool<unsigned>(_indirectionScope,_indirectionAttribute);
+		_scopeSize = _pool->GetNumberOfContexts(_indirectionScope);
+		_targetScopeSize = _pool->GetNumberOfContexts(_scope);
+	}
+
+	const AttributeType & GetForReading() const
+	{
+		unsigned indirection = _indirections[_current];
+		CLAM_ASSERT(indirection<_targetScopeSize,
+			"Invalid cross-scope reference");
+		return _data[indirection];
+	}
+	
+private:
+	const DescriptionDataPool * _pool;
+	std::string _indirectionScope;
+	std::string _indirectionAttribute;
+	const unsigned * _indirections;
+	const AttributeType * _data;
+	unsigned _targetScopeSize;
+};
+
+
 template <typename AttributeType>
 class WriteHook : public Hook<AttributeType>
 {
@@ -78,8 +119,6 @@ private:
 	DescriptionDataPool * _pool;
 	AttributeType * _data;
 };
-
-
 
 
 

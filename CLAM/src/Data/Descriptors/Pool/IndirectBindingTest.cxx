@@ -8,61 +8,20 @@
 namespace CLAMTest
 {
 
-class CharCopierExtractor
+
+class IndirectBindingTest;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( IndirectBindingTest );
+
+class IndirectBindingTest : public CppUnit::TestFixture
 {
-public:
-	void SetHooks(CLAM::ReadHook<char> & inputHook, CLAM::WriteHook<char> & outputHook)
-	{
-		_inputHook = &inputHook;
-		_outputHook = &outputHook;
-	}
+	CPPUNIT_TEST_SUITE( IndirectBindingTest );
+	CPPUNIT_TEST(testInit_PointsToThePlaceReferencedByTheFirstReference);
+	CPPUNIT_TEST(testNext_PointsToThePlaceReferencedByTheSecondReference);
+	CPPUNIT_TEST(testIsInsideScope_returnsTrueBeforeEnd);
+	CPPUNIT_TEST(testIsInsideScope_returnsFalseAfterLastReference);
+	CPPUNIT_TEST(testGetForReading_failsWhenInvalidReference);
 
-	void Extract()
-	{
-		char & output = _outputHook->GetForWriting();
-		const char  & input = _inputHook->GetForReading();
-		output = input;
-	}
-	bool IsInsideScope()
-	{
-		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
-	}
-		
-	void Next()
-	{
-		_inputHook->Next();
-		_outputHook->Next();
-	}
-
-	void Init(CLAM::DescriptionDataPool & pool)
-	{
-		_inputHook->Init(pool);
-		_outputHook->Init(pool);
-	}
-private:
-	CLAM::ReadHook<char> * _inputHook;
-	CLAM::WriteHook<char> * _outputHook;
-};
-
-class HookTest;
-
-CPPUNIT_TEST_SUITE_REGISTRATION( HookTest );
-
-class HookTest : public CppUnit::TestFixture
-{
-	CPPUNIT_TEST_SUITE( HookTest );
-	CPPUNIT_TEST(testInit_PointsToThePoolBegin);
-	CPPUNIT_TEST(testNext_PointsToTheNextPoolData);
-	CPPUNIT_TEST(testIsInsideScope_ReturnsTrueWhileInsideTheScope);
-	CPPUNIT_TEST(testIsInsideScope_ReturnsFalseBeyondTheScope);
-
-	CPPUNIT_TEST(testWriteInit_PointsToThePoolBegin);
-	CPPUNIT_TEST(testWriteNext_PointsToTheNextPoolData);
-	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsTrueWhileInsideTheScope);
-	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsFalseBeyondTheScope);
-
-	CPPUNIT_TEST(testTransformUsingHooks);
-	CPPUNIT_TEST(testExtraction_usingExtractor);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -70,18 +29,33 @@ public:
 	void setUp()
 	{
 		mScheme.AddAttribute< CLAM::Attribute<char> >(
-				"TestScope1","InputData");
+				"Referenced","Input");
+		mScheme.AddAttribute< CLAM::Attribute<unsigned> >(
+				"Referencer","BadReference");
+		mScheme.AddAttribute< CLAM::Attribute<unsigned> >(
+				"Referencer","Reference");
 		mScheme.AddAttribute< CLAM::Attribute<char> >(
-				"TestScope1","OutputData");
+				"Referencer","Output");
 
 		mPool = new CLAM::DescriptionDataPool(mScheme);
-		mPool->SetNumberOfContexts("TestScope1",3);
-
-		char * inputBuffer = mPool->GetAttributePool<char>("TestScope1","InputData");
-		for (unsigned i = 0; i<3; i++)
-			inputBuffer[i]='a'+i;
-
-		mInputBuffer = inputBuffer;
+		mPool->SetNumberOfContexts("Referenced",10);
+		mPool->SetNumberOfContexts("Referencer",3);
+		{
+			char * inputBuffer = mPool->GetAttributePool<char>("Referenced","Input");
+			for (unsigned i = 0; i<10; i++)
+				inputBuffer[i]='a'+i;
+		}
+		{
+			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","Reference");
+			for (unsigned i = 0; i<3; i++)
+				inputBuffer[i]=3*i;
+		}
+		{
+			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","BadReference");
+			for (unsigned i = 0; i<3; i++)
+				inputBuffer[i]=3*i;
+			inputBuffer[0]=20;
+		}
 
 	}
 
@@ -94,8 +68,86 @@ public:
 private:
 	CLAM::DescriptionScheme mScheme;
 	CLAM::DescriptionDataPool * mPool;
-	const char * mInputBuffer;
 
+	void testInit_PointsToThePlaceReferencedByTheFirstReference()
+	{
+		CLAM::ReadIndirectHook<char> hook;
+		hook.Bind("Referenced","Input");
+		hook.Indirect("Referencer","Reference");
+		hook.Init(*mPool);
+		const void * result = & (hook.GetForReading());
+		const void * expected = mPool->GetReadAttributePool<char>("Referenced","Input");
+
+		CPPUNIT_ASSERT_EQUAL(expected,result);
+	}
+
+	void testNext_PointsToThePlaceReferencedByTheSecondReference()
+	{
+		CLAM::ReadIndirectHook<char> hook;
+		hook.Bind("Referenced","Input");
+		hook.Indirect("Referencer","Reference");
+		hook.Init(*mPool);
+		hook.Next();
+		const void * result = & (hook.GetForReading());
+		const void * thirdPosition =
+			mPool->GetReadAttributePool<char>("Referenced","Input")+3;
+
+		CPPUNIT_ASSERT_EQUAL(thirdPosition,result);
+	}
+	
+	//  setUp reminder
+	//  referenced :abcdefghij
+	//              ^  ^  ^  
+	//  referencer :036
+	void testIsInsideScope_returnsTrueBeforeEnd()
+	{
+		CLAM::ReadIndirectHook<char> hook;
+		hook.Bind("Referenced","Input");
+		hook.Indirect("Referencer","Reference");
+		hook.Init(*mPool);
+
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+		hook.Next();
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+		hook.Next();
+		CPPUNIT_ASSERT(hook.IsInsideScope());
+	}
+
+	void testIsInsideScope_returnsFalseAfterLastReference()
+	{
+		CLAM::ReadIndirectHook<char> hook;
+		hook.Bind("Referenced","Input");
+		hook.Indirect("Referencer","Reference");
+		hook.Init(*mPool);
+
+		hook.Next();
+		hook.Next();
+		hook.Next();
+		CPPUNIT_ASSERT(!hook.IsInsideScope());
+	}
+
+	void testGetForReading_failsWhenInvalidReference()
+	{
+		CLAM::ReadIndirectHook<char> hook;
+		hook.Bind("Referenced","Input");
+		hook.Indirect("Referencer","BadReference");
+		hook.Init(*mPool);
+		try
+		{
+			const void * result = & (hook.GetForReading());
+			CPPUNIT_FAIL("Should have failed an assertion");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "Invalid cross-scope reference";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+
+
+	}
+
+	
+/*
 	void testInit_PointsToThePoolBegin()
 	{
 		const char * expected = mInputBuffer;
@@ -244,7 +296,7 @@ private:
 		
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
-
+*/
 
 };
 
