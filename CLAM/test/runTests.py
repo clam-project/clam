@@ -33,7 +33,7 @@ import sys
 CLAM_SANDBOXES = os.path.abspath( os.path.dirname(sys.argv[0])+'/../..' ) + '/'
 print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
-MODULE_TAG = 'CLAM-0_7_0-pre3-rel'
+MODULE_TAG = 'CLAM-0_7_0-rel'
 #MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
 
@@ -159,11 +159,11 @@ simpleExamples = [
 testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
+testsToRun[-1:-1] = automaticTests 
 testsToRun[-1:-1] = externalApplications 
 testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
-testsToRun[-1:-1] = automaticTests 
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
