@@ -25,6 +25,9 @@
 #include "SpectrumConfig.hxx"
 #include "SMSAnalysisCore.hxx"
 
+// TODO: remove
+#include "XMLStorage.hxx"
+
 namespace CLAM
 {
 
@@ -139,25 +142,61 @@ void SMSAnalysisCore::AttachChildren()
 	mPeakDetect.SetParent(this);
 	mFundDetect.SetParent(this);
 	mSinTracking.SetParent(this);
+	mSynthSineSpectrum.SetParent( this );
 	mSpecSubstracter.SetParent(this);
+}
+
+bool SMSAnalysisCore::ConcreteStart()
+{
+	if( mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort() )
+	{
+		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetSize( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
+		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetHop( mSinSpectralAnalysis.GetInPort("Input").GetSize() );
+		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->CenterEvenRegions();
+	}
+	return ProcessingComposite::ConcreteStart();
 }
 
 bool SMSAnalysisCore::Do()
 {
-	if( mSinSpectralAnalysis.CanConsumeAndProduce() && mResSpectralAnalysis.CanConsumeAndProduce() )
+	if( mSinSpectralAnalysis.CanConsumeAndProduce() && mResSpectralAnalysis.CanConsumeAndProduce()  )
 	{
+		std::cout << "doing analysis" << std::endl;
 		mSinSpectralAnalysis.Do();
-		mPeakDetect.Do();
-		mFundDetect.Do();
-		mSinTracking.Do();
-		mSynthSineSpectrum.Do();
 		mResSpectralAnalysis.Do();
+		
+		CLAM_DEBUG_ASSERT( mPeakDetect.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mPeakDetect should have data feeded");
+		mPeakDetect.Do();
+	
+		CLAM_DEBUG_ASSERT( mFundDetect.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mFundDetect should have data feeded");
+		mFundDetect.Do();
+
+		CLAM_DEBUG_ASSERT( mSinTracking.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mSinTracking should have data feeded");
+		mSinTracking.Do();
+	
+		CLAM_DEBUG_ASSERT( mSynthSineSpectrum.CanConsumeAndProduce(), "SMSAnalysisCore::Do() mSynthSineSpectrum should have data feeded");
+		mSynthSineSpectrum.Do();
+
+		
 		CLAM_DEBUG_ASSERT( mSpecSubstracter.CanConsumeAndProduce(), "SMSAnalysisCore::Do() specSubstracter should have data feeded");
 		mSpecSubstracter.Do();
 
+		static int i=0;
+		if(!i)
+		{
+			std::stringstream prova1("");
+			prova1 << "peaks_anal.xml_" << i;
+			std::stringstream prova2("");
+			prova2 << "spec_anal.xml_" << i;
+			XmlStorage::Dump( mOutputSpectralPeaks.GetData(), "prova", prova1.str() );
+			XmlStorage::Dump( mOutputSubstractedSpectrum.GetData(), "prova", prova2.str() );
+			i++;
+		}
+
+		return true;
 	}
 	
-	return true;
+	return false;
 }
 
 void SMSAnalysisCore::ConnectAndPublishPorts()
@@ -182,4 +221,5 @@ void SMSAnalysisCore::ConnectAndPublishPorts()
 }
 
 } // namespace CLAM
+
 

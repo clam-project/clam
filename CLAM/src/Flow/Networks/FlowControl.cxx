@@ -43,6 +43,9 @@ void FlowControl::AttachToNetwork( Network* network)
 
 void FlowControl::ConfigurePorts(Processing& toConfigure) const
 {
+	/*
+	 *
+	 * TODO: rethink the way ports size must be decided
 	PublishedInPorts::Iterator itin; // todo : should be a typdef of PublishedInPorts
 	for (itin = toConfigure.GetInPorts().Begin(); itin != toConfigure.GetInPorts().End(); itin++)
 	{
@@ -54,8 +57,9 @@ void FlowControl::ConfigurePorts(Processing& toConfigure) const
 	for (itout = toConfigure.GetOutPorts().Begin(); itout != toConfigure.GetOutPorts().End(); itout++)
 	{
 		(*itout)->SetSize(mFrameSize);
-		(*itout)->SetHop(mFrameSize);
+	(*itout)->SetHop(mFrameSize);
 	}
+	*/
 }
 
 void FlowControl::ProcessingConfigured( Processing & configured )

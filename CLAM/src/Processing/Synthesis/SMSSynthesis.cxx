@@ -22,6 +22,9 @@
 #include "SpectrumConfig.hxx"
 #include "SMSSynthesis.hxx"
 
+// TODO: remove
+#include "XMLStorage.hxx"
+
 namespace CLAM
 {
 
@@ -75,6 +78,8 @@ SMSSynthesis::~SMSSynthesis()
 
 bool SMSSynthesis::ConfigureChildren()
 {
+	mConfig.SetSpectrumSize( mAudioFrame.GetSize()/2+1 );
+
 	//configure global spectral synthesis
 	if(!mPO_SpectralSynthesis.Configure(mConfig.GetSpectralSynth()))
 		return false;
@@ -117,6 +122,13 @@ bool SMSSynthesis::ConfigureChildren()
 void SMSSynthesis::ConfigureData()
 {
 	mAudioFrame.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
+	mOutputAudio.SetSize( mConfig.GetHopSize() );
+	mOutputSinAudio.SetSize( mConfig.GetHopSize() );
+	mOutputResAudio.SetSize( mConfig.GetHopSize() );
+
+	mOutputAudio.SetHop( mConfig.GetHopSize() );
+	mOutputSinAudio.SetHop( mConfig.GetHopSize() );
+	mOutputResAudio.SetHop( mConfig.GetHopSize() );
 }
 
 
@@ -144,10 +156,11 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out)
 bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 {
 	outSpec.SetSize(mConfig.GetSpectrumSize());
-	
 	mPO_SynthSineSpectrum.Do(in,outSpec);
+
 	mPO_SinSpectralSynthesis.Do(outSpec,mAudioFrame);
 	//Finally the overlap and add is accomplished
+	
 	return mPO_OverlapAddSin.Do(mAudioFrame, outAudio);
 
 }
@@ -155,10 +168,26 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& out
 
 bool SMSSynthesis::Do(void)
 {
-	bool result =  Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
-		mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
-		mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
+	std::cout << "doing synth" << std::endl;
+
+
+
+	static int i=0;
+	if(!i)
+	{
+		std::stringstream prova1("");
+		prova1 << "peaks_synth.xml_" << i;
+		std::stringstream prova2("");
+		prova2 << "spec_synth.xml_" << i;
+		XmlStorage::Dump( mInputSinSpectralPeaks.GetData(), "prova", prova1.str() );
+		XmlStorage::Dump( mInputResSpectrum.GetData(), "prova", prova2.str() );
+		i++;
+	}
 	
+	bool result =  Do( mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+			   mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
+			   mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
+
 	mInputSinSpectralPeaks.Consume();
 	mInputResSpectrum.Consume();
 
@@ -167,6 +196,7 @@ bool SMSSynthesis::Do(void)
 	mOutputAudio.Produce();
 	mOutputSinAudio.Produce();
 	mOutputResAudio.Produce();
+
 
 	return result;
 }
@@ -198,13 +228,15 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 	//We synthesize the sinusoidal component 	
 	SinusoidalSynthesis(inputSinusoidalPeaks,outputSinusoidalSpectrum,outputSinusoidalAudio);
 	
+	outputSpectrum.SetSize( inputResidualSpectrum.GetSize() );
+	
 	//We add Residual spectrum in the input frame plus the synthesized sinusoidal spectrum
 	mPO_SpectrumAdder.Do(outputSinusoidalSpectrum,inputResidualSpectrum,outputSpectrum);
 	
 	//We synthesize to audio the resulting summed spectrum
 	mPO_SpectralSynthesis.Do(outputSpectrum,mAudioFrame);
 
-		
+
 	//We do the overlap and add
 	mPO_OverlapAddGlobal.Do(mAudioFrame, outputAudio);
 
@@ -213,6 +245,8 @@ bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputRes
 	//Now we synthesize only the residual spectrum
 	mPO_ResSpectralSynthesis.Do(inputResidualSpectrum,mAudioFrame);
 	//And we do the overlap and add process for the residual
+
+	
 	mPO_OverlapAddRes.Do(mAudioFrame, outputResidualAudio);
 
 	/* Note: although sinusoidal spectrum is already available from the analysis phase, we 

@@ -65,6 +65,7 @@ public:
 	/** Supervised mode execution */
 	bool Do(void);
 
+	bool ConcreteStart();
 private:
 
 /** Configuration data */

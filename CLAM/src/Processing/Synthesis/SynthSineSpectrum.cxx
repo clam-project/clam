@@ -669,6 +669,8 @@ bool SynthSineSpectrum::Do()
 // COULD BE OPTIMIZED LATER !!!! JO 
 bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut, double gain)
 {
+	CLAM_DEBUG_ASSERT( AbleToExecute(), "SynthSineSpectrum::Do - processing is not running" );
+		
 	InitSynthSpec(mConfig.GetSpectrumSize());		// could be optimised with memset
 	FillSynthSineSpectrum(peakArray,gain);
 

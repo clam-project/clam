@@ -81,7 +81,6 @@ bool SMSAnalysis::ConcreteStart()
 	
 	mAudioProvider.SetSize( mConfig.GetHopSize() );
 	mAudioProvider.SetHop( mConfig.GetHopSize() );
-	mAudioProvider.CenterEvenRegions();
 	
 	return ProcessingComposite::ConcreteStart();
 }
