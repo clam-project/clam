@@ -119,11 +119,12 @@ private: \
 		a->CompilationError_AttributeNotDefined(); \
 	}\
 	/** Undefined link for the Visit method chain (Visit) */ \
-	template <unsigned int NAttrib, typename Visitor> \
+		/*	template <unsigned int NAttrib, typename Visitor> \
 	void VisitChainedAttr (AttributePosition<NAttrib>*a, Visitor & visitor) { \
 		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
+		*/\
 	/** Undefined link for the Remove method chain (Remove) */ \
 	template <unsigned int NAttrib> \
 	void RemoveChainedAttr (AttributePosition<NAttrib>*a) { \
