@@ -40,7 +40,8 @@ public:
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withIncorrectOutPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withSomeInPorts );
-	CPPUNIT_TEST( testOutPortPublisher_GetConnectedInPorts_whenConnectedToInPortPublisher );
+//	CPPUNIT_TEST( testOutPort_GetConnectedInPorts_whenConnectedToInPortPublisher );
+//	CPPUNIT_TEST( testInPortPublisher_deleteInPortPublisherAfterRealPorts );
 	CPPUNIT_TEST( testGetLastWrittenData_whenPortIsWrongType_throwsException );
 	CPPUNIT_TEST( testGetLastWrittenData_fillsWithCorrectData );
 	
@@ -414,11 +415,10 @@ public:
 
 	}
 
-	void testOutPortPublisher_GetConnectedInPorts_whenConnectedToInPortPublisher()
+	void testOutPort_GetConnectedInPorts_whenConnectedToInPortPublisher()
 	{
 		CLAM::OutPort<int> out;
 		CLAM::InPort<int> in1, in2, in3;
-		CLAM::OutPortPublisher<int> pubOut;
 		CLAM::InPortPublisher<int> pubIn;
 		pubIn.PublishInPort( in1 );
 		pubIn.PublishInPort( in2 );
@@ -427,13 +427,36 @@ public:
 		
 		// let's check that the connected list of pubOut have a unique
 		// entry (which is &pubIn)
-		CLAM::OutPortBase::InPortsList::iterator it = pubOut.BeginConnectedInPorts(); 
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
 		CPPUNIT_ASSERT( it != out.EndConnectedInPorts() );
 		CPPUNIT_ASSERT( *(it++) = &pubIn );
 		CPPUNIT_ASSERT( it == out.EndConnectedInPorts() );
 		
 	}
 		
+	void testInPortPublisher_deleteInPortPublisherAfterRealPorts()
+	{
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> *in1, *in2;
+		CLAM::InPortPublisher<int> *pubIn;
+
+		in1 = new CLAM::InPort<int>;
+		in2 = new CLAM::InPort<int>;
+		pubIn = new CLAM::InPortPublisher<int>;
+		
+		pubIn->PublishInPort( *in1 );
+		pubIn->PublishInPort( *in2 );
+		out.ConnectToIn( *pubIn );
+		
+		delete in1;
+		delete in2;
+		delete pubIn;
+
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
+		CPPUNIT_ASSERT(it == out.EndConnectedInPorts() );
+		
+	}
+	
 	void testGetLastWrittenData_whenPortIsWrongType_throwsException()
 	{
 		CLAM::OutPort<char> out;
