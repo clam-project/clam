@@ -5,9 +5,9 @@
 # 1: make depend and make clean
 # 2: cvs update
 # 3: remove & cvs checkout
-thoroughtnessLevel = 0  # at night we want 3
-disableMail = True
-publicAddress = 'pau.arumi@iua.upf.es' #'clam-devel@iua.upf.es'
+thoroughtnessLevel = 3  # at night we want 3
+disableMail = False
+publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
 executionTime = 5 #sec  30 by default TODO
@@ -25,40 +25,64 @@ print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
 MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
-#TODO remove. it's just for rappid testing. 
-#SANDBOX_NAME = 'devel'
 
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
 SALTO_DATA_FOLDER = CLAM_SANDBOXES + 'SaltoDataFolder/'
 
 unitTestsPath = BUILDPATH+'Tests/AllUnitTests/'
 functionalTestsPath = BUILDPATH+'Tests/FunctionalTests/AllFunctionalTests/'
-smsToolsPath = BUILDPATH+'Examples/SMS/Tools/'
-saltoPath = BUILDPATH + 'Examples/Salto/'
-simplePath = BUILDPATH + 'Examples/Simple/'
+spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
+nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 
 #TODO max time allowed for each test -
-
+#TODO refactoring: delete last column of these tuples
 testsToRun = [
-	( 'UnitTests', unitTestsPath, './AllUnitTests'),
-	( 'FunctionalTests', functionalTestsPath, './AllApplicationTests'),
-	( 'SMSTools', smsToolsPath, './SMSTools' ),
-	( 'Salto', saltoPath, './SaltoExample' ),
-	( 'SpectralDelay', BUILDPATH+'Examples/SpectralDelay/', './SpectralDelay' ),
-	( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/', './NetworkEditor' )
+	( 'AllUnitTests', unitTestsPath ),
+	( 'AllApplicationlTests', functionalTestsPath ),
+	( 'SMSTools', BUILDPATH+'Examples/SMS/Tools/' ),
+	( 'SaltoExample',BUILDPATH + 'Examples/Salto/' ),
+	( 'SpectralDelay', BUILDPATH+'Examples/SpectralDelay/' ),
+	( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/' )
 ]
-
-#insert a 
 supervisedTests = [
-	('AudioIOTest', BUILDPATH+'Tests/SupervisedTests/AudioIO/', './AudioIOTest'),
-	('MIDIIOTest', BUILDPATH+'Tests/SupervisedTests/MIDIIO/', './MIDIIOTest'),
-	('Fl_EnvelopeTest', BUILDPATH+'Tests/SupervisedTests/Fl_Envelope/', './Fl_EnvelopeTest'),
-	('Test_Multiplot', BUILDPATH+'Tests/SupervisedTests/Plotsv2/Test_Multiplot/', './Test_Multiplot'),
-	('Test_SinlglePlot', BUILDPATH+'Tests/SupervisedTests/Plotsv2/Test_SinglePlot/', './Test_SinglePlot'),
-	('Test_SpecificPlots', BUILDPATH+'Tests/SupervisedTests/Plotsv2/Test_Multiplot/', './Test_SpecificPlots')
+	('SpectralPeaksPresentation', spvTestsPath+'SpectralPeaksPresentation/' ), 
+	('SpectrumPresentation', spvTestsPath+'SpectrumPresentation/' ),
+	('AudioPresentation', spvTestsPath+'AudioPresentation/' ),
+	('FunFreqPresentationTest', spvTestsPath+'FundFreqPresentation/' ),
+	('AudioIOTest', spvTestsPath+'AudioIO/' ),
+	('MIDIIOTest', spvTestsPath+'MIDIIO/' ),
+	('Fl_EnvelopeTest', spvTestsPath+'Fl_Envelope/' ),
+	('Test_Multiplot', spvTestsPath+'Plotsv2/Test_Multiplot/' ),
+	('Test_SinlglePlot', spvTestsPath+'Plotsv2/Test_SinglePlot/' ),
+	('Test_SpecificPlots', spvTestsPath+'Plotsv2/Test_Multiplot/' )
 ]
 
-testsToRun[0:0] = supervisedTests
+
+notPortedTests = [
+	( 'Array', nonPortedTestsPath+'Array/'),
+        ( 'Array2', nonPortedTestsPath+'Array2/'),
+        ( 'Assert', nonPortedTestsPath+'Assert/'),
+        ( 'BPF', nonPortedTestsPath+'BPF/'),
+        ( 'EnvelopeExtractor', nonPortedTestsPath+'EnvelopeExtractor/'),
+        ( 'Error', nonPortedTestsPath+'Error/'),
+        ( 'FDFilterGen', nonPortedTestsPath+'FDFilterGen/'),
+        ( 'List', nonPortedTestsPath+'List/'),
+        ( 'Segment', nonPortedTestsPath+'Segment/'),
+        ( 'Signalv1', nonPortedTestsPath+'Signalv1/'),
+        ( 'Spectrum', nonPortedTestsPath+'Spectrum/'),
+        ( 'SpectrumAdder', nonPortedTestsPath+'SpectrumAdder/'),
+        ( 'SpectrumAdder2', nonPortedTestsPath+'SpectrumAdder2/'),
+        ( 'SpectrumProduct', nonPortedTestsPath+'SpectrumProduct/'),
+        ( 'TabFunct', nonPortedTestsPath+'TabFunct/'),
+        ( 'Threading', nonPortedTestsPath+'Threading/'),
+        ( 'WaveGenerator', nonPortedTestsPath+'WaveGenerator/'),
+        ( 'Windowing', nonPortedTestsPath+'Windowing/')
+]
+
+
+# insert sub-lists to the main list:
+testsToRun[-1:-1] = supervisedTests
+testsToRun[-1:-1] = notPortedTests
 
 sender = '"automatic tests script" <pau.arumi@iua.upf.es>'
 
@@ -75,6 +99,10 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 	if disableMail :
 		print msg
 		return
+	
+	# in case of network error, we better off save the mail in a file
+	file('last_mail_sent_by_tests.txt','w').write(msg)
+	
 	server = smtplib.SMTP('iua-mail.upf.es')
 	server.set_debuglevel(1)
 	server.sendmail(fromaddr, toaddrs, msg)
@@ -85,10 +113,16 @@ def checkPaths() :
 		err = "Sorry can't access CLAM_SANDBOXES path : " + CLAM_SANDBOXES
 		sendError(err)
 		sys.exit(1)
-	for name, path, execcmd in testsToRun :
+	report = ''
+	for name, path in testsToRun :
 		if not os.access(path, os.F_OK) :
-			sendError("Sorry can't access path: %s \n" % path)
-			sys.exit(1)
+			report += "- can't access path: %s \n" % path
+		setfile = path+'settings.cfg'
+		if not os.access(setfile, os.F_OK) :
+			report += "- can't find this settings file: %s\n"%setfile
+	if report != '' :
+		sendError(report)
+		sys.exit(1)
 
 def parseCompilationWarnings(compilationOut) :
 	nwarnings = compilationOut.count('warning')
@@ -161,15 +195,15 @@ def formatSummary(name, configuration, result) :
 		points +='.'
 	return nameConfig + points + result+'\n'
 
-def compileAndRun(name, path, execcmd) :
+def compileAndRun(name, path) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures
 	os.chdir(path)
 	# compilation phase
 	summary = details = s = d = ''
 	for configuration in ['debug', 'release'] :
 		if thoroughtnessLevel >= 1 :
-			executeMandatory('make clean')
-			executeMandatory('make depend')
+			getStatusOutput('make clean')
+			getStatusOutput('make depend')
 		makecmd = 'make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
@@ -188,6 +222,7 @@ def compileAndRun(name, path, execcmd) :
 			continue
 			
 		# execution phase
+		execcmd = './'+name
 		if isTest(path) :
 			print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
@@ -209,6 +244,20 @@ mailTemplate = '''
 (This message has been automatically generated)
 
 Status of CLAM on tag: %s 
+
+New: 
+  - included all the tests not-ported-to-cppUnit
+  - included all the Supervised Tests
+  - fixed the way to get CLAM path and CVSROOT var
+  - made easy to turn on/of sending mail
+  - moved to /build/
+
+TODO:
+  - comand line options
+  - default options in another file, maybe?
+  - behaviour: send public mail when a)something fails, or 
+    b)everything ok, but last time something failed.
+    
 
 -------  
 SUMMARY
@@ -298,9 +347,9 @@ def runTests() :
 			details += output
 
 	# compile and run/tests entries
-	for name, path, execcmd in testsToRun :
-		print '\n\nname\t\t %s \npath \t\t%s \nexec \t\t%s\n' % (name, path, execcmd)
-		summary, details  = compileAndRun(name, path, execcmd)
+	for name, path in testsToRun :
+		print '\n\nname\t\t %s \npath \t\t%s \n' % (name, path)
+		summary, details  = compileAndRun(name, path)
 		#TODO a refactoring this huge line -> create class
 		totalSummary += summary
 		totalDetails += details
