@@ -40,7 +40,7 @@ public:
 private:
 	void testGetIndex_whenEmpty()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		try
 		{
 			spec.GetIndex("MyAttribute");
@@ -58,7 +58,7 @@ private:
 
 	void testGetIndex_withOneInserted()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetNAttributes());
@@ -66,7 +66,7 @@ private:
 
 	void testGetIndex_withAWrongName()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
@@ -85,7 +85,7 @@ private:
 
 	void testGetIndex_withSecondInsertedArray()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		spec.Add<CLAM::TData>("Foo");
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
@@ -95,7 +95,7 @@ private:
 
 	void testAddAttribute_whenNameAlreadyAdded()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
@@ -114,7 +114,7 @@ private:
 
 	void testAdding_DifferentTypes()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		spec.Add<CLAM::TIndex>("Foo");
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
@@ -125,7 +125,7 @@ private:
 	void testCheckType_withOtherType()
 	{
 		std::string expected = "Type Missmatch using a pool";
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
@@ -142,7 +142,7 @@ private:
 
 	void testCheckType_withSameType()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		spec.CheckType(0,(CLAM::TData*)0);
 	}
@@ -179,7 +179,7 @@ private:
 	void testGet_ReturnsSameMemory()
 	{
 		const unsigned poolSize=5;
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 		
 		CLAM::Pool pool(spec,poolSize);
@@ -193,7 +193,7 @@ private:
 	void testGet_ReturnsConstMemory()
 	{
 		const unsigned poolSize=5;
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
@@ -208,7 +208,7 @@ private:
 	void testGet_withStrings()
 	{
 		const unsigned poolSize=5;
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
@@ -228,7 +228,7 @@ private:
 	void testGet_withWrongType()
 	{
 		const unsigned poolSize=5;
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
@@ -247,7 +247,7 @@ private:
 	void testGet_withWrongTypeAndConst()
 	{
 		const unsigned poolSize=5;
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::Pool pool(spec,poolSize);
@@ -266,7 +266,7 @@ private:
 
 	void testConstruction_withoutSize()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
@@ -286,7 +286,7 @@ private:
 
 	void testConstruction_withoutSizeGettingNoConst()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
@@ -305,7 +305,7 @@ private:
 
 	void testConstruction_givesSizeZeroByDefault()
 	{
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
@@ -317,7 +317,7 @@ private:
 	{
 		const unsigned poolSize=5;
 
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec);
@@ -335,7 +335,7 @@ private:
 	{
 		const unsigned poolSize=5;
 
-		CLAM::AttributeScope spec;
+		CLAM::DescriptionScope spec;
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::Pool pool(spec,7);
@@ -389,7 +389,7 @@ private:
 		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
 		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
 
-		const CLAM::AttributeScope & spec = registry.GetSpec("MyScope");
+		const CLAM::DescriptionScope & spec = registry.GetSpec("MyScope");
 
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("MyOtherAttribute"));
@@ -402,8 +402,8 @@ private:
 		registry.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
 		registry.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
 
-		const CLAM::AttributeScope & mySpec = registry.GetSpec("MyScope");
-		const CLAM::AttributeScope & yourSpec = registry.GetSpec("YourScope");
+		const CLAM::DescriptionScope & mySpec = registry.GetSpec("MyScope");
+		const CLAM::DescriptionScope & yourSpec = registry.GetSpec("YourScope");
 
 		CPPUNIT_ASSERT_EQUAL(0u,mySpec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(0u,yourSpec.GetIndex("YourAttribute"));

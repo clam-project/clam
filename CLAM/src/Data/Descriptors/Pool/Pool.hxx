@@ -49,7 +49,7 @@ namespace CLAM
 		}
 	};
 
-	class AttributeScope
+	class DescriptionScope
 	{
 	public:
 		typedef std::map<std::string, unsigned> NamesMap;
@@ -58,7 +58,7 @@ namespace CLAM
 		NamesMap _nameMap;
 		Attributes _attributes;
 	public:
-		~AttributeScope()
+		~DescriptionScope()
 		{
 			Attributes::iterator it = _attributes.begin();
 			Attributes::iterator end = _attributes.end();
@@ -105,16 +105,19 @@ namespace CLAM
 		}
 	};
 
+	/**
+	 * A container for the data attached to a description scope
+	 */
 	class Pool
 	{
 	public:
-		typedef std::vector<void*> Attributes;
+		typedef std::vector<void*> AttributesData;
 	private:
 		unsigned _size;
-		Attributes _attributes;
-		const AttributeScope & _spec;
+		AttributesData _attributes;
+		const DescriptionScope & _spec;
 	public:
-		Pool(const AttributeScope & spec, unsigned size=0)
+		Pool(const DescriptionScope & spec, unsigned size=0)
 			: _size(0), _spec(spec)
 		{
 			_attributes.resize(_spec.GetNAttributes());
@@ -128,8 +131,8 @@ namespace CLAM
 		void Deallocate()
 		{
 			if (!_size) return;
-			Attributes::iterator it = _attributes.begin();
-			Attributes::iterator end = _attributes.end();
+			AttributesData::iterator it = _attributes.begin();
+			AttributesData::iterator end = _attributes.end();
 			for (unsigned i=0; it!=end; i++, it++)
 				_spec.Deallocate(i, *it);
 			_size=0;
@@ -179,7 +182,7 @@ namespace CLAM
 	{
 	private:
 		typedef std::map<std::string, unsigned> SpecMap;
-		typedef std::vector<AttributeScope *> Specs;
+		typedef std::vector<DescriptionScope *> Specs;
 	private:
 		Specs _specs;
 		SpecMap _specMap;
@@ -200,11 +203,11 @@ namespace CLAM
 		void AddAttribute(const std::string &scope, const std::string & name)
 		{
 			typedef typename AttributeSpec::DataType DataType;
-			AttributeScope & theSpec = SearchScopeOrAdd(scope);
+			DescriptionScope & theSpec = SearchScopeOrAdd(scope);
 			theSpec.template Add<DataType>(name);
 		}
 
-		AttributeScope & SearchScopeOrAdd(const std::string scopeName)
+		DescriptionScope & SearchScopeOrAdd(const std::string scopeName)
 		{
 			const unsigned nSpecs = _specs.size();
 			std::pair<SpecMap::iterator,bool> result = 
@@ -213,12 +216,12 @@ namespace CLAM
 			// Already inserted
 			if (!result.second) return *_specs[result.first->second];
 
-			AttributeScope * theSpec = new AttributeScope;
+			DescriptionScope * theSpec = new DescriptionScope;
 			_specs.push_back(theSpec);
 			return *theSpec;
 		}
 
-		const AttributeScope & GetSpec(const std::string & name) const
+		const DescriptionScope & GetSpec(const std::string & name) const
 		{
 			SpecMap::const_iterator it = _specMap.find(name);
 			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
@@ -231,6 +234,8 @@ namespace CLAM
 			
 		}
 	};
+
+
 }
 
 
