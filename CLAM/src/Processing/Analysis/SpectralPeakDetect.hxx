@@ -77,7 +77,6 @@ namespace CLAM
 		/** Destructor of the class*/
  		virtual ~SpectralPeakDetect();
 
-//		virtual void Attach( Spectrum& in, SpectralPeakArray& out );
 
 	       /** This method allows to obtain the SpectralPeakDetectConfig object of the class
 		*  @return The configuration of the class

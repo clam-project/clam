@@ -92,15 +92,8 @@ namespace CLAM {
 	{
 		return true;
 	}
-/*
-	void SpectralPeakDetect::Attach( Spectrum& in, SpectralPeakArray& out )
-	{
-		mInput.Attach( in );
-		mOutput.Attach( out );
-	}
-*/
-	/* The supervised Do() function */
 
+	/* The supervised Do() function */
 	bool  SpectralPeakDetect::Do(void)
 	{
 		if (mInput.GetData().GetScale() != EScale::eLog)
