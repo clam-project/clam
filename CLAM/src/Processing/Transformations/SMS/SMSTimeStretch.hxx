@@ -25,6 +25,7 @@
 
 #include "SMSTransformation.hxx"
 #include "FrameInterpolator.hxx"
+#include "SMSTimeStretchConfig.hxx"
 
 namespace CLAM{
 
@@ -65,16 +66,15 @@ namespace CLAM{
 		bool HaveFinished();
 		void UpdateTimeAndIndex(const Segment& in);
 		const Frame& UnwrapProcessingData(const Segment& in,Frame*);
-		Frame& UnwrapProcessingData(Segment& in,Frame*);
+		Frame& UnwrapProcessingData(Segment& out,Frame*);
 
 		TTime mSynthesisTime;
 		TTime mAnalysisTime;
-		TIndex mIndex;
 		TIndex mnSynthesisFrames;
-		TData mHopSize;
-		TData mSampleRate;
 		
 		Frame mLeftFrame;
+
+		SMSTimeStretchConfig mConfig;
 
 		/** Child processings **/
 		FrameInterpolator mPO_FrameInterpolator;
