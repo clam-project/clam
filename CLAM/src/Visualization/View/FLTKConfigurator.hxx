@@ -28,6 +28,7 @@
 
 #include "Assert.hxx"
 #include "Enum.hxx"
+#include "Filename.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 
@@ -182,6 +183,34 @@ namespace CLAM{
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, std::string *foo, T& value) {
+			Fl_Input * mInput = dynamic_cast<Fl_Input*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value=mInput->value();
+		}
+
+		template <typename T>
+		void AddWidget(const char *name, Filename *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+			Fl_Input * mInput = new Fl_Input( 155, 0, 170, 20);
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
+			mInput->value( value.c_str() );
+			mInput->textsize(12);
+			mInput->align(FL_ALIGN_LEFT);
+			mInput->color(FL_CYAN);
+
+			mWidgetNum++;
+			mWidgets.insert(tWidgets::value_type(name, mInput));
+		}
+		template <typename T>
+		void RetrieveValue(const char *name, Filename *foo, T& value) {
 			Fl_Input * mInput = dynamic_cast<Fl_Input*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
 			value=mInput->value();

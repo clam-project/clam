@@ -24,6 +24,7 @@
 
 #include "SMSAnalysis.hxx"
 #include "SMSSynthesis.hxx"
+#include "Filename.hxx"
 //#include "Flags.hxx"
 
 namespace CLAM{
@@ -36,10 +37,10 @@ class SMSAnalysisSynthesisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 
 /** General	**/
-	DYN_ATTRIBUTE(1,public,std::string,InputSoundFile);
-	DYN_ATTRIBUTE(2,public,std::string,OutputSoundFile);
-	DYN_ATTRIBUTE(3,public,std::string,OutputAnalysisFile);
-	DYN_ATTRIBUTE(4,public,std::string,InputAnalysisFile);
+	DYN_ATTRIBUTE(1,public,Filename,InputSoundFile);
+	DYN_ATTRIBUTE(2,public,Filename,OutputSoundFile);
+	DYN_ATTRIBUTE(3,public,Filename,OutputAnalysisFile);
+	DYN_ATTRIBUTE(4,public,Filename,InputAnalysisFile);
 /** Analysis **/
 	DYN_ATTRIBUTE(5,public,TSize,AnalysisWindowSize);
 	DYN_ATTRIBUTE(6,public,TSize,AnalysisHopSize);
@@ -63,7 +64,6 @@ class SMSAnalysisSynthesisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(22,public,EWindowType,SynthesisWindowType);
 	DYN_ATTRIBUTE(23,public,EPhaseGeneration,SynthesisPhaseManagementType);
 
-		
 private:
 
 	void DefaultInit();
