@@ -34,14 +34,14 @@
  *
  * @code
  * CLAM::DescriptionScheme scheme;
- * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("AudioSample","SignalLevel");
- * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("AudioSample","FilteredSignal");
- * scheme.AddAttribute<CLAM::Attribute<SamplePosition> > ("Frame","Center");
- * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("Frame","Energy");
- * scheme.AddAttribute<CLAM::Attribute<CLAM::TData> >    ("Frame","RMS");
- * scheme.AddAttribute<CLAM::Attribute<CLAM::Spectrum> > ("Frame","SpectralDistribution");
- * scheme.AddAttribute<CLAM::Attribute<FramePosition> >  ("Note","Onset");
- * scheme.AddAttribute<CLAM::Attribute<CLAM::Pitch> >    ("Note","Pitch");
+ * scheme.AddAttribute <CLAM::TData>    ("AudioSample", "SignalLevel");
+ * scheme.AddAttribute <CLAM::TData>    ("AudioSample", "FilteredSignal");
+ * scheme.AddAttribute <SamplePosition> ("Frame", "Center");
+ * scheme.AddAttribute <CLAM::TData>    ("Frame", "Energy");
+ * scheme.AddAttribute <CLAM::TData>    ("Frame", "RMS");
+ * scheme.AddAttribute <CLAM::Spectrum> ("Frame", "SpectralDistribution");
+ * scheme.AddAttribute <FramePosition>  ("Note", "Onset");
+ * scheme.AddAttribute <CLAM::Pitch>    ("Note", "Pitch");
  * @endcode
  * 
  * The description scheme only specifies the attribute organization.
@@ -57,8 +57,50 @@
  * See the documentation for CLAM::DescriptionDataPool to see how to work
  * with it directly.
  *
- * Description data pools can be loaded or stored in XML as any
- * other CLAM::Component using an CLAM::XmlStorage.
+ * So, summarizing:
+ * - A description scheme defines attributes to be computed
+ * - Every attribute has its name and type and is related to a given scope
+ * - A scope specifies the kind of attribute target
+ * - A description data pool is the real container for the values computed by extraction.
+ * - A description data pool matches the structure specified by a given description scheme.
+ *
+ * @section PoolByHand Accessing the pool by hand
+ *
+ * Accessing the pool by hand is not the ideal way of doing it but,
+ * currently, extractor binding is not so complete so, by now,
+ * it is the only way to do certain things.
+ *
+ * The scope provides interface to:
+ * - Populate a given scope with a size.
+ *   That is for the scope Note, telling how many notes there are.
+ *   @code
+ *   pool.SetNumberOfContexts("Note",60);
+ *   @endcode
+ * - Obtaining the attribute pool for writting, 
+ *   so you will get a vector of pitches one for every note.
+ *   @code
+ *   CLAM::Pitch * pitches = pool.GetAttributePool<CLAM::Pitch>("Note","Pitch");
+ *   @endcode
+ * - Obtaining the attribute pool for reading
+ *   @code
+ *   const CLAM::Pitch * pitches = pool.GetReadAttributePool<CLAM::Pitch>("Note","Pitch");
+ *   @endcode
+ *
+ * @warning A write access is required before any read access.
+ * The pool will create the attribute pool memory only when
+ * somebody requires to write in it.
+ *
+ * The access is templatized by the attribute type.
+ * The pool user need not to handle generic types (void*, casts...)
+ * and her code keeps typesafe. 
+ * Some checking between the usage and the real type 
+ * for the attribute is done on run-time.
+ * So if you use a different value type an assertion will fail.
+ * 
+ * @section XML
+ *   
+ * Description data pools can be loaded or stored in XML, as any
+ * other CLAM::Component, by using an CLAM::XmlStorage.
  * 
  * @code
  * // Storing a description in XML
@@ -70,13 +112,6 @@
  * CLAM::XmlStorage::Restore(pool, "mysong.xml");
  * @endcode
  *
- * So, summarizing:
- * - A description scheme defines attributes to be computed
- * - Every attribute has its name and type and is related to a given scope
- * - A scope specifies the kind of attribute target
- * - A description data pool contains the values computed from an extraction
- *   matching the structure specified by a description scheme
- * - Attributes assures multiple type safe operations.
  * 
  * @section ExtractorBinding Binding extractors 
  *
@@ -159,10 +194,9 @@ namespace CLAM
 				delete *it;
 		}
 
-		template < typename AttributeSpec >
+		template < typename DataType >
 		void AddAttribute(const std::string &scope, const std::string & name)
 		{
-			typedef typename AttributeSpec::DataType DataType;
 			DescriptionScope & theScope = SearchScopeOrAdd(scope);
 			theScope.template Add<DataType>(name);
 		}
