@@ -379,7 +379,7 @@ public:
 		int data = 4;
 
 		outPublisher.ConnectToIn(in);
-		out.GetData() = 4;
+		out.GetData() = data;
 
 		CPPUNIT_ASSERT_EQUAL( data, outPublisher.GetData() );
 		

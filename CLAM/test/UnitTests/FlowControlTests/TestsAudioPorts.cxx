@@ -3,6 +3,8 @@
 #include "AudioOutPort.hxx"
 #include "AudioInPort.hxx"
 #include "Audio.hxx"
+#include "AudioOutPortPublisher.hxx"
+#include "AudioInPortPublisher.hxx"
 
 namespace CLAMTest {
 
@@ -22,6 +24,9 @@ public:
 	CPPUNIT_TEST( testAudioPortsProduceAndConsume_afterConsuming );
 	CPPUNIT_TEST( testAudioPortsProduceAndConsume_whenMoreThanOneReader );
 	CPPUNIT_TEST( testAudioPortsProduceAndConsume_whenDifferentSizes );
+	CPPUNIT_TEST( testAudioInPortPublisher_PublishInPort_withIncorrectInPort );
+	CPPUNIT_TEST( testAudioInPortPublisher_PublishInPort_withProperInPort );
+	CPPUNIT_TEST( testAudioInPortPublisher_PublishInPort_withIncorrectInPort );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testCreateAudioOutPorts()
@@ -172,6 +177,57 @@ public:
 			CPPUNIT_ASSERT_EQUAL( (CLAM::TData)i, toConsume2.GetBuffer()[i] );
 		}
 	}
+	
+	void testAudioInPortPublisher_PublishInPort_withIncorrectInPort()
+	{
+		CLAM::InPort<int> in;
+		CLAM::AudioInPortPublisher inPublisher;
+
+		try
+		{
+			inPublisher.PublishInPort( in );
+			CPPUNIT_FAIL( "Assertion should fail" ); 
+		}
+		catch( CLAM::ErrAssertionFailed & )
+		{
+		}
+	}
+	
+	void testAudioInPortPublisher_PublishInPort_withProperInPort()
+	{
+		CLAM::AudioOutPort out;
+		CLAM::AudioInPort in;
+		CLAM::AudioInPortPublisher inPublisher;
+		inPublisher.PublishInPort( in );
+
+		CLAM::TData data(4.0);
+
+		out.ConnectToIn(inPublisher);
+		out.GetAudio().GetBuffer()[0] = data;
+		out.Produce();
+			
+		CPPUNIT_ASSERT_EQUAL( data, inPublisher.GetAudio().GetBuffer()[0] );		
+		CPPUNIT_ASSERT_EQUAL( data, in.GetAudio().GetBuffer()[0] );
+	}
+	
+	void testAudioOutPortPublisher_PublishOutPort_withProperOutPort()
+	{
+		
+		CLAM::OutPort<CLAM::TData> out;
+		CLAM::AudioInPort in;
+		CLAM::AudioOutPortPublisher outPublisher;
+		outPublisher.PublishOutPort( out );
+
+		CLAM::TData data(4.0);
+
+		outPublisher.ConnectToIn(in);
+		out.GetData() = data;
+
+		CPPUNIT_ASSERT_EQUAL( data, outPublisher.GetAudio().GetBuffer()[0] );		
+		out.Produce();
+		CPPUNIT_ASSERT_EQUAL( data, in.GetAudio().GetBuffer()[0] );
+	}
+
 };
 
 } // namespace CLAMTest
