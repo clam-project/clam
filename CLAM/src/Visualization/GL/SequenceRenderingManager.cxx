@@ -142,9 +142,9 @@ namespace CLAMVM
 		else if ( mDataBounds.mLeft <= mDataBBox.mLeft
 			  && mDataBounds.mRight >= mDataBBox.mRight ) // inverse inclusion
 		{
-			mOffset = ( fabs( mDataBounds.mLeft - mDataBBox.mLeft )/dataSpan ) * mDataCached.Size();
+			mOffset = (TSize)(( fabs( mDataBounds.mLeft - mDataBBox.mLeft )/dataSpan ) * mDataCached.Size());
 			mStart_x = mDataBBox.mLeft;
-			mLen = ( 1.0 - ( fabs( mDataBounds.mRight - mDataBBox.mRight ) / dataSpan ) ) * mDataCached.Size();
+			mLen = (TSize)(( 1.0 - ( fabs( mDataBounds.mRight - mDataBBox.mRight ) / dataSpan ) ) * mDataCached.Size());
 			mLen -= mOffset;
 			shownSpan = visibleSpan;
 		}
@@ -153,13 +153,13 @@ namespace CLAMVM
 		{
 			mOffset = 0;
 			mStart_x = mDataBounds.mLeft;
-			mLen = ( fabs( mDataBBox.mRight - mDataBounds.mLeft ) / dataSpan ) * mDataCached.Size();
+			mLen = (TSize)(( fabs( mDataBBox.mRight - mDataBounds.mLeft ) / dataSpan ) * mDataCached.Size());
 			shownSpan = fabs( mDataBounds.mLeft - mDataBBox.mRight );
 		}
 		else if ( mDataBounds.mLeft <= mDataBBox.mLeft 
 			  && mDataBounds.mRight <= mDataBBox.mRight ) // right partial inclusion
 		{
-			mOffset = ( fabs( mDataBounds.mLeft - mDataBBox.mLeft )/dataSpan ) * mDataCached.Size();
+			mOffset = (TSize)(( fabs( mDataBounds.mLeft - mDataBBox.mLeft )/dataSpan ) * mDataCached.Size());
 			mStart_x = mDataBBox.mLeft;
 			mLen = mDataCached.Size() - mOffset;
 			shownSpan = fabs( mDataBounds.mRight - mDataBBox.mLeft );
