@@ -409,7 +409,8 @@
      ** Library generation under Linux available (still not for a CLAM lib 
         but for generating user libraries)
 
-2003-06-11 CLAM_0_5_0 'flashing new build system and SMSTools'
+2003-06-11 CLAM_0_5_0
+'flashing new build system and SMSTools'
   * Build system:
      ** New flashing build system, fast, crossplatform and easy to use
      ** Configuration file for each binary is shared between platforms
