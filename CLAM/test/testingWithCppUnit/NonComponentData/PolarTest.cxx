@@ -16,8 +16,8 @@ class PolarTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( PolarTest );
 	CPPUNIT_TEST( testConstructor_TakesValues );
 	CPPUNIT_TEST( testDefaultConstructor_InitAsZero );
-	CPPUNIT_TEST( testSetImag );
-	CPPUNIT_TEST( testSetReal );
+	CPPUNIT_TEST( testSetAng );
+	CPPUNIT_TEST( testSetMag );
 	CPPUNIT_TEST( testInequality_WithDifferentValues );
 	CPPUNIT_TEST( testStreamInsertion );
 	CPPUNIT_TEST( testStreamExtraction );
@@ -38,8 +38,8 @@ private:
 	void testConstructor_TakesValues()
 	{
 		CLAM::Polar aPolar(3.0, 2.0);
-		CPPUNIT_ASSERT_EQUAL(3.0, aPolar.Real());
-		CPPUNIT_ASSERT_EQUAL(2.0, aPolar.Imag());
+		CPPUNIT_ASSERT_EQUAL(3.0, aPolar.Mag());
+		CPPUNIT_ASSERT_EQUAL(2.0, aPolar.Ang());
 	}
 
 	void testDefaultConstructor_InitAsZero()
@@ -52,23 +52,23 @@ private:
 
 	void testInequality_WithDifferentValues()
 	{
-		CLAM::Polar pureRealUnitPolar(1.0, 0.0);
-		CLAM::Polar pureImagUnitPolar(0.0, 1.0);
+		CLAM::Polar pureMagUnitPolar(1.0, 0.0);
+		CLAM::Polar pureAngUnitPolar(0.0, 1.0);
 
-		CPPUNIT_ASSERT(pureImagUnitPolar != pureRealUnitPolar);
+		CPPUNIT_ASSERT(pureAngUnitPolar != pureMagUnitPolar);
 	}
 
-	void testSetImag()
+	void testSetAng()
 	{
 		CLAM::Polar aPolar(3.0, 2.0);
-		aPolar.SetImag(4.3);
+		aPolar.SetAng(4.3);
 		CPPUNIT_ASSERT_EQUAL(CLAM::Polar(3.0,4.3), aPolar);
 	}
 
-	void testSetReal()
+	void testSetMag()
 	{
 		CLAM::Polar aPolar(3.0, 2.0);
-		aPolar.SetReal(4.3);
+		aPolar.SetMag(4.3);
 		CPPUNIT_ASSERT_EQUAL(CLAM::Polar(4.3,2.0), aPolar);
 	}
 
