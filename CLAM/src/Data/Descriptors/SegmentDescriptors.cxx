@@ -19,16 +19,11 @@
  *
  */
 
-
-
-
-#include "ProcessingData.hxx"
 #include "SegmentDescriptors.hxx"
 #include "Segment.hxx"
 
-using namespace CLAM;
-
-
+namespace CLAM
+{
 
 SegmentDescriptors::SegmentDescriptors(Segment* pSegment): Descriptor(eNumAttr)
 {
@@ -118,4 +113,6 @@ void SegmentDescriptors::ConcreteCompute()
 	if(HasVarianceD())
 		SetVarianceD(mSegmentStats->GetVariance());
 }
+
+} // namespace CLAM
 
