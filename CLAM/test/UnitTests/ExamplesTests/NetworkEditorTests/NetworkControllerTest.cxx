@@ -49,8 +49,18 @@ public:
 	virtual void Hide()
 	{
 	}
-	
-protected:
+	void setUp()
+	{
+		char* pathToTestData = getenv("CLAM_TEST_DATA");
+		if ( !pathToTestData )
+			mPathToTestData ="../../../../../CLAM-TestData"; 
+		else
+			mPathToTestData = pathToTestData;
+		mPathToTestData += "/networkTestsData/";
+	}
+
+protected:		
+	std::string mPathToTestData;
 	bool mSignalEmitted;
 	void SetName(const std::string& name)
 	{
@@ -96,17 +106,19 @@ protected:
 	CPPUNIT_TEST( testRemoveProcessingDeletesProcessingController );
 	CPPUNIT_TEST( testRemoveProcessingNotifiesActionToNetwork );
 
-/*
-	CPPUNIT_TEST( testProcessingNameChangedNotifiesActionToNetworkAndSendsSignalToPresentation );
-	CPPUNIT_TEST( testRemoveAllConnectionNotifiesActionToNetworkAndSendsSignalToPresentation );
-	CPPUNIT_TEST( testRemoveAllConnectionDeletesAllConnectionAdaptersAndSendsSignalToPresentation );
+
+	CPPUNIT_TEST( testProcessingNameChangedNotifiesActionToNetwork );
+	CPPUNIT_TEST( testRemoveAllConnectionNotifiesActionToNetwork );
 
 	CPPUNIT_TEST( testLoadNetworkNotifiesActionToNetwork );
-	CPPUNIT_TEST( testLoadNetworkRemovesOldTopologyIfOk );
-	CPPUNIT_TEST( testLoadNetworkDoesntRemoveOldTopologyIfNotOk );
+	CPPUNIT_TEST( testLoadAndStartNetwork_whenAnotherNetworkIsLoadedButStopped );
+	CPPUNIT_TEST( testLoadAndStartNetwork_whenAnotherNetworkIsLoadedAndRunning );
+/*
 	CPPUNIT_TEST( testSaveNetworkNotifiesActionToNetwork );
 	CPPUNIT_TEST( testClearNotifiesActionToNetwork );
 	CPPUNIT_TEST( testClearDeletesAllControllersAndAdapters );
+	CPPUNIT_TEST( testCreateControlConnection_whenNetworkIsRunning );
+	CPPUNIT_TEST( testCreatePortConnection_whenNetworkIsRunning );
 */	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -408,31 +420,99 @@ public:
 		CPPUNIT_ASSERT_EQUAL( false, network.HasProcessing("osc"));
 	}
 	
-/*	
-	void testProcessingNameChangedNotifiesActionToNetworkAndSendsSignalToPresentation()
+	
+	void testProcessingNameChangedNotifiesActionToNetwork()
 	{
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc", new CLAM::SimpleOscillator );
+		controller.BindTo( network );
+		controller.Publish();
+		
+		CLAMVM::ProcessingController * procController = controller.BeginProcessingControllers()->second;
+		procController->SignalProcessingNameChanged.Emit( "generator", procController );
+		CPPUNIT_ASSERT_EQUAL( false, network.HasProcessing("osc") );
+		CPPUNIT_ASSERT_EQUAL( true, network.HasProcessing("generator") );
 	}
 	
-	void testRemoveAllConnectionNotifiesActionToNetworkAndSendsSignalToPresentation()
-	{
+	void testRemoveAllConnectionNotifiesActionToNetwork()
+	{	
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc", new CLAM::SimpleOscillator );
+		network.AddProcessing( "panner" , new CLAM::AutoPanner );
+		network.AddProcessing( "multiplier" , new CLAM::AudioMultiplier );		
+		network.ConnectPorts( "osc.Audio Output", "multiplier.First Audio Input" );
+		network.ConnectControls( "panner.Right Control", "osc.Amplitude" );
+		controller.BindTo( network );
+		controller.Publish();
+		
+		CLAMVM::ProcessingController * procController = controller.BeginProcessingControllers()->second;
+		procController->SignalRemoveAllConnections.Emit( &(network.GetProcessing( "osc" )) );
+	
+		CLAM::Network::NamesList list = network.GetInPortsConnectedTo( "osc.Audio Output" );
+		CPPUNIT_ASSERT_MESSAGE( "Oscillator out port shouldn't have any connections", (list.begin()==list.end()) );
+		list = network.GetInControlsConnectedTo( "panner.Right Control" );
+		CPPUNIT_ASSERT_MESSAGE( "AutoPanner out control shouldn't have any connections", (list.begin()==list.end()) );
 	}
 	
-	void testRemoveAllConnectionDeletesAllConnectionAdaptersAndSendsSignalToPresentation()
-	{
-	}
 	
 	void testLoadNetworkNotifiesActionToNetwork()
-	{
+	{	
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
+		controller.BindTo( network );
+		controller.Publish();
+		SignalLoadNetworkFrom.Emit( mPathToTestData+"networkwithoneproc.xml" );
+
+		CPPUNIT_ASSERT_EQUAL( true, network.HasProcessing("oscillator"));
 	}
 
-	void testLoadNetworkRemovesOldTopologyIfOk()
-	{
-	}
+	void testLoadAndStartNetwork_whenAnotherNetworkIsLoadedButStopped()
+	{	
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
+		controller.BindTo( network );
+		controller.Publish();
+		SignalLoadNetworkFrom.Emit( mPathToTestData+"networkwithoneproc.xml" );
+		SignalLoadNetworkFrom.Emit( mPathToTestData+"networkwithanotherproc.xml" );
 	
-	void testLoadNetworkDoesntRemoveOldTopologyIfNotOk()
-	{
+		CPPUNIT_ASSERT_EQUAL( false, network.HasProcessing("oscillator"));
+		CPPUNIT_ASSERT_EQUAL( true, network.HasProcessing("panner"));
 	}
+
+	void testLoadAndStartNetwork_whenAnotherNetworkIsLoadedAndRunning()
+	{
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
+		controller.BindTo( network );
+		controller.Publish();
+		SignalChangeState.Connect(  controller.SlotChangeState );
+
+		SignalLoadNetworkFrom.Emit( mPathToTestData+"networkwithoneproc.xml" );
+		SignalChangeState.Emit( true );	
 		
+		CLAM::Processing & proc = network.GetProcessing("oscillator");
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, proc.GetExecState() );
+
+		SignalLoadNetworkFrom.Emit( mPathToTestData+"networkwithanotherproc.xml" );
+		SignalChangeState.Emit( true );	
+		
+		CLAM::Processing & proc2 = network.GetProcessing("panner");
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, proc2.GetExecState() );
+
+		SignalChangeState.Emit( false );
+	}
+
+/*
 	void testSaveNetworkNotifiesActionToNetwork()
 	{
 	}
