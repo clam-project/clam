@@ -122,6 +122,7 @@ namespace CLAM
 				mDevice->closeStream( mOutputStreamId );
 				mDevice->closeStream( mInputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mInputSamples = NULL;
 				mOutputSamples = NULL;
 				mOutputStreamId = -1;
@@ -131,6 +132,7 @@ namespace CLAM
 				mDevice->stopStream( mInputStreamId );
 				mDevice->closeStream( mInputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mInputSamples = NULL;
 				mInputStreamId = -1;
 				break;
@@ -138,6 +140,7 @@ namespace CLAM
 				mDevice->stopStream( mOutputStreamId );
 				mDevice->closeStream( mOutputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mOutputSamples = NULL;
 				mOutputStreamId = -1;
 				break;
