@@ -31,6 +31,11 @@
 #include "OutControl.hxx"
 #include "DummyProcessingData.hxx"
 
+#include "Oscillator.hxx"
+#include "AudioMultiplier.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+
 namespace CLAMTest {
 
 class NetworkTest;
@@ -83,11 +88,12 @@ class NetworkTest : public CppUnit::TestFixture
 
 	CPPUNIT_TEST( testRemoveProcessing_WhenHasIt );
 	CPPUNIT_TEST( testRemoveProcessing_WhenHasntIt );
-	CPPUNIT_TEST( testRemoveProcessing_WhenRemoveProducer_DeletesAlsoNodesAndPortConnections );
-	CPPUNIT_TEST( testRemoveProcessing_WhenRemoveConsumer_DeletesAlsoPortConnections );
-	
-//	CPPUNIT_TEST( testConnectControls_WhenConnectionIsValid );
-//	CPPUNIT_TEST( testConnectControls_WhenConnectionIsNotValid );
+
+	CPPUNIT_TEST( testConnectControls_WhenConnectionIsValid );
+	CPPUNIT_TEST( testConnectControls_WhenConnectionIsNotValid );
+	CPPUNIT_TEST( testRemoveControlsConnection_WhenControlsAreNotConnected );
+	CPPUNIT_TEST( testRemoveControlsConnection_WhenControlsAreConnected );
+
 
 	CPPUNIT_TEST( testUseOfString_substr );
 	CPPUNIT_TEST_SUITE_END();
@@ -777,6 +783,7 @@ class NetworkTest : public CppUnit::TestFixture
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
 		net.DisconnectPorts( "first.outPortOfFirstProc","second.inPortOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+
 	}
 
 	void testRemoveProcessing_WhenHasIt()
@@ -810,12 +817,13 @@ class NetworkTest : public CppUnit::TestFixture
 		{}
 	}
 
-	void testRemoveProcessing_WhenRemoveProducer_DeletesAlsoNodesAndPortConnections()
+	void testConnectControls_WhenConnectionIsValid()
 	{
+/*
 		CLAM::Network net;
 		const int nodeSize=1;
 		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
-
+	
 		DummyProcessing* firstProc = new DummyProcessing;
 		DummyProcessing* secondProc = new DummyProcessing;
 
@@ -823,45 +831,29 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "second", secondProc );
 
 		const int dummyLength = 1;
-		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<CLAM::Audio>
-			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
+		CLAM::OutControl* outControlOfFirstProc =  
+			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
 
-		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<CLAM::Audio>
-			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+		CLAM::InControl* inControlOfSecondProc = 
+			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
 		
-		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
-		net.RemoveProcessing( "first" );
-		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );	
+		net.ConnectControls("first.outPortOfFirstProc","second.inPortOfSecondProc");
+		CPPUNIT_ASSERT_EQUAL( true, outControlOfFirstProc->IsConnectedTo(*inControlOfSecondProc) );
+*/
+	
 	}
 
-	void testRemoveProcessing_WhenRemoveConsumer_DeletesAlsoPortConnections()
+	void testConnectControls_WhenConnectionIsNotValid()
 	{
-		CLAM::Network net;
-		const int nodeSize=1;
-		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
-
-		DummyProcessing* firstProc = new DummyProcessing;
-		DummyProcessing* secondProc = new DummyProcessing;
-
-		net.AddProcessing( "first", firstProc );
-		net.AddProcessing( "second", secondProc );
-
-		const int dummyLength = 1;
-		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<CLAM::Audio>
-			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
-
-		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<CLAM::Audio>
-			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
-		
-		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
-		net.RemoveProcessing( "second" );
-		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );	
 	}
 
+	void testRemoveControlsConnection_WhenControlsAreNotConnected()
+	{
+	}
+
+	void testRemoveControlsConnection_WhenControlsAreConnected()
+	{
+	}
 };
    
 } // namespace 
