@@ -100,16 +100,16 @@ bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
 		m++;
 	} while (p<=in.GetSize()-mFrameSize);
 
-	//normalizes in relation to the max energy 
+	//normalizes according to the max energy 
 	if (mType==1) scalFactor=sqrt(max/mFrameSize);
 
-	//normalizes in relation to the average energy
+	//normalizes according to the average energy
 	if (mType==2)
 	{
 		scalFactor=sqrt(totEnergy/in.GetSize());		
 	}
 
-	//normalizes in relation to the threshold under which lies percent% of
+	//normalizes according to the threshold under which lies percent% of
 	//the energy values that are not silence
 	if (mType==3)
 	{
