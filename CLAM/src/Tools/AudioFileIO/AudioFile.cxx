@@ -85,6 +85,11 @@ namespace CLAM
 	void AudioFile::SetLocation( std::string uri )
 	{
 		mLocation = uri;
+		VerifyLocation();
+	}
+
+	void AudioFile::VerifyLocation()
+	{
 		ResolveCodec();			
 		
 		if ( mActiveCodec != NULL )
@@ -223,15 +228,13 @@ namespace CLAM
 
 		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
 		storage.Load( xmlLocation );
-
+		VerifyLocation();
+		
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
 		storage.Load( xmlHeader );
 
-
 		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
 		storage.Load( xmlTxtDescriptors );
-
-		
 	}
 
 	void AudioFile::StoreOn( Storage& storage ) const
@@ -245,8 +248,6 @@ namespace CLAM
 
 		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
 		storage.Store( xmlTxtDescriptors );
-
-
 	}
 
 }

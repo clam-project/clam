@@ -73,6 +73,7 @@ namespace CLAM
 
 	protected:
 		void                   ResolveCodec();
+		void		       VerifyLocation();
 		void                   SetKind( EAudioFileKind newKind );
 
 	protected:
