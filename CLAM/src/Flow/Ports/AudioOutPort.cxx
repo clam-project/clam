@@ -31,7 +31,9 @@ TData AudioOutPort::GetSampleRate()
 
 Audio & AudioOutPort::GetLastWrittenAudio( int offset )
 {
-	CLAM_DEBUG_ASSERT( 0 <= offset <= GetSize(), "AudioOutPort::GetLastWrittenData - Index out of bounds" );
+	CLAM_DEBUG_ASSERT( (0 <= offset) && (offset <= GetSize()), 
+		"AudioOutPort::GetLastWrittenData - Index out of bounds" );
+
 	mAudio.GetBuffer().SetPtr( &(mRegion.GetLastWrittenData(offset)), mRegion.Size() );
 	return mAudio;
 }
