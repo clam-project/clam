@@ -4,6 +4,8 @@
 
 namespace CLAMVM
 {
+	using CLAM::TData;
+
 		SpectralTokenDelayController::SpectralTokenDelayController()
 		{
 		}
@@ -32,8 +34,9 @@ namespace CLAMVM
 				const CLAM::TokenDelayConfig& cfg = 
 					static_cast< const CLAM::TokenDelayConfig& >( mObserved->GetConfig() );
 
-#warning "This line been commented in order to compile but it really doesn't works"
-//				adap->SetValueRange( 0, max );
+				TData max = cfg.GetMaxDelay();
+
+				adap->SetValueRange( 0, max );
 				
 				return true;
 		}
