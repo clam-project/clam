@@ -2021,6 +2021,361 @@ int main()
 fi
 fi
 #####################################################################
+# Check if gl is going to be used
+#
+# source: acv/check_package_enable.acv 
+#####################################################################
+AC_MSG_CHECKING([gl usage specified])
+#
+AC_ARG_WITH(
+	[gl],AC_HELP_STRING([--with-gl],
+	[use gl (default is yes)]),[
+	if test x$enableval = xyes
+	then
+		AC_MSG_RESULT([yes])
+		enabled_gl=yes
+	else
+		AC_MSG_RESULT([no])
+		enabled_gl=no
+	fi
+],[
+	AC_MSG_RESULT([yes (default)])
+	enabled_gl=yes
+])
+found_gl=no
+#####################################################################
+
+#####################################################################
+# IF gl is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_gl = xyes
+then
+#####################################################################
+
+#####################################################################
+# Look for gl in the sandbox
+#
+# source: acv/package_in_sandbox.acv 
+#####################################################################
+AC_MSG_CHECKING([gl in sandbox])
+if test x$sandbox_location = x
+then
+	if test x$enabled_sandbox = xno
+	then
+		AC_MSG_RESULT([no - sandbox disabled])	
+	else
+		AC_MSG_RESULT([no - sandbox not found])	
+	fi
+else
+	AC_MSG_RESULT([searching headers])	
+	if test x$found_gl = xno
+	then
+		found=1
+		for file in GL/gl.h
+		do
+			AC_MSG_CHECKING([$file for gl in sandbox])
+			if test -r $sandbox_location/gl/include/$file
+			then
+				AC_MSG_RESULT([yes])
+				include_dirs_gl="$sandbox_location/gl/include"
+			else
+				AC_MSG_RESULT([no])
+				found=0
+			fi
+		done
+		AC_MSG_CHECKING([[gl header(s) found in sandbox]])
+		if test $found = 1
+		then
+			AC_MSG_RESULT([yes])
+			sep=""
+			found=1
+			libdirset=no
+			for file in GL
+			do
+				AC_MSG_CHECKING([lib$file for gl in sandbox])
+				if test -r $sandbox_location/gl/lib/lib$file.$dllext
+					then
+					AC_MSG_RESULT([yes])
+					libs_in_sandbox_gl="$libs_in_sandbox_gl$sep$file"
+					if test x$libdirset = xno
+					then
+						lib_dirs_gl="$sandbox_location/gl/lib"
+						libdirset=yes
+					fi
+					sep=" "
+				else
+					AC_MSG_RESULT([no])
+					found=0
+				fi
+			done
+			AC_MSG_CHECKING([[all gl lib(s) found in sandbox]])
+			if test $found = 1
+			then
+				AC_MSG_RESULT([yes - adding to library path])
+				found_gl=yes
+				found_in_sandbox_gl=yes
+			else
+				AC_MSG_RESULT([no])
+				found_gl=no
+			fi
+		else
+			AC_MSG_RESULT([no])
+			found_gl=no
+		fi
+	fi
+fi
+if test x$found_in_sandbox_gl = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_gl"
+	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_gl
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_gl
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for gl])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
+	return 0;
+}
+
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_gl 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_gl=$tmp_libs
+			found_gl=yes
+			AC_MSG_RESULT([$libs_gl])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
+#####################################################################
+# pkgconfig routine for finding gl
+#
+# source: acv/pkg_config_find.acv 
+#####################################################################
+if test x$enabled_gl = xyes
+    then
+    if test x$found_gl = xno
+	then
+	AC_MSG_CHECKING([gl has pkg-config])
+	if test x$pkg_config_status = xenabled
+	    then
+	    $pkg_config --exists gl
+	    if test $? = 0
+		then
+		AC_MSG_RESULT([yes])
+		found_gl=yes
+		include_dirs_gl=`$pkg_config gl --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
+		libs_gl=`$pkg_config gl --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
+		lib_dirs_gl=`$pkg_config gl --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
+	    else
+		AC_MSG_RESULT([no])
+		found_gl=no
+	    fi
+	else
+	    if test x$pkg_config_status = xdisabled
+		then
+		AC_MSG_RESULT([no: pkg-config disabled])
+	    else
+		AC_MSG_RESULT([no: pkg-config is not installed])
+	    fi
+	fi
+    fi
+fi
+#####################################################################
+
+#####################################################################
+# Standard routine for finding gl
+#
+# source: acv/standard_find.acv 
+#####################################################################
+if test x$enabled_gl = xyes
+then
+  if test x$found_gl = xno
+	then
+	found=1
+	for file in GL/gl.h
+	do
+		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
+		AC_MSG_CHECKING([$file for gl in standard locations])
+		if test $filefound = 1
+		then
+			AC_MSG_RESULT([yes])
+		else
+	    AC_MSG_RESULT([no])
+	    found=0
+		fi
+	done
+	AC_MSG_CHECKING([[gl header(s) found in standard locations]])
+	if test $found = 1
+	then
+		AC_MSG_RESULT([yes])
+		if test x"GL" != x
+		then
+			LIBS=
+			old_CXXFLAGS=$CXXFLAGS
+			old_LDFLAGS=$LDFLAGS
+			for tmp in $include_dirs_gl
+			do
+				CXXFLAGS="$CXXFLAGS -I$tmp"
+			done
+			for tmp in $lib_dirs_gl
+			do
+				LDFLAGS="$LDFLAGS -L$tmp"
+			done
+			AC_MSG_CHECKING([libraries needed for gl])
+			AC_COMPILE_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
+	return 0;
+}
+
+]]	
+			)],[
+				links_ok=0
+				tmp_libs=""
+				sep=""
+				for tmp in GL 
+				do
+					LDFLAGS="$LDFLAGS -l$tmp"
+					tmp_libs="$tmp_libs$sep$tmp"
+					sep=" "
+					AC_LINK_IFELSE(
+					[
+						AC_LANG_SOURCE(
+[[
+#include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
+	return 0;
+}
+;
+]])	
+					],[
+						links_ok=yes
+					],[
+					]
+					)
+					if test x$links_ok = xyes; then
+						break 2
+					fi
+				done
+				if test x$links_ok = xyes; then
+					libs_gl=$tmp_libs
+					found_gl=yes
+					AC_MSG_RESULT([$libs_gl])
+				else
+					# trying alternative libs
+					LDFLAGS=$old_LDFLAGS
+					tmp_libs=""
+					sep=""
+					for tmp in 
+					do
+						LDFLAGS="$LDFLAGS -l$tmp"
+						tmp_libs="$tmp_libs$sep$tmp"
+						sep=" "
+						AC_LINK_IFELSE(
+						[
+							AC_LANG_SOURCE(
+[[
+#include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
+	return 0;
+}
+;
+]])	
+						],[
+							links_ok=yes
+						],[
+						]
+						)
+						if test x$links_ok = xyes; then
+							break 2
+						fi
+					done
+					if test x$links_ok = xyes; then
+						libs_gl=$tmp_libs
+						found_gl=yes
+						AC_MSG_RESULT([$libs_gl])
+					else
+						AC_MSG_RESULT([linking failed])
+					fi
+				fi
+			],[
+				AC_MSG_RESULT([compilation failed])
+			])
+			CXXFLAGS=$old_CXXFLAGS
+			LDFLAGS=$old_LDFLAGS
+		else
+			# no libs to checks
+			found_gl=yes
+		fi
+	else
+	    AC_MSG_RESULT([no])
+	    found_gl=no
+	fi
+    fi
+fi
+
+fi
+#####################################################################
 # Check if sndfile is going to be used
 #
 # source: acv/check_package_enable.acv 
@@ -4949,6 +5304,77 @@ fi
 
 fi
 #####################################################################
+# IF gl is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_gl = xyes
+then
+#####################################################################
+
+#####################################################################
+# Default test, to test gl
+#
+# source: acv/default_test.acv 
+#####################################################################
+failure=no
+if test $found_gl
+then
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_gl
+	  do
+	  CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_gl
+	  do
+	  LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	for tmp in $libs_gl
+	  do
+	  LDFLAGS="$LDFLAGS -l$tmp"
+	done
+	AC_MSG_CHECKING([compiling, linking and running with gl])
+	AC_RUN_IFELSE(
+	    [
+		AC_LANG_SOURCE(
+		    [[
+			    #include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
+	return 0;
+}
+
+			    ]])	
+		],[
+		AC_MSG_RESULT(ok)
+		],[
+			AC_MSG_RESULT(failed)
+			failure=yes
+		]
+	)
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+else
+	failure=yes
+fi
+if test x$failure = xyes
+then
+	AC_MSG_FAILURE([
+Configure-checks for gl failed.
+Please check the configure output to see which checks failed, and the
+config.log file for more details.
+Note that you can disable the use of gl altogether, running configure
+with the
+  --without-gl
+option.
+])
+fi
+#####################################################################
+
+fi
+#####################################################################
 # IF sndfile is enabled THEN
 #
 # source: acv/package_enabled_start.acv 
@@ -5570,6 +5996,28 @@ fi
 #####################################################################
 
 #####################################################################
+# Give a warning when gl is disabled
+#
+# source: acv/disabled_package_warning.acv 
+#####################################################################
+if test x$enabled_gl = x
+then
+	AC_MSG_ERROR('gl with/without checking not done')
+fi
+if test x$enabled_gl = xno
+then
+	AC_MSG_WARN([without gl
+======================================================================
+You deactivated usage of package gl. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
+
+srcdeps: configuration specifies USE_GL=1, but HAS_GL=0
+======================================================================])
+fi
+#####################################################################
+
+#####################################################################
 # Give a warning when sndfile is disabled
 #
 # source: acv/disabled_package_warning.acv 
@@ -5803,6 +6251,22 @@ AC_SUBST(QT_INCLUDES)
 AC_SUBST(QT_LIB_PATH)
 AC_SUBST(QT_LIBS)
 AC_SUBST(HAS_QT)
+# substs for gl
+GL_INCLUDES=$include_dirs_gl
+GL_LIBS=$libs_gl
+GL_LIB_PATH=$lib_dirs_gl
+#echo GL_INCLUDES=$include_dirs_gl
+#echo GL_LIBS=$libs_gl
+#echo GL_LIB_PATH=$lib_dirs_gl
+if test x$found_gl = xyes; then
+	HAS_GL=1
+else
+	HAS_GL=0
+fi
+AC_SUBST(GL_INCLUDES)
+AC_SUBST(GL_LIB_PATH)
+AC_SUBST(GL_LIBS)
+AC_SUBST(HAS_GL)
 # substs for sndfile
 SNDFILE_INCLUDES=$include_dirs_sndfile
 SNDFILE_LIBS=$libs_sndfile
