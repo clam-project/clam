@@ -28,7 +28,7 @@
 
 using namespace CLAM;
 
-void FrameDescriptors::MandatoryInit()
+void FrameDescriptors::DefaultInit()
 {
 	mpFrame=NULL;
 }
