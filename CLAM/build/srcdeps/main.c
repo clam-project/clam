@@ -210,7 +210,7 @@ int main(int argc,char** argv)
 
 	if (platform == windows_platform )
 	{
-		dsp_parse( dspFileToWrite );
+//		dsp_parse( dspFileToWrite );  disabled since CLAM 0.7
 		vcproj_parse( vcprojFileToWrite);
 	}
 
