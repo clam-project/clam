@@ -1,14 +1,14 @@
 #include "PlotSpectrum.hxx"
 
 #include "Spectrum.hxx"
-#include "SpectrumAdapter.hxx"
+#include "LogMagSpectrumAdapter.hxx"
 #include "../Presentation/FLTK/Fl_Spectrum.hxx"
 #include "WidgetTKWrapper.hxx"
 
 void CLAMVM::plot(const CLAM::Spectrum &model, const char *label)
 {
 	// Create model adaptor:
-	SpectrumAdapter ma;
+	LogMagSpectrumAdapter ma;
 
 	// Bind model to the model adapter:
 	ma.BindTo(&model);
