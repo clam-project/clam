@@ -1,8 +1,5 @@
 PROGRAMS = \
            TestSnapshots \
-           TestComplex \
-           TestPoint \
-           TestPolar \
            BPFTest \
            ListTest \
            TestMIDIIO \
@@ -14,6 +11,9 @@ PROGRAMS = \
            TestAudioFileIO \
 
 TESTS = \
+        TestComplex \
+        TestPoint \
+        TestPolar \
         TestEnum \
         TestXMLAdapters \
         TestConfig \
