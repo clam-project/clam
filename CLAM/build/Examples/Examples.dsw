@@ -3,6 +3,18 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "OfflineSpectralDelay"=".\SpectralDelay\Offline\OfflineSpectralDelay.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "SpectralDelay"=".\SpectralDelay\SpectralDelay.dsp" - Package Owner=<4>
 
 Package=<5>
