@@ -383,7 +383,7 @@ void UserInterface::LoadTransformation(void)
 
 void UserInterface::LoadAnalysisData(void)
 {
-	char* str = fl_file_chooser("Select analysis data file","*.xml","");
+	char* str = fl_file_chooser("Select analysis data file","{*.xml|*.sdif}","");
 	if (str)
 	{
 		//mAnalysisDataText->value(str);
