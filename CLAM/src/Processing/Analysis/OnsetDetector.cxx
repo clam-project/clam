@@ -135,40 +135,15 @@ namespace CLAM
 		//Filter Bank
 
 
-		DataArray audioArray;
+		const TSize bandSize=mAudio.GetSize();
 
-		audioArray.Resize( mAudio.GetSize() );
-		audioArray.SetSize( mAudio.GetSize() );
-
-		cf=mFilterBank.GetCentreFreq();
-
-
-		//OnsetDetection::AudioDecimator Initialization
-
-
-		for(int band=0 ; band<mnBands ; band++)
+		for ( int band = 0; band < mnBands; band++ )
 		{
-			mFilterBank.Do( mAudio , band,  audioArray);
-			
-			const TSize bandSize=audioArray.Size();
-			//Full-wave rectification
 			mFilterBankOutputs[band].Resize(bandSize/90);
-			mFilterBankOutputs[band].SetSize(bandSize/90);
-
-			for(int i=0 ; i<bandSize ; i++)
-				audioArray[i]=fabsf(audioArray[i]);
-
-					
-			//Decimation to 245 Hz
-
-			mDecimator.DecimateFrom22050To245(audioArray, mFilterBankOutputs[band]);
-
-			for(int i=0 ; i<mFilterBankOutputs[band].Size() ; i++)
-				mFilterBankOutputs[band][i] = mFilterBankOutputs[band][i]*cf[band];
-
-			//cout<<(band+1)*100/mnBands<<"%"<<endl;
-	
+			mFilterBankOutputs[band].SetSize(bandSize/90);			
 		}
+
+		mFilterBank.Do( mAudio, mFilterBankOutputs );
 
 		mSampleRate = 245;
 	
