@@ -24,6 +24,10 @@
 
 namespace CLAM {
 
+	TopLevelProcessing::~TopLevelProcessing()
+	{
+	}
+
 	void TopLevelProcessingConfig::DefaultInit(void)
 	{ 
 		AddName(); 

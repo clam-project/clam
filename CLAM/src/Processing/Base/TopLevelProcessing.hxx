@@ -67,6 +67,7 @@ namespace CLAM {
 
 		bool Do(void);
 		
+		virtual ~TopLevelProcessing();
 	};
 
 }

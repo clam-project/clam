@@ -327,9 +327,9 @@ namespace CLAM {
 		 */
 		template <typename ConcreteConfig>
 		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const {
-			CLAM_ASSERT(typeid(const ConcreteConfig &)==typeid(abstract), 
+			CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
 				"Configuring a Processing with a configuration not being the proper type.");
-			concrete = static_cast<const ConcreteConfig &>(abstract);
+			concrete = static_cast<const ConcreteConfig& >(abstract);
 		}
 
 		/**
