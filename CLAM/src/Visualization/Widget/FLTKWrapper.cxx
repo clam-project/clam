@@ -150,7 +150,7 @@ void FLTKWrapper::sRefreshingCallback( void* data )
 			while ( i != pFl->mWidgetsToBeRefreshed.end() )
 				{
 					childWidget = (*i).mpWidget;
-					childWidget->damage();
+					childWidget->resize(childWidget->x(),childWidget->y(), childWidget->w(), childWidget->h() );
 					childWidget->redraw();
 					i++;
 				}
