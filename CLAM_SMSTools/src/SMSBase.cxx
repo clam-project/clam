@@ -23,7 +23,7 @@
 
 #include "SMSBase.hxx"
 #include "SegmentDescriptors.hxx"
-#include "BasicStatistics.hxx"
+#include "BasicOps.hxx"
 
 
 #include "AudioFileIn.hxx"
@@ -886,7 +886,7 @@ void SMSBase::ComputeLowLevelDescriptors()
 		Spectrum &tmpSpec=frames[i].GetSpectrum();
 		tmpFrameD.SetpFrame(&frames[i]);
 		tmpFrameD.GetSpectrumD().SetpSpectrum(&tmpSpec);
-		tmpFrameD.GetSpectrumD().SetEnergy(Energy(tmpSpec.GetMagBuffer().GetPtr(),tmpSpec.GetMagBuffer().Size()));
+		tmpFrameD.GetSpectrumD().SetEnergy(Energy<>()(tmpSpec.GetMagBuffer()));
 		frameDesc.AddElem(tmpFrameD);
 	}
 
