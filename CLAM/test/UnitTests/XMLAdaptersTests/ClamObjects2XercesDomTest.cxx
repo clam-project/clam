@@ -59,325 +59,307 @@ public:
 private:
 	std::stringstream mTargetStream;
 
-	void assertRootDocumentStoresAs(const std::string & expected, ClamObject2XercesDom & dumper)
+	void assertDumpAs(const Component & toStore, const std::string & expected)
 	{
+		XMLStorage dumper;
+		dumper.Create("Doc");
+		dumper.DumpObject(toStore);
 		dumper.WriteSelection(mTargetStream);
 		CPPUNIT_ASSERT_EQUAL(expected, mTargetStream.str());
 	}
 
+
+
 	void testEmptyDocument()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 
-		assertRootDocumentStoresAs("<Doc/>",dumper);
+		assertDumpAs(toStore,"<Doc/>");
 	}
 
 	void testBasicAsPlainContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic basic;
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(basic);
+		toStore.add(basic);
 
-		assertRootDocumentStoresAs("<Doc>Content</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc>Content</Doc>");
 	}
 
 	void testBasicAsPlainContent_withoutContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic basic;
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(basic);
+		toStore.add(basic);
 
-		assertRootDocumentStoresAs("<Doc/>",dumper);
+		assertDumpAs(toStore,"<Doc/>");
 	}
 
 	void testBasicAsElement_withoutContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic basic("Element",true);
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(basic);
+		toStore.add(basic);
 
-		assertRootDocumentStoresAs("<Doc><Element/></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element/></Doc>");
 	}
 
 	void testBasicAsElement_withContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic basic("Element",true);
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(basic);
+		toStore.add(basic);
 
-		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element>Content</Element></Doc>");
 	}
 	
 	void testBasicAsAttribute()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic basic("at",false);
 		basic.setContent("Content");
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(basic);
+		toStore.add(basic);
 
-		assertRootDocumentStoresAs("<Doc at=\"Content\"/>",dumper);
+		assertDumpAs(toStore,"<Doc at=\"Content\"/>");
 	}
 
 	void testComponentAsPlainContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent component;
 		component.setContent("Content");
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(component);
+		toStore.add(component);
 
-		assertRootDocumentStoresAs("<Doc>Content</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc>Content</Doc>");
 	}
 
 	void testComponentAsPlainContent_withoutContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent component;
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(component);
+		toStore.add(component);
 
-		assertRootDocumentStoresAs("<Doc/>",dumper);
+		assertDumpAs(toStore,"<Doc/>");
 	}
 
 	void testComponentAsElement_withoutContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent component("Element",true);
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(component);
+		toStore.add(component);
 
-		assertRootDocumentStoresAs("<Doc><Element/></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element/></Doc>");
 	}
 
 	void testComponentAsElement_withContent()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent component("Element",true);
 		component.setContent("Content");
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(component);
+		toStore.add(component);
 
-		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element>Content</Element></Doc>");
 	}
 	
 	void testComponentAsAttribute()
 	{
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent component("at",false);
 		component.setContent("Content");
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
-		dumper.Store(component);
+		toStore.add(component);
 
-		assertRootDocumentStoresAs("<Doc at=\"Content\"/>",dumper);
+		assertDumpAs(toStore,"<Doc at=\"Content\"/>");
 	}
 
 
 
 	void testSibblingsContentsAndAttributes_getOrderedAsInserted()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic oneElement("OneElement",true);
 		XmlMockUpBasic otherElement("OtherElement",true);
 		XmlMockUpBasic content;
 		content.setContent("Content");
-		dumper.Store(oneElement);
-		dumper.Store(content);
-		dumper.Store(otherElement);
+		toStore.add(oneElement);
+		toStore.add(content);
+		toStore.add(otherElement);
 
-		assertRootDocumentStoresAs("<Doc><OneElement/>Content<OtherElement/></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><OneElement/>Content<OtherElement/></Doc>");
 	}
 	
 
 	void testConsecutiveContents_getSpaceSeparation()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic content1;
 		content1.setContent("Content1");
 		XmlMockUpBasic content2;
 		content2.setContent("Content2");
-		dumper.Store(content1);
-		dumper.Store(content2);
+		toStore.add(content1);
+		toStore.add(content2);
 
-		assertRootDocumentStoresAs("<Doc>Content1 Content2</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc>Content1 Content2</Doc>");
 	}
 
 	void testNonConsecutiveContents_dontGetSpaceSeparation()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic content1;
 		content1.setContent("Content1");
 		XmlMockUpBasic content2;
 		XmlMockUpBasic element("Element",true);
 		content2.setContent("Content2");
-		dumper.Store(content1);
-		dumper.Store(element);
-		dumper.Store(content2);
+		toStore.add(content1);
+		toStore.add(element);
+		toStore.add(content2);
 
-		assertRootDocumentStoresAs("<Doc>Content1<Element/>Content2</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc>Content1<Element/>Content2</Doc>");
 	}
 
 	void testSibblingsAttributes_getReordered()
 	{
+		CompositeOfXmlables toStore;
 		// Not a requirement, just to check the behabiour
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
 		XmlMockUpBasic attribute1("zFirst");
 		attribute1.setContent("Content1");
 		XmlMockUpBasic attribute2("aSecond");
 		attribute2.setContent("Content2");
-		dumper.Store(attribute1);
-		dumper.Store(attribute2);
+		toStore.add(attribute1);
+		toStore.add(attribute2);
 
-		assertRootDocumentStoresAs("<Doc aSecond=\"Content2\" zFirst=\"Content1\"/>",dumper);
+		assertDumpAs(toStore,"<Doc aSecond=\"Content2\" zFirst=\"Content1\"/>");
 	}
 
 	void testComponentAsElement_containingBasicAsPlainContent()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
 		element.add(content);
-		dumper.Store(element);
+		toStore.add(element);
 
 
-		assertRootDocumentStoresAs("<Doc><Element>Content</Element></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element>Content</Element></Doc>");
 	}
 
 	void testElementContents_getPrintedBeforeSiblingContent()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
 		element.setContent("ElementContent");
 		element.add(content);
-		dumper.Store(element);
+		toStore.add(element);
 
 
-		assertRootDocumentStoresAs("<Doc><Element>ElementContent Content</Element></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element>ElementContent Content</Element></Doc>");
 	}
 
 	void testNodesInsertionAfterComponentElement()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpBasic content;
 		content.setContent("Content");
 		XmlMockUpComponent element("Element",true);
 		XmlMockUpBasic afterContent;
 		afterContent.setContent("AfterContent");
 		element.add(content);
-		dumper.Store(element);
-		dumper.Store(afterContent);
+		toStore.add(element);
+		toStore.add(afterContent);
 
 
-		assertRootDocumentStoresAs("<Doc><Element>Content</Element>AfterContent</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element>Content</Element>AfterContent</Doc>");
 	}
 
 	void testComponentAsElement_containingBasicAsAttribute()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent element("Element",true);
 		XmlMockUpBasic attribute("at");
 		attribute.setContent("atContent");
 		element.add(attribute);
-		dumper.Store(element);
+		toStore.add(element);
 
 
-		assertRootDocumentStoresAs("<Doc><Element at=\"atContent\"/></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc><Element at=\"atContent\"/></Doc>");
 	}
 
 	void testComponentAsElement_containingBasicAsElement()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent componentElement("Component",true);
 		componentElement.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("Basic",true);
 		basicElement.setContent("BasicContent");
 		componentElement.add(basicElement);
-		dumper.Store(componentElement);
+		toStore.add(componentElement);
 
-		assertRootDocumentStoresAs("<Doc><Component>ComponentContent"
-			"<Basic>BasicContent</Basic>""</Component></Doc>",dumper);
+		assertDumpAs(toStore,
+			"<Doc><Component>ComponentContent"
+			"<Basic>BasicContent</Basic>""</Component></Doc>");
 	}
 
 	void testComponentAsElement_containingComponentAsElement()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent outsideElement("Outside",true);
 		outsideElement.setContent("ComponentContent");
 		XmlMockUpComponent insideElement("Inside",true);
 		insideElement.setContent("InsideContent");
 		outsideElement.add(insideElement);
-		dumper.Store(outsideElement);
+		toStore.add(outsideElement);
 
-		assertRootDocumentStoresAs("<Doc><Outside>ComponentContent"
-			"<Inside>InsideContent</Inside></Outside></Doc>",dumper);
+		assertDumpAs(toStore,
+			"<Doc><Outside>ComponentContent"
+			"<Inside>InsideContent</Inside></Outside></Doc>");
 	}
 
 	void testComponentAsContent_containingBasicAsPlainContent()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicContent;
 		basicContent.setContent("BasicContent");
 		componentContent.add(basicContent);
-		dumper.Store(componentContent);
+		toStore.add(componentContent);
 
-		assertRootDocumentStoresAs("<Doc>ComponentContent BasicContent</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc>ComponentContent BasicContent</Doc>");
 	}
 
 	void testComponentAsContent_containingBasicAsAttribute()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicAttribute("at");
 		basicAttribute.setContent("BasicContent");
 		componentContent.add(basicAttribute);
-		dumper.Store(componentContent);
+		toStore.add(componentContent);
 
-		assertRootDocumentStoresAs("<Doc at=\"BasicContent\">ComponentContent</Doc>",dumper);
+		assertDumpAs(toStore,"<Doc at=\"BasicContent\">ComponentContent</Doc>");
 	}
 
 	void testComponentAsContent_containingBasicAsElement()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent componentContent;
 		componentContent.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("Basic",true);
 		basicElement.setContent("BasicContent");
 		componentContent.add(basicElement);
-		dumper.Store(componentContent);
+		toStore.add(componentContent);
 
-		assertRootDocumentStoresAs("<Doc>ComponentContent<Basic>BasicContent</Basic></Doc>",dumper);
+		assertDumpAs(toStore,"<Doc>ComponentContent<Basic>BasicContent</Basic></Doc>");
 	}
 
 	void testComponentAsAttribute_containingAnything_childrenHaveNoEffect()
 	{
-		ClamObject2XercesDom dumper;
-		dumper.Create("Doc");
+		CompositeOfXmlables toStore;
 		XmlMockUpComponent componentAttribute("componentAttribute");
 		componentAttribute.setContent("ComponentContent");
 		XmlMockUpBasic basicElement("BasicElement",true);
@@ -389,9 +371,9 @@ private:
 		componentAttribute.add(basicElement);
 		componentAttribute.add(basicAttribute);
 		componentAttribute.add(basicContent);
-		dumper.Store(componentAttribute);
+		toStore.add(componentAttribute);
 
-		assertRootDocumentStoresAs("<Doc componentAttribute=\"ComponentContent\"/>",dumper);
+		assertDumpAs(toStore,"<Doc componentAttribute=\"ComponentContent\"/>");
 	}
 
 };
