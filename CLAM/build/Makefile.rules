@@ -27,8 +27,31 @@ Makefile.vars: Makefile $(SRCDEPS) settings.cfg
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
 	$(SRCDEPS) settings.cfg > Makefile.vars
 
+ifeq ($(ISDARWIN),1)
+PROGRAMPATH = $(PROGRAM).app/Contents/MacOS/
+PROGRAMEXTRAS = $(PROGRAM).app $(PROGRAM).app/Contents $(PROGRAM).app/Contents/MacOS $(PROGRAM).app/Contents/Resources $(PROGRAM).app/Contents/Resources/CLAM.icns $(PROGRAM).app/Contents/Info.plist  
 
-program: $(PROGRAM)
+$(PROGRAM).app:
+	mkdir $(PROGRAM).app
+
+$(PROGRAM).app/Contents:
+	mkdir $(PROGRAM).app/Contents
+
+$(PROGRAM).app/Contents/MacOS:
+	mkdir $(PROGRAM).app/Contents/MacOS
+
+$(PROGRAM).app/Contents/Resources:
+	mkdir $(PROGRAM).app/Contents/Resources
+
+$(PROGRAM).app/Contents/Resources/CLAM.icns: $(CLAM_PATH)/build/macosx-utils/CLAM.icns
+	cp $(CLAM_PATH)/build/macosx-utils/CLAM.icns $(PROGRAM).app/Contents/Resources
+
+$(PROGRAM).app/Contents/Info.plist:
+	$(CLAM_PATH)/build/macosx-utils/create_Info_plist.sh $(PROGRAM).app/Contents/Info.plist $(PROGRAM)
+
+endif
+
+program: $(PROGRAMPATH)$(PROGRAM)
 
 tags:
 	ctags-exuberant --excmd=number $(SOURCES) src/*.h
@@ -38,10 +61,10 @@ LIBRARIES = $(LIBRARIES_DEBUG)
 LINK_FLAGS = $(LINK_FLAGS_DEBUG)
 CXXFLAGS = $(CXXFLAGS_DEBUG)
 
-$(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
+$(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-	@$(MACOSX_POSTLINK)
+	$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
 
 %.o:
 	@mkdir -p obj
@@ -70,10 +93,10 @@ LIBRARIES = $(LIBRARIES_RELEASE)
 LINK_FLAGS = $(LINK_FLAGS_RELEASE)
 CXXFLAGS = $(CXXFLAGS_RELEASE)
 
-$(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
+$(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-	@$(MACOSX_POSTLINK)
+	$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
 
 %.o:
 	@mkdir -p obj
@@ -112,7 +135,7 @@ else
 	@echo "         setenv CONFIG release"
 	@echo "===================================================================="
 
-$(PROGRAM): .FORCE
+$(PROGRAMPATH)$(PROGRAM): .FORCE
 	@echo "===================================================================="
 	@echo "Error: specify configuration, either by"
 	@echo "- specifying CONFIG=[debug|release] when running make"
