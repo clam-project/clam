@@ -26,6 +26,7 @@
 #include <string>
 #include <ctime>
 #include <stdexcept>
+#include <boost.h>
 
 #if defined(unix) || defined(__unix) || defined(__unix__)
 #include <sys/types.h>
