@@ -16,13 +16,13 @@
 
 #ifdef WIN32
 int _recursedir(
-  const char* dir,int l,int m,on_file_func f,on_dir_func d,void* ptr);
+  const char* dir,int l,int m,on_file_func f,on_dir_func d,void* ptr)
 {
 	WIN32_FIND_DATA fd;
 	HANDLE hFind;
 	char tmp[2048];
 	strstart(tmp,2048);
-	if (strcmp(dir,"")==0)
+	if (strcmp(dir,"")!=0)
 	{
 		stradd(dir);
 		stradd("\\");
@@ -51,7 +51,7 @@ int _recursedir(
 				}
 				if (l<m || m==-1)
 				{
-					if (recursedir(tmp2,l+1,m,f,d,ptr)==1)
+					if (_recursedir(tmp2,l+1,m,f,d,ptr)==1)
 					{
 						FindClose(hFind);
 						return 1;
@@ -82,9 +82,26 @@ int _recursedir(
 }
 
 int recursedir(
-  const char* dir,int m,on_file_func f,on_dir_func d,void* ptr);
+  const char* dir,int m,on_file_func f,on_dir_func d,void* ptr)
 {
-	return _recursedir(dir,0,f,d,ptr);
+	WIN32_FIND_DATA fd;
+	HANDLE hFind;
+	hFind = FindFirstFile(dir, &fd);
+	if (hFind == INVALID_HANDLE_VALUE) return -1;
+	if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+	{	
+		if (d && d(dir,ptr)==1) {
+			FindClose(hFind);
+			return 1;
+		}
+		if (_recursedir(dir,0,m,f,d,ptr)==1)
+		{
+			FindClose(hFind);
+			return 1;
+		}
+	}
+	FindClose(hFind);
+	return 0;
 }
 
 #else

@@ -171,7 +171,7 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 			strncpy(tmp,n->str,1024);
 			winstyle(tmp);
 			fprintf(outfile,"# Begin Source File\n\n");
-			fprintf(outfile,"SOURCE = %s\n",tmp);
+			fprintf(outfile,"SOURCE=%s\n",tmp);
 			fprintf(outfile,"# End Source File\n");
 		}
 		n = n->next;
@@ -185,7 +185,7 @@ void dsp_parse_insert(int type)
 	item* i = type ? guessed_headers->first : guessed_sources->first;
 	list* repeatcheck = list_new();
 
-	char* typestr = type ? "Headers" : "Sources";
+	char* typestr = type ? "Header Files" : "Source Files";
 
 	while (i)
 	{
@@ -202,7 +202,7 @@ void dsp_parse_insert(int type)
 		while (*ptr)
 		{
 			if (start==0) start = ptr;
-			if (*ptr=='/')
+			if (*ptr=='/' || *ptr=='\\')
 			{
 				*ptr = 0;
 				if (strcmp(start,"..") && strcmp(start,"src"))

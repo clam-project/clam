@@ -347,6 +347,14 @@ void config_init(void)
 	list_add_str_once(used_vars,"DEFINES");
 	list_add_str_once(used_vars,"SEARCH_INCLUDES");
 	list_add_str_once(used_vars,"SEARCH_RECURSE_INCLUDES");
+
+#ifdef WIN32
+	listhash_add_item_str(config,"OS_WINDOWS","1");
+	listhash_add_item_str(config,"OS_LINUX","0");
+#else
+	listhash_add_item_str(config,"OS_WINDOWS","0");
+	listhash_add_item_str(config,"OS_LINUX","1");
+#endif
 }
 
 void config_check(void)

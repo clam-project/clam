@@ -26,12 +26,15 @@ int main(int argc,char** argv)
 	config_check();
 
 	{
+		int cnt = 0;
 		item* i = guessed_sources->first;
 		while (i)
 		{
+			fprintf(stderr,"%s %d %d\n",i->str,cnt,list_size(guessed_sources));
 			parser_run(i->str);
 			
 			i = i->next;
+			cnt++;
 		}
 	}
 

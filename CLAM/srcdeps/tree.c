@@ -2,18 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tree.h"
-
-#ifdef WIN32
-char* strdup(const char* str)
-{
-	char* cpy = malloc(strlen(str));
-	if (ptr) 
-	{
-		strcpy(cpy,str);
-	}
-	return cpy;
-}
-#endif
+#include "strdup.h"
 
 node* node_new(const char* str)
 {

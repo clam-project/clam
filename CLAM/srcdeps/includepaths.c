@@ -3,6 +3,7 @@
 #include "strfuncs.h"
 #include "strptr.h"
 #include "includepaths.h"
+#include <string.h>
 
 extern list* includepaths; /* definition in main */
 
@@ -12,8 +13,8 @@ void includepaths_add(const char* str)
 {
 	const char* ptr = str;
 	ptr = strptr_skip_end(ptr);
-	while (ptr!=str && *ptr!='/') ptr--;
-	if (*ptr=='/' && !strcmp(ptr,"/CVS")) return;
+	while (ptr!=str && *ptr!='/' && *ptr!='\\') ptr--;
+	if ((*ptr=='/' || *ptr!='\\') && (!strcmp(ptr,"/CVS") || !strcmp(ptr,"\\CVS"))) return;
 
 	list_add_str_once(includepaths,str);
 }
