@@ -25,6 +25,9 @@
 #include <string>
 #include "BaseLoggable.hxx" // also includes <sstream>
 #include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 #include "DummyProcessingData.hxx"
 
 namespace CLAMTest {
@@ -43,11 +46,35 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testHasProcessing_WhenHasIt );
 	CPPUNIT_TEST( testHasProcessing_WhenHasntIt );
 	CPPUNIT_TEST( testDestructor_DeletesChildrenProcessings );
+
+	// InPort 
 	CPPUNIT_TEST( testGetInPortByCompleteName_WhenPortExist );
 	CPPUNIT_TEST( testGetInPortByCompleteName_WhenPortDoesntExist );
 	CPPUNIT_TEST( testGetInPortByCompleteName_WhenProcessingDoesntExist );
 	CPPUNIT_TEST( testGetInPortByCompleteName_WhithMalformedName_WithNoDot );
 	CPPUNIT_TEST( testGetInPortByCompleteName_WithThreeIdentifiers );
+
+	// OutPort
+	CPPUNIT_TEST( testGetOutPortByCompleteName_WhenPortExist );
+	CPPUNIT_TEST( testGetOutPortByCompleteName_WhenPortDoesntExist );
+	CPPUNIT_TEST( testGetOutPortByCompleteName_WhenProcessingDoesntExist );
+	CPPUNIT_TEST( testGetOutPortByCompleteName_WhithMalformedName_WithNoDot );
+	CPPUNIT_TEST( testGetOutPortByCompleteName_WithThreeIdentifiers );
+
+	// InControl
+	CPPUNIT_TEST( testGetInControlByCompleteName_WhenControlExist );
+	CPPUNIT_TEST( testGetInControlByCompleteName_WhenControlDoesntExist );
+	CPPUNIT_TEST( testGetInControlByCompleteName_WhenProcessingDoesntExist );
+	CPPUNIT_TEST( testGetInControlByCompleteName_WhithMalformedName_WithNoDot );
+	CPPUNIT_TEST( testGetInControlByCompleteName_WithThreeIdentifiers );
+
+	// OutControl
+	CPPUNIT_TEST( testGetOutControlByCompleteName_WhenControlExist );
+	CPPUNIT_TEST( testGetOutControlByCompleteName_WhenControlDoesntExist );
+	CPPUNIT_TEST( testGetOutControlByCompleteName_WhenProcessingDoesntExist );
+	CPPUNIT_TEST( testGetOutControlByCompleteName_WhithMalformedName_WithNoDot );
+	CPPUNIT_TEST( testGetOutControlByCompleteName_WithThreeIdentifiers );
+
 	CPPUNIT_TEST( testUseOfString_substr );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -163,7 +190,27 @@ class NetworkTest : public CppUnit::TestFixture
 		{	
 			return Network::GetInPortByCompleteName( name );
 		}
+		CLAM::OutPort & GetOutPortByCompleteName( const std::string& name )
+		{	
+			return Network::GetOutPortByCompleteName( name );
+		}	
+		CLAM::InControl & GetInControlByCompleteName( const std::string& name )
+		{	
+			return Network::GetInControlByCompleteName( name );
+		}	
+		CLAM::OutControl & GetOutControlByCompleteName( const std::string& name )
+		{	
+			return Network::GetOutControlByCompleteName( name );
+		}
+
+
 	};
+
+
+
+	///////////////////////////////////////////
+	//////////   GetInPort testing  ///////////
+	///////////////////////////////////////////
 
 	void testGetInPortByCompleteName_WhenPortExist()
 	{
@@ -234,7 +281,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "Malformed port name. It should be ProcessingName.PortName" ), 
+				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -259,13 +306,314 @@ class NetworkTest : public CppUnit::TestFixture
 		// tear down
 		delete expectedInPort;
 	}
+
+	///////////////////////////////////////////
+	//////////   GetOutPort testing  //////////
+	///////////////////////////////////////////
+
+
+	void testGetOutPortByCompleteName_WhenPortExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		DummyProcessing* theProc = new DummyProcessing;
+		net.AddProcessing( "theOnlyProcessing", theProc );
+		const int dummyLength = 1;
+		CLAM::OutPort* expectedOutPort = 
+			new CLAM::OutPortTmpl<DummyProcessingData>( std::string("theOnlyOutPort"), theProc, dummyLength );
+	
+		// exercice and test
+		CPPUNIT_ASSERT_EQUAL( 
+			expectedOutPort, 
+			&net.GetOutPortByCompleteName( std::string("theOnlyProcessing.theOnlyOutPort") ) 
+		);
+
+		// tear down
+		delete expectedOutPort;
+	}
+
+	void testGetOutPortByCompleteName_WhenPortDoesntExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
+
+		// exercice and test
+		try {
+			net.GetOutPortByCompleteName( std::string("theOnlyProcessing.NonExistingPort") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "name not found in OutPorts collection" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+
+	void testGetOutPortByCompleteName_WhenProcessingDoesntExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		
+		// exercice and test
+		try {
+			net.GetOutPortByCompleteName( std::string("NonExistingProcessing.NonExistingPort") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "No Processing with the given name" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+
+	void testGetOutPortByCompleteName_WhithMalformedName_WithNoDot()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		
+		// exercice and test
+		try {
+			net.GetOutPortByCompleteName( std::string("TheNameShould_ContainADot") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+	
+	void testGetOutPortByCompleteName_WithThreeIdentifiers()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		DummyProcessing* theProc = new DummyProcessing;
+		net.AddProcessing( "theOnlyProcessing", theProc );
+		const int dummyLength = 1;
+		CLAM::OutPort* expectedOutPort = 
+			new CLAM::OutPortTmpl<DummyProcessingData>( std::string("theOnlyOutPort"), theProc, dummyLength );
+	
+		// exercice and test
+		CPPUNIT_ASSERT_EQUAL( 
+			expectedOutPort, 
+			&net.GetOutPortByCompleteName( std::string("nonExistingNetwork.theOnlyProcessing.theOnlyOutPort") ) 
+		);
+
+		// tear down
+		delete expectedOutPort;
+	}
+
+
+	///////////////////////////////////////////
+	//////////   GetInControl testing  ///////////
+	///////////////////////////////////////////
+
+	void testGetInControlByCompleteName_WhenControlExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		DummyProcessing* theProc = new DummyProcessing;
+		net.AddProcessing( "theOnlyProcessing", theProc );
+		CLAM::InControl* expectedInControl = 
+			new CLAM::InControl( std::string("theOnlyInControl"), theProc );
+	
+		// exercice and test
+		CPPUNIT_ASSERT_EQUAL( 
+			expectedInControl, 
+			&net.GetInControlByCompleteName( std::string("theOnlyProcessing.theOnlyInControl") ) 
+		);
+
+		// tear down
+		delete expectedInControl;
+	}
+
+	void testGetInControlByCompleteName_WhenControlDoesntExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
+
+		// exercice and test
+		try {
+			net.GetInControlByCompleteName( std::string("theOnlyProcessing.NonExistingControl") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "name not found in InControls collection" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+
+	void testGetInControlByCompleteName_WhenProcessingDoesntExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		
+		// exercice and test
+		try {
+			net.GetInControlByCompleteName( std::string("NonExistingProcessing.NonExistingControl") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "No Processing with the given name" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+
+	void testGetInControlByCompleteName_WhithMalformedName_WithNoDot()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		
+		// exercice and test
+		try {
+			net.GetInControlByCompleteName( std::string("TheNameShould_ContainADot") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+	
+	void testGetInControlByCompleteName_WithThreeIdentifiers()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		DummyProcessing* theProc = new DummyProcessing;
+		net.AddProcessing( "theOnlyProcessing", theProc );
+		CLAM::InControl* expectedInControl = 
+			new CLAM::InControl( std::string("theOnlyInControl"), theProc );
+	
+		// exercice and test
+		CPPUNIT_ASSERT_EQUAL( 
+			expectedInControl, 
+			&net.GetInControlByCompleteName( std::string("nonExistingNetwork.theOnlyProcessing.theOnlyInControl") ) 
+		);
+
+		// tear down
+		delete expectedInControl;
+	}
+
+
+
+	///////////////////////////////////////////
+	//////////   GetOutControl testing  ///////////
+	///////////////////////////////////////////
+
+	void testGetOutControlByCompleteName_WhenControlExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		DummyProcessing* theProc = new DummyProcessing;
+		net.AddProcessing( "theOnlyProcessing", theProc );
+		CLAM::OutControl* expectedOutControl = 
+			new CLAM::OutControl( std::string("theOnlyOutControl"), theProc );
+	
+		// exercice and test
+		CPPUNIT_ASSERT_EQUAL( 
+			expectedOutControl, 
+			&net.GetOutControlByCompleteName( std::string("theOnlyProcessing.theOnlyOutControl") ) 
+		);
+
+		// tear down
+		delete expectedOutControl;
+	}
+
+	void testGetOutControlByCompleteName_WhenControlDoesntExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
+
+		// exercice and test
+		try {
+			net.GetOutControlByCompleteName( std::string("theOnlyProcessing.NonExistingControl") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "name not found in OutControls collection" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+
+	void testGetOutControlByCompleteName_WhenProcessingDoesntExist()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		
+		// exercice and test
+		try {
+			net.GetOutControlByCompleteName( std::string("NonExistingProcessing.NonExistingControl") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "No Processing with the given name" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+
+	void testGetOutControlByCompleteName_WhithMalformedName_WithNoDot()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		
+		// exercice and test
+		try {
+			net.GetOutControlByCompleteName( std::string("TheNameShould_ContainADot") );
+			CPPUNIT_FAIL("Expected assert, but didn't happened");
+		}
+		catch( CLAM::ErrAssertionFailed& expected) {
+			CPPUNIT_ASSERT_EQUAL( 
+				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( expected.what() ) );
+
+		}
+	}
+	
+	void testGetOutControlByCompleteName_WithThreeIdentifiers()
+	{
+		//set up
+		NetworkProtectedInterfacePublisher net;
+		DummyProcessing* theProc = new DummyProcessing;
+		net.AddProcessing( "theOnlyProcessing", theProc );
+		CLAM::OutControl* expectedOutControl = 
+			new CLAM::OutControl( std::string("theOnlyOutControl"), theProc );
+	
+		// exercice and test
+		CPPUNIT_ASSERT_EQUAL( 
+			expectedOutControl, 
+			&net.GetOutControlByCompleteName( std::string("nonExistingNetwork.theOnlyProcessing.theOnlyOutControl") ) 
+		);
+
+		// tear down
+		delete expectedOutControl;
+	}
+
+
+
+
+
+
 	void testUseOfString_substr()
 	{
 		std::string today("today it rains");
 		CPPUNIT_ASSERT_EQUAL( std::string("it"), today.substr(6,2) );
 	}
-	//void testGetOutPortByCompleteName_WhenPortExist()
-	//void testGetOutPortByCompleteName_WhenPortDoesntExist()
 };
    
 } // namespace 
