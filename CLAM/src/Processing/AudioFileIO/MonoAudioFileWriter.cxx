@@ -60,9 +60,14 @@ namespace CLAM
 
 	bool MonoAudioFileWriter::Do()
 	{
-		mOutStream->WriteData( 0, &(mInput.GetData()), mInput.GetSize() );
-	
+		bool result = Do( mInput.GetAudio() );
 		mInput.Consume();
+		return result;		
+	}
+	
+	bool MonoAudioFileWriter::Do( const Audio & data )
+	{
+		mOutStream->WriteData( 0, data.GetBuffer().GetPtr(), data.GetSize() );
 		return true;
 	}
 
