@@ -44,5 +44,7 @@ namespace CLAM
 
 		SetHybSinSpectralShape( defaultShapeWeights );
 		SetHybResSpectralShape( defaultShapeWeights );
+
+		SetUseSpectralShapes ( false );
 	}
 }

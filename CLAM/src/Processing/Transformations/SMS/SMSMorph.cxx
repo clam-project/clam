@@ -108,8 +108,10 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	cfg.SetType(type);
 	cfg.SetSpectralRange(mSegment.GetFrame(0).GetResidualSpec().GetSpectralRange());
 
-	mSpectralShape.Configure(cfg);
-	mResSpectralShape.Configure(cfg);
+	mUseSinSpectralShape=mConfig.GetUseSpectralShapes();
+	mUseResSpectralShape=mConfig.GetUseSpectralShapes();
+
+	
 	
 	InitializeFactorsToUse();
 
@@ -119,13 +121,13 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		frIntCfg.SetUseSpectralShape(true);
 		mPO_FrameInterpolator.mSpectralShape.Attach(mSpectralShape);
+		mSpectralShape.Configure(cfg);
+		mResSpectralShape.Configure(cfg);
 	}
 
 	CLAM_ASSERT( mPO_FrameInterpolator.Configure(frIntCfg),
 				 "Failed to configure Frame interpolator in SMSMorph::ConcreteConfigure" );
 	
-
-
 	return UpdateControlValueFromBPF(0);
 }
 
@@ -287,20 +289,12 @@ void SMSMorph::InitializeFactorsToUse()
 		mUseSinFreq=true;
 	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
 		mUseResAmp=true;
-	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size()&&
-		mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size()&&
-		mConfig.HasHybResShapeW2() && mConfig.GetHybResShapeW2().Size())
+	if(mConfig.GetUseSpectralShapes())
 	{
 			mUseResSpectralShape=true;
 			mUseResAmp=false;
-	}
-	//Updating spectral shapes
-	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size()&&
-		mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size()&&
-		mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
-	{
-		mUseSinSpectralShape=true;
-		mUseSinAmp=false;
+			mUseSinSpectralShape=true;
+			mUseSinAmp=false;
 	}
 
 }
