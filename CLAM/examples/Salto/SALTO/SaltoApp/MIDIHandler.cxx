@@ -78,8 +78,8 @@ namespace CLAM
 				Params().SetStatResFreq(440.0*pow(2,(pitch+48-69)/12.0));
 
 				if(Params().GetPlay()               // this means transition !
-					&& Params().GetAttackTimbre().GetLevel()>0
-					&! Params().GetTransitionInit()) 
+					&& (Params().GetAttackTimbre().GetLevel()>0)
+					&& (!Params().GetTransitionInit() ) ) 
 				{
 					Params().SetTransitionInit(true); // step into trans init process
 					Params().SetTransitionMode(true);

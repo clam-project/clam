@@ -16,7 +16,10 @@
 #include "MIDIBreathController.hxx"
 #include "CSaltoDataManagment.hxx"
 #include <iostream>
+#include "MelodyTranslator.hxx"
+#include <FL/Fl_Double_Window.H>
 
+using SALTO::CSaltoEditor;
 using CLAMGUI::WidgetTKWrapper;
 using namespace CLAM;
 
