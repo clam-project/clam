@@ -413,7 +413,14 @@ public:
 	}
 	U operator()(const Array<T>& a,WeightedPoweredSum<o,abs,T>& wPowSum,PoweredSum<o,abs,T>& PowSum,StaticFalse*)
 	{
-		return static_cast<U>(wPowSum(a))/PowSum(a);
+		U normFactor = PowSum( a );
+
+		//MRJ: the zero case. I have set the tolerance to 1e-7, which is appropiate for single
+		//precision floating point numbers.
+		if ( normFactor < 1e-7 ) 
+			return (a.Size()%2==0)? a.Size()/2 : (a.Size()+1)/2;
+		
+		return static_cast<U>(wPowSum(a))/normFactor;
 	}
 	/**No weighted powered sum and powered sum previously computed, use member*/
 	U operator()(const Array<T>& a,StaticFalse*)
