@@ -12,25 +12,21 @@ class ProgressGUI
 	: public Progress
 {
 public:
-	Fl_Progress* mFlProgress;
 
-	static Fl_Progress* requested;
-	static Fl_Progress* delRequested;
-	static const char* requestedTitle;
-	static pthread_t flThread;
-	static float requestedFrom;	
-	static float requestedTo;	
-
+	
+	
 	void Update(float val)
 	{
-		mFlProgress->mValue = val;
+		mProgressBar->mValue = val;
 	}
 
 	ProgressGUI( const char* title, float from, float to );
 
 	~ProgressGUI();
 
-	static void Idle( void* ptr );
+private:
+
+	Fl_Progress* mProgressBar;
 };
 
 }

@@ -5,7 +5,7 @@
 #include "WaitMessageGUI.hxx"
 #include "ProgressGUI.hxx"
 #include "AnalysisSynthesisExampleBase.hxx"
-#include <pthread.h>
+#include "Thread.hxx"
 using namespace CLAM;
 
 namespace CLAMGUI
@@ -15,6 +15,11 @@ class AnalysisSynthesisExampleGUI
 	: public AnalysisSynthesisExampleBase
 {
 public:
+
+	virtual ~AnalysisSynthesisExampleGUI()
+	{
+	}
+
 	friend class UserInterface;
 
 	void Run();
@@ -23,27 +28,31 @@ public:
 
 	WaitMessage* CreateWaitMessage(const char* title);
 
-	static void* startfn_analyze( void* ptr );
 
-	static void* startfn_synthesize( void* ptr );
+protected: // methods
 
-	static void* startfn_LoadAnalysis(void* ptr);
+	void DoAnalysis();
 
-	static void* startfn_StoreAnalysis(void* ptr);
-	
-	void AnalyzeThread();
-	
-	void SynthesizeThread();
+	void DoSynthesis();
 
-	void LoadAnalysisThread(const std::string& filename);
-	
-	void StoreAnalysisThread();
+	void DoTracksCleanup();
 
+	void DoLoadXMLAnalysis();
+
+	void DoLoadSDIFAnalysis();
+
+	void DoStoreXMLAnalysis();
+
+	void DoStoreSDIFAnalysis();
+
+private:
+
+	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0& method );
 
 protected:
 	int mThreadState;
-	pthread_t mThread;
 	std::string mFilename;
+	Thread      mThread;
 };
 
 }

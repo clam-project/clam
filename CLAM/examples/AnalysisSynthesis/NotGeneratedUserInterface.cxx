@@ -88,7 +88,7 @@ void UserInterface::LoadAnalysisData(void)
 	{
 		//mAnalysisDataText->value(str);
 		std::string inputXMLFileName(str);
-		mAnalysisSynthesisExample->LoadAnalysisThread(inputXMLFileName);
+		mAnalysisSynthesisExample->LoadAnalysis(inputXMLFileName);
 		mStoreAnalysisData->deactivate();
 		if (
 			mAnalysisSynthesisExample->mHaveAnalysis &&
@@ -102,7 +102,7 @@ void UserInterface::LoadAnalysisData(void)
 
 void UserInterface::Analyze(void)
 {
-	mAnalysisSynthesisExample->AnalyzeThread();
+	mAnalysisSynthesisExample->Analyze();
 	if (mAnalysisSynthesisExample->mHaveAnalysis)
 	{
 		mDisplayInSpec->activate();
@@ -117,7 +117,7 @@ void UserInterface::Analyze(void)
 
 void UserInterface::Synthesize(void)
 {
-	mAnalysisSynthesisExample->SynthesizeThread();
+	mAnalysisSynthesisExample->Synthesize();
 	if (mAnalysisSynthesisExample->mHaveAudioOut)
 	{
 		mSynthesize->activate();
@@ -134,7 +134,7 @@ void UserInterface::Exit(void)
 
 void UserInterface::StoreAnalysisData(void)
 {
-	mAnalysisSynthesisExample->StoreAnalysisThread();
+	mAnalysisSynthesisExample->StoreAnalysis();
 }
 
 void UserInterface::DisplayInputSound(void)

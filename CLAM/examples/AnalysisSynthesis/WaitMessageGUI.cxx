@@ -14,71 +14,15 @@ namespace CLAMGUI
 	WaitMessageGUI::WaitMessageGUI(const char* title)
 		:WaitMessage(title)
 	{
-		if (flThread == pthread_self())
-			{
-				
-				mFlWaitMessage = new Fl_WaitMessage;
-				mFlWaitMessage->mLabel->label(title);
-				mFlWaitMessage->mWindow->show();
-			}
-		else
-			{
-				requested = 0;
-				
-				requestedTitle = title;
-				while (requested==0)
-					{
-						Sleep(1);
-					}
-				
-				mFlWaitMessage = requested;
-			}
+		mWaitMsg = new Fl_WaitMessage;
+		mWaitMsg->mLabel->label( title );
+		mWaitMsg->mWindow->show();
 	}
 	
 	WaitMessageGUI::~WaitMessageGUI()
 	{
-		if (flThread == pthread_self())
-		{
-			delete mFlWaitMessage;
-		}
-		else
-			{
-				delRequested = mFlWaitMessage;
-				while (delRequested)
-					{
-						Sleep(10);
-					}
-			}
+		mWaitMsg->mWindow->hide();
+		delete mWaitMsg;
 	}	
-
-	void WaitMessageGUI::Idle(void* ptr)
-	{
-		std::cout << "Idle #2" << std::endl;
-		if (requestedTitle)
-		{
-
-			const char* tmp = requestedTitle;
-			requestedTitle = 0;
-			Fl_WaitMessage * o= new Fl_WaitMessage;
-			o->mLabel->label(tmp);
-			o->mWindow->show();
-			requested = o;
-		}
-		if (delRequested)
-		{
-
-			Fl_WaitMessage* tmp = delRequested;
-			delRequested = 0;
-			delete tmp;
-		}
-	}
-
-
-
-Fl_WaitMessage* WaitMessageGUI::requested = 0;
-Fl_WaitMessage* WaitMessageGUI::delRequested = 0;
-const char* WaitMessageGUI::requestedTitle = 0;
-pthread_t WaitMessageGUI::flThread;
-
 
 }

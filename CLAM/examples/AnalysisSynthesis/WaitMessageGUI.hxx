@@ -13,18 +13,14 @@ class WaitMessageGUI
 {
 public:
 
-	Fl_WaitMessage* mFlWaitMessage;
-	static Fl_WaitMessage* requested;
-	static Fl_WaitMessage* delRequested;
-	static const char* requestedTitle;
-	static pthread_t flThread;
 	
 	
 	WaitMessageGUI(const char* title);
 
 	~WaitMessageGUI();
 
-	static void Idle( void* ptr );
+private:
+	Fl_WaitMessage* mWaitMsg;
 
 };
 

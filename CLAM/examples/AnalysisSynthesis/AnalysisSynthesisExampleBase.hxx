@@ -33,6 +33,9 @@
 #include "AudioOut.hxx"
 #include "Progress.hxx"
 #include "WaitMessage.hxx"
+#include "SDIFIn.hxx"
+#include "SDIFOut.hxx"
+
 
 
 namespace CLAM
@@ -66,7 +69,36 @@ namespace CLAM
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
 		/** Load previously stored analysis xml data */
+
+		void LoadXMLAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+			further control on how the concrete process is performed */
+		virtual void DoLoadXMLAnalysis();
+		
+		void LoadSDIFAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+			further control on how the concrete process is performed */
+
+		virtual void DoLoadSDIFAnalysis();
+
 		void LoadAnalysis(const std::string& inputFileName);
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		virtual void DoStoreXMLAnalysis();
+
+		void StoreXMLAnalysis();
+
+		virtual void DoStoreSDIFAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		void StoreSDIFAnalysis();
+
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
 		void StoreAnalysis(void);
@@ -80,9 +112,15 @@ namespace CLAM
 		/** Load input sound */
 		bool LoadInputSound(void);
 
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
 		virtual void DoAnalysis();
 
 		void AnalysisProcessing();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
 
 		virtual void DoTracksCleanup();
 
@@ -92,6 +130,13 @@ namespace CLAM
 		void Analyze(void);
 		/** Perform synthesis. Requires a valid configuration file to be loaded 
 		* and the analysis to be performed. */
+		void SynthesisProcessing();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		virtual void DoSynthesis();
+
 		void Synthesize(void);
 		/** Perform transformation according to previously set transformation 
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
@@ -168,6 +213,10 @@ namespace CLAM
 
 		CLAMGUI::Progress* mCurrentProgressIndicator;
 		CLAMGUI::WaitMessage* mCurrentWaitMessage;
+
+		std::string mXMLInputFile;
+
+		SDIFIn  mSDIFReader;
 
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
