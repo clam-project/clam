@@ -67,7 +67,7 @@ namespace AudioCodecs
 	{
 		bool validFrameFound = false;
 
-		while( !validFrameFound && !EOS() && !FatalError() )
+		while( !validFrameFound && !FatalError() )
 		{
 			// the first condition ( mStream.buffer == NULL ) handles the first time we 
 			// seek a new Mpeg frame since the stream object does not have a buffer attached.			
@@ -97,7 +97,9 @@ namespace AudioCodecs
 				
 				TSize readbytes = fread( readStart, sizeof(unsigned char), readSize, mpFile );
 			
-				if ( readbytes < readSize ) // Less bytes than expected were read
+				if ( readbytes == 0 ) // Nothing read
+					return false;
+				else if ( readbytes < readSize ) // Less bytes than expected were read
 				{
 					CLAM_DEBUG_ASSERT( readStart + readbytes + MAD_BUFFER_GUARD <=
 							   mInputBuffer + mInputBufferSize,
