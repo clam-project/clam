@@ -79,7 +79,7 @@ protected:
 	virtual void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * ) = 0;
 	void RemoveProcessing( ProcessingPresentation* );
 	void AddProcessing( const std::string & , CLAM::Processing * );
-	void RemoveProcessingPresentationAttachedTo( const std::string & );
+	void RebuildProcessingPresentationAttachedTo( const std::string &, CLAMVM::ProcessingController * );
 	void ChangeConnectionPresentationNames( const std::string &, const std::string & );
 	
 	virtual void CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
@@ -120,7 +120,7 @@ public:
 	SigSlot::Slotv2< const std::string & , CLAMVM::ProcessingController * > SlotCreateProcessingPresentation;
 	SigSlot::Slotv1< ProcessingPresentation* > SlotRemoveProcessing;
 	SigSlot::Signalv1< const std::string & > SignalRemoveProcessing;
-	SigSlot::Slotv1< const std::string & > SlotRemoveProcessingPresentationAttachedTo;
+	SigSlot::Slotv2< const std::string &, CLAMVM::ProcessingController * > SlotRebuildProcessingPresentationAttachedTo;
 
 	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnection;
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreatePortConnection;

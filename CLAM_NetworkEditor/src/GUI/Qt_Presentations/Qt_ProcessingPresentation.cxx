@@ -23,6 +23,8 @@
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_ProcessingConfigPresentation.hxx"
+#include "ProcessingController.hxx"
+#include "Processing.hxx"
 
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
@@ -272,6 +274,7 @@ void Qt_ProcessingPresentation::UpdateOutControlsPosition()
 void Qt_ProcessingPresentation::Show()
 {
 	Hide();
+	UpdateSize();
 
 	ConnectionPointPresentationsList::iterator it;
 	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
@@ -306,7 +309,7 @@ void Qt_ProcessingPresentation::Hide()
 
 void Qt_ProcessingPresentation::DrawSelectedRepresentation()
 {
-	QColor c(50, 220, 50);
+	QColor c(200, 200, 200);
 	QPainter p( this );
         p.setBrush( c );
 		
@@ -323,7 +326,23 @@ void Qt_ProcessingPresentation::DrawSelectedRepresentation()
 void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 {
 
-	QColor c(220, 220, 170);
+	QColor c(0, 0, 0);
+	switch( mProcessingState )
+	{
+		case CLAM::Processing::Ready:
+			c.setRgb( 30, 180, 50 );
+			QToolTip::add( this, "Processing is ready to run" );
+			break;
+		case CLAM::Processing::Unconfigured:
+			c.setRgb( 200, 10, 30 );
+			QToolTip::add( this, QString( mProcessingStatus.c_str() ));
+			break;	
+		case CLAM::Processing::Running:
+			c.setRgb( 0, 100, 200 );
+			QToolTip::add( this, "Processing running" );
+			break;
+
+	}
 	QPainter p( this );
         p.setBrush( c );
 

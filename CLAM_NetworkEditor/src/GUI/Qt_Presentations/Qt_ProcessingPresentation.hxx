@@ -47,6 +47,7 @@ class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 	Q_OBJECT
 public:
 	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
+	virtual ~Qt_ProcessingPresentation(){}
 	void Show();
 	void Hide();
 	void EmitPositionOfChildren();
@@ -86,6 +87,7 @@ protected:
 	void UpdateSize();
 	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
 	void DrawSelectedRepresentation();
+	void  UpdatePresentation(){ repaint(); }
 
 
 // qt stuff

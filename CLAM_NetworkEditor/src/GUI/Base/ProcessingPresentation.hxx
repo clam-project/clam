@@ -28,17 +28,13 @@
 
 #include "Presentation.hxx"
 #include "ProcessingConfigPresentation.hxx"
+#include "ProcessingController.hxx"
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
 
 namespace CLAM
 {
 	class ProcessingConfig;
-}
-
-namespace CLAMVM
-{
-	class ProcessingController;
 }
 
 namespace NetworkGUI
@@ -49,7 +45,8 @@ class ConnectionPointPresentation;
 class ProcessingPresentation : public CLAMVM::Presentation
 {
 protected:
-	
+	std::string mProcessingStatus;
+	CLAMVM::ProcessingController::ProcessingExecState mProcessingState;
 	typedef std::list< ConnectionPointPresentation * > ConnectionPointPresentationsList;
 
 	ConnectionPointPresentationsList mInPortPresentations;
@@ -74,6 +71,7 @@ public:
 	bool HasInPort( const std::string& name);
 	bool HasOutPort( const std::string& name);
 	virtual void ChangeProcessingPresentationName( const std::string & name );
+	void UpdateListOfPortsAndControls( CLAMVM::ProcessingController & controller );
 
 protected:
 	void SetConfig( const CLAM::ProcessingConfig & );
@@ -83,6 +81,9 @@ protected:
 	virtual void SetOutPort( const std::string & ) = 0;
 	virtual void SetInControl( const std::string & ) = 0;
 	virtual void SetOutControl( const std::string & ) = 0;
+	void ChangeState( CLAMVM::ProcessingController::ProcessingExecState state, const std::string & status );
+	virtual void UpdatePresentation() = 0;
+	
 
 public:	//signals & slots
 	SigSlot::Signalv1< ProcessingPresentation* > SignalRemoveProcessing;
@@ -90,6 +91,7 @@ public:	//signals & slots
 	SigSlot::Signalv1< const std::string & > SignalProcessingNameChanged;
 	SigSlot::Slotv1< const CLAM::ProcessingConfig &> SlotConfigureProcessing;
 	SigSlot::Slotv1< const std::string & > SlotChangeProcessingPresentationName;
+	SigSlot::Slotv2< CLAMVM::ProcessingController::ProcessingExecState, const std::string & > SlotChangeState; 
 };
 
 

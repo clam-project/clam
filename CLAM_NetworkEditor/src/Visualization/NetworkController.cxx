@@ -30,8 +30,6 @@
 #include "OutControl.hxx"
 #include "XMLStorage.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace CLAMVM
 {
 	
@@ -47,7 +45,9 @@ NetworkController::NetworkController()
 	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
 	
 	SlotRemoveProcessing.Wrap( this, &NetworkController::RemoveProcessing );
-	SlotProcessingControllerNeedsRebuild.Wrap( this, &NetworkController::ProcessingControllerNeedsRebuild );
+//	SlotProcessingControllerNeedsRebuild.Wrap( this, &NetworkController::ProcessingControllerNeedsRebuild );
+	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkController::RebuildProcessingPresentationAttachedTo );
+	SlotRemoveAllConnections.Wrap( this, &NetworkController::RemoveAllConnections );
 	SlotAddProcessing.Wrap( this, &NetworkController::AddProcessing );
 	SlotProcessingNameChanged.Wrap( this, &NetworkController::ProcessingNameChanged );
 	
@@ -149,7 +149,9 @@ void NetworkController::ChangeState( bool state)
 		mLoopCondition = true;
 		
 		mThread.Start();
-
+		ProcessingControllersMapIterator it;
+		for( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++ )
+			it->second->SignalChangeState.Emit( it->second->GetProcessingExecState(), it->second->GetProcessingStatus() );	
 	}
 	else // stop the network
 	{		
@@ -159,6 +161,11 @@ void NetworkController::ChangeState( bool state)
 		mLoopCondition = false;
 		mThread.Stop();
 		mObserved->Stop();
+
+		ProcessingControllersMapIterator it;
+		for( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++ )
+			it->second->SignalChangeState.Emit( it->second->GetProcessingExecState(), it->second->GetProcessingStatus() );	
+
 	}
 }
 
@@ -435,36 +442,22 @@ void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 	delete proc;
 }
 
-void NetworkController::ProcessingControllerNeedsRebuild( ProcessingController * controller, 
-					                  CLAM::Processing * proc, const CLAM::ProcessingConfig & cfg)
+
+void NetworkController::RemoveAllConnections(  CLAM::Processing * proc )
 {
 	std::string name = mObserved->GetNetworkId( proc );
-	bool wasRunning = false;
-	if(proc->GetExecState()==CLAM::Processing::Running)
-	{
-		wasRunning = true;
-		proc->Stop();
-	}
 
 	// remove all connections to processing and communicate it to gui
 	RemoveAllPortConnections( name );
 	RemoveAllControlConnections( name );
+}
+
+void NetworkController::RebuildProcessingPresentationAttachedTo( ProcessingController * controller, CLAM::Processing * proc )
+{
+	std::string name = mObserved->GetNetworkId( proc );
+
 	// emit signal to delete processing presentation 
-	SignalRemoveProcessingPresentationAttachedTo.Emit( name );
-	
-	// delete processing controller
-	ProcessingControllersMapIterator it = mProcessingControllers.find( name );
-	mProcessingControllers.erase( it );
-	delete controller;
-
-	// now we can configure the processing correctly
-	proc->Configure( cfg );
-	// bind controller to processing
-	// create processing presentation
-	SignalCreateProcessingPresentation.Emit( name, CreateProcessingController(name, proc) );
-
-	if(wasRunning)
-		proc->Start();
+	SignalRebuildProcessingPresentationAttachedTo.Emit( name, controller );
 }
 
 void NetworkController::ExecuteRemovePortConnection( const std::string & out , const std::string & in )
@@ -529,8 +522,9 @@ ProcessingController* NetworkController::CreateProcessingController( const std::
 		CLAM_ASSERT(false, "NetworkController::CreateProcessingController() Trying to add a processing controller with a repeated name (key)" );
 
 	ProcessingController* controller = new ProcessingController;
-	controller->SignalProcessingControllerNeedsRebuild.Connect( SlotProcessingControllerNeedsRebuild );
 	controller->SignalProcessingNameChanged.Connect( SlotProcessingNameChanged );
+	controller->SignalRemoveAllConnections.Connect( SlotRemoveAllConnections );
+	controller->SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
 
 	controller->BindTo(*proc);
 	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, controller));

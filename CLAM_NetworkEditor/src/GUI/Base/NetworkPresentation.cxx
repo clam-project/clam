@@ -48,7 +48,7 @@ NetworkPresentation::NetworkPresentation()
 	SlotCreateProcessingPresentation.Wrap( this, &NetworkPresentation::CreateProcessingPresentation );
 	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing );
 	SlotRemoveProcessing.Wrap( this, &NetworkPresentation::RemoveProcessing );
-	SlotRemoveProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RemoveProcessingPresentationAttachedTo );
+	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RebuildProcessingPresentationAttachedTo );
 	
 	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
 	SlotClear.Wrap(this, &NetworkPresentation::Clear );
@@ -125,7 +125,7 @@ void NetworkPresentation::RemoveProcessing( ProcessingPresentation * proc)
 	SignalRemoveProcessing.Emit( proc->GetName() ); 
 }
 
-void NetworkPresentation::RemoveProcessingPresentationAttachedTo( const std::string & name )
+void NetworkPresentation::RebuildProcessingPresentationAttachedTo( const std::string & name, CLAMVM::ProcessingController * controller )
 {	
 
 	ProcessingPresentationIterator it;
@@ -133,11 +133,13 @@ void NetworkPresentation::RemoveProcessingPresentationAttachedTo( const std::str
 	{
 		if((*it)->GetName()==name)
 		{
-			mProcessingPresentationsToRemove.push_back(*it);
+			(*it)->UpdateListOfPortsAndControls( *controller );
+			(*it)->Show();
+//			mProcessingPresentationsToRemove.push_back(*it);
 			return;
 		}
 	}
-	CLAM_ASSERT( false, "NetworkPresentation::RemoveProcessingPresentationAttachedTo : name not found in processing presentations list" );
+	CLAM_ASSERT( false, "NetworkPresentation::RebuildProcessingPresentationAttachedTo : name not found in processing presentations list" );
 
 }
 
@@ -164,7 +166,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 	
 	SignalAddProcessing.Connect( controller.SlotAddProcessing );
 	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
-	controller.SignalRemoveProcessingPresentationAttachedTo.Connect( SlotRemoveProcessingPresentationAttachedTo );
+	controller.SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
 	
 	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
 	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );

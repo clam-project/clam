@@ -176,15 +176,6 @@ namespace CLAMVM
 		 * controller created and a signal emitted to create the proper presentation.
 		 */
 		void AddProcessing( const std::string & , CLAM::Processing * );
-
-		/**
-		 * When a configure from a processing modifies its number of ports/controls, this slot receives a signal
-		 * in order to create a new processing controller binded to this processing, and emit signals to do the
-		 * same with presentations.
-		 */
-		void ProcessingControllerNeedsRebuild( ProcessingController *, CLAM::Processing *, const CLAM::ProcessingConfig & );
-
-
 		/** 
 		 * This method is called when a processing name is changed from gui. It executes the change inside NetworkController and
 		 * passes the change to Network
@@ -215,6 +206,10 @@ namespace CLAMVM
 		 * in a thread-safe way.
 		 */		
 		void ExecuteEvents();
+
+		void RemoveAllConnections( CLAM::Processing * );
+		void RebuildProcessingPresentationAttachedTo( ProcessingController *, CLAM::Processing * );
+
 	public:
 		NetworkController();
 		virtual ~NetworkController();
@@ -255,9 +250,10 @@ namespace CLAMVM
 		SigSlot::Slotv2< const std::string &, ProcessingController * > SlotProcessingNameChanged;
 		SigSlot::Signalv2< const std::string &, const std::string & > SignalChangeConnectionPresentationNames;
 
-		SigSlot::Slotv3< ProcessingController *, CLAM::Processing *, const CLAM::ProcessingConfig & > SlotProcessingControllerNeedsRebuild;
 		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;
-		SigSlot::Signalv1< const std::string & > SignalRemoveProcessingPresentationAttachedTo;
+		SigSlot::Signalv2< const std::string &, ProcessingController *> SignalRebuildProcessingPresentationAttachedTo;
+		SigSlot::Slotv1< CLAM::Processing * > SlotRemoveAllConnections;
+		SigSlot::Slotv2< ProcessingController *, CLAM::Processing * > SlotRebuildProcessingPresentationAttachedTo;
 
 		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
 		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
