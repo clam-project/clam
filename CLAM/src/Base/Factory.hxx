@@ -9,7 +9,7 @@
 //#include "AudioAdder.hxx"
 
 namespace CLAM {
-	
+class Processing;	
 
 /// Error type thrown by Factory classes (Factory, FactoryRegistry)
 class ErrFactory : public Err
