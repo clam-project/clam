@@ -43,9 +43,21 @@ AC_SUBST(SNDFILE_INCLUDES)
 AC_SUBST(SNDFILE_LIB_PATH)
 AC_SUBST(SNDFILE_LIBS)
 
+#MRJ: Variables defined by autoconf for libogg and libvorbis
 AC_SUBST(OGGVORBIS_INCLUDES)
 AC_SUBST(OGGVORBIS_LIB_PATH)
 AC_SUBST(OGGVORBIS_LIBS)
+
+#MRJ: Variables defined by autoconf for libmad
+AC_SUBST(LIBMAD_INCLUDES)
+AC_SUBST(LIBMAD_LIB_PATH)
+AC_SUBST(LIBMAD_LIBS)
+
+#MRJ: Variables defined by autoconf for libid3tag
+AC_SUBST(ID3TAG_INCLUDES)
+AC_SUBST(ID3TAG_LIB_PATH)
+AC_SUBST(ID3TAG_LIBS)
+
 
 # Check external C libraries
 
@@ -57,6 +69,10 @@ CLAM_LIB_FFTW
 CLAM_LIB_SNDFILE
 # Vorbis I  SDK checking procedure
 CLAM_LIB_OGGVORBIS
+# Underbit's MAD checking procedure
+CLAM_LIB_MAD
+# MAD's ID3 tag library
+CLAM_LIB_ID3TAG
 
 # Check external C++ libraries
 

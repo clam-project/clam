@@ -497,7 +497,118 @@ AC_DEFUN(CLAM_LIB_OGGVORBIS,
 ])
 dnl End of Vorbis I SDK checking procedure
 
-dnl End of Vorbis I SDK checking
+dnl Start of libid3tag checking procedure
+AC_DEFUN(CLAM_LIB_ID3TAG,
+[
+	AC_MSG_NOTICE([Checking that libid3tag is installed])
+	
+	AC_CHECK_LIB(id3tag, id3_file_open,
+		     [LIBID3TAG_PRESENT="yes";ID3TAG_LIBS="id3tag"],
+		     [LIBID3TAG_PRESENT="no"],
+		     -lz)
+
+	AC_CHECK_HEADER(id3tag.h,
+			[HDRID3TAG_PRESENT="yes"],
+			[HDRID3TAG_PRESENT="no"])
+
+	if test $LIBID3TAG_PRESENT = no || test $HDRID3TAG_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libid3tag seems not to be installed on your system!])
+	fi
+
+	ID3TAG_LIBS="$ID3TAG_LIBS z"
+	ID3TAG_LIB_PATH=""
+	ID3TAG_INCLUDES=""
+
+	AC_PATH_TOOL( ID3TAG_LIB_PATH,
+		      libid3tag.so,
+		      [],
+		      [/usr/lib:/usr/local:/opt/lib])
+
+	ID3TAG_LIB_PATH=${ID3TAG_LIB_PATH%/libid3tag.so}
+
+	if test $ID3TAG_LIB_PATH = "/usr/lib"
+	then
+		ID3TAG_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( ID3TAG_INCLUDES,
+		      id3tag.h,
+		      [/usr/include:/usr/local/include])
+
+	ID3TAG_INCLUDES=${ID3TAG_INCLUDES%/id3tag.h}
+
+	if test $ID3TAG_INCLUDES = "/usr/include" || test $ID3TAG_INCLUDES="/usr/local/include"
+	then
+		ID3TAG_INCLUDES=""
+	fi
+	
+])
+
+dnl End of libid3tag checking procedure
+
+dnl Start of Underbit's libmad checking procedure
+AC_DEFUN(CLAM_LIB_MAD,
+[
+	pkg_config_exec=`which pkg-config`
+	AC_MSG_NOTICE([Checking that Underbit's MPEG Audio Decoder library is installed])
+	
+	$pkg_config_exec --exists mad
+	
+	if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Seems that libmad is not installed in your system. If you haven't installed it yet, please do so. If you have, then check that the mad.pc file location is somewhere inside the PKG_CONFIG_PATH environment variable.])
+	fi;
+
+	AC_MSG_NOTICE([Checking that libmad version is acceptable (above 0.14.2)])
+	
+	$pkg_config_exec --atleast-version=0.14.2 mad
+	
+	if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([The currently installed libmad version is inferior to 0.14.2. Please update you currently installed version to a more recent release])
+	fi;
+
+	LIBMAD_INCLUDES__0=`$pkg_config_exec --cflags mad`
+	LIBMAD_LIBS_PATH_0=`$pkg_config_exec --libs-only-L mad`
+	LIBMAD_LIBS_0=`$pkg_config_exec --libs-only-l mad`
+
+	for incpath in $LIBMAD_INCLUDES_0
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+	 	   then
+			LIBMAD_INCLUDES="$LIBMAD_INCLUDES ${incpath#-I*}"
+		fi
+	done
+
+	for libpath in $LIBMAD_LIBS_PATH_0
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+		   then
+			LIBMAD_LIB_PATH="$LIBMAD_LIB_PATH ${libpath#-L*}"
+		fi
+	done
+
+	for binname in $LIBMAD_LIBS_0
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+		   then
+			LIBMAD_LIBS="$LIBMAD_LIBS ${binname#-l}"
+		fi
+	done
+
+
+
+])
+dnl end of Underbit's libmad checking procedure
+
 
 dnl Start of libsndfile checking procedure
 AC_DEFUN(CLAM_LIB_SNDFILE,
@@ -547,7 +658,7 @@ for incpath in $SNDFILE_INCLUDE_PATH_0
 	do
 		if [[ ${incpath:0:2} == "-I" ]]
 	 	   then
-			SNDFILE_INCLUDES="$SNDFILE_INCLUDE_PATH ${incpath#-I*}"
+			SNDFILE_INCLUDES="$SNDFILE_INCLUDES ${incpath#-I*}"
 		fi
 	done
 
@@ -555,7 +666,7 @@ for libpath in $SNDFILE_LIBS_PATH_0
 	do
 		if [[ ${libpath:0:2} == "-L" ]]
 		   then
-			SNDFILE_LIB_PATH="$SNDFILE_LIBS_PATH ${libpath#-L*}"
+			SNDFILE_LIB_PATH="$SNDFILE_LIB_PATH ${libpath#-L*}"
 		fi
 	done
 
