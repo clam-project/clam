@@ -55,7 +55,7 @@ namespace SDIF
 		}
 	};
 
-	template <class T> class ConcreteMatrix:public Matrix
+	template <class T=TFloat32> class ConcreteMatrix:public Matrix
 	{
 	friend class File;
 	private:

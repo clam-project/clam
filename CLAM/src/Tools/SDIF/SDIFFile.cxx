@@ -4,6 +4,7 @@
 
 #ifdef WIN32
 	#include <io.h>
+	#include <fcntl.h>
 #else
 	#include <unistd.h>
 	#include <sys/types.h>

@@ -3,7 +3,7 @@
 namespace SDIF
 {
 
-TypeId TypeId::sDefault;
+ TypeId TypeId::sDefault;
 
 }
 
