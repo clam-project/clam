@@ -125,7 +125,7 @@ public:
 		mProcObj(parent),
 		mId(id)
 		{
-			if (publish) mProcObj->PublishInControl(this);
+			if (publish && mProcObj) mProcObj->PublishInControl(this);
 		};
 
 	~InControlTmpl(){};
