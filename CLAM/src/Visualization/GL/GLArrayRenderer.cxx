@@ -340,7 +340,7 @@ void GLArrayRenderer::FindMaxMin()
 	mIntertwined[mnMaxMin].y=0;
 	mnMaxMin++;
 
-	mElemIdxBuffer.resize(mnMaxMin);
+//	mElemIdxBuffer.resize(mnMaxMin);
 	
 }
 
