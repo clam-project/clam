@@ -3,7 +3,7 @@
 #
 # source: $$filename 
 #####################################################################
-AC_MSG_CHECKING([$$package package specified])
+AC_MSG_CHECKING([$$package usage specified])
 #
 AC_ARG_WITH(
 	[$$package],AC_HELP_STRING([--with-$$package],

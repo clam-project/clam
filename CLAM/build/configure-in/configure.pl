@@ -35,7 +35,7 @@ sub parse_acv_file
 				s/$pat/$val/;
 			}
 		}
-		print $_;
+		print OUTFILE $_;
 	}	
 }
 
@@ -44,13 +44,26 @@ sub ac
 	my $func = shift;
 	my $sep = "";
 	my $arg;
-	print "AC_$func(";
+	print OUTFILE "AC_$func(";
 	while ($_ = shift)
 	{
-		print $sep,'[',$_,']';
+		print OUTFILE $sep,'[',$_,']';
 		$sep = ",";
 	}
-	print ")\n\n";
+	print OUTFILE ")\n\n";
+}
+
+sub ac_check_feature_enabled
+{
+	local $feature = shift;
+	local $feature_esc = $feature;
+	$feature_esc =~ s/-/_/g;
+	local $default = shift;
+
+	
+	if ($default eq "") { $default = "yes"; }
+
+	parse_acv_file("acv/check_feature_enable.acv");
 }
 
 sub ac_check_package_enabled
@@ -97,7 +110,7 @@ sub ac_sandbox_location
 	if ($checked_sandbox_location) { return; }
 	$checked_sandbox_location = 1;
 
-	&ac_check_package_enabled('sandbox');
+	&ac_check_feature_enabled('sandbox');
 	parse_acv_file("acv/sandbox_location.acv");
 }
 
@@ -164,7 +177,7 @@ sub ac_pkg_config_availability
 	
 	$checked_pkg_config_availability = 1;
 
-	&ac_check_package_enabled('pkg-config');
+	&ac_check_feature_enabled('pkg-config');
 
 	parse_acv_file("acv/pkg_config_availability.acv");
 }
@@ -237,13 +250,18 @@ sub ac_introspect
 	my $package_esc = $package;
 	$package_esc =~ s/-/_/g;
 
-	print<<EOF;
+	print OUTFILE<<EOF;
 AC_MSG_NOTICE([found_$package_esc = \$found_$package_esc])
 AC_MSG_NOTICE([include_dirs_$package_esc = \$include_dirs_$package_esc])
 AC_MSG_NOTICE([lib_dirs_$package_esc = \$lib_dirs_$package_esc])
 AC_MSG_NOTICE([libs_$package_esc = \$libs_$package_esc])
 
 EOF
+}
+
+sub ac_dllextension
+{
+	parse_acv_file("acv/dllextension.acv");
 }
 
 sub ac_package_substs
@@ -258,6 +276,45 @@ sub ac_package_substs
 
 	parse_acv_file("acv/package_substs.acv");
 }
+
+@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
+
+if ($ARGV[0] eq '-u')
+{
+open OUTFILE,">$ARGV[1]";
+foreach $f (@packagedlibs)
+{
+	my $package = $f;
+	my $package_esc = $package;
+	$package_esc =~ s/-/_/g;
+	my $uc_package_esc = uc($package_esc);		
+	print OUTFILE "USE_$uc_package_esc=0\n";
+}
+close OUTFILE;
+exit(0);
+}
+
+#if ($ARGV[0] eq '-p')
+#{
+#open OUTFILE,">$ARGV[1]";
+#foreach $f (@packagedlibs)
+#{
+#	my $package = $f;
+#	my $package_esc = $package;
+#	$package_esc =~ s/-/_/g;
+#	my $uc_package_esc = uc($package_esc);		
+#	print OUTFILE "HAS_$uc_package_esc=\@HAS_$uc_package_esc\@\n";
+#}
+#close OUTFILE;
+#exit(0);
+#}
+
+if ($ARGV[0] eq '')
+{
+	die "Missing outfile\n";
+}
+
+open OUTFILE,">$ARGV[0]";
 
 &ac('INIT','test','0.1','clam@iua.upf.es');
 
@@ -459,22 +516,15 @@ int main()
 }
 EOF
 
-print<<EOF;
-dllext=so
-echo TODO: CHECK DLL EXTENSION
-echo NOW SET TO $dllext
-EOF
-
 &ac_sed();
 
 &ac_cplusplus_tests();
+&ac_dllextension();
 
 &ac_sandbox_location();
 &ac_pkg_config_availability();
 
 &ac('LANG_CPLUSPLUS');
-
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
 
 foreach $f (@packagedlibs)
 { 
@@ -490,18 +540,7 @@ foreach $f (@packagedlibs) { &ac_introspect($f); }
 foreach $f (@packagedlibs) { &ac_disabled_package_warning($f); }
 foreach $f (@packagedlibs) { &ac_package_substs($f); }
 
-open OUTFILE,">packages.cfg.in";
-foreach $f (@packagedlibs)
-{
-	my $package = $f;
-	my $package_esc = $package;
-	$package_esc =~ s/-/_/g;
-	my $uc_package_esc = uc($package_esc);		
-	print OUTFILE "HAS_$uc_package_esc=\@HAS_$uc_package_esc\@\n";
-}
-close OUTFILE;
-
-print<<EOF;
-AC_OUTPUT(system-linux.cfg)
-AC_OUTPUT(packages.cfg)
+print OUTFILE<<EOF;
+AC_OUTPUT(system-posix.cfg)
+AC_OUTPUT(packages-posix.cfg)
 EOF
