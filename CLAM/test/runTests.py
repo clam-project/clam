@@ -10,7 +10,7 @@ disableMail = True
 publicAddress = 'pau.arumi@iua.upf.es' #'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
-executionTime = 30 #sec
+executionTime = 5 #sec  30 by default TODO
 #TODO: this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
 
@@ -25,6 +25,9 @@ print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
 MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
+#TODO remove. it's just for rappid testing. 
+#SANDBOX_NAME = 'devel'
+
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
 SALTO_DATA_FOLDER = CLAM_SANDBOXES + 'SaltoDataFolder/'
 
@@ -44,9 +47,25 @@ testsToRun = [
 	( 'SpectralDelay', BUILDPATH+'Examples/SpectralDelay/', './SpectralDelay' ),
 	( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/', './NetworkEditor' )
 ]
-#testsToRun = [( 'NetworkEditor', BUILDPATH+'Examples/NetworkEditor/', './NetworkEditor' )]
+
+#insert a 
+supervisedTests = [
+	('AudioIOTest', BUILDPATH+'Tests/SupervisedTests/AudioIO/', './AudioIOTest'),
+	('MIDIIOTest', BUILDPATH+'Tests/SupervisedTests/MIDIIO/', './MIDIIOTest'),
+	('Fl_EnvelopeTest', BUILDPATH+'Tests/SupervisedTests/Fl_Envelope/', './Fl_EnvelopeTest'),
+	('Test_Multiplot', BUILDPATH+'Tests/SupervisedTests/Plotsv2/Test_Multiplot/', './Test_Multiplot'),
+	('Test_SinlglePlot', BUILDPATH+'Tests/SupervisedTests/Plotsv2/Test_SinglePlot/', './Test_SinglePlot'),
+	('Test_SpecificPlots', BUILDPATH+'Tests/SupervisedTests/Plotsv2/Test_Multiplot/', './Test_SpecificPlots')
+]
+
+testsToRun[0:0] = supervisedTests
 
 sender = '"automatic tests script" <pau.arumi@iua.upf.es>'
+
+foundCompilationErrors = False 
+foundTestsFailures = False
+foundExecutionErrors = False
+
 
 def sendmail(fromaddr, toaddrs, subject, body) :
 	import smtplib
@@ -68,7 +87,7 @@ def checkPaths() :
 		sys.exit(1)
 	for name, path, execcmd in testsToRun :
 		if not os.access(path, os.F_OK) :
-			sendError("Sorry can't access path " +path)
+			sendError("Sorry can't access path: %s \n" % path)
 			sys.exit(1)
 
 def parseCompilationWarnings(compilationOut) :
@@ -110,8 +129,8 @@ def parseExecutionErrors( executionOut ) :
 	return 'execution OK', ''
 
 
-def isTest(name) :
-	return name.find('Test') >= 0 or name.find('test') >= 0
+def isTest(path) :
+	return path.find('UnitTests')>=0 or path.find('FunctionalTests')>= 0
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
@@ -142,10 +161,10 @@ def formatSummary(name, configuration, result) :
 		points +='.'
 	return nameConfig + points + result+'\n'
 
-def compileAndRun(name, path, execcmd, compErrs, execErrs, testsErrs ) :
+def compileAndRun(name, path, execcmd) :
+	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures
 	os.chdir(path)
 	# compilation phase
-		
 	summary = details = s = d = ''
 	for configuration in ['debug', 'release'] :
 		if thoroughtnessLevel >= 1 :
@@ -153,7 +172,7 @@ def compileAndRun(name, path, execcmd, compErrs, execErrs, testsErrs ) :
 			executeMandatory('make depend')
 		makecmd = 'make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
-		compErrs= compErrs or not ok
+		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
 			s = 'COMPILATION ERRORS'
 		else :
@@ -169,21 +188,21 @@ def compileAndRun(name, path, execcmd, compErrs, execErrs, testsErrs ) :
 			continue
 			
 		# execution phase
-		if isTest(name) :
+		if isTest(path) :
 			print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
-			testsErrs = testsErrs or not ok
+			foundTestsFailues = foundTestsFailures or not ok
 			s, d = parseTestsFailures( output )
 		else :
 			print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
 			s, d = parseExecutionErrors( output )
-			execErrs =  execErrs or not ok or s.find('OK')==-1
+			foundExecutionErrors =  foundExecutionErrors or not ok or s.find('OK')==-1
 		
 		summary += formatSummary(name, configuration, s)
 		if d != '' :
 			details += detailsFormat % (name, d)
-	return summary, details, compErrs, execErrs, testsErrs
+	return summary, details
 
 
 mailTemplate = '''
@@ -240,9 +259,6 @@ def sendError(usermsg='') :
 #
 def runTests() :
 #	executeMandatory('./setenv.sh') #TODO fix problem with env vars and remove this
-	foundCompilationErrors = False 
-	foundTestsFailures = False
-	foundExecutionErrors = False
 	subj = subject
 	report = []
 	totalSummary = totalDetails = ''
@@ -284,7 +300,7 @@ def runTests() :
 	# compile and run/tests entries
 	for name, path, execcmd in testsToRun :
 		print '\n\nname\t\t %s \npath \t\t%s \nexec \t\t%s\n' % (name, path, execcmd)
-		summary, details, foundCompilationErrors, foundExecutionErrors, foundTestsFailures = compileAndRun(name, path, execcmd, foundCompilationErrors, foundExecutionErrors, foundTestsFailures )
+		summary, details  = compileAndRun(name, path, execcmd)
 		#TODO a refactoring this huge line -> create class
 		totalSummary += summary
 		totalDetails += details
