@@ -22,7 +22,7 @@ public:
 	int Size() const;
 	bool AreReadyForReading();
 	void Publish(InPort *);
-
+	void Clear(){ mInPorts.clear(); }
 	Iterator Begin();
 	Iterator End();
 	ConstIterator Begin() const;

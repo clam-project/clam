@@ -19,7 +19,7 @@ public:
 	InControl& Get(const std::string & name) const;
 	int Size() const;
 	void Publish(InControl *);
-
+	void Clear(){ mInControls.clear(); }
         Iterator Begin();
 	Iterator End();
 	ConstIterator Begin() const;

@@ -22,7 +22,7 @@ public:
 	int Size() const;
 	bool AreReadyForWriting();
 	void Publish( OutPort * );
-	
+	void Clear(){ mOutPorts.clear(); }
 	Iterator Begin();
 	Iterator End();
 	ConstIterator Begin() const;

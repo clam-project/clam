@@ -20,7 +20,7 @@ public:
 	OutControl& Get(const std::string & name) const;
 	int Size() const;
 	void Publish( OutControl *);
-
+	void Clear(){ mOutControls.clear(); }
         Iterator Begin();
 	Iterator End();	
 	ConstIterator Begin() const;
