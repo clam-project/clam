@@ -150,6 +150,8 @@ namespace CLAM
 
 			//-------Remove audio DC component------------------
 			//TODO
+			// MRJ: some of the segment descriptors might be sensitive
+			// to the presence/absence of a DC component
 
 			
 			// MRJ: Beat intervals descriptors computation.
@@ -194,7 +196,7 @@ namespace CLAM
 			
 			for (int i=0;i<segments.Size()-1;i++) 
 			{
-				//MRJ: Temporal Centroid computation and normalization
+				//MRJ: Temporal Centroid computation result is normalized
 				// i.e. mapping to the [0..1] interval.
 
 				TData centroidTime = segDList[i].GetAudioD().GetTemporalCentroid();

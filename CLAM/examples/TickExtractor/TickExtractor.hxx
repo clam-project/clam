@@ -14,7 +14,7 @@ namespace CLAM
 				   CLAM::Pulse& beatsSequence );
 
 	void ExtractTicksSequence( std::string pathToFile,
-				   TickExtractorConfig& cfg,
+				   const TickExtractorConfig& cfg,
 				   CLAM::Pulse& ticksSequence,
 				   CLAM::Pulse& beatsSequence );
 }

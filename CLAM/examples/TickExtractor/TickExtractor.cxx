@@ -58,7 +58,7 @@ namespace CLAM
 		ExtractTicksSequence( pathToFile, defaultConfig, ticksList, beatsList );
 	}
 
-	static void OnsetDetection( TickExtractorConfig& configuration, 
+	static void OnsetDetection( const TickExtractorConfig& configuration, 
 				    Audio& audioFromFile,
 				    Array<TimeIndex>& transients )
 	{
@@ -148,12 +148,12 @@ namespace CLAM
 	}
 	
 	void ExtractTicksSequence( std::string pathToFile,
-				   TickExtractorConfig& configuration,
+				   const TickExtractorConfig& configuration,
 				   CLAM::Pulse& tickSequence,
 				   CLAM::Pulse& beatSequence )	
 	{
 
-		configuration.SetFromAudio( false );		
+		//configuration.SetFromAudio( false );		
 		Audio   audioFromFile;
 
 		try
