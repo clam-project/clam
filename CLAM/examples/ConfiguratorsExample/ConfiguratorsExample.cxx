@@ -20,11 +20,12 @@
  */
 
 #include "FLTKConfigurator.hxx"
-//#include "QTConfigurator.hxx"
+#include "QTConfigurator.hxx"
+#include <qapplication.h>
 #include "HeapDbg.hxx"
 #include "DynamicType.hxx"
 
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -165,14 +166,13 @@ public:
 using namespace CLAMTest;
 
 int TryQTConfigurator(DummyConfig & config, int argc, char**argv)
-{/*
+{
 	QApplication a(argc,argv);
 	CLAM::QTConfigurator configurator;
 	configurator.SetConfig(config);
 	configurator.show();
 	a.setMainWidget( &configurator );
-	return a.exec();*/
-	return 0;
+	return a.exec();
 }
 
 int TryFLTKConfigurator(DummyConfig & config)
