@@ -25,6 +25,7 @@
 #include "AudioDescriptors.hxx"
 #include "AudioFileIn.hxx"
 #include "AudioFileConfig.hxx"
+#include <cmath>
 
 
 /*
@@ -117,8 +118,11 @@ private:
 			audio = helperGetData((*it).first);
 			mDescriptors->SetpAudio(&audio);
 			mDescriptors->Compute();
-			if ((mDescriptors->*getter)() > (*it).second + tolerance
-			    || (mDescriptors->*getter)() < (*it).second - tolerance)
+			if (
+				std::isnan((mDescriptors->*getter)()) ||
+				(mDescriptors->*getter)() > (*it).second + tolerance ||
+				(mDescriptors->*getter)() < (*it).second - tolerance
+				)
 			{
 				log << (*it).first
 				<< ": expected " << (*it).second
@@ -264,7 +268,7 @@ private:
 
 	void testDecrease()
 	{
-		CLAM::TData tolerance = 0.1;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 0.001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = -1.229580;
