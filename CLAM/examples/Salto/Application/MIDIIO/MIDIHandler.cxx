@@ -137,12 +137,10 @@ namespace CLAM
 					Params().SetDisplayedValuesChanged(true); // display needs update 
 
 					TIndex val = 30-velocity;
-					#ifdef TRUMPET
-					val = CLIP(val,1,10);
-					#endif           
-					#ifdef ALTOSAX    
+					if (TRUMPET)
+						val = CLIP(val,1,10);
+					if (ALTOSAX)
 					val = CLIP(val,2,10);
-					#endif            
 					//Params().SetAttackTimbreTransFrames(val);    
 
 					if (pitch>=Params().GetAttackTimbre().GetPitch())   // check if transition up or down

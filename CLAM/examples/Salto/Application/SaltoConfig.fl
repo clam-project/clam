@@ -12,9 +12,9 @@ class SaltoConfig {open
 } {
   decl {int mInstrument;} {public
   }
-  decl {char* mDataFolder;} {public
+  decl {char mDataFolder[1024];} {public
   }
-  Function {SaltoConfig()} {open
+  Function {SaltoConfig(int argc,char** argv)} {open
   } {
     Fl_Window mWindow {open
       xywh {988 507 336 170} align 0 visible
@@ -31,12 +31,12 @@ class SaltoConfig {open
           xywh {5 15 15 15} type Radio box THIN_DOWN_BOX down_box THIN_DOWN_BOX value 1 color 7 selection_color 2 align 8
         }
       }
-      Fl_Output mDataFolderOutput {selected
+      Fl_Output mDataFolderOutput {
         xywh {5 100 325 25} box THIN_DOWN_BOX align 0 textfont 4 textsize 12
       }
       Fl_Button {} {
         label Choose
-        callback {mDataFolderOutput->value(fl_file_chooser("","",""));}
+        callback {SetDataFolder(fl_file_chooser("","",""));}
         xywh {250 70 80 25} box THIN_UP_BOX
       }
       Fl_Box {} {
@@ -46,12 +46,29 @@ class SaltoConfig {open
       Fl_Button {} {
         label Ok
         callback {mInstrument = mTrumpet->value();
-mDataFolder = new char[1+strlen(mDataFolderOutput->value())];
-strcpy(mDataFolder,mDataFolderOutput->value());
-delete mWindow;}
+mWindow->hide();}
         xywh {275 140 55 25} box THIN_UP_BOX
       }
     }
-    code {mWindow->show(); Fl::run();} {}
+    code {SetDataFolder("");} {}
+    code {{
+	int i;
+	for (i=1;i<argc;i++)
+	{
+		if (argv[i][0]=='-' && argv[i][1]=='t')
+			mTrumpet->value(1);
+		else
+			SetDataFolder(argv[i]);
+	}
+}
+mWindow->show();
+Fl::run();} {selected
+    }
+  }
+  Function {SetDataFolder(char* choice)} {open
+  } {
+    code {if (choice==0) choice="";
+strcpy(mDataFolder,choice);
+mDataFolderOutput->value(mDataFolder);} {}
   }
 } 
