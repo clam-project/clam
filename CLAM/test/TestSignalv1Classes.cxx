@@ -38,9 +38,9 @@ namespace CLAMTest
 
 		void Slotted::LinkWith( Signaler& sig )
 		{
-				mSignalSlot.Bind( sig.GetNewIntegerSignal().Connect( this, &Slotted::React ) );
-				mStaticSignalSlot.Bind( sig.GetNewIntegerSignal().Connect( &Slotted::sReact ) );
-				mPureVirtualSignalSlot.Bind( sig.GetNewIntegerSignal().Connect( this, &Slotted::PureVirtualReact ) );
+				sig.GetNewIntegerSignal().Connect( this, &Slotted::React, mSignalSlot );
+				sig.GetNewIntegerSignal().Connect( &Slotted::sReact, mStaticSignalSlot );
+				sig.GetNewIntegerSignal().Connect( this, &Slotted::PureVirtualReact,mPureVirtualSignalSlot );
 		}
 
 		bool Slotted::WasCorrectlyNotified()
@@ -72,9 +72,9 @@ namespace CLAMTest
 
 			while( i != end )
 			{
-				mSignalSlot.Bind( i->GetNewIntegerSignal().Connect( this, &Slotted::React ) );
-				mStaticSignalSlot.Bind( i->GetNewIntegerSignal().Connect( &Slotted::sReact ) );
-				mPureVirtualSignalSlot.Bind( i->GetNewIntegerSignal().Connect( this, &SlottedBase::PureVirtualReact ) );
+				i->GetNewIntegerSignal().Connect( this, &Slotted::React,mSignalSlot );
+				i->GetNewIntegerSignal().Connect( &Slotted::sReact, mStaticSignalSlot );
+				i->GetNewIntegerSignal().Connect( this, &SlottedBase::PureVirtualReact, mPureVirtualSignalSlot );
 
 				i++;
 			}

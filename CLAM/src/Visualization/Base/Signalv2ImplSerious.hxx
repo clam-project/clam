@@ -19,23 +19,23 @@ public:
 public:
 	
 	template < class RefType, typename PtrMember >
-		Connection Connect( RefType thisRef, PtrMember pMember )
+		void Connect( RefType thisRef, PtrMember pMember, Slot& slot )
 	{
-		Connection s( AssignConnection(), this );
+		Connection c( AssignConnection(), this );
 
-		mSuper.AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, *thisRef, pMember ) );
+		mSuper.AddCallback( c.GetID(), CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, *thisRef, pMember ) );
 
-		return s;
+		slot.Bind(c);
 	}
 
 	template < typename PtrFunction >
-		Connection Connect( PtrFunction pMember )
+		void Connect( PtrFunction pMember, Slot& slot )
 	{
-		Connection s( AssignConnection(), this );
+		Connection c( AssignConnection(), this );
 
 		mSuper.AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor2<ParmType2>*)0, pMember ) );
 
-		return s;
+		slot.Bind(c);
 	}
 	
 	void Emit( ParmType1 parm1, ParmType2 parm2 )
