@@ -9,12 +9,12 @@ namespace CLAMVM
 	Fl_SMS_BPF_Editor::Fl_SMS_BPF_Editor( int X, int Y, int W, int H )
 		: Fl_Group( X, Y, W, H), mpFunctionEditor( NULL )
 	{
-		mpFunctionEditor = new Fl_Envelope_Scroll( X+15, Y+15, W-30, H-30 );
+		mpFunctionEditor = new Fl_Envelope_Scroll( X+5, Y+5, W-10, H-30 );
 		mpFunctionEditor->envelope.grid( 0.1f, 0.1f );
 		mpFunctionEditor->control.hvalue( 0.0, 1.0, 0.0, 1.0 );
 		mpFunctionEditor->control.vvalue( 0.0, 1.0, 0.0, 1.0 );
 		mpFunctionEditor->envelope.margin( 20, 10, 0, 0 );
-		mpFunctionEditor->margin_adjust();
+		//mpFunctionEditor->margin_adjust();
 		mpFunctionEditor->end();
 
 		mpSnapToGridBtn = new Fl_Check_Button( X+10, H-15, W-40, 15 );
