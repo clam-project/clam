@@ -25,9 +25,9 @@
 #define _TokenDelay_
 
 #include "Processing.hxx"
-//#include "ProcessingData.hxx"
 #include "InControl.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
 #include <string>

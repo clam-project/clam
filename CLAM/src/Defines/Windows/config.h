@@ -19,8 +19,6 @@
  *
  */
 
-
-
 /* Define whether you have an std version that is not full compliant
  * to the standard (such as the one included in Visual C++)
  */
@@ -87,11 +85,9 @@
 		typedef ::size_t size_t;
 	} // namespace
 #endif // MSVC++ 6
-#endif
+#endif //__cplusplus
 
 // Needed for getting RtAudio to compile right for Windoze
 #define __WINDOWS_DS__
 
-#endif
-
-
+#endif //_MSC_VER

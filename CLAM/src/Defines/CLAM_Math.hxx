@@ -110,7 +110,7 @@ inline float log2lin( float x )
 
 //	static double magic = 1.0 / (20.0 * log10(exp(1.0)))=0.1151292546497;
 
-	return exp( x * 0.1151292546497 );
+	return exp( x * 0.1151292546497f );
 
 }
 

@@ -24,7 +24,6 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "Port.hxx"
 #include "Spectrum.hxx"
 #include "SpectralPeak.hxx"
 #include "SpectralPeakArray.hxx"
@@ -114,8 +113,6 @@ namespace CLAM {
 		 *  @return Boolean value, true if all has been executed correctly.
 		 */
 		bool Do(Spectrum& input, SpectralPeakArray& out);
-
-		// Port interfaces.
 
 		/** Change the internal type state.  
 		 * Apart from prototype configuration, the Size, Scale and

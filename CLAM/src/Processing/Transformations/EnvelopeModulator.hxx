@@ -23,7 +23,8 @@
 #define _EnvelopeModulator_
 
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Envelope.hxx"
 #include "Audio.hxx"
 

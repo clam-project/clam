@@ -28,10 +28,23 @@
 
 namespace CLAM {
 
+	//-------------------------------------------
+	class NodeBase {
+	public:
+		virtual ~NodeBase() {}
+		
+	};
+
+	//-------------------------------------------
+	
+	// forward declarations:
 	class Port;
+	class OutPort;
+	class InPort;
 
 	template<class T>
-	class Node {
+	class Node : public NodeBase
+	{
 	protected:
 		OutPort *mpDriver;
 		Array<InPort*> mInputs;
@@ -65,7 +78,7 @@ namespace CLAM {
 
 
 	template<>
-	class Node<Audio>
+	class Node<Audio> : public NodeBase
 	{
 	protected:
 		OutPort *mpDriver;

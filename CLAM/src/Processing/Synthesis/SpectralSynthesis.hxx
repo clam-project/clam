@@ -36,7 +36,6 @@
 #include "Segment.hxx"
 #include "InControl.hxx"
 #include "Spectrum.hxx"
-#include "Port.hxx"
 #include "ProcessingData.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "Processing.hxx"
@@ -71,9 +70,9 @@ public:
 	DYN_ATTRIBUTE(2,public,WindowGeneratorConfig,SynthWindowGenerator);
 	DYN_ATTRIBUTE(3,public,CircularShiftConfig,CircularShift);
 	DYN_ATTRIBUTE(4,public,IFFTConfig,IFFT);
-	DYN_ATTRIBUTE(5,protected,int, prZeroPadding);
-	DYN_ATTRIBUTE(6,protected,int,prSamplingRate);
-	DYN_ATTRIBUTE(7,public,bool,Residual);
+	DYN_ATTRIBUTE(5,public,OverlapAddConfig,OverlapAdd);
+	DYN_ATTRIBUTE(6,protected,int, prZeroPadding);
+	DYN_ATTRIBUTE(7,protected,int,prSamplingRate);
 
 
 //Config shortcuts
@@ -133,6 +132,9 @@ public:
 /** Setter for Spectrum Size **/
 	void SetSpectrumSize(TSize specSize);
 	TSize GetSpectrumSize() const;
+/** Frame Size **/
+	void SetFrameSize(TSize f);
+	TSize GetFrameSize();
 
 private:
 
@@ -165,7 +167,8 @@ private:
 		IFFT_rfftw              mPO_IFFT;
 		AudioMultiplier            mPO_AudioProduct;
 		CircularShift			mPO_CircularShift;
-			
+		OverlapAdd				mPO_OverlapAdd;
+	
 		// And the interfaces with the outside world.
 
 		
@@ -185,10 +188,9 @@ private:
 		SpectralSynthesis(const SpectralSynthesisConfig& cfg);
 		SpectralSynthesis();
 		~SpectralSynthesis();
-
-		void Attach(Spectrum& in, Audio &out);
 		
-// Processing Object compliance methods.
+		// Processing Object compliance methods.
+
 		const char *GetClassName() const {return "SpectralSynthesis";}
 
 
@@ -200,13 +202,8 @@ private:
 		/** Unsupervised mode execution */
 		bool Do(Spectrum& in, Audio &out);
 		
-		bool Do(Frame& in);
-		bool Do(Segment& in);
-
-
-		/** Ports */
-		InPortTmpl<Spectrum>     mInput;
-		OutPortTmpl<Audio> mOutput;
+		bool Do(Frame& in, bool residual=false);
+		bool Do(Segment& in, bool residual=false);
 
 
 	};

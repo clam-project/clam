@@ -23,14 +23,13 @@
 #ifndef _SpectralFilterGen_
 #define _SpectralFilterGen_
 
-#include"Processing.hxx"
-#include"ProcessingData.hxx"
-#include"Port.hxx"
-#include"DataTypes.hxx"
-#include"Audio.hxx"
-#include"Spectrum.hxx"
+#include "Processing.hxx"
+#include "ProcessingData.hxx"
+#include "OutPortTmpl.hxx"
+#include "DataTypes.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 #include "Enum.hxx"
-// #include"Defines.hxx"
 
 namespace CLAM {
 

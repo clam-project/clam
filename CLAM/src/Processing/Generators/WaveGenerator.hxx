@@ -24,7 +24,7 @@
 
 #include "Audio.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM {
 

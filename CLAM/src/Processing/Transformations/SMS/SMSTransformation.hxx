@@ -25,7 +25,8 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 
 #include "BPF.hxx"
 

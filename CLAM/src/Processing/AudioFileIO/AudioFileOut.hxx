@@ -25,7 +25,8 @@
 #include "Audio.hxx"
 #include "AudioFile.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+
 
 
 namespace CLAM {
@@ -40,6 +41,10 @@ namespace CLAM {
 		AudioFileConfig mConfig;
 		SoundFileIO* mpSoundFileIO;
 	private:
+
+
+		InPortTmpl<Audio> Input;
+
 		const char *GetClassName() const {return "AudioFileOut";}
 
 		/** Configuration change method
@@ -59,8 +64,6 @@ namespace CLAM {
 		AudioFileOut();
 
 		AudioFileOut(const AudioFileConfig &c);
-
-		InPortTmpl<Audio> Input;
 
 		virtual ~AudioFileOut();
 

@@ -66,10 +66,9 @@ namespace CLAM {
 		return name.str();
 	}
 
-	bool SpectrumSubstracter2::ConcreteConfigure(const ProcessingConfig&c) throw(std::bad_cast)
+	bool SpectrumSubstracter2::ConcreteConfigure(const ProcessingConfig&c)
 	{
-		// Nothing specific to configure here...
-		mConfig = dynamic_cast<const SpecSubstracter2Config&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		
 		return true;
 	}

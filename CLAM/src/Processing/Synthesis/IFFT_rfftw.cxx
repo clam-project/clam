@@ -19,12 +19,12 @@
  *
  */
 
-#include"IFFT_rfftw.hxx"
+#include "IFFT_rfftw.hxx"
 
-#include<string>
+#include <string>
 #include "mtgsstream.h" // An alias for <sstream>
 
-#include"ErrProcessingObj.hxx"
+#include "ErrProcessingObj.hxx"
 
 namespace CLAM {
 

@@ -20,16 +20,21 @@
  */
 
 
-#ifndef _PROCESING_OBJECT_H
-#define _PROCESING_OBJECT_H
+#ifndef _Processing_hxx_
+#define _Processing_hxx_
 
-// CLAM Processing Object prototype.
 
 #include "DynamicType.hxx"
 #include "Component.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
+#include "PublishedInControls.hxx"
+#include "PublishedOutControls.hxx"
+#include "PublishedInPorts.hxx"
+#include "PublishedOutPorts.hxx"
+
+
 #include <vector>
 #include <list>
 #include <typeinfo>
@@ -38,9 +43,15 @@
 namespace CLAM {
 
 	class Processing;
+	class Port;
 	class InPort;
 	class OutPort;
 	class ProcessingComposite;
+
+	//! Free function that checks whether two ports are connected with a common 
+	//! ProcessingData
+	bool PortsAreConnected(Port &p1, Port &p2);
+
 
 	/**
 	 * This is an abstract class which serves as interface for
@@ -95,8 +106,8 @@ namespace CLAM {
 
 	/**
 	 * This is the base of all the CLAM processing object classes.
-	 * <p>
-	 * It holds information common to all objects: lists of ports,
+	 * 
+	 * It holds common information to all processings: lists of ports,
 	 * lists of controls, name, etc.  */
 	class Processing: public Component {
 	public:
@@ -533,7 +544,7 @@ namespace CLAM {
 		 */
 		virtual void StoreOn(Storage & store)
 		{
-
+			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
 		}
 
 		/**
@@ -550,11 +561,46 @@ namespace CLAM {
 		 */
 		virtual void LoadFrom(Storage & store)
 		{
-
+			CLAM_ASSERT(false, "Processing::LoadFrom() not yet implemented");
 		}
+
+		//---------
+		// refactoring ports/controls in progress
+		// begin
+	public:
+		
+		PublishedInControls& GetInControls()
+		{
+			return mInControls;
+		}
+		
+		PublishedOutControls& GetOutControls()
+		{
+			return mOutControls;
+		}
+	
+		PublishedInPorts& GetInPorts()
+		{
+			return mInPorts;
+		}
+		PublishedOutPorts& GetOutPorts()
+		{
+			return mOutPorts;
+		}
+
+	private:
+		PublishedInControls mInControls;
+		PublishedOutControls mOutControls;
+		PublishedInPorts mInPorts;
+		PublishedOutPorts mOutPorts;
+
+		// end refactoring in progress
+		// ---------
+
 	};
+
 
 };//namespace CLAM
 
-#endif//_PROCESING_OBJECT_H
+#endif
 

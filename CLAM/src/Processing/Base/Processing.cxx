@@ -24,6 +24,9 @@
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
 #include "ErrDynamicType.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+
 
 #include "mtgsstream.h" // An alias for <sstream>
 #include <cstring>
@@ -31,11 +34,27 @@
 
 namespace CLAM {
 
+	// function to check the connection of two ports
+	bool PortsAreConnected(CLAM::Port &p1, CLAM::Port &p2)
+	{
+		if ( 
+			(dynamic_cast<InPort*>(&p1) && dynamic_cast<InPort*>(&p2) ) ||
+	  		(dynamic_cast<OutPort*>(&p1) && dynamic_cast<OutPort*>(&p2) ) 
+	  	) CLAM_ASSERT( false, "The two passed ports are of the same kind. So cannot be connected");
+	  		 
+		return ( p1.IsAttached() && ( p1.GetProcessingData() == p2.GetProcessingData() ) );
+	}
+
+
 	const Processing::iterator 
 	Processing::null_iterator = Processing::iterator(0);
 
 	Processing::Processing() 
-		: mpParent(0)
+		: mpParent(0),
+		mInControls(this),
+		mOutControls(this),
+		mOutPorts(this),
+		mInPorts(this)
 	{
 		mState = Unconfigured;
 	}
