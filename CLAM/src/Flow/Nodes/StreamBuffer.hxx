@@ -31,14 +31,14 @@ namespace CLAM {
 	class Array;
 
 	/** Buffer class for streams of data objects.
-	 * <p>
+	 * 
 	 * This class implements the CLAM data stream abstraction, which
-	 * consist of a flow of data tokens with several "clientes" which
+	 * consist of a flow of data tokens with several "clients" which
 	 * read or modify the data flow through StreamRegion objects.
-	 * <p>
+	 * 
 	 * The utility of this class is two-fold:
-	 *   - It provides very eficient stream possition book-keeping for
-     *     the stream clients. They only need to perform Activate() and
+	 *   - It provides very eficient stream position book-keeping for
+	 *     the stream clients. They only need to perform Activate() and
 	 *     Leave() operations on the region.
 	 *   - It provides (not so eficient) run time checking in debug
 	 *     mode, which eases the manual implementation of client
@@ -203,13 +203,8 @@ namespace CLAM {
 
 	};
 
-}
 
 // Template method implementations:
-
-#include "Array.hxx"
-
-namespace CLAM {
 
 	template<class D, class B>
 	StreamBuffer<D,B>::StreamBuffer(unsigned int max_window_size)

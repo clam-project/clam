@@ -34,7 +34,6 @@
 #include "Segment.hxx"
 #include "InControl.hxx"
 #include "Spectrum.hxx"
-#include "Port.hxx"
 #include "ProcessingData.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "Processing.hxx"

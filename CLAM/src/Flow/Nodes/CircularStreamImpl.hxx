@@ -109,7 +109,9 @@ namespace CLAM {
 		bool FulfilsInvariant();
 	};
 
-
+///////////////////////////////////////////////////////////////////////////////
+// Here goes the implementation
+///////////////////////////////////////////////////////////////////////////////
 
 	template<class T>
 	CircularStreamImpl<T>::CircularStreamImpl(unsigned int max_window_size,
@@ -269,6 +271,10 @@ namespace CLAM {
 	}
 
 }
+
+
+
+
 
 
 #endif

@@ -31,8 +31,9 @@
 
 namespace CLAM {
 
-#if !defined (_MSC_VER)//this class does not compile under Visual 6!
+#if !defined _MSC_VER || _MSC_VER >= 1310 // MSVC++ 6 this class does not compile under Visual 6!
 	
+
 	template<class B>
 	class StreamBuffer<Audio,B> : public StreamBuffer<TData,B> {
 
@@ -51,38 +52,38 @@ namespace CLAM {
 		{}
 
 		void SetSampleRate(TData sr) {  mSampleRate = sr; }
-
+		
 		void SetPrototype(const Audio& proto) {  mSampleRate = proto.GetSampleRate(); }
-
+		
 		template<class REGION>
 		void GetAndActivate(REGION* r, Audio &a)
 		{
 			a.SetSampleRate(mSampleRate);
 			StreamBuffer<TData,B>::GetAndActivate(r,a.GetBuffer());
 		}
-
+		
 	};
 #endif
-
+	
 /**NOTE: this class is exactly the same as StreamBuffer<Audio,B> except for one minor detail:
-	it compiles under Visual 6 !*/	
+   it compiles under Visual 6 !*/	
 	template<class B>
-		class AudioStreamBuffer : public StreamBuffer<TData,B> {
-
+	class AudioStreamBuffer : public StreamBuffer<TData,B> {
+		
 		TData mSampleRate;
-
+		
 	public:
-
+		
 		AudioStreamBuffer(unsigned int max_window_size = 0)
 			: StreamBuffer<TData,B>(max_window_size),
 			  mSampleRate(0.0)
 		{}
-
-		AudioStreamBuffer(const StreamBuffer& b)
+		
+		AudioStreamBuffer(const StreamBuffer<TData,B> & b)
 			: StreamBuffer<TData,B>(b),
 			  mSampleRate(0.0)
 		{}
-
+		
 		void SetSampleRate(TData sr) {  mSampleRate = sr; }
 
 		void SetPrototype(const Audio& proto) {  mSampleRate = proto.GetSampleRate(); }
