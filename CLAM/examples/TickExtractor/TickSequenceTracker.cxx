@@ -356,10 +356,10 @@ namespace CLAM
 
 		std::cerr << "Number of loops: " << nLoops;
 		///Compute Global tempo
-		RhythmDescription::GlobalPulseConfig gpconf;
+		RhythmDescription::GlobalPulseGeneratorConfig gpconf;
 		gpconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 		//This is bad, There should be a global attribute specifying this size
-		RhythmDescription::GlobalPulse gpulse;
+		RhythmDescription::GlobalPulseGenerator gpulse;
 		gpulse.Configure(gpconf);
 		
 		if (computeBeats)
@@ -440,7 +440,7 @@ namespace CLAM
 		}
 	}
 
-	TData TickSequenceTracker::CompGlobPulse(RhythmDescription::GlobalPulse& gpulse,
+	TData TickSequenceTracker::CompGlobPulse(RhythmDescription::GlobalPulseGenerator& gpulse,
 						 const int pulseLimSup, 
 						 const Array<TData> &forGlobalPulseCalc)
 	{

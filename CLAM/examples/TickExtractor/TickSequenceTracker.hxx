@@ -20,7 +20,7 @@ namespace CLAM
 
 	namespace RhythmDescription
 	{
-		class GlobalPulse;
+		class GlobalPulseGenerator;
 		class GridGen;
 	}
 
@@ -57,14 +57,17 @@ namespace CLAM
 			     TData& globalTick,
 			     TData& globalTempo);
 
-		TData CompGlobPulse(RhythmDescription::GlobalPulse& gpulse, const int pulseLimSup, 
-				    const Array<TData> &forGlobalPulseCalc);
+		TData CompGlobPulse( RhythmDescription::GlobalPulseGenerator& gpulse, 
+				     const int pulseLimSup, 
+				     const Array<TData> &forGlobalPulseCalc);
 
-		void StorePulseIndexes(const int nLoops, const Array<TimeIndex>& pulsesArray,
-				       Array<TimeIndex>& mPulses);
+		void StorePulseIndexes( const int nLoops, 
+					const Array<TimeIndex>& pulsesArray,
+				        Array<TimeIndex>& mPulses );
 
-		void GeneratePulseGrid(const TData start, const TData gap, const TData end, 
-				       RhythmDescription::GridGen& pulseGridGen, Array<TimeIndex>& pulseArray);
+		void GeneratePulseGrid( const TData start, const TData gap, const TData end, 
+					RhythmDescription::GridGen& pulseGridGen, 
+					Array<TimeIndex>& pulseArray );
 
 
 		unsigned AdjustTickIntervalForSwing( RhythmDescription::IOIHistogram& ioiHistogram, 

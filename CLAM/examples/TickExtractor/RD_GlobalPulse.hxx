@@ -37,18 +37,18 @@ namespace CLAM
 	namespace RhythmDescription
 	{
 
-		class GlobalPulseConfig: public ProcessingConfig
+		class GlobalPulseGeneratorConfig: public ProcessingConfig
 		{
 		public:
-			DYNAMIC_TYPE_USING_INTERFACE (GlobalPulseConfig, 1,ProcessingConfig);
+			DYNAMIC_TYPE_USING_INTERFACE (GlobalPulseGeneratorConfig, 1,ProcessingConfig);
 			DYN_ATTRIBUTE (0,public, TSize, GaussianSize);
 		protected:
 			void DefaultInit();
 		};
 
-		class GlobalPulse: public Processing 
+		class GlobalPulseGenerator: public Processing 
 		{
-			GlobalPulseConfig mConfig;
+			GlobalPulseGeneratorConfig mConfig;
 
 			WindowGenerator mWindowGen;
 			DataArray       mWindow;
@@ -58,9 +58,9 @@ namespace CLAM
 			bool ConcreteConfigure(const ProcessingConfig&);
 
 		public:
-			GlobalPulse();
+			GlobalPulseGenerator();
 
-			~GlobalPulse();
+			~GlobalPulseGenerator();
 
 			const ProcessingConfig &GetConfig() const { return mConfig;}
 

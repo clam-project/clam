@@ -34,7 +34,7 @@ namespace CLAM
 	namespace RhythmDescription
 	{
 
-		void GlobalPulseConfig::DefaultInit()
+		void GlobalPulseGeneratorConfig::DefaultInit()
 		{
 			AddGaussianSize();
 			UpdateData();
@@ -42,22 +42,22 @@ namespace CLAM
 		}
 
 
-		GlobalPulse::GlobalPulse()
+		GlobalPulseGenerator::GlobalPulseGenerator()
 		{
 
 		}
 
 
-		GlobalPulse::~GlobalPulse()
+		GlobalPulseGenerator::~GlobalPulseGenerator()
 		{
 		}
 
-		const char* GlobalPulse::GetClassName() const
+		const char* GlobalPulseGenerator::GetClassName() const
 		{
-			return "GlobalPulse";
+			return "GlobalPulseGenerator";
 		}
 
-		bool GlobalPulse::ConcreteConfigure(const ProcessingConfig& c)
+		bool GlobalPulseGenerator::ConcreteConfigure(const ProcessingConfig& c)
 		{
 			CopyAsConcreteConfig( mConfig, c );
 			WindowGeneratorConfig winconf;
@@ -82,18 +82,18 @@ namespace CLAM
 
 		/* Setting Prototypes for faster processing */
 
-		bool GlobalPulse::SetPrototypes(Array<TData>& in,const Audio& out)
+		bool GlobalPulseGenerator::SetPrototypes(Array<TData>& in,const Audio& out)
 		{ return false;
 		}
 
 		/* The supervised Do() function */
-		bool  GlobalPulse::Do(void) 
+		bool  GlobalPulseGenerator::Do(void) 
 		{
 			return false;
 		}
 
 		/* The  unsupervised Do() function */
-		bool  GlobalPulse::Do(const Array<TData>& in, IOIHistogram& out)
+		bool  GlobalPulseGenerator::Do(const Array<TData>& in, IOIHistogram& out)
 		{
 			int gsize = mConfig.GetGaussianSize();
 	
