@@ -58,6 +58,8 @@ namespace CLAM
 		void AudioDecimator::DecimateFrom44100To22050( const DataArray& signal,
 							       DataArray& decimatedSignal )
 		{
+			TSize size = signal.Size();
+
 			if ( mOutput.Size() < signal.Size() )
 			{
 				mOutput.Resize( signal.Size() );
@@ -86,29 +88,45 @@ namespace CLAM
 			b8 = 0.23814049785960;			
 			
 			int i;
+
+			// The "difficult" part of the filtering loop has been stripmined
+			
+			mOutput[0] = a0*signal[0];
+
+			mOutput[1] = a0*signal[1]+ a1*signal[0]
+				- b1*mOutput[0];
+
+			mOutput[2] = a0*signal[2]+ a1*signal[1] + a2*signal[0] 
+				- b1*mOutput[1] - b2*mOutput[0];
+
+			mOutput[3] = a0*signal[3]+ a1*signal[2] + a2*signal[1] + a3*signal[0] 
+				- b1*mOutput[2] - b2*mOutput[1] - b3*mOutput[0];
+
+			mOutput[4] = a0*signal[4]+ a1*signal[3] + a2*signal[2] + a3*signal[1]  + a4*signal[0]
+				- b1*mOutput[3] - b2*mOutput[2] - b3*mOutput[1] - b4*mOutput[0];
+
+			mOutput[5] = a0*signal[5]+ a1*signal[4] + a2*signal[3] + a3*signal[2]  + a4*signal[1]+ a5*signal[0]
+				- b1*mOutput[4] - b2*mOutput[3] - b3*mOutput[2] - b4*mOutput[1]- b5*mOutput[0];
+
+			mOutput[6] = a0*signal[6]+ a1*signal[5] + a2*signal[4] + a3*signal[3]  + a4*signal[2]+ a5*signal[1]+ a6*signal[0]
+				- b1*mOutput[5] - b2*mOutput[4] - b3*mOutput[3] - b4*mOutput[2]- b5*mOutput[1]- b6*mOutput[0];
+
+			mOutput[7] = a0*signal[7]+ a1*signal[6] + a2*signal[5] + a3*signal[4]  + a4*signal[3]+ a5*signal[2]
+				+ a6*signal[1]+ a7*signal[0]
+				- b1*mOutput[6] - b2*mOutput[5] - b3*mOutput[4] - b4*mOutput[3]- b5*mOutput[2]
+				- b6*mOutput[1]- b7*mOutput[0];
 			
 			//filtering
-			for(i=0; i<signal.Size(); i++)
+			for(i=8; i<size; i++)
 			{
-				if(i==0) mOutput[i] = a0*signal[i];
-				else if(i==1) mOutput[i] = a0*signal[i]+ a1*signal[i-1]- b1*mOutput[i-1];
-				else if(i==2) mOutput[i] = a0*signal[i]+ a1*signal[i-1] + a2*signal[i-2] - b1*mOutput[i-1] - b2*mOutput[i-2];
-				else if(i==3) mOutput[i] = a0*signal[i]+ a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3] - b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3];
-				else if(i==4) mOutput[i] = a0*signal[i]+ a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3]  + a4*signal[i-4]
-						      - b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4];
-				else if(i==5) mOutput[i] = a0*signal[i]+ a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3]  + a4*signal[i-4]+ a5*signal[i-5]
-						      - b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4]- b5*mOutput[i-5];
-				else if(i==6) mOutput[i] = a0*signal[i]+ a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3]  + a4*signal[i-4]+ a5*signal[i-5]+ a6*signal[i-6]
-						      - b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4]- b5*mOutput[i-5]- b6*mOutput[i-6];
-				else if(i==7) mOutput[i] = a0*signal[i]+ a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3]  + a4*signal[i-4]+ a5*signal[i-5]+ a6*signal[i-6]+ a7*signal[i-7]
-						      - b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4]- b5*mOutput[i-5]- b6*mOutput[i-6]- b7*mOutput[i-7];
-				else mOutput[i] = a0*signal[i] + a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3] + a4*signal[i-4] + a5*signal[i-5]
-					     + a6*signal[i-6] + a7*signal[i-7] + a8*signal[i-8]- b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4] - b5*mOutput[i-5] - b6*mOutput[i-6] - b7*mOutput[i-7] - b8*mOutput[i-8];
+
+				mOutput[i] = a0*signal[i] + a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3] + a4*signal[i-4] + a5*signal[i-5]
+					+ a6*signal[i-6] + a7*signal[i-7] + a8*signal[i-8]
+					- b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4] - b5*mOutput[i-5] 
+					- b6*mOutput[i-6] - b7*mOutput[i-7] - b8*mOutput[i-8];
 				
-				}
-			
-			
-			
+			}
+									
 			TSize decimatedSize = signal.Size() / 2;
 			decimatedSignal.Resize(decimatedSize);
 			decimatedSignal.SetSize(decimatedSize);
