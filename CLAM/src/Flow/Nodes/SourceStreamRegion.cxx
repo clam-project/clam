@@ -46,9 +46,8 @@ namespace CLAM {
 	}
 
 	SourceStreamRegion::SourceStreamRegion(unsigned int hop,
-	                                       unsigned int length,
-	                                       unsigned int offset)
-		: StreamRegion(hop,length,offset)
+	                                       unsigned int length)
+		: StreamRegion(hop,length)
 	{}
 
 	bool SourceStreamRegion::IsSourceOf(const ReadStreamRegion* reader) const
@@ -78,6 +77,41 @@ namespace CLAM {
 				return false;
 
 		return true;
+	}
+
+	void SourceStreamRegion::InitReaders(unsigned int offset) 
+	{
+		reader_iterator it;
+		for (it=readers_begin(); it!=readers_end(); it++)
+			(*it)->Init(offset);
+	}
+	
+	void SourceStreamRegion::Init(unsigned int offset)
+	{
+		unsigned int realOffset=Chop(FindLargestReadRegionLength()*0.5)+offset;
+		unsigned int hopsInHalfWindow=Chop(realOffset/mHop);
+
+		int i;
+		for(i=0;i<hopsInHalfWindow;i++)
+		{
+			Activate();
+			//Would have to make sure that zeros are here
+			LeaveAndAdvance();
+		}
+		mOffset= realOffset;
+		InitReaders(realOffset);
+	}
+
+	unsigned int SourceStreamRegion::FindLargestReadRegionLength()
+	{
+		unsigned int len=0;
+
+		reader_const_iterator rit;
+
+		for (rit=readers_begin();  rit != readers_end();  rit++)
+				if ((*rit)->MaxLength() >len) len=(*rit)->MaxLength();
+		
+		return len;
 	}
 
 }

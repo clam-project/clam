@@ -19,26 +19,15 @@
  *
  */
 
-#ifndef _WRITE_STREAM_REGION_H
-#define _WRITE_STREAM_REGION_H
-
-#include "SourceStreamRegion.hxx"
+#include "AddStreamRegion.hxx"
 
 namespace CLAM {
 
-	class WriteStreamRegion : public SourceStreamRegion {
-	public:
-		WriteStreamRegion(unsigned int hop,
-		                  unsigned int length)
-			: SourceStreamRegion(hop,length)
-		{}
-
-		virtual bool FulfilsInvariant() const;
-		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
-
-	};
+	bool AddStreamRegion::FulfilsInvariant() const
+	{
+		bool ok = true;
+		ok &= SourceStreamRegion::FulfilsInvariant();
+		return ok;
+	}
 
 }
-
-
-#endif

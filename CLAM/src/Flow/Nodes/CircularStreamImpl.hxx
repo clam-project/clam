@@ -94,6 +94,7 @@ namespace CLAM {
 		 */
 		//@{
 		inline void Leave(WriteStreamRegion*);
+		inline void Leave(AddStreamRegion*);
 		inline void Leave(InplaceStreamRegion*);
 		inline void Leave(ReadStreamRegion*) {}
 		inline void Leave(DelayStreamRegion*) {}
@@ -108,16 +109,9 @@ namespace CLAM {
 		bool FulfilsInvariant();
 	};
 
-}
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Here goes the implementation
 ///////////////////////////////////////////////////////////////////////////////
-
-
-namespace CLAM {
-
 
 	template<class T>
 	CircularStreamImpl<T>::CircularStreamImpl(unsigned int max_window_size,
@@ -177,6 +171,13 @@ namespace CLAM {
 
 	template<class T>
 	void CircularStreamImpl<T>::Leave(WriteStreamRegion*w)
+	{
+		mBuffer.Touch(w->Pos() % mLogicalSize,
+		              w->Len());
+	}
+
+	template<class T>
+	void CircularStreamImpl<T>::Leave(AddStreamRegion*w)
 	{
 		mBuffer.Touch(w->Pos() % mLogicalSize,
 		              w->Len());
@@ -270,6 +271,10 @@ namespace CLAM {
 	}
 
 }
+
+
+
+
 
 
 #endif

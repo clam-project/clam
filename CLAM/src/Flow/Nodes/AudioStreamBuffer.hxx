@@ -89,10 +89,10 @@ namespace CLAM {
 		void SetPrototype(const Audio& proto) {  mSampleRate = proto.GetSampleRate(); }
 
 		template<class REGION>
-		void GetAndActivate(REGION* r, Audio &a)
+		bool GetAndActivate(REGION* r, Audio &a)
 		{
 			a.SetSampleRate(mSampleRate);
-			StreamBuffer<TData,B>::GetAndActivate(r,a.GetBuffer());
+			return StreamBuffer<TData,B>::GetAndActivate(r,a.GetBuffer());
 		}
 
 	};

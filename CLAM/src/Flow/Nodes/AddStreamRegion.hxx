@@ -14,21 +14,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * along with this program; if not, Add to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
 
-#ifndef _WRITE_STREAM_REGION_H
-#define _WRITE_STREAM_REGION_H
+#ifndef _Add_STREAM_REGION_H
+#define _Add_STREAM_REGION_H
 
 #include "SourceStreamRegion.hxx"
 
 namespace CLAM {
 
-	class WriteStreamRegion : public SourceStreamRegion {
+	class AddStreamRegion : public SourceStreamRegion {
 	public:
-		WriteStreamRegion(unsigned int hop,
+		AddStreamRegion(unsigned int hop,
 		                  unsigned int length)
 			: SourceStreamRegion(hop,length)
 		{}
