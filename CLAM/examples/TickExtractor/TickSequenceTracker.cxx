@@ -67,7 +67,7 @@ namespace CLAM
 		
 		mTemporalDiff.SetParent( this );
 		
-		TemporalSeriesFinderConfig tsfConfig;
+		RhythmDescription::TimeSeriesFinderConfig tsfConfig;
 
 		mTimeSeriesFinder.Configure( tsfConfig );
 
@@ -515,7 +515,14 @@ namespace CLAM
 		pulseGridConf.SetStart(start);
 		pulseGridConf.SetGap(gap);
 		pulseGridConf.SetEnd(end);
+
+		int nUnits = 1+(end-start)/gap; //cast to an integer
+
+		pulseArray.Resize( nUnits );
+		pulseArray.SetSize( nUnits );
+
 		pulseGridGen.Configure(pulseGridConf);
+
 		pulseGridGen.Start();
 		pulseGridGen.Do(pulseArray);
 		pulseGridGen.Stop();

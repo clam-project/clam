@@ -9,8 +9,8 @@
 #include "IOIHistogram.hxx"
 #include "Pulse.hxx"
 #include "RD_TimeDifference.hxx"
-#include "TemporalSeriesFinder.hxx"
-#include "TemporalSeriesSeed.hxx"
+#include "RD_TimeSeriesFinder.hxx"
+#include "RD_TimeSeriesSeed.hxx"
 
 namespace CLAM
 {
@@ -80,14 +80,14 @@ namespace CLAM
 
 		RhythmDescription::IOIHistPeakDetector   mPeakDetector;
 		RhythmDescription::TimeDifference        mTemporalDiff;
-		TemporalSeriesFinder                     mTimeSeriesFinder;
-		TemporalSeriesFinderConfig               mTSFConfig;
+		RhythmDescription::TimeSeriesFinder                     mTimeSeriesFinder;
+		RhythmDescription::TimeSeriesFinderConfig               mTSFConfig;
 
 	private: // Internal PD's
 		
-		TemporalSeriesSeed    mTickFirstGuess;
-		TemporalSeriesSeed    mGoodTick;
-		TemporalSeriesSeed    mGoodTempo;
+		RhythmDescription::TimeSeriesSeed    mTickFirstGuess;
+		RhythmDescription::TimeSeriesSeed    mGoodTick;
+		RhythmDescription::TimeSeriesSeed    mGoodTempo;
 
 	};
 

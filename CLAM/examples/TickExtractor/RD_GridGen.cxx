@@ -80,9 +80,6 @@ namespace CLAM
 	
 			int nUnits = 1+(end-start)/gap; //cast to an integer
 
-			out.Resize(nUnits);
-			out.SetSize(nUnits);
-	
 			CLAM_ASSERT( out.Size() == nUnits,
 				     "PulseGridGenerator::Do() : output array of TimeIndex has not enough space to hold the grid" );
 
