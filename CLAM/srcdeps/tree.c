@@ -76,17 +76,19 @@ void tree_free(tree* l)
 	free(l);
 }
 
-void tree_add(tree* l,node* i)
+node* tree_add(tree* l,node* i)
 {
 	if (l->last) l->last->next = i;
 	else l->first = i;
 	l->last = i;
+	return i;
 }
 
-void tree_add_in_front(tree* l,node* i)
+node* tree_add_in_front(tree* l,node* i)
 {
 	i->next = l->first;
 	l->first = i;
+	return i;
 }
 
 int tree_size(tree* l)
@@ -119,25 +121,29 @@ node* tree_find(tree* l,const char* str)
 	return 0;
 }
 
-void tree_add_str(tree* l,const char* str)
+node* tree_add_str(tree* l,const char* str)
 {
 	node* i = node_new(str);
 	tree_add(l,i);
+	return i;
 }
 
-void tree_add_str_in_front(tree* l,const char* str)
+node* tree_add_str_in_front(tree* l,const char* str)
 {
 	node* i = node_new(str);
 	tree_add_in_front(l,i);
+	return i;
 }
 
-void tree_add_str_once(tree* l,const char* str)
+node* tree_add_str_once(tree* l,const char* str)
 {
-	if (!tree_find(l,str))
+	node *i = tree_find(l,str);
+	if (i==0)
 	{
-		node* i = node_new(str);
+		i = node_new(str);
 		tree_add(l,i);
 	}
+	return i;
 }
 
 void tree_rmv_after(tree* l,node* prev,node* i)

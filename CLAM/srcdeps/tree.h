@@ -26,13 +26,13 @@ void  tree_free(tree* l);
 
 int   tree_size(tree* l);
 
-void  tree_add(tree* l,node* i);
-void  tree_add_str(tree* l,const char* str);
+node* tree_add(tree* l,node* i);
+node* tree_add_str(tree* l,const char* str);
 
-void  tree_add_in_front(tree* l,node* i);
-void  tree_add_str_in_front(tree* l,const char* str);
+node* tree_add_in_front(tree* l,node* i);
+node* tree_add_str_in_front(tree* l,const char* str);
 
-void  tree_add_str_once(tree* l,const char* str);
+node* tree_add_str_once(tree* l,const char* str);
 
 node* tree_find(tree* l,const char* str);
 
