@@ -41,8 +41,17 @@ namespace CLAM {
 			(dynamic_cast<InPort*>(&p1) && dynamic_cast<InPort*>(&p2) ) ||
 	  		(dynamic_cast<OutPort*>(&p1) && dynamic_cast<OutPort*>(&p2) ) 
 	  	) CLAM_ASSERT( false, "The two passed ports are of the same kind. So cannot be connected");
-	  		 
-		return ( p1.IsAttached() && ( p1.GetProcessingData() == p2.GetProcessingData() ) );
+		if (!p1.IsAttached())
+		{
+			return false;
+		}
+		
+		if (p1.GetProcessingData() != 0)
+			return ( p1.GetProcessingData() == p2.GetProcessingData() );
+		if(p1.GetNode() != 0)
+			return ( p1.GetNode() == p2.GetNode() );
+
+		return false;
 	}
 
 
