@@ -1,12 +1,36 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
+#include <FL/Fl.H>
 #include "NotGeneratedUserInterface.hxx"
 #include "GeometryKit.hxx"
 #include "AnalysisSynthesisExampleGUI.hxx"
 #include "AudioBrowser.hxx"
 #include "SpectrumDisplay.hxx" 
 #include <FL/fl_file_chooser.H>
-#include <FL/Fl.H>
 #include "FLTKConfigurator.hxx"
+#include "Fl_Browsable_Playable_Audio.hxx"
+#include "AudioPlayer.hxx"
 
+using CLAMVM::Fl_Browsable_Playable_Audio;
 using CLAMVM::AudioBrowser;
 using CLAMVM::SpectrumDisplay;
 using CLAMVM::LogMagSpectrumAdapter;
@@ -28,7 +52,7 @@ void UserInterface::Update()
 	mAnalysisSynthesisExample->SetHaveConfig(true);
  	mAnalysisSynthesisExample->InitConfigs();
 	LoadSound();
-	DetachDisplays();
+	mVC.CloseAll();
 }
 
 
@@ -48,26 +72,9 @@ void UserInterface::LoadConfiguration(void)
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
 			mSynthesize->activate();
 		Fl::redraw();
-		DetachDisplays();
+		mVC.CloseAll();
 
 	}		
-}
-
-void UserInterface::DetachDisplays()
-{
-	if( mAudioInputDisplay!=NULL ){
-		Detach( mAudioInputDisplay );
-	}
-	if( mAudioOutputDisplay!=NULL )
-		Detach( mAudioOutputDisplay );
-	if( mAudioOutputResidualDisplay!=NULL )
-		Detach( mAudioOutputResidualDisplay );
-	if( mAudioOutputSinusoidalDisplay!=NULL )
-		Detach( mAudioOutputSinusoidalDisplay );
-	if( mInputSpectrum!=NULL )
-		Detach( mInputSpectrum );
-	if( mOutputSpectrum!=NULL )
-		Detach( mOutputSpectrum );
 }
 
 void UserInterface::LoadSound(void)
@@ -80,18 +87,14 @@ void UserInterface::LoadSound(void)
 			mAnalyze->activate();
 			mDisplayInSM->activate();
 			mDisplayInSound->activate();
-			mPlayInputSound->activate();
 		}
 		else
 		{
 			mAnalyze->deactivate();
 			mDisplayInSM->deactivate();
 			mDisplayInSound->deactivate();
-			mPlayInputSound->deactivate();
 			mAnalysisSynthesisExample->mHaveConfig=false;
 		}
-//		mSmartTile->equalize();
-
 		mCounter->deactivate();
 		mCounter->value( 0 );
 
@@ -160,7 +163,7 @@ void UserInterface::Analyze(void)
 		mCounter->step( 1 );
 		mCounter->lstep( mAnalysisSynthesisExample->mSegment.GetnFrames()/10 );
 
-		mPaintSignal.Emit( true );
+		mVC.mPaintSignal.Emit( true );
 		ChangeFrame();
 
 		mDisplayInSpec->activate();
@@ -178,7 +181,6 @@ void UserInterface::Synthesize(void)
 	{
 		mSynthesize->activate();
 		mOutputSM->activate();
-		mPlayOutputs->activate();
 		Fl::redraw();
 	}
 }
@@ -196,47 +198,57 @@ void UserInterface::StoreAnalysisData(void)
 
 void UserInterface::DisplayInputSpectrum(void)
 {
-	if (mInputSpectrum == NULL)
-		mInputSpectrum = Attach( "Input Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ (int) mCounter->value() ].GetSpectrum(), 0 );
-	else {
-		List<Frame>& localFrames = mAnalysisSynthesisExample->mSegment.GetFramesArray();
-		Frame& frame = localFrames[ mCounter->value() ];
-		Spectrum& spectrum = frame.GetSpectrum();
+	mVC.Display ( mVC.eSpectrumIn, mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ mCounter->value() ).GetSpectrum() );
 
-		mInputSpectrumView.BindTo( spectrum );
-		mInputSpectrumView.Publish();
-//		mSmartTile->equalize();
-	}
+// 	if (mInputSpectrum == NULL)
+// 		mInputSpectrum = Attach( "Input Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFrame()[ (int) mCounter->value() ].GetSpectrum(), 0 );
+// 	else {
+// 		List<Frame>& localFrames = mAnalysisSynthesisExample->mSegment.GetFramesArray();
+// 		Frame& frame = localFrames[ mCounter->value() ];
+// 		Spectrum& spectrum = frame.GetSpectrum();
+
+// 		mInputSpectrumView.BindTo( spectrum );
+// 		mInputSpectrumView.Publish();
+// 	}
 }
 
 void UserInterface::DisplayInputSound(void)
 {
-	if ( mAudioInputDisplay == NULL )
-		mAudioInputDisplay = AttachInputSound( "Audio Input" , &mAnalysisSynthesisExample->mAudioIn );
+	mVC.Display ( mVC.eAudioIn, mAnalysisSynthesisExample->mAudioIn );
+
+//	if ( mAudioInputDisplay == NULL )
+//		mAudioInputDisplay = AttachInputSound( "Audio Input" , &mAnalysisSynthesisExample->mAudioIn );
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
-	if ( mAudioOutputDisplay == NULL )
-		mAudioOutputDisplay = AttachOutputSound( "Audio Output" , &mAnalysisSynthesisExample->mAudioOut );
+	mVC.Display ( mVC.eAudioOut, mAnalysisSynthesisExample->mAudioOut );
+
+// 	if ( mAudioOutputDisplay == NULL )
+// 		mAudioOutputDisplay = AttachOutputSound( "Audio Output" , &mAnalysisSynthesisExample->mAudioOut );
 }
 
 void UserInterface::DisplayOutputSpectrum(void)
 {
-	if ( mOutputSpectrum == NULL )
-		mOutputSpectrum = Attach( "Output Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ (int) mCounter->value() ].GetSpectrum(), 1 );
+	mVC.Display ( mVC.eSpectrumOut, mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ mCounter->value() ).GetOutSpec() );
+
+// 	if ( mOutputSpectrum == NULL )
+// 		mOutputSpectrum = Attach( "Output Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ (int) mCounter->value() ].GetSpectrum(), 1 );
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-	if ( mAudioOutputResidualDisplay == NULL )
-		mAudioOutputResidualDisplay = AttachSynthSineSound( "Residual" , &mAnalysisSynthesisExample->mAudioOutRes );
+	mVC.Display ( mVC.eAudioResidual, mAnalysisSynthesisExample->mAudioOutRes );
+
+// 	if ( mAudioOutputResidualDisplay == NULL )
+// 		mAudioOutputResidualDisplay = AttachSynthSineSound( "Residual" , &mAnalysisSynthesisExample->mAudioOutRes );
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-	if ( mAudioOutputSinusoidalDisplay == NULL )
-		mAudioOutputSinusoidalDisplay = AttachSynthResidualSound( "Sinusoidal" , &mAnalysisSynthesisExample->mAudioOutSin );
+	mVC.Display ( mVC.eAudioSinusoidal, mAnalysisSynthesisExample->mAudioOutSin );
+// 	if ( mAudioOutputSinusoidalDisplay == NULL )
+// 		mAudioOutputSinusoidalDisplay = AttachSynthResidualSound( "Sinusoidal" , &mAnalysisSynthesisExample->mAudioOutSin );
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -270,66 +282,41 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
-void UserInterface::PlayInputSound(void)
-{
-
-	mAnalysisSynthesisExample->PlayInputSound();
-}
-
-void UserInterface::PlayOutputSound(void)
-{
-
-	mAnalysisSynthesisExample->PlayOutputSound();
-}
-
-void UserInterface::PlaySinusoidal(void)
-{
-
-	mAnalysisSynthesisExample->PlaySinusoidal();
-}
-
-void UserInterface::PlayResidual(void)
-{
-	mAnalysisSynthesisExample->PlayResidual();
-}
-
-void UserInterface::_Detach(Fl_Window *w,UserInterface* ui)
-{
-	ui->Detach(w);
-}
-
+/*
 void UserInterface::Detach(Fl_Window *w)
 {
 	
-		mSmartTile->remove( w );
-		mSmartTile->redraw();
-		w->hide();
-
-		if (w==mAudioInputDisplay) 
-				mAudioInputDisplay = NULL;
-		else if (w==mAudioOutputDisplay)
-				mAudioOutputDisplay = NULL;
-		else if (w==mAudioOutputResidualDisplay)
-				mAudioOutputResidualDisplay = NULL;
-		else if (w==mAudioOutputSinusoidalDisplay)
-				mAudioOutputSinusoidalDisplay = NULL;
-		else if (w==mInputSpectrum) 
-				mInputSpectrum = NULL;
-		else if (w==mOutputSpectrum)
-				mOutputSpectrum = NULL;
-
+	mSmartTile->remove( w );
+	mSmartTile->redraw();
+	w->hide();
+	
+	if (w==mAudioInputDisplay) 
+		mAudioInputDisplay = NULL;
+	else if (w==mAudioOutputDisplay)
+		mAudioOutputDisplay = NULL;
+	else if (w==mAudioOutputResidualDisplay)
+		mAudioOutputResidualDisplay = NULL;
+	else if (w==mAudioOutputSinusoidalDisplay)
+		mAudioOutputSinusoidalDisplay = NULL;
+	else if (w==mInputSpectrum) 
+		mInputSpectrum = NULL;
+	else if (w==mOutputSpectrum)
+		mOutputSpectrum = NULL;
+	
 //	mSmartTile->equalize();
 }
 
 Fl_Window* UserInterface::AttachInputSound(const char* title, CLAM::Audio* data )
 {
-	AudioBrowser* localPresentation;
+	Fl_Browsable_Playable_Audio* localPresentation;
 
 	mSoundView.BindTo( *data );
 
 	//TODO: Calculate h() in a correct way
-	localPresentation = new AudioBrowser( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
+	localPresentation = new Fl_Browsable_Playable_Audio( 0, 0, mSmartTile->w(), mSmartTile->h()/(mSmartTile->children()+1), title);
 	localPresentation->AttachTo( mSoundView );
+
+	localPresentation->setAudioPlayer( new AudioPlayer( *data ) );
 
 	//Link Signals with Slots
 	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
@@ -337,7 +324,7 @@ Fl_Window* UserInterface::AttachInputSound(const char* title, CLAM::Audio* data 
 	localPresentation->GetSignal()->Connect( mSlot );
 
  	if (mAnalysisSynthesisExample->mHaveAnalysis)
- 		localPresentation->setPainting( true );
+ 		localPresentation->SetPainting( true );
 	
 	// registering callback for notifying the ui the need of 'detaching'
 	localPresentation->callback( (Fl_Callback*)_Detach, this );
@@ -471,14 +458,14 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int ty
 
 void UserInterface::Init()
 {
-	mAudioInputDisplay=NULL; 
-	mAudioOutputDisplay=NULL; 
-	mAudioOutputResidualDisplay=NULL; 
-	mAudioOutputSinusoidalDisplay=NULL;
-	mInputSpectrum=NULL;
-	mOutputSpectrum=NULL;
+//	mAudioInputDisplay=NULL; 
+//	mAudioOutputDisplay=NULL; 
+//	mAudioOutputResidualDisplay=NULL; 
+//	mAudioOutputSinusoidalDisplay=NULL;
+//	mInputSpectrum=NULL;
+//	mOutputSpectrum=NULL;
 }
-
+*/
 void UserInterface::ChangeFrame()
 {
 	DisplayInputSound();
@@ -491,13 +478,13 @@ void UserInterface::ChangeFrame()
 	TData nextcursorpos = localFrames[ nframe ].GetCenterTime();
 	
 	//Notify SigSlotted class to change
-	mFrameSignal.Emit( nextcursorpos );
+	mVC.mFrameSignal.Emit( nextcursorpos );
 
 	//Change Spectrum Displayer
-	// InputSpectrum Displayer is yet cahnged
+	// InputSpectrum Displayer is yet changed
 		
-	mOutputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
-	mOutputSpectrumView.Publish();
+//	mOutputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+//	mOutputSpectrumView.Publish();
 //		mSmartTile->equalize();
 
 	Fl::redraw();
@@ -513,14 +500,17 @@ void UserInterface::ChangeTimeTag( double tag )
 
 	//Notify other GLPorts
 	TData nextcursorpos = mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetCenterTime();
-	mFrameSignal.Emit( nextcursorpos );
+	mVC.mFrameSignal.Emit( nextcursorpos );
 
 	//Change Spectrum Displayer
-	mInputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
-	mInputSpectrumView.Publish();
+	mVC.Display ( mVC.eSpectrumIn, mAnalysisSynthesisExample->mSegment.GetFrame( /*(int)*/ nframe ).GetSpectrum() );
+
+//	mVC.mSpectrumAdapters[ mVC::eSpectrumIn ].BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+//	mVC.mSpectrumAdapters[ mVC::eSpectrumIn ].Publish();
+
 //		mSmartTile->equalize();
-	mOutputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
-	mOutputSpectrumView.Publish();
+//	mOutputSpectrumView.BindTo( mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+//	mOutputSpectrumView.Publish();
 //		mSmartTile->equalize();
 
 	Fl::redraw();

@@ -866,69 +866,6 @@ void AnalysisSynthesisExampleBase::ComputeLowLevelDescriptors()
 
 }
 
-void AnalysisSynthesisExampleBase::PlayOutputSound()
-{
-	if(mHaveAudioOut)
-	{
-		Play(mAudioOut);
-	}
-}
-
-void AnalysisSynthesisExampleBase::PlayInputSound()
-{
-	if(mHaveAudioIn)
-	{
-		Play(mAudioIn);
-	}
-}
-
-void AnalysisSynthesisExampleBase::PlaySinusoidal()
-{
-	if(mHaveAudioIn)
-	{
-		Play(mAudioOutSin);
-	}
-}
-
-void AnalysisSynthesisExampleBase::PlayResidual()
-{
-	if(mHaveAudioIn)
-	{
-		Play(mAudioOutRes);
-	}
-}
-
-void AnalysisSynthesisExampleBase::Play(const Audio& audio)
-{
-	
-	TSize outBufferSize=512;
-	AudioManager audioManager(mSamplingRate,outBufferSize);
-	AudioIOConfig outCfgL;
-	AudioIOConfig outCfgR;
-
-	outCfgL.SetName("left out");
-	outCfgL.SetChannelID(0);
-	outCfgR.SetName("right out");
-	outCfgR.SetChannelID(1);
-
-	AudioOut outputL(outCfgL);
-	AudioOut outputR(outCfgR);
-	
-	Audio  tmpAudioBuffer;
-	tmpAudioBuffer.SetSize(outBufferSize);
-	TSize size=audio.GetSize();
-	AudioManager::Current().Start();
-	outputL.Start();
-	outputR.Start();
-	int i;
-	for(i=0;i<size;i+=outBufferSize)
-	{
-		audio.GetAudioChunk(i,i+outBufferSize,tmpAudioBuffer,false);
-		outputR.Do(tmpAudioBuffer);
-		outputL.Do(tmpAudioBuffer);
-	}
-}
-
 void AnalysisSynthesisExampleBase::SetSamplingRate(TSize samplingRate)
 {
 	mSamplingRate=samplingRate;

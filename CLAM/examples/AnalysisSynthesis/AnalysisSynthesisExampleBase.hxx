@@ -144,20 +144,6 @@ namespace CLAM
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
 		void Transform(void);
 
-
-		/** Play Input Sound */
-		void PlayInputSound();
-		/** Play Output Synthesized Sound */
-		void PlayOutputSound();
-		/** Play Ouput Synthesized Sinusoidal Component */
-		void PlaySinusoidal();
-		/** Play Output Synthesized Residual Component */
-		void PlayResidual();
-
-		/** Method used by any other method that needs to play an audio */
-		void Play(const Audio& audio);
-
-
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
 		void AnalyzeMelody(void);
