@@ -59,58 +59,39 @@ namespace CLAMGUI
 		void SinTrackVerClipper::ClipSpans( TData f_lower, TData f_upper, peak_iterator& si, peak_iterator& ei, 
 											SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e  )
 		{
-				peak_iterator curr_p0 = si;
-				peak_iterator curr_p1 = si;
-				peak_iterator old_ei = ei;
+				if ( si == ei )
+						return;
 
+				peak_iterator currp = si;
+				peak_iterator listEnd = ei;
 
-				bool new_span_start = false;
-				bool current_span_finished = false;
+				peak_iterator first_in = find_first_in( f_lower, f_upper, currp, listEnd );
 				
-				outcode outcode0, outcode1;
-
-				outcode0 = in_out_test( f_lower, f_upper, curr_p0->mFreq );
-
-				while ( !current_span_finished && curr_p1!=ei )
+				if ( first_in == ei ) // no points in
 				{
-						curr_p1++;
-						outcode1 = in_out_test( f_lower, f_upper, curr_p1->mFreq );
-
-						//if ( ~outcode0 & ~outcode1  ) // p0 and p1 are inside
-						//{
-								// does nothing
-						//}
-						if ( outcode0 & outcode1 ) // p0 and p1 are outside 
-						{
-								si = curr_p1;
-						}
-						else if ( outcode0 & Outside ) // p0 is outside, p1 is inside
-						{
-								if ( !new_span_start ) si = curr_p1;
-								else
-								{
-										pl_s.push_back( curr_p1 );
-										pl_e.push_back( old_ei );
-										current_span_finished = true;
-								}
-						}
-						else if ( outcode1 & Outside ) // p1 is outside, p0 is inside
-						{
-								if ( !new_span_start)
-								{
-										new_span_start = true;
-										ei = curr_p0;
-								}
-								else
-								{
-										CLAM_DEBUG_ASSERT( false, "Check the algorithm" );
-								}								
-						}
-				
-						curr_p0 = curr_p1;
-						outcode0 = outcode1;
-
+						si = ei;
+						return;
 				}
+				
+				si = currp = first_in; // we set the start to the first_in ( as well as the current point )
+
+				peak_iterator last_in = find_last_in( f_lower, f_upper, currp, listEnd );
+				
+				ei = currp = last_in; // first span 
+
+				while ( currp!= listEnd )
+				{
+						currp++;
+						peak_iterator new_start;
+						peak_iterator new_end;
+
+						new_start = currp  = find_first_in( f_lower, f_upper, currp, listEnd );
+						if ( new_start == listEnd ) return;
+						new_end = currp = find_last_in( f_lower, f_upper, currp, listEnd );
+						pl_s.push_back( new_start );
+						pl_e.push_back( new_end );
+				}
+
 		}
 
 }

@@ -11,7 +11,7 @@ class SinTrackVerClipper
 		typedef SineTrackSpanEnds::iterator span_iterator;
 		typedef SinusoidalTrack::iterator   peak_iterator;
 
-		typedef enum { Inside = 0x0, Outside = 0x01 } outcode; // 0x0 means Inside
+		typedef enum { Inside = 0x0, Outside = 0x1 } outcode; // 0x0 means Inside
 public:
 		SinTrackVerClipper( TData f = 30.0 );
 
@@ -35,6 +35,36 @@ private:
 				if ( f > upper || f < lower ) return Outside;
 				
 				return Inside;
+		}
+
+		inline peak_iterator find_first_in( TData f_lo, TData f_hi, peak_iterator pi, peak_iterator ei )
+		{				
+				outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+
+				while ( (pi != ei) && (outcodei & Outside) )
+				{
+						outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+						pi++;
+				}
+
+				return pi;
+		}
+
+		inline peak_iterator find_last_in( TData f_lo, TData f_hi, peak_iterator pi, peak_iterator ei )
+		{
+				peak_iterator last_in = pi;
+
+				pi++;
+				outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+				
+				while ( (pi!=ei) && ( !outcodei &0x01 ) )
+				{
+						last_in = pi;
+						pi++;
+						outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
+				}
+
+				return last_in;
 		}
 		
 		TData mLowFreq;
