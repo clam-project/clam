@@ -129,6 +129,7 @@ private:
 			mDescriptors->Compute();
 			if (
 				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
+				(std::isinf((mDescriptors->*getter)()) != std::isinf(it->second)) ||
 				(mDescriptors->*getter)() > (*it).second + tolerance ||
 				(mDescriptors->*getter)() < (*it).second - tolerance
 				)
