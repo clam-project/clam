@@ -1,6 +1,18 @@
 
 
 2004-??-?? CLAM_0_7_0
+'Minimal set of plots implemented using qt'
+  * specific plots to view the following data:
+    ** Audio (playable).
+    ** Fundamental (playable).
+    ** Spectrum.
+    ** Spectrum and peaks.
+    ** Sinusoidal tracks.
+  * sources:
+    ** CLAM/src/Visualization/QTVM
+  * Some examples:
+    ** CLAM/build/Examples/Simple/QtPlots
+  * Note that these widgets are in the initial development phase.
 'Processing ports rewrite and clean up'
   * NetworkEditor:
      ** 
