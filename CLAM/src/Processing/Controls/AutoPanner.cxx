@@ -1,7 +1,7 @@
-
 #include "AutoPanner.hxx"
 #include <iostream>
 #include "OSDefines.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {
@@ -36,8 +36,8 @@ bool AutoPanner::Do()
 		mPhase = fmod(mPhase,TData(2*M_PI));
 	}
 
-	CLAM::TData firstValue = std::abs(newValue);
-	CLAM::TData secondValue = 1 - std::abs(newValue);
+	CLAM::TData firstValue = abs(newValue);
+	CLAM::TData secondValue = 1 - abs(newValue);
 
 	mLeft.SendControl(firstValue);
 	mRight.SendControl(secondValue);
