@@ -60,28 +60,29 @@ class XercesDomReader : private xercesc::HandlerBase
 		}
 		xercesc::DOMDocument * read(std::istream & target)
 		{
-			std::ostringstream stream;
-			char c;
-			while (target.get(c)) stream.put(c);
-			const char * documentText = stream.str().c_str();
-			unsigned length = stream.str().length();
-			xercesc::MemBufInputSource* memBufIS = new xercesc::MemBufInputSource
-			(
-				(const XMLByte*)documentText
-				, length
-				, "CLAMParser"
-				, false
-			);
-
-
 			parser->setErrorHandler(this);
 			parser->setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
 			parser->setValidationSchemaFullChecking(true);
 			parser->setDoNamespaces(true);
 			parser->setDoSchema(true);
-			parser->setCreateEntityReferenceNodes(false);
+			parser->setCreateEntityReferenceNodes(true);
 
-			parser->parse(*memBufIS);
+			std::ostringstream stream;
+			char c;
+			while (target.get(c)) stream.put(c);
+			std::string temp = stream.str();
+			unsigned length = temp.length();
+			const char * documentText = temp.c_str();
+			xercesc::MemBufInputSource xercesInputSource (
+				(const XMLByte*)documentText
+				, length
+				, "CLAMParser"
+				, false
+				);
+
+			xercesInputSource.setCopyBufToStream(false);
+
+			parser->parse(xercesInputSource);
 
 			if (parser->getErrorCount())
 				throw Err(
