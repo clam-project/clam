@@ -81,9 +81,12 @@ namespace CLAM
 		InPort & inport = GetInPortByCompleteName(consumer);
 
 		if ( outport.IsConnectedTo(inport) ) 
-			return true;
+			return false;
 			
 		if ( !outport.IsConnectableTo(inport) ) //they have different type
+			return false;
+
+		if( inport.IsAttached())
 			return false;
 
 		inport.Attach(GetNodeAttachedTo(outport));

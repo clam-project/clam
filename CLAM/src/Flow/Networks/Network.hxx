@@ -58,9 +58,11 @@ public:
 	NodesIterator EndNodes();
 	ConstNodesIterator BeginNodes() const;
 	ConstNodesIterator EndNodes() const;
-protected:
 	InPort & GetInPortByCompleteName( const std::string& );
 	OutPort & GetOutPortByCompleteName( const std::string& );
+
+
+protected:
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
 	NodeBase & GetNodeAttachedTo(OutPort & );
