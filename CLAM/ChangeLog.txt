@@ -1,3 +1,7 @@
+2003-07-03 CLAM_0_5_1
+  * Examples - SMS
+      ** Improved stability and performance.
+      ** SMSMorph transformation is now usable.
 2003-06-11 CLAM_0_5_0
 'flashing new build system and SMSTools'
   * Build system:
