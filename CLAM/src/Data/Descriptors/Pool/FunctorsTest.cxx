@@ -26,7 +26,9 @@ class FunctorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testApplyBinaryFunctionSum );
 	CPPUNIT_TEST( testApplyBinaryFunctionProd );
 	CPPUNIT_TEST( testApplyBinaryComposition );
-	CPPUNIT_TEST( testApplyBinaryCompositionComposition );
+	CPPUNIT_TEST( testApplyBinaryCompositionAppliedToSingleScalar );
+	CPPUNIT_TEST( testApplyBinaryCompositionOnUnaryComposition );
+	CPPUNIT_TEST( testApplySubstraction );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -150,7 +152,7 @@ private:
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(14, myProd(myNeg,myAbs)(-2.0,-7.0),.0001);
 	}
 
-	void testApplyBinaryCompositionComposition()
+	void testApplyBinaryCompositionAppliedToSingleScalar()
 	{
 		CLAM::neg myNeg;
 		CLAM::sum mySum;
@@ -159,6 +161,22 @@ private:
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(6, mySum(myPow2,myNeg)(3.0),.0001);
 	}
 
+	void testApplyBinaryCompositionOnUnaryComposition()
+	{
+		CLAM::abs myAbs;
+		CLAM::neg myNeg;
+		CLAM::sum mySum;
+		CLAM::pow<3> myPow3;
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(5, mySum(myPow3,myNeg(myAbs))(2.0,-3.0),.0001);
+	}
+
+	void testApplySubstraction()
+	{
+		CLAM::subst mySubst;
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(5, mySubst(2.0,-3.0),.0001);
+	}
 
 };
 
