@@ -29,7 +29,7 @@ using std::min_element;
 #include <iostream>
 using namespace CLAMGUI;
 
-GLArrayRenderer::GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
+GLArrayRenderer::GLArrayRenderer( unsigned char red, unsigned char gree, unsigned char blu)
 	: mElemIdxBuffer(0,100), mLastIndex(0), mFirstIndex(0), r( red ), g( gree ), b( blu ), mDataChanged( false ), 
 	  mCullingRequested(false), mMustUpdateBounds( true )
 {
