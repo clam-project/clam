@@ -806,6 +806,7 @@ void SMSBase::StoreMelody(void)
 	melodyFilename += "_melody.xml";
 
 	XMLStorage x;
+	x.UseIndentation(true);
 	x.Dump(mMelody,"Analyzed_Melody",melodyFilename);
 }
 
