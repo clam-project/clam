@@ -1,10 +1,43 @@
 <!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
-<SMSTransformationConfig>
+<SMSTransformationChainConfig>
 	<Name/>
-	<Type/>
-	<FAmount>200</FAmount>
-	<BPFAmount>
-		<Interpolation>Linear</Interpolation>
-		<Points>{0 1.5} {1 1.5}</Points>
-	</BPFAmount>
-</SMSTransformationConfig>
+	<Configurations>
+		<Config>
+			<Name/>
+			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+		</Config>
+		<Config>
+			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSPitchShift</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Linear</Interpolation>
+				<Points>{0 1} {1 2}</Points>
+			</BPFAmount>
+		</Config>
+		<Config>
+			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSOddEvenHarmonicRatio</ConcreteClassName>
+			<Amount>6</Amount>
+		</Config>
+		<Config>
+			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSFreqShift</ConcreteClassName>
+			<Amount>100</Amount>
+		</Config>
+		<Config>
+			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSHarmonicFilter</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Step</Interpolation>
+				<Points>{0 6} {1 0} {2 0} {100 0} </Points>
+			</BPFAmount>
+		</Config>
+
+		<Config>
+			<Name/>
+			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+		</Config>
+
+	</Configurations>
+	<OnArray>1 1 1 1 1 1</OnArray>
+</SMSTransformationChainConfig>
