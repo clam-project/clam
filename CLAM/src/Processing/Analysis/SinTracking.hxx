@@ -155,7 +155,7 @@ namespace CLAM {
 	//Member variables
 		TData mThreshold;
 		mutable bool mInitialized;
-		SpectralPeakArray* mpPreviousPeakArray;
+		SpectralPeakArray mPreviousPeakArray;
 		mutable Array<TGuide> mGuideArray;
 		int mnMaxSines;
 		mutable int mnActiveGuides;		

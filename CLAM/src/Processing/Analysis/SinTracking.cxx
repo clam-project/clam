@@ -138,11 +138,11 @@ using namespace CLAM;
 	  int candidatePos;
 	  TData distance;
 	  SpectralPeak currentPeak;		
-	  currentPeak=mpPreviousPeakArray->GetSpectralPeak(processedPeakPos);
+	  currentPeak=mPreviousPeakArray.GetSpectralPeak(processedPeakPos);
 	  if(!ThereIsCandidate(currentPeak,iPeakArray,oPeakArray))
 	  {
 		//Kill Track
-		KillTrack(mpPreviousPeakArray->GetIndex(processedPeakPos));
+		KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 	  }
 	  else
 	  {
@@ -154,7 +154,7 @@ using namespace CLAM;
 		if(candidatePos<mnMaxSines&&(IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
 		{
 		  //Match
-		  Match(mpPreviousPeakArray->GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
+		  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
 		}
 		else
 		{
@@ -162,7 +162,7 @@ using namespace CLAM;
 		/*candidatePos--;//Try with previous peak in array
 		  if(candidatePos==-1)&&(candidatePeak.GetIndex()==-1)
 		  {
-			KillTrack(mpPreviousPeakArray.GetIndex(processedPeakPos));
+			KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 		  }
 		  else
 		  {
@@ -170,16 +170,16 @@ using namespace CLAM;
 			if(IsBestCandidate(candidatePeak,processedPeakPos))
 			{
 			 //Match
-			 Match(mpPreviousPeakArray.GetIndex(processedPeakPos),
+			 Match(mPreviousPeakArray.GetIndex(processedPeakPos),
 			   candidatePos,candidatePeak,oPeakArray);
 			}
 			else
 			{
 			 //Kill Track
-			 KillTrack(mpPreviousPeakArray.GetIndex(processedPeakPos));
+			 KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 			}
 		  }*/
-			KillTrack(mpPreviousPeakArray->GetIndex(processedPeakPos));
+			KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
 		}
 	  }
 
@@ -260,10 +260,10 @@ using namespace CLAM;
 	{
 	  int i;
 	  SpectralPeak tmpPeak;
-	  tmpPeak=mpPreviousPeakArray->GetSpectralPeak(nMatchedPeaksInPreviousFrame);
+	  tmpPeak=mPreviousPeakArray.GetSpectralPeak(nMatchedPeaksInPreviousFrame);
 	  double nextDistance=(tmpPeak|candidate);
-	  int nPeaks=mpPreviousPeakArray->GetnPeaks();
-	  DataArray& peakFreqBuffer=mpPreviousPeakArray->GetFreqBuffer();
+	  int nPeaks=mPreviousPeakArray.GetnPeaks();
+	  DataArray& peakFreqBuffer=mPreviousPeakArray.GetFreqBuffer();
 	  TData candidateFreq=candidate.GetFreq();
 	  for(i=0;i<nPeaks;i++)
 	  {
@@ -341,7 +341,7 @@ already been assigned)*/
 		{
 			AddNewTrack(i, iPeakArray.GetSpectralPeak(i), oPeakArray);
 		}
-		mpPreviousPeakArray=&oPeakArray;
+		mPreviousPeakArray=oPeakArray;
 	}
 
 
@@ -365,12 +365,12 @@ already been assigned)*/
 		
 		int i;
 		oPeakArray.SetIsIndexUpToDate(true);
-		for(i=0;i<mpPreviousPeakArray->GetnPeaks();i++)
+		for(i=0;i<mPreviousPeakArray.GetnPeaks();i++)
 		{
 			Tracking(iPeakArray,oPeakArray,i);
 		}
 		CheckForNewBornTracks(iPeakArray,oPeakArray);
-		mpPreviousPeakArray=&oPeakArray;
+		mPreviousPeakArray=oPeakArray;
 		return true;
 	}
 
@@ -386,7 +386,7 @@ already been assigned)*/
 		InitHarmonicTracks(out,funFreq);
 		out.SetIsIndexUpToDate(true);
 		HarmonicTracking(in, out, funFreq);
-		mpPreviousPeakArray=&out;
+		mPreviousPeakArray=out;
 		return true;
 
 	}
