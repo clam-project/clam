@@ -37,7 +37,10 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testInPorts_Size );
 	CPPUNIT_TEST( testOutPorts_Size );
 		
-	CPPUNIT_TEST( testConnectPorts );
+	CPPUNIT_TEST( testConnectPorts_usingNames );
+	CPPUNIT_TEST( testConnectPorts_usingNumbers );
+	CPPUNIT_TEST( testConnectControls_usingNames );
+	CPPUNIT_TEST( testConnectControls_usingNumbers );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -183,7 +186,13 @@ private:
 	public:
 		CLAM::InPort<int> in;
 		CLAM::OutPort<int> out;
-		DummyIOProcessing() : in("In", this), out("Out", this)
+		CLAM::InControl inControl;
+		CLAM::OutControl outControl;
+		DummyIOProcessing() : 
+			in("In", this), 
+			out("Out", this),
+			inControl("In", this),
+			outControl("Out", this)
 		{
 		}
 		bool Do() { return false; }
@@ -193,12 +202,38 @@ private:
 
 		
 	};
-	void testConnectPorts()
+	void testConnectPorts_usingNames()
 	{
 		DummyIOProcessing sender, receiver;
 		CLAM::ConnectPorts(sender, "Out", receiver, "In");
 		sender.out.GetData()=2;
+		sender.out.Produce();
 		CPPUNIT_ASSERT_EQUAL(2, receiver.in.GetData() );
+	}
+	void testConnectPorts_usingNumbers()
+	{
+		DummyIOProcessing sender, receiver;
+		CLAM::ConnectPorts(sender, 0, receiver, 0);
+		sender.out.GetData()=2;
+		sender.out.Produce();
+		CPPUNIT_ASSERT_EQUAL(2, receiver.in.GetData() );
+	}
+	void testConnectControls_usingNames()
+	{
+		DummyIOProcessing sender, receiver;
+		CLAM::ConnectControls(sender, "Out", receiver, "In");
+		CLAM::TControlData event(1.);
+		sender.outControl.SendControl(event);
+		CPPUNIT_ASSERT_EQUAL(event, receiver.inControl.GetLastValue() );
+	}
+	void testConnectControls_usingNumbers()
+	{
+
+		DummyIOProcessing sender, receiver;
+		CLAM::ConnectPorts(sender, 0, receiver, 0);
+		CLAM::TControlData event(1.);
+		sender.outControl.SendControl( event );
+		CPPUNIT_ASSERT_EQUAL(event, receiver.inControl.GetLastValue() );
 	}
 
 
