@@ -129,7 +129,7 @@ public:
 	/// Gives ownership of the new created Processing registered with
 	/// the given name.
 	/// It asserts that the name is in the registry.
-	Processing* MakeProcessing( const RegistryKey name )
+	Processing* Create( const RegistryKey name )
 	{
 		// it asserts that name is in the registry
 		CreatorMethod creator =
@@ -140,7 +140,7 @@ public:
 	/// Gives ownership of the new created Processing registered with
 	/// the given name.
 	/// It throws an ErrFactory if the name isn't found in the registry.
-	Processing* MakeProcessingSafe( const RegistryKey name ) throw (ErrFactory)
+	Processing* CreateSafe( const RegistryKey name ) throw (ErrFactory)
 	{
 		return ( *GetRegistry().GetCreatorSafe(name) )();
 	}
