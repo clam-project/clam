@@ -69,6 +69,16 @@ public:
 			throw ErrFactory("FactoryRegistry::AddCreatorSafe(...) a repeated key was passed");
 		}
 	}
+
+	void RemoveAllCreators()
+	{
+		_creators.clear();
+	}
+
+	std::size_t Count()
+	{
+		return _creators.size();
+	}
 	
 
 private: // data
@@ -135,6 +145,10 @@ public:
 	{
 		return ( *GetRegistry().GetCreatorSafe(name) )();
 	}
+	void Clear()
+	{
+		GetRegistry().RemoveAllCreators();
+	}
 
 private:
 	FactoryRegistry _registry;
@@ -143,6 +157,17 @@ private:
 
 };
 
+template< typename ProcessingType>
+class AutomaticRegistrator
+{
+public:
+	AutomaticRegistrator()
+	{
+		//fake impl! don't use the template type.
+		Factory::GetInstance().GetRegistry().AddCreator(
+			"Oscillator", CreateOscillator );
+	}
+};
 
 
 } // namespace

@@ -42,19 +42,30 @@
 							<li class='done'>
 								Safe version: rises ErrFactory</li>
 						</ul>
-					<li class='to-do'>
+					<li class='current'>
 					Automatic registry
 					<li class='done'>
 						AddCreator should return bool ? <b>No</b>. do it evident
 					<li class='done'>
 						separate FactoryRegistry tests. Thus simplifying the names
 					</li>
+					<li class='done'>
+						RemoveAllCreators (since Factory is singleton and we want to tear tests down)
+						<ul>
+							<li class='done'>
+								when empty, when non empty
+							</li>
+						</ul>
+					</li>
+					<li class='done'>
+						Count when empty and non empty.
+					</li>
 				</ul>
 			<li class='to-do'>
 			Avoid #include bottleneck in Factory
 			<li class='done'>
 			Create custom assert for typeid
-			<li class='current'>
+			<li class='done'>
 			ProcessingFactory singleton
 			<li class='to-do'>
 			Arrange documentation

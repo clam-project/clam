@@ -24,7 +24,9 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetCreatorSafe_CorrectKeyWithTwoCreators );
 	CPPUNIT_TEST( testAddCreator_RepeatedKey );
 	CPPUNIT_TEST( testAddCreatorSafe_RepeatedKey );
-	
+	CPPUNIT_TEST( testRemoveCreator_WhenIsEmpty );
+	CPPUNIT_TEST( testRemoveCreator_WhenNotEmtpy );
+	CPPUNIT_TEST( testCount );
 	CPPUNIT_TEST_SUITE_END();
 
 	
@@ -153,7 +155,7 @@ private:
 			reg.AddCreator( "Oscillator", CLAM::CreateAudioAdder );
 			CPPUNIT_FAIL( "Assert expected to happen" );
 
-		} catch (CLAM::ErrAssertionFailed& expected ) {}
+		} catch (CLAM::ErrAssertionFailed& ) {}
 	}
 
 	void testAddCreatorSafe_RepeatedKey()
@@ -171,6 +173,38 @@ private:
 				std::string( expected.what() ) );
 		}
 	}
+
+	void testRemoveCreator_WhenIsEmpty()
+	{
+		CLAM::FactoryRegistry reg;
+		reg.RemoveAllCreators();
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(
+			"Count() should be 0 after RemoveAllCreators()",
+			std::size_t(0), reg.Count() );
+	}
+
+	void testRemoveCreator_WhenNotEmtpy()
+	{
+		CLAM::FactoryRegistry reg;
+		reg.AddCreator("osc", CLAM::CreateOscillator );
+		reg.AddCreator("adder", CLAM::CreateAudioAdder );
+
+		reg.RemoveAllCreators();
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(
+			"Count() should be 0 after RemoveAllCreators()",
+			std::size_t(0), reg.Count() );
+	}
+	
+	void testCount()
+	{
+		CLAM::FactoryRegistry reg;
+		CPPUNIT_ASSERT_EQUAL( std::size_t(0), reg.Count() );
+
+		reg.AddCreator("osc", CLAM::CreateOscillator );
+		reg.AddCreator("adder", CLAM::CreateAudioAdder );
+		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );
+	}
+	
 
 };
 

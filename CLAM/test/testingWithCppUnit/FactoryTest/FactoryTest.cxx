@@ -1,5 +1,5 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for custom assert
+#include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "Oscillator.hxx"
 #include "Factory.hxx"
@@ -17,6 +17,7 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testMakeProcessing_ReturnsAnOscillator );
 	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
 	CPPUNIT_TEST( testFactoryIsSingleton );
+	CPPUNIT_TEST( testAutomaticRegistry );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -43,14 +44,18 @@ private:
 	
 	void testMakeProcessing_ReturnsAnOscillator()
 	{
+		// set up:
 		CLAM::Factory &factory = CLAM::Factory::GetInstance();
+		factory.Clear();
 		factory.GetRegistry().AddCreator( "Oscillator", CLAM::CreateOscillator );
+		
 		CLAM::Processing* returned = factory.MakeProcessing("Oscillator");
-		
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
-		delete returned;
-
 		
+		// tear down:
+		delete returned;
+		factory.Clear();
+
 	}
 
 	void testMakeProcessingSafe_WithABadKey()
@@ -77,6 +82,23 @@ private:
 		CPPUNIT_ASSERT_MESSAGE(
 			"the thow Factory refs should point the same object ",
 			&ref1 == &ref2);
+
+	}
+
+	void testAutomaticRegistry()
+	{
+		CLAM::Factory &factory = CLAM::Factory::GetInstance();
+		factory.Clear(); // make sure it's empty (although innecessary)
+		
+		// the ctr register the creator to the factory.
+		CLAM::AutomaticRegistrator<CLAM::Oscillator> dummy;
+
+		CLAM::Processing* returned = factory.MakeProcessing("Oscillator");
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
+		
+		// tear down:
+		delete returned;
+		factory.Clear();
 
 	}
 };
