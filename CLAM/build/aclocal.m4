@@ -84,6 +84,28 @@ cannot handle g++ version ($CXXVERSION)]
 	fi
 ])
 
+AC_DEFUN(CLAM_CHECK_UNICODE_SUPPORT,
+[
+	AC_MSG_CHECKING([for wchar_t support in listdc++])
+
+	AC_TRY_LINK([
+	#include <string>
+	int main( int argc, char** argv )
+	{
+		std::char_traits<wchar_t> theString;
+		return 0;
+	}
+	],[UNICODE_SUPPORT_AVAILABLE="yes"],[UNICODE_SUPPORT_AVAILABLE="no"])
+
+	if test $UNICODE_SUPPORT_AVAILABLE = "yes"
+	then
+		DEFINE_HAVE_STANDARD_UNICODE="HAVE_STANDARD_UNICODE"
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+	fi
+])
+
 AC_DEFUN(CLAM_CHECK_LIBCXX_FEATURES,
 [
 dnl TODO: We should check if c++ and libc++ are available first...
@@ -473,8 +495,8 @@ AC_DEFUN(CLAM_LIB_OGGVORBIS_DARWIN,
 	fi
 
 	OGGVORBIS_LIBS="ogg vorbis vorbisenc vorbisfile"
-	OGGVORBIS_LIB_PATH="../../oggvorbis/lib"
-	OGGVORBIS_INCLUDES="../../oggvorbis/include"
+	OGGVORBIS_LIB_PATH="\$(CLAM_PATH)/../oggvorbis/lib"
+	OGGVORBIS_INCLUDES="\$(CLAM_PATH)/../oggvorbis/include"
 ])
 
 AC_DEFUN( CLAM_LIB_SNDFILE_DARWIN,
@@ -492,8 +514,8 @@ AC_DEFUN( CLAM_LIB_SNDFILE_DARWIN,
 	fi
 
 	SNDFILE_LIBS="sndfile"
-	SNDFILE_LIB_PATH="../../libsndfile/lib"
-	SNDFILE_INCLUDES="../../libsndfile/include"
+	SNDFILE_LIB_PATH="\$(CLAM_PATH)/../libsndfile/lib"
+	SNDFILE_INCLUDES="\$(CLAM_PATH)/../libsndfile/include"
 	
 ])
 
@@ -512,8 +534,8 @@ AC_DEFUN(CLAM_LIB_MAD_DARWIN,
 	fi
 
 	LIBMAD_LIBS="mad"
-	LIBMAD_LIB_PATH="../../libmad/lib"
-	LIBMAD_INCLUDES="../../libmad/include"
+	LIBMAD_LIB_PATH="\$(CLAM_PATH)/../libmad/lib"
+	LIBMAD_INCLUDES="\$(CLAM_PATH)/../libmad/include"
 	
 ])
 
@@ -532,8 +554,8 @@ AC_DEFUN(CLAM_LIB_ID3LIB_DARWIN,
 	fi
 
 	ID3LIB_LIBS="id3 z"
-	ID3LIB_LIB_PATH="../../id3lib/lib"
-	ID3LIB_INCLUDES="../../id3lib/include"
+	ID3LIB_LIB_PATH="\$(CLAM_PATH)/../id3lib/lib"
+	ID3LIB_INCLUDES="\$(CLAM_PATH)/../id3lib/include"
 	
 ])
 
