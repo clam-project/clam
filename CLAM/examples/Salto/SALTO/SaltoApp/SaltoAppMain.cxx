@@ -63,6 +63,7 @@ public:
 
 
 		DSPCfg.SetParams( mParams );
+		mMIDIHandler.SetParams( &mParams );
 		pDSP = new SaltoSynth(DSPCfg);
 		if(pDSP==NULL)
 			throw Err("OOM in MAIN cant construct CSaltoDSP");
@@ -229,9 +230,12 @@ protected:
 
 		mFileAudioOut.Configure( outcfg );
 
-	
+#ifdef _WIN32
 		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());
-	
+#else
+		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());	
+#endif
+
 		mAudioManager->SetInternalBuffersNumber(12);
 
 		AudioIOConfig iocfgL;
@@ -241,7 +245,7 @@ protected:
 		iocfgR.SetName("right out");
 		iocfgR.SetChannelID(1);
 		mAudioOutL = new AudioOut(iocfgL);
-		mAudioOutR = new AudioOut(iocfgR);
+//		mAudioOutR = new AudioOut(iocfgR);
 		//iocfg.SetName("left in");
 		//mAudioIn = new AudioIn(iocfg);
 
@@ -257,7 +261,7 @@ protected:
 		{
 			
 			mAudioOutL->Do( synthbuffer );
-			mAudioOutR->Do( synthbuffer );
+//			mAudioOutR->Do( synthbuffer );
 		}
 	}
 
