@@ -5,16 +5,25 @@ import CLAMProcessing
 import CLAMIO
 import CLAMSMS
 import CLAMVM
-import libGen
+import SettingsGen
+import os
 
 def main() :
+    outPath = "../Libs"
 
-    libGen.resetHeaderDB()
-    CLAMcore.makelib()
-    CLAMProcessing.makelib()
-    CLAMIO.makelib()
-    CLAMSMS.makelib()
-    CLAMVM.makelib()
+    CLAMcore.makeAutoconf( outPath )
+    CLAMProcessing.makeAutoconf( outPath )
+    CLAMIO.makeAutoconf( outPath )
+    CLAMSMS.makeAutoconf( outPath )
+    CLAMVM.makeAutoconf( outPath )
+    
+    SettingsGen.resetHeaderDB()
+  
+    CLAMcore.makeSettings(outPath)
+    CLAMProcessing.makeSettings(outPath)
+    CLAMIO.makeSettings(outPath)
+    CLAMSMS.makeSettings(outPath)
+    CLAMVM.makeSettings(outPath)
 
 if __name__ == "__main__" :
     main()

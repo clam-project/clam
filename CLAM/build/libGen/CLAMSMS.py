@@ -1,9 +1,37 @@
 #!/usr/bin/python
 
-import libGen, sys
+import SettingsGen, sys, os, AutoconfTools
 
-def makeSettings() :
-    libCLAMSMS = libGen.LibGenerator( "SMS" )
+def makeAutoconf( outPath ) :
+    outPath = "../Libs/%s"%"SMS"
+
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+
+    script = AutoconfTools.AutoconfScript()
+
+    xml = AutoconfTools.Feature( "xml" )
+    script.addFeature( xml )
+
+    double = AutoconfTools.Feature( "double", False )
+    script.addFeature( double )
+
+    checks = AutoconfTools.Feature( "checks" )
+    script.addFeature( checks )
+
+    releaseAsserts = AutoconfTools.Feature( "release_asserts", False )
+    script.addFeature( releaseAsserts )
+  
+    script.commitToFile( outPath )
+   
+    AutoconfTools.copySupportFiles( outPath )
+
+
+def makeSettings( outPath) :
+    if not os.path.exists( outPath ) :
+        os.makedirs( outPath )
+
+    libCLAMSMS = SettingsGen.LibGenerator( "SMS" )
 
     print "Generating libCLAM%s..."%libCLAMSMS.libName
 
@@ -14,16 +42,13 @@ def makeSettings() :
     libCLAMSMS.addFile( "SMSSynthesis", "Processing/Synthesis" )
     libCLAMSMS.addFolder( "Processing/Transformations/SMS" )
 
-    libCLAMSMS.activate( 'XML' )
-    libCLAMSMS.activate( 'PTHREADS' )
-
     libCLAMSMS.dependsOn( "Core" )
     libCLAMSMS.dependsOn( "Processing" )
     libCLAMSMS.dependsOn( "IO" )
 
-    libCLAMSMS.generateFiles( )
+    libCLAMSMS.generateFiles( outPath )
 
-    print "Files are being generated on build/Libs/%s..."%libCLAMSMS.libName
+    print "Files are being generated on %s/%s..."%(outPath,libCLAMSMS.libName)
 
 if __name__ == "__main__" :
-    makelib()
+    makeSettings("../Libs")
