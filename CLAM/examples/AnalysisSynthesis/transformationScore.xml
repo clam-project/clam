@@ -9,8 +9,12 @@
 			<!--Amount>1.7</Amount-->
 			<BPFAmount>
 				<Interpolation>Linear</Interpolation>
-				<Points>{0 1} {1 2}</Points>
+				<Points>{0 1} {1 0.6}</Points>
 			</BPFAmount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSGenderChange</ConcreteClassName>
+			<Amount>0</Amount>
 		</Config>
 		<Config>
 			<ConcreteClassName>SMSPitchDiscretization</ConcreteClassName>
@@ -46,8 +50,12 @@
 			</BPFAmount>
 		</Config>
 		<Config>
+			<ConcreteClassName>SMSSpectralShapeShift</ConcreteClassName>
+			<Amount>50</Amount>
+		</Config>
+		<Config>
 			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
 		</Config>
 	</Configurations>
-	<OnArray>1 1 1 0 0 0 0 0 1 1</OnArray>
+	<OnArray>1 0 1 0 0 0 0 0 0 1 0 1</OnArray>
 </SMSTransformationChainConfig>

@@ -15,6 +15,8 @@
 #include "SMSHarmonizer.hxx"
 #include "SMSSinusoidalGain.hxx"
 #include "SMSPitchDiscretization.hxx"
+#include "SMSSpectralShapeShift.hxx"
+#include "SMSGenderChange.hxx"
 
 #ifndef _ProcessingChain_
 #define _ProcessingChain_
@@ -108,7 +110,8 @@ namespace CLAM{
 		{
 			if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
 				type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
-				type=="SMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||type=="SMSTransformationChainIO")
+				type=="SMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||
+				type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||type=="SMSTransformationChainIO")
 			{
 				return new CLAM::SMSTransformationConfig();
 			}
@@ -425,6 +428,14 @@ protected:
 			else if(type=="SMSPitchDiscretization")
 			{
 				InsertAndGiveName(*(new SMSPitchDiscretization()));
+			}
+			else if(type=="SMSSpectralShapeShift")
+			{
+				InsertAndGiveName(*(new SMSSpectralShapeShift()));
+			}
+			else if(type=="SMSGenderChange")
+			{
+				InsertAndGiveName(*(new SMSGenderChange()));
 			}
 			else
 			{
