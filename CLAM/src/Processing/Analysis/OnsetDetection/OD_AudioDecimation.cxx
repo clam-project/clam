@@ -173,18 +173,20 @@ namespace CLAM
 		void AudioDecimator::DecimateFrom22050To245( const DataArray& signal,
 							     DataArray& decimatedSignal )
 		{
+			CLAM_ASSERT( decimatedSignal.Size() == signal.Size() / 90,
+				     "AudioDecimator::DecimateFrom22050To245(): decimated signal size is not 90 times smaller than signal" );
 			TSize size = signal.Size();
 			int i;
 
 			double a0, a1, a2,a3, a4, b1, b2, b3, b4;
 
-			if ( mOutput.Size() < signal.Size() )
+			if ( mOutput.AllocatedSize() < signal.Size() )
 			{
 				mOutput.Resize( signal.Size() );
 			}
 			mOutput.SetSize( signal.Size() );
 
-			if ( mOutputRev.Size() < signal.Size() )
+			if ( mOutputRev.AllocatedSize() < signal.Size() )
 			{
 				mOutputRev.Resize( signal.Size() );
 			}
@@ -253,7 +255,7 @@ namespace CLAM
 			i=0;
 			int j=0;
 			//decimation
-			while(i<decimatedSize)
+			while(i < decimatedSize && j < size )
 			{
 				decimatedSignal[i] = mOutputRev[j];
 				i++;

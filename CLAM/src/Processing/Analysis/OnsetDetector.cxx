@@ -159,17 +159,17 @@ namespace CLAM
 		{
 			const TSize bandSize=audioArray[band].GetSize();
 			//Full-wave rectification
-			mFilterBankOutputs[band].Resize(bandSize);
-			mFilterBankOutputs[band].SetSize(bandSize);
+			mFilterBankOutputs[band].Resize(bandSize/90);
+			mFilterBankOutputs[band].SetSize(bandSize/90);
 
 			DataArray & bandAudioBuffer = audioArray[band].GetBuffer();
 			for(int i=0 ; i<bandSize ; i++)
-				mFilterBankOutputs[band][i]=fabsf(bandAudioBuffer[i]);
+				bandAudioBuffer[i]=fabsf(bandAudioBuffer[i]);
 
 					
 			//Decimation to 245 Hz
 
-			mDecimator.DecimateFrom22050To245(mFilterBankOutputs[band], mFilterBankOutputs[band]);
+			mDecimator.DecimateFrom22050To245(bandAudioBuffer, mFilterBankOutputs[band]);
 
 			for(int i=0 ; i<mFilterBankOutputs[band].Size() ; i++)
 				mFilterBankOutputs[band][i] = mFilterBankOutputs[band][i]*cf[band];
@@ -591,17 +591,18 @@ namespace CLAM
 		//Extracts Amplitude Enveloppe//
 		////////////////////////////////
 		DataArray amplitude;
-		amplitude.Resize( mAudio.GetSize() );
-		amplitude.SetSize( mAudio.GetSize() );
+		
+		amplitude.Resize( mAudio.GetSize()/90 );
+		amplitude.SetSize( mAudio.GetSize()/90 );
 		DataArray& samples = mAudio.GetBuffer();
 		TSize numSamples = mAudio.GetSize();
 
 		for( i=0; i< numSamples ; i++)
-			amplitude[i] = fabsf(samples[i]);
+			samples[i] = fabsf(samples[i]);
 
 		//Decimation
 
-		mDecimator.DecimateFrom22050To245(amplitude, amplitude);
+		mDecimator.DecimateFrom22050To245(samples, amplitude);
 
 		//Computes the smoothing filter coefficients
 		TSize winSize = 0.05*mSampleRate;
