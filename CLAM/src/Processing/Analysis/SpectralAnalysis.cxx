@@ -27,131 +27,6 @@
 namespace CLAM
 {
 
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-/*					SpectralANALYSIS CONFIGURATION						*/
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-
-
-
-
-	
-void SpectralAnalysisConfig::DefaultInit()
-{
-	AddAll();
-	UpdateData();
-	DefaultValues();	
-}
-
-void SpectralAnalysisConfig::DefaultValues()
-{
-
-	SetprSamplingRate(44100);
-/** FFTSize will be next power of two of the window size*/
-	SetprZeroPadding(0);
-
-	SetprHopSize(0);//for preventing reading uninitialized memory
-
-	/** Default window size */
-	SetWindowSize(513);
-	SetWindowType(EWindowType::eHamming);
-	
-	/** WindowSize/2*/
-	SetHopSize((GetWindowSize()-1)/2);
-
-	GetCircularShift().SetAmount(-256);
-
-}
-
-
-void SpectralAnalysisConfig::SetWindowSize(TSize w)
-{
-	CLAM_ASSERT(w%2==1,"Window size must be odd");
-	GetWindowGenerator().SetSize(w);
-	SetprFFTSize(int(PowerOfTwo((w-1)*pow(TData(2),TData(GetZeroPadding())))));
-	GetCircularShift().SetAmount(-((w-1)/TData(2))); 
-	GetFFT().SetAudioSize(GetprFFTSize());
-	if(w<2*GetHopSize()+1)
-		SetHopSize((w-1)/2);
-}
-
-TSize SpectralAnalysisConfig::GetWindowSize() const
-{
-	return GetWindowGenerator().GetSize();
-}
-
-/** Analysis Window type*/
-void SpectralAnalysisConfig::SetWindowType(const EWindowType& t)
-{
-	GetWindowGenerator().SetType(t);
-}
-
-const EWindowType& SpectralAnalysisConfig::GetWindowType() const
-{
-	return GetWindowGenerator().GetType();
-}
-
-/** Zero padding factor*/
-void SpectralAnalysisConfig::SetZeroPadding(int z)
-{
-	SetprZeroPadding(z);
-	SetprFFTSize(int(PowerOfTwo((GetWindowSize()-1)*pow(TData(2),TData(GetZeroPadding())))));
-	GetFFT().SetAudioSize(GetprFFTSize());
-}
-
-int SpectralAnalysisConfig::GetZeroPadding() const
-{
-	return GetprZeroPadding();
-}
-
-
-
-void SpectralAnalysisConfig::SetHopSize(TSize h)
-{
-	SetprHopSize(h);
-}
-
-TSize SpectralAnalysisConfig::GetHopSize() const
-{
-		return GetprHopSize();
-}
-
-/** Sampling rate of the input audio*/
-void SpectralAnalysisConfig::SetSamplingRate(TData sr)
-{
-	SetprSamplingRate(int(sr));
-	/** for sychronizing existing config*/
-	SetWindowSize(GetWindowSize());
-}
-
-TData SpectralAnalysisConfig::GetSamplingRate() const
-{
-	return GetprSamplingRate();
-}
-
-
-/* TODO: this functionality should be elsewhere */
-TInt32 SpectralAnalysisConfig::PowerOfTwo(TInt32 size)
-{
-	int tmp = size;
-	int outputSize = 1;
-	while (tmp) 
-	{
-	 	outputSize=outputSize << 1;
-	 	tmp=tmp >> 1;
-	}
-	if(outputSize == size << 1)
-		outputSize = outputSize >> 1;
-	return outputSize;
-}
-
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-/*							SpectralANALYSIS 							*/
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-
 SpectralAnalysis::SpectralAnalysis()
 	: mInput("Input",this ),
 	  mOutput("Output",this )
@@ -183,7 +58,6 @@ bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
 
 bool SpectralAnalysis::ConfigureChildren()
 {
-	
 	mPO_WinGen.Configure(mConfig.GetWindowGenerator());
 	mPO_CShift.Configure(mConfig.GetCircularShift());
 	mPO_FFT.Configure(mConfig.GetFFT());
@@ -210,7 +84,7 @@ void SpectralAnalysis::ConfigureData()
 
 	/* Spectrum used only for initializing a frame */
 	SpectrumConfig scfg;
-	scfg.SetSize(mConfig.GetprFFTSize()/2+1); 
+	scfg.SetSize(mConfig.GetprFFTSize()/2+1);
 	mSpec.Configure(scfg);
 	
 	
@@ -229,7 +103,7 @@ void SpectralAnalysis::AttachChildren()
 
 bool SpectralAnalysis::Do(void)
 {
-	mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+	mOutput.GetData().SetSize( mConfig.GetFFT().GetAudioSize()/2+1);
 	mOutput.GetData().SetSpectralRange( mInput.GetAudio().GetSampleRate()/2);
 	
 	bool result =  Do(mInput.GetAudio(),mOutput.GetData());
@@ -248,8 +122,10 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	// TODO: it is wrong
 	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);
 
+
 	/* Zero padding is added to audioframe */
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
+
 	
 	/* Windowing funcition is now applied */
 	mPO_AProduct.Do(mAudioFrame, mWindow, mAudioFrame);
@@ -259,7 +135,6 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 
 	/* and now the FFT can be performed */
 	mPO_FFT.Do(mAudioFrame, outSp);
-
 
 	return true;
 }
