@@ -170,18 +170,18 @@ else
 	AC_MSG_RESULT(no)
 	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
 	found_fltk=no
-	for base in "/usr/include" \
-	            "/usr/local/include" \
-	            "/opt/include" \
-	            "/usr/"
+	for base in "/usr" \
+	            "/usr/local" \
+	            "/opt" 
 	do
-		if test -d $base/FL; then
+		if test -d $base/include/FL; then
 			AC_MSG_RESULT(yes)
 			found_fltk=yes
+			FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L$base/lib"
+			FLTK_LIB_PATH="/usr/X11R6/lib $base/lib"
 			break;
 		fi
 	done
-	FLTK_LIB_PATH=
 fi
 if test $found_fltk = yes; then
 	AC_MSG_CHECKING([for fltk library (and other fltk required)...])
@@ -189,20 +189,19 @@ if test $found_fltk = yes; then
 
 	link_ok=no
 
-	FLTK_LIBS="fltk GL fltk_gl"
+	FLTK_LIBS="fltk GL fltk_gl X11 Xext"
 	for lib in $FLTK_LIBS
 	do
 		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
 	done
 
-	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
+	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIB_PATH $FLAG_FLTK_LIBS"
 	AC_TRY_LINK([
 		#include<FL/Fl_Window.H>
 		#include<FL/Fl.H>
 	],[
 		Fl_Window w(100,100);
 		Fl::run();
-		return 0;
 	],[
 		link_ok=yes
 	],[])
