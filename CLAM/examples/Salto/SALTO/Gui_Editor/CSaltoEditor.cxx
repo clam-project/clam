@@ -1,32 +1,57 @@
 #include "SaltoSynth.hxx"
 #include "CSaltoEditor.hxx"
+#include "CSaltoDisplay.hxx"
+#include "CSaltoSpectralDisplay.hxx"
+#include "CSaltoSpectrumDisplay.hxx"
+#include "Parameters.hxx"
 #include "CSaltoStatTmplData.hxx"
+#include "BaseAudioApplication.hxx"
+#include <FL/Fl_Value_Output.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Light_Button.H>
+#include <FL/Fl_Value_Slider.H>
+#include <FL/Fl.H>
+#include <FL/fl_draw.H>
+#include <FL/fl_file_chooser.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Slider.H>
+#include <FL/Fl_Scrollbar.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Output.H>
+#include <FL/Fl_Value_Output.H>
+#include <FL/Fl_Counter.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Adjuster.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Dial.H>
 
-#define TP_FUNCTIONS_X 200
-#define TP_FUNCTIONS_Y 660
+using CLAM::CSaltoStatTmplData;
 
-#define S_CHOOSER_X 310
-#define S_CHOOSER_Y 565
+const int TP_FUNCTIONS_X = 200;
+const int TP_FUNCTIONS_Y = 660;
 
-#define TOGGLE1_X 205
-#define TOGGLE1_Y 565
+const int S_CHOOSER_X = 310;
+const int S_CHOOSER_Y = 565;
 
-#define ALIGN_X_4 410
-#define ALIGN_Y_4 565
+const int TOGGLE1_X  = 205;
+const int TOGGLE1_Y = 565;
 
-#define IP_SLIDERS_X  420
-#define IP_SLIDERS_Y  250
+const int ALIGN_X_4 = 410;
+const int ALIGN_Y_4 = 565;
 
-#define LOOP_CONTROL_X 205
-#define LOOP_CONTROL_Y 285
+const int IP_SLIDERS_X= 420;
+const int IP_SLIDERS_Y= 250;
 
-#define LOOP_CONTROL_STAT_X 540
-#define LOOP_CONTROL_STAT_Y 285
+const int LOOP_CONTROL_X= 205;
+const int LOOP_CONTROL_Y=  285;
 
-#define TEST_FADERS_X 545
-#define TEST_FADERS_Y 565
+const int LOOP_CONTROL_STAT_X = 540;
+const int LOOP_CONTROL_STAT_Y = 285;
 
-namespace CLAM
+const int TEST_FADERS_X = 545;
+const int TEST_FADERS_Y = 565;
+
+namespace SALTO
 {
 
 class MyWindow:public Fl_Double_Window {
@@ -1208,10 +1233,16 @@ void CSaltoEditor::DisplayAttackResidual()
 	mpWidgetAttackResidual->redraw();
 }
 
+void CSaltoEditor::DisplayStationaryResidual(const Spectrum& spec)
+{
+	//XA:this widget does nothing! mpWidgetStationaryResidual->redraw();
+}
+
 void CSaltoEditor::DisplayStationaryResidual()
 {
 	//XA:this widget does nothing! mpWidgetStationaryResidual->redraw();
 }
+
 
 void CSaltoEditor::DisplaySynthesizedSpectrum()
 {

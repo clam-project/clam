@@ -8,6 +8,8 @@
 
 #define TRACESTATE if (1) ; else std::cout
 
+using SALTO::CSaltoEditor;
+
 namespace CLAM
 {
 

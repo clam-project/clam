@@ -29,12 +29,18 @@ using SALTO::TransitionHandler;
 using SALTO::ReleaseHandler;
 using SALTO::SynthesisProcessor;
 
+namespace SALTO
+{
+class CSaltoEditor;
+}
+
+using SALTO::CSaltoEditor;
+
 namespace CLAM
 {
 
 
 class CSaltoStatTmplData;
-class CSaltoEditor;
 
 class SaltoSynthConfig : public ProcessingConfig
 {

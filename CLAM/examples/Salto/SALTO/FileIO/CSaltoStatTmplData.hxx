@@ -5,12 +5,17 @@
 
 #include "SpectralPeakArray.hxx"
 
+namespace SALTO
+{
+	class CSaltoEditor;
+}
+
+using SALTO::CSaltoEditor;
 
 namespace CLAM
 {
 
 class CSaltoFileIO;
-class CSaltoEditor;
 
 class CSaltoStatTmplData
 {
@@ -29,6 +34,9 @@ inline double             GetFundFreq()                       {return mFundFreq;
 inline double             GetNumValidPeaks()                  {return mNumValidPeaks;}
 inline SpectralPeak  GetPeak(int pos)                    {return mpStatPeak[pos];}
 
+void                    SetPeak(int pos,SpectralPeak peak)      {mpStatPeak[pos]=peak;}
+inline void             SetFundFreq(double d)               {mFundFreq = d;}
+inline void             SetNumValidPeaks(int i)             {mNumValidPeaks = i;}
 
 
 //----------------------------------------------------------------------------//
@@ -38,9 +46,6 @@ SpectralPeak mpStatPeak[MAX_PEAKS_IN_STAT_TMPL];
 TIndex mNumValidPeaks;
 double mFundFreq;
 
-void                    SetPeak(int pos,SpectralPeak peak)      {mpStatPeak[pos]=peak;}
-inline void             SetFundFreq(double d)               {mFundFreq = d;}
-inline void             SetNumValidPeaks(int i)             {mNumValidPeaks = i;}
 
 };
 
