@@ -41,7 +41,10 @@ public:
 		CLAM_ASSERT(_creators.begin() != _creators.end(), 
 			"the Factory Registry shouldn't be empty");
 		
-		return CommonGetCreator(creatorId);
+		CreatorMethod res = CommonGetCreator(creatorId);
+		CLAM_ASSERT(res,"GetCreatorSafe invoked with a non existent key")
+			
+		return res;
 	}
 
 	CreatorMethod GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory)
@@ -49,7 +52,11 @@ public:
 		if ( _creators.begin() == _creators.end() )
 			throw ErrFactory("GetCreatorSafe invoked on an empty registry");
 
-		return CommonGetCreator(creatorId);
+		CreatorMethod res = CommonGetCreator(creatorId);
+		if (!res)
+			throw ErrFactory("GetCreatorSafe invoked with a non existent key");
+		
+		return res;
 	}
 
 	void AddCreator( RegistryKey creatorId, CreatorMethod creator )
@@ -154,23 +161,31 @@ public:
 private:
 	FactoryRegistry _registry;
 
+public: // Inner class
+
+	template< typename ConcreteProcessingType>
+	class Registrator
+	{
+	public:
+		Registrator( Factory::RegistryKey key, Factory& fact )
+		{
+			fact.AddCreator( key, Create );
+		}
+
+		Registrator( Factory& fact )
+		{
+			fact.AddCreator( "Oscilator", CreateAudioAdder );
+		}
+
+		static Processing* Create()
+		{
+			return new ConcreteProcessingType;
+		}
+	};
+
 };
 
-template< typename ConcreteProcessingType>
-class FactoryRegistrator
-{
-public:
-	FactoryRegistrator( Factory& fact )
-	{
-		ConcreteProcessingType* foo = 0;
-		fact.AddCreator(foo->GetClassName() , CreateAudioAdder );
-	}
 
-	static Processing* Create()
-	{
-		return new ConcreteProcessingType;
-	}
-};
 
 
 } // namespace

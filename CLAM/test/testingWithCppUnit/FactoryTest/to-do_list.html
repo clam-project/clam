@@ -43,18 +43,22 @@
 								Safe version: rises ErrFactory</li>
 						</ul>
 					<li class='current'>
-					Automatic registry
-					<ul>
-						<li class='done'>
-							FactoryRegistrator&lt Dummy &gt Create() returns a Dummy;
-						</li>
-						<li class='current'>
-							create a Oscillator after having constructed the FactoryRegistrator with factory
-						</li>
-						<li class='to-do'>
-							The same after FactoryRegistrator constructed by default
-						</li>
-					</ul>
+						Automatic registry
+						<ul>
+							<li class='done'>
+								FactoryRegistrator&lt Dummy &gt Create() returns a Dummy;
+							</li>
+							<li class='to-do'>
+								create a Oscillator after having constructed the FactoryRegistrator with 
+								factory. (two versions: passing explicitly the key, and using GetClassName)
+							</li>
+							<li class='to-do'>
+								The same after FactoryRegistrator constructed by default
+							</li>
+							<li class='to-do'>
+								Make Registrator inner class of Factory
+							</li>
+						</ul>
 					<li class='done'>
 						AddCreator should return bool ? <b>No</b>. do it evident
 					<li class='done'>
@@ -103,7 +107,9 @@
 			<li class='to-do'>
 				decide if generalize base type for factory (not only Processing)
 			</li>
-			
+			<li class='to-do'>
+				Processsings with static GetClassName
+			</li>
 		</ul>
 	</body>
 </html>

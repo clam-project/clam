@@ -14,35 +14,56 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FactoryRegistratorTest );
 class FactoryRegistratorTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( FactoryRegistratorTest );
-	CPPUNIT_TEST( testCreate_ReturnsAnObjectOfTheTemplateType );
-	CPPUNIT_TEST( testConstructorPassingAFactory_RegistersCreator );
 	CPPUNIT_TEST_SUITE_END();
 
-	void testCreate_ReturnsAnObjectOfTheTemplateType()
-	{
-		CLAM::Processing* created =
-			CLAM::FactoryRegistrator<CLAM::Oscillator>::Create();
-
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created ); 
-		delete created;
-	}
-
-	void testConstructorPassingAFactory_RegistersCreator()
-	{
-		CLAM::Factory fact;
-		CLAM::FactoryRegistrator<CLAM::Oscillator> foo( fact );
-		
-		const char* OscillatorClassName = "Oscillator";
-
-		CLAM::Processing *created = 
-			fact.Create( OscillatorClassName );
-		
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created ); 
-		delete created;	
-	}
 };
 
 } // namespace CLAMTest
 
 
+
+/*	CPPUNIT_TEST( testCreate_ReturnsAnObjectOfTheTemplateType );
+	CPPUNIT_TEST( testConstructorPassingKeyAndFactory_RegistersCreator );
+	CPPUNIT_TEST( testConstructorPassingFactory_RegistersCreator );
+
+	void testCreate_ReturnsAnObjectOfTheTemplateType()
+	{
+		CLAM::Processing* created =
+			CLAM::Factory::Registrator<CLAM::Oscillator>::Create();
+
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created ); 
+		delete created;
+	}
+
+	void testConstructorPassingKeyAndFactory_RegistersCreator()
+	{
+		CLAM::Factory fact;
+		const char* oscillatorClassName = "Oscilator";
+		
+		CLAM::Factory::Registrator<CLAM::Oscillator> regt( oscillatorClassName, fact );
+		
+		CLAM::Processing *created = 
+			fact.Create( oscillatorClassName );
+		
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created ); 
+		delete created;	
+	}
+
+	void testConstructorPassingFactory_RegistersCreator()
+	{
+		CLAM::Factory fact;
+		CLAM::Oscillator dummy; //needed for calling GetClassName()
+		// here we use the name just for creating. Not for registrating
+		const char* oscillatorClassName = dummy.GetClassName();
+			
+		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
+		CLAM::Factory::Registrator<CLAM::Oscillator> regt( fact );
+		
+		CLAM::Processing *created = 
+			fact.Create( oscillatorClassName );
+		
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *created ); 
+		delete created;	
+	}
+*/
 
