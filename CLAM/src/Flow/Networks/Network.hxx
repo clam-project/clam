@@ -33,6 +33,7 @@ public:
 	void SetName( const std::string& name ) { _name=name; }
 	Processing& GetProcessing( const std::string & name );
 	void AddProcessing( const std::string &, Processing* );
+	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name );
 	bool ConnectPorts( const std::string &, const std::string & );
 	bool DisconnectPorts( const std::string &, const std::string & );

@@ -59,6 +59,33 @@ namespace CLAM
 		_flowControl->ProcessingAddedToNetwork(*proc);
 	}
 
+	void Network::RemoveProcessing ( const std::string & name)
+	{
+		ProcessingsMap::const_iterator i = _processings.find( name );
+		if(i==_processings.end())
+			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing with a repeated name (key)" );
+		
+		Processing * proc = i->second;
+		_processings.erase( name );
+
+		Processing::InPortIterator itInPort;
+		for(itInPort=proc->GetInPorts().Begin(); 
+		    itInPort!=proc->GetInPorts().End();
+		    itInPort++)
+		{
+			(*itInPort)->Unattach();
+		}
+
+		Processing::OutPortIterator itOutPort;
+		for(itOutPort=proc->GetOutPorts().Begin(); 
+		    itOutPort!=proc->GetOutPorts().End();
+		    itOutPort++)
+		{
+			(*itOutPort)->Unattach();
+		}
+		
+	}
+
 	bool Network::HasProcessing( const std::string & name )
 	{
 		ProcessingsMap::const_iterator i = _processings.find( name );
