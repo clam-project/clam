@@ -24,8 +24,8 @@ private:
 	{
 		CLAM::Processing* returned = CLAM::CreateOscillator();
 		std::string msg = std::string(
-			"Expected: CLAM::Oscillator\n"
-			"But was: " ) + std::string( typeid( returned ).name() );
+			"Expected: ") + typeid( CLAM::Oscillator ).name() +
+			"But was: " + typeid( returned ).name();
 		
 		CPPUNIT_ASSERT_MESSAGE( msg, typeid( CLAM::Oscillator ) == typeid(*returned) ); 
 	
