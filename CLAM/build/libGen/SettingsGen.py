@@ -109,19 +109,22 @@ class LibGenerator :
                     raise TypeError, "%s does not exist!"%fullPath
             self.sourceFilenames.append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, filename ) )
 
+
+        failed = True
         try:
             trySource()
             self.blackBall( fname )
+            failed = False
         except TypeError, e:
             pass
 
         try:
             tryHeader()
         except TypeError, e:
-            raise e
+            if failed : raise e
 
 
-    def condAddFile( self, condition, fname, folder, rootFolder="src" ) :
+    def condAddFile( self, package, fname, folder, rootFolder="src" ) :
         if rootFolder != "src" :
             self.extraIncludes.append( "$(TOP)/%s"%(rootFolder,) )
 
@@ -150,6 +153,7 @@ class LibGenerator :
                 fullPath = "%s/%s"%(basePath, filename )            
                 if not os.path.exists( fullPath ) :
                     raise TypeError, "%s does not exist!"%fullPath
+            condition = "USING_%s"%package.upper()
             if not self.condSources.has_key(condition) :
                 self.condSources[condition] = list()
             self.condSources[condition].append( "$(TOP)/%s/%s/%s"%(rootFolder, folder, filename ) )
