@@ -100,7 +100,6 @@ bool System::ModulatedFileInPlusFileIn()
 	_fileIn.Do(_fileInData);
 	_modulator.Do(_modulatorData);
 	_multiplier.Do(_fileInData, _modulatorData, _multiplierData);
-	_oscillator.Do(_oscillatorData);
 	_adder.Do(_multiplierData, _fileInData, _adderData);
 	_fileOut.Do(_adderData);
 	return false;
