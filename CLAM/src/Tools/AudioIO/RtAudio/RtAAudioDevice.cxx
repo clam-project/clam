@@ -84,7 +84,7 @@ namespace CLAM {
 				int limit = mFrames*mChannels;
 				int i = mReadIndex*mChannels;
 
-#ifndef DEBUG_RDWR_POS				
+#ifdef DEBUG_RDWR_POS				
 				printf("copyto: r=%d %d\n",mReadIndex,frames);
 #endif				
 				while (cnt--)
@@ -103,7 +103,7 @@ namespace CLAM {
 				int limit = mFrames*mChannels;
 				int i = mWriteIndex*mChannels;
 				
-#ifndef DEBUG_RDWR_POS				
+#ifdef DEBUG_RDWR_POS				
 				printf("copyfrom: w=%d %d\n",mWriteIndex,frames);
 #endif				
 				while (cnt--)
@@ -121,7 +121,7 @@ namespace CLAM {
 				int n = size;
 				int limit = mChannels*mFrames;
 
-#ifndef DEBUG_RDWR_POS				
+#ifdef DEBUG_RDWR_POS				
 				printf("ChannelCopyFrom: w=%d %d\n",mWriteIndex,size);
 #endif
 				fflush(stdout);
@@ -146,7 +146,7 @@ namespace CLAM {
 				int n = size;
 				int limit = mChannels*mFrames;
 				
-#ifndef DEBUG_RDWR_POS				
+#ifdef DEBUG_RDWR_POS				
 				printf("ChannelCopyTo: r=%d %d\n",mReadIndex,size);
 #endif
 				while (n--)
