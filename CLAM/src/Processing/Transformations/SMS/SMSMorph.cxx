@@ -167,26 +167,15 @@ bool SMSMorph::InterpolateResidual(const Frame& in1,const Frame& in2, Frame& out
 	/**Residual Morphing**/
 	///////////////////////
 	
-	/** Xavier: we cannot be sure that incoming spectrum is in MagPhase format.
-	We will do it the "slow way" and try to optimize later (TODO)
-	*/
 	Spectrum &inRes1=in1.GetResidualSpec();
 	Spectrum &inRes2=in2.GetResidualSpec();
 	Spectrum &outRes=out.GetResidualSpec();
 	
-	outRes.SetSpectralRange(inRes1.GetSpectralRange());
+	mPO_SpectrumInterpolator.mInterpolationFactorCtl.DoControl(resFactor);
 	//TODO: should set prototypes at the beginning to enhance speed
 	mPO_SpectrumInterpolator.Do(inRes1,inRes2,outRes);
 
-/*	TSize specSize=out.GetResidualSpec().GetSize();
 
-	int i;
-	for(i=0;i<specSize;i++)
-		outRes.SetMag(i,inRes1.GetMag(i)*(1-resFactor)+inRes2.GetMag(i)*resFactor);
-	if(resFactor>0.5)
-		for(i=0;i<specSize;i++)
-			outRes.SetPhase(i,inRes2.GetPhase(i));
-*/
 	return true;
 }
 
