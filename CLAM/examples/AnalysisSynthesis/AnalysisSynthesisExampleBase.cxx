@@ -35,7 +35,6 @@
 #include "SMSSynthesis.hxx"
 #include "CleanTracks.hxx"
 #include "Segmentator.hxx"
-#include "OnsetDetection.hxx"
 #include "Normalization.hxx"
 #include "HeapDbg.hxx"
 
@@ -418,13 +417,11 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 
 	myAnalysis.Start();
 
-	do
+	while(myAnalysis.Do(mSegment))
 	{      
-		myAnalysis.Do(mSegment);
-		mSegment.mCurrentFrameIndex++;
-	    k+=step;
+		k+=step;
 		mCurrentProgressIndicator->Update(float(k));
-	}  while(k<=size-step-initialOffset);
+	}  //while(k<=size-step-initialOffset);
 
 	myAnalysis.Stop();
 
@@ -681,20 +678,6 @@ in metadata extraction from an input sound.*/
 	//Segmentation//
 	////////////////
 			
-	//This new segmentator is still to be tested
-/*	OnsetDetectionConfig onsetconfig;
-	onsetconfig.SetFrameSize(analysisFrameSize);
-	onsetconfig.SetSmoothFiltSize(smoothFiltSize);
-	onsetconfig.SetBandThreshold(bandThreshold);
-	onsetconfig.SetMinPeakDist(minPeakDist);
-	onsetconfig.SetGlobalThreshold(globalThreshold);
-	onsetconfig.SetDifSize(difSize);
-	OnsetDetection onset(onsetconfig);
-
-	//Segmentation
-	onset.Start();
-	onset.Do(mSegment);
-*/
 	List<Note> array;
 	Array<TData> fund;
 	Array<TData> energy;
