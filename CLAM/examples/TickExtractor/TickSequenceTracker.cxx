@@ -236,8 +236,6 @@ namespace CLAM
 
 			Array<TimeIndex>  IOIHistPeaks;
 
-			TData tempo;
-
 			Array<TimeIndex> tickArray, tempoArray;
 
 			Array<TData> forGlobalTempoCalc;
@@ -277,7 +275,6 @@ namespace CLAM
 
 				mTemporalDiff.Do(mTransientsForHist,IOIHist);
 
-
 				///IOI histogram Peak Detection
 
 				mPeakDetector.Do(IOIHist,IOIHistPeaks);
@@ -286,10 +283,9 @@ namespace CLAM
 
 				///Compute Tempo (optional)
 				if (computeBeats)
-				{
 					mTempoEstimator.Do( IOIHistPeaks, initialBeatParams );
-					tempo = initialBeatParams.GetInterval();
-				}
+
+
 
 				///Tick Estimation
 
@@ -330,12 +326,8 @@ namespace CLAM
 
 				if (computeBeats) 
 				{
-					unsigned int goodTempoInterval, goodTempoOffset;
-
 					TimeSeriesSeed tickAdjustedBeatParams;
 					mBeatTickAdjuster.Do( mGoodTick, initialBeatParams, tickAdjustedBeatParams );
-
-					tempo = tickAdjustedBeatParams.GetInterval();
 
 					if (mConfig.GetAdjustWithOnsets()) 
 					{
@@ -345,22 +337,17 @@ namespace CLAM
 						mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
 						mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
 
-						mBeatOnsetsAdjuster.Do( transients, mGoodTick, tickAdjustedBeatParams,
-									tempoArray, mGoodTempo );
-
 
 						//NB: Use of transients instead of transientsForHist
 						// i.e. making use of transient weights
+						mBeatOnsetsAdjuster.Do( transients, mGoodTick, tickAdjustedBeatParams,
+									tempoArray, mGoodTempo );
 
-						
-						goodTempoInterval = mGoodTempo.GetInterval();
-						goodTempoOffset = mGoodTempo.GetOffset();
-						///Generate beat indexes array
 					}
 					else 
-						goodTempoInterval = tempo;
+						mGoodTempo = tickAdjustedBeatParams;
 
-					forGlobalTempoCalc.AddElem(goodTempoInterval);
+					forGlobalTempoCalc.AddElem( mGoodTempo.GetInterval() );
 				}
 
 
