@@ -99,15 +99,19 @@ namespace CLAM {
 		DYN_ATTRIBUTE (15,public, TData, Spread);
 		DYN_ATTRIBUTE (16,public, TData, Skewness);
 		/**
-		 * The spectral roll-off point is the frequency so that 85%
-		 * of the signal energy is contained below this
-		 * frequency. Returns -1 if the rolloff point can't be
-		 * found. Measured in Hz.
+		 * The spectral roll-off point is the frequency value 
+		 * so that the 85% of the spectral energy is contained below 
+		 * it. For silences this is 0Hz. Measured in Hz.
+		 *
+		 * \f[
+		 * Rolloff / \sum_{f=0}^{RollOff} {a_f^2} = 0.85 \times \sum_{f=0}^{SpectralRange} {a_f^2}
+		 * \f]
 		 */
 		DYN_ATTRIBUTE (17,public, TData, Rolloff); 
 		/**
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
+		 * @see Stats::Slope
 		 */
 		DYN_ATTRIBUTE (18,public, TData, Slope); 
 		DYN_ATTRIBUTE (19,public, TData, HighFrequencyCoefficient);
