@@ -120,6 +120,7 @@
 - Different sizes of Binders
 - Extract search and retrieval from Hooks
 - Enhance exception messages with names
+- Hook::_current is not shared
 
 
 

@@ -29,8 +29,8 @@ public:
 	{
 		return _current < GetIterationSize();
 	}
-protected:
 	virtual unsigned GetIterationSize() const =0;
+protected:
 
 	std::string _attribute;
 	std::string _scope;
@@ -41,24 +41,23 @@ template <typename AttributeType>
 class ReadHook : public Hook<AttributeType>
 {
 public:
+	const AttributeType & GetForReading() const
+	{
+		return _data [GetCurrent()];
+	}
+
 	virtual void Init(const DescriptionDataPool & pool) 
 	{
 		_pool = &pool;
 		_current = 0;
 		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
 	}
-
-	const AttributeType & GetForReading() const
-	{
-		return _data [GetCurrent()];
-	}
-
 	virtual unsigned GetIterationSize() const
 	{
 		return _pool->GetNumberOfContexts(_scope);
 	}
 
-private:
+protected:
 	virtual unsigned GetCurrent() const
 	{
 		return _current;
@@ -87,10 +86,6 @@ public:
 		_chained.Init(pool);
 	}
 
-	virtual unsigned GetIterationSize() const
-	{
-		return _chained.GetIterationSize();
-	}
 	virtual void Next()
 	{
 		_chained.Next();
@@ -100,7 +95,11 @@ public:
 	{
 		return _chained.IsInsideScope();
 	}
-private:
+	virtual unsigned GetIterationSize() const
+	{
+		return _chained.GetIterationSize();
+	}
+protected:
 	unsigned GetCurrent() const
 	{
 		unsigned indirection = _chained.GetForReading();
@@ -108,7 +107,7 @@ private:
 			"Invalid cross-scope reference");
 		return indirection;
 	}
-	
+private:
 	ReadHook<unsigned> _chained;
 };
 
@@ -134,11 +133,11 @@ protected:
 	{
 		return _pool->GetNumberOfContexts(_scope);
 	}
-private:
 	unsigned GetCurrent() const
 	{
 		return _current;
 	}
+private:
 	DescriptionDataPool * _pool;
 	AttributeType * _data;
 };
