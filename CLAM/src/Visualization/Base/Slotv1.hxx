@@ -2,7 +2,7 @@
 #define __SLOTV1__
 
 #include "Slot.hxx"
-#include "CBL.hxx"
+#include "Functor1.hxx"
 #include "Assert.hxx"
 
 namespace CLAMGUI
@@ -11,7 +11,7 @@ namespace CLAMGUI
 template < typename ParmType1 >
 class Slotv1 : public Slot
 {
-		typedef CBL::Functor1<Parmtype1> WrappedFuncType;
+		typedef CBL::Functor1<ParmType1> WrappedFuncType;
 
 public:
 
