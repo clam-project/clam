@@ -117,9 +117,6 @@ int main( int argc, char** argv )
 			}
 
 			fileLoaderConfig.SetFilename( filename );
-
-			CLAM_ASSERT( fileLoader.Configure( fileLoaderConfig ),
-				     "Unable to configure fileLoader!" );
 		}
 	}
 	
