@@ -23,8 +23,8 @@ static void vcproj_parse_insert( FileType filetype );
 static void vcproj_parse_insert_recurse( tree* t, list* repeatCheck, FileType type, int depth );
 
 static void vcproj_parse_insert_regular_file( const char*, FileType type, int depth );
-static void vcproj_parse_insert_ui_file( const char*, int depth);
-static void vcproj_parse_insert_mocable_header( char*);
+static void vcproj_parse_insert_ui_file( const char* file, int depth);
+static void vcproj_parse_insert_mocable_header( const char* file, int depth);
 
 
 static void indent( int numTabs );
@@ -369,7 +369,7 @@ void vcproj_parse_insert_recurse(tree* t,list* repeatcheck, FileType type, int d
 				assert( mocable_headers != NULL );
 				
 				if ( list_find( mocable_headers, n->str ) )
-					vcproj_parse_insert_mocable_header( n->str );
+					vcproj_parse_insert_mocable_header( n->str, depth );
 				else
 					vcproj_parse_insert_regular_file( n->str, type, depth );
 			}
@@ -414,6 +414,11 @@ void vcproj_parse_insert_regular_file( const char* filename, FileType type, int 
 static void vcproj_parse_insert_ui_file( const char* file, int depth)
 {
 	char winfile[1024];
+	/*
+	$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+	$(QTDIR)\bin\uic.exe $(InputPath) -i .\uic\${InputName}.h -o .\uic\$(InputName).cxx
+	$(QTDIR)\bin\moc.exe -i .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+	*/
 
 	strncpy(winfile,file,1024);
 	winstyle(winfile);
@@ -428,13 +433,13 @@ static void vcproj_parse_insert_ui_file( const char* file, int depth)
 	indent(depth+3);
 	fprintf(outfile, "Description=\"UICing %s\"\n", winfile);
 	indent(depth+3);
-	fprintf(outfile, "CommandLine=\"uic.exe ${InputFile} -o .\\uic\\${InputName}.h\n");
+	fprintf(outfile, "CommandLine=\"$(QTDIR)\\bin\\uic.exe $(InputPath) -o .\\uic\\$(InputName).h\n");
 	indent(depth+4);
-	fprintf(outfile, "uic.exe ${InputFile} -i ${InputName}.h -o .\\uic\\${InputName}.cxx\n");
+	fprintf(outfile, "$(QTDIR)\\bin\\uic.exe $(InputPath) -i $(InputName).h -o .\\uic\\$(InputName).cxx\n");
 	indent(depth+4);
-	fprintf(outfile, "moc.exe ${InputFile} -i ${InputName}.h -o .\\moc\\${InputName}_moc.cxx\"\n");
+	fprintf(outfile, "$(QTDIR)\\bin\\moc.exe .\\uic\\$(InputName).h -o .\\moc\\$(InputName)_moc.cxx\"\n");
 	indent(depth+3);
-	fprintf(outfile, "Outputs=\".\\uic\\${InputName}.h;.\\uic\\${InputName}.cxx;.\\moc\\${InputName}_moc.cxx\" />\n");
+	fprintf(outfile, "Outputs=\".\\uic\\$(InputName).h;.\\uic\\$(InputName).cxx;.\\moc\\$(InputName)_moc.cxx\" />\n");
 	indent(depth+1);
 	fprintf(outfile, "</FileConfiguration>\n");
 	indent(depth);
@@ -442,5 +447,31 @@ static void vcproj_parse_insert_ui_file( const char* file, int depth)
 
 }
 
-void vcproj_parse_insert_mocable_header( char*a) {}
+void vcproj_parse_insert_mocable_header( char* file, int depth) 
+{
+	char winfile[1024];
+
+	strncpy(winfile,file,1024);
+	winstyle(winfile);
+	indent(depth);
+	fprintf(outfile, "<File RelativePath=\"%s\">\n", winfile);
+	indent(depth+1);
+	fprintf(outfile, "<FileConfiguration Name=\"Debug|Win32\">\n");
+	indent(depth+2);
+	fprintf(outfile, "<Tool\n");
+	indent(depth+3);
+	fprintf(outfile, "Name=\"VCCustomBuildTool\"\n");
+	indent(depth+3);
+	fprintf(outfile, "Description=\"MOCing %s\"\n", winfile);
+	indent(depth+3);
+	fprintf(outfile, "CommandLine=\"$(QTDIR)\\bin\\moc.exe $(InputPath) -o .\\moc\\$(InputName)_moc.cxx\"\n");
+	fprintf(outfile, "Outputs=\".\\moc\\$(InputName)_moc.cxx\" />\n");
+	indent(depth+1);
+	fprintf(outfile, "</FileConfiguration>\n");
+	indent(depth);
+	fprintf(outfile, "</File>\n");
+
+}
+
+
 
