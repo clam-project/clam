@@ -4,6 +4,7 @@
 ''
 
   * Build system:
+      ** Bug fix in srcdeps: uninitialized var in emptydsp.c
       ** Fix: 'configure' test for local sandbox fftw in linux, used wrong parameters order
       ** Added support to fltk-config in order to get fltk paths and flags
       ** Changed "release" flag compilation in gcc from -O6 to -O3
