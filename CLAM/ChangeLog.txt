@@ -1,3 +1,10 @@
+2003-07-25 CLAM_0_5_2
+'Processing bug-fixing
+  * Processing - Transformation - SMS:
+      ** SMSMorph was not working by a side-effect of the introduction of the SMS Time Stretch
+  * Processing - Analysis:
+      ** SpectralPeakDetect bug fixed
+
 2003-07-03 CLAM_0_5_1
 'SMSTools update and Mac compilation issues'
   * Examples - SMS:
