@@ -12,11 +12,22 @@
 <li class='to-do'>Fix broken sources
 	<ul>
 		<li class='done'>Remove any trace of Qt ( for now ) from the .dsp file</li>
-		<li class='to-do'>Fix 'examples/GUI/View/TokenDelayView.hxx'</li>
-		<li class='to-do'>Fix 'examples/GUI/View/AudioFileView.hxx'</li>
-		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterPres.hxx'</li>
-		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterBankPres.hxx'</li>+
-		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseSpecPres.hxx'</li>
+		<li class='to-do'>Fix 'examples/GUI/View/TokenDelayView.hxx'
+			<li class='done'>Change the name of UpdatingModelAdapter class for ModelController</li>
+			<li class='to-do'>Write/Test a TokenDelayController</li>
+		</li>
+		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterPres.hxx'
+			<li class='to-do'>Write/Test a FDFilterController</li>
+		</li>
+		<li class='to-do'>Fix 'examples/GUI/View/AudioFileView.hxx'
+			<ul>
+				<li class='to-do'>In this case, we are just accessing a ProcessingConfig ( AudioFileConfig ) so this should be handled by the Configurators thing. However, this may imply major hacking of that nifty generative programming example. In a nutshell, we must decide between doing the 'right' thing or hacking a ModelController that is bound to a Processing
+				</li>
+			</ul>
+		</li>
+		<li class='to-do'>Remove 'examples/GUI/Presentation/BaseSpecPres.hxx' since the needs it covers are already covered by the SpectrumPresentation class at 'src/Visualization/Presentation/Base'</li>
+
+		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterBankPres.hxx' ( not very sure about what to do with this thing )</li>
 	</ul>
 </li>
 
