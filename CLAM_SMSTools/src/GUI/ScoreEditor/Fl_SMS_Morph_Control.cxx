@@ -408,7 +408,8 @@ namespace CLAMVM
 				 "being the X axis the time, and the Y axis the interpolation factor "
 				 "so a factor of 0.0 means that the resulting sound is exactly the "
 				 "source and a factor of 1.0 means that the resulting sound matches "
-				 "exactly the target" );
+				 "exactly the target. By default this control is synchronized to Sinusoidal"
+				 "Amplitude and Frequency and Residual Amplitude envelopes.");
 		widget->hide();
 		widget->InitPoints( 0.5 );
 		add( widget );
@@ -425,14 +426,15 @@ namespace CLAMVM
 		widget->SetHorizontalRange( 0.0, 1.0 );
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
-		widget->tooltip( 
-				 "This widget allows you to control an aspect of the timbre blending "
-				 "performed, concretely the sinusoidal component amplitude envelopes blending. "
-				 "The X axis is time, expressed in a parametric form,  and the Y axis is "
-				 "the interpolation factor between the two sinusoidal envelopes. "
-				 "An interpolation factor of 0.0 means that the resulting sound sinusoidal envelope matches "
-				 "source's one,  and a factor of 1.0 means that the resulting sound sinusoidal "
-				 "envelope matches exactly the target's one" );
+		widget->tooltip( "Allows to control an aspect of the timbre blending performed," 
+			"concretely the amplitude of the sinusoidal component, that is the amplitude" 
+			"of the spectral peaks of the resulting sound expressed as a interpolation"
+			" factor between the peaks of the two original sounds. The X axis is time, "
+			"expressed in a parametric form,  and the Y axis is the interpolation factor "
+			"between the two sinusoidal amplitude envelopes. An interpolation factor of "
+			"0.0 means that the resulting sound sinusoidal envelope will match the "
+			"source's one, and a factor of 1.0 means that the resulting sound sinusoidal" 
+			"envelope matches exactly the target's one." );
 
 		widget->hide();
 		widget->InitPoints( 0.5 );
@@ -450,14 +452,20 @@ namespace CLAMVM
 		widget->SetHorizontalRange( 0.0, 1.0 );
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
-		widget->tooltip( 
-				 "This widget allows you to control an aspect of the timbre blending "
-				 "performed by the SMS Morphing, concretely the sinusoidal component frequencies blending. "
-				 "The X axis is time, expressed in a parametric form, and the Y axis is "
-				 "the interpolation factor between the two sinusoidal frequency contents. "
-				 "An interpolation factor of 0.0 means that the resulting sound sinusoidal frequency content matches "
-				 "source's one,  and a factor of 1.0 means that the resulting sound sinusoidal "
-				 "frequency content matches exactly the target's one" );
+		widget->tooltip( " This envelope allows to control an aspect of the timbre "
+			"blending performed, concretely the frequency of the sinusoidal component,"
+			"that is the frequency of the spectral peaks of the resulting sound "
+			"expressed as a interpolation factor between the peaks of the two original "
+			"sounds. The X axis is time, expressed in a parametric form,  and the Y "
+			"axis is the interpolation factor between the two frequencies of peaks "
+			" in the sinusoidal component. An interpolation factor of 0.0 means that "
+			" the resulting sound sinusoidal frequencies will match the source's one, "
+			"and a factor of 1.0 means that the resulting sound sinusoidal envelope "
+			"matches exactly the target's one. Note that this control has rather weak "
+			"effect on harmonic sounds analyzed as such. In that case the effect will "
+			"be driven by the value in the pitch hybridation factor except in frames "
+			"where no pitch has been found, it is then recommended that you synchronize "
+			"this factor to pitch." );
 
 		widget->hide();
 		widget->InitPoints( 0.5 );
@@ -477,13 +485,15 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "This widget allows you to control the blending of the sounds' pitches. Note "
-				 "that this involves not only to blend the fundamental frequency, but also any accompanying "
-				 "harmonics detected. The X axis is time, expressed in a parametric form, and the Y axis is "
-				 "the interpolation factor between the two sounds pitches. "
-				 "An interpolation factor of 0.0 means that the resulting sound harmonicity matches "
-				 "source's one,  and a factor of 1.0 means that the resulting sound harmonicity "
-				 "matches exactly the target's one" );
+				"Allows to control sounds' pitches blending. Note that this involves "
+				"not only to blend the fundamental frequency, but also any accompanying "
+				"harmonics detected as tready pointed out in the previous control. The "
+				"X axis is time, expressed in a parametric form, and the Y axis is the "
+				"interpolation factor between the two sounds pitches. An interpolation "
+				"factor of 0.0 means that the resulting sound harmonics will match the "
+				"source's one, and a factor of 1.0 means that the resulting sound "
+				"harmonics will match exactly the target's one in their frequency "
+				"distributions.");
 
 		widget->hide();
 		widget->InitPoints( 0.5 );
@@ -503,13 +513,13 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "This widget allows you to control the blending of the two sounds " 
-				 "hoarseness, or residual component amplitude envelope of the two sounds."
-				 "The X axis represents transformation time, in a parametric form, and the "
-				 "Y axis represents the interpolation factor between the two sounds hoarseness. So "
-				 "a interpolation factor of 0.0 means that the resulting sound hoarseness should match "
-				 "source's one, and an interpolation factor of 1.0 means that the resulting sound hoarseness "
-				 "should match target's one.");
+				"This widget allows you to control the blending of the two sounds "
+				"residual component amplitude envelope. The X axis represents "
+				"transformation time, in a parametric form, and the Y axis represents "
+				"the interpolation factor between the two sounds hoarseness. So a "
+				"interpolation factor of 0.0 means that the resulting sound noisy "
+				"component will match source's one, and an interpolation factor of 1.0 "
+				"means that the resulting sound residual will  match target's one.");
 
 		widget->hide();
 		widget->InitPoints( 0.5 );
@@ -530,7 +540,12 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: write a description for this ");
+				"It defines a temporal mapping between the source and the target sound." 
+				"X axis is the normalized time for the source sound and Y is the "
+				"normalized time for the target. Using this control you can achieve"
+				"morphs on only some parts of the sound, define how you want to stretch "
+				"the shortest sound or even reverse one of the sounds in respect to the "
+				"other.");
 
 		widget->hide();
 		
@@ -555,7 +570,16 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: write a description for this ");
+				"SinusoidalShapeW1, SinusoidalShapeW2 and SinusoidalShapeInterpolationFactor "
+				"form a non separable set. The first two define spectral envelopes where, "
+				"and for every frequency, a Y value of 0 means that the amplitude of "
+				"that frequency will be taken from the source spectrum and a value of 1 "
+				"means that the amplitude should be that of the target spectrum. The "
+				"third control is a temporal envelope that defines how much of each of "
+				"the previous spectral shapes should be taken in every instant. An "
+				"instantaneous value of 0 in this temporal envelope means that "
+				"SinusoidalShapeW1 should be used and a value of 1 means that the "
+				"SinusoidalShapeW2 should be used.");
 
 		widget->hide();
 		
@@ -580,7 +604,16 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: write a description for this ");
+				"SinusoidalShapeW1, SinusoidalShapeW2 and SinusoidalShapeInterpolationFactor "
+				"form a non separable set. The first two define spectral envelopes where, "
+				"and for every frequency, a Y value of 0 means that the amplitude of "
+				"that frequency will be taken from the source spectrum and a value of 1 "
+				"means that the amplitude should be that of the target spectrum. The "
+				"third control is a temporal envelope that defines how much of each of "
+				"the previous spectral shapes should be taken in every instant. An "
+				"instantaneous value of 0 in this temporal envelope means that "
+				"SinusoidalShapeW1 should be used and a value of 1 means that the "
+				"SinusoidalShapeW2 should be used.");
 
 		widget->hide();
 		
@@ -605,7 +638,7 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: write a description for this ");
+				 "This control is curently disabled");
 
 		widget->hide();
 		
@@ -630,7 +663,7 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: write a description for this ");
+				 "This control is curently disabled");
 
 		widget->hide();
 		
@@ -655,7 +688,16 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: please, write me!");
+				"SinusoidalShapeW1, SinusoidalShapeW2 and SinusoidalShapeInterpolationFactor "
+				"form a non separable set. The first two define spectral envelopes where, "
+				"and for every frequency, a Y value of 0 means that the amplitude of "
+				"that frequency will be taken from the source spectrum and a value of 1 "
+				"means that the amplitude should be that of the target spectrum. The "
+				"third control is a temporal envelope that defines how much of each of "
+				"the previous spectral shapes should be taken in every instant. An "
+				"instantaneous value of 0 in this temporal envelope means that "
+				"SinusoidalShapeW1 should be used and a value of 1 means that the "
+				"SinusoidalShapeW2 should be used.");
 
 		widget->hide();
 		
@@ -680,7 +722,7 @@ namespace CLAMVM
 		widget->SetVerticalRange( 0.0, 1.0 );
 		widget->SetGridWidth( 0.1, 0.1 );
 		widget->tooltip( 
-				 "TODO: please, write me!");
+				 "This control is curently disabled");
 
 		widget->hide();
 		
