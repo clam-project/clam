@@ -153,119 +153,92 @@ AC_DEFUN(CLAM_LIB_FLTK,
 AC_MSG_CHECKING([for fltk headers; looking relative to CLAM])
 fltk_local=no
 if test -d ../../fltk/include/FL/; then
-   AC_MSG_RESULT(yes)
-   found_fltk=yes
-   FLTK_INCLUDES="../../fltk/include"
-	 FLAG_FLTK_INCLUDES="-I../../fltk/include"
-   FLTK_LIB_PATH="../../fltk/lib"
-	 FLAG_FLTK_LIB_PATH="-L../../fltk/lib"
-   fltk_local=yes
+	AC_MSG_RESULT(yes)
+	found_fltk=yes
+	FLTK_INCLUDES="../../fltk/include"
+	FLTK_LIB_PATH="../../fltk/lib"
+	FLAG_FLTK_INCLUDES="-I../../fltk/include"
+	FLAG_FLTK_LIB_PATH="-L../../fltk/lib"
+	fltk_local=yes
 else
- AC_MSG_RESULT(no)
- AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
- found_fltk=no
- for base in "/usr/include" \
-             "/usr/local/include" \
-             "/opt/include" \
-             "/usr/"; do
-   if test -d $base/FL; then
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
+	found_fltk=no
+	for base in "/usr/include" \
+	            "/usr/local/include" \
+	            "/opt/include" \
+	            "/usr/"
+	do
+		if test -d $base/FL; then
 			AC_MSG_RESULT(yes)
-      found_fltk=yes
-      break;
-   fi
- done
- FLTK_LIB_PATH=
-fi		
+			found_fltk=yes
+			break;
+		fi
+	done
+	FLTK_LIB_PATH=
+fi
 if test $found_fltk = yes; then
-   AC_MSG_CHECKING([for fltk library (and other fltk required)...])
-   OLD_FLAGS=$CXXFLAGS
+	AC_MSG_CHECKING([for fltk library (and other fltk required)...])
+	OLD_FLAGS=$CXXFLAGS
 
-	 link_ok=no
+	link_ok=no
 
-	 if test $link_ok = no; then
-	    FLTK_LIBS="fltk"
-	    FLAG_FLTK_LIBS="-lfltk"
-    	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
-			AC_TRY_LINK([
-	 #include<FL/Fl_Window.H>
-	 #include<FL/Fl.H>
-			],[
-	 Fl_Window w(100,100);
-	 Fl::run();
-	 return 0;
-			],[
-	  		 link_ok=yes
-			],[])
-	 fi
+	for lib in fltk GL pthreads
+	do
+		FLTK_LIBS="$FLTK_LIBS $lib"
+		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
+		CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
+		AC_TRY_LINK([
+			#include<FL/Fl_Window.H>
+			#include<FL/Fl.H>
+		],[
+			Fl_Window w(100,100);
+			Fl::run();
+			return 0;
+		],[
+			link_ok=yes
+		],[])
+		test $link_ok = yes && break;
+	done
 
-	 if test $link_ok = no; then
-	    FLTK_LIBS="fltk GL"
-	    FLAGS_FLTK_LIBS="-lfltk -lGL"
-    	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
-			AC_TRY_LINK([
-	 #include<FL/Fl_Window.H>
-	 #include<FL/Fl.H>
-			],[
-	 Fl_Window w(100,100);
-	 Fl::run();
-	 return 0;
-			],[
-	  		 link_ok=yes
-			],[])
-	 fi
-
-	 if test $link_ok = no; then
-	    FLTK_LIBS="fltk GL pthread"
-	    FLAG_FLTK_LIBS="-lfltk -lGL -lpthread"
-    	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIBS $FLAG_FLTK_LIB_PATH"
-			AC_TRY_LINK([
-	 #include<FL/Fl_Window.H>
-	 #include<FL/Fl.H>
-			],[
-	 Fl_Window w(100,100);
-	 Fl::run();
-	 return 0;
-			],[
-	  		 link_ok=yes
-			],[])
-	 fi
+	if test $link_ok = no; then
+		AC_MSG_ERROR([
+			The test program did not compile or link. Check your config.log for details.
+		])
+	else
+		AC_MSG_RESULT(yes: [$FLTK_LIBS])
+	fi
 	 
-	 if test $link_ok = no; then
-			AC_MSG_ERROR([
-	  		 The test program did not compile or link. Check your config.log for details.
-			])
-	 else
-			AC_MSG_RESULT(yes: [$FLTK_LIBS])
-	 fi
-	 
-   AC_TRY_RUN([
-#include<FL/Fl_Window.H>
-#include<FL/Fl.H>
-int main()
-{
-	Fl_Window w(100,100);
-	Fl::run();
-	return 0;
-}
-   ],[
-      AC_MSG_RESULT(yes)
-			DEFINE_HAVE_FLTK=HAVE_FLTK
-      if test $fltk_local = yes; then
-       FLTK_INCLUDES="\$(CLAM_PATH)/../fltk/include"
-       FLTK_LIB_PATH="\$(CLAM_PATH)/../fltk/lib"
-      fi
-   ],[
-The test program did compile and to link, but failed to run. This probably 
-means that the run-time linker is not able to find libfltk.so. You might want
-to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to
-the right location.
-	 ],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-	 
-   CXXFLAGS=$OLD_FLAGS
+	AC_TRY_RUN([
+		#include<FL/Fl_Window.H>
+		#include<FL/Fl.H>
+		int main()
+		{
+			Fl_Window w(100,100);
+			Fl::run();
+			return 0;
+		}
+	],[
+		AC_MSG_RESULT(yes)
+		DEFINE_HAVE_FLTK=HAVE_FLTK
+		if test $fltk_local = yes; then
+			FLTK_INCLUDES="\$(CLAM_PATH)/../fltk/include"
+			FLTK_LIB_PATH="\$(CLAM_PATH)/../fltk/lib"
+		fi
+	],[
+		The test program did compile and to link, but failed to run. This probably 
+		means that the run-time linker is not able to find libfltk.so. You might want
+		to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to
+		the right location.
+	],[
+		echo $ac_n "cross compiling; assumed OK... $ac_c"
+	])
+
+	CXXFLAGS=$OLD_FLAGS
 else
-   AC_MSG_ERROR([
-       No fltk headers found!
-   ])
+	AC_MSG_ERROR([
+		No fltk headers found!
+	])
 fi;
 ]
 )
@@ -397,31 +370,33 @@ AC_DEFUN(CLAM_LIB_FFTW,
     		OLD_LIBS=$LIBS
 		AC_SEARCH_LIBS(fftw_sizeof_fftw_real,sfftw,
 			[AC_CHECK_HEADER(srfftw.h,
-					[ DEFINE_HAVE_FFTW=HAVE_FFTW
-						FFTW_LIBS="srfftw sfftw"
-					]
-				)
+				[ 
+					DEFINE_HAVE_FFTW=HAVE_FFTW
+					FFTW_LIBS="srfftw sfftw"
+				])
 			],
 			[AC_MSG_CHECKING([for double precision fftw library])
 			AC_SEARCH_LIBS(fftw_sizeof_fftw_real,fftw,
 				[AC_CHECK_HEADER(rfftw.h,
-						[ DEFINE_HAVE_FFTW=HAVE_FFTW
-							FFTW_LIBS="rfftw fftw"
-						]
-					)
+					[
+						DEFINE_HAVE_FFTW=HAVE_FFTW
+						FFTW_LIBS="rfftw fftw"
+					])
 				],AC_MSG_ERROR([fftw not found])
 				,-lfftw -lm)
-			],-lsfftw -lm)
+			],-lsfftw -lm
+		)
 	else
 		AC_MSG_CHECKING([for double precision fftw library])
 	
-    AC_SEARCH_LIBS(fftw_sizeof_fftw_real,fftw,
+	AC_SEARCH_LIBS(fftw_sizeof_fftw_real,fftw,
     	[AC_CHECK_HEADER(rfftw.h,
-					[ DEFINE_HAVE_FFTW=HAVE_FFTW
-						FFTW_LIBS="rfftw fftw"
-					]
-				)
-			],
+		[ 
+		DEFINE_HAVE_FFTW=HAVE_FFTW
+		FFTW_LIBS="rfftw fftw"
+		]
+		)
+	],
 	AC_MSG_ERROR(
 [fftw library (double precision) not found. Maybe you want to configure with 
 --disable-double?]) 		
@@ -429,5 +404,102 @@ AC_DEFUN(CLAM_LIB_FFTW,
     )
 	fi
 	LIBS=$OLD_LIBS
+])
+
+
+
+
+AC_DEFUN(CLAM_LIB_QT,
+[
+AC_MSG_CHECKING([for qt headers; looking relative to CLAM])
+qt_local=no
+if test -d ../../qt/include//; then
+	AC_MSG_RESULT(yes)
+	found_qt=yes
+	QT_INCLUDES="../../qt/include"
+	QT_LIB_PATH="../../qt/lib"
+	FLAG_QT_INCLUDES="-I../../qt/include"
+	FLAG_QT_LIB_PATH="-L../../qt/lib"
+	qt_local=yes
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING([for qt headers; looking in standard locations...])
+	found_qt=no
+	for base in "/usr" \
+	            "/usr/local" \
+	            "/opt" 
+	do
+		if test -d $base/include/qt3; then
+			AC_MSG_RESULT(yes)
+			QT_INCLUDES="$base/include/qt3"
+			QT_LIB_PATH="$base/lib"
+			FLAG_QT_INCLUDES="-I$base/include/qt3"
+			FLAG_QT_LIB_PATH="-L$base/lib"
+			found_qt=yes
+			break;
+		fi
+	done
+fi
+if test $found_qt = yes; then
+	AC_MSG_CHECKING([for qt library (and other qt required)...])
+	OLD_FLAGS=$CXXFLAGS
+
+	link_ok=no
+
+	QT_LIBS=""
+	FLAG_QT_LIBS=""
+	for lib in qt-mt qt; do
+		QT_LIBS="$lib"
+		FLAG_QT_LIBS="-l$lib"
+		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIBS $FLAG_QT_LIB_PATH"
+		AC_TRY_LINK([
+				#include<qapplication.h>
+			],[
+				int argc = 2;
+				char *argv[]={"Just","testing"};
+				QApplication app(argc,argv);
+			],[
+				link_ok=yes
+			],[])
+		test "$link_ok"="yes" && break
+	done
+
+	if test $link_ok = no; then
+		AC_MSG_ERROR([
+			The test program did not compile or link. Check your config.log for details.
+		])
+	else
+		AC_MSG_RESULT(yes: [$QT_LIBS])
+	fi
+
+	AC_TRY_RUN([
+		#include<qapplication.h>
+		int main(int argc, char** argv)
+		{
+			QApplication app(argc,argv);
+			return 0;
+		}
+	],[
+		AC_MSG_RESULT(yes)
+		DEFINE_HAVE_QT=HAVE_QT
+		if test $qt_local = yes; then
+			QT_INCLUDES="\$(CLAM_PATH)/../qt/include"
+			QT_LIB_PATH="\$(CLAM_PATH)/../qt/lib"
+		fi
+	],[
+		The test program did compile and to link, but failed to run. This probably 
+		means that the run-time linker is not able to find libqt.so. You might want
+		to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to
+		the right location.
+	],[
+		echo $ac_n "cross compiling; assumed OK... $ac_c"
+	])
+	 
+	CXXFLAGS=$OLD_FLAGS
+else
+	AC_MSG_ERROR([
+		No qt headers found!
+	])
+fi
 ])
 
