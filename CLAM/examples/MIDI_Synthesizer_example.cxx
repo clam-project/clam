@@ -33,7 +33,7 @@ CLAM-Docs/MIDI_Synthesizer_example (development-branch)
 #include "MIDIInControl.hxx"
 #include "MIDIClocker.hxx"
 #include "Dispatcher.hxx"
-#include "AudioMixer.hxx"
+#include "Mixer.hxx"
 #include "AudioManager.hxx"
 #include "TopLevelProcessing.hxx"
 #include <vector>
@@ -120,8 +120,6 @@ public:
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure( const ProcessingConfig& c );
-	
-	bool ConcreteStart();
 
 		bool Do(void) { return true; }
 
@@ -197,15 +195,6 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 	return true;
 }
 
-bool MyInstrument::ConcreteStart()
-{
-	mOscillator.Start();
-	mADSR.Start();
-	mSampleMultiplier.Start();
-
-	return true;
-}
-
 bool MyInstrument::Do( Audio& out )
 {
 	mEnvelope.SetSize( out.GetSize() );
@@ -223,7 +212,7 @@ void MyAudioApplication::AudioMain(void)
 	TControlData curTimeInc = 0.;
 	try
 	{
-		const int nVoices = 4;
+		int nVoices = 4;
 		unsigned int buffersize = 256;
 
 		// Audio and MIDI managers
@@ -352,24 +341,13 @@ void MyAudioApplication::AudioMain(void)
 		out.SetSize( buffersize );
 
 		// Mixer Declaration
-		AudioMixerConfig mixerCfg;
-		mixerCfg.SetFrameSize(buffersize);
-//		mixerCfg.SetSampleRate(audioManager.SampleRate());
-
-		AudioMixer<nVoices> mixer;
-		mixer.Configure(mixerCfg);
-
-		for ( i=0;i<nVoices;i++)
-		{
-			mixer.Input[i].Attach(audioArray[i]);
-		}
-		mixer.Output.Attach(out);
+		Mixer mixer;
 
 		inNote.LinkOutWithInControl( 0, &dispatcher, 1 );   /** Key for Note Off */
 		inNote.LinkOutWithInControl( 1, &dispatcher, 2 );   /** Velocity for Note Off */
 		inNote.LinkOutWithInControl( 2, &dispatcher, 1 );   /** Key for Note On */
 		inNote.LinkOutWithInControl( 3, &dispatcher, 2 );   /** Velocity for Note On */
-		
+
 		for( i = 0; i < nVoices; i++ )
 		{
 			inPitchBend.LinkOutWithInControl( 0, instruments[ i ] , 3 );
@@ -379,24 +357,9 @@ void MyAudioApplication::AudioMain(void)
 
 		audioManager.Start();
 
-		mixer.Start();
-
-		inL.Start();
-		inR.Start();
-		outL.Start();
-		outR.Start();
-
-		for ( i = 0; i < nVoices; i++ )
-		{
-			instruments[ i ]->Start();
-		}
-
-
-
 		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
-		std::cout << "before" << std::endl;
-//		TopLevelProcessing::GetInstance().Start();
-		std::cout << "after" << std::endl;			
+
+		TopLevelProcessing::GetInstance().Start();
 
 		do
 		{
@@ -405,7 +368,7 @@ void MyAudioApplication::AudioMain(void)
 
 			clocker.DoControl(0,curTime);
 			curTime += curTimeInc;
-
+			
 			midiManager.Check();
 
 			for ( i = 0; i < nVoices; i++ )
@@ -413,7 +376,7 @@ void MyAudioApplication::AudioMain(void)
 				instruments[ i ]->Do( audioArray[ i ] );
 			}
 
-			mixer.Do();
+			mixer.Do( audioArray, out );
 
 			outL.Do( out );
 			outR.Do( out );

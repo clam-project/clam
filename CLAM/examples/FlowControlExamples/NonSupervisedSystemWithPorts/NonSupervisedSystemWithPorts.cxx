@@ -23,15 +23,14 @@ void NetworkConfiguration::ConnectAndDo()
 }
 
 
-SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut ) :
+SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int frameSize , int nFrames,
+				  bool hasAudioOut ) :
 	_audioManager(44100, frameSize),
-	_controlSender(20,44100,0,frameSize),
 	_fileInName(fileIn),
 	_fileOutName(fileOut), 
 	_frameSize(frameSize), 
 	_maxFramesToProcess(nFrames),
 	_hasAudioOut(hasAudioOut)
-
 {
 	AddNetworkConfiguration( new OscillatorToFileOut( this, hasAudioOut ) );
 	AddNetworkConfiguration( new FileInFileOut( this, hasAudioOut ) );
@@ -75,11 +74,6 @@ void SystemWithPorts::ConfigureProcessings()
 
 	_fileIn.Configure (fileCfg);
 
-	CLAM::AudioMixerConfig mixerCfg;
-	mixerCfg.SetFrameSize(_frameSize);
-
-	_mixer.Configure( mixerCfg );
-
 	if (_hasAudioOut)
 	{
 		CLAM::AudioIOConfig audioCfg;
@@ -97,7 +91,7 @@ void SystemWithPorts::ConfigureData()
 	_fileInData.SetSize(_frameSize);
 	_modulatorData.SetSize(_frameSize);
 	_multiplierData.SetSize(_frameSize);
-	_mixerData.SetSize(_frameSize);
+	_adderData.SetSize(_frameSize);
 }
 
 void SystemWithPorts::StartProcessings()
@@ -108,8 +102,7 @@ void SystemWithPorts::StartProcessings()
 		_fileIn.Start();
 		_modulator.Start();
 		_multiplier.Start();
-		_mixer.Start();
-
+		_adder.Start();
 		if (_hasAudioOut)
 		{
 			_audioOut.Start();
@@ -233,24 +226,18 @@ void SystemWithPorts::FileInFileOut::Stop()
 
 void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 {
-	// linking ControlSender with AudioMixer volumes.
-	System()._controlSender._outControl1.AddLink(&(System()._mixer.mGain[0]));
-	System()._controlSender._outControl2.AddLink(&(System()._mixer.mGain[1]));
-
-
-
 	System()._fileIn.mOutput.Attach( System()._fileInData );
 	System()._modulator.mOutput.Attach( System()._modulatorData );
 	System()._multiplier.mFirstInput.Attach( System()._fileInData );
 	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
 	System()._multiplier.mOutput.Attach( System()._multiplierData );
-	System()._mixer.mInput[0].Attach( System()._multiplierData );
-	System()._mixer.mInput[1].Attach( System()._fileInData );
-	System()._mixer.mOutput.Attach( System()._mixerData );
-	System()._fileOut.Input.Attach( System()._mixerData );
+	System()._adder.mFirstInput.Attach( System()._multiplierData );
+	System()._adder.mSecondInput.Attach( System()._fileInData );
+	System()._adder.mOutput.Attach( System()._adderData );
+	System()._fileOut.Input.Attach( System()._adderData );
 	if (_hasAudioOut)
 	{
-		System()._audioOut.Input.Attach( System()._mixerData );
+		System()._audioOut.Input.Attach( System()._adderData );
 	}
 
 }
@@ -259,8 +246,7 @@ bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
 	System()._fileIn.Do();
 	System()._modulator.Do();
 	System()._multiplier.Do();
-	System()._controlSender.Do();
-	System()._mixer.Do();
+	System()._adder.Do();
 	System()._fileOut.Do();
 	if (_hasAudioOut)
 	{
