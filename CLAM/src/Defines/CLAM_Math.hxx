@@ -42,7 +42,7 @@ inline int Chop(float a) {
 #define roundInt(var) int(rint(var))
 #else
 // on mac and windows it doesn't
-inline int roundInt(double in)
+inline int roundInt(float a)
 {
 	int i;
 	static const float half = 0.5f;
@@ -62,7 +62,6 @@ inline int roundInt(double in)
 			_controlfp(saved, _MCW_RC);
 #endif //_DEBUG
             return i;
-#endif //WIN32
 }
 #endif
 
