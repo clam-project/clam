@@ -41,9 +41,10 @@ SMSMorph::SMSMorph():
 	mHybResShapeW1("ResShapeW1", this),
 	mHybResShapeW2("ResShapeW2", this),
 	mInput2("Input2",this,1)
+	
 {
 		mHaveInternalSegment=false;
-		
+		mUseTemporalBPF = true;
 		mUseSinSpectralShape=false;
 		mUseGlobalFactor=false;
 		mUseSynchronizeTime=false;
@@ -68,10 +69,12 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW1("ResShapeW1", this),
 	mHybResShapeW2("ResShapeW2", this),
-	mInput2("Input2",this,1)
+	mInput2("Input2",this,1)	
+
 {
 	mHaveInternalSegment=false;
-	
+	mUseTemporalBPF = true;
+
 	mUseSinSpectralShape=false;
 	mUseGlobalFactor=false;
 	mUseSynchronizeTime=false;
@@ -109,7 +112,7 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 	mResSpectralShape.Configure(cfg);
 	
 	InitializeFactorsToUse();
-	
+
 	FrameInterpConfig frIntCfg;
 
 	if(mUseSinSpectralShape)
@@ -118,8 +121,11 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 		mPO_FrameInterpolator.mSpectralShape.Attach(mSpectralShape);
 	}
 
-	mPO_FrameInterpolator.Configure(frIntCfg);
+	CLAM_ASSERT( mPO_FrameInterpolator.Configure(frIntCfg),
+				 "Failed to configure Frame interpolator in SMSMorph::ConcreteConfigure" );
 	
+
+
 	return UpdateControlValueFromBPF(0);
 }
 
@@ -153,6 +159,7 @@ bool SMSMorph::Do(const Frame& in1, Frame& out)
 	{
 		//it means we are at the boudaries of segment to morph
 		out=in1;
+
 		return true;
 	}
 
@@ -165,12 +172,14 @@ bool SMSMorph::Do(const Frame& in1, Frame& out)
 		//Morphing
 		UpdateFrameInterpolatorFactors();
 		mPO_FrameInterpolator.Do(in1,tempFrame2,out);
+
 	}
 	//Without Frame Interpolation
 	else
 	{
 		UpdateFrameInterpolatorFactors();
 		mPO_FrameInterpolator.Do(in1,mInput2.GetData().GetFrame(int(synchroTimeFactor)),out);
+
 	}
 					
 	return true;
