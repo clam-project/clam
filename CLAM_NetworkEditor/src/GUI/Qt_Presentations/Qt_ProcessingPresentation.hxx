@@ -98,6 +98,7 @@ public: // signals
 	SigSlot::Signalv1< Qt_OutControlPresentation * > SignalAcquireOutControlClicked;
 
 	SigSlot::Signalv1< Qt_ProcessingPresentation * > SignalProcessingPresentationSelected;
+	SigSlot::Signalv1< const std::string & > SignalSendMessageToStatus;
 	SigSlot::Signalv0 SignalProcessingPresentationUnSelected;
 
 public: // slots

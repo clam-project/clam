@@ -60,8 +60,14 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 
 	SlotProcessingPresentationSelected.Wrap( this, &Qt_NetworkPresentation::ProcessingPresentationSelected );
 	SlotProcessingPresentationUnSelected.Wrap( this, &Qt_NetworkPresentation::ProcessingPresentationUnSelected );
+	SlotSendMessageToStatus.Wrap( this, &Qt_NetworkPresentation::SendMessageToStatus );
 
 	setAcceptDrops(TRUE);
+}
+
+void Qt_NetworkPresentation::SendMessageToStatus( const std::string & message )
+{
+	SignalSendMessageToStatus.Emit( message );
 }
 
 
@@ -93,8 +99,6 @@ void Qt_NetworkPresentation::SetName(const std::string& name)
 {
 	mName = name;
 
-//	parent()->setCaption(QString(mName.c_str()));
-
 	QFont font( "Verdana" ,10 );
 	QFontMetrics fm( font );
 	int pixelsWide = fm.width( QString(mName.c_str()));
@@ -114,6 +118,7 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	presentation->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
 	presentation->SignalProcessingPresentationSelected.Connect( SlotProcessingPresentationSelected );
 	presentation->SignalProcessingPresentationUnSelected.Connect( SlotProcessingPresentationUnSelected );
+	presentation->SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
 	
 	SignalAcquireOutPortAfterClickInPort.Connect( presentation->SlotSetOutPortAfterClickInPort );
 	SignalAcquireInPortAfterClickOutPort.Connect( presentation->SlotSetInPortAfterClickOutPort );
@@ -125,7 +130,7 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 
 	presentation->Show();
 
-	SignalSendNewMessageToStatus.Emit( "Created " + presentation->GetName() );
+	SignalSendMessageToStatus.Emit( "Created " + presentation->GetName() );
 }
 
 void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
@@ -147,7 +152,7 @@ void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::Connectio
 	}	
 	presentation->Show();
 
-	SignalSendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
+	SignalSendMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
 				     " to " + presentation->GetInName() );
 }
 
@@ -171,7 +176,7 @@ void Qt_NetworkPresentation::CreateControlConnectionPresentation( CLAMVM::Connec
 	}	
 	presentation->Show();
 
-	SignalSendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
+	SignalSendMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
 				     " to " + presentation->GetInName() );
 }
 

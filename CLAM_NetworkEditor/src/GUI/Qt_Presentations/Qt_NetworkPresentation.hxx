@@ -74,6 +74,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void mousePressEvent ( QMouseEvent *); 
 	void dropEvent(QDropEvent* event);
 	void dragEnterEvent(QDragEnterEvent* event);
+
+	void SendMessageToStatus( const std::string & );		
 	
 	Qt_InPortPresentation* mInPortSelected;
 	Qt_OutPortPresentation* mOutPortSelected;
@@ -95,12 +97,14 @@ public:
 	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentationSelected;
 	SigSlot::Slotv0 SlotProcessingPresentationUnSelected;
 
+	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
+
 	// signals
 	SigSlot::Signalv1< const QPoint & > SignalAcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInPortAfterClickOutPort;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireOutControlAfterClickInControl;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInControlAfterClickOutControl;
-	SigSlot::Signalv1< const std::string& > SignalSendNewMessageToStatus;
+	SigSlot::Signalv1< const std::string& > SignalSendMessageToStatus;
 	SigSlot::Signalv0 SignalProcessingCreated;
 	SigSlot::Signalv0 SignalUnselectProcessingPresentation;
 
