@@ -7,7 +7,7 @@
 #include "Array.hxx"
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		using CLAM::Array;
 		

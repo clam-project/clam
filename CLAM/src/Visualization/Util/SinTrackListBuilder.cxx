@@ -1,7 +1,7 @@
 #include "SinTrackListBuilder.hxx"
 #include <algorithm>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		SinTrackBuilder::SinTrackBuilder(  )
 			: mSineTrackList( NULL )

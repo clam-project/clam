@@ -3,7 +3,7 @@
 
 #include "SineTracksDef.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class SinTrackVerClipper

@@ -5,7 +5,7 @@
 #include <vector>
 #include "DataTypes.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 		
 		using CLAM::TIndex;

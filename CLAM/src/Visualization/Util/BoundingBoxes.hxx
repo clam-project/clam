@@ -1,7 +1,7 @@
 #ifndef __BOUNDINGBOXES__
 #define __BOUNDINGBOXES__
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 struct DataBoundBox

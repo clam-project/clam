@@ -2,7 +2,7 @@
 #include "Assert.hxx"
 #include <iterator>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		SinTrackVerClipper::SinTrackVerClipper( TData minfreqrange )

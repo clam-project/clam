@@ -6,7 +6,7 @@
 #include "TimeFreqMagPoint.hxx"
 
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		typedef std::list< TimeFreqMagPoint >            SinusoidalTrack;

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "Assert.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 	
 		void SinTrackHorClipper::Cull( TIndex start_frame, TIndex end_frame, 

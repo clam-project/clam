@@ -1,6 +1,6 @@
 #include "TimeFreqMagPoint.hxx"
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		TimeFreqMagPoint::TimeFreqMagPoint()
