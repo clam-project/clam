@@ -10,6 +10,7 @@
 #include "SMSAnalysis.hxx"
 #include "SMSAnalysisConfig.hxx"
 #include "XMLStorage.hxx"
+#include "AudioCollator.hxx"  // for helperFileExist
 #include <string>
 #include <fstream>
 
@@ -25,7 +26,8 @@ class SMSAnalysisTest : public CppUnit::TestFixture
 public:
 	
 	CPPUNIT_TEST_SUITE( SMSAnalysisTest );
-
+	
+	CPPUNIT_TEST( testPathToFiles );
 	CPPUNIT_TEST( testSine_comparingSegment);
 	CPPUNIT_TEST( testSweep_comparingSegments );
 	CPPUNIT_TEST( testTrumpet_comparingSegment );
@@ -102,10 +104,16 @@ public: // TestFixture interface
 		mAnalysis.Stop();
 	}
 	
+	void testPathToFiles()
+	{
+		std::string msg = "Cound't open this file: " + mPathToTestData+"sine.wav";
+		CPPUNIT_ASSERT_MESSAGE(msg, helperFileExist(mPathToTestData+"sine.wav"));
+	}
+	
 	void testSine_comparingSegment()
 	{
 		CLAM::Audio in;
-		LoadAudioFile( in, mPathToTestData + std::string( "sine.wav" ) );
+		LoadAudioFile( in, mPathToTestData + "sine.wav" );
 		CLAM::Segment segment;
 		segment.SetAudio( in );
 		mAnalysis.Do(segment);
