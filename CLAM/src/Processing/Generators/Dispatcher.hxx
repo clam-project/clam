@@ -78,7 +78,7 @@ namespace CLAM
 
 		int UpdateVel( TControlData value )
 		{
-			printf("UpdateVel = %f\n",value);
+//			printf("UpdateVel = %f\n",value);
 			mVelocity = value;
 
 			return 0;
@@ -86,7 +86,7 @@ namespace CLAM
 
 		int UpdateNote( TControlData value )
 		{
-			printf("UpdateNote = %f\n",value);
+//			printf("UpdateNote = %f\n",value);
 			mNote = value;
 			Dispatch();
 

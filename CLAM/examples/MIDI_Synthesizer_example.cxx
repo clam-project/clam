@@ -31,9 +31,11 @@ CLAM-Docs/MIDI_Synthesizer_example (development-branch)
 #include "AudioApplication.hxx"
 #include "MIDIManager.hxx"
 #include "MIDIInControl.hxx"
+#include "MIDIClocker.hxx"
 #include "Dispatcher.hxx"
 #include "Mixer.hxx"
 #include "AudioManager.hxx"
+#include "TopLevelProcessing.hxx"
 #include <vector>
 #include <iostream>
 
@@ -204,16 +206,17 @@ bool MyInstrument::Do( Audio& out )
 	return true;
 }
 
-
 void MyAudioApplication::AudioMain(void)
 {
+	TControlData curTime = 0.;
+	TControlData curTimeInc = 0.;
 	try
 	{
-
-		unsigned int buffersize = 512;
+		int nVoices = 4;
+		unsigned int buffersize = 256;
 
 		// Audio and MIDI managers
-		AudioManager audioManager(48000,512);
+		AudioManager audioManager(48000,8192);
 		MIDIManager midiManager;
 
 		// AudioIn
@@ -256,11 +259,8 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInConfig inNoteCfg;
 		
 		inNoteCfg.SetName("in");
-		inNoteCfg.SetDevice("default:default");
-		inNoteCfg.SetChannelMask(
-			MIDI::ChannelMask(1)|
-			MIDI::ChannelMask(2)
-		);
+		inNoteCfg.SetDevice("file:test.mid");
+		inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
 
 		inNoteCfg.SetMessageMask(
 			MIDI::MessageMask(MIDI::eNoteOn)|
@@ -272,8 +272,8 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInConfig inCtrlCfg;
 		
 		inCtrlCfg.SetName("inctrl");
-		inCtrlCfg.SetDevice("default:default");
-		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
+		inCtrlCfg.SetDevice("file:test.mid");
+		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(-1)); // all
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
 		inCtrlCfg.SetFilter(0x0a);
 		
@@ -282,29 +282,36 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInConfig inPitchBendCfg;
 		
 		inPitchBendCfg.SetName("inPitchBend");
-		inPitchBendCfg.SetDevice("default:default");
-		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
+		inPitchBendCfg.SetDevice("file:test.mid");
+		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
 		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
 		
 		MIDIInControl inPitchBend(inPitchBendCfg);
 
+		MIDIClockerConfig clockerCfg;
+
+		clockerCfg.SetName("clocker");
+		clockerCfg.SetDevice("file:test.mid");
+		
+		MIDIClocker clocker(clockerCfg);
+
 		// Instrument
-		MyInstrumentConfig instrumentCfg[ 3 ];
+		MyInstrumentConfig instrumentCfg[ nVoices ];
 		int i;
-		for (i=0;i<3;i++)
+		for (i=0;i<nVoices;i++)
 		{
 			char tmp[10];
 			sprintf(tmp,"instrument%d",i);
 			instrumentCfg[i].SetName(tmp);
-			instrumentCfg[i].SetAttackTime( (TData) 0.2 );
-			instrumentCfg[i].SetDecayTime( (TData) 0.1 );
+			instrumentCfg[i].SetAttackTime( (TData) 0.05 );
+			instrumentCfg[i].SetDecayTime( (TData) 0.07 );
 			instrumentCfg[i].SetSustainLevel( (TData) 0.5 );
-			instrumentCfg[i].SetReleaseTime( (TData) 0.5 );
+			instrumentCfg[i].SetReleaseTime( (TData) 0.05 );
 		}
 
-		Array< Instrument* > instruments( 3 );
+		Array< Instrument* > instruments( nVoices );
 
-		for (i=0;i<3;i++)
+		for (i=0;i<nVoices;i++)
 		{
 			instruments.AddElem( new MyInstrument( instrumentCfg[i] ) );
 		}
@@ -319,12 +326,12 @@ void MyAudioApplication::AudioMain(void)
 		Dispatcher dispatcher( dispatcherCfg );
 
 		// Audio Array
-		Array< Audio > audioArray( 3 );
+		Array< Audio > audioArray( nVoices );
 
 		Audio bufOsc;
 		bufOsc.SetSize(buffersize);
 
-		for( i = 0; i < 3; i++ )
+		for( i = 0; i < nVoices; i++ )
 		{
 			audioArray.AddElem( bufOsc );
 		}
@@ -341,22 +348,30 @@ void MyAudioApplication::AudioMain(void)
 		inNote.LinkOutWithInControl( 2, &dispatcher, 1 );   /** Key for Note On */
 		inNote.LinkOutWithInControl( 3, &dispatcher, 2 );   /** Velocity for Note On */
 
-		inPitchBend.LinkOutWithInControl( 0, instruments[ 0 ] , 3 );
-		inPitchBend.LinkOutWithInControl( 0, instruments[ 1 ] , 3 );
-		inPitchBend.LinkOutWithInControl( 0, instruments[ 2 ] , 3 );
+		for( i = 0; i < nVoices; i++ )
+		{
+			inPitchBend.LinkOutWithInControl( 0, instruments[ i ] , 3 );
+		}
 
 		midiManager.Start();
 
 		audioManager.Start();
+
+		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
+
+		TopLevelProcessing::GetInstance().Start();
 
 		do
 		{
 			inL.Do(bufL);
 			inR.Do(bufR);
 
+			clocker.DoControl(0,curTime);
+			curTime += curTimeInc;
+			
 			midiManager.Check();
 
-			for ( i = 0; i < 3; i++ )
+			for ( i = 0; i < nVoices; i++ )
 			{
 				instruments[ i ]->Do( audioArray[ i ] );
 			}
@@ -368,7 +383,7 @@ void MyAudioApplication::AudioMain(void)
 
 		} while (!Canceled()) ;
 
-		for ( i = 0; i < 3; i++ )
+		for ( i = 0; i < nVoices; i++ )
 			delete instruments[ i ];
 
 	}

@@ -21,8 +21,6 @@
 
 #include "Oscillator.hxx"
 #include <iostream>
-using std::cout;
-using std::endl;
 
 using namespace CLAM;
 
@@ -207,17 +205,12 @@ int Oscillator::UpdateFreq( TControlData value )
 {
 	mFreqUpdated = true;
 
-	cout << "Pitch update request received" << endl;
-
 	return 0;
 }
 
 int Oscillator::UpdatePhase( TControlData value )
 {
 	mPhaseUpdated = true;
-
-	cout << "Phase update request received" << endl;
-
 
 	return 0;
 }
@@ -226,18 +219,12 @@ int Oscillator::UpdateModIdx( TControlData value )
 {
 	mModIdxUpdated = true;
 
-	cout << "ModIndex update request received" << endl;
-
-
 	return 0;
 }
 
 int Oscillator::UpdateAmp( TControlData value )
 {
 	mAmpUpdated = true;
-
-	cout << "Amplitude update request received" << endl;
-
 
 	return 0;
 }
