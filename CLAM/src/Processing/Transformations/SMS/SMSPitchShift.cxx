@@ -71,7 +71,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-	mSpectralRange=in.GetSinusoidalSpec().GetSpectralRange();
+	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
 }
