@@ -48,6 +48,8 @@ class DynamicTypeBasicTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( CopyConstructor );
 	CPPUNIT_TEST( DeepCopy );
 	CPPUNIT_TEST( Assignation );
+	CPPUNIT_TEST( Assignation_WhenIsNotUpdated );
+	CPPUNIT_TEST( Assignation_WhenIsSelfAssigning );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -275,6 +277,32 @@ private:
 		CPPUNIT_ASSERT_EQUAL( 10, dyn->GetSubDyn().GetInt() );
 		
 		// don't delete dynCopy, now:  the copy object is a local variable.
+	}
+
+	void Assignation_WhenIsNotUpdated()
+	{
+		dyn->AddInt();
+		dyn->AddSubDyn();
+		dyn->UpdateData();
+		
+		Dyn foo;
+		dyn->SetSubDyn( foo );
+		dyn->RemoveSubDyn();
+		try
+		{
+			Dyn dynCopyPointee = *dyn;
+			CPPUNIT_FAIL("non updated copy should have asserted");
+		}
+		catch( CLAM::ErrAssertionFailed&  ) {}
+
+	}
+	void Assignation_WhenIsSelfAssigning()
+	{
+		dyn->AddInt();
+		dyn->UpdateData();
+		dyn->SetInt(1);
+		*dyn = *dyn;
+		CPPUNIT_ASSERT_EQUAL( 1, dyn->GetInt() );
 	}
 }; // class DynamicTypeBasicTest
 
