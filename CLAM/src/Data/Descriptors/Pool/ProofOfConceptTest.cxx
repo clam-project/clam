@@ -9,6 +9,8 @@
 #include "Audio.hxx"
 #include "SpectralAnalysis.hxx"
 #include "XMLStorage.hxx"
+#include <sstream>
+#include <fstream>
 
 
 namespace CLAMTest
@@ -32,6 +34,21 @@ public:
 	void tearDown() { }
 
 private:
+	void assertBackToBackMatches(const CLAM::Component & result, const std::string & referenceFilename)
+	{
+		std::ifstream referenceFile( referenceFilename.c_str() );
+		std::string reference(  
+			(std::istreambuf_iterator<char>(referenceFile)),
+			std::istreambuf_iterator<char>() );
+
+		std::stringstream dumpedResult;
+		CLAM::XmlStorage::Dump(result,"DescriptionData",dumpedResult);
+
+		CPPUNIT_ASSERT_EQUAL(reference,dumpedResult.str());
+	}
+
+
+	
 	void testUsingThePoolDirectly()
 	{
 		typedef unsigned SamplePosition;
@@ -46,7 +63,7 @@ private:
 		CLAM::DescriptionDataPool pool(scheme);
 
 
-		const unsigned audioSize = 3000;
+		const unsigned audioSize = 1025;
 		const unsigned frameSize = 256;
 		pool.PopulateScope("AudioSample",audioSize);
 		{
@@ -110,7 +127,7 @@ private:
 			spectralAnalysis.Stop();
 		}
 
-		CLAM::XmlStorage::Dump(pool, "DescriptionData", "ProofOfConcept.xml");
+		assertBackToBackMatches(pool,"SpectralAnalysis.xml");
 	}
 
 	
