@@ -43,12 +43,10 @@ namespace CLAM
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
 
-		if (PortsAreConnected(outport, inport)) //currently are connected
-		{
+		if ( outport.IsConnectedTo(inport) ) 
 			return true;
-		}
-	
-		if (!outport.IsConnectableTo(inport)) //they have different type
+			
+		if ( !outport.IsConnectableTo(inport) ) //they have different type
 			return false;
 
 		inport.Attach(GetNodeAttachedTo(outport));
@@ -113,11 +111,16 @@ namespace CLAM
 	{
 			if (!out.GetNode())
 			{
-				NodeBase * node = out.CreateNodeWithDefaultStreamBuffer();
+				NodeBase * node = CreateAudioNodeWithDefaultStreamBuffer();
 				out.Attach(*node);
 				_nodes.push_back(node);				
 			}
 			return *out.GetNode();
+	}
+	NodeBase* Network::CreateAudioNodeWithDefaultStreamBuffer()
+	{
+		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
+		return new NodeTmpl<Audio, DefaultStreamBuffer>;
 	}
 
 }
