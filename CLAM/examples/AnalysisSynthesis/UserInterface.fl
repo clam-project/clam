@@ -28,21 +28,22 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
-class UserInterface {open selected
+class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {} {
+  Function {UserInterface()} {open
+  } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {86 116 872 548} color 50 resizable
-      code0 {mWindow2=NULL;} visible
+      xywh {87 139 872 548} color 50 hide resizable
+      code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
         label {Configuration File}
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
-      Fl_Menu_Bar mMenuBar {open
+      Fl_Menu_Bar mMenuBar {
         private xywh {0 0 872 21} box THIN_UP_BOX color 50 labelsize 13 textsize 12
       } {
         submenu {} {
@@ -222,9 +223,9 @@ Exit();}
           private xywh {10 10 100 20} labelsize 12
         }
       }
-      Fl_Box mSmartTile {
+      Fl_Box mSmartTile {selected
         private xywh {5 50 860 490} color 23 resizable
-        class Fl_Tile
+        class Fl_Smart_Tile
       }
     }
     code {for(int i=0; i<4; i++){
@@ -238,7 +239,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {437 329 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      private xywh {438 330 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {

@@ -270,7 +270,7 @@ UserInterface::UserInterface() {
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
-    { Fl_Tile* o = mSmartTile = new Fl_Tile(5, 50, 860, 490);
+    { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(5, 50, 860, 490);
       o->color(23);
       Fl_Group::current()->resizable(o);
     }

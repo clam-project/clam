@@ -91,7 +91,7 @@ private:
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
-  Fl_Tile *mSmartTile;
+  Fl_Smart_Tile *mSmartTile;
   void AboutWindow();
   Fl_Window *mWindow2;
   inline void cb_mWindow2_i(Fl_Window*, void*);
