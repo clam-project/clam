@@ -23,13 +23,37 @@
 	+ Multitype Pool::Get
 	+ Spec::AssertType
 	+ Pool::Get check for type
-- Select the scope specification by name
-	- ScopeSpecFactory
-- Consider using a iterator/vector interface
++ Set size a posteriori
+	+ Size 0 by default
+	+ Assert on Getting attributes when 0 size
++ Resize del scope
++ ScopeSpecRegistry
+- Scope relations
+- Consider using iterator/vector interface
+- Prepare: Determinar attributos necesarios
 - Multilevel pools
 - XML for the Pool
 - XML for the Pool Spec
 - Multitype XML loading
+
+
+- Instanciar attributos on demand
+
+
+
+CreatePoolFrame("nom")
+
+
+
+
+PoolFactory::CreateScope("FrameA200mx");
+PoolFactory::AddAttribute("Nota","fundamental",);
+PoolFactory::CreateScope("FrameA400mx");
+PoolFactory::AddAttribute("Nota","fundamental",);
+
+
+
+
 
 
 
