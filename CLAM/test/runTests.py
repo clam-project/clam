@@ -10,6 +10,7 @@ updateLevelForTestData = 1
 doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = True
+configureOptions = '--without-portmidi  --without-portaudio'
 doAutoconf = doAutoconf or updateLevelForCLAM == 2
 # Non-test are runned those seconds and then killed
 executionTime = 15 
@@ -437,7 +438,7 @@ def deployClamBuildSystem() :
 	os.chdir(BUILDPATH)
 	if doAutoconf:
 		executeMandatory('autoconf')
-		executeMandatory('./configure --without-portmidi')
+		executeMandatory('./configure %s'%configureOptions)
 
 	# Setting the clam location
 	global sandboxes
