@@ -64,20 +64,14 @@ public:
 		_document->release();
 		xercesc::XMLPlatformUtils::Terminate();
 	}
+	xercesc::DOMDocument * getDom()
+	{
+		return _document;
+	}
 	bool Load(Storable & storable)
 	{
 		return false;
 	}
-	void StoreSibblingsIfComponent(const XMLable & xmlable)
-	{
-		try { 
-			const Component & component = 
-				dynamic_cast<const Component &>(xmlable);
-			component.StoreOn(*this);
-		}
-		catch (std::bad_cast &) { }
-	}
-
 	void Store(const Storable & storable)
 	{
 		const XMLable & xmlable = dynamic_cast<const XMLable &>(storable);
@@ -109,6 +103,16 @@ public:
 		CLAM_ASSERT(false,"Component not used");
 	}
 
+	void StoreSibblingsIfComponent(const XMLable & xmlable)
+	{
+		try { 
+			const Component & component = 
+				dynamic_cast<const Component &>(xmlable);
+			component.StoreOn(*this);
+		}
+		catch (std::bad_cast &) { }
+	}
+
 	void AddContentToElement(const std::string & content)
 	{
 		if (content=="") return;
@@ -122,10 +126,6 @@ public:
 		_lastWasContent = true;
 	}
 
-	xercesc::DOMDocument * getDom()
-	{
-		return _document;
-	}
 };
 
 	
