@@ -4,11 +4,9 @@
 
 #include <string>
 #include <qwidget.h>
-#include <qlabel.h>
 #include "NetworkPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
-//#include "QTConfigurator.hxx"
 
 namespace CLAM
 {
@@ -55,14 +53,12 @@ protected:
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *m);
-	QLabel mNameLabel;
 
 	Qt_InPortPresentation* mInPortSelected;
 	Qt_OutPortPresentation* mOutPortSelected;
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
-//	CLAM::QTConfigurator mConfigurator;
 
 public: // slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;

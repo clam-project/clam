@@ -19,7 +19,6 @@ namespace NetworkGUI
 
 Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *name)
 	: QWidget( parent, name ),	  
-	  mNameLabel(this),
 	  mInPortSelected(0),
 	  mOutPortSelected(0),
 	  mInControlSelected(0),
@@ -68,16 +67,13 @@ void Qt_NetworkPresentation::OnNewOutControlClicked( Qt_OutControlPresentation *
 void Qt_NetworkPresentation::OnNewName(const std::string& name)
 {
 	mName = name;
-	mNameLabel.setFont(QFont( "Verdana", 10));
-	mNameLabel.setFrameStyle( QFrame::Panel | QFrame::Sunken );
-	mNameLabel.setAlignment( AlignCenter );
-	mNameLabel.setText(QString(mName.c_str()));
+
+//	parent()->setCaption(QString(mName.c_str()));
 
 	QFont font( "Verdana" ,10 );
 	QFontMetrics fm( font );
 	int pixelsWide = fm.width( QString(mName.c_str()));
 	int pixelsHigh = fm.height();
-	mNameLabel.setFixedSize(pixelsWide + 30, pixelsHigh*2);
 
 }
 
@@ -90,7 +86,6 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* cont
 	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
 	presentation->AcquireInControlClicked.Connect( SetInControlClicked );
 	presentation->AcquireOutControlClicked.Connect( SetOutControlClicked );
-//	presentation->EditConfiguration.Connect( SetConfigurator );
 	presentation->RemoveProcessing.Connect( SetRemoveProcessing );
 
 	AcquireOutPortAfterClickInPort.Connect( presentation->SetOutPortAfterClickInPort );
