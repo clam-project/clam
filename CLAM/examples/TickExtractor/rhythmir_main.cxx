@@ -3,6 +3,7 @@
 #include "Err.hxx"
 #include "rhythmir_dumper.hxx"
 #include "rhythmir_cmdproc.hxx"
+#include "rhythmir_process.hxx"
 #include "Pool.hxx"
 #include <exception>
 #include <string>
@@ -50,10 +51,12 @@ int main( int argc, char** argv )
 		*pool.GetAttributePool<std::string>("Global", "Path" ) = parms.GetInputFilename();
 
 
-		/* Description extraction
-		  RhytmIR::LoadInputAudio( pool, parms.GetInputFilename() );
+		RhythmIR::LoadInputAudio( pool, parms.GetInputFilename() );
 
-		  RhythmIR::NormalizeInputAudio( pool, parms.GetConfig() );
+		RhythmIR::NormalizeInputAudio( pool, parms.GetConfig() );
+		/* Description extraction
+
+
 
 		  RhythmIR::ExtractOnsets( pool, parms.GetConfig() );
 		  
