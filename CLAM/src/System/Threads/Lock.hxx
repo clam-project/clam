@@ -11,7 +11,10 @@ namespace CLAM
 	namespace Detail
 	{
 
-    template <typename MutexType>
+	using CLAM::xtime;
+		
+		
+	template <typename MutexType>
     class LockOps 
     {
     private:
