@@ -834,7 +834,7 @@ void AnalysisSynthesisExampleBase::Transform(void)
 	bool def=false;
 	if(!mpTransformation)
 	{
-		SetTransformation(new SMSPitchShift);
+		SetTransformation(new SMSPitchShift());
 		def=true;
 	}
 	mpTransformation->Configure(mTransformationScore);
