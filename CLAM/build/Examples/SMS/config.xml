@@ -1,7 +1,6 @@
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
-	<Name/>
 	<InputSoundFile>./3.wav</InputSoundFile>
+
 	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>BlackmanHarris92</AnalysisWindowType>
@@ -20,3 +19,4 @@
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
 	<MorphSoundFile/>
 </SMSAnalysisSynthesisConfig>
+
