@@ -3,7 +3,19 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "CLAM_Skeleton_project"=".\AudioPresentation\AudioPresentationTest.dsp" - Package Owner=<4>
+Project: "AudioPresentationTest"=".\AudioPresentation\AudioPresentationTest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CLAM_Skeleton_project"=".\Albert\AlbertBugReproduction.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
