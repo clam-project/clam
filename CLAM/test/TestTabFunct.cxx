@@ -47,23 +47,42 @@ public:
 
 int TestTabFunction()
 {
-	TabFunct<CLAMTest::Log> f(11, 0, 100);
+	TabFunct<CLAMTest::Log> f(100, TData(2.01), 100);
 	TabFunct<CLAMTest::Double> g(3, 0, 100);
 	
-	for (TData x=0; x<=100; x+=1)	cout << f(x) << " ";
+	TData maxerror=0;
+	for (TData x=TData(2.01); x<=100; x+=5)	{
+		TData newerror = abs(f.Log::operator() (x) - f(x));
+		maxerror = maxerror < newerror?  newerror : maxerror;
+		cout << f(x) << " (" << f.Log::operator() (x) <<") ";
+	} 
+	cout << "\nLog Max Error = "<<maxerror<<" \n\n";
+	if (maxerror > 0.001) {
+		cout << "Error too high\n";
+		return -1;
+	}
 	
-	cout << "\n";
-	for (TData x=0; x<=100; x+=1)	cout << g(x) << " ";
+	maxerror=0;
+	for (TData x=TData(0.01); x<=100; x+=5)	{
+		TData newerror = abs(g.Double::operator() (x) - g(x));
+		maxerror = maxerror < newerror?  newerror : maxerror;
+		cout << g(x) << " (" << g.Double::operator() (x) <<") ";
+	}
+	cout << "\nDouble Max Error = "<<maxerror<<" \n\n";
+	if (maxerror > 0.001) {
+		cout << "Error too high\n";
+		return -1;
+	}
 	
-
+	
 	return 0;
 }
 
 
 int main(void)
 {
-	TestTabFunction();
 
-	return 0;
+	return TestTabFunction();
+
 }
  
