@@ -22,6 +22,7 @@
 #include "MultiChannelAudioFileWriter.hxx"
 #include <sstream>
 #include "AudioCodecs_Stream.hxx"
+#include "FileSystem.hxx"
 
 namespace CLAM
 {
@@ -42,6 +43,10 @@ namespace CLAM
 			delete mNativeStream;
 
 		DestroyOldInputs();
+
+		if ( mConfig.HasTargetFile() )
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+
 	}
 
 	const char* MultiChannelAudioFileWriter::GetClassName() const
@@ -105,6 +110,10 @@ namespace CLAM
 
 	bool MultiChannelAudioFileWriter::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
+		if ( mConfig.HasTargetFile() )
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+
+
 		CopyAsConcreteConfig( mConfig, cfg );
 
 		AudioFile& targetFile = mConfig.GetTargetFile();
@@ -130,6 +139,18 @@ namespace CLAM
 
 			return false;
 		}
+
+		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
+		{
+			mStatus = "File: ";
+			mStatus += mConfig.GetTargetFile().GetLocation();
+			mStatus += " has been locked by another Processing";
+
+			return false;
+		}
+
+		FileSystem::GetInstance().LockFile( mConfig.GetTargetFile().GetLocation() );
+
 
 		if ( !mInputs.empty() )
 			DestroyOldInputs();

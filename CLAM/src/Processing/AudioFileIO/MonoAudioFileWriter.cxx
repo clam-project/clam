@@ -21,6 +21,7 @@
 
 #include "MonoAudioFileWriter.hxx"
 #include "AudioCodecs_Stream.hxx"
+#include "FileSystem.hxx"
 
 namespace CLAM
 {
@@ -41,6 +42,10 @@ namespace CLAM
 	{
 		if ( mOutStream )
 			delete mOutStream;
+		if ( mConfig.HasTargetFile() )
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+
+	
 	}
 
 	const char* MonoAudioFileWriter::GetClassName() const
@@ -65,6 +70,9 @@ namespace CLAM
 
 	bool MonoAudioFileWriter::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
+		if ( mConfig.HasTargetFile() )
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+
 		CopyAsConcreteConfig( mConfig, cfg );
 
 		AudioFile& targetFile = mConfig.GetTargetFile();
@@ -83,6 +91,17 @@ namespace CLAM
 			
 			return false;
 		}
+
+		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
+		{
+			mStatus = "File: ";
+			mStatus += mConfig.GetTargetFile().GetLocation();
+			mStatus += " has been locked by another Processing";
+
+			return false;
+		}
+
+		FileSystem::GetInstance().LockFile( mConfig.GetTargetFile().GetLocation() );
 
 		mOutStream = targetFile.GetStream();
 
