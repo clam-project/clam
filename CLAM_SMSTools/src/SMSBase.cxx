@@ -283,16 +283,14 @@ void SMSBase::Flush(Segment& seg)
 void SMSBase::AnalysisProcessing()
 {
 	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator")
-	TSize size = mOriginalSegment.GetAudio().GetSize();
-	
+		
 	Flush(mOriginalSegment);
 	
 	/////////////////////////////////////////////////////////////////////////////
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	int initialOffset=mAnalConfig.GetInitialOffset();	
-
+	
 	GetAnalysis().Start();
 
 	while(GetAnalysis().Do(mOriginalSegment))
@@ -489,7 +487,6 @@ void SMSBase::SynthesisProcessing()
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
 	
-	//test
 	TSize size=synthFrameSize*nSynthFrames;
 
 	mAudioOutSin.SetSize(size);
