@@ -28,10 +28,7 @@
 #include <fstream>  // idem
 #include <list>	   // needed in UpdateData 
 
-#ifdef CLAM_USE_XML
-#	include "XMLStaticAdapter.hxx"
-#	include "XMLStorage.hxx"
-#endif//CLAM_USE_XML
+#include "XMLStorage.hxx"
 
 #include "ErrDynamicType.hxx"
 
@@ -855,11 +852,10 @@ void DynamicType::Debug()
 	}
 	std::cout<<std::endl;
 
-#	ifdef CLAM_USE_XML
-		XMLStorage storage;
-		std::fstream fileout("Debug.xml", std::ios::out);
-		storage.Dump(*this, GetClassName(), fileout);
-#	endif//CLAM_USE_XML
+	// Only dump when CLAM_USE_XML defined
+	#ifdef CLAM_USE_XML
+	XMLStorage::Dump(*this, GetClassName(), "Debug.xml");
+	#endif// CLAM_USE_XML
 }
 
 }; //namespace CLAM

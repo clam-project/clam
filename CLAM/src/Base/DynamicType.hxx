@@ -25,11 +25,9 @@
 #ifndef _DynamicType_
 #define _DynamicType_
 
-#ifdef CLAM_USE_XML
-	#include "XMLAdapter.hxx"
-	#include "XMLIterableAdapter.hxx"
-	#include "XMLComponentAdapter.hxx"
-#endif //CLAM_USE_XML
+#include "XMLAdapter.hxx"
+#include "XMLIterableAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
 
 #include "DynamicTypeMacros.hxx"  //this file is not included anywhere but here.
 
@@ -311,54 +309,36 @@ protected:
 	template <typename AttribType>
 	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const 
 	{
-#ifdef CLAM_USE_XML
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
 		s.Store (adapter);
-#endif//CLAM_USE_XML
 	}
 	template <typename AttribType>
 	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const
 	{
-#ifdef CLAM_USE_XML
 		CLAM::XMLComponentAdapter adapter(object, name, true);
 		s.Store (adapter);
-#endif//CLAM_USE_XML
 	} 
 	template <typename AttribType>
 	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) const
 	{
-#ifdef CLAM_USE_XML
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
 		s.Store (adapter);
-#endif//CLAM_USE_XML
 	} 
 
 	template <typename AttribType>
 	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#ifdef CLAM_USE_XML
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
 		return s.Load (adapter);	
-#else 
-		return false;
-#endif//CLAM_USE_XML
 	}
 	template <typename AttribType>
 	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#ifdef CLAM_USE_XML
 		CLAM::XMLComponentAdapter adapter(object, name, true);
 		return s.Load (adapter);	
-#else 
-		return false;
-#endif//CLAM_USE_XML
 	} 
 	template <typename AttribType>
 	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
-#ifdef CLAM_USE_XML
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
 		return s.Load (adapter);
-#else 
-		return false;
-#endif//CLAM_USE_XML
 	} 
 };
 
