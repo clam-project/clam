@@ -37,7 +37,7 @@ namespace CLAM
 namespace CLAMVM
 {
 	class ProcessingController;
-	class ConnectionAdapter;
+//	class ConnectionAdapter;
 }
 
 namespace NetworkGUI
@@ -61,8 +61,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
 	void SetName(const std::string& name); 
 	void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * );
-	void CreatePortConnectionPresentation(CLAMVM::ConnectionAdapter* );
-	void CreateControlConnectionPresentation(CLAMVM::ConnectionAdapter* );
+	void CreatePortConnectionPresentation( const std::string &, const std::string & );
+	void CreateControlConnectionPresentation( const std::string &,const std::string & );
 	
 	void SetInPortClicked( Qt_InPortPresentation *);
 	void SetOutPortClicked( Qt_OutPortPresentation *);

@@ -29,6 +29,7 @@
 #include "AudioMultiplier.hxx"
 #include "AutoPanner.hxx"
 #include "PushFlowControl.hxx"
+#include "Network.hxx"
 
 #include <string>
 
@@ -71,12 +72,12 @@ protected:
 		mSignalEmitted = true;
 	}
 	
-	void CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter * )
+	void CreatePortConnectionPresentation( const std::string & ,const std::string & )
 	{	
 		mSignalEmitted = true;
 	}
 	
-	void CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter * )
+	void CreateControlConnectionPresentation( const std::string & ,const std::string & )
 	{	
 		mSignalEmitted = true;
 	}
@@ -93,11 +94,13 @@ protected:
 	CPPUNIT_TEST( testRemovePortConnectionDeletesPortAdapterAndSendsSignalToPresentation );
 	CPPUNIT_TEST( testCreatePortConnectionNotifiesActionToNetwork );
 	CPPUNIT_TEST( testCreatePortConnectionCreatesControlAdapterAndSendsSignalToPresentation );
+	CPPUNIT_TEST( testCreatePortConnection_whenNetworkIsRunning );
 	
 	CPPUNIT_TEST( testRemoveControlConnectionNotifiesActionToNetwork );
 	CPPUNIT_TEST( testRemoveControlConnectionDeletesControlAdapterAndSendsSignalToPresentation );
 	CPPUNIT_TEST( testCreateControlConnectionNotifiesActionToNetwork );
 	CPPUNIT_TEST( testCreateControlConnectionCreatesControlAdapterAndSendsSignalToPresentation );
+	CPPUNIT_TEST( testCreateControlConnection_whenNetworkIsRunning );
 	
 	CPPUNIT_TEST( testAddProcessingRegistersTheProcessingInNetwork );
 	CPPUNIT_TEST( testAddProcessingCreatesProcessingControllerAndSendsSignalToPresentation );
@@ -113,13 +116,11 @@ protected:
 	CPPUNIT_TEST( testLoadNetworkNotifiesActionToNetwork );
 	CPPUNIT_TEST( testLoadAndStartNetwork_whenAnotherNetworkIsLoadedButStopped );
 	CPPUNIT_TEST( testLoadAndStartNetwork_whenAnotherNetworkIsLoadedAndRunning );
-/*
+
 	CPPUNIT_TEST( testSaveNetworkNotifiesActionToNetwork );
 	CPPUNIT_TEST( testClearNotifiesActionToNetwork );
-	CPPUNIT_TEST( testClearDeletesAllControllersAndAdapters );
-	CPPUNIT_TEST( testCreateControlConnection_whenNetworkIsRunning );
-	CPPUNIT_TEST( testCreatePortConnection_whenNetworkIsRunning );
-*/	
+	CPPUNIT_TEST( testClearDeletesAllControllers );
+	
 	CPPUNIT_TEST_SUITE_END();
 
 public:	
@@ -154,7 +155,7 @@ public:
 			CPPUNIT_FAIL( "exception should not be thrown, processing not binded correctly to controller" );
 		}
 		
-		CLAMVM::NetworkController::ProcessingControllersMapIterator it;
+		CLAMVM::NetworkController::ProcessingControllersMap::iterator it;
 		it = controller.BeginProcessingControllers();		
 		CPPUNIT_ASSERT_EQUAL( std::string("multiplier"), it->first );
 		it++;
@@ -272,7 +273,29 @@ public:
 		SignalCreatePortConnection.Emit( "osc.Audio Output", "multiplier.First Audio Input" );
 		CPPUNIT_ASSERT_EQUAL( true, mSignalEmitted );
 	}
-	
+
+	void testCreatePortConnection_whenNetworkIsRunning()
+	{
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc" , new CLAM::SimpleOscillator );
+		network.AddProcessing( "multiplier" , new CLAM::AudioMultiplier );
+		controller.BindTo( network );
+		controller.Publish();
+		SignalChangeState.Connect(  controller.SlotChangeState );
+		SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
+		SignalChangeState.Emit( true );
+
+		SignalCreatePortConnection.Emit( "osc.Audio Output", "multiplier.First Audio Input" );
+		// to let the audio thread execute the events
+		sleep(1);
+
+		CLAM::Network::NamesList list = network.GetInPortsConnectedTo( "osc.Audio Output" );
+		CLAM::Network::NamesList::iterator it;
+		CPPUNIT_ASSERT_EQUAL( std::string("multiplier.First Audio Input"), *(list.begin()) );
+	}
+
 	void testRemoveControlConnectionNotifiesActionToNetwork()
 	{	
 		CLAM::Network network;
@@ -340,6 +363,28 @@ public:
 		CPPUNIT_ASSERT_EQUAL( true, mSignalEmitted );
 
 	}
+	
+	void testCreateControlConnection_whenNetworkIsRunning()
+	{	
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc" , new CLAM::SimpleOscillator );
+		network.AddProcessing( "panner" , new CLAM::AutoPanner );
+		controller.BindTo( network );
+		controller.Publish();
+		SignalChangeState.Connect(  controller.SlotChangeState );
+		SignalCreateControlConnection.Connect( controller.SlotCreateControlConnection );
+		SignalChangeState.Emit( true );
+		SignalCreateControlConnection.Emit(  "panner.Left Control", "osc.Pitch" );
+
+		// to let the audio thread execute the events
+		sleep(1);
+		CLAM::Network::NamesList list = network.GetInControlsConnectedTo(  "panner.Left Control" );
+		CLAM::Network::NamesList::iterator it;
+		CPPUNIT_ASSERT_EQUAL( std::string("osc.Pitch"), *(list.begin()) );
+	}
+	
 
 	void testAddProcessingRegistersTheProcessingInNetwork()
 	{	
@@ -451,7 +496,6 @@ public:
 		
 		CLAMVM::ProcessingController * procController = controller.BeginProcessingControllers()->second;
 		procController->SignalRemoveAllConnections.Emit( &(network.GetProcessing( "osc" )) );
-	
 		CLAM::Network::NamesList list = network.GetInPortsConnectedTo( "osc.Audio Output" );
 		CPPUNIT_ASSERT_MESSAGE( "Oscillator out port shouldn't have any connections", (list.begin()==list.end()) );
 		list = network.GetInControlsConnectedTo( "panner.Right Control" );
@@ -512,19 +556,60 @@ public:
 		SignalChangeState.Emit( false );
 	}
 
-/*
+
 	void testSaveNetworkNotifiesActionToNetwork()
 	{
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc", new CLAM::SimpleOscillator );
+		SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );
+		controller.BindTo( network );
+		controller.Publish();
+		SignalSaveNetworkTo.Emit( mPathToTestData+"testsavenetwork.xml" );
+		
+		CLAM::Network network2;
+		network2.AddFlowControl( new CLAM::PushFlowControl );
+		CLAMVM::NetworkController controller2;
+		SignalLoadNetworkFrom.Connect( controller2.SlotLoadNetwork );
+		controller2.BindTo( network2 );
+		controller2.Publish();
+		SignalLoadNetworkFrom.Emit( mPathToTestData+"testsavenetwork.xml" );
+
+		CPPUNIT_ASSERT_EQUAL( true, network2.HasProcessing("osc") );
 	}
 	
 	void testClearNotifiesActionToNetwork()
 	{
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc", new CLAM::SimpleOscillator );
+		controller.BindTo( network );
+		controller.Publish();
+
+		SignalClear.Connect( controller.SlotClear );
+		SignalClear.Emit();
+		
+		CPPUNIT_ASSERT_EQUAL( false, network.HasProcessing("osc"));
 	}
 	
-	void testClearDeletesAllControllersAndAdapters()
-	{
+	void testClearDeletesAllControllers()
+	{	
+		CLAM::Network network;
+		CLAMVM::NetworkController controller;		
+		network.AddFlowControl( new CLAM::PushFlowControl );
+		network.AddProcessing( "osc", new CLAM::SimpleOscillator );
+		controller.BindTo( network );
+		controller.Publish();
+
+		SignalClear.Connect( controller.SlotClear );
+		SignalClear.Emit();
+
+		CPPUNIT_ASSERT_MESSAGE( "network controller shouldn't have any processing controller", 
+				controller.BeginProcessingControllers() == controller.EndProcessingControllers() );
 	}
-*/
+	
 };
 
 } // namespace CLAMTest

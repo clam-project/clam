@@ -22,7 +22,7 @@
 #include "NetworkPresentation.hxx"
 #include "NetworkController.hxx"
 #include "ProcessingController.hxx"
-#include "ConnectionAdapter.hxx"
+//#include "ConnectionAdapter.hxx"
 #include "ProcessingPresentation.hxx"
 #include "ConnectionPresentation.hxx"
 #include "ConnectionPointPresentation.hxx"
@@ -153,7 +153,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 {
 	SetName( controller.GetName() );
 	controller.SignalCreateProcessingPresentation.Connect( SlotCreateProcessingPresentation );
-	CLAMVM::NetworkController::ProcessingControllersMapIterator it;	
+	CLAMVM::NetworkController::ProcessingControllersMap::iterator it;	
 	for(it=controller.BeginProcessingControllers(); it!=controller.EndProcessingControllers(); it++ )
 		CreateProcessingPresentation( it->first, it->second );
 		

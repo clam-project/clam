@@ -21,7 +21,7 @@
 
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
-#include "ConnectionAdapter.hxx"
+//#include "ConnectionAdapter.hxx"
 #include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
@@ -146,10 +146,10 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	SignalSendMessageToStatus.Emit( "Created " + presentation->GetName() );
 }
 
-void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::CreatePortConnectionPresentation( const std::string & out, const std::string & in )
 {
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
-	presentation->AttachTo(*adapter);
+	presentation->AttachTo( out, in );
 	presentation->SignalRemoveConnection.Connect( SlotRemovePortConnection);
 	presentation->SignalConnectionPresentationSelected.Connect( SlotConnectionPresentationSelected );
 	presentation->SignalConnectionPresentationAddedToSelection.Connect( SlotConnectionPresentationAddedToSelection );
@@ -171,10 +171,10 @@ void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::Connectio
 }
 
 
-void Qt_NetworkPresentation::CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::CreateControlConnectionPresentation( const std::string & out, const std::string & in ) 
 {
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
-	presentation->AttachTo(*adapter);
+	presentation->AttachTo(out, in);
 	presentation->SignalRemoveConnection.Connect( SlotRemoveControlConnection);
 	presentation->SignalConnectionPresentationSelected.Connect( SlotConnectionPresentationSelected );
 	presentation->SignalConnectionPresentationAddedToSelection.Connect( SlotConnectionPresentationAddedToSelection );
