@@ -16,6 +16,7 @@ namespace CLAM
 	{
 		QtPresentation::QtPresentation(QWidget* parent) : QtPlot(parent)
 		{
+			flag=false;
 			Init();
 		}
 		
@@ -154,7 +155,17 @@ namespace CLAM
 		{
 			if(_controller)
 			{
-				_controller->UpdateHViewport(value);
+				if(flag)
+				{
+					if(_hs->GetScrollValue()!=value)
+					{
+						_controller->UpdateHViewport(value);
+					}
+				}
+				else
+				{
+					_controller->UpdateHViewport(value);
+				}
 				emit HScrollValue(value);
 			}
 		}
@@ -338,6 +349,11 @@ namespace CLAM
 		void QtPresentation::SetToggleColorOn(bool b)
 		{
 			_btoggle_color->setOn(b);
+		}
+
+		void QtPresentation::SetFlag(bool f)
+		{
+			flag=f;
 		}
 	}
 }

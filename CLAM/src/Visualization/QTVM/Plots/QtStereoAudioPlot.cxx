@@ -72,6 +72,7 @@ namespace CLAM
 			left->addStretch(1);
 
 			_leftChannel = new QtAudioPlot(this);
+			_leftChannel->SetFlag(true);
 			_leftChannel->RemoveXRuler();
 			_leftChannel->RemoveVScrollGroup();
 			_leftChannel->RemoveHScrollGroup();
@@ -101,6 +102,7 @@ namespace CLAM
 			right->addStretch(1);
 
 			_rightChannel = new QtAudioPlot(this);
+			_rightChannel->SetFlag(true);
 			_rightChannel->RemoveXRuler();
 			_rightChannel->RemoveVScrollGroup();
 			_rightChannel->RemoveHScrollGroup();

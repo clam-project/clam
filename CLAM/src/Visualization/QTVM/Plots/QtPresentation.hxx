@@ -50,6 +50,8 @@ namespace CLAM
 				void RemoveHScrollGroup();
 				void RemoveVScrollGroup();
 
+				void SetFlag(bool f);
+
 			signals:
 				void HZoomIn();
 				void HZoomOut();
@@ -126,6 +128,8 @@ namespace CLAM
 				VScrollGroup* _vs;
 
 				QPushButton* _btoggle_color;
+
+				bool flag;
 
 				// holes
 				QFrame *topLeftHole,*topRightHole;
