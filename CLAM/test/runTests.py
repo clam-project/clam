@@ -7,12 +7,12 @@ updateLevelForExamples = 1
 updateLevelForTestData = 1
 
 # When false keeps already compiled objects
-doCleanMake = False
+doCleanMake = True
 # When false does nothing
 doAutoconf = False
 doAutoconf = doAutoconf or updateLevelForCLAM == 2
 
-enableSendMail = True
+enableSendMail = False
 publicAddress = 'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
@@ -358,6 +358,7 @@ def updateSandboxes() :
 	global sandboxes
 	for module, sandbox, tag, level in sandboxes :
 		if not os.access(sandbox, os.F_OK) :
+			print 'Cannot update sandbox %s (dont exist), doing checkout'%(sandbox)
 			checkoutSandbox(module, sandbox, tag)
 		elif level == 2 :
 			print 'The sandbox %s already exists, deleting it'%(sandbox)
