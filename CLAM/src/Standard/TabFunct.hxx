@@ -18,6 +18,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef __TABFUNCT__
+#define __TABFUNCT__
+
 #include "DataTypes.hxx"
 #include "Assert.hxx"
 #include <vector>
@@ -84,3 +87,5 @@ private:
 };
 
 } //namespace
+
+#endif // TabFunct.hxx
