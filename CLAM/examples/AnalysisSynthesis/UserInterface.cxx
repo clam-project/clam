@@ -526,7 +526,7 @@ void UserInterface::cb_mWindow2(Fl_Window* o, void* v) {
 
 UserInterface::UserInterface() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mWindow = new Fl_Double_Window(1028, 746, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
+  { Fl_Double_Window* o = mWindow = new Fl_Double_Window(1114, 796, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->color(23);
     o->user_data((void*)(this));

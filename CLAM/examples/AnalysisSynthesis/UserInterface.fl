@@ -400,7 +400,7 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {0 18 1028 746} type Double color 23 hide resizable
+      xywh {4 30 1114 796} type Double color 23 hide resizable
       code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
@@ -578,7 +578,7 @@ Exit();}
           private xywh {10 10 100 20} labelfont 13 labelsize 12
         }
       }
-      Fl_Box mSmartTile {
+      Fl_Box mSmartTile {selected
         private xywh {5 50 1095 725} color 23 resizable
         class Fl_Smart_Tile
       }
@@ -637,7 +637,6 @@ mWindow2=NULL;}
   decl {void Attach(Fl_Window* canvas);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
-  decl {void PlaySinusoidal();} {selected
-  }
+  decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
 } 
