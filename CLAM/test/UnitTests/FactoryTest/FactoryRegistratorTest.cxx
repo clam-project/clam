@@ -38,7 +38,7 @@ private:
 	void testConstructorPassingKeyAndFactory_RegistersCreator()
 	{
 		MyFactoryType fact;
-		const char* fooClassName = "DummyProduct";
+		const char* fooClassName = "DummyProductFoo";
 
 		MyFactoryType::Registrator<DummyProductFoo> regt( fooClassName, fact );
 
