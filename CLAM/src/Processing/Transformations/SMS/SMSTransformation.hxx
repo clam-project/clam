@@ -249,6 +249,7 @@ namespace CLAM {
 		 */
 		virtual bool Do(const Segment& in, Segment& out)
 		{
+			if (!mInput.IsAttached()) mInput.Attach(const_cast<Segment&>(in));
 			while(mCurrentInputFrame<in.mCurrentFrameIndex)
 			{
 				if(mUseTemporalBPF)

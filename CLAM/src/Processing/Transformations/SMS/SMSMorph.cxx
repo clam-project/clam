@@ -216,6 +216,7 @@ bool SMSMorph::Do(const Segment& in1, Segment& out)
 bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)
 {
 	mInput2.Attach(in2);
+	mHaveInternalSegment=true;
 	return Do(in1,out);
 }
 
