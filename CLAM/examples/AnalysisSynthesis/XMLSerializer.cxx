@@ -44,7 +44,7 @@ bool XMLSerializer::DoStore( char* fileName, Segment& segment )
 	int i=0;
 	int nFrames=segment.GetnFrames();
 
-	for( i=0; i<nFrames; i++ )
+	for( i = 0; i < nFrames; i++ )
 	{
 		Frame& tmpFrame = segment.GetFrame( i );
 		tmpFrame.RemoveAudioFrame(  ); //windowed audio frame
