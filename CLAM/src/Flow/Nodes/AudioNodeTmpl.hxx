@@ -63,6 +63,13 @@ namespace CLAM {
 		void LeaveAndAdvance(ReadStreamRegion *r);
 		void LeaveAndAdvance(DelayStreamRegion *r);
 		void LeaveAndAdvance(InplaceStreamRegion *r);
+
+		bool CanActivateRegion(SourceStreamRegion &toActivate) {
+			return mStream.CanActivateRegion( toActivate );
+		}
+		bool CanActivateRegion(ReadStreamRegion &toActivate) {
+			return mStream.CanActivateRegion( toActivate );
+		}
 	};
 
 	template<class BUFFER>

@@ -192,13 +192,25 @@ namespace CLAM {
 		void Leave(REGION*r)
 		{
 			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
-							  "StreamBuffer::LeaveAndAdvance(): "
+							  "StreamBuffer::Leave(): "
 							  "Invalid region argument ");
 			mBuffer.Leave(r);
 			r->Leave();
 		}
 
-		
+		bool CanActivateRegion( ReadStreamRegion& readRegion)
+		{
+			// notice that exist a overload for WriteStreamRegion.
+			CLAM_DEBUG_ASSERT(mRegions.Contains(&readRegion), "StreamBuffer::CanActivate(): Invalid region argument ");
+			return readRegion.CanActivate();
+		}
+
+		bool CanActivateRegion( SourceStreamRegion& writeRegion ) 
+		{
+			CLAM_DEBUG_ASSERT(&writeRegion == mRegions.Writer(), "CanActivate() argument should be the write region" );
+			return writeRegion.CanActivate() && 
+				!mBuffer.CanActivateSourceWithNoCircularOverlap( writeRegion );
+		}
 
 	};
 

@@ -58,6 +58,9 @@ namespace CLAM {
 						      unsigned int hop,
 						      unsigned int length,
 						      SourceStreamRegion* source = 0) = 0;
+
+		virtual bool CanActivateRegion(SourceStreamRegion &toActivate)=0;
+		virtual bool CanActivateRegion(ReadStreamRegion &toActivate)=0;
 	};
 
 	//-------------------------------------------
