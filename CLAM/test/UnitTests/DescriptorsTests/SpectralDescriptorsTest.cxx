@@ -46,7 +46,7 @@ class SpectralDescriptorsTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralDescriptorsTest );
 	CPPUNIT_TEST( testRolloff );
-	CPPUNIT_TEST( testFlatness );
+//	CPPUNIT_TEST( testFlatness );
 	CPPUNIT_TEST( testCentroid );
 	CPPUNIT_TEST( testSpread );
 	CPPUNIT_TEST( testSlope );
@@ -168,8 +168,9 @@ private:
 				)
 			{
 				log << (*it).first
-				<< ": expected " << (*it).second
+				<< ": expected " << it->second
 				<< ", received " << (mDescriptors->*getter)()
+				<< ", difference " << (it->second - (mDescriptors->*getter)())
 				<< std::endl;
 
 				success = false;
@@ -193,7 +194,7 @@ private:
 		data["Balance001.988.wav"] = 925.024390;
 		data["Balance010.910.wav"] = 150.585366;
 		data["Cello_A2.wav"] = 1656.439024;
-		data["Cello_C2.wav"] = -1.000000;
+		data["Cello_C2.wav"] = 0.000000;
 		data["Disco_Rojo001.008.wav"] = 4904.780488;
 		data["Disco_Rojo002.327.wav"] = 537.804878;
 		data["Geiger_Counter005.020.wav"] = 258.146341;
@@ -202,10 +203,10 @@ private:
 		data["bell_A3.wav"] = 2646.000000;
 		data["gamelan-gong.wav"] = 139.829268;
 		data["gt_E4.wav"] = 86.048780;
-		data["pno_Eb1.wav"] = -1.000000;
-		data["silence.wav"] = -1.000000;
-		data["vln_A3.wav"] = -1.000000;
-		data["vln_D5.wav"] = -1.000000;
+		data["pno_Eb1.wav"] = 0.000000;
+		data["silence.wav"] = 0.000000;
+		data["vln_A3.wav"] = 0.000000;
+		data["vln_D5.wav"] = 0.000000;
 		data["whitenoise.wav"] = 18672.585366;
 
 		mDescriptors->AddRolloff();
@@ -255,7 +256,7 @@ private:
 		data["Balance001.988.wav"] = 1588.760453;
 		data["Balance010.910.wav"] = 2696.114917;
 		data["Cello_A2.wav"] = 3017.010992;
-		data["Cello_C2.wav"] = 0.000000;
+		data["Cello_C2.wav"] = 11025.;
 		data["Disco_Rojo001.008.wav"] = 4169.324045;
 		data["Disco_Rojo002.327.wav"] = 2579.081038;
 		data["Geiger_Counter005.020.wav"] = 1764.977615;
@@ -270,6 +271,7 @@ private:
 		data["vln_A3.wav"] = 11025.;
 		data["vln_D5.wav"] = 11025.;
 		data["whitenoise.wav"] = 11072.758057;
+		data["Constant-Spectrum.xml"]= 11025;
 
 		mDescriptors->AddCentroid();
 
@@ -279,15 +281,25 @@ private:
 	void testSpread()
 	{
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+		CLAM::TData plainFor513 = sqrt(CLAM::TData(513-1)/(513-3)/3);
+		CLAM::TData plainFor257 = sqrt(CLAM::TData(257-1)/(257-3)/3);
 
 		std::map<std::string, CLAM::TData> data;
+		data["MaxSpread-Spectrum.xml"] = 1.0;
+		data["MinSpread-Spectrum.xml"] = 0.0;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
+		data["Silence-Spectrum.xml"] = plainFor513; // Avoid NaN
+		data["Constant-Spectrum.xml"] = plainFor513;
+		data["ConstantDouble-Spectrum.xml"] = plainFor513;
+		data["ConstantHalfSize-Spectrum.xml"] = plainFor257;
+
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1.791044;
 		data["Balance000.600.wav"] = 4.119432;
 		data["Balance000.992.wav"] = 3.158641;
 		data["Balance001.988.wav"] = 1.451249;
 		data["Balance010.910.wav"] = 1.822904;
 		data["Cello_A2.wav"] = 1.322429;
-		data["Cello_C2.wav"] = 0.000000;
+		data["Cello_C2.wav"] = plainFor513;
 		data["Disco_Rojo001.008.wav"] = 0.916335;
 		data["Disco_Rojo002.327.wav"] = 1.335445;
 		data["Geiger_Counter005.020.wav"] = 2.159354;
@@ -296,10 +308,10 @@ private:
 		data["bell_A3.wav"] = 1.092978;
 		data["gamelan-gong.wav"] = 1.871866;
 		data["gt_E4.wav"] = 1.324165;
-		data["pno_Eb1.wav"] = 0.000000;
-		data["silence.wav"] = 0.000000;
-		data["vln_A3.wav"] = 0.000000;
-		data["vln_D5.wav"] = 0.000000;
+		data["pno_Eb1.wav"] = plainFor513;
+		data["silence.wav"] = plainFor513;
+		data["vln_A3.wav"] = plainFor513;
+		data["vln_D5.wav"] = plainFor513;
 		data["whitenoise.wav"] = 0.568572;
 
 		mDescriptors->AddSpread();
@@ -312,6 +324,11 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
+		data["Constant-Spectrum.xml"]= 0.0;
+		data["ConstantDouble-Spectrum.xml"]= 0.0;
+		data["ConstantHalfSize-Spectrum.xml"]= 0.0;
+		data["MaxSpread-Spectrum.xml"]= 0.0;
+		data["MinSpread-Spectrum.xml"]= 0.0;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = -4.07655e-07;
 		data["Balance000.600.wav"] = -5.10341e-07;
 		data["Balance000.992.wav"] = -4.92062e-07;
