@@ -31,7 +31,7 @@ SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int 
 	_frameSize(frameSize), 
 	_maxFramesToProcess(nFrames),
 	_hasAudioOut(hasAudioOut),
-	_controlSender(20,44100,0);
+	_controlSender(20,44100,0,frameSize);
 {
 	AddNetworkConfiguration( new OscillatorToFileOut( this, hasAudioOut ) );
 	AddNetworkConfiguration( new FileInFileOut( this, hasAudioOut ) );
