@@ -6,20 +6,30 @@ TraverseDirectory::TraverseDirectory(void)
 
 }
 // Helper method for TraverseHelper
-bool TraverseDirectory::IsCurrentOrParentDir(dirent* dirEntry) const
+bool TraverseDirectory::IsCurrentOrParentDir(DirectoryEntry dirEntry) const
 {
+#ifndef WIN32
 	return !strcmp(dirEntry->d_name,".") || !strcmp(dirEntry->d_name,"..");
+#else
+	return false;
+#endif
 }
 
-std::string TraverseDirectory::CompleteName(const std::string& currentDirName, dirent* dirEntry) const
+std::string TraverseDirectory::CompleteName(const std::string& currentDirName, DirectoryEntry dirEntry) const
 {
+#ifndef WIN32
 	bool noDirName = currentDirName == "";
 	return noDirName? dirEntry->d_name : currentDirName+"/"+dirEntry->d_name;
+#else
+	return "";
+#endif
+
 }
 
-void TraverseDirectory::TraverseHelper( DIR* dir, const std::string& currentDirname,
+void TraverseDirectory::TraverseHelper( Directory dir, const std::string& currentDirname,
 	int curdepth, int maxdepth )
 {
+#ifndef WIN32
 	dirent* dirEntry;
 	while ((dirEntry = readdir(dir)))
 	{
@@ -41,10 +51,49 @@ void TraverseDirectory::TraverseHelper( DIR* dir, const std::string& currentDirn
 			OnFile(currentItemName); // 'template method'
 		}
 	}
+#else
+	WIN32_FIND_DATA fd;
+	HANDLE hFind;
+	std::string tmp;;
+	if(currentDirname!="")
+	{
+		tmp+=currentDirname;
+		tmp+="/";
+	}
+	tmp+="*.*";
+	hFind = FindFirstFile(tmp.c_str(), &fd);
+	if (hFind == INVALID_HANDLE_VALUE) return;
+	
+	do
+	{
+		std::string tmp2=currentDirname;
+		tmp2+="/";
+		tmp2+=fd.cFileName;
+				
+		if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+		{	
+			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
+			{
+				
+				OnDirectory(tmp2);
+				if (curdepth<maxdepth || maxdepth==-1)
+				{
+					TraverseHelper(fd, tmp2, curdepth+1, maxdepth);
+				}
+			}	
+		}
+		else
+		{
+			OnFile(tmp2);
+		}
+	} while (FindNextFile(hFind, &fd)); // enumerates contents
+	FindClose(hFind);
+#endif
 }
 
 void TraverseDirectory::Traverse(const std::string& rootname,int maxdepth)
 {
+#ifndef WIN32
 	DIR* dir;
 
 	dir = opendir(rootname == "" ? "." : rootname.c_str());
@@ -55,6 +104,27 @@ void TraverseDirectory::Traverse(const std::string& rootname,int maxdepth)
 		TraverseHelper(dir,rootname,0,maxdepth);
 		closedir(dir);
 	}
+#else
+	WIN32_FIND_DATA fd;
+	HANDLE hFind;
+	std::string tmp = rootname;
+	if ((tmp.rfind("/")!=tmp.length()-1)
+		&&
+		(tmp.rfind("\\")!=tmp.length()-1))
+	{
+		tmp += "\\";
+	}
+	tmp += "*.*";
+	hFind = FindFirstFile(tmp.c_str(), &fd);
+	if (hFind == INVALID_HANDLE_VALUE) return;
+	if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+	{	
+		OnDirectory(rootname);
+		TraverseHelper(fd,rootname,0,maxdepth);
+	}
+	FindClose(hFind);;
+
+#endif
 }
 
 

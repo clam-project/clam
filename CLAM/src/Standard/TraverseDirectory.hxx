@@ -1,14 +1,29 @@
 #include <string>
-#include <dirent.h>
+#ifndef WIN32
+#	include <dirent.h>
+#else
+#	include <windows.h>
+#endif
 
 class TraverseDirectory
 {
+
+#ifdef WIN32
+	typedef WIN32_FIND_DATA Directory;
+	typedef HANDLE DirectoryEntry;
+#else
+	typedef DIR* Directory;
+	typedef dirent* DirectoryEntry;
+#endif
+
 public:
 	TraverseDirectory(void);
 	virtual ~TraverseDirectory(void)
 	{
 	}
 	void Traverse(const std::string& rootname = "",int maxdepth = -1);
+
+
 protected:
 	virtual void OnFile(const std::string& filename) { };
 	virtual void OnDirectory(const std::string& dirname) { };
@@ -32,9 +47,9 @@ protected:
 	std::string GetExtension(const std::string& filename);
 
 private:
-	void TraverseHelper(DIR* dir,const std::string& dirname,int curdepth,int maxdepth);
-	bool IsCurrentOrParentDir(dirent* dirEntry) const;
-	std::string CompleteName(const std::string& currentDirName, dirent* dirEntry) const;
+	void TraverseHelper(Directory dir,const std::string& dirname,int curdepth,int maxdepth);
+	bool IsCurrentOrParentDir(DirectoryEntry dirEntry) const;
+	std::string CompleteName(const std::string& currentDirName, DirectoryEntry dirEntry) const;
 };
 
 /*
