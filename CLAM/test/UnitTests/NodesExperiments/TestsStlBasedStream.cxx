@@ -1,4 +1,4 @@
-#include "MiniCppUnit.hxx"
+#include <cppunit/extensions/HelperMacros.h>
 
 #include "WritingRegion.hxx"
 #include "ReadingRegion.hxx"
@@ -9,13 +9,19 @@
  * stream and not to phantom-buffer stream
  */
  //TODO it should be a template (stl container) class like TestsStream
-class TestsStlBasedStream : public GrupDeTests<TestsStlBasedStream>
+namespace CLAMTest {
+
+class TestsStlBasedStream ;
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStlBasedStream );
+
+class TestsStlBasedStream : public CppUnit::TestFixture
 {
 public:
-	GRUP_DE_TESTS(TestsStlBasedStream)
-	{
-		CAS_DE_TEST( testStreamIncreasesSizeAfterProducing );
-	}
+	CPPUNIT_TEST_SUITE( TestsStlBasedStream );
+
+	CPPUNIT_TEST( testStreamIncreasesSizeAfterProducing );
+
+	CPPUNIT_TEST_SUITE_END();
 
 	// tests of size of stream
 	void testStreamIncreasesSizeAfterProducing()
@@ -23,9 +29,11 @@ public:
 		WritingRegion<char,std::list> writer;
 		writer.size(5);
 		writer.hop(2);
-		ASSERT_IGUALS(5, writer.logicalStreamSize() );
+		CPPUNIT_ASSERT_EQUAL(5, writer.logicalStreamSize() );
 		writer.produce();
-		ASSERT_IGUALS(7, writer.logicalStreamSize() );
+		CPPUNIT_ASSERT_EQUAL(7, writer.logicalStreamSize() );
 	}
 
 };
+
+} // namespace CLAMTest 

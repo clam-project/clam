@@ -54,117 +54,106 @@ namespace CLAMTest {
 		CLAM::PhantomBuffer<double> *mpObject1;
 		CLAM::PhantomBuffer<double> *mpObject2;
 
-		void TestConstruction();
-		void TestUsage();
-		void TestDestruction();
-
 	public:
 		CPPUNIT_TEST_SUITE( PhantomBufferTest );
-
-		CPPUNIT_TEST( TestConstruction );
 		CPPUNIT_TEST( TestUsage );
-		CPPUNIT_TEST( TestDestruction );
-
 		CPPUNIT_TEST_SUITE_END();
-	};
+	public:
+		void setUp()
+		{
+			mpObject1 = new CLAM::PhantomBuffer<double>();
+			mpObject2 = new CLAM::PhantomBuffer<double>(*mpObject1);
+		}
+
+		void tearDown()
+		{
+			delete mpObject1;
+			delete mpObject2;
+		}
+
+		void PhantomBufferTest::TestUsage()
+		{
+			mpObject1->Resize(0,0,0);
+			mpObject1->Resize(1,1,0);
+			mpObject1->Resize(1,1,1);
+			mpObject1->Resize(2,1,0);
+			mpObject1->Resize(2,1,1);
+			mpObject1->Resize(2,1,2);
+			mpObject1->Resize(2,2,2);
+			mpObject1->Resize(2,2,1);
+			mpObject1->Resize(2,2,0);
 
 
-	void PhantomBufferTest::TestConstruction()
-	{
-		mpObject1 = new CLAM::PhantomBuffer<double>();
-		mpObject2 = new CLAM::PhantomBuffer<double>(*mpObject1);
-	}
+			mpObject2->Resize(0,0,0);
+			mpObject2->Resize(10,1,0);
+			mpObject2->Resize(10,1,1);
+			mpObject2->Resize(20,1,0);
+			mpObject2->Resize(20,1,1);
+			mpObject2->Resize(20,1,2);
+			mpObject2->Resize(20,2,2);
+			mpObject2->Resize(20,2,1);
+			mpObject2->Resize(20,2,0);
 
-	void PhantomBufferTest::TestUsage()
-	{
-		mpObject1->Resize(0,0,0);
-		mpObject1->Resize(1,1,0);
-		mpObject1->Resize(1,1,1);
-		mpObject1->Resize(2,1,0);
-		mpObject1->Resize(2,1,1);
-		mpObject1->Resize(2,1,2);
-		mpObject1->Resize(2,2,2);
-		mpObject1->Resize(2,2,1);
-		mpObject1->Resize(2,2,0);
+			int i;
+			double *read;
+			for (i = 0; i<22-5; i++) {
+				DataChunk<double,5> data(double(100.0+i));
+				mpObject2->Write(i,5,data.Address());
+				read = mpObject2->Read(i,5);
+				for (int j=0; j<5; j++)
+					CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!",
+							data[j] == read[j] );
+			}
 
-
-		mpObject2->Resize(0,0,0);
-		mpObject2->Resize(10,1,0);
-		mpObject2->Resize(10,1,1);
-		mpObject2->Resize(20,1,0);
-		mpObject2->Resize(20,1,1);
-		mpObject2->Resize(20,1,2);
-		mpObject2->Resize(20,2,2);
-		mpObject2->Resize(20,2,1);
-		mpObject2->Resize(20,2,0);
-
-		int i;
-		double *read;
-		for (i = 0; i<22-5; i++) {
-			DataChunk<double,5> data(double(100.0+i));
-			mpObject2->Write(i,5,data.Address());
-			read = mpObject2->Read(i,5);
-			for (int j=0; j<5; j++)
-				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!",
+			for (i = 22-9; i>=0; i--) {
+				DataChunk<double,8> data(double(2000+i));
+				mpObject2->FulfilsInvariant();
+				mpObject2->Write( i,8,data.Address() );
+				mpObject2->FulfilsInvariant();
+				read = mpObject2->Read(i,8);
+				for (int j=0; j<8; j++)
+					CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
 						data[j] == read[j] );
+				mpObject2->FulfilsInvariant();
+			}
+
+			int logical_size = 21;
+			int phantom_size = 2;
+			for (i=0; i<100; i++) {
+				DataChunk<double,10> data(double(30000+i));
+				mpObject2->FulfilsInvariant();
+				mpObject2->Write(0,10,data.Address());
+				mpObject2->FulfilsInvariant();
+				mpObject2->Resize(logical_size++, phantom_size++, 0);
+				mpObject2->FulfilsInvariant();
+				read = mpObject2->Read(1,10);
+				mpObject2->FulfilsInvariant();
+				for (int j=0; j<10; j++)
+					CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
+						data[j] == read[j] );
+			}
+
+			int size_increment = 1;
+			int write_pos = 0;
+			for (i=0; i<100; i++) {
+				DataChunk<double,10> data(double(40000+i));
+				mpObject2->FulfilsInvariant();
+				mpObject2->Write(write_pos,10,data.Address());
+				mpObject2->FulfilsInvariant();
+				mpObject2->Resize(logical_size, phantom_size, write_pos);
+				mpObject2->FulfilsInvariant();
+				read = mpObject2->Read(write_pos + size_increment,10);
+				mpObject2->FulfilsInvariant();
+				for (int j=0; j<10; j++)
+					CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
+						data[j] == read[j] );
+
+				size_increment++;
+				logical_size += size_increment;
+				phantom_size += 2;
+				write_pos += size_increment;
+			}
 		}
-
-		for (i = 22-9; i>=0; i--) {
-			DataChunk<double,8> data(double(2000+i));
-			mpObject2->FulfilsInvariant();
-			mpObject2->Write( i,8,data.Address() );
-			mpObject2->FulfilsInvariant();
-			read = mpObject2->Read(i,8);
-			for (int j=0; j<8; j++)
-				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
-					data[j] == read[j] );
-			mpObject2->FulfilsInvariant();
-		}
-
-		int logical_size = 21;
-		int phantom_size = 2;
-		for (i=0; i<100; i++) {
-			DataChunk<double,10> data(double(30000+i));
-			mpObject2->FulfilsInvariant();
-			mpObject2->Write(0,10,data.Address());
-			mpObject2->FulfilsInvariant();
-			mpObject2->Resize(logical_size++, phantom_size++, 0);
-			mpObject2->FulfilsInvariant();
-			read = mpObject2->Read(1,10);
-			mpObject2->FulfilsInvariant();
-			for (int j=0; j<10; j++)
-				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
-					data[j] == read[j] );
-		}
-
-		int size_increment = 1;
-		int write_pos = 0;
-		for (i=0; i<100; i++) {
-			DataChunk<double,10> data(double(40000+i));
-			mpObject2->FulfilsInvariant();
-			mpObject2->Write(write_pos,10,data.Address());
-			mpObject2->FulfilsInvariant();
-			mpObject2->Resize(logical_size, phantom_size, write_pos);
-			mpObject2->FulfilsInvariant();
-			read = mpObject2->Read(write_pos + size_increment,10);
-			mpObject2->FulfilsInvariant();
-			for (int j=0; j<10; j++)
-				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
-					data[j] == read[j] );
-
-			size_increment++;
-			logical_size += size_increment;
-			phantom_size += 2;
-			write_pos += size_increment;
-		}
-	}
-
-	void PhantomBufferTest::TestDestruction()
-	{
-		delete mpObject1;
-		delete mpObject2;
-	}
-
-
+	};
 } // namespace CLAMTest
 
