@@ -65,6 +65,11 @@ public:
 	bool ConcreteStop();
 	bool ConcreteStart();		
 	bool ConcreteConfigure( const ProcessingConfig & cfg);
+
+	bool ModifiesPortsAndControlsAtConfiguration()
+	{
+		return true;
+	}
 	
 	const char* GetClassName() const
 	{ 
