@@ -44,7 +44,7 @@ class UserInterface {open
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input
+          label Input open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -58,9 +58,9 @@ class UserInterface {open
             private xywh {15 15 100 20} labelsize 12
           }
           menuitem {} {
-            label {Store Configure...}
-            callback {StoreConfiguration();}
-            private xywh {15 15 100 20} labelsize 12 hide
+            label {Store Configuration...}
+            callback {StoreConfiguration();} selected
+            private xywh {15 15 100 20} labelsize 12
           }
           submenu mDisplayInSM {
             label Display
@@ -286,8 +286,7 @@ mWindow2=NULL;}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
-  decl {void LoadSound();} {selected
-  }
+  decl {void LoadSound();} {}
   decl {CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];} {}
   decl {CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];} {}
   decl {void Update();} {public
