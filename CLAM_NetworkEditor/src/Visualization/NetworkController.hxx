@@ -45,9 +45,12 @@ namespace CLAMVM
 {
 	class NetworkController : public ModelController, public NetworkModel
 	{
+	public:
 		typedef std::map< std::string , std::string  > ConnectionsMap;
+		typedef std::map< std::string , ProcessingController*  > ProcessingControllersMap;
+		typedef ProcessingControllersMap::iterator ProcessingControllersMapIterator;
 		typedef std::list< std::string > ProcessingsList;
-	private:		
+	protected:		
 
 		// multithread related
 		CLAM::Thread mThread;
@@ -61,8 +64,7 @@ namespace CLAMVM
 		ProcessingsList mProcessingsToRemove;
 
 		CLAM::Network* mObserved;
-		std::list<ProcessingController*> mProcessingControllers;
-		typedef std::list<ProcessingController*>::iterator ProcessingControllerIterator;
+		ProcessingControllersMap mProcessingControllers;
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
@@ -91,9 +93,9 @@ namespace CLAMVM
 		{
 			return "NetworkController";
 		}
-		void AddProcessing( const std::string & , CLAM::Processing *  );
+		void CreateProcessingController( const std::string & , CLAM::Processing *  );
 		void OnRebuildProcessingStructure( CLAM::Processing *  );
-		void NewProcessingFromGUI( const std::string & , CLAM::Processing * );
+		void AddProcessing( const std::string & , CLAM::Processing * );
 	
 		virtual bool Publish();
 		virtual bool Update();
