@@ -18,6 +18,28 @@ public:
 		_scope = scope;
 		_attribute = attribute;
 	}
+
+	void Next()
+	{
+		_current++;
+	}
+
+	bool IsInsideScope() const
+	{
+		return _current < _scopeSize;
+	}
+
+protected:
+	std::string _attribute;
+	std::string _scope;
+	unsigned _current;
+	unsigned _scopeSize;
+};
+
+template <typename AttributeType>
+class ReadHook : public Hook<AttributeType>
+{
+public:
 	void Init(const DescriptionDataPool & pool) 
 	{
 		_pool = &pool;
@@ -30,25 +52,9 @@ public:
 	{
 		return _data [_current];
 	}
-
-	void Next()
-	{
-		_current++;
-	}
-
-	bool IsInsideScope() const
-	{
-		return _current < _scopeSize;
-	}
-
 private:
 	const DescriptionDataPool * _pool;
 	const AttributeType * _data;
-protected:
-	std::string _attribute;
-	std::string _scope;
-	unsigned _current;
-	unsigned _scopeSize;
 };
 
 template <typename AttributeType>
