@@ -196,6 +196,34 @@ void makefilevars_generate(void)
 		fprintf(outfile,"\n\n");
 	}
 
+	{
+		listkey* k = listhash_find(config,"LINK_FLAGS_DEBUG");
+		item* i = (k && k->l) ? k->l->first : 0;
+		fprintf(outfile,"LINK_FLAGS_DEBUG =");
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				fprintf(outfile,"\\\n %s",i->str);
+
+			i = i->next;
+		}
+		fprintf(outfile,"\n\n");
+	}
+
+	{
+		listkey* k = listhash_find(config,"LINK_FLAGS_RELEASE");
+		item* i = (k && k->l) ? k->l->first : 0;
+		fprintf(outfile,"LINK_FLAGS_RELEASE =");
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				fprintf(outfile,"\\\n %s",i->str);
+
+			i = i->next;
+		}
+		fprintf(outfile,"\n\n");
+	}
+
 	fclose(outfile);
 }
 

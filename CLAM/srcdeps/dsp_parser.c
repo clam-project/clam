@@ -203,7 +203,11 @@ void dsp_parse_add_library_paths(void)
 
 void dsp_parse_add_link_flags(void)
 {
-	item* i = link_flags->first;
+	item* i = currentConfigIsDebug ?
+		link_flags_debug->first 
+		:
+		link_flags_release->first 
+	;
 	while (i)
 	{
 		if (i->str && i->str[0]!=0)

@@ -16,7 +16,8 @@ list* ignore_unused = 0;
 list *libraries_debug = 0;
 list *libraries_release = 0;
 
-list *link_flags = 0;
+list *link_flags_debug = 0;
+list *link_flags_release = 0;
 
 list *cxxflags_debug = 0;
 list *cxxflags_release = 0;
@@ -446,8 +447,11 @@ void config_init(void)
 	library_paths = 
 		listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
 
-	link_flags = 
-		listhash_add_key_once(config,"LINK_FLAGS")->l = list_new();
+	link_flags_debug = 
+		listhash_add_key_once(config,"LINK_FLAGS_DEBUG")->l = list_new();
+
+	link_flags_release = 
+		listhash_add_key_once(config,"LINK_FLAGS_RELEASE")->l = list_new();
 
 	cxxflags_debug = 
 		listhash_add_key_once(config,"CXXFLAGS_DEBUG")->l = list_new();
@@ -466,7 +470,8 @@ void config_init(void)
 
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
-	list_add_str_once(used_vars,"LINK_FLAGS");
+	list_add_str_once(used_vars,"LINK_FLAGS_DEBUG");
+	list_add_str_once(used_vars,"LINK_FLAGS_RELEASE");
 	list_add_str_once(used_vars,"LIBRARY_PATHS");
 	list_add_str_once(used_vars,"CXXFLAGS_DEBUG");
 	list_add_str_once(used_vars,"CXXFLAGS_RELEASE");

@@ -8,7 +8,8 @@ extern list* used_vars;
 
 extern list* cxxflags_debug;
 extern list* cxxflags_release;
-extern list* link_flags;
+extern list* link_flags_debug;
+extern list* link_flags_release;
 extern list* libraries_debug;
 extern list* libraries_release;
 extern list* library_paths;
