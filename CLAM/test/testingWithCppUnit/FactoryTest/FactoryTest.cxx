@@ -18,14 +18,20 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
 	CPPUNIT_TEST( testFactoryIsSingleton );
 	CPPUNIT_TEST( testAutomaticRegistry );
-
 	CPPUNIT_TEST_SUITE_END();
 
-	
+public:
+	void setUp()
+	{
+	}
+
+	void tearDown()
+	{
+		CLAM::Factory::GetInstance().Clear();
+	}
 
 	// Tests definition :
 private:
-	
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
 		CLAM::Processing* returned = CLAM::CreateOscillator();
@@ -46,7 +52,7 @@ private:
 	{
 		// set up:
 		CLAM::Factory &factory = CLAM::Factory::GetInstance();
-		factory.Clear();
+		
 		factory.GetRegistry().AddCreator( "Oscillator", CLAM::CreateOscillator );
 		
 		CLAM::Processing* returned = factory.MakeProcessing("Oscillator");
@@ -61,7 +67,6 @@ private:
 	void testMakeProcessingSafe_WithABadKey()
 	{
 		CLAM::Factory &factory = CLAM::Factory::GetInstance();
-		factory.Clear();
 		try{
 			factory.MakeProcessingSafe("Oscillator");
 			CPPUNIT_FAIL("Should throw an exception");
@@ -90,7 +95,6 @@ private:
 	void testAutomaticRegistry()
 	{
 		CLAM::Factory &factory = CLAM::Factory::GetInstance();
-		factory.Clear(); // make sure it's empty (although innecessary)
 		
 		// the ctr register the creator to the factory.
 		CLAM::AutomaticRegistrator<CLAM::Oscillator> dummy;
@@ -101,7 +105,6 @@ private:
 		// tear down:
 		delete returned;
 		factory.Clear();
-
 	}
 };
 
