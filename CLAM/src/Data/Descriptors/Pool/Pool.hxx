@@ -6,6 +6,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "Assert.hxx"
 #include "DataTypes.hxx"
 #include "Component.hxx"
