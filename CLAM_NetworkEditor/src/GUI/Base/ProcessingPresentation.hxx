@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
 
 #include "Presentation.hxx"
 #include "Slotv1.hxx"
@@ -38,7 +37,6 @@ protected:
 	std::list<OutPortPresentation*> mOutPortPresentations;
 	typedef std::list<InPortPresentation*>::iterator InPortPresentationIterator;
 	typedef std::list<OutPortPresentation*>::iterator OutPortPresentationIterator;
-	std::string mName;
 	std::string mNameFromNetwork;
 	std::string mObservedClassName;
 public:
@@ -47,21 +45,18 @@ public:
 	virtual void AttachTo(CLAMVM::ProcessingModel & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
-	virtual const std::string & GetName(){return mName;}
 	virtual const std::string & GetNameFromNetwork(){return mNameFromNetwork;}
 	OutPortPresentation & GetOutPortPresentation( const std::string& );
 	InPortPresentation & GetInPortPresentation( const std::string& );
 
 protected:
 	virtual void OnNewConfig( CLAM::ProcessingConfig * );
-	virtual void OnNewName( const std::string& ) = 0;
 	virtual void OnNewObservedClassName( const std::string& ) = 0;
 	virtual void OnNewInPort( CLAMVM::InPortAdapter* ) = 0;
 	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* ) = 0;
 
 public:	//slots
 	SigSlot::Signalv1< ProcessingPresentation* > RemoveProcessing;
-	SigSlot::Slotv1<const std::string &> SetName;
 	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfig;
 	SigSlot::Slotv1<const std::string &> SetObservedClassName;
 	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SetInPort;

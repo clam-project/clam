@@ -5,9 +5,8 @@
 #include "Presentation.hxx"
 #include "Slotv1.hxx"
 #include "Slotv2.hxx"
-#include "Slotv3.hxx"
-#include "Signalv2.hxx"
 #include "Signalv1.hxx"
+#include "Signalv2.hxx"
 
 #include <string>
 #include <list>
@@ -54,7 +53,7 @@ protected:
 	virtual void OnNewChangeState( bool );
 	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & ) = 0;
 	virtual void OnNewConnection(CLAMVM::ConnectionAdapter* ) = 0;
-	virtual void OnRemoveConnection( const std::string &, const std::string &,ConnectionPresentation* );
+	virtual void OnRemoveConnection( ConnectionPresentation* );
 	virtual void OnRemoveProcessing( ProcessingPresentation* );
 	virtual void OnAddNewProcessing ( const std::string &, CLAM::Processing * );
 
@@ -73,7 +72,7 @@ public: //slots
 	SigSlot::Slotv2< CLAMVM::ProcessingController*, const std::string & > SetProcessing;
 	SigSlot::Slotv1< CLAMVM::ConnectionAdapter* > SetConnection;
 	SigSlot::Slotv1< bool > ChangeState;
-	SigSlot::Slotv3< const std::string &, const std::string &, ConnectionPresentation* > SetRemoveConnection;
+	SigSlot::Slotv1< ConnectionPresentation* > SetRemoveConnection;
 	SigSlot::Slotv1< ProcessingPresentation* > SetRemoveProcessing;
 	
 	//signals

@@ -4,7 +4,11 @@
 
 #include "ModelController.hxx"
 #include "ProcessingModel.hxx"
-#include "Processing.hxx"
+
+namespace CLAM
+{
+	class Processing;
+}
 
 namespace CLAMVM
 {

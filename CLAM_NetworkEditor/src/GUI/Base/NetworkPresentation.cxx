@@ -33,17 +33,12 @@ void NetworkPresentation::OnNewChangeState( bool newState )
 	}
 }
 
-void NetworkPresentation::OnRemoveConnection( const std::string & out, const std::string & in, ConnectionPresentation * con)
+void NetworkPresentation::OnRemoveConnection(  ConnectionPresentation * con)
 {
 	mConnectionPresentations.remove(con);
 	con->Hide();
-	ProcessingPresentation & procOut = GetProcessingPresentation( GetProcessingIdentifier( out ));
-	ProcessingPresentation & procIn = GetProcessingPresentation( GetProcessingIdentifier( in ));
 
-	std::string outPort(procOut.GetNameFromNetwork()+"."+GetLastIdentifier(out));
-	std::string inPort(procIn.GetNameFromNetwork()+"."+GetLastIdentifier(in));
-
-	RemoveConnectionFromGUI.Emit( outPort, inPort );
+	RemoveConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
 }
 
 void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
@@ -54,24 +49,22 @@ void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
 	for(it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++)
 	{
 		const std::string & connection = (*it)->GetInName();
-		if( GetProcessingIdentifier(connection) == proc->GetName() )
+		if( GetProcessingIdentifier(connection) == proc->GetNameFromNetwork() )
 		{
  			toRemove.push_back(*it);
-//			OnRemoveConnection( (*it)->GetOutName(), (*it)->GetInName(), (*it) );
 		}
 		else
 		{
 			const std::string & connection2 = (*it)->GetOutName();
-			if( GetProcessingIdentifier(connection2) == proc->GetName() )
+			if( GetProcessingIdentifier(connection2) == proc->GetNameFromNetwork() )
 			{
 				toRemove.push_back(*it);
-//				OnRemoveConnection( (*it)->GetOutName(), (*it)->GetInName(), (*it) );
 			}
 		}
 	}
 	for(it=toRemove.begin(); it!=toRemove.end(); it++)
 	{
-		OnRemoveConnection( (*it)->GetOutName(), (*it)->GetInName(), (*it) );
+		OnRemoveConnection( *it );
 	}
 	mProcessingPresentations.remove( proc );
 	RemoveProcessingFromGUI.Emit( proc->GetNameFromNetwork() );
@@ -117,7 +110,7 @@ ProcessingPresentation& NetworkPresentation::GetProcessingPresentation( const st
 {
 	ProcessingPresentationIterator it;
 	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-       		if ((*it)->GetName() ==  name)
+       		if ((*it)->GetNameFromNetwork() ==  name)
 				return **it;
 	CLAM_ASSERT( false, "NetworkPresentation::GetProcessingPresentation. Object not found." );
 }

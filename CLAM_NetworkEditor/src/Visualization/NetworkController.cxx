@@ -3,6 +3,7 @@
 #include "Network.hxx"
 #include "Node.hxx"
 #include "InPort.hxx"
+#include "Processing.hxx"
 #include "OutPort.hxx"
 #include <iostream>
 
@@ -79,15 +80,9 @@ void NetworkController::OnNewChangeState( bool state)
 void NetworkController::OnNewConnectionFromGUI( const std::string & out, const std::string& in)
 {	
 	if (mLoopCondition)
-	{
-		if (!mToConnect.insert( ConnectionsMap::value_type( in, out ) ).second )
-			CLAM_ASSERT(false, "NetworkController::OnNewConnectionFromGUI() Trying to remove connection with repeated key" );
-	}
+		mToConnect.insert( ConnectionsMap::value_type( in, out ) );
 	else
-	{
 		ConnectPorts(out, in);
-	}
-			
 }
 
 void NetworkController::ConnectPorts( const std::string & out , const std::string & in )
@@ -95,28 +90,25 @@ void NetworkController::ConnectPorts( const std::string & out , const std::strin
 	std::cout << "add connection" << std::endl;
 	if(mObserved->ConnectPorts(out, in))
 	{
-		
-		// now we must to create a new gui connection
-//	OutPort & outPort = mObserved->GetOutPortByCompleteName(out);
-//	InPort & inPort = mObserved->GetInPortByCompleteName(in);
 		ConnectionAdapter* conAdapter = new ConnectionAdapter;
 		conAdapter->BindTo( mObserved->GetOutPortByCompleteName(out), 
-				    mObserved->GetInPortByCompleteName(in) );
+				    mObserved->GetInPortByCompleteName(in), (const CLAM::Network&)*mObserved );
 		mConnectionAdapters.push_back( conAdapter );
 		AcquireConnection.Emit( conAdapter );
 	}
 }
 
-void NetworkController::OnRemoveConnectionFromGUI(const std::string & out , const std::string & in)
+void NetworkController::OnRemoveConnectionFromGUI( const std::string & outPort, 
+						   const std::string & inPort )
 {
 	if (mLoopCondition)
 	{
-		if (!mToDisconnect.insert( ConnectionsMap::value_type( in, out ) ).second )
+		if (!mToDisconnect.insert( ConnectionsMap::value_type( inPort, outPort ) ).second )
 			CLAM_ASSERT(false, "NetworkController::OnRemoveConnectionFromGUI() Trying to remove connection with repeated key" );
 	}
 	else
 	{
-		DisconnectPorts(out, in);
+		DisconnectPorts(outPort, inPort);
 	}
 
 }
@@ -133,7 +125,6 @@ void NetworkController::OnRemoveProcessingFromGUI(const std::string & proc)
 void NetworkController::RemoveProcessingFromNetwork( const std::string & proc )
 {
 	mObserved->RemoveProcessing( proc );
-	// passar per totes les connexions i després borrar
 }
 
 void NetworkController::DisconnectPorts( const std::string & out , const std::string & in )
@@ -205,10 +196,6 @@ bool NetworkController::Publish()
 	CLAM::Network::Nodes::const_iterator itNodes;
 	for(itNodes=mObserved->BeginNodes(); itNodes!=mObserved->EndNodes(); itNodes++)
 	{
-		// agafar els ports d'entrada
-		   // per cada port d'entrada, donat el de sortida, crear adapter lligat a ells
-		   // getpresentation per nom de processing.port i fer que emetin senyal quan es moguin
-		   // de tal manera que es vagi actualitzant la posicio
 		CLAM::NodeBase * node = *itNodes;
 		const CLAM::OutPort* out = node->GetWriter();
 		std::list<CLAM::InPort*> inPortList = node->GetReaders();
@@ -217,7 +204,7 @@ bool NetworkController::Publish()
 		{
 			ConnectionAdapter* conAdapter = new ConnectionAdapter;
 			const CLAM::InPort* in = *itInPort;
-			conAdapter->BindTo( *out, *in );
+			conAdapter->BindTo( *out, *in, (const CLAM::Network&)*mObserved);
 			mConnectionAdapters.push_back( conAdapter );
 			AcquireConnection.Emit( conAdapter );
 		}

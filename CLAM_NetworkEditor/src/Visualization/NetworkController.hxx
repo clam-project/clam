@@ -18,6 +18,7 @@
 namespace CLAM
 {
 	class Network;
+	class Processing;
 }
 
 namespace CLAMVM

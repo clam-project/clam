@@ -2,10 +2,9 @@
 #include "ProcessingController.hxx"
 #include "InPortAdapter.hxx"
 #include "OutPortAdapter.hxx"
+#include "Processing.hxx"
 
 #include <vector>
-#include <iostream>
-
 
 namespace CLAMVM
 {
@@ -35,7 +34,6 @@ bool ProcessingController::Publish()
 	if ( !mObserved )  // there is no object being observed
 		return false;
 	
-	AcquireName.Emit( mObserved->GetName() );
 	AcquireClassName.Emit( mObserved->GetClassName() );
 	if (mConfig)
 		delete mConfig;

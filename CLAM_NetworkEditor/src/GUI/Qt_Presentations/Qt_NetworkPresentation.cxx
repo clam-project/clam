@@ -8,7 +8,6 @@
 #include "Qt_OutPortPresentation.hxx"
 
 #include <qpainter.h>
-#include <iostream>
 #include <qpixmap.h>
 #include "ProcessingConfig.hxx"
 
@@ -35,7 +34,6 @@ Qt_NetworkPresentation::~Qt_NetworkPresentation()
 
 void Qt_NetworkPresentation::OnNewConfiguration( CLAM::ProcessingConfig *cfg )
 {
-	std::cout << "new configuration" << std::endl;
 //	mConfigurator.SetConfig(*cfg);
 	mConfigurator.show();
 }
@@ -81,7 +79,7 @@ void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* cont
 	controller->Publish();
 	mProcessingPresentations.push_back(presentation);
 	presentation->Show();
-//	Show();	
+
 	SendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
 }
 
@@ -111,17 +109,13 @@ void Qt_NetworkPresentation::OnNewConnection( CLAMVM::ConnectionAdapter* adapter
 
 void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_ConnectionPresentation * con)
 {
-	std::string outName = con->GetOutName();
 	Qt_OutPortPresentation & out = (Qt_OutPortPresentation&)
-		GetOutPortPresentationByCompleteName(outName);
-	std::string inName = con->GetInName();
+		GetOutPortPresentationByCompleteName( con->GetOutName() );
 	Qt_InPortPresentation & in = (Qt_InPortPresentation&)
-		GetInPortPresentationByCompleteName(inName);
-	Qt_OutPortPresentation & concreteOut = (Qt_OutPortPresentation &)out;
-	Qt_InPortPresentation & concreteIn = (Qt_InPortPresentation &)in;
+		GetInPortPresentationByCompleteName( con->GetInName() );
 
-	concreteOut.AcquirePos.Connect(con->SetOutPos);
-	concreteIn.AcquirePos.Connect(con->SetInPos);	
+	out.AcquirePos.Connect(con->SetOutPos);	
+	in.AcquirePos.Connect(con->SetInPos);	
 }
 
 void Qt_NetworkPresentation::Show()
@@ -186,9 +180,7 @@ void Qt_NetworkPresentation::Hide()
 {
 	ProcessingPresentationIterator it;
 	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-	{
 		(*it)->Hide();
-	}
 	hide();	
 }
 

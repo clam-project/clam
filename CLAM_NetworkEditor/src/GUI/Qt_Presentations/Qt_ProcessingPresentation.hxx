@@ -36,7 +36,6 @@ public:
 	virtual void Hide();
 	void EmitPositionOfPorts();
 protected:
-	virtual void OnNewName(const std::string& name);
 	virtual void OnNewObservedClassName(const std::string& name);
 	virtual void OnNewInPort( CLAMVM::InPortAdapter* );
 	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* );	
