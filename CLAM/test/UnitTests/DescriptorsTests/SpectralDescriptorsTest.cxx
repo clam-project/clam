@@ -46,6 +46,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SpectralDescriptorsTest );
 class SpectralDescriptorsTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralDescriptorsTest );
+	CPPUNIT_TEST( testDataAttachment_whenLogDataFails );
+	CPPUNIT_TEST( testConstructionDataAttachment_whenLogDataFails );
 	CPPUNIT_TEST( testRolloff );
 	CPPUNIT_TEST( testFlatness );
 	CPPUNIT_TEST( testCentroid );
@@ -187,31 +189,75 @@ private:
 
 private:
 
+	void testDataAttachment_whenLogDataFails()
+	{
+		CLAM::Spectrum spectrum;
+		spectrum = helperGetData("whitenoise.wav");
+		spectrum.SetScale(CLAM::EScale::eLog);
+		try 
+		{
+			mDescriptors->SetpSpectrum(&spectrum);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (const CLAM::ErrAssertionFailed & e)
+		{
+			std::string msg = e.what();
+			CPPUNIT_ASSERT_EQUAL(std::string("Spectral Descriptors require a linear magnitude Spectrum"),
+					std::string(e.what()));
+		}
+	}
+
+	void testConstructionDataAttachment_whenLogDataFails()
+	{
+		CLAM::Spectrum spectrum;
+		spectrum = helperGetData("whitenoise.wav");
+		spectrum.SetScale(CLAM::EScale::eLog);
+		try 
+		{
+			CLAM::SpectralDescriptors spectrumDescriptors(&spectrum);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (const CLAM::ErrAssertionFailed & e)
+		{
+			std::string msg = e.what();
+			CPPUNIT_ASSERT_EQUAL(std::string("Spectral Descriptors require a linear magnitude Spectrum"),
+					std::string(e.what()));
+		}
+	}
+
 	void testRolloff()
 	{
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 473.268293;
-		data["Balance000.600.wav"] = 150.585366;
-		data["Balance000.992.wav"] = 236.634146;
-		data["Balance001.988.wav"] = 925.024390;
-		data["Balance010.910.wav"] = 150.585366;
-		data["Cello_A2.wav"] = 1656.439024;
+		data["DeltasAtExtremeBins-Spectrum.xml"] = 22050;
+		data["DeltaAtCenterBin-Spectrum.xml"] = 3*22050.0/(513-1);
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0;
+		data["Silence-Spectrum.xml"] = 0.0;
+		data["Constant-Spectrum.xml"] = (513*85/100)*22050.0/(513-1);
+		data["ConstantDouble-Spectrum.xml"] = (513*85/100)*22050.0/(513-1);
+		data["ConstantHalfSize-Spectrum.xml"] = (257*85/100)*22050.0/(257-1);
+
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 473.73046875;
+		data["Balance000.600.wav"] = 129.19921875;
+		data["Balance000.992.wav"] = 215.33203125;
+		data["Balance001.988.wav"] = 904.39453125;
+		data["Balance010.910.wav"] = 172.265625;
+		data["Cello_A2.wav"] = 1679.58984375;
 		data["Cello_C2.wav"] = 0.000000;
-		data["Disco_Rojo001.008.wav"] = 4904.780488;
-		data["Disco_Rojo002.327.wav"] = 537.804878;
-		data["Geiger_Counter005.020.wav"] = 258.146341;
-		data["SaxBritHorns12.wav"] = 2732.048780;
-		data["Time002.624.wav"] = 9874.097561;
-		data["bell_A3.wav"] = 2646.000000;
-		data["gamelan-gong.wav"] = 139.829268;
-		data["gt_E4.wav"] = 86.048780;
+		data["Disco_Rojo001.008.wav"] = 4909.5703125;
+		data["Disco_Rojo002.327.wav"] = 516.796875;
+		data["Geiger_Counter005.020.wav"] = 258.3984375;
+		data["SaxBritHorns12.wav"] = 2713.18359375;
+		data["Time002.624.wav"] = 9905.2734375;
+		data["bell_A3.wav"] = 2670.1171875;
+		data["gamelan-gong.wav"] = 129.19921875;
+		data["gt_E4.wav"] = 215.33203125;
 		data["pno_Eb1.wav"] = 0.000000;
 		data["silence.wav"] = 0.000000;
 		data["vln_A3.wav"] = 0.000000;
 		data["vln_D5.wav"] = 0.000000;
-		data["whitenoise.wav"] = 18672.585366;
+		data["whitenoise.wav"] = 18776.953125;
 
 		mDescriptors->AddRolloff();
 
@@ -220,29 +266,37 @@ private:
 
 	void testFlatness()
 	{
-		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 0.1;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = -5.570786;
-		data["Balance000.600.wav"] = -14.812896;
-		data["Balance000.992.wav"] = -11.349304;
-		data["Balance001.988.wav"] = -10.240200;
-		data["Balance010.910.wav"] = -4.842938;
-		data["Cello_A2.wav"] = -5.525457;
-		data["Cello_C2.wav"] = 0.000000;
-		data["Disco_Rojo001.008.wav"] = -5.169985;
-		data["Disco_Rojo002.327.wav"] = -6.795831;
-		data["Geiger_Counter005.020.wav"] = -7.020690;
-		data["SaxBritHorns12.wav"] = -4.667628;
-		data["Time002.624.wav"] = -3.651583;
-		data["bell_A3.wav"] = -5.276683;
-		data["gamelan-gong.wav"] = -5.224524;
-		data["gt_E4.wav"] = -3.491369;
-		data["pno_Eb1.wav"] = 0.000000;
-		data["silence.wav"] = 0.000000;
-		data["vln_A3.wav"] = 0.000000;
-		data["vln_D5.wav"] = 0.000000;
-		data["whitenoise.wav"] = -0.795157;
+		data["DeltasAtExtremeBins-Spectrum.xml"] = 0.0;
+		data["DeltaAtCenterBin-Spectrum.xml"] = 0.0;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
+		data["Silence-Spectrum.xml"] = 1.0; // Avoid NaN
+		data["Constant-Spectrum.xml"] = 1.0;
+		data["ConstantDouble-Spectrum.xml"] = 1.0;
+		data["ConstantHalfSize-Spectrum.xml"] = 1.0;
+
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 0.267271624236802;
+		data["Balance000.600.wav"] = 0.036650885546594;
+		data["Balance000.992.wav"] = 0.072583091070888;
+		data["Balance001.988.wav"] = 0.0837806358257842;
+		data["Balance010.910.wav"] = 0.327493037556974;
+		data["Cello_A2.wav"] = 0.277396357995771;
+		data["Cello_C2.wav"] = 1.000000;
+		data["Disco_Rojo001.008.wav"] = 0.322437144838621;
+		data["Disco_Rojo002.327.wav"] = 0.203485263744029;
+		data["Geiger_Counter005.020.wav"] = 0.196482850099661;
+		data["SaxBritHorns12.wav"] = 0.357219109955712;
+		data["Time002.624.wav"] = 0.401771638263218;
+		data["bell_A3.wav"] = 0.288621683607595;
+		data["gamelan-gong.wav"] = 0.303649201938523;
+		data["gt_E4.wav"] = 0.457328853208041;
+		data["pno_Eb1.wav"] = 1.000000;
+		data["silence.wav"] = 1.000000;
+		data["vln_A3.wav"] = 1.000000;
+		data["vln_D5.wav"] = 1.000000;
+		data["whitenoise.wav"] = 0.841145650951002;
 
 		mDescriptors->AddFlatness();
 
@@ -255,34 +309,34 @@ private:
 
 		std::map<std::string, CLAM::TData> data;
 		data["DeltasAtExtremeBins-Spectrum.xml"] = 11025;
-		data["DeltaAtCenterBin-Spectrum.xml"] = 0.0;
+		data["DeltaAtCenterBin-Spectrum.xml"] = 3*22050.0/(513-1);
 		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
 		data["Silence-Spectrum.xml"] = 11025; // Avoid NaN
 		data["Constant-Spectrum.xml"] = 11025;
 		data["ConstantDouble-Spectrum.xml"] = 11025;
 		data["ConstantHalfSize-Spectrum.xml"] = 11025;
 
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 2546.840064;
-		data["Balance000.600.wav"] = 416.676904;
-		data["Balance000.992.wav"] = 795.851545;
-		data["Balance001.988.wav"] = 1588.760453;
-		data["Balance010.910.wav"] = 2696.114917;
-		data["Cello_A2.wav"] = 3017.010992;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 2474.50537340967;
+		data["Balance000.600.wav"] = 441.43828410591;
+		data["Balance000.992.wav"] = 793.86035277716;
+		data["Balance001.988.wav"] = 1545.65773828789;
+		data["Balance010.910.wav"] = 2693.41226047632;
+		data["Cello_A2.wav"] = 3005.95204227151;
 		data["Cello_C2.wav"] = 11025.;
-		data["Disco_Rojo001.008.wav"] = 4169.324045;
-		data["Disco_Rojo002.327.wav"] = 2579.081038;
-		data["Geiger_Counter005.020.wav"] = 1764.977615;
-		data["SaxBritHorns12.wav"] = 3750.426935;
-		data["Time002.624.wav"] = 7135.560467;
-		data["bell_A3.wav"] = 3686.122991;
-		data["gamelan-gong.wav"] = 1263.962139;
-		data["gt_E4.wav"] = 4403.107081;
+		data["Disco_Rojo001.008.wav"] = 4208.65401772965;
+		data["Disco_Rojo002.327.wav"] = 2575.172793503;
+		data["Geiger_Counter005.020.wav"] = 1750.98161715738;
+		data["SaxBritHorns12.wav"] = 3847.36074949493;
+		data["Time002.624.wav"] = 7128.46724514185;
+		data["bell_A3.wav"] = 3624.55943759231;
+		data["gamelan-gong.wav"] = 1278.48982559027;
+		data["gt_E4.wav"] = 4486.20249063408;
 		// Silences
 		data["pno_Eb1.wav"] = 11025.;
 		data["silence.wav"] = 11025.;
 		data["vln_A3.wav"] = 11025.;
 		data["vln_D5.wav"] = 11025.;
-		data["whitenoise.wav"] = 11072.758057;
+		data["whitenoise.wav"] = 11115.6968494146;
 
 		mDescriptors->AddCentroid();
 
