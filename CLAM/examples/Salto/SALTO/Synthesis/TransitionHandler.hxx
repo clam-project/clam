@@ -88,40 +88,68 @@ namespace SALTO
 		int RandomRangeCB( TControlData value );
 
 	private:
-		// Here come the attributes
-		Frame*									mpTransitionFrameBase;
-		Frame*									mpTransitionFrameTarget;
-		bool									mUseRandomLoop;
-		bool									mUseRandomDeviations;
-		double									mRandomRange;
-		InControlTmpl< TransitionHandler >		mInUseRandomLoop;
-		InControlTmpl< TransitionHandler >		mInUseRandomDeviations;
-		InControlTmpl< TransitionHandler >		mInRandomRange;
-		InControlTmpl< TransitionHandler >		mInTransitionInterval;
-		InControlTmpl< TransitionHandler >		mInTransitionUpwards;
-		OutControl								mOut_InLoopSynthesis;
-		OutControl								mOutUseRandomLoop;
-		OutControl								mOutUseRandomDeviations;
-		OutControl								mOutPitchFactor;
-		OutControl								mOutRandomRange;
-		OutControl								mOutTargetFreq;
-		OutControl								mOutMagInterpolFactor;
-		OutControl								mOutMagGain;
-		OutControl								mOutFreqInterpolFactor;
-		OutControl								mOutMagInterpolFactor2;
-		OutControl								mOutTransitionInit;
-		OutControl								mOutTransitionFrequency;
-		OutControl								mOutDisplayedValuesChanged;
-		OutControl								mOutState;
-
 
 		TransitionHandlerConfig					mConfig;
+
 		SynthesisProcessor*						mSynthProcessor;
+
+		Frame*									mpTransitionFrameBase;
+
+		Frame*									mpTransitionFrameTarget;
+
 		TIndex									mSegPositionTransition;
+
 		TIndex									mNumTransitionFrames;
+
 		TIndex									mTransitionInterval;
+
 		double									mLastIndividualGain;
+
 		bool									mTransitionUpwards;
+
+		bool									mUseRandomLoop;
+
+		bool									mUseRandomDeviations;
+
+		double									mRandomRange;
+
+		InControlTmpl< TransitionHandler >		mInTransitionInterval;
+
+		InControlTmpl< TransitionHandler >		mInTransitionUpwards;
+
+		InControlTmpl< TransitionHandler >		mInUseRandomLoop;
+
+		InControlTmpl< TransitionHandler >		mInUseRandomDeviations;
+
+		InControlTmpl< TransitionHandler >		mInRandomRange;
+
+		OutControl								mOutTransitionInit;
+
+		OutControl								mOutTransitionFrequency;
+
+		OutControl								mOutDisplayedValuesChanged;
+
+		OutControl								mOut_InLoopSynthesis;
+
+		OutControl								mOutUseRandomDeviations;
+
+		OutControl								mOutUseRandomLoop;
+
+		OutControl								mOutRandomRange;
+
+		OutControl								mOutTargetFreq;
+		
+		OutControl								mOutMagInterpolFactor;
+
+		OutControl								mOutMagGain;
+
+		OutControl								mOutFreqInterpolFactor;
+
+		OutControl								mOutMagInterpolFactor2;
+
+		OutControl								mOutPitchFactor;
+
+		OutControl								mOutState;
 	};
 }
 

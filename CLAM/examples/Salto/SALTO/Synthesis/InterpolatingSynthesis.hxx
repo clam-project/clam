@@ -105,29 +105,6 @@ namespace SALTO
 
 		double DoLinInterpolation(double base,double target,double ipFactor);
 
-		bool										mOneTrackAlreadyStarted;
-		double										mRandomIndex;
-		bool										mInLoopSynthesis;
-		bool										mUseRandomDeviations;
-		bool										mUseRandomLoop;
-		double										mPitchFactor;
-		TData										mRandomRange;
-		double										mTargetFreq;
-		double										mMagInterpolFactor;
-		double										mMagGain;
-		double										mFreqInterpolFactor;
-		double										mMagInterpolFactor2;
-		InControlTmpl< InterpolatingSynthesis >		mIn_InLoopSynthesis;
-		InControlTmpl< InterpolatingSynthesis >		mInUseRandomLoop;
-		InControlTmpl< InterpolatingSynthesis >		mInUseRandomDeviations;
-		InControlTmpl< InterpolatingSynthesis >		mInPitchFactor;
-		InControlTmpl< InterpolatingSynthesis >		mInRandomRange;
-		InControlTmpl< InterpolatingSynthesis >		mInTargetFreq;
-		InControlTmpl< InterpolatingSynthesis >		mInMagInterpolFactor;
-		InControlTmpl< InterpolatingSynthesis >		mInMagGain;
-		InControlTmpl< InterpolatingSynthesis >		mInFreqInterpolFactor;
-		InControlTmpl< InterpolatingSynthesis >		mInMagInterpolFactor2;
-
 		InterpolatingSynthesisConfig				mConfig;
 
 /*		double							mTargetFundFreq;
@@ -144,8 +121,55 @@ namespace SALTO
 
 */
 		double										mSpectralRange;
+
+		TData										mRandomRange;
+
+		bool										mUseRandomDeviations;
+
+		bool										mInLoopSynthesis;
+
+		bool										mUseRandomLoop;
+
+		double										mPitchFactor;
+
+		double										mTargetFreq;
+
+		double										mMagInterpolFactor;
+
+		double										mMagGain;
+
+		double										mFreqInterpolFactor;
+
+		double										mMagInterpolFactor2;
+
+		InControlTmpl< InterpolatingSynthesis >		mIn_InLoopSynthesis;
+
+		InControlTmpl< InterpolatingSynthesis >		mInUseRandomDeviations;
+
+		InControlTmpl< InterpolatingSynthesis >		mInUseRandomLoop;
+
+		InControlTmpl< InterpolatingSynthesis >		mInPitchFactor;
+
+		InControlTmpl< InterpolatingSynthesis >		mInRandomRange;
+
+		InControlTmpl< InterpolatingSynthesis >		mInTargetFreq;
+
+		InControlTmpl< InterpolatingSynthesis >		mInMagInterpolFactor;
+
+		InControlTmpl< InterpolatingSynthesis >		mInMagGain;
+
+		InControlTmpl< InterpolatingSynthesis >		mInFreqInterpolFactor;
+
+		InControlTmpl< InterpolatingSynthesis >		mInMagInterpolFactor2;
+
 		TIndex										mLastPosition;
+
+		double										mRandomIndex;
+
+		bool										mOneTrackAlreadyStarted;
+
 		double										mFirstFreq;
+
 		TData										mRandomNumber[ MAX_SINES ];
 
 	};

@@ -82,31 +82,52 @@ namespace SALTO
 
 	private:
 
-		// Here come the attributes
+		SynthesisProcessorConfig				mConfig;
+		
 		double									mStatResFreq;
+
 		double									mStatResGain;
+
 		bool									mUseSines;
+
 		bool									mUseAttackResidual;
+
 		bool									mUseStatResidual;
+
 		bool									mPlayFrameOnly;
+
 		bool									mUsePhaseAlignment;
+
 		bool									mBreathOnlySound;
-		InControlTmpl< SynthesisProcessor >		mInBreathOnlySound;
-		InControlTmpl< SynthesisProcessor >		mInUsePhaseAlignment;
-		InControlTmpl< SynthesisProcessor >		mInStatResGain;
+
 		InControlTmpl< SynthesisProcessor >		mInStatResFreq;
-		InControlTmpl< SynthesisProcessor >		mInUseAttackResidual;
-		InControlTmpl< SynthesisProcessor >		mInUseStatResidual;
+
+		InControlTmpl< SynthesisProcessor >		mInStatResGain;
+
 		InControlTmpl< SynthesisProcessor >		mInUseSines;
+
+		InControlTmpl< SynthesisProcessor >		mInUseAttackResidual;
+
+		InControlTmpl< SynthesisProcessor >		mInUseStatResidual;
+
 		InControlTmpl< SynthesisProcessor >		mInPlayFrameOnly;
+
+		InControlTmpl< SynthesisProcessor >		mInUsePhaseAlignment;
+
+		InControlTmpl< SynthesisProcessor >		mInBreathOnlySound;
+
 		OutControl								mOutResGain;
+
 		OutControl								mOutResFreq;
+
 		OutControl								mOutBreathOnlySound;
+
 		OutControl								mOutAttackTimbreLevel;
+
 		OutControl								mOutUsePhaseAlignment;
+
 		OutControl								mOutLastAlignedFrame;
 
-		SynthesisProcessorConfig				mConfig;
 	};
 }
 

@@ -52,7 +52,8 @@ SaltoSynth::SaltoSynth()
 	  mOutUsePhaseAlignment( "Use Phase Alignment Out Control", this ),
 	  mOutLastAlignedFrame( "Last Aligned Frame Out Control", this ),
 	  mOutResGain( "Resonance Gain Out Control", this ),
-	  mOutResonanceFreq( "Resonance Frequency Out Control", this )
+	  mOutResonanceFreq( "Resonance Frequency Out Control", this ),
+	  mpGUI(NULL)
 {
 		SaltoSynthConfig cfg;
 
@@ -89,7 +90,8 @@ SaltoSynth::SaltoSynth( const SaltoSynthConfig& cfg )
 	  mOutUsePhaseAlignment( "Use Phase Alignment Out Control", this ),
 	  mOutLastAlignedFrame( "Last Aligned Frame Out Control", this ),
 	  mOutResGain( "Resonance Gain Out Control", this ),
-	  mOutResonanceFreq( "Resonance Frequency Out Control", this )
+	  mOutResonanceFreq( "Resonance Frequency Out Control", this ),
+	  mpGUI(NULL)
 {
 		Configure( cfg );
 }
@@ -112,7 +114,7 @@ bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& cfg)throw( std::bad_
 	mDrawingBuffer.Resize(internalBufferSize);
 	mDrawingBuffer.SetSize(internalBufferSize);
 		
-	CSaltoDataManagment::InitSaltoDB( mpParams );
+	//CSaltoDataManagment::InitSaltoDB( mpParams );
 
 	SineSynthesisConfig sineCfg;
 
@@ -578,7 +580,7 @@ void SaltoSynth::DoInterpolatingReleaseSynthesis( CSaltoSynthFrame* pSynthFrame,
 									mIndividualGain/(currRelFrame*currRelFrame),
 									mpSynthFrame );
 */
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -739,7 +741,7 @@ void SaltoSynth::DoTransitionSynthesis( CSaltoSynthFrame *pSynthFrame)
 	mpInterpolPO->DoPitchMod(pSynthFrame,mpParams->GetPitchModFactor()*mLastPitchCorrectionFactor);
 */
 
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -882,7 +884,7 @@ void SaltoSynth::DoTransitionSynthesis2( CSaltoSynthFrame* pSynthFrame )
 								 mIPFactor);
 */
 
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -1177,7 +1179,7 @@ void SaltoSynth::DoInterpolatingSynthesis(CSaltoSynthFrame *pSynthFrame)
 								   mIndividualGain,// magnitude gain
 								   pSynthFrame);
 */
-	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis() );
+	mOut_InLoopSynthesis.SendControlAsBoolean( mpParams->GetInLoopSynthesis );
 	mOutUseRandomDeviations.SendControlAsBoolean( mpParams->GetUseRandomDeviations() );
 	mOutUseRandomLoop.SendControlAsBoolean( mpParams->GetUseRandomLoop() );
 	mOutRandomRange.SendControl( mpParams->GetRandomRange() );
@@ -1426,6 +1428,8 @@ void SaltoSynth::EndTransitionSynthesis(CSaltoSynthFrame *pSynthFrame)
 
 void SaltoSynth::UpdateGUI( )
 {
+	if (!mpGUI)
+		return;
 	if (mState == Idle )
 		return;
 

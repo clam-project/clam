@@ -85,6 +85,18 @@ public:
 class SaltoSynth : public ProcessingComposite
 {
 	//Types Definition
+public:
+
+	//SALTO states
+	enum State{
+		Idle		   = 0,
+		Attack		   = 1,
+		Sustain		   = 2,
+		Transition	   = 3,
+		Release		   = 4,
+		Termination    = 5,
+		TransitionLoop = 6,
+		ReleaseLoop    = 7 } mState;
 
 	// Methods Definition
 public:
@@ -197,93 +209,63 @@ protected:
 	// Attributes
 private:
 
-	CSaltoSynthFrame*  mpSynthFrame;
+	SaltoSynthConfig mConfig;
+	/*settings*/
+	double mEventSample;
+
+	/* runtime */
+	Frame*	           mpCurrSpectralFrameBase;
+	Frame*	           mpCurrSpectralFrameResidual;	// for TESTING
 	SpectralPeakArray* mpCurrPeakArrayTarget;
 	Frame*             mpTransitionFrameBase;
 	Frame*             mpTransitionFrameTarget;
-	Frame*	           mpCurrSpectralFrameBase;
-	Frame*	           mpCurrSpectralFrameResidual;	// for TESTING
-	/* Sample stepping for counting time: */
-	double             mEventSample;
-	TIndex             mLoopStart;
-	TIndex             mLoopEnd;
-	TIndex             mLimitLoopStart;
-	TIndex             mLimitLoopEnd;
-	TIndex             mInterpolEnd;
-	TIndex             mInterpolStart;
-	TIndex             mResFadeStart;
-	TIndex             mResFadeEnd;
-	double             mAttackResVolume;
-	double             mStatResVolume;
-	double             mIPFactor;
-	TIndex             mStatResFadeInFrom;
-	TIndex             mStatResFadeInTo;
-	TIndex             mFrameCounterStatRes;
-	TIndex             mFrameCounterAttackResidual;
-	TIndex             mNumFramesStatRes;
-	double             mIndividualGain;
-	double             mLastPitchCorrectionFactor;
 	
-	// Why this? Because we want the attributes
-	// correctly ordered...
-public:
-
-	//SALTO states
-	enum State{
-		Idle		   = 0,
-		Attack		   = 1,
-		Sustain		   = 2,
-		Transition	   = 3,
-		Release		   = 4,
-		Termination    = 5,
-		TransitionLoop = 6,
-		ReleaseLoop    = 7 } mState;
-private:
-	TSize                           mSampleStepping;
-	InControlTmpl< SaltoSynth >		mStateIn;
-	InControlTmpl< SaltoSynth >		mInLastAlignedFrame;
-	InControlTmpl< SaltoSynth >		mInBreathOnlySound;
-	OutControl						mOut_InLoopSynthesis;
-	OutControl						mOutUseRandomLoop;
-	OutControl						mOutUseRandomDeviations;
-	OutControl						mOutPitchFactor;
-	OutControl						mOutRandomRange;
-	OutControl						mOutTargetFreq;
-	OutControl						mOutMagInterpolFactor;
-	OutControl						mOutMagInterpolFactor2;
-	OutControl						mOutBreathOnlySound;
-	OutControl						mOutAttackTimbreLevel;
-	OutControl						mOutUsePhaseAlignment;
-	OutControl						mOutLastAlignedFrame;
-	OutControl						mOutResGain;
-	OutControl						mOutResonanceFreq;
-
-
-	/*settings*/
-	SaltoSynthConfig           mConfig;
-
-	/* runtime */
 //	CSaltoTimbreVektor mTimbreVektorBase;
 
-	TIndex                     mFrameCounterBase;
-	TIndex                     mFrameCounterTransition;
-	TIndex                     mNumTransitionFrames;
-	TIndex                     mNumFramesBase;
-	TIndex                     mInterpolDuration;
-	TIndex                     mSegPositionBase;
-	TIndex                     mSegPositionTransition;
+	TIndex  mFrameCounterBase;
+	TIndex  mFrameCounterAttackResidual;
+	TIndex  mFrameCounterStatRes;
+	TIndex  mFrameCounterTransition;
+	TIndex  mNumTransitionFrames;
+	TIndex  mNumFramesBase;
+	TIndex  mLoopStart;
+	TIndex  mLoopEnd;
+	TIndex  mLimitLoopStart;
+	TIndex  mLimitLoopEnd;
+	TIndex  mInterpolStart;
+	TIndex  mInterpolEnd;
+	TIndex  mInterpolDuration;
+	TIndex  mSegPositionBase;
+	TIndex  mSegPositionTransition;
+	TIndex  mResFadeStart;
+	TIndex  mResFadeEnd;
+	TIndex  mStatResFadeInFrom;
+	TIndex  mStatResFadeInTo;
+	TIndex  mNumFramesStatRes;
 //	TIndex  mSinAttackOffset;
 //	TIndex  mSinAttackOffsetCounter;
-	bool                       mLoopDirectionFW;
-	bool                       mStatResLoopDirectionFW;
-	double                     mPitchReference;
-	double                     mLastIndividualGain; 
-	TIndex                     mNumFramesRelease;
-	TIndex                     mFrameCounterRelease;
+	
+	bool mLoopDirectionFW;
+	bool mStatResLoopDirectionFW;
+
+	double mAttackResVolume;
+	double mStatResVolume;
+	double mIPFactor;
+	double mPitchReference;
+	double mIndividualGain;
+	double mLastIndividualGain;
+	double mLastPitchCorrectionFactor;
+	  
+	TIndex  mNumFramesRelease;
+	TIndex  mFrameCounterRelease;
+	
 	/*storage*/
-	Audio                      AudioOutBuffer;
-	Audio                      EmptyAudioBuffer;
-	DataArray                  mDrawingBuffer;
+	Audio AudioOutBuffer;
+	Audio EmptyAudioBuffer;
+
+	DataArray           mDrawingBuffer;
+	CSaltoSynthFrame*   mpSynthFrame;
+	
 	/* processing objects* all named PO*/
 	SineSynthesis						mpSineSynthPO;
 	SpectralSynthesis					mSpectralSynthesisPO;
@@ -302,13 +284,50 @@ private:
 	SynthesisState						mSynthState;
 		
 	/* pointer to other classes*/
-	Parameters*                         mpParams;
+	Parameters	        *mpParams;
 
-	CSaltoEditor*                       mpGUI;
-	OutControl						    mOutMagGain;
-	OutControl						    mOutFreqInterpolFactor;
+	CSaltoEditor* mpGUI;
 
+	InControlTmpl< SaltoSynth >		mStateIn;
 
+	InControlTmpl< SaltoSynth >		mInBreathOnlySound;
+
+	InControlTmpl< SaltoSynth >		mInLastAlignedFrame;
+
+	OutControl						mOut_InLoopSynthesis;
+
+	OutControl						mOutUseRandomLoop;
+
+	OutControl						mOutUseRandomDeviations;
+
+	OutControl						mOutPitchFactor;
+
+	OutControl						mOutRandomRange;
+
+	OutControl						mOutTargetFreq;
+
+	OutControl						mOutMagInterpolFactor;
+
+	OutControl						mOutMagGain;
+
+	OutControl						mOutFreqInterpolFactor;
+
+	OutControl						mOutMagInterpolFactor2;
+
+	OutControl						mOutAttackTimbreLevel;
+
+	OutControl						mOutUsePhaseAlignment;
+
+	OutControl						mOutLastAlignedFrame;
+
+	OutControl						mOutBreathOnlySound;
+
+	OutControl						mOutResGain;
+
+	OutControl						mOutResonanceFreq;
+
+	/* Sample stepping for counting time: */
+	TSize    mSampleStepping;
 };
 
 }
