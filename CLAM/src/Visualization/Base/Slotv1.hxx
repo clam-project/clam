@@ -8,15 +8,15 @@
 namespace SigSlot
 {
 
-template < typename ParmType1 >
-class Slotv1 : public Slot
-{
+	template < typename ParmType1 >
+	class Slotv1 : public Slot
+	{
 		typedef CBL::Functor1<ParmType1> WrappedFuncType;
 
-public:
+	public:
 
 		Slotv1()
-				: mIsInit( false )
+			: mIsInit( false )
 		{
 		}
 
@@ -27,36 +27,36 @@ public:
 		template < class RefType, typename PtrMember >
 		void Wrap( RefType thisRef, PtrMember pMember )
 		{
-				mFunctor = CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember );
-				mIsInit = true;
+			mFunctor = CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember );
+			mIsInit = true;
 		}
 
 		template <  typename PtrMember >
 		void Wrap( PtrMember pMember )
 		{
-				mFunctor = CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember );
-				mIsInit = true;
+			mFunctor = CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember );
+			mIsInit = true;
 		}
 
 
 		const WrappedFuncType& GetMethod() const
 		{
-				CLAM_ASSERT( mIsInit, "Must be initialized" );
-				return mFunctor;
+			CLAM_ASSERT( mIsInit, "Must be initialized" );
+			return mFunctor;
 		}
 
 		void operator()( ParmType1 parm )
 		{
-				CLAM_ASSERT( mIsInit, "Must be initialized" );
-				mFunctor( parm );
+			CLAM_ASSERT( mIsInit, "Must be initialized" );
+			mFunctor( parm );
 		}
 
-private:
+	private:
 
 		WrappedFuncType   mFunctor;
 		bool              mIsInit;
 
-};
+	};
 
 }
 

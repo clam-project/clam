@@ -102,7 +102,7 @@ public:
 		 */
 		void AddCallback( tConnectionId pConnection, Slot* slot, tCallbackType cb )
 		{
-				mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
+			mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
 		}
 		
 
