@@ -13,13 +13,14 @@ namespace CLAM
 		virtual ~AbstractPoolAttribute() {}
 		virtual void * Allocate(unsigned size) = 0;
 		virtual void Deallocate(void * data) = 0;
-		virtual const std::type_info & TypeInfo() const = 0;
 		template <typename TypeToCheck>
 		void CheckType() const
 		{
 			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
 				"Type Missmatch using a pool");
 		}
+	protected:
+		virtual const std::type_info & TypeInfo() const = 0;
 	};
 
 	template <typename AttributeType>
@@ -34,6 +35,7 @@ namespace CLAM
 		{
 			delete [] (AttributeType*)data;
 		}
+	protected:
 		virtual const std::type_info & TypeInfo() const
 		{
 			return typeid(AttributeType);
