@@ -183,16 +183,15 @@ namespace CLAM
 		template <unsigned isOdd> class isOddSelector {};
 		typedef isOddSelector<(n&1)> isOdd;
 
+		typedef pow<(n>>1)> nextPower;
+		typedef typename nextPower::isOdd nextIsOdd;
+
 		static resultType power(const paramType & x, isOddSelector<1> * foo)
 		{
-			typedef pow<(n>>1)> nextPower;
-			typedef typename nextPower::isOdd nextIsOdd;
 			return squared(nextPower::power(x,(nextIsOdd*)0)) * x;
 		}
 		static resultType power(const paramType & x, isOddSelector<0> * foo)
 		{
-			typedef pow<(n>>1)> nextPower;
-			typedef typename nextPower::isOdd nextIsOdd;
 			return squared(nextPower::power(x,(nextIsOdd*)0));
 		}
 	};
@@ -202,14 +201,18 @@ namespace CLAM
 	{
 		return x;
 	}
+
 	template<>
 	pow<0>::resultType pow<0>::power(const paramType & x, pow<0>::isOddSelector<0> * foo)
 	{
 		return 1;
 	}
 
+	typedef pow<1> identity;
 	typedef pow<2> squared;
 	typedef pow<3> cubed;
+
+	typedef composition2<sum,identity,neg> subst;
 
 
 }
