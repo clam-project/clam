@@ -228,7 +228,7 @@ void Spectrum::ToDB()
 		if (HasMagBPF())  // WARNING: computational expensive operation
 		{
 			BPF &magBPF= GetMagBPF();
-			int bpfSize=TData(GetBPFSize());
+			const int bpfSize=GetBPFSize();
 			for (i=0; i<bpfSize; i++)
 			{
 				TData magLin=magBPF.GetValueFromIndex(i);
