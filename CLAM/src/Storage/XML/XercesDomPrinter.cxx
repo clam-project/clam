@@ -226,7 +226,7 @@ void CLAM::XercesDomPrinter::Print(std::ostream & os, DOM_Node & toWrite)
 		if (aStr != "") encNameStr = aStr;
 	}
 	unsigned int lent = encNameStr.length();
-	XMLCh encodingName[lent+1];
+	XMLCh* encodingName = new XMLCh[lent+1];
 	XMLString::copyNString(encodingName, encNameStr.rawBuffer(), lent);
 	encodingName[lent] = 0;
 	mEncodingName=encodingName;
@@ -247,6 +247,7 @@ void CLAM::XercesDomPrinter::Print(std::ostream & os, DOM_Node & toWrite)
 			<< std::endl
 			<< DOMString(e.getMessage()) << std::endl;
 	}
+	delete encodingName;
 	delete gFormatter;
 	mEncodingName=0;
 
