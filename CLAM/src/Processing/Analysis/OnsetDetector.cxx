@@ -178,6 +178,9 @@ namespace CLAM
 		onsetsArray.SetSize(mnSamples);	
 
 
+		mRevSmoothedEnergy.Resize( mnSamples );
+		mRevSmoothedEnergy.SetSize( mnSamples );
+
 		//////////////////////////
 		//ONSET DETECTION PER BAND	
 		for (int band=0 ; band<mnBands ; band++)
@@ -273,15 +276,10 @@ namespace CLAM
 	}
 
 
-////////////////////////////////
-///////////SMOOTHING////////////
-////////////////////////////////
 	void OnsetDetector::Smoothing(Array<double>& energy, Array<double>& smoothedEnergy )
 	{
 		int i, j, k;
 		TData temp;
-		Array<double> revSmoothedEnergy(mnSamples);
-		revSmoothedEnergy.SetSize(mnSamples);
 
 
 		//Rescaling factor
@@ -306,7 +304,7 @@ namespace CLAM
 			else 
 			{smoothedEnergy.AddElem(mNoiseThreshold);}
 
-			revSmoothedEnergy[mnSamples-i-1]=smoothedEnergy[i];
+			mRevSmoothedEnergy[mnSamples-i-1]=smoothedEnergy[i];
 		}
 
 		//reverse convolution for zero-phase distortion
@@ -317,7 +315,7 @@ namespace CLAM
 			{
 				if(i-mWinSize+1+j>=0) 
 				{
-					temp+=revSmoothedEnergy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
+					temp+=mRevSmoothedEnergy[i-mWinSize+1+j]*mWinCoef[mWinSize-1-j];
 				}
 			}
 			smoothedEnergy[mnSamples-i-1]=temp/sum;		
