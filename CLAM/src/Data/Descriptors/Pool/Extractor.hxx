@@ -21,21 +21,14 @@ public:
 		_attribute = attribute;
 	}
 
-	virtual void Next()
-	{
-		_current++;
-	}
+	virtual void Next() = 0;
+	virtual bool IsInsideScope() const = 0;
+	virtual unsigned GetIterationSize() const = 0;
 
-	virtual bool IsInsideScope() const
-	{
-		return _current < GetIterationSize();
-	}
-	virtual unsigned GetIterationSize() const =0;
 protected:
 
 	std::string _attribute;
 	std::string _scope;
-	unsigned _current;
 };
 
 /** @ingroup SemanticalAnalysis */
@@ -59,6 +52,16 @@ public:
 		return _pool->GetNumberOfContexts(_scope);
 	}
 
+	virtual void Next()
+	{
+		_current++;
+	}
+
+	virtual bool IsInsideScope() const
+	{
+		return _current < GetIterationSize();
+	}
+
 protected:
 	virtual unsigned GetCurrent() const
 	{
@@ -68,6 +71,8 @@ protected:
 protected:
 	const DescriptionDataPool * _pool;
 	const AttributeType * _data;
+private:
+	unsigned _current;
 };
 
 
@@ -132,6 +137,16 @@ public:
 		return _data [GetCurrent()];
 	}
 
+	virtual void Next()
+	{
+		_current++;
+	}
+
+	virtual bool IsInsideScope() const
+	{
+		return _current < GetIterationSize();
+	}
+
 protected:
 	virtual unsigned GetIterationSize() const
 	{
@@ -144,6 +159,7 @@ protected:
 private:
 	DescriptionDataPool * _pool;
 	AttributeType * _data;
+	unsigned _current;
 };
 
 
