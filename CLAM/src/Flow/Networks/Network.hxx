@@ -75,14 +75,17 @@ public:
 	bool DisconnectControls( const std::string &, const std::string & );
 	void DisconnectAllPorts();
 
-	// methods used to create processings and get them
+	//! methods used to create processings and get them
 	Processing& GetProcessing( const std::string & name ) const;
-	// add method using a pointer to a new processing
+	//! add method using a pointer to a new processing
 	void AddProcessing( const std::string &, Processing* );
-	// add method using a key to get the new processing from factory
+	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
+	/** It configures the processing with the given processing id and config object and
+	 *  notifies this to the network. So use this method instead of getting the processing
+	 *  with GetProcessing and calling Configure on it. **/
 	void ConfigureProcessing( const std::string &, const ProcessingConfig & );
 	void ChangeKeyMap( const std::string & oldName, const std::string & newName );	
 	
