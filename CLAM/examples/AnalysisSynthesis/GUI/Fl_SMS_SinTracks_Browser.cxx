@@ -102,7 +102,7 @@ namespace CLAMVM
 		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-		snprintf( txtBuffer, maxLen,  "freq. %g Hz time %.3g secs",  wY, wX );	
+		snprintf( txtBuffer, maxLen,  "freq. %.2f Hz time %.3f secs",  wY, wX );	
 	}
 
 	int Fl_SMS_SinTracks_Browser::handle( int event )

@@ -112,7 +112,7 @@ void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* text
 	double wX = (((double)x / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 	double wY = mYAxis->maximum() - (((double)y / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-	snprintf( textBuffer, maxLen,  "amp. %.2g time %.4g secs",  wY, wX );
+	snprintf( textBuffer, maxLen,  "amp. %.2f time %.4f secs",  wY, wX );
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )
