@@ -32,11 +32,12 @@ namespace NetworkGUI
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
-ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwork)
-	: mNameFromNetwork(nameFromNetwork),
+ProcessingPresentation::ProcessingPresentation(const std::string& name )
+	: mName(name),
 	  mConfig(0)
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingPresentation::ConfigureProcessing );
+	SlotChangeProcessingPresentationName.Wrap( this, &ProcessingPresentation::ChangeProcessingPresentationName );
 }
 
 void ProcessingPresentation::SetConfig( const CLAM::ProcessingConfig & cfg)
@@ -53,6 +54,11 @@ void ProcessingPresentation::SetConfig( const CLAM::ProcessingConfig & cfg)
 void ProcessingPresentation::ConfigureProcessing( const CLAM::ProcessingConfig & cfg)
 {
 	SignalConfigureProcessing.Emit( cfg );
+}
+
+void ProcessingPresentation::ChangeProcessingPresentationName( const std::string & name )
+{
+	mName = name;
 }
 
 ProcessingPresentation::~ProcessingPresentation()
@@ -77,6 +83,8 @@ ProcessingPresentation::~ProcessingPresentation()
 		mConfig->Hide();
 		delete mConfig;
 	}
+
+//	SlotChangeProcessingPresentationName.Unbind();
 }
 
 void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
@@ -98,6 +106,8 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
 	SetConfig( controller.GetObservedConfig() );
 	
 	SignalConfigureProcessing.Connect( controller.SlotConfigureProcessing );
+	SignalProcessingNameChanged.Connect( controller.SlotProcessingNameChanged );
+	controller.SignalChangeProcessingPresentationName.Connect( SlotChangeProcessingPresentationName );
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)

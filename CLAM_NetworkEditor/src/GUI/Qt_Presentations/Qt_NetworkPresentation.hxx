@@ -49,14 +49,10 @@ class Qt_InPortPresentation;
 class Qt_OutPortPresentation;
 class Qt_InControlPresentation;
 class Qt_OutControlPresentation;
+class Qt_ProcessingPresentation;
 
 class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
-public:
-	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
-	void Show();
-	void Hide();
-protected:
 	void AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * );
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
 	void SetName(const std::string& name); 
@@ -69,9 +65,13 @@ protected:
 	void SetInControlClicked( Qt_InControlPresentation *);
 	void SetOutControlClicked( Qt_OutControlPresentation *);
 
+	void ProcessingPresentationSelected( Qt_ProcessingPresentation * );
+	void ProcessingPresentationUnSelected();
+	
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
-	void mouseReleaseEvent( QMouseEvent *m);
+	void mouseReleaseEvent( QMouseEvent *);
+	void mousePressEvent ( QMouseEvent *); 
 	void dropEvent(QDropEvent* event);
 	void dragEnterEvent(QDragEnterEvent* event);
 	
@@ -80,12 +80,21 @@ protected:
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
+	Qt_ProcessingPresentation * mSelectedPresentation;
+public:
+	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
+	void Show();
+	void Hide();
 
-public: // slots
+	// slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SlotSetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SlotSetOutPortClicked;
 	SigSlot::Slotv1< Qt_InControlPresentation * > SlotSetInControlClicked;
 	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
+
+	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentationSelected;
+	SigSlot::Slotv0 SlotProcessingPresentationUnSelected;
+
 	// signals
 	SigSlot::Signalv1< const QPoint & > SignalAcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInPortAfterClickOutPort;
@@ -93,7 +102,7 @@ public: // slots
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInControlAfterClickOutControl;
 	SigSlot::Signalv1< const std::string& > SignalSendNewMessageToStatus;
 	SigSlot::Signalv0 SignalProcessingCreated;
-
+	SigSlot::Signalv0 SignalUnselectProcessingPresentation;
 
 private:
 	const std::string GetCompleteNameFromInPortSelected();

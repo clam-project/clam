@@ -28,7 +28,10 @@
 #include "Qt_OutControlPresentation.hxx"
 #include <qtooltip.h> 
 #include <qpainter.h>
+#include <qlineedit.h>
 #include <cmath>
+
+#include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
@@ -36,10 +39,11 @@ namespace NetworkGUI
 Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent, const char *name)
 	: QWidget( parent, name ),
 	  ProcessingPresentation(nameFromNetwork),
-	  mDown(false)
+	  mDown(false),
+	  mSelected( false )
 {
 	QWidget * top = topLevelWidget();
-	QString s(mNameFromNetwork.c_str());
+	QString s(mName.c_str());
 
 	//we calculate width of name
 	QFont font( "Helvetica" ,8 );
@@ -323,10 +327,17 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	p.setPen( QPen( blue, 1 ));
 	p.drawRect( 12,7, width()-24,height()-14); // draw a rectangle
 	p.setPen( QPen( black,1 ));
-	p.setFont( QFont( "Helvetica" ,8) );
-	p.drawText( QRect(12,7,width()-24, height()-14),
-		    Qt::AlignHCenter+Qt::AlignVCenter ,	
-		    QString( mNameFromNetwork.c_str() ));
+	if(mSelected)
+	{
+		p.setFont( QFont( "Helvetica", 8, QFont::Light, true ));
+	}
+	else
+	{
+		p.setFont( QFont( "Helvetica" ,8) );
+	}
+	p.drawText(  rect(), //QRect(12,7,width()-24, height()-14),
+		    Qt::AlignCenter ,	
+		    QString( mName.c_str() ));
 	adjustSize();
  
 }
@@ -335,6 +346,7 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 {
 	if(m->button() == LeftButton )
 	{
+		grabKeyboard();
 		mDown = true;
 		mClickPos = m->pos();
 	}
@@ -342,13 +354,15 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 	{
 		mConfig->Show();
 	}
-	grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
 {
+	mSelected = true;
+	SignalProcessingPresentationSelected.Emit( this );
+	repaint();
+
 	mDown = false;
-	releaseKeyboard();
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
@@ -429,17 +443,72 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 
 void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
 {
-	switch ( tolower(k->ascii()) ) 
+	switch ( k->key() ) 
 	{
-        case 'x': 
 
+	case Key_Escape:
+		releaseKeyboard();
+		if(mSelected) // editing finished
+		{
+			SignalProcessingPresentationUnSelected.Emit();
+			mSelected = false;
+			releaseKeyboard();
+		}
+		break;
+			
+        case Key_Delete: 
 		SignalRemoveProcessing.Emit( this );
 		Hide();
-		mDown = false;
 		releaseKeyboard();
 		break;
+	case Key_Return:
+		if(mSelected) // editing finished
+		{
+			SignalProcessingPresentationUnSelected.Emit();
+			releaseKeyboard();
+			mSelected = false;
+		}
+		break;
+	default:
+		break;
 	}
+	repaint();
 }
 
+void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
+{
+	releaseKeyboard();
+	std::cout << "editing" << std::endl;
+	QLineEdit * nameEdit = new QLineEdit( this );
+	nameEdit->setAlignment( Qt::AlignCenter ); 
+	nameEdit->setText( mName.c_str() );
+
+	connect( nameEdit, SIGNAL( textChanged ( const QString & )),
+		 this, SLOT( SlotTextChange( const QString & )));
+
+	connect( nameEdit, SIGNAL( returnPressed() ), nameEdit, SLOT( close() ) );
+	connect( nameEdit, SIGNAL( returnPressed() ), this, SLOT( SlotExecuteChangeName() ) );
+
+	nameEdit->setFont( QFont( "Helvetica" ,8) );
+	nameEdit->setGeometry( QRect(12,7,width()-24, height()-14) );
+	nameEdit->show();
+	nameEdit->grabKeyboard();
+}
+
+void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
+{
+	mSelected = false;
+	repaint();
+}
+
+void Qt_ProcessingPresentation::SlotTextChange( const QString & newName )
+{
+	ChangeProcessingPresentationName( newName.latin1() );
+}
+
+void Qt_ProcessingPresentation::SlotExecuteChangeName()
+{
+	SignalProcessingNameChanged.Emit( mName );
+}
 
 } // namespace NetworkGUI

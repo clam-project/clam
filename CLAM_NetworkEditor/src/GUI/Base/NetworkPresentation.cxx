@@ -48,7 +48,8 @@ NetworkPresentation::NetworkPresentation()
 	SlotCreateProcessingPresentation.Wrap( this, &NetworkPresentation::CreateProcessingPresentation );
 	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing );
 	SlotRemoveProcessing.Wrap( this, &NetworkPresentation::RemoveProcessing );
-
+	SlotRemoveProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RemoveProcessingPresentationAttachedTo );
+	
 	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
 	SlotClear.Wrap(this, &NetworkPresentation::Clear );
 }
@@ -119,7 +120,23 @@ void NetworkPresentation::UpdatePresentations()
 void NetworkPresentation::RemoveProcessing( ProcessingPresentation * proc)
 {
 	mProcessingPresentationsToRemove.push_back(proc);
-	SignalRemoveProcessing.Emit( proc->GetNameFromNetwork() ); // TODO: change GetNameFromNetwork name method
+	SignalRemoveProcessing.Emit( proc->GetName() ); 
+}
+
+void NetworkPresentation::RemoveProcessingPresentationAttachedTo( const std::string & name )
+{	
+
+	ProcessingPresentationIterator it;
+	for( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++ )
+	{
+		if((*it)->GetName()==name)
+		{
+			mProcessingPresentationsToRemove.push_back(*it);
+			return;
+		}
+	}
+	CLAM_ASSERT( false, "NetworkPresentation::RemoveProcessingPresentationAttachedTo : name not found in processing presentations list" );
+
 }
 
 NetworkPresentation::~NetworkPresentation()
@@ -145,6 +162,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 	
 	SignalAddProcessing.Connect( controller.SlotAddProcessing );
 	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
+	controller.SignalRemoveProcessingPresentationAttachedTo.Connect( SlotRemoveProcessingPresentationAttachedTo );
 	
 	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
 	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );
@@ -188,7 +206,7 @@ ProcessingPresentation& NetworkPresentation::GetProcessingPresentation( const st
 {
 	ProcessingPresentationIterator it;
 	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-       		if ((*it)->GetNameFromNetwork() ==  name)
+       		if ((*it)->GetName() ==  name)
 				return **it;
 	CLAM_ASSERT( false, "NetworkPresentation::GetProcessingPresentation. Object not found." );
 }

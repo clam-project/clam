@@ -34,10 +34,19 @@ ProcessingController::ProcessingController()
 	: mObserved(0)
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingController::ConfigureProcessing );
+	SlotProcessingNameChanged.Wrap( this, &ProcessingController::ProcessingNameChanged );
 }
 
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
 {
+
+	// TODO: Think about a way to do it in a cleaner way
+	if(GetObservedClassName()=="LadspaLoader")
+	{
+			SignalProcessingControllerNeedsRebuild.Emit( this, mObserved, cfg );
+			return;
+	}
+
 	if (mObserved->GetExecState() == CLAM::Processing::Running)
 	{
 		mObserved->Stop();
@@ -46,9 +55,14 @@ void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & c
 	}
 	else
 		mObserved->Configure(cfg);
+	
+}
+
+void ProcessingController::ProcessingNameChanged( const std::string & newName )
+{
+	SignalProcessingNameChanged.Emit( newName, this );
 }
 	
-
 bool ProcessingController::Publish()
 {
 	CLAM_ASSERT( mObserved, "Trying to publish an unbinded processing controller" );
@@ -61,6 +75,7 @@ std::string ProcessingController::GetObservedClassName()
 		return mObserved->GetClassName();
 	return "unbinded processing controller";
 }
+
 bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
 	mObserved = dynamic_cast< CLAM::Processing* > (&obj);
@@ -131,6 +146,11 @@ ProcessingController::NamesList::iterator ProcessingController::BeginOutControlN
 ProcessingController::NamesList::iterator ProcessingController::EndOutControlNames()
 {
 	return mOutControlNames.end();
+}
+
+void ProcessingController::SetName( const std::string & name )
+{
+	SignalChangeProcessingPresentationName.Emit( name );
 }
 
 } //namespace CLAMVM

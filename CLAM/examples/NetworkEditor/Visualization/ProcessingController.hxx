@@ -24,6 +24,9 @@
 
 #include "ModelController.hxx"
 #include "Slotv1.hxx"
+#include "Signalv3.hxx"
+#include "Signalv2.hxx"
+#include "Signalv1.hxx"
 
 #include <string>
 #include <list>
@@ -51,8 +54,13 @@ protected:
 	NamesList mOutPortNames;
 	NamesList mInControlNames;
 	NamesList mOutControlNames;
-	
+
+	/** 
+	 * In this method new config from GUI is passed to Network; if its state is running the processing is stopped before
+	 */
 	void ConfigureProcessing( const CLAM::ProcessingConfig & );
+	
+	void ProcessingNameChanged( const std::string & );
 public:
 	ProcessingController();
 	std::string GetObservedClassName();
@@ -66,6 +74,12 @@ public:
 		return true;
 	}
 	bool Publish();
+
+	void SetName( const std::string & );
+
+	/** 
+	 * We create a list if ports and controls for each processing
+	 */
 	bool BindTo( CLAM::Processing& obj );
 
 	NamesList::iterator BeginInPortNames();
@@ -81,7 +95,10 @@ public:
 	NamesList::iterator EndOutControlNames();
 	
 	SigSlot::Slotv1< const CLAM::ProcessingConfig & > SlotConfigureProcessing;
-
+	SigSlot::Slotv1< const std::string & > SlotProcessingNameChanged;
+	SigSlot::Signalv3< ProcessingController *, CLAM::Processing *, const CLAM::ProcessingConfig & > SignalProcessingControllerNeedsRebuild;
+	SigSlot::Signalv2< const std::string &, ProcessingController * > SignalProcessingNameChanged;
+	SigSlot::Signalv1< const std::string & > SignalChangeProcessingPresentationName;
 };
 
 } // namespace CLAMVM

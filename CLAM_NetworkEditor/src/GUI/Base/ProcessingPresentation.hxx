@@ -56,23 +56,24 @@ protected:
 	ConnectionPointPresentationsList mOutPortPresentations;
 	ConnectionPointPresentationsList mInControlPresentations;
 	ConnectionPointPresentationsList mOutControlPresentations;
-	std::string mNameFromNetwork;
+	std::string mName;
 	std::string mObservedClassName;
 
 	ProcessingConfigPresentation * mConfig;
 public:
-	ProcessingPresentation(const std::string& nameFromNetwork = "unnamed");
+	ProcessingPresentation(const std::string& name= "unnamed");
 	virtual ~ProcessingPresentation();
 	void AttachTo(CLAMVM::ProcessingController & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
-	const std::string & GetNameFromNetwork(){return mNameFromNetwork;}
+	const std::string & GetName(){return mName;}
 	ConnectionPointPresentation & GetOutPortPresentation( const std::string& );
 	ConnectionPointPresentation & GetInPortPresentation( const std::string& );
 	ConnectionPointPresentation & GetOutControlPresentation( const std::string& );
 	ConnectionPointPresentation & GetInControlPresentation( const std::string& );
 	bool HasInPort( const std::string& name);
 	bool HasOutPort( const std::string& name);
+	void ChangeProcessingPresentationName( const std::string & name );
 
 protected:
 	void SetConfig( const CLAM::ProcessingConfig & );
@@ -86,7 +87,9 @@ protected:
 public:	//signals & slots
 	SigSlot::Signalv1< ProcessingPresentation* > SignalRemoveProcessing;
 	SigSlot::Signalv1< const CLAM::ProcessingConfig & > SignalConfigureProcessing;
+	SigSlot::Signalv1< const std::string & > SignalProcessingNameChanged;
 	SigSlot::Slotv1< const CLAM::ProcessingConfig &> SlotConfigureProcessing;
+	SigSlot::Slotv1< const std::string & > SlotChangeProcessingPresentationName;
 };
 
 
