@@ -50,9 +50,6 @@ AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
 	SetRiseTime(initVal);
 	SetLogAttackTime(initVal);
 	SetAttack(initVal);
-	SetDecay(initVal);
-	SetSustain(initVal);
-	SetRelease(initVal);
 	SetDecrease(initVal);
 }
 
@@ -100,9 +97,6 @@ void AudioDescriptors::ConcreteCompute()
 		Not implemented yet;
 
 		DYN_ATTRIBUTE (3, public, TData, Attack);
-		DYN_ATTRIBUTE (4, public, TData, Decay);
-		DYN_ATTRIBUTE (5, public, TData, Sustain);
-		DYN_ATTRIBUTE (6, public, TData, Release);
 */
 }
 
@@ -270,18 +264,6 @@ AudioDescriptors operator * (const AudioDescriptors& a,TData mult)
 	{
 		tmpD.SetAttack(a.GetAttack()*mult);
 	}
-	if(a.HasDecay())
-	{
-		tmpD.SetDecay(a.GetDecay()*mult);
-	}
-	if(a.HasSustain())
-	{
-		tmpD.SetSustain(a.GetSustain()*mult);
-	}
-	if(a.HasRelease())
-	{
-		tmpD.SetRelease(a.GetRelease()*mult);
-	}
 	if(a.HasDecrease())
 	{
 		tmpD.SetDecrease(a.GetDecrease()*mult);
@@ -346,24 +328,6 @@ AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.UpdateData();
 		tmpD.SetAttack(a.GetAttack()*b.GetAttack() );
 	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		tmpD.AddDecay();
-		tmpD.UpdateData();
-		tmpD.SetDecay(a.GetDecay()*b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		tmpD.AddSustain();
-		tmpD.UpdateData();
-		tmpD.SetSustain(a.GetSustain()*b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		tmpD.AddRelease();
-		tmpD.UpdateData();
-		tmpD.SetRelease(a.GetRelease()*b.GetRelease() );
-	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
 		tmpD.AddDecrease();
@@ -424,24 +388,6 @@ AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.AddAttack();
 		tmpD.UpdateData();
 		tmpD.SetAttack(a.GetAttack()+b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		tmpD.AddDecay();
-		tmpD.UpdateData();
-		tmpD.SetDecay(a.GetDecay()+b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		tmpD.AddSustain();
-		tmpD.UpdateData();
-		tmpD.SetSustain(a.GetSustain()+b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		tmpD.AddRelease();
-		tmpD.UpdateData();
-		tmpD.SetRelease(a.GetRelease()+b.GetRelease() );
 	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
