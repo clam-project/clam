@@ -4,15 +4,14 @@
 #include "Oscillator.hxx"
 #include "AudioFileOut.hxx"
 #include "AudioFileIn.hxx"
-#include "AudioAdder.hxx"
 #include "AudioMultiplier.hxx"
+#include "AudioMixerNew.hxx"
 #include "AudioOut.hxx"
 
 #include "Audio.hxx"
 #include "AudioManager.hxx"
 #include <list>
 #include <string>
-
 
 namespace FlowControlExample
 {
@@ -130,15 +129,16 @@ private:
 	CLAM::Oscillator _modulator;
 	CLAM::AudioFileIn _fileIn;
 	CLAM::AudioFileOut _fileOut;
-	CLAM::AudioAdder _adder;
 	CLAM::AudioMultiplier _multiplier;
 	CLAM::AudioOut _audioOut;
+
+	CLAM::AudioMixer<2> _mixer;
 
 	// processing data
 	CLAM::Audio _oscillatorData;
 	CLAM::Audio _fileInData;
 	CLAM::Audio _modulatorData;
-	CLAM::Audio _adderData;
+	CLAM::Audio _mixerData;
 	CLAM::Audio _multiplierData;
 
 	//other system parameters

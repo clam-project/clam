@@ -91,7 +91,7 @@ void SystemWithPorts::ConfigureData()
 	_fileInData.SetSize(_frameSize);
 	_modulatorData.SetSize(_frameSize);
 	_multiplierData.SetSize(_frameSize);
-	_adderData.SetSize(_frameSize);
+	_mixerData.SetSize(_frameSize);
 }
 
 void SystemWithPorts::StartProcessings()
@@ -102,7 +102,8 @@ void SystemWithPorts::StartProcessings()
 		_fileIn.Start();
 		_modulator.Start();
 		_multiplier.Start();
-		_adder.Start();
+		_mixer.Start();
+
 		if (_hasAudioOut)
 		{
 			_audioOut.Start();
@@ -231,13 +232,14 @@ void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 	System()._multiplier.mFirstInput.Attach( System()._fileInData );
 	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
 	System()._multiplier.mOutput.Attach( System()._multiplierData );
-	System()._adder.mFirstInput.Attach( System()._multiplierData );
-	System()._adder.mSecondInput.Attach( System()._fileInData );
-	System()._adder.mOutput.Attach( System()._adderData );
-	System()._fileOut.Input.Attach( System()._adderData );
+
+	System()._mixer.Input[0].Attach( System()._multiplierData );
+	System()._mixer.Input[1].Attach( System()._fileInData );
+	System()._mixer.Output.Attach( System()._mixerData );
+	System()._fileOut.Input.Attach( System()._mixerData );
 	if (_hasAudioOut)
 	{
-		System()._audioOut.Input.Attach( System()._adderData );
+		System()._audioOut.Input.Attach( System()._mixerData );
 	}
 
 }
@@ -246,7 +248,7 @@ bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
 	System()._fileIn.Do();
 	System()._modulator.Do();
 	System()._multiplier.Do();
-	System()._adder.Do();
+	System()._mixer.Do();
 	System()._fileOut.Do();
 	if (_hasAudioOut)
 	{
