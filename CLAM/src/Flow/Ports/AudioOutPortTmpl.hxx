@@ -132,6 +132,7 @@ inline bool OutPortTmpl<Audio>::IsAttached()
 }
 inline void OutPortTmpl<Audio>::Unattach()
 {
+	mpNode = 0;
 	mpData = 0;
 }
 

@@ -152,6 +152,7 @@ bool InPortTmpl<T>::IsAttached()
 template<class T>
 void InPortTmpl<T>::Unattach()
 {
+	mpNode = 0;
 	mData.SetPtr(NULL);
 }
 	

@@ -141,6 +141,7 @@ bool OutPortTmpl<T>::IsAttached()
 template<class T>
 void OutPortTmpl<T>::Unattach()
 {
+	mpNode = 0;
 	mData.SetPtr(NULL);
 }
 

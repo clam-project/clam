@@ -111,6 +111,7 @@ inline bool InPortTmpl<Audio>::IsAttached()
 }
 inline void InPortTmpl<Audio>::Unattach()
 {
+	mpNode = 0;
 	mpData = 0;
 }
 
