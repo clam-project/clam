@@ -159,10 +159,10 @@ namespace CLAM
 	
 		//cout << "\nOnset Detection per band...\n";
 	
-		Array< Array<TData> > smoothedInput(mnBands);	//Smoothed Band Energy Array
+		Array< Array<double> > smoothedInput(mnBands);	//Smoothed Band Energy Array
 		smoothedInput.SetSize(mnBands);
 
-		Array< Array<TData> > bandOnsetDetectData(mnBands);	//Data on which detection is performed 
+		Array< Array<double> > bandOnsetDetectData(mnBands);	//Data on which detection is performed 
 		bandOnsetDetectData.SetSize(mnBands);
 
 		Array< Array<TimeIndex> > bandCandidates(mnBands);		//Candidates positions per band
@@ -279,11 +279,11 @@ namespace CLAM
 ////////////////////////////////
 ///////////SMOOTHING////////////
 ////////////////////////////////
-	void OnsetDetector::Smoothing(DataArray& energy, DataArray& smoothedEnergy )
+	void OnsetDetector::Smoothing(Array<double>& energy, Array<double>& smoothedEnergy )
 	{
 		int i, j, k;
 		TData temp;
-		DataArray revSmoothedEnergy(mnSamples);
+		Array<double> revSmoothedEnergy(mnSamples);
 		revSmoothedEnergy.SetSize(mnSamples);
 
 
@@ -332,7 +332,7 @@ namespace CLAM
 ////////////////////////////////
 //////ONSET TIME DETECTION//////
 ////////////////////////////////
-	void OnsetDetector::DetectPosition(DataArray& in, DataArray& ret)
+	void OnsetDetector::DetectPosition(Array<double>& in, Array<double>& ret)
 	{
 		int i;
 
@@ -350,7 +350,7 @@ namespace CLAM
 ////////////////////////////////
 ///////CANDIDATE DETECTION//////
 ////////////////////////////////
-	void OnsetDetector::DetectCandidates(DataArray& in, DataArray& weight, TData threshold , Array<TimeIndex>& ret)
+	void OnsetDetector::DetectCandidates(Array<double>& in, Array<double>& weight, TData threshold , Array<TimeIndex>& ret)
 	{	
 	
 		//This function detect the positions and weights of candidates
@@ -364,12 +364,6 @@ namespace CLAM
 		TData maxLog, maxLin, intDyn;	
 		TimeIndex candidate;
 
-#if 0	
-
-		int firstPeak;
-		bool firstPeakFound;
-
-#endif
 
 
 		//takes peaks above the threshold
@@ -380,9 +374,6 @@ namespace CLAM
 			if(in[i]>0)
 			{
 
-#if 0
-				firstPeakFound=false;
-#endif
 
 				begin=i;
 
@@ -390,19 +381,6 @@ namespace CLAM
 				while(i<in.Size()-3 && (in[i]>0 || in[i+1]>0 || in[i+2]>0))
 				{
 				
-#if 0
-				
-					//store the first peak (could be used as the onsets position, but the highest peak seems better)
-					if(firstPeakFound==false)
-					{
-						if(in[i]>in[i-1] && in[i]>in[i+1])
-						{
-							firstPeak=i;
-							firstPeakFound=true;
-						}
-					}
-
-#endif
 
 					//store the position and the value of the highest peak in the detection function (derivative of
 					//the log smoothed energy)
@@ -556,7 +534,7 @@ namespace CLAM
 		////////////////////////////////
 		//Extracts Amplitude Enveloppe//
 		////////////////////////////////
-		DataArray amplitude;
+		Array<double> amplitude;
 		
 		amplitude.Resize( mAudio.GetSize()/90 );
 		amplitude.SetSize( mAudio.GetSize()/90 );

@@ -22,7 +22,7 @@
 //Implemented from Slaney's Auditory Toolbox (http://rvl4.ecn.purdue.edu/~malcolm/interval/1998-010/)
 
 #include "Complex.hxx"
-#include "ERB_Space.hxx"
+#include "ERB_Space_Gen.hxx"
 #include "GT_FilterBank.hxx"
 #include "Audio.hxx"
 #include "OSDefines.hxx"
@@ -64,7 +64,7 @@ namespace CLAM
 		return false;
 	}
 	
-	bool GT_FilterBank::Do(Audio &in, Array< DataArray >& filterBankOutputs )
+	bool GT_FilterBank::Do(Audio &in, Array< Array<double> >& filterBankOutputs )
 	{
 		CLAM_ASSERT( filterBankOutputs.Size() == mnChannels,
 			     "GT_FilterBank::Do() : filterBankOutputs array size is smaller than the number of bands setup on the configuration" );
@@ -72,7 +72,7 @@ namespace CLAM
 
 		const TSize audiosize = in.GetSize();
 	
-		DataArray audioArray;
+		Array<double> audioArray;
 
 		audioArray.Resize( audiosize );
 		audioArray.SetSize( audiosize );
@@ -102,7 +102,7 @@ namespace CLAM
 
 		//Is that also true here?
 	
-		DataArray & outputBuffer = audioArray;
+		Array<double>& outputBuffer = audioArray;
 
 		for ( int i = 0; i < mnChannels; i++ )
 		{
@@ -165,11 +165,9 @@ namespace CLAM
 					+ A2  *tempBuffer3[j2]
 					- B1i *tempBuffer4[j1] 
 					- B2i *tempBuffer4[j2];
-				outputBuffer[j] = tempBuffer4[j0];
+				outputBuffer[j] = fabs(tempBuffer4[j0]);
 			}
 
-			for(int k=0 ; k < audiosize; k++)
-				audioArray[k]=fabsf(audioArray[k]);
 				
 			//Decimation to 245 Hz
 			
@@ -192,29 +190,29 @@ namespace CLAM
 		mCentreFreq.Resize(mnChannels);
 		mCentreFreq.SetSize(mnChannels);
 	
-		ERB_SpaceConfig ERBCfg;
+		ERB_SpaceGenConfig ERBCfg;
 		ERBCfg.SetNumFilter(mnChannels);
 		ERBCfg.SetLowFreq(mLowFreq);
 		ERBCfg.SetHighFreq(mHighFreq);
 
-		ERB_Space ERBS(ERBCfg);
+		ERB_SpaceGen ERBS(ERBCfg);
 
 		ERBS.Do(mCentreFreq);
 
 	
 		//Glasberg and Moore Parameters
-		TData EarQ = 9.26449;
-		TData minBW = 24.7;
+		double EarQ = 9.26449;
+		double minBW = 24.7;
 		int order = 1;	
 	
-		TData T=1/(float)mSampleRate;
+		double T=1.0/(double)mSampleRate;
 
 
 		A0 = T;
 		A2 = 0;
 		B0 = 1;	
 
-		DataArray ERB, B;
+		Array<double> ERB, B;
 
 
 		ERB.Resize(mCentreFreq.Size());
@@ -237,35 +235,52 @@ namespace CLAM
 		gain.SetSize(mCentreFreq.Size());
 	
 
-		Complex a, b, tempGain;
+		ComplexTmpl<double> a, b, tempGain;
+
+		double invEarQ = 1.0 / EarQ;
+		double invOrder = 1.0 / (double)order;
 
 		for(int i=0; i<mnChannels; i++)
 		{
 
-			ERB[i] = pow( ( pow(mCentreFreq[i]/EarQ,order) + pow(minBW,order) ) , 1/(float)order);
-			B[i] = ERB[i]*2*1.019*M_PI;
+			ERB[i] = pow( ( pow(mCentreFreq[i]*invEarQ,order) + pow(minBW,order) ) , invOrder);
 
-			B1[i] = -2*std::cos(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T);
-			B2[i] = exp(-2*B[i]*T);
+			B[i] = ERB[i]*2.0*1.019*M_PI;
 
-			A11[i] = -(2*T*std::cos(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T) + 2*sqrt(3+pow(2.0,1.5))*T*std::sin(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T))/2;
-			A12[i] = -(2*T*std::cos(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T) - 2*sqrt(3+pow(2.0,1.5))*T*std::sin(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T))/2;
-			A13[i] = -(2*T*std::cos(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T) + 2*sqrt(3-pow(2.0,1.5))*T*std::sin(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T))/2;
-			A14[i] = -(2*T*std::cos(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T) - 2*sqrt(3-pow(2.0,1.5))*T*std::sin(2*mCentreFreq[i]*M_PI*T)/exp(B[i]*T))/2;
+			const double invExpBiT = 1.0 / exp(B[i]*T);
+			const double twocfpiT = 2.0 * mCentreFreq[i] * M_PI * T;
+			const double cos_2cfpiT = std::cos( twocfpiT );
+			const double sin_2cfpiT = std::sin( twocfpiT );
+			const double two_1_5 = pow( 2.0, 1.5 );
 
-			a.SetReal(-2*std::cos(4*mCentreFreq[i]*M_PI*T));
-			a.SetImag(-2*std::sin(4*mCentreFreq[i]*M_PI*T));
+			B1[i] = -2.0*cos_2cfpiT*invExpBiT;
+			B2[i] = exp(-2.0*B[i]*T);
 
-			b.SetReal(2*exp(-B[i]*T)*std::cos(2*mCentreFreq[i]*M_PI*T));
-			b.SetImag(2*exp(-B[i]*T)*std::sin(2*mCentreFreq[i]*M_PI*T));
+			A11[i] = -(2*T*cos_2cfpiT*invExpBiT 
+				   + 2.0*sqrt(3+two_1_5)*T*sin_2cfpiT*invExpBiT)/2.0;
+
+			A12[i] = -(2.0*T*cos_2cfpiT*invExpBiT 
+				   - 2.0*sqrt(3+two_1_5)*T*sin_2cfpiT*invExpBiT)/2.0;
+
+			A13[i] = -(2.0*T*cos_2cfpiT*invExpBiT 
+				   + 2.0*sqrt(3.0-two_1_5)*T*sin_2cfpiT*invExpBiT)/2.0;
+
+			A14[i] = -(2*T*cos_2cfpiT*invExpBiT 
+				   - 2.0*sqrt(3.0-two_1_5)*T*sin_2cfpiT*invExpBiT)/2.0;
+
+			a.SetReal(-2.0*std::cos(2.0* twocfpiT));
+			a.SetImag(-2.0*std::sin(2.0* twocfpiT));
+
+			b.SetReal(2.0*exp(-B[i]*T)*cos_2cfpiT);
+			b.SetImag(2.0*exp(-B[i]*T)*sin_2cfpiT);
 
 			tempGain =
-				( a*T + b*T*(std::cos(2*mCentreFreq[i]*M_PI*T) - sqrt(3-pow(2.0,1.5))*std::sin(2*mCentreFreq[i]*M_PI*T)))*
-				( a*T + b*T*(std::cos(2*mCentreFreq[i]*M_PI*T) + sqrt(3-pow(2.0,1.5))*std::sin(2*mCentreFreq[i]*M_PI*T)))*
-				( a*T + b*T*(std::cos(2*mCentreFreq[i]*M_PI*T) - sqrt(3+pow(2.0,1.5))*std::sin(2*mCentreFreq[i]*M_PI*T)))*
-				( a*T + b*T*(std::cos(2*mCentreFreq[i]*M_PI*T) + sqrt(3+pow(2.0,1.5))*std::sin(2*mCentreFreq[i]*M_PI*T)))/
-				(( a-2/exp(2*B[i]*T)  - (a-2)/exp(B[i]*T))*( a-2/exp(2*B[i]*T)  - (a-2)/exp(B[i]*T))*
-				 ( a-2/exp(2*B[i]*T)  - (a-2)/exp(B[i]*T))*( a-2/exp(2*B[i]*T)  - (a-2)/exp(B[i]*T)));
+				( a*T + b*T*(cos_2cfpiT - sqrt(3.0-two_1_5)*sin_2cfpiT))*
+				( a*T + b*T*(cos_2cfpiT + sqrt(3.0-two_1_5)*sin_2cfpiT))*
+				( a*T + b*T*(cos_2cfpiT - sqrt(3.0+two_1_5)*sin_2cfpiT))*
+				( a*T + b*T*(cos_2cfpiT + sqrt(3.0+two_1_5)*sin_2cfpiT))/
+				(( a-2.0/exp(2.0*B[i]*T)  - (a-2.0)*invExpBiT)*( a-2.0/exp(2.0*B[i]*T)  - (a-2.0)*invExpBiT)*
+				 ( a-2.0/exp(2.0*B[i]*T)  - (a-2.0)*invExpBiT)*( a-2.0/exp(2.0*B[i]*T)  - (a-2.0)*invExpBiT));
 
 			gain[i] = tempGain.Mag();
 

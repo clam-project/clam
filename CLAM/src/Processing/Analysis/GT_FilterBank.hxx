@@ -45,9 +45,9 @@ namespace CLAM
 		TData mHighFreq;
 		int mnChannels;
 		int mSampleRate;
-		DataArray mCentreFreq;
-		TData A0, A2, B0;
-		DataArray B1, B2, A11, A12, A13, A14, gain;
+		Array<double> mCentreFreq;
+		double A0, A2, B0;
+		Array<double> B1, B2, A11, A12, A13, A14, gain;
 		OnsetDetection::AudioDecimator mDecimator;
 
 	public:
@@ -60,11 +60,9 @@ namespace CLAM
 
 		bool Do(void);
 
-		bool Do(Audio &in, Array< DataArray >& filterBankOut);
+		bool Do(Audio &in, Array< Array<double> >& filterBankOut);
 	
 		void MakeERBFilters();
-
-		DataArray GetCentreFreq() {return mCentreFreq;}
 	
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 

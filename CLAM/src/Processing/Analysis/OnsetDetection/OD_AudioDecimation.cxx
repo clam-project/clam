@@ -170,8 +170,8 @@ namespace CLAM
 			}
 		}
 
-		void AudioDecimator::DecimateFrom22050To245( const DataArray& signal,
-							     DataArray& decimatedSignal )
+		void AudioDecimator::DecimateFrom22050To245( const Array<double>& signal,
+							     Array<double>& decimatedSignal )
 		{
 			CLAM_ASSERT( decimatedSignal.Size() == signal.Size() / 90,
 				     "AudioDecimator::DecimateFrom22050To245(): decimated signal size is not 90 times smaller than signal" );
@@ -246,11 +246,94 @@ namespace CLAM
 			
 			TSize decimatedSize = size/90;
 			
-			if ( decimatedSignal.Size() != decimatedSize )
+			i=0;
+			int j=0;
+			//decimation
+			while(i < decimatedSize && j < size )
 			{
-				decimatedSignal.Resize(decimatedSize);
-				decimatedSignal.SetSize(decimatedSize);
+				decimatedSignal[i] = mOutputRev[j];
+				i++;
+				j+=90;
 			}
+			
+
+		}
+
+		void AudioDecimator::DecimateFrom22050To245( const Array<float>& signal,
+							     Array<double>& decimatedSignal )
+		{
+			CLAM_ASSERT( decimatedSignal.Size() == signal.Size() / 90,
+				     "AudioDecimator::DecimateFrom22050To245(): decimated signal size is not 90 times smaller than signal" );
+			TSize size = signal.Size();
+			int i;
+
+			double a0, a1, a2,a3, a4, b1, b2, b3, b4;
+
+			if ( mOutput.AllocatedSize() < signal.Size() )
+			{
+				mOutput.Resize( signal.Size() );
+			}
+			mOutput.SetSize( signal.Size() );
+
+			if ( mOutputRev.AllocatedSize() < signal.Size() )
+			{
+				mOutputRev.Resize( signal.Size() );
+			}
+			mOutputRev.SetSize( signal.Size() );						
+						
+			a0 = 0.13376242754340e-007;
+			a1 = 0.53504971017360e-007;
+			a2 = 0.80257456526040e-007;
+			a3 = 0.53504971017360e-007;
+			a4 = 0.13376242754340e-007;			
+			
+			b1 = -3.96578818443280;
+			b2 = 5.89871439914956;
+			b3 = -3.90004183080475;
+			b4 = 0.96711584278936;
+				
+			// The "difficult" part of the filtering loop has been stripmined
+			mOutput[0] = a0*signal[0];
+
+			mOutput[1] = a0*signal[1]+ a1*signal[0]
+				- b1*mOutput[0];
+
+			mOutput[2] = a0*signal[2]+ a1*signal[1] + a2*signal[0] 
+				- b1*mOutput[1] - b2*mOutput[0];
+
+			mOutput[3] = a0*signal[3]+ a1*signal[2] + a2*signal[1] + a3*signal[0] 
+				- b1*mOutput[2] - b2*mOutput[1] - b3*mOutput[0];
+
+			
+			//filtering
+			for(i=4; i<size; i++)
+			{
+				mOutput[i] = a0*signal[i] + a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3] + a4*signal[i-4] 
+					     - b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4];				
+			}
+
+			for(i=0;i<size;i++)
+				mOutputRev[size-1-i]=mOutput[i];
+
+			mOutput[0] = a0*mOutputRev[0];
+			mOutput[1] = a0*mOutputRev[1]+ a1*mOutputRev[0]- b1*mOutput[0];
+			mOutput[2] = a0*mOutputRev[2]+ a1*mOutputRev[1] + a2*mOutputRev[0] - b1*mOutput[1] - b2*mOutput[0];
+			mOutput[3] = a0*mOutputRev[3]+ a1*mOutputRev[2] + a2*mOutputRev[1] + a3*mOutputRev[0] 
+				- b1*mOutput[2] - b2*mOutput[1] - b3*mOutput[0];
+
+			//filtering the reverse signal for 0 phase distortion
+			for(i=4; i<size; i++)
+			{
+
+				mOutput[i] = a0*mOutputRev[i] + a1*mOutputRev[i-1] + a2*mOutputRev[i-2] + a3*mOutputRev[i-3] + a4*mOutputRev[i-4] 
+					- b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4];				
+			
+			}
+
+			for(i=0;i<size;i++)
+				mOutputRev[i]=mOutput[size-1-i];
+			
+			TSize decimatedSize = size/90;
 			
 			i=0;
 			int j=0;
@@ -267,27 +350,6 @@ namespace CLAM
 
 		bool AudioDecimator::Do(DataArray &input, int sampleRate, int type)
 		{
-			switch(type){
-		
-			case 1:
-				//44100 to 22050
-				CLAM_ASSERT( sampleRate == 44100, "Sample rate should be 44100Hz!" );
-				
-				DecimateFrom44100To22050( input, input );
-				break;
-		
-			case 2:
-				//22050 to 245
-				CLAM_ASSERT( sampleRate == 22050, "Sample rate should be 22050Hz!" );
-
-				DecimateFrom22050To245( input, input );
-
-				break;
-
-			default:
-				CLAM_ASSERT( false, "This conversion is not implemented...");
-			}
-
 			return true;
 
 		}

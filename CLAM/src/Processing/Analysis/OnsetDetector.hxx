@@ -59,9 +59,9 @@ namespace CLAM
 	
 		bool CalcFilterBankOutput(  );
 		void Algorithm(Segment& s, Array<TimeIndex>& out );
-		void Smoothing(DataArray& energy, DataArray &smoothedEnergy );
-		void DetectPosition(DataArray& in, DataArray &ret);
-		void DetectCandidates(DataArray& in, DataArray& weight, TData threshold , Array<TimeIndex> &ret);
+		void Smoothing(Array<double>& energy, Array<double> &smoothedEnergy );
+		void DetectPosition(Array<double>& in, Array<double> &ret);
+		void DetectCandidates(Array<double>& in, Array<double>& weight, TData threshold , Array<TimeIndex> &ret);
 		void DeleteWeakOnsets(Array<TimeIndex> &in , int type );
 		void PeakDeletion( Array<TimeIndex>& in , TimeIndex &ret );
 		void PeakSummation( Array<TimeIndex>& in , TimeIndex &ret );
@@ -82,7 +82,7 @@ namespace CLAM
 		TData mSampleRate;						//Sample Rate after down sampling
 		TData mOffsetThreshold;
 		bool mComputeOffsets;
-		Array< Array<TData> > mFilterBankOutputs;
+		Array< Array<double> > mFilterBankOutputs;
 		Array<TimeIndex> mOnsets;
 		DataArray cf;
 	};
