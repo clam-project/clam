@@ -117,7 +117,7 @@ bool SpectralAnalysis::Do(void)
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
-	in.GetAudioChunk((TIndex)0,(TIndex)in.GetSize()-1 ,mAudioFrame,true );
+	in.GetAudioChunk(0,in.GetSize()-1 ,mAudioFrame,true );
 
 	// TODO: it is wrong
 	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);

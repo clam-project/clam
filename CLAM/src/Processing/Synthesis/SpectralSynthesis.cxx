@@ -107,7 +107,7 @@ void SpectralSynthesis::ConfigureData()
 
 
 	//We now take only the mSynthWindowSize central samples of the inverse window
-	tmpWindow.GetAudioChunk((TIndex)((TData)mConfig.GetAnalWindowSize()/2-(TData)mConfig.GetHopSize()),(TIndex)((float)mConfig.GetAnalWindowSize()/2+(float)mConfig.GetHopSize()),mSynthWindow,false);
+	tmpWindow.GetAudioChunk((int)((TData)mConfig.GetAnalWindowSize()/2-(TData)mConfig.GetHopSize()),(int)((float)mConfig.GetAnalWindowSize()/2+(float)mConfig.GetHopSize()),mSynthWindow,false);
 
 
 
@@ -166,10 +166,10 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 //Undoing Synthesis circular shift
 	mPO_CircularShift.Do(mAudio0,mAudio0);
 //Undoing zero padding by hand seems a bit ugly but...
-	mAudio0.GetAudioChunk((TIndex)0,(TIndex)mConfig.GetAnalWindowSize()-1,mAudio1,false);
+	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()-1,mAudio1,false);
 //Now we take the central samples to multiply with the window
 	int centerSample=mAudio1.GetSize()/2;
-	mAudio1.GetAudioChunk((TIndex)centerSample-mConfig.GetHopSize(),(TIndex)centerSample+mConfig.GetHopSize()-1,mAudio2,false);
+	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);
 //Aplying inverse window
 	mPO_AudioProduct.Do(mAudio2, mSynthWindow,out);
 	
