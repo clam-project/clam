@@ -2,15 +2,17 @@
 #define __SINETRACKSDEF__
 
 #include <list>
+#include <vector>
 #include "TimeFreqMagPoint.hxx"
 
 
 namespace CLAMGUI
 {
 
-		typedef std::list< TimeFreqMagPoint >      SinusoidalTrack;
-		typedef std::list< SinusoidalTrack >       SineTrackList;
-
+		typedef std::list< TimeFreqMagPoint >            SinusoidalTrack;
+		typedef std::list< SinusoidalTrack >             SineTrackList;
+		typedef std::vector< SinusoidalTrack::iterator>  SineTrackSpanEnds;
+		
 
 }
 
