@@ -360,9 +360,13 @@ void MyAudioApplication::AudioMain(void)
 
 		for ( i=0;i<nVoices;i++)
 		{
-			mixer.mInput[i].Attach(audioArray[i]);
+			std::stringstream sstr;
+			sstr.str("");
+			std::string name("Input Audio");
+			sstr << name << "_" << i;
+			mixer.GetInPorts().Get(sstr.str()).Attach(audioArray[i]);
 		}
-		mixer.mOutput.Attach(out);
+		mixer.GetOutPorts().Get("Output Audio").Attach(out);
 
 		inNote.LinkOutWithInControl( 0, &dispatcher, 1 );   /** Key for Note Off */
 		inNote.LinkOutWithInControl( 1, &dispatcher, 2 );   /** Velocity for Note Off */
