@@ -71,6 +71,7 @@ int main( int argc, char** argv )
 	// for configuring the MultiChannelAudioFileReader that will actually
 	// read the samples from the file
 	CLAM::MultiChannelAudioFileReaderConfig cfg;
+
 	// We set the 'Source File' config attribute to the AudioFile object
 	// we created before
 	cfg.SetSourceFile( file );
@@ -97,10 +98,16 @@ int main( int argc, char** argv )
 	// sort of gauge that indicates the loudness of a given signal. This
 	// 'loudness' can be computed for each samples as:
 	//     loudness[ n ] = 20. * log10( fabs( x[n] ) )
-	// Note that this will give a number in the [0,-inf] range, in dB scale
+	// Note that this will give a number in the [0,-inf] range, in dB scale. What
+	// is interesting is to see which is the range of this loudness for a given
+	// audio fragment: it might be understood as a measure of how 'loud' is
+	// that fragment.
 
+	// We will use this counter for tracking the current frame index
 	CLAM::TIndex frameCount = 1;
 
+	// When will the loop end? Whenever the EOF is reached ;) i.e. when the Processing
+	// cannot generate any more Audio objects.
 	while ( reader.Do() )
 	{
 
@@ -110,10 +117,12 @@ int main( int argc, char** argv )
 		{
 			std::cout << "Channel #" << i << " ";
 
+			// We take the first sample loudness as both minimum and maximum
 			CLAM::TData currentMax = 20. * log10( fabs(outputs[i].GetBuffer()[0]));
 			CLAM::TData currentMin = 20. * log10( fabs(outputs[i].GetBuffer()[0]));
 			
-		
+			// Simple min&max search loop: we compute loudness for each sample
+			// in the fragment and check it against the current max and min
 			for ( int n = 1; n < outputs[i].GetSize(); n++ )
 			{
 				CLAM::TData loudness = 20. * log10( fabs(outputs[i].GetBuffer()[n]) );
@@ -123,6 +132,7 @@ int main( int argc, char** argv )
 					currentMin = loudness;
 			}
 			
+			// we print out the pair of (max,min) loudness values
 			std::cout << "( " << currentMax << " dB, " << currentMin << " dB)" << std::endl;
 		}
 		
