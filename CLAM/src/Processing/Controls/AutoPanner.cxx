@@ -1,3 +1,4 @@
+
 #include "AutoPanner.hxx"
 #include "OSDefines.hxx"
 #include "CLAM_Math.hxx"
@@ -7,15 +8,8 @@ namespace CLAM
 
 void AutoPannerConfig::DefaultInit(void)
 {
-	AddName();
-	AddFrequency();
-	AddSamplingRate();
-	AddPhase();
-	AddFrameSize();
-
-	
-	UpdateData();
-	
+	AddAll();       
+	UpdateData();	
 	SetName("AutoPanner");
 	SetFrequency(440.0);
 	SetPhase(0.0);
@@ -27,8 +21,9 @@ AutoPanner::AutoPanner()
 	: mLeft("Left Control", this ),
 	  mRight("Right Control", this )
 {
+	AutoPannerConfig cfg;
 
-	Configure(AutoPannerConfig());
+	Configure(cfg);
 }
 
 AutoPanner::AutoPanner( const AutoPannerConfig & cfg)
@@ -68,6 +63,8 @@ bool AutoPanner::ConcreteConfigure(const ProcessingConfig& c)
 	mPhase = mConfig.GetPhase();
 	mFrameSize = mConfig.GetFrameSize();
 	mDeltaPhase = ((2* TData(M_PI) *mFreq)/mSamplingRate)* mFrameSize;
+
+	return true;
 }
 
 } // namespace CLAM
