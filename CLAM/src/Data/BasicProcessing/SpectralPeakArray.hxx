@@ -397,6 +397,10 @@ public:
 	void   SetThruIndexBinWidth(TIndex pos,TSize binWidth);
 	void   SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak);
 
+	/** Converts linear magnitude data to dB*/
+	void TodB();
+	/** Converts dB magnitude data to linear*/
+	void ToLinear();
 
 };
 
