@@ -71,6 +71,14 @@ AC_SUBST(RESAMPLE_LIBS)
 
 AC_SUBST(LADSPA_INCLUDES)
 
+AC_SUBST(INSTALLPROG)
+AC_SUBST(LDDCONFPROG)
+AC_SUBST(PREFIX)
+
+INSTALLPROG=`which install`
+LDDCONFPROG=ldconfig
+PREFIX=/usr/local
+
 IS_DARWIN="no"
 
 # Checks system Darwiness i.e. libraries should be
@@ -174,3 +182,4 @@ DEFINE_CLAM_HAVE_PTHREADS=CLAM_HAVE_PTHREADS
 
 AC_OUTPUT(system-linux.cfg)
 AC_OUTPUT(system-macosx.cfg)
+AC_OUTPUT(Makefile.rules)
