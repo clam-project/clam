@@ -5,6 +5,7 @@
 #include "AudioFileOut.hxx"
 #include "AudioFileIn.hxx"
 #include "AudioAdder.hxx"
+#include "AudioMultiplier.hxx"
 
 #include "Audio.hxx"
 #include <list>
@@ -28,6 +29,9 @@ public:
 	// Iteration methods
 	bool OscillatorToFileOut();
 	bool ModulatedFileIn();
+	bool ModulatedOscillator();
+	bool ModulatedFileInPlusFileIn();
+	bool FileInFileOut();
 	
 private:
 	void StartProcessings();
@@ -40,12 +44,14 @@ private:
 	CLAM::AudioFileIn _fileIn;
 	CLAM::AudioFileOut _fileOut;
 	CLAM::AudioAdder _adder;
+	CLAM::AudioMultiplier _multiplier;
 
 	// processing data
 	CLAM::Audio _oscillatorData;
 	CLAM::Audio _fileInData;
 	CLAM::Audio _modulatorData;
 	CLAM::Audio _adderData;
+	CLAM::Audio _multiplierData;
 
 	//other system parameters
 	std::string _fileInName;

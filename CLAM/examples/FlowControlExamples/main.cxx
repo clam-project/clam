@@ -5,10 +5,10 @@ using FlowControlExample::System;
 int main()
 {
 	System s(
-		"testin.wav" /* file in */,
-		"testout.wav" /* file out */, 
+		"snd.wav" /* file in */,
+		"curtout.wav" /* file out */, 
 		512 /* frame size */, 
-		500 /* frames to compute*/ );
+		5000 /* frames to compute*/ );
 
 	s.ProcessAllIterations();
 //	s.DoProcessings( &System::OscillatorToFileOut );
