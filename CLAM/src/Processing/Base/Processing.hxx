@@ -74,6 +74,7 @@ namespace CLAM {
 
 		/** Status description, for debugging */
 		std::string mStatus;
+// Overridable
 	protected:
 		/** Configuration method interface.
 		 * The Processing base class forces all the concrete
@@ -103,27 +104,15 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteStart() {return true;};
 
-
-		/**
-		 * Helper template to convert a reference to a ProcessingConfig to the concrete
-		 * ProcessingConfig specified on the first parameter.
-		 * @param concrete The copy destination (it forces the runtime type for abstract)
-		 * @param abstract A reference to the configuration to be copied
-		 * @pre The object runtime type must be exactly the type required by the first parameter
-		 */
-		template <typename ConcreteConfig>
-		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const {
-			CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
-				"Configuring a Processing with a configuration not being the proper type.");
-			concrete = static_cast<const ConcreteConfig &>(abstract);
-		}
-
 		/**
 		 * Processing objects have to redefine this method when stoping
 		 * them implies some internal changes. ie: releasing resources.
 		 * @returns Whether stop changes have been successful
 		 */
 		virtual bool ConcreteStop() {return true;};
+	
+// Helpers only for subclasses
+	protected:
 
 		void SetOrphan();
 
@@ -153,6 +142,21 @@ namespace CLAM {
 			CLAM_END_DEBUG_CHECK
 
 			return GetExecState() != Disabled;
+		}
+
+
+		/**
+		 * Helper template to convert a reference to a ProcessingConfig to the concrete
+		 * ProcessingConfig specified on the first parameter.
+		 * @param concrete The copy destination (it forces the runtime type for abstract)
+		 * @param abstract A reference to the configuration to be copied
+		 * @pre The object runtime type must be exactly the type required by the first parameter
+		 */
+		template <typename ConcreteConfig>
+		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const {
+			CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
+				"Configuring a Processing with a configuration not being the proper type.");
+			concrete = static_cast<const ConcreteConfig &>(abstract);
 		}
 
 
@@ -217,6 +221,7 @@ namespace CLAM {
 		 *  on when and how to use them.
 		 */
 		void PreConcreteConfigure( const ProcessingConfig& c);
+
 		/**
 		 *  This method, is temporary, very prone to disappear
 		 *  soon, for enabling clients that know concrete Processing object
