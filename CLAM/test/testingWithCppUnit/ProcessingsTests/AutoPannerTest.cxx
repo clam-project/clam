@@ -35,8 +35,8 @@ public:
 
 	void setUp()
 	{
-		_controlSender._outControl1.AddLink(&_receiverLeft);
-		_controlSender._outControl2.AddLink(&_receiverRight);		
+		_controlSender.mLeft.AddLink(&_receiverLeft);
+		_controlSender.mRight.AddLink(&_receiverRight);		
 	}
 	void tearDown(){}
 
