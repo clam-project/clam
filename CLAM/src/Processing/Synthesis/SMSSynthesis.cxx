@@ -387,9 +387,12 @@ bool SMSSynthesis::Do(Frame& in)
 	mCurrentPitch.DoControl(in.GetFundamental().GetFreq(0));
 	
 
-//We make sure that spectrum in input frame has the appropiate size and spectral range
+//We make sure that spectrums in input frame has the appropiate size and spectral range.
+//Note that the only spectrum we can be sure has the correct spectral range is the residual 
+//because it its the only one that has been stored in the analysis process.
 	in.GetOutSpec().SetSize(mConfig.GetSpectrumSize());
 	in.GetOutSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
+	in.GetSinusoidalSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
 
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),in.GetSinusoidalSpec(),in.GetOutSpec(),
 		in.GetSynthAudioFrame(),in.GetSinusoidalAudioFrame(),in.GetResidualAudioFrame());
