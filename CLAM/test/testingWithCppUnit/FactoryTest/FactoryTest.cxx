@@ -23,7 +23,10 @@ private:
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
 		CLAM::Processing* returned = CLAM::CreateOscillator();
-		CPPUNIT_ASSERT( typeid( CLAM::Oscillator*) == typeid(returned)  ); 
+		std::string msg = std::string(
+			"Expected: CLAM::Oscillator\n"
+			"But was: " ) + std::string( typeid( returned ).name() );
+		CPPUNIT_ASSERT_MESSAGE( msg, typeid( CLAM::Oscillator*) == typeid(returned) ); 
 	
 	}
 };
