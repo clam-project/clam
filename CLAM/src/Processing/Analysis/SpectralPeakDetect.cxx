@@ -125,7 +125,11 @@ namespace CLAM {
 		DataArray& inPhaseBuffer=input.GetPhaseBuffer();
 
 		TSize maxPeaks=mConfig.GetMaxPeaks();
-		out.SetnMaxPeaks(maxPeaks);
+		if (out.GetnMaxPeaks() != maxPeaks)
+		{
+			out.SetnMaxPeaks(maxPeaks);
+		}
+
 		out.SetnPeaks(0);
 		
 		DataArray& outMagBuffer=out.GetMagBuffer();
@@ -269,18 +273,34 @@ namespace CLAM {
 
 	bool SpectralPeakDetect::CheckOutputType(SpectralPeakArray& out) 
 	{
-		out.SetScale(EScale::eLog);
+		if (!out.HasScale())
+			return false;
+
+		if (out.GetScale() != EScale::eLog)
+			return false;
+
+		if (!out.HasBinWidthBuffer())
+			return false;
+
+		if (!out.HasFreqBuffer())
+			return false;
+
+		if (!out.HasBinPosBuffer())
+			return false;
+
+		if (!out.HasMagBuffer())
+			return false;
+
+		if (!out.HasPhaseBuffer())
+			return false;
+
+/*		out.SetScale(EScale::eLog);
 		out.AddBinWidthBuffer();
 		out.AddFreqBuffer();
 		out.AddBinPosBuffer();
 		out.AddMagBuffer();
 		out.AddPhaseBuffer();
-
-		out.UpdateData();
-
-		/* Clear the  output Array */
-
-		out.SetnPeaks(0); // set the number of SpectralPeaks to 0
+		out.UpdateData();*/
 
 		return true;
 	}
