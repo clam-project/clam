@@ -67,12 +67,14 @@ int main( int argc, char** argv )
 		myifft.Configure( ifconfig );
 	
 		CLAM::AudioFile file;
-		file.SetLocation( "test.wav" );
+
 		CLAM::AudioFileHeader header;
 		CLAM::EAudioFileFormat outputFormat = 
 		CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
 		header.SetValues( sampleRate, 1, outputFormat );
-		file.SetHeader( header );
+
+
+		file.CreateNew( "test.wav", header );
 		CLAM::MonoAudioFileWriterConfig configWriter;
 		configWriter.AddTargetFile();
 		configWriter.UpdateData();
