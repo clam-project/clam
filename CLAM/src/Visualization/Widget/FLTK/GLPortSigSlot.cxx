@@ -30,27 +30,24 @@ GLPortSigSlot::GLPortSigSlot( const Rect<int>& geometry, const char* label = 0 )
 	: GLPort( geometry, label ) { 
 	
 	mPainting = false;
-	mPos = -1;////////////////////////////////
-
-	mSlot.Wrap( this, &setPos );
+	mPos = -1;
+	
+	mFrameSlot.Wrap( this, &CLAMGUI::GLPortSigSlot::setPos );
+	mPaintSlot.Wrap( this, &CLAMGUI::GLPortSigSlot::setPainting );
 }
 
 void GLPortSigSlot::setPainting( bool painting ) {
 	mPainting = painting;
 }
 
-void GLPortSigSlot::setPos( TData pos ) {
-	mPos ( pos );
-	redraw();
+void GLPortSigSlot::setPos( CLAM::TData pos ) {
+	mPos = pos;
+	redraw_overlay();
 }
-
-#include <iostream>
 
 void GLPortSigSlot::draw_overlay(  ) {
 	if( mHorRange.mPosition < mPos && mPos < mHorRange.mPosition+mHorRange.mSize ) {
-		//	double position = ( mPos - mHorRange.mPosition ) * w(  ) / mHorRange.mSize + x(  );
-
-		double position = ( ( mPos- mHorRange.mPosition ) * w() ) / mHorRange.mSize;
+		int position = (int) ceil( ( ( mPos- mHorRange.mPosition ) * w() ) / mHorRange.mSize );
 
 		glMatrixMode( GL_PROJECTION );
 		glPushMatrix();
@@ -80,7 +77,7 @@ void GLPortSigSlot::draw(  ) {
 }
 
 int GLPortSigSlot::handle( int event ) {
-//	if( mPainting ) {
+	if( mPainting ) {
 		if ( event == FL_PUSH && Fl::event_button() == FL_LEFT_MOUSE ) {
 			mPos = ( Fl::event_x(  ) - x(  ) ) * mHorRange.mSize / w(  ) + mHorRange.mPosition;
 
@@ -88,9 +85,8 @@ int GLPortSigSlot::handle( int event ) {
 			mSignal.Emit( mPos );
 
 			redraw();
-			cout<<"-->"<<mPos<<endl;
 			return 1;
 		}
-//	}	
-	GLPort::handle( event );
+	}	
+	return GLPort::handle( event );
 }

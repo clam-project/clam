@@ -25,6 +25,7 @@
 #include "GeometryKit.hxx"
 #include "GLPortNew.hxx"
 #include "FL/Fl.H"
+#include "DataTypes.hxx"
 
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
@@ -46,14 +47,19 @@ namespace CLAMGUI
 
 		void setPainting( bool painting );
 
-		void setPos( TData pos );
+		void setPos( CLAM::TData pos );
 
+		Slotv1<CLAM::TData>* getFrameSlot(  ) { return &mFrameSlot; }
+		Slotv1<bool>* getPaintSlot(  ) { return &mPaintSlot; }
+		Signalv1<double>* getSignal(  ) { return &mSignal; }
+		
 	protected:
 		bool mPainting;
 		double mPos;
 
 		Signalv1<double> mSignal;
-		Slotv1<TData> mSlot;
+		Slotv1<CLAM::TData> mFrameSlot;
+		Slotv1<bool> mPaintSlot;
 	};
 	
 }
