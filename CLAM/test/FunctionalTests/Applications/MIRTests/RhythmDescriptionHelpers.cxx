@@ -1,16 +1,16 @@
-#include "RythmDescriptionHelpers.hxx"
+#include "RhythmDescriptionHelpers.hxx"
 
 namespace CLAMTest
 {
 
-namespace RythmDescriptionTests
+namespace RhythmDescriptionTests
 {
-	void RythmEventsB2B::DefaultInit()
+	void RhythmEventsB2B::DefaultInit()
 	{
 		
 	}
 
-	bool RythmEventsB2B::IsValid() const
+	bool RhythmEventsB2B::IsValid() const
 	{
 		return HasRelativePath() 
 			&& HasEvents();

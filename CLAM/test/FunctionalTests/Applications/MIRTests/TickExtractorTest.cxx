@@ -1,6 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
-#include "RythmDescriptionHelpers.hxx"
+#include "RhythmDescriptionHelpers.hxx"
 #include "TickExtractor.hxx"
 #include "XMLStorage.hxx"
 
@@ -38,7 +38,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTests = "../../../../../CLAM-TestData/RythmDescription";
+			mPathToTests = "../../../../../CLAM-TestData/RhythmDescription";
 		}
 
 		void tearDown()
@@ -49,11 +49,11 @@ namespace CLAMTest
 		
 		void test_02_alles_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/02_alles_Ticks.xml" );
 			
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/02_alles_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/02_alles_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -67,11 +67,11 @@ namespace CLAMTest
 
 		void test_12_cubic_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/12_cubic_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE(	"Error loading back to back test data: problem with RythmDescription/Tick/12_cubic_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE(	"Error loading back to back test data: problem with RhythmDescription/Tick/12_cubic_Ticks.xml",
 						 inst.IsValid() == true );
 
 			CLAM::DataArray extractedEvents;
@@ -85,11 +85,11 @@ namespace CLAMTest
 
 		void test_blue_monday_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/blue_monday_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/blue_monday_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/blue_monday_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -104,11 +104,11 @@ namespace CLAMTest
 
 		void test_ALoCubano_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/ALoCubano_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/ALoCubano_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/ALoCubano_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -123,11 +123,11 @@ namespace CLAMTest
 
 		void test_AmourEnPoudre_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/AmourEnPoudre_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/AmourEnPoudre_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/AmourEnPoudre_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -142,11 +142,11 @@ namespace CLAMTest
 
 		void test_Amsterdam_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/Amsterdam_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/Amsterdam_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/Amsterdam_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -161,11 +161,11 @@ namespace CLAMTest
 
 		void test_clicseq_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/clicseq_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/clicseq_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/clicseq_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -180,11 +180,11 @@ namespace CLAMTest
 
 		void test_drums_electronic_guit_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/drums-electronic-guit_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/drums-electronic-guit_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/drums-electronic-guit_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -199,11 +199,11 @@ namespace CLAMTest
 
 		void test_elecpiano_drums_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/elecpiano-drums_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/elecpiano-drums_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/elecpiano-drums_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -218,11 +218,11 @@ namespace CLAMTest
 
 		void test_test1_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/test1_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/test1_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/test1_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -237,11 +237,11 @@ namespace CLAMTest
 
 		void test_test2_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/test2_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/test2_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/test2_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;
@@ -256,11 +256,11 @@ namespace CLAMTest
 
 		void test_test_Ticks()
 		{
-			RythmDescriptionTests::RythmEventsB2B inst;
+			RhythmDescriptionTests::RhythmEventsB2B inst;
 
 			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Tick/test_Ticks.xml" );
 
-			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RythmDescription/Tick/test_Ticks.xml",
+			CPPUNIT_ASSERT_MESSAGE( "Error loading back to back test data: problem with RhythmDescription/Tick/test_Ticks.xml",
 						inst.IsValid() == true);
 
 			CLAM::DataArray extractedEvents;

@@ -1,5 +1,5 @@
-#ifndef __RYTHMDESCRIPTIONHELPERS__
-#define __RYTHMDESCRIPTIONHELPERS__
+#ifndef __RHYTHMDESCRIPTIONHELPERS__
+#define __RHYTHMDESCRIPTIONHELPERS__
 
 #include "DynamicType.hxx"
 #include "Text.hxx"
@@ -10,13 +10,13 @@
 
 namespace CLAMTest
 {
-	namespace RythmDescriptionTests
+	namespace RhythmDescriptionTests
 	{
 
-		class RythmEventsB2B
+		class RhythmEventsB2B
 			: public CLAM::DynamicType
 		{
-			DYNAMIC_TYPE( RythmEventsB2B, 2 );
+			DYNAMIC_TYPE( RhythmEventsB2B, 2 );
 			DYN_ATTRIBUTE( 0, public, CLAM::Text,      RelativePath );
 			DYN_ATTRIBUTE( 1, public, CLAM::Pulse,     Events );
 
@@ -47,4 +47,4 @@ namespace CLAMTest
 	}
 }
 
-#endif // RythmDescriptionHelpers.hxx
+#endif // RhythmDescriptionHelpers.hxx
