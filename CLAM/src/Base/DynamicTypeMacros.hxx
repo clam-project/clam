@@ -50,15 +50,15 @@ protected: \
 	void MandatoryInit()\
 	{\
 		static bool staticTableInitialized = false;\
-		static TAttr staticTypeDescTable[N];\
+		static TAttr staticTypeDescTable[N+1];\
+		typeDescTable = staticTypeDescTable;\
 		if(!staticTableInitialized)\
 		{\
 			staticTableInitialized=true;\
-			typeDescTable = staticTypeDescTable;\
 			InformAll();\
-		}else{\
-			typeDescTable = staticTypeDescTable;\
-			maxAttrSize = typeDescTable[N-1].offset+typeDescTable[N-1].size;\
+		}else \
+		{\
+			maxAttrSize = N ? (typeDescTable[N-1].offset+typeDescTable[N-1].size) : 0;\
 		}\
 	} \
 public: \
