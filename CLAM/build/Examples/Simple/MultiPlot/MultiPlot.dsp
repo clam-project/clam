@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="SinglePlot_1" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="MultiPlot" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=SinglePlot_1 - Win32 Debug
+CFG=MultiPlot - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "SinglePlot_1.mak".
+!MESSAGE NMAKE /f "MultiPlot.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "SinglePlot_1.mak" CFG="SinglePlot_1 - Win32 Debug"
+!MESSAGE NMAKE /f "MultiPlot.mak" CFG="MultiPlot - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "SinglePlot_1 - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "SinglePlot_1 - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "MultiPlot - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "MultiPlot - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=SinglePlot_1 - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "SinglePlot_1 - Win32 Release"
+!IF  "$(CFG)" == "MultiPlot - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,7 +53,7 @@ LINK32=link.exe
 # ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" RFFTW2st.lib FFTW2st.lib fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
-!ELSEIF  "$(CFG)" == "SinglePlot_1 - Win32 Debug"
+!ELSEIF  "$(CFG)" == "MultiPlot - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -82,8 +82,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "SinglePlot_1 - Win32 Release"
-# Name "SinglePlot_1 - Win32 Debug"
+# Name "MultiPlot - Win32 Release"
+# Name "MultiPlot - Win32 Debug"
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -94,7 +94,7 @@ LINK32=link.exe
 
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\SinglePlot_example.cxx
+SOURCE=..\..\..\..\examples\MultiPlot_example.cxx
 # End Source File
 # Begin Source File
 
@@ -197,7 +197,7 @@ SOURCE=..\..\..\..\src\Visualization\Plot\GenericPlot.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Visualization\Plot\Plot.cxx
+SOURCE=..\..\..\..\src\Visualization\Plot\MultiPlot.cxx
 # End Source File
 # Begin Source File
 
@@ -245,7 +245,7 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Plot.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_SinglePlot.cxx
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_MultiPlot.cxx
 # End Source File
 # Begin Source File
 
@@ -269,7 +269,7 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_2DSurface.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Single_Display.cxx
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Multi_Display.cxx
 # End Source File
 # End Group
 # Begin Source File
@@ -694,7 +694,7 @@ SOURCE=..\..\..\..\src\Visualization\Plot\GenericPlot.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Visualization\Plot\Plot.hxx
+SOURCE=..\..\..\..\src\Visualization\Plot\MultiPlot.hxx
 # End Source File
 # Begin Source File
 
@@ -770,7 +770,7 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Plot.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_SinglePlot.hxx
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_MultiPlot.hxx
 # End Source File
 # Begin Source File
 
@@ -798,7 +798,7 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_2DSurface.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Single_Display.hxx
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Gl_Multi_Display.hxx
 # End Source File
 # End Group
 # Begin Source File
@@ -1157,23 +1157,23 @@ SOURCE=..\..\..\..\..\fftw\include\rfftw.h
 
 SOURCE=settings.cfg
 
-!IF  "$(CFG)" == "SinglePlot_1 - Win32 Release"
+!IF  "$(CFG)" == "MultiPlot - Win32 Release"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "SinglePlot_1.dsp"
-	srcdeps.exe settings.cfg SinglePlot_1.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "MultiPlot.dsp"
+	srcdeps.exe settings.cfg MultiPlot.dsp
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "SinglePlot_1 - Win32 Debug"
+!ELSEIF  "$(CFG)" == "MultiPlot - Win32 Debug"
 
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "SinglePlot_1.dsp"
-	srcdeps.exe settings.cfg SinglePlot_1.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)" "MultiPlot.dsp"
+	srcdeps.exe settings.cfg MultiPlot.dsp
 
 # End Custom Build
 
