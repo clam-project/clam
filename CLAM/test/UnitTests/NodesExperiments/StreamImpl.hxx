@@ -66,7 +66,7 @@ public:
 
 	Token& operator[](int physicalIndex)
 	{
-		assert( physicalIndex < int(_dataImpl.size()) );
+		CLAM_DEBUG_ASSERT( physicalIndex < int(_dataImpl.size()), "StreamImpl operator[] - Index out of bounds" );
 		typename DataStructure<Token>::iterator it;
 		int i;
 		for(i=0, it = _dataImpl.begin();
@@ -106,15 +106,15 @@ public:
 	
 	void newWritingRegionSize( Region& writer )
 	{
-		assert( writer.size()>0 ); // TODO -> CLAM_DEBUG_ASSERT
-		assert( !writer.producerRegion() ); // TODO debug assert
+		CLAM_DEBUG_ASSERT( writer.size()>0, "StreamImpl::newWritingRegionSize() - size must be greather than 0" );
+		CLAM_DEBUG_ASSERT( !writer.producerRegion(), "StreamImpl::newWritingRegionSize() - region must be a WritingRegion" );
 		commonNewRegionSize( writer );	
 	}
 
 
 	void newReadingRegionSize( Region& reader )
 	{
-		assert( reader.producerRegion() );
+		CLAM_DEBUG_ASSERT( reader.producerRegion(), "StreamImpl::newReadingRegionSize() - region must be a ReadingRegion" );
 		commonNewRegionSize(reader);
 	}
 private:
@@ -130,7 +130,8 @@ private:
 
 		int newLogicalSize = 1 << exponentOfClosestGreaterPowerOfTwo(logicalSizeCandidate);
 
-		assert(newLogicalSize > logicalSize() ); // TODO debug assert
+		CLAM_DEBUG_ASSERT(newLogicalSize > logicalSize(), "StreamImpl::commonNewRegionSize() - new logical size"
+								"must be greater than the older logical size" ); 
 		int tokensToInsert = newLogicalSize - logicalSize();
 
 		_dataImpl.Resize( 
@@ -194,7 +195,7 @@ public:
 
 	Token& operator[](int physicalIndex)
 	{
-		assert( physicalIndex < logicalSize()+phantomSize() ); //TODO debug assert
+		CLAM_DEBUG_ASSERT( physicalIndex < logicalSize()+phantomSize(), "StreamImpl::operator[] - Index out of bounds" );
 		return read( physicalIndex, 1);
 	}
 

@@ -314,8 +314,8 @@ public:
 		reader.consume(); // 4
 
 		CPPUNIT_ASSERT( false == reader.canConsume() );
-		writer.produce();  // without producing here, the following indexed acceses
-		CPPUNIT_ASSERT_EQUAL( 'r', reader[0] );  // to the reader would fail an assert
+		writer.produce(); 
+		CPPUNIT_ASSERT_EQUAL( 'r', reader[0] ); 
 		CPPUNIT_ASSERT_EQUAL( 'l', reader[1] );
 		CPPUNIT_ASSERT_EQUAL( 'd', reader[2] );
 	}
@@ -534,7 +534,6 @@ public:
 		char *bufferbase = &(writer.stream().operator[](0) );
 		//printbuffer(bufferbase, 22);
 
-		// assert "food" == buffer[16 : 16+5]
 		CPPUNIT_ASSERT_EQUAL( std::string("food"), std::string(bufferbase+16) );
 
 	}
@@ -600,11 +599,9 @@ public:
 		//printbuffer( &(writer.stream().operator[](0)), 32+5 );
 
 		char* bufferbase = &(writer.stream().operator[](0));
-		// assert stream[16+5:16+5+2] == "ye"
 		CPPUNIT_ASSERT_EQUAL('y', bufferbase[21] );
 		CPPUNIT_ASSERT_EQUAL('e', bufferbase[22] );
 
-		// assert stream[32:32+9] == stream[0:9] == "goodbXXye" where X are uninitialized chars
 		CPPUNIT_ASSERT_EQUAL('g', bufferbase[32] );
 		CPPUNIT_ASSERT_EQUAL('o', bufferbase[33] );
 		CPPUNIT_ASSERT_EQUAL('o', bufferbase[34] );

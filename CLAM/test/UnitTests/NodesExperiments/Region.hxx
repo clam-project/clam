@@ -2,6 +2,7 @@
 #define Region_hxx
 
 #include <list>
+#include "Assert.hxx"
 
 class Region
 {

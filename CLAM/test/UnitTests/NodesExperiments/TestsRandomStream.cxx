@@ -2,6 +2,7 @@
 #include "ReadingRegion.hxx"
 
 #include "PhantomBuffer.hxx"
+#include "Assert.hxx"
 #include <cppunit/extensions/HelperMacros.h>
 #include <sstream>
 #include <fstream>
@@ -94,7 +95,8 @@ private:
 		int dist = to-from;
 		int result = from + int((random() / double(RAND_MAX)) * dist);
 
-		assert(result>=from && result <=to);
+		CLAM_DEBUG_ASSERT(result>=from && result <=to, "TestsRandomStream::randomIntFromTo() - "
+								 " result must be inside interval marked by parameters" );
 		return result;
 	}
 

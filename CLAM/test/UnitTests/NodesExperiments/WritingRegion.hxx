@@ -69,14 +69,13 @@ public:
 	*/
 	bool canProduce()
 	{
-		// TODO: Convert standard assert to CLAM_DEBUG_ASSERT
-		assert( fulfilsInvariant() );
+		CLAM_DEBUG_ASSERT( fulfilsInvariant(), "WritingRegion::canProduce() - fulfils invariant checking failed" );
 		return !_stream.existsCircularOverlap( rearmostReadingPos(), pos()+size() );
  	}
 
 	void produce()
 	{
-		assert( canProduce() ); // TODO should be a CLAM_DEBUG_ASSERT
+		CLAM_DEBUG_ASSERT( canProduce(), "WritingRegion::produce() - WritingRegion can't produce" );
 		pos() += hop();
 		// reserve stream tokens for next position
 		_stream.writerHasAdvanced( *this );
@@ -86,7 +85,7 @@ public:
 	Token& operator[](int offset)  // TODO decide if operator[0] is the best option to get the data chunk
 	{
 
-		assert(0 <= offset && offset < size() ); //TODO debug assert
+		CLAM_DEBUG_ASSERT(0 <= offset && offset < size(), "WritingRegion::operator [] - Index out of bounds" ); 
 		int physicalIndex = beginDistance() + offset;
 
 		if (offset==0)

@@ -269,8 +269,8 @@ public:
 		reader.consume(); // 4
 
 		CPPUNIT_ASSERT( false == reader.canConsume() );
-		writer.produce();  // without producing here, the following indexed acceses
-		CPPUNIT_ASSERT_EQUAL( 'r', reader[0] );  // to the reader would fail an assert
+		writer.produce(); 
+		CPPUNIT_ASSERT_EQUAL( 'r', reader[0] ); 
 		CPPUNIT_ASSERT_EQUAL( 'l', reader[1] );
 		CPPUNIT_ASSERT_EQUAL( 'd', reader[2] );
 	}
