@@ -60,6 +60,9 @@ namespace CLAMGUI
 		mUI->mSMS = this;
 		mUI->Init(  );
 		
+		// FLTK visual settings
+		Fl::visual(FL_DOUBLE|FL_INDEX);
+
 		// FLTK Tooltip settings
 
 		Fl_Tooltip::delay( 0.5 );
@@ -183,8 +186,10 @@ namespace CLAMGUI
 	
 	void SMSTools::DoLoadAnalysis()
 	{
+
 		ExecuteMethodOnThreadKeepingScreenUpToDate( 
 			makeMemberFunctor0( *this, SMSTools, LoadAnalysis ) );
+	
 
 	}
 
