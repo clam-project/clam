@@ -182,12 +182,12 @@ private:
 		XMLComponentAdapter adapter(value,mElementsName,true);
 		return store.Load(adapter);
 	}
-	//* @return A string with the extracted XML content
+	//* @return A string with the extracted XML content */
 	std::string ContentLeaveOrComponent(StaticFalse* /*isLeave*/) const
 	{
 		return "";
 	}
-	/// @return A string with the extracted XML content
+	/** @return A string with the extracted XML content */
 	std::string ContentLeaveOrComponent(StaticTrue* /*isLeave*/) const
 	{
 		if (!IsXMLAttribute()) return "";
