@@ -20,11 +20,12 @@
 */
 
 #include "InControl.hxx"
-#include "Processing.hxx"
-#include "ProcessingComposite.hxx"
+#include "OutControl.hxx"
+#include "InControlArray.hxx"
+#include "InControlTmplArray.hxx"
+#include "cppunitHelper.hxx" // defines BaseLoggable
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <sstream>
 
 namespace CLAMTest {
 
@@ -33,21 +34,35 @@ using CLAM::TControlData;
 class ControlsTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( ControlsTest );
 
-class ControlsTest : public CppUnit::TestFixture
+
+class ControlsTest : public CppUnit::TestFixture, public BaseLoggable
 {
 	CPPUNIT_TEST_SUITE( ControlsTest );
+	// testing InControl and OutControl :
 	CPPUNIT_TEST( testInControl_DoControl_ChangesInternalState );
 	CPPUNIT_TEST( testLinkAndSendControl_ChangesInControlInternalState );
 	CPPUNIT_TEST( testInControlTmpl_DoControl_ChangesInternalState );
 	CPPUNIT_TEST( testLinkAndSendWithInControlTmpl_CallbackMethodGetsCalled );
+	CPPUNIT_TEST( testControlHandlerId_WritesToLog );
 	CPPUNIT_TEST( testLinkAndSendWithInControlTmpl_CallbackWithIdMethodGetsCalled );
 	CPPUNIT_TEST( testInControl_GetName_ChangesInteralState );
 	CPPUNIT_TEST( testOutControl_GetName_ChangesInteralState );
+	// testing InControlArray :
+	CPPUNIT_TEST( testInControlArray_Constructor_GeneratesCorrectName );
+	CPPUNIT_TEST( testInControlTmplArray_Constructor_GeneratesCorrectName );
+	CPPUNIT_TEST( testInControlTmplArray_ReceivesControl_HandlerReceivesControlAndId );
+
+
 	CPPUNIT_TEST_SUITE_END();
 	
-	// helper attribute
-	std::stringstream _log;
+	
 
+public:
+	void tearDown() {
+		ClearLog();
+	}
+
+private:
 	void testInControl_DoControl_ChangesInternalState()
 	{
 		CLAM::InControl in("i'm an in control");
@@ -66,7 +81,10 @@ class ControlsTest : public CppUnit::TestFixture
 	// this method is used by the CLAM::InControlTmpl<T>
 	// here we are simulating that this class is the parent processing object
 public:
-	void PublishInControl(CLAM::InControl*) {}	
+	void PublishInControl(CLAM::InControl* c) 
+	{
+		ToLog() << "InControl published\n";
+	}	
 
 private:
 	void testInControlTmpl_DoControl_ChangesInternalState()
@@ -77,7 +95,7 @@ private:
 	}
 	// helper method used for handling incoming control
 	int ControlHandler(CLAM::TControlData val) {
-		_log << "ControlHandler called with: " << val;
+		ToLog() << "ControlHandler called with: " << val;
 		return 0;
 	}
 	void testLinkAndSendWithInControlTmpl_CallbackMethodGetsCalled()
@@ -85,16 +103,22 @@ private:
 		CLAM::InControlTmpl<ControlsTest> 
 			in("in", this, &ControlsTest::ControlHandler); // calls this->PublishInControl
 		
+		ClearLog();
 		in.DoControl(1.f);
-		CPPUNIT_ASSERT_EQUAL( _log.str(), std::string("ControlHandler called with: 1") );
-		_log.clear();
+		CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with: 1"), GetLog() );
 	}
 
 	// helper method for handling incoming control plus incontrol ID
 	int ControlHandlerId(int id, CLAM::TControlData val) {
-		_log << "ControlHandler called with id : " << id << " and value : " << val;
+		ToLog() << "ControlHandler called with id : " << id << " and value : " << val;
 		return 0;
 	}
+	void testControlHandlerId_WritesToLog()
+	{
+		ControlHandlerId(0, 1.0);
+		CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with id : 0 and value : 1"), GetLog() );
+	}
+
 	void testLinkAndSendWithInControlTmpl_CallbackWithIdMethodGetsCalled()
 	{
 		const int controlId=2;
@@ -103,10 +127,9 @@ private:
 				
 		in.DoControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 
-			_log.str(), 
-			std::string("ControlHandler called with id : 2 and value : 1") );
+			GetLog(), 
+			std::string("InControl published\nControlHandler called with id : 2 and value : 1") );
 		    // note that controlId == 2
-		_log.clear();
 	}
 
 	void testInControl_GetName_ChangesInteralState()
@@ -118,6 +141,45 @@ private:
 	{
 		CLAM::OutControl out("out name");
 		CPPUNIT_ASSERT_EQUAL(std::string("out name"), out.GetName() );
+	}
+
+	void testInControlArray_Constructor_GeneratesCorrectName()
+	{
+		CLAM::InControlArray inControls (4, "root_name");
+		CPPUNIT_ASSERT_EQUAL( 
+			std::string("root_name_0"),
+			inControls[0].GetName() );
+
+	}
+
+	void testInControlTmplArray_Constructor_GeneratesCorrectName()
+	{
+		CLAM::InControlTmplArray<ControlsTest>
+			inControls(4, "in", this, &ControlsTest::ControlHandlerId);
+
+		CPPUNIT_ASSERT_EQUAL( 
+			std::string("in_3"), 
+			inControls[3].GetName() );
+	}
+	// void testInControlTmplArray_Constructor_ControlsGetPublished() //?
+
+
+
+	void testInControlTmplArray_ReceivesControl_HandlerReceivesControlAndId()
+	{
+		CLAM::InControlTmplArray<ControlsTest> 
+			ins( 2, /*num controls*/
+				"in", 
+				this, /*parent to publish (the fixture class is impersonating a processing)*/ 
+				&ControlsTest::ControlHandlerId ); // calls this->PublishInControl
+				
+		ins[1].DoControl( -1.0 );
+		CPPUNIT_ASSERT_EQUAL( 
+			std::string(
+				"InControl published\n"
+				"InControl published\n"
+				"ControlHandler called with id : 1 and value : -1" ),
+			GetLog() );
 	}
 };
 
