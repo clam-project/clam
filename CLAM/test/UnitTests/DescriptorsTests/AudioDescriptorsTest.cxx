@@ -25,14 +25,12 @@
 #include "AudioDescriptors.hxx"
 #include "AudioFileIn.hxx"
 #include "AudioFileConfig.hxx"
-#include <cmath>
+#include "MonoAudioFileReader.hxx"
+#include "XMLStorage.hxx"
 
 
-/*
-#include "similarityHelper.hxx"
-#include <algorithm>
+
 #include <iostream>
-*/
 
 namespace CLAMTest
 {
@@ -83,29 +81,40 @@ private:
 	CLAM::AudioDescriptors *mDescriptors;
 	std::string mPathToTestData;
 
-	CLAM::Audio helperGetData(const std::string & fileName)
+	CLAM::Audio ReadAudio(const std::string & fileName)
 	{
 		CLAM::AudioFileConfig infilecfg;
 
-		infilecfg.SetFilename(mPathToTestData+fileName);
+		infilecfg.SetFilename(fileName);
 		infilecfg.SetFiletype(CLAM::EAudioFileType::eWave);
 
-		CLAM::AudioFileIn infile(infilecfg);
-		    
+		CLAM::AudioFileIn reader(infilecfg);
+
 		CLAM::Audio buf;
-		buf.SetSize(infile.Size());
-		buf.SetSampleRate(infile.SampleRate());
+		buf.SetSize(reader.Size());
+		buf.SetSampleRate(reader.SampleRate());
 
-		infile.Start();
-
+		reader.Start();
 		do {
-			infile.Do(buf);
-		} while (!infile.Done());
-
-		infile.Stop();
+			reader.Do(buf);
+		} while (!reader.Done());
+		reader.Stop();
 
 		return buf;
+
 	}
+
+	CLAM::Audio helperGetData(const std::string & fileName)
+	{
+		std::string extension = fileName.substr(fileName.size()-4,fileName.size());
+		std::string fullPath = mPathToTestData+fileName;
+		if (extension!=".xml")
+			return ReadAudio(fullPath);
+		CLAM::Audio audio;
+		CLAM::XMLStorage::Restore(audio,fullPath); 
+		return audio;
+	}
+
 	void assertDescriptorExtractionInsideTolerance(const std::map<std::string, CLAM::TData> & expected, 
 		CLAM::TData tolerance, CLAM::TData & (CLAM::AudioDescriptors::*getter)() const )
 	{
@@ -119,8 +128,7 @@ private:
 			mDescriptors->SetpAudio(&audio);
 			mDescriptors->Compute();
 			if (
-				(std::isnan((mDescriptors->*getter)()) && !std::isnan(it->second)) ||
-				(!std::isnan((mDescriptors->*getter)()) && std::isnan(it->second)) ||
+				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
 				(mDescriptors->*getter)() > (*it).second + tolerance ||
 				(mDescriptors->*getter)() < (*it).second - tolerance
 				)
