@@ -58,7 +58,7 @@ namespace CLAM
 	public:
 		SMSBase(void);	
 		virtual ~SMSBase(void);
-		void Run(void);
+		virtual void Run()=0;
 		void SetHaveConfig(bool hasConfig){
 			mHaveConfig=hasConfig;
 		}
