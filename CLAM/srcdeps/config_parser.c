@@ -23,6 +23,8 @@ list *cxxflags_release = 0;
 
 list *library_paths = 0;
 
+list *program = 0;
+
 int config_parse(const char* filename);
 
 int var_true(char* subst,const char* filename,int line)
@@ -453,6 +455,9 @@ void config_init(void)
 	cxxflags_release = 
 		listhash_add_key_once(config,"CXXFLAGS_RELEASE")->l = list_new();
 
+	program = 
+		listhash_add_key_once(config,"PROGRAM")->l = list_new();
+
 	listhash_add_key_once(config,"SOURCES")->l = list_new();
 	listhash_add_key_once(config,"PRE_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"DEFINES")->l = list_new();
@@ -465,6 +470,7 @@ void config_init(void)
 	list_add_str_once(used_vars,"LIBRARY_PATHS");
 	list_add_str_once(used_vars,"CXXFLAGS_DEBUG");
 	list_add_str_once(used_vars,"CXXFLAGS_RELEASE");
+	list_add_str_once(used_vars,"PROGRAM");
 	list_add_str_once(used_vars,"SOURCES");
 	list_add_str_once(used_vars,"PRE_INCLUDES");
 	list_add_str_once(used_vars,"DEFINES");

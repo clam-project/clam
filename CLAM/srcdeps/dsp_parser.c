@@ -353,6 +353,107 @@ void copy_without_includes(char* tgt,const char* src)
 }
 */
 
+int dsp_parser_modify_project_name(const char* buf,char* tmp,int len)
+{
+	char* project_name = 0;
+	if (program && program->first && program->first->str)
+	{
+		project_name = program->first->str;
+	}
+	else
+	{
+		fprintf(stderr,"Error: variable PROGRAM not defined\n");	
+	}
+	
+	{
+		char* cmp="# Microsoft Developer Studio Project File - Name=\"";
+		if (!strcmp_begin(buf,cmp))
+		{
+			const char* a = buf;
+			strstart(tmp,len);
+			stradd(cmp);
+			a += strlen(cmp);
+			while (*a && *a!='"') a++;
+			stradd(project_name);
+			stradd(a);
+			strend();
+			return 1;
+		}
+	}
+
+	{
+		char* cmps[]={
+			"CFG=",
+			"!IF  \"$(CFG)\" == \"",
+			"!ELSEIF  \"$(CFG)\" == \"",
+			"!MESSAGE \"",
+			"# Name \"",
+			0};
+		int i = 0;
+		char* cmp;
+		while ((cmp=cmps[i])!=0)
+		{
+			if (!strcmp_begin(buf,cmp))
+			{
+				const char* a = buf;
+				a += strlen(cmp);
+				a = strstr(a," - ");
+				if (a)
+				{
+					strstart(tmp,len);
+					stradd(cmp);
+					stradd(project_name);
+					stradd(a);
+					strend();
+					return 1;
+				}
+			}
+			i++;
+		}
+	}
+
+	{
+		char* cmp="!MESSAGE NMAKE /f \"";
+		if (!strcmp_begin(buf,cmp))
+		{
+			const char* a = buf;
+			const char* aa;
+			char* cmp2 = ".mak\".";
+			
+			aa = strstr(a,cmp2);
+			if (aa)
+			{
+				strstart(tmp,len);
+				stradd(cmp);
+				stradd(project_name);
+				stradd(aa);
+				strend();
+				return 1;
+			}
+
+			cmp2 = ".mak\" CFG=\"";
+
+			aa = strstr(a,cmp2);
+			if (aa) {
+				aa = strstr(a," - ");
+				if (aa)
+				{
+					strstart(tmp,len);
+					stradd(cmp);
+					stradd(project_name);
+					stradd(cmp2);
+					stradd(project_name);
+					stradd(aa);
+					strend();
+					return 1;
+				}
+			}
+		}
+	}
+
+	return 0;	
+}
+
 void dsp_parse_line_chkcfg(const char* buf,int line)
 {
 	const char* a = 0;
@@ -381,7 +482,8 @@ void dsp_parse_line_chkcfg(const char* buf,int line)
 			b++;
 		}
 
-		fprintf(stderr,"%d CURRENTCONFIG=%s %d\n",line,currentConfig,currentConfigIsDebug);
+/*		fprintf(stderr,"%d CURRENTCONFIG=%s %d\n",line,currentConfig,currentConfigIsDebug);
+*/
 	}
 	if (strcmp_eol(buf,"!ENDIF")==0)
 	{
@@ -455,11 +557,10 @@ void dsp_parse_line(const char* buf,int line)
 	}
 	
 	if (!skip && !skipsource && sourcefile!=1) {
-
+		char tmp[4096];
 		if (
 			!strcmp_begin(buf,"# ADD CPP ")
 		) {
-			char tmp[4096];
 			/*
 			char tmp2[4096];
 			copy_without_includes(tmp2,buf);
@@ -486,7 +587,6 @@ void dsp_parse_line(const char* buf,int line)
 		if (
 			!strcmp_begin(buf,"# ADD LINK32 ")
 		) {
-			char tmp[4096];
 			/*
 			char tmp2[4096];
 			copy_without_includes(tmp2,buf);
@@ -499,13 +599,20 @@ void dsp_parse_line(const char* buf,int line)
 			
 			/** add all needed_includepaths here **/
 
-			dsp_parse_add_libraries();
 			dsp_parse_add_library_paths();
+
+			dsp_parse_add_libraries();
+
 			dsp_parse_add_link_flags();
 
 			stradd("\n");
 			
 			strend();
+			fputs(tmp,outfile);
+		}
+		else
+		if (dsp_parser_modify_project_name(buf,tmp,4096))
+		{
 			fputs(tmp,outfile);
 		}
 		else

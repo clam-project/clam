@@ -13,6 +13,8 @@ extern list* libraries_debug;
 extern list* libraries_release;
 extern list* library_paths;
 
+extern list* program;
+
 int config_parse(const char* filename);
 void config_apply(void);
 void config_init(void);
