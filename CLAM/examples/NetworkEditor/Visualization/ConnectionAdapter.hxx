@@ -12,6 +12,8 @@ namespace CLAM
 {
 	class OutPort;
 	class InPort;
+	class InControl;
+	class OutControl;
 	class Network;
 }
 
