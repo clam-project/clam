@@ -221,7 +221,7 @@ InControlTmplArray<Processing>::InControlTmplArray(
 		const std::string &name,
 		Processing *parent, 
 		TPtrMemberFuncId f,
-		const bool publish=true)
+		const bool publish)
 {
 	mArray.Resize(size);
 	mArray.SetSize(size);
