@@ -388,7 +388,7 @@ else
 	            "/usr/local/include" \
 	            "/opt/include"
 	do
-		if test -d "$base/rfftw.h"; then
+		if test -r "$base/rfftw.h"; then
 			AC_MSG_RESULT(yes)
 			found_fftw=yes
 			break;
