@@ -149,14 +149,19 @@ void MyOutAudioApplication::AudioMain(void)
 
 		AudioManager audioManager(48000,4096);
 
-		AudioIOConfig outCfg;
-		outCfg.SetName("mono out");
-		outCfg.SetChannelID(0);
+		AudioIOConfig outLCfg;
+		outLCfg.SetName("left out");
+		outLCfg.SetChannelID(0);
+
+		AudioIOConfig outRCfg;
+		outRCfg.SetName("right out");
+		outRCfg.SetChannelID(1);
 
 		Audio bufOsc;
 		bufOsc.SetSize(buffersize);
 
-		AudioOut out(outCfg);
+		AudioOut outL(outLCfg);
+		AudioOut outR(outRCfg);
 
 		OscillatorConfig testtoneCfg;
 
@@ -169,7 +174,8 @@ void MyOutAudioApplication::AudioMain(void)
 		do
 		{
 			testtone.Do(bufOsc);
-			out.Do(bufOsc);
+			outL.Do(bufOsc);
+			outR.Do(bufOsc);
 		} while (!Canceled());
 	}
 	catch(Err error)
@@ -194,9 +200,7 @@ int main(int argc,char** argv)
 			MyIOAudioApplication app;
 			app.Run(argc,argv);
 		}
-
 		getchar();
-
 		{
 			MyOutAudioApplication app;
 			app.Run(argc,argv);

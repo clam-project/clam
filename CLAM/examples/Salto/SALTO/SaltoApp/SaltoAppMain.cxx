@@ -222,10 +222,14 @@ protected:
 	
 		mAudioManager->SetInternalBuffersNumber(12);
 
-		AudioIOConfig iocfg;
-		iocfg.SetName("left out");
-		iocfg.SetChannelID(0);
-		mAudioOut = new AudioOut(iocfg);
+		AudioIOConfig iocfgL;
+		iocfgL.SetName("left out");
+		iocfgL.SetChannelID(0);
+		AudioIOConfig iocfgR;
+		iocfgR.SetName("right out");
+		iocfgR.SetChannelID(1);
+		mAudioOutL = new AudioOut(iocfgL);
+		mAudioOutR = new AudioOut(iocfgR);
 		//iocfg.SetName("left in");
 		//mAudioIn = new AudioIn(iocfg);
 
@@ -240,7 +244,8 @@ protected:
 		else
 		{
 			
-			mAudioOut->Do( synthbuffer );
+			mAudioOutL->Do( synthbuffer );
+			mAudioOutR->Do( synthbuffer );
 		}
 	}
 
@@ -332,8 +337,8 @@ private:
 
 	// Sample Based
 	AudioManager*    mAudioManager;
-	AudioIn*         mAudioIn;
-	AudioOut*        mAudioOut;
+	AudioOut*        mAudioOutL;
+	AudioOut*        mAudioOutR;
 	AudioFileOut     mFileAudioOut;
 	//MIDI based
 	MIDIManager      mMIDIManager;
