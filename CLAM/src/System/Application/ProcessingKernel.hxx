@@ -10,6 +10,7 @@ class ProcessingKernel
 {
 
 public:
+	virtual ~ProcessingKernel() {}
 
 	virtual void ProcessingCleanup() = 0;
 
