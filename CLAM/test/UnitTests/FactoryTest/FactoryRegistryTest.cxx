@@ -10,7 +10,7 @@
 namespace CLAMTest
 {
 
-	
+
 
 class FactoryRegistryTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( FactoryRegistryTest );
@@ -34,28 +34,30 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCount_WithTwoCreators );
 	CPPUNIT_TEST_SUITE_END();
 
+protected:
+	typedef CLAM::Factory<CLAM::Processing> MyFactoryType;
 
 private:
 
 	// helper methods:
-	CLAM::Factory::CreatorMethod OscillatorCreator() { 
-		return CLAM::Factory::Registrator<CLAM::Oscillator>::Create;
+	MyFactoryType::CreatorMethod OscillatorCreator() {
+		return MyFactoryType::Registrator<CLAM::Oscillator>::Create;
 	}
 
-	CLAM::Factory::CreatorMethod AudioAdderCreator() { 
-		return CLAM::Factory::Registrator<CLAM::AudioAdder>::Create;
+	MyFactoryType::CreatorMethod AudioAdderCreator() {
+		return MyFactoryType::Registrator<CLAM::AudioAdder>::Create;
 	}
 
 	// tests definition
 	void testGetCreator_WhenIsEmpty()
 	{
-		CLAM::Factory::Registry reg; // an empty factory register
+		MyFactoryType::Registry reg; // an empty factory register
 		try {
 			reg.GetCreator("bla");
 			CPPUNIT_FAIL( "Assert was expected to happen");
 
 		} catch( CLAM::ErrAssertionFailed& expected ) {
-			CPPUNIT_ASSERT_EQUAL( 
+			CPPUNIT_ASSERT_EQUAL(
 				std::string("the Factory Registry shouldn't be empty"),
 				std::string( expected.what() ) );
 		}
@@ -63,23 +65,23 @@ private:
 
 	void testGetCreatorSafe_WhenIsEmpty()
 	{
-		CLAM::Factory::Registry reg; // an  empty factor y register
+		MyFactoryType::Registry reg; // an  empty factor y register
 		try {
 			reg.GetCreatorSafe("foo");
 			CPPUNIT_FAIL( "it was expected to catch a CLAM::ErrFactory" );
 		} catch (CLAM::ErrFactory& expected) {
-			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:", 
-				std::string("GetCreatorSafe invoked on an empty registry"), 
+			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:",
+				std::string("GetCreatorSafe invoked on an empty registry"),
 				std::string( expected.what() ) );
 		}
 	}
 
 	void testGetCreator_WrongKeyWithASingleCreator()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up:
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
-		
+
 		try{
 			reg.GetCreator("non existent key");
 			CPPUNIT_FAIL( "Assertion should happen" );
@@ -88,10 +90,10 @@ private:
 
 	void testGetCreatorSafe_WrongKeyWithASingleCreator()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up:
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
-		
+
 		try{
 			reg.GetCreatorSafe("non existent key");
 			CPPUNIT_FAIL( "ErrFactory expected" );
@@ -100,51 +102,51 @@ private:
 
 	void testGetCreator_CorrectKeyWithASingleCreator()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up:
-		CLAM::Factory::CreatorMethod inserted;
+		MyFactoryType::CreatorMethod inserted;
 		inserted = OscillatorCreator();
 
 		reg.AddCreator( "Oscillator", inserted);
-		CPPUNIT_ASSERT( inserted == reg.GetCreator("Oscillator") ); 
+		CPPUNIT_ASSERT( inserted == reg.GetCreator("Oscillator") );
 	}
 
 	void testGetCreatorSafe_CorrectKeyWithASingleCreator()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up:
-		CLAM::Factory::CreatorMethod inserted;
+		MyFactoryType::CreatorMethod inserted;
 		inserted = OscillatorCreator();
 
 		reg.AddCreator( "Oscillator", inserted);
-		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("Oscillator") ); 
+		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("Oscillator") );
 	}
 
 	void testGetCreator_CorrectKeyWithTwoCreators()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
 		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
 
-		CLAM::Factory::CreatorMethod oscillatorCreator = OscillatorCreator();
+		MyFactoryType::CreatorMethod oscillatorCreator = OscillatorCreator();
 		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreator("Oscillator") );
 	}
 
 	void testGetCreatorSafe_CorrectKeyWithTwoCreators()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
 		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
 
-		CLAM::Factory::CreatorMethod oscillatorCreator = OscillatorCreator();
+		MyFactoryType::CreatorMethod oscillatorCreator = OscillatorCreator();
 		CPPUNIT_ASSERT( oscillatorCreator == reg.GetCreatorSafe("Oscillator") );
 	}
 
 	void testGetCreator_WrongKeyWithTwoCreators()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
 		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
@@ -156,11 +158,11 @@ private:
 
 	void testGetCreatorSafe_WrongKeyWithTwoCreators()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		// set up
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
 		reg.AddCreator( "AudioAdder", AudioAdderCreator() );
-		
+
 		try{
 			reg.GetCreatorSafe("incorrect as well");
 			CPPUNIT_FAIL( "CLAM::ErrFactory exptected" );
@@ -169,7 +171,7 @@ private:
 
 	void testAddCreator_RepeatedKey()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
 
 		try {
@@ -181,7 +183,7 @@ private:
 
 	void testAddCreatorSafe_RepeatedKey()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		reg.AddCreator( "Oscillator", OscillatorCreator() );
 
 		try {
@@ -189,15 +191,15 @@ private:
 			CPPUNIT_FAIL( "CLAM::ErrFactory expected" );
 
 		} catch (CLAM::ErrFactory& expected) {
-			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:", 
-				std::string("A repeated key was passed"), 
+			CPPUNIT_ASSERT_EQUAL_MESSAGE("In ErrFactory message:",
+				std::string("A repeated key was passed"),
 				std::string( expected.what() ) );
 		}
 	}
 
 	void testRemoveCreators_WhenIsEmpty()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		reg.RemoveAllCreators();
 		CPPUNIT_ASSERT_EQUAL_MESSAGE(
 			"Count() should be 0 after RemoveAllCreators()",
@@ -206,7 +208,7 @@ private:
 
 	void testRemoveCreators_WhenNotEmtpy()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		reg.AddCreator("osc", OscillatorCreator() );
 		reg.AddCreator("adder", AudioAdderCreator() );
 
@@ -218,13 +220,13 @@ private:
 
 	void testCount_WhenEmpty()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		CPPUNIT_ASSERT_EQUAL( std::size_t(0), reg.Count() );
 	}
 
 	void testCount_WithTwoCreators()
 	{
-		CLAM::Factory::Registry reg;
+		MyFactoryType::Registry reg;
 		reg.AddCreator("osc", OscillatorCreator() );
 		reg.AddCreator("adder", AudioAdderCreator() );
 		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );

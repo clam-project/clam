@@ -19,11 +19,12 @@ public:
 };
 
 
+template <typename AbstractProductType = Processing>
 class Factory
 {
 public:
 
-	typedef Processing AbstractProduct;
+	typedef AbstractProductType AbstractProduct;
 	typedef AbstractProduct* (*CreatorMethod)(void);
 	typedef std::string RegistryKey;
 
@@ -118,8 +119,9 @@ private:
 // Class definitions (not placed in the cxx because Factory will become template)
 
 
-
-inline Factory::AbstractProduct* Factory::Create( const RegistryKey name )
+template <typename AbstractProductType>
+inline typename Factory<AbstractProductType>::AbstractProduct*
+	Factory<AbstractProductType>::Create( const RegistryKey name )
 {
 	// it asserts that name is in the registry
 	CreatorMethod creator =
@@ -128,26 +130,34 @@ inline Factory::AbstractProduct* Factory::Create( const RegistryKey name )
 }
 
 
-inline Factory::AbstractProduct* Factory::CreateSafe( const RegistryKey name ) throw (ErrFactory)
+template <typename AbstractProductType>
+inline typename Factory<AbstractProductType>::AbstractProduct*
+	Factory<AbstractProductType>::CreateSafe( const RegistryKey name ) throw (ErrFactory)
 {
 	return  _registry.GetCreatorSafe(name)();
 }
-inline void Factory::Clear()
+
+template <typename AbstractProductType>
+inline void Factory<AbstractProductType>::Clear()
 {
 	_registry.RemoveAllCreators();
 }
-inline void Factory::AddCreator(const RegistryKey name, CreatorMethod creator) {
+
+template <typename AbstractProductType>
+inline void Factory<AbstractProductType>::AddCreator(const RegistryKey name, CreatorMethod creator) {
 	_registry.AddCreator(name, creator);
 }
 
-inline void Factory::AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory) {
+template <typename AbstractProductType>
+inline void Factory<AbstractProductType>::AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory) {
 	_registry.AddCreatorSafe(name, creator);
 }
 
 
 
-
-inline Factory::CreatorMethod Factory::Registry::GetCreator( RegistryKey creatorId)
+template <typename AbstractProductType>
+inline typename Factory<AbstractProductType>::CreatorMethod 
+	Factory<AbstractProductType>::Registry::GetCreator( RegistryKey creatorId)
 {
 	CLAM_ASSERT(_creators.begin() != _creators.end(),
 		"the Factory Registry shouldn't be empty");
@@ -158,7 +168,9 @@ inline Factory::CreatorMethod Factory::Registry::GetCreator( RegistryKey creator
 	return res;
 }
 
-inline Factory::CreatorMethod Factory::Registry::GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory)
+template <typename AbstractProductType>
+inline typename Factory<AbstractProductType>::CreatorMethod 
+	Factory<AbstractProductType>::Registry::GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory)
 {
 	if ( _creators.begin() == _creators.end() )
 		throw ErrFactory("GetCreatorSafe invoked on an empty registry");
@@ -170,7 +182,8 @@ inline Factory::CreatorMethod Factory::Registry::GetCreatorSafe( RegistryKey cre
 	return res;
 }
 
-inline void Factory::Registry::AddCreator( RegistryKey creatorId, CreatorMethod creator )
+template <typename AbstractProductType>
+inline void Factory<AbstractProductType>::Registry::AddCreator( RegistryKey creatorId, CreatorMethod creator )
 {
 	if( !CommonAddCreator( creatorId, creator ) ) {
 		// repeated key
@@ -178,7 +191,8 @@ inline void Factory::Registry::AddCreator( RegistryKey creatorId, CreatorMethod 
 	}
 }
 
-inline void Factory::Registry::AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory)
+template <typename AbstractProductType>
+inline void Factory<AbstractProductType>::Registry::AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory)
 {
 	if( !CommonAddCreator( creatorId, creator ) ) {
 		// repeated key
@@ -186,18 +200,21 @@ inline void Factory::Registry::AddCreatorSafe( RegistryKey creatorId, CreatorMet
 	}
 }
 
-inline void Factory::Registry::RemoveAllCreators()
+template <typename AbstractProductType>
+inline void Factory<AbstractProductType>::Registry::RemoveAllCreators()
 {
 	_creators.clear();
 }
 
-inline std::size_t Factory::Registry::Count()
+template <typename AbstractProductType>
+inline std::size_t Factory<AbstractProductType>::Registry::Count()
 {
 	return _creators.size();
 }
 
 // helper methods:
-inline Factory::CreatorMethod Factory::Registry::CommonGetCreator( RegistryKey& creatorId )
+template <typename AbstractProductType>
+inline typename Factory<AbstractProductType>::CreatorMethod Factory<AbstractProductType>::Registry::CommonGetCreator( RegistryKey& creatorId )
 {
 	CreatorMap::const_iterator i = _creators.find(creatorId);
 	if ( i==_creators.end() ) {
@@ -207,7 +224,8 @@ inline Factory::CreatorMethod Factory::Registry::CommonGetCreator( RegistryKey& 
 	return i->second;
 }
 
-inline bool Factory::Registry::CommonAddCreator( RegistryKey& creatorId, CreatorMethod creator)
+template <typename AbstractProductType>
+inline bool Factory<AbstractProductType>::Registry::CommonAddCreator( RegistryKey& creatorId, CreatorMethod creator)
 {
 	// returns false if the key was repeated.
 	return  _creators.insert(

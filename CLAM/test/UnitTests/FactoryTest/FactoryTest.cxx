@@ -10,7 +10,7 @@
 namespace CLAMTest
 {
 
-	
+
 class FactoryTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( FactoryTest );
 
@@ -26,12 +26,14 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	CLAM::Factory* _theFactory;
+	typedef CLAM::Factory<CLAM::Processing> MyFactoryType;
+
+	MyFactoryType* _theFactory;
 
 public:
 	void setUp()
 	{
-		_theFactory = new CLAM::Factory;
+		_theFactory = new MyFactoryType;
 	}
 	void tearDown()
 	{
@@ -39,30 +41,30 @@ public:
 	}
 
 	// helper methods:
-	CLAM::Factory::CreatorMethod OscillatorCreator() { 
-		return CLAM::Factory::Registrator<CLAM::Oscillator>::Create;
+	MyFactoryType::CreatorMethod OscillatorCreator() {
+		return MyFactoryType::Registrator<CLAM::Oscillator>::Create;
 	}
 
-	CLAM::Factory::CreatorMethod AudioAdderCreator() { 
-		return CLAM::Factory::Registrator<CLAM::AudioAdder>::Create;
+	MyFactoryType::CreatorMethod AudioAdderCreator() {
+		return MyFactoryType::Registrator<CLAM::AudioAdder>::Create;
 	}
 	// Tests definition :
 protected:
-	void testCreateOscillatorReturnsAnOscillator() 
+	void testCreateOscillatorReturnsAnOscillator()
 	{
 		CLAM::Processing* returned = OscillatorCreator()();
-		
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned ); 
+
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
 		delete returned;
 	}
-	
+
 	void testCreate_ReturnsAnOscillator()
 	{
 		_theFactory->AddCreator( "Oscillator", OscillatorCreator() );
-		
+
 		CLAM::Processing* returned = _theFactory->Create("Oscillator");
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
-		
+
 		// tear down:
 		delete returned;
 		_theFactory->Clear();
@@ -95,7 +97,7 @@ protected:
 			_theFactory->AddCreatorSafe("Oscillator", OscillatorCreator());
 			CPPUNIT_FAIL("an ErrFactory should be rised");
 		} catch (CLAM::ErrFactory&) {
-			
+
 		}
 	}
 
@@ -120,10 +122,10 @@ class FactorySingletonTest : public FactoryTest
 	CPPUNIT_TEST_SUITE_END();
 
 public:
-	
+
 	void setUp()
 	{
-		_theFactory = &CLAM::Factory::GetInstance();
+		_theFactory = &MyFactoryType::GetInstance();
 	}
 
 	void tearDown()
@@ -134,8 +136,8 @@ public:
 private:
 	void testFactoryIsSingleton()
 	{
-		CLAM::Factory &ref1 = CLAM::Factory::GetInstance();
-		CLAM::Factory &ref2 = CLAM::Factory::GetInstance();
+		MyFactoryType &ref1 = MyFactoryType::GetInstance();
+		MyFactoryType &ref2 = MyFactoryType::GetInstance();
 
 		CPPUNIT_ASSERT_MESSAGE(
 			"the thow Factory refs should point the same object ",
@@ -144,7 +146,7 @@ private:
 	}
 };
 
-	
+
 
 
 } // namespace CLAMTest
