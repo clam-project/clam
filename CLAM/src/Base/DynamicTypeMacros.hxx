@@ -94,7 +94,7 @@ protected: \
 	} \
 private: \
 	template <unsigned int NAttrib> \
-	class AttributePosition : public DynamicType::AttributePositionBase<NAttrib> { \
+	class AttributePosition : public CLAM::DynamicType::AttributePositionBase<NAttrib> { \
 		public: \
 			typedef StaticBool<!(NAttrib>=N)> InboundsCheck; \
 	}; \
