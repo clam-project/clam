@@ -286,7 +286,7 @@ void SMSBase::Flush(Segment& seg)
 void SMSBase::AnalysisProcessing()
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;
-	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator")
+	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator");
 		
 	Flush(mOriginalSegment);
 	
