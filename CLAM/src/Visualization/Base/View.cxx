@@ -19,15 +19,18 @@
  *
  */
 
+#include "View.hxx"
 #include "Mutex.hxx"
 #include "Lock.hxx"
+
+using CLAM::Mutex;
 
 namespace CLAMGUI
 {
 		void View::Refresh( Mutex& mutexObj )
 		{
-				CLAM::ScopedLock<Mutex> lock( mutexObj );
+			Mutex::ScopedLock lock( mutexObj );
 				
-				Refresh();
+			Refresh();
 		}
 }

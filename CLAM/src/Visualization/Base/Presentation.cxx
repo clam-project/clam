@@ -24,7 +24,7 @@
 
 namespace CLAMGUI
 {
-		void Presentation::AttachTo( View& view )
+		void Presentation::AttachTo( View& view ) throw ( std::bad_cast )
 		{
 				Bind( view.GetAspect() );
 		}

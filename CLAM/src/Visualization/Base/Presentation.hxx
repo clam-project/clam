@@ -22,7 +22,7 @@
 #ifndef __PRESENTATION__
 #define __PRESENTATION__
 
-#include <exception>
+#include <typeinfo>
 
 namespace CLAMGUI
 {
@@ -50,7 +50,7 @@ public:
 		 *  presentation and the concrete view is resolved in the Presentation::Bind
 		 *  method.
 		 */
-		virtual void AttachTo( View& );
+		virtual void AttachTo( View& ) throw ( std::bad_cast );
 
 		virtual ~Presentation()
 		{

@@ -56,13 +56,15 @@ public:
 		/**
 		 *  @see View::Refresh
 		 */
-		virtual void Refresh() = 0;
+		virtual bool Refresh() = 0;
 
 		/**
 		 *  This pure virtual method expresses a view ability to
 		 *  to modify the model as sees fit.
+		 *  @returns A boolean indicating wether it has been possible 
+		 *           to update the model object
 		 */
-		virtual void UpdateModel() = 0;
+		virtual bool UpdateModel() = 0;
 };
 
 }

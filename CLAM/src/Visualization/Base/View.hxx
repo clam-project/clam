@@ -70,9 +70,10 @@ public:
 		/**
 		 *   The main message to be send to any view. Its purpose is the same
 		 *   as the Observer::broadcast() method found in the Observer pattern.
+		 *   @returns A boolean indicating wether it has been possible to perform the refresh
 		 */
 
-		virtual void Refresh() = 0;
+		virtual bool Refresh() = 0;
 
 		/**
 		 *   This is a proxy method that ensures that View::Refresh() is an
