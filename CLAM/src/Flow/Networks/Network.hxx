@@ -49,6 +49,14 @@ private:
 	std::string GetLastIdentifier( const std::string& );
 	std::string GetProcessingIdentifier( const std::string& );
 	static const char NamesIdentifiersSeparator();
+
+	/**this method is provisional, because Network may need non-audio nodes.
+	 * Thus the factory method should be a (virtual) method of OutPort, implemented
+	 * in the concrete class.
+	 * \todo the motivation for this kludge is in order to avoid the coupling between
+	 * ports and the nodes stuff, since VC6 doesn't compiles all of it.
+	 */
+	NodeBase* CreateAudioNodeWithDefaultStreamBuffer();
 	
 };
 
