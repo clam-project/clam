@@ -57,7 +57,7 @@ int AudioFileLoader::LoadST(const char* fileName,std::vector<Audio>& outputs)
 	reader.Configure(cfg);
 
 	reader.Start();
-	bool ok=reader.Do(outputs); 
+	reader.Do(outputs); 
 	reader.Stop();
 	
 	return 0;
