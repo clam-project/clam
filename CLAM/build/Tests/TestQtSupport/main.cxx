@@ -1,14 +1,24 @@
-#include "MainWindow.hxx"
-#include "ControlPanel.h"
-#include "Assert.hxx"
+//#include "Assert.hxx"
+#include <qapplication.h>
+#include <stdio.h>
+//#include "MainWindow.hxx"
+//#include "TestControlPanel.h"
+//#include "buttongroups.h"
+
+
 
 int main( int argc, char** argv )
 {
-	NetworkGUI::MainWindow* widget = new NetworkGUI::MainWindow( );
+	QApplication dummy(argc, argv);
+	ControlPanel panel;
+	
 
-	CLAM_ASSERT( widget != NULL, "Could not create widget!" );
+	dummy.setMainWidget(&panel);
+	
+//	NetworkGUI::MainWindow* widget = new NetworkGUI::MainWindow( );
+//	CLAM_ASSERT( widget != NULL, "Could not create widget!" );
+	panel.show();
+	return dummy.exec();
 
-	delete widget;
-
-	return 0;
 }
+
