@@ -349,7 +349,7 @@ std::istream & operator >> (std::istream & is, Flags<N> & f) {
 
 template <unsigned int N>
 std::ostream & operator << (std::ostream & os, const Flags<N> & f){
-	return (os << static_cast<FlagsBase&>(f));
+	return (os << static_cast<const FlagsBase&>(f));
 }
 #endif //_MSC_VER
 
