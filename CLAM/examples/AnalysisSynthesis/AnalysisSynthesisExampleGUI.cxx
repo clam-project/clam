@@ -26,21 +26,24 @@
 #include "Fl_WaitMessage.cxx"
 #include "AnalysisSynthesisExampleBase.hxx"
 #include "pthread.h"
-#include "DebugSnapshots.hxx" 
-#include "AudioSnapshot.hxx" 
-#include "SpectrumSnapshot.hxx" 
+#include "CLAMViews.hxx"
+#include "CLAMPresentations.hxx"
+#include "DebugSnapshots.hxx"
+#include "AudioSnapshot.hxx"
+
+#include "AudioIO.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "AudioManager.hxx"
 
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
-
 
 #include <iostream>
 
 using namespace CLAM;
 using namespace CLAMGUI;
 using namespace std;
-
-
 
 #ifndef WIN32
 #include <unistd.h>
@@ -68,7 +71,7 @@ public:
 	}
 
 	ProgressGUI(const char* title,float from,float to)
-	:Progress(title,from,to)
+		:Progress(title,from,to)
 	{
 		if (flThread == pthread_self())
 		{
@@ -214,9 +217,6 @@ Fl_WaitMessage* WaitMessageGUI::delRequested = 0;
 const char* WaitMessageGUI::requestedTitle = 0;
 pthread_t WaitMessageGUI::flThread;
 
-/** This class adds FLTK GUI to AnalysisSynthesisExampleBase.
- *	@see AnalysisSynthesisExampleBase
- */
 class AnalysisSynthesisExampleGUI:public AnalysisSynthesisExampleBase
 {
 public:
@@ -329,65 +329,56 @@ public:
 
 };
 
+void UserInterface::EditConfiguration(void)
+{
+	new Configuration(&mAnalysisSynthesisExample->mGlobalConfig);
+}
+
 void UserInterface::LoadConfiguration(void)
 {
-
+	
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	
 	if ( str )
-		{
+	{
+		mConfigurationText->value(str);
 		
-			mConfigurationText->value(str);
+		std::string inputXMLFileName(str);
 		
-			std::string inputXMLFileName(str);
+		mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
 		
-			mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
-		
-			if (mAnalysisSynthesisExample->mHaveConfig)
-		   	{	
-					mAnalysisSynthesisExample->LoadInputSound();
-					if (mAnalysisSynthesisExample->mHaveAudioIn)
-		   			{
-							mDisplayInputSoundButton->activate();
-							mAnalyzeButton->activate();
-		   			}
-					else 
-					{
-						mAnalysisSynthesisExample->mHaveConfig=false;
-						mDisplayInputSoundButton->deactivate();
-						mAnalyzeButton->deactivate();
-					}
-		   	}
+		if (mAnalysisSynthesisExample->mHaveConfig)
+		{	
+			mAnalysisSynthesisExample->LoadInputSound();
+			if (mAnalysisSynthesisExample->mHaveAudioIn)
+			{
+				mAnalyze->activate();
+				mDisplayInSM->activate();
+				mDisplayInSound->activate();
+			}
 			else 
-			{
-				mDisplayInputSoundButton->deactivate();
-				mAnalyzeButton->deactivate();
-			}
+				mAnalysisSynthesisExample->mHaveConfig=false;
+		}
 		
-
-		if (
-			mAnalysisSynthesisExample->mHaveAnalysis &&
-			mAnalysisSynthesisExample->mHaveConfig)
-			{
-				mSynthesizeButton->activate();
-			}
-		}		
+		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
+			mSynthesize->activate();
+		Fl::redraw();
+	}		
 }
 
 void UserInterface::LoadTransformation(void)
 {
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	if ( str )
-		{
-			mTransformationFileText->value(str);
-			std::string inputXMLFileName(str);
-			mAnalysisSynthesisExample->LoadTransformationScore(inputXMLFileName);
-			mAnalysisSynthesisExample->mHaveTransformationScore=true;
-			if (mAnalysisSynthesisExample->mHaveAnalysis)
-				{
-					mTransformButton->activate();
-				}
-		}
+	{
+		//mTransformationFileText->value(str);
+		std::string inputXMLFileName(str);
+		mAnalysisSynthesisExample->LoadTransformationScore(inputXMLFileName);
+		mAnalysisSynthesisExample->mHaveTransformationScore=true;
+		if (mAnalysisSynthesisExample->mHaveAnalysis)
+			mDoTransformation->activate();
+		Fl::redraw();
+	}
 }
 
 void UserInterface::LoadAnalysisData(void)
@@ -395,16 +386,17 @@ void UserInterface::LoadAnalysisData(void)
 	char* str = fl_file_chooser("Select analysis data file","*.xml","");
 	if (str)
 	{
-		mAnalysisDataText->value(str);
+		//mAnalysisDataText->value(str);
 		std::string inputXMLFileName(str);
 		mAnalysisSynthesisExample->LoadAnalysisThread(inputXMLFileName);
-		mAnalyzeMelodyButton->deactivate();
+		mStoreAnalysisData->deactivate();
 		if (
 			mAnalysisSynthesisExample->mHaveAnalysis &&
 			mAnalysisSynthesisExample->mHaveConfig)
 		{
-			mSynthesizeButton->activate();
+			mSynthesize->activate();
 		}
+		Fl::redraw();
 	}
 }
 
@@ -413,11 +405,13 @@ void UserInterface::Analyze(void)
 	mAnalysisSynthesisExample->AnalyzeThread();
 	if (mAnalysisSynthesisExample->mHaveAnalysis)
 	{
-		mAnalyzeMelodyButton->activate();
-		mSynthesizeButton->activate();
-		mStoreAnalysisDataButton->activate();
+		mDisplayInSpec->activate();
+		mSynthesize->activate();
+		mMelodySM->activate();
+		mStoreAnalysisData->activate();
 		if(mAnalysisSynthesisExample->mHaveTransformationScore)
-			mTransformButton->activate();
+			mDoTransformation->activate();
+		Fl::redraw();
 	}
 }
 
@@ -426,12 +420,9 @@ void UserInterface::Synthesize(void)
 	mAnalysisSynthesisExample->SynthesizeThread();
 	if (mAnalysisSynthesisExample->mHaveAudioOut)
 	{
-		mStoreOutputSoundButton->activate();
-		mDisplayOutputSoundButton->activate();
-		mStoreOutputSoundSinusoidalButton->activate();
-		mDisplayOutputSoundSinusoidalButton->activate();
-		mStoreOutputSoundResidualButton->activate();
-		mDisplayOutputSoundResidualButton->activate();
+		mSynthesize->activate();
+		mOutputSM->activate();
+		Fl::redraw();
 	}
 }
 
@@ -447,22 +438,92 @@ void UserInterface::StoreAnalysisData(void)
 
 void UserInterface::DisplayInputSound(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioIn,"Input Audio");
+	Geometry g(0, 0, 1095, 725);
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>(g, "Input Audio");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioIn );
+	presentation->LinkWithView( view );
+
+	Attach( presentation->GetWindow() );
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioIn, "Input Audio");
+}
+
+void UserInterface::DisplayInputSpectrum(void)
+{
+	Geometry g(0, 0, 1095, 725);
+	ProcDataView<Spectrum> *view = new ProcDataView<Spectrum>;
+	ProcDataPresentation<Spectrum> *presentation = 
+		new ProcDataPresentation<Spectrum>(g,"Input Audio Spectrum");
+
+	view->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[1].GetSpectrum() );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotSpectrum(mAnalysisSynthesisExample->);//, "Input Audio Spectrum");
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOut,"Output Audio");
+	Geometry g(0, 0, 1095, 725);
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>(g,"Output Audio");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioOut );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOut, "Output Audio");
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
+	Geometry g(0, 0, 1095, 725);
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>(g,"Output Audio Residual");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioOutRes );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
+	Geometry g(0, 0, 1095, 725);
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>(g,"Output Audio Sinusoidal");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioOutSin );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -483,7 +544,7 @@ void UserInterface::StoreOutputSoundSinusoidal(void)
 void UserInterface::AnalyzeMelody(void)
 {
 	mAnalysisSynthesisExample->AnalyzeMelody();
-	mStoreMelodyButton->activate();
+	mMelodyStore->activate();
 }
 
 void UserInterface::StoreMelody(void)
@@ -496,7 +557,36 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
-main(void)
+void UserInterface::Attach(Fl_Window* canvas)
+{
+/*
+	MyGroup** aux = (MyGroup**) mT->array();
+	int n = mT->children();
+	int i;
+	for(i=0; i<n; i++)
+		if ((unsigned int)(aux[i]->mId) == mMenu->value()) 
+			return; // added
+*/
+/*
+	MyGroup* g = new MyGroup(0,0,mT->w(),mT->h(),strdup(mSettings->mName[mMenu->value()]),mMenu->value());    
+	g->SetData(mAudioSegment);
+	g->showPeaks = mPeaksButton->value();
+	
+	if (mMenu->value() == DISP_AUDIO)
+		g->showOnsets = mAudioSegment.HasChildren();
+*/
+	canvas->resizable();
+	mSmartTile->add(canvas);
+	mSmartTile->equalize();
+	canvas->show();
+
+/*
+	g->shade_button->callback((Fl_Callback *)shade_cb,mT);
+	g->close_button->callback((Fl_Callback *)close_cb,mT); 
+*/
+}
+
+int main(void)
 {
 	try{
 		AnalysisSynthesisExampleGUI example;
@@ -504,6 +594,43 @@ main(void)
 		SMSFreqShift myTrans;
 		example.SetTransformation(&myTrans);
 		/******* TRANSFORMATION *******/
+
+		AudioManager audioManager(48000,4096);
+
+		AudioIOConfig inCfgL;
+		AudioIOConfig inCfgR;
+		AudioIOConfig outCfgL;
+		AudioIOConfig outCfgR;
+
+		inCfgL.SetName("left in");
+		inCfgL.SetChannelID(0);
+		inCfgR.SetName("right in");
+		inCfgR.SetChannelID(1);
+
+		outCfgL.SetName("left out");
+		outCfgL.SetChannelID(0);
+		outCfgR.SetName("right out");
+		outCfgR.SetChannelID(1);
+
+		AudioIn inL(inCfgL);
+		AudioIn inR(inCfgR);
+		AudioOut outL(outCfgL);
+		AudioOut outR(outCfgR);
+
+		audioManager.Start();
+/*
+  unsigned int buffersize = 256;
+
+  Audio bufL;
+  bufL.SetSize(buffersize);
+  Audio bufR;
+  bufR.SetSize(buffersize);
+  
+  inL.Do(bufL);
+  inR.Do(bufR);
+  outL.Do(bufL);
+  outR.Do(bufR);
+*/
 		example.Run();
 	}
 	catch(Err error)
@@ -516,6 +643,6 @@ main(void)
 		std::cout << e.what() << std::endl;
 	}
 	
-	std::clog << "Finished successfully!";
+	std::clog << "Finished successfully!"<<std::endl;
 	return 0;
 }

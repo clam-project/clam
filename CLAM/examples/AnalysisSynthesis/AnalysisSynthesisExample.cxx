@@ -98,7 +98,7 @@ void AnalysisSynthesisExampleStdio::Run(void)
 		std::cout << "7. Load Transformation Score" << "\n";
 		std::cout << "8. Transform" << "\n";
 		std::cout << "9. Synthesize" << "\n";
-		std::cout << "10. Finish" << "\n" << "\n";
+		std::cout << "0. Finish" << "\n" << "\n";
 
 		int option;
 		std::cin>>option;
@@ -237,7 +237,7 @@ void AnalysisSynthesisExampleStdio::Run(void)
 				showSnapshotAudio(mAudioOutRes,"Residual Component");
 				break;
 			}
-			case 10://Exit
+			case 0://Exit
 			{
 				finish=true;
 				break;
