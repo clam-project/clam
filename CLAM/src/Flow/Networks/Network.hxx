@@ -39,6 +39,7 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	bool HasProcessing( const std::string & name );
 	bool ConnectPorts( const std::string &, const std::string & );
+	bool RemovePortsConnection( const std::string &, const std::string & );
 	
 	void Start();
 	void Stop();

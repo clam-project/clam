@@ -94,6 +94,21 @@ namespace CLAM
 		return true;
 	}
 
+	bool Network::RemovePortsConnection( const std::string & producer, const std::string & consumer)
+	{
+		OutPort & outport = GetOutPortByCompleteName(producer);
+		InPort & inport = GetInPortByCompleteName(consumer);
+
+		if ( !outport.IsConnectedTo(inport) ) 
+			return false;
+
+		inport.Unattach();
+		
+		//todo: send a message to flowcontrol about connections modified
+
+		return true;
+	}
+
 
 	char Network::NamesIdentifiersSeparator()
 	{ 	
