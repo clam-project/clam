@@ -453,7 +453,9 @@ void SMSBase::Analyze(void)
 			DestroyWaitMessage();
 
 		}
-		mSerialization.DoSerialization( mSerialization.Store, mMorphSegment, (mGlobalConfig.GetMorphSoundFile()+"_tmp.sdif").c_str() );	
+		std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
+		tempSdifFilename += "_tmp.sdif";
+		mSerialization.DoSerialization( mSerialization.Store, mMorphSegment, tempSdifFilename.c_str() );
 	}
 }
 
@@ -843,7 +845,9 @@ void SMSBase::SetSMSMorphFileName()
 				SMSMorphConfig& morphCfg=dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
 				morphCfg.AddFileName();
 				morphCfg.UpdateData();
-				morphCfg.SetFileName((mGlobalConfig.GetMorphSoundFile()+"_tmp.sdif").c_str());
+				std::string tempSdifFilename = mGlobalConfig.GetMorphSoundFile();
+				tempSdifFilename+="_tmp.sdif";
+				morphCfg.SetFileName(tempSdifFilename);
 				break;
 			}
 		}
