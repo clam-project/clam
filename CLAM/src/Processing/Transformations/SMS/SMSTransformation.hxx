@@ -75,7 +75,7 @@ namespace CLAM {
 		/** Supervised Do() function. It calls the non-supervised Do that receives Segment as
 		 *	input and output.
 		 */
-		bool Do(void)
+		virtual bool Do(void)
 		{
 			return Do(mInput.GetData(),mOutput.GetData());
 		}
@@ -87,8 +87,12 @@ namespace CLAM {
 		/** Method to update the Amount control from an existing BPF configured in the
 		 *	configuration phase.
 		 */
-		bool UpdateControlValueFromBPF(TData pos);
-	
+		virtual bool UpdateControlValueFromBPF(TData pos);
+
+		virtual bool IsLastFrame(){return mInput.GetData().mCurrentFrameIndex>mInput.GetData().GetnFrames();}
+
+
+
 	protected:
 
 /**@TODO: The UnwrapProcessingData methods could possibly be moved to a more
@@ -100,7 +104,7 @@ namespace CLAM {
 		 *	@param Frame*: just used as the selector that indicates that this
 		 *	overload is to be used
 		 */
-		const Frame& UnwrapProcessingData(const Segment& in,Frame*)
+		virtual const Frame& UnwrapProcessingData(const Segment& in,Frame*)
 		{
 			return in.GetFrame(in.mCurrentFrameIndex);
 		}
@@ -110,9 +114,12 @@ namespace CLAM {
 		 *	@param Frame*: just used as the selector that indicates that this
 		 *	overload is to be used
 		 */
-		Frame& UnwrapProcessingData(Segment& out,Frame*)
+		virtual Frame& UnwrapProcessingData(Segment& out,Frame*)
 		{
+			if(out.mCurrentFrameIndex>out.GetnFrames()&&mInput.GetData().GetnFrames()>out.GetnFrames())
+				out.AddFrame(out.GetFrame(out.mCurrentFrameIndex-1));
 			return out.GetFrame(out.mCurrentFrameIndex);
+
 		}
 
 		/** Particular method for unwrapping an Audio from a given Segment
