@@ -124,6 +124,8 @@ ConnectionPointPresentation & ProcessingPresentation::GetOutPortPresentation( co
 	for ( it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
 		if((*it)->GetName() == name)
 			return **it;
+
+	return *(ConnectionPointPresentation*)NULL;
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetInPortPresentation( const std::string& name)
@@ -132,6 +134,7 @@ ConnectionPointPresentation & ProcessingPresentation::GetInPortPresentation( con
 	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
 		if((*it)->GetName() == name)
 			return **it;	
+	return *(ConnectionPointPresentation*)NULL;
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetOutControlPresentation( const std::string& name)
@@ -140,6 +143,7 @@ ConnectionPointPresentation & ProcessingPresentation::GetOutControlPresentation(
 	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
 		if((*it)->GetName() == name)
 			return **it;
+	return *(ConnectionPointPresentation*)NULL;
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetInControlPresentation( const std::string& name)
@@ -148,6 +152,7 @@ ConnectionPointPresentation & ProcessingPresentation::GetInControlPresentation( 
 	for ( it=mInControlPresentations.begin(); it!=mInControlPresentations.end(); it++)
 		if((*it)->GetName() == name)
 			return **it;
+	return *(ConnectionPointPresentation*)NULL;
 }
 
 bool ProcessingPresentation::HasInPort( const std::string& name)
