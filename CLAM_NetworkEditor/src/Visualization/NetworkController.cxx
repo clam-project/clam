@@ -30,8 +30,6 @@
 #include "OutControl.hxx"
 #include "XMLStorage.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace CLAMVM
 {
 	
@@ -237,12 +235,10 @@ void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 		completeOutName += ".";
 		completeOutName += *namesIt;
 			
-		std::cout << "removing connections to port: " << completeOutName << std::endl;
 		CLAM::Network::NamesList connected = mObserved->GetInPortsConnectedTo( completeOutName );
 		CLAM::Network::NamesList::iterator namesIn;
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 		{
-			std::cout << "removing port connection: " << completeOutName << " : " << *namesIn << std::endl;
 			RemovePortConnection( completeOutName, *namesIn );
 			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
 		}
@@ -275,12 +271,10 @@ void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 		completeOutName += ".";
 		completeOutName += *namesIt;
 		
-		std::cout << "removing connections to control: " << completeOutName << std::endl;
 		CLAM::Network::NamesList connected = mObserved->GetInControlsConnectedTo( completeOutName );
 		CLAM::Network::NamesList::iterator namesIn;
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 		{
-			std::cout << "removing control connection: " << completeOutName << " : " << *namesIn << std::endl;
 			RemoveControlConnection( completeOutName, *namesIn );
 			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
 		}
@@ -293,20 +287,25 @@ void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 		completeInName += ".";
 		completeInName += *namesIt;
 
-		std::cout << "removing connections to control: " << completeInName << std::endl;
 
 		// in controls should have references to its connected out controls
+		std::list< ConnectionAdapter* > connectionsToRemove;
 		ConnectionAdapterIterator connectionIt;
 		for( connectionIt=mConnectionAdapters.begin(); connectionIt!=mConnectionAdapters.end(); connectionIt++)
 		{
 			if( (*connectionIt)->GetInName() == completeInName )
 			{	
-				std::cout << "removing control connection: " << completeInName << " : " << (*connectionIt)->GetOutName() << std::endl;
-				RemoveControlConnection( (*connectionIt)->GetOutName(), completeInName );
-				std::cout << "removing" << std::endl;
-				SignalRemoveConnectionPresentation.Emit( (*connectionIt)->GetOutName(), completeInName );
-				std::cout << "ok" << std::endl;
+				connectionsToRemove.push_back( *connectionIt );
 			}
+		}
+		
+		for( connectionIt=connectionsToRemove.begin(); connectionIt!=connectionsToRemove.end(); connectionIt++)
+		{
+			std::string completeOutName("");
+			completeOutName += (*connectionIt)->GetOutName();
+			RemoveControlConnection( completeOutName, completeInName );
+			SignalRemoveConnectionPresentation.Emit( completeOutName, completeInName); 
+
 		}
 	}
 
@@ -345,9 +344,9 @@ void NetworkController::ExecuteRemoveControlConnection( const std::string & out 
 		for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
 		{
 			ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl> * con = (ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl>*)(*itc);
-			if (con->ConnectsInElement(inControl))
-			{
-				mConnectionAdapters.remove(con);
+			if (con && con->ConnectsInElement(inControl))
+			{				
+				mConnectionAdapters.erase( itc );
 				delete con;
 				return;   
 			}
