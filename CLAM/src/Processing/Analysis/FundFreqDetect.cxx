@@ -145,9 +145,12 @@ namespace CLAM {
 
 		// 1.- SELECT PEAKS
 		// Add an index to the PeakArray
-		peaks.AddIndexArray();
-		peaks.AddIsIndexUpToDate();
-		peaks.UpdateData();
+		if(!peaks.HasIndexArray())
+		{
+			peaks.AddIndexArray();
+			peaks.AddIsIndexUpToDate();
+			peaks.UpdateData();
+		}
   
 		// Reset indices in the peak array
 		peaks.ResetIndices();
