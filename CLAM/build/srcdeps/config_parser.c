@@ -24,7 +24,7 @@ list *cxxflags_release = 0;
 
 list *library_paths = 0;
 
-list *ui_files = NULL;
+list *ui_files = 0;
 
 list *program = 0;
 
@@ -438,8 +438,8 @@ int config_parse(const char* filename)
 	
 	if (f==0) 
 	{
-		fprintf(stderr, "Could not open config file: %s for reading\n", filename);
-		return -1;
+		fprintf(stderr, "Could not open config file: %s for reading\nCLAM build system aborted\n", filename);
+		exit(-1);
 	}
 	
 	n = 0;
