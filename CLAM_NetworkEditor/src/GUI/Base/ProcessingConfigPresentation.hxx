@@ -19,17 +19,12 @@
  *
  */
 
-#ifndef __PROCESSINGCONFIGPRESENTATION_HXX__
-#define __PROCESSINGCONFIGPRESENTATION_HXX__
+#ifndef __ProcessingConfigPresentation_hxx__
+#define __ProcessingConfigPresentation_hxx__
 
 #include "Presentation.hxx"
 #include "Signalv1.hxx"
 #include "ProcessingConfig.hxx"
-
-namespace CLAM
-{
-	class ProcessingConfig;
-}
 
 namespace NetworkGUI
 {
@@ -49,4 +44,5 @@ public: // signals
 
 } // namespace NetworkGUI
 
-#endif // __PROCESSINGCONFIGPRESENTATION_HXX__
+#endif // __ProcessingConfigPresentation_hxx__
+
