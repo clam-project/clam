@@ -29,32 +29,46 @@ public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
 	typedef std::list< NodeBase* > Nodes;
 	typedef std::list<std::string> NamesList;
+	typedef std::list<InPort *> InPortsList;
 	
 	// constructor / destructor
 	Network();
 	virtual ~Network();
-	
+
+	// Methods related to network itself
 	const std::string& GetName() const { return mName; }
 	void SetName( const std::string& name ) { mName=name; }
-	Processing& GetProcessing( const std::string & name );
-	void AddProcessing( const std::string &, Processing* );
-	void RemoveProcessing ( const std::string & );
-	bool HasProcessing( const std::string & name );
+	virtual const char * GetClassName() const
+	{
+		return "Network";
+	}
+	void Start();
+	void Stop();
+	void DoProcessings();
+	void AddFlowControl( FlowControl* );
+	void ConfigureAllNodes();
+	void Clear();
+	// serialization methods
+	virtual void StoreOn( Storage & storage);
+	virtual void LoadFrom( Storage & storage);
+	
+
+
+	// methods related to connect/disconnect interface
 	bool ConnectPorts( const std::string &, const std::string & );
 	bool ConnectControls( const std::string &, const std::string & );
 	bool DisconnectPorts( const std::string &, const std::string & );
 	bool DisconnectControls( const std::string &, const std::string & );
 	void DisconnectAllPorts();
+
+	// methods used to create processings and get them
+	Processing& GetProcessing( const std::string & name );
+	void AddProcessing( const std::string &, Processing* );
+	void RemoveProcessing ( const std::string & );
+	bool HasProcessing( const std::string & name );
+
 	
-	void Start();
-	void Stop();
-	void DoProcessings();
-
-	void ConfigureAllNodes();
-
-	void AddFlowControl( FlowControl* );
-	void Clear();
-
+	
 	// accessors to nodes and processing
 	ProcessingsMap::iterator BeginProcessings();
 	ProcessingsMap::iterator EndProcessings();
@@ -68,16 +82,10 @@ public:
 	OutPort & GetOutPortByCompleteName( const std::string& );
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
+
 	NamesList GetInPortsConnectedTo( const std::string & );
 	NamesList GetInControlsConnectedTo( const std::string & );
-	// serialization methods
-	virtual void StoreOn( Storage & storage);
-	virtual void LoadFrom( Storage & storage);
-	virtual const char * GetClassName() const
-	{
-		return "Network";
-	}
-	
+	InPortsList GetInPortsConnectedTo( OutPort & );
 
 protected:
 	NodeBase & GetNodeAttachedTo(OutPort & );

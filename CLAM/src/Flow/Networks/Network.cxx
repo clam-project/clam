@@ -510,6 +510,17 @@ namespace CLAM
 		return consumers;
 	}
 
+	Network::InPortsList Network::GetInPortsConnectedTo( OutPort & producer )
+	{		
+		CLAM_ASSERT( producer.GetNode(), "Trying to access a node from an outport without connections");
+		InPortsList consumers;
+
+		NodeBase::ReaderIterator it;
+		for(it=producer.GetNode()->BeginReaders(); it!=producer.GetNode()->EndReaders(); it++)
+			consumers.push_back(*it);
+		return consumers;
+	}
+
 	const std::string &  Network::GetNetworkId(const Processing * proc)
 	{
 		ProcessingsMap::iterator it;
