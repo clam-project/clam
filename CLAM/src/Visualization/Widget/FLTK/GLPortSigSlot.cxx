@@ -26,7 +26,7 @@
 
 using namespace CLAMGUI;
 
-GLPortSigSlot::GLPortSigSlot( const Rect<int>& geometry, const char* label = 0 ) 
+GLPortSigSlot::GLPortSigSlot( const Rect<int>& geometry, const char* label ) 
 	: GLPort( geometry, label ) { 
 	
 	mPainting = false;
