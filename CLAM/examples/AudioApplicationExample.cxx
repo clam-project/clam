@@ -26,6 +26,7 @@
 
 #include "Oscillator.hxx"
 #include "Multiplier.hxx"
+#include "AudioAdder.hxx"
 #include "AudioApplication.hxx"
 
 using namespace CLAM;
@@ -70,6 +71,9 @@ void MyIOAudioApplication::AudioMain(void)
 		Audio bufOsc;
 		bufOsc.SetSize(buffersize);
 
+		Audio bufTesttone;
+		bufTesttone.SetSize(buffersize);
+
 		AudioIn inL(inCfgL);
 		AudioIn inR(inCfgR);
 
@@ -84,23 +88,33 @@ void MyIOAudioApplication::AudioMain(void)
 		oscLcfg.SetPhase(PI/2.);
 
 		Multiplier mul;
+		AudioAdder add;
 
 		Oscillator oscL(oscRcfg);
 		Oscillator oscR(oscLcfg);
+
+		OscillatorConfig testtoneCfg;
+
+		testtoneCfg.SetFrequency(440);
+
+		Oscillator testtone(testtoneCfg);
 
 		audioManager.Start();
 
 		do
 		{
-			printf("."); fflush(stdout);
 			inL.Do(bufL);
 			inR.Do(bufR);
+
+			testtone.Do(bufTesttone);
 
 			oscL.Do(bufOsc);
 			mul.Do(bufL,bufOsc,bufL);
 
 			oscR.Do(bufOsc);
-			mul.Do(bufR,bufOsc,bufR);
+			mul.Do(bufTesttone,bufOsc,bufTesttone);
+
+			add.Do(bufTesttone,bufL,bufL);
 
 			outL.Do(bufL);
 			outR.Do(bufR);
@@ -175,15 +189,19 @@ int main(int argc,char** argv)
 {
 	try
 	{
-		{
-			MyOutAudioApplication app;
-			app.Run(argc,argv);
-		}
 
 		{
 			MyIOAudioApplication app;
 			app.Run(argc,argv);
 		}
+
+		getchar();
+
+		{
+			MyOutAudioApplication app;
+			app.Run(argc,argv);
+		}
+
 
 	}
 	catch(Err error)
