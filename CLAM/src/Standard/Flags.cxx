@@ -68,14 +68,14 @@ unsigned int FlagsBase::GetFlagPosition(const std::string & whichOne) const thro
  * @see Storage
  * @todo TODO: This method can throw and IllegalValue exception
  */
-void FlagsBase::StoreOn (Storage & storage) {
+void FlagsBase::StoreOn (Storage & storage) const {
 #		ifdef CLAM_USE_XML 
 		unsigned int N=GetNFlags();
 		for (unsigned int i=0; i<N; i++) {
 			if (!IsSetFlag(i)) continue;
 			std::string s = GetFlagString(i);
 			XMLStaticAdapter adapter(s);
-			storage.Store(&adapter);
+			storage.Store(adapter);
 		}
 #		endif//CLAM_USE_XML 
 
@@ -95,7 +95,7 @@ void FlagsBase::LoadFrom (Storage & storage) {
 		do {
 			std::string flagName;
 			XMLAdapter<std::string> adapter(flagName);
-			if (!storage.Load(&adapter)) break;
+			if (!storage.Load(adapter)) break;
 			unsigned int i = GetFlagPosition(flagName);
 			SetFlag(i,true);
 		}

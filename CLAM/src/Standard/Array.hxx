@@ -264,7 +264,7 @@ public:
 			(*this)[i] = f( (*this)[i], parameter );
 	}
 
-	void StoreOn(Storage & storage)
+	void StoreOn(Storage & storage) const
 	{
 		#ifdef CLAM_USE_XML
 		// This condition is not needed because storing an XML adapter
@@ -311,33 +311,33 @@ private:
 	inline void InitializeCopyDataBlock(int first, int last, int src_first, const T* src);
 
 #ifdef CLAM_USE_XML
-	void StoreBufferOn(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage) {
+	void StoreBufferOn(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage) const {
 		if (mSize<=0) return;
 		const char* className = mpData[1].GetClassName();
 		const char* label = className? className : "Element";
 		for (int i=0; i<mSize; i++) {
 			XMLComponentAdapter adapter(mpData[i], label, true);
-			storage.Store(&adapter);
+			storage.Store(adapter);
 		}
 	}
-	void StoreBufferOn(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage) {
+	void StoreBufferOn(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage) const {
 		XMLArrayAdapter<T> adapter(mpData,mSize);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
-	void StoreBufferOn(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage) {
+	void StoreBufferOn(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage) const {
 		CLAM_ASSERT(false, 
 			"Trying to Store an object that is not neither a streamable nor a Component");
 	}
 /*
-	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) {
+	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) const {
 		XMLAdapter<T> adapter(*(T*)item);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
-	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) {
+	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) const {
 		const char* className = item->GetClassName();
 		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
 	bool StoreMemberOn(StaticFalse* asLeave, void * item, Storage & storage) {
 		CLAM_ASSERT(false, "Trying to Store an object that is not neither a streamable nor a Component");
@@ -346,13 +346,13 @@ private:
 */
 	bool LoadMemberFrom(StaticTrue* asLeave, void * item, Storage & storage) {
 		XMLAdapter<T> adapter(*(T*)item);
-		return storage.Load(&adapter);
+		return storage.Load(adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, Component * item, Storage & storage) {
 		const char* className = (item->GetClassName());
 		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
-		return storage.Load(&adapter);
+		return storage.Load(adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, void * item, Storage & storage) {
 		CLAM_ASSERT(false, "Trying to Load an object that is not neither a streamable nor a Component");
@@ -635,7 +635,7 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 		inline void Apply( T (*f)(T,int),int parameter );
 
-		void StoreOn(Storage & storage);
+		void StoreOn(Storage & storage) const;
 		void LoadFrom(Storage & storage);
 
 		// Error messages, to ease tests a little while we decide
@@ -648,8 +648,8 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 	private:
 
 #ifdef CLAM_USE_XML
-	void StoreMemberOn(void * item, Storage & storage);
-	void StoreMemberOn(Component * item, Storage & storage);
+	void StoreMemberOn(void * item, Storage & storage) const;
+	void StoreMemberOn(Component * item, Storage & storage) const;
 	bool LoadMemberFrom(void * item, Storage & storage);
 	bool LoadMemberFrom(Component * item, Storage & storage);
 #endif //CLAM_USE_XML
@@ -804,7 +804,7 @@ void Array<T>::Apply( T (*f)(T,int),int parameter )
 }
 
 template<class T>
-void Array<T>::StoreOn(Storage & storage)
+void Array<T>::StoreOn(Storage & storage) const
 {
 //	CLAM_ASSERT(mpData,"Array contains no buffer")
 	#ifdef CLAM_USE_XML
@@ -843,26 +843,26 @@ void Array<T>::LoadFrom(Storage & storage)
 #ifdef CLAM_USE_XML
 
 template<class T>
-void Array<T>::StoreMemberOn(void * item, Storage & storage) 
+void Array<T>::StoreMemberOn(void * item, Storage & storage) const
 {
 	XMLAdapter<T> adapter(*(T*)item);
-	storage.Store(&adapter);
+	storage.Store(adapter);
 }
 
 template<class T>
-void Array<T>::StoreMemberOn(Component * item, Storage & storage) 
+void Array<T>::StoreMemberOn(Component * item, Storage & storage) const
 {
 	const char* className = item->GetClassName();
 	const char* label = className? className : "Element";
 	XMLComponentAdapter adapter(*item, label, true);
-	storage.Store(&adapter);
+	storage.Store(adapter);
 }
 
 template<class T>
 bool Array<T>::LoadMemberFrom(void * item, Storage & storage) 
 {
 	XMLAdapter<T> adapter(*(T*)item);
-	return storage.Load(&adapter);
+	return storage.Load(adapter);
 }
 
 template<class T>
@@ -871,7 +871,7 @@ bool Array<T>::LoadMemberFrom(Component * item, Storage & storage)
 	const char* className = item->GetClassName();
 	const char* label = className? className : "Element";
 	XMLComponentAdapter adapter(*item, label, true);
-	return storage.Load(&adapter);
+	return storage.Load(adapter);
 }
 
 #endif//CLAM_USE_XML

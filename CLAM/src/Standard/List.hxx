@@ -231,7 +231,7 @@ private:
 
 public:
 
-	void StoreOn(Storage & storage)
+	void StoreOn(Storage & storage) const
 	{
 
 		#ifdef CLAM_USE_XML	 
@@ -274,29 +274,29 @@ public:
 	}
 private:
 #ifdef CLAM_USE_XML
-	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) {
+	void StoreMemberOn(StaticTrue* asLeave, const void * item, Storage & storage) const {
 		XMLAdapter<T> adapter(*(T*)item);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
-	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) {
+	void StoreMemberOn(StaticFalse* asLeave, const Component * item, Storage & storage) const {
 		const char* className = item->GetClassName();
 		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
-	bool StoreMemberOn(StaticFalse* asLeave, void * item, Storage & storage) {
+	bool StoreMemberOn(StaticFalse* asLeave, const void * item, Storage & storage) const {
 		CLAM_ASSERT(false, "Trying to Store an object that is not neither a streamable nor a Component");
 		return false;
 	}
 	bool LoadMemberFrom(StaticTrue* asLeave, void * item, Storage & storage) {
 		XMLAdapter<T> adapter(*(T*)item);
-		return storage.Load(&adapter);
+		return storage.Load(adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, Component * item, Storage & storage) {
 		const char* className = item->GetClassName();
 		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
-		return storage.Load(&adapter);
+		return storage.Load(adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, void * item, Storage & storage) {
 		CLAM_ASSERT(false, "Trying to Load an object that is not neither a streamable nor a Component");

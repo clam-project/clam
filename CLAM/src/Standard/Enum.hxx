@@ -296,11 +296,11 @@ public:
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
-	virtual void StoreOn (Storage & storage) {
+	virtual void StoreOn (Storage & storage) const {
 		#ifdef CLAM_USE_XML 
 			std::string s = GetString();
 			XMLAdapter<std::string> adapter(s);
-			storage.Store(&adapter);
+			storage.Store(adapter);
 		#endif//CLAM_USE_XML 
 
 	}
@@ -315,7 +315,7 @@ public:
 		#ifdef CLAM_USE_XML 
 			std::string s;
 			XMLAdapter<std::string> adapter(s);
-			storage.Load(&adapter);
+			storage.Load(adapter);
 			SetValueSafely(s);
 		#endif//CLAM_USE_XML 
 
