@@ -66,8 +66,15 @@
 - Prepare: Determinar attributos necesarios
 + Multilevel pools
 - XML for the Pool
-- XML for the Pool Spec
-- Multitype XML loading
+	- Attribute dump
+	- Multitype XML loading
+- Getting names from index
+	- Getting valid scope indexes names
+	- Getting invalid scope indexes names
+	- getting valid attribute indexes names
+	- getting invalid attribute indexes names
+- XML for the Scheme
+- Selecting which attributes should be serialized
 
 - Errors en l'ús d'identificadors irregulars.
 
@@ -111,10 +118,6 @@ void testSubGoal()
 void testExtractionGoal()
 {
 	std::string fileName("mysong.mpg");
-	
-
-
-	
 }
 
 void testGoal()
@@ -153,6 +156,75 @@ CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
 	/>
 </Extractor>
 ...
+
+
+An example of description data pool dump
+
+
+<DescriptionDataPool NumberOfScopes='3'>
+	<DescriptionScheme>
+		<ImportScheme
+			uri='http://www.semanticaudio.org/RecomenderDS.xml'/>
+		<Attribute scope="Sample" name="Level" type="Signal" />
+		<Attribute scope="Frame" name="Center" type="SamplePosition" />
+		<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+	</DescriptionScheme>
+	<ScopePool name='Sample' size='2000'>
+		<AttributePool name='Level'>
+			0.0 0.0 .342161 ....
+		</AttributePool>"
+	</ScopePool>
+	<ScopePool name='Frame' size='8'>
+		<AttributePool name='Center'>
+			0 256 512 768 1024 1280 1536 1792
+		</AttributePool>
+		<AttributePool name='SpectralDistribution'>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			....
+		</AttributePool>
+	</ScopePool>
+</DescriptionDataPool>
+
+<DescriptionDataPool NumberOfScopes='3'>
+	<DescriptionScheme>
+		<ImportScheme
+			uri='http://www.semanticaudio.org/RecomenderDS.xml'/>
+		<Attribute scope="Sample" name="Level" type="Signal" />
+		<Attribute scope="Frame" name="Center" type="SamplePosition" />
+		<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+	</DescriptionScheme>
+	<Sample size='2000'>
+		<Level>
+			0.0 0.0 .342161 ....
+		</Level>
+	</Sample>
+	<Frame size='8'>
+		<Center>
+			0 256 512 768 1024 1280 1536 1792
+		</Center>
+		<SpectralDistribution>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			....
+		</SpectralDistribution>
+	</Frame>
+</DescriptionDataPool>
+
 
 
 

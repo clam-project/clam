@@ -27,6 +27,8 @@ class DescriptionSchemeTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetScopeIndex_withNoScopeRegistered );
 	CPPUNIT_TEST( testGetScopeIndex_withARegisteredAttribute );
 	CPPUNIT_TEST( testGetScopeIndex_withTwoScopes );
+	CPPUNIT_TEST( testGetScopeName_withTwoScopes );
+	CPPUNIT_TEST( testGetScopeName_withWrongNumber );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -168,6 +170,30 @@ private:
 		CPPUNIT_ASSERT_EQUAL(1u,yourScope.GetIndex("YourIntAttribute"));
 	}
 
+	void testGetScopeName_withTwoScopes()
+	{
+		CLAM::DescriptionScheme scheme;
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
+		CPPUNIT_ASSERT_EQUAL(std::string("MyScope"), scheme.GetScopeName(0));
+		CPPUNIT_ASSERT_EQUAL(std::string("YourScope"), scheme.GetScopeName(1));
+	}
+
+	void testGetScopeName_withWrongNumber()
+	{
+		CLAM::DescriptionScheme scheme;
+		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
+		try
+		{
+			scheme.GetScopeName(1);
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "GetScopeName: Using a wrong index to look up an scope name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
 };
 
 

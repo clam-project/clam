@@ -1,5 +1,6 @@
 #include <typeinfo>
 #include "Assert.hxx"
+#include "Storage.hxx"
 
 /**
  * @group Descriptors Pool
@@ -20,6 +21,10 @@ namespace CLAM
 		{
 			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
 				"Type Missmatch using a pool");
+		}
+		virtual void Dump(Storage & storage, const void * data, unsigned size)
+		{
+			// TODO
 		}
 	protected:
 		virtual const std::type_info & TypeInfo() const = 0;

@@ -6,6 +6,7 @@
 #include "Assert.hxx"
 #include "DataTypes.hxx"
 #include "Component.hxx"
+#include "XMLAdapter.hxx"
 
 
 /**
@@ -74,6 +75,7 @@ namespace CLAM
 		{
 			_attributes[attributeIndex]->CheckType<AttributeType>();
 		}
+
 	};
 
 	/**
@@ -89,7 +91,7 @@ namespace CLAM
 		typedef std::vector<DescriptionScope *> Scopes;
 	private:
 		Scopes _scopes;
-		ScopeMap _specMap;
+		ScopeMap _scopeNameMap;
 	public:
 		DescriptionScheme()
 		{
@@ -115,7 +117,7 @@ namespace CLAM
 		{
 			const unsigned nScopes = _scopes.size();
 			std::pair<ScopeMap::iterator,bool> result = 
-				_specMap.insert(std::make_pair(scopeName,nScopes));
+				_scopeNameMap.insert(std::make_pair(scopeName,nScopes));
 
 			if (!result.second) return *_scopes[result.first->second];
 
@@ -126,8 +128,8 @@ namespace CLAM
 
 		unsigned GetScopeIndex(const std::string & name) const
 		{
-			ScopeMap::const_iterator it = _specMap.find(name);
-			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
+			ScopeMap::const_iterator it = _scopeNameMap.find(name);
+			CLAM_ASSERT(it!=_scopeNameMap.end(), "No scope registered with that name");
 			return it->second;
 		}
 
@@ -147,13 +149,22 @@ namespace CLAM
 			return _scopes.size();
 		}
 
+		const std::string & GetScopeName(unsigned attribute)
+		{
+			ScopeMap::iterator it = _scopeNameMap.begin();
+			ScopeMap::iterator end = _scopeNameMap.end();
+			for (; it!=end; it++)
+				if (it->second == attribute)
+					return it->first;
+			CLAM_ASSERT(false,"GetScopeName: Using a wrong index to look up an scope name");
+		}
 	};
 
 	/**
 	 * A container for the attributes values along the differents
 	 * contexts of a single scope.
 	 */
-	class ScopePool
+	class ScopePool : public Component
 	{
 	public:
 		typedef std::vector<void*> AttributesData;
@@ -177,6 +188,17 @@ namespace CLAM
 				*it=0;
 			}
 			_size=0;
+		}
+		const char * GetClassName() const { return "DescriptionDataPool"; }
+		void StoreOn(Storage & storage) const
+		{
+			CLAM::XMLAdapter<unsigned> sizeAdapter(_size,"size",false);
+			storage.Store(sizeAdapter);
+			CLAM::XMLAdapter<unsigned> numberOfAttributes(_spec.GetNAttributes(),"numberOfAttributes",false);
+			storage.Store(numberOfAttributes);
+		}
+		void LoadFrom(Storage & storage)
+		{
 		}
 	private:
 		void Reallocate(unsigned newSize)
@@ -245,15 +267,6 @@ namespace CLAM
 			for (; it != end; it++)
 				if (*it) delete *it;
 		}
-		/*
-		const char * GetClassName() const { return "DescriptionDataPool"; }
-		void StoreOn(Storage & storage) const
-		{
-		}
-		void LoadFrom(Storage & storage)
-		{
-		}
-		*/
 		void PopulateScope(const std::string & scopeName, unsigned size)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
