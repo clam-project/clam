@@ -33,36 +33,39 @@ namespace CLAM{
 class SMSAnalysisSynthesisConfig:public ProcessingConfig
 {
 
-	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisSynthesisConfig,22,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisSynthesisConfig,25,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 
 /** General	**/
 	DYN_ATTRIBUTE(1,public,Filename,InputSoundFile);
+	DYN_ATTRIBUTE(2,public,Filename,OutputSoundFile);
+	DYN_ATTRIBUTE(3,public,Filename,OutputAnalysisFile);
+	DYN_ATTRIBUTE(4,public,Filename,InputAnalysisFile);
 /** Analysis **/
-	DYN_ATTRIBUTE(2,public,TSize,AnalysisWindowSize);
-	DYN_ATTRIBUTE(3,public,TSize,AnalysisHopSize);
-	DYN_ATTRIBUTE(4,public,EWindowType, AnalysisWindowType);
-	DYN_ATTRIBUTE(5,public,TSize,ResAnalysisWindowSize);
-	DYN_ATTRIBUTE(6,public,EWindowType, ResAnalysisWindowType);
+	DYN_ATTRIBUTE(5,public,TSize,AnalysisWindowSize);
+	DYN_ATTRIBUTE(6,public,TSize,AnalysisHopSize);
+	DYN_ATTRIBUTE(7,public,EWindowType, AnalysisWindowType);
+	DYN_ATTRIBUTE(8,public,TSize,ResAnalysisWindowSize);
+	DYN_ATTRIBUTE(9,public,EWindowType, ResAnalysisWindowType);
 
-	DYN_ATTRIBUTE(7,public,TSize,AnalysisZeroPaddingFactor);
-	DYN_ATTRIBUTE(8,public,TData,AnalysisPeakDetectMagThreshold);
-	DYN_ATTRIBUTE(9,public,TSize,AnalysisMaxSines);
-	DYN_ATTRIBUTE(10,public,TData,AnalysisSinTrackingFreqDeviation);
-	DYN_ATTRIBUTE(11,public,TData,AnalysisReferenceFundFreq); 
-	DYN_ATTRIBUTE(12,public,TData,AnalysisLowestFundFreq); 
-	DYN_ATTRIBUTE(13,public,TData,AnalysisHighestFundFreq); 
-	DYN_ATTRIBUTE(14,public,TData,AnalysisMaxFundFreqError);
-	DYN_ATTRIBUTE(15,public,TSize,AnalysisMaxFundCandidates);
-	DYN_ATTRIBUTE(16,public,bool, AnalysisHarmonic);
-	DYN_ATTRIBUTE(17,public,bool, DoCleanTracks);
+	DYN_ATTRIBUTE(10,public,TSize,AnalysisZeroPaddingFactor);
+	DYN_ATTRIBUTE(11,public,TData,AnalysisPeakDetectMagThreshold);
+	DYN_ATTRIBUTE(12,public,TSize,AnalysisMaxSines);
+	DYN_ATTRIBUTE(13,public,TData,AnalysisSinTrackingFreqDeviation);
+	DYN_ATTRIBUTE(14,public,TData,AnalysisReferenceFundFreq); 
+	DYN_ATTRIBUTE(15,public,TData,AnalysisLowestFundFreq); 
+	DYN_ATTRIBUTE(16,public,TData,AnalysisHighestFundFreq); 
+	DYN_ATTRIBUTE(17,public,TData,AnalysisMaxFundFreqError);
+	DYN_ATTRIBUTE(18,public,TSize,AnalysisMaxFundCandidates);
+	DYN_ATTRIBUTE(19,public,bool, AnalysisHarmonic);
+	DYN_ATTRIBUTE(20,public,bool, DoCleanTracks);
 /** Synthesis **/
-	DYN_ATTRIBUTE(18,public,TSize,SynthesisFrameSize);
-	DYN_ATTRIBUTE(19,public,EWindowType,SynthesisWindowType);
-	DYN_ATTRIBUTE(20,public,EPhaseGeneration,SynthesisPhaseManagementType);
+	DYN_ATTRIBUTE(21,public,TSize,SynthesisFrameSize);
+	DYN_ATTRIBUTE(22,public,EWindowType,SynthesisWindowType);
+	DYN_ATTRIBUTE(23,public,EPhaseGeneration,SynthesisPhaseManagementType);
 
 /** File To Morph **/
-	DYN_ATTRIBUTE(21,public, Filename, MorphSoundFile);
+	DYN_ATTRIBUTE(24,public, Filename, MorphSoundFile);
 
 private:
 

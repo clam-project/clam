@@ -23,7 +23,6 @@
 #define _SMSBase_
 
 #include <string>
-#include <vector>
 
 #include "SerializationController.hxx"
 
@@ -33,45 +32,14 @@
 #include "Melody.hxx"
 #include "SMSTransformationChain.hxx"
 #include "SegmentDescriptors.hxx"
-#include "Audio.hxx"
+#include "AudioOut.hxx"
 #include "Progress.hxx"
 #include "WaitMessage.hxx"
+#include "SDIFIn.hxx"
+#include "SDIFOut.hxx"
 
 namespace CLAM
 {
-	class DataState{
-		std::vector<bool> mStateArray;
-		enum{ mNumStates = 9 };
-	public:
-		enum States {
-			/** Indicates whether there is a valid analysis-synthesis configuration */
-			HaveConfig = 0,
-			/** Indicates whether an analysis has been performed */
-			HaveAnalysis,
-			/** Indicates whether there is a valid input audio */
-			HaveAudioIn,
-			/** Indicates whether there is a valid audio to morph*/
-			HaveAudioMorph,
-			/** Indicates whether there is a valid output audio */
-			HaveAudioOut,
-			/** Indicates whether there is a valid analyzed melody */
-			HaveMelody,
-			/** Indicates whether there is a valid transformation score */
-			HaveTransformationScore,
-			/** Indicates whether there is a valid spectrum, needed for melody anlysis */
-			HaveSpectrum,
-			/** Indicates whether there a transformation has been performed */
-			HaveTransformation
-		};
-
-		DataState( ) : mStateArray( mNumStates, false ) { }
-		virtual ~DataState( ) { }
-		inline bool Query( enum States query ) { return mStateArray[query]; }
-		inline void Reached( enum States query ) { mStateArray[query] = true; }
-		inline void Abandoned( enum States query ) { mStateArray[query] = false; }
-	};
-
-
 	/** This is the base class for the Analysis Synthesis example. It implements
 	* all the necessary processing but it cannot be instantiated. To instantiate
 	* a particular analysis synthesis application you need to work directly with 
@@ -87,11 +55,7 @@ namespace CLAM
 		SMSBase(void);	
 		virtual ~SMSBase(void);
 		void Run(void);
-		inline void SetHaveConfig(bool hasConfig) {
-			hasConfig ?
-				mDataState.Reached( DataState::HaveConfig )
-				: mDataState.Abandoned( DataState::HaveConfig );
-		}
+		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
 	protected:
 		
@@ -118,20 +82,14 @@ namespace CLAM
 		void StoreAnalysis(const char* filename);
 		void StoreAnalysis(const std::string& filename) {StoreAnalysis(filename.c_str());}
 
-		/** Store data resulting from transformation. Some unnecessary data
-		* is removed from memory */
-		void StoreTransformation(const char* filename);
-		void StoreTransformation(const std::string& filename) {StoreTransformation(filename.c_str());}
-
 		/** Store synthesized sound */
-		void StoreOutputSound( const char* fileName );
+		void StoreOutputSound(void);
 		/** Store synthesized sound, only residual component */
-		void StoreOutputSoundResidual( const char* fileName );
+		void StoreOutputSoundResidual(void);
 		/** Store synthesized sound, only sinusoidal component */
-		void StoreOutputSoundSinusoidal( const char* fileName );
+		void StoreOutputSoundSinusoidal(void);
 		/** Load input sound */
-		bool LoadInputSound( );
-		bool LoadInputSound( const char* fileName );
+		bool LoadInputSound(void);
 		/** Load sound to morph*/
 		bool LoadMorphSound(void);
 
@@ -179,14 +137,12 @@ namespace CLAM
 		void ComputeLowLevelDescriptors();
 
 		/** Stores previously analyzed melody into xml format */
-		void StoreMelody( const char* fileName );
+		void StoreMelody(void);
 
-		/** This member is in charge of all the serialization movements in the application */
 		SerializationController mSerialization;
 
-		/** This member knows the application's data state*/
-		DataState mDataState;
-
+		/** Input audio */
+//		Audio mAudioIn;
 		/** Output audio */
 		Audio mAudioOut;
 		/** Output audio, only sinusoidal component */
@@ -221,8 +177,32 @@ namespace CLAM
 		/** Actual transformation to be used*/
 		SMSTransformationChain mTransformation;
 
+		/** Indicates whether there is a valid analysis-synthesis configuration */
+		bool mHaveConfig;
+		/** Indicates whether an analysis has been performed */
+		bool mHaveAnalysis;
+		/** Indicates whether there is a valid input audio */
+		bool mHaveAudioIn;
+		/** Indicates whether there is a valid audio to morph*/
+		bool mHaveAudioMorph;
+		/** Indicates whether there is a valid output audio */
+		bool mHaveAudioOut;
+		/** Indicates whether there is a valid analyzed melody */
+		bool mHaveMelody;
+		/** Indicates whether there is a valid transformation score */
+		bool mHaveTransformationScore;
+		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
+		bool mHaveSpectrum;
+		/** Indicates whether there a transformation has been performed */
+		bool mHaveTransformation;
+
 		CLAMGUI::Progress* mCurrentProgressIndicator;
 		CLAMGUI::WaitMessage* mCurrentWaitMessage;
+
+		std::string mXMLInputFile;
+
+		SDIFIn  mSDIFReader;
+
 
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;

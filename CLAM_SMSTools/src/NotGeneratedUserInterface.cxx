@@ -50,13 +50,12 @@ void UserInterface::Update()
 	ApplyInitialState();
 	ApplyReadyToAnalyzeState();
 	mSMS->mExplorer.CloseAll();
-	mCounter->value(0);
 	mWindow->redraw();
 }
 
 void UserInterface::LoadConfiguration(void)
 {
-	char* str = fl_file_chooser("Select configuration file","*.xml","",1);
+	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	
 	if ( str )
 	{
@@ -67,46 +66,25 @@ void UserInterface::LoadConfiguration(void)
 			return;	
 		ApplyReadyToAnalyzeState();
 	
-		if ( mSMS->mDataState.Query( DataState::HaveAnalysis )
-		     &&	mSMS->mDataState.Query( DataState::HaveConfig ) )
+		if (mSMS->mHaveAnalysis &&	mSMS->mHaveConfig)
 			ApplyAnalysisAvailableState();
 
 		mSMS->mExplorer.CloseAll();
-		mCounter->value(0);
+
 		mWindow->redraw();
 	}		
 }
 
-bool UserInterface::LoadSelectedSound( )
+bool UserInterface::LoadSound(void)
 {
-	char* str = fl_file_chooser("Select audio file","*.wav","",1);
-	if ( str )
-	{
-		mSMS->LoadInputSound( str );
-		if ( !mSMS->mDataState.Query( DataState::HaveAudioIn ) )
-		{
-			fl_alert( "Unable to open the Input sound file!");
-			ApplyInitialState();
-			return false;
-		}
-		
-		mSMS->mExplorer.NewInputAudio( mSMS->mOriginalSegment.GetAudio());
-		
-		return true;
-	}
-	return false;
-}
-
-bool UserInterface::LoadSound( )
-{
-	mSMS->LoadInputSound( );
-	if ( !mSMS->mDataState.Query( DataState::HaveAudioIn ) )
+	mSMS->LoadInputSound();
+	if ( !mSMS->mHaveAudioIn )
 	{
 		fl_alert( "Unable to open the Input sound file!");
 		ApplyInitialState();
 		return false;
 	}
-	
+
 	mSMS->mExplorer.NewInputAudio( mSMS->mOriginalSegment.GetAudio());
 	
 	return true;
@@ -114,7 +92,7 @@ bool UserInterface::LoadSound( )
 
 void UserInterface::StoreConfiguration(void)
 {
-	char* str = fl_file_chooser("Select configuration file","*.xml","",1);
+	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	if ( str )
 	{
 		std::string inputXMLFileName(str);
@@ -124,13 +102,13 @@ void UserInterface::StoreConfiguration(void)
 
 void UserInterface::LoadTransformation(void)
 {
-	char* str = fl_file_chooser("Select configuration file","*.xml","",1);
+	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	if ( str )
 	{
 		//mTransformationFileText->value(str);
 		std::string inputXMLFileName(str);
 		mSMS->LoadTransformationScore(inputXMLFileName);
-		mSMS->mDataState.Reached( DataState::HaveTransformationScore );
+		mSMS->mHaveTransformationScore=true;
 		ApplyTransformationReadyState();
 		mWindow->redraw();
 	}
@@ -141,9 +119,9 @@ void UserInterface::LoadAnalysisData(void)
 
 	if ( !mSMS->LoadAnalysis(  ) )
 		return;
-	mSMS->mDataState.Reached( DataState::HaveAnalysis );
+	mSMS->mHaveAnalysis = true;
 	// @todo: Check this is true...
-	mSMS->mDataState.Reached( DataState::HaveConfig );
+	mSMS->mHaveConfig = true;
 	ApplyAnalysisAvailableState();
 	DeactivateFrameDataMenuItems();
 	mSMS->mExplorer.NewSegment( mSMS->mOriginalSegment );
@@ -162,7 +140,7 @@ bool UserInterface::FrameDataAvailable()
 void UserInterface::Analyze(void)
 {
 	mSMS->Analyze();
-	if ( mSMS->mDataState.Query( DataState::HaveAnalysis ) )
+	if (mSMS->mHaveAnalysis)
 	{
 		ApplyInitialState();
 		ApplyReadyToAnalyzeState();
@@ -178,7 +156,7 @@ void UserInterface::Analyze(void)
 void UserInterface::Synthesize(void)
 {
 	mSMS->Synthesize();
-	if ( mSMS->mDataState.Query( DataState::HaveAudioOut ) )
+	if (mSMS->mHaveAudioOut)
 	{
 		ApplySynthesisAvailableState();
 	}
@@ -199,36 +177,19 @@ void UserInterface::StoreAnalysisData(void)
 	mSMS->StoreAnalysis();
 }
 
-void UserInterface::StoreTransformationData(void)
-{
-	mSMS->StoreTransformation();
-}
-
 void UserInterface::StoreOutputSound(void)
 {
-	char* str = fl_file_chooser("Select audio file","*.wav","",1);
-	if ( str )
-	{
-		mSMS->StoreOutputSound( str );
-	}
+	mSMS->StoreOutputSound();
 }
 
 void UserInterface::StoreOutputSoundResidual(void)
 {
-	char* str = fl_file_chooser("Select audio file","*.wav","",1);
-	if ( str )
-	{
-		mSMS->StoreOutputSoundResidual( str );
-	}
+	mSMS->StoreOutputSoundResidual();
 }
 
 void UserInterface::StoreOutputSoundSinusoidal(void)
 {
-	char* str = fl_file_chooser("Select audio file","*.wav","",1);
-	if ( str )
-	{
-		mSMS->StoreOutputSoundSinusoidal( str );
-	}
+	mSMS->StoreOutputSoundSinusoidal();
 }
 
 void UserInterface::AnalyzeMelody(void)
@@ -239,11 +200,7 @@ void UserInterface::AnalyzeMelody(void)
 
 void UserInterface::StoreMelody(void)
 {
-	char* str = fl_file_chooser("Select melody file","*.xml","",1);
-	if ( str )
-	{
-		mSMS->StoreMelody( str );
-	}
+	mSMS->StoreMelody();
 }
 
 void UserInterface::Transform(void)
@@ -252,17 +209,16 @@ void UserInterface::Transform(void)
 	mSMS->Transform();
 	ApplyTransformationPerformedState();
 	mSMS->mExplorer.CloseAll();
-	mCounter->value(0);
 	mSMS->mExplorer.NewSegment( mSMS->mTransformedSegment );
 	mSMS->mExplorer.NewFrame( mSMS->mTransformedSegment.GetFramesArray()[0],
-				  FrameDataAvailable() );
+												   FrameDataAvailable() );
 	mWindow->redraw();
 
 }
 
 void UserInterface::UndoTransform()
 {
-	mSMS->mDataState.Abandoned( DataState::HaveTransformation );
+	mSMS->mHaveTransformation = false;
 	ApplyInitialState();
 	ApplyReadyToAnalyzeState();
 	ApplyAnalysisAvailableState();
@@ -281,7 +237,7 @@ void UserInterface::ChangeFrame()
 
 	if ( mFrameDataAvailable )
 	{
-		if( mSMS->mDataState.Query( DataState::HaveTransformation ) )
+		if(mSMS->mHaveTransformation)
 			mSMS->mExplorer.NewFrame( mSMS->mTransformedSegment.GetFramesArray()[nframe],
 													   FrameDataAvailable() );
 		else
@@ -358,27 +314,58 @@ void UserInterface::DisplaySinusoidalTracks()
 void UserInterface::ApplyInitialState()
 {
 	mSMS->mExplorer.CloseAll();
-	mCounter->value(0);
-	mSMSAnalysisButton->deactivate();
-	mSegmentButton->deactivate();
-	mFirstSegmentButton->deactivate();
-	mSMSTransformationLoad->deactivate();
-	mSMSTransformationButton->deactivate();
-	mSecondSegmentButton->deactivate();
-	mSMSSynthesisButton->deactivate();
-	mAudioInButton->deactivate();
-	mStoreMelodyButton->deactivate();
-	mStoreAnalysis->deactivate();
+	
+
+	mFileMenuItem->activate();
+	mConfigurationOpsMenuItem->activate();
+	mEditCfgMenuItem->activate();
+	mLoadCfgMenuItem->activate();
+	mStoreCfgMenuItem->activate();
+	mAnalysisFileOpsMenuItem->activate();
+	mLoadAnalysisMenuItem->activate();
+	mStoreAnalysisMenuItem->deactivate();
+	mMelodyFileOpsMenuItem->activate();
+	mStoreMelodyMenuItem->deactivate();
+	mSMSTransFileOpsMenuItem->activate();
+	mLoadSMSTransScoreMenuItem->activate();
+	mSMSSynthesisFileOpsMenuItem->activate();
+	mStoreSMSSynthSoundMenuItem->deactivate();
+	mStoreSMSSynthSinusoidalMenuItem->deactivate();
+	mStoreSMSSynthResidualMenuItem->deactivate();
+	mSMSAnalysisMenuItem->activate();
+	mDoSMSAnalysisMenuItem->deactivate();
+	mMelodyExtractionMenuItem->deactivate();
+	mSMSTransformationMenuItem->activate();
+	mDoSMSTransMenuItem->deactivate();
+	mUndoTransMenuItem->deactivate();
+	mSMSSynthesisMenuItem->activate();
+	mDoSMSSynthesisMenuItem->deactivate();
+	mViewMenuItem->activate();
+	mShowOriginalAudioMenuItem->deactivate();
+	mShowAnalysisResultsMenuItem->deactivate();
+	mShowSinTracksMenuItem->deactivate();
+	mViewFrameDataMenuItem->deactivate();
+	mShowSinusoidalSpectrumMenuItem->deactivate();
+	mShowSpectrumAndPeaksMenuItem->deactivate();
+	mShowResidualSpectrumMenuItem->deactivate();
+	mViewSynthesisResultsMenuItem->deactivate();
+	mShowSynthesizedAudioMenuItem->deactivate();
+	mShowSynthesizedSinusoidalMenuItem->deactivate();
+	mShowSynthesizedResidualMenuItem->deactivate();
+	mAppExitMenuItem->activate();
+	mHelpMenuItem->activate();
+	mCounter->deactivate();
+	mWindow->redraw();
 }
 
 void UserInterface::ApplyReadyToAnalyzeState()
 {
-	mSMSAnalysisButton->activate();
-	mAudioInButton->activate();
-	mStoreAnalysis->deactivate();
-	mSMSSynthesisButton->deactivate();
-	mSMSTransformationLoad->deactivate();
-	mSMSTransformationButton->deactivate();
+	mEditCfgMenuItem->activate();
+	mStoreCfgMenuItem->activate();
+	mDoSMSAnalysisMenuItem->activate();
+	mShowOriginalAudioMenuItem->activate();
+	mStoreAnalysisMenuItem->deactivate();
+	mDoSMSSynthesisMenuItem->deactivate();
 	mWindow->redraw();
 }
 
@@ -390,15 +377,18 @@ void UserInterface::ApplyAnalysisAvailableState()
 	mCounter->step( 1 );
 	mCounter->lstep( mSMS->mOriginalSegment.GetnFrames()/10 );
 
-	mStoreAnalysis->activate();
-	mExtractMelody->activate();
-	mSMSSynthesisButton->activate();
+	mStoreAnalysisMenuItem->activate();
+	mMelodyExtractionMenuItem->activate();
+	mDoSMSSynthesisMenuItem->activate();
 	
-	mFirstSegmentButton->activate();
+	mShowAnalysisResultsMenuItem->activate();
+	mShowSinTracksMenuItem->activate();
+	mViewFrameDataMenuItem->activate();
+	mShowSpectrumAndPeaksMenuItem->activate();
+	mShowResidualSpectrumMenuItem->activate();
 
-	mSMSTransformationLoad->activate();
-	if ( mSMS->mDataState.Query( DataState::HaveTransformationScore ) )
-		mSMSTransformationButton->activate();
+	if ( mSMS->mHaveTransformationScore )
+		mDoSMSTransMenuItem->activate();
 
 	mWindow->redraw();
 
@@ -406,39 +396,40 @@ void UserInterface::ApplyAnalysisAvailableState()
 
 void UserInterface::DeactivateFrameDataMenuItems()
 {
-	mFirstSegmentButton->deactivate();
+	mViewFrameDataMenuItem->deactivate();
+	mShowSpectrumAndPeaksMenuItem->deactivate();
+	mShowResidualSpectrumMenuItem->deactivate();
 	mWindow->redraw();
 }
 
 void UserInterface::ApplyMelodyAvailableState()
 {
-	mStoreMelodyButton->activate();
+	mStoreMelodyMenuItem->activate();
 	mWindow->redraw();
 }
 
 void UserInterface::ApplyTransformationReadyState()
 {
-	mSMSTransformationLoad->activate();
-	if ( mSMS->mDataState.Query( DataState::HaveAnalysis ) )
-		mSMSTransformationButton->activate();
+	if ( mSMS->mHaveAnalysis )
+		mDoSMSTransMenuItem->activate();
 	mWindow->redraw();
 }
 
 void UserInterface::ApplySynthesisAvailableState()
 {
-	mStoreSMSSynthSound->activate();
-	mStoreSMSSynthSinusoidal->activate();
-	mStoreSMSSynthResidual->activate();
+	mStoreSMSSynthSoundMenuItem->activate();
+	mStoreSMSSynthSinusoidalMenuItem->activate();
+	mStoreSMSSynthResidualMenuItem->activate();
 
-	mShowSynthesizedAudio->activate();
-	mShowSynthesizedSinusoidal->activate();
-	mShowSynthesizedResidual->activate();
+	mViewSynthesisResultsMenuItem->activate();
+	mShowSynthesizedAudioMenuItem->activate();
+	mShowSynthesizedSinusoidalMenuItem->activate();
+	mShowSynthesizedResidualMenuItem->activate();
 	mWindow->redraw();
 }
 
 void UserInterface::ApplyTransformationPerformedState()
 {
-	mStoreTransformation->activate();
-	mSMSTransformationUndo->activate();
+	mUndoTransMenuItem->activate();
 	mWindow->redraw();
 }

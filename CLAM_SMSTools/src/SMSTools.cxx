@@ -58,7 +58,7 @@ namespace CLAMGUI
 		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
 		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
 
-		Fl_Tooltip::delay( 0.01f );
+		Fl_Tooltip::delay( 0.01 );
 		Fl_Tooltip::size( 10 );
 		Fl_Tooltip::enable();
 
@@ -69,22 +69,21 @@ namespace CLAMGUI
 	
 	void SMSTools::OnNewTime( double value )
 	{
-		if ( ! mDataState.Query( DataState::HaveAnalysis ) )
+		if (!mHaveAnalysis)
 			return;
 		//Change mCounter
 		TTime time( value  );
 		TIndex nframe;
-		Segment* tmpSegment = NULL ;
-
-		if( mDataState.Query( DataState::HaveTransformation ) ) 
-			tmpSegment = &mTransformedSegment;
+		if(mHaveTransformation)
+			nframe = mTransformedSegment.FindFrame( time );
 		else
-			tmpSegment = &mOriginalSegment;
-
-		nframe = tmpSegment->FindFrame( time );
-		mExplorer.NewFrame( tmpSegment->GetFramesArray()[nframe], mUI->FrameDataAvailable() );
+			nframe = mOriginalSegment.FindFrame( time );
 		
-		mUI->mCounter->value( (int) nframe );		
+		mUI->mCounter->value( (int) nframe );
+		if(mHaveTransformation)
+			mExplorer.NewFrame( mTransformedSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
+		else
+			mExplorer.NewFrame( mOriginalSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
 	}
 
 	Progress* SMSTools::CreateProgress(const char* title,float from,float to) 
@@ -170,7 +169,7 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to load...", "*.xml|*.sdif", "");
+		char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
 
 		if ( !fileName )
 			return false;
@@ -180,23 +179,12 @@ namespace CLAMGUI
 
 	void SMSTools::StoreAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
+		char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
 
 		if ( !fileName )
 			return;
 		
 		SMSBase::StoreAnalysis(fileName);
-
-	}
-
-	void SMSTools::StoreTransformation()
-	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
-
-		if ( !fileName )
-			return;
-		
-		SMSBase::StoreTransformation(fileName);
 
 	}
 

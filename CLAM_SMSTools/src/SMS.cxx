@@ -78,15 +78,15 @@ void SMSStdio::Run(void)
 			}
 			case 2://Load analysis data
 			{
-				std::string inputFileName;
-				std::cout<<"\n"<<"\n"<<"Enter Input XML or SDIF File Name: \n";
-				std::cin>>inputFileName;
-				LoadAnalysis(inputFileName);
+				std::string inputXMLFileName;
+				std::cout<<"\n"<<"\n"<<"Enter Input XML File Name: \n";
+				std::cin>>inputXMLFileName;
+				LoadAnalysis(inputXMLFileName);
 				break;
 			}
 			case 3://Analyze
 			{
-				if( !mDataState.Query(DataState::HaveConfig) )
+				if(!mHaveConfig)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
@@ -99,62 +99,54 @@ void SMSStdio::Run(void)
 			}
 			case 4://Store analysis data
 			{
-				if( !mDataState.Query(DataState::HaveConfig) )
-				{
-					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
-					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
-					break;
-				}
-				if( !mDataState.Query(DataState::HaveAnalysis) )
+				if(!mHaveAnalysis)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
 					break;
 				}
-				std::string inputFileName;
-				std::cout<<"\n"<<"\n"<<"Enter Input XML or SDIF File Name: \n";
-				std::cin>>inputFileName;
-				StoreAnalysis( inputFileName );
+				//tmpSegment=mySegment;
+				std::string storeAnalysisFile;
+				std::cout<<"\n"<<"\n"<<"Enter Analysis Output File Name: [.xml|.sdif]  \n";
+				std::cin>> storeAnalysisFile;
+				StoreAnalysis( storeAnalysisFile );
 				break;
 			}
 			case 5: //Analyze melody
 			{
-				if( !mDataState.Query(DataState::HaveConfig) )
+				if(!mHaveConfig)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
 					break;
 				}
-				if( !mDataState.Query(DataState::HaveAnalysis) )
+				if(!mHaveAnalysis)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
 					break;
 				}
-				if( !mDataState.Query(DataState::HaveSpectrum) )
+				if(!mHaveSpectrum)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, cannot analyze melody from loaded data"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 of the menu first"<<"\n";
 					break;
 				}
 				//tmpSegment=mySegment;
-				mDataState.Reached( DataState::HaveMelody );
+				mHaveMelody=true;
 				AnalyzeMelody();
 				break;
 			}
 			case 6://Store melody
 			{
-				if( !mDataState.Query(DataState::HaveMelody) )
+				if(!mHaveMelody)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available melody"<<"\n";
 					std::cout<<"\n"<<"Please select option 5 of the menu first"<<"\n";
 					break;
 				}
 				//tmpSegment=mySegment;
-				std::string inputFileName;
-				std::cout<<"\n"<<"\n"<<"Enter Input XML File Name: \n";
-				std::cin>>inputFileName;
-				StoreMelody( inputFileName.c_str() );
+				StoreMelody();
 				break;
 			}
 			case 7://Load Transformation score
@@ -163,18 +155,18 @@ void SMSStdio::Run(void)
 				std::cout<<"\n"<<"\n"<<"Enter Input XML File Name: \n";
 				std::cin>>inputXMLFileName;
 				LoadTransformationScore(inputXMLFileName);
-				mDataState.Reached( DataState::HaveTransformationScore );
+				mHaveTransformationScore = true;
 				break;
 			}
 			case 8://Transform
 			{
-				if( !mDataState.Query(DataState::HaveTransformationScore) )
+				if(!mHaveTransformationScore)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available transformation score"<<"\n";
 					std::cout<<"\n"<<"Please select option 7 of the menu first"<<"\n";
 					break;
 				}
-				if( !mDataState.Query(DataState::HaveAnalysis) )
+				if(!mHaveAnalysis)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
@@ -186,13 +178,13 @@ void SMSStdio::Run(void)
 
 			case 9://Synthesize
 			{
-				if( !mDataState.Query(DataState::HaveAnalysis) )
+				if(!mHaveAnalysis)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
 					break;
 				}
-				if( !mDataState.Query(DataState::HaveConfig) )
+				if(!mHaveConfig)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
@@ -238,3 +230,25 @@ int main(int argc,char** argv)
 	std::clog << "Finished successfully!";
 	return 0;
 }
+
+/*
+void GenerateXML()
+{
+	SMSBaseAnalysisSynthesisConfig c;
+	XMLStorage x;
+	x.UseIndentation(true);
+	x.Dump(c,"SMSBaseAnalysisSynthesisConfig","c:\\config.xml");
+}
+
+TData Error(Audio& original, Audio& synthesized,Audio& error)
+{
+	CLAM_ASSERT(original.GetSize()==synthesized.GetSize(),"Original and synthesized audio do not have the same size");
+	TData err=0;
+	int size=original.GetSize();
+	for(int i=0;i<size;i++)
+	{
+		err+=error.GetBuffer()[i]=(original.GetBuffer()[i]-synthesized.GetBuffer()[i]);
+	}
+	return err;
+}
+*/

@@ -57,7 +57,6 @@ protected: // methods
 
 	bool LoadAnalysis();
 	void StoreAnalysis();
-	void StoreTransformation();
 
 
 private:
