@@ -42,8 +42,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	addColumn( "Processing" );
 	setRootIsDecorated( TRUE );
 	QListViewItem * gen = new QListViewItem( this,"Generators" );
-	ProcessingItem * osc = new ProcessingItem( gen, "Oscillator");
-	ProcessingItem * osc2 = new ProcessingItem( gen, "OscillatorWithModulation");
+	ProcessingItem * osc = new ProcessingItem( gen, "SimpleOscillator");
+	ProcessingItem * osc2 = new ProcessingItem( gen, "Oscillator");
 	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
 
 	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
@@ -54,6 +54,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
 	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
 	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
+	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
 	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );

@@ -31,19 +31,20 @@
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "BinaryAudioOp.hxx"
+#include "SimpleOscillator.hxx"
 #include "Oscillator.hxx"
 #include "ADSR.hxx"
 
 // in draft/NewProcessings
 #include "FlagControl.hxx"
 #include "Random.hxx"
-#include "OscillatorWithModulation.hxx"
-
+#include "OneOverF.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
 
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OscillatorConfig> OscillatorConfigPresentationTmpl;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::SimpleOscillatorConfig> SimpleOscillatorConfigPresentationTmpl;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> AutoPannerConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioFileConfig> AudioFileConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioIOConfig> AudioIOConfigPresentation;
@@ -55,7 +56,9 @@ typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> AudioAdderCon
 // in draft
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> FlagControlConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::RandomConfig> RandomConfigPresentation;
+typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> OneOverFConfigPresentation;
 
+static ProcessingConfigPresentationFactory::Registrator<SimpleOscillatorConfigPresentationTmpl> regtSimpleOscillatorCfg( "SimpleOscillatorConfig" );
 static ProcessingConfigPresentationFactory::Registrator<OscillatorConfigPresentationTmpl> regtOscillatorCfg( "OscillatorConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AutoPannerConfigPresentation> regtAutoPannerCfg( "AutoPannerConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AudioFileConfigPresentation> regtAudioFileInCfg( "AudioFileConfig" );
@@ -64,8 +67,11 @@ static ProcessingConfigPresentationFactory::Registrator<AudioAdderConfigPresenta
 static ProcessingConfigPresentationFactory::Registrator<BinaryAudioOpConfigPresentation> regtBinaryAudioOpCfg( "BinaryAudioOpConfig" );
 static ProcessingConfigPresentationFactory::Registrator<ADSRConfigPresentation> regtADSRCfg( "ADSRConfig" );
 static ProcessingConfigPresentationFactory::Registrator<AudioMultiplierConfigPresentation> regtAudioMultiplierCfg( "AudioMultiplierConfig" );
+
+// in draft
 static ProcessingConfigPresentationFactory::Registrator<FlagControlConfigPresentation> regtFlagControlCfg( "FlagControlConfig" );
 static ProcessingConfigPresentationFactory::Registrator<RandomConfigPresentation> regtRandomCfg( "RandomConfig" );
+static ProcessingConfigPresentationFactory::Registrator<OneOverFConfigPresentation> regtOneOverFCfg( "OneOverFConfig" );
 
 
 // manual config presentation
