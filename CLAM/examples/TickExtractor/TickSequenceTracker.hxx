@@ -16,11 +16,12 @@ namespace CLAM
 {
 
 	class Audio;
-	class GridGen;
+
 
 	namespace RhythmDescription
 	{
 		class GlobalPulse;
+		class GridGen;
 	}
 
 	class TickSequenceTracker : public ProcessingComposite
@@ -63,7 +64,7 @@ namespace CLAM
 				       Array<TimeIndex>& mPulses);
 
 		void GeneratePulseGrid(const TData start, const TData gap, const TData end, 
-				       GridGen& pulseGridGen, Array<TimeIndex>& pulseArray);
+				       RhythmDescription::GridGen& pulseGridGen, Array<TimeIndex>& pulseArray);
 
 
 		unsigned AdjustTickIntervalForSwing( RhythmDescription::IOIHistogram& ioiHistogram, 

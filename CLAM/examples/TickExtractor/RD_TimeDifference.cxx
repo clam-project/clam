@@ -25,126 +25,126 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "Complex.hxx"
+
 #include "RD_TimeDifference.hxx"
 #include "CLAM_Math.hxx"
 
 namespace CLAM 
 {
 
-namespace RhythmDescription
-{
-
-/* The  Configuration object has at least to have a name */
-	void TimeDifferenceConfig::DefaultInit()
+	namespace RhythmDescription
 	{
-		/* the dynamic type takes care if we add an existing attr .. */
-		AddGaussianSize();
 
-		/* All Attributes are added */
-		UpdateData();
-		SetGaussianSize(8192);
-	}
-
-
-/* Processing  object Method  implementations */
-	TimeDifference::TimeDifference()
-	{
-		Configure(TimeDifferenceConfig());
-	}
-
-	TimeDifference::TimeDifference(const TimeDifferenceConfig &c)
-	{
-		Configure(c);
-	}
-
-	TimeDifference::~TimeDifference()
-	{
-	}
-
-	const char* TimeDifference::GetClassName() const
-	{
-		return "TimeDifference";
-	}
-
-	/* Configure the Processing Object according to the Config object */
-
-	bool TimeDifference::ConcreteConfigure(const ProcessingConfig& c)
-	{
-		CopyAsConcreteConfig( mConfig, c );
-		WindowGeneratorConfig winconf;
-		winconf.AddType();
-		winconf.UpdateData();
-		winconf.SetType(EWindowType::eGaussian);
-		winconf.SetSize(mConfig.GetGaussianSize());
-
-		mWindowGen.Configure(winconf);
-
-		mWindow.Resize(mConfig.GetGaussianSize());
-		mWindow.SetSize(mConfig.GetGaussianSize());
-
-		mWindowGen.Start();
-
-		mWindowGen.Do(mWindow);
-		mWindowGen.Stop();	    
-
-		//NB: full-width of gaussian at half max= s*2*sqrt(2)
-		//	where s is the standard dev
-		//	in WindowGenerator::Gaussian, s=0.15
-
-
-		return true;
-	}
-
-	/* The supervised Do() function */
-	bool  TimeDifference::Do(void) 
-	{
-		return false;
-	}
-
-	/* The  unsupervised Do() function */
-	bool  TimeDifference::Do(Array<TimeIndex>& in, DataArray& out)
-	{
-		int gsize = mConfig.GetGaussianSize();
-	
-		TData* outp = out.GetPtr();
-		TData* end = outp + out.Size();
-		TData* win = mWindow.GetPtr();
-		int  size = in.Size();
-    
-		for (int i=0;i<out.Size();i++)
-			outp[i] = 0.;
-	
-		for (int j=0;j < size-1;j++) 
+		/* The  Configuration object has at least to have a name */
+		void TimeDifferenceConfig::DefaultInit()
 		{
-			int apos = (int) in[j].GetPosition();
+			/* the dynamic type takes care if we add an existing attr .. */
+			AddGaussianSize();
 
-			for (int k = j+1; k<size;k++) 
+			/* All Attributes are added */
+			UpdateData();
+			SetGaussianSize(8192);
+		}
+
+
+		/* Processing  object Method  implementations */
+		TimeDifference::TimeDifference()
+		{
+			Configure(TimeDifferenceConfig());
+		}
+
+		TimeDifference::TimeDifference(const TimeDifferenceConfig &c)
+		{
+			Configure(c);
+		}
+
+		TimeDifference::~TimeDifference()
+		{
+		}
+
+		const char* TimeDifference::GetClassName() const
+		{
+			return "TimeDifference";
+		}
+
+		/* Configure the Processing Object according to the Config object */
+
+		bool TimeDifference::ConcreteConfigure(const ProcessingConfig& c)
+		{
+			CopyAsConcreteConfig( mConfig, c );
+			WindowGeneratorConfig winconf;
+			winconf.AddType();
+			winconf.UpdateData();
+			winconf.SetType(EWindowType::eGaussian);
+			winconf.SetSize(mConfig.GetGaussianSize());
+
+			mWindowGen.Configure(winconf);
+
+			mWindow.Resize(mConfig.GetGaussianSize());
+			mWindow.SetSize(mConfig.GetGaussianSize());
+
+			mWindowGen.Start();
+
+			mWindowGen.Do(mWindow);
+			mWindowGen.Stop();	    
+
+			//NB: full-width of gaussian at half max= s*2*sqrt(2)
+			//	where s is the standard dev
+			//	in WindowGenerator::Gaussian, s=0.15
+
+
+			return true;
+		}
+
+		/* The supervised Do() function */
+		bool  TimeDifference::Do(void) 
+		{
+			return false;
+		}
+
+		/* The  unsupervised Do() function */
+		bool  TimeDifference::Do(Array<TimeIndex>& in, DataArray& out)
+		{
+			int gsize = mConfig.GetGaussianSize();
+	
+			TData* outp = out.GetPtr();
+			TData* end = outp + out.Size();
+			TData* win = mWindow.GetPtr();
+			int  size = in.Size();
+    
+			for (int i=0;i<out.Size();i++)
+				outp[i] = 0.;
+	
+			for (int j=0;j < size-1;j++) 
 			{
-				int pos = labs((int)apos - in[k].GetPosition()); 
-				
-				if (pos+gsize<out.Size()) 
+				int apos = (int) in[j].GetPosition();
+
+				for (int k = j+1; k<size;k++) 
 				{
-
-					TData* outw = outp + pos - gsize/2;
-					TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());
-
-					// add the gaussian 
-					for (int i=0;i<gsize;i++) 
+					int pos = labs((int)apos - in[k].GetPosition()); 
+				
+					if (pos+gsize<out.Size()) 
 					{
-						if (outw >= outp && outw < end) 
+
+						TData* outw = outp + pos - gsize/2;
+						TData weight = std::min(in[k].GetWeight(),in[j].GetWeight());
+
+						// add the gaussian 
+						for (int i=0;i<gsize;i++) 
 						{
-							*outw += (win[i]*weight);
+							if (outw >= outp && outw < end) 
+							{
+								*outw += (win[i]*weight);
+							}
+							outw++;
 						}
-						outw++;
 					}
 				}
 			}
+			return true;
 		}
-		return true;
-	}
 
-} // namespace RhythmDescription
+	} // namespace RhythmDescription
   
 } // namespace CLAM
 

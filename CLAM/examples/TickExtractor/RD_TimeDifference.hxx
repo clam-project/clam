@@ -52,36 +52,36 @@ namespace CLAM
 	namespace RhythmDescription
 	{
 		
-	class TimeDifferenceConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (TimeDifferenceConfig, 1,ProcessingConfig);
-		DYN_ATTRIBUTE (0,public, TSize, GaussianSize);
-	protected:
-		void DefaultInit();
+		class TimeDifferenceConfig: public ProcessingConfig
+		{
+		public:
+			DYNAMIC_TYPE_USING_INTERFACE (TimeDifferenceConfig, 1,ProcessingConfig);
+			DYN_ATTRIBUTE (0,public, TSize, GaussianSize);
+		protected:
+			void DefaultInit();
 
-	};
+		};
 
-	class TimeDifference: public Processing 
-	{
-		TimeDifferenceConfig mConfig;
-		WindowGenerator      mWindowGen;
-		DataArray            mWindow;
+		class TimeDifference: public Processing 
+		{
+			TimeDifferenceConfig mConfig;
+			WindowGenerator      mWindowGen;
+			DataArray            mWindow;
 
-		const char *GetClassName() const;
+			const char *GetClassName() const;
 		
-		bool ConcreteConfigure(const ProcessingConfig&);
+			bool ConcreteConfigure(const ProcessingConfig&);
 
-	public:
-		TimeDifference();
-		TimeDifference(const TimeDifferenceConfig &c);
-		~TimeDifference();
+		public:
+			TimeDifference();
+			TimeDifference(const TimeDifferenceConfig &c);
+			~TimeDifference();
 
-		const ProcessingConfig &GetConfig() const { return mConfig;}
+			const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		bool Do(void);
-		bool Do(Array<TimeIndex>& input, DataArray& out);
-	};
+			bool Do(void);
+			bool Do(Array<TimeIndex>& input, DataArray& out);
+		};
 
 	}
 

@@ -27,7 +27,7 @@
 
 #include "TickSequenceTracker.hxx"
 #include "RD_GlobalPulse.hxx"
-#include "GridGen.hxx"
+#include "RD_GridGen.hxx"
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
 #include <list>
@@ -249,7 +249,7 @@ namespace CLAM
 
 
 			unsigned int goodTickInterval,goodTickOffset;
-			GridGen pulseGridGen;
+			RhythmDescription::GridGen pulseGridGen;
 			
 			if (mConfig.GetAdjustWithOnsets()) 
 			{
@@ -500,10 +500,10 @@ namespace CLAM
 
 
 	void TickSequenceTracker::GeneratePulseGrid(const TData start, const TData gap, 
-					       const TData end, GridGen& pulseGridGen, 
+					       const TData end, RhythmDescription::GridGen& pulseGridGen, 
 					       Array<TimeIndex>& pulseArray)
 	{
-		GridGenConfig pulseGridConf=dynamic_cast<const GridGenConfig&>(pulseGridGen.GetConfig());
+		RhythmDescription::GridGenConfig pulseGridConf=dynamic_cast<const RhythmDescription::GridGenConfig&>(pulseGridGen.GetConfig());
 		pulseGridConf.SetStart(start);
 		pulseGridConf.SetGap(gap);
 		pulseGridConf.SetEnd(end);
