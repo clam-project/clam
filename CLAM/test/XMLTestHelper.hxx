@@ -24,8 +24,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "mtgsstream.h"
-#include <fstream>
+#include <cppunit/extensions/HelperMacros.h>
 
 #ifdef CLAM_USE_XML
 #include "XMLStorage.hxx"
@@ -40,7 +39,7 @@ namespace CLAMTest {
 	 * Returns true if the XML output from 'tested' and the XML output
 	 * generated from an object restored from this output matches.
 	 */
-	template <class T> 
+	template <class T>
 	bool XMLInputOutputMatches(T & outObject, char * filename) {
 		std::ostringstream out;
 		std::ostringstream in;
@@ -54,7 +53,6 @@ namespace CLAMTest {
 			storage.Dump(outObject, "Object", out);
 			storage.Dump(outObject, "Object", fout);
 		}
-		std::cout << " Stored: " << out.str() << std::endl;
 		{
 			// Recover the objec on superIn
 			XMLStorage storage;
@@ -66,8 +64,10 @@ namespace CLAMTest {
 			storage.UseIndentation(true);
 			storage.Dump(inObject, "Object", in);
 		}
+		std::cout << " Stored: " << out.str() << std::endl;
+		std::cout << " Loaded: " << in.str() << std::endl;
 #endif//CLAM_USE_XML
-		std::cout << " Loaded: " << in. str() << std::endl;
+		CPPUNIT_ASSERT_EQUALS(in.str(),out.str());
 		return in.str()==out.str();
 
 	}
