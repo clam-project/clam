@@ -74,7 +74,6 @@ namespace CLAM {
 		 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
 		 *  @return true if the object has been configured correctly; true otherwise
 		 *  @param The related ProcessingConfig object
-		 *  @throws A bad_cast exception if the arguments is not the expected configuration class
 		 */
 		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
@@ -84,7 +83,7 @@ namespace CLAM {
 
 		/** Getter for the configuration of the class
 		 *  @return The ProcessingConfig object attached to this Processing object
-		 */		
+		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;};
 
 		/** Method created to print in default screen the values of MIDI messages catched by the MIDIDevice. Each PrintControl object controls messages of only one kind and one value (two values are controlled by two objects), so this method will print the type of message and its value.
