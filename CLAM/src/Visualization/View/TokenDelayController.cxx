@@ -29,9 +29,11 @@ namespace CLAMVM
 
 				ControlAdapter* adap = static_cast<ControlAdapter*> (mChildren["Delay Control"]);
 				
-				const TokenDelayConfig& cfg = static_cast< const TokenDelayConfig& >( mObserved->GetConfig() );
+				const CLAM::TokenDelayConfig& cfg = 
+					static_cast< const CLAM::TokenDelayConfig& >( mObserved->GetConfig() );
 
-				adap->SetValueRange( 0, max );
+#warning "This line been commented in order to compile but it really doesn't works"
+//				adap->SetValueRange( 0, max );
 				
 				return true;
 		}
