@@ -360,6 +360,17 @@ namespace CLAM {
 		}
 
 	public:
+		/**
+		 * This method is used to determine if a given processing can change its interface of ports/controls after
+		 * its construction (i.e. changing the name of ports in ConcreteConfigure). If a concrete processing
+		 * can do this, it should reimplement the method returning true, in order to notify networks, graphical
+		 * interfaces, etc.
+		 */
+		virtual bool ModifiesPortsAndControlsAtRuntime()
+		{ 
+			return false;
+		}
+		
 		PublishedInControls& GetInControls()
 		{
 			return mPublishedInControls;
