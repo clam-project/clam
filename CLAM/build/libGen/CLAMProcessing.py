@@ -2,7 +2,7 @@
 
 import libGen, sys
 
-def makelib() :
+def makeSettings() :
     libCLAMProcessing = libGen.LibGenerator( "Processing" )
 
     print "Generating libCLAM%s..."%libCLAMProcessing.libName

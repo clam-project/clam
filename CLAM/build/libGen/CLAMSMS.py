@@ -2,7 +2,7 @@
 
 import libGen, sys
 
-def makelib() :
+def makeSettings() :
     libCLAMSMS = libGen.LibGenerator( "SMS" )
 
     print "Generating libCLAM%s..."%libCLAMSMS.libName

@@ -2,7 +2,7 @@
 
 import libGen, sys
 
-def makelib( ) :
+def makeSettings( ) :
     libCLAMIO = libGen.LibGenerator( "IO" )
 
     print "Generating libCLAM%s..."%libCLAMIO.libName

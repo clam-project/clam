@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
 import libGen, sys
+import AutoconfTools
 
-def makelib() :
+def makeSettings() :
     libCLAMCore = libGen.LibGenerator("Core")
 
     print "Generating libCLAM%s..."%libCLAMCore.libName
