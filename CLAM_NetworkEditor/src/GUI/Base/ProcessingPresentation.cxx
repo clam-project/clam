@@ -111,6 +111,7 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
 	
 	SignalConfigureProcessing.Connect( controller.SlotConfigureProcessing );
 	SignalProcessingNameChanged.Connect( controller.SlotProcessingNameChanged );
+	SignalSendOutControlValue.Connect( controller.SlotSendOutControlValue );
 	controller.SignalChangeProcessingPresentationName.Connect( SlotChangeProcessingPresentationName );
 	controller.SignalChangeState.Connect( SlotChangeState );
 
