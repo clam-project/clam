@@ -8,25 +8,6 @@
 namespace CLAMTest
 {
 
-class A
-{
-public:
-	virtual void foo() = 0;
-
-	virtual ~A()
-	{
-	}
-};
-
-class B : public A
-{
-public:
-	virtual void foo() {}
-
-	virtual ~B()
-	{
-	}
-};
 
 typedef CLAM::Factory< A > FactoryOfAs;
 
@@ -138,6 +119,6 @@ private:
 
 };
 
-	static FactoryOfAs::Registrator<B> DummyRegt("B");
+
 
 } // namespace CLAMTest
