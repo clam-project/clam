@@ -2,5 +2,7 @@
 #define __dsp_parser__
 
 void dsp_parse(const char* filename);
+void dsp_parse_from_empty(const char* outFilename);
+void dsp_parse_from_file(const char* inFilename, const char* outFilename);
 
 #endif
