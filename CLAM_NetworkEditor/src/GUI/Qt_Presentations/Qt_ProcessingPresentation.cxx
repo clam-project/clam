@@ -31,8 +31,6 @@
 #include <qlineedit.h>
 #include <cmath>
 
-#include <iostream> // TODO: remove
-
 namespace NetworkGUI
 {
 
@@ -341,7 +339,10 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	p.drawRect( 12,7, width()-24,height()-14); // draw a rectangle
 	p.setPen( QPen( blue, 1 ));
 	p.drawRect( 12,7, width()-24,height()-14); // draw a rectangle
+	p.drawLine( QPoint( 12, height()/2), QPoint( width()-12, height()/2 )); 
+	
 	p.setPen( QPen( black,1 ));
+	
 	if(mSelected)
 	{
 		p.setFont( QFont( "Helvetica", 8, QFont::Light, true ));
@@ -353,6 +354,7 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	p.drawText(  QRect(12,7,width()-24, height()/2 - 5 ),
 		    Qt::AlignCenter ,	
 		    QString( mName.c_str() ));
+				
 	p.drawText(  QRect(12,height()/2,width()-24, height()/2 - 5 ),
 		    Qt::AlignCenter ,	
 		    QString( mObservedClassName.c_str() ));
@@ -498,7 +500,6 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 {
 	releaseKeyboard();
 	QLineEdit * nameEdit = new QLineEdit( this );
-//	nameEdit->setAlignment( Qt::AlignCenter ); 
 	nameEdit->setText( mName.c_str() );
 
 	connect( nameEdit, SIGNAL( textChanged ( const QString & )),
@@ -512,6 +513,8 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 	nameEdit->setGeometry( QRect(12,7,width()-24, height()-14) );
 	nameEdit->show();
 	nameEdit->grabKeyboard();
+
+	SignalSendMessageToStatus.Emit( "Edit the processing name" );
 }
 
 void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
@@ -524,10 +527,12 @@ void Qt_ProcessingPresentation::SlotTextChange( const QString & newName )
 {
 	ChangeProcessingPresentationName( newName.latin1() );
 	emit SignalEmitGeometryChange( QRect(12,7,width()-24, height()-14) );
+	EmitPositionOfChildren();
 }
 
 void Qt_ProcessingPresentation::SlotExecuteChangeName()
 {
+
 	SignalProcessingNameChanged.Emit( mName );
 }
 
