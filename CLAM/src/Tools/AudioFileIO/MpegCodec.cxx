@@ -135,7 +135,7 @@ namespace AudioCodecs
 		if ( uri.size() > 4 )
 		{
 
-			std::string::size_type startExt = uri.find( '.' );
+			std::string::size_type startExt = uri.rfind( '.' );
 
 			if ( startExt != std::string::npos )
 			{
