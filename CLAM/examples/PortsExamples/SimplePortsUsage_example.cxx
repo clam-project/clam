@@ -42,8 +42,10 @@ int main( int argc, char** argv )
 {	
 	try
 	{
-		// we won't comment the code related to audio I/O and processing configuration, because they are questions discussed
-		// in another examples (like FilePlayback_example.cxx  and ProcessingLifeCycle_example.cxx).
+		// we won't comment the code related to audio I/O and processing
+		// configuration, because they are questions discussed
+		// in another examples (like FilePlayback_example.cxx 
+		// and ProcessingLifeCycle_example.cxx).
 		int sampleRate = 44100;
 		int size = 256;
 
@@ -70,7 +72,7 @@ int main( int argc, char** argv )
 
 		CLAM::AudioFileHeader header;
 		CLAM::EAudioFileFormat outputFormat = 
-		CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
+			CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
 		header.SetValues( sampleRate, 1, outputFormat );
 
 
@@ -90,15 +92,15 @@ int main( int argc, char** argv )
 		audioOut.GetInPort("Audio Input").SetSize( size );
 		audioOut.GetInPort("Audio Input").SetHop( size );
 
-		writer.GetInPort("Samples to write").SetSize( size );
-		writer.GetInPort("Samples to write").SetHop( size );
+		writer.GetInPort("Samples Write").SetSize( size );
+		writer.GetInPort("Samples Write").SetHop( size );
 
 		// after this, is needed to attach the different ports to their respective nodes.
-//		osc.GetOutPorts("Audio Output").ConnectToIn( audioOut.GetInPorts("Audio Input") );
-		osc.GetOutPort("Audio Output").ConnectToIn( myfft.GetInPort("Audio Input") );
-		myfft.GetOutPort("Spectrum Output").ConnectToIn( myifft.GetInPort("Spectrum Input") );
-		myifft.GetOutPort("Audio Output").ConnectToIn( audioOut.GetInPort("Audio Input") );
-		osc.GetOutPort("Audio Output").ConnectToIn( writer.GetInPort("Samples to write") );
+//		CLAM::ConnectPorts( osc, "Audio Output", audioOut, "Audio Input");
+		CLAM::ConnectPorts( osc, "Audio Output", myfft, "Audio Input");
+		CLAM::ConnectPorts( myfft, "Spectrum Output", myifft, "Spectrum Input");
+		CLAM::ConnectPorts( myifft, "Audio Output", audioOut, "Audio Input");
+		CLAM::ConnectPorts( osc, "Audio Output", writer, "Samples Write");
 
 	
 		osc.Start();
