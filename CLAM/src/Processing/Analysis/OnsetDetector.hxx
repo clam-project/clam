@@ -84,7 +84,7 @@ namespace CLAM
 		bool mComputeOffsets;
 		Array< Array<double> > mFilterBankOutputs;
 		Array<TimeIndex> mOnsets;
-		DataArray cf;
+		Array<double>    mRevSmoothedEnergy;
 	};
 
 

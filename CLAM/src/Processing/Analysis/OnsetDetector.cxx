@@ -182,9 +182,6 @@ namespace CLAM
 		//ONSET DETECTION PER BAND	
 		for (int band=0 ; band<mnBands ; band++)
 		{
-
-			//cout<<(band+1)*100/mnBands<<"%"<<endl;
-		
 		
 			//smoothing
 			Smoothing( mFilterBankOutputs[band] , smoothedInput[band] );
@@ -211,7 +208,7 @@ namespace CLAM
 		//Forms ordered array of onsets
 		for (int i=0 ; i<mnSamples ; i++)
 		{
-			if (onsetsArray[i] == 0) continue;
+			if (onsetsArray[i] < 1e-7 ) continue;
 			tempOnset.SetPosition(i);
 			tempOnset.SetWeight(onsetsArray[i]);
 			mOnsets.AddElem(tempOnset);
