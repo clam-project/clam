@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "parser.h"
 #include "config_parser.h"
@@ -516,22 +517,53 @@ const char* parser_comment(const char* ptr)
 	return 0;
 }
 
+static void parser_mark_as_mocable( )
+{
+	const char* currentFilename = stack_top( filenamestack);
+	
+	if ( !strstr( currentFilename, "/include" ) )	/*Ignoring external library headers*/	
+	{
+		listkey* k = listhash_find( config, "MOCABLE_HEADERS" );
+		assert( k != NULL );
+		list* mocable_headers = k->l;
+		assert( mocable_headers != NULL );
+		
+		list_add_str_once( mocable_headers, currentFilename );		
+	}
+}
+
 /* parse a line. return 1 if after parsing the line we are still inside 
 ** a c-style comment */
 int parser_line(const char* ptr)
 {
-restart:
-	ptr = strptr_skip_spaces(ptr);
-	if (*ptr=='/' && *(ptr+1)=='/') return 0;
-	if (*ptr=='/' && *(ptr+1)=='*') 
+	do
 	{
-		ptr = parser_comment(ptr+2);
-		if (ptr==0) {
-			return 1;
+		/* Eat leading tabs and spaces */
+		ptr = strptr_skip_spaces(ptr);
+		
+		/* C++ single line comment */
+		if ( ptr[0] == '/' && ptr[1] == '/' )
+			return 0;
+
+		/* Beginning of C-style block comment */
+		if ( ptr[0] == '/' && ptr[1] == '*' )
+		{
+			ptr = parser_comment( ptr + 2 );
+
+			/*End of line reached inside parser_comment*/
+			if ( ptr == 0 )
+				return 1;
 		}
-		goto restart;
-	}
-	if (*ptr=='#')
+		else
+			break;
+	
+	} while( 1 );
+	
+	/* Blank line :S*/
+	if ( *ptr=='\n' )
+		return 0;	
+	/* Preprocessor directive */
+	else if (*ptr=='#')
 	{
 		ptr++;
 		ptr = strptr_skip_spaces(ptr);
@@ -539,7 +571,19 @@ restart:
 		{
 			ptr = parser_directive(ptr);
 		}
+		return 0;
 	}
+	/* TODO: Possible Q object - this might be optimized by controlling if we are
+	 * inside or outside a class scope
+	 */
+	else if ( strstr( ptr, "Q_OBJECT") )
+	{
+		parser_mark_as_mocable();
+		return 0;
+	}
+	else
+		return 0;
+
 	return 0;
 }
 
