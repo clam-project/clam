@@ -9,6 +9,7 @@
 namespace CLAMVM
 {
 		using SigSlot::Signalv1;
+		using SigSlot::Signalv2;
 		using SigSlot::Slotv1;
 
 		class InputControlModel
@@ -25,7 +26,7 @@ namespace CLAMVM
 
 				// Signals
 				Signalv1< CLAM::TControlData >                  ValuePublished;
-				Signalv1< CLAM::TControlData, CLAM::TControlData >    ValueRangePublished;
+				Signalv2< CLAM::TControlData, CLAM::TControlData >    ValueRangePublished;
 				
 				// Slots
 				Slotv1< CLAM::TControlData>                     UpdateValue;
