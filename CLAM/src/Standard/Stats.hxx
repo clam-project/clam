@@ -52,6 +52,22 @@ public:
 		}
 		InitMoment((O<initOrder>*)(0));
 	}
+	~StatsTmpl()
+	{
+		int i;
+		for (i=0;i<mMoments.Size();i++)
+		{
+			if(mMoments[i]) delete mMoments[i];
+		}
+		for (i=0;i<mCentralMoments.Size();i++)
+		{
+			if(mCentralMoments[i]) delete mCentralMoments[i];
+		}
+		for (i=0;i<mCenterOfGravities.Size();i++)
+		{
+			if(mCenterOfGravities[i]) delete mCenterOfGravities[i];
+		}
+	}
 
 	/** Method to change data array and reset all previous computations*/
 	void SetArray(const Array<T>* data)
