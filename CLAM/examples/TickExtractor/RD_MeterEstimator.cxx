@@ -47,14 +47,39 @@ namespace CLAM
 			SetACFIntegrationTime(10);
 		}
 
+		std::ofstream MeterEstimator::smLogFile;
+		bool          MeterEstimator::smLogInit = false;
+
 		MeterEstimator::MeterEstimator()
 		{
+			CheckLogInitialization();
 			AttachChildren();
 
 		}
 
 		MeterEstimator::~MeterEstimator()
 		{
+		}
+	       
+		void MeterEstimator::CheckLogInitialization()
+		{
+			if ( !smLogInit )
+			{
+				if ( smLogFile.is_open() )
+				{
+					smLogFile.close();
+				}
+
+				std::string logFilename = std::string(GetClassName()) + std::string("_Log.log");
+				smLogFile.open( logFilename.c_str() );
+				smLogInit = true;
+			}
+		}
+
+		std::ostream& MeterEstimator::Log()
+		{
+			CLAM_ASSERT( smLogFile.is_open(), "MeterEstimator::Log() : the log file is not opened!" );
+			return smLogFile;
 		}
 
 		const ProcessingConfig& MeterEstimator::GetConfig() const
@@ -103,6 +128,9 @@ namespace CLAM
 		{
 			const Array<TimeIndex>& beats = beatData.GetIndexes();
 			
+			// MRJ: If there were no beats detected: i.e. silence or
+			// error, we just set the numerator and denominator
+			// for the meter to 0/0.
 			if ( beats.Size() == 0 )
 			{
 				dataOut.SetNumerator(0);
@@ -110,27 +138,13 @@ namespace CLAM
 				
 				return true;
 			}
-
-			TData globalTempo;
+			
 			TData sampleRate = audioIn.GetSampleRate();
 
-			//Beat centering method 3 (mean IBI)
-
-
-			globalTempo = .0; 
-			for (int i=0;i<beats.Size()-1;i++) 
-				globalTempo += beats[i+1].GetPosition()-beats[i].GetPosition();
-			globalTempo /= beats.Size()-1;
-			std::cerr << "Ad-hoc tempo: " << 60.0/globalTempo << std::endl;
-			std::cerr << "Max IOI tempo: " << beatData.GetRate() << std::endl;
-
-			/*
-			  globalTempo *= sampleRate;
-			  globalTempo /= 2;
-			*/
-
+			// MRJ: We take as the tempo value the BPM descriptor
+			// as computed by the TickSequenceTracker composite
 			
-			globalTempo = (60.0 * sampleRate)/beatData.GetRate();
+			TData globalTempo = (60.0 * sampleRate)/beatData.GetRate();
 			TData offset = globalTempo / 2.0;
 			
 
@@ -138,20 +152,20 @@ namespace CLAM
 			//TODO
 
 			
-			//-------Compute beat descriptors----
+			// MRJ: Beat intervals descriptors computation.
+			// Here we segment the input signal into a series of
+			// fragments, centered on each beat ( minus the first one )
+			// with a width of globalTempo.
 			Array<TData> segments; 
-			//Beat index recentering method 1 & 3
-
+			
 			for (int i=1;i<beats.Size();i++)   //NB: begins at 1
 				segments.AddElem(beats[i].GetPosition()*sampleRate
 						 - globalTempo);
 
-			//mSegment.SetAudio(audioIn);
+
 			mSegment.SetHoldsData(true);
-			//mSegmentD.SetpSegment(&mSegment);
+
 			
-			//List<Segment> & segList = mSegment.GetChildren();
-			//List<SegmentDescriptors> & segDList = mSegmentD.GetChildrenD();
 			List<Segment> segList;
 			List<SegmentDescriptors> segDList;
 			
@@ -173,61 +187,76 @@ namespace CLAM
 				mAudioDescGen.Do(audioD);
 			}
 			
-			//---Compute feature Z-values-----
-			//TODO
+			// MRJ: AutoCorrelation factors computation
+			// over the sequence of "beat intervals" descriptors
 			
-			//-------Compute ACFs------------
 			Array<TData> seq,acf;
+			
 			for (int i=0;i<segments.Size()-1;i++) 
 			{
-				//temporal centroid mapped to values between 0 and 1
-				//MRJ: TemporalCentroid is in seconds!!!!!
-				//seq.AddElem(segDList[i].GetAudioD().GetTemporalCentroid()
-				// / (segments[i+1]-segments[i]));
+				//MRJ: Temporal Centroid computation and normalization
+				// i.e. mapping to the [0..1] interval.
+
 				TData centroidTime = segDList[i].GetAudioD().GetTemporalCentroid();
 				centroidTime*=sampleRate;
-				std::cerr << "Centroid: " << centroidTime << " Segment("<< i+1 <<"): ";
-				std::cerr << segments[i+1] << " Segment("<<i<<"): " << segments[i];
-				std::cerr << " Width: " << segments[i+1] - segments[i];
-				std::cerr << " Factor: " << centroidTime / ( segments[i+1] - segments[i] ) << std::endl; 
+
+				Log() << "Centroid: " << centroidTime << " Segment("<< i+1 <<"): ";
+				Log() << segments[i+1] << " Segment("<<i<<"): " << segments[i];
+				Log() << " Width: " << segments[i+1] - segments[i];
+				Log() << " Factor: " << centroidTime / ( segments[i+1] - segments[i] ) << std::endl; 
+
 				seq.AddElem( centroidTime / ( segments[i+1] - segments[i] ) );
 			}
 
 			mACF.Do(seq,acf);
 			
-			//-------Compute feature M------------
+			// MRJ: Decision. This is done by finding on which
+			// side of the hyperplane defined by M lies the
+			// analyzed beat sequence.
+			// Note: Take that this is a quite wild departure
+			// from the "canon" established in pherrera and fgouyon
+			// article. Basically, I found that:
+			// 1) there was a grievous error with the indexes due to
+			//    a careless translation from Matlab to C
+			// 2) it did not make much sense to just consider 5 low-order
+			//    autocorrelation values, whose difference ranged
+			//    between [1e-3..1e-5].
+			
 			TSize acfSize = acf.Size();
 			if (acfSize<10) 
 			{
-				std::cout<<"upper limit is too small, unreliable computations..."<< std::endl;
+				Log()<<"upper limit is too small, unreliable computations..."<< std::endl;
 				acf.Resize(10);
 				acf.SetSize(10);
 				//newly created elements are set to 0 automatically
 			}
-#if 1
-			std::cout<<"ACF"<<std::endl;
+
+			Log()<<"ACF"<<std::endl;
 			for(int i=0;i<acf.Size();i++) 
-				std::cout << "acf("<<i<<"):="<<acf[i]<<"\n";
-#endif
+				Log() << "acf("<<i<<"):="<<acf[i]<<"\n";
+
 			// MRJ: Almost the one on the paper ( coefficient #9 is used instead of #6 ).
 			// Fabien changed this so we don't mix ternary and binary hypotheses: 3 and
 			// 9 do not have as factor two, while six does. 
 
+			// MRJ: the M feature as was found on the original "Cuidado" implementation
 			//TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[9])/2;
+
+			// MRJ: the M feature translated right from MATLABish
 			TData M = (acf[1]+acf[3]+acf[7])/3.0 - (acf[2]+acf[8])/2.0;
-			std::cout<<"Feature M = "<<M<<std::endl;
+			Log()<<"Feature M = "<<M<<std::endl;
 			
-			//--------Final decision--------------
+
 			dataOut.SetDenominator(4);
 
+			// MRJ: Another departure from the canon. We compute the
+			// "likelihoods" for our hypothesis i.e. duple/triple meter.
+			// Note that we only consider those orderings that are
+			// multiples of 2 or 3 ( 2n beat groups, 3n beat groups ).
 
-			//if ( M < -0.108046 )
-			//if ( (acf[3]+acf[9])/2 > (acf[2]+acf[4]+acf[8])/3 )
-			//
 			TData dupleLikelihood = 0.0;
 			int twoMults = 0, threeMults = 0;
 			TData tripleLikelihood = 0.0;
-
 
 			for ( int i = 1; i < acf.Size(); i++ )
 			{
@@ -251,25 +280,22 @@ namespace CLAM
 			tripleLikelihood *= 1.0/TData(threeMults);
 			dupleLikelihood *= 1.0/TData(twoMults);
 			
-			std::cout << "twoMults= " << twoMults << std::endl;
-			std::cout << "threeMults= " << threeMults << std::endl;
-			std::cout << "dupleLikelihood = " << dupleLikelihood << std::endl;
-			std::cout << "tripleLikelihood = " << tripleLikelihood << std::endl;
-			std::cout << "M2 = " << dupleLikelihood - tripleLikelihood << std::endl;
+			Log() << "twoMults= " << twoMults << std::endl;
+			Log() << "threeMults= " << threeMults << std::endl;
+			Log() << "dupleLikelihood = " << dupleLikelihood << std::endl;
+			Log() << "tripleLikelihood = " << tripleLikelihood << std::endl;
+			Log() << "M2 = " << dupleLikelihood - tripleLikelihood << std::endl;
 
-			//if ( (acf[2]+acf[8])/2.0 > (acf[1]+acf[3]+acf[7])/3.0 )
-
-			//if ( tripleLikelihood > dupleLikelihood )
 			TData M2 = dupleLikelihood - tripleLikelihood;
 			if ( M2 < -0.000665 ) 
 			{
 				dataOut.SetNumerator(3);
-				std::cout<<"Triple (3/4) meter"<<std::endl;
+				Log()<<"Triple (3/4) meter"<<std::endl;
 			}
 			else 
 			{
 				dataOut.SetNumerator(4);
-				std::cout<<"Duple (4/4) meter"<<std::endl;
+				Log()<<"Duple (4/4) meter"<<std::endl;
 			}
 					       
 

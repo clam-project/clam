@@ -34,6 +34,7 @@
 #include "SegmentDescriptors.hxx"
 #include "RD_AutoCorrelationTD.hxx"
 #include "DescriptorComputation.hxx"
+#include <fstream>
 
 namespace CLAM
 {
@@ -69,8 +70,11 @@ namespace CLAM
 			bool Do(void);
 			bool Do(Audio& audioIn, const Pulse& beats, Meter& dataOut);
 
+			std::ostream& Log();
+
 		protected:
 			bool ConcreteConfigure(const ProcessingConfig&);
+			void CheckLogInitialization();
 
 			
 		private:
@@ -85,10 +89,15 @@ namespace CLAM
 			Segment mSegment;
 			SegmentDescriptors mSegmentD;
 	
+			static std::ofstream  smLogFile;
+			static bool           smLogInit;
+			
 			// Internal convenience methods
 			void AttachChildren();
 			bool ConfigureChildren();
 			void ConfigureData();
+
+			
 
 		};
 
