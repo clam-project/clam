@@ -23,11 +23,11 @@ protected:
 //	QPushButton* mCancelButton;
 	ActionButton * mOkButton;
 	ActionButton * mCancelButton;
-	QLabel * mName;
 
-	void Ok( bool );
-	void Cancel( bool );
-
+	virtual void Ok( bool );
+	virtual void Cancel( bool );
+	virtual void ApplyChangesToConfig() = 0;
+	virtual void OnNewConfig( CLAM::ProcessingConfig* ) = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
 	virtual ~Qt_ProcessingConfigPresentation();

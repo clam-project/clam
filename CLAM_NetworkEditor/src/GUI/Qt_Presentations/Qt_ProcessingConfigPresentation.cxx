@@ -4,6 +4,8 @@
 #include <qlabel.h>
 #include <qgroupbox.h>  
 
+#include "ProcessingConfig.hxx"
+
 #include <iostream>
 
 namespace NetworkGUI
@@ -24,14 +26,11 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 	mCancelButton = new ActionButton( mGroupBox, "mCancelButton" );
 	mCancelButton->setGeometry( QRect( 100, 10, 70, 20 ) );
 	
-	mName = new QLabel( this, "mName" );
-	mName->setGeometry( QRect( 10, 10, 180, 33 ) );
-
 	setCaption( tr( "Processing Config" ) );
+
 	mGroupBox->setTitle( QString::null );
 	mOkButton->setText( tr( "Ok" ) );
 	mCancelButton->setText( tr( "Cancel" ) );
-	mName->setText( QString::null );
 
 	resize( QSize(209, 275).expandedTo(minimumSizeHint()) );
 
@@ -50,7 +49,7 @@ Qt_ProcessingConfigPresentation::~Qt_ProcessingConfigPresentation()
 void Qt_ProcessingConfigPresentation::Ok( bool )
 {
 	std::cout << "ok is pressed" << std::endl;
-	ApplyConfig.Emit( mConfig );
+	ApplyChangesToConfig();
 	close();
 }
 
