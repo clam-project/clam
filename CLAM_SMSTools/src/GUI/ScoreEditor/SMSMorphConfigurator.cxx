@@ -83,7 +83,6 @@ namespace CLAMVM
 		mUserDefinedSinFreqEnvelope = false;
 		mUserDefinedResAmpEnvelope = false;
 		mUserDefinedPitchHybEnvelope = false;
-		mOnlyGlobalEnvelope = true;
 	}
 
 	SMSMorphConfigurator::SMSMorphConfigurator()
