@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "unittests\source_files_for_testing\subdir"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\cppunit\lib" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib pthreadVC.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "testsettings - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "unittests\source_files_for_testing\subdir"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\cppunit\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib pthreadVC.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -90,63 +90,21 @@ LINK32=link.exe
 # End Group
 # Begin Group "Source Files"
 
-# Begin Group "unittests Sources"
-
-# Begin Group "source_files_for_testing Sources"
-
 # Begin Source File
 
-SOURCE=unittests\source_files_for_testing\a.cxx
+SOURCE=a.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=unittests\source_files_for_testing\b.cxx
+SOURCE=b.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=unittests\source_files_for_testing\c.cxx
+SOURCE=d.cxx
 # End Source File
-# Begin Source File
-
-SOURCE=unittests\source_files_for_testing\d.cxx
-# End Source File
-# Begin Group "subdir Sources"
-
-# Begin Source File
-
-SOURCE=unittests\source_files_for_testing\subdir\c.cxx
-# End Source File
-# End Group
-# End Group
-# End Group
 # End Group
 # Begin Group "Header Files"
 
-# Begin Group "unittests Headers"
-
-# Begin Group "source_files_for_testing Headers"
-
-# Begin Source File
-
-SOURCE=unittests\source_files_for_testing\a.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=unittests\source_files_for_testing\b.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=unittests\source_files_for_testing\with_no_impl.hxx
-# End Source File
-# Begin Group "subdir Headers"
-
-# Begin Source File
-
-SOURCE=unittests\source_files_for_testing\subdir\c.hxx
-# End Source File
-# End Group
-# End Group
-# End Group
 # End Group
 # Begin Source File
 
