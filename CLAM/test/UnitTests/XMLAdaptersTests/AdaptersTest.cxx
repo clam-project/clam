@@ -29,14 +29,12 @@
  * @todo List of basic objects XML test
  */
 
-#ifdef CLAM_USE_XML
 #include "XMLAdapter.hxx"
 #include "XMLStaticAdapter.hxx"
 #include "XMLArrayAdapter.hxx"
 #include "XMLComponentAdapter.hxx"
 #include "XMLIterableAdapter.hxx"
 #include "XMLStorage.hxx"
-#endif//CLAM_USE_XML
 #include "Array.hxx"
 #include "List.hxx"
 #include "XMLTestHelper.hxx"
