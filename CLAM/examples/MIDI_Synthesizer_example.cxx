@@ -282,7 +282,7 @@ void MyAudioApplication::AudioMain(void)
 		// The ConfigureAndCheck will assert on this.
 		
 		// MIDIInControls
-		MIDIInConfig inNoteCfg;
+		MIDIIOConfig inNoteCfg;
 		
 		inNoteCfg.SetDevice(mMidiDeviceStr);
 		inNoteCfg.SetMessage(MIDI::eNoteOnOff);
@@ -290,7 +290,7 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInControl inNote;
 		ConfigureAndCheck(inNote,inNoteCfg);
 
-		MIDIInConfig inCtrlCfg;
+		MIDIIOConfig inCtrlCfg;
 		
 		inCtrlCfg.SetDevice(mMidiDeviceStr);
 		inCtrlCfg.SetMessage(MIDI::eControlChange);
@@ -299,7 +299,7 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInControl inCtrl;
 		ConfigureAndCheck(inCtrl,inCtrlCfg);
 
-		MIDIInConfig inPitchBendCfg;
+		MIDIIOConfig inPitchBendCfg;
 		
 		inPitchBendCfg.SetDevice(mMidiDeviceStr);
 		inPitchBendCfg.SetMessage(MIDI::ePitchbend);
