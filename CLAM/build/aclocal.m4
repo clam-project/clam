@@ -182,6 +182,7 @@ dnl	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
 		AC_MSG_RESULT(yes)
 		found_fltk=yes
 		FLAG_FLTK_INCLUDES=`fltk-config --use-gl --use-images --cxxflags`
+		FLAG_FLTK_LIBS=`fltk-config --use-gl --use-images --ldflags`
 	fi
 dnl	for base in "/usr" \
 dnl	            "/usr/local" \
@@ -207,7 +208,6 @@ dnl	for lib in $FLTK_LIBS
 dnl	do
 dnl		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
 dnl	done
-	FLAG_FLTK_LIBS=`fltk-config --use-gl --use-images --ldflags`
 	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIB_PATH $FLAG_FLTK_LIBS"
 	AC_TRY_LINK([
 		#include<FL/Fl_Window.H>
