@@ -833,7 +833,7 @@ void UserInterface::AboutWindow() {
       o->labelcolor(4);
     }
     new Fl_Box(110, 115, 230, 20, "for more information");
-    { Fl_Box* o = new Fl_Box(5, 145, 440, 30, "CLAM Release 0.5 beta 2");
+    { Fl_Box* o = new Fl_Box(5, 145, 440, 30, "CLAM Release 0.5 beta 3");
       o->box(FL_FLAT_BOX);
       o->labelfont(3);
       o->labelcolor(0);
