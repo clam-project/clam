@@ -54,7 +54,7 @@ namespace CLAM {
 		            "CircularStreamImpl.GetData(): "
 		            "Unconfigured stream. Call Configure() before using it." );
 		CLAM_ASSERT(r->Accept(mChecker),"");
-		return mBuffer.Read(a,r->Pos() % mLogicalSize,
+		mBuffer.Read(a,r->Pos() % mLogicalSize,
 		                    r->Len());
 	}
 

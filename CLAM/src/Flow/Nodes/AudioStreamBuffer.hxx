@@ -28,6 +28,7 @@
 
 #include "Audio.hxx"
 
+
 namespace CLAM {
 
 	template<class B>
@@ -43,6 +44,38 @@ namespace CLAM {
 		{}
 
 		StreamBuffer(const StreamBuffer& b)
+			: StreamBuffer<TData,B>(b),
+			  mSampleRate(0.0)
+		{}
+
+		void SetSampleRate(TData sr) {  mSampleRate = sr; }
+
+		void SetPrototype(const Audio& proto) {  mSampleRate = proto.GetSampleRate(); }
+
+		template<class REGION>
+		void GetAndActivate(REGION* r, Audio &a)
+		{
+			a.SetSampleRate(mSampleRate);
+			StreamBuffer<TData,B>::GetAndActivate(r,a.GetBuffer());
+		}
+
+	};
+
+/**NOTE: this class is exactly the same as StreamBuffer<Audio,B> except for one minor detail:
+	it compiles under Visual 6 !*/	
+	template<class B>
+		class AudioStreamBuffer : public StreamBuffer<TData,B> {
+
+		TData mSampleRate;
+
+	public:
+
+		AudioStreamBuffer(unsigned int max_window_size = 0)
+			: StreamBuffer<TData,B>(max_window_size),
+			  mSampleRate(0.0)
+		{}
+
+		AudioStreamBuffer(const StreamBuffer& b)
 			: StreamBuffer<TData,B>(b),
 			  mSampleRate(0.0)
 		{}

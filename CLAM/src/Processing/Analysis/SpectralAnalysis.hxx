@@ -22,11 +22,6 @@
 #ifndef _SpectralAnalysis_
 #define _SpectralAnalysis_
 
-//#define WITH_GUI
-
-#ifdef WITH_GUI
-
-#endif
 
 #include "WindowGenerator.hxx"
 #include "CircularShift.hxx"
@@ -55,7 +50,7 @@ class SpectralAnalysisConfig:public ProcessingConfig
 
 	friend class SpectralAnalysis;
 
-	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,9,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,8,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig, WindowGenerator);
@@ -65,7 +60,6 @@ class SpectralAnalysisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(5,protected,int, prZeroPadding);
 	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
 	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
-	DYN_ATTRIBUTE(8,public,int, BufferSize);
 
 public:
 	~SpectralAnalysisConfig(){};
@@ -164,7 +158,7 @@ public:
 	const ProcessingConfig &GetConfig() const {return mConfig;}
 
 /** Supervised mode execution */
-	bool Do(void){return false;}
+	bool Do(void);
 
 /** Basic unsupervised Do method. It returns an output spectrum using an input audio frame*/
 	bool Do(const Audio& in,Spectrum& outSp);
@@ -180,6 +174,10 @@ public:
  *  in the segment and increments that index.
  *  @see Segment*/
 	bool Do(Segment& in);
+
+
+	virtual void Attach(Audio& in, Spectrum &out);
+
 
 private:
 
@@ -210,7 +208,7 @@ private:
 
 /** Internal Circular Buffer Processing for overlap 
  *  @see AudioCircularBuffer  */
-	AudioCircularBuffer mCircularBuffer;
+//	AudioCircularBuffer mCircularBuffer;
 
 //Internal DataObjects
 
@@ -229,7 +227,11 @@ private:
 
 	
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&);
+	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+
+	/** Ports */
+	InPortTmpl<Audio>     mInput;
+	OutPortTmpl<Spectrum> mOutput;
 
 };
 

@@ -31,6 +31,8 @@
 #include "SMSSynthesis.hxx"//For Sinusoidal Synthesis
 #include "SpectrumSubstracter2.hxx"
 #include "SpectralAnalysis.hxx"
+#include "StreamBuffer.hxx"
+#include "CircularStreamImpl.hxx"
 
 #include "Flags.hxx"
 
@@ -57,6 +59,7 @@ class SMSAnalysisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
 	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
 	DYN_ATTRIBUTE(8,public, SynthSineSpectrumConfig,SynthSineSpectrum);
+
 	
 //Config shortcuts
 public:
@@ -88,8 +91,9 @@ public:
 	TData GetSamplingRate() const;
 
 /** Initial offset that is applied to analysis frame computed from windowSize and hopSize*/
-	TSize GetInitialOffset();
+	TSize GetInitialOffset() const;
 
+	TSize GetHopsInBiggerWindow() const;
 
 private:
 
@@ -123,11 +127,14 @@ public:
 	/** Supervised mode execution */
 	bool Do(void){return false;}
 
+	void Start();
+	
 	/** Unsupervised mode execution */
 	bool Do(Segment& in);
 	bool Do(Frame& in);
-	bool Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
-	bool Do(const Audio& in,Spectrum& inGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
+	bool Do(Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
+
+	bool SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
 
 private:
 
@@ -146,11 +153,28 @@ private:
 	SpectrumSubstracter2		mPO_SpecSubstract;
 
 	//Internal DataObjects
-/** object only used for initializing frames */	
-	Spectrum mSpec;
+/** internal object used for convinience */	
+	Spectrum mResSpec;
+	Spectrum mSinSpec;
 /** object only used for initializing frames */	
 	Fundamental mFund;
 
+/** member stream buffer*/
+	AudioStreamBuffer<CircularStreamImpl<TData> > mStreamBuffer;
+/** member writer into stream buffer */
+	WriteStreamRegion* mWriter;
+/** member sinusoidal reader from stream buffer */
+	ReadStreamRegion* mSinReader;
+/** member residual reader from stream buffer */
+	ReadStreamRegion* mResReader;
+
+	//Internal audio objects used for convenience
+	Audio mSinAudioFrame;
+	Audio mResAudioFrame;
+	Audio mAudioFrame;
+
+	TSize mInitialOffset;
+	
 
 #ifdef WITH_GUI
 #endif
@@ -163,7 +187,7 @@ private:
 
 	
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&);
+	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
 
 };
 

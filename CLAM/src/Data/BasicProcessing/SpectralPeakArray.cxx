@@ -302,6 +302,7 @@ TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maxim
 
 void SpectralPeakArray::ResetIndices() // reset all indices 
 {
+	static int nTimes=0;
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::ResetIndices: Index array is not instantiated");
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks();
@@ -503,7 +504,7 @@ void SpectralPeakArray::ToLinear()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= pow(TData(10),TData(mag[i]/20)); 
+			mag[i]= log2lin(mag[i]); 
 		}
 		SetScale(EScale::eLinear);
 	}

@@ -35,7 +35,6 @@
 #include "SMSSynthesis.hxx"
 #include "CleanTracks.hxx"
 #include "Segmentator.hxx"
-#include "OnsetDetection.hxx"
 #include "Normalization.hxx"
 #include "HeapDbg.hxx"
 
@@ -108,11 +107,12 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	else
 		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
-	int samplingRate=int(mGlobalConfig.GetSamplingRate());
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
 	// SMS Analysis configuration
+	//if window size is even we add one !
+	if (analWindowSize%2==0) analWindowSize+=1;
+	if (resAnalWindowSize%2==0) resAnalWindowSize+=1;
 	mAnalConfig.SetSinWindowSize(analWindowSize);
-	mAnalConfig.SetSamplingRate(TData(samplingRate));
 	mAnalConfig.SetHopSize(analHopSize);
 	mAnalConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
 	mAnalConfig.SetSinZeroPadding(analZeroPaddingFactor);
@@ -136,8 +136,9 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
 	mSynthConfig.SetHopSize(synthFrameSize);
-	mSynthConfig.SetSamplingRate(TData(samplingRate));
 	mSynthConfig.GetPhaseMan().SetType(mGlobalConfig.GetSynthesisPhaseManagementType());
+
+	
 }
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
@@ -158,28 +159,27 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	x.Restore(mGlobalConfig,inputFileName);
 	mHaveConfig = false;
 	if(	
-		mGlobalConfig.HasInputSoundFile() &&
-		mGlobalConfig.HasOutputSoundFile() &&
-		mGlobalConfig.HasOutputAnalysisFile() &&
-		mGlobalConfig.HasInputAnalysisFile() &&
-		mGlobalConfig.HasSamplingRate() &&
-		mGlobalConfig.HasAnalysisWindowSize() &&
-		mGlobalConfig.HasAnalysisHopSize() &&
-		mGlobalConfig.HasAnalysisWindowType() &&
-		mGlobalConfig.HasResAnalysisWindowSize() &&
-		mGlobalConfig.HasResAnalysisWindowType() &&
-		mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
-		mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
-		mGlobalConfig.HasAnalysisMaxSines() &&
-		mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
-		mGlobalConfig.HasAnalysisReferenceFundFreq() && 
-		mGlobalConfig.HasAnalysisLowestFundFreq() && 
-		mGlobalConfig.HasAnalysisHighestFundFreq() && 
-		mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
-		mGlobalConfig.HasAnalysisMaxFundCandidates() &&
-		mGlobalConfig.HasSynthesisFrameSize() &&
-		mGlobalConfig.HasSynthesisWindowType() &&
-		mGlobalConfig.HasSynthesisPhaseManagementType())
+	mGlobalConfig.HasInputSoundFile() &&
+	mGlobalConfig.HasOutputSoundFile() &&
+	mGlobalConfig.HasOutputAnalysisFile() &&
+	mGlobalConfig.HasInputAnalysisFile() &&
+	mGlobalConfig.HasAnalysisWindowSize() &&
+	mGlobalConfig.HasAnalysisHopSize() &&
+	mGlobalConfig.HasAnalysisWindowType() &&
+	mGlobalConfig.HasResAnalysisWindowSize() &&
+	mGlobalConfig.HasResAnalysisWindowType() &&
+	mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
+	mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
+	mGlobalConfig.HasAnalysisMaxSines() &&
+	mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
+	mGlobalConfig.HasAnalysisReferenceFundFreq() && 
+	mGlobalConfig.HasAnalysisLowestFundFreq() && 
+	mGlobalConfig.HasAnalysisHighestFundFreq() && 
+	mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
+	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
+	mGlobalConfig.HasSynthesisFrameSize() &&
+	mGlobalConfig.HasSynthesisWindowType() &&
+	mGlobalConfig.HasSynthesisPhaseManagementType())
 	{	
 		mHaveConfig = true;
 		InitConfigs();
@@ -265,7 +265,7 @@ void AnalysisSynthesisExampleBase::StoreSDIFAnalysis()
 {
 	int i;
 	SDIFOutConfig cfg;
-	cfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	cfg.SetSamplingRate(mSamplingRate);
 	cfg.SetFileName(mGlobalConfig.GetOutputAnalysisFile());
 	cfg.SetEnableResidual(true);
 	SDIFOut SDIFWriter(cfg);
@@ -281,7 +281,7 @@ void AnalysisSynthesisExampleBase::StoreSDIFAnalysis()
 
 void AnalysisSynthesisExampleBase::StoreXMLAnalysis()
 {
-	//first we have to get rid of not wanted data
+		//first we have to get rid of not wanted data
 	mSegment.RemoveAudio();
 	mSegment.UpdateData();
 	int i=0;
@@ -370,8 +370,12 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	// Initialization of the processing data objects :
 	TSize fileSize=myAudioFileIn.Size();
 
+	SetSamplingRate(myAudioFileIn.SampleRate());
+	
+	
 	mAudioIn.SetSize(fileSize);
-	mAudioIn.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	
+
 	//Read Audio File
 	myAudioFileIn.Start();
 	myAudioFileIn.Do(mAudioIn);
@@ -379,10 +383,10 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 
 	//Normalization is not needed for the time being
 	/*NormalizationConfig NCfg;
-	  NCfg.SetType(3);
-	  Normalization mNorm(NCfg);
+	NCfg.SetType(3);
+	Normalization mNorm(NCfg);
 
-	  mNorm.Do(mAudioIn);*/
+	mNorm.Do(mAudioIn);*/
 	
 	mHaveAudioIn = true;
 
@@ -401,11 +405,11 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	mSegment.DefaultInit();
 
 	// Spectral Segment that will actually hold data
-	float duration=size/mAnalConfig.GetSamplingRate();
+	float duration=size/mSamplingRate;
 	mSegment.SetHoldsData(true);
 	mSegment.SetAudio(mAudioIn);
 	mSegment.SetEndTime(duration);
-	mSegment.SetSamplingRate(mAnalConfig.GetSamplingRate());
+	mSegment.SetSamplingRate(mSamplingRate);
 	mSegment.mCurrentFrameIndex=0;
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -416,15 +420,13 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 
 	myAnalysis.Start();
 
-	do
+	while(myAnalysis.Do(mSegment))
 	{      
-		myAnalysis.Do(mSegment);
-		mSegment.mCurrentFrameIndex++;
-		k+=step;
+		k=step*(mSegment.mCurrentFrameIndex+1);
 		mCurrentProgressIndicator->Update(float(k));
-	}  while(k<=size-step-initialOffset);
+	}
 
-	myAnalysis.Stop();
+ 	myAnalysis.Stop();
 
 
 }
@@ -432,7 +434,7 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 void AnalysisSynthesisExampleBase::TracksCleanupProcessing()
 {
 	CleanTracksConfig clcfg;
-	clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	clcfg.SetSamplingRate(mSamplingRate);
 	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
 	CleanTracks myCleanTracks;
 	myCleanTracks.Configure(clcfg);
@@ -463,16 +465,16 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	DestroyProgressIndicator();
 
 	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
-	  and included in SMSAnalysis*/
+	and included in SMSAnalysis*/
 	if ( HasToDoTracksCleaning() )
-	{	
-		mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
-		
-		DoTracksCleanup();
-		
-		DestroyWaitMessage();
-		
-	}
+		{	
+			mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
+
+			DoTracksCleanup();
+
+			DestroyWaitMessage();
+
+		}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
 }
@@ -485,7 +487,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSound(void)
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
-	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	outfilecfg.SetSampleRate(mSamplingRate);
 
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -504,10 +506,10 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundSinusoidal(void)
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
-		substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
+			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_sin.wav";
 	outfilecfg.SetFilename(filename);
-	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	outfilecfg.SetSampleRate(mSamplingRate);
 	
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -523,10 +525,10 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundResidual(void)
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
+	outfilecfg.SetSampleRate(mSamplingRate);
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
-		substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
+			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_res.wav";
 	
 	outfilecfg.SetFilename(filename);
@@ -547,11 +549,8 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	//The output Audio 
 	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
 	mAudioOutSin.SetSize(size);
-	mAudioOutSin.SetSampleRate(mSegment.GetSamplingRate());
 	mAudioOutRes.SetSize(size);
-	mAudioOutRes.SetSampleRate(mSegment.GetSamplingRate());
 	mAudioOut.SetSize(size);
-	mAudioOut.SetSampleRate(mSegment.GetSamplingRate());
 
 	//The system that contains all synthesis PO
 	
@@ -563,7 +562,7 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	Audio tmpAudioFrame,tmpAudioFrame2;
 	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
 		
-	int nSynthFrames=size/mSynthConfig.GetFrameSize();
+	int nSynthFrames=mSegment.GetnFrames();
 	int i;
 
 
@@ -608,20 +607,20 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 {
 	
 /* This function is just an example of the kind of things you are able to do departing from this
-   Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
-   in metadata extraction from an input sound.*/	
+Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
+in metadata extraction from an input sound.*/	
 	
 	
 	ComputeLowLevelDescriptors();
 	
 	TData frequencies[85]={32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55.000, 58.270, 61.735,
-			       65.406, 69.296, 73.416, 77.782, 82.407, 87.307, 92.499, 97.999, 103.83, 110.00, 116.00, 123.47,
-			       130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
-			       261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392.00, 415.30, 440.00, 466.16, 493.88,
-			       523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.00, 932.33, 987.77,
-			       1046.5, 1108.7, 1174.7, 1244.5, 1318.5, 1396.9, 1480.0, 1568.0, 1661.2, 1760.0, 1864.7, 1975.5,
-			       2093.0, 2217.5, 2349.3, 2489.0, 2637.0, 2793.8, 2960.0, 3136.0, 3322.4, 3520.0, 3729.3, 3951.1,
-			       4186.0};
+												 65.406, 69.296, 73.416, 77.782, 82.407, 87.307, 92.499, 97.999, 103.83, 110.00, 116.00, 123.47,
+												 130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
+												 261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392.00, 415.30, 440.00, 466.16, 493.88,
+												 523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99, 830.61, 880.00, 932.33, 987.77,
+												 1046.5, 1108.7, 1174.7, 1244.5, 1318.5, 1396.9, 1480.0, 1568.0, 1661.2, 1760.0, 1864.7, 1975.5,
+												 2093.0, 2217.5, 2349.3, 2489.0, 2637.0, 2793.8, 2960.0, 3136.0, 3322.4, 3520.0, 3729.3, 3951.1,
+												 4186.0};
 
 	TData analysisFrameSize, smoothFiltSize, bandThreshold, minPeakDist, globalThreshold, difSize;
 
@@ -678,24 +677,10 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	mySegmentator.Do(mSegment,mSegmentDescriptors);
 
 
-	////////////////
+		////////////////
 	//Segmentation//
 	////////////////
 			
-	//This new segmentator is still to be tested
-/*	OnsetDetectionConfig onsetconfig;
-	onsetconfig.SetFrameSize(analysisFrameSize);
-	onsetconfig.SetSmoothFiltSize(smoothFiltSize);
-	onsetconfig.SetBandThreshold(bandThreshold);
-	onsetconfig.SetMinPeakDist(minPeakDist);
-	onsetconfig.SetGlobalThreshold(globalThreshold);
-	onsetconfig.SetDifSize(difSize);
-	OnsetDetection onset(onsetconfig);
-
-	//Segmentation
-	onset.Start();
-	onset.Do(mSegment);
-*/
 	List<Note> array;
 	Array<TData> fund;
 	Array<TData> energy;
@@ -725,12 +710,12 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 		myNote.UpdateData();
 
 		// Compute Fundamental frequency mean
-		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());
+		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());
 		TIndex e;
 		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())
-			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
+			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 		else
-			e=roundInt(2*mSegment.GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
+			e=roundInt(2*mSegment.GetEndTime()*mSamplingRate/mGlobalConfig.GetAnalysisWindowSize());	
 
 		int j;
 		// Compute mean
@@ -742,25 +727,25 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 			if(fund[j]>100&&fund[j]<1000)
 			{
 				if(j<e-3){
-					if(Abs(fund[j]-fund[j+1])<offsetTh&&Abs(fund[j]-fund[j+2])<offsetTh)//offset detected
+				if(Abs(fund[j]-fund[j+1])<offsetTh&&Abs(fund[j]-fund[j+2])<offsetTh)//offset detected
+				{
+					aux+=fund[j];
+					count++;
+					if(!onset)
 					{
-						aux+=fund[j];
-						count++;
-						if(!onset)
-						{
-							onset=true;
-							b=j;
-						}
-					}}
+						onset=true;
+						b=j;
+					}
+				}}
 			}
 			if(j<e-3){
-				if(Abs(fund[j]-fund[j+1])>offsetTh&&Abs(fund[j]-fund[j+2])>offsetTh)//offset detected
-				{
-					if(onset){
-						e=j;
-						time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mGlobalConfig.GetSamplingRate()));
-						break;}
-				}}
+			if(Abs(fund[j]-fund[j+1])>offsetTh&&Abs(fund[j]-fund[j+2])>offsetTh)//offset detected
+			{
+				if(onset){
+				e=j;
+				time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mSamplingRate));
+				break;}
+			}}
 		}
 		aux/=count;
 		// Not use the values >2*mean o<2*mean to compute the mean
@@ -815,8 +800,8 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 void AnalysisSynthesisExampleBase::StoreMelody(void)
 {
 	std::string melodyFilename(
-		mGlobalConfig.GetOutputAnalysisFile().
-		substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
+	mGlobalConfig.GetOutputAnalysisFile().
+			substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
 	melodyFilename += "_melody.xml";
 
 	XMLStorage x;
@@ -917,7 +902,7 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 {
 	
 	TSize outBufferSize=512;
-	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize);
+	AudioManager audioManager(mSamplingRate,outBufferSize);
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
 
@@ -942,4 +927,18 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 		outputR.Do(tmpAudioBuffer);
 		outputL.Do(tmpAudioBuffer);
 	}
+}
+
+void AnalysisSynthesisExampleBase::SetSamplingRate(TSize samplingRate)
+{
+	mSamplingRate=samplingRate;
+	mAnalConfig.SetSamplingRate(TData(samplingRate));
+	mSynthConfig.SetSamplingRate(TData(samplingRate));
+
+	//Initialize audios sample rate
+	mAudioIn.SetSampleRate(samplingRate);
+	mAudioOut.SetSampleRate(samplingRate);
+	mAudioOutRes.SetSampleRate(samplingRate);
+	mAudioOutSin.SetSampleRate(samplingRate);
+
 }
