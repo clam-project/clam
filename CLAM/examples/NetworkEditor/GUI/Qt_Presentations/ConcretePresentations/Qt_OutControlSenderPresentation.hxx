@@ -26,6 +26,7 @@ protected:
 	void AdjustControlRepresentationValues();
 	void ExecuteResize( const QPoint & difference );
 	void paintEvent( QPaintEvent * );
+	void mouseDoubleClickEvent ( QMouseEvent * ){} // to avoid editing name		
 
 	CLAM::TControlData mMin;
 	CLAM::TControlData mMax;
