@@ -1,3 +1,6 @@
+#ifndef _ProcessingChain_
+#define _ProcessingChain_
+
 #include "ProcessingComposite.hxx"
 #include "ProcessingData.hxx"
 #include "InPortTmpl.hxx"
@@ -5,8 +8,6 @@
 #include "InControlTmplArray.hxx"
 #include "Factory.hxx"
 
-#ifndef _ProcessingChain_
-#define _ProcessingChain_
 
 namespace CLAM{
 
