@@ -165,7 +165,6 @@ public:
 
 /** Unsupervised Do method that uses a CLAM Frame as input and output. AudioFrame attribute of
  *  the frame is used as input and Spectrum as output.
- *  Note that this may not be consistent when trying to analyze residual or sinusoidal component.
  *  @see Frame */
 	bool Do(Frame& in);
 

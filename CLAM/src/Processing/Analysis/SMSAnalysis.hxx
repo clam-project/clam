@@ -129,35 +129,84 @@ public:
 
 	void Start();
 	
-	/** Unsupervised mode execution */
+	/** Processes a single frame in a Segment, calling the Do(Frame&) overload. It adds the
+	 *	frame to the segment if the analysis has produced some data and increments the internal
+	 *	frame counter in the Segment. Note that the audio to be analyzed is taken from the
+	 *	segment's Audio attribute.
+	 *	@return: false if end of input audio has been reached and the analysis process has thus
+	 *	finished. 
+	 */
 	bool Do(Segment& in);
+	
+	/** Processes a Frame and writes result of the analysis into the Frame's attributes.
+	 *	This method adds the necessary attributes to the Frame and maybe allocating memory.
+	 *	@return: false if no data has been produced in the Analysis. This condition is usually
+	 *	produced when not enough samples have been written onto the stream buffer.
+	 */
 	bool Do(Frame& in);
-	bool Do(Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
+	
+	/** This overload is actually where all processing is accomplished. It computes residual and
+	 *	sinusoidal components and writes them into the arguments of the call.
+	 *	@return: false if the member stream buffer has not enough written samples so as to do
+	 *	the processing.
+	 *	@param in: input audio frame (size should be hop size as these are the new samples that
+	 *	are actually written into stream buffer.
+	 *	@param outSpectrum: output of the FFT, it is taken as the one coming from the residual
+	 *	branch.
+	 *	@param outPk: output peakArray detected from the sinusoidal component
+	 *	@param outFn: output Fundamental Frequency computed from the sinusoidal peaks
+	 *	@param outResSpec: residual spectrum computed from substracting the synthesized sinusoidal
+	 *	spectrum from the original spectrum.
+	 *	@param outSinSpec: synthesized sinusoidal spectrum
+	 */
+	bool Do(Audio& in, Spectrum& outSpectrum,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 
-	bool SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
+	/**	Auxiliary method to perform the analysis on the sinusoidal component. It computes the
+	 *	spectral peaks, the fundamental frequency and then performs sinusoidal tracking on the
+	 *	spectral peaks. Note: to do this operations, the method converts the input spectrum to
+	 *	dB's and leaves it so. If you need linear magnitude afterwards, you will need to convert
+	 *	it back.
+	 *	@param inSpectrum: input sinusoidal spectrum to compute the peaks and fundamental.
+	 *	@param outpkArray: output spectral peak array computed from the spectrum and after the
+	 *	sinusoidal tracking has been applied.
+	 *	@param outFn: output fundamental frequency.
+	 *	@return: false if no fundamental frequency has been found and this is supposed to be an 
+	 *	unvoiced segment. */
+	bool SinusoidalAnalysis(Spectrum& inSpectrum, SpectralPeakArray& outPkArray,Fundamental& outFn);
 
 private:
 
-	// Configuration data
+/** Configuration data */
 	SMSAnalysisConfig mConfig;
 
-	// The internal Processing Objects
+// The internal Processing Objects
+
+/** Child processing object: spetral analysis for the sinusoidal component.
+ *	@see SpectralAnalysis */
 	SpectralAnalysis mPO_SinSpectralAnalysis;
+/** Child processing object: spetral analysis for the residual component
+ *	@see SpectralAnalysis */
 	SpectralAnalysis mPO_ResSpectralAnalysis;
-	FFT_rfftw		mPO_FFT;
+/** Child processing object: spetral peak detection for the sinusoidal component
+ *	@see SpectralPeakDetect */
 	SpectralPeakDetect		mPO_PeakDetect;
+/** Child processing object: fundamental detection for the sinusoidal component
+ *	@see FundFreqDetect */
 	FundFreqDetect  mPO_FundDetect;
+/** Child processing object: sinusoidal peak tracking for the sinusoidal component
+ *	@see SinTracking */
 	SinTracking		mPO_SinTracking;
-	/**For Sinusoidal Synthesis*/
+/** Child processing object: sinusoidal synthesis to compute a sinsoidal spectrum from
+	the extracted peaks. 
+ *	@see SynthSineSpectrum*/
 	SynthSineSpectrum		mPO_SynthSineSpectrum;
+/** Child processing object: spectrum substracter to compute the residual spectrum from
+	the original and the sinusoidal one.
+ *	@see SpectrumSubstracter2 */
 	SpectrumSubstracter2		mPO_SpecSubstract;
 
 	//Internal DataObjects
-/** internal object used for convinience */	
-	Spectrum mResSpec;
-	Spectrum mSinSpec;
-/** object only used for initializing frames */	
-	Fundamental mFund;
+
 
 /** member stream buffer*/
 	AudioStreamBuffer<CircularStreamImpl<TData> > mStreamBuffer;
@@ -168,21 +217,25 @@ private:
 /** member residual reader from stream buffer */
 	ReadStreamRegion* mResReader;
 
-	//Internal audio objects used for convenience
+/** Internal audio objects used for convenience */
 	Audio mSinAudioFrame;
 	Audio mResAudioFrame;
-	Audio mAudioFrame;
 
+/** internal spectrum objects used for convinience */	
+	Spectrum mResSpec;
+	Spectrum mSinSpec;
+	
+/** Index that indicates how many audio frames have been processed until now*/
 	TSize mAudioFrameIndex;
 	
 
-#ifdef WITH_GUI
-#endif
+// Internal convenience methods.
 
-	// Internal convenience methods.
-
+/**	This method notifies child processing objets that "this" is their parent*/
 	void AttachChildren();
+/** Configures child processing using configuration data in mConfig. */
 	bool ConfigureChildren();
+/** Configures internal data objects and stream buffer. */
 	void ConfigureData();
 
 	
