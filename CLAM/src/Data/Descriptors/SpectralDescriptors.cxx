@@ -77,7 +77,16 @@ const Spectrum* SpectralDescriptors::GetpSpectrum() const {
 }
 
 void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
-	mpSpectrum=pSpectrum;
+	if(pSpectrum->GetScale()==EScale::eLog)
+	{
+		/*WARNING: if spectrum is in dB we need to copy spectrum and this copy will
+		not be updated if original spectrum changes */
+		mAuxLinearSpectrum=*pSpectrum;
+		mAuxLinearSpectrum.ToLinear();
+		mpSpectrum=&mAuxLinearSpectrum;
+	}
+	else
+		mpSpectrum=pSpectrum;
 	//TODO: we are asuming Spectrum is in MagBuffer
 	//TODO: it may give problems because pointer passed
 	InitStats(&mpSpectrum->GetMagBuffer());

@@ -25,7 +25,7 @@
 
 #include "Array.hxx"
 #include "Descriptor.hxx"
-
+#include "Spectrum.hxx"
 
 /*
  * This class holds Descriptors computed from Spectral data 
@@ -35,9 +35,7 @@
 
 namespace CLAM {
 
-	class Spectrum;
-
-	class SpectralDescriptors : public Descriptor {
+  	class SpectralDescriptors : public Descriptor {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 27, Descriptor);
 		
@@ -109,7 +107,7 @@ namespace CLAM {
 
 	private:
 		Spectrum* mpSpectrum;
-		
+		Spectrum mAuxLinearSpectrum;	
 		/** Conversion from index to frequency, needed for many descriptors */
 		TData mDeltaFreq;
 };
