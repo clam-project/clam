@@ -58,9 +58,6 @@ namespace CLAM {
 		const char *GetClassName() const {return "CircularShift";}
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
