@@ -5,6 +5,9 @@
 #include "MpegBitstream.hxx"
 #include "MpegAudioStream.hxx"
 #include <mad.h>
+#ifndef HAVE_STANDARD_UNICODE
+#error This platform c++ standard library does not support wchar_t
+#endif
 #include <id3/tag.h>
 #include <cstdio>
 
