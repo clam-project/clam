@@ -26,7 +26,7 @@
 #include <xercesc/sax/HandlerBase.hpp>
 #include <string>
 #include <list>
-
+#include "Assert.hxx"
 
 namespace xercesc = XERCES_CPP_NAMESPACE;
 
@@ -43,7 +43,16 @@ class XercesDomReader : private xercesc::HandlerBase
 		}
 		~XercesDomReader()
 		{
-			delete parser;
+			// TODO: This is a hack for xerces bug on adoptNode, parser should be local variable
+			if (parser)
+				delete parser;
+		}
+		// TODO: This is a hack parser should be local variable
+		xercesc::XercesDOMParser * adoptParser()
+		{
+			xercesc::XercesDOMParser * temp = parser;
+			parser = 0;
+			return temp;
 		}
 		xercesc::DOMDocument * read(std::istream & target)
 		{
