@@ -94,8 +94,8 @@ void SegmentTFView::Refresh()
 {
 	if ( HasModelLocked() && HasServicesLocked() )
 	{
-		if ( mParametersGetter == NULL || mFramesGetter == NULL )
-			throw( ErrGUI("SegmentTFView is an 'all-or-nothing' view" ) );
+		CLAM_ASSERT( mParametersGetter != NULL, "Inconsistent Segment object was provided" );
+		CLAM_ASSERT( mFramesGetter != NULL, "Inconsistent Segment object was provided" );
 
 		bool isLin = false; 
 		TData spec_range = mObservedObj->GetFrame(0).GetSpectrum().GetSpectralRange();
