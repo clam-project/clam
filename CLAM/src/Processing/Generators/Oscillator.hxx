@@ -63,6 +63,10 @@ public:
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 
 	bool Do();
+	bool Do(Audio & out)
+	{
+		return SimpleOscillator::Do(out);
+	}
 	bool Do(const Audio& pitchModIn,const Audio& phaseModIn,Audio& out);
 	bool Do(const Audio& pitchModIn,const int& dum ,Audio& out);
 	bool Do(const int& dum ,const Audio& phaseModIn,Audio& out);

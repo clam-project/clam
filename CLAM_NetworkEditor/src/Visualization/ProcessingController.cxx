@@ -92,7 +92,7 @@ bool ProcessingController::Publish()
 	std::cout << mConfig->GetClassName() << std::endl;
 	AcquireConfig.Emit( mConfig );
 	CLAM::Processing* proc = (CLAM::Processing*) mObserved;	
-	CLAM::Processing::ConstInPortIterator itPortIn;
+	CLAM::PublishedInPorts::ConstIterator itPortIn;
 	for (itPortIn = proc->GetInPorts().Begin(); 
 	     itPortIn != proc->GetInPorts().End(); 
 	     itPortIn++)
@@ -104,7 +104,7 @@ bool ProcessingController::Publish()
 		AcquireInPort.Emit(adapter);
 	}
 	
-	CLAM::Processing::ConstOutPortIterator itPortOut;
+	CLAM::PublishedOutPorts::ConstIterator itPortOut;
 	for (itPortOut = proc->GetOutPorts().Begin(); 
 	     itPortOut != proc->GetOutPorts().End(); 
 	     itPortOut++)
@@ -117,7 +117,7 @@ bool ProcessingController::Publish()
 	}
 
 
-	CLAM::Processing::ConstInControlIterator itCtrlIn;
+	CLAM::PublishedInControls::ConstIterator itCtrlIn;
 	for (itCtrlIn = proc->GetInControls().Begin(); 
 	     itCtrlIn != proc->GetInControls().End(); 
 	     itCtrlIn++)
@@ -129,7 +129,7 @@ bool ProcessingController::Publish()
 		AcquireInControl.Emit(adapter);
 	}
 	
-	CLAM::Processing::ConstOutControlIterator itCtrlOut;
+	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
 	for (itCtrlOut = proc->GetOutControls().Begin(); 
 	     itCtrlOut != proc->GetOutControls().End(); 
 	     itCtrlOut++)

@@ -106,18 +106,17 @@ int main(void)
 	MyProcObj proc2(conf1);
 	MyProcObj proc3(conf1);
 
-	proc1.LinkOutWithInControl(0, &proc2, 0);
-	proc1.LinkOutWithInControl(1, &proc2, 1);
-	proc1.LinkOutWithInControl(0, &proc3, 0);
-	proc1.LinkOutWithInControl(0, &proc3, 1);
-
+	proc1.GetOutControls().GetByNumber(0).AddLink(&proc2.GetInControls().GetByNumber(0));
+	proc1.GetOutControls().GetByNumber(1).AddLink(&proc2.GetInControls().GetByNumber(1));
+	proc1.GetOutControls().GetByNumber(0).AddLink(&proc3.GetInControls().GetByNumber(0));
+	proc1.GetOutControls().GetByNumber(0).AddLink(&proc3.GetInControls().GetByNumber(1));
 
 	proc1.Do();
 	proc2.Do();
-	proc1.SendControl(0, 44);
-	proc1.SendControl(1, 555);
+	proc1.GetOutControls().GetByNumber(0).SendControl(44);
+	proc1.GetOutControls().GetByNumber(1).SendControl(555);
 
-	proc1.DoControl(0, 222.2f); 
+	proc1.GetInControls().GetByNumber(0).DoControl(222.2f); 
 
 
 	}catch(std::out_of_range e)

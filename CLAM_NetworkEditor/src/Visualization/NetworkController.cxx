@@ -310,12 +310,12 @@ bool NetworkController::Publish()
 	{
 		CLAM::Processing * producer = it->second;
 		AddProcessing( it->first,  it->second );
-		CLAM::Processing::OutPortIterator itOutPort;
+		CLAM::PublishedOutPorts::Iterator itOutPort;
 	}
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{
 		CLAM::Processing * producer = it->second;
-		CLAM::Processing::OutPortIterator itOutPort;
+		CLAM::PublishedOutPorts::Iterator itOutPort;
 	
 		for (itOutPort=producer->GetOutPorts().Begin(); 
 		     itOutPort!=producer->GetOutPorts().End(); 
@@ -337,7 +337,7 @@ bool NetworkController::Publish()
 				AcquirePortConnection.Emit( (ConnectionAdapter*)conAdapter );
 			}		
 		}
-		CLAM::Processing::OutControlIterator itOutControl;
+		CLAM::PublishedOutControls::Iterator itOutControl;
 
 		for( itOutControl=producer->GetOutControls().Begin();
 		     itOutControl!=producer->GetOutControls().End();

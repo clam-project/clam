@@ -73,7 +73,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 {
 	
 	// for each out port of the processing already executed
-	Processing::OutPortIterator itOutPort;
+	PublishedOutPorts::Iterator itOutPort;
 	
 	for (itOutPort=producer->GetOutPorts().Begin(); 
 	     itOutPort!=producer->GetOutPorts().End(); 
@@ -98,7 +98,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 
 bool PushFlowControl::AreAllProducersExecuted( Processing * son, std::list<Processing*> & done)
 {
-	Processing::InPortIterator itInPort;
+	PublishedInPorts::Iterator itInPort;
 	for (itInPort=son->GetInPorts().Begin(); 
 	     itInPort!=son->GetInPorts().End(); 
 	     itInPort++)

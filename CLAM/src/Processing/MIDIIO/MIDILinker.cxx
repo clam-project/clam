@@ -349,5 +349,5 @@ void Cmd_MIDILinker::cbShowProcessingControls(const char* procName)
 	Processing* po = GetProcessingObject(procName);
 	cout << "\nPrinting control names of processing :" << po->GetName() << endl;
 	cout << "InControls:\n";
-	for_each(po->FirstInControl(), po->LastInControl(), PrintControl<InControl>() );
+	for_each(po->GetInControls().Begin(), po->GetInControls().End(), PrintControl<InControl>() );
 }

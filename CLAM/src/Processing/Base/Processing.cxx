@@ -37,11 +37,7 @@ namespace CLAM {
 
 	Processing::Processing() 
 		: mpParent(0),
-		mInControls(this),
-		mOutControls(this),
-		  mInPorts(this),
-		mOutPorts(this),
-		  mPreconfigureExecuted( false )
+		mPreconfigureExecuted( false )
 	{
 		mState = Unconfigured;
 	}
@@ -158,63 +154,64 @@ namespace CLAM {
 
 	void Processing::PublishOutPort(OutPort* out) 
 	{
-		mPublishedOutPorts.push_back(out);
+		mPublishedOutPorts.Publish(out);
 	}
 	void Processing::PublishInPort(InPort* in)
 	{
-		mPublishedInPorts.push_back(in);
+		mPublishedInPorts.Publish(in);
 	}
 
 	void Processing::PublishOutControl(OutControl* out) 
 	{
-		mPublishedOutControls.push_back(out);
+		mPublishedOutControls.Publish(out);
 	}
 	void Processing::PublishInControl(InControl* in)
 	{
-		mPublishedInControls.push_back(in);
+		mPublishedInControls.Publish(in);
 	}
-	void Processing::LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const
-	{ //.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		mPublishedOutControls.at(outId)->AddLink(inProc->GetInControl(inId));
-#else
-		mPublishedOutControls[outId]->AddLink(inProc->GetInControl(inId));
-#endif
-	}
-	int Processing::DoControl(unsigned id, TControlData val) const
-	{//.at(unsigned) can throw an "out_of_range" exception.	
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedInControls.at(id)->DoControl(val);
-#else
-		return mPublishedInControls[id]->DoControl(val);
-#endif
-	}
-	int Processing::SendControl(unsigned id, TControlData val) const
-	{//.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedOutControls.at(id)->SendControl(val);
-#else
-		return mPublishedOutControls[id]->SendControl(val);
-#endif
-	}
+	
+//	void Processing::LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const
+//	{ //.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		mPublishedOutControls.at(outId)->AddLink(inProc->GetInControl(inId));
+//#else
+//		mPublishedOutControls[outId]->AddLink(inProc->GetInControl(inId));
+//#endif
+//	}
+//	int Processing::DoControl(unsigned id, TControlData val) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.	
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedInControls.at(id)->DoControl(val);
+//#else
+//		return mPublishedInControls[id]->DoControl(val);
+//#endif
+//	}
+//	int Processing::SendControl(unsigned id, TControlData val) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedOutControls.at(id)->SendControl(val);
+//#else
+//		return mPublishedOutControls[id]->SendControl(val);
+//#endif
+//	}
 
-	InControl* Processing::GetInControl(unsigned inId) const
-	{//.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedInControls.at(inId);
-#else
-		return mPublishedInControls[inId];
-#endif
-	}
+//	InControl* Processing::GetInControl(unsigned inId) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedInControls.at(inId);
+//#else
+//		return mPublishedInControls[inId];
+//#endif
+//	}
 
-	OutControl* Processing::GetOutControl(unsigned inId) const
-	{//.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedOutControls.at(inId);
-#else
-		return mPublishedOutControls[inId];
-#endif
-	}
+//	OutControl* Processing::GetOutControl(unsigned inId) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedOutControls.at(inId);
+//#else
+//		return mPublishedOutControls[inId];
+//#endif
+//	}
 
 	void Processing::SetParent(Processing *o)
 	{

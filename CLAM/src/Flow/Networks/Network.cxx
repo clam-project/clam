@@ -76,7 +76,7 @@ namespace CLAM
 		{
 			std::string name(it->first);
 			Processing * proc = it->second;
-			Processing::OutPortIterator itOutPort;
+			PublishedOutPorts::Iterator itOutPort;
 			for (itOutPort=proc->GetOutPorts().Begin(); 
 			     itOutPort!=proc->GetOutPorts().End(); 
 			     itOutPort++)
@@ -109,7 +109,7 @@ namespace CLAM
 		{
 			std::string name(it->first);
 			Processing * proc = it->second;
-			Processing::OutControlIterator itOutControl;
+			PublishedOutControls::Iterator itOutControl;
 			for (itOutControl=proc->GetOutControls().Begin(); 
 			     itOutControl!=proc->GetOutControls().End(); 
 			     itOutControl++)
@@ -230,7 +230,7 @@ namespace CLAM
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
-		Processing::InPortIterator itInPort;
+		PublishedInPorts::Iterator itInPort;
 		for(itInPort=proc->GetInPorts().Begin(); 
 		    itInPort!=proc->GetInPorts().End();
 		    itInPort++)
@@ -238,7 +238,7 @@ namespace CLAM
 			(*itInPort)->Unattach();
 		}
 
-		Processing::OutPortIterator itOutPort;
+		PublishedOutPorts::Iterator itOutPort;
 		for(itOutPort=proc->GetOutPorts().Begin(); 
 		    itOutPort!=proc->GetOutPorts().End();
 		    itOutPort++)
