@@ -585,6 +585,8 @@ foreach $f (@packagedlibs) {
 foreach $f (@packagedlibs) { &ac_disabled_package_warning($f); }
 foreach $f (@packagedlibs) { &ac_package_substs($f); }
 
+&parse_acv_file("acv/opengl.acv");
+
 print OUTFILE<<EOF;
 AC_OUTPUT(system-posix.cfg)
 AC_OUTPUT(packages-posix.cfg)
