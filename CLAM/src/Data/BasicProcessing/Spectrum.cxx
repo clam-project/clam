@@ -626,7 +626,7 @@ void Spectrum::BPF2MagPhase()
 
 int Spectrum::GetSize() const
 {
-	int size= GetprSize();
+	const int size= GetprSize();
 
 	CLAM_BEGIN_CHECK
 	if(HasMagBuffer() && GetMagBuffer().Size())
@@ -683,7 +683,7 @@ void Spectrum::SetSize(int newSize)
 
 int Spectrum::GetBPFSize() const
 {
-	int bpfsize= HasprBPFSize() ? GetprBPFSize() : GetSize();
+	const int bpfsize= HasprBPFSize() ? GetprBPFSize() : GetSize();
 
 	CLAM_BEGIN_CHECK
 	CLAM_ASSERT(! (HasMagBPF() && GetMagBPF().Size() && GetMagBPF().Size() != bpfsize) ,
