@@ -112,14 +112,19 @@ namespace CLAMTest
 		std::string resultAudioFile = audioFile+"_result.wav";
 		whyDifferents = "comparing with file: "+ audioFile +
 			"\nThe calculed audio has been saved in:  " + resultAudioFile +"\n";
+		if( !helperFileExist(audioFile) )
+		{
+			helperSaveAudioToFile(audio, resultAudioFile);
+			return false;
+		}
 		CLAM::Audio loadedAudio;
 		helperLoadAudioFromFile( audioFile, loadedAudio);
+		
 		bool result = helperAudiosAreEqual(audio, loadedAudio, whyDifferents, delta);
 		if (!result)
 		{
 			helperSaveAudioToFile(audio, resultAudioFile);
 		}
-				
 		return result;
 	}
 
