@@ -25,6 +25,11 @@
 //#include <util/PlatformUtils.hpp>
 #include <iosfwd>
 #include <string>
+#include <xercesc/util/XercesDefs.hpp>
+
+class DOM_Node;
+class DOMString;
+
 
 namespace CLAM {
 
@@ -35,12 +40,21 @@ public:
 	XercesDomPrinter ();
 	~XercesDomPrinter ();
 // Operations
-	Print(std::ostream & os, DOM_Node & toWrite);
+	void Print(std::ostream & os, DOM_Node & toWrite);
 // Attributes
 private:
 	unsigned _indentationLevel;
 };
 
 }
+
+// ---------------------------------------------------------------------------
+//  Forward references
+// ---------------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& target, const DOMString& toWrite);
+std::ostream& operator<<(std::ostream& target, const XMLCh* toWrite);
+std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite);
+
+
 
 #endif//_XercesDomPrinter_
