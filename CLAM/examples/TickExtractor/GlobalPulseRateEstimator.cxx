@@ -53,7 +53,7 @@ namespace CLAM
 			return false;
 		}
 
-		bool GlobalPulseRateEstimator::Do( const CLAM::Array<TData>& pulses, TData& pulseRate )
+		bool GlobalPulseRateEstimator::Do( const CLAM::Array<TData>& pulses, Pulse& pulseDesc )
 		{
 			int pulseLimSup = (int)mRateLowerBound.GetLastValue();
 			
@@ -78,7 +78,7 @@ namespace CLAM
 				}
 			
 
-			pulseRate =  mPulseHistPeaks[index].GetPosition() / mConfig.GetSampleRate();	
+			pulseDesc.SetRate( 60.0 / (mPulseHistPeaks[index].GetPosition() / mConfig.GetSampleRate() ) );	
 
 			return true;
 		}

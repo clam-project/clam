@@ -143,6 +143,8 @@ namespace CLAM
 			mGlobalPREstimator.Configure( gpreCfg );
 
 			// internal parameters setup
+			//MRJ: put a maximum on the IOIHist length (maximum difference to be considered
+			//is 10s)
 			mIOIHistMaxSize = 10 * (TSize)mConfig.GetSampleRate();
 
 			// Internal data objects setup
@@ -151,8 +153,6 @@ namespace CLAM
 			//Don't use weights for the building of the histogram:
 			mTransientsForHist[0].SetWeight(0); //because the 1st transient is added manually			
 			mTransientsForHist[0].SetPosition(0);
-
-
 
 			return true;
 		}
@@ -181,42 +181,12 @@ namespace CLAM
 			mGoodTempo.SetOffset(0); 
 			mGoodTempo.SetInterval(1);
 
-		
-			Compute( transients, 
-				 IOIHist, 
-				 tickSequence.GetIndexes(), 
-				 beatSequence.GetIndexes(), 
-				 globalTick, 
-				 globalTempo);
-		
-			if (globalTick==-1) 
-			{
-				tickSequence.SetRate(0.0);
-				beatSequence.SetRate(0.0);
-			}
-			else 
-			{
-				tickSequence.SetRate(60.0/globalTick);
-				beatSequence.SetRate(60.0/globalTempo);
-			}
-		
-			return true;
-		}
 
-
-
-		bool TickSequenceTracker::Compute(const Array<TimeIndex>& transients, 
-						  IOIHistogram& IOIHist, 
-						  Array<TimeIndex>& ticks,Array<TimeIndex>& beats,
-						  TData& globalTick, 
-						  TData& globalTempo)
-		{
 			if ( transients.Size() < 5 ) 
 			{
 				return false;
 			}
 
-			bool computeBeats = mConfig.GetComputeBeats();
 			int stop = 0;
 			int numbTrans = mConfig.GetNTrans();
 			//If one gives a large value for numbTrans, the computation is done
@@ -229,10 +199,10 @@ namespace CLAM
 			}
 
 			int transHop = mConfig.GetTransHop();
-			int indTrans1 = 0;
-			int indTrans2 = numbTrans-1;
-			int posTrans1;
-			int posTrans2;
+			int firstTransientIndex = 0;
+			int lastTransientIndex = numbTrans-1;
+			int firstTransientPos;
+			int lastTransientPos;
 
 			Array<TimeIndex>  IOIHistPeaks;
 
@@ -242,17 +212,15 @@ namespace CLAM
 
 			Array<TData> forGlobalTickCalc;
 		
-			//MRJ: put a maximum on the IOIHist length (maximum difference to be considered
-			//is 10s)
 			
 
 			int nLoops = 1;
 
-			while (indTrans2<transients.Size() && stop<2)
+			while (lastTransientIndex<transients.Size() && stop<2)
 			{
-				posTrans1 = transients[indTrans1].GetPosition();
-				posTrans2 = transients[indTrans2].GetPosition();
-				TSize windowSize = posTrans2 - posTrans1;
+				firstTransientPos = transients[firstTransientIndex].GetPosition();
+				lastTransientPos = transients[lastTransientIndex].GetPosition();
+				TSize windowSize = lastTransientPos - firstTransientPos;
 			
 				TSize actualIOIHistSize = std::min((TSize)windowSize,mIOIHistMaxSize);
 				
@@ -267,7 +235,7 @@ namespace CLAM
 				for (int i=1;i<mTransientsForHist.Size();i++)
 				{
 					mTransientsForHist[i].SetPosition
-						(transients[indTrans1+i].GetPosition()-posTrans1);
+						(transients[firstTransientIndex+i].GetPosition()-firstTransientPos);
 					mTransientsForHist[i].SetWeight(1); //All weights to 1
 				}
 
@@ -289,19 +257,20 @@ namespace CLAM
 		
 				///Adjust pulses and generate arrays of pulses
 				///Tick adjustment
-				mTickOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
-				mTickOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
+				mTickOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( firstTransientPos );
+				mTickOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( lastTransientPos );
 				
 				//Use of transientsForHist or transients???
 				// i.e. use of weights or not??					
-				mTickOnsetsAdjuster.Do(transients,mTickFirstGuess,tickArray,mGoodTick);		
+				mTickOnsetsAdjuster.Do( transients, mTickFirstGuess, 
+							tickArray, mGoodTick);		
 
 				forGlobalTickCalc.AddElem(mGoodTick.GetInterval());
 
-				StorePulseIndexes(nLoops, tickArray, ticks);
+				StorePulseIndexes(nLoops, tickArray, tickSequence.GetIndexes());
 
 				///Compute Tempo (optional)
-				if (computeBeats) 
+				if (mConfig.GetComputeBeats()) 
 				{
 
 					TimeSeriesSeed initialBeatParams;
@@ -314,9 +283,8 @@ namespace CLAM
 					//get the best phase
 					// Computing best beat phase
 
-					mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( posTrans1 );
-					mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( posTrans2 );
-
+					mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( firstTransientPos );
+					mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( lastTransientPos );
 
 					//NB: Use of transients instead of transientsForHist
 					// i.e. making use of transient weights
@@ -325,17 +293,17 @@ namespace CLAM
 					
 					forGlobalTempoCalc.AddElem( mGoodTempo.GetInterval() );
 
-					StorePulseIndexes(nLoops, tempoArray, beats);
+					StorePulseIndexes(nLoops, tempoArray, beatSequence.GetIndexes() );
 				}
 
 				nLoops +=1;
-				indTrans1 = nLoops*transHop;
-				indTrans2 = nLoops*transHop+numbTrans-1;
+				firstTransientIndex = nLoops*transHop;
+				lastTransientIndex = nLoops*transHop+numbTrans-1;
 
-				if ( indTrans2 >= transients.Size() )
+				if ( lastTransientIndex >= transients.Size() )
 				{
-					indTrans2 = transients.Size()-1;
-					indTrans1 = indTrans2-numbTrans+1;
+					lastTransientIndex = transients.Size()-1;
+					firstTransientIndex = lastTransientIndex-numbTrans+1;
 					stop += 1;
 				}
 
@@ -346,20 +314,30 @@ namespace CLAM
 			std::cerr << "Number of loops: " << nLoops;
 
 			///Compute Global tempo
-			if (computeBeats)
+			if (mConfig.GetComputeBeats() )
 			{
 				const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
 				TData rateLowerBound = (mConfig.GetSampleRate()*60.0)/tempoLimInf;
 				mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( rateLowerBound );
-				mGlobalPREstimator.Do( forGlobalTempoCalc, globalTempo );
+				mGlobalPREstimator.Do( forGlobalTempoCalc, beatSequence );
 			}
 
 			///Compute Global tick
 			const int tickLimInf = mConfig.GetTickLimInf()*mConfig.GetSampleRate(); //samples
 			mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( tickLimInf );
-			mGlobalPREstimator.Do( forGlobalTickCalc, globalTick );
+			mGlobalPREstimator.Do( forGlobalTickCalc, tickSequence );
+		
+			return true;
+		}
 
 
+
+		bool TickSequenceTracker::Compute(const Array<TimeIndex>& transients, 
+						  IOIHistogram& IOIHist, 
+						  Array<TimeIndex>& ticks,Array<TimeIndex>& beats,
+						  TData& globalTick, 
+						  TData& globalTempo)
+		{
 			return true;
 
 		}

@@ -7,6 +7,7 @@
 #include "IOIHistPeakDetector.hxx"
 #include "IOIHistogram.hxx"
 #include "DataTypes.hxx"
+#include "Pulse.hxx"
 
 namespace CLAM
 {
@@ -35,7 +36,7 @@ namespace CLAM
 
 			bool Do();
 			bool Do( const Array<TData>& pulses,
-				 TData& pulseRate );
+				 Pulse& pulseRate );
 		protected:
 
 			bool ConcreteConfigure( const ProcessingConfig& cfg );
