@@ -90,6 +90,8 @@ void AudioPlayer::PlayingThreadSafe(  )
 void* AudioPlayer::sPlayingThreadSafe(void* ptr)
 {
  	((AudioPlayer*)ptr)->PlayingThreadSafe();
+
+	return NULL;
 }
 
 void AudioPlayer::StopFromGUIThread(  )
