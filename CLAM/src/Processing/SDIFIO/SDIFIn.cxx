@@ -57,13 +57,16 @@ bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
+	try{mpFile->Open();}
+	catch(Err)
+	{ return false;}
+	mpFile->Close();//must leave closed file ready to start()
 	return true;
 }
 
 bool SDIFIn::ConcreteStart()
 {
 	mpFile->Open();
-
 	return true;
 }
 
