@@ -12,9 +12,9 @@ namespace SALTO
 class Application
 {
 public:
-	SALTOApplication();
+	Application();
 
-	virtual ~SALTOApplication();
+	virtual ~Application();
 
 	void Start();
 protected:
@@ -24,8 +24,8 @@ protected:
 private:
 	bool             mRunning;
 	bool             mToQuit;
-	Kernel*          mKernel;
-	UserInterface*   mUI;
+	Kernel          mKernel;
+	UserInterface   mUI;
 	Thread           mThread;
 };
 
