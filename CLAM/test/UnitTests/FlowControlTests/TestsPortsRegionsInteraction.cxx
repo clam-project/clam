@@ -35,7 +35,6 @@ public:
 	CPPUNIT_TEST( testOutPortGetConnectedInPorts_whenOneInPort ); 
 	CPPUNIT_TEST( testOutPortGetConnectedInPorts_whenMoreThanOneInPort );
 	CPPUNIT_TEST( testInPortGetConnectedOutPort );
-	CPPUNIT_TEST( testDestructOutPortAfterInPort );
 	CPPUNIT_TEST( testOutPortDisconnectFromAll );	
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WhenInPortIsTheSameType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WhenInPortIsDifferentType );
@@ -49,9 +48,12 @@ public:
 	CPPUNIT_TEST( testOutPort_IsPhysicallyConnectedToIn_withOneInPort );
 	CPPUNIT_TEST( testGetLastWrittenData_whenPortIsWrongType_throwsException );
 	CPPUNIT_TEST( testGetLastWrittenData_fillsWithCorrectData );
-	CPPUNIT_TEST( testInPortPublisher_deleteInPortPublisherAfterRealPorts );
+	// delete sequence tests:
+	CPPUNIT_TEST( testOutPort_deleteSequence_Out_In );
+	CPPUNIT_TEST( testPort_deleteSequence_In_Out );
+	CPPUNIT_TEST( testPortPublisher_deleteSequence_In_InPub_Out );
 	CPPUNIT_TEST( testPortPublisher_deleteSequence_Out_InPub_In );
-//	CPPUNIT_TEST( testAudioInPortPublisher_deleteSequence_Out_InPub_In ); 
+	CPPUNIT_TEST( testAudioInPortPublisher_deleteSequence_Out_InPub_In ); 
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -292,15 +294,6 @@ public:
 		CPPUNIT_ASSERT( &out == in2.GetAttachedOutPort() );
 	}
 
-	void testDestructOutPortAfterInPort()
-	{
-		CLAM::InPort<int> * in = new CLAM::InPort<int>;
-		CLAM::OutPort<int> * out = new CLAM::OutPort<int>;
-		out->ConnectToIn( *in );
-
-		delete out;
-		delete in;
-	}
 	void testOutPortDisconnectFromAll()
 	{
 		CLAM::OutPort<int> out;
@@ -505,7 +498,26 @@ public:
 		CPPUNIT_ASSERT( false==out.IsPhysicallyConnectedToIn(inNotConnected) );
 	}
 
-	void testInPortPublisher_deleteInPortPublisherAfterRealPorts()
+	
+	void testOutPort_deleteSequence_Out_In()
+	{
+		CLAM::InPort<int> * in = new CLAM::InPort<int>;
+		CLAM::OutPort<int> * out = new CLAM::OutPort<int>;
+		out->ConnectToIn( *in );
+
+		delete out;
+		delete in;
+	}
+	void testPort_deleteSequence_In_Out()
+	{
+		CLAM::InPort<int> * in = new CLAM::InPort<int>;
+		CLAM::OutPort<int> * out = new CLAM::OutPort<int>;
+		out->ConnectToIn( *in );
+
+		delete in;
+		delete out;
+	}
+	void testPortPublisher_deleteSequence_In_InPub_Out()
 	{
 		CLAM::OutPort<int> out;
 		CLAM::InPort<int> *in1, *in2;
@@ -525,9 +537,7 @@ public:
 
 		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
 		CPPUNIT_ASSERT(it == out.EndConnectedInPorts() );
-		
 	}
-
 	void testPortPublisher_deleteSequence_Out_InPub_In()
 	{
 		CLAM::OutPort<int> *out = new CLAM::OutPort<int>;
@@ -542,7 +552,6 @@ public:
 		delete pubIn;
 		delete in;
 	}
-	
 	void testAudioInPortPublisher_deleteSequence_Out_InPub_In()
 	{
 		CLAM::AudioInPortPublisher *pub = new CLAM::AudioInPortPublisher;
@@ -551,7 +560,7 @@ public:
 
 		pub->PublishInPort( *in );
 		out->ConnectToIn( *pub );
-	//	delete out;
+		delete out;
 		delete pub;
 		delete in;
 	}
