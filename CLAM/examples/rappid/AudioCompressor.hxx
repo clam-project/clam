@@ -23,8 +23,8 @@
 #define _AUDIO_COMPRESSOR_HXX
 
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 #include "Audio.hxx"
 #include "Enum.hxx"
@@ -72,8 +72,8 @@ namespace CLAM
 	{
 	public:
 
-		InPortTmpl<Audio>  Input;
-		OutPortTmpl<Audio> Output;
+		AudioInPort Input;
+		AudioOutPort Output;
 
 	private:
 

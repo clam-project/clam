@@ -140,15 +140,13 @@ int WritingRegion< Token, DataStructure >::GetGreatestReaderRegionSize()
 template< typename Token, template <class> class DataStructure>
 void WritingRegion<Token, DataStructure >::CheckRegionsAreEven()
 {
-	// XR TODO: writer must be even?	
-	CLAM_ASSERT( Pos() == 0, "WritingRegion::CheckRegionsAreEven - Writer's position must be zero." );
+	//TODO: writer must be even?	
 	CLAM_ASSERT( Size()%2==0, "WritingRegion::CheckRegionsAreEven - Writer's size must be even for centering." );
 	
 	ReadingRegionsIterator it;
 	for(it=BeginReaders(); it!=EndReaders(); it++)
 	{
 		CLAM_ASSERT( (*it)->Size()%2==0, "WritingRegion::CheckRegionsAreEven - Reader's size must be even for centering.");
-		CLAM_ASSERT( (*it)->Pos() == 0, "WritingRegion::CheckRegionsAreEven - Reader's pos must be zero");
 	}
 
 }
@@ -163,6 +161,8 @@ void WritingRegion< Token, DataStructure >::ClearData()
 template< typename Token, template <class> class DataStructure>
 void WritingRegion< Token, DataStructure >::PositionWritingRegion( int centralIndex )
 {
+	Pos( 0 );
+	BeginDistance( 0);
 
 	int currentHop = Hop();
 	int currentSize = Size();
@@ -170,9 +170,10 @@ void WritingRegion< Token, DataStructure >::PositionWritingRegion( int centralIn
 	Size( centralIndex);	
 	Hop( centralIndex );
 
-	ClearData();	
+	ClearData();
 	
-	Produce();
+	Pos( centralIndex );
+	BeginDistance( centralIndex );
 
 	Size( currentSize );
 	Hop( currentHop );

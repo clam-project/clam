@@ -24,8 +24,8 @@
 
 #include "ControlConfig.hxx"
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "OutPort.hxx"
 #include "Envelope.hxx"
 #include "Audio.hxx"
 
@@ -171,8 +171,8 @@ namespace CLAM
 		InControlTmpl<EnvelopeExtractor> cNormalLevel;
 		InControlTmpl<EnvelopeExtractor> cSilenceLevel;
 
-		InPortTmpl<Audio>     Input;
-		OutPortTmpl<Envelope> Output;
+		AudioInPort Input;
+		OutPort<Envelope> Output;
 
 		EnvelopeExtractor(const EnvExtractorConfig& c = EnvExtractorConfig());
 

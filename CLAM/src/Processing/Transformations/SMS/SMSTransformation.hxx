@@ -25,8 +25,8 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "InControl.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
@@ -48,13 +48,8 @@ namespace CLAM {
 		typedef InControlTmpl<SMSTransformation> SMSTransformationCtrl;
 	
 	public:
-		//TODO begin to remove
-		
-		void AttachIn( Segment& data ){ mInput.Attach(data); }
-		void AttachOut( Segment& data ){ mOutput.Attach(data); }
-		
-		//TODO end
-		
+		void AttachIn( Segment& data ){ mInput = &data; }
+		void AttachOut( Segment& data ){ mOutput = &data; }
 		
 		/** Configuration change method. Note that the Amount Control is initialized from the
 		 *	the values in the configuration. Appart from that the member boolean variable that
@@ -85,7 +80,7 @@ namespace CLAM {
 		 */
 		virtual bool Do(void)
 		{
-			return Do(mInput.GetData(),mOutput.GetData());
+			return Do(*mInput, *mOutput);
 		}
 
 		/** Pure virtual method that is implemented in the template subclass.
@@ -129,7 +124,7 @@ namespace CLAM {
 		 */
 		virtual Frame& UnwrapProcessingData(Segment& out,Frame*)
 		{
-			if(mCurrentInputFrame==out.GetnFrames()&&mInput.GetData().GetnFrames()>out.GetnFrames())
+			if(mCurrentInputFrame==out.GetnFrames() && mInput->GetnFrames()>out.GetnFrames())
 				out.AddFrame(out.GetFrame(out.GetnFrames()-1));
 			return out.GetFrame(mCurrentInputFrame);
 
@@ -223,11 +218,11 @@ namespace CLAM {
 		/** Input Port. Note that all SMSTransformations will have segment as input and output, 
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
 		 *	transformation*/
-		InPortTmpl<Segment> mInput;
+		Segment* mInput;
 		/** Output Port. Note that all SMSTransformations will have segment as input and output, 
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
 		 *	transformation*/
-		OutPortTmpl<Segment> mOutput;
+		Segment* mOutput;
 	};
 	
 	/** Template SMS Transformation abstract class. It derives from also abstract SMSTransformation

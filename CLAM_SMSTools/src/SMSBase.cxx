@@ -64,8 +64,8 @@ SMSBase::SMSBase()
 	mHaveTransformation = false;
 	mHaveAudioMorph = false;
 
-	mTransformation.mChainInput.Attach(mOriginalSegment);
-	mTransformation.mChainOutput.Attach(mTransformedSegment);
+	mTransformation.mpChainInput = &mOriginalSegment;
+	mTransformation.mpChainOutput = &mTransformedSegment;
 
 
 	mpAnalysis=new SMSAnalysis;

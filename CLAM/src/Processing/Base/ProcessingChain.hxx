@@ -3,8 +3,8 @@
 
 #include "ProcessingComposite.hxx"
 #include "ProcessingData.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "InControlTmplArray.hxx"
 #include "Factory.hxx"
 #include "Array.hxx"
@@ -149,7 +149,9 @@ namespace CLAM{
 		typedef ProcessingChain ThisProc;
 	public:
 		/** Default Constructor */
-		ProcessingChain():mChainInput("Input",this,1),mChainOutput("Output",this,1)
+		ProcessingChain():
+			mpChainInput(0),
+			mpChainOutput(0)
 		{
 			mpConfig=NULL;
 			mpOnCtrlArray=NULL;
@@ -309,9 +311,13 @@ namespace CLAM{
 		}
 
 		/** Input port*/
-		InPortTmpl<U>     mChainInput;
+		U* mpChainInput;
 		/** Output port*/
-		OutPortTmpl<U> mChainOutput;
+		U* mpChainOutput;
+		
+		void AttachIn(U& data) { mpChainInput = &data; }
+		void AttachOut(U& data) { mpChainOutput = &data; }
+		
 
 protected:
 		/** Adds a Processing chainee at the end of the chain. It instantiates a concrete Processing

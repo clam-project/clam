@@ -28,8 +28,8 @@
 #include "EnvelopeExtractor.hxx"
 #include "EnvelopeGenerator.hxx"
 #include "RappidTypes.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 
 using namespace CLAM;
@@ -54,9 +54,9 @@ class EnvelopeMorpher: public ProcessingComposite {
 
 public:
 
-	InPortTmpl<Audio>  InputAudio;
-	InPortTmpl<Audio>  ControlAudio;
-	OutPortTmpl<Audio> OutputAudio;
+	AudioInPort  InputAudio;
+	AudioInPort  ControlAudio;
+	AudioOutPort OutputAudio;
 
 	InControlTmpl<EnvelopeMorpher> cInterpolationPeriod;
 	InControlTmpl<EnvelopeMorpher> cIntegrationLength;

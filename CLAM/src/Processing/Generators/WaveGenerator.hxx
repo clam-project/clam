@@ -24,7 +24,7 @@
 
 #include "Audio.hxx"
 #include "Processing.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 #include "Enum.hxx"
 
 namespace CLAM {
@@ -124,7 +124,7 @@ namespace CLAM {
 			return mAmplitude;
 		}
 
-		OutPortTmpl<Audio> Output;
+		AudioOutPort Output;
 
 		WaveGenerator();
 
@@ -135,8 +135,6 @@ namespace CLAM {
 		/** Configuration access:
 		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;}
-
-		void Attach(Audio& out) {Output.Attach(out);}
 
 		/** Supervised-mode Do function.
 		 */

@@ -116,7 +116,7 @@ namespace CLAM{
 		/** Input Port. Note that all SMSTransformations will have segment as input and output, 
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
 		 *	transformation. Here we add a second segment for the sound to morph.*/
-		InPortTmpl<Segment> mInput2;
+		Segment* mpInput2;
 		
 		bool mHarmSpectralShapeMorph;
 		bool mHaveInternalSegment;

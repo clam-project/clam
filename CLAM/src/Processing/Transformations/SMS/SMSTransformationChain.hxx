@@ -88,7 +88,7 @@ namespace CLAM {
 			mpTmpDataArray.SetSize(0);
 			
 			Segment* pCurrentData;
-			pCurrentData=new Segment(mChainInput.GetData());
+			pCurrentData=new Segment(*mpChainInput);
 			mpTmpDataArray.AddElem(pCurrentData);
 			for(obj=composite_begin();obj!=composite_end();obj++)
 			{
@@ -97,27 +97,21 @@ namespace CLAM {
 				SMSTransformation &concreteObj = dynamic_cast<SMSTransformation&>(processing);
 				
 				concreteObj.AttachIn(*pCurrentData);
-//				(*obj)->GetInPorts().GetByNumber(0).Attach(*pCurrentData);
 				if(!(*obj)->CanProcessInplace())
 				{
-					pCurrentData=new Segment(mChainInput.GetData());
+					pCurrentData=new Segment(*mpChainInput);
 					mpTmpDataArray.AddElem(pCurrentData);
 				}
-//				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
 				concreteObj.AttachOut(*pCurrentData);
 			}
 			obj=composite_begin();
 			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>( *(*(obj)) );
-			concreteObj.AttachIn(mChainInput.GetData());
-//			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
+			concreteObj.AttachIn(*mpChainInput);
 			obj=composite_end();
 			obj--;
 			SMSTransformation& concreteObj2 = dynamic_cast<SMSTransformation&>( *(*(obj)) );
 
-
-//			(*obj)->GetOutPorts().GetByNumber(0).Attach(mChainOutput.GetData());
-			concreteObj2.AttachOut(mChainOutput.GetData() );
-			
+			concreteObj2.AttachOut( *mpChainOutput);
 			return ProcessingComposite::ConcreteStart();
 
 		}
@@ -130,7 +124,7 @@ namespace CLAM {
 			int i;
 			for(i=0;i<mpTmpDataArray.Size();i++)
 				mpTmpDataArray[i]->mCurrentFrameIndex=0;
-			mChainInput.GetData().mCurrentFrameIndex=0;
+			mpChainInput->mCurrentFrameIndex=0;
 			return ret;
 		}
 
@@ -138,7 +132,7 @@ namespace CLAM {
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()
 		{
-			mChainInput.GetData().mCurrentFrameIndex++;
+			mpChainInput->mCurrentFrameIndex++;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment

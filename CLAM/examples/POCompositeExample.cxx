@@ -57,9 +57,9 @@ class BigProcessing : public ProcessingComposite {
 	// And the interfaces with the outside world.
 
 	/** Global input port */
-	InPortTmpl<Audio> InputAudio;
+	AudioInPort InputAudio;
 	/** Global output port */
-	OutPortTmpl<Audio> OutputAudio;
+	AudioInPort OutputAudio;
 
 	// Internal convenience methods.
 

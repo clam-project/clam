@@ -23,9 +23,9 @@
 #define _DYNAMIC_MIXER_HXX
 
 #include "ProcessingComposite.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
-
+#include "InPort.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 #include "Audio.hxx"
 #include "SoftSwitch.hxx"
 #include "AudioMixer.hxx"
@@ -58,7 +58,7 @@ namespace CLAM
 	public:
 
 		InPortArrayTmpl<Audio> Input;
-		OutPortTmpl<Audio>     Output;
+		AudioOutPort     Output;
 
 		InControlArray     Enable;
 

@@ -67,9 +67,9 @@ namespace CLAM
 		TSize mNCoeficients;
 	public:
 
-		InPortTmpl<Audio>    InputAudio;
-		InPortTmpl<ConvolutionKernel> Coeficients;
-		OutPortTmpl<Audio>   OutputAudio;
+		AudioInPort InputAudio;
+		InPort<ConvolutionKernel> Coeficients;
+		AudioOutPort OutputAudio;
 
 	public:
 		const char *GetClassName() const {return "FIR";}
