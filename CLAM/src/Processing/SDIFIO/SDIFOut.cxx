@@ -102,7 +102,7 @@ bool SDIFOut::Do(const Frame& frame)
 		SDIF::ConcreteMatrix<TFloat32>* pMatrix;
 				
 		//First matrix to add to frame
-		pMatrix=new SDIF::ConcreteMatrix<TFloat32>(SDIF::TypeId::sDefault,1,1);
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("1FQ0",1,1);
 
 		//We add fundamental frequency
 		pMatrix->SetValue(0,0,frame.GetFundamental().GetFreq());
