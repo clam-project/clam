@@ -39,6 +39,11 @@
 	MacOS X note: ID3 meta-data extraction only works for MacOS X 10.3 systems and above,
 	since Apple did not include Unicode ( wchar_t ) support in their libstdc++ binary
 	distribution.
+     ** Three new examples showing how to use the new Processing's and the AudioFile class:
+	-> examples/FileInfo_example.cxx
+	-> examples/AudioFileReading_example.cxx
+	-> examples/AudioFileWritiing_example.cxx
+	their build projects can be found on the build/Examples/Simple folder
 	
 
 2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
