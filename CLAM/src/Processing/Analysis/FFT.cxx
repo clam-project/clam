@@ -110,6 +110,11 @@ namespace CLAM {
 		if (mConfig.HasAudioSize()) {
 			CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
 			mSize = mConfig.GetAudioSize();
+			if(mSize>0)
+			{
+				mInput.SetSize( mSize );
+				mInput.SetHop( mSize );
+			}
 		}
 
 		CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");

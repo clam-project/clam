@@ -36,7 +36,12 @@ namespace CLAM {
 		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
 			CLAM_ASSERT (mConfig.GetAudioSize()>=0,"Wrong (negative) Size in IFFT Configuration.");
-			mSize = mConfig.GetAudioSize();
+			mSize = mConfig.GetAudioSize();	
+			if(mSize>0)
+			{
+				mOutput.SetSize( mSize );
+				mOutput.SetHop( mSize );
+			}
 		}
 		else
 			mSize = CLAM_DEFAULT_IFFT_SIZE;
