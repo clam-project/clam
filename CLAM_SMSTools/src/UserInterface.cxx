@@ -763,7 +763,7 @@ static Fl_Pixmap image_mtg3(idata_mtg3);
 
 UserInterface::UserInterface() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mWindow = new Fl_Double_Window(870, 550, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
+  { Fl_Double_Window* o = mWindow = new Fl_Double_Window(870, 550, "SMS Tools 2 | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
     { Fl_Menu_Bar* o = mMenuBar = new Fl_Menu_Bar(0, 0, 872, 25);

@@ -81,7 +81,7 @@ namespace CLAMVM
 				if ( mConfig.GetBPFAmount().GetValueFromIndex( i ) < 0.5 )
 					mConfig.GetBPFAmount().SetValue( i, 0.5 );
 				else if ( mConfig.GetBPFAmount().GetValueFromIndex(i) > 2.0 )
-					mConfig.GetBPFAmount().GetValue( i, 2.0 );
+					mConfig.GetBPFAmount().SetValue( i, 2.0 );
 			}
 
 			if ( mConfig.GetBPFAmount().Size() == 0 )

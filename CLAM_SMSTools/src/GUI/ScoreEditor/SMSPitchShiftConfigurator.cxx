@@ -3,6 +3,7 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
 #include "Fl_SMS_BPF_Editor.hxx"
+#include "SMS_ScoreEditor_Helper.hxx"
 
 namespace CLAMVM
 {
@@ -50,21 +51,28 @@ namespace CLAMVM
 	void SMSPitchShiftConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
 		mConfig = static_cast< const CLAM::SMSTransformationConfig& >( cfg );
+		
 		mEditorWidget->Clear();
-		if ( mConfig.HasBPFAmount() )
+
+		if ( !mConfig.HasBPFAmount() )
 		{
-			mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
-		}
-		else
-		{
-			if ( mConfig.GetAmount() >= 0.5 )
-				mEditorWidget->InitPoints( mConfig.GetAmount() );
-			else
-				mEditorWidget->InitPoints( 1.0 );
+			double oldAmount = mConfig.GetAmount();
+
+			if ( oldAmount < 0.5 ) oldAmount = 0.5;
+			else if ( oldAmount > 2.0 ) oldAmount = 2.0;
+
 			mConfig.AddBPFAmount();
 			mConfig.RemoveAmount();
 			mConfig.UpdateData();
+
+			mConfig.GetBPFAmount().Insert( 0.0, oldAmount );
+			mConfig.GetBPFAmount().Insert( 1.0, oldAmount );
 		}
+		else
+			clampBPFValues( mConfig.GetBPFAmount(), 0.5, 2.0 );
+
+
+		mEditorWidget->InitPoints( mConfig.GetBPFAmount() );
 
 	}
 

@@ -23,8 +23,8 @@ class UserInterface {open
   Function {UserInterface()} {open
   } {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {280 51 870 550} type Double resizable
+      label {SMS Tools 2 | MTG-UPF (Barcelona)} open selected
+      xywh {153 51 870 550} type Double resizable
       code0 {mWindow2=NULL;} visible
     } {
       Fl_Menu_Bar mMenuBar {
@@ -254,7 +254,7 @@ Exit();}
           xywh {0 520 340 30} resizable
         }
       }
-      Fl_Group {} {open selected
+      Fl_Group {} {open
         xywh {0 25 870 495} resizable
       } {
         Fl_Box mSmartTile {
