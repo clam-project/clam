@@ -61,13 +61,12 @@ bool XMLSerializer::DoStore( char* fileName, Segment& segment )
 	mXMLStorage.Dump( segment, "Segment", fileName );
 
 	//Now we add Spectrum back, it is needed for Melody analysis
-	for( i=0; nFrames; i++ )
+	for( i = 0; i < nFrames; i++ )
 	{
 		Frame& tmpFrame = segment.GetFrame( i );
 		tmpFrame.AddSpectrum(  );//this could be kept for direct IFFT
 		tmpFrame.UpdateData(  );			
 	}
-	std::cout<< "caca"<< std::endl;
 
 	return true;
 }
