@@ -18,7 +18,7 @@ public:
 	long& Pos();
 	int& Size();
 	int& Hop();
-
+	
 	int& BeginDistance();
 	void BeginDistance(int &dist);
 
@@ -39,7 +39,9 @@ private:
 	long mPos;
 	int mSize;
 	int mHop;
-	int mBeginDistance; /// offset from the beginning of the data structure 
+	
+	 /// offset from the beginning of the data structure 
+	int mBeginDistance;
 };
 
 } // namespace CLAM

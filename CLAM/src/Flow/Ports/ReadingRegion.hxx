@@ -31,9 +31,7 @@ public:
 	void Consume();
 	void LinkProducerRegion( Region& writing);
 	
-	/*
-	 * const?? TODO!!
-	 * */
+	// const?? TODO
 	ProperToken& operator[](int offset);
 
 	Region* ProducerRegion();
