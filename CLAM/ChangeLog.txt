@@ -1,6 +1,6 @@
 2003-06-11 CLAM_0_4_3
 ''
-  * Build system
+  * Build system:
       ** New flashing build system, fast, crossplatform and easy to use
       ** Configuration file for each binary is shared between platforms
       ** Automatic detection of binaries dependencies
@@ -41,14 +41,15 @@
   * DynamicTypes:
       ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  to
          compilation problems if you don't use the ugly 'using namespace CLAM;'.
-  * Examples - SMSAnalysisSynthesis:
-      ** Allows perform SMS transformations
+  * Examples - SMS (old SMSAnalysisSynthesis):
+      ** Renamed as SMS. GUI is now SMSTools.
+      ** Applies chained SMS transformations
       ** Menu reorganization
       ** New views: sinusoidal tracks, spectrum & peaks
       ** Frame navigator
       ** Fixes and performance enhancements
   * Examples - Other:
-      ** Fix:  The Tutorial4 didn't compile  (used  Complex  in  a old fashioned
+      ** Fix:  The Tutorial4 didn't compile (used Complex in an old fashioned
          way).
   * XML:
       ** New method XMLStorage::UseIndentation to enable pretty XML formatting
