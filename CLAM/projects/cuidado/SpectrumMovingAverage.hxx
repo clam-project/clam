@@ -33,7 +33,7 @@ namespace MTG {
 	  WindowGeneratorConfig* mWinGenConf;
 	  WindowGenerator*       mWinGen;
 	  DataArray             mArray;
-		const char *GetClassName() {return "SpectrumMovingAverage";}
+		const char *GetClassName() const {return "SpectrumMovingAverage";}
 
 		/** Config change method
 		 * @throw

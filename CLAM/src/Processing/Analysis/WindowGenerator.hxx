@@ -115,7 +115,7 @@ namespace CLAM {
 	class WindowGenerator: public Processing {
 		WindowGeneratorConfig mConfig;
 
-		const char *GetClassName() {return "WindowGenerator";}
+		const char *GetClassName() const {return "WindowGenerator";}
 
 		/** Config change method
 		 * @throw

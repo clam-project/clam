@@ -23,6 +23,7 @@
 #include "Processing.hxx"
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
+#include "ErrDynamicType.hxx"
 
 #include "mtgsstream.h" // An alias for <sstream>
 #include <cstring>

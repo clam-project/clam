@@ -34,10 +34,10 @@ class UserInterface {open
     code {Init();} {}
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {192 296 872 548} resizable
+      xywh {550 299 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
-      Fl_Box mResizable {selected
+      Fl_Box mResizable {
         xywh {505 50 360 490} hide resizable
       }
       Fl_Output mConfigurationText {
@@ -236,8 +236,8 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {451 343 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
-      code0 {mWindow2->show();} noborder visible
+      private xywh {452 344 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
+      code0 {mWindow2->show();} modal noborder visible
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
@@ -289,11 +289,14 @@ mWindow2=NULL;}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
   decl {void LoadSound();} {}
-  decl {void Init();} {}
+  decl {void Init();} {selected
+  }
   decl {Fl_Window* mAudioInputDisplay;} {}
   decl {Fl_Window* mAudioOutputDisplay;} {}
   decl {Fl_Window* mAudioOutputResidualDisplay;} {}
   decl {Fl_Window* mAudioOutputSinusoidalDisplay;} {}
   decl {void Update();} {public
+  }
+  decl {void DetachDisplays();} {public
   }
 } 

@@ -95,6 +95,9 @@ public:
 			CLAM_ASSERT(!failed, context.c_str());
 		}
 	}
+	const char * GetClassName() const {
+		return "GenericAdaptersTester";
+	}
 };
 
 class SimpleAdapterTestCase {
@@ -449,6 +452,9 @@ public:
 	virtual ~ComponentAdapterTestHelper() {
 
 	};
+	const char * GetClassName() const {
+		return "ComponentAdapterTestHelper";
+	}
 // Operations
 public:
 	void modify () {
@@ -534,6 +540,9 @@ public:
 	ComponentAdaptersTester() {
 		mId="ComponentAdapter";
 	}
+	const char * GetClassName() const {
+		return "ComponentAdaptersTester";
+	}
 	void StoreOn(Storage & storer) {
 		ComponentAdapterTestCase a('C'), b('E');
 		a.AdaptToStore(storer,true,false); // Content
@@ -583,7 +592,7 @@ class MyComponent : public CLAM::Component {
 		MyComponent() {_tag="DefaultContent";};
 		MyComponent(const MyComponent &c) {_tag=c._tag;};
 		MyComponent(std::string tag) {_tag=tag;};
-		virtual const char * GetClassName() {
+		const char * GetClassName() const {
 			return "MyComponent";
 		}
 		virtual ~MyComponent() {};
@@ -601,7 +610,7 @@ class MyComponent : public CLAM::Component {
 			#endif//CLAM_USE_XML
 		}
 };
-
+ 
 void XMLComponentArrayTest() {
 	std::cout << "-- Testing CLAM::Array<Component>" << std::endl;
 	CLAM::Array<MyComponent> a;

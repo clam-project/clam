@@ -23,7 +23,7 @@ namespace MTG {
 	class PeakLikelihood: public ProcessingObject {
 		PeakLikelihoodConfig mConfig;
 
-		const char *GetClassName() {return "PeakLikelihood";}
+		const char *GetClassName() const {return "PeakLikelihood";}
 
 		/** Config change method
 		 * @throw

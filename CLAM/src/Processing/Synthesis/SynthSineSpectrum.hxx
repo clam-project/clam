@@ -37,6 +37,7 @@ public:
 	SynthSineSpectrum();
 	SynthSineSpectrum(SynthSineSpectrumConfig& cfg);
 	~SynthSineSpectrum();
+	const char * GetClassName() const {return "SynthSineSpectrum";}
 
 	/* public member functions */
 	bool Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut,

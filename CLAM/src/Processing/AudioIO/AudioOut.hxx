@@ -72,6 +72,8 @@ public:
 
 	/** Destructor method of the class*/
 	~AudioOut() { if (mpDevice) mpDevice->Unregister(*this); }
+
+	const char * GetClassName() const {return "AudioOut";}
 	
 	/** Supervised mode of Do method. Calls the non-supervised method with the Audio data chunk attached before as the parameter where data will be written
 	 */

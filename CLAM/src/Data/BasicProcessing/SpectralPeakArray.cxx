@@ -499,7 +499,7 @@ void SpectralPeakArray::ToLinear()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= pow(10,mag[i]/20); 
+			mag[i]= pow(TData(10),TData(mag[i]/20)); 
 		}
 		SetScale(EScale::eLinear);
 	}

@@ -30,7 +30,7 @@ namespace CLAM {
 OutControl::OutControl(std::string name, Processing* parent, const bool publish) :
 	mName(name)
 {
-	if (publish) parent->PublishOutControl(this);
+	if (parent && publish) 	parent->PublishOutControl(this);
 }
 		
 /*OutControl::OutControlIterator()()
@@ -61,7 +61,7 @@ int OutControl::SendControl(TControlData val)
 	{
 		ret = (*it)->DoControl(val);
 	}
-	// TODO: decide if returning just the last result is ok
+	// TODO: depracate controls with return value.
 	return ret;
 }
 

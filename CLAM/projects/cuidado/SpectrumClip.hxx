@@ -32,7 +32,7 @@ namespace MTG {
 	class SpectrumClip: public ProcessingObject {
 		SpectrumClipConfig mConfig;
 
-		const char *GetClassName() {return "SpectrumClip";}
+		const char *GetClassName() const {return "SpectrumClip";}
 
 		/** Config change method
 		 * @throw

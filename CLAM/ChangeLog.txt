@@ -1,8 +1,37 @@
-XXXX-XX-XX  CLAM_0_4_1??
-  * Fix: WindowGenerator Enums symbols had illegal spaces on their inside
+2003-01-23 CLAM_0_4_1
+'Analysis Synthesis debuggin'
 
-  
-  
+  * General:
+     ** Fix: Component::GetClassName has changed the signature to const (#0111)
+     ** GetClassName gets pure virtual on Component to reveal misredeclarations
+  * Unix build system:
+     ** Better support for external projects
+     ** $(CLAM_PATH)/ prefix needs to be added on for each filename on '.files' files
+  * Spectral Analysis:
+      ** Fix: WindowGenerator Enums symbols had illegal spaces on their inside
+  * AnalysisSynthesisExampleBase:
+     ** default HopSize is now computed from residual window size
+     ** SynthHopSize has disappeared: only frameSize is used (affects also SMSAnalysisSynthesisConfig.hxx)
+     ** Max number of sines of Peak Detect and SineTracking are now configured using configuration value
+  * Audio:
+     ** GetAudioChunk now allows to ask for a chunk with begin time beyond the original audio limits. It just
+        returns zeros but configures the chunk if necessary.
+  * SMSAnalysisConfig:
+     ** Buffer Size of both spectral analysis (sinusoidal and residual) is configured after the largest window
+        size (this condition is necessary for handling different window sizes in both components).
+  * SpectralPeakDetect:
+     ** Added a condition so the loop breaks whenever we have more peaks than those indicated in MaxPeaks
+        (Note: here the algorithm should be changed to decide what are the n best peaks, not the n first peaks: TODO)
+  * SMSAnalysis:
+     ** Sample rate was not correctly initialized under some conditions
+
+2002-12-10
+'Zero padding move'
+  * Analysis Synthesis example:
+     ** Removed useless synthesis zero padding factor
+     ** Fixed some other bugs related to zero padding
+     ** Did a little modification in the GUI so Audio displays are closed when editing configuration
+
 2002-11-26  CLAM_0_4_0-rel
 'Fly examples, fly to seattle' release
   * General:
@@ -202,7 +231,7 @@ XXXX-XX-XX  CLAM_0_4_1??
   * AudioIO classes
       ** Some more error condition checks.
       ** Added underrun/overrun recovery mechanism.
-  * List class 
+  * List class
       ** It is now tested and working.
   * Changes in the Documentation:
       ** Updated doxygen generation configuration.
@@ -210,7 +239,7 @@ XXXX-XX-XX  CLAM_0_4_1??
   * Other:
       ** Fixed minor compilation problems in several source files.
       ** Fixed some missing binary dependencies in the UNIX build system.
-  
+
 2001-02-07  development-root cuidado-root salto-root time_machine-root
 
   * Branches created.

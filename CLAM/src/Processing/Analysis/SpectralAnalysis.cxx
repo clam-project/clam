@@ -56,7 +56,10 @@ void SpectralAnalysisConfig::DefaultValues()
 	/** WindowSize/2*/
 	SetHopSize((GetWindowSize()-1)/2);
 
-	GetCircularShift().SetAmount(256);//because zero padding is zero!!
+	GetCircularShift().SetAmount(-256);
+
+	/** Buffer size for circular buffer **/
+	SetBufferSize(-1); //by default, it will be taken as windowSize-1+hopsize
 	
 }
 
@@ -66,7 +69,7 @@ void SpectralAnalysisConfig::SetWindowSize(TSize w)
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
 	GetWindowGenerator().SetSize(w);
 	SetprFFTSize(int(PowerOfTwo((w-1)*pow(TData(2),TData(GetZeroPadding())))));
-	GetCircularShift().SetAmount(-(GetprFFTSize()/TData(2))); 
+	GetCircularShift().SetAmount(-((w-1)/TData(2))); 
 	GetFFT().SetAudioSize(GetprFFTSize());
 	if(w<2*GetHopSize()+1)
 		SetHopSize((w-1)/2);
@@ -94,7 +97,6 @@ void SpectralAnalysisConfig::SetZeroPadding(int z)
 	SetprZeroPadding(z);
 	SetprFFTSize(int(PowerOfTwo((GetWindowSize()-1)*pow(TData(2),TData(GetZeroPadding())))));
 	GetFFT().SetAudioSize(GetprFFTSize());
-	GetCircularShift().SetAmount(-(GetprFFTSize()/2)); 
 }
 
 int SpectralAnalysisConfig::GetZeroPadding() const
@@ -186,7 +188,7 @@ bool SpectralAnalysis::ConfigureChildren()
 
 void SpectralAnalysis::ConfigureData()
 {
-//	TData samplingRate=mConfig.GetSamplingRate();
+	TData samplingRate=mConfig.GetSamplingRate();
 		  
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
 	mAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
@@ -211,11 +213,13 @@ void SpectralAnalysis::ConfigureData()
 	mPO_FFT.SetPrototypes (mWindow, mSpec);
 		  
 	/*Initializing and configuring member circular buffer*/
-	mCircularBuffer.SetBufferSize(mConfig.GetWindowSize()-1+mConfig.GetHopSize());
+	if(mConfig.GetBufferSize()==-1) mConfig.SetBufferSize(mConfig.GetWindowSize()-1+mConfig.GetHopSize());
+	mCircularBuffer.SetBufferSize(mConfig.GetBufferSize());
 	mCircularBuffer.SetReadSize(mConfig.GetWindowSize()-1);
 	mCircularBuffer.SetWriteSize(mConfig.GetHopSize());
 	mCircularBuffer.Init();
-	mCircularBuffer.IncreaseWriteIndex(mConfig.GetWindowSize()-mConfig.GetHopSize()-1);
+	mCircularBuffer.IncreaseWriteIndex(mConfig.GetBufferSize()-2*mConfig.GetHopSize());
+	mCircularBuffer.IncreaseReadIndex(((mConfig.GetBufferSize()-mConfig.GetHopSize()+1)-(mConfig.GetWindowSize()))/2);
 }
 
 void SpectralAnalysis::AttachChildren()
@@ -236,6 +240,7 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	mCircularBuffer.WriteAudio(in);
 	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
 	mCircularBuffer.ReadAudio(mAudioFrame);
+
 	/* Read index is then decreased according to hop size */
 	mCircularBuffer.DecreaseReadIndex(mConfig.GetWindowSize()-mConfig.GetHopSize()-1);
 

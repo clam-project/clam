@@ -26,7 +26,7 @@ namespace MTG {
 	class AudioDescriptorGen: public ProcessingObject {
 		AudioDescriptorGenConfig mConfig;
 
-		const char *GetClassName() {return "AudioDescriptorGen";}
+		const char *GetClassName() const {return "AudioDescriptorGen";}
 
 		/** Config change method
 		 * @throw

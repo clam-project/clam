@@ -30,7 +30,7 @@ namespace MTG {
 	class SpectrumJTransform: public ProcessingObject {
 		SpectrumJTransformConfig mConfig;
 
-		const char *GetClassName() {return "SpectrumJTransform";}
+		const char *GetClassName() const {return "SpectrumJTransform";}
 
 		/** Config change method
 		 * @throw
