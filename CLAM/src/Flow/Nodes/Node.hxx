@@ -38,11 +38,14 @@ namespace CLAM {
 	//-------------------------------------------
 	class NodeBase {
 	protected:
+
 		OutPort *mpDriver;
 		std::list<InPort*> mInputs;
 	public:
+		typedef std::list<InPort*>::iterator ReaderIterator;
 		const OutPort * GetWriter() const;
-		const std::list<InPort*> GetReaders() const;
+		ReaderIterator BeginReaders();
+		ReaderIterator EndReaders();
 
 		NodeBase() : mpDriver(0){}
 		virtual ~NodeBase() {}		
@@ -53,6 +56,7 @@ namespace CLAM {
 						      unsigned int length) = 0;
 		virtual void RemoveInPortConnection( InPort * port, 
 						     ReadStreamRegion * reader) = 0;
+		virtual void UnattachAll();
 	
 		virtual ReadStreamRegion  *NewReader (InPort *port,
 						      unsigned int hop,

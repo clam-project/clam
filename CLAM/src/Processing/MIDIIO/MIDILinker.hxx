@@ -63,15 +63,12 @@ namespace CLAM
 	class MIDILinkerConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDILinkerConfig, 5, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDILinkerConfig, 4, ProcessingConfig);
 		
-		DYN_ATTRIBUTE (0,public, std::string, Name);
-		DYN_CONTAINER_ATTRIBUTE (1,public, std::vector<MIDIInConfig>, MIDICfgs,midicfgs);
-		DYN_CONTAINER_ATTRIBUTE (2,public, std::vector<ControlMapperConfig>, MapperCfgs,mappercfgs);
-		DYN_CONTAINER_ATTRIBUTE (3,public, std::vector<unsigned>, NumBytes,numbytes);
-//proves
-
-		DYN_CONTAINER_ATTRIBUTE (4,public, std::vector<MIDIRelation>, Relations, relations);
+		DYN_CONTAINER_ATTRIBUTE (0,public, std::vector<MIDIInConfig>, MIDICfgs,midicfgs);
+		DYN_CONTAINER_ATTRIBUTE (1,public, std::vector<ControlMapperConfig>, MapperCfgs,mappercfgs);
+		DYN_CONTAINER_ATTRIBUTE (2,public, std::vector<unsigned>, NumBytes,numbytes);
+		DYN_CONTAINER_ATTRIBUTE (3,public, std::vector<MIDIRelation>, Relations, relations);
 		
 	protected:
 		void DefaultInit(void);

@@ -22,136 +22,17 @@
 #ifndef _Spectrum_
 #define _Spectrum_
 
-#include "DynamicType.hxx"
 #include "Array.hxx"
 #include "Complex.hxx"
 #include "Polar.hxx"
 #include "BPF.hxx"
-#include "ArrayToBPFCnv.hxx"
-#include "ComplexToPolarCnv.hxx"
-#include "DataTypes.hxx"
-#include "Flags.hxx"
-#include "OSDefines.hxx"
-#include "Err.hxx"
-#include "Enum.hxx"
-#include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
-#include "GlobalEnums.hxx"
 
-namespace CLAM{
+namespace CLAM {
 
-/**
-* This class tells which formats are instantiated in a Spectrum.
-* It could be:
-* <ul>
-* <li> Complex: Array of Complex objects
-* <li> Polar: Array of Polar objects
-* <li> MagPhase: Array of magnitude/phase pairs
-* <li> MagPhaseBPF: BPF of magnitude/phase pairs
-* </ul>
-* It can be used as any other class derived from Flags: you can
-* use the std::bit interface and Flags added functionalities.
-* @see Flags
-*/
-struct SpecTypeFlags : public Flags<4>
-{
-public:
-	static tFlagValue sFlagValues[];
-	static tValue sDefault;
-	virtual Component * Species() const {
-		return new SpecTypeFlags();
-	}
-	typedef enum {
-		eComplex=0,
-		ePolar=1,
-		eMagPhase=2,
-		eMagPhaseBPF=3
-	} tFlags;
-// Constructors
-	SpecTypeFlags () :
-		Flags<4>(sFlagValues),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-	{
-		bComplex = 0;
-		bPolar = 0; 
-		bMagPhase = 1;
-		bMagPhaseBPF = 0;
-	}
+class SpectrumConfig;
 
-
-	SpecTypeFlags (const SpecTypeFlags &t) : 
-		Flags<4>(sFlagValues,t),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-
-	{};
-
-/*
-	template <typename T> SpecTypeFlags (const T &t) : 
-		Flags<4>(sFlagValues,t),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-
-	{};
-*/
-
-	template <typename T1, typename T2> SpecTypeFlags (const T1 &t1,const T2 &t2) : 
-		Flags<4>(sFlagValues,t1,t2),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-	{};
-
-
-	reference bComplex;
-	reference bPolar; 
-	reference bMagPhase;
-	reference bMagPhaseBPF;
-
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// Class SpectrumConfig :
-//
-
-class Spectrum;
-
-
-/**
-* The Spectrum configuration object.
-*/
-class SpectrumConfig : public ProcessingDataConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE (SpectrumConfig, 5, ProcessingDataConfig);
-	/**
-	* The kind of scale
-	*/
-	DYN_ATTRIBUTE (0, public, EScale, Scale);
-	DYN_ATTRIBUTE (1, public, TData, SpectralRange);
-	DYN_ATTRIBUTE (2, public, int, Size);
-	DYN_ATTRIBUTE (3, public, SpecTypeFlags, Type);
-	DYN_ATTRIBUTE (4, public, int, BPFSize);
-public:
-	/*
-	* Sets to the default configuration.
-	*/
-	void DefaultValues();
-	~SpectrumConfig(){};
-protected:
-	/*
-	* Dynamic Type constructor: instanciates all the attributes.
-	*/
-	void DefaultInit();
-};
+struct SpecTypeFlags;
 
 /** 
  *	Spectrum is a ProcessingData class that allows the following representations: 
@@ -182,11 +63,7 @@ public:
 	DYN_ATTRIBUTE (9, public, BPF, PhaseBPF);
 
 public:
-	Spectrum(const SpectrumConfig &newConfig) : ProcessingData(eNumAttr)
-	{
-		MandatoryInit(); // Macro-expanded function. Necessary for some dynamic type initialization.
-		Configure(newConfig);
-	}
+	Spectrum(const SpectrumConfig &newConfig);
  
 	void Configure(const SpectrumConfig &newConfig);
 
@@ -236,6 +113,11 @@ public:
 	void SetPhase(TData freq,TData newPhase);
 	/** Synchronizes all data to the one of the specified type */
 	void SynchronizeTo(const SpecTypeFlags& tmpFlags);
+	/** Synchronizes all data to the one of the input spectrum */
+	void SynchronizeTo(const Spectrum& in);
+    /** Actual Synchronization routine */
+	void SynchronizeTo(const SpecTypeFlags& tmpFlags,const Spectrum& in);
+
 
 
 // Config shortcut interface.
@@ -296,8 +178,9 @@ private:
 	/** Returns index from a given frequency */
 	TIndex IndexFromFreq(TData freq) const;
 
-// Converting routines
+
 public:
+// Internal converting routines
 	/** Convert from Complex to Polar Buffer */
 	void Complex2Polar() ;
 	/** Convert from Polar to Complex Buffer */
@@ -314,6 +197,32 @@ public:
 	void MagPhase2BPF() ;
 	/** Convert from BPF to MagPhase*/
 	void BPF2MagPhase();
+
+// Converting routines from a second input spectrum
+/** Convert from Complex to Polar Buffer */
+	void Complex2Polar(const Spectrum& in) ;
+	/** Convert from Polar to Complex Buffer */
+	void Polar2Complex(const Spectrum& in) ;
+	/** Convert from Complex to Mag/Phase buffers */
+	void Complex2MagPhase(const Spectrum& in) ;
+	/** Convert from Polar to Mag/Phase buffers */
+	void Polar2MagPhase(const Spectrum& in) ;
+	/** Convert from Mag/Phase to Polar */
+	void MagPhase2Polar(const Spectrum& in) ;
+	/** Convert from Mag/Phase to Complex */
+	void MagPhase2Complex(const Spectrum& in) ;
+	/** Convert to BPF */
+	void MagPhase2BPF(const Spectrum& in) ;
+	/** Convert from BPF to MagPhase*/
+	void BPF2MagPhase(const Spectrum& in);
+private:
+//Low level converting routines
+	void Polar2MagPhase(const Array<Polar>& polarArray,DataArray& magBuffer, DataArray& phaseBuffer);
+	void Complex2MagPhase(const Array<Complex>& complexArray, DataArray& magBuffer, DataArray& phaseBuffer);
+	void MagPhase2Polar(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Polar>& polarArray);
+	void MagPhase2Complex(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Complex>& complexArray);
+	void MagPhase2BPF(const DataArray& magBuffer, const DataArray& phaseBuffer, BPF& magBPF, BPF& phaseBPF);
+	void BPF2MagPhase( const BPF& magBPF, const BPF& phaseBPF, DataArray& magBuffer, DataArray& phaseBuffer);
 
 };
 

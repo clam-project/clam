@@ -34,7 +34,7 @@ namespace CLAMVM
 
 		// new object, new list
 		mTrackBuilder.Flush();
-
+		mExtractedList.clear();
 		return true;
 	}
 
@@ -45,7 +45,7 @@ namespace CLAMVM
 		mMatrixSampleRate = sampleRate;
 
 		mTrackBuilder.Flush();
-
+		mExtractedList.clear();
 		return true;
 	}
 

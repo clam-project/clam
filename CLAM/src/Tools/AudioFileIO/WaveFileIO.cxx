@@ -58,12 +58,21 @@ void WaveFileIO::ReadHeader(void)
 	ChunkHeader riff;
 	ReadChunkHeader(riff);
 	if (!CheckID(riff.id,"RIFF"))
-		throw ErrSoundFileIO("Not a RIFF file");
+	{
+		UnsupportedSoundFileFormat error( "Given file has not a valid RIFF header \n" );
+
+		throw error;
+	}
 	i = 0;
 	int r = ReadID(waveID);
 	i += r;
+	
 	if (!CheckID(waveID,"WAVE"))
-		throw ErrSoundFileIO("Not a WAVE file");
+	{
+		UnsupportedSoundFileFormat error( "Given file has not a valid WAVE header \n" );
+
+		throw error;
+	}
 
 	ChunkHeader h;	
 	
@@ -88,9 +97,21 @@ void WaveFileIO::ReadHeader(void)
 
 			mHeader.mSampleWidth = fmt.sampleWidth;
 			mHeader.mBytesPerSample = (mHeader.mSampleWidth+7)>>3;
+			mHeader.mFormatTag = fmt.formatTag;
 
-			if (fmt.formatTag!=0x0001)
-				throw ErrSoundFileIO("Not a WAVE PCM file");
+			// MRJ: We acknowledge here WAVE IEEE Float sample format
+			if ( fmt.formatTag == 0x0003 )
+			{
+				UnsupportedSoundFileSampleEncoding error( "IEEE 32-bit WAV encoding not supported" );
+
+				throw error;
+			}
+			if (fmt.formatTag!=0x0001 )
+			{
+				UnsupportedSoundFileSampleEncoding error( "Compressed WAVE modes are not supported!" );
+
+				throw error;
+			}
 			mHeader.mChannels = fmt.channels;
 			mHeader.mSamplerate = fmt.samplerate;
 			fmtFound = true;
@@ -106,7 +127,7 @@ void WaveFileIO::ReadHeader(void)
 		else
 		{
 		  if (CheckID(h.id,"data")) {
-			  mSize = h.len/2;
+			  mSize += h.len/mHeader.mBytesPerSample;
 			  mOffset = sizeof(riff)+i;
 		  }
 		  if (CheckID(h.id,"cue "))
@@ -120,7 +141,11 @@ void WaveFileIO::ReadHeader(void)
 				fread(&tmp,1,sizeof(int),mFile);
 				SWAP(tmp);
 				if (tmp!=mNCuePoints)
-					throw ErrSoundFileIO("'cue ' chunk len does not match with number of cue points");
+				{
+					UnsupportedSoundFileFormat error( "Given file is not consistent: \n"
+									  "'cue ' chunk len does not match with number of cue points");
+					throw error;
+				}
 				mCuePoints = new CuePoint[mNCuePoints];
 				for (int i=0;i<mNCuePoints;i++)
 				{
@@ -137,9 +162,19 @@ void WaveFileIO::ReadHeader(void)
 		}
 	}
 	if (!fmtFound)
-		throw ErrSoundFileIO("No format chunk found");
+	{
+		UnsupportedSoundFileFormat error( "Given sound file is not consistent: " 
+						  "no format 'chunk' was found \n" );
+		
+		throw error;
+	}
 	if (mOffset == 0) 
-		throw ErrSoundFileIO("No data block found");
+	{
+		UnsupportedSoundFileFormat error( "Given sound file is not consistent: "
+						  "it does not contain any data \n");
+
+		throw error;
+	}
 }
 
 void WaveFileIO::WriteHeader(void)

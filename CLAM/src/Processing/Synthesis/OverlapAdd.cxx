@@ -36,7 +36,6 @@ using namespace CLAM;
 void OverlapAddConfig::DefaultInit()
 {
 	/* the dynamic type takes care if we add an existing attr .. */
-	AddName();
 	AddHopSize();
 	AddFrameSize();
 	AddBufferSize();
@@ -131,7 +130,7 @@ bool OverlapAdd::UnsetPrototypes(){
 
 bool OverlapAdd::Do(void)
 {
-	throw(ErrProcessingObj("OverlapAdd::Do(): Supervised mode not implemented"),this);
+	CLAM_ASSERT(false,"OverlapAdd::Do(): Supervised mode not implemented");
 	return false;
 }
 

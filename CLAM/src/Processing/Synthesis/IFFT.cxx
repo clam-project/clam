@@ -23,14 +23,13 @@
 #include "IFFT.hxx"
 #include <string>
 #include "ErrProcessingObj.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM {
 
-	const std::string UnnamedIFFT("UnnamedIFFT");
-
 	void IFFTConfig::DefaultInit(void)
 	{
-		AddName();
 		AddAudioSize();
 		UpdateData();
 		SetAudioSize(0);
@@ -41,17 +40,6 @@ namespace CLAM {
 		mInput("Input",this,1),
 		mOutput("Output",this,1)
 	{
-	};
-
-
-	std::string IFFT_base::NewUniqueName()
-	{
-		static int ObjectCount=0;
-
-		std::stringstream name;
-		name << "IFFT_" << ObjectCount++;
-
-		return name.str();
 	}
 
 	IFFT_base::~IFFT_base()
@@ -62,7 +50,7 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(n>=0,"Wrong (negative) Size in control input.");
 
-		throw(ErrProcessingObj("Controls not yet implemented.",this));
+		CLAM_ASSERT(false,"Controls not yet implemented.");
 	}
 
 

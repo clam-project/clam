@@ -49,12 +49,15 @@ void Segment::DefaultValues()
 	SetBeginTime(0);
 	SetEndTime(0);
 	SetSamplingRate(44100);
+	SetHoldsData( true );
+
 }
  
 void Segment::CopyInit(const Segment& prototype)
 {
 	pParent=prototype.pParent;
 	mFramesSearch=prototype.mFramesSearch;
+	mFramesSearch.Set(GetFramesArray());
 	mCurrentFrameIndex=prototype.mCurrentFrameIndex;
 }
 
@@ -138,7 +141,7 @@ void Segment::AddFrame(Frame& newFrame)
 
 void Segment::DeleteFrame(TIndex pos)
 {
-	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame: Index out of bounds")
+	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame: Index out of bounds");
 	CLAM_ASSERT(GetHoldsData()||pParent,
 		"Segment::DeleteFrame: No available frame array attribute");
 
@@ -147,12 +150,20 @@ void Segment::DeleteFrame(TIndex pos)
 	else
 		pParent->GetFramesArray().DeleteElem(pos);
 
-	if(pos==GetnFrames())//it was the last frame
-		SetEndTime(GetFrame(GetnFrames()-1).GetCenterTime());
+	if (GetnFrames()==0)
+	{
+		SetEndTime(0);
+		SetBeginTime(0);
+	}
 
-	if(pos==0)//it was first frame
-		SetBeginTime(GetFrame(0).GetCenterTime());
+	else 
+	{
+		if(pos==GetnFrames())//it was the last frame
+			SetEndTime(GetFrame(GetnFrames()-1).GetCenterTime());
 
+		if(pos==0)//it was first frame
+			SetBeginTime(GetFrame(0).GetCenterTime());
+	}
 }
 
 TIndex Segment::FindFrame(TTime time) const

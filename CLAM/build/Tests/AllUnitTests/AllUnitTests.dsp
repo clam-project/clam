@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\test\testingWithCppUnit\CommonHelpers" /I "..\..\..\test\testingWithCppUnit" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Flow\Networks" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\include" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\cppunit\lib" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib pthreadVC.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "AllUnitTests - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\test\testingWithCppUnit\CommonHelpers" /I "..\..\..\test\testingWithCppUnit" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Flow\Networks" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\include" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\cppunit\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib pthreadVC.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -92,109 +92,124 @@ LINK32=link.exe
 
 # Begin Group "test Sources"
 
-# Begin Group "testingWithCppUnit Sources"
+# Begin Group "UnitTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\TestRunnerConsole.cxx
+SOURCE=..\..\..\test\UnitTests\TestRunnerConsole.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\cppUnitHelperTest.cxx
+SOURCE=..\..\..\test\UnitTests\cppUnitHelperTest.cxx
 # End Source File
 # Begin Group "NonComponentData Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\NonComponentData\ComplexTest.cxx
+SOURCE=..\..\..\test\UnitTests\NonComponentData\ComplexTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\NonComponentData\PolarTest.cxx
+SOURCE=..\..\..\test\UnitTests\NonComponentData\PolarTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\NonComponentData\PointTest.cxx
+SOURCE=..\..\..\test\UnitTests\NonComponentData\PointTest.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\NonComponentData\EnumTest.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\NonComponentData\FlagsTest.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\NonComponentData\TextTest.cxx
 # End Source File
 # End Group
 # Begin Group "DynamicTypeTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\DummyDynamicTypes.cxx
+SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DummyDynamicTypes.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\DynamicTypeBasicTest.cxx
+SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DynamicTypeBasicTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\DynamicTypeAdvancedTest.cxx
+SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DynamicTypeAdvancedTest.cxx
 # End Source File
 # End Group
 # Begin Group "ControlsTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\ControlsTests\ControlsTest.cxx
+SOURCE=..\..\..\test\UnitTests\ControlsTests\ControlsTest.cxx
 # End Source File
 # End Group
 # Begin Group "FactoryTest Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\FactoryTest\FactoryTest.cxx
+SOURCE=..\..\..\test\UnitTests\FactoryTest\FactoryTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\FactoryTest\FactoryRegistratorTest.cxx
+SOURCE=..\..\..\test\UnitTests\FactoryTest\FactoryRegistratorTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\FactoryTest\FactoryRegistryTest.cxx
+SOURCE=..\..\..\test\UnitTests\FactoryTest\FactoryRegistryTest.cxx
 # End Source File
 # End Group
 # Begin Group "ProcessingsTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\ProcessingsTests\AutoPannerTest.cxx
+SOURCE=..\..\..\test\UnitTests\ProcessingsTests\AutoPannerTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\ProcessingsTests\AudioMixerTest.cxx
+SOURCE=..\..\..\test\UnitTests\ProcessingsTests\AudioMixerTest.cxx
 # End Source File
 # End Group
 # Begin Group "PortsTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\PortsTests\PortsTest.cxx
+SOURCE=..\..\..\test\UnitTests\PortsTests\PortsTest.cxx
 # End Source File
 # End Group
 # Begin Group "ProcessingBaseTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\ProcessingBaseTests\ProcessingTest.cxx
+SOURCE=..\..\..\test\UnitTests\ProcessingBaseTests\ProcessingTest.cxx
 # End Source File
 # End Group
-# Begin Group "FlowControlTests Sources"
+# Begin Group "XMLAdaptersTests Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\FlowControlTests\PortsAndNodesTest.cxx
+SOURCE=..\..\..\test\UnitTests\XMLAdaptersTests\AdaptersTest.cxx
+# End Source File
+# End Group
+# Begin Group "VisualizationTests Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\VisualizationTests\FundamentalAdapterTest.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\FlowControlTests\NetworkTest.cxx
+SOURCE=..\..\..\test\UnitTests\VisualizationTests\FundamentalAdapterTestHelper.cxx
 # End Source File
 # End Group
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\test\TestEnum.cxx
-# End Source File
 # End Group
 # Begin Group "Errors Sources"
 
@@ -213,6 +228,10 @@ SOURCE=..\..\..\src\Errors\ErrProcessingObj.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Errors\ErrDynamicType.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Errors\ErrSystem.cxx
 # End Source File
 # End Group
 # Begin Group "Defines Sources"
@@ -244,6 +263,14 @@ SOURCE=..\..\..\src\Standard\Enum.cxx
 
 SOURCE=..\..\..\src\Standard\Flags.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\GlobalEnums.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\BPF.cxx
+# End Source File
 # End Group
 # Begin Group "Storage Sources"
 
@@ -251,15 +278,7 @@ SOURCE=..\..\..\src\Standard\Flags.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\XML\XMLStorage.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Storage\XML\BasicXMLable.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.cxx
 # End Source File
 # Begin Source File
 
@@ -267,7 +286,15 @@ SOURCE=..\..\..\src\Storage\XML\XMLAdapter.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Storage\XML\XMLStorage.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.cxx
 # End Source File
 # Begin Source File
 
@@ -338,26 +365,7 @@ SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\AddStreamRegion.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.cxx
-# End Source File
-# End Group
-# Begin Group "Networks Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Networks\Network.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Networks\FlowControl.cxx
 # End Source File
 # End Group
 # End Group
@@ -394,20 +402,6 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.cxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
-# Begin Group "Generators Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Generators\Oscillator.cxx
-# End Source File
-# End Group
-# Begin Group "ArithOps Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioAdder.cxx
-# End Source File
-# End Group
 # Begin Group "Controls Sources No. 1"
 
 # Begin Source File
@@ -423,6 +417,80 @@ SOURCE=..\..\..\src\Processing\Controls\AutoPanner.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Fundamental.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeak.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeakArray.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Frame.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Segment.cxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "Visualization Sources"
+
+# Begin Group "Base Sources No. 2"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ModelAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signal.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Connection.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Slot.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Presentation.cxx
+# End Source File
+# End Group
+# Begin Group "Util Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Util\TimeFreqMagPoint.cxx
+# End Source File
+# End Group
+# Begin Group "View Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\FundamentalAdapter.cxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "System Sources"
+
+# Begin Group "Threads Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\System\Threads\Mutex.cxx
 # End Source File
 # End Group
 # End Group
@@ -517,40 +585,50 @@ SOURCE=..\..\..\..\cppunit\include\cppunit\TestCaller.h
 # End Group
 # Begin Group "test Headers"
 
-# Begin Group "testingWithCppUnit Headers"
+# Begin Group "UnitTests Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\cppUnitHelper.hxx
+SOURCE=..\..\..\test\UnitTests\cppUnitHelper.hxx
 # End Source File
 # Begin Group "CommonHelpers Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\CommonHelpers\BaseLoggable.hxx
+SOURCE=..\..\..\test\UnitTests\CommonHelpers\BaseLoggable.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\CommonHelpers\DummyProcessingData.hxx
+SOURCE=..\..\..\test\UnitTests\CommonHelpers\XMLTestHelper.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\CommonHelpers\DummyProcessingData.hxx
 # End Source File
 # End Group
 # Begin Group "DynamicTypeTests Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\DummyDynamicTypes.hxx
+SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DummyDynamicTypes.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\DynamicTypeBasicTest.hxx
+SOURCE=..\..\..\test\UnitTests\DynamicTypeTests\DynamicTypeAdvancedTest.hxx
 # End Source File
+# End Group
+# Begin Group "FactoryTest Headers"
+
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\DynamicTypeAdvancedTest.hxx
+SOURCE=..\..\..\test\UnitTests\FactoryTest\DummyProducts.hxx
 # End Source File
+# End Group
+# Begin Group "VisualizationTests Headers"
+
 # Begin Source File
 
-SOURCE=..\..\..\test\testingWithCppUnit\DynamicTypeTests\XMLTestHelper.hxx
+SOURCE=..\..\..\test\UnitTests\VisualizationTests\FundamentalAdapterTestHelper.hxx
 # End Source File
 # End Group
 # End Group
@@ -572,6 +650,10 @@ SOURCE=..\..\..\src\Errors\ErrProcessingObj.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Errors\ErrDynamicType.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Errors\ErrSystem.hxx
 # End Source File
 # End Group
 # Begin Group "Defines Headers"
@@ -616,6 +698,13 @@ SOURCE=..\..\..\src\Defines\EDataFormat.hxx
 
 SOURCE=..\..\..\src\Defines\OSDefines.hxx
 # End Source File
+# Begin Group "Windows Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\Windows\CLAM_windows.h
+# End Source File
+# End Group
 # End Group
 # Begin Group "Standard Headers"
 
@@ -645,10 +734,6 @@ SOURCE=..\..\..\src\Standard\Point.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Array.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Standard\Enum.hxx
 # End Source File
 # Begin Source File
@@ -657,11 +742,47 @@ SOURCE=..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\CommonOps.hxx
+SOURCE=..\..\..\src\Standard\Text.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PhantomBuffer.hxx
+SOURCE=..\..\..\src\Standard\Array.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\List.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\PointTmplDef.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\PointTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\SearchArray.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\GlobalEnums.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\BPFTmplDec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\BPF.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\IndexArray.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Search.hxx
 # End Source File
 # Begin Source File
 
@@ -681,11 +802,19 @@ SOURCE=..\..\..\src\Standard\PolarTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PointTmplDef.hxx
+SOURCE=..\..\..\src\Standard\BPFTmplDef.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\PointTmpl.hxx
+SOURCE=..\..\..\src\Standard\BPFTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
 # End Source File
 # End Group
 # Begin Group "Storage Headers"
@@ -705,10 +834,6 @@ SOURCE=..\..\..\src\Storage\Base\Storage.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\XML\XMLStorage.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Storage\XML\XMLable.hxx
 # End Source File
 # Begin Source File
@@ -717,11 +842,11 @@ SOURCE=..\..\..\src\Storage\XML\BasicXMLable.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
+SOURCE=..\..\..\src\Storage\XML\XMLAdapter.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\XML\XMLAdapter.hxx
+SOURCE=..\..\..\src\Storage\XML\XMLStorage.hxx
 # End Source File
 # Begin Source File
 
@@ -730,6 +855,10 @@ SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
 # End Source File
 # Begin Source File
 
@@ -848,46 +977,7 @@ SOURCE=..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Nodes\AddStreamRegion.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\StreamRegionContainer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\AudioStreamBuffer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\StreamBuffer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\CircularStreamImpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\AudioNodeTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Nodes\NodeTmpl.hxx
-# End Source File
-# End Group
-# Begin Group "Networks Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Networks\Network.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Networks\FlowControl.hxx
 # End Source File
 # End Group
 # End Group
@@ -913,6 +1003,10 @@ SOURCE=..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
@@ -924,33 +1018,18 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
-# Begin Group "Generators Headers"
+# Begin Group "Controls Headers No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\Generators\Oscillator.hxx
+SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
 # End Source File
 # End Group
 # Begin Group "ArithOps Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\ArithOps\AudioAdder.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Processing\ArithOps\AudioMixer.hxx
-# End Source File
-# End Group
-# Begin Group "Controls Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
 # End Source File
 # End Group
 # End Group
@@ -972,6 +1051,152 @@ SOURCE=..\..\..\src\Data\Base\ProcessingData.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Fundamental.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeak.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeakArray.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Frame.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Segment.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "Visualization Headers"
+
+# Begin Group "Base Headers No. 4"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ModelAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signal.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Connection.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Slot.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Slotv2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ConnectionHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signalv2ImplSerious.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signalv2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Presentation.hxx
+# End Source File
+# End Group
+# Begin Group "Util Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Util\TimeFreqMagPoint.hxx
+# End Source File
+# End Group
+# Begin Group "View Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\View\FundamentalAdapter.hxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "externals Headers"
+
+# Begin Group "CbLib Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor0.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor1.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor3.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor4.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor0R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor1R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor2R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor3R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor4R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\CBLMacros.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\CBL.hxx
 # End Source File
 # End Group
 # End Group
@@ -1122,6 +1347,34 @@ SOURCE=..\..\..\..\xercesc\include\xercesc\framework\XMLFormatter.hpp
 # End Source File
 # End Group
 # End Group
+# End Group
+# End Group
+# Begin Group "pthreads Headers"
+
+# Begin Group "include Headers No. 2"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\pthreads\include\pthread.h
+# End Source File
+# End Group
+# End Group
+# Begin Group "System Headers"
+
+# Begin Group "Threads Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\System\Threads\xtime.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\System\Threads\Lock.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\System\Threads\Mutex.hxx
+# End Source File
 # End Group
 # End Group
 # End Group

@@ -49,12 +49,13 @@ WidgetTKWrapper& WidgetTKWrapper::GetWrapperFor( std::string toolkit )
 
 	if ( requestedTK.GetValue() == EWidgetTK::FLTK )
 	{
-			return FLTKWrapper::GetInstance();
+		return FLTKWrapper::GetInstance();
 	}
 	else
 	{
-		throw ( ErrGUI( "None of supported toolkits was chosen. Check documentation\n"
-		      "about CLAM supported toolkits\n" ) );
+		CLAM_ASSERT(false, "None of supported toolkits was chosen. Check documentation\n"
+		      "about CLAM supported toolkits\n" );
+		return *((WidgetTKWrapper*)NULL);
 	}
 
 }

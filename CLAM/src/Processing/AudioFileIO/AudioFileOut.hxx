@@ -23,7 +23,7 @@
 #define _AudioFileOut_
 
 #include "Audio.hxx"
-#include "AudioFile.hxx"
+#include "AudioFileConfig.hxx"
 #include "Processing.hxx"
 #include "InPortTmpl.hxx"
 
@@ -48,9 +48,7 @@ namespace CLAM {
 		const char *GetClassName() const {return "AudioFileOut";}
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an FFTConfig
-		 * object.  
+		 * @pre argument should be an AudioFileOutConfig
 		 */
 
 		bool ConcreteConfigure(const ProcessingConfig&);
@@ -84,10 +82,6 @@ namespace CLAM {
 
 		bool Do(const Audio& inL,const Audio& inR);
 
-		// COMPONENT Methods
-		/** @todo Not yet implemented. */
-		void StoreOn(Storage &s) {};
- 	
 	};
 };//namespace CLAM
 

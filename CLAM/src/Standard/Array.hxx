@@ -39,18 +39,9 @@
 #include "DynamicType.hxx"
 
 
-#ifdef CLAM_USE_STL_ARRAY
-#include <vector>
-using std::vector;
-#endif
-
-
-#ifdef CLAM_USE_XML
-	#include "XMLStorage.hxx"
-	#include "XMLAdapter.hxx"
-	#include "XMLArrayAdapter.hxx"
-	#include "XMLComponentAdapter.hxx"
-#endif//CLAM_USE_XML 
+#include "XMLAdapter.hxx"
+#include "XMLArrayAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
 
 namespace CLAM {
 
@@ -108,7 +99,7 @@ public:
 
 	void SetSize(TSize size)
 	{
-		CLAM_ASSERT(size <= mAllocSize,msgSetSizeOutOfRange);
+		CLAM_ASSERT(size <= mAllocSize || !OwnsMemory(), msgSetSizeOutOfRange);
 		if (OwnsMemory())
 		{
 			if (size > mSize)
@@ -264,31 +255,13 @@ public:
 			(*this)[i] = f( (*this)[i], parameter );
 	}
 
-	void StoreOn(Storage & storage)
+	void StoreOn(Storage & storage) const
 	{
-		#ifdef CLAM_USE_XML
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
-		}
-		#endif//CLAM_USE_XML
+		StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 	}
 	void LoadFrom(Storage & storage)
 	{
-		#ifdef CLAM_USE_XML 
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			while (true) {
-				T elem;
-				if (!LoadMemberFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
-				AddElem(elem);
-			}
-		}
-		#endif//CLAM_USE_XML
+		LoadBufferFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
 	}
 
 	// Error messages, to ease tests a little while we decide
@@ -310,34 +283,82 @@ private:
 	inline void InitializeCopyDataBlock(int first, int last, const T* src);
 	inline void InitializeCopyDataBlock(int first, int last, int src_first, const T* src);
 
-#ifdef CLAM_USE_XML
-	void StoreBufferOn(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage) {
+	void StoreBufferOn(StaticFalse* asLeave, const Component * polymorphicSelector, Storage & storage) const
+	{
 		if (mSize<=0) return;
 		const char* className = mpData[1].GetClassName();
 		const char* label = className? className : "Element";
-		for (int i=0; i<mSize; i++) {
+		for (int i=0; i<mSize; i++)
+		{
 			XMLComponentAdapter adapter(mpData[i], label, true);
-			storage.Store(&adapter);
+			storage.Store(adapter);
 		}
 	}
-	void StoreBufferOn(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage) {
+	void StoreBufferOn(StaticTrue* asLeave, const void * polymorphicSelector, Storage & storage) const 
+	{
+		XMLAdapter<unsigned> sizeAdapter(Size(),"size");
+		storage.Store(sizeAdapter);
 		XMLArrayAdapter<T> adapter(mpData,mSize);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
-	void StoreBufferOn(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage) {
+	void StoreBufferOn(StaticFalse* asLeave, const void * polymorphicSelector, Storage & storage) const 
+	{
+		CLAM_ASSERT(false, 
+			"Trying to Store an object that is not neither a streamable nor a Component");
+	}
+	void LoadBufferFrom(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage)
+	{
+		const char* label = 0;
+		while (true)
+		{
+			T elem;
+			if (!label)
+			{
+				label = elem.GetClassName();
+				if (!label)
+					label = "Element";
+			}
+			XMLComponentAdapter adapter(elem, label, true);
+			if (!storage.Load(adapter)) return;
+			AddElem(elem);
+		}
+	}
+	void LoadBufferFrom(StaticTrue* asLeave, void * polymorphicSelector, Storage & storage)
+	{
+		unsigned size;
+		XMLAdapter<unsigned> sizeAdapter(size,"size");
+		if (storage.Load(sizeAdapter))
+		{
+			Resize(size);
+			SetSize(size);
+			XMLArrayAdapter<T> adapter(mpData,mSize);
+			storage.Load(adapter);
+			// TODO: if false, then insert an error on the storage
+			return;
+		}
+
+		while (true) {
+			T elem;
+			XMLAdapter<T> adapter(elem);
+			if ( ! storage.Load(adapter)) return;
+			AddElem(elem);
+		}
+	}
+	void LoadBufferFrom(StaticFalse* asLeave, void * polymorphicSelector, Storage & storage)
+	{
 		CLAM_ASSERT(false, 
 			"Trying to Store an object that is not neither a streamable nor a Component");
 	}
 /*
-	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) {
+	void StoreMemberOn(StaticTrue* asLeave, void * item, Storage & storage) const {
 		XMLAdapter<T> adapter(*(T*)item);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
-	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) {
+	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) const {
 		const char* className = item->GetClassName();
 		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
-		storage.Store(&adapter);
+		storage.Store(adapter);
 	}
 	bool StoreMemberOn(StaticFalse* asLeave, void * item, Storage & storage) {
 		CLAM_ASSERT(false, "Trying to Store an object that is not neither a streamable nor a Component");
@@ -346,19 +367,18 @@ private:
 */
 	bool LoadMemberFrom(StaticTrue* asLeave, void * item, Storage & storage) {
 		XMLAdapter<T> adapter(*(T*)item);
-		return storage.Load(&adapter);
+		return storage.Load(adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, Component * item, Storage & storage) {
 		const char* className = (item->GetClassName());
 		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
-		return storage.Load(&adapter);
+		return storage.Load(adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, void * item, Storage & storage) {
 		CLAM_ASSERT(false, "Trying to Load an object that is not neither a streamable nor a Component");
 		return false;
 	}
-#endif//CLAM_USE_XML
 
 };
 
@@ -434,7 +454,7 @@ void Array<T>::InitializeCopyDataBlock(int first, int last, int src_first, const
 
 #define CLAM_NUMERIC_ARRAY_INITIALIZATION(Type)          \
 template<>                                              \
-void Array<Type>::InitializeElement(int i)              \
+inline void Array<Type>::InitializeElement(int i)              \
 {                                                       \
     mpData[i]=0;                                        \
 }                                                       \
@@ -516,7 +536,7 @@ void Array<T>::DeleteElemInDataBuffer(int position)
 
 #define CLAM_FAST_ARRAY_SPECIALIZATIONS(TYPE)                           \
 template<>                                                             \
-void Array<TYPE >::CopyDataBlock(int first, int last,                  \
+inline void Array<TYPE >::CopyDataBlock(int first, int last,                  \
                                  const TYPE *src)                      \
 {                                                                      \
     if (last>first)                                                    \
@@ -524,7 +544,7 @@ void Array<TYPE >::CopyDataBlock(int first, int last,                  \
                sizeof(TYPE)*(last-first));                             \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
+inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                                            const TYPE *src)            \
 {                                                                      \
     if (last>first)                                                    \
@@ -532,7 +552,7 @@ void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                sizeof(TYPE)*(last-first));                             \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
+inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                                            int src_first,              \
                                            const TYPE *src)            \
 {                                                                      \
@@ -541,18 +561,18 @@ void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                sizeof(TYPE)*(last-first));                             \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::ResizeDataBuffer(int new_size)                      \
+inline void Array<TYPE >::ResizeDataBuffer(int new_size)                      \
 {                                                                      \
     mpData = (TYPE*) realloc(mpData,new_size*sizeof(TYPE));            \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::InsertElemInDataBuffer(int where)                   \
+inline void Array<TYPE >::InsertElemInDataBuffer(int where)                   \
 {                                                                      \
     memmove(&mpData[where+1],&mpData[where],                           \
             (mSize-where)*sizeof(TYPE));                               \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::DeleteElemInDataBuffer(int where)                   \
+inline void Array<TYPE >::DeleteElemInDataBuffer(int where)                   \
 {                                                                      \
     memmove(&mpData[where],&mpData[where+1],                           \
             (mSize-where-1)*sizeof(TYPE));                             \
@@ -600,11 +620,14 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 #else // CLAM_USE_STL_ARRAY
 
+	#include <vector>
+
+
 	template<class T>
-	class Array : public Component, public vector<T> {
+	class Array : public Component, public std::vector<T> {
 	public:
-		typedef vector<T>::iterator iterator;
-		typedef vector<T>::const_iterator const_iterator;
+		typedef std::vector<T>::iterator iterator;
+		typedef std::vector<T>::const_iterator const_iterator;
 		Array(TSize size = 0);
 		Array(T* ptr,int size = 0);
 		inline void  Init();
@@ -635,7 +658,7 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 		inline void Apply( T (*f)(T,int),int parameter );
 
-		void StoreOn(Storage & storage);
+		void StoreOn(Storage & storage) const;
 		void LoadFrom(Storage & storage);
 
 		// Error messages, to ease tests a little while we decide
@@ -647,12 +670,10 @@ template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
 	private:
 
-#ifdef CLAM_USE_XML
-	void StoreMemberOn(void * item, Storage & storage);
-	void StoreMemberOn(Component * item, Storage & storage);
+	void StoreMemberOn(void * item, Storage & storage) const;
+	void StoreMemberOn(Component * item, Storage & storage) const;
 	bool LoadMemberFrom(void * item, Storage & storage);
 	bool LoadMemberFrom(Component * item, Storage & storage);
-#endif //CLAM_USE_XML
 
 	};
 
@@ -673,7 +694,7 @@ void Array<T>::Init()
 template<class T>
 Array<T>::Array(T* ptr,int size) 
 {
-	throw(Err("Array::Array(T*): Not implemented"));
+	CLAM_ASSERT(false,"Array::Array(T*): Not implemented");
 }
 
 template<class T>
@@ -724,14 +745,14 @@ template<class T>
 const T& Array<T>::operator [](const int& i) const
 {	
 	CLAM_DEBUG_ASSERT(i>=0 && i<(signed)Size(),msgIndexOutOfRange);
-	return vector<T>::operator[](i); 
+	return std::vector<T>::operator[](i); 
 }
 
 template<class T>
 T& Array<T>::operator [](const int& i) 
 {	
 	CLAM_DEBUG_ASSERT(i>=0 && i<(signed)size(),msgIndexOutOfRange);
-	return vector<T>::operator[](i); 
+	return std::vector<T>::operator[](i); 
 }
 
 template<class T>
@@ -749,19 +770,19 @@ T* Array<T>::GetPtr(void)
 template<class T>
 void Array<T>::SetPtr(T* ptr) 
 {
-	throw(Err("Array::SetPtr(T*): Not implemented"));
+	CLAM_ASSERT(false,"Array::SetPtr(T*): Not implemented");
 }
 
 template<class T>
 TSize Array<T>::GetStep() 
 {
-	throw(Err("Array::GetStep(): Not implemented"));
+	CLAM_ASSERT(false,"Array::GetStep(): Not implemented");
 }
 
 template<class T>
 void Array<T>::SetStep(TSize step) 
 {
-	throw(Err("Array::SetStep(int): Not implemented"));
+	CLAM_ASSERT(false,"Array::SetStep(int): Not implemented");
 }
 
 template<class T>
@@ -804,65 +825,49 @@ void Array<T>::Apply( T (*f)(T,int),int parameter )
 }
 
 template<class T>
-void Array<T>::StoreOn(Storage & storage)
+void Array<T>::StoreOn(Storage & storage) const
 {
 //	CLAM_ASSERT(mpData,"Array contains no buffer")
-	#ifdef CLAM_USE_XML
-	// This condition is not needed because storing an XML adapter
-	// onto a non XML storage has no effect but it enhances performance.
 	int mSize = Size();
 	T* mpData = GetPtr();
-	if (dynamic_cast < XMLStorage* > (&storage))
-	{
-		for (int i=0; i<mSize; i++) {
-			StoreMemberOn(&(mpData[i]), storage);
-		}
+	for (int i=0; i<mSize; i++) {
+		StoreMemberOn(&(mpData[i]), storage);
 	}
-	#endif//CLAM_USE_XML
 }
 
 template <class T>
 void Array<T>::LoadFrom(Storage & storage)
 {
 //	CLAM_ASSERT(mpData,"Array contains no buffer")
-	#ifdef CLAM_USE_XML 
-	// This condition is not needed because storing an XML adapter
-	// onto a non XML storage has no effect but it enhances performance.
-	if (dynamic_cast < XMLStorage* > (&storage))
-	{
-		while (true) {
-			T elem;
-			if (!LoadMemberFrom(&(elem), storage)) return;
-			AddElem(elem);
-		}
+	while (true) {
+		T elem;
+		if (!LoadMemberFrom(&(elem), storage)) return;
+		AddElem(elem);
 	}
-	#endif//CLAM_USE_XML
 }
 
 
-#ifdef CLAM_USE_XML
-
 template<class T>
-void Array<T>::StoreMemberOn(void * item, Storage & storage) 
+void Array<T>::StoreMemberOn(void * item, Storage & storage) const
 {
 	XMLAdapter<T> adapter(*(T*)item);
-	storage.Store(&adapter);
+	storage.Store(adapter);
 }
 
 template<class T>
-void Array<T>::StoreMemberOn(Component * item, Storage & storage) 
+void Array<T>::StoreMemberOn(Component * item, Storage & storage) const
 {
 	const char* className = item->GetClassName();
 	const char* label = className? className : "Element";
 	XMLComponentAdapter adapter(*item, label, true);
-	storage.Store(&adapter);
+	storage.Store(adapter);
 }
 
 template<class T>
 bool Array<T>::LoadMemberFrom(void * item, Storage & storage) 
 {
 	XMLAdapter<T> adapter(*(T*)item);
-	return storage.Load(&adapter);
+	return storage.Load(adapter);
 }
 
 template<class T>
@@ -871,10 +876,8 @@ bool Array<T>::LoadMemberFrom(Component * item, Storage & storage)
 	const char* className = item->GetClassName();
 	const char* label = className? className : "Element";
 	XMLComponentAdapter adapter(*item, label, true);
-	return storage.Load(&adapter);
+	return storage.Load(adapter);
 }
-
-#endif//CLAM_USE_XML
 
 
 #endif // CLAM_USE_STL_ARRAY

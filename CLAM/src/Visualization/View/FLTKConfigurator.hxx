@@ -49,6 +49,9 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/fl_file_chooser.H>
 
+
+#undef GetClassName
+
 #include "CBL.hxx"
 
 #define HorPos fl_width(name)
@@ -452,7 +455,7 @@ namespace CLAM{
 		static void LaunchFileBrowser(Fl_Widget* o, void * data)
 		{
 			Fl_Input * fileInput = (Fl_Input*) data;
-			fileInput->value(fl_file_chooser("Select filename","*",fileInput->value() ));
+			fileInput->value(fl_file_chooser("Select filename","*",fileInput->value(),1 ));
 		}
 
 		void show() {

@@ -21,6 +21,7 @@
 
 #include "Complex.hxx"
 #include "SpectrumAdder.hxx"
+#include "SpectrumConfig.hxx"
 #include "ErrProcessingObj.hxx"
 
 #include "mtgsstream.h" // An alias for <sstream>
@@ -29,15 +30,9 @@ namespace CLAM {
 
 	void SpecAdderConfig::DefaultInit()
 	{
-		if (!HasName()) {
-			AddName();
-			UpdateData();
-		}
-		if (!HasNInputs()) {
-			AddNInputs();
-			UpdateData();
-			SetNInputs(0);
-		}
+		AddNInputs();
+		UpdateData();
+		SetNInputs(0);
 	}
 
 
@@ -187,14 +182,14 @@ namespace CLAM {
 			AddPolar(inputs,out);
 			break;
 		case ShasBPF:
-			throw(ErrProcessingObj("SpectrumAdder::Do(): BPF addition not implemented",this));
+			CLAM_ASSERT(false,"SpectrumAdder::Do(): BPF addition not implemented");
 			break;
 		// Slow type configurations
 		case SOther:
 			Add(inputs,out);
 			break;
 		default:
-			throw(ErrProcessingObj("Do(...) : internal inconsistency (invalid mProtoState)",this));
+			CLAM_ASSERT(false,"Do(...) : internal inconsistency (invalid mProtoState)");
 		}
 
 		return true;
@@ -202,7 +197,7 @@ namespace CLAM {
 
 	bool SpectrumAdder::Do(void)
 	{
-		throw(ErrProcessingObj("SpectrumAdder::Do(): Not implemented"),this);
+		CLAM_ASSERT(false,"SpectrumAdder::Do(): Not implemented");
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -219,46 +214,40 @@ namespace CLAM {
 		SpectrumConfig so;
 		SpecTypeFlags *ti = new SpecTypeFlags[mNInputs];
 		SpecTypeFlags to;
-		int i;
 
-		for (i=0; i<mNInputs; i++) {
+		for (int i=0; i<mNInputs; i++) {
 			inputs[i]->GetConfig(si[i]);
 			inputs[i]->GetType(ti[i]);
 		}
 		out.GetConfig(so);
 		out.GetType(to);
 
-		// Do we have the necesary attributes?
-		for (i=0;i<mNInputs; i++)
-			if (!(ti[i].bMagPhase || ti[i].bComplex || ti[i].bPolar) )
-				throw(ErrProcessingObj("SpectrumAdders:"
-									   " Output spectrum object with no non-BPF attributes"));
-		if (!(to.bMagPhase || to.bComplex || to.bPolar) )
-			throw(ErrProcessingObj("SpectrumAdders:"
-								   " Output spectrum object with no non-BPF attributes"));
 
-		// We check that the size, the spectral range and the scale of the arrays all match.
+		// Do we have the necesary attributes?
+		CLAM_BEGIN_CHECK
+			for (int i=0;i<mNInputs; i++)
+				CLAM_ASSERT(ti[i].bMagPhase || ti[i].bComplex || ti[i].bPolar,
+					"SpectrumAdders: Output spectrum object with no non-BPF attributes");
+			CLAM_ASSERT(to.bMagPhase || to.bComplex || to.bPolar,
+				"SpectrumAdders: Output spectrum object with no non-BPF attributes");
+			// We check that the size, the spectral range and the scale of the arrays all match.
+			CLAM_ASSERT(so.GetSize(), "SpectrumAdder::SetPrototypes: Zero size spectrum output");
+		CLAM_END_CHECK
 
 		mSize=so.GetSize();
-		if (!mSize)
-			throw(ErrProcessingObj("SpectrumAdder::SetPrototypes:"
-								   " Zero size spectrum output",this));
 		TData range = so.GetSpectralRange();
 		EScale scale = so.GetScale();
-		for (i=0; i<mNInputs; i++) {
-			if (mSize != si[i].GetSize())
-				throw(ErrProcessingObj("SpectrumAdder::SetPrototypes:"
-									   "Size mismatch in spectrum sum"
-									   ,this));
-			if (range != si[i].GetSpectralRange())
-				throw(ErrProcessingObj("SpectrumAdder::SetPrototypes:"
-									   "Spectral range mismatch in spectrum sum"
-									   ,this));
-			if (scale != si[i].GetScale())
-				throw(ErrProcessingObj("SpectrumAdder::SetPrototypes:"
-									   "Scale mismatch in spectrum sum"
-									   ,this));
+
+		CLAM_BEGIN_CHECK
+		for (int i=0; i<mNInputs; i++) {
+			CLAM_ASSERT(mSize == si[i].GetSize(),
+				"SpectrumAdder::SetPrototypes: Size mismatch in spectrum sum");
+			CLAM_ASSERT(range == si[i].GetSpectralRange(),
+				"SpectrumAdder::SetPrototypes: Spectral range mismatch in spectrum sum");
+			CLAM_ASSERT(scale == si[i].GetScale(),
+				"SpectrumAdder::SetPrototypes: Scale mismatch in spectrum sum");
 		}
+		CLAM_END_CHECK
 
 		if (scale == EScale::eLinear)
 			mScaleState=Slin;
@@ -270,7 +259,7 @@ namespace CLAM {
 		// We first count how many inputs have each type of attribute
 		// instantiated.
 		int Ncomplex=0,Npolar=0,Nmagphase=0;
-		for (i=0; i<mNInputs;i++) {
+		for (int i=0; i<mNInputs;i++) {
 			if (ti[i].bMagPhase)
 				Nmagphase++;
 			if (ti[i].bComplex)
@@ -286,7 +275,7 @@ namespace CLAM {
 			Npolar++;
 
 		// Now we look for the best choice.
-		for (i=mNInputs+1; i>0; i--) {
+		for (int i=mNInputs+1; i>0; i--) {
 			if (Nmagphase == i) {
 				mProtoState=SMagPhase;
 				return true;
@@ -300,15 +289,13 @@ namespace CLAM {
 				return true;
 			}
 		}
-		throw(ErrProcessingObj("SpectrumAdder::SetPrototypes:"
-							   "Prototype inconsistency"
-							   ,this));
+		CLAM_ASSERT(false,"SpectrumAdder::SetPrototypes: Prototype inconsistency");
 	}
 
 
 	bool SpectrumAdder::SetPrototypes()
 	{
-		throw(ErrProcessingObj("SpectrumAdder::SetPrototypes(): Not implemented"),this);
+		CLAM_ASSERT(false,"SpectrumAdder::SetPrototypes(): Not implemented");
 	}
 
 	bool SpectrumAdder::UnsetPrototypes()
@@ -536,14 +523,14 @@ namespace CLAM {
 	// UNINMPLEMENTED METHODS. Some day...
 	void SpectrumAdder::AddMagPhaseLog(Spectrum **inputs, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"AddMagPhaseLog: Not implemented");
 	}
 	void SpectrumAdder::AddComplexLog(Spectrum **inputs, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"AddComplexLog: Not implemented");
 	}
 	void SpectrumAdder::AddPolarLog(Spectrum **inputs, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"AddPolarLog: Not implemented");
 	}
 }

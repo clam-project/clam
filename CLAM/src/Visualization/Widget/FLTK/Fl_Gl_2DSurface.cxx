@@ -28,6 +28,7 @@ namespace CLAMVM
 		if ( !valid() )
 			ResizeGL();
 
+		glClear( GL_COLOR_BUFFER_BIT );
 		DrawContents();
 		redraw_overlay();
 		
@@ -65,9 +66,12 @@ namespace CLAMVM
 		int width = (int)gl_width( TooltipText() );
 		int height = (int)gl_height();
 		gl_color( FL_BLACK );
+		glEnable( GL_SCISSOR_TEST );
+		glScissor( w() - width - 4, h() - height - 2, width +2 , height + 2 );
 		gl_rectf( w() - width - 4, h() - height - 2, width, height + 2 );
 		gl_color( FL_WHITE );
 		gl_draw( TooltipText(), w() - width - 2, h() - height );
+		glDisable( GL_SCISSOR_TEST );
 		WCSProject();
 	}
 
@@ -126,7 +130,7 @@ namespace CLAMVM
 		
 	bool Fl_Gl_2DSurface::IsDoubleBufferingEnabled() const
 	{
-		return bool(mode()&FL_DOUBLE);
+		return mode()&FL_DOUBLE!=0;
 	}
 
 	void Fl_Gl_2DSurface::WCSProject()

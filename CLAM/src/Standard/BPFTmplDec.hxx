@@ -49,7 +49,7 @@ namespace CLAM
 
 /**
 * Constructor from a given interpolation type. 
-* @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
+* @param Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 		BPFTmpl(const EInterpolation& eInterpolation);
 
@@ -57,8 +57,8 @@ namespace CLAM
 * Constructor from a given interpolation type and an initial size. The initial size is used
 * to allocate the member mArray. Is the one to use for efficiency whenever a maximum size of
 * the BPF is known beforehand.
-* @argument size: Allocation size for the member array of points.
-* @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
+* @param size: Allocation size for the member array of points.
+* @param Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 		BPFTmpl(TSize size);
 
@@ -67,7 +67,7 @@ namespace CLAM
 
 /**
 * Copy Constructor.
-* @argument originalBPF
+* @param originalBPF
 */
 		BPFTmpl(const BPFTmpl<TX,TY>& orig);
 
@@ -121,7 +121,7 @@ namespace CLAM
 * @param : point to insert
 * @see : CLAM::SearchArray 
 */
-		void Insert(const PointTmpl<TX,TY> &point);
+		TIndex Insert(const PointTmpl<TX,TY> &point);
 
 /**
 * Inserts a point made of an X and a Y value in the correct position. Note that 
@@ -131,7 +131,7 @@ namespace CLAM
 * @param : Y value
 * @see : Insert
 */
-		void Insert(const TX &x,const TX &y);
+		TIndex Insert(const TX &x,const TX &y);
 
 /**
 * Deletes the point found at the given index
@@ -369,7 +369,7 @@ protected:
 		TData &errorEstimate) const;
 	void CreateSplineTable();
 	TY BPFSplineInt(const TX& x) const;
-	void StoreOn(Storage & storage);
+	void StoreOn(Storage & storage) const;
 	void LoadFrom(Storage & storage);
 
 	};

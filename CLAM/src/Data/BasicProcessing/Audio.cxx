@@ -104,7 +104,7 @@ void Audio::GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, boo
 		slice.SetSampleRate( GetSampleRate() );
 		slice.GetBuffer().SetSize(size);
 	}
-	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized") 
+	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized");
 	
 }
 
@@ -131,10 +131,12 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	{
 		TIndex size=endIndex-beginIndex;
 		chunk.SetSize(size);
+		chunk.SetSampleRate( GetSampleRate() );
+		chunk.SetBeginTime( GetTimeFromIndex(beginIndex) );
 	}
 	
 		
-	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized") 
+	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized");
 	
 	/*Whenever trying to copy samples before the beginning or after end of 
 	  actual audio, zeros will be added at the beginning or end of chunk*/
@@ -172,7 +174,7 @@ void Audio::SetAudioChunk(TTime beginTime,const Audio& chunk)
 
 void Audio::SetAudioChunk(TIndex beginIndex,const Audio& chunk)
 {
-	CLAM_ASSERT(beginIndex<GetSize(),"Audio::SetAudioChunk: Incorrect begin index")
+	CLAM_ASSERT(beginIndex<GetSize(),"Audio::SetAudioChunk: Incorrect begin index");
 	TSize nBytesToCopy,offset=0;
 	TIndex endIndex=beginIndex+chunk.GetSize();
 	if(endIndex>GetSize()) endIndex=GetSize();
@@ -180,7 +182,7 @@ void Audio::SetAudioChunk(TIndex beginIndex,const Audio& chunk)
 		offset=-beginIndex;
 		beginIndex=0;}
 	
-	CLAM_ASSERT(chunk.HasBuffer()&&HasBuffer(),"Audio::SetAudioChunk: one of the buffers is not initialized") 
+	CLAM_ASSERT(chunk.HasBuffer()&&HasBuffer(),"Audio::SetAudioChunk: one of the buffers is not initialized") ;
 	nBytesToCopy=(endIndex-beginIndex)*sizeof(TData);
 	memcpy(GetBuffer().GetPtr()+beginIndex,chunk.GetBuffer().GetPtr()+offset,nBytesToCopy);
 }

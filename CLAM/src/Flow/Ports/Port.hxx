@@ -58,7 +58,7 @@ namespace CLAM {
 		/** Port name */
 		std::string mName;
 		/** Processing to which this port belongs */
-		Processing *mObject;
+		Processing *mParent;
 		/** Number of data objects used in each Do */
 		unsigned int mLength;
 		/** Number of data objects discarded in each Do */
@@ -66,7 +66,7 @@ namespace CLAM {
 	public:
 		Port(const std::string &n, Processing *o, int length, int hop = 0) : 
 			mName(n),
-			mObject(o),
+			mParent(o),
 			mLength(length),
 			mHop(hop?hop:length)
 		{};
@@ -86,12 +86,17 @@ namespace CLAM {
 		void SetParams(unsigned int length,
 		               unsigned int hop = 0)
 		{
-			CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
+			//CLAM_ASSERT( !IsAttached(), "Port::SetParams(int), SetParams must be called before Attach port" );
+
+			// PA: todo: allow attach before a SetParams. For this we need to finish the Nodes refactoring
+			// by now I comment this assert because it doesn't allows SpectralDelay to work.
+			// a cludge (which is not rapid) would be to add a new virtual IsAttachedToNode() which would
+			// be a better assert.
 			mLength = length;
 			mHop = hop?hop:length;
 		}
 		const std::string& GetName() const { return mName; }
-		const Processing * GetProcessing() const { return mObject;}
+		Processing * GetProcessing() const { return mParent;}
 	};
 
 }

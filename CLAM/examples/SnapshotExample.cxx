@@ -64,7 +64,6 @@ int main(int argc, char* argv[])
 		
 		// Processing object configuration
 		CLAM::FFTConfig fconfig;
-		fconfig.SetName(std::string("local.My_beautiful_fft"));
 		fconfig.SetAudioSize(Size);
 		
 		// Processing object creation

@@ -27,6 +27,10 @@
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
+#include "CLAM_Math.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
@@ -34,31 +38,19 @@ extern "C" {
 
 namespace CLAM {
 
-	SpecTypeFlags FFT_numrec::mComplexflags;
 
 	bool FFT_numrec::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		int oldSize = mSize;
+		FFT_base::ConcreteConfigure(c);
+		if ( !isPowerOfTwo( mSize ) )
+		{
+			mStatus = "Configure failed: Numerical Recipes FFT algorithm does not\n";
+			mStatus += "accept non power of two buffers";
 
-		CopyAsConcreteConfig(mConfig, c);
-
-		if (mConfig.HasAudioSize()) {
-			if (mConfig.GetAudioSize()<0)
-				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));
-			mSize = mConfig.GetAudioSize();
+			return false;
 		}
 
-		mState=sOther;
-		mComplexflags.bComplex=1;
-		mComplexflags.bMagPhase=0;
-
-		if (mSize>0) {
-			if (mSize != oldSize)
-				fftbuffer = new TData[mSize];
-			return true;
-		}
-		fftbuffer = 0;
-		return false;
+		return true;
 	}
 
 	FFT_numrec::FFT_numrec()
@@ -66,69 +58,15 @@ namespace CLAM {
 		Configure(FFTConfig());
 	}
 
-	FFT_numrec::FFT_numrec(const FFTConfig &c) throw(ErrDynamicType)
+	FFT_numrec::FFT_numrec(const FFTConfig &c)
 	{ 
 		Configure(c);
 	};
 
 	FFT_numrec::~FFT_numrec()
 	{
-		delete fftbuffer;
-	}
-
-	void FFT_numrec::CheckTypes(const Audio& in, const Spectrum &out) const
-	{
-		CLAM_BEGIN_CHECK
-		// Input object checking
-		if (in.GetSize()!=mSize) { 
-			std::stringstream ss;
-			ss << "FFT_numrec::Do: Wrong size in FFT Audio input\n"
-			   << "  Expected: " << mSize << ", used " << in.GetSize();
-			throw(ErrProcessingObj(ss.str().c_str(),this));
-		}
-		if (!in.HasBuffer())
-			throw ErrProcessingObj("FFT Do: Float attribute required for Audio object.",this);
-		if (out.GetSize() < mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
-			std::stringstream ss;
-			ss << "FFT_numrec::Do: not enough memory in out Spectrum.\n"
-			   << "  Expected: " << mSize/2+1 << ", used " << out.GetSize();
-			throw(ErrProcessingObj(ss.str().c_str(),this));
-		}
-		CLAM_END_CHECK
-	}
-
-
-	bool FFT_numrec::SetPrototypes(const Audio& in,const Spectrum &out)
-	{
-		CheckTypes(in,out);
-
-		SpecTypeFlags flags;
-		out.GetType(flags);
-
-		if (flags.bComplex)
-			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
-				mState=sComplexSync;
-			else
-				mState=sComplex;
-		else
-			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
-				mState=sOther;
-			else
-				throw(ErrProcessingObj("FFT_numrec: SetPrototypes(): Spectrum with no attributes!",this));
-
-		return true;
-	}
-
-	bool FFT_numrec::UnsetPrototypes()
-	{
-		mState=sOther;
-		return true;
-	}
-
-	void FFT_numrec::Attach(Audio& in, Spectrum &out)
-	{
-		mInput.Attach(in);
-		mOutput.Attach(out);
+	  if (fftbuffer)
+		delete[] fftbuffer;
 	}
 
 	bool FFT_numrec::Do()
@@ -136,7 +74,7 @@ namespace CLAM {
 		return Do(mInput.GetData(),mOutput.GetData());
 	};
 
-	bool FFT_numrec::Do(const Audio& in, Spectrum &out) const
+	bool FFT_numrec::Do(const Audio& in, Spectrum &out)
 	{
 		TData *inbuffer;
 		int i;
@@ -157,7 +95,7 @@ namespace CLAM {
  			for (i=0; i<mSize; i++)
  				fftbuffer[i]=inbuffer[i];
 			realft(fftbuffer-1, mSize, 1);
-			NumrecToComplex(out);
+			ToComplex(out);
 			break;
 		case sComplexSync:
 			inbuffer = in.GetBuffer().GetPtr();
@@ -167,7 +105,7 @@ namespace CLAM {
  			for (i=0; i<mSize; i++)
  				fftbuffer[i]=inbuffer[i];
 			realft(fftbuffer-1, mSize, 1);
-			NumrecToComplex(out);
+			ToComplex(out);
 			out.SynchronizeTo(mComplexflags);
 			break;
 		case sOther:
@@ -179,7 +117,7 @@ namespace CLAM {
  			for (i=0; i<mSize; i++)
  				fftbuffer[i]=inbuffer[i];
 			realft(fftbuffer-1, mSize, 1);
-			NumrecToOther(out);
+			ToOther(out);
 			break;
 		default:
 			throw(ErrProcessingObj("FFT_numrec: Do(): Inconsistent state",this));
@@ -189,16 +127,10 @@ namespace CLAM {
 
 	}
 
-	bool FFT_numrec::SetPrototypes()
-	{
-		// @todo Check port prototypes, and set the state (or de
-		// backup state if disabled) acordingly.
-		throw(ErrProcessingObj("FFT_numrec::SetPrototypes: Not implemented.",this));
-	}
 
-	inline void FFT_numrec::NumrecToComplex(Spectrum &out) const
+	void FFT_numrec::ToComplex(Spectrum &out)
 	{
-		int i;
+	   	int i;
 		Array<Complex>* outbuffer;
 
 		outbuffer = &out.GetComplexArray();		
@@ -216,25 +148,4 @@ namespace CLAM {
 	}
 
 
-	inline void FFT_numrec::NumrecToOther(Spectrum &out) const
-	{
-		bool hadcomplex=true;
-		SpecTypeFlags flags;
-
-		if (!out.HasComplexArray()) {
-			hadcomplex=false;
-			out.GetType(flags);
-			flags.bComplex=1;
-			out.SetType(flags);
-		}
-
-		NumrecToComplex(out);
-		out.SynchronizeTo(mComplexflags);
-
-		// @todo Can we leave the complex attribute just there?
-		if (!hadcomplex) {
-			out.RemoveComplexArray();
-			out.UpdateData();
-		}
-	}
 };//namespace CLAM

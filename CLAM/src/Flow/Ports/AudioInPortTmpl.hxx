@@ -3,7 +3,7 @@
 
 
 #include "Audio.hxx"
-#include "InPort.hxx"
+#include "InPortTmpl.hxx"
 #include "Node.hxx"
 
 namespace CLAM
@@ -18,6 +18,7 @@ class InPortTmpl<Audio> : public InPort
 	Audio mWrapper;
 public:
 	inline InPortTmpl(std::string n, Processing *o, int length, int hop = 0, bool inplace=false);
+	inline ~InPortTmpl();
 	inline Audio &GetData();
 	inline void LeaveData();
 	void Attach(ProcessingData& data);
@@ -37,10 +38,10 @@ public:
 // Template method implementations
 
 InPortTmpl<Audio>::InPortTmpl(std::string n,
-							  Processing *o,
-							  int length,
-							  int hop,
-							  bool inplace)
+			      Processing *o,
+			      int length,
+			      int hop,
+			      bool inplace)
 	: InPort(n,o,length,hop,inplace),
 	  mpRegion(0),
 	  mpNode(0),
@@ -48,6 +49,13 @@ InPortTmpl<Audio>::InPortTmpl(std::string n,
 {
 	o->PublishInPort(this);
 }
+
+InPortTmpl<Audio>::~InPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
+}
+
 
 Audio &InPortTmpl<Audio>::GetData()	
 { 
@@ -71,7 +79,9 @@ inline void InPortTmpl<Audio>::Attach(ProcessingData& data)
 	try{
 		Attach(dynamic_cast<Audio&> (data));
 	}
-	catch (std::bad_cast){
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception){
 		CLAM_ASSERT(false,"You are trying to attach a processing data that is not an Audio to an Audio port");
 	}
 }
@@ -87,7 +97,9 @@ inline void InPortTmpl<Audio>::Attach( NodeBase& node)
 	try {
 		Attach( dynamic_cast< Node<Audio>& >(node) );
 	}
-	catch (std::bad_cast) {
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception) {
 		CLAM_ASSERT(false,"You are trying to attach a node that is not suitable for this port");
 	}
 }
@@ -122,7 +134,6 @@ inline bool InPortTmpl<Audio>::IsReadyForReading()
 	
 	return mpNode->CanActivateRegion( *mpRegion );
 }
-
 
 inline void InPortTmpl<Audio>::Unattach()
 {

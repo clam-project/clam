@@ -81,7 +81,7 @@ public:
 	 * @see Storage
 	 * @todo TODO: This method can throw and IllegalValue exception
 	 */
-	virtual void StoreOn (Storage & storage);
+	virtual void StoreOn (Storage & storage) const;
 
 	/*
 	 * Loads component's subitems from the given Storage
@@ -349,7 +349,7 @@ std::istream & operator >> (std::istream & is, Flags<N> & f) {
 
 template <unsigned int N>
 std::ostream & operator << (std::ostream & os, const Flags<N> & f){
-	return (os << static_cast<FlagsBase&>(f));
+	return (os << static_cast<const FlagsBase&>(f));
 }
 #endif //_MSC_VER
 

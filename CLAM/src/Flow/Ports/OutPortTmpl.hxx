@@ -22,6 +22,7 @@ class OutPortTmpl : public OutPort
 public:
 	
 	inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
+	inline ~OutPortTmpl();
 	inline T &GetData();
 	inline void LeaveData();
 	void Attach(ProcessingData& data);
@@ -56,12 +57,21 @@ inline OutPortTmpl<T>::OutPortTmpl(const std::string &n,
 }
 
 template<class T>
+inline OutPortTmpl<T>::~OutPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
+}
+
+template<class T>
 inline void OutPortTmpl<T>::Attach(ProcessingData& data)
 {
 	try { 
 		Attach(dynamic_cast<T&>(data));
 	}
-	catch (std::bad_cast){
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception){
 		CLAM_ASSERT(false,"You are trying to attach a processing data that is not suitable for this port");
 	}
 }	
@@ -105,7 +115,9 @@ inline void OutPortTmpl<T>::Attach( NodeBase& node)
 	try {
 		Attach( dynamic_cast< Node<T>& >(node) );
 	}
-	catch (std::bad_cast) {
+	// the exception catched should be std::bad_cast instead of std::exception. 
+	// to fix when VC6 is no longer supported
+	catch (std::exception) {
 		CLAM_ASSERT(false,"You are trying to attach a node that is not suitable for this port");
 	}
 }
@@ -154,7 +166,17 @@ inline bool OutPortTmpl<T>::IsReadyForWriting()
 template<class T>
 inline void OutPortTmpl<T>::Unattach()
 {
-	mpNode = 0;
+	if( !IsAttached() )
+		return;
+
+	if(mpNode)
+	{
+		mpNode->UnattachAll();
+		delete mpRegion;
+		delete mpNode;
+		mpRegion = 0;
+		mpNode = 0;
+	}	
 	mData.SetPtr(NULL);
 }
 

@@ -37,6 +37,7 @@
 #include "Filename.hxx"
 #include "Enum.hxx"
 #include "Processing.hxx"
+#include "XMLStorage.hxx"
 
 using namespace CLAM;
 
@@ -99,19 +100,27 @@ public:
 	~DummySubConfig(){};
 };
 
+class NotSupportedType : public Component {
+	void StoreOn(Storage &) const { }
+	void LoadFrom(Storage &) { }
+	const char * GetClassName() const { return "NotSupportedType"; }
+};
+
 class DummyConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,9,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,10,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
 	DYN_ATTRIBUTE(2,public,TData,ThisIsATData);
 	DYN_ATTRIBUTE(3,public,TSize,ThisIsATSize);
 	DYN_ATTRIBUTE(4,public,EDummy, ThisIsAEDummy);
-	DYN_ATTRIBUTE(5,public,DummySubConfig, ThisIsASubConfig);
-	DYN_ATTRIBUTE(6,public,bool, ThisIsABool);
-	DYN_ATTRIBUTE(7,public,DummySubConfig, ThisIsDifferentSubConfig);
-	DYN_ATTRIBUTE(8,public,Filename, ThisIsAFilename);
+	DYN_ATTRIBUTE(5,public,NotSupportedType, ThisIsNotSupportedType);
+	DYN_ATTRIBUTE(6,public,DummySubConfig, ThisIsASubConfig);
+	DYN_ATTRIBUTE(7,public,bool, ThisIsABool);
+	DYN_ATTRIBUTE(8,public,DummySubConfig, ThisIsDifferentSubConfig);
+	DYN_ATTRIBUTE(9,public,Filename, ThisIsAFilename);
+
 private:
 
 	void DefaultInit() {
@@ -156,21 +165,18 @@ int TryFLTKConfigurator(DummyConfig & config)
 
 void TryDisplayXML(DummyConfig & config) 
 {
-	XMLStorage storage;
-	storage.Dump(config,"DummyConfig", std::cout);
+	XMLStorage::Dump(config,"DummyConfig", std::cout);
 }
 
 void TryStoreXML(DummyConfig & config, char * xmlfilename) 
 {
-	XMLStorage storage;
-	storage.Dump(config,"DummyConfig", xmlfilename);
+	XMLStorage::Dump(config,"DummyConfig", xmlfilename);
 }
 
 void TryLoadXML(DummyConfig & config, char * xmlfilename) 
 {
 	try {
-		XMLStorage storage;
-		storage.Restore(config, xmlfilename);
+		XMLStorage::Restore(config, xmlfilename);
 	} catch (...) {
 		std::cout 
 			<< "Could not read the file '" << xmlfilename <<  "'. " 

@@ -34,11 +34,7 @@ namespace CLAM {
 	class SpecAdder2Config: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpecAdder2Config, 1,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-	protected:
-		void DefaultInit();
-
+		DYNAMIC_TYPE_USING_INTERFACE (SpecAdder2Config, 0,ProcessingConfig);
 	};
 
 /** This calss performs the sum of two Spectrum processing data
@@ -124,9 +120,7 @@ namespace CLAM {
 
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdder2Config
-		 * object.
+		 * @pre argument should be an SpecAdder2Config
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
@@ -158,8 +152,6 @@ namespace CLAM {
 		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
-
-		void StoreOn(Storage &s) {};
 
 	private:
 

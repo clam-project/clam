@@ -46,7 +46,6 @@ using namespace CLAM;
 	void WindowGeneratorConfig::DefaultInit()
 	{
 		/* All Attributes are added */
-		AddName();
 		AddType();
 		AddSize();
 		AddMaxSize();
@@ -70,13 +69,15 @@ using namespace CLAM;
 	/* Processing  object Method  implementations */
 
 	WindowGenerator::WindowGenerator():
-		mSize("Size",this)
+		mSize("Size",this),
+		mOutput( "Generated window function samples", this, 1 )
 	{
 		Configure(WindowGeneratorConfig());
 	}
 
 	WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
-		mSize("Size",this)
+		mSize("Size",this),
+		mOutput( "Generated window function samples", this, 1 )
 	{
 		Configure(c);
 	}
@@ -134,8 +135,9 @@ using namespace CLAM;
 
 	bool  WindowGenerator::Do(void)
 	{
-		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
-		return false;
+		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
+		
+		return Do( mOutput.GetData() );
 	}
 
 	/* The  unsupervised Do() function */
@@ -185,11 +187,10 @@ using namespace CLAM;
 	bool  WindowGenerator::Do(Spectrum& out)
 	{
 
-		if (out.HasMagBuffer())
-			Do(out.GetMagBuffer());
-		else
-			throw(ErrProcessingObj(CLASS"::Do(): Spectral Window exists only for type MagPhase"),this);
+		CLAM_ASSERT(out.HasMagBuffer(),
+			CLASS"::Do(): Spectral Window exists only for type MagPhase");
 
+		Do(out.GetMagBuffer());
 		return true;
 	}
 
@@ -417,7 +418,7 @@ void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
 {
 	int i;
 	TData fSum=0;
-	float a0 = .51, a1 = .42, a2 = -0.04, a3 = .03, a4=0.03, a5=0.05;
+	float a0 = .51f, a1 = .42f, a2 = -0.04f, a3 = .03f, a4=0.03f, a5=0.05f;
 	for(i=0; i<size; i++)
 		fSum += window[i] = 
 			0.47 - 0.45*cos(TData(TWO_PI/(size-1.0)*i)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*2.0)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*3.0));

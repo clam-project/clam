@@ -23,11 +23,8 @@
 #define __AUDIODescriptors_H__
 
 
-#include "ProcessingData.hxx"
-#include "ProcessingDataConfig.hxx"
+#include "Descriptor.hxx"
 #include "DataTypes.hxx"
-
-
 /*
  * This class holds Descriptors computed from Audio data
  *
@@ -38,9 +35,9 @@ namespace CLAM {
 
 	class Audio;
 
-	class AudioDescriptors : public ProcessingData {
+	class AudioDescriptors : public DescriptorAbs {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 11, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 11, DescriptorAbs);
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, Variance);
 		DYN_ATTRIBUTE (2, public, TData, TemporalCentroid);
@@ -56,41 +53,166 @@ namespace CLAM {
 	public:
 
 		AudioDescriptors(Audio* pAudio);
+		AudioDescriptors(TData initVal);
 
 		const Audio* GetpAudio() const;
 		void SetpAudio(Audio* pAudio);
+		void ConcreteCompute();
 
 	private:
 		void DefaultInit();
 		void CopyInit(const AudioDescriptors & copied);
+		
+		TData ComputeZeroCrossingRate();
+		TData ComputeAttackTime();
+		TData ComputeLogAttackTime();
 
+		
 	private:
 		Audio* mpAudio;
-
+		
+		TData mComputedAttackTime;
 	};
 
 
+AudioDescriptors operator * (const AudioDescriptors& a,TData mult) ;
+AudioDescriptors operator * (TData mult, const AudioDescriptors& a) ;
+AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b) ;
+AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b) ;
+AudioDescriptors operator - (const AudioDescriptors& a,const AudioDescriptors& b) ;
+AudioDescriptors operator / (const AudioDescriptors& a,TData div);
 
-// Implementation
+template<>
+inline AudioDescriptors CLAM_min (const AudioDescriptors & a,const AudioDescriptors & b)
+{
+	AudioDescriptors tmpD(a);
 
-inline void AudioDescriptors::DefaultInit() {
-	mpAudio=0;
+	if (a.HasMean() && b.HasMean() )
+	{
+		if(b.GetMean()<a.GetMean())
+			tmpD.SetMean(b.GetMean() );
+	}
+	if (a.HasTemporalCentroid() && b.HasTemporalCentroid() )
+	{
+		if(b.GetTemporalCentroid()<a.GetTemporalCentroid())
+			tmpD.SetTemporalCentroid(b.GetTemporalCentroid() );
+	}
+	if (a.HasEnergy() && b.HasEnergy() )
+	{
+		if(b.GetEnergy()<a.GetEnergy())
+			tmpD.SetEnergy(b.GetEnergy() );
+	}
+	if(a.HasVariance() && b.HasVariance() )
+	{
+		if(b.GetVariance()<a.GetVariance())
+			tmpD.SetVariance(b.GetVariance() );
+	}
+	if(a.HasZeroCrossingRate() && b.HasZeroCrossingRate() )
+	{
+		if(b.GetZeroCrossingRate()<a.GetZeroCrossingRate())
+			tmpD.SetZeroCrossingRate(b.GetZeroCrossingRate() );
+	}
+	if(a.HasRiseTime() && b.HasRiseTime() )
+	{
+		if(b.GetRiseTime()<a.GetRiseTime())
+			tmpD.SetRiseTime(b.GetRiseTime() );
+	}
+	if(a.HasLogAttackTime() && b.HasLogAttackTime() )
+	{
+		if(b.GetLogAttackTime()<a.GetLogAttackTime())
+			tmpD.SetLogAttackTime(b.GetLogAttackTime() );
+	}
+	if(a.HasAttack() && b.HasAttack() )
+	{
+		if(b.GetAttack()<a.GetAttack())
+			tmpD.SetAttack(b.GetAttack() );
+	}
+	if(a.HasDecay() && b.HasDecay() )
+	{
+		if(b.GetDecay()<a.GetDecay())
+			tmpD.SetDecay(b.GetDecay() );
+	}
+	if(a.HasSustain() && b.HasSustain() )
+	{
+		if(b.GetSustain()<a.GetSustain())
+			tmpD.SetSustain(b.GetSustain() );
+	}
+	if(a.HasRelease() && b.HasRelease() )
+	{
+		if(b.GetRelease()<a.GetRelease())
+			tmpD.SetRelease(b.GetRelease() );
+	}
+	return tmpD;
+
+
 }
 
-inline void AudioDescriptors::CopyInit(const AudioDescriptors & copied) {
-	mpAudio=copied.mpAudio;
+template<>
+inline AudioDescriptors CLAM_max (const AudioDescriptors & a,const AudioDescriptors & b)
+{
+	AudioDescriptors tmpD(a);
+
+	if (a.HasMean() && b.HasMean() )
+	{
+		if(b.GetMean()>a.GetMean())
+			tmpD.SetMean(b.GetMean() );
+	}
+	if (a.HasTemporalCentroid() && b.HasTemporalCentroid() )
+	{
+		if(b.GetTemporalCentroid()>a.GetTemporalCentroid())
+			tmpD.SetTemporalCentroid(b.GetTemporalCentroid() );
+	}
+	if (a.HasEnergy() && b.HasEnergy() )
+	{
+		if(b.GetEnergy()>a.GetEnergy())
+			tmpD.SetEnergy(b.GetEnergy() );
+	}
+	if(a.HasVariance() && b.HasVariance() )
+	{
+		if(b.GetVariance()>a.GetVariance())
+			tmpD.SetVariance(b.GetVariance() );
+	}
+	if(a.HasZeroCrossingRate() && b.HasZeroCrossingRate() )
+	{
+		if(b.GetZeroCrossingRate()>a.GetZeroCrossingRate())
+			tmpD.SetZeroCrossingRate(b.GetZeroCrossingRate() );
+	}
+	if(a.HasRiseTime() && b.HasRiseTime() )
+	{
+		if(b.GetRiseTime()>a.GetRiseTime())
+			tmpD.SetRiseTime(b.GetRiseTime() );
+	}
+	if(a.HasLogAttackTime() && b.HasLogAttackTime() )
+	{
+		if(b.GetLogAttackTime()>a.GetLogAttackTime())
+			tmpD.SetLogAttackTime(b.GetLogAttackTime() );
+	}
+	if(a.HasAttack() && b.HasAttack() )
+	{
+		if(b.GetAttack()>a.GetAttack())
+			tmpD.SetAttack(b.GetAttack() );
+	}
+	if(a.HasDecay() && b.HasDecay() )
+	{
+		if(b.GetDecay()>a.GetDecay())
+			tmpD.SetDecay(b.GetDecay() );
+	}
+	if(a.HasSustain() && b.HasSustain() )
+	{
+		if(b.GetSustain()>a.GetSustain())
+			tmpD.SetSustain(b.GetSustain() );
+	}
+	if(a.HasRelease() && b.HasRelease() )
+	{
+		if(b.GetRelease()>a.GetRelease())
+			tmpD.SetRelease(b.GetRelease() );
+	}
+	return tmpD;
+
 }
 
-inline const Audio* AudioDescriptors::GetpAudio() const {
-	return mpAudio;
-}
 
-inline void AudioDescriptors::SetpAudio(Audio* pAudio) {
-	mpAudio=pAudio;
-}
-
-
-}
+};
 
 
 #endif /* __AUDIODescriptors_H__ */

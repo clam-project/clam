@@ -24,19 +24,89 @@
 
 #include "ProcessingData.hxx"
 #include "SegmentDescriptors.hxx"
-
+#include "Segment.hxx"
 
 using namespace CLAM;
 
 
 
-SegmentDescriptors::SegmentDescriptors(Segment* pSegment): ProcessingData(eNumAttr)
+SegmentDescriptors::SegmentDescriptors(Segment* pSegment): Descriptor(eNumAttr)
 {
 	MandatoryInit();
 	mpSegment=pSegment;
 }
 
+void SegmentDescriptors::DefaultInit() {
+	mpSegment=0;
+	mpStats=0;
+	AddFramesD();
+	UpdateData();
+}
 
+void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
+	mpSegment=copied.mpSegment;
+	mpStats=0;
+}
 
+const Segment* SegmentDescriptors::GetpSegment() const {
+	return mpSegment;
+}
 
+void SegmentDescriptors::SetpSegment(Segment* pSegment) {
+	mpSegment=pSegment;
+	if(mpSegment->HasAudio())
+		AddAudioD();
+	UpdateData();
+	if(mpSegment->HasAudio())
+		GetAudioD().SetpAudio(&mpSegment->GetAudio());
+	int nFrames=mpSegment->GetnFrames();
+	int i;
+	for (i=0;i<nFrames;i++){
+		GetFramesD()[i].SetpFrame(&(mpSegment->GetFrame(i)));}
+}
+
+void SegmentDescriptors::SetFramePrototype(const FrameDescriptors& proto, int nFrames)
+{
+	int i;
+	FrameDescriptors tmpFrD;
+	for (i=0;i<nFrames;i++){
+		GetFramesD().AddElem(tmpFrD);
+		GetFramesD()[i].SetPrototype(proto);}
+	mSegmentStats= new StatsTmpl<false,FrameDescriptors,FrameDescriptors>(&GetFramesD());
+	if(HasMeanD())
+		GetMeanD().SetPrototype(proto);
+	if(HasMaxD())
+		GetMaxD().SetPrototype(proto);
+	if(HasMinD())
+		GetMinD().SetPrototype(proto);
+	if(HasVarianceD())
+		GetVarianceD().SetPrototype(proto);
+
+}
+
+void SegmentDescriptors::Compute()
+{
+	/*Overriding compute method in base class because right now I don't know
+	what to do with member statistics. The best thing would be passing the list of
+	FrameDescriptors as processing data but then Descriptors would have to be 
+	template and I am not sure that statistics would work, I would need to add
+	some operators like + on FrameDescriptors.*/
+	ConcreteCompute();
+}
+
+void SegmentDescriptors::ConcreteCompute()
+{
+	int nFrames=mpSegment->GetnFrames();
+	int i;
+	for (i=0;i<nFrames;i++)
+		GetFramesD()[i].Compute();
+	if(HasMeanD())
+		SetMeanD(mSegmentStats->GetMean());
+	if(HasMaxD())
+		SetMaxD(mSegmentStats->GetMax());
+	if(HasMinD())
+		SetMinD(mSegmentStats->GetMin());
+	if(HasVarianceD())
+		SetVarianceD(mSegmentStats->GetVariance());
+}
 

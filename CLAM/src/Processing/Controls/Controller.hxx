@@ -47,11 +47,10 @@ namespace CLAM {
 class ControllerConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (ControllerConfig, 4, ProcessingConfig);
-	DYN_ATTRIBUTE          (0, public, std::string, Name);
-	DYN_ATTRIBUTE          (1, public, unsigned, NumControls);
-	DYN_CONTAINER_ATTRIBUTE (2, public, std::vector<TControlData>, MinValues, foo);
-	DYN_CONTAINER_ATTRIBUTE (3, public, std::vector<TControlData>, MaxValues, foo);
+	DYNAMIC_TYPE_USING_INTERFACE (ControllerConfig, 3, ProcessingConfig);
+	DYN_ATTRIBUTE          (0, public, unsigned, NumControls);
+	DYN_CONTAINER_ATTRIBUTE (1, public, std::vector<TControlData>, MinValues, foo);
+	DYN_CONTAINER_ATTRIBUTE (2, public, std::vector<TControlData>, MaxValues, foo);
 protected:
 	/** 
 	* Dynamic type initialization: all attributes are instantiated.
@@ -106,15 +105,13 @@ public:
 	}
 	
 	const ProcessingConfig&  GetConfig() const;
-	virtual bool ConcreteConfigure(const ProcessingConfig&); //throw(std::bad_cast);
+	virtual bool ConcreteConfigure(const ProcessingConfig&);
 	
 	
 
 	/** Interface for the users of the class. As: a sliders view class, a midi class... */
 	void EnqueueControl(unsigned id, TControlData data);
 	TControlData LastDequeuedValue(unsigned id);
-
-	void StoreOn( Storage& s) {}
 
 	OutControlArray OutControls;
 	std::vector<TControlData> OutValues;

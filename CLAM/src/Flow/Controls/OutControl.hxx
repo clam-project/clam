@@ -25,12 +25,17 @@
 #include "InControl.hxx" // TControlData defined there.
 #include <list>
 #include <string>
+#include <Array.hxx>
+
 
 namespace CLAM {
 
+class InPort;
+class Processing;
+
 //free method to link two Processing
-	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
-				  Processing* inProc, std::string inControl);
+//	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
+//				  Processing* inProc, std::string inControl);
 
 class OutControl
 {
@@ -38,6 +43,7 @@ class OutControl
 private:
 	std::list<InControl*> mLinks;
 	std::string mName;
+	Processing * mParent;
 //Constructor/Destructor
 public:
 	~OutControl();
@@ -55,13 +61,16 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	* \todo improve construction mechanism (params set)
 	*/
-	OutControl( std::string name, Processing* parent=0, const bool publish=true );
+	OutControl( std::string name, Processing* parent=0, const bool publish=true );	
 	
 	
 //Methods
 public:
 	void AddLink(InControl* in);
 	void RemoveLink(InControl* in);
+
+	std::list<InControl*>::iterator BeginInControlsConnected();
+	std::list<InControl*>::iterator EndInControlsConnected();
 
 	int SendControl(TControlData val);
 	/**
@@ -73,6 +82,9 @@ public:
 	}
 
 	const std::string& GetName(void) const { return mName; }
+	bool IsConnected();
+	bool IsConnectedTo( InControl & );
+	Processing * GetProcessing() const { return mParent;}
 };
 
 
@@ -113,8 +125,8 @@ void OutControlArray::Configure(int size,
 	mArray.Resize(size);
 	mArray.SetSize(size);
 	for (int i=0; i<size; i++) {
-		std::stringstream str(name);
-		str << "_" << i;
+		std::stringstream str("");
+		str << name << "_" << i;
 		mArray[i] = new OutControl(str.str(),wtp);
 	}
 }

@@ -115,10 +115,10 @@ namespace CLAM {
 			mpSoundFileIO->Create(
 				mConfig.GetFilename().c_str(),SoundFileIO::eWrite,header);
 		}
-		catch (ErrSoundFileIO err)
+		catch (ErrSoundFileIO& err)
 		{
 			mStatus += "Error opening file: ";
-			mStatus += err.mStr;
+			mStatus += err.what();
 			mStatus += "\n";
 			return false;
 		}
@@ -164,8 +164,8 @@ namespace CLAM {
 				n -= m;
 			}
 		}
-		catch (ErrSoundFileIO orig) {
-			throw ErrProcessingObj(orig.mStr,this);
+		catch (ErrSoundFileIO& orig) {
+			throw ErrProcessingObj(orig.what(),this);
 		}
 				
 		return true;		
@@ -175,18 +175,15 @@ namespace CLAM {
 	{
 		short tmp[256];
 
-		if ( GetExecState() == Unconfigured ||
-			 GetExecState() == Ready )
-			throw(ErrProcessingObj("AudioFileOut: Do(): Not in execution mode",this));
+		CLAM_ASSERT(GetExecState() == Running, 
+			"AudioFileOut: Do(): Not in execution mode");
 
-		if (mpSoundFileIO->Header().mChannels!=2)
-			throw(ErrProcessingObj("AudioFileOut: Do(): Not a stereo file",this));
+		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==2,
+			"AudioFileOut: Do(): Not a stereo file");
 
 		int n = inL.GetBuffer().Size();
-		if (n != inR.GetBuffer().Size())
-		{
-			throw(ErrProcessingObj("AudioFileOut: Do(): Audio L/R needs same size",this));
-		}
+		CLAM_ASSERT(n == inR.GetBuffer().Size(),
+			"AudioFileOut: Do(): Audio L/R needs same size");
 
 		int pos=0;
 		DataArray &arrayL = inL.GetBuffer();
@@ -221,8 +218,8 @@ namespace CLAM {
 				n -= m/2;
 			}
 		}
-		catch (ErrSoundFileIO orig) {
-			throw ErrProcessingObj(orig.mStr,this);
+		catch (ErrSoundFileIO& orig) {
+			throw ErrProcessingObj(orig.what(),this);
 		}
 				
 		return true;		

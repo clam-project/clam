@@ -36,19 +36,7 @@ namespace CLAM {
 	class FDCombFilterConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (FDCombFilterConfig, 1,ProcessingConfig);
-		/** Name of the FDCombFilter object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		
-		
-	protected:
-		void DefaultInit();
-	public:
-	  /** Initialize configuration object with default values (name 'FDCombFilter', 513 bands, Magnitude treshold set to -80 and MaxSpectralPeaks setted to 100
-	   */
-		void DefaultValues();
-		~FDCombFilterConfig(){};
-		
+		DYNAMIC_TYPE_USING_INTERFACE (FDCombFilterConfig, 0,ProcessingConfig);
  	}; 
 
 	/**
@@ -67,7 +55,7 @@ namespace CLAM {
 
 		/** Config change method
 		 *  @param The ProcessingConfig object
-		 *  @throw bad_cast exception when the argument is not an FDCombFilterConfig object.
+		 *  @pre argument should be a FDCombFilterConfig.
 		 *  @return True if the cast has been commited correctly		 
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
@@ -110,9 +98,6 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		/** Not implemented yet*/
-		void StoreOn(Storage &s) {};
-	
 		InControlTmpl<FDCombFilter> mFreq;
 
 	

@@ -1,49 +1,61 @@
 #include "PublishedOutControls.hxx"
-#include "Processing.hxx"
 #include "OutControl.hxx"
-#include <string>
 
 namespace CLAM
 {
 
-PublishedOutControls::PublishedOutControls(Processing* parent) :
-		mParent(*parent)
-{}
-
 OutControl& PublishedOutControls::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Control must be >=0");
-	return *mParent.GetOutControl(index);
+	CLAM_ASSERT(index<Size(), "index for Control must be < than Size");
+	
+	return *mOutControls.at(index);
 }
 
-OutControl& PublishedOutControls::Get(std::string name) const
+OutControl& PublishedOutControls::Get(const std::string & name) const
 {
-	Processing::OutControlIterator it;
-	for (it=mParent.FirstOutControl(); it!=mParent.LastOutControl(); it++)
+	ConstIterator it;
+	for (it=mOutControls.begin(); it!=mOutControls.end(); it++)
 	{
 		std::string actualName( (*it)->GetName() );
 		if (name == (*it)->GetName()) return *(*it);
 	}
-	CLAM_ASSERT(false, "name not found in OutControls collection");
+	
+	std::string error( "name not found in OutControls collection: " );
+	error += name;
+	CLAM_ASSERT( false, error.c_str() );
+
+	return *(OutControl*)NULL; // Just to get rid of warnings
 }
 
 int PublishedOutControls::Size() const
 {
-	Processing::OutControlIterator it;
-	int count=0;
-	for (it=mParent.FirstOutControl(); it!=mParent.LastOutControl(); it++)
-		++count;
-	return count;
+	return mOutControls.size();
 }
 
 PublishedOutControls::Iterator  PublishedOutControls::Begin()
 {
-	return mParent.FirstOutControl();
+	return mOutControls.begin();
 }
 
 PublishedOutControls::Iterator PublishedOutControls::End()
 {
-	return mParent.LastOutControl();
+	return mOutControls.end();
+}
+
+PublishedOutControls::ConstIterator  PublishedOutControls::Begin() const
+{
+	return mOutControls.begin();
+}
+
+PublishedOutControls::ConstIterator PublishedOutControls::End() const
+{
+	return mOutControls.end();
+}
+
+void PublishedOutControls::Publish( OutControl * out )
+{
+	mOutControls.push_back( out );
 }
 
 } // namespace CLAM

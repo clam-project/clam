@@ -25,6 +25,7 @@
 #include "Array.hxx"
 #include "DataTypes.hxx"
 #include "Err.hxx"
+#include <iostream>
 
 namespace CLAM
 {
@@ -45,7 +46,7 @@ namespace CLAM
 	 */
 	template <class T> class CircularBuffer
 	{
-	public: // XXX: no encapsulation! danger danger!
+	protected: 
 		Array<T> mBuffer;
 		TSize mLogicalSize;
 		TSize mReadSize;
@@ -101,6 +102,18 @@ namespace CLAM
 			return mBuffer.Size()-GetReadSize();
 		}
 
+		TSize GetCapacity() const
+		{
+			return mBuffer.Size();
+		}
+
+		void Reserve( TSize elems ) 
+		{
+			mBuffer.Resize(elems);
+			mBuffer.SetSize(elems);
+			InitPointers();
+		}
+
 		/**
 		 * Resizes the buffer to a new capacity (or buffer size). 
 		 * This capacity (or buffer size) can be arbitrary (not power-of-two, 
@@ -149,13 +162,33 @@ namespace CLAM
 		 */
 		void SetInitialReadOffset(TSize size)
 		{
-			CLAM_ASSERT((mInitialReadOffset >= 0)&&(mInitialReadOffset < GetBufferSize()-1),
+			CLAM_ASSERT((size >= 0)&&(size < GetBufferSize()-1),
 				"CircularBuffer:SetInitialReadOffset: InitialReadOffset has to be larger than zero");
-			mInitialReadOffsetSize = size;
+			mInitialReadOffset = size;
 		}
 
+		/**
+		 * Returns the initial write offset. That is, the 
+		 * index at which the buffer starts writeing after it 
+		 * has been initialized.
+		 */
+		TSize GetInitialWriteOffset() const
+		{
+			return mInitialWriteOffset;
+		}
 
-		// XXX: no get/set initial write offset?
+		/**
+		 * Sets the initial write offset. That is, the
+		 * index at which the buffer starts writeing after it 
+		 * has been initialized. Init() or InitPointers() should be 
+		 * called after this method.
+		 */
+		void SetInitialWriteOffset(TSize size)
+		{
+			CLAM_ASSERT((size >= 0)&&(size < GetBufferSize()-1),
+				"CircularBuffer:SetInitialWriteOffset: InitialWriteOffset has to be larger than zero");
+			mInitialWriteOffset = size;
+		}
 
 		// Methods for data acces: ------------------------------------------------------
 	
@@ -219,7 +252,11 @@ namespace CLAM
 				memcpy(mBuffer.GetPtr()+GetBufferSize(),mBuffer.GetPtr(),mReadSize*sizeof(T));
 			}
 			buffer.SetPtr(mBuffer.GetPtr()+mReadIndex,mReadSize);
+			//std::cout << "before: (r) " << mReadIndex << " (w) " << mWriteIndex;
+			//std::cout.flush();
 			IncreaseReadIndex(mReadSize);
+			//std::cout << "after: (r) " << mReadIndex << " (w) " << mWriteIndex;
+			//std::cout.flush();
 
 
 		}
@@ -285,11 +322,18 @@ namespace CLAM
 		 */
 		void Write(const T* buffer)
 		{
+			CLAM_ASSERT( mWriteIndex >= 0 && mWriteIndex < mBuffer.Size(),
+				     "The Write index went out of the buffer!" );
+
+
 			TSize limit;
-			if((limit=mWriteIndex+mWriteSize)>GetBufferSize())
+			if((limit=mWriteIndex+mWriteSize)> GetBufferSize() )
 			{
 				TSize secondHalf=limit%GetBufferSize();
-				TSize firstHalf=mWriteSize-secondHalf;
+
+				TSize firstHalf= GetBufferSize() - (mWriteIndex%GetBufferSize()); //mWriteSize-secondHalf;
+
+
 				memcpy(mBuffer.GetPtr()+mWriteIndex,buffer,firstHalf*sizeof(T));
 				memcpy(mBuffer.GetPtr(),buffer+firstHalf,secondHalf*sizeof(T));
 			}
@@ -354,6 +398,14 @@ namespace CLAM
 			mReadIndex += step;
 			mReadIndex=mReadIndex%GetBufferSize();
 			mLogicalSize-=step;
+
+			int a = 0;
+
+			if ( mLogicalSize < 0 )
+			{
+				a++;
+			}
+
 			CLAM_ASSERT(mLogicalSize>=0,"Error:Read Index surpassed Write Index");
 		}
 
@@ -368,6 +420,7 @@ namespace CLAM
 			mWriteIndex =mWriteIndex%GetBufferSize();
 			mLogicalSize+=step;
 			CLAM_ASSERT(mLogicalSize<=GetBufferSize(),"Error:Write Index surpassed Read Index");
+
 		}
 
 		/**
@@ -393,9 +446,12 @@ namespace CLAM
 			// XXX: might want to assert that step > 0
 			mWriteIndex -= step;
 			mWriteIndex =mWriteIndex%GetBufferSize();
-			if(mWriteIndex<0) mWriteIndex =GetBufferSize()+mWriteIndex ;
+			if(mWriteIndex<0) mWriteIndex = GetBufferSize()+mWriteIndex ;
 			mLogicalSize-=step;
 			CLAM_ASSERT(mLogicalSize>=0,"Error:Read Index surpassed Write Index");
+			CLAM_ASSERT( mWriteIndex >= 0 && mWriteIndex < mBuffer.Size(),
+				     "The Write index went out of the buffer!" );
+
 		}
 
 		/**
@@ -442,6 +498,14 @@ namespace CLAM
 			TSize previousBufferSize=GetBufferSize();
 			mReadSize = size;
 			SetBufferSize(previousBufferSize);
+		}
+
+		void SetReadSizeWithoutAllocation( TSize size )
+		{
+			CLAM_ASSERT( size >= 0 && size <= GetBufferSize(),
+				     "CircularBuffer: SetReadSizeWithoutAllocation: Read size must be positive and lesser than "
+				     "current buffer size");
+			mReadSize = size;
 		}
 
 		/**

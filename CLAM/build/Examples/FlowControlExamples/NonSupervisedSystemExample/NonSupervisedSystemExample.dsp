@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Tools\AudioFileIO" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 dsound.lib dxerr8.lib user32.lib gdi32.lib portmidi.lib porttime.lib winmm.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\..\dxsdk\lib"
+# ADD LINK32 /libpath:"..\..\..\..\..\dxsdk\lib" dsound.lib dxerr8.lib user32.lib gdi32.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "NonSupervisedSystemExample - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Tools\AudioFileIO" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /FD /GZ /Zm1000 /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 dsound.lib dxerr8.lib user32.lib gdi32.lib portmidid.lib porttimed.lib winmm.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\..\portmidi\lib" /libpath:"..\..\..\..\..\dxsdk\lib"
+# ADD LINK32 /libpath:"..\..\..\..\..\dxsdk\lib" dsound.lib dxerr8.lib user32.lib gdi32.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -90,71 +90,40 @@ LINK32=link.exe
 # End Group
 # Begin Group "Source Files"
 
-# PROP Default_Filter ""
 # Begin Group "examples Sources"
 
-# PROP Default_Filter ""
 # Begin Group "FlowControlExamples Sources"
 
-# PROP Default_Filter ""
 # Begin Group "NonSupervisedSystem Sources"
 
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\FlowControlExamples\NonSupervisedSystem\main.cxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\FlowControlExamples\NonSupervisedSystem\NonSupervisedSystem.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\FlowControlExamples\NonSupervisedSystem\main.cxx
 # End Source File
 # End Group
 # End Group
 # End Group
 # Begin Group "Tools Sources"
 
-# PROP Default_Filter ""
-# Begin Group "AudioFileIO Sources"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\extended.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
-# End Source File
-# End Group
 # Begin Group "AudioIO Sources"
 
-# PROP Default_Filter ""
 # Begin Group "Windows Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.cxx
+SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAAudioDevice.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAAudioDevice.cxx
+SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.cxx
 # End Source File
 # Begin Source File
 
@@ -167,28 +136,46 @@ SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.cxx
 # End Group
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Tools\AudioIO\AudioManager.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDevice.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDeviceList.cxx
 # End Source File
+# End Group
+# Begin Group "AudioFileIO Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\AudioManager.cxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\extended.cxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Errors Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\Err.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
 # End Source File
 # Begin Source File
 
@@ -198,10 +185,13 @@ SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.cxx
 
 SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
+# End Source File
 # End Group
 # Begin Group "Defines Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\Assert.cxx
@@ -209,7 +199,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.cxx
 # End Group
 # Begin Group "Base Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Base\DynamicType.cxx
@@ -217,10 +206,8 @@ SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Group
 # Begin Group "Flow Sources"
 
-# PROP Default_Filter ""
 # Begin Group "Controls Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Controls\InControl.cxx
@@ -232,22 +219,24 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
 # End Group
 # Begin Group "Ports Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
-# End Group
-# Begin Group "Nodes Sources"
-
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# End Group
+# Begin Group "Nodes Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.cxx
 # End Source File
 # Begin Source File
 
@@ -259,20 +248,42 @@ SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Processing Sources"
 
-# PROP Default_Filter ""
 # Begin Group "Base Sources No. 1"
 
-# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Base\Processing.cxx
@@ -283,28 +294,11 @@ SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
 # Begin Group "Generators Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.cxx
@@ -312,23 +306,21 @@ SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.cxx
 # End Group
 # Begin Group "AudioFileIO Sources No. 1"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
 # End Source File
 # End Group
 # Begin Group "ArithOps Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioAdder.cxx
@@ -340,55 +332,41 @@ SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
 # End Group
 # Begin Group "AudioIO Sources No. 1"
 
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIn.cxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\AudioIO\AudioOut.cxx
 # End Source File
-# End Group
-# End Group
-# Begin Group "Standard Sources"
-
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Enum.cxx
+SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIn.cxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.cxx
-# End Source File
+# End Group
 # End Group
 # Begin Group "Data Sources"
 
-# PROP Default_Filter ""
 # Begin Group "BasicProcessing Sources"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.cxx
 # End Source File
 # End Group
 # End Group
+# Begin Group "Standard Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Enum.cxx
+# End Source File
+# End Group
 # End Group
 # Begin Group "Header Files"
 
-# PROP Default_Filter ""
 # Begin Group "Errors Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\Err.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
@@ -400,47 +378,18 @@ SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Errors\ErrSoundFileIO.hxx
 # End Source File
 # End Group
 # Begin Group "Defines Headers"
 
-# PROP Default_Filter ""
-# Begin Group "Windows Headers"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\Windows\CLAM_windows.h
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\Assert.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
 # End Source File
 # Begin Source File
 
@@ -454,10 +403,44 @@ SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
 
 SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
+# End Source File
+# Begin Group "Windows Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\Windows\CLAM_windows.h
+# End Source File
+# End Group
 # End Group
 # Begin Group "Base Headers"
 
-# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Base\Component.hxx
@@ -466,17 +449,11 @@ SOURCE=..\..\..\..\src\Base\Component.hxx
 
 SOURCE=..\..\..\..\src\Base\DynamicType.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
 # End Group
 # Begin Group "Storage Headers"
 
-# PROP Default_Filter ""
 # Begin Group "Base Headers No. 1"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
@@ -489,10 +466,8 @@ SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
 # End Group
 # Begin Group "Flow Headers"
 
-# PROP Default_Filter ""
 # Begin Group "Controls Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Controls\ControlLinker.hxx
@@ -508,22 +483,9 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.hxx
 # End Group
 # Begin Group "Ports Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\InPort.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\InPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\Port.hxx
 # End Source File
 # Begin Source File
 
@@ -531,27 +493,30 @@ SOURCE=..\..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\InPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\Port.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\InPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\Node.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.hxx
 # End Source File
 # Begin Source File
 
@@ -563,24 +528,27 @@ SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Standard Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Array.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\CommonOps.hxx
 # End Source File
 # Begin Source File
 
@@ -588,15 +556,29 @@ SOURCE=..\..\..\..\src\Standard\Enum.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Flags.hxx
+SOURCE=..\..\..\..\src\Standard\CommonOps.hxx
 # End Source File
 # End Group
 # Begin Group "Processing Headers"
 
-# PROP Default_Filter ""
 # Begin Group "Base Headers No. 2"
 
-# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Base\Processing.hxx
@@ -607,28 +589,11 @@ SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
 # Begin Group "Generators Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.hxx
@@ -636,23 +601,25 @@ SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.hxx
 # End Group
 # Begin Group "AudioFileIO Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFile.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
+SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
 # End Source File
 # End Group
 # Begin Group "ArithOps Headers"
 
-# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioAdder.hxx
@@ -661,18 +628,9 @@ SOURCE=..\..\..\..\src\Processing\ArithOps\AudioAdder.hxx
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
-# End Source File
 # End Group
 # Begin Group "AudioIO Headers"
 
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIn.hxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIO.hxx
@@ -681,26 +639,27 @@ SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIO.hxx
 
 SOURCE=..\..\..\..\src\Processing\AudioIO\AudioOut.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\AudioIO\AudioIn.hxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "Data Headers"
 
-# PROP Default_Filter ""
 # Begin Group "Base Headers No. 3"
 
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\Base\ProcessingDataConfig.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
+# End Source File
 # End Group
 # Begin Group "BasicProcessing Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
@@ -709,13 +668,18 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
 # End Group
 # Begin Group "Tools Headers"
 
-# PROP Default_Filter ""
 # Begin Group "AudioIO Headers No. 1"
 
-# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioIO\AudioManager.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDevice.hxx
+# End Source File
 # Begin Group "Windows Headers No. 1"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.hxx
@@ -731,27 +695,14 @@ SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.hxx
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDevice.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDeviceList.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioIO\AudioManager.hxx
 # End Source File
 # End Group
 # Begin Group "AudioFileIO Headers No. 1"
 
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\extended.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
 # End Source File
 # Begin Source File
 
@@ -759,23 +710,24 @@ SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundFileIO.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\AIFFFileIO.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Tools\AudioFileIO\WaveFileIO.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioFileIO\extended.hxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "examples Headers"
 
-# PROP Default_Filter ""
 # Begin Group "FlowControlExamples Headers"
 
-# PROP Default_Filter ""
 # Begin Group "NonSupervisedSystem Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\FlowControlExamples\NonSupervisedSystem\NonSupervisedSystem.hxx
@@ -785,17 +737,11 @@ SOURCE=..\..\..\..\examples\FlowControlExamples\NonSupervisedSystem\NonSupervise
 # End Group
 # Begin Group "dxsdk Headers"
 
-# PROP Default_Filter ""
 # Begin Group "include Headers"
 
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\..\dxsdk\include\basetsd.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\dxsdk\include\dinput.h
+SOURCE=..\..\..\..\..\dxsdk\include\dxerr8.h
 # End Source File
 # Begin Source File
 
@@ -803,7 +749,11 @@ SOURCE=..\..\..\..\..\dxsdk\include\dsound.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\dxsdk\include\dxerr8.h
+SOURCE=..\..\..\..\..\dxsdk\include\dinput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\dxsdk\include\basetsd.h
 # End Source File
 # End Group
 # End Group
@@ -817,7 +767,7 @@ SOURCE=settings.cfg
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"buildstamp" : $(SOURCE) "$(INTDIR)" "NonSupervisedSystemExample.dsp"
 	srcdeps.exe settings.cfg NonSupervisedSystemExample.dsp
 
 # End Custom Build
@@ -827,7 +777,7 @@ InputPath=settings.cfg
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"buildstamp" : $(SOURCE) "$(INTDIR)" "NonSupervisedSystemExample.dsp"
 	srcdeps.exe settings.cfg NonSupervisedSystemExample.dsp
 
 # End Custom Build

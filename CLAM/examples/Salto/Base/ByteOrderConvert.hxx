@@ -5,7 +5,7 @@
 #include "DataTypes.hxx"
 #include "ByteOrder.hxx"
 
-#ifdef LINUX
+#ifdef linux
   #include <byteswap.h>
 #endif
 
@@ -21,10 +21,10 @@ public:
   
 inline void FixByteOrder(TByte* ptr, TUInt32 nElems,TUInt32 elemSize)
 {
-#ifdef MTG_LITTLE_ENDIAN
+#ifdef CLAM_LITTLE_ENDIAN
 	_FixByteOrder(ptr,nElems,elemSize);
 #else
-#ifndef MTG_BIG_ENDIAN
+#ifndef CLAM_BIG_ENDIAN
   #pragma message ("BYTE ORDER NOT DEFINED!")
 #endif
 #endif

@@ -51,7 +51,6 @@ namespace CLAM {
  * 
  * @see XMLable
  * @see XMLAdapter
- * @see XMLStaticAdapter
  * @see XMLComponentAdapter
  */
 template <class T> class XMLArrayAdapter : public BasicXMLable {
@@ -85,12 +84,18 @@ public:
 	{
 		size = nElements;
 	}
+	XMLArrayAdapter (const t_adaptee * anAdaptee, unsigned int nElements, 
+			const char * name=NULL, bool isXMLElement=false)
+		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T*>(anAdaptee))
+	{
+		size = nElements;
+	}
 	virtual ~XMLArrayAdapter() {};
 
 // Accessors
 public:
 	//* @return A string with the extracted XML content
-	std::string XMLContent() 
+	std::string XMLContent() const
 	{
 		std::string s;
 		s.resize(size*15);
