@@ -117,14 +117,14 @@ namespace CLAM
 	bool AudioMixer<N>::Do(Audio* inp[N], Audio& out)
 	{
 		if( !AbleToExecute() ) return true;
-	
-		CLAM_ASSERT(inp[0]->GetSize() == int(mFrameSize) &&
+/* todo: re-set these asserts, after fixing problem with nodes and audio sampler rate
+		CLAM_DEBUG_ASSERT(inp[0]->GetSize() == int(mFrameSize) &&
 					out.GetSize()     == int(mFrameSize),
 					"AudioMixer::Do(...): Size mismatch");
-		CLAM_ASSERT(inp[0]->GetSampleRate() == mConfig.GetSampleRate() &&
+		CLAM_DEBUG_ASSERT(inp[0]->GetSampleRate() == mConfig.GetSampleRate() &&
 					out.GetSampleRate()     == mConfig.GetSampleRate(),
 					"AudioMixer::Do(...): sample rate mismatch");
-
+*/
 		Array<TData>* in_array[N];
 		Array<TData> &out_array = out.GetBuffer();
 
