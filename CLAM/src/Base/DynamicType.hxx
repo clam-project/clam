@@ -40,33 +40,30 @@
 
 
 namespace CLAM {
-/////////////////////////////////////////////////////////////////////////////
-// Class DynamicType declaration :
-//
-/////////////////////////////////////////////////////////////////////////////
-
 
 /**
- * This class implements a type that is dynamic. That is, it allows to add &
- * remove fields or attributes at run time, optimizing this way the memory used.
- * All the dynamic attributes are nevertheless perceived typed. So the compiler
+ * The base class for dynamic types (DTs).
+ * It allows to add and remove attributes at run time. Thus, giving instantiation
+ * semantics at attributes, and optimize memory used, if it's the case of 
+ * only a subset of attributes is instantiated.
+ *
+ * All the dynamic attributes interface is strongly typed. So the compiler
  * can garant the type consistency in every access to the dynamic attributes.
  * It also allows herarchic structures and implements de Component interface
  * so it can be stored all the tree (to XML format, for example)
  * and can be copied (swallow or deep copy). (see the methods: SwallowCopy, 
  * DeepCopy and StoreOn )
- * <p>
- * In this class there is implemented all the memory management, but is an abstract
- * class: to work with dynamic types, is necessary to define a concrete dynamic 
- * type (derives from this). A concrete dynamic type must be defined following 
+ * 
+ * This class holds all the implementation of the memory management and is an abstract
+ * class: is necessary to define a concrete dynamic type (subclass). 
+ * A DT must be defined following 
  * a very specific set of rules; basically the attributes are registered using a
  * macros mechanism that expand a known interface for accessing attributes.
- * <p>
+ * 
  * As these methods are expanded by macros, they can not be documented inside the
  * concrete dynamic type. Hence they will be documented here:
  * 
- * @see Component
- * @see DynamicBranch
+ * \see Component
  *
  */
 class DynamicType : public Component
@@ -96,14 +93,7 @@ public:
 	
 	virtual const char* GetClassName() const =0;
 protected:
-	/**
-	* The concrete dynamic type constructor calls DefaultInit(). This allows user to initialize
-	* his/her object. But we define DefaultInit() here because we don't want to force writting
-	* one DefaultInit() function for each concrete dynamic type.
-	* If a dynamic type concrete class defines some (not-default) constructors, this should
-	* also call the DefaultInit().
-	* @see CopyInit()
-	*/
+	/// \todo depracate: write a cerr text explaining the (simpler) alternative (using constructor)
 	void DefaultInit() {
 	
 	};
@@ -112,6 +102,7 @@ protected:
 	* implemented by the macros in the concrete class. Informs all attrs. to the typeDescTable.
 	* used in UpdateData(). @see UpdateData()
 	*/
+	/// \todo update
 	virtual void InformAll() {
 			// lets calculates the offsets of the "Pre allocated mode"
 		CLAM_DEBUG_ASSERT(typeDescTable,"static table don't exist. in DT::InformAll()");
@@ -124,53 +115,115 @@ protected:
 
 	};
 
-public:
-	/**
-	* This method allows custom code for the copy-constructor of a dynamic type, since the
-	* copy-constructor is macro expanded and can not be overwritted. If the writter of a 
-	* concrete dynamic type writes more copy-constructors, he/she should include manually
-	* the call of the CopyInit().
-	* Here we give the default (void) implementation.
-	*/
+	/// \todo depracate: write a cerr text explaining the (simpler) alternative (using constructor)
 	void CopyInit(const DynamicType & dt) {
 	};
+// Inner classes declaration
+	/// \todo document
+	class DynamicInfo
+	{
+		//just allow instance creation from DynamicType
+		friend DynamicType;
+		DynamicInfo() : _numActiveAttr(0), _parentDT(0) {}
+		
+		void InitDynamicInfo( DynamicType *parent );
+		
+		// nested-nested class:
+		class AttrDynamicInfo 
+		{
+			friend DynamicInfo;
+			AttrDynamicInfo() : _added(false), _removed(false) {}
+		public:
+			void Add() { _added = true; }
+			void Remove() { _removed = true; }
+			bool Added() { return _added; }
+			bool Removed() { return _removed; }
+			int Offs() { return _offs; }
 
+		private:
+			bool _added;
+			bool _removed;
+			int _offs;
+		};
+	public:
+		
+		int NumActiveAttr() { return _numActiveAttr; }
+	   	AttrDynamicInfo& Attr (int i ) {
+			CLAM_DEBUG_ASSERT( _parentDT!=0, "at(int) without init" );
+			return _dynInfoImpl[i];
+		}
+	private:
+		DynamicType* _parentDT;
+		int _numActiveAttr;
+		AttrDynamicInfo* _dynInfoImpl; //C array
+	}; // DynamicInfo
+
+	/// \todo document
+	class StaticInfo
+	{
+		// only DT can create StaticInfo
+		friend DynamicType;
+		
+		StaticInfo() {			
+		}
+	public:
+		void AddAttr() { NumAttr()++; }
+		int &NumAttr() { 
+			static int _numAttr = 0;
+			return _numAttr; }
+	private:
+		int _numAttr;
+	}; // StaticInfo
+
+public:
+	DynamicInfo& GetDynamicInfo() { 
+		_dynInfo.InitDynamicInfo(this);
+		return _dynInfo;
+	}
+	StaticInfo& GetStaticInfo() {
+		static StaticInfo* p=0; //must be init?
+		if (!p) {
+			p = new StaticInfo; 
+			InformAll();
+		}
+		return *p;
+	}
 	/**
 	* Method used to resize the data space of the dynamic type, necessary when some
-	* AddXXX() / RemoveXXX() (where XXX is an attribute name) has been done.
+	* AddXxx() / RemoveXxx() (where Xxx is an attribute name) has been done.
 	* This operation does not check it if has been some attributes changes.
 	* In the case that the object is "not owner" of its memory this flag is changed
 	* to "owner", and a new data table is created.
 	*
-	* @return whether some modification has ocurred or not.
+	* \return whether some modification has ocurred or not.
 	*/
+	/// \todo update :-)
 	bool UpdateData();
 	
-	
+private:
 	// Types of the constructors and destructors that all registerd type must have.
 	// A pointer to these functions is stored into the typeDescTable. (an array of TAttr) 
 	// The definition of TAttr is following:
-	typedef void* (*t_new)(void* pos);
-	typedef void* (*t_new_copy)(void* pos,void* orig);
-	typedef void (*t_destructor)(void* pos);
+	/// \todo think about make this calls implicit using templates.
+	typedef void* (*NewInplaceFn)(void* pos);
+	typedef void* (*NewCopyInplaceFn)(void* pos,void* orig);
+	typedef void (*DestructorInplaceFn)(void* pos);
 
-	/**
-	*
-	*
-	*
-	*/
-	virtual void InformAttr_ (unsigned id, const char* name, unsigned size, const char* type, const bool isPtr,
-	                       const t_new, const t_new_copy, const t_destructor);
+protected:
+	/// \todo do we really need to store this type info? we allready have typed visitors 
+	virtual void InformAttr_ (unsigned id, char* name, unsigned size, char* type, const bool isPtr,
+	                       const NewInplaceFn, const NewCopyInplaceFn, const DestructorInplaceFn);
+		
+	inline void InformTypedAttr_(unsigned id, char* name, unsigned size, char *type, const bool isPtr,
+	                          const NewInplaceFn, const NewCopyInplaceFn, const DestructorInplaceFn, const Component* ptr);
 
-	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
-	                          const t_new, const t_new_copy, const t_destructor, const Component* ptr);
+	inline void InformTypedAttr_(unsigned id, char* name, unsigned size, char *type, const bool isPtr,
+	                          const NewInplaceFn, const NewCopyInplaceFn, const DestructorInplaceFn, const DynamicType* ptr);
 
-	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
-	                          const t_new, const t_new_copy, const t_destructor, const DynamicType* ptr);
+	inline void InformTypedAttr_(unsigned id, char* name, unsigned size, char *type, const bool isPtr,
+	                          const NewInplaceFn, const NewCopyInplaceFn, const DestructorInplaceFn, const void* ptr);
 
-	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
-	                          const t_new, const t_new_copy, const t_destructor, const void* ptr);
-	
+
 	void AddAttr_ (const unsigned i, const unsigned size);
 	void RemoveAttr_ (const unsigned id);
 
@@ -180,18 +233,16 @@ public:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
-	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
-
 	// item of the typeDescTable, that is static created only once in the concrete class constructor
 	struct TAttr
 	{
-		char id[idLength];                   
-		char type[typeLength];
+		char *id;                   
+		char *type;
 		int size;
 		int offset;
-		t_new newObj;
-		t_new_copy newObjCopy;
-		t_destructor destructObj;
+		NewInplaceFn newObj;
+		NewCopyInplaceFn newObjCopy;
+		DestructorInplaceFn destructObj;
 
 //		bool isInformed : 1;   Deprecated!! Now the concrete constr. calls InformAll() chain.method.
 		bool isComponent : 1;
@@ -201,6 +252,7 @@ public:
 	};
 
 	// item of the dynamicTable, that holds the dynamic information of the dynamic type
+	/// \todo move to DynInfo
 	struct TDynInfo
 	{
 		int offs;  // attribute offset of the data table. Has a -1 value when
@@ -208,27 +260,35 @@ public:
 		bool hasBeenAdded : 1;
 		bool hasBeenRemoved : 1;
 	};
+	/// \todo why no call it clone? (make all components clonable?)
 	virtual DynamicType& GetDynamicTypeCopy(const bool shareData = false, const bool deep = false) const =0;
+	/// \todo we really need this now?
 	virtual Component* ShallowCopy() const;
 	virtual Component* DeepCopy() const;
 	DynamicType& operator= (const DynamicType& source);
 
 
-	// Public Accesors to protected data. Necesary in the implementation of Branches (aggregates)
+private:
+	/// \todo move to StaticInfo
 	inline unsigned    GetNumAttr() const { return numAttr; };
+	/// \todo move to DynInfo
 	inline unsigned    GetNumActiveAttr() const { return numActiveAttr; }
 	inline char*       GetData() const { return data; }
 	inline void        SetData(char* srcData) { data = srcData;}
+	/// \todo remove
 	inline TDynInfo*   GetDynamicTable() const { return dynamicTable; }
+	/// \todo remove
 	inline TAttr*      GetTypeDescTable() const { return typeDescTable; }
+	/// \todo move to StaticInfo
 	inline unsigned    GetDataSize() const { return dataSize; }
 	inline bool        IsInstanciate() const { return (data != 0); }
-	inline bool        OwnsItsMemory() const { return bOwnsItsMemory; }
-	inline void        SetOwnsItsMemory(const bool owns) { bOwnsItsMemory = owns; }
+		
+protected:
 	inline bool        ExistAttr(unsigned id) const;
 	/**
 	 * 
 	 */
+public:
 	inline void        SetPreAllocateAllAttributes() { bPreAllocateAllAttributes=true; }
 
 
@@ -238,13 +298,12 @@ public:
 	void FullfilsInvariant() const;
 
 protected:
-	
+/// \todo move almost all attributes	
 	unsigned        numActiveAttr;
 	char            *data;
 	TDynInfo        *dynamicTable;
 	TAttr           *typeDescTable;
 	unsigned        dataSize;
-	bool            bOwnsItsMemory;
 	unsigned		numAttr;    // the total number of dyn. attrs.
 	unsigned		maxAttrSize;	// the total dyn. attrs. size
 	unsigned        allocatedDataSize;
@@ -253,16 +312,15 @@ protected:
 	inline void     InitDynTableRefCounter();
 	inline int      DecrementDynTableRefCounter();
 	inline int      IncrementDynTableRefCounter();
-
 private:
+	DynamicInfo     _dynInfo;
+
 	inline bool   AttrHasData(unsigned i) const { return (dynamicTable[i].offs > -1); };
 	inline void   RemoveAllMem();
 	inline void*  GetPtrToData_(const unsigned id) const;
 	inline void*  GetDataAsPtr_(const unsigned id) const;
 	inline void   SetDataAsPtr_(const unsigned id, void* p);
 	
-	/** support method for UpdateData() @see UpdateData() */
-	void BeMemoryOwner();
 	/** support method for UpdateData(). @see UpdateData() 
 	 *  SHRINK MODE: now we'll reuse the allocated data table deleting the gaps.
 	 *  two traversals: the first one is for moving the existing attributes:
@@ -368,6 +426,13 @@ template <unsigned int NAttrib> const int DynamicType::AttributePositionBase<NAt
 //////////////////////////////////////////////////////////////////
 // IMPLEMENTATION OF INLINE FUNCTIONS
 
+inline void DynamicType::DynamicInfo::InitDynamicInfo(DynamicType* p) {
+	if (_parentDT) return;
+		int n = _parentDT->GetStaticInfo().NumAttr();
+		_dynInfoImpl = new AttrDynamicInfo[n];
+		_parentDT = p;
+}
+
 inline bool DynamicType::ExistAttr(unsigned id) const 
 { 
 
@@ -397,8 +462,8 @@ inline void DynamicType::SetDataAsPtr_(const unsigned id, void* p)
 
 
 
-inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigned size, const char *type, const bool isPtr,
-                                       const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr, const void* ptr)
+inline void DynamicType::InformTypedAttr_(unsigned val, char*name, unsigned size, char *type, const bool isPtr,
+                                       const NewInplaceFn fnew, const NewCopyInplaceFn fcopy, const DestructorInplaceFn fdestr, const void* ptr)
 {
 	InformAttr_(val, name, size, type, isPtr, fnew, fcopy, fdestr);
 	typeDescTable[val].isComponent = false;
@@ -406,8 +471,8 @@ inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigne
 	typeDescTable[val].isStorable = false;
 }
 
-inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigned size, const char *type, const bool isPtr,
-                                       const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr, const Component* ptr)
+inline void DynamicType::InformTypedAttr_(unsigned val, char*name, unsigned size, char *type, const bool isPtr,
+                                       const NewInplaceFn fnew, const NewCopyInplaceFn fcopy, const DestructorInplaceFn fdestr, const Component* ptr)
 {
 	InformAttr_(val, name, size, type, isPtr, fnew, fcopy, fdestr);
 	typeDescTable[val].isComponent = true;
@@ -415,8 +480,8 @@ inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigne
 	typeDescTable[val].isStorable = false;
 }
 
-inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigned size, const char *type, const bool isPtr,
-                                       const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr, const DynamicType* ptr)
+inline void DynamicType::InformTypedAttr_(unsigned val, char*name, unsigned size, char *type, const bool isPtr,
+                                       const NewInplaceFn fnew, const NewCopyInplaceFn fcopy, const DestructorInplaceFn fdestr, const DynamicType* ptr)
 {
 	InformAttr_(val, name, size, type, isPtr, fnew, fcopy, fdestr);
 	typeDescTable[val].isComponent = true;

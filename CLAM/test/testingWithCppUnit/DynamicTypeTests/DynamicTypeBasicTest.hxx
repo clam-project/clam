@@ -46,6 +46,8 @@ class DynamicTypeBasicTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( CopyConstructor );
 	CPPUNIT_TEST( DeepCopy );
 	CPPUNIT_TEST( Assignation );
+	CPPUNIT_TEST( StaticInfoAddAttr );
+	CPPUNIT_TEST( StaticInfoDescriptors );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -65,6 +67,9 @@ private:
 	void CopyConstructor();
 	void DeepCopy();
 	void Assignation();
+	// the folowing tests are introduced when the Gen-2003 DT refactoring.
+	void StaticInfoAddAttr();
+	void StaticInfoDescriptors();
 
 	Dyn * dyn;
 	
