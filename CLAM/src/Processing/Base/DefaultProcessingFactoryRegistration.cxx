@@ -1,7 +1,7 @@
 
 #include "Factory.hxx"
 #include "Oscillator.hxx"
-//#include "AudioMixer.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "AudioFileOut.hxx"
@@ -15,10 +15,6 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 
-// processings in draft directory
-#include "OscillatorWithModulation.hxx"
-#include "Random.hxx"
-#include "FlagControl.hxx"
 
 /**
  * In this cxx are defined the objects that will be in the factory by default. Including it 
@@ -31,6 +27,7 @@
  */
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
+static ProcessingFactory::Registrator<CLAM::SimpleOscillator> regtSimpleOscillator( "SimpleOscillator" );
 static ProcessingFactory::Registrator<CLAM::Oscillator> regtOscillator( "Oscillator" );
 static ProcessingFactory::Registrator<CLAM::AudioMultiplier> regtAudioMultiplier( "AudioMultiplier" );
 static ProcessingFactory::Registrator<CLAM::AudioAdder> regtAudioAdder( "AudioAdder" );
@@ -41,8 +38,4 @@ static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Control
 static ProcessingFactory::Registrator<CLAM::AudioFileIn> regtAudioFileIn( "AudioFileIn" );
 static ProcessingFactory::Registrator<CLAM::AudioFileOut> regtAudioFileOut( "AudioFileOut" );
 static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
-// processings in draft directory
-static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
-static ProcessingFactory::Registrator<CLAM::OscillatorWithModulation> regtOscillatorWithModulation( "OscillatorWithModulation" );
-static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 

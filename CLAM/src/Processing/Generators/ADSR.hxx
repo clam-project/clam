@@ -35,13 +35,12 @@ namespace CLAM
 	class ADSRConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ADSRConfig, 6, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TData, AttackTime);
-		DYN_ATTRIBUTE (2, public, TData, DecayTime);
-		DYN_ATTRIBUTE (3, public, TData, SustainLevel);
-		DYN_ATTRIBUTE (4, public, TData , ReleaseTime);
-		DYN_ATTRIBUTE (5, public, TData , SamplingRate);
+		DYNAMIC_TYPE_USING_INTERFACE (ADSRConfig, 5, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, TData, AttackTime);
+		DYN_ATTRIBUTE (1, public, TData, DecayTime);
+		DYN_ATTRIBUTE (2, public, TData, SustainLevel);
+		DYN_ATTRIBUTE (3, public, TData , ReleaseTime);
+		DYN_ATTRIBUTE (4, public, TData , SamplingRate);
 	protected:
 		void DefaultInit(void);
 	};

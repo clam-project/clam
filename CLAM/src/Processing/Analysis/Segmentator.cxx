@@ -148,7 +148,6 @@ std::istream& operator >> (std::istream& myStream, const TDescriptorsParams& a)
 void SegmentatorConfig::DefaultInit()
 {
 	//AddAll();
-	AddName();
 	AddDescriptorsParams();
 	AddMinSegmentLength();
 	UpdateData();

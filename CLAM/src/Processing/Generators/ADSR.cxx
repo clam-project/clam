@@ -27,7 +27,6 @@ using namespace CLAM;
 
 void ADSRConfig::DefaultInit(void)
 {
-	AddName();
 	AddAttackTime();
 	AddDecayTime(),
 	AddSustainLevel();

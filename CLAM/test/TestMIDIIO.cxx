@@ -90,8 +90,6 @@ int main(void)
 
 		BinaryControlOpConfig multiplyCfg ;
 
-		multiplyCfg.SetName("Multiply");
-
 		ControlMultiplier FreqMultiplier( multiplyCfg); 
 
 
@@ -100,7 +98,6 @@ int main(void)
 		MIDIInConfig inNoteCfg;
 
 		
-		inNoteCfg.SetName("in");
 		inNoteCfg.SetDevice("default:default");
 		inNoteCfg.SetChannelMask(
 			MIDI::ChannelMask(1)|
@@ -114,14 +111,8 @@ int main(void)
 		
 		MIDIInControl inNote(inNoteCfg);
 
-	/*	for (Processing::InControlIterator it = FreqMultiplier.FirstInControl(); it<FreqMultiplier.LastInControl(); it++)
-		{
-			cout << (*(it))->GetName() << endl;
-		}*/
-
 		MIDIInConfig inCtrlCfg;
 		
-		inCtrlCfg.SetName("inctrl");
 		inCtrlCfg.SetDevice("default:default");
 		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
@@ -131,7 +122,6 @@ int main(void)
 
 		MIDIInConfig inPitchBendCfg;
 		
-		inPitchBendCfg.SetName("inPitchBend");
 		inPitchBendCfg.SetDevice("default:default");
 		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));

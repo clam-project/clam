@@ -84,7 +84,6 @@ bool MIDIRelation::operator== (MIDIRelation  r)
 
 void MIDILinkerConfig::DefaultInit (void)
 {
-	AddName();
 	AddMIDICfgs();
 	AddMapperCfgs();
 	AddNumBytes();

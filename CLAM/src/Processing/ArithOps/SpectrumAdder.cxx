@@ -30,15 +30,9 @@ namespace CLAM {
 
 	void SpecAdderConfig::DefaultInit()
 	{
-		if (!HasName()) {
-			AddName();
-			UpdateData();
-		}
-		if (!HasNInputs()) {
-			AddNInputs();
-			UpdateData();
-			SetNInputs(0);
-		}
+		AddNInputs();
+		UpdateData();
+		SetNInputs(0);
 	}
 
 

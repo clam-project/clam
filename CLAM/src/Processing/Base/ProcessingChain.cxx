@@ -20,7 +20,6 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
-		SetName("ProcessingChaineeConfig");
 		SetConcreteClassName("Unknown");
 		mpConcreteConfig=NULL;
 	}

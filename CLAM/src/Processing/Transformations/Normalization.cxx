@@ -30,7 +30,6 @@ using namespace CLAM;
 
 void NormalizationConfig::DefaultInit()
 {
-	AddName();
 	AddType();
 	AddFrameSize();
 	UpdateData();

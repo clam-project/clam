@@ -67,9 +67,6 @@ namespace CLAM {
 
 // Attributes:
 	private:
-		/** Processing object name */
-		std::string mName;
-
 		/** Pointer to the parent (composite) processing object, or 0 */
 		ProcessingComposite *mpParent;
 
@@ -445,18 +442,6 @@ namespace CLAM {
 
 		/** Accesor */
 		const std::string &GetStatus() const {return mStatus;}
-
-		/** Configuration attribute access method */
-		const std::string &GetName() const {return mName;}
-
-		void SetName( const std::string& str ) { mName = str; }
-
-		/**
-		 * Builds the qualified name of the object.
-		 * @return Name of the processing object, after appending to it
-		 *	the full path of the compound objects containing this one.
-		 */
-		virtual std::string GetFullName() const;
 
 		// Input Output related methods.
 		// They are not mandatory; a default implementation is given.

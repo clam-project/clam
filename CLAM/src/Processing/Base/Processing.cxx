@@ -50,37 +50,13 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
 		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-		std::string config_name;
-		std::string old_name = mName;
 		mStatus = "";
 
-		// As we have no acces to the actual dynamic configuration object
-		// but via its abstract interface, we have no way to do apriori an
-		// ExistAttr check, so we have to catch the possible exceptions.
-/*
-		if (c.HasName())
-			config_name = c.GetName();
-
-		bool name_change_requested = config_name != ""     && 
-		                             config_name != mName;
-		if (name_change_requested)
-			mName = config_name;
-
-
-		if (!mpParent) {
+		if (!mpParent) 
+		{
 			mpParent =  &(TopLevelProcessing::GetInstance());
-
-			if (mName == "")
-				mName = mpParent->InsertAndGiveName(*this);
-			else
-				mpParent->Insert(*this);
+			mpParent->Insert(*this);
 		}
-		else if (name_change_requested) 
-			// if Processing name is duplicated it is changed silently to something
-			// acceptable
-			if (!mpParent->NameChanged(*this,old_name)) 
-				mName = mpParent->InsertAndGiveName( *this );
-*/
 		mPreconfigureExecuted = true;
 
 	}
@@ -130,23 +106,9 @@ namespace CLAM {
 
 	void Processing::ConfigureOrphan(const ProcessingConfig &c)
 	{
-		std::string config_name;
-		std::string old_name = mName;
 
 		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
 		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-
-		// As we have no acces to the actual dynamic configuration object
-		// but via its abstract interface, we have no way to do apriori an
-		// ExistAttr check, so we have to catch the possible exceptions.
-		CLAM_ASSERT(c.HasName(), "There is no name in a Processing Configuration");
-
-		config_name = c.GetName();
-
-		bool name_change_requested = config_name != ""     && 
-		                             config_name != mName;
-		if (name_change_requested)
-			mName = config_name;
 
 		if (ConcreteConfigure(c))
 			mState=Ready;
@@ -254,15 +216,6 @@ namespace CLAM {
 #endif
 	}
 
-
-	std::string Processing::GetFullName() const 
-	{
-		if (mpParent && mpParent != this)
-			return mpParent->GetFullName()+"."+mName;
-		else
-			return mName;
-	}
-
 	void Processing::SetParent(Processing *o)
 	{
 		ProcessingComposite *p;
@@ -294,9 +247,6 @@ namespace CLAM {
 			mpParent->Remove(*this);
 
 		mpParent=0;
-
-		if (GetConfig().GetName() == "")
-			mName = "";
 	}
 
 	const char* Processing::AddStatus(const std::string& a)
@@ -330,3 +280,4 @@ namespace CLAM {
 		return ret;
 	}
 };//namespace CLAM
+

@@ -19,11 +19,9 @@ namespace CLAM{
 	class ProcessingChaineeConfig:public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChaineeConfig, 2,ProcessingConfig);
-		/** Name of the ProcessingChainConfig object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChaineeConfig, 1,ProcessingConfig);
 		/** Name of concrete Config class */
-		DYN_ATTRIBUTE (1, public, std::string, ConcreteClassName);
+		DYN_ATTRIBUTE (0, public, std::string, ConcreteClassName);
 	public:
 		/** Initialization for default constructor. All attributes are added, ConcreteClassName is
 		 *	set to "Unknown" and pointer to concrete configuration is set to null. 
@@ -99,13 +97,11 @@ namespace CLAM{
 		typedef std::list<ProcessingChaineeConfig>::iterator iterator;
 		typedef std::list<ProcessingChaineeConfig>::const_iterator const_iterator;
 		
-		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChainConfig, 3,ProcessingConfig);
-		/** Name of the ProcessingChainConfig object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChainConfig, 2,ProcessingConfig);
 		/** List of children configurations, a list of pointers to base class is kept */
-		DYN_CONTAINER_ATTRIBUTE (1, public, std::list<ProcessingChaineeConfig>, Configurations,Config);
+		DYN_CONTAINER_ATTRIBUTE (0, public, std::list<ProcessingChaineeConfig>, Configurations,Config);
 		/** Array of On/off initial values for control*/
-		DYN_ATTRIBUTE (2, public, Array<bool>,OnArray);
+		DYN_ATTRIBUTE (1, public, Array<bool>,OnArray);
 
 		
 		/** By default all attributes are added. */
@@ -326,7 +322,8 @@ protected:
 
 			// Factory::CreateSafe throws an ErrFactory exception if the key is not
 			// valid
-			InsertAndGiveName( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
+			//InsertAndGiveName( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
+			Insert( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
 						
 			return true;
 			
