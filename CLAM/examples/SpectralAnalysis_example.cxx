@@ -28,8 +28,7 @@
 #include <iostream>
 
 /**
- *  In this example we will see how to use CLAM spectral analysis processings
- *  together.
+ *  WARNING: This example should be considered as *WORK IN PROGRESS*
  */
 
 int main( int argc, char** argv )
