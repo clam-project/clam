@@ -108,7 +108,7 @@ namespace CLAM
 
 			const float magSquared = re*re + im*im;
 
-			if (magSquared < minLinSquared)
+			if (magSquared <= minLinSquared)
 			{
 				destMag[i] = minLog;
 			}
