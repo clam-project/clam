@@ -327,7 +327,6 @@ void SMSAnalysis::ConfigureData()
 	mPO_ResSpectralAnalysis.Attach(mResAudioFrame,mResSpec);
 
 	mInitialOffset=0;
-	mEndingOffset=0;
 }
 
 void SMSAnalysis::AttachChildren()
@@ -338,6 +337,12 @@ void SMSAnalysis::AttachChildren()
 	mPO_FundDetect.SetParent(this);
 	mPO_SinTracking.SetParent(this);
 	mPO_SpecSubstract.SetParent(this);
+}
+
+void SMSAnalysis::Start()
+{
+	mInitialOffset=0;
+	ProcessingComposite::Start();
 }
 
 bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
@@ -407,7 +412,6 @@ bool SMSAnalysis::SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray
 
 bool SMSAnalysis::Do(Frame& in)
 {
-	static count=0;
 	in.AddResidualAudioFrame();
 	in.AddSpectrum();
 	in.AddSpectralPeakArray();
@@ -430,7 +434,7 @@ bool SMSAnalysis::Do(Frame& in)
 	mStreamBuffer.LeaveAndAdvance(mWriter);
 
 	bool result=false;
-	if (count>mConfig.GetHopsInBiggerWindow())
+	if (mInitialOffset>mConfig.GetHopsInBiggerWindow()*0.5)
 	{
 		
 		result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
@@ -439,10 +443,7 @@ bool SMSAnalysis::Do(Frame& in)
 	else
 	{
 		mInitialOffset++;
-		mEndingOffset++;
-
 	}
-	count++;
 	return result;
 }
 
@@ -462,6 +463,10 @@ bool SMSAnalysis::Do(Segment& in)
 
 	TTime frameCenterTime=frameIndex*step/samplingRate;
 	
+	/**TODO: miliseconds and seconds are inconsistently used in different places?*/
+	if(frameCenterTime>in.GetAudio().GetDuration()*0.001)//have reached end of input audio
+		return false;
+
 	//Adding a new frame to segment, this frame will have the audiochunk as audioframe
 	Frame tmpFrame;
 	tmpFrame.SetDuration(step/samplingRate);
@@ -488,11 +493,7 @@ bool SMSAnalysis::Do(Segment& in)
 		in.AddFrame(tmpFrame);
 	}
 
-	bool result=true;
-	if(tmpAudio.GetSize()<step){//have reached end of input audio
-		mEndingOffset--;
-		if(mEndingOffset==0) result=false;}
-	return result;
+	return true;
 }
 
 
