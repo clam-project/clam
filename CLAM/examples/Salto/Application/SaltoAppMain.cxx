@@ -271,6 +271,10 @@ protected:
 
 	void ProcessMIDIMessages(void)
 	{
+		if ( mParams.GetPlayNote() )
+		{
+			mMIDIHandler.DoNote();
+		}
 		if (mParams.GetUseMelody())
 		{
 			TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
