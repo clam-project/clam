@@ -24,7 +24,6 @@
 
 #include "ModelAdapter.hxx"
 #include "Network.hxx"
-#include "Signalv2.hxx"
 #include <string>
 #include <list>
 
@@ -57,7 +56,6 @@ namespace CLAMVM
 
 		virtual std::string GetInName() = 0;
 		virtual std::string GetOutName() = 0;
-
 	};
 
 
