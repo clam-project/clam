@@ -39,25 +39,26 @@ class ClamObject2XercesDom : public Storage
 {
 	XercesDomDocumentHandler _documentHandler;
 	XercesDomWritingContext * _writeContext;
-	XercesDomWritingContext * _rootContext;
+	XercesDomWritingContext * _rootWriteContext;
 	bool _lastWasContent;
 public:
 	ClamObject2XercesDom()
 	{
 		_writeContext = 0;
-		_rootContext = 0;
+		_rootWriteContext = 0;
 		_lastWasContent = true;
 	}
 	~ClamObject2XercesDom()
 	{
-		delete _rootContext;
+		if (_rootWriteContext)
+			delete _rootWriteContext;
 	}
 	void Create(const std::string name)
 	{
 		_documentHandler.create(name.c_str());
 		_lastWasContent=false;
-		_rootContext= new XercesDomWritingContext(_documentHandler);
-		_writeContext = _rootContext;
+		_rootWriteContext= new XercesDomWritingContext(_documentHandler);
+		_writeContext = _rootWriteContext;
 	}
 	bool Load(Storable & storable)
 	{
