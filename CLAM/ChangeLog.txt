@@ -15,6 +15,10 @@
 
 2004-01-12 CLAM_0_5_6 'XML and Ladspa rewrite'
 
+  * Simple Examples:
+     ** FlowControlExamples tree has been moved to draft since simpler and more
+	    concrete examples now exists: examples/NetworkUsage_example and
+		examples/PortsAndControlsUsageExample/
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface have changed.
         Check 'Migration Guidelines' on the documentation and update your code.
