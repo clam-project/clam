@@ -92,7 +92,7 @@ AC_DEFUN(CLAM_CHECK_UNICODE_SUPPORT,
 	AC_TRY_LINK([
 	#include <string>
 	],
-	[	
+	[
 		const wchar_t str[] = {0xFABB,0x0000,0x12FF,0x33FF};
 		std::basic_string<wchar_t> theString;
 		theString.assign( (wchar_t*)str, 2);      
@@ -241,10 +241,17 @@ if [[ "1.1" == "$FLTK_API_VERSION" ]]
 	else
 		AC_MSG_RESULT(no)
 		AC_MSG_ERROR([Currently CLAM only supports FLTK API version 1.1])
-fi;	
+fi;
 
-RAW_FLTK_CFLAGS=`$FLTKCONFIG --cxxflags`
-RAW_FLTK_LDFLAGS=`$FLTKCONFIG --ldflags`
+FLTK_API_VERSION=`$FLTKCONFIG --version`
+if [[ "1.1.4" == "$FLTK_API_VERSION" ]]
+then
+	RAW_FLTK_CFLAGS=`$FLTKCONFIG --use-gl --use-images --cxxflags`
+	RAW_FLTK_LDFLAGS=`$FLTKCONFIG --use-gl --use-images --ldflags`
+else
+	RAW_FLTK_CFLAGS=`$FLTKCONFIG --cxxflags`
+	RAW_FLTK_LDFLAGS=`$FLTKCONFIG --ldflags`
+fi
 
 for incpath in $RAW_FLTK_CFLAGS
 	do
