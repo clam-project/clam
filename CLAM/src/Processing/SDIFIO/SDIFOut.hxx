@@ -44,7 +44,7 @@ public:
 	bool GetEnablePeakArray()       {return mConfig.GetEnablePeakArray();}
 	bool GetEnableFundFreq()        {return mConfig.GetEnableFundFreq();}
 	
-	bool Do(void){throw Err("Not implemented");}
+	bool Do(void){CLAM_ASSERT(false,"Not implemented");}
 	bool Do(const Frame& frame);
 
 	const ProcessingConfig &GetConfig() const;
