@@ -61,7 +61,7 @@ namespace CLAM
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
-			unsigned attributeIndex = scope.GetIndex(attributeName);
+			scope.GetIndex(attributeName);
 			CLAM_ASSERT(_scopePools[scopeIndex], "Instantianting an attribute inside an unpopulated scope");
 		}
 		/**
@@ -72,10 +72,9 @@ namespace CLAM
 		 * @pre Such attribute in such scope exists and the type is the one in the template.
 		 */
 		template <typename AttributeType>
-		AttributeType * GetAttributePool(const std::string & scopeName, const std::string & attributeName)
+		AttributeType * GetWritePool(const std::string & scopeName, const std::string & attributeName)
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
-			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
 
 			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
 
@@ -86,14 +85,13 @@ namespace CLAM
 		 * with all the values for the specified attribute.
 		 * The C array lenght will be the GetScopeSize(scope) long.
 		 * @pre Such attribute in such scope exists and the type is the one in the template.
-		 * @pre GetAttributePool, which allocates the data,
+		 * @pre GetWritePool, which allocates the data,
 		 * 	has been previously called for this attribute and pool object.
 		 */
 		template <typename AttributeType>
-		const AttributeType * GetReadAttributePool(const std::string & scopeName, const std::string & attributeName) const
+		const AttributeType * GetReadPool(const std::string & scopeName, const std::string & attributeName) const
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
-			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
 
 			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
 

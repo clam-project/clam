@@ -132,8 +132,8 @@ private:
 		data.InstantiateAttribute("Frame","Center");
 		data.InstantiateAttribute("Frame","Size");
 
-		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
-		unsigned * sizes   = data.GetAttributePool<unsigned>("Frame","Size");
+		unsigned * centers = data.GetWritePool<unsigned>("Frame","Center");
+		unsigned * sizes   = data.GetWritePool<unsigned>("Frame","Size");
 
 		CPPUNIT_ASSERT(centers!=sizes);
 	}
@@ -144,8 +144,8 @@ private:
 		data.SetNumberOfContexts("Frame",30);
 		data.InstantiateAttribute("Frame","Center");
 
-		unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
-		unsigned * centers2 = data.GetAttributePool<unsigned>("Frame","Center");
+		unsigned * centers = data.GetWritePool<unsigned>("Frame","Center");
+		unsigned * centers2 = data.GetWritePool<unsigned>("Frame","Center");
 
 		CPPUNIT_ASSERT_EQUAL(centers,centers2);
 	}
@@ -156,7 +156,7 @@ private:
 
 		try
 		{
-			unsigned * centers = data.GetAttributePool<unsigned>("Frame","Center");
+			unsigned * centers = data.GetWritePool<unsigned>("Frame","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -172,7 +172,7 @@ private:
 
 		try
 		{
-			unsigned * centers = data.GetAttributePool<unsigned>("UnexistingScope","Center");
+			unsigned * centers = data.GetWritePool<unsigned>("UnexistingScope","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -189,7 +189,7 @@ private:
 
 		try
 		{
-			const unsigned * centers = data.GetReadAttributePool<unsigned>("Frame","Center");
+			const unsigned * centers = data.GetReadPool<unsigned>("Frame","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)

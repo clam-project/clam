@@ -75,7 +75,7 @@ public:
 	{
 		_current = 0;
 		_pool = &pool;
-		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
+		_data = _pool->template GetReadPool<AttributeType>(_scope,_attribute);
 		if (_chained) _chained->Init(pool);
 	}
 
@@ -141,7 +141,7 @@ public:
 	{
 		_pool = &pool;
 		_current = 0;
-		_data = _pool->template GetAttributePool<AttributeType>(_scope,_attribute);
+		_data = _pool->template GetWritePool<AttributeType>(_scope,_attribute);
 	}
 
 	AttributeType & GetForWriting() const

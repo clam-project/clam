@@ -18,8 +18,8 @@ namespace CLAM
 		typedef std::vector<AttributePool> AttributesData;
 	private:
 		unsigned _size;
-		AttributesData _attributePools;
 		const DescriptionScope & _spec;
+		AttributesData _attributePools;
 	public:
 		ScopePool(const DescriptionScope & spec, unsigned size=0)
 			: _size(size), _spec(spec), _attributePools(spec.GetNAttributes())

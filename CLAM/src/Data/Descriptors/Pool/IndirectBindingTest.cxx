@@ -45,22 +45,22 @@ public:
 		mPool->SetNumberOfContexts("Referenced",10);
 		mPool->SetNumberOfContexts("Referencer",3);
 		{
-			char * inputBuffer = mPool->GetAttributePool<char>("Referenced","Input");
+			char * inputBuffer = mPool->GetWritePool<char>("Referenced","Input");
 			for (unsigned i = 0; i<10; i++)
 				inputBuffer[i]='a'+i;
 		}
 		{
-			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referenced","ReverseReference");
+			unsigned * inputBuffer = mPool->GetWritePool<unsigned>("Referenced","ReverseReference");
 			for (unsigned i = 0; i<10; i++)
 				inputBuffer[i]=9-i;
 		}
 		{
-			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","Reference");
+			unsigned * inputBuffer = mPool->GetWritePool<unsigned>("Referencer","Reference");
 			for (unsigned i = 0; i<3; i++)
 				inputBuffer[i]=3*i;
 		}
 		{
-			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","BadReference");
+			unsigned * inputBuffer = mPool->GetWritePool<unsigned>("Referencer","BadReference");
 			for (unsigned i = 0; i<3; i++)
 				inputBuffer[i]=3*i;
 			inputBuffer[0]=20;
@@ -85,7 +85,7 @@ private:
 		hook.Indirect("Referencer","Reference");
 		hook.Init(*mPool);
 		const void * result = & (hook.GetForReading());
-		const void * expected = mPool->GetReadAttributePool<char>("Referenced","Input");
+		const void * expected = mPool->GetReadPool<char>("Referenced","Input");
 
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
@@ -99,7 +99,7 @@ private:
 		hook.Next();
 		const void * result = & (hook.GetForReading());
 		const void * thirdPosition =
-			mPool->GetReadAttributePool<char>("Referenced","Input")+3;
+			mPool->GetReadPool<char>("Referenced","Input")+3;
 
 		CPPUNIT_ASSERT_EQUAL(thirdPosition,result);
 	}
@@ -166,7 +166,7 @@ private:
 			output = input;
 		}
 		std::string expected("adg",3);
-		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
+		std::string result(mPool->GetWritePool<char>("Referencer","Output"),3);
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
 
@@ -188,7 +188,7 @@ private:
 			output = input;
 		}
 		std::string expected("jgd",3);
-		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
+		std::string result(mPool->GetWritePool<char>("Referencer","Output"),3);
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
 
@@ -203,7 +203,7 @@ private:
 		const char * end;
 		hook.GetRangeForReading(begin,end);
 
-		const char * expectedBegin = mPool->GetReadAttributePool<char>("Referenced","Input");
+		const char * expectedBegin = mPool->GetReadPool<char>("Referenced","Input");
 		const char * expectedEnd = expectedBegin + 4;
 
 		CPPUNIT_ASSERT_EQUAL( (void*)expectedBegin, (void*)begin);
@@ -255,7 +255,7 @@ private:
 		std::string expected0("abcd",4);
 		std::string expected1("defg",4);
 		std::string expected2("ghij",4);
-		std::string * results = mPool->GetAttributePool<std::string>("Referencer","Concatenations");
+		std::string * results = mPool->GetWritePool<std::string>("Referencer","Concatenations");
 		CPPUNIT_ASSERT_EQUAL(expected0,results[0]);
 		CPPUNIT_ASSERT_EQUAL(expected1,results[1]);
 		CPPUNIT_ASSERT_EQUAL(expected2,results[2]);

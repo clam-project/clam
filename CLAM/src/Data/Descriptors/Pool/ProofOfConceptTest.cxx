@@ -73,7 +73,7 @@ private:
 
 		// AudioSample::Level
 		{
-			CLAM::TData * audio = pool.GetAttributePool<CLAM::TData>("AudioSample","Level");
+			CLAM::TData * audio = pool.GetWritePool<CLAM::TData>("AudioSample","Level");
 			for (unsigned i=0; i<audioSize; i++) audio[i] = 0;
 			audio[0]=1.0;
 			audio[audioSize-1]=2.0;
@@ -86,7 +86,7 @@ private:
 
 		// Frame::Center
 		{
-			SamplePosition * centers = pool.GetAttributePool<SamplePosition>("Frame","Center");
+			SamplePosition * centers = pool.GetWritePool<SamplePosition>("Frame","Center");
 			for (unsigned i=0; i<nFrames; i++)
 			{
 				centers[i] = i*frameSize;
@@ -95,9 +95,9 @@ private:
 
 		// Frame::Energy
 		{
-			CLAM::TData * means = pool.GetAttributePool<CLAM::TData>("Frame","Energy");
-			const SamplePosition * centers = pool.GetReadAttributePool<SamplePosition>("Frame","Center");
-			const CLAM::TData * samples = pool.GetReadAttributePool<CLAM::TData>("AudioSample","Level");
+			CLAM::TData * means = pool.GetWritePool<CLAM::TData>("Frame","Energy");
+			const SamplePosition * centers = pool.GetReadPool<SamplePosition>("Frame","Center");
+			const CLAM::TData * samples = pool.GetReadPool<CLAM::TData>("AudioSample","Level");
 			for (unsigned i=0; i<nFrames; i++)
 			{
 				CLAM::TData & mean = means[i] = 0;
@@ -129,8 +129,8 @@ private:
 			}
 			*/
 
-			CLAM::TData * RMS = pool.GetAttributePool<CLAM::TData>("Frame","RMS");
-			const CLAM::TData * energy = pool.GetReadAttributePool<CLAM::TData>("Frame","Energy");
+			CLAM::TData * RMS = pool.GetWritePool<CLAM::TData>("Frame","RMS");
+			const CLAM::TData * energy = pool.GetReadPool<CLAM::TData>("Frame","Energy");
 			for (unsigned i=0; i<nFrames; i++)
 			{
 				CLAM::TData & outData = RMS[i];
@@ -144,9 +144,9 @@ private:
 
 		// Frame::SpectralDistribution
 		{
-			CLAM::Spectrum * spectrums = pool.GetAttributePool<CLAM::Spectrum>("Frame","SpectralDistribution");
-			const SamplePosition * centers = pool.GetReadAttributePool<SamplePosition>("Frame","Center");
-			const CLAM::TData * samples = pool.GetReadAttributePool<CLAM::TData>("AudioSample","Level");
+			CLAM::Spectrum * spectrums = pool.GetWritePool<CLAM::Spectrum>("Frame","SpectralDistribution");
+			const SamplePosition * centers = pool.GetReadPool<SamplePosition>("Frame","Center");
+			const CLAM::TData * samples = pool.GetReadPool<CLAM::TData>("AudioSample","Level");
 
 			CLAM::SpecTypeFlags sflags;
 			sflags.bMagPhase = true;

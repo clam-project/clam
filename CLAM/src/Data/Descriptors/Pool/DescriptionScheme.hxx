@@ -212,11 +212,11 @@ namespace CLAM
  * - Obtaining the attribute pool for writting, 
  *   so you will get a vector of pitches one for every note.
  *   @code
- *   CLAM::Pitch * pitches = pool.GetAttributePool<CLAM::Pitch>("Note","Pitch");
+ *   CLAM::Pitch * pitches = pool.GetWritePool<CLAM::Pitch>("Note","Pitch");
  *   @endcode
  * - Obtaining the attribute pool for reading
  *   @code
- *   const CLAM::Pitch * pitches = pool.GetReadAttributePool<CLAM::Pitch>("Note","Pitch");
+ *   const CLAM::Pitch * pitches = pool.GetReadPool<CLAM::Pitch>("Note","Pitch");
  *   @endcode
  *
  * @warning A write access is required before any read access.

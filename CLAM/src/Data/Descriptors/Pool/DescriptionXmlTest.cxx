@@ -394,20 +394,20 @@ private:
 		pool.SetNumberOfContexts("TestScope1",3);
 		pool.SetNumberOfContexts("TestScope2",4);
 		{
-			DummyComponent * values = pool.GetAttributePool<DummyComponent>("TestScope1","DummyComponentAttribute");
+			DummyComponent * values = pool.GetWritePool<DummyComponent>("TestScope1","DummyComponentAttribute");
 			values[0].SetValue("value0");
 			values[1].SetValue("value1");
 			values[2].SetValue("value2");
 		}
 		{
-			std::string * values = pool.GetAttributePool<std::string>("TestScope2","StringAttribute");
+			std::string * values = pool.GetWritePool<std::string>("TestScope2","StringAttribute");
 			values[0]="value0";
 			values[1]="value1";
 			values[2]="value2";
 			values[3]="value3";
 		}
 		{
-			unsigned * values = pool.GetAttributePool<unsigned>("TestScope2","UnsignedAttribute");
+			unsigned * values = pool.GetWritePool<unsigned>("TestScope2","UnsignedAttribute");
 			values[0]=0;
 			values[1]=1;
 			values[2]=2;
@@ -469,14 +469,14 @@ private:
 		CPPUNIT_ASSERT_EQUAL(3u,pool.GetNumberOfContexts("TestScope1"));
 		CPPUNIT_ASSERT_EQUAL(4u,pool.GetNumberOfContexts("TestScope2"));
 		{
-			DummyComponent * data = pool.GetAttributePool<DummyComponent>("TestScope1","DummyComponentAttribute");
+			DummyComponent * data = pool.GetWritePool<DummyComponent>("TestScope1","DummyComponentAttribute");
 			const std::string value0("value0"), value1("value1"), value2("value2");
 			CPPUNIT_ASSERT_EQUAL(value0, data[0].GetValue());
 			CPPUNIT_ASSERT_EQUAL(value1, data[1].GetValue());
 			CPPUNIT_ASSERT_EQUAL(value2, data[2].GetValue());
 		}
 		{
-			const std::string * data = pool.GetAttributePool<std::string>("TestScope2","StringAttribute");
+			const std::string * data = pool.GetWritePool<std::string>("TestScope2","StringAttribute");
 			const std::string value0("value0"), value1("value1"), value2("value2"), value3("value3");
 			CPPUNIT_ASSERT_EQUAL(value0, data[0]);
 			CPPUNIT_ASSERT_EQUAL(value1, data[1]);
@@ -484,7 +484,7 @@ private:
 			CPPUNIT_ASSERT_EQUAL(value3, data[3]);
 		}
 		{
-			const unsigned * data = pool.GetAttributePool<unsigned>("TestScope2","UnsignedAttribute");
+			const unsigned * data = pool.GetWritePool<unsigned>("TestScope2","UnsignedAttribute");
 			for (unsigned int i = 0; i<4; i++)
 				CPPUNIT_ASSERT_EQUAL((const unsigned)i, data[i]);
 		}

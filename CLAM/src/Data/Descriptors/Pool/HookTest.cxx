@@ -41,7 +41,7 @@ public:
 		mPool = new CLAM::DescriptionDataPool(mScheme);
 		mPool->SetNumberOfContexts("TestScope1",3);
 
-		char * inputBuffer = mPool->GetAttributePool<char>("TestScope1","InputData");
+		char * inputBuffer = mPool->GetWritePool<char>("TestScope1","InputData");
 		for (unsigned i = 0; i<3; i++)
 			inputBuffer[i]='a'+i;
 
@@ -85,7 +85,6 @@ private:
 
 	void testIsInsideScope_ReturnsTrueWhileInsideTheScope()
 	{
-		const char * expected = mInputBuffer;
 		CLAM::ReadHook<char> hook;
 		hook.Bind("TestScope1","InputData");
 		hook.Init(*mPool);
@@ -99,7 +98,6 @@ private:
 
 	void testIsInsideScope_ReturnsFalseBeyondTheScope()
 	{
-		const char * expected = mInputBuffer;
 		CLAM::ReadHook<char> hook;
 		hook.Bind("TestScope1","InputData");
 		hook.Init(*mPool);
@@ -120,7 +118,7 @@ private:
 		hook.Init(*mPool);
 		char & result = hook.GetForWriting();
 
-		char * expected = mPool->GetAttributePool<char>("TestScope1","OutputData");
+		char * expected = mPool->GetWritePool<char>("TestScope1","OutputData");
 
 		CPPUNIT_ASSERT_EQUAL(expected, &result);
 	}
@@ -132,7 +130,7 @@ private:
 		hook.Init(*mPool);
 		hook.Next();
 		char & result = hook.GetForWriting();
-		char * expected = mPool->GetAttributePool<char>("TestScope1","OutputData") + 1;
+		char * expected = mPool->GetWritePool<char>("TestScope1","OutputData") + 1;
 
 		CPPUNIT_ASSERT_EQUAL(expected, &result);
 	}
@@ -181,8 +179,8 @@ private:
 			output = input;
 		}
 		
-		std::string expected(mPool->GetAttributePool<char>("TestScope1","InputData"),3);
-		std::string result(mPool->GetAttributePool<char>("TestScope1","OutputData"),3);
+		std::string expected(mPool->GetWritePool<char>("TestScope1","InputData"),3);
+		std::string result(mPool->GetWritePool<char>("TestScope1","OutputData"),3);
 		
 
 		CPPUNIT_ASSERT_EQUAL(expected,result);
