@@ -505,11 +505,11 @@ SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
+SOURCE=..\..\..\..\src\Errors\ErrSystem.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrSystem.cxx
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
 # End Source File
 # Begin Source File
 
@@ -603,6 +603,86 @@ SOURCE=..\..\..\..\src\Standard\Matrix.cxx
 SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Source File
 # End Group
+# Begin Group "Data Sources"
+
+# Begin Group "BasicProcessing Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Fundamental.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeak.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeakArray.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Frame.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Segment.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConversions.cxx
+# End Source File
+# End Group
+# Begin Group "Descriptors Sources"
+
+# Begin Group "Melody Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\MediaTime.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\PitchNote.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Note.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Melody.cxx
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\AudioDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\SpectralDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\SegmentDescriptors.cxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Flow Sources"
 
 # Begin Group "Controls Sources"
@@ -659,11 +739,11 @@ SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\AddStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\AddStreamRegion.cxx
 # End Source File
 # Begin Source File
 
@@ -713,103 +793,6 @@ SOURCE=..\..\..\..\src\Processing\SDIFIO\SDIFIn.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\SDIFIO\SDIFOut.cxx
-# End Source File
-# End Group
-# Begin Group "Analysis Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\WindowGenerator.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\CircularShift.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralAnalysis.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetect.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FundFreqDetect.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SinTracking.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SMSAnalysis.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtract.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\CleanTracks.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\Segmentator.cxx
-# End Source File
-# End Group
-# Begin Group "ArithOps Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.cxx
-# End Source File
-# End Group
-# Begin Group "Synthesis Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\SynthSineSpectrum.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\PhaseManagement.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT_rfftw.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\OverlapAdd.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\SpectralSynthesis.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Synthesis\SMSSynthesis.cxx
 # End Source File
 # End Group
 # Begin Group "Transformations Sources"
@@ -878,6 +861,72 @@ SOURCE=..\..\..\..\src\Processing\Transformations\FDCombFilter.cxx
 SOURCE=..\..\..\..\src\Processing\Transformations\Normalization.cxx
 # End Source File
 # End Group
+# Begin Group "Analysis Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtract.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetect.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FundFreqDetect.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SinTracking.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\WindowGenerator.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\CircularShift.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFT.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralAnalysis.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SMSAnalysis.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\CleanTracks.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\Segmentator.cxx
+# End Source File
+# End Group
+# Begin Group "ArithOps Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
+# End Source File
+# End Group
 # Begin Group "AudioIO Sources No. 1"
 
 # Begin Source File
@@ -904,84 +953,35 @@ SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
 SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
 # End Source File
 # End Group
-# End Group
-# Begin Group "Data Sources"
-
-# Begin Group "BasicProcessing Sources"
+# Begin Group "Synthesis Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\SynthSineSpectrum.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\PhaseManagement.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Fundamental.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeak.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT_rfftw.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeakArray.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\OverlapAdd.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Frame.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\SpectralSynthesis.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Segment.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConversions.cxx
-# End Source File
-# End Group
-# Begin Group "Descriptors Sources"
-
-# Begin Group "Melody Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\MediaTime.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\PitchNote.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Note.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Melody.cxx
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\AudioDescriptors.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\SpectralDescriptors.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\SegmentDescriptors.cxx
+SOURCE=..\..\..\..\src\Processing\Synthesis\SMSSynthesis.cxx
 # End Source File
 # End Group
 # End Group
@@ -1571,11 +1571,11 @@ SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
+SOURCE=..\..\..\..\src\Errors\ErrSystem.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Errors\ErrSystem.hxx
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
@@ -1614,14 +1614,6 @@ SOURCE=..\..\..\..\src\Defines\mtgsstream.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
@@ -1631,6 +1623,14 @@ SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
 # End Source File
 # Begin Source File
 
@@ -1839,22 +1839,6 @@ SOURCE=..\..\..\..\src\Standard\Array.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\IndexArray.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\List.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Search.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\SearchArray.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Standard\ComplexTmplDec.hxx
 # End Source File
 # Begin Source File
@@ -1880,6 +1864,10 @@ SOURCE=..\..\..\..\src\Standard\PointTmplDef.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\PointTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\SearchArray.hxx
 # End Source File
 # Begin Source File
 
@@ -1911,15 +1899,15 @@ SOURCE=..\..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\CommonOps.hxx
+SOURCE=..\..\..\..\src\Standard\IndexArray.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\PhantomBuffer.hxx
+SOURCE=..\..\..\..\src\Standard\List.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\CircularBuffer.hxx
+SOURCE=..\..\..\..\src\Standard\Search.hxx
 # End Source File
 # Begin Source File
 
@@ -1955,6 +1943,18 @@ SOURCE=..\..\..\..\src\Standard\BasicStatistics.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\CommonOps.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\PhantomBuffer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\CircularBuffer.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\MatrixTmplDec.hxx
 # End Source File
 # Begin Source File
@@ -1969,6 +1969,109 @@ SOURCE=..\..\..\..\src\Standard\MatrixTmplDef.hxx
 
 SOURCE=..\..\..\..\src\Standard\MatrixTmpl.hxx
 # End Source File
+# End Group
+# Begin Group "Data Headers"
+
+# Begin Group "Base Headers No. 4"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Base\ProcessingDataConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
+# End Source File
+# End Group
+# Begin Group "BasicProcessing Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Fundamental.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeak.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeakArray.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Frame.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\Segment.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\AudioCircularBuffer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConversions.hxx
+# End Source File
+# End Group
+# Begin Group "Descriptors Headers"
+
+# Begin Group "Melody Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\MediaTime.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\PitchNote.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Note.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Melody.hxx
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\AudioDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\SpectralDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\SegmentDescriptors.hxx
+# End Source File
+# End Group
 # End Group
 # Begin Group "Flow Headers"
 
@@ -2050,15 +2153,19 @@ SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\AddStreamRegion.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Flow\Nodes\AddStreamRegion.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegionContainer.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\CircularStreamImpl.hxx
 # End Source File
 # Begin Source File
 
@@ -2068,15 +2175,11 @@ SOURCE=..\..\..\..\src\Flow\Nodes\AudioStreamBuffer.hxx
 
 SOURCE=..\..\..\..\src\Flow\Nodes\StreamBuffer.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\CircularStreamImpl.hxx
-# End Source File
 # End Group
 # End Group
 # Begin Group "Processing Headers"
 
-# Begin Group "Base Headers No. 4"
+# Begin Group "Base Headers No. 5"
 
 # Begin Source File
 
@@ -2093,6 +2196,10 @@ SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingConfig.hxx
 # End Source File
 # Begin Source File
 
@@ -2122,78 +2229,36 @@ SOURCE=..\..\..\..\src\Processing\SDIFIO\SDIFIn.hxx
 SOURCE=..\..\..\..\src\Processing\SDIFIO\SDIFOut.hxx
 # End Source File
 # End Group
-# Begin Group "Analysis Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\WindowGenerator.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\CircularShift.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FFT.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralAnalysis.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetect.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\FundFreqDetect.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SinTracking.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SMSAnalysis.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtract.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\CleanTracks.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Analysis\Segmentator.hxx
-# End Source File
-# End Group
-# Begin Group "ArithOps Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.hxx
-# End Source File
-# End Group
 # Begin Group "Synthesis Headers"
 
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\EPhaseGeneration.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\PhaseManagementConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\IFFTConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\SpectralSynthesisConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\OverlapAddConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\SynthSineSpectrumConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\SMSSynthesisConfig.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Synthesis\SynthSineSpectrum.hxx
@@ -2221,6 +2286,101 @@ SOURCE=..\..\..\..\src\Processing\Synthesis\SpectralSynthesis.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Synthesis\SMSSynthesis.hxx
+# End Source File
+# End Group
+# Begin Group "Analysis Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\WindowGeneratorConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\CircularShiftConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFTConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralAnalysisConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetectConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FundFreqDetectConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SinTrackingConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SMSAnalysisConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtractConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralEnvelopeExtract.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralPeakDetect.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FundFreqDetect.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SinTracking.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\WindowGenerator.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\CircularShift.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFT.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SpectralAnalysis.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SMSAnalysis.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\CleanTracksConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\CleanTracks.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\SegmentatorConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\Segmentator.hxx
 # End Source File
 # End Group
 # Begin Group "Transformations Headers"
@@ -2297,6 +2457,25 @@ SOURCE=..\..\..\..\src\Processing\Transformations\FDCombFilter.hxx
 SOURCE=..\..\..\..\src\Processing\Transformations\Normalization.hxx
 # End Source File
 # End Group
+# Begin Group "ArithOps Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumAdder2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumSubstracter2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
+# End Source File
+# End Group
 # Begin Group "AudioIO Headers"
 
 # Begin Source File
@@ -2325,115 +2504,6 @@ SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "Data Headers"
-
-# Begin Group "Base Headers No. 5"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Base\ProcessingDataConfig.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
-# End Source File
-# End Group
-# Begin Group "BasicProcessing Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Fundamental.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeak.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectralPeakArray.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Frame.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\Segment.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\AudioCircularBuffer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConversions.hxx
-# End Source File
-# End Group
-# Begin Group "Descriptors Headers"
-
-# Begin Group "Melody Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\MediaTime.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\PitchNote.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Note.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\Melody\Melody.hxx
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\AudioDescriptors.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\SpectralDescriptors.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Descriptors\SegmentDescriptors.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "fftw Headers"
-
-# Begin Group "include Headers No. 2"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fftw\include\fftw.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fftw\include\rfftw.h
 # End Source File
 # End Group
 # End Group
@@ -2552,7 +2622,7 @@ SOURCE=..\..\..\..\src\System\Threads\Mutex.hxx
 # End Group
 # Begin Group "dxsdk Headers"
 
-# Begin Group "include Headers No. 3"
+# Begin Group "include Headers No. 2"
 
 # Begin Source File
 
@@ -2574,7 +2644,7 @@ SOURCE=..\..\..\..\..\dxsdk\include\basetsd.h
 # End Group
 # Begin Group "xercesc Headers"
 
-# Begin Group "include Headers No. 4"
+# Begin Group "include Headers No. 3"
 
 # Begin Group "xercesc Headers No. 1"
 
@@ -2719,6 +2789,20 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\framework\XMLFormatter.hpp
 # End Source File
 # End Group
 # End Group
+# End Group
+# End Group
+# Begin Group "fftw Headers"
+
+# Begin Group "include Headers No. 4"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fftw\include\fftw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fftw\include\rfftw.h
+# End Source File
 # End Group
 # End Group
 # End Group
