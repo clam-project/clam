@@ -48,8 +48,8 @@ protected:
 	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
-	virtual void Show();
-	virtual void Hide();
+	void Show();
+	void Hide();
 
 public slots:
 	void SlotOk();
