@@ -1,26 +1,52 @@
 <html>
-<head>
-	<title> Test Driven Development example</title>
-	<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen" />
-</head>
-<body>
-<h1> Example of TDD to-do list </h1>
-<h2> Developing a Processing Factory</h2>
-
-<ul>
-
-<li class='current'> current </li>
-<li class='to-do'>to do</li>
-<li class='to-do'>another to do
-	<ul>
-		<li class='done'> a sub to do</li>
-	</ul>
-</li>
-
-<li class='done'> done </li>
-<li class='hidden'> hidden </li>
-
-</ul>
-
-</body>
+	<head>
+		<title>Test Driven Development example</title>
+		<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen" />
+	</head>
+	<body>
+		<h1>
+			Example of TDD to-do list
+		</h1>
+		<h2>
+			Developing a Processing Factory</h2>
+		<ul>
+			<li class='to-do'>
+				Query "Generator" to the factory and the returned Processing* type_id == 
+				Generator
+			</li>
+			<li class='to-do'>
+				Processing* p = CreateGenerator(); type_id of p is Generator
+			</li>
+			<li class='to-do'>
+				Registry :
+				<ul>
+					<li class='to-do'>
+						Get a creator method when registry is empty
+						<ul>
+							<li class='to-do'>
+								Unsafe version with CLAM_ASSERT</li>
+							<li class='to-do'>
+								Save version rises Err</li>
+						</ul>
+					</li>
+					<li class='to-do'>Having added a single creator method, ask for the correct key	</li>
+					<li class='to-do'>Having added a single creator method, ask for the wrong key</li>
+					<li class='to-do'>Having added two elements, ask for one of the keys</li>
+					<li class='to-do'>Having added two elements, ask for an incorrect keys</li>
+					<li class='to-do'>Add a repeated key</li>
+					<ul> 
+						<li class='to-do'>Unsafe version: CLAM_ASSERT</li>
+						<li class='to-do'>Safe version: rises Err</li>
+					</ul>
+					<li class='to-do'>Automatic registry</li>
+				</ul>
+			</li>
+			<li class='done'>
+				done
+			</li>
+			<li class='hidden'>
+				hidden
+			</li>
+		</ul>
+	</body>
 </html>
