@@ -125,6 +125,20 @@ namespace CLAM{
 			mSetter = new VisitorSetter<Config,QTConfigurator>(&config, this);
 			if (mGetter) delete mGetter;
 			mGetter = new VisitorGetter<Config,QTConfigurator>(&config, this);
+
+			setSpacing(3);
+			GetInfo();
+			
+			QFrame * frame = new QFrame(this);
+			frame->setMinimumHeight(10);
+
+			QGrid *grid = new QGrid( 2, this );
+			
+			QPushButton * applyButton = new QPushButton("Apply", grid, "apply");
+			connect( applyButton, SIGNAL(clicked()), this, SLOT(Apply()) );
+
+			QPushButton * discardButton = new QPushButton("Discard", grid, "discard");
+			connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
 		}
 	private:
 
@@ -255,9 +269,10 @@ namespace CLAM{
 			QHBox * cell = new QHBox(this);
 			new QLabel(QString(name), cell);
 			QPushButton * mInput = new QPushButton("Details...", cell);
-//			QTConfigurator subConfigurator = new QTConfigurator();
-//			subConfigurator.SetConfig(value);
-//			mSubConfigurators.insert(tSubConfigurators::value_type(name, subConfigurator));
+			QTConfigurator * subConfigurator = new QTConfigurator();
+			subConfigurator->SetConfig(value);
+			mSubConfigurators.insert(tSubConfigurators::value_type(name, subConfigurator));
+			connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
 		}
@@ -276,18 +291,6 @@ namespace CLAM{
 	public:
 	
 		void QTConfigurator::show() {
-			GetInfo();
-			
-			QFrame * frame = new QFrame(this);
-			frame->setMinimumHeight(10);
-
-			QGrid *grid = new QGrid( 2, this );
-			
-			QPushButton * applyButton = new QPushButton("Apply", grid, "apply");
-			connect( applyButton, SIGNAL(clicked()), this, SLOT(Apply()) );
-
-			QPushButton * discardButton = new QPushButton("Discard", grid, "discard");
-			connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
 
 			super::show();
 		}
