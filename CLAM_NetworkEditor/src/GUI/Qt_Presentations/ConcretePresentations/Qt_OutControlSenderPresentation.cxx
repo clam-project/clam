@@ -1,10 +1,11 @@
 
 #include "Qt_OutControlSenderPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
-#include "OutControlSender.hxx"
-#include <cmath>
 
+#include <cmath>
 #include <qslider.h>
+#include <qdial.h>
+#include <qspinbox.h>
 #include <qpainter.h>
 #include <iostream> // TODO: remove
 
@@ -12,30 +13,23 @@ namespace NetworkGUI
 {
 
 Qt_OutControlSenderPresentation::Qt_OutControlSenderPresentation()
-	: mSlider(0)
+	: mControlRepresentation(0)
 {
-	mSlider = new QSlider( Vertical, this );
-	mSlider->setMinimumSize( 20, 50 );
-	mSlider->resize(20, 50 );
-	mSlider->move( 18, 14 );
-
-	connect( mSlider, SIGNAL( valueChanged( int ) ), 
-		 this, SLOT( SlotValueChanged( int ) ) );
-
-
 }
 
 void Qt_OutControlSenderPresentation::UpdateSize( bool hasToResize)
-{
-	setMinimumSize(56, 76 );
+{	
+	setMinimumSize( 50, 50 );
 	if(hasToResize)
-		resize(56,76);
+		resize( 50, 50 );
+
 }
 
 void Qt_OutControlSenderPresentation::paintEvent( QPaintEvent * )
 {
 	QPainter p( this );
-	mSlider->setPalette( QPalette( GetColorOfState()));
+	if(mControlRepresentation)
+		mControlRepresentation->setPalette( QPalette( GetColorOfState()));
 	p.setBrush( GetColorOfState() );
 
 	QRegion reg(12,7,width()-24, height()-14);
@@ -59,21 +53,80 @@ void Qt_OutControlSenderPresentation::paintEvent( QPaintEvent * )
 
 void Qt_OutControlSenderPresentation::ConfigurationUpdated( bool ok )
 {
+	if(mControlRepresentation)
+	{
+		delete mControlRepresentation;
+		mControlRepresentation = 0;
+	}
 
 	CLAM::OutControlSenderConfig * config = dynamic_cast<CLAM::OutControlSenderConfig *>(mConfig->GetConfig());
 	CLAM_ASSERT( config, " Qt_OutControlSenderPresentation::ConfigurationUpdated(), config has the wrong concrete type" );
+
 	mMin = config->GetMin();
 	mDefault = config->GetDefault();
 	mMax = config->GetMax();
 	mStep = config->GetStep();
 
-	mSlider->setRange( (int)(round(mMin/mStep)),
+	if(config->GetControlRepresentation() == CLAM::OutControlSenderConfig::EControlRepresentation::eUndetermined )
+		return;
+
+	CreateControlRepresentationWidget( config->GetControlRepresentation() );
+	AdjustControlRepresentationValues();
+	SignalSendOutControlValue.Emit( "out", mDefault );
+}
+
+void Qt_OutControlSenderPresentation::AdjustControlRepresentationValues()
+{
+	QRangeControl * controlRepresentation = dynamic_cast<QRangeControl*>( mControlRepresentation );
+	controlRepresentation->setRange( (int)(round(mMin/mStep)),
 			   (int)(round(mMax/mStep)) );
 	
-	mSlider->setValue( (int)(mDefault/mStep) );
-	SignalSendOutControlValue.Emit( "out", mDefault );
-
+	controlRepresentation->setValue( (int)(mDefault/mStep) );
 }
+
+void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget( 
+		const CLAM::OutControlSenderConfig::EControlRepresentation & representation )
+{
+	switch( representation )
+	{
+		case CLAM::OutControlSenderConfig::EControlRepresentation::eVerticalSlider:
+			mControlRepresentation = new QSlider( Vertical, this );
+			mControlRepresentation->setMinimumSize( 20, 50 );
+			setMinimumSize( 56, 76 );
+			resize( 56, 76 );
+			break;
+		case CLAM::OutControlSenderConfig::EControlRepresentation::eHorizontalSlider:
+			mControlRepresentation = new QSlider( Horizontal, this );
+			mControlRepresentation->setMinimumSize( 50, 20 );
+			setMinimumSize( 86, 46 );
+			resize( 86, 46 );
+			break;
+		case CLAM::OutControlSenderConfig::EControlRepresentation::eKnot:
+			mControlRepresentation = new QDial( this );
+			mControlRepresentation->setMinimumSize( 30, 30 );
+			setMinimumSize( 66, 56 );
+			resize( 66, 56 );
+			break;
+		case CLAM::OutControlSenderConfig::EControlRepresentation::eSpinBox:
+			mControlRepresentation = new QSpinBox( this );
+			mControlRepresentation->setMinimumSize( 45, 25 );
+			setMinimumSize( 81, 51 );
+			resize( 81, 51 );
+			break;
+		default:
+			CLAM_ASSERT( false, "Qt_OutControlSenderPresentation::ConfigurationUpdated(), unknown type of widget" );
+	}	
+	
+	connect( mControlRepresentation, SIGNAL( valueChanged( int ) ), 
+		 this, SLOT( SlotValueChanged( int ) ) );
+
+	mControlRepresentation->move( 18, 14 );
+	mControlRepresentation->show();
+	mControlRepresentation->resize( geometry().width() - 36, geometry().height() - 28 );
+	UpdateOutControlsPosition();
+	repaint();
+}
+
 void Qt_OutControlSenderPresentation::SlotValueChanged( int value )
 {
 	SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
@@ -110,8 +163,8 @@ void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
 	//QRect sliderGeometry = newGeometry;
 	//sliderGeometry.setWidth( width() - 24 );
 	//sliderGeometry.setHeight( height() - 14 );
-	mSlider->resize( geometry().width() - 36, geometry().height() - 28 );
-	std::cout << "slider measures: " << mSlider->width() << "  " << mSlider->height() << std::endl;
+	if(mControlRepresentation)
+		mControlRepresentation->resize( geometry().width() - 36, geometry().height() - 28 );
 	UpdateOutControlsPosition();
 }
 

@@ -4,6 +4,18 @@
 namespace CLAM
 {
 
+Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =
+	{
+		{ EControlRepresentation::eUndetermined, "Undetermined" },
+		{ EControlRepresentation::eVerticalSlider, "Vertical Slider" },
+		{ EControlRepresentation::eHorizontalSlider, "Horizontal Slider" },
+		{ EControlRepresentation::eKnot, "Knot" },
+		{ EControlRepresentation::eSpinBox, "Spin Box" },
+		{ 0, NULL }
+	};
+
+Enum::tValue OutControlSenderConfig::EControlRepresentation::sDefault = OutControlSenderConfig::EControlRepresentation::eVerticalSlider;
+
 void OutControlSenderConfig::DefaultInit(void)
 {
 	AddAll();
