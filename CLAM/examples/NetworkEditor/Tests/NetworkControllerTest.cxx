@@ -32,13 +32,13 @@
 namespace CLAMTest 
 {
 
-class NetworkEditorTest;
-CPPUNIT_TEST_SUITE_REGISTRATION( NetworkEditorTest );
+class NetworkControllerTest;
+CPPUNIT_TEST_SUITE_REGISTRATION( NetworkControllerTest );
 
 
-class NetworkEditorTest : public CppUnit::TestFixture, public CLAMVM::NetworkController
+class NetworkControllerTest : public CppUnit::TestFixture, public CLAMVM::NetworkController
 {
-	CPPUNIT_TEST_SUITE( NetworkEditorTest );
+	CPPUNIT_TEST_SUITE( NetworkControllerTest );
 		
 	CPPUNIT_TEST( testNetworkControllerStopsNetwork_WhenIsStopped );
 	CPPUNIT_TEST( testAddProcessingCreatesProcessingController );
