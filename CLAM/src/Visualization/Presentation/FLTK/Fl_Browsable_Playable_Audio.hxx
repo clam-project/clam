@@ -52,11 +52,13 @@ namespace CLAMVM
 		AudioRenderingManager   mDrawMgr;
 		Fl_Button * mPlayButton, * mStopButton;
 		bool mCancel, mIsThisPlaying;
-		SigSlot::Slotv0 mSlot;
 		CLAM::AudioPlayer* mAudioPlayer;
 
 		void Play(  );
 		void Stop(  );
+
+		void OnMouseEvent( double place );
+		void OnNewFrame( CLAM::TData frameNum );
 
 		static void play( Fl_Widget*, void* data);
 		static void stop( Fl_Widget*, void* data);
@@ -68,11 +70,20 @@ namespace CLAMVM
 		Fl_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label = 0 );
 		~Fl_Browsable_Playable_Audio();
 				
-		void SetPainting(bool painting); 
+		void SetPaint(); 
+		void UnsetPaint(); 
 		void SetPos( CLAM::TData pos );
-		SigSlot::Slotv1<CLAM::TData>* GetFrameSlot();
-		SigSlot::Slotv1<bool>& GetPaintSlot(); 
-		SigSlot::Signalv1<double>* GetSignal();
+
+		SigSlot::Slotv1<double> mMouseEvent;
+		SigSlot::Signalv1<double> mSendingMouseEvent;
+		SigSlot::Signalv1<CLAM::TData> mNewFrame;
+		SigSlot::Slotv1<CLAM::TData> mRecievingNewFrame;
+
+
+		SigSlot::Slotv0 mStopSlot;
+
+//		Slotv1<CLAM::TData>* GetFrameSlot();
+//		SigSlot::Signalv1<double>* GetSignal();
 		
 		void Show();
 		void Hide();

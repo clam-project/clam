@@ -83,7 +83,12 @@ Fl_Browsable_Playable_Audio::Fl_Browsable_Playable_Audio( int X, int Y, int W, i
 				
 	end();
 	mDrawMgr.SetDetailThreshold( 500 );
-	mSlot.Wrap( this, &Fl_Browsable_Playable_Audio::Stop );
+
+	mStopSlot.Wrap( this, &Fl_Browsable_Playable_Audio::Stop );
+	mMouseEvent.Wrap( this, &Fl_Browsable_Playable_Audio::OnMouseEvent );
+	mRecievingNewFrame.Wrap( this, &Fl_Browsable_Playable_Audio::OnNewFrame );
+	mNewFrame.Connect( mDisplay->mNewFrame );
+	mDisplay->mMouseEvent.Connect( mMouseEvent );
 }
 
 Fl_Browsable_Playable_Audio::~Fl_Browsable_Playable_Audio( )
@@ -109,7 +114,7 @@ void Fl_Browsable_Playable_Audio::Play(  )
 	tempAudio->SetBuffer( mDrawMgr.GetDataCached(  ) );
 
 	mIsThisPlaying = true;
-	mAudioPlayer = new AudioPlayer( tempAudio, mSlot );
+	mAudioPlayer = new AudioPlayer( tempAudio, mStopSlot );
 }
 
 void Fl_Browsable_Playable_Audio::Stop(  )
@@ -128,6 +133,7 @@ void Fl_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime begi
 	mDisplay->SetWorldSpace( array.Size() - 2, 0, 1.0, -1.0f );
 	mXAxis->minimum( begin );
 	mXAxis->maximum( begin+end );
+	mDisplay->invalidate();
 	redraw();
 }
 	
@@ -140,28 +146,28 @@ void Fl_Browsable_Playable_Audio::Hide()
 {
 	hide();
 }
-void Fl_Browsable_Playable_Audio::SetPainting(bool painting) 
+
+void Fl_Browsable_Playable_Audio::SetPaint() 
 { 
-	mDisplay->SetPainting(painting); 
+	mDisplay->SetPainting(); 
 }
 		
+void Fl_Browsable_Playable_Audio::UnsetPaint() 
+{ 
+	mDisplay->UnsetPainting();
+}
+
 void Fl_Browsable_Playable_Audio::SetPos( CLAM::TData pos )
 { 
 	mDisplay->SetPos(pos); 
 }
 		
-Slotv1<TData>* Fl_Browsable_Playable_Audio::GetFrameSlot()
+void Fl_Browsable_Playable_Audio::OnMouseEvent( double place )
 {
-	return mDisplay->GetFrameSlot();
-
+	mSendingMouseEvent.Emit( place );
 }
 
-Slotv1<bool>& Fl_Browsable_Playable_Audio::GetPaintSlot() 
-{ 
-	return mDisplay->GetPaintSlot(); 
-} 
-
-Signalv1<double>* Fl_Browsable_Playable_Audio::GetSignal() 
-{ 
-	return mDisplay->GetSignal(); 
+void Fl_Browsable_Playable_Audio::OnNewFrame( CLAM::TData frameNum )
+{
+	mNewFrame.Emit( frameNum );
 }

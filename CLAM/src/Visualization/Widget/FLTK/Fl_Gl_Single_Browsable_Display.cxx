@@ -25,6 +25,10 @@
 #include "Assert.hxx"
 #include "AudioRenderingManager.hxx"
 
+
+#include <iostream>
+
+
 namespace CLAMVM
 {
 	Fl_Gl_Single_Browsable_Display::Fl_Gl_Single_Browsable_Display( int X, int Y, int W, int H, const char* label)
@@ -79,6 +83,7 @@ namespace CLAMVM
 		if( dataBBox.mLeft < mPos && mPos < dataBBox.mRight ) 
 		{
 			int position = (int) ceil( ( ( mPos - dataBBox.mLeft ) * w() ) / (dataBBox.mRight-dataBBox.mLeft) );
+
 			glMatrixMode( GL_PROJECTION );
 			glPushMatrix();
 			ortho();
@@ -104,9 +109,11 @@ namespace CLAMVM
 
 	void Fl_Gl_Single_Browsable_Display::DrawContents()
 	{
+		Fl_Gl_Single_Display::DrawContents();
+
 		if( mPainting ) {
 			redraw_overlay(  );
 		}
-		Fl_Gl_Single_Display::DrawContents();
+
 	}
 }
