@@ -1,0 +1,17 @@
+#####################################################################
+# Check sandbox location
+#
+# source: $$filename 
+#####################################################################
+if test x$enabled_sandbox = xyes
+then
+	if test x$sandbox_location = x
+	then
+		echo TODO: PROPER SANDBOX LOCATION CHECK
+		AC_MSG_CHECKING([[CLAM sandbox location]])
+		sandbox_location=/mnt/hda8/CLAM
+		AC_MSG_RESULT([$sandbox_location])
+	fi
+fi
+#####################################################################
+
