@@ -5,7 +5,7 @@
 #include <FL/Fl_Slider.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
-#include "SDTooltip.hxx"
+#include "SDToolTip.hxx"
 
 namespace CLAM
 {

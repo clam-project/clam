@@ -1,5 +1,6 @@
 #include "SDToolTip.hxx"
 #include <cstring>
+#include <cstdio>
 
 SDToolTip::SDToolTip( int x, int y, int w, int h )
 	: Fl_Box( x, y, w, h )
