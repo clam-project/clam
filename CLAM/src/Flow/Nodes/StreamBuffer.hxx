@@ -54,8 +54,11 @@ namespace CLAM {
 	class StreamBuffer {
 
 		StreamRegionContainer mRegions;
-
+		/** Member buffer where reading/writing is performed*/
 		B mBuffer;
+		/** XA: Auxiliary array used when AddStreamRegions are activated. It is where the
+		 *	actual addition takes place. This array should not be here but rather in the region */
+		Array<D> mTmpBuffer;
 
 	public:
 
@@ -84,6 +87,7 @@ namespace CLAM {
 		                                unsigned int write_length,
 		                                SourceStreamRegion* source=0,
 		                                unsigned int write_delay=0);
+		AddStreamRegion *NewAdder(unsigned int hop, unsigned int length);
 		//@}
 
 		void SetPrototype(const D& proto) {};
@@ -96,30 +100,10 @@ namespace CLAM {
 		void Configure(unsigned int max_window_size=0);
 
 		/** Region activation method.
-		 * These methods provide the interface to access the data
+		 * This method provides the interface to access the data
 		 * inside a region. They must always be followed by a
-		 * Region Advance method.
+		 * Region Advance method unless the activation has failed.
 		 */
-		template<class REGION>
-		D* GetAndActivate(REGION* r)
-		{
-			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
-			                  "StreamBuffer::GetAndActivate(): "
-			                  "Invalid region argument ");
-			CLAM_DEBUG_ASSERT(r->FulfilsInvariant(),
-			                  "StreamBuffer::GetAndActivate(): "
-			                  "Region inconsistent before activation.");
-			r->Activate();
-			/** if r does not fulfil invariant after activation, it means that
-			 *	it cannot be used consistently. The Leave() method should be called
-			 *	afterwards, else results are not predictable when trying to use the region
-			 *	as it does not point to a valid memory.*/
-			if (!r->FulfilsInvariant())	return false;
-			else {
-				return mBuffer.GetData(r);
-				return true;}
-		}
-
 		template<class REGION>
 		bool GetAndActivate(REGION* r, Array<D> &a)
 		{
@@ -141,6 +125,30 @@ namespace CLAM {
 				return true;}
 		}
 
+		template <>
+		bool GetAndActivate(AddStreamRegion* r, Array<D> &a)
+		{
+			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
+			                  "StreamBuffer::GetAndActivate(): "
+			                  "Invalid region argument ");
+			CLAM_DEBUG_ASSERT(r->FulfilsInvariant(),
+			                  "StreamBuffer::GetAndActivate(): "
+			                  "Region inconsistent before activation.");
+			r->Activate();
+			
+			/** if r does not fulfil invariant after activation, it means that
+			 *	it cannot be used consistently. The Leave() method should be called
+			 *	afterwards, else results are not predictable when trying to use the region
+			 *	as it does not point to a valid memory.*/
+			if (!r->FulfilsInvariant())	return false;
+			else {
+				mBuffer.GetData(r,a);
+				mTmpBuffer=a;
+				return true;
+
+			}
+		}
+
 		/** @name Region Advance methods.
 		 * This methods notify the buffer that data processing in the
 		 * region which was requested by a previous GetAndActivate
@@ -155,6 +163,21 @@ namespace CLAM {
 			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
 							  "StreamBuffer::LeaveAndAdvance(): "
 							  "Invalid region argument ");
+			mBuffer.Leave(r);
+			r->LeaveAndAdvance();
+		}
+
+		template<>
+		void LeaveAndAdvance(AddStreamRegion*r)
+		{
+			CLAM_DEBUG_ASSERT(mRegions.Contains(r),
+							  "StreamBuffer::LeaveAndAdvance(): "
+							  "Invalid region argument ");
+			//I have to do the addition by hand!!
+			Array<D> tmp;
+			mBuffer.GetData(r,tmp);
+			for(int i=0;i<tmp.Size();i++)
+				tmp[i]+=mTmpBuffer[i];
 			mBuffer.Leave(r);
 			r->LeaveAndAdvance();
 		}
@@ -175,6 +198,8 @@ namespace CLAM {
 			mBuffer.Leave(r);
 			r->Leave();
 		}
+
+		
 
 	};
 
@@ -204,10 +229,20 @@ namespace CLAM {
 	                                                 unsigned int length)
 	{
 		CLAM_ASSERT(mRegions.Writer() == 0,
-		            "StreamBuffer::NewWirter(): Writer already registered");
+		            "StreamBuffer::NewWriter(): Writer already registered");
 		WriteStreamRegion *writer = new WriteStreamRegion(hop,length);
 		mRegions.SetWriter(writer);
 		return writer;
+	}
+
+	template<class D, class B>
+	AddStreamRegion *StreamBuffer<D,B>::NewAdder(unsigned int hop, unsigned int length)
+	{
+		CLAM_ASSERT(mRegions.Adder() == 0,
+		            "StreamBuffer::NewAdder(): Adder already registered");
+		AddStreamRegion *adder= new AddStreamRegion(hop,length);
+		mRegions.SetAdder(adder);
+		return adder;
 	}
 
 	template<class D, class B>
@@ -249,7 +284,7 @@ namespace CLAM {
 		            "StreamBuffer::NewInplace(): Invalid source argument.");
 		if (!source)
 			source = mRegions.Writer();
- 		InplaceStreamRegion *inplace = new InplaceStreamRegion(hop,length,source);
+ 		InplaceStreamRegion *inplace = new InplaceStreamRegion(hop,read_length,write_length,source);
 		mRegions.AddInplace(inplace,source);
 		return inplace;
 	}

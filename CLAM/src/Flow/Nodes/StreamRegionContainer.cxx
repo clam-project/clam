@@ -35,10 +35,18 @@ namespace CLAM {
 
 	void StreamRegionContainer::SetWriter(WriteStreamRegion *writer)
 	{
-		CLAM_ASSERT(mSources.size() == 0,
+		CLAM_ASSERT(!Writer(),
 		            "StreamRegionContainer::SetWriter():"
 		            " Writer already set.");
 		mSources.push_back(writer);
+	}
+
+	void StreamRegionContainer::SetAdder(AddStreamRegion *adder)
+	{
+		CLAM_ASSERT(!Adder(),
+		            "StreamRegionContainer::SetAdder():"
+		            " Adder already set.");
+		mSources.push_back(adder);
 	}
 
 	void StreamRegionContainer::AddDelay(DelayStreamRegion *new_delay,
@@ -103,14 +111,56 @@ namespace CLAM {
 	{
 		if (mSources.size() == 0)
 			return 0;
-		return static_cast<WriteStreamRegion*>(mSources.front());
+		WriteStreamRegion* writer;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(writer=dynamic_cast<WriteStreamRegion*>(*sit));
+				return writer;
+		}
+		return 0;
 	}
 
 	const WriteStreamRegion *StreamRegionContainer::Writer() const
 	{
 		if (mSources.size() == 0)
 			return 0;
-		return static_cast<WriteStreamRegion*>(mSources.front());
+		const WriteStreamRegion* writer;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(writer=dynamic_cast<WriteStreamRegion*>(*sit));
+				return writer;
+		}
+		return 0;
+	}
+
+	AddStreamRegion *StreamRegionContainer::Adder()
+	{
+		if (mSources.size() == 0)
+			return 0;
+		AddStreamRegion* adder;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(adder=dynamic_cast<AddStreamRegion*>(*sit));
+				return adder;
+		}
+		return 0;
+	}
+
+	const AddStreamRegion *StreamRegionContainer::Adder() const
+	{
+		if (mSources.size() == 0)
+			return 0;
+		const AddStreamRegion* adder;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(adder=dynamic_cast<AddStreamRegion*>(*sit));
+				return adder;
+		}
+		return 0;
 	}
 
 	const SourceStreamRegion *StreamRegionContainer::LastSource() const
