@@ -1,3 +1,6 @@
+#ifndef _DescriptionAttributes_hxx_
+#define _DescriptionAttributes_hxx_
+
 #include <typeinfo>
 #include "Assert.hxx"
 #include "Storage.hxx"
@@ -85,3 +88,4 @@ namespace CLAM
 
 
 
+#endif// _DescriptionAttributes_hxx_
