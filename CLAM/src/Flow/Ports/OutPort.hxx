@@ -190,7 +190,10 @@ bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
 	mConnectedInPortsList.remove( &in );
 	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
-		(*it)->UnAttachRegion();
+	{
+		if( (*it)->GetAttachedOutPort())
+			(*it)->UnAttachRegion();
+	}
 	return true;
 }
 
