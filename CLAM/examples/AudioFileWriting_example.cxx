@@ -17,6 +17,7 @@
 // For accessing <cmath> header in a cross-platform way
 #include "CLAM_Math.hxx"
 #include "DataTypes.hxx"
+#include "OSDefines.hxx"
 
 #include <vector>
 

@@ -2,7 +2,22 @@
 #include "MIDIIOConfig.hxx"
 #include "MIDIOutControl.hxx"
 
+#ifdef WIN32
+	#include "Windows.h"
+#endif
+
 using namespace CLAM;
+
+void CrossPlatformSleep(int seconds)
+{
+	#ifdef POSIX
+		sleep(seconds);
+	#elif defined WIN32
+		Sleep(1000*seconds);
+	#else 
+		#error sleeping function still not tried on your platform
+	#endif
+}
 
 main()
 {
@@ -22,12 +37,11 @@ main()
 	outNote.GetInControls().GetByNumber(0).DoControl(60);
 	outNote.GetInControls().GetByNumber(1).DoControl(120);
 
-	sleep(1);
-
+	CrossPlatformSleep(1);
 	outNote.GetInControls().GetByNumber(0).DoControl(60);
 	outNote.GetInControls().GetByNumber(1).DoControl(0);
 	
-	sleep(1);
+	CrossPlatformSleep(1);
 
 	// STOP HERE
 	return 0;
