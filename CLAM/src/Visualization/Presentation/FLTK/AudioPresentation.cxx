@@ -24,6 +24,7 @@
 #include "GeometryKit.hxx"
 #include "Viewport.hxx"
 #include <algorithm>
+
 using std::max_element;
 using std::min_element;
 using namespace CLAMGUI;

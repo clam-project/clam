@@ -1,12 +1,26 @@
+#ifndef __PresentationWindow__
+#define __PresentationWindow__
+
 #include <FL/Fl_Double_Window.H>
+
+namespace CLAM
+{
+	class Audio;
+}
+using CLAM::Audio;
 
 namespace CLAMGUI
 {
 
+	// TODO: there should be a class in between Presentation and the 
+	//  FLTK Presentations, that has a PresentationWindow as member
+	// See also: AudioPresentation.hxx: GetWindow()
+	class ProcDataPresentation<Audio>;
+	
 	class PresentationWindow:public Fl_Double_Window
 	{
 	protected:
-		friend class Presentation;
+		friend ProcDataPresentation<Audio>; 
 	
 		Presentation* mPresentation;
 
@@ -26,3 +40,5 @@ namespace CLAMGUI
 		}
 	};
 }
+
+#endif

@@ -24,7 +24,6 @@
 
 #include "ProcDataPresentation.hxx"
 #include "FLDisplayContainer.hxx"
-#include "PresentationWindow.hxx"
 #include "GLPortNew.hxx"
 #include "GLWaveRenderer.hxx"
 #include "GLState.hxx"
@@ -33,6 +32,7 @@
 #include "CLAMGL.hxx"
 #include "CBL.hxx"
 #include "GeometryKit.hxx"
+#include "PresentationWindow.hxx" // TODO this should be a forward declaration!
 
 using CLAM::DataArray;
 using CLAM::TData;
