@@ -61,7 +61,7 @@ void PushFlowControl::DoProcessings()
 		Processing * next = *(toDo.begin()); // the first
 		toDo.pop_front();
 
-		if(next->CanDoUsingPorts())
+		if(next->CanConsumeAndProduce())
 		{
 			next->Do();
 			done.push_back(next);

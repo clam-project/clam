@@ -50,16 +50,14 @@ namespace CLAM
 		try {
 			if( !ConfigureChildren() )
 			{
-				std::string aux(mStatus);
-				mStatus = "\nFailed to configure children:\n";
-				mStatus += aux;
+				AddConfigErrorMessage("\nFailed to configure children:\n");
 				r = false;
 			}
 		}
 		catch(std::exception &e)
 		{
-			mStatus += "Failed to configure children:\n";
-			mStatus += e.what();
+			AddConfigErrorMessage("Failed to configure children:\n");
+			AddConfigErrorMessage( e.what() );
 			return false;
 		}
 
@@ -96,8 +94,8 @@ namespace CLAM
 
 		if(!mControl.Configure(cfg))
 		{
-			mStatus += "mControl: ";
-			mStatus += mControl.GetStatus();
+			AddConfigErrorMessage("mControl: ");
+			AddConfigErrorMessage( mControl.GetStatus() );
 			return false;
 		}
 

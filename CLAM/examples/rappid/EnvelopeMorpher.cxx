@@ -197,13 +197,13 @@ bool EnvelopeMorpher::ConfigureChildren()
 		if (!pEnvelopeFile)
 			pEnvelopeFile = new AudioFileOut;
 		if (!pEnvelopeFile)  {
-			mStatus += "Memory full";
+			AddConfigErrorMessage("Memory full");
 			return false;
 		}
 		if (!pEnvelopeFile->Configure(fcfg))
 		{
-			mStatus += "EnvelopeFile: ";
-			mStatus += pEnvelopeFile->GetStatus();
+			AddConfigErrorMessage("EnvelopeFile: ");
+			AddConfigErrorMessage( pEnvelopeFile->GetStatus() );
 			return false;
 		}
 		pEnvelopeFile->SetParent(this);
@@ -216,13 +216,13 @@ bool EnvelopeMorpher::ConfigureChildren()
 		if (!pEnvelopeGen)
 			pEnvelopeGen = new EnvelopeGenerator;
 		if (!pEnvelopeGen) {
-			mStatus += "Memory full";
+			AddConfigErrorMessage("Memory full");
 			return false;
 		}
 		if (!pEnvelopeGen->Configure(egcfg))
 		{
-			mStatus += "EnvelopeGenerator: ";
-			mStatus += pEnvelopeGen->GetStatus();
+			AddConfigErrorMessage("EnvelopeGenerator: ");
+			AddConfigErrorMessage( pEnvelopeGen->GetStatus() );
 			return false;
 		}
 		pEnvelopeGen->SetParent(this);
@@ -232,8 +232,8 @@ bool EnvelopeMorpher::ConfigureChildren()
 	mcfg.SetSampleRate(mSampleRate);
 	mcfg.SetFrameSize(mConfig.GetGlobalConfig().GetFrameSize());
 	if (!mModulator.Configure(mcfg)) {
-		mStatus += "EnvelopeApplicator: ";
-		mStatus += mModulator.GetStatus();
+		AddConfigErrorMessage("EnvelopeApplicator: ");
+		AddConfigErrorMessage( mModulator.GetStatus() );
 		return false;
 	}
 	acfg.SetName("EnvelopeExtractor");
@@ -245,8 +245,8 @@ bool EnvelopeMorpher::ConfigureChildren()
 	acfg.SetSilenceLevel(mConfig.GetSilenceLevel());
 	acfg.SetInterpolationType(mConfig.GetInterpolationType());
 	if (!mAnalysis.Configure(acfg)) {
-		mStatus += "EnvelopeExtractor: ";
-		mStatus += mAnalysis.GetStatus();
+		AddConfigErrorMessage("EnvelopeExtractor: ");
+		AddConfigErrorMessage( mAnalysis.GetStatus() );
 		return false;
 	}
 
@@ -264,23 +264,19 @@ bool EnvelopeMorpher::ConcreteConfigure(const ProcessingConfig& c)
 	try {
 		if (!ConfigureChildren())
 		{
-			std::string aux(mStatus);
-			mStatus = "\nFailed to configure children:\n";
-			mStatus += aux;
+			AddConfigErrorMessage("\nFailed to configure children:\n");
 			res=false;
 		}
 		if (!ConfigureData())
 		{
-			std::string aux(mStatus);
-			mStatus = "Failed to configure data:\n";
-			mStatus += aux;
+			AddConfigErrorMessage("Failed to configure data:\n");
 			res=false;
 		}
 	}
 	catch (std::exception &e)
 	{
-		mStatus += "Failed to configure children:\n";
-		mStatus += e.what();
+		AddConfigErrorMessage("Failed to configure children:\n");
+		AddConfigErrorMessage( e.what() );
 		return false;
 	}
 	if (mConfig.GetGlobalConfig().GetVerbose()) {

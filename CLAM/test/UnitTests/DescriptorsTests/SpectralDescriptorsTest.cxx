@@ -123,7 +123,7 @@ private:
 		cfg.SetSourceFile(audioFile);
 		CLAM::MonoAudioFileReader reader;
 		CPPUNIT_ASSERT_MESSAGE(
-			"configuration failed " + reader.GetStatus(),
+			"configuration failed " + reader.GetConfigErrorMessage(),
 			reader.Configure(cfg));
 
 		CLAM::Audio buf;

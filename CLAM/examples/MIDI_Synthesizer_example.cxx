@@ -228,7 +228,7 @@ bool MyInstrument::Do( Audio& out )
 
 void MyAudioApplication::ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
 {
-	CLAM_ASSERT(p.Configure(cfg),p.GetStatus().c_str());
+	CLAM_ASSERT(p.Configure(cfg),p.GetConfigErrorMessage().c_str());
 }
 
 void MyAudioApplication::AudioMain(void)

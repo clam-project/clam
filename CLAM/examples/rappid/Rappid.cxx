@@ -70,24 +70,20 @@ bool Rappid::ConcreteConfigure(const ProcessingConfig& c)
 	try {
 		if (!ConfigureChildren())
 		{
-			std::string aux(mStatus);
-			mStatus = "\nFailed to configure children:\n";
-			mStatus += aux;
+			AddConfigErrorMessage("\nFailed to configure children:\n");
 			res=false;
 		}
 		if (!ConfigureData())
 		{
-			std::string aux(mStatus);
-			mStatus = "Failed to configure data:\n";
-			mStatus += aux;
+			AddConfigErrorMessage("Failed to configure data:\n");
 			res=false;
 		}
 		AttachChildren();
 	}
 	catch (std::exception &e)
 	{
-		mStatus += "Failed to configure children:\n";
-		mStatus += e.what();
+		AddConfigErrorMessage("Failed to configure children:\n");
+		AddConfigErrorMessage( e.what() );
 		return false;
 	}
 	if (res && mConfig.GetGlobalConfig().GetVerbose())
@@ -337,44 +333,44 @@ bool Rappid::ConfigureChildren()
 	cfg.SetName("RappidController");
 	cfg.SetNumControls(eNUMControls);
 	if (!Control.Configure(cfg)) {
-		mStatus += "Control: ";
-		mStatus += Control.GetStatus();
+		AddConfigErrorMessage("Control: ");
+		AddConfigErrorMessage( Control.GetConfigErrorMessage() );
 		return false;
 	}
 
 	if (!mViola.Configure(mConfig.GetViolaIOConfig())) {
-		mStatus += "Viola Input: ";
-		mStatus += mViola.GetStatus();
+		AddConfigErrorMessage("Viola Input: " );
+		AddConfigErrorMessage( mViola.GetConfigErrorMessage() );
 		return false;
 	}
 
 	if (!mHarp.Configure(mConfig.GetHarpIOConfig())) {
-		mStatus += "Harp Input: ";
-		mStatus += mHarp.GetStatus();
+		AddConfigErrorMessage("Harp Input: ");
+		AddConfigErrorMessage( mHarp.GetConfigErrorMessage() );
 		return false;
 	}
 
 	if (!mSynthL.Configure(mConfig.GetSynthLeftIOConfig())) {
-		mStatus += "Synth Left Output: ";
-		mStatus += mSynthL.GetStatus();
+		AddConfigErrorMessage("Synth Left Output: ");
+		AddConfigErrorMessage( mSynthL.GetConfigErrorMessage() );
 		return false;
 	}
 
 	if (!mSynthR.Configure(mConfig.GetSynthRightIOConfig())) {
-		mStatus += "Synth Right Output: ";
-		mStatus += mSynthR.GetStatus();
+		AddConfigErrorMessage("Synth Right Output: ");
+		AddConfigErrorMessage( mSynthR.GetConfigErrorMessage() );
 		return false;
 	}
 
 	if (!mEM1.Configure(mConfig.GetEnvMorph1Cfg())) {
-		mStatus += "EnvelopeMorpher: ";
-		mStatus += mEM1.GetStatus();
+		AddConfigErrorMessage("EnvelopeMorpher: ");
+		AddConfigErrorMessage( mEM1.GetConfigErrorMessage() );
 		return false;
 	}
 
 	if (!mEM2.Configure(mConfig.GetEnvMorph2Cfg())) {
-		mStatus += "EnvelopeMorpher: ";
-		mStatus += mEM2.GetStatus();
+		AddConfigErrorMessage("EnvelopeMorpher: ");
+		AddConfigErrorMessage( mEM2.GetConfigErrorMessage() );
 		return false;
 	}
 
@@ -388,14 +384,14 @@ bool Rappid::ConfigureChildren()
 	mcfg.SetFrameSize(mConfig.GetGlobalConfig().GetFrameSize());
 	mcfg.SetName("MixerLeft");
 	if (!mMixerL.Configure(mcfg)) {
-		mStatus += "DynamicMixerLeft: ";
-		mStatus += mMixerL.GetStatus();
+		AddConfigErrorMessage("DynamicMixerLeft: ");
+		AddConfigErrorMessage( mMixerL.GetConfigErrorMessage() );
 		return false;
 	}
 	mcfg.SetName("MixerRight");
 	if (!mMixerR.Configure(mcfg)) {
-		mStatus += "DynamicMixerRight: ";
-		mStatus += mMixerR.GetStatus();
+		AddConfigErrorMessage("DynamicMixerRight: ");
+		AddConfigErrorMessage( mMixerR.GetConfigErrorMessage() );
 		return false;
 	}
 
@@ -408,8 +404,8 @@ bool Rappid::ConfigureChildren()
 		fcfg.SetFiletype(RappidIOBase::FileTypeFromName("debug.wav"));
 		if (!mDebugOutput.Configure(fcfg))
 		{
-			mStatus += "DebugFile: ";
-			mStatus += mDebugOutput.GetStatus();
+			AddConfigErrorMessage( "DebugFile: " );
+			AddConfigErrorMessage( mDebugOutput.GetConfigErrorMessage() );
 			return false;
 		}
 		mDebugOutput.SetParent(this);

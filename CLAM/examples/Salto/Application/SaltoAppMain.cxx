@@ -137,7 +137,7 @@ protected:
 			MIDIInControl pitchBend;
 
 			bool configOk = pitchBend.Configure( inPitchBendCfg );
-			CLAM_ASSERT(configOk, pitchBend.GetStatus().c_str() );
+			CLAM_ASSERT(configOk, pitchBend.GetConfigErrorMessage().c_str() );
 			
 
 			MIDIIOConfig inBreathNoteCfg;

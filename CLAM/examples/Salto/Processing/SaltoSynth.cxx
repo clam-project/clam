@@ -121,23 +121,19 @@ bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& c)
 											mConfig.GetSampleRate() );
 		if( !ConfigureChildren() )
 		{
-			std::string aux(mStatus);
-			mStatus = "\nFailed to configure children: \n";
-			mStatus += aux;
+			AddConfigErrorMessage("\nFailed to configure children: \n");
 			res = false;
 		}
 		if( !ConfigureData() )
 		{
-			std::string aux(mStatus);
-			mStatus = "Failed to configure data:\n";
-			mStatus += aux;
+			AddConfigErrorMessage("Failed to configure data:\n");
 			res = false;
 		}
 	}
 	catch(std::exception &e)
 	{
-		mStatus += "Failed to configure children:\n";
-		mStatus += e.what();
+		AddConfigErrorMessage("Failed to configure children:\n");
+		AddConfigErrorMessage( e.what() );
 		return false;
 	}
 
@@ -196,8 +192,8 @@ bool SaltoSynth::ConfigureChildren(void)
 
 	if( ! mSineSynth.Configure( sineCfg ) )
 	{
-		mStatus += "mSineSynth: ";
-		mStatus += mSineSynth.GetStatus();
+		AddConfigErrorMessage("mSineSynth: ");
+		AddConfigErrorMessage( mSineSynth.GetStatus() );
 		return false;
 	}
 
@@ -212,8 +208,8 @@ bool SaltoSynth::ConfigureChildren(void)
 
 	if( ! mInterpol.Configure( interpCfg ) )
 	{
-		mStatus += "mInterpol: ";
-		mStatus += mInterpol.GetStatus();
+		AddConfigErrorMessage( "mInterpol: " );
+		AddConfigErrorMessage( mInterpol.GetStatus() );
 		return false;
 	}
 

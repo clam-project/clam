@@ -8,7 +8,7 @@ using namespace CLAM;
 
 void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
 {
-	CLAM_ASSERT(p.Configure(cfg),p.GetStatus().c_str());
+	CLAM_ASSERT( p.Configure(cfg), p.GetConfigErrorMessage().c_str() );
 }
 
 main()

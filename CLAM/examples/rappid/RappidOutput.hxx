@@ -50,7 +50,7 @@ class RappidOutput: public ProcessingComposite, public RappidIO<RappidOutput>
 
 	void Adopt(Processing& o) { o.SetParent(this);}
 
-	void ConfigError(const std::string &str) { mStatus += str; }
+	void ConfigError(const std::string &str) { AddConfigErrorMessage(str); }
 
 public:
 

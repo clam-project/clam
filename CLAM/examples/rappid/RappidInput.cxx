@@ -33,7 +33,7 @@ bool RappidInput::ConfigureRealTime()
 	pWaveformIn=0;
 
 	if (!AudioManagerSingleton()) {
-		mStatus += "RappidInput::ConfigureRealTime(): Failed to obtain audio manager.";
+		AddConfigErrorMessage("RappidInput::ConfigureRealTime(): Failed to obtain audio manager.");
 		return false;
 	}
 
@@ -104,8 +104,8 @@ bool RappidInput::ConcreteConfigure(const ProcessingConfig& c)
 		res = ConfigureChildren();
 	}
 	catch (std::exception &e) {
-		mStatus += "Failed to configure children:\n";
-		mStatus += e.what();
+		AddConfigErrorMessage("Failed to configure children:\n");
+		AddConfigErrorMessage( e.what() ); 
 		return false;
 	}
 

@@ -111,11 +111,10 @@ namespace CLAMExamples
 			mpFFTAlgorithm = new CLAM::FFT_ooura();
 		else
 		{
-			mStatus = "Error configuring processing:\n";
-			mStatus += "requested algorithm '";
-			mStatus += mConfig.GetFFTAlgorithm();
-			mStatus += "' is not supported. Supported algorithms are:\n";
-			mStatus += "'FFTW', 'NumericalRecipes' and 'Ooura'";
+			AddConfigErrorMessage( "Error configuring processing:\n requested algorithm ");
+			AddConfigErrorMessage( mConfig.GetFFTAlgorithm() );
+			AddConfigErrorMessage("' is not supported. Supported algorithms are:\n";
+				"'FFTW', 'NumericalRecipes' and 'Ooura'");
 
 			return false;
 		}

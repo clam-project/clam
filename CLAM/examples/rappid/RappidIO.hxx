@@ -145,7 +145,7 @@ protected:
 			}
 		}
 		if (!(*po)->Configure(cfg)) {
-			ConfigError((*po)->GetStatus());
+			ConfigError((*po)->GetConfigErrorMessage());
 			return false;
 		}
 		return true;

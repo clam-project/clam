@@ -591,7 +591,15 @@ namespace CLAMTest
 		void test_MpegAudioFiles_128kbps_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
+
+			inputFile.SetLocation( mPathToTestData + "trumpet.wav");
+			CLAM_ASSERT( inputFile.IsReadable(), "collons, amb wav tampoc");
+			
+			inputFile.SetLocation(std::string("/home/parumi/clam-sandboxes/CLAM-TestData/test-stereo-decoding-128_44.mp3"));
+			CLAM_ASSERT( inputFile.IsReadable(), "absolute path to : test-stereo-decoding-128_44.mp3" );
+
 			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );
+			CLAM_ASSERT( inputFile.IsReadable(), "can't find: test-stereo-decoding-128_44.mp3" );
 
 			CLAM::AudioFile outputFile;
 			outputFile.SetLocation( "test-mp3-128-44.wav" );			

@@ -82,7 +82,7 @@ public:
 
 	const std::string & GetProcessingStatus()
 	{
-		return mObserved->GetStatus();
+		return mObserved->GetConfigErrorMessage();
 	}
 	
 
