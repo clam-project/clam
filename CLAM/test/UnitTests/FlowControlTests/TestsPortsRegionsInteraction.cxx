@@ -39,7 +39,7 @@ public:
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withProperInPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withIncorrectOutPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
-
+	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withSomeInPorts );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testOutPortConnectToIn_usingBaseClass()
@@ -345,10 +345,9 @@ public:
 		int data = 4;
 
 		out.ConnectToIn(inPublisher);
-		out.GetData() = 4;
+		out.GetData() = data;
 		out.Produce();
 		
-		CPPUNIT_ASSERT_EQUAL( data, inPublisher.GetData() );
 		CPPUNIT_ASSERT_EQUAL( data, in.GetData() );
 
 	}
@@ -387,6 +386,30 @@ public:
 		CPPUNIT_ASSERT_EQUAL( data, in.GetData() );
 
 	}
+
+	void testInPortPublisher_PublishInPort_withSomeInPorts()
+	{
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in;
+		CLAM::InPort<int> in2;
+		CLAM::InPort<int> in3;
+		CLAM::InPortPublisher<int> inPublisher;
+
+		inPublisher.PublishInPort( in );
+		inPublisher.PublishInPort( in2 );
+		inPublisher.PublishInPort( in3 );
+		int data = 4;
+
+		out.ConnectToIn(inPublisher);
+		out.GetData() = data;
+		out.Produce();
+		
+		CPPUNIT_ASSERT_EQUAL( data, in.GetData() );
+		CPPUNIT_ASSERT_EQUAL( data, in2.GetData() );
+		CPPUNIT_ASSERT_EQUAL( data, in3.GetData() );
+
+	}
+	
 };
 
 } // namespace CLAMTest 

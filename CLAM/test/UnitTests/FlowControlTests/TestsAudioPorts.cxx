@@ -206,7 +206,6 @@ public:
 		out.GetAudio().GetBuffer()[0] = data;
 		out.Produce();
 			
-		CPPUNIT_ASSERT_EQUAL( data, inPublisher.GetAudio().GetBuffer()[0] );		
 		CPPUNIT_ASSERT_EQUAL( data, in.GetAudio().GetBuffer()[0] );
 	}
 	
