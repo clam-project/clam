@@ -30,11 +30,10 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCount_WithTwoCreators );
 	CPPUNIT_TEST_SUITE_END();
 
-	
 
 	// Tests definition :
 private:
-	
+
 
 	void testGetCreator_WhenIsEmpty()
 	{
@@ -68,16 +67,16 @@ private:
 		CLAM::FactoryRegistry reg;
 		// set up:
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
-		
+
 		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
 	}
-	
+
 	void testGetCreatorSafe_WrongKeyWithASingleCreator()
 	{
 		CLAM::FactoryRegistry reg;
 		// set up:
 		reg.AddCreator( "Oscillator", CLAM::CreateOscillator );
-		
+
 		CPPUNIT_ASSERT( NULL==reg.GetCreator("non existent key") );
 	}
 
@@ -193,7 +192,7 @@ private:
 			"Count() should be 0 after RemoveAllCreators()",
 			std::size_t(0), reg.Count() );
 	}
-	
+
 	void testCount_WhenEmpty()
 	{
 		CLAM::FactoryRegistry reg;
@@ -207,11 +206,11 @@ private:
 		reg.AddCreator("adder", CLAM::CreateAudioAdder );
 		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );
 	}
-	
+
 
 };
 
-	
+
 
 
 } // namespace CLAMTest
