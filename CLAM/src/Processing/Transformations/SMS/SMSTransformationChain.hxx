@@ -23,7 +23,6 @@
 #define _SMSTransformationChain_
 
 
-//WARNING the _new suffix should be removed
 #include "ProcessingChain.hxx"
 #include "SMSTransformation.hxx"
 
