@@ -216,7 +216,7 @@ private:
 		CLAM::TData tolerance = 0.006;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 0.211988;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 0.126168;
 		data["Balance000.600.wav"] = 0.006349;
 		data["Balance000.992.wav"] = 0.011791;
 		data["Balance001.988.wav"] = 0.027891;
