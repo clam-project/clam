@@ -5,11 +5,13 @@
 # 1: make depend and make clean
 # 2: cvs update
 # 3: remove & cvs checkout
-thoroughtnessLevel = 3  # at night we want 3
+thoroughtnessLevel = 0  # at night we want 3
+disableMail = True
 publicAddress = 'pau.arumi@iua.upf.es' #'clam-devel@iua.upf.es'
 privateAddress = 'parumi@iua.upf.es'
 subject = 'nightly tests report'
 executionTime = 30 #sec
+#TODO: this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
 
 
@@ -18,9 +20,11 @@ import os
 import string
 import sys
 
+CLAM_SANDBOXES = os.path.abspath( os.path.dirname(sys.argv[0])+'/../..' ) + '/'
+print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
+
 MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
-CLAM_SANDBOXES = '../../'
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
 SALTO_DATA_FOLDER = CLAM_SANDBOXES + 'SaltoDataFolder/'
 
@@ -49,7 +53,9 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 
 	# Add the From: and To: headers at the start!
 	msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n" % (fromaddr, toaddrs, subject) + body
-
+	if disableMail :
+		print msg
+		return
 	server = smtplib.SMTP('iua-mail.upf.es')
 	server.set_debuglevel(1)
 	server.sendmail(fromaddr, toaddrs, msg)
@@ -244,7 +250,9 @@ def runTests() :
 		checkPaths()
 	# CVS phase
 	if thoroughtnessLevel >= 3 :
-		os.environ['CVSROOT'] = CVSROOT
+		if 'CVSROOT' not in os.environ :
+			print 'warning: CVSROOT not found in environ'
+			os.environ['CVSROOT'] = CVSROOT
 		os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
 		os.chdir(CLAM_SANDBOXES)
 		#sanity check
