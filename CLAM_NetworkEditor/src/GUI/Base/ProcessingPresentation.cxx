@@ -5,6 +5,7 @@
 #include "InPortAdapter.hxx"
 #include "OutPortAdapter.hxx"
 #include "ProcessingModel.hxx"
+#include "Processing.hxx"
 
 #include <iostream>
 
@@ -16,10 +17,16 @@ ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwor
 	: mName( "unnamed processing" ),
 	  mNameFromNetwork(nameFromNetwork)
 {
+	SetConfig.Wrap( this, &ProcessingPresentation::OnNewConfig );
 	SetName.Wrap( this, &ProcessingPresentation::OnNewName );
 	SetInPort.Wrap( this, &ProcessingPresentation::OnNewInPort );
 	SetOutPort.Wrap( this, &ProcessingPresentation::OnNewOutPort );
 	SetObservedClassName.Wrap( this, &ProcessingPresentation::OnNewObservedClassName );
+}
+
+void ProcessingPresentation::OnNewConfig( CLAM::ProcessingConfig * cfg)
+{
+	mConfig = cfg;
 }
 
 ProcessingPresentation::~ProcessingPresentation()
@@ -29,7 +36,7 @@ ProcessingPresentation::~ProcessingPresentation()
 		delete *itin;
 	OutPortPresentationIterator itout;
 	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
-		delete *itout;		
+		delete *itout;
 }
 
 void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
@@ -38,6 +45,7 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
 	m.AcquireClassName.Connect(SetObservedClassName);
 	m.AcquireInPort.Connect(SetInPort);
 	m.AcquireOutPort.Connect(SetOutPort);
+	m.AcquireConfig.Connect(SetConfig);
 }
 
 OutPortPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)

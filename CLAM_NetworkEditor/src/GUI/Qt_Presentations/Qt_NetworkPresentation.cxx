@@ -1,6 +1,6 @@
 
 #include "Qt_NetworkPresentation.hxx"
-#include "ProcessingAdapter.hxx"
+#include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_ConnectionPresentation.hxx"
@@ -10,6 +10,7 @@
 #include <qpainter.h>
 #include <iostream>
 #include <qpixmap.h>
+#include "ProcessingConfig.hxx"
 
 namespace NetworkGUI
 {
@@ -24,10 +25,19 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	setPalette( QPalette( QColor( 250, 250, 200 )));
  	SetInPortClicked.Wrap( this, &Qt_NetworkPresentation::OnNewInPortClicked);
  	SetOutPortClicked.Wrap( this, &Qt_NetworkPresentation::OnNewOutPortClicked);
+	SetConfigurator.Wrap( this, &Qt_NetworkPresentation::OnNewConfiguration );
 }
+
 
 Qt_NetworkPresentation::~Qt_NetworkPresentation()
 {
+}
+
+void Qt_NetworkPresentation::OnNewConfiguration( CLAM::ProcessingConfig *cfg )
+{
+	std::cout << "new configuration" << std::endl;
+//	mConfigurator.SetConfig(*cfg);
+	mConfigurator.show();
 }
 
 void Qt_NetworkPresentation::OnNewInPortClicked( Qt_InPortPresentation * inport)
@@ -58,15 +68,16 @@ void Qt_NetworkPresentation::OnNewName(const std::string& name)
 
 }
 
-void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingAdapter* adapter, const std::string & name)
+void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* controller, const std::string & name)
 {
 	Qt_ProcessingPresentation* presentation = new Qt_ProcessingPresentation(name, this);
-	presentation->AttachTo(*adapter);
+	presentation->AttachTo(*controller);
 	presentation->AcquireInPortClicked.Connect( SetInPortClicked );
 	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
+	presentation->EditConfiguration.Connect( SetConfigurator );
 	AcquireOutPortAfterClickInPort.Connect( presentation->SetOutPortAfterClickInPort );
 	AcquireInPortAfterClickOutPort.Connect( presentation->SetInPortAfterClickOutPort );
-	adapter->Publish();
+	controller->Publish();
 	mProcessingPresentations.push_back(presentation);
 	Show();	
 	SendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
@@ -117,6 +128,7 @@ void Qt_NetworkPresentation::Show()
 	{
 		(*itc)->Show();
 	}
+	mConfigurator.hide();
 	show();
 
 }

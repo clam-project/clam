@@ -5,6 +5,7 @@
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
 
+
 #include <qtooltip.h> 
 #include <qpainter.h>
 #include <cmath>
@@ -204,8 +205,15 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 
 void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 {
-	mDown = true;
-	mClickPos = m->pos();
+	if(m->button() == LeftButton )
+	{
+		mDown = true;
+		mClickPos = m->pos();
+	}
+	else
+	{
+		EditConfiguration.Emit( mConfig );
+	}
 }
 
 void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)

@@ -7,6 +7,13 @@
 #include "ProcessingPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include "QTConfigurator.hxx"
+
+
+namespace CLAM
+{
+	class ProcessingConfig;
+}
 
 namespace CLAMVM
 {
@@ -50,6 +57,7 @@ protected:
 public: // signals
 	SigSlot::Signalv1< Qt_InPortPresentation * > AcquireInPortClicked;
 	SigSlot::Signalv1< Qt_OutPortPresentation * > AcquireOutPortClicked;
+	SigSlot::Signalv1< CLAM::ProcessingConfig * > EditConfiguration;
 public: // slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;

@@ -10,6 +10,11 @@
 #include "Presentation.hxx"
 #include "Slotv1.hxx"
 
+namespace CLAM
+{
+	class ProcessingConfig;
+}
+
 namespace CLAMVM
 {
 	class ProcessingModel;
@@ -26,6 +31,8 @@ namespace NetworkGUI
 class ProcessingPresentation : public CLAMVM::Presentation
 {
 protected:
+	CLAM::ProcessingConfig * mConfig;
+
 	std::list<InPortPresentation*> mInPortPresentations;
 	std::list<OutPortPresentation*> mOutPortPresentations;
 	typedef std::list<InPortPresentation*>::iterator InPortPresentationIterator;
@@ -45,6 +52,7 @@ public:
 	InPortPresentation & GetInPortPresentation( const std::string& );
 
 protected:
+	virtual void OnNewConfig( CLAM::ProcessingConfig * );
 	virtual void OnNewName( const std::string& ) = 0;
 	virtual void OnNewObservedClassName( const std::string& ) = 0;
 	virtual void OnNewInPort( CLAMVM::InPortAdapter* ) = 0;
@@ -52,6 +60,7 @@ protected:
 
 public:	//slots
 	SigSlot::Slotv1<const std::string &> SetName;
+	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfig;
 	SigSlot::Slotv1<const std::string &> SetObservedClassName;
 	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SetInPort;
 	SigSlot::Slotv1< CLAMVM::OutPortAdapter* > SetOutPort;	

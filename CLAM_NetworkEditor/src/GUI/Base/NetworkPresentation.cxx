@@ -1,7 +1,7 @@
 
 #include "NetworkPresentation.hxx"
 #include "NetworkModel.hxx"
-#include "ProcessingAdapter.hxx"
+#include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 #include "ProcessingPresentation.hxx"
 #include "ConnectionPresentation.hxx"
