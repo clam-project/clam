@@ -71,22 +71,16 @@ namespace CLAMTest {
 			flag3(operator[](eFlag3)),
 			flag4(operator[](eFlag4))
 		{};
-		template <class T> MyFlags(const T &t) :
-			Flags<5>(sFlagValues,t),
+
+		MyFlags(int i) :
+		Flags<5>(sFlagValues, i),
 			flag0(operator[](eFlag0)),
 			flag1(operator[](eFlag1)),
 			flag2(operator[](eFlag2)),
 			flag3(operator[](eFlag3)),
 			flag4(operator[](eFlag4))
 		{};
-		template <class T1, class T2> MyFlags(const T1 &t1, const T2 &t2) :
-			Flags<5>(sFlagValues,t1,t2),
-			flag0(operator[](eFlag0)),
-			flag1(operator[](eFlag1)),
-			flag2(operator[](eFlag2)),
-			flag3(operator[](eFlag3)),
-			flag4(operator[](eFlag4))
-		{}
+
 		reference flag0;
 		reference flag1;
 		reference flag2;
@@ -193,6 +187,7 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_MESSAGE("All but Flag4 must be off by default",
 				defaultConstructedFlags.Matches(0,0,0,0,1));
 		}
+
 		void testValueConstructor()
 		{
 			MyFlags flags1and2=3;
