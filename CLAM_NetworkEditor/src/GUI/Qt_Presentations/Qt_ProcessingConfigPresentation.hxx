@@ -48,12 +48,12 @@ protected:
 
 	void Ok( bool );
 	void Cancel( bool );
-	void ConfigureProcessing() = 0;
-	void SetConfig( const CLAM::ProcessingConfig & ) = 0;
+	virtual void ConfigureProcessing() = 0;
+	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
-	void Show();
-	void Hide();
+	virtual void Show();
+	virtual void Hide();
 
 public: // slots
 	SigSlot::Slotv1< bool > SlotOk;
