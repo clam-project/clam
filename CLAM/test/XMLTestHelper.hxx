@@ -49,6 +49,7 @@ namespace CLAMTest {
 		{
 			// Store the arg a file and on a string
 			XMLStorage storage;
+			storage.UseIndentation(true);
 			std::ofstream fout(filename);
 			storage.Dump(outObject, "Object", out);
 			storage.Dump(outObject, "Object", fout);
@@ -62,6 +63,7 @@ namespace CLAMTest {
 		{
 			// Store it on a string again
 			XMLStorage storage;
+			storage.UseIndentation(true);
 			storage.Dump(inObject, "Object", in);
 		}
 #endif//CLAM_USE_XML
