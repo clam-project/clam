@@ -44,9 +44,6 @@ typedef TByte TMIDIByte;
 typedef TInt32 TMIDITime;
 typedef double TTime;
 
-typedef TInt64 TLongIndex;
-typedef TInt64 TLongSize;
-
 #ifdef CLAM_DOUBLE
 	typedef double TData;
 #else
