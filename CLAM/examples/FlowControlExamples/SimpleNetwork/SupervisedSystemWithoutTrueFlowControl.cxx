@@ -3,7 +3,8 @@
 
 
 #include "AudioMultiplier.hxx"
-#include "FlowControl.hxx"
+#include "PushFlowControl.hxx"
+#include "BasicFlowControl.hxx"
 
 namespace FlowControlExample
 {
@@ -23,7 +24,7 @@ SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl (
 	_fileInName(fileIn),
 	_fileOutName(fileOut)
 {
-	_network.AddFlowControl( new CLAM::FlowControl( _frameSize ));
+	_network.AddFlowControl( new CLAM::PushFlowControl( _frameSize ));
 	ConfigureAndAddProcessingsToNetwork();
 	_network.ConfigurePorts();
 	RegisterAllNetworkConfigurationMethods();
@@ -95,31 +96,15 @@ void SupervisedSystemWithoutTrueFlowControl::RegisterAllNetworkConfigurationMeth
 
 	_configurations.push_back( NetworkConfigurationMethodWrapper(
 		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut ) );
-	
-	_configurations.push_back( 	NetworkConfigurationMethodWrapper(
-		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut ) );
-
-	_configurations.push_back( 	NetworkConfigurationMethodWrapper(
-		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut ) );
-
-	
-
-/*
-	_configurations.push_back( 	NetworkConfigurationMethodWrapper(
-		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut ) );
-
-	_configurations.push_back( NetworkConfigurationMethodWrapper(
-		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut ) );
-
-	_configurations.push_back( NetworkConfigurationMethodWrapper(
-		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn ) );
-
 	_configurations.push_back( NetworkConfigurationMethodWrapper(
 		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator ) );
-
+	_configurations.push_back( 	NetworkConfigurationMethodWrapper(
+		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut ) );
+	_configurations.push_back( NetworkConfigurationMethodWrapper(
+		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn ) );
 	_configurations.push_back( NetworkConfigurationMethodWrapper(
 		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn ) );
-*/
+
 }
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
@@ -192,7 +177,6 @@ void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworkTopologies()
 	{
 		_network.DisconnectAllPorts();
 		currentConfigMethod->Configure();
-
 		for (int i=0; i<_maxFramesToProcess; i++)
 			_network.DoProcessings();
 

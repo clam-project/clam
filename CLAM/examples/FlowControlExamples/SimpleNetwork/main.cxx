@@ -7,7 +7,7 @@ int main()
 		"testin.wav" /* file in */,
 		"testout.wav" /* file out */, 
 		512 /* frame size */, 
-		250 /* frames to compute*/,
+		500 /* frames to compute*/,
 		false /* audio output*/);
 
 	s.ProcessAllNetworkTopologies();
