@@ -6,29 +6,45 @@
 namespace CLAM
 {
 
-AutoPanner::AutoPanner(CLAM::TData freq, 
-			     CLAM::TData samplingRate,
-			     CLAM::TData phase,
-			     int frameSize)
-	: mLeft("Left Control"),
-	  mRight("Right Control")
+void AutoPannerConfig::DefaultInit(void)
 {
-	Configure(freq, samplingRate, phase, frameSize);
+	AddName();
+	AddFrequency();
+	AddSamplingRate();
+	AddPhase();
+	AddFrameSize();
+
+	
+	UpdateData();
+	
+	SetName("AutoPanner");
+	SetFrequency(440.0);
+	SetPhase(0.0);
+	SetSamplingRate( 44100 );
+	SetFrameSize( 512 );
 }
 
-void AutoPanner::Configure(CLAM::TData freq, CLAM::TData samplingRate, CLAM::TData phase, 
-			      int frameSize)
+AutoPanner::AutoPanner()
+	: mLeft("Left Control", this ),
+	  mRight("Right Control", this )
 {
-	mFreq = freq;
-	mSamplingRate = samplingRate;
-	mPhase = phase;
-	mFrameSize = frameSize;
-	mDeltaPhase = ((2* TData(M_PI) *mFreq)/mSamplingRate)* mFrameSize;
+
+	Configure(AutoPannerConfig());
+}
+
+AutoPanner::AutoPanner( const AutoPannerConfig & cfg)
+	: mLeft("Left Control", this ),
+	  mRight("Right Control", this )
+{
+
+	Configure(cfg);
 }
 
 
 bool AutoPanner::Do()
-{
+{	
+	if( !AbleToExecute() ) return true;
+
 	CLAM::TData newValue = sin(mPhase);
 	mPhase += mDeltaPhase;
 	if (mPhase > (2*M_PI))
@@ -36,13 +52,25 @@ bool AutoPanner::Do()
 		mPhase = fmod(mPhase,TData(2*M_PI));
 	}
 
-	CLAM::TData firstValue = abs(newValue);
-	CLAM::TData secondValue = 1 - abs(newValue);
+	CLAM::TData firstValue = fabs(newValue);
+	CLAM::TData secondValue = 1 - fabs(newValue);
 
 	mLeft.SendControl(firstValue);
 	mRight.SendControl(secondValue);
+	std::cout << firstValue << "  " << secondValue << "  " << mFreq << "  " << mPhase << "  " << mDeltaPhase << std::endl;
 	       
 	return true;
+}
+
+bool AutoPanner::ConcreteConfigure(const ProcessingConfig& c)
+{
+	CopyAsConcreteConfig(mConfig, c);
+
+	mFreq = mConfig.GetFrequency();
+	mSamplingRate = mConfig.GetSamplingRate();
+	mPhase = mConfig.GetPhase();
+	mFrameSize = mConfig.GetFrameSize();
+	mDeltaPhase = ((2* TData(M_PI) *mFreq)/mSamplingRate)* mFrameSize;
 }
 
 } // namespace CLAM
