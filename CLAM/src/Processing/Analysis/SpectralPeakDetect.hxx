@@ -65,7 +65,7 @@ namespace CLAM {
 		SpectralPeakDetect();
 		/** Constructor with an object of SpectralPeakDetectConfig class by parameter
 		 *  @param c SpectralPeakDetectConfig object created by the user
-*/
+		*/
 		SpectralPeakDetect(const SpectralPeakDetectConfig &c);
 
 		/** Destructor of the class*/
