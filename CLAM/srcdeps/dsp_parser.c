@@ -324,7 +324,7 @@ void dsp_parse_insert_settings_rule(void)
 	fprintf(outfile,"# Begin Custom Build\n");
 	fprintf(outfile,"InputPath=settings.cfg\n");
 	fprintf(outfile,"\n");
-	fprintf(outfile,"\"%s.dsp\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n",
+	fprintf(outfile,"\"buildstamp\" : $(SOURCE) \"$(INTDIR)\" \"%s.dsp\"\n",
 		project_name);
 	fprintf(outfile,"	srcdeps.exe settings.cfg %s.dsp\n",
 		project_name);
@@ -337,7 +337,7 @@ void dsp_parse_insert_settings_rule(void)
 	fprintf(outfile,"# Begin Custom Build\n");
 	fprintf(outfile,"InputPath=settings.cfg\n");
 	fprintf(outfile,"\n");
-	fprintf(outfile,"\"%s.dsp\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n",
+	fprintf(outfile,"\"buildstamp\" : $(SOURCE) \"$(INTDIR)\" \"%s.dsp\"\n",
 		project_name);
 	fprintf(outfile,"	srcdeps.exe settings.cfg %s.dsp\n",
 		project_name);

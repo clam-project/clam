@@ -47,6 +47,15 @@ int main(int argc,char** argv)
 
 	parser_exit();
 	config_exit();
-
+	
+	{
+		FILE* f = fopen( "buildstamp", "w" );
+		if ( !f ) 
+		{
+			fprintf( stderr, "Error: failed to create build stamp!" );
+			exit( -1 );
+		}
+		fclose( f );
+	}
 	return 0;
 }
