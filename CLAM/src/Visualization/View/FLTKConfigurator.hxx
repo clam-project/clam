@@ -46,6 +46,8 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Item.H>
+#include <FL/fl_file_chooser.H>
+
 #include "CBL.hxx"
 
 #define HorPos fl_width(name)
@@ -194,7 +196,18 @@ namespace CLAM{
 
 			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
 		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
-			Fl_Input * mInput = new Fl_Input( 155, 0, 170, 20);
+
+			Fl_Pack* fileWidget = new Fl_Pack( 155, 0, 170, 20);
+			
+			fileWidget->type(FL_HORIZONTAL);
+			fileWidget->spacing(4);
+
+			Fl_Input * mInput = new Fl_Input( 0, 0, 150, 20);
+			Fl_Button * fileBrowserLauncher = new Fl_Button (0,0,20,20);
+			fileBrowserLauncher->label("...");
+			fileBrowserLauncher->callback(LaunchFileBrowser, mInput);
+
+			fileWidget->end();
 			o->end();
 
 			b->labelsize(12);
@@ -204,7 +217,6 @@ namespace CLAM{
 			mInput->value( value.c_str() );
 			mInput->textsize(12);
 			mInput->align(FL_ALIGN_LEFT);
-			mInput->color(FL_CYAN);
 
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
@@ -381,6 +393,12 @@ namespace CLAM{
 		static void ShowSubConfig(Fl_Widget* o, void* v) {
 			FLTKConfigurator * sub = (FLTKConfigurator*)(v);
 			sub->show();
+		}
+
+		static void LaunchFileBrowser(Fl_Widget* o, void * data)
+		{
+			Fl_Input * fileInput = (Fl_Input*) data;
+			fileInput->value(fl_file_chooser("Select filename","*",fileInput->value() ));
 		}
 
 		void show() {
