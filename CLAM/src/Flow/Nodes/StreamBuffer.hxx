@@ -208,8 +208,8 @@ namespace CLAM {
 		bool CanActivateRegion( SourceStreamRegion& writeRegion ) 
 		{
 			CLAM_DEBUG_ASSERT(&writeRegion == mRegions.Writer(), "CanActivate() argument should be the write region" );
-			return writeRegion.CanActivate() && 
-				!mBuffer.CanActivateSourceWithNoCircularOverlap( writeRegion );
+
+			return writeRegion.CanActivate() && mBuffer.CanActivateSourceWithNoCircularOverlap( writeRegion );
 		}
 
 	};
