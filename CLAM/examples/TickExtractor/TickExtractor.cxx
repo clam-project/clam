@@ -47,7 +47,7 @@ namespace CLAM
 
 
 	void ExtractTicksSequence( std::string pathToFile,
-				  CLAM::DataArray& extractedTicksSequence )
+				   CLAM::Pulse& ticksList )
 	{
 		TickExtractorConfig configuration; // we will be using default config
 		configuration.SetFromAudio( false );
@@ -164,11 +164,9 @@ namespace CLAM
 		}
 		tick.SetIndexes(allTicks);
 		beat.SetIndexes(allBeats);
-		
-		Array<TimeIndex>& ticks = tick.GetIndexes();
 
-		for ( int i = 0 ; i < ticks.Size(); i++ )
-			extractedTicksSequence.AddElem( ticks[i].GetPosition() );
+		ticksList = tick;
+		
 
 	}
 }
