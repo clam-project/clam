@@ -1,29 +1,27 @@
 #include <iostream>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/TestSuite.h>
-//#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/TextTestResult.h>
+#include <cppunit/ui/qt/TestRunner.h>
 
 #include "cppUnitHelper.hxx"
+#include "Assert.hxx"
 
 int main(void){
+	// this flag allows clam asserts to behave throwing an exception instead
+	// of doing breakpoint. Thus making auto-testing of asserts possible.
+	// Notice: while debugging tests (if breakpoints are wanted back) you might need to
+	// modify this flag before the point to be debugged.
+	CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = false;
+
+	QApplication application;
 
 	CppUnit::TestFactoryRegistry &registry = CppUnit::TestFactoryRegistry::getRegistry();
 	CppUnit::Test* theTest = registry.makeTest();
 	CLAMTest::Helper::printTestNames( theTest );
-		
-	// The first way of running tests: TestSuite::run
-	CppUnit::TestSuite suite;
-	suite.addTest( theTest ); // TestSuite deletes its children
-	CppUnit::TextTestResult res;
-	suite.run(&res);
-	std::cout << res << std::endl << std::endl;
 
-/*
 	// The other way of running a test suite: using TestRunner.
-	CppUnit::TextUi::TestRunner runner;
-	runner.addTest( CLAMTest::Suite() ); // caution: it deletes the suite on termination.
-	return runner.run("");
-*/
+	CppUnit::QtUi::TestRunner runner;
+	runner.addTest( theTest ); // caution: it deletes the suite on termination.
+	return !runner.run("");
 }
 
