@@ -50,12 +50,10 @@ public:
 		if (_chained) 
 		{
 			_chained->Indirect(scope,attribute);
+			return;
 		}
-		else
-		{
-			_chained= new ReadHook<unsigned>;
-			_chained->Bind(scope,attribute);
-		}
+		_chained = new ReadHook<unsigned>;
+		_chained->Bind(scope,attribute);
 	}
 
 	const AttributeType & GetForReading() const
@@ -65,8 +63,8 @@ public:
 
 	virtual void Init(const DescriptionDataPool & pool) 
 	{
-		_pool = &pool;
 		_current = 0;
+		_pool = &pool;
 		_data = _pool->template GetReadAttributePool<AttributeType>(_scope,_attribute);
 		if (_chained) _chained->Init(pool);
 	}
@@ -101,7 +99,6 @@ protected:
 private:
 	unsigned _current;
 };
-
 
 
 /** @ingroup SemanticalAnalysis */
