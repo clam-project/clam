@@ -105,12 +105,12 @@ namespace CLAM {
 		int GetnCleanedTracks() const {return mTrajectoryArray.Size();};
 
 	private:
-		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
-		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
-		void AddTrajectory(TTrajectory& trajectory);
-		void UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray);
 		void Update(Array<SpectralPeakArray*>& peakArrayArray);
+		void AddTrajectory(TTrajectory& trajectory);
+		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
 		void ContinuedAt(void);
+		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
+		void UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray);
 		void InterpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
 
 		TIndex FindTrajectoryPosition(TIndex id);

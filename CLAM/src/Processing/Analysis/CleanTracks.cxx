@@ -88,7 +88,6 @@ namespace CLAM {
 	{
 
 		Update(peakArrayArray);
-
 		Continue(peakArrayArray);
 		Clean(peakArrayArray);
 		UpdateTrackIds(peakArrayArray);
@@ -125,86 +124,6 @@ namespace CLAM {
 			}
 		}
 		ContinuedAt();
-	}
-
-	void CleanTracks::Continue(Array<SpectralPeakArray*>& peakArrayArray)
-	{
-		for(int i=0;i<mTrajectoryArray.Size();i++)
-		{
-			const int id     = mTrajectoryArray[i].id;
-			      int contAt = mTrajectoryArray[i].continuedAtId;
-			const int begPos = mTrajectoryArray[i].beginPos;
-			const int lastfreq=int(mTrajectoryArray[i].finalFreq);
-			while(mTrajectoryArray[i].continuedAtId!=-1)
-			{
-				contAt=mTrajectoryArray[i].continuedAtId;
-				InterpolatePeaks(mTrajectoryArray[i], peakArrayArray);
-			}
-		}
-	}
-
-
-	void CleanTracks::Clean(Array<SpectralPeakArray*>& peakArrayArray)
-	{
-		for(int i=0;i<peakArrayArray.Size();i++)
-		{
-			int nDeleted=0;
-			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
-			{
-				const int id=peakArrayArray[i]->GetIndex(z-nDeleted);
-				const int trajectoryPosition=FindTrajectoryPosition(id);
-
-				if (trajectoryPosition==-1) continue;
-				if (mTrajectoryArray[trajectoryPosition].length>=mMinLength) continue;
-
-				//modified
-				peakArrayArray[i]->DeleteSpectralPeak(z-nDeleted);
-				peakArrayArray[i]->SetIsIndexUpToDate(true);
-				peakArrayArray[i]->DeleteIndex(id);
-				mTrajectoryArray[trajectoryPosition].length--;//update length
-				if(mTrajectoryArray[trajectoryPosition].length==0)
-					mTrajectoryArray.DeleteElem(trajectoryPosition);
-				nDeleted++;
-			}
-		}
-	}
-
-
-	void CleanTracks::UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray)
-	{
-		for(int i=0;i<peakArrayArray.Size();i++)
-		{
-			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
-			{
-				const int currentTrackid=peakArrayArray[i]->GetIndex(z);
-				const int newTrackid=FindTrajectoryPosition(currentTrackid);
-				if(newTrackid!=currentTrackid)
-				{
-					peakArrayArray[i]->SetIndex(z,newTrackid);
-					peakArrayArray[i]->SetIsIndexUpToDate(true);//needed?
-				}
-			}
-		}
-	}
-
-
-
-	void CleanTracks::AddTrajectory(TTrajectory& trajectory)
-	{
-		// would be faster using searcharray.find?
-		const int pos = FindTrajectoryPosition(trajectory.id);
-		if(pos==-1)
-		{
-			// not found, new id, add it
-			mTrajectoryArray.AddElem(trajectory);
-		}
-		else
-		{
-			// if found, length and last data are updated
-			mTrajectoryArray[pos].length++;
-			mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
-			mTrajectoryArray[pos].finalMag=trajectory.finalMag;
-		}
 	}
 
 	void CleanTracks::ContinuedAt()
@@ -279,6 +198,85 @@ namespace CLAM {
 
 			candidateTrajectory.continuedAtId=toBeAppended.id;
 
+		}
+	}
+
+	void CleanTracks::Continue(Array<SpectralPeakArray*>& peakArrayArray)
+	{
+		for(int i=0;i<mTrajectoryArray.Size();i++)
+		{
+			const int id     = mTrajectoryArray[i].id;
+			      int contAt = mTrajectoryArray[i].continuedAtId;
+			const int begPos = mTrajectoryArray[i].beginPos;
+			const int lastfreq=int(mTrajectoryArray[i].finalFreq);
+			while(mTrajectoryArray[i].continuedAtId!=-1)
+			{
+				contAt=mTrajectoryArray[i].continuedAtId;
+				InterpolatePeaks(mTrajectoryArray[i], peakArrayArray);
+			}
+		}
+	}
+
+
+	void CleanTracks::Clean(Array<SpectralPeakArray*>& peakArrayArray)
+	{
+		for(int i=0;i<peakArrayArray.Size();i++)
+		{
+			int nDeleted=0;
+			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
+			{
+				const int id=peakArrayArray[i]->GetIndex(z-nDeleted);
+				const int trajectoryPosition=FindTrajectoryPosition(id);
+
+				if (trajectoryPosition==-1) continue;
+				if (mTrajectoryArray[trajectoryPosition].length>=mMinLength) continue;
+
+				//modified
+				peakArrayArray[i]->DeleteSpectralPeak(z-nDeleted);
+				peakArrayArray[i]->SetIsIndexUpToDate(true);
+				peakArrayArray[i]->DeleteIndex(id);
+				mTrajectoryArray[trajectoryPosition].length--;//update length
+				if(mTrajectoryArray[trajectoryPosition].length==0)
+					mTrajectoryArray.DeleteElem(trajectoryPosition);
+				nDeleted++;
+			}
+		}
+	}
+
+
+	void CleanTracks::UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray)
+	{
+		for(int i=0;i<peakArrayArray.Size();i++)
+		{
+			for(int z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
+			{
+				const int currentTrackid=peakArrayArray[i]->GetIndex(z);
+				const int newTrackid=FindTrajectoryPosition(currentTrackid);
+				if(newTrackid!=currentTrackid)
+				{
+					peakArrayArray[i]->SetIndex(z,newTrackid);
+					peakArrayArray[i]->SetIsIndexUpToDate(true);//needed?
+				}
+			}
+		}
+	}
+
+
+	void CleanTracks::AddTrajectory(TTrajectory& trajectory)
+	{
+		// would be faster using searcharray.find?
+		const int pos = FindTrajectoryPosition(trajectory.id);
+		if(pos==-1)
+		{
+			// not found, new id, add it
+			mTrajectoryArray.AddElem(trajectory);
+		}
+		else
+		{
+			// if found, length and last data are updated
+			mTrajectoryArray[pos].length++;
+			mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
+			mTrajectoryArray[pos].finalMag=trajectory.finalMag;
 		}
 	}
 
