@@ -63,8 +63,10 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 
 $(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-	$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+ifeq ($(ISDARWIN),1)
+	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+endif
 
 %.o:
 	@mkdir -p obj
@@ -95,8 +97,10 @@ CXXFLAGS = $(CXXFLAGS_RELEASE)
 
 $(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-	$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+ifeq ($(ISDARWIN),1)
+	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+endif
 
 %.o:
 	@mkdir -p obj
