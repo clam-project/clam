@@ -48,35 +48,24 @@ static void generate_link_flags_release_var( FILE* outfile );
 
 static void generate_uic_dependencies( FILE* outfile )
 {
-	listkey* k = listhash_find( config, "UI_FILES" );
-
-	list* ui_files = NULL;
-	item* current = NULL;
-
-	assert( k->l != NULL );
+	listkey* currentUI = NULL;
 	
-	ui_files = k->l;
-
-	if ( ! ui_files->first ) /* There are no .ui files to be considered */
+	if ( ui_outputs->first == NULL )
 		return;
-
-	list_add_str_once( includepaths, "./uic" );
-	list_add_str_once( needed_includepaths, "./uic" );
-	fprintf( stderr, "Added ./uic to includepaths \n" );
-
-	current = ui_files->first;
-
-	while( current != NULL )
+	else
+		currentUI = ui_outputs->first;
+	
+	
+	
+	while( currentUI != NULL )
 	{
-		char hdrname[2048];
 		char hdrwopath[2048];
-		char srcname[2048];
 		char objname[2048];
+		char* hdrname = currentUI->l->first->str;
+		char* srcname = currentUI->l->first->next->str;
+		
+		fprintf( stderr, "Generating rules for %s ...\n", currentUI->str );
 
-		fprintf( stderr, "Generating rules for %s ...\n", current->str );
-
-		convert_to_uicname( hdrname, 2048, current->str, ".h" );
-		convert_to_uicname( srcname, 2048, current->str, ".cxx" );
 		convert_to_objname( objname, 2048, srcname );
 		discard_path( hdrwopath, 2048, hdrname );
 
@@ -85,12 +74,12 @@ static void generate_uic_dependencies( FILE* outfile )
 		list_add_str_once( gen_ui_objs, objname );
 
 		/* dependency writing */
-		fprintf( outfile, "%s : %s\n", hdrname, current->str );
-		fprintf( outfile, "%s : %s\n", srcname, current->str );
+		fprintf( outfile, "%s : %s\n", hdrname, currentUI->str );
+		fprintf( outfile, "%s : %s\n", srcname, currentUI->str );
 		fprintf( outfile, "%s : %s %s\n", objname, srcname, hdrname );
 		fprintf( outfile, "\n" );
 		
-		current = current->next;
+		currentUI = currentUI->next;
 	}
 	
 }
