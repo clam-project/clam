@@ -95,7 +95,7 @@
 
 + SameContextBinder::GetForRead
 + SameContextBinder::Init
-* SameContextBinder::Next
++ SameContextBinder::Next
 	+ It updates the pointer
 + SameContextBinder::IsInsideScope
 	+ It returns true while valid
@@ -106,7 +106,13 @@
 + Separate Pool init and binding
 + Move HookTests to their own tests
 + Create a test Extractor test
-
+* Indirect Binding
+	+ Init
+	+ Next
+	+ IsInsideScope
+	+ Invalid references
+	+ Refactor to base class
+	+ Use it with an extractor
 - Associar al schema durante el bind o antes
 - Comprobaciones de nombres en el bind
 - Read Accessing AttributeScopes that are not written
