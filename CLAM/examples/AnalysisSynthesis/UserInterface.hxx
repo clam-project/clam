@@ -155,5 +155,9 @@ private:
   void ApplyTransformationReadyState();
   void ApplySynthesisAvailableState();
   void ApplyTransformationPerformedState();
+  void DeactivateFrameDataMenuItems();
+  bool mFrameDataAvailable;
+public:
+  bool FrameDataAvailable();
 };
 #endif

@@ -121,7 +121,18 @@ void UserInterface::LoadAnalysisData(void)
 	// @todo: Check this is true...
 	mAnalysisSynthesisExample->mHaveConfig = true;
 	ApplyAnalysisAvailableState();
+	DeactivateFrameDataMenuItems();
+	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
+	// @todo: determine what has to do the UserInterface for obtaining frame data when it is being loaded
+	// so that one cannot rely on the fact that it is available in the segment object
+	// mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0]);
+	mFrameDataAvailable = false;
 	mWindow->redraw();
+}
+
+bool UserInterface::FrameDataAvailable()
+{
+	return mFrameDataAvailable;
 }
 
 void UserInterface::Analyze(void)
@@ -133,7 +144,9 @@ void UserInterface::Analyze(void)
 		ApplyAnalysisAvailableState();
 
 		mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
-		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0]);
+		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0],
+													   FrameDataAvailable());
+		mFrameDataAvailable = true;
 		mWindow->redraw();
 	}
 }
@@ -207,7 +220,8 @@ void UserInterface::Transform(void)
 	ApplyTransformationPerformedState();
 	mAnalysisSynthesisExample->mExplorer.CloseAll();
 	mAnalysisSynthesisExample->mExplorer.NewSegment( mAnalysisSynthesisExample->mSegment );
-	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0]);
+	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[0],
+												   FrameDataAvailable() );
 	mWindow->redraw();
 
 }
@@ -216,7 +230,9 @@ void UserInterface::ChangeFrame()
 {
 	int nframe = (int) mCounter->value();
 
-	mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[nframe] );
+	if ( mFrameDataAvailable )
+		mAnalysisSynthesisExample->mExplorer.NewFrame( mAnalysisSynthesisExample->mSegment.GetFramesArray()[nframe],
+													   FrameDataAvailable() );
 }
 
 void UserInterface::ChangeTimeTag( TTime tag )
@@ -227,6 +243,7 @@ void UserInterface::Init(  )
 {
 	mAnalysisSynthesisExample->SetCanvas( mSmartTile );
 	ApplyInitialState();
+	mFrameDataAvailable = false;
 }
 
 void UserInterface::DisplayInputSound()
@@ -361,6 +378,14 @@ void UserInterface::ApplyAnalysisAvailableState()
 
 	mWindow->redraw();
 
+}
+
+void UserInterface::DeactivateFrameDataMenuItems()
+{
+	mViewFrameDataMenuItem->deactivate();
+	mShowSpectrumAndPeaksMenuItem->deactivate();
+	mShowResidualSpectrumMenuItem->deactivate();
+	mWindow->redraw();
 }
 
 void UserInterface::ApplyMelodyAvailableState()

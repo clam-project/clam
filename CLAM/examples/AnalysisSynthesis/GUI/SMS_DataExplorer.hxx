@@ -1,6 +1,7 @@
 #ifndef __SMS_DATAEXPLORER__
 #define __SMS_DATAEXPLORER__
 
+#include "Slotv2.hxx"
 #include "Slotv1.hxx"
 #include "Slotv0.hxx"
 #include "Signalv1.hxx"
@@ -36,7 +37,7 @@ namespace CLAMVM
 		~SMS_DataExplorer();
 
 		SigSlot::Slotv1< const CLAM::Segment& >   NewSegment;
-		SigSlot::Slotv1< const CLAM::Frame& >     NewFrame;
+		SigSlot::Slotv2< const CLAM::Frame&, bool >     NewFrame;
 		SigSlot::Slotv1< const CLAM::Audio& >     NewInputAudio;
 		SigSlot::Slotv1< const CLAM::Audio& >     NewSynthesizedAudio;
 		SigSlot::Slotv1< const CLAM::Audio& >     NewSynthesizedSinusoidal;
@@ -61,7 +62,7 @@ namespace CLAMVM
 		SigSlot::Slotv1< double >                 SelectedTimeChanged; 
 
 		void OnNewSegment( const CLAM::Segment& );
-		void OnNewFrame( const CLAM::Frame& );
+		void OnNewFrame( const CLAM::Frame& , bool fullAnalysisData );
 		void OnNewInputAudio( const CLAM::Audio& );
 		void OnNewSynthesizedAudio( const CLAM::Audio& );
 		void OnNewSynthesizedSinusoidal( const CLAM::Audio& );

@@ -70,7 +70,8 @@ namespace CLAMGUI
 		TIndex nframe = mSegment.FindFrame( time );
 		
 		mUI->mCounter->value( (int) nframe );
-		mExplorer.NewFrame( mSegment.GetFramesArray()[nframe] );
+
+		mExplorer.NewFrame( mSegment.GetFramesArray()[nframe],mUI->FrameDataAvailable() );
 	}
 
 	Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 

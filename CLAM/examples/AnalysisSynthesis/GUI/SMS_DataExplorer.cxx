@@ -68,31 +68,39 @@ namespace CLAMVM
 		mSinusoidalTracksAdapter.Publish();
 	}
 	
-	void SMS_DataExplorer::OnNewFrame( const CLAM::Frame& frame )
+	void SMS_DataExplorer::OnNewFrame( const CLAM::Frame& frame, bool fullAnalysisData )
 	{
-		CLAM_ASSERT( frame.HasSpectrum(), "The given frame did not have the Spectrum field");
-		mSpectrumAdapter.BindTo( frame.GetSpectrum() );
-		// @todo: AnalysisSynthesis does not keep a SinusoidalSpec in the Frames
-		//CLAM_ASSERT( frame.HasSinusoidalSpec(), "The given frame did not have the Sinusoidal Spectrum field" );
-		//mSinusoidalSpectrumAdapter.BindTo( frame.GetSinusoidalSpec() );
+
+		if ( fullAnalysisData )
+		{
+			CLAM_ASSERT( frame.HasSpectrum(), "The given frame did not have the Spectrum field");
+			mSpectrumAdapter.BindTo( frame.GetSpectrum() );
+			// @todo: AnalysisSynthesis does not keep a SinusoidalSpec in the Frames
+			//CLAM_ASSERT( frame.HasSinusoidalSpec(), "The given frame did not have the Sinusoidal Spectrum field" );
+			//mSinusoidalSpectrumAdapter.BindTo( frame.GetSinusoidalSpec() );
+			if ( !mpSpectrumAndPeaksWidget )
+			{
+				mpSpectrumAndPeaksWidget = new Fl_SMS_SpectrumAndPeaks( 0,0,100,100, "Frame spectrum and spectral peaks" );
+				CLAM_ASSERT( mpSpectrumAndPeaksWidget!=NULL, "The widget could not be created" );
+				mpSpectrumAndPeaksWidget->AttachTo( mSpectrumAdapter, mPeakArrayAdapter );
+			}
+			if ( !mpSinusoidalSpectrum )
+			{
+				mpSinusoidalSpectrum = new Fl_SMS_Spectrum( 0,0,100,100, "Sinusoidal Spectrum ");
+				CLAM_ASSERT( mpSinusoidalSpectrum!=NULL, "The widget could not be created");
+				mpSinusoidalSpectrum->AttachTo( mSinusoidalSpectrumAdapter );
+			}
+			mSpectrumAdapter.Publish();
+			mSinusoidalSpectrumAdapter.Publish();
+
+		}
+
 		CLAM_ASSERT( frame.HasResidualSpec(), "The given frame did not have the Residual Spectrum field");
 		mResidualSpectrumAdapter.BindTo( frame.GetResidualSpec() );
 		CLAM_ASSERT( frame.HasSpectralPeakArray(), "The given frame did not have the SpectralPeakArray field" );
 		mPeakArrayAdapter.BindTo( frame.GetSpectralPeakArray() );
 		
 		// now we create the necessary widgets
-		if ( !mpSpectrumAndPeaksWidget )
-		{
-			mpSpectrumAndPeaksWidget = new Fl_SMS_SpectrumAndPeaks( 0,0,100,100, "Frame spectrum and spectral peaks" );
-			CLAM_ASSERT( mpSpectrumAndPeaksWidget!=NULL, "The widget could not be created" );
-			mpSpectrumAndPeaksWidget->AttachTo( mSpectrumAdapter, mPeakArrayAdapter );
-		}
-		if ( !mpSinusoidalSpectrum )
-		{
-			mpSinusoidalSpectrum = new Fl_SMS_Spectrum( 0,0,100,100, "Sinusoidal Spectrum ");
-			CLAM_ASSERT( mpSinusoidalSpectrum!=NULL, "The widget could not be created");
-			mpSinusoidalSpectrum->AttachTo( mSinusoidalSpectrumAdapter );
-		}
 		if ( !mpResidualSpectrum )
 		{
 			mpResidualSpectrum = new Fl_SMS_Spectrum( 0,0,100,100, "Residual Spectrum");
@@ -100,8 +108,6 @@ namespace CLAMVM
 			mpResidualSpectrum->AttachTo( mResidualSpectrumAdapter );
 		}
 		
-		mSpectrumAdapter.Publish();
-		mSinusoidalSpectrumAdapter.Publish();
 		mResidualSpectrumAdapter.Publish();
 		mPeakArrayAdapter.Publish();
 		

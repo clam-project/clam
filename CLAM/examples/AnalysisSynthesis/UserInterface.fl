@@ -20,8 +20,7 @@ class UserInterface {open
 } {
   decl {public: CLAMGUI::AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {open
-  } {
+  Function {UserInterface()} {} {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
       xywh {276 191 872 548} resizable
@@ -38,7 +37,7 @@ class UserInterface {open
           private xywh {5 5 100 20} labelsize 12
         } {
           submenu mConfigurationOpsMenuItem {
-            label Configuration
+            label Configuration open
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mLoadCfgMenuItem {
@@ -241,7 +240,7 @@ Exit();}
       }
     }
   }
-  Function {AboutWindow()} {open private return_type void
+  Function {AboutWindow()} {private return_type void
   } {
     Fl_Window mWindow2 {
       label {About this program...}
@@ -306,4 +305,8 @@ mWindow2=NULL;} open
   decl {void ApplyTransformationReadyState();} {}
   decl {void ApplySynthesisAvailableState();} {}
   decl {void ApplyTransformationPerformedState();} {}
+  decl {void DeactivateFrameDataMenuItems();} {}
+  decl {bool mFrameDataAvailable;} {}
+  decl {bool FrameDataAvailable();} {selected public
+  }
 } 
