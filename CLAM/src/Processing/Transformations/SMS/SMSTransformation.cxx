@@ -3,14 +3,17 @@
 namespace CLAM
 {
 	SMSTransformation::SMSTransformation()
-		: mAmountCtrl("Amount",this), mOnCtrl("On",this), mInput("Input",this,1), 
-		  mOutput("Output",this,1)
+		: mAmountCtrl("Amount",this), mOnCtrl("On",this), 
+		mInput("Input",this,1), mOutput("Output",this,1)
 	{
+		mCurrentInputFrame=0;
 	}
 
 	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c)
-		:mAmountCtrl("Amount",this),mOnCtrl("On",this),mInput("Input",this,1),mOutput("Output",this,1)
+		:mAmountCtrl("Amount",this),mOnCtrl("On",this),
+		mInput("Input",this,1),mOutput("Output",this,1)
 	{
+		mCurrentInputFrame=0;
 		Configure(c);
 	}
 
