@@ -21,6 +21,8 @@ namespace CLAMVM
 
 		ma.Publish();
 
+		presWidget.Show();
+
 		// Run widget toolkit wrapper:
 		CLAMVM::WidgetTKWrapper& tk = CLAMVM::WidgetTKWrapper::GetWrapperFor("FLTK");
 		tk.Run();
