@@ -77,14 +77,12 @@ Progress::~Progress()
 
 WaitMessage::WaitMessage(const char* title)
 {
-//	mTitle = strdup(title);
 	mTitle = new char[strlen(title)+1];
 	strncpy(mTitle,title, strlen(title)+1 );
 }
 
 WaitMessage::~WaitMessage()
 {
-//	free(mTitle);
 	delete[] mTitle;
 }
 
@@ -153,7 +151,6 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetSinZeroPadding(analZeroPaddingFactor);
 	mAnalConfig.SetResWindowSize(resAnalWindowSize);
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
-	//	analConfig.SetDisplayFlags(mGlobalConfig.GetAnalysisSynthesisDisplayFlags());
 
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
@@ -244,6 +241,7 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 	CLAM_ASSERT(mGlobalConfig.GetOutputAnalysisFile()!="","Not a valid file name");
 	
 	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
+	List<Frame>& frames=mSegment.GetFramesArray();
 	if(ext=="sdif")
 	{
 		WaitMessage *wm = CreateWaitMessage("Storing sdif file, please wait");
@@ -256,7 +254,7 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 		int nFrames=mSegment.GetnFrames();
 		for(i=0;i<nFrames;i++)
 		{
-			SDIFWriter.Do(mSegment.GetFrame(i));
+			SDIFWriter.Do(frames[i]);
 		}
 		delete wm;
 	}
@@ -272,7 +270,7 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 		for(i=0;i<nFrames;i++)
 		{
 		
-			Frame& tmpFrame=mSegment.GetFrame(i);
+			Frame& tmpFrame=frames[i];
 			tmpFrame.RemoveAudioFrame();//windowed audio frame
 			tmpFrame.RemoveSinusoidalAudioFrame();
 			tmpFrame.RemoveResidualAudioFrame();
@@ -291,9 +289,8 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 		for(i=0;i<mSegment.GetnFrames();i++)
 		{
 			
-			Frame& tmpFrame=mSegment.GetFrame(i);
+			Frame& tmpFrame=frames[i];
 			tmpFrame.AddSpectrum();//this could be kept for direct IFFT
-			tmpFrame.UpdateData();			
 		}
 		delete wm;
 	}
@@ -357,7 +354,6 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	//TODO: Using Sinusoidal Hop Size as global, check!
 	
 	Progress* pct = CreateProgress("Analysis Processing",0,float(size));
 	myAnalysis.Start();
@@ -373,7 +369,7 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	myAnalysis.Stop();
 	delete pct;
 	
-	/*Now I will try to clean Tracks (TODO:This should be done on a frame by frame basis
+	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
 	and included in SMSAnalysis*/
 
 	if( mGlobalConfig.GetDoCleanTracks() ){
@@ -467,38 +463,39 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 	
 	SMSSynthesis mySynthesis(mSynthConfig);
 	mySynthesis.Start();
-	/////////////////////////////////////////////////////////////////////////////
-	// The main synthesis processing loop.
-	
+		
 	Audio tmpAudioFrame,tmpAudioFrame2;
 	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
 		
-	//This does not necessarily have to be true, look at OverlapAddTest above!
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
-	int windowsInFrame=(mSynthConfig.GetFrameSize()+1)/mSynthConfig.GetHopSize();
-	int k=0,i;
+	int i;
 
 	Progress* pct = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
+
+	List<Frame>& frames=mSegment.GetFramesArray();
+	
+	/////////////////////////////////////////////////////////////////////////////
+	// The main synthesis processing loop.
 	for(i=0;i<nSynthFrames;i++){
 		
-		mSegment.GetFramesArray()[i].AddSinusoidalAudioFrame();
-		mSegment.GetFramesArray()[i].AddResidualAudioFrame();
-		mSegment.GetFramesArray()[i].AddSynthAudioFrame();
-		mSegment.GetFramesArray()[i].UpdateData();
+		frames[i].AddSinusoidalAudioFrame();
+		frames[i].AddResidualAudioFrame();
+		frames[i].AddSynthAudioFrame();
+		frames[i].UpdateData();
 
-		mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		mSegment.GetFramesArray()[i].GetResidualAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		mSegment.GetFramesArray()[i].GetSynthAudioFrame().SetSize(mSynthConfig.GetFrameSize());
+		Frame& currentFrame=frames[i];
+		currentFrame.GetSinusoidalAudioFrame().SetSize(mSynthConfig.GetFrameSize());
+		currentFrame.GetResidualAudioFrame().SetSize(mSynthConfig.GetFrameSize());
+		currentFrame.GetSynthAudioFrame().SetSize(mSynthConfig.GetFrameSize());
 		
-		mySynthesis.Do(mSegment.GetFramesArray()[i]);
-		mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
-		mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
-		mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
+		mySynthesis.Do(currentFrame);
+		mAudioOutSin.SetAudioChunk(beginIndex,currentFrame.GetSinusoidalAudioFrame());
+		mAudioOutRes.SetAudioChunk(beginIndex,currentFrame.GetResidualAudioFrame());
+		mAudioOut.SetAudioChunk(beginIndex,currentFrame.GetSynthAudioFrame());
 		beginIndex+=synthFrameSize;
-		//CLAMGUI::showPDSnapshot(&mAudioOutSin,"OutputAudio");
 		pct->Update(float(i));
 	}
 
@@ -511,6 +508,8 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 
 void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 {
+/** Note that all this processing should be inside a separate Processing ! @todo */
+	
 	ComputeLowLevelDescriptors();
 	
 	TData frequencies[85]={32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55.000, 58.270, 61.735,
@@ -582,19 +581,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	////////////////
 			
 	//Configuration
-/*	OnsetDetectionConfig onsetconfig;
-	onsetconfig.SetFrameSize(analysisFrameSize);
-	onsetconfig.SetSmoothFiltSize(smoothFiltSize);
-	onsetconfig.SetBandThreshold(bandThreshold);
-	onsetconfig.SetMinPeakDist(minPeakDist);
-	onsetconfig.SetGlobalThreshold(globalThreshold);
-	onsetconfig.SetDifSize(difSize);
-	OnsetDetection onset(onsetconfig);
 
-	//Segmentation
-	onset.Start();
-	onset.Do(mSegment);
-*/
 	List<Note> array;
 	Array<TData> fund;
 	Array<TData> energy;
@@ -612,25 +599,33 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	}
 	int fr = 0;		
 	TData ff,aux,number =0,noteEnergy=0,lastFF=0,lastEnergy=0;
-	for(i=0;i<mSegment.GetChildren().Size();i++)
+	
+	int nChildren=mSegment.GetChildren().Size();
+	List<Segment>& children=mSegment.GetChildren();
+	TData samplingRate=mGlobalConfig.GetSamplingRate();
+	TData analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
+	TTime endTime=mSegment.GetEndTime();
+	for(i=0;i<nChildren;i++)
 	{
 		ff=0; aux=0; number=0,noteEnergy=0; 
-		mSegment.GetChildren()[i].SetHoldsData(false);
+		children[i].SetHoldsData(false);
+		
+		Segment& currentChild=children[i];
 		MediaTime time;
-		time.SetBegin(mSegment.GetChildren()[i].GetBeginTime());
-		time.SetEnd(mSegment.GetChildren()[i].GetEndTime());
+		time.SetBegin(currentChild.GetBeginTime());
+		time.SetEnd(currentChild.GetEndTime());
 	
 		Note myNote;
 		myNote.AddPitchNote();
 		myNote.UpdateData();
 
 		// Compute Fundamental frequency mean
-		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());
+		TIndex b=roundInt(2*currentChild.GetBeginTime()*samplingRate/analWindowSize);
 		TIndex e;
-		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())//don't know why but sometimes there is an error in last child
-			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
+		if(currentChild.GetEndTime()<endTime)//don't know why but sometimes there is an error in last child
+			e=roundInt(2*currentChild.GetEndTime()*mGlobalConfig.GetSamplingRate()/analWindowSize);	
 		else
-			e=roundInt(2*mSegment.GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
+			e=roundInt(2*endTime*samplingRate/analWindowSize);	
 
 		int j;
 		// Compute mean
@@ -658,7 +653,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 			{
 				if(onset){
 				e=j;
-				time.SetEnd(TData(.5*j*mGlobalConfig.GetAnalysisWindowSize()/mGlobalConfig.GetSamplingRate()));
+				time.SetEnd(TData(.5*j*analWindowSize/samplingRate));
 				break;}
 			}}
 		}
@@ -678,7 +673,6 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 				number++;
 			}
 		}
-//		CLAMGUI::showPDSnapshot(&testEnergyAudio);
 		if (number)
 			ff/=number;
 		else ff=0;
@@ -703,14 +697,10 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 			}
 		myNote.SetPitchNote(pitch[n]);		
 		if(noteEnergy>0.01&&((myNote.GetTime().GetEnd()-myNote.GetTime().GetBegin())>0.01))
-		//if(noteEnergy>0.005&&maxEnergy>0)
 		{
 			if((myNote.GetTime().GetEnd()-myNote.GetTime().GetBegin())<0.2)
 				myNote.GetTime().SetEnd(myNote.GetTime().GetBegin()+TData(0.2));
-/*			if(array.CurrentIndex()!=0&&myNote.GetTime().GetBegin()<array.Last().GetTime().GetEnd()){
-				array.Last().GetTime().SetEnd(myNote.GetTime().GetBegin()-0.05);
-				array.Last().GetTime().SetBegin(array.Last().GetTime().GetBegin()-0.05);}
-*/
+
 			array.AddElem(myNote);
 		}
 	}
