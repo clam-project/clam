@@ -5,50 +5,57 @@
 #include "SinTracksModel.hxx"
 #include "SineTracksDef.hxx"
 #include "SinTrackListBuilder.hxx"
+#include "DataTypes.hxx"
 
 namespace CLAM
 {
+	template <typename T> class Array;
 	class Segment;
+	class SpectralPeakArray;
 };
 
 
 namespace CLAMVM
 {
-		using CLAM::Segment;
-		using CLAM::ProcessingData;
-		using CLAM::Array;
+	using CLAM::Segment;
+	using CLAM::ProcessingData;
+	using CLAM::Array;
 
-		class SinTracksAdapter 
-				: public SpectralPeakArrayAdapter, public SinTracksModel
-		{
-				// attributes
-		private:
-				const Segment*                  mObserved;
-				SineTrackList                   mExtractedList;
-				SinTrackBuilder                 mTrackBuilder;
+	class SinTracksAdapter 
+		: public SpectralPeakArrayAdapter, public SinTracksModel
+	{
+		// attributes
+	private:
+		const Segment*                  mObserved;
+		const CLAM::Array< CLAM::SpectralPeakArray >* mMatrixObserved;
+		CLAM::TData                     mMatrixSampleRate;
+		SineTrackList                   mExtractedList;
+		SinTrackBuilder                 mTrackBuilder;
 
-				// implementation details
-		protected:
+		// implementation details
+	protected:
 				
-				virtual void TransmitPeakArrays();
+		virtual void TransmitPeakArrays();
 
-				// class interface
-		public:
+		// class interface
+	public:
 
-				SinTracksAdapter();
+		SinTracksAdapter();
 
-				virtual ~SinTracksAdapter();
+		virtual ~SinTracksAdapter();
 
-				virtual const char* GetClassName() const
-				{
-						return "SinTracksAdapter";
-				}
+		virtual const char* GetClassName() const
+		{
+			return "SinTracksAdapter";
+		}
 
 
-				virtual bool Publish();
+		virtual bool Publish();
 			
-				virtual bool BindTo( const ProcessingData& procDataObj );
-		};
+		virtual bool BindTo( const ProcessingData& procDataObj );
+
+		virtual bool BindTo( const CLAM::Array< CLAM::SpectralPeakArray >& peakMatrix, CLAM::TData srate );
+	};
 
 }
 #endif // SinTrackView.hxx
