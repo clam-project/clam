@@ -439,7 +439,7 @@ void WindowGenerator::Triangular(long size,DataArray& window) const
 void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window) const
 {
 	short N = 512, i, m;
-	TData fA[4] = {.35875, .48829, .14128, .01168},
+	TData fA[4] = {TData(.35875), TData(.48829), TData(.14128), TData(.01168)},
 		fMax = 0;
 	TData fTheta = -TData(4.0) * TData(TWO_PI) / N, 
 	       fThetaIncr = (TData(8.0) * TData(TWO_PI) / N) / (size);
