@@ -1,3 +1,4 @@
+#include "extended.hxx"
 #include "AIFFFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
