@@ -51,8 +51,8 @@ private:
 	void testConstructor_TakesValues()
 	{
 		CLAM::Point aPoint(3.0, 2.0);
-		CPPUNIT_ASSERT_EQUAL(3.0, aPoint.GetX());
-		CPPUNIT_ASSERT_EQUAL(2.0, aPoint.GetY());
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(3.0), aPoint.GetX());
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(2.0), aPoint.GetY());
 	}
 
 	void testDefaultConstructor_InitAsZero()

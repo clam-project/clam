@@ -38,8 +38,8 @@ private:
 	void testConstructor_TakesValues()
 	{
 		CLAM::Polar aPolar(3.0, 2.0);
-		CPPUNIT_ASSERT_EQUAL(3.0, aPolar.Mag());
-		CPPUNIT_ASSERT_EQUAL(2.0, aPolar.Ang());
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(3.0), aPolar.Mag() );
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(2.0), aPolar.Ang() );
 	}
 
 	void testDefaultConstructor_InitAsZero()

@@ -38,8 +38,8 @@ private:
 	void testConstructor_TakesValues()
 	{
 		CLAM::Complex aComplex(3.0, 2.0);
-		CPPUNIT_ASSERT_EQUAL(3.0, aComplex.Real());
-		CPPUNIT_ASSERT_EQUAL(2.0, aComplex.Imag());
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(3.0), aComplex.Real());
+		CPPUNIT_ASSERT_EQUAL( CLAM::TData(2.0), aComplex.Imag());
 	}
 
 	void testDefaultConstructor_InitAsZero()
