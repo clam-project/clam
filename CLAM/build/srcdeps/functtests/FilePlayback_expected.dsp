@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "__WINDOWS_DS__" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\libsndfile\include" /I "..\..\..\..\oggvorbis\include" /I "..\..\..\..\libmad\include" /I "..\..\..\..\id3lib\include" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\externals"
+# ADD CPP -O3 -fomit-frame-pointer -pipe /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "__LINUX_ALSA__" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" fltk.lib fltkformsd.lib fltkgld.lib fltkimagesd.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib libsndfile.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib id3lib.lib libmad.lib /nologo /subsystem:console /NODEFAULTLIB:MSVCRTD /machine:I386
+# ADD LINK32 /libpath:"\usr\X11R6\lib" asound.lib pthread.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib fltk_images.lib png.lib jpeg.lib z.lib fltk_gl.lib GLU.lib GL.lib fltk.lib Xft.lib pthread.lib m.lib Xext.lib X11.lib stdc++.lib id3.lib z.lib
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "FilePlayback - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "__WINDOWS_DS__" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\libsndfile\include" /I "..\..\..\..\oggvorbis\include" /I "..\..\..\..\libmad\include" /I "..\..\..\..\id3lib\include" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\externals"
+# ADD CPP -g -fno-inline -pipe -D_DEBUG /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "__LINUX_ALSA__" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" fltkd.lib fltkformsd.lib fltkgld.lib fltkimagesd.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib libsndfiled.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib id3libd.lib libmadd.lib /nologo /subsystem:console /NODEFAULTLIB:MSVCRT /debug /machine:I386
+# ADD LINK32 /libpath:"\usr\X11R6\lib" asound.lib pthread.lib fltk_images.lib png.lib jpeg.lib z.lib fltk_gl.lib GLU.lib GL.lib fltk.lib Xft.lib pthread.lib m.lib Xext.lib X11.lib stdc++.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib id3.lib z.lib -rdynamic
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -101,15 +101,15 @@ SOURCE=..\..\..\examples\FilePlayback_example.cxx
 
 # Begin Group "AudioIO Sources"
 
-# Begin Group "Windows Sources"
+# Begin Group "Linux Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx
+SOURCE=..\..\..\src\Tools\AudioIO\Linux\ALSAAudioDevice.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.cxx
+SOURCE=..\..\..\src\Tools\AudioIO\Linux\SndPcm.cxx
 # End Source File
 # End Group
 # Begin Group "RtAudio Sources"
@@ -501,17 +501,313 @@ SOURCE=..\..\..\src\Defines\EDataFormat.hxx
 
 SOURCE=..\..\..\src\Defines\CLAM_Math.hxx
 # End Source File
-# Begin Group "Windows Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\Windows\CLAM_windows.h
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\OSDefines.hxx
 # End Source File
+# End Group
+# Begin Group " Headers"
+
+# Begin Group "usr Headers"
+
+# Begin Group "include Headers"
+
+# Begin Group "sys Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\sys\cdefs.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\select.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\poll.h
+# End Source File
+# End Group
+# Begin Group "gnu Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\gnu\stubs.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\features.h
+# End Source File
+# Begin Group "bits Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\bits\wordsize.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\typesizes.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\select.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sigset.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\posix_opt.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\confname.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\fcntl.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\poll.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\errno.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ctype.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\stdio.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\stdlib.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sndfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\unistd.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\string.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\fcntl.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\assert.h
+# End Source File
+# Begin Group "asm-generic Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\asm-generic\errno-base.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\asm-generic\errno.h
+# End Source File
+# End Group
+# Begin Group "asm Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\asm\errno.h
+# End Source File
+# End Group
+# Begin Group "linux Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\linux\errno.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\errno.h
+# End Source File
+# Begin Group "alsa Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\alsa\asoundef.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\global.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\input.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\output.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\error.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\conf.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\pcm.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\rawmidi.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\timer.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\hwdep.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\control.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\mixer.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seq_event.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seq.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seqmid.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seq_midi_event.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\conv.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\instr.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\asoundlib.h
+# End Source File
+# End Group
+# Begin Group "ogg Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\ogg\config_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ogg\os_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ogg\ogg.h
+# End Source File
+# End Group
+# Begin Group "vorbis Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\vorbis\codec.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\vorbis\vorbisfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\vorbis\vorbisenc.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\mad.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\limits.h
+# End Source File
+# Begin Group "id3 Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\id3\sized_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\globals.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\id3lib_frame.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\field.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\tag.h
+# End Source File
+# End Group
+# End Group
+# End Group
 # End Group
 # Begin Group "Base Headers No. 1"
 
@@ -728,11 +1024,11 @@ SOURCE=..\..\..\src\Tools\AudioIO\AudioManager.hxx
 
 SOURCE=..\..\..\src\Tools\AudioIO\AudioDevice.hxx
 # End Source File
-# Begin Group "Windows Headers No. 1"
+# Begin Group "Linux Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.hxx
+SOURCE=..\..\..\src\Tools\AudioIO\Linux\SndPcm.hxx
 # End Source File
 # End Group
 # Begin Source File
@@ -801,128 +1097,6 @@ SOURCE=..\..\..\src\Tools\AudioFileIO\MpegBitstream.hxx
 
 SOURCE=..\..\..\src\Tools\AudioFileIO\MpegAudioStream.hxx
 # End Source File
-# End Group
-# End Group
-# Begin Group "libsndfile Headers"
-
-# Begin Group "include Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\libsndfile\include\sndfile.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "dxsdk Headers"
-
-# Begin Group "include Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\dxerr8.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\dsound.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\dinput.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\basetsd.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "oggvorbis Headers"
-
-# Begin Group "include Headers No. 2"
-
-# Begin Group "ogg Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\ogg\os_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\ogg\ogg.h
-# End Source File
-# End Group
-# Begin Group "vorbis Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\vorbis\codec.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\vorbis\vorbisfile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\vorbis\vorbisenc.h
-# End Source File
-# End Group
-# End Group
-# End Group
-# Begin Group "externals Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\externals\deque
-# End Source File
-# End Group
-# Begin Group "libmad Headers"
-
-# Begin Group "include Headers No. 3"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\libmad\include\mad.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "id3lib Headers"
-
-# Begin Group "include Headers No. 4"
-
-# Begin Group "id3 Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\sized_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\globals.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\id3lib_frame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\field.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\id3lib_streams.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\id3lib_strings.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\utils.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\tag.h
-# End Source File
-# End Group
 # End Group
 # End Group
 # End Group

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "__WINDOWS_DS__" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\libsndfile\include" /I "..\..\..\..\oggvorbis\include" /I "..\..\..\..\libmad\include" /I "..\..\..\..\id3lib\include" /I "..\..\..\examples\SMS\GUI" /I "..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Tools\SDIF" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\externals"
+# ADD CPP -O3 -fomit-frame-pointer -pipe /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "__LINUX_ALSA__" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "\usr\X11R6\include" /I "..\..\..\examples\SMS\GUI" /I "..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Tools\SDIF" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" RFFTW2st.lib FFTW2st.lib fltk.lib fltkformsd.lib fltkgld.lib fltkimagesd.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_2.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib libsndfile.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib id3lib.lib libmad.lib /nologo /subsystem:windows /NODEFAULTLIB:MSVCRTD /machine:I386
+# ADD LINK32 /libpath:"\usr\X11R6\lib" sfftw.lib srfftw.lib asound.lib xerces-c.lib pthread.lib pthread.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib fltk_images.lib png.lib jpeg.lib z.lib fltk_gl.lib GLU.lib GL.lib fltk.lib Xft.lib pthread.lib m.lib Xext.lib X11.lib stdc++.lib id3.lib z.lib
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "SMSTools - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "__WINDOWS_DS__" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\..\libsndfile\include" /I "..\..\..\..\oggvorbis\include" /I "..\..\..\..\libmad\include" /I "..\..\..\..\id3lib\include" /I "..\..\..\examples\SMS\GUI" /I "..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Tools\SDIF" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\externals"
+# ADD CPP -g -fno-inline -pipe -D_DEBUG /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "CLAM_HAVE_PTHREADS" /D "HAVE_STANDARD_UNICODE" /D "__LINUX_ALSA__" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "\usr\X11R6\include" /I "..\..\..\examples\SMS\GUI" /I "..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\SDIFIO" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Tools\SDIF" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" FFTW2std.lib RFFTW2std.lib fltkd.lib fltkformsd.lib fltkgld.lib fltkimagesd.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_2d.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib libsndfiled.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib id3libd.lib libmadd.lib /nologo /subsystem:console /NODEFAULTLIB:MSVCRT /debug /machine:I386
+# ADD LINK32 /libpath:"\usr\X11R6\lib" sfftw.lib srfftw.lib asound.lib xerces-c.lib pthread.lib pthread.lib fltk_images.lib png.lib jpeg.lib z.lib fltk_gl.lib GLU.lib GL.lib fltk.lib Xft.lib pthread.lib m.lib Xext.lib X11.lib stdc++.lib sndfile.lib vorbis.lib ogg.lib vorbisfile.lib vorbisenc.lib mad.lib m.lib id3.lib z.lib -rdynamic
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -246,15 +246,15 @@ SOURCE=..\..\..\examples\SMS\ProgressGUI.cxx
 
 # Begin Group "AudioIO Sources"
 
-# Begin Group "Windows Sources"
+# Begin Group "Linux Sources"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx
+SOURCE=..\..\..\src\Tools\AudioIO\Linux\ALSAAudioDevice.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.cxx
+SOURCE=..\..\..\src\Tools\AudioIO\Linux\SndPcm.cxx
 # End Source File
 # End Group
 # Begin Group "RtAudio Sources"
@@ -1320,13 +1320,6 @@ SOURCE=..\..\..\src\Defines\CLAM_Math.hxx
 
 SOURCE=..\..\..\src\Defines\OSDefines.hxx
 # End Source File
-# Begin Group "Windows Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\Windows\CLAM_windows.h
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\HeapDbg.hxx
@@ -1745,6 +1738,759 @@ SOURCE=..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_BPF_Sync_Editor.hxx
 
 SOURCE=..\..\..\examples\SMS\SMSTools_inlines.hxx
 # End Source File
+# End Group
+# End Group
+# Begin Group " Headers"
+
+# Begin Group "usr Headers"
+
+# Begin Group "include Headers"
+
+# Begin Group "sys Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\sys\cdefs.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\select.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\poll.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sys\stat.h
+# End Source File
+# End Group
+# Begin Group "gnu Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\gnu\stubs.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\features.h
+# End Source File
+# Begin Group "bits Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\bits\wordsize.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\typesizes.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sched.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sigset.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\pthreadtypes.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\initspin.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\sigthread.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\select.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\posix_opt.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\confname.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\fcntl.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\poll.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\errno.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\stat.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\huge_val.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\mathdef.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\bits\mathcalls.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\endian.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ctype.h
+# End Source File
+# Begin Group "FL Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Export.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Enumerations.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Widget.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Group.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Tile.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Window.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Double_Window.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Image.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Menu_Item.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Menu_.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Menu_Bar.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Valuator.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Counter.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Box.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Slider.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Scrollbar.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\fl_draw.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Shared_Image.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Help_View.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Pixmap.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Tooltip.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Choice.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Menu_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Preferences.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Browser_.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_File_Icon.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\filename.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\dirent.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_File_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Light_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Check_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Input_.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Input.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_File_Input.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Return_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\fl_ask.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\fl_file_chooser.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Pack.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Scroll.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Float_Input.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Int_Input.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\fl_message.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Help_Dialog.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Round_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Select_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Tabs.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\Fl_Gl_Window.H
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\FL\gl.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\time.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sched.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\signal.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\pthread.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\unistd.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\stdio.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\stdlib.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\string.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\fcntl.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\assert.h
+# End Source File
+# Begin Group "asm-generic Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\asm-generic\errno-base.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\asm-generic\errno.h
+# End Source File
+# End Group
+# Begin Group "asm Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\asm\errno.h
+# End Source File
+# End Group
+# Begin Group "linux Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\linux\errno.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\errno.h
+# End Source File
+# Begin Group "alsa Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\alsa\asoundef.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\global.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\input.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\output.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\error.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\conf.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\pcm.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\rawmidi.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\timer.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\hwdep.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\control.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\mixer.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seq_event.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seq.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seqmid.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\seq_midi_event.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\conv.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\instr.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\alsa\asoundlib.h
+# End Source File
+# End Group
+# Begin Group "xercesc Headers"
+
+# Begin Group "util Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XMLString.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XercesDefs.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XMLUni.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\XMemory.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\util\PlatformUtils.hpp
+# End Source File
+# End Group
+# Begin Group "parsers Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\parsers\XercesDOMParser.hpp
+# End Source File
+# End Group
+# Begin Group "framework Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\framework\MemBufInputSource.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\framework\XMLFormatter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\framework\MemBufFormatTarget.hpp
+# End Source File
+# End Group
+# Begin Group "sax Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\DocumentHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\DTDHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\EntityResolver.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\ErrorHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\SAXException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\SAXParseException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\sax\HandlerBase.hpp
+# End Source File
+# End Group
+# Begin Group "dom Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMImplementationLS.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMRangeException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMImplementation.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMImplementationRegistry.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNode.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNodeFilter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMWriterFilter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMErrorHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMWriter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMDocumentRange.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMDocumentTraversal.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMDocument.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMElement.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMCharacterData.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMText.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNamedNodeMap.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\xercesc\dom\DOMNodeList.hpp
+# End Source File
+# End Group
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\sfftw.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\srfftw.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\sndfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\math.h
+# End Source File
+# Begin Group "ogg Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\ogg\config_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ogg\os_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\ogg\ogg.h
+# End Source File
+# End Group
+# Begin Group "vorbis Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\vorbis\codec.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\vorbis\vorbisfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\vorbis\vorbisenc.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\mad.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\limits.h
+# End Source File
+# Begin Group "id3 Headers"
+
+# Begin Source File
+
+SOURCE=\usr\include\id3\sized_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\globals.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\id3lib_frame.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\field.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\include\id3\tag.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=\usr\include\memory.h
+# End Source File
+# End Group
+# Begin Group "X11R6 Headers"
+
+# Begin Group "include Headers No. 1"
+
+# Begin Group "GL Headers"
+
+# Begin Source File
+
+SOURCE=\usr\X11R6\include\GL\glext.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\X11R6\include\GL\gl.h
+# End Source File
+# Begin Source File
+
+SOURCE=\usr\X11R6\include\GL\glu.h
+# End Source File
+# End Group
+# End Group
+# End Group
 # End Group
 # End Group
 # Begin Group "Data Headers"
@@ -2360,11 +3106,11 @@ SOURCE=..\..\..\src\Tools\AudioIO\AudioManager.hxx
 
 SOURCE=..\..\..\src\Tools\AudioIO\AudioDevice.hxx
 # End Source File
-# Begin Group "Windows Headers No. 1"
+# Begin Group "Linux Headers"
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.hxx
+SOURCE=..\..\..\src\Tools\AudioIO\Linux\SndPcm.hxx
 # End Source File
 # End Group
 # Begin Source File
@@ -2484,219 +3230,6 @@ SOURCE=..\..\..\src\Tools\AudioFileIO\MpegBitstream.hxx
 
 SOURCE=..\..\..\src\Tools\AudioFileIO\MpegAudioStream.hxx
 # End Source File
-# End Group
-# End Group
-# Begin Group "fltk Headers"
-
-# Begin Group "include Headers"
-
-# Begin Group "FL Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Export.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Enumerations.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Widget.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Group.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Tile.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Window.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Double_Window.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Image.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_Item.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_Bar.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Valuator.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Counter.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Box.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Slider.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Scrollbar.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\fl_draw.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Shared_Image.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Help_View.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Pixmap.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Tooltip.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Choice.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Menu_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Preferences.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Browser_.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Browser.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_File_Icon.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\filename.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\dirent.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_File_Browser.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Light_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Check_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Input_.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Input.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_File_Input.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Return_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\fl_ask.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\fl_file_chooser.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Pack.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Scroll.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Float_Input.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Int_Input.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\fl_message.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Help_Dialog.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Round_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Select_Browser.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Tabs.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\Fl_Gl_Window.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fltk\include\FL\gl.h
-# End Source File
-# End Group
 # End Group
 # End Group
 # Begin Group "Visualization Headers"
@@ -2948,7 +3481,7 @@ SOURCE=..\..\..\src\Visualization\Util\SinTrackHorClipper.hxx
 SOURCE=..\..\..\src\Visualization\Util\SinTrackVerClipper.hxx
 # End Source File
 # End Group
-# Begin Group "GL Headers"
+# Begin Group "GL Headers No. 1"
 
 # Begin Source File
 
@@ -3102,20 +3635,6 @@ SOURCE=..\..\..\externals\CbLib\CBLMacros.hxx
 SOURCE=..\..\..\externals\CbLib\CBL.hxx
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\externals\deque
-# End Source File
-# End Group
-# Begin Group "pthreads Headers"
-
-# Begin Group "include Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\pthreads\include\pthread.h
-# End Source File
-# End Group
 # End Group
 # Begin Group "System Headers"
 
@@ -3146,295 +3665,6 @@ SOURCE=..\..\..\src\System\Threads\Mutex.hxx
 
 SOURCE=..\..\..\src\System\FileSystem.hxx
 # End Source File
-# End Group
-# Begin Group "dxsdk Headers"
-
-# Begin Group "include Headers No. 2"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\dxerr8.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\dsound.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\dinput.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\dxsdk\include\basetsd.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "xercesc Headers"
-
-# Begin Group "include Headers No. 3"
-
-# Begin Group "xercesc Headers No. 1"
-
-# Begin Group "util Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMLString.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XercesDefs.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMLUni.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMemory.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\util\PlatformUtils.hpp
-# End Source File
-# End Group
-# Begin Group "parsers Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\parsers\XercesDOMParser.hpp
-# End Source File
-# End Group
-# Begin Group "framework Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\framework\MemBufInputSource.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\framework\XMLFormatter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\framework\MemBufFormatTarget.hpp
-# End Source File
-# End Group
-# Begin Group "sax Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\DocumentHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\DTDHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\EntityResolver.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\ErrorHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\SAXException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\SAXParseException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\sax\HandlerBase.hpp
-# End Source File
-# End Group
-# Begin Group "dom Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMImplementationLS.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMRangeException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMImplementation.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMImplementationRegistry.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMNode.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMNodeFilter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMWriterFilter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMErrorHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMWriter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMDocumentRange.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMDocumentTraversal.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMDocument.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMElement.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMCharacterData.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMText.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMNamedNodeMap.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMNodeList.hpp
-# End Source File
-# End Group
-# End Group
-# End Group
-# End Group
-# Begin Group "fftw Headers"
-
-# Begin Group "include Headers No. 4"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\fftw\include\fftw.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\fftw\include\rfftw.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "libsndfile Headers"
-
-# Begin Group "include Headers No. 5"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\libsndfile\include\sndfile.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "oggvorbis Headers"
-
-# Begin Group "include Headers No. 6"
-
-# Begin Group "ogg Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\ogg\os_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\ogg\ogg.h
-# End Source File
-# End Group
-# Begin Group "vorbis Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\vorbis\codec.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\vorbis\vorbisfile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\oggvorbis\include\vorbis\vorbisenc.h
-# End Source File
-# End Group
-# End Group
-# End Group
-# Begin Group "libmad Headers"
-
-# Begin Group "include Headers No. 7"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\libmad\include\mad.h
-# End Source File
-# End Group
-# End Group
-# Begin Group "id3lib Headers"
-
-# Begin Group "include Headers No. 8"
-
-# Begin Group "id3 Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\sized_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\globals.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\id3lib_frame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\field.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\id3lib_streams.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\id3lib_strings.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\utils.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\id3lib\include\id3\tag.h
-# End Source File
-# End Group
-# End Group
 # End Group
 # End Group
 # Begin Group "Qt .ui Files"
