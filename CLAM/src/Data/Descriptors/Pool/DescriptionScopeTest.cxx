@@ -38,7 +38,7 @@ public:
 private:
 	void testGetIndex_whenEmpty()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		try
 		{
 			spec.GetIndex("MyAttribute");
@@ -56,7 +56,7 @@ private:
 
 	void testGetIndex_withOneInserted()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
 		CPPUNIT_ASSERT_EQUAL(1u,spec.GetNAttributes());
@@ -64,7 +64,7 @@ private:
 
 	void testGetIndex_withAWrongName()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
@@ -83,7 +83,7 @@ private:
 
 	void testGetIndex_withSecondInsertedArray()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		spec.Add<CLAM::TData>("Foo");
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
@@ -93,7 +93,7 @@ private:
 
 	void testAddAttribute_whenNameAlreadyAdded()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
@@ -112,7 +112,7 @@ private:
 
 	void testAdding_DifferentTypes()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		spec.Add<CLAM::TIndex>("Foo");
 		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
@@ -123,7 +123,7 @@ private:
 	void testCheckType_withOtherType()
 	{
 		std::string expected = "Type Missmatch using a pool";
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
 		{
@@ -140,14 +140,14 @@ private:
 
 	void testCheckType_withSameType()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		spec.CheckType(0,(CLAM::TData*)0);
 	}
 
 	void testGetAttributeName_withTwoScopes()
 	{
-		CLAM::DescriptionScope scope;
+		CLAM::DescriptionScope scope("TestScope");
 		scope.Add< CLAM::TData >("MyAttribute");
 		scope.Add< CLAM::TData >("YourAttribute");
 		CPPUNIT_ASSERT_EQUAL(std::string("MyAttribute"), scope.GetAttributeName(0));
@@ -156,7 +156,7 @@ private:
 
 	void testGetAttributeName_withWrongNumber()
 	{
-		CLAM::DescriptionScope scope;
+		CLAM::DescriptionScope scope("TestScope");
 		scope.Add< CLAM::TData >("MyAttribute");
 		try
 		{

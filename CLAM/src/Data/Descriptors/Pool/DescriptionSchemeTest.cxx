@@ -190,7 +190,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "GetScopeName: Using a wrong index to look up an scope name";
+			const std::string expected = "Accessing an illegal scope index for the description scheme";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}

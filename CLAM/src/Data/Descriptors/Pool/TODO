@@ -69,13 +69,14 @@
 	+ Dumping an empty scope
 	+ Dumping a zero size scope
 	+ Dumping sized scope with one attribute
-		- Create a proxy object
+		+ Create a proxy object
 	+ Removing the number of attributes attribute
 	+ Attribute dump
 	+ Multitype XML loading
-	- Component type attribute
-	- Consider a solution for the helper classes
-	- Adding the scope name attribute
+	+ Component type attribute
+	+ Consider a solution for the helper classes
+	+ Adding the scope name attribute
+	- Full data pool
 - Getting names from index
 	+ Getting valid scope indexes names
 	+ Getting invalid scope indexes names

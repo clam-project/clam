@@ -40,7 +40,7 @@ private:
 	void testGetWritePool_ReturnsSameMemory()
 	{
 		const unsigned poolSize=5;
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		
 		CLAM::ScopePool pool(spec,poolSize);
@@ -54,7 +54,7 @@ private:
 	void testGetReadPool_ReturnsConstMemory()
 	{
 		const unsigned poolSize=5;
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,poolSize);
@@ -69,7 +69,7 @@ private:
 	void testGetWritePool_withStrings()
 	{
 		const unsigned poolSize=5;
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,poolSize);
@@ -89,7 +89,7 @@ private:
 	void testGetWritePool_withWrongType()
 	{
 		const unsigned poolSize=5;
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,poolSize);
@@ -108,7 +108,7 @@ private:
 	void testGetReadPool_withWrongType()
 	{
 		const unsigned poolSize=5;
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<std::string>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,poolSize);
@@ -127,7 +127,7 @@ private:
 
 	void testConstruction_withoutSize()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec);
@@ -147,7 +147,7 @@ private:
 
 	void testConstruction_withoutSizeGettingNoConst()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec);
@@ -166,7 +166,7 @@ private:
 
 	void testGetReadPool_withoutGetWritePoolFirst()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,20);
@@ -186,7 +186,7 @@ private:
 
 	void testConstruction_givesSizeZeroByDefault()
 	{
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec);
@@ -198,7 +198,7 @@ private:
 	{
 		const unsigned poolSize=5;
 
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec);
@@ -216,7 +216,7 @@ private:
 	{
 		const unsigned poolSize=5;
 
-		CLAM::DescriptionScope spec;
+		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 
 		CLAM::ScopePool pool(spec,7);

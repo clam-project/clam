@@ -31,13 +31,19 @@ namespace CLAM
 	private:
 		NamesMap _nameMap;
 		Attributes _attributes;
+		std::string _scopeName;
 	public:
+		DescriptionScope(const std::string & name) : _scopeName(name) {}
 		~DescriptionScope()
 		{
 			Attributes::iterator it = _attributes.begin();
 			Attributes::iterator end = _attributes.end();
 			for (; it!=end; it++)
 				delete *it;
+		}
+		const std::string & GetName() const
+		{
+			return _scopeName;
 		}
 
 		template <typename AttributeType>
@@ -47,7 +53,7 @@ namespace CLAM
 			bool inserted = 
 				_nameMap.insert(std::make_pair(name,attributeIndex)).second;
 			CLAM_ASSERT(inserted,"DescriptionScope::Add, Attribute already present");
-			_attributes.push_back(new Attribute<AttributeType>);
+			_attributes.push_back(new Attribute<AttributeType>(name));
 		}
 
 		unsigned GetIndex(const std::string & name) const
@@ -78,19 +84,16 @@ namespace CLAM
 			_attributes[attributeIndex]->CheckType<AttributeType>();
 		}
 
-		const std::string & GetAttributeName(unsigned attribute) const
+		const std::string & GetAttributeName(unsigned attributeIndex) const
 		{
-			NamesMap::const_iterator it = _nameMap.begin();
-			NamesMap::const_iterator end = _nameMap.end();
-			for (; it!=end; it++)
-				if (it->second == attribute)
-					return it->first;
-			CLAM_ASSERT(false,"GetAttributeName: Using a wrong index to look up an attribute name");
+			CLAM_ASSERT(attributeIndex<_attributes.size(),
+				"GetAttributeName: Using a wrong index to look up an attribute name");
+			AbstractAttribute * attribute = _attributes[attributeIndex];
+			return attribute->GetName();
 		}
 		void DumpAttributeData(Storage & storage, unsigned attribute, void * data, unsigned size) const
 		{
-			XMLAdapter<std::string> nameAdapter(GetAttributeName(attribute),"name",false);
-			storage.Store(nameAdapter);
+			CLAM_ASSERT(data || !size, "Dumping data from a non instantiated attribute");
 			_attributes[attribute]->XmlDumpData(storage, data, size);
 		}
 	};
@@ -138,7 +141,7 @@ namespace CLAM
 
 			if (!result.second) return *_scopes[result.first->second];
 
-			DescriptionScope * theScope = new DescriptionScope;
+			DescriptionScope * theScope = new DescriptionScope(scopeName);
 			_scopes.push_back(theScope);
 			return *theScope;
 		}
@@ -166,14 +169,10 @@ namespace CLAM
 			return _scopes.size();
 		}
 
-		const std::string & GetScopeName(unsigned scope) const
+		const std::string & GetScopeName(unsigned scopeIndex) const
 		{
-			ScopeMap::const_iterator it = _scopeNameMap.begin();
-			ScopeMap::const_iterator end = _scopeNameMap.end();
-			for (; it!=end; it++)
-				if (it->second == scope)
-					return it->first;
-			CLAM_ASSERT(false,"GetScopeName: Using a wrong index to look up an scope name");
+			const DescriptionScope & scope = GetScope(scopeIndex);
+			return scope.GetName();
 		}
 	};
 
@@ -189,10 +188,10 @@ namespace CLAM
 		unsigned _size;
 		AttributesData _attributes;
 		const DescriptionScope & _spec;
-		class AttributeAdapter : public Component
+		class AttributePoolAdapter : public Component
 		{
 		public:
-			AttributeAdapter(const DescriptionScope & scope, unsigned attribute, void * data, unsigned size)
+			AttributePoolAdapter(const DescriptionScope & scope, unsigned attribute, void * data, unsigned size)
 				: _scope(scope), _attribute(attribute), _data(data), _size(size) { }
 			const char * GetClassName() const { return "TODO"; }
 			void StoreOn(Storage & storage) const
@@ -226,14 +225,17 @@ namespace CLAM
 			}
 			_size=0;
 		}
-		const char * GetClassName() const { return "DescriptionDataPool"; }
+		const char * GetClassName() const { return "ScopePool"; }
 		void StoreOn(Storage & storage) const
 		{
+			XMLAdapter<std::string> nameAdapter(_spec.GetName(),"name",false);
+			storage.Store(nameAdapter);
 			XMLAdapter<unsigned> sizeAdapter(_size,"size",false);
 			storage.Store(sizeAdapter);
 			for (unsigned attribute=0; attribute<_attributes.size(); attribute++)
 			{
-				AttributeAdapter attributeAdapter(_spec, attribute, _attributes[attribute], _size);
+				if (_size && !_attributes[attribute]) continue;
+				AttributePoolAdapter attributeAdapter(_spec, attribute, _attributes[attribute], _size);
 				XMLComponentAdapter adapter(attributeAdapter,"AttributePool",true);
 				storage.Store(adapter);
 			}
@@ -295,7 +297,7 @@ namespace CLAM
 	 * Contains the extracted data for a given description target.
 	 * It conforms to a given DescriptionScheme
 	 */
-	class DescriptionDataPool
+	class DescriptionDataPool : public Component
 	{
 	public:
 		DescriptionDataPool(const DescriptionScheme & scheme)
@@ -342,6 +344,22 @@ namespace CLAM
 
 			return _scopePools[scopeIndex]->template GetReadPool<AttributeType>(attributeName);
 		}
+	// Component Interface
+
+		const char * GetClassName() const { return "DescriptionDataPool"; }
+		void StoreOn(Storage & storage) const
+		{
+			for (unsigned i = 0; i<_scopePools.size(); i++)
+			{
+				XMLComponentAdapter adapter(*(_scopePools[i]), "ScopePool", true);
+				storage.Store(adapter);
+			}
+		}
+		void LoadFrom(Storage & storage)
+		{
+		}
+
+
 		/*
 		unsigned GetScopeSize(const std::string & scopeName)
 		{
@@ -349,9 +367,6 @@ namespace CLAM
 			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
 			return scope.GetSize();
 		}
-
-		
-		void DeleteInstances(const std::string & scope, unsigned position, unsigned size);
 		*/
 	private:
 		const DescriptionScheme & _scheme;

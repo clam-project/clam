@@ -1,7 +1,9 @@
 #include <typeinfo>
 #include "Assert.hxx"
 #include "Storage.hxx"
+#include "XMLAdapter.hxx"
 #include "XMLArrayAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
 #include "Component.hxx"
 
 /**
@@ -15,6 +17,7 @@ namespace CLAM
 	class AbstractAttribute
 	{
 	public:
+		AbstractAttribute(const std::string & attributeName) : _attributeName(attributeName) {}
 		virtual ~AbstractAttribute() {}
 		virtual void * Allocate(unsigned size) = 0;
 		virtual void Deallocate(void * data) = 0;
@@ -25,14 +28,21 @@ namespace CLAM
 			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
 				"Type Missmatch using a pool");
 		}
+		const std::string & GetName()
+		{
+			return _attributeName;
+		}
 	protected:
 		virtual const std::type_info & TypeInfo() const = 0;
+	private:
+		std::string _attributeName;
 	};
 
 	template <typename AttributeType>
 	class Attribute : public AbstractAttribute
 	{
 	public:
+		Attribute(const std::string & attributeName) : AbstractAttribute(attributeName) {}
 		typedef AttributeType DataType;
 		virtual void * Allocate(unsigned size)
 		{
@@ -44,7 +54,9 @@ namespace CLAM
 		}
 		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size )
 		{
-			XmlDumpConcreteData(storage,data,size,(AttributeType*)0);
+			XMLAdapter<std::string> nameAdapter(GetName(),"name",false);
+			storage.Store(nameAdapter);
+			XmlDumpConcreteData(storage,(AttributeType*)data,size,(AttributeType*)0);
 		}
 	private:
 		template <typename T>
@@ -56,6 +68,11 @@ namespace CLAM
 		template <typename T>
 		void XmlDumpConcreteData(Storage & storage, const T * data, unsigned size, Component * discriminator )
 		{
+			for (unsigned i=0 ; i < size ; i++ )
+			{
+				XMLComponentAdapter componentAdapter(data[i],data[i].GetClassName(),true);
+				storage.Store(componentAdapter);
+			}
 		}
 	protected:
 		virtual const std::type_info & TypeInfo() const
