@@ -38,6 +38,7 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do();
+		virtual bool Do( const CLAM::Audio & data );
 
 		virtual ~MonoAudioFileWriter();
 

@@ -54,9 +54,8 @@ namespace CLAMTest
 		cfg.UpdateData();
 		cfg.SetTargetFile(file);
 		writer.Configure( cfg );
-		writer.GetInPorts().GetByNumber(0).Attach(audio);
 		writer.Start();
-		writer.Do();
+		writer.Do(audio);
 		writer.Stop();
 	}
 
