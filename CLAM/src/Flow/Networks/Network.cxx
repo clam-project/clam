@@ -56,12 +56,14 @@ namespace CLAM
 
 	void Network::AddProcessing( const std::string & name, Processing* proc)
 	{
-		AssertFlowControlNotNull();
+//		AssertFlowControlNotNull();
 
 		// returns false if the key was repeated.
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
-		_flowControl->ProcessingAddedToNetwork();
+
+		if(_flowControl)
+			_flowControl->ProcessingAddedToNetwork();
 	}
 
 	bool Network::HasProcessing( const std::string & name )
@@ -73,7 +75,7 @@ namespace CLAM
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
-		AssertFlowControlNotNull();
+//		AssertFlowControlNotNull();
 
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
@@ -85,7 +87,9 @@ namespace CLAM
 			return false;
 
 		inport.Attach(GetNodeAttachedTo(outport));
-		_flowControl->ConnectionAddedToNetwork();
+		
+		if(_flowControl)
+			_flowControl->ConnectionAddedToNetwork();
 
 		return true;
 	}
