@@ -88,7 +88,7 @@ AC_PROG_CC
 CLAM_LIB_FFTW
 
 # PortMIDI checking procedure
-CLAM_LIB_PORTMIDI
+# CLAM_LIB_PORTMIDI
 
 if test $IS_DARWIN = "no"
 then
