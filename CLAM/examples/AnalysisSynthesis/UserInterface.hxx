@@ -69,6 +69,8 @@ private:
   static Fl_Menu_Item *mVisualizeOutputs;
   inline void cb_Sound_i(Fl_Menu_*, void*);
   static void cb_Sound(Fl_Menu_*, void*);
+  inline void cb_Spectrum_i(Fl_Menu_*, void*);
+  static void cb_Spectrum(Fl_Menu_*, void*);
   inline void cb_Sinusoidal_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal(Fl_Menu_*, void*);
   inline void cb_Residual_i(Fl_Menu_*, void*);
@@ -113,6 +115,7 @@ private:
   void StoreMelody(void);
   void StoreOutputSound(void);
   void DisplayOutputSound(void);
+  void DisplayOutputSpectrum(void);
   void StoreOutputSoundResidual(void);
   void DisplayOutputSoundResidual(void);
   void StoreOutputSoundSinusoidal(void);
@@ -121,7 +124,7 @@ private:
   void Transform(void);
   void Exit(void);
   Fl_Window* Attach( const char* title, CLAM::Audio* data );
-  Fl_Window* Attach( const char* title, CLAM::Spectrum* data );
+  Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
   static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
@@ -141,7 +144,9 @@ private:
   Fl_Window* mAudioOutputResidualDisplay;
   Fl_Window* mAudioOutputSinusoidalDisplay;
   Fl_Window* mInputSpectrum;
-  ProcDataView<Spectrum>* mSpectrumView;
+  Fl_Window* mOutputSpectrum;
+  ProcDataView<Spectrum>* mInputSpectrumView;
+  ProcDataView<Spectrum>* mOutputSpectrumView;
   Signalv1<TData> mFrameSignal;
   Signalv1<bool> mPaintSignal;
   Slotv1<double> mSlot;
