@@ -25,10 +25,10 @@
 
 namespace CLAM {
 
-  
+
 	void CleanTracksConfig::DefaultInit()
 	{
-		
+
 		AddAll();
 		UpdateData();
 
@@ -39,7 +39,7 @@ namespace CLAM {
 		SetSamplingRate(44100);
 		SetSpecSize(22050);
 	}
-	
+
 	CleanTracks::CleanTracks():mTrajectoryArray(100,100),mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(CleanTracksConfig());
@@ -61,7 +61,7 @@ namespace CLAM {
 	bool CleanTracks::ConcreteConfigure(const ProcessingConfig& c)
 	{
 
-		CopyAsConcreteConfig(mConfig, c);	    
+		CopyAsConcreteConfig(mConfig, c);
 
 		mMaxDropOut = mConfig.GetMaxDropOut();
 		mMinLength= mConfig.GetMinLength();
@@ -76,7 +76,7 @@ namespace CLAM {
 
 //Process
 
-	
+
 	//Supervised mode
 	bool  CleanTracks::Do(void)
 	{
@@ -220,56 +220,77 @@ namespace CLAM {
 		mTrajectoryArray.DeleteElem(pos);
 	}
 
-
-
-	void  CleanTracks::ContinuedAt()
+	void CleanTracks::ContinuedAt()
 	{
-		TSize dropOut;
-		int bestCandidate;
-		bool ThereIsCandidate;
-
 		for(int i=0; i<mTrajectoryArray.Size(); i++)
 		{
-			ThereIsCandidate=false;
+			const TTrajectory & toBeAppended = mTrajectoryArray[i];
+			bool thereIsCandidate=false;
 			TData bestFreqDif=mFreqDev;
+			int bestCandidate;
 
-			//GetBestCandidate
+			// Get the best 'candidate' to be followed by the track 'toBeAppended'
 			for(int k=0; k<mTrajectoryArray.Size(); k++)
 			{
-				dropOut=mTrajectoryArray[i].beginPos-(mTrajectoryArray[k].beginPos+mTrajectoryArray[k].length);
+				const TTrajectory & candidate = mTrajectoryArray[k];
+				const TSize dropOut=
+					toBeAppended.beginPos-
+						(candidate.beginPos+candidate.length);
 
-				if((dropOut>0)&&(dropOut<=mMaxDropOut)&&
-					(Abs(mTrajectoryArray[i].initialFreq-mTrajectoryArray[k].finalFreq)<bestFreqDif))
-				{
-					bestFreqDif=Abs(mTrajectoryArray[i].initialFreq-mTrajectoryArray[k].finalFreq);
-					bestCandidate=k;
-					ThereIsCandidate=true;
-				}
+				// 'candidate' should end before 'toBeAppended' starts
+				if (dropOut<=0) continue;
+				// ...but not too much
+				if (dropOut>mMaxDropOut) continue;
+
+				// ...and the frequency distance should be the better one
+				const TData frequencyDistance =
+					Abs(toBeAppended.initialFreq-candidate.finalFreq);
+				if (frequencyDistance >= bestFreqDif) continue;
+
+				bestFreqDif=frequencyDistance;
+				bestCandidate=k;
+				thereIsCandidate=true;
 			}
 
-			if(ThereIsCandidate)
+			// If there is no candidate, toBeAppended is not appended, next...
+			if (!thereIsCandidate) continue;
+
+			TTrajectory & candidateTrajectory = mTrajectoryArray[bestCandidate];
+
+			// Check that the best candidate for 'toBeAppended'
+			// is not the best one to another
+
+			bool isBetterForAnother=true;
+			const TSize candidateEnd =
+				candidateTrajectory.beginPos+candidateTrajectory.length;
+
+			for(int j=0; j<mTrajectoryArray.Size(); j++)
 			{
-				//IsBestCandidateInTheOtherWay
-				bool isBestCandidate=true;
-				for(int j=0; j<mTrajectoryArray.Size(); j++)
-				{
-					dropOut=mTrajectoryArray[j].beginPos-(mTrajectoryArray[bestCandidate].beginPos+mTrajectoryArray[bestCandidate].length);
-					if((dropOut>0)&&(dropOut<=mMaxDropOut)&&
-						(Abs(mTrajectoryArray[j].initialFreq-mTrajectoryArray[bestCandidate].finalFreq)<bestFreqDif))
-						//(Abs(mTrajectoryArray[j].initialFreq-mTrajectoryArray[bestCandidate].finalFreq)/(dropOut+1)<bestFreqDif))
-						isBestCandidate=false;
-				}
-				if (isBestCandidate==true) mTrajectoryArray[bestCandidate].continuedAtId=mTrajectoryArray[i].id;
+				const TTrajectory & another = mTrajectoryArray[j];
+				const TSize dropOut=another.beginPos-candidateEnd;
 
+				if (dropOut<=0) continue;
+				if (dropOut>mMaxDropOut) continue;
+				const TData frequencyDistance =
+					Abs(another.initialFreq-candidateTrajectory.finalFreq);
+				if (frequencyDistance >= bestFreqDif) continue;
+
+				isBetterForAnother=false;
+				break; // there is no reason to continue the search
 			}
+
+			if (!isBetterForAnother) continue;
+
+			candidateTrajectory.continuedAtId=toBeAppended.id;
+
 		}
 	}
 
 	void  CleanTracks::InterpolatePeaks(TTrajectory& fromTrajectory, Array<SpectralPeakArray*>& peakArrayArray)
 	{
-		int newTrajPos=FindTrajectoryPosition(fromTrajectory.continuedAtId);
+		const int newTrajPos=FindTrajectoryPosition(fromTrajectory.continuedAtId);
 		CLAM_ASSERT(newTrajPos>-1,"CleanTracks::InterpolatePeaks:Negative Index for track");
-		TTrajectory toTrajectory=mTrajectoryArray[newTrajPos];
+		const TTrajectory & toTrajectory = mTrajectoryArray[newTrajPos];
 		int gap=toTrajectory.beginPos-(fromTrajectory.beginPos+fromTrajectory.length);
 		TData freqSlope=(toTrajectory.initialFreq-fromTrajectory.finalFreq)/(gap+1);
 		TData magSlope=(toTrajectory.initialMag-fromTrajectory.finalMag)/(gap+1);
@@ -308,26 +329,26 @@ namespace CLAM {
 		fromTrajectory.continuedAtId=mTrajectoryArray[newTrajPos].continuedAtId;
 		fromTrajectory.finalFreq=mTrajectoryArray[newTrajPos].finalFreq;
 		mTrajectoryArray.DeleteElem(newTrajPos);
-		
+
 	}
 
-	
+
 TIndex CleanTracks::FindTrajectoryPosition(TIndex id)
 {
-	TTrajectory tmpTrajectory;
-	int trajectoryPosition=-1;
-	tmpTrajectory.id=id;
 	//we have to check whether it is first or last track
-	if(tmpTrajectory.id==mTrajectoryArray[0].id) 
-		trajectoryPosition=0;
-	else if (tmpTrajectory.id==mTrajectoryArray[mTrajectoryArray.Size()-1].id) 
-		trajectoryPosition=mTrajectoryArray.Size()-1;
-	else
-	{
-		trajectoryPosition=mSearchTrajectories.Find(tmpTrajectory);
-		//note that Find returns the closest index and that does not guarantee that is the exact one
-		if(trajectoryPosition!=-1&&mTrajectoryArray[trajectoryPosition].id!=id) trajectoryPosition=-1;
-	}
+	if (id == mTrajectoryArray[0].id)
+		return 0;
+	if (id == mTrajectoryArray[mTrajectoryArray.Size()-1].id)
+		return mTrajectoryArray.Size()-1;
+
+	TTrajectory tmpTrajectory;
+	tmpTrajectory.id=id;
+	TIndex trajectoryPosition = mSearchTrajectories.Find(tmpTrajectory);
+
+	//note that Find returns the closest index and that does not guarantee that is the exact one
+	if (trajectoryPosition!=-1)
+		if (mTrajectoryArray[trajectoryPosition].id!=id)
+			return -1;
 	return trajectoryPosition;
 }
 
