@@ -1,12 +1,18 @@
 This is the CHANGELOG file for SMS Tools 2, a CLAM application.
 
-9999-99-99 SMS Tools 2, version 0.1.1
-'GUI bug fixing and feature addition'
-	* GUI - Score Editor:
-	  ** UI texts tweaked so they result more informative
-	  ** Added new and improved SMS Morph transformation control widget, allowing user a finer grain level
-	  of control on the SMS transformation
-	  ** Bug fixed: under some circumstances configuration widgets might be unadvertendly duplicated
+20003-07-25
+'Bug fixing and SMS Morph editor improvements'
+  * SMSTools - v.0.1.1
+      ** GUI - Score Editor:
+	  *** UI screen texts tweaked so they result more informative
+	  *** Added new and improved SMS Morph transformation control widget, 
+	      allowing user a finer grain level of control on that SMS transformation. Also SMS Morph
+	      transformation description has been completely rewritten.
+	  *** Bug fixed: under some circumstances configuration widgets might be 
+              unadvertendly duplicated, leading to invalid transformation scores
+	  *** Editor widget layout tweaked a bit to make bigger the screen area devoted
+	      to transformation parameters edition
+
 	
 2003-07-23 SMS Tools 2, version 0.1
 'First SMS Tools 2 public release'
