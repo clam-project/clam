@@ -6,14 +6,13 @@ PROGRAMS = \
            TestPolar \
            BPFTest \
            ListTest \
-           TestAudioFileIO \
            TestMIDIIO \
            TestAudioIO \
            TestControlMapper \
-           TestControls \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
+           TestAudioFileIO \
 
 TESTS = \
         TestXMLAdapters \
@@ -27,16 +26,17 @@ TESTS = \
         TestFFT \
         TestIFFT \
         TestSpectrum \
-        TestSignalv1 \
+        TestControls \
         TestSpectrumAdder \
-        TestSpectrumAdder2 \
-        TestSpectrumProduct \
         TestWindowing \
         PhantomBufferTest \
         TestStreamRegions \
         TestStreamBuffer \
         TestEnvelopeExtractor \
         TestWaveGenerator \
+        TestSignalv1 \
+        TestSpectrumAdder2 \
+        TestSpectrumProduct \
 
 TOP=..
 
