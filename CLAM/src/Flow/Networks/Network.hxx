@@ -30,7 +30,7 @@ public:
 	// constructor / destructor
 	Network();
 	Network( const std::string& );
-	~Network();
+	virtual ~Network();
 	
 	const std::string& GetName() const { return _name; }
 	Processing& GetProcessing( const std::string & name );
