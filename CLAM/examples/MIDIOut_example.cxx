@@ -10,12 +10,10 @@ using namespace CLAM;
 
 void CrossPlatformSleep(int seconds)
 {
-	#ifdef POSIX
-		sleep(seconds);
-	#elif defined WIN32
+	#ifdef WIN32
 		Sleep(1000*seconds);
 	#else 
-		#error sleeping function still not tried on your platform
+		sleep(seconds);
 	#endif
 }
 
