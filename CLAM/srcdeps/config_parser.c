@@ -39,74 +39,82 @@ int var_true(char* subst,const char* filename,int line)
 	return 0;
 }
 
-int decn(int n,const char* filename,int line)
+typedef struct config_data
 {
-	n--;
-	if (n<=0)
-	{
-		fprintf(stderr,
-		"Maximum variable length exceeded in line %s:%d\n",filename,line);
-		exit(-1);
-	}
-	return n;
-}
+	char* in;
+	char* out_start;
+	char* out;
+	int n;
+	const char* filename;
+	int line;
+} config_data;
 
-char* config_parse_var(char* b,const char* filename,int line,int insidecond,int cond,char** resptr,int n)
+#define COPYINOUT(d) { *d->out++ = *d->in++; d->n--; if (d->n==0) { fprintf(stderr,"Error: parsing space exceeded in %s:%d\n",d->filename,d->line); exit(-1); } }
+#define CHAROUT(d,c) { *d->out++ = c; d->n--; if (d->n==0) { fprintf(stderr,"Error: parsing space exceeded in %s:%d\n",d->filename,d->line); exit(-1); } }
+#define ENDOUT(d) { *d->out = 0; }
+
+void config_parse_line_sub(config_data* d,int insidecond,int cond)
 {
-	int iscond = 0;
-	char* res = *resptr;
-	while (*b && (!insidecond || (*b!=':' && *b!=')')))
+	char* var = 0;
+	*d->out = 0;
+
+	while (*d->in)
 	{
-		if (*b=='$') {
-			char var[256];
-			char* a = var;
-			b++;
-			if (*b!='(')
-			{ 
-				fprintf(stderr,
-				"Expected '(' after '$' in line %s:%d\n",filename,line);
-				exit(-1);
-			}
-			b++;
-			while (*b && *b!=')')
-			{
-				if (*b=='?')
-				{
-					int subcond = 0;
-					b++;
-					*a = 0;
-					iscond = 1;
-					subcond = var_true(var,filename,line);
-					b = config_parse_var(b,filename,line,1,cond&subcond,&res,n);
-					if (*b==':')
-					{
-						b++;
-						b = config_parse_var(b,filename,line,1,cond&(!subcond),&res,n);
-					}
-				}else{
-					*a++ = *b++;
-				}
-			}
-			if (*b!=')')
+		/* if we are inside a condition, and not parsing a variable, we should
+		** return if we encounter a ':' or a ')'
+		*/ 
+		if (!var && insidecond && (*d->in==':' || *d->in==')')) return;
+
+		if (*d->in=='$')
+		{
+			/* encountering a variable, starting with $( */
+			var = d->out;
+			d->in++;
+			if (*d->in!='(')
 			{
 				fprintf(stderr,
-				"Expected ')' after %s in line %s:%d\n",var,filename,line);
+				"Expected '(' after '$' in line %s:%d\n",d->filename,d->line);
 				exit(-1);
 			}
-			*a = 0;
-			if (!iscond)
+			d->in++;
+		}
+
+		if (var)
+		{
+			/* we are inside a variable */
+
+			if (*d->in == ')')
 			{
-				listkey* k = listhash_find(config,var);
+				/* encountered the end of the variable */
+				listkey* k;
+				d->in++;	
+				
+				/* terminate variable */
+				ENDOUT(d);
+
+				/* search for the variable */
+				k = listhash_find(config,var);
 				if (k==0)
 				{
 					fprintf(stderr,
 						"Variable \"%s\" not found in line %s:%d\n",
-						var,filename,line);
+						var,d->filename,d->line);
 					exit(-1);
 				}
+				
+				/* marked the variable as used */
 				list_add_str_once(used_vars,k->str);
-				if (cond)
+
+				/* reset the token string pointer to where we encountered the 
+				** variable so we will overwrite it with it's value(s)
+				*/
+				d->out = var;
+				var = 0;
+
+				if (cond) 
 				{
+					/* only if we are inside a true evalution */
+					/* copy the variable's value(s) to the token string */
 					if (k->l)
 					{
 						item* i = k->l->first;
@@ -115,159 +123,150 @@ char* config_parse_var(char* b,const char* filename,int line,int insidecond,int 
 							char* c = i->str;
 							while (*c)
 							{
-								*res++ = *c++;
-								n=decn(n,filename,line);
+								CHAROUT(d,*c++)
 							}
 							i = i->next;
 							if (i) {
-								*res++=' ';
-								n=decn(n,filename,line);
+								CHAROUT(d,0)
 							}
 						}
 					}
 				}
+			}else if (*d->in == '?')
+			{
+				/* we are inside a condition in the from $(VARIABLE?IF_TRUE:IF_FALSE) */
+				int subcond;
+				/* terminate variable */
+				ENDOUT(d);
+				d->in++;
+
+				/* evuluate variable */				
+				subcond = var_true(var,d->filename,d->line);
+
+				/* reset the token string pointer to where we encountered the 
+				** variable so we will overwrite it with the result of the condition
+				** expansion
+				*/
+				d->out = var;
+				var = 0;
+
+				/* recursively evaluate left and right hand side. depending on the
+				** condition, either one will be added to the token list
+				*/
+				config_parse_line_sub(d,1,cond&subcond);
+				if (*d->in==':')
+				{
+					d->in++;
+					config_parse_line_sub(d,1,cond&(!subcond));
+				}
+				if (*d->in==')')
+				{
+					d->in++;
+				}
+			}else
+			{
+				/* still copying variable name */
+				COPYINOUT(d);
 			}
-			b++;
-		}
-		else
-		{
+		}else{
+			/* not in a variable - just copying the value to the token list */
 			if (cond)
 			{
-				*res++ = *b++;
-				n=decn(n,filename,line);
-				*res = 0;
+				/* if true, we copy the value char by char to the token list */
+				
+				/* encountering space, which means we have to insert a token seperation */
+				if (*d->in == ' ' || *d->in == '\t')
+				{
+					/* skip all extra spaces */
+					while (*d->in && (*d->in == ' ' || *d->in == '\t')) d->in++;
+
+					/* insert token seperation if necesary */
+					if (d->out!=d->out_start && *(d->out-1)) CHAROUT(d,0);
+				}else{
+					/* '=' is a special case: it is not necesarily seperated with spaces,
+					** so we insert token seperations just in case
+					*/
+					if (*d->in == '=')
+					{
+						if (d->out!=d->out_start && *(d->out-1)) CHAROUT(d,0);
+						COPYINOUT(d);
+						CHAROUT(d,0);
+					}else{
+						COPYINOUT(d);
+					}
+				}
 			}else{
-				b++;
+				/* if false, we just skip the value char by char */
+				d->in++;
 			}
 		}
 	}
-	*res = 0;
-	*resptr = res;
-	return b;
-}
-
-void config_parse_handle(char* keystr,char** val,int nvals,const char* filename,int line,int is_include)
-{
-	int k;
-	listkey* i = 0;
-	if (!is_include)
-		i = listhash_add_key_once(config,keystr);
-	for (k=0;k<nvals;k++)
-	{
-		char tmp[4096];
-		char* b = val[k];
-		while (*b)
-		{	
-			char* res = tmp;
-			b = config_parse_var(b,filename,line,0,1,&res,4096);
-		}
-		if (!is_include)
-			listkey_add_item_str(i,tmp);
-		else
-			config_parse(tmp);
-	}
+	/* terminate token list */
+	CHAROUT(d,0);
+	CHAROUT(d,0);
 }
 
 void config_parse_line(char* ptr,const char* filename,int line)
 {
-	char* keystr = 0;
-	char* val[1024];
-	int nvals = 0;
-	char* end = 0;
-	int is_include = 0;
+	char tmp[4096];
+	config_data d;
+	d.filename = filename;
+	d.line = line;
+	d.in = ptr;
+	d.out = d.out_start = tmp;
+	d.n = 4096;
 
-	while (*ptr && (*ptr==' ' || *ptr=='\t')) ptr++;
-	if (!*ptr) return;
-	keystr = ptr;
-	while (*ptr && *ptr!=' ' && *ptr!='\t' && *ptr!='=') ptr++;
-	end = ptr;
-	while (*ptr && (*ptr==' ' || *ptr=='\t')) ptr++;
-	if (*ptr!='=')
-	{
-		char tmp = *end;
-		*end = 0;
-		if (strcmp(keystr,"include")==0)
-		{
-			is_include = 1;
-			*end = tmp;
-		}
-		else
-		{
-			*end = tmp;
-			*ptr = 0;
-			fprintf(stderr,"Expected '=' in line %s:%d after \"%s\"\n",filename,line,keystr);
-			exit(-1);
-		}
-	}
-	
-	
-	if (!is_include)
-	{
-		if (*ptr!='=') {
-			*ptr = 0;
-			fprintf(stderr,"Expected '=' in line %s:%d after \"%s\"\n",filename,line,keystr);
-			exit(-1);
-		}else{
-			*end = 0;
-			ptr++;
-		}
-	}
-	end = 0;
-	while (*ptr)
-	{
-		char* ptr2;
-		while (*ptr && (*ptr==' ' || *ptr=='\t')) ptr++;
-		if (end) *end = 0;
-		if (*ptr) val[nvals++] = ptr;
-		if (nvals==1024)
-		{
-			fprintf(stderr,"Error: limit of 1024 values per key reached in line %s:%d\n",filename,line);
-			exit(-1);
-		}
-		ptr2 = ptr;
-		if (*ptr=='"')
-		{
-			char* start;
-			ptr++;
-			start = ptr;
-			while (*ptr) 
-			{
-				if (*ptr=='"') break;
-				if (*ptr=='\\') ptr++;
-				*ptr2++ = *ptr++;
-			}
-			if (*ptr!='"')
-			{
-				*ptr2 = 0;
-				fprintf(stderr,"Expected '\"' in line %s:%d after \"%s\"\n",filename,line,start);
-				exit(-1);
-			}
-			end = ptr2;
-			ptr++;
-		}
-		else
-		{
-			int brackets = 0;
-			while (*ptr) 
-			{
-				if (*ptr=='(') brackets++;
-				if (*ptr==')') brackets--;
-				if (brackets == 0 && (*ptr==' ' || *ptr=='\t'))
-					break;
-				if (*ptr=='\\') ptr++;
-				*ptr2++ = *ptr++;
-			}
-			if (brackets!=0)
-			{
-				fprintf(stderr,"Mismatch '(' ')' in line %s:%d\n",filename,line);
-				exit(-1);
-			}
-			end = ptr2;
-		}
-	}
-	if (end) *end = 0;
+	/* parse the line and start the tokens, \0 seperated in \0\0 terminated
+	** in tmp */	
+	config_parse_line_sub(&d,0,1);
 
-	config_parse_handle(keystr,val,nvals,filename,line,is_include);
+	/* we now have a token list */
+
+	{
+		int k = 0;
+		char* ptr = tmp;
+		char* key = ptr;
+		listkey* i = 0;
+		int isinclude = 0;
+
+		/* special case: the first token is include */
+		if (!strcmp(key,"include"))
+		{
+			isinclude = 1;
+		}
+		
+		while (*ptr)
+		{
+			if (isinclude)
+			{
+				if (k>0) config_parse(ptr);
+			}
+			else
+			{
+				/* if not, the first token is a variable name,
+				** and the second token should be "=" */
+				if (k==1)
+				{
+					if (!strcmp(ptr,"="))
+					{
+						i = listhash_add_key_once(config,key);
+						if (i->l)
+						{
+							list_free(i->l);
+							i->l = list_new();
+						}
+					}
+				}
+				if (k>1)
+				{
+					if (i) listkey_add_item_str(i,ptr);
+				}
+			}
+			while (*ptr) ptr++;
+			ptr++;
+			k++;
+		}
+	}
 }
 
 int config_parse(const char* filename)
