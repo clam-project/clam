@@ -71,7 +71,7 @@ bool SDIFOut::Do(const Frame& frame)
 //If enabled, first frame will contain fundamental frequency
 	if(mConfig.GetEnableFundFreq())
 	{
-		SDIF::Frame tmpSDIFFrame("1FQ0",frame.GetCenterTime());
+		SDIF::Frame tmpSDIFFrame("1FQ0",frame.GetCenterTime(),0);
 		//Note: other Frame Header values could be set but are not available in segment data
 				
 		//First matrix to add to frame
@@ -85,7 +85,7 @@ bool SDIFOut::Do(const Frame& frame)
 //If enabled, second frame will contain residual spectrum
 	if(mConfig.GetEnableResidual())
 	{
-		SDIF::Frame tmpSDIFFrame("1STF",frame.GetCenterTime());
+		SDIF::Frame tmpSDIFFrame("1STF",frame.GetCenterTime(),1);
 		
 		//First matrix to add to frame
 		SDIF::Matrix* pMatrix=new SDIF::Matrix("ISTF",SDIF::eFloat32,1,3);
@@ -124,7 +124,7 @@ bool SDIFOut::Do(const Frame& frame)
 		//SDIF only accepts linear data
 		tmpPeakArray.ToLinear();
 		
-		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime());
+		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime(),2);
 		
 		int nElems=tmpPeakArray.GetnPeaks();
 		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::TypeId::sDefault,SDIF::eFloat32,nElems,4);
