@@ -127,7 +127,7 @@ namespace CLAM {
 		TData spectralPeakMag;
 		TData diffFromMax;
 		const TData samplingRate = input.GetSpectralRange() * TData(2.0);
-		const TSize magThreshold = mConfig.GetMagThreshold();
+		const TSize magThreshold = (TSize)mConfig.GetMagThreshold();
 		const TSize nBins = input.GetSize();
 		const TData maxFreq= mConfig.GetMaxFreq();
 
