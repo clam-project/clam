@@ -83,6 +83,9 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 		_oscillatorToFileOut.ConnectPorts( "0_oscillator-generator.Audio Output", "2_audio-out.Input" );
 	}
 
+//	_oscillatorToFileOut.GetProcessing("0_oscillator-generator").GetOutPorts().Get("Audio Output").SetParams(_frameSize);
+//	_oscillatorToFileOut.GetProcessing("1_file-out").GetInPorts().Get("Input").SetParams(_frameSize);
+
 }
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
@@ -240,15 +243,33 @@ void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn(
 
 void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworks()
 {
+/*
 	NetworkList::iterator it;
 	for ( it=_networks.begin(); it != _networks.end(); it++ )
 	{
-		(*it)->Start();
 		(*it)->ConfigureNodes(_frameSize);
+		(*it)->Start();
 		for (int i=0; i<_maxFramesToProcess; i++)
 			(*it)->DoProcessings();
 		(*it)->Stop();
 	}
+*/
+
+	_oscillatorToFileOut.Start();
+	_oscillatorToFileOut.ConfigureNodes(_frameSize);
+
+
+	_oscillatorToFileOut.GetProcessing("0_oscillator-generator").GetOutPorts().Get("Audio Output").SetParams(_frameSize);
+	_oscillatorToFileOut.GetProcessing("1_file-out").GetInPorts().Get("Input").SetParams(_frameSize);
+
+
+	for (int i=0; i<_maxFramesToProcess; i++)
+	{
+		_oscillatorToFileOut.GetProcessing("0_oscillator-generator").Do();
+		_oscillatorToFileOut.GetProcessing("1_file-out").Do();
+	}
+	_oscillatorToFileOut.Stop();
+	
 }
 
 } //namespace
