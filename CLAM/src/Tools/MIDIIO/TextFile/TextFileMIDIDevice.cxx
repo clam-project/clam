@@ -32,6 +32,7 @@ namespace CLAM {
 		std::string mDevice;
 		FILE* mOut;
 		FILE* mIn;
+		TControlData mClock;
 	public:
 		TextFileMIDIDevice(const std::string& name,const std::string& device);
 		~TextFileMIDIDevice();
@@ -41,6 +42,9 @@ namespace CLAM {
 
 		void Read(void) throw(Err);
 		void Write(unsigned char* msg,int size) throw(Err);
+
+		void SetClock(TControlData val) { mClock = val; }
+
 	};
 
 	TextFileMIDIDevice::TextFileMIDIDevice(const std::string& name,const std::string& device): 
@@ -49,6 +53,7 @@ namespace CLAM {
 		mDevice = device;
 		mOut = 0;
 		mIn = 0;
+		mClock = 0;
 	}
 
 	void TextFileMIDIDevice::ConcreteStart(void) throw(Err)
@@ -90,12 +95,20 @@ namespace CLAM {
 	void TextFileMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
 	{
 		printf("TextFileMIDIDevice::Write:");
+		printf("%f",mClock);
 		for (int i=0;i<size;i++)
 		{
 			printf(" 0x%02x",msg[i]);
 		}
 		printf("\n");
 		fflush(stdout);
+		
+		fprintf(mOut,"%f",mClock);
+		for (int i=0;i<size;i++)
+		{
+			fprintf(mOut," 0x%02x",msg[i]);
+		}
+		fprintf(mOut,"\n");
 	}
 
 	void TextFileMIDIDevice::Read(void) throw(Err)

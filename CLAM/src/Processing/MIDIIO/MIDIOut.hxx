@@ -109,9 +109,9 @@ public:
 	 *  @return The ProcessingConfig object attached to this Processing object
 	 */		
 	const ProcessingConfig &GetConfig() const { return mConfig;}
-
+protected:
 	virtual void Handle(unsigned char* msg,int size) = 0;
-
+public:
 	/** Constructor of the class with a boolean as parameter to choose whether
 	 *  to configure the object. It has been implemented by this way to solve
 	 *  a problem between constructor of this class and constructors of classes

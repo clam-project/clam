@@ -69,8 +69,9 @@ bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
 		mReceivedUniqId[i] = mUniqId;
 	}
 	
+	if (m==MIDI::eNoteOnOff) m = MIDI::eNoteOn;
 	/* init first message byte, based on message type */
-	mMessage[0] = 0x80|(int(m)<<4);
+	mStatusByte = 0x80|(int(m)<<4);
 
 	int ctrlid = 0;
 	
@@ -89,7 +90,7 @@ bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
 				else
 					/* channel _is_ predefined, so modify status byte
 					 * to contain channel */
-					mMessage[0] |= (mConfig.GetChannel()+1);
+					mStatusByte |= (mConfig.GetChannel()+1);
 				break;
 			case 1:
 				if (mConfig.GetFirstData()==128)
@@ -131,7 +132,7 @@ int MIDIOutControl::DoControl(int id,TControlData val)
 		{
 			/* for the first byte, we need to keep the status, and
 			 * modify the channel */
-			mMessage[i] = (mMessage[i]&0xF0) | ((unsigned char)(val)-1);
+			mMessage[i] = mStatusByte | ((unsigned char)(val)-1);
 		}else{
 			mMessage[i] = (unsigned char) val;
 		}
@@ -158,6 +159,7 @@ void MIDIOutControl::Handle(unsigned char* msg,int size)
 {
 	/* write the message to the device */
 	CLAM_ASSERT(mpDevice,"MIDIOutControl used without a valid device");
+	if ((msg[0]&0xF0)==0x90 && msg[2]==0) msg[0] &=0x8F;
 	mpDevice->Write(msg,size);
 }
 

@@ -20,6 +20,7 @@ class MIDIOutControl:public MIDIOut
 		
 		/* buffer to store the message */
 		unsigned char* mMessage;
+		unsigned char  mStatusByte;
 
 		/* buffer to store the uniq id for each controlled byte */
 		unsigned char* mReceivedUniqId;

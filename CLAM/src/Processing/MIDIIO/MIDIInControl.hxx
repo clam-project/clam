@@ -9,23 +9,15 @@ namespace CLAM {
 
 class MIDIInControl:public MIDIIn
 {
-public:
+private:
 	Array<OutControl*> mMyOutControls;
 
-	struct OutControlInfo
-	{
-		OutControlInfo(MIDI::Message msg,int field)
-		{
-			mMessage = msg;
-			mField = field;
-		}
+	int mMessageSize;
+	int mControllingBytes;
+	
+	unsigned char* mMsgByteIdToControlId;
 
-		MIDI::Message mMessage;
-		int mField;
-	};
-
-	Array<OutControlInfo*> mMyOutControlInfos;
-
+public:
 	MIDIInControl();
 	MIDIInControl(const MIDIInConfig &c);
 	const char * GetClassName() const {return "MIDIInControl";}
@@ -33,6 +25,7 @@ public:
 	bool ConcreteConfigure(const ProcessingConfig& c)
 		throw(ErrProcessingObj);
 
+private:
 	void Handle(unsigned char* msg,int size);
 };
 

@@ -46,43 +46,36 @@ public:
 	 **/
 	DYN_ATTRIBUTE (0, public, std::string, Device);
 	
-	/** The ChannelMask allows you to create a MIDIIn that receives midi
-	 *  messages on a certain channel or channels only. The way to calculate
-	 *  the ChannelMask is by adding the channel masks for the channels you 
-	 *  want to filter with bitwise OR. You can use the function 
-	 *  MIDI::ChannelMask(channel) to obtain the mask for a certain channel.
+	/** The Channel allows you to create a MIDIIn that receives midi
+	 *  messages on a certain channel only.
 	 **/
-	DYN_ATTRIBUTE (1, public, unsigned short, ChannelMask);
+	DYN_ATTRIBUTE (1, public, unsigned char, Channel);
 
-	/** The MessageMask allows you to create a MIDIIn that receives midi
-	 *  messages of a certain type only. The way to calculate the MessageMask
-	 *  is by adding the message masks for the message types you want to 
-	 *  filter with logical OR. You can use the function 
-	 *  MIDI::MessageMask(channel) to obtain the mask for a certain
-	 *  channel.
+	/** The Message allows you to create a MIDIIn that receives midi
+	 *  messages of a certain type only. 0 means: all channels
 	 **/
-	DYN_ATTRIBUTE (2, public, unsigned short, MessageMask);
+	DYN_ATTRIBUTE (2, public, unsigned char, Message);
 
-	/** The Filter allows you to create a MIDIIn that receives midi messages
+	/** The FirstData allows you to create a MIDIIn that receives midi messages
 	 *  where the second byte (first data byte) has a certain value. This is
 	 *  particularly useful for control change messages, where the second byte
 	 *  specifies the type of control change.
 	 **/
-	DYN_ATTRIBUTE (3, public, unsigned char, Filter);
+	DYN_ATTRIBUTE (3, public, unsigned char, FirstData);
 protected:
 	void DefaultInit(void)
 	{
 		AddDevice();
-		AddChannelMask();
-		AddMessageMask();
-		AddFilter();
+		AddChannel();
+		AddMessage();
+		AddFirstData();
 
 		UpdateData();
 
 		SetDevice("default:default");
-		SetMessageMask(MIDI::sAllMessageMask);
-		SetChannelMask(MIDI::sAllChannelMask);
-		SetFilter(0xFF);
+		SetMessage(0);
+		SetChannel(0);
+		SetFirstData(128);
 	}
 };
 
@@ -114,7 +107,7 @@ public:
 	 *  @return The ProcessingConfig object attached to this Processing object
 	 */		
 	const ProcessingConfig &GetConfig() const { return mConfig;}
-
+private:
 	virtual void Handle(unsigned char* msg,int size) = 0;
 	
 	/** Constructor of the class with a boolean as parameter to choose whether
@@ -131,6 +124,7 @@ public:
 	 *  @param configure Boolean parameter to decide if configure object, like
 	 *  explained before. True by default.
 	 */
+public:
 	MIDIIn(bool configure = true)
 	{ 
 		mpDevice = 0;
@@ -174,8 +168,6 @@ public:
 protected:
 	bool ConcreteStart(void);
 };
-
-
 
 } // namespace CLAM
 #endif
