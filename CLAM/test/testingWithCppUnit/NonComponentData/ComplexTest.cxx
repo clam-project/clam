@@ -87,8 +87,8 @@ private:
 	void testStreamExtraction()
 	{
 		CLAM::Complex toBeModified(1,3);
-		std::string inputString("{5.3 7.3i}");
-		CLAM::Complex expected(5.3, 7.3);
+		std::string inputString("{5.4 7.4i}");
+		CLAM::Complex expected( CLAM::TData(5.4), CLAM::TData(7.4) );
 		std::stringstream ss(inputString);
 
 		ss >> toBeModified;
