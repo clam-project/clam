@@ -37,7 +37,7 @@ namespace CLAM {
 
   	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 24, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 22, Descriptor);
 		
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
@@ -52,36 +52,35 @@ namespace CLAM {
 		DYN_ATTRIBUTE (10,public, TData, Kurtosis);
 		DYN_ATTRIBUTE (11,public, TData, HFC);
 		DYN_ATTRIBUTE (12,public, Array<TData>, MFCC);
-		DYN_ATTRIBUTE (13,public, Array<TData>, BandEnergy);
-		DYN_ATTRIBUTE (14,public, TData, MaxMagFreq); 
+		DYN_ATTRIBUTE (13,public, TData, MaxMagFreq); 
 		/**
 		 * Frequency of the maximum magnitude of the spectrum 
 		 * normalized by the spectral range
 		 */
-		DYN_ATTRIBUTE (15,public, TData, LowFreqEnergyRelation); 
+		DYN_ATTRIBUTE (14,public, TData, LowFreqEnergyRelation); 
 		/**
 		 * The spectral spread is the variation of the spectrum
 		 * around its mean value. It's computed from the second
 		 * order moment.
 		 */
-		DYN_ATTRIBUTE (16,public, TData, Spread);
-		DYN_ATTRIBUTE (17,public, TData, Skewness);
+		DYN_ATTRIBUTE (15,public, TData, Spread);
+		DYN_ATTRIBUTE (16,public, TData, Skewness);
 		/**
 		 * The spectral roll-off point is the frequency so that 85%
 		 * of the signal energy is contained below this
 		 * frequency. Returns -1 if the rolloff point can't be
 		 * found. Measured in Hz.
 		 */
-		DYN_ATTRIBUTE (18,public, TData, Rolloff); 
+		DYN_ATTRIBUTE (17,public, TData, Rolloff); 
 		/**
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
 		 */
-		DYN_ATTRIBUTE (19,public, TData, Slope); 
-		DYN_ATTRIBUTE (20,public, TData, HighFrequencyCoefficient);
-		DYN_ATTRIBUTE (21,public, Array<SpectralDescriptors>, BandDescriptors);
+		DYN_ATTRIBUTE (18,public, TData, Slope); 
+		DYN_ATTRIBUTE (19,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (20,public, Array<SpectralDescriptors>, BandDescriptors);
 
-		DYN_ATTRIBUTE (22,public, Array<TData>,PCP);
+		DYN_ATTRIBUTE (21,public, Array<TData>,PCP);
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
@@ -228,13 +227,6 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetMFCC()>a.GetMFCC())
 			tmpD.SetMFCC(b.GetMFCC());*/
 	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		/* Array does not have these operators
-		if(b.GetBandEnergy()>a.GetBandEnergy())
-			tmpD.SetBandEnergy(b.GetBandEnergy());*/
-	}
-		
 	return tmpD;
 
 }
@@ -350,13 +342,7 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetMFCC()<a.GetMFCC())
 			tmpD.SetMFCC(b.GetMFCC());*/
 	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		/* Array does not have these operators
-		if(b.GetBandEnergy()<a.GetBandEnergy())
-			tmpD.SetBandEnergy(b.GetBandEnergy());*/
-	}
-		
+
 	return tmpD;
 
 }

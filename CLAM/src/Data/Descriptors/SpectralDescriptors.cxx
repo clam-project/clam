@@ -285,9 +285,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 	if(a.HasMFCC())
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC());
-	if(a.HasBandEnergy())
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetBandEnergy(a.GetBandEnergy());
 	if(a.HasPCP())
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetPCP(a.GetPCP());
@@ -424,13 +421,6 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC() /** b.GetMFCC() */);
-	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		tmpD.AddBandEnergy();
-		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetBandEnergy(a.GetBandEnergy() /* * b.GetBandEnergy() */);
 	}
 	if(a.HasPCP() && b.HasPCP() )
 	{
@@ -578,13 +568,6 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC() /* + b.GetMFCC() */);
-	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		tmpD.AddBandEnergy();
-		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetBandEnergy(a.GetBandEnergy() /* + b.GetBandEnergy() */);
 	}
 	if(a.HasPCP() && b.HasPCP() )
 	{
