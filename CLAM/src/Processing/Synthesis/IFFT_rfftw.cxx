@@ -184,6 +184,7 @@ namespace CLAM {
 		// @todo Check port prototypes, and set the state (or de
 		// backup state if disabled) acordingly.
 		CLAM_ASSERT(false,"IFFT_rfftw::SetPrototypes: Not implemented.");
+		return false;
 	}
 
 	inline void IFFT_rfftw::ComplexToRIFFTW(Spectrum &in) const
