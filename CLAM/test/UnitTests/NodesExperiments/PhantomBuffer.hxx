@@ -68,11 +68,20 @@ namespace CLAM {
 
 		unsigned LogicalSize() const {return mLogicalSize;}
 		
-		unsigned int PhantomSize() { return mBuffer.size() - mLogicalSize; }
+		unsigned int PhantomSize() const { return mBuffer.size() - mLogicalSize; }
 
 		void Resize(unsigned int size,
 		            unsigned int phantom,
 		            unsigned int insert_pos);
+	
+		/**
+			For debugging purposes. Checks that:
+			logical / phantom sizes are consistents and
+			'repeated' data is consistent
+			/see Touch
+		**/
+		void FulfilsInvariant() const;
+
 	private:
 		/**
 			Updates the phantom zone corresponding with 'symetric' of the specifyed window
@@ -85,16 +94,12 @@ namespace CLAM {
 	 	c*/
 		void UpdateBeginning(unsigned int pos, unsigned int size);
 
-		unsigned int AllocatedSize() { return mBuffer.size(); }
+		unsigned int AllocatedSize() const
+		{ 
+			return mBuffer.size(); 
+		}
 
-		/**
-			For debugging purposes. Checks that:
-			logical / phantom sizes are consistents and
-			'repeated' data is consistent
-			/see Touch
-		**/
-		void FulfilsInvariant() const;
-
+	
 		// attributes
 		std::vector<T> mBuffer;
 		unsigned mLogicalSize;

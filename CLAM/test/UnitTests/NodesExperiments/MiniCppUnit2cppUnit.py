@@ -1,19 +1,22 @@
 #! /usr/bin/python
-
+# -*- coding: iso-8859-15 -*-
 import sys, re
 
-if len(sys.argv) == 1 :
+if len(sys.argv) != 2 :
 	print 'filename needed'
 	sys.exit(1)
 	
 print 'processing file:', sys.argv[1]
 
-contains = lambda line, search : line.find(search)>=0
+def contains( line, pattern ):
+	return re.search( pattern, line )
+	
 
 substitutions = [
 	('ASSERT_IGUALS', 'CPPUNIT_ASSERT_EQUAL'),
+	('ASSERT_MISSATGE', 'ASSERT_MESSAGE'),
 	('#include\s*"MiniCppUnit.hxx"', '#include <cppunit/extensions/HelperMacros.h>'),
-	('public GrupDeTests<\S+>','public CppUnit::TestFixture' ),
+	('public GrupDeTests<\s*\S+\s*>','public CppUnit::TestFixture' ),
 	('\tCAS_DE_TEST', 'CPPUNIT_TEST' ),
 	('GRUP_DE_TESTS','CPPUNIT_TEST_SUITE'),
 	('FALLA', 'CPPUNIT_FAIL' )
@@ -34,9 +37,15 @@ def processLine(aLine) :
 	global parsingState
 
 	if parsingState == 'DEFAULT' :
+		if contains(aLine, 'class \S+Test') :
+			matchGroup = re.search('class(.+):', aLine)
+			classname = matchGroup.group(1)
+			register = 'class%s;\nCPPUNIT_TEST_SUITE_REGISTRATION(%s);' % (classname, classname)
+			aLine = 'namespace CLAMTest {\n\n%s\n\n%s' % (register, aLine)
 		if contains(aLine, 'GRUP_DE_TESTS') :
-			matchGrup = re.search('GRUP_DE_TESTS\(\s*(\S+)\s*\)', aLine )
-			aLine = re.sub( 'GRUP_DE_TESTS\(\s*(\S+)\s*\)', 'CPPUNIT_TEST_SUITE( '+matchGrup.group(1) + ' );', aLine )
+			matchGroup = re.search('GRUP_DE_TESTS\(\s*(\S+)\s*\)', aLine )
+			aLine = re.sub( 'GRUP_DE_TESTS\(\s*(\S+)\s*\)\n', 'CPPUNIT_TEST_SUITE( ', aLine)
+			aLine += matchGroup.group(1) + ' );\n'
 			parsingState = 'TESTS_DECL'
 		if contains(aLine, 'int main'):
 			parsingState = 'MAIN'
@@ -65,11 +74,17 @@ def processLine(aLine) :
 	
 	return changed, aLine
 
-for line in file(sys.argv[1]) :
+newfile = file('__'+sys.argv[1], 'w')
+originalFile = file(sys.argv[1]).readlines()
+originalFile.append('\n} // namespace CLAMTest \n')
+
+for line in originalFile :
 	changed, processedLine = processLine(line)
 	if changed : 
 		print '+++',
 	else :
 		print '···',
 	print processedLine,
+	newfile.write(processedLine)
+	
 

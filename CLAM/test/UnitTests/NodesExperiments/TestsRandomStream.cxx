@@ -1,18 +1,23 @@
 #include "WritingRegion.hxx"
 #include "ReadingRegion.hxx"
 
-#include "MiniCppUnit.hxx"
+#include "PhantomBuffer.hxx"
+#include <cppunit/extensions/HelperMacros.h>
 #include <sstream>
 #include <fstream>
 #include <list>
 #include <cstdlib>
 #include <ctime>
 
-template <template <class> class DataStructure>
-class TestsRandomStream : public GrupDeTests< TestsRandomStream<DataStructure> >
+namespace CLAMTest {
+
+class TestsRandomStream ;
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsRandomStream );
+
+class TestsRandomStream : public CppUnit::TestFixture
 {
-	typedef WritingRegion<char, DataStructure> WRegion;
-	typedef typename WritingRegion<char, DataStructure>::ProperReadingRegion RRegion;
+	typedef WritingRegion<char, CLAM::PhantomBuffer > WRegion;
+	typedef WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion RRegion;
 
 	WRegion _writer;
 	RRegion _outputReader;
@@ -23,13 +28,10 @@ class TestsRandomStream : public GrupDeTests< TestsRandomStream<DataStructure> >
 	std::ostringstream _buff;
 
 public:
-	// GRUP_DE_TESTS( TestsStream<DataStructure> )
 	TestsRandomStream() :
-		GrupDeTests< TestsRandomStream<DataStructure> >( "TestsRandomStream<DataStructure>" ),
 		_inputFile( "testFile.txt" ),
 		_inputString( (std::istreambuf_iterator<char>(_inputFile)), std::istreambuf_iterator<char>() )
 	{
-		CAS_DE_TEST( test );
 
 		_inputFile.seekg( std::ios::beg );
 		std::srand(std::time(0));
@@ -37,11 +39,14 @@ public:
 		
 	~TestsRandomStream()
 	{
-		typename std::list< RRegion* >::iterator it;
+		std::list< RRegion* >::iterator it;
 		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
 			delete *it;
 	}
 
+	CPPUNIT_TEST_SUITE( TestsRandomStream );
+	CPPUNIT_TEST( test );
+	CPPUNIT_TEST_SUITE_END();
 private:
 	bool fillWriterFromInputFile()
 	{
@@ -135,7 +140,7 @@ private:
 
 	void maybeRemoveOtherReader()
 	{	
-		typename std::list< RRegion * >::iterator it;
+		std::list< RRegion * >::iterator it;
 		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
 		{
 			if(chanceOf(0.1))
@@ -151,7 +156,7 @@ private:
 	
 	void maybeModifyHopAndSizeOfOtherReaders()
 	{	
-		typename std::list< RRegion * >::iterator it;
+		std::list< RRegion * >::iterator it;
 		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
 		{
 			if(chanceOf(0.2))
@@ -181,7 +186,7 @@ private:
 
 	void OtherReadersConsume()
 	{
-		typename std::list< RRegion * >::iterator it;
+		std::list< RRegion * >::iterator it;
 		for(it=_otherReaders.begin(); it!=_otherReaders.end(); it++)
 			if( (*it)->canConsume() )
 				(*it)->consume();
@@ -218,10 +223,12 @@ private:
 				if( endOfFile ) break;
 		}
 
-		ASSERT_IGUALS( _inputString, _output.str() );
+		CPPUNIT_ASSERT_EQUAL( _inputString, _output.str() );
 	}
 };
 
 
 
 
+
+} // namespace CLAMTest 

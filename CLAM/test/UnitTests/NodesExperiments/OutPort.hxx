@@ -32,10 +32,9 @@ public:
 			connectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
 		} catch (...) // could be std::bad_cast ?
 		{
-			FALLA(
+			CLAM_ASSERT( false,
 				"OutPort<Token>::connectToIn coudn't connect to inPort"
 				"because was not templatized by the same Token type as outPort" );
-			// TODO should be assert() or CLAM_ASSERT
 		}
 	}
 

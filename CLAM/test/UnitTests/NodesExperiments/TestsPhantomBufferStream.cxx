@@ -1,5 +1,8 @@
-#include "MiniCppUnit.hxx"
+
+#include <cppunit/extensions/HelperMacros.h>
 #include "PhantomBuffer.hxx"
+#include "WritingRegion.hxx"
+#include <list>
 
 // TODO to remove. Just for debugging purposes
 #include <cctype>
@@ -20,27 +23,33 @@ void printbuffer(char* p, int size)
 }
 // end remove
 
-class TestsPhantomBufferStream : public GrupDeTests<TestsPhantomBufferStream>
+namespace CLAMTest {
+
+class TestsPhantomBufferStream ;
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsPhantomBufferStream );
+
+class TestsPhantomBufferStream : public CppUnit::TestFixture
 {
 public:
-	GRUP_DE_TESTS(TestsPhantomBufferStream)
-	{
-		CAS_DE_TEST( testStreamDontIncreasesSizeAfterProducing );
-		CAS_DE_TEST( testStreamIncreasesSizeAfterLinkingWithBiggerRegion );
-		CAS_DE_TEST( testPhantomBufferIncreasesAfterLinkingWithBiggerRegion );
-		CAS_DE_TEST( testInsertionPositionInLogicalZone_afterLinkingWithBiggerRegion );
-		CAS_DE_TEST( testLogicalSizeIncreases_whenWriterIncreasesItsSize );
-		CAS_DE_TEST( testLogicalSizeRemainsTheSame_whenWriterDecreasesItsSize );
-		CAS_DE_TEST( testLogicalSizeIncreases_whenReaderIncreasesItsSize );
-		CAS_DE_TEST( testWriterRegionCantProduce_whenOverlapsReadingRegion );
-		CAS_DE_TEST( testWriting_rearmostPos_when2ReadingRegions );
-		CAS_DE_TEST( testWriter_sizeReservesSizePowOf2 );
-  		CAS_DE_TEST( testPhantomZoneGetsUpdated_whenWroteInBeginningZone );
-		CAS_DE_TEST( testBeginningZoneGetsUpdated_whenWroteInPhantomZone );
-		CAS_DE_TEST( testPhantomZoneGetsUpdated_whenInsertedInLogicalZone );
-		CAS_DE_TEST( testIntegrityAfterBufferResize );
-		CAS_DE_TEST( testWriterResizes_whenRearmostReaderHasSameBeginDistance )
-	}
+	CPPUNIT_TEST_SUITE( TestsPhantomBufferStream );
+
+	CPPUNIT_TEST( testStreamDontIncreasesSizeAfterProducing );
+	CPPUNIT_TEST( testStreamIncreasesSizeAfterLinkingWithBiggerRegion );
+	CPPUNIT_TEST( testPhantomBufferIncreasesAfterLinkingWithBiggerRegion );
+	CPPUNIT_TEST( testInsertionPositionInLogicalZone_afterLinkingWithBiggerRegion );
+	CPPUNIT_TEST( testLogicalSizeIncreases_whenWriterIncreasesItsSize );
+	CPPUNIT_TEST( testLogicalSizeRemainsTheSame_whenWriterDecreasesItsSize );
+	CPPUNIT_TEST( testLogicalSizeIncreases_whenReaderIncreasesItsSize );
+	CPPUNIT_TEST( testWriterRegionCantProduce_whenOverlapsReadingRegion );
+	CPPUNIT_TEST( testWriting_rearmostPos_when2ReadingRegions );
+	CPPUNIT_TEST( testWriter_sizeReservesSizePowOf2 );
+  	CPPUNIT_TEST( testPhantomZoneGetsUpdated_whenWroteInBeginningZone );
+	CPPUNIT_TEST( testBeginningZoneGetsUpdated_whenWroteInPhantomZone );
+	CPPUNIT_TEST( testPhantomZoneGetsUpdated_whenInsertedInLogicalZone );
+	CPPUNIT_TEST( testIntegrityAfterBufferResize );
+	CPPUNIT_TEST( testWriterResizes_whenRearmostReaderHasSameBeginDistance );
+
+	CPPUNIT_TEST_SUITE_END();
 
 	void testStreamDontIncreasesSizeAfterProducing()
 	{
@@ -49,7 +58,7 @@ public:
 		writer.hop(2);
 		int initialLogicalSize = writer.logicalStreamSize();
 		writer.produce();
-		ASSERT_IGUALS(initialLogicalSize, writer.logicalStreamSize() );
+		CPPUNIT_ASSERT_EQUAL(initialLogicalSize, writer.logicalStreamSize() );
 	}
 
 
@@ -67,7 +76,7 @@ public:
 		reader.hop(2);
 		writer.linkRegions(reader);
 
-		ASSERT( sizeWithALonelyWritingRegion < writer.logicalStreamSize() );
+		CPPUNIT_ASSERT( sizeWithALonelyWritingRegion < writer.logicalStreamSize() );
 	}
 
 	// test phantom buffer increases after linking with bigger reading region
@@ -84,7 +93,7 @@ public:
 		int oldPhantomSize = writer.stream().phantomSize();
 		writer.linkRegions(reader);
 
-		ASSERT( oldPhantomSize < writer.stream().phantomSize() );
+		CPPUNIT_ASSERT( oldPhantomSize < writer.stream().phantomSize() );
 	}
 
 	// test resize reading region which is not in the begining
@@ -109,7 +118,9 @@ public:
 
   		writer.linkRegions(reader);
 
-		ASSERT_IGUALS( "od", &(writer.stream().operator[](18)) ); //we are inserting 16 elems + offset of 2
+		CPPUNIT_ASSERT_EQUAL( std::string("od"), 
+				std::string( &(writer.stream().operator[](18))) ); 
+		//we are inserting 16 elems + offset of 2
 	}
 
 	void testLogicalSizeIncreases_whenWriterIncreasesItsSize()
@@ -121,7 +132,7 @@ public:
 		writer.hop(2);
 		int initialSize = writer.logicalStreamSize();
 		writer.size(10);
-		ASSERT(initialSize < writer.logicalStreamSize() );
+		CPPUNIT_ASSERT(initialSize < writer.logicalStreamSize() );
 	}
 
 	void testLogicalSizeRemainsTheSame_whenWriterDecreasesItsSize()
@@ -133,7 +144,7 @@ public:
 		writer.hop(2);
 		int initialSize = writer.logicalStreamSize();
 		writer.size(3);
-		ASSERT(initialSize == writer.logicalStreamSize() );
+		CPPUNIT_ASSERT(initialSize == writer.logicalStreamSize() );
 	}
 
 	//tests of logicalSize changed when reader changes its size
@@ -150,10 +161,10 @@ public:
 		int initialSize = writer.logicalStreamSize();
 		writer.linkRegions(reader);
 
-		ASSERT( initialSize == writer.logicalStreamSize() );
+		CPPUNIT_ASSERT( initialSize == writer.logicalStreamSize() );
 		reader.size( 9 );
 
-		ASSERT( initialSize < writer.logicalStreamSize() );
+		CPPUNIT_ASSERT( initialSize < writer.logicalStreamSize() );
 	}
 
 	//tests of !canProduce (circular overlap)
@@ -171,7 +182,7 @@ public:
 			writer[0] = 'X';
 			writer.produce();
 		}
-		ASSERT( writer.canProduce() == false );
+		CPPUNIT_ASSERT( writer.canProduce() == false );
 	}
 
 	void testWriting_rearmostPos_when2ReadingRegions()
@@ -190,7 +201,7 @@ public:
 		writer.produce();
 		firstReader.consume();
 		lastReader.consume();
-		ASSERT_IGUALS( 3, writer.rearmostReadingPos() );
+		CPPUNIT_ASSERT_EQUAL( 3, writer.rearmostReadingPos() );
 	}
 
 	void testWriter_sizeReservesSizePowOf2()
@@ -199,7 +210,7 @@ public:
 
 		WritingRegion<char, CLAM::PhantomBuffer> writer;
 		writer.size( 258 / 2 ); // logical size will be the power of 2 greater and closer to size*2
-		ASSERT_IGUALS( powOfNine, writer.stream().logicalSize() );
+		CPPUNIT_ASSERT_EQUAL( powOfNine, writer.stream().logicalSize() );
 	}
 
 	void testPhantomZoneGetsUpdated_whenWroteInBeginningZone()
@@ -225,7 +236,7 @@ public:
 		//printbuffer(bufferbase, 22);
 
 		// assert "food" == buffer[16 : 16+5]
-		ASSERT_IGUALS("food", bufferbase+16 );
+		CPPUNIT_ASSERT_EQUAL( std::string("food"), std::string(bufferbase+16) );
 
 	}
 
@@ -257,8 +268,8 @@ public:
 		toWrite[5] = 'y';
 		writer.produce();
 		WritingRegion<char, CLAM::PhantomBuffer>::ProperReadingRegion reader;
-		ASSERT_IGUALS('b', bufferbase[0] );
-		ASSERT_IGUALS('y', bufferbase[1] );
+		CPPUNIT_ASSERT_EQUAL('b', bufferbase[0] );
+		CPPUNIT_ASSERT_EQUAL('y', bufferbase[1] );
 	}
 
 	void testPhantomZoneGetsUpdated_whenInsertedInLogicalZone()
@@ -291,15 +302,15 @@ public:
 
 		char* bufferbase = &(writer.stream().operator[](0));
 		// assert stream[16+5:16+5+2] == "ye"
-		ASSERT_IGUALS('y', bufferbase[21] );
-		ASSERT_IGUALS('e', bufferbase[22] );
+		CPPUNIT_ASSERT_EQUAL('y', bufferbase[21] );
+		CPPUNIT_ASSERT_EQUAL('e', bufferbase[22] );
 
 		// assert stream[32:32+9] == stream[0:9] == "goodbXXye" where X are uninitialized chars
-		ASSERT_IGUALS('g', bufferbase[32] );
-		ASSERT_IGUALS('o', bufferbase[33] );
-		ASSERT_IGUALS('o', bufferbase[34] );
-		ASSERT_IGUALS('d', bufferbase[35] );
-		ASSERT_IGUALS('b', bufferbase[36] );
+		CPPUNIT_ASSERT_EQUAL('g', bufferbase[32] );
+		CPPUNIT_ASSERT_EQUAL('o', bufferbase[33] );
+		CPPUNIT_ASSERT_EQUAL('o', bufferbase[34] );
+		CPPUNIT_ASSERT_EQUAL('d', bufferbase[35] );
+		CPPUNIT_ASSERT_EQUAL('b', bufferbase[36] );
 	}
 	void testIntegrityAfterBufferResize()
 	{
@@ -315,7 +326,7 @@ public:
 		writer[0]='X';
 		writer[1]='X';
 		writer.produce();
-		ASSERT_IGUALS('A', writer[0]);
+		CPPUNIT_ASSERT_EQUAL('A', writer[0]);
 	}
 	
 	void testWriterResizes_whenRearmostReaderHasSameBeginDistance()
@@ -336,7 +347,13 @@ public:
 		int oldBeginDistance = reader.beginDistance();
 		
 		writer.size(5);   // buff size = 16
-		ASSERT( oldBeginDistance != reader.beginDistance() );
+		CPPUNIT_ASSERT( oldBeginDistance != reader.beginDistance() );
 	}
 };
 
+
+
+
+
+
+} // namespace CLAMTest 

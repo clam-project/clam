@@ -18,10 +18,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#include <cppunit/extensions/HelperMacros.h>
 #include "PhantomBuffer.hxx"
 #include <iostream>
-#include "MiniCppUnit.hxx" // TODO: Move to CPPUnit
 
 namespace CLAMTest {
 
@@ -45,7 +44,11 @@ namespace CLAMTest {
 	 * This test is not a proper unit test
 	 * is just an old test (Enrique's style) that uses CppUnit framework
 	 */
-	class PhantomBufferTest : public GrupDeTests< PhantomBufferTest >
+
+	class PhantomBufferTest ;
+	CPPUNIT_TEST_SUITE_REGISTRATION( PhantomBufferTest );
+
+	class PhantomBufferTest : public CppUnit::TestFixture
 	{
 
 		CLAM::PhantomBuffer<double> *mpObject1;
@@ -56,12 +59,13 @@ namespace CLAMTest {
 		void TestDestruction();
 
 	public:
-		GRUP_DE_TESTS( PhantomBufferTest)
-		{
-			CAS_DE_TEST( TestConstruction );
-			CAS_DE_TEST( TestUsage );
-			CAS_DE_TEST( TestDestruction );
-		}
+		CPPUNIT_TEST_SUITE( PhantomBufferTest );
+
+		CPPUNIT_TEST( TestConstruction );
+		CPPUNIT_TEST( TestUsage );
+		CPPUNIT_TEST( TestDestruction );
+
+		CPPUNIT_TEST_SUITE_END();
 	};
 
 
@@ -98,24 +102,22 @@ namespace CLAMTest {
 		double *read;
 		for (i = 0; i<22-5; i++) {
 			DataChunk<double,5> data(double(100.0+i));
-			mpObject2->FulfilsInvariant();
 			mpObject2->Write(i,5,data.Address());
-			mpObject2->FulfilsInvariant();
 			read = mpObject2->Read(i,5);
 			for (int j=0; j<5; j++)
-				ASSERT_MISSATGE( data[j] == read[j], "TestUsage(): Written and read data differ!" );
-
-			mpObject2->FulfilsInvariant();
+				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!",
+						data[j] == read[j] );
 		}
 
 		for (i = 22-9; i>=0; i--) {
 			DataChunk<double,8> data(double(2000+i));
 			mpObject2->FulfilsInvariant();
-			mpObject2->Write(i,8,data.Address());
+			mpObject2->Write( i,8,data.Address() );
 			mpObject2->FulfilsInvariant();
 			read = mpObject2->Read(i,8);
 			for (int j=0; j<8; j++)
-				ASSERT_MISSATGE( data[j] == read[j], "TestUsage(): Written and read data differ!" );
+				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
+					data[j] == read[j] );
 			mpObject2->FulfilsInvariant();
 		}
 
@@ -131,7 +133,8 @@ namespace CLAMTest {
 			read = mpObject2->Read(1,10);
 			mpObject2->FulfilsInvariant();
 			for (int j=0; j<10; j++)
-				ASSERT_MISSATGE( data[j] == read[j], "TestUsage(): Written and read data differ!" );
+				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
+					data[j] == read[j] );
 		}
 
 		int size_increment = 1;
@@ -146,7 +149,9 @@ namespace CLAMTest {
 			read = mpObject2->Read(write_pos + size_increment,10);
 			mpObject2->FulfilsInvariant();
 			for (int j=0; j<10; j++)
-				ASSERT_MISSATGE( data[j] == read[j], "TestUsage(): Written and read data differ!" );
+				CPPUNIT_ASSERT_MESSAGE( "TestUsage(): Written and read data differ!", 
+					data[j] == read[j] );
+
 			size_increment++;
 			logical_size += size_increment;
 			phantom_size += 2;
@@ -161,10 +166,5 @@ namespace CLAMTest {
 	}
 
 
-}; // namespace
+} // namespace CLAMTest
 
-int main()
-{
-	CLAMTest::PhantomBufferTest().testeja();
-	return 0;
-}

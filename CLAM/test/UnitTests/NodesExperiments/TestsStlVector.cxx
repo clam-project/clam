@@ -1,27 +1,33 @@
 
-#include "MiniCppUnit.hxx"
+#include <cppunit/extensions/HelperMacros.h>
 #include <vector>
 #include <list>
 #include <deque>
 
-class TestsStlVector : public GrupDeTests<TestsStlVector>
+namespace CLAMTest {
+
+class TestsStlVector ;
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsStlVector );
+
+class TestsStlVector : public CppUnit::TestFixture
 {
 public:
-	GRUP_DE_TESTS(TestsStlVector)
-	{
-		CAS_DE_TEST( testReserve );
-		CAS_DE_TEST( testAt );
-		CAS_DE_TEST( testResize_beforeReserve );
-		CAS_DE_TEST( testList_isCircularWithPhantomElement );
-		CAS_DE_TEST( testDeque_elementsNotInContiguousSpace );
-		CAS_DE_TEST( testVectorInsertInTheMiddle );
-	}
+	CPPUNIT_TEST_SUITE( TestsStlVector );
+
+	CPPUNIT_TEST( testReserve );
+	CPPUNIT_TEST( testAt );
+	CPPUNIT_TEST( testResize_beforeReserve );
+	CPPUNIT_TEST( testList_isCircularWithPhantomElement );
+	CPPUNIT_TEST( testDeque_elementsNotInContiguousSpace );
+	CPPUNIT_TEST( testVectorInsertInTheMiddle );
+
+	CPPUNIT_TEST_SUITE_END();
 
 	void testReserve()
 	{
 		std::vector<int> vector;
 		vector.reserve(5);
-		ASSERT(0 == vector.size());
+		CPPUNIT_ASSERT(0 == vector.size());
 
 	}
 	void testAt()
@@ -30,7 +36,7 @@ public:
 		vector.reserve(5);
 		try {
 			vector.at(1); // en canvi l'operator[] no fa comprovacions
-			FALLA("hauria d'haver llençat exception"); //funciona tant en debug com en release
+			CPPUNIT_FAIL("hauria d'haver llençat exception"); //funciona tant en debug com en release
 		} catch (std::exception&)
 		{
 		}
@@ -40,11 +46,11 @@ public:
 	{
 		std::vector<int> vector;
 		vector.resize(5);
-		ASSERT(5 == vector.size());
-		ASSERT(5 <= vector.capacity());
+		CPPUNIT_ASSERT(5 == vector.size());
+		CPPUNIT_ASSERT(5 <= vector.capacity());
 
 		vector.at(4)=1;
-		ASSERT(1==vector.at(4));
+		CPPUNIT_ASSERT(1==vector.at(4));
 	}
 
 	void testList_isCircularWithPhantomElement()
@@ -58,12 +64,12 @@ public:
 		List::iterator it=list.begin();
 		for(int i=0; i<3; i++,it++);
 
-		ASSERT(it==list.end());
+		CPPUNIT_ASSERT(it==list.end());
 
 		it++; // we are out of range: let's see that magically we're in the beginning
-		ASSERT(it!=list.end());
+		CPPUNIT_ASSERT(it!=list.end());
 		(*it)=66;
-		ASSERT(66==*list.begin());
+		CPPUNIT_ASSERT(66==*list.begin());
 
 	}
 
@@ -78,8 +84,8 @@ public:
 		deque.push_back(5);
 		deque.push_front(0);
 
-		ASSERT_IGUALS(5, deque.at(5));
-		ASSERT(5 != *(&(deque.at(0))+5) );
+		CPPUNIT_ASSERT_EQUAL(5, deque.at(5));
+		CPPUNIT_ASSERT(5 != *(&(deque.at(0))+5) );
 	}
 
 	void testVectorInsertInTheMiddle()
@@ -98,13 +104,11 @@ public:
 		it += 2;
 		buff.insert(it, 2, 'l');
 
-		ASSERT_IGUALS( 10, int(buff.size()) );
-		ASSERT_IGUALS( "hello all", (char *)(&buff[0]));
+		CPPUNIT_ASSERT_EQUAL( 10, int(buff.size()) );
+		CPPUNIT_ASSERT_EQUAL( std::string("hello all"), 
+				std::string((char *)(&buff[0])) );
 	}
 };
 
-int main()
-{
-	TestsStlVector().testeja();
-	return 0;
-}
+
+} // namespace CLAMTest 

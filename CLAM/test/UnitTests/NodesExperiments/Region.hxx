@@ -2,6 +2,7 @@
 #define Region_hxx
 
 #include <cassert>
+#include <list>
 
 class Region
 {

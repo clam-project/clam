@@ -1,20 +1,26 @@
-#include "MiniCppUnit.hxx"
+#include <cppunit/extensions/HelperMacros.h>
 #include "InPort.hxx"
 #include "OutPort.hxx"
 
-class TestsPortsRegionsInteraction : public GrupDeTests<TestsPortsRegionsInteraction>
+namespace CLAMTest {
+
+class TestsPortsRegionsInteraction ;
+CPPUNIT_TEST_SUITE_REGISTRATION( TestsPortsRegionsInteraction );
+
+class TestsPortsRegionsInteraction : public CppUnit::TestFixture
 {
 public:
-	GRUP_DE_TESTS(TestsPortsRegionsInteraction)
-	{
-		CAS_DE_TEST( testOutPort_connectToIn_usingBaseClass );
-		CAS_DE_TEST( testWritingRegion_addRegion );
-		CAS_DE_TEST( testWritingRegion_removeRegion );
-		CAS_DE_TEST( testWritingRegion_removeRegion_withTwoReadingRegions );
-		CAS_DE_TEST( testOutPort_connect_whenNoNode );
-//		CAS_DE_TEST( testNode_content );
-//		CAS_DE_TEST( testProduceAndConsume );
-	}
+	CPPUNIT_TEST_SUITE( TestsPortsRegionsInteraction );
+
+	CPPUNIT_TEST( testOutPort_connectToIn_usingBaseClass );
+	CPPUNIT_TEST( testWritingRegion_addRegion );
+	CPPUNIT_TEST( testWritingRegion_removeRegion );
+	CPPUNIT_TEST( testWritingRegion_removeRegion_withTwoReadingRegions );
+	CPPUNIT_TEST( testOutPort_connect_whenNoNode );
+//	CPPUNIT_TEST( testNode_content );
+//	CPPUNIT_TEST( testProduceAndConsume );
+
+	CPPUNIT_TEST_SUITE_END();
 
 	void testOutPort_connectToIn_usingBaseClass()
 	{
@@ -25,7 +31,7 @@ public:
 
 		outBase.connectToIn(inBase);
 
-		ASSERT_IGUALS( &inBase, outBase.connectedInPorts() );
+		CPPUNIT_ASSERT_EQUAL( &inBase, outBase.connectedInPorts() );
 	}
 	void testWritingRegion_addRegion()
 	{
@@ -34,7 +40,7 @@ public:
 
 		writer.linkRegions( reader );
 		Region & baseReader = (Region &)reader;
-		ASSERT_IGUALS( &baseReader, *(writer.beginReaders()) );
+		CPPUNIT_ASSERT_EQUAL( &baseReader, *(writer.beginReaders()) );
 	}
 	void testWritingRegion_removeRegion()
 	{
@@ -43,7 +49,7 @@ public:
 
 		writer.linkRegions( reader );
 		writer.removeRegion( reader );
-		ASSERT( writer.beginReaders() == writer.endReaders() );
+		CPPUNIT_ASSERT( writer.beginReaders() == writer.endReaders() );
 	}
 	void testWritingRegion_removeRegion_withTwoReadingRegions()
 	{
@@ -54,7 +60,7 @@ public:
 		writer.removeRegion( reader1 );
 
 		Region & baseReader2 = (Region &)reader2;
-		ASSERT_IGUALS( &baseReader2, *writer.beginReaders() );
+		CPPUNIT_ASSERT_EQUAL( &baseReader2, *writer.beginReaders() );
 	}
 
 	class OutPortStub : public OutPort<int>
@@ -75,14 +81,14 @@ public:
 
 		const bool existReadingRegion =
 			out.writingRegion().beginReaders() != out.writingRegion().endReaders();
-		ASSERT( existReadingRegion );
+		CPPUNIT_ASSERT( existReadingRegion );
 
 		WritingRegion<int> & writer = out.writingRegion();
 		
 		Region & baseReader = **(writer.beginReaders());
 		WritingRegion<int>::ProperReadingRegion & reader = 
 			(WritingRegion<int>::ProperReadingRegion &)baseReader;
-		ASSERT( &(writer.stream()) == &(reader.stream()) );
+		CPPUNIT_ASSERT( &(writer.stream()) == &(reader.stream()) );
 	}
 
 /*
@@ -90,7 +96,7 @@ public:
 	{
 		Node<int, DefaultStreamImpl> stream;
 		stream.content(1);
-		ASSERT_IGUALS( 1, stream.content() );
+		CPPUNIT_ASSERT_EQUAL( 1, stream.content() );
 	}
 */
 
@@ -102,13 +108,11 @@ public:
 
 		out.connectToIn(in);
 		out.produceData(1);
-		ASSERT_IGUALS( 1, in.consumeData() );
+		CPPUNIT_ASSERT_EQUAL( 1, in.consumeData() );
 	}
 */
 	//TODO: next test: produceAndConsume
 	// refactoring: regions knows stream and not out ports. then write region owns stream.
 };
 
-
-
-
+} // namespace CLAMTest 
