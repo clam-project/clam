@@ -37,6 +37,8 @@ namespace SDIF
 	public:
 		virtual ~Matrix() { }
 
+		TypeId Type(void) {return mHeader.mType;}
+		
 		TInt32 Rows(void) { return mHeader.mnRows; }
 		TInt32 Columns(void) { return mHeader.mnColumns; }
 		TInt32 SizeInFile(void)

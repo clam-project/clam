@@ -53,7 +53,7 @@ bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 {
 	mConfig = dynamic_cast< const SDIFOutConfig& > ( c );
 	if(mpFile) delete mpFile;
-	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),DataFileIO::eOutput);
+	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eOutput);
 	mpFile->Open();
 	return true;
 }
@@ -73,9 +73,10 @@ bool SDIFOut::Do(const Frame& frame)
 	{
 		SDIF::Frame tmpSDIFFrame("1FQ0",frame.GetCenterTime(),0);
 		//Note: other Frame Header values could be set but are not available in segment data
+		SDIF::ConcreteMatrix<TFloat32>* pMatrix;
 				
 		//First matrix to add to frame
-		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::TypeId::sDefault,SDIF::eFloat32,1,1);
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>(SDIF::TypeId::sDefault,1,1);
 		
 		//We add fundamental frequency
 		pMatrix->SetValue(0,0,frame.GetFundamental().GetFreq());
@@ -87,14 +88,18 @@ bool SDIFOut::Do(const Frame& frame)
 	{
 		SDIF::Frame tmpSDIFFrame("1STF",frame.GetCenterTime(),1);
 		
+		SDIF::ConcreteMatrix<TFloat32>* pMatrix;
 		//First matrix to add to frame
-		SDIF::Matrix* pMatrix=new SDIF::Matrix("ISTF",SDIF::eFloat32,1,3);
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("ISTF",1,3);
+
 		pMatrix->SetValue(0,0,mConfig.GetSamplingRate());
 		pMatrix->SetValue(0,1,mConfig.GetFrameSize());
 		pMatrix->SetValue(0,2,mConfig.GetSpectrumSize());
 		tmpSDIFFrame.Add(pMatrix);
 		//Next matrix
-		pMatrix=new SDIF::Matrix("1STF",SDIF::eFloat32,frame.GetResidualSpec().GetSize(),2);
+
+
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("ISTF",frame.GetResidualSpec().GetSize(),2);
 		
 		//We have to convert residual spectrum to complex
   		SpectrumConfig Scfg;
@@ -109,7 +114,7 @@ bool SDIFOut::Do(const Frame& frame)
 		frame.GetResidualSpec().ToLinear();
 		
 		Array<Complex>& complexBuffer=frame.GetResidualSpec().GetComplexArray();
-		for (int r=0;r<pMatrix->mHeader.mnRows;r++)	//Write in complex data
+		for (int r=0;r<pMatrix->Rows();r++)	//Write in complex data
 		{
 			pMatrix->SetValue(r,0,complexBuffer[r].Real());
 			pMatrix->SetValue(r,1,complexBuffer[r].Imag());
@@ -127,8 +132,11 @@ bool SDIFOut::Do(const Frame& frame)
 		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime(),2);
 		
 		int nElems=tmpPeakArray.GetnPeaks();
-		SDIF::Matrix* pMatrix=new SDIF::Matrix(SDIF::TypeId::sDefault,SDIF::eFloat32,nElems,4);
-		pMatrix->mHeader.mnRows=nElems;
+
+		SDIF::ConcreteMatrix<TFloat32>* pMatrix;
+				
+		//First matrix to add to frame
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>(SDIF::TypeId::sDefault,nElems,4);
 	
 		DataArray& pkfreqBuffer=tmpPeakArray.GetFreqBuffer();
 		DataArray& pkmagBuffer=tmpPeakArray.GetMagBuffer();

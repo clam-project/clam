@@ -57,7 +57,7 @@ bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
 	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
 	if(mpFile) delete mpFile;
-	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),DataFileIO::eInput);
+	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
 	mpFile->Open();
 	return true;
 }
@@ -104,9 +104,9 @@ bool SDIFIn::Do(void)
 
 	//SDIF::Matrix* pMatrix = tmpSDIFFrame.mpFirst;
 	
-	SDIF::Matrix* pMatrix=*frameIt;
+	SDIF::ConcreteMatrix<TFloat32>* pMatrix=
+		dynamic_cast< SDIF::ConcreteMatrix<TFloat32>* >(*frameIt);
 	
-
 	/* its a fundamental frequency ..*/
 	if (tmpSDIFFrame.Type()=="1FQ0" && mConfig.GetEnableFundFreq())
 	{
@@ -116,19 +116,20 @@ bool SDIFIn::Do(void)
 	/* it is residual data ..*/
 	else if(tmpSDIFFrame.Type()=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
 	{
-		if(!(pMatrix->mHeader.mType =="ISTF"))	
+		if(!(pMatrix->Type() == "ISTF"))	
 			throw Err("SDIFIn::Add ISTF Header in Matrix expected");	
 		
 		// move pointer to next matrix in frame
 		frameIt++;
-		pMatrix=*frameIt;
+		pMatrix=
+			dynamic_cast< SDIF::ConcreteMatrix<TFloat32>* >(*frameIt);
 		//pMatrix=pMatrix->mpNext;	
 		
-		if(!(pMatrix->mHeader.mType=="1STF"))	
+		if(!(pMatrix->Type() =="1STF"))	
 			throw Err("SDIFIn::Add 1STF Headerin Matrix expected");
-		tmpFrame.GetResidualSpec().SetSize(pMatrix->mHeader.mnRows);
+		tmpFrame.GetResidualSpec().SetSize(pMatrix->Rows());
 		Array<Complex>& complexBuffer=tmpFrame.GetResidualSpec().GetComplexArray();
-		for (int r=0;r<pMatrix->mHeader.mnRows;r++)	//read in complex data
+		for (int r=0;r<pMatrix->Rows();r++)	//read in complex data
 		{
 			Complex tmpComplex(pMatrix->GetValue(r,0),pMatrix->GetValue(r,1));
 			complexBuffer[r] = tmpComplex;
@@ -139,7 +140,7 @@ bool SDIFIn::Do(void)
 	/* its sinusoidal track data */ 
 	else if(tmpSDIFFrame.Type()=="1TRC" && mConfig.GetEnablePeakArray())
 	{				
-		TIndex nElems = pMatrix->mHeader.mnRows;
+		TIndex nElems = pMatrix->Rows();
 	
 		
 		tmpFrame.GetSpectralPeakArray().AddAll();

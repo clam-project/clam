@@ -53,6 +53,8 @@ public:
 	void Open(void);										//open data file
 	void Close(void);										//close data file
 
+	bool Done(void);
+
 private:
 	bool mSkipData;
 	bool mFirstAccess;
@@ -63,7 +65,6 @@ private:
 
 	TIndex Pos(void);
 	TIndex Pos(TIndex pos);
-	bool Done(void);
 
 /*	
   template <class T> void ReadArray(Array<T>& data)					//read from data file
