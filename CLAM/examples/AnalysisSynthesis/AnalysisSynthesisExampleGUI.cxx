@@ -469,6 +469,8 @@ void UserInterface::DisplayInputSound(void)
 		mAttachedViews[0]->Refresh();
 	}
  	else{
+		//MRJ: Don't forget to always refresh associated views!
+		mAttachedViews[0]->Refresh();
 		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
 			mAttachedPresentations[0]->GetWindow()->hide();
 		}
