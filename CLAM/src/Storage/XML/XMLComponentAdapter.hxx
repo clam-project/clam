@@ -94,12 +94,17 @@ public:
 	{
 		CLAM_ASSERT(!name||isXMLElement,"Adapting a component as attribute is useless");
 	}
+	template <class T> XMLComponentAdapter (const T & adaptee, const char * name=NULL, bool isXMLElement=false)
+		: BasicXMLable(name, isXMLElement), myAdaptee(const_cast<T&>(adaptee))
+	{
+		CLAM_ASSERT(!name||isXMLElement,"Adapting a component as attribute is useless");
+	}
 	virtual ~XMLComponentAdapter() {};
 
 // Accessors (for XMLable interface)
 public:
 	//* @return The XML content: an empty string.
-	virtual std::string XMLContent() 
+	virtual std::string XMLContent() const
 	{
 		return "";
 	}
@@ -120,7 +125,7 @@ public:
 	 * @param store The given storage where the subitem will be stored
 	 * @see Storage
 	 */
-	virtual void StoreOn (Storage & store){
+	virtual void StoreOn (Storage & store) const {
 		myAdaptee.StoreOn(store);
 	};
 	/**

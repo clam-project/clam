@@ -109,7 +109,7 @@ public:
 // Accessors
 public:
 	//* @return A string with the extracted XML content
-	virtual std::string XMLContent() 
+	virtual std::string XMLContent() const
 	{
 		return mContent;
 	}

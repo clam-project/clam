@@ -107,7 +107,7 @@ public:
 // Accessors
 public:
 	//* @return A string with the extracted XML content
-	std::string XMLContent() 
+	std::string XMLContent() const
 	{
 
 		std::stringstream str;

@@ -90,7 +90,7 @@ public:
 // Accessors
 public:
 	//* @return A string with the extracted XML content
-	std::string XMLContent() 
+	std::string XMLContent() const
 	{
 		std::string s;
 		s.resize(size*15);
