@@ -109,6 +109,10 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_BPF_Editor.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_BPF_Sync_Editor.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Gender_Selector.cxx
 # End Source File
 # Begin Source File
@@ -1902,6 +1906,10 @@ SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_BPF_Editor.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_BPF_Sync_Editor.hxx
 # End Source File
 # Begin Source File
 
