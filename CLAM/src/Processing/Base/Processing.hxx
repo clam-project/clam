@@ -46,10 +46,49 @@ namespace CLAM {
 	class ProcessingComposite;
 
 	/**
-	 * This is the base of all the CLAM processing object classes.
+	 * Processings are the building blocks of any CLAM system,
+	 * they are an abstraction of an audio/music processing step.
+	 * This is the base of all the CLAM processing object classes,
+	 * defines their interface and contains common infrastructure.
 	 * 
-	 * It holds common information to all processings: lists of ports,
-	 * lists of controls, name, etc.  */
+	 * @section Ports: Sincronous data flow
+	 * A Processing can be feeded with data tokens and it produces
+	 * data tokens in a given step whenever the Do method is executed.
+	 * 
+	 * Data flow from and into the Processing can be done using
+	 * Ports. The number of tokens that are seen/consumed/produced
+	 * though the port is flexible.
+	 *
+	 * @see InPortBase, OutPortBase
+	 * 
+	 * @section Controls: Asyncronous data flow
+	 *
+	 * A processing can also receive an event from another one in an
+	 * asyncronous way in order to change the way the processing is
+	 * done.
+	 * 
+	 * @see InControl, OutControl
+	 *
+	 * @section Configuration
+	 *
+	 * An initial setup is needed before using any processing.
+	 * The ProcessingConfig object is an object that contains
+	 * configuration parameters.
+	 *
+	 * @dot
+	 * digraph example {
+	 * 	node [shape=record, fontname=Helvetica, fontsize=10];
+	 * 	b [ label="class B" URL="\ref B"];
+	 * 	c [ label="class C" URL="\ref C"];
+	 * 	b -> c [ arrowhead="open", style="dashed" ];
+	 * }
+	 * @enddot
+	 *
+	 * @see ProcessingConfig
+	 *
+	 * All the Processings have a 
+	 * 
+	 */
 	class Processing {
 	public:
 		/** Processing Object possible execution states. */
