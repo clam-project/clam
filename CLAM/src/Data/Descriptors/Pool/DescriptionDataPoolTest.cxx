@@ -17,6 +17,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DescriptionDataPoolTest );
 class DescriptionDataPoolTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DescriptionDataPoolTest );
+	CPPUNIT_TEST( testPopulateScope_withANonExistingScope );
+	CPPUNIT_TEST( testPopulateScope_withAnExistingScope );
+	CPPUNIT_TEST( testInstantiateAttribute_fromANonPopulatedScope );
+	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingAttribute );
+	CPPUNIT_TEST( testInstantiateAttribute_fromANonExistingScope );
+	CPPUNIT_TEST( testInstantiateAttribute_withAnExistingScope );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,7 +31,7 @@ public:
 	{
 		mScheme.AddAttribute<CLAM::Attribute<CLAM::TData> >   ("AudioSample","Level");
 		mScheme.AddAttribute<CLAM::Attribute<unsigned> >      ("Frame","Center");
-		mScheme.AddAttribute<CLAM::Attribute<CLAM::TData> >   ("Frame","Energy");
+		mScheme.AddAttribute<CLAM::Attribute<std::string> >   ("Frame","MyLabel");
 	}
 
 	/// Common clean up, executed after each test method
@@ -34,12 +40,12 @@ public:
 private:
 	CLAM::DescriptionScheme mScheme;
 private:
-	void testDescriptionScheme_withNoScopeRegistered()
+	void testPopulateScope_withANonExistingScope()
 	{
-		CLAM::DescriptionScheme scheme;
+		CLAM::DescriptionDataPool data(mScheme);
 		try
 		{
-			scheme.GetSpec("NonExistent");
+			data.PopulateScope("NonExistingScope",10);
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -49,33 +55,66 @@ private:
 		}
 	}
 
-	void testDescriptionScheme_withARegisteredAttribute()
+	void testPopulateScope_withAnExistingScope()
 	{
-		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyOtherAttribute");
-
-		const CLAM::DescriptionScope & spec = scheme.GetSpec("MyScope");
-
-		CPPUNIT_ASSERT_EQUAL(0u,spec.GetIndex("MyAttribute"));
-		CPPUNIT_ASSERT_EQUAL(1u,spec.GetIndex("MyOtherAttribute"));
+		CLAM::DescriptionDataPool data(mScheme);
+		data.PopulateScope("AudioSample",10);
 	}
 
-	void testDescriptionScheme_withTwoScopes()
+	void testInstantiateAttribute_fromANonExistingScope()
 	{
-		CLAM::DescriptionScheme scheme;
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("MyScope","MyAttribute");
-		scheme.AddAttribute< CLAM::Attribute<CLAM::TData> >("YourScope","YourAttribute");
-		scheme.AddAttribute< CLAM::Attribute<int> >("YourScope","YourIntAttribute");
-
-		const CLAM::DescriptionScope & mySpec = scheme.GetSpec("MyScope");
-		const CLAM::DescriptionScope & yourSpec = scheme.GetSpec("YourScope");
-
-		CPPUNIT_ASSERT_EQUAL(0u,mySpec.GetIndex("MyAttribute"));
-		CPPUNIT_ASSERT_EQUAL(0u,yourSpec.GetIndex("YourAttribute"));
-		CPPUNIT_ASSERT_EQUAL(1u,yourSpec.GetIndex("YourIntAttribute"));
+		CLAM::DescriptionDataPool data(mScheme);
+		try
+		{
+			data.InstantiateAttribute("NonExistingScope","AnAttribute");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "No scope registered with that name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
 	}
 
+	void testInstantiateAttribute_fromANonExistingAttribute()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		try
+		{
+			data.InstantiateAttribute("AudioSample","ANonExistingAttribute");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "No scope registered with that name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testInstantiateAttribute_fromANonPopulatedScope()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		try
+		{
+			data.InstantiateAttribute("AudioSample","Level");
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::ErrAssertionFailed & err)
+		{
+			const std::string expected = "No scope registered with that name";
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+	}
+
+	void testInstantiateAttribute_withAnExistingScope()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		data.PopulateScope("AudioSample",10);
+		data.InstantiateAttribute("AudioSample","Level");
+		CLAM::TData * audio = data.GetAttributePool<CLAM::TData>("AudioSample","Level");
+		// TODO: Which assert
+	}
+	
 };
 
 

@@ -253,12 +253,29 @@ namespace CLAM
 	class DescriptionDataPool
 	{
 	public:
-		void InstantiateAttribute(const std::string & scope, const std::string & attribute);
-		void PopulateScope(const std::string & name, unsigned size);
+		DescriptionDataPool(const DescriptionScheme & scheme)
+			: mScheme(scheme)
+		{
+		}
+		void PopulateScope(const std::string & scopeName, unsigned size)
+		{
+			const DescriptionScope & scope = mScheme.GetSpec(scopeName);
+			ScopePool * scopePool = new ScopePool(scope, size);
+		}
+		void InstantiateAttribute(const std::string & scope, const std::string & attribute)
+		{
+		}
 		template <typename AttributeType>
-		AttributeType * GetAttributeData(const std::string & scope, const std::string & attribute);
-		unsigned GetScopeSize();
+		AttributeType * GetAttributePool(const std::string & scope, const std::string & attribute)
+		{
+			return NULL;
+		}
+		unsigned GetScopeSize(const std::string & scopeName);
+
+		
+		void DeleteContext(const std::string & scope, unsigned position);
 	private:
+		const DescriptionScheme & mScheme;
 	};
 
 
