@@ -30,6 +30,7 @@ public:
 	CPPUNIT_TEST( testOutPortGetConnectedInPorts_whenMoreThanOneInPort );
 	CPPUNIT_TEST( testInPortGetConnectedOutPort );
 	CPPUNIT_TEST( testDestructOutPortAfterInPort );
+	CPPUNIT_TEST( testOutPortDisconnectFromAll );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testOutPortConnectToIn_usingBaseClass()
@@ -271,7 +272,21 @@ public:
 		delete out;
 		delete in;
 	}
-	
+	void testOutPortDisconnectFromAll()
+	{
+		CLAM::OutPort<int> out;
+		CLAM::InPort<int> in1, in2, in3;
+		out.ConnectToIn( in1 );
+		out.ConnectToIn( in2 );
+		out.ConnectToIn( in3 );
+
+		out.DisconnectFromAll();
+
+		CPPUNIT_ASSERT( out.BeginConnectedInPorts() == out.EndConnectedInPorts() );
+		CPPUNIT_ASSERT( 0 == in1.GetProcessing() );
+		CPPUNIT_ASSERT( 0 == in2.GetProcessing() );
+		CPPUNIT_ASSERT( 0 == in3.GetProcessing() );
+	}
 };
 
 } // namespace CLAMTest 
