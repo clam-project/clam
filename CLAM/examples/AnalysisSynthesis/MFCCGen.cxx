@@ -64,9 +64,9 @@ bool MFCCGen::UnsetPrototypes()
 	return false;
 }
 
-bool MFCCGen::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool MFCCGen::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const MFCCGenConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 	if (mNumFilter != mConfig.GetNumFilter()) {
 		mNumFilter = mConfig.GetNumFilter();
 		mFiltered.Resize(mNumFilter);

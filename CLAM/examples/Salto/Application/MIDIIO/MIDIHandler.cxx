@@ -41,15 +41,13 @@ namespace CLAM
 	{ 
 	}
 
-	bool MIDIHandler::ConcreteConfigure( const ProcessingConfig& cfg)throw( std::bad_cast )
+	bool MIDIHandler::ConcreteConfigure( const ProcessingConfig& c)
 	{
 	
 		bool r = true;
 
+		CopyAsConcreteConfig(mConfig, c);
 		try {
-			
-			mConfig = dynamic_cast< const MIDIHandlerConfig& >( cfg );
-
 			if( !ConfigureChildren() )
 			{
 				std::string aux(mStatus);
