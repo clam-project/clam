@@ -5,30 +5,7 @@
 namespace CLAM
 {
 
-Enum::tEnumValue EPhaseGeneration::sEnumValues[] = {
-		{EPhaseGeneration::eAlign,"Align"},
-		{EPhaseGeneration::eRandom,"Random"},
-		{EPhaseGeneration::eContinuation,"Continuation"},
-		{0,NULL}
-	};
 
-Enum::tValue EPhaseGeneration::sDefault = EPhaseGeneration::eAlign;
-
-void PhaseManagementConfig::DefaultInit()
-{
-	AddSamplingRate();
-	AddMaxSines();
-	AddType();
-	UpdateData();
-	DefaultValues();
-}
-
-void PhaseManagementConfig::DefaultValues()
-{
-	SetSamplingRate(44100);
-	SetMaxSines(100);
-	SetType(EPhaseGeneration::eContinuation);
-}
 
 PhaseManagement::PhaseManagement():
 	mCurrentTime("CurrentTime",this),mCurrentPitch("CurrentPitch",this)
