@@ -1,3 +1,10 @@
+2003-12-XX  CLAM_0_4_2
+'Cuidado merge update'
+  * Spectral Processings:
+      ** Added Gaussian window to WindowGenerator
+      ** Removed Synth window to WindowGenerator (not used)
+      ** Added Maximizer Normalization to WindowGenerator
+
 2003-01-23 CLAM_0_4_1
 'Analysis Synthesis debuggin'
 
