@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "Pool.hxx"
+#include "DescriptionScheme.hxx"
 #include "DataTypes.hxx"
 #include "Component.hxx"
 
