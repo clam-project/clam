@@ -12,7 +12,7 @@ using CLAMVM::LogMagSpectrumAdapter;
 using CLAMVM::StdioSpectrumPresentation;
 using CLAM::XMLStorage;
 
-static const char* sPathToData= "./DataSets/";
+static const char* sPathToData= "./Datasets/";
 
 
 bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, StdioSpectrumPresentation& presentation )

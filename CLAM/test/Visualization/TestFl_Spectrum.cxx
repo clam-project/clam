@@ -18,7 +18,7 @@ using CLAMVM::LogMagSpectrumAdapter;
 using CLAMVM::Fl_Spectrum;
 using CLAM::XMLStorage;
 
-static const char* sPathToData= "./DataSets/";
+static const char* sPathToData= "./Datasets/";
 
 bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
@@ -91,7 +91,7 @@ bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation 
 		XMLStorage  x;
 		Spectrum    specObj;
 
-		std::string filename = "Spectrum_Sine.xml";
+		std::string filename = "Spectrum_sine.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;

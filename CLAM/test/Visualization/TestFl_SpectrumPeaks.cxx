@@ -20,7 +20,7 @@ using CLAMVM::SpectralPeakArrayAdapter;
 using CLAMVM::Fl_SpectrumPeaks;
 using CLAMVM::WidgetTKWrapper;
 
-static const char* sPathToData="./DataSets/";
+static const char* sPathToData="./Datasets/";
 
 bool TestBasicUseCase( LogMagSpectrumAdapter& specView, SpectralPeakArrayAdapter& peaksView, Fl_SpectrumPeaks& peaksWidget )
 {

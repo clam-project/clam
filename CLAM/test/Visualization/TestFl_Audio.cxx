@@ -22,7 +22,7 @@ using CLAMVM::AudioAdapter;
 using CLAMVM::Fl_Audio;
 using CLAMVM::WidgetTKWrapper;
 
-static const char* sPathToData="./DataSets/";
+static const char* sPathToData="./Datasets/";
 static std::string sFilename;
 static bool        sNoArgs;
 

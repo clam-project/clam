@@ -12,7 +12,7 @@ using CLAM::XMLStorage;
 using CLAMVM::SpectralPeakArrayAdapter;
 using CLAMVM::StdioSpectralPeakArrayPresentation;
 
-static const char* sPathToData = "./DataSets/";
+static const char* sPathToData = "./Datasets/";
 
 bool TestBasicUseCase( SpectralPeakArrayAdapter& view, StdioSpectralPeakArrayPresentation& presentation )
 {

@@ -12,7 +12,7 @@ using CLAM::XMLStorage;
 using CLAMVM::SinTracksAdapter;
 using CLAMVM::StdioSinTracksPresentation;
 
-static const char* sPathToData = "./DataSets/";
+static const char* sPathToData = "./Datasets/";
 
 bool TestBasicUseCase( SinTracksAdapter& view, StdioSinTracksPresentation& presentation )
 {

@@ -15,7 +15,7 @@ using CLAMVM::SinTracksAdapter;
 using CLAMVM::Fl_SinTracks;
 using CLAMVM::WidgetTKWrapper;
 
-static const char* sPathToData = "./DataSets/";
+static const char* sPathToData = "./Datasets/";
 static const char* sFilename = 0;
 
 bool TestBasicUseCase( SinTracksAdapter& view, Fl_SinTracks& presentation )
