@@ -25,7 +25,6 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp()
 	{
-
 		mScheme.AddAttribute< CLAM::Attribute<CLAM::TData> >(
 				"TestScope1","TDataAttribute");
 
@@ -47,8 +46,7 @@ private:
 	{
 		CLAM::Hook<CLAM::TData> binder;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool,
-			"TestScope1","TDataAttribute");
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
 		const CLAM::TData & result = binder.GetForReading();
 
 		CPPUNIT_ASSERT_EQUAL(expected, &result);
@@ -58,8 +56,7 @@ private:
 	{
 		CLAM::Hook<CLAM::TData> binder;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, 
-			"TestScope1","TDataAttribute");
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
 		binder.Next();
 		const CLAM::TData & result = binder.GetForReading();
 
@@ -70,8 +67,7 @@ private:
 	{
 		CLAM::Hook<CLAM::TData> binder;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool,
-			"TestScope1","TDataAttribute");
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
 
 		CPPUNIT_ASSERT(binder.IsInsideScope());
 		binder.Next();
@@ -84,8 +80,7 @@ private:
 	{
 		CLAM::Hook<CLAM::TData> binder;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool,
-			"TestScope1","TDataAttribute");
+		binder.Init(*mPool, "TestScope1","TDataAttribute");
 
 		// Advance until the end
 		binder.Next();
