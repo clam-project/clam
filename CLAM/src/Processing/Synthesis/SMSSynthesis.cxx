@@ -194,9 +194,12 @@ SMSSynthesis::SMSSynthesis():
 mInputSinSpectralPeaks("InputSinPeaks",this,1),
 mInputResSpectrum("InputResSpectrum",this,1),
 mOutputSinSpectrum("OutputSinSpectrum",this,1),
+mOutputSpectrum("OutputSpectrum",this,1),
 mOutputAudio("OutputAudio",this,1),
 mOutputResAudio("OutputResAudio",this,1),
-mOutputSinAudio("OutputSinAudio",this,1)
+mOutputSinAudio("OutputSinAudio",this,1),
+mCurrentTime("CurrentTime",this),
+mCurrentPitch("CurrentPitch",this)
 {
 	Configure(SMSSynthesisConfig());
 	AttachChildren();
@@ -206,9 +209,12 @@ SMSSynthesis::SMSSynthesis(const SMSSynthesisConfig& cfg):
 mInputSinSpectralPeaks("InputSinPeaks",this,1),
 mInputResSpectrum("InputResSpectrum",this,1),
 mOutputSinSpectrum("OutputSinSpectrum",this,1),
+mOutputSpectrum("OutputSpectrum",this,1),
 mOutputAudio("OutputAudio",this,1),
 mOutputResAudio("OutputResAudio",this,1),
-mOutputSinAudio("OutputSinAudio",this,1)
+mOutputSinAudio("OutputSinAudio",this,1),
+mCurrentTime("CurrentTime",this),
+mCurrentPitch("CurrentPitch",this)
 {
 	Configure(cfg);
 	AttachChildren();
@@ -275,10 +281,6 @@ bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 	return true;
 }
 
-bool SMSSynthesis::Do(void)
-{
-	return false;
-}
 
 
 bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out)
@@ -303,8 +305,15 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& out
 }
 
 
+bool SMSSynthesis::Do(void)
+{
+	return Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+		mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
+		mOutputAudio.GetData(),mOutputSinAudio.GetData(),mOutputResAudio.GetData());
+}
 
-bool SMSSynthesis::Do(const SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum, 
+
+bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum, 
 			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
 {
 	//This may need to be initialized?
@@ -316,10 +325,18 @@ bool SMSSynthesis::Do(const SpectralPeakArray& inputSinusoidalPeaks, Spectrum& i
 
 }
 
-bool SMSSynthesis::Do(const SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputResidualSpectrum,
+bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputResidualSpectrum,
 		Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
 		Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
 {
+	
+	//First we do the phase managing. Note that if the Do(frame) overload is not used,
+	//the time and pitch controls in this processing should be set by hand before this
+	//method is used
+	mPO_PhaseMan.mCurrentTime.DoControl(mCurrentTime.GetLastValue());
+	mPO_PhaseMan.mCurrentPitch.DoControl(mCurrentPitch.GetLastValue());
+	mPO_PhaseMan.Do(inputSinusoidalPeaks);
+	
 	//We synthesize the sinusoidal component 	
 	SinusoidalSynthesis(inputSinusoidalPeaks,outputSinusoidalSpectrum,outputSinusoidalAudio);
 	
@@ -350,8 +367,10 @@ bool SMSSynthesis::Do(Frame& in)
 	
 //We initialize input frame, adding necessary attributes
 	InitFrame(in);
-//First we do phase management on input frame	
-	mPO_PhaseMan.Do(in);
+//First we set the controls 
+	mCurrentTime.DoControl(in.GetCenterTime());
+	mCurrentPitch.DoControl(in.GetFundamental().GetFreq(0));
+	
 
 //We make sure that spectrum in input frame has the appropiate size and spectral range
 	in.GetOutSpec().SetSize(mConfig.GetSpectrumSize());
@@ -371,6 +390,7 @@ bool SMSSynthesis::Do(Segment& in)
 void SMSSynthesis::InitFrame(Frame& in)
 {
 	in.AddOutSpec();
+	in.AddSinusoidalSpec();
 	in.AddSinusoidalAudioFrame();
 	in.AddResidualAudioFrame();
 	in.AddSynthAudioFrame();

@@ -170,16 +170,18 @@ private:
 		bool SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out);
 
 		/** non-supervised Do method. Produces as output the sinusoidal spectrum, the global spectrum.
-		 *	and the sinusoidal, residual and globar audio frames. */
-		bool Do(const SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
+		 *	and the sinusoidal, residual and globar audio frames. If this overload is used directly
+		 *	you must set the controls for current time and current pitch from the outside.*/
+		bool Do(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
 			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
 			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio);
 
 
 		/** non-supervised Do method. SMSSynthesis produces, as side effect, also some output Spectrums. 
 		 *	Use this overload if you do not care about these spectrums and just need the output audio. 
+		 *	If this overload is used directly you must set the controls for current time and current pitch from the outside.
 		 */
-		bool Do(const SpectralPeakArray& inputSinusoidal, Spectrum& inputSpectrum, 
+		bool Do(SpectralPeakArray& inputSinusoidal, Spectrum& inputSpectrum, 
 			Audio& outputAudio, Audio& outputSinusoidal, Audio& outputResidual);
 		/** non-supervised Do method: works on a CLAM::Frame */
 		bool Do(Frame& in);
@@ -194,9 +196,15 @@ private:
 		InPortTmpl<SpectralPeakArray>     mInputSinSpectralPeaks;
 		InPortTmpl<Spectrum>     mInputResSpectrum;
 		OutPortTmpl<Spectrum>     mOutputSinSpectrum;
+		OutPortTmpl<Spectrum>     mOutputSpectrum;
 		OutPortTmpl<Audio> mOutputAudio;
 		OutPortTmpl<Audio> mOutputResAudio;
 		OutPortTmpl<Audio> mOutputSinAudio;
+
+	public:
+		//Controls
+		InControlTmpl<SMSSynthesis> mCurrentTime;
+		InControlTmpl<SMSSynthesis> mCurrentPitch;
 
 
 	};
