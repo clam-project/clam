@@ -92,6 +92,12 @@ namespace CLAM
 
 		AudioFile& targetFile = mConfig.GetTargetFile();
 
+		if ( !targetFile.GetHeader().HasChannels() )
+		{
+			mStatus = "Channels field was not added to header";
+			return false;
+		}
+
 		if ( targetFile.GetHeader().GetChannels() < 2 )
 		{
 			mStatus = "Too few channels. This processing is meant for handling ";

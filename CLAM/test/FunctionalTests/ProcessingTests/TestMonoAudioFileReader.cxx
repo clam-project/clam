@@ -491,6 +491,8 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
+			std::cout << "MonoFileReader Test 256 samples readsize" << std::endl;
+
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 
@@ -500,11 +502,11 @@ namespace CLAMTest
 			procReader.Start();
 			procWriter.Start();
 
-			int  frameCounter = 0;
+			int  framesRead = 0;
 
 			while( procReader.Do() )
 			{
-				frameCounter++;
+				framesRead++;
 				procWriter.Do();
 			}
 
@@ -515,7 +517,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.SetLocation( "PeopleSay-copy.wav" );
+			inputFile.SetLocation( "PeopleSay-mono-copy.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -527,11 +529,12 @@ namespace CLAMTest
 			procReader.Start();
 			procReader2.Start();
 
-			frameCounter = 0;
+			int framesChecked = 0;
 
 			while( procReader.Do() && procReader2.Do() )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
+				framesChecked++;
 
 				CPPUNIT_ASSERT
 					(  sim >= 0.5 );
@@ -540,8 +543,10 @@ namespace CLAMTest
 
 			procReader.Stop();
 			procReader2.Stop();		
-
+		       
 			CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
+			
+			CPPUNIT_ASSERT_EQUAL(framesRead, framesChecked );
 		}
 
 	};

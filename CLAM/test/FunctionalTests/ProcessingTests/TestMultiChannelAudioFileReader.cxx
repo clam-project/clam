@@ -41,7 +41,15 @@ namespace CLAMTest
 		CPPUNIT_TEST( testDo_OggVorbis_JustOneFrame );
 		CPPUNIT_TEST( testDo_OggVorbis_JustTwoFrames );		
 
-		CPPUNIT_TEST( test_MpegAudioFiles_AreDecoded_OK );
+		CPPUNIT_TEST( test_MpegAudioFiles_128kbps_44kHz_AreDecoded_OK );
+		CPPUNIT_TEST( test_MpegAudioFiles_192kbps_44kHz_AreDecoded_OK );
+
+		CPPUNIT_TEST( test_MpegAudioFiles_64kbps_44kHz_AreDecoded_OK );
+		CPPUNIT_TEST( test_MpegAudioFiles_320kbps_44kHz_AreDecoded_OK );
+		CPPUNIT_TEST( test_MpegAudioFiles_LowVBR_44kHz_AreDecoded_OK );
+		CPPUNIT_TEST( test_MpegAudioFiles_AvgVBR_44kHz_AreDecoded_OK );
+		CPPUNIT_TEST( test_MpegAudioFiles_HighVBR_44kHz_AreDecoded_OK );
+
 
 		CPPUNIT_TEST( testDo_JustOneFrame_SampleRateIsOK );
 		CPPUNIT_TEST( testDo_JustTwoFrames_BeginTimesAreOK );
@@ -377,10 +385,12 @@ namespace CLAMTest
 			similarityRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
 							      prevRightSamples );
 		       
-			CPPUNIT_ASSERT( fabs( -0.150199 // MRJ: value established by inspection
+
+			CPPUNIT_ASSERT( fabs( -0.21055 // MRJ: value established by inspection
 					      - similarityLeft ) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( 1 // MRJ: value established by inspection
+			CPPUNIT_ASSERT( fabs( -0.150199 // MRJ: value established by inspection
 					      - similarityRight ) < 1e-4 );
+
 		}
 
 		void testDo_JustOneFrame_SampleRateIsOK()
@@ -553,22 +563,21 @@ namespace CLAMTest
 			similarityRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
 							      prevRightSamples );
 
-
-
 			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection
 					      - similarityLeft ) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( 1.0 // MRJ: value established by inspection
+			CPPUNIT_ASSERT( fabs( 0.129901 // MRJ: value established by inspection
 					      - similarityRight ) < 1e-4 );
+
 
 		}
 
-		void test_MpegAudioFiles_AreDecoded_OK()
+		void test_MpegAudioFiles_128kbps_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "PeopleSay.mp3" ) );
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "PeopleSay-stereo-copy.wav" );			
+			outputFile.SetLocation( "test-mp3-128-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -593,6 +602,8 @@ namespace CLAMTest
 					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
 
 			CLAM::Audio readSamplesLeft;
 			readSamplesLeft.SetSize( 4096 );
@@ -626,7 +637,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "PeopleSay-stereo-copy.wav" );
+			inputFile.SetLocation( "test-mp3-128-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -694,13 +705,13 @@ namespace CLAMTest
 				averageSimRight += simRight;
 				
 
-				/*
-				CPPUNIT_ASSERT
-					(  simLeft >= 0.9 );
 
 				CPPUNIT_ASSERT
-					( simRight >= 0.9 );
-				*/
+					(  simLeft >= 0.99 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.99 );
+
 			}
 
 			procReader.Stop();
@@ -708,9 +719,11 @@ namespace CLAMTest
 
 			averageSimLeft *= (1.0/double(framesChecked));
 			averageSimRight *= (1.0/double(framesChecked));
-			
-			
+
+			/*
+
 			std::cout << std::endl;
+			std::cout << "Mp3 - 128kbps" << std::endl;
 			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
 			std::cout << std::endl;
 			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
@@ -723,16 +736,6 @@ namespace CLAMTest
 			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
 			std::cout << std::endl;
 			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
-			
-			/*
-			CPPUNIT_ASSERT( fabs( maxSimLeft -  0.999595) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( minSimLeft -  0.980736) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( averageSimLeft - 0.99788 ) < 1e-4 );
-
-			CPPUNIT_ASSERT( fabs( maxSimRight -  1) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( minSimRight -  1) < 1e-4 );
-			CPPUNIT_ASSERT( fabs( averageSimRight -  1) < 1e-4 );
-
 			*/
 			CPPUNIT_ASSERT_EQUAL( framesRead,
 					      framesChecked );
@@ -740,6 +743,1039 @@ namespace CLAMTest
 
 		}
 
+		void test_MpegAudioFiles_192kbps_44kHz_AreDecoded_OK()
+		{
+			CLAM::AudioFile inputFile;
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-192_44.mp3" ) );
+
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "test-mp3-192-44.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+					
+			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+						    inputFile.GetHeader().GetChannels(),
+						    "WAV" );
+	
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( inputFile );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+			CLAM::MultiChannelAudioFileReader procReader;
+			CLAM::MultiChannelAudioFileWriter procWriter;
+
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
+
+			CLAM::Audio readSamplesLeft;
+			readSamplesLeft.SetSize( 4096 );
+			CLAM::Audio readSamplesRight;
+			readSamplesRight.SetSize( 4096 );
+
+
+			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+
+			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+
+
+			procReader.Start();
+			procWriter.Start();
+
+			CLAM::TSize framesRead = 0;
+
+			while( procReader.Do() )
+			{
+				framesRead++;
+
+				procWriter.Do();
+			}
+
+			procReader.Stop();
+			procWriter.Stop();
+
+			// Once written to disk, now we recover it, and 
+			// check it is the same frame by frame
+			
+			CLAM::MultiChannelAudioFileReader procReader2;
+			inputFile.SetLocation( "test-mp3-192-44.wav" );
+			cfgReader.SetSourceFile( inputFile );
+			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
+
+			CLAM::Audio readSamplesLeft2;
+			readSamplesLeft2.SetSize( 4096 );
+			CLAM::Audio readSamplesRight2;
+			readSamplesRight2.SetSize( 4096 );
+
+			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
+			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			
+			procReader.Start();
+			procReader2.Start();
+
+			int framesChecked = 0;
+
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
+			while( procReader.Do() && procReader2.Do() )
+			{
+				framesChecked++;
+				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
+								     readSamplesLeft2.GetBuffer() );
+
+				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+								      readSamplesRight2.GetBuffer() );
+
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+				
+
+
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
+
+			}
+
+			procReader.Stop();
+			procReader2.Stop();		
+
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Mp3 - 196kbps" << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+			
+			CPPUNIT_ASSERT_EQUAL( framesRead,
+					      framesChecked );
+			
+
+		}
+
+		void test_MpegAudioFiles_64kbps_44kHz_AreDecoded_OK()
+		{
+			CLAM::AudioFile inputFile;
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-64_44.mp3" ) );
+
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "test-mp3-64-44.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+					
+			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+						    inputFile.GetHeader().GetChannels(),
+						    "WAV" );
+	
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( inputFile );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+			CLAM::MultiChannelAudioFileReader procReader;
+			CLAM::MultiChannelAudioFileWriter procWriter;
+
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
+
+			CLAM::Audio readSamplesLeft;
+			readSamplesLeft.SetSize( 4096 );
+			CLAM::Audio readSamplesRight;
+			readSamplesRight.SetSize( 4096 );
+
+
+			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+
+			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+
+
+			procReader.Start();
+			procWriter.Start();
+
+			CLAM::TSize framesRead = 0;
+
+			while( procReader.Do() )
+			{
+				framesRead++;
+
+				procWriter.Do();
+			}
+
+			procReader.Stop();
+			procWriter.Stop();
+
+			// Once written to disk, now we recover it, and 
+			// check it is the same frame by frame
+			
+			CLAM::MultiChannelAudioFileReader procReader2;
+			inputFile.SetLocation( "test-mp3-64-44.wav" );
+			cfgReader.SetSourceFile( inputFile );
+			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
+
+			CLAM::Audio readSamplesLeft2;
+			readSamplesLeft2.SetSize( 4096 );
+			CLAM::Audio readSamplesRight2;
+			readSamplesRight2.SetSize( 4096 );
+
+			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
+			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			
+			procReader.Start();
+			procReader2.Start();
+
+			int framesChecked = 0;
+
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
+			while( procReader.Do() && procReader2.Do() )
+			{
+				framesChecked++;
+				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
+								     readSamplesLeft2.GetBuffer() );
+
+				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+								      readSamplesRight2.GetBuffer() );
+
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+				
+
+
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
+
+			}
+
+			procReader.Stop();
+			procReader2.Stop();		
+
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Mp3 - 64kbps" << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+			
+			CPPUNIT_ASSERT_EQUAL( framesRead,
+					      framesChecked );
+			
+
+		}
+
+		void test_MpegAudioFiles_320kbps_44kHz_AreDecoded_OK()
+		{
+			CLAM::AudioFile inputFile;
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-320_44.mp3" ) );
+
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "test-mp3-320-44.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+					
+			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+						    inputFile.GetHeader().GetChannels(),
+						    "WAV" );
+	
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( inputFile );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+			CLAM::MultiChannelAudioFileReader procReader;
+			CLAM::MultiChannelAudioFileWriter procWriter;
+
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
+
+			CLAM::Audio readSamplesLeft;
+			readSamplesLeft.SetSize( 4096 );
+			CLAM::Audio readSamplesRight;
+			readSamplesRight.SetSize( 4096 );
+
+
+			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+
+			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+
+
+			procReader.Start();
+			procWriter.Start();
+
+			CLAM::TSize framesRead = 0;
+
+			while( procReader.Do() )
+			{
+				framesRead++;
+
+				procWriter.Do();
+			}
+
+			procReader.Stop();
+			procWriter.Stop();
+
+			// Once written to disk, now we recover it, and 
+			// check it is the same frame by frame
+			
+			CLAM::MultiChannelAudioFileReader procReader2;
+			inputFile.SetLocation( "test-mp3-320-44.wav" );
+			cfgReader.SetSourceFile( inputFile );
+			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
+
+			CLAM::Audio readSamplesLeft2;
+			readSamplesLeft2.SetSize( 4096 );
+			CLAM::Audio readSamplesRight2;
+			readSamplesRight2.SetSize( 4096 );
+
+			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
+			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			
+			procReader.Start();
+			procReader2.Start();
+
+			int framesChecked = 0;
+
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
+			while( procReader.Do() && procReader2.Do() )
+			{
+				framesChecked++;
+				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
+								     readSamplesLeft2.GetBuffer() );
+
+				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+								      readSamplesRight2.GetBuffer() );
+
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+				
+
+
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
+
+			}
+
+			procReader.Stop();
+			procReader2.Stop();		
+
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Mp3 - 320kbps" << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+
+			CPPUNIT_ASSERT_EQUAL( framesRead,
+					      framesChecked );
+			
+
+		}
+
+		void test_MpegAudioFiles_LowVBR_44kHz_AreDecoded_OK()
+		{
+			CLAM::AudioFile inputFile;
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-LowVBR_44.mp3" ) );
+
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "test-mp3-LowVBR-44.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+					
+			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+						    inputFile.GetHeader().GetChannels(),
+						    "WAV" );
+	
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( inputFile );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+			CLAM::MultiChannelAudioFileReader procReader;
+			CLAM::MultiChannelAudioFileWriter procWriter;
+
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
+
+			CLAM::Audio readSamplesLeft;
+			readSamplesLeft.SetSize( 4096 );
+			CLAM::Audio readSamplesRight;
+			readSamplesRight.SetSize( 4096 );
+
+
+			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+
+			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+
+
+			procReader.Start();
+			procWriter.Start();
+
+			CLAM::TSize framesRead = 0;
+
+			while( procReader.Do() )
+			{
+				framesRead++;
+
+				procWriter.Do();
+			}
+
+			procReader.Stop();
+			procWriter.Stop();
+
+			// Once written to disk, now we recover it, and 
+			// check it is the same frame by frame
+			
+			CLAM::MultiChannelAudioFileReader procReader2;
+			inputFile.SetLocation( "test-mp3-LowVBR-44.wav" );
+			cfgReader.SetSourceFile( inputFile );
+			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
+
+			CLAM::Audio readSamplesLeft2;
+			readSamplesLeft2.SetSize( 4096 );
+			CLAM::Audio readSamplesRight2;
+			readSamplesRight2.SetSize( 4096 );
+
+			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
+			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			
+			procReader.Start();
+			procReader2.Start();
+
+			int framesChecked = 0;
+
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
+			while( procReader.Do() && procReader2.Do() )
+			{
+				framesChecked++;
+				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
+								     readSamplesLeft2.GetBuffer() );
+
+				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+								      readSamplesRight2.GetBuffer() );
+
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+				
+
+
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
+
+			}
+
+			procReader.Stop();
+			procReader2.Stop();		
+
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Mp3 - LowVBR" << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+
+			CPPUNIT_ASSERT_EQUAL( framesRead,
+					      framesChecked );
+			
+
+		}
+
+		void test_MpegAudioFiles_HighVBR_44kHz_AreDecoded_OK()
+		{
+			CLAM::AudioFile inputFile;
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-HighVBR_44.mp3" ) );
+
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "test-mp3-HighVBR-44.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+					
+			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+						    inputFile.GetHeader().GetChannels(),
+						    "WAV" );
+	
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( inputFile );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+			CLAM::MultiChannelAudioFileReader procReader;
+			CLAM::MultiChannelAudioFileWriter procWriter;
+
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
+
+			CLAM::Audio readSamplesLeft;
+			readSamplesLeft.SetSize( 4096 );
+			CLAM::Audio readSamplesRight;
+			readSamplesRight.SetSize( 4096 );
+
+
+			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+
+			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+
+
+			procReader.Start();
+			procWriter.Start();
+
+			CLAM::TSize framesRead = 0;
+
+			while( procReader.Do() )
+			{
+				framesRead++;
+
+				procWriter.Do();
+			}
+
+			procReader.Stop();
+			procWriter.Stop();
+
+			// Once written to disk, now we recover it, and 
+			// check it is the same frame by frame
+			
+			CLAM::MultiChannelAudioFileReader procReader2;
+			inputFile.SetLocation( "test-mp3-HighVBR-44.wav" );
+			cfgReader.SetSourceFile( inputFile );
+			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
+
+			CLAM::Audio readSamplesLeft2;
+			readSamplesLeft2.SetSize( 4096 );
+			CLAM::Audio readSamplesRight2;
+			readSamplesRight2.SetSize( 4096 );
+
+			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
+			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			
+			procReader.Start();
+			procReader2.Start();
+
+			int framesChecked = 0;
+
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
+			while( procReader.Do() && procReader2.Do() )
+			{
+				framesChecked++;
+				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
+								     readSamplesLeft2.GetBuffer() );
+
+				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+								      readSamplesRight2.GetBuffer() );
+
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+				
+
+
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
+
+			}
+
+			procReader.Stop();
+			procReader2.Stop();		
+
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Mp3 - HighVBR" << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+
+			CPPUNIT_ASSERT_EQUAL( framesRead,
+					      framesChecked );
+			
+
+		}
+
 		
+		void test_MpegAudioFiles_AvgVBR_44kHz_AreDecoded_OK()
+		{
+			CLAM::AudioFile inputFile;
+			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-AvgVBR_44.mp3" ) );
+
+			CLAM::AudioFile outputFile;
+			outputFile.SetLocation( "test-mp3-AvgVBR-44.wav" );			
+
+			CLAM::AudioFileHeader outputFileHeader;
+					
+			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+						    inputFile.GetHeader().GetChannels(),
+						    "WAV" );
+	
+			outputFile.SetHeader( outputFileHeader );
+
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( inputFile );
+
+			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
+			cfgWriter.AddTargetFile();
+			cfgWriter.UpdateData();
+			cfgWriter.SetTargetFile( outputFile );
+			
+			CLAM::MultiChannelAudioFileReader procReader;
+			CLAM::MultiChannelAudioFileWriter procWriter;
+
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procWriter.Configure( cfgWriter ) );
+
+			std::cout << "MonoFileReader Test 4096 samples readsize" << std::endl;
+
+			CLAM::Audio readSamplesLeft;
+			readSamplesLeft.SetSize( 4096 );
+			CLAM::Audio readSamplesRight;
+			readSamplesRight.SetSize( 4096 );
+
+
+			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+
+			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
+			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+
+
+			procReader.Start();
+			procWriter.Start();
+
+			CLAM::TSize framesRead = 0;
+
+			while( procReader.Do() )
+			{
+				framesRead++;
+
+				procWriter.Do();
+			}
+
+			procReader.Stop();
+			procWriter.Stop();
+
+			// Once written to disk, now we recover it, and 
+			// check it is the same frame by frame
+			
+			CLAM::MultiChannelAudioFileReader procReader2;
+			inputFile.SetLocation( "test-mp3-AvgVBR-44.wav" );
+			cfgReader.SetSourceFile( inputFile );
+			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
+
+			CLAM::Audio readSamplesLeft2;
+			readSamplesLeft2.SetSize( 4096 );
+			CLAM::Audio readSamplesRight2;
+			readSamplesRight2.SetSize( 4096 );
+
+			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
+			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			
+			procReader.Start();
+			procReader2.Start();
+
+			int framesChecked = 0;
+
+			double maxSimLeft = -1e20;
+			int    maxSimLeftFrame = 0;
+			double minSimLeft = 1e20;
+			int    minSimLeftFrame = 0;
+			double averageSimLeft = 0.0;
+
+			double maxSimRight = -1e20;
+			int    maxSimRightFrame = 0;
+			double minSimRight = 1e20;
+			int    minSimRightFrame = 0;
+			double averageSimRight = 0.0;
+
+
+			while( procReader.Do() && procReader2.Do() )
+			{
+				framesChecked++;
+				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
+								     readSamplesLeft2.GetBuffer() );
+
+				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+								      readSamplesRight2.GetBuffer() );
+
+
+				if ( simLeft > maxSimLeft )
+				{
+					maxSimLeft = simLeft;
+					maxSimLeftFrame = framesChecked;
+				}
+				if ( simLeft < minSimLeft )
+				{
+					minSimLeft = simLeft;
+					minSimLeftFrame = framesChecked;
+				}
+
+				averageSimLeft += simLeft;
+
+
+				if ( simRight > maxSimRight )
+				{
+					maxSimRight = simRight;
+					maxSimRightFrame = framesChecked;
+				}
+				if ( simRight < minSimRight )
+				{
+					minSimRight = simRight;
+					minSimRightFrame = framesChecked;
+				}
+
+				averageSimRight += simRight;
+				
+
+
+				CPPUNIT_ASSERT
+					(  simLeft >= 0.9 );
+
+				CPPUNIT_ASSERT
+					( simRight >= 0.9 );
+
+			}
+
+			procReader.Stop();
+			procReader2.Stop();		
+
+			averageSimLeft *= (1.0/double(framesChecked));
+			averageSimRight *= (1.0/double(framesChecked));
+			
+			/*
+			std::cout << std::endl;
+			std::cout << "Mp3 - AvgVBR" << std::endl;
+			std::cout << "Maximum Left similarity: " << maxSimLeft << " at " << maxSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Left similarity: " << minSimLeft << " at " << minSimLeftFrame;
+			std::cout << std::endl;
+			std::cout << "Average Left similarity: " << averageSimLeft  << std::endl;
+
+			std::cout << std::endl;
+			std::cout << "Maximum Right similarity: " << maxSimRight << " at " << maxSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Minimum Right similarity: " << minSimRight << " at " << minSimRightFrame;
+			std::cout << std::endl;
+			std::cout << "Average Right similarity: " << averageSimRight  << std::endl;
+			*/
+
+			CPPUNIT_ASSERT_EQUAL( framesRead,
+					      framesChecked );
+			
+
+		}
+
 	};
 }
