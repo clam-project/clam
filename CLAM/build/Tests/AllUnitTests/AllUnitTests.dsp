@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\..\libsndfile\include" /I "..\..\..\..\oggvorbis\include" /I "..\..\..\..\libmad\include" /I "..\..\..\..\id3lib\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\externals"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\cppunit\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" RFFTW2st.lib FFTW2st.lib xerces-c_2.lib pthreadVC.lib cppunit_vc6.lib libsndfile.lib ogg.lib vorbis.lib vorbisenc.lib vorbisfile.lib id3lib.lib libmad.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\cppunit\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" RFFTW2st.lib FFTW2st.lib xerces-c_2.lib pthreadVC.lib cppunit_vc6.lib libsndfile.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib id3lib.lib libmad.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "AllUnitTests - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\..\libsndfile\include" /I "..\..\..\..\oggvorbis\include" /I "..\..\..\..\libmad\include" /I "..\..\..\..\id3lib\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Processing\Generators" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\externals"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\cppunit\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" FFTW2std.lib RFFTW2std.lib xerces-c_2d.lib pthreadVC.lib cppunitd_vc6.lib libsndfile.lib ogg_d.lib vorbis_d.lib vorbisenc_d.lib vorbisfile_d.lib id3libd.lib libmadd.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\cppunit\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" FFTW2std.lib RFFTW2std.lib xerces-c_2d.lib pthreadVC.lib cppunitd_vc6.lib libsndfile.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib id3libd.lib libmadd.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -243,6 +243,13 @@ SOURCE=..\..\..\test\UnitTests\XMLAdaptersTests\XercesDom2ClamObjectsTest.cxx
 # Begin Source File
 
 SOURCE=..\..\..\test\UnitTests\XMLAdaptersTests\AdaptersTest.cxx
+# End Source File
+# End Group
+# Begin Group "ToolsTests Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\ToolsTests\AudioFileTest.cxx
 # End Source File
 # End Group
 # Begin Group "CommonHelpers Sources"
@@ -631,6 +638,22 @@ SOURCE=..\..\..\src\Tools\AudioIO\AudioDeviceList.cxx
 
 # Begin Source File
 
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioFileFormats.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioFileHeader.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioTextDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioFile.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Tools\AudioFileIO\SoundHeader.cxx
 # End Source File
 # Begin Source File
@@ -647,7 +670,43 @@ SOURCE=..\..\..\src\Tools\AudioFileIO\WaveFileIO.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioCodec.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\PCMCodec.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\OggVorbisCodec.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\MpegCodec.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Tools\AudioFileIO\extended.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioCodecs_Stream.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\PCMAudioStream.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\OggVorbisAudioStream.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\MpegBitstream.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\MpegAudioStream.cxx
 # End Source File
 # End Group
 # End Group
@@ -1501,6 +1560,10 @@ SOURCE=..\..\..\externals\CbLib\CBLMacros.hxx
 SOURCE=..\..\..\externals\CbLib\CBL.hxx
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\externals\deque
+# End Source File
 # End Group
 # Begin Group "fftw Headers"
 
@@ -1537,6 +1600,22 @@ SOURCE=..\..\..\src\Tools\AudioIO\AudioDeviceList.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioFileFormats.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioFileHeader.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioTextDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioFile.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Tools\AudioFileIO\SoundHeader.hxx
 # End Source File
 # Begin Source File
@@ -1553,7 +1632,43 @@ SOURCE=..\..\..\src\Tools\AudioFileIO\WaveFileIO.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioCodec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\PCMCodec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\OggVorbisCodec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\MpegCodec.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Tools\AudioFileIO\extended.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\AudioCodecs_Stream.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\PCMAudioStream.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\OggVorbisAudioStream.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\MpegBitstream.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Tools\AudioFileIO\MpegAudioStream.hxx
 # End Source File
 # End Group
 # End Group
@@ -1753,6 +1868,99 @@ SOURCE=..\..\..\..\xercesc\include\xercesc\sax\HandlerBase.hpp
 # End Group
 # End Group
 # End Group
+# Begin Group "libsndfile Headers"
+
+# Begin Group "include Headers No. 4"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\libsndfile\include\sndfile.h
+# End Source File
+# End Group
+# End Group
+# Begin Group "oggvorbis Headers"
+
+# Begin Group "include Headers No. 5"
+
+# Begin Group "ogg Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\oggvorbis\include\ogg\os_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\oggvorbis\include\ogg\ogg.h
+# End Source File
+# End Group
+# Begin Group "vorbis Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\oggvorbis\include\vorbis\codec.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\oggvorbis\include\vorbis\vorbisfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\oggvorbis\include\vorbis\vorbisenc.h
+# End Source File
+# End Group
+# End Group
+# End Group
+# Begin Group "libmad Headers"
+
+# Begin Group "include Headers No. 6"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\libmad\include\mad.h
+# End Source File
+# End Group
+# End Group
+# Begin Group "id3lib Headers"
+
+# Begin Group "include Headers No. 7"
+
+# Begin Group "id3 Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\sized_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\globals.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\id3lib_frame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\field.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\id3lib_streams.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\id3lib_strings.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\id3lib\include\id3\tag.h
+# End Source File
+# End Group
+# End Group
+# End Group
 # End Group
 # Begin Source File
 
@@ -1767,6 +1975,7 @@ InputPath=settings.cfg
 	srcdeps.exe settings.cfg AllUnitTests.dsp
 
 # End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "AllUnitTests - Win32 Debug"
 
@@ -1777,6 +1986,7 @@ InputPath=settings.cfg
 	srcdeps.exe settings.cfg AllUnitTests.dsp
 
 # End Custom Build
+# PROP Exclude_From_Build 1
 
 !ENDIF 
 
