@@ -24,6 +24,7 @@
 #include "AudioFile.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
+#include "HeapDbg.hxx"
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -218,8 +219,7 @@ namespace CLAMGUI
 		cfg.SetSelectedChannel( selectedChannel );
 
 		CLAM::MonoAudioFileReader fileReader;
-		CLAM_DEBUG_ASSERT( true == fileReader.Configure( cfg ),
-				   "Error: fileReader configuration has failed!");
+		fileReader.Configure( cfg );
 
 		fileReader.Start();
 
