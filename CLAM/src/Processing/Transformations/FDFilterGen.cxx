@@ -72,7 +72,7 @@ namespace CLAM {
 	
 
 	FDFilterGen::FDFilterGen() :
-		Output("Output",this,1),
+		Output("Output",this),
 		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
 		HighCutOff( "High Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
 		LowCutOff( "Low Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
@@ -87,7 +87,7 @@ namespace CLAM {
 	};
 
 	FDFilterGen::FDFilterGen( const FDFilterGenConfig& c) :
-		Output("Output",this,1),
+		Output("Output",this),
 		SpectralRange(0),
 		mControlChanged( false ),
 		Type( EFDFilterType::eLowPass ),
