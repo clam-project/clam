@@ -49,7 +49,8 @@ namespace CLAM {
 
 	Err::~Err() throw()
 	{
-		delete [] mMsg;
+		if ( mMsg )
+			delete [] mMsg;
 	};
 
 /* specifying the header's member function */
