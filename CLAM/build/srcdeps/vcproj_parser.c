@@ -23,7 +23,7 @@ static void vcproj_parse_insert( FileType filetype );
 static void vcproj_parse_insert_recurse( tree* t, list* repeatCheck, FileType type, int depth );
 
 static void vcproj_parse_insert_regular_file( const char*, FileType type, int depth );
-static void vcproj_parse_insert_ui_file( char* );
+static void vcproj_parse_insert_ui_file( const char*, int depth);
 static void vcproj_parse_insert_mocable_header( char*);
 
 
@@ -281,7 +281,7 @@ extern void vcproj_parse(const char* outFilename)
 	fclose(outfile);
 	{
 		FILE* stamp = fopen("buildstamp", "w");
-		close(stamp);
+		fclose(stamp);
 	}
 }
 
@@ -375,7 +375,7 @@ void vcproj_parse_insert_recurse(tree* t,list* repeatcheck, FileType type, int d
 			}
 			else if ( type == qt )
 			{
-				vcproj_parse_insert_ui_file( n->str );
+				vcproj_parse_insert_ui_file( n->str, depth );
 			}
 			else
 				vcproj_parse_insert_regular_file( n->str, type, depth );
@@ -397,8 +397,6 @@ void vcproj_parse_insert_regular_file( const char* filename, FileType type, int 
 		indent(depth+1);
  		fprintf(outfile, "<FileConfiguration Name=\"Release|Win32\">\n");
 		indent(depth+2);
-		fprintf(outfile, "<Tool Name=\"VCCLCompilerTool\ Description=\"\" " />\n");
-		indent(depth+2);
 		fprintf(outfile, "<Tool Name=\"VCCLCompilerTool\" />\n");
 		indent(depth+1);
 		fprintf(outfile, "</FileConfiguration>\n");
@@ -413,27 +411,40 @@ void vcproj_parse_insert_regular_file( const char* filename, FileType type, int 
 	fprintf(outfile, "</File>\n");
 }
 
-static void vcproj_parse_insert_ui_file( const char* file)
+static void vcproj_parse_insert_ui_file( const char* file, int depth)
 {
 	char* project_name = 0;
 	char winfile[1024];
 	strncpy(winfile,file,1024);
 	winstyle(winfile);
-	fprintf(outfile, "<File RelativePath=\"%s\">\n", tmp);
+	indent(depth);
+	fprintf(outfile, "<File RelativePath=\"%s\">\n", winfile);
+	indent(depth+1);
+	fprintf(outfile, "<FileConfiguration Name=\"Debug|Win32\">\n");
+	indent(depth+2);
+	fprintf(outfile, "<Tool\n");
+	indent(depth+3);
+	fprintf(outfile, "Name=\"VCCustomBuildTool\"\n");
+	indent(depth+3);
+	fprintf(outfile, "Description=\"UICing %s\"", winfile);
+	indent(depth+3);
+	fprintf(outfile, "CommandLine=\"uic.exe %s\"", winfile);
+	
+	
 //TODO continuar per icí
-
+/*
 	fprintf( outfile, "<>" );
 	fprintf( outfile, "#Begin Source File\n");
 	fprintf( outfile, "\n" );
 	fprintf( outfile, "SOURCE=\"%s\"\n", winfile );
 	fprintf( outfile, "\n" );
-	/*Custom build - release mode */
+	//Custom build - release mode 
 	fprintf( outfile, "!IF \"$(CFG)\" == \"%s - Win32 Release \"\n", project_name );
 	fprintf( outfile, "\n" );
 	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
 	dsp_parse_insert_ui_custom_build_rule(  file );
 	fprintf( outfile, "\n" );
-	/*Custom build - debug mode */
+	//Custom build - debug mode 
 	fprintf( outfile, "!ELSEIF \"$(CFG)\" == \"%s - Win32 Debug\"\n", project_name );
 	fprintf( outfile, "\n" );
 	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
@@ -442,6 +453,7 @@ static void vcproj_parse_insert_ui_file( const char* file)
 	fprintf( outfile, "!ENDIF\n" );
 	fprintf( outfile, "\n" );
 	fprintf( outfile, "#End Source File\n");
+*/
 }
 
 void vcproj_parse_insert_mocable_header( char*a) {}
