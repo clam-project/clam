@@ -81,10 +81,9 @@ int GLPortSigSlot::handle( int event ) {
 		if ( event == FL_PUSH && Fl::event_button() == FL_LEFT_MOUSE ) {
 			mPos = ( Fl::event_x(  ) - x(  ) ) * mHorRange.mSize / w(  ) + mHorRange.mPosition;
 
+			redraw_overlay();
 			// notify SLOTTED class to act
 			mSignal.Emit( mPos );
-
-			redraw();
 			return 1;
 		}
 	}	
