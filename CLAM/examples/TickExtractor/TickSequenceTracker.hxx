@@ -7,7 +7,7 @@
 #include "TickSequenceTrackerConfig.hxx"
 #include "AudioPeakDetect.hxx"
 #include "Pulse.hxx"
-#include "TimeDifference.hxx"
+#include "RD_TimeDifference.hxx"
 #include "TemporalSeriesFinder.hxx"
 #include "TemporalSeriesSeed.hxx"
 
@@ -66,12 +66,15 @@ namespace CLAM
 
 		unsigned AdjustTickIntervalForSwing( Audio& IOIHistogram, unsigned previousTickInterval );
 
+		TData    ComputeTempo( Array<TimeIndex>& IOIHistPeaks );
+				       
+
 	private: // children Processing
 
-		AudioPeakDetect       mAudioPeakDetector;
-		TimeDifference        mTemporalDiff;
-		TemporalSeriesFinder  mTimeSeriesFinder;
-		TemporalSeriesFinderConfig mTSFConfig;
+		AudioPeakDetect                          mAudioPeakDetector;
+		RhythmDescription::TimeDifference        mTemporalDiff;
+		TemporalSeriesFinder                     mTimeSeriesFinder;
+		TemporalSeriesFinderConfig               mTSFConfig;
 
 	private: // Internal PD's
 		

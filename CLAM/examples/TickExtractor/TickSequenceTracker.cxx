@@ -26,12 +26,8 @@
  */
 
 #include "TickSequenceTracker.hxx"
-#include "AudioPeakDetect.hxx"
 #include "GlobalPulse.hxx"
-#include "TimeDifference.hxx"
 #include "GridGen.hxx"
-#include "TemporalSeriesSeed.hxx"
-#include "TemporalSeriesFinder.hxx"
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
 #include <list>
@@ -63,7 +59,7 @@ namespace CLAM
 
 		mAudioPeakDetector.SetParent( this );
 
-		TimeDifferenceConfig tconf;
+		RhythmDescription::TimeDifferenceConfig tconf;
 		tconf.SetGaussianSize((TSize)(mConfig.GetSamplingRate()*mConfig.GetGaussianWindowSize()));
 
 		mTemporalDiff.Configure( tconf );
@@ -102,7 +98,6 @@ namespace CLAM
 		
 		mGoodTempo.SetOffset(0); 
 		mGoodTempo.SetInterval(1);
-
 
 		
 		Compute( transients, 
@@ -186,14 +181,14 @@ namespace CLAM
 			posTrans1 = transients[indTrans1].GetPosition();
 			posTrans2 = transients[indTrans2].GetPosition();
 			windowSize = posTrans2-posTrans1;
+			
 			//put a maximum on the IOIHist length
 			TData IOIHistLim = 10.0*mConfig.GetSamplingRate();
 			IOIHist.SetSize(CLAM::CLAM_min(windowSize,IOIHistLim));
 
 			/// Compute the IOIHistogram
 			//Don't use weights for the building of the histogram:
-			transientsForHist[0].SetWeight(0); //because the 1st transient is added manually
-			//transientsForHist[0].SetPosition(posTrans1);//Original
+			transientsForHist[0].SetWeight(0); //because the 1st transient is added manually			
 			transientsForHist[0].SetPosition(0);
 			
 			for (int i=1;i<transientsForHist.Size();i++)
@@ -215,26 +210,7 @@ namespace CLAM
 			///Compute Tempo (optional)
 			if (computeBeats)
 			{
-
-				TData maxForTempo=0.0;
-				int indexForTempo=0;
-				for (int i=1;i < IOIHistPeaks.Size() ;i++) //starts at 1 because there is a peak at 0 (with 0 weight)
-				{
-					//Tempo is between tempoLimInf and tempoLimSup BPM
-					if ((IOIHistPeaks[i].GetPosition() > mConfig.GetSamplingRate()*60.0/tempoLimSup)
-					    && (IOIHistPeaks[i].GetPosition() < mConfig.GetSamplingRate()*60.0/tempoLimInf)
-					    && (IOIHistPeaks[i].GetWeight() > maxForTempo))
-					{
-						maxForTempo = IOIHistPeaks[i].GetWeight();
-						indexForTempo = i;
-					}
-				}
-				if (indexForTempo==0) {
-
-					tempo = 60.0*mConfig.GetSamplingRate()/((tempoLimSup+tempoLimInf)/2);
-				}
-				else
-					tempo=IOIHistPeaks[indexForTempo].GetPosition();
+				tempo = ComputeTempo( IOIHistPeaks );
 			}
 
 			///Tick Estimation
@@ -319,7 +295,10 @@ namespace CLAM
 					tempo += goodTickInterval;
 				while (tempo>mConfig.GetSamplingRate()*60.0/tempoLimInf)
 					tempo -= goodTickInterval;
-				if(tempo==0) tempo = goodTickInterval;
+
+				if(tempo==0) 
+					tempo = goodTickInterval;
+				
 				if (mConfig.GetAdjustWithOnsets()) 
 				{
 					//get the best phase
@@ -363,6 +342,7 @@ namespace CLAM
 			///Store Tick indexes and (optionally) Beat indexes
 			if (computeBeats)
 				StorePulseIndexes(nLoops, tempoArray, beats);
+			
 			StorePulseIndexes(nLoops, tickArray, ticks);
 
 		
@@ -482,6 +462,31 @@ namespace CLAM
 			}
 			
 		return pulseHistPeaks[index].GetPosition();
+	}
+
+	TData TickSequenceTracker::ComputeTempo( Array<TimeIndex>& IOIHistPeaks )
+	{
+		TData tempo;
+		TData maxForTempo=0.0;
+		int indexForTempo=0;
+		
+		for (int i=1;i < IOIHistPeaks.Size() ;i++) //starts at 1 because there is a peak at 0 (with 0 weight)
+		{
+			//Tempo is between tempoLimInf and tempoLimSup BPM
+			if ((IOIHistPeaks[i].GetPosition() > mConfig.GetSamplingRate()*60.0/mConfig.GetTempoLimSup())
+			    && (IOIHistPeaks[i].GetPosition() < mConfig.GetSamplingRate()*60.0/mConfig.GetTempoLimInf())
+			    && (IOIHistPeaks[i].GetWeight() > maxForTempo))
+			{
+				maxForTempo = IOIHistPeaks[i].GetWeight();
+				indexForTempo = i;
+			}
+		}
+		if (indexForTempo==0)			
+			tempo = 60.0*mConfig.GetSamplingRate()/((mConfig.GetTempoLimSup()+mConfig.GetTempoLimInf())/2);
+		else
+			tempo=IOIHistPeaks[indexForTempo].GetPosition();
+
+		return tempo;
 	}
 
 
