@@ -21,7 +21,7 @@
 
 
 #include "InPortPresentation.hxx"
-#include "PortModel.hxx"
+//#include "PortModel.hxx"
 
 namespace NetworkGUI
 {
@@ -29,16 +29,16 @@ namespace NetworkGUI
 InPortPresentation::InPortPresentation()
 	: mName( "unnamed in port" )
 {
-	SlotSetName.Wrap( this, &InPortPresentation::SetName );
+//	SlotSetName.Wrap( this, &InPortPresentation::SetName );
 }
 
 InPortPresentation::~InPortPresentation()
 {
 }
 
-void InPortPresentation::AttachTo( CLAMVM::PortModel & m )
-{
-	m.SignalAcquireName.Connect(SlotSetName);
-}
+//void InPortPresentation::AttachTo( CLAMVM::PortModel & m )
+//{
+//	m.SignalAcquireName.Connect(SlotSetName);
+//}
 
 } // namespace NetworkGUI

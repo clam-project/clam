@@ -24,11 +24,12 @@
 #include "OutPortPresentation.hxx"
 #include "InControlPresentation.hxx"
 #include "OutControlPresentation.hxx"
-#include "InPortAdapter.hxx"
-#include "OutPortAdapter.hxx"
-#include "InControlAdapter.hxx"
-#include "OutControlAdapter.hxx"
-#include "ProcessingModel.hxx"
+//#include "InPortAdapter.hxx"
+//#include "OutPortAdapter.hxx"
+//#include "InControlAdapter.hxx"
+//#include "OutControlAdapter.hxx"
+//#include "ProcessingModel.hxx"
+#include "ProcessingController.hxx"
 #include "ProcessingConfig.hxx"
 #include "Factory.hxx"
 
@@ -45,10 +46,10 @@ ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwor
 {
 	SlotSetConfig.Wrap( this, &ProcessingPresentation::SetConfig );
 	SlotSetConfigFromGUI.Wrap( this, &ProcessingPresentation::SetConfigFromGUI );
-	SlotSetInPort.Wrap( this, &ProcessingPresentation::SetInPort );
-	SlotSetOutPort.Wrap( this, &ProcessingPresentation::SetOutPort );
-	SlotSetInControl.Wrap( this, &ProcessingPresentation::SetInControl );
-	SlotSetOutControl.Wrap( this, &ProcessingPresentation::SetOutControl );
+//	SlotSetInPort.Wrap( this, &ProcessingPresentation::SetInPort );
+//	SlotSetOutPort.Wrap( this, &ProcessingPresentation::SetOutPort );
+//	SlotSetInControl.Wrap( this, &ProcessingPresentation::SetInControl );
+//	SlotSetOutControl.Wrap( this, &ProcessingPresentation::SetOutControl );
 	SlotUpdatePresentation.Wrap(this, &ProcessingPresentation::UpdatePresentation );
 	SlotSetObservedClassName.Wrap( this, &ProcessingPresentation::SetObservedClassName );
 }
@@ -64,12 +65,12 @@ void ProcessingPresentation::SetConfig( CLAM::ProcessingConfig * cfg)
 	{
 		ProcessingConfigPresentationFactory & factory =  ProcessingConfigPresentationFactory::GetInstance();
 		mConfig = factory.Create(cfg->GetClassName());
-		SignalNewConfig.Connect( mConfig->SlotSetConfig );
+		SignalConfigureProcessing.Connect( mConfig->SlotSetConfig );
 		mConfig->SignalApplyConfig.Connect( SlotSetConfigFromGUI );
 
 	}
 
-	SignalNewConfig.Emit( cfg );
+	SignalConfigureProcessing.Emit( cfg );
 
 }
 
@@ -100,18 +101,30 @@ ProcessingPresentation::~ProcessingPresentation()
 	}
 }
 
-void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
+void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
 {
-	m.SignalAcquireClassName.Connect(SlotSetObservedClassName);
-	m.SignalAcquireInPort.Connect(SlotSetInPort);
-	m.SignalAcquireOutPort.Connect(SlotSetOutPort);
-	m.SignalAcquireInControl.Connect(SlotSetInControl);
-	m.SignalAcquireOutControl.Connect(SlotSetOutControl);
-	m.SignalAcquireConfig.Connect(SlotSetConfig);
+	controller.SignalAcquireClassName.Connect(SlotSetObservedClassName);
+//	m.SignalAcquireInPort.Connect(SlotSetInPort);
+//	m.SignalAcquireOutPort.Connect(SlotSetOutPort);
+//	m.SignalAcquireInControl.Connect(SlotSetInControl);
+//	m.SignalAcquireOutControl.Connect(SlotSetOutControl);
+	controller.SignalAcquireConfig.Connect(SlotSetConfig);
 
-	m.SignalUpdatePresentation.Connect(SlotUpdatePresentation);
-
-	SignalUpdateConfig.Connect( m.SlotSetNewConfig );
+	controller.SignalUpdatePresentation.Connect(SlotUpdatePresentation);
+	CLAMVM::ProcessingController::NamesList::iterator it;
+	for( it=controller.BeginInPortNames();it!=controller.EndInPortNames();it++)
+		SetInPort(*it);
+	
+	for( it=controller.BeginOutPortNames();it!=controller.EndOutPortNames();it++)
+		SetOutPort(*it);
+	
+	for( it=controller.BeginInControlNames();it!=controller.EndInControlNames();it++)
+		SetInControl(*it);
+	
+	for( it=controller.BeginOutControlNames();it!=controller.EndOutControlNames();it++)
+		SetOutControl(*it);
+	
+	SignalUpdateConfig.Connect( controller.SlotConfigureProcessing );
 }
 
 OutPortPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)

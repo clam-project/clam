@@ -34,7 +34,7 @@ namespace CLAMVM
 		SigSlot::Signalv1< OutPortAdapter* > SignalAcquireOutPort;
 		SigSlot::Signalv1< InControlAdapter* >   SignalAcquireInControl;
 		SigSlot::Signalv1< OutControlAdapter* > SignalAcquireOutControl;
-		SigSlot::Slotv1< CLAM::ProcessingConfig * > SlotSetNewConfig;
+		SigSlot::Slotv1< CLAM::ProcessingConfig * > SlotConfigureProcessing;
 		SigSlot::Signalv0 SignalUpdatePresentation;
 		SigSlot::Signalv2< ProcessingModel *, const std::string & > SignalCreateNewPresentation;
 		SigSlot::Signalv1< CLAM::Processing * > SignalRebuildProcessingStructure;

@@ -40,7 +40,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class NetworkModel;
+	class NetworkController;
 	class ProcessingController;
 	class ConnectionAdapter;
 }
@@ -68,7 +68,7 @@ protected:
 public:
 	NetworkPresentation();
         virtual ~NetworkPresentation();
-	virtual void AttachTo(CLAMVM::NetworkModel &);
+	virtual void AttachTo(CLAMVM::NetworkController &);
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 

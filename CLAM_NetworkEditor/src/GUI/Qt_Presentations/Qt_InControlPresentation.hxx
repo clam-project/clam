@@ -40,10 +40,9 @@ public:
 	virtual void Show();
 	virtual void Hide();
 	QRegion GetRegion();
-
-protected:
 	virtual void SetName(const std::string& name);
-
+	
+protected:
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 public: // signals

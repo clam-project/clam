@@ -20,7 +20,7 @@
  */
 
 #include "InControlPresentation.hxx"
-#include "ControlModel.hxx"
+//#include "ControlModel.hxx"
 
 namespace NetworkGUI
 {
@@ -28,16 +28,16 @@ namespace NetworkGUI
 InControlPresentation::InControlPresentation()
 	: mName( "unnamed in control" )
 {
-	SlotSetName.Wrap( this, &InControlPresentation::SetName );
+//	SlotSetName.Wrap( this, &InControlPresentation::SetName );
 }
 
 InControlPresentation::~InControlPresentation()
 {
 }
 
-void InControlPresentation::AttachTo( CLAMVM::ControlModel & m )
-{
-	m.SignalAcquireName.Connect(SlotSetName);
-}
+//void InControlPresentation::AttachTo( CLAMVM::ControlModel & m )
+//{
+//	m.SignalAcquireName.Connect(SlotSetName);
+//}
 
 } // namespace NetworkGUI

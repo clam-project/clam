@@ -20,14 +20,16 @@
  */
 
 #include "ProcessingController.hxx"
-#include "InPortAdapter.hxx"
-#include "OutPortAdapter.hxx"
-#include "InControlAdapter.hxx"
-#include "OutControlAdapter.hxx"
+//#include "InPortAdapter.hxx"
+//#include "OutPortAdapter.hxx"
+//#include "InControlAdapter.hxx"
+//#include "OutControlAdapter.hxx"
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
-
-#include <vector>
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 
 #include <iostream>
 namespace CLAMVM
@@ -37,7 +39,7 @@ ProcessingController::ProcessingController()
 	: mObserved(0),
 	  mConfig(0)
 {
-	SlotSetNewConfig.Wrap( this, &ProcessingController::SetNewConfig );
+	SlotConfigureProcessing.Wrap( this, &ProcessingController::ConfigureProcessing );
 }
 
 ProcessingController::~ProcessingController()
@@ -45,22 +47,22 @@ ProcessingController::~ProcessingController()
 	if (mConfig)
 		delete mConfig;
 
-	InPortAdapterIterator itPortIn;
-	for ( itPortIn=mInPortAdapters.begin(); itPortIn!=mInPortAdapters.end(); itPortIn++)
-		delete *itPortIn;
-	OutPortAdapterIterator itPortOut;
-	for ( itPortOut=mOutPortAdapters.begin(); itPortOut!=mOutPortAdapters.end(); itPortOut++)
-		delete *itPortOut;
-	InControlAdapterIterator itCtrlIn;
-	for ( itCtrlIn=mInControlAdapters.begin(); itCtrlIn!=mInControlAdapters.end(); itCtrlIn++)
-		delete *itCtrlIn;
-	OutControlAdapterIterator itCtrlOut;
-	for ( itCtrlOut=mOutControlAdapters.begin(); itCtrlOut!=mOutControlAdapters.end(); itCtrlOut++)
-		delete *itCtrlOut;
+//	InPortAdapterIterator itPortIn;
+//	for ( itPortIn=mInPortAdapters.begin(); itPortIn!=mInPortAdapters.end(); itPortIn++)
+//		delete *itPortIn;
+//	OutPortAdapterIterator itPortOut;
+//	for ( itPortOut=mOutPortAdapters.begin(); itPortOut!=mOutPortAdapters.end(); itPortOut++)
+//		delete *itPortOut;
+//	InControlAdapterIterator itCtrlIn;
+//	for ( itCtrlIn=mInControlAdapters.begin(); itCtrlIn!=mInControlAdapters.end(); itCtrlIn++)
+///		delete *itCtrlIn;
+//	OutControlAdapterIterator itCtrlOut;
+//	for ( itCtrlOut=mOutControlAdapters.begin(); itCtrlOut!=mOutControlAdapters.end(); itCtrlOut++)
+//		delete *itCtrlOut;
 
 }
 
-void ProcessingController::SetNewConfig( CLAM::ProcessingConfig * cfg) 
+void ProcessingController::ConfigureProcessing( CLAM::ProcessingConfig * cfg) 
 {
 	mConfig = (CLAM::ProcessingConfig*)cfg->DeepCopy();
 
@@ -86,57 +88,66 @@ bool ProcessingController::Publish()
 
 	const CLAM::ProcessingConfig & conf( mObserved->GetConfig() );
 	mConfig = (CLAM::ProcessingConfig*)conf.DeepCopy();
-	std::cout << mConfig->GetClassName() << std::endl;
 	SignalAcquireConfig.Emit( mConfig );
-	CLAM::Processing* proc = (CLAM::Processing*) mObserved;	
-	CLAM::PublishedInPorts::ConstIterator itPortIn;
-	for (itPortIn = proc->GetInPorts().Begin(); 
-	     itPortIn != proc->GetInPorts().End(); 
-	     itPortIn++)
-	{
-		InPortAdapter* adapter = new InPortAdapter;
-		CLAM::InPort* inport = *itPortIn;
-		adapter->BindTo(*inport);
-		mInPortAdapters.push_back(adapter);
-		SignalAcquireInPort.Emit(adapter);
-	}
+//	CLAM::Processing* mObserved = (CLAM::Processing*) mObserved;	
+//	CLAM::PublishedInPorts::ConstIterator itPortIn;
+//	for (itPortIn = mObserved->GetInPorts().Begin(); 
+//	     itPortIn != mObserved->GetInPorts().End(); 
+//	     itPortIn++)
+//	{
+
+//		std::cout << "publishing" << std::endl;
+//		mInPortNames.push_back((*itPortIn)->GetName());
+		
+//		InPortAdapter* adapter = new InPortAdapter;
+//		CLAM::InPort* inport = *itPortIn;
+//		adapter->BindTo(*inport);
+//		mInPortAdapters.push_back(adapter);
+//		SignalAcquireInPort.Emit(adapter);
+//	}
 	
-	CLAM::PublishedOutPorts::ConstIterator itPortOut;
-	for (itPortOut = proc->GetOutPorts().Begin(); 
-	     itPortOut != proc->GetOutPorts().End(); 
-	     itPortOut++)
-	{	
-		OutPortAdapter* adapter = new OutPortAdapter;
-		CLAM::OutPort* outport = *itPortOut;
-		adapter->BindTo(*outport);
-		mOutPortAdapters.push_back(adapter);
-		SignalAcquireOutPort.Emit(adapter);
-	}
+//	CLAM::PublishedOutPorts::ConstIterator itPortOut;
+//	for (itPortOut = mObserved->GetOutPorts().Begin(); 
+//	     itPortOut != mObserved->GetOutPorts().End(); 
+//	     itPortOut++)
+//	{		
+//		mOutPortNames.push_back((*itPortOut)->GetName());
+
+//		OutPortAdapter* adapter = new OutPoirtAdapter;
+//		CLAM::OutPort* outport = *itPortOut;
+//		adapter->BindTo(*outport);
+//		mOutPortAdapters.push_back(adapter);
+//		SignalAcquireOutPort.Emit(adapter);
+//	}
 
 
-	CLAM::PublishedInControls::ConstIterator itCtrlIn;
-	for (itCtrlIn = proc->GetInControls().Begin(); 
-	     itCtrlIn != proc->GetInControls().End(); 
-	     itCtrlIn++)
-	{
-		InControlAdapter* adapter = new InControlAdapter;
-		CLAM::InControl* incontrol = *itCtrlIn;
-		adapter->BindTo(*incontrol);
-		mInControlAdapters.push_back(adapter);
-		SignalAcquireInControl.Emit(adapter);
-	}
+//	CLAM::PublishedInControls::ConstIterator itCtrlIn;
+//	for (itCtrlIn = mObserved->GetInControls().Begin(); 
+//	     itCtrlIn != mObserved->GetInControls().End(); 
+//	     itCtrlIn++)
+//	{
+//		mInControlNames.push_back((*itCtrlIn)->GetName());
+
+//		InControlAdapter* adapter = new InControlAdapter;
+//		CLAM::InControl* incontrol = *itCtrlIn;
+//		adapter->BindTo(*incontrol);
+//		mInControlAdapters.push_back(adapter);
+//		SignalAcquireInControl.Emit(adapter);
+//	}
 	
-	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
-	for (itCtrlOut = proc->GetOutControls().Begin(); 
-	     itCtrlOut != proc->GetOutControls().End(); 
-	     itCtrlOut++)
-	{	
-		OutControlAdapter* adapter = new OutControlAdapter;
-		CLAM::OutControl* outcontrol = *itCtrlOut;
-		adapter->BindTo(*outcontrol);
-		mOutControlAdapters.push_back(adapter);
-		SignalAcquireOutControl.Emit(adapter);
-	}
+//	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
+//	for (itCtrlOut = mObserved->GetOutControls().Begin(); 
+//	     itCtrlOut != mObserved->GetOutControls().End(); 
+//	     itCtrlOut++)
+//	{		
+//		mOutControlNames.push_back((*itCtrlOut)->GetName());
+
+//		OutControlAdapter* adapter = new OutControlAdapter;
+//		CLAM::OutControl* outcontrol = *itCtrlOut;
+//		adapter->BindTo(*outcontrol);
+//		mOutControlAdapters.push_back(adapter);
+//		SignalAcquireOutControl.Emit(adapter);
+//	}
 
 	return true;
 }
@@ -149,6 +160,24 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 	{ 
 		return false;
 	}
+
+	CLAM::PublishedInPorts::ConstIterator itPortIn;
+	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
+		mInPortNames.push_back((*itPortIn)->GetName());
+		
+	CLAM::PublishedOutPorts::ConstIterator itPortOut;
+	for (itPortOut = mObserved->GetOutPorts().Begin(); itPortOut != mObserved->GetOutPorts().End(); itPortOut++)
+		mOutPortNames.push_back((*itPortOut)->GetName());
+
+
+	CLAM::PublishedInControls::ConstIterator itCtrlIn;
+	for (itCtrlIn = mObserved->GetInControls().Begin(); itCtrlIn != mObserved->GetInControls().End(); itCtrlIn++)
+		mInControlNames.push_back((*itCtrlIn)->GetName());
+	
+	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
+	for (itCtrlOut = mObserved->GetOutControls().Begin(); itCtrlOut != mObserved->GetOutControls().End(); itCtrlOut++)
+		mOutControlNames.push_back((*itCtrlOut)->GetName());
+
 	return true;
 }
 
@@ -165,7 +194,7 @@ void ProcessingController::CheckIfLadspaLoader()
 	if(std::string(mObserved->GetClassName())=="LadspaLoader")
 	{
 		SignalRebuildProcessingStructure.Emit( mObserved );
-		SignalRemoveProcessingModel.Emit(this );
+		SignalRemoveProcessingController.Emit(this );
 	}
 	
 }

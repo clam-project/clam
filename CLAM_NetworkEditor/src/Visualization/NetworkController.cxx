@@ -49,7 +49,7 @@ NetworkController::NetworkController()
 	SlotLoadNetwork.Wrap( this, &NetworkController::LoadNetwork );
 	SlotClear.Wrap( this, &NetworkController::Clear );
 	SlotCreateNewPresentation.Wrap( this, &NetworkController::CreateNewPresentation );
-	SlotRemoveProcessingModel.Wrap( this, &NetworkController::RemoveProcessingModel );
+	SlotRemoveProcessingController.Wrap( this, &NetworkController::RemoveProcessingController );
 	SlotRebuildProcessingStructure.Wrap( this, &NetworkController::OnRebuildProcessingStructure );
 
 }
@@ -116,7 +116,7 @@ void NetworkController::ChangeState( bool state)
 	}
 }
 
-void NetworkController::RemoveProcessingModel( ProcessingModel * proc )
+void NetworkController::RemoveProcessingController( ProcessingController * proc )
 {
 	ProcessingControllersMapIterator it;
 	for(it=mProcessingControllers.begin();it!=mProcessingControllers.end();it++)
@@ -324,12 +324,12 @@ void NetworkController::CreateProcessingController( const std::string & name, CL
 	controller->BindTo(*proc);
 	controller->SignalCreateNewPresentation.Connect(SlotCreateNewPresentation);
 	controller->SignalRebuildProcessingStructure.Connect(SlotRebuildProcessingStructure);
-	controller->SignalRemoveProcessingModel.Connect(SlotRemoveProcessingModel);
+	controller->SignalRemoveProcessingController.Connect(SlotRemoveProcessingController);
 	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, controller));
 	SignalAcquireProcessing.Emit(controller, name);
 }
 
-void NetworkController::CreateNewPresentation( ProcessingModel * controller, const std::string & name )
+void NetworkController::CreateNewPresentation( ProcessingController * controller, const std::string & name )
 {
 	SignalAcquireProcessing.Emit((ProcessingController*)controller, name);
 }

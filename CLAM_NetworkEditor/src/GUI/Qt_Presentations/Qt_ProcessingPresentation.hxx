@@ -61,16 +61,20 @@ protected:
 	virtual void SetObservedClassName(const std::string& name);
 
 	// port methods
-	virtual void SetInPort( CLAMVM::InPortAdapter* );
-	virtual void SetOutPort( CLAMVM::OutPortAdapter* );	
+//	virtual void SetInPort( CLAMVM::InPortAdapter* );
+//	virtual void SetOutPort( CLAMVM::OutPortAdapter* );	
+	void SetInPort( const std::string & );
+	void SetOutPort( const std::string & );
 	virtual void SetInPortClicked( Qt_InPortPresentation *);
 	virtual void SetOutPortClicked( Qt_OutPortPresentation *);
 	virtual void SetOutPortAfterClickInPort(const QPoint &);
 	virtual void SetInPortAfterClickOutPort(const QPoint &);
 
 	// control methods
-	virtual void SetInControl( CLAMVM::InControlAdapter* );
-	virtual void SetOutControl( CLAMVM::OutControlAdapter* );	
+	void SetInControl( const std::string & );
+	void SetOutControl( const std::string & );
+//	virtual void SetInControl( CLAMVM::InControlAdapter* );
+//	virtual void SetOutControl( CLAMVM::OutControlAdapter* );	
 	virtual void SetInControlClicked( Qt_InControlPresentation *);
 	virtual void SetOutControlClicked( Qt_OutControlPresentation *);
 	virtual void SetOutControlAfterClickInControl(const QPoint &);

@@ -34,7 +34,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class ConnectionModel;
+	class ConnectionAdapter;
 }
 
 namespace NetworkGUI
@@ -45,7 +45,7 @@ class ConnectionPresentation : public CLAMVM::Presentation
 public:
 	ConnectionPresentation();
 	virtual ~ConnectionPresentation();
-	virtual void AttachTo(CLAMVM::ConnectionModel & );
+	virtual void AttachTo(CLAMVM::ConnectionAdapter & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 

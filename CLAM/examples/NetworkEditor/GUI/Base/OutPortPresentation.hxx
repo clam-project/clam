@@ -23,13 +23,13 @@
 #define __OUTPORTPRESENTATION_HXX__
 
 #include "Presentation.hxx"
-#include "Slotv1.hxx"
+//#include "Slotv1.hxx"
 #include <string>
 
-namespace CLAMVM
-{
-	class PortModel;
-}
+//namespace CLAMVM
+//{
+//	class PortModel;
+//}
 
 namespace NetworkGUI
 {
@@ -41,16 +41,14 @@ protected:
 public:
 	OutPortPresentation();
 	virtual ~OutPortPresentation();
-	virtual void AttachTo(CLAMVM::PortModel & );
+//	virtual void AttachTo(CLAMVM::PortModel & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	virtual const std::string & GetName(){return mName;}
-
-protected:
 	virtual void SetName(const std::string& name) = 0;
 
-public: //slots
-	SigSlot::Slotv1<const std::string &> SlotSetName;	
+//public: //slots
+//	SigSlot::Slotv1<const std::string &> SlotSetName;	
 
 };
 

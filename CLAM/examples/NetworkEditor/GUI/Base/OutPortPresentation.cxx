@@ -20,7 +20,7 @@
  */
 
 #include "OutPortPresentation.hxx"
-#include "PortModel.hxx"
+//#include "PortModel.hxx"
 
 namespace NetworkGUI
 {
@@ -28,16 +28,16 @@ namespace NetworkGUI
 OutPortPresentation::OutPortPresentation()
 	: mName( "unnamed out port" )
 {
-	SlotSetName.Wrap( this, &OutPortPresentation::SetName );
+//	SlotSetName.Wrap( this, &OutPortPresentation::SetName );
 }
 
 OutPortPresentation::~OutPortPresentation()
 {
 }
 
-void OutPortPresentation::AttachTo( CLAMVM::PortModel & m )
-{
-	m.SignalAcquireName.Connect(SlotSetName);
-}
+//void OutPortPresentation::AttachTo( CLAMVM::PortModel & m )
+//{
+//	m.SignalAcquireName.Connect(SlotSetName);
+//}
 
 } // namespace NetworkGUI

@@ -20,7 +20,7 @@
  */
 
 #include "NetworkPresentation.hxx"
-#include "NetworkModel.hxx"
+#include "NetworkController.hxx"
 #include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 #include "ProcessingPresentation.hxx"
@@ -153,24 +153,24 @@ NetworkPresentation::~NetworkPresentation()
 		delete *itc;
 }
 
-void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
+void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 {
-	model.SignalAcquireName.Connect( SlotSetName );
-	model.SignalAcquireProcessing.Connect( SlotSetProcessing );
-	model.SignalAcquirePortConnection.Connect( SlotSetPortConnection );
-	model.SignalAcquireControlConnection.Connect( SlotSetControlConnection );
-	SignalChangeState.Connect( model.SlotChangeState );
-	SignalAddProcessing.Connect( model.SlotAddNewProcessing );
+	controller.SignalAcquireName.Connect( SlotSetName );
+	controller.SignalAcquireProcessing.Connect( SlotSetProcessing );
+	controller.SignalAcquirePortConnection.Connect( SlotSetPortConnection );
+	controller.SignalAcquireControlConnection.Connect( SlotSetControlConnection );
+	SignalChangeState.Connect( controller.SlotChangeState );
+	SignalAddProcessing.Connect( controller.SlotAddNewProcessing );
 	
-	SignalCreateNewPortConnectionFromGUI.Connect( model.SlotCreateNewPortConnection );
-	SignalCreateNewControlConnectionFromGUI.Connect( model.SlotCreateNewControlConnection );
-	SignalRemovePortConnectionFromGUI.Connect( model.SlotRemovePortConnection );
-	SignalRemoveControlConnectionFromGUI.Connect( model.SlotRemoveControlConnection );
-	SignalRemoveProcessingFromGUI.Connect( model.SlotRemoveProcessing );
-	SignalClearSignal.Connect( model.SlotClear );
-	SignalSaveNetworkTo.Connect( model.SlotSaveNetwork );
-	SignalLoadNetworkFrom.Connect( model.SlotLoadNetwork );
-	model.SignalRemoveProcessingToGUI.Connect( SlotRemoveProcessingToGUI );
+	SignalCreateNewPortConnectionFromGUI.Connect( controller.SlotCreateNewPortConnection );
+	SignalCreateNewControlConnectionFromGUI.Connect( controller.SlotCreateNewControlConnection );
+	SignalRemovePortConnectionFromGUI.Connect( controller.SlotRemovePortConnection );
+	SignalRemoveControlConnectionFromGUI.Connect( controller.SlotRemoveControlConnection );
+	SignalRemoveProcessingFromGUI.Connect( controller.SlotRemoveProcessing );
+	SignalClearSignal.Connect( controller.SlotClear );
+	SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );
+	SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
+	controller.SignalRemoveProcessingToGUI.Connect( SlotRemoveProcessingToGUI );
 }
 
 

@@ -38,9 +38,8 @@ public:
 	virtual ~Qt_InPortPresentation();
 	virtual void Show();
 	virtual void Hide();
-protected:
 	virtual void SetName(const std::string& name);
-
+protected:
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 public: // signals

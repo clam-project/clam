@@ -23,9 +23,10 @@
 #define _CONNECTIONADAPTER_HXX_
 
 #include "ModelAdapter.hxx"
-#include "ConnectionModel.hxx"
+//#include "ConnectionModel.hxx"
 #include "Network.hxx"
-
+#include "Signalv2.hxx"
+#include <string>
 #include <list>
 
 namespace CLAM
@@ -39,7 +40,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class ConnectionAdapter : public ModelAdapter, public ConnectionModel
+	class ConnectionAdapter : public ModelAdapter//, public ConnectionModel
 	{
 	protected:		
 		const CLAM::Network*  mNetworkObserved;
@@ -59,6 +60,9 @@ namespace CLAMVM
 		}
 
 		virtual bool Publish()=0;
+		
+		//signals
+		SigSlot::Signalv2< const std::string &, const std::string &>  SignalAcquireNames;
 	};
 
 

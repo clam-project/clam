@@ -41,9 +41,9 @@ public:
 	virtual void Hide();
 	void updatePosition();
 	QRegion GetRegion();
-protected:
 	virtual void SetName(const std::string& name);
 
+protected:
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 

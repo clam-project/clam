@@ -39,9 +39,8 @@ public:
 	virtual void Show();
 	virtual void Hide();
 	void updatePosition();
-protected:
 	virtual void SetName(const std::string& name);
-
+protected:
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 

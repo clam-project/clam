@@ -39,11 +39,11 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class ProcessingModel;
-	class InPortAdapter;
-	class OutPortAdapter;
-	class InControlAdapter;
-	class OutControlAdapter;
+	class ProcessingController;
+//	class InPortAdapter;
+//	class OutPortAdapter;
+//	class InControlAdapter;
+//	class OutControlAdapter;
 }
 
 namespace NetworkGUI
@@ -74,7 +74,7 @@ protected:
 public:
 	ProcessingPresentation(const std::string& nameFromNetwork = "unnamed");
 	virtual ~ProcessingPresentation();
-	virtual void AttachTo(CLAMVM::ProcessingModel & );
+	virtual void AttachTo(CLAMVM::ProcessingController & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	virtual const std::string & GetNameFromNetwork(){return mNameFromNetwork;}
@@ -89,21 +89,25 @@ protected:
 	virtual void SetConfig( CLAM::ProcessingConfig * );
 	virtual void SetConfigFromGUI( CLAM::ProcessingConfig * );
 	virtual void SetObservedClassName( const std::string& ) = 0;
-	virtual void SetInPort( CLAMVM::InPortAdapter* ) = 0;
-	virtual void SetOutPort( CLAMVM::OutPortAdapter* ) = 0;
-	virtual void SetInControl( CLAMVM::InControlAdapter* ) = 0;
-	virtual void SetOutControl( CLAMVM::OutControlAdapter* ) = 0;
+//	virtual void SetInPort( CLAMVM::InPortAdapter* ) = 0;
+//	virtual void SetOutPort( CLAMVM::OutPortAdapter* ) = 0;
+//	virtual void SetInControl( CLAMVM::InControlAdapter* ) = 0;
+//	virtual void SetOutControl( CLAMVM::OutControlAdapter* ) = 0;
+	virtual void SetInPort( const std::string & ) = 0;
+	virtual void SetOutPort( const std::string & ) = 0;
+	virtual void SetInControl( const std::string & ) = 0;
+	virtual void SetOutControl( const std::string & ) = 0;
 
 	virtual void UpdatePresentation();
 public:	//slots
 	SigSlot::Signalv1< ProcessingPresentation* > SignalRemoveProcessing;
 	SigSlot::Slotv1<const std::string &> SlotSetObservedClassName;
-	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SlotSetInPort;
-	SigSlot::Slotv1< CLAMVM::OutPortAdapter* > SlotSetOutPort;	
-	SigSlot::Slotv1< CLAMVM::InControlAdapter* > SlotSetInControl;
-	SigSlot::Slotv1< CLAMVM::OutControlAdapter* > SlotSetOutControl;	
+//	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SlotSetInPort;
+//	SigSlot::Slotv1< CLAMVM::OutPortAdapter* > SlotSetOutPort;	
+//	SigSlot::Slotv1< CLAMVM::InControlAdapter* > SlotSetInControl;
+//	SigSlot::Slotv1< CLAMVM::OutControlAdapter* > SlotSetOutControl;	
 
-	SigSlot::Signalv1< CLAM::ProcessingConfig * > SignalNewConfig;
+	SigSlot::Signalv1< CLAM::ProcessingConfig * > SignalConfigureProcessing;
 	SigSlot::Signalv1< CLAM::ProcessingConfig * > SignalUpdateConfig;
 	SigSlot::Slotv1< CLAM::ProcessingConfig *> SlotSetConfig;
 	SigSlot::Slotv1< CLAM::ProcessingConfig *> SlotSetConfigFromGUI;

@@ -20,14 +20,14 @@
  */
 
 #include "Qt_ProcessingPresentation.hxx"
-#include "InPortAdapter.hxx"
-#include "OutPortAdapter.hxx"
+//#include "InPortAdapter.hxx"
+//#include "OutPortAdapter.hxx"
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_ProcessingConfigPresentation.hxx"
 
-#include "InControlAdapter.hxx"
-#include "OutControlAdapter.hxx"
+//#include "InControlAdapter.hxx"
+//#include "OutControlAdapter.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
 #include <qtooltip.h> 
@@ -176,14 +176,15 @@ void Qt_ProcessingPresentation::SetObservedClassName(const std::string& name)
 	QToolTip::add( this, QString( mObservedClassName.c_str() ));
 }
 
-void Qt_ProcessingPresentation::SetInPort( CLAMVM::InPortAdapter* adapter )
+void Qt_ProcessingPresentation::SetInPort( const std::string & name )
 {
 	Qt_InPortPresentation* presentation = 
 		new Qt_InPortPresentation( mInPortPresentations.size(),this );
 
-	presentation->AttachTo(*adapter);
+	presentation->SetName(name);
+//	presentation->AttachTo(*adapter);
 	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
-	adapter->Publish();
+//	adapter->Publish();
 	mInPortPresentations.push_back(presentation);
 	int heightPorts = mInPortPresentations.size()*7+14;
 	if (height() < heightPorts)
@@ -193,14 +194,15 @@ void Qt_ProcessingPresentation::SetInPort( CLAMVM::InPortAdapter* adapter )
 	}
 }
 
-void Qt_ProcessingPresentation::SetOutPort( CLAMVM::OutPortAdapter* adapter )
+void Qt_ProcessingPresentation::SetOutPort( const std::string & name )
 {
 	Qt_OutPortPresentation* presentation = 
 		new Qt_OutPortPresentation( mOutPortPresentations.size(), this );
 
-	presentation->AttachTo(*adapter);
+	presentation->SetName(name);
+//	presentation->AttachTo(*adapter);
 	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
-	adapter->Publish();
+//	adapter->Publish();
 	mOutPortPresentations.push_back(presentation);
 	int heightPorts = mOutPortPresentations.size()*7+14;
 	if (height() < heightPorts)
@@ -212,14 +214,15 @@ void Qt_ProcessingPresentation::SetOutPort( CLAMVM::OutPortAdapter* adapter )
 
 
 
-void Qt_ProcessingPresentation::SetInControl( CLAMVM::InControlAdapter* adapter )
+void Qt_ProcessingPresentation::SetInControl( const std::string & name )
 {
 	Qt_InControlPresentation* presentation = 
 		new Qt_InControlPresentation( mInControlPresentations.size(),this );
 
-	presentation->AttachTo(*adapter);
+	presentation->SetName(name);
+//	presentation->AttachTo(*adapter);
 	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
-	adapter->Publish();
+//	adapter->Publish();
 	mInControlPresentations.push_back(presentation);
 	int widthControls = mInControlPresentations.size()*13+24;
 	if (width() < widthControls)
@@ -229,14 +232,15 @@ void Qt_ProcessingPresentation::SetInControl( CLAMVM::InControlAdapter* adapter 
 	}
 }
 
-void Qt_ProcessingPresentation::SetOutControl( CLAMVM::OutControlAdapter* adapter )
+void Qt_ProcessingPresentation::SetOutControl(  const std::string & name )
 {
 	Qt_OutControlPresentation* presentation = 
 		new Qt_OutControlPresentation( mOutControlPresentations.size(), this );
 
-	presentation->AttachTo(*adapter);
+	presentation->SetName(name);
+//	presentation->AttachTo(*adapter);
 	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
-	adapter->Publish();
+//	adapter->Publish();
 	mOutControlPresentations.push_back(presentation);
 	int widthControls = mOutControlPresentations.size()*13+24;
 	if (width() < widthControls)
