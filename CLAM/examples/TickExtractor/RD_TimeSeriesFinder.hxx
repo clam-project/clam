@@ -51,9 +51,6 @@
 #include "InControl.hxx"
 #include "TimeIndex.hxx"
 
-#ifndef INFINITE
-#define INFINITE (unsigned long)(-1)
-#endif
 
 namespace CLAM
 {
@@ -105,6 +102,9 @@ private:
 	InControl mIntervalMin;
 	InControl mIntervalMax;
 	InControl mIntervalStep;
+
+	static const unsigned long mInfinite;
+
 };
 
 }

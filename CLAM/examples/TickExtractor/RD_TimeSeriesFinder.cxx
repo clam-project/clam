@@ -46,6 +46,7 @@ namespace CLAM
 			SetUseOffsetMax(false);
 		}
 
+		const unsigned long TimeSeriesFinder::mInfinite = 0xFFFFFFFF;
 
 		TimeSeriesFinder::TimeSeriesFinder() :
 			mOffsetMin("OffsetMin",this),
@@ -96,8 +97,8 @@ namespace CLAM
 			const TData deviationPenalty = mConfig.GetDeviationPenalty();
 			const TData overSubdivisionPenalty = mConfig.GetOverSubdivisionPenalty();
 
-			CLAM_ASSERT(offsetStep>0, "No valid offset step");
-			CLAM_ASSERT(intervalMin<intervalMax, "No valid interval range");
+			CLAM_ASSERT(offsetStep>0, "TimeSeriesFinder::Do() : No valid offset step");
+			CLAM_ASSERT(intervalMin<intervalMax, "TimeSeries::Do() : No valid interval range");
 			//TODO: Add some other restriction?
 
 			const unsigned int nDiracs = diracs.Size();
@@ -110,11 +111,11 @@ namespace CLAM
 						  "Dirac are not sorted");
 				lastDiracPosition=currentDiracPosition;
 			}
-			CLAM_END_DEBUG_CHECK
+			CLAM_END_DEBUG_CHECK;
 
-				unsigned int selectedOffset=0;
+			unsigned int selectedOffset=0;
 			unsigned int selectedInterval=intervalMin;
-			TData selectedPenalty = INFINITE;
+			TData selectedPenalty = mInfinite;
 
 			//The 3 following lines have to be commented except when using GUI
 			DataArray diracDev;diracDev.Init();
@@ -135,7 +136,10 @@ namespace CLAM
 					offsetMax = mOffsetMax.GetLastValue()+0.5;
 				
 				CLAM_ASSERT(offsetMin<offsetMax, "No valid interval range");
-				for(unsigned int offset=offsetMin; offset<offsetMax; offset+=offsetStep)
+				
+				for( unsigned int offset=offsetMin; 
+				     offset < offsetMax; 
+				     offset+=offsetStep )
 				{
 					TData diracDeviation=0;
 					unsigned int nUnusedIntervals=0;
