@@ -19,6 +19,7 @@
  *
  */
 
+
 /*
 A FLOW DIAGRAM TO DEMONSTRATE THIS EXAMPLE CAN BE FOUND IN
 CLAM-Docs/MIDI_Synthesizer_example (development-branch)
@@ -43,8 +44,17 @@ using namespace CLAM;
 class MyAudioApplication:public AudioApplication
 {
 	void AppCleanup() {}
+private:
+	const char* mMidiDeviceStr;
+	const char* mAudioDeviceStr;
 public:
 	void AudioMain(void);	
+	MyAudioApplication(const char* midiDeviceStr,const char* audioDeviceStr)
+	:	mMidiDeviceStr(midiDeviceStr),
+		mAudioDeviceStr(audioDeviceStr),
+		AudioApplication()
+	{
+	}
 };
 
 class MyInstrumentConfig: public ProcessingConfig
@@ -226,7 +236,7 @@ void MyAudioApplication::AudioMain(void)
 		unsigned int buffersize = 256;
 
 		// Audio and MIDI managers
-		AudioManager audioManager(48000,8192);
+		AudioManager audioManager(48000,768);
 		MIDIManager midiManager;
 
 		// AudioIn
@@ -234,26 +244,28 @@ void MyAudioApplication::AudioMain(void)
 		AudioIOConfig inCfgR;
 
 		inCfgL.SetName("left in");
+		inCfgL.SetDevice(mAudioDeviceStr);
 		inCfgL.SetChannelID(0);
 
-		inCfgL.SetName("right in");
-		inCfgL.SetChannelID(1);
+		inCfgR.SetName("right in");
+		inCfgR.SetDevice(mAudioDeviceStr);
+		inCfgR.SetChannelID(1);
 
 	
 		AudioIn inL(inCfgL);
 		AudioIn inR(inCfgR);
-
-
 
 		// AudioOut
 		AudioIOConfig outCfgL;
 		AudioIOConfig outCfgR;
 
 		outCfgL.SetName("left out");
+		outCfgL.SetDevice(mAudioDeviceStr);
 		outCfgL.SetChannelID(0);
 
-		outCfgL.SetName("right out");
-		outCfgL.SetChannelID(1);
+		outCfgR.SetName("right out");
+		outCfgR.SetDevice(mAudioDeviceStr);
+		outCfgR.SetChannelID(1);
 
 		AudioOut outL(outCfgL);
 		AudioOut outR(outCfgR);
@@ -269,7 +281,7 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInConfig inNoteCfg;
 		
 		inNoteCfg.SetName("in");
-		inNoteCfg.SetDevice("file:test.mid");
+		inNoteCfg.SetDevice(mMidiDeviceStr);
 		inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
 
 		inNoteCfg.SetMessageMask(
@@ -282,7 +294,7 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInConfig inCtrlCfg;
 		
 		inCtrlCfg.SetName("inctrl");
-		inCtrlCfg.SetDevice("file:test.mid");
+		inCtrlCfg.SetDevice(mMidiDeviceStr);
 		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(-1)); // all
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
 		inCtrlCfg.SetFilter(0x0a);
@@ -292,7 +304,7 @@ void MyAudioApplication::AudioMain(void)
 		MIDIInConfig inPitchBendCfg;
 		
 		inPitchBendCfg.SetName("inPitchBend");
-		inPitchBendCfg.SetDevice("file:test.mid");
+		inPitchBendCfg.SetDevice(mMidiDeviceStr);
 		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
 		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
 		
@@ -301,7 +313,7 @@ void MyAudioApplication::AudioMain(void)
 		MIDIClockerConfig clockerCfg;
 
 		clockerCfg.SetName("clocker");
-		clockerCfg.SetDevice("file:test.mid");
+		clockerCfg.SetDevice(mMidiDeviceStr);
 		
 		MIDIClocker clocker(clockerCfg);
 
@@ -442,9 +454,12 @@ void MyAudioApplication::AudioMain(void)
 
 int main(int argc,char** argv)
 {
+	char* midiDeviceStr = "default";
+	char* audioDeviceStr = "default";
+	
 	try
 	{
-		MyAudioApplication app;
+		MyAudioApplication app(midiDeviceStr,audioDeviceStr);
 		app.Run(argc,argv);
 	}
 	catch(Err error)
