@@ -20,6 +20,7 @@ class RegionsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( RegionsTest );
 	CPPUNIT_TEST( testReadStreamRegion_CanActivate_WhenWriterIsJustInitialized );
 	CPPUNIT_TEST( testWriteStreamRegion_CanActivate_WhenWriterIsJustInitialized );
+	CPPUNIT_TEST( testWriteStreamRegion_CanActivate_WhenWriterIsOutOfBufferSpace );
 	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithoutReadersThrowsException );
 	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithoutCorrectReaderThrowsException );
 	CPPUNIT_TEST( testStreamRegionContainer_RemoveReader_WithCorrectReader );
@@ -45,7 +46,8 @@ private:
 		CLAM::ReadStreamRegion * read = buffer.NewReader( hop, length );
 
 		// Verification
-		CPPUNIT_ASSERT_EQUAL( false, read->CanActivate() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("shouldn't be able to activate because reader overlaps writer", 
+			false, read->CanActivate() );
 		
 		// Tear down
 		delete write;
@@ -63,7 +65,33 @@ private:
 		CLAM::ReadStreamRegion * read = buffer.NewReader( hop, length );
 
 		// Verification
-		CPPUNIT_ASSERT_EQUAL( true, write->CanActivate() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(
+			"the region always let writer to activate. It doesn't know about buffering implementation",
+			true, write->CanActivate() );
+		
+		// Tear down
+		delete write;
+		delete read;
+	}
+
+	void testWriteStreamRegion_CanActivate_WhenWriterIsOutOfBufferSpace()
+	{
+		// Setup
+		const int hop = 0;
+		const int length = 1;
+		CLAM::StreamBuffer<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > buffer;
+		// Exercise
+		CLAM::WriteStreamRegion * write = buffer.NewWriter( hop, length );
+		CLAM::ReadStreamRegion * read = buffer.NewReader( hop, length );
+
+		// Verification
+		write->Activate();
+		write->LeaveAndAdvance(); 
+		// This is a tricky test: notice buffer length is 1. region should be out of buffer space.
+		// but Region::CanActivate() only have to check reading-over-source region overlapping.
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(
+			"the region always lets writer to activate. It doesn't know about buffering implementation restrictions",
+			true, write->CanActivate() );
 		
 		// Tear down
 		delete write;
