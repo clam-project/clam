@@ -3,7 +3,6 @@
 
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Valuator.H>
-#include "Fl_GeoMgr.hxx"
 #include "Signalv2.hxx"
 #include <cmath>
 
