@@ -93,7 +93,7 @@ namespace CLAM
 			:mFirstInput("First Audio Input",this,1)
 			 ,mSecondInput("Second Audio Input",this,1)
 			 ,mOutput("Audio Output",this,1)
-
+									                 
 		{
 				Configure( c );
 		}
@@ -104,7 +104,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		void Check(Audio& in1,Audio& in2, Audio& out)
+		void Check(const Audio& in1, const Audio& in2, const Audio& out)
 		{
 			CLAM_ASSERT(in1.GetSize() <= in2.GetSize(),
 				"BinaryAudioOperation::Do(): Incompatible Input Audio Data Sizes");
@@ -118,7 +118,7 @@ namespace CLAM
 			return (Do(mFirstInput.GetData(),mSecondInput.GetData(),mOutput.GetData()));
 		}
 
-		bool Do(Audio& in1, Audio& in2, Audio& out)
+		bool Do(const Audio& in1, const Audio& in2, Audio& out)
 		{
 
 
@@ -141,7 +141,7 @@ namespace CLAM
 
 		// Port interfaces.
 
-		bool SetPrototypes(Audio& in1,Audio& in2, const Audio& out)
+		bool SetPrototypes(const Audio& in1, const Audio& in2, const Audio& out)
 		{
 			return false;
 		}
