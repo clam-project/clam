@@ -1,4 +1,5 @@
 #include "Fl_SpectrumAnalyzer.hxx"
+#include <FL/Fl_Box.H>
 #include "Fl_GridLayout.hxx"
 #include "Fl_Gl_Single_Display.hxx"
 #include <algorithm>
@@ -13,7 +14,7 @@ Fl_SpectrumAnalyzer::Fl_SpectrumAnalyzer( int X, int Y, int W, int H, const char
 
 	const char * finalLabel = label ? label : "Unnamed Presentation";
 
-	Fl_Box * aLabelBox = new CLAMVM::Fl_Box( 0,0,0,0, finalLabel );
+	Fl_Box * aLabelBox = new Fl_Box( 0,0,0,0, finalLabel );
 	aLabelBox->align( FL_ALIGN_CENTER | FL_ALIGN_INSIDE );
 	aLabelBox->labelsize(10);
 	mLayout->AddMultiCellWidget( aLabelBox, 0,0, 4, 1 );
@@ -47,8 +48,9 @@ Fl_SpectrumAnalyzer::~Fl_SpectrumAnalyzer( )
 {
 }
 
-void Fl_SpectrumAnalyzer::OnNewSpectrum( const DataArray& array, TData spectralRange )
+void Fl_SpectrumAnalyzer::OnNewSpectrum( const CLAM::DataArray& array, CLAM::TData spectralRange )
 {
+	using CLAM::TData;
 	mDrawMgr.CacheData( array );
 	TData maxMag = *std::max_element( array.GetPtr(), array.GetPtr()+array.Size() );
 	TData minMag = *std::min_element( array.GetPtr(), array.GetPtr()+array.Size() );
@@ -60,4 +62,9 @@ void Fl_SpectrumAnalyzer::OnNewSpectrum( const DataArray& array, TData spectralR
 void Fl_SpectrumAnalyzer::Show()
 {
 	show();
+}
+
+void Fl_SpectrumAnalyzer::Hide()
+{
+	hide();
 }
