@@ -45,11 +45,10 @@ then
 Configure-checks for $$package failed.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
-Note that you can disable the use of $$package altogther, running configure
+Note that you can disable the use of $$package altogether, running configure
 with the
   --without-$$package
-option. Note that this will very likely cause that some examples and tests
-will not compile...
+option.
 ])
 fi
 #####################################################################
