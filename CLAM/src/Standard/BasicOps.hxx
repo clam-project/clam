@@ -31,68 +31,28 @@ namespace CLAM {
 
 
 
-namespace Implementation {}
-
 template <int o> struct Pow
 {
 public:
-	template <typename T>
-	T operator () (const T& x) const
-	{
-		return Implementation::power(x,(IsOdd*)0,(IsTrivial*)0);
-	}
-
-	template <int n> struct IsOddSelector {};
-	template <int n> struct IsTrivialSelector {};
-	typedef IsOddSelector<(o&1)> IsOdd;
-	typedef IsTrivialSelector<(((o&~1)==0)?1:0)> IsTrivial;
+	template <class T>
+	T operator () (const T& n) const {return n*next(n);}
+	Pow<o-1> next;
 };
 
-namespace Implementation
+template<> struct Pow<1>
 {
+public:
+	template<class T>
+	T operator() (const T& n) const {return n;}
+};
 
-	template <typename T> T square(const T & x) {return x*x;}
+template<> struct Pow<0>
+{
+public:
+	template<class T>
+	T operator() (const T& n) const {return T(1.0);}
+};
 
-
-	template <unsigned n, typename T>
-	T power(const T & x, 
-			typename Pow<n>::IsOddSelector<0>* foo,
-			typename Pow<n>::IsTrivialSelector<0>*bar)
-	{
-		typedef Pow<(n>>1)> nextPow;
-		typedef typename nextPow::IsOdd nextOdd;
-		typedef typename nextPow::IsTrivial nextTrivial;
-		return square(power(x, (nextOdd*)0, (nextTrivial*)0));
-	}
-
-	template <unsigned n, typename T>
-	T power(const T & x, 
-			typename Pow<n>::IsOddSelector<1>* foo,
-			typename Pow<n>::IsTrivialSelector<0>*bar)
-	{
-		typedef Pow<(n>>1)> nextPow;
-		typedef typename nextPow::IsOdd nextOdd;
-		typedef typename nextPow::IsTrivial nextTrivial;
-		return square(power(x, (nextOdd*)0, (nextTrivial*)0)) * x;
-	}
-
-	template <typename T>
-	T power(const T & x, 
-			typename Pow<1>::IsOdd* foo,
-			typename Pow<1>::IsTrivial*bar)
-	{
-		return x;
-	}
-
-	template <typename T>
-	T power(const T & x, 
-			typename Pow<0>::IsOdd* foo,
-			typename Pow<0>::IsTrivial*bar)
-	{
-		return T(1.0);
-	}
-
-}
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^n)*/
