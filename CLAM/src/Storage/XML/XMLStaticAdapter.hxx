@@ -29,6 +29,8 @@
 #include "BasicXMLable.hxx"
 #include "mtgsstream.h" // An alias for <sstream>
 
+#warning XMLStaticAdapter class is deprecated and will be obsoleted on next release
+
 namespace CLAM {
 
 /**
