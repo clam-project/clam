@@ -140,9 +140,12 @@ private:
 	CLAM::Spectrum helperGetData(const std::string & fileName)
 	{
 		std::string extension = fileName.substr(fileName.size()-4,fileName.size());
-		std::string fullPath = mPathToTestData+fileName;
 		if (extension!=".xml")
+		{
+			std::string fullPath = mPathToTestData+fileName;
 			return ComputeSpectrum(ReadAudio(fullPath));
+		}
+		std::string fullPath = mPathToTestData+"Spectrums/"+fileName;
 		CLAM::Spectrum spectrum;
 		CLAM::XMLStorage::Restore(spectrum,fullPath); 
 		return spectrum;
@@ -160,7 +163,7 @@ private:
 		for (it = expected.begin(); it != expected.end(); it++) {
 			spectrum = helperGetData((*it).first);
 			mDescriptors->SetpSpectrum(&spectrum);
-//			CLAM::XMLStorage::Dump(spectrum, "Spectrum", mPathToTestData + it->first + "-Spectrum.xml");
+//			CLAM::XMLStorage::Dump(spectrum, "Spectrum", mPathToTestData + "Spectrums/ + it->first + "-Spectrum.xml");
 			mDescriptors->Compute();
 			if (
 				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
@@ -251,8 +254,8 @@ private:
 		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["MaxSpread-Spectrum.xml"] = 11025;
-		data["MinSpread-Spectrum.xml"] = 0.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"] = 11025;
+		data["DeltaAtCenterBin-Spectrum.xml"] = 0.0;
 		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
 		data["Silence-Spectrum.xml"] = 11025; // Avoid NaN
 		data["Constant-Spectrum.xml"] = 11025;
@@ -296,8 +299,8 @@ private:
 		CLAM::TData tolerance = 0.0006;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["MaxSpread-Spectrum.xml"] = 22050*22050/4;
-		data["MinSpread-Spectrum.xml"] = 0.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"] = 22050*22050/4;
+		data["DeltaAtCenterBin-Spectrum.xml"] = 0.0;
 		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Avoid NaN
 		data["Silence-Spectrum.xml"] = plainSpread(513,22050); // Avoid NaN
 		data["Constant-Spectrum.xml"] = plainSpread(513,22050);
@@ -332,14 +335,15 @@ private:
 
 	void testSlope()
 	{
-		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 1e-8;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
+		data["DeltaAtZeroBin-Spectrum.xml"] = -5.28363e-07;
 		data["Constant-Spectrum.xml"]= 0.0;
 		data["ConstantDouble-Spectrum.xml"]= 0.0;
 		data["ConstantHalfSize-Spectrum.xml"]= 0.0;
-		data["MaxSpread-Spectrum.xml"]= 0.0;
-		data["MinSpread-Spectrum.xml"]= 0.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 0.0;
+		data["DeltaAtCenterBin-Spectrum.xml"]= -5.22171e-07;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = -4.07655e-07;
 		data["Balance000.600.wav"] = -5.10341e-07;
 		data["Balance000.992.wav"] = -4.92062e-07;
