@@ -148,8 +148,12 @@ private:
 			spectrum = helperGetData((*it).first);
 			mDescriptors->SetpSpectrum(&spectrum);
 			mDescriptors->Compute();
-			if ((mDescriptors->*getter)() > (*it).second + tolerance
-			    || (mDescriptors->*getter)() < (*it).second - tolerance)
+			if (
+				(std::isnan((mDescriptors->*getter)()) && !std::isnan(it->second)) ||
+				(!std::isnan((mDescriptors->*getter)()) && std::isnan(it->second)) ||
+				(mDescriptors->*getter)() > (*it).second + tolerance ||
+				(mDescriptors->*getter)() < (*it).second - tolerance
+				)
 			{
 				log << (*it).first
 				<< ": expected " << (*it).second
