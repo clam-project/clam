@@ -1,7 +1,7 @@
-#ifndef __SIGNALV1IMPLVC6__
-#define __SIGNALV1IMPLVC6__
+#ifndef __SIGNALV2IMPLVC6__
+#define __SIGNALV2IMPLVC6__
 
-#ifndef __SIGNALV1__
+#ifndef __SIGNALV2__
 #error "This is an implementation header. You are not allowed to include it directly!"
 #endif
 
@@ -11,12 +11,12 @@
 namespace CLAMGUI
 {
 
-template < typename ParmType1 >
-	class Signalv1 : public Signal
+template < typename ParmType1, typename ParmType2 >
+	class Signalv2 : public Signal
 {
 public:
-		typedef typename CBL::Functor1<ParmType1>                  tCallbackType;
-		typedef std::pair<tConnectionId, tCallbackType>                  tCallback;
+		typedef typename CBL::Functor2<ParmType1,ParmType2>        tCallbackType;
+		typedef std::pair<tConnectionId, tCallbackType>            tCallback;
 		typedef tCallbackType*                                     tCallbackPtr;
 		typedef std::list<tCallbackPtr>                            tCallList;
 		typedef std::list<tCallbackPtr >::iterator                 tCallIterator;
@@ -76,7 +76,7 @@ public:
 	{
 		Connection s( AssignConnection(), this );
 
-		AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, *thisRef, pMember ) );
+		AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, *thisRef, pMember ) );
 
 		return s;
 	}
@@ -86,12 +86,12 @@ public:
 	{
 		Connection s( AssignConnection(), this );
 
-		AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor1<ParmType1>*)0, pMember ) );
+		AddCallback( s.GetID(), CBL::makeFunctor( (CBL::Functor2<ParmType1,ParmType2>*)0, pMember ) );
 
 		return s;
 	}
 	
-	void Emit( ParmType1 parm )
+	void Emit( ParmType1 parm1, ParmType2 parm2 )
 	{
 		if ( HasNoCallbacks() )
 			return;
@@ -102,7 +102,7 @@ public:
 
 		while ( i != end )
 			{
-				(*(*i))( parm );
+				(*(*i))( parm1, parm2 );
 				i++;
 			}
 		
@@ -125,4 +125,5 @@ private:
 }
 
 
-#endif // Signalv1ImplVC6.hxx
+
+#endif // Signalv2ImplVC6.hxx

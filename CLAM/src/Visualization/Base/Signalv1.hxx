@@ -13,5 +13,4 @@
 #include "Signalv1ImplSerious.hxx"
 #endif
 
-
 #endif // Signalv1.hxx
