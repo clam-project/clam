@@ -38,8 +38,6 @@ class RappidOutput: public ProcessingComposite, public RappidIO<RappidOutput>
 	AudioOut      *pRTOutput;
 	AudioFileOut  *pOutputFile;
 
-	const char *GetClassName() const {return "RappidOutput";}
-
 	bool ConfigureRealTime(bool exclusive=true);
 
 	bool ConfigureFile(bool exclusive=true);
@@ -61,6 +59,8 @@ public:
 	RappidOutput();
 
 	RappidOutput(const RappidIOConfig &c);
+
+	const char * GetClassName() const {return "RappidOutput";}
 
 	~RappidOutput();
 
