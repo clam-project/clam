@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <vorbis/vorbisfile.h>
+#include <iostream>
 
 namespace CLAM
 {
@@ -31,11 +32,24 @@ namespace AudioCodecs
 	{
 		FILE*          fileHandle;
 		OggVorbis_File vorbisFile;
-		
-		if ( ( fileHandle = fopen( uri.c_str(), "rb" ) ) == NULL )
-		     return false;
 
-		if ( ov_open( fileHandle, &vorbisFile, NULL, 0 ) < 0 )		
+		memset( &vorbisFile, 0, sizeof(OggVorbis_File) );
+
+		fileHandle = fopen( uri.c_str(), "rb+" );
+		
+		if (  !fileHandle || ferror(fileHandle) != 0  )
+		{
+			//:TODO: possible exception throwing
+			//std::cerr << uri << std::endl;
+			//std::cerr << "Open failed! " << strerror( errno ) << std::endl;
+			return false;
+		}
+
+		void* pFunc = ov_open;
+
+		int retval = ov_open( fileHandle, &vorbisFile, NULL, 0 );
+
+		if (  retval < 0 )		
 		{
 			fclose( fileHandle );
 			
