@@ -47,9 +47,15 @@ public:
 		const std::string & scope, 
 		const std::string & attribute)
 	{
-		if (_chained) delete _chained;
-		_chained= new ReadHook<unsigned>;
-		_chained->Bind(scope,attribute);
+		if (_chained) 
+		{
+			_chained->Indirect(scope,attribute);
+		}
+		else
+		{
+			_chained= new ReadHook<unsigned>;
+			_chained->Bind(scope,attribute);
+		}
 	}
 
 	const AttributeType & GetForReading() const

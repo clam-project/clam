@@ -24,6 +24,8 @@ class IndirectBindingTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testGetForReading_failsWhenInvalidReference);
 	CPPUNIT_TEST(testExtraction_usingHooks);
 	CPPUNIT_TEST(testExtraction_usingExtractor);
+	CPPUNIT_TEST(testDoubleIndirection_usingHooks);
+	CPPUNIT_TEST(testDoubleIndirection_usingExtractor);
 
 	CPPUNIT_TEST(testRangeInit_PointsToTheFirstRange);
 	CPPUNIT_TEST(testGetRangeForReading_failsWhenInvalidReference);
@@ -37,6 +39,7 @@ public:
 	void setUp()
 	{
 		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referenced","Input");
+		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referenced","ReverseReference");
 		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referencer","BadReference");
 		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referencer","Reference");
 		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referencer","Output");
@@ -49,6 +52,11 @@ public:
 			char * inputBuffer = mPool->GetAttributePool<char>("Referenced","Input");
 			for (unsigned i = 0; i<10; i++)
 				inputBuffer[i]='a'+i;
+		}
+		{
+			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referenced","ReverseReference");
+			for (unsigned i = 0; i<10; i++)
+				inputBuffer[i]=9-i;
 		}
 		{
 			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","Reference");
@@ -182,6 +190,49 @@ private:
 			extractor.Extract();
 		}
 		std::string expected("adg",3);
+		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
+		CPPUNIT_ASSERT_EQUAL(expected,result);
+	}
+
+	void testDoubleIndirection_usingHooks()
+	{
+		CLAM::WriteHook<char> outputHook;
+		CLAM::ReadHook<char> inputHook;
+		inputHook.Bind("Referenced","Input");
+		inputHook.Indirect("Referenced","ReverseReference");
+		inputHook.Indirect("Referencer","Reference");
+		outputHook.Bind("Referencer","Output");
+
+		for (inputHook.Init(*mPool),outputHook.Init(*mPool); 
+			inputHook.IsInsideScope() && outputHook.IsInsideScope();
+			outputHook.Next(),inputHook.Next())
+		{
+			const char & input = inputHook.GetForReading();
+			char & output = outputHook.GetForWriting();
+			output = input;
+		}
+		std::string expected("jgd",3);
+		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
+		CPPUNIT_ASSERT_EQUAL(expected,result);
+	}
+
+	void testDoubleIndirection_usingExtractor()
+	{
+		CharCopierExtractor extractor;
+
+		CLAM::WriteHook<char> outputHook;
+		CLAM::ReadHook<char> inputHook;
+		inputHook.Bind("Referenced","Input");
+		inputHook.Indirect("Referenced","ReverseReference");
+		inputHook.Indirect("Referencer","Reference");
+		outputHook.Bind("Referencer","Output");
+		extractor.SetHooks(inputHook,outputHook);
+
+		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
+		{
+			extractor.Extract();
+		}
+		std::string expected("jgd",3);
 		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
