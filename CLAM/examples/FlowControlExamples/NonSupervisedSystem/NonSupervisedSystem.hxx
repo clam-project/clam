@@ -11,6 +11,8 @@
 #include <list>
 #include <string>
 
+#include "AudioOut.hxx"
+
 namespace FlowControlExample
 {
 
@@ -21,7 +23,8 @@ class System
 
 public:
 	virtual ~System() {};
-	System( std::string fileIn, std::string fileOut , int frameSize, int maxFramesToProcess);
+	System( std::string fileIn, std::string fileOut , int frameSize, int maxFramesToProcess, 
+		bool hasAudioOut);
 	
 	void DoProcessings( IterationMethod );
 	
@@ -47,6 +50,8 @@ private:
 	CLAM::AudioAdder _adder;
 	CLAM::AudioMultiplier _multiplier;
 
+	CLAM::AudioOut _audioOut;
+
 	// processing data
 	CLAM::Audio _oscillatorData;
 	CLAM::Audio _fileInData;
@@ -59,6 +64,7 @@ private:
 	std::string _fileOutName;
 	int _frameSize;
 	int _maxFramesToProcess;
+	bool _hasAudioOut;
 
 };
 

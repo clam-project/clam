@@ -2,14 +2,17 @@
 
 #include <iostream>
 
+#include "AudioIO.hxx"
+
 namespace FlowControlExample
 {
 
-System::System( std::string fileIn, std::string fileOut , int frameSize , int nFrames) : 
+System::System( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut) : 
 	_fileInName(fileIn),
 	_fileOutName(fileOut), 
 	_frameSize(frameSize), 
-	_maxFramesToProcess(nFrames)
+	_maxFramesToProcess(nFrames),
+	_hasAudioOut(hasAudioOut)
 {
 	ConfigureProcessings();
 	ConfigureData();
@@ -43,6 +46,14 @@ void System::ConfigureProcessings()
 	fileCfg.SetFilename(_fileInName);
 
 	_fileIn.Configure (fileCfg);
+
+	if (_hasAudioOut)
+	{
+		CLAM::AudioIOConfig audioCfg;
+		audioCfg.SetFrameSize(_frameSize);
+
+		_audioOut.Configure(audioCfg);
+	}
 }
 
 void System::ConfigureData()
@@ -57,12 +68,16 @@ void System::ConfigureData()
 void System::StartProcessings()
 {
 	try{
-	_oscillator.Start();
-	_fileOut.Start();
-	_fileIn.Start();
-	_modulator.Start();
-	_multiplier.Start();
-	_adder.Start();
+		_oscillator.Start();
+		_fileOut.Start();
+		_fileIn.Start();
+		_modulator.Start();
+		_multiplier.Start();
+		_adder.Start();
+		if (_hasAudioOut)
+		{
+			_audioOut.Start();
+		}
 	}
 	catch (CLAM::ErrProcessingObj& e)
 	{
@@ -74,6 +89,11 @@ bool System::OscillatorToFileOut()
 {
 	_oscillator.Do(_oscillatorData);
 	_fileOut.Do(_oscillatorData);
+	if (_hasAudioOut)
+	{
+		_audioOut.Do(_oscillatorData);
+	}
+
 	return false;
 }
 
@@ -83,6 +103,11 @@ bool System::ModulatedFileIn()
 	_modulator.Do(_modulatorData);
 	_multiplier.Do(_fileInData, _modulatorData, _multiplierData);
 	_fileOut.Do(_multiplierData);
+	if (_hasAudioOut)
+	{
+		_audioOut.Do(_multiplierData);
+	}
+
 	return false;
 }
 
@@ -92,6 +117,11 @@ bool System::ModulatedOscillator()
 	_modulator.Do(_modulatorData);
 	_multiplier.Do(_oscillatorData, _modulatorData, _multiplierData);
 	_fileOut.Do(_multiplierData);
+	if (_hasAudioOut)
+	{
+		_audioOut.Do(_multiplierData);
+	}
+
 	return false;
 }
 
@@ -102,6 +132,11 @@ bool System::ModulatedFileInPlusFileIn()
 	_multiplier.Do(_fileInData, _modulatorData, _multiplierData);
 	_adder.Do(_multiplierData, _fileInData, _adderData);
 	_fileOut.Do(_adderData);
+	if (_hasAudioOut)
+	{
+		_audioOut.Do(_adderData);
+	}
+
 	return false;
 }
 
@@ -109,6 +144,10 @@ bool System::FileInFileOut()
 {
 	_fileIn.Do(_fileInData);
 	_fileOut.Do(_fileInData);
+	if (_hasAudioOut)
+	{
+		_audioOut.Do(_fileInData);
+	}
 	return false;
 }
 
@@ -143,6 +182,7 @@ void System::ProcessAllIterations()
 	_fileIn.Start();
 	std::cout << "modulatedfileinplusfilein" << std::endl;
 	DoProcessings( &System::ModulatedFileInPlusFileIn);
+
 }
 
 } // namespace
