@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-15 -*-
-import sys, re
+import sys, re, os
 
 if len(sys.argv) != 2 :
 	print 'filename needed'
@@ -11,16 +11,7 @@ print 'processing file:', sys.argv[1]
 def contains( line, pattern ):
 	return re.search( pattern, line )
 
-def processLine(aLine) :
-	changed = False
-	attribute = '_(\S)(\S*)'
-	matchAttribute = re.search( attribute, aLine )
-	include = contains( aLine, '_hxx' )
-	if matchAttribute and not include:
-		changed = True
-		newAttribute = 'm%s%s' % ( matchAttribute.group(1).upper(), matchAttribute.group(2) )
-		aLine = re.sub( attribute, newAttribute, aLine )
-		
+def changeMethods(aLine) :
 	method = '([a-z])(\S+)\((.*)\)'
 	matchMethod = re.search( method, aLine )
 	if matchMethod :
@@ -30,6 +21,19 @@ def processLine(aLine) :
 				print 'call'
 		newMethod = '%s%s(%s)' % (matchMethod.group(1).upper(),matchMethod.group(2), matchMethod.group(3) )
 		aLine = re.sub( method, newMethod, aLine )
+	return aLine
+
+def processLine(aLine) :
+	changed = False
+	attribute = '_([a-z])\S*'
+	matchAttribute = re.search( attribute, aLine )
+	
+	include = contains( aLine, '_hxx' )
+	if matchAttribute and not include:
+		changed = True
+		newAttribute = 'm%s%s' % ( matchAttribute.group(0)[1].upper(), matchAttribute.group(0)[2:] )
+		aLine = re.sub( attribute, newAttribute, aLine )
+		
 	return changed, aLine
 
 
@@ -45,4 +49,6 @@ for line in originalFile :
 		print '···',
 	print processedLine,
 	newfile.write(processedLine)
+newfile.close()
+os.system('xxdiff %s __%s' % (sys.argv[1], sys.argv[1]))
 	
