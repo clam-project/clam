@@ -586,7 +586,9 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 		 this, SLOT( SlotTextChange( const QString & )));
 
 	connect( nameEdit, SIGNAL( returnPressed() ), nameEdit, SLOT( close() ) );
+	connect( this, SIGNAL( SignalFinishTextEditing() ), nameEdit, SLOT( close() ) );
 	connect( nameEdit, SIGNAL( returnPressed() ), this, SLOT( SlotExecuteChangeName() ) );
+	connect( this, SIGNAL( SignalFinishTextEditing() ), this, SLOT( SlotExecuteChangeName() ) );
 	connect( this, SIGNAL(SignalEmitGeometryChange( const QRect &)), nameEdit, SLOT( setGeometry( const QRect & )) );
 
 	nameEdit->setFont( QFont( "Helvetica" ,8) );
@@ -600,6 +602,7 @@ void Qt_ProcessingPresentation::mouseDoubleClickEvent ( QMouseEvent * e )
 void Qt_ProcessingPresentation::UnSelectProcessingPresentation()
 {
 	mSelected = false;
+	emit SignalFinishTextEditing();	
 	repaint();
 }
 

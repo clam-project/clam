@@ -144,6 +144,7 @@ public slots: // qt slots
 	void SlotExecuteChangeName();
 signals:
 	void SignalEmitGeometryChange( const QRect & );
+	void SignalFinishTextEditing();
 };
 
 
