@@ -1,4 +1,3 @@
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSTransformationChainConfig>
 	<Name/>
 	<Configurations>
@@ -9,6 +8,7 @@
 		<Config>
 			<Name>ProcessingChaineeConfig</Name>
 			<ConcreteClassName>SMSPitchShift</ConcreteClassName>
+			<!--Amount>1.7</Amount-->
 			<BPFAmount>
 				<Interpolation>Linear</Interpolation>
 				<Points>{0 1} {1 2}</Points>
@@ -17,7 +17,7 @@
 		<Config>
 			<Name>ProcessingChaineeConfig</Name>
 			<ConcreteClassName>SMSOddEvenHarmonicRatio</ConcreteClassName>
-			<Amount>6</Amount>
+			<Amount>12</Amount>
 		</Config>
 		<Config>
 			<Name>ProcessingChaineeConfig</Name>
@@ -32,12 +32,23 @@
 				<Points>{0 6} {1 0} {2 0} {100 0} </Points>
 			</BPFAmount>
 		</Config>
-
+		<Config>
+			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSResidualGain</ConcreteClassName>
+			<Amount>6</Amount>
+		</Config>
+		<Config>
+			<Name>ProcessingChaineeConfig</Name>
+			<ConcreteClassName>SMSHarmonizer</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Step</Interpolation>
+				<Points>{-3 1.3} {-3 1.5} {-3 1.7}</Points>
+			</BPFAmount>
+		</Config>
 		<Config>
 			<Name/>
 			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
 		</Config>
-
 	</Configurations>
-	<OnArray>1 1 1 1 1 1</OnArray>
+	<OnArray>1 1 1 0 0 1 1 1</OnArray>
 </SMSTransformationChainConfig>

@@ -30,7 +30,7 @@
 #include "SMSAnalysis.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
-#include "SMSTransformation.hxx"
+#include "SMSTransformationChain.hxx"
 #include "SegmentDescriptors.hxx"
 #include "AudioOut.hxx"
 #include "Progress.hxx"
@@ -152,10 +152,10 @@ namespace CLAM
 		* @see InitConfigs */
 		SMSAnalysisSynthesisConfig mGlobalConfig;
 		/** Transformation score loaded from an xml file */
-		SMSTransformationConfig mTransformationScore;
+		SMSTransformationChainConfig mTransformationScore;
 
 		/** Actual transformation to be used*/
-		SMSTransformation* mpTransformation;
+		SMSTransformationChain mTransformation;
 
 		/** Indicates whether there is a valid analysis-synthesis configuration */
 		bool mHaveConfig;

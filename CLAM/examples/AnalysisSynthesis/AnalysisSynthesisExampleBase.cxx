@@ -40,10 +40,6 @@
 #include "Normalization.hxx"
 #include "HeapDbg.hxx"
 
-//Transformation class
-#include "SMSPitchShift.hxx"
-#include "SMSFreqShift.hxx"
-
 #include <fstream>
 #include "XMLStorage.hxx"
 #include "XMLStaticAdapter.hxx"
@@ -68,7 +64,9 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 	mHaveMelody = false;
 	mHaveSpectrum = false;
 
-	mpTransformation=NULL;
+	mTransformation.mChainInput.Attach(mSegment);
+	mTransformation.mChainOutput.Attach(mSegment);
+
 }
 
 void AnalysisSynthesisExampleBase::DestroyWaitMessage( )
@@ -838,21 +836,15 @@ void AnalysisSynthesisExampleBase::LoadTransformationScore(const std::string& in
 void AnalysisSynthesisExampleBase::Transform(void)
 {
 	bool def=false;
-	if(!mpTransformation)
-	{
-		SetTransformation(new SMSPitchShift());
-		def=true;
-	}
-	mpTransformation->Configure(mTransformationScore);
-	mpTransformation->Do(mSegment,mSegment);
-	if (def) {
-		delete mpTransformation;
-		mpTransformation=NULL;}
+	mTransformation.Configure(mTransformationScore);
+	mTransformation.Start();
+	while(mTransformation.Do()){}
+	mTransformation.Stop();
 }
 
 void AnalysisSynthesisExampleBase::SetTransformation(SMSTransformation* pTransformation)
 {
-	mpTransformation=pTransformation;
+//	mpTransformation=pTransformation;
 }
 
 void AnalysisSynthesisExampleBase::ComputeLowLevelDescriptors()

@@ -20,8 +20,6 @@
  */
 
 #include "AnalysisSynthesisExampleGUI.hxx"
-/******* TRANSFORMATION *******/
-#include "SMSFreqShift.hxx"
 #include "Err.hxx"
 #include <exception>
 #include <iostream>
