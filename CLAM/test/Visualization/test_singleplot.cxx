@@ -1,4 +1,4 @@
-#include "Plotv2.hxx"
+#include "Plot.hxx"
 #include "SystemPlots.hxx"
 #include "DataTypes.hxx"
 #include "Array.hxx"
