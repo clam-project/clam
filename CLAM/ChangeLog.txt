@@ -1,6 +1,11 @@
 2003-11-?? CLAM_0_5_4
 
   * Build system:
+     ** Added 'Compiling_against_CLAM_example' subdir to the build dir. It contains
+	     an out-of-the-box example of how a CLAM external aplication can compile against
+		 the library. It contains a tutorial in its 'readme.html' file.
+		 Since now it was a separated tarball available in the web. Now integrated
+		 in the CLAM dir tree.
      ** Configuration:
         *** Use fltk-config to get the paths to fltk includes/paths
         *** QTDIR support
@@ -73,8 +78,9 @@
      ** ProcessingController
      ** ControlAdapter
      ** Fl_FundFreq (supervised)
-  * SMS: **Removed MaxSines from peak detection configuration and replaced it 
-    with the much more useful MaxFreq
+  * SMS:
+     ** Removed MaxSines from peak detection configuration and replaced it
+        with the much more useful MaxFreq
      ** Several bugfixes and code cleanups
      ** New transformations
   * New examples:
