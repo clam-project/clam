@@ -79,7 +79,7 @@ void AudioDescriptors::ConcreteCompute()
 	if (HasMean())
 		SetMean(mpStats->GetMean());
 	if (HasTemporalCentroid())
-		SetTemporalCentroid(mpStats->GetCentroid()*mpAudio->GetDuration()/mpAudio->GetSize());
+		SetTemporalCentroid(mpStats->GetCentroid()/mpAudio->GetSampleRate());
 	if (HasEnergy())
 		SetEnergy(mpStats->GetEnergy());
 	if(HasVariance())
