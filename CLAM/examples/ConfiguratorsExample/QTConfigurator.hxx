@@ -76,7 +76,10 @@ namespace CLAM{
 			mLayout->setMinimumWidth(400);
 //			mLayout->setPaletteBackgroundColor(QColor(0xFF,0x00,0x00));
 			GetInfo();
-			
+
+			QFrame * frame = new QFrame(mLayout);
+			frame->setMinimumHeight(10);
+
 			QHBox * buttons = new QHBox(mLayout );
 			buttons->setMargin(5);
 			buttons->setSpacing(3);
