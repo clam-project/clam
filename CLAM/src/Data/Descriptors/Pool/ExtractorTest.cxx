@@ -3,6 +3,7 @@
 
 #include "Extractor.hxx"
 #include "DataTypes.hxx"
+#include "CharCopierExtractor.hxx"
 
 
 namespace CLAMTest
@@ -16,26 +17,48 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ExtractorTest );
 class ExtractorTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ExtractorTest );
-//	CPPUNIT_TEST(test);
+	CPPUNIT_TEST(testInScopeBinding);
+	CPPUNIT_TEST(testIndirectedBinding);
+	CPPUNIT_TEST(testDoubleIndirectedBinding);
+	CPPUNIT_TEST(testRangeIndirectBinding);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Common initialization, executed before each test method
 	void setUp()
 	{
-		mScheme.AddAttribute< CLAM::Attribute<char> >(
-				"TestScope1","InputData");
-		mScheme.AddAttribute< CLAM::Attribute<char> >(
-				"TestScope1","OutputData");
+		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referenced","Input");
+		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referenced","Output");
+		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referenced","ReverseReference");
+		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referencer","BadReference");
+		mScheme.AddAttribute< CLAM::Attribute<unsigned> >   ( "Referencer","Reference");
+		mScheme.AddAttribute< CLAM::Attribute<char> >       ( "Referencer","Output");
+		mScheme.AddAttribute< CLAM::Attribute<std::string> >( "Referencer","Concatenations");
 
 		mPool = new CLAM::DescriptionDataPool(mScheme);
-		mPool->SetNumberOfContexts("TestScope1",3);
-
-		char * inputBuffer = mPool->GetAttributePool<char>("TestScope1","InputData");
-		for (unsigned i = 0; i<3; i++)
-			inputBuffer[i]='a'+i;
-
-		mInputBuffer = inputBuffer;
+		mPool->SetNumberOfContexts("Referenced",10);
+		mPool->SetNumberOfContexts("Referencer",3);
+		{
+			char * inputBuffer = mPool->GetAttributePool<char>("Referenced","Input");
+			for (unsigned i = 0; i<10; i++)
+				inputBuffer[i]='a'+i;
+		}
+		{
+			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referenced","ReverseReference");
+			for (unsigned i = 0; i<10; i++)
+				inputBuffer[i]=9-i;
+		}
+		{
+			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","Reference");
+			for (unsigned i = 0; i<3; i++)
+				inputBuffer[i]=3*i;
+		}
+		{
+			unsigned * inputBuffer = mPool->GetAttributePool<unsigned>("Referencer","BadReference");
+			for (unsigned i = 0; i<3; i++)
+				inputBuffer[i]=3*i;
+			inputBuffer[0]=20;
+		}
 	}
 
 	/// Common clean up, executed after each test method
@@ -47,13 +70,97 @@ public:
 private:
 	CLAM::DescriptionScheme mScheme;
 	CLAM::DescriptionDataPool * mPool;
-	const char * mInputBuffer;
-/*
-	void test()
+
+	void testInScopeBinding()
 	{
-		CPPUNIT_FAIL("Joder!!");
+		CharCopierExtractor extractor;
+
+		CLAM::WriteHook<char> outputHook;
+		extractor.GetOutHook()
+			.Bind("Referenced","Output");
+		extractor.GetInHook()
+			.Bind("Referenced","Input");
+
+		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
+		{
+			extractor.Extract();
+		}
+		
+		std::string expected(mPool->GetAttributePool<char>("Referenced","Input"),3);
+		std::string result(mPool->GetAttributePool<char>("Referenced","Output"),3);
+		
+		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
-*/
+
+
+	void testIndirectedBinding()
+	{
+		CharCopierExtractor extractor;
+
+		CLAM::WriteHook<char> outputHook;
+		extractor.GetOutHook()
+			.Bind("Referencer","Output");
+		extractor.GetInHook()
+			.Bind("Referenced","Input")
+			.Indirect("Referencer","Reference");
+
+		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
+		{
+			extractor.Extract();
+		}
+		std::string expected("adg",3);
+		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
+		CPPUNIT_ASSERT_EQUAL(expected,result);
+	}
+
+	void testDoubleIndirectedBinding()
+	{
+		CharCopierExtractor extractor;
+
+		CLAM::WriteHook<char> outputHook;
+		extractor.GetOutHook()
+			.Bind("Referencer","Output");
+		extractor.GetInHook()
+			.Bind("Referenced","Input")
+			.Indirect("Referenced","ReverseReference")
+			.Indirect("Referencer","Reference");
+
+		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
+		{
+			extractor.Extract();
+		}
+		std::string expected("jgd",3);
+		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
+		CPPUNIT_ASSERT_EQUAL(expected,result);
+	}
+
+	void testRangeIndirectBinding()
+	{
+		CharJoinExtractor extractor;
+
+		extractor.GetInHook()
+			.Range(4)
+			.Bind("Referenced","Input")
+			.Indirect("Referencer","Reference");
+
+		extractor.GetOutHook()
+			.Bind("Referencer","Concatenations");
+
+
+		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
+		{
+			extractor.Extract();
+		}
+
+		std::string expected0("abcd",4);
+		std::string expected1("defg",4);
+		std::string expected2("ghij",4);
+		std::string * results = mPool->GetAttributePool<std::string>("Referencer","Concatenations");
+		CPPUNIT_ASSERT_EQUAL(expected0,results[0]);
+		CPPUNIT_ASSERT_EQUAL(expected1,results[1]);
+		CPPUNIT_ASSERT_EQUAL(expected2,results[2]);
+	}
+
 
 };
 

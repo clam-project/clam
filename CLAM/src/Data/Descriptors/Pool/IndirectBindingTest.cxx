@@ -3,7 +3,6 @@
 
 #include "Extractor.hxx"
 #include "DataTypes.hxx"
-#include "CharCopierExtractor.hxx"
 
 
 namespace CLAMTest
@@ -23,14 +22,11 @@ class IndirectBindingTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testIsInsideScope_returnsFalseAfterLastReference);
 	CPPUNIT_TEST(testGetForReading_failsWhenInvalidReference);
 	CPPUNIT_TEST(testExtraction_usingHooks);
-	CPPUNIT_TEST(testExtraction_usingExtractor);
 	CPPUNIT_TEST(testDoubleIndirection_usingHooks);
-	CPPUNIT_TEST(testDoubleIndirection_usingExtractor);
 
 	CPPUNIT_TEST(testRangeInit_PointsToTheFirstRange);
 	CPPUNIT_TEST(testGetRangeForReading_failsWhenInvalidReference);
 	CPPUNIT_TEST(testRangeExtraction_usingHooks);
-	CPPUNIT_TEST(testRangeExtraction_usingExtractor);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -174,26 +170,6 @@ private:
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
 
-	void testExtraction_usingExtractor()
-	{
-		CharCopierExtractor extractor;
-
-		CLAM::WriteHook<char> outputHook;
-		extractor.GetOutHook()
-			.Bind("Referencer","Output");
-		extractor.GetInHook()
-			.Bind("Referenced","Input")
-			.Indirect("Referencer","Reference");
-
-		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
-		{
-			extractor.Extract();
-		}
-		std::string expected("adg",3);
-		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
-		CPPUNIT_ASSERT_EQUAL(expected,result);
-	}
-
 	void testDoubleIndirection_usingHooks()
 	{
 		CLAM::WriteHook<char> outputHook;
@@ -210,27 +186,6 @@ private:
 			const char & input = inputHook.GetForReading();
 			char & output = outputHook.GetForWriting();
 			output = input;
-		}
-		std::string expected("jgd",3);
-		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
-		CPPUNIT_ASSERT_EQUAL(expected,result);
-	}
-
-	void testDoubleIndirection_usingExtractor()
-	{
-		CharCopierExtractor extractor;
-
-		CLAM::WriteHook<char> outputHook;
-		extractor.GetOutHook()
-			.Bind("Referencer","Output");
-		extractor.GetInHook()
-			.Bind("Referenced","Input")
-			.Indirect("Referenced","ReverseReference")
-			.Indirect("Referencer","Reference");
-
-		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
-		{
-			extractor.Extract();
 		}
 		std::string expected("jgd",3);
 		std::string result(mPool->GetAttributePool<char>("Referencer","Output"),3);
@@ -305,36 +260,8 @@ private:
 		CPPUNIT_ASSERT_EQUAL(expected1,results[1]);
 		CPPUNIT_ASSERT_EQUAL(expected2,results[2]);
 	}
-
-	void testRangeExtraction_usingExtractor()
-	{
-		CharJoinExtractor extractor;
-
-		extractor.GetInHook()
-			.Range(4)
-			.Bind("Referenced","Input")
-			.Indirect("Referencer","Reference");
-
-		extractor.GetOutHook()
-			.Bind("Referencer","Concatenations");
-
-
-		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
-		{
-			extractor.Extract();
-		}
-
-		std::string expected0("abcd",4);
-		std::string expected1("defg",4);
-		std::string expected2("ghij",4);
-		std::string * results = mPool->GetAttributePool<std::string>("Referencer","Concatenations");
-		CPPUNIT_ASSERT_EQUAL(expected0,results[0]);
-		CPPUNIT_ASSERT_EQUAL(expected1,results[1]);
-		CPPUNIT_ASSERT_EQUAL(expected2,results[2]);
-	}
-
-
 };
+
 
 
 } // namespace CLAMTest

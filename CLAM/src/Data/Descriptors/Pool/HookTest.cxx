@@ -3,7 +3,6 @@
 
 #include "Extractor.hxx"
 #include "DataTypes.hxx"
-#include "CharCopierExtractor.hxx"
 
 
 namespace CLAMTest
@@ -28,7 +27,6 @@ class HookTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testWriteIsInsideScope_ReturnsFalseBeyondTheScope);
 
 	CPPUNIT_TEST(testTransformUsingHooks);
-	CPPUNIT_TEST(testExtraction_usingExtractor);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -189,28 +187,6 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(expected,result);
 	}
-
-	void testExtraction_usingExtractor()
-	{
-		CharCopierExtractor extractor;
-
-		CLAM::WriteHook<char> outputHook;
-		extractor.GetOutHook()
-			.Bind("TestScope1","OutputData");
-		extractor.GetInHook()
-			.Bind("TestScope1","InputData");
-
-		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
-		{
-			extractor.Extract();
-		}
-		
-		std::string expected(mPool->GetAttributePool<char>("TestScope1","InputData"),3);
-		std::string result(mPool->GetAttributePool<char>("TestScope1","OutputData"),3);
-		
-		CPPUNIT_ASSERT_EQUAL(expected,result);
-	}
-
 
 };
 
