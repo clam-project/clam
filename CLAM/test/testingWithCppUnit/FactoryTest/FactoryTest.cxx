@@ -16,22 +16,24 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
 	CPPUNIT_TEST( testMakeProcessing_ReturnsAnOscillator );
 	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
-	CPPUNIT_TEST( testFactoryIsSingleton );
-	CPPUNIT_TEST( testAutomaticRegistry );
+	CPPUNIT_TEST( testAddCreator_WithRepeatedKey );
 	CPPUNIT_TEST_SUITE_END();
+
+protected:
+	CLAM::Factory* _theFactory;
 
 public:
 	void setUp()
 	{
+		_theFactory = new CLAM::Factory;
 	}
-
 	void tearDown()
 	{
-		CLAM::Factory::GetInstance().Clear();
+		delete _theFactory;
 	}
 
 	// Tests definition :
-private:
+protected:
 	void testCreateOscillatorReturnsAnOscillator() 
 	{
 		CLAM::Processing* returned = CLAM::CreateOscillator();
@@ -50,39 +52,82 @@ private:
 	
 	void testMakeProcessing_ReturnsAnOscillator()
 	{
-		// set up:
-		CLAM::Factory &factory = CLAM::Factory::GetInstance();
+		_theFactory->GetRegistry().AddCreator( "Oscillator", CLAM::CreateOscillator );
 		
-		factory.GetRegistry().AddCreator( "Oscillator", CLAM::CreateOscillator );
-		
-		CLAM::Processing* returned = factory.MakeProcessing("Oscillator");
+		CLAM::Processing* returned = _theFactory->MakeProcessing("Oscillator");
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
 		
 		// tear down:
 		delete returned;
-		factory.Clear();
+		_theFactory->Clear();
 
 	}
 
 	void testMakeProcessingSafe_WithABadKey()
 	{
-		CLAM::Factory &factory = CLAM::Factory::GetInstance();
 		try{
-			factory.MakeProcessingSafe("Oscillator");
+			_theFactory->MakeProcessingSafe("Oscillator");
 			CPPUNIT_FAIL("Should throw an exception");
 		} catch ( CLAM::ErrFactory& ) {}
 	}
 
+
+	void testAddCreator_WithRepeatedKey()
+	{
+		_theFactory->AddCreator("Oscillator", CLAM::CreateOscillator );
+		try{
+			_theFactory->AddCreator("Oscillator", CLAM::CreateOscillator);
+			CPPUNIT_FAIL("an assertion should happen");
+		} catch ( CLAM::ErrAssertionFailed& )
+		{}
+	}
+
+	void testAddCreatorSafe_WithRepeatedKey()
+	{
+		_theFactory->AddCreator("Oscillator", CLAM::CreateAudioAdder );
+		try{
+			_theFactory->AddCreator("Oscillator", CLAM::CreateOscillator);
+			CPPUNIT_FAIL("");
+		} catch (CLAM::ErrFactory&) {
+			
+		}
+	}
+
+};
+
+
+
+///////////////////////////////////////////////////////////////////////
+
+class FactorySingletonTest;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( FactorySingletonTest );
+
+class FactorySingletonTest : public FactoryTest
+{
+	CPPUNIT_TEST_SUITE( FactorySingletonTest );
+	CPPUNIT_TEST( testCreateOscillatorReturnsAnOscillator );
+	CPPUNIT_TEST( testMakeProcessing_ReturnsAnOscillator );
+	CPPUNIT_TEST( testMakeProcessingSafe_WithABadKey );
+	CPPUNIT_TEST( testFactoryIsSingleton );
+
+	CPPUNIT_TEST_SUITE_END();
+
+public:
+	
+	void setUp()
+	{
+		_theFactory = &CLAM::Factory::GetInstance();
+	}
+
+	void tearDown()
+	{
+		_theFactory->Clear();
+	}
+
+private:
 	void testFactoryIsSingleton()
 	{
-		// this is a compilation test (impossible to automate) :
-		// discommenting the following lines must give a compiler error
-	
-		//CLAM::Factory fact; // error: ctr is private
-		//delete &CLAM::Factory::GetInstance(); // error: dtr is private
-		//class Sub : public CLAM::Factory {}; Sub s; // error: class is final
-
-
 		CLAM::Factory &ref1 = CLAM::Factory::GetInstance();
 		CLAM::Factory &ref2 = CLAM::Factory::GetInstance();
 
@@ -90,21 +135,6 @@ private:
 			"the thow Factory refs should point the same object ",
 			&ref1 == &ref2);
 
-	}
-
-	void testAutomaticRegistry()
-	{
-		CLAM::Factory &factory = CLAM::Factory::GetInstance();
-		
-		// the ctr register the creator to the factory.
-		CLAM::AutomaticRegistrator<CLAM::Oscillator> dummy;
-
-		CLAM::Processing* returned = factory.MakeProcessing("Oscillator");
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( CLAM::Oscillator, *returned );
-		
-		// tear down:
-		delete returned;
-		factory.Clear();
 	}
 };
 

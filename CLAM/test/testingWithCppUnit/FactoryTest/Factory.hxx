@@ -149,7 +149,7 @@ public:
 		GetRegistry().RemoveAllCreators();
 	}
 	void AddCreator(const RegistryKey name, CreatorMethod creator) {
-//		GetRegistry().AddCreator(name, creator);
+		GetRegistry().AddCreator(name, creator);
 	}
 /*
 	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory) {
