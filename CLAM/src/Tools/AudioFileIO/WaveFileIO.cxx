@@ -14,12 +14,14 @@ void WaveFileIO::InitSelf(void)
 #ifdef SOUNDFILEIO_BIG_ENDIAN
 	mSwap = true;
 #endif
+	mCuePoints = 0;
+	mNCuePoints = 0;
 }
 
 int WaveFileIO::ReadChunkHeader(ChunkHeader& h)
 {
 	int ret = int( fread(&h,1,sizeof(h),mFile) );
-	SWAP(h.len);
+	if (ret>0) SWAP(h.len);
 	return ret;
 }
 
@@ -60,9 +62,17 @@ void WaveFileIO::ReadHeader(void)
 	i += r;
 	if (!CheckID(waveID,"WAVE"))
 		throw ErrSoundFileIO("Not a WAVE file");
-	while (i<riff.len) {
-		ChunkHeader h;
-		i += ReadChunkHeader(h);
+
+	ChunkHeader h;	
+	
+	// allowing to read beyond riff len
+	while ((r = ReadChunkHeader(h)) > 0) {
+		if (i>=riff.len) 
+		{
+			// WARNING: Reading beyond RIFF chunk. gnoise locates cue-points
+			// here. Check with standatd if this is correct
+		}
+		i += r;
 		if (CheckID(h.id,"fmt ")) {
 			WaveFmtChunk fmt;
 			int j = 0;
@@ -96,6 +106,29 @@ void WaveFileIO::ReadHeader(void)
 		  if (CheckID(h.id,"data")) {
 			  mSize = h.len/2;
 			  mOffset = sizeof(riff)+i;
+		  }
+		  if (CheckID(h.id,"cue "))
+			{
+				if (mCuePoints)
+				{
+					delete mCuePoints;
+				}
+				mNCuePoints = (h.len-4)/24;
+				int tmp;
+				fread(&tmp,1,sizeof(int),mFile);
+				SWAP(tmp);
+				if (tmp!=mNCuePoints)
+					throw ErrSoundFileIO("'cue ' chunk len does not match with number of cue points");
+				mCuePoints = new CuePoint[mNCuePoints];
+				for (int i=0;i<mNCuePoints;i++)
+				{
+					fread(&mCuePoints[i],1,sizeof(CuePoint),mFile);
+					SWAP(mCuePoints[i].identifier);
+					SWAP(mCuePoints[i].position);
+					SWAP(mCuePoints[i].chunkStart);
+					SWAP(mCuePoints[i].blockStart);
+					SWAP(mCuePoints[i].offset);
+				}
 		  }
 			i += h.len;
 			fseek(mFile, sizeof(riff)+i, SEEK_SET);
