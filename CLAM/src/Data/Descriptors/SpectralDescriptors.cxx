@@ -26,6 +26,66 @@
 
 namespace CLAM{
 
+DataArray	Add(DataArray &a, DataArray &b) {
+	TIndex i;
+	TSize sizea=a.Size(); 
+	TSize sizeb=b.Size();
+	TSize size;
+	DataArray result;
+
+	// One has size==0 (optimized with respect to the following case?)
+	if (sizea==0) {
+		result=b;
+		return result;
+	}
+	if (sizeb==0) {
+		result=a;
+		return result;
+	}
+	
+	// Different sizes
+	if(sizea != sizeb) {
+		if (sizea < sizeb) {
+			size=sizeb;
+			result.Resize(size);
+			result.SetSize(size);
+			for (i=0; i<sizea; i++)
+				result[i]=a[i]+b[i];
+			for (i=sizea; i<sizeb; i++)
+				result[i]=b[i];
+			return result;
+		}
+		else {  // sizea>sizeb
+			size=sizea;
+			result.Resize(size);
+			result.SetSize(size);
+			for (i=0; i<sizeb; i++)
+				result[i]=a[i]+b[i];
+			for (i=sizeb; i<sizea; i++)
+				result[i]=a[i];
+			return result;
+		}
+	}
+	// Equal size
+	size=sizea;
+	result.Resize(size);
+	result.SetSize(size);
+	for (i=0; i<size; i++)
+		result[i]=a[i]+b[i];
+	return result;
+}
+
+DataArray	Multiply(TData &factor, DataArray &a) {
+	TIndex i;
+  TSize size=a.Size(); 
+  DataArray result;
+	result.Resize(size);
+  result.SetSize(size);
+  for (i=0; i<size; i++)
+    result[i]=factor*a[i];
+	return result;
+}
+
 SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAttr)
 {
 	MandatoryInit();
@@ -155,25 +215,31 @@ TData SpectralDescriptors::ComputeHighFrequencyCoefficient()
 	return WeightedPoweredSum<2>()(mpSpectrum->GetMagBuffer());
 }
 
-/*this has been mostly copied and pasted from cuidado and should be checked and some of
-it promoted into basicOps*/
+/**
+ * It computes the frequency where the spectrum has its maximum value
+ *
+ * It there are more than one frequency with the same magnitude, 
+ * it takes the lower one.
+ *
+ * @todo Promote MaxPosition to Stats
+ */
 TData SpectralDescriptors::ComputeMaxMagFreq()
 { 
-	// Frequency of the spectrum maxima 
-	// Note: it is supposing the spectrum is in dB?
+	// Zero is not enough for spectrums in dB's
 	TData max = -1000.0;
 	TIndex index = -1;
 	
-	DataArray& data=mpSpectrum->GetMagBuffer();
-	int size=mpSpectrum->GetSize();
+	const DataArray& data=mpSpectrum->GetMagBuffer();
+	const unsigned size=mpSpectrum->GetSize();
 	for(unsigned i=0; i<size; i++) 
 		if(data[i] > max )
 		{
 			max = data[i];
 			index = i;
 		} 
-	// Normalized by the spectral range
-	return (TData) index* (mpSpectrum->GetSpectralRange()/(TData)(size-1));
+
+	// Convert from index to frequency value in Hz
+	return (TData) index * (mpSpectrum->GetSpectralRange()/(TData)(size-1));
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
@@ -236,8 +302,6 @@ TData SpectralDescriptors::ComputeSpread()
 	return sqrt(variance) / centroid;
 }
 
-
-
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 {
 	SpectralDescriptors  tmpD(a);
@@ -286,8 +350,8 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC());
 	if(a.HasPCP())
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetPCP(a.GetPCP());
+		tmpD.SetPCP(Multiply(mult,a.GetPCP()));
+
 	return tmpD;
 }
 
@@ -573,8 +637,7 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 	{
 		tmpD.AddPCP();
 		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetPCP(a.GetPCP() /* + b.GetPCP() */);
+		tmpD.SetPCP(Add(a.GetPCP(),b.GetPCP()));
 	}
 		
 	return tmpD;
@@ -589,5 +652,4 @@ SpectralDescriptors operator * (TData mult,const SpectralDescriptors& a)
 
 
 };
-
 
