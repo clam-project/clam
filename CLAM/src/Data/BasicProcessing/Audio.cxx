@@ -78,6 +78,36 @@ void Audio::GetAudioChunk(TTime beginTime, TTime endTime,Audio& chunk, bool conf
 	GetAudioChunk(GetIndexFromTime(beginTime),GetIndexFromTime(endTime),chunk, configureChunk);
 }
 
+void Audio::GetAudioSlice(TTime beginTime, TTime endTime,Audio& slice, bool configureSlice) const
+{
+	GetAudioSlice(GetIndexFromTime(beginTime),GetIndexFromTime(endTime),slice, configureSlice);
+}
+
+
+
+void Audio::GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, bool configureChunk ) const
+{
+	CLAM_ASSERT( beginIndex >=0, "Negative indexes are not allowed for audio slices" );
+	CLAM_ASSERT( endIndex <= GetSize(), "Slices are not allowed to surpass audio size" );
+
+
+	TIndex size=endIndex-beginIndex;
+
+	DataArray tmpArray;
+	tmpArray.SetPtr( GetBuffer().GetPtr() + beginIndex );
+	tmpArray.SetSize( size );
+	slice.SetBuffer( tmpArray );
+
+	if(configureChunk)
+	{
+		slice.SetBeginTime(GetTimeFromIndex(beginIndex));
+		slice.SetSampleRate( GetSampleRate() );
+		slice.GetBuffer().SetSize(size);
+	}
+	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized") 
+	
+}
+
 void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool configureChunk) const
 {
 	
