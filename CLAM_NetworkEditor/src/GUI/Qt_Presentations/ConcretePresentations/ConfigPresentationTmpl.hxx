@@ -32,6 +32,7 @@
 #include "Enum.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
+#include "Filename.hxx"
 
 #include <qdialog.h>
 #include <qvbox.h>
@@ -42,7 +43,7 @@
 #include <qvalidator.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
-
+#include <qfiledialog.h>
 
 
 namespace CLAM
@@ -112,6 +113,13 @@ public:
 	void AddWidget(const char *name, CLAM::Enum *foo, T& value);
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::Enum *foo, T& value);
+
+	
+	template<typename T>
+	void AddWidget(const char *name, CLAM::Filename *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, CLAM::Filename *foo, T& value);
+
 };
 
 
@@ -320,6 +328,38 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	CLAM_END_CHECK
 		value=mapping[mInput->currentItem()].value;
 }
+
+
+template <class ConcreteConfig>
+template <typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::Filename *foo, T& value) 
+{	
+	QHBox * cell = new QHBox(mLayout);
+	new QLabel(QString(name), cell);
+	QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
+	mInput->resize( 80, 25 );
+	resize(245, 275);
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+
+	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
+	QFileDialog * fd = new QFileDialog(0, "file dialog", FALSE );
+	fd->setMode( QFileDialog::ExistingFile );
+	fd->setFilter( "WAVE File (*.wav)" );
+	
+	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+	connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::Filename *foo, T& value) 
+{	
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+	value=mInput->text().latin1();
+}
+
+
 
 /*	
   template <class ConcreteConfig>
