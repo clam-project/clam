@@ -16,6 +16,10 @@ public:
 	{
 	}
 
+	virtual ~Region()
+	{
+	}
+
 	long& Pos()
 	{
 		return mPos;
@@ -55,9 +59,11 @@ public:
 	}
 
 	virtual Region* ProducerRegion() = 0;
+	virtual void RemoveProducer(){}
 
 	virtual ReadingRegionsIterator BeginReaders() = 0;
 	virtual ReadingRegionsIterator EndReaders() = 0;
+	virtual void RemoveRegion( Region & Region ){}
 
 protected:
  	virtual void SizeChanged(const int & newSize) = 0;

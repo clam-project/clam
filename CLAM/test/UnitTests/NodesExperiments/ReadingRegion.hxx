@@ -18,6 +18,12 @@ public:
 	{
 	}
 
+	~ReadingRegion()
+	{
+		if(mProducingRegion)
+			mProducingRegion->RemoveRegion( *this );
+	}
+
 	void LinkAndNotifySizeToStream( ProperStream& stream )
 	{
 		mAttachedStream = &stream;
@@ -57,7 +63,11 @@ public:
 		BeginDistance( writing.BeginDistance() );
 	}
 	
-	const ProperToken& operator[](int offset)
+	/*
+	 * const?? TODO!!
+	 * */
+	
+	ProperToken& operator[](int offset)
 	{
 		CLAM_DEBUG_ASSERT( mAttachedStream, "ReadingRegion operator[] - No attached stream" );
 		CLAM_DEBUG_ASSERT( CanConsume(), "ReadingRegion operator[] - region can't consume" );
@@ -90,6 +100,7 @@ public:
 	{
 		return 0; 
 	}
+
 private:
 	void SizeChanged(const int & newSize)
 	{
