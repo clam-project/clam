@@ -108,13 +108,12 @@ SaltoSynth::SaltoSynth( const SaltoSynthConfig& cfg )
 		ControlSetup();
 }
 
-bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& cfg)throw( std::bad_cast )
+bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& c)
 {
 	bool res = true;
 	
+	CopyAsConcreteConfig(mConfig, c);
 	try{
-		mConfig = dynamic_cast< const SaltoSynthConfig& >( cfg );
-
 		mpParams = mConfig.GetParams();
 
 		mpSynthFrame= new CSaltoSynthFrame(	MAX_SINES, 

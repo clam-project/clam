@@ -66,9 +66,9 @@ bool SineSynthesis::ConcreteStop()
 	return true;
 }
 
-bool SineSynthesis::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast )
+bool SineSynthesis::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast< const SineSynthesisConfig& > ( cfg );
+	CopyAsConcreteConfig(mConfig, c);
 
 	CLAM_ASSERT( mConfig.HasFrameTime(), "Configuration Object hasn't FrameTime Attribute instantiated" );
 
