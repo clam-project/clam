@@ -23,6 +23,7 @@
 //Filtered in both ways in order to avoid phase distortion
 
 #include "OD_AudioDecimation.hxx"
+#include <deque>
 
 namespace CLAM
 {
@@ -62,13 +63,11 @@ namespace CLAM
 				     "OnsetDetection::AudioDecimator::DecimateFrom44100To22050(): the decimatedSignal array"
 				     " is required to have half the size of the input signal" );
 
-			TSize size = signal.Size();
+			CLAM_ASSERT( signal.Size() > 8,
+				     "You cannot filter a 8 samples signal with an 8th order filter!!!!" );
 
-			if ( mOutput.Size() < signal.Size() )
-			{
-				mOutput.Resize( signal.Size() );
-			}					
-			mOutput.SetSize( signal.Size() );			
+			TSize size = signal.Size();
+			TSize decimatedSize = decimatedSignal.Size();
 
 			double a0, a1, a2,a3, a4, a5, a6, a7, a8, b0, b1, b2, b3, b4, b5, b6, b7, b8;
 			//coefs from Matlab for cheby1 filter order=8, R=0.5, wn=0.4.
@@ -92,56 +91,83 @@ namespace CLAM
 			b8 = 0.23814049785960;			
 			
 			int i;
+			int j=0;
+			double out = 0.0;
+
+			std::deque<float> inMemory;
+
+			std::deque<float> outMemory;
+
 
 			// The "difficult" part of the filtering loop has been stripmined
+
+			inMemory.push_front( signal[0] );
+			out = a0 * inMemory[0];
+			outMemory.push_front( out );
+			decimatedSignal[j++]=out;
+
+
+
+			inMemory.push_front( signal[1] );
+			out = a0*inMemory[0] + a1*inMemory[1] 
+				- b1*outMemory[0];
+			outMemory.push_front( out );
+
+
+			inMemory.push_front( signal[2] );
+			out = a0*inMemory[0] + a1*inMemory[1] + a2*inMemory[2]
+				- b1*outMemory[0] - b2*outMemory[1];
+			outMemory.push_front( out );
+			decimatedSignal[j++]=out;
+
+
+			inMemory.push_front( signal[3] );
+			out = a0 * inMemory[0] + a1* inMemory[1] + a2*inMemory[2] + a3*inMemory[3]
+				- b1*outMemory[0] - b2*outMemory[1] - b3*outMemory[2];
+			outMemory.push_front( out );
 			
-			mOutput[0] = a0*signal[0];
 
-			mOutput[1] = a0*signal[1]+ a1*signal[0]
-				- b1*mOutput[0];
+			inMemory.push_front( signal[4] );
+			out = a0 * inMemory[0] + a1*inMemory[1] + a2*inMemory[2] + a3*inMemory[3] + a4*inMemory[4]
+				- b1*outMemory[0] - b2*outMemory[1] - b3*outMemory[2] - b4*outMemory[3];
+			outMemory.push_front( out );
+			decimatedSignal[j++] = out;
 
-			mOutput[2] = a0*signal[2]+ a1*signal[1] + a2*signal[0] 
-				- b1*mOutput[1] - b2*mOutput[0];
+			inMemory.push_front( signal[5] );
+			out = a0 * inMemory[0] + a1*inMemory[1] + a2*inMemory[2] + a3*inMemory[3] + a4*inMemory[4] + a5*inMemory[5]
+				- b1*outMemory[0] - b2*outMemory[1] - b3*outMemory[2] - b4*outMemory[3] - b5*outMemory[4];
+			outMemory.push_front( out );
 
-			mOutput[3] = a0*signal[3]+ a1*signal[2] + a2*signal[1] + a3*signal[0] 
-				- b1*mOutput[2] - b2*mOutput[1] - b3*mOutput[0];
+			inMemory.push_front( signal[6] );
+			out = a0 * inMemory[0] + a1*inMemory[1] + a2*inMemory[2] + a3*inMemory[3] + a4*inMemory[4] + a5*inMemory[5] +a6*inMemory[6]
+				- b1*outMemory[0] - b2*outMemory[1] - b3*outMemory[2] - b4*outMemory[3] - b5*outMemory[4] - b6*outMemory[5]; 
+			outMemory.push_front( out );
+			decimatedSignal[j++] = out;
 
-			mOutput[4] = a0*signal[4]+ a1*signal[3] + a2*signal[2] + a3*signal[1]  + a4*signal[0]
-				- b1*mOutput[3] - b2*mOutput[2] - b3*mOutput[1] - b4*mOutput[0];
+			inMemory.push_front( signal[7] );
+			out = a0 * inMemory[0] + a1*inMemory[1] + a2*inMemory[2] + a3*inMemory[3] + a4*inMemory[4] + a5*inMemory[5] 
+				+a6*inMemory[6] + a7*inMemory[7]
+				- b1*outMemory[0] - b2*outMemory[1] - b3*outMemory[2] - b4*outMemory[3] - b5*outMemory[4] 
+				- b6*outMemory[5] - b7*outMemory[6]; 
+			outMemory.push_front( out );
 
-			mOutput[5] = a0*signal[5]+ a1*signal[4] + a2*signal[3] + a3*signal[2]  + a4*signal[1]+ a5*signal[0]
-				- b1*mOutput[4] - b2*mOutput[3] - b3*mOutput[2] - b4*mOutput[1]- b5*mOutput[0];
-
-			mOutput[6] = a0*signal[6]+ a1*signal[5] + a2*signal[4] + a3*signal[3]  + a4*signal[2]+ a5*signal[1]+ a6*signal[0]
-				- b1*mOutput[5] - b2*mOutput[4] - b3*mOutput[3] - b4*mOutput[2]- b5*mOutput[1]- b6*mOutput[0];
-
-			mOutput[7] = a0*signal[7]+ a1*signal[6] + a2*signal[5] + a3*signal[4]  + a4*signal[3]+ a5*signal[2]
-				+ a6*signal[1]+ a7*signal[0]
-				- b1*mOutput[6] - b2*mOutput[5] - b3*mOutput[4] - b4*mOutput[3]- b5*mOutput[2]
-				- b6*mOutput[1]- b7*mOutput[0];
 			
 			//filtering
-			for(i=8; i<size; i++)
+			for(i=8; i<size && j < decimatedSize; i++)
 			{
-
-				mOutput[i] = a0*signal[i] + a1*signal[i-1] + a2*signal[i-2] + a3*signal[i-3] + a4*signal[i-4] + a5*signal[i-5]
-					+ a6*signal[i-6] + a7*signal[i-7] + a8*signal[i-8]
-					- b1*mOutput[i-1] - b2*mOutput[i-2] - b3*mOutput[i-3] - b4*mOutput[i-4] - b5*mOutput[i-5] 
-					- b6*mOutput[i-6] - b7*mOutput[i-7] - b8*mOutput[i-8];
 				
-			}
-									
-			i=0;
-			
-			//decimation
-			TSize decimatedSize = decimatedSignal.Size();
-			while(i<decimatedSize)
-			{
-				decimatedSignal[i] = mOutput[i*2];
-				i++;
-			}
-			
+				inMemory.push_front( signal[i] );
+				out = a0 * inMemory[0] + a1*inMemory[1] + a2*inMemory[2] + a3*inMemory[3] + a4*inMemory[4] + a5*inMemory[5] 
+					+a6*inMemory[6] + a7*inMemory[7] + a8*inMemory[8]
+					- b1*outMemory[0] - b2*outMemory[1] - b3*outMemory[2] - b4*outMemory[3] - b5*outMemory[4] 
+					- b6*outMemory[5] - b7*outMemory[6] - b8*outMemory[7]; 
+				outMemory.pop_back();
+				outMemory.push_front( out );
 
+
+				if ( i % 2 == 0 ) decimatedSignal[j++] = out;
+				inMemory.pop_back();
+			}
 		}
 
 		void AudioDecimator::DecimateFrom22050To245( const DataArray& signal,
