@@ -1,5 +1,6 @@
 #include "PublishedOutControls.hxx"
 #include "Processing.hxx"
+#include "OutControl.hxx"
 #include <string>
 
 namespace CLAM
@@ -33,6 +34,16 @@ int PublishedOutControls::Size() const
 	for (it=mParent.FirstOutControl(); it!=mParent.LastOutControl(); it++)
 		++count;
 	return count;
+}
+
+PublishedOutControls::Iterator  PublishedOutControls::Begin()
+{
+	return mParent.FirstOutControl();
+}
+
+PublishedOutControls::Iterator PublishedOutControls::End()
+{
+	return mParent.LastOutControl();
 }
 
 } // namespace CLAM

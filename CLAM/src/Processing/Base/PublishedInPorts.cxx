@@ -1,6 +1,6 @@
 #include "PublishedInPorts.hxx"
-#include "Processing.hxx"
 #include "InPort.hxx"
+#include "Processing.hxx"
 #include <string>
 
 namespace CLAM
@@ -41,6 +41,17 @@ int PublishedInPorts::Size() const
 		++count;
 	return count;
 }
+
+PublishedInPorts::Iterator  PublishedInPorts::Begin()
+{
+	return mParent.FirstInput();
+}
+
+PublishedInPorts::Iterator PublishedInPorts::End()
+{
+	return mParent.LastInput();
+}
+
 
 	
 } // namespace CLAM

@@ -1,5 +1,6 @@
 #include "PublishedInControls.hxx"
 #include "Processing.hxx"
+#include "InControl.hxx"
 #include <string>
 
 namespace CLAM
@@ -34,6 +35,17 @@ int PublishedInControls::Size() const
 
 	return i;
 }
+
+PublishedInControls::Iterator  PublishedInControls::Begin()
+{
+	return mParent.FirstInControl();
+}
+
+PublishedInControls::Iterator PublishedInControls::End()
+{
+	return mParent.LastInControl();
+}
+
 		
 } // namespace CLAM
 

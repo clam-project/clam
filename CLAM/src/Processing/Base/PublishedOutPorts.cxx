@@ -40,4 +40,15 @@ int PublishedOutPorts::Size() const
 	return count;
 }
 
+PublishedOutPorts::Iterator  PublishedOutPorts::Begin()
+{
+	return mParent.FirstOutput();
+}
+
+PublishedOutPorts::Iterator PublishedOutPorts::End()
+{
+	return mParent.LastOutput();
+}
+
+
 }// namespace CLAM
