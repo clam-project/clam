@@ -308,16 +308,16 @@ private:
 
 	void testRangeExtraction_usingExtractor()
 	{
-		CLAM::ReadRangedHook<char> inputHook;
-		inputHook.Range(4);
-		inputHook.Bind("Referenced","Input");
-		inputHook.Indirect("Referencer","Reference");
-
-		CLAM::WriteHook<std::string> outputHook;
-		outputHook.Bind("Referencer","Concatenations");
-
 		CharJoinExtractor extractor;
-		extractor.SetHooks(inputHook,outputHook);
+
+		extractor.GetInHook()
+			.Range(4)
+			.Bind("Referenced","Input")
+			.Indirect("Referencer","Reference");
+
+		extractor.GetOutHook()
+			.Bind("Referencer","Concatenations");
+
 
 		for (extractor.Init(*mPool); extractor.IsInsideScope(); extractor.Next())
 		{

@@ -52,38 +52,44 @@ class CharJoinExtractor
 public:
 	void SetHooks(CLAM::ReadRangedHook<char> & inputHook, CLAM::WriteHook<std::string> & outputHook)
 	{
-		_inputHook = &inputHook;
-		_outputHook = &outputHook;
+	}
+	CLAM::ReadRangedHook<char> & GetInHook()
+	{
+		return _inputHook;
+	}
+	CLAM::WriteHook<std::string> & GetOutHook()
+	{
+		return _outputHook;
 	}
 
 	void Extract()
 	{
 		const char * input;
 		const char * inputEnd;
-		_inputHook->GetRangeForReading(input, inputEnd);
-		std::string & output = _outputHook->GetForWriting();
+		_inputHook.GetRangeForReading(input, inputEnd);
+		std::string & output = _outputHook.GetForWriting();
 		for (output = ""; input<inputEnd; input++)
 			output += *input;
 	}
 	bool IsInsideScope()
 	{
-		return _inputHook->IsInsideScope() && _outputHook->IsInsideScope();
+		return _inputHook.IsInsideScope() && _outputHook.IsInsideScope();
 	}
 
 	void Next()
 	{
-		_inputHook->Next();
-		_outputHook->Next();
+		_inputHook.Next();
+		_outputHook.Next();
 	}
 
 	void Init(CLAM::DescriptionDataPool & pool)
 	{
-		_inputHook->Init(pool);
-		_outputHook->Init(pool);
+		_inputHook.Init(pool);
+		_outputHook.Init(pool);
 	}
 private:
-	CLAM::ReadRangedHook<char> * _inputHook;
-	CLAM::WriteHook<std::string> * _outputHook;
+	CLAM::ReadRangedHook<char> _inputHook;
+	CLAM::WriteHook<std::string> _outputHook;
 };
 
 } // namespace CLAMTest

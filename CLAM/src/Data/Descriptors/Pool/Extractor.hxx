@@ -123,9 +123,10 @@ public:
 		end = begin + _range;
 	}
 
-	void Range(unsigned range)
+	ReadHook<AttributeType> & Range(unsigned range)
 	{
 		_range = range;
+		return *this;
 	}
 private:
 	unsigned _range;
@@ -168,8 +169,6 @@ private:
 	AttributeType * _data;
 	unsigned _current;
 };
-
-
 
 }
 
