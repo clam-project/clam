@@ -92,7 +92,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/02_alles.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/02_alles_Meter.xml" );
 			
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -110,6 +110,8 @@ namespace CLAMTest
 			meterEstimator.Start();
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
+
+			CLAM::XMLStorage::Dump( result, "Meter", "02_alles_Meter.xml");
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
@@ -120,7 +122,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/12_cubic.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/12_cubic_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -138,6 +140,8 @@ namespace CLAMTest
 			meterEstimator.Start();
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
+
+			CLAM::XMLStorage::Dump( result, "Meter", "12_cubic_Meter.xml");
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
@@ -148,7 +152,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/blue_monday.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/blue_monday_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -165,6 +169,8 @@ namespace CLAMTest
 			meterEstimator.Start();
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
+
+			CLAM::XMLStorage::Dump( result, "Meter", "blue_monday_Meter.xml");
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
@@ -176,7 +182,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/ALoCubano.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/ALoCubano_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -195,6 +201,8 @@ namespace CLAMTest
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
+			CLAM::XMLStorage::Dump( result, "Meter", "ALoCubano_Meter.xml");
+
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
 
@@ -205,7 +213,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/AmourEnPoudre.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/AmourEnPoudre_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -225,6 +233,8 @@ namespace CLAMTest
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
+			CLAM::XMLStorage::Dump( result, "Meter", "AmourEnPoudre_Meter.xml");
+
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
 
@@ -234,7 +244,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/Amsterdam.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/Amsterdam_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -254,6 +264,8 @@ namespace CLAMTest
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
+			CLAM::XMLStorage::Dump( result, "Meter", "Amsterdam_Meter.xml");
+
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
 
@@ -263,7 +275,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/clicseq.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/clicseq_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -282,6 +294,8 @@ namespace CLAMTest
 			meterEstimator.Start();
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
+
+			CLAM::XMLStorage::Dump( result, "Meter", "clicseq_Meter.xml");
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
@@ -292,7 +306,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/drums-electronic-guit.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/drums-electronic-guit_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -310,6 +324,8 @@ namespace CLAMTest
 			meterEstimator.Start();
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
+
+			CLAM::XMLStorage::Dump( result, "Meter", "drums-electronic-guit_Meter.xml");
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
@@ -321,7 +337,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/elecpiano-drums.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/elecpiano-drums_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -340,6 +356,8 @@ namespace CLAMTest
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
+			CLAM::XMLStorage::Dump( result, "Meter", "elecpiano-drums_Meter.xml");
+
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
 
@@ -350,7 +368,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/test1.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/test1_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -370,6 +388,8 @@ namespace CLAMTest
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
+			CLAM::XMLStorage::Dump( result, "Meter", "test1_Meter.xml");
+
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
 
@@ -379,7 +399,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/test2.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/test2_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -399,6 +419,8 @@ namespace CLAMTest
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
 			
+			CLAM::XMLStorage::Dump( result, "Meter", "test2_Meter.xml");
+
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
 
@@ -408,7 +430,7 @@ namespace CLAMTest
 		{
 			CLAM::RhythmDescription::Meter inst;
 
-			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/test.wav_MeterStuff.xml" );
+			CLAM::XMLStorage::Restore( inst, mPathToTests + "/Meter/test_Meter.xml" );
 
 			CLAM::Pulse extractedEvents;
 			CLAM::Pulse extractedBeats;
@@ -426,6 +448,8 @@ namespace CLAMTest
 			meterEstimator.Start();
 			meterEstimator.Do( signal, extractedBeats, result );
 			meterEstimator.Stop();
+
+			CLAM::XMLStorage::Dump( result, "Meter", "test_Meter.xml");
 			
 			CPPUNIT_ASSERT_EQUAL( inst.GetNumerator(), result.GetNumerator() );
 			CPPUNIT_ASSERT_EQUAL( inst.GetDenominator(), result.GetDenominator() );
