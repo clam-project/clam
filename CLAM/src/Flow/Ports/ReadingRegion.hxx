@@ -104,8 +104,8 @@ template<class WritingRegion>
 typename ReadingRegion<WritingRegion>::ProperToken & ReadingRegion<WritingRegion>::operator[](int offset)
 {
 	CLAM_DEBUG_ASSERT( mAttachedStream, "ReadingRegion operator[] - No attached stream" );
-	CLAM_DEBUG_ASSERT( CanConsume(), "ReadingRegion operator[] - region can't consume" );
 	CLAM_DEBUG_ASSERT( 0 <= offset && offset < Size(), "ReadingRegion operator[] - Index out of bounds" );
+	CLAM_DEBUG_ASSERT( CanConsume(), "ReadingRegion operator[] - region can't consume" );
 
 	int physicalIndex = BeginDistance() + offset;
 
