@@ -58,6 +58,8 @@ void SpectralSynthesisConfig::DefaultValues()
 	GetSynthWindowGenerator().SetType(EWindowType::eTriangular);
 	GetSynthWindowGenerator().SetNormalize(EWindowNormalize::eNone);
 	GetSynthWindowGenerator().SetSize(GetHopSize()*2+1);
+
+	SetResidual(false);
 	
 
 }
@@ -307,17 +309,17 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 }
 
 
-bool SpectralSynthesis::Do(Frame& in,bool residual)//this bool could be set in configuration
+bool SpectralSynthesis::Do(Frame& in)
 {
-	if(!residual)
+	if(mConfig.GetResidual())
 		return Do(in.GetSpectrum(),in.GetAudioFrame());
 	else
 		return Do(in.GetResidualSpec(),in.GetResidualAudioFrame());
 }
 
-bool SpectralSynthesis::Do(Segment& in,bool residual)
+bool SpectralSynthesis::Do(Segment& in)
 {
-	return Do(in.GetFrame(in.mCurrentFrameIndex++),residual);
+	return Do(in.GetFrame(in.mCurrentFrameIndex++));
 }
 
 TInt32 SpectralSynthesis::CalculatePowerOfTwo(TInt32 size)

@@ -64,7 +64,7 @@ friend class SpectralSynthesis;
 
 public:
 	
-	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,7,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,8,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig,AnalWindowGenerator);
@@ -73,6 +73,7 @@ public:
 	DYN_ATTRIBUTE(4,public,IFFTConfig,IFFT);
 	DYN_ATTRIBUTE(5,protected,int, prZeroPadding);
 	DYN_ATTRIBUTE(6,protected,int,prSamplingRate);
+	DYN_ATTRIBUTE(7,public,bool,Residual);
 
 
 //Config shortcuts
@@ -199,8 +200,8 @@ private:
 		/** Unsupervised mode execution */
 		bool Do(Spectrum& in, Audio &out);
 		
-		bool Do(Frame& in, bool residual=false);
-		bool Do(Segment& in, bool residual=false);
+		bool Do(Frame& in);
+		bool Do(Segment& in);
 
 
 		/** Ports */
