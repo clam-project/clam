@@ -9,7 +9,7 @@
 
 int main(int argc,char** argv)
 {
-	if (argc<3)
+	if (argc!=3)
 	{
 		fprintf(stderr,"Usage srcdeps SETTINGSFILE DSPFILE\n");
 		exit(-1);
@@ -18,16 +18,15 @@ int main(int argc,char** argv)
 	gendepend = 0;
 	recursesrcs = 1;
 	
-	parser_init();
-	
 	config_init();
 	config_parse(argv[1]);
-	config_apply();
+
+	parser_init();
+
 	config_check();
-	config_exit();
 
 	{
-		item* i = sources->first;
+		item* i = guessed_sources->first;
 		while (i)
 		{
 			parser_run(i->str);
@@ -39,6 +38,7 @@ int main(int argc,char** argv)
 	dsp_parse(argv[2]);
 
 	parser_exit();
+	config_exit();
 
 	return 0;
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "parser.h"
+#include "listhash.h"
 #include "tree.h"
 #include "stack.h"
 #include "list.h"
@@ -181,7 +182,7 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 void dsp_parse_insert(int type)
 {
 	tree* t = tree_new();
-	item* i = type ? headers->first : sources->first;
+	item* i = type ? guessed_headers->first : guessed_sources->first;
 	list* repeatcheck = list_new();
 
 	char* typestr = type ? "Headers" : "Sources";

@@ -239,7 +239,16 @@ void config_parse_line(char* ptr,const char* filename,int line)
 		{
 			if (isinclude)
 			{
-				if (k>0) config_parse(ptr);
+				if (k>0)
+				{
+					int err = config_parse(ptr);
+					if (err)
+					{
+						fprintf(stderr,"Error: could not include file '%s' in line %s:%d\n",
+							ptr,filename,line);
+						exit(-1);			
+					}
+				}
 			}
 			else
 			{
@@ -276,6 +285,9 @@ int config_parse(const char* filename)
 	int line = 0;
 		
 	FILE* f = fopen(filename,"r");
+	
+	if (f==0) return -1;
+	
 	n = 0;
 
 	while (fgets(buf+n,4096-n,f))
