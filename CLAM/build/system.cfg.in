@@ -22,8 +22,16 @@ LIBRARY_PATHS = \
 	$(USE_XERCESC?$(TOP)/../xercesc/lib)
 
 LIBRARIES = \
+	$(USE_DOUBLE?rfftw:srfftw) \
+	$(USE_DOUBLE?fftw:sfftw) \
+	$(USE_FLTK?fltk) \
+	$(USE_FLTK?GL) \
 	$(USE_ALSA?asound) \
-	$(USE_XERCESC?xercesc) \
+	$(USE_XERCESC?xerces-c) \
+
+
+#	$(USE_DOUBLE?fftw) \
+#	$(USE_FLOAT?sfftw) \
 
 SOURCES_AUDIODEVICE = \
 	$(USE_ALSA?$(TOP)/src/Tools/AudioIO/Linux/ALSAAudioDevice.cxx)
