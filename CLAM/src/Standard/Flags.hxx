@@ -179,11 +179,6 @@ std::ostream & operator << (std::ostream & os, FlagsBase & f);
 */
 template <unsigned int N> class Flags : public FlagsBase, public std::bitset<N>
 {
-friend
-std::ostream & operator << (std::ostream & os, Flags<N> & f);
-friend
-std::istream & operator >> (std::istream & is, Flags<N> & f);
-
 // Construction/Destruction
 protected:
 	/** The default constructor */
@@ -262,6 +257,8 @@ public:
 //longer needed in VC++ 7.1. We could have implemented the body of the methods
 //inline on the header, but would have prevented us from using the compile-time
 //saving usage of the <iosfwd> header.
+
+#ifdef _MSC_VER
 template <unsigned int N>
 std::istream & operator >> (std::istream & is, Flags<N> & f) {
 	return (is >>  static_cast<FlagsBase&>(f) );
@@ -271,6 +268,7 @@ template <unsigned int N>
 std::ostream & operator << (std::ostream & os, Flags<N> & f){
 	return (os << static_cast<FlagsBase&>(f));
 }
+#endif //_MSC_VER
 
 }
 
