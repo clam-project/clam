@@ -61,7 +61,7 @@ public:
 	DYN_ATTRIBUTE (0, public, TTime, BeginTime);
 	DYN_ATTRIBUTE (1, public, TTime, EndTime);
 	DYN_ATTRIBUTE (2, private, bool, prHoldsData);
-	DYN_ATTRIBUTE (3, public, List<Frame>, FramesArray);
+	DYN_ATTRIBUTE (3, private, List<Frame>, prFramesArray);
 	DYN_ATTRIBUTE (4, public, Audio, Audio);
 	DYN_ATTRIBUTE (5, public, List<Segment>, Children);
 	DYN_ATTRIBUTE (6, public, TData, SamplingRate);
@@ -74,6 +74,22 @@ private:
 
 public:
 
+	void AddFramesArray()
+	{
+		AddprFramesArray();
+	}
+	void RemoveFramesArray()
+	{
+		RemoveprFramesArray();
+	}
+	
+	void SetFramesArray(const List<Frame>& frames)
+	{
+		SetprFramesArray(frames);
+		GetFramesSearch().Set(GetprFramesArray());
+	}
+	const List<Frame>& GetFramesArray() const {return GetprFramesArray();}
+	List<Frame>& GetFramesArray() {return GetprFramesArray();}
 	/** Index used when processing for keeeping trace of current location in Frame list*/
 	TIndex mCurrentFrameIndex;
 	

@@ -57,6 +57,7 @@ void Segment::CopyInit(const Segment& prototype)
 {
 	pParent=prototype.pParent;
 	mFramesSearch=prototype.mFramesSearch;
+	mFramesSearch.Set(GetFramesArray());
 	mCurrentFrameIndex=prototype.mCurrentFrameIndex;
 }
 
