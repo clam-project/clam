@@ -141,9 +141,10 @@ void SystemWithPorts::StartProcessings()
 
 void SystemWithPorts::OscillatorToFileOut::Connect()
 {
-	System()._oscillator.mOutput.Attach( System()._oscillatorData );
-	System()._fileOut.Input.Attach( System()._oscillatorData );
+	System()._oscillator.GetOutPorts().Get( "Audio Output" ).Attach( System()._oscillatorData );
+	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._oscillatorData );
 	System().AudioOutAttach(System()._oscillatorData);
+
 }
 bool SystemWithPorts::OscillatorToFileOut::Do() 
 {
@@ -155,12 +156,12 @@ bool SystemWithPorts::OscillatorToFileOut::Do()
 
 void SystemWithPorts::ModulatedFileIn::Connect()
 {
-	System()._fileIn.mOutput.Attach( System()._fileInData );
-	System()._modulator.mOutput.Attach( System()._modulatorData );
-	System()._multiplier.mFirstInput.Attach( System()._fileInData );
-	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
-	System()._multiplier.mOutput.Attach( System()._multiplierData );
-	System()._fileOut.Input.Attach( System()._multiplierData );
+	System()._fileIn.GetOutPorts().Get( "Output" ).Attach( System()._fileInData );
+	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
+	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._fileInData );
+	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
+	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
+	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._multiplierData );
 	System().AudioOutAttach(System()._multiplierData);
 }
 bool SystemWithPorts::ModulatedFileIn::Do()
@@ -181,12 +182,12 @@ void SystemWithPorts::ModulatedFileIn::Stop()
 
 void SystemWithPorts::ModulatedOscillator::Connect()
 {
-	System()._oscillator.mOutput.Attach( System()._oscillatorData );
-	System()._modulator.mOutput.Attach( System()._modulatorData );
-	System()._multiplier.mFirstInput.Attach( System()._oscillatorData );
-	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
-	System()._multiplier.mOutput.Attach( System()._multiplierData );
-	System()._fileOut.Input.Attach( System()._multiplierData );
+	System()._oscillator.GetOutPorts().Get( "Audio Output" ).Attach( System()._oscillatorData );
+	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
+	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._fileInData );
+	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
+	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
+	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._multiplierData );
 	System().AudioOutAttach(System()._multiplierData);
 }
 bool SystemWithPorts::ModulatedOscillator::Do()
@@ -203,8 +204,9 @@ bool SystemWithPorts::ModulatedOscillator::Do()
 
 void SystemWithPorts::FileInFileOut::Connect()
 {
-	System()._fileIn.mOutput.Attach( System()._fileInData );
-	System()._fileOut.Input.Attach( System()._fileInData );
+
+	System()._fileIn.GetOutPorts().Get( "Output" ).Attach( System()._fileInData );
+	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._fileInData );
 	System().AudioOutAttach(System()._fileInData);
 }
 bool SystemWithPorts::FileInFileOut::Do()
@@ -227,17 +229,15 @@ void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 	System()._controlSender.mLeft.AddLink(&(System()._mixer.mGain[0]));
 	System()._controlSender.mRight.AddLink(&(System()._mixer.mGain[1]));
 
-
-
-	System()._fileIn.mOutput.Attach( System()._fileInData );
-	System()._modulator.mOutput.Attach( System()._modulatorData );
-	System()._multiplier.mFirstInput.Attach( System()._fileInData );
-	System()._multiplier.mSecondInput.Attach( System()._modulatorData );
-	System()._multiplier.mOutput.Attach( System()._multiplierData );
-	System()._mixer.mInput[0].Attach( System()._multiplierData );
-	System()._mixer.mInput[1].Attach( System()._fileInData );
-	System()._mixer.mOutput.Attach( System()._mixerData );
-	System()._fileOut.Input.Attach( System()._mixerData );
+	System()._fileIn.GetOutPorts().Get( "Output" ).Attach( System()._fileInData );
+	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
+	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._fileInData );
+	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
+	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
+	System()._mixer.GetInPorts().Get("Input Audio_0").Attach( System()._multiplierData );
+	System()._mixer.GetInPorts().Get("Input Audio_1").Attach( System()._fileInData );
+	System()._mixer.GetOutPorts().Get("Output Audio").Attach( System()._mixerData );
+	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._mixerData );
 	System().AudioOutAttach(System()._mixerData);
 }
 bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
@@ -290,7 +290,7 @@ bool SystemWithPorts::AudioOutAttach(CLAM::Audio& a)
 {
 	if (_hasAudioOut)
 	{
-		_audioOut.Input.Attach( a );
+		_audioOut.GetInPorts().Get( "Input" ).Attach( a );
 		return true;
 	}
 	return false;

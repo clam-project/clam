@@ -420,12 +420,20 @@ namespace CLAM {
 		mArray.SetSize(size);
 		mDataPointers.Resize(size);
 		mDataPointers.SetSize(size);
+/*
 		for (int i=0; i<size; i++) {
-			std::stringstream sstr(i);
-			std::string nprima( n );
-			nprima+=std::string("_") + sstr.str();
-
-			mArray[i] = new InPortTmpl<T>(nprima,o,length,hop,inplace);
+			std::stringstream str("");
+//			stringstream::app
+			str << "_" << i << n;
+			mArray[i] = new InPortTmpl<T>(str.str(),o,length,hop,inplace);
+		}
+*/
+		for (int i=0; i<size; i++) {
+			std::stringstream sstr;
+			sstr.str("");
+			sstr << n << "_" << i;
+			std::cout << sstr.str() << std::endl;
+			mArray[i] = new InPortTmpl<T>(sstr.str(),o,length,hop,inplace);
 		}
 	}
 
