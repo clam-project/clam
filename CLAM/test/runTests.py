@@ -35,7 +35,6 @@ spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 
 #TODO max time allowed for each test -
-#TODO refactoring: delete last column of these tuples
 testsToRun = [
 	( 'AllUnitTests', unitTestsPath ),
 	( 'AllApplicationlTests', functionalTestsPath ),
@@ -325,7 +324,6 @@ def runTests() :
 			print 'warning: CVSROOT not found in environ'
 			os.environ['CVSROOT'] = CVSROOT
 
-		checkPaths()
 		os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
 		os.chdir(CLAM_SANDBOXES)
 		#sanity check
@@ -335,6 +333,7 @@ def runTests() :
 		print 'checking out a clean repository'
 		getStatusOutput('rm -rf '+SANDBOX_NAME )
 		executeMandatory('cvs checkout -r %s -d %s CLAM' % (MODULE_TAG, SANDBOX_NAME) )
+		checkPaths();
 		os.chdir(BUILDPATH+'srcdeps/')
 		executeMandatory('make')
 		os.chdir(BUILDPATH)
