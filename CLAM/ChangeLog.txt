@@ -1,3 +1,11 @@
+2003-11-26? CLAM_0_5_5
+  * General:
+    ** Code cleanup
+  * Visualization Module:
+    ** Bug that provoked Sinusoidal tracks to pop has been fixed
+    ** Bug that prevented some code to compile fixed
+
+
 2003-11-06 CLAM_0_5_4
 
   * Build system:
