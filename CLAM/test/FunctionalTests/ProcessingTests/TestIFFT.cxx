@@ -82,8 +82,8 @@ namespace CLAMTest
 
 			if ( !pathToTestData )
 				pathToTestData ="../../../../../CLAM-TestData/"; 
-
-			mPathToTestData = pathToTestData;
+			else
+				mPathToTestData = pathToTestData;
 
 			mPathToTestData += "spectralData/";
 			loadBack2BackDataset( mPathToTestData );
