@@ -22,213 +22,86 @@
 #ifndef _CLAM_OBJECTS_2_XERCES_DOM_HXX_
 #define _CLAM_OBJECTS_2_XERCES_DOM_HXX_
 
-#include "XercesDomDocumentHandler.hxx"
-#include "XMLable.hxx"
-#include "Assert.hxx"
-#include "Component.hxx"
+#include "Storage.hxx"
+#include <iosfwd>
+#include <string>
 
-#include <vector>
-#include <fstream>
-
-namespace xercesc = XERCES_CPP_NAMESPACE;
 
 namespace CLAM
 {
 
-class XMLStorage : public Storage
+class XMLable;
+class Component;
+class XercesDomDocumentHandler;
+class XercesDomWritingContext;
+class XercesDomReadingContext;
+
+class XmlStorage : public Storage
 {
-	XercesDomDocumentHandler _documentHandler;
+	XercesDomDocumentHandler * _documentHandler;
 	XercesDomWritingContext * _writeContext;
 	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
 public:
-	XMLStorage()
-	{
-		_readContext = 0;
-		_writeContext = 0;
-		_lastWasContent = true;
-	}
-	~XMLStorage()
-	{
-	}
+	XmlStorage();
+	~XmlStorage();
 
 // Final user interface (Atomic operations)
 public:
-	void Read(std::istream & is)
-	{
-		_documentHandler.read(is);
-	}
-
-	void Create(const std::string name)
-	{
-		_documentHandler.create(name.c_str());
-		_lastWasContent=false;
-	}
-
-	void WriteSelection(std::ostream & os)
-	{
-		_documentHandler.writeSelection(os);
-	}
-
-	void WriteDocument(std::ostream & os)
-	{
-		_documentHandler.writeDocument(os);
-	}
-
-	void DumpObject(const Component & component)
-	{
-		XercesDomWritingContext rootContext(_documentHandler);
-		_writeContext = & rootContext;
-		component.StoreOn(*this);
-	}
-
-	void RestoreObject(Component & component)
-	{
-		XercesDomReadingContext rootContext(_documentHandler);
-		_readContext = & rootContext;
-		component.LoadFrom(*this);
-	}
-
-	void Select(const std::string & path)
-	{
-		CLAM_ASSERT(false,"XMLStorage::Select not implemented yet");
-	}
-
-	void UseIndentation(bool useIndentation) {
-		// TODO: Not yet implemented
-	}
+	void Read(std::istream & is);
+	void Create(const std::string name);
+	void WriteSelection(std::ostream & os);
+	void WriteDocument(std::ostream & os);
+	void DumpObject(const Component & component);
+	void RestoreObject(Component & component);
+	void Select(const std::string & path);
+	void UseIndentation(bool useIndentation);
 // Final User static interface (Summary operations)
 public:
 
 	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os)
 	{
-		XMLStorage storage;
+		XmlStorage storage;
 		storage.Create(rootName);
 		storage.DumpObject(obj);
-		storage.WriteDocument(os);
+		storage.WriteSelection(os);
 	}
 
 	static void Restore(Component & obj, std::istream & is)
 	{
-		XMLStorage storage;
+		XmlStorage storage;
 		storage.Read(is);
 		storage.RestoreObject(obj);
 	}
 
-	static void Restore(Component & obj, const std::string & filename)
-	{
-		std::fstream is(filename.c_str());
-		Restore(obj,is);
-	}
+	static void Restore(Component & obj, const std::string & filename);
 
 	static void RestorePartialDocument(Component & obj, const std::string & path, std::istream & is)
 	{
-		XMLStorage storage;
+		XmlStorage storage;
 		storage.Read(is);
 		storage.Select(path);
 		storage.RestoreObject(obj);
 	}
 
-	static void AppendToDocument(Component & obj, const std::string & path, std::iostream & str)
-	{
-		XMLStorage storage;
-		storage.Read(str);
-		storage.Select(path);
-		storage.DumpObject(obj);
-		storage.WriteDocument(str);
-	}
+	static void AppendToDocument(Component & obj, const std::string & path, std::iostream & str);
 
 // Interface for Components to load/store their subitems
 public:
-	void Store(const Storable & storable)
-	{
-		const XMLable * xmlable = dynamic_cast<const XMLable *>(&storable);
-		const char * name = xmlable->XMLName();
-		if (!name)
-		{
-			StoreContentAndChildren(xmlable);
-			return;
-		}
-		if (xmlable->IsXMLAttribute())
-		{
-			_writeContext->addAttribute(name,xmlable->XMLContent().c_str());
-			return;
-		}
-		if (xmlable->IsXMLElement())
-		{
-			_lastWasContent=false;
-			XercesDomWritingContext newContext(_writeContext, name);
-			_writeContext = & newContext;
-			StoreContentAndChildren(xmlable);
-			_writeContext = newContext.release();
-			_lastWasContent=false;
-			return;
-		}
-		CLAM_ASSERT(false,"A weird XMLable inserted");
-	}
+	void Store(const Storable & storable);
+	bool Load(Storable & storable);
 
-	bool Load(Storable & storable)
-	{
-		XMLable * xmlable = dynamic_cast<XMLable *>(&storable);
-		if (!xmlable) return false;
-
-		if (xmlable->IsXMLText())
-			return LoadContentAndChildren(xmlable);
-
-		if (xmlable->IsXMLElement())
-		{
-			if (!_readContext->findElement(xmlable->XMLName()))
-				return false;
-			XercesDomReadingContext innerContext(_readContext, xmlable->XMLName());
-			_readContext = &innerContext;
-			LoadContentAndChildren(xmlable);
-			_readContext = innerContext.release();
-		//	addErrors(innerContext.errors());
-			return true;
-		}
-
-		// TODO: Test Attributes
-		if (xmlable->IsXMLAttribute())
-		{
-			std::stringstream stream;
-			if (!_readContext->extractAttribute(xmlable->XMLName(), stream))
-				return false;
-			return xmlable->XMLContent(stream);
-		}
-
-		CLAM_ASSERT(false, "A weird XMLable inserted");
-	}
+// Private helper functions
 private:
-	bool LoadContentAndChildren(XMLable* xmlable)
-	{
-		bool result = xmlable->XMLContent(_readContext->reachableContent());
-		Component * component = dynamic_cast<Component*>(xmlable);
-		if (component) component->LoadFrom(*this);
-		return result;
-	}
-
-	void StoreContentAndChildren(const XMLable * xmlable)
-	{
-		AddContentToElement(xmlable->XMLContent());
-		StoreChildrenIfComponent(xmlable);
-	}
-
-	void StoreChildrenIfComponent(const XMLable * xmlable)
-	{
-		const Component * component = dynamic_cast<const Component *>(xmlable);
-		if (component) component->StoreOn(*this);
-	}
-
-	void AddContentToElement(const std::string & content)
-	{
-		if (content=="") return;
-		if (_lastWasContent)
-			_writeContext->addContent(" ");
-		_writeContext->addContent(content.c_str());
-		_lastWasContent = true;
-	}
+	bool LoadContentAndChildren(XMLable* xmlable);
+	void StoreContentAndChildren(const XMLable * xmlable);
+	void StoreChildrenIfComponent(const XMLable * xmlable);
+	void AddContentToElement(const std::string & content);
 
 };
+
+/** For maintaining compatibility with deprecated class name  */
+typedef XmlStorage XMLStorage;
 
 
 }
