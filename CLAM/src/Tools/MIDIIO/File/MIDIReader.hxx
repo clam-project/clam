@@ -35,9 +35,15 @@ namespace MIDI
 			fread(&val,4,1,mFile);
     	unsigned char* ptr=(unsigned char*) &val;
     	unsigned char tmp;
-			/* todo: only do byte swap on little endian machines */
+			#ifdef CLAM_LITTLE_ENDIAN
+			printf("CLAM_LITTLE_ENDIAN BYTES\n");
+			#endif
+			#ifdef MIDI_FILE_NEEDS_SWAP
+			printf("SWAPPING BYTES\n");
+			fflush(stdout);
     	tmp=ptr[0]; ptr[0]=ptr[3]; ptr[3]=tmp;
     	tmp=ptr[1]; ptr[1]=ptr[2]; ptr[2]=tmp;
+			#endif
 			return val;
 		}
 		unsigned short GetShort(void)
@@ -46,8 +52,9 @@ namespace MIDI
 			fread(&val,2,1,mFile);
     	unsigned char* ptr=(unsigned char*) &val;
     	unsigned char tmp;
-			/* todo: only do byte swap on little endian machines */
+			#ifdef MIDI_FILE_NEEDS_SWAP
     	tmp=ptr[0]; ptr[0]=ptr[1]; ptr[1]=tmp;
+			#endif
 			return val;
 		}
 		unsigned int GetVarLength(void)

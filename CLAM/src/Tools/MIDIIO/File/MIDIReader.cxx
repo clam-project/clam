@@ -11,6 +11,26 @@ namespace MIDI
 		static int nbytesPerChnMsg[7] =
 		{ 3,3,3,3,2,3,3 };
 
+		{
+			/* do some overly paranoid safety check, to see if endianity
+			** got determined correctly. this should really not be necesary,
+			** we should have some standard tests for that, but hey! it won't
+			** hurt
+			*/
+			unsigned int tmpi = 0x4D546864;
+			#ifdef MIDI_FILE_NEEDS_SWAP
+			char tmps[4] = {0x64,0x68,0x54,0x4D};
+			#else
+			char tmps[4] = {0x4D,0x54,0x68,0x64};
+			#endif
+						
+			if (*((int*)tmps)!=tmpi)
+			{
+				printf("Determined endianity seems wrong\n");
+				throw Error("Determined endianity seems wrong");
+			}
+		}
+
 		unsigned int chnkType = GetInt();
 		unsigned int length;
 		unsigned short format,ntrcks;
