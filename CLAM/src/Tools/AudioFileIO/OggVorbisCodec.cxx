@@ -3,6 +3,8 @@
 #include "OggVorbisCodec.hxx"
 #include "OggVorbisAudioStream.hxx"
 #include <cstdio>
+#include <string>
+#include <algorithm>
 #include <vorbis/vorbisfile.h>
 
 namespace CLAM
@@ -102,6 +104,101 @@ namespace AudioCodecs
 
 		// MRJ: No need to close the fileHandle since libvorbisfile takes
 		// its ownership if the ov_open call is successful
+		ov_clear( &vorbisFile );
+	}
+
+	void    OggVorbisCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors&  txtDesc )
+	{
+		FILE*          fileHandle;
+		OggVorbis_File vorbisFile;
+		
+		if ( ( fileHandle = fopen( uri.c_str(), "rb" ) ) == NULL )
+		     return;
+
+		if ( ov_open( fileHandle, &vorbisFile, NULL, 0 ) < 0 )		
+		{
+			fclose( fileHandle );			
+			return;
+		}
+
+		vorbis_info* fileInfo = ov_info( &vorbisFile, -1 );
+		
+		if ( !fileInfo ) // File was encoded improperly
+			return;
+
+
+		vorbis_comment* fileComments = ov_comment( &vorbisFile, -1 );
+
+		if ( !fileComments ) // there were no comments in the file!
+		{
+			return;
+		}
+		
+		int nComments = fileComments->comments;
+		char** commentVector = fileComments->user_comments;
+		int*   commentLenVector = fileComments->comment_lengths;
+
+		for ( int i = 0; i < nComments; i++ )
+		{
+			// convert the current comment string into a std::string
+			std::string currentComment;
+			currentComment.assign( commentVector[i], 
+					       commentVector[i]+commentLenVector[i] );
+			
+			std::string::iterator eqPos = std::find( currentComment.begin(),
+								 currentComment.end(), '=' );
+
+			if ( eqPos < currentComment.end() )
+			{
+				std::string fieldName;
+				fieldName.assign( currentComment.begin(), eqPos );
+
+				if( fieldName == "ARTIST" )
+				{
+					txtDesc.AddArtist();
+					txtDesc.UpdateData();
+					txtDesc.GetArtist().assign( eqPos+1, currentComment.end() );
+				}
+				else if ( fieldName == "TITLE" )
+				{
+					txtDesc.AddTitle();
+					txtDesc.UpdateData();
+					txtDesc.GetTitle().assign( eqPos+1, currentComment.end() );
+				}
+				else if ( fieldName == "ALBUM" )
+				{
+					txtDesc.AddAlbum();
+					txtDesc.UpdateData();
+					txtDesc.GetAlbum().assign( eqPos+1, currentComment.end() );
+				}
+				else if ( fieldName == "TRACKNUMBER" )
+				{
+					txtDesc.AddTrackNumber();
+					txtDesc.UpdateData();
+					txtDesc.GetTrackNumber().assign( eqPos+1, currentComment.end() );
+				}
+				else if ( fieldName == "PERFORMER" )
+				{
+					txtDesc.AddPerformer();
+					txtDesc.UpdateData();
+					txtDesc.GetPerformer().assign( eqPos+1, currentComment.end() );
+				}
+				else if ( fieldName == "COMPOSER" )
+				{
+					txtDesc.AddComposer();
+					txtDesc.UpdateData();
+					txtDesc.GetComposer().assign( eqPos+1, currentComment.end() );
+				}
+				else
+				{
+					std::string msg = fieldName;
+					msg+= ":  Ignored comment field!";
+					CLAM_WARNING( false, msg.c_str() );
+				}
+			}
+			
+		}
+
 		ov_clear( &vorbisFile );
 	}
 }

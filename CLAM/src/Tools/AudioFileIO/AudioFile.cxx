@@ -71,12 +71,14 @@ namespace CLAM
 				SetKind( EAudioFileKind::eOggVorbis );
 				mActiveCodec = & AudioCodecs::OggVorbisCodec::Instantiate();
 				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
+				mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );
 			}
 			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( uri ) )
 			{
 				SetKind( EAudioFileKind::eMpeg );
 				mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
 				mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
+				mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );
 			}
 		
 			return; // things went smooth...

@@ -29,6 +29,11 @@ namespace AudioCodecs
 
 		return true;
 	}
+
+	void   Codec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& tdesc )
+	{
+		//CLAM_WARNING( false, "Text descriptors retrieval is not implemented for this kind of files!" );
+	}
 }
 
 }

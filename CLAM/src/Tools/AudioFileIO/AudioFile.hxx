@@ -27,6 +27,7 @@
 #include "Filename.hxx"
 #include "AudioFileFormats.hxx"
 #include "AudioFileHeader.hxx"
+#include "AudioTextDescriptors.hxx"
 
 #include <string>
 
@@ -48,14 +49,21 @@ namespace CLAM
 		const AudioFile& operator=( const AudioFile& );
 		~AudioFile();
 
-		void                   SetLocation( std::string uri );
-		const AudioFileHeader& GetHeader() const;
-		bool                   SetHeader( const AudioFileHeader& );
-		const std::string&     GetLocation() const;
-		EAudioFileKind         GetKind() const;
-		bool                   IsValid() const;
-		bool                   IsReadable() const;
-		bool                   IsWritable() const;
+		void                          SetLocation( std::string uri );
+
+		bool                          SetHeader( const AudioFileHeader& );
+		const AudioFileHeader&        GetHeader() const;
+		
+		void                          SetTextDescriptors( const AudioTextDescriptors& );
+		AudioTextDescriptors&         GetTextDescriptors();
+		const AudioTextDescriptors&   GetTextDescriptors() const;
+
+		const std::string&            GetLocation() const;
+		EAudioFileKind                GetKind() const;
+
+		bool                          IsValid() const;
+		bool                          IsReadable() const;
+		bool                          IsWritable() const;
 
 		AudioCodecs::Stream*   GetStream();
 		void                   LoadFrom( Storage& storage);
@@ -67,10 +75,11 @@ namespace CLAM
 		void                   SetKind( EAudioFileKind newKind );
 
 	protected:
-		std::string         mLocation;
-		EAudioFileKind      mKind;
-		AudioCodecs::Codec* mActiveCodec;
-		AudioFileHeader     mHeaderData;
+		std::string           mLocation;
+		EAudioFileKind        mKind;
+		AudioCodecs::Codec*   mActiveCodec;
+		AudioFileHeader       mHeaderData;
+		AudioTextDescriptors  mTextDescriptors;
 
 	};
 
@@ -80,6 +89,21 @@ namespace CLAM
 	inline void AudioFile::SetKind( EAudioFileKind newKind )
 	{
 		mKind = newKind;
+	}
+
+	inline void AudioFile::SetTextDescriptors( const AudioTextDescriptors& txtDesc )
+	{
+		mTextDescriptors = txtDesc;
+	}
+
+	inline AudioTextDescriptors& AudioFile::GetTextDescriptors()
+	{
+		return mTextDescriptors;
+	}
+
+	inline const AudioTextDescriptors& AudioFile::GetTextDescriptors() const
+	{
+		return mTextDescriptors;
 	}
 	
 }

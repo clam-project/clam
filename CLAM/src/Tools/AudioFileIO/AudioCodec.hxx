@@ -8,6 +8,7 @@ namespace CLAM
 
 	class AudioFile;
 	class AudioFileHeader;
+	class AudioTextDescriptors;
 
 namespace AudioCodecs
 {
@@ -22,6 +23,7 @@ namespace AudioCodecs
 		virtual bool     IsWritable( std::string filename, const AudioFileHeader& ) const = 0;
 		virtual Stream*  GetStreamFor( const AudioFile& ) = 0;
 		virtual void     RetrieveHeaderData( std::string uri, AudioFileHeader& ) = 0;
+		virtual void     RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& );
 	};
 }
 
