@@ -24,8 +24,6 @@
 
 #include <FL/Fl_Group.H>
 #include "FLDisplay.hxx"
-#include "GLPortNew.hxx"
-
 namespace CLAMGUI
 {
 

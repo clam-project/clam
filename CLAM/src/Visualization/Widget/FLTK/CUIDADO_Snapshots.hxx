@@ -12,7 +12,7 @@ using CLAM::Spectrum;
 using CLAM::SpectralPeakArray;
 using CLAM::TData;
 
-namespace CLAMGUI
+namespace CUIDADO
 {
   void ShowSnapshot( DataArray& arr, const char* label = 0);
   

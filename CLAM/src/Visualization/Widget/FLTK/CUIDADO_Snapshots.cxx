@@ -2,15 +2,15 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Scroll.H>
-#include "FLDisplayContainer.hxx"
+#include "CUIDADO_FLDisplayContainer.hxx"
 #include "FLDisplayArray.hxx"
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Double_Window.H>
 #include "ErrGUI.hxx"
 
+using namespace CLAM;
 using namespace CLAMGUI;
-
-namespace CLAMGUI {
+namespace CUIDADO {
 
 void CalculateWndSize( int& x, int& y, int& w, int& h )
 {
@@ -46,7 +46,7 @@ void DrawArray( DataArray& arr, const char* label )
 
 	FLDisplayArray<TData> display( &arr  );
 	
-	mc.Add( display );
+	mc.Add( &display );
 
 	mc.SetHorRange( 0, arr.Size() );
 
@@ -124,7 +124,7 @@ void ShowSnapshot( Audio& aud, CLAM::Array<int> mask, const char* label, unsigne
 	
 	FLDisplayArray<TData> display( &arr, mask, c );
 	
-	mc.Add( display );
+	mc.Add( &display );
 	
 	mc.SetHorRange( 0, arr.Size() );
 	
@@ -166,7 +166,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 		display.AddArray( &arr1, FL_GREEN );
 		display.AddArray( &arr2, FL_RED );
 		
-		mc.Add( display );
+		mc.Add( &display );
 		
 		mc.SetHorRange( 0, arr1.Size() );
 		
@@ -232,7 +232,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 		
 		display.AddArray(&peaks,FL_YELLOW);
 		
-		mc.Add( display );     
+		mc.Add( &display );     
 		mc.SetHorRange( 0, sp.GetSize() );
 		mc.SetVerRange( max, -( max - min)  );
 		
@@ -297,7 +297,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 		display.AddArray(&peaks,FL_YELLOW);
 		display.AddArray(&selec, FL_RED);
 
-		mc.Add( display );     
+		mc.Add( &display );     
 		mc.SetHorRange( 0, sp.GetSize() );
 		mc.SetVerRange( max, -( max - min)  );
 
@@ -380,7 +380,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 			 cte += maxval[i]-minval[i];
      }
 
-     mc.Add(display);     
+     mc.Add(&display);     
      mc.SetHorRange(0,size);
      mc.SetVerRange(cte+maxval[numBands-1], -(cte  - minval[0]));
      
@@ -437,7 +437,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 				
 				FLDisplayArray<TData>*  display = new FLDisplayArray<TData>( &array  );
 				
-				mc->Add( *display );
+				mc->Add( display );
 				
 				mc->SetHorRange( 0, array.Size() );
 				
@@ -488,7 +488,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 			max+=0.5;
 		}
 		FLDisplayArray<TData>*  display = new FLDisplayArray<TData>( &audio  );
-		mc->Add( *display );
+		mc->Add( display );
 		mc->SetHorRange( 0, audio.Size() );
 		mc->SetVerRange( max, -( max - min)  );
 		mc->mpHorRuler->mInteger = true;
@@ -504,7 +504,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 			max+=0.5;
 		}
 		FLDisplayArray<TData>*  display2 = new FLDisplayArray<TData>( &desc1  );
-		mc2->Add( *display2 );
+		mc2->Add( display2 );
 		mc2->SetHorRange( 0, desc1.Size() );
 		mc2->SetVerRange( max, -( max - min)  );
 		mc2->mpHorRuler->mInteger = true;
@@ -520,7 +520,7 @@ void ShowSnapshot( DataArray& arr1, DataArray& arr2, const char* label)
 			max+=0.5;
 		}
 		FLDisplayArray<TData>*  display3 = new FLDisplayArray<TData>( &desc2  );
-		mc3->Add( *display3 );
+		mc3->Add( display3 );
 		mc3->SetHorRange( 0, desc2.Size() );
 		mc3->SetVerRange( max, -( max - min)  );
 		mc3->mpHorRuler->mInteger = true;
@@ -570,7 +570,7 @@ void ShowSnapshot(DataArray& audio, CLAM::Array<int> mask, DataArray &desc1, Dat
 		FLDisplayArray<TData>* display= new FLDisplayArray<TData>( &audio, mask, c );
 		//FLDisplayArray<TData>*  display = new FLDisplayArray<TData>( &audio  );
 		
-		mc->Add( *display );
+		mc->Add( display );
 		mc->SetHorRange( 0, audio.Size() );
 		mc->SetVerRange( max, -( max - min)  );
 		mc->mpHorRuler->mInteger = true;
@@ -586,7 +586,7 @@ void ShowSnapshot(DataArray& audio, CLAM::Array<int> mask, DataArray &desc1, Dat
 			max+=0.5;
 		}
 		FLDisplayArray<TData>*  display2 = new FLDisplayArray<TData>( &desc1  );
-		mc2->Add( *display2 );
+		mc2->Add( display2 );
 		mc2->SetHorRange( 0, desc1.Size() );
 		mc2->SetVerRange( max, -( max - min)  );
 		mc2->mpHorRuler->mInteger = true;
@@ -602,7 +602,7 @@ void ShowSnapshot(DataArray& audio, CLAM::Array<int> mask, DataArray &desc1, Dat
 			max+=0.5;
 		}
 		FLDisplayArray<TData>*  display3 = new FLDisplayArray<TData>( &desc2  );
-		mc3->Add( *display3 );
+		mc3->Add( display3 );
 		mc3->SetHorRange( 0, desc2.Size() );
 		mc3->SetVerRange( max, -( max - min)  );
 		mc3->mpHorRuler->mInteger = true;
@@ -650,7 +650,7 @@ void ShowSnapshot(DataArray& audio, CLAM::Array<int> mask, DataArray &desc1, Dat
 	
 	FLDisplayArray<TData>*  display = new FLDisplayArray<TData>( &array  );
 	
-	mc->Add( *display );
+	mc->Add( display );
 
 	mc->SetHorRange( 0, array.Size() );
 
@@ -706,7 +706,7 @@ void ShowSnapshot(DataArray& audio, CLAM::Array<int> mask, DataArray &desc1, Dat
 	
 	FLDisplayArray<TData>*  display = new FLDisplayArray<TData>( &array  );
 	
-	mc->Add( *display );
+	mc->Add( display );
 
 	mc->SetHorRange( 0, array.Size() );
 
