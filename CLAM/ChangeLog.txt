@@ -8,6 +8,8 @@
       ** Fix: 'this' (the processing) was thown on error instead exceptions
   * Visualization:
       ** Removed: FLDisplay, FLMultiDisplay, FLDisplayArray and CUIDADO_Snapshots
+  * FLTKConfigurator:
+      ** Uses FL_Pack  & FL_Scroll for managing the widgets position
 
 2003-01-23 CLAM_0_4_1
 'Analysis Synthesis debuggin'
