@@ -1,20 +1,8 @@
 #include "ProcessingChain.hxx"
 
 //We should avoid having to include all SMS Transformations here: factory needed
-#include "SMSTransformation.hxx"
-#include "SMSFreqShift.hxx"
-#include "SMSPitchShift.hxx"
-#include "SMSOddEvenHarmonicRatio.hxx"
-#include "SMSSineFilter.hxx"
-#include "SMSResidualGain.hxx"
-#include "SMSTransformationChainIO.hxx"
-#include "SMSHarmonizer.hxx"
-#include "SMSSinusoidalGain.hxx"
-#include "SMSPitchDiscretization.hxx"
-#include "SMSSpectralShapeShift.hxx"
-#include "SMSGenderChange.hxx"
-#include "SMSMorph.hxx"
-
+#include "SMSTransformationConfig.hxx"
+#include "SMSMorphConfig.hxx"
 
 namespace CLAM
 {

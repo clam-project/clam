@@ -28,53 +28,14 @@
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
 
-#include "BPF.hxx"
-
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
+#include "SMSTransformationConfig.hxx"
 
 namespace CLAM {
 
 
-	/** Configuration class for all SMSTransformations. It includes a float-like single value 
-	 *	parameter and a BPF envelope-like parameter. Either one of these may be used to initialize 
-	 *	and update the value control in an SMSTransformation.
-	 */
-	class SMSTransformationConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationConfig, 4,ProcessingConfig);
-		/** Name of the SMSTransformation object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/** Type of transformation, for the time being just a string, should become
-		* an enumeration of known transformation types??*/
-		DYN_ATTRIBUTE (1, public, std::string, Type);
-		/** Single Value Parameter */
-		DYN_ATTRIBUTE (2, public, TData, Amount);
-		/** BPF (envelope-like) Parameter */
-		DYN_ATTRIBUTE (3, public, BPF, BPFAmount);
-
-
-	protected:
-		/** The single-value Amount and the On configuration are added by default. 
-		 *	Should you need the BPF, it must be added explicitly
-		 */
-		void DefaultInit()
-		{
-			AddAmount();
-			UpdateData();
-			DefaultValues();
-		}
-
-		/** By default, the amount is set to 0 and the On parameter to true.*/
-		void DefaultValues()
-		{
-			SetAmount(0);
-		}
-	public:
-		virtual ~SMSTransformationConfig(){}
-	};
 
 	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
 	 *	SMS Transformations such as Configuration and Control handling but defers the selection
@@ -93,37 +54,20 @@ namespace CLAM {
 		 *  @param The ProcessingConfig object
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			CopyAsConcreteConfig(mConfig, c);
-			mUseTemporalBPF=false;
-			if(mConfig.HasAmount())
-				mAmountCtrl.DoControl(mConfig.GetAmount());
-			else if(mConfig.HasBPFAmount()){
-				mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
-				mUseTemporalBPF=true;}
-			else
-				mAmountCtrl.DoControl(0);
-			return true;
-		}
-		
+		virtual bool ConcreteConfigure(const ProcessingConfig& c);
+
 		const ProcessingConfig& GetConfig() const
 		{
 			return mConfig;
 		}
 
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSTransformation():mAmountCtrl("Amount",this),mOnCtrl("On",this),mInput("Input",this,1),mOutput("Output",this,1)
-		{
-		}
+		SMSTransformation();
 
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSTransformation(const SMSTransformationConfig& c):mAmountCtrl("Amount",this),mOnCtrl("On",this),mInput("Input",this,1),mOutput("Output",this,1)
-		{
-			Configure(c);
-		}
+		SMSTransformation(const SMSTransformationConfig& c);
 		
 		/** Destructor of the class*/
  		virtual ~SMSTransformation(){};
@@ -143,15 +87,7 @@ namespace CLAM {
 		/** Method to update the Amount control from an existing BPF configured in the
 		 *	configuration phase.
 		 */
-		bool UpdateControlValueFromBPF(TData pos)
-		{
-			if(mConfig.HasBPFAmount())
-			{
-				mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(pos));
-				return true;
-			}
-			else return false;
-		}
+		bool UpdateControlValueFromBPF(TData pos);
 	
 	protected:
 

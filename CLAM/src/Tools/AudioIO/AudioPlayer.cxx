@@ -77,7 +77,7 @@ void AudioPlayer::PlayingThreadSafe(  )
 	
 	// first sample calculation
 	TIndex firstSample = 
-		((mT0*1000 - mAudioReference->GetBeginTime())/(mAudioReference->GetEndTime()-mAudioReference->GetBeginTime()))*(TTime)mAudioReference->GetSize()-1;
+		((mT0*1000 - mAudioReference->GetBeginTime())/(mAudioReference->GetEndTime()-mAudioReference->GetBeginTime()))*((TTime)mAudioReference->GetSize()-1);
 
 	CLAM_ASSERT( firstSample >= 0, "Bad sample index!" );
 	CLAM_ASSERT( firstSample < mAudioReference->GetSize(), "Bad sample index!" );

@@ -20,6 +20,7 @@
  */
 
 #include "SMSPitchShift.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -82,3 +83,7 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 	out.SetFundamental(tmpFund);
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
 }
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+static ProcessingFactory::Registrator<CLAM::SMSPitchShift> regtSMSPitchShift( "SMSPitchShift" );

@@ -21,6 +21,7 @@
 #include <iostream>
 #include <fstream>
 #include "SMSMorph.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -293,3 +294,6 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 		mHybResPhase.DoControl(mConfig.GetHybResPhase().GetValue(pos));
 	return ret;
 }
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSMorph> regtSMSMorph( "SMSMorph" );

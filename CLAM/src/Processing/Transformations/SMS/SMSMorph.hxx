@@ -24,6 +24,7 @@
 #define _SMSMorph_
 
 #include "SMSTransformation.hxx"
+#include "SMSMorphConfig.hxx"
 #include "SDIFIn.hxx"
 #include "FrameInterpolator.hxx"
 #include "SpectrumInterpolator.hxx"
@@ -32,68 +33,6 @@
 namespace CLAM{
 
 
-	class SMSMorphConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSMorphConfig, 15,ProcessingConfig);
-		/** Name of the SMSTransformation object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/** FileName where pre-analyzed sound to morph is to be found */
-		DYN_ATTRIBUTE (1, public, std::string, FileName);
-		/** BPF (envelope-like) Parameter. Defines how much of each sound is being used from 0 to 1  */
-		DYN_ATTRIBUTE (2, public, BPF, HybBPF);
-		/** boolean Parameter. Defines whether intermediate frames should be interpolated from
-			existing ones. */
-		DYN_ATTRIBUTE (3, public, bool, InterpolateFrame);
-		/** BPF (envelope-like) Parameter. Defines temporal relation between input sound and sound
-			to hybridize */
-		DYN_ATTRIBUTE (4, public, BPF, SynchronizeTime);
-		/** BPF (envelope-like) Parameter. Amount of amplitude of sinusoids to take from input sound (0)
-			or sound to hybridize (1) */
-		DYN_ATTRIBUTE (5, public, BPF, HybSinAmp);
-		/** BPF (envelope-like) Parameter. Defines whether HybSinShapeW1 or HybSinShapeW2 should be used */
-		DYN_ATTRIBUTE (6, public, BPF, HybSinSpectralShape);
-		/** BPF (envelope-like) Parameter. Weight given to input spectral shape in relation to sound to
-			hybridize spectral shape */
-		DYN_ATTRIBUTE (7, public, BPF, HybSinShapeW1);
-		/** BPF (envelope-like) Parameter. Weight given to sound to hybridize spectral shape in relation to 
-			input sound spectral shape */
-		DYN_ATTRIBUTE (8, public, BPF, HybSinShapeW2);
-		/** BPF (envelope-like) Parameter. Pitch to use: 0 input, 1 sound to hybridize */
-		DYN_ATTRIBUTE (9, public, BPF, HybPitch);
-		/** BPF (envelope-like) Parameter. Hybridize Sinusoidal Frequency */
-		DYN_ATTRIBUTE (10, public, BPF, HybSinFreq);
-		/** BPF (envelope-like) Parameter. Hybridize Residual Frequency */
-		DYN_ATTRIBUTE (11, public, BPF, HybResAmp);
-		/** BPF (envelope-like) Parameter. Hybridize Residual Spectral Shape */
-		DYN_ATTRIBUTE (12, public, BPF, HybResSpectralShape);
-		/** BPF (envelope-like) Parameter. Weight for Residual Spectral Shape */
-		DYN_ATTRIBUTE (13, public, BPF, HybResShapeW1);
-		/** BPF (envelope-like) Parameter. What residual phase to take, input sound or sound to hybridize */
-		DYN_ATTRIBUTE (14, public, BPF, HybResPhase);
-		
-
-
-	protected:
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-			DefaultValues();
-		}
-
-		void DefaultValues()
-		{
-			BPF tmpBPF(2);
-			tmpBPF.SetValue(0,0);
-			tmpBPF.SetXValue(0,0);
-			tmpBPF.SetValue(1,0);
-			tmpBPF.SetXValue(1,1);
-			SetHybBPF(tmpBPF);
-		}
-	public:
-		~SMSMorphConfig(){}
-	};
 	
 	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
 	 *	extracted to external Processing's*/
