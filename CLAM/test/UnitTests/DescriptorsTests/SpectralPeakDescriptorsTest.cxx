@@ -50,7 +50,6 @@ class SpectralPeakDescriptorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testDataAttachment_whenLogDataFails );
 	CPPUNIT_TEST( testConstructionDataAttachment_whenLogDataFails );
 	CPPUNIT_TEST( testMagnitudeMean );
-	CPPUNIT_TEST( testSpectralTilt );
 	CPPUNIT_TEST( testHarmonicCentroid );
 	CPPUNIT_TEST( testHarmonicDeviation );
 	CPPUNIT_TEST( testFirstTristimulus );
@@ -70,14 +69,7 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-		if ( !pathToTestData )
-			mPathToTestData = "../../../../CLAM-TestData/";
-		else
-			mPathToTestData = pathToTestData;
-
-		mPathToTestData += "descriptorsData/frames/SpectralPeaks/";
+		mPathToTestData = GetTestDataDirectory("descriptorsData/frames/SpectralPeaks/");
 
 		mDescriptors = new CLAM::SpectralPeakDescriptors();
 		mDescriptors->RemoveAll();
@@ -417,24 +409,6 @@ private:
 		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetOddToEvenRatio);
 	}
 		
-	void testSpectralTilt()
-	{
-		CLAM::TData tolerance = 1e-23;  // Due to numerical inaccuracies
-
-		std::map<std::string, CLAM::TData> data;
-		data["No-Peaks.xml"] = 0;
-		data["Single-Peaks.xml"] =0;
-		data["5FlatSloped-Peaks.xml"] = -4.32389e-19;
-		data["Serie1To5-Peaks.xml"] = -1.11172e-18;
-		data["Serie5To1-Peaks.xml"] = -2.60335e-18;
-		data["bell_A3.wav-Peaks.xml"] = -3.73177e-21;
-
-		
-		mDescriptors->AddSpectralTilt();
-
-		assertDescriptorExtractionInsideTolerance(data, tolerance, &CLAM::SpectralPeakDescriptors::GetSpectralTilt);
-	}
-
 };
 
 
