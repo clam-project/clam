@@ -20,17 +20,18 @@ class UserInterface {open
 } {
   decl {public: CLAMGUI::SMSTools* mSMS;} {public
   }
-  Function {UserInterface()} {} {
+  Function {UserInterface()} {open
+  } {
     Fl_Window mWindow {
       label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {182 177 872 548} hide resizable
-      code0 {mWindow2=NULL;}
+      xywh {358 388 870 550} type Double resizable
+      code0 {mWindow2=NULL;} visible
     } {
       Fl_Group {} {
         xywh {0 0 872 21}
       } {}
       Fl_Menu_Bar mMenuBar {
-        private xywh {0 0 872 21} box PLASTIC_UP_BOX labelsize 13 textsize 12
+        private xywh {0 0 872 25} labelsize 13 textsize 12
       } {
         submenu mFileMenuItem {
           label File open
@@ -244,48 +245,71 @@ Exit();}
           }
         }
       }
-      Fl_Counter mCounter {
-        label {Frame }
-        callback {ChangeFrame();}
-        xywh {330 525 190 20} box PLASTIC_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
-      }
       Fl_Group {} {
-        xywh {0 25 870 495} resizable
+        xywh {0 25 870 495}
       } {
         Fl_Box mSmartTile {
-          private xywh {0 25 870 495}
+          private xywh {0 30 870 490}
           code0 {o->minsize(80);}
           class Fl_Smart_Tile
         }
       }
+      Fl_Group {} {open
+        xywh {0 525 870 25}
+      } {
+        Fl_Counter mCounter {
+          label {Frame }
+          callback {ChangeFrame();}
+          xywh {340 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+        }
+        Fl_Box {} {
+          xywh {0 525 340 20} resizable
+        }
+      }
+      Fl_Box {} {
+        xywh {530 525 340 20} resizable
+      }
     }
   }
-  Function {AboutWindow()} {private return_type void
+  Function {AboutWindow()} {open return_type void
   } {
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;}
-      private xywh {837 547 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
-      code0 {mWindow2->show();} modal
+mWindow2=NULL;} open selected
+      private xywh {347 416 450 180} type Double labelsize 10
+      code0 {mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);}
+      code1 {mWindow2->show();} modal visible
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
-        private xywh {85 15 265 20} labelfont 3 labelsize 12
+        private xywh {5 5 440 30} box FLAT_BOX color 1 labelfont 1 labelsize 16 labelcolor 7
       }
       Fl_Box {} {
-        label {by MTG - IUA - UPF (Barcelona, Spain)}
-        private xywh {85 40 265 20} labelfont 2 labelsize 12
+        label {MTG - IUA - UPF}
+        private xywh {110 45 230 25}
       }
       Fl_Box {} {
-        private image {logos/iua.xpm} xywh {360 15 50 60}
+        private image {logos/iua2.xpm} xywh {345 40 100 100}
       }
       Fl_Box {} {
-        label {please visit us at http://www.iua.upf.es/mtg for more info}
-        private xywh {90 65 260 20} labelfont 2 labelsize 11
+        label {Please visit us at}
+        private xywh {110 75 230 20}
       }
       Fl_Box {} {
-        private image {logos/mtg.xpm} xywh {10 20 75 55}
+        private image {logos/mtg3.xpm} xywh {5 40 100 100}
+      }
+      Fl_Box {} {
+        label {http://www.iua.upf.es/mtg/}
+        private xywh {110 95 230 20} labelfont 4 labelcolor 4
+      }
+      Fl_Box {} {
+        label {for more information}
+        private xywh {110 115 230 20}
+      }
+      Fl_Box {} {
+        label {CLAM Release 0.5beta1}
+        private xywh {5 145 440 30} box FLAT_BOX color 1 labelfont 3 labelcolor 7
       }
     }
   }
@@ -322,7 +346,7 @@ mWindow2=NULL;}
   decl {void ApplyReadyToAnalyzeState();} {}
   decl {void ApplyAnalysisAvailableState();} {}
   decl {void ApplyMelodyAvailableState();} {}
-  decl {void ApplyTransformationReadyState();} {selected public
+  decl {void ApplyTransformationReadyState();} {public
   }
   decl {void ApplySynthesisAvailableState();} {}
   decl {void ApplyTransformationPerformedState();} {}

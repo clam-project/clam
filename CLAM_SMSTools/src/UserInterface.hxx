@@ -7,7 +7,7 @@
 #include "Fl_Smart_Tile.hxx"
 class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Counter.H>
@@ -17,7 +17,7 @@ class UserInterface {
 public:
   public: CLAMGUI::SMSTools* mSMS;
   UserInterface();
-  Fl_Window *mWindow;
+  Fl_Double_Window *mWindow;
 private:
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
@@ -120,16 +120,18 @@ public:
 private:
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
+  Fl_Smart_Tile *mSmartTile;
 public:
   Fl_Counter *mCounter;
 private:
   inline void cb_mCounter_i(Fl_Counter*, void*);
   static void cb_mCounter(Fl_Counter*, void*);
-  Fl_Smart_Tile *mSmartTile;
+public:
   void AboutWindow();
-  Fl_Window *mWindow2;
-  inline void cb_mWindow2_i(Fl_Window*, void*);
-  static void cb_mWindow2(Fl_Window*, void*);
+private:
+  Fl_Double_Window *mWindow2;
+  inline void cb_mWindow2_i(Fl_Double_Window*, void*);
+  static void cb_mWindow2(Fl_Double_Window*, void*);
 public:
   void Init(void);
 private:
