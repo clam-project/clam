@@ -20,7 +20,6 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetOutputSoundFile("");
 	SetInputAnalysisFile("");
 	SetOutputAnalysisFile("");
-	SetSamplingRate(44100);
 /** Analysis **/
 	SetAnalysisWindowSize(513);
 	/* by default (if -1) will take (WindowSize-1)/2*/
