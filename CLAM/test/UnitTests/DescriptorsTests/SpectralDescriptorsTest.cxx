@@ -164,6 +164,7 @@ private:
 			mDescriptors->Compute();
 			if (
 				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
+				(std::isinf((mDescriptors->*getter)()) != std::isinf(it->second)) ||
 				(mDescriptors->*getter)() > (*it).second + tolerance ||
 				(mDescriptors->*getter)() < (*it).second - tolerance
 				)
@@ -499,32 +500,33 @@ private:
 		CLAM::TData tolerance = 0.000000001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["DeltaAtZeroBin-Spectrum.xml"] = 507.994171142578;
-		data["Constant-Spectrum.xml"]= 0.0;
-		data["ConstantDouble-Spectrum.xml"]= 0.0;
-		data["ConstantHalfSize-Spectrum.xml"]= 0.0;
-		data["DeltasAtExtremeBins-Spectrum.xml"]= 251.503921508789;
-		data["DeltaAtCenterBin-Spectrum.xml"]= 507.994232177734;
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 79.7926788330078;
-		data["Balance000.600.wav"] = 374.411987304688;
-		data["Balance000.992.wav"] = 474.992065429688;
-		data["Balance001.988.wav"] = 50.0362358093262;
-		data["Balance010.910.wav"] = 235.156997680664;
-		data["Cello_A2.wav"] = 90.5747756958008;
-		data["Cello_C2.wav"] = 0.000000; // Avoid NaN!!
-		data["Disco_Rojo001.008.wav"] = 13.8839492797852;
-		data["Disco_Rojo002.327.wav"] = 125.505096435547;
-		data["Geiger_Counter005.020.wav"] = 137.091598510742;
-		data["SaxBritHorns12.wav"] = 29.0153884887695;
-		data["Time002.624.wav"] = 30.4215717315674;
-		data["bell_A3.wav"] = 84.1860504150391;
-		data["gamelan-gong.wav"] = 188.309326171875;
-		data["gt_E4.wav"] = 293.318389892578;
-		data["pno_Eb1.wav"] = 0.000000;  // Avoid NaN!!
-		data["silence.wav"] = 0.000000; // Avoid NaN!!
-		data["vln_A3.wav"] = 0.000000; // Avoid NaN!!
-		data["vln_D5.wav"] = 0.000000; // Avoid NaN!!
-		data["whitenoise.wav"] = -0.515219032764435;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 510.994171142578;
+		data["Silence-Spectrum.xml"] = 3.0; // Avoid NaN
+		data["Constant-Spectrum.xml"]= 3.0;
+		data["ConstantDouble-Spectrum.xml"]= 3.0;
+		data["ConstantHalfSize-Spectrum.xml"]= 3.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 254.503921508789;
+		data["DeltaAtCenterBin-Spectrum.xml"]= 510.994232177734;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 82.7926788330078;
+		data["Balance000.600.wav"] = 377.411987304688;
+		data["Balance000.992.wav"] = 477.992065429688;
+		data["Balance001.988.wav"] = 53.0362358093262;
+		data["Balance010.910.wav"] = 238.156997680664;
+		data["Cello_A2.wav"] = 93.5747756958008;
+		data["Cello_C2.wav"] = 3.000000; // Avoid NaN!!
+		data["Disco_Rojo001.008.wav"] = 16.8839492797852;
+		data["Disco_Rojo002.327.wav"] = 128.505096435547;
+		data["Geiger_Counter005.020.wav"] = 140.091598510742;
+		data["SaxBritHorns12.wav"] = 32.0153884887695;
+		data["Time002.624.wav"] = 33.4215717315674;
+		data["bell_A3.wav"] = 87.1860504150391;
+		data["gamelan-gong.wav"] = 191.309326171875;
+		data["gt_E4.wav"] = 296.318389892578;
+		data["pno_Eb1.wav"] = 3.000000;  // Avoid NaN!!
+		data["silence.wav"] = 3.000000; // Avoid NaN!!
+		data["vln_A3.wav"] = 3.000000; // Avoid NaN!!
+		data["vln_D5.wav"] = 3.000000; // Avoid NaN!!
+		data["whitenoise.wav"] = 2.48478102684021;
 
 		mDescriptors->AddMagnitudeKurtosis();
 
