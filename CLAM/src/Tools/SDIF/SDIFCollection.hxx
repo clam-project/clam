@@ -47,6 +47,7 @@ namespace SDIF
 		StreamIterator EndStreams(void) const { return mStreamList.end(); }
 
 		Stream* FindStream(TInt32 streamId);
+		Stream* FindStream(TypeId streamTypeId);
 
 		void ParseStreams(void);
 	};

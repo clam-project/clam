@@ -23,21 +23,26 @@ namespace SDIF
 		typedef std::list<Frame*>::const_iterator FrameIterator;
 	private:
 		std::list<Frame*> mFrameList;
+		TypeId mType;
 		TInt32 mStreamId;
 	public:
 		/** Create a Stream
 		* @param streamId The StreamID for the frames in this stream
 		*/
-		Stream(TInt32 streamId);
+		Stream(TypeId typeId, TInt32 streamId);
 		/** Add a Frame to the stream
 		* @param pFrame The Frame that this stream starts with.
 		*/
 		void Add(Frame* pFrame);
 
 		FrameIterator Begin(void) const { return mFrameList.begin(); }
-		FrameIterator End(void) const { return mFrameList.begin(); }
+		FrameIterator End(void) const { return mFrameList.end(); }
+
+		Frame* Front(void) const { return mFrameList.front(); }
+		Frame* Back(void) const { return mFrameList.back(); }
 
 		TInt32 StreamId(void) { return mStreamId; }		
+		TypeId StreamType(void) { return mType; }
 	};
 
 }

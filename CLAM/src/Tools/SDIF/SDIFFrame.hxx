@@ -51,6 +51,13 @@ namespace SDIF
 		*/
 		void Add(Matrix* pMatrix);
 		
+		Matrix* GetMatrixAt(int i)
+		{
+			MatrixIterator it = mMatrixList.begin();
+			std::advance(it,i);
+			return *it;
+		}
+		
 		MatrixIterator Begin(void) const { return mMatrixList.begin(); }
 		MatrixIterator End(void) const { return mMatrixList.end(); }
 		

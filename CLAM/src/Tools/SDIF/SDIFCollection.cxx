@@ -19,9 +19,12 @@ namespace SDIF
 			Stream* pStream = FindStream(pFrame->mHeader.mStreamId);
 			if (!pStream)
 			{
-				pStream = new Stream(pFrame->mHeader.mStreamId);
+				pStream = 
+					new Stream(pFrame->mHeader.mType,pFrame->mHeader.mStreamId);
 				Add(pStream);
 			}
+			CLAM_ASSERT(pFrame->mHeader.mType==pStream->StreamType(),
+	"Trying to add a frame to a stream with the same ID but a different type");
 			pStream->Add(pFrame);
 		}
 	}
@@ -44,7 +47,9 @@ namespace SDIF
 
 			Stream* pStream = FindStream(pFrame->mHeader.mStreamId);
 			if (!pStream) {
-				pStream = new Stream(pFrame->mHeader.mStreamId);
+				pStream = 
+					new Stream(pFrame->mHeader.mType,pFrame->mHeader.mStreamId);
+
 				Add(pStream);
 			}
 			pStream->Add(pFrame);
@@ -70,5 +75,24 @@ namespace SDIF
 
 		return 0;
 	}
+
+	Stream* Collection::FindStream(TypeId streamTypeId)
+	{
+		typedef std::list<Stream*>::iterator iterator;
+
+		iterator it = mStreamList.begin();
+		iterator end = mStreamList.end();
+
+		while (it!=end)
+		{
+			Stream* pStream = *it;
+			if (pStream->StreamType()==streamTypeId) return pStream;
+			
+			it++;
+		}
+
+		return 0;
+	}
+
 
 }

@@ -2,7 +2,10 @@
 #define __Matrix__
 
 #include "SDIFHeader.hxx"
+
+#undef CLAM_USE_XML
 #include "Array.hxx"
+
 #include "SDIFType.hxx"
 
 /** The data in a Frames are stored in 2D matrices.
