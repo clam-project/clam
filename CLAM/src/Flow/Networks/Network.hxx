@@ -92,6 +92,7 @@ public:
 	void AddProcessing( const std::string & name, const std::string & key );
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
+	const std::string & GetNetworkId(const Processing * proc) const;
 
 	
 	
@@ -112,7 +113,6 @@ public:
 
 protected:
 	NodeBase & GetNodeAttachedTo(OutPort & );
-	const std::string & GetNetworkId(const Processing * proc) const;
 private:
 	
 	// fields
