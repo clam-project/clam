@@ -92,11 +92,24 @@ namespace MIDI
 								}
 							}
 						}
+						else if (b == 0xF0 || b==0xF7)
+						{
+							/* TODO: For now, we'll just skip SysEx events */
+							int length = GetVarLength();
+							while (--length)
+							{
+								GetByte();
+							}
+							if (GetByte()!=0xF7)
+							{
+								throw Error("SysEx message did not terminate with 0xF7");
+							}
+						}
 						else
 						{
-							throw Error("Currently only supporting MIDI and META events\n");
+							throw Error("Encountered a message that I don't know how to handle");
 						}
-						runningStatus = 0;					
+						runningStatus = 0;
 					}else{
 						if (nbytesPerChnMsg[type]==2)
 						{
