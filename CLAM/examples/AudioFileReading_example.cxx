@@ -27,14 +27,14 @@ int main( int argc, char** argv )
 	if ( argc == 1 ) // No input file
 	{
 		std::cerr << "No input file" << std::endl;
-		std::cerr << "Usage: FileInfo <input file name>" << std::endl;
+		std::cerr << "Usage: AudioFileReading <input file name>" << std::endl;
 
 		exit( - 1 );
 	}
 	else if ( argc > 2 ) // Too many parameters
 	{
 		std::cerr << "Too many parameters" << std::endl;
-		std::cerr << "Usage: FileInfo <input file name>" << std::endl;
+		std::cerr << "Usage: AudioFileReading <input file name>" << std::endl;
 		
 		exit( -1 );
 	}
