@@ -153,7 +153,7 @@ private:
 
 
 /** member stream buffer*/
-	AudioStreamBuffer<CircularStreamImpl<TData> > mStreamBuffer;
+	AudioStreamBuffer<CircularStreamImpl<TData> > *mStreamBuffer;
 /** member writer into stream buffer */
 	WriteStreamRegion* mWriter;
 /** member sinusoidal reader from stream buffer */
