@@ -355,7 +355,6 @@ void UserInterface::ChangeFrame()
 
 	TData nextcursorpos = mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetCenterTime();
 
-	cout<<nextcursorpos<<endl;
 	//Notify SigSlotted class to change
 	mSignal.Emit( nextcursorpos );
 
