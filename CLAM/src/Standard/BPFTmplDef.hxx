@@ -623,15 +623,13 @@ namespace CLAM
 		(const TX& x,const Array<TIndex>& closestPointsIndex, TData &errorEstimate)
 		const
 	{
-		int i,m,iClosest=1;
-		TY y;
-		TX den,dif,dift,ho,hp,w;
-					
-		dif=Abs(x-GetXValue(closestPointsIndex[0]));
+		int iClosest=1;
+		TX dif=Abs(x-GetXValue(closestPointsIndex[0]));
 		
-		for(i=1;i<=mOrder+1;i++)
+		for(int i=1;i<=mOrder+1;i++)
 		{
-			if((dift=Abs(x-GetXValue(closestPointsIndex[i-1])))<dif)
+			TX dift=Abs(x-GetXValue(closestPointsIndex[i-1]));
+			if(dift<dif)
 			{
 				iClosest=i;
 				dif=dift;
@@ -641,24 +639,22 @@ namespace CLAM
 			
 		}
 	
-		y=GetValueFromIndex(closestPointsIndex[iClosest-1]);
+		TY y=GetValueFromIndex(closestPointsIndex[iClosest-1]);
 		iClosest--;
-		for(m=1;m<mOrder+1;m++)
+		for(int m=1;m<mOrder+1;m++)
 		{
-			for(i=1;i<=mOrder+1-m;i++)
+			for(int i=1;i<=mOrder+1-m;i++)
 			{
-				ho=GetXValue(closestPointsIndex[i-1])-x;
-				hp=GetXValue(closestPointsIndex[i+m-1])-x;
-				w=mc[i]-md[i-1];
-				if((den=ho-hp)==0) //Error
-				{
-					throw Err("Error interpolating BPF");
-				}
+				TX ho=GetXValue(closestPointsIndex[i-1])-x;
+				TX hp=GetXValue(closestPointsIndex[i+m-1])-x;
+				TX w=mc[i]-md[i-1];
+				TX den=ho-hp;
+				CLAM_ASSERT(den!=0, "Division by zero error interpolating BPF");
 				den=w/den;
 				md[i-1]=hp*den;
 				mc[i-1]=ho*den;
 			}
-			if(2*iClosest<(mOrder+1-m)) 
+			if(2*iClosest<(mOrder+1-m))
 			{
 				errorEstimate=mc[iClosest];
 			}
@@ -744,10 +740,7 @@ namespace CLAM
 			else klo=k;
 		}
 		h=GetXValue(khi-1)-GetXValue(klo-1);
-		if(h==0.0)
-		{
-			throw Err("Error interpolating Spline");
-		}
+		CLAM_ASSERT(h!=0.0, "Error interpolating Spline");
 		a=(GetXValue(khi-1)-x)/h;
 		b=(x-GetXValue(klo-1))/h;
 		return (a*GetValueFromIndex(klo-1)+b*GetValueFromIndex(khi-1)+((a*a*a-a)*
