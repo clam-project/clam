@@ -89,6 +89,9 @@ bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
 	mKeepFrameSizes = mConfig.GetKeepFrameSizes();
 	
 	mOutput.SetParams(mConfig.GetFrameSize());
+
+	mConfig.SetSampleRate( mpSoundFileIO->Header().mSamplerate );
+	mConfig.SetChannels( mpSoundFileIO->Header().mChannels );
 	
 	return true;
 }
