@@ -49,6 +49,20 @@ SDIFOut::~SDIFOut()
 	delete mpFile;
 }
 
+bool SDIFOut::ConcreteStart()
+{
+	mpFile->Open();
+
+	return true;
+}
+
+bool SDIFOut::ConcreteStop()
+{
+	mpFile->Close();
+
+	return true;
+}
+
 bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 {
 	mConfig = dynamic_cast< const SDIFOutConfig& > ( c );

@@ -51,6 +51,12 @@ public:
 
 	SDIF::File* mpFile;
 	
+protected:
+
+	bool ConcreteStart();
+
+	bool ConcreteStop();
+
 private:
 	
 	bool ConcreteConfigure(const ProcessingConfig& c);

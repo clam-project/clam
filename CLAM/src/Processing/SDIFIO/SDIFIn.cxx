@@ -49,7 +49,6 @@ Output("Output",this,1)
 	
 SDIFIn::~SDIFIn()
 {
-	mpFile->Close();
 	delete mpFile;
 }
 
@@ -58,10 +57,22 @@ bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
-	mpFile->Open();
 	return true;
 }
 
+bool SDIFIn::ConcreteStart()
+{
+	mpFile->Open();
+
+	return true;
+}
+
+bool SDIFIn::ConcreteStop()
+{
+	mpFile->Close();
+
+	return true;
+}
 
 const ProcessingConfig& SDIFIn::GetConfig() const
 {

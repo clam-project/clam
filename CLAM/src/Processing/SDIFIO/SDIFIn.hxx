@@ -51,7 +51,12 @@ public:
 
 	SDIF::File* mpFile;
 	OutPortTmpl<Segment> Output;
-	
+protected:
+
+	bool ConcreteStart();
+
+	bool ConcreteStop();
+
 private:
 	
 	bool ConcreteConfigure(const ProcessingConfig& c);
