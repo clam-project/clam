@@ -28,6 +28,7 @@
 #include "Signalv1.hxx"
 
 #include <iostream>
+
 namespace CLAMTest 
 {
 
@@ -41,7 +42,7 @@ class ProcessingControllerTest : public CppUnit::TestFixture, public CLAMVM::Pro
 		
 	CPPUNIT_TEST( testPublishCreatesPortsAndControls );
 	CPPUNIT_TEST( testConfigureProcessingExecutesConfigureOfObservedProcessing );
-	
+		
 	CPPUNIT_TEST_SUITE_END();
 
 	CLAM::Oscillator * mProc;
@@ -74,14 +75,13 @@ public:
 		cfg.SetAmplitude(0.5);
 		cfg.SetSamplingRate(22050);
 
-		ConfigureProcessing(&cfg);
+		ConfigureProcessing(cfg);
 
 		CLAM::OscillatorConfig & cfg2 ((CLAM::OscillatorConfig&)(mProc->GetConfig()));
 		CPPUNIT_ASSERT_EQUAL( 880.0f, cfg2.GetFrequency() );
 		CPPUNIT_ASSERT_EQUAL( 0.5f, cfg2.GetAmplitude() );
 		CPPUNIT_ASSERT_EQUAL( 22050.0f, cfg2.GetSamplingRate() );
 	}
-
 };
 
 } // namespace CLAMTest
