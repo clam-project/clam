@@ -109,20 +109,15 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	MIDI2Melody converter;
 
 	/** Key for Note Off*/
-	inNoteOff.GetOutControls().GetByNumber(1).AddLink(
-		&converter.GetInControls().GetByNumber(2));
+	CLAM::ConnectControls(inNoteOff, 1, converter, 2);
 	/** Velocity for Note Off */
-	inNoteOff.GetOutControls().GetByNumber(1).AddLink(
-		&converter.GetInControls().GetByNumber(3));
+	CLAM::ConnectControls(inNoteOff, 1, converter, 3);
 	/** Key for Note On */
-	inNoteOn.GetOutControls().GetByNumber(1).AddLink(
-		&converter.GetInControls().GetByNumber(4));
+	CLAM::ConnectControls(inNoteOn, 1, converter, 4);
 	 /** Velocity for Note On */
-	inNoteOn.GetOutControls().GetByNumber(2).AddLink(
-		&converter.GetInControls().GetByNumber(5));
-  
-	inStop.GetOutControls().GetByNumber(0).AddLink(
-		&converter.GetInControls().GetByNumber(0));
+	CLAM::ConnectControls(inNoteOn, 2, converter, 5);
+
+	CLAM::ConnectControls(inStop, 0, converter, 0);
   
 	//We start the MIDI manager and initialize loop variables	
 	manager.Start();
