@@ -92,10 +92,10 @@ namespace CLAM {
 		 *  @throw bad_cast exception when the argument is not an SMSTransformationConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
 			bool ret=true;
-			mConfig=dynamic_cast<const SMSTransformationConfig&>(c);
+			CopyAsConcreteConfig(mConfig, c);
 			if(mConfig.HasFAmount())
 				mAmountCtrl.DoControl(mConfig.GetFAmount());
 			else if(mConfig.HasBPFAmount())
@@ -104,7 +104,6 @@ namespace CLAM {
 				ret=false;
 			return ret;
 		}
-
 		
 		const ProcessingConfig& GetConfig() const
 		{

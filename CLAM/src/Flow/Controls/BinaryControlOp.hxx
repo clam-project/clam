@@ -100,14 +100,8 @@ namespace CLAM {
 		}
 
 		bool ConcreteConfigure(const ProcessingConfig& cfg)
-			throw(ErrProcessingObj)
 		{
-			try {
-				mConfig = dynamic_cast<const BinaryControlOpConfig&>(cfg);
-			}
-			catch (std::bad_cast) {
-				throw(ErrProcessingObj("ControlMapper::ConcreteConfigure(): Wrong argument type.",this));
-			}
+			CopyAsConcreteConfig(mConfig, c);
 			return true;
 		}
 

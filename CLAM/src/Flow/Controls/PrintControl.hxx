@@ -77,14 +77,8 @@ namespace CLAM {
 		 *  @throws A bad_cast exception if the arguments is not the expected configuration class
 		 */
 		bool ConcreteConfigure(const ProcessingConfig& cfg)
-			throw(ErrProcessingObj)
 		{
-			try {
-				mConfig = dynamic_cast<const PrintControlConfig&>(cfg);
-			}
-			catch (std::bad_cast) {
-				throw(ErrProcessingObj("MIDIIn::ConcreteConfigure(): Wrong argument type.",this));
-			}
+			CopyAsConcreteConfig(mConfig, c);
 			return true;
 		}
 
