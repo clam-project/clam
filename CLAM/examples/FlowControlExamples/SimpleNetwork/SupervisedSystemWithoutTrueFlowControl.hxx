@@ -16,11 +16,7 @@ namespace FlowControlExample
 
 class SupervisedSystemWithoutTrueFlowControl
 {
-	//! Deprecated type	
-	typedef std::list<CLAM::Network*> NetworkList;
-
-
-	typedef void (SupervisedSystemWithoutTrueFlowControl::*NetworkConfigurationMethod) (CLAM::Network & );
+	typedef void (SupervisedSystemWithoutTrueFlowControl::*NetworkConfigurationMethod) ();
 
 	class NetworkConfigurationMethodWrapper
 	{
@@ -34,9 +30,9 @@ class SupervisedSystemWithoutTrueFlowControl
 			_configurationMethod(confMethod)
 		{}
 		
-		void Configure( CLAM::Network& net)
+		void Configure()
 		{ 
-			(_parent->*_configurationMethod)( net );
+			(_parent->*_configurationMethod)();
 		}
 	};
 
@@ -61,9 +57,6 @@ public:
 
 private:
 
-	//! Deprecated method
-	void InitConfigurations();
-
 	void ConfigureAndAddProcessingsToNetwork();
 	void RegisterAllNetworkConfigurationMethods();
 	
@@ -75,19 +68,11 @@ private:
 	CLAM::AudioFileConfig CreateFileOutCfg();
 	CLAM::AudioIOConfig CreateAudioOutCfg();
 
-	//! Deprecated methods
 	void ConfigureOscillatorToFileOut();
 	void ConfigureFileInFileOut();
 	void ConfigureModulatedFileIn();
 	void ConfigureModulatedOscillator();
 	void ConfigureModulatedFileInPlusFileIn();
-	//! end
-
-	void ConfigureOscillatorToFileOut( CLAM::Network& );
-	void ConfigureFileInFileOut( CLAM::Network& );
-	void ConfigureModulatedFileIn( CLAM::Network& );
-	void ConfigureModulatedOscillator( CLAM::Network& );
-	void ConfigureModulatedFileInPlusFileIn( CLAM::Network& );
 
 	//other system parameters
 	std::string _fileInName;
@@ -96,23 +81,7 @@ private:
 	int _maxFramesToProcess;
 	bool _hasAudioOut;
 
-	//networks
-
-	//! Deprecated attribute
-	CLAM::Network _oscillatorToFileOut;
-	//! Deprecated attribute
-	CLAM::Network _fileInFileOut;
-	//! Deprecated attribute
-	CLAM::Network _modulatedFileIn;
-	//! Deprecated attribute
-	CLAM::Network _modulatedOscillator;
-	//! Deprecated attribute
-	CLAM::Network _modulatedFileInPlusFileIn;
-
 	CLAM::Network _network;
-
-	//! Deprecated attribute
-	NetworkList _networks;
 
 	NetworkConfigurationMethods _configurations;
 
