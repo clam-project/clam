@@ -46,15 +46,7 @@ void ProcessingController::OnUpdateConfigFromGUI( CLAM::ProcessingConfig * cfg)
 //	if (mConfig)
 //		delete mConfig;
 //	mConfig = new CLAM::ProcessingConfig(*cfg);
-
-	if (mObserved->GetExecState() == CLAM::Processing::Running)
-	{
-		mObserved->Stop();
-		Update();
-		mObserved->Start();
-	}
-	else
-		Update();
+	Update();
 }
 	
 
