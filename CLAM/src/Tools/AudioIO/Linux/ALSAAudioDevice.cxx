@@ -260,7 +260,7 @@ namespace CLAM {
 
 		if (mNChannelsWritten==mNWriteChannels)
 		{
-			sndpcm->Poll();
+			if (mNReadChannels==0) sndpcm->Poll();
 			sndpcm->WriteBuf(mWriteBuf.GetPtr(),mWriteBufSize);
 						
 			mNChannelsWritten = 0;
