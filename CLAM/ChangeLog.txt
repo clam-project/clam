@@ -31,6 +31,8 @@
      ** Most NaN singularities has ben solved. Check doxygen.
      ** Unit testing and back-to-back testing for every descriptor.
      ** Asserts that source data is in linear format
+     ** SpectralDesc Skew/Kurstosis -> MagnitudeSkew MagnitudeKurtosis
+     ** Spectral and Harmonic Tilts removed (Returned very unstable values)
   * Standard:
      ** FormatData.hxx removed, also their useless uses
      ** Vector removed
