@@ -277,7 +277,7 @@ sub ac_package_substs
 	parse_acv_file("acv/package_substs.acv");
 }
 
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
+@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','gl','sndfile','oggvorbis','ladspa','portmidi','alsa','mad','id3');
 
 if ($ARGV[0] eq '-u')
 {
@@ -442,6 +442,20 @@ int main()
 {
 	Fl_Gl_Window w(0,0);
 	Fl_PNG_Image png("");
+	return 0;
+}
+EOF
+
+$sandbox{'gl'} = 'gl';
+$headers{'gl'} = 'GL/gl.h';
+$libs{'gl'} = 'GL';
+$ext_libs{'gl'} = '';
+$alt_libs{'gl'} = '';
+$source{'gl'} = <<EOF;
+#include<GL/gl.h>
+int main()
+{
+	glClearColor(0.0,0.0,0.0,0.0);
 	return 0;
 }
 EOF
