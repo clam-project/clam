@@ -130,13 +130,17 @@ public:
 
 
 private:
+
+	// processing data
+	typedef CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  AudioNode;
+
 	void StartProcessings();
 	void ConfigureProcessings();
-	void ConfigureData();
+	void ConfigureNodes();
 
 //methods relative to audio out
 	bool AudioOutDo();
-	bool AudioOutAttach(CLAM::Audio& a);
+	bool AudioOutAttach( AudioNode& a);
 
 	// audio manager
 	CLAM::AudioManager _audioManager;
@@ -151,8 +155,6 @@ private:
 	CLAM::AudioMixer<2> _mixer;
 	CLAM::AutoPanner _controlSender;	
 
-	// processing data
-	typedef CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> >  AudioNode;
 
 	AudioNode _oscillatorData;
 	AudioNode _fileInData;
@@ -160,10 +162,6 @@ private:
 	AudioNode _mixerData;
 	AudioNode _multiplierData;
 	
-	
-		
-
-
 	//other system parameters
 	std::string _fileInName;
 	std::string _fileOutName;
