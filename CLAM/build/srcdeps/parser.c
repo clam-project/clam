@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "config_parser.h"
 #include "list.h"
+#include "listhash.h"
 #include "hash.h"
 #include "stack.h"
 #include "strfuncs.h"
@@ -65,6 +66,9 @@ list *guessed_headers = 0;
 */
 list *needed_includepaths = 0;
 
+list* ui_headers = NULL;
+listhash* ui_outputs = NULL;
+
 /* list of all includes checked when building the
 ** needed_includepaths, for efficiency.
 */
@@ -94,6 +98,8 @@ int gendepend = 0;
 ** headers if recursesrc is set
 */
 hash* extmap = 0;
+
+static void generate_outputs_for_ui_files();
 
 void extmap_exit(void)
 {
@@ -174,6 +180,9 @@ int parser_include(const char* filename)
 
 	if (verbose)
 		fprintf(stderr,"Including %s from %s\n",filename,curFilename);
+
+	if ( list_find( ui_headers, filename ) ) /* An .ui generated header. Ignore completely.*/
+		return 1;
 		
 	{
 		/* first, check local path */
@@ -646,11 +655,67 @@ int parser_recurse(const char* filename)
 	return 1;
 }
 
+void generate_outputs_for_ui_files()
+{
+	listkey* k = listhash_find( config, "USE_QT" );
+	
+	if ( !k ) return;
+	
+	if ( strcmp( k->l->first->str, "1" ) ) return;
+
+	k = listhash_find( config, "UI_FILES" );
+
+	if ( !k ) return;
+	
+	/* No .ui files were specified */
+	if ( k->l->first == NULL ) return;
+
+	{
+		item* current_ui_file = k->l->first;
+
+		char ui_output_header[2048];
+		char ui_output_source[2048];
+		char ui_header_name[2048];
+		char ui_out_moc[2048];
+		
+		while( current_ui_file != NULL )
+		{
+			listkey* key = listhash_find( ui_outputs, current_ui_file->str );
+
+			if ( key )
+			{
+				fprintf( stderr, "Error: %s file was specified twice in UI_FILES \n", current_ui_file->str );
+				exit( 1 );
+			}
+
+			key = listhash_add_key_once( ui_outputs, current_ui_file->str );
+
+			convert_to_uicname( ui_output_header, 2048, current_ui_file->str, ".h" );
+			convert_to_uicname( ui_output_source, 2048, current_ui_file->str, ".cxx" );
+			convert_to_mocname( ui_out_moc, 2048, ui_output_header );
+			discard_path( ui_header_name, 2048, ui_output_header );
+
+			listkey_add_item_str_once( key, ui_output_header );
+			listkey_add_item_str_once( key, ui_output_source );
+			listkey_add_item_str_once( key, ui_out_moc );
+
+			list_add_str_once( ui_headers, ui_header_name );
+
+			current_ui_file = current_ui_file->next;
+		}
+	}
+}
+
 void parser_init(void)
 {
 	guessed_sources = list_new();
 
 	guessed_headers = list_new();
+
+	ui_headers = list_new();
+	ui_outputs = listhash_new();
+
+	generate_outputs_for_ui_files();
 
 	includepaths = list_new();
 
@@ -709,11 +774,15 @@ void parser_exit(void)
 
 	list_free(guessed_headers);
 
+	list_free(ui_headers);
+
 	list_free(includepaths);
 
 	list_free(includes_checked);
 
 	list_free(needed_includepaths);
+
+	listhash_free( ui_outputs );
 	
 	extmap_exit();
 }

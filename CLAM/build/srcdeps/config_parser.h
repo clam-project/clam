@@ -13,6 +13,7 @@ extern list* link_flags_release;
 extern list* libraries_debug;
 extern list* libraries_release;
 extern list* library_paths;
+extern list* ui_files;
 
 extern list* program;
 

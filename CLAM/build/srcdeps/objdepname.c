@@ -101,3 +101,19 @@ void convert_to_depname(char* depname,int maxlen,const char* filename)
 		strncpy(ext,".d",3);
 	}
 }
+
+void convert_to_uicname(char* uiname,int maxlen,const char* filename, const char* ext)
+{
+	const char* ptr = filename;
+	ptr = strptr_skip_end(ptr);
+	while (ptr!=filename)
+	{
+		ptr--;
+		if (*ptr=='/') { ptr++; break; }
+	}
+	strstart(uiname,maxlen-3); /* leave space for extension */
+	stradd("uic/");
+	stradd_range( ptr, extension((char*)ptr) );
+	stradd( ext );
+	strend();
+}

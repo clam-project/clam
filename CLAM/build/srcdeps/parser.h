@@ -2,6 +2,7 @@
 #define __parser__
 
 #include "list.h"
+#include "listhash.h"
 
 extern list* pre_includes;
 extern list* guessed_sources;
@@ -10,6 +11,7 @@ extern list* defines;
 extern list *includes;
 extern list *includepaths;
 extern list *needed_includepaths;
+extern listhash *ui_outputs;
 
 extern int gendepend;
 extern int recursesrcs;

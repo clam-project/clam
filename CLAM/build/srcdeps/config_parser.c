@@ -26,6 +26,7 @@ list *library_paths = 0;
 
 list *mocable_headers = NULL;
 list *mocable_sources = NULL;
+list *ui_files = NULL;
 
 list *program = 0;
 
@@ -526,7 +527,11 @@ void config_init(void)
 
 	list_lock( mocable_sources );
 
+	ui_files = 
+		listhash_add_key_once(config,"UI_FILES")->l = list_new();
 	
+	list_lock( ui_files );
+
 	program = 
 		listhash_add_key_once(config,"PROGRAM")->l = list_new();
 	list_lock(program );
@@ -539,6 +544,7 @@ void config_init(void)
 
 	list_add_str_once(used_vars,"MOCABLE_HEADERS");
 	list_add_str_once(used_vars,"MOCABLE_SOURCES");
+	list_add_str_once(used_vars,"UI_FILES");
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"LINK_FLAGS_DEBUG");
@@ -599,6 +605,7 @@ void config_exit(void)
 	list_unlock(cxxflags_release );
 	list_unlock(mocable_headers );
 	list_unlock(mocable_sources );
+	list_unlock(ui_files);
 	list_unlock(program );
 	
 	listhash_free(config);

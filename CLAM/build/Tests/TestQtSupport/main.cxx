@@ -1,4 +1,5 @@
 #include "MainWindow.hxx"
+#include "ControlPanel.h"
 #include "Assert.hxx"
 
 int main( int argc, char** argv )

@@ -36,6 +36,10 @@ static int begingroupl = 0;
 
 static void dsp_parse_insert_mocable_header( const char* mocableFile );
 
+static void dsp_parse_insert_ui_rules();
+static void dsp_parse_insert_ui_file( const char* uiFile );
+static void dsp_parse_insert_ui_custom_build_rule( const char* uiFile );
+
 void winstyle(char* str)
 {
 	while (*str)
@@ -277,6 +281,10 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 				else
 					dsp_parse_insert_regular_file( n->str );
 			}
+			else if ( type == 2 )
+			{
+				dsp_parse_insert_ui_file( n->str );
+			}
 			else
 				dsp_parse_insert_regular_file( n->str );
 		}
@@ -288,10 +296,31 @@ void dsp_parse_insert_recurse(tree* t,list* repeatcheck,int type)
 void dsp_parse_insert(int type)
 {
 	tree* t = tree_new();
-	item* i = type ? guessed_headers->first : guessed_sources->first;
+	item* i = NULL;
 	list* repeatcheck = list_new();
 
-	char* typestr = type ? "Header Files" : "Source Files";
+	char* typestr = NULL;
+
+	if ( type == 1 ) 
+	{
+		typestr = "Header Files";
+		i = guessed_headers->first;
+	}
+	else if ( type == 0 ) 
+	{ 
+		typestr = "Source Files";
+		i = guessed_sources->first;
+	}
+	else if ( type == 2 ) 
+	{
+		typestr = "Qt .ui Files";
+		i = ui_files->first;
+	}
+	else
+	{
+		typestr = "Unknown files :o";
+		i = NULL;
+	}
 
 	while (i)
 	{
@@ -368,6 +397,52 @@ static dsp_parse_insert_moc_custom_build_rule( const char* fileString  )
 	fprintf( outfile, "# End Custom Build \n" );
 }
 
+static void dsp_parse_insert_ui_custom_build_rule( const char* theuifile )
+{
+	list* outputsList = listhash_find(ui_outputs, theuifile)->l;
+	char* outHeader = outputsList->first->str;
+	char* outSource = outputsList->first->next->str;
+	char* outMoc = outputsList->first->next->next->str;
+	char  strippedFile[2048];
+	char  strippedHeader[2048];
+	char  winStyleUI[2048];
+	char  winStyleHeader[2048];
+	char  winStyleSource[2048];
+	char  winStyleMOC[2048];
+	listkey *k = listhash_find( config, "QTDIR" );
+	const char* qtdir = k->l->first->str;
+
+	discard_path( strippedFile, 2048, theuifile );
+	discard_path( strippedHeader, 2048, outHeader );
+	strncpy( winStyleUI, theuifile, 2048 );
+	winstyle( winStyleUI );
+	strncpy( winStyleHeader, outHeader, 2048 );
+	winstyle( winStyleHeader );
+	strncpy( winStyleSource, outSource, 2048 );
+	winstyle( winStyleSource );
+	strncpy( winStyleMOC, outMoc, 2048 );
+	winstyle( winStyleMOC );
+
+	/*.dsp code generation*/
+	fprintf( outfile, "# Begin Custom Build - UICing %s...\n", strippedFile );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "BuildCmds= \\\n");
+	fprintf( outfile, "	%s\\bin\\uic.exe %s -o .\\%s \\\n", qtdir, winStyleUI, winStyleHeader );
+	fprintf( outfile, "	%s\\bin\\uic.exe %s -i %s -o .\\%s \\\n", qtdir, winStyleUI, strippedHeader, winStyleSource );
+	fprintf( outfile, "	%s\\bin\\moc.exe .\\%s -o .\\%s \\\n", qtdir, winStyleHeader, winStyleMOC );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "\".\\%s\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n", winStyleHeader);
+	fprintf( outfile, "   $(BuildCmds)\n");
+	fprintf( outfile, "\".\\%s\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n", winStyleSource);
+	fprintf( outfile, "   $(BuildCmds)\n");
+	fprintf( outfile, "\".\\%s\" : $(SOURCE) \"$(INTDIR)\" \"$(OUTDIR)\"\n", winStyleMOC);
+	fprintf( outfile, "   $(BuildCmds)\n");
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "# End Custom Build \n" );
+	
+}
+
 static void dsp_parse_insert_mocable_header( const char* file  )
 {
 	char* project_name = 0;
@@ -405,6 +480,43 @@ static void dsp_parse_insert_mocable_header( const char* file  )
 	fprintf( outfile, "#End Source File\n");
 }
 
+static void dsp_parse_insert_ui_file( const char* file  )
+{
+	char* project_name = 0;
+	char tmp[1024];
+	
+	if ( program && program->first && program->first->str )
+	{
+		project_name = program->first->str;
+	}
+	else
+		fprintf( stderr, "Error: Variable PROGRAM was not defined!\n" );
+
+
+	strncpy(tmp,file,1024);
+	winstyle(tmp);
+
+	fprintf( outfile, "#Begin Source File\n");
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "SOURCE=\"%s\"\n", tmp );
+	fprintf( outfile, "\n" );
+	/*Custom build - release mode */
+	fprintf( outfile, "!IF \"$(CFG)\" == \"%s - Win32 Release \"\n", project_name );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
+	dsp_parse_insert_ui_custom_build_rule(  file );
+	fprintf( outfile, "\n" );
+	/*Custom build - debug mode */
+	fprintf( outfile, "!ELSEIF \"$(CFG)\" == \"%s - Win32 Debug\"\n", project_name );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
+	dsp_parse_insert_ui_custom_build_rule(  file );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "!ENDIF\n" );
+	fprintf( outfile, "\n" );
+	fprintf( outfile, "#End Source File\n");
+}
+
 void dsp_parse_insert_settings_rule(void)
 {
 	char* project_name = 0;
@@ -423,26 +535,24 @@ void dsp_parse_insert_settings_rule(void)
 	fprintf(outfile,"!IF  \"$(CFG)\" == \"%s - Win32 Release\"\n",
 		project_name);
 	fprintf(outfile,"\n");
+	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
 	fprintf(outfile,"# Begin Custom Build\n");
 	fprintf(outfile,"InputPath=settings.cfg\n");
 	fprintf(outfile,"\n");
-	fprintf(outfile,"\"buildstamp\" : $(SOURCE) \"$(INTDIR)\" \"%s.dsp\"\n",
-		project_name);
-	fprintf(outfile,"	srcdeps.exe settings.cfg %s.dsp\n",
-		project_name);
+	fprintf(outfile, "\"buildstamp\" : $(SOURCE) \"$(INTDIR)\"\n" );
+	fprintf(outfile, "	srcdeps.exe settings.cfg\n");
 	fprintf(outfile,"\n");
 	fprintf(outfile,"# End Custom Build\n");
 	fprintf(outfile,"\n");
 	fprintf(outfile,"!ELSEIF  \"$(CFG)\" == \"%s - Win32 Debug\"\n",
 		project_name);
 	fprintf(outfile,"\n");
+	fprintf( outfile, "# PROP Ignore_Default_Tool 1\n");
 	fprintf(outfile,"# Begin Custom Build\n");
 	fprintf(outfile,"InputPath=settings.cfg\n");
 	fprintf(outfile,"\n");
-	fprintf(outfile,"\"buildstamp\" : $(SOURCE) \"$(INTDIR)\" \"%s.dsp\"\n",
-		project_name);
-	fprintf(outfile,"	srcdeps.exe settings.cfg %s.dsp\n",
-		project_name);
+	fprintf(outfile, "\"buildstamp\" : $(SOURCE) \"$(INTDIR)\"\n" );
+	fprintf(outfile, "	srcdeps.exe settings.cfg\n");
 	fprintf(outfile,"\n");
 	fprintf(outfile,"# End Custom Build\n");
 	fprintf(outfile,"\n");
@@ -459,6 +569,11 @@ void dsp_parse_insert_sources()
 void dsp_parse_insert_headers()
 {
 	dsp_parse_insert(1);
+}
+
+void dsp_parse_insert_ui_rules()
+{
+	dsp_parse_insert(2);
 }
 
 /*
@@ -792,8 +907,47 @@ void dsp_parse_line(const char* buf,int line)
 					}
 				}
 
+				/* And now we just insert the files resulting from UICing */
+				{
+					if ( listhash_find( config, "UI_FILES") )
+					{
+						listkey* currentEntry = ui_outputs->first;
+						char tmpname[2048];
+						
+						while( currentEntry != NULL )
+						{
+							item* currentOutput = currentEntry->l->first;
+							/*ui generated header*/
+							strstart( tmpname, 2048 );
+							stradd( "./" );
+							stradd( currentOutput->str );
+							strend();
+							list_add_str_once( guessed_headers, tmpname );
+
+							/* ui generated source */
+							currentOutput = currentOutput->next;
+							strstart( tmpname, 2048 );
+							stradd( "./" );
+							stradd( currentOutput->str );
+							strend();
+							list_add_str_once( guessed_sources, tmpname );
+
+							/* moc resulting from ui generated source */
+							currentOutput = currentOutput->next;
+							strstart( tmpname, 2048 );
+							stradd( "./" );
+							stradd( currentOutput->str );
+							strend();
+							list_add_str_once( guessed_sources, tmpname );
+
+							currentEntry = currentEntry->next;
+						}
+					}
+				}
+
 				dsp_parse_insert_sources();
 				dsp_parse_insert_headers();
+				dsp_parse_insert_ui_rules();
 				dsp_parse_insert_settings_rule();
 			}	
 			fputs(buf,outfile);
@@ -824,8 +978,9 @@ void assert_file_open(FILE* fd, const char* filename, const char* additional)
 	}
 }
 
-void dsp_parse_from_empty(const char* outFilename)
+void dsp_parse(const char* outFilename)
 {
+
 	char buf[4096];
 	int line = 0;
 
@@ -841,62 +996,4 @@ void dsp_parse_from_empty(const char* outFilename)
 		dsp_parse_line(buf,line);
 	}
 	fclose(outfile);
-}
- 
-void dsp_parse_from_file(const char* inFilename,const char* outFilename)
-/* expects two different files */
-{
-
-	char buf[4096];
-	int line = 0;
-
-	groupstack = stack_new();
-
-	infile = fopen(inFilename,"r");
-	assert_file_open(infile, inFilename, "for reading");
-
-	// TODO assert files are not equals (?)
-	outfile = fopen(outFilename,"w");
-	assert_file_open(outfile, outFilename, "for writing");
-	
-	while (fgets(buf,4096,infile))
-	{
-		line++;
-		dsp_parse_line(buf,line);
-	}
-	fclose(infile);
-	fclose(outfile);
-
-}
-
-
-void dsp_parse_inplace(const char* filename)
-/* modifies the passed file */
-{
-	char buf[4096];
-	const char* tempFile = "PARSETMP.dsp";
-
-	dsp_parse_from_file(filename, tempFile);
-
-	// copy the temp file back to filename
-	infile = fopen(tempFile,"r");
-	assert_file_open(infile, tempFile, "for reading");
-	
-	outfile = fopen(filename,"w");
-	assert_file_open(outfile, tempFile, "for writing");
-	
-	while (fgets(buf,4096,infile))
-	{
-		fputs(buf,outfile);
-	}
-
-	fclose(infile);
-	fclose(outfile);
-	
-	remove("PARSETMP.dsp");
-}
-
-void dsp_parse(const char* filename)
-{
-	dsp_parse_inplace( filename );
 }
