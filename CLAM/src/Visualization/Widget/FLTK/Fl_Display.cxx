@@ -19,7 +19,7 @@
  *
  */
 
-#include "FLDisplay.hxx"
+#include "Fl_Display.hxx"
 #include "FLMultiDisplay.hxx"
 
 #include <FL/fl_draw.H>
@@ -27,13 +27,17 @@
 
 using namespace CLAMGUI;
 
-FLDisplay::FLDisplay(int x,int y,int w,int h)
+Fl_Display::Fl_Display(int x,int y,int w,int h)
 :Fl_Widget(x,y,w,h)
 {
 	mInMultiDisplay = 0;
 }
 
-void FLDisplay::draw(void) { 
+Fl_Display::~Fl_Display()
+{
+}
+
+void Fl_Display::draw(void) { 
 	if (mInMultiDisplay) {
 		mInMultiDisplay->draw();
 	}

@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _FLDisplay_
-#define _FLDisplay_
+#ifndef _Fl_Display_
+#define _Fl_Display_
 
 #include <FL/Fl_Widget.H>
 #include "Range.hxx"
@@ -31,30 +31,34 @@ namespace CLAMGUI
 
 class FLMultiDisplay;
 
-class FLDisplay:public Fl_Widget
+class Fl_Display 
+		: public Fl_Widget
 {
 public:
 	Range mVerRange;
 	Range mHorRange;
 	FLMultiDisplay* mInMultiDisplay;
 public:
-	FLDisplay(int x,int y,int w,int h);
+		Fl_Display(int x,int y,int w,int h);
+		
+		virtual ~Fl_Display();
+		
+		virtual void draw(void); 
+		
+		virtual void DrawSelf(void)
+		{
+		}
+		void SetHorRange(const Range& range)
+		{
+				mHorRange = range;
+		}
 
-	virtual void draw(void); 
-
-	virtual void DrawSelf(void)
-	{
-	}
-	void SetHorRange(const Range& range)
-	{
-		mHorRange = range;
-	}
-	void SetVerRange(const Range& range)
-	{
-		mVerRange = range;
-	}
+		void SetVerRange(const Range& range)
+		{
+				mVerRange = range;
+		}
 };
 
 }
 
-#endif
+#endif // Fl_Display.hxx

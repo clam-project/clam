@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
@@ -19,8 +20,8 @@
  *
  */
 
-#ifndef _FLDisplayContainer_
-#define _FLDisplayContainer_
+#ifndef _Fl_DisplayContainer_
+#define _Fl_DisplayContainer_
 
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Scrollbar.H>
@@ -35,7 +36,7 @@ namespace CLAMGUI
 
 class GLPort;
 
-class FLDisplayContainer:public Fl_Group
+class Fl_DisplayContainer:public Fl_Group
 {
 	Range mVerRange;
 	Range mHorRange;
@@ -56,7 +57,8 @@ public:
 	static void VerSliderCB( Fl_Slider* slider );
 	static void VerScrollCB( Fl_Scrollbar* scrollbar );
 	
-	FLDisplayContainer(int x,int y,int w,int h);
+	Fl_DisplayContainer(int x,int y,int w,int h);
+		~Fl_DisplayContainer();
 
 	void SetHorRange(double top,double total);
 	void SetVerRange(double top,double total);
@@ -70,4 +72,4 @@ public:
 
 }
 
-#endif
+#endif // Fl_DisplayContainer.hxx
