@@ -33,7 +33,6 @@ public:
 	bool IsAttached();
 	void Unattach();
 	bool IsConnectableTo(InPort & );
-	NodeBase* CreateNodeWithDefaultStreamBuffer();
 
 };
 
@@ -133,8 +132,9 @@ inline NodeBase* OutPortTmpl<Audio>::GetNode()
 
 inline bool OutPortTmpl<Audio>::IsAttached()
 {
-	return mpData!=0;
+	return  mpData || mpNode ;
 }
+
 inline void OutPortTmpl<Audio>::Unattach()
 {
 	mpNode = 0;
@@ -145,13 +145,6 @@ inline void OutPortTmpl<Audio>::Unattach()
 inline bool OutPortTmpl<Audio>::IsConnectableTo(InPort & in)
 {
 	return ((dynamic_cast< InPortTmpl<Audio>* >(&in)) != 0);
-}
-
-inline NodeBase* OutPortTmpl<Audio>::CreateNodeWithDefaultStreamBuffer()
-{
-	typedef CircularStreamImpl<TData> DefaultStreamBuffer;
-	CLAM_ASSERT(false, "on work. inclusion of nodetmpl is difficult")
-	//return new NodeTmpl<Audio, DefaultStreamBuffer>;
 }
 
 
