@@ -5,7 +5,7 @@ code_name {.cxx}
 gridx 5 
 gridy 5 
 snap 3
-decl {\#include "FL/Fl_Tile.H"} {selected public
+decl {\#include "FL/Fl_Tile.H"} {public
 } 
 
 decl {\#include "Fl_Smart_Tile.H"} {public
@@ -28,14 +28,14 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
-class UserInterface {open
+class UserInterface {open selected
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
   Function {UserInterface()} {} {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
-      xywh {186 604 872 548} color 23 resizable
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
+      xywh {86 116 872 548} color 50 resizable
       code0 {mWindow2=NULL;} visible
     } {
       Fl_Input mConfigurationText {
@@ -43,14 +43,14 @@ class UserInterface {open
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
       Fl_Menu_Bar mMenuBar {open
-        private xywh {0 0 905 20} box THIN_UP_BOX labelsize 13 textsize 12
+        private xywh {0 0 872 21} box THIN_UP_BOX color 50 labelsize 13 textsize 12
       } {
         submenu {} {
           label Input open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
-            label {Load Configure...}
+            label {Load Configuration...}
             callback {LoadConfiguration();}
             private xywh {5 5 100 20} labelsize 12
           }
@@ -64,38 +64,8 @@ class UserInterface {open
             callback {StoreConfiguration();}
             private xywh {15 15 100 20} labelsize 12 hide
           }
-          submenu {} {
-            label {Analysis Data}
-            private xywh {35 35 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label {Load...}
-              callback {LoadAnalysisData();}
-              private xywh {35 35 100 20} labelsize 12
-            }
-            menuitem mStoreAnalysisData {
-              label {Store...}
-              callback {StoreAnalysisData();}
-              private xywh {35 35 100 20} labelsize 12 deactivate
-            }
-          }
-          submenu {} {
-            label Transformation
-            private xywh {15 15 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label {Load...}
-              callback {LoadTransformation();}
-              private xywh {55 55 100 20} labelsize 12
-            }
-            menuitem mDoTransformation {
-              label Do
-              callback {Transform();}
-              private xywh {55 55 100 20} labelsize 12 deactivate
-            }
-          }
           submenu mDisplayInSM {
-            label Display open
+            label Display
             private xywh {10 10 100 20} labelsize 12 deactivate
           } {
             menuitem mDisplayInSound {
@@ -115,40 +85,55 @@ class UserInterface {open
             private xywh {0 0 100 20} labelsize 12 deactivate
           }
         }
-        menuitem mAnalyze {
-          label Analyze
-          callback {Analyze();}
-          private xywh {35 35 100 20} shortcut 0x40061 labelsize 12 deactivate
+        submenu {} {
+          label Analysis open
+          xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem mAnalyze {
+            label Analyze
+            callback {Analyze();}
+            private xywh {40 40 100 20} shortcut 0x40061 labelsize 12 deactivate
+          }
+          menuitem {} {
+            label {Load...}
+            callback {LoadAnalysisData();}
+            private xywh {45 45 100 20} labelsize 12
+          }
+          menuitem mStoreAnalysisData {
+            label {Store...}
+            callback {StoreAnalysisData();}
+            private xywh {45 45 100 20} labelsize 12 deactivate
+          }
         }
-        menuitem mSynthesize {
-          label Synthesize
-          callback {Synthesize();}
-          private xywh {25 25 100 20} shortcut 0x40073 labelsize 12 deactivate
+        submenu {} {
+          label Transformation open
+          private xywh {20 20 100 20} labelsize 12
+        } {
+          menuitem {} {
+            label {Load...}
+            callback {LoadTransformation();}
+            private xywh {60 60 100 20} labelsize 12
+          }
+          menuitem mDoTransformation {
+            label Apply
+            callback {Transform();}
+            private xywh {60 60 100 20} labelsize 12 deactivate
+          }
+        }
+        submenu mSynthesize {
+          label Synthesis open
+          xywh {0 0 100 20} labelsize 12 deactivate
+        } {
+          menuitem {} {
+            label Synthesize
+            callback {Synthesize();}
+            private xywh {30 30 100 20} shortcut 0x40073 labelsize 12
+          }
         }
         submenu mOutputSM {
           label Output open
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
-          submenu mStoreOutputs {
-            label Store
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label Sound
-              callback {StoreOutputSound();}
-              private xywh {20 20 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Sinusoidal
-              callback {StoreOutputSoundSinusoidal();}
-              private xywh {50 50 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Residual
-              callback {StoreOutputSoundResidual();}
-              private xywh {55 55 100 20} labelsize 12
-            }
-          }
           submenu mVisualizeOutputs {
             label Display
             private xywh {5 5 100 20} labelsize 12
@@ -204,6 +189,26 @@ class UserInterface {open
               private xywh {70 70 100 20} labelsize 12 deactivate
             }
           }
+          submenu mStoreOutputs {
+            label Store open
+            private xywh {10 10 100 20} labelsize 12
+          } {
+            menuitem {} {
+              label Sound
+              callback {StoreOutputSound();}
+              private xywh {30 30 100 20} labelsize 12
+            }
+            menuitem {} {
+              label Sinusoidal
+              callback {StoreOutputSoundSinusoidal();}
+              private xywh {60 60 100 20} labelsize 12
+            }
+            menuitem {} {
+              label Residual
+              callback {StoreOutputSoundResidual();}
+              private xywh {65 65 100 20} labelsize 12
+            }
+          }
         }
         menuitem {} {
           label Exit
@@ -214,7 +219,7 @@ Exit();}
         menuitem {} {
           label About
           callback {AboutWindow()}
-          private xywh {10 10 100 20} labelfont 13 labelsize 12
+          private xywh {10 10 100 20} labelsize 12
         }
       }
       Fl_Box mSmartTile {
@@ -246,7 +251,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/iua.xpm}
-        private xywh {360 15 50 60} labeltype image
+        private xywh {360 15 50 60}
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -254,7 +259,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55} labeltype image
+        private xywh {10 20 75 55}
       }
     }
   }

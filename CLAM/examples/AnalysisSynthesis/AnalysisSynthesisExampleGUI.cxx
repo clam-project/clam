@@ -33,7 +33,7 @@
 #include "AudioSnapshot.hxx"
 
 /******* TRANSFORMATION *******/
-#include "SMSFreqShift.hxx"
+#include "SMSPitchShift.hxx"
 
 #include <iostream>
 
@@ -664,7 +664,10 @@ int main(void)
 	try{
 		AnalysisSynthesisExampleGUI example;
 		/******* TRANSFORMATION *******/
-		SMSFreqShift myTrans;
+		/*SMSFreqShift myTrans;*/
+
+		SMSPitchShift myTrans;
+
 		example.SetTransformation(&myTrans);
 		/******* TRANSFORMATION *******/
 
@@ -677,7 +680,7 @@ int main(void)
 	}
 	catch (std::exception e)
 	{
-		std::cout << e.what() << std::endl;
+		std::cout << e.what() << std::endl; 
 	}
 	
 	std::clog << "Finished successfully!"<<std::endl;

@@ -832,8 +832,15 @@ void AnalysisSynthesisExampleBase::PlayResidual()
 
 void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 {
-	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),1024);
-
+	
+	TSize outBufferSize=256;
+	
+#ifdef WIN32
+	//This seems very weird to me. if sound file is played as stereo 2*sampleRate must be used
+	AudioManager audioManager(2*mGlobalConfig.GetSamplingRate(),outBufferSize*2);
+#else
+	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize*2);
+#endif
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
 
@@ -845,7 +852,6 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 	AudioOut outputL(outCfgL);
 	AudioOut outputR(outCfgR);
 	
-	TSize outBufferSize=1024;
 	Audio  tmpAudioBuffer;
 	tmpAudioBuffer.SetSize(outBufferSize);
 	TSize size=audio.GetSize();
