@@ -32,6 +32,8 @@ GenerateDoxygen()
 		ssh clamadm@www.iua.upf.es tar xfvj $Tarball
 		echo cleaning remote tarball
 		ssh clamadm@www.iua.upf.es rm $Tarball
+		echo transferring Doxy Tags
+		scp -r CLAM.tag "clamadm@www.iua.upf.es:$TargetDir"
 		echo transferring DoxyLog
 		scp -r DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
 	popd
