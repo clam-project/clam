@@ -137,11 +137,6 @@ void SpectralDescriptors::ConcreteCompute()
 		SetHFC(0);
 }
 
-void SpectralDescriptors::SetPrototype(const SpectralDescriptors& p)
-{
-	*this=p;
-}
-
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeSpectralTilt()
@@ -367,6 +362,9 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 	if(a.HasBandEnergy())
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandEnergy(a.GetBandEnergy());
+	if(a.HasPCP())
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetPCP(a.GetPCP());
 	return tmpD;
 }
 
@@ -526,7 +524,13 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandEnergy(a.GetBandEnergy() /* * b.GetBandEnergy() */);
 	}
-		
+	if(a.HasPCP() && b.HasPCP() )
+	{
+		tmpD.AddPCP();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetPCP(a.GetPCP() /* * b.GetPCP() */);
+	}	
 	return tmpD;
 }
 
@@ -691,6 +695,13 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandEnergy(a.GetBandEnergy() /* + b.GetBandEnergy() */);
+	}
+	if(a.HasPCP() && b.HasPCP() )
+	{
+		tmpD.AddPCP();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetPCP(a.GetPCP() /* + b.GetPCP() */);
 	}
 		
 	return tmpD;
