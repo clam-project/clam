@@ -43,19 +43,24 @@ int main(void)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
+		abort();
 	}
 	catch (std::bad_cast& e)
 	{
-		std::cout << e.what() << std::endl; 
+		std::cout << e.what() << std::endl;
+		abort();
 	}
 	catch (std::exception& e)
 	{
 		std::cout<<typeid(e).name();
-		std::cout << e.what() << std::endl; 
+		std::cout << e.what() << std::endl;
+		std::cerr << "Abnormal Program Termination" << std::endl;
+		abort();
 	}
 	catch ( ... )
 	{
 		std::cerr << "If you are under windows this can be a major memory corruption... DEBUG!" << std::endl;
+		std::cerr << "Abnormal Program Termination" << std::endl;
 		abort();
 	}
 	
