@@ -147,12 +147,15 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 TData SpectralPeakDescriptors::ComputeFirstTristimulus()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=0) return 0;
 	TData firstHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[0];
 	return firstHarmonicMag*firstHarmonicMag/mpStats->GetEnergy();
 }
 
 TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=4) return 0;
+
 	TData secondHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[1];
 	TData thirdHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[2];
 	TData fourthHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[3];
@@ -163,6 +166,7 @@ TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 
 TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=5) return 0;
 	DataArray& a=mpSpectralPeakArray->GetMagBuffer();
 	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2,false,TData>())/mpStats->GetEnergy();	
 }
@@ -171,6 +175,7 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 {
 	TData num=0,denom=0,SE=0;
 	int size=mpSpectralPeakArray->GetnPeaks();
+	if(size<4) return 0;//is it really necessary to have 4 or with 2 is enough
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	int i;
 	for (i=1;i<size-1;i++)
@@ -190,6 +195,7 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 TData SpectralPeakDescriptors::ComputeOddHarmonics()
 {
 	int size=mpSpectralPeakArray->GetnPeaks();
+	if(size<4) return 0;
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	int i;
 	DataArray odd;
