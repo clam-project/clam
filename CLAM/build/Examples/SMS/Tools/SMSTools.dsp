@@ -148,6 +148,10 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSPitchShiftConfigurator.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_PitchShift_Editor.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSTransformPanel.cxx
 # End Source File
 # End Group
@@ -616,6 +620,18 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Smart_Tile.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Palette.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Selection.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Envelope.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Envelope_Scroll.cxx
 # End Source File
 # Begin Source File
 
@@ -1293,6 +1309,10 @@ SOURCE=..\..\..\..\..\fltk\include\FL\fl_message.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Double_Window.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Select_Browser.H
 # End Source File
 # Begin Source File
@@ -1330,6 +1350,18 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Smart_Tile.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Palette.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Selection.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Envelope.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Envelope_Scroll.H
 # End Source File
 # Begin Source File
 
@@ -1902,6 +1934,10 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSResidualGainConfigurator.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSPitchShiftConfigurator.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_PitchShift_Editor.hxx
 # End Source File
 # Begin Source File
 

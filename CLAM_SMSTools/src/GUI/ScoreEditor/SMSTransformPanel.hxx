@@ -36,6 +36,7 @@ public:
 
 protected:
 	CLAM::SMSTransformationChainConfig mChainConfig;
+	CLAM::SMSTransformationChainConfig mPreviousChainConfig;
 	bool                               mUserChangedSomething; 
 	CLAMVM::SMSConfigurator*           mpCurrentConfigurator;
 
@@ -47,6 +48,8 @@ protected:
 	void ShowActiveConfiguratorHelp();
 	void ShowActiveConfiguratorEditWidget();
 	void ApplyChangesToCurrentCfg();
+	void HideConfigurator();
+	void ResetChainConfig();
 
 	int  mHighlightedConfig;
 
