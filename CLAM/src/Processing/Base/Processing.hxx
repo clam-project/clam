@@ -46,55 +46,55 @@ namespace CLAM {
 	class ProcessingComposite;
 
 	/**
-	 * Processings are the building blocks of any CLAM system,
-	 * they are an abstraction of an audio/music processing step.
-	 * This is the base of all the CLAM processing object classes,
-	 * defines their interface and contains common infrastructure.
-	 * 
-	 * @section Ports: Sincronous data flow
-	 * A Processing can be feeded with data tokens and it produces
-	 * data tokens in a given step whenever the Do method is executed.
-	 * 
-	 * Data flow from and into the Processing can be done using
-	 * Ports. The number of tokens that are seen/consumed/produced
-	 * though the port is flexible.
+	 * The base class for all the CLAM processing object classes.
 	 *
-	 * @see InPortBase, OutPortBase
+	 * Processing is the base class for all the CLAM processing object classes.
+	 * It defines their shared interface and contains common infrastructure.
+	 * Processings are the building blocks for any CLAM system,
+	 * they are an abstraction of an audio/music processing step.
 	 * 
-	 * @section Controls: Asyncronous data flow
+	 * Whenever the Do method is called, the processing consumes
+	 * data tokens from its input ports and produces data tokens 
+	 * for its output ports performing a single processing step.
+	 * Each port is related to a given C++ data type and the number
+	 * of tokens that are seen/consumed/produced at every Do step
+	 * is flexible, even at running mode.
 	 *
 	 * A processing can also receive an event from another one in an
 	 * asyncronous way in order to change the way the processing is
-	 * done.
+	 * done. 
+	 * Asyncronous comunication is done using the Control abstraction.
 	 * 
-	 * @see InControl, OutControl
-	 *
-	 * @section Configuration
+	 * @see InPortBase, OutPortBase, InControl, OutControl
 	 *
 	 * An initial setup is needed before using any processing.
-	 * The ProcessingConfig object is an object that contains
-	 * configuration parameters.
-	 *
-	 * @dot
-	 * digraph example {
-	 * 	node [shape=record, fontname=Helvetica, fontsize=10];
-	 * 	b [ label="class B" URL="\ref B"];
-	 * 	c [ label="class C" URL="\ref C"];
-	 * 	b -> c [ arrowhead="open", style="dashed" ];
-	 * }
-	 * @enddot
+	 * You can specify this initial setup by providing the
+	 * procesing with a configuration object (an instance of the
+	 * proper ProcessingConfig subclass) containing all the
+	 * parameters.
 	 *
 	 * @see ProcessingConfig
 	 *
-	 * All the Processings have a 
-	 * 
+	 * @dot
+	 * digraph example
+	 * {
+	 * 	bgcolor="#ffffaa";
+	 * 	rankdir=LR;
+	 * 	node [shape=ellipse, style=filled, fillcolor="#ccffcc", color="#558855", fontname=Arial, fontsize=10];
+	 * 	edge [color=red ];
+	 * 	Ready        -> Running [ label="Start"     URL="\ref Start" ];
+	 * 	Unconfigured -> Ready   [ label="Configure" URL="\ref Configure" ];
+	 * 	Running      -> Ready   [ label="Stop"      URL="\ref Stop" ];
+	 * 	Running      -> Running [ label="Do"        URL="\ref Do" ];
+	 * }
+	 * @enddot
 	 */
 	class Processing {
 	public:
 		/** Processing Object possible execution states. */
 		typedef enum {
 			Unconfigured=0,
-			Disabled,
+			Disabled, ///< @deprecated The disabled state is not used any more
 			Ready,
 			Running
 		} ExecState;
@@ -110,13 +110,13 @@ namespace CLAM {
 		 *  This method performs some execution state checkings and
 		 *  updates, and calls the ConcreteConfigure method of the
 		 *  concrete class to perform the actual configuration.
-		 *  @param Reference to the configuration object.
+		 *  @param config Reference to the configuration object.
 		 *  @throw ErrProcessingObj if the processing object is in
 		 *  running or disabled state, or if the argument is not
 		 *  an object of the configuration class matching the concrete
 		 *  processing class of the processing object.
 		 */
-		bool Configure(const ProcessingConfig&);
+		bool Configure(const ProcessingConfig& config);
 
 		/** Method to turn the object into running state.
 		 * This method must be called before any call to Do() methods.
