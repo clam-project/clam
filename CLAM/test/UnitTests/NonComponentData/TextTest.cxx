@@ -43,6 +43,8 @@ namespace CLAMTest {
 		CPPUNIT_TEST (testStringComparation_whenDiffers);
 		CPPUNIT_TEST (testInitializationFromCharPointer);
 		CPPUNIT_TEST (testStreamExtraction_withSpaces);
+		CPPUNIT_TEST (testStreamExtraction_withTabs);
+		CPPUNIT_TEST (testStreamExtraction_clearsPreviousContent);
 
 		CPPUNIT_TEST_SUITE_END();
 	private:
@@ -82,10 +84,33 @@ namespace CLAMTest {
 
 		void testStreamExtraction_withSpaces()
 		{
-			std::istringstream istream ("Hola tu");
+			std::string toberead("Hola tu");
+			std::istringstream myistream (toberead);
 			CLAM::Text extracted;
-			istream >> extracted;
+			myistream >> extracted;
 			CLAM::Text expected("Hola tu");
+
+			CPPUNIT_ASSERT_EQUAL(expected, extracted);
+			
+		}
+		void testStreamExtraction_withTabs()
+		{
+			std::string toberead("Hola\t tu");
+			std::istringstream myistream (toberead);
+			CLAM::Text extracted;
+			myistream >> extracted;
+			CLAM::Text expected("Hola\t tu");
+
+			CPPUNIT_ASSERT_EQUAL(expected, extracted);
+			
+		}
+		void testStreamExtraction_clearsPreviousContent()
+		{
+			std::string toberead("Hola");
+			std::istringstream myistream (toberead);
+			CLAM::Text extracted("Previous content");
+			myistream >> extracted;
+			CLAM::Text expected("Hola");
 
 			CPPUNIT_ASSERT_EQUAL(expected, extracted);
 			
