@@ -51,8 +51,8 @@ void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & c
 		mObserved->Stop();
 	}
 
-
-	mObserved->Configure(cfg);
+	SignalConfigureProcessing.Emit( mObserved, cfg );
+//	mObserved->Configure(cfg);
 	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetStatus() );
 
 	if(mObserved->ModifiesPortsAndControlsAtConfiguration())

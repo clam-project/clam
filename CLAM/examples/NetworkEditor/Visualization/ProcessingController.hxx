@@ -32,12 +32,7 @@
 
 #include <string>
 #include <list>
-/*
-namespace CLAM
-{
-	class ProcessingConfig;
-}
-*/
+
 namespace CLAMVM
 {
 
@@ -113,6 +108,7 @@ public:
 	NamesList::iterator EndOutControlNames();
 	
 	SigSlot::Slotv1< const CLAM::ProcessingConfig & > SlotConfigureProcessing;
+	SigSlot::Signalv2< CLAM::Processing * , const CLAM::ProcessingConfig & > SignalConfigureProcessing;
 	SigSlot::Slotv1< const std::string & > SlotProcessingNameChanged;
 	SigSlot::Slotv2< const std::string &, CLAM::TControlData > SlotSendOutControlValue;
 	SigSlot::Signalv2< const std::string &, ProcessingController * > SignalProcessingNameChanged;

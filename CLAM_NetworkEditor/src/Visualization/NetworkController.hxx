@@ -209,6 +209,9 @@ namespace CLAMVM
 
 		void RemoveAllConnections( CLAM::Processing * );
 		void RebuildProcessingPresentationAttachedTo( ProcessingController *, CLAM::Processing * );
+		
+		void ConfigureProcessing( CLAM::Processing * , const CLAM::ProcessingConfig & );
+	
 
 	public:
 		NetworkController();
@@ -246,6 +249,7 @@ namespace CLAMVM
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateControlConnection;
 
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
+		SigSlot::Slotv2< CLAM::Processing *, const CLAM::ProcessingConfig &  > SlotConfigureProcessing;
 		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
 		SigSlot::Slotv2< const std::string &, ProcessingController * > SlotProcessingNameChanged;
 		SigSlot::Signalv2< const std::string &, const std::string & > SignalChangeConnectionPresentationNames;

@@ -45,6 +45,8 @@ NetworkController::NetworkController()
 	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
 	
 	SlotRemoveProcessing.Wrap( this, &NetworkController::RemoveProcessing );
+	SlotConfigureProcessing.Wrap( this, &NetworkController::ConfigureProcessing );
+
 	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkController::RebuildProcessingPresentationAttachedTo );
 	SlotRemoveAllConnections.Wrap( this, &NetworkController::RemoveAllConnections );
 	SlotAddProcessing.Wrap( this, &NetworkController::AddProcessing );
@@ -460,6 +462,13 @@ void NetworkController::RebuildProcessingPresentationAttachedTo( ProcessingContr
 	SignalRebuildProcessingPresentationAttachedTo.Emit( name, controller );
 }
 
+void NetworkController::ConfigureProcessing( CLAM::Processing * proc, const CLAM::ProcessingConfig & cfg )
+{
+	std::string name = mObserved->GetNetworkId( proc );
+	mObserved->ConfigureProcessing( name, cfg );
+}
+
+
 void NetworkController::ExecuteRemovePortConnection( const std::string & out , const std::string & in )
 {
 	if(mObserved->DisconnectPorts(out, in))
@@ -525,6 +534,7 @@ ProcessingController* NetworkController::CreateProcessingController( const std::
 	controller->SignalProcessingNameChanged.Connect( SlotProcessingNameChanged );
 	controller->SignalRemoveAllConnections.Connect( SlotRemoveAllConnections );
 	controller->SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
+	controller->SignalConfigureProcessing.Connect( SlotConfigureProcessing );
 
 	controller->BindTo(*proc);
 	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, controller));
