@@ -162,14 +162,15 @@ AC_MSG_CHECKING([fltk-config is known by the /usr/bin/which command...])
 if test -f `which fltk-config`
 	then
 		fltk_config_exec=`which fltk-config`	
+
 		AC_MSG_RESULT(yes)
 	else
+
 		AC_MSG_RESULT(no)
 		AC_MSG_CHECKING([fltk-config is in the sandbox...])
-		PWD=`pwd`
-		if test -f "$PWD/../../fltk/bin/fltk-config"
+		if test -f `$pwd/../../fltk/bin/fltk-config`
 			then
-				fltk_config_exec="$PWD/../../fltk/bin/fltk-config"
+				fltk_config_exec=`$pwd/../../fltk/bin/fltk-config`
 				AC_MSG_RESULT(yes)
 			else
 				AC_MSG_RESULT(no)
@@ -429,6 +430,342 @@ No fftw headers found!]
 fi;
 ]
 )
+
+dnl Start of Vorbis I SDK checking procedure
+AC_DEFUN(CLAM_LIB_OGGVORBIS,
+[
+	AC_MSG_NOTICE([Checking that Vorbis I SDK is installed])
+	AC_CHECK_LIB(vorbisfile,
+		     ov_open,
+		     [LIBVORBISFILE_PRESENT="yes";OGGVORBIS_LIBS="vorbisfile"],
+		     [LIBVORBISFILE_PRESENT="no"],
+		     -lvorbis -logg)
+	
+	AC_CHECK_LIB(vorbisenc,
+		     vorbis_encode_init,
+		     [LIBVORBISENC_PRESENT="yes";OGGVORBIS_LIBS="$OGGVORBIS_LIBS vorbisenc"],
+		     [LIBVORBISENC_PRESENT="no"],
+		     -lvorbis -logg)
+	
+	AC_CHECK_HEADER(vorbis/vorbisfile.h,
+			[HDRVORBISFILE_PRESENT="yes"],
+			[HDRVORBISFILE_PRESENT="no"] )
+	
+	AC_CHECK_HEADER(vorbis/vorbisenc.h,
+			[HDRVORBISENC_PRESENT="yes"],
+			[HDRVORBISENC_PRESENT="no"] )
+	
+	if test $LIBVORBISFILE_PRESENT = no || test $HDRVORBISFILE_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libvorbisfile.so seems not to be present on your system. Please install Xiph.org Vorbis I development libraries])
+	fi
+	if test $HDRVORBISFILE_PRESENT = no || test $HDRVORBISENC_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Vorbis SDK headers were not found. Please install Xiph.org Vorbis I development libraries])
+	fi
+
+	OGGVORBIS_LIBS="vorbis ogg $OGGVORBIS_LIBS"
+	OGGVORBIS_LIB_PATH=""
+	OGGVORBIS_INCLUDES=""
+	
+	AC_PATH_TOOL( OGGVORBIS_LIB_PATH,
+		      libvorbis.so,
+		      [],
+		      [/usr/lib:/usr/local/lib:/opt/lib])
+
+	OGGVORBIS_LIB_PATH=${OGGVORBIS_LIB_PATH%/libvorbis.so}
+
+	if test $OGGVORBIS_LIB_PATH = "/usr/lib";
+	then
+		OGGVORBIS_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( OGGVORBIS_INCLUDES,
+		      vorbis/vorbisfile.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	OGGVORBIS_INCLUDES=${OGGVORBIS_INCLUDES%/vorbis/vorbisfile.h}
+	
+	if test $OGGVORBIS_INCLUDES = "/usr/include" || test $OGGVORBIS_INCLUDES = "/usr/local/include";
+	then
+		OGGVORBIS_INCLUDES=""
+	fi
+
+])
+dnl End of Vorbis I SDK checking procedure
+
+dnl Start of libid3tag checking procedure
+AC_DEFUN(CLAM_LIB_ID3TAG,
+[
+	AC_MSG_NOTICE([Checking that libid3tag is installed])
+	
+	AC_CHECK_LIB(id3tag, id3_file_open,
+		     [LIBID3TAG_PRESENT="yes";ID3TAG_LIBS="id3tag"],
+		     [LIBID3TAG_PRESENT="no"],
+		     -lz)
+
+	AC_CHECK_HEADER(id3tag.h,
+			[HDRID3TAG_PRESENT="yes"],
+			[HDRID3TAG_PRESENT="no"])
+
+	if test $LIBID3TAG_PRESENT = no || test $HDRID3TAG_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libid3tag seems not to be installed on your system!])
+	fi
+
+	ID3TAG_LIBS="$ID3TAG_LIBS z"
+	ID3TAG_LIB_PATH=""
+	ID3TAG_INCLUDES=""
+
+	AC_PATH_TOOL( ID3TAG_LIB_PATH,
+		      libid3tag.so,
+		      [],
+		      [/usr/lib:/usr/local:/opt/lib])
+
+	ID3TAG_LIB_PATH=${ID3TAG_LIB_PATH%/libid3tag.so}
+
+	if test $ID3TAG_LIB_PATH = "/usr/lib"
+	then
+		ID3TAG_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( ID3TAG_INCLUDES,
+		      id3tag.h,
+		      [/usr/include:/usr/local/include])
+
+	ID3TAG_INCLUDES=${ID3TAG_INCLUDES%/id3tag.h}
+
+	if test $ID3TAG_INCLUDES = "/usr/include" || test $ID3TAG_INCLUDES="/usr/local/include"
+	then
+		ID3TAG_INCLUDES=""
+	fi
+	
+])
+
+dnl End of libid3tag checking procedure
+
+dnl Start of libid3 checking procedure
+AC_DEFUN( CLAM_LIB_ID3LIB,
+[
+	AC_MSG_NOTICE([Checking that id3lib is installed])
+
+	AC_CHECK_HEADER(id3/tag.h,
+			[HDRID3_PRESENT="yes"],
+			[HDRID3_PRESENT="no"])
+
+
+	if test $HDRID3_PRESENT = no;
+	then
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([libid3 seems not to be installed on your system!])
+	fi
+
+	ID3_INCLUDES=""
+
+	AC_PATH_TOOL( ID3_INCLUDES,
+		      id3/tag.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	ID3LIB_INCLUDES=${ID3_INCLUDES%/id3/tag.h}
+
+	if test $ID3_INCLUDES = "/usr/include" || test $ID3_INCLUDES="/usr/local/include"
+	then
+		ID3_INCLUDES=""
+	fi
+
+
+	CXXFLAGS="-I$ID3_INCLUDES -lid3 -lz"
+
+	LIBID3_PRESENT="no"
+
+	AC_TRY_LINK(
+	[
+		#include <id3/tag.h>
+		
+		int main( int argc, char** argv )
+		{
+			ID3_Tag myTag;
+
+			return 0;
+		}
+	], 
+	[
+		LIBID3_PRESENT="yes"
+	],
+	[
+		LIBID3_PRESENT="no"
+	]
+	);
+
+	if test $LIBID3_PRESENT="yes";
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Seems that id3lib, http://id3lib.sourceforge.net is not installed. Please make necessary steps to install it on your system.])
+	fi
+	
+	ID3LIB_LIBS="id3 z"
+	ID3LIB_LIB_PATH=""
+
+
+	AC_PATH_TOOL( ID3_LIB_PATH,
+		      libid3.so,
+		      [],
+		      [/usr/lib:/usr/local:/opt/lib])
+
+	ID3_LIB_PATH=${ID3_LIB_PATH%/libid3.so}
+
+	if test $ID3_LIB_PATH="/usr/lib"
+	then
+		ID3_LIB_PATH=""
+	fi
+
+
+
+
+])
+
+dnl End of libid3 checking procedure
+
+dnl Start of Underbit's libmad checking procedure
+AC_DEFUN(CLAM_LIB_MAD,
+[
+	pkg_config_exec=`which pkg-config`
+	AC_MSG_NOTICE([Checking that Underbit's MPEG Audio Decoder library is installed])
+	
+	$pkg_config_exec --exists mad
+	
+	if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Seems that libmad is not installed in your system. If you haven't installed it yet, please do so. If you have, then check that the mad.pc file location is somewhere inside the PKG_CONFIG_PATH environment variable.])
+	fi;
+
+	AC_MSG_NOTICE([Checking that libmad version is acceptable (above 0.14.2)])
+	
+	$pkg_config_exec --atleast-version=0.14.2 mad
+	
+	if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([The currently installed libmad version is inferior to 0.14.2. Please update you currently installed version to a more recent release])
+	fi;
+
+	LIBMAD_INCLUDES__0=`$pkg_config_exec --cflags mad`
+	LIBMAD_LIBS_PATH_0=`$pkg_config_exec --libs-only-L mad`
+	LIBMAD_LIBS_0=`$pkg_config_exec --libs-only-l mad`
+
+	for incpath in $LIBMAD_INCLUDES_0
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+	 	   then
+			LIBMAD_INCLUDES="$LIBMAD_INCLUDES ${incpath#-I*}"
+		fi
+	done
+
+	for libpath in $LIBMAD_LIBS_PATH_0
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+		   then
+			LIBMAD_LIB_PATH="$LIBMAD_LIB_PATH ${libpath#-L*}"
+		fi
+	done
+
+	for binname in $LIBMAD_LIBS_0
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+		   then
+			LIBMAD_LIBS="$LIBMAD_LIBS ${binname#-l}"
+		fi
+	done
+
+
+
+])
+dnl end of Underbit's libmad checking procedure
+
+
+dnl Start of libsndfile checking procedure
+AC_DEFUN(CLAM_LIB_SNDFILE,
+[
+AC_MSG_CHECKING([pkg-config is present...])
+if test -n `which pkg-config`
+	then 
+		pkg_config_exec=`which pkg-config`
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([pkg-config is not installed in your system. Please first install pkg-config and then install libsndfile, before attempting to execute CLAM configure script.
+		])
+fi;
+
+AC_MSG_CHECKING([libsndfile is installed...])
+
+$pkg_config_exec --exists sndfile
+
+if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Seems that libsndfile is not installed in your system. If you haven't installed it yet, please do so. If you have, then check that the sndfile.pc file location is in the PKG_CONFIG_PATH environment variable.
+		])
+fi;
+
+AC_MSG_CHECKING([libsndfile version is acceptable...])
+
+$pkg_config_exec --atleast-version=1.0.3 sndfile
+
+if test "$?" -eq 0;
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Currently installed libsndfile version is inferior to 1.0.3. Please update your current libsndfile installation to a more recent release.
+		])
+fi;
+
+SNDFILE_INCLUDE_PATH_0=`$pkg_config_exec --cflags sndfile`
+SNDFILE_LIBS_PATH_0=`$pkg_config_exec --libs-only-L sndfile`
+SNDFILE_LIBS_0=`$pkg_config_exec --libs-only-l sndfile `
+
+for incpath in $SNDFILE_INCLUDE_PATH_0
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+	 	   then
+			SNDFILE_INCLUDES="$SNDFILE_INCLUDES ${incpath#-I*}"
+		fi
+	done
+
+for libpath in $SNDFILE_LIBS_PATH_0
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+		   then
+			SNDFILE_LIB_PATH="$SNDFILE_LIB_PATH ${libpath#-L*}"
+		fi
+	done
+
+for binname in $SNDFILE_LIBS_0
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+		   then
+			SNDFILE_LIBS="$SNDFILE_LIBS ${binname#-l}"
+		fi
+	done
+
+]
+) 
+dnl End of libsndfile checking procedure
 
 AC_DEFUN(CLAM_LIB_FFTWOLD,
 [
