@@ -4,36 +4,36 @@
 #include "ProcessingController.hxx"
 namespace CLAM
 {
-		class Spectrum;
-		template <class T> class TokenDelay;
+	class Spectrum;
+	template <class T> class TokenDelay;
 };
 
 namespace CLAMVM
 {
-		using CLAM::TokenDelay;
-		using CLAM::Spectrum;
+	using CLAM::TokenDelay;
+	using CLAM::Spectrum;
 		
 
-		class SpectralTokenDelayController 
-				: public ProcessingController
+	class SpectralTokenDelayController 
+		: public ProcessingController
+	{
+	protected:
+		const TokenDelay<Spectrum>*  mObserved;
+
+	public:
+		SpectralTokenDelayController();
+
+		~SpectralTokenDelayController();
+
+		virtual const char* GetClassName() const
 		{
-		protected:
-				const TokenDelay<Spectrum>*  mObserved;
+			return "SpectralTokenDelayController";
+		}
 
-		public:
-				SpectralTokenDelayController();
+		virtual bool BindTo( Processing& proc );
 
-				~SpectralTokenDelayController();
-
-				virtual const char* GetClassName() const
-				{
-						return "SpectralTokenDelayController";
-				}
-
-				virtual bool BindTo( Processing& proc );
-
-				virtual bool Publish();
-		};
+		virtual bool Publish();
+	};
 }
 
 #endif // TokenDelayController.hxx
