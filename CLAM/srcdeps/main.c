@@ -143,12 +143,14 @@ int main(int argc,char** argv)
 		}
 
 		{
-			item* i = needed_includepaths->first;
+			item* i = includepaths->first;
 			printf("INCLUDES =");
 			while (i)
 			{
-				printf("\\\n -I%s",i->str);
-
+				if (list_find(needed_include_paths,i->str))
+				{
+					printf("\\\n -I%s",i->str);
+				}
 				i = i->next;
 			}
 			printf("\n\n");

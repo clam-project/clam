@@ -8,6 +8,9 @@
 #include "objdepname.h"
 #include "config_parser.h"
 
+
+extern list* includepaths; /* parser.c */
+
 void usage(void)
 {
 	fprintf(stderr,"Usage srcdeps SETTINGSFILE\n");
@@ -90,12 +93,13 @@ void makefilevars_generate(void)
 	}
 
 	{
-		item* i = needed_includepaths->first;
+		item* i = includepaths->first;
 		fprintf(outfile,"INCLUDES =");
 		while (i)
 		{
 			if (i->str && i->str[0]!=0)
-				fprintf(outfile,"\\\n -I%s",i->str);
+				if (list_find(needed_includepaths,i->str))
+					fprintf(outfile,"\\\n -I%s",i->str);
 
 			i = i->next;
 		}
