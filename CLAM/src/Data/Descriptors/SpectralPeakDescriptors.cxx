@@ -106,7 +106,7 @@ void SpectralPeakDescriptors::ConcreteCompute()
 TData SpectralPeakDescriptors::ComputeCentroid()
 {
 	int size = mpSpectralPeakArray->GetnPeaks();
-	if(size<=0) return 0;
+	if (size<=0) return 0;
 	const Array<TData> & magnitudes = mpSpectralPeakArray->GetMagBuffer();
 	const Array<TData> & frequencies = mpSpectralPeakArray->GetFreqBuffer();
 	TData crossProduct=0.0;
@@ -125,7 +125,6 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 	/* TODO check me , this computation does not seem to work*/
 	TData m1;
-	int i;
 
 	TData d1=0;
 	TData d2=0;
@@ -142,19 +141,19 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 	m1 = Mean()(mag);
 
-	for (i=0;i<size;i++)
-	  {
-	d1 += pos[i]/mag[i];
-	d2 += 1/mag[i];
-	  }
+	for (int i=0;i<size;i++)
+	{
+		d1 += pos[i]/mag[i];
+		d2 += 1/mag[i];
+	}
 
 	/* ti = m1/ai *(n - (d1/d2)) */
 	/* SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]  */
 
-	for (i=0;i<size;i++) {
-	  Tilt += (1/mag[i] *(pos[i]-d1/d2));
-	  ti = m1/mag[i]*(pos[i] - (d1/d2));
-	  SumTi2 += ti*ti;
+	for (int i=0;i<size;i++) {
+		Tilt += (1/mag[i] *(pos[i]-d1/d2));
+		ti = m1/mag[i]*(pos[i] - (d1/d2));
+		SumTi2 += ti*ti;
 	}
 
 	Tilt*= (m1*m1/SumTi2);
@@ -216,7 +215,7 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 	for (int i=0;i<size;i++)
 	{
 		nom +=	abs(data[i] - SE[i]);
-        denom += data[i];
+		denom += data[i];
 	}
 
 	return nom/denom;	
