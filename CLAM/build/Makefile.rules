@@ -1,6 +1,6 @@
 CLAM_PATH ?= $(TOP)
 
-SRCDEPS=$(CLAM_PATH)/srcdeps/srcdeps
+SRCDEPS=$(CLAM_PATH)/build/srcdeps/srcdeps
 
 all: program library
 
