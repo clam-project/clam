@@ -105,20 +105,23 @@ void SpectralPeakDescriptors::ConcreteCompute()
 
 TData SpectralPeakDescriptors::ComputeCentroid()
 {
+	int size = mpSpectralPeakArray->GetnPeaks();
+	if(size<=0) return 0;
 	const Array<TData> & magnitudes = mpSpectralPeakArray->GetMagBuffer();
 	const Array<TData> & frequencies = mpSpectralPeakArray->GetFreqBuffer();
 	TData crossProduct=0.0;
-	for (unsigned i = 0; i < magnitudes.GetSize(); i++)
+	for (unsigned i = 0; i < size; i++)
 	{
 		crossProduct += magnitudes[i]*frequencies[i];
 	}
-	return crossProduct/(mpStats->Mean()*magnitudes.GetSize());
+	return crossProduct/(mpStats->GetMean()*size);
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
 it promoted into basicOps*/
 TData SpectralPeakDescriptors::ComputeSpectralTilt()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=1) return 0;
 
 	/* TODO check me , this computation does not seem to work*/
 	TData m1;
@@ -167,7 +170,7 @@ TData SpectralPeakDescriptors::ComputeFirstTristimulus()
 
 TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=4) return 0;
+	if(mpSpectralPeakArray->GetnPeaks()<=3) return 0;
 
 	TData secondHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[1];
 	TData thirdHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[2];
@@ -179,7 +182,7 @@ TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 
 TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 {
-	if(mpSpectralPeakArray->GetnPeaks()<=5) return 0;
+	if(mpSpectralPeakArray->GetnPeaks()<=4) return 0;
 	DataArray& a=mpSpectralPeakArray->GetMagBuffer();
 	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2,false,TData>())/mpStats->GetEnergy();	
 }
@@ -189,28 +192,44 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 	int size=mpSpectralPeakArray->GetnPeaks();
 	if(size<4) return 0;//is it really necessary to have 4 or with 2 is enough
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
-	TData num = data[0]-(data[0]+data[1])/2;
-	TData denom = data[0];
+
+	DataArray SE;
+	SE.Resize(size);
+	SE.SetSize(size);
+
+	SE[0] = log10((data[0]+data[1])/2);
+	
 	for (int i=1; i<size-1; i++)
 	{
-		TData SE=(data[i-1]+data[i]+data[i+1])/3;
-		num+=data[i]-SE;
-		denom+=data[i];
+		SE[i]=log10((data[i-1]+data[i]+data[i+1])/3);
+		data[i-1] = log10(data[i-1]);
 	}
-	//we add first and last point by hand
-	num+=data[size-1]-(data[size-2]+data[size-1])/2;
-	denom+=data[size-1];
-	return num/denom;
+
+	SE[size-1]=log10((data[size-2]+data[size-1])/2);
+
+	data[size-2] = log10(data[size-2]);
+	data[size-1] = log10(data[size-1]);
+
+	TData nom = 0;
+	TData denom = 0;
+
+	for (int i=0;i<size;i++)
+	{
+		nom +=	abs(data[i] - SE[i]);
+        denom += data[i];
+	}
+
+	return nom/denom;	
 }
 
 TData SpectralPeakDescriptors::ComputeOddHarmonics()
 {
 	int size=mpSpectralPeakArray->GetnPeaks();
-	if(size<4) return 0;
+	if(size<3) return 0;
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	int i;
 	DataArray odd;
-	for (i=3;i<size;i+=2)
+	for (i=2;i<size;i+=2)
 	{
 		odd.AddElem(data[i]);
 	}
@@ -221,10 +240,11 @@ TData SpectralPeakDescriptors::ComputeOddHarmonics()
 TData SpectralPeakDescriptors::ComputeEvenHarmonics()
 {
 	int size=mpSpectralPeakArray->GetnPeaks();
+	if(size<2) return 0;
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	int i;
 	DataArray even;
-	for (i=2;i<size;i+=2)
+	for (i=1;i<size;i+=2)
 	{
 		even.AddElem(data[i]);
 	}
@@ -234,13 +254,14 @@ TData SpectralPeakDescriptors::ComputeEvenHarmonics()
 
 TData SpectralPeakDescriptors::ComputeOddToEvenRatio()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=1) return 0.5;
 	TData odd,even;
 	if(HasOddHarmonics()) odd=GetOddHarmonics();
 	else odd=ComputeOddHarmonics();
 	if(HasEvenHarmonics()) even=GetEvenHarmonics();
 	else even=ComputeEvenHarmonics();
-	
-	return odd/even;
+
+	return odd/(even+odd);
 }
 
 SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,TData mult) 
