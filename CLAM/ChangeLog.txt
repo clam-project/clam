@@ -36,6 +36,9 @@
 	Support for a wider range of textual descriptors extraction will be available soon.
 	-> ID3 metadata frames retrieval from Mpeg bitstreams
 	-> Vorbis Comments retrieval from Vorbis bitstreams
+	MacOS X note: ID3 meta-data extraction only works for MacOS X 10.3 systems and above,
+	since Apple did not include Unicode ( wchar_t ) support in their libstdc++ binary
+	distribution.
 	
 
 2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
