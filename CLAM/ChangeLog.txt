@@ -1,5 +1,5 @@
 2003-07-25 CLAM_0_5_2
-'Processing bug-fixing
+'Processing bug-fixing, SMSTools update'
   * Processing - Transformation - SMS:
       ** SMSMorph was not working by a side-effect of the introduction
          of the SMS Time Stretch.
@@ -11,6 +11,17 @@
   * BuildSystem:
       ** Library generation for both Linux and Windows. (Still not
          CLAM binaries but user libraries)
+  * Examples - Miscellaneous:
+      ** AudioFileIO example, explaining how to load and save a sound file is 
+         available
+  * SMSTools - v.0.1.1
+      ** GUI - Score Editor:
+	  *** UI screen texts tweaked so they result more informative
+	  *** Added new and improved SMS Morph transformation control widget, 
+	      allowing user a finer grain level of control on that SMS transformation
+	  *** Bug fixed: under some circumstances configuration widgets might be 
+              unadvertendly duplicated, leading to invalid transformation scores
+
 
 2003-07-03 CLAM_0_5_1
 'SMSTools update and Mac compilation issues'
