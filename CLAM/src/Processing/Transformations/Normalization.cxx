@@ -27,7 +27,6 @@
 using namespace CLAM;
 
 
-
 void NormalizationConfig::DefaultInit()
 {
 	AddName();
@@ -110,11 +109,13 @@ bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
 		scalFactor=sqrt(totEnergy/in.GetSize());		
 	}
 
-	//normalizes in relation to the value under which lies percent% of
+	//normalizes in relation to the threshold under which lies percent% of
 	//the energy values that are not silence
 	if (mType==3)
 	{
-		
+		//find the threshold under which lies percent% of the energy values
+		//that are not silence
+
 		int percent=90, i;
 
 		sort(energy, energy.Size());
