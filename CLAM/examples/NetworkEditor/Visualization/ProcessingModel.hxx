@@ -28,13 +28,13 @@ namespace CLAMVM
 		
 		virtual ~ProcessingModel(){}
 		//signals
-		SigSlot::Signalv1< CLAM::ProcessingConfig *>  AcquireConfig;
-		SigSlot::Signalv1< const std::string &>          AcquireClassName;
-		SigSlot::Signalv1< InPortAdapter* >   AcquireInPort;
-		SigSlot::Signalv1< OutPortAdapter* > AcquireOutPort;
-		SigSlot::Signalv1< InControlAdapter* >   AcquireInControl;
-		SigSlot::Signalv1< OutControlAdapter* > AcquireOutControl;
-		SigSlot::Slotv1< CLAM::ProcessingConfig * > SetNewConfig;
+		SigSlot::Signalv1< CLAM::ProcessingConfig *>  SignalAcquireConfig;
+		SigSlot::Signalv1< const std::string &>          SignalAcquireClassName;
+		SigSlot::Signalv1< InPortAdapter* >   SignalAcquireInPort;
+		SigSlot::Signalv1< OutPortAdapter* > SignalAcquireOutPort;
+		SigSlot::Signalv1< InControlAdapter* >   SignalAcquireInControl;
+		SigSlot::Signalv1< OutControlAdapter* > SignalAcquireOutControl;
+		SigSlot::Slotv1< CLAM::ProcessingConfig * > SlotSetNewConfig;
 		SigSlot::Signalv0 SignalUpdatePresentation;
 		SigSlot::Signalv2< ProcessingModel *, const std::string & > SignalCreateNewPresentation;
 		SigSlot::Signalv1< CLAM::Processing * > SignalRebuildProcessingStructure;

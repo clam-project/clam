@@ -68,17 +68,17 @@ namespace CLAMVM
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
-		void OnNewPortConnectionFromGUI( const std::string &, const std::string & );
-		void OnNewControlConnectionFromGUI( const std::string &, const std::string & );
-		void OnNewChangeState( bool);
-		void OnRemovePortConnectionFromGUI( const std::string &, const std::string & );
-		void OnRemoveControlConnectionFromGUI( const std::string &, const std::string & );
-		void OnRemoveProcessingFromGUI( const std::string & );
-		void OnLoadNetwork( const std::string & );
-		void OnSaveNetwork( const std::string & );
-		void OnClear();
-		void OnCreateNewPresentation( ProcessingModel * , const std::string & );
-		void OnRemoveProcessingModel( ProcessingModel * );
+		void CreateNewPortConnection( const std::string &, const std::string & );
+		void CreateNewControlConnection( const std::string &, const std::string & );
+		void ChangeState( bool);
+		void RemovePortConnection( const std::string &, const std::string & );
+		void RemoveControlConnection( const std::string &, const std::string & );
+		void RemoveProcessing( const std::string & );
+		void LoadNetwork( const std::string & );
+		void SaveNetwork( const std::string & );
+		void Clear();
+		void CreateNewPresentation( ProcessingModel * , const std::string & );
+		void RemoveProcessingModel( ProcessingModel * );
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );
 		void ConnectControls( const std::string & , const std::string & );

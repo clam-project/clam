@@ -34,8 +34,7 @@ namespace CLAMVM
 		virtual ~ControlModel(){}
 
 		//signals
-		SigSlot::Signalv1< const std::string &>  AcquireName;
-//		SigSlot::Signalv1< const std::string &>  AcquireDataType;
+		SigSlot::Signalv1< const std::string &>  SignalAcquireName;
 
 	};
 } // namespace CLAMVM

@@ -39,8 +39,8 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
 
-	SetOutPos.Wrap( this, &Qt_ConnectionPresentation::OnNewOutPos);
-	SetInPos.Wrap( this, &Qt_ConnectionPresentation::OnNewInPos);
+	SlotSetOutPos.Wrap( this, &Qt_ConnectionPresentation::SetOutPos);
+	SlotSetInPos.Wrap( this, &Qt_ConnectionPresentation::SetInPos);
 	setFixedSize(0,0);
 
 	mPositions[0] = QPoint(0,0);
@@ -54,14 +54,14 @@ Qt_ConnectionPresentation::~Qt_ConnectionPresentation()
 {
 }
 
-void Qt_ConnectionPresentation::OnNewOutPos(int x, int y)
+void Qt_ConnectionPresentation::SetOutPos(int x, int y)
 {
 	origin.setX(x);
 	origin.setY(y);
 	UpdatePosition();
 }
 
-void Qt_ConnectionPresentation::OnNewInPos(int x, int y)
+void Qt_ConnectionPresentation::SetInPos(int x, int y)
 {
 	end.setX(x);
 	end.setY(y);
@@ -129,7 +129,7 @@ void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
 	switch ( tolower(k->ascii()) )
 	{
         case 'x':
-		RemoveConnection.Emit( this );
+		SignalRemoveConnection.Emit( this );
 		Hide();
 		mDown = false;
 		releaseKeyboard();

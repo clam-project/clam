@@ -71,7 +71,7 @@ protected:
 
 
 	ConcreteConfig * mConfig;
-	virtual void OnNewConfig( CLAM::ProcessingConfig* );
+	virtual void SetConfig( CLAM::ProcessingConfig* );
 	virtual void ApplyChangesToConfig();
 	void GetInfo();
 	void SetInfo();
@@ -160,7 +160,7 @@ void ConfigPresentationTmpl<ConcreteConfig>::Hide()
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::OnNewConfig( CLAM::ProcessingConfig* cfg)
+void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( CLAM::ProcessingConfig* cfg)
 {
 	mConfig = (ConcreteConfig*)cfg;
 
@@ -192,7 +192,7 @@ template<class ConcreteConfig>
 void ConfigPresentationTmpl<ConcreteConfig>::ApplyChangesToConfig()
 {
 	SetInfo();
-	ApplyConfig.Emit(mConfig);
+	SignalApplyConfig.Emit(mConfig);
 }
 
 template<class ConcreteConfig>

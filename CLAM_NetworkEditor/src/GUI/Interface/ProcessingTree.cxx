@@ -71,10 +71,10 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	connect( this, SIGNAL( pressed(QListViewItem *) ),
 		 this, SLOT( PressProcessing(QListViewItem *) ));
 
-	ProcessingCreated.Wrap( this, &ProcessingTree::IncreaseNumProc );
+	SlotProcessingCreated.Wrap( this, &ProcessingTree::IncreaseNumProc );
 
-	AddNewProcessing.Connect( network.AddNewProcessing );	
-	network.ProcessingCreated.Connect( ProcessingCreated );
+	SignalAddNewProcessing.Connect( network.SlotAddNewProcessing );	
+	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
 }
 
 ProcessingTree::~ProcessingTree()
@@ -102,7 +102,7 @@ void ProcessingTree::CreateProcessing(QListViewItem * item)
 
 	ProcessingFactory & factory = ProcessingFactory::GetInstance();
 
-	AddNewProcessing.Emit( name.str(), factory.Create(className) );
+	SignalAddNewProcessing.Emit( name.str(), factory.Create(className) );
 	
 }
 

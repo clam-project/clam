@@ -27,13 +27,7 @@ namespace NetworkGUI
 
 ProcessingConfigPresentation::ProcessingConfigPresentation()
 {
-	SetConfig.Wrap( this, &ProcessingConfigPresentation::OnNewConfig );
+	SlotSetConfig.Wrap( this, &ProcessingConfigPresentation::SetConfig );
 }
-/*
-void ProcessingConfigPresentation::OnNewConfig( CLAM::ProcessingConfig * config)
-{
-	mConfig = config;
-}
-*/	
 
 } // namespace NetworkGUI

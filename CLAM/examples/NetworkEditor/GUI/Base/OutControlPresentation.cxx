@@ -28,7 +28,7 @@ namespace NetworkGUI
 OutControlPresentation::OutControlPresentation()
 	: mName( "unnamed out control" )
 {
-	SetName.Wrap( this, &OutControlPresentation::OnNewName );
+	SlotSetName.Wrap( this, &OutControlPresentation::SetName );
 }
 
 OutControlPresentation::~OutControlPresentation()
@@ -37,7 +37,7 @@ OutControlPresentation::~OutControlPresentation()
 
 void OutControlPresentation::AttachTo( CLAMVM::ControlModel & m )
 {
-	m.AcquireName.Connect(SetName);
+	m.SignalAcquireName.Connect(SlotSetName);
 }
 
 } // namespace NetworkGUI

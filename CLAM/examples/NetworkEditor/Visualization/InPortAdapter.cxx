@@ -39,7 +39,7 @@ bool InPortAdapter::Publish()
 	if (!mObserved)
 		return false;
 
-	AcquireName.Emit(mObserved->GetName());
+	SignalAcquireName.Emit(mObserved->GetName());
 }
 
 bool InPortAdapter::BindTo( const CLAM::InPort& obj)

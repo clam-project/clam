@@ -58,27 +58,15 @@ public:
 		return mOutName;
 	}
 
-/*	CLAM::Processing * GetInProcessing()
-	{
-		return mInProc;
-	}
-	CLAM::Processing * GetOutProcessing()
-	{
-		return mInProc;
-	}
-*/
-
 protected:
-	virtual void OnNewNames( const std::string &, const std::string &);
+	virtual void SetNames( const std::string &, const std::string &);
 
-//	CLAM::Processing * mOutProc;
-//	CLAM::Processing * mInProc;
 	std::string mOutName;
 	std::string mInName;
 	
 public: //slots
-	SigSlot::Slotv2< const std::string &, const std::string &> SetNames;
-	SigSlot::Signalv1< ConnectionPresentation* > RemoveConnection;
+	SigSlot::Slotv2< const std::string &, const std::string &> SlotSetNames;
+	SigSlot::Signalv1< ConnectionPresentation* > SignalRemoveConnection;
 
 };
 

@@ -86,28 +86,28 @@ public:
 	bool HasOutPort( const std::string& name);
 
 protected:
-	virtual void OnNewConfig( CLAM::ProcessingConfig * );
-	virtual void OnNewUpdateConfig( CLAM::ProcessingConfig * );
-	virtual void OnNewObservedClassName( const std::string& ) = 0;
-	virtual void OnNewInPort( CLAMVM::InPortAdapter* ) = 0;
-	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* ) = 0;
-	virtual void OnNewInControl( CLAMVM::InControlAdapter* ) = 0;
-	virtual void OnNewOutControl( CLAMVM::OutControlAdapter* ) = 0;
+	virtual void SetConfig( CLAM::ProcessingConfig * );
+	virtual void SetConfigFromGUI( CLAM::ProcessingConfig * );
+	virtual void SetObservedClassName( const std::string& ) = 0;
+	virtual void SetInPort( CLAMVM::InPortAdapter* ) = 0;
+	virtual void SetOutPort( CLAMVM::OutPortAdapter* ) = 0;
+	virtual void SetInControl( CLAMVM::InControlAdapter* ) = 0;
+	virtual void SetOutControl( CLAMVM::OutControlAdapter* ) = 0;
 
-	virtual void OnUpdatePresentation();
+	virtual void UpdatePresentation();
 public:	//slots
-	SigSlot::Signalv1< ProcessingPresentation* > RemoveProcessing;
-	SigSlot::Slotv1<const std::string &> SetObservedClassName;
-	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SetInPort;
-	SigSlot::Slotv1< CLAMVM::OutPortAdapter* > SetOutPort;	
-	SigSlot::Slotv1< CLAMVM::InControlAdapter* > SetInControl;
-	SigSlot::Slotv1< CLAMVM::OutControlAdapter* > SetOutControl;	
+	SigSlot::Signalv1< ProcessingPresentation* > SignalRemoveProcessing;
+	SigSlot::Slotv1<const std::string &> SlotSetObservedClassName;
+	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SlotSetInPort;
+	SigSlot::Slotv1< CLAMVM::OutPortAdapter* > SlotSetOutPort;	
+	SigSlot::Slotv1< CLAMVM::InControlAdapter* > SlotSetInControl;
+	SigSlot::Slotv1< CLAMVM::OutControlAdapter* > SlotSetOutControl;	
 
-	SigSlot::Signalv1< CLAM::ProcessingConfig * > NewConfig;
-	SigSlot::Signalv1< CLAM::ProcessingConfig * > UpdateConfig;
-	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfig;
-	SigSlot::Slotv1< CLAM::ProcessingConfig *> SetConfigFromGUI;
-	SigSlot::Slotv0 UpdatePresentation;	
+	SigSlot::Signalv1< CLAM::ProcessingConfig * > SignalNewConfig;
+	SigSlot::Signalv1< CLAM::ProcessingConfig * > SignalUpdateConfig;
+	SigSlot::Slotv1< CLAM::ProcessingConfig *> SlotSetConfig;
+	SigSlot::Slotv1< CLAM::ProcessingConfig *> SlotSetConfigFromGUI;
+	SigSlot::Slotv0 SlotUpdatePresentation;	
 };
 
 

@@ -54,7 +54,7 @@ private:
 	typedef std::list<InControlAdapter*>::iterator InControlAdapterIterator;
 
 protected:
-	void OnUpdateConfigFromGUI( CLAM::ProcessingConfig* );
+	void SetNewConfig( CLAM::ProcessingConfig* );
 	void CheckIfLadspaLoader();
 public:
 	ProcessingController();

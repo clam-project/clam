@@ -52,11 +52,11 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 
 	resize( QSize(400, 275).expandedTo(minimumSizeHint()) );
 
-	mOkButtonIsPressed.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
-	mCancelButtonIsPressed.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );
+	SlotOk.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
+	SlotCancel.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );
 
-	mOkButton->Pressed.Connect( mOkButtonIsPressed );
-	mCancelButton->Pressed.Connect( mCancelButtonIsPressed );
+	mOkButton->Pressed.Connect( SlotOk );
+	mCancelButton->Pressed.Connect( SlotCancel );
 
 }
 	

@@ -101,10 +101,10 @@ void OscillatorConfigPresentation::ApplyChangesToConfig()
 	mConfig->SetPhase( mPhaseEdit->text().toFloat());
 	mConfig->SetSamplingRate( mSamplingRateEdit->text().toFloat());
 	
-	ApplyConfig.Emit(mConfig);
+	SignalApplyConfig.Emit(mConfig);
 }
 
-void OscillatorConfigPresentation::OnNewConfig( CLAM::ProcessingConfig* cfg)
+void OscillatorConfigPresentation::SetConfig( CLAM::ProcessingConfig* cfg)
 {
 	mConfig = (CLAM::OscillatorConfig*)cfg;
 }

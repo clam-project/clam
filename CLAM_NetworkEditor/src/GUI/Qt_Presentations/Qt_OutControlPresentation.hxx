@@ -42,15 +42,15 @@ public:
 	void updatePosition();
 	QRegion GetRegion();
 protected:
-	virtual void OnNewName(const std::string& name);
+	virtual void SetName(const std::string& name);
 
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 
 
 public: // signals
-	SigSlot::Signalv2< int , int >  AcquirePos;
-	SigSlot::Signalv1< Qt_OutControlPresentation * > AcquireOutControlClicked;
+	SigSlot::Signalv2< int , int >  SignalAcquirePos;
+	SigSlot::Signalv1< Qt_OutControlPresentation * > SignalAcquireOutControlClicked;
 
 protected:
 // qt stuff

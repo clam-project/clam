@@ -67,7 +67,7 @@ public:
 		if (mObserved)
 			mObserved->Stop();
 
-		OnClear();
+		Clear();
 		mObserved = 0;
 		delete mNetwork;
 
@@ -79,14 +79,14 @@ public:
 		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
 		mNetwork->AddProcessing( "oscillator", oscillator) ;
 
-		SignalChangeState.Connect( ChangeState );
+		SignalChangeState.Connect( SlotChangeState );
 		
 		SignalChangeState.Emit(true);
 		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, oscillator->GetExecState() );
 		
 		SignalChangeState.Emit(false);
 		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, oscillator->GetExecState() );
-		ChangeState.Unbind();
+		SlotChangeState.Unbind();
 	}
 
 	void testAddProcessingCreatesProcessingController()
@@ -117,7 +117,7 @@ public:
 	{
 		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
 		AddProcessing( "oscillator", oscillator );
-		OnRemoveProcessingFromGUI( "oscillator" ); // TODO:: its name should be RemoveProcessing
+		RemoveProcessing( "oscillator" ); // TODO:: its name should be RemoveProcessing
 
 		CPPUNIT_ASSERT_EQUAL( 0, (int)mProcessingControllers.size() );
 	}
@@ -126,13 +126,12 @@ public:
 	{
 		try
 		{
-			OnRemoveProcessingFromGUI("oscillator");
+			RemoveProcessing("oscillator");
 			CPPUNIT_FAIL("exception should be thrown when trying to remove a nonexistent key");
 		}
 		catch(CLAM::ErrAssertionFailed &)
 		{
 		}
-			
 	}
 
 };

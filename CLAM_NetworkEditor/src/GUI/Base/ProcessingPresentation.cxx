@@ -43,55 +43,39 @@ ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwor
 	: mNameFromNetwork(nameFromNetwork),
 	  mConfig(0)
 {
-	SetConfig.Wrap( this, &ProcessingPresentation::OnNewConfig );
-	SetConfigFromGUI.Wrap( this, &ProcessingPresentation::OnNewUpdateConfig );
-	SetInPort.Wrap( this, &ProcessingPresentation::OnNewInPort );
-	SetOutPort.Wrap( this, &ProcessingPresentation::OnNewOutPort );
-	SetInControl.Wrap( this, &ProcessingPresentation::OnNewInControl );
-	SetOutControl.Wrap( this, &ProcessingPresentation::OnNewOutControl );
-	UpdatePresentation.Wrap(this, &ProcessingPresentation::OnUpdatePresentation );
-	SetObservedClassName.Wrap( this, &ProcessingPresentation::OnNewObservedClassName );
+	SlotSetConfig.Wrap( this, &ProcessingPresentation::SetConfig );
+	SlotSetConfigFromGUI.Wrap( this, &ProcessingPresentation::SetConfigFromGUI );
+	SlotSetInPort.Wrap( this, &ProcessingPresentation::SetInPort );
+	SlotSetOutPort.Wrap( this, &ProcessingPresentation::SetOutPort );
+	SlotSetInControl.Wrap( this, &ProcessingPresentation::SetInControl );
+	SlotSetOutControl.Wrap( this, &ProcessingPresentation::SetOutControl );
+	SlotUpdatePresentation.Wrap(this, &ProcessingPresentation::UpdatePresentation );
+	SlotSetObservedClassName.Wrap( this, &ProcessingPresentation::SetObservedClassName );
 }
 
-void ProcessingPresentation::OnUpdatePresentation()
+void ProcessingPresentation::UpdatePresentation()
 {
-	std::cout << "updating presentation" << std::endl;
-	RemoveProcessing.Emit(this);
-//	Hide();
-	/*
-	InPortPresentationIterator itInPort;
-	for ( itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end(); itInPort++)
-		delete *itInPort;
-	OutPortPresentationIterator itOutPort;
-	for ( itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end(); itOutPort++)
-		delete *itOutPort;
-	InControlPresentationIterator itInControl;
-	for ( itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end(); itInControl++)
-		delete *itInControl;
-	OutControlPresentationIterator itOutControl;
-	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
-		delete *itOutControl;
-		*/
+	SignalRemoveProcessing.Emit(this);
 }
 
-void ProcessingPresentation::OnNewConfig( CLAM::ProcessingConfig * cfg)
+void ProcessingPresentation::SetConfig( CLAM::ProcessingConfig * cfg)
 {
 	if (!mConfig)
 	{
 		ProcessingConfigPresentationFactory & factory =  ProcessingConfigPresentationFactory::GetInstance();
 		mConfig = factory.Create(cfg->GetClassName());
-		NewConfig.Connect( mConfig->SetConfig );
-		mConfig->ApplyConfig.Connect( SetConfigFromGUI );
+		SignalNewConfig.Connect( mConfig->SlotSetConfig );
+		mConfig->SignalApplyConfig.Connect( SlotSetConfigFromGUI );
 
 	}
 
-	NewConfig.Emit( cfg );
+	SignalNewConfig.Emit( cfg );
 
 }
 
-void ProcessingPresentation::OnNewUpdateConfig( CLAM::ProcessingConfig * cfg)
+void ProcessingPresentation::SetConfigFromGUI( CLAM::ProcessingConfig * cfg)
 {
-	UpdateConfig.Emit( cfg );
+	SignalUpdateConfig.Emit( cfg );
 }
 
 ProcessingPresentation::~ProcessingPresentation()
@@ -118,16 +102,16 @@ ProcessingPresentation::~ProcessingPresentation()
 
 void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
 {
-	m.AcquireClassName.Connect(SetObservedClassName);
-	m.AcquireInPort.Connect(SetInPort);
-	m.AcquireOutPort.Connect(SetOutPort);
-	m.AcquireInControl.Connect(SetInControl);
-	m.AcquireOutControl.Connect(SetOutControl);
-	m.AcquireConfig.Connect(SetConfig);
+	m.SignalAcquireClassName.Connect(SlotSetObservedClassName);
+	m.SignalAcquireInPort.Connect(SlotSetInPort);
+	m.SignalAcquireOutPort.Connect(SlotSetOutPort);
+	m.SignalAcquireInControl.Connect(SlotSetInControl);
+	m.SignalAcquireOutControl.Connect(SlotSetOutControl);
+	m.SignalAcquireConfig.Connect(SlotSetConfig);
 
-	m.SignalUpdatePresentation.Connect(UpdatePresentation);
+	m.SignalUpdatePresentation.Connect(SlotUpdatePresentation);
 
-	UpdateConfig.Connect( m.SetNewConfig );
+	SignalUpdateConfig.Connect( m.SlotSetNewConfig );
 }
 
 OutPortPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)

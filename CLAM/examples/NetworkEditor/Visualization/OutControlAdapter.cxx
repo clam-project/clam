@@ -39,7 +39,7 @@ bool OutControlAdapter::Publish()
 	if (!mObserved)
 		return false;
 
-	AcquireName.Emit(mObserved->GetName());
+	SignalAcquireName.Emit(mObserved->GetName());
 }
 
 bool OutControlAdapter::BindTo( const CLAM::OutControl& obj)

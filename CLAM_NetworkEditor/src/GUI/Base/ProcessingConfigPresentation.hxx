@@ -37,17 +37,16 @@ namespace NetworkGUI
 class ProcessingConfigPresentation : public CLAMVM::Presentation
 {
 protected:
-//	CLAM::ProcessingConfig * mConfig;
 
-	virtual void OnNewConfig( CLAM::ProcessingConfig* ) = 0;
+	virtual void SetConfig( CLAM::ProcessingConfig* ) = 0;
 public:
 	ProcessingConfigPresentation();       
 	virtual ~ProcessingConfigPresentation(){}
 	
 
 public: // signals
-	SigSlot::Signalv1< CLAM::ProcessingConfig* > ApplyConfig;
-	SigSlot::Slotv1< CLAM::ProcessingConfig* > SetConfig;
+	SigSlot::Signalv1< CLAM::ProcessingConfig* > SignalApplyConfig;
+	SigSlot::Slotv1< CLAM::ProcessingConfig* > SlotSetConfig;
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 

@@ -39,13 +39,13 @@ public:
 	virtual void Show();
 	virtual void Hide();
 protected:
-	virtual void OnNewName(const std::string& name);
+	virtual void SetName(const std::string& name);
 
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 public: // signals
-	SigSlot::Signalv2< int , int >  AcquirePos;
-	SigSlot::Signalv1< Qt_InPortPresentation * > AcquireInPortClicked;
+	SigSlot::Signalv2< int , int >  SignalAcquirePos;
+	SigSlot::Signalv1< Qt_InPortPresentation * > SignalAcquireInPortClicked;
 
 // qt stuff
 	int   mId;

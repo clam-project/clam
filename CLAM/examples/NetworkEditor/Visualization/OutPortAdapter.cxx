@@ -19,7 +19,7 @@ bool OutPortAdapter::Publish()
 	if (!mObserved)
 		return false;
 
-	AcquireName.Emit(mObserved->GetName());
+	SignalAcquireName.Emit(mObserved->GetName());
 }
 
 bool OutPortAdapter::BindTo( const CLAM::OutPort& obj)

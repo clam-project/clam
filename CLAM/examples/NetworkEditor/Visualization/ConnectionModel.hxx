@@ -14,7 +14,7 @@ namespace CLAMVM
 		virtual ~ConnectionModel(){}
 
 		//signals
-		SigSlot::Signalv2< const std::string &, const std::string &>  AcquireNames;
+		SigSlot::Signalv2< const std::string &, const std::string &>  SignalAcquireNames;
 	};
 } // namespace CLAMVM
 

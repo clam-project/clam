@@ -42,22 +42,23 @@ namespace CLAMVM
 	class ConnectionAdapter : public ModelAdapter, public ConnectionModel
 	{
 	protected:		
-//		const CLAM::OutPort* mOutObserved;
-//		const CLAM::InPort* mInObserved;
 		const CLAM::Network*  mNetworkObserved;
 		
 	public:
-		ConnectionAdapter();
-		virtual ~ConnectionAdapter();
+		ConnectionAdapter() : mNetworkObserved(0)
+		{
+		}
+	
+		virtual ~ConnectionAdapter()
+		{
+		}
+
 		virtual const char* GetClassName() const
 		{
 			return "ConnectionAdapter";
 		}
 
-//		virtual bool ConnectsInPort( CLAM::InPort &);
 		virtual bool Publish()=0;
-//		virtual bool BindTo( const CLAM::OutPort&, const CLAM::InPort&, const CLAM::Network &);
-		
 	};
 
 
@@ -126,7 +127,7 @@ namespace CLAMVM
 		inName += ".";
 		inName += mInObserved->GetName();
 		
-		AcquireNames.Emit( outName, inName );
+		SignalAcquireNames.Emit( outName, inName );
 	}
 
 

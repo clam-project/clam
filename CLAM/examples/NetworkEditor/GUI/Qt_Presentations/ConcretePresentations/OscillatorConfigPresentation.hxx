@@ -52,7 +52,7 @@ class OscillatorConfigPresentation : public Qt_ProcessingConfigPresentation
 	QTextEdit * mPhaseEdit;
 	QTextEdit * mSamplingRateEdit;
 protected:
-	virtual void OnNewConfig( CLAM::ProcessingConfig* );
+	virtual void SetConfig( CLAM::ProcessingConfig* );
 	virtual void ApplyChangesToConfig();
 public:
 	OscillatorConfigPresentation( QWidget * parent = 0 );

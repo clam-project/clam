@@ -28,7 +28,7 @@ namespace NetworkGUI
 OutPortPresentation::OutPortPresentation()
 	: mName( "unnamed out port" )
 {
-	SetName.Wrap( this, &OutPortPresentation::OnNewName );
+	SlotSetName.Wrap( this, &OutPortPresentation::SetName );
 }
 
 OutPortPresentation::~OutPortPresentation()
@@ -37,7 +37,7 @@ OutPortPresentation::~OutPortPresentation()
 
 void OutPortPresentation::AttachTo( CLAMVM::PortModel & m )
 {
-	m.AcquireName.Connect(SetName);
+	m.SignalAcquireName.Connect(SlotSetName);
 }
 
 } // namespace NetworkGUI
