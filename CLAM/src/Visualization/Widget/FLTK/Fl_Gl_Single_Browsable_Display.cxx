@@ -20,7 +20,7 @@
  */
 
 #include <FL/Fl.H>
-#include <FL/gl.h>
+#include "CLAMGL.hxx"
 #include "Fl_Gl_Single_Browsable_Display.hxx"
 #include "Assert.hxx"
 #include "AudioRenderingManager.hxx"
@@ -88,7 +88,7 @@ namespace CLAMVM
 		
 			//glClear(GL_COLOR_BUFFER_BIT );
 		
-			gl_color( FL_RED );
+			glColor3f( 1.0, 0.0, 0.0 );
 			glLineWidth(2);
 		
 			glBegin( GL_LINES );
