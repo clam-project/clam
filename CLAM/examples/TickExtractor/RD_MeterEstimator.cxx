@@ -206,7 +206,8 @@ namespace CLAM
 			// Fabien changed this so we don't mix ternary and binary hypotheses: 3 and
 			// 9 do not have as factor two, while six does. 
 
-			TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[9])/2;
+			//TData M = (acf[2]+acf[4]+acf[8])/3 - (acf[3]+acf[9])/2;
+			TData M = (acf[1]+acf[3]+acf[7])/3.0 - (acf[2]+acf[8])/2.0;
 			std::cout<<"Feature M = "<<M<<std::endl;
 			
 			//--------Final decision--------------
@@ -218,7 +219,32 @@ namespace CLAM
 			//
 
 			//if ( M < -0.000665 ) 
-			if ( (acf[2]+acf[8])/2.0 > (acf[1]+acf[3]+acf[7]+acf[9])/4.0 )
+			TData dupleLikelihood = 0.0;
+			int twoMults = 0, threeMults = 0;
+			TData tripleLikelihood = 0.0;
+
+			for ( int i = 1; i < acf.Size(); i++ )
+			{
+				if ( (i+1)%2 == 0)
+				{
+					dupleLikelihood+=acf[i];
+					twoMults++;
+				}
+
+				if ( (i+1)%3 == 0)
+				{
+					tripleLikelihood+=acf[i];
+					threeMults++;
+				}
+			}
+
+			tripleLikelihood *= 1.0/TData(threeMults);
+			dupleLikelihood *= 1.0/TData(twoMults);
+
+			std::cout << "M2 = " << dupleLikelihood - tripleLikelihood << std::endl;
+
+			//if ( (acf[2]+acf[8])/2.0 > (acf[1]+acf[3]+acf[7])/3.0 )
+			if ( tripleLikelihood > dupleLikelihood )
 			{
 				dataOut.SetNumerator(3);
 				std::cout<<"Triple (3/4) meter"<<std::endl;

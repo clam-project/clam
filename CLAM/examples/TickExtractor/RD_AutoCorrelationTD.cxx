@@ -126,7 +126,7 @@ namespace CLAM
 			TData tmpCoef;
 			TData normY;
 
-			for(int m=0;m<ul;m++) 
+			for(int m=0;m<maxIt;m++) 
 			{
 				tmpCoef = 0.0;
 			
