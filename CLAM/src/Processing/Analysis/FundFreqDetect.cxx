@@ -246,10 +246,11 @@ namespace CLAM {
 		// 2.2.- Peaks below the maximum magnitude peak (except for the 3 max peaks)
 		for (int i=0; (i < nMaxMagPeak) && (tmpFreq.GetnCandidates() < mnMaxCandidates); i++ ) // be careful not to exceed the maximun permitted
 		{
-				if((i!=nMaxMagPeak2) && (i!=nMaxMagPeak3))
-					if (peaks.GetThruIndexMag(i) > (maxMag - mMaxCandMagDiff) )
-						if ( IsGoodCandidate(peaks.GetThruIndexFreq(i)) )
-							tmpFreq.AddElem(peaks.GetThruIndexFreq(i));
+			if(i==nMaxMagPeak2) continue;
+			if (i==nMaxMagPeak3) continue;
+			if (peaks.GetThruIndexMag(i) <= maxMag - mMaxCandMagDiff ) continue;
+			if (! IsGoodCandidate(peaks.GetThruIndexFreq(i)) ) continue;
+			tmpFreq.AddElem(peaks.GetThruIndexFreq(i));
 		}
 		
 		// 2.3.- Frequency offset between peaks above the maximun magnitude peak and the maximun magnitude peak
@@ -257,24 +258,23 @@ namespace CLAM {
 		for (int i = nMaxMagPeak+1; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++)
 		{
 			freq = peaks.GetThruIndexFreq(i) - peaks.GetThruIndexFreq(nMaxMagPeak);
-			if (freq < peaks.GetThruIndexFreq(nMaxMagPeak)*1.1)
-				if (IsGoodCandidate(freq))
-					tmpFreq.AddElem(freq);
+			if (freq >= peaks.GetThruIndexFreq(nMaxMagPeak)*1.1) continue;
+			if (!IsGoodCandidate(freq)) continue;
+			tmpFreq.AddElem(freq);
 		}
 		
 		// 2.4.- Frequency offset between peaks
 		for (int i = 0; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++ )
 		{
-			if (i!=nMaxMagPeak) {	
-				j = i+1;
-				while( (j<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates) )
-				{
-					freq = peaks.GetThruIndexFreq(j) - peaks.GetThruIndexFreq(i);
-					if (freq < peaks.GetThruIndexFreq(nMaxMagPeak)*1.1)
-						if (IsGoodCandidate(freq))
-							tmpFreq.AddElem(freq);
-					j++;
-				}
+			if (i==nMaxMagPeak) continue;
+			j = i+1;
+			while( (j<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates) )
+			{
+				freq = peaks.GetThruIndexFreq(j) - peaks.GetThruIndexFreq(i);
+				if (freq < peaks.GetThruIndexFreq(nMaxMagPeak)*1.1)
+					if (IsGoodCandidate(freq))
+						tmpFreq.AddElem(freq);
+				j++;
 			}
 		}
 		
@@ -314,25 +314,27 @@ namespace CLAM {
 		tmpFreq2.SetnMaxCandidates(tmpFreq.GetnCandidates());
 
 		for (int i=0;i<tmpFreq.GetnCandidates();i++)
-			if (i>0)
+		{
+			if (i<=0)
 			{
-				int j; 
-				bool addedNearOne=false;
-				for(j=0; j<tmpFreq2.GetnCandidates(); j++)
-					if((tmpFreq.GetFreq(i)>0.95*tmpFreq2.GetFreq(j)) && (tmpFreq.GetFreq(i)<1.1*tmpFreq2.GetFreq(j)))
-					{
-						addedNearOne = true;
-						if(tmpFreq2.GetErr(j)> tmpFreq.GetErr(i))
-						{
-							tmpFreq2.SetFreq(j,tmpFreq.GetFreq(i));
-							tmpFreq2.SetErr(j,tmpFreq.GetErr(i));
-						}
-					}
-				if(!addedNearOne)
-					tmpFreq2.AddElem(tmpFreq.GetFreq(i),tmpFreq.GetErr(i));
-			}		
-			else
 				tmpFreq2.AddElem(tmpFreq.GetFreq(i),tmpFreq.GetErr(i));
+				continue;
+			}
+			bool addedNearOne=false;
+			for(int j=0; j<tmpFreq2.GetnCandidates(); j++)
+			{
+				if (tmpFreq.GetFreq(i)<=0.95*tmpFreq2.GetFreq(j)) continue;
+				if (tmpFreq.GetFreq(i)>=1.1*tmpFreq2.GetFreq(j)) continue;
+				addedNearOne = true;
+				if(tmpFreq2.GetErr(j)> tmpFreq.GetErr(i))
+				{
+					tmpFreq2.SetFreq(j,tmpFreq.GetFreq(i));
+					tmpFreq2.SetErr(j,tmpFreq.GetErr(i));
+				}
+			}
+			if(!addedNearOne)
+				tmpFreq2.AddElem(tmpFreq.GetFreq(i),tmpFreq.GetErr(i));
+		}
 		
 		// 5.- SEARCH AROUND FOR A RELATIVE MINIMUM
 		TData nMinimum = std::min(3,tmpFreq2.GetnCandidates());
