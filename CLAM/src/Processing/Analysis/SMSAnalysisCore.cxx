@@ -83,7 +83,6 @@ bool SMSAnalysisCore::ConfigureChildren()
 	TSize frameSize=mConfig.GetHopSize();
 	TSize sinWindowSize=mConfig.GetSinWindowSize();
 	TSize resWindowSize=mConfig.GetResWindowSize();
-	
 	mInputAudio.SetSize( frameSize );
 	mInputAudio.SetHop( frameSize );
 
@@ -145,23 +144,17 @@ void SMSAnalysisCore::AttachChildren()
 
 bool SMSAnalysisCore::Do()
 {
-	if( mSinSpectralAnalysis.CanDoUsingPorts() )
+	if( mSinSpectralAnalysis.CanDoUsingPorts() && mResSpectralAnalysis.CanDoUsingPorts() )
 	{
 		mSinSpectralAnalysis.Do();
 		mPeakDetect.Do();
 		mFundDetect.Do();
 		mSinTracking.Do();
 		mSynthSineSpectrum.Do();
-	}
-
-	if( mResSpectralAnalysis.CanDoUsingPorts() )
-	{
 		mResSpectralAnalysis.Do();
-	}
-	
-	if( mSpecSubstracter.CanDoUsingPorts() )
-	{
+		CLAM_DEBUG_ASSERT( mSpecSubstracter.CanDoUsingPorts(), "SMSAnalysisCore::Do() specSubstracter should have data feeded");
 		mSpecSubstracter.Do();
+
 	}
 	
 	return true;

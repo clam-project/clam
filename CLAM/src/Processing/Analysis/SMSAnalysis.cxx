@@ -78,6 +78,11 @@ bool SMSAnalysis::ConcreteStart()
 {
 	//we have to initialize internal counter
 	mAudioFrameIndex=0;
+	
+	mAudioProvider.SetSize( mConfig.GetHopSize() );
+	mAudioProvider.SetHop( mConfig.GetHopSize() );
+	mAudioProvider.CenterEvenRegions();
+	
 	return ProcessingComposite::ConcreteStart();
 }
 
@@ -96,14 +101,14 @@ bool SMSAnalysis::Do(Frame& in)
 
 	bool result=false;
 
-	mAudioProvider.SetSize( in.GetAudioFrame().GetSize() );
-	mAudioProvider.SetHop( in.GetAudioFrame().GetSize() );
 	mAudioProvider.SetSampleRate( in.GetAudioFrame().GetSampleRate() );
-	mAudioProvider.CenterEvenRegions();
 	mAudioProvider.GetAudio().GetBuffer() = in.GetAudioFrame().GetBuffer();
 	mAudioProvider.Produce();
 
-	result = mCore.Do();
+	if(mCore.CanDoUsingPorts())
+		result = mCore.Do();
+	else
+		return false;
 
 	OutPortBase & outSinSpectrum  = mCore.GetOutPort("Sinusoidal Branch Spectrum");
 	in.GetSinusoidalAnalSpectrum() =  OutPortPublisher<Spectrum>::GetLastWrittenData( outSinSpectrum );
@@ -124,7 +129,7 @@ bool SMSAnalysis::Do(Frame& in)
 	CLAM_DEBUG_ASSERT( in.GetResidualSpec().GetSpectralRange() > 0, 
 			   "Residual spectrum is not being properly configured" );
 
-	if (result)
+	if (result) // TODO: refactor
 		//if we have been able to analyze something we set whether frame is voiced or not
 		in.SetIsHarmonic(in.GetFundamental().GetFreq(0)>0);
 	return result;
@@ -166,8 +171,8 @@ bool SMSAnalysis::Do(Segment& in)
 	mAudioFrameIndex++;
 	
 	//tmpFrame.SetAudioFrame(tmpAudio);
-
 	bool hasProcessed=Do(tmpFrame);
+	
 	if(hasProcessed)
 	{//we have been able to do an analysis and write the result into tmpFrame's attributes
 		in.mCurrentFrameIndex++;
