@@ -61,7 +61,7 @@ namespace CLAMTest
 namespace CppUnit
 {
 	template<>
-	struct ::CppUnit::assertion_traits< std::type_info >
+	struct assertion_traits< std::type_info >
 	{
 		static bool equal( const std::type_info& x, const std::type_info& y )
 		{
