@@ -37,19 +37,14 @@ namespace CLAM
 		T mIm;
 
 	public:
-		ComplexTmpl(T re = 0.0, T im = 0.0) //< constructor
-		{
-			mRe = re;
-			mIm = im;
-		}
+		ComplexTmpl(T re = 0.f, T im = 0.f) : mRe(re), mIm(im) {}
 
-//		~ComplexTmpl(){}
 
 		const T Real() const { return mRe; } //< accessor returns the real part
 		const T Imag() const { return mIm; } //< accessor returns the imaginary part
 
-		void SetReal(const T& re) { mRe = re; } //< accesor sets the real part
-		void SetImag(const T& im) { mIm = im; } //< accesor sets the imaginary part
+		void SetReal(const T re) { mRe = re; } //< accesor sets the real part
+		void SetImag(const T im) { mIm = im; } //< accesor sets the imaginary part
 
 		/// returns magnitude
 		const T Mag() const
@@ -63,83 +58,77 @@ namespace CLAM
 			return atan2(mIm, mRe);
 		}
 
-		/// friend function to handle polar coordinates
-		friend ComplexTmpl<T> ToPolar(const T& r, const T& theta)
+		/// function to handle polar coordinates
+		ComplexTmpl<T> ToPolar(const T& r, const T& theta)
 		{
-			return ComplexTmpl<T>(r * cos(theta), r * sin(theta));
+			return ComplexTmpl<T>(r*cos(theta), r*sin(theta));
 		}
 
 		// ------   member operators ... ------
 
 		///  complex '=' operator  (float)
-		const ComplexTmpl<T>& operator = (const float re)
+		ComplexTmpl<T>& operator = (const T re)
 		{
 			mRe = re;
-			mIm = 0;
+			mIm = 0.f;
 			return *this;
 		}
 
 		/// complex '=' operator
-		const ComplexTmpl<T>& operator = (const ComplexTmpl<T>& a)
+		ComplexTmpl<T>& operator = (const ComplexTmpl<T>& rhs)
 		{
-			mRe = a.mRe;
-			mIm = a.mIm;
+			mRe = rhs.mRe;
+			mIm = rhs.mIm;
 			return *this;
 
 		}
 
 		/// complex '+=' operator
-		const ComplexTmpl<T>& operator += (const ComplexTmpl<T>& a)
+		ComplexTmpl<T>& operator += (const ComplexTmpl<T>& rhs)
 		{
-			mRe = mRe + a.mRe;
-			mIm = mIm + a.mIm;
+			mRe += rhs.mRe;
+			mIm += rhs.mIm;
 			return *this;
 		}
 
 		///  complex '-=' operator
-		const ComplexTmpl<T>& operator -= (const ComplexTmpl<T>& a)
+		ComplexTmpl<T>& operator -= (const ComplexTmpl<T>& rhs)
 		{
-			mRe = mRe - a.mRe;
-			mIm = mIm - a.mIm;
+			mRe -= rhs.mRe;
+			mIm -= rhs.mIm;
 			return *this;
 		}
 
 		/// complex '+' operator
-		ComplexTmpl<T> operator + (const ComplexTmpl<T>& b) const
+		ComplexTmpl<T> operator + (const ComplexTmpl<T>& rhs) const
 		{
-			ComplexTmpl<T> ret(mRe + b.mRe , mIm + b.mIm);
-			return ret;
+			return ComplexTmpl<T>(mRe + rhs.mRe , mIm + rhs.mIm);
 		}
 
 		///  complex '-' operator
-		ComplexTmpl<T> operator - (const ComplexTmpl<T>& b) const
+		ComplexTmpl<T> operator - (const ComplexTmpl<T>& rhs) const
 		{
-			ComplexTmpl<T> ret(mRe - b.mRe , mIm - b.mIm);
-			return ret;
+			return ComplexTmpl<T>(mRe - rhs.mRe, mIm - rhs.mIm);
 		}
 
 		/// complex '*' operator
-		ComplexTmpl<T> operator * (const ComplexTmpl<T>& b) const
+		ComplexTmpl<T> operator * (const ComplexTmpl<T>& rhs) const
 		{
-			return ComplexTmpl<T> (
-				(mRe * b.mRe) - (mIm * b.mIm),
-				(mRe * b.mIm) + (b.mRe * mIm)
-			);
+			return ComplexTmpl<T>(mRe*rhs.mRe - mIm*rhs.mIm, mRe*rhs.mIm + rhs.mRe*mIm);
 		}
 
 		/// Product by a scalar
-		ComplexTmpl<T> operator * (const T& scalar ) const
+		ComplexTmpl<T> operator * (const T& scalar) const
 		{
-			return ComplexTmpl<T>(mRe*scalar,mIm*scalar);
+			return ComplexTmpl<T>(mRe*scalar, mIm*scalar);
 		}
 
 		/// complex '/' operator
-		ComplexTmpl<T> operator / (const ComplexTmpl<T>& b) const
+		ComplexTmpl<T> operator / (const ComplexTmpl<T>& rhs) const
 		{
-			return ComplexTmpl<T> (
-				((mRe * b.mRe) + (mIm * b.mIm)) /((b.mRe * b.mRe) + (b.mIm * b.mIm)),
-				((b.mRe * mIm) - (mRe * b.mIm)) /((b.mRe * b.mRe) + (b.mIm * b.mIm))
-			);
+			const float rhsInvSquaredMag = 1.f/(rhs.mRe*rhs.mRe + rhs.mIm*rhs.mIm);
+
+			return ComplexTmpl<T>((mRe*rhs.mRe + mIm*rhs.mIm)*rhsInvSquaredMag, (rhs.mRe*mIm - mRe*rhs.mIm)*rhsInvSquaredMag);
 		}
 
 		/// complex '==' operator
@@ -151,7 +140,7 @@ namespace CLAM
 		/// complex '!=' operator
 		bool operator != (const ComplexTmpl<T>& b) const
 		{
-			return (mRe != b.mRe) || (mIm != b.mIm);
+			return !(*this == b);
 		}
 
 	};
