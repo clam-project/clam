@@ -1,5 +1,9 @@
 #! /usr/bin/python
 
+#----------------------------------------------------------------------
+# begin configuration
+
+
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 1
@@ -7,13 +11,14 @@ updateLevelForExamples = 1
 updateLevelForTestData = 1
 
 # When false keeps already compiled objects
-doCleanMake = True
+doCleanMake = False
 # When false does not run autoconf and configure unless a new checkout
-doAutoconf = True
+doAutoconf = False
 configureOptions = '--without-portmidi  --without-portaudio'
-doAutoconf = doAutoconf or updateLevelForCLAM == 2
 # Non-test are runned those seconds and then killed
 executionTime = 15 
+
+configurations = ['release'] #['debug', 'release'] 
 
 # Mail report settings
 enableSendMail = True
@@ -21,20 +26,24 @@ publicAddress = 'clam-devel@iua.upf.es' # To use only when fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
 
-#TODO: this will be used only when it's not set in the environment
+MODULE_TAG = 'development-branch'
+
+#this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@mtg150.upf.es:/mnt/cvsroot'
-configurations = ['release'] #['debug', 'release'] 
+
+
 
 import commands
 import os
 import string
 import sys
 
+doAutoconf = doAutoconf or updateLevelForCLAM == 2
+
 CLAM_SANDBOXES = os.path.abspath( os.path.dirname(sys.argv[0])+'/../..' ) + '/'
 print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
-MODULE_TAG = 'CLAM-0_7_0-rel'
-#MODULE_TAG = 'development-branch'
+MODULE_TAG = 'development-branch'
 SANDBOX_NAME = 'clean-'+MODULE_TAG
 
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
@@ -63,7 +72,8 @@ sandboxes = [ # Module, Sandbox, Tag, Update level
 
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
-	( 'FunctionalTests', functionalTestsPath )
+	( 'FunctionalTests', functionalTestsPath ),
+	( 'SMSToolsTests', CLAM_SANDBOXES+'CLAM_SMSTools/build/FunctionalTests/' )
 ]
 
 externalApplications = [
@@ -103,9 +113,9 @@ notPortedTests = [
         ( 'BPFTest', nonPortedTestsPath+'BPF/'),
 #        ( 'EnvelopeExtractorTest', nonPortedTestsPath+'EnvelopeExtractor/'),
         ( 'ErrorTest', nonPortedTestsPath+'Error/'),
-        ( 'FDFilterGenTest', nonPortedTestsPath+'FDFilterGen/'),
+#        ( 'FDFilterGenTest', nonPortedTestsPath+'FDFilterGen/'),
         ( 'ListTest', nonPortedTestsPath+'List/'),
-        ( 'SegmentTest', nonPortedTestsPath+'Segment/'),
+#        ( 'SegmentTest', nonPortedTestsPath+'Segment/'),
         ( 'Signalv1Test', nonPortedTestsPath+'Signalv1/'),
         ( 'SpectrumTest', nonPortedTestsPath+'Spectrum/'),
         ( 'SpectrumAdderTest', nonPortedTestsPath+'SpectrumAdder/'),
@@ -167,6 +177,9 @@ testsToRun[-1:-1] = notPortedTests
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
+# end configuration
+#--------------------------------------------------------------------
+
 # global vars. ugly, yes.
 foundCompilationErrors = False 
 foundTestsFailures = False
@@ -179,7 +192,6 @@ def sendmail(fromaddr, toaddrs, subject, body) :
 	# Add the From: and To: headers at the start!
 	msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n" % (fromaddr, toaddrs, subject) + body
 	if not enableSendMail :
-		print msg
 		return
 	
 	server = smtplib.SMTP('iua-mail.upf.es')
@@ -257,7 +269,6 @@ def parseExecutionErrors( executionOut ) :
 
 def isTest(path) :
 	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')>=0 
-		#TODO for SMSBaseTests or path.find('build/Tests/')>= 0  
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
@@ -298,6 +309,7 @@ def compileAndRun(name, path) :
 	summary = ''
 	details = ''
 	for configuration in configurations :
+		# compilation phase
 		if doCleanMake :
 			getStatusOutput('make clean')
 		makecmd = 'make depend && make CONFIG=%s' % (configuration)
@@ -312,18 +324,14 @@ def compileAndRun(name, path) :
 		detailsFormat = '\n\n%s\n-----------------------------\n%s\n'
 		if not ok :
 			details += detailsFormat % (name, output)
-		# print 'summary: ',summary
-
 		if not ok : 
 			continue
 			
 		# execution phase
 		execcmd = './'+name
-		
 		if not os.access(execcmd, os.X_OK) :
-			# print 'file should exist: ', execcmd
+			print 'file should exist: ', execcmd
 			assert(False)
-
 		if isTest(path) :
 			# print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
@@ -332,6 +340,7 @@ def compileAndRun(name, path) :
 		else :
 			# print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
+			#TODO have into account that when segfault returns(?) 139
 			runMessages, d = parseExecutionErrors( output )
 			foundExecutionErrors =  foundExecutionErrors or not ok or runMessages.find('OK')==-1
 		
@@ -346,12 +355,7 @@ def compileAndRun(name, path) :
 mailTemplate = '''
 (This message has been automatically generated)
 
-Status of CLAM on tag: %s 
-
-TODO:
-  - behaviour: send public mail when a)something fails, or 
-    b)everything ok, but last time something failed.
-    
+Status of CLAM on tag: %s  And externals examples in main trunk)
 
 -------  
 SUMMARY
@@ -382,10 +386,16 @@ def runInBackgroundForAWhile(path, command, sleeptime=10) :
 	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
 	
 	# print 'kill status ', status, dummy
-	result = string.join( file('/tmp/removeme.out').readlines() )
-	result += string.join( file('/tmp/removeme.err').readlines() )
-	#os.remove(out)
-	#os.remove(err)
+	if os.access('/tmp/removeme.out', os.F_OK) :
+		result = string.join( file('/tmp/removeme.out').readlines() )
+		os.remove(out)
+	else :
+		result = "[No output received from '%s']"%command
+	if os.access('/tmp/removeme.err', os.F_OK) :
+		result += string.join( file('/tmp/removeme.err').readlines() )
+		os.remove(err)
+	else :
+		result = "[No error messages received from '%s']"%command
 	os.chdir(CLAM_SANDBOXES)
 	return True, result #TODO status
 
@@ -485,12 +495,6 @@ def runTests() :
 		totalDetails.append(details)
 		print "".join(totalSummary)
 
-
-	results = file(CLAM_SANDBOXES + "RunTestResults.txt", "w")
-	results.write("".join(totalSummary))
-	results.write("".join(totalDetails))
-	results.close()
-	
 	mailBody = mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
 	if foundCompilationErrors : 
 		subj.append(' - compilation err!')
@@ -503,14 +507,20 @@ def runTests() :
 		sendReportTo = publicAddress
 	else :
 		sendReportTo = privateAddress
+
 	if sendReportTo != '' :
-		sendmail( sender, sendReportTo, subj, mailBody )
+		sendmail( sender, sendReportTo, "".join(subj), mailBody )
 	else :
 		print 'nowbody to send report'
 		print 'subject: ', "".join(subj)
 		print mailBody
 
-
+	#write log
+	results = file(CLAM_SANDBOXES + "RunTestResults.txt", "w")
+	results.write("".join(subj))
+	results.write("".join(totalSummary))
+	results.write("".join(totalDetails))
+	results.close()
 #--------------------------------------------------------------
 #
 #  If called from command-line, parse arguments and take actions
