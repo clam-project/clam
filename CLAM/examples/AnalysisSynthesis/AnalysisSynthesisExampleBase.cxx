@@ -899,7 +899,7 @@ void AnalysisSynthesisExampleBase::PlayResidual()
 void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 {
 	
-	TSize outBufferSize=256;
+	TSize outBufferSize=512;
 	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize*2);
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
