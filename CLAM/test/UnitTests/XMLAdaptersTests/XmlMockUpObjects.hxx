@@ -23,11 +23,13 @@ class XmlMockUpBasic : public BasicXMLable
 			return _content;
 		}
 
-	       //* Extracts the content from the stream.
+		//* Extracts the content from the stream.
 		bool XMLContent(std::istream & str)
 		{
+			_content="";
 			str >> _content;
 			return str!=NULL;
+		
 		}
 		virtual std::string structureTrace(unsigned level)
 		{
@@ -55,6 +57,9 @@ class XmlMockUpComponent : public XmlMockUpBasic, public Component
 		}
 		void LoadFrom(Storage & store)
 		{
+			std::list<XMLable *>::const_iterator it = _parts.begin();
+			for (; it!= _parts.end();it++)
+				store.Load(**it);
 		}
 
 		virtual std::string structureTrace(unsigned level)
