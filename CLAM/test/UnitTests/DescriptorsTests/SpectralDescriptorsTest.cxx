@@ -254,10 +254,10 @@ private:
 		data["gamelan-gong.wav"] = 1263.962139;
 		data["gt_E4.wav"] = 4403.107081;
 		// Silences
-		data["pno_Eb1.wav"] = mHelperDataSpec.GetSpectralRange()/2;
-		data["silence.wav"] = mHelperDataSpec.GetSpectralRange()/2;
-		data["vln_A3.wav"] = mHelperDataSpec.GetSpectralRange()/2;
-		data["vln_D5.wav"] = mHelperDataSpec.GetSpectralRange()/2;
+		data["pno_Eb1.wav"] = 11025.;
+		data["silence.wav"] = 11025.;
+		data["vln_A3.wav"] = 11025.;
+		data["vln_D5.wav"] = 11025.;
 		data["whitenoise.wav"] = 11072.758057;
 
 		mDescriptors->AddCentroid();
