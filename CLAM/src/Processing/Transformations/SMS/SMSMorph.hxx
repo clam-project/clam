@@ -100,46 +100,11 @@ namespace CLAM{
 	
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSMorph():
-			mAmountCtrl("Amount",this),  
-			mHybBPF("MorphFactor",this),
-			mSynchronizeTime("Time", this),
-			mHybSinAmp("SinAmp", this),
-			mHybSinSpectralShape("SinShape", this),
-			mHybSinShapeW1("SinShapeW1", this),
-			mHybSinShapeW2("SinShapeW2", this),
-			mHybPitch("Pitch", this),
-			mHybSinFreq("SinFreq", this),
-			mHybResAmp("ResAmp", this),
-			mHybResSpectralShape("ResShape", this),
-			mHybResShapeW("ResShapeW", this),
-			mHybResPhase("ResPhase", this),
-			mInput1("Input1",this,1),mInput2("Input2",this,1),mOutput("Output",this,1)
-		{
-				mHaveInternalSegment=false;
-		}
+		SMSMorph();
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSMorph(const SMSMorphConfig &c):
-			mAmountCtrl("Amount",this),
-			mHybBPF("MorphFactor",this),
-			mSynchronizeTime("Time", this),
-			mHybSinAmp("SinAmp", this),
-			mHybSinSpectralShape("SinShape", this),
-			mHybSinShapeW1("SinShapeW1", this),
-			mHybSinShapeW2("SinShapeW2", this),
-			mHybPitch("Pitch", this),
-			mHybSinFreq("SinFreq", this),
-			mHybResAmp("ResAmp", this),
-			mHybResSpectralShape("ResShape", this),
-			mHybResShapeW("ResShapeW", this),
-			mHybResPhase("ResPhase", this),
-			mInput1("Input1",this,1),mInput2("Input2",this,1),mOutput("Output",this,1)
-		{
-			mHaveInternalSegment=false;
-			Configure(c);
-		}
+		SMSMorph(const SMSMorphConfig &c);
 		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
@@ -161,11 +126,7 @@ namespace CLAM{
 		bool Do();
 		bool Do(const Segment& in1, Segment& out);
 		bool Do(const Segment& in1,const Segment& in2, Segment& out);
-		bool Do(SpectralPeakArray& in1,const SpectralPeakArray& in2, SpectralPeakArray& out);
-		bool Do(const Frame& in1,const Frame& in2, Frame& out);
 		
-		bool Do(const Frame& in1,const Frame& in2, Frame& out , TData morphFactor);
-
 		virtual bool UpdateControlValueFromBPF(TData pos);
 	
 		SMSMorphCtrl  mAmountCtrl;
@@ -184,6 +145,17 @@ namespace CLAM{
 		SMSMorphCtrl  mHybResPhase;
 	protected:
 		
+		void UpdateMorphFactors();
+		
+		bool MorphFrames(const Frame& f1, const Frame& f2, Frame& fout);
+		
+		bool ResidualMorph(const Frame& in1,const Frame& in2, Frame& out);
+		bool SinusoidalMorph(const Frame& in1,const Frame& in2, Frame& out);
+
+		bool InterpolateSpectralPeaks(const SpectralPeakArray& in1,const SpectralPeakArray& in2, SpectralPeakArray& out, TData pitch1, TData pitch2);
+				
+		bool FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition);
+
 		bool LoadSDIF( std::string fileName, Segment& segment );
 		
 		SDIFIn mSDIFReader;
@@ -205,8 +177,13 @@ namespace CLAM{
 		TData mNewPitch;
 		bool mHarmonicMorph;
 		bool mHarmSpectralShapeMorph;
-		TData magInterpFactor;
-		TData freqInterpFactor;
+		
+		//Morph Factors
+		TData mPitchFactor;
+		TData mMagFactor;
+		TData mFreqFactor;
+		TData mFrameFactor;
+		TData mResMagFactor;
 
 		bool mHaveInternalSegment;
 
