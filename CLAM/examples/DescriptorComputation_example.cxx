@@ -29,6 +29,8 @@ int main( int argc, char** argv )
 	std::cout<<"Computing Descriptors. Please Wait."<<"\n";
 				
 	CLAM::SegmentDescriptors segmentDescriptors;
+	segmentDescriptors.AddAll();
+	segmentDescriptors.UpdateData();
 
 	CLAM::SpectralDescriptors specProto;
 	specProto.AddAll();
