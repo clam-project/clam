@@ -505,11 +505,13 @@ void SMSBase::SynthesisProcessing()
 	GetSynthesis().Stop();
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
-void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
+void SMSBase::CopySegmentExceptAudio(Segment& src, Segment& dest)
 {
-	dest=src;
-	dest.RemoveAudio();
-	dest.UpdateData();
+	dest.SetBeginTime(src.GetBeginTime());
+	dest.SetEndTime(src.GetEndTime());
+	dest.SetSamplingRate(src.GetSamplingRate());
+	dest.SetFramesArray(src.GetFramesArray());
+
 	dest.CopyInit(src);
 	dest.mCurrentFrameIndex=0;
 }

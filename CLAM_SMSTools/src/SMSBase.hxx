@@ -154,7 +154,7 @@ namespace CLAM
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);
 		/** Copies all content in src segment except Audio */
-		void CopySegmentExceptAudio(const Segment& src, Segment& dest);
+		void CopySegmentExceptAudio(Segment& src, Segment& dest);
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
 		void InitConfigs(void);
