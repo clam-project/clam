@@ -189,7 +189,7 @@ if test $found_fltk = yes; then
 
 	link_ok=no
 
-	FLTK_LIBS="fltk GL fltk_gl X11 Xext"
+	FLTK_LIBS="fltk GL fltk_gl X11 Xext fltk_forms fltk_images z png jpeg"
 	for lib in $FLTK_LIBS
 	do
 		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
@@ -576,7 +576,7 @@ if test $found_qt = yes; then
 	for lib in qt-mt qt; do
 		QT_LIBS="$lib"
 		FLAG_QT_LIBS="-l$lib"
-		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIBS $FLAG_QT_LIB_PATH"
+		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIB_PATH $FLAG_QT_LIBS"
 		AC_TRY_LINK([
 				#include<qapplication.h>
 			],[
