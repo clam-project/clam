@@ -11,6 +11,7 @@
 #include "Random.hxx"
 #include "FlagControl.hxx"
 #include "OneOverF.hxx"
+#include "SquareWave.hxx"
 #include "OutControlSender.hxx"
 
 
@@ -20,6 +21,7 @@ typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
 static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" );
+static ProcessingFactory::Registrator<CLAM::SquareWave> regtSquareWave( "SquareWave" );
 
 static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
 static ProcessingFactory::Registrator<CLAM::MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );

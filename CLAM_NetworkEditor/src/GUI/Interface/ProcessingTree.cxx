@@ -44,7 +44,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * osc = new ProcessingItem( gen, "SimpleOscillator");
 	ProcessingItem * osc2 = new ProcessingItem( gen, "Oscillator");
 	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
-
+	ProcessingItem * squarewave = new ProcessingItem( gen, "SquareWave" );	
+	
 	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
 	ProcessingItem * multiplier = new ProcessingItem( binops, "AudioMultiplier" );
 	ProcessingItem * adder = new ProcessingItem( binops, "AudioAdder" );
@@ -54,7 +55,6 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
 	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
 	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
-	ProcessingItem * outcontrolsender = new ProcessingItem( controls, "OutControlSender" );	
 
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
@@ -65,8 +65,9 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( inputoutput, "MultiChannelAudioFileReader" );
 	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( inputoutput, "MultiChannelAudioFileWriter" );
 	
-	QListViewItem * plugins = new QListViewItem( this, "Plugins" );
-	ProcessingItem * ladspaloader = new ProcessingItem( plugins, "LadspaLoader" );
+	QListViewItem * utils = new QListViewItem( this, "Utils" );
+	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
+	ProcessingItem * outcontrolsender = new ProcessingItem( utils, "OutControlSender" );	
 	show();
 	header()->hide();
 
@@ -79,8 +80,6 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	SignalAddNewProcessing.Connect( network.SlotAddProcessing );	
 	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
-
-//	setFocusPolicy( NoFocus );
 }
 
 ProcessingTree::~ProcessingTree()

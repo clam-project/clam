@@ -44,6 +44,7 @@
 #include "Random.hxx"
 #include "OneOverF.hxx"
 #include "OutControlSender.hxx"
+#include "SquareWave.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -99,6 +100,8 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> > 
 	regtOneOverFCfg( "OneOverFConfig" );
 
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SquareWaveConfig> > 
+	regtSquareWaveCfg( "SquareWaveConfig" );
 
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> > 
 	regtOutControlSenderCfg( "OutControlSenderConfig" );
