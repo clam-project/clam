@@ -7,6 +7,7 @@
 namespace CLAM
 {
 
+template <typename AttributeType>
 class Binder 
 {
 public:
@@ -18,22 +19,30 @@ public:
 		_scope = scope;
 		_attribute = attribute;
 		_current = 0;
+		_data = _pool->template GetAttributePool<AttributeType>(_scope,_attribute);
 	}
-	template <typename AttributeType>
+
 	const AttributeType & GetForReading()
 	{
-		return _pool->template GetAttributePool<AttributeType>(_scope,_attribute)[_current];
+		return _data [_current];
 	}
+
 	void Next()
 	{
 		_current++;
+	}
+
+	bool IsInsideScope()
+	{
+		return _current < _pool->GetNumberOfContexts(_scope);
 	}
 private:
 	unsigned _current;
 	DescriptionDataPool * _pool;
 	std::string _scope;
 	std::string _attribute;
-		
+	AttributeType * _data;
+
 };
 
 

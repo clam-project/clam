@@ -17,6 +17,8 @@ class ExtractorTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( ExtractorTest );
 	CPPUNIT_TEST(testBinderInit_PointsToThePoolBegin);
 	CPPUNIT_TEST(testBinderNext_PointsToTheNextPoolData);
+	CPPUNIT_TEST(testBinderIsInsideScope_ReturnsTrueWhileInsideTheScope);
+	CPPUNIT_TEST(testBinderIsInsideScope_ReturnsFalseBeyondTheScope);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,23 +45,55 @@ private:
 
 	void testBinderInit_PointsToThePoolBegin()
 	{
-		CLAM::Binder binder;
+		CLAM::Binder<CLAM::TData> binder;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
-		const CLAM::TData & result = binder.GetForReading<CLAM::TData>();
+		binder.Init(*mPool,
+			"TestScope1","TDataAttribute");
+		const CLAM::TData & result = binder.GetForReading();
 
 		CPPUNIT_ASSERT_EQUAL(expected, &result);
 	}
 
 	void testBinderNext_PointsToTheNextPoolData()
 	{
-		CLAM::Binder binder;
+		CLAM::Binder<CLAM::TData> binder;
 		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
-		binder.Init(*mPool, "TestScope1","TDataAttribute");
+		binder.Init(*mPool, 
+			"TestScope1","TDataAttribute");
 		binder.Next();
-		const CLAM::TData & result = binder.GetForReading<CLAM::TData>();
+		const CLAM::TData & result = binder.GetForReading();
 
 		CPPUNIT_ASSERT_EQUAL(expected+1, &result);
+	}
+
+	void testBinderIsInsideScope_ReturnsTrueWhileInsideTheScope()
+	{
+		CLAM::Binder<CLAM::TData> binder;
+		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
+		binder.Init(*mPool,
+			"TestScope1","TDataAttribute");
+
+		CPPUNIT_ASSERT(binder.IsInsideScope());
+		binder.Next();
+		CPPUNIT_ASSERT(binder.IsInsideScope());
+		binder.Next();
+		CPPUNIT_ASSERT(binder.IsInsideScope());
+	}
+
+	void testBinderIsInsideScope_ReturnsFalseBeyondTheScope()
+	{
+		CLAM::Binder<CLAM::TData> binder;
+		const CLAM::TData * expected = mPool->GetAttributePool<CLAM::TData>("TestScope1","TDataAttribute");
+		binder.Init(*mPool,
+			"TestScope1","TDataAttribute");
+
+		// Advance until the end
+		binder.Next();
+		binder.Next();
+		// Go Beyond
+		binder.Next();
+
+		CPPUNIT_ASSERT(!binder.IsInsideScope());
 	}
 
 };
