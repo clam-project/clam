@@ -340,10 +340,11 @@ configure with the --disable-xml option.]
 		FLAG_XERCESC_LIBS=-lxerces-c
 		CXXFLAGS="$CXXFLAGS $FLAG_XERCESC_INCLUDES $FLAG_XERCESC_LIBS $FLAG_XERCESC_LIB_PATH"
 		AC_TRY_RUN([
-			#include<xercesc/dom/DOM_Document.hpp>
+			#include<xercesc/util/PlatformUtils.hpp>
 			int main()
 			{
-				DOM_Document::createDocument();
+				namespace xercesc=XERCES_CPP_NAMESPACE;
+				xercesc::XMLPlatformUtils::Initialize();
 				return 0;
 			}
 		],[
@@ -351,9 +352,10 @@ configure with the --disable-xml option.]
 			DEFINE_HAVE_XERCESC=HAVE_XERCESC
 		],[
 			AC_TRY_LINK([
-					#include<xercesc/dom/DOM_Document.hpp>
+					#include<xercesc/util/PlatformUtils.hpp>
 				],[
-					DOM_Document::createDocument();
+					namespace xercesc=XERCES_CPP_NAMESPACE;
+					xercesc::XMLPlatformUtils::Initialize();
 					return 0;
 				],[
 				AC_MSG_ERROR([
