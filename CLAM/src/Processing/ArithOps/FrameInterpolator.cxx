@@ -160,7 +160,7 @@ namespace CLAM {
 
 	bool FrameInterpolator::Do(void)
 	{
-		throw(ErrProcessingObj("FrameInterpolator::Do(): Not implemented"),this);
+		CLAM_ASSERT(false,"FrameInterpolator::Do(): Not implemented");
 	}
 
 	
