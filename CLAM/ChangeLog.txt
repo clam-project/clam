@@ -49,6 +49,10 @@
         (i.e. in dB's)/phase spectrum.
   * Processing:
      ** SMSAnalysis: fixed a bug that lead to divisions by zero
+  * FlowControl:
+     ** Added interface to network in order to connect/disconnect controls
+     ** Serialization of network, including connections (ports/controls) and 
+        processing configurations.
   * Testing:
      ** CLAMTEST_ASSERT_XML_EQUAL to compare XML canonically
      ** Helpfull colors for finding differences on expected and obtained 
@@ -79,6 +83,11 @@
      ** ProcessingLifeCycle
      ** ThreadedProcessing
      ** StereoToMonoFile
+  * Examples - NetworkEditor
+     ** Improved GUI
+     ** Controls
+     ** Configuration of processings from interface.
+     ** Serialization
 
 2003-10-4 CLAM_0_5_3 'Starting the new course'
 
