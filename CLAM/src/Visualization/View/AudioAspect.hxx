@@ -3,6 +3,7 @@
 
 #include "Aspect.hxx"
 #include "Signalv1.hxx"
+#include "Signalv4.hxx"
 #include "DataTypes.hxx"
 #include "Array.hxx"
 
@@ -23,10 +24,11 @@ namespace CLAMGUI
 				virtual void ForceViewRefresh();
 
 				//signals
-				Signalv1< const DataArray& >   AcquireSamples;
-				Signalv1< TTime >              AcquireDuration;
-				Signalv1< TTime >              AcquireStartTime;
-				Signalv1< TData >              AcquireSampleRate;
+				Signalv1< const DataArray& >                          AcquireSamples;
+				Signalv1< TTime >                                     AcquireDuration;
+				Signalv1< TTime >                                     AcquireStartTime;
+				Signalv1< TData >                                     AcquireSampleRate;
+				Signalv4< const DataArray&, TTime, TTime, TData >     AcquireAudio;
 
 		private:
 				AudioAdapter&                  mAdapter;

@@ -36,7 +36,8 @@ namespace CLAMGUI
 				mAspect.AcquireSamples.Emit( mObserved->GetBuffer() );
 				mAspect.AcquireDuration.Emit( nSamples * obsSR );
 				mAspect.AcquireStartTime.Emit( mObserved->GetBeginTime() );
-				mAspect.AcquireSampleRate.Emit( obsSR );
+				mAspect.AcquireSampleRate.Emit( mObserved->GetSampleRate() );
+				mAspect.AcquireAudio.Emit( mObserved->GetBuffer(), mObserved->GetBeginTime(), nSamples * obsSR, mObserved->GetSampleRate()   ); 
 
 				return true;
 		}

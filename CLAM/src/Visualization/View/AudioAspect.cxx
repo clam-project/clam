@@ -1,5 +1,5 @@
 #include "AudioAspect.hxx"
-#include "AudioView.hxx"
+#include "AudioAdapter.hxx"
 
 namespace CLAMGUI
 {
