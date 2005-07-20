@@ -95,33 +95,31 @@ void ProcessingController::UpdateListOfPortsAndControls()
 	mInControlNames.clear();
 	mOutControlNames.clear();
 
-	CLAM::InPortRegistry::ConstIterator itPortIn;
+	CLAM::PublishedInPorts::ConstIterator itPortIn;
 	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
 		mInPortNames.push_back((*itPortIn)->GetName());
 		
-	CLAM::OutPortRegistry::ConstIterator itPortOut;
+	CLAM::PublishedOutPorts::ConstIterator itPortOut;
 	for (itPortOut = mObserved->GetOutPorts().Begin(); itPortOut != mObserved->GetOutPorts().End(); itPortOut++)
 		mOutPortNames.push_back((*itPortOut)->GetName());
 
-	CLAM::InControlRegistry::ConstIterator itCtrlIn;
+	CLAM::PublishedInControls::ConstIterator itCtrlIn;
 	for (itCtrlIn = mObserved->GetInControls().Begin(); itCtrlIn != mObserved->GetInControls().End(); itCtrlIn++)
 		mInControlNames.push_back((*itCtrlIn)->GetName());
 
-	CLAM::OutControlRegistry::ConstIterator itCtrlOut;
+	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
 	for (itCtrlOut = mObserved->GetOutControls().Begin(); itCtrlOut != mObserved->GetOutControls().End(); itCtrlOut++)
 		mOutControlNames.push_back((*itCtrlOut)->GetName());
 }
 
 bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
-	mObserved = &obj;
+	mObserved = dynamic_cast< CLAM::Processing* > (&obj);
+	
+	if ( !mObserved )
+		return false;
 	UpdateListOfPortsAndControls();
 	return true;
-}
-
-CLAM::Processing & ProcessingController::GetObserved()
-{
-	return *mObserved;
 }
 
 const CLAM::ProcessingConfig & ProcessingController::GetObservedConfig()

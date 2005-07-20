@@ -21,6 +21,7 @@
 
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
+//#include "ConnectionAdapter.hxx"
 #include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
@@ -29,16 +30,15 @@
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
+#include "ProcessingConfig.hxx"
 
-#include "NetworkController.hxx"
+#include "CLAM_Math.hxx"
 
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qdragobject.h> 
 
 #include <iostream> // TODO: remove
-#include <fstream>
-#include "MainWindow.hxx"
 
 namespace NetworkGUI
 {
@@ -46,14 +46,13 @@ namespace NetworkGUI
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
-Qt_NetworkPresentation::Qt_NetworkPresentation( MainWindow *parent, const char *name)
+Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *name)
 	: QWidget( parent, name ),	  
 	  mInPortSelected(0),
 	  mOutPortSelected(0),
 	  mInControlSelected(0),
 	  mOutControlSelected(0)
 {
-	mMainWindow = parent;
 	resize(800,600);
 	setPalette( QPalette( QColor( 250, 250, 200 )));
  	SlotSetInPortClicked.Wrap( this, &Qt_NetworkPresentation::SetInPortClicked);
@@ -106,134 +105,46 @@ void Qt_NetworkPresentation::SetOutControlClicked( Qt_OutControlPresentation * o
 void Qt_NetworkPresentation::SetName(const std::string& name)
 {
 	mName = name;
-/* 
+
 	QFont font( "Verdana" ,10 );
 	QFontMetrics fm( font );
 	int pixelsWide = fm.width( QString(mName.c_str()));
 	int pixelsHigh = fm.height();
-*/
-}
 
-Qt_ProcessingPresentation* Qt_NetworkPresentation::FindProcessingPresentation(const std::string& name)
-{
- 	ProcessingPresentationIterator it;
-	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-	{
-		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
-		if (name==proc->GetName())
-			return proc;
-	}
-	return 0;
-}
-
-void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilename)
-{
-	std::string positionsFilename = baseFilename + ".pos";
-	
-	std::ofstream os(positionsFilename.c_str());
-	CLAM_ASSERT(os.is_open(), "error opening positions file for writting");
-	
-	const std::string tab = "\t";
-	const std::string sep = " ";
-
-	int width = mMainWindow->size().width();
-	int height = mMainWindow->size().height();
-
-	os << width << sep << height << std::endl; // main window size
-	ProcessingPresentationIterator it;
-	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-	{
-		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
-		int x = proc->pos().x();
-		int y = proc->pos().y();
-		width = proc->size().width();
-		height = proc->size().height();
-		os << proc->GetName() << tab << x << sep << y << tab;
-		os << width << sep << height << std::endl;
-	}
-
-		
-}
-void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilename)
-{
-	std::string positionsFilename = baseFilename+".pos";
-	printf("opening file %s\n", positionsFilename.c_str());
-	std::ifstream is(positionsFilename.c_str());
-	if (!is.is_open())
-	{
-		std::cerr << "Warning: widget-positions file '" 
-			<< positionsFilename << "' not found\n";
-		return;
-	}
-	std::string procname;
-	int x,y, width, height;
-	is >> x;
-	is >> y;
-	resize(x,y);
-	mMainWindow->resize(x,y);
-	std::string caption("CLAM Network Editor -- ");
-	caption += baseFilename;
-	mMainWindow->setCaption( caption.c_str() );
-
-	while (is >> procname)
-	{
-		is >> x;
-		is >> y;
-		is >> width;
-		is >> height;
-		Qt_ProcessingPresentation * proc=FindProcessingPresentation( procname );
-		if (!proc)
-		{
-			std::cerr<<"Warning: found bad name in network-positions file: '"
-				<< procname <<"'\n";
-			continue;
-		}
-		proc->MoveAbsolute( QPoint(x,y) );
-		proc->resize(width, height);
-		proc->ConfigurationUpdated(true);
-	}
 }
 
 void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
 {
 	
-	Qt_ProcessingPresentation* procPresent = 0;
+	Qt_ProcessingPresentation* presentation = 0;
 
 	Qt_ProcessingPresentationFactory & factory =  Qt_ProcessingPresentationFactory::GetInstance();
-	try
-	{
-		procPresent = factory.CreateSafe(controller->GetObservedClassName());
-	}
-	catch (CLAM::ErrFactory & err)
-	{
-		// No special presentation, just the standar one
-		procPresent = new Qt_ProcessingPresentation;
-	}
-	procPresent->Initialize( name, this );
+	presentation = factory.Create(controller->GetObservedClassName());
+	presentation->Initialize( name, this );
 			
-	procPresent->AttachToProcessingController(*controller);
+	presentation->AttachTo(*controller);
 
-	procPresent->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
-	procPresent->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
-	procPresent->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
-	procPresent->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
-	procPresent->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
-	procPresent->SignalProcessingPresentationSelected.Connect( SlotProcessingPresentationSelected );
-	procPresent->SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
-	procPresent->SignalMovingMouseWithButtonPressed.Connect( SlotMovingMouseWithButtonPressed );
-	procPresent->SignalProcessingPresentationAddedToSelection.Connect( SlotProcessingPresentationAddedToSelection );
+	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
+	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
+	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
+	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
+	presentation->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
+	presentation->SignalProcessingPresentationSelected.Connect( SlotProcessingPresentationSelected );
+	presentation->SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
+	presentation->SignalMovingMouseWithButtonPressed.Connect( SlotMovingMouseWithButtonPressed );
+	presentation->SignalProcessingPresentationAddedToSelection.Connect( SlotProcessingPresentationAddedToSelection );
 		
-	SignalAcquireOutPortAfterClickInPort.Connect( procPresent->SlotSetOutPortAfterClickInPort );
-	SignalAcquireInPortAfterClickOutPort.Connect( procPresent->SlotSetInPortAfterClickOutPort );
-	SignalAcquireOutControlAfterClickInControl.Connect( procPresent->SlotSetOutControlAfterClickInControl );
-	SignalAcquireInControlAfterClickOutControl.Connect( procPresent->SlotSetInControlAfterClickOutControl );
+	SignalAcquireOutPortAfterClickInPort.Connect( presentation->SlotSetOutPortAfterClickInPort );
+	SignalAcquireInPortAfterClickOutPort.Connect( presentation->SlotSetInPortAfterClickOutPort );
+	SignalAcquireOutControlAfterClickInControl.Connect( presentation->SlotSetOutControlAfterClickInControl );
+	SignalAcquireInControlAfterClickOutControl.Connect( presentation->SlotSetInControlAfterClickOutControl );
 
 	controller->Publish();
-	mProcessingPresentations.push_back(procPresent);
+	mProcessingPresentations.push_back(presentation);
 
-	procPresent->Show();
+	presentation->Show();
 
-	SignalSendMessageToStatus.Emit( "Created " + procPresent->GetName() );
+	SignalSendMessageToStatus.Emit( "Created " + presentation->GetName() );
 }
 
 void Qt_NetworkPresentation::CreatePortConnectionPresentation( const std::string & out, const std::string & in )
@@ -384,7 +295,7 @@ bool Qt_NetworkPresentation::CheckPortsSelection( QMouseEvent *m )
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
-		GetNetworkController().CreatePortConnection( outPort, inPort );
+		SignalCreatePortConnection.Emit( outPort, inPort );
 		selected = true;
 	}
 
@@ -410,7 +321,7 @@ bool Qt_NetworkPresentation::CheckControlsSelection( QMouseEvent *m )
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-		GetNetworkController().CreateControlConnection( outControl, inControl );
+		SignalCreateControlConnection.Emit( outControl, inControl );
 		selected = true;		
 	}
 
@@ -582,12 +493,15 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 	
 	if ( QTextDrag::decode(event, text) ) 
 	{
-		std::string key = text.ascii();
-		std::string name = AddProcessing( key );	
-		SignalProcessingCreated.Emit(); 		// TODO: Get rid of this signal
+		ProcessingFactory & factory = ProcessingFactory::GetInstance();
+		std::string completeName(text.ascii());
+		
+		std::string className(GetProcessingIdentifier(completeName));
+		std::string concreteName(GetLastIdentifier(completeName));
+		AddProcessing( concreteName, factory.Create(className) );
+		SignalProcessingCreated.Emit();
 
-
-		Qt_ProcessingPresentation& proc = (Qt_ProcessingPresentation&)GetProcessingPresentation( name );
+		Qt_ProcessingPresentation & proc = (Qt_ProcessingPresentation&)GetProcessingPresentation(concreteName);
 		proc.move(event->pos());
 	}
 	setFocus();
@@ -647,6 +561,8 @@ void Qt_NetworkPresentation::MovingMouseWithButtonPressed( const QPoint & p)
 			(*it)->Move(p);
 	}
 }
+
+
 
 
 } // namespace NetworkGUI

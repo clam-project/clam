@@ -12,7 +12,7 @@ namespace NetworkGUI
 {
 
 Qt_OutControlSenderPresentation::Qt_OutControlSenderPresentation()
-	: mControlRepresentation(0), mInvertDirection(false)
+	: mControlRepresentation(0)
 {
 }
 
@@ -80,20 +80,15 @@ void Qt_OutControlSenderPresentation::ConfigurationUpdated( bool ok )
 void Qt_OutControlSenderPresentation::AdjustControlRepresentationValues()
 {
 	QRangeControl * controlRepresentation = dynamic_cast<QRangeControl*>( mControlRepresentation );
-
 	controlRepresentation->setRange( (int)(round(mMin/mStep)),
-		(int)(round(mMax/mStep)) );
-
-	if ( mInvertDirection ) 
-		controlRepresentation->setValue( (int)(round(mMin/mStep)) + (int)(round((mMax-mDefault)/mStep)) );
-	else
-		controlRepresentation->setValue( (int)(mDefault/mStep) );
+			   (int)(round(mMax/mStep)) );
+	
+	controlRepresentation->setValue( (int)(mDefault/mStep) );
 }
 
 void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget( 
 		const CLAM::OutControlSenderConfig::EControlRepresentation & representation )
 {
-	mInvertDirection = false;
 	switch( representation )
 	{
 		case CLAM::OutControlSenderConfig::EControlRepresentation::eVerticalSlider:
@@ -101,7 +96,6 @@ void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget(
 			mControlRepresentation->setMinimumSize( 20, 50 );
 			setMinimumSize( 56, 76 );
 			resize( 56, 76 );
-			mInvertDirection = true;
 			break;
 		case CLAM::OutControlSenderConfig::EControlRepresentation::eHorizontalSlider:
 			mControlRepresentation = new QSlider( Horizontal, this );
@@ -138,9 +132,6 @@ void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget(
 
 void Qt_OutControlSenderPresentation::SlotValueChanged( int value )
 {
-	if ( mInvertDirection ) 
-		SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( mMin + mMax - value*mStep ) );
-	else	
 	SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
 }
 
@@ -170,8 +161,6 @@ void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
 			newGeometry.setWidth( difference.x() + width() );
 			newGeometry.setHeight( difference.y() + height() );
 			break;
-		default: 
-			break;
 	}
 	setGeometry( newGeometry );
 	if(mControlRepresentation)
@@ -182,11 +171,4 @@ void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
 }
 
 } // namespace NetworkGUI
-
-#include "Factory.hxx"
-typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
-
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_OutControlSenderPresentation > 
-	regtOutControlSender( "OutControlSender" );
-
 

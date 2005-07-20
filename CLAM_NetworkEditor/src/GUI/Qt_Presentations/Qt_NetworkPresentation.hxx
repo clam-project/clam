@@ -51,12 +51,9 @@ class Qt_OutPortPresentation;
 class Qt_InControlPresentation;
 class Qt_OutControlPresentation;
 class Qt_ProcessingPresentation;
-class MainWindow;
 
 class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
-	MainWindow * mMainWindow;
-	
 	typedef std::list<Qt_ProcessingPresentation * > QtProcessingList;
 	typedef std::list<Qt_ConnectionPresentation * > QtConnectionList;
 	
@@ -89,10 +86,7 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void CheckSelectionRectangle();
 	bool CheckPortsSelection( QMouseEvent *m );
 	bool CheckControlsSelection(QMouseEvent *m );
-
-	/** Used in SetUpWidgetsPositions: queries names readen from a file*/
-	Qt_ProcessingPresentation* FindProcessingPresentation(const std::string& name);
-		
+	
 	void SendMessageToStatus( const std::string & );		
 	
 	Qt_InPortPresentation* mInPortSelected;
@@ -105,13 +99,9 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	QtProcessingList mSelectedProcessingPresentations;
 	QtConnectionList mSelectedConnectionPresentations;
 public:
-	Qt_NetworkPresentation( MainWindow *parent = 0, const char *name = 0);
+	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
 	void Show();
 	void Hide();
-
-	void SetUpWidgetsPositions(const std::string& positionsFilename);
-	void SaveWidgetsPositions(const std::string& positionsFilename);
-
 
 	// slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SlotSetInPortClicked;

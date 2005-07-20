@@ -21,7 +21,6 @@
 
 #include "MainWindow.hxx"
 #include "ProcessingTree.hxx"
-#include <qaction.h>
 #include <qstatusbar.h>
 #include <qtoolbar.h>
 #include <qbutton.h>
@@ -33,109 +32,49 @@
 #include <string>
 #include "aboutdialog.h"
 
-#include "NetworkController.hxx"
-
 #include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
 
-	MainWindow::MainWindow() :
-		  QMainWindow( 0, "", WGroupLeader ),
-		  mNetworkPresentation(this),
+	MainWindow::MainWindow()
+		: mNetwork(this),
 		  mDockProcMenu(0),
-		  mNetworkIsRunning(false)
+		  QMainWindow( 0, "", WGroupLeader )
 	{
-		setCentralWidget( &mNetworkPresentation );
+		setCentralWidget( &mNetwork );
 		setCaption( "CLAM Network Editor" );
-		resize(800,600 );
+		resize( 800, 600 );
 	
 		SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
-		mNetworkPresentation.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
-		SignalNewNetworkSignal.Connect( mNetworkPresentation.SlotClear );
+		mNetwork.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
+		SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
 		statusBar()->message( "Ready to edit" );
 
-		SignalChangeNetworkState.Connect( mNetworkPresentation.SlotChangeState );
-		SignalChangeOSCState.Connect( mNetworkPresentation.SlotChangeOSCState );
+		SignalChangeNetworkState.Connect( mNetwork.SlotChangeState );
 
 
 		QPopupMenu * file = new QPopupMenu( this );
 		QPopupMenu * view = new QPopupMenu( this );
 		QPopupMenu * networkActions = new QPopupMenu( this );
-//TODO		QPopupMenu * outControlActions = new QPopupMenu( this );
-		menuBar()->insertItem( "&File", file );
-		menuBar()->insertItem( "&View", view );
-		menuBar()->insertItem( "Network &Actions", networkActions );
+		QPopupMenu * outControlActions = new QPopupMenu( this );
+		menuBar()->insertItem( "File", file );
+		menuBar()->insertItem( "View", view );
+		menuBar()->insertItem( "Network Actions", networkActions );
 		menuBar()->insertItem( "About", this, SLOT(ShowAboutDlg()));
-		setCentralWidget(&mNetworkPresentation);
+		setCentralWidget(&mNetwork);
  
-
-///////// FILE MENU /////////////////////////////////////////////
-		QAction* newNetwork = new QAction( this, "NewNetwork" );
-		newNetwork->addTo( file );
-	    newNetwork->setMenuText( tr( "&New" ) );
-		newNetwork->setAccel( tr( "CTRL+N" ) );
-		connect( newNetwork, SIGNAL( activated() ), this, SLOT( NewNetwork() ) );
-
-		QAction* loadNetwork = new QAction( this, "LoadNetwork" );
-		loadNetwork->addTo( file );
-	    loadNetwork->setMenuText( tr( "&Load" ) );
-		loadNetwork->setAccel( tr( "CTRL+O" ) );
-		connect( loadNetwork, SIGNAL( activated() ), this, SLOT( LoadNetwork() ) );
-		
-		QAction* saveNetwork = new QAction( this, "SaveNetwork" );
-		saveNetwork->addTo( file );
-	    saveNetwork->setMenuText( tr( "&Save" ) );
-		saveNetwork->setAccel( tr( "CTRL+S" ) );
-		connect( saveNetwork, SIGNAL( activated() ), this, SLOT( SaveNetwork() ) );
-
-		QAction* saveAsNetwork = new QAction( this, "SaveAsNetwork" );
-		saveAsNetwork->addTo( file );
-	    saveAsNetwork->setMenuText( tr( "&Save As" ) );
-		saveAsNetwork->setAccel( tr( "CTRL+SHIFT+S" ) );
-		connect( saveAsNetwork, SIGNAL( activated() ), this, SLOT( SaveAsNetwork() ) );
-
+		file->insertItem("New", this, SLOT(NewNetwork()));
+		file->insertItem("Load", this, SLOT(LoadNetwork()));
+		file->insertItem("Save", this, SLOT(SaveNetwork()));
+		file->insertItem("Save As", this, SLOT(SaveAsNetwork()));
 		file->insertSeparator();
+		file->insertItem("Exit", qApp, SLOT(quit()));
 
-		QAction* quitProgram = new QAction( this, "Quit" );
-		quitProgram->addTo( file );
-	    quitProgram->setMenuText( tr( "&Quit" ) );
-		quitProgram->setAccel( tr( "CTRL+Q" ) );
-		connect( quitProgram, SIGNAL( activated() ), qApp, SLOT( quit() ) );
+		view->insertItem("Processing Menu", this, SLOT(ShowProcMenu()));
 
-///////// VIEW MENU /////////////////////////////////////////////
-		QAction* viewProcessingMenu = new QAction( this, "ShowProcMenu" );
-		viewProcessingMenu->addTo( view );
-	    viewProcessingMenu->setMenuText( tr( "&Processing Menu" ) );
-		viewProcessingMenu->setAccel( tr( "CTRL+M" ) );
-		connect( viewProcessingMenu, SIGNAL( activated() ), this, SLOT( ShowProcMenu() ) );
-		
-///////// NETWORK ACTIONS MENU /////////////////////////////////////////////
-		QAction* startNetwork = new QAction( this, "StartNetwork" );
-		startNetwork->addTo( networkActions );
-	    startNetwork->setMenuText( tr( "&Start Network" ) );
-		startNetwork->setAccel( tr( "Space" ) );
-		connect( startNetwork, SIGNAL( activated() ), this, SLOT( StartNetwork() ) );
-
-		QAction* stopNetwork = new QAction( this, "StopNetwork" );
-		stopNetwork->addTo( networkActions );
-	    stopNetwork->setMenuText( tr( "&Stop Network" ) );
-		stopNetwork->setAccel( tr( "Esc" ) );
-		connect( stopNetwork, SIGNAL( activated() ), this, SLOT( StopNetwork() ) );
-
-		QAction* startOSCListening = new QAction( this, "StartOSCListening" );
-		startOSCListening->addTo( networkActions );
-	    startOSCListening->setMenuText( tr( "Start Listening OSC Packets" ) );
-		startOSCListening->setAccel( tr( "O" ) );
-		connect( startOSCListening, SIGNAL( activated() ), this, SLOT( StartOSCListening() ) );
-
-		QAction* stopOSCListening = new QAction( this, "StopOSCListening" );
-		stopOSCListening->addTo( networkActions );
-	    stopOSCListening->setMenuText( tr( "Stop Listening OSC Packets" ) );
-		stopOSCListening->setAccel( tr( "P" ) );
-		connect( stopOSCListening, SIGNAL( activated() ), this, SLOT( StopOSCListening() ) );
-
-/////////////////////////////////////////////////////////////////////////////
+		networkActions->insertItem("Start", this, SLOT(StartNetwork()));
+		networkActions->insertItem("Stop", this, SLOT(StopNetwork()));	
 
 		mDockProcMenu = new QDockWindow( QDockWindow::InDock, this );
 		mDockProcMenu->setResizeEnabled( true );
@@ -151,10 +90,10 @@ namespace NetworkGUI
 
 		mpAboutDlg = new AboutDialog( this, "NetworkEditor_AboutDialog", true );
 
-		ProcessingTree * procTree = new ProcessingTree( mNetworkPresentation, mDockProcMenu );
+		ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
 		mDockProcMenu->setWidget( procTree );
 		setActiveWindow();
-		mNetworkPresentation.Show();
+		mNetwork.Show();
 	}
 
 	void MainWindow::ShowAboutDlg()
@@ -173,7 +112,7 @@ namespace NetworkGUI
 
 	Qt_NetworkPresentation & MainWindow::GetNetworkPresentation()
 	{
-		return mNetworkPresentation;
+		return mNetwork;
 	}
 
 	void MainWindow::NewNetwork()
@@ -190,36 +129,36 @@ namespace NetworkGUI
 			"open file dialog"
 			"Choose a file to load network" );
 
-		if (s==QString::null)
-			return;
-		
-		mNetworkPresentation.GetNetworkController().LoadNetworkFrom(std::string(s.ascii()) );
-		mCurrentNetwork = s;
+//	SignalNewNetworkSignal.Emit();
+		if (s!=QString::null)
+			mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
 	}
 
 
-	void MainWindow::SaveAsNetwork()
+	void MainWindow::SaveNetwork()
 	{
 		QString s = QFileDialog::getSaveFileName(
-			mCurrentNetwork,
+			"",
 			"XML Files (*.xml)",
 			this,
 			"save file dialog"
 			"Choose a file to save network" );
 
-		if (s==QString::null) 
-			return;
-
-		mCurrentNetwork = s;
-		SaveNetwork();	
+		if (s!=QString::null)
+		{
+			//TODO code for saving positions
+			//  call method to mNetwork : SaveNetwork passing filename
+			//  QtNetworkPresentation::SaveNetwork (slot) :
+			//     execute Signal SaveNetworkTo passing ref to stream
+			//     add elem with positions: (name, xpos, ypos) tuples
+			//     save doc
+			mNetwork.SignalSaveNetworkTo.Emit(std::string(s.ascii()));
+		}
 	}
 
-	void MainWindow::SaveNetwork()
+	void MainWindow::SaveAsNetwork()
 	{
-		if (mCurrentNetwork==QString::null)
-			return;
-		std::string xmlfile = mCurrentNetwork.ascii();
-		mNetworkPresentation.GetNetworkController().SaveNetworkTo(xmlfile);
+		SaveNetwork();
 	}
 
 	void MainWindow::StartNetwork()
@@ -230,16 +169,6 @@ namespace NetworkGUI
 	void MainWindow::StopNetwork()
 	{
 		SignalChangeNetworkState.Emit(false);
-	}
-
-	void MainWindow::StartOSCListening()
-	{
-		SignalChangeOSCState.Emit(true);
-	}
-
-	void MainWindow::StopOSCListening()
-	{
-		SignalChangeOSCState.Emit(false);
 	}
 
 	void MainWindow::ShowProcMenu()

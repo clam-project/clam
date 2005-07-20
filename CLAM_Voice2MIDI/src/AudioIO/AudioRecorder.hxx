@@ -18,27 +18,24 @@ using CLAM::DataArray;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
 
-class AudioRecorder
+class AudioRecorder 
 {
 public:
-    AudioRecorder(Slotv1<DataArray>& slot);
-    ~AudioRecorder();
+	AudioRecorder(Slotv1<DataArray>& slot);
+	~AudioRecorder();
 
-    void Stop();
-    const Audio& GetAudio();
-
-private:
-    pthread_t mThread;
-    Audio audio;
-    Signalv1<DataArray> mSendData;
+	void Stop();
+	const Audio GetAudio();
     
-    bool active;
+private:
+	pthread_t mThread;
+	Audio audio;
+	Signalv1<DataArray> mSendData;
 
-    void RecordingThreadSafe();
-    static void* sRecordingThreadSafe(void* thisObject);
-
+	bool active;
+	
+	void RecordingThreadSafe();
+	static void* sRecordingThreadSafe(void* thisObject);
 };
 
 #endif
-
-
