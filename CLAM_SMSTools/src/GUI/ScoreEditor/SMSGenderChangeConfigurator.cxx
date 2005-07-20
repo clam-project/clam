@@ -61,7 +61,7 @@ namespace CLAMVM
 
 	void SMSGenderChangeConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
 	{
-		CLAM::SegmentTransformationConfig& conCfg = static_cast< CLAM::SegmentTransformationConfig& >( cfg );
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
 		
 		conCfg.AddAmount();
 		conCfg.UpdateData();
@@ -72,7 +72,7 @@ namespace CLAMVM
 
 	void SMSGenderChangeConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SegmentTransformationConfig& >(cfg);
+		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
 		
 		GenderChanged.Emit( (int)mConfig.GetAmount() );
 

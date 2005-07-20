@@ -101,8 +101,8 @@ protected:
 
 	typedef InControlTmpl<SquareWave> SquareWaveCtrl;
 
-	SquareWaveCtrl* mFreqCtl;
 	SquareWaveCtrl* mAmpCtl;
+	SquareWaveCtrl* mFreqCtl;
 
 	bool           mFreqUpdated;
 	bool           mAmpUpdated;

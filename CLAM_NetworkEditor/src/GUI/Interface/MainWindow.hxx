@@ -45,12 +45,9 @@ public:
 
 private:
 	void SendMessageToStatus( const std::string & );
-	Qt_NetworkPresentation mNetworkPresentation;
+	Qt_NetworkPresentation mNetwork;
 	QDockWindow * mDockProcMenu;
 	AboutDialog* mpAboutDlg;
-	QString mCurrentNetwork;
-	bool mNetworkIsRunning;
-
 public: //slots
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 
@@ -61,14 +58,11 @@ public: //slots
 	void SaveAsNetwork();
 	void StartNetwork();
 	void StopNetwork();
-	void StartOSCListening();
-	void StopOSCListening();
 	void ShowProcMenu();
 	void ShowAboutDlg();
 
 public: // CLAM signals
 	SigSlot::Signalv1 < bool > SignalChangeNetworkState;
-	SigSlot::Signalv1 < bool > SignalChangeOSCState;
 	SigSlot::Signalv0 SignalNewNetworkSignal;
 
 };

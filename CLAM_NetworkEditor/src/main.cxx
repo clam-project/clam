@@ -19,7 +19,7 @@
  *
  */
 
-#include "OSCEnabledNetwork.hxx"
+#include "Network.hxx"
 #include "NetworkController.hxx"
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
@@ -27,39 +27,28 @@
 
 #include "AudioManager.hxx"
 
-#include "MIDIManager.hxx"
-
 #include <qapplication.h>
 
 #include <cmath>
-#include <ctime>
+#include <time.h>
 #include "MainWindow.hxx"
-
-#ifdef Q_WS_X11
-#include <X11/Xlib.h>
-#endif
 
 void ConfigureNetwork(CLAM::Network & net)
 {	
-	int frameSize = 1024; // was 512
+	int frameSize = 512;
 	net.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
 
 }
 
 int main( int argc, char **argv )
 {
-#ifdef Q_WS_X11
-	XInitThreads();
-#endif
 
-	CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
-
-	CLAM::MIDIManager midiManager;
+	CLAM::AudioManager audioManager( 44100, 512 );
 
 	srand(time(NULL)); // gui stuff
 
-	CLAM::OSCEnabledNetwork net;
-	net.SetName("CLAM OSCEnabledNetwork");
+	CLAM::Network net;
+	net.SetName("CLAM Network");
 	ConfigureNetwork(net);
 
 	CLAMVM::NetworkController controller;
@@ -69,11 +58,11 @@ int main( int argc, char **argv )
 	app.setFont(QFont("Verdana", 9));
 	NetworkGUI::MainWindow mw;
 	
-	mw.GetNetworkPresentation().AttachToNetworkController(controller);
+	mw.GetNetworkPresentation().AttachTo(controller);
+	controller.Publish();
 	app.setMainWidget(&mw);
 	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
-	
 	return app.exec();
 }
 

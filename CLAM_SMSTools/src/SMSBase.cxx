@@ -55,8 +55,8 @@ namespace CLAM
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mTransformation.AttachIn( mOriginalSegment );
-	mTransformation.AttachOut( mTransformedSegment );
+	mTransformation.mpChainInput = &mOriginalSegment;
+	mTransformation.mpChainOutput = &mTransformedSegment;
 
 	mpAnalysis=new SMSAnalysis;
 	mpSynthesis=new SMSSynthesis;
@@ -213,7 +213,6 @@ bool SMSBase::LoadAnalysis(const char* fileName)
 
 	mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, fileName );
 
-	GetState().SetHasAnalysis(true);
 	GetState().SetHasTransformation(false);
 
 	DestroyWaitMessage();
@@ -768,11 +767,10 @@ void SMSBase::StoreMelody(void)
 
 void SMSBase::LoadTransformationScore(const std::string& inputFileName)
 {
-	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading score xml file, please wait.");
+	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage::Restore(mTransformationScore,inputFileName);
 	delete wm;
-	GetState().SetHasTransformationScore(true);
 }
 
 void SMSBase::StoreTransformationScore( const std::string& outputFilename )

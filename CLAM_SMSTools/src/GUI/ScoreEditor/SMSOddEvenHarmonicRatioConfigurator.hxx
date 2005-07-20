@@ -2,7 +2,7 @@
 #define __SMSODDEVENHARMONICRATIO__
 
 #include "SMS_Configurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include "SMSTransformationConfig.hxx"
 
 class Fl_Widget;
 class Fl_Help_View;
@@ -32,7 +32,7 @@ namespace CLAMVM
 		
 		Fl_Help_View*                 mHelpWidget;
 		Fl_SMS_BPF_Editor*            mEditorWidget;
-		CLAM::SegmentTransformationConfig mConfig;
+		CLAM::SMSTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
 		

@@ -30,7 +30,6 @@
 #include "SMSAnalysisConfig.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
-#include "SMSTransformationChainConfig.hxx"
 #include "SMSTransformationChain.hxx"
 #include "SegmentDescriptors.hxx"
 #include "AudioOut.hxx"
@@ -166,16 +165,8 @@ namespace CLAM
 		{
 			return mMelody;
 		}
-		
-		SMSAnalysisSynthesisConfig& GetGlobalConfig()
-		{
-			return mGlobalConfig;
-		}
-		
-		SMSAppState& GetState() {return mState;}
-		
 
-	public:
+	protected:
 	
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);
@@ -211,26 +202,14 @@ namespace CLAM
 		/** Store synthesized sound, only sinusoidal component */
 		virtual void StoreOutputSoundSinusoidal(void);
 		
-		/** Perform analysis. Requires a valid configuration file to be loaded */
-		void Analyze(void);
-		/** Perform synthesis. Requires a valid configuration file to be loaded and 
-		 *	a previuos analysis or a loaded analysis */
-		void Synthesize(void);
-		/** Perform transformation according to previously set transformation 
-		* (PitchScale by default). Requires a valid transformation score to be loaded */
-		virtual void DoTransformation();
-		void Transform(void);
+		/** General method for storing a sound*/
+		void StoreSound(const std::string& filename,const Audio& audio);
 		
 		/** Load input sound */
 		virtual bool LoadInputSound(void);
 		/** Load sound to morph*/
 		bool LoadMorphSound(void);
-		
-	protected:		
-		/** General method for storing a sound*/
-		void StoreSound(const std::string& filename,const Audio& audio);
-		
-		
+
 		/** General method for loading a sound */
 		virtual bool LoadSound(const std::string& filename,Segment& segment);
 
@@ -253,6 +232,8 @@ namespace CLAM
 		void TracksCleanupProcessing();
 		void MorphTracksCleanupProcessing();
 
+		/** Perform analysis. Requires a valid configuration file to be loaded */
+		void Analyze(void);
 		/** Perform synthesis. Requires a valid configuration file to be loaded 
 		* and the analysis to be performed. */
 		void SynthesisProcessing();
@@ -262,6 +243,11 @@ namespace CLAM
 
 		virtual void DoSynthesis();
 
+		void Synthesize(void);
+		/** Perform transformation according to previously set transformation 
+		* (PitchScale by default). Requires a valid transformation score to be loaded */
+		virtual void DoTransformation();
+		void Transform(void);
 		void TransformProcessing();
 
 		void ConfigureSMSMorph();
@@ -274,6 +260,9 @@ namespace CLAM
 
 		/** Stores previously analyzed melody into xml format */
 		void StoreMelody(void);
+
+
+		SMSAppState& GetState() {return mState;}
 
 
 	protected:

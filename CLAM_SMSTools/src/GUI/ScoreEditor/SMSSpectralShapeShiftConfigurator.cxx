@@ -51,7 +51,7 @@ namespace CLAMVM
 
 	void SMSSpectralShapeShiftConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
 	{
-		CLAM::SegmentTransformationConfig& conCfg = static_cast< CLAM::SegmentTransformationConfig& >( cfg );
+		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
 
 		conCfg.RemoveBPFAmount();
 		conCfg.RemoveAmount();
@@ -64,7 +64,7 @@ namespace CLAMVM
 
 	void SMSSpectralShapeShiftConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SegmentTransformationConfig& >(cfg);
+		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
 		mEditorWidget->Clear();
 		if ( mConfig.HasBPFAmount() )
 		{

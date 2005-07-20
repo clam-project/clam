@@ -20,19 +20,9 @@
  */
 
 #include "SquareWave.hxx"
-#include "Factory.hxx"
-
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<SquareWave> regtSquareWave( "SquareWave" );
-	}
-	
-	
 
 // SquareWave controls enumeration
 
@@ -66,10 +56,10 @@ void SquareWaveConfig::DefaultInit(void)
 // SquareWave method definition
 SquareWave::SquareWave()
 	:mOutput("Audio Output",this),
-	mFreqCtl(0),
-	mAmpCtl(0),
 	mFreqUpdated( false ),
-	mAmpUpdated( false )
+	mAmpUpdated( false ),
+	mFreqCtl(0),
+	mAmpCtl(0)
 
 {
 	mFreqCtl = new SquareWaveCtrl( "Pitch", this, &SquareWave::UpdateFreq );
@@ -82,10 +72,10 @@ SquareWave::SquareWave()
 
 SquareWave::SquareWave( const SquareWaveConfig& cfg )
 	:mOutput("Audio Output",this),
-	mFreqCtl(0),
-	mAmpCtl(0),
 	mFreqUpdated( false ),
-	mAmpUpdated( false )
+	mAmpUpdated( false ),
+	mFreqCtl(0),
+	mAmpCtl(0)
 
 {
 	mFreqCtl = new SquareWaveCtrl( "Pitch", this, &SquareWave::UpdateFreq );

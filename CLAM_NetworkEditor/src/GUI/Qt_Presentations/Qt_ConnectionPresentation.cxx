@@ -119,14 +119,15 @@ void Qt_ConnectionPresentation::mouseMoveEvent( QMouseEvent *m)
 void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 {
 	mPrevPos = m->globalPos();
-	if (mSelected) return; // already selected
-
-	mSelected = true;
-	if ((m->button() & LeftButton) && (m->state() & ShiftButton))
-		SignalConnectionPresentationAddedToSelection.Emit( this );
-	else
-		SignalConnectionPresentationSelected.Emit( this );
-	repaint();
+	if(!mSelected) // already selected
+	{
+		mSelected = true;
+		if((m->button() & LeftButton) && (m->state() & ShiftButton))
+			SignalConnectionPresentationAddedToSelection.Emit( this );
+		else
+			SignalConnectionPresentationSelected.Emit( this );
+		repaint();
+	}
 }
 
 void Qt_ConnectionPresentation::UnSelectConnectionPresentation()

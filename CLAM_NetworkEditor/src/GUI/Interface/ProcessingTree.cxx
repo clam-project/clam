@@ -37,102 +37,45 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	  mNumProc(0),
 	  mItemPressed(false),
 	  mSelectedItem(0)
-{
+{	
 	addColumn( "Processing" );
 	setRootIsDecorated( TRUE );
-
 	QListViewItem * gen = new QListViewItem( this,"Generators" );
-	new ProcessingItem( gen, "SimpleOscillator");
-	new ProcessingItem( gen, "Oscillator");
-	new ProcessingItem( gen, "ADSR");
-	new ProcessingItem( gen, "SquareWave" );	
-	new ProcessingItem( gen, "WaveGenerator" );	
-
+	ProcessingItem * osc = new ProcessingItem( gen, "SimpleOscillator");
+	ProcessingItem * osc2 = new ProcessingItem( gen, "Oscillator");
+	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
+	ProcessingItem * squarewave = new ProcessingItem( gen, "SquareWave" );	
+	
 	QListViewItem * aritops = new QListViewItem( this,"Arithmetic operations" );
-	new ProcessingItem( aritops, "AudioMultiplier" );
-	new ProcessingItem( aritops, "AudioAdder" );
-	new ProcessingItem( aritops, "AudioMixer" );
-	new ProcessingItem( aritops, "SpectralPeakArrayAdder" );
-	new ProcessingItem( aritops, "SpectrumAdder" );
-	new ProcessingItem( aritops, "SpectrumAdder2" );
+	ProcessingItem * multiplier = new ProcessingItem( aritops, "AudioMultiplier" );
+	ProcessingItem * adder = new ProcessingItem( aritops, "AudioAdder" );
+	ProcessingItem * mixer = new ProcessingItem( aritops, "AudioMixer" );
 	
 	QListViewItem * controls = new QListViewItem( this, "Controls" );
-	new ProcessingItem( controls, "AutoPanner" );	
-	new ProcessingItem( controls, "FlagControl" );	
-	new ProcessingItem( controls, "Random" );	
-	new ProcessingItem( controls, "OneOverF" );	
-	new ProcessingItem( controls, "OSCSender" );	
+	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
+	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
+	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
+	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
 	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
-	new ProcessingItem( inputoutput, "AudioOut" );
-//	new ProcessingItem( inputoutput, "AudioIn" );
+	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
 	
-	QListViewItem * midi = new QListViewItem( this,"MIDI" );
-	new ProcessingItem( midi, "MIDIKeyboard" );
-	new ProcessingItem( midi, "MIDIInControl" );
-	new ProcessingItem( midi, "MIDIDispatcher" );
-
 	QListViewItem * files = new QListViewItem( this,"Audio File I/O" );
-	new ProcessingItem( files, "MonoAudioFileReader" );
-	new ProcessingItem( files, "MonoAudioFileWriter" );
-	new ProcessingItem( files, "MultiChannelAudioFileReader" );
-	new ProcessingItem( files, "MultiChannelAudioFileWriter" );
+	ProcessingItem * monoaudiofilereader = new ProcessingItem( files, "MonoAudioFileReader" );
+	ProcessingItem * monoaudiofilewriter = new ProcessingItem( files, "MonoAudioFileWriter" );
+	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( files, "MultiChannelAudioFileReader" );
+	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( files, "MultiChannelAudioFileWriter" );
 
-	QListViewItem * analysis = new QListViewItem( this,"Analysis" );	
-	new ProcessingItem( analysis, "FFT_rfftw" );	
-	new ProcessingItem( analysis, "SMSAnalysisCore" );	
-
+	QListViewItem * analysis= new QListViewItem( this,"Analysis" );	
+	ProcessingItem * fft = new ProcessingItem( analysis, "FFT_rfftw" );	
+	ProcessingItem * smsanalysiscore = new ProcessingItem( analysis, "SMSAnalysisCore" );	
 	QListViewItem * synthesis = new QListViewItem( this,"Synthesis" );
-	new ProcessingItem( synthesis, "IFFT_rfftw" );	
-	new ProcessingItem( synthesis, "SMSSynthesis" );	
-
-	QListViewItem * smstrans = new QListViewItem(this, "SMS Transformations");
-	new ProcessingItem( smstrans, "SMSFreqShift" );
-	new ProcessingItem( smstrans, "SMSPitchShift" );
-	new ProcessingItem( smstrans, "SMSResidualGain" );
-	new ProcessingItem( smstrans, "SMSSinusoidalGain" );
-	new ProcessingItem( smstrans, "SMSSineFilter" );
-	new ProcessingItem( smstrans, "SMSOddEvenHarmonicRatio" );
-	new ProcessingItem( smstrans, "SMSSpectralShapeShift" );
-	new ProcessingItem( smstrans, "SMSPitchDiscretization" );
-	new ProcessingItem( smstrans, "SMSGenderChange" );
-
-		
+	ProcessingItem * ifft = new ProcessingItem( synthesis, "IFFT_rfftw" );	
+	ProcessingItem * smssynthesis = new ProcessingItem( synthesis, "SMSSynthesis" );	
+	
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
-#ifndef WIN32
-	new ProcessingItem( utils, "LadspaLoader" );
-#endif
-	new ProcessingItem( utils, "OutControlSender" );	
-	new ProcessingItem( utils, "Fundamental2Control" );	
-	new ProcessingItem( utils, "ControlPrinter" );	
-	new ProcessingItem( utils, "ControlScaler" );	
-	new ProcessingItem( utils, "ControlMapper" );	
-
-	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
-	new ProcessingItem(winplots, "AudioPlotProcessing");
-	new ProcessingItem(winplots, "SpectrumPlotProcessing");
-	new ProcessingItem(winplots, "PeaksPlotProcessing");
-	new ProcessingItem(winplots, "FundPlotProcessing");
-	new ProcessingItem(winplots, "SinTracksPlotProcessing");
-	new ProcessingItem(winplots, "FundTrackPlotProcessing");
-	new ProcessingItem(winplots, "SpecgramPlotProcessing");
-	new ProcessingItem(winplots, "AudioBuffPlotProcessing");
-
-	QListViewItem* canvasplots = new QListViewItem(this,"Plots in canvas");
-	new ProcessingItem(canvasplots,"AudioPortMonitor");
-	new ProcessingItem(canvasplots,"SpectrumPortMonitor");
-	new ProcessingItem(canvasplots,"PeaksPortMonitor");
-	new ProcessingItem(canvasplots,"FundamentalPortMonitor");
-	new ProcessingItem(canvasplots,"AudioBuffPortMonitor");
-	new ProcessingItem(canvasplots,"SpecgramPortMonitor");
-	new ProcessingItem(canvasplots,"FundTrackPortMonitor");
-	new ProcessingItem(canvasplots,"SinTracksPortMonitor");
-	
-	QListViewItem* icaRelated = new QListViewItem(this,"ICA");
-	new ProcessingItem(icaRelated,"ICA");
-	new ProcessingItem(icaRelated,"CrossMixer");
-	new ProcessingItem(icaRelated,"AmariError");
-	
+	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
+	ProcessingItem * outcontrolsender = new ProcessingItem( utils, "OutControlSender" );	
 	show();
 	header()->hide();
 
@@ -199,7 +142,17 @@ void ProcessingTree::contentsMouseReleaseEvent ( QMouseEvent * e )
 void ProcessingTree::startDrag()
 {
 	std::string className(mSelectedItem->text(0).ascii());
-	QDragObject *d = new QTextDrag( className.c_str(), this );
+
+	std::stringstream completeName;
+	completeName.str("");
+
+	// in the format "classname.concretename", like "Oscillator.Oscillator_3"
+
+	completeName << className << ".";
+
+	completeName << className << "_" << mNumProc;
+
+	QDragObject *d = new QTextDrag( completeName.str().c_str(), this );
 	d->dragCopy();
 }
 

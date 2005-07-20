@@ -25,8 +25,6 @@
 #include "Qt_ProcessingConfigPresentation.hxx"
 #include <qwidget.h>
 
-#include "AudioManager.hxx"
-
 #include <map>
 #include <string>
 #include "ConfigurationVisitor.hxx"
@@ -36,8 +34,6 @@
 #include "DynamicType.hxx"
 #include "Filename.hxx"
 #include "AudioFile.hxx"
-#include "BPF.hxx"
-#include "QtEnvelopeEditor.hxx"
 
 #include <limits>
 #include <qdialog.h>
@@ -102,11 +98,6 @@ public:
 	void RetrieveValue(const char *name, CLAM::TData *foo, T& value);
 
 	template<typename T>
-	void AddWidget(const char *name, unsigned *foo, T& value);
-	template<typename T>
-	void RetrieveValue(const char *name, unsigned *foo, T& value);
-
-	template<typename T>
 	void AddWidget(const char *name, unsigned long *foo, T& value);
 	template<typename T>
 	void RetrieveValue(const char *name, unsigned long *foo, T& value);
@@ -137,19 +128,6 @@ public:
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value);
 
-	//////////////////////////////////////////////////////
-	
-	template<typename T>
-	void AddWidget(const char *name, unsigned short *foo, T& value);
-	template<typename T>
-	void RetrieveValue(const char *name, unsigned short *foo, T& value);
-
-
-	template<typename T>
-	void AddWidget(const char *name, CLAM::BPF *foo, T& value);
-	template<typename T>
-	void RetrieveValue(const char *name, CLAM::BPF *foo, T& value);
-	///////////////////////////////////////////////////////
 };
 
 
@@ -278,7 +256,6 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	std::stringstream s(readValue);
 	s >> value;
 }
-
 template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned long *foo, T& value) {
@@ -301,85 +278,6 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, uns
 	const char * readValue=mInput->text().latin1();
 	std::stringstream s(readValue);
 	s >> value;
-}
-
-template <class ConcreteConfig>
-template< typename T>
-void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned *foo, T& value) {
-	QHBox * cell = new QHBox(mLayout);
-	cell->setSpacing(5);
-	new QLabel(QString(name), cell);
-	std::stringstream val;
-	val << value << std::ends;
-	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
-	mInput->setAlignment(Qt::AlignRight);
-	mInput->setValidator(new QDoubleValidator(mInput));
-	mWidgets.insert(tWidgets::value_type(name, mInput));
-}
-
-template <class ConcreteConfig>
-template< typename T>
-void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, unsigned *foo, T& value) {
-	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
-	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-	const char * readValue=mInput->text().latin1();
-	std::stringstream s(readValue);
-	s >> value;
-}
-
-template <class ConcreteConfig>
-template< typename T>
-void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned short *foo, T& value) {
-	QHBox * cell = new QHBox(mLayout);
-	cell->setSpacing(5);
-	new QLabel(QString(name), cell);
-	std::stringstream val;
-	val << value << std::ends;
-	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
-	mInput->setAlignment(Qt::AlignRight);
-	mInput->setValidator(new QDoubleValidator(mInput));
-	mWidgets.insert(tWidgets::value_type(name, mInput));
-}
-
-template <class ConcreteConfig>
-template< typename T>
-void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, unsigned short *foo, T& value) {
-	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
-	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-	const char * readValue=mInput->text().latin1();
-	std::stringstream s(readValue);
-	s >> value;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////
-
-
-template <class ConcreteConfig>
-template <typename T>
-void ConfigPresentationTmpl<ConcreteConfig>::AddWidget( const char* name, CLAM::BPF *foo, T& value )
-{
-	QHBox* cell = new QHBox( mLayout);
-	new QLabel( QString(name), cell);
-
-	CLAM::QtEnvelopeEditor * mInput = new CLAM::QtEnvelopeEditor ( cell);
-	mInput->setMinimumSize( QSize( 400, 400) );
-
-	// TODO: Those should be BPF properties
-	mInput->BoundMinX( 0 );
-	mInput->BoundMaxX( CLAM::AudioManager::Current().SampleRate() / 2 );	// nyquist/2
-	mInput->BoundMinY( -12 ); // used in SMSSineFilter (interpreted as dB's )
-	mInput->BoundMaxY( 12 );
-
-	mInput->SetValue(value);
-	mWidgets.insert(tWidgets::value_type(name, mInput));
-}
-
-template <class ConcreteConfig>
-template <typename T>
-void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::BPF *foo, T& value) {
-	CLAM::QtEnvelopeEditor * mInput = dynamic_cast<CLAM::QtEnvelopeEditor *>(GetWidget(name));
-	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-	value = mInput->GetValue();
 }
 
 

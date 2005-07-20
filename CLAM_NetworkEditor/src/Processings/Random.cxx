@@ -2,23 +2,14 @@
 #include "Random.hxx"
 #include "OSDefines.hxx"
 #include "CLAM_Math.hxx"
-#include "Factory.hxx"
-#include <ctime>
-#include <cstdlib>
+#include <time.h>
+#include <stdlib.h>
 
 #define DEFAULTDELAYFACTOR 10
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<Random> regtRandom( "Random" );
-	}
-	
-	
+
 void RandomConfig::DefaultInit(void)
 {
 	AddAll();

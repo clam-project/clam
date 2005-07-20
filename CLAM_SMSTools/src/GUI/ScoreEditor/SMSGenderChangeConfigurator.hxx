@@ -3,7 +3,7 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include "SMSTransformationConfig.hxx"
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
 
@@ -39,7 +39,7 @@ namespace CLAMVM
 		
 		Fl_Help_View*                 mHelpWidget;
 		Fl_SMS_Gender_Selector*       mpGenderSelector;
-		CLAM::SegmentTransformationConfig mConfig;
+		CLAM::SMSTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
 		

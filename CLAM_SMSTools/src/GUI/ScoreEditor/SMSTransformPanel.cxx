@@ -1,5 +1,5 @@
 #include "SMSTransformPanel.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include "SMSTransformationConfig.hxx"
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Group.H>
@@ -455,7 +455,7 @@ void SMSScoreEditor::InsertConfigurationIntoChain( const char* name, const CLAM:
 	else
 		givenName = name;
 
-	CLAM::SMSTransformationChaineeConfig cfg;
+	CLAM::ProcessingChaineeConfig cfg;
 	cfg.SetConcreteClassName( givenName.c_str() );
 	cfg.SetConcreteConfig( userConfig );
 
@@ -664,7 +664,7 @@ void SMSScoreEditor::ApplyChangesIntoChain()
 	newChainConfig.GetOnArray().Resize(0);
 	newChainConfig.GetOnArray().SetSize(0);
 
-	CLAM::SMSTransformationChaineeConfig cfg;
+	CLAM::ProcessingChaineeConfig cfg;
 	cfg.SetConcreteClassName( "SMSTransformationChainIO" );
 	cfg.AddConcreteConfig();
 

@@ -510,12 +510,8 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 
 void Qt_ProcessingPresentation::Move( const QPoint & difference)
 {
-	MoveAbsolute( difference + pos() );
-}
-
-void Qt_ProcessingPresentation::MoveAbsolute( const QPoint & absolutePos )
-{
-	move( absolutePos );
+	QPoint toMove = difference + pos();
+	move( toMove );
 	
 	// emit movement to update connections
 	ConnectionPointPresentationsList::iterator it;
@@ -524,28 +520,28 @@ void Qt_ProcessingPresentation::MoveAbsolute( const QPoint & absolutePos )
 		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->SignalAcquirePos.Emit( absolutePos.x()+ posX, absolutePos.y()+posY);
+		in->SignalAcquirePos.Emit( toMove.x()+ posX, toMove.y()+posY);
 	}
 	for (it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end();it++)
 	{	
 		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->SignalAcquirePos.Emit( absolutePos.x() + posX , absolutePos.y()+ posY );
+		out->SignalAcquirePos.Emit( toMove.x() + posX , toMove.y()+ posY );
 	}
 	for (it=mInControlPresentations.begin(); it!=mInControlPresentations.end();it++)
 	{
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->SignalAcquirePos.Emit( absolutePos.x()+ posX +5  , absolutePos.y()+posY -2 );
+		in->SignalAcquirePos.Emit( toMove.x()+ posX +5  , toMove.y()+posY -2 );
 	}
 	for (it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end();it++)
 	{	
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->SignalAcquirePos.Emit( absolutePos.x() + posX - 4, absolutePos.y()+ posY +2 );
+		out->SignalAcquirePos.Emit( toMove.x() + posX - 4, toMove.y()+ posY +2 );
 	}
 }
 

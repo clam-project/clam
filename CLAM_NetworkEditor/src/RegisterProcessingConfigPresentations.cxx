@@ -21,7 +21,6 @@
 
 #include "Factory.hxx"
 #include "ProcessingConfigPresentation.hxx"
-#include "ConfigPresentationTmpl.hxx"
 
 // concrete configs
 #include "MonoAudioFileWriterConfigPresentation.hxx"
@@ -29,6 +28,7 @@
 #ifndef WIN32
 #include "LadspaLoaderConfigPresentation.hxx"
 #endif
+#include "ConfigPresentationTmpl.hxx"
 #include "AudioFileConfig.hxx"
 #include "AutoPanner.hxx"
 #include "AudioIO.hxx"
@@ -57,19 +57,8 @@
 #include "FlagControl.hxx"
 #include "Random.hxx"
 #include "OneOverF.hxx"
+#include "OutControlSender.hxx"
 #include "SquareWave.hxx"
-#include "OSCSender.hxx"
-
-// Controls
-#include "Fundamental2Control.hxx"
-#include "ControlPrinter.hxx"
-#include "ControlScaler.hxx"
-#include "ControlMapper.hxx"
-
-//MIDI
-#include "MIDIKeyboard.hxx"
-#include "MIDIIOConfig.hxx"
-#include "MIDIDispatcher.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -120,14 +109,14 @@ static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MonoAudioFil
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> > 
 	regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
 	
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSAnalysisConfig> > 
-	regtSmsAnalysisCfg("SMSAnalysisConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSynthesisConfig> > 
-	regtSmsSynthesisCfg("SMSSynthesisConfig");
-	
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> 
 	regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSAnalysisConfig> > 
+	regtSMSAnalysisCfg( "SMSAnalysisConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSynthesisConfig> > 
+	regtSMSSynthesisCfg( "SMSSynthesisConfig" );
 
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::SpectralPeakDetectConfig> > 
 	regtSpectralPeakDetectCfg( "SpectralPeakDetectConfig" );
@@ -150,6 +139,7 @@ static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresen
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::CircularShiftConfig> > 
 	regtCircularShiftCfg( "CircularShiftConfig" );
 
+// in draft
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> > 
 	regtFlagControlCfg( "FlagControlConfig" );
 	
@@ -162,24 +152,6 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SquareWaveConfig> > 
 	regtSquareWaveCfg( "SquareWaveConfig" );
 
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OSCSenderConfig> > 
-	regtOSCSenderCfg( "OSCSenderConfig" );
-
-// Controls
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::Fundamental2ControlConfig> >
-       regtFundamental2ControlConfig("Fundamental2ControlConfig");
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlPrinterConfig> >
-       regtControlPrinterConfig("ControlPrinterConfig");
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlScalerConfig> >
-       regtControlScalerConfig("ControlScalerConfig");
-
-// MIDI
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIKeyboardConfig> >
-       regtMIDIKeyboardConfig("MIDIKeyboardConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIIOConfig> >
-       regtMIDIIOConfig("MIDIIOConfig");
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIDispatcherConfig> >
-       regtMIDIDispatcherConfig("MIDIDispatcherConfig");
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> > 
+	regtOutControlSenderCfg( "OutControlSenderConfig" );
 

@@ -1,15 +1,9 @@
+
 #include "OutControlSender.hxx"
-#include "Factory.hxx"
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-
+#include <iostream> // TODO: remove
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<OutControlSender> regtOutControlSender( "OutControlSender" );
-	}
-	
+
 Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =
 	{
 		{ EControlRepresentation::eUndetermined, "Undetermined" },

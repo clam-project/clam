@@ -3,7 +3,7 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include "SMSTransformationConfig.hxx"
 
 class Fl_Widget;
 class Fl_Help_View;
@@ -30,7 +30,7 @@ namespace CLAMVM
 	protected:
 		
 		Fl_Help_View*                 mHelpWidget;
-		CLAM::SegmentTransformationConfig mConfig;
+		CLAM::SMSTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
 		
