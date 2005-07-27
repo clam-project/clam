@@ -2,7 +2,7 @@
 #ifndef _RestrictedString_
 #define _RestrictedString_
 
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 
 #include <string>
 

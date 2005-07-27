@@ -1,7 +1,7 @@
 #ifndef _LLDSchema_
 #define _LLDSchema_
 
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 
 #include <list>
 #include <string>

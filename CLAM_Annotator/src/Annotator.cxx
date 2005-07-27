@@ -19,17 +19,17 @@
 //xamat
 #include <time.h>
 
-#include "QtAudioPlot.hxx"
+#include <CLAM/QtAudioPlot.hxx>
 #include <qtabwidget.h>
-#include "AudioFile.hxx"
-#include "MultiChannelAudioFileReaderConfig.hxx"
-#include "MultiChannelAudioFileReader.hxx"
-#include "IndexArray.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
+#include <CLAM/IndexArray.hxx>
 
 
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 
-#include "BPFEditor.hxx"
+#include <CLAM/BPFEditor.hxx>
 
 using CLAM::VM::QtAudioPlot;
 

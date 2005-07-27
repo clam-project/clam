@@ -1,13 +1,13 @@
 #ifndef _HLDSchema_
 #define _HLDSchema_
 
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 
 #include <list>
 #include <string>
 
-#include "Pool.hxx"
-#include "Assert.hxx"
+#include <CLAM/Pool.hxx>
+#include <CLAM/Assert.hxx>
 
 #include "EType.hxx"
 #include "AnnotatorDescriptor.hxx"

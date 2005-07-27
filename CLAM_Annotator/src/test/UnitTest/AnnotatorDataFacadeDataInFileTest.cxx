@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "AnnotatorDataFacade.hxx"
 #include "cppUnitHelper.hxx"
-#include "Assert.hxx"
+#include <CLAM/Assert.hxx>
 #include "TXTSongParser.hxx"
 
 #include "DataFacade.hxx"

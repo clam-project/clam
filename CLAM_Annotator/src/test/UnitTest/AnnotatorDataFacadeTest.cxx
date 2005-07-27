@@ -4,7 +4,7 @@
 #include "AnnotatorDataFacade.hxx"
 #include "DataFacade.hxx"
 #include "cppUnitHelper.hxx"
-#include "Assert.hxx"
+#include <CLAM/Assert.hxx>
 
 #include <iostream>
 

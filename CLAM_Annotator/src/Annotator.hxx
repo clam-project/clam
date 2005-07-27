@@ -7,16 +7,16 @@
 
 //xamat
 
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 
 #include "Schema.hxx"
-#include "DescriptionScheme.hxx"
-#include "Pool.hxx"
+#include <CLAM/DescriptionScheme.hxx>
+#include <CLAM/Pool.hxx>
 
 #include "SongFiles.hxx"
 #include "Project.hxx"
 
-#include "BPF.hxx"
+#include <CLAM/BPF.hxx>
 
 using CLAM::TIndex;
 using CLAM::TData;

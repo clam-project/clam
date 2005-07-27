@@ -1,7 +1,7 @@
 #ifndef _Project_hxx_
 #define _Project_hxx_
 
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 
 namespace CLAM_Annotator
 {

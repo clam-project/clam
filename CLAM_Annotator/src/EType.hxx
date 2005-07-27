@@ -2,7 +2,7 @@
 #ifndef _EType_hxx__
 #define _EType_hxx_
 
-#include "Enum.hxx"
+#include <CLAM/Enum.hxx>
 
 namespace CLAM_Annotator
 {
