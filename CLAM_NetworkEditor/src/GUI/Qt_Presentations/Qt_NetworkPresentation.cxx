@@ -21,7 +21,7 @@
 
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
 #include "Qt_ControlConnectionPresentation.hxx"

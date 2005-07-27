@@ -20,19 +20,19 @@
  */
 
 #if USE_OSCPACK
-#include "OSCEnabledNetwork.hxx"
+#include <CLAM/OSCEnabledNetwork.hxx>
 #else
-#include "Network.hxx"
+#include <CLAM/Network.hxx>
 #endif
 
 #include "NetworkController.hxx"
-#include "PushFlowControl.hxx"
-#include "BasicFlowControl.hxx"
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/BasicFlowControl.hxx>
 #include <string>
 
-#include "AudioManager.hxx"
+#include <CLAM/AudioManager.hxx>
 
-#include "MIDIManager.hxx"
+#include <CLAM/MIDIManager.hxx>
 
 #include <qapplication.h>
 
