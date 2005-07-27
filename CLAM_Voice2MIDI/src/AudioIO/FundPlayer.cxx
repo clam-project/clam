@@ -5,10 +5,10 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "FundPlayer.hxx"
-#include "AudioIO.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
-#include "SimpleOscillator.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/SimpleOscillator.hxx>
 
 using namespace CLAM;
 

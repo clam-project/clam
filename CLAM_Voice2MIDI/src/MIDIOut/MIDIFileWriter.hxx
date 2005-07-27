@@ -9,7 +9,7 @@
 #define _MIDIFILEWRITER_
 
 #include <string>
-#include "MIDIMelody.hxx"
+#include <CLAM/MIDIMelody.hxx>
 
 #define MThd	0x4d546864
 #define MTrk	0x4d54726b

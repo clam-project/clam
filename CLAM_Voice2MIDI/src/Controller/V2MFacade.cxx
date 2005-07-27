@@ -5,7 +5,7 @@
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include <vector>
-#include "MIDIManager.hxx"
+#include <CLAM/MIDIManager.hxx>
 #include "V2MFacade.hxx"
 
 #ifdef WIN32

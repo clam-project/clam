@@ -9,7 +9,7 @@
 #ifndef _AUDIOFILEIO_
 #define _AUDIOFILEIO_
 
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 
 using CLAM::Audio;
 

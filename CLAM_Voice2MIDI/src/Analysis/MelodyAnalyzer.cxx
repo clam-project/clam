@@ -5,9 +5,9 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "MelodyAnalyzer.hxx"
-#include "Segmentator.hxx"
-#include "SegmentatorConfig.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Segmentator.hxx>
+#include <CLAM/SegmentatorConfig.hxx>
+#include <CLAM/XMLStorage.hxx>
 
 using namespace CLAM; 
 

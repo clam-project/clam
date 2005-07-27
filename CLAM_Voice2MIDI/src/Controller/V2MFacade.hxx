@@ -16,8 +16,8 @@
 #include "V2MAudioIO.hxx"
 #include "V2MMIDIOut.hxx"
 #include "SharedTypes.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;

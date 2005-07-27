@@ -9,12 +9,12 @@
 #define _FUNDPLAYER_
 
 #include <pthread.h>
-#include "Array.hxx"
-#include "Segment.hxx"
-#include "Signalv0.hxx"
-#include "Slotv0.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Array.hxx>
+#include <CLAM/Segment.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv0.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using CLAM::DataArray;
 using CLAM::Segment;

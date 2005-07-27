@@ -9,11 +9,11 @@
 #define _AUDIOPLAYER_
 
 #include <pthread.h>
-#include "Audio.hxx"
-#include "Signalv0.hxx"
-#include "Slotv0.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv0.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using CLAM::Audio;
 using CLAM::DataArray;

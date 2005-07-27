@@ -9,9 +9,9 @@
 #define _AUDIORECORDER_
 
 #include <pthread.h>
-#include "Audio.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using CLAM::Audio;
 using CLAM::DataArray;
