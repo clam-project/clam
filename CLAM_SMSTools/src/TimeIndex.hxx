@@ -1,8 +1,8 @@
 #ifndef __TIMEINDEX_H__
 #define __TIMEINDEX_H__
 
-#include "DynamicType.hxx"
-#include "ProcessingData.hxx"
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/ProcessingData.hxx>
 
 namespace CLAM {
 
