@@ -1,0 +1,10 @@
+Package: libclamvmqt0-dev
+Version: 0.8-1
+Section: base
+Priority: optional
+Architecture: i386
+Depends: 
+Maintainer: CLAM development team <clam@iua.upf.es>
+Description: clam framework data visualization components (Qt)
+ libclamvmqt0-dev bundles clam framework data visualization components.
+ These components rely on the Qt framework.

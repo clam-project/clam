@@ -1,12 +1,12 @@
 BUILD_PKG = dpkg-deb
 TOP = ../..
-PKG_NAME = libdummy0-dev
-VERSION = 1.0-1
+PKG_NAME = libclamvmfl0-dev
+VERSION = 0.8-1
 ARCH = 
 PREFIX = /usr
 PKG_BASE = ./debian
 BIN_PREFIX= $(PREFIX)/bin
-DOC_PREFIX= $(PREFIX)/share/doc/CLAM
+DOC_PREFIX= $(PREFIX)/share/doc/libclamvmfl0-dev
 MAN_PREFIX= $(PREFIX)/share/man
 
 all: init build

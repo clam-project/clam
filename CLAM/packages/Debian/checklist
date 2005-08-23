@@ -1,0 +1,34 @@
+ + Run 'make clean' at /path_to_clam_repository/packages folder  
+
+ + For each clam package, check the following files
+	1) changelog 
+	2) changelog.Debian
+	3) copyright
+	4) control (do not worry now for dependencies)
+	5) shlibs
+	6) Makefile
+
+ + Run 'make init' at /path_to_clam_repository/packages folder 
+  
+ + Compile clam binaries modules setting the prefix to
+	/path_to_clam_repository/packages/Debian/lib<clam module name>0-dev/debian/usr
+
+ + Install CLAM packages issuing a command like:
+	$ scons prefix=/home/mramirez/Sandboxes/CLAM-nh/packages/Debian/libclamcore0-dev/debian/usr release=yes xmlbackend=xercesc install_core
+
+ + Check that the list of package dependencies listed on the control file
+   matches actual binaries dependencies
+	+ Execute the command:
+		$ objdump -p debian/usr/lib/*so* | grep NEEDED
+    + For each shared object listed execute and write down the package names:
+		$ dpkg -S <shared object name>
+	+ Now, for each package name execute and write down the installed package version:
+		$ apt-cache showpkg <package name> | head
+ 	+ Update control file accordingly to the dependency list obtained, having in mind
+	  the following:
+		+ When specifying package version requirements only consider version numbers up
+		  to the minor version number
+
+ + Run 'make dist' at at /path_to_clam_repository/packages folder
+ 
+ + Fix issues reported by lintian 
