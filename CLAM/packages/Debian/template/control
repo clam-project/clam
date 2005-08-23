@@ -1,0 +1,9 @@
+Package: libdummy0-dev
+Version: 0.1-1
+Section: base
+Priority: optional
+Architecture:
+Depends: 
+Maintainer: CLAM development team <clam@iua.upf.es>
+Description: short description
+ long description
