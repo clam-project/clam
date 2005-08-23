@@ -33,9 +33,9 @@ setup-control:
 setup-data:
 	@echo -n "Moving $(PKG_NAME) manpages and assorted documentation... "
 	@cp changelog $(PKG_BASE)/$(DOC_PREFIX)
-	@gzip --best $(PKG_BASE)/$(DOC_PREFIX)/changelog
+	@gzip -f --best $(PKG_BASE)/$(DOC_PREFIX)/changelog
 	@cp changelog.Debian $(PKG_BASE)/$(DOC_PREFIX)
-	@gzip --best $(PKG_BASE)/$(DOC_PREFIX)/changelog.Debian
+	@gzip -f --best $(PKG_BASE)/$(DOC_PREFIX)/changelog.Debian
 	@echo "Done!"
 
 build: setup-control setup-data

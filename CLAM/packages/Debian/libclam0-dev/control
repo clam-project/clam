@@ -1,6 +1,6 @@
 Package: libclam0-dev
 Version: 0.8-1
-Section: base
+Section: libs
 Priority: optional
 Architecture: i386
 Depends: libclamcore0-dev (>= 0.8), libclamprocessing0-dev (>= 0.8), libclamaudioio0-dev (>= 0.8), libclamvmqt0-dev (>= 0.8)

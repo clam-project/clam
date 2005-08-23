@@ -1,6 +1,6 @@
 Package: libclamprocessing0-dev
 Version: 0.8-1
-Section: base
+Section: libs
 Priority: optional
 Architecture: i386
 Depends: libc6 (>= 2.3.2), libstdc++5 (>= 1:3.3.5), libgcc1 (>= 1:4.0), sfftw2 (>= 2.1.3), libclamcore0-dev (>= 0.8)
