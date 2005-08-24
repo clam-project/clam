@@ -6,6 +6,7 @@ tools_env = Environment( ENV=os.environ )
 
 opts = Options( 'SMSTools.conf' )
 opts.Add( PathOption( 'clam_prefix', 'Prefix where CLAM was installed', '/usr') )
+opts.Add( PathOption( 'install_prefix', 'Prefix where SMS Tools is to be installed', '/usr') )
 opts.Add( BoolOption( 'release', 'Build SMS Tools enabling compiler optimizations', 'yes' ) )
 opts.Update( tools_env )
 opts.Save( 'SMSTools.conf', tools_env )
