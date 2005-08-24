@@ -26,3 +26,11 @@ tools_env.Append( CCFLAGS='-include CLAM/preinclude.hxx' )
 sourcefiles = ['../../src/SMS.cxx','../../src/XMLSerializer.cxx','../../src/SDIFSerializer.cxx','../../src/SerializationController.cxx','../../src/SMSAnalysisSynthesisConfig.cxx', '../../src/Progress.cxx', '../../src/WaitMessage.cxx', '../../src/StdOutProgress.cxx', '../../src/StdOutWaitMessage.cxx', '../../src/SMSBase.cxx']
 
 tools_bin = tools_env.Program( 'SMSConsole', sourcefiles, LINKFLAGS=['-rdynamic'] )
+
+install_bin = tools_env.Install( tools_env['install_prefix']+"/bin", tools_bin )
+tools_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+
+manpage = ['../../resources/man/man9/SMSConsole.9']
+install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man9", manpage )
+
+tools_env.Alias( 'install', [install_bin, install_manpage] )

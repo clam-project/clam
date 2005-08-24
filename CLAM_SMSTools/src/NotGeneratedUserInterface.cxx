@@ -35,6 +35,10 @@
 using namespace CLAM;
 using namespace CLAMGUI;
 
+#ifndef RESOURCES_BASE
+#define RESOURCES_BASE "."
+#endif
+
 void UserInterface::EditConfiguration(void)
 {
 	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
@@ -419,7 +423,7 @@ void UserInterface::DeactivateFrameDataMenuItems()
 void composeFilename( const std::string& key, std::string& filename )
 {
 	if ( key=="Application_License" )
-		filename="doc/en/license.html";
+		filename = std::string(RESOURCES_BASE) + std::string("/html/en/license.html");
 	else
 		filename="";
 }
