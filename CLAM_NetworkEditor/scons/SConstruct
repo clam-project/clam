@@ -6,6 +6,7 @@ neted_env.Replace(QT_LIB='qt-mt')
 
 opts = Options('NetworkEditor.conf')
 opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+opts.Add( PathOption( 'install_prefix', 'Prefix were Network editor is going to be installed', '/usr') )
 opts.Add( BoolOption( 'release', 'Build network editor enabling compiler optimizations', 'yes') )
 opts.Update(neted_env)
 opts.Save('NetworkEditor.conf', neted_env)
@@ -28,3 +29,29 @@ for dir in source_dirs :
 	sourcefiles += glob.glob(dir+'/*.cxx')
 	sourcefiles += glob.glob(dir+'/*.ui')
 neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
+
+install_bin = neted_env.Install( neted_env['install_prefix']+'/bin', neted_bin )
+neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+
+examples = []
+
+for _, _, filenames in os.walk('../resources/examples' ) :
+	for filename in filenames :
+		examples.append( File( '../resources/examples/'+filename ) )
+
+install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
+
+graphics = []
+
+for _, _, filenames in os.walk('../resources/graphics' ) :
+	for filename in filenames :
+		graphics.append( File( '../resources/graphics/' + filename ) )
+
+install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
+
+manpages = [ 'NetworkEditor.9' ]
+manpages = [ '../resources/man/man9/'+item for item in manpages ]
+
+install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
+
+install_alias = neted_env.Install( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
