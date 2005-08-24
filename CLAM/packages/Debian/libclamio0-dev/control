@@ -3,7 +3,7 @@ Version: 0.8-1
 Section: libs
 Priority: optional
 Architecture: i386
-Depends: libc6 (>= 2.3.2), libstdc++5 (>= 1:3.3.5), libgcc1 (>= 1:4.0), libsndfile1 (>= 1.0.10), libogg0 (>= 1.1.2), libvorbisenc2 (>= 1.0.1), libvorbis0a (>= 1.0.1), libvorbisfile3 (>= 1.0.1), libmad0 (>= 0.15), libid3-3.8.3 (>= 3.8.3), libasound2 (>= 1.0.8), libclamcore0-dev (>= 0.8), libclamprocessing0-dev(>= 0.8) 
+Depends: libc6 (>= 2.3.2), libstdc++5 (>= 1:3.3.5), libgcc1 (>= 1:4.0), libsndfile1 (>= 1.0.10), libogg0 (>= 1.1.2), libvorbisenc2 (>= 1.0.1), libvorbis0a (>= 1.0.1), libvorbisfile3 (>= 1.0.1), libmad0 (>= 0.15), libid3-3.8.3 (>= 3.8.3), libasound2 (>= 1.0.8), libclamcore0-dev (>= 0.8), libclamprocessing0-dev(>= 0.8), pkg-config (>= 0.15) 
 Maintainer: CLAM development team <clam@iua.upf.es>
 Description: clam framework audio and MIDI i/o components
  libclamaudioio0-dev bundles together all the CLAM
