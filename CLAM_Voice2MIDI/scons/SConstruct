@@ -6,6 +6,7 @@ v2m_env.Replace(QT_LIB='qt-mt')
 
 opts = Options('NetworkEditor.conf')
 opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+opts.Add( PathOption( 'install_prefix', 'Prefix were Voice2MIDI is to be installed', '/usr') )
 opts.Add( BoolOption( 'release', 'Build voice2midi enabling compiler optimizations', 'yes') )
 opts.Update(v2m_env)
 opts.Save('NetworkEditor.conf', v2m_env)
@@ -27,4 +28,29 @@ sourcefiles = []
 for dir in source_dirs :
 	sourcefiles += glob.glob(dir+'/*.cxx')
 	sourcefiles += glob.glob(dir+'/*.ui')
+v2m_env.Append(CPPFLAGS='-DMANUAL_BASE="\\"/usr/share/doc/voice2midi/manual\\""')
+
 v2m_bin = v2m_env.Program( 'Voice2MIDI', sourcefiles, LINKFLAGS=['-rdynamic'] )
+
+install_bin = v2m_env.Install( v2m_env['install_prefix']+'/bin', v2m_bin)
+#v2m_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+
+manual_html = []
+for file in glob.glob( '../resources/doc/*.htm' ) :
+	manual_html.append( File(file) )
+manual_pics = []
+for file in glob.glob( '../resources/doc/pics/*.png' ) :
+	manual_pics.append( File(file) )
+
+install_manual_html = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/manual', manual_html )
+install_manual_pics = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/manual/pics', manual_pics )
+
+manpage = File( '../resources/man/man9/Voice2MIDI.9' )
+install_manpage = v2m_env.Install( v2m_env['install_prefix']+'/share/man/man9', manpage )
+
+soundsamples = File( '../resources/soundsamples/birthday.wav' )
+install_soundsamples = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/samplesounds', soundsamples )
+
+install_alias = v2m_env.Install( 'install', [install_bin, install_manual_html, install_manual_pics, install_manpage, install_soundsamples] )
+
+
