@@ -31,6 +31,10 @@
 
 #include <CLAM/BPFEditor.hxx>
 
+#ifndef RESOURCES_BASE
+#define RESOURCES_BASE "."
+#endif
+
 using CLAM::VM::QtAudioPlot;
 
 using CLAM::TData;
@@ -1067,7 +1071,9 @@ void Annotator::auralizeMarks()
 	{
 		mClick.resize(2);
 		CLAM::AudioFile file;
-		file.OpenExisting("click.mp3");
+		std::string click_path = RESOURCES_BASE;
+		click_path += "/sounds/click.mp3";
+		file.OpenExisting(click_path);
 		int nChannels = file.GetHeader().GetChannels();
 		CLAM::MultiChannelAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );

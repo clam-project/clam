@@ -28,6 +28,7 @@ annotator_env.Replace(QT_LIB='qt-mt')
 
 opts = Options('Annotator.conf')
 opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+opts.Add( PathOption( 'install_prefix', 'Prefix were the Annotator is to be installed', '/usr') )
 opts.Add( BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'yes') )
 opts.Update(annotator_env)
 opts.Save('Annotator.conf', annotator_env)
@@ -69,5 +70,15 @@ bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
 
 annotator_env.Append(CPPPATH=source_dirs)
 annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"/usr/share/annotator\\""')
 
 annotator_bin = annotator_env.Program( 'Annotator', bin_main_object + bin_objects, LINKFLAGS=['-rdynamic'] )
+install_bin = annotator_env.Install( annotator_env['install_prefix']+'/bin', annotator_bin )
+
+manpage = ['../resources/man/man9/Annotator.9']
+install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
+
+sounds = ['../resources/sounds/click.mp3']
+install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
+
+install_alias = annotator_env.Install( 'install', [install_bin, install_manpage, install_sounds] ) 
