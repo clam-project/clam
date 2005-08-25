@@ -9,6 +9,9 @@
 #define _V2MHELPVIEWER_
 
 #include <qwidget.h>
+#ifndef MANUAL_BASE
+#define MANUAL_BASE "./doc"
+#endif
 
 class QTextBrowser;
 class QFrame;

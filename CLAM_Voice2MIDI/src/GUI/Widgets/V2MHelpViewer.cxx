@@ -33,7 +33,7 @@ void V2MHelpViewer::InitBrowser()
 	browser = new QTextBrowser(container);
 	browser->setFixedSize(container->width(),container->height());
 
-    browser->mimeSourceFactory()->setFilePath("doc/");
+    browser->mimeSourceFactory()->setFilePath(MANUAL_BASE);
     browser->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     connect(browser,SIGNAL(textChanged()),this,SLOT(textChanged()));
 

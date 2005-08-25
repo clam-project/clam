@@ -25,6 +25,7 @@
 #include "V2MIconData.hxx"
 #include "V2MHelpViewer.hxx"
 
+
 V2MGUI::V2MGUI()
 	: QMainWindow(0,"main window",WStyle_Customize|WStyle_Title|WStyle_SysMenu|WStyle_Minimize|WDestructiveClose)
 {
@@ -911,9 +912,15 @@ void V2MGUI::show_help()
 	if(!helpViewer)
 	{
 		FILE* fp = NULL;
-		if((fp=fopen("doc/index.htm","r"))==NULL)
+		std::string index = "/index.htm";
+		std::string base = MANUAL_BASE;
+	   	std::string manual_path = base + index;
+	
+		if((fp=fopen(manual_path.c_str(), "r"))==NULL)
 		{
-			Message(QMessageBox::Critical,"help not found","Voice2MIDI  help  not  found.");
+			std::string errorMessage = "Voice2MIDI  help  not  found. Expected at: " + manual_path;
+			
+			Message(QMessageBox::Critical,"help not found", errorMessage.c_str());
 		}
 		else
 		{
