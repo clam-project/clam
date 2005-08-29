@@ -24,10 +24,11 @@ def setup_build_options( env ) :
 	
 	# global options
 	opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
+	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
 	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
-	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ) )
+	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	
 	# clam_core options
@@ -99,7 +100,7 @@ def create_custom_builders( env ) :
 # SConstruct file for CLAM
 # Main section
 
-version = '0.8'
+version = '0.8.0'
 Export('version')
 
 top = '../..'

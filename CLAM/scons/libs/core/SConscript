@@ -106,4 +106,10 @@ install_descriptor = core_env.Install( install_dirs.lib+'/pkgconfig', lib_descri
 
 core_install_tgt = core_env.Alias( 'install_core', [install_headers, install_lib, install_descriptor] )
 
+install_runtime = core_env.Install( install_dirs.lib, [lib, soname_lib] )
+install_core_runtime = core_env.Alias( 'install_core_runtime', install_runtime )
+
+install_linkername = core_env.Install( install_dirs.lib, linkername_lib )
+instalL_core_dev = core_env.Alias( 'install_core_dev', [ install_linkername, install_headers] )
+
 Return( 'core_tgt','core_install_tgt' )

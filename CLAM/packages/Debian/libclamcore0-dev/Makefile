@@ -30,7 +30,10 @@ setup-control:
 	@cp copyright $(PKG_BASE)$(DOC_PREFIX)
 	@echo "Done!"
 
-setup-data:
+build-lib:
+	
+
+setup-data: build-lib
 	@echo -n "Moving $(PKG_NAME) manpages and assorted documentation... "
 	@cp changelog $(PKG_BASE)/$(DOC_PREFIX)
 	@gzip -f --best $(PKG_BASE)/$(DOC_PREFIX)/changelog
