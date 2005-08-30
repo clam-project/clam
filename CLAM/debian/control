@@ -1,0 +1,131 @@
+Source: libclam
+Priority: optional
+Maintainer: mramirez <clam@iua.upf.es>
+Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1)
+Standards-Version: 3.6.1
+
+
+Package: libclamcore1-dev
+Section: libdev
+Architecture: any
+Depends: libclamcore1 (= ${Source-Version}), ladspa-sdk (>= 0.1), pkg-config (>= 0.15)
+Description: clam framework core components (development files)
+  This package contains the set of fundamental classes
+  in the CLAM framework. This includes:
+   * XML-based object persistence infrastructure
+   * OSC support
+   * Network, Processing and ProcessingData base classes
+   * Component and DynamicType
+   * Threading support
+   * Framework 'standard' data structures such as the
+     Array class
+
+Package: libclamprocessing1-dev
+Section: libdev
+Architecture: any
+Depends: libclamprocessing1(= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), pkg-config (>= 0.15)
+Description: clam framework processing algorithms repository
+ This package offers a substantial number of audio and music
+ digital signal processing algorithms encapsulated as CLAM
+ Processing objects.
+
+Package: libclamaudioio1-dev
+Section: libdev
+Architecture: any
+Depends: libclamaudioio1 (= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), pkg-config (>= 0.15)
+Description: clam framework audio and MIDI i/o components
+ This package contains all the CLAM framework components 
+ that allow to:
+   * Read or write data from/into a sound card buffer
+   * Read or write data from/into audio files (both
+     PCM and compressed - Vorbis and Mpeg)
+   * Read or write messages from MIDI devices
+   * Read or write messages from MIDI files
+
+Package: libclamvmfl1-dev
+Architecture: any
+Depends: libclamvmfl1 (= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), libclamaudioio1-dev (= ${Source-Version}), pkg-config (>= 0.15)
+Description: clam framework data visualization components (FLTK)
+ This package contains a set of CLAM components meant for 
+ data visualization. These rely on the Fast Light Toolkit
+ library.
+
+Package: libclamvmqt1-dev
+Architecture: any
+Depends: libclamvmqt1 (= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), libclamaudioio1-dev (= ${Source-Version}), pkg-config (>= 0.15)
+Description: clam framework data visualization components (Qt)
+ This package contains CLAM framework data visualization components.
+ These components rely on the Qt framework.
+
+
+Package: libclam1-dev
+Section: libdev
+Architecture: any
+Depends: libclamcore1-dev, libclamprocessing1-dev, libclamaudioio1-dev, libclamvmfl1-dev, libclamvmqt1-dev
+Description: development package for the CLAM framework
+ The CLAM framework is a C++ framework meant for helping
+ to build applications that analyze, synthesize or transform
+ digital signals - either music or audio.
+
+Package: libclamcore1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: clam framework core components
+  This package contains the set of fundamental classes
+  in the CLAM framework. This includes:
+   * XML-based object persistence infrastructure
+   * OSC support
+   * Network, Processing and ProcessingData base classes
+   * Component and DynamicType
+   * Threading support
+   * Framework 'standard' data structures such as the
+     Array class
+
+Package: libclamprocessing1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: clam framework processing algorithms repository
+ This package offers a substantial number of audio and music
+ digital signal processing algorithms encapsulated as CLAM
+ Processing objects.
+
+Package: libclamaudioio1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: clam framework audio and MIDI i/o components
+ This package contains all the CLAM framework components 
+ that allow to:
+   * Read or write data from/into a sound card buffer
+   * Read or write data from/into audio files (both
+     PCM and compressed - Vorbis and Mpeg)
+   * Read or write messages from MIDI devices
+   * Read or write messages from MIDI files
+
+Package: libclamvmfl1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: clam framework data visualization components (FLTK)
+ This package contains a set of CLAM components meant for 
+ data visualization. These rely on the Fast Light Toolkit
+ library.
+
+Package: libclamvmqt1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: clam framework data visualization components (Qt)
+ This package contains CLAM framework data visualization components.
+ These components rely on the Qt framework.
+
+Package: libclam1
+Section: libs
+Architecture: any
+Depends: libclamcore1, libclamprocessing1, libclamvmfl1, libclamaudioio1, libclamvmqt1
+Description: runtime package for the CLAM framework
+ The CLAM framework is a C++ framework meant for helping
+ to build applications that analyze, synthesize or transform
+ digital signals - either music or audio.
