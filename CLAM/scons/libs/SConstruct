@@ -190,7 +190,7 @@ if not clam_env.GetOption('clean') :
 	vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
-vmqt_env.Replace( QT_DEBUG='1' )
+vmqt_env.Replace( QT_DEBUG='0' )
 Export('vmqt_env')
 
 if not clam_env.GetOption('clean') :
@@ -214,15 +214,9 @@ vmfl_tgt, vmfl_install_tgt = SConscript('vmfl/SConscript')
 vmqt_tgt, vmqt_install_tgt = SConscript('vmqt/SConscript')
 
 # Module dependencies
-#Depends( processing_tgt, core_tgt )
-#Depends( audioio_tgt, [processing_tgt, core_tgt] )
-#Depends( vmfl_tgt, [core_tgt, processing_tgt, audioio_tgt] )
-#Depends( vmqt_tgt, [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt] )
 
 all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt, vmqt_tgt ] )
 install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmfl_install_tgt, vmqt_install_tgt] )
-
-Depends( install_alias, all_alias )
 
 Default( all_alias )
 print """\

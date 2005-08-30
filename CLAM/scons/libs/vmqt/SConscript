@@ -64,13 +64,13 @@ else :
 
 headers = [ File(header) for header in header_files ]
 
-vmqt_env.Append(CPPPATH=['.','../core/include','../processing/include','../audioio/include'])
+vmqt_env.Prepend(CPPPATH=['.','../core/include','../processing/include','../audioio/include'])
 
 if not vmqt_env.GetOption('clean') :
 	vmqt_env.Append(CCFLAGS='-include CLAM/%s'%vmqt_env['preinclude'])
 
 vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
-vmqt_env.Append(LIBPATH=['../core','../processing','../audioio'])
+vmqt_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
 soname = 'libclam_vmqt.so.%s'%version.split('.')[0]
 linker_name = 'libclam_vmqt.so'
@@ -85,10 +85,11 @@ vmqt_tgt = vmqt_env.Alias( 'vmqt', linkername_lib )
 
 install_headers = vmqt_env.Install( install_dirs.inc+'/CLAM', headers )
 vmqt_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+
 install_lib = vmqt_env.Install( install_dirs.lib, lib )
 vmqt_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-install_descriptor = vmqt_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 
+install_descriptor = vmqt_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 vmqt_install_tgt = vmqt_env.Alias( 'install_vmqt', [install_headers, install_lib, install_descriptor] )
 
 Return( 'vmqt_tgt', 'vmqt_install_tgt' )

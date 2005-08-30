@@ -61,13 +61,13 @@ else :
 
 headers = [ File(header) for header in header_files]
 
-vmfl_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
+vmfl_env.Prepend(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
 
 if not vmfl_env.GetOption('clean') :
 	vmfl_env.Append(CCFLAGS='-include CLAM/%s'%vmfl_env['preinclude'])
 
 vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
-vmfl_env.Append(LIBPATH=['../core','../processing','../audioio'])
+vmfl_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
 soname = 'libclam_vmfl.so.%s'%version.split('.')[0]
 linker_name = 'libclam_vmfl.so'

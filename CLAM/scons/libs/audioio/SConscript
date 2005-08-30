@@ -81,13 +81,13 @@ else :
 
 
 
-audioio_env.Append(CPPPATH=['include','../core/include','../processing/include'])
+audioio_env.Prepend(CPPPATH=['include','../core/include','../processing/include'])
 
 if not audioio_env.GetOption('clean') :
 	audioio_env.Append(CCFLAGS='-include CLAM/%s'%audioio_env['preinclude'])
 
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
-audioio_env.Append(LIBPATH=['../core','../processing'])
+audioio_env.Prepend(LIBPATH=['../core','../processing'])
 
 soname = 'libclam_audioio.so.%s'%version.split('.')[0]
 linker_name = 'libclam_audioio.so'

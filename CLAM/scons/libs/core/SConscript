@@ -57,10 +57,6 @@ def define_module_contents() :
 
 	manifest = Manifest()
 	manifest.store( file_retriever.headers, file_retriever.sources )
-
-	header_files = file_retriever.headers
-	source_files = file_retriever.sources
-
 	print "ok"
 	return file_retriever.headers, file_retriever.sources
 
@@ -82,7 +78,7 @@ else :
 	manifest.load( header_files, source_files )
 
 if not core_env.GetOption('clean') :
-	core_env.Append(CPPPATH='include')
+	core_env.Prepend(CPPPATH='include')
 	core_env.Append(CCFLAGS='-include CLAM/%s'%core_env['preinclude'])
 
 soname = 'libclam_core.so.%s'%version.split('.')[0]
@@ -100,16 +96,13 @@ core_tgt = core_env.Alias( 'core', linkername_lib )
 
 install_headers = core_env.Install( install_dirs.inc+'/CLAM', headers )
 core_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+
 install_lib = core_env.Install( install_dirs.lib, lib )
 core_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
+
 install_descriptor = core_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 
 core_install_tgt = core_env.Alias( 'install_core', [install_headers, install_lib, install_descriptor] )
 
-install_runtime = core_env.Install( install_dirs.lib, [lib, soname_lib] )
-install_core_runtime = core_env.Alias( 'install_core_runtime', install_runtime )
-
-install_linkername = core_env.Install( install_dirs.lib, linkername_lib )
-instalL_core_dev = core_env.Alias( 'install_core_dev', [ install_linkername, install_headers] )
 
 Return( 'core_tgt','core_install_tgt' )
