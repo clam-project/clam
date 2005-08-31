@@ -60,6 +60,6 @@ manpages = [ '../resources/man/man9/'+item for item in manpages ]
 
 install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
 
-install_alias = neted_env.Install( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
+install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
 
 Default(neted_bin)
