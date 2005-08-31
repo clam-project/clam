@@ -67,10 +67,23 @@ clean:
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
+	find $(CURDIR) -type f -name *.os | xargs rm -rf
+	find $(CURDIR) -type f -name *.a | xargs rm -rf
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
 	rm -rf $(CURDIR)/scons/libs/*.conf
+	rm -rf $(CURDIR)/debian/libclamcore1/usr
+	rm -rf $(CURDIR)/debian/libclamcore1-dev/usr
+	rm -rf $(CURDIR)/debian/libclamprocessing1/usr
+	rm -rf $(CURDIR)/debian/libclamprocessing1-dev/usr
+	rm -rf $(CURDIR)/debian/libclamaudioio1/usr
+	rm -rf $(CURDIR)/debian/libclamaudioio1-dev/usr
+	rm -rf $(CURDIR)/debian/libclamvmfl1/usr
+	rm -rf $(CURDIR)/debian/libclamvmfl1-dev/usr
+	rm -rf $(CURDIR)/debian/libclamvmqt1/usr
+	rm -rf $(CURDIR)/debian/libclamvmqt1-dev/usr
+
 
 	dh_clean 
 
