@@ -35,17 +35,23 @@ neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
 
 examples = []
 
-for _, _, filenames in os.walk('../resources/examples' ) :
+for root, _, filenames in os.walk('../resources/examples' ) :
+	if 'CVS' in root :
+		continue
 	for filename in filenames :
-		examples.append( File( '../resources/examples/'+filename ) )
+		examples.append( '../resources/examples/'+filename )
+
 
 install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
 
 graphics = []
 
-for _, _, filenames in os.walk('../resources/graphics' ) :
+for root, _, filenames in os.walk('../resources/graphics' ) :
+	if 'CVS' in root:
+		continue
 	for filename in filenames :
-		graphics.append( File( '../resources/graphics/' + filename ) )
+		graphics.append( '../resources/graphics/' + filename )
+
 
 install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
 
@@ -55,3 +61,5 @@ manpages = [ '../resources/man/man9/'+item for item in manpages ]
 install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
 
 install_alias = neted_env.Install( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
+
+Default(neted_bin)
