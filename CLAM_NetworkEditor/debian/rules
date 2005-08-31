@@ -43,6 +43,7 @@ build-arch-stamp: configure-stamp
 	# Add here commands to compile the arch part of the package.
 	#$(MAKE) 
 	touch build-arch-stamp
+	cd scons && scons
 
 build-indep: build-indep-stamp
 build-indep-stamp: configure-stamp 
@@ -57,7 +58,16 @@ clean:
 	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
+	cd scons && scons -c
+	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
+	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
+	find $(CURDIR) -type f -name *.o | xargs rm -rf
+	find $(CURDIR) -type f -name *.os | xargs rm -rf
+	find $(CURDIR) -type f -name *.a | xargs rm -rf
+	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
+	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
+	find $(CURDIR) -type f -name *.db | xargs rm -rf
+	rm -rf $(CURDIR)/scons/*.conf
 
 	dh_clean 
 
@@ -82,7 +92,8 @@ install-arch:
 
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/networkeditor
+	mkdir -p $(CURDIR)/debian/networkeditor/usr
+	cd scons && scons install_prefix=$(CURDIR)/debian/networkeditor/usr install
 
 	dh_install -s
 # Must not depend on anything. This is to be called by
