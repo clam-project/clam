@@ -119,6 +119,6 @@ static_lib = audioio_env.Library( 'clam_audioio', source_files )
 install_static = audioio_env.Install( install_dirs.lib, static_lib )
 
 dev_linkername = audioio_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname)
-audioio_env.Alias( 'install_audioio_dev', [install_headers, install_static, dev_linkername  ] )
+audioio_env.Alias( 'install_audioio_dev', [install_headers, install_static, install_descriptor, dev_linkername  ] )
 
 Return( 'audioio_tgt', 'audioio_install_tgt' )

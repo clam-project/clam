@@ -97,6 +97,6 @@ static_lib = vmfl_env.Library( 'clam_vmfl', source_files )
 install_static = vmfl_env.Install( install_dirs.lib, static_lib )
 
 dev_linkername = vmfl_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
-vmfl_env.Alias( 'install_vmfl_dev', [install_headers, install_static, dev_linkername ] )
+vmfl_env.Alias( 'install_vmfl_dev', [install_headers, install_static, install_descriptor, dev_linkername ] )
 
 Return( 'vmfl_target', 'vmfl_install_target' )

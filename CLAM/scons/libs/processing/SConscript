@@ -105,6 +105,6 @@ static_lib = processing_env.Library( 'clam_processing', source_files )
 install_static = processing_env.Install( install_dirs.lib, static_lib )
 
 dev_linkername =  processing_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname)
-processing_env.Alias( 'install_processing_dev', [install_headers, install_static, dev_linkername ] )
+processing_env.Alias( 'install_processing_dev', [install_headers, install_static, install_descriptor, dev_linkername ] )
 
 Return( 'processing_tgt', 'processing_install_tgt' )

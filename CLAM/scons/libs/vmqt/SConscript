@@ -101,6 +101,6 @@ static_lib = vmqt_env.Library( 'clam_vmqt', source_files )
 install_static = vmqt_env.Install( install_dirs.lib, static_lib )
 
 dev_linkername = vmqt_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
-vmqt_env.Alias( 'install_vmqt_dev', [install_headers, install_static, dev_linkername ] )
+vmqt_env.Alias( 'install_vmqt_dev', [install_headers, install_static, install_descriptor, dev_linkername ] )
 
 Return( 'vmqt_tgt', 'vmqt_install_tgt' )
