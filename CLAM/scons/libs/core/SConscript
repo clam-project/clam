@@ -104,5 +104,16 @@ install_descriptor = core_env.Install( install_dirs.lib+'/pkgconfig', lib_descri
 
 core_install_tgt = core_env.Alias( 'install_core', [install_headers, install_lib, install_descriptor] )
 
+runtime_lib = core_env.Install( install_dirs.lib, lib )
+runtime_soname = core_env.SonameLink( install_dirs.lib+'/'+soname, runtime_lib )
+
+core_env.Alias( 'install_core_runtime', [runtime_lib, runtime_soname] )
+
+static_lib = core_env.Library( 'clam_core', source_files )
+install_static = core_env.Install( install_dirs.lib, static_lib )
+
+dev_linkername =  core_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
+core_env.Alias( 'install_core_dev', [install_headers,dev_linkername, install_static] )
+
 
 Return( 'core_tgt','core_install_tgt' )

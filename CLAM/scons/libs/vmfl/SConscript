@@ -88,4 +88,15 @@ install_descriptor = vmfl_env.Install( install_dirs.lib+'/pkgconfig', lib_descri
 
 vmfl_install_target = vmfl_env.Alias( 'install_vmfl', [install_headers, install_lib, install_descriptor] )
 
+runtime_lib = vmfl_env.Install( install_dirs.lib, lib )
+runtime_soname = vmfl_env.SonameLink( install_dirs.lib+'/'+soname, runtime_lib )
+
+vmfl_env.Alias( 'install_vmfl_runtime', [runtime_lib, runtime_soname] )
+
+static_lib = vmfl_env.Library( 'clam_vmfl', source_files )
+install_static = vmfl_env.Install( install_dirs.lib, static_lib )
+
+dev_linkername = vmfl_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
+vmfl_env.Alias( 'install_vmfl_dev', [install_headers, install_static, dev_linkername ] )
+
 Return( 'vmfl_target', 'vmfl_install_target' )

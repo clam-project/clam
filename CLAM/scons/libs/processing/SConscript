@@ -96,4 +96,15 @@ install_descriptor = processing_env.Install( install_dirs.lib+'/pkgconfig', lib_
 
 processing_install_tgt = processing_env.Alias( 'install_processing', [install_headers,install_lib, install_descriptor] )
 
+runtime_lib = processing_env.Install( install_dirs.lib, lib )
+runtime_soname = processing_env.SonameLink( install_dirs.lib+'/'+soname, runtime_lib )
+
+processing_env.Alias( 'install_processing_runtime', [runtime_lib, runtime_soname] )
+
+static_lib = processing_env.Library( 'clam_processing', source_files )
+install_static = processing_env.Install( install_dirs.lib, static_lib )
+
+dev_linkername =  processing_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname)
+processing_env.Alias( 'install_processing_dev', [install_headers, install_static, dev_linkername ] )
+
 Return( 'processing_tgt', 'processing_install_tgt' )

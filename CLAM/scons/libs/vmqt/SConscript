@@ -92,4 +92,15 @@ vmqt_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_messa
 install_descriptor = vmqt_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 vmqt_install_tgt = vmqt_env.Alias( 'install_vmqt', [install_headers, install_lib, install_descriptor] )
 
+runtime_lib = vmqt_env.Install( install_dirs.lib, lib )
+runtime_soname = vmqt_env.SonameLink( install_dirs.lib+'/'+soname, runtime_lib )
+
+vmqt_env.Alias( 'install_vmqt_runtime', [runtime_lib, runtime_soname] )
+
+static_lib = vmqt_env.Library( 'clam_vmqt', source_files )
+install_static = vmqt_env.Install( install_dirs.lib, static_lib )
+
+dev_linkername = vmqt_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
+vmqt_env.Alias( 'install_vmqt_dev', [install_headers, install_static, dev_linkername ] )
+
 Return( 'vmqt_tgt', 'vmqt_install_tgt' )

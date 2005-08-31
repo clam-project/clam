@@ -110,4 +110,15 @@ install_descriptor = audioio_env.Install( install_dirs.lib+'/pkgconfig', lib_des
 
 audioio_install_tgt = audioio_env.Alias( 'install_audioio', [install_headers, install_lib, install_descriptor]  )
 
+runtime_lib = audioio_env.Install( install_dirs.lib, lib )
+runtime_soname = audioio_env.SonameLink( install_dirs.lib+'/'+soname, runtime_lib )
+
+audioio_env.Alias( 'install_audioio_runtime', [runtime_lib, runtime_soname] )
+
+static_lib = audioio_env.Library( 'clam_audioio', source_files )
+install_static = audioio_env.Install( install_dirs.lib, static_lib )
+
+dev_linkername = audioio_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname)
+audioio_env.Alias( 'install_audioio_dev', [install_headers, install_static, dev_linkername  ] )
+
 Return( 'audioio_tgt', 'audioio_install_tgt' )
