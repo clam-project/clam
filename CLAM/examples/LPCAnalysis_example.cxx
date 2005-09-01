@@ -121,7 +121,7 @@ int main( int argc, char** argv )
 		CLAM::LPModel lpModel;
 		// We will try our hand with a polynomial approximation of 
 		// the eleventh order
-		const unsigned lpcOrder = 11;
+		const unsigned lpcOrder = 16;
 		// We tell the lpSpectrum object which is the order of the
 		// approximation we have chosen
 		lpModel.UpdateModelOrder( lpcOrder );
