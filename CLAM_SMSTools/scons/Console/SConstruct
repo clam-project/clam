@@ -34,3 +34,5 @@ manpage = ['../../resources/man/man9/SMSConsole.9']
 install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man9", manpage )
 
 tools_env.Alias( 'install', [install_bin, install_manpage] )
+
+Default(tools_bin)

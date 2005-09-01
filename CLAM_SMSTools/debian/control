@@ -1,0 +1,19 @@
+Source: smstools
+Section: x11
+Priority: optional
+Maintainer: mramirez <clam@iua.upf.es>
+Build-Depends: debhelper (>= 4.0.0), g++-3.3 (>= 1:3.3.5), libc6-dev (>= 2.3.2), libstdc++5-3.3-dev (>= 1:3.3.5), make (>= 3.80), libclamcore1-dev (>= 0.8.0), libclamprocessing1-dev (>= 0.8.0), libclamaudioio1-dev (>= 0.8.0), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), xlibmesa-gl-dev | libgl1-dev, xlibmesa-glu-dev | libglu1-dev, zlib1g-dev (>= 1:1.2.1) 
+Standards-Version: 3.6.1
+
+Package: smstools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CLAM-based sms analysis/synthesis applications
+ smstools bundles together three different applications that
+ implement the SMS Analysis/Transformation/Synthesis pipeline.
+ They are:
+  * SMSTools - A graphical application that uses FLTK
+  * SMSConsole - A console application that offers the
+    same functionality as SMSTools
+  * SMSBatch - A console application that allows to apply
+    SMS algorithms over sets of files at once.
