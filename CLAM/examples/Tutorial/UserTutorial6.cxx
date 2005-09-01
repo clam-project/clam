@@ -22,8 +22,8 @@
 /** @file UserTutorial6.cxx CLAM tutorial, example 6.
  *  Ilustrates how to use a processing object with controls.
  */
-#include <FDFilterGen.hxx>
-#include <Spectrum.hxx>
+#include <CLAM/FDFilterGen.hxx>
+#include <CLAM/Spectrum.hxx>
 
 int main()
 {

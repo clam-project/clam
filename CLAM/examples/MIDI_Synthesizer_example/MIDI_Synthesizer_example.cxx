@@ -26,17 +26,17 @@ CLAM-Docs/MIDI_Synthesizer_example (development-branch)
 */
 #include "MyInstrument.hxx"
 
-#include "AudioIn.hxx"
-#include "AudioOut.hxx"
-#include "Oscillator.hxx"
+#include <CLAM/AudioIn.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/Oscillator.hxx>
 #include "AudioApplication.hxx"
-#include "MIDIManager.hxx"
-#include "MIDIInControl.hxx"
-#include "MIDIClocker.hxx"
-#include "Dispatcher.hxx"
-#include "AudioMixer.hxx"
-#include "AudioManager.hxx"
-#include "TopLevelProcessing.hxx"
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDIInControl.hxx>
+#include <CLAM/MIDIClocker.hxx>
+#include <CLAM/Dispatcher.hxx>
+#include <CLAM/AudioMixer.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/TopLevelProcessing.hxx>
 #include <vector>
 #include <iostream>
 

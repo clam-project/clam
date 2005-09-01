@@ -19,11 +19,11 @@
  *
  */
 
-#include "MIDIManager.hxx"
-#include "MIDIInControl.hxx"
-#include "MIDIOutControl.hxx"
-#include "MIDIClocker.hxx"
-#include "OutControl.hxx"
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDIInControl.hxx>
+#include <CLAM/MIDIOutControl.hxx>
+#include <CLAM/MIDIClocker.hxx>
+#include <CLAM/OutControl.hxx>
 #include <vector>
 
 using namespace CLAM;

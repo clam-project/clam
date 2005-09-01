@@ -19,10 +19,10 @@
  *
  */
 
-#include "ProcessingComposite.hxx"
-#include "FFT.hxx"
-#include "IFFT.hxx"
-#include "SpectrumProduct.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/FFT.hxx>
+#include <CLAM/IFFT.hxx>
+#include <CLAM/SpectrumProduct.hxx>
 
 using namespace CLAM;
 

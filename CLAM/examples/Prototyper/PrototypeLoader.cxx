@@ -3,11 +3,11 @@
 #include <qwidget.h>
 #include <qobjectlist.h>
 #include <iostream>
-#include "Network.hxx"
-#include "PushFlowControl.hxx"
-#include "XMLStorage.hxx"
-#include "Thread.hxx"
-#include "AudioManager.hxx"
+#include <CLAM/Network.hxx>
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/Thread.hxx>
+#include <CLAM/AudioManager.hxx>
 #include "QtSlot2Control.hxx"
 #include "NetAudioPlot.hxx"
 #include "NetPeaksPlot.hxx"

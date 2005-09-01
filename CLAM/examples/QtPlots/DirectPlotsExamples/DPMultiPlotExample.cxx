@@ -19,9 +19,9 @@
  *
  */
 
-#include "CLAM_Math.hxx"
-#include "DataTypes.hxx"
-#include "Array.hxx"
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Array.hxx>
 #include "DPMultiPlot.hxx"
 
 using CLAM::TData;

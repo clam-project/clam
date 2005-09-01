@@ -24,8 +24,8 @@
 
 #include <iostream>
 
-#include "InControl.hxx"
-#include "Processing.hxx"
+#include <CLAM/InControl.hxx>
+#include <CLAM/Processing.hxx>
 
 namespace CLAM 
 {

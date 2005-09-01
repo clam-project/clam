@@ -29,14 +29,14 @@
  */
 
 #include <iostream>
-#include "Err.hxx"
-#include "SimpleOscillator.hxx"
-#include "MonoAudioFileWriter.hxx"
-#include "AudioFile.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
-#include "FFT_rfftw.hxx"
-#include "IFFT_rfftw.hxx"
+#include <CLAM/Err.hxx>
+#include <CLAM/SimpleOscillator.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/FFT_rfftw.hxx>
+#include <CLAM/IFFT_rfftw.hxx>
 
 int main( int argc, char** argv )
 {	

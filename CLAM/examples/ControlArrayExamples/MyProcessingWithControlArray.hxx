@@ -24,8 +24,8 @@
 
 #include <vector>
 #include "TransformationDummy.hxx"
-#include "InControlTmplArray.hxx"
-#include "Processing.hxx"
+#include <CLAM/InControlTmplArray.hxx>
+#include <CLAM/Processing.hxx>
 
 namespace CLAM
 {

@@ -29,14 +29,14 @@
  *      -> Manage the state of the network
  */
 
-#include "Network.hxx"
-#include "PushFlowControl.hxx"
-#include "Err.hxx"
-#include "SimpleOscillator.hxx"
-#include "AudioMultiplier.hxx"
-#include "AudioOut.hxx"
+#include <CLAM/Network.hxx>
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/Err.hxx>
+#include <CLAM/SimpleOscillator.hxx>
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/AudioOut.hxx>
 #include <iostream>
-#include "AudioManager.hxx"
+#include <CLAM/AudioManager.hxx>
 
 int main( int argc, char** argv )
 {	

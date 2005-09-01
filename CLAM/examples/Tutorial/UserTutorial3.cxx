@@ -23,10 +23,10 @@
  * Tutorial example ilustrating how to set and get the dynamic
  * attributes in a data object.
  */
-#include <Audio.hxx>
-#include <Array.hxx>
+#include <CLAM/Audio.hxx>
+#include <CLAM/Array.hxx>
 #include <iostream>
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 
 int main()
 {

@@ -19,10 +19,10 @@
  *
  */
 
-#include "Spectrum.hxx" // imports CLAM::Spectrum declaration
-#include "Array.hxx" // imports CLAM::Array declaration
-#include "Plot.hxx" // imports CLAMVM::Plot declaration
-#include "SystemPlots.hxx" // imports CLAMVM::SystemPlots declaration
+#include <CLAM/Spectrum.hxx> // imports CLAM::Spectrum declaration
+#include <CLAM/Array.hxx> // imports CLAM::Array declaration
+#include <CLAM/Plot.hxx> // imports CLAMVM::Plot declaration
+#include <CLAM/SystemPlots.hxx> // imports CLAMVM::SystemPlots declaration
 #include "PlotExamplesHelper.hxx" // imports some trivial functions needed by the example
 #include <iostream>
 #include <exception>

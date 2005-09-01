@@ -25,7 +25,7 @@
  */
 
 // We include the FFT class
-#include <FFT.hxx>
+#include <CLAM/FFT.hxx>
 
 // And C++ input-output library to write the output message.
 #include <iostream> 

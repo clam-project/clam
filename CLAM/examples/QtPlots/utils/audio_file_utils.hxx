@@ -2,7 +2,7 @@
 #define __AUDIO_FILE_UTILS__
 
 #include <vector>
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 
 using CLAM::Audio;
 

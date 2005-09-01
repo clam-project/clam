@@ -22,7 +22,7 @@
 /** @file UserTutorial5.cxx CLAM tutorial, example 5.
  *  Ilustrates how to use a simple processing object.
  */
-#include"FFT.hxx"
+#include <CLAM/FFT.hxx>
 #include<iostream>
 #include<cmath>
 

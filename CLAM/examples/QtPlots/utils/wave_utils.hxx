@@ -1,7 +1,7 @@
 #ifndef __WAVE_UTILS__
 #define __WAVE_UTILS__
 
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 
 using CLAM::TData;
 using CLAM::Audio;

@@ -20,13 +20,13 @@
  */
 
 #include <iostream>
-#include "DynamicType.hxx"
-#include "XMLStorage.hxx"
-#include "XMLAdapter.hxx"
-#include "XMLIterableAdapter.hxx"
-#include "Err.hxx"
-#include "List.hxx"
-#include "Text.hxx"
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/XMLAdapter.hxx>
+#include <CLAM/XMLIterableAdapter.hxx>
+#include <CLAM/Err.hxx>
+#include <CLAM/List.hxx>
+#include <CLAM/Text.hxx>
 #include <string>
 #include <list>
 #include <fstream>

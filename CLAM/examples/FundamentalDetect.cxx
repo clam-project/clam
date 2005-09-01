@@ -33,14 +33,14 @@ int main(int argc,char** argv)
 #include<iostream>
 #include<fstream>
 #include<string>
-#include"FFT_rfftw.hxx"
-#include "AudioFileIn.hxx"
+#include <CLAM/FFT_rfftw.hxx>
+#include <CLAM/AudioFileIn.hxx>
 #include "PeakDetect.hxx"
 
-#include"FundFreqDetect.hxx"
-#include"XMLStorage.hxx"
-#include"DataTypes.hxx"
-#include"WindowGenerator.hxx"
+#include <CLAM/FundFreqDetect.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/WindowGenerator.hxx>
 
 #include<cmath>
 

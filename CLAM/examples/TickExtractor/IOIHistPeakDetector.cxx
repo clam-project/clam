@@ -26,8 +26,8 @@
  */
 
 #include "IOIHistPeakDetector.hxx"
-#include "Audio.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/CLAM_Math.hxx>
 #include <list>
 
 namespace CLAM

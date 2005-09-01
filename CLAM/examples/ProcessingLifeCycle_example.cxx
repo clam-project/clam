@@ -22,10 +22,10 @@
 #include <iostream>
 #include <ctime>          // C++ version of good old <time.h>
 #include <cstdlib>        // C++ version of good old <stdlib.h>
-#include "Err.hxx"        // imports CLAM exception class declaration
-#include "Processing.hxx" // imports Processing abstract class declaration
-#include "Audio.hxx"      // imports the Audio class declaration
-#include "CLAM_Math.hxx"
+#include <CLAM/Err.hxx>        // imports CLAM exception class declaration
+#include <CLAM/Processing.hxx> // imports Processing abstract class declaration
+#include <CLAM/Audio.hxx>      // imports the Audio class declaration
+#include <CLAM/CLAM_Math.hxx>
 
 // Helper function used below
 static inline CLAM::TData sign( CLAM::TData value )

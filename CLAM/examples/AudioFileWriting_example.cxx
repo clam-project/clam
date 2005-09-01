@@ -29,16 +29,16 @@
 
 // We need to include the following files to have access to classes
 // AudioFile, MultiChannelAudioFileWriter and MultiChannelAudioFileWriterConfig
-#include "AudioFile.hxx"
-#include "MultiChannelAudioFileWriter.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MultiChannelAudioFileWriter.hxx>
 
 // We also need the declaration of the CLAM::Audio object
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 
 // For accessing <cmath> header in a cross-platform way
-#include "CLAM_Math.hxx"
-#include "DataTypes.hxx"
-#include "OSDefines.hxx"
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/OSDefines.hxx>
 
 #include <vector>
 

@@ -22,12 +22,12 @@
 #ifndef __MyProcessingWithPortsAndControls_hxx__
 #define __MyProcessingWithPortsAndControls_hxx__
 
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
-#include "AudioOutPort.hxx"
-#include "AudioInPort.hxx"
-#include "InControl.hxx"
-#include "Audio.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/AudioOutPort.hxx>
+#include <CLAM/AudioInPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/Audio.hxx>
 #include <string>
 
 namespace CLAM

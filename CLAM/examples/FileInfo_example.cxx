@@ -26,7 +26,7 @@
 //   + Its 'text' descriptors
 
 // This header imports CLAM::AudioFile class interface
-#include "AudioFile.hxx"
+#include <CLAM/AudioFile.hxx>
 #include <iostream>
 
 // To make this example minimally interesting, we will accept one parameter to

@@ -22,14 +22,14 @@
 #ifndef __AUBIOONSETDETECTOR__
 #define __AUBIOONSETDETECTOR__
 
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
 #include <string>
 #include <aubio/aubio.h>
-#include "Audio.hxx"
-#include "Array.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
-#include "Enum.hxx"
+#include <CLAM/Enum.hxx>
 
 namespace CLAM
 {

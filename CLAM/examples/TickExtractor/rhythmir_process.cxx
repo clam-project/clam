@@ -20,10 +20,10 @@
  */
 
 #include "rhythmir_process.hxx"
-#include "AudioFile.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "Normalization.hxx"
-#include "Segment.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/Normalization.hxx>
+#include <CLAM/Segment.hxx>
 #include "OnsetDetector.hxx"
 #include "Pulse.hxx"
 #include "TickSequenceTracker.hxx"

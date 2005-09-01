@@ -34,9 +34,9 @@
 // Just a test class.
 //
 
-#include "Processing.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <string>
 #include <stdexcept>
 

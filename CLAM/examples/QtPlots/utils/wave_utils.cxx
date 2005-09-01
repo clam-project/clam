@@ -1,5 +1,5 @@
 #include <complex>
-#include "SimpleOscillator.hxx"
+#include <CLAM/SimpleOscillator.hxx>
 #include "wave_utils.hxx"
 
 using namespace CLAM;

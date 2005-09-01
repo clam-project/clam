@@ -25,9 +25,9 @@
  *     such as an array of samples.
  *   * How to synchronize different dynamic attributes in a data object.
  */
-#include <Spectrum.hxx>
-#include <Array.hxx>
-#include <Complex.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/Array.hxx>
+#include <CLAM/Complex.hxx>
 
 int main()
 {

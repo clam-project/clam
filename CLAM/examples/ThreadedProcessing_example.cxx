@@ -18,19 +18,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "AudioFileIn.hxx"       // this header imports the CLAM::AudioFileIn Processing class interface
-#include "LPC_AutoCorrelation.hxx" // imports CLAM LPC_AutoCorrelation Processing declaration
-#include "LPModel.hxx"             // imports CLAM::LPModel ProcessingData declaration
-#include "Audio.hxx"               // imports CLAM::Audio ProcessingData declaration
-#include "Spectrum.hxx"            // imports CLAM::Spectrum ProcessingData declaration
-#include "SpectrumConfig.hxx"      // imports CLAM::Spectrum auxiliar datatypes declaration
-#include "WindowGenerator.hxx"     // imports CLAM::WindowGenerator Processing declaration
-#include "AudioMultiplier.hxx"     // imports CLAM::AudioMultiplier Processing declaration
+#include <CLAM/AudioFileIn.hxx>       // this header imports the CLAM::AudioFileIn Processing class interface
+#include <CLAM/LPC_AutoCorrelation.hxx> // imports CLAM LPC_AutoCorrelation Processing declaration
+#include <CLAM/LPModel.hxx>             // imports CLAM::LPModel ProcessingData declaration
+#include <CLAM/Audio.hxx>               // imports CLAM::Audio ProcessingData declaration
+#include <CLAM/Spectrum.hxx>            // imports CLAM::Spectrum ProcessingData declaration
+#include <CLAM/SpectrumConfig.hxx>      // imports CLAM::Spectrum auxiliar datatypes declaration
+#include <CLAM/WindowGenerator.hxx>     // imports CLAM::WindowGenerator Processing declaration
+#include <CLAM/AudioMultiplier.hxx>     // imports CLAM::AudioMultiplier Processing declaration
 #include "DownSampling.hxx"
-#include "Plot.hxx"
-#include "SystemPlots.hxx"
-#include "Thread.hxx"
-#include "Err.hxx"
+#include <CLAM/Plot.hxx>
+#include <CLAM/SystemPlots.hxx>
+#include <CLAM/Thread.hxx>
+#include <CLAM/Err.hxx>
 #include <iostream>
 #include <FL/fl_file_chooser.H>  // imports FLTK functions for file choosing dialogs
 

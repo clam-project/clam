@@ -22,9 +22,9 @@
 #ifndef _MyProcessingWithSimpleControls_hxx_
 #define _MyProcessingWithSimpleControls_hxx_
 
-#include "InControl.hxx"
+#include <CLAM/InControl.hxx>
 #include "TransformationDummy.hxx"
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 
 #include <vector>
 #include <iostream>

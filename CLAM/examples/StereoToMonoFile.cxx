@@ -19,8 +19,8 @@
  *
  */
 
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include <CLAM/AudioFileIn.hxx>
+#include <CLAM/AudioFileOut.hxx>
 #include <stdio.h>
 
 using namespace CLAM;

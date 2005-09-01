@@ -29,14 +29,14 @@
 // We must include these headers to have access to classes
 // AudioFile, MultiChannelAudioFileReader and MultiChannelAudioFileReaderConfig
 #include <iostream>
-#include "AudioFile.hxx"
-#include "MultiChannelAudioFileReader.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
 // Also we need the declaration of CLAM::Audio object, the object which
 // represents an ( or portion of an ) audio signal
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 // For accessing <cmath> header in a cross-platform way
-#include "CLAM_Math.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/DataTypes.hxx>
 
 #include <vector>
 

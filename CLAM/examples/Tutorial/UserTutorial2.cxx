@@ -25,7 +25,7 @@
  * attributes, and also using the flags attribute.
  */
 
-#include <Spectrum.hxx>
+#include <CLAM/Spectrum.hxx>
 #include <iostream>
 
 int main()

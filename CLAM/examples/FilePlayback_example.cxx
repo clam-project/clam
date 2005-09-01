@@ -25,13 +25,13 @@
  *      -> Play a file using CLAM abstraction of audio devices
  *
  */
-#include "AudioIO.hxx"      // imports CLAM::AudioManager and CLAM::AudioIOConfig declarations
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"     // imports CLAM::AudioOut declaration
-#include "AudioFile.hxx"    // imports CLAM::AudioFile declaration
-#include "MultiChannelAudioFileReader.hxx" // imports CLAM::MultiChannelAudioFileReader
-#include "Audio.hxx"        // imports the CLAM::Audio ProcessingData class interface
-#include "Err.hxx"          // imports CLAM::Err exception class declaration
+#include <CLAM/AudioIO.hxx>      // imports CLAM::AudioManager and CLAM::AudioIOConfig declarations
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>     // imports CLAM::AudioOut declaration
+#include <CLAM/AudioFile.hxx>    // imports CLAM::AudioFile declaration
+#include <CLAM/MultiChannelAudioFileReader.hxx> // imports CLAM::MultiChannelAudioFileReader
+#include <CLAM/Audio.hxx>        // imports the CLAM::Audio ProcessingData class interface
+#include <CLAM/Err.hxx>          // imports CLAM::Err exception class declaration
 
 #include <iostream>
 

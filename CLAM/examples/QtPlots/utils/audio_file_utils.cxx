@@ -1,5 +1,5 @@
-#include "MonoAudioFileReader.hxx"
-#include "MultiChannelAudioFileReader.hxx"
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
 #include "audio_file_utils.hxx"
 
 using namespace CLAM;

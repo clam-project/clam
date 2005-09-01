@@ -27,19 +27,19 @@
  *      -> Activate an XML to get a fully functional network again.
  */
 
-#include "XMLStorage.hxx"
-#include "Network.hxx"
-#include "PushFlowControl.hxx"
-#include "Err.hxx"
-#include "SimpleOscillator.hxx"
-#include "Oscillator.hxx"
-#include "AudioMultiplier.hxx"
-#include "AudioAdder.hxx"
-#include "AudioIO.hxx"
-#include "AudioOut.hxx"
-#include "AudioManager.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/Network.hxx>
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/Err.hxx>
+#include <CLAM/SimpleOscillator.hxx>
+#include <CLAM/Oscillator.hxx>
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/AudioAdder.hxx>
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/AudioManager.hxx>
 
-#include "AudioFile.hxx"
+#include <CLAM/AudioFile.hxx>
 #include <iostream>
 #include <FL/fl_file_chooser.H>
 

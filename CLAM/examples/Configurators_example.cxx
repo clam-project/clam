@@ -34,11 +34,11 @@
  */
 
 
-#include "XMLStorage.hxx"
-#include "ProcessingConfig.hxx"
-#include "Enum.hxx"
-#include "Filename.hxx"
-#include "BPF.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/Enum.hxx>
+#include <CLAM/Filename.hxx>
+#include <CLAM/BPF.hxx>
 
 
 namespace CLAMTest
@@ -145,8 +145,8 @@ namespace CLAMTest
 
 }
 
-#include "FLTKConfigurator.hxx"
-#include "QTConfigurator.hxx"
+#include <CLAM/FLTKConfigurator.hxx>
+#include <CLAM/QTConfigurator.hxx>
 
 #include <FL/Fl.H>
 #include <qapplication.h>

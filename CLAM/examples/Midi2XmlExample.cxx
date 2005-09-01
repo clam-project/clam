@@ -20,15 +20,15 @@
  */
 
 
-#include "MIDI2Melody.hxx"
-#include "MIDIManager.hxx"
-#include "MIDIInControl.hxx"
-#include "MIDIClocker.hxx"
-#include "MIDIMelody.hxx"
-#include "TraverseDirectory.hxx"
-#include "XMLStorage.hxx"
-#include "OutControl.hxx"
-#include "InPort.hxx"
+#include <CLAM/MIDI2Melody.hxx>
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDIInControl.hxx>
+#include <CLAM/MIDIClocker.hxx>
+#include <CLAM/MIDIMelody.hxx>
+#include <CLAM/TraverseDirectory.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/OutControl.hxx>
+#include <CLAM/InPort.hxx>
 
 #include <iostream>
 

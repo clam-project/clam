@@ -26,9 +26,9 @@
 // modified by Miguel Ramirez - September 2003
 ////////////////////////////////////////////////////////////////////
 
-#include "Spectrum.hxx" // imports CLAM::Spectrum declaration
-#include "SpectrumConfig.hxx" // imports CLAM::SpectrumConfig declaration
-#include "FDFilterGen.hxx" // imports CLAM::FDFilterGen declaration
+#include <CLAM/Spectrum.hxx> // imports CLAM::Spectrum declaration
+#include <CLAM/SpectrumConfig.hxx> // imports CLAM::SpectrumConfig declaration
+#include <CLAM/FDFilterGen.hxx> // imports CLAM::FDFilterGen declaration
 #include <iostream>
 #include <exception>
 

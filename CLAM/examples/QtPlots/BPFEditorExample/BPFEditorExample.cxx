@@ -1,4 +1,4 @@
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 #include "QtAppWrapper.hxx"
 #include "BPFEditor.hxx"
 

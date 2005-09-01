@@ -38,7 +38,7 @@
  *  implemented by hand...
  */
 
-#include "AudioIO.hxx"
+#include <CLAM/AudioIO.hxx>
 
 #include "SpectralAnalysisLite.hxx"
 #include "SpectralSynthesisLite.hxx"

@@ -20,13 +20,13 @@
  */
 
 #include <iostream>
-#include "Spectrum.hxx"         // imports CLAM::Spectrum declaration
-#include "SpectrumConfig.hxx"	// imports CLAM::SpectrumConfig and CLAM::SpecTypeFlags
+#include <CLAM/Spectrum.hxx>         // imports CLAM::Spectrum declaration
+#include <CLAM/SpectrumConfig.hxx>	// imports CLAM::SpectrumConfig and CLAM::SpecTypeFlags
 								// declarations
-#include "FFT_rfftw.hxx"        // imports CLAM::FFT_rfftw Processing declaration
-#include "XMLStorage.hxx"       // imports CLAM XML interface
-#include "DataTypes.hxx"        // imports CLAM-defined types declarations
-#include "Err.hxx"              // imports CLAM::Err exception declaration
+#include <CLAM/FFT_rfftw.hxx>        // imports CLAM::FFT_rfftw Processing declaration
+#include <CLAM/XMLStorage.hxx>       // imports CLAM XML interface
+#include <CLAM/DataTypes.hxx>        // imports CLAM-defined types declarations
+#include <CLAM/Err.hxx>              // imports CLAM::Err exception declaration
 
 int main(int argc, char* argv[])
 {

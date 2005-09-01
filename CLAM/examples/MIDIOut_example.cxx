@@ -19,9 +19,9 @@
  *
  */
 
-#include "MIDIManager.hxx"
-#include "MIDIIOConfig.hxx"
-#include "MIDIOutControl.hxx"
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDIIOConfig.hxx>
+#include <CLAM/MIDIOutControl.hxx>
 
 #ifdef WIN32
 	#include "Windows.h"

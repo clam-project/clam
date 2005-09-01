@@ -19,17 +19,17 @@
  *
  */
 
-#include "LPC_AutoCorrelation.hxx" // imports CLAM LPC_AutoCorrelation Processing declaration
-#include "FFT_rfftw.hxx"           // imports CLAM::FFT_rfftw Processing declaration
-#include "LPModel.hxx"             // imports CLAM::LPModel ProcessingData declaration
-#include "Audio.hxx"               // imports CLAM::Audio ProcessingData declaration
-#include "Spectrum.hxx"            // imports CLAM::Spectrum ProcessingData declaration
-#include "SpectrumConfig.hxx"      // imports CLAM::Spectrum auxiliar datatypes declaration
-#include "WindowGenerator.hxx"     // imports CLAM::WindowGenerator Processing declaration
-#include "AudioMultiplier.hxx"     // imports CLAM::AudioMultiplier Processing declaration
-#include "MultiPlot.hxx"           // imports CLAMVM::MultiPlot declaration
-#include "SystemPlots.hxx"         // imports CLAMVM::SystemPlots declaration
-#include "Err.hxx"                 // imports CLAM::Err declaration
+#include <CLAM/LPC_AutoCorrelation.hxx> // imports CLAM LPC_AutoCorrelation Processing declaration
+#include <CLAM/FFT_rfftw.hxx>           // imports CLAM::FFT_rfftw Processing declaration
+#include <CLAM/LPModel.hxx>             // imports CLAM::LPModel ProcessingData declaration
+#include <CLAM/Audio.hxx>               // imports CLAM::Audio ProcessingData declaration
+#include <CLAM/Spectrum.hxx>            // imports CLAM::Spectrum ProcessingData declaration
+#include <CLAM/SpectrumConfig.hxx>      // imports CLAM::Spectrum auxiliar datatypes declaration
+#include <CLAM/WindowGenerator.hxx>     // imports CLAM::WindowGenerator Processing declaration
+#include <CLAM/AudioMultiplier.hxx>     // imports CLAM::AudioMultiplier Processing declaration
+#include <CLAM/MultiPlot.hxx>           // imports CLAMVM::MultiPlot declaration
+#include <CLAM/SystemPlots.hxx>         // imports CLAMVM::SystemPlots declaration
+#include <CLAM/Err.hxx>                 // imports CLAM::Err declaration
 #include <iostream>
 
 int main( int argc, char** argv )

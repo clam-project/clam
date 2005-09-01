@@ -1,6 +1,6 @@
-#include "XMLStorage.hxx"
-#include "Melody.hxx"
-#include "BPF.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/Melody.hxx>
+#include <CLAM/BPF.hxx>
 #include "MultiBPFViewer.hxx"
 
 void ExtractData(const CLAM::Melody& in, CLAM::BPF& out, CLAM::TData& min, CLAM::TData& max);

@@ -3,9 +3,9 @@
 #include <qwidget.h>
 #include <qobjectlist.h>
 #include <iostream>
-#include "Network.hxx"
-#include "PushFlowControl.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Network.hxx>
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/XMLStorage.hxx>
 #include "QtSlot2Control.hxx"
 #include "NetAudioPlot.hxx"
 #include "NetPeaksPlot.hxx"
@@ -19,10 +19,10 @@
 #include "PortMonitor.hxx"
 
 /////////////Temporary includes
-#include "SimpleOscillator.hxx"
-#include "AudioOutPort.hxx"
+#include <CLAM/SimpleOscillator.hxx>
+#include <CLAM/AudioOutPort.hxx>
 
-#include "BasicFlowControl.hxx"
+#include <CLAM/BasicFlowControl.hxx>
 
 ////////JACK CODE
 #include <jack/jack.h>

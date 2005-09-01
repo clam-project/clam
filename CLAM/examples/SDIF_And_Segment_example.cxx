@@ -18,11 +18,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "SDIFIn.hxx"  // imports CLAM::SDIFIn declaration
-#include "Segment.hxx" // imports CLAM::Segment ProcessingData object declaration
-#include "Err.hxx"     // imports CLAM::Err exception class declaration
-#include "Plots.hxx"   // imports various CLAM Visualization Module plots declarations
-#include "SystemPlots.hxx" // imports CLAMVM::SystemPlots declaration
+#include <CLAM/SDIFIn.hxx>  // imports CLAM::SDIFIn declaration
+#include <CLAM/Segment.hxx> // imports CLAM::Segment ProcessingData object declaration
+#include <CLAM/Err.hxx>     // imports CLAM::Err exception class declaration
+#include <CLAM/Plots.hxx>   // imports various CLAM Visualization Module plots declarations
+#include <CLAM/SystemPlots.hxx> // imports CLAMVM::SystemPlots declaration
 #include <FL/fl_file_chooser.H> // imports FLTK file choose dialog function
 #include <iostream>
 

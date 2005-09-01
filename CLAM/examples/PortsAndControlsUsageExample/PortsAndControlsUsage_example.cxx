@@ -29,12 +29,12 @@
  */
 
 #include <iostream>
-#include "Err.hxx"
-#include "AutoPanner.hxx"
-#include "SimpleOscillator.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
-#include "Audio.hxx"
+#include <CLAM/Err.hxx>
+#include <CLAM/AutoPanner.hxx>
+#include <CLAM/SimpleOscillator.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/Audio.hxx>
 
 #include "MyProcessingWithPortsAndControls.hxx" // this is our new processing, created with ports and controls
 

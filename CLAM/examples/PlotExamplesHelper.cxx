@@ -20,14 +20,14 @@
  */
 
 #include "PlotExamplesHelper.hxx"
-#include "Audio.hxx"
-#include "FFT_rfftw.hxx"
-#include "WindowGenerator.hxx"
-#include "AudioMultiplier.hxx"
-#include "Spectrum.hxx"
-#include "SpectrumConfig.hxx" 
-#include "FDFilterGen.hxx"
-#include "SpectrumProduct.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/FFT_rfftw.hxx>
+#include <CLAM/WindowGenerator.hxx>
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectrumConfig.hxx> 
+#include <CLAM/FDFilterGen.hxx>
+#include <CLAM/SpectrumProduct.hxx>
 #include <cstdlib>
 #include <ctime>
 

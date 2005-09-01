@@ -19,17 +19,17 @@
  *
  */
 
-#include "AudioIO.hxx"
-#include "AudioIn.hxx"
-#include "AudioOut.hxx"
-#include "AudioManager.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioIn.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/AudioManager.hxx>
 
-#include "Oscillator.hxx"
-#include "AudioMultiplier.hxx"
-#include "AudioAdder.hxx"
+#include <CLAM/Oscillator.hxx>
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/AudioAdder.hxx>
 #include "AudioApplication.hxx"
 
-#include "TopLevelProcessing.hxx"
+#include <CLAM/TopLevelProcessing.hxx>
 
 using namespace CLAM;
 

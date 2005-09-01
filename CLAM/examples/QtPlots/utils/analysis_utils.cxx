@@ -1,4 +1,4 @@
-#include "SMSAnalysis.hxx"
+#include <CLAM/SMSAnalysis.hxx>
 #include "analysis_utils.hxx"
 
 using namespace CLAM;

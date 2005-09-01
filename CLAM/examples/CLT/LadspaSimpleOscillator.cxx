@@ -19,7 +19,7 @@
  *
  */
 
-#include "Oscillator.hxx"
+#include <CLAM/Oscillator.hxx>
 #include "LadspaBridge.hxx"
 
 LadspaBridge* Instance(void)

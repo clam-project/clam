@@ -19,7 +19,7 @@
  *
  */
 
-#include "AudioMultiplier.hxx"
+#include <CLAM/AudioMultiplier.hxx>
 
 #include "LadspaBridge.hxx"
 

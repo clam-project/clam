@@ -19,13 +19,13 @@
  *
  */
 
-#include "AudioIO.hxx"
-#include "AudioIn.hxx"
-#include "AudioOut.hxx"
-#include "AudioManager.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioIn.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/AudioManager.hxx>
 
-#include "ProcessingComposite.hxx"
-#include "OSDefines.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/OSDefines.hxx>
 #include <iostream>
 using std::cout;
 using std::endl;

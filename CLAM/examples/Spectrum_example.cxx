@@ -26,10 +26,10 @@
 ////////////////////////////////////////////////////////////////////
 
 
-#include "Spectrum.hxx"
-#include "SpectrumConfig.hxx"
-#include "GlobalEnums.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectrumConfig.hxx>
+#include <CLAM/GlobalEnums.hxx>
+#include <CLAM/XMLStorage.hxx>
 #include <iostream>
 
 

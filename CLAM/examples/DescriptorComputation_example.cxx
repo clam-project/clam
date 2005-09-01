@@ -19,11 +19,11 @@
  *
  */
 
-#include "Segment.hxx"
-#include "XMLStorage.hxx"
-#include "SegmentDescriptors.hxx"
-#include "DescriptorComputation.hxx"
-#include "FileChooser.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/SegmentDescriptors.hxx>
+#include <CLAM/DescriptorComputation.hxx>
+#include <CLAM/FileChooser.hxx>
 
 int main( int argc, char** argv )
 {

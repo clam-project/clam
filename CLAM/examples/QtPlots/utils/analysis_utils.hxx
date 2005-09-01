@@ -1,7 +1,7 @@
 #ifndef __ANALYSIS_UTILS__
 #define __ANALYSIS_UTILS__
 
-#include "Segment.hxx"
+#include <CLAM/Segment.hxx>
 
 using CLAM::Audio;
 using CLAM::Segment;

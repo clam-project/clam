@@ -22,7 +22,7 @@
 #ifndef __PLOTEXAMPLESHELPER__
 #define __PLOTEXAMPLESHELPER__
 
-#include "DataTypes.hxx"
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {
