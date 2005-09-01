@@ -51,6 +51,6 @@ install_manpage = v2m_env.Install( v2m_env['install_prefix']+'/share/man/man9', 
 soundsamples = File( '../resources/soundsamples/birthday.wav' )
 install_soundsamples = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/samplesounds', soundsamples )
 
-install_alias = v2m_env.Install( 'install', [install_bin, install_manual_html, install_manual_pics, install_manpage, install_soundsamples] )
+install_alias = v2m_env.Alias( 'install', [install_bin, install_manual_html, install_manual_pics, install_manpage, install_soundsamples] )
 
-
+Default( v2m_bin )
