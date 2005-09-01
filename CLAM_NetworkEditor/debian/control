@@ -8,7 +8,7 @@ Standards-Version: 3.6.1
 Package: networkeditor
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: dsp system prototyping tool
+Description: CLAM prototyping tool
  The networkeditor is a graphic application meant for designing
  audio and music digital signal processing systems. networkeditor
  features a GUI following the metaphor of specifying DSP components
