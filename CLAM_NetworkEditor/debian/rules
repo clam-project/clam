@@ -94,7 +94,7 @@ install-arch:
 	# debian/tmp.
 	mkdir -p $(CURDIR)/debian/networkeditor/usr
 	cd scons && scons install_prefix=$(CURDIR)/debian/networkeditor/usr install
-
+	find . -type f -name .sconsign* | xargs rm -rf
 	dh_install -s
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-indep

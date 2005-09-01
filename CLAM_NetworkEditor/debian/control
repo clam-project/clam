@@ -14,7 +14,3 @@ Description: dsp system prototyping tool
  features a GUI following the metaphor of specifying DSP components
  as 'boxes' and connecting them to define the DSP system data flow.
 
-Package: networkeditor-doc
-Architecture: all
-Description: Documentation for networkeditor
- Manual and examples for CLAM Network Editor
