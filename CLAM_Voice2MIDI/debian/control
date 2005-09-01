@@ -1,0 +1,15 @@
+Source: voice2midi
+Section: x11
+Priority: optional
+Maintainer: mramirez <clam@iua.upf.es>
+Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++-3.3 (>= 1:3.3.5), libc6-dev (>= 2.3.2), libstdc++5-3.3-dev (>= 1:3.3.5), make (>= 3.80), libclamcore1-dev (>= 0.8.0), libclamprocessing1-dev (>= 0.8.0), libclamaudioio1-dev (>= 0.8.0), libclamvmqt1-dev (>= 0.8.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
+Standards-Version: 3.6.1
+
+Package: voice2midi
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: voice to MIDI transductor
+ voice2midi is an application that allows to transduct human voice
+ to a set of MIDI messages (note on/off, velocity, etc.). This is
+ achieved by means of using SMS audio analysis algorithms that allow
+ to estimate harmonic sounds pitch.
