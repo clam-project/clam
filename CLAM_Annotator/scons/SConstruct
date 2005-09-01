@@ -81,4 +81,4 @@ install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share
 sounds = ['../resources/sounds/click.mp3']
 install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
-install_alias = annotator_env.Install( 'install', [install_bin, install_manpage, install_sounds] ) 
+install_alias = annotator_env.Alias( 'install', [install_bin, install_manpage, install_sounds] ) 
