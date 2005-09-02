@@ -20,14 +20,22 @@ PROGRAMS = FFT_example \
 	PersistenceThroughDT \
 	SDIFAndSegment \
 	SpectrumExample \
-	StereoToMono
+	StereoToMono \
+	ControlArrayExample \
+	PortsAndControlsExample \
+	PortsExample \
+	QtPlotsExamples
 
+SUBDIRS= ControlArrayExamples \
+	PortsAndControlsUsageExample \
+	PortsExamples
 
 all: $(PROGRAMS)
 
 clean:
 	rm -rf *.o
 	rm -rf $(PROGRAMS)
+	for dir in $(SUBDIRS); do $(MAKE) -C $$dir clean; done
 
 
 FFT_example : FFT_example.cxx
@@ -110,3 +118,22 @@ StereoToMono : StereoToMonoFile.cxx
 	$(CC) -o $@ $(CFLAGS) $< $(LDFLAGS)
 
 
+ControlArrayExample: 
+	$(MAKE) -C ControlArrayExamples
+	cp ControlArrayExamples/ControlArrayExample .
+
+# Broken - doesn't compile
+MIDISynthExample :
+	$(MAKE) -C MIDI_Synthesizer_example
+	cp MIDI_Synthesizer_example/MIDISynthExample .
+
+PortsAndControlsExample:
+	$(MAKE) -C PortsAndControlsUsageExample
+	cp PortsAndControlsUsageExample/PortsAndControlsExample .
+
+PortsExample:
+	$(MAKE) -C PortsExamples
+	cp PortsExamples/PortsExample .
+
+QtPlotsExamples:
+	$(MAKE) -C QtPlots
