@@ -1,5 +1,5 @@
-#include "QtAppWrapper.hxx"
-#include "QtSpectrogram.hxx"
+#include <CLAM/QtAppWrapper.hxx>
+#include <CLAM/QtSpectrogram.hxx>
 #include "wave_utils.hxx"
 #include "analysis_utils.hxx"
 

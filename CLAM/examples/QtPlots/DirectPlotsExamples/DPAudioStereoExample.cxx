@@ -20,7 +20,7 @@
  */
 
 #include <stdlib.h>
-#include "DPAudioStereo.hxx"
+#include <CLAM/DPAudioStereo.hxx>
 #include "audio_file_utils.hxx"
 
 int main()
@@ -28,7 +28,7 @@ int main()
 	std::vector<Audio> channels;
 	
 	// get audio data
-	if(qtvm_examples_utils::load_audio_st("../../data/imagine.mp3",channels))
+	if(qtvm_examples_utils::load_audio_st("resources/imagine.mp3",channels))
 	{
 		printf("File Error: \'imagine.mp3\' audio file not found!\n");
 		exit(1);

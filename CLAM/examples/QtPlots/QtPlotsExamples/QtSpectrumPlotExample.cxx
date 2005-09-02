@@ -19,8 +19,8 @@
  *
  */
 
-#include "QtAppWrapper.hxx"
-#include "QtSpectrumPlot.hxx"
+#include <CLAM/QtAppWrapper.hxx>
+#include <CLAM/QtSpectrumPlot.hxx>
 #include "wave_utils.hxx"
 #include "analysis_utils.hxx"
 

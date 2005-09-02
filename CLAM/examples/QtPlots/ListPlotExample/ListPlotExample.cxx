@@ -20,7 +20,7 @@
  */
 
 #include <stdlib.h>
-#include "QtPlotter.hxx"
+#include <CLAM/QtPlotter.hxx>
 #include "audio_file_utils.hxx"
 #include "analysis_utils.hxx"
 
@@ -53,14 +53,14 @@ int main()
 	}
 
 	std::vector<Audio> channels;
-	if(qtvm_examples_utils::load_audio_st("../data/imagine.mp3",channels))
+	if(qtvm_examples_utils::load_audio_st("resources/imagine.mp3",channels))
 	{
 	    printf("File Error: \'imagine.mp3\' audio file not found!\n");
 	    exit(1);
 	}
 
 	CLAM::Audio audio;
-	if(qtvm_examples_utils::load_audio("../data/birthday.wav",audio))
+	if(qtvm_examples_utils::load_audio("resources/birthday.wav",audio))
 	{
 	    printf("File Error: \'birthday.wav\' audio file not found!\n");
 	    exit(1);

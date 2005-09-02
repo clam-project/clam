@@ -1,6 +1,6 @@
 #include <CLAM/XMLStorage.hxx>
-#include "QtAppWrapper.hxx"
-#include "BPFEditor.hxx"
+#include <CLAM/QtAppWrapper.hxx>
+#include <CLAM/BPFEditor.hxx>
 
 void ExtractData(const CLAM::Melody& in, CLAM::BPF& out, CLAM::TData& min, CLAM::TData& max);
 

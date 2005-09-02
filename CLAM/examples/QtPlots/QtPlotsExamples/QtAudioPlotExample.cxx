@@ -20,8 +20,8 @@
  */
 
 #include <stdlib.h>
-#include "QtAudioPlot.hxx"
-#include "QtAppWrapper.hxx"
+#include <CLAM/QtAudioPlot.hxx>
+#include <CLAM/QtAppWrapper.hxx>
 #include "audio_file_utils.hxx"
 
 int main()
@@ -29,7 +29,7 @@ int main()
     
 	CLAM::Audio audio;
 	
-	if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
+	if(qtvm_examples_utils::load_audio("resources/birthday.wav",audio))
 	{
 	    printf("File Error: \'birthday.wav\' audio file not found!\n");
 	    exit(1);

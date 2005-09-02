@@ -28,7 +28,8 @@ PROGRAMS = FFT_example \
 
 SUBDIRS= ControlArrayExamples \
 	PortsAndControlsUsageExample \
-	PortsExamples
+	PortsExamples \
+	QtPlots
 
 all: $(PROGRAMS)
 

@@ -1,7 +1,7 @@
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/Melody.hxx>
 #include <CLAM/BPF.hxx>
-#include "MultiBPFViewer.hxx"
+#include <CLAM/MultiBPFViewer.hxx>
 
 void ExtractData(const CLAM::Melody& in, CLAM::BPF& out, CLAM::TData& min, CLAM::TData& max);
 
@@ -9,7 +9,7 @@ int main()
 {
 	// prepared data
     CLAM::Melody melody;
-    CLAM::XMLStorage::Restore(melody,"../../data/melody.xml");
+    CLAM::XMLStorage::Restore(melody,"resources/melody.xml");
 
     CLAM::TData duration = melody.GetNoteArray()[melody.GetNumberOfNotes()-1].GetTime().GetEnd();
 
@@ -19,9 +19,9 @@ int main()
     CLAM::BPF bpf0,bpf1,bpf2;
 	
 	ExtractData(melody,bpf0,min,max);
-	CLAM::XMLStorage::Restore(melody,"../../data/melody1.xml");
+	CLAM::XMLStorage::Restore(melody,"resources/melody1.xml");
 	ExtractData(melody,bpf1,min,max);
-	CLAM::XMLStorage::Restore(melody,"../../data/melody2.xml");
+	CLAM::XMLStorage::Restore(melody,"resources/melody2.xml");
     ExtractData(melody,bpf2,min,max);
 
     CLAM::TData span = max-min;

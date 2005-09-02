@@ -20,14 +20,14 @@
  */
 
 #include <stdlib.h>
-#include "DPFundamental.hxx"
+#include <CLAM/DPFundamental.hxx>
 #include "audio_file_utils.hxx"
 #include "analysis_utils.hxx"
 
 int main()
 {
     CLAM::Audio audio;
-    if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
+    if(qtvm_examples_utils::load_audio("resources/birthday.wav",audio))
     {
 		printf("File Error: \'birthday.wav\' audio file not found!\n");
 		exit(1);

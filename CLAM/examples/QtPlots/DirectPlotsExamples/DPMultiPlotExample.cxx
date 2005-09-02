@@ -22,7 +22,7 @@
 #include <CLAM/CLAM_Math.hxx>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/Array.hxx>
-#include "DPMultiPlot.hxx"
+#include <CLAM/DPMultiPlot.hxx>
 
 using CLAM::TData;
 using CLAM::DataArray;

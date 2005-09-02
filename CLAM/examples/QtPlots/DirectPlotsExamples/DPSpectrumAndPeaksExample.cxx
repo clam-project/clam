@@ -19,7 +19,7 @@
  *
  */
 
-#include "DPSpectrumAndPeaks.hxx"
+#include <CLAM/DPSpectrumAndPeaks.hxx>
 #include "wave_utils.hxx"
 #include "analysis_utils.hxx"
 
