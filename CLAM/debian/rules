@@ -52,6 +52,12 @@ build-stamp: configure-stamp
 	$(MAKE) -C $(CURDIR)/scons/libs build-vmfl
 	$(MAKE) -C $(CURDIR)/scons/libs build-vmqt
 	#cd $(CURDIR)/scons/libs && scons $(OPTIONS) core
+	# First, tarballize the examples folder
+	tar zcvf examples.tar.gz examples
+	# and now doxygenate CLAM stuff
+	doxygen $(CURDIR)/doxygen.cfg
+	# tarballize dox
+	tar zcvf clam-doxydocs.tar.gz doxygen
 
 	touch build-stamp
 
@@ -83,7 +89,8 @@ clean:
 	rm -rf $(CURDIR)/debian/libclamvmfl1-dev/usr
 	rm -rf $(CURDIR)/debian/libclamvmqt1/usr
 	rm -rf $(CURDIR)/debian/libclamvmqt1-dev/usr
-
+	rm -rf $(CURDIR)/CLAM.tag
+	rm -rf $(CURDIR)/*.tar.gz
 
 	dh_clean 
 
@@ -126,6 +133,11 @@ install: build
 	rm -rf $(CURDIR)/debian/libclamvmqt1/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclamvmqt1-dev/usr/lib/*.so.*
 	find $(CURDIR)/debian -type f -name .sconsign | xargs rm -rf
+	# and copy it to the libclam-doc folder
+	mkdir -p $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
+	cp clam-doxydocs.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
+	# and copy it to the libclam-doc folder
+	cp examples.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
 
 
 # Build architecture-independent files here.
