@@ -1,3 +1,5 @@
+import sys
+
 def setup_core_environment( core_env, conf ) :
 	if core_env['xmlbackend'] == 'both' or core_env['xmlbackend'] == 'xercesc' :
 		failed = False	
@@ -33,7 +35,7 @@ def setup_core_environment( core_env, conf ) :
 		else :
 			core_env['xmlbackend'] = 'none'	
 
-	if core_env['with_ladspa_support'] :
+	if core_env['with_ladspa_support'] and sys.platform == 'linux2':
 		result = conf.CheckCHeader( 'ladspa.h' )
 		if not result :
 			print "ladspa SDK header was not found"
@@ -49,7 +51,7 @@ def setup_core_environment( core_env, conf ) :
 
 		core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'])
 	
-	if core_env['with_osc_support'] :
+	if core_env['with_osc_support'] and sys.platform != 'win32':
 		result = conf.CheckCXXHeader( 'oscpack/ip/NetworkingUtils.h' )
 		if not result :	
 			print "liboscpack headers not found!"

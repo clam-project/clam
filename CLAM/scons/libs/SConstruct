@@ -23,12 +23,18 @@ def setup_build_options( env ) :
 	opts = Options('clam.conf')
 	
 	# global options
-	opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
+	if sys.platform == 'linux2' :
+		opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
+	else :
+		opts.Add( PathOption( 'prefix', 'Directory to install under', 'c:\\Sandboxes\CLAM-bin') )
 	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
+	if sys.platform != 'linux2' :
+		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'c:\\Sandboxes' ) )
 	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
+
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	
 	# clam_core options
@@ -48,14 +54,14 @@ def setup_build_options( env ) :
 	if sys.platform == 'linux2' :
 		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
 	elif sys.platform == 'win32' :
-		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
+		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	else :
 		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'rtaudio', ('rtaudio',) ) )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
 	# clam_vmqt options
-	opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
-	opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
+	#opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
+	#opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -106,14 +112,40 @@ Export('version')
 top = '../..'
 Export('top')
 
+
+	
+
+
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
-clam_env.Replace( QT_LIB = 'qt-mt' )
+
+if sys.platform == 'win32' :
+	splitted_path = clam_env['ENV']['QTDIR'].split('\\')
+	version_str = splitted_path[2]
+	qt_suffix = ''.join( version_str.split('.') )
+	clam_env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
+
+else :
+	clam_env.Replace( QT_LIB = 'qt-mt' )
+
 Export('clam_env')
 
 header_db = shelve.open( 'header.db' )
 Export('header_db')
 
 setup_build_options( clam_env )
+
+
+# Sandbox setup
+if sys.platform != 'linux2' :
+	libbasenames = [ 'fltk', 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','pthreads']
+	for basename in libbasenames :
+		if sys.platform == 'win32' : path_sep = '\\'
+		if sys.platform == 'darwin' : path_sep = '/'
+		include_path = "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'include')
+		lib_path =  "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'lib')
+		clam_env.Append( CPPPATH= include_path )
+		clam_env.Append( LIBPATH = lib_path )
+
 
 if not clam_env.GetOption('clean') :
 
@@ -131,10 +163,10 @@ if not clam_env.GetOption('clean') :
 ### CLAM GLOBAL DEPENDENCIES CHECKING    ###
 ############################################"""
 
-	conf = Configure( clam_env, custom_tests = custom_check_routines )
-	if not setup_global_environment( clam_env, conf ) :
-		Exit(1)
-	clam_env = conf.Finish()
+conf = Configure( clam_env, custom_tests = custom_check_routines )
+if not setup_global_environment( clam_env, conf ) :
+	Exit(1)
+clam_env = conf.Finish()
 
 print """\
 ############################################

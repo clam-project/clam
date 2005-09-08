@@ -1,3 +1,4 @@
+import sys
 from thorough_check import *
 
 package_checks = dict()
@@ -17,7 +18,10 @@ int main( int argc, char** argv )
 }
 """
 
-package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
+if sys.platform == 'win32' :
+	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c_2', xerces_test_code )
+else :
+	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
 
 # libxml++ package-check
 xmlpp_test_code = """
@@ -63,7 +67,10 @@ int main(int argc, char *argv[])
 
 """
 
-package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code )
+if sys.platform == 'win32' :
+	package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', 'pthreadVCE', pthread_test_code )
+else :
+	package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code )
 
 double_fftw_wo_prefix_test_code = """\
 #include <fftw.h>
@@ -165,6 +172,39 @@ int main(int argc, char** argv )
 """
 
 package_checks['check_rfftw_float_w_prefix'] = ThoroughPackageCheck( 'rfftw using floats with prefixed binaries/headers', 'c', None, float_rfftw_w_prefix_test_code )
+
+float_fftw_wo_prefix_test_code = """\
+#include <fftw.h>
+#include <stdio.h>
+
+int main(int argc, char** argv )
+{
+
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(float))
+	{
+		fprintf(stderr, "expecting fftw to be using floats, and it is using doubles!\\n");
+		return -1;
+	}
+	return 0;
+
+}	
+"""
+
+package_checks['check_fftw_float_wo_prefix'] = ThoroughPackageCheck( 'fftw using floats with not prefixed binaries/headers', 'c', None, float_fftw_wo_prefix_test_code )
+
+float_rfftw_wo_prefix_test_code = """\
+#include <rfftw.h>
+
+int main(int argc, char** argv )
+{
+
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	return 0;
+}		
+"""
+
+package_checks['check_rfftw_float_wo_prefix'] = ThoroughPackageCheck( 'rfftw using floats with not prefixed binaries/headers','c', None, float_rfftw_wo_prefix_test_code )
 
 liboscpack_test_code = """\
 #include <oscpack/ip/NetworkingUtils.h>
