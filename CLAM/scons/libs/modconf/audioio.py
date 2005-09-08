@@ -138,6 +138,28 @@ def test_directx_sdk( audioio_env, conf ) :
 		return False
 	return True
 
+def test_portmidi( audioio_env, conf ) :
+	if sys.platform == 'linux2' :
+		print "Bypassing portmidi checks: using ALSA MIDI facilities"
+		return True
+	result = conf.CheckHeader( 'portmidi.h' )
+	if not result :
+		print "Could not find portmidi header 'portmidi.h'! Check your portmidi installation..."
+		return False
+	audioio_env.Append( LIBS=['portmidi','porttime','winmm'] )
+	result = conf.CheckLib( library='portmidi', symbol='Pm_OpenInput' )
+	if not result :
+		print "Could not find portmidi libraries! Check your portmidi installation..."
+		return False
+
+	result = conf.check_portmidi()
+	if not result :
+		print "Portmidi compile/link/run tests failed! Check config.log for details..."
+		return False
+
+	audioio_env.Append( CPPFLAGS=['-DUSE_PORTMIDI=1'] )
+	return True
+
 def setup_audioio_environment( audioio_env, conf ) :
 
 	if audioio_env['with_sndfile'] :
@@ -166,6 +188,7 @@ def setup_audioio_environment( audioio_env, conf ) :
 		if audioio_env['audio_backend'] == 'rtaudio' :
 			audioio_env.Append( CPPFLAGS=['DUSE_RTAUDIO=1'] )	
 	if audioio_env['with_portmidi'] :
-		raise RuntimeError, "Not implemented yet!"
+		result = test_portmidi( audioio_env, conf )
+		if not result : return False
 	
 	return True

@@ -88,6 +88,8 @@ def test_fftw_linux( processing_env, conf ) :
 
 	processing_env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
 
+	return True
+
 def test_fftw_win32( processing_env, conf ) :
 	if processing_env['double']  or sys.platform == 'win32' : # CLAM uses double for TData
 		double_prefixed = False
@@ -125,12 +127,17 @@ def test_fftw_win32( processing_env, conf ) :
 			
 	processing_env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
 
+	return True
+
 
 def setup_processing_environment( processing_env, conf ) :
 	if processing_env['with_fftw'] :
 		if sys.platform == 'win32' :
-			test_fftw_win32( processing_env, conf )
+			result = test_fftw_win32( processing_env, conf )
 		else :
-			test_fftw_linux( processing_env, conf )
+			result = test_fftw_linux( processing_env, conf )
 		
-	return True
+	if result :
+		return True
+	else :
+		return False
