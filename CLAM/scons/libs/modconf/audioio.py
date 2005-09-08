@@ -7,7 +7,10 @@ def setup_audioio_environment( audioio_env, conf ) :
 		if not result :
 			print "Could not find libsndfile headers! Please check your libsndfile installation"
 			return False
-		result = conf.CheckLib( library='sndfile', symbol='sf_open_fd' )
+		if sys.platform != 'win32' :
+			result = conf.CheckLib( library='sndfile', symbol='sf_open_fd' )
+		else :
+			result = conf.CheckLib( library='libsndfile', symbol='sf_open_fd' )
 		if not result :
 			print "Could not find libnsndfile binaries! Please check your libsndfile installation"
 			return False
@@ -61,7 +64,10 @@ def setup_audioio_environment( audioio_env, conf ) :
 		if not result :
 			print "Could not find libmad headers! Please check your libmad installation"
 			return False
-		result = conf.CheckLib( library='mad', symbol='mad_stream_init' )
+		if sys.platform != 'win32' :
+			result = conf.CheckLib( library='mad', symbol='mad_stream_init' )
+		else :
+			result = conf.CheckLib( library='libmad', symbol='mad_stream_init' )
 		if not result :
 			print "Could not find libmad binaries! Please check your libmad installation"
 			return False
@@ -71,14 +77,25 @@ def setup_audioio_environment( audioio_env, conf ) :
 			return False
 		audioio_env.Append( CPPFLAGS=['-DUSE_MAD=1'] )
 	if audioio_env['with_id3'] :
-		result = conf.CheckCXXHeader('id3/tag.h')
+		if sys.platform == 'win32' :
+			audioio_env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=1'] )
+			#pass
+		result = conf.CheckCXXHeader( 'id3.h' )
 		if not result :
 			print "Could not find id3lib headers! Please check your id3lib installation"
 			return False
-		result = conf.CheckLibWithHeader( 'id3', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
+
+
+		if sys.platform == 'win32' :
+			result = conf.CheckLibWithHeader( 'id3lib_vc7', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
+		else :
+			result = conf.CheckLibWithHeader( 'id3', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
+			
 		if not result :
 			print "Could not find id3lib binaries! Please check your id3lib installation"
 			return False
+		if sys.platform == 'win32' :
+			audioio_env.Append( LIBS='zlib_vc7' )
 		result = conf.check_id3lib()
 		if not result :
 			print "id3lib compile/link/run tests failed! Please check config.log for details"
