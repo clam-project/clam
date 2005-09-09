@@ -30,7 +30,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "envelope.hxx"
+#include "ct_envelope.hxx"
 
 namespace CLAM 
 {
