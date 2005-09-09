@@ -77,6 +77,8 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 				outPeaks, outFund, outSpectrum,
 				false /*preserve outs*/);
 	}
+
+	return true;
 }
 
 bool SMSGenderChange::Do(const Frame& in, Frame& out)
