@@ -39,7 +39,7 @@ class XercesDomDocumentHandler;
  * Keeps the booking when loading a single Xerces-C DOM element into CLAM data.
  * @ingroup XmlBackends_Xerces
  */
-class XercesDomReadingContext
+class CLAM_DLL_EXPORT XercesDomReadingContext
 {
 	xercesc::DOMElement * _context;
 	xercesc::DOMNodeList * _children;

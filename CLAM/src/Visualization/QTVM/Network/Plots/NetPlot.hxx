@@ -12,7 +12,7 @@ namespace CLAM
 		class NetPlotController;
 		class NetDisplaySurface;
 
-		class NetPlot : public QWidget
+		class CLAM_DLL_EXPORT NetPlot : public QWidget
 		{	
 			Q_OBJECT
 		public:

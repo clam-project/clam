@@ -7,7 +7,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class BuffDataRenderer : public Renderer
+		class CLAM_DLL_EXPORT BuffDataRenderer : public Renderer
 		{
 		public:
 			BuffDataRenderer();

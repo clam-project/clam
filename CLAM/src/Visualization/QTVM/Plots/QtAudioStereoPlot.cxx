@@ -3,6 +3,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+
 #include "Ruler.hxx"
 #include "DisplaySurface.hxx"
 #include "AudioPlotController.hxx"

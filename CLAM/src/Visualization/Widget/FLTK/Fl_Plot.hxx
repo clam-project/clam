@@ -39,7 +39,7 @@ namespace CLAMVM
 	class Fl_ZoomSlider;
 	class Fl_Gl_2DSurface;
 
-	class Fl_Plot : public Presentation, public Fl_Group
+	class CLAM_DLL_EXPORT Fl_Plot : public Presentation, public Fl_Group
 	{
 	public:
 		Fl_Plot();

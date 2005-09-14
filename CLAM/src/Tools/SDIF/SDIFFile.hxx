@@ -58,7 +58,7 @@
 namespace SDIF
 {
 
-class File
+class CLAM_DLL_EXPORT File
 {
 public:
 	enum Mode

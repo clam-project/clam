@@ -32,7 +32,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class SinTracksPlotController : public PlotController 
+		class CLAM_DLL_EXPORT SinTracksPlotController : public PlotController 
 		{
 			Q_OBJECT
 

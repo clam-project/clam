@@ -33,7 +33,7 @@ class GLState;
 
 class Range;
 
-class QtGLPort : public QGLWidget
+class CLAM_DLL_EXPORT QtGLPort : public QGLWidget
 {
 	Q_OBJECT
 public:

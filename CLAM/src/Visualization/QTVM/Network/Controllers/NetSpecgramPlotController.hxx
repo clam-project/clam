@@ -12,7 +12,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class NetSpecgramPlotController : public NetPlotController 
+		class CLAM_DLL_EXPORT NetSpecgramPlotController : public NetPlotController 
 		{
 		public:
 			typedef SpecgramPortMonitor MonitorType;

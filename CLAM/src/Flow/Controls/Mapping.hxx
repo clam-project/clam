@@ -32,7 +32,7 @@ namespace CLAM {
 
 	class MappingFactory;
 
-	class Mapping
+	class CLAM_DLL_EXPORT Mapping
 	{
 	friend class MappingFactory;
 	private:
@@ -43,7 +43,7 @@ namespace CLAM {
 		virtual void Set(DataArray& arguments) { }
 	};
 
-	class MappingFactory
+	class CLAM_DLL_EXPORT MappingFactory
 	{
 	friend class Mapping;
 	private:
@@ -64,7 +64,7 @@ namespace CLAM {
 	};
 
 
-	class ValueToRatioMapping:public Mapping
+	class CLAM_DLL_EXPORT ValueToRatioMapping:public Mapping
 	{
 	private:
 		TData mSemitones ;
@@ -91,7 +91,7 @@ namespace CLAM {
 		}
 	};
 
-	class ValueToRatioMappingFactory:public MappingFactory
+	class CLAM_DLL_EXPORT ValueToRatioMappingFactory:public MappingFactory
 	{
 	public:
 		static ValueToRatioMappingFactory sSingleton ;
@@ -104,7 +104,7 @@ namespace CLAM {
 
 
 
-	class NoteToFreqMapping:public Mapping
+	class CLAM_DLL_EXPORT NoteToFreqMapping:public Mapping
 	{
 	private:
 		TData mNoteRef ;
@@ -143,7 +143,7 @@ namespace CLAM {
 		}
 	};
 
-	class NoteToFreqMappingFactory:public MappingFactory
+	class CLAM_DLL_EXPORT NoteToFreqMappingFactory:public MappingFactory
 	{
 	public:
 		static NoteToFreqMappingFactory sSingleton ;
@@ -154,7 +154,7 @@ namespace CLAM {
 		Mapping* Create(void) { return new NoteToFreqMapping; }
 	};
 
-	class LinearMapping:public Mapping
+	class CLAM_DLL_EXPORT LinearMapping:public Mapping
 	{
 	private:
 		TData mInOffset,mOutOffset,mScale;
@@ -188,7 +188,7 @@ namespace CLAM {
 
 	};
 
-	class LinearMappingFactory:public MappingFactory
+	class CLAM_DLL_EXPORT LinearMappingFactory:public MappingFactory
 	{
 	public:
 		static LinearMappingFactory sSingleton;

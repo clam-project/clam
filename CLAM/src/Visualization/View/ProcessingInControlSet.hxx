@@ -28,7 +28,7 @@
 
 namespace CLAMVM
 {
-	class ProcessingInControlSet
+	class CLAM_DLL_EXPORT ProcessingInControlSet
 	{
 	private:
 		typedef std::map< std::string, InputControlModel* >   tChildTbl;

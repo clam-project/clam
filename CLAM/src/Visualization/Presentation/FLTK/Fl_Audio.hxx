@@ -35,7 +35,7 @@ namespace CLAMVM
 	class Fl_Gl_Single_Display;
 	class Fl_GridLayout;
 	
-	class Fl_Audio : public AudioPresentation, public Fl_Window
+	class CLAM_DLL_EXPORT Fl_Audio : public AudioPresentation, public Fl_Window
 	{
 		
 	private:

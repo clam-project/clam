@@ -31,7 +31,7 @@ namespace CLAM {
 	
 	/** This Processing class only calls the Compute operation of Descriptor passed to the Do 
 	 */
-	class DescriptorComputation
+	class CLAM_DLL_EXPORT DescriptorComputation
 		: public Processing {
 	
 	protected:

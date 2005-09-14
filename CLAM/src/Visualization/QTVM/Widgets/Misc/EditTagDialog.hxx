@@ -11,7 +11,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class EditTagDialog : public QDialog
+		class CLAM_DLL_EXPORT EditTagDialog : public QDialog
 		{
 			Q_OBJECT
 		public:

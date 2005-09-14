@@ -9,7 +9,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class NetDisplaySurface : public QGLWidget
+		class CLAM_DLL_EXPORT NetDisplaySurface : public QGLWidget
 		{
 			Q_OBJECT
 

@@ -29,7 +29,7 @@
 namespace SigSlot
 {
 
-	class Slotv0 : public Slot
+	class CLAM_DLL_EXPORT Slotv0 : public Slot
 	{
 		typedef CBL::Functor0 WrappedFuncType;
   

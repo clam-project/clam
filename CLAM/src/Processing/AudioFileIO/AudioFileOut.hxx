@@ -34,7 +34,7 @@ namespace CLAM {
 	class SoundFileIO;
 
 	/** Class for audiofile output */
-	class AudioFileOut: public Processing
+	class CLAM_DLL_EXPORT AudioFileOut: public Processing
 	{
 	protected:
 		/** Audiofile Configuration */

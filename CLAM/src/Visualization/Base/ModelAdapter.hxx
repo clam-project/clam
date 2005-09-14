@@ -42,7 +42,7 @@ using CLAM::Mutex;
  *  the Model objects from its representation.
  */
 
-class ModelAdapter
+class CLAM_DLL_EXPORT ModelAdapter
 {
 public:
 		/** \brief Destructor

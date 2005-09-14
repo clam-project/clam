@@ -34,7 +34,7 @@ namespace CLAM {
 
 	// WARNING: This class has been renamed for ErrProcessingObj
 	// Keeping a define for backwards compatibility
-	class ErrProcessingObj : public Err {
+	class CLAM_DLL_EXPORT ErrProcessingObj : public Err {
 
 	public:
 

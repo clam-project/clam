@@ -47,7 +47,7 @@ namespace CLAM {
  * own channel id, typically 0 for left, and 1 for right.
  * @see AudioIn, AudioOut, AudioDevice, AudioManager, ProcessingConfig
 */
-	class AudioIOConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT AudioIOConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (AudioIOConfig, 4, ProcessingConfig);

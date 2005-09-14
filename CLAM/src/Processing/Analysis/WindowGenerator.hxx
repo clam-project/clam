@@ -77,7 +77,7 @@ class ProcessingConfig;
 	 * you have to create a window of size FFTSize+1. (if you care for correctness)
 	 */
 
-	class WindowGenerator: public Processing {
+	class CLAM_DLL_EXPORT WindowGenerator: public Processing {
 		WindowGeneratorConfig mConfig;
 
 		const char *GetClassName() const {return "WindowGenerator";}

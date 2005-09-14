@@ -42,7 +42,7 @@ namespace CLAM {
 	/** Implementation of the FFT using the Fastest Fourier in the West 
 	 * @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
 	 */
-	class FFT_rfftw: public FFT_base
+	class CLAM_DLL_EXPORT FFT_rfftw: public FFT_base
 	{
 		rfftw_plan	mpPlan;
 	

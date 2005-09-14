@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-template <class T> class ScaleCnv
+template <class T> class CLAM_DLL_EXPORT ScaleCnv
 {
 public:
 

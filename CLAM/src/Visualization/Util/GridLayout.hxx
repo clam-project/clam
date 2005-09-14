@@ -31,7 +31,7 @@ namespace CLAMGUI
 	 *  This class provides the functionality required to make that a given rect
 	 *  adapts to the layout provided by the GridLayout object
 	 */
-	class GridLayout : public Layout
+	class CLAM_DLL_EXPORT GridLayout : public Layout
 	{
 	private:
 		/**

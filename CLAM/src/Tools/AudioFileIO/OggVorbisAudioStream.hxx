@@ -40,7 +40,7 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class OggVorbisAudioStream : public Stream
+	class CLAM_DLL_EXPORT OggVorbisAudioStream : public Stream
 	{
 
 	public:

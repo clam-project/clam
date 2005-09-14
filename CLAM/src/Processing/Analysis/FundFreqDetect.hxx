@@ -49,7 +49,7 @@ namespace CLAM {
 	*     @author emilia.gomez@iua.upf.es
 	*     @see Fundamental SpectralPeakArray
 	*/
-	class FundFreqDetect: public Processing {
+	class CLAM_DLL_EXPORT FundFreqDetect: public Processing {
 		mutable FundFreqDetectConfig mConfig;
 
 		const char *GetClassName() const {return "FundFreqDetect";}

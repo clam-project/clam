@@ -28,7 +28,7 @@
 namespace CLAM
 {
 
-class AudioInPortPublisher : public InPortPublisher<TData>
+class CLAM_DLL_EXPORT AudioInPortPublisher : public InPortPublisher<TData>
 {
 public:
 	AudioInPortPublisher( const std::string & name = "unnamed in port", Processing * proc = 0 );

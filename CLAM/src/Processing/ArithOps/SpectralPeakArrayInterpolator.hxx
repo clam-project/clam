@@ -33,7 +33,7 @@
 namespace CLAM {
 
 
-	class PeaksInterpConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT PeaksInterpConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (PeaksInterpConfig, 5,ProcessingConfig);
@@ -51,7 +51,7 @@ namespace CLAM {
 /** This class performs the interpolation of two SpectralPeakArray processing data
  * objects.
  */
-	class SpectralPeakArrayInterpolator: public Processing {
+	class CLAM_DLL_EXPORT SpectralPeakArrayInterpolator: public Processing {
 		
 		typedef InControlTmpl<SpectralPeakArrayInterpolator> SpectralPeakArrayInterpolatorCtl;	
 		

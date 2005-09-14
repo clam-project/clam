@@ -26,7 +26,7 @@
 
 namespace CLAMVM
 {
-	class MessageBox 
+	class CLAM_DLL_EXPORT MessageBox 
 	{
 	public:
 

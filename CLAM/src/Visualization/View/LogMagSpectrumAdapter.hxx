@@ -28,7 +28,7 @@
 namespace CLAMVM
 {
 
-		class LogMagSpectrumAdapter 
+		class CLAM_DLL_EXPORT LogMagSpectrumAdapter 
 				: public SpectrumAdapter
 		{
 				// attributes

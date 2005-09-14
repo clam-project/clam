@@ -30,7 +30,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class QtAudioPlayer : public QtSinglePlayer
+		class CLAM_DLL_EXPORT QtAudioPlayer : public QtSinglePlayer
 		{
 		public:
 			QtAudioPlayer(QWidget* parent=0);

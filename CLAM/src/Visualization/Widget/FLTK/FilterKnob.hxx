@@ -36,7 +36,7 @@ namespace CLAMGUI
 	typedef CBL::Functor0                 ValueChangedCb;
 	typedef CBL::Functor1< TData >        ConstrainSignal;
 
-	class FilterKnob
+	class CLAM_DLL_EXPORT FilterKnob
 		: public Fl_Knob
 	{
 

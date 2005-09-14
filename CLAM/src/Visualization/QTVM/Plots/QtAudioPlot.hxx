@@ -41,7 +41,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 	
-		class QtAudioPlot : public SingleDisplayPlot, public PlayablePlot
+		class CLAM_DLL_EXPORT QtAudioPlot : public SingleDisplayPlot, public PlayablePlot
 		{
 			Q_OBJECT
 

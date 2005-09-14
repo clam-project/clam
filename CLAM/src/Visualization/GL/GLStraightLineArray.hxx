@@ -29,7 +29,7 @@ namespace CLAMVM
 {
 	using CLAM::TData;
 
-	class GLStraightLineArray
+	class CLAM_DLL_EXPORT GLStraightLineArray
 		: public GLRenderer
 	{
 	public:

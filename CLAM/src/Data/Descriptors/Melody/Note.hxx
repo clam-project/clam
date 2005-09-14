@@ -42,7 +42,7 @@ namespace CLAM {
 	 and time information.
 **/
 
-	class Note: public ProcessingData
+	class CLAM_DLL_EXPORT Note: public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (Note, 7, ProcessingData);

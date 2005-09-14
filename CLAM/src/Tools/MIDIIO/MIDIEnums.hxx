@@ -24,7 +24,7 @@
 
 namespace CLAM {
 
-class MIDI
+class CLAM_DLL_EXPORT MIDI
 {
 public:
 	/**
@@ -78,35 +78,24 @@ public:
 	* Convert the first byte of a MIDI Channel Message to a EMessage.
 	* @param b The midi byte
 	*/
-	static Message StatusByteToMessage(const unsigned char& byte)
-	{
-		return (Message)((byte >> 4)&7);
-	}
+	static Message StatusByteToMessage(const unsigned char& byte);
+
 
 	/**
 	* Convert the first byte of a MIDI Channel Message to a ECLAMSysMsg.
 	* @param b The midi byte, which should be have the hexadecimal value #Fx
 	*/
-	static SysMsg StatusByteToSysMsg(const unsigned char& b)
-	{
-		return (SysMsg)(b&15);
-	}
+	static SysMsg StatusByteToSysMsg(const unsigned char& b);
 
-	static const MessageInfo& GetMessageInfo(Message msg)
-	{
-		return sMessageInfo[int(msg)];
-	}
+	static const MessageInfo& GetMessageInfo(Message msg);
 
-	static const MessageInfo& GetMessageInfo(int msg)
-	{
-		return sMessageInfo[msg];
-	}
+	static const MessageInfo& GetMessageInfo(int msg);
 private:
-	static const MessageInfo sMessageInfo[9];
+	static const MessageInfo sMessageInfo[];
 
 friend class MIDIDevice;
 
-	static const int sNBytesPerSysMsg[16];
+	static const int sNBytesPerSysMsg[];
 
 };
 

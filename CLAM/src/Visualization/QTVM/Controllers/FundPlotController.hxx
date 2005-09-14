@@ -30,7 +30,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class FundPlotController : public PlayablePlotController
+		class CLAM_DLL_EXPORT FundPlotController : public PlayablePlotController
 		{
 			Q_OBJECT
 

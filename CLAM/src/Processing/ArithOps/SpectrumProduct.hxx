@@ -31,7 +31,7 @@
 namespace CLAM {
 
 
-	class SpecProductConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpecProductConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpecProductConfig, 0,ProcessingConfig);
@@ -73,7 +73,7 @@ namespace CLAM {
  * range and point possition, the way to go is obvious, but in other
  * situations it is not so simple. Whe should probably merge both
  * BPFs, into a new BPF.  */
-	class SpectrumProduct: public Processing {
+	class CLAM_DLL_EXPORT SpectrumProduct: public Processing {
 		SpecProductConfig mConfig;
 
 		/** Size of the input/output vectors */

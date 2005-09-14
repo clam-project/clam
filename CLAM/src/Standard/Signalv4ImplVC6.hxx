@@ -33,7 +33,7 @@ namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2, typename ParmType3, typename ParmType4 >
-	class Signalv4 : public Signal
+	class CLAM_DLL_EXPORT Signalv4 : public Signal
 {
 
 public:

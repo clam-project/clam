@@ -30,7 +30,7 @@ namespace CLAM {
 /** Interpolation
 *   Enumeration to use for specifying the type of interpolation used
 */
-class EInterpolation: public Enum
+class CLAM_DLL_EXPORT EInterpolation: public Enum
 {
 public:
 	
@@ -74,7 +74,7 @@ public:
 *   Enumeration to use for specifying the type of scale used (linear or log)
 */
 //TODO (may include different types of logarithmic scales??
-class EScale : public Enum
+class CLAM_DLL_EXPORT EScale : public Enum
 {
 public:
 	
@@ -101,7 +101,7 @@ public:
 };
 
 
-class EWindowType : public Enum
+class CLAM_DLL_EXPORT EWindowType : public Enum
 {
 public:
 	

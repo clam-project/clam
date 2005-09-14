@@ -37,7 +37,7 @@ namespace CLAMVM
 		using CLAM::Spectrum;
 		using CLAM::ProcessingData;
 
-		class SpectrumAdapter 
+		class CLAM_DLL_EXPORT SpectrumAdapter 
 				: public ProcessingDataAdapter, public SpectrumModel
 		{
 				// attributes

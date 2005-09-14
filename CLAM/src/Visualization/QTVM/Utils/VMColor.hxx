@@ -28,7 +28,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		struct Color
+		struct CLAM_DLL_EXPORT Color
 		{
 		    TUInt16 r;
 		    TUInt16 g;
@@ -43,7 +43,7 @@ namespace CLAM
 		    bool operator==(Color c);
 		};
 		
-		class VMColor
+		class CLAM_DLL_EXPORT VMColor
 		{
 		public:
 			static Color Red();

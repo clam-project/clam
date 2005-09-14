@@ -34,7 +34,7 @@
 
 namespace CLAM {
 
-class EFDFilterGenControls : public Enum
+class CLAM_DLL_EXPORT EFDFilterGenControls : public Enum
 {
 public:
 	
@@ -73,7 +73,7 @@ public:
 };
 
 /** Simple filter types, more to be added*/
-class EFDFilterType : public Enum
+class CLAM_DLL_EXPORT EFDFilterType : public Enum
 {
 public:
 	
@@ -108,7 +108,7 @@ public:
 
 
 /** Configuration class for SpectralFilterGen class */
-class FDFilterGenConfig: public ProcessingConfig 
+class CLAM_DLL_EXPORT FDFilterGenConfig: public ProcessingConfig 
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (FDFilterGenConfig, 7, ProcessingConfig);
@@ -124,7 +124,7 @@ protected:
 };
 
 /** Frequency Domain Filter Generator */
-class FDFilterGen: public Processing
+class CLAM_DLL_EXPORT FDFilterGen: public Processing
 {
 private:
 	typedef InControlTmpl<FDFilterGen> FDFilterGenCtrl;

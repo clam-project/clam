@@ -33,9 +33,9 @@ namespace CLAMVM
 	/**
 	 * Overload of plot() for CLAM::Audio.
 	 */
-	void plot(const CLAM::Audio &model, const char *label = "");
+	void CLAM_DLL_EXPORT plot(const CLAM::Audio &model, const char *label = "");
 
-	void deferredPlot( const CLAM::Audio& model, const char* label = 0 );
+	void CLAM_DLL_EXPORT deferredPlot( const CLAM::Audio& model, const char* label = 0 );
 
 } // namespace CLAMVM
 

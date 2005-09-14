@@ -29,7 +29,7 @@ namespace CLAMVM
 {
 		class Fl_Palette;
 
-		class GLSineTracks
+		class CLAM_DLL_EXPORT GLSineTracks
 				: public GLRenderer
 		{
 		public:

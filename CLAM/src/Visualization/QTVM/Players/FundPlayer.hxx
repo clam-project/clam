@@ -29,7 +29,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class FundPlayer : public Player
+		class CLAM_DLL_EXPORT FundPlayer : public Player
 		{
 		public:
 			FundPlayer();

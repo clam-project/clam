@@ -34,7 +34,7 @@ namespace CLAM
 		 * Viewing a single spectrum with peaks directly.
 		 */
 
-		void PlotSpectrumAndPeaks(	const Spectrum& spec,
+		void CLAM_DLL_EXPORT PlotSpectrumAndPeaks(	const Spectrum& spec,
 									const SpectralPeakArray& peaks,
 									const std::string& label="",
 									int x=100,

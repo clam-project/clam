@@ -32,7 +32,7 @@ namespace CLAM
 
 	class AudioOutPort;
 	
-	class MultiChannelAudioFileReader : public Processing
+	class CLAM_DLL_EXPORT MultiChannelAudioFileReader : public Processing
 	{
 	public:
 		MultiChannelAudioFileReader();

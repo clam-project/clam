@@ -31,7 +31,7 @@
 namespace CLAM {
 
 /// Error type thrown by Factory classes (Factory, FactoryRegistry)
-class ErrFactory : public Err
+class CLAM_DLL_EXPORT ErrFactory : public Err
 {
 public:
 	ErrFactory(const char* msg) : Err(msg)
@@ -41,7 +41,7 @@ public:
 
 
 template <typename AbstractProductType>
-class Factory
+class CLAM_DLL_EXPORT Factory
 {
 public:
 

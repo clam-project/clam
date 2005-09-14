@@ -32,7 +32,7 @@ namespace CLAM {
 	/**
 	 * Config class for the SpectralSynthesis Processing
 	 */
-class SpectralSynthesisConfig:public ProcessingConfig
+class CLAM_DLL_EXPORT SpectralSynthesisConfig:public ProcessingConfig
 {
 
 friend class SpectralSynthesis;

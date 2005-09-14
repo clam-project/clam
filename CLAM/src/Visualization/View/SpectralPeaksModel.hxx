@@ -33,7 +33,7 @@ namespace CLAMVM
 	using CLAM::Array;
 
 
-	class SpectralPeaksModel
+	class CLAM_DLL_EXPORT SpectralPeaksModel
 	{
 	public:
 				

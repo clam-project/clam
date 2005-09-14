@@ -13,7 +13,7 @@ either version 2 of the License, or (at your option) any later version.
 #ifndef __Selection__
 #define __Selection__
 
-class Selection {
+class CLAM_DLL_EXPORT Selection {
 private:
 	class SelectionRange
 	{

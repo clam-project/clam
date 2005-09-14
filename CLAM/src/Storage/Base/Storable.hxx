@@ -42,7 +42,7 @@ namespace CLAM {
  * All common queries about storability must be defined here as virtual
  * functions.
  */
-class Storable {
+class CLAM_DLL_EXPORT Storable {
 // Construction/Destruction
 public:
 	//* The required virtual destructor

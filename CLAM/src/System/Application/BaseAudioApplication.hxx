@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-	class BaseAudioApplication:public Application
+	class CLAM_DLL_EXPORT BaseAudioApplication:public Application
 	{
 	protected:
 		BaseAudioApplication();

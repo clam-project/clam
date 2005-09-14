@@ -31,7 +31,7 @@ typedef struct {
 
 #define SNAPBOTH 3
 
-class Fl_PointMover:public Fl_Widget {
+class CLAM_DLL_EXPORT  Fl_PointMover:public Fl_Widget {
 protected:
 	CLAM::Array<FLPOINT> points_;
 	float	 xmin_;
@@ -204,7 +204,7 @@ public:
 	void get_selection(void);
 };
 
-class Fl_Envelope:public Fl_PointMover {
+class CLAM_DLL_EXPORT Fl_Envelope:public Fl_PointMover {
 public:
 	Fl_Envelope(int x,int y,int w,int h);
 	void draw(void);

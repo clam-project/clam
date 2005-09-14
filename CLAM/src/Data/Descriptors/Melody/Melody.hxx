@@ -44,7 +44,7 @@ namespace CLAM
 @@see Key
 **/
 
-class Melody: public ProcessingData
+class CLAM_DLL_EXPORT Melody: public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Melody, 4, ProcessingData);

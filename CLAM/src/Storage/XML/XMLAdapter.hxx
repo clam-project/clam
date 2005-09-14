@@ -54,7 +54,7 @@ namespace CLAM {
  * @see BasicXMLable
  * @see XMLable
  */
-template <class T> class XMLAdapter : public BasicXMLable {
+template <class T> class CLAM_DLL_EXPORT XMLAdapter : public BasicXMLable {
 // Internal Types
 public:
 	typedef BasicXMLable super;

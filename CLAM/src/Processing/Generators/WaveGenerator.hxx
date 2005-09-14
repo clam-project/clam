@@ -29,7 +29,7 @@
 
 namespace CLAM {
 
-	class EWaveType : public Enum {
+	class CLAM_DLL_EXPORT EWaveType : public Enum {
 	public:
 		
 		EWaveType() : Enum(ValueTable(), eSine) {}
@@ -56,7 +56,7 @@ namespace CLAM {
 
 
 	template< typename WaveType > 
-	class WaveFunctor {
+	class CLAM_DLL_EXPORT WaveFunctor {
 	public:
 		TData operator()(TTime x,TData amplitude);
 	};
@@ -75,7 +75,7 @@ namespace CLAM {
 		void DefaultInit(void);
 	};
 
-	class WaveGenerator: public Processing
+	class CLAM_DLL_EXPORT WaveGenerator: public Processing
 	{
 	protected:
 		WaveGeneratorConfig mConfig;	
@@ -158,7 +158,7 @@ namespace CLAM {
 	};
 
 	template < typename WaveType >
-	void FillBuffer(Array<TData> &buffer, WaveGenerator& generator, WaveType* dummy = 0 )
+	void CLAM_DLL_EXPORT FillBuffer(Array<TData> &buffer, WaveGenerator& generator, WaveType* dummy = 0 )
 	{
 		TData xvalue = generator.GetXPos(); 
 		TData xdelta = generator.GetXDelta();

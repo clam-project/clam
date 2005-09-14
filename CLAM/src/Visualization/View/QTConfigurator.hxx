@@ -52,7 +52,7 @@ namespace CLAM{
 	 * @ingroup Configurators
 	 * @see DynamicType, FLTKConfigurator
 	 */
-	class QTConfigurator : public QDialog {
+	class CLAM_DLL_EXPORT QTConfigurator : public QDialog {
 		Q_OBJECT
 		typedef QDialog super;
 		typedef std::map<std::string, QWidget*> tWidgets;

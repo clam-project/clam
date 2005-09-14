@@ -33,7 +33,7 @@ namespace CLAM {
  *	No new data members
  *	No member functions
  */
-	class ErrOpenFile: public Err
+	class CLAM_DLL_EXPORT ErrOpenFile: public Err
 	{
 	public:
 		// Constructor

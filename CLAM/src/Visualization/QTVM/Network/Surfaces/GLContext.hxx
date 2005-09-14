@@ -14,7 +14,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class GLContext : public QGLContext
+		class CLAM_DLL_EXPORT GLContext : public QGLContext
 		{
 		public:
 			GLContext(const QGLFormat& fmt, QPaintDevice* dev);

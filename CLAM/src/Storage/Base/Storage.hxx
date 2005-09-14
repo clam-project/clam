@@ -41,7 +41,7 @@ namespace CLAM {
  * @todo This class must have semantic modifiers
  * @todo This class must be moved to some other file
  */
-class ErrNotFound : public Err {
+class CLAM_DLL_EXPORT ErrNotFound : public Err {
 };
 
 /**
@@ -50,7 +50,7 @@ class ErrNotFound : public Err {
  * state. Subclasses of Storage will implement the way the storage
  * and loading is done.
  */
-class Storage {
+class CLAM_DLL_EXPORT Storage {
 // Construction/Destruction
 public:
 	//* The required virtual destructor

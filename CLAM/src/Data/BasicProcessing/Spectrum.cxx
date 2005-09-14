@@ -21,19 +21,13 @@
 
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
-#include "SpecTypeFlags.hxx"
 #include "ArrayToBPFCnv.hxx"
 #include "ComplexToPolarCnv.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
-Flags<4>::tFlagValue SpecTypeFlags::sFlagValues[] = {
- 	{SpecTypeFlags::eComplex, "Complex"},
- 	{SpecTypeFlags::ePolar, "Polar"},
- 	{SpecTypeFlags::eMagPhase, "MagPhase"},
- 	{SpecTypeFlags::eMagPhaseBPF, "MagPhaseBPF"},
- 	{0,NULL}
-}; 
+
 
 
 ///////////////////////////////////////////////////////
@@ -824,4 +818,6 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 TIndex Spectrum::IndexFromFreq(TData freq) const
 {
 	return Round(freq*((GetSize()-1)/GetSpectralRange()));
+}
+
 }

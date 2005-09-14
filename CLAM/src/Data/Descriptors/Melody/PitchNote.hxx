@@ -33,7 +33,7 @@ namespace CLAM
 {
 
 	// Class EPitch
-	class EPitch : public Enum
+	class CLAM_DLL_EXPORT EPitch : public Enum
 	{
 	public:
 		EPitch() : Enum(ValueTable(), eNone) {}
@@ -77,7 +77,7 @@ namespace CLAM
 
 	/** Pitch note type definition = pitch + octave 
 	 **/
-	class PitchNote: public ProcessingData
+	class CLAM_DLL_EXPORT PitchNote: public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (PitchNote, 2, ProcessingData);

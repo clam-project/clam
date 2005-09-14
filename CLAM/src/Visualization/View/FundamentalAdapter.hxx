@@ -35,7 +35,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class FundamentalAdapter : public ModelAdapter
+	class CLAM_DLL_EXPORT FundamentalAdapter : public ModelAdapter
 	{
 	public:
 		

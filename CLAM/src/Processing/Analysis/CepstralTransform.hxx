@@ -30,7 +30,7 @@
 namespace CLAM
 {
 
-  class CepstralTransformConfig : public ProcessingConfig
+  class CLAM_DLL_EXPORT CepstralTransformConfig : public ProcessingConfig
   {
   public:
     
@@ -60,7 +60,7 @@ namespace CLAM
    *
    * @see CLAM::MelFilterBank
    */
-  class CepstralTransform : public Processing
+  class CLAM_DLL_EXPORT CepstralTransform : public Processing
   {
   public:
     CepstralTransform( );

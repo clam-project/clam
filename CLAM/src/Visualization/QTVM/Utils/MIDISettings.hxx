@@ -8,7 +8,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class MIDISettings
+		class CLAM_DLL_EXPORT MIDISettings
 		{
 		public:
 			MIDISettings();

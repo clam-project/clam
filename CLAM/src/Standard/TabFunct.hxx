@@ -40,7 +40,7 @@ namespace CLAM
  * and upper bound.
  * 
  */
-template <class OriginalFunction> class TabFunct : public OriginalFunction
+template <class OriginalFunction> class CLAM_DLL_EXPORT TabFunct : public OriginalFunction
 {
 private:
 	TabFunct() {};

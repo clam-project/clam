@@ -118,7 +118,7 @@ namespace CLAM
  * @ingroup XmlScoped
  */
 
-class XmlFragment
+class CLAM_DLL_EXPORT XmlFragment
 {
 	public:
 		XmlFragment(std::ostream & os) :
@@ -137,7 +137,7 @@ class XmlFragment
  * ostream defined.
  * @ingroup XmlScoped
  */
-class XmlContent
+class CLAM_DLL_EXPORT XmlContent
 {
 	public:
 		/**
@@ -165,7 +165,7 @@ class XmlContent
  * construction and closes it on destruction.
  * @ingroup XmlScoped
  */
-class XmlElement
+class CLAM_DLL_EXPORT XmlElement
 {
 	public:
 		/**
@@ -198,7 +198,7 @@ class XmlElement
 };
 
 #ifdef NEVER_DEFINED
-class XmlHeader
+class CLAM_DLL_EXPORT XmlHeader
 {	public:
 		/**
 		 * Opens on construction an XML element on the
@@ -225,7 +225,7 @@ class XmlHeader
  * ostream defined.
  * @ingroup XmlScoped
  */
-class XmlAttribute
+class CLAM_DLL_EXPORT XmlAttribute
 {
 	public:
 		/**

@@ -41,7 +41,7 @@ namespace CLAM
 
 class FlowControl;
 
-class Network : public Component
+class CLAM_DLL_EXPORT Network : public Component
 {
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;

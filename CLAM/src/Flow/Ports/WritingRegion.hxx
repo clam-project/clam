@@ -31,7 +31,7 @@ namespace CLAM
 {
 
 template< typename Token, template <class> class DataStructure = PhantomBuffer>
-class WritingRegion : public Region
+class CLAM_DLL_EXPORT WritingRegion : public Region
 {
 public:
 	typedef StreamImpl< Token, DataStructure > ProperStream;

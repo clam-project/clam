@@ -34,7 +34,7 @@ namespace CLAM{
 /** This class is the interface to an output of an AudioDevice.
  *  @see Processing, AudioIOConfig, AudioOut, AudioManager, AudioDevice
  */
-class AudioOut: public Processing
+class CLAM_DLL_EXPORT AudioOut: public Processing
 {
 friend class AudioManager;
 friend class AudioDevice;

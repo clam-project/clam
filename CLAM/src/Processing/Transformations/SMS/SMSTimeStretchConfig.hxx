@@ -27,7 +27,7 @@
 
 namespace CLAM
 {
-	class SMSTimeStretchConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SMSTimeStretchConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SMSTimeStretchConfig, 7,ProcessingConfig);

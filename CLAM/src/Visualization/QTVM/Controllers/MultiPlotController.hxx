@@ -31,7 +31,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class MultiPlotController : public PlotController
+		class CLAM_DLL_EXPORT MultiPlotController : public PlotController
 		{
 			Q_OBJECT
 

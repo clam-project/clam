@@ -29,7 +29,7 @@
 
 namespace CLAM {
 
-class MIDIOutControl:public MIDIOut
+class CLAM_DLL_EXPORT MIDIOutControl:public MIDIOut
 {
 	private:
 		Array<InControl*> mMyInControls;

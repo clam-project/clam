@@ -41,7 +41,7 @@ namespace CLAM {
 	 * It implements the supervised Do and a helper method for
 	 *	updating the frame counter in the Segment.
 	 */
-	class SMSTransformationChain: public ProcessingComposite
+	class CLAM_DLL_EXPORT SMSTransformationChain: public ProcessingComposite
 	{
 		
 		InControlTmplArray<SMSTransformationChain> *mpOnCtrlArray;

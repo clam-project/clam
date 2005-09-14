@@ -32,7 +32,7 @@ namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2, typename ParmType3 >
-	class Signalv3 : public Signal
+	class CLAM_DLL_EXPORT Signalv3 : public Signal
 {
 public:
 	typedef typename CBL::Functor3<ParmType1,ParmType2, ParmType3 >              tCallbackType;

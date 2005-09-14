@@ -34,14 +34,14 @@ namespace CLAM
 		 * Viewing Fundamental directly.
 		 */
 
-		void PlotFundamental( const Segment& segment,
+		void CLAM_DLL_EXPORT PlotFundamental( const Segment& segment,
 							  const std::string& label="",
 							  int x=100,
 							  int y=100,
 							  int w=500,
 							  int h=225 );
 
-		void PlotFundamental( const Segment& segment,
+		void CLAM_DLL_EXPORT PlotFundamental( const Segment& segment,
 							  std::vector<unsigned>& marks,
 							  const std::string& label="",
 							  int x=100,

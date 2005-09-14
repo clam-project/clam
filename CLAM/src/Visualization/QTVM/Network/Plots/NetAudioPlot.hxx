@@ -10,7 +10,7 @@ namespace CLAM
 
 	namespace VM
 	{
-		class NetAudioPlot : public NetPlot
+		class CLAM_DLL_EXPORT NetAudioPlot : public NetPlot
 		{
 			Q_OBJECT
 		public:

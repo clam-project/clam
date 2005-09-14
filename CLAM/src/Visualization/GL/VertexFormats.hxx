@@ -31,7 +31,7 @@ namespace CLAMGUI
 
 	// One simple vertex format
 
-	struct c3f_v3f
+	struct CLAM_DLL_EXPORT c3f_v3f
 	{
 		GLfloat r;
 		GLfloat g;
@@ -62,7 +62,7 @@ namespace CLAMGUI
 	// color are not needed, a more compact memory storage allows more
 	// efficient memory access, due to less cache misses.
 
-	struct v2f
+	struct CLAM_DLL_EXPORT v2f
 	{
 		GLfloat x;
 		GLfloat y;
@@ -88,7 +88,7 @@ namespace CLAMGUI
 
 	// And only the color...
 
-	struct c3f
+	struct CLAM_DLL_EXPORT c3f
 	{
 		GLfloat r;
 		GLfloat g;

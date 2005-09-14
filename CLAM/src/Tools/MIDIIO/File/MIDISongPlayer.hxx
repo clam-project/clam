@@ -27,7 +27,7 @@ namespace MIDI
 	class Event;
 	class Song;
 	
-	class SongPlayer
+	class CLAM_DLL_EXPORT SongPlayer
 	/* class to obtain events from a midi song, ordered in time */
 	{
 	private:

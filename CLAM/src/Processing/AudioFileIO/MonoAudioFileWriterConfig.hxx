@@ -34,7 +34,7 @@ namespace CLAM
 	 *
 	 *  @see MonoAudioFileWriter
 	 */
-	class MonoAudioFileWriterConfig
+	class CLAM_DLL_EXPORT MonoAudioFileWriterConfig
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE

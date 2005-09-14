@@ -31,7 +31,7 @@ namespace CLAM
 	{
 		enum {NormalMode=0,DetailMode,HugeMode};
 
-		class DataRenderer : public Renderer
+		class CLAM_DLL_EXPORT DataRenderer : public Renderer
 		{
 		public:
 			DataRenderer();

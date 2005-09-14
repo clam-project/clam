@@ -35,7 +35,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class BPFEditor : public QWidget, public PlayablePlot
+		class CLAM_DLL_EXPORT BPFEditor : public QWidget, public PlayablePlot
 		{
 			Q_OBJECT
 

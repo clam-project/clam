@@ -29,7 +29,7 @@ namespace CLAM {
 
 	/** Configuration class for FFT classes
 	 */
-	struct FFTConfig: public ProcessingConfig {
+	struct CLAM_DLL_EXPORT FFTConfig: public ProcessingConfig {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (FFTConfig, 1, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, int, AudioSize);

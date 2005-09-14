@@ -39,7 +39,7 @@ namespace CLAM {
 	/** This Processing class takes an input audio buffer and shifts it to get zero-phase
 	 *	conditions in the STFT 
 	 */
-	class CircularShift
+	class CLAM_DLL_EXPORT CircularShift
 		: public Processing {
 	protected:
 		CircularShiftConfig mConfig;

@@ -44,7 +44,7 @@ namespace CLAM
  * when the program ends.
  * @author David Garcia
  */
-class XercesInitializer
+class CLAM_DLL_EXPORT XercesInitializer
 {
 	XercesInitializer()
 	{

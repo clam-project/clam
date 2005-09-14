@@ -27,7 +27,7 @@
 namespace CLAMVM
 {
 
-class GLSampleDetailArray
+class CLAM_DLL_EXPORT GLSampleDetailArray
 		: public GLStraightLineArray
 {
 public:

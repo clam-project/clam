@@ -33,7 +33,7 @@ namespace CLAM {
 	/** Specialization of the CircularBuffer class for the case of Audio chunks
 	 *	@see CircularBuffer
 	 */
-	class AudioCircularBuffer:public CircularBuffer<TData>
+	class CLAM_DLL_EXPORT AudioCircularBuffer:public CircularBuffer<TData>
 	{
 	protected:
 		

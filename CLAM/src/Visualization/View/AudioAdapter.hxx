@@ -36,7 +36,7 @@ namespace CLAMVM
 	using CLAM::Audio;
 	using CLAM::ProcessingData;
 
-	class AudioAdapter 
+	class CLAM_DLL_EXPORT AudioAdapter 
 		: public ProcessingDataAdapter, public AudioModel
 	{
 		// attributes

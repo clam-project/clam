@@ -29,7 +29,7 @@
 
 namespace CLAMVM
 {
-	class FundFreqRM : public GLRenderingManager
+	class CLAM_DLL_EXPORT FundFreqRM : public GLRenderingManager
 	{
 	public:
 		FundFreqRM();

@@ -30,7 +30,7 @@ namespace CLAMVM
 	class ModelAdapter;
 	class Presentation;
 
-	class Plotter
+	class CLAM_DLL_EXPORT Plotter
 	{
 	public:
 		static void Hold( ModelAdapter* , Presentation* );

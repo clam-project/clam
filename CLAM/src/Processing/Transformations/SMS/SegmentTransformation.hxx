@@ -39,7 +39,7 @@
 
 namespace CLAM {
 
-	class SegmentTransformation: public Processing
+	class CLAM_DLL_EXPORT SegmentTransformation: public Processing
 	{
 		
 		FrameTransformation* mFrameTransformation;

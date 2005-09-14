@@ -47,7 +47,7 @@ namespace CLAM {
     typedef FFT_rfftw FFT;
 
     /** Abstract base class for FFT classes */
-    class FFT_base: public Processing
+    class CLAM_DLL_EXPORT FFT_base: public Processing
     {
     protected:
 

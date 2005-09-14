@@ -37,7 +37,7 @@ namespace CLAM
 		 * out more clearly.
 		 *
 		 */
-		class QtPalette
+		class CLAM_DLL_EXPORT QtPalette
 		{
 			static const int NCOLORMAPPING;
 			static const int FIRST_INDEX;

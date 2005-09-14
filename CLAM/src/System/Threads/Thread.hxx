@@ -31,7 +31,7 @@ namespace CLAM
 {
 	class Condition;
 
-class Thread
+class CLAM_DLL_EXPORT Thread
 {
 public:
 

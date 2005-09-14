@@ -18,7 +18,7 @@ typedef int (*on_dir_func)(const char* dir,void* ptr);
 ** and -1 means any level of recursion. ptr is a void* that will be
 ** passed to the on_file_func and on_dir_func functions.
 */
-int recursedir(
+int CLAM_DLL_EXPORT recursedir(
   const char* dir,int max_recursion,on_file_func f,on_dir_func d,void* ptr);
 
 #endif

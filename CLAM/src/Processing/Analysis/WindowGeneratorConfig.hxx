@@ -31,7 +31,7 @@ namespace CLAM {
 
 	class Component;
 
-	class EWindowNormalize : public Enum {
+	class CLAM_DLL_EXPORT EWindowNormalize : public Enum {
 	public:
 		EWindowNormalize() : Enum(ValueTable(), eAnalysis) {}
 		EWindowNormalize(tValue v) : Enum(ValueTable(), v) {};
@@ -61,7 +61,7 @@ namespace CLAM {
 		}
 	};
 
-	class WindowGeneratorConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT WindowGeneratorConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (WindowGeneratorConfig, 6,ProcessingConfig);

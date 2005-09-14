@@ -61,7 +61,7 @@ namespace CLAM{
 	 * @ingroup Configurators
 	 * @see DynamicType, QTConfigurator
 	 */
-	class FLTKConfigurator : public Fl_Window {
+	class CLAM_DLL_EXPORT FLTKConfigurator : public Fl_Window {
 	// Inner classes
 	private:
 		class ConfigurationHolderBase

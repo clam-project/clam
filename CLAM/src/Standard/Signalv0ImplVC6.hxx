@@ -29,7 +29,7 @@
 namespace SigSlot
 {
 
-	class Signalv0 
+	class CLAM_DLL_EXPORT Signalv0 
 		: public Signal
 	{
 	public:

@@ -43,7 +43,7 @@ namespace CLAM {
  * If you don't need those implementation issues consider using 
  * XMLable instead which defines only the interface.
  */
-class BasicXMLable : public XMLable {
+class CLAM_DLL_EXPORT BasicXMLable : public XMLable {
 // Attributes
 private:
 	const char * myXMLName;

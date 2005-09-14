@@ -36,7 +36,7 @@ namespace SigSlot
  *
  *  \see Signal
  */
-		class Slot
+		class CLAM_DLL_EXPORT Slot
 		{
 				typedef std::list<Connection>        tConnectionList;
 				typedef tConnectionList::iterator    tConnectionIterator;

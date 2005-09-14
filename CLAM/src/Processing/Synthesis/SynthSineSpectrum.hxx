@@ -53,7 +53,7 @@ namespace CLAM{
  * the output spectrum to complex regardless its original format. This
  * behaviour may result in inconsistencies and should be taken into account.
  */
-class SynthSineSpectrum:public Processing
+class CLAM_DLL_EXPORT SynthSineSpectrum:public Processing
 {
 
 	InPort<SpectralPeakArray> mInput;

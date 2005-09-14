@@ -45,7 +45,7 @@ struct xtime;
  * access to the shared resource. When use of the shared resource is complete, the thread unlocks 
  * the mutex object, allowing another thread to acquire the lock and use the shared resource.
  */
-class Mutex
+class CLAM_DLL_EXPORT Mutex
 {
 public:
 
@@ -77,7 +77,7 @@ private:
 
 };
 
-class TryMutex
+class CLAM_DLL_EXPORT TryMutex
 {
 public:
 	friend class Detail::LockOps<TryMutex>;
@@ -108,7 +108,7 @@ private:
 
 };
 
-class TimedMutex
+class CLAM_DLL_EXPORT TimedMutex
 {
 public:
 	friend class Detail::LockOps<TimedMutex>;

@@ -35,7 +35,7 @@ namespace CLAMVM
  *
  *   @see ModelAdapter
  */
-class ModelController
+class CLAM_DLL_EXPORT ModelController
 		: public ModelAdapter
 {
 public:

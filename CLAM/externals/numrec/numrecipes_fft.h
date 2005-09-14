@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-void realft(CLAM::TData data[], unsigned long n, int isign);
+void CLAM_DLL_EXPORT realft(CLAM::TData data[], unsigned long n, int isign);
 
 #ifdef __cplusplus
 }

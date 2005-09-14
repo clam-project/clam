@@ -9,7 +9,7 @@ namespace CLAM
     {
 		class Player;
 		
-		class QtSinglePlayer : public QtPlayer
+		class CLAM_DLL_EXPORT QtSinglePlayer : public QtPlayer
 		{	
 		public:
 			QtSinglePlayer(QWidget* parent=0);

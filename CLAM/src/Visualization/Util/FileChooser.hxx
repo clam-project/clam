@@ -27,7 +27,7 @@
 
 namespace CLAMVM
 {
-	class FileChooserDialog
+	class CLAM_DLL_EXPORT FileChooserDialog
 	{
 	public:
 		FileChooserDialog();

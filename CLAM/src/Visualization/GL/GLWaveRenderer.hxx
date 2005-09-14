@@ -27,7 +27,7 @@
 namespace CLAMGUI
 {
 
-	class GLWaveRenderer 
+	class CLAM_DLL_EXPORT GLWaveRenderer 
 	: public GLArrayRenderer
 	{
 	public:

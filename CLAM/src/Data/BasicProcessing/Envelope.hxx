@@ -38,7 +38,7 @@ namespace CLAM{
 	/** Configuration class for Envelope data objects.
 	 *  @see Envelope, ProcessingDataConfig*/
 
-	class EnvelopeConfig : public ProcessingDataConfig
+	class CLAM_DLL_EXPORT EnvelopeConfig : public ProcessingDataConfig
 	{
 	public:
 

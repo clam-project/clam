@@ -36,7 +36,7 @@
 namespace CLAM{
 
 
-	class SMSOddEvenHarmonicRatio: public FrameTransformation
+	class CLAM_DLL_EXPORT SMSOddEvenHarmonicRatio: public FrameTransformation
 	{
 		const char *GetClassName() const {return "SMSOddEvenHarmonicRatio";}
 

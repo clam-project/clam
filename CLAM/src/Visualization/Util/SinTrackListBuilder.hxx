@@ -32,7 +32,7 @@ namespace CLAMVM
 {
 		using CLAM::Array;
 		
-		class SinTrackBuilder
+		class CLAM_DLL_EXPORT SinTrackBuilder
 		{
 				// types
 		protected:

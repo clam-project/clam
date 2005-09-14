@@ -13,7 +13,7 @@ namespace CLAM
 		 * Viewing sonogram directly.
 		 */
 
-		void PlotSpectrogram( const Array<Spectrum>& specMtx,
+		void CLAM_DLL_EXPORT PlotSpectrogram( const Array<Spectrum>& specMtx,
 							  const TData& duration,
 							  const std::string& label="",
 							  int x=100,
@@ -21,7 +21,7 @@ namespace CLAM
 							  int w=600,
 							  int h=300 );
 
-		void PlotSpectrogram( const Array<Spectrum>& specMtx,
+		void CLAM_DLL_EXPORT PlotSpectrogram( const Array<Spectrum>& specMtx,
 							  const TData& duration,
 							  std::vector<unsigned>& marks,
 							  const std::string& label="",

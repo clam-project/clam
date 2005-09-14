@@ -8,7 +8,7 @@ namespace CLAM
 {
 	class Frame;
 
-	class FrameTransformation : public Processing
+	class CLAM_DLL_EXPORT FrameTransformation : public Processing
 	{
 		public:
 			FrameTransformation():mAmount("Amount", this){}

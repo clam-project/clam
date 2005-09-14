@@ -33,7 +33,7 @@
 namespace CLAM {
 
 
-	class FrameInterpConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT FrameInterpConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (FrameInterpConfig, 6,ProcessingConfig);
@@ -55,7 +55,7 @@ namespace CLAM {
  *	@todo: maybe other attributes in Frame could also be interpolated if so specified
  *	in the configuration.
  */
-	class FrameInterpolator: public ProcessingComposite {
+	class CLAM_DLL_EXPORT FrameInterpolator: public ProcessingComposite {
 		
 		typedef InControlTmpl<FrameInterpolator> FrameInterpolatorCtl;	
 		

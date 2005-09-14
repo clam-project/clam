@@ -21,6 +21,6 @@
 
 /* only here to force the source dependency of extended.cxx */
 
-extern int tenbytefloat2int (unsigned char *bytes);
-extern void uint2tenbytefloat (unsigned int num, unsigned char *bytes);
+extern int CLAM_DLL_EXPORT tenbytefloat2int (unsigned char *bytes);
+extern void CLAM_DLL_EXPORT uint2tenbytefloat (unsigned int num, unsigned char *bytes);
 

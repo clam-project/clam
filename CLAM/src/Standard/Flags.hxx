@@ -37,7 +37,7 @@ namespace CLAM {
 * It provides some clever pure virtual functions and shared
 * implementations for the symbol managing.
 */
-class FlagsBase : public Component {
+class CLAM_DLL_EXPORT FlagsBase : public Component {
 // Internal Types
 public:
 	/** The type of the positional indexes */
@@ -106,8 +106,8 @@ public:
 	inline bool CheckInvariant();
 };
 
-std::istream & operator >> (std::istream & is, FlagsBase & f);
-std::ostream & operator << (std::ostream & os, const FlagsBase & f);
+CLAM_DLL_EXPORT std::istream & operator >> (std::istream & is, FlagsBase & f);
+CLAM_DLL_EXPORT std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 
 /**
 * Instances of this class represents objects containing a set
@@ -248,7 +248,7 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 	};
 @endcode
 */
-template <unsigned int N> class Flags : public FlagsBase, public std::bitset<N>
+template <unsigned int N> class CLAM_DLL_EXPORT Flags : public FlagsBase, public std::bitset<N>
 {
 // Construction/Destruction
 protected:
@@ -340,12 +340,12 @@ public:
 
 #ifdef _MSC_VER
 template <unsigned int N>
-std::istream & operator >> (std::istream & is, Flags<N> & f) {
+CLAM_DLL_EXPORT std::istream & operator >> (std::istream & is, Flags<N> & f) {
 	return (is >>  static_cast<FlagsBase&>(f) );
 }
 
 template <unsigned int N>
-std::ostream & operator << (std::ostream & os, const Flags<N> & f){
+CLAM_DLL_EXPORT std::ostream & operator << (std::ostream & os, const Flags<N> & f){
 	return (os << static_cast<const FlagsBase&>(f));
 }
 #endif //_MSC_VER

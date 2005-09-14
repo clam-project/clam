@@ -23,6 +23,11 @@
 #define __DISPLAYSURFACE__
 
 #include <qgl.h>
+// Added to avoid the infamous GetClassName macro
+// from leaking through some Windows related header.
+#ifdef GetClassName
+#undef GetClassName
+#endif
 #include <qcursor.h>
 #include "GLView.hxx"
 
@@ -34,7 +39,7 @@ namespace CLAM
     {
 		class PlotController;
 
-		class DisplaySurface : public QGLWidget
+		class CLAM_DLL_EXPORT DisplaySurface : public QGLWidget
 		{
 			Q_OBJECT
 

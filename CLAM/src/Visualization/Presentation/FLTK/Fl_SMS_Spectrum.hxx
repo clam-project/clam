@@ -37,7 +37,7 @@ namespace CLAMVM
 	class Fl_ZoomSlider;
 	class Fl_Gl_Single_Display;
 
-	class Fl_SMS_Spectrum : public SpectrumPresentation, public Fl_Group
+	class CLAM_DLL_EXPORT Fl_SMS_Spectrum : public SpectrumPresentation, public Fl_Group
 	{
 	private:
 		Fl_X_Axis*                  mXAxis;

@@ -31,7 +31,7 @@ namespace CLAM {
 	/**
 	 * Config class for the IFFT Processing
 	 */
-	class IFFTConfig: public ProcessingConfig {
+	class CLAM_DLL_EXPORT IFFTConfig: public ProcessingConfig {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE  (IFFTConfig, 1, ProcessingConfig);
 		DYN_ATTRIBUTE (0,public,int, AudioSize);

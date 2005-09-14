@@ -25,7 +25,7 @@
 namespace CLAMVM
 {
 
-struct Color
+struct CLAM_DLL_EXPORT Color
 {
 	char r;
 	char g;

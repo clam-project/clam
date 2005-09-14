@@ -11,7 +11,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class NetSinTracking
+		class CLAM_DLL_EXPORT NetSinTracking
 		{
 		public:
 			NetSinTracking();

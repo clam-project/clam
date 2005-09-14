@@ -35,7 +35,7 @@ namespace SDIF
 	*       to implement other ways of handling read frames.
 	* @see Collection
 	*/
-	class Storage
+	class CLAM_DLL_EXPORT Storage
 	{
 	public:
 		typedef std::list<Frame*>::const_iterator FrameIterator;

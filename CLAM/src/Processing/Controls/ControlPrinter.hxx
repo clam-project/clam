@@ -30,7 +30,7 @@
 namespace CLAM
 {
 
-class ControlPrinterConfig : public ProcessingConfig
+class CLAM_DLL_EXPORT ControlPrinterConfig : public ProcessingConfig
 {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterConfig, 1, ProcessingConfig);
@@ -40,7 +40,7 @@ class ControlPrinterConfig : public ProcessingConfig
 		void DefaultInit();
 };
 
-class ControlPrinter : public Processing
+class CLAM_DLL_EXPORT ControlPrinter : public Processing
 {
 	ControlPrinterConfig mConfig;
 	InControl mInControl;

@@ -39,7 +39,7 @@ namespace CLAM {
 * controls, and two optional vectors: min and max values for the controls. That is the rang
 * of floats that can be generated for each control.
 */
-class Control2DataConfig : public ProcessingConfig
+class CLAM_DLL_EXPORT Control2DataConfig : public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Control2DataConfig, 3, ProcessingConfig);
@@ -62,7 +62,7 @@ protected:
 * Note that if mulithreading is enabled, the EnqueueControl calls can be done from different
 * threads than the execution method. A lock for the mDataQueue structure ensures it.
 */
-class Control2Data : public Processing
+class CLAM_DLL_EXPORT Control2Data : public Processing
 {
 public:
 	Control2Data ();	

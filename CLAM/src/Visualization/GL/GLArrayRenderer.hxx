@@ -32,7 +32,7 @@ using CLAM::DataArray;
 namespace CLAMGUI
 {
 
-class GLArrayRenderer
+class CLAM_DLL_EXPORT GLArrayRenderer
 	: public ArrayRenderer
 {
 	struct tCullingData

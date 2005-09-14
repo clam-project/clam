@@ -47,7 +47,7 @@ namespace CLAMGUI
  *  This interface is <em>deprecated</em>, so its usage is strongly discouraged. Since
  *  it will be removed soon.
  */
-class ArrayRenderer
+class CLAM_DLL_EXPORT ArrayRenderer
 {
 public:
 

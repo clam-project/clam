@@ -29,7 +29,7 @@
 namespace CLAM
 {
 
-class XmlStorageErr : public Err
+class CLAM_DLL_EXPORT XmlStorageErr : public Err
 {
 	public:
 		XmlStorageErr(const std::string & error);

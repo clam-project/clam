@@ -29,7 +29,7 @@
 
 namespace CLAM {
 
-	class BinaryControlOpConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT BinaryControlOpConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (BinaryControlOpConfig, 1,ProcessingConfig);
@@ -46,7 +46,7 @@ namespace CLAM {
 	};
 
 	template < typename BinOp >
-	class BinaryControlOp:public Processing
+	class CLAM_DLL_EXPORT BinaryControlOp:public Processing
 	{
 	private:
 		TControlData mOutValue;

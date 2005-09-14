@@ -34,7 +34,7 @@ namespace CLAM {
 /** Interface classe for every concrete processing data (data that flows through the processing objs.)
   * @see DynamicType ProcessingDataConfig
   */
-class ProcessingData : public DynamicType
+class CLAM_DLL_EXPORT ProcessingData : public DynamicType
 {
 public:
 

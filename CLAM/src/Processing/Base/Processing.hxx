@@ -49,28 +49,28 @@ namespace CLAM {
 	 * Connects two ports of two processings selecting them by the port name.
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
-	void ConnectPorts(
+	void CLAM_DLL_EXPORT ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName );
 	/**
 	 * Connects two ports of two processings selecting them by the port number.
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
-	void ConnectPorts(
+	void CLAM_DLL_EXPORT ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Free function that connects two controls.
 	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
 	 */
-	void ConnectControls(
+	void CLAM_DLL_EXPORT ConnectControls(
 			Processing & sender, unsigned outControlNumber, 
 			Processing & receiver, unsigned inControlNumber );
 	/**
 	 * Connects two controls of two processings selecting them by the control name.
 	 * Short hand for sender.GetOutControls().GetByName(outControlName).AddLink(&receiver.GetOutControls().GetByName(inControlName))
 	 */
-	void ConnectControls(
+	void CLAM_DLL_EXPORT ConnectControls(
 			Processing & sender, const std::string & outControlName, 
 			Processing & receiver, const std::string & inControlName );
 		
@@ -78,14 +78,14 @@ namespace CLAM {
 	 * Connects a free port to one belonging to a processing selecting it by the port number.
 	 * Short hand for sender.ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
-	void ConnectPorts(
+	void CLAM_DLL_EXPORT ConnectPorts(
 			OutPortBase & sender, 
 			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Connects a processing port, selected by number, to a free in port.
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver)
 	 */
-	void ConnectPorts(
+	void CLAM_DLL_EXPORT ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			InPortBase & receiver );
 	/**
@@ -132,7 +132,7 @@ namespace CLAM {
 	 * }
 	 * @enddot
 	 */
-	class Processing {
+	class CLAM_DLL_EXPORT Processing {
 	public:
 		/** Processing Object possible execution states. */
 		typedef enum {

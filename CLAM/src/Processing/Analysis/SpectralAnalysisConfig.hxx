@@ -38,7 +38,7 @@ namespace CLAM {
  *  WindowGenerator, Circular Shift and FFT. These configurations
  *  should only be modified by advanced users
  */
-class SpectralAnalysisConfig:public ProcessingConfig
+class CLAM_DLL_EXPORT SpectralAnalysisConfig:public ProcessingConfig
 {
 	friend class SpectralAnalysis;
 

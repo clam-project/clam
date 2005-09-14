@@ -61,7 +61,7 @@ class InControl;
  * \warning This class is just temptative. It is likely to be
  *		soon depracated
  */
-class ControlLinker
+class CLAM_DLL_EXPORT ControlLinker
 {
 // Attributes:
 private:

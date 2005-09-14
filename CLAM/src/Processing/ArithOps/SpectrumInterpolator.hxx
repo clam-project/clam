@@ -32,7 +32,7 @@
 namespace CLAM {
 
 
-	class SpecInterpConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpecInterpConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpecInterpConfig, 1,ProcessingConfig);
@@ -75,7 +75,7 @@ namespace CLAM {
  * range and point possition, the way to go is obvious, but in other
  * situations it is not so simple. Whe should probably merge both
  * BPFs, into a new BPF.  */
-	class SpectrumInterpolator: public Processing {
+	class CLAM_DLL_EXPORT SpectrumInterpolator: public Processing {
 		
 		typedef InControlTmpl<SpectrumInterpolator> SpectrumInterpolatorCtl;	
 		

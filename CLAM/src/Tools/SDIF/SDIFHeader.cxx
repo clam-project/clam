@@ -39,8 +39,8 @@ namespace SDIF
 		mnMatrices = 0;	
 	}
 
-	MatrixHeader::MatrixHeader(const TypeId& type = "\0\0\0\0",DataType dataType = eUnknown,
-		CLAM::TInt32 nRows = 0, CLAM::TInt32 nColumns = 0)
+	MatrixHeader::MatrixHeader(const TypeId& type, DataType dataType,
+		CLAM::TInt32 nRows, CLAM::TInt32 nColumns)
 	{
 		mType = type;
 		mDataType = dataType;

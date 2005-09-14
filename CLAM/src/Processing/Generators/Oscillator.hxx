@@ -33,7 +33,7 @@
 namespace CLAM
 {
 	
-class OscillatorConfig: public ProcessingConfig
+class CLAM_DLL_EXPORT OscillatorConfig: public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (OscillatorConfig, 5, ProcessingConfig);
@@ -46,7 +46,7 @@ protected:
 	void DefaultInit(void);
 };
 
-class Oscillator : public SimpleOscillator
+class CLAM_DLL_EXPORT Oscillator : public SimpleOscillator
 {
 	OscillatorConfig mConfig;
 

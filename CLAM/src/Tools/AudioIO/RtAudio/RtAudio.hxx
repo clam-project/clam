@@ -88,7 +88,7 @@
   typedef pthread_mutex_t MUTEX;
 
 #elif defined(__WINDOWS_DS__)
-  #include "CLAM_Windows.h"
+  #include <CLAM/CLAM_Windows.h>
   #include <process.h>
 
   // The following struct is used to hold the extra variables
@@ -150,7 +150,7 @@
 */
 /************************************************************************/
 
-class RtError
+class CLAM_DLL_EXPORT RtError
 {
 public:
   //! Defined RtError types.
@@ -214,7 +214,7 @@ typedef struct {
 //
 // *************************************************** //
 
-class RtAudio
+class CLAM_DLL_EXPORT RtAudio
 {
 public:
 

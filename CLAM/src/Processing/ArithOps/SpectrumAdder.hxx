@@ -32,7 +32,7 @@
 namespace CLAM {
 
 
-	class SpecAdderConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpecAdderConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpecAdderConfig, 1,ProcessingConfig);
@@ -73,7 +73,7 @@ namespace CLAM {
  *      some of the objects lack it (and need format conversion).
  * </ul>
  **/
-	class SpectrumAdder: public Processing {
+	class CLAM_DLL_EXPORT SpectrumAdder: public Processing {
 		SpecAdderConfig mConfig;
 
 		/** Size of the input/output vectors */

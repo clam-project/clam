@@ -30,7 +30,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SinTrackHorClipper
+		class CLAM_DLL_EXPORT SinTrackHorClipper
 		{
 			typedef SineTrackSpanEnds::iterator peak_iterator;
 

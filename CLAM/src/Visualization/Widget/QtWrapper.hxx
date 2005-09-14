@@ -32,7 +32,7 @@ namespace CLAMVM
 
 class QtAppSignaler;
 
-class QtWrapper
+class CLAM_DLL_EXPORT QtWrapper
 	: public WidgetTKWrapper
 {
 

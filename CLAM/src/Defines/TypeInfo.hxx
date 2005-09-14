@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-	class DefaultTypeInfo {
+	class CLAM_DLL_EXPORT DefaultTypeInfo {
 	public:
 		typedef StaticFalse StorableAsLeaf;
 		typedef StaticFalse IsComponent;
@@ -36,22 +36,22 @@ namespace CLAM {
 	};
 
 	/** C native types TypeInfo base class */
-	class BasicCTypeInfo : public DefaultTypeInfo {
+	class CLAM_DLL_EXPORT BasicCTypeInfo : public DefaultTypeInfo {
 	public:
 		typedef StaticTrue StorableAsLeaf;
 	};
 
-	class ContainerTypeInfo : public DefaultTypeInfo {
+	class CLAM_DLL_EXPORT ContainerTypeInfo : public DefaultTypeInfo {
 	public:
 		typedef StaticTrue IsIterable;
 	};
 
 	// Default TypeInfo definition
-	template <typename T> class TypeInfo : public DefaultTypeInfo {};
+	template <typename T> class CLAM_DLL_EXPORT TypeInfo : public DefaultTypeInfo {};
 
 	// A short for defining a class belonging to a TypeInfo group
 #define CLAM_TYPEINFOGROUP(GROUP, TYPE) \
-	template <> class TypeInfo< TYPE > : public GROUP  {};
+	template <> class CLAM_DLL_EXPORT TypeInfo< TYPE > : public GROUP  {};
 
 	CLAM_TYPEINFOGROUP(BasicCTypeInfo, char);
 	CLAM_TYPEINFOGROUP(BasicCTypeInfo, unsigned char);

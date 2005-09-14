@@ -17,7 +17,7 @@ namespace CLAM
 namespace CLAM
 {
 
-	class FundPlotProcessingConfig : public ProcessingConfig
+	class CLAM_DLL_EXPORT FundPlotProcessingConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (FundPlotProcessingConfig, 6, ProcessingConfig);
@@ -32,7 +32,7 @@ namespace CLAM
 		void DefaultInit();
 	};
 
-	class FundPlotProcessing : public Processing
+	class CLAM_DLL_EXPORT FundPlotProcessing : public Processing
 	{
 	public:
 		FundPlotProcessing();

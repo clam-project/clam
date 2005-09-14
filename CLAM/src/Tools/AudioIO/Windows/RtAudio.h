@@ -68,7 +68,7 @@
 //
 // *************************************************** //
 
-class RtError
+class CLAM_DLL_EXPORT RtError
 {
 public:
   enum TYPE {
@@ -115,7 +115,7 @@ public:
 //
 // *************************************************** //
 
-class RtAudio
+class CLAM_DLL_EXPORT RtAudio
 {
 public:
 

@@ -10,7 +10,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class NetFundTrackPlotController : public NetPlotController 
+		class CLAM_DLL_EXPORT NetFundTrackPlotController : public NetPlotController 
 		{
 		public:
 			typedef FundTrackPortMonitor MonitorType;

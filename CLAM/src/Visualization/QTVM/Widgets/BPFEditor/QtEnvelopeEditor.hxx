@@ -5,7 +5,7 @@
 #include <vector>
 #include "BPF.hxx"
 #include "envelope_point_editor.hxx"
-#include "envelope.hxx"
+#include "ct_envelope.hxx"
 
 // Provisional
 #include "AudioManager.hxx"
@@ -13,7 +13,7 @@
 namespace CLAM 
 {
 
-class QtEnvelopeEditor : public QWidget {
+class CLAM_DLL_EXPORT QtEnvelopeEditor : public QWidget {
 
 Q_OBJECT
 

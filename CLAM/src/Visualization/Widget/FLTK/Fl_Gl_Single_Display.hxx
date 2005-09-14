@@ -27,7 +27,7 @@
 
 namespace CLAMVM
 {
-	class Fl_Gl_Single_Display : public Fl_Gl_2DSurface
+	class CLAM_DLL_EXPORT Fl_Gl_Single_Display : public Fl_Gl_2DSurface
 	{
 	public:
 			Fl_Gl_Single_Display( int X, int Y, int W, int H, const char* label = 0);

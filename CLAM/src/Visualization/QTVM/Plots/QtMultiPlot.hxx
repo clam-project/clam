@@ -38,7 +38,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class QtMultiPlot : public SingleDisplayPlot
+		class CLAM_DLL_EXPORT QtMultiPlot : public SingleDisplayPlot
 		{
 			Q_OBJECT
 

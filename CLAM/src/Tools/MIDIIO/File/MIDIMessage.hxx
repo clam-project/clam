@@ -29,7 +29,7 @@
 namespace MIDI
 {
 
-	class Message
+	class CLAM_DLL_EXPORT Message
 	/* an ordinary MIDI message contains between 2 and 4 bytes. reserve
 	** space for the maximum, 4. */
 	{

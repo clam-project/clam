@@ -29,7 +29,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SineTracksAdapter
+		class CLAM_DLL_EXPORT SineTracksAdapter
 		{
 		public:
 			SineTracksAdapter();

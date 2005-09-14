@@ -37,7 +37,7 @@ namespace CLAM
 {
 	class EInterpolation;
 
-	template <class TX,class TY> class BPFTmpl:public Component
+	template <class TX,class TY> class CLAM_DLL_EXPORT BPFTmpl:public Component
 	{
 		static const TData Infinity;
 

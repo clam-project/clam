@@ -31,7 +31,7 @@ namespace CLAM
 {
 
 	template <class T>
-	class MatrixTmpl
+	class CLAM_DLL_EXPORT MatrixTmpl
 	{
 	public:
 		MatrixTmpl();

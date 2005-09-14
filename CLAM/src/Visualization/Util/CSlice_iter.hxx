@@ -32,7 +32,7 @@
  */
 
 template < typename T, typename SliceType = std::slice >
-class CSlice_iter
+class CLAM_DLL_EXPORT CSlice_iter
 {
 public:
 

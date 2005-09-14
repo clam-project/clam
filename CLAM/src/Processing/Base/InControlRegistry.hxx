@@ -29,7 +29,7 @@ namespace CLAM
 {
 class InControl;
 
-class InControlRegistry
+class CLAM_DLL_EXPORT InControlRegistry
 {
 	std::vector<InControl*> mInControls;
 public:

@@ -27,7 +27,7 @@
 namespace CLAMGUI
 {
 
-	class GLPhaseSpRenderer
+	class CLAM_DLL_EXPORT GLPhaseSpRenderer
 	: public GLArrayRenderer
 	{
 	public:

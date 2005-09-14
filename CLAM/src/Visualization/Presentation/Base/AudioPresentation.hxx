@@ -42,7 +42,7 @@ namespace CLAMVM
 	 *   This abstract class is the base class for all CLAM-based
 	 *   audio signal graphical representations.
 	 */
-	class AudioPresentation 
+	class CLAM_DLL_EXPORT AudioPresentation 
 		: public Presentation
 	{
 	protected:				

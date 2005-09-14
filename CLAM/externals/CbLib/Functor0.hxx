@@ -27,7 +27,7 @@
 namespace CBL
 {
 
-class Functor0 : public FunctorBase
+class CLAM_DLL_EXPORT Functor0 : public FunctorBase
 {
 public:
 

@@ -30,7 +30,7 @@ namespace CLAM {
 	/**
 	 * Config class for the PhaseManagement Processing
 	 */
-class PhaseManagementConfig:public ProcessingConfig
+class CLAM_DLL_EXPORT PhaseManagementConfig:public ProcessingConfig
 {
 	DYNAMIC_TYPE_USING_INTERFACE (PhaseManagementConfig,3,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,TSize,MaxSines);

@@ -38,7 +38,7 @@ namespace CLAM
  * Controls the Xerces-C DOM serializer.
  * @ingroup XmlBackends_Xerces
  */
-class XercesDomWriter
+class CLAM_DLL_EXPORT XercesDomWriter
 {
 	public:
 		XercesDomWriter()

@@ -27,7 +27,7 @@
 
 namespace CLAM {
 
-template <class T> class SearchList
+template <class T> class CLAM_DLL_EXPORT SearchList
 {
 private:
 	List<T>* mpList;

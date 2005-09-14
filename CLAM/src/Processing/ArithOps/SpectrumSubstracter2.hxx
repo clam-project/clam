@@ -31,7 +31,7 @@
 namespace CLAM {
 
 
-	class SpecSubstracter2Config: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpecSubstracter2Config: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpecSubstracter2Config, 0,ProcessingConfig);
@@ -57,7 +57,7 @@ namespace CLAM {
  * @todo
  * @see SpectrumSubstracter2
  */
-	class SpectrumSubstracter2: public Processing {
+	class CLAM_DLL_EXPORT SpectrumSubstracter2: public Processing {
 		SpecSubstracter2Config mConfig;
 
 		/** Size of the input/output vectors */

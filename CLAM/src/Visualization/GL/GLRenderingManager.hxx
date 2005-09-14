@@ -30,7 +30,7 @@ namespace CLAMVM
 
 	class DrawingSurface2D;
 
-	class GLRenderingManager
+	class CLAM_DLL_EXPORT GLRenderingManager
 	{
 	public:
 

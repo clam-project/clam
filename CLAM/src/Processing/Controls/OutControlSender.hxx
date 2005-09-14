@@ -10,7 +10,7 @@
 namespace CLAM
 {
 
-class OutControlSenderConfig : public ProcessingConfig
+class CLAM_DLL_EXPORT OutControlSenderConfig : public ProcessingConfig
 {	
 public:
 	class EControlRepresentation : public Enum
@@ -50,7 +50,7 @@ protected:
 	void DefaultInit(void);
 };
 
-class OutControlSender : public Processing
+class CLAM_DLL_EXPORT OutControlSender : public Processing
 {
 	OutControlSenderConfig mConfig;
 	OutControl mOutput;

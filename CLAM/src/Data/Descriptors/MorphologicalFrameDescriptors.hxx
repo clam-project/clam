@@ -46,7 +46,7 @@ namespace CLAM{
  * inside the frame. TODO: add specific descriptors.
  *
  */
-class MorphologicalFrameDescriptors : public CLAM::ProcessingData
+class CLAM_DLL_EXPORT MorphologicalFrameDescriptors : public CLAM::ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (MorphologicalFrameDescriptors, 7, ProcessingData);

@@ -42,7 +42,7 @@
 
 namespace CLAM{
 
-class SoundFileIO
+class CLAM_DLL_EXPORT SoundFileIO
 {
 public:
 	enum EMode{

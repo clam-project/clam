@@ -31,7 +31,7 @@
 namespace CLAM 
 {
 
-class Envelope_Point_Editor : public QWidget {
+class CLAM_DLL_EXPORT Envelope_Point_Editor : public QWidget {
 
 Q_OBJECT
 

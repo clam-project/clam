@@ -30,7 +30,7 @@
 
 namespace CLAM{
 
-class MorphologicalSegmentDescriptors : public ProcessingData
+class CLAM_DLL_EXPORT MorphologicalSegmentDescriptors : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (MorphologicalSegmentDescriptors, 18, ProcessingData);

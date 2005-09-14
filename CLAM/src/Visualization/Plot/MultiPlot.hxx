@@ -34,7 +34,7 @@ namespace CLAMVM
 {
 	class SequenceRenderingManager;
 
-	class MultiPlot : public GenericPlot
+	class CLAM_DLL_EXPORT MultiPlot : public GenericPlot
 	{
 	public:
 		MultiPlot( );

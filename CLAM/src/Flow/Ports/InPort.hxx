@@ -32,7 +32,7 @@ namespace CLAM
 class OutPortBase; 
 class Processing;
 
-class InPortBase
+class CLAM_DLL_EXPORT InPortBase
 {
 public:
 	InPortBase( const std::string & name = "unnamed in port", Processing * proc = 0 );
@@ -57,7 +57,7 @@ protected:
 
 
 template<typename Token>
-class InPort : public InPortBase
+class CLAM_DLL_EXPORT InPort : public InPortBase
 {
 	typedef WritingRegion<Token> ProperWritingRegion;
 	typedef typename ProperWritingRegion::ProperReadingRegion ProperReadingRegion;

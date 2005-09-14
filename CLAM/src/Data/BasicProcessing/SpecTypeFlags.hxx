@@ -39,7 +39,7 @@ namespace CLAM
 * use the std::bit interface and Flags added functionalities.
 * @see Flags
 */
-struct SpecTypeFlags : public Flags<4>
+struct CLAM_DLL_EXPORT SpecTypeFlags : public Flags<4>
 {
 public:
 	static tFlagValue sFlagValues[];
@@ -54,27 +54,10 @@ public:
 		eMagPhaseBPF=3
 	} tFlags;
 // Constructors
-	SpecTypeFlags () :
-		Flags<4>(sFlagValues),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-	{
-		bComplex = 0;
-		bPolar = 0; 
-		bMagPhase = 1;
-		bMagPhaseBPF = 0;
-	}
+	SpecTypeFlags();
 
 
-	SpecTypeFlags (const SpecTypeFlags &t) : 
-		Flags<4>(sFlagValues,t),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-	{};
+	SpecTypeFlags (const SpecTypeFlags &t);
 
 /*
 	template <typename T1, typename T2> SpecTypeFlags (const T1 &t1,const T2 &t2) :

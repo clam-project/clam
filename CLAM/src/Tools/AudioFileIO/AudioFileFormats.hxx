@@ -35,7 +35,7 @@
 namespace CLAM
 {
 
-	class EAudioFileKind
+	class CLAM_DLL_EXPORT EAudioFileKind
 		: public Enum
 	{
 	public:
@@ -56,7 +56,7 @@ namespace CLAM
 		virtual Component* Species() const;
 	};
 
-	class EAudioFileFormat
+	class CLAM_DLL_EXPORT EAudioFileFormat
 		: public Enum
 	{
 	public:
@@ -101,7 +101,7 @@ namespace CLAM
 
 	};
 
-	class EAudioFileEncoding
+	class CLAM_DLL_EXPORT EAudioFileEncoding
 		: public Enum
 	{
 	public:
@@ -141,7 +141,7 @@ namespace CLAM
 		virtual Component* Species() const;
 	};
 
-	class EAudioFileEndianess
+	class CLAM_DLL_EXPORT EAudioFileEndianess
 		: public Enum
 	{
 	public:

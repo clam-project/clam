@@ -37,7 +37,7 @@ namespace CLAM{
 * @todo This class could abstract more common behaviour from subclasses by becoming template
 */
 template <bool abs>
-class DescriptorTmpl:public ProcessingData
+class CLAM_DLL_EXPORT DescriptorTmpl:public ProcessingData
 {
 public:
 	DescriptorTmpl(int n):ProcessingData(n){mpStats=0;}

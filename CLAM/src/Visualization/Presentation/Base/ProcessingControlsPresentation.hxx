@@ -27,7 +27,7 @@
 
 namespace CLAMVM
 {
-	class ProcessingInControlsPresentation
+	class CLAM_DLL_EXPORT ProcessingInControlsPresentation
 	{
 	public:
 		virtual ~ProcessingInControlsPresentation();

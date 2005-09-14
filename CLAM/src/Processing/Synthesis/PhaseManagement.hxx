@@ -42,7 +42,7 @@ namespace CLAM
 * <li> phase alignment</li>
 *
 */
-class	PhaseManagement:public Processing
+class	CLAM_DLL_EXPORT PhaseManagement:public Processing
 {
 public:
 

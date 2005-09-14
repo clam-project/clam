@@ -33,7 +33,7 @@
 namespace CBL
 {
 
-class FunctorBase
+class CLAM_DLL_EXPORT FunctorBase
 {
 	class A
 	{

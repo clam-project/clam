@@ -33,7 +33,7 @@
 
 #include "Component.hxx"
 #include "DataTypes.hxx"
-
+#include "DynamicLibraryDefinitions.hxx"
 #include <new>
 
 namespace CLAM {
@@ -67,7 +67,7 @@ namespace CLAM {
  * @see DynamicBranch
  *
  */
-class DynamicType : public Component
+class CLAM_DLL_EXPORT DynamicType : public Component
 {
 public:
 	/**

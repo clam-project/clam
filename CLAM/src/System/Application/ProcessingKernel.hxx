@@ -27,7 +27,7 @@ namespace CLAM
 
 class Thread;
 
-class ProcessingKernel
+class CLAM_DLL_EXPORT ProcessingKernel
 {
 
 public:

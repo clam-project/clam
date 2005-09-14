@@ -10,7 +10,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class SpectrogramPlotController : public PlotController 
+		class CLAM_DLL_EXPORT SpectrogramPlotController : public PlotController 
 		{
 			Q_OBJECT
 

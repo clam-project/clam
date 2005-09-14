@@ -29,7 +29,7 @@
 namespace CLAM
 {
 
-struct DoubleBuffer
+struct CLAM_DLL_EXPORT DoubleBuffer
 {
 	short*   mFrontBuffer;
 	short*   mBackBuffer;

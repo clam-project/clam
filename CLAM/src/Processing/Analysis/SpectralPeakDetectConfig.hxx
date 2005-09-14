@@ -31,7 +31,7 @@ namespace CLAM {
 	/** Configuration class for SpectralPeakDetect objects
 	 *  @see ProcessingConfig, SpectralPeakDetect
 	 */
-	class SpectralPeakDetectConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpectralPeakDetectConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDetectConfig, 3, ProcessingConfig);

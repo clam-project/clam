@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-template <class T> class SearchArray
+template <class T> class CLAM_DLL_EXPORT SearchArray
 {
 /* Based on locate() and hunt(), Numerical Recipes,second Edition, 117 */
 private:

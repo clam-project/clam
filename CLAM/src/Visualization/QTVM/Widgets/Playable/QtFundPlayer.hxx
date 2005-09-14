@@ -29,7 +29,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class QtFundPlayer : public QtSinglePlayer
+		class CLAM_DLL_EXPORT QtFundPlayer : public QtSinglePlayer
 		{
 		public:
 			QtFundPlayer(QWidget* parent=0);

@@ -43,7 +43,7 @@ namespace CLAM {
  * methods in order to know the XML structure.
  */
 
-class XMLable : public Storable {
+class CLAM_DLL_EXPORT XMLable : public Storable {
 // Construction/Destruction
 public:
 	virtual ~XMLable() {};

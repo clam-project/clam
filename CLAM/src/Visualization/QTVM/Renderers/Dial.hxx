@@ -28,7 +28,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class Dial : public Renderer
+		class CLAM_DLL_EXPORT Dial : public Renderer
 		{
 		public:
 			Dial();

@@ -30,7 +30,7 @@ namespace CLAM
 	 * A container for the values for a single attribute along the scope.
 	 * @ingroup SemanticalAnalysis
 	 */
-	class AttributePool : public Component
+	class CLAM_DLL_EXPORT AttributePool : public Component
 	{
 	public:
 		AttributePool()

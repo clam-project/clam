@@ -45,7 +45,7 @@ namespace CLAM {
  * One member function : Print
  * One data member : mMsg 
  */
-	class Err : public std::exception
+	class CLAM_DLL_EXPORT Err : public std::exception
 	{
 	protected:
 		char* mMsg;

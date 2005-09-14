@@ -34,14 +34,14 @@ namespace CLAM
 		 * Viewing CLAM::Audio directly.
 		 */
   
-		void PlotAudio(	const Audio& audio,
+		void CLAM_DLL_EXPORT PlotAudio(	const Audio& audio,
 						const std::string& label="",
 						int x=100, 
 						int y=100, 
 						int w=500, 
 						int h=225 );
 
-		void PlotAudios( const Audio& audio,
+		void CLAM_DLL_EXPORT PlotAudios( const Audio& audio,
 						 std::vector<unsigned>& marks,
 						 const std::string& label="",
 						 int x=100, 

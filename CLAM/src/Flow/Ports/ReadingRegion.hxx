@@ -29,7 +29,7 @@ namespace CLAM
 {
 
 template<class WritingRegion>
-class ReadingRegion : public Region
+class CLAM_DLL_EXPORT ReadingRegion : public Region
 {
 	typedef typename WritingRegion::ProperStream ProperStream;
 	typedef typename WritingRegion::ProperToken ProperToken;

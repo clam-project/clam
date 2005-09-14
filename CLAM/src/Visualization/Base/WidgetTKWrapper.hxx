@@ -37,7 +37,7 @@ namespace CLAMVM
  *  This CLAM::Enum identifies the toolkits that CLAM is
  *  able to wrap. 
  */
-class EWidgetTK
+class CLAM_DLL_EXPORT EWidgetTK
 	: public CLAM::Enum
 {
 public:
@@ -79,7 +79,7 @@ public:
 		 *   <em>NOTE:</em> This class will be refactored soon, so keep in mind
 		 *   slight interface changes in the near future.
 		 */
-class WidgetTKWrapper
+class CLAM_DLL_EXPORT WidgetTKWrapper
 {
 
 public:

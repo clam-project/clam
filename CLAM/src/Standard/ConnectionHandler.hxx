@@ -54,7 +54,7 @@ namespace SigSlot
  *  \sa Signalv1(SI), Signalv0(SI), Signalv2(SI), Signalv3(SI), Signalv4(SI) 
  */
 	template < class SignalType >
-	class ConnectionHandler
+	class CLAM_DLL_EXPORT ConnectionHandler
 	{
 	public:
 		/** The callback type definition */

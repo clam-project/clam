@@ -10,7 +10,7 @@
 
 namespace CLAM
 {
-    class OutControlPublisher : public OutControl
+    class CLAM_DLL_EXPORT OutControlPublisher : public OutControl
 	{
 			OutControl* mPublished;
 

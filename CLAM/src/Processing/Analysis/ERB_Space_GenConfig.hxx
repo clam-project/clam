@@ -27,7 +27,7 @@
 
 namespace CLAM
 {
-	class ERB_SpaceGenConfig : public ProcessingConfig
+	class CLAM_DLL_EXPORT ERB_SpaceGenConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (ERB_SpaceGenConfig, 3,ProcessingConfig);

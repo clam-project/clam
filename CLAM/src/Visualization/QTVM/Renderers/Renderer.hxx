@@ -28,7 +28,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class Renderer
+		class CLAM_DLL_EXPORT Renderer
 		{
 		public:
 			Renderer();

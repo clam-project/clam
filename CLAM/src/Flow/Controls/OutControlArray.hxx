@@ -10,7 +10,7 @@
 
 namespace CLAM{
 
-class OutControlArray
+class CLAM_DLL_EXPORT OutControlArray
 {
 	std::vector<OutControl*> mControls;
 public:

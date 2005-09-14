@@ -30,7 +30,7 @@ namespace MIDI
 	class Song;
 	class Track;
 
-	class Tempo
+	class CLAM_DLL_EXPORT Tempo
 	/* class to convert midi ticks to time in milliseconds, 
 	** according to the tempo information in a certain track 
 	** (typically the first) of a midi song

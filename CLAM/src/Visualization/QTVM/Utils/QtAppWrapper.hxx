@@ -28,7 +28,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class QtAppWrapper
+		class CLAM_DLL_EXPORT QtAppWrapper
 		{
 			typedef QApplication* Wrapper; 
 			

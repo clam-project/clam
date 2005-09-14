@@ -45,7 +45,7 @@ namespace CLAMVM
 	class GLStraightLineArray;
 		
 
-	class AudioRenderingManager : public GLRenderingManager
+	class CLAM_DLL_EXPORT AudioRenderingManager : public GLRenderingManager
 	{
 	public:
 

@@ -28,7 +28,7 @@ namespace CLAMVM
 {
 	class GLRenderingManager;
 
-	class Fl_SinglePlot : public Fl_Plot
+	class CLAM_DLL_EXPORT Fl_SinglePlot : public Fl_Plot
 	{		
 	public:
 		Fl_SinglePlot();

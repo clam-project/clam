@@ -40,7 +40,7 @@ namespace CLAM
  * @todo Explicit namespaces (now are supported by hand)
  * @todo Checks on element levels
  */
-class XmlWriteContext
+class CLAM_DLL_EXPORT XmlWriteContext
 {
 	public:
 		XmlWriteContext(std::ostream & targetStream) :

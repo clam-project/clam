@@ -32,7 +32,7 @@
 
 namespace CLAM {
 
-	class ControlMapperConfig:public ProcessingConfig
+	class CLAM_DLL_EXPORT ControlMapperConfig:public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (ControlMapperConfig, 3,ProcessingConfig);
@@ -43,7 +43,7 @@ namespace CLAM {
 		void DefaultInit(void);		
 	};
 
-	class ControlMapper:public Processing
+	class CLAM_DLL_EXPORT ControlMapper:public Processing
 	{
 	private:
 		ControlMapperConfig mConfig;

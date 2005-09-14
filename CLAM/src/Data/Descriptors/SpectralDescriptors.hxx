@@ -35,7 +35,7 @@
 
 namespace CLAM {
 
-  	class SpectralDescriptors : public Descriptor {
+  	class CLAM_DLL_EXPORT SpectralDescriptors : public Descriptor {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 21, Descriptor);
 		
@@ -144,14 +144,14 @@ namespace CLAM {
 		double mDeltaFreq; // double because a lot of computations depends on its precission
 };
 
-SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult);
-SpectralDescriptors operator * (TData mult,const SpectralDescriptors& a);
-SpectralDescriptors operator / (const SpectralDescriptors& a,TData div);
-SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescriptors& b) ;
-SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDescriptors& b);
+SpectralDescriptors CLAM_DLL_EXPORT operator * (const SpectralDescriptors& a,TData mult);
+SpectralDescriptors CLAM_DLL_EXPORT operator * (TData mult,const SpectralDescriptors& a);
+SpectralDescriptors CLAM_DLL_EXPORT operator / (const SpectralDescriptors& a,TData div);
+SpectralDescriptors CLAM_DLL_EXPORT operator * (const SpectralDescriptors& a,const SpectralDescriptors& b) ;
+SpectralDescriptors CLAM_DLL_EXPORT operator + (const SpectralDescriptors& a, const SpectralDescriptors& b);
 
 template<>
-inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const SpectralDescriptors& b)
+inline SpectralDescriptors CLAM_DLL_EXPORT CLAM_max (const SpectralDescriptors& a,const SpectralDescriptors& b)
 {
 	SpectralDescriptors  tmpD(a);
 	if(a.HasMean() && b.HasMean() )
@@ -262,7 +262,7 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 }
 
 template<>
-inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const SpectralDescriptors& b)
+inline SpectralDescriptors CLAM_DLL_EXPORT CLAM_min (const SpectralDescriptors& a,const SpectralDescriptors& b)
 {
 	SpectralDescriptors  tmpD(a);
 	if(a.HasMean() && b.HasMean() )

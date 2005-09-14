@@ -32,7 +32,7 @@ namespace CLAM
 	class AudioInPort;
 	class Audio;
 
-	class MultiChannelAudioFileWriter
+	class CLAM_DLL_EXPORT MultiChannelAudioFileWriter
 		: public Processing
 	{
 	public:

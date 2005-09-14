@@ -33,7 +33,7 @@
 
 namespace CLAM
 {
-	class AudioPlayer
+	class CLAM_DLL_EXPORT AudioPlayer
 	{
 		Audio* mAudioReference;
 		SigSlot::Signalv0 mRequestStop;

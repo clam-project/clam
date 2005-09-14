@@ -34,7 +34,7 @@ namespace CBL
  */
 
 template < class Parm1Type >
-class Functor1 : public FunctorBase
+class CLAM_DLL_EXPORT Functor1 : public FunctorBase
 {
 public:
 	

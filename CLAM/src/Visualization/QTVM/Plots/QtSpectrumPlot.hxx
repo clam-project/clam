@@ -39,7 +39,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class QtSpectrumPlot : public SingleDisplayPlot
+		class CLAM_DLL_EXPORT QtSpectrumPlot : public SingleDisplayPlot
 		{
 
 			Q_OBJECT

@@ -31,7 +31,7 @@
 
 namespace CLAM {
 
-	class EAudioFileType : public Enum
+	class CLAM_DLL_EXPORT EAudioFileType : public Enum
 	{
 	public:
 
@@ -69,7 +69,7 @@ namespace CLAM {
 
 	/** Configuration class for AudioFileIn/Out classes
 	 */
-	struct AudioFileConfig: public ProcessingConfig {
+	struct CLAM_DLL_EXPORT AudioFileConfig: public ProcessingConfig {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE
 			(AudioFileConfig, 7, ProcessingConfig);

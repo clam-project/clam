@@ -38,7 +38,7 @@ namespace SDIF
 	*       
 	*       @see Collection.
 	*/
-	class Stream
+	class CLAM_DLL_EXPORT Stream
 	{
 	public:
 		typedef std::list<Frame*>::const_iterator FrameIterator;

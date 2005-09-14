@@ -26,7 +26,7 @@
 
 namespace CLAM{
 
-class AIFFFileIO:public SoundFileIO
+class CLAM_DLL_EXPORT AIFFFileIO:public SoundFileIO
 {
 public:
 	~AIFFFileIO()

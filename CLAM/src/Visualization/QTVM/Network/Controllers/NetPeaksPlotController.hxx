@@ -10,7 +10,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class NetPeaksPlotController : public NetPlotController
+		class CLAM_DLL_EXPORT NetPeaksPlotController : public NetPlotController
 		{
 		public:
 			typedef PeaksPortMonitor MonitorType;

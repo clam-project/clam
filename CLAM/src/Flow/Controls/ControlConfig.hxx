@@ -27,7 +27,7 @@
 namespace CLAM
 {
 
-	class ControlConfig : public DynamicType {
+	class CLAM_DLL_EXPORT ControlConfig : public DynamicType {
 	public:
 		DYNAMIC_TYPE(ControlConfig, 3);
 		DYN_ATTRIBUTE(0, public, TData, InitValue);

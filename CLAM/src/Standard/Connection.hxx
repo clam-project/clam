@@ -43,7 +43,7 @@ class Signal;
  *  \sa   Signal, Signalv0, Signalv1, Signalv2, Signalv3, Signalv4
  *  \sa   Slot, Slotv0, Slotv1, Slotv2, Slotv3, Slotv4
  */
-class Connection
+class CLAM_DLL_EXPORT Connection
 {
 public:
 		typedef unsigned tConnectionId; /**< Type declaration for the ConnectionId */

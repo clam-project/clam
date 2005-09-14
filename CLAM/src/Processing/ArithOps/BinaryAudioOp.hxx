@@ -34,14 +34,14 @@
 namespace CLAM 
 {
 	
-	class BinaryAudioOpConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT BinaryAudioOpConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (BinaryAudioOpConfig, 0, ProcessingConfig);
 	};
 	
 	template < typename BinOp >
-	class BinaryAudioOp
+	class CLAM_DLL_EXPORT BinaryAudioOp
 		: public Processing 
 	{
 		BinaryAudioOpConfig mConfig;

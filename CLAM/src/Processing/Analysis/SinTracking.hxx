@@ -58,7 +58,7 @@ namespace CLAM {
 	 * of the same input material (ie, if you want to track two different sources, 
 	 * you must use two seperate SinTrackings).
 	 */
-	class SinTracking: public Processing
+	class CLAM_DLL_EXPORT SinTracking: public Processing
 	{
 		mutable SinTrackingConfig mConfig;
 

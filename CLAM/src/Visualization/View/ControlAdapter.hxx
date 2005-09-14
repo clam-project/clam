@@ -32,7 +32,7 @@ namespace CLAMVM
 		using CLAM::InControl;
 		using CLAM::OutControl;
 
-		class ControlAdapter
+		class CLAM_DLL_EXPORT ControlAdapter
 				: public  ModelController, public  InputControlModel
 		{
 		private:

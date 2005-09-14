@@ -34,14 +34,14 @@ namespace CLAM
 		 * Viewing sinusoidal tracks directly.
 		 */
 
-		void PlotSinTracks( const Segment& segment,
+		void CLAM_DLL_EXPORT PlotSinTracks( const Segment& segment,
 							const std::string& label="",
 							int x=100,
 							int y=100,
 							int w=500,
 							int h=225 );
 
-		void PlotSinTracks( const Array< SpectralPeakArray >& peakMtx, 
+		void CLAM_DLL_EXPORT PlotSinTracks( const Array< SpectralPeakArray >& peakMtx, 
 							const TData& sr, 
 							const TData& dur,
 							const std::string& label="",
@@ -50,7 +50,7 @@ namespace CLAM
 							int w=500,
 							int h=225 );
 
-		void PlotSinTracks( const Segment& segment,
+		void CLAM_DLL_EXPORT PlotSinTracks( const Segment& segment,
 							std::vector<unsigned>& marks,
 							const std::string& label="",
 							int x=100,
@@ -58,7 +58,7 @@ namespace CLAM
 							int w=500,
 							int h=225 );
 
-		void PlotSinTracks( const Array< SpectralPeakArray >& peakMtx, 
+		void CLAM_DLL_EXPORT PlotSinTracks( const Array< SpectralPeakArray >& peakMtx, 
 							const TData& sr, 
 							const TData& dur,
 							std::vector<unsigned>& marks,

@@ -44,7 +44,7 @@ namespace SDIF
 	* frame.
 	*/
 
-	class Matrix
+	class CLAM_DLL_EXPORT Matrix
 	{
 	friend class File;
 	protected:
@@ -79,7 +79,7 @@ namespace SDIF
 		}
 	};
 
-	template <class T=CLAM::TFloat32> class ConcreteMatrix:public Matrix
+	template <class T=CLAM::TFloat32> class CLAM_DLL_EXPORT ConcreteMatrix:public Matrix
 	{
 	friend class File;
 	private:

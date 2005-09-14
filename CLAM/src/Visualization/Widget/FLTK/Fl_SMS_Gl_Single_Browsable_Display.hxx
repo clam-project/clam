@@ -34,7 +34,7 @@ namespace CLAMVM
 	using SigSlot::Signalv1;
 	using SigSlot::Slotv1;
 
-	class Fl_SMS_Gl_Single_Browsable_Display : public Fl_Gl_Single_Display
+	class CLAM_DLL_EXPORT Fl_SMS_Gl_Single_Browsable_Display : public Fl_Gl_Single_Display
 	{
 	public:
 		Fl_SMS_Gl_Single_Browsable_Display( int X, int Y, int W, int H, const char* label = 0);

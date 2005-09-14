@@ -27,9 +27,9 @@
 
 namespace CLAM
 {
-	class Spectrum;
+	class CLAM_DLL_EXPORT Spectrum;
 
-	class LPModel /*of the spectral characteristics of a given signal*/
+	class CLAM_DLL_EXPORT LPModel /*of the spectral characteristics of a given signal*/
 		: public ProcessingData
 	{
 	public:

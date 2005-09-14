@@ -27,7 +27,7 @@ using CLAM::TData;
 
 namespace CLAMGUI
 {
-	struct Viewport
+	struct CLAM_DLL_EXPORT Viewport
 	{
 		TData top;
 		bool  top_es;

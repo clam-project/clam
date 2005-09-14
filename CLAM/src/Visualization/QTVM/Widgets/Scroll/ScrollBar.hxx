@@ -28,7 +28,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class ScrollBar : public QScrollBar
+		class CLAM_DLL_EXPORT ScrollBar : public QScrollBar
 		{
 			Q_OBJECT
 			

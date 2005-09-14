@@ -33,11 +33,9 @@ namespace CLAMVM
 	using SigSlot::Signalv2;
 	using SigSlot::Slotv1;
 
-	class InputControlModel
+	class CLAM_DLL_EXPORT InputControlModel
 	{
-	protected:
 
-		virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
 
 	public:
 
@@ -45,6 +43,8 @@ namespace CLAMVM
 
 		virtual ~InputControlModel();
 
+		virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
+		
 		// Signals
 		Signalv1< CLAM::TControlData >                      ValuePublished;
 		Signalv2< CLAM::TControlData, CLAM::TControlData >  ValueRangePublished;

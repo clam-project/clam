@@ -36,7 +36,7 @@ namespace CLAMGUI
 	 *  not copied) from "Game Programming Gems" edited by Charles River Media, a
 	 *  truly gem BTW
 	 */
-	class GLSprite
+	class CLAM_DLL_EXPORT GLSprite
 	{
 	private:
 		GLuint		mKludgeVar;

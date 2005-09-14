@@ -34,7 +34,7 @@ namespace CLAM {
 	/** Configuration class for SpectralEnvelopeApply objects
 	 *  @see ProcessingConfig, SpectralEnvelopeApply
 	 */
-	class SpectralEnvelopeApplyConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpectralEnvelopeApplyConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeApplyConfig, 0,ProcessingConfig);
@@ -45,7 +45,7 @@ namespace CLAM {
 	 * @todo: the spline interpolation gets a bit out of hand in the ends of the spectral envelope
 	 *	so you may get artifacts in the higher frequencies!!!
 	 */
-	class SpectralEnvelopeApply: public Processing {
+	class CLAM_DLL_EXPORT SpectralEnvelopeApply: public Processing {
 		SpectralEnvelopeApplyConfig mConfig;
 
 		/** This method returns the name of the object

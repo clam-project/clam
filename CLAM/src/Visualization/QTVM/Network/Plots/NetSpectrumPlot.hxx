@@ -10,7 +10,7 @@ namespace CLAM
 
 	namespace VM
 	{
-		class NetSpectrumPlot : public NetPlot
+		class CLAM_DLL_EXPORT NetSpectrumPlot : public NetPlot
 		{
 			Q_OBJECT
 		public:

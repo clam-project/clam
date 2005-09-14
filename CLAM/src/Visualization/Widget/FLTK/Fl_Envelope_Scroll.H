@@ -21,7 +21,7 @@ either version 2 of the License, or (at your option) any later version.
 
 #include "Fl_Envelope.H"
 
-class Fl_EnvelopeControl
+class CLAM_DLL_EXPORT Fl_EnvelopeControl
 {
 private:
 	Fl_Scrollbar* hscroll;
@@ -62,7 +62,7 @@ public:
 	static void e_cb(Fl_Envelope* ev,Fl_EnvelopeControl* ec);
 };
 
-class Fl_Envelope_Scroll : public Fl_Group
+class CLAM_DLL_EXPORT Fl_Envelope_Scroll : public Fl_Group
 {
 public:
 	Fl_Scrollbar* hscroll;

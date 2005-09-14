@@ -28,7 +28,7 @@ namespace CBL
 {
 
 template < class TypeOfReturn >
-class Functor0R : public FunctorBase
+class CLAM_DLL_EXPORT Functor0R : public FunctorBase
 {
 public:
 

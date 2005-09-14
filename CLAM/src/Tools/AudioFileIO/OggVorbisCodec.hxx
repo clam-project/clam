@@ -29,7 +29,7 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class OggVorbisCodec : public Codec
+	class CLAM_DLL_EXPORT OggVorbisCodec : public Codec
 	{
 	protected:
 		OggVorbisCodec();

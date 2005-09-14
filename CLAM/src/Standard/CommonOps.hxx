@@ -26,7 +26,7 @@ namespace CLAM
 {
 
 	template < typename DataType >
-	class Multiply
+	class CLAM_DLL_EXPORT Multiply
 	{
 	public:
 	
@@ -43,7 +43,7 @@ namespace CLAM
 		const DataType Multiply<DataType>::IdentityElement = 1;
 	
 	template< typename DataType >
-	class Add
+	class CLAM_DLL_EXPORT Add
 	{
 	public:
 

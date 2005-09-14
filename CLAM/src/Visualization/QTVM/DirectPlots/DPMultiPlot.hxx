@@ -39,7 +39,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class DPMultiPlot
+		class CLAM_DLL_EXPORT DPMultiPlot
 		{
 		public:
 			DPMultiPlot();

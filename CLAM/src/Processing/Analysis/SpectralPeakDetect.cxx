@@ -37,7 +37,7 @@ namespace CLAM {
 		Configure(SpectralPeakDetectConfig());
 	}
 
-	SpectralPeakDetect::SpectralPeakDetect(const SpectralPeakDetectConfig &c = SpectralPeakDetectConfig())
+	SpectralPeakDetect::SpectralPeakDetect(const SpectralPeakDetectConfig &c )
 		: mInput( "Input spectrum", this ),
 		  mOutput( "Output spectral peak array", this )
 	{

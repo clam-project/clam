@@ -42,7 +42,7 @@ namespace CLAM
  * Controls the Xerces-C DOM parser.
  * @ingroup XmlBackends_Xerces
  */
-class XercesDomReader : private xercesc::HandlerBase
+class CLAM_DLL_EXPORT XercesDomReader : private xercesc::HandlerBase
 {
 	xercesc::XercesDOMParser * parser;
 	public:

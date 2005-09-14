@@ -30,7 +30,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SinTracksRenderer : public Renderer
+		class CLAM_DLL_EXPORT SinTracksRenderer : public Renderer
 		{
 		public:
 			SinTracksRenderer();

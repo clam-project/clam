@@ -44,7 +44,7 @@ namespace CLAMVM
 	 *  This abstract class is the base class for all CLAM-based
 	 *  spectrum magnitude graphical representations.
 	 */
-	class SpectrumPresentation : public Presentation
+	class CLAM_DLL_EXPORT SpectrumPresentation : public Presentation
 	{
 				
 	protected:

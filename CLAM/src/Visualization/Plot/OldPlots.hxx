@@ -51,7 +51,7 @@
 
 namespace CLAMVM
 {
-	void showPendingPlots();
+	void CLAM_DLL_EXPORT showPendingPlots();
 }
 
 #endif // __CLAMVM_PLOT_HXX

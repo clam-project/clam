@@ -44,7 +44,7 @@ class ProcessingConfig;
  *  a spectrum out of an incoming audio signal, applying windowing, circular shift
  *  and zero padding. Its different 
  */
-class SpectralAnalysis:public ProcessingComposite
+class CLAM_DLL_EXPORT SpectralAnalysis:public ProcessingComposite
 {
 
 public:

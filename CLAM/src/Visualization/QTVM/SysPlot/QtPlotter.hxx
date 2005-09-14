@@ -41,7 +41,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class QtPlotter
+		class CLAM_DLL_EXPORT QtPlotter
 		{
 			typedef std::map<std::string,int> PlotMap;
 			typedef std::vector<QtPlot*> PlotList;

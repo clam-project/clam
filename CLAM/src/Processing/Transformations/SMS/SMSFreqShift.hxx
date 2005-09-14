@@ -34,7 +34,7 @@
 
 namespace CLAM{
 
-	class SMSFreqShift: public FrameTransformation
+	class CLAM_DLL_EXPORT SMSFreqShift: public FrameTransformation
 	{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;

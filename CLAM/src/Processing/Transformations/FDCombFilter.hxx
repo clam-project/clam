@@ -33,7 +33,7 @@ namespace CLAM {
 	/** Configuration class for FDCombFilter objects
 	 *  @see ProcessingConfig, FDCombFilter
 	 */
-	class FDCombFilterConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT FDCombFilterConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (FDCombFilterConfig, 0,ProcessingConfig);

@@ -38,7 +38,7 @@ namespace CLAM {
 	 * objects by value; further changes in a configuration object
 	 * will have no effect on the processing object constructed with it.
 	 */
-	class ProcessingConfig : public DynamicType {
+	class CLAM_DLL_EXPORT ProcessingConfig : public DynamicType {
 	public:
 		/**
 		 * Constructor. Must be called from the initialization list

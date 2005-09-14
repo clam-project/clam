@@ -27,12 +27,12 @@
 #include "Polar.hxx"
 #include "BPF.hxx"
 #include "ProcessingData.hxx"
+#include "SpecTypeFlags.hxx"
 
 namespace CLAM {
 
 class SpectrumConfig;
 
-struct SpecTypeFlags;
 
 /** 
  *	Spectrum is a ProcessingData class that allows the following representations: 
@@ -41,7 +41,7 @@ struct SpecTypeFlags;
  *	between different possible representations are also offered.
  *	@see ProcessingData
  */
-class Spectrum : public ProcessingData
+class CLAM_DLL_EXPORT Spectrum : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Spectrum, 10, ProcessingData);

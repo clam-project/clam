@@ -9,7 +9,7 @@
 // Extract common interface from InControlPublisher, InControl and create a common base class
 namespace CLAM
 {
-    class InControlPublisher : public InControl
+    class CLAM_DLL_EXPORT InControlPublisher : public InControl
 	{
 		InControl* mPublished; //TODO should be a list, in the future
 

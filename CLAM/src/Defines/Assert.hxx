@@ -212,7 +212,7 @@ namespace CLAM
 * @see CLAM_END_CHECK
 */
 
-class ErrAssertionFailed : public Err {
+class CLAM_DLL_EXPORT ErrAssertionFailed : public Err {
 public:
 	/** this bool is used for automatic-tesing CLAM asserts.
 	 * by default is defined to true. But can be set to false where we
@@ -240,12 +240,12 @@ typedef void (*AssertFailedHandlerType) (const char* message, const char* filena
 * @param handler The new handler
 * @return The old handler, for restoring purposes.
 */
-AssertFailedHandlerType SetAssertFailedHandler(AssertFailedHandlerType handler);
+AssertFailedHandlerType CLAM_DLL_EXPORT SetAssertFailedHandler(AssertFailedHandlerType handler);
 
 /**
 * (Don't use directly, use the CLAM_ASSERT macro instead) Execute the assert failed handler.
 */
-void ExecuteAssertFailedHandler(const char* message, const char* filename, int linenumber);
+void CLAM_DLL_EXPORT ExecuteAssertFailedHandler(const char* message, const char* filename, int linenumber);
 
 /**
 * The type of the warning handlers.
@@ -263,12 +263,12 @@ typedef void (*WarningHandlerType) (const char* message, const char* filename, i
 * @param handler The new handler
 * @return The old handler, for restoring purposes.
 */
-WarningHandlerType SetWarningHandler(WarningHandlerType handler);
+WarningHandlerType CLAM_DLL_EXPORT SetWarningHandler(WarningHandlerType handler);
 
 /**
 * (Don't use directly, use the CLAM_WARNING macro instead) Execute the assert failed handler.
 */
-void ExecuteWarningHandler(const char* message, const char* filename, int linenumber);
+void CLAM_DLL_EXPORT ExecuteWarningHandler(const char* message, const char* filename, int linenumber);
 
 
 }

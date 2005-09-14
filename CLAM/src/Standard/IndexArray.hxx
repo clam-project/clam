@@ -29,7 +29,7 @@ reset to set elements to 0...size-1. See base class for more details.*/
 
 namespace CLAM {
 
-class IndexArray:public Array<TIndex>
+class CLAM_DLL_EXPORT IndexArray:public Array<TIndex>
 {
 public:
 	IndexArray(int size=0)

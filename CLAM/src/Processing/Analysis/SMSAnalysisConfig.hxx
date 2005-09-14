@@ -34,7 +34,7 @@ namespace CLAM {
 
 class EWindowType;
 
-class SMSAnalysisConfig:public ProcessingConfig
+class CLAM_DLL_EXPORT SMSAnalysisConfig:public ProcessingConfig
 {
 
 	friend class SMSAnalysis;

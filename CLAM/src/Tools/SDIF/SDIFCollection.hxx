@@ -39,7 +39,7 @@ namespace SDIF
 	*	Typically, Collection is passed to File::Read, as the place
 	*	the store the read Frames. @see File::Read
 	*/
-	class Collection:public Storage
+	class CLAM_DLL_EXPORT Collection:public Storage
 	{
 	public:
 		typedef std::list<Stream*>::const_iterator StreamIterator;

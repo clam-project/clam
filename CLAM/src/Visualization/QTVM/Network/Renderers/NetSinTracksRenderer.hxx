@@ -9,7 +9,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class NetSinTracksRenderer : public Renderer
+		class CLAM_DLL_EXPORT NetSinTracksRenderer : public Renderer
 		{
 		public:
 			NetSinTracksRenderer();

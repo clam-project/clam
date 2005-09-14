@@ -38,7 +38,7 @@ namespace CLAM{
  * AudioManager::FindList
  * @see AudioDevice, AudioManager
  */
-class AudioDeviceList
+class CLAM_DLL_EXPORT AudioDeviceList
 {
 private:
 	std::string mArch;

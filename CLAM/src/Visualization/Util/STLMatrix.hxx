@@ -29,7 +29,7 @@
 namespace CLAMGUI{
 
 template < typename T >
-class Matrix
+class CLAM_DLL_EXPORT Matrix
 {
 	std::valarray<T>*    pData;
 	unsigned int          mdim1;

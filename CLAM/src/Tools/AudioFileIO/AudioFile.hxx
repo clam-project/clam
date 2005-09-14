@@ -39,7 +39,7 @@ namespace CLAM
 		class Stream; // forward declaration
 	}
 
-	class AudioFile 
+	class CLAM_DLL_EXPORT AudioFile 
 		: public Component
 	{
 	public:

@@ -24,6 +24,7 @@
 #include "Fl_Gl_Single_Browsable_Display.hxx"
 #include "Assert.hxx"
 #include "AudioRenderingManager.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAMVM
 {

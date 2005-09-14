@@ -34,7 +34,7 @@ namespace CLAM
 	 *
 	 *  @see MonoAudioFileReader
 	 */
-	class MonoAudioFileReaderConfig 
+	class CLAM_DLL_EXPORT MonoAudioFileReaderConfig 
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( MonoAudioFileReaderConfig, 3, ProcessingConfig );

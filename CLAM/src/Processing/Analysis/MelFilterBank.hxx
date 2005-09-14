@@ -30,7 +30,7 @@
 namespace CLAM
 {
 	
-	class MelFilterBankConfig : public ProcessingConfig
+	class CLAM_DLL_EXPORT MelFilterBankConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE( MelFilterBankConfig, 6, ProcessingConfig );

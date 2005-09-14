@@ -37,7 +37,7 @@ namespace CLAMVM
 		
 	typedef float             TControlData;
 
-	class InControlPresentation : public Presentation
+	class CLAM_DLL_EXPORT InControlPresentation : public Presentation
 	{
 
 	protected:

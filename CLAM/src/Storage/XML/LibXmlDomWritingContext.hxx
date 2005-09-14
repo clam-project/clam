@@ -34,7 +34,7 @@ class LibXmlDomDocumentHandler;
  * Keeps the booking when mapping CLAM data into a single libxml++ DOM element.
  * @ingroup XmlBackends_LibXml
  */
-class LibXmlDomWritingContext
+class CLAM_DLL_EXPORT LibXmlDomWritingContext
 {
 	xmlpp::Element * _currentElement;
 	LibXmlDomWritingContext * _parent;

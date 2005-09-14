@@ -41,7 +41,7 @@ namespace CLAMVM
 	class Fl_Gl_Single_Browsable_Display;
 	class Fl_GridLayout;
 
-	class Fl_Browsable_Playable_Audio : public Fl_Window, public AudioPresentation
+	class CLAM_DLL_EXPORT Fl_Browsable_Playable_Audio : public Fl_Window, public AudioPresentation
 	{
 		Fl_X_Axis*              mXAxis;
 		Fl_Y_Axis*              mYAxis;

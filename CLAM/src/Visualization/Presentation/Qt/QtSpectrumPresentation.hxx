@@ -43,7 +43,7 @@ namespace CLAMGUI
 class QtGLPort;
 class QtDataDisplay;
 
-class SpecGLSetup : public GLState
+class CLAM_DLL_EXPORT SpecGLSetup : public GLState
 {
 public:
 
@@ -54,7 +54,7 @@ public:
 	}
 };
 
-class QtSpectrumPresentation : public Presentation
+class CLAM_DLL_EXPORT QtSpectrumPresentation : public Presentation
 {
 public:
 	QtSpectrumPresentation( const char* label = 0 )

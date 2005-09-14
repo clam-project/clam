@@ -31,7 +31,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class QtPlot : public QWidget
+		class CLAM_DLL_EXPORT QtPlot : public QWidget
 		{	
 		public:
 			QtPlot(QWidget* parent = 0, const char * name = 0, WFlags f = 0);

@@ -44,7 +44,7 @@ namespace CLAM {
 	 * some other audio's data.
 	 *  @see AudioDescriptors, Spectrum
 	 */
-	class Audio: public ProcessingData {
+	class CLAM_DLL_EXPORT Audio: public ProcessingData {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (Audio, 3, ProcessingData);
 

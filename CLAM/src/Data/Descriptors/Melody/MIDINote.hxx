@@ -41,7 +41,7 @@ namespace CLAM {
 /**class MIDINote used to store note information coming from a MIDI stream/file
 **/
 
-	class MIDINote: public ProcessingData
+	class CLAM_DLL_EXPORT MIDINote: public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (MIDINote, 3, ProcessingData);

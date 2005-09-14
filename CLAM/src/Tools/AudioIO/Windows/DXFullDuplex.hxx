@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-class ErrDXFullDuplex : public Err
+class CLAM_DLL_EXPORT ErrDXFullDuplex : public Err
 {
 public:
 	const char* mTxt;
@@ -76,7 +76,7 @@ bool SafeRelease( DXObjectType& obj )
 	return true;
 }
 
-class DXFullDuplex
+class CLAM_DLL_EXPORT DXFullDuplex
 {
 public:
 

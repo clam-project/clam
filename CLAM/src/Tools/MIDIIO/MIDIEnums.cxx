@@ -66,4 +66,25 @@ namespace CLAM {
 			1, // eActiveSensing
 			1  // eSystemReset
 	};
+
+	MIDI::Message MIDI::StatusByteToMessage(const unsigned char& byte)
+	{
+		return (Message)((byte >> 4)&7);
+	}
+
+	MIDI::SysMsg MIDI::StatusByteToSysMsg(const unsigned char& b)	
+	{
+		return (SysMsg)(b&15);
+	}
+
+	const MIDI::MessageInfo& MIDI::GetMessageInfo(Message msg)
+	{
+		return sMessageInfo[int(msg)];
+	}
+
+	const MIDI::MessageInfo& MIDI::GetMessageInfo(int msg)
+	{
+		return sMessageInfo[msg];
+	}
+	
 }

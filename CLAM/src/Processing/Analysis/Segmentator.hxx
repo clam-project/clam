@@ -68,7 +68,7 @@ enum {
 };
 
 
-class Segmentator : public Processing
+class CLAM_DLL_EXPORT Segmentator : public Processing
 {
 public:
 	Segmentator();

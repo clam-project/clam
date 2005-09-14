@@ -22,7 +22,7 @@ namespace CLAMVM
 
 
 
-class Fl_Palette
+class CLAM_DLL_EXPORT Fl_Palette
 /*D* 
   Class to convert values in the range 0-1 to a color scale.
   The color scale can be adjusted, so weaker values can be

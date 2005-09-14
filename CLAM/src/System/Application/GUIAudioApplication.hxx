@@ -47,7 +47,7 @@ namespace CLAM {
 
 #endif
 
-	class GUIAudioApplication:public BaseAudioApplication
+	class CLAM_DLL_EXPORT GUIAudioApplication:public BaseAudioApplication
 	{
 	private:
 		static void SAudioStartStop(

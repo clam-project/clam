@@ -39,7 +39,7 @@ class SoundFileIO;
 	 * fields will be set by the Processing itself once 
 	 * Start() has been called.
 	 */
-	class AudioFileIn: public Processing
+	class CLAM_DLL_EXPORT AudioFileIn: public Processing
 	{
 	protected:
 		/** Audiofile Configuration */

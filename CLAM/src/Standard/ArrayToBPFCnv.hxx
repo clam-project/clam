@@ -31,7 +31,7 @@ namespace CLAM {
 
 	//Convert values array (supposed to be equidistant) to BPF
 	template <class TX, class TY> 
-	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TY>& originalArray)
+	void CLAM_DLL_EXPORT ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TY>& originalArray)
 	{
 		CLAM_ASSERT(originalArray.Size()>=1, "Zero lenght array.");
 		CLAM_ASSERT(originalArray.Size()==newBPF.Size(), "Different array dimensions");
@@ -44,7 +44,7 @@ namespace CLAM {
 	}
 
 	template <class TX, class TY> 
-	void ConvertToBPF( BPFTmpl<TX,TY>& newBPF, TX X0, TX deltaX, const Array<TY>& originalArray )
+	void CLAM_DLL_EXPORT ConvertToBPF( BPFTmpl<TX,TY>& newBPF, TX X0, TX deltaX, const Array<TY>& originalArray )
 	{
 		CLAM_ASSERT( originalArray.Size() >= 1, 
 			     "ArrayToBPFCnv::ConvertToBPF(): Array to be converted into a BPF must have a positive non-zero length!" );
@@ -64,7 +64,7 @@ namespace CLAM {
 
 	//Convert X and Y values arrays to BPF
 	template <class TX, class TY> 
-	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TX>& originalXArray,
+	void CLAM_DLL_EXPORT ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TX>& originalXArray,
 		const Array<TY>& originalYArray)
 	{
 		CLAM_ASSERT(originalXArray.Size()>=1, "Zero lenght X array.");
@@ -81,7 +81,7 @@ namespace CLAM {
 	
 	//Convert BPF to X and Y values arrays
 	template <class TX, class TY> 
-	void ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,Array<TX>& 
+	void CLAM_DLL_EXPORT ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,Array<TX>& 
 		newXArray,Array<TY>& newYArray)
 	{
 		for(int i=0;i<originalBPF.Size();i++)
@@ -94,7 +94,7 @@ namespace CLAM {
 	/*Convert BPF to values array (points are supposed to be equidistant in the 
 	X axis)*/
 	template <class TX, class TY> 
-	void ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,
+	void CLAM_DLL_EXPORT ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,
 		Array<TY>& newArray)
 	{
 		for(int i=0;i<originalBPF.Size();i++)

@@ -28,7 +28,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class RegionMarker : public Renderer
+		class CLAM_DLL_EXPORT RegionMarker : public Renderer
 		{
 		public:
 			RegionMarker();

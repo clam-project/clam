@@ -41,7 +41,7 @@ namespace CLAM
 	 *  current audio frame, and of previous audio frames.
 	 *  <p>
 	 */
-	class IntervalAmplitudeAverages
+	class CLAM_DLL_EXPORT IntervalAmplitudeAverages
 	{
 		/** Array of interval amplitude average points.
 		 *  <p>
@@ -88,7 +88,7 @@ namespace CLAM
 	};
 
 
-	class EnvExtractorConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT EnvExtractorConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (EnvExtractorConfig, 9, ProcessingConfig);
@@ -158,7 +158,7 @@ namespace CLAM
 	};
 	
 
-	class EnvelopeExtractor: public Processing
+	class CLAM_DLL_EXPORT EnvelopeExtractor: public Processing
 	{
 		TTime mInterpolationPeriodControl;
 		TTime mIntegrationLengthControl;

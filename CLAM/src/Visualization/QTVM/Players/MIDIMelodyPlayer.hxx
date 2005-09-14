@@ -11,7 +11,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class MIDIMelodyPlayer : public Player
+		class CLAM_DLL_EXPORT MIDIMelodyPlayer : public Player
 		{
 			typedef std::map<std::string,unsigned> IndexTable;
 			typedef std::vector<MIDIMelody>        Melodies;

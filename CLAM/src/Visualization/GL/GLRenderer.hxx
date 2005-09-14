@@ -24,7 +24,7 @@
 
 namespace CLAMVM
 {
-		class GLRenderer
+		class CLAM_DLL_EXPORT GLRenderer
 		{
 		public:
 				virtual void ApplyGLState();

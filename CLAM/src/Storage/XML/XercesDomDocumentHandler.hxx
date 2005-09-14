@@ -43,7 +43,7 @@ class XercesDomWritingContext;
  * XML implementation backend for the Xerces-C library.
  * @ingroup XmlBackends_Xerces
  */
-class XercesDomDocumentHandler
+class CLAM_DLL_EXPORT XercesDomDocumentHandler
 {
 public:
 	typedef XercesDomWritingContext WritingContext;

@@ -34,7 +34,7 @@ namespace AudioCodecs
 {
 
 
-	class MpegCodec : public Codec
+	class CLAM_DLL_EXPORT MpegCodec : public Codec
 	{
 	protected:
 		MpegCodec();

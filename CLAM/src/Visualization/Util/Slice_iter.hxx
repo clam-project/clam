@@ -32,7 +32,7 @@ namespace CLAMGUI{
  *   of the concept
  */
 template < typename T, typename SliceType = std::slice >
-class Slice_iter
+class CLAM_DLL_EXPORT Slice_iter
 {
 public:
 

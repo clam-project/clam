@@ -16,7 +16,7 @@ namespace CLAM
 
 namespace CLAM
 {
-    class SinTracksPlotProcessingConfig : public ProcessingConfig
+    class CLAM_DLL_EXPORT SinTracksPlotProcessingConfig : public ProcessingConfig
     {
     public:
 		DYNAMIC_TYPE_USING_INTERFACE (SinTracksPlotProcessingConfig, 6, ProcessingConfig);
@@ -31,7 +31,7 @@ namespace CLAM
 		void DefaultInit();
     };
 
-    class SinTracksPlotProcessing : public Processing
+    class CLAM_DLL_EXPORT SinTracksPlotProcessing : public Processing
     {
     public:
 		SinTracksPlotProcessing();

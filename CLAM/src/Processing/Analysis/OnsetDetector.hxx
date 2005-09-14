@@ -36,7 +36,7 @@ namespace CLAM
 {
 
 	/** OnsetDetector class **/
-	class OnsetDetector : public ProcessingComposite 
+	class CLAM_DLL_EXPORT OnsetDetector : public ProcessingComposite 
 	{
 		typedef std::list<TimeIndex>::iterator LI;
 		typedef std::map< TIndex, double>::iterator MI;

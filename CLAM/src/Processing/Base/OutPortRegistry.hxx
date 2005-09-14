@@ -31,7 +31,7 @@ namespace CLAM
 //forward declarations:
 class OutPortBase;
 
-class OutPortRegistry
+class CLAM_DLL_EXPORT OutPortRegistry
 {
 	std::vector<OutPortBase*> mOutPorts;
 public:

@@ -35,7 +35,7 @@ namespace CLAMGUI
  *  to support floating point color component values as well as
  *  integers
  */
-	class Pixel
+	class CLAM_DLL_EXPORT Pixel
 	{
 	private:
 		unsigned char*  data;
@@ -205,12 +205,12 @@ namespace CLAMGUI
 	/**
 	 * @todo: Not yet implemented
 	 */
-	std::istream& operator >> (std::istream& myStream, const Pixel& p);
+	std::istream& CLAM_DLL_EXPORT operator >> (std::istream& myStream, const Pixel& p);
 
 	/**
 	 * @todo: Not yet implemented
 	 */
-	std::ostream& operator << (std::ostream& myStream, const Pixel& p);
+	std::ostream& CLAM_DLL_EXPORT operator << (std::ostream& myStream, const Pixel& p);
 
 	/**
 	 *  Array Specialization for representing a serie of colorspace vectors

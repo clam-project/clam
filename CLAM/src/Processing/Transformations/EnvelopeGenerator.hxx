@@ -33,7 +33,7 @@ namespace CLAM
 {
 
 
-class EnvelopeGeneratorConfig: public ProcessingConfig
+class CLAM_DLL_EXPORT EnvelopeGeneratorConfig: public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (EnvelopeGeneratorConfig, 4, ProcessingConfig);
@@ -55,7 +55,7 @@ protected:
 	}
 };
 	
-class EnvelopeGenerator: public Processing
+class CLAM_DLL_EXPORT EnvelopeGenerator: public Processing
 {
 private:
 	EnvelopeGeneratorConfig mConfig;

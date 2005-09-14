@@ -35,7 +35,7 @@
 namespace CLAM{
 
 
-	class SMSResidualGain: public FrameTransformation
+	class CLAM_DLL_EXPORT SMSResidualGain: public FrameTransformation
 	{
 		
 		const char *GetClassName() const {return "SMSResidualGain";}

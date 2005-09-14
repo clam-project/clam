@@ -29,7 +29,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class VLineArrayRenderer : public Renderer
+		class CLAM_DLL_EXPORT VLineArrayRenderer : public Renderer
 		{
 		public:
 			VLineArrayRenderer();

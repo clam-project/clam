@@ -34,7 +34,7 @@ namespace CLAM
  * Dummy implementation of a DomDocumentWritingContext when XML is disabled.
  * @ingroup XmlBackends_Null
  */
-class NullDomWritingContext
+class CLAM_DLL_EXPORT NullDomWritingContext
 {
 	NullDomWritingContext * _parent;
 public:

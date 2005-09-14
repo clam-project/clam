@@ -38,7 +38,7 @@ namespace CLAM {
  * by type discriminators.
  * @todo Build a filename specific interface
  */
-class Filename : public Text
+class CLAM_DLL_EXPORT Filename : public Text
 {
 public:
 		Filename() {}

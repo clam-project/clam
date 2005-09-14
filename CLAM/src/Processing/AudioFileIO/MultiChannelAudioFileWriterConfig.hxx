@@ -35,7 +35,7 @@ namespace CLAM
 	 *  @see MultiChannelAudioFileWriter
 	 */
 
-	class MultiChannelAudioFileWriterConfig
+	class CLAM_DLL_EXPORT MultiChannelAudioFileWriterConfig
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE

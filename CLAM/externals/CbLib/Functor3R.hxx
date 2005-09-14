@@ -28,7 +28,7 @@ namespace CBL
 {
 
 template < class TypeOfReturn, class Parm1Type, class Parm2Type, class Parm3Type >
-class Functor3R : public FunctorBase
+class CLAM_DLL_EXPORT Functor3R : public FunctorBase
 {
 public:
 
@@ -63,7 +63,7 @@ private:
 // From non-member function
 
 template < class TypeOfReturn, class Parm1Type, class Parm2Type, class Parm3Type, class Func >
-class FunctionTranslator3R : public Functor3R< TypeOfReturn, Parm1Type, Parm2Type, Parm3Type >
+class CLAM_DLL_EXPORT FunctionTranslator3R : public Functor3R< TypeOfReturn, Parm1Type, Parm2Type, Parm3Type >
 {
 public:
 	
@@ -82,7 +82,7 @@ public:
 // From member Function
 
 template < class TypeOfReturn, class Parm1Type, class Parm2Type, class Parm3Type, class Callee, class MemFunc >
-class MemberTranslator3R : public Functor3R< TypeOfReturn, Parm1Type, Parm2Type, Parm3Type >
+class CLAM_DLL_EXPORT MemberTranslator3R : public Functor3R< TypeOfReturn, Parm1Type, Parm2Type, Parm3Type >
 {
 public:
 

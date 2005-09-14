@@ -43,7 +43,7 @@ namespace CLAM
 * Configuration of the TokenDelay processing object. It includes tree
 * dynamic type attributes: Name, Delay and MaxDelay
 */
-class TokenDelayConfig : public ProcessingConfig 
+class CLAM_DLL_EXPORT TokenDelayConfig : public ProcessingConfig 
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (TokenDelayConfig, 2, ProcessingConfig);
@@ -78,7 +78,7 @@ protected:
  * get out. And these tokens will be deleted by the delay object.
  * 
  */
-template <class T> class TokenDelay : public Processing
+template <class T> class CLAM_DLL_EXPORT TokenDelay : public Processing
 {
 
 private:
@@ -291,7 +291,7 @@ void TokenDelay<T>::FulfillsInvariant() const
 
 // Control Enumeration
 
-class ETokenDelayControls
+class CLAM_DLL_EXPORT ETokenDelayControls
 : public Enum
 {
 

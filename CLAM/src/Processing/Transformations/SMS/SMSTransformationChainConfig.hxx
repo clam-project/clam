@@ -40,7 +40,7 @@ namespace CLAM{
 	 *	(@see mpConcreteConfig) and has access to the concrete class through its name stored
 	 *	in a dynamic attribute (ConcreteClassName)
 	 */
-	class SMSTransformationChaineeConfig:public ProcessingConfig
+	class CLAM_DLL_EXPORT SMSTransformationChaineeConfig:public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationChaineeConfig, 1,ProcessingConfig);
@@ -115,7 +115,7 @@ namespace CLAM{
 	 *	on these children. These pointers to a ProcessingConfig are indeed pointers to
 	 *	instances of a derived class.
 	 */
-	class SMSTransformationChainConfig:public ProcessingConfig
+	class CLAM_DLL_EXPORT SMSTransformationChainConfig:public ProcessingConfig
 	{
 	public:
 		typedef std::list<SMSTransformationChaineeConfig>::iterator iterator;

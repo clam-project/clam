@@ -32,7 +32,7 @@ namespace CLAMVM
  *  model objects, to the user. This "information presentation" is accomplished,
  *  typically, through some sort of graphical metaphor.
  */
-	class Presentation
+	class CLAM_DLL_EXPORT Presentation
 	{
 	public:
 		

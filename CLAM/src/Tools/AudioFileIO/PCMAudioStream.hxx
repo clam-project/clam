@@ -36,7 +36,7 @@ namespace CLAM
 namespace AudioCodecs
 {
 
-	class PCMAudioStream : public Stream
+	class CLAM_DLL_EXPORT PCMAudioStream : public Stream
 	{
 	public:
 		PCMAudioStream();

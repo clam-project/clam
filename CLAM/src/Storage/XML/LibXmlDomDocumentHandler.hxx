@@ -37,7 +37,7 @@ class LibXmlDomWritingContext;
  * XML implementation backend for the libxml++ library.
  * @ingroup XmlBackends_LibXml
  */
-class LibXmlDomDocumentHandler
+class CLAM_DLL_EXPORT LibXmlDomDocumentHandler
 {
 public:
 	typedef LibXmlDomWritingContext WritingContext;

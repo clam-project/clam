@@ -30,7 +30,7 @@ namespace CLAM {
 	/**
 	 * Config class for the SpectralEnvelopeExtract Processing
 	 */
-	class SpectralEnvelopeExtractConfig: public ProcessingConfig
+	class CLAM_DLL_EXPORT SpectralEnvelopeExtractConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeExtractConfig, 1,ProcessingConfig);

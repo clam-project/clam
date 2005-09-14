@@ -29,7 +29,7 @@
 namespace CLAM
 {
 
-	template <typename TX = TData, typename TY = TX> class PointTmpl
+	template <typename TX = TData, typename TY = TX> class CLAM_DLL_EXPORT PointTmpl
 	{
 	public:
 	/*Constructors*/
@@ -102,10 +102,10 @@ namespace CLAM
 	};
 
 	template <class TX,class TY>
-	std::istream& operator >> (std::istream & stream, PointTmpl<TX,TY> & a);
+	CLAM_DLL_EXPORT std::istream& operator >> (std::istream & stream, PointTmpl<TX,TY> & a);
 	
 	template <class TX,class TY>
-	std::ostream& operator << (std::ostream & stream, const PointTmpl<TX,TY> & a);
+	CLAM_DLL_EXPORT std::ostream& operator << (std::ostream & stream, const PointTmpl<TX,TY> & a);
 	
 } // namespace CLAM
 
