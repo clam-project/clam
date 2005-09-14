@@ -40,6 +40,8 @@
 #	pragma warning (disable : 4786 4503)
 // turn off warning about the "C++ Exception Specification ignored"
 #       pragma warning (disable : 4290 )
+// turn off warning about templates and dll-interface
+#	pragma warning (disable : 4251 )
 
 #ifdef __cplusplus
 #	include <cstdio>
@@ -65,6 +67,7 @@
 #endif // MSVC++ 6
 #endif
 
+#include "DynamicLibraryDefinitions.hxx"
 
 #endif
 
