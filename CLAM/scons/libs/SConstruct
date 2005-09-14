@@ -39,8 +39,14 @@ def setup_build_options( env ) :
 	
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
-	opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
-	opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
+	if sys.platform == 'win32' :
+		opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'no') )
+	else :
+		opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
+	if sys.platform == 'win32' :
+		opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'no') )
+	else :
+		opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
 	
 	# clam_processing options
 	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))

@@ -186,7 +186,11 @@ def setup_audioio_environment( audioio_env, conf ) :
 		if audioio_env['audio_backend'] == 'portaudio' :
 			raise RuntimeError, "Not implemented yet!"
 		if audioio_env['audio_backend'] == 'rtaudio' :
-			audioio_env.Append( CPPFLAGS=['DUSE_RTAUDIO=1'] )	
+			if sys.platform == 'win32' :
+				audioio_env.Append( CPPFLAGS=['-D__WINDOWS_DS__'])
+			else :
+				audioio_env.Append( CPPFLAGS=['-D__MACOSX_CORE__'])
+			audioio_env.Append( CPPFLAGS=['-DUSE_RTAUDIO=1'] )	
 	if audioio_env['with_portmidi'] :
 		result = test_portmidi( audioio_env, conf )
 		if not result : return False

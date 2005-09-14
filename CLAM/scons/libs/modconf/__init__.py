@@ -32,9 +32,9 @@ def setup_global_environment( clam_env, conf ) :
 			clam_env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
 		if clam_env['release'] :
-			clam_env.Append( CCFLAGS = '/DWIN32 /FD /GR /GX /MD /O2 /W3 /Zm1000' )	
+			clam_env.Append( CCFLAGS = '/DWIN32 /D_USRDLL /FD /GR /GX /MD /O2 /W3 /Zm1000' )	
 		else :
-			clam_env.Append( CCFLAGS = '"/DWIN32 /D_DEBUG" /D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+			clam_env.Append( CCFLAGS = '"/DWIN32 /D_USRDLL /D_DEBUG" /D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 
 	# pthreads testing
 	result = conf.CheckCHeader('pthread.h')

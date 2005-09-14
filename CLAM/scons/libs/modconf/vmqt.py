@@ -27,5 +27,11 @@ def setup_vmqt_environment( vmqt_env, conf ) :
 		return False
 
 	vmqt_env.Append( CPPFLAGS=['-DUSE_QT=1'] )
+	if sys.platform == 'win32' :
+		vmqt_env.Append( CPPFLAGS=['-DQT_DLL', '-DQT_THREAD_SUPPORT', '-DVISUAL'] )
+		# Win32 required libs
+		vmqt_env.Append( LIBS=['advapi32', 'comctl32', 'comdlg32', 'gdi32', 'kernel32', 'ole32', 'oleaut32', 'shell32', 'user32', 'uuid', 'winspool','wsock32'] )
+		if vmqt_env['with_portmidi'] :
+			vmqt_env.Append( LIBS=['portmidi','porttime','winmm'] )
 	return True
 

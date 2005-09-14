@@ -315,6 +315,7 @@ int main()
 package_checks['check_libasound'] = ThoroughPackageCheck( 'libasound', 'c', None, libasound_test_code )
 
 id3lib_test_code = """\
+#include <id3.h>
 #include <id3/tag.h>
 int main()
 {
@@ -324,6 +325,7 @@ int main()
 """
 
 package_checks['check_id3lib'] = ThoroughPackageCheck( 'id3lib', 'c++', None, id3lib_test_code )
+
 
 fltk_test_code = """\
 #include<FL/Fl_Gl_Window.H>
@@ -340,6 +342,9 @@ int main()
 package_checks['check_fltk'] = ThoroughPackageCheck( 'fltk', 'c++', None, fltk_test_code )
 
 opengl_test_code = """\
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
 int main( int argc, char** argv )
@@ -355,6 +360,9 @@ int main( int argc, char** argv )
 package_checks['check_opengl'] = ThoroughPackageCheck( 'opengl', 'c', None, opengl_test_code )
 
 glu_test_code = """\
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/glu.h>
 
 int main( int argc, char** argv )
@@ -370,7 +378,7 @@ int main( int argc, char** argv )
 package_checks['check_glu'] = ThoroughPackageCheck( 'glu', 'c', None, glu_test_code )
 
 libqt_test_code = r"""\
-#include <qt3/qapplication.h>
+#include <qapplication.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -384,3 +392,36 @@ int main()
 """
 
 package_checks['check_qt'] = ThoroughPackageCheck( 'qt', 'c++', None, libqt_test_code )
+
+directx_test_code = r"""\
+#include <windows.h>
+#include <dsound.h>
+
+int main()
+{
+	LPGUID mGUID = 0;
+	LPDIRECTSOUND mDS;
+	HRESULT hr = DirectSoundCreate( mGUID, &mDS, NULL );
+	
+	return 0;
+}
+
+"""
+
+package_checks['check_directx'] = ThoroughPackageCheck( 'directx', 'c++', None, directx_test_code )
+
+portmidi_test_code = """\
+#include <portmidi.h>
+#include <stdlib.h>
+
+int main()
+{
+	PmStream* mHandleIn = NULL;
+	PmError err = Pm_OpenInput( &mHandleIn, 0, NULL, 100, NULL, NULL, 0 );
+
+	return 0;
+}
+
+"""
+
+package_checks['check_portmidi'] = ThoroughPackageCheck( 'portmidi', 'c', None, portmidi_test_code )

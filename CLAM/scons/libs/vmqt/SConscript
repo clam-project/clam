@@ -3,6 +3,7 @@ from buildtools import *
 from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
+from buildtools.rulesets import *
 import os, sys
 Import('vmqt_env version top install_dirs header_db')
 
@@ -15,9 +16,12 @@ def define_module_contents() :
 
 	qtvm_base = 'src/Visualization/QTVM/'
 
-	folders = ['Controllers','DirectPlots','Network/Controllers','Network/Plots','Network/Processings','Network/Renderers','Network/Surfaces','Network/Utils','Players','Plots','Renderers','Surfaces','SysPlot','Utils','Widgets','Widgets/BPFEditor','Widgets/Label','Widgets/Misc','Widgets/Playable','Widgets/Rulers','Widgets/Scroll']
+	folders = ['Controllers','DirectPlots','Network/Controllers','Network/Plots','Network/Processings','Network/Renderers','Network/Surfaces','Network/Utils','Players','Plots','Renderers','Surfaces','SysPlot','Utils','Widgets','Widgets/BPFEditor','Widgets/Label','Widgets/Misc','Widgets/Playable','Widgets/Rulers','Widgets/Scroll'] 
+	
 
 	folders = [ qtvm_base+folder for folder in folders]
+	folders += ['src/Standard/Polar.cxx', 'src/Standard/Complex.cxx', 'src/Standard/Point.cxx', 'src/Standard/Order.cxx']
+
 	folders.append(qtvm_base)
 
 	blacklist = []
@@ -51,7 +55,6 @@ if not vmqt_env.GetOption('clean') :
 	pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
 	print "ok"
 
-lib_descriptor = vmqt_env.File( 'clam_vmqt.pc' )
 
 if not vmqt_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()
@@ -67,40 +70,14 @@ headers = [ File(header) for header in header_files ]
 vmqt_env.Prepend(CPPPATH=['.','../core/include','../processing/include','../audioio/include'])
 
 if not vmqt_env.GetOption('clean') :
-	vmqt_env.Append(CCFLAGS='-include CLAM/%s'%vmqt_env['preinclude'])
+	handle_preinclude( vmqt_env )
 
 vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmqt_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
-soname = 'libclam_vmqt.so.%s'%version.split('.')[0]
-linker_name = 'libclam_vmqt.so'
-vmqt_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname] )
-
-lib = vmqt_env.SharedLibrary( 'clam_vmqt', source_files, SHLIBSUFFIX='.so.%s'%version, QT_LIB='qt-mt' )
-
-soname_lib = vmqt_env.SonameLink( soname, lib )
-linkername_lib = vmqt_env.LinkerNameLink( linker_name, soname_lib)
-
-vmqt_tgt = vmqt_env.Alias( 'vmqt', linkername_lib )
-
-install_headers = vmqt_env.Install( install_dirs.inc+'/CLAM', headers )
-vmqt_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
-
-install_lib = vmqt_env.Install( install_dirs.lib, lib )
-vmqt_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-
-install_descriptor = vmqt_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-vmqt_install_tgt = vmqt_env.Alias( 'install_vmqt', [install_headers, install_lib, install_descriptor] )
-
-runtime_lib = vmqt_env.Install( install_dirs.lib, lib )
-runtime_soname = vmqt_env.SonameLink( install_dirs.lib+'/'+soname, runtime_lib )
-
-vmqt_env.Alias( 'install_vmqt_runtime', [runtime_lib, runtime_soname] )
-
-static_lib = vmqt_env.Library( 'clam_vmqt', source_files )
-install_static = vmqt_env.Install( install_dirs.lib, static_lib )
-
-dev_linkername = vmqt_env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
-vmqt_env.Alias( 'install_vmqt_dev', [install_headers, install_static, install_descriptor, dev_linkername ] )
+if sys.platform != 'win32' :
+	vmqt_tgt, vmqt_install_tgt = posix_lib_rules( 'vmqt', version, headers, source_files, install_dirs, vmqt_env )
+else :
+	vmqt_tgt, vmqt_install_tgt = win32_lib_rules( 'vmqt', version, headers, source_files, install_dirs, vmqt_env )
 
 Return( 'vmqt_tgt', 'vmqt_install_tgt' )
