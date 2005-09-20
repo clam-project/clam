@@ -33,7 +33,6 @@
 
 #include "Component.hxx"
 #include "DataTypes.hxx"
-#include "DynamicLibraryDefinitions.hxx"
 #include <new>
 
 namespace CLAM {
