@@ -55,7 +55,7 @@ class FileRetriever :
 
 	def is_source( self, filename ) :
 		for regexp in self.sourceREs :
-			if regexp.search( filename ) is not None :
+			if regexp.search( os.path.basename(filename) ) is not None :
 				return True
 		return False
 
