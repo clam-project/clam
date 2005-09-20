@@ -67,7 +67,7 @@
 #endif // MSVC++ 6
 #endif
 
-#include "DynamicLibraryDefinitions.hxx"
+#define CLAM_DLL_EXPORT
 
 #endif
 
