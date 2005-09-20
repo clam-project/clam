@@ -15,6 +15,11 @@ if not os.path.exists('include') :
 folders = ['UnitTests', 'UnitTests/CommonHelpers','UnitTests/ControlTests', 'UnitTests/DescriptorsTests', 'UnitTests/DynamicTypeTests', 'UnitTests/FactoryTest', 'UnitTests/FlowControlTests', 'UnitTests/NonComponentData','UnitTests/PortsTest', 'UnitTests/ProcessingBaseTests', 'UnitTests/ProcessingDataTests', 'UnitTests/ProcessingsTests','UnitTests/StandardTests', 'UnitTests/ToolsTests','UnitTests/XMLAdaptersTests']
 blacklist = ['TestRunnerQt.+','PolymorphicTest.+','AudioMixer.+']
 
+
+if sys.platform == 'win32' : 
+	blacklist.append( 'OSC.+' )
+	blacklist.append( 'LibXml.+' )
+
 file_retriever = FileRetriever( '../../../test', folders, blacklist )
 file_retriever.out_inc = 'include'
 
@@ -26,8 +31,17 @@ for filename in file_retriever.sources :
 	update_includes( header_db, filename )
 
 tests_env.Append( CPPPATH=['include'] )
-neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+if sys.platform != 'win32' :
+	tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+
 unit_tests = tests_env.Program( 'UnitTests', file_retriever.sources )
+
+tests_env.MSVSProject( target = 'UnitTests' + tests_env['MSVSPROJECTSUFFIX'],
+			srcs = file_retriever.sources,
+			incs = file_retriever.headers,
+			buildtarget = unit_tests,
+			variant = 'Release' )
+
 
 test_alias = Alias( 'run_unit_tests', [unit_tests], unit_tests[0].abspath )
 

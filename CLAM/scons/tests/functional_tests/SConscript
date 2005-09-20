@@ -14,6 +14,9 @@ if not os.path.exists('include') :
 
 folders = ['UnitTests','UnitTests/CommonHelpers','FunctionalTests/CommonHelpers','FunctionalTests/FlowControlTests','FunctionalTests/ProcessingTests']
 blacklist = ['TestRunnerQt','TestMIDIIO','TestOnsetDetector','TestSpectralPeakDetect','TestSMSAnalysis','TestAudioFileIn']
+if sys.platform == 'win32' :
+	blacklist.append( 'OSC.+')
+
 
 file_retriever = FileRetriever( '../../../test', folders, blacklist )
 file_retriever.out_inc = 'include'
@@ -28,8 +31,16 @@ for filename in file_retriever.sources :
 print "ok"
 
 tests_env.Append( CPPPATH=['include'] )
-neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+if sys.platform != 'win32' :
+	tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+
 functional_tests = tests_env.Program( 'FunctionalTests', file_retriever.sources )
+
+tests_env.MSVSProject( target = 'FunctionalTests' + tests_env['MSVSPROJECTSUFFIX'],
+			srcs = file_retriever.sources,
+			incs = file_retriever.headers,
+			buildtarget = functional_tests,
+			variant = 'Release' )
 
 test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
 
