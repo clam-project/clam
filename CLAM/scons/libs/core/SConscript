@@ -67,7 +67,7 @@ def define_module_contents() :
 
 if not core_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
-	pkg_data = PackageData( 'clam_core', version, [] )
+	pkg_data = PackageData( 'clam_core', version, extra = ['clam_core_templates'] )
 	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
 	print "ok"
 
@@ -89,6 +89,7 @@ headers = [ File(header) for header in header_files ]
 if sys.platform != 'win32' :
 	core_tgt, core_install_tgt = posix_lib_rules( 'core', version, headers, source_files, install_dirs, core_env )
 else :
-	core_tgt, core_install_tgt = win32_lib_rules( 'core', version, headers, source_files, install_dirs, core_env )
+	templates = [ 'src/Point.cxx', 'src/Polar.cxx', 'src/Complex.cxx', 'src/BPF.cxx', 'src/Matrix.cxx', 'src/Order.cxx'] 
+	core_tgt, core_install_tgt = win32_lib_rules( 'core', version, headers, source_files, install_dirs, core_env, templates )
 
 Return( 'core_tgt','core_install_tgt' )

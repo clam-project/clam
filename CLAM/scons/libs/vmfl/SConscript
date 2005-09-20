@@ -14,7 +14,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK', 'src/Standard/Polar.cxx', 'src/Standard/Complex.cxx', 'src/Standard/Point.cxx', 'src/Standard/Order.cxx' ]
+	folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK' ]
 
 	blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController','HugeArrayRenderer']
 
@@ -66,7 +66,7 @@ vmfl_env.Prepend(CPPPATH=['include','../core/include','../processing/include','.
 if not vmfl_env.GetOption('clean') :
 	handle_preinclude( vmfl_env )
 
-vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
+vmfl_env.Append(LIBS=['clam_core', 'clam_core_templates', 'clam_processing','clam_audioio'])
 vmfl_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
 if sys.platform != 'win32' :

@@ -1,6 +1,7 @@
 import sys
 import os
 import shelve
+import copy
 # tools for build configuration
 from buildtools import *
 from buildtools.custom_builders import * 
@@ -118,10 +119,6 @@ Export('version')
 top = '../..'
 Export('top')
 
-
-	
-
-
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
 
 if sys.platform == 'win32' :
@@ -135,7 +132,10 @@ else :
 
 Export('clam_env')
 
-header_db = shelve.open( 'header.db' )
+if not clam_env.GetOption("clean") :
+	header_db = shelve.open( 'header.db' )
+else :
+	header_db = None
 Export('header_db')
 
 setup_build_options( clam_env )
@@ -169,12 +169,12 @@ if not clam_env.GetOption('clean') :
 ### CLAM GLOBAL DEPENDENCIES CHECKING    ###
 ############################################"""
 
-conf = Configure( clam_env, custom_tests = custom_check_routines )
-if not setup_global_environment( clam_env, conf ) :
-	Exit(1)
-clam_env = conf.Finish()
+	conf = Configure( clam_env, custom_tests = custom_check_routines )
+	if not setup_global_environment( clam_env, conf ) :
+		Exit(1)
+	clam_env = conf.Finish()
 
-print """\
+	print """\
 ############################################
 ### CLAM MODULES DEPENDENCIES CHECKING   ###
 ############################################"""
@@ -196,6 +196,8 @@ if not clam_env.GetOption('clean') :
 
 
 processing_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	processing_env.Append( LIBS=copy.copy(core_env['LIBS']) )
 Export('processing_env')
 processing_env.Replace( QT_LIB = '' )
 
@@ -207,6 +209,9 @@ if not clam_env.GetOption('clean') :
 
 
 audioio_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	audioio_env.Append( LIBS=copy.copy(core_env['LIBS']) )
+	audioio_env.Append( LIBS=copy.copy(processing_env['LIBS']) )
 Export('audioio_env')
 audioio_env.Replace( QT_LIB = '' )
 
@@ -218,6 +223,10 @@ if not clam_env.GetOption('clean') :
 
 
 vmfl_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	vmfl_env.Append( LIBS=copy.copy(core_env['LIBS']) )
+	vmfl_env.Append( LIBS=copy.copy(processing_env['LIBS']) )
+	vmfl_env.Append( LIBS=copy.copy(audioio_env['LIBS']) )
 Export('vmfl_env')
 vmfl_env.Replace( QT_LIB = '' )
 
@@ -228,6 +237,10 @@ if not clam_env.GetOption('clean') :
 	vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	vmqt_env.Append( LIBS=copy.copy(core_env['LIBS']) )
+	vmqt_env.Append( LIBS=copy.copy(processing_env['LIBS']) )
+	vmqt_env.Append( LIBS=copy.copy(audioio_env['LIBS']) )
 vmqt_env.Replace( QT_DEBUG='0' )
 Export('vmqt_env')
 
@@ -241,7 +254,8 @@ if not clam_env.GetOption('clean') :
 compose_install_dirnames(clam_env)
 
 if clam_env.GetOption('clean') :
-	os.remove('header.db')
+	if os.path.exists( 'header.db' ) :
+		os.remove('header.db')
 
 #building
 

@@ -20,7 +20,6 @@ def define_module_contents() :
 	
 
 	folders = [ qtvm_base+folder for folder in folders]
-	folders += ['src/Standard/Polar.cxx', 'src/Standard/Complex.cxx', 'src/Standard/Point.cxx', 'src/Standard/Order.cxx']
 
 	folders.append(qtvm_base)
 
@@ -72,7 +71,7 @@ vmqt_env.Prepend(CPPPATH=['.','../core/include','../processing/include','../audi
 if not vmqt_env.GetOption('clean') :
 	handle_preinclude( vmqt_env )
 
-vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
+vmqt_env.Append(LIBS=['clam_core', 'clam_core_templates', 'clam_processing','clam_audioio'])
 vmqt_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
 if sys.platform != 'win32' :

@@ -16,7 +16,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Standard/Polar.cxx', 'src/Standard/Complex.cxx', 'src/Standard/Point.cxx', 'src/Standard/Order.cxx' ]
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls' ]
 
 	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
 
@@ -73,7 +73,7 @@ processing_env.Prepend(CPPPATH=['include','../core/include'])
 if not processing_env.GetOption('clean') :
 	handle_preinclude( processing_env )
 
-processing_env.Append(LIBS=['clam_core'])
+processing_env.Append(LIBS=['clam_core','clam_core_templates'])
 processing_env.Prepend(LIBPATH=['../core'])
 
 headers = [ File(header) for header in header_files ]

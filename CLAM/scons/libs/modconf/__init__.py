@@ -32,9 +32,13 @@ def setup_global_environment( clam_env, conf ) :
 			clam_env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
 		if clam_env['release'] :
-			clam_env.Append( CCFLAGS = '/DWIN32 /D_USRDLL /FD /GR /GX /MD /O2 /W3 /Zm1000' )	
+			#clam_env.Append( CPPFLAGS= ['-DWIN32', '-D_USRDLL'] )
+			clam_env.Append( CPPFLAGS = ['-DWIN32'] )
+			clam_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /W3 /Zm1000' )	
 		else :
-			clam_env.Append( CCFLAGS = '"/DWIN32 /D_USRDLL /D_DEBUG" /D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+			#clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_USRDLL', '-D_DEBUG'] )
+			clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+			clam_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 
 	# pthreads testing
 	result = conf.CheckCHeader('pthread.h')
@@ -63,6 +67,7 @@ def setup_global_environment( clam_env, conf ) :
 
 	clam_env['preinclude'] = 'preinclude.hxx'
 
-	clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
+	if not sys.platform == 'win32' :
+		clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
 
 	return True
