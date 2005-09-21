@@ -31,7 +31,10 @@ def setup_build_options( env ) :
 	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
 	if sys.platform != 'linux2' :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'c:\\Sandboxes' ) )
-	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
+	if sys.platform == 'win32' :
+		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
+	else :
+		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'yes'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
@@ -197,7 +200,7 @@ if not clam_env.GetOption('clean') :
 
 processing_env = clam_env.Copy()
 if sys.platform == 'win32' :
-	processing_env.Append( LIBS=copy.copy(core_env['LIBS']) )
+	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 Export('processing_env')
 processing_env.Replace( QT_LIB = '' )
 
@@ -210,8 +213,8 @@ if not clam_env.GetOption('clean') :
 
 audioio_env = clam_env.Copy()
 if sys.platform == 'win32' :
-	audioio_env.Append( LIBS=copy.copy(core_env['LIBS']) )
-	audioio_env.Append( LIBS=copy.copy(processing_env['LIBS']) )
+	audioio_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 Export('audioio_env')
 audioio_env.Replace( QT_LIB = '' )
 
@@ -224,9 +227,9 @@ if not clam_env.GetOption('clean') :
 
 vmfl_env = clam_env.Copy()
 if sys.platform == 'win32' :
-	vmfl_env.Append( LIBS=copy.copy(core_env['LIBS']) )
-	vmfl_env.Append( LIBS=copy.copy(processing_env['LIBS']) )
-	vmfl_env.Append( LIBS=copy.copy(audioio_env['LIBS']) )
+	vmfl_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	vmfl_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
 Export('vmfl_env')
 vmfl_env.Replace( QT_LIB = '' )
 
@@ -238,9 +241,9 @@ if not clam_env.GetOption('clean') :
 
 vmqt_env = clam_env.Copy()
 if sys.platform == 'win32' :
-	vmqt_env.Append( LIBS=copy.copy(core_env['LIBS']) )
-	vmqt_env.Append( LIBS=copy.copy(processing_env['LIBS']) )
-	vmqt_env.Append( LIBS=copy.copy(audioio_env['LIBS']) )
+	vmqt_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	vmqt_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	vmqt_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
 vmqt_env.Replace( QT_DEBUG='0' )
 Export('vmqt_env')
 

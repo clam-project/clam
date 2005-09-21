@@ -34,7 +34,8 @@ def setup_global_environment( clam_env, conf ) :
 		if clam_env['release'] :
 			#clam_env.Append( CPPFLAGS= ['-DWIN32', '-D_USRDLL'] )
 			clam_env.Append( CPPFLAGS = ['-DWIN32'] )
-			clam_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /W3 /Zm1000' )	
+			clam_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+			clam_env.Append( LINKFLAGS = ['/LTCG'] )
 		else :
 			#clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_USRDLL', '-D_DEBUG'] )
 			clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )

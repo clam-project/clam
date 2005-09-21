@@ -78,17 +78,6 @@ else :
 		# This is necessary since if we leave it out, then MSVC linker
 		# will assume they are 'windows' apps.
 		tests_env.Append(LINKFLAGS=['/subsystem:console','/MACHINE:X86'])
-
-		print "CCFLAGS"
-		for elem in tests_env['CCFLAGS'] :
-			print elem
-
-		print "CPPFLAGS"
-		for elem in tests_env['CPPFLAGS'] :
-			print elem
-		print "LINKFLAGS"
-		for elem in tests_env['LINKFLAGS'] :
-			print elem 
 	else :
 		raise RuntimeError, "Not implemented yet!"
 
