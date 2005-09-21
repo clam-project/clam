@@ -67,8 +67,8 @@
 #endif // MSVC++ 6
 #endif
 
-#define CLAM_DLL_EXPORT
 
 #endif
 
 
+#define CLAM_DLL_EXPORT  
