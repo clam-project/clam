@@ -118,6 +118,7 @@ public: // Inner classes. Public for better testing
 				std::string errmsg("GetCreator invoked with a non existent key : ");
 				errmsg += creatorId + "\nRegistered keys are:\n";
 				errmsg += GetRegisteredNames();
+				errmsg += "\n";
 				CLAM_ASSERT(res,errmsg.c_str());
 			}
 
