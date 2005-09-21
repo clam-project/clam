@@ -85,7 +85,7 @@ def test_id3lib( audioio_env, conf ) :
 	if sys.platform == 'win32' :
 		audioio_env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=1'] )
 		#pass
-		result = conf.CheckCXXHeader( 'id3.h' )
+	result = conf.CheckCXXHeader( 'id3.h' )
 	if not result :
 		print "Could not find id3lib headers! Please check your id3lib installation"
 		return False
@@ -111,7 +111,7 @@ def test_alsa_sdk( audioio_env, conf ) :
 	if not result :
 		print "Could not find libasound development headers! Please check your libasound installation"
 		return False
-	result = conf.CheckLibWithHeader( library='asound', symbol='snd_card_next' )	
+	result = conf.CheckLib( library='asound', symbol='snd_card_next' )	
 	if not result :
 		print "Could not find libasound binaries! Please check your libasound installation"
 		return False

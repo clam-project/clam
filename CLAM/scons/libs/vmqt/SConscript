@@ -71,7 +71,11 @@ vmqt_env.Prepend(CPPPATH=['.','../core/include','../processing/include','../audi
 if not vmqt_env.GetOption('clean') :
 	handle_preinclude( vmqt_env )
 
-vmqt_env.Append(LIBS=['clam_core', 'clam_core_templates', 'clam_processing','clam_audioio'])
+vmqt_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
+
+if sys.platform == 'win32' : 
+	vmqt_env.Append( LIBS=['clam_core_templates'] )
+
 vmqt_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
 if sys.platform != 'win32' :

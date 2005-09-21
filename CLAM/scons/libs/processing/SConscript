@@ -73,7 +73,10 @@ processing_env.Prepend(CPPPATH=['include','../core/include'])
 if not processing_env.GetOption('clean') :
 	handle_preinclude( processing_env )
 
-processing_env.Append(LIBS=['clam_core','clam_core_templates'])
+processing_env.Append(LIBS=['clam_core'])
+if sys.platform == 'win32' :
+	processing_env.Append(LIBS=['clam_core_templates'])
+
 processing_env.Prepend(LIBPATH=['../core'])
 
 headers = [ File(header) for header in header_files ]
