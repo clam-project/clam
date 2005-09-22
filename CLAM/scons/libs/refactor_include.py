@@ -3,7 +3,7 @@ from buildtools.include_rename import *
 import os, re, shelve, getopt, sys
 
 hdrNormRE = re.compile( r"#include \"(?P<hdr>.+)\"" )
-isSourceRE = re.compile(r"[^\.#]+\.[cC][xp]?[xp]?\Z" )
+isSourceRE = re.compile(r"[^\.#]+\.[cC][cxp]?[xp]?\Z" )
 isHeaderRE = re.compile( r"[^\.#].+\.[hH][xp]?[xp]?\Z" )
 
 def compilable( filename ) :

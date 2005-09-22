@@ -50,6 +50,28 @@ def setup_core_environment( core_env, conf ) :
 			return False			
 
 		core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'])
+
+	if sys.platform == 'linux2' and core_env['with_jack_support'] :
+		result = conf.CheckCHeader( 'jack/jack.h' )
+		if not result :
+			print "jack headers not found!"
+			print "Either install jack or disable jack support by issuing"
+			print "$scons with_jack_support=no"
+			return False
+		result = conf.CheckLib( library='jack', symbol='jack_cpu_load' )
+		if not result :
+			print "jack binaries not found!"
+			print "Either install jack or disable jack support by issuing"
+			print "$scons with_jack_support=no"
+			return False
+		result = conf.check_jack()
+		if not result :
+			print "jack compile/link/run test failed! check config.log for details..."
+			print "Either install jack or disable jack support by issuing"
+			print "$scons with_jack_support=no"
+			return False
+		core_env.Append(CPPFLAGS='-DUSE_JACK=1')	
+		
 	
 	if core_env['with_osc_support'] and sys.platform != 'win32':
 		result = conf.CheckCXXHeader( 'oscpack/ip/NetworkingUtils.h' )
