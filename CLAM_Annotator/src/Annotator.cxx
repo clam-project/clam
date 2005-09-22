@@ -32,7 +32,7 @@
 #include <CLAM/BPFEditor.hxx>
 
 #ifndef RESOURCES_BASE
-#define RESOURCES_BASE "."
+#define RESOURCES_BASE "../resources"
 #endif
 
 using CLAM::VM::QtAudioPlot;
