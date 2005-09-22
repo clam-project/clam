@@ -27,7 +27,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT AudioTextDescriptors
+	class  AudioTextDescriptors
 		: public DynamicType
 	{
 	public:

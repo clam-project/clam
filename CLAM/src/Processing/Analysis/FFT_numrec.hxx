@@ -38,7 +38,7 @@ namespace CLAM {
 	 * in C.
 	 * @see <a HREF="http://www.nr.com/"> Numerical Recipies Home Page</a>
 	 */
-	class CLAM_DLL_EXPORT FFT_numrec: public FFT_base
+	class  FFT_numrec: public FFT_base
 	{
 	
    	

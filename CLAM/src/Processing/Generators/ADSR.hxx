@@ -32,7 +32,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT ADSRConfig: public ProcessingConfig
+	class  ADSRConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (ADSRConfig, 5, ProcessingConfig);
@@ -45,7 +45,7 @@ namespace CLAM
 		void DefaultInit(void);
 	};
 
-	class CLAM_DLL_EXPORT ADSR: public Processing
+	class  ADSR: public Processing
 	{
 	public:
 		AudioOutPort mOutput;

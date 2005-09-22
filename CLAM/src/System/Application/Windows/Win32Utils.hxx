@@ -29,7 +29,7 @@
 
 namespace CLAM
 {
-	void CLAM_DLL_EXPORT EnableConsoleAudio();
+	void  EnableConsoleAudio();
 }
 
 

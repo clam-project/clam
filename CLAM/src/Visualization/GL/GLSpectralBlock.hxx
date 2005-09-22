@@ -36,7 +36,7 @@ namespace CLAMGUI
 
 using CLAM::TData;
 
-class CLAM_DLL_EXPORT GLSpectralBlock
+class  GLSpectralBlock
 	: public ArrayRenderer
 {
 

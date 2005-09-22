@@ -32,7 +32,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT SinTrackBuilder
+		class  SinTrackBuilder
 		{
 			// types
 		protected:

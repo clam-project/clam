@@ -48,7 +48,7 @@ namespace CLAMVM
 	 *  This abstract class is the base class for all CLAM-based sinusoidal tracks
 	 *  graphical representations
 	 */
-	class CLAM_DLL_EXPORT SinTracksPresentation : public Presentation
+	class  SinTracksPresentation : public Presentation
 	{
 	protected:
 		

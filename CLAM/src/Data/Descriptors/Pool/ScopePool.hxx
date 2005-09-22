@@ -33,7 +33,7 @@ namespace CLAM
 	 * contexts of a single scope.
 	 * @ingroup SemanticalAnalysis
 	 */
-	class CLAM_DLL_EXPORT ScopePool : public Component
+	class  ScopePool : public Component
 	{
 	public:
 		typedef std::vector<AttributePool> AttributesData;

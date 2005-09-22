@@ -19,7 +19,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class CLAM_DLL_EXPORT QtSpectrogram : public SingleDisplayPlot
+		class  QtSpectrogram : public SingleDisplayPlot
 		{
 			Q_OBJECT
 

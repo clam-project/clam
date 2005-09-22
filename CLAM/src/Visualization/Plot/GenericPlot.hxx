@@ -29,7 +29,7 @@ namespace CLAMVM
 {
 	class Fl_Plot;
 	
-	class CLAM_DLL_EXPORT GenericPlot : public PlotBase
+	class  GenericPlot : public PlotBase
 	{
 
 	public:

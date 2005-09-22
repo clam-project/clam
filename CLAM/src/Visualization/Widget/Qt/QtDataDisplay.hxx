@@ -34,7 +34,7 @@ namespace CLAMGUI
 
 class QtGLPort;
 
-class CLAM_DLL_EXPORT QtDataDisplay : public QWidget
+class  QtDataDisplay : public QWidget
 {
 	Q_OBJECT
 public:

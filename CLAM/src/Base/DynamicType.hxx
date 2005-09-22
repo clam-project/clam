@@ -66,7 +66,7 @@ namespace CLAM {
  * @see DynamicBranch
  *
  */
-class CLAM_DLL_EXPORT DynamicType : public Component
+class  DynamicType : public Component
 {
 public:
 	/**

@@ -36,7 +36,7 @@ namespace CLAM
 {
 
 
-class CLAM_DLL_EXPORT SDIFInConfig:public ProcessingConfig
+class  SDIFInConfig:public ProcessingConfig
 {
 public:
 
@@ -54,7 +54,7 @@ public:
 	void DefaultInit();
 };
 
-class CLAM_DLL_EXPORT SDIFIn: public Processing
+class  SDIFIn: public Processing
 {
 public:
 

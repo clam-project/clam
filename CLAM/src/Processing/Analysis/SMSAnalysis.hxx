@@ -36,7 +36,7 @@ namespace CLAM
 class ProcessingConfig;
 
 /** Class that encapsulates all the building blocks of the SegmentAnalysis example */
-class CLAM_DLL_EXPORT SMSAnalysis : public ProcessingComposite
+class  SMSAnalysis : public ProcessingComposite
 {
 
 public:

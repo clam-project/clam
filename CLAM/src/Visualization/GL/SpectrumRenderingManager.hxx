@@ -34,7 +34,7 @@ namespace CLAMVM
 	using CLAM::TData;
 	using CLAM::TSize;
 
-	class CLAM_DLL_EXPORT SpectrumRenderingManager : public GLRenderingManager
+	class  SpectrumRenderingManager : public GLRenderingManager
 	{
 	public:
 		SpectrumRenderingManager();

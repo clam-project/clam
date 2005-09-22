@@ -52,7 +52,7 @@ namespace CLAM {
 
 
 
-template <int o> struct CLAM_DLL_EXPORT Pow
+template <int o> struct  Pow
 {
 public:
 	template <class T>
@@ -60,14 +60,14 @@ public:
 	Pow<o-1> next;
 };
 
-template<> struct CLAM_DLL_EXPORT Pow<1>
+template<> struct  Pow<1>
 {
 public:
 	template<class T>
 	T operator() (const T& n) const {return n;}
 };
 
-template<> struct CLAM_DLL_EXPORT Pow<0>
+template<> struct  Pow<0>
 {
 public:
 	template<class T>
@@ -77,7 +77,7 @@ public:
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^n)*/
-template <int s,bool abs=false,class T=TData> class CLAM_DLL_EXPORT Power
+template <int s,bool abs=false,class T=TData> class  Power
 {
 public:
 	Power(){}
@@ -99,13 +99,13 @@ protected:
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^1)*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT NoPowerTmpl
+template<bool abs=false,class T=TData> class  NoPowerTmpl
 :public Power<1,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^2)*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT SquareTmpl
+template<bool abs=false,class T=TData> class  SquareTmpl
 :public Power<2,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(x(i)^3)*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT CubeTmpl
+template<bool abs=false,class T=TData> class  CubeTmpl
 :public Power<3,abs,T>{};
 
 /** Typedefs */
@@ -115,7 +115,7 @@ typedef  CubeTmpl<> Cube;
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^n)*/
-template <int s,bool abs=false, class T=TData> class CLAM_DLL_EXPORT WeightedPower
+template <int s,bool abs=false, class T=TData> class  WeightedPower
 {
 public:
 	WeightedPower():i(0){}
@@ -138,7 +138,7 @@ protected:
 
 
 /**Binary Operator for use with std::inner_product*/
-template <int s=1,class T=TData> class CLAM_DLL_EXPORT PoweredProduct
+template <int s=1,class T=TData> class  PoweredProduct
 {
 public:
 	PoweredProduct(){}
@@ -152,13 +152,13 @@ protected:
 
 
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^1)*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT WeightedNoPowerTmpl
+template<bool abs=false,class T=TData> class  WeightedNoPowerTmpl
 :public WeightedPower<1,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^2)*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT WeightedSquareTmpl
+template<bool abs=false,class T=TData> class  WeightedSquareTmpl
 :public WeightedPower<2,abs,T>{};
 /**Binary Operator for use with std::accumulate, for computing Sum(i*x(i)^3)*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT WeightedCubeTmpl
+template<bool abs=false,class T=TData> class  WeightedCubeTmpl
 :public WeightedPower<3,abs,T>{};
 
 /** typedefs */
@@ -167,7 +167,7 @@ typedef WeightedSquareTmpl<> WeightedSquare;
 typedef WeightedCubeTmpl<> WeightedCube;
 
 /**Binary Operator for use with std::accumulate, for computing Sum((x(i)-k)^n)*/
-template <int s=1,bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT BiasedPower
+template <int s=1,bool abs=false,class T=TData,class U=TData> class  BiasedPower
 {
 public:
 	BiasedPower(U imean):mean(imean){}
@@ -191,7 +191,7 @@ public:
 
 
 /**Binary Operator for use with std::accumulate, for computing Product(x(i))*/
-template <class T=TData> class CLAM_DLL_EXPORT ProductTmpl
+template <class T=TData> class  ProductTmpl
 {
 public:
 	T operator()(const T& orig,const T& num)
@@ -205,7 +205,7 @@ typedef ProductTmpl<> Product;
 /** Class used as base for all operators with memory, useful to define array of operators.
  *	@see Stats
  *	@todo: check if polymorphism affects efficiency. */
-class CLAM_DLL_EXPORT BaseMemOp
+class  BaseMemOp
 {
 public:
 	BaseMemOp():alreadyComputed(false){}
@@ -217,7 +217,7 @@ protected:
 
 /** Class Function that computes Sum(x(i)^n) using std::accumulate and Power<T,s> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
-template <int s,bool abs=false,class T=TData> class CLAM_DLL_EXPORT PoweredSum:public BaseMemOp
+template <int s,bool abs=false,class T=TData> class  PoweredSum:public BaseMemOp
 {
 public:
 	PoweredSum():memory((T)0.0){}
@@ -238,11 +238,11 @@ private:
 
 
 /** Class Function that computes Sum(x(i)) using std::accumulate and NoPower<T> BinaryOp*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT SumTmpl:public PoweredSum<1,abs,T>{};
+template<bool abs=false,class T=TData> class  SumTmpl:public PoweredSum<1,abs,T>{};
 /** Class Function that computes Sum(x(i)^2) using std::accumulate and Square<T> BinaryOp*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT SquaredSumTmpl:public PoweredSum<2,abs,T>{};
+template<bool abs=false,class T=TData> class  SquaredSumTmpl:public PoweredSum<2,abs,T>{};
 /** Class Function that computes Sum(x(i)^3) using std::accumulate and Cube<T> BinaryOp*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT CubedSumTmpl:public PoweredSum<3,abs,T>{};
+template<bool abs=false,class T=TData> class  CubedSumTmpl:public PoweredSum<3,abs,T>{};
 
 typedef SumTmpl<> Sum;
 typedef SquaredSumTmpl<> SquaredSum;
@@ -250,7 +250,7 @@ typedef CubedSumTmpl<> CubedSum;
 
 
 /**Binary Operator for use with std::accumulate, for computing Product(x(i))*/
-template <class T=TData> class CLAM_DLL_EXPORT LogPlusTmpl
+template <class T=TData> class  LogPlusTmpl
 {
 public:
 	T operator()(const T& orig,const T& num)
@@ -267,7 +267,7 @@ typedef LogPlusTmpl<> LogSum;
 
 /** Class Function for computing logarithmic sum of all data in vector using.
  *	It also has associated memory so operation is not performed more than necessary. */
-template <class T=TData> class CLAM_DLL_EXPORT LogSumTmpl:public BaseMemOp
+template <class T=TData> class  LogSumTmpl:public BaseMemOp
 {
 public:
 	LogSumTmpl():memory(0.0){}
@@ -289,7 +289,7 @@ private:
 
 /** Class Function for computing product of all data in vector.
  *	It also has associated memory so operation is not performed more than necessary. */
-template <class T=TData> class CLAM_DLL_EXPORT InnerProductTmpl:public BaseMemOp
+template <class T=TData> class  InnerProductTmpl:public BaseMemOp
 {
 public:
 	InnerProductTmpl():memory(0.0){}
@@ -311,7 +311,7 @@ typedef InnerProductTmpl<> InnerProduct;
 
 /** Class Function that computes Sum(i*x(i)^n) using std::accumulate and WeightedPower<T,s> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
-template <int s, bool abs=false, class T=TData> class CLAM_DLL_EXPORT WeightedPoweredSum:public BaseMemOp
+template <int s, bool abs=false, class T=TData> class  WeightedPoweredSum:public BaseMemOp
 {
 public:
 	WeightedPoweredSum():memory(0.0){}
@@ -336,7 +336,7 @@ private:
 
 /** Class Function that computes Sum(x(i)^n * y(i)) using std::accumulate and WeightedPower<T,s> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
-template <int s,bool abs=false, class T=TData> class CLAM_DLL_EXPORT CrossWeightedPoweredSum:public BaseMemOp
+template <int s,bool abs=false, class T=TData> class  CrossWeightedPoweredSum:public BaseMemOp
 {
 public:
 	CrossWeightedPoweredSum():memory(0.0){}
@@ -359,11 +359,11 @@ private:
 
 
 /** Class Function that computes Sum(i*x(i)) using std::accumulate and WeightedNoPower<T> BinaryOp*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT WeightedSumTmpl:public WeightedPoweredSum<1,abs,T>{};
+template<bool abs=false,class T=TData> class  WeightedSumTmpl:public WeightedPoweredSum<1,abs,T>{};
 /** Class Function that computes Sum(i*x(i)^2)using std::accumulate and WeightedSquare<T> BinaryOp*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT WeightedSquaredSumTmpl:public WeightedPoweredSum<2,abs,T>{};
+template<bool abs=false,class T=TData> class  WeightedSquaredSumTmpl:public WeightedPoweredSum<2,abs,T>{};
 /** Class Function that computes Sum(i*x(i)^3) using std::accumulate and WeightedCube<T> BinaryOp*/
-template<bool abs=false,class T=TData> class CLAM_DLL_EXPORT WeightedCubedSumTmpl:public WeightedPoweredSum<3,abs,T>{};
+template<bool abs=false,class T=TData> class  WeightedCubedSumTmpl:public WeightedPoweredSum<3,abs,T>{};
 
 typedef WeightedSumTmpl<> WeightedSum;
 typedef WeightedSquaredSumTmpl<> WeightedSquaredSum;
@@ -372,7 +372,7 @@ typedef WeightedCubedSumTmpl<> WeightedCubedSum;
 
 /** Class Function that computes 'oth' order Moment using PoweredSum Class Function.
  *	It also has associated memory so operation is not performed more than necessary. */
-template<int o, bool abs=false, class T=TData,class U=TData> class CLAM_DLL_EXPORT Moment:public BaseMemOp
+template<int o, bool abs=false, class T=TData,class U=TData> class  Moment:public BaseMemOp
 {
 public:
 	Moment():memory(0.0){}
@@ -406,7 +406,7 @@ protected:
 
 /** Class Function that computes 'oth' order Center of Gravity using WeightedPoweredSum Class Function.
  *	It also has associated memory so operation is not performed more than necessary. */
-template<int o, bool abs=false, class T=TData,class U=TData> class CLAM_DLL_EXPORT CenterOfGravity:public BaseMemOp
+template<int o, bool abs=false, class T=TData,class U=TData> class  CenterOfGravity:public BaseMemOp
 {
 public:
 	CenterOfGravity():memory(0.0){}
@@ -447,7 +447,7 @@ protected:
 };
 
 /** Special CenterOfGravity using 2ond sequence as indexing sequence */
-template<int o, bool abs=false, class T=TData,class U=TData> class CLAM_DLL_EXPORT CrossCenterOfGravity:public BaseMemOp
+template<int o, bool abs=false, class T=TData,class U=TData> class  CrossCenterOfGravity:public BaseMemOp
 {
 public:
 	CrossCenterOfGravity():memory(0.0){}
@@ -482,13 +482,13 @@ protected:
 
 /** Centroid is 1st order center of gravity
  *	@see: CenterOfGravity */
-template<bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT CentroidTmpl:public CenterOfGravity<1,abs,T,U>{};
+template<bool abs=false,class T=TData,class U=TData> class  CentroidTmpl:public CenterOfGravity<1,abs,T,U>{};
 /** Mean is 1st order Moment
  *	@see: Moment */
-template<bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT MeanTmpl:public Moment<1,abs,T,U>{};
+template<bool abs=false,class T=TData,class U=TData> class  MeanTmpl:public Moment<1,abs,T,U>{};
 /** Energy is just the squared sum
  *	@see: SquaredSum */
-template<class T=TData> class CLAM_DLL_EXPORT EnergyTmpl:public SquaredSumTmpl<false,T>{};
+template<class T=TData> class  EnergyTmpl:public SquaredSumTmpl<false,T>{};
 
 typedef CentroidTmpl<> Centroid;
 typedef MeanTmpl<> Mean;
@@ -497,7 +497,7 @@ typedef EnergyTmpl<> Energy;
 
 /** RMS is the square root of the Energy
  *	@see: Energy */
-template<class T=TData,class U=TData> class CLAM_DLL_EXPORT RMSTmpl:public BaseMemOp
+template<class T=TData,class U=TData> class  RMSTmpl:public BaseMemOp
 {
 public:
 	/// Memoryless Computation using external lower level functors
@@ -535,7 +535,7 @@ typedef RMSTmpl<> RMS;
 
 /** Class Function that computes Geometric Mean using InnerProduct class function.
  *	It also has associated memory so operation is not performed more than necessary. */
-template<class T=TData,class U=TData> class CLAM_DLL_EXPORT GeometricMeanTmpl:public BaseMemOp
+template<class T=TData,class U=TData> class  GeometricMeanTmpl:public BaseMemOp
 {
 public:
 	U operator()(const Array<T>& a,LogSumTmpl<T>& inProd,StaticFalse * useMemory)
@@ -567,7 +567,7 @@ typedef GeometricMeanTmpl<> GeometricMean;
 
 /** Class Function that computes Sum((x(i)-mean)^n) using std::accumulate and BiasedPower<T,s> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
-template <int s,bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT BiasedPoweredSum:public BaseMemOp
+template <int s,bool abs=false,class T=TData,class U=TData> class  BiasedPoweredSum:public BaseMemOp
 {
 public:
 	BiasedPoweredSum():memory(0.0){}
@@ -600,7 +600,7 @@ private:
 /** Class Function that computes 'oth' order CentralMoment using BiasedPoweredSum Class Function.
  *	It can also compute Central Moments using Previously Computed raw Moments.
  *	It also has associated memory so operation is not performed more than necessary. */
-template<int o,bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT CentralMoment:public BaseMemOp
+template<int o,bool abs=false,class T=TData,class U=TData> class  CentralMoment:public BaseMemOp
 {
 public:
 	CentralMoment():memory(){}
@@ -692,7 +692,7 @@ protected:
 
 /** Class Function to compute StandardDeviation. That is square root of second order
  *	central moment.*/
-template <bool abs=false, class T=TData, class U=TData> class CLAM_DLL_EXPORT StandardDeviationTmpl:public BaseMemOp
+template <bool abs=false, class T=TData, class U=TData> class  StandardDeviationTmpl:public BaseMemOp
 {
 public:
 	StandardDeviationTmpl():memory(){}
@@ -723,7 +723,7 @@ typedef StandardDeviationTmpl<> StandardDeviation;
 
 /** Class Function that computes Skewness using Standard Deviation and 3rd order central moment.
  *	It also has associated memory so operation is not performed more than necessary. */
-template <bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT SkewTmpl:public BaseMemOp
+template <bool abs=false,class T=TData,class U=TData> class  SkewTmpl:public BaseMemOp
 {
 	
 public:
@@ -761,7 +761,7 @@ typedef SkewTmpl<> Skew;
 
 /** Class Function that computes Kurtosis Excess using Variance and 4th order central moment.
  *	It also has associated memory so operation is not performed more than necessary. */
-template <bool abs=false,class T=TData,class U=TData> class CLAM_DLL_EXPORT KurtosisTmpl:public BaseMemOp
+template <bool abs=false,class T=TData,class U=TData> class  KurtosisTmpl:public BaseMemOp
 {
 public:
 	KurtosisTmpl():memory(){}
@@ -797,7 +797,7 @@ typedef KurtosisTmpl<> Kurtosis;
 
 
 /**Binary Operator for use with std::accumulate, for computing Min(x(i))*/
-template <bool abs=false, class T=TData> class CLAM_DLL_EXPORT ComplexMin
+template <bool abs=false, class T=TData> class  ComplexMin
 {
 public:
 	ComplexMin(){}
@@ -817,7 +817,7 @@ public:
 
 /** Class Function that computes Min(x(i)) using std::accumulate and ComplexMin<T> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
-template <bool abs=false,class T=TData> class CLAM_DLL_EXPORT ComplexMinElement:public BaseMemOp
+template <bool abs=false,class T=TData> class  ComplexMinElement:public BaseMemOp
 {
 public:
 	ComplexMinElement():memory((T)0.0){}
@@ -837,7 +837,7 @@ private:
 };
 
 /**Binary Operator for use with std::accumulate, for computing Max(x(i))*/
-template <bool abs=false, class T=TData> class CLAM_DLL_EXPORT ComplexMax
+template <bool abs=false, class T=TData> class  ComplexMax
 {
 public:
 	ComplexMax(){}
@@ -857,7 +857,7 @@ public:
 
 /** Class Function that computes Max(x(i)) using std::accumulate and ComplexMax<T> BinaryOp
  *	It also has associated memory so operation is not performed more than necessary. */
-template <bool abs=false,class T=TData> class CLAM_DLL_EXPORT ComplexMaxElement:public BaseMemOp
+template <bool abs=false,class T=TData> class  ComplexMaxElement:public BaseMemOp
 {
 public:
 	ComplexMaxElement():memory((T)0.0){}

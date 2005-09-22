@@ -31,7 +31,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT Instrument: public ProcessingComposite
+	class  Instrument: public ProcessingComposite
 	{
 	private:
 		AudioOutPort	mOut;

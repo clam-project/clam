@@ -33,7 +33,7 @@ namespace CLAM {
  *	No new data members
  *	No member functions
  */
-	class CLAM_DLL_EXPORT ErrOutOfMemory:public Err
+	class  ErrOutOfMemory:public Err
 	{
 	public:
 		ErrOutOfMemory(int size);

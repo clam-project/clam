@@ -26,7 +26,7 @@
 
 namespace CLAMVM
 {
-	class CLAM_DLL_EXPORT PlotBase
+	class  PlotBase
 	{
 
 	public:

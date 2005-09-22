@@ -30,7 +30,7 @@ namespace CLAM{
 /** PhaseGeneration
 *   Enumeration to use for specifying the type of phase generation used
 */
-class CLAM_DLL_EXPORT EPhaseGeneration: public Enum
+class  EPhaseGeneration: public Enum
 {
 public:
 	EPhaseGeneration() : Enum(ValueTable(), eAlign) {}

@@ -17,7 +17,7 @@ namespace CLAM
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT AudioBuffPlotProcessingConfig : public ProcessingConfig
+	class  AudioBuffPlotProcessingConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (AudioBuffPlotProcessingConfig, 6, ProcessingConfig);
@@ -32,7 +32,7 @@ namespace CLAM
 		void DefaultInit();
 	};
 
-	class CLAM_DLL_EXPORT AudioBuffPlotProcessing : public Processing
+	class  AudioBuffPlotProcessing : public Processing
 	{
 	public:
 		AudioBuffPlotProcessing();

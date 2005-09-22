@@ -37,7 +37,7 @@ namespace CLAM{
  * AudioManager::FindList
  * @see MIDIDevice, MIDIManager
  */
-class CLAM_DLL_EXPORT MIDIDeviceList
+class  MIDIDeviceList
 {
 friend class MIDIManager;
 private:

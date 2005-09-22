@@ -33,7 +33,7 @@ namespace CLAM
 	{
 		class ScrollBar;
 
-		class CLAM_DLL_EXPORT HScrollGroup : public QWidget
+		class  HScrollGroup : public QWidget
 		{
 			Q_OBJECT
 

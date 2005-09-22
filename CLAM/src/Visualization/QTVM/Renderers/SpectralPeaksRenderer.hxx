@@ -30,7 +30,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT SpectralPeaksRenderer : public Renderer
+		class  SpectralPeaksRenderer : public Renderer
 		{
 		public:
 			SpectralPeaksRenderer();

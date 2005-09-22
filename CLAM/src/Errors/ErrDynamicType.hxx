@@ -33,7 +33,7 @@ namespace CLAM {
 	 * No new data members
 	 * No member functions
 	 **/
-	class CLAM_DLL_EXPORT ErrDynamicType : public Err
+	class  ErrDynamicType : public Err
 	{
 	public:
 

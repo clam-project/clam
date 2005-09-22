@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT ConnectionDefinitionAdapter :public Component
+class  ConnectionDefinitionAdapter :public Component
 {
 private:
 	Text mOut;

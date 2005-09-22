@@ -38,7 +38,7 @@ namespace CLAM
     {	
 		enum ColorMap { WindowMode=0, BlackBackground, WhiteBackground };
 
-		class CLAM_DLL_EXPORT  QtPlayer : public QWidget
+		class   QtPlayer : public QWidget
 		{
 			Q_OBJECT
 			

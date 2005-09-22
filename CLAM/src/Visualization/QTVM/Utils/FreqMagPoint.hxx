@@ -7,7 +7,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		struct CLAM_DLL_EXPORT FreqMagPoint
+		struct  FreqMagPoint
 		{
 			TData freq;
 			TData mag;

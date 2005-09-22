@@ -30,7 +30,7 @@ namespace CLAM
 	{
 		class PlayablePlot;
 		
-		class CLAM_DLL_EXPORT PlayableList
+		class  PlayableList
 		{
 			typedef std::list<PlayablePlot*> PlayablePlotList;
 				

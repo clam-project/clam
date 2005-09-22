@@ -27,7 +27,7 @@
 namespace CLAMVM
 {
 
-class CLAM_DLL_EXPORT Fl_X_Axis: public Fl_Axis
+class  Fl_X_Axis: public Fl_Axis
 {
 
 protected:

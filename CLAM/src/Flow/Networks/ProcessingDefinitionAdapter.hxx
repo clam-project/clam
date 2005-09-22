@@ -31,7 +31,7 @@ namespace CLAM
 {
 class Processing;
 
-class CLAM_DLL_EXPORT ProcessingDefinitionAdapter :public Component
+class  ProcessingDefinitionAdapter :public Component
 {
 private:
 	Processing * mAdaptee;

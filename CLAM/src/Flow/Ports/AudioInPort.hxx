@@ -28,7 +28,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT AudioInPort : public InPort<TData>
+class  AudioInPort : public InPort<TData>
 {
 public:
 	AudioInPort( const std::string & name = "unnamed in port", Processing * proc = 0 );

@@ -37,7 +37,7 @@ namespace CLAMVM
 		using CLAM::ProcessingData;
 		using CLAM::Array;
 
-		class CLAM_DLL_EXPORT SpectralPeakArrayAdapter 
+		class  SpectralPeakArrayAdapter 
 				: public ProcessingDataAdapter, public SpectralPeaksModel
 		{
 				// attributes

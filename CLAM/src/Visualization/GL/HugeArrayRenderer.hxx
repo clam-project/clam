@@ -33,7 +33,7 @@ namespace CLAMVM
 		using CLAM::TSize;
 		using CLAM::DataArray;
 
-		class CLAM_DLL_EXPORT HugeArrayRenderer : public GLRenderer
+		class  HugeArrayRenderer : public GLRenderer
 		{
 		public:
 

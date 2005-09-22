@@ -12,7 +12,7 @@
 namespace CLAM 
 {
 
-class CLAM_DLL_EXPORT MIDIKeyboardConfig : public ProcessingConfig
+class  MIDIKeyboardConfig : public ProcessingConfig
 {
 	DYNAMIC_TYPE_USING_INTERFACE (MIDIKeyboardConfig, 1, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, std::string, MidiDevice);

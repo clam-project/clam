@@ -35,7 +35,7 @@ namespace CLAMVM
 	class LogMagSpectrumAdapter;
 	class Fl_SMS_Spectrum;
 
-	class CLAM_DLL_EXPORT SpectrumPlot : public PlotBase
+	class  SpectrumPlot : public PlotBase
 	{
 	public:
 		SpectrumPlot();

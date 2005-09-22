@@ -11,7 +11,7 @@ namespace CLAM
     {
 		enum Position { Left=0, Right, Bottom, Top };
 
-		class CLAM_DLL_EXPORT Ruler : public QWidget
+		class  Ruler : public QWidget
 		{
 			Q_OBJECT
 

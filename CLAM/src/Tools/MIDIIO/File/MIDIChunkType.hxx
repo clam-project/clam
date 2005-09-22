@@ -28,7 +28,7 @@
 
 namespace MIDI
 {
-	class CLAM_DLL_EXPORT ChunkType
+	class  ChunkType
 	{
 	public:
 		Byte mBytes[4];

@@ -34,7 +34,7 @@ namespace CLAM
  * setup.
  * @see MIDIIn, MIDIOut, MIDIDevice, MIDIManager, ProcessingConfig
  */
-class CLAM_DLL_EXPORT MIDIIOConfig: public ProcessingConfig
+class  MIDIIOConfig: public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (MIDIIOConfig, 4, ProcessingConfig);

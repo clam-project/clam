@@ -65,7 +65,7 @@ namespace CLAM{
 * @see SpectralPeak
 * @author Xavier Amatriain
 */
-class CLAM_DLL_EXPORT SpectralPeakArray : public ProcessingData
+class  SpectralPeakArray : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakArray, 8, ProcessingData);

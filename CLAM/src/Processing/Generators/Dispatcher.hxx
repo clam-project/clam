@@ -30,7 +30,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT DispatcherConfig: public ProcessingConfig
+	class  DispatcherConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (DispatcherConfig, 2, ProcessingConfig);
@@ -46,7 +46,7 @@ namespace CLAM
 		}
 	};
 
-	class CLAM_DLL_EXPORT Dispatcher:public Processing
+	class  Dispatcher:public Processing
 	{
 	private:
 		struct InstrStatus

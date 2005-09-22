@@ -38,7 +38,7 @@ namespace CLAM
  * @ingroup XmlBackends_LibXml
  * @todo dumping selections
  */
-class CLAM_DLL_EXPORT LibXmlDomWriter
+class  LibXmlDomWriter
 {
 	public:
 		LibXmlDomWriter()

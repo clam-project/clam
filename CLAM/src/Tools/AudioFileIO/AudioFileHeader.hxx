@@ -27,7 +27,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT AudioFileHeader
+	class  AudioFileHeader
 		: public DynamicType
 	{
 	public:

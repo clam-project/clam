@@ -11,7 +11,7 @@ namespace CLAM
 {
     namespace VM
     {
-		struct CLAM_DLL_EXPORT SView
+		struct  SView
 		{
 			float left;
 			float right;
@@ -26,7 +26,7 @@ namespace CLAM
 			void operator=(SView v);
 		};
 
-		class CLAM_DLL_EXPORT NetPlotController : public QObject
+		class  NetPlotController : public QObject
 		{
 			typedef std::list<SView> ViewStack;
 

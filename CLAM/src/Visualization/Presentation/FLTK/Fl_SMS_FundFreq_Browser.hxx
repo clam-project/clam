@@ -44,7 +44,7 @@ namespace CLAMVM
 	class Fl_ZoomSlider;
 	class Fl_SMS_Gl_Single_Browsable_Display;
 
-	class CLAM_DLL_EXPORT Fl_SMS_FundFreq_Browser : public Presentation, public Fl_Group
+	class  Fl_SMS_FundFreq_Browser : public Presentation, public Fl_Group
 	{
 	private:
 		

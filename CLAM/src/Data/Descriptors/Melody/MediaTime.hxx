@@ -44,7 +44,7 @@ namespace CLAM {
  * boundaries                                    *
  *                                               */
 
-class CLAM_DLL_EXPORT MediaTime: public ProcessingData
+class  MediaTime: public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (MediaTime, 3, ProcessingData);

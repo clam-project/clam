@@ -10,7 +10,7 @@ namespace CLAM
     {
 		enum SonogramCM { ColorSonogram=0, BlackWhiteSonogram };
 
-		class CLAM_DLL_EXPORT SpectrogramRenderer : public Renderer
+		class  SpectrogramRenderer : public Renderer
 		{
 		public:
 			SpectrogramRenderer();

@@ -26,7 +26,7 @@
 namespace CLAMGUI
 {
 
-class CLAM_DLL_EXPORT QtAppSignaler : public QObject
+class  QtAppSignaler : public QObject
 {
 	Q_OBJECT
 

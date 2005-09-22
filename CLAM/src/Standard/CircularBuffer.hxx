@@ -43,7 +43,7 @@ namespace CLAM
 	 * which indicates the index at which the buffer starts reading 
 	 * after it's been initialized (default: 0).
 	 */
-	template <class T> class CLAM_DLL_EXPORT CircularBuffer
+	template <class T> class  CircularBuffer
 	{
 	protected: 
 		Array<T> mBuffer;

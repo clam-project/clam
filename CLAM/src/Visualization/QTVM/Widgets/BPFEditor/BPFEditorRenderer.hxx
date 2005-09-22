@@ -8,7 +8,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT BPFEditorRenderer
+		class  BPFEditorRenderer
 		{
 		public:
 			BPFEditorRenderer();

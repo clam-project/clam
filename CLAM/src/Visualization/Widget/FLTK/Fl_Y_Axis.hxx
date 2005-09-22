@@ -27,7 +27,7 @@
 namespace CLAMVM
 {
 
-class CLAM_DLL_EXPORT Fl_Y_Axis
+class  Fl_Y_Axis
 		: public Fl_Axis
 {
 		int min_pos() const;

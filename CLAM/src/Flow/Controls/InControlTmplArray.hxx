@@ -31,7 +31,7 @@ namespace CLAM
  * \todo document this class
  */ 
 template <class TProcessing>
-class CLAM_DLL_EXPORT InControlTmplArray
+class  InControlTmplArray
 {
 	typedef InControlTmpl<TProcessing> TInControl;
 	typedef typename TInControl::TPtrMemberFuncId TPtrMemberFuncId;

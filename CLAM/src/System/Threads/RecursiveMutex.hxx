@@ -30,7 +30,7 @@ namespace CLAM
 
 	struct xtime;
 
-	class CLAM_DLL_EXPORT RecursiveMutex
+	class  RecursiveMutex
 	{
 	public:
 		
@@ -62,7 +62,7 @@ namespace CLAM
 		bool           mValidID;
 	};
 
-	class CLAM_DLL_EXPORT RecursiveTryMutex
+	class  RecursiveTryMutex
 	{
 	public:
 		friend class Detail::LockOps<RecursiveTryMutex>;
@@ -94,7 +94,7 @@ namespace CLAM
 		bool           mValidID;
 	};
 
-	class CLAM_DLL_EXPORT RecursiveTimedMutex
+	class  RecursiveTimedMutex
 	{
 	public:
 		friend class Detail::LockOps<RecursiveTimedMutex>;

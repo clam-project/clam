@@ -31,7 +31,7 @@ namespace CLAM
 
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT APlayer : public Player
+		class  APlayer : public Player
 		{
 		public:
 			APlayer();

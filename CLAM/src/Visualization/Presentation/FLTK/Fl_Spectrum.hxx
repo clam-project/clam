@@ -35,7 +35,7 @@ namespace CLAMVM
 	class Fl_Gl_Single_Display;
 	class Fl_GridLayout;
 
-	class CLAM_DLL_EXPORT Fl_Spectrum : public SpectrumPresentation, public Fl_Window
+	class  Fl_Spectrum : public SpectrumPresentation, public Fl_Window
 	{
 	private:
 		Fl_X_Axis*                  mXAxis;

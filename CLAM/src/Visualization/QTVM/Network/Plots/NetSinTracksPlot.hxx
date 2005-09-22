@@ -10,7 +10,7 @@ namespace CLAM
 
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT NetSinTracksPlot : public NetPlot
+		class  NetSinTracksPlot : public NetPlot
 		{
 			Q_OBJECT
 		public:

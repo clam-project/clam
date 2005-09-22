@@ -33,7 +33,7 @@ namespace CLAM
 		class VZLabel;
 		class ScrollBar;
 
-		class CLAM_DLL_EXPORT VScrollGroup : public QWidget
+		class  VScrollGroup : public QWidget
 		{
 			Q_OBJECT
 

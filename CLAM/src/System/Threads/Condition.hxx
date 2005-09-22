@@ -31,7 +31,7 @@ namespace CLAM
 
 	struct xtime;
 
-	class CLAM_DLL_EXPORT Condition
+	class  Condition
 	{
 	public:
 		Condition();

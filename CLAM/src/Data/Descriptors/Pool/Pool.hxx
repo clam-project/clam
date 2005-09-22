@@ -37,7 +37,7 @@ namespace CLAM
 	 * The values can be dumped and restored to and from an XML file.
 	 * @ingroup SemanticalAnalysis
 	 */
-	class CLAM_DLL_EXPORT DescriptionDataPool : public Component
+	class  DescriptionDataPool : public Component
 	{
 	public:
 		/**

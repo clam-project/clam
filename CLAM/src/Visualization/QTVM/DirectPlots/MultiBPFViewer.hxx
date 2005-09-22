@@ -17,7 +17,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class CLAM_DLL_EXPORT MultiBPFViewer
+		class  MultiBPFViewer
 		{
 		public:
 			MultiBPFViewer();

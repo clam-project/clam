@@ -26,7 +26,7 @@ namespace CLAM {
 	/** Configuration class for PrintControl objects. It contains the name of the object and a string with the kind of message it prints.
 	 *  @see PrintControl, ProcessingConfig
 	 */
-	class CLAM_DLL_EXPORT PrintControlConfig: public ProcessingConfig
+	class  PrintControlConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (PrintControlConfig, 2,ProcessingConfig);
@@ -52,7 +52,7 @@ namespace CLAM {
 	/** A class useful to debug watching what kind of MIDI messages we are processing. Prints in the screen the type of message, and its value. If the objective is control more than one type of data (i.e. Note On and Note Velocity), more than one PrintControl objects must be created.
 	 *  @see Processing, PrintControlConfig
 	 */
-	class CLAM_DLL_EXPORT PrintControl:public Processing
+	class  PrintControl:public Processing
 	{
 	private:
 		PrintControlConfig mConfig;

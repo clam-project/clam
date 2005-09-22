@@ -30,7 +30,7 @@ namespace CLAM
 
 class Processing;
 
-class CLAM_DLL_EXPORT BasicFlowControl : public FlowControl
+class  BasicFlowControl : public FlowControl
 {
 public:
 	BasicFlowControl( int frameSize = 512 );

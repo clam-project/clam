@@ -39,7 +39,7 @@ namespace CLAMVM
 	using CLAM::TIndex;
 	using CLAM::TData;
 		
-	class CLAM_DLL_EXPORT SinTracksRM : public GLRenderingManager
+	class  SinTracksRM : public GLRenderingManager
 	{
 	public:
 		SinTracksRM();

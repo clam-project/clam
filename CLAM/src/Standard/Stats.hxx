@@ -30,7 +30,7 @@
 namespace CLAM{
 
 
-template <unsigned int x,unsigned int y> class CLAM_DLL_EXPORT GreaterThan
+template <unsigned int x,unsigned int y> class  GreaterThan
 {
 	public: static StaticBool<(x>y)> mIs;
 };
@@ -48,7 +48,7 @@ template <unsigned int x,unsigned int y> StaticBool<(x>y)>  GreaterThan<x,y>::mI
  * By reseting it you are releasing the memory until a new assignement.
  */
 template <typename T>
-class CLAM_DLL_EXPORT StatMemory
+class  StatMemory
 {
 public:
 	StatMemory() : mMemorized(false) {}
@@ -86,7 +86,7 @@ private:
  *	@param U the type of the resulting statistics
  *	@pre Most stats are not tolerant to size 0 data sets
  */
-template <bool abs=false,class T=TData, class U=TData,int initOrder=5> class CLAM_DLL_EXPORT StatsTmpl
+template <bool abs=false,class T=TData, class U=TData,int initOrder=5> class  StatsTmpl
 {
 
 public:

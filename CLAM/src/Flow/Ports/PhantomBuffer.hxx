@@ -29,7 +29,7 @@
 namespace CLAM {
 
 	template<class T>
-	class CLAM_DLL_EXPORT PhantomBuffer 
+	class  PhantomBuffer 
 	{
 	public:
 		PhantomBuffer();

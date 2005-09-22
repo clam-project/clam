@@ -9,7 +9,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT PlayablePlotController : public PlotController
+		class  PlayablePlotController : public PlotController
 		{
 			Q_OBJECT
 

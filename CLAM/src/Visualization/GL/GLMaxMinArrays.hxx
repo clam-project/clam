@@ -31,7 +31,7 @@ namespace CLAMVM
 	using CLAM::TSize;
 	using CLAM::TData;
 
-class CLAM_DLL_EXPORT GLMaxMinArrays
+class  GLMaxMinArrays
 		: public GLRenderer
 {
 public:

@@ -30,7 +30,7 @@ namespace CLAMVM
 	using CLAM::TData;
 	using CLAM::TSize;
 
-	class CLAM_DLL_EXPORT GLPointsArrays : public GLRenderer
+	class  GLPointsArrays : public GLRenderer
 	{
 	public:
 		GLPointsArrays();

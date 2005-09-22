@@ -26,7 +26,7 @@
 #	include <windows.h>
 #endif
 
-class CLAM_DLL_EXPORT TraverseDirectory
+class  TraverseDirectory
 {
 
 #ifdef WIN32

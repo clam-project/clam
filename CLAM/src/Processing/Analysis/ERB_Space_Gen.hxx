@@ -39,7 +39,7 @@ namespace CLAM
 // excitation patterns," J. Acoust. Soc. Am. 74, 750-753.
 
 
-class CLAM_DLL_EXPORT ERB_SpaceGen : public Processing
+class  ERB_SpaceGen : public Processing
 {
 public:
 	ERB_SpaceGen();

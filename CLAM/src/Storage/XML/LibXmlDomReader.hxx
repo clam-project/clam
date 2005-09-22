@@ -36,7 +36,7 @@ namespace CLAM
  * Controls the libxml++ DOM parser.
  * @ingroup XmlBackends_LibXml
  */
-class CLAM_DLL_EXPORT LibXmlDomReader
+class  LibXmlDomReader
 {
 	xmlpp::DomParser * parser;
 	public:

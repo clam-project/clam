@@ -30,7 +30,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT AudioPlotController : public PlayablePlotController
+		class  AudioPlotController : public PlayablePlotController
 		{
 			Q_OBJECT
 

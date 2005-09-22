@@ -23,7 +23,7 @@
 #define __CONFIGURATIONVISITOR__
 
 namespace CLAM{
-	class CLAM_DLL_EXPORT ConfigurationVisitor {
+	class  ConfigurationVisitor {
 	public:
 		virtual ~ConfigurationVisitor() {}
 		virtual void VisitConfig()=0;
@@ -38,7 +38,7 @@ namespace CLAM{
 	 * @see ConfigurationSetter, QTConfigurator, FLTKConfigurator, DynamicType
 	 */
 	template <typename Configuration, typename Builder>
-	class CLAM_DLL_EXPORT ConfigurationGetter : public ConfigurationVisitor {
+	class  ConfigurationGetter : public ConfigurationVisitor {
 	public:
 		ConfigurationGetter(Configuration * config, Builder* builder) {
 			mBuilder = builder;
@@ -71,7 +71,7 @@ namespace CLAM{
 	 * @see ConfigurationGetter, QTConfigurator, FLTKConfigurator, DynamicType
 	 */
 	template <typename Configuration, typename Builder>
-	class CLAM_DLL_EXPORT ConfigurationSetter : public ConfigurationVisitor {
+	class  ConfigurationSetter : public ConfigurationVisitor {
 	public:
 		ConfigurationSetter(Configuration * config, Builder* builder) {
 			mBuilder = builder;

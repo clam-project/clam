@@ -36,7 +36,7 @@ class LibXmlDomDocumentHandler;
  * Keeps the booking when loading one LibXml DOM single element into CLAM data.
  * @ingroup XmlBackends_LibXml
  */
-class CLAM_DLL_EXPORT LibXmlDomReadingContext
+class  LibXmlDomReadingContext
 {
 	LibXmlDomReadingContext * _parentContext;
 	xmlpp::Element * _context;

@@ -36,7 +36,7 @@ namespace CLAMVM
 	class SinTracksAdapter;
 	class Fl_SMS_SinTracks_Browser;
 
-	class CLAM_DLL_EXPORT SinTracksPlot : public PlotBase
+	class  SinTracksPlot : public PlotBase
 	{
 	public:
 		SinTracksPlot();

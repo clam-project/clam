@@ -13,7 +13,7 @@
 namespace CLAM 
 {
 
-class CLAM_DLL_EXPORT QtEnvelopeEditor : public QWidget {
+class  QtEnvelopeEditor : public QWidget {
 
 Q_OBJECT
 

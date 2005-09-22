@@ -54,7 +54,7 @@ namespace CLAMVM
 	*   + Third, use the Thread class for a cleaner solution for MT
 	*/
 
-	class CLAM_DLL_EXPORT Fl_SMS_Browsable_Playable_Audio 
+	class  Fl_SMS_Browsable_Playable_Audio 
 		: public Fl_Group, public AudioPresentation
 	{
 	public:

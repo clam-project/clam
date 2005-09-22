@@ -31,7 +31,7 @@ namespace CLAMGUI
 	/**
 	 *	Abstract class defining an interface for class that encapsulate Color mapping algorithms
 	 */
-	class CLAM_DLL_EXPORT MappingAlgo
+	class  MappingAlgo
 	{
 		public:
 			/**

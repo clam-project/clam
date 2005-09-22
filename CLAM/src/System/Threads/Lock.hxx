@@ -35,7 +35,7 @@ namespace CLAM
 		using CLAM::xtime;
 				
 		template <typename MutexType>
-		class CLAM_DLL_EXPORT LockOps 
+		class  LockOps 
 		{
 		private:
 			LockOps() { }
@@ -70,7 +70,7 @@ namespace CLAM
 		};
 		
 		template <typename MutexType>
-		class CLAM_DLL_EXPORT ScopedLock
+		class  ScopedLock
 		{
 		public:
 			typedef MutexType mutex_type;
@@ -124,7 +124,7 @@ namespace CLAM
 		};
 
 		template <typename TryMutexType>
-		class CLAM_DLL_EXPORT ScopedTryLock 
+		class  ScopedTryLock 
 		{
 		public:
 			typedef TryMutexType mutex_type;
@@ -195,7 +195,7 @@ namespace CLAM
 		};
 
 		template <typename TimedMutexType>
-		class CLAM_DLL_EXPORT ScopedTimedLock 
+		class  ScopedTimedLock 
 		{
 		public:
 			typedef TimedMutexType mutex_type;

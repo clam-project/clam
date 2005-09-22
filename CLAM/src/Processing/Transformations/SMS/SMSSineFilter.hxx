@@ -36,7 +36,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT SMSSineFilterConfig : public ProcessingConfig
+	class  SMSSineFilterConfig : public ProcessingConfig
 	{
 
 	   public:

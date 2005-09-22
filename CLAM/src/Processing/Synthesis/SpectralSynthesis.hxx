@@ -66,7 +66,7 @@ namespace CLAM {
 	/** This is the processing object class we are using to group several
 	 *  other processing objects. 
 	 */
-	class CLAM_DLL_EXPORT SpectralSynthesis : public ProcessingComposite {
+	class  SpectralSynthesis : public ProcessingComposite {
 
 private:
 		// Configuration data

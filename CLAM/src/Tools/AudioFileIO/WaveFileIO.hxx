@@ -26,7 +26,7 @@
 
 namespace CLAM{
 
-class CLAM_DLL_EXPORT WaveFileIO:public SoundFileIO
+class  WaveFileIO:public SoundFileIO
 {
 public:
 	~WaveFileIO()

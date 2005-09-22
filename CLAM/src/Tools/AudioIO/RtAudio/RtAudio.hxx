@@ -150,7 +150,7 @@
 */
 /************************************************************************/
 
-class CLAM_DLL_EXPORT RtError
+class  RtError
 {
 public:
   //! Defined RtError types.
@@ -214,7 +214,7 @@ typedef struct {
 //
 // *************************************************** //
 
-class CLAM_DLL_EXPORT RtAudio
+class  RtAudio
 {
 public:
 

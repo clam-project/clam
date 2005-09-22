@@ -28,7 +28,7 @@ namespace CLAM
     {
 		class QtPlayer;
 		
-		class CLAM_DLL_EXPORT PlayablePlot 
+		class  PlayablePlot 
 		{
 		public:
 			PlayablePlot();

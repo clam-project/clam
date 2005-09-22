@@ -22,7 +22,7 @@
 #ifndef _STATIC_BOOL_HXX_
 #define _STATIC_BOOL_HXX_
 template <bool b>
-	class CLAM_DLL_EXPORT StaticBool {
+	class  StaticBool {
 };
 
 typedef StaticBool<true> StaticTrue;

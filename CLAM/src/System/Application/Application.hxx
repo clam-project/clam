@@ -23,7 +23,7 @@
 #define __Application__
 
 namespace CLAM {
-	class CLAM_DLL_EXPORT Application
+	class  Application
 	{
 	};
 }

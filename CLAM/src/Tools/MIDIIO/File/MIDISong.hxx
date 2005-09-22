@@ -29,7 +29,7 @@ namespace MIDI
 
 	class Track;
 
-	class CLAM_DLL_EXPORT Song
+	class  Song
 	/* a midi song is a collection of tracks */
 	{
 	private:

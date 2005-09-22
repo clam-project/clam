@@ -29,7 +29,7 @@ namespace CLAM
 	namespace VM
 	{
 
-		class CLAM_DLL_EXPORT SingleLabel : public QLabel
+		class  SingleLabel : public QLabel
 		{
 		public:
 			SingleLabel(QWidget* parent,const QString& units="",const QString& tooltip="");

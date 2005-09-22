@@ -28,7 +28,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT FileSystem
+	class  FileSystem
 	{
 	public:
 		~FileSystem();

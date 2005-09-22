@@ -53,7 +53,7 @@ namespace CLAMVM
  *  by the left, right, bottom, top values; as well as the underlying framebuffer portion
  *  where you are going to draw on.
  */
-	class CLAM_DLL_EXPORT DrawingSurface2D
+	class  DrawingSurface2D
 	{
 	public:
 		/** \brief  Default constructor

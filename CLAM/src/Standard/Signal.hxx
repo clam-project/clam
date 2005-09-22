@@ -47,7 +47,7 @@ namespace SigSlot
  * This class is an abstract one, already implementing common behaviour, the signal
  * and slot connection handling issues.
  */
-	class CLAM_DLL_EXPORT Signal
+	class  Signal
 	{
 	public:
 		typedef unsigned  tConnectionId;

@@ -32,7 +32,7 @@ namespace CLAM {
 /** This class is the interface to an input of an MIDIDevice.
  *  @see Processing, MIDIInConfig, MIDIOut, MIDIManager, MIDIDevice
  */
-class CLAM_DLL_EXPORT MIDIIn: public Processing
+class  MIDIIn: public Processing
 {
 friend class MIDIManager;
 friend class MIDIDevice;

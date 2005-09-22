@@ -30,7 +30,7 @@
 
 namespace CLAM {
 
-class CLAM_DLL_EXPORT SMSSynthesisConfig:public ProcessingConfig
+class  SMSSynthesisConfig:public ProcessingConfig
 {
 
 friend class SMSSynthesis;

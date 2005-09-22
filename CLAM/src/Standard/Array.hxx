@@ -46,7 +46,7 @@ namespace CLAM {
 
 
 
-template <class T> class CLAM_DLL_EXPORT Array:public Component
+template <class T> class  Array:public Component
 {
 private:
 	T *mpData;

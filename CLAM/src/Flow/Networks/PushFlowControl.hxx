@@ -31,7 +31,7 @@ namespace CLAM
 
 class Processing;
 
-class CLAM_DLL_EXPORT PushFlowControl : public FlowControl
+class  PushFlowControl : public FlowControl
 {
 public:
 	PushFlowControl( int frameSize = 512 );

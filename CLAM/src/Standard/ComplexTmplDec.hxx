@@ -30,7 +30,7 @@ namespace CLAM
 {
 
 	template <class T>
-	class CLAM_DLL_EXPORT ComplexTmpl
+	class  ComplexTmpl
 	{
 	private:
 		T mRe;
@@ -152,10 +152,10 @@ namespace CLAM
 	};
 
 	template <class T>
-	CLAM_DLL_EXPORT std::istream& operator >> (std::istream & stream, ComplexTmpl<T> & a);
+	 std::istream& operator >> (std::istream & stream, ComplexTmpl<T> & a);
 
 	template <class T>
-	CLAM_DLL_EXPORT std::ostream& operator << (std::ostream & stream, const ComplexTmpl<T> & a);
+	 std::ostream& operator << (std::ostream & stream, const ComplexTmpl<T> & a);
 
 } // namespace CLAM
 

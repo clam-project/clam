@@ -5,7 +5,7 @@ namespace CLAM
 {
     namespace VM
     {
-		struct CLAM_DLL_EXPORT GLView
+		struct  GLView
 		{
 			double left, right, bottom, top;
 

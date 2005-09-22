@@ -39,7 +39,7 @@ namespace CLAM {
 	 * @see <a HREF="http://momonga.t.u-tokyo.ac.jp/~ooura/fft.html">
 	 *      Ooura's FFT Homepage</a>
 	 */
-	class CLAM_DLL_EXPORT FFT_ooura: public FFT_base
+	class  FFT_ooura: public FFT_base
 	{
 	  /** Internal bit reversal, cos & sin tables */
 		TData *w;

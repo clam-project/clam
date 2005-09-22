@@ -17,7 +17,7 @@ namespace CLAM
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT SpecgramPlotProcessingConfig : public ProcessingConfig
+	class  SpecgramPlotProcessingConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpecgramPlotProcessingConfig, 6, ProcessingConfig);
@@ -32,7 +32,7 @@ namespace CLAM
 		void DefaultInit();
 	};
 
-	class CLAM_DLL_EXPORT SpecgramPlotProcessing : public Processing
+	class  SpecgramPlotProcessing : public Processing
 	{
 	public:
 		SpecgramPlotProcessing();

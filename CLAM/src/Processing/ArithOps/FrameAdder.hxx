@@ -33,7 +33,7 @@
 namespace CLAM {
 
 
-	class CLAM_DLL_EXPORT FrameAdderConfig: public ProcessingConfig
+	class  FrameAdderConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (FrameAdderConfig, 0,ProcessingConfig);
@@ -45,7 +45,7 @@ namespace CLAM {
  *	@todo: maybe other attributes in Frame could also be interpolated if so specified
  *	in the configuration.
  */
-	class CLAM_DLL_EXPORT FrameAdder: public ProcessingComposite {
+	class  FrameAdder: public ProcessingComposite {
 		
 		FrameAdderConfig mConfig;
 

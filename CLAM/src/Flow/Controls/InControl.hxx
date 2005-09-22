@@ -38,7 +38,7 @@ typedef float TControlData;
 * \brief Processing in control class.
 * 
 */
-class CLAM_DLL_EXPORT InControl
+class  InControl
 {
 // Attributes:
 protected:
@@ -74,7 +74,7 @@ public:
 * the callback to the \c InControlTmpl
 */
 template<class ProcObj>
-class CLAM_DLL_EXPORT InControlTmpl : public InControl
+class  InControlTmpl : public InControl
 {
 public:
 	typedef int (ProcObj::*TPtrMemberFunc)(TControlData);

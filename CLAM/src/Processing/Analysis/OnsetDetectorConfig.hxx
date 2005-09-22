@@ -27,7 +27,7 @@
 namespace CLAM
 {
 	/** OnsetDetector configuration class **/
-	class CLAM_DLL_EXPORT OnsetDetectorConfig : public ProcessingConfig 
+	class  OnsetDetectorConfig : public ProcessingConfig 
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (OnsetDetectorConfig, 11,ProcessingConfig);

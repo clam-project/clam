@@ -29,7 +29,7 @@ namespace CLAM {
 /**
 	 * Config class for the SynthSineSpectrum Processing
 	 */
-class CLAM_DLL_EXPORT SynthSineSpectrumConfig:public ProcessingConfig
+class  SynthSineSpectrumConfig:public ProcessingConfig
 {
 	DYNAMIC_TYPE_USING_INTERFACE (SynthSineSpectrumConfig,3,ProcessingConfig);
 	/**

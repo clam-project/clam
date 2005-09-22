@@ -33,7 +33,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT MIDIDispatcherConfig: public ProcessingConfig
+	class  MIDIDispatcherConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (MIDIDispatcherConfig, 2, ProcessingConfig);
@@ -44,7 +44,7 @@ namespace CLAM
 		void DefaultInit(void);
 	};
 
-	class CLAM_DLL_EXPORT MIDIDispatcher : public Processing
+	class  MIDIDispatcher : public Processing
 	{
 
 		std::vector< InControl* > mInputControls;

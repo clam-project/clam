@@ -30,7 +30,7 @@ namespace CLAMGUI
 	 *	This class encapsulates the concept of a screen rectangle
 	 *	Note it is templatized
 	 */
-	template <class T> class CLAM_DLL_EXPORT Rect
+	template <class T> class  Rect
 	{
 	private:
 		/**

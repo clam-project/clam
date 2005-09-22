@@ -27,7 +27,7 @@
 namespace CLAMVM
 {
 
-class CLAM_DLL_EXPORT SinTrackVerClipper
+class  SinTrackVerClipper
 {
 		typedef SineTrackSpanEnds::iterator span_iterator;
 		typedef SinusoidalTrack::iterator   peak_iterator;

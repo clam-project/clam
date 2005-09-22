@@ -32,7 +32,7 @@ namespace CLAMVM
 		using CLAM::TIndex;
 		using CLAM::TSize;
 
-		class CLAM_DLL_EXPORT SinTrackHorClipper
+		class  SinTrackHorClipper
 		{
 				typedef SineTrackSpanEnds::iterator peak_iterator;
 		public:

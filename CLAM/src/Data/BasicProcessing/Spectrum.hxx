@@ -41,7 +41,7 @@ class SpectrumConfig;
  *	between different possible representations are also offered.
  *	@see ProcessingData
  */
-class CLAM_DLL_EXPORT Spectrum : public ProcessingData
+class  Spectrum : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Spectrum, 10, ProcessingData);

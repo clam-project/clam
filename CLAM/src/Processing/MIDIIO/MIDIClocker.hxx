@@ -37,7 +37,7 @@ namespace CLAM
  * own channel id, typically 0 for left, and 1 for right.
  * @see MIDIClocker, MIDIDevice, MIDIManager, ProcessingConfig
  */
-class CLAM_DLL_EXPORT MIDIClockerConfig: public ProcessingConfig
+class  MIDIClockerConfig: public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (MIDIClockerConfig, 1, ProcessingConfig);
@@ -59,7 +59,7 @@ protected:
 /** This class is the interface to an input of an MIDIDevice.
  *  @see Processing, MIDIClockerConfig, MIDIOut, MIDIManager, MIDIDevice
  */
-class CLAM_DLL_EXPORT MIDIClocker: public Processing
+class  MIDIClocker: public Processing
 {
 friend class MIDIManager;
 friend class MIDIDevice;

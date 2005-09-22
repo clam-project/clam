@@ -29,7 +29,7 @@
 
 namespace CLAMGUI
 {
-		class CLAM_DLL_EXPORT Fl_Range : public Fl_Widget
+		class  Fl_Range : public Fl_Widget
 		{
 		public:
 				

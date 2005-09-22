@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT ErrRtAudio : public Err
+	class  ErrRtAudio : public Err
 	{
 	public:
 		ErrRtAudio( const RtError& rtErr );

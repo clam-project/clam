@@ -31,7 +31,7 @@ namespace CLAMVM
 {
 	using SigSlot::Signalv2;
 
-	class CLAM_DLL_EXPORT Fl_ZoomSlider : public Fl_Widget
+	class  Fl_ZoomSlider : public Fl_Widget
 	{
 		/**
 		   Slider widget that can be used for both zooming and scrolling.

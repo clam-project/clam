@@ -27,7 +27,7 @@
 #include "GUIAudioApplication.hxx"
 
 namespace CLAM {
-	class CLAM_DLL_EXPORT AudioApplication:public GUIAudioApplication
+	class  AudioApplication:public GUIAudioApplication
 	{
 	};
 }
@@ -37,7 +37,7 @@ namespace CLAM {
 #include "BaseAudioApplication.hxx"
 
 namespace CLAM {
-	class CLAM_DLL_EXPORT AudioApplication:public BaseAudioApplication
+	class  AudioApplication:public BaseAudioApplication
 	{
 	public:
 		void Run(int argc = 0,char** argv = 0)

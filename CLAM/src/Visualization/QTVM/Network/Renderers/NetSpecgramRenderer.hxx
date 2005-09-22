@@ -8,7 +8,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT NetSpecgramRenderer : public Renderer
+		class  NetSpecgramRenderer : public Renderer
 		{
 		public:
 			NetSpecgramRenderer();

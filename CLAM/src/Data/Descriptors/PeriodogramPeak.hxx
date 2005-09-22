@@ -30,7 +30,7 @@
 
 namespace CLAM{
 
-class CLAM_DLL_EXPORT PeriodogramPeak: public ProcessingData
+class  PeriodogramPeak: public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (PeriodogramPeak, 4, ProcessingData);

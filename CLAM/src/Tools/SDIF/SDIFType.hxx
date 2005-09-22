@@ -33,7 +33,7 @@ namespace SDIF
 	* Used to store the Frame and Matrix types, a 4-byte
 	* identifier
 	*/
-	class CLAM_DLL_EXPORT TypeId
+	class  TypeId
 	{
 	friend class File;
 	protected:
@@ -78,13 +78,13 @@ namespace SDIF
 		eByte     = 0x401  // Arbitrary byte, 1 bytes
 	};
 
-	template <class T> class CLAM_DLL_EXPORT GetType
+	template <class T> class  GetType
 	{
 	public:
 		static DataType Get(void) { return eUnknown; }
 	};
 	
-	class CLAM_DLL_EXPORT TUTF8byte
+	class  TUTF8byte
 	{
 	public:
 		char c;

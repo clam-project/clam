@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT ControlScalerConfig : public ProcessingConfig
+class  ControlScalerConfig : public ProcessingConfig
 {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (ControlScalerConfig, 1, ProcessingConfig);
@@ -41,7 +41,7 @@ class CLAM_DLL_EXPORT ControlScalerConfig : public ProcessingConfig
 		void DefaultInit();
 };
 
-class CLAM_DLL_EXPORT ControlScaler : public Processing
+class  ControlScaler : public Processing
 {
 	ControlScalerConfig mConfig;
 	InControl mInControl;

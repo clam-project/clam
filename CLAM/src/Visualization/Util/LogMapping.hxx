@@ -28,7 +28,7 @@
 
 namespace CLAMGUI
 {
-	class CLAM_DLL_EXPORT LogMapping : public MappingAlgo
+	class  LogMapping : public MappingAlgo
 	{
 	private:
 		int*	mColorMappings;

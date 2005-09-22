@@ -31,7 +31,7 @@
 
 namespace CLAM{
 
-class CLAM_DLL_EXPORT Frame;
+class  Frame;
 
 /*
  * This class holds Descriptors computed from Frame data. Right now no specific
@@ -39,7 +39,7 @@ class CLAM_DLL_EXPORT Frame;
  * inside the frame. TODO: add specific descriptors.
  *
  */
-class CLAM_DLL_EXPORT EnvelopeDescriptors : public ProcessingData
+class  EnvelopeDescriptors : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (EnvelopeDescriptors, 23, ProcessingData);

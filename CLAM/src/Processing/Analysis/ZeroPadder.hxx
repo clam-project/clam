@@ -30,13 +30,13 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT ZeroPadderConfig
+	class  ZeroPadderConfig
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( ZeroPadderConfig, 0, ProcessingConfig );
 	};
 
-	class CLAM_DLL_EXPORT ZeroPadder : public Processing
+	class  ZeroPadder : public Processing
 	{
 	protected: // attributes
 

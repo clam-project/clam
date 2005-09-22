@@ -31,7 +31,7 @@ namespace CLAMGUI{
  *  Curiosly parametrized version of Stroustrup's slice 
  */
 template < unsigned Size, unsigned Stride >
-class CLAM_DLL_EXPORT TmplSlice
+class  TmplSlice
 {
 	typedef   unsigned int  TSIZE_T;
 

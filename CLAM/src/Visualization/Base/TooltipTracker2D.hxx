@@ -29,7 +29,7 @@ namespace CLAMVM
 
 	class DrawingSurface2D;
 
-	class CLAM_DLL_EXPORT TooltipTracker2D
+	class  TooltipTracker2D
 	{
 	public:
 		TooltipTracker2D();

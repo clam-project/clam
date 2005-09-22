@@ -29,7 +29,7 @@ namespace CLAM
 	/**
 	 * Config class for the OverlapAdd Processing
 	 */
-	class CLAM_DLL_EXPORT OverlapAddConfig: public CLAM::ProcessingConfig
+	class  OverlapAddConfig: public CLAM::ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (OverlapAddConfig, 2, ProcessingConfig);

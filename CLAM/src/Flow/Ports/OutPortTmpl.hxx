@@ -23,7 +23,7 @@
 #define _OutPortTmpl_hxx_
 
 template<typename T>
-class CLAM_DLL_EXPORT OutPortTmpl
+class  OutPortTmpl
 {
 	T* mData;
 public:

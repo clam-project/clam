@@ -54,7 +54,7 @@ namespace CLAM {
 	/** This is the processing object class we are using to group several
 	 *  other processing objects. 
 	 */
-	class CLAM_DLL_EXPORT SMSSynthesis : public ProcessingComposite {
+	class  SMSSynthesis : public ProcessingComposite {
 
 private:
 		// Configuration data

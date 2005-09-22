@@ -41,7 +41,7 @@ class Component;
 class DomDocumentHandler;
 
 
-class CLAM_DLL_EXPORT XmlStorage : public Storage
+class  XmlStorage : public Storage
 {
 	DomDocumentHandler * _documentHandler;
 	bool _lastWasContent;

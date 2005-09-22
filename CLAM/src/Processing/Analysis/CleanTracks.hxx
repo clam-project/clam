@@ -59,7 +59,7 @@ namespace CLAM {
 
 
 
-	class CLAM_DLL_EXPORT CleanTracks: public Processing
+	class  CleanTracks: public Processing
 	{
 		mutable CleanTracksConfig mConfig;
 

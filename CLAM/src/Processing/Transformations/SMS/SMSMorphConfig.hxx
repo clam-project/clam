@@ -27,7 +27,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT SMSMorphConfig: public ProcessingConfig
+	class  SMSMorphConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SMSMorphConfig, 16,ProcessingConfig);

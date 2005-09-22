@@ -34,7 +34,7 @@ namespace CLAMVM
 	using CLAM::TData;
 	using CLAM::DataArray;
 
-	class CLAM_DLL_EXPORT SpectrumModel
+	class  SpectrumModel
 	{
 	public:
 

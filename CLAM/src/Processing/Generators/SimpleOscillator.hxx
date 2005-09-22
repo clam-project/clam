@@ -34,7 +34,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT EOscillatorControls : public Enum
+class  EOscillatorControls : public Enum
 {
 public:
 
@@ -68,7 +68,7 @@ public:
 	}
 };
 
-class CLAM_DLL_EXPORT SimpleOscillatorConfig: public ProcessingConfig
+class  SimpleOscillatorConfig: public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (SimpleOscillatorConfig, 4, ProcessingConfig);
@@ -81,7 +81,7 @@ protected:
 	void DefaultInit(void);
 };
 	
-class CLAM_DLL_EXPORT SimpleOscillator : public Processing
+class  SimpleOscillator : public Processing
 {
 protected:
 	AudioOutPort mOutput;

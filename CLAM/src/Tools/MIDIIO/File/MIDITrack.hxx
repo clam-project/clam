@@ -30,7 +30,7 @@
 namespace MIDI
 {
 
-	class CLAM_DLL_EXPORT Track
+	class  Track
 	{
 	private:
 		/* a midi track consists of a list of midi event */

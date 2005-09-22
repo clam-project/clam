@@ -31,7 +31,7 @@ namespace CLAM
 //forward declarations:
 class InPortBase;
 
-class CLAM_DLL_EXPORT InPortRegistry
+class  InPortRegistry
 {
 	std::vector<InPortBase*> mInPorts;
 public:

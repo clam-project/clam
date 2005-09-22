@@ -36,7 +36,7 @@ class AudioDeviceList;
  * It's a singleton class (only must be an instantiation of this class) because and unique object manages all the Devices, AudioOut and AudioIn objects provided by the system
  * @see AudioIn, AudioOut, AudioDevice
  */
-class CLAM_DLL_EXPORT AudioManager
+class  AudioManager
 {
 	friend class AudioIn;
 	friend class AudioOut;

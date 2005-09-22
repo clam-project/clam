@@ -32,13 +32,13 @@
 namespace CLAM 
 {
 
-class CLAM_DLL_EXPORT Segment;
+class  Segment;
 
 /*
  * This class holds Descriptors computed from Segment data
  *
  */
-class CLAM_DLL_EXPORT SegmentDescriptors : public Descriptor 
+class  SegmentDescriptors : public Descriptor 
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 9, Descriptor);

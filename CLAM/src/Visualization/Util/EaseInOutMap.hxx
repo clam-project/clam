@@ -28,7 +28,7 @@
 
 namespace CLAMGUI
 {
-	class CLAM_DLL_EXPORT EaseInOutMap : public MappingAlgo
+	class  EaseInOutMap : public MappingAlgo
 	{
 	private:
 		int*   mColorMappings;

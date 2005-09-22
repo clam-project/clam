@@ -35,7 +35,7 @@ namespace CLAM {
 	/** Base class of ProcessingData settings, all the configurations of ProcessingData objects will be derived of this.
 	 *  @see ProcessingData, DynamicType
 	 */
-class CLAM_DLL_EXPORT ProcessingDataConfig : public DynamicType
+class  ProcessingDataConfig : public DynamicType
 {
 public:
 	/** Constructor of an object that will contain the number of attributes passed by parameter

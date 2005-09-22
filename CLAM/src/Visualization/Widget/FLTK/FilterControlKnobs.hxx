@@ -31,7 +31,7 @@ using CLAM::TData;
 namespace CLAMGUI
 {
 
-	class CLAM_DLL_EXPORT GainKnob
+	class  GainKnob
 		: public FilterKnob
 	{
 	public:
@@ -47,7 +47,7 @@ namespace CLAMGUI
 	};
 
 
-class CLAM_DLL_EXPORT SlopeKnob
+class  SlopeKnob
 		: public FilterKnob
 	{
 	public:
@@ -62,7 +62,7 @@ class CLAM_DLL_EXPORT SlopeKnob
 	
 	};
 
-class CLAM_DLL_EXPORT LowcutoffKnob
+class  LowcutoffKnob
 		: public FilterKnob
 	{
 		TData           mSampleRate;
@@ -90,7 +90,7 @@ class CLAM_DLL_EXPORT LowcutoffKnob
 	};
 
 
-class CLAM_DLL_EXPORT HighcutoffKnob
+class  HighcutoffKnob
 		: public FilterKnob
 	{
 		TData            mSampleRate;

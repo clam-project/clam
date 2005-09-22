@@ -31,11 +31,11 @@ template<int order> O<order>  O<order>::instance;
 
 //A nicer way of referring to the first orders
 
-extern CLAM_DLL_EXPORT O<1>* FirstOrder;
-extern CLAM_DLL_EXPORT O<2>* SecondOrder;
-extern CLAM_DLL_EXPORT O<3>* ThirdOrder;
-extern CLAM_DLL_EXPORT O<4>* FourthOrder;
-extern CLAM_DLL_EXPORT O<5>* FifthOrder;
+extern  O<1>* FirstOrder;
+extern  O<2>* SecondOrder;
+extern  O<3>* ThirdOrder;
+extern  O<4>* FourthOrder;
+extern  O<5>* FifthOrder;
 
 } // namespace CLAM
 

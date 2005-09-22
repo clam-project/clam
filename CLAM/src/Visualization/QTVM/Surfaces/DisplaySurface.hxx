@@ -39,7 +39,7 @@ namespace CLAM
     {
 		class PlotController;
 
-		class CLAM_DLL_EXPORT DisplaySurface : public QGLWidget
+		class  DisplaySurface : public QGLWidget
 		{
 			Q_OBJECT
 

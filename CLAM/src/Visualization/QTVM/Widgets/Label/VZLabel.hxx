@@ -29,7 +29,7 @@ namespace CLAM
 	namespace VM
 	{
 
-		class CLAM_DLL_EXPORT VZLabel : public QFrame
+		class  VZLabel : public QFrame
 		{
 		public:
 			VZLabel(QWidget* parent);

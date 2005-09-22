@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-	class CLAM_DLL_EXPORT TopLevelProcessingConfig : public ProcessingConfig
+	class  TopLevelProcessingConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (TopLevelProcessingConfig, 0, ProcessingConfig);
@@ -42,7 +42,7 @@ namespace CLAM {
 	 * processing objects. It will allways be the upper composite
 	 * object in the processing object hierarchy.
 	 */
-	class CLAM_DLL_EXPORT TopLevelProcessing : public ProcessingComposite
+	class  TopLevelProcessing : public ProcessingComposite
 	{
 
 		TopLevelProcessing(  );

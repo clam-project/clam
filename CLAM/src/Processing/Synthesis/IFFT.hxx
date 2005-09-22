@@ -52,7 +52,7 @@ namespace CLAM {
 
 
     /** Abstract base class for IFFT classes */
-    class CLAM_DLL_EXPORT IFFT_base: public Processing
+    class  IFFT_base: public Processing
     {
     protected:
 	enum {CLAM_DEFAULT_IFFT_SIZE=1024};

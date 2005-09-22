@@ -34,7 +34,7 @@ namespace CLAMVM
 	class Presentation;
 	class PlotBase;
 
-	class CLAM_DLL_EXPORT SystemPlots
+	class  SystemPlots
 	{
 		struct Position 
 		{

@@ -47,7 +47,7 @@ namespace CLAM
 	 * @experimental This is a draft
 	 */
 	template <typename FactoryType>
-	class CLAM_DLL_EXPORT Polymorphic : public Component
+	class  Polymorphic : public Component
 	{
 	public:
 		typedef FactoryType Factory;

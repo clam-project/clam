@@ -26,7 +26,7 @@
 
 namespace CLAM {
 
-	class CLAM_DLL_EXPORT DescriptorComputationConfig : public ProcessingConfig
+	class  DescriptorComputationConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (DescriptorComputationConfig, 0,ProcessingConfig);

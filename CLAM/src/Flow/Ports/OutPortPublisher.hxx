@@ -28,7 +28,7 @@ namespace CLAM
 {
 
 template< typename Token >
-class CLAM_DLL_EXPORT OutPortPublisher : public OutPortBase
+class  OutPortPublisher : public OutPortBase
 {
 	typedef OutPort<Token> ProperOutPort;
 public:

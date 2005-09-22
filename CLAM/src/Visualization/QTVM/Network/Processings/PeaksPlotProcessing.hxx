@@ -17,7 +17,7 @@ namespace CLAM
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT PeaksPlotProcessingConfig : public ProcessingConfig
+	class  PeaksPlotProcessingConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (PeaksPlotProcessingConfig, 6, ProcessingConfig);
@@ -32,7 +32,7 @@ namespace CLAM
 		void DefaultInit();
 	};
 
-	class CLAM_DLL_EXPORT PeaksPlotProcessing : public Processing
+	class  PeaksPlotProcessing : public Processing
 	{
 	public:
 		PeaksPlotProcessing();

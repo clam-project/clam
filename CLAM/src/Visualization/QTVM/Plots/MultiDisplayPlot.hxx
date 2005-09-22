@@ -16,7 +16,7 @@ namespace CLAM
 		class HScrollGroup;
 		class EditTagDialog;
 
-		class CLAM_DLL_EXPORT MultiDisplayPlot : public QtPlot
+		class  MultiDisplayPlot : public QtPlot
 		{
 
 			Q_OBJECT

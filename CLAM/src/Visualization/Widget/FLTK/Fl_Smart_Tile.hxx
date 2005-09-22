@@ -24,7 +24,7 @@
 
 #include <FL/Fl_Group.H>
 
-class CLAM_DLL_EXPORT Fl_Smart_Tile : public Fl_Group {
+class  Fl_Smart_Tile : public Fl_Group {
 private:
 	int current_;
 	char action_;

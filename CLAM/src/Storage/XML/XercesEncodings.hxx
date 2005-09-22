@@ -32,7 +32,7 @@ namespace CLAM
  * Converts local encoding char* into Xerces Unicode String
  * @ingroup XmlBackends_Xerces
  */
-class CLAM_DLL_EXPORT XercesLocal2Unicode
+class  XercesLocal2Unicode
 {
 public :
 	XercesLocal2Unicode(const char* const toTranscode)
@@ -59,7 +59,7 @@ private :
  * Converts Xerces Unicode String into local encoding char* 
  * @ingroup XmlBackends_Xerces
  */
-class CLAM_DLL_EXPORT XercesUnicode2Local
+class  XercesUnicode2Local
 {
 public :
     XercesUnicode2Local(const XMLCh* const toTranscode)

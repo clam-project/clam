@@ -44,7 +44,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 	
-		class CLAM_DLL_EXPORT QtFundFreqPlot : public SingleDisplayPlot, public PlayablePlot
+		class  QtFundFreqPlot : public SingleDisplayPlot, public PlayablePlot
 		{
 			Q_OBJECT
 

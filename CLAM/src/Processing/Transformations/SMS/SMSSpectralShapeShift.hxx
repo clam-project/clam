@@ -41,7 +41,7 @@ namespace CLAM{
 	 *	Pitch shift with timbre preservation using the SMS model. In order to preserve timbre, 
 	 *	the original spectral shape is extracted and then applied back.
 	 */
-	class CLAM_DLL_EXPORT SMSSpectralShapeShift: public FrameTransformation
+	class  SMSSpectralShapeShift: public FrameTransformation
 	{
 		
 		const char *GetClassName() const {return "SMSSpectralShapeShift";}

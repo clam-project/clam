@@ -30,7 +30,7 @@ namespace CLAMVM
 
 using CLAM::Err;
 
-class CLAM_DLL_EXPORT ErrGUI : public Err
+class  ErrGUI : public Err
 {
 private:
 	char*          mGUIErrMsg;

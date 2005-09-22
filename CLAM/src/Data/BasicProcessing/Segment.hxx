@@ -47,7 +47,7 @@ typedef Search < List < Frame >, Frame> FrameSearch;
  *	parent to be able to access the data.
  *	@see Audio, Frame, ProcessingData, List*/
 
-class CLAM_DLL_EXPORT Segment : public ProcessingData
+class  Segment : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Segment, 8, ProcessingData);

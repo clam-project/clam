@@ -58,7 +58,7 @@ namespace CLAM
 	 * @see DescriptionDataPool class, which instanciates a DescriptionScheme
 	 * 
 	 */
-	class CLAM_DLL_EXPORT DescriptionScheme
+	class  DescriptionScheme
 	{
 	private:
 		typedef std::map<std::string, unsigned> ScopeMap;

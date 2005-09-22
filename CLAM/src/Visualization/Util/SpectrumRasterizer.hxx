@@ -45,7 +45,7 @@ namespace CLAMGUI
 	 *  into vectorial data in RGB space, beside generating a pixmap representing
 	 *  that mapping
 	 */
-class CLAM_DLL_EXPORT SpectrumRasterizer
+class  SpectrumRasterizer
 {
 private:
 	/** Singleton Instance */

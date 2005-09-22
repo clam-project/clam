@@ -41,7 +41,7 @@ namespace CLAMVM
 	class Fl_ZoomSlider;
 	class Fl_SMS_Gl_Single_Browsable_Display;
 
-	class CLAM_DLL_EXPORT Fl_SMS_SinTracks_Browser 
+	class  Fl_SMS_SinTracks_Browser 
 		: public SinTracksPresentation, public Fl_Group
 	{
 	private:

@@ -34,7 +34,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT Player 
+		class  Player 
 		{
 		public:
 			Player();

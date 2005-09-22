@@ -9,7 +9,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT ColorScale : public QWidget
+		class  ColorScale : public QWidget
 		{
 			Q_OBJECT
 

@@ -42,7 +42,7 @@ namespace CLAMVM
 	using CLAM::ProcessingData;
 	using CLAM::Array;
 
-	class CLAM_DLL_EXPORT SinTracksAdapter 
+	class  SinTracksAdapter 
 		: public SpectralPeakArrayAdapter, public SinTracksModel
 	{
 		// attributes

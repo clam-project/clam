@@ -33,10 +33,10 @@
 namespace CLAM {
 
 	
-	class CLAM_DLL_EXPORT SpectralPeakArray;
+	class  SpectralPeakArray;
 
 
-	class CLAM_DLL_EXPORT SpectralPeakDescriptors : public Descriptor {
+	class  SpectralPeakDescriptors : public Descriptor {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDescriptors, 10, Descriptor);
 		/**
@@ -152,13 +152,13 @@ namespace CLAM {
 	};
 
 
-SpectralPeakDescriptors CLAM_DLL_EXPORT operator / (const SpectralPeakDescriptors& a,TData div) ;
-SpectralPeakDescriptors CLAM_DLL_EXPORT operator * (const SpectralPeakDescriptors& a,TData mult) ;
-SpectralPeakDescriptors CLAM_DLL_EXPORT operator * (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) ;
-SpectralPeakDescriptors CLAM_DLL_EXPORT operator + (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) ;
+SpectralPeakDescriptors  operator / (const SpectralPeakDescriptors& a,TData div) ;
+SpectralPeakDescriptors  operator * (const SpectralPeakDescriptors& a,TData mult) ;
+SpectralPeakDescriptors  operator * (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) ;
+SpectralPeakDescriptors  operator + (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) ;
 
 template<>
-inline SpectralPeakDescriptors CLAM_DLL_EXPORT CLAM_max (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
+inline SpectralPeakDescriptors  CLAM_max (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
 {
 	SpectralPeakDescriptors tmpD(a);
 
@@ -212,7 +212,7 @@ inline SpectralPeakDescriptors CLAM_DLL_EXPORT CLAM_max (const SpectralPeakDescr
 }
 
 template<>
-inline SpectralPeakDescriptors CLAM_DLL_EXPORT CLAM_min (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
+inline SpectralPeakDescriptors  CLAM_min (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
 {
 	SpectralPeakDescriptors tmpD(a);
 

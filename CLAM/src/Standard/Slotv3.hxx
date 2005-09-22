@@ -30,7 +30,7 @@ namespace SigSlot
 {
 
 template < typename ParmType1, typename ParmType2, typename ParmType3 >
-class CLAM_DLL_EXPORT Slotv3 : public Slot
+class  Slotv3 : public Slot
 {
 		typedef CBL::Functor3<ParmType1, ParmType2, ParmType3> WrappedFuncType;
 

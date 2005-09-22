@@ -35,7 +35,7 @@ namespace CLAMVM
 	class Fl_SMS_Browsable_Playable_Audio;
 	
 
-	class CLAM_DLL_EXPORT AudioPlot : public PlotBase
+	class  AudioPlot : public PlotBase
 	{
 	public:
 		AudioPlot();

@@ -60,14 +60,14 @@ inline bool operator==(const TDescriptorsParams& param1,TIndex id)
 	else return false;
 }
 
-std::ostream& CLAM_DLL_EXPORT operator << (std::ostream& myStream, const TDescriptorsParams& a);
+std::ostream&  operator << (std::ostream& myStream, const TDescriptorsParams& a);
 
-std::istream& CLAM_DLL_EXPORT operator >> (std::istream& myStream, const TDescriptorsParams& a);
+std::istream&  operator >> (std::istream& myStream, const TDescriptorsParams& a);
 
 	/**
 	 * Config class for the Segmentator Processing
 	 */
-class CLAM_DLL_EXPORT SegmentatorConfig : public ProcessingConfig
+class  SegmentatorConfig : public ProcessingConfig
 {
 friend class Segmentator;
 public:

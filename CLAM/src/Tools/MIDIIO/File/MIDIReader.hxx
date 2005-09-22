@@ -32,7 +32,7 @@ namespace MIDI
 {
 	class Song;
 
-	class CLAM_DLL_EXPORT Reader
+	class  Reader
 	/* class to read midi data from a file, parse it and store it in a song;
 	*/
 	{

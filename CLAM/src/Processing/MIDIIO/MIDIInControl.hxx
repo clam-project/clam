@@ -28,7 +28,7 @@
 
 namespace CLAM {
 
-class CLAM_DLL_EXPORT MIDIInControl:public MIDIIn
+class  MIDIInControl:public MIDIIn
 {
 private:
 	Array<OutControl*> mMyOutControls;

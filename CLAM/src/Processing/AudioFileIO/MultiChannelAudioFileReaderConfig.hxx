@@ -29,7 +29,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT MultiChannelAudioFileReaderConfig
+	class  MultiChannelAudioFileReaderConfig
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE

@@ -33,9 +33,9 @@
 
 namespace CLAM {
 
-	class CLAM_DLL_EXPORT Audio;
+	class  Audio;
 
-	class CLAM_DLL_EXPORT AudioDescriptors : public DescriptorAbs {
+	class  AudioDescriptors : public DescriptorAbs {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 8, DescriptorAbs);
 		
@@ -126,15 +126,15 @@ namespace CLAM {
 
 	
 
-AudioDescriptors CLAM_DLL_EXPORT operator * (const AudioDescriptors& a,TData mult) ;
-AudioDescriptors CLAM_DLL_EXPORT operator * (TData mult, const AudioDescriptors& a) ;
-AudioDescriptors CLAM_DLL_EXPORT operator * (const AudioDescriptors& a,const AudioDescriptors& b) ;
-AudioDescriptors CLAM_DLL_EXPORT operator + (const AudioDescriptors& a,const AudioDescriptors& b) ;
-AudioDescriptors CLAM_DLL_EXPORT operator - (const AudioDescriptors& a,const AudioDescriptors& b) ;
-AudioDescriptors CLAM_DLL_EXPORT operator / (const AudioDescriptors& a,TData div);
+AudioDescriptors  operator * (const AudioDescriptors& a,TData mult) ;
+AudioDescriptors  operator * (TData mult, const AudioDescriptors& a) ;
+AudioDescriptors  operator * (const AudioDescriptors& a,const AudioDescriptors& b) ;
+AudioDescriptors  operator + (const AudioDescriptors& a,const AudioDescriptors& b) ;
+AudioDescriptors  operator - (const AudioDescriptors& a,const AudioDescriptors& b) ;
+AudioDescriptors  operator / (const AudioDescriptors& a,TData div);
 
 template<>
-inline AudioDescriptors CLAM_DLL_EXPORT CLAM_min (const AudioDescriptors & a,const AudioDescriptors & b)
+inline AudioDescriptors  CLAM_min (const AudioDescriptors & a,const AudioDescriptors & b)
 {
 	AudioDescriptors tmpD(a);
 
@@ -184,7 +184,7 @@ inline AudioDescriptors CLAM_DLL_EXPORT CLAM_min (const AudioDescriptors & a,con
 }
 
 template<>
-inline AudioDescriptors CLAM_DLL_EXPORT CLAM_max (const AudioDescriptors & a,const AudioDescriptors & b)
+inline AudioDescriptors  CLAM_max (const AudioDescriptors & a,const AudioDescriptors & b)
 {
 	AudioDescriptors tmpD(a);
 

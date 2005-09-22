@@ -29,7 +29,7 @@ namespace CLAM {
 	/**
 	 * Config class for the SinTracking Processing
 	 */
-	class CLAM_DLL_EXPORT SinTrackingConfig: public ProcessingConfig
+	class  SinTrackingConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SinTrackingConfig, 3,ProcessingConfig);

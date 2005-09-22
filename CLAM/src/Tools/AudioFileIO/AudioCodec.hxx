@@ -35,7 +35,7 @@ namespace AudioCodecs
 {
 	class Stream;
 
-	class CLAM_DLL_EXPORT Codec
+	class  Codec
 	{
 	public:
 		virtual          ~Codec();

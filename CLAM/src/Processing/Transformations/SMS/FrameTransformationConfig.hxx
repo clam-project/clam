@@ -6,7 +6,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT FrameTransformationConfig : public ProcessingConfig
+	class  FrameTransformationConfig : public ProcessingConfig
 	{
 		public:
                 DYNAMIC_TYPE_USING_INTERFACE (FrameTransformationConfig, 0,ProcessingConfig);

@@ -32,7 +32,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT EnvModulatorConfig: public ProcessingConfig
+	class  EnvModulatorConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (EnvModulatorConfig, 3, ProcessingConfig);

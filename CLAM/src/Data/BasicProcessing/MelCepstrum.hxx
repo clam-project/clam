@@ -28,7 +28,7 @@
 namespace CLAM
 {
   
-  class CLAM_DLL_EXPORT MelCepstrum : public ProcessingData
+  class  MelCepstrum : public ProcessingData
   {
   public:
     DYNAMIC_TYPE_USING_INTERFACE( MelCepstrum, 4, ProcessingData );

@@ -11,7 +11,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT FlagControlConfig : public ProcessingConfig
+class  FlagControlConfig : public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (FlagControlConfig, 2, ProcessingConfig);
@@ -21,7 +21,7 @@ protected:
 	void DefaultInit(void);
 };
 
-class CLAM_DLL_EXPORT FlagControl : public Processing
+class  FlagControl : public Processing
 {
 private:
 	

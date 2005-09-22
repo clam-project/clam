@@ -35,7 +35,7 @@
 namespace CLAM{
 
 
-	class CLAM_DLL_EXPORT SMSGenderChange: public FrameTransformation
+	class  SMSGenderChange: public FrameTransformation
 	{
 		
 		const char *GetClassName() const {return "SMSGenderChange";}

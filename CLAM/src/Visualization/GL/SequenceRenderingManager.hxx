@@ -35,7 +35,7 @@ namespace CLAMVM
 	using CLAM::TData;
 	using CLAM::TSize;
 
-	class CLAM_DLL_EXPORT SequenceRenderingManager : public GLRenderingManager
+	class  SequenceRenderingManager : public GLRenderingManager
 	{
 	public:
 		SequenceRenderingManager();

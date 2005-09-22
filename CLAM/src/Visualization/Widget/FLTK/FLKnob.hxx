@@ -32,7 +32,7 @@
 #include <stdlib.h>
 
 
-class CLAM_DLL_EXPORT Fl_Knob : public Fl_Valuator {
+class  Fl_Knob : public Fl_Valuator {
 public:
 	enum Fl_Knobtype {DOTLIN=0,DOTLOG_1,DOTLOG_2,DOTLOG_3,LINELIN,LINELOG_1,LINELOG_2,LINELOG_3};
 private:

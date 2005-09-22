@@ -26,7 +26,7 @@
 
 namespace CLAMGUI
 {
-	class CLAM_DLL_EXPORT GLLogSpRenderer 
+	class  GLLogSpRenderer 
 	: public GLLinearSpRenderer
 	{
 	public:

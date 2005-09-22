@@ -28,7 +28,7 @@
 namespace CLAMVM
 {
 
-	class CLAM_DLL_EXPORT Fl_Gl_2DSurface : public DrawingSurface2D, public Fl_Gl_Window
+	class  Fl_Gl_2DSurface : public DrawingSurface2D, public Fl_Gl_Window
 	{
 	public:
 		Fl_Gl_2DSurface( int X, int Y, int W, int H, const char* label = 0 );

@@ -33,7 +33,7 @@ namespace CLAM
  * This class wrapps a vector (array) of InControls and gives its InControl automatic
  * names at construction
  */ 
-class CLAM_DLL_EXPORT InControlArray
+class  InControlArray
 {
 	typedef std::vector<InControl*> Controls;
 	Controls mControls;

@@ -35,7 +35,7 @@ namespace CLAM {
  * Abstract class for objects that can have subitems to be stored on a 
  * storage.
  */
-class CLAM_DLL_EXPORT Component {
+class  Component {
 // Construction/Destruction
 public:
 	//* The required virtual destructor

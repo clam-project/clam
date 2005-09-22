@@ -34,7 +34,7 @@ namespace CLAM {
  *	and converts them into a MIDIMelody processing data
  *	@see: Control2Data
  */
-class CLAM_DLL_EXPORT MIDI2Melody:public Control2Data
+class  MIDI2Melody:public Control2Data
 {
 public:
 	MIDI2Melody();

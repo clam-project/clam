@@ -20,7 +20,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT PortMonitorConfig : public ProcessingConfig
+	class  PortMonitorConfig : public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (PortMonitorConfig, 0, ProcessingConfig);
@@ -59,7 +59,7 @@ namespace CLAM
 	 * @endcode
 	 */
 	template <typename TheDataType, typename ThePortType=InPort<TheDataType> >
-	class CLAM_DLL_EXPORT PortMonitor : public Processing
+	class  PortMonitor : public Processing
 	{
 	public:
 		typedef TheDataType DataType;
@@ -160,32 +160,32 @@ namespace CLAM
 
 
 
-	class CLAM_DLL_EXPORT PeaksPortMonitor : public PortMonitor <SpectralPeakArray>
+	class  PeaksPortMonitor : public PortMonitor <SpectralPeakArray>
 	{
 	public:
 		const char * GetClassName() const {return "PeaksPortMonitor";}
 	};
-	class CLAM_DLL_EXPORT SinTracksPortMonitor : public PortMonitor<SpectralPeakArray>
+	class  SinTracksPortMonitor : public PortMonitor<SpectralPeakArray>
 	{
 	public:
 		const char * GetClassName() const {return "SinTracksPortMonitor";}
 	};
-	class CLAM_DLL_EXPORT SpectrumPortMonitor : public PortMonitor <Spectrum>
+	class  SpectrumPortMonitor : public PortMonitor <Spectrum>
 	{
 	public:
 		const char * GetClassName() const {return "SpectrumPortMonitor";}
 	};
-	class CLAM_DLL_EXPORT SpecgramPortMonitor : public PortMonitor<Spectrum>
+	class  SpecgramPortMonitor : public PortMonitor<Spectrum>
 	{
 	public:
 		const char * GetClassName() const {return "SpecgramPortMonitor";}
 	};
-	class CLAM_DLL_EXPORT FundamentalPortMonitor : public PortMonitor <Fundamental>
+	class  FundamentalPortMonitor : public PortMonitor <Fundamental>
 	{
 	public:
 		const char * GetClassName() const {return "FundamentalPortMonitor";}
 	};
-	class CLAM_DLL_EXPORT FundTrackPortMonitor : public PortMonitor<Fundamental>
+	class  FundTrackPortMonitor : public PortMonitor<Fundamental>
 	{
 	public:
 		const char * GetClassName() const {return "FundTrackPortMonitor";}
@@ -200,12 +200,12 @@ namespace CLAM
 	template <>
 	PortMonitor<Audio,AudioInPort>::PortMonitor(const PortMonitorConfig& cfg);
 
-	class CLAM_DLL_EXPORT AudioPortMonitor : public PortMonitor <Audio,AudioInPort>
+	class  AudioPortMonitor : public PortMonitor <Audio,AudioInPort>
 	{
 	public:
 		const char * GetClassName() const {return "AudioPortMonitor";}
 	};
-	class CLAM_DLL_EXPORT AudioBuffPortMonitor : public PortMonitor<Audio,AudioInPort>
+	class  AudioBuffPortMonitor : public PortMonitor<Audio,AudioInPort>
 	{
 	public:
 		const char * GetClassName() const {return  "AudioBuffPortMonitor";}

@@ -35,7 +35,7 @@ namespace SDIF
 	* @see DataFrameHeader
 	*/
 
-	class CLAM_DLL_EXPORT FrameHeader
+	class  FrameHeader
 	{
 	public:
 		//* Identifier indicating the kind of frame */
@@ -60,7 +60,7 @@ namespace SDIF
 	*       An extension of FrameHeader, that is used for data frames.
 	*       This is the header that is used for a Frame.
 	*/
-	class CLAM_DLL_EXPORT DataFrameHeader:public FrameHeader 
+	class  DataFrameHeader:public FrameHeader 
 	{
 	public:
 		 //* Timestamp
@@ -88,7 +88,7 @@ namespace SDIF
 
 	/** The header for each Matrix
 	*/
-	class CLAM_DLL_EXPORT MatrixHeader
+	class  MatrixHeader
 	{
 	public:
 	

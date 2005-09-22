@@ -33,7 +33,7 @@ namespace CLAM
 	class Audio;
 
 
-	class CLAM_DLL_EXPORT GT_FilterBank: public Processing
+	class  GT_FilterBank: public Processing
 	{
 	private:
 

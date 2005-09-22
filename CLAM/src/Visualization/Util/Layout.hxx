@@ -29,7 +29,7 @@ namespace CLAMGUI
 	/**
 	 *  Abstract class for widget container layouts
 	 */
-	class CLAM_DLL_EXPORT Layout
+	class  Layout
 	{
 	public:
 		

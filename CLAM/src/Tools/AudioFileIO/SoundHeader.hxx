@@ -24,7 +24,7 @@
 
 namespace CLAM {
 
-class CLAM_DLL_EXPORT SoundHeader
+class  SoundHeader
 {
 public:
 	int   mSamplerate;

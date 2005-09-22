@@ -52,7 +52,7 @@ namespace CLAM {
  *	Note: There are some Getters and Setters, but for efficiency you need to work directly on the dynamic attributes
  *	@see Spectrum, SpectralPeakArray, Fundamental, Audio
  */
-class CLAM_DLL_EXPORT Frame : public ProcessingData
+class  Frame : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Frame, 14, ProcessingData);

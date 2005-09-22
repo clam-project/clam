@@ -60,7 +60,7 @@ namespace CLAM {
 	 *  output (this overlapped region and thus the output will be of frame size).
 	 *  @see OverlapAddConfig 
 	 */
-	class CLAM_DLL_EXPORT OverlapAdd: public Processing 
+	class  OverlapAdd: public Processing 
 	{
 	public:
 

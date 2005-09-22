@@ -38,7 +38,7 @@ namespace CLAM {
     /** Implementation of the IFFT using the Fastest Fourier in the West 
      * @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
      */
-    class CLAM_DLL_EXPORT IFFT_rfftw: public IFFT_base
+    class  IFFT_rfftw: public IFFT_base
     {
 	rfftw_plan	mpPlan;
 	/** Internal output buffer */

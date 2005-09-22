@@ -36,7 +36,7 @@ namespace CLAM{
  * Each AudioIn and AudioOut created is registered with the AudioManager. When the AudioManager is started, it will create the appropiate AudioDevice or AudioDevices, based on the number of inputs, outputs, operating system and AudioIOConfig of the AudioIn and AudioOut objects.
  * @see AudioIn, AudioOut, AudioDeviceList, AudioManager
  */
-class CLAM_DLL_EXPORT AudioDevice
+class  AudioDevice
 {
 	friend class AudioIn;
 	friend class AudioOut;

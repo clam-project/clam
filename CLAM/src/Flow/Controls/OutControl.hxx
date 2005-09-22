@@ -35,7 +35,7 @@ class Processing;
 //	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
 //				  Processing* inProc, std::string inControl);
 
-class CLAM_DLL_EXPORT OutControl
+class  OutControl
 {
 //Attributes
 private:

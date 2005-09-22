@@ -22,7 +22,7 @@ namespace CLAM
 					  AllowZoomByMouse=0x10, HasVerticalScroll=0x20, HasHorizontalScroll=0x40, HasPlayer=0x80,
 					  AllowAll=0xff };
 
-		class CLAM_DLL_EXPORT BPFEditorController : public QObject
+		class  BPFEditorController : public QObject
 		{
 			struct RulerRange
 			{

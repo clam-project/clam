@@ -36,7 +36,7 @@ namespace CLAMVM
 {
 	using CLAM::Processing;
 
-	class CLAM_DLL_EXPORT ProcessingController
+	class  ProcessingController
 		: public ModelController, public ProcessingInControlSet
 	{
 

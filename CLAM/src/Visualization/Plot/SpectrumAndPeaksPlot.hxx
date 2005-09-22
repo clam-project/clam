@@ -36,7 +36,7 @@ namespace CLAMVM
 	class SpectralPeakArrayAdapter;
 	class Fl_SMS_SpectrumAndPeaks;
 
-	class CLAM_DLL_EXPORT SpectrumAndPeaksPlot : public PlotBase
+	class  SpectrumAndPeaksPlot : public PlotBase
 	{
 	public:
 		SpectrumAndPeaksPlot();

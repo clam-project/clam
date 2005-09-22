@@ -29,7 +29,7 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class CLAM_DLL_EXPORT PCMCodec : public Codec
+	class  PCMCodec : public Codec
 	{
 	protected:
 		PCMCodec();

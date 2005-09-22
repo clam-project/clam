@@ -43,7 +43,7 @@ namespace CLAM{
  * outputs, operating system and MIDIInConfig of the MIDIIn objects
  * @see MIDIIn, MIDIOut, MIDIDeviceList, MIDIManager
  */
-class CLAM_DLL_EXPORT MIDIDevice
+class  MIDIDevice
 {
 	friend class MIDIIn;
 	friend class MIDIOut;

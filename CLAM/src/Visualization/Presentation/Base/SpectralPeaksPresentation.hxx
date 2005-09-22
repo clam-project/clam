@@ -47,7 +47,7 @@ namespace CLAMVM
 	 *  This abstract class is the base class for all CLAM-based representations
 	 *  a magnitude spectrum and the peaks detected in it.
 	 */
-	class CLAM_DLL_EXPORT SpectrumPlusPeaksPresentation : public Presentation
+	class  SpectrumPlusPeaksPresentation : public Presentation
 	{
 	protected:
 		/** \brief "Slotted method"

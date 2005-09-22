@@ -32,7 +32,7 @@
 namespace CLAM{
 
 
-class CLAM_DLL_EXPORT Frame;
+class  Frame;
 
 /*
  * This class holds Descriptors computed from Frame data. Right now no specific
@@ -40,7 +40,7 @@ class CLAM_DLL_EXPORT Frame;
  * inside the frame. TODO: add specific descriptors.
  *
  */
-class CLAM_DLL_EXPORT FrameDescriptors : public Descriptor
+class  FrameDescriptors : public Descriptor
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 10, Descriptor);
@@ -91,15 +91,15 @@ private:
 
 };
 
-FrameDescriptors CLAM_DLL_EXPORT operator * (const FrameDescriptors& a,const FrameDescriptors& b);
-FrameDescriptors CLAM_DLL_EXPORT operator + (const FrameDescriptors& a,const FrameDescriptors& b);
-FrameDescriptors CLAM_DLL_EXPORT operator * (const FrameDescriptors& a,TData mult);
-FrameDescriptors CLAM_DLL_EXPORT operator * (TData mult,const FrameDescriptors& a);
-FrameDescriptors CLAM_DLL_EXPORT operator - (const FrameDescriptors& a,const FrameDescriptors& b);
-FrameDescriptors CLAM_DLL_EXPORT operator / (const FrameDescriptors& a,TData div);
+FrameDescriptors  operator * (const FrameDescriptors& a,const FrameDescriptors& b);
+FrameDescriptors  operator + (const FrameDescriptors& a,const FrameDescriptors& b);
+FrameDescriptors  operator * (const FrameDescriptors& a,TData mult);
+FrameDescriptors  operator * (TData mult,const FrameDescriptors& a);
+FrameDescriptors  operator - (const FrameDescriptors& a,const FrameDescriptors& b);
+FrameDescriptors  operator / (const FrameDescriptors& a,TData div);
 
 template<>
-inline FrameDescriptors CLAM_DLL_EXPORT CLAM_max (const FrameDescriptors& a,const FrameDescriptors& b)
+inline FrameDescriptors  CLAM_max (const FrameDescriptors& a,const FrameDescriptors& b)
 {
 	FrameDescriptors  tmpD(a);
 	if(a.HasSpectralPeakD() && b.HasSpectralPeakD())
@@ -138,7 +138,7 @@ inline FrameDescriptors CLAM_DLL_EXPORT CLAM_max (const FrameDescriptors& a,cons
 }
 
 template<>
-inline FrameDescriptors CLAM_DLL_EXPORT CLAM_min (const FrameDescriptors& a,const FrameDescriptors& b)
+inline FrameDescriptors  CLAM_min (const FrameDescriptors& a,const FrameDescriptors& b)
 {
 	FrameDescriptors  tmpD(a);
 	if(a.HasSpectralPeakD() && b.HasSpectralPeakD())

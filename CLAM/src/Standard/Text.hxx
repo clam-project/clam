@@ -35,7 +35,7 @@ namespace CLAM
 	 * Use it instead std::string if you want to deserialize
 	 * It inherits all the std::string methods.
 	 */
-	class CLAM_DLL_EXPORT Text : public std::basic_string<char>
+	class  Text : public std::basic_string<char>
 	{
 		public:
 			Text()
@@ -51,14 +51,14 @@ namespace CLAM
 			}
 	};
 
-	CLAM_DLL_EXPORT std::istream & operator >> (std::istream & stream, Text & text);
+	 std::istream & operator >> (std::istream & stream, Text & text);
 
 #if defined( _MSC_VER ) && ( _MSC_VER < 1310 )
 	/**
 	* This is a kludge to make windows work
 	*/
 
-	CLAM_DLL_EXPORT inline std::istream& operator>>( std::istringstream& stream, CLAM::Text& text )
+	 inline std::istream& operator>>( std::istringstream& stream, CLAM::Text& text )
 	{
 		std::istream & basestream = stream;
 		return basestream >> text;

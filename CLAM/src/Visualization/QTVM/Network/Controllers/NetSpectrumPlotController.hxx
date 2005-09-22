@@ -10,7 +10,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT NetSpectrumPlotController : public NetPlotController
+		class  NetSpectrumPlotController : public NetPlotController
 		{
 		public:
 			typedef SpectrumPortMonitor MonitorType;

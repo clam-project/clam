@@ -48,21 +48,21 @@
 #include "NullDomDocumentHandler.hxx"
 namespace CLAM 
 {
-	class CLAM_DLL_EXPORT DomDocumentHandler : public NullDomDocumentHandler {};
+	class  DomDocumentHandler : public NullDomDocumentHandler {};
 }
 #else
 #ifdef USE_XERCES_TRUE
 #include "XercesDomDocumentHandler.hxx"
 namespace CLAM 
 {
-	class CLAM_DLL_EXPORT DomDocumentHandler : public XercesDomDocumentHandler {};
+	class  DomDocumentHandler : public XercesDomDocumentHandler {};
 }
 #else
 #ifdef USE_XMLPP_TRUE
 #include "LibXmlDomDocumentHandler.hxx"
 namespace CLAM 
 {
-	class CLAM_DLL_EXPORT DomDocumentHandler : public LibXmlDomDocumentHandler {};
+	class  DomDocumentHandler : public LibXmlDomDocumentHandler {};
 }
 
 #else

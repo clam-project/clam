@@ -32,7 +32,7 @@
 
 namespace CLAM {
 
-template <class T> class CLAM_DLL_EXPORT ComplexToPolarCnv
+template <class T> class  ComplexToPolarCnv
 {
 public:
 

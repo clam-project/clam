@@ -32,7 +32,7 @@ namespace CLAM
 class Network;
 class Processing;
 
-class CLAM_DLL_EXPORT FlowControl
+class  FlowControl
 {
 	bool mNetworkChanged;
 

@@ -31,7 +31,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT TimeSegmentLabelsGroup : public QWidget
+		class  TimeSegmentLabelsGroup : public QWidget
 		{
 		public:
 			TimeSegmentLabelsGroup(QWidget* parent=0);

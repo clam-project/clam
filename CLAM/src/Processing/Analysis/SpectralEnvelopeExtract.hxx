@@ -41,7 +41,7 @@ namespace CLAM {
 	/**
 	 *	Processing to extract spectral envelope from an array of spectral peaks.
 	 */
-	class CLAM_DLL_EXPORT SpectralEnvelopeExtract: public Processing {
+	class  SpectralEnvelopeExtract: public Processing {
 		SpectralEnvelopeExtractConfig mConfig;
 
 		/** This method returns the name of the object

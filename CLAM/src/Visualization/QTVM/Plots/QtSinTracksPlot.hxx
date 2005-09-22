@@ -38,7 +38,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class CLAM_DLL_EXPORT QtSinTracksPlot : public SingleDisplayPlot
+		class  QtSinTracksPlot : public SingleDisplayPlot
 		{
 			Q_OBJECT
 

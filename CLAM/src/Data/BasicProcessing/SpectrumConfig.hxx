@@ -32,7 +32,7 @@ namespace CLAM {
 /**
 * The Spectrum configuration object.
 */
-class CLAM_DLL_EXPORT SpectrumConfig : public ProcessingDataConfig
+class  SpectrumConfig : public ProcessingDataConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (SpectrumConfig, 5, ProcessingDataConfig);

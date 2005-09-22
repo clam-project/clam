@@ -33,7 +33,7 @@ namespace CLAMVM
 {
 	class SequenceRenderingManager;
 
-	class CLAM_DLL_EXPORT Plot : public GenericPlot
+	class  Plot : public GenericPlot
 	{
 	public:
 		Plot( );

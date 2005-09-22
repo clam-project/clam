@@ -36,7 +36,7 @@ namespace CLAMVM
 	using CLAM::TSize;
 	using CLAM::TIndex;
 
-	class CLAM_DLL_EXPORT PeaksRenderingManager : public GLRenderingManager
+	class  PeaksRenderingManager : public GLRenderingManager
 	{
 	public:
 		PeaksRenderingManager();

@@ -10,7 +10,7 @@ namespace CLAM
     {
 		class Player;
 		
-		class CLAM_DLL_EXPORT QtMultiPlayer : public QtPlayer
+		class  QtMultiPlayer : public QtPlayer
 		{
 			Q_OBJECT
 

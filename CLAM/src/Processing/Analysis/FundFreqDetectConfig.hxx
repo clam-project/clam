@@ -31,7 +31,7 @@ namespace CLAM {
 	/**
 	 * Config class for FundFreqDetect Processing.
 	 */
-	class CLAM_DLL_EXPORT FundFreqDetectConfig: public ProcessingConfig
+	class  FundFreqDetectConfig: public ProcessingConfig
 	{
 	public:
 	  DYNAMIC_TYPE_USING_INTERFACE (FundFreqDetectConfig, 17,ProcessingConfig);

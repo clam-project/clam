@@ -39,7 +39,7 @@ namespace CLAM
 * use the std::bit interface and Flags added functionalities.
 * @see Flags
 */
-struct CLAM_DLL_EXPORT SpecTypeFlags : public Flags<4>
+struct  SpecTypeFlags : public Flags<4>
 {
 public:
 	static tFlagValue sFlagValues[];

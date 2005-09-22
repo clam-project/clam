@@ -8,7 +8,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT MultiPlotRenderer : public Renderer
+		class  MultiPlotRenderer : public Renderer
 		{
 		public:
 			MultiPlotRenderer();

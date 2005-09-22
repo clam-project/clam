@@ -38,7 +38,7 @@ namespace CLAM
 	 * defined on the specialization of the Attribute template.
 	 * @ingroup SemanticalAnalysis 
 	 */
-	class CLAM_DLL_EXPORT AbstractAttribute
+	class  AbstractAttribute
 	{
 	public:
 		AbstractAttribute(const std::string & attributeName) : _attributeName(attributeName) {}
@@ -76,7 +76,7 @@ namespace CLAM
 	 * @ingroup SemanticalAnalysis
 	 */
 	template <typename AttributeType>
-	class CLAM_DLL_EXPORT Attribute : public AbstractAttribute
+	class  Attribute : public AbstractAttribute
 	{
 	public:
 		Attribute(const std::string & attributeName) : AbstractAttribute(attributeName) {}

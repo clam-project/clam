@@ -28,7 +28,7 @@
 namespace CLAMVM
 {
 
-class CLAM_DLL_EXPORT Fl_GridLayout 
+class  Fl_GridLayout 
 	: public Fl_Group
 {
 

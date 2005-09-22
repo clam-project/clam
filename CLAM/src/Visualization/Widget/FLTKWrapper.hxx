@@ -31,7 +31,7 @@ class Fl_Widget;
 namespace CLAMVM
 {
 
-class CLAM_DLL_EXPORT FLTKWrapper
+class  FLTKWrapper
 	: public WidgetTKWrapper
 {
 

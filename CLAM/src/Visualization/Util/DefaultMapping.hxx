@@ -33,7 +33,7 @@ namespace CLAMGUI
 	 *  values and "less" for hight magnitued values, thus achieving
 	 *  a higher level resolution while representing low magnitude values
 	 */
-	class CLAM_DLL_EXPORT DefaultMapping : public MappingAlgo
+	class  DefaultMapping : public MappingAlgo
 	{
 	private:
 		int*	mColorMappings;

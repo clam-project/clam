@@ -31,7 +31,7 @@ namespace CLAMVM
 	using CLAM::TIndex;
 
 	// @todo: change the name of this struct to TimeFreqDatum or something similar
-	struct CLAM_DLL_EXPORT TimeFreqMagPoint
+	struct  TimeFreqMagPoint
 	{
 		TData   mMag;
 		TData   mFreq;

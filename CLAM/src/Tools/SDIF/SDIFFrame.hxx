@@ -31,7 +31,7 @@ namespace SDIF
 
 	/** A special kind of frame at the beginning of each SDIF file
 	*/
-	class CLAM_DLL_EXPORT OpeningsFrame {
+	class  OpeningsFrame {
 	public:
 		FrameHeader mHeader;
 		CLAM::TInt32 mSpecVersion;
@@ -49,7 +49,7 @@ namespace SDIF
 	*       An SDIFFrame can be aware of it's successors and precessors in time 
 	* (both in the whole list of frames and in the streams)
 	*/
-	class CLAM_DLL_EXPORT Frame {
+	class  Frame {
 	friend class File;
 	friend class Collection;
 	public:

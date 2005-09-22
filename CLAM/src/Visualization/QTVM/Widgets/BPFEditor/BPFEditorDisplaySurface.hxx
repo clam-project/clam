@@ -13,7 +13,7 @@ namespace CLAM
     {
 		class BPFEditorController;
 
-		class CLAM_DLL_EXPORT BPFEditorDisplaySurface : public QGLWidget
+		class  BPFEditorDisplaySurface : public QGLWidget
 		{
 			Q_OBJECT
 

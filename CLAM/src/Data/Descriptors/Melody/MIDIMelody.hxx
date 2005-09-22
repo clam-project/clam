@@ -40,7 +40,7 @@ namespace CLAM{
 @@see SegmentDescriptors
 **/
 
- class CLAM_DLL_EXPORT MIDIMelody: public ProcessingData
+ class  MIDIMelody: public ProcessingData
  {
  public:
 	DYNAMIC_TYPE_USING_INTERFACE (MIDIMelody, 2, ProcessingData);

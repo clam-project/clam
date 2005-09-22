@@ -34,7 +34,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT PlotController : public QObject
+		class  PlotController : public QObject
 		{
 			Q_OBJECT
 

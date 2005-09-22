@@ -30,7 +30,7 @@
 namespace CLAMGUI
 {
 
-class CLAM_DLL_EXPORT FLCB_Button : public Fl_Button
+class  FLCB_Button : public Fl_Button
 {
 public:
 	FLCB_Button( const CLAMGUI::Rect<int>& geometry, const char* label = 0);

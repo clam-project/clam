@@ -53,7 +53,7 @@ namespace CLAM
 #endif
 
 
-class CLAM_DLL_EXPORT Win32ConsoleApp 
+class  Win32ConsoleApp 
 : public BaseAudioApplication
 {
 public:

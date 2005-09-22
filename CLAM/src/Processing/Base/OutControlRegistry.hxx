@@ -30,7 +30,7 @@ namespace CLAM
 //foward declaration:
 class OutControl;
 
-class CLAM_DLL_EXPORT OutControlRegistry
+class  OutControlRegistry
 {
 	std::vector<OutControl*> mOutControls;
 public:

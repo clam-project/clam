@@ -30,7 +30,7 @@ namespace CLAM
 	class Audio;
 	template < class T > class Array;
 
-	class CLAM_DLL_EXPORT LPCConfig
+	class  LPCConfig
 		: public ProcessingConfig
 	{
 	public:

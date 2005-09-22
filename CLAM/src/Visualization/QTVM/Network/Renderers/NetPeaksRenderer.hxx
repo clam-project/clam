@@ -7,7 +7,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-	    class CLAM_DLL_EXPORT NetPeaksRenderer : public Renderer
+	    class  NetPeaksRenderer : public Renderer
 	    {
 	    public:
 			NetPeaksRenderer();

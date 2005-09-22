@@ -33,7 +33,7 @@ namespace CLAM
 
 class Processing;
 
-class CLAM_DLL_EXPORT OutPortBase
+class  OutPortBase
 {
 public:
 	typedef std::list<InPortBase*> InPortsList;
@@ -66,7 +66,7 @@ protected:
 
 
 template<typename Token>
-class CLAM_DLL_EXPORT OutPort : public OutPortBase
+class  OutPort : public OutPortBase
 {
 	typedef OutPort<Token> ProperOutPort;
 	typedef InPort<Token> ProperInPort;

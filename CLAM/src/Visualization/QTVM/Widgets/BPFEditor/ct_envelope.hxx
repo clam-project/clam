@@ -52,7 +52,7 @@ and interface
 namespace CLAM
 {
 
-struct CLAM_DLL_EXPORT Envelope {
+struct  Envelope {
 
 	enum {
 

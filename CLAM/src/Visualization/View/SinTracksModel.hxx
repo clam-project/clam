@@ -38,7 +38,7 @@ namespace CLAMVM
 	using CLAM::TData;
 
 
-	class CLAM_DLL_EXPORT SinTracksModel
+	class  SinTracksModel
 	{
 	public:
 				

@@ -10,7 +10,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT NetAudioPlotController : public NetPlotController
+		class  NetAudioPlotController : public NetPlotController
 		{
 		public:
 			typedef AudioPortMonitor MonitorType;

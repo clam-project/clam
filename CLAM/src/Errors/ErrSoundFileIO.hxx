@@ -26,7 +26,7 @@
 
 namespace CLAM {
 
-	class CLAM_DLL_EXPORT ErrSoundFileIO : public ErrProcessingObj
+	class  ErrSoundFileIO : public ErrProcessingObj
 	{
 	public:
 		ErrSoundFileIO() throw();
@@ -36,7 +36,7 @@ namespace CLAM {
 		virtual ~ErrSoundFileIO() throw();
 	};
 
-	class CLAM_DLL_EXPORT UnavailableSoundFile : public ErrSoundFileIO
+	class  UnavailableSoundFile : public ErrSoundFileIO
 	{
 	public:
 		UnavailableSoundFile() throw();
@@ -47,7 +47,7 @@ namespace CLAM {
 		
 	};
 
-	class CLAM_DLL_EXPORT UnsupportedSoundFileSampleEncoding : public ErrSoundFileIO
+	class  UnsupportedSoundFileSampleEncoding : public ErrSoundFileIO
 	{
 	public:
 		UnsupportedSoundFileSampleEncoding() throw();
@@ -58,7 +58,7 @@ namespace CLAM {
 		
 	};
 	
-	class CLAM_DLL_EXPORT UnsupportedSoundFileFormat : public ErrSoundFileIO
+	class  UnsupportedSoundFileFormat : public ErrSoundFileIO
 	{
 	public:
 		UnsupportedSoundFileFormat() throw();

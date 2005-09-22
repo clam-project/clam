@@ -30,7 +30,7 @@ namespace CLAM
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
-class CLAM_DLL_EXPORT Hook 
+class  Hook 
 {
 public:
 	virtual ~Hook(){}
@@ -56,7 +56,7 @@ protected:
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
-class CLAM_DLL_EXPORT ReadHook : public Hook<AttributeType>
+class  ReadHook : public Hook<AttributeType>
 {
 public:
 	ReadHook()
@@ -140,7 +140,7 @@ private:
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
-class CLAM_DLL_EXPORT ReadRangedHook : public ReadHook<AttributeType>
+class  ReadRangedHook : public ReadHook<AttributeType>
 {
 public:
 	void GetRangeForReading(
@@ -162,7 +162,7 @@ private:
 
 /** @ingroup SemanticalAnalysis */
 template <typename AttributeType>
-class CLAM_DLL_EXPORT WriteHook : public Hook<AttributeType>
+class  WriteHook : public Hook<AttributeType>
 {
 public:
 	void Init(DescriptionDataPool & pool) 

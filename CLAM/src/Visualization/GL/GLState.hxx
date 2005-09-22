@@ -29,7 +29,7 @@ namespace CLAMGUI
  *   Simple OpenGL state variable setting for rendering
  */
 
-class CLAM_DLL_EXPORT GLState
+class  GLState
 {
 
 public:

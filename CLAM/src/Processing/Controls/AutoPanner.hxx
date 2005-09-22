@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT AutoPannerConfig : public ProcessingConfig
+class  AutoPannerConfig : public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (AutoPannerConfig, 4, ProcessingConfig);
@@ -43,7 +43,7 @@ protected:
 	void DefaultInit(void);
 };
 
-class CLAM_DLL_EXPORT AutoPanner : public Processing
+class  AutoPanner : public Processing
 {
 private:
 	

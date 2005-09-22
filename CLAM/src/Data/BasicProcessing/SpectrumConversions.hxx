@@ -29,31 +29,31 @@
 
 namespace CLAM
 {
-		void CLAM_DLL_EXPORT Complex2Polar( const Array<Complex>&, Array<Polar>& );
+		void  Complex2Polar( const Array<Complex>&, Array<Polar>& );
 		
-		void CLAM_DLL_EXPORT Polar2Complex( const Array<Polar>&, Array<Complex>& );
+		void  Polar2Complex( const Array<Polar>&, Array<Complex>& );
 
-		void CLAM_DLL_EXPORT Complex2MagPhase( const Array<Complex>&, DataArray&, DataArray& );
+		void  Complex2MagPhase( const Array<Complex>&, DataArray&, DataArray& );
 		
-		void CLAM_DLL_EXPORT Polar2MagPhase( const Array<Polar>&, DataArray&, DataArray& );
+		void  Polar2MagPhase( const Array<Polar>&, DataArray&, DataArray& );
 
-		void CLAM_DLL_EXPORT BPF2MagPhase( const BPF&, const BPF&, DataArray&, DataArray&, TSize, TData );
+		void  BPF2MagPhase( const BPF&, const BPF&, DataArray&, DataArray&, TSize, TData );
 
-		void CLAM_DLL_EXPORT MagPhase2Polar( const DataArray&, const DataArray&, Array<Polar>& );
+		void  MagPhase2Polar( const DataArray&, const DataArray&, Array<Polar>& );
 
-		void CLAM_DLL_EXPORT MagPhase2Complex( const DataArray&, const DataArray&, Array<Complex>& );
+		void  MagPhase2Complex( const DataArray&, const DataArray&, Array<Complex>& );
 
-		void CLAM_DLL_EXPORT Log2LinearMagnitude( const DataArray&, DataArray& );
+		void  Log2LinearMagnitude( const DataArray&, DataArray& );
 		
-		void CLAM_DLL_EXPORT Linear2LogMagnitude( const DataArray&, DataArray& );
+		void  Linear2LogMagnitude( const DataArray&, DataArray& );
 
-		void CLAM_DLL_EXPORT Complex2LogMagPhase(const Array<Complex> &src, DataArray &destMag, DataArray &destPhase);
+		void  Complex2LogMagPhase(const Array<Complex> &src, DataArray &destMag, DataArray &destPhase);
 
 		// Inplace conversion function overloads
 
-		void CLAM_DLL_EXPORT Log2LinearMagnitude( DataArray& );
+		void  Log2LinearMagnitude( DataArray& );
 		
-		void CLAM_DLL_EXPORT Linear2LogMagnitude( DataArray& );
+		void  Linear2LogMagnitude( DataArray& );
 }
 
 

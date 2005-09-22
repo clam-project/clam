@@ -46,7 +46,7 @@ class ProcessingConfig;
 class SpectralPeakArray;
 
 /** Class that encapsulates all the building blocks of the SegmentAnalysis example */
-class CLAM_DLL_EXPORT SMSAnalysisCore : public ProcessingComposite
+class  SMSAnalysisCore : public ProcessingComposite
 {
 
 public:

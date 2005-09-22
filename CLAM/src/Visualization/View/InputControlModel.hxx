@@ -33,7 +33,7 @@ namespace CLAMVM
 	using SigSlot::Signalv2;
 	using SigSlot::Slotv1;
 
-	class CLAM_DLL_EXPORT InputControlModel
+	class  InputControlModel
 	{
 
 

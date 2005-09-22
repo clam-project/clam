@@ -39,7 +39,7 @@ class NullDomDocumentHandler;
  * Dummy implementation of a DomDocumentReadingContext when XML is disabled.
  * @ingroup XmlBackends_Null
  */
-class CLAM_DLL_EXPORT NullDomReadingContext
+class  NullDomReadingContext
 {
 	std::stringstream _plainContentToParse;
 

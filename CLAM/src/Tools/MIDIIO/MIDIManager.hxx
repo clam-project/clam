@@ -42,7 +42,7 @@ namespace CLAM{
  */
 
 
-class CLAM_DLL_EXPORT MIDIManager
+class  MIDIManager
 {
 	friend class MIDIIn;
 	friend class MIDIClocker;

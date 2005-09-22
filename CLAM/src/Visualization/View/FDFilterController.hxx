@@ -35,7 +35,7 @@ namespace CLAMVM
 {
 	using CLAM::FDFilterGen;
 
-	class CLAM_DLL_EXPORT FDFilterController : public ProcessingController
+	class  FDFilterController : public ProcessingController
 	{
 	protected:
 		const FDFilterGen* mObserved;

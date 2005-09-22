@@ -29,7 +29,7 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT MonoAudioFileReader 
+	class  MonoAudioFileReader 
 		: public Processing
 	{
 	public: 

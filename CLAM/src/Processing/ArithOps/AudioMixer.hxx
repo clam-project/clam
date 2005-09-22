@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-class CLAM_DLL_EXPORT AudioMixerConfig: public ProcessingConfig
+class  AudioMixerConfig: public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (AudioMixerConfig, 2, ProcessingConfig);
@@ -49,7 +49,7 @@ protected:
 
 };
 
-class CLAM_DLL_EXPORT AudioMixer: public Processing
+class  AudioMixer: public Processing
 {
 private:
 	AudioMixerConfig  mConfig;

@@ -61,7 +61,7 @@ namespace CLAM
 
 */
 
-	class CLAM_DLL_EXPORT NormalizationConfig: public ProcessingConfig
+	class  NormalizationConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (NormalizationConfig, 2, ProcessingConfig);
@@ -71,7 +71,7 @@ namespace CLAM
 		void DefaultInit(void);
 	};
 	
-	class CLAM_DLL_EXPORT Normalization: public Processing
+	class  Normalization: public Processing
 	{
 	private:
 		NormalizationConfig mConfig;

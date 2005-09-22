@@ -30,7 +30,7 @@
 namespace CLAM {
 
 // TODO: Integrate this excepcion class with CLAM exception standards
-class CLAM_DLL_EXPORT IllegalValue : public std::exception {
+class  IllegalValue : public std::exception {
 	public:
 		IllegalValue(const IllegalValue & e): msg(e.msg) {};
 		IllegalValue(const std::string & s) : msg(s) {};
@@ -90,7 +90,7 @@ class CLAM_DLL_EXPORT IllegalValue : public std::exception {
  *	};
  * @endcode
  */
-class CLAM_DLL_EXPORT Enum : public Component {
+class  Enum : public Component {
 
 // Internal Types
 public:
@@ -312,7 +312,7 @@ public:
  * @param e The Enum
  * @returns The output stream
  */
-CLAM_DLL_EXPORT std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue);
+ std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue);
 
 /**
  * Loads a symbolic value from the input stream onto an Enum.
@@ -320,7 +320,7 @@ CLAM_DLL_EXPORT std::ostream & operator << (std::ostream & os, const Enum & e) t
  * @param e The Enum
  * @returns The input stream
  */
-CLAM_DLL_EXPORT std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue);
+ std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue);
 
 };
 #endif // _ENUM_H_

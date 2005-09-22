@@ -26,7 +26,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT GT_FilterBankConfig: public ProcessingConfig
+	class  GT_FilterBankConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (GT_FilterBankConfig, 4, ProcessingConfig);

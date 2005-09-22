@@ -32,7 +32,7 @@ namespace CLAM
 	 *	parameter and a BPF envelope-like parameter. Either one of these may be used to initialize 
 	 *	and update the value control in an SegmentTransformation.
 	 */
-	class CLAM_DLL_EXPORT SegmentTransformationConfig: public ProcessingConfig
+	class  SegmentTransformationConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SegmentTransformationConfig, 3,ProcessingConfig);

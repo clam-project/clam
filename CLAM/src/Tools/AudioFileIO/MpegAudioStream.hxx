@@ -33,7 +33,7 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class CLAM_DLL_EXPORT MpegAudioStream 
+	class  MpegAudioStream 
 		: public Stream
 	{
 	public:

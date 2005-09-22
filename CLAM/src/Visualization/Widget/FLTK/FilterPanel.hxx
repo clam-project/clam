@@ -28,7 +28,7 @@
 namespace CLAMGUI
 {
 
-	class CLAM_DLL_EXPORT FilterPanel
+	class  FilterPanel
 	{
 	public:
 		
@@ -98,7 +98,7 @@ namespace CLAMGUI
 		SlopeKnob*       mSSB;
 	};
 
-	class CLAM_DLL_EXPORT BPFPanel
+	class  BPFPanel
 		: public FilterPanel
 
 	{
@@ -146,7 +146,7 @@ namespace CLAMGUI
 		SlopeKnob*       mSSB;    
 	};
 	
-	class CLAM_DLL_EXPORT HPFPanel
+	class  HPFPanel
 		: public FilterPanel
 	{
 	public:

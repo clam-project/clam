@@ -11,7 +11,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM_DLL_EXPORT ListItemChooser : public QDialog
+		class  ListItemChooser : public QDialog
 		{
 			Q_OBJECT
 		public:

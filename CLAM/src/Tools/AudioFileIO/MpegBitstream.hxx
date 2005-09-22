@@ -35,7 +35,7 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class CLAM_DLL_EXPORT MpegBitstream
+	class  MpegBitstream
 	{
 		struct mad_stream  mBitstream;
 		struct mad_frame   mCurrentFrame;

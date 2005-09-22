@@ -8,7 +8,7 @@ namespace CLAM
 {
     namespace VM
     {
-		struct CLAM_DLL_EXPORT SinTrackNode
+		struct  SinTrackNode
 		{
 			TData freq;
 			TIndex timeIndex;

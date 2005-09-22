@@ -34,7 +34,7 @@
 namespace CLAM{
 
 
-	class CLAM_DLL_EXPORT SMSHarmonizer: public SegmentTransformation
+	class  SMSHarmonizer: public SegmentTransformation
 	{
 		
 		/** This method returns the name of the object

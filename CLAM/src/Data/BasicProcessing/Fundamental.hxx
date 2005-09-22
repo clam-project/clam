@@ -41,7 +41,7 @@ namespace CLAM
 	 * There are getters and setters, but for efficiency work directly on the buffer.
 	 * @see Frame
 	 */
-	class CLAM_DLL_EXPORT Fundamental : public ProcessingData
+	class  Fundamental : public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (Fundamental, 2, ProcessingData);

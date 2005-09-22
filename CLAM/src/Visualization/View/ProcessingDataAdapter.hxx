@@ -41,7 +41,7 @@ namespace CLAMVM
  *  for all Views that observe CLAM ProcessingData's.
  */
 
-class CLAM_DLL_EXPORT ProcessingDataAdapter : public ModelAdapter
+class  ProcessingDataAdapter : public ModelAdapter
 {
 public:
 

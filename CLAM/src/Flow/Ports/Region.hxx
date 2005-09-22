@@ -27,7 +27,7 @@
 namespace CLAM
 {
 	
-class CLAM_DLL_EXPORT Region
+class  Region
 {
 public:
 	typedef std::list<Region*> ReadingRegionsList;

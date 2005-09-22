@@ -38,7 +38,7 @@ namespace CLAMGUI
 
 	class SpectrumRasterizer;
 
-	class CLAM_DLL_EXPORT GLTF2DRenderer
+	class  GLTF2DRenderer
 	{
 	public:
 

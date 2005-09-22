@@ -28,7 +28,7 @@
 
 namespace CLAM
 {
-	class CLAM_DLL_EXPORT MonoAudioFileWriter
+	class  MonoAudioFileWriter
 		: public Processing
 	{
 	public:

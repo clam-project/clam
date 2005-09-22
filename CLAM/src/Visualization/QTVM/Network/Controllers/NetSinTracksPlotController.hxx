@@ -11,7 +11,7 @@ namespace CLAM
 {
     namespace VM
     {
-		class CLAM_DLL_EXPORT NetSinTracksPlotController : public NetPlotController 
+		class  NetSinTracksPlotController : public NetPlotController 
 		{
 		public:
 			typedef SinTracksPortMonitor MonitorType;

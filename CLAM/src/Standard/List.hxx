@@ -35,7 +35,7 @@ namespace CLAM {
 
 template <class T2> void StoreMemberOn(T2 &item, Storage & storage);
 
-template <class T> class CLAM_DLL_EXPORT List:public Component
+template <class T> class  List:public Component
 {
 
 	class Node

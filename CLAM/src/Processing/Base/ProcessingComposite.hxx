@@ -30,7 +30,7 @@
 namespace CLAM {
 
 /** Abstract class for processing object agregates. */
-	class CLAM_DLL_EXPORT ProcessingComposite : public Processing
+	class  ProcessingComposite : public Processing
 	{
 		std::list<Processing*> mObjects;
 

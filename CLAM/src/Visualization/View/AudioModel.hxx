@@ -36,7 +36,7 @@ namespace CLAMVM
 	using CLAM::DataArray;
 	class AudioAdapter;
 
-	class CLAM_DLL_EXPORT AudioModel
+	class  AudioModel
 	{
 	public:				
 		AudioModel(  );

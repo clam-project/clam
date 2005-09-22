@@ -34,7 +34,7 @@
 namespace CLAM{
 
 
-	class CLAM_DLL_EXPORT SMSPitchDiscretization: public FrameTransformation
+	class  SMSPitchDiscretization: public FrameTransformation
 	{
 		InPort<SpectralPeakArray> mInPeaks;
 		InPort<Fundamental> mInFund;

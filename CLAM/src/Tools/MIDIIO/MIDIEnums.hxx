@@ -24,7 +24,7 @@
 
 namespace CLAM {
 
-class CLAM_DLL_EXPORT MIDI
+class  MIDI
 {
 public:
 	/**

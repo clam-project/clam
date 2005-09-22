@@ -29,7 +29,7 @@
 namespace MIDI
 {
 
-	class CLAM_DLL_EXPORT Event
+	class  Event
 	/* a midi event is a time-stamped midi message */
 	{
 	private:
@@ -55,7 +55,7 @@ namespace MIDI
 	** so we subclass Event for them
 	*/
 	
-	class CLAM_DLL_EXPORT MetaEvent:public Event
+	class  MetaEvent:public Event
 	{
 	public:
 		Byte *mData;
@@ -65,7 +65,7 @@ namespace MIDI
 		}
 	};
 
-	class CLAM_DLL_EXPORT SysExEvent:public Event
+	class  SysExEvent:public Event
 	{
 	public:
 		Byte *mData;

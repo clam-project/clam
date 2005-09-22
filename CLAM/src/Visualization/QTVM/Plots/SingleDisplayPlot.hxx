@@ -27,7 +27,7 @@ namespace CLAM
 		 *   - rulers: horizontal/vertical 
 		 *   - zoom controls: in/out 
 		 */ 
-		class CLAM_DLL_EXPORT SingleDisplayPlot : public QtPlot
+		class  SingleDisplayPlot : public QtPlot
 		{
 			Q_OBJECT		
 	

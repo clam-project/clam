@@ -30,7 +30,7 @@ namespace CLAM
 {
 
 	template <class T>
-	class CLAM_DLL_EXPORT PolarTmpl
+	class  PolarTmpl
 	{
 	private:
 		T mMag, mAng;
@@ -127,10 +127,10 @@ namespace CLAM
 	};
 
 	template <class T>
-	CLAM_DLL_EXPORT std::istream& operator >> (std::istream & stream, PolarTmpl<T> & a);
+	 std::istream& operator >> (std::istream & stream, PolarTmpl<T> & a);
 	
 	template <class T>
-	CLAM_DLL_EXPORT std::ostream& operator << (std::ostream & stream, const PolarTmpl<T> & a);
+	 std::ostream& operator << (std::ostream & stream, const PolarTmpl<T> & a);
 	
 } // namespace CLAM
 

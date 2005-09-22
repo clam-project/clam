@@ -42,7 +42,7 @@ namespace CLAM
 	 * @see SemanticalAnalysis module, for more information on that.
 	 * @ingroup SemanticalAnalysis
 	 */
-	class CLAM_DLL_EXPORT DescriptionScope
+	class  DescriptionScope
 	{
 	public:
 		typedef std::map<std::string, unsigned> NamesMap;

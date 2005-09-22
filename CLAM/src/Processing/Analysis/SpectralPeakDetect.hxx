@@ -45,7 +45,7 @@ namespace CLAM
 	 * <p>
 	 * The type of the  output is  SpectralPeakArray
 	 */
-	class CLAM_DLL_EXPORT SpectralPeakDetect: public Processing {
+	class  SpectralPeakDetect: public Processing {
 
 	protected: // attributes
 		SpectralPeakDetectConfig mConfig;

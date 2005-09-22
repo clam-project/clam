@@ -35,7 +35,7 @@ namespace CLAMVM
 	using CLAM::Spectrum;
 		
 
-	class CLAM_DLL_EXPORT SpectralTokenDelayController 
+	class  SpectralTokenDelayController 
 		: public ProcessingController
 	{
 	protected:

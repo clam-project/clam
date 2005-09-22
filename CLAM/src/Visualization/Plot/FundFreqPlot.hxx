@@ -34,7 +34,7 @@ namespace CLAMVM
 	class FundamentalAdapter;
 	class Fl_SMS_FundFreq_Browser;
 
-	class CLAM_DLL_EXPORT FundFreqPlot : public PlotBase
+	class  FundFreqPlot : public PlotBase
 	{
 	public:
 

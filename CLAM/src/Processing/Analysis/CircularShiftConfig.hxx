@@ -27,7 +27,7 @@
 
 namespace CLAM {
 
-	class CLAM_DLL_EXPORT CircularShiftConfig: public ProcessingConfig
+	class  CircularShiftConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (CircularShiftConfig, 1,ProcessingConfig);

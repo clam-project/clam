@@ -27,13 +27,13 @@
 namespace CLAM
 {
 
-	class CLAM_DLL_EXPORT  LockError : public Err
+	class   LockError : public Err
 	{
 	public:
 		LockError( const char* msg = 0 );
 	};
 
-	class CLAM_DLL_EXPORT ThreadResourceError : public Err
+	class  ThreadResourceError : public Err
 	{
 	public:
 		ThreadResourceError( const char* msg = 0);

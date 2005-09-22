@@ -36,7 +36,7 @@ namespace CLAMVM
 	class Fl_GridLayout;
 	class Fl_Gl_Single_Display;
 
-	class CLAM_DLL_EXPORT Fl_SinTracks : public SinTracksPresentation, public Fl_Window
+	class  Fl_SinTracks : public SinTracksPresentation, public Fl_Window
 	{
 	private:
 		Fl_GridLayout*            mLayout;

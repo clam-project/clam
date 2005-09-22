@@ -18,7 +18,7 @@ namespace CLAM
 
     namespace VM
     {
-		class CLAM_DLL_EXPORT QtBPFPlayer : public QtMultiPlayer
+		class  QtBPFPlayer : public QtMultiPlayer
 		{
 			struct DataInfo
 			{

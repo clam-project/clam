@@ -41,7 +41,7 @@ namespace CLAMVM
 	class Fl_GridLayout;
 	class Fl_Gl_Multi_Display;
 
-	class CLAM_DLL_EXPORT Fl_SMS_SpectrumAndPeaks 
+	class  Fl_SMS_SpectrumAndPeaks 
 		: public SpectrumPlusPeaksPresentation, public Fl_Group
 	{
 	private:

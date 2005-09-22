@@ -34,7 +34,7 @@ namespace CLAMVM
 
 		class SpectralPeakArrayAdapter;
 
-		class CLAM_DLL_EXPORT SpectralPeakArrayAspect
+		class  SpectralPeakArrayAspect
 		{
 		public:
 			   
