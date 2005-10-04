@@ -207,11 +207,11 @@ int main(int argc, char** argv )
 package_checks['check_rfftw_float_wo_prefix'] = ThoroughPackageCheck( 'rfftw using floats with not prefixed binaries/headers','c', None, float_rfftw_wo_prefix_test_code )
 
 liboscpack_test_code = """\
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
 	return 0;
 }
 """
