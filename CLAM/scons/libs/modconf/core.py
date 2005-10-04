@@ -74,13 +74,13 @@ def setup_core_environment( core_env, conf ) :
 		
 	
 	if core_env['with_osc_support'] and sys.platform != 'win32':
-		result = conf.CheckCXXHeader( 'oscpack/ip/NetworkingUtils.h' )
+		result = conf.CheckCXXHeader( 'oscpack/ip/IpEndpointName.h' )
 		if not result :	
 			print "liboscpack headers not found!"
 			print "Either install liboscpack or disable OSC support by issuing"
 			print "$scons with_osc_support=no"
 			return False
-		result = conf.CheckLibWithHeader( 'oscpack', 'oscpack/ip/NetworkingUtils.h', 'cxx', call='InitializeNetworking();')
+		result = conf.CheckLibWithHeader( 'oscpack', 'oscpack/ip/IpEndpointName.h', 'cxx', call='IpEndpointName("localhost",9999);')
 		if not result :
 			print "liboscpack binaries not found!"
 			print "Either install liboscpack or disable OSC support by issuing"
