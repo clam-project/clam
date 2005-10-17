@@ -24,13 +24,15 @@
 
 
 //CLAM dependencies
-#include <Network.hxx>
-#include <BasicFlowControl.hxx>
-
+#include "Network.hxx"
+#include "BasicFlowControl.hxx"
+#include "Thread.hxx"
 
 //OSC dependencies
 #include <oscpack/ip/NetworkingUtils.h>
-#include <oscpack/ip/UdpPacketListenerPort.h>
+#include <oscpack/ip/UdpSocket.h>
+#include <oscpack/ip/TimerListener.h>
+#include <oscpack/osc/OscPacketListener.h>
 #include <oscpack/osc/OscReceivedElements.h>
 
 //Other dependencies
@@ -38,32 +40,32 @@
 #include <list>
 #include <string>
 
-
-
 namespace CLAM
 {
 	class OSCEnabledNetwork : public CLAM::Network
 	{
-	  //Inner class of OSCEnabledNetwork
-		class OscReceivePacketListener : public UdpPacketListener
+		//Inner classes of OSCEnabledNetwork:
+		
+		//Listener that will process every incoming packet
+		class OscReceivePacketListener : public osc::OscPacketListener
 		{
-			void ProcessBundle( const osc::ReceivedBundle& b );
-			void ProcessMessage( const osc::ReceivedMessage& m );
+			virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
 
 			OSCEnabledNetwork* mParentNetwork;
 			
 		public:
-			virtual void ProcessPacket( const char *data, unsigned long size );
 			void AttachToNetwork(OSCEnabledNetwork* net);
 		};
-		
-	private:
 
-		/*static*/ UdpPacketListenerPort *mListenerPort;
+	private:
+		CLAM::Thread mThread;
+		
+		UdpListeningReceiveSocket *mReceiveSocket;
 		OscReceivePacketListener mListener;
+		
 		int mPort;
 		std::queue<std::string> mMessageLog;
-		bool mListeningOSC;		
+		bool mListeningOSC;
 
 		int GetPort(void) const
 		{
@@ -77,12 +79,21 @@ namespace CLAM
 		virtual void StopListeningOSC();
 		//Gets the first message in the log queue
 		const std::string GetLogMessage(void);
+
 		void SetPort(const int p)
 		{
 			mPort=p;
 		}
 		
-		virtual const bool GetListeningOSC() const { return mListeningOSC; }
+		virtual ~OSCEnabledNetwork()
+		{
+			StopListeningOSC();
+			Stop();
+			if ( mReceiveSocket != NULL )
+				delete mReceiveSocket;
+		}
+		
+		virtual const bool IsListeningOSC() const { return mListeningOSC; }
 
 	protected:
 		//Adds the specified message to the log queue
