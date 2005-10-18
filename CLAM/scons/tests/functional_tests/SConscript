@@ -36,11 +36,12 @@ if sys.platform != 'win32' :
 
 functional_tests = tests_env.Program( 'FunctionalTests', file_retriever.sources )
 
-tests_env.MSVSProject( target = 'FunctionalTests' + tests_env['MSVSPROJECTSUFFIX'],
-			srcs = file_retriever.sources,
-			incs = file_retriever.headers,
-			buildtarget = functional_tests,
-			variant = 'Release' )
+if sys.platform == 'win32' :
+	tests_env.MSVSProject( target = 'FunctionalTests' + tests_env['MSVSPROJECTSUFFIX'],
+				srcs = file_retriever.sources,
+				incs = file_retriever.headers,
+				buildtarget = functional_tests,
+				variant = 'Release' )
 
 test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
 
