@@ -150,6 +150,8 @@ if sys.platform != 'linux2' :
 		lib_path =  "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'lib')
 		clam_env.Append( CPPPATH= include_path )
 		clam_env.Append( LIBPATH = lib_path )
+else:
+	clam_env.Append( CPPPATH= '/usr/local/include' )
 
 
 if not clam_env.GetOption('clean') :
