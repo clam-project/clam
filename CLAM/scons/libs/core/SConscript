@@ -42,10 +42,10 @@ def define_module_contents() :
 		blacklist.append( 'Xerces.+' )
 		blacklist.append( 'LibXml.+' )
 
-	if not core_env['with_ladspa_support'] :
+	if not core_env.has_key('with_ladspa_support') :
 		blacklist.append( 'Ladspa.+' )
 
-	if not core_env['with_osc_support'] :
+	if not core_env.has_key('with_osc_support') :
 		blacklist.append( 'OSC.+')
 
 	file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
@@ -67,7 +67,7 @@ def define_module_contents() :
 
 if not core_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
-	pkg_data = PackageData( 'clam_core', version, extra = ['clam_core_templates'] )
+	pkg_data = PackageData( 'clam_core', version )
 	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
 	print "ok"
 
@@ -89,7 +89,8 @@ headers = [ File(header) for header in header_files ]
 if sys.platform != 'win32' :
 	core_tgt, core_install_tgt = posix_lib_rules( 'core', version, headers, source_files, install_dirs, core_env )
 else :
-	templates = [ 'src/Point.cxx', 'src/Polar.cxx', 'src/Complex.cxx', 'src/BPF.cxx', 'src/Matrix.cxx', 'src/Order.cxx'] 
-	core_tgt, core_install_tgt = win32_lib_rules( 'core', version, headers, source_files, install_dirs, core_env, templates )
+	# TODO whats about templates
+	#templates = [ 'src/Point.cxx', 'src/Polar.cxx', 'src/Complex.cxx', 'src/BPF.cxx', 'src/Matrix.cxx', 'src/Order.cxx'] 
+	core_tgt, core_install_tgt = win32_lib_rules( 'core', version, headers, source_files, install_dirs, core_env )
 
 Return( 'core_tgt','core_install_tgt' )

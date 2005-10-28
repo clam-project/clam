@@ -73,8 +73,8 @@ if not vmqt_env.GetOption('clean') :
 
 vmqt_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 
-if sys.platform == 'win32' : 
-	vmqt_env.Append( LIBS=['clam_core_templates'] )
+#if sys.platform == 'win32' : 
+#	vmqt_env.Append( LIBS=['clam_core_templates'] )
 
 vmqt_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 

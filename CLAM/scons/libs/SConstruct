@@ -27,10 +27,10 @@ def setup_build_options( env ) :
 	if sys.platform == 'linux2' :
 		opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
 	else :
-		opts.Add( PathOption( 'prefix', 'Directory to install under', 'c:\\Sandboxes\CLAM-bin') )
+		opts.Add( PathOption( 'prefix', 'Directory to install under', 'G:\\projects\CLAM-bin') )
 	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
 	if sys.platform != 'linux2' :
-		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'c:\\Sandboxes' ) )
+		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
 	if sys.platform == 'win32' :
 		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
 	else :
@@ -66,8 +66,13 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
 	# clam_vmqt options
-	opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
-	opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
+	if sys.platform != 'win32' :
+		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
+		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
+	else:
+		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
+		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
+		
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -121,10 +126,12 @@ Export('top')
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
 
 if sys.platform == 'win32' :
-	splitted_path = clam_env['ENV']['QTDIR'].split('\\')
-	version_str = splitted_path[2]
-	qt_suffix = ''.join( version_str.split('.') )
-	clam_env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
+	#splitted_path = clam_env['ENV']['QTDIR'].split('\\')
+	#version_str = splitted_path[2]
+	#qt_suffix = ''.join( version_str.split('.') )
+	#print('qt_suffix: ' + qt_suffix)
+	#clam_env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
+	clam_env.Replace( QT_LIB = 'qt-mt322')
 
 else :
 	clam_env.Replace( QT_LIB = 'qt-mt' )
@@ -147,9 +154,17 @@ if sys.platform != 'linux2' :
 		if sys.platform == 'win32' : path_sep = '\\'
 		if sys.platform == 'darwin' : path_sep = '/'
 		include_path = "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'include')
+		print( 'include path: ' + include_path )
 		lib_path =  "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'lib')
+		print( 'lib path: ' + lib_path)
 		clam_env.Append( CPPPATH= include_path )
 		clam_env.Append( LIBPATH = lib_path )
+	if sys.platform == 'win32' :
+		environmentIncludes = os.environ['INCLUDE']
+		environmentIncludesList = environmentIncludes.split(';')
+		for include in environmentIncludesList :
+			print( 'adding include dir from windows config: ' + include )
+			clam_env.Append( CPPPATH = include)
 else:
 	clam_env.Append( CPPPATH= '/usr/local/include' )
 
@@ -213,6 +228,8 @@ audioio_env = clam_env.Copy()
 if sys.platform == 'win32' :
 	audioio_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
+			
 Export('audioio_env')
 audioio_env.Replace( QT_LIB = '' )
 

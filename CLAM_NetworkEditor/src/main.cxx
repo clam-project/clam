@@ -44,6 +44,8 @@
 #include <X11/Xlib.h>
 #endif
 
+#include <CLAM/AudioOut.hxx>
+
 void ConfigureNetwork(CLAM::Network & net)
 {	
 	int frameSize = 1024; // was 512
@@ -55,9 +57,11 @@ int main( int argc, char **argv )
 {
 #ifdef Q_WS_X11
 	XInitThreads();
-#endif
+#endif	
 
 	CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
+
+	CLAM::AudioOut * processing = new CLAM::AudioOut();
 
 	CLAM::MIDIManager midiManager;
 	

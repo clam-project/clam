@@ -1,15 +1,13 @@
 #ifndef CLIPBOARDWIDGET_HXX
 #define CLIPBOARDWIDGET_HXX
 
-#include "StaticHeader.hxx"
-
 #include <qwidget.h>
 #include <qwidgetplugin.h>
 
 class QLabel;
 class ClipBoard;
 
-class SIMAC_QT_WIDGET_PLUGIN_EXPORT ClipBoardWidget : public QWidget
+class ClipBoardWidget : public QWidget
 {
   Q_OBJECT
 public:

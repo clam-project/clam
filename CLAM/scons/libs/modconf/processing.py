@@ -91,7 +91,8 @@ def test_fftw_linux( processing_env, conf ) :
 	return True
 
 def test_fftw_win32( processing_env, conf ) :
-	if processing_env['double']  or sys.platform == 'win32' : # CLAM uses double for TData
+	if processing_env.has_key('double')  or sys.platform == 'win32' : # CLAM uses double for TData
+		print('testing fftw windows/double')
 		double_prefixed = False
 		result = conf.CheckCHeader( 'fftw.h' )
 		if not result :
@@ -110,14 +111,16 @@ def test_fftw_win32( processing_env, conf ) :
 			print "Please check that fftw is properly installed"
 			return False
 
-		if processing_env['double'] :
+		if processing_env.has_key('double') :
+			print('with double')
 			result = conf.check_fftw_double_wo_prefix()
 		else :
+			print('with float')
 			result = conf.check_fftw_float_wo_prefix()
 		if not result :
 			print "fftw compile/link/run tests failed! Check config.log for details"
 			return False
-		if processing_env['double'] :
+		if processing_env.has_key('double') :
 			result = conf.check_rfftw_double_wo_prefix()
 		else :
 			result = conf.check_rfftw_float_wo_prefix()

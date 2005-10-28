@@ -20,12 +20,12 @@ def define_module_contents() :
 
 	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
 
-	if not processing_env['with_osc_support'] :
+	if not processing_env.has_key('with_osc_support') :
 		blacklist.append('OSCSender')
 
-	if not processing_env['with_fftw'] :
+	if not processing_env.has_key('with_fftw') :
 		blacklist.append('.+rfftw.+')
-	if not processing_env['with_nr_fft'] :
+	if not processing_env.has_key('with_nr_fft') :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
 
@@ -74,8 +74,8 @@ if not processing_env.GetOption('clean') :
 	handle_preinclude( processing_env )
 
 processing_env.Append(LIBS=['clam_core'])
-if sys.platform == 'win32' :
-	processing_env.Append(LIBS=['clam_core_templates'])
+#if sys.platform == 'win32' :
+#	processing_env.Append(LIBS=['clam_core_templates'])
 
 processing_env.Prepend(LIBPATH=['../core'])
 

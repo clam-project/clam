@@ -40,7 +40,10 @@ def setup_global_environment( clam_env, conf ) :
 			#clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_USRDLL', '-D_DEBUG'] )
 			clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
 			clam_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+			clam_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
+	for includePath in clam_env['CPPPATH'] :
+		print('include before pthread checking: ' + includePath )
 	# pthreads testing
 	result = conf.CheckCHeader('pthread.h')
 	if not result :

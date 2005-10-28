@@ -1,4 +1,5 @@
 import sys
+import os
 
 def setup_core_environment( core_env, conf ) :
 	if core_env['xmlbackend'] == 'both' or core_env['xmlbackend'] == 'xercesc' :
@@ -6,6 +7,8 @@ def setup_core_environment( core_env, conf ) :
 		if not failed and not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
 			print "Could not find xerces c headers! Defaulting to the null xml backend"
 			failed = True
+		core_env['ENV'] = os.environ
+		print('path of app: ' + core_env['ENV']['PATH'])
 		if not failed and not conf.check_xerces_c( conf ) :
 			print "xerces c code compile/link/run test failed! Check config.log for details..."
 			failed = True
@@ -34,8 +37,7 @@ def setup_core_environment( core_env, conf ) :
 			core_env.Append( CPPFLAGS=['-DUSE_XMLPP_TRUE','-DCLAM_USE_XML'] )
 		else :
 			core_env['xmlbackend'] = 'none'	
-
-	if core_env['with_ladspa_support'] and sys.platform == 'linux2':
+	if core_env.has_key('with_ladspa_support') and sys.platform == 'linux2':
 		result = conf.CheckCHeader( 'ladspa.h' )
 		if not result :
 			print "ladspa SDK header was not found"
@@ -71,9 +73,9 @@ def setup_core_environment( core_env, conf ) :
 			print "$scons with_jack_support=no"
 			return False
 		core_env.Append(CPPFLAGS='-DUSE_JACK=1')	
-		
+
 	
-	if core_env['with_osc_support'] and sys.platform != 'win32':
+	if core_env.has_key('with_osc_support') and sys.platform != 'win32':
 		result = conf.CheckCXXHeader( 'oscpack/ip/IpEndpointName.h' )
 		if not result :	
 			print "liboscpack headers not found!"

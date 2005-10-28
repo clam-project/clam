@@ -26,16 +26,20 @@ def define_module_contents() :
 			folders.append( 'src/Tools/AudioIO/Linux')
 	elif sys.platform == 'win32':
 		if audioio_env['audio_backend'] == 'rtaudio' :
+			print('using rtaudio')
 			folders += ['src/Tools/AudioIO/RtAudio']
 		elif audioio_env['audio_backend'] == 'directx' :
+			print('using directx')
 			folders += ['src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx', 'src/Tools/AudioIO/Windows/DXFullDuplex.*xx']
 		elif audioio_env['audio_backend'] == 'portaudio' :
+			print('using portaudio')
 			folders += ['src/Tools/AudioIO/Windows/PAAudio*.*xx', 
 					'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
 					'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
 					'src/Tools/AudioIO/Windows/DoubleBuffer.*xx']
 	else :
 		if audioio_env['audio_backend'] == 'rtaudio' :
+			print('using rtaudio2')
 			folders += ['src/Tools/AudioIO/RtAudio']
 
 	blacklist = [ 'foo.cxx','main.cxx']
@@ -88,6 +92,7 @@ if not audioio_env.GetOption('clean') :
 
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
 audioio_env.Prepend(LIBPATH=['../core','../processing'])
+audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 
 headers = [ File(header) for header in header_files ]

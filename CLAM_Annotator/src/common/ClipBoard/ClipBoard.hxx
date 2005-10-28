@@ -1,10 +1,10 @@
 #ifndef CLIPBOARD_HXX
 #define CLIPBOARD_HXX
 
-#include "Song.hxx"
+#include "SongFiles.hxx"
 #include <vector>
 
-class ClipBoard : public std::vector<Song*>
+class ClipBoard : public std::vector<CLAM_Annotator::Song*>
 {
 public:
   static ClipBoard * getInstance();

@@ -68,8 +68,8 @@ if not vmfl_env.GetOption('clean') :
 
 vmfl_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 
-if sys.platform == 'win32' : 
-	vmfl_env.Append( LIBS=['clam_core_templates'] )
+#if sys.platform == 'win32' : 
+#	vmfl_env.Append( LIBS=['clam_core_templates'] )
 
 vmfl_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 

@@ -3,6 +3,7 @@
 #define _SongFiles_
 
 #include <CLAM/DynamicType.hxx>
+#include <vector>
 
 namespace CLAM_Annotator{
 

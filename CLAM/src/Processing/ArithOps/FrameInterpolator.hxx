@@ -29,6 +29,7 @@
 #include "OutPort.hxx"
 #include "SpectrumInterpolator.hxx"
 #include "SpectralPeakArrayInterpolator.hxx"
+#include "InControl.hxx"
 
 namespace CLAM {
 
@@ -37,10 +38,10 @@ namespace CLAM {
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (FrameInterpConfig, 6,ProcessingConfig);
-		DYN_ATTRIBUTE(0, public, TData, MagInterpolationFactor);
-		DYN_ATTRIBUTE(1, public, TData, FreqInterpolationFactor);
-		DYN_ATTRIBUTE(2, public, TData, PitchInterpolationFactor);
-		DYN_ATTRIBUTE(3, public, TData, ResidualInterpolationFactor);
+		DYN_ATTRIBUTE(0, public, TControlData, MagInterpolationFactor);
+		DYN_ATTRIBUTE(1, public, TControlData, FreqInterpolationFactor);
+		DYN_ATTRIBUTE(2, public, TControlData, PitchInterpolationFactor);
+		DYN_ATTRIBUTE(3, public, TControlData, ResidualInterpolationFactor);
 		DYN_ATTRIBUTE(4, public, bool, Harmonic);
 		DYN_ATTRIBUTE(5, public, bool, UseSpectralShape);
 	protected:
@@ -116,17 +117,17 @@ namespace CLAM {
 		SpectralPeakArrayInterpolator mPO_PeaksInterpolator;
 
 		/** callbacks for controls */
-		int DoFrameFactorControl(TData value);
+		int DoFrameFactorControl(TControlData value);
 
-		int DoMagFactorControl(TData value);
-		int DoFreqFactorControl(TData value);
-		int DoPitchFactorControl(TData value);
-		int DoResidualFactorControl(TData value);
+		int DoMagFactorControl(TControlData value);
+		int DoFreqFactorControl(TControlData value);
+		int DoPitchFactorControl(TControlData value);
+		int DoResidualFactorControl(TControlData value);
 
-		int DoPitch1Control(TData value);
-		int DoPitch2Control(TData value);
+		int DoPitch1Control(TControlData value);
+		int DoPitch2Control(TControlData value);
 
-		int DoHarmonicControl(TData value);
+		int DoHarmonicControl(TControlData value);
 	
 	};
 
