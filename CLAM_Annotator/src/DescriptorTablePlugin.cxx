@@ -30,7 +30,7 @@ namespace CLAM_Annotator
 	{
 		mElement = element;
 		std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
-		if (mElement==-1)
+		if (mElement<0 || mElement>=dataPool.GetNumberOfContexts(mScope))
 			clearData();
 		else
 			refreshData(dataPool);
@@ -64,13 +64,13 @@ namespace CLAM_Annotator
 	public:
 		DescriptorsTableItemControllerEnum(QTable * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
-			, mOptions(scheme.GetRestrictionValues())
+			, mOptions(scheme.GetEnumerationValues())
 		{
 		}
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
 		{
-			const CLAM_Annotator::RestrictedString& value =
-				dataPool.GetReadPool<RestrictedString>(mScope,mName)[mElement];
+			const CLAM_Annotator::Enumerated& value =
+				dataPool.GetReadPool<Enumerated>(mScope,mName)[mElement];
 			QString qvalue = value.GetString().c_str();
 			QStringList qrestrictionStrings;
 
@@ -89,7 +89,7 @@ namespace CLAM_Annotator
 			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
 			const std::string & value = qValue.ascii();
-			dataPool.GetWritePool<RestrictedString>(mScope,mName)[mElement].SetString(value);
+			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement].SetString(value);
 		}
 	private:
 		const std::list<std::string> mOptions;
@@ -105,7 +105,7 @@ namespace CLAM_Annotator
 		}
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
 		{
-			float value = dataPool.GetReadPool<float>(mScope,mName)[mElement];
+			CLAM::TData value = dataPool.GetReadPool<CLAM::TData>(mScope,mName)[mElement];
 			mTable->setItem(mRow,1,
 				new RangeSelectionTableItem(mTable,
 					TableItem::WhenCurrent,
@@ -116,10 +116,10 @@ namespace CLAM_Annotator
 			if (mElement==-1) return;
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
 			QString qValue = mTable->text(mRow, 1);
-			dataPool.GetWritePool<float>(mScope,mName)[mElement] = qValue.toFloat();
+			dataPool.GetWritePool<CLAM::TData>(mScope,mName)[mElement] = qValue.toFloat();
 		}
 	private:
-		const Range<float> mRange;
+		const Range<CLAM::TData> mRange;
 	};
 
 	class DescriptorsTableItemControllerInt : public DescriptorTablePlugin
@@ -160,7 +160,7 @@ namespace CLAM_Annotator
 
 		if (type == "String")
 			return new DescriptorsTableItemControllerString(parent,row,scheme);
-		if (type == "RestrictedString")
+		if (type == "Enumerated")
 			return new DescriptorsTableItemControllerEnum(parent,row,scheme);
 		if (type == "Float")
 			return new DescriptorsTableItemControllerFloat(parent,row,scheme);

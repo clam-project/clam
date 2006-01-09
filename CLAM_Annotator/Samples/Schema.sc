@@ -1,13 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <DescriptionScheme>
-
-  <Uri>descriptionScheme:www.iua.upf.edu:clam:dummyTest</Uri>
-
+  <Uri>descriptionScheme:www.iua.upf.edu:clam:dummyTest-0.90</Uri>
   <Attributes>
     <Attribute name="Artist" scope="Song" type="String"/>
     <Attribute name="Title" scope="Song" type="String"/>
-    <Attribute name="Genre" scope="Song" type="RestrictedString">
-      <RestrictionValues>Dance Classic Jazz Rhythm&amp;Blues Folk</RestrictionValues>
+    <Attribute name="Genre" scope="Song" type="Enumerated">
+      <EnumerationValues>Dance Classic Jazz Rhythm&amp;Blues Folk</EnumerationValues>
     </Attribute>
     <Attribute name="Danceability" scope="Song" type="Float">
       <fRange>
@@ -15,11 +13,11 @@
         <Max>10</Max>
       </fRange>
     </Attribute>
-    <Attribute name="Key" scope="Song" type="RestrictedString">
-      <RestrictionValues>A A# B C C# D D# E F F# G G#</RestrictionValues>
+    <Attribute name="Key" scope="Song" type="Enumerated">
+      <EnumerationValues>C C# D D# E F F# G G# A A# B</EnumerationValues>
     </Attribute>
-    <Attribute name="Mode" scope="Song" type="RestrictedString">
-      <RestrictionValues>Minor Major</RestrictionValues>
+    <Attribute name="Mode" scope="Song" type="Enumerated">
+      <EnumerationValues>Minor Major</EnumerationValues>
     </Attribute>
     <Attribute name="DynamicComplexity" scope="Song" type="Float">
       <fRange>
@@ -47,15 +45,15 @@
         <Max>10</Max>
       </fRange>
     </Attribute>
-    <Attribute name="DetectedChange" scope="Onset" type="RestrictedString">
-      <RestrictionValues>PitchChange EnergyChange</RestrictionValues>
+    <Attribute name="DetectedChange" scope="Onset" type="Enumerated">
+      <EnumerationValues>PitchChange EnergyChange</EnumerationValues>
     </Attribute>
     <Attribute name="Notes" scope="Song" type="Segmentation">
       <ChildScope>Note</ChildScope>
-      <SegmentationPolicy>Unsized</SegmentationPolicy>
+      <SegmentationPolicy>Overlapping</SegmentationPolicy>
     </Attribute>
-    <Attribute name="Pitch" scope="Note" type="RestrictedString">
-      <RestrictionValues>A A# B C C# D D# E F F# G G#</RestrictionValues>
+    <Attribute name="Pitch" scope="Note" type="Enumerated">
+      <EnumerationValues>C C# D D# E F F# G G# A A# B</EnumerationValues>
     </Attribute>
     <Attribute name="Octave" scope="Note" type="Int">
       <iRange>
@@ -64,6 +62,26 @@
       </iRange>
     </Attribute>
     <Attribute name="Instrument" scope="Note" type="String"/>
+    <Attribute name="Chords" scope="Song" type="Segmentation">
+      <ChildScope>Chord</ChildScope>
+      <SegmentationPolicy>Continuous</SegmentationPolicy>
+    </Attribute>
+    <Attribute name="Root" scope="Chord" type="Enumerated">
+      <EnumerationValues>C C# D D# E F F# G G# A A# B</EnumerationValues>
+    </Attribute>
+    <Attribute name="Mode" scope="Chord" type="Enumerated">
+      <EnumerationValues>Major Minor Diminished Augmented</EnumerationValues>
+    </Attribute>
+    <Attribute name="Structure" scope="Song" type="Segmentation">
+      <ChildScope>StructuralPart</ChildScope>
+      <SegmentationPolicy>Discontinuous</SegmentationPolicy>
+    </Attribute>
+    <Attribute name="Description" scope="StructuralPart" type="Enumerated">
+      <EnumerationValues>Versus Chorus Solo Accapella</EnumerationValues>
+    </Attribute>
+    <Attribute name="SimilarityGroup" scope="StructuralPart" type="Enumerated">
+      <EnumerationValues>A B C D E F G H I</EnumerationValues>
+    </Attribute>
     <Attribute name="Mean" scope="Frame" type="Float"/>
     <Attribute name="GeometricMean" scope="Frame" type="Float"/>
     <Attribute name="Energy" scope="Frame" type="Float"/>
@@ -83,5 +101,4 @@
     <Attribute name="Slope" scope="Frame" type="Float"/>
     <Attribute name="HighFrequencyContent" scope="Frame" type="Float"/>
   </Attributes>
-
 </DescriptionScheme>
