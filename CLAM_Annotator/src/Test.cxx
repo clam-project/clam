@@ -22,10 +22,12 @@
 
 #include <time.h>
 
-void BuildAndDumpTestSchema(const char * schemaLocation);
+void BuildAndDumpTestSchema(const std::string & schemaLocation);
 void PopulatePool(const std::string& song, CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
-void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
+unsigned GenerateRandomSegmentationMarks(CLAM::IndexArray & segmentation,int nSamples, int minDuration, int maxDuration);
+unsigned GenerateNonOverlappingSegments(CLAM::IndexArray & segmentation, int nSamples, int maxGap, int maxDuration);
+unsigned GenerateOverlappingSegments(CLAM::IndexArray & segmentation, int nSamples, int maxGap, int maxDuration);
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title);
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
 void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
@@ -37,25 +39,19 @@ int GetnSamples(const std::string& fileName);
 
 int main(int argc, char ** argv)
 {
-	const char * schemaLocation = "../Samples/Schema.sc";
-	const char * projectLocation = "../Samples/Project.pro";
+	std::string projectDir = "../Samples/";
+	std::string schemaLocation = "Schema.sc";
+	std::string projectLocation = projectDir+"Project.pro";
 	const char * songFileNames[] =
 	{
-		"../../CLAM-TestData/trumpet.mp3",
-		"../../CLAM-TestData/Elvis.ogg",
-		"../../CLAM-TestData/trumpet.wav",
-		"../../CLAM-TestData/Elvis.wav",
-		"../Samples/SongsTest/02.mp3",
-		"../Samples/SongsTest/03.mp3",
-//		"../Samples/SongsTest/Franz Ferdinand - Franz Ferdinand - 02 - Tell Her Tonight.ogg",
-//		"../Samples/SongsTest/Coldplay - Parachutes - 01 - Don't Panic.mp3",
-//		"../Samples/SongsTest/06 - Up In Arms.mp3",
+		"SongsTest/LisaRein-SomethingBetter.mp3",
+		"SongsTest/LisaRein-spunkyfunk.mp3",
 		0
 	};
 	bool generateJustPools = (argc>1);
 
 	if (!generateJustPools)
-		BuildAndDumpTestSchema(schemaLocation);
+		BuildAndDumpTestSchema(projectDir+schemaLocation);
 
 	//Create and store Project
 	CLAM_Annotator::Project myProject;
@@ -66,7 +62,8 @@ int main(int argc, char ** argv)
 		for (const char ** filename = songFileNames; *filename; filename++)
 			myProject.AppendSong(*filename);
 
-	myProject.LoadScheme(schemaLocation);
+	myProject.LoadScheme(schemaLocation, projectDir);
+	myProject.SetExtractor("ClamExtractorExample");
 
 	if (!generateJustPools)
 		CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
@@ -83,33 +80,58 @@ int main(int argc, char ** argv)
 		currentSong != myProject.GetSongs().end();
 		currentSong++)
 	{
-		std::cout<<"Computing Descriptors for file "<< currentSong->GetSoundFile()
-		     <<" Please wait..."<<std::endl;
-		PopulatePool(currentSong->GetSoundFile(), pool);
+		std::string songFile = currentSong->GetSoundFile();
+		if (!generateJustPools) songFile = projectDir + songFile;
+		std::cout<<"Computing Descriptors for file "<< songFile <<" Please wait..."<<std::endl;
+		PopulatePool(songFile, pool);
 		//Dump Descriptors Pool
 		std::string poolFile;
 		if (currentSong->HasPoolFile()) poolFile = currentSong->GetPoolFile();
-		else poolFile = currentSong->GetSoundFile()+".pool";
+		else poolFile = songFile+".pool";
 		CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
 
 		//Now we load the Pool and validate it with the schema
 		CLAM::DescriptionDataPool toValidadDescription(myProject.GetDescriptionScheme());
 		CLAM::XMLStorage::Restore(toValidadDescription, poolFile);
 
-		if (myProject.ValidateDataPool(toValidadDescription))
-			std::cout<<"Descriptor Pool Validated With Schema"<<std::endl;
-		else
-			std::cout<<"Descriptor Pool Did Not Validate With Schema"<<std::endl;
+		std::cout << "Validating data..." << std::endl;
+
+		std::ostringstream os;
+		if (!myProject.ValidateDataPool(toValidadDescription, os))
+		{
+			std::cerr<<"Descriptor Pool Did Not Validate With Schema!"<<std::endl;
+			std::cerr<< os.str() << std::endl;
+		}
 	}
 
 	return 0;
 
 }
 
-void BuildAndDumpTestSchema(const char * schemaLocation)
+CLAM::TData randomNumber(CLAM::TData minimum, CLAM::TData maximum)
+{
+	return minimum + rand()*(maximum-minimum)/RAND_MAX;
+}
+const char * pitchValues[] =
+{
+	"C", "C#", "D", "D#",
+	"E", "F", "F#", "G",
+	"G#", "A", "A#", "B",
+	0
+};
+const char * chordModeValues[] =
+{
+	"Major",
+	"Minor",
+	"Diminished",
+	"Augmented",
+	0
+};
+
+void BuildAndDumpTestSchema(const std::string & schemaLocation)
 {
 	CLAM_Annotator::Schema schema;
-	schema.SetUri("descriptionScheme:www.iua.upf.edu:clam:dummyTest");
+	schema.SetUri("descriptionScheme:www.iua.upf.edu:clam:dummyTest-0.90");
 	schema.AddString("Song","Artist");
 	schema.AddString("Song","Title");
 	const char * genreValues[] =
@@ -121,38 +143,51 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		"Folk",
 		0
 	};
-	schema.AddRestrictedString("Song","Genre", genreValues);
+	schema.AddEnumerated("Song","Genre", genreValues);
 	schema.AddRangedReal("Song","Danceability", 0., 10.);
-	const char * keyValues[] =
-	{
-		"A", "A#", "B", "C", "C#",
-		"D", "D#", "E", "F", "F#",
-		"G", "G#", 0
-	};
-	schema.AddRestrictedString("Song","Key", keyValues);
+	schema.AddEnumerated("Song","Key", pitchValues);
 	const char * modeValues[] =
 	{
 		"Minor",
 		"Major",
 		0
 	};
-	schema.AddRestrictedString("Song","Mode", modeValues);
+	schema.AddEnumerated("Song","Mode", modeValues);
 	schema.AddRangedReal("Song","DynamicComplexity", 0., 10.);
 	schema.AddRangedInt("Song","BPM", 0, 240);
+
 	schema.AddSegmentation("Song","RandomSegments", CLAM_Annotator::SegmentationPolicy::eUnsized, "");
-	schema.AddSegmentation("Song","Onsets", CLAM_Annotator::SegmentationPolicy::eUnsized, "Onset");
-	schema.AddRangedReal("Onset","Relevance", 0., 10.);
+
 	const char * onsetKindValues[] =
 	{
 		"PitchChange",
 		"EnergyChange",
 		0
 	};
-	schema.AddRestrictedString("Onset","DetectedChange", onsetKindValues);
-	schema.AddSegmentation("Song", "Notes", CLAM_Annotator::SegmentationPolicy::eUnsized, "Note");
-	schema.AddRestrictedString("Note", "Pitch", keyValues);
+	schema.AddSegmentation("Song","Onsets", CLAM_Annotator::SegmentationPolicy::eUnsized, "Onset");
+	schema.AddRangedReal("Onset","Relevance", 0., 10.);
+	schema.AddEnumerated("Onset","DetectedChange", onsetKindValues);
+
+	schema.AddSegmentation("Song", "Notes", CLAM_Annotator::SegmentationPolicy::eOverlapping, "Note");
+	schema.AddEnumerated("Note", "Pitch", pitchValues);
 	schema.AddRangedInt("Note", "Octave", 1, 12);
 	schema.AddString("Note", "Instrument");
+
+	schema.AddSegmentation("Song", "Chords", CLAM_Annotator::SegmentationPolicy::eContinuous, "Chord");
+	schema.AddEnumerated("Chord", "Root", pitchValues);
+	schema.AddEnumerated("Chord", "Mode", chordModeValues);
+
+	const char * partDescriptionValues[] = {
+		"Versus",
+		"Chorus",
+		"Solo",
+		"Accapella",
+		0
+	};
+	const char * partGroupIds[] = {"A","B","C","D","E","F","G","H","I","J",0};
+	schema.AddSegmentation("Song", "Structure", CLAM_Annotator::SegmentationPolicy::eDiscontinuous, "StructuralPart");
+	schema.AddEnumerated("StructuralPart", "Description", partDescriptionValues);
+	schema.AddEnumerated("StructuralPart", "SimilarityGroup", partGroupIds);
 
 	const char * lowLevelDescriptorsNames[] =
 	{
@@ -176,6 +211,7 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		"HighFrequencyContent",
 		0
 	};
+	schema.AddFrameDivision("Song", "Frames", "Frame");
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
 		schema.AddFrameFloatAttribute(*name);
 
@@ -201,74 +237,101 @@ void PopulatePool(const std::string & song,
 	ComputeSegment(audio,segment,segmentD);
 	SegmentD2Pool(segmentD,pool);
 
-	//Create segmentation marks
+	// Write Song level descriptors
+	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
+	pool.GetWritePool<CLAM::Text>("Song","Title")[0] = title;
+	pool.GetWritePool<CLAM_Annotator::Enumerated>("Song","Genre")[0] = "Folk";
+	pool.GetWritePool<CLAM::TData>("Song","Danceability")[0] = 7.2;
+	pool.GetWritePool<CLAM_Annotator::Enumerated>("Song","Key")[0] = "C";
+	pool.GetWritePool<CLAM_Annotator::Enumerated>("Song","Mode")[0] = "Minor";
+	pool.GetWritePool<CLAM::TData>("Song","DynamicComplexity")[0] = 8.1;
+	pool.GetWritePool<int>("Song","BPM")[0] = 100;
+
+	// Onset Segmentation
 	CLAM::IndexArray & segmentation = 
 		pool.GetWritePool<CLAM::IndexArray>("Song","Onsets")[0];
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	
-	unsigned nOnsets = segmentation.Size();
-	if (nOnsets==0) nOnsets=1; // KLUDGE!!
+	unsigned nOnsets = segmentation.Size()+1;
 	pool.SetNumberOfContexts("Onset",nOnsets);
-	float * onsetForces = pool.GetWritePool<float>("Onset","Relevance");
-	CLAM_Annotator::RestrictedString * onsetChange = pool.GetWritePool<CLAM_Annotator::RestrictedString>("Onset","DetectedChange");
+	CLAM::TData * onsetForces = pool.GetWritePool<CLAM::TData>("Onset","Relevance");
+	CLAM_Annotator::Enumerated * onsetChange = pool.GetWritePool<CLAM_Annotator::Enumerated>("Onset","DetectedChange");
 	for (unsigned i = 0; i<nOnsets; i++)
 	{
-		onsetForces[i] = float (rand())/float(RAND_MAX)*10;
-		onsetChange[i] = (float (rand())/float(RAND_MAX)*2)>1.0 ? "PitchChange" : "EnergyChange";
+		onsetForces[i] = randomNumber(0,10);
+		onsetChange[i] = randomNumber(0,2)>1? "PitchChange" : "EnergyChange";
 	}
 
+	// Random Segmentation
 	CLAM::IndexArray* randomSegmentation = 
 		pool.GetWritePool<CLAM::IndexArray>("Song","RandomSegments");
-	GenerateRandomSegmentationMarks(randomSegmentation, GetnSamples(song), 1024);
+	GenerateRandomSegmentationMarks(randomSegmentation[0], GetnSamples(song), 10000,40000);
 
+	// Note Segmentation
 	CLAM::IndexArray* noteSegmentation = 
 		pool.GetWritePool<CLAM::IndexArray>("Song","Notes");
-	GenerateRandomSegmentationMarks(noteSegmentation, GetnSamples(song), 1024);
-	unsigned nNotes = noteSegmentation->Size();
+	unsigned nNotes = GenerateOverlappingSegments(noteSegmentation[0], GetnSamples(song), 100000, 800000);
 	pool.SetNumberOfContexts("Note",nNotes);
-	CLAM_Annotator::RestrictedString * notePitch = pool.GetWritePool<CLAM_Annotator::RestrictedString>("Note","Pitch");
+	CLAM_Annotator::Enumerated * notePitch = pool.GetWritePool<CLAM_Annotator::Enumerated>("Note","Pitch");
 	int * noteOctave = pool.GetWritePool<int>("Note","Octave");
-	const char * pitchValues[] =
-	{
-		"A", "A#", "B", "C", "C#",
-		"D", "D#", "E", "F", "F#",
-		"G", "G#", 0
-	};
 	for (unsigned i = 0; i<nNotes; i++)
 	{
-		noteOctave[i] = std::max(std::min(int(float (rand())/float(RAND_MAX)*11),10), 0)+1;
-		unsigned pitch = std::max(std::min(int(float (rand())/float(RAND_MAX)*12), 11), 0);
-		notePitch[i] = pitchValues[pitch];
+		noteOctave[i] = int(randomNumber(4,7));
+		notePitch[i] = pitchValues[int(randomNumber(0,11.99))];
 	}
-
-
-	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
-	pool.GetWritePool<CLAM::Text>("Song","Title")[0] = title;
-	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Genre")[0] = "Folk";
-	pool.GetWritePool<float>("Song","Danceability")[0] = 7.2;
-	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Key")[0] = "C";
-	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Mode")[0] = "Minor";
-	pool.GetWritePool<float>("Song","DynamicComplexity")[0] = 8.1;
-	pool.GetWritePool<int>("Song","BPM")[0] = 100;
+	// Chord Segmentation
+	CLAM::IndexArray* chordSegmentation = 
+		pool.GetWritePool<CLAM::IndexArray>("Song","Chords");
+	unsigned nChords = GenerateRandomSegmentationMarks(chordSegmentation[0], GetnSamples(song), 1000, 500000 )+1;
+	pool.SetNumberOfContexts("Chord",nChords);
+	CLAM_Annotator::Enumerated * chordRoot = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Root");
+	CLAM_Annotator::Enumerated * chordMode = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Mode");
+	for (unsigned i = 0; i<nChords; i++)
+	{
+		chordRoot[i] = pitchValues[int(randomNumber(0,11.99))];
+		chordMode[i] = chordModeValues[int(randomNumber(0,3.999))];
+	}
+	// Structural Segmentation
+	CLAM::IndexArray* structuralSegmentation = 
+		pool.GetWritePool<CLAM::IndexArray>("Song","Structure");
+	unsigned nParts = GenerateNonOverlappingSegments(structuralSegmentation[0], GetnSamples(song), 0, 1000000);
+	pool.SetNumberOfContexts("StructuralPart",nParts);
+	CLAM_Annotator::Enumerated * partDescription =
+		pool.GetWritePool<CLAM_Annotator::Enumerated>("StructuralPart","Description");
+	CLAM_Annotator::Enumerated * partGroup =
+		pool.GetWritePool<CLAM_Annotator::Enumerated>("StructuralPart","SimilarityGroup");
+	const char * partDescriptionValues[] = {
+		"Versus",
+		"Chorus",
+		"Solo",
+		"Accapella",
+		0
+	};
+	const char * partGroupIds[] = {
+		"A","B","C","D","E",
+		"F","G","H","I","J",0};
+	for (unsigned i = 0; i<nParts; i++)
+	{
+		partDescription[i] = partDescriptionValues[int(randomNumber(0,3.5))];
+		partGroup[i] = partGroupIds[int(randomNumber(0,9.99))];
+	}
 
 }
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 {
-	int randomInt=(float (rand())/float(RAND_MAX))*100;
+	int randomInt=randomNumber(0,100);
 	int randomIncr;
 	for (int i=0; i<size; i++)
 	{
-		randomIncr = (float (rand())/float(RAND_MAX))*20-10;
+		randomIncr = randomNumber(-10,10);
 		randomInt += randomIncr;
 		if(randomInt>100) randomInt = 80;
 		if(randomInt<0) randomInt=20;
 
 		values[i] = randomInt;
 	}
-
-
 }
 
 int GetnSamples(const std::string& fileName)
@@ -280,18 +343,60 @@ int GetnSamples(const std::string& fileName)
 	return (int)(duration*sampleRate/1000.);
 }
 
-void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, 
-				     int frameSize)
+unsigned GenerateRandomSegmentationMarks(CLAM::IndexArray & segmentation,int nSamples, int minDuration, int maxDuration)
 {
-	int index = 0, randomIncr;
+	unsigned nSegments = 0; 
+	int index = 0;
 	while(index<nSamples)
 	{
-		  //random number between 10 and 30 frames
-		randomIncr = ((float (rand())/float(RAND_MAX))*200+100)*frameSize;
+		//random number between 10 and 30 frames
+		int randomIncr = randomNumber(minDuration,maxDuration);
 		index += randomIncr;
-		(*segmentation).AddElem(index);
+		if (index>=nSamples) break;
+		segmentation.AddElem(index);
+		nSegments++;
 	}
+	return nSegments;
 
+}
+
+unsigned GenerateNonOverlappingSegments(CLAM::IndexArray & segmentation,int nSamples,
+				     int maxGap, int maxSize)
+{
+	unsigned nSegments = 0; 
+	unsigned lastOffset = 0;
+	while(lastOffset<nSamples)
+	{
+		//random number between 10 and 30 frames
+		int randomOnset = randomNumber(lastOffset,lastOffset+maxGap);
+		int randomOffset = randomNumber(randomOnset,randomOnset+maxSize);
+		if (randomOffset>nSamples) break;
+		segmentation.AddElem(randomOnset);
+		segmentation.AddElem(randomOffset);
+		lastOffset = randomOffset;
+		nSegments++;
+	}
+	return nSegments;
+}
+
+unsigned GenerateOverlappingSegments(CLAM::IndexArray & segmentation,int nSamples,
+				     int maxGap, int maxSize)
+{
+	return GenerateNonOverlappingSegments(segmentation, nSamples, maxGap, maxSize);
+	unsigned nSegments = 0; 
+	unsigned lastOnset = 0;
+	while(lastOnset<nSamples)
+	{
+		//random number between 10 and 30 frames
+		int randomOnset = randomNumber(lastOnset,lastOnset+maxGap);
+		int randomOffset = randomNumber(randomOnset,randomOnset+maxSize);
+		if (randomOffset>nSamples) break;
+		segmentation.AddElem(randomOnset);
+		segmentation.AddElem(randomOffset);
+		lastOnset = randomOnset;
+		nSegments++;
+	}
+	return nSegments;
 }
 
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool)

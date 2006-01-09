@@ -4,6 +4,7 @@
 #include "Schema.hxx"
 #include "DynamicType.hxx"
 #include "SongFiles.hxx"
+#include "Filename.hxx"
 #include "DescriptionScheme.hxx"
 #include <vector>
 
@@ -13,9 +14,10 @@ class Schema;
 
 class Project : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Project,2);
-	DYN_ATTRIBUTE(0, public, std::string, Schema);
-	DYN_CONTAINER_ATTRIBUTE(1,public, std::vector<Song>, Songs, Song);
+	DYNAMIC_TYPE(Project,3);
+	DYN_ATTRIBUTE(0, public, CLAM::Filename, Schema);
+	DYN_ATTRIBUTE(1, public, CLAM::Filename, Extractor);
+	DYN_CONTAINER_ATTRIBUTE(2,public, std::vector<Song>, Songs, Song);
 
 	void DefaultInit()
 	{
@@ -23,47 +25,46 @@ class Project : public CLAM::DynamicType
 		UpdateData();
 	}
 public:
+	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 	void AppendSong(const std::string & songFileName)
 	{
 		std::vector<Song> & songs = GetSongs();
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
 	}
+	bool LoadScheme(const std::string & schemeFileName, const std::string & basePath="");
 	CLAM::DescriptionScheme & GetDescriptionScheme()
 	{
 		return mDescriptionScheme;
 	}
-	bool LoadScheme(const std::string & schemeFileName);
 	CLAM_Annotator::Schema & GetAnnotatorSchema()
 	{
 		return mSchema;
 	}
-	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 	ScopeSchema GetScopeSchema(const std::string & scope) const;
 	std::list<std::string> GetNamesByScopeAndType(const std::string & scope, const std::string & type);
-	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool)
+	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
 	{
-		return GetAnnotatorSchema().Validate(dataPool);
+		return GetAnnotatorSchema().Validate(dataPool,err);
 	}
 	const CLAM_Annotator::SchemaAttribute & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
-		const std::list<CLAM_Annotator::SchemaAttribute>& hlds = mSchema.GetAllAttributes();
-		std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it;
-		for(it = hlds.begin(); it != hlds.end(); it++)
-		{
-			if (it->GetScope() != scope) continue;
-			if (it->GetName() != name) continue;
-			return *it;
-		}
+		return mSchema.GetAttribute(scope, name);
+	}
 
-		std::string message = "Accessing an attribute '";
-		message += scope + "':'" + name + "' not in the scheme.";
-		CLAM_ASSERT(false, message.c_str());
+	void SetBasePath(const std::string & basePath)
+	{
+		mBasePath = basePath;
+	}
+	const std::string & GetBasePath() const
+	{
+		return mBasePath;
 	}
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
+	std::string mBasePath;
 };
 
 }

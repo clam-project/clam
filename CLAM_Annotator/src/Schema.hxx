@@ -29,7 +29,7 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetType("Float");
 			AddAttribute(schemaAttribute);
 		}
-		void AddRestrictedString(
+		void AddEnumerated(
 				const std::string & scope,
 				const std::string & attribute,
 				const char ** availableValues)
@@ -37,11 +37,11 @@ namespace CLAM_Annotator{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
 			schemaAttribute.SetScope(scope);
 			schemaAttribute.SetName(attribute);
-			schemaAttribute.SetType("RestrictedString");
-			schemaAttribute.AddRestrictionValues();
+			schemaAttribute.SetType("Enumerated");
+			schemaAttribute.AddEnumerationValues();
 			schemaAttribute.UpdateData();
 			for (const char ** value = availableValues; *value; value++)
-				schemaAttribute.GetRestrictionValues().push_back(*value);
+				schemaAttribute.GetEnumerationValues().push_back(*value);
 			AddAttribute(schemaAttribute);
 		}
 		void AddRangedInt(
@@ -105,10 +105,39 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetChildScope(childScope);
 			AddAttribute(schemaAttribute);
 		}
-		bool Validate(const CLAM::DescriptionDataPool & data);
+		void AddFrameDivision(
+				const std::string & scope,
+				const std::string & attribute,
+				const std::string & childScope)
+		{
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.AddChildScope();
+			schemaAttribute.UpdateData();
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("FrameDivision");
+			schemaAttribute.SetChildScope(childScope);
+			AddAttribute(schemaAttribute);
+		}
+		bool Validate(const CLAM::DescriptionDataPool & data, std::ostream & err);
 		const std::list<SchemaAttribute> & GetAllAttributes() const
 	       	{
 			return GetAttributes();
+		}
+		const SchemaAttribute & GetAttribute(const std::string & scope, const std::string name) const
+		{
+			const std::list<SchemaAttribute> & attributes = GetAllAttributes();
+			for (std::list<SchemaAttribute>::const_iterator it = attributes.begin();
+					it!=attributes.end();
+					it++)
+			{
+				if (it->GetScope()!=scope) continue;
+				if (it->GetName()!=name) continue;
+				return *it;
+			}
+			std::string message = "Accessing an attribute '";
+			message += scope + "':'" + name + "' not in the scheme.";
+			CLAM_ASSERT(false, message.c_str());
 		}
 	private:
 		void AddAttribute(SchemaAttribute & attribute)
@@ -116,7 +145,6 @@ namespace CLAM_Annotator{
 			GetAttributes().push_back(attribute);
 			GetAttributes().back().UpdateTypePlugin();
 		}
-
 	};
 
 };

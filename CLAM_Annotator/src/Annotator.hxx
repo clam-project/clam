@@ -6,6 +6,8 @@
 
 #include <string>
 #include <utility>
+#include <deque>
+#include <qstatusbar.h>
 
 //xamat
 
@@ -15,7 +17,9 @@
 #include "BPF.hxx"
 
 class QTimer;
+class QTabBar;
 class AudioLoadThread;
+class SchemaBrowser;
 using CLAM::TIndex;
 using CLAM::TData;
 
@@ -24,9 +28,39 @@ namespace CLAM {
 	{
 		class QtAudioPlot;
 		class BPFEditor;
+		class QtSingleBPFPlayerExt;
 	};
+	class Segmentation;
 	class XmlStorageErr;
 };
+class StatusBarDumper 
+{
+		QStatusBar * mStatusBar;
+		std::ostringstream * os;
+	public:
+		StatusBarDumper(QStatusBar * statusBar)
+			: mStatusBar(statusBar)
+		{
+			os = new std::ostringstream;
+		}
+		template <typename ObjectType>
+		StatusBarDumper & operator << (const ObjectType & object)
+		{
+			(*os) << object;
+			std::cout << object;
+			return *this;
+		}
+		StatusBarDumper & operator << (const StatusBarDumper & statusDumper)
+		{
+			(*os) << std::flush;
+			std::cout << std::endl;
+			mStatusBar->message(QString(os->str().c_str()), 2000);
+			delete os;
+			os = new std::ostringstream;
+			return *this;
+		}
+};
+
 
 class Annotator : public AnnotatorBase
 {
@@ -42,17 +76,20 @@ class Annotator : public AnnotatorBase
 public:
 	Annotator(const std::string & nameProject);
 	virtual ~Annotator();
-	void songsClicked( QListViewItem * item);
+	void currentSongChanged();
 	void playPause();
 
 	void initProject();
-	void initInterface();
 	void markProjectChanged(bool changed);
+	void loadSettings();
+	void saveSettings();
 public slots:
 	void globalDescriptorsTableChanged( int, int);
 	void segmentDescriptorsTableChanged( int, int);
 	void frameDescriptorsChanged(int, float);
-	void segmentationMarksChanged(int, unsigned);
+	void segmentationMarksChanged(unsigned, double);
+	void removeSegment(unsigned);
+	void insertSegment(unsigned);
 
 	void fileNew();
 	void fileOpen();
@@ -65,33 +102,34 @@ public slots:
 	void saveDescriptors();
 	void computeSongDescriptors();
 
-	void playMarks(bool);
-	void playOriginalAudioAndLLD(bool);
 	void refreshAudioData();
 	void changeCurrentSegment(unsigned current);
+	void changeFrameLevelDescriptor(int current);
+	void updateAuralizationOptions();
+	void linkCurrentSegmentToPlayback(bool enabled);
 protected:
 	void closeEvent( QCloseEvent * e);
-	bool event(QEvent* e);
 
 private slots:
 	void onStopPlaying(float);
-	void onSelectPageLLD(QWidget*);
+
+	void startPlaying();
+	void pausePlaying();
+	void stopPlaying();
 
 private:
 	void updateSongListWidget();
-	bool saveProject();
-
 	void makeConnections();
-	void connectBPFs();
 	void currentFile( std::string &);
 	void markCurrentSongChanged();
 	void markAllSongsUnchanged();
 	void refreshGlobalDescriptorsTable();
+	void appendRecentOpenedProject(const std::string & projectFilename);
 
-	//xamat
-
+	std::string projectToAbsolutePath(const std::string & file);
+	std::string absoluteToProjectPath(const std::string & file);
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
-	void initAudioWidget();
+	void initInterface();
 	void adaptInterfaceToCurrentSchema();
 	void drawAudio(const char * filename);
 	void loadDescriptorPool();
@@ -111,8 +149,7 @@ private:
 
 	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);
-	void hideBPFEditors();
-	
+
 	// Functions to control de audio loader
 	void loaderCreate(CLAM::Audio & audio, const char * filename);
 		///< Creates a loader for the audio after clearing any existing one.
@@ -121,7 +158,7 @@ private:
 	void abortLoader(); ///< Clears the loader 
 
 	bool isPlaying();
-	void removeFromCurrentLayout();
+	void resetTabOrder();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
@@ -137,16 +174,14 @@ private:
 
 	CLAM::DescriptionDataPool* mpDescriptorPool;
 
-	bool mGlobalChanges;
-	bool mHLDChanged;
-	bool mLLDChanged;
-	bool mSegmentsChanged;
+	bool mProjectNeedsSave;
+	bool mFrameDescriptorsNeedUpdate;
+	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
-	QVBoxLayout* mpTabLayout;
-	std::vector<QWidget*> mTabPages;
 	CLAM::VM::QtAudioPlot* mpAudioPlot;
 	QTimer * mAudioRefreshTimer;
+	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
 	CLAM_Annotator::DescriptorTableController mGlobalDescriptors;
 	CLAM_Annotator::DescriptorTableController mSegmentDescriptors;
@@ -154,6 +189,12 @@ private:
 	std::vector<BPFInfo> mBPFs; // cached LLDs         
 	CLAM::VM::BPFEditor* mBPFEditor;
 	int                  mCurrentBPFIndex;
+	CLAM::Segmentation * mSegmentation;
+
+	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
+	std::deque<std::string> mRecentOpenedProjects;
+	StatusBarDumper mStatusBar;
+	QTabBar * mFrameLevelTabBar;
 };
 
 #endif
