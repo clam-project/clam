@@ -2,9 +2,7 @@
 #define _DescriptorTableController_hxx_
 
 #include <string>
-#include <list>
 #include <vector>
-#include "Range.hxx"
 
 class QTable;
 
