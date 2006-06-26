@@ -5,9 +5,7 @@
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include <vector>
-#include <CLAM/MIDIManager.hxx>
-#include <CLAM/MIDISettings.hxx>
-#include <CLAM/ShowMessage.hxx>
+#include "MIDIManager.hxx"
 #include "V2MFacade.hxx"
 
 #ifdef WIN32
@@ -16,9 +14,7 @@
 using namespace CLAM;
 
 V2MFacade::V2MFacade(Slotv0& slot0,Slotv1<int>& slot1,Slotv1<DataArray>& slot2) 
-                     : mStopSlot(slot0),mDynamicReceptor(slot2), 
-		     audioPlayer(0), fundPlayer(0), fundSegPlayer(0), recorder(0),
-		     midiPlayer(0), _needUpdatedMelody(false) 
+                     : mStopSlot(slot0),mDynamicReceptor(slot2)
 {
 	mRequestUpdateProgressBar.Connect(slot1);
 	mFrame.AddAudioFrame();
@@ -27,6 +23,12 @@ V2MFacade::V2MFacade(Slotv0& slot0,Slotv1<int>& slot1,Slotv1<DataArray>& slot2)
 	mSegment.AddAudio();
 	mSegment.UpdateData();
 
+	audioPlayer = NULL;
+	fundPlayer = NULL;
+	fundSegPlayer = NULL;
+	recorder = NULL;
+	midiPlayer = NULL;
+	_needUpdatedMelody = false;
 	InitMIDI();
 	_midi_device = "default";
 	_midi_program = 0;
@@ -46,19 +48,19 @@ void V2MFacade::Play(pMode mode)
 	switch(mode)
 	{
 		case pmAudio:						
-	                audioPlayer = new V2M::AudioPlayer(mSegment.GetAudio(),mStopSlot,mDynamicReceptor);
-			break;
+	                    audioPlayer = new AudioPlayer(mSegment.GetAudio(),mStopSlot,mDynamicReceptor);
+						break;
 		case pmFundamental:	
-			fundPlayer = new V2M::FundPlayer(mSegment,mStopSlot,mDynamicReceptor);
-			break;
+						fundPlayer = new FundPlayer(mSegment,mStopSlot,mDynamicReceptor);
+						break;
 		case pmFundamentalSeg:
-			if(!NeedUpdatedMelody())
-				fundSegPlayer = new V2M::FundSegPlayer(GetMelody(),
-									mSegment.GetAudio().GetSampleRate(),
-									mSegment.GetAudio().GetSize(),
-									mStopSlot,mDynamicReceptor); 
-			else
-							fundSegPlayer = new V2M::FundSegPlayer(_melodyTmp,
+						if(!NeedUpdatedMelody())
+							fundSegPlayer = new FundSegPlayer(GetMelody(),
+								                              mSegment.GetAudio().GetSampleRate(),
+															  mSegment.GetAudio().GetSize(),
+															  mStopSlot,mDynamicReceptor); 
+						else
+							fundSegPlayer = new FundSegPlayer(_melodyTmp,
 								                              mSegment.GetAudio().GetSampleRate(),
 															  mSegment.GetAudio().GetSize(),
 															  mStopSlot,mDynamicReceptor); 
@@ -66,12 +68,12 @@ void V2MFacade::Play(pMode mode)
 
 		case pmMIDI:
 						if(!NeedUpdatedMelody())
-							midiPlayer = new V2M::MIDIMelodyPlayer(GetMIDIMelody(),
+							midiPlayer = new MIDIMelodyPlayer(GetMIDIMelody(),
 															  _midi_device,
 															  _midi_program,
 															  mStopSlot);
 						else
-							midiPlayer = new V2M::MIDIMelodyPlayer(_midiMelodyTmp,
+							midiPlayer = new MIDIMelodyPlayer(_midiMelodyTmp,
 															  _midi_device,
 															  _midi_program,
 															  mStopSlot);
@@ -121,7 +123,7 @@ void V2MFacade::Stop()
 
 void V2MFacade::Rec()
 {
-	recorder = new V2M::AudioRecorder(mDynamicReceptor); 
+	recorder = new AudioRecorder(mDynamicReceptor); 
 }
 
 void V2MFacade::AttachAudioFromRecorder()
@@ -315,38 +317,11 @@ void V2MFacade::SetMIDIMelodyTmp(const MIDIMelody& midiMelodyTmp)
 }
 void V2MFacade::GetMIDIDevices()
 {
-	CLAM::VM::MIDISettings settings;
-	std::vector<std::string> midiDevices = settings.GetMIDIDevices();
-	if(midiDevices.size())
-	{
-    		int i = 0;
-		int num_devices = 0;
-
-		std::vector<std::string>::iterator v_it = midiDevices.begin();
-		for(;v_it != midiDevices.end();v_it++,i++) 
-		{
-#ifdef WIN32			
-        		const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-			if(info->output)
-			{
-				midi_dev[num_devices++]=(*v_it);
-				_midi_device_list.push_back(info->name);
-			}		
-#else
-			midi_dev[num_devices++]=(*v_it);
-			_midi_device_list.push_back((*v_it));
-#endif
-		}
-	}
-
-	/*	
-	std::cout << "BEGIN GET MIDI DEVICES" << std::endl;
 	MIDIManager manager;	
-	std::cout << "midi manager created" << std::endl;
+    int i = 0;
+	int num_devices = 0;
 	MIDIDeviceList* _devList = manager.FindList("default");
-	std::cout << "midi device list found: " << _devList << std::endl;
 	std::vector<std::string> lst = _devList->AvailableDevices();
-	std::cout << "getting available devices" << std::endl;
 	std::vector<std::string>::iterator v_it = lst.begin();
 	for(;v_it != lst.end();v_it++,i++) 
 	{
@@ -362,8 +337,6 @@ void V2MFacade::GetMIDIDevices()
 		_midi_device_list.push_back((*v_it));
 #endif
 	}
-	*/
-	std::cout << "END GET MIDI DEVICES" << std::endl;
 }
 const std::list<std::string> V2MFacade::GetMIDIDeviceNames()
 {

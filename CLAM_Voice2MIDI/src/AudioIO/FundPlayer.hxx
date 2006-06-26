@@ -9,12 +9,12 @@
 #define _FUNDPLAYER_
 
 #include <pthread.h>
-#include <CLAM/Array.hxx>
-#include <CLAM/Segment.hxx>
-#include <CLAM/Signalv0.hxx>
-#include <CLAM/Slotv0.hxx>
-#include <CLAM/Signalv1.hxx>
-#include <CLAM/Slotv1.hxx>
+#include "Array.hxx"
+#include "Segment.hxx"
+#include "Signalv0.hxx"
+#include "Slotv0.hxx"
+#include "Signalv1.hxx"
+#include "Slotv1.hxx"
 
 using CLAM::DataArray;
 using CLAM::Segment;
@@ -23,36 +23,27 @@ using SigSlot::Slotv0;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
 
-namespace V2M
-{
-
-class FundPlayer
+class FundPlayer 
 {
 public:
-    FundPlayer(const Segment& originalSegment,
-	       Slotv0& slot0,
-	       Slotv1<DataArray>& slot1);
-
-    ~FundPlayer();
+	FundPlayer(const Segment& originalSegment,
+			   Slotv0& slot0,
+		       Slotv1<DataArray>& slot1);
+	~FundPlayer();
 
     void Stop();
 
 private:
-    pthread_t mThread;
-    Segment mSegment;
+	pthread_t mThread;
+	Segment mSegment;
 
-    Signalv0 mRequestStop;
-    Signalv1<DataArray> mSendData;
+	Signalv0 mRequestStop;
+	Signalv1<DataArray> mSendData;
 
-    bool active;
+	bool active;
 
     void PlayFundThreadSafe();
-    static void* sPlayFundThreadSafe(void* thisObject);
-
+	static void* sPlayFundThreadSafe(void* thisObject);
 };
 
-} // namespace V2M
-
 #endif
-
-

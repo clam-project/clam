@@ -5,24 +5,21 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "FundSegPlayer.hxx"
-#include <CLAM/AudioIO.hxx>
-#include <CLAM/AudioManager.hxx>
-#include <CLAM/AudioOut.hxx>
-#include <CLAM/SimpleOscillator.hxx>
+#include "AudioIO.hxx"
+#include "AudioManager.hxx"
+#include "AudioOut.hxx"
+#include "SimpleOscillator.hxx"
 
 using namespace CLAM;
 
-namespace V2M
-{
-
 FundSegPlayer::FundSegPlayer(const Melody& melody,
                                    TData sampleRate,
-		    		   TSize nSamples,
-			       Slotv0& slot0,
-			       Slotv1<DataArray>& slot1) 
-			       : _melody(melody),
-			         _sampleRate(sampleRate),
-			         _nSamples(nSamples)
+		 			    		   TSize nSamples,
+							       Slotv0& slot0,
+							       Slotv1<DataArray>& slot1) 
+							       : _melody(melody),
+							         _sampleRate(sampleRate),
+							         _nSamples(nSamples)
 {
 	active = false;
 	mRequestStop.Connect(slot0);
@@ -64,7 +61,8 @@ void FundSegPlayer::PlayFundSegThreadSafe()
 	oscCfg.SetAmplitude(TData(0.6));
 	SimpleOscillator osc(oscCfg);
 	
-	InControl& freqControl = osc.GetInControls().Get("Pitch");
+	PublishedInControls controls = osc.GetInControls();
+	InControl& freqControl = controls.Get("Pitch");
 
 	Audio samples;
 	samples.SetSize(frameSize);
@@ -97,7 +95,5 @@ void FundSegPlayer::Stop()
 {
 	active = false;
 }
-
-} // namespace V2M
 
 // END

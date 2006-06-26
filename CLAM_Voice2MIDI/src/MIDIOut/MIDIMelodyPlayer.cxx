@@ -4,16 +4,13 @@
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
-#include <CLAM/xtime.hxx>
-#include <CLAM/MIDIManager.hxx>
-#include <CLAM/MIDIIOConfig.hxx>
-#include <CLAM/MIDIOutControl.hxx>
+#include "xtime.hxx"
+#include "MIDIManager.hxx"
+#include "MIDIIOConfig.hxx"
+#include "MIDIOutControl.hxx"
 #include "MIDIMelodyPlayer.hxx"
 
 using namespace CLAM;
-
-namespace V2M
-{
 
 MIDIMelodyPlayer::MIDIMelodyPlayer(const MIDIMelody& melody,
 								   const std::string& device,
@@ -129,7 +126,5 @@ unsigned MIDIMelodyPlayer::getmilliseconds()
 	m2 = _t.nsec/NANOSECONDS_PER_MILLISECOND;
 	return m1+m2;
 }
-
-} // namespace V2M
 
 // END

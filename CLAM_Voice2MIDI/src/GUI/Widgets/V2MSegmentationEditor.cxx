@@ -11,7 +11,7 @@
 #include <qpopupmenu.h>
 #include <qcursor.h>
 #include <qtooltip.h>
-#include <CLAM/List.hxx>
+#include "List.hxx"
 #include "V2MSegmentationEditor.hxx"
 
 using CLAM::Note;

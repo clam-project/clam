@@ -9,12 +9,10 @@
 #define _V2MAUDIOIO_
 
 #include "AudioFileIO.hxx"
-#include <CLAM/AudioPlayer.hxx>
+#include "AudioPlayer.hxx"
 #include "AudioRecorder.hxx"
-#include <CLAM/FundPlayer.hxx>
+#include "FundPlayer.hxx"
 #include "FundSegPlayer.hxx"
 
 #endif
-
-
 

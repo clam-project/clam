@@ -10,16 +10,13 @@
 
 #include <string>
 #include <pthread.h>
-#include <CLAM/MIDIMelody.hxx>
-#include <CLAM/Signalv0.hxx>
-#include <CLAM/Slotv0.hxx>
+#include "MIDIMelody.hxx"
+#include "Signalv0.hxx"
+#include "Slotv0.hxx"
 
 using CLAM::MIDIMelody;
 using SigSlot::Signalv0;
 using SigSlot::Slotv0;
-
-namespace V2M
-{
 
 class MIDIMelodyPlayer 
 {
@@ -48,7 +45,5 @@ private:
 
 	unsigned getmilliseconds();
 };
-
-} // namespace V2M
 
 #endif

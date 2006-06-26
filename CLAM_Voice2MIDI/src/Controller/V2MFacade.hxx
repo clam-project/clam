@@ -16,12 +16,8 @@
 #include "V2MAudioIO.hxx"
 #include "V2MMIDIOut.hxx"
 #include "SharedTypes.hxx"
-#include <CLAM/Signalv1.hxx>
-#include <CLAM/Slotv1.hxx>
-#include "FundPlayer.hxx"
-#include "MIDIMelodyPlayer.hxx"
-#include "AudioPlayer.hxx"
-#include "MIDIFileWriter.hxx"
+#include "Signalv1.hxx"
+#include "Slotv1.hxx"
 
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
@@ -76,15 +72,15 @@ private:
 
 	bool _needUpdatedMelody;
 
-	V2M::AudioPlayer* audioPlayer;
-	V2M::FundPlayer* fundPlayer;
-	V2M::AudioRecorder* recorder;
-	V2M::FundSegPlayer* fundSegPlayer;
-	V2M::MIDIMelodyPlayer* midiPlayer;
+	AudioPlayer* audioPlayer;
+	FundPlayer* fundPlayer;
+	AudioRecorder* recorder;
+	FundSegPlayer* fundSegPlayer;
+	MIDIMelodyPlayer* midiPlayer;
 
-	V2M::AudioFileIO wFileIO;
+	AudioFileIO wFileIO;
 
-	V2M::MIDIFileWriter mfWriter;
+	MIDIFileWriter mfWriter;
 
 	Segment mSegment;
 	Frame mFrame;

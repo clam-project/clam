@@ -9,41 +9,33 @@
 #define _AUDIORECORDER_
 
 #include <pthread.h>
-#include <CLAM/Audio.hxx>
-#include <CLAM/Signalv1.hxx>
-#include <CLAM/Slotv1.hxx>
+#include "Audio.hxx"
+#include "Signalv1.hxx"
+#include "Slotv1.hxx"
 
 using CLAM::Audio;
 using CLAM::DataArray;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
 
-namespace V2M
-{
-
-class AudioRecorder
+class AudioRecorder 
 {
 public:
-    AudioRecorder(Slotv1<DataArray>& slot);
-    ~AudioRecorder();
+	AudioRecorder(Slotv1<DataArray>& slot);
+	~AudioRecorder();
 
-    void Stop();
-    const Audio& GetAudio();
-
-private:
-    pthread_t mThread;
-    Audio audio;
-    Signalv1<DataArray> mSendData;
+	void Stop();
+	const Audio GetAudio();
     
-    bool active;
+private:
+	pthread_t mThread;
+	Audio audio;
+	Signalv1<DataArray> mSendData;
 
-    void RecordingThreadSafe();
-    static void* sRecordingThreadSafe(void* thisObject);
-
+	bool active;
+	
+	void RecordingThreadSafe();
+	static void* sRecordingThreadSafe(void* thisObject);
 };
 
-} // namespace V2M
-
 #endif
-
-

@@ -1,21 +1,22 @@
 /*
- * MyAnalyzer.hxx
- * Interface for MyAnalizer class
- * Used to perform the spectral analysis over the audio signal.
- *
- * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
-*/
+*   MyAnalyzer.hxx
+*   Interface for MyAnalizer class
+*	Used to perform the spectral analysis over the audio signal.
+*
+*	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
+ */
+
 #ifndef _MYANALYZER_
 #define _MYANALYZER_
 
-#include <CLAM/ProcessingComposite.hxx>
-#include <CLAM/FFT.hxx>
-#include <CLAM/Frame.hxx>
-#include <CLAM/WindowGeneratorConfig.hxx>
-#include <CLAM/WindowGenerator.hxx>
-#include <CLAM/AudioMultiplier.hxx>
-#include <CLAM/CircularShiftConfig.hxx>
-#include <CLAM/CircularShift.hxx>
+#include "ProcessingComposite.hxx"
+#include "FFT.hxx"
+#include "Frame.hxx"
+#include "WindowGeneratorConfig.hxx"
+#include "WindowGenerator.hxx"
+#include "AudioMultiplier.hxx"
+#include "CircularShiftConfig.hxx"
+#include "CircularShift.hxx"
 
 using CLAM::ProcessingComposite;
 using CLAM::ProcessingConfig;
@@ -43,7 +44,7 @@ class MyAnalyzerConfig: public ProcessingConfig
     DYN_ATTRIBUTE(3,public,CircularShiftConfig,CircularShift);
     DYN_ATTRIBUTE(4,protected,int, prFFTSize);
     DYN_ATTRIBUTE(5,protected,int,prZeroPadding);
-    DYN_ATTRIBUTE(6,protected,TData,prSamplingRate);
+	DYN_ATTRIBUTE(6,protected,TData,prSamplingRate);
     
 public:
     void SetWindowSize(TSize w);
@@ -52,8 +53,8 @@ public:
     const EWindowType& GetWindowType() const;
     void SetZeroPadding(int z);
     int GetZeroPadding() const;
-    void SetSamplingRate(TData sr);
-    TData GetSamplingRate() const;
+	void SetSamplingRate(TData sr);
+	TData GetSamplingRate() const;
     
 private:
     void DefaultInit();
@@ -65,39 +66,43 @@ class MyAnalyzer : public ProcessingComposite
 {
   
 public:
-    MyAnalyzer();
-    MyAnalyzer(const MyAnalyzerConfig& cfg);
+	MyAnalyzer();
+	MyAnalyzer(const MyAnalyzerConfig& cfg);
   
-    const ProcessingConfig& GetConfig() const;
+	const ProcessingConfig& GetConfig() const;
 
-    bool Do(){return false;}
+	bool Do(){return false;}
 
-    bool Do(const Audio& in,Spectrum& out);
-    bool Do(Frame& in);
+	bool Do(const Audio& in,Spectrum& out);
+	bool Do(Frame& in);
   
 private:
-    MyAnalyzerConfig mConfig;
+	MyAnalyzerConfig mConfig;
 
-    FFT mPO_FFT;
-    WindowGenerator mPO_WinGen;
-    CircularShift mPO_CShift;
-    AudioMultiplier mPO_AProduct;
+	/* Proceso hijo: FFT */
+	FFT mPO_FFT;
 
-    
-    Audio mWindow;
-    Audio mAudioFrame;
+	/* Proceso hijo generador de ventanas */
+	WindowGenerator mPO_WinGen;
 
-    bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	/* Proceso hijo desplazamiento circular */
+	CircularShift mPO_CShift;
 
-    void AttachChildren();
-    bool ConfigureChildren();
-    void ConfigureData();
-    void ConfigureFrame(Frame& in);
+	/* Proceso hijo multiplicador de audio */
+	AudioMultiplier mPO_AProduct;
+
+	/* objeto ventana interno que sera multiplicado con el audio de entrada */
+	Audio mWindow;
+
+	/* objeto de audio usado internamente por conveniencia */
+	Audio mAudioFrame;
+
+	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+
+	void AttachChildren();
+	bool ConfigureChildren();
+	void ConfigureData();
+	void ConfigureFrame(Frame& in);
 };
 
 #endif
-
-
-
-
-

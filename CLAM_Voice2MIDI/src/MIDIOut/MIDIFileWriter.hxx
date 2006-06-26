@@ -1,16 +1,15 @@
 /*
  * MIDIFileWriter.hxx
  * Interface for MIDIFileWriter class
- * Used to write a MIDI file from the obtained MIDI melody.
+ * Used to write a MIDI file from the obtained MIDI melody. 
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
-
 #ifndef _MIDIFILEWRITER_
 #define _MIDIFILEWRITER_
 
 #include <string>
-#include <CLAM/MIDIMelody.hxx>
+#include "MIDIMelody.hxx"
 
 #define MThd	0x4d546864
 #define MTrk	0x4d54726b
@@ -19,9 +18,6 @@
 #define TEMPO	   120
 
 using CLAM::MIDIMelody;
-
-namespace V2M
-{
 
 class MIDIFileWriter
 {
@@ -45,7 +41,5 @@ private:
 	void EPutc(char c);
 	unsigned long Sec2Ticks(float secs,int division,unsigned tempo);
 };
-
-} // namespace V2M
 
 #endif
