@@ -28,7 +28,7 @@
 int main(int argc, char** argv)
 {
 	QApplication app( argc, argv );
-	QString fn = QFileDialog::getOpenFileName(0,"Choose a mono audio file",".","Audio (*.wav *.ogg *.mp3)");
+	QString fn = QFileDialog::getOpenFileName(0,"Choose a mono audio file",".","Audio (*.wav *.ogg)");
 	if(fn.isEmpty())
 	{
 		printf("No file was choosen.\n");

@@ -62,8 +62,6 @@ namespace CLAM {
 namespace CLAM_Annotator {
 	class FrameDivision;
 }
-class InstantViewPlugin;
-
 class StatusBarDumper 
 {
 		QStatusBar * mStatusBar;
@@ -217,12 +215,9 @@ private:
 	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
 	CLAM::Segmentation * mSegmentation;
 
-  	QTextBrowser* mProjectDocumentation;
+    QTextBrowser* mProjectDocumentation;
 	CLAM::VM::BPFPlayer* mPlayer;
-	
-	typedef std::vector<InstantViewPlugin *> InstantViewPlugins;
-	InstantViewPlugins mInstantViewPlugins;
-
+	std::vector<CLAM::VM::InstantView *> mInstantViews;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QDialog * mAbout;

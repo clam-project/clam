@@ -3,6 +3,7 @@ import os
 import glob
 import sys
 
+version='0.3.2'#-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -33,14 +34,6 @@ CLAMVmQtPath = 'vmqt'
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
-env.Tool('dmg', toolpath=[clam_sconstoolspath])
-sys.path.append(clam_sconstoolspath)
-import versionInfo
-version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "MusicAnnotator")
-print "Version: ", version
-print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','MusicAnnotatorVersion'), "MusicAnnotator", fullVersion)
-
 
 
 env['CXXFILESUFFIX'] = '.cxx'
@@ -122,14 +115,10 @@ if sys.platform=="win32" :
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
 env.Append(LIBS="clam_vmqt4")
-if sys.platform=='darwin' :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
-else :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
+env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 else:
-	# TODO: This should not be hardcoded neither install_prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['install_prefix'] + '/share/annotator/example-data')
 
 if sys.platform=='linux2' :
@@ -155,15 +144,7 @@ example_data = [
 chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
 chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
 chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
-chordNoLibSources = [
-	os.path.join('src','ChordExtractor',file) for file in [
-			'MainClam.cxx',
-		]
-]
-chordLibSources = [chordSource for chordSource in chordSources if not chordSource in chordNoLibSources ]
-
-chordLib = [ env.StaticLibrary(target='ChordExtractor', source = chordLibSources) ]
-programs += [ env.Program(target='ChordExtractor', source = chordNoLibSources + chordLib) ]
+programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
 bocaClientSources = [
@@ -206,16 +187,6 @@ installation = {
 	'/share/annotator/example-data/SongsTest': song_examples,
 }
 
-if sys.platform=='darwin' :
-	env.AppendUnique(CXXFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
-	env.AppendUnique(LINKFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
-	env.AppendUnique(LINKFLAGS='-framework QtCore')
-	env.AppendUnique(LINKFLAGS='-framework QtGui')
-	env.AppendUnique(LINKFLAGS='-framework QtOpenGL')
-	env.AppendUnique(LINKFLAGS='-dynamic')
-	env.AppendUnique(LIBS=['System','Gl'])
-	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
-	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL'])
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
@@ -225,7 +196,7 @@ if sys.platform=='win32' :
 			env['install_prefix']+"/bin", 
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
-	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
+	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
 	externalsDllDir = os.environ['EXTERNALDLLDIR']
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
@@ -238,18 +209,18 @@ if sys.platform=='win32' :
 	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
 	env.Alias('package', win_packages)
 
-if sys.platform=='darwin' :
-	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
+if sys.platform=='macosx' : # not really tested!!!
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
+	#Binaries: annotator + sample extractor
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
 		env.Install( 'Annotator.app/Contents/MacOS', programs ),
 		env.Install( 'Annotator.app/Contents', 'resources/Info.plist'),
-		env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM-MusicAnnotator.icns'),
+		env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns'),
 		]
-	mac_packages = env.Dmg('CLAM_Annotator-%s.dmg'%fullVersion, [env.Dir('Annotator.app/')]+installTargets )
+	mac_packages = env.Dmg('notused', installTargets )
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )

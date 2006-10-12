@@ -25,14 +25,14 @@
 #include <iostream>
 #include "FrameDivision.hxx"
 #include <CLAM/Pool.hxx>
+#include <CLAM/Array.hxx>
 
 CLAM::VM::Tonnetz::~Tonnetz()
 {
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
-	QGLWidget(parent)
+	InstantView(parent)
 {
-	_dataSource = 0;
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
 	_updatePending=0;
@@ -99,7 +99,6 @@ void CLAM::VM::Tonnetz::paintGL()
 }
 void CLAM::VM::Tonnetz::Draw()
 {
-	if (!_dataSource) return;
 	if (!_nBins) return;
 	_maxValue*=0.95;
 	if (_maxValue<1e-5) _maxValue=1;
@@ -136,7 +135,7 @@ void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), _font);
+	renderText(posx, posy, .6, getLabel(bin).c_str(), _font);
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {
@@ -226,19 +225,104 @@ void CLAM::VM::Tonnetz::DrawChordsShapes()
 	glEnd();
 	glPopMatrix();
 }
-void CLAM::VM::Tonnetz::updateIfNeeded()
+
+void CLAM::VM::Tonnetz::setCurrentTime(double timeMiliseconds)
 {
+	bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
+	if (!mustUpdate) return;
 	if (!_updatePending++) update();
 }
 
-void CLAM::VM::Tonnetz::setSource(const FloatArrayDataSource & dataSource )
+const std::string & CLAM::VM::Tonnetz::getLabel(unsigned bin) const
 {
-	_dataSource = &dataSource;
-	_nBins = _dataSource->nBins();
+	return _dataSource.getLabel(bin);
 }
+
+void CLAM::VM::Tonnetz::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
+{
+	_dataSource.setSource(project, scope, name);
+	const std::list<std::string> & binLabels=project.GetAttributeScheme(scope,name).GetBinLabels();
+	_nBins = binLabels.size();
+}
+
+void CLAM::VM::Tonnetz::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+{
+	_dataSource.updateData(data, samplingRate);
+}
+
 
 void CLAM::VM::Tonnetz::clearData()
 {
+	_dataSource.clearData();
 	_maxValue=1;
 }
+
+CLAM::VM::FloatArrayDataSource::FloatArrayDataSource()
+	: _nFrames(0)
+	, _frameDivision(0)
+	, _samplingRate(44100)
+	, _frameData(0)
+	, _currentFrame(0)
+{
+}
+
+void CLAM::VM::FloatArrayDataSource::clearData()
+{
+	_data.resize(0);
+	_nFrames=0;
+	_frameDivision=0;
+	_frameData=0;
+	_currentFrame=0;
+}
+
+void CLAM::VM::FloatArrayDataSource::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
+{
+	_name = name;
+	_scope = scope;
+	_project = & project;
+	const std::list<std::string> & binLabels=
+		project.GetAttributeScheme(scope,name).GetBinLabels();
+	_binLabels.assign(binLabels.begin(), binLabels.end());
+}
+
+void CLAM::VM::FloatArrayDataSource::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+{
+	_frameData = 0;
+	_samplingRate = samplingRate;
+	_nFrames = data.GetNumberOfContexts(_scope);
+	const CLAM_Annotator::SchemaAttribute & parent =
+		_project->GetParentAttribute(_scope);
+	_frameDivision = 
+		data.GetReadPool<CLAM_Annotator::FrameDivision>(
+			parent.GetScope(),
+			parent.GetName()
+		);
+	const CLAM::DataArray * arrays =
+		data.GetReadPool<CLAM::DataArray>(_scope,_name);
+	unsigned nBins = _binLabels.size();
+	_data.resize(_nFrames*nBins);
+	for (unsigned frame =0; frame < _nFrames; frame++)
+	{
+		const CLAM::DataArray & array = arrays[frame];
+		for (unsigned i=0; i<nBins; i++)
+		{
+			// TODO: This nBins is and adhoc hack for normalization
+			double value = array[i]*nBins;
+			_data[frame*nBins+i] = value;
+		}
+	}
+	_frameData = &_data[0];
+}
+
+bool CLAM::VM::FloatArrayDataSource::setCurrentTime(double timeMiliseconds)
+{
+	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
+	if (_nFrames==0) newFrame = 0;
+	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
+	_frameData = getData()? getData()+_binLabels.size()*newFrame : 0;
+	if (newFrame == _currentFrame) return false;
+	_currentFrame = newFrame;
+	return true;
+}
+
 

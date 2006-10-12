@@ -23,8 +23,6 @@
 #include "Project.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
-#include "PoolFloatArrayDataSource.hxx"
-
 
 #include <string>
 #include <map>
@@ -50,32 +48,24 @@ std::list<std::string> InstantViewPlugin::availablePlugins()
 	return list;
 }
 
+InstantViewPlugin * InstantViewPlugin::getPlugin(const std::string & type)
+{
+	try { return plugins[type]; }
+	catch (...) { return 0; }
+}
+
 /// Concrete plugins
 
 
 class TonnetzPlugin : public InstantViewPlugin
 {
-private:
-	CLAM::VM::Tonnetz * _view;
-	CLAM::VM::PoolFloatArrayDataSource _dataSource;
-public:
-	TonnetzPlugin()
-		: _view(0)
-	{}
-	~TonnetzPlugin()
-	{
-		if (_view) delete _view;
-	}
-private:
 	virtual const char * id() const { return "Tonnetz"; }
 	virtual QString name() const { return QObject::tr("Tonnezt"); }
-	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
-		_view = new CLAM::VM::Tonnetz(parent);
-		_dataSource.setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		_view->setSource( _dataSource );
-		_view->resize(-1,300);
-		return _view;
+		CLAM::VM::Tonnetz * view =  new CLAM::VM::Tonnetz(parent);
+		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		return view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
@@ -106,48 +96,17 @@ private:
 		config.SetAttributeName(splitted[1].toStdString());
 		return true;
 	}
-
-	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
-	{
-		_dataSource.updateData(data, samplingRate);
-	}
-	virtual void clearData()
-	{
-		_dataSource.clearData();
-		_view->clearData();
-	}
-	virtual void setCurrentTime(double timeMiliseconds)
-	{
-		if ( !_view) return;
-		bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
-		if ( !mustUpdate) return;
-		_view->updateIfNeeded();
-	}
 };
 
 class KeySpacePlugin : public InstantViewPlugin
 {
-private:
-	CLAM::VM::KeySpace * _view;
-	CLAM::VM::PoolFloatArrayDataSource _dataSource;
-public:
-	KeySpacePlugin()
-		: _view(0)
-	{}
-	~KeySpacePlugin()
-	{
-		if (_view) delete _view;
-	}
-private:
 	virtual const char * id() const { return "KeySpace"; }
 	virtual QString name() const { return QObject::tr("Key Space"); }
-	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
-		_view = new CLAM::VM::KeySpace(parent);
-		_dataSource.setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		_view->setSource( _dataSource );
-		_view->resize(-1,300);
-		return _view;
+		CLAM::VM::KeySpace * view = new CLAM::VM::KeySpace(parent);
+		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		return view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
@@ -178,36 +137,12 @@ private:
 		config.SetAttributeName(splitted[1].toStdString());
 		return true;
 	}
-
-	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
-	{
-		_dataSource.updateData(data, samplingRate);
-	}
-	virtual void clearData()
-	{
-		_view->clearData();
-		_dataSource.clearData();
-	}
-	virtual void setCurrentTime(double timeMiliseconds)
-	{
-		if ( !_view) return;
-		bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
-		if ( !mustUpdate) return;
-		_view->updateIfNeeded();
-	}
 };
 
 Initializer::Initializer()
 {
 	plugins["KeySpace"] = new KeySpacePlugin;
 	plugins["Tonnetz"] = new TonnetzPlugin;
-}
-
-InstantViewPlugin * InstantViewPlugin::createPlugin(const std::string & type)
-{
-	if (type=="KeySpace") return new KeySpacePlugin;
-	if (type=="Tonnetz") return new TonnetzPlugin;
-	return 0;
 }
 
 
