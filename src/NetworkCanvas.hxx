@@ -29,7 +29,7 @@
 #include <iostream>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGraphicsScene>
-#include <QGraphicsRectItem>
+#include <QtGui/QGraphicsRectItem>
 
 class NetworkCanvas : public QGraphicsView
 {
@@ -698,11 +698,9 @@ public: // Event Handlers
 
 	void paintEvent(QPaintEvent * event)
 	{
-		{
-			QPainter painter(this);
-			paint(painter);
-		}
 		QGraphicsView::paintEvent(event);
+		QPainter painter(this);
+		paint(painter);
 	}
 
 	void mouseMoveEvent(QMouseEvent * event)
@@ -711,14 +709,20 @@ public: // Event Handlers
 		setToolTip(0);
 		setStatusTip(0);
 		setCursor(Qt::ArrowCursor);
+		std::cout << "antes" << std::endl;
+		QGraphicsView::mouseMoveEvent(event);
+		static unsigned i=0;
+		std::cout << "despues" << i++ << std::endl;
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseMoveEvent(event);
+		for (unsigned i = _processings.size(); i--; )
+			_processings[i]->hover(mapToScene(_dragPoint).toPoint());
 		_tooltipPos=_dragPoint;
-		QGraphicsView::mouseMoveEvent(event);
 		update();
 	}
 	void mousePressEvent(QMouseEvent * event)
 	{
+		QGraphicsView::mousePressEvent(event);
 		if (event->button()!=Qt::LeftButton) return;
 		QPoint translatedPoint = translatedPos(event);
 		for (unsigned i = _processings.size(); i--; )
@@ -726,18 +730,17 @@ public: // Event Handlers
 			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
 			_processings[i]->mousePressEvent(event);
 			update();
-			QGraphicsView::mousePressEvent(event);
 			return;
 		}
 		if (! (event->modifiers() & Qt::ControlModifier) )
 			clearSelections();
 		_selectionDragOrigin=translatedPoint;
 		startDrag(SelectionDrag,0,0);
-		QGraphicsView::mousePressEvent(event);
 		update();
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
 	{
+		QGraphicsView::mouseReleaseEvent(event);
 		if (_dragStatus == SelectionDrag)
 		{
 			QRect selectionBox (_selectionDragOrigin, _dragPoint);
@@ -748,22 +751,20 @@ public: // Event Handlers
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseReleaseEvent(event);
 		_dragStatus=NoDrag;
-		QGraphicsView::mouseReleaseEvent(event);
 		update();
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
+		QGraphicsView::mouseDoubleClickEvent(event);
 		QPoint translatedPoint = translatedPos(event);
 		for (unsigned i = _processings.size(); i--; )
 		{
 			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
 			_processings[i]->mouseDoubleClickEvent(event);
-			QGraphicsView::mouseDoubleClickEvent(event);
 			update();
 			return;
 		}
 		print();
-		QGraphicsView::mouseDoubleClickEvent(event);
 	}
 
 	void contextMenuEvent(QContextMenuEvent * event)

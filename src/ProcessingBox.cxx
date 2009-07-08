@@ -5,8 +5,24 @@
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QInputDialog>
-
+#include <QtGui/QGraphicsSceneHoverEvent>
+#include <QtGui/QGraphicsSceneMouseEvent>
 #include <iostream>
+
+std::string processingBoxRegionName(ProcessingBox::Region region)
+{
+	switch(region)
+	{
+		case ProcessingBox::nameRegion:		return "nameRegion";
+		case ProcessingBox::bodyRegion:		return "bodyRegion";
+		case ProcessingBox::resizeHandleRegion:return "resizeHandleRegion";
+		case ProcessingBox::inportsRegion:		return "inportsRegion";
+		case ProcessingBox::outportsRegion:	return "outportsRegion";
+		case ProcessingBox::incontrolsRegion:	return "incontrolsRegion";
+		case ProcessingBox::outcontrolsRegion:	return "outcontrolsRegion";
+		case ProcessingBox::noRegion:	return "noRegion";
+	}
+}
 
 ProcessingBox::~ProcessingBox()
 {
@@ -403,9 +419,6 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
-	_highLightRegion=noRegion;;
-
-
 	if (_actionMode==Moving)
 	{
 		_canvas->setCursor(Qt::SizeAllCursor);
@@ -423,66 +436,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 			));
 		return;
 	}
-	Region region = getRegion(_canvas->translatedPos(event));
-	if (region==noRegion) return;
-	_canvas->setCursor(Qt::ArrowCursor);
-	switch (region)
-	{	
-		case noRegion:
-			break;		// it should not reach this point, is handled by a previous conditional....
-		case inportsRegion:
-		{
-			int index = portIndexByYPos(_canvas->translatedPos(event));
-			_highLightRegion=region;
-			_highLightConnection=index;
-			_canvas->setToolTip(_canvas->inportTooltip(_processing, index));
-			break;
-		}
-		case outportsRegion:
-		{
-			int index = portIndexByYPos(_canvas->translatedPos(event));
-			_highLightRegion=region;
-			_highLightConnection=index;
-			_canvas->setToolTip(_canvas->outportTooltip(_processing, index));
-			break;
-		}
-		case incontrolsRegion:
-		{
-			int index = controlIndexByXPos(_canvas->translatedPos(event));
-			_highLightRegion=region;
-			_highLightConnection=index;
-			_canvas->setToolTip(_canvas->incontrolTooltip(_processing, index));
-			break;
-		}
-		case outcontrolsRegion:
-		{	
-			int index = controlIndexByXPos(_canvas->translatedPos(event));
-			_highLightRegion=region;
-			_highLightConnection=index;
-			_canvas->setToolTip(_canvas->outcontrolTooltip(_processing, index));
-			break;
-		}
-		case resizeHandleRegion:
-		{
-			_canvas->setCursor(Qt::SizeFDiagCursor);
-			_canvas->setStatusTip(QObject::tr("Drag: resize"));
-			break;
-		}
-		case bodyRegion:
-		{
-			if (not _canvas->isOk(_processing)) 
-				_canvas->setToolTip(_canvas->errorMessage(_processing));
-			_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
-			break;
-		}
-		case nameRegion:
-		{
-			if (not _canvas->isOk(_processing)) _canvas->setToolTip(_canvas->errorMessage(_processing));
-			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
-			break;
-		}
-		return;
-	}
+	hover(_canvas->translatedPos(event));
 }
 void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 {
@@ -544,9 +498,11 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 			_canvas->addLinkedProcessingReceiver(this,point,"AudioSink");
 	}
 }
-void ProcessingBox::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
+//////////////////////////////////////////////////////
+
+void ProcessingBox::hover(const QPoint & scenePoint)
 {
-	QPoint scenePoint = event->scenePos().toPoint();
+	_highLightRegion=noRegion;
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
 	_canvas->setCursor(Qt::ArrowCursor);
@@ -601,27 +557,19 @@ void ProcessingBox::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 		}
 		case nameRegion:
 		{
-			if (not _canvas->isOk(_processing)) _canvas->setToolTip(_canvas->errorMessage(_processing));
+			if (not _canvas->isOk(_processing))
+				_canvas->setToolTip(_canvas->errorMessage(_processing));
 			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
 			break;
 		}
 		return;
 	}
-/*
-	QPoint point(event->pos().toPoint());
-	Region region = getRegion(point);
-	switch(region)
-	{
-		case nameRegion:		std::cout << "nameRegion" << std::endl; break;
-		case bodyRegion:		std::cout << "bodyRegion" << std::endl; break;
-		case resizeHandleRegion:std::cout << "resizeHandleRegion" << std::endl; break;
-		case inportsRegion:		std::cout << "inportsRegion" << std::endl; break;
-		case outportsRegion:	std::cout << "outportsRegion" << std::endl; break;
-		case incontrolsRegion:	std::cout << "incontrolsRegion" << std::endl; break;
-		case outcontrolsRegion:	std::cout << "outcontrolsRegion" << std::endl; break;
-		case noRegion:	return;
-	}
-*/
+}
+
+bool ProcessingBox::sceneEvent(QEvent * event)
+{
+	std::cout << event->type() << std::endl;
+	return QGraphicsItem::sceneEvent(event);
 }
 
 bool ProcessingBox::rename()

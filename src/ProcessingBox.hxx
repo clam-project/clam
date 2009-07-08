@@ -3,7 +3,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QGraphicsItem>
-#include <QtGui/QGraphicsSceneHoverEvent>
+
 
 class NetworkCanvas;
 
@@ -80,7 +80,12 @@ public:
 	void mouseMoveEvent(QMouseEvent * event);
 	void mouseReleaseEvent(QMouseEvent * event);
 	void mouseDoubleClickEvent(QMouseEvent * event);
-	void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
+	
+//	void mousePressEvent(QGraphicsSceneMouseEvent * event);
+//	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+//	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+//	void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
+	bool sceneEvent(QEvent * event);
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
@@ -90,6 +95,7 @@ public:
 	void embed(QWidget * widget);
 	bool configure();
 	bool rename();
+	void hover(const QPoint & scenePoint);
 
 	void raiseEmbeded() {if (_embeded) _embeded->raise();}
 
