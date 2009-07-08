@@ -2,10 +2,12 @@
 #define ProcessingBox_hxx
 
 #include <QtGui/QWidget>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsSceneHoverEvent>
 
 class NetworkCanvas;
 
-class ProcessingBox 
+class ProcessingBox : public QGraphicsItem
 {
 public:
 	enum
@@ -44,6 +46,9 @@ public:
 			unsigned nIncontrols, unsigned nOutcontrols);
 	virtual ~ProcessingBox();
 
+	QRectF boundingRect() const;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 	void setProcessing(void * model);
 	void * model() const { return _processing; }
 	void paintFromParent(QPainter & painter);
@@ -75,6 +80,7 @@ public:
 	void mouseMoveEvent(QMouseEvent * event);
 	void mouseReleaseEvent(QMouseEvent * event);
 	void mouseDoubleClickEvent(QMouseEvent * event);
+	void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);

@@ -27,11 +27,11 @@
 #include <CLAM/Assert.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <iostream>
+#include <QtGui/QGraphicsView>
+#include <QtGui/QGraphicsScene>
+#include <QGraphicsRectItem>
 
-
-
-
-class NetworkCanvas : public QWidget
+class NetworkCanvas : public QGraphicsView
 {
 	Q_OBJECT
 public:
@@ -47,7 +47,7 @@ public:
 		SelectionDrag
 	};
 	NetworkCanvas(QWidget * parent=0)
-		: QWidget(parent)
+		: QGraphicsView(parent)
 		, _zoomFactor(1.)
 		, _changed(false)
 		, _dragStatus(NoDrag)
@@ -71,12 +71,28 @@ public:
 		, _colorControlWire       (0x4b,0x99,0xb4)
 		, _colorControlWireOutline(0x20,0x50,0x52)
 	{
+	// begin
+		//setBackgroundBrush(Qt::NoBrush);
+		_scene=new QGraphicsScene(this);
+		_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+		setScene(_scene);
+		setAlignment(Qt::AlignLeft | Qt::AlignTop);
+		setRenderHint(QPainter::Antialiasing);
+		setTransformationAnchor ( QGraphicsView::NoAnchor );
+//		setResizeAnchor(AnchorViewCenter);
+//		setCacheMode(QGraphicsView::CacheBackground);
+//		setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+//		setDragMode(QGraphicsView::ScrollHandDrag);
+		_scene->addRect(QRectF(0,0,1,1), QPen(QColor(0, 0, 0, 0)));
+		setStyleSheet("background-color: transparent");
+	// end
+		
 		setGreenColorsForBoxes();
 
 		setMouseTracking(true);
 		setAcceptDrops(true);
 		setMinimumSize(200,100);
-		resize(600,300);
+		resize(1024,1024);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
 
@@ -95,6 +111,7 @@ public:
 		addAction(_clearSelectionAction);
 		connect(_clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
 	}
+	
 	void setGreenColorsForBoxes()
 	{
 		_colorBoxFrameText = QColor(0xff,0xff,0xff);
@@ -497,10 +514,13 @@ public:
 		else
 			for (int i=0; i>steps; i--)
 				_zoomFactor/=1.0625;
+		resetTransform();
+		scale(_zoomFactor,_zoomFactor);
 		update();
 	}
 	void resetZoom()
 	{
+		resetTransform();
 		_zoomFactor=1.;
 		update();
 	}
@@ -516,6 +536,7 @@ public:
 			return pixmap.scaled(800,800,Qt::KeepAspectRatio, mode);
 		return pixmap;
 	}
+
 protected:
 	ProcessingBox * getBox(const QString & name)
 	{
@@ -675,6 +696,15 @@ public:
 
 public: // Event Handlers
 
+	void paintEvent(QPaintEvent * event)
+	{
+		{
+			QPainter painter(this);
+			paint(painter);
+		}
+		QGraphicsView::paintEvent(event);
+	}
+
 	void mouseMoveEvent(QMouseEvent * event)
 	{
 		_dragPoint = translatedPos(event);
@@ -684,6 +714,7 @@ public: // Event Handlers
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseMoveEvent(event);
 		_tooltipPos=_dragPoint;
+		QGraphicsView::mouseMoveEvent(event);
 		update();
 	}
 	void mousePressEvent(QMouseEvent * event)
@@ -695,12 +726,14 @@ public: // Event Handlers
 			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
 			_processings[i]->mousePressEvent(event);
 			update();
+			QGraphicsView::mousePressEvent(event);
 			return;
 		}
 		if (! (event->modifiers() & Qt::ControlModifier) )
 			clearSelections();
 		_selectionDragOrigin=translatedPoint;
 		startDrag(SelectionDrag,0,0);
+		QGraphicsView::mousePressEvent(event);
 		update();
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
@@ -715,6 +748,7 @@ public: // Event Handlers
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseReleaseEvent(event);
 		_dragStatus=NoDrag;
+		QGraphicsView::mouseReleaseEvent(event);
 		update();
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
@@ -724,10 +758,12 @@ public: // Event Handlers
 		{
 			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
 			_processings[i]->mouseDoubleClickEvent(event);
+			QGraphicsView::mouseDoubleClickEvent(event);
 			update();
 			return;
 		}
 		print();
+		QGraphicsView::mouseDoubleClickEvent(event);
 	}
 
 	void contextMenuEvent(QContextMenuEvent * event)
@@ -782,6 +818,7 @@ public: // Event Handlers
 		event->acceptProposedAction();
 		addProcessing(translatedPos(event), type);
 	}
+
 	void wheelEvent(QWheelEvent * event)
 	{
 		const int deltaUnitsPerDegree = 8;
@@ -890,6 +927,7 @@ protected:
 	QColor _colorPortWireOutline;
 	QColor _colorControlWire;
 	QColor _colorControlWireOutline;
+	QGraphicsScene * _scene;
 };
 
 
@@ -964,11 +1002,6 @@ public:
 
 	virtual ~ClamNetworkCanvas();
 
-	void paintEvent(QPaintEvent * event)
-	{
-		QPainter painter(this);
-		paint(painter);
-	}
 public: // Actions
 
 	void addProcessing(QPoint point, QString type)
@@ -1261,6 +1294,7 @@ private:
 		_processings.back()->setProcessing(processing);
 		_processings.back()->move(point);
 		_processings.back()->resize(size);
+		_scene->addItem(_processings.back());
 	}
 protected:
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
