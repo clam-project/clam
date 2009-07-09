@@ -386,6 +386,14 @@ public: // Actions
 		}
 		setCursor(Qt::SizeAllCursor);
 	}
+	void keepMovingSelected(const QPoint& point)
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			if (!_processings[i]->isSelected()) continue;
+			_processings[i]->keepMoving(point);
+		}
+	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
 	 * @pre The processing box has checked that connection is the proper one for the canvas _dragStatus.
