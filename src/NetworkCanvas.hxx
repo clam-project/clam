@@ -386,12 +386,12 @@ public: // Actions
 		}
 		setCursor(Qt::SizeAllCursor);
 	}
-	void keepMovingSelected(const QPoint& point)
+	void keepMovingSelected(const QPoint& delta)
 	{
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			if (!_processings[i]->isSelected()) continue;
-			_processings[i]->keepMoving(point);
+			_processings[i]->keepMoving(delta);
 		}
 	}
 	/**

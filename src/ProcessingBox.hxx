@@ -89,7 +89,7 @@ public:
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
 	void startMoving(const QPoint & initialGlobalPos);
-	void keepMoving(const QPoint & newGlobalPos);
+	void keepMoving(const QPoint & delta);
 	QPoint pos() const { return _pos; }
 	QSize size() const { return _size; }
 	void embed(QWidget * widget);

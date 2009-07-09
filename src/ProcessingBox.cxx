@@ -490,7 +490,8 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 	QPoint scenePoint = event->scenePos().toPoint();
-	_canvas->keepMovingSelected(scenePoint);
+	QPoint delta = scenePoint - dragOrigin;
+	_canvas->keepMovingSelected(delta);
 }
 
 void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
@@ -509,12 +510,11 @@ void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
 	dragOrigin = initialGlobalPos;
 }
 
-void ProcessingBox::keepMoving(const QPoint & scenePoint)
+void ProcessingBox::keepMoving(const QPoint & delta)
 {
 	if (_actionMode==Moving)
 	{
-		QPoint dragDelta = scenePoint - dragOrigin;
-		move(originalPosition + dragDelta);
+		move(originalPosition + delta);
 	}
 }
 
