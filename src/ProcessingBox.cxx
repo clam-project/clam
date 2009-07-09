@@ -81,7 +81,6 @@ void ProcessingBox::updateEmbededWidget()
 
 void ProcessingBox::paintFromParent(QPainter & painter)
 {
-
 	updateEmbededWidget();
 	painter.save();
 	painter.translate(_pos);
@@ -356,21 +355,6 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	if (region==noRegion) return;
 	_canvas->raise(this);
 	// Head
-	if (region==nameRegion)
-	{
-		if (event->modifiers() & Qt::ControlModifier )
-		{
-			_selected=!_selected;
-			if (!_selected) return;
-		}
-		if (!_selected)
-		{
-			_canvas->clearSelections();
-			_selected=true;
-		}
-		_canvas->startMovingSelected(event);
-		return;
-	}
 	if (region==bodyRegion)
 	{
 		if (event->modifiers() & Qt::ControlModifier )
@@ -419,13 +403,6 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
-	if (_actionMode==Moving)
-	{
-		_canvas->setCursor(Qt::SizeAllCursor);
-		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
-		move(originalPosition + dragDelta);
-		return;
-	}
 	if (_actionMode==Resizing)
 	{
 		_canvas->setCursor(Qt::SizeFDiagCursor);
@@ -440,11 +417,6 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 {
-	if (_actionMode==Moving)
-	{
-		_canvas->setCursor(Qt::ArrowCursor);
-		_actionMode = NoAction;
-	}
 	if (_actionMode==Resizing)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
@@ -499,6 +471,49 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 	}
 }
 //////////////////////////////////////////////////////
+
+void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+	QPoint scenePoint = event->scenePos().toPoint();
+	Region region = getRegion(scenePoint);
+	if (region==noRegion) return;
+	// Head
+	if (region==nameRegion)
+	{
+		if (event->modifiers() & Qt::ControlModifier )
+		{
+			_selected=!_selected;
+			if (!_selected) return;
+		}
+		if (!_selected)
+		{
+			_canvas->clearSelections();
+			_selected=true;
+		}
+		_canvas->startMovingSelected(scenePoint);
+		return;
+	}
+}
+void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+	QPoint scenePoint = event->scenePos().toPoint();
+	if (_actionMode==Moving)
+	{
+		_canvas->setCursor(Qt::SizeAllCursor);
+		QPoint dragDelta = scenePoint - dragOrigin;
+		move(originalPosition + dragDelta);
+		return;
+	}
+}
+
+void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+	if (_actionMode==Moving)
+	{
+		_canvas->setCursor(Qt::ArrowCursor);
+		_actionMode = NoAction;
+	}
+}
 
 void ProcessingBox::hover(const QPoint & scenePoint)
 {
@@ -564,12 +579,6 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 		}
 		return;
 	}
-}
-
-bool ProcessingBox::sceneEvent(QEvent * event)
-{
-	std::cout << event->type() << std::endl;
-	return QGraphicsItem::sceneEvent(event);
 }
 
 bool ProcessingBox::rename()

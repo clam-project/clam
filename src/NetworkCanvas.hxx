@@ -30,6 +30,7 @@
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsRectItem>
+#include <QtGui/QGraphicsSceneMouseEvent>
 
 class NetworkCanvas : public QGraphicsView
 {
@@ -74,7 +75,7 @@ public:
 	// begin
 		//setBackgroundBrush(Qt::NoBrush);
 		_scene=new QGraphicsScene(this);
-		_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+		_scene->setItemIndexMethod(QGraphicsScene::BspTreeIndex);
 		setScene(_scene);
 		setAlignment(Qt::AlignLeft | Qt::AlignTop);
 		setRenderHint(QPainter::Antialiasing);
@@ -221,11 +222,11 @@ protected:
 		for (unsigned i = 0; i<_portWires.size(); i++)
 			_portWires[i]->expand(_boundingBox);
 		_boundingBox = _boundingBox.unite(QRect(_boundingBox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
-		resize(_boundingBox.size()*_zoomFactor);
+//		resize(_boundingBox.size()*_zoomFactor);
 
 		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(_zoomFactor,_zoomFactor);
-		painter.translate(-_boundingBox.topLeft());
+//		painter.translate(-_boundingBox.topLeft());
 
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
@@ -288,7 +289,7 @@ public: // Helpers
 	QRect translatedRect(QRect rect)
 	{
 		rect.setSize(rect.size()*_zoomFactor);
-		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
+//		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
 		return rect;
 	}
 	template <class Event> QPoint translatedPos(Event * event)
@@ -373,6 +374,15 @@ public: // Actions
 		{
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->startMoving(translatedGlobalPos(event));
+		}
+		setCursor(Qt::SizeAllCursor);
+	}
+	void startMovingSelected(const QPoint& point)
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			if (!_processings[i]->isSelected()) continue;
+			_processings[i]->startMoving(point);
 		}
 		setCursor(Qt::SizeAllCursor);
 	}

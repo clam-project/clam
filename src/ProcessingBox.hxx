@@ -81,11 +81,10 @@ public:
 	void mouseReleaseEvent(QMouseEvent * event);
 	void mouseDoubleClickEvent(QMouseEvent * event);
 	
-//	void mousePressEvent(QGraphicsSceneMouseEvent * event);
-//	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
-//	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+	void mousePressEvent(QGraphicsSceneMouseEvent * event);
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 //	void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
-	bool sceneEvent(QEvent * event);
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
