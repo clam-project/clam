@@ -342,13 +342,6 @@ QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 	return _pos + QPoint( controlOffset+i*controlStep + controlWidth/2, _size.height()  );
 }
 
-void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
-{
-	_actionMode = Moving;
-	originalPosition = _pos;
-	dragOrigin = initialGlobalPos;
-}
-
 void ProcessingBox::mousePressEvent(QMouseEvent * event)
 {
 	Region region = getRegion(_canvas->translatedPos(event));
@@ -497,13 +490,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 	QPoint scenePoint = event->scenePos().toPoint();
-	if (_actionMode==Moving)
-	{
-		_canvas->setCursor(Qt::SizeAllCursor);
-		QPoint dragDelta = scenePoint - dragOrigin;
-		move(originalPosition + dragDelta);
-		return;
-	}
+	keepMoving(scenePoint);
 }
 
 void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
@@ -512,6 +499,23 @@ void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
 		_actionMode = NoAction;
+	}
+}
+
+void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
+{
+	_actionMode = Moving;
+	originalPosition = _pos;
+	dragOrigin = initialGlobalPos;
+}
+
+void ProcessingBox::keepMoving(const QPoint & scenePoint)
+{
+	if (_actionMode==Moving)
+	{
+		_canvas->setCursor(Qt::SizeAllCursor);
+		QPoint dragDelta = scenePoint - dragOrigin;
+		move(originalPosition + dragDelta);
 	}
 }
 
