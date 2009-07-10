@@ -348,15 +348,6 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	if (region==noRegion) return;
 	_canvas->raise(this);
 
-	// Resize corner
-	if (region==resizeHandleRegion)
-	{
-		_actionMode = Resizing;
-		originalSize = _size;
-		dragOrigin=_canvas->translatedGlobalPos(event);
-		_canvas->setCursor(Qt::SizeFDiagCursor);
-		return;
-	}
 	if (region==inportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
@@ -384,25 +375,10 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
-	if (_actionMode==Resizing)
-	{
-		_canvas->setCursor(Qt::SizeFDiagCursor);
-		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
-		resize(QSize(
-			originalSize.width() + dragDelta.x(),
-			originalSize.height() + dragDelta.y()
-			));
-		return;
-	}
 	hover(_canvas->translatedPos(event));
 }
 void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 {
-	if (_actionMode==Resizing)
-	{
-		_canvas->setCursor(Qt::ArrowCursor);
-		_actionMode = NoAction;
-	}
 	Region region = getRegion(_canvas->translatedPos(event));
 	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
 	{
@@ -490,23 +466,44 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 			_canvas->startMovingSelected(scenePoint);
 		return;
 	}
+	if (region==resizeHandleRegion)
+	{
+		_actionMode = Resizing;
+		originalSize = _size;
+		dragOrigin=scenePoint;
+		_canvas->setCursor(Qt::SizeFDiagCursor);
+		return;
+	}
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-	if(!_selected)
+	QPoint scenePoint = event->scenePos().toPoint();
+
+	if (_actionMode==Moving)
 	{
-		_canvas->clearSelections();
+		if(!_selected)
+		{
+			_canvas->clearSelections();
+			return;
+		}
+		QPoint delta = scenePoint - dragOrigin;
+		_canvas->keepMovingSelected(delta);
 		return;
 	}
-
-	QPoint scenePoint = event->scenePos().toPoint();
-	QPoint delta = scenePoint - dragOrigin;
-	_canvas->keepMovingSelected(delta);
+	if (_actionMode==Resizing)
+	{
+		_canvas->setCursor(Qt::SizeFDiagCursor);
+		QPoint dragDelta = scenePoint - dragOrigin;
+		resize(QSize(
+			originalSize.width() + dragDelta.x(),
+			originalSize.height() + dragDelta.y()
+			));
+		return;
+	}
 }
-
 void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-	if (_actionMode==Moving)
+	if (_actionMode==Moving or _actionMode==Resizing)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
 		_actionMode = NoAction;
@@ -519,7 +516,6 @@ void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
 	originalPosition = _pos;
 	dragOrigin = initialGlobalPos;
 }
-
 void ProcessingBox::keepMoving(const QPoint & delta)
 {
 	if (_actionMode==Moving)
@@ -527,13 +523,15 @@ void ProcessingBox::keepMoving(const QPoint & delta)
 		move(originalPosition + delta);
 	}
 }
-
 void ProcessingBox::hover(const QPoint & scenePoint)
 {
 	_highLightRegion=noRegion;
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
-	//_canvas->setCursor(Qt::ArrowCursor);
+	
+	if(_actionMode!=Moving)
+		_canvas->setCursor(Qt::ArrowCursor);
+	
 	switch (region)
 	{	
 		case noRegion:
@@ -572,7 +570,8 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 		}
 		case resizeHandleRegion:
 		{
-			_canvas->setCursor(Qt::SizeFDiagCursor);
+			if(_actionMode!=Moving)
+				_canvas->setCursor(Qt::SizeFDiagCursor);
 			_canvas->setStatusTip(QObject::tr("Drag: resize"));
 			break;
 		}
@@ -610,7 +609,6 @@ bool ProcessingBox::rename()
 	_canvas->markAsChanged();
 	return true;
 }
-
 QString ProcessingBox::getName() const
 {
 	return _name;
