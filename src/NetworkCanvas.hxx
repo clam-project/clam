@@ -729,7 +729,10 @@ public: // Event Handlers
 		_dragPoint = translatedPos(event);
 		setToolTip(0);
 		setStatusTip(0);
-		//setCursor(Qt::ArrowCursor);
+		
+		if(cursor().shape()!=Qt::ClosedHandCursor)
+			setCursor(Qt::ArrowCursor);
+
 		std::cout << "antes" << std::endl;
 		QGraphicsView::mouseMoveEvent(event);
 		static unsigned i=0;
