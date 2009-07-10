@@ -347,19 +347,7 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	Region region = getRegion(_canvas->translatedPos(event));
 	if (region==noRegion) return;
 	_canvas->raise(this);
-	// Head
-	if (region==bodyRegion)
-	{
-		if (event->modifiers() & Qt::ControlModifier )
-		{
-			_selected=!_selected;
-		}
-		else
-		{
-			_canvas->clearSelections();
-			_selected=true;
-		}
-	}
+
 	// Resize corner
 	if (region==resizeHandleRegion)
 	{
@@ -470,6 +458,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
+
 	// Head
 	if (region==nameRegion)
 	{
@@ -486,9 +475,30 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 		_canvas->startMovingSelected(scenePoint);
 		return;
 	}
+	if (region==bodyRegion)
+	{
+		if (event->modifiers() & Qt::ControlModifier )
+		{
+			_selected=!_selected;
+		}
+		else
+		{
+			_canvas->clearSelections();
+			_selected=true;
+		}
+		if(_selected) 
+			_canvas->startMovingSelected(scenePoint);
+		return;
+	}
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
+	if(!_selected)
+	{
+		_canvas->clearSelections();
+		return;
+	}
+
 	QPoint scenePoint = event->scenePos().toPoint();
 	QPoint delta = scenePoint - dragOrigin;
 	_canvas->keepMovingSelected(delta);
@@ -523,7 +533,7 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 	_highLightRegion=noRegion;
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
-	_canvas->setCursor(Qt::ArrowCursor);
+	//_canvas->setCursor(Qt::ArrowCursor);
 	switch (region)
 	{	
 		case noRegion:

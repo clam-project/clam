@@ -360,6 +360,7 @@ protected:
 public: // Actions
 	void clearSelections()
 	{
+		setCursor(Qt::ArrowCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->deselect();
 	}
@@ -375,24 +376,26 @@ public: // Actions
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->startMoving(translatedGlobalPos(event));
 		}
-		setCursor(Qt::SizeAllCursor);
+		//setCursor(Qt::SizeAllCursor);
 	}
 	void startMovingSelected(const QPoint& point)
 	{
+		setCursor(Qt::ClosedHandCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->startMoving(point);
 		}
-		setCursor(Qt::SizeAllCursor);
 	}
 	void keepMovingSelected(const QPoint& delta)
 	{
+		setCursor(Qt::ClosedHandCursor);
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			if (!_processings[i]->isSelected()) continue;
 			_processings[i]->keepMoving(delta);
 		}
+		//setCursor(Qt::SizeAllCursor);
 	}
 	/**
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
@@ -726,7 +729,7 @@ public: // Event Handlers
 		_dragPoint = translatedPos(event);
 		setToolTip(0);
 		setStatusTip(0);
-		setCursor(Qt::ArrowCursor);
+		//setCursor(Qt::ArrowCursor);
 		std::cout << "antes" << std::endl;
 		QGraphicsView::mouseMoveEvent(event);
 		static unsigned i=0;
@@ -750,7 +753,8 @@ public: // Event Handlers
 			update();
 			return;
 		}
-		if (! (event->modifiers() & Qt::ControlModifier) )
+		if (_scene->itemAt(mapToScene(event->pos()))) return;
+		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
 		_selectionDragOrigin=translatedPoint;
 		startDrag(SelectionDrag,0,0);
