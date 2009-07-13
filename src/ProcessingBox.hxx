@@ -84,12 +84,14 @@ public:
 	void mousePressEvent(QGraphicsSceneMouseEvent * event);
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 //	void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
 	void startMoving(const QPoint & initialGlobalPos);
 	void keepMoving(const QPoint & delta);
+	void doubleClicking(const QPoint & scenePoint);
 	QPoint pos() const { return _pos; }
 	QSize size() const { return _size; }
 	void embed(QWidget * widget);

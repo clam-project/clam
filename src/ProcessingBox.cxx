@@ -404,28 +404,7 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
 	QPoint point =_canvas->translatedPos(event);
-	Region region = getRegion(point);
-	if (region==nameRegion) rename();
-	if (region==incontrolsRegion)
-	{
-		_canvas->addControlSenderProcessing(this, point);
-	}
-	if (region==outcontrolsRegion)
-	{
-		_canvas->addControlPrinterProcessing(this, point);
-	}
-	if (region==inportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
-			_canvas->addLinkedProcessingSender(this,point,"AudioSource");
-	}
-	if (region==outportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
-			_canvas->addLinkedProcessingReceiver(this,point,"AudioSink");
-	}
+	doubleClicking(point);
 }
 //////////////////////////////////////////////////////
 
@@ -462,8 +441,6 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 			_canvas->clearSelections();
 			_selected=true;
 		}
-		if(_selected) 
-			_canvas->startMovingSelected(scenePoint);
 		return;
 	}
 	if (region==resizeHandleRegion)
@@ -509,6 +486,11 @@ void ProcessingBox::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 		_actionMode = NoAction;
 	}
 }
+void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+{
+	QPoint point = event->scenePos().toPoint();
+	doubleClicking(point);
+}
 
 void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
 {
@@ -528,9 +510,6 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 	_highLightRegion=noRegion;
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
-	
-	if(_actionMode!=Moving)
-		_canvas->setCursor(Qt::ArrowCursor);
 	
 	switch (region)
 	{	
@@ -590,6 +569,31 @@ void ProcessingBox::hover(const QPoint & scenePoint)
 			break;
 		}
 		return;
+	}
+}
+void ProcessingBox::doubleClicking(const QPoint & scenePoint)
+{
+	Region region = getRegion(scenePoint);
+	if (region==nameRegion) rename();
+	if (region==incontrolsRegion)
+	{
+		_canvas->addControlSenderProcessing(this, scenePoint);
+	}
+	if (region==outcontrolsRegion)
+	{
+		_canvas->addControlPrinterProcessing(this, scenePoint);
+	}
+	if (region==inportsRegion)
+	{
+		int index = portIndexByYPos(scenePoint);
+		if (((CLAM::Processing*)_processing)->GetInPort(index).GetTypeId()==typeid(CLAM::TData))
+			_canvas->addLinkedProcessingSender(this,scenePoint,"AudioSource");
+	}
+	if (region==outportsRegion)
+	{
+		int index = portIndexByYPos(scenePoint);
+		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
+			_canvas->addLinkedProcessingReceiver(this,scenePoint,"AudioSink");
 	}
 }
 

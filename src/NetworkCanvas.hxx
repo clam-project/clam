@@ -789,7 +789,7 @@ public: // Event Handlers
 			update();
 			return;
 		}
-		print();
+		//print();
 	}
 
 	void contextMenuEvent(QContextMenuEvent * event)
