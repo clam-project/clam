@@ -733,14 +733,11 @@ public: // Event Handlers
 		if(cursor().shape()!=Qt::ClosedHandCursor)
 			setCursor(Qt::ArrowCursor);
 
-		std::cout << "antes" << std::endl;
 		QGraphicsView::mouseMoveEvent(event);
-		static unsigned i=0;
-		std::cout << "despues" << i++ << std::endl;
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseMoveEvent(event);
 		for (unsigned i = _processings.size(); i--; )
-			_processings[i]->hover(mapToScene(_dragPoint).toPoint());
+			_processings[i]->hover(mapToScene(event->pos()).toPoint());
 		_tooltipPos=_dragPoint;
 		update();
 	}
