@@ -778,16 +778,10 @@ public: // Event Handlers
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
-		QGraphicsView::mouseDoubleClickEvent(event);
-		QPoint translatedPoint = translatedPos(event);
-		for (unsigned i = _processings.size(); i--; )
-		{
-			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
-			_processings[i]->mouseDoubleClickEvent(event);
-			update();
-			return;
-		}
-		//print();
+		if (_scene->itemAt(mapToScene(event->pos())))
+			QGraphicsView::mouseDoubleClickEvent(event);
+		else
+			print();
 	}
 
 	void contextMenuEvent(QContextMenuEvent * event)
