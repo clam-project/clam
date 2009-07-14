@@ -288,9 +288,10 @@ public: // Helpers
 
 	QRect translatedRect(QRect rect)
 	{
-		rect.setSize(rect.size()*_zoomFactor);
-//		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
-		return rect;
+		QPoint topLeft = mapFromScene(rect.topLeft())+viewport()->pos();
+		QPoint bottomRight = mapFromScene(rect.bottomRight())+viewport()->pos();
+
+		return QRect(topLeft, bottomRight);
 	}
 	template <class Event> QPoint translatedPos(Event * event)
 	{
