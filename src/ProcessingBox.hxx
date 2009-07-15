@@ -85,7 +85,7 @@ public:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
-//	void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
+	void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event ) ;
 
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);

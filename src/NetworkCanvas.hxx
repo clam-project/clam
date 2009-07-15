@@ -694,10 +694,9 @@ public:
 	virtual void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort =0) =0;
 	virtual void addLinkedProcessingSender ( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort =0) =0;
 
-	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
-	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing) { }
+	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
+	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing) { }
 	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event) { }
-
 
 signals:
 	void changed();
@@ -744,8 +743,8 @@ public: // Event Handlers
 	}
 	void mousePressEvent(QMouseEvent * event)
 	{
-		QGraphicsView::mousePressEvent(event);
 		if (event->button()!=Qt::LeftButton) return;
+		QGraphicsView::mousePressEvent(event);
 		QPoint translatedPoint = translatedPos(event);
 		for (unsigned i = _processings.size(); i--; )
 		{
@@ -786,40 +785,16 @@ public: // Event Handlers
 
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
-		QMenu menu(this);
-		for (unsigned i = _processings.size(); i--; )
+		if (_scene->itemAt(mapToScene(event->pos())))
 		{
-			ProcessingBox::Region region = _processings[i]->getRegion(translatedPos(event));
-			switch (region)
-			{
-				case ProcessingBox::inportsRegion:
-				case ProcessingBox::outportsRegion:
-				case ProcessingBox::incontrolsRegion:
-				case ProcessingBox::outcontrolsRegion:
-					connectionContextMenu(&menu, event, _processings[i], region);
-					menu.exec(event->globalPos());
-				return;
-
-				case ProcessingBox::nameRegion:
-				case ProcessingBox::bodyRegion:
-				case ProcessingBox::resizeHandleRegion:
-					if (not _processings[i]->isSelected())
-					{
-						std::cout << "updating selection on context menu" << std::endl;
-						if (! (event->modifiers() & Qt::ControlModifier) )
-							clearSelections();
-						_processings[i]->select();
-						update();
-					}
-					processingContextMenu(&menu, event, _processings[i]);
-					menu.exec(event->globalPos());
-				return;
-
-				default: continue;
-			}
+			QGraphicsView::contextMenuEvent(event);
 		}
-		canvasContextMenu(&menu, event);
-		menu.exec(event->globalPos());
+		else
+		{
+			QMenu menu(this);
+			canvasContextMenu(&menu, event);
+			menu.exec(event->globalPos());
+		}
 	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
@@ -1779,9 +1754,12 @@ private:
 	}
 
 
-	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
+	virtual void connectionContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
 	{
-		QPoint cursorPosition = translatedPos(event);
+		connectionContextMenu(menu, event->scenePos().toPoint(), processing, region);
+	}
+	virtual void connectionContextMenu(QMenu * menu, const QPoint& cursorPosition, ProcessingBox * processing, ProcessingBox::Region region)
+	{
 		menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
 			this, SLOT(onDisconnect()))->setData(cursorPosition);
 		menu->addAction(QIcon(":/icons/images/editcopy.png"), tr("Copy connection name"),
@@ -1907,12 +1885,17 @@ private:
 			}
 		}
 	}
-	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing)
+
+	virtual void processingContextMenu(QMenu * menu, QGraphicsSceneContextMenuEvent * event, ProcessingBox * processing)
+	{
+		processingContextMenu(menu, event->scenePos().toPoint(), processing);
+	}
+	virtual void processingContextMenu(QMenu * menu, const QPoint& point, ProcessingBox * processing)
 	{
 		menu->addAction(QIcon(":/icons/images/configure.png"), tr("Configure"),
-			this, SLOT(onConfigure()))->setData(translatedPos(event));
+			this, SLOT(onConfigure()))->setData(point);
 		menu->addAction(QIcon(":/icons/images/editclear.png"), tr("Rename"),
-			this, SLOT(onRename()))->setData(translatedPos(event));
+			this, SLOT(onRename()))->setData(point);
 		menu->addAction(_deleteSelectedAction);
 		menu->addAction(_copySelectionAction);
 		menu->addAction(_cutSelectionAction);
@@ -1932,15 +1915,20 @@ private:
 			menu->addAction(clamProcessingIcon(className),"Open source with editor",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
 			//menu->addAction(clamProcessingIcon(className),"Recompile plugin");
 		}
-
 	}
+
 	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event)
 	{
-		_pasteSelectionAction->setData(translatedPos(event));
+		canvasContextMenu(menu, mapToScene(event->pos()).toPoint());
+	}
+	virtual void canvasContextMenu(QMenu * menu, const QPoint& point)
+	{
+		_pasteSelectionAction->setData(point);
 		menu->addAction(_pasteSelectionAction);
-		_newProcessingAction->setData(translatedPos(event));
+		_newProcessingAction->setData(point);
 		menu->addAction(_newProcessingAction);
 	}
+
 	virtual QIcon processingIcon(ProcessingBox * processingBox)
 	{
 		const char* className=((CLAM::Processing*)processingBox->model())->GetClassName();

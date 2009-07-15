@@ -7,6 +7,8 @@
 #include <QtGui/QInputDialog>
 #include <QtGui/QGraphicsSceneHoverEvent>
 #include <QtGui/QGraphicsSceneMouseEvent>
+#include <QtGui/QGraphicsSceneContextMenuEvent>
+
 #include <iostream>
 
 std::string processingBoxRegionName(ProcessingBox::Region region)
@@ -21,6 +23,7 @@ std::string processingBoxRegionName(ProcessingBox::Region region)
 		case ProcessingBox::incontrolsRegion:	return "incontrolsRegion";
 		case ProcessingBox::outcontrolsRegion:	return "outcontrolsRegion";
 		case ProcessingBox::noRegion:	return "noRegion";
+		default: return "invalidRegion";
 	}
 }
 
@@ -490,6 +493,37 @@ void ProcessingBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
 	QPoint point = event->scenePos().toPoint();
 	doubleClicking(point);
+}
+void ProcessingBox::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
+{
+	QMenu menu(_canvas);
+	QPoint scenePoint = event->scenePos().toPoint();
+	Region region = getRegion(scenePoint);
+
+	switch (region)
+	{
+		case ProcessingBox::inportsRegion:
+		case ProcessingBox::outportsRegion:
+		case ProcessingBox::incontrolsRegion:
+		case ProcessingBox::outcontrolsRegion:
+			_canvas->connectionContextMenu(&menu, event, this, region);
+			menu.exec(event->screenPos());
+			return;
+		case ProcessingBox::nameRegion:
+		case ProcessingBox::bodyRegion:
+		case ProcessingBox::resizeHandleRegion:
+			if (not isSelected())
+			{
+				std::cout << "updating selection on context menu" << std::endl;
+				if (! (event->modifiers() & Qt::ControlModifier) )
+					_canvas->clearSelections();
+				select();
+				update();
+			}
+			_canvas->processingContextMenu(&menu, event, this);
+			menu.exec(event->screenPos());
+		default:return;
+	}
 }
 
 void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
