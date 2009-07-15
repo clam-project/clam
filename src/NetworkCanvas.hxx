@@ -71,6 +71,7 @@ public:
 		, _colorPortWireOutline   (0x50,0x50,0x22)
 		, _colorControlWire       (0x4b,0x99,0xb4)
 		, _colorControlWireOutline(0x20,0x50,0x52)
+		, _maxZ(0)
 	{
 	// begin
 		//setBackgroundBrush(Qt::NoBrush);
@@ -133,11 +134,8 @@ public:
 	}
 	void raise(ProcessingBox * toRaise)
 	{
-		std::vector<ProcessingBox*>::iterator search = std::find(_processings.begin(), _processings.end(), toRaise);
-		if (search==_processings.end()) return;
-		_processings.erase(search);
-		_processings.push_back(toRaise);
 		toRaise->raiseEmbeded();
+		toRaise->setZValue(++_maxZ);
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -154,6 +152,7 @@ public:
 			delete _processings[i];
 		_processings.clear();
 		update();
+		_maxZ=0;
 	}
 	void clearWires()
 	{
@@ -921,6 +920,7 @@ protected:
 	QColor _colorControlWire;
 	QColor _colorControlWireOutline;
 	QGraphicsScene * _scene;
+	unsigned long _maxZ;
 };
 
 
@@ -1288,6 +1288,7 @@ private:
 		_processings.back()->move(point);
 		_processings.back()->resize(size);
 		_scene->addItem(_processings.back());
+		raise(_processings.back());
 	}
 protected:
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)

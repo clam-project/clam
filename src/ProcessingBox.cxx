@@ -416,7 +416,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	QPoint scenePoint = event->scenePos().toPoint();
 	Region region = getRegion(scenePoint);
 	if (region==noRegion) return;
-
+	_canvas->raise(this);
 	// Head
 	if (region==nameRegion)
 	{
