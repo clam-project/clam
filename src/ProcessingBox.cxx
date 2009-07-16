@@ -347,34 +347,6 @@ QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 
 void ProcessingBox::mousePressEvent(QMouseEvent * event)
 {
-	Region region = getRegion(_canvas->translatedPos(event));
-	if (region==noRegion) return;
-	_canvas->raise(this);
-
-	if (region==inportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
-		return;
-	}
-	if (region==outportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
-		return;
-	}
-	if (region==incontrolsRegion)
-	{
-		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
-		return;
-	}
-	if (region==outcontrolsRegion)
-	{
-		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
-		return;
-	}
 }
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
@@ -382,27 +354,6 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 {
-	Region region = getRegion(_canvas->translatedPos(event));
-	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->endWireDrag(this, index);
-	}
-	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->endWireDrag(this, index);
-	}
-	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
-	{
-		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->endWireDrag(this, index);
-	}
-	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
-	{
-		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->endWireDrag(this, index);
-	}
 }
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
@@ -454,6 +405,32 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 		_canvas->setCursor(Qt::SizeFDiagCursor);
 		return;
 	}
+	// connection actions
+	if (region==inportsRegion)
+	{
+		int index = portIndexByYPos(scenePoint);
+		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
+		return;
+	}
+	if (region==outportsRegion)
+	{
+		int index = portIndexByYPos(scenePoint);
+		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
+		return;
+	}
+	if (region==incontrolsRegion)
+	{
+		int index = controlIndexByXPos(scenePoint);
+		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
+		return;
+	}
+	if (region==outcontrolsRegion)
+	{
+		int index = controlIndexByXPos(scenePoint);
+		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
+		return;
+	}
+	event->ignore();
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
@@ -628,6 +605,31 @@ void ProcessingBox::doubleClicking(const QPoint & scenePoint)
 		int index = portIndexByYPos(scenePoint);
 		if (((CLAM::Processing*)_processing)->GetOutPort(index).GetTypeId()==typeid(CLAM::TData))
 			_canvas->addLinkedProcessingReceiver(this,scenePoint,"AudioSink");
+	}
+}
+void ProcessingBox::endWireDrag(const QPoint& scenePoint)
+{
+	Region region = getRegion(scenePoint);
+
+	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
+	{
+		int index = portIndexByYPos(scenePoint);
+		_canvas->endWireDrag(this, index);
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
+	{
+		int index = portIndexByYPos(scenePoint);
+		_canvas->endWireDrag(this, index);
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
+	{
+		int index = controlIndexByXPos(scenePoint);
+		_canvas->endWireDrag(this, index);
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
+	{
+		int index = controlIndexByXPos(scenePoint);
+		_canvas->endWireDrag(this, index);
 	}
 }
 

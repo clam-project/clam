@@ -755,13 +755,12 @@ public: // Event Handlers
 		if (_scene->itemAt(mapToScene(event->pos()))) return;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
-		_selectionDragOrigin=translatedPoint;
+		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
 		startDrag(SelectionDrag,0,0);
 		update();
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
 	{
-		QGraphicsView::mouseReleaseEvent(event);
 		if (_dragStatus == SelectionDrag)
 		{
 			QRect selectionBox (_selectionDragOrigin, _dragPoint);
@@ -769,8 +768,11 @@ public: // Event Handlers
 				if (selectionBox.contains(QRect(_processings[i]->pos(),_processings[i]->size())))
 					_processings[i]->select();
 		}
-		for (unsigned i = _processings.size(); i--; )
-			_processings[i]->mouseReleaseEvent(event);
+		QGraphicsView::mouseReleaseEvent(event);
+		QPointF scenePointF=mapToScene(event->pos());
+		ProcessingBox * processingBox=(ProcessingBox*)_scene->itemAt(scenePointF);
+		if(processingBox)
+			processingBox->endWireDrag(scenePointF.toPoint());
 		_dragStatus=NoDrag;
 		update();
 	}
