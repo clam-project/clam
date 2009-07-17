@@ -755,7 +755,7 @@ public: // Event Handlers
 		if (_scene->itemAt(mapToScene(event->pos()))) return;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
-		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
+		_selectionDragOrigin=translatedPos(event);
 		startDrag(SelectionDrag,0,0);
 		update();
 	}

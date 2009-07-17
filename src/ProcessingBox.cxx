@@ -430,7 +430,6 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
 		return;
 	}
-	event->ignore();
 }
 void ProcessingBox::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
