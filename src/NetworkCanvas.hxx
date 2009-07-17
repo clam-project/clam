@@ -226,23 +226,13 @@ protected:
 		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(_zoomFactor,_zoomFactor);
 //		painter.translate(-_boundingBox.topLeft());
-
+		
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
 		for (unsigned i = 0; i<_portWires.size(); i++)
 			_portWires[i]->draw(painter);
 		for (unsigned i = 0; i<_processings.size(); i++)
 			_processings[i]->paintFromParent(painter);
-		if (_dragStatus==InportDrag)
-			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
-		if (_dragStatus==OutportDrag)
-			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
-		if (_dragStatus==IncontrolDrag)
-			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
-		if (_dragStatus==OutcontrolDrag)
-			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
-		drawSelectBox(painter);
-		drawTooltip(painter);
 	}
 	void drawSelectBox(QPainter & painter)
 	{
@@ -277,6 +267,20 @@ protected:
 		painter.drawRect(tooltip);
 		painter.setPen(_colorTooltipText);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
+	}
+	void drawForeground ( QPainter * painter, const QRectF & rect )
+	{
+		if (_dragStatus==InportDrag)
+			PortWire::draw(*painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
+		if (_dragStatus==OutportDrag)
+			PortWire::draw(*painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
+		if (_dragStatus==IncontrolDrag)
+			ControlWire::draw(*painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
+		if (_dragStatus==OutcontrolDrag)
+			ControlWire::draw(*painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
+
+		drawSelectBox(*painter);
+		drawTooltip(*painter);
 	}
 
 public: // Helpers
@@ -725,7 +729,8 @@ public: // Event Handlers
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
-		_dragPoint = translatedPos(event);
+		_dragPoint = mapToScene(event->pos()).toPoint();
+
 		setToolTip(0);
 		setStatusTip(0);
 		
@@ -755,7 +760,7 @@ public: // Event Handlers
 		if (_scene->itemAt(mapToScene(event->pos()))) return;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
-		_selectionDragOrigin=translatedPos(event);
+		_selectionDragOrigin=mapToScene(event->pos()).toPoint();
 		startDrag(SelectionDrag,0,0);
 		update();
 	}
