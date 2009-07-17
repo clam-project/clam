@@ -248,18 +248,21 @@ protected:
 		int margin =3;
 		int cursorSize = 16;
 
+		QPoint viewPortTopLeft=mapToScene(0,0).toPoint();
+		QPoint viewPortBottomRight=mapToScene(viewport()->width(), viewport()->height()).toPoint();
+
 		QRect boundingRect = metrics.boundingRect(QRect(0,0,width(),height()), Qt::AlignLeft, _tooltipText);
 		double tooltipWidth = boundingRect.width()+2*margin;
 		double x = _tooltipPos.x()+cursorSize;
-		if (x + tooltipWidth > width())
+		if (x + tooltipWidth > viewPortBottomRight.x())
 			x = _tooltipPos.x() - tooltipWidth;
-		if (x<0) x=0;
+		if (x<viewPortTopLeft.x()) x=viewPortTopLeft.x();
 
 		double tooltipHeight = boundingRect.height()+2*margin;
 		double y = _tooltipPos.y() +cursorSize;
-		if (y + tooltipHeight > height())
+		if (y + tooltipHeight > viewPortBottomRight.y())
 			y = _tooltipPos.y() - tooltipHeight;
-		if (y<0) y=0;
+		if (y<viewPortTopLeft.y()) y=viewPortTopLeft.y();
 
 		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
 		painter.setBrush(_colorTooltipBody);
