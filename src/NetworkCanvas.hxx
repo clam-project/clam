@@ -74,7 +74,7 @@ public:
 		, _maxZ(0)
 	{
 	// begin
-		//setBackgroundBrush(Qt::NoBrush);
+//		setBackgroundBrush(Qt::NoBrush);
 		_scene=new QGraphicsScene(this);
 		_scene->setItemIndexMethod(QGraphicsScene::BspTreeIndex);
 		setScene(_scene);
@@ -211,29 +211,6 @@ public:
 	}
 // Drawing routines
 protected:
-	void paint(QPainter & painter)
-	{
-		_boundingBox=QRect(0,0,1,1);
-		for (unsigned i = 0; i<_processings.size(); i++)
-			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
-		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->expand(_boundingBox);
-		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->expand(_boundingBox);
-		_boundingBox = _boundingBox.unite(QRect(_boundingBox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
-//		resize(_boundingBox.size()*_zoomFactor);
-
-		painter.setRenderHint(QPainter::Antialiasing);
-		painter.scale(_zoomFactor,_zoomFactor);
-//		painter.translate(-_boundingBox.topLeft());
-		
-		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->draw(painter);
-		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->draw(painter);
-		for (unsigned i = 0; i<_processings.size(); i++)
-			_processings[i]->paintFromParent(painter);
-	}
 	void drawSelectBox(QPainter & painter)
 	{
 		if (_dragStatus!=SelectionDrag) return;
@@ -306,14 +283,6 @@ public: // Helpers
 
 		return QRect(topLeft, bottomRight);
 	}
-	template <class Event> QPoint translatedPos(Event * event)
-	{
-		return event->pos()/_zoomFactor+_boundingBox.topLeft();
-	}
-	template <class Event> QPoint translatedGlobalPos(Event * event)
-	{
-		return event->globalPos()/_zoomFactor;
-	}
 protected:
 	/// Given a connector region it return the complementary one.
 	/// Returns noRegion if the region is not a connector region.
@@ -382,15 +351,6 @@ public: // Actions
 	{
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->select();
-	}
-	void startMovingSelected(QMouseEvent * event)
-	{
-		for (unsigned i=0; i<_processings.size(); i++)
-		{
-			if (!_processings[i]->isSelected()) continue;
-			_processings[i]->startMoving(translatedGlobalPos(event));
-		}
-		//setCursor(Qt::SizeAllCursor);
 	}
 	void startMovingSelected(const QPoint& point)
 	{
@@ -463,10 +423,10 @@ public slots:
 		printer.setOrientation(QPrinter::Landscape);
 		QPrintDialog * dialog = new QPrintDialog(&printer, this);
 		dialog->exec();
-		QPainter painter;
-		painter.begin(&printer);
-		paint(painter);
-		painter.end();
+//		QPainter painter;
+//		painter.begin(&printer);
+//		paint(painter);
+//		painter.end();
 
 		// Restore display colors
 		_colorBoxFrameText = colorBoxFrameText;
@@ -562,10 +522,10 @@ public:
 	const QPixmap getPixmapOfCanvas(Qt::TransformationMode mode = Qt::FastTransformation)
 	{
 		QPixmap pixmap(size());
-		QPainter painter;
-		painter.begin(&pixmap);
-		paint(painter);
-		painter.end();
+//		QPainter painter;
+//		painter.begin(&pixmap);
+//		paint(painter);
+//		painter.end();
 		// if greater than 800x800, rescale it
 		if (size()!=size().boundedTo(QSize(800,800)))
 			return pixmap.scaled(800,800,Qt::KeepAspectRatio, mode);
@@ -730,13 +690,6 @@ public:
 
 public: // Event Handlers
 
-	void paintEvent(QPaintEvent * event)
-	{
-		QGraphicsView::paintEvent(event);
-		QPainter painter(this);
-		paint(painter);
-	}
-
 	void mouseMoveEvent(QMouseEvent * event)
 	{
 		_dragPoint = mapToScene(event->pos()).toPoint();
@@ -749,8 +702,6 @@ public: // Event Handlers
 
 		QGraphicsView::mouseMoveEvent(event);
 		for (unsigned i = _processings.size(); i--; )
-			_processings[i]->mouseMoveEvent(event);
-		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->hover(mapToScene(event->pos()).toPoint());
 		_tooltipPos=_dragPoint;
 		update();
@@ -759,14 +710,6 @@ public: // Event Handlers
 	{
 		if (event->button()!=Qt::LeftButton) return;
 		QGraphicsView::mousePressEvent(event);
-		QPoint translatedPoint = translatedPos(event);
-		for (unsigned i = _processings.size(); i--; )
-		{
-			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
-			_processings[i]->mousePressEvent(event);
-			update();
-			return;
-		}
 		if (_scene->itemAt(mapToScene(event->pos()))) return;
 		if (not (event->modifiers() & Qt::ControlModifier))
 			clearSelections();
@@ -825,7 +768,7 @@ public: // Event Handlers
 	{
 		QString type =  event->mimeData()->text();
 		event->acceptProposedAction();
-		addProcessing(translatedPos(event), type);
+		addProcessing(mapToScene(event->pos()).toPoint(), type);
 	}
 
 	void wheelEvent(QWheelEvent * event)

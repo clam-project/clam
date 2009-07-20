@@ -76,11 +76,6 @@ public:
 	QString getOutcontrolPrototyperName(const QPoint & point) const;
 	QString getConnectionPrototyperName(QString kind, QString connectionName) const;
 
-	void mousePressEvent(QMouseEvent * event);
-	void mouseMoveEvent(QMouseEvent * event);
-	void mouseReleaseEvent(QMouseEvent * event);
-	void mouseDoubleClickEvent(QMouseEvent * event);
-	
 	void mousePressEvent(QGraphicsSceneMouseEvent * event);
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
 	void mouseMoveEvent(QGraphicsSceneMouseEvent * event);

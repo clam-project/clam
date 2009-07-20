@@ -316,7 +316,6 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 	return bodyRegion;
 }
 
-
 int ProcessingBox::portIndexByYPos(const QPoint & point) const
 {
 	int y = point.y()-_pos.y();
@@ -344,23 +343,6 @@ QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 {
 	return _pos + QPoint( controlOffset+i*controlStep + controlWidth/2, _size.height()  );
 }
-
-void ProcessingBox::mousePressEvent(QMouseEvent * event)
-{
-}
-void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
-{
-	hover(_canvas->translatedPos(event));
-}
-void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
-{
-}
-void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
-{
-	QPoint point =_canvas->translatedPos(event);
-	doubleClicking(point);
-}
-//////////////////////////////////////////////////////
 
 void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
