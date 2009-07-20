@@ -285,6 +285,13 @@ protected:
 		drawSelectBox(*painter);
 		drawTooltip(*painter);
 	}
+	void drawBackground ( QPainter * painter, const QRectF & rect )
+	{
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			_controlWires[i]->draw(*painter);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->draw(*painter);
+	}
 
 public: // Helpers
 	void setToolTip(const QString & text)
