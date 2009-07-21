@@ -85,7 +85,7 @@ public:
 //		setCacheMode(QGraphicsView::CacheBackground);
 //		setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 //		setDragMode(QGraphicsView::ScrollHandDrag);
-		_scene->addRect(QRectF(0,0,1,1), QPen(QColor(0, 0, 0, 0)));
+//		_scene->addRect(QRectF(0,0,1,1), QPen(QColor(0, 0, 0, 0)));
 		setStyleSheet("background-color: transparent");
 	// end
 		
@@ -94,7 +94,7 @@ public:
 		setMouseTracking(true);
 		setAcceptDrops(true);
 		setMinimumSize(200,100);
-		resize(1024,1024);
+		resize(800,600);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
 
@@ -211,6 +211,17 @@ public:
 	}
 // Drawing routines
 protected:
+	void paintEvent ( QPaintEvent * event )
+	{	_boundingBox=QRect(0,0,1,1);
+		for (unsigned i = 0; i<_processings.size(); i++)
+			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			_controlWires[i]->expand(_boundingBox);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->expand(_boundingBox);
+		_scene->setSceneRect(_boundingBox);
+		QGraphicsView::paintEvent(event);
+	}
 	void drawSelectBox(QPainter & painter)
 	{
 		if (_dragStatus!=SelectionDrag) return;
