@@ -30,6 +30,7 @@
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsRectItem>
+#include <QtGui/QResizeEvent>
 #include <QtGui/QGraphicsSceneMouseEvent>
 
 class NetworkCanvas : public QGraphicsView
@@ -72,6 +73,7 @@ public:
 		, _colorControlWire       (0x4b,0x99,0xb4)
 		, _colorControlWireOutline(0x20,0x50,0x52)
 		, _maxZ(0)
+		, _scene(0)
 	{
 	// begin
 //		setBackgroundBrush(Qt::NoBrush);
@@ -83,18 +85,18 @@ public:
 		setTransformationAnchor ( QGraphicsView::NoAnchor );
 //		setResizeAnchor(AnchorViewCenter);
 //		setCacheMode(QGraphicsView::CacheBackground);
-//		setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+//		setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 //		setDragMode(QGraphicsView::ScrollHandDrag);
 //		_scene->addRect(QRectF(0,0,1,1), QPen(QColor(0, 0, 0, 0)));
-		setStyleSheet("background-color: transparent");
+		setStyleSheet("background-color: transparent;");
 	// end
 		
 		setGreenColorsForBoxes();
 
 		setMouseTracking(true);
 		setAcceptDrops(true);
-		setMinimumSize(200,100);
-		resize(800,600);
+//		setMinimumSize(200,100);
+//		resize(800,600);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
 
@@ -211,15 +213,25 @@ public:
 	}
 // Drawing routines
 protected:
-	void paintEvent ( QPaintEvent * event )
-	{	_boundingBox=QRect(0,0,1,1);
+	void resizeEvent(QResizeEvent * event)
+	{
+		viewport()->resize(event->size());
+		QGraphicsView::resizeEvent(event);
+	}
+	void recomputeSceneRect()
+	{
+		QRect boundingBox(0,0,1,1);
 		for (unsigned i = 0; i<_processings.size(); i++)
-			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+			boundingBox = boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
 		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->expand(_boundingBox);
+			_controlWires[i]->expand(boundingBox);
 		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->expand(_boundingBox);
-		_scene->setSceneRect(_boundingBox);
+			_portWires[i]->expand(boundingBox);
+		_scene->setSceneRect(boundingBox);
+	}
+	void paintEvent ( QPaintEvent * event )
+	{
+		recomputeSceneRect();
 		QGraphicsView::paintEvent(event);
 	}
 	void drawSelectBox(QPainter & painter)
@@ -287,7 +299,7 @@ public: // Helpers
 		_tooltipText = text;
 	}
 
-	QRect translatedRect(QRect rect)
+	QRect translatedRect(const QRect & rect)
 	{
 		QPoint topLeft = mapFromScene(rect.topLeft())+viewport()->pos();
 		QPoint bottomRight = mapFromScene(rect.bottomRight())+viewport()->pos();
@@ -847,13 +859,12 @@ public: // Event Handlers
 			));
 		return QWidget::event(event);
 	}
-
+	
 protected:
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
 	std::vector<ControlWire *> _controlWires;
 	double _zoomFactor;
-	QRect _boundingBox;
 private:
 	bool _changed;
 protected:
