@@ -3,6 +3,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QPainter>
+#include <QtGui/QStyleOption>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QInputDialog>
 #include <QtGui/QGraphicsSceneHoverEvent>
@@ -58,7 +59,6 @@ QRectF ProcessingBox::boundingRect() const
 }
 void ProcessingBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	painter->drawRect(boundingRect());
 	paintFromParent(*painter);
 }
 

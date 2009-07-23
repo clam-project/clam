@@ -98,8 +98,8 @@ public:
 	void raiseEmbeded() {if (_embeded) _embeded->raise();}
 
 	bool isSelected() { return _selected; }
-	void select() { _selected=true; }
-	void deselect() { _selected=false; }
+	void select()   { setSelected(true);  _selected=true; }
+	void deselect() { setSelected(false); _selected=false; }
 private:
 	void setName(const QString & newName);
 	void recomputeMinimumSizes();

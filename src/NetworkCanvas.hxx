@@ -32,6 +32,7 @@
 #include <QtGui/QGraphicsRectItem>
 #include <QtGui/QResizeEvent>
 #include <QtGui/QGraphicsSceneMouseEvent>
+#include <QtGui/QPainter>
 
 class NetworkCanvas : public QGraphicsView
 {
