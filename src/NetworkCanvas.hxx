@@ -214,7 +214,7 @@ public:
 // Drawing routines
 protected:
 
-	void QPainter & painter)
+	void paint(QPainter & painter)
 	{
 		drawBackground ( &painter, QRectF() );
 		QList<QGraphicsItem *> itemList=items();
