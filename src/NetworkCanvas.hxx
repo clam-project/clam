@@ -72,10 +72,10 @@ public:
 		, _colorPortWireOutline   (0x50,0x50,0x22)
 		, _colorControlWire       (0x4b,0x99,0xb4)
 		, _colorControlWireOutline(0x20,0x50,0x52)
-		, _maxZ(0)
 		, _scene(0)
+		, _maxZ(0)
 	{
-	// begin
+// begin
 //		setBackgroundBrush(Qt::NoBrush);
 		_scene=new QGraphicsScene(this);
 		_scene->setItemIndexMethod(QGraphicsScene::BspTreeIndex);
@@ -85,11 +85,11 @@ public:
 		setTransformationAnchor ( QGraphicsView::NoAnchor );
 //		setResizeAnchor(AnchorViewCenter);
 //		setCacheMode(QGraphicsView::CacheBackground);
-//		setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+//		setViewportUpdateMode(BoundingRectViewportUpdate);
 //		setDragMode(QGraphicsView::ScrollHandDrag);
 //		_scene->addRect(QRectF(0,0,1,1), QPen(QColor(0, 0, 0, 0)));
 		setStyleSheet("background-color: transparent;");
-	// end
+// end
 		
 		setGreenColorsForBoxes();
 
@@ -213,6 +213,21 @@ public:
 	}
 // Drawing routines
 protected:
+
+	void QPainter & painter)
+	{
+		drawBackground ( &painter, QRectF() );
+		QList<QGraphicsItem *> itemList=items();
+		QList<QGraphicsItem *>::iterator i=itemList.begin();
+
+		while(i!=itemList.end())
+		{
+			(*i)->paint(&painter, 0, 0);
+			i++;
+		}
+		drawForeground ( &painter, QRectF() );
+	}
+
 	void resizeEvent(QResizeEvent * event)
 	{
 		viewport()->resize(event->size());
@@ -446,10 +461,10 @@ public slots:
 		printer.setOrientation(QPrinter::Landscape);
 		QPrintDialog * dialog = new QPrintDialog(&printer, this);
 		dialog->exec();
-//		QPainter painter;
-//		painter.begin(&printer);
-//		paint(painter);
-//		painter.end();
+		QPainter painter;
+		painter.begin(&printer);
+		paint(painter);
+		painter.end();
 
 		// Restore display colors
 		_colorBoxFrameText = colorBoxFrameText;
@@ -545,10 +560,10 @@ public:
 	const QPixmap getPixmapOfCanvas(Qt::TransformationMode mode = Qt::FastTransformation)
 	{
 		QPixmap pixmap(size());
-//		QPainter painter;
-//		painter.begin(&pixmap);
-//		paint(painter);
-//		painter.end();
+		QPainter painter;
+		painter.begin(&pixmap);
+		paint(painter);
+		painter.end();
 		// if greater than 800x800, rescale it
 		if (size()!=size().boundedTo(QSize(800,800)))
 			return pixmap.scaled(800,800,Qt::KeepAspectRatio, mode);
