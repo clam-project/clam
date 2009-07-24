@@ -87,7 +87,7 @@ public:
 	void startMoving(const QPoint & initialGlobalPos);
 	void keepMoving(const QPoint & delta);
 	void doubleClicking(const QPoint & scenePoint);
-	QPoint pos() const { return _pos; }
+	QPoint position() const { return _pos; }
 	QSize size() const { return _size; }
 	void embed(QWidget * widget);
 	bool configure();

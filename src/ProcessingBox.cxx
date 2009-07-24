@@ -117,6 +117,7 @@ void ProcessingBox::resize(const QSize & size)
 void ProcessingBox::move(const QPoint & point)
 {
 	_pos=point;
+	setPos(mapFromScene(point));
 }
 
 void ProcessingBox::setName(const QString & newName)

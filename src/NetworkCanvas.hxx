@@ -224,7 +224,7 @@ protected:
 	{
 		QRect boundingBox(0,0,1,1);
 		for (unsigned i = 0; i<_processings.size(); i++)
-			boundingBox = boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+			boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->expand(boundingBox);
 		for (unsigned i = 0; i<_portWires.size(); i++)
@@ -650,7 +650,7 @@ protected:
 		QRect boundingBox;
 		for (unsigned i = 0; i<_processings.size(); i++)
 			if (_processings[i]->isSelected())
-				boundingBox = boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+				boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
 		return boundingBox;
 	}
 
@@ -748,7 +748,7 @@ public: // Event Handlers
 		{
 			QRect selectionBox (_selectionDragOrigin, _dragPoint);
 			for (unsigned i = _processings.size(); i--; )
-				if (selectionBox.contains(QRect(_processings[i]->pos(),_processings[i]->size())))
+				if (selectionBox.contains(QRect(_processings[i]->position(),_processings[i]->size())))
 					_processings[i]->select();
 		}
 		QGraphicsView::mouseReleaseEvent(event);
@@ -1425,7 +1425,7 @@ public:
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
 			CLAM::BaseNetwork::Geometry processingGeometry;
-			QPoint position = _processings[i]->pos()-offsetPoint;
+			QPoint position = _processings[i]->position()-offsetPoint;
 			QSize size = _processings[i]->size();
 			const std::string name=_processings[i]->getName().toStdString();
 			processingGeometry.x=position.x();
