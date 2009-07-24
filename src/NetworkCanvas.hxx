@@ -215,20 +215,6 @@ public:
 // Drawing routines
 protected:
 
-	void paint(QPainter & painter)
-	{
-		drawBackground ( &painter, QRectF() );
-		QList<QGraphicsItem *> itemList=items();
-		QList<QGraphicsItem *>::iterator i=itemList.begin();
-
-		while(i!=itemList.end())
-		{
-			(*i)->paint(&painter, 0, 0);
-			i++;
-		}
-		drawForeground ( &painter, QRectF() );
-	}
-
 	void resizeEvent(QResizeEvent * event)
 	{
 		viewport()->resize(event->size());
@@ -464,7 +450,7 @@ public slots:
 		dialog->exec();
 		QPainter painter;
 		painter.begin(&printer);
-		paint(painter);
+		render(&painter);
 		painter.end();
 
 		// Restore display colors
@@ -563,7 +549,7 @@ public:
 		QPixmap pixmap(size());
 		QPainter painter;
 		painter.begin(&pixmap);
-		paint(painter);
+		render(&painter);
 		painter.end();
 		// if greater than 800x800, rescale it
 		if (size()!=size().boundedTo(QSize(800,800)))
