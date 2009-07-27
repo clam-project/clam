@@ -89,7 +89,7 @@ public:
 //		setViewportUpdateMode(BoundingRectViewportUpdate);
 //		setDragMode(QGraphicsView::ScrollHandDrag);
 //		_scene->addRect(QRectF(0,0,1,1), QPen(QColor(0, 0, 0, 0)));
-		setStyleSheet("background-color: transparent;");
+		viewport ()->setStyleSheet("background-color: transparent;");
 // end
 		
 		setGreenColorsForBoxes();
