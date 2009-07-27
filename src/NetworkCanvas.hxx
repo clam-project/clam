@@ -805,7 +805,7 @@ public: // Event Handlers
 	}
 	bool event(QEvent * event)
 	{
-		if (event->type()!=QEvent::WhatsThis) return QWidget::event(event);
+		if (event->type()!=QEvent::WhatsThis) return QGraphicsView::event(event);
 		QHelpEvent * helpEvent = (QHelpEvent *) event;
 		for (unsigned i = _processings.size(); i--; )
 		{
@@ -851,7 +851,7 @@ public: // Event Handlers
 						"</ul>\n"
 						));
 			}
-			return QWidget::event(event);
+			return QGraphicsView::event(event);
 		}
 		setWhatsThis(tr(
 			"<p>This is the 'network canvas'. "
@@ -859,7 +859,7 @@ public: // Event Handlers
 			"and connect them by dragging compatible connectors. "
 			"You may pan the canvas by dragging it with the control key pressed.</p>"
 			));
-		return QWidget::event(event);
+		return QGraphicsView::event(event);
 	}
 	
 protected:
