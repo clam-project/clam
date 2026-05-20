@@ -36,7 +36,6 @@ public:
 		if ( !_dataSource) return;
 		QPainter painter(this);
 //		painter.setRenderHint(QPainter::Antialiasing);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
 		painter.translate(0,height()/2);
 		painter.scale(width(),-height()/2);
@@ -85,4 +84,3 @@ private:
 
 
 #endif//Oscilloscope_hxx
-

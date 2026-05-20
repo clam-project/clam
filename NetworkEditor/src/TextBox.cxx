@@ -12,10 +12,7 @@ TextBox::TextBox(NetworkCanvas * canvas)
 {
 	setFlag(QGraphicsItem::ItemIsMovable,true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
-#if QT_VERSION >= 0x040600
-	// This flag doesn't exists in Qt 4.5 but it is needed to be set in Qt 4.6 and above
 	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-#endif
 	_canvas=canvas;
 //	setTextInteractionFlags(Qt::TextEditable);
 }

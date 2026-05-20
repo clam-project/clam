@@ -100,9 +100,9 @@ namespace MIDI
 		Write16Bit(mDivision); // division
 	}
 
-	void Writer::WriteVarLen(register unsigned long value)
+	void Writer::WriteVarLen(unsigned long value)
 	{
-		register unsigned long buffer;
+		unsigned long buffer;
 		buffer = value & 0x7F;
 
 		while( (value >>= 7) )

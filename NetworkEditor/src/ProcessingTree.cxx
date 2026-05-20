@@ -20,6 +20,8 @@
  */
 
 #include "ProcessingTree.hxx" 
+#include <QtCore/QMimeData>
+#include <QtGui/QDrag>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
@@ -131,9 +133,9 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 	data->setText(className);
 	drag->setMimeData(data);
 	drag->setPixmap(QPixmap(":/icons/images/processing.png"));
-	Qt::DropAction dropAction = drag->start();
+	Qt::DropAction dropAction = drag->exec();
+	(void)dropAction;
 }
 
 
 } // namespace NetworkGUI
-

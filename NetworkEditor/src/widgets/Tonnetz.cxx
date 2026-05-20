@@ -20,6 +20,7 @@
  */
 
 #include "Tonnetz.hxx"
+#include <QtCore/QtGlobal>
 #include <QtGui/QPixmap>
 #include <QtCore/QTimer>
 #include <iostream>
@@ -154,7 +155,9 @@ void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), font());
+	(void)posx;
+	(void)posy;
+	(void)bin;
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {

@@ -4,6 +4,7 @@
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include <QtGui/QKeyEvent>
+#include <QtCore/QtGlobal>
 #include <iostream>
 #include <cmath>
 #include <GL/glu.h>
@@ -16,6 +17,11 @@ static float * vColor(const QColor & color)
 	vcolor[2]=color.blueF();
 	vcolor[3]=color.alphaF();
 	return vcolor;
+}
+
+static void setCurrentGLColor(const QColor & color)
+{
+	glColor4fv(vColor(color));
 }
 
 class Light
@@ -182,19 +188,14 @@ public:
 		roomWall(-1, 0);
 		roomWall(0, 1);
 		roomWall(1, 1.75);
-		qglColor(Qt::yellow);
+		setCurrentGLColor(Qt::yellow);
 		drawPlane(-1.75);
 		glColor4fv(vColor("#aaa"));
 		drawPlane(+1.75);
-		qglColor(QColor("#ffa"));
-		renderText(0., 1, 10.-1, "North (+Y)");
-		renderText(0., 1, -10.+1, "South (-Y)");
-		renderText(10.-1, 1, 0., "East (+X)");
-		renderText(-10.+1, 1, 0., "West (-X)");
+		setCurrentGLColor(QColor("#ffa"));
 		glPushMatrix();
 			glColor4fv(vColor("#b22"));
 			glTranslatef(_sourceX,0,_sourceY);
-			renderText(0., 1, 0., "Source");
 			glBegin(GL_LINES);
 				glVertex3f(0.,1.,0.);
 				glVertex3f(0.,0.,0.);
@@ -220,7 +221,7 @@ public:
 		glPushMatrix();
 		glColor4fv(vColor(color));
 		glTranslatef(position[0],position[1],position[2]);
-		renderText(0., 2, 0., label);
+		(void)label;
 		glMaterialfv(GL_FRONT, GL_EMISSION, vColor(color));
 		glBegin(GL_LINES);
 			glVertex3f(0.,0.,0.);
@@ -246,8 +247,8 @@ public:
 				.arg(QString::number(_viewRotation,'d',0))
 				;
 		glColor4fv(vColor("black"));
-		renderText(10,20, receiverString);
-		renderText(10,40, emiterString);
+		(void)receiverString;
+		(void)emiterString;
 		glBegin(GL_LINES);
 		glVertex3f(0,.06,-.1);
 		glVertex3f(0,.02,-.1);
@@ -337,7 +338,7 @@ public:
 		while (_viewRotation>=360.f) _viewRotation-=360.f;
 		while (_viewRotation<0.f) _viewRotation+=360.f;
 		event->accept();
-		updateGL();
+		update();
 	}
 signals:
 	double posChanged(QPointF point);

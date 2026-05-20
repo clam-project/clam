@@ -7018,8 +7018,8 @@ void RtAudio :: convertStreamBuffer(RTAUDIO_STREAM *stream, STREAM_MODE mode)
 
 void RtAudio :: byteSwapBuffer(char *buffer, int samples, RTAUDIO_FORMAT format)
 {
-  register char val;
-  register char *ptr;
+  char val;
+  char *ptr;
 
   ptr = buffer;
   if (format == RTAUDIO_SINT16) {

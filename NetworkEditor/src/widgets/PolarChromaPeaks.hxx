@@ -43,7 +43,6 @@ public:
 			"F#",
 		};
 		QPainter painter(this);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		painter.translate(width()/2,height()/2);
 		for (int i=0; i<12; i++)
 		{

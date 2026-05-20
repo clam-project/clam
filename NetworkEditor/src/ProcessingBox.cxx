@@ -9,7 +9,8 @@
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QGraphicsSceneContextMenuEvent>
 #include <QtGui/QGraphicsProxyWidget>
-#include "ui_DummyProcessingConfig.hxx"
+#include <QtCore/QtGlobal>
+#include "ui_DummyProcessingConfig.h"
 
 // ANY CLAM DEPENDENCY ON THIS FILE SHOULD BE DELEGATED TO THE CANVAS
 
@@ -203,7 +204,7 @@ void ProcessingBox::recomputeMinimumSizes()
 	if (minimumHeight<outportsHeight) minimumHeight = outportsHeight;
 	minimumHeight += 2*portOffset;
 
-	int minimumWidth = metrics.width(_name) + textHeight + margin;
+	int minimumWidth = metrics.horizontalAdvance(_name) + textHeight + margin;
 	if (_embeded && minimumWidth<_embeded->minimumWidth())
 		minimumWidth = _embeded->minimumWidth();
 	if (_embeded && minimumWidth<_embeded->minimumSizeHint().width())
@@ -786,4 +787,3 @@ bool ProcessingBox::configure()
 	recomputeMinimumSizes();
 	return true;
 }
-

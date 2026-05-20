@@ -106,7 +106,7 @@ public:
 	bool XMLContent(std::istream & str) 
 	{
 		str >> mAdaptee;
-		return str!=NULL;
+		return static_cast<bool>(str);
 	}
 // Testing
 public:
@@ -119,4 +119,3 @@ public:
 
 }
 #endif//_XMLAdapter_
-

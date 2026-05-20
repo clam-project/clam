@@ -49,11 +49,11 @@ namespace CLAM {
 		FileMIDIDevice(const std::string& name,const std::string& device);
 		~FileMIDIDevice();
 
-		void ConcreteStart(void) throw(Err);
-		void ConcreteStop(void) throw(Err);
+		void ConcreteStart(void);
+		void ConcreteStop(void);
 
-		void Read(void) throw(Err);
-		void Write(unsigned char* msg,int size) throw(Err);
+		void Read(void);
+		void Write(unsigned char* msg,int size);
 		void SetClock(TControlData val);
 	};
 
@@ -66,7 +66,7 @@ namespace CLAM {
 		mCurTime = 0;
 	}
 
-	void FileMIDIDevice::ConcreteStart(void) throw(Err)
+	void FileMIDIDevice::ConcreteStart(void)
 	{
 		if (!mReadDone)
 		{
@@ -93,7 +93,7 @@ namespace CLAM {
 		}
 	}
 
-	void FileMIDIDevice::ConcreteStop(void) throw(Err)
+	void FileMIDIDevice::ConcreteStop(void)
 	{
 	}
 
@@ -102,12 +102,12 @@ namespace CLAM {
 		mCurTime = (::MIDI::Milliseconds) val;
 	}
 
-	void FileMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
+	void FileMIDIDevice::Write(unsigned char* msg,int size)
 	{
 		throw Err("FileMIDIDevice::Write not implemented yet");
 	}
 
-	void FileMIDIDevice::Read(void) throw(Err)
+	void FileMIDIDevice::Read(void)
 	{
 		bool flag;
 		static int nbytesPerChnMsg[7] =

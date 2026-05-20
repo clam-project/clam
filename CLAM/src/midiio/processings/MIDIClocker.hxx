@@ -80,7 +80,7 @@ public:
 	 *  @throw ErrProcessingObj when there is an error on device adquisition
 	 */
 	virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		throw(ErrProcessingObj);
+;
 	
 	/** Getter for the configuration of the class
 	 *  @return The ProcessingConfig object attached to this Processing object

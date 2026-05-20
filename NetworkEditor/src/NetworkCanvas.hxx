@@ -16,9 +16,11 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
 #include <QtCore/QFile>
+#include <QtCore/QMimeData>
 #include <QtGui/QMessageBox>
 #include <QtGui/QAction>
 #include <QtGui/QCompleter>
+#include <QtCore/QtGlobal>
 #include <QtCore/QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
@@ -37,6 +39,7 @@
 #include <QtGui/QPlainTextEdit>
 #include <QtGui/QDesktopServices>
 #include <QtCore/QUrl>
+#include <QtGui/QPageLayout>
 
 class NetworkCanvas : public QGraphicsView
 {
@@ -237,7 +240,7 @@ protected:
 	{
 		QRect boundingBox(0,0,1,1);
 		for (unsigned i = 0; i<_processings.size(); i++)
-			boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
+			boundingBox = boundingBox.united(QRect(_processings[i]->position(),_processings[i]->size()));
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->expand(boundingBox);
 		for (unsigned i = 0; i<_portWires.size(); i++)
@@ -501,7 +504,7 @@ public slots:
 		printer.setOutputFileName("ExportedNetwork.pdf");
 		printer.setFullPage(true);
 		printer.setCreator( "CLAM NetworkEditor");
-		printer.setOrientation(QPrinter::Landscape);
+		printer.setPageOrientation(QPageLayout::Landscape);
 		QPrintDialog * dialog = new QPrintDialog(&printer, this);
 		dialog->exec();
 		QPainter painter;
@@ -729,7 +732,7 @@ protected:
 		QRect boundingBox;
 		for (unsigned i = 0; i<_processings.size(); i++)
 			if (_processings[i]->isSelected())
-				boundingBox = boundingBox.unite(QRect(_processings[i]->position(),_processings[i]->size()));
+				boundingBox = boundingBox.united(QRect(_processings[i]->position(),_processings[i]->size()));
 		return boundingBox;
 	}
 protected:
@@ -1035,7 +1038,7 @@ public: // Event Handlers
 		}
 		QGraphicsView::mouseReleaseEvent(event);
 		QPointF scenePointF=mapToScene(event->pos());
-		ProcessingBox * processingBox=(ProcessingBox*)_scene->itemAt(scenePointF);
+		ProcessingBox * processingBox=(ProcessingBox*)_scene->itemAt(scenePointF, transform());
 		if(processingBox)
 			processingBox->endWireDrag(scenePointF.toPoint());
 		_dragStatus=NoDrag;
@@ -1044,7 +1047,7 @@ public: // Event Handlers
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
-		if (_scene->itemAt(mapToScene(event->pos())))
+		if (_scene->itemAt(mapToScene(event->pos()), transform()))
 			QGraphicsView::mouseDoubleClickEvent(event);
 		else
 			print();
@@ -1071,7 +1074,7 @@ public: // Event Handlers
 	{
 		QString type =  event->mimeData()->text();
 		event->acceptProposedAction();
-		addProcessing(mapToScene(event->pos()).toPoint(), type);
+		addProcessing(mapToScene(event->position().toPoint()).toPoint(), type);
 	}
 	void scrollContentsBy( int dx, int dy )
 	{
@@ -1082,7 +1085,8 @@ public: // Event Handlers
 	{
 		const int deltaUnitsPerDegree = 8;
 		const int degreesPerStep = 15;
-		int steps = event->delta() / (deltaUnitsPerDegree*degreesPerStep);
+		const int delta = event->angleDelta().y();
+		int steps = delta / (deltaUnitsPerDegree*degreesPerStep);
 		zoom(steps);
 	}
 	bool event(QEvent * event)
@@ -1207,4 +1211,3 @@ public:
 };
 
 #endif//NetworkCanvas_hxx
-

@@ -2,7 +2,7 @@
 #define LadspaPluginCompilationTask_hxx
 #include "MainWindow.hxx"
 #include <QtCore/QTemporaryFile>
-#include "ui_LadspaMetadataEditor.hxx"
+#include "ui_LadspaMetadataEditor.h"
 
 
 //////////////////////

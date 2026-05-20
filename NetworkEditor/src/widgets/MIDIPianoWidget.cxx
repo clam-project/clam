@@ -21,6 +21,8 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include <CLAM/CLAM_Math.hxx>
 #include <QtGui/QMouseEvent>
+#include <QtCore/QPoint>
+#include <QtCore/QtGlobal>
 #include "EmbededWidgets.hxx"
 
 
@@ -138,7 +140,8 @@ void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 	if (!_clickEnabled) return;
 	if (event->button() == Qt::LeftButton)
 	{
-		TSize x=event->x(), y=event->y();
+		const QPoint position = event->position().toPoint();
+		TSize x=position.x(), y=position.y();
 
 		unsigned note = identifyMidiByPosition(x,y);
 		noteOn(note);
@@ -152,7 +155,8 @@ void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
 	if (!_clickEnabled) return;
 	if (event->button() == Qt::LeftButton)
 	{
-		TSize x=event->x(), y=event->y();
+		const QPoint position = event->position().toPoint();
+		TSize x=position.x(), y=position.y();
 
 //FIXME: there is a bug if you press in one note, move the mouse and release the click in a different (note) one
 // DGG: Suggestion: keep the state of a pressed key, and here, just release the one we pressed
@@ -171,7 +175,7 @@ void MIDIPianoWidget::noteOn(unsigned note)
 	// TODO: Shouldn't the controlPiano be responsible of that?
 	unsigned midiNote = note + 21 + (_controlPiano->GetOctave()-1)*12;
 	//144 NoteOn, note, velocity
-	MIDI::Message tmpMessage(144, note, _controlPiano->GetVelocity(), 0);
+	MIDI::Message tmpMessage(144, midiNote, _controlPiano->GetVelocity(), 0);
 	_controlPiano->SendMIDIMessage(tmpMessage);
 }
 
@@ -182,16 +186,16 @@ void MIDIPianoWidget::noteOff(unsigned note)
 	// TODO: Shouldn't the controlPiano be responsible of that?
 	unsigned midiNote = note + 21 + (_controlPiano->GetOctave()-1)*12;
 	//128 NoteOff, note, velocity
-	MIDI::Message tmpMessage(128, note, _controlPiano->GetVelocity(), 0);
+	MIDI::Message tmpMessage(128, midiNote, _controlPiano->GetVelocity(), 0);
 	_controlPiano->SendMIDIMessage(tmpMessage);
 }
 
 unsigned MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
 {
-	unsigned whiteKeyWidth = width()/7.;
+	TSize whiteKeyWidth = width()/7.;
 	if (not  whiteKeyWidth) return eCNote; // TODO: return eNoNote?
-	unsigned sharpHeight = height()/2;
-	unsigned sharpWidth = whiteKeyWidth/2;
+	TSize sharpHeight = height()/2;
+	TSize sharpWidth = whiteKeyWidth/2;
 	const TSize octaveConst = 12;
 
 	bool isSharpZone = (y<=sharpHeight) and (x+whiteKeyWidth/4)%whiteKeyWidth <= sharpWidth;

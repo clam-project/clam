@@ -42,7 +42,6 @@ public:
 			0
 		};
 		QPainter painter(this);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		painter.translate(width()/2,height());
 		painter.save();
 		painter.rotate(-90);

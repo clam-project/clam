@@ -20,6 +20,7 @@
  */
 
 #include "KeySpace.hxx"
+#include <QtCore/QtGlobal>
 #include <cmath>
 #include <iostream>
 
@@ -265,7 +266,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	glEnable(GL_TEXTURE_2D);
-	qglColor(Qt::yellow);
+	glColor3d(1,1,0);
 	float vertexes[] = {0,0,0,1,1,1,1,0};
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -293,7 +294,5 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(),font());
 	}
 }
-

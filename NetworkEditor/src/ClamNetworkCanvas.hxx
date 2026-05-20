@@ -264,10 +264,10 @@ public: // Actions
 	template <typename Connector>
 	QString connectorTooltip(Connector & connector) const
 	{
-		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(connector.GetTypeId()).c_str();
+		const std::string typeName = CLAM::ProcessingDataPlugin::displayNameFor(connector.GetTypeId());
 		return QObject::tr("%1\nType: %2", "Connector tooltip")
-			.arg(connector.GetName().c_str())
-			.arg(typeString)
+			.arg(QString::fromStdString(connector.GetName()))
+			.arg(QString::fromStdString(typeName))
 			;
 	}
 	QString outportTooltip(void * processing, unsigned index) const

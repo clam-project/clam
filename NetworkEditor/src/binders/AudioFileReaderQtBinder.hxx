@@ -1,5 +1,5 @@
-#ifndef CLAM_ConfigurationQtBinder_hxx
-#define CLAM_ConfigurationQtBinder_hxx
+#ifndef CLAM_AudioFileReaderQtBinder_hxx
+#define CLAM_AudioFileReaderQtBinder_hxx
 
 #include "QtBinder.hxx"
 
@@ -47,5 +47,4 @@ public:
 	bool bind(QObject * uiElement, CLAM::Network & network, QStringList & errors);
 };
 
-#endif//CLAM_ConfigurationQtBinder_hxx
-
+#endif//CLAM_AudioFileReaderQtBinder_hxx

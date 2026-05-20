@@ -47,7 +47,6 @@ public:
 		//std::cout << min << ":" << max << std::endl;
 		QVector<QPointF> lines;
 		QPainter painter(this);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		const double spectralRange = 11025;
 		painter.setPen(QPen(_pointColor,4));
 		for (int i=0; i<size; i++)

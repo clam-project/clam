@@ -1,4 +1,4 @@
-#include "ui_MainWindow.hxx"
+#include "ui_MainWindow.h"
 #include "ClamNetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
 #include <QtGui/QVBoxLayout>
@@ -10,7 +10,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
-#include "ui_About.hxx"
+#include "ui_About.h"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/NaiveFlowControl.hxx>
@@ -25,12 +25,12 @@
 // copied from Annotator:
 #include "TaskRunner.hxx"
 
-#if QT_VERSION >= 0x040400
-#include <QtWebKit/QWebView>
-#endif
 #include <QtSvg/QSvgWidget>
 #include <QtCore/QProcess>
+#include <QtCore/QUrl>
 #include <QtGui/QDesktopServices>
+#include <QtWidgets/QTextBrowser>
+#include <QtXml/QDomDocument>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -47,7 +47,6 @@
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
-#include <QtXmlPatterns/QXmlQuery>
 #include <QtCore/QStringList>
 
 
@@ -257,22 +256,14 @@ public:
 	{
 		QFile networkFile(networkFileName);
 		if( !networkFile.exists() ) return QString();
-		networkFile.open(QIODevice::ReadOnly);
+		if (!networkFile.open(QIODevice::ReadOnly)) return QString();
 
-		QXmlQuery query;
-		query.bindVariable("document", &networkFile);
-		query.setQuery("doc($document)/network/@clamVersion/string()");	
+		QDomDocument document;
+		if (!document.setContent(&networkFile)) return QString();
 
-		QString readClamVersion;
-#if QT_VERSION<0x040500
-		// TODO: Remove this code when Qt<4.5 are not supported anymore
-		QStringList queryResult;
-		query.evaluateTo(&queryResult);
-		readClamVersion = queryResult.join("");
-#else
-		query.evaluateTo(&readClamVersion);
-#endif
-		return readClamVersion.trimmed();
+		QDomElement root = document.documentElement();
+		if (root.tagName() != "network") return QString();
+		return root.attribute("clamVersion").trimmed();
 	}
 	void load(const QString & filename)
 	{
@@ -524,16 +515,15 @@ public slots:
 
 	void browseUrlInternalFromProcessing(const QString & fileName)
 	{
-#if QT_VERSION >= 0x040400
 		QDockWidget * browser=new QDockWidget(this);
-		QWebView * view=new QWebView(browser);
+		QTextBrowser * view=new QTextBrowser(browser);
 		view->setContextMenuPolicy(Qt::NoContextMenu);
-		view->load(fileName);
+		view->setOpenExternalLinks(true);
+		view->setSource(QUrl::fromUserInput(fileName));
 		browser->setObjectName(tr("Internal Browser"));
 		browser->setWidget(view);
 		browser->setWindowTitle(tr("Browsing %1").arg(fileName));
 		addDockWidget(Qt::BottomDockWidgetArea,browser);
-#endif
 	}
 
 	void updateNetworkDescription()
@@ -569,7 +559,7 @@ public slots:
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://clam-project.org/wiki/Network_Editor_tutorial";
-		QDesktopServices::openUrl(helpUrl);
+		QDesktopServices::openUrl(QUrl::fromUserInput(helpUrl));
 	}
 	void on_action_About_triggered()
 	{
@@ -589,7 +579,7 @@ public slots:
 	{
 		if (!askUserSaveChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", "", networkFilter());
-		if (file==QString::null) return;
+		if (file.isEmpty()) return;
 		load(file);
 	}
 	void on_action_Open_example_triggered()
@@ -603,7 +593,7 @@ public slots:
 		examplesPath = DATA_EXAMPLES_PATH;
 #endif
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", examplesPath, networkFilter());
-		if (file==QString::null) return;
+		if (file.isEmpty()) return;
 		load(file);
 	}
 	void on_action_OpenToolbar_triggered()
@@ -615,7 +605,7 @@ public slots:
 		QAction *action = qobject_cast<QAction *>(sender());
 		if (!action) return;
 		QString file = action->data().toString();
-		if (file==QString::null) return;
+		if (file.isEmpty()) return;
 		if (!askUserSaveChanges()) return;
 		load(file);
 	}
@@ -631,7 +621,7 @@ public slots:
 		fileDialog.setFileMode(QFileDialog::AnyFile);
 //		fileDialog.setCaption("");
 		fileDialog.selectFile(_networkFile);
-		fileDialog.setFilter(networkFilter());
+		fileDialog.setNameFilter(networkFilter());
 		fileDialog.setDefaultSuffix("clamnetwork");
 		if (not fileDialog.exec()) return;
 		
@@ -751,4 +741,3 @@ private:
 	QTabWidget * _centralTab;
 #endif//AFTER13RELEASE
 };
-

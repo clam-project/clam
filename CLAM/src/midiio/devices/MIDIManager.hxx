@@ -76,7 +76,7 @@ public:
 	typedef std::vector<MIDIDeviceList*>::const_iterator list_iterator;
 
 	/** Constructor of the class*/
-	MIDIManager() throw(Err);
+	MIDIManager();
 
 	/** Destructor of the class*/
 	~MIDIManager();
@@ -103,10 +103,10 @@ public:
 	MIDIDevice* FindOrCreateDevice(const std::string& name);
 
 	/** This method starts the MIDIManager object*/
-	void Start(void) throw(Err);
+	void Start(void);
 
 	/** This method stops the MIDIManager object*/
-	void Stop(void) throw(Err);
+	void Stop(void);
 
 	/** Checks all devices searching data to read*/
 	void Check(void);

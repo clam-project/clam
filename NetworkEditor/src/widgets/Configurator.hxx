@@ -26,7 +26,7 @@ public:
 	{
 		mLayout = new QVBoxLayout(this);
 		mLayout->setSpacing(3);
-		mLayout->setMargin(5);
+		mLayout->setContentsMargins(5, 5, 5, 5);
 		setMinimumWidth(400);
 		GenerateWidgets();
 		AddButtons();
@@ -104,4 +104,3 @@ public slots:
 };
 
 #endif//Configurator_hxx
-
