@@ -26,6 +26,31 @@
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
+namespace
+{
+	// Run fn(); on a thrown exception show a critical message box instead
+	// of letting the unhandled exception abort the process. CLAM throws
+	// CLAM::Err (a std::exception) on XML parse failures, missing factory
+	// entries, IO errors, etc.
+	template <typename F>
+	bool guard(QWidget* parent, const QString& action, F&& fn)
+	{
+		try { fn(); return true; }
+		catch (const std::exception& e)
+		{
+			QMessageBox::critical(parent, "SMS Tools 2",
+				QObject::tr("%1 failed:\n%2").arg(action, QString::fromUtf8(e.what())));
+			return false;
+		}
+		catch (...)
+		{
+			QMessageBox::critical(parent, "SMS Tools 2",
+				QObject::tr("%1 failed: unknown error.").arg(action));
+			return false;
+		}
+	}
+}
+
 namespace QtSMS
 {
 	QtSMSTools::QtSMSTools()
@@ -100,18 +125,24 @@ namespace QtSMS
 #endif
 		QString filename = QFileDialog::getOpenFileName(this, QString(), examplesPath, "(*.xml *.sdif)");
 		if(filename.isEmpty()) return;
-		if(!mEngine->LoadConfiguration(filename.toStdString()))
+		bool loaded = false;
+		if (!guard(this, tr("Load configuration"), [&]() {
+				loaded = mEngine->LoadConfiguration(filename.toStdString());
+			})) return;
+		if(!loaded)
 		{
-			QMessageBox::critical(0,"SMS Tools 2","Load configuration failed.");
+			QMessageBox::critical(this,"SMS Tools 2","Load configuration failed.");
 			return;
 		}
-		
+
 		mShowOriginalAudio=true;
 		Engine::DisplayManager()->Flush(); // we have a new config
 		if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
 		{
-			mEngine->RetrieveAudio(true);
-			mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
+			guard(this, tr("Load analysis"), [&]() {
+				mEngine->RetrieveAudio(true);
+				mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
+			});
 		}
 		else
 		{
@@ -131,13 +162,17 @@ namespace QtSMS
 		QString filename = QFileDialog::getSaveFileName(this, QString(), "new_config.xml", "*.xml");
 		if(filename.isEmpty()) return;
 		mShowOriginalAudio=true;
-		mEngine->StoreConfiguration(filename.toStdString());
-		mEngine->LoadConfiguration(filename.toStdString());
+		if (!guard(this, tr("Store configuration"), [&]() {
+				mEngine->StoreConfiguration(filename.toStdString());
+				mEngine->LoadConfiguration(filename.toStdString());
+			})) return;
 		Engine::DisplayManager()->Flush(); // we have a new config
 		if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
 		{
-			mEngine->RetrieveAudio(true);
-			mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
+			guard(this, tr("Load analysis"), [&]() {
+				mEngine->RetrieveAudio(true);
+				mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
+			});
 		}
 		else
 		{
@@ -152,7 +187,9 @@ namespace QtSMS
 	{
 		QString filename = QFileDialog::getSaveFileName(this, QString(), "extracted_melody_out.xml", "*.xml");
 		if(filename.isEmpty()) return;
-		mEngine->StoreMelody(filename.toStdString());
+		guard(this, tr("Save extracted melody"), [&]() {
+			mEngine->StoreMelody(filename.toStdString());
+		});
 	}
 
 	void QtSMSTools::loadAnalysisData()
@@ -162,8 +199,10 @@ namespace QtSMS
 		mShowOriginalAudio=false;
 		Engine::DisplayManager()->Flush();
 		InitMenuViewItems();
-		mEngine->RetrieveAudio(false);
-		mEngine->LoadAnalysis(filename.toStdString());
+		guard(this, tr("Load analysis"), [&]() {
+			mEngine->RetrieveAudio(false);
+			mEngine->LoadAnalysis(filename.toStdString());
+		});
 	}
 
 	void QtSMSTools::storeAnalysisData()
@@ -172,7 +211,9 @@ namespace QtSMS
 			mEngine->GetGlobalConfig().GetOutputAnalysisFile() : "outputAnalysis.xml";
 		QString filename = QFileDialog::getSaveFileName(this, QString(), QString::fromStdString(fn), "(*.xml *.sdif)");
 		if(filename.isEmpty()) return;
-		mEngine->StoreAnalysis(filename.toStdString());
+		guard(this, tr("Store analysis"), [&]() {
+			mEngine->StoreAnalysis(filename.toStdString());
+		});
 	}
 
 	void QtSMSTools::saveSynthesizedAudio()
@@ -181,28 +222,36 @@ namespace QtSMS
 			mEngine->GetGlobalConfig().GetOutputSoundFile() : "outputSound.wav";
 		QString filename = QFileDialog::getSaveFileName(this, QString(), QString::fromStdString(fn), "Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
-		mEngine->StoreOutputSound(filename.toStdString());
+		guard(this, tr("Save synthesized audio"), [&]() {
+			mEngine->StoreOutputSound(filename.toStdString());
+		});
 	}
 
 	void QtSMSTools::saveSynthesizedSinusoidal()
 	{
 		QString filename = QFileDialog::getSaveFileName(this, QString(), "synthesized_sinusoidal_out.wav", "Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
-		mEngine->StoreOutputSoundSinusoidal(filename.toStdString());
+		guard(this, tr("Save synthesized sinusoidal"), [&]() {
+			mEngine->StoreOutputSoundSinusoidal(filename.toStdString());
+		});
 	}
 
 	void QtSMSTools::saveSynthesizedResidua()
 	{
 		QString filename = QFileDialog::getSaveFileName(this, QString(), "synthesized_residual_out.wav", "Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
-		mEngine->StoreOutputSoundResidual(filename.toStdString());
+		guard(this, tr("Save synthesized residual"), [&]() {
+			mEngine->StoreOutputSoundResidual(filename.toStdString());
+		});
 	}
 
 	void QtSMSTools::loadTransformationScore()
 	{
 		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "*.xml *");
 		if(filename.isEmpty()) return;
-		mEngine->LoadTransformationScore(filename.toStdString());
+		guard(this, tr("Load transformation score"), [&]() {
+			mEngine->LoadTransformationScore(filename.toStdString());
+		});
 		UpdateState();
 	}
 
@@ -223,7 +272,9 @@ namespace QtSMS
 		if (filename.isEmpty()) return;
 
 		mEngine->SetCurrentTransformationScore(scoreDlg.GetTransformationChain());
-		mEngine->StoreTransformationScore(filename.toStdString());
+		guard(this, tr("Store transformation score"), [&]() {
+			mEngine->StoreTransformationScore(filename.toStdString());
+		});
 		UpdateState();
 	}
 
@@ -233,13 +284,13 @@ namespace QtSMS
 		InitMenuViewItems(false);
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
-		mEngine->Analyze();
+		if (!guard(this, tr("Analyze"), [&]() { mEngine->Analyze(); })) return;
 		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
 	}
 
 	void QtSMSTools::melodyExtraction()
 	{
-		mEngine->ExtractMelody();
+		guard(this, tr("Extract melody"), [&]() { mEngine->ExtractMelody(); });
 		UpdateState();
 	}
 
@@ -248,7 +299,7 @@ namespace QtSMS
 		InitMenuViewItems(false);
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
-		mEngine->Transform();
+		if (!guard(this, tr("Apply transformation"), [&]() { mEngine->Transform(); })) return;
 		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendTransformedDataToViewManager));
 	}
 
@@ -260,12 +311,12 @@ namespace QtSMS
 		Engine::DisplayManager()->Reset();
 		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
 	}
-   
+
 	void QtSMSTools::synthesize()
 	{
 		ResetMenuViewAudioItems();
 		Engine::DisplayManager()->Reset();
-		mEngine->Synthesize();
+		if (!guard(this, tr("Synthesize"), [&]() { mEngine->Synthesize(); })) return;
 		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendSynthesizedDataToViewManager));
 	}
 
