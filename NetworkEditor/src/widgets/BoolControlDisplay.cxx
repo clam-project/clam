@@ -1,7 +1,7 @@
 #include "BoolControlDisplay.hxx"
 #include <CLAM/InControlBase.hxx>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
+#include <QHBoxLayout>
+#include <QLabel>
 #include "EmbededWidgets.hxx"
 
 static CLAM::EmbededWidgetCreator <BoolControlDisplay> reg("BoolControlPrinter");

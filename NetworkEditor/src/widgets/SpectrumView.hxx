@@ -1,13 +1,13 @@
 #ifndef SpectrumView_hxx
 #define SpectrumView_hxx
 
-#include <QtGui/QLabel>
-#include <QtGui/QPolygonF>
-#include <QtGui/QPainter>
+#include <QLabel>
+#include <QPolygonF>
+#include <QPainter>
 #include "FloatArrayDataSource.hxx"
 #include <cmath>
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT SpectrumView : public QWidget
 {

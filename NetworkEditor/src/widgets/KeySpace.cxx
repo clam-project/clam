@@ -79,7 +79,7 @@ static TKeyNode * getKeyNodes()
 static unsigned nKeyNodes=24;
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
-	: QGLWidget(parent)
+	: QOpenGLWidget(parent)
 	, _smooth(true)
 	, _nX(128)
 	, _nY(64)

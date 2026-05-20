@@ -1,9 +1,9 @@
 #ifndef QFirstPerson_hxx
 #define QFirstPerson_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
 #undef GetClassName
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include <QtCore/QtGlobal>
 #include <iostream>
 #include <cmath>
@@ -70,7 +70,7 @@ public:
 	}
 };
 
-class QFirstPerson : public QGLWidget
+class QFirstPerson : public QOpenGLWidget
 {
 	double _viewX;
 	double _viewY;
@@ -82,7 +82,7 @@ class QFirstPerson : public QGLWidget
 	Q_OBJECT
 public:
 	QFirstPerson(QWidget * parent=0)
-		: QGLWidget(parent)
+		: QOpenGLWidget(parent)
 		, _viewX(0)
 		, _viewY(-1)
 		, _viewRotation(0)

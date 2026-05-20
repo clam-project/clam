@@ -1,5 +1,5 @@
 #include "IPyClamConsole.hxx"
-#include <QtGui/QLabel>
+#include <QLabel>
 
 #ifndef CLAM_USE_PYTHON
 QWidget * GetIPyClamConsole(CLAM::Network & network)
@@ -9,7 +9,7 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 #else
 
 #include <boost/python.hpp>
-#include <QtGui/QHBoxLayout>
+#include <QHBoxLayout>
 #include <shiboken/basewrapper.h>
 #include <shiboken/typeresolver.h>
 #include <shiboken/conversions.h>

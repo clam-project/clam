@@ -3,10 +3,10 @@
 
 
 #include "FloatArrayDataSource.hxx"
-#include <QtGui/QWidget>
-#include <QtGui/QPainter>
+#include <QWidget>
+#include <QPainter>
 #include <CLAM/DataTypes.hxx>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 #include <cmath>
 
 

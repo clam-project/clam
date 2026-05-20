@@ -2,8 +2,8 @@
 #define CLAM_ConfigurationQtBinder_hxx
 
 #include "QtBinder.hxx"
-#include <QtGui/QAction>
-#include <QtGui/QMessageBox>
+#include <QAction>
+#include <QMessageBox>
 #include <CLAM/Network.hxx>
 #include "Configurator.hxx"
 

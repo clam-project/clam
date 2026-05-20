@@ -1,10 +1,10 @@
-#include <QtGui/QPushButton>
-#include <QtGui/QSlider>
-#include <QtGui/QPixmap>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
+#include <QPushButton>
+#include <QSlider>
+#include <QPixmap>
+#include <QWheelEvent>
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QPainter>
 #include <QtCore/QPoint>
 #include <QtCore/QTimer>
 #include <QtCore/QtGlobal>

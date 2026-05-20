@@ -3,11 +3,11 @@
 
 #include "PeakDataSource.hxx"
 
-#include <QtGui/QLabel>
-#include <QtGui/QPainter>
+#include <QLabel>
+#include <QPainter>
 #include <cmath>
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT Tunner : public QWidget
 {

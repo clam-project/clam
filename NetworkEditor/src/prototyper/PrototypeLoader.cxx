@@ -1,10 +1,10 @@
 #include "PrototypeLoader.hxx"
 #include <QtUiTools/QUiLoader>
-#include <QtGui/QPushButton>
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QLabel>
+#include <QPushButton>
+#include <QApplication>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QLabel>
 #include <QtCore/QFile>
 #include <QtCore/QTimer>
 #include <CLAM/XMLStorage.hxx>

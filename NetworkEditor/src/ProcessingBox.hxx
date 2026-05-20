@@ -1,8 +1,8 @@
 #ifndef ProcessingBox_hxx
 #define ProcessingBox_hxx
 
-#include <QtGui/QWidget>
-#include <QtGui/QGraphicsItem>
+#include <QWidget>
+#include <QGraphicsItem>
 
 class NetworkCanvas;
 class QGraphicsProxyWidget;

@@ -20,7 +20,7 @@
 #include "MIDIPianoWidget.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 #include <CLAM/CLAM_Math.hxx>
-#include <QtGui/QMouseEvent>
+#include <QMouseEvent>
 #include <QtCore/QPoint>
 #include <QtCore/QtGlobal>
 #include "EmbededWidgets.hxx"

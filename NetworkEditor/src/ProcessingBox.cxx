@@ -1,14 +1,14 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
 
-#include <QtGui/QWidget>
-#include <QtGui/QPainter>
-#include <QtGui/QStyleOption>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QInputDialog>
-#include <QtGui/QGraphicsSceneMouseEvent>
-#include <QtGui/QGraphicsSceneContextMenuEvent>
-#include <QtGui/QGraphicsProxyWidget>
+#include <QWidget>
+#include <QPainter>
+#include <QStyleOption>
+#include <QMouseEvent>
+#include <QInputDialog>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QGraphicsProxyWidget>
 #include <QtCore/QtGlobal>
 #include "ui_DummyProcessingConfig.h"
 

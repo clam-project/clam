@@ -1,6 +1,6 @@
 #include <iostream>
 #include "RichTextEditor.hxx"
-#include <QtGui/QTextList>
+#include <QTextList>
 
 using namespace std;
 

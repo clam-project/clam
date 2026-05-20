@@ -1,7 +1,7 @@
 #ifndef _PROTOTYPE_LOADER_HXX_
 #define _PROTOTYPE_LOADER_HXX_
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/PortMonitor.hxx>
 

@@ -2,9 +2,9 @@
 #define __ProgressControlWidget_hxx__
 
 #include <CLAM/Processing.hxx>
-#include <QtGui/QWidget>
-#include <QtGui/QSlider>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QWidget>
+#include <QSlider>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT ProgressControlWidget : public QSlider
 {

@@ -21,10 +21,10 @@
 
 #include "ProcessingTree.hxx" 
 #include <QtCore/QMimeData>
-#include <QtGui/QDrag>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
+#include <QDrag>
+#include <QMouseEvent>
+#include <QHeaderView>
+#include <QLabel>
 #include <iostream>
 
 #include <CLAM/ProcessingFactory.hxx> 

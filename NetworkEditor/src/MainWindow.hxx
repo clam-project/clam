@@ -1,12 +1,12 @@
 #include "ui_MainWindow.h"
 #include "ClamNetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QScrollArea>
-#include <QtGui/QDockWidget>
-#include <QtGui/QWhatsThis>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
+#include <QVBoxLayout>
+#include <QScrollArea>
+#include <QDockWidget>
+#include <QWhatsThis>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
@@ -25,10 +25,10 @@
 // copied from Annotator:
 #include "TaskRunner.hxx"
 
-#include <QtSvg/QSvgWidget>
+#include <QSvgWidget>
 #include <QtCore/QProcess>
 #include <QtCore/QUrl>
-#include <QtGui/QDesktopServices>
+#include <QDesktopServices>
 #include <QtWidgets/QTextBrowser>
 #include <QtXml/QDomDocument>
 

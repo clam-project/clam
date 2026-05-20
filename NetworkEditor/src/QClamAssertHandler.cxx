@@ -1,4 +1,4 @@
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 #include <CLAM/Assert.hxx>
 #include <sstream>
 #include <cstdlib>

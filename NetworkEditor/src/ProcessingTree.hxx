@@ -22,12 +22,12 @@
 #ifndef __PROCESSINGTREE_HXX__
 #define __PROCESSINGTREE_HXX__
 
-#include <QtGui/QTreeWidget>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-//#include <QtGui/QLabel>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QLineEdit>
+//#include <QLabel>
 //#include <iostream>
 
 namespace CLAM

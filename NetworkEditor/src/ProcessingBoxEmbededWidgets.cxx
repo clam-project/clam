@@ -43,7 +43,7 @@
 #include <typeinfo>
 #include <CLAM/ProcessingDataPlugin.hxx>
 
-#include <QtSvg/QSvgWidget>
+#include <QSvgWidget>
 #include <QtSvg/QSvgRenderer>
 #include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
 

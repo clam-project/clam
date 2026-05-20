@@ -1,5 +1,3 @@
-include(ClamQtCompat)
-
 if(NOT TARGET CLAM::core OR NOT TARGET CLAM::processing OR NOT TARGET CLAM::audioio)
 	message(FATAL_ERROR "NetworkEditor CMake currently expects CLAM_BUILD_LIBRARIES=ON so it can link the in-tree CLAM libraries.")
 endif()
@@ -25,7 +23,6 @@ set(CLAM_QT_LIBRARIES
 	Qt6::PrintSupport
 )
 
-clam_generate_qt_compat_headers(CLAM_QT_COMPAT_INCLUDE_DIR)
 find_library(CLAM_GLU_LIBRARY NAMES GLU)
 if(NOT CLAM_GLU_LIBRARY)
 	message(FATAL_ERROR "NetworkEditor OpenGL widgets require GLU but libGLU was not found")
@@ -75,10 +72,6 @@ target_compile_definitions(clam_qtmonitors
 		QT_PLUGIN
 		QDESIGNER_EXPORT_WIDGETS
 		_REENTRANT
-)
-target_include_directories(clam_qtmonitors
-	BEFORE PRIVATE
-		"${CLAM_QT_COMPAT_INCLUDE_DIR}"
 )
 target_include_directories(clam_qtmonitors
 	PUBLIC
@@ -140,10 +133,6 @@ if(CLAM_NETWORKEDITOR_BUILD_APPS)
 	clam_set_legacy_cxx(NetworkEditor)
 	set_target_properties(NetworkEditor PROPERTIES
 		AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/src"
-	)
-	target_include_directories(NetworkEditor
-		BEFORE PRIVATE
-			"${CLAM_QT_COMPAT_INCLUDE_DIR}"
 	)
 	target_include_directories(NetworkEditor
 		PRIVATE

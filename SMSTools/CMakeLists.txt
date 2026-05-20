@@ -21,8 +21,6 @@ set(CLAM_SMSTOOLS_QT_LIBRARIES
 	Qt6::PrintSupport
 )
 
-clam_generate_qt_compat_headers(CLAM_SMSTOOLS_QT_COMPAT_INCLUDE_DIR)
-
 find_library(CLAM_SMSTOOLS_GLU_LIBRARY NAMES GLU)
 if(NOT CLAM_SMSTOOLS_GLU_LIBRARY)
 	message(FATAL_ERROR "SMSTools OpenGL widgets require GLU but libGLU was not found")
@@ -140,10 +138,6 @@ add_library(clam_smstools_vmqt STATIC
 )
 clam_set_legacy_cxx(clam_smstools_vmqt)
 target_include_directories(clam_smstools_vmqt
-	BEFORE PUBLIC
-		"${CLAM_SMSTOOLS_QT_COMPAT_INCLUDE_DIR}"
-)
-target_include_directories(clam_smstools_vmqt
 	PUBLIC
 		"${CMAKE_CURRENT_SOURCE_DIR}/vmqt"
 		"${CMAKE_CURRENT_SOURCE_DIR}/vmqt/CLAM"
@@ -191,10 +185,6 @@ clam_set_legacy_cxx(SMSTools)
 set_target_properties(SMSTools PROPERTIES
 	AUTOUIC_SEARCH_PATHS
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/QtImpl/Application;${CMAKE_CURRENT_SOURCE_DIR}/src/QtImpl/GUI/Dialogs/AboutBox;${CMAKE_CURRENT_SOURCE_DIR}/src/QtImpl/GUI/Dialogs/Configurator;${CMAKE_CURRENT_SOURCE_DIR}/src/QtImpl/GUI/Dialogs/ScoreEditor"
-)
-target_include_directories(SMSTools
-	BEFORE PRIVATE
-		"${CLAM_SMSTOOLS_QT_COMPAT_INCLUDE_DIR}"
 )
 target_include_directories(SMSTools
 	PRIVATE

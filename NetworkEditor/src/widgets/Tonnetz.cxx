@@ -21,7 +21,7 @@
 
 #include "Tonnetz.hxx"
 #include <QtCore/QtGlobal>
-#include <QtGui/QPixmap>
+#include <QPixmap>
 #include <QtCore/QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
@@ -49,7 +49,7 @@ CLAM::VM::Tonnetz::~Tonnetz()
 {
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
-	QGLWidget(parent)
+	QOpenGLWidget(parent)
 {
 	_data = 0;
 	_dataSource = 0;

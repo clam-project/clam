@@ -26,14 +26,14 @@
 #include <cmath>
 #include <QtCore/QtGlobal>
 #include <QtCore/QTimer>
-#include <QtGui/QToolTip>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-#include <QtGui/QImage>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QColormap>
-#include <QtGui/QRadialGradient>
+#include <QToolTip>
+#include <QPainter>
+#include <QPixmap>
+#include <QImage>
+#include <QWheelEvent>
+#include <QMouseEvent>
+#include <QColormap>
+#include <QRadialGradient>
 
 #include "QSynthKnob.hxx"
 

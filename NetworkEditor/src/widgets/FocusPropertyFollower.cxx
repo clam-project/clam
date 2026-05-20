@@ -1,5 +1,5 @@
 #include "FocusPropertyFollower.hxx"
-#include <QtGui/QApplication>
+#include <QApplication>
 
 FocusPropertyFollower::FocusPropertyFollower(QWidget * parent)
 	: QLabel(parent)

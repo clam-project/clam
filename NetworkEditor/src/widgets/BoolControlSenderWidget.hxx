@@ -5,7 +5,7 @@
 
 #include <CLAM/Processing.hxx>
 #include "BoolControlSender.hxx"
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class QAbstractButton;
 

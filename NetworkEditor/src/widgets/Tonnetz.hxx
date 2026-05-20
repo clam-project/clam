@@ -22,18 +22,18 @@
 #ifndef Tonnetz_hxx
 #define Tonnetz_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 namespace CLAM
 {
 namespace VM
 {
 
-	class QDESIGNER_WIDGET_EXPORT Tonnetz : public QGLWidget
+	class QDESIGNER_WIDGET_EXPORT Tonnetz : public QOpenGLWidget
 	{
 		Q_OBJECT
 

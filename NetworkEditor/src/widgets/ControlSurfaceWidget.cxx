@@ -1,9 +1,9 @@
 #include "ControlSurfaceWidget.hxx"
-#include <QtGui/QLabel>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
+#include <QLabel>
+#include <QDoubleSpinBox>
+#include <QVBoxLayout>
+#include <QPainter>
+#include <QMouseEvent>
 #include <QtCore/QPoint>
 #include <QtCore/QtGlobal>
 #include "EmbededWidgets.hxx"
