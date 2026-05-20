@@ -1,6 +1,9 @@
-#include <qlayout.h>
-#include <qsplitter.h>
-#include <qframe.h>
+#include <QLayout>
+#include <QSplitter>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QBoxLayout>
+#include <QVBoxLayout>
 #include <CLAM/Navigator.hxx>
 #include <CLAM/SMSTimeMultiDisplay.hxx>
 #include <CLAM/SMSFreqMultiDisplay.hxx>
@@ -310,10 +313,10 @@ namespace QtSMS
 		if(mHasTimeViewFocus) return;
 		mHasTimeViewFocus = true;
 		mHasSpecViewFocus = false;
-		specViewLayout->setMargin(0);
+		specViewLayout->setContentsMargins(0, 0, 0, 0);
 		mSpecViewContainer->setLineWidth(0);
-		mSpecViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
-		timeViewLayout->setMargin(4);
+		mSpecViewContainer->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+		timeViewLayout->setContentsMargins(4, 4, 4, 4);
 		mTimeViewContainer->setLineWidth(4);
 		mTimeViewContainer->setFrameStyle(QFrame::Box | QFrame::Plain);
 	}
@@ -323,10 +326,10 @@ namespace QtSMS
 		if(mHasSpecViewFocus) return;
 		mHasSpecViewFocus = true;
 		mHasTimeViewFocus = false;
-		timeViewLayout->setMargin(0);
+		timeViewLayout->setContentsMargins(0, 0, 0, 0);
 		mTimeViewContainer->setLineWidth(0);
-		mTimeViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
-		specViewLayout->setMargin(4);
+		mTimeViewContainer->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+		specViewLayout->setContentsMargins(4, 4, 4, 4);
 		mSpecViewContainer->setLineWidth(4);
 		mSpecViewContainer->setFrameStyle(QFrame::Box | QFrame::Plain);
 	}
@@ -385,7 +388,7 @@ namespace QtSMS
 		f.setBold(true);
 		f.setStyleHint(QFont::Courier,QFont::NoAntialias);
 		QFontMetrics fm(f);       
-		return fm.width("X:-0.0e+00")+1;
+		return fm.horizontalAdvance("X:-0.0e+00")+1;
 	}
 
 	QString ViewManager::GetSampleRateDuration(bool hasAudio)
@@ -404,7 +407,7 @@ namespace QtSMS
 		int min = sec/60;
 		sec %= 60;
 		int msec = tmp%1000;
-		s = s.sprintf("%02d:%02d,%03d",min,sec,msec);
+		s = QString::asprintf("%02d:%02d,%03d", min, sec, msec);
 		return s;
 	}
 

@@ -1,7 +1,7 @@
 #ifndef __QTSMSGENDERSELECTOR__
 #define __QTSMSGENDERSELECTOR__
 
-#include <qwidget.h>
+#include <QWidget>
 
 namespace QtSMS
 {

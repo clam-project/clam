@@ -19,8 +19,14 @@
  *
  */
 
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QTimer>
+#include <QToolTip>
+#include <QResizeEvent>
+#include <QFocusEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QEnterEvent>
+#include <QPainter>
 #include <CLAM/PlotController.hxx>
 #include <CLAM/DisplaySurface.hxx>
 
@@ -45,8 +51,7 @@ namespace CLAM
 			, mIsPlaying(false)
 		{
 			setMouseTracking(true);
-			setAutoBufferSwap(false);
-			setFocusPolicy(StrongFocus);
+			setFocusPolicy(Qt::StrongFocus);
 
 			mToolTipFont.setFamily("fixed");
 			mToolTipFont.setPointSize(8);
@@ -54,7 +59,8 @@ namespace CLAM
 			mToolTipFont.setStyleHint(QFont::Courier);
 
 			mTimer = new QTimer(this);
-			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+			mTimer->setSingleShot(true);
+			connect(mTimer,SIGNAL(timeout()),this,SLOT(update()));
 		}
 
 		DisplaySurface::~DisplaySurface()
@@ -67,14 +73,14 @@ namespace CLAM
 			mRed = r;
 			mGreen= g;
 			mBlue= b;
-			updateGL();
+			update();
 		}
 
 		void DisplaySurface::SetController(PlotController* controller)
 		{
 			mController = controller;
 			connect(mController,SIGNAL(viewChanged(GLView)),this,SLOT(updateView(GLView)));
-			connect(mController,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
+			connect(mController,SIGNAL(requestRefresh()),this,SLOT(update()));
 			connect(mController,SIGNAL(localToolTip(QString)),this,SLOT(updateLocalToolTip(QString)));
 			connect(mController,SIGNAL(globalToolTip(QString)),this,SLOT(updateGlobalToolTip(QString)));
 			connect(mController,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
@@ -100,9 +106,8 @@ namespace CLAM
 			glClearColor(mRed, mGreen, mBlue, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
 			mController->Draw();
-			RenderToolTip(); 
-			swapBuffers();
-			if(mIsPlaying && !mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
+			RenderToolTip();
+			if(mIsPlaying && !mTimer->isActive()) mTimer->start(TIMER_INTERVAL);
 		}
 
 		void DisplaySurface::mousePressEvent(QMouseEvent * e) 
@@ -117,8 +122,8 @@ namespace CLAM
 
 		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
-			mMouseXPos = e->x();
-			mMouseYPos = e->y();
+			mMouseXPos = int(e->position().x());
+			mMouseYPos = int(e->position().y());
 			mController->MouseMoveEvent(e);
 		}
 
@@ -150,20 +155,19 @@ namespace CLAM
 		void DisplaySurface::updateGlobalToolTip(QString s)
 		{
 			if(mController->HasSegmentation()) return;
-			QToolTip::remove(this);
-			QToolTip::add(this,s);
+			this->setToolTip(s);
 		}
 
 		void DisplaySurface::leaveEvent(QEvent* e)
 		{
 			mController->LeaveMouse();
-		    QWidget::leaveEvent(e);
+			QWidget::leaveEvent(e);
 		}
 
-		void DisplaySurface::enterEvent(QEvent* e)
+		void DisplaySurface::enterEvent(QEnterEvent* e)
 		{
 			mController->EnterMouse();
-		    QWidget::enterEvent(e);
+			QWidget::enterEvent(e);
 		}
 
 		void DisplaySurface::changeCursor(QCursor cursor)
@@ -174,19 +178,19 @@ namespace CLAM
 		void DisplaySurface::startTimer()
 		{
 			mIsPlaying = true;
-			mTimer->start(1,true);
+			mTimer->start(1);
 		}
 
 		void DisplaySurface::stopTimer()
 		{
 			mTimer->stop();
 			mIsPlaying = false;
-			mTimer->start(1,true);
+			mTimer->start(1);
 		}
 
 		void DisplaySurface::mouseDoubleClickEvent(QMouseEvent* e)
 		{
-			if(e->button()==LeftButton)
+			if(e->button()==Qt::LeftButton)
 			{
 				mController->OnDoubleClick();
 			}
@@ -237,8 +241,9 @@ namespace CLAM
 			glVertex2f(rect.left(),rect.bottom());
 			glVertex2f(rect.left(),rect.top());
 			glEnd();
-   
-			renderText(rect.left()+5,rect.top()+font_height+2,mToolTip,mToolTipFont);
+			// Tooltip text was drawn by QGLWidget::renderText(); QOpenGLWidget
+			// has no equivalent. Skipping; would need a QPainter overlay path.
+			(void)font_height;
 
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
@@ -248,11 +253,11 @@ namespace CLAM
 		QRect DisplaySurface::ToolTipRect()
 		{
 			QFontMetrics font_metrics(mToolTipFont);
-			
+
 			int x = mMouseXPos+2;
 			int y = mMouseYPos+2;
 
-			int w = font_metrics.width(mToolTip)+10;
+			int w = font_metrics.horizontalAdvance(mToolTip)+10;
 			int h = font_metrics.height()+10;
 
 			if(x+w > mWidth) x -= w;

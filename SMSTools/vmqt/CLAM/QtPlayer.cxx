@@ -18,10 +18,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include <qlayout.h>
-#include <qframe.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <CLAM/PaletteHelpers.hxx>
+#include <QFrame>
+#include <QPushButton>
+#include <QToolTip>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QIcon>
+#include <QHBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/QtPlayer.hxx>
 
@@ -42,7 +47,7 @@ namespace CLAM
 
 		void QtPlayer::InitWidgets()
 		{
-			winBackground = this->paletteBackgroundColor();
+			winBackground = this->palette().color(this->backgroundRole());
 
 			layout = new QHBoxLayout(this);
 	    
@@ -52,17 +57,17 @@ namespace CLAM
 			mPlay = new QPushButton(container);
 			mPlay->setFixedSize(25,20);
 			mPlay->setGeometry(0,5,25,20);
-			QToolTip::add(mPlay,"Play");
+			mPlay->setToolTip("Play");
 
 			mPause = new QPushButton(container);
 			mPause->setFixedSize(25,20);
 			mPause->setGeometry(mPlay->width(),mPlay->y(),25,20);
-			QToolTip::add(mPause,"Pause");
+			mPause->setToolTip("Pause");
 
 			mStop = new QPushButton(container);
 			mStop->setFixedSize(25,20);
 			mStop->setGeometry(mPause->x()+mPause->width(),mPlay->y(),25,20);
-			QToolTip::add(mStop,"Stop");
+			mStop->setToolTip("Stop");
 
 			layout->addWidget(container);
 
@@ -92,55 +97,55 @@ namespace CLAM
 
 		void QtPlayer::WindowModeCM()
 		{
-			this->setPaletteBackgroundColor(winBackground);
-			container->setPaletteBackgroundColor(winBackground);
-			mPlay->setPaletteBackgroundColor(winBackground);
-			mPause->setPaletteBackgroundColor(winBackground);
-			mStop->setPaletteBackgroundColor(winBackground);
+			CLAM::VM::setBgColor(this, winBackground);
+			CLAM::VM::setBgColor(container, winBackground);
+			CLAM::VM::setBgColor(mPlay, winBackground);
+			CLAM::VM::setBgColor(mPause, winBackground);
+			CLAM::VM::setBgColor(mStop, winBackground);
 
 			QPixmap iconPlay((const char**)icon_play);
 			QPixmap iconPause((const char**)icon_pause);
 			QPixmap iconStop((const char**)icon_stop);
 
-			mPlay->setPixmap(iconPlay);
-			mPause->setPixmap(iconPause);
-			mStop->setPixmap(iconStop);
+			mPlay->setIcon(QIcon(iconPlay));
+			mPause->setIcon(QIcon(iconPause));
+			mStop->setIcon(QIcon(iconStop));
 		}
 
 		void QtPlayer::BlackBackgroundCM()
 		{
 			QColor bkcolor(0,0,0);
-			this->setPaletteBackgroundColor(bkcolor);
-			container->setPaletteBackgroundColor(bkcolor);
-			mPlay->setPaletteBackgroundColor(bkcolor);
-			mPause->setPaletteBackgroundColor(bkcolor);
-			mStop->setPaletteBackgroundColor(bkcolor);
+			CLAM::VM::setBgColor(this, bkcolor);
+			CLAM::VM::setBgColor(container, bkcolor);
+			CLAM::VM::setBgColor(mPlay, bkcolor);
+			CLAM::VM::setBgColor(mPause, bkcolor);
+			CLAM::VM::setBgColor(mStop, bkcolor);
 
 			QPixmap iconPlay((const char**)icon_play_cyan);
 			QPixmap iconPause((const char**)icon_pause_cyan);
 			QPixmap iconStop((const char**)icon_stop_cyan);
 
-			mPlay->setPixmap(iconPlay);
-			mPause->setPixmap(iconPause);
-			mStop->setPixmap(iconStop);
+			mPlay->setIcon(QIcon(iconPlay));
+			mPause->setIcon(QIcon(iconPause));
+			mStop->setIcon(QIcon(iconStop));
 		}
 
 		void QtPlayer::WhiteBackgroundCM()
 		{
 			QColor bkcolor(255,255,255);
-			this->setPaletteBackgroundColor(bkcolor);
-			container->setPaletteBackgroundColor(bkcolor);
-			mPlay->setPaletteBackgroundColor(bkcolor);
-			mPause->setPaletteBackgroundColor(bkcolor);
-			mStop->setPaletteBackgroundColor(bkcolor);
+			CLAM::VM::setBgColor(this, bkcolor);
+			CLAM::VM::setBgColor(container, bkcolor);
+			CLAM::VM::setBgColor(mPlay, bkcolor);
+			CLAM::VM::setBgColor(mPause, bkcolor);
+			CLAM::VM::setBgColor(mStop, bkcolor);
 
 			QPixmap iconPlay((const char**)icon_play);
 			QPixmap iconPause((const char**)icon_pause);
 			QPixmap iconStop((const char**)icon_stop);
 
-			mPlay->setPixmap(iconPlay);
-			mPause->setPixmap(iconPause);
-			mStop->setPixmap(iconStop); 
+			mPlay->setIcon(QIcon(iconPlay));
+			mPause->setIcon(QIcon(iconPause));
+			mStop->setIcon(QIcon(iconStop)); 
 		}
 
 		void QtPlayer::RemoveButton(int id)

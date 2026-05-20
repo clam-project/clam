@@ -1,22 +1,29 @@
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qframe.h>
-#include <qpopupmenu.h>
+#include <QLayout>
+#include <CLAM/PaletteHelpers.hxx>
+#include <QLabel>
+#include <QFrame>
+#include <QMenu>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QHideEvent>
+#include <QVBoxLayout>
+#include <QBoxLayout>
+#include <QInputDialog>
+#include <QShowEvent>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/HScrollGroup.hxx>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/BPFEditorController.hxx>
 #include <CLAM/BPFEditorDisplaySurface.hxx>
 #include <CLAM/QtBPFPlayer.hxx>
-#include <CLAM/ListItemChooser.hxx>
 #include <CLAM/BPFEditor.hxx>
 
 namespace CLAM
 {
 	namespace VM
 	{
-		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* name, WFlags f)
-			: QWidget(parent,name,f)
+		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* /*name*/)
+			: QWidget(parent)
 			, mEFlags(eFlags)
 			, mActivePlayer(true)
 			, mXRuler(0)
@@ -33,7 +40,6 @@ namespace CLAM
 			, mWhiteOverBlackScheme(false)
 			, mUseFocusColors(false)
 			, mPopupMenu(0)
-			, mChooseBPFDialog(0)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&BPFEditor::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&BPFEditor::StopPlaying);
@@ -49,7 +55,7 @@ namespace CLAM
 
 		void BPFEditor::Label(const std::string& label)
 		{
-			setCaption(label.c_str());
+			setWindowTitle(label.c_str());
 		}
 
 		void BPFEditor::Geometry(int x, int y, int w, int h)
@@ -273,7 +279,7 @@ namespace CLAM
 			   && !(mEFlags & CLAM::VM::AllowZoomByMouse))
 			{
 			    // top area xRuler
-			    topLayout = new QHBoxLayout(mainLayout);
+			    topLayout = new QHBoxLayout; mainLayout->addLayout(topLayout);
 			    mXRuler = new Ruler(this,CLAM::VM::Top);
 			    topLeftHole = new QFrame(this);
 			    topLayout->addWidget(topLeftHole);
@@ -288,7 +294,7 @@ namespace CLAM
 			}
 
 			// middle area: left ruler and display surface
-			middleLayout = new QHBoxLayout(mainLayout);
+			middleLayout = new QHBoxLayout; mainLayout->addLayout(middleLayout);
 
 			mYRuler = new Ruler(this,CLAM::VM::Left);
 
@@ -296,7 +302,7 @@ namespace CLAM
 
 			QFontMetrics fm(labelFont);
 
-			int initial_width=fm.width("X:-0.0e+00");
+			int initial_width=fm.horizontalAdvance("X:-0.0e+00");
 
 			mYRuler->setFixedWidth(initial_width);
 			
@@ -308,7 +314,7 @@ namespace CLAM
 			middleLayout->addWidget(mDisplaySurface);
 
 			// bottom area:info labels and bottom ruler
-			bottomLayout = new QHBoxLayout(mainLayout);
+			bottomLayout = new QHBoxLayout; mainLayout->addLayout(bottomLayout);
 			
 			int middle_panel_height=0;
 			
@@ -350,7 +356,7 @@ namespace CLAM
 			labelsContainer->setFixedSize(mYRuler->width(),middle_panel_height);
 			
 
-			int fixed_label_width = fm.width("X:");
+			int fixed_label_width = fm.horizontalAdvance("X:");
 			int fixed_label_height = fm.height();
 
 			fixed_x_label = new QLabel(labelsContainer);
@@ -384,7 +390,7 @@ namespace CLAM
 
 			bottomLayout->addWidget(labelsContainer);
 
-			QBoxLayout* middlePanel = new QVBoxLayout(bottomLayout);
+			QBoxLayout* middlePanel = new QVBoxLayout; bottomLayout->addLayout(middlePanel);
 			if(mHScroll)
 			{
 			    playerHole = new QFrame(this);
@@ -462,7 +468,7 @@ namespace CLAM
 			if(mUseFocusColors) return;
 			if(mColorScheme==EWhiteOverBlack) return;
 
-			setPaletteBackgroundColor(Qt::black);
+			CLAM::VM::setBgColor(this, Qt::black);
 
 			mController->SetDataColor(VMColor::White(),VMColor::Cyan());
 			mController->SetRectColor(VMColor::White());
@@ -474,21 +480,21 @@ namespace CLAM
 			mYRuler->SetBackgroundColor(VMColor::Black());
 			mYRuler->SetForegroundColor(VMColor::White());
 
-			labelsContainer->setPaletteBackgroundColor(Qt::black);
+			CLAM::VM::setBgColor(labelsContainer, Qt::black);
 
-			fixed_x_label->setPaletteBackgroundColor(Qt::black);
-			fixed_x_label->setPaletteForegroundColor(Qt::white);
-			fixed_y_label->setPaletteBackgroundColor(Qt::black);
-			fixed_y_label->setPaletteForegroundColor(Qt::white);
+			CLAM::VM::setBgColor(fixed_x_label, Qt::black);
+			CLAM::VM::setFgColor(fixed_x_label, Qt::white);
+			CLAM::VM::setBgColor(fixed_y_label, Qt::black);
+			CLAM::VM::setFgColor(fixed_y_label, Qt::white);
 
-			mXLabelInfo->setPaletteBackgroundColor(Qt::black);
-			mXLabelInfo->setPaletteForegroundColor(Qt::white);
-			mYLabelInfo->setPaletteBackgroundColor(Qt::black);
-			mYLabelInfo->setPaletteForegroundColor(Qt::white);
+			CLAM::VM::setBgColor(mXLabelInfo, Qt::black);
+			CLAM::VM::setFgColor(mXLabelInfo, Qt::white);
+			CLAM::VM::setBgColor(mYLabelInfo, Qt::black);
+			CLAM::VM::setFgColor(mYLabelInfo, Qt::white);
 
 			mDisplaySurface->SetBackgroundColor(0.0f,0.0f,0.0f);
 
-			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(Qt::black);
+			if(bottomRightHole) CLAM::VM::setBgColor(bottomRightHole, Qt::black);
 			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetColorMap(CLAM::VM::BlackBackground);
 			
 			mColorScheme = EWhiteOverBlack;
@@ -498,7 +504,7 @@ namespace CLAM
 		{
 			if(!mUseFocusColors && mColorScheme==EBlackOverWhite) return;
 			
-			setPaletteBackgroundColor(Qt::white);
+			CLAM::VM::setBgColor(this, Qt::white);
 
 			mController->SetDataColor(VMColor::Black(),VMColor::Blue());
 			mController->SetRectColor(VMColor::Black());
@@ -510,21 +516,21 @@ namespace CLAM
 			mYRuler->SetBackgroundColor(VMColor::White());
 			mYRuler->SetForegroundColor(VMColor::Black());
 			
-			labelsContainer->setPaletteBackgroundColor(Qt::white);
+			CLAM::VM::setBgColor(labelsContainer, Qt::white);
 
-			fixed_x_label->setPaletteBackgroundColor(Qt::white);
-			fixed_x_label->setPaletteForegroundColor(Qt::black);
-			fixed_y_label->setPaletteBackgroundColor(Qt::white);
-			fixed_y_label->setPaletteForegroundColor(Qt::black);
+			CLAM::VM::setBgColor(fixed_x_label, Qt::white);
+			CLAM::VM::setFgColor(fixed_x_label, Qt::black);
+			CLAM::VM::setBgColor(fixed_y_label, Qt::white);
+			CLAM::VM::setFgColor(fixed_y_label, Qt::black);
 
-			mXLabelInfo->setPaletteBackgroundColor(Qt::white);
-			mXLabelInfo->setPaletteForegroundColor(Qt::black);
-			mYLabelInfo->setPaletteBackgroundColor(Qt::white);
-			mYLabelInfo->setPaletteForegroundColor(Qt::black);
+			CLAM::VM::setBgColor(mXLabelInfo, Qt::white);
+			CLAM::VM::setFgColor(mXLabelInfo, Qt::black);
+			CLAM::VM::setBgColor(mYLabelInfo, Qt::white);
+			CLAM::VM::setFgColor(mYLabelInfo, Qt::black);
 
 			mDisplaySurface->SetBackgroundColor(1.0f,1.0f,1.0f);
 			
-			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(Qt::white);
+			if(bottomRightHole) CLAM::VM::setBgColor(bottomRightHole, Qt::white);
 			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetColorMap(CLAM::VM::WhiteBackground);
 
 			mColorScheme = EBlackOverWhite;
@@ -542,7 +548,7 @@ namespace CLAM
 
 			QFontMetrics fm(labelFont);
 
-			int width = (length_min > length_max) ? fm.width(QString::number(min,'f',2)) : fm.width(QString::number(max,'f',2));
+			int width = (length_min > length_max) ? fm.horizontalAdvance(QString::number(min,'f',2)) : fm.horizontalAdvance(QString::number(max,'f',2));
 		   
 			width += (fixed_x_label->width()+2);
 
@@ -715,21 +721,21 @@ namespace CLAM
 
 		void BPFEditor::InitPopupMenu()
 		{
-			if(mPopupMenu) 
+			if(mPopupMenu)
 			{
 				delete mPopupMenu;
 				mPopupMenu = 0;
 			}
-			mPopupMenu = new QPopupMenu();
-			mPopupMenu->setCheckable(true);
+			mPopupMenu = new QMenu();
 			if(mPlayer)
 			{
-				mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0);
-				if(mActivePlayer) mPopupMenu->setItemChecked(0,true);
+				QAction * auralizeAction = mPopupMenu->addAction("Auralize",this,SLOT(activePlayer()));
+				auralizeAction->setCheckable(true);
+				auralizeAction->setChecked(mActivePlayer);
 			}
 			if(mController->HasMultipleBPF())
 			{
-				mPopupMenu->insertItem("Select...",this,SLOT(showChooseBPFDlg()),0,1);
+				mPopupMenu->addAction("Select...",this,SLOT(showChooseBPFDlg()));
 			}
 		}
 
@@ -768,18 +774,22 @@ namespace CLAM
 
 		void BPFEditor::showChooseBPFDlg()
 		{
-			if(mChooseBPFDialog)
-			{
-				delete mChooseBPFDialog;
-				mChooseBPFDialog=0;    
-			}
-
-			mChooseBPFDialog = new ListItemChooser("Choose BPF","Available BPFs",mController->GetBPFNamesList(),this);
-			if( mChooseBPFDialog->exec() == QDialog::Accepted )
-			{
-				mController->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
-				if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
-			}
+			typedef std::list<QString> Names;
+			const Names & names = mController->GetBPFNamesList();
+			QStringList qlist;
+			for (Names::const_iterator it = names.begin(); it != names.end(); it++)
+				qlist.append(*it);
+			bool ok=false;
+			QString chosen = QInputDialog::getItem(this,
+				tr("Choose BPF"),
+				tr("Available BPFs"),
+				qlist,
+				0, // selected item
+				false, // editable
+				&ok);
+			if (not ok) return;
+			mController->SetCurrentBPF(chosen.toStdString());
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetCurrentBPF(chosen.toStdString());
 		}
 
 		void BPFEditor::ActiveLocator(bool active)
@@ -854,21 +864,21 @@ namespace CLAM
 		
 			QColor fc(QColor(c.r,c.g,c.b));
 
-			setPaletteBackgroundColor(fc);
+			CLAM::VM::setBgColor(this, fc);
 			
-			labelsContainer->setPaletteBackgroundColor(fc);
+			CLAM::VM::setBgColor(labelsContainer, fc);
 
-			fixed_x_label->setPaletteBackgroundColor(fc);
-			fixed_x_label->setPaletteForegroundColor(Qt::black);
-			fixed_y_label->setPaletteBackgroundColor(fc);
-			fixed_y_label->setPaletteForegroundColor(Qt::black);
+			CLAM::VM::setBgColor(fixed_x_label, fc);
+			CLAM::VM::setFgColor(fixed_x_label, Qt::black);
+			CLAM::VM::setBgColor(fixed_y_label, fc);
+			CLAM::VM::setFgColor(fixed_y_label, Qt::black);
 
-			mXLabelInfo->setPaletteBackgroundColor(fc);
-			mXLabelInfo->setPaletteForegroundColor(Qt::black);
-			mYLabelInfo->setPaletteBackgroundColor(fc);
-			mYLabelInfo->setPaletteForegroundColor(Qt::black);
+			CLAM::VM::setBgColor(mXLabelInfo, fc);
+			CLAM::VM::setFgColor(mXLabelInfo, Qt::black);
+			CLAM::VM::setBgColor(mYLabelInfo, fc);
+			CLAM::VM::setFgColor(mYLabelInfo, Qt::black);
 			
-			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(fc);
+			if(bottomRightHole) CLAM::VM::setBgColor(bottomRightHole, fc);
 		}
 
 		void BPFEditor::focusOutColor()

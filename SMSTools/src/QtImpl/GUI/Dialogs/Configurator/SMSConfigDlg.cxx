@@ -1,17 +1,28 @@
-#include <qfiledialog.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qvalidator.h>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QValidator>
 #include "SMSConfigDlg.hxx"
 
 namespace QtSMS
 {
-	SMSConfigDlg::SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config, QWidget* parent) 
-		: SMSConfigDlgBase(parent)
+	SMSConfigDlg::SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config, QWidget* parent)
+		: QDialog(parent)
 		, mConfig(config)
 	{
+		setupUi(this);
 		InitConfigDlg();
+		// Connections previously declared in the .ui file; wired here so the
+		// typed-pointer connect() form resolves to SMSConfigDlg slots instead
+		// of QDialog (uic targets the form's base class).
+		connect(buttonOk,                 &QPushButton::clicked, this, &SMSConfigDlg::accept);
+		connect(buttonCancel,             &QPushButton::clicked, this, &SMSConfigDlg::reject);
+		connect(mBrowseInputSoundFile,    &QPushButton::clicked, this, &SMSConfigDlg::browseInputSoundFile);
+		connect(mBrowseOutputSoundFile,   &QPushButton::clicked, this, &SMSConfigDlg::browseOutputSoundFile);
+		connect(mBrowseInputAnalysisFile, &QPushButton::clicked, this, &SMSConfigDlg::browseInputAnalysisFile);
+		connect(mBrowseOutputAnalysisFile,&QPushButton::clicked, this, &SMSConfigDlg::browseOutputAnalysisFile);
+		connect(mBrowseMorphSoundFile,    &QPushButton::clicked, this, &SMSConfigDlg::browseMorphSoundFile);
 	}
 
 	SMSConfigDlg::~SMSConfigDlg(){}
@@ -21,7 +32,7 @@ namespace QtSMS
 		// file page
 		if(!mCfgNameLineEdit->text().isEmpty())
 		{
-			mConfig.SetName(mCfgNameLineEdit->text().ascii());
+			mConfig.SetName(mCfgNameLineEdit->text().toStdString());
 		}
 		else
 		{
@@ -29,7 +40,7 @@ namespace QtSMS
 		}
 		if(!mInputSoundLineEdit->text().isEmpty())
 		{
-			mConfig.SetInputSoundFile(mInputSoundLineEdit->text().ascii());
+			mConfig.SetInputSoundFile(mInputSoundLineEdit->text().toStdString());
 		}
 		else
 		{
@@ -37,7 +48,7 @@ namespace QtSMS
 		}
 		if(!mOutputSoundLineEdit->text().isEmpty())
 		{
-			mConfig.SetOutputSoundFile(mOutputSoundLineEdit->text().ascii());
+			mConfig.SetOutputSoundFile(mOutputSoundLineEdit->text().toStdString());
 		}
 		else
 		{
@@ -45,7 +56,7 @@ namespace QtSMS
 		}
 		if(!mInputAnalysisLineEdit->text().isEmpty())
 		{
-			mConfig.SetInputAnalysisFile(mInputAnalysisLineEdit->text().ascii());
+			mConfig.SetInputAnalysisFile(mInputAnalysisLineEdit->text().toStdString());
 		}
 		else
 		{
@@ -53,7 +64,7 @@ namespace QtSMS
 		}
 		if(!mOutputAnalysisLineEdit->text().isEmpty())
 		{
-			mConfig.SetOutputAnalysisFile(mOutputAnalysisLineEdit->text().ascii());
+			mConfig.SetOutputAnalysisFile(mOutputAnalysisLineEdit->text().toStdString());
 		}
 		else
 		{
@@ -61,7 +72,7 @@ namespace QtSMS
 		}
 		if(!mMorphSoundFileLineEdit->text().isEmpty())
 		{
-			mConfig.SetMorphSoundFile(mMorphSoundFileLineEdit->text().ascii());
+			mConfig.SetMorphSoundFile(mMorphSoundFileLineEdit->text().toStdString());
 		}
 		else
 		{
@@ -109,8 +120,8 @@ namespace QtSMS
 		{
 			mConfig.SetAnalysisHighestFundFreq(CLAM::TData(mAnalysisHighestFundFreqLineEdit->text().toDouble()));
 		}
-		mConfig.SetAnalysisWindowType(CLAM::EWindowType::ValueTable()[mAnalysisWindowTypeComboBox->currentItem()].value);
-		mConfig.SetResAnalysisWindowType(CLAM::EWindowType::ValueTable()[mResAnalysisWindowTypeComboBox->currentItem()].value);
+		mConfig.SetAnalysisWindowType(CLAM::EWindowType::ValueTable()[mAnalysisWindowTypeComboBox->currentIndex()].value);
+		mConfig.SetResAnalysisWindowType(CLAM::EWindowType::ValueTable()[mResAnalysisWindowTypeComboBox->currentIndex()].value);
 		mConfig.SetAnalysisHarmonic(mHarmonicAnalysisCheckBox->isChecked());
 
 		// tracks page
@@ -129,40 +140,43 @@ namespace QtSMS
 		{
 			mConfig.SetSynthesisFrameSize(CLAM::TSize(mSynthFrameSizeLineEdit->text().toInt()));
 		}
-		mConfig.SetSynthesisWindowType(CLAM::EWindowType::ValueTable()[mSynthWindowTypeComboBox->currentItem()].value);
+		mConfig.SetSynthesisWindowType(CLAM::EWindowType::ValueTable()[mSynthWindowTypeComboBox->currentIndex()].value);
 	}
 
 	void SMSConfigDlg::browseInputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = QFileDialog::getOpenFileName(this,
+			tr("Choose Input Sound file"),
+			QString(), // dir
+			"Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
 		mInputSoundLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseOutputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
 		mOutputSoundLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseInputAnalysisFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "(*.xml *.sdif)");
 		if(filename.isEmpty()) return;
 		mInputAnalysisLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseOutputAnalysisFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "(*.xml *.sdif)");
 		if(filename.isEmpty()) return;
 		mOutputAnalysisLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseMorphSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
+		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "Audio (*.wav *.ogg *.mp3)");
 		if(filename.isEmpty()) return;
 		mMorphSoundFileLineEdit->setText(filename);
 	}
@@ -191,8 +205,8 @@ namespace QtSMS
 		mAnalysisReferenceFundFreqLineEdit->setText(QString::number(mConfig.GetAnalysisReferenceFundFreq(),'f',0));
 		mAnalysisLowestFundFreqLineEdit->setText(QString::number(mConfig.GetAnalysisLowestFundFreq(),'f',0));
 		mAnalysisHighestFundFreqLineEdit->setText(QString::number(mConfig.GetAnalysisHighestFundFreq(),'f',0));
-		mAnalysisWindowTypeComboBox->setCurrentItem(mConfig.GetAnalysisWindowType());
-		mResAnalysisWindowTypeComboBox->setCurrentItem(mConfig.GetResAnalysisWindowType());
+		mAnalysisWindowTypeComboBox->setCurrentIndex(mConfig.GetAnalysisWindowType());
+		mResAnalysisWindowTypeComboBox->setCurrentIndex(mConfig.GetResAnalysisWindowType());
 		mHarmonicAnalysisCheckBox->setChecked(mConfig.GetAnalysisHarmonic());
 
 		// tracks page
@@ -202,7 +216,7 @@ namespace QtSMS
 
 		// synthesis page
 		mSynthFrameSizeLineEdit->setText(QString::number(mConfig.GetSynthesisFrameSize()));
-		mSynthWindowTypeComboBox->setCurrentItem(mConfig.GetSynthesisWindowType());		
+		mSynthWindowTypeComboBox->setCurrentIndex(mConfig.GetSynthesisWindowType());		
 	}
 
 	void SMSConfigDlg::SetValidators()
@@ -231,9 +245,9 @@ namespace QtSMS
 		for(int i=0; CLAM::EWindowType::ValueTable()[i].name != NULL; i++)
 		{
 			const char* item =  CLAM::EWindowType::ValueTable()[i].name;
-			mAnalysisWindowTypeComboBox->insertItem(item);
-			mResAnalysisWindowTypeComboBox->insertItem(item);
-			mSynthWindowTypeComboBox->insertItem(item);
+			mAnalysisWindowTypeComboBox->addItem(item);
+			mResAnalysisWindowTypeComboBox->addItem(item);
+			mSynthWindowTypeComboBox->addItem(item);
 		}
 	}
 }

@@ -13,6 +13,9 @@ include(ClamSources)
 option(BUILD_SHARED_LIBS "Build shared libraries by default" ON)
 option(CLAM_BUILD_LIBRARIES "Build the CLAM C++ libraries" ON)
 option(CLAM_BUILD_GUI_APPS "Enable Qt code that has been ported to CMake" OFF)
+option(CLAM_BUILD_SMSTOOLS "Build the SMSTools Qt application" OFF)
+
+include(ClamQtCompat)
 
 if(CLAM_BUILD_LIBRARIES)
 	add_subdirectory(CLAM)
@@ -20,4 +23,8 @@ endif()
 
 if(CLAM_BUILD_GUI_APPS)
 	add_subdirectory(NetworkEditor)
+endif()
+
+if(CLAM_BUILD_SMSTOOLS)
+	add_subdirectory(SMSTools)
 endif()

@@ -1,4 +1,4 @@
-#include <qmessagebox.h>
+#include <QMessageBox>
 #include <CLAM/ShowMessage.hxx>
 
 namespace CLAM
@@ -16,8 +16,8 @@ namespace CLAM
 								"Seems that your system has not MIDI support. MIDI settings will be deactivated",
 								QMessageBox::Warning,
 								QMessageBox::Ok,
-								QMessageBox::NoButton,
-								QMessageBox::NoButton); 
+								Qt::NoButton,
+								Qt::NoButton); 
 
 				message.exec();
 		}

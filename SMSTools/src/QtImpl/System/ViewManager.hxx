@@ -2,8 +2,8 @@
 #define __VIEWMANAGER__
 
 #include <vector>
-#include <qobject.h>
-#include <qstring.h>
+#include <QObject>
+#include <QString>
 #include <CLAM/Segment.hxx>
 
 class QWidget;

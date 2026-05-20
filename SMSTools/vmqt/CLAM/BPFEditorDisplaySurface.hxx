@@ -1,9 +1,12 @@
 #ifndef __BPFEDITORDISPLAYSURFACE__
 #define __BPFEDITORDISPLAYSURFACE__
 
-#include <qgl.h>
-#include <qcursor.h>
+#include <QOpenGLWidget>
+#include <QCursor>
+#include <QEnterEvent>
 #include <CLAM/GLView.hxx>
+
+using QGLWidget = QOpenGLWidget;
 
 class QTimer;
 
@@ -41,8 +44,8 @@ namespace CLAM
 			void mouseMoveEvent(QMouseEvent* e);
 			void keyReleaseEvent(QKeyEvent * e);
 			void resizeEvent(QResizeEvent *e);
-			void enterEvent(QEvent *e); 
-			void leaveEvent(QEvent *e); 
+			void enterEvent(QEnterEvent *e);
+			void leaveEvent(QEvent *e);
 			void focusInEvent(QFocusEvent* e);
 			void focusOutEvent(QFocusEvent* e);
 

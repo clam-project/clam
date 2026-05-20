@@ -1,7 +1,7 @@
 #ifndef __QTSMSBPFEDITORSYNC__
 #define __QTSMSBPFEDITORSYNC__
 
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/BPF.hxx>
 
 class QCheckBox;

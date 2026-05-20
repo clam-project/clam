@@ -5,9 +5,9 @@
 #include <vector>
 #include <string>
 #include <list>
-#include <qobject.h>
-#include <qstring.h>
-#include <qcursor.h>
+#include <QObject>
+#include <QString>
+#include <QCursor>
 #include <CLAM/BPF.hxx>
 #include <CLAM/Point.hxx>
 #include <CLAM/GLView.hxx>

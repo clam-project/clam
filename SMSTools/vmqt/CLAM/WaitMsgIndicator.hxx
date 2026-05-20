@@ -1,7 +1,7 @@
 #ifndef __WAITMSGINDICATOR__
 #define __WAITMSGINDICATOR__
 
-#include <qframe.h>
+#include <QFrame>
 
 namespace CLAM
 {

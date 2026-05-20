@@ -1,7 +1,11 @@
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
+#include <QLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+//Added by qt3to4:
+#include <QVBoxLayout>
+#include <QBoxLayout>
+#include <QHBoxLayout>
 #include <CLAM/EditTagDialog.hxx>
 
 namespace CLAM
@@ -11,7 +15,7 @@ namespace CLAM
 		EditTagDialog::EditTagDialog(const QString& contents, QWidget* parent)
 			: QDialog(parent)
 		{
-			setCaption("Edit tag");
+			setWindowTitle("Edit tag");
 			InitEditTagDialog(contents);
 		}
 
@@ -27,11 +31,13 @@ namespace CLAM
 		void EditTagDialog::InitEditTagDialog(const QString& contents)
 		{
 			// main layout
-			QBoxLayout* mainLayout = new QVBoxLayout(this,5);
+			QBoxLayout* mainLayout = new QVBoxLayout(this);
+			mainLayout->setContentsMargins(5, 5, 5, 5);
 			mainLayout->addStretch();
 
 			// top: label and lineedit
-			QBoxLayout* topLayout = new QHBoxLayout(mainLayout);
+			QBoxLayout* topLayout = new QHBoxLayout;
+			mainLayout->addLayout(topLayout);
 			mLabel = new QLabel(this);
 			mLabel->setText("Tag");
 			mLineEdit = new QLineEdit(contents,this);
@@ -41,7 +47,8 @@ namespace CLAM
 			mainLayout->addStretch();
 
 			// bottom: ok and cancel buttons
-			QBoxLayout* bottomLayout = new QHBoxLayout(mainLayout);
+			QBoxLayout* bottomLayout = new QHBoxLayout;
+			mainLayout->addLayout(bottomLayout);
 			mOkButton = new QPushButton(this);
 			mOkButton->setText("Ok");
 			mOkButton->setDefault(true);

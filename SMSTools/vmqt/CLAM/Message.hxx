@@ -2,7 +2,7 @@
 #define __MESSAGE__
 
 #include <string>
-#include <qmessagebox.h>
+#include <QMessageBox>
 
 namespace CLAM
 {

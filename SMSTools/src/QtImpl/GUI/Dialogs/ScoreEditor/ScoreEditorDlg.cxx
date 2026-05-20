@@ -1,18 +1,33 @@
 #include <algorithm>
-#include <qlayout.h>
-#include <qlistbox.h>
-#include <qtabwidget.h>
+#include <QLayout>
+#include <QListWidget>
+#include <QTabWidget>
+#include <QVBoxLayout>
 #include "SMSConfigurator.hxx"
 #include "ScoreEditorDlg.hxx"
 
 namespace QtSMS
 {
 	ScoreEditorDlg::ScoreEditorDlg(QWidget* parent)
-		: ScoreEditorDlgBase(parent)
+		: QDialog(parent)
 		, mIsShowed(false)
 		, mScoreChanged(false)
 	{
+		setupUi(this);
 		InitScoreEditor();
+		// Connections previously declared in the .ui file; wired here so the
+		// typed-pointer connect() form resolves to ScoreEditorDlg slots
+		// instead of QDialog (uic targets the form's base class). The Qt3
+		// Q3ListBox::highlighted(QString) maps to QListWidget::currentTextChanged,
+		// and highlighted(int) maps to currentRowChanged.
+		connect(mOkBtn,         &QPushButton::clicked, this, &ScoreEditorDlg::accept);
+		connect(mCancelBtn,     &QPushButton::clicked, this, &ScoreEditorDlg::reject);
+		connect(mAddToScoreBtn, &QPushButton::clicked, this, &ScoreEditorDlg::addHighlightedToScore);
+		connect(mMoveUpBtn,     &QPushButton::clicked, this, &ScoreEditorDlg::moveHighlightedUp);
+		connect(mMoveDownBtn,   &QPushButton::clicked, this, &ScoreEditorDlg::moveHighlightedDown);
+		connect(mRemoveBtn,     &QPushButton::clicked, this, &ScoreEditorDlg::removeHighlightedFromScore);
+		connect(mAvailableTransformationList, &QListWidget::currentTextChanged, this, &ScoreEditorDlg::onSelectAvailableTransformation);
+		connect(mScoreTransformationList,     &QListWidget::currentRowChanged,  this, &ScoreEditorDlg::onSelectTransformationInScore);
 	}
 
 	ScoreEditorDlg::~ScoreEditorDlg()
@@ -43,7 +58,7 @@ namespace QtSMS
 		for(unsigned i=0; i < mSMSConfiguratorList.size(); i++)
 		{
 			CLAM::SMSTransformationChaineeConfig cfg;
-			cfg.SetConcreteClassName(mScoreTransformationList->text(i).ascii());
+			cfg.SetConcreteClassName(mScoreTransformationList->item(i)->text().toStdString());
 			cfg.SetConcreteConfig(mSMSConfiguratorList[i]->GetConfig());
 
 			CLAM::SMSTransformationChainConfig::iterator it = mTransformationChainCfg.ConfigList_begin();
@@ -62,13 +77,15 @@ namespace QtSMS
 		it++;
 		for(unsigned i=1; i < cfg.ConfigList_size()-1; i++, it++)
 		{
-			mScoreTransformationList->insertItem(it->GetConcreteClassName().c_str());
+			mScoreTransformationList->addItem(it->GetConcreteClassName().c_str());
 			QtSMS::SMSConfigurator* pCfg = QtSMS::SMSConfiguratorFactory::GetInstance().Create(it->GetConcreteClassName().c_str());
 			pCfg->SetConfig(it->GetConcreteConfig());
 			mSMSConfiguratorList.push_back(pCfg);
-			mSMSConfiguratorList[i-1]->GetParametersWidget()->reparent(mTabWidget->page(1),QPoint(0,0));
-			mTabPage1Layout->addWidget(mSMSConfiguratorList[i-1]->GetParametersWidget());
-			mSMSConfiguratorList[i-1]->GetParametersWidget()->hide();
+			QWidget* paramsWidget = mSMSConfiguratorList[i-1]->GetParametersWidget();
+			paramsWidget->setParent(mTabWidget->widget(1));
+			paramsWidget->move(0, 0);
+			mTabPage1Layout->addWidget(paramsWidget);
+			paramsWidget->hide();
 			connect(mSMSConfiguratorList[i-1],SIGNAL(configurationChanged()),SLOT(scoreChanged()));
 		}
 		HideAll();
@@ -91,27 +108,29 @@ namespace QtSMS
 		}
 		HideAll();
 		mScoreTransformationList->clearSelection();
-		mTabWidget->showPage(mTabWidget->page(0));
-		mHelpWidgetTable[str.ascii()]->show();
+		mTabWidget->setCurrentWidget(mTabWidget->widget(0));
+		mHelpWidgetTable[str.toStdString()]->show();
 	}
 
 	void ScoreEditorDlg::onSelectTransformationInScore(int index)
 	{
 		HideAll();
 		mAvailableTransformationList->clearSelection();
-		mTabWidget->showPage(mTabWidget->page(1));
+		mTabWidget->setCurrentWidget(mTabWidget->widget(1));
 		mSMSConfiguratorList[index]->GetParametersWidget()->show();
-		mHelpWidgetTable[mScoreTransformationList->text(index).ascii()]->show();
+		mHelpWidgetTable[mScoreTransformationList->item(index)->text().toStdString()]->show();
 	}
 
 	void ScoreEditorDlg::addHighlightedToScore()
 	{
-		QString str = mAvailableTransformationList->currentText();
-		mScoreTransformationList->insertItem(str);
-		mSMSConfiguratorList.push_back(QtSMS::SMSConfiguratorFactory::GetInstance().Create(str.ascii()));
-		mSMSConfiguratorList[mSMSConfiguratorList.size()-1]->GetParametersWidget()->reparent(mTabWidget->page(1),QPoint(0,0));
-		mTabPage1Layout->addWidget(mSMSConfiguratorList[mSMSConfiguratorList.size()-1]->GetParametersWidget());
-		mScoreTransformationList->setSelected(mSMSConfiguratorList.size()-1,true);
+		QString str = mAvailableTransformationList->currentItem()->text();
+		mScoreTransformationList->addItem(str);
+		mSMSConfiguratorList.push_back(QtSMS::SMSConfiguratorFactory::GetInstance().Create(str.toStdString()));
+		QWidget* paramsWidget = mSMSConfiguratorList.back()->GetParametersWidget();
+		paramsWidget->setParent(mTabWidget->widget(1));
+		paramsWidget->move(0, 0);
+		mTabPage1Layout->addWidget(paramsWidget);
+		mScoreTransformationList->setCurrentRow(int(mSMSConfiguratorList.size()) - 1);
 
 		scoreChanged();
 	}
@@ -119,40 +138,40 @@ namespace QtSMS
 	void ScoreEditorDlg::removeHighlightedFromScore()
 	{
 		if(!mScoreTransformationList->count()) return;
-		int index = mScoreTransformationList->currentItem();
-		if(mScoreTransformationList->count()==1) 
+		int index = mScoreTransformationList->currentRow();
+		if(mScoreTransformationList->count()==1)
 		{
 			mScoreTransformationList->clear();
 		}
 		else
 		{
-			mScoreTransformationList->removeItem(index);
+			delete mScoreTransformationList->takeItem(index);
 		}
 		HideAll();
 		SMSConfiguratorList::iterator pos = std::find(mSMSConfiguratorList.begin(),
 													  mSMSConfiguratorList.end(),
 													  mSMSConfiguratorList[index]);
-		mTabPage1Layout->remove(mSMSConfiguratorList[index]->GetParametersWidget());
+		mTabPage1Layout->removeWidget(mSMSConfiguratorList[index]->GetParametersWidget());
 		delete mSMSConfiguratorList[index];
 		mSMSConfiguratorList.erase(pos);
 		if(mScoreTransformationList->count())
 		{
-			mScoreTransformationList->setSelected(mScoreTransformationList->currentItem(),true);
+			mScoreTransformationList->setCurrentRow(mScoreTransformationList->currentRow());
 		}
 		scoreChanged();
 	}
 
 	void ScoreEditorDlg::moveHighlightedUp()
 	{
-		int source = mScoreTransformationList->currentItem();
-		if(!source) return;
+		int source = mScoreTransformationList->currentRow();
+		if(source <= 0) return;
 		SwapTransformations(source,source-1);
 	}
 
 	void ScoreEditorDlg::moveHighlightedDown()
 	{
-		int source = mScoreTransformationList->currentItem();
-		if(source == (int)mScoreTransformationList->count()-1) return;
+		int source = mScoreTransformationList->currentRow();
+		if(source == mScoreTransformationList->count()-1) return;
 		SwapTransformations(source,source+1);
 	}
 
@@ -171,19 +190,22 @@ namespace QtSMS
 		std::list<std::string>::const_iterator it = availableTransformationsList.begin();
 		for(; it != availableTransformationsList.end(); it++)
 		{
-			mAvailableTransformationList->insertItem(it->c_str());
-			mHelpWidgetTable[(*it)]=QtSMS::SMSConfiguratorFactory::GetInstance().Create(it->c_str())->GetHelpWidget();
-			mHelpWidgetTable[(*it)]->reparent(mTabWidget->page(0),QPoint(0,0));
-			mTabPage0Layout->addWidget(mHelpWidgetTable[(*it)]);
-			mHelpWidgetTable[(*it)]->hide();
+			mAvailableTransformationList->addItem(it->c_str());
+			QWidget* helpWidget = QtSMS::SMSConfiguratorFactory::GetInstance().Create(it->c_str())->GetHelpWidget();
+			mHelpWidgetTable[(*it)] = helpWidget;
+			helpWidget->setParent(mTabWidget->widget(0));
+			helpWidget->move(0, 0);
+			mTabPage0Layout->addWidget(helpWidget);
+			helpWidget->hide();
 		}
 	}
 
 	void ScoreEditorDlg::SwapTransformations(int source, int dest)
 	{
-		QString str = mScoreTransformationList->text(source);
-		mScoreTransformationList->changeItem(mScoreTransformationList->text(dest),source);
-		mScoreTransformationList->changeItem(str,dest);
+		QString sourceText = mScoreTransformationList->item(source)->text();
+		QString destText = mScoreTransformationList->item(dest)->text();
+		mScoreTransformationList->item(source)->setText(destText);
+		mScoreTransformationList->item(dest)->setText(sourceText);
 		SMSConfigurator* cfg = mSMSConfiguratorList[source];
 		mSMSConfiguratorList[source]=mSMSConfiguratorList[dest];
 		mSMSConfiguratorList[dest]=cfg;
@@ -211,8 +233,8 @@ namespace QtSMS
 
 	void ScoreEditorDlg::InitScoreEditor()
 	{
-		mTabPage0Layout = new QVBoxLayout(mTabWidget->page(0));
-		mTabPage1Layout = new QVBoxLayout(mTabWidget->page(1));
+		mTabPage0Layout = new QVBoxLayout(mTabWidget->widget(0));
+		mTabPage1Layout = new QVBoxLayout(mTabWidget->widget(1));
 		GetAvailableTransformations();
 	}
 }
