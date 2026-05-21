@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <dirent.h>
+#include <filesystem>
 #ifdef WIN32
 #	include "CLAM_windows.h"
 #else
@@ -99,42 +99,41 @@ bool isDynamicLibrary(const std::string & file)
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 {
+	std::error_code ec;
+	if (!std::filesystem::is_directory(path, ec)) return;
 
-	DIR* dir = opendir(path.c_str());
-	if (!dir) return;
-	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
-	while ( struct dirent * dirEntry = readdir(dir) )
+	auto& factory = CLAM::ProcessingFactory::GetInstance();
+	for (const auto& entry : std::filesystem::directory_iterator(path, ec))
 	{
-		std::string pluginFilename(dirEntry->d_name);
-		if(pluginFilename == "." || pluginFilename == ".." || not isDynamicLibrary(pluginFilename))
+		const std::string pluginFilename = entry.path().filename().string();
+		if (!isDynamicLibrary(pluginFilename))
 			continue;
 		if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
-		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
+		const std::string pluginFullFilename = entry.path().string();
 
-		if (factory.isLibraryLoaded( pluginFullFilename ))
+		if (factory.isLibraryLoaded(pluginFullFilename))
 		{
 			if (getenv(debugEnvFlag))
 				std::cout << "RunTimeLibraryLoader: Already loaded, skiping..." << std::endl;
 			continue;
 		}
-		factory.setLibraryAsLoaded( pluginFullFilename );
+		factory.setLibraryAsLoaded(pluginFullFilename);
 
-		void * handle = FullyLoadLibrary(pluginFullFilename);
+		void* handle = FullyLoadLibrary(pluginFullFilename);
 
 		// TODO: throw exception and have catch in main()
 		if (handle == nullptr)
 		{
-			std::cout << "RunTimeLibraryLoader: Error loading: " << pluginFullFilename 
+			std::cout << "RunTimeLibraryLoader: Error loading: " << pluginFullFilename
 					  << " reason: " << LibraryLoadError()
 					  << std::endl;
 		}
 		else if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Loaded" << std::endl;
 
-		SetupLibrary( handle, pluginFullFilename );
+		SetupLibrary(handle, pluginFullFilename);
 	}
-	closedir(dir);
 }
 
 
@@ -276,25 +275,17 @@ const std::string RunTimeLibraryLoader::GetPaths() const
 const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const 
 {
 	std::string paths=GetPaths();
-	std::vector <std::string> environmentPaths = SplitPathVariable(paths);
-	for (unsigned i=0; i<environmentPaths.size(); i++)
+	std::vector<std::string> environmentPaths = SplitPathVariable(paths);
+	for (const auto& envPath : environmentPaths)
 	{
-		// get file name:
-		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1); 
-		// testDir= root_path + subpath:
-		std::string testDir = environmentPaths[i] + "/" + subpathAndName.substr(0, subpathAndName.size()-fileName.size());
-		// check if directory exists:
-		DIR* dir = opendir(testDir.c_str());
-		if (not dir) 
-			continue; // directory doesn't match, skip
-		closedir(dir);
-		// check if file exists:
-		std::fstream fin;
-		std::string completeFileName=testDir+fileName;
-		fin.open(completeFileName.c_str(),std::ios::in);
-		if (not fin.is_open()) 
-			continue; // file doesn't exist, skip
-		fin.close();
+		const std::string fileName = subpathAndName.substr(subpathAndName.rfind("/") + 1);
+		const std::string testDir = envPath + "/" + subpathAndName.substr(0, subpathAndName.size() - fileName.size());
+		std::error_code ec;
+		if (!std::filesystem::is_directory(testDir, ec))
+			continue;
+		const std::string completeFileName = testDir + fileName;
+		if (!std::filesystem::is_regular_file(completeFileName, ec))
+			continue;
 		return completeFileName;
 	}
 	return "";
