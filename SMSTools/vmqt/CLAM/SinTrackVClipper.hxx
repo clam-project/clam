@@ -33,7 +33,7 @@ namespace CLAM
 			typedef SineTrackSpanEnds::iterator span_iterator;
 			typedef SinusoidalTrack::iterator   peak_iterator;
 				
-			typedef enum { Inside = 0x0, Outside = 0x1 } outcode; // 0x0 means Inside
+			enum outcode { Inside = 0x0, Outside = 0x1 }; // 0x0 means Inside
 
 		public:
 			SinTrackVerClipper( TData f = 30.0 );

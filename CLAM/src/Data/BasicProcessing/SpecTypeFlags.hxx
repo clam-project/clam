@@ -47,12 +47,12 @@ public:
 	virtual Component * Species() const {
 		return new SpecTypeFlags();
 	}
-	typedef enum {
+	enum tFlags {
 		eComplex=0,
 		ePolar=1,
 		eMagPhase=2,
 		eMagPhaseBPF=3
-	} tFlags;
+	};
 // Constructors
 	SpecTypeFlags () :
 		Flags<4>(sFlagValues),

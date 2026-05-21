@@ -184,13 +184,13 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 		virtual Component * Species() const {
 			return new MyFlags();
 		}
-		typedef enum {
+		enum tFlag {
 			eFlag0=0,
 			eFlag1=1,
 			eFlag2=2,
 			eFlag3=3,
 			eFlag4=4
-		} tFlag;
+		};
 		MyFlags () :
 			Flags<5>(sFlagValues),
 			flag0(operator[](eFlag0)),

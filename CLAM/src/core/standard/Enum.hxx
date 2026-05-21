@@ -71,11 +71,11 @@ public:
 
 	virtual CLAM::Component * Species() const {return new EMyEnum();}
 
-	typedef enum {
+	enum tEnum {
 		eZero=0,
 		eTwo=2,
 		eHundred=100
-	} tEnum;
+	};
 	static tEnumValue * ValueTable()
 	{
 		static tEnumValue sValueTable[] = 

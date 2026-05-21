@@ -39,7 +39,7 @@ public:
 	EInterpolation(std::string s) : Enum(ValueTable(), s) {};
 	virtual Component* Species() const { return new EInterpolation; }
 
-	typedef enum {
+	enum tEnum {
 		eStep,
 		eRound,
 		eLinear,
@@ -49,7 +49,7 @@ public:
 		ePolynomial4,
 		ePolynomial5,
 		ePolynomialn
-	} tEnum;
+	};
 
 	static tEnumValue * ValueTable()
 	{

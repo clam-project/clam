@@ -24,13 +24,13 @@ public:
 		EControlRepresentation(tValue v) : Enum(sEnumValues, v) {};
 		EControlRepresentation(std::string s) : Enum(sEnumValues, s) {};
 
-		typedef enum {
+		enum tEnum {
 			eUndetermined,
 			eVerticalSlider,
 			eHorizontalSlider,
 			eKnot,
 			eSpinBox		
-		} tEnum; 
+		}; 
 		
 		Component* Species() const
 		{
@@ -49,12 +49,12 @@ public:
 		EMapping(tValue v) : Enum(sEnumValues, v) {};
 		EMapping(std::string s) : Enum(sEnumValues, s) {};
 
-		typedef enum {
+		enum tEnum {
 			eLinear,		///< 1:1 relationship (default)
 			eInverted,		///< Inverted linear relationship
 			eLog, 			///< More resolution in the low range
 			eReverseLog		///< More resolution in the upper range
-		} tEnum; 
+		}; 
 		
 		Component* Species() const
 		{

@@ -36,12 +36,12 @@ namespace CLAM {
 		EWindowNormalize(tValue v) : Enum(ValueTable(), v) {};
 		EWindowNormalize(std::string s) : Enum(ValueTable(), s) {};
 
-		typedef enum {
+		enum tEnum {
 			eNone,
 			eAnalysis,
 			eEnergy,
 			eMax
-		} tEnum;
+		};
 
 		virtual Component* Species() const
 		{

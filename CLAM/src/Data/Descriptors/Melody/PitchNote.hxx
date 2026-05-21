@@ -41,9 +41,9 @@ namespace CLAM
 		EPitch(tValue v) : Enum(ValueTable(), v) {};
 		EPitch(std::string s) : Enum(ValueTable(), s) {};
 		
-		typedef enum {
+		enum tEnum {
 			eC,eDb,eD,eEb,eE,eF,eGb,eG,eAb,eA,eBb,eB,eNone
-		} tEnum;	
+		};	
 
 		virtual Component* Species() const
 		{
