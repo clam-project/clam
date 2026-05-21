@@ -1,8 +1,9 @@
 #ifndef __ENGINE__
 #define __ENGINE__
 
+#include <functional>
 #include <string>
-#include <CLAM/Thread.hxx>
+#include <thread>
 #include "QtProgress.hxx"
 #include "QtWaitMessage.hxx"
 #include "SMSBase.hxx"
@@ -60,7 +61,7 @@ namespace QtSMS
 			
 		static Engine* mInstance;
 
-		CLAM::Thread mThread;
+		std::thread  mThread;
 		std::string  mCurrentFileName;
 		bool         mRetrieveAudio;
 
@@ -70,7 +71,7 @@ namespace QtSMS
 		bool LoadSound(const std::string& filename,CLAM::Segment& segment);
 		void StoreSound(const CLAM::Audio& audio,const std::string& filename);
 
-		void LaunchMethodOnThread(CBL::Functor0 method);
+		void LaunchMethodOnThread(std::function<void()> method);
 
 		void DoLoadAnalysis();
 		void DoStoreAnalysis();

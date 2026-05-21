@@ -29,8 +29,6 @@ namespace CLAM
 			BuildPlayer();
 			LoadMIDIDevices();
 			LoadMIDIInstruments();
-		   
-			mThread.SetThreadCode(makeMemberFunctor0((*this), QtBPFPlayer, thread_code));
 		}
 		
 		QtBPFPlayer::~QtBPFPlayer()
@@ -432,7 +430,7 @@ namespace CLAM
 		void QtBPFPlayer::StopThread()
 		{
 			mThreadIsCancelled = true;
-			if(mThread.IsRunning()) mThread.Stop();
+			if (mThread.joinable()) mThread.join();
 		}
 
 		void QtBPFPlayer::PlaySimultaneously(bool psi)
@@ -443,15 +441,15 @@ namespace CLAM
 
 		void QtBPFPlayer::ProcessIncomingBPF()
 		{
-			if(mThread.IsRunning() || mThreadIsCancelled) return;
-			mThread.Start();
+			if(mThread.joinable() || mThreadIsCancelled) return;
+			mThread = std::thread([this]{ thread_code(); });
 		}
 
 		void QtBPFPlayer::CheckPendent()
 		{
 			if(mEnqueuedData.empty() || mThreadIsCancelled) return;
-			mThread.Stop();
-			mThread.Start();
+			if (mThread.joinable()) mThread.join();
+			mThread = std::thread([this]{ thread_code(); });
 		}
 
 		void QtBPFPlayer::SetCurrentBPF(const std::string& current)

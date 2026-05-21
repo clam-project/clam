@@ -61,6 +61,7 @@ namespace QtSMS
 
 	QtSMSTools::~QtSMSTools()
 	{
+		if (mThread.joinable()) mThread.join();
 		delete mEngine;
 	}
 
@@ -285,7 +286,7 @@ namespace QtSMS
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
 		if (!guard(this, tr("Analyze"), [&]() { mEngine->Analyze(); })) return;
-		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
+		LaunchMethodOnThread([this]{ SendAnalyzedDataToViewManager(); });
 	}
 
 	void QtSMSTools::melodyExtraction()
@@ -300,7 +301,7 @@ namespace QtSMS
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
 		if (!guard(this, tr("Apply transformation"), [&]() { mEngine->Transform(); })) return;
-		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendTransformedDataToViewManager));
+		LaunchMethodOnThread([this]{ SendTransformedDataToViewManager(); });
 	}
 
 	void QtSMSTools::undoTransformation()
@@ -309,7 +310,7 @@ namespace QtSMS
 		InitMenuViewItems(false);
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
-		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
+		LaunchMethodOnThread([this]{ SendAnalyzedDataToViewManager(); });
 	}
 
 	void QtSMSTools::synthesize()
@@ -317,7 +318,7 @@ namespace QtSMS
 		ResetMenuViewAudioItems();
 		Engine::DisplayManager()->Reset();
 		if (!guard(this, tr("Synthesize"), [&]() { mEngine->Synthesize(); })) return;
-		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendSynthesizedDataToViewManager));
+		LaunchMethodOnThread([this]{ SendSynthesizedDataToViewManager(); });
 	}
 
 	void QtSMSTools::displayBWSonogram(bool on)
@@ -703,10 +704,10 @@ namespace QtSMS
 		UpdateState();
 	}
 
-	void QtSMSTools::LaunchMethodOnThread(CBL::Functor0 method)
+	void QtSMSTools::LaunchMethodOnThread(std::function<void()> method)
 	{
-		mThread.SetThreadCode(method);
-		mThread.Start();
+		if (mThread.joinable()) mThread.join();
+		mThread = std::thread(std::move(method));
 	}
 
 	void QtSMSTools::OnAnalysisDataLoaded()
@@ -714,7 +715,7 @@ namespace QtSMS
 		InitMenuViewItems(false);
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
-		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
+		LaunchMethodOnThread([this]{ SendAnalyzedDataToViewManager(); });
 	}
 
 	void QtSMSTools::NotImplemented()

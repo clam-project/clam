@@ -186,7 +186,6 @@ set(CLAM_CORE_FOLDERS
 	src/Flow/Networks
 	src/Processing/Plugins
 	src/System
-	src/System/Threads
 	externals/CbLib
 )
 

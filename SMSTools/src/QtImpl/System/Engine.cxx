@@ -7,7 +7,7 @@
 
 namespace QtSMS
 {
-	Engine* Engine::mInstance = 0;
+	Engine* Engine::mInstance = nullptr;
 
 	Engine* Engine::Instance()
 	{
@@ -18,7 +18,7 @@ namespace QtSMS
 		return mInstance;
 	}
 
-	Engine::Engine(){}	 
+	Engine::Engine() = default;
 
 	ViewManager* Engine::DisplayManager()
 	{
@@ -39,20 +39,20 @@ namespace QtSMS
 	bool Engine::LoadAnalysis(const std::string& filename)
 	{
 		mCurrentFileName = filename;
-		LaunchMethodOnThread(makeMemberFunctor0(*this,Engine,DoLoadAnalysis));
+		LaunchMethodOnThread([this]{ DoLoadAnalysis(); });
 		return true;
 	}
 
 	void Engine::StoreAnalysis(const std::string& filename)
 	{
 		mCurrentFileName = filename;
-		LaunchMethodOnThread(makeMemberFunctor0(*this,Engine,DoStoreAnalysis));
+		LaunchMethodOnThread([this]{ DoStoreAnalysis(); });
 	}
 
 	void Engine::StoreMelody(const std::string& filename)
 	{
 		mCurrentFileName = filename;
-		LaunchMethodOnThread(makeMemberFunctor0(*this,Engine,DoStoreMelody));
+		LaunchMethodOnThread([this]{ DoStoreMelody(); });
 	}
 
 	void Engine::LoadTransformationScore(const std::string& filename)
@@ -87,7 +87,7 @@ namespace QtSMS
 
 	void Engine::ExtractMelody()
 	{
-		LaunchMethodOnThread(makeMemberFunctor0(*this,Engine,DoMelodyExtraction));
+		LaunchMethodOnThread([this]{ DoMelodyExtraction(); });
 	}
 
 	void Engine::DoTransformations()
@@ -208,10 +208,10 @@ namespace QtSMS
 		proc.Stop();		
 	}
 
-	void Engine::LaunchMethodOnThread(CBL::Functor0 method)
+	void Engine::LaunchMethodOnThread(std::function<void()> method)
 	{
-		mThread.SetThreadCode(method);
-		mThread.Start();
+		if (mThread.joinable()) mThread.join();
+		mThread = std::thread(std::move(method));
 	}
 
 	void Engine::DoLoadAnalysis()
