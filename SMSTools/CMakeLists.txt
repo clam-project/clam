@@ -21,11 +21,6 @@ set(CLAM_SMSTOOLS_QT_LIBRARIES
 	Qt6::PrintSupport
 )
 
-find_library(CLAM_SMSTOOLS_GLU_LIBRARY NAMES GLU)
-if(NOT CLAM_SMSTOOLS_GLU_LIBRARY)
-	message(FATAL_ERROR "SMSTools OpenGL widgets require GLU but libGLU was not found")
-endif()
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -146,7 +141,6 @@ target_link_libraries(clam_smstools_vmqt
 	PUBLIC
 		clam_smstools_common
 		${CLAM_SMSTOOLS_QT_LIBRARIES}
-		"${CLAM_SMSTOOLS_GLU_LIBRARY}"
 )
 
 # ------------------------------------------------------------------------------

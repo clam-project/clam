@@ -4,10 +4,43 @@
 #include <QOpenGLWidget>
 #undef GetClassName
 #include <QKeyEvent>
+#include <QMatrix4x4>
 #include <QtCore/QtGlobal>
 #include <iostream>
 #include <cmath>
-#include <GL/glu.h>
+
+namespace
+{
+	// Replacement for gluSphere(quadric, radius, slices, stacks): draws a
+	// lat/long parameterized sphere with outward normals using legacy
+	// fixed-function GL (matches the rest of this widget). Suitable for
+	// the small decorative spheres rendered here; not optimized.
+	inline void drawSphere(float radius, int slices, int stacks)
+	{
+		const float pi = static_cast<float>(M_PI);
+		for (int i = 0; i < stacks; ++i)
+		{
+			const float lat0 = pi * (-0.5f + static_cast<float>(i)   / stacks);
+			const float lat1 = pi * (-0.5f + static_cast<float>(i+1) / stacks);
+			const float z0  = std::sin(lat0);
+			const float zr0 = std::cos(lat0);
+			const float z1  = std::sin(lat1);
+			const float zr1 = std::cos(lat1);
+			glBegin(GL_QUAD_STRIP);
+			for (int j = 0; j <= slices; ++j)
+			{
+				const float lng = 2.0f * pi * static_cast<float>(j) / slices;
+				const float x = std::cos(lng);
+				const float y = std::sin(lng);
+				glNormal3f(x * zr0, y * zr0, z0);
+				glVertex3f(x * zr0 * radius, y * zr0 * radius, z0 * radius);
+				glNormal3f(x * zr1, y * zr1, z1);
+				glVertex3f(x * zr1 * radius, y * zr1 * radius, z1 * radius);
+			}
+			glEnd();
+		}
+	}
+}
 
 static float * vColor(const QColor & color)
 {
@@ -78,7 +111,6 @@ class QFirstPerson : public QOpenGLWidget
 	double _viewElevation;
 	double _sourceX;
 	double _sourceY;
-	GLUquadric * _sphere;
 	Q_OBJECT
 public:
 	QFirstPerson(QWidget * parent=0)
@@ -89,7 +121,6 @@ public:
 		, _viewElevation(0)
 		, _sourceX(0)
 		, _sourceY(0)
-		, _sphere(0)
 	{
 	}
 	void initializeGL()
@@ -113,8 +144,9 @@ public:
 		std::cout << "resize" << std::endl;
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(90.0f, (GLfloat)width / (GLfloat)height, 0.01f, 1250.0f);
+		QMatrix4x4 projection;
+		projection.perspective(90.0f, static_cast<float>(width) / static_cast<float>(height), 0.01f, 1250.0f);
+		glLoadMatrixf(projection.constData());
 		glMatrixMode(GL_MODELVIEW);
 	}
 	void paintGL()
@@ -200,7 +232,7 @@ public:
 				glVertex3f(0.,1.,0.);
 				glVertex3f(0.,0.,0.);
 			glEnd();
-			gluSphere(sphere(), 0.5f, 40, 20);
+			drawSphere(0.5f, 40, 20);
 		glPopMatrix();
 	}
 	void drawPlane(float height)
@@ -229,7 +261,7 @@ public:
 			glVertex3f(0.,2.,0.);
 			glVertex3f(0.,0.,0.);
 		glEnd();
-		gluSphere(sphere(), 0.2f, 40, 20);
+		drawSphere(0.2f, 40, 20);
 		glMaterialfv(GL_FRONT, GL_EMISSION, vColor("black"));
 		glPopMatrix();
 	}
@@ -346,11 +378,6 @@ signals:
 	double yPosChanged(double y);
 	double orientationChanged(double degrees);
 private:
-	GLUquadric * sphere()
-	{
-		if (!_sphere) _sphere = gluNewQuadric();
-		return _sphere;
-	}
 	void emitPositionChange()
 	{
 		emit posChanged(QPointF(_viewX, _viewY));

@@ -23,11 +23,6 @@ set(CLAM_QT_LIBRARIES
 	Qt6::PrintSupport
 )
 
-find_library(CLAM_GLU_LIBRARY NAMES GLU)
-if(NOT CLAM_GLU_LIBRARY)
-	message(FATAL_ERROR "NetworkEditor OpenGL widgets require GLU but libGLU was not found")
-endif()
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -85,7 +80,6 @@ target_link_libraries(clam_qtmonitors
 		CLAM::audioio
 		PRIVATE
 			${CLAM_QT_LIBRARIES}
-			"${CLAM_GLU_LIBRARY}"
 	)
 
 install(TARGETS clam_qtmonitors

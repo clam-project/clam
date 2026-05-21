@@ -43,7 +43,7 @@ On Ubuntu 24.04 (`ubuntu-latest` in CI), `apt install` the following:
 build-essential cmake ninja-build pkg-config
 libxerces-c-dev libfftw3-dev libsndfile1-dev libvorbis-dev libmad0-dev
 libid3-3.8.3-dev lv2-dev libjack-jackd2-dev portaudio19-dev
-libasound2-dev libgl1-mesa-dev libglu1-mesa-dev ladspa-sdk
+libasound2-dev libgl1-mesa-dev ladspa-sdk
 qt6-base-dev qt6-base-dev-tools libqt6opengl6-dev qt6-svg-dev qt6-tools-dev
 ```
 
