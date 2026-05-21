@@ -99,8 +99,10 @@ public:
 
 // Attributes
 private:
-	const tEnumValue * mEnumValues;
-	tValue mValue;
+	// Default-initialise so the implicit move-assignment doesn't trip
+	// -Wmaybe-uninitialized when the source has never been valued.
+	const tEnumValue * mEnumValues = nullptr;
+	tValue mValue = 0;
 
 /** @name Construction/Destruction */
 //@{

@@ -231,14 +231,15 @@ public:
 		const bool goOn = true;
 		const bool abort = false;
 		if (! _canvas->isChanged()) return goOn;
-		int reply = QMessageBox::question(this, tr("Unsaved changes"),
+		const auto reply = QMessageBox::question(this, tr("Unsaved changes"),
 				tr("The network has been modified. Do you want to save it?"),
-			   	tr("Save"), tr("Discard"), tr("Abort"));
-		if (reply == 2) return abort;
-		if (reply == 1 ) return goOn;
-		
+				QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+				QMessageBox::Save);
+		if (reply == QMessageBox::Cancel) return abort;
+		if (reply == QMessageBox::Discard) return goOn;
+
 		on_action_Save_triggered();
-		return _canvas->isChanged()? abort : goOn;;
+		return _canvas->isChanged() ? abort : goOn;
 	}
 
 	int compareVersions(const QString & versio1, const QString & versio2)

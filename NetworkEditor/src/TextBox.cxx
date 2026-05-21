@@ -57,7 +57,9 @@ QVariant TextBox::itemChange(GraphicsItemChange change, const QVariant & value)
 {
 	if (change==ItemPositionHasChanged)
 	{
-		QPointF newPos = value.toPointF();
+		// networkUpdateTextBox reads pos() directly; newPos was captured but
+		// never consumed (the value passed via itemChange should match pos()).
+		[[maybe_unused]] QPointF newPos = value.toPointF();
 		_canvas->networkUpdateTextBox(_modelText, toPlainText(), pos());
 	}
 	return QGraphicsTextItem::itemChange(change, value);

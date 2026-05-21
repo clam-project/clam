@@ -856,16 +856,10 @@ namespace CLAM
 
 		std::pair<double,double> PlotController::GetXY(QMouseEvent* e)
 		{
-			double left = mLeftBound;
-			double xcoord = double(e->x());
-			xcoord *= mView.right;
-			xcoord /= mDisplayWidth;
-			xcoord += left;			
-			double ycoord = double(-e->y()+mDisplayHeight);
-			ycoord *= (mView.top-mView.bottom);
-			ycoord /= double(mDisplayHeight);
-			ycoord += mView.bottom;
-			return std::make_pair(xcoord,ycoord);
+			const auto pos = e->position();
+			const auto xcoord = pos.x() * mView.right / mDisplayWidth + mLeftBound;
+			const auto ycoord = (-pos.y() + mDisplayHeight) * (mView.top - mView.bottom) / mDisplayHeight + mView.bottom;
+			return { xcoord, ycoord };
 		}
 
 		void PlotController::segmentEditorWorking(bool w)

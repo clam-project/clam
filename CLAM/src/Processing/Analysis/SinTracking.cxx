@@ -418,7 +418,6 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 	
 	int i;
 
-	TSize nPeaks=mnMaxSines;
 	i=0;
 	int n;
 	for(n=0; n<mnMaxSines;n++)

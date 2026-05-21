@@ -122,8 +122,9 @@ namespace CLAM
 
 		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
-			mMouseXPos = int(e->position().x());
-			mMouseYPos = int(e->position().y());
+			const auto pos = e->position();
+			mMouseXPos = static_cast<int>(pos.x());
+			mMouseYPos = static_cast<int>(pos.y());
 			mController->MouseMoveEvent(e);
 		}
 

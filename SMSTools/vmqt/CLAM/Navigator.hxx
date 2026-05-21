@@ -1,5 +1,5 @@
 #ifndef __NAVIGATOR__
-#define __NAVEGATOR__
+#define __NAVIGATOR__
 
 #include <QWidget>
 

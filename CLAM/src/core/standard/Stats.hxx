@@ -605,7 +605,7 @@ private:
 		}
 
 		// ti = m1/ai *(n - (d1/d2))
-		// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
+		// SpecTilt = m1ï¿½/tiï¿½ * SUM[1/ai *(i-d1/d2)]
 
 		TData SumTi2 = 0;
 		TData Tilt = 0;
@@ -745,9 +745,11 @@ private:
 			int previousSize=mCenterOfGravities.Size();
 			mCenterOfGravities.Resize(order);
 			mCenterOfGravities.SetSize(order);
-			for(int i=previousSize;i<order;i++) mCenterOfGravities[i]=NULL;
+			for(int i=previousSize;i<order;i++) mCenterOfGravities[i]=nullptr;
 		}
-		if(mCenterOfGravities[order-1]=NULL)
+		// Real bug, not just a parens warning: original was `= NULL` (assignment),
+		// so the body never ran and the CenterOfGravity was never instantiated.
+		if(mCenterOfGravities[order-1]==nullptr)
 		{
 			mCenterOfGravities[order-1]=new CenterOfGravity<order,abs,T,U>;
 		}

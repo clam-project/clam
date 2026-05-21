@@ -127,7 +127,7 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 			unsigned i = f.GetFlagPosition(flagName);
 			bs[i]=true;
 		}
-		catch (IllegalValue) {
+		catch (const IllegalValue&) {
 			delete [] bs;
 			throw IllegalValue(std::string("Invalid flag name: '")+
 				flagName+"'");

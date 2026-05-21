@@ -12,14 +12,11 @@ namespace CLAM
 			if(!IsInitiated()) Init();
 			if(mMessages[NOMIDI]) return;
 			mMessages[NOMIDI] = true;
-			QMessageBox message("MIDI support not available",
+			QMessageBox message(QMessageBox::Warning,
+								"MIDI support not available",
 								"Seems that your system has not MIDI support. MIDI settings will be deactivated",
-								QMessageBox::Warning,
-								QMessageBox::Ok,
-								Qt::NoButton,
-								Qt::NoButton); 
-
-				message.exec();
+								QMessageBox::Ok);
+			message.exec();
 		}
 
 		void ShowMessage::Init()

@@ -51,13 +51,13 @@ void SDIFOutConfig::DefaultInit()
 	SetSpectrumSize(513);
 }
 
-SDIFOut::SDIFOut(const SDIFOutConfig& c):
-mPrevIndexArray(0),
-mInputFundamental("Fundamental", this),
-mInputSinSpectralPeaks("Sinusoidal Peaks", this),
-mInputResSpectrum("Residual Spectrum", this)
-{ 
-	mpFile=NULL;
+SDIFOut::SDIFOut(const SDIFOutConfig& c)
+	: mInputFundamental("Fundamental", this)
+	, mInputSinSpectralPeaks("Sinusoidal Peaks", this)
+	, mInputResSpectrum("Residual Spectrum", this)
+	, mPrevIndexArray(0)
+{
+	mpFile = nullptr;
 	Configure(c);
 }
 	
@@ -111,11 +111,14 @@ const ProcessingConfig& SDIFOut::GetConfig() const
 
 bool SDIFOut::Do()
 {
-    //CLAM::Fundamental theFundamental = mInputFundamental.GetData();
-    CLAM::SpectralPeakArray sinePeaks = mInputSinSpectralPeaks.GetData();
-    CLAM::Spectrum residualSpectrum = mInputResSpectrum.GetData();
-    
-    //std::cout << "The fundamental is <" << theFundamental.GetFreq() << ">" << std::endl;
+	//CLAM::Fundamental theFundamental = mInputFundamental.GetData();
+	[[maybe_unused]] CLAM::SpectralPeakArray sinePeaks = mInputSinSpectralPeaks.GetData();
+	[[maybe_unused]] CLAM::Spectrum residualSpectrum = mInputResSpectrum.GetData();
+
+	//std::cout << "The fundamental is <" << theFundamental.GetFreq() << ">" << std::endl;
+	// TODO: the stream-mode Do() was never finished; returning false until the
+	// per-frame path (overload below) is wired up.
+	return false;
 }
     
 bool SDIFOut::Do(const Frame& frame)

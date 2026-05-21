@@ -111,7 +111,7 @@ namespace AudioCodecs
 	{
 		unsigned nFrames = mInterleavedData.size()/mChannels;
 		const TData* begin = &mInterleavedData[0];
-		sf_count_t samplesWritten = CLAM_sf_writef( mFileHandle,
+		[[maybe_unused]] sf_count_t samplesWritten = CLAM_sf_writef( mFileHandle,
 							   begin,
 							   nFrames );
 

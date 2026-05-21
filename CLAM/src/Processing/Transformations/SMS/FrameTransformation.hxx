@@ -17,8 +17,9 @@ namespace CLAM
 				: mAmount("Amount", this) //soon to be deprecated
 			{
 			}
-			virtual bool Do(const Frame& in,Frame& out) = 0; 
-			
+			using Processing::Do; // bring the base Do() into scope
+			virtual bool Do(const Frame& in,Frame& out) = 0;
+
 			const ProcessingConfig& GetConfig() const { return mConfig; }
 
 			virtual bool ConcreteStart(){ return InitControls();}
@@ -41,7 +42,8 @@ namespace CLAM
 	template <typename T>
 	class FrameTransformationTmpl : public FrameTransformation
 	{
-	public:	
+	public:
+		using FrameTransformation::Do; // bring base overloads into scope
 		virtual bool Do(const T&, T&) = 0;
 	};
 

@@ -83,7 +83,7 @@ LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor, double sam
 	{
 		CLAM::XmlStorage::Restore( _network, xmlfile);
 	}
-	catch ( CLAM::XmlStorageErr err)
+	catch (const CLAM::XmlStorageErr& err)
 	{
 		std::cerr << "CLAM LV2: Error while loading CLAM network based plugin '" << descriptor->URI<< "'." <<std::endl;
 		std::cerr << err.what() << std::endl;

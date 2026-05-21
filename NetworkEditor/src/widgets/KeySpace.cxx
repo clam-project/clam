@@ -284,13 +284,16 @@ void CLAM::VM::KeySpace::DrawLabels()
 	TKeyNode *pKeyNodes = getKeyNodes();
 	for(unsigned i=0; i<nKeyNodes; i++)
 	{
-		float x1 = pKeyNodes[i].x;
+		// TODO: label drawing call is missing; x1/y1/colour are computed but
+		// not consumed (no glRasterPos / text-render). Preserved verbatim so
+		// the missing render call is visible in code review.
+		[[maybe_unused]] float x1 = pKeyNodes[i].x;
 		float y1 = pKeyNodes[i].y;
 
 		if (y1 < 4./_nY)
 			y1 = 4./_nY;
 
-		float value = _data ? _data[i]/_maxValue : 0; 
+		float value = _data ? _data[i]/_maxValue : 0;
 		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 

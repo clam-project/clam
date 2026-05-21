@@ -143,12 +143,12 @@ int main(int argc,char** argv)
 		CLAM::SMSBatch example;
 		example.Run();
 	}
-	catch(CLAM::Err error)
+	catch (const CLAM::Err& error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
 	}
-	catch (std::exception e)
+	catch (const std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 	}

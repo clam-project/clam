@@ -130,7 +130,7 @@ namespace QtSMS
 		paramsWidget->setParent(mTabWidget->widget(1));
 		paramsWidget->move(0, 0);
 		mTabPage1Layout->addWidget(paramsWidget);
-		mScoreTransformationList->setCurrentRow(int(mSMSConfiguratorList.size()) - 1);
+		mScoreTransformationList->setCurrentRow(static_cast<int>(mSMSConfiguratorList.size()) - 1);
 
 		scoreChanged();
 	}

@@ -46,7 +46,7 @@ namespace CLAM
 
 		void Ruler::SetBackgroundColor(const Color& c)
 		{
-			CLAM::VM::setBgColor(this, QColor(int(c.r),int(c.g),int(c.b)));
+			CLAM::VM::setBgColor(this, QColor(static_cast<int>(c.r), static_cast<int>(c.g), static_cast<int>(c.b)));
 		}
 
 		void Ruler::SetForegroundColor(const Color& c)

@@ -51,19 +51,19 @@ void RichTextEditor::setupTextActions()
 	_layout->addWidget(_toolBar);
 
 	_actionTextBold = new QAction(QIcon(":/icons/images/text_bold.png"),tr("&Bold"), this);
-	_actionTextBold->setShortcut(Qt::CTRL + Qt::Key_B);
+	_actionTextBold->setShortcut(Qt::CTRL | Qt::Key_B);
 	_actionTextBold->setCheckable(true);
 	_toolBar->addAction(_actionTextBold);
 	connect(_actionTextBold, SIGNAL(triggered()), this, SLOT(textBold()));
 
 	_actionTextUnderline = new QAction(QIcon(":/icons/images/text_under.png"),tr("&Underline"), this);
-	_actionTextUnderline->setShortcut(Qt::CTRL + Qt::Key_U);
+	_actionTextUnderline->setShortcut(Qt::CTRL | Qt::Key_U);
 	_actionTextUnderline->setCheckable(true);
 	_toolBar->addAction(_actionTextUnderline);
 	connect(_actionTextUnderline, SIGNAL(triggered()), this, SLOT(textUnderline()));
 
 	_actionTextItalic = new QAction(QIcon(":/icons/images/text_italic.png"),tr("&Italic"), this);
-	_actionTextItalic->setShortcut(Qt::CTRL + Qt::Key_I);
+	_actionTextItalic->setShortcut(Qt::CTRL | Qt::Key_I);
 	_actionTextItalic->setCheckable(true);
 	_toolBar->addAction(_actionTextItalic);
 	connect(_actionTextItalic, SIGNAL(triggered()), this, SLOT(textItalic()));
@@ -82,16 +82,16 @@ void RichTextEditor::setupTextActions()
 	}
 	_actionAlignJustify = new QAction(QIcon(":/icons/images/text_block.png"), tr("&Justify"), grp);
 
-	_actionAlignLeft->setShortcut(Qt::CTRL + Qt::Key_L);
+	_actionAlignLeft->setShortcut(Qt::CTRL | Qt::Key_L);
 	_actionAlignLeft->setCheckable(true);
 	_toolBar->addAction(_actionAlignLeft);
-	_actionAlignCenter->setShortcut(Qt::CTRL + Qt::Key_E);
+	_actionAlignCenter->setShortcut(Qt::CTRL | Qt::Key_E);
 	_actionAlignCenter->setCheckable(true);
 	_toolBar->addAction(_actionAlignCenter);
-	_actionAlignRight->setShortcut(Qt::CTRL + Qt::Key_R);
+	_actionAlignRight->setShortcut(Qt::CTRL | Qt::Key_R);
 	_actionAlignRight->setCheckable(true);
 	_toolBar->addAction(_actionAlignRight);
-	_actionAlignJustify->setShortcut(Qt::CTRL + Qt::Key_J);
+	_actionAlignJustify->setShortcut(Qt::CTRL | Qt::Key_J);
 	_actionAlignJustify->setCheckable(true);
 	_toolBar->addAction(_actionAlignJustify);
 
@@ -251,7 +251,7 @@ void RichTextEditor::textStyle(int styleIndex)
 void RichTextEditor::textFamily(const QString &f)
 {
 	QTextCharFormat fmt;
-	fmt.setFontFamily(f);
+	fmt.setFontFamilies({f});
 	mergeFormatOnWordOrSelection(fmt);
 }
 

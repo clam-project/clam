@@ -1,5 +1,6 @@
 #include "BufferedSDIFFileReader.hxx"
 #include "DataUtil.hxx"
+#include <cstddef>
 #include <limits.h>
 
 namespace CLAM
@@ -31,7 +32,7 @@ BufferedSDIFFileReader::~BufferedSDIFFileReader()
 bool BufferedSDIFFileReader::Configure(const SDIFInConfig& config)
 {
 	bool response;
-	if ( response = mSDIFFileReader.Configure(config) )
+	if ( (response = mSDIFFileReader.Configure(config)) )
 	{
 		// if the metadata has defined the number of milliseconds to preload
 		// preload the corresponding number of frames.
@@ -224,8 +225,10 @@ bool BufferedSDIFFileReader::IsThreaded()
 
 void BufferedSDIFFileReader::Run()
 {
-	int iterationsSinceLastExecution = 0;
-	while ( mReaderHasMoreFrames && totalNumberOfFramesToLoad <= frameBuffer.size() )
+	// TODO: iterationsSinceLastExecution is set on each loop but never read;
+	// looks like an unfinished throttle. Preserved with [[maybe_unused]].
+	[[maybe_unused]] int iterationsSinceLastExecution = 0;
+	while ( mReaderHasMoreFrames && static_cast<std::size_t>(totalNumberOfFramesToLoad) <= frameBuffer.size() )
 	{
 		//std::cout << "Thread <" << mThreadPtr << "> this <" << this << "> is loading buffers." << std::endl;
 		mReaderHasMoreFrames = LoadFramesIntoBuffer(mFrameLoadChunkSize);

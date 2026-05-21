@@ -287,6 +287,9 @@ void QSynthKnob::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	int newValue = value();
 	switch (m_knobMode)
 	{
+		case QDialMode:
+			// already short-circuited above; included for switch completeness.
+			break;
 		case LinearMode:
 		{
 			newValue = m_lastDragValue + xdelta - ydelta;

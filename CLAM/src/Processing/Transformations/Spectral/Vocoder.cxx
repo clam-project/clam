@@ -42,9 +42,11 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 		out = in; //TODO big cludge for streaming
 	}
 	
-	int nBands = mNumBandsCtl.GetLastValue(); 
+	int nBands = mNumBandsCtl.GetLastValue();
 	int nGainBands = 5; //it is one more than the actual gains
-	int firstBand = 5;
+	// TODO: firstBand looks like a leftover from a bin-domain pass that was
+	// replaced by the float-domain (fFirstBand) calculations below.
+	[[maybe_unused]] int firstBand = 5;
 	TData fFirstBand = 100;
 	
 	DataArray gains(4);
@@ -61,24 +63,28 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	mMagBuffer.Resize(spectrumSize);
 	mMagBuffer.SetSize(spectrumSize);
 	
-	TData bandFactor = pow(TData(spectrumSize),1./nBands);
+	// The bin-domain partner variables (bandFactor, fLastBandLimit, fCurrentOsc,
+	// gainBandFactor) below mirror an earlier design; only the float-domain
+	// versions actually feed the loop. Kept with [[maybe_unused]] until a
+	// decision is made on whether they should drive the loop instead.
+	[[maybe_unused]] TData bandFactor = pow(TData(spectrumSize),1./nBands);
 	TData fBandFactor = pow(TData(spectralRange),1./nBands);
-	
+
 	TData fCurrentBandLimit = fFirstBand;
 	int currentBandLimit = Round(fFirstBand*spectralResolution);
 	int lastBandLimit = 0;
-	TData fLastBandLimit = 0.;
-	
-	int freqShift = Round(mFreqShiftCtl.GetLastValue()*spectralResolution); 
-	
+	[[maybe_unused]] TData fLastBandLimit = 0.;
+
+	int freqShift = Round(mFreqShiftCtl.GetLastValue()*spectralResolution);
+
 	int currentOscBin = int(spectrumSize/nBands) + freqShift;
-	TData fCurrentOsc = spectralRange/nBands;
-	
+	[[maybe_unused]] TData fCurrentOsc = spectralRange/nBands;
+
 	int currentGainIndex = 0;
 	TData fCurrentGainBandLimit = fCurrentBandLimit*2;
 	int currentGainBandLimit = Round(fCurrentGainBandLimit*spectralResolution);
-	
-	TData gainBandFactor = pow(TData(spectrumSize/currentBandLimit),1./nGainBands);
+
+	[[maybe_unused]] TData gainBandFactor = pow(TData(spectrumSize/currentBandLimit),1./nGainBands);
 	TData fGainBandFactor = pow(TData(spectralRange/fCurrentGainBandLimit),1./nGainBands);
 	
 	TData bandEnergy =0;

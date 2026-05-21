@@ -4,6 +4,8 @@
 #include <QOpenGLWidget>
 #include <QCursor>
 #include <QEnterEvent>
+#include <utility>
+#include <CLAM/DataTypes.hxx>
 #include <CLAM/GLView.hxx>
 
 using QGLWidget = QOpenGLWidget;
@@ -38,7 +40,9 @@ namespace CLAM
 			void stopTimer();
 
 		protected:
-			void paintGL(); 
+			std::pair<TData, TData> eventToViewCoords(QMouseEvent* e) const;
+
+			void paintGL();
 			void mousePressEvent(QMouseEvent* e);
 			void mouseReleaseEvent(QMouseEvent* e);
 			void mouseMoveEvent(QMouseEvent* e);

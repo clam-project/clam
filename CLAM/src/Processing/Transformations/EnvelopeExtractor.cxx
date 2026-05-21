@@ -82,7 +82,7 @@ namespace CLAM {
 	TData IntervalAmplitudeAverages::Acumulated(int ipoint)
 	{
 		TData res =0.0;
-		for (unsigned i=0; i< mNMemoryPoints; i++)
+		for (auto i = 0; i < mNMemoryPoints; ++i)
 			res += AcumulationShape(i) * Current(ipoint-i);
 		return res;
 	}
