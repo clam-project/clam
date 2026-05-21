@@ -1,5 +1,5 @@
 /*
- * Authors: Günter Geiger
+ * Authors: GÃ¼nter Geiger
  *			fabien gouyon 
  * http://www.iua.upf.es/~fgouyon
  * Description:

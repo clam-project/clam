@@ -109,7 +109,7 @@ int main( int argc, char** argv )
 		CLAM::AudioMultiplier windowApplier;
 
 		// Start, Do and Stop. Note that the parameters in the form
-		// myAudio · window = windowedAudio
+		// myAudio Â· window = windowedAudio
 		windowApplier.Start();
 		windowApplier.Do( myaudio, window, windowedAudio );
 		windowApplier.Stop();
