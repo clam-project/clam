@@ -50,21 +50,21 @@ namespace CLAM {
 	protected:
 		char* mMsg;
 	public:
-		Err() throw();
-		Err(const char* msg) throw();
-		Err(const Err&) throw();
+		Err() noexcept;
+		Err(const char* msg) noexcept;
+		Err(const Err&) noexcept;
 
-		virtual ~Err() throw();
+		virtual ~Err() noexcept;
 
-		void Print(void) const throw();
+		void Print(void) const noexcept;
 
-		virtual const char* what() const throw() 
+		virtual const char* what() const noexcept 
 		{
 			return mMsg?mMsg:"Unknown Error"; 
 		}
 
-		void Embed(const std::exception &) throw();
-		void Embed(const char* str) throw();
+		void Embed(const std::exception &) noexcept;
+		void Embed(const char* str) noexcept;
 
 	};
 

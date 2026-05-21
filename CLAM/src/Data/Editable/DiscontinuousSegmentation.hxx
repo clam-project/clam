@@ -11,12 +11,12 @@ namespace CLAM
 		class InsertedOutOfBounds : public std::exception
 		{
 			public:
-			const char * what() const throw () { return "Segmentation point inserted out of limits";}
+			const char * what() const noexcept { return "Segmentation point inserted out of limits";}
 		};
 		class OffsetMissing : public std::exception
 		{
 			public:
-			const char * what() const throw () { return "Odd number of segmentation points, every segment beggining must be followed by its ending";}
+			const char * what() const noexcept { return "Odd number of segmentation points, every segment beggining must be followed by its ending";}
 		};
 		class MissplacedOnset : public std::exception
 		{
@@ -32,8 +32,8 @@ namespace CLAM
 					<< " overlapping previous segment which ends at " << previousOffsetPosition;
 				_message = os.str();
 			}
-			virtual ~MissplacedOnset() throw () {}
-			const char * what() const throw () { return _message.c_str(); }
+			virtual ~MissplacedOnset() noexcept {}
+			const char * what() const noexcept { return _message.c_str(); }
 		};
 		class MissplacedOffset : public std::exception
 		{
@@ -49,8 +49,8 @@ namespace CLAM
 					<< " but ends before that, at " << offsetPosition;
 				_message = os.str();
 			}
-			virtual ~MissplacedOffset() throw () {}
-			const char * what() const throw () { return _message.c_str(); }
+			virtual ~MissplacedOffset() noexcept {}
+			const char * what() const noexcept { return _message.c_str(); }
 		};
 		typedef std::vector<double> TimePositions;
 	public:

@@ -262,7 +262,7 @@ public:
 	static bool breakpointInCLAMAssertEnabled;
 
 	ErrAssertionFailed(const char* message, const char* filename, int linenumber);
-	virtual ~ErrAssertionFailed() throw () { }
+	virtual ~ErrAssertionFailed() noexcept { }
 };
 
 /**

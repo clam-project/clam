@@ -34,7 +34,7 @@ class IllegalValue : public std::exception {
 	public:
 		IllegalValue(const IllegalValue & e): msg(e.msg) {};
 		IllegalValue(const std::string & s) : msg(s) {};
-		virtual ~IllegalValue() throw() {};
+		virtual ~IllegalValue() noexcept {};
 		std::string msg;
 };
 
