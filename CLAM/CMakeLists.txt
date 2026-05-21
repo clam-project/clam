@@ -28,6 +28,20 @@ option(CLAM_WITH_PORTMIDI "Enable PortMidi MIDI backend" OFF)
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 
+if(BUILD_TESTING)
+	find_package(CppUnit CONFIG QUIET)
+	if(TARGET CppUnit::cppunit)
+		set(CLAM_CPPUNIT_TARGET CppUnit::cppunit)
+	elseif(TARGET CppUnit::CppUnit)
+		set(CLAM_CPPUNIT_TARGET CppUnit::CppUnit)
+	elseif(TARGET cppunit)
+		set(CLAM_CPPUNIT_TARGET cppunit)
+	else()
+		pkg_check_modules(CPPUNIT REQUIRED IMPORTED_TARGET cppunit)
+		set(CLAM_CPPUNIT_TARGET PkgConfig::CPPUNIT)
+	endif()
+endif()
+
 add_library(clam_config INTERFACE)
 add_library(CLAM::config ALIAS clam_config)
 
@@ -327,6 +341,13 @@ target_link_libraries(clam_audioio
 	PUBLIC clam_core clam_processing
 	PRIVATE ${CLAM_AUDIOIO_PRIVATE_LIBS}
 )
+
+if(BUILD_TESTING)
+	add_executable(clam_test_threading test/NonPortedTests/TestThreading.cxx)
+	clam_set_legacy_cxx(clam_test_threading)
+	target_link_libraries(clam_test_threading PRIVATE clam_core)
+	add_test(NAME clam_test_threading COMMAND clam_test_threading)
+endif()
 
 install(TARGETS clam_config clam_core clam_processing clam_audioio
 	EXPORT CLAMTargets
