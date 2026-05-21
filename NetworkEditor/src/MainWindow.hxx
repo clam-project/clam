@@ -202,11 +202,11 @@ public:
 		QMenu * toolBarOpenMenu = new QMenu(this);
 		ui.action_OpenToolbar->setMenu(toolBarOpenMenu);
 		int i=0;
-		for (QStringList::iterator it = _recentFiles.begin(); it!=_recentFiles.end(); it++)
+		for (const QString& recentFile : _recentFiles)
 		{
-			QString text = QString("&%1 %2").arg(++i).arg(*it);
-			QAction * recentFileAction = new QAction(text,this);
-			recentFileAction->setData(*it);
+			QString text = QString("&%1 %2").arg(++i).arg(recentFile);
+			QAction* recentFileAction = new QAction(text, this);
+			recentFileAction->setData(recentFile);
 			ui.menuOpen_recent->addAction(recentFileAction);
 			toolBarOpenMenu->addAction(recentFileAction);
 			connect(recentFileAction, SIGNAL(triggered()), this, SLOT(openRecentTriggered()));

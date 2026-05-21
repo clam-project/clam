@@ -21,23 +21,18 @@ static const char * debugEnvFlag = "CLAM_DEBUG_PLUGINS";
 void RunTimeLibraryLoader::ReLoad() 
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
-	std::list<std::string> usedLibraries=GetUsedLibraries();
-	std::list<std::string>::const_iterator itLibraries;
-	// iterate on used libraries
-	for (itLibraries=usedLibraries.begin();itLibraries!=usedLibraries.end();itLibraries++)
+	auto usedLibraries = GetUsedLibraries();
+	for (const auto& library : usedLibraries)
 	{
-		CLAM::ProcessingFactory::Keys keys;
-		keys=factory.GetKeys("library",(*itLibraries));
-		CLAM::ProcessingFactory::Keys::const_iterator itKeys;
-		// iterate on used creators of the library
-		for(itKeys=keys.begin();itKeys!=keys.end();itKeys++)
+		auto keys = factory.GetKeys("library", library);
+		for (const auto& key : keys)
 		{
-			factory.DeleteCreator(*itKeys);
+			factory.DeleteCreator(key);
 		}
 		if (needReleaseHandlerOnReload())
 		{
-			void * handle=GetLibraryHandler(*itLibraries);
-			ReleaseLibraryHandler(handle,(*itLibraries));
+			void* handle = GetLibraryHandler(library);
+			ReleaseLibraryHandler(handle, library);
 		}
 	}
 	Load();
@@ -48,13 +43,12 @@ std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 	std::list<std::string> usedLibraries;
-	CLAM::ProcessingFactory::Values librariesValues=factory.GetSetOfValues("library");
-	CLAM::ProcessingFactory::Values::const_iterator itLibraries;
-	for (itLibraries=librariesValues.begin();itLibraries!=librariesValues.end();itLibraries++)
+	auto librariesValues = factory.GetSetOfValues("library");
+	for (const auto& library : librariesValues)
 	{
-		const std::string & path=getPathFromFullFileName(*itLibraries); 
+		const std::string& path = getPathFromFullFileName(library);
 		if (IsOnPath(path))
-			usedLibraries.push_back(*itLibraries);
+			usedLibraries.push_back(library);
 	}
 	return usedLibraries;
 }
