@@ -48,16 +48,16 @@ namespace CLAM {
 	ALSAMIDIDevice::ALSAMIDIDevice(const std::string& name,const std::string& device): 
 		MIDIDevice(name)
 	{
-		mHandleIn = NULL;
-		mHandleOut = NULL;
-		mStatusIn = NULL;
+		mHandleIn = nullptr;
+		mHandleOut = nullptr;
+		mStatusIn = nullptr;
 		mDevice = device;
 	}
 
 	void ALSAMIDIDevice::ConcreteStart(void)
 	{
-			snd_rawmidi_t** handleInRef = NULL;
-			snd_rawmidi_t** handleOutRef = NULL;
+			snd_rawmidi_t** handleInRef = nullptr;
+			snd_rawmidi_t** handleOutRef = nullptr;
 			
 			if (mInputs.size()) handleInRef = &mHandleIn;
 			if (mOutputs.size()) handleOutRef = &mHandleOut;

@@ -55,7 +55,7 @@ public slots:
 private slots:
 	void filterProcessings ( const QString & text )
 	{
-		QTreeWidgetItem * parentItem=NULL;
+		QTreeWidgetItem * parentItem=nullptr;
 		QTreeWidgetItemIterator itemIt (_treeWidget, QTreeWidgetItemIterator::NoChildren);
 		while (*itemIt)
 		{

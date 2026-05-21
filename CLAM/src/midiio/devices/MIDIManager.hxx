@@ -90,9 +90,9 @@ public:
 		return *p;
 	}
 
-	/** Find a created MIDIDevice, or NULL when not found
+	/** Find a created MIDIDevice, or nullptr when not found
 	 *  @param name The name of the MIDIDevice we want to get
-	 *  @return the MIDIDevice if it exists, or NULL otherwise
+	 *  @return the MIDIDevice if it exists, or nullptr otherwise
 	 */
 	MIDIDevice* FindDevice(const std::string& name);
 

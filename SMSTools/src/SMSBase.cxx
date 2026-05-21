@@ -51,7 +51,7 @@ namespace CLAM
 {
 
 SMSBase::SMSBase()
-	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
+	: mCurrentProgressIndicator( nullptr ), mCurrentWaitMessage( nullptr )
 {
 	mTransformation.AttachIn( mOriginalSegment );
 	mTransformation.AttachOut( mTransformedSegment );
@@ -65,13 +65,13 @@ void SMSBase::DestroyWaitMessage( )
 {
 	CLAM_DEBUG_ASSERT( 0!=mCurrentWaitMessage, "SMSBase destructor needs mCUrrentWaitMessage not null. (used by LoadConfig -Pau)");
 	delete mCurrentWaitMessage;
-	mCurrentWaitMessage = NULL;
+	mCurrentWaitMessage = nullptr;
 }
 
 void SMSBase::DestroyProgressIndicator( )
 {
 	delete mCurrentProgressIndicator;
-	mCurrentProgressIndicator = NULL;
+	mCurrentProgressIndicator = nullptr;
 }
 
 
@@ -832,7 +832,7 @@ void SMSBase::TransformProcessing(void)
 	while(mTransformation.Do())
 	{
 		CLAM_ASSERT( mCurrentProgressIndicator, 
-				"SMSBase::TransformProcessing mCurrentProgressIndicator should't be NULL"
+				"SMSBase::TransformProcessing mCurrentProgressIndicator should't be null"
 				" Probably you din't call Transfrom()" );
 		mCurrentProgressIndicator->Update(float(i++));
 	}

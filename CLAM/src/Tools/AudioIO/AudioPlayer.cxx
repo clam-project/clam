@@ -32,7 +32,7 @@
 
 using namespace CLAM;
 
-AudioPlayer* AudioPlayer::sCurrentPlayer = NULL;
+AudioPlayer* AudioPlayer::sCurrentPlayer = nullptr;
 
 AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 ) 
 	: mAudioReference( audio ), mT0( t0 )
@@ -97,7 +97,7 @@ void* AudioPlayer::sPlayingThreadSafe(void* ptr)
 {
  	((AudioPlayer*)ptr)->PlayingThreadSafe();
 
-	return NULL;
+	return nullptr;
 }
 
 void AudioPlayer::StopFromGUIThread(  )
@@ -105,7 +105,7 @@ void AudioPlayer::StopFromGUIThread(  )
 	if( sCurrentPlayer )
 	{
 		delete sCurrentPlayer;
-		sCurrentPlayer = NULL;
+		sCurrentPlayer = nullptr;
 	}
 }
 

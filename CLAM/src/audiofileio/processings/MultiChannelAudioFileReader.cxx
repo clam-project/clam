@@ -43,14 +43,14 @@ namespace Hidden
 	
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader()
 		: mTimeOutput( "Current Time Position", this)
-		, mNativeStream( NULL )
+		, mNativeStream( nullptr )
 	{
 		Configure(MultiChannelAudioFileReaderConfig());
 	}
 
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader( const ProcessingConfig& cfg )
 		: mTimeOutput( "Current Time Position", this)
-		, mNativeStream( NULL )
+		, mNativeStream( nullptr )
 	{
 		Configure( cfg );
 	}
@@ -326,7 +326,7 @@ namespace Hidden
 
 	bool MultiChannelAudioFileReader::ConcreteStart()
 	{
-		if (mNativeStream == NULL) 
+		if (mNativeStream == nullptr) 
 			mNativeStream = mAudioFile.GetStream();
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
@@ -340,7 +340,7 @@ namespace Hidden
 	{
 		mNativeStream->Dispose();
 		delete mNativeStream;
-		mNativeStream = NULL;
+		mNativeStream = nullptr;
 
 		return true;
 	}

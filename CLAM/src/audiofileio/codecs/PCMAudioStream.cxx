@@ -37,7 +37,7 @@ namespace CLAM
 namespace AudioCodecs
 {
 	PCMAudioStream::PCMAudioStream( const AudioFile& file )
-		: mFileHandle( NULL )
+		: mFileHandle( nullptr )
 	{
 		mName = file.GetLocation();
 		mNativeFileParams.channels = file.GetHeader().GetChannels();
@@ -57,7 +57,7 @@ namespace AudioCodecs
 				       SFM_READ, 
 				       &mNativeFileParams );
 
-		CLAM_ASSERT( mFileHandle != NULL,
+		CLAM_ASSERT( mFileHandle != nullptr,
 			"Cannot open file for reading!!!" );
 		mEOFReached = false;
 		mFramePosition = 0;
@@ -69,7 +69,7 @@ namespace AudioCodecs
 				       SFM_WRITE,
 				       &mNativeFileParams );
 
-		CLAM_ASSERT( mFileHandle != NULL,
+		CLAM_ASSERT( mFileHandle != nullptr,
 			"Cannot open file for writing!!!" );
 	}
 
@@ -78,7 +78,7 @@ namespace AudioCodecs
 		if ( mFileHandle )
 		{
 			sf_close( mFileHandle );
-			mFileHandle = NULL;
+			mFileHandle = nullptr;
 		}
 	}
 

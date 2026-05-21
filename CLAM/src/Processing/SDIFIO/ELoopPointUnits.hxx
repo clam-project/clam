@@ -51,7 +51,7 @@ public:
 		static tEnumValue sEnumValues[] = {
 			{eMilliseconds,"Milliseconds"},
 			{eFrames,"Frames"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sEnumValues;
 	}

@@ -96,7 +96,7 @@ public:
 
 	StatsTmpl(const Array<T>* data):mMoments(initOrder,5),mCentralMoments(initOrder,5),mCenterOfGravities(initOrder,5)
 	{
-		CLAM_ASSERT(data!=NULL,"Stats: A constructed array must be passed");
+		CLAM_ASSERT(data!=nullptr,"Stats: A constructed array must be passed");
 		mData=data;
 		/*we initialize moments up to initOrder-th order, if higher moments are asked for
 		arrays are then resized*/
@@ -105,9 +105,9 @@ public:
 		mCenterOfGravities.SetSize(initOrder);
 		for(unsigned i=0;i<initOrder;i++)
 		{
-			mMoments[i]=NULL;
-			mCentralMoments[i]=NULL;
-			mCenterOfGravities[i]= NULL;
+			mMoments[i]=nullptr;
+			mCentralMoments[i]=nullptr;
+			mCenterOfGravities[i]= nullptr;
 		}
 		InitMoment((O<initOrder>*)(0));
 	}
@@ -155,7 +155,7 @@ public:
 		}
 		pTmpArray=&moments;
 		GetChainedMoment((const O<order>*)(0));
-		pTmpArray=NULL;
+		pTmpArray=nullptr;
 	}
 
 	/**
@@ -179,7 +179,7 @@ public:
 		}
 		pTmpArray=&centralMoments;
 		GetChainedCentralMoment((const O<order>*)(0));
-		pTmpArray=NULL;
+		pTmpArray=nullptr;
 	}
 
 	/**
@@ -203,7 +203,7 @@ public:
 		}
 		pTmpArray=&centerOfGravities;
 		GetChainedCenterOfGravity((const O<order>*)(0));
-		pTmpArray=NULL;
+		pTmpArray=nullptr;
 	}
 
 	/**
@@ -568,11 +568,11 @@ public:
 	{
 		//Note: we keep previously allocated data, we just reset computations
 		for (int i=0;i<mMoments.Size();i++)
-			if(mMoments[i]!=NULL) mMoments[i]->Reset();
+			if(mMoments[i]!=nullptr) mMoments[i]->Reset();
 		for (int i=0;i<mCentralMoments.Size();i++)
-			if(mCentralMoments[i]!=NULL) mCentralMoments[i]->Reset();
+			if(mCentralMoments[i]!=nullptr) mCentralMoments[i]->Reset();
 		for (int i=0;i<mCenterOfGravities.Size();i++)
-			if(mCenterOfGravities[i]!=NULL) mCenterOfGravities[i]->Reset();
+			if(mCenterOfGravities[i]!=nullptr) mCenterOfGravities[i]->Reset();
 
 		mKurtosis.Reset();
 		mStdDev.Reset();
@@ -623,13 +623,13 @@ private:
 	/** Chained method for initializing moments*/
 	template<int order> void InitMoment(const O<order>*)
 	{
-		if(mMoments[order-1]!=NULL)
+		if(mMoments[order-1]!=nullptr)
 			delete mMoments[order-1];
 		mMoments[order-1]=new Moment<order,abs,T,U>;
-		if(mCentralMoments[order-1]!=NULL)
+		if(mCentralMoments[order-1]!=nullptr)
 			delete mCentralMoments[order-1];
 		mCentralMoments[order-1]=new CentralMoment<order,abs,T,U>;
-		if(mCenterOfGravities[order-1]!=NULL)
+		if(mCenterOfGravities[order-1]!=nullptr)
 			delete mCenterOfGravities[order-1];
 		mCenterOfGravities[order-1]= new CenterOfGravity<order,abs,T,U>;
 		InitMoment((O<order-1>*)(0));
@@ -657,10 +657,10 @@ private:
 			int previousSize=mMoments.Size();
 			mMoments.Resize(order);
 			mMoments.SetSize(order);
-			for(int i=previousSize;i<order;i++) mMoments[i]=NULL;
+			for(int i=previousSize;i<order;i++) mMoments[i]=nullptr;
 		}
 
-		if(mMoments[order-1]==NULL)
+		if(mMoments[order-1]==nullptr)
 		{
 			mMoments[order-1]=new Moment<order,abs,T,U>;
 		}
@@ -690,7 +690,7 @@ private:
 		for(int i=0;i<order;i++)
 		{
 			//if we don't, we will have to compute them
-			if(mMoments[i]==NULL)
+			if(mMoments[i]==nullptr)
 				return tmpMoment(*mData);
 		}
 
@@ -706,9 +706,9 @@ private:
 			const int previousSize=mCentralMoments.Size();
 			mCentralMoments.Resize(order+1);
 			mCentralMoments.SetSize(order+1);
-			for(int i=previousSize; i<order; i++) mCentralMoments[i]=NULL;
+			for(int i=previousSize; i<order; i++) mCentralMoments[i]=nullptr;
 		}
-		if(mCentralMoments[order-1]==NULL)
+		if(mCentralMoments[order-1]==nullptr)
 		{
 			mCentralMoments[order-1] = new CentralMoment<order,abs,T,U>;
 		}

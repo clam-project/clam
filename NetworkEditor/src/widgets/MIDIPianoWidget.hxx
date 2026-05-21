@@ -43,7 +43,7 @@ class MIDIPianoWidget: public QWidget
 	Q_OBJECT
 
 public:
-	MIDIPianoWidget(Processing *processing, QWidget * parent=NULL)
+	MIDIPianoWidget(Processing *processing, QWidget * parent=nullptr)
 		: QWidget(parent)
 		, _processing(processing)
 	{

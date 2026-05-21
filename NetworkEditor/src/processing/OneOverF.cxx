@@ -53,7 +53,7 @@ void OneOverFConfig::DefaultInit(void)
 	SetMinNote(36);
 	SetMaxNote(98);
 	SetDices(4); // 1..MAXDICES
-	srand( (unsigned)time( NULL ) );
+	srand( (unsigned)time( nullptr ) );
 }
 
 void OneOverF::ResetSeq()

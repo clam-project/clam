@@ -54,7 +54,7 @@ namespace CLAM {
 				{eAnalysis,"NormalizationForAnalysis"},
 				{eEnergy,"NormalizationForConstantEnergy"},
 				{eMax,"NormalizationForMaximizingMagnitude"},
-				{0,NULL}
+				{0,nullptr}
 			};
 			return sEnumValues;
 		}

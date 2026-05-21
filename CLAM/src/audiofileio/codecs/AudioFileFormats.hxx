@@ -59,7 +59,7 @@ namespace CLAM
 				{ eOggVorbis,   "Ogg/Vorbis" },
 				{ eMpeg,        "Mpeg Audio" },
 				{ eUnknown,     "Unknown" },
-				{ 0,            NULL }
+				{ 0,            nullptr }
 			};
 			return sEnumValues;
 		}
@@ -188,7 +188,7 @@ namespace CLAM
 				{ eDefault, "Format Default"},
 				{ e5015US, "Emphasis 50/15 US"},
 				{ eCCITTJ17, "Emphasis CCITT J.17"},
-				{ 0, NULL }
+				{ 0, nullptr }
 			};
 			return sEnumValues;
 		}
@@ -218,7 +218,7 @@ namespace CLAM
 				{ eLittle,  "Little Endian"},
 				{ eBig,     "Big Endian"},
 				{ eHost,    "Host CPU Endianess"},
-				{ 0, NULL }
+				{ 0, nullptr }
 			};
 			return sEnumValues;
 		}

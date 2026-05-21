@@ -40,7 +40,7 @@ Flags<4>::tFlagValue SpecTypeFlags::sFlagValues[] = {
  	{SpecTypeFlags::ePolar, "Polar"},
  	{SpecTypeFlags::eMagPhase, "MagPhase"},
  	{SpecTypeFlags::eMagPhaseBPF, "MagPhaseBPF"},
- 	{0,NULL}
+ 	{0,nullptr}
 }; 
 
 

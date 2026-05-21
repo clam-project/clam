@@ -57,7 +57,7 @@ public:
 	{
 		mSize = mAllocSize = 0;
 		mStep = step;
-		mpData = NULL;
+		mpData = nullptr;
 		Resize(size);
 		SetSize(size);
 	}
@@ -68,7 +68,7 @@ public:
 
 	Array(T* ptr,int size = 0)
 	{
-		CLAM_ASSERT( ptr!=NULL,
+		CLAM_ASSERT( ptr!=nullptr,
 			     "Array::Array( T*, int) : you cannot create a not-owning memory array "
 			     "without specifying a valid data pointer. ");
 		mSize = mAllocSize = size;
@@ -78,7 +78,7 @@ public:
 	
 	Array(const Array<T> &originalArray)
 	{
-		mpData = NULL;
+		mpData = nullptr;
 		mSize = mAllocSize = mStep = 0;
 		*this = originalArray;
 	}
@@ -89,7 +89,7 @@ public:
 		mAllocSize=mSize=mStep=0;
 	}
 	
-	const char * GetClassName() const {return NULL;}
+	const char * GetClassName() const {return nullptr;}
 
 	bool OwnsMemory() const {return mStep>=0; }
 	bool Empty() const { return mSize==0; }
@@ -134,7 +134,7 @@ public:
 			if(mpData)
 			{
 				DestroyDataBuffer();
-				mpData=NULL;
+				mpData=nullptr;
 			}
 		}
 
@@ -145,7 +145,7 @@ public:
 		
 		/* if the pointer to the end of the array is over then you're out of memory */
 		/* and an error message will be sent to the console */
-		CLAM_ASSERT( AllocatedSize()==0 || mpData!=NULL,
+		CLAM_ASSERT( AllocatedSize()==0 || mpData!=nullptr,
 			     "Array::Resize() : Memory Allocation failed!" );
 	}
 
@@ -239,7 +239,7 @@ public:
 		{
 			CLAM_ASSERT( AllocatedSize() >= src.Size(),
 				     "Array::RegionWrite() : source size exceeds the Region bounds" );
-			CLAM_ASSERT( GetPtr() != NULL, 
+			CLAM_ASSERT( GetPtr() != nullptr, 
 				     "Array::operator= : if you want to create a not memory owning array "
 				     "from one that does own memory, use instead Array::SetPtr() method");
 		}
@@ -277,11 +277,11 @@ public:
 
 	void StoreOn(Storage & storage) const
 	{
-		StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
+		StoreBufferOn((typename TypeInfo<T>::StorableAsLeaf *)nullptr, mpData, storage);
 	}
 	void LoadFrom(Storage & storage)
 	{
-		LoadBufferFrom((typename TypeInfo<T>::StorableAsLeaf *)NULL, mpData, storage);
+		LoadBufferFrom((typename TypeInfo<T>::StorableAsLeaf *)nullptr, mpData, storage);
 	}
 
 	// Error messages, to ease tests a little while we decide
@@ -480,7 +480,7 @@ void Array<T>::DestroyDataBuffer()
 		UninitializeDataBlock(0,mSize);
 		free(mpData);
 	}
-	mpData=NULL;
+	mpData=nullptr;
 }
 
 /** Unoptimised and safe default resizing code */

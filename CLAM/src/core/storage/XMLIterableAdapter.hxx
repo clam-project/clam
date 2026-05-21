@@ -95,13 +95,13 @@ public:
 	 * @param isXMLElement Tells whether the object is an
 	 * element or an attribute when the name is defined.
 	 */
-	XMLIterableAdapter (T & anAdaptee, const char * elementName, const char * name=NULL, 
+	XMLIterableAdapter (T & anAdaptee, const char * elementName, const char * name=nullptr, 
 			bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), mAdaptee(anAdaptee)
 	{
 		mElementsName = elementName;
 	}
-	XMLIterableAdapter (const T & anAdaptee, const char * elementName, const char * name=NULL, 
+	XMLIterableAdapter (const T & anAdaptee, const char * elementName, const char * name=nullptr, 
 			bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T&>(anAdaptee))
 	{
@@ -118,13 +118,13 @@ public:
 	//* @return A string with the extracted XML content
 	std::string XMLContent() const
 	{
-		return ContentLeaveOrComponent((BasicIsStorableAsLeaf*)NULL);
+		return ContentLeaveOrComponent((BasicIsStorableAsLeaf*)nullptr);
 	}
 
 	//* Extracts the content from the stream.
 	bool XMLContent(std::istream & str) 
 	{
-		return ContentLeaveOrComponent((BasicIsStorableAsLeaf*)NULL, str);
+		return ContentLeaveOrComponent((BasicIsStorableAsLeaf*)nullptr, str);
 	}
 
 // Operators (for Component interface)
@@ -136,7 +136,7 @@ public:
 	 */
 	virtual void StoreOn (Storage & store) const
 	{
-		StoreLeaveOrComponent (store, (BasicIsStorableAsLeaf*)NULL);
+		StoreLeaveOrComponent (store, (BasicIsStorableAsLeaf*)nullptr);
 	};
 	/**
 	 * Loads component's subitems from the given Storage
@@ -149,7 +149,7 @@ public:
 		while (true) {
 			t_adapteeValues elem;
 			if (!LoadLeaveOrComponent(store, elem,
-						(BasicIsStorableAsLeaf *)NULL)
+						(BasicIsStorableAsLeaf *)nullptr)
 					)
 				break;
 			mAdaptee.push_back(elem);

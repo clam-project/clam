@@ -30,7 +30,7 @@ LoopingSDIFFileReader::~LoopingSDIFFileReader()
 bool LoopingSDIFFileReader::Configure(const SDIFInConfig& c)
 {
 	/* initialize random seed: */
-	srand ( time(NULL) );
+	srand ( time(nullptr) );
 	
 	return true;
 }

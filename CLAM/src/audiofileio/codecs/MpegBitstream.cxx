@@ -72,7 +72,7 @@ namespace AudioCodecs
 	}
 
 	MpegBitstream::MpegBitstream()
-		: mpFile(NULL)
+		: mpFile(nullptr)
 	{
 		mInputBuffer = new unsigned char[mInputBufferSize];
 	}
@@ -121,7 +121,7 @@ namespace AudioCodecs
 
 	bool MpegBitstream::EnsureEnoughBufferData()
 	{
-		bool firstFrameAfterSeek = mBitstream.buffer == NULL;
+		bool firstFrameAfterSeek = mBitstream.buffer == nullptr;
 		bool lastDecodeNeededMoreData = mBitstream.error == MAD_ERROR_BUFLEN;
 		if ( not firstFrameAfterSeek and not lastDecodeNeededMoreData) return true;
 

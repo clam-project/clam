@@ -129,7 +129,7 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 		void * handle = FullyLoadLibrary(pluginFullFilename);
 
 		// TODO: throw exception and have catch in main()
-		if (handle == NULL)
+		if (handle == nullptr)
 		{
 			std::cout << "RunTimeLibraryLoader: Error loading: " << pluginFullFilename 
 					  << " reason: " << LibraryLoadError()
@@ -211,11 +211,11 @@ const std::string RunTimeLibraryLoader::LibraryLoadError()
 	LPVOID lpMsgBuf;
 	FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
+		nullptr,
 		GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) &lpMsgBuf,
-		0, NULL );
+		0, nullptr );
 	std::string message((char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 	return message;

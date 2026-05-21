@@ -69,7 +69,7 @@ void DumpBacktrace(std::ostream & os)
 		return;
 	}
 
-	if ((bt_strings = backtrace_symbols(bt_array, num_entries)) == NULL) {
+	if ((bt_strings = backtrace_symbols(bt_array, num_entries)) == nullptr) {
 		os << " Unable to adquire symbols names for the backtrace" << std::endl;
 		return;
 	}

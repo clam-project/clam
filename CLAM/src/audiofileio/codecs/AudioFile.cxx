@@ -34,7 +34,7 @@ namespace CLAM
 {
 	AudioFile::AudioFile()
 		: mCodec( EAudioFileCodec::eUnknown )
-		, mActiveCodec( NULL )
+		, mActiveCodec( nullptr )
 	{
 	}
 
@@ -63,7 +63,7 @@ namespace CLAM
 	
 	void AudioFile::ResolveCodec()
 	{
-		mActiveCodec = NULL;
+		mActiveCodec = nullptr;
 
 		const std::string &location = mLocation;
 		if ( !AudioCodecs::Codec::FileExists( location ) )
@@ -149,7 +149,7 @@ namespace CLAM
 
 	bool AudioFile::IsValid() const
 	{
-		return mActiveCodec == NULL;
+		return mActiveCodec == nullptr;
 	}
 
 	bool AudioFile::IsReadable() const

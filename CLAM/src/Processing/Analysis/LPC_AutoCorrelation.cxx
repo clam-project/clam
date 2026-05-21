@@ -192,7 +192,7 @@ void LPC_AutoCorrelation::ComputeAutocorrelation(const Array<TData>& signal,
 	TData *outBuffer = acCoeffs.GetPtr();
 	const TData *endOutBuffer = acCoeffs.GetPtr()+acCoeffs.Size();
 
-	const TData *inBuffer2 = NULL;
+	const TData *inBuffer2 = nullptr;
 
 	*outBuffer = dot_product( inBuffer, inBuffer, endInBuffer );
 	*outBuffer *= N;

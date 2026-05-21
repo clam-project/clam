@@ -78,7 +78,7 @@ namespace CLAM
 		void Init();
 
 /**
-* Returns the class name. This implementation returns a NULL pointer
+* Returns the class name. This implementation returns a nullptr pointer
 */
 		const char * GetClassName() const {return "BPF";}
 

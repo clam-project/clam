@@ -58,7 +58,7 @@ public:
 						{eDouble,"d"},
 						{eInt,"i"},
 //						{eMidi,"M"},
-						{0,NULL}
+						{0,nullptr}
 				};
 				return sValueTable;
 		}

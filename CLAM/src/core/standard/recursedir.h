@@ -3,7 +3,7 @@
 
 /* These are the type definitions of the function that are
 ** passed to recursedir to specify what to do on each directory
-** and each file. Note that you can also pass NULL.
+** and each file. Note that you can also pass nullptr.
 **
 ** The functions return a value to specify whether to stop (1)
 ** or to continue (0)

@@ -159,7 +159,7 @@ void PANetworkPlayer::Start()
 		inputParameters.channelCount = nInChannels;
 		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
 		inputParameters.suggestedLatency = info->defaultLowOutputLatency;
-		inputParameters.hostApiSpecificStreamInfo = NULL;
+		inputParameters.hostApiSpecificStreamInfo = nullptr;
 		inParams = &inputParameters;
 	}
 
@@ -185,7 +185,7 @@ void PANetworkPlayer::Start()
 		outputParameters.channelCount = nOutChannels;
 		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
 		outputParameters.suggestedLatency = info->defaultLowOutputLatency;
-		outputParameters.hostApiSpecificStreamInfo = NULL;
+		outputParameters.hostApiSpecificStreamInfo = nullptr;
 		outParams = &outputParameters;
 	}
 

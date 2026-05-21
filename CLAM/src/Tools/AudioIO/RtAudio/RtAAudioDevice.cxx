@@ -508,7 +508,7 @@ namespace CLAM {
 
 	void RtAAudioDeviceList::EnumerateAvailableDevices()
 	{
-		RtAudio* instance = NULL;
+		RtAudio* instance = nullptr;
 		
 		try {
 				instance = new RtAudio();

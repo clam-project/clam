@@ -242,7 +242,7 @@ namespace QtSMS
 	void SMSConfigDlg::FillComboBoxes()
 	{
 		
-		for(int i=0; CLAM::EWindowType::ValueTable()[i].name != NULL; i++)
+		for(int i=0; CLAM::EWindowType::ValueTable()[i].name != nullptr; i++)
 		{
 			const char* item =  CLAM::EWindowType::ValueTable()[i].name;
 			mAnalysisWindowTypeComboBox->addItem(item);

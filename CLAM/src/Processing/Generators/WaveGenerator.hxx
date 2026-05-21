@@ -43,7 +43,7 @@ namespace CLAM {
 		{
 			static tEnumValue sEnumValues[] = {
 				{EWaveType::eSine,"SineWave"},
-				{0,NULL}
+				{0,nullptr}
 			};
 			return sEnumValues;
 		}

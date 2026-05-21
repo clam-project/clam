@@ -1,501 +1,261 @@
-#include "Mutex.hxx"
-#include "RecursiveMutex.hxx"
-#include "Condition.hxx"
-#include "Thread.hxx"
-#include "xtime.hxx"
-#include <iostream>
-using std::cout;
-using std::endl;
-#include <list>
 #include "Assert.hxx"
 #include "Err.hxx"
 
-template < typename M >
-void test_lock( M* overload_provider = 0 )
+#include <chrono>
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <vector>
+
+using std::cout;
+using std::endl;
+
+namespace
 {
-	typedef M MutexType;
-	typedef typename M::ScopedLock LockType;
-
-	MutexType mutex;
-	CLAM::Condition condition;
-
-	// Test lock constructors
+	template <typename MutexType>
+	void test_basic_locking()
 	{
-		LockType lock( mutex, false );
-		CLAM_ASSERT( !lock, "ScopedLock constructor failed" );
-	}
-	
-	LockType lock( mutex );
-	CLAM_ASSERT( lock, "ScopedLock constructor failed" );
+		MutexType mutex;
+		std::unique_lock<MutexType> lock(mutex, std::defer_lock);
 
-	// Time out test. Since nobody notifies the condition variable
-	// it should time out
-
-	CLAM::xtime xt;
-	CLAM_ASSERT( CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, " Something went wrong with time initialization" );
-	xt.nsec += 100000000; // one tenth of a sec
-
-	CLAM_ASSERT( condition.TimedWait( lock, xt ) == false, "Condition didn't timeout" );
-	CLAM_ASSERT( lock, "Lock was messed up" );
-	
-	// Test the lock and unlock
-
-	lock.Unlock();
-	CLAM_ASSERT( !lock, "Lock not unlocked!" );
-	lock.Lock();
-	CLAM_ASSERT( lock, "Unlocked lock not locked" );
-}
-
-template <typename M>
-void test_trylock( M* overload_provider = 0 )
-{
-	typedef M MutexType;
-	typedef typename M::ScopedTryLock TryLockType;
-
-	MutexType mutex;
-	CLAM::Condition condition;
-
-	// Lock constructors test
-	{
-		TryLockType lock( mutex );
-		CLAM_ASSERT( lock, "Constructor failed" );
-	}
-	{
-		TryLockType lock( mutex, false);
-		CLAM_ASSERT( !lock, "Constructor failed" );
-	}
-	TryLockType lock( mutex, true );
-	CLAM_ASSERT( lock, "Constructor failed" );
-
-	// Fast timeout
-	CLAM::xtime xt;
-	CLAM_ASSERT( CLAM::xtime_get( &xt, CLAM::TIME_UTC ) == CLAM::TIME_UTC, "Clock test failed" );
-	xt.nsec += 100000000; // one tenth of a second
-
-	// This should timeout
-
-	CLAM_ASSERT( condition.TimedWait( lock ,xt ) == false, "Condition didn't time out" );
-	CLAM_ASSERT( lock, "Lock was messed" );
-
-	// now we try the lock, unlock and trylock
-	lock.Unlock();
-	CLAM_ASSERT( !lock, "Unlock() did not work" );
-	lock.Lock(); 
-	CLAM_ASSERT( lock, "Lock() did not work" );
-	lock.Unlock();
-	CLAM_ASSERT( !lock, "Unlock() did not work" );
-	CLAM_ASSERT( lock.TryLock(), "Unable to acquire a lock onto a unlocked mutex"  );
-	CLAM_ASSERT( lock, "mutex not locked" );
-}
-
-template <typename M>
-void test_timedlock( M* overload_provider = 0)
-{
-    typedef M MutexType;
-    typedef typename M::ScopedTimedLock TimedLockType;
-
-    MutexType mutex;
-    CLAM::Condition condition;
-
-    // Test the lock's constructors.
-    {
-        // Construct and initialize an xtime for a fast time out.
-        CLAM::xtime xt;
-        CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "Clock Test failed");
-        xt.nsec += 100000000; // one tenth of a second
-
-        TimedLockType lock(mutex, xt);
-        CLAM_ASSERT(lock, "Constructor failed");
-    }
-    {
-        TimedLockType lock(mutex, false);
-        CLAM_ASSERT(!lock, "Constructor failed");
-    }
-    TimedLockType lock(mutex, true);
-    CLAM_ASSERT(lock, "Constructor failed");
-
-    // Construct and initialize an xtime for a fast time out.
-    CLAM::xtime xt;
-    CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "Clock test failed");
-    xt.nsec += 100000000;
-
-    // Test the lock and the mutex with condition variables.
-    // No one is going to notify this condition variable.  We expect to
-    // time out.
-    CLAM_ASSERT(condition.TimedWait(lock, xt) == false, "Condition did not timeout");
-    CLAM_ASSERT(lock,"Test failed");
-
-    // Test the lock, unlock and timedlock methods.
-    lock.Unlock();
-    CLAM_ASSERT(!lock, "Unlock() failed");
-    lock.Lock();
-    CLAM_ASSERT(lock, "Lock() failed");
-    lock.Unlock();
-    CLAM_ASSERT(!lock, "Unlock() failed");
-    CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "Test failed");
-    xt.nsec += 100000000;
-    CLAM_ASSERT(lock.TimedLock(xt), "TimedLock() did not work");
-}
-
-void test_mutex()
-{
-	typedef CLAM::Mutex mutex;
-	test_lock<mutex>();
-
-	cout << "Mutex test passed...." << endl;
-}
-
-void test_try_mutex()
-{
-	typedef CLAM::TryMutex mutex;
-	test_lock<mutex>();
-	test_trylock<mutex>();
-	
-	cout << "TryMutex test passed..." << endl;
-}
-
-void test_timed_mutex()
-{
-	typedef CLAM::TimedMutex mutex;
-	test_lock<mutex>();
-	test_trylock<mutex>();
-	test_timedlock<mutex>();
-
-	cout << "TimedMutex test passed..." << endl;
-}
-
-void test_recursive_mutex()
-{
-	typedef CLAM::RecursiveMutex mutex;
-
-	test_lock<mutex>();
-	mutex m;
-	{
-		mutex::ScopedLock lock1( m );
-		mutex::ScopedLock lock2( m );
-	}
-	cout << "RecursiveMutex test passed..." << endl;
-}
-
-void test_recursive_try_mutex()
-{
-	typedef CLAM::RecursiveTryMutex mutex;
-	
-	test_lock<mutex>();
-	test_trylock<mutex>();
-	mutex m;
-	{
-		mutex::ScopedLock lock1(m);
-		mutex::ScopedLock lock2(m);
-	}
-	cout << "RecursiveTryMutex test passed..." << endl;
-}
-
-void test_recursive_timed_mutex()
-{
-	typedef CLAM::RecursiveTimedMutex mutex;
-	
-	test_lock<mutex>();
-	test_trylock<mutex>();
-	test_timedlock<mutex>();
-	mutex m;
-	{
-		mutex::ScopedLock lock1(m);
-		mutex::ScopedLock lock2(m);
-	}
-	
-	cout << "RecursiveTimedMutex test passed..." << endl;
-}
-
-class TestCondition
-{
-public:
-
-	TestCondition()
-		: notified(0), awoken(0)
-	{
+		CLAM_ASSERT(!lock.owns_lock(), "Deferred lock should start unlocked");
+		lock.lock();
+		CLAM_ASSERT(lock.owns_lock(), "Lock did not acquire the mutex");
+		lock.unlock();
+		CLAM_ASSERT(!lock.owns_lock(), "Unlock did not release the mutex");
+		lock.lock();
+		CLAM_ASSERT(lock.owns_lock(), "Relock did not acquire the mutex");
 	}
 
-	virtual void ThreadCode()
+	template <typename MutexType>
+	void test_try_locking()
 	{
-		CLAM::Mutex::ScopedLock lock( mutex );
-		CLAM_ASSERT( lock, "Lock did not worked" );
-		
-		while ( !(notified) )
-			condition.Wait(lock);
+		MutexType mutex;
+		std::unique_lock<MutexType> owner(mutex);
+		bool acquired_in_other_thread = true;
+		std::thread blocked([&] {
+			std::unique_lock<MutexType> failed(mutex, std::try_to_lock);
+			acquired_in_other_thread = failed.owns_lock();
+		});
+		blocked.join();
 
-		CLAM_ASSERT( lock, "Lock was messed" );
-		awoken++;
+		CLAM_ASSERT(!acquired_in_other_thread, "try_to_lock acquired a mutex owned by another thread");
+		owner.unlock();
+
+		std::unique_lock<MutexType> acquired(mutex, std::try_to_lock);
+		CLAM_ASSERT(acquired.owns_lock(), "try_to_lock failed on an unlocked mutex");
 	}
 
-public:
-
-	CLAM::Mutex     mutex;
-	CLAM::Condition condition;
-	int notified;
-	int awoken;
-};
-
-void test_condition_notify_one()
-{
-	TestCondition test_cond;
-
-	CLAM::Thread t;
-
-	t.SetThreadCode( makeMemberFunctor0( test_cond, TestCondition, ThreadCode ) );
-	
-	t.Start();
+	template <typename MutexType>
+	void test_timed_locking()
 	{
-		CLAM::Mutex::ScopedLock lock( test_cond.mutex );
-		CLAM_ASSERT( lock, "Unable to lock the mutex" );
-		test_cond.notified++;
-		test_cond.condition.NotifyOne();
+		MutexType mutex;
+		std::unique_lock<MutexType> owner(mutex);
+		bool acquired_in_other_thread = true;
+		std::thread blocked([&] {
+			std::unique_lock<MutexType> timed(mutex, std::defer_lock);
+			acquired_in_other_thread = timed.try_lock_for(std::chrono::milliseconds(10));
+		});
+		blocked.join();
+
+		CLAM_ASSERT(!acquired_in_other_thread, "Timed lock acquired a mutex owned by another thread");
+		owner.unlock();
+
+		std::unique_lock<MutexType> timed(mutex, std::defer_lock);
+		CLAM_ASSERT(timed.try_lock_for(std::chrono::milliseconds(100)), "Timed lock failed on an unlocked mutex");
 	}
 
-	t.Stop();
-	CLAM_ASSERT(test_cond.awoken==1,"Test Condition::NotifyOne failed!" );
-
-	cout << "Test Condition::NotifyOne passed!" << endl;
-}
-
-void test_condition_notify_all()
-{
-	const int nthreads = 5;
-	
-	typedef std::list<CLAM::Thread*> ThreadGroup;
-	typedef std::list<CLAM::Thread*>::iterator TGIterator;
-	
-	ThreadGroup threads;
-	TestCondition test_cond;
-
-	for ( int i = 0; i < nthreads; i++ )
-		threads.push_back( new CLAM::Thread() );
-
-	TGIterator it;	
-
-	for ( it = threads.begin(); it != threads.end(); it++)
-		(*it)->SetThreadCode( makeMemberFunctor0( test_cond, TestCondition, ThreadCode ) );
-	
-	for ( it = threads.begin(); it != threads.end(); it++ )
-		(*it)->Start();
-
+	void test_mutex()
 	{
-		CLAM::Mutex::ScopedLock lock( test_cond.mutex );
-		CLAM_ASSERT( lock, "Not able to lock: Test Condition::NotifyAll failed" );
-		test_cond.notified++;
-		test_cond.condition.NotifyAll();
+		test_basic_locking<std::mutex>();
+		test_try_locking<std::mutex>();
+
+		cout << "std::mutex test passed...." << endl;
 	}
 
-	for ( it = threads.begin(); it != threads.end(); it++ )
-		(*it)->Stop();
-	
-	for ( it = threads.begin(); it != threads.end(); it++ )
-		delete (*it);
-
-
-
-	CLAM_ASSERT( test_cond.awoken == nthreads, "Test Condition::NotifyAll failed" );
-
-
-	cout << "Test Condition::NotifyAll passed" << endl;
-}
-
-struct ConditionPredicate
-{
-	ConditionPredicate( int& var, int val ) 
-		: mVar(var), mVal(val)
+	void test_timed_mutex()
 	{
+		test_basic_locking<std::timed_mutex>();
+		test_try_locking<std::timed_mutex>();
+		test_timed_locking<std::timed_mutex>();
+
+		cout << "std::timed_mutex test passed..." << endl;
 	}
 
-	bool operator() ()
+	void test_recursive_mutex()
 	{
-		return mVar == mVal;
+		test_basic_locking<std::recursive_mutex>();
+		test_try_locking<std::recursive_mutex>();
+
+		std::recursive_mutex mutex;
+		std::lock_guard<std::recursive_mutex> lock1(mutex);
+		std::lock_guard<std::recursive_mutex> lock2(mutex);
+
+		cout << "std::recursive_mutex test passed..." << endl;
 	}
 
-	int& mVar;
-	int  mVal;
-};
-
-class TestConditionWait : public TestCondition
-{
-public:
-
-	virtual void ThreadCode()
+	void test_recursive_timed_mutex()
 	{
-		CLAM::Mutex::ScopedLock lock( mutex );
-		CLAM_ASSERT( lock, "Test Condition Wait failed: not able to lock the mutex"  );
-		
-		// Test wait
-		while ( !notified )
-			condition.Wait( lock );
-		
-		CLAM_ASSERT( lock, "Test Condition Wait failed: lock messed up during wait" );
-		CLAM_ASSERT( notified == 1, "Test Condition Wait failed: guard var messed" );
+		test_basic_locking<std::recursive_timed_mutex>();
+		test_try_locking<std::recursive_timed_mutex>();
+		test_timed_locking<std::recursive_timed_mutex>();
 
-		awoken++;
-		condition.NotifyOne();
+		std::recursive_timed_mutex mutex;
+		std::lock_guard<std::recursive_timed_mutex> lock1(mutex);
+		std::lock_guard<std::recursive_timed_mutex> lock2(mutex);
 
-		// Test predicate wait
-		condition.Wait( lock, ConditionPredicate( notified, 2 ) );
-		CLAM_ASSERT( lock, "Test Condition Wait failed: lock messed during wait" );
-		CLAM_ASSERT( notified == 2, "Test Condition Wait failed: Guard variable failed" );
-		awoken++;
-		condition.NotifyOne();
-
-		// Test timed_wait.
-		CLAM::xtime xt;
-		CLAM_ASSERT( CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "Clock mismatch!" );
-		xt.nsec += 100000000; // one tenth of a second
-		while (notified != 3)
-			condition.TimedWait(lock, xt);
-		CLAM_ASSERT(lock, "Test Condition Wait failed: lock messed during wait" );
-		CLAM_ASSERT(notified == 3, "Test Condition Wait failed: Guard variable messed");
-		awoken++;
-		condition.NotifyOne();
-
-	   // Test predicate timed_wait.
-		CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "Clock mismatch!" );
-		xt.sec += 2;
-		CLAM_ASSERT( condition.TimedWait(lock, xt, ConditionPredicate(notified, 4)), "Test Condition Wait failed: TimedOut!");
-		CLAM_ASSERT(lock, "Lock messed during wait");
-		CLAM_ASSERT(notified == 4, "Test Condition Wait failed: Guard variable messed");
-		awoken++;
-	}
-};
-
-void test_condition_waits()
-{
-	TestConditionWait test_cond;
-	TestCondition* pBase;
-	CLAM::Thread t;
-	
-	pBase = static_cast<TestCondition*>( &test_cond ); // upcast
-	t.SetThreadCode( makeMemberFunctor0( *pBase, TestCondition, ThreadCode  ) );
-	t.Start();
-	CLAM::xtime xt;
-
-	{
-		CLAM::Mutex::ScopedLock lock( test_cond.mutex );
-		CLAM_ASSERT( lock, "Test condition wait failed: mutex not locked" );
-		
-		t.Sleep( 1000 );
-        test_cond.notified++;
-        test_cond.condition.NotifyOne();
-        while (test_cond.awoken != 1)
-            test_cond.condition.Wait(lock);
-        CLAM_ASSERT(test_cond.awoken == 1, "Test failed" );
-
-        CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "test condition waits failed");
-		t.Sleep( 1000 );
-        test_cond.notified++;
-        test_cond.condition.NotifyOne();
-        while (test_cond.awoken != 2)
-            test_cond.condition.Wait(lock);
-        CLAM_ASSERT(test_cond.awoken == 2, "test condition waits failed");
-
-        CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "test condition waits failed");
-        t.Sleep( 1000 );
-        test_cond.notified++;
-        test_cond.condition.NotifyOne();
-        while (test_cond.awoken != 3)
-            test_cond.condition.Wait(lock);
-        CLAM_ASSERT(test_cond.awoken == 3, "test condition waits failed");
+		cout << "std::recursive_timed_mutex test passed..." << endl;
 	}
 
-	CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "test condition waits failed");
-    t.Sleep( 1000 );
-    test_cond.notified++;
-    test_cond.condition.NotifyOne();
-    CLAM_ASSERT(CLAM::xtime_get(&xt, CLAM::TIME_UTC) == CLAM::TIME_UTC, "test condition waits failed");
-    t.Sleep(1000);
-    t.Stop();
-    CLAM_ASSERT(test_cond.awoken == 4, "test condition waits failed");
-
-	cout << "Test condition waits passed" << endl;
-}
-
-void test_condition()
-{
-	cout << "Testing Condition::NotifyOne() " << std::endl;
-	test_condition_notify_one();
-	cout << "Testing Condition::NotifyAll() " << std::endl;
-	test_condition_notify_all();
-	cout << "Testing Condition:: waits" << std::endl;
-	test_condition_waits();
-}
-
-
-class Sleepy
-{
-public:
-
-	void ThreadCode()
+	class TestCondition
 	{
-
-		double b = 10.5;
-		double c = 0.71;
-
-		for ( int i = 0; i < 1000000L; i++)
+	public:
+		void WaitUntilNotified()
 		{
-			double a = b / c;
+			std::unique_lock<std::mutex> lock(mutex);
+			++waiting;
+			ready_condition.notify_one();
+			condition.wait(lock, [this] { return notified; });
+			++awoken;
 		}
+
+		std::mutex mutex;
+		std::condition_variable ready_condition;
+		std::condition_variable condition;
+		bool notified = false;
+		int waiting = 0;
+		int awoken = 0;
+	};
+
+	void test_condition_notify_one()
+	{
+		TestCondition test_cond;
+		std::thread thread(&TestCondition::WaitUntilNotified, &test_cond);
+
+		{
+			std::unique_lock<std::mutex> lock(test_cond.mutex);
+			test_cond.ready_condition.wait(lock, [&test_cond] { return test_cond.waiting == 1; });
+			test_cond.notified = true;
+		}
+		test_cond.condition.notify_one();
+
+		thread.join();
+		CLAM_ASSERT(test_cond.awoken == 1, "std::condition_variable notify_one failed");
+
+		cout << "std::condition_variable notify_one passed!" << endl;
 	}
-};
 
-void test_sleep_and_wake()
-{
-	Sleepy sl;
+	void test_condition_notify_all()
+	{
+		const int nthreads = 5;
+		TestCondition test_cond;
+		std::vector<std::thread> threads;
 
-	CLAM::Thread t;
+		for (int i = 0; i < nthreads; ++i)
+			threads.emplace_back(&TestCondition::WaitUntilNotified, &test_cond);
 
-	t.SetThreadCode( makeMemberFunctor0( sl, Sleepy, ThreadCode ) );
-	
-	t.Start();
+		{
+			std::unique_lock<std::mutex> lock(test_cond.mutex);
+			test_cond.ready_condition.wait(lock, [&test_cond] { return test_cond.waiting == nthreads; });
+			test_cond.notified = true;
+		}
+		test_cond.condition.notify_all();
 
-	t.Sleep(1000);
-	cout << "*";
+		for (std::thread& thread : threads)
+			thread.join();
 
-	for ( int i = 0; i < 10; i++ )
-		cout << "+";
+		CLAM_ASSERT(test_cond.awoken == nthreads, "std::condition_variable notify_all failed");
 
-	cout << endl;
+		cout << "std::condition_variable notify_all passed" << endl;
+	}
 
-	t.WakeUp();
+	void test_condition_waits()
+	{
+		std::mutex mutex;
+		std::condition_variable condition;
+		int value = 0;
 
-	t.Stop();
+		{
+			std::unique_lock<std::mutex> lock(mutex);
+			CLAM_ASSERT(
+				condition.wait_for(lock, std::chrono::milliseconds(10), [&value] { return value == 1; }) == false,
+				"std::condition_variable wait_for should time out"
+			);
+		}
 
-	cout << "Test sleep and wake passed!" << endl;
+		std::thread thread([&] {
+			{
+				std::lock_guard<std::mutex> lock(mutex);
+				value = 1;
+			}
+			condition.notify_one();
+		});
+
+		{
+			std::unique_lock<std::mutex> lock(mutex);
+			condition.wait(lock, [&value] { return value == 1; });
+			CLAM_ASSERT(value == 1, "std::condition_variable predicate wait failed");
+		}
+
+		thread.join();
+
+		cout << "std::condition_variable waits passed" << endl;
+	}
+
+	void test_condition()
+	{
+		cout << "Testing std::condition_variable notify_one" << endl;
+		test_condition_notify_one();
+		cout << "Testing std::condition_variable notify_all" << endl;
+		test_condition_notify_all();
+		cout << "Testing std::condition_variable waits" << endl;
+		test_condition_waits();
+	}
+
+	void test_thread()
+	{
+		bool executed = false;
+		std::thread thread([&executed] {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			executed = true;
+		});
+
+		thread.join();
+		CLAM_ASSERT(executed, "std::thread did not execute");
+
+		cout << "std::thread test passed!" << endl;
+	}
 }
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
+	(void) argc;
+	(void) argv;
+
 	try
-		{
-			cout << "Testing Mutex class" << endl;
-			test_mutex();
-			cout << "Testing TryMutex class" << endl;
-			test_try_mutex();
-			cout << "Testing TimedMutex class" << endl;
-			test_timed_mutex();
-			cout << "Testing Recursive Mutex class" << endl;
-			test_recursive_mutex();
-			cout << "Testing Recursive TryMutex class" << endl;
-			test_recursive_try_mutex();
-			cout << "Testing Recursive TimedMutex class" << endl;
-			test_recursive_timed_mutex();
-			cout << "Testing Sleep and Wakeup" << endl;
-//			test_sleep_and_wake();
-			cout << "Testing Condition class" << endl;
-			test_condition();
+	{
+		cout << "Testing std::mutex" << endl;
+		test_mutex();
+		cout << "Testing std::timed_mutex" << endl;
+		test_timed_mutex();
+		cout << "Testing std::recursive_mutex" << endl;
+		test_recursive_mutex();
+		cout << "Testing std::recursive_timed_mutex" << endl;
+		test_recursive_timed_mutex();
+		cout << "Testing std::thread" << endl;
+		test_thread();
+		cout << "Testing std::condition_variable" << endl;
+		test_condition();
 
-			cout << "All tests passed. Congratulations!" << endl;
-		}
-	catch( CLAM::Err& e )
-		{
-			e.Print();
-			std::cerr << "Abnormal program termination" << std::endl;
-		}
+		cout << "All tests passed. Congratulations!" << endl;
+	}
+	catch (CLAM::Err& e)
+	{
+		e.Print();
+		std::cerr << "Abnormal program termination" << std::endl;
+		return 1;
+	}
 
 	return 0;
 }
-

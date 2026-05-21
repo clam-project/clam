@@ -338,8 +338,8 @@ int SndPcm::setparams_set(snd_pcm_t *handle,
 	tick_time_ok = 0;
 	if (tick_time > 0) {
 		int time, ttime;
-		time = snd_pcm_hw_params_get_period_time(params, NULL);
-		ttime = snd_pcm_hw_params_get_tick_time(params, NULL);
+		time = snd_pcm_hw_params_get_period_time(params, nullptr);
+		ttime = snd_pcm_hw_params_get_tick_time(params, nullptr);
 		if (time < ttime) {
 			cat_error("Skipping to set minimal sleep: period time < tick time\n");
 		} else if (ttime <= 0) {
@@ -356,10 +356,10 @@ int SndPcm::setparams_set(snd_pcm_t *handle,
 			tick_time_ok = sleep_min * ttime;
 		}
 	}
-	val = !block ? 4 : snd_pcm_hw_params_get_period_size(params, NULL);
+	val = !block ? 4 : snd_pcm_hw_params_get_period_size(params, nullptr);
 	if (tick_time_ok > 0)
 		val = 16;
-	val = snd_pcm_hw_params_get_period_size(params, NULL);
+	val = snd_pcm_hw_params_get_period_size(params, nullptr);
 	err = snd_pcm_sw_params_set_avail_min(handle, swparams, val);
 	if (err < 0) {
 		cat_error("Unable to set avail min for %s: %s\n", id, snd_strerror(err));
@@ -428,25 +428,25 @@ int SndPcm::setparams(snd_pcm_t *phandle, snd_pcm_t *chandle, int *bufsize)
 
 	if (p_params)
 	{
-		size = snd_pcm_hw_params_get_period_size(p_params, NULL);
+		size = snd_pcm_hw_params_get_period_size(p_params, nullptr);
 		if (size > *bufsize)
 			*bufsize = size;
 	}
 	
 	if (c_params)
 	{		
-		size = snd_pcm_hw_params_get_period_size(c_params, NULL);
+		size = snd_pcm_hw_params_get_period_size(c_params, nullptr);
 		if (size > *bufsize)
 			*bufsize = size;
 	}
 	
 	if (c_params && p_params)
-		if (snd_pcm_hw_params_get_period_time(p_params, NULL) !=
-		    snd_pcm_hw_params_get_period_time(c_params, NULL))
+		if (snd_pcm_hw_params_get_period_time(p_params, nullptr) !=
+		    snd_pcm_hw_params_get_period_time(c_params, nullptr))
 			goto __again;
-	if (p_params && snd_pcm_hw_params_get_period_size(p_params, NULL) * 2 < snd_pcm_hw_params_get_buffer_size(p_params))
+	if (p_params && snd_pcm_hw_params_get_period_size(p_params, nullptr) * 2 < snd_pcm_hw_params_get_buffer_size(p_params))
 			goto __again;
-	if (c_params && snd_pcm_hw_params_get_period_size(c_params, NULL) * 2 < snd_pcm_hw_params_get_buffer_size(c_params))
+	if (c_params && snd_pcm_hw_params_get_period_size(c_params, nullptr) * 2 < snd_pcm_hw_params_get_buffer_size(c_params))
 			goto __again;
 
 	if (phandle && (err = setparams_set(phandle, p_params, p_swparams, "playback")) < 0) {

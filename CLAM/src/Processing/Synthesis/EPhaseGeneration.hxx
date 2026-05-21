@@ -55,7 +55,7 @@ public:
 			{eRandom,"Random"},
 			{eContinuation,"Continuation"},
 			{eNone,"None"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sEnumValues;
 	}

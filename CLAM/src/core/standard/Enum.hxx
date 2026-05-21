@@ -83,7 +83,7 @@ public:
 			{eZero,"zero"},
 			{eTwo,"two"},
 			{eHundred,"hundred"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sValueTable;
 	}
@@ -111,7 +111,7 @@ protected:
 	/**
 	 * Construction with a numeric value.
 	 * @param values An array of tEnumValue structures in wich the last
-	 * one has a NULL pointer as name.
+	 * one has a nullptr pointer as name.
 	 * @param value An initialization numeric value.
 	 * @throw A IllegalValue exception when the value is not valid.
 	 */
@@ -122,7 +122,7 @@ protected:
 	/**
 	 * Construction with a symbolic value.
 	 * @param values An array of tEnumValue structures in wich the last
-	 * one has a NULL pointer as name.
+	 * one has a nullptr pointer as name.
 	 * @param value An initialization symbolic value.
 	 * @throw A IllegalValue exception when the value is not valid.
 	 */
@@ -133,7 +133,7 @@ protected:
 public:
 	/** The required virtual destructor */
 	virtual ~Enum ();
-	const char * GetClassName() const {return NULL;}
+	const char * GetClassName() const {return nullptr;}
 //@}
 
 // Operations

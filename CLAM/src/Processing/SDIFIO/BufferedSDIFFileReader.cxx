@@ -94,7 +94,7 @@ Frame* BufferedSDIFFileReader::ReadFrame()
 
 	if ( frameBuffer.size() == 0 )
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -104,7 +104,7 @@ Frame* BufferedSDIFFileReader::ReadFrame()
 		Frame* nextFrame = frameBuffer.at(frameBufferPosition);
 		frameBufferPosition++;
 
-		if (nextFrame == NULL)
+		if (nextFrame == nullptr)
 		{
 			std::cout << "next frame is null" << std::endl;
 		}

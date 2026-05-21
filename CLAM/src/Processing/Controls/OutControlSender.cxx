@@ -24,7 +24,7 @@ Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =
 		{ EControlRepresentation::eHorizontalSlider, "Horizontal Slider" },
 		{ EControlRepresentation::eKnot, "Knot" },
 		{ EControlRepresentation::eSpinBox, "Spin Box" },
-		{ 0, NULL }
+		{ 0, nullptr }
 	};
 
 Enum::tEnumValue OutControlSenderConfig::EMapping::sEnumValues[] =
@@ -33,7 +33,7 @@ Enum::tEnumValue OutControlSenderConfig::EMapping::sEnumValues[] =
 		{ EMapping::eInverted, "Inverted" },
 		{ EMapping::eLog, "Log" },
 		{ EMapping::eReverseLog, "Reverse Log" },
-		{ 0, NULL }
+		{ 0, nullptr }
 	};
 
 

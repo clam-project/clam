@@ -64,7 +64,7 @@ public:
 			{ePolynomial4,"4th_order_Polynomial"},
 			{ePolynomial5,"5th_order_Polynomial"},
 			{ePolynomialn,"nth_order_Polynomial"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sValueTable;
 	}
@@ -94,7 +94,7 @@ public:
 		{
 			{EScale::eLinear,"Linear"},
 			{EScale::eLog,"Log"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sValueTable;
 	}
@@ -156,7 +156,7 @@ public:
 			{eBlackmanHarrisLike,"BlackmanHarrisLike"},
 			{eSine,"Sine"},
 			{eSquare,"Square"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sValueTable;
 	}

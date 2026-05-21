@@ -34,7 +34,7 @@ public:
 private:
 	QWidget * GetWidget(const char * name) {
 		tWidgets::iterator found=mWidgets.find(name);
-		if (found==mWidgets.end()) return NULL;
+		if (found==mWidgets.end()) return nullptr;
 		return found->second;
 	}
 	void PushWidget(const char * name, QWidget * widget)

@@ -65,7 +65,7 @@ namespace CLAM
 				{eBb,"Bb"},
 				{eB, "B"},
 				{eNone,"NotSet"},
-				{0,NULL}
+				{0,nullptr}
 			};
 			return sEnumValues;
 		}
