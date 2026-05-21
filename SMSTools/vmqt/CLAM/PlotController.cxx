@@ -21,6 +21,9 @@
 
 #include <algorithm>
 #include <CLAM/PlotController.hxx>
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <QMouseEvent>
 
 namespace CLAM
 {
@@ -510,7 +513,7 @@ namespace CLAM
 		{
 			mHit=false;
 		    mIsAbleToEdit=false;
-			QCursor cursor(ArrowCursor);
+			QCursor cursor(Qt::ArrowCursor);
 			emit cursorChanged(cursor);
 			emit mouseOverDisplay(false);
 			mSegmentEditor.LeaveMouse();
@@ -830,7 +833,7 @@ namespace CLAM
 
 		void PlotController::MousePressEvent(QMouseEvent* e)
 		{			
-			if(e->button() != LeftButton) return;
+			if(e->button() != Qt::LeftButton) return;
 			SetLeftButtonPressed(true);;
 			std::pair<double,double> coords = GetXY(e);
 			SetSelPos(coords.first,true);
@@ -839,7 +842,7 @@ namespace CLAM
 
 		void PlotController::MouseReleaseEvent(QMouseEvent* e)
 		{
-			if(e->button() != LeftButton) return;
+			if(e->button() != Qt::LeftButton) return;
 			SetLeftButtonPressed(false);
 			std::pair<double,double> coords = GetXY(e);
 			mSegmentEditor.MouseReleased(coords.first,coords.second);
@@ -853,16 +856,10 @@ namespace CLAM
 
 		std::pair<double,double> PlotController::GetXY(QMouseEvent* e)
 		{
-			double left = mLeftBound;
-			double xcoord = double(e->x());
-			xcoord *= mView.right;
-			xcoord /= mDisplayWidth;
-			xcoord += left;			
-			double ycoord = double(-e->y()+mDisplayHeight);
-			ycoord *= (mView.top-mView.bottom);
-			ycoord /= double(mDisplayHeight);
-			ycoord += mView.bottom;
-			return std::make_pair(xcoord,ycoord);
+			const auto pos = e->position();
+			const auto xcoord = pos.x() * mView.right / mDisplayWidth + mLeftBound;
+			const auto ycoord = (-pos.y() + mDisplayHeight) * (mView.top - mView.bottom) / mDisplayHeight + mView.bottom;
+			return { xcoord, ycoord };
 		}
 
 		void PlotController::segmentEditorWorking(bool w)

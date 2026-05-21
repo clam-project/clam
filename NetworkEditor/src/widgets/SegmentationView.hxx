@@ -4,11 +4,11 @@
 
 #include "SegmentationDataSource.hxx"
 
-#include <QtGui/QLabel>
-#include <QtGui/QPainter>
+#include <QLabel>
+#include <QPainter>
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 
 class QDESIGNER_WIDGET_EXPORT SegmentationView : public QWidget
@@ -86,11 +86,7 @@ public:
 			if (segmentation.onsets()[i]>maxTime) continue;
 			if (segmentation.offsets()[i]<minTime) continue;
 			painter.setBrush(colorForLabel(segmentation.labels()[i]));
-#if QT_VERSION < 0x040400
-			painter.drawRect(segmentBoxes[i]);
-#else
 			painter.drawRoundedRect(segmentBoxes[i], margin, margin);
-#endif
 		}
 		painter.setPen(Qt::black);
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)

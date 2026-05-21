@@ -1,7 +1,9 @@
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QLayout>
+#include <QPushButton>
 #include <qlcdnumber.h>
-#include <qtooltip.h>
+#include <QToolTip>
+#include <QBoxLayout>
+#include <QHBoxLayout>
 #include <CLAM/Message.hxx>
 #include <CLAM/Navigator.hxx>
 
@@ -77,21 +79,21 @@ namespace CLAM
 			mFirst = new QPushButton(this);
 			mFirst->setFixedSize(25,25);
 			mFirst->setText("<<");
-			QToolTip::add(mFirst,"First");
+			mFirst->setToolTip("First");
 			mPrior = new QPushButton(this);
 			mPrior->setFixedSize(25,25);
 			mPrior->setAutoRepeat(true);
 			mPrior->setText("<");
-			QToolTip::add(mPrior,"Prior");
+			mPrior->setToolTip("Prior");
 			mNext = new QPushButton(this);
 			mNext->setFixedSize(25,25);
 			mNext->setAutoRepeat(true);
 			mNext->setText(">");
-			QToolTip::add(mNext,"Next");
+			mNext->setToolTip("Next");
 			mLast = new QPushButton(this);
 			mLast->setFixedSize(25,25);
 			mLast->setText(">>");
-			QToolTip::add(mLast,"Last");
+			mLast->setToolTip("Last");
 			mDisplay = new QLCDNumber(this);
 			mDisplay->setFixedHeight(25);
 			mDisplay->setMode(QLCDNumber::Dec);

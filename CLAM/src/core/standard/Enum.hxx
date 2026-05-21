@@ -99,8 +99,10 @@ public:
 
 // Attributes
 private:
-	const tEnumValue * mEnumValues;
-	tValue mValue;
+	// Default-initialise so the implicit move-assignment doesn't trip
+	// -Wmaybe-uninitialized when the source has never been valued.
+	const tEnumValue * mEnumValues = nullptr;
+	tValue mValue = 0;
 
 /** @name Construction/Destruction */
 //@{
@@ -165,10 +167,10 @@ public:
 	 * catchable exception if not.
 	 * @param v The new numeric value
 	 * @throw IllegalValue when the value is not valid for the enum
-	 * @todo Fill IllegalValue with useful information to recover 
+	 * @todo Fill IllegalValue with useful information to recover
 	 * instead a insightfull string.
 	 */
-	void SetValueSafely(const tValue v) throw (IllegalValue) {
+	void SetValueSafely(const tValue v) {
 		for (int i = 0; mEnumValues[i].name; i++) {
 			if (v==mEnumValues[i].value) {
 				mValue = v;
@@ -200,7 +202,7 @@ public:
 	 * @todo Fill IllegalValue with useful information to recover 
 	 * instead a insightfull string.
 	 */
-	void SetValueSafely(const std::string & s) throw (IllegalValue) 
+	void SetValueSafely(const std::string & s)
 	{
 		for (int i = 0; mEnumValues[i].name; i++) {
 			if (s.compare(mEnumValues[i].name)==0) {
@@ -223,7 +225,7 @@ public:
 	 * Returns the symbolic value.
 	 * @returns The symbolic value
 	 */
-	std::string GetString() const throw (IllegalValue)
+	std::string GetString() const
 	{
 		for (int i = 0; mEnumValues[i].name; i++) {
 			if (mValue==mEnumValues[i].value) 
@@ -233,17 +235,17 @@ public:
 		return "IllegalValue";
 	}
 
-	Enum & operator = (const tValue & v) throw (IllegalValue) {
+	Enum & operator = (const tValue & v) {
 		SetValue(v);
 		return *this;
 	}
 
-	Enum & operator = (const std::string & v) throw (IllegalValue) {
+	Enum & operator = (const std::string & v) {
 		SetValue(v);
 		return *this;
 	}
 
-	Enum & operator = (const Enum & v) throw (IllegalValue) {
+	Enum & operator = (const Enum & v) {
 		SetValue(tValue(v));
 		return *this;
 	}
@@ -311,7 +313,7 @@ public:
  * @param e The Enum
  * @returns The output stream
  */
-std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue);
+std::ostream & operator << (std::ostream & os, const Enum & e);
 
 /**
  * Loads a symbolic value from the input stream onto an Enum.
@@ -319,8 +321,7 @@ std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalVal
  * @param e The Enum
  * @returns The input stream
  */
-std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue);
+std::istream & operator >> (std::istream & os, Enum & e);
 
 }
 #endif // _ENUM_H_
-

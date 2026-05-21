@@ -18,8 +18,8 @@
 #ifndef _MIDIPianoWidget_
 #define _MIDIPianoWidget_
 
-#include <QtGui/QWidget>
-#include <QtGui/QPainter>
+#include <QWidget>
+#include <QPainter>
 #include <QtSvg/QSvgRenderer>
 
 #include <vector>

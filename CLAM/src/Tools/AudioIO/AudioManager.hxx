@@ -103,7 +103,7 @@ public:
 	AudioDevice* FindOrCreateDevice(const std::string& name);
 
 	/** This method starts the AudioManager object*/
-	void Start(void) throw(Err);
+	void Start(void);
 
 	/** Getter to obtain the sample rate of the AudioManager
 	 *  @return the sample rate

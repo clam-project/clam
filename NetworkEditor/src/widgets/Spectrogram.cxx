@@ -44,7 +44,7 @@ static CLAM::VM::FloatArrayDataSource & getDummySource()
 }
 
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
-	: QGLWidget(parent)
+	: QOpenGLWidget(parent)
 	, _nBins(0)
 	, _nFrames(256)
 	, _currentFrame(0)

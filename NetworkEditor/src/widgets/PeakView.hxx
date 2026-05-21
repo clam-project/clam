@@ -4,11 +4,11 @@
 
 #include "PeakDataSource.hxx"
 
-#include <QtGui/QLabel>
-#include <QtGui/QPainter>
+#include <QLabel>
+#include <QPainter>
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 
 class QDESIGNER_WIDGET_EXPORT PeakView : public QWidget
@@ -47,7 +47,6 @@ public:
 		//std::cout << min << ":" << max << std::endl;
 		QVector<QPointF> lines;
 		QPainter painter(this);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		const double spectralRange = 11025;
 		painter.setPen(QPen(_pointColor,4));
 		for (int i=0; i<size; i++)

@@ -53,8 +53,8 @@ namespace CLAM {
 		ALSAAudioDevice(const std::string& name,const std::string& device);
 		~ALSAAudioDevice();
 		
-		void Start(void) throw(Err);
-		void Stop(void) throw(Err);
+		void Start(void);
+		void Stop(void);
 		void Read(Audio& audio,const int channelID);
 		void Write(const Audio& audio,const int channelID);
 	};
@@ -100,7 +100,7 @@ namespace CLAM {
 
 	}
 
-	void ALSAAudioDevice::Start(void) throw(Err)
+	void ALSAAudioDevice::Start(void)
 	{
 		int i;
 		bool needs_start = false;
@@ -161,7 +161,7 @@ namespace CLAM {
 			mSndpcm->Start();
 	}
 
-	void ALSAAudioDevice::Stop(void) throw(Err)
+	void ALSAAudioDevice::Stop(void)
 	{
 		//printf("ALSAAudioDevice::Stop\n");
 		if (mSndpcm) {

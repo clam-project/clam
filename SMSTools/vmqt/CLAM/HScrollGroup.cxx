@@ -19,10 +19,13 @@
  *
  */
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QToolTip>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QHBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/ScrollBar.hxx>
 #include <CLAM/HScrollGroup.hxx>
@@ -34,7 +37,7 @@ namespace CLAM
 		HScrollGroup::HScrollGroup(QWidget* parent) 
 			: QWidget(parent)
 		{
-			setFocusPolicy(QWidget::NoFocus);
+			setFocusPolicy(Qt::NoFocus);
 			Init();
 		}
 		
@@ -48,10 +51,11 @@ namespace CLAM
 			f.setBold(true);
 
 			QHBoxLayout* layout = new QHBoxLayout(this);
-			mScrollBar = new ScrollBar(QScrollBar::Horizontal,this);
+			mScrollBar = new ScrollBar(Qt::Horizontal,this);
 			mScrollBar->setFixedHeight(mScrollBar->sizeHint().height());
 			mScrollBar->setRange(0,0);
-			mScrollBar->setSteps(20,100);
+			mScrollBar->setSingleStep(20);
+			mScrollBar->setPageStep(100);
 			layout->addWidget(mScrollBar,1);
 
 			mLabel = new QLabel(this);
@@ -59,26 +63,28 @@ namespace CLAM
 			mLabel->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
 			mLabel->setFont(f);
 			mLabel->setAlignment(Qt::AlignCenter);
-			QToolTip::add(mLabel,"Zoom Ratio");
+			mLabel->setToolTip("Zoom Ratio");
 			layout->addWidget(mLabel);
 
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-			mZIn->setFocusPolicy(QWidget::NoFocus);
-			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
-			QToolTip::add(mZIn,"Zoom In");
+			mZIn->setFocusPolicy(Qt::NoFocus);
+			mZIn->setIcon(QIcon(QPixmap((const char**)icon_zoomin)));
+			mZIn->setToolTip("Zoom In");
 			layout->addWidget(mZIn,0);
 
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-			mZOut->setFocusPolicy(QWidget::NoFocus);
-			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
-			QToolTip::add(mZOut,"Zoom Out");
+			mZOut->setFocusPolicy(Qt::NoFocus);
+			mZOut->setIcon(QIcon(QPixmap((const char**)icon_zoomout)));
+			mZOut->setToolTip("Zoom Out");
 			layout->addWidget(mZOut,0);
 
-			setPaletteBackgroundColor(mZIn->paletteBackgroundColor());
+			QPalette pal = palette();
+			pal.setColor(backgroundRole(), mZIn->palette().color(mZIn->backgroundRole()));
+			setPalette(pal);
 
 			// connections
 			connect(mZIn,SIGNAL(clicked()),this,SIGNAL(zoomIn()));
@@ -116,9 +122,9 @@ namespace CLAM
 
 		void HScrollGroup::setMaxScrollValue(int value)
 		{
-			if(value >= 0 && mScrollBar->maxValue() != value)
+			if(value >= 0 && mScrollBar->maximum() != value)
 			{
-				mScrollBar->setMaxValue(value);
+				mScrollBar->setMaximum(value);
 				emit maxScrollValue(value);
 			}
 		}
@@ -130,7 +136,7 @@ namespace CLAM
 
 		int HScrollGroup::GetMaxScrollValue() const
 		{
-			return mScrollBar->maxValue();
+			return mScrollBar->maximum();
 		}
 	}
 }

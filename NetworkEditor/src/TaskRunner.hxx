@@ -22,16 +22,16 @@
 #ifndef TaskRunner_hxx
 #define TaskRunner_hxx
 
-#include <QtGui/QWidget>
-#include <QtGui/QTextEdit>
+#include <QWidget>
+#include <QTextEdit>
 #include <QtCore/QProcess>
 //#include <QtCore/QTimer>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QDockWidget>
-#include <QtGui/QTextCursor>
-#include <QtGui/QStatusBar>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QPushButton>
+#include <QHBoxLayout>
+#include <QDockWidget>
+#include <QTextCursor>
+#include <QStatusBar>
+#include <QDialogButtonBox>
+#include <QPushButton>
 #include <iostream>
 
 

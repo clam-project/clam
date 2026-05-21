@@ -39,7 +39,7 @@ using namespace CLAM;
 * @param whichOne The position of the selected flag
 * @returns The symbolic name of the selected flag as stream
 */
-std::string FlagsBase::GetFlagString(unsigned int whichOne) const throw (IllegalValue) {
+std::string FlagsBase::GetFlagString(unsigned int whichOne) const {
 	for (unsigned int i = 0; mFlagValues[i].name; i++) {
 		if (whichOne==mFlagValues[i].value) 
 			return mFlagValues[i].name;
@@ -52,7 +52,7 @@ std::string FlagsBase::GetFlagString(unsigned int whichOne) const throw (Illegal
 * @param whichOne The string containing the simbolic name
 * @returns The symbolic name of the selected flag as stream
 */
-unsigned int FlagsBase::GetFlagPosition(const std::string & whichOne) const throw (IllegalValue) {
+unsigned int FlagsBase::GetFlagPosition(const std::string & whichOne) const {
 	for (int i = 0; mFlagValues[i].name; i++) {
 		if (whichOne==mFlagValues[i].name) 
 			return mFlagValues[i].value;
@@ -127,7 +127,7 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 			unsigned i = f.GetFlagPosition(flagName);
 			bs[i]=true;
 		}
-		catch (IllegalValue) {
+		catch (const IllegalValue&) {
 			delete [] bs;
 			throw IllegalValue(std::string("Invalid flag name: '")+
 				flagName+"'");
@@ -196,4 +196,3 @@ bool FlagsBase::CheckInvariant() {
 	}
 	return true;
 }
-

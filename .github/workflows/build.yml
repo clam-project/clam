@@ -1,0 +1,56 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ubuntu-build:
+    name: Ubuntu (Qt6 / C++17)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libxerces-c-dev \
+            libfftw3-dev \
+            libsndfile1-dev \
+            libvorbis-dev \
+            libmad0-dev \
+            libid3-3.8.3-dev \
+            lv2-dev \
+            libjack-jackd2-dev \
+            portaudio19-dev \
+            libasound2-dev \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev \
+            ladspa-sdk \
+            qt6-base-dev \
+            qt6-base-dev-tools \
+            libqt6opengl6-dev \
+            qt6-svg-dev \
+            qt6-tools-dev
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCLAM_BUILD_LIBRARIES=ON
+          -DCLAM_BUILD_GUI_APPS=ON
+          -DCLAM_BUILD_SMSTOOLS=ON
+
+      - name: Build
+        run: cmake --build build -j $(nproc)
+
+      - name: List built binaries
+        run: |
+          find build -maxdepth 4 -type f -executable \
+            \( -name NetworkEditor -o -name SMSTools -o -name SMSBatch -o -name SMSConsole \) -print

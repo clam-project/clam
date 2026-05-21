@@ -1,8 +1,9 @@
-#include <qlayout.h>
-#include <qframe.h>
-#include <qradiobutton.h>
-#include <qcombobox.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <CLAM/PaletteHelpers.hxx>
+#include <QFrame>
+#include <QRadioButton>
+#include <QComboBox>
+#include <QToolTip>
 #include <CLAM/MelodyPlayer.hxx>
 #include <CLAM/MIDIMelodyPlayer.hxx>
 #include <CLAM/MIDISettings.hxx>
@@ -183,14 +184,14 @@ namespace CLAM
 		{
 			QtPlayer::WindowModeCM();
 			QColor fgcolor(0,0,0);
-			mPlayAudio->setPaletteBackgroundColor(winBackground);
-			mPlayAudio->setPaletteForegroundColor(fgcolor);
-			mPlayMIDI->setPaletteBackgroundColor(winBackground);
-			mPlayMIDI->setPaletteForegroundColor(fgcolor);
-			mMIDIDevicesCB->setPaletteBackgroundColor(winBackground);
-			mMIDIDevicesCB->setPaletteForegroundColor(fgcolor);
-			mMIDIInstrumentsCB->setPaletteBackgroundColor(winBackground);
-			mMIDIInstrumentsCB->setPaletteForegroundColor(fgcolor);
+			CLAM::VM::setBgColor(mPlayAudio, winBackground);
+			CLAM::VM::setFgColor(mPlayAudio, fgcolor);
+			CLAM::VM::setBgColor(mPlayMIDI, winBackground);
+			CLAM::VM::setFgColor(mPlayMIDI, fgcolor);
+			CLAM::VM::setBgColor(mMIDIDevicesCB, winBackground);
+			CLAM::VM::setFgColor(mMIDIDevicesCB, fgcolor);
+			CLAM::VM::setBgColor(mMIDIInstrumentsCB, winBackground);
+			CLAM::VM::setFgColor(mMIDIInstrumentsCB, fgcolor);
 		}
 
 		void QtBPFPlayer::BlackBackgroundCM()
@@ -198,14 +199,14 @@ namespace CLAM
 			QtPlayer::BlackBackgroundCM();
 			QColor bkcolor(0,0,0);
 			QColor fgcolor(255,255,255);
-			mPlayAudio->setPaletteBackgroundColor(bkcolor);
-			mPlayAudio->setPaletteForegroundColor(fgcolor);
-			mPlayMIDI->setPaletteBackgroundColor(bkcolor);
-			mPlayMIDI->setPaletteForegroundColor(fgcolor);
-			mMIDIDevicesCB->setPaletteBackgroundColor(fgcolor);
-			mMIDIDevicesCB->setPaletteForegroundColor(bkcolor);
-			mMIDIInstrumentsCB->setPaletteBackgroundColor(fgcolor);
-			mMIDIInstrumentsCB->setPaletteForegroundColor(bkcolor);
+			CLAM::VM::setBgColor(mPlayAudio, bkcolor);
+			CLAM::VM::setFgColor(mPlayAudio, fgcolor);
+			CLAM::VM::setBgColor(mPlayMIDI, bkcolor);
+			CLAM::VM::setFgColor(mPlayMIDI, fgcolor);
+			CLAM::VM::setBgColor(mMIDIDevicesCB, fgcolor);
+			CLAM::VM::setFgColor(mMIDIDevicesCB, bkcolor);
+			CLAM::VM::setBgColor(mMIDIInstrumentsCB, fgcolor);
+			CLAM::VM::setFgColor(mMIDIInstrumentsCB, bkcolor);
 		}
 
 		void QtBPFPlayer::WhiteBackgroundCM()
@@ -213,14 +214,14 @@ namespace CLAM
 			QtPlayer::WhiteBackgroundCM();
 			QColor bkcolor(255,255,255);
 			QColor fgcolor(0,0,0);
-			mPlayAudio->setPaletteBackgroundColor(bkcolor);
-			mPlayAudio->setPaletteForegroundColor(fgcolor);
-			mPlayMIDI->setPaletteBackgroundColor(bkcolor);
-			mPlayMIDI->setPaletteForegroundColor(fgcolor);
-			mMIDIDevicesCB->setPaletteBackgroundColor(bkcolor);
-			mMIDIDevicesCB->setPaletteForegroundColor(fgcolor);
-			mMIDIInstrumentsCB->setPaletteBackgroundColor(bkcolor);
-			mMIDIInstrumentsCB->setPaletteForegroundColor(fgcolor);
+			CLAM::VM::setBgColor(mPlayAudio, bkcolor);
+			CLAM::VM::setFgColor(mPlayAudio, fgcolor);
+			CLAM::VM::setBgColor(mPlayMIDI, bkcolor);
+			CLAM::VM::setFgColor(mPlayMIDI, fgcolor);
+			CLAM::VM::setBgColor(mMIDIDevicesCB, bkcolor);
+			CLAM::VM::setFgColor(mMIDIDevicesCB, fgcolor);
+			CLAM::VM::setBgColor(mMIDIInstrumentsCB, bkcolor);
+			CLAM::VM::setFgColor(mMIDIInstrumentsCB, fgcolor);
 		}
 
 		void QtBPFPlayer::BuildMelodies()
@@ -229,7 +230,7 @@ namespace CLAM
 			this->setEnabled(false);
 
 			// informative tooltip
-			QToolTip::add(this,"Please wait: disabled while building a huge melody.");
+			this->setToolTip("Please wait: disabled while building a huge melody.");
 			
 			const BPF& currentBPF = mEnqueuedData.front().data;
 			const bool& mustDoMapping = mEnqueuedData.front().mapping;
@@ -309,7 +310,7 @@ namespace CLAM
 				mEnqueuedData.pop();
 			}
 			// remove informative tooltip
-			QToolTip::remove(this);
+			this->setToolTip(QString());
 
 			// enable widget when the melodies are fully loaded
 			this->setEnabled(true);
@@ -327,8 +328,8 @@ namespace CLAM
 			f.setStyleHint(QFont::Courier,QFont::NoAntialias);
 	    
 			QFontMetrics fm(f);
-			int audioLabelWidth = fm.width("Audio");
-			int midiLabelWidth = fm.width("MIDI");
+			int audioLabelWidth = fm.horizontalAdvance("Audio");
+			int midiLabelWidth = fm.horizontalAdvance("MIDI");
 
 			// play mode panel
 			radioPanel = new QFrame(this);
@@ -338,13 +339,13 @@ namespace CLAM
 			mPlayAudio->setFont(f);
 			mPlayAudio->setText("Audio");
 			mPlayAudio->setGeometry(0,1,audioLabelWidth+20,mPlayAudio->height());
-			QToolTip::add(mPlayAudio,"Play Audio");
+			mPlayAudio->setToolTip("Play Audio");
 
 			mPlayMIDI = new QRadioButton(radioPanel);
 			mPlayMIDI->setFont(f);
 			mPlayMIDI->setText("MIDI");
 			mPlayMIDI->setGeometry(mPlayAudio->width()+10,mPlayAudio->y(),midiLabelWidth+20,mPlayMIDI->height());
-			QToolTip::add(mPlayMIDI,"Play MIDI");
+			mPlayMIDI->setToolTip("Play MIDI");
 
 			radioPanel->setFixedSize(mPlayMIDI->x()+mPlayMIDI->width(),30);
 
@@ -357,12 +358,12 @@ namespace CLAM
 	    
 			mMIDIInstrumentsCB = new QComboBox(midiSettingsPanel);
 			mMIDIInstrumentsCB->setGeometry(0,5,85,20);
-			QToolTip::add(mMIDIInstrumentsCB,"MIDI Instruments");
+			mMIDIInstrumentsCB->setToolTip("MIDI Instruments");
 
 			mMIDIDevicesCB = new QComboBox(midiSettingsPanel);
 			mMIDIDevicesCB->setGeometry(mMIDIInstrumentsCB->width()+5,mMIDIInstrumentsCB->y(),
 										mMIDIInstrumentsCB->width(),mMIDIInstrumentsCB->height());
-			QToolTip::add(mMIDIDevicesCB,"MIDI Devices");
+			mMIDIDevicesCB->setToolTip("MIDI Devices");
 	    
 			midiSettingsPanel->setFixedSize(mMIDIDevicesCB->x()+mMIDIDevicesCB->width(),30);
 
@@ -389,10 +390,10 @@ namespace CLAM
 				std::vector<std::string>::iterator it = deviceNames.begin();
 				for(int index=0; it != deviceNames.end(); it++, index++)
 				{
-					mMIDIDevicesCB->insertItem(QString((*it).c_str()),index);
+					mMIDIDevicesCB->addItem(QString((*it).c_str()));
 				}
 				// set default MIDI device
-				((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIDevice(mMIDIDevices[mMIDIDevicesCB->currentItem()]);
+				((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIDevice(mMIDIDevices[mMIDIDevicesCB->currentIndex()]);
 			}
 
 			if(!mMIDIDevices.size())
@@ -416,10 +417,10 @@ namespace CLAM
 			std::vector<std::string>::iterator it = programNames.begin();
 			for(int index=0; it != programNames.end(); it++, index++)
 			{
-				mMIDIInstrumentsCB->insertItem(QString((*it).c_str()),index);
+				mMIDIInstrumentsCB->addItem(QString((*it).c_str()));
 			}
 			// set default MIDI program
-			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
+			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentIndex()]);
 		}
 
 		void QtBPFPlayer::thread_code()

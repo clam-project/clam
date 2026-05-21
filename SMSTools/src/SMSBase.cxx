@@ -570,7 +570,10 @@ in metadata extraction from an input sound.*/
 		(TData)2637.0, (TData)2793.8, (TData)2960.0, (TData)3136.0, (TData)3322.4, (TData)3520.0, (TData)3729.3, (TData)3951.1,
 		(TData)4186.0};
 
-	TData analysisFrameSize, smoothFiltSize, bandThreshold, minPeakDist, globalThreshold, difSize;
+	// These six belong to the "old segmentator" block below (assigned but
+	// never read by the current segmentator). Preserved as a reference for
+	// the previous tuning defaults.
+	[[maybe_unused]] TData analysisFrameSize, smoothFiltSize, bandThreshold, minPeakDist, globalThreshold, difSize;
 
 	Array<PitchNote> pitch(85); 
 	pitch.SetSize(85);
@@ -804,7 +807,7 @@ void SMSBase::ConfigureSegmentSMSMorph()
 					tmpMorph->Configure(tmpMorphConfig);
 					tmpMorph->SetSegmentToMorph(mMorphSegment);
 				}
-				catch (Err e)
+				catch (const Err& e)
 				{
 					e.Print();
 				}

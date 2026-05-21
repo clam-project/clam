@@ -3,7 +3,7 @@
 #include <typeinfo>
 #include <list>
 #include <CLAM/DynamicType.hxx>
-#include <QtGui/QLabel>
+#include <QLabel>
 
 /**
  * Abstract class for plugins to add new editable types to configuration dialogs

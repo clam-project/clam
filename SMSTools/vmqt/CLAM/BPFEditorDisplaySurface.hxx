@@ -1,9 +1,14 @@
 #ifndef __BPFEDITORDISPLAYSURFACE__
 #define __BPFEDITORDISPLAYSURFACE__
 
-#include <qgl.h>
-#include <qcursor.h>
+#include <QOpenGLWidget>
+#include <QCursor>
+#include <QEnterEvent>
+#include <utility>
+#include <CLAM/DataTypes.hxx>
 #include <CLAM/GLView.hxx>
+
+using QGLWidget = QOpenGLWidget;
 
 class QTimer;
 
@@ -35,14 +40,16 @@ namespace CLAM
 			void stopTimer();
 
 		protected:
-			void paintGL(); 
+			std::pair<TData, TData> eventToViewCoords(QMouseEvent* e) const;
+
+			void paintGL();
 			void mousePressEvent(QMouseEvent* e);
 			void mouseReleaseEvent(QMouseEvent* e);
 			void mouseMoveEvent(QMouseEvent* e);
 			void keyReleaseEvent(QKeyEvent * e);
 			void resizeEvent(QResizeEvent *e);
-			void enterEvent(QEvent *e); 
-			void leaveEvent(QEvent *e); 
+			void enterEvent(QEnterEvent *e);
+			void leaveEvent(QEvent *e);
 			void focusInEvent(QFocusEvent* e);
 			void focusOutEvent(QFocusEvent* e);
 

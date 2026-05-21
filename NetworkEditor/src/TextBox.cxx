@@ -12,10 +12,7 @@ TextBox::TextBox(NetworkCanvas * canvas)
 {
 	setFlag(QGraphicsItem::ItemIsMovable,true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
-#if QT_VERSION >= 0x040600
-	// This flag doesn't exists in Qt 4.5 but it is needed to be set in Qt 4.6 and above
 	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-#endif
 	_canvas=canvas;
 //	setTextInteractionFlags(Qt::TextEditable);
 }
@@ -60,7 +57,9 @@ QVariant TextBox::itemChange(GraphicsItemChange change, const QVariant & value)
 {
 	if (change==ItemPositionHasChanged)
 	{
-		QPointF newPos = value.toPointF();
+		// networkUpdateTextBox reads pos() directly; newPos was captured but
+		// never consumed (the value passed via itemChange should match pos()).
+		[[maybe_unused]] QPointF newPos = value.toPointF();
 		_canvas->networkUpdateTextBox(_modelText, toPlainText(), pos());
 	}
 	return QGraphicsTextItem::itemChange(change, value);

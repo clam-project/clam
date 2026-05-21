@@ -46,7 +46,10 @@ AudioBufferMixer::AudioBufferMixer()
 
 void AudioBufferMixer::CreatePortsAndControls()
 {
-	unsigned portSize = BackendBufferSize();
+	// TODO: ports are created with SetSize(1) below, so BackendBufferSize()
+	// was queried but never used. Marked [[maybe_unused]] so the dead query
+	// surfaces in code review without breaking -Wall builds.
+	[[maybe_unused]] unsigned portSize = BackendBufferSize();
 
 	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
 	{
@@ -65,10 +68,10 @@ void AudioBufferMixer::CreatePortsAndControls()
 	if (useConfigGains)
 	{
 		gainsArray=mConfig.GetDefaultGains();
-		unsigned numberofConfiguredGains=gainsArray.Size();
+		const auto numberofConfiguredGains = gainsArray.Size();
 		gainsArray.Resize(inPortsNumber);
 		gainsArray.SetSize(inPortsNumber);
-		for (unsigned i=numberofConfiguredGains;i<gainsArray.Size();i++)
+		for (auto i = numberofConfiguredGains; i < gainsArray.Size(); ++i)
 		{
 			gainsArray[i]=1;
 		}

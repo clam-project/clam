@@ -22,15 +22,15 @@
 #ifndef Spectrogram_hxx
 #define Spectrogram_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
 #undef GetClassName
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 #include "FloatArrayDataSource.hxx"
 
 namespace CLAM {
 namespace VM {
 
-class QDESIGNER_WIDGET_EXPORT Spectrogram : public QGLWidget
+class QDESIGNER_WIDGET_EXPORT Spectrogram : public QOpenGLWidget
 {
 	Q_OBJECT
 	Q_PROPERTY(bool smooth READ smooth WRITE setSmooth)

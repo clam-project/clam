@@ -4,7 +4,7 @@
 #endif
 
 #include "PrototypeLoader.hxx"
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <iostream>
 
 #ifdef USE_LADSPA

@@ -70,21 +70,62 @@ namespace CLAM
 #endif
 
 
+/**
+ * @def CLAM_DISABLE_TERMINATE_WARNING_BEGIN
+ * @def CLAM_DISABLE_TERMINATE_WARNING_END
+ *
+ * CLAM_ASSERT throws on failure, and CLAM intentionally invokes it from
+ * destructors so the application gets a chance to do an orderly shutdown.
+ * Under C++17 destructors are implicitly noexcept(true), so any throw
+ * inside one would call std::terminate; GCC and Clang then emit a static
+ * warning (-Wterminate) at every such call site. The warning is correct in
+ * the abstract but flags a design choice rather than a bug.
+ *
+ * These two macros wrap the throw site with a per-compiler diagnostic
+ * suppression so the warning is silenced where the throw actually appears,
+ * without changing behaviour and without touching every destructor.
+ */
+#if defined(__clang__)
+#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
+		_Pragma("clang diagnostic push") \
+		_Pragma("clang diagnostic ignored \"-Wterminate\"")
+#  define CLAM_DISABLE_TERMINATE_WARNING_END \
+		_Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
+		_Pragma("GCC diagnostic push") \
+		_Pragma("GCC diagnostic ignored \"-Wterminate\"")
+#  define CLAM_DISABLE_TERMINATE_WARNING_END \
+		_Pragma("GCC diagnostic pop")
+#elif defined(_MSC_VER)
+   /* MSVC has no -Wterminate equivalent; the wrapper is intentionally empty. */
+#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN
+#  define CLAM_DISABLE_TERMINATE_WARNING_END
+#else
+#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN
+#  define CLAM_DISABLE_TERMINATE_WARNING_END
+#endif
+
+
 /// Macro used when an assert fails
 #if defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_ABORT(message) \
 	do { \
+		CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
 		throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
+		CLAM_DISABLE_TERMINATE_WARNING_END \
 	} while(0)
 #else
 #define CLAM_ABORT(message) \
 	do { \
+		CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
 		if ( !CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled ) { \
 			throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
 		} else { \
 			CLAM::ExecuteAssertFailedHandler ( message, __FILE__, __LINE__); \
 			CLAM_BREAKPOINT; \
 		} \
+		CLAM_DISABLE_TERMINATE_WARNING_END \
 	} while(0)
 #endif
 

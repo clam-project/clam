@@ -1,22 +1,22 @@
 #ifndef RichTextEditor_hxx
 #define RichTextEditor_hxx
 
-#include <QtGui/QWidget>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QTextEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QAction>
-#include <QtGui/QActionGroup>
-#include <QtGui/QColorDialog>
-#include <QtGui/QComboBox>
-#include <QtGui/QFontComboBox>
-#include <QtGui/QTextCharFormat>
-#include <QtGui/QTextCursor>
-#include <QtGui/QFontDatabase>
-#include <QtGui/QApplication>
-#include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QTextEdit>
+#include <QPushButton>
+#include <QAction>
+#include <QActionGroup>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QFontComboBox>
+#include <QTextCharFormat>
+#include <QTextCursor>
+#include <QFontDatabase>
+#include <QApplication>
+#include <QToolBar>
+#include <QToolButton>
 
 
 class QFontComboBox;

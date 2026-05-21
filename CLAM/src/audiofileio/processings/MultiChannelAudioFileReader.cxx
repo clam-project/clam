@@ -23,6 +23,7 @@
 #include "AudioCodecs_Stream.hxx"
 #include "AudioOutPort.hxx"
 #include "ProcessingFactory.hxx"
+#include <cstddef>
 
 
 namespace CLAM
@@ -282,7 +283,7 @@ namespace Hidden
 				selectedChannels.GetPtr(),
 				selectedChannels.GetPtr()+selectedChannels.Size());
 
-			if ( mSelectedChannels.size() != mAudioFile.GetHeader().GetChannels() )
+			if ( mSelectedChannels.size() != static_cast<std::size_t>(mAudioFile.GetHeader().GetChannels()) )
 			{
 				return AddConfigErrorMessage(
 					"The configuration asked for more channels than the audio file has.");

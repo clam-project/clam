@@ -3,11 +3,11 @@
 
 #include "PeakDataSource.hxx"
 
-#include <QtGui/QLabel>
-#include <QtGui/QPainter>
+#include <QLabel>
+#include <QPainter>
 #include <cmath>
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT Tunner : public QWidget
 {
@@ -42,7 +42,6 @@ public:
 			0
 		};
 		QPainter painter(this);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		painter.translate(width()/2,height());
 		painter.save();
 		painter.rotate(-90);

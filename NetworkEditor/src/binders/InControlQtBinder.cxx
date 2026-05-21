@@ -191,7 +191,7 @@ public:
 static FloatInControlQtBinder floatBinder;
 
 #include <CLAM/ControlSource.hxx>
-#include <QtGui/QAbstractSlider>
+#include <QAbstractSlider>
 
 void ControlSourceSender::send(int value)
 {

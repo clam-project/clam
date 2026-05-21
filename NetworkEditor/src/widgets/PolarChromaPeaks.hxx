@@ -3,11 +3,11 @@
 
 #include "PeakDataSource.hxx"
 
-#include <QtGui/QLabel>
-#include <QtGui/QPainter>
+#include <QLabel>
+#include <QPainter>
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 
 class QDESIGNER_WIDGET_EXPORT PolarChromaPeaks : public QWidget
@@ -43,7 +43,6 @@ public:
 			"F#",
 		};
 		QPainter painter(this);
-		painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 		painter.translate(width()/2,height()/2);
 		for (int i=0; i<12; i++)
 		{

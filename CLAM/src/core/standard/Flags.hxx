@@ -66,14 +66,14 @@ public:
 	* @param whichOne The position of the selected flag
 	* @returns The symbolic name of the selected flag as stream
 	*/
-	std::string GetFlagString(unsigned int whichOne) const throw (IllegalValue);
+	std::string GetFlagString(unsigned int whichOne) const;
 
 	/**
 	* Retrieves the position of the named flag
 	* @param whichOne The string containing the simbolic name
 	* @returns The symbolic name of the selected flag as stream
 	*/
-	unsigned int GetFlagPosition(const std::string & whichOne) const throw (IllegalValue);
+	unsigned int GetFlagPosition(const std::string & whichOne) const;
 
 	/*
 	 * Stores component's subitems on the given Storage
@@ -353,4 +353,3 @@ std::ostream & operator << (std::ostream & os, const Flags<N> & f){
 }
 
 #endif//_Flags_hxx_
-

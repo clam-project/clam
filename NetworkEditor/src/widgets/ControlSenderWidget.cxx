@@ -1,9 +1,9 @@
 #include "ControlSenderWidget.hxx"
-#include <QtGui/QSlider>
-#include <QtGui/QDial>
-#include <QtGui/QLabel>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QHBoxLayout>
+#include <QSlider>
+#include <QDial>
+#include <QLabel>
+#include <QDoubleSpinBox>
+#include <QHBoxLayout>
 #include "QSynthKnob.hxx"
 #include "EmbededWidgets.hxx"
 
@@ -61,7 +61,7 @@ void ControlSenderWidget::init()
 		createSpinBox();
 		break;
 	}
-	layout()->setMargin(1);
+	layout()->setContentsMargins(1, 1, 1, 1);
 }
 
 void ControlSenderWidget::createDial()
@@ -157,4 +157,3 @@ inline double ControlSenderWidget::mapValue(double value)
 		return 0;
 	}
 }
-

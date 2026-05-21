@@ -26,8 +26,10 @@ namespace CLAM
 {
 
 namespace Hidden
-{	
-	static const char * metadata[] = {
+{
+	// Kept for the commented-out FactoryRegistrator below; preserved so the
+	// processing can be re-registered with one line.
+	[[maybe_unused]] static const char * metadata[] = {
 		"key", "SMSTimeStretch",
 		"category", "SMS Transformations",
 		"description", "SMSTimeStretch",
@@ -91,8 +93,9 @@ bool SMSTimeStretch::Do( const SpectralPeakArray& inPeaks,
 // bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 
 	
-	//FIXME
-	TData interpFactor; // = (mAnalysisTime-mLeftFrame.GetCenterTime()) / (mConfig.GetHopSize()/mConfig.GetSamplingRate());
+	//FIXME: interpFactor is declared for the commented-out interpolation
+	// branch below; left in place as a placeholder for the unfinished feature.
+	[[maybe_unused]] TData interpFactor; // = (mAnalysisTime-mLeftFrame.GetCenterTime()) / (mConfig.GetHopSize()/mConfig.GetSamplingRate());
 // 	out.SetCenterTime(mSynthesisTime);
 
 	mSynthesisTime += (TData)mConfig.GetHopSize() / mConfig.GetSamplingRate();

@@ -1,12 +1,17 @@
-#include <qlayout.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <QLayout>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QPushButton>
+#include <QToolTip>
+#include <QWhatsThis>
 #include "Qt_SMS_BPF_Editor.hxx"
 #include "Qt_SMS_BPF_Editor_Sync.hxx"
 #include "Qt_SMS_Morph_Control.hxx"
+#include <QHBoxLayout>
+#include <QBoxLayout>
+#include <QVBoxLayout>
+#include <QIcon>
+#include <QPixmap>
 
 namespace QtSMS
 {
@@ -441,26 +446,26 @@ namespace QtSMS
 
 		mFrameInterpSelector->setChecked(false);
 		mFrameInterpSelector->setText("Interpolate intermediate frames");
-		QToolTip::add(mFrameInterpSelector,"Enable for allow interpolation of frames " 
+		mFrameInterpSelector->setToolTip("Enable for allow interpolation of frames "
 					  "while morphing sounds of different lenghts");
 
-		mEnvelopeSelector->insertItem("Global morph factor vs. time",0);
-		mEnvelopeSelector->insertItem("Sinusoidal component amplitude hybridization",1);
-		mEnvelopeSelector->insertItem("Sinusoidal component frequency hybridization",2);
-		mEnvelopeSelector->insertItem("Residual component amplitude hybridization",3);
-		mEnvelopeSelector->insertItem("Pitch hybridization",4);
-		mEnvelopeSelector->insertItem("Time synchronization",5);
-		mEnvelopeSelector->insertItem("Sinusoidal spectral shape interpolation",6);
-		mEnvelopeSelector->insertItem("Sinusoidal spectral shape weight A",7);
-		mEnvelopeSelector->insertItem("Sinusoidal spectral shape weight B",8);
-		mEnvelopeSelector->insertItem("Residual spectral shape interpolation",9);
-		mEnvelopeSelector->insertItem("Residual spectral shape weight A",10);
-		mEnvelopeSelector->insertItem("Residual spectral shape weight B",11);
-		QToolTip::add(mEnvelopeSelector,"Sound Hybridization Controls");
+		mEnvelopeSelector->addItem("Global morph factor vs. time");
+		mEnvelopeSelector->addItem("Sinusoidal component amplitude hybridization");
+		mEnvelopeSelector->addItem("Sinusoidal component frequency hybridization");
+		mEnvelopeSelector->addItem("Residual component amplitude hybridization");
+		mEnvelopeSelector->addItem("Pitch hybridization");
+		mEnvelopeSelector->addItem("Time synchronization");
+		mEnvelopeSelector->addItem("Sinusoidal spectral shape interpolation");
+		mEnvelopeSelector->addItem("Sinusoidal spectral shape weight A");
+		mEnvelopeSelector->addItem("Sinusoidal spectral shape weight B");
+		mEnvelopeSelector->addItem("Residual spectral shape interpolation");
+		mEnvelopeSelector->addItem("Residual spectral shape weight A");
+		mEnvelopeSelector->addItem("Residual spectral shape weight B");
+		mEnvelopeSelector->setToolTip("Sound Hybridization Controls");
 
-		mWhatsThisButton->setPixmap(QPixmap("rc/whatsthis.xpm"));
+		mWhatsThisButton->setIcon(QIcon(QPixmap("rc/whatsthis.xpm")));
 		mWhatsThisButton->setFixedSize(25,25);
-		QToolTip::add(mWhatsThisButton,"What's this?");
+		mWhatsThisButton->setToolTip("What's this?");
 
 		QBoxLayout* innerLayout0 = new QHBoxLayout;
 		innerLayout0->addWidget(mEnvelopeSelector);

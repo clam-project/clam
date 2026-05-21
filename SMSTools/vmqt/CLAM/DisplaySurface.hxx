@@ -22,9 +22,12 @@
 #ifndef __DISPLAYSURFACE__
 #define __DISPLAYSURFACE__
 
-#include <qgl.h>
-#include <qcursor.h>
+#include <QOpenGLWidget>
+#include <QCursor>
+#include <QEnterEvent>
 #include <CLAM/GLView.hxx>
+
+using QGLWidget = QOpenGLWidget;
 
 #ifdef WIN32
 	#undef GetClassName
@@ -70,7 +73,7 @@ namespace CLAM
 			void mouseMoveEvent(QMouseEvent* e);
 			void resizeEvent(QResizeEvent *e);
 			void leaveEvent(QEvent* e);
-			void enterEvent(QEvent* e);
+			void enterEvent(QEnterEvent* e);
 			void mouseDoubleClickEvent(QMouseEvent* e);
 			void focusInEvent(QFocusEvent* e);
 			void focusOutEvent(QFocusEvent* e);

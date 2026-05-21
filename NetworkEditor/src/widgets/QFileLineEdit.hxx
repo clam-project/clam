@@ -22,10 +22,10 @@
 #ifndef QFileLineEdit_hxx
 #define QFileLineEdit_hxx
 
-#include <QtGui/QLineEdit>
-#include <QtGui/QFileDialog>
-#include <QtGui/QPushButton>
-#include <QtGui/QHBoxLayout>
+#include <QLineEdit>
+#include <QFileDialog>
+#include <QPushButton>
+#include <QHBoxLayout>
 
 class QFileLineEdit : public QWidget
 {

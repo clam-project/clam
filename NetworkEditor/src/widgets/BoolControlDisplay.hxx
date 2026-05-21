@@ -2,7 +2,7 @@
 #define BoolControlDisplay_hxx
 
 #include <CLAM/Processing.hxx>
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <vector>
 
 class QLabel;

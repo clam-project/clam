@@ -73,7 +73,7 @@ class MIDIOutControl:public MIDIOut
 		const char * GetClassName() const {return "MIDIOutControl";}
 
 		bool ConcreteConfigure(const ProcessingConfig& c)
-			throw(ErrProcessingObj);
+;
 };
 
 } // namespace CLAM

@@ -51,12 +51,12 @@ namespace CLAM {
 
 		~PortMIDIDevice();
 
-		void ConcreteStart(void) throw(Err);
-		void ConcreteStop(void) throw(Err);
-		void Read(void) throw(Err);
-		void Write(unsigned char* msg,int size) throw(Err);
-		void OpenInput(int dev) throw(Err);
-		void OpenOutput(int dev) throw(Err);
+		void ConcreteStart(void);
+		void ConcreteStop(void);
+		void Read(void);
+		void Write(unsigned char* msg,int size);
+		void OpenInput(int dev);
+		void OpenOutput(int dev);
 	};
 
 
@@ -69,7 +69,7 @@ namespace CLAM {
 		mHandleOut = NULL;
 	}
 
-	void PortMIDIDevice::OpenInput(int dev) throw(Err)
+	void PortMIDIDevice::OpenInput(int dev)
 	{
 		PmError err = Pm_OpenInput( &mHandleIn,  /** data stream */
 									dev,                       /** Input device */
@@ -86,7 +86,7 @@ namespace CLAM {
 		}
 	}
 
-	void PortMIDIDevice::OpenOutput(int dev) throw(Err)
+	void PortMIDIDevice::OpenOutput(int dev)
 	{
 		PmError err = Pm_OpenOutput(&mHandleOut,
 									dev,
@@ -103,7 +103,7 @@ namespace CLAM {
 		}
 	}
 
- 	void PortMIDIDevice::ConcreteStart(void) throw(Err)
+	void PortMIDIDevice::ConcreteStart(void)
 	{
 		int dev;
 
@@ -162,7 +162,7 @@ namespace CLAM {
 		}
 	}
 
-	void PortMIDIDevice::ConcreteStop(void) throw(Err)
+	void PortMIDIDevice::ConcreteStop(void)
 	{
 
 		if ( mHandleIn )
@@ -179,7 +179,7 @@ namespace CLAM {
 
 	}
 
-	void PortMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
+	void PortMIDIDevice::Write(unsigned char* msg,int size)
 	{
 		int m = msg[0]&0xff;
 
@@ -205,7 +205,7 @@ namespace CLAM {
 		}
 	}
 
-	void PortMIDIDevice::Read(void) throw(Err)
+	void PortMIDIDevice::Read(void)
 	{
 		PmEvent buffer; /** one message at a time */
 		unsigned char status, data1, data2;
@@ -298,5 +298,4 @@ public:
 }
 
 #endif
-
 

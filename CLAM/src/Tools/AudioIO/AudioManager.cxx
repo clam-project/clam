@@ -67,7 +67,7 @@ AudioDevice* AudioManager::FindDevice(const std::string& name)
 	return 0;
 }
 
-void AudioManager::Start(void) throw(Err)
+void AudioManager::Start(void)
 {
 	unsigned int i;
 	for (i=0;i<mDevices.size();i++)

@@ -69,7 +69,7 @@ namespace CLAM {
 		mObjects.remove(&obj);
 	}
 
-	void ProcessingComposite::Insert(Processing& obj) throw(ErrProcessingObj)
+	void ProcessingComposite::Insert(Processing& obj)
 	{
 		iterator it;
 		for (it=mObjects.begin(); it!=mObjects.end(); it++)

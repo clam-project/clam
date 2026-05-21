@@ -1,7 +1,7 @@
 #ifndef __SMSCONFIGURATOR__
 #define __SMSCONFIGURATOR__
 
-#include <qobject.h>
+#include <QObject>
 #include <CLAM/Factory.hxx>
 
 class QWidget;

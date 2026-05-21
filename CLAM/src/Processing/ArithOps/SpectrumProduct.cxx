@@ -103,9 +103,9 @@ namespace Hidden
 	bool SpectrumProduct::Do()
 	{
 		const Spectrum& in1 = mInput1.GetData();
-		const Spectrum& in2 = mInput2.GetData();
+		[[maybe_unused]] const Spectrum& in2 = mInput2.GetData();
 		Spectrum& out = mOutput.GetData();
-		
+
 		if (in1.HasComplexArray())
 			std::cout << "in1.HasComplexArray()" << std::endl;
 

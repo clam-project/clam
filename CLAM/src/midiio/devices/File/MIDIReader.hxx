@@ -106,7 +106,7 @@ namespace MIDI
 		{
 		public:
 			const char* mStr;
-			Error(const char* str):mStr(str) { printf(str); }
+			Error(const char* str) : mStr(str) { printf("%s", str); }
 		};
 
 		void Read(Song& s);

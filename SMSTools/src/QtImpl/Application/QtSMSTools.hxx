@@ -2,8 +2,9 @@
 #define __QTSMSTOOLS__
 
 #include <CLAM/Thread.hxx>
-#include "SMSToolsBase.h"
+#include "ui_QtSMSTools.h"
 #include <CLAM/Slotv0.hxx>
+#include <QMainWindow>
 
 class QLabel;
 
@@ -11,7 +12,7 @@ namespace QtSMS
 {
 	class Engine;
 
-	class QtSMSTools : public SMSToolsBase
+	class QtSMSTools : public QMainWindow, public Ui::QtSMSTools
 	{
 		Q_OBJECT
 	public:

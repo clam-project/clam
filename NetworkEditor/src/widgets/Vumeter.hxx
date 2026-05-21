@@ -5,7 +5,7 @@
 #include "Oscilloscope.hxx"
 
 #include <CLAM/DataTypes.hxx>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT Vumeter : public QWidget
 {

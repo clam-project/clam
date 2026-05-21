@@ -22,7 +22,7 @@
 #ifndef __HSCROLLGROUP__
 #define __HSCROLLGROUP__
 
-#include <qwidget.h>
+#include <QWidget>
 
 class QLabel;
 class QPushButton;

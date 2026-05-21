@@ -1,11 +1,13 @@
-#include <QtGui/QPushButton>
-#include <QtGui/QSlider>
-#include <QtGui/QPixmap>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
+#include <QPushButton>
+#include <QSlider>
+#include <QPixmap>
+#include <QWheelEvent>
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QtCore/QPoint>
 #include <QtCore/QTimer>
+#include <QtCore/QtGlobal>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -258,9 +260,10 @@ public:
 	{
 		if (event->button() == Qt::LeftButton)
 		{
+			const QPoint position = event->position().toPoint();
 			_dragging=true;
-			_lastX = event->x();
-			_lastY = event->y();
+			_lastX = position.x();
+			_lastY = position.y();
 		}
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
@@ -272,14 +275,17 @@ public:
 	{
 		if (!_dragging) return;
 
-		int newValue = value() - ((event->y() - _lastY) + (_lastX - event->x() ));
-		_lastX = event->x();
-		_lastY = event->y();
+		const QPoint position = event->position().toPoint();
+		int newValue = value() - ((position.y() - _lastY) + (_lastX - position.x() ));
+		_lastX = position.x();
+		_lastY = position.y();
 		setValue(newValue);
 	}
 	void wheelEvent(QWheelEvent * event)
 	{
-		if (event->delta() < 0 )
+		const int delta =
+			event->angleDelta().y();
+		if (delta < 0 )
 			setValue(value() - pageStep());
 		else
 			setValue(value() + pageStep());
@@ -324,7 +330,5 @@ public:
  * @todo LED
  * 
  */
-
-
 
 

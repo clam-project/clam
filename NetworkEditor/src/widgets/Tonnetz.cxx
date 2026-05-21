@@ -20,7 +20,8 @@
  */
 
 #include "Tonnetz.hxx"
-#include <QtGui/QPixmap>
+#include <QtCore/QtGlobal>
+#include <QPixmap>
 #include <QtCore/QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
@@ -48,7 +49,7 @@ CLAM::VM::Tonnetz::~Tonnetz()
 {
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
-	QGLWidget(parent)
+	QOpenGLWidget(parent)
 {
 	_data = 0;
 	_dataSource = 0;
@@ -154,7 +155,9 @@ void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), font());
+	(void)posx;
+	(void)posy;
+	(void)bin;
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {

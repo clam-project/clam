@@ -30,9 +30,30 @@
 #endif
 #include <pthread.h>
 
-// KLUDGE: C11 defines TIME_UTC as macro in time.h
+// KLUDGE: Modern C libraries define some TIME_* names as macros.
 #ifdef TIME_UTC
 #undef TIME_UTC
+#endif
+#ifdef TIME_TAI
+#undef TIME_TAI
+#endif
+#ifdef TIME_MONOTONIC
+#undef TIME_MONOTONIC
+#endif
+#ifdef TIME_PROCESS
+#undef TIME_PROCESS
+#endif
+#ifdef TIME_THREAD
+#undef TIME_THREAD
+#endif
+#ifdef TIME_LOCAL
+#undef TIME_LOCAL
+#endif
+#ifdef TIME_SYNC
+#undef TIME_SYNC
+#endif
+#ifdef TIME_RESOLUTION
+#undef TIME_RESOLUTION
 #endif
 
 namespace CLAM
@@ -161,4 +182,3 @@ namespace CLAM
 } // end of namespace CLAM
 
 #endif // XTime.hxx
-
