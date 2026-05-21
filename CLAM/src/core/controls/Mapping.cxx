@@ -28,7 +28,7 @@ namespace CLAM {
 		static MappingFactories sFactories;
 		return sFactories;
 	}
-	Mapping::~Mapping() {}
+	Mapping::~Mapping() = default;
 
 	Mapping* Mapping::Create(const std::string& name)
 	{

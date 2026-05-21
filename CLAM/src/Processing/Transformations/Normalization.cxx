@@ -52,7 +52,7 @@ namespace CLAM
 		Configure(c);
 	}
 
-	Normalization::~Normalization() {}
+	Normalization::~Normalization() = default;
 
 
 	bool Normalization::ConcreteConfigure(const ProcessingConfig& c)

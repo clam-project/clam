@@ -25,7 +25,7 @@ namespace QtSMS
 		connect(mBrowseMorphSoundFile,    &QPushButton::clicked, this, &SMSConfigDlg::browseMorphSoundFile);
 	}
 
-	SMSConfigDlg::~SMSConfigDlg(){}
+	SMSConfigDlg::~SMSConfigDlg() = default;
 
 	void SMSConfigDlg::Apply()
 	{
