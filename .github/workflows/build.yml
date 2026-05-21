@@ -20,6 +20,7 @@ jobs:
             cmake \
             ninja-build \
             pkg-config \
+            libcppunit-dev \
             libxerces-c-dev \
             libfftw3-dev \
             libsndfile1-dev \
