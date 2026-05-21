@@ -146,7 +146,7 @@ namespace CLAM
 	Processing::Processing() 
 		: mpParent(0)
 		, _network(0)
-		, _execState(Unconfigured)
+		, _execState(ExecState::Unconfigured)
 	{
 	}
 
@@ -156,7 +156,7 @@ namespace CLAM
 		_configErrorMessage = "";
 //		if (!mpParent) //TODO remove
 //			TopLevelProcessing::GetInstance().Insert(*this);
-		_execState = Unconfigured;
+		_execState = ExecState::Unconfigured;
 		try
 		{
 			if (!ConcreteConfigure(c)) 
@@ -174,7 +174,7 @@ namespace CLAM
 			_configErrorMessage += "Configuration failed.";
 			return false;
 		}
-		_execState = Ready;
+		_execState = ExecState::Ready;
 		_configErrorMessage="Ready to be started";
 		return true;
 	}
@@ -191,7 +191,7 @@ namespace CLAM
 		CLAM_ASSERT(IsConfigured(), "Starting an unconfigured processing");
 		try {
 			if (ConcreteStart())
-				_execState = Running;
+				_execState = ExecState::Running;
 		}
 		catch (ErrProcessingObj &e) {
 			_configErrorMessage += "Exception thrown while starting.\n";
@@ -204,7 +204,7 @@ namespace CLAM
 		CLAM_ASSERT(IsRunning(), "Stop(): Object not running." );
 		try {
 			if(ConcreteStop())
-				_execState = Ready; 
+				_execState = ExecState::Ready;
 		}
 		catch (ErrProcessingObj &e) {
 			_configErrorMessage += "Exception thrown while stoping.\n";
@@ -300,11 +300,11 @@ namespace CLAM
 	{
 		switch (_execState)
 		{
-			case Unconfigured:
+			case ExecState::Unconfigured:
 				return "Unconfigured";
-			case Ready:
+			case ExecState::Ready:
 				return "Ready";
-			case Running:
+			case ExecState::Running:
 				return "Running";
 		}
 		CLAM_ASSERT(false, "Unknown processing exec state found");
