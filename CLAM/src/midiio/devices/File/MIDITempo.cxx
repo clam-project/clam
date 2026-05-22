@@ -88,8 +88,6 @@ namespace MIDI
 				return (Milliseconds)((double)t*480.0/(double)mSong->GetTicksPerQ());
 			}
 
-			int i = 0;
-
 			/* move the iterator to the next tempo event */
 			while (mIterator!=mTrack->End())
 			{
@@ -147,7 +145,6 @@ namespace MIDI
 					prevIterator = mIterator;
 				}
 				mIterator++;
-				i++;
 			}
 
 			/* move one back, to the event before or at Ticks t */

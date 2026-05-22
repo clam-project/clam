@@ -81,7 +81,7 @@ namespace CLAM
 
 					outcode outcodei = in_out_test( f_lo, f_hi, pi->mFreq );
 						
-					while ( (pi!=ei) && ( !outcodei &0x01 ) )
+					while ( (pi!=ei) && ( outcodei == Inside ) )
 					{
 						last_in = pi;
 						pi++;

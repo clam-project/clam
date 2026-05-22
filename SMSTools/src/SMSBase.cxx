@@ -586,15 +586,12 @@ in metadata extraction from an input sound.*/
 	}
 	
 	
-	TData ePercentil, eThr, fPercentil, fThr, minLength;
-	bool useDefault=true;
-	if(useDefault) {
-		ePercentil = 50;
-		eThr = TData(0.0016);//0.0032;
-		fPercentil = 3;
-		fThr = 0;
-		minLength = 2;
-	}
+	TData ePercentil = 50;
+	TData eThr = TData(0.0016);//0.0032;
+	TData fPercentil = 3;
+	TData fThr = 0;
+	TData minLength = 2;
+	const bool useDefault=true;
 /*old segmentator*/
 	if(useDefault) {
 		// Default Parameters

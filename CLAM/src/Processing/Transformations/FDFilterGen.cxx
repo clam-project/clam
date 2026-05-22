@@ -191,7 +191,7 @@ namespace CLAM {
 				
 				TData tmpValue = bpf.GetValueFromIndex(i);
 						
-				tmpValue = (tmpValue==0.0001) ? 0 : CLAM_pow(10.0,tmpValue/20.0); 
+				tmpValue = (tmpValue==TData(0.0001)) ? 0 : CLAM_pow(10.0,tmpValue/20.0);
 				bpf.SetValue(i, tmpValue);
 			}
 			out.SetScale(EScale(EScale::eLinear));
