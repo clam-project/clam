@@ -33,7 +33,6 @@
 
 using std::accumulate;
 using std::inner_product;
-using std::mem_fun;
 
 
 /** 

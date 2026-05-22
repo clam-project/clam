@@ -38,30 +38,29 @@ namespace CLAM
 * get an warning message when compiling.
 */
 
-// Microsoft VisualC++ and ancestror MSC
-#ifdef _MSC_VER
-#define CLAM_BREAKPOINT {__asm {int 3}}
-	
-// MetroWorks Code Warrior
-#elif defined (__MWERKS__)
-#define CLAM_BREAKPOINT {_asm {int 3}}
+// MSVC
+#if defined(_MSC_VER)
+#  include <intrin.h>
+#  define CLAM_BREAKPOINT __debugbreak()
 
-// GNU GCC
-#elif defined (__GNUC__) && (defined  (__i386__) || defined(__x86_64__))
-#define CLAM_BREAKPOINT {__asm__ (" int $3 "); }
+// Clang (covers macOS x86_64 and arm64, Linux/clang, FreeBSD/clang, etc.)
+#elif defined(__has_builtin) && __has_builtin(__builtin_debugtrap)
+#  define CLAM_BREAKPOINT __builtin_debugtrap()
 
-/* g++ on powerpc linux */
-#elif defined (__GNUC__) && defined  (__powerpc__)
-#define CLAM_BREAKPOINT {__asm__ (" .long 0x7d821008 "); }
+// GCC on x86
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#  define CLAM_BREAKPOINT do { __asm__("int $3"); } while (0)
 
-/* g++ on powerpc macosx */ 
-#elif defined (__GNUC__) && defined  (__POWERPC__)
-#define CLAM_BREAKPOINT {__asm__ (" .long 0x7d821008 "); }
+// GCC on PowerPC (Linux and macOS spellings)
+#elif defined(__GNUC__) && (defined(__powerpc__) || defined(__POWERPC__))
+#  define CLAM_BREAKPOINT do { __asm__(" .long 0x7d821008 "); } while (0)
 
-// Insert your compiler here
+// Last-resort fallback: trap if we have it, else nothing. No #warning --
+// it gets echoed by every translation unit that pulls in this header.
+#elif defined(__GNUC__)
+#  define CLAM_BREAKPOINT __builtin_trap()
 #else
-#warning Breakpoint code unknown for the platform. You can add it defining the CLAM_BREAKPOINT macro at file Assert.hxx.
-#define CLAM_BREAKPOINT {}
+#  define CLAM_BREAKPOINT do {} while (0)
 #endif
 
 
@@ -85,22 +84,18 @@ namespace CLAM
  * suppression so the warning is silenced where the throw actually appears,
  * without changing behaviour and without touching every destructor.
  */
-#if defined(__clang__)
-#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
-		_Pragma("clang diagnostic push") \
-		_Pragma("clang diagnostic ignored \"-Wterminate\"")
-#  define CLAM_DISABLE_TERMINATE_WARNING_END \
-		_Pragma("clang diagnostic pop")
-#elif defined(__GNUC__)
+/* -Wterminate is GCC-only. clang has no such warning, and complains
+ * with -Wunknown-warning-option if asked to ignore it. MSVC has no
+ * equivalent either. Only emit the pragma for real GCC. Note that
+ * clang also defines __GNUC__, so the !defined(__clang__) guard is
+ * required.
+ */
+#if defined(__GNUC__) && !defined(__clang__)
 #  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
 		_Pragma("GCC diagnostic push") \
 		_Pragma("GCC diagnostic ignored \"-Wterminate\"")
 #  define CLAM_DISABLE_TERMINATE_WARNING_END \
 		_Pragma("GCC diagnostic pop")
-#elif defined(_MSC_VER)
-   /* MSVC has no -Wterminate equivalent; the wrapper is intentionally empty. */
-#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN
-#  define CLAM_DISABLE_TERMINATE_WARNING_END
 #else
 #  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN
 #  define CLAM_DISABLE_TERMINATE_WARNING_END
@@ -258,8 +253,13 @@ public:
 	/** this bool is used for automatic-tesing CLAM asserts.
 	 * by default is defined to true. But can be set to false where we
 	 * want to test that a CLAM_ASSERT has occurred.
+	 *
+	 * static inline (C++17) so every TU that expands the CLAM_ASSERT
+	 * macro gets its own definition, without requiring DLL export of a
+	 * static data member (which CMake's WINDOWS_EXPORT_ALL_SYMBOLS does
+	 * not handle).
 	 */
-	static bool breakpointInCLAMAssertEnabled;
+	static inline bool breakpointInCLAMAssertEnabled = true;
 
 	ErrAssertionFailed(const char* message, const char* filename, int linenumber);
 	virtual ~ErrAssertionFailed() noexcept { }

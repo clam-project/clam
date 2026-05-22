@@ -26,7 +26,10 @@
 #  include "OggVorbisCodec.hxx"
 #endif
 
-#if USE_MAD == 1
+// MpegCodec also depends on id3lib (its .cxx #errors out without USE_ID3);
+// requiring both keeps AudioFile dispatch consistent with what was actually
+// compiled into the audioio library.
+#if USE_MAD == 1 && USE_ID3 == 1
 #  include "MpegCodec.hxx"
 #endif
 
@@ -84,7 +87,7 @@ namespace CLAM
 			mCodec = EAudioFileCodec::ePCM;
 			mActiveCodec = &AudioCodecs::PCMCodec::Instantiate();
 		}
-#if USE_MAD == 1
+#if USE_MAD == 1 && USE_ID3 == 1
 		else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( location ) )
 		{
 			mCodec = EAudioFileCodec::eMpeg;

@@ -148,7 +148,7 @@ namespace
 
 	void test_condition_notify_all()
 	{
-		const int nthreads = 5;
+		constexpr int nthreads = 5;
 		TestCondition test_cond;
 		std::vector<std::thread> threads;
 
@@ -157,7 +157,7 @@ namespace
 
 		{
 			std::unique_lock<std::mutex> lock(test_cond.mutex);
-			test_cond.ready_condition.wait(lock, [&test_cond] { return test_cond.waiting == nthreads; });
+			test_cond.ready_condition.wait(lock, [&test_cond, n=nthreads] { return test_cond.waiting == n; });
 			test_cond.notified = true;
 		}
 		test_cond.condition.notify_all();

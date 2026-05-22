@@ -184,7 +184,7 @@ public: \
 #define __COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 private: \
 /** This declaration to detect compile-time-err of repeated attribute IDs(num), without having to relay in templates*/\
-	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
+	[[maybe_unused]] struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\

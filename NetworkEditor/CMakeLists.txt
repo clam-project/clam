@@ -11,6 +11,15 @@ clam_generate_version_sources(NETWORKEDITOR_VERSION_SOURCE NETWORKEDITOR_VERSION
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Xml Svg SvgWidgets OpenGL OpenGLWidgets PrintSupport)
+if(WIN32)
+	# Qt6::OpenGL ships Qt's GL helper classes but does not transitively pull
+	# opengl32.lib on Windows; raw glBegin/glEnd/etc. (Spectrogram, Tonnetz,
+	# KeySpace) come up unresolved at link time. Linux libGL and the macOS
+	# OpenGL framework are picked up via the toolchain already. The
+	# generator-expression entry below pairs OpenGL::GL with Qt6::OpenGL so
+	# the two are visibly coupled: drop Qt6::OpenGL and OpenGL::GL goes too.
+	find_package(OpenGL REQUIRED)
+endif()
 set(CLAM_QT_LIBRARIES
 	Qt6::Core
 	Qt6::Gui
@@ -18,7 +27,7 @@ set(CLAM_QT_LIBRARIES
 	Qt6::Xml
 	Qt6::Svg
 	Qt6::SvgWidgets
-	Qt6::OpenGL
+	Qt6::OpenGL $<$<PLATFORM_ID:Windows>:OpenGL::GL>
 	Qt6::OpenGLWidgets
 	Qt6::PrintSupport
 )
@@ -49,7 +58,18 @@ foreach(_dir IN LISTS CLAM_QTMONITOR_DIRS)
 	list(APPEND CLAM_QTMONITOR_HEADERS ${_headers})
 endforeach()
 
-add_library(clam_qtmonitors
+# On Windows, MSBuild compiles AutoRCC's qrc_images.cpp in parallel with
+# the WINDOWS_EXPORT_ALL_SYMBOLS "Auto build dll exports" step that wants
+# to read its .obj, and the two race ("Couldn't open file qrc_images.obj").
+# clam_qtmonitors is internal to NetworkEditor.exe -- making it STATIC
+# side-steps the race entirely (no DLL -> no auto-export). Linux and
+# macOS keep the BUILD_SHARED_LIBS default.
+if(WIN32)
+	set(_clam_qtmonitors_libtype STATIC)
+else()
+	set(_clam_qtmonitors_libtype)
+endif()
+add_library(clam_qtmonitors ${_clam_qtmonitors_libtype}
 	${CLAM_QTMONITOR_SOURCES}
 	${CLAM_QTMONITOR_HEADERS}
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/images.qrc"

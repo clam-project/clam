@@ -35,15 +35,6 @@ namespace CLAM
 		static ProcessingDataPlugin::Registrator<Spectrum> dataRegistrator("yellowgreen");
 	}
 }
-Flags<4>::tFlagValue SpecTypeFlags::sFlagValues[] = {
- 	{SpecTypeFlags::eComplex, "Complex"},
- 	{SpecTypeFlags::ePolar, "Polar"},
- 	{SpecTypeFlags::eMagPhase, "MagPhase"},
- 	{SpecTypeFlags::eMagPhaseBPF, "MagPhaseBPF"},
- 	{0,nullptr}
-}; 
-
-
 ///////////////////////////////////////////////////////
 //
 // SpectrumConfig

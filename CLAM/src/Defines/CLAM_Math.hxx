@@ -369,7 +369,11 @@ inline float CLAM_exp(float x)
 	} // namespace std
 #endif // MSVC++ 6
 
-#if defined _MSC_VER // MSVC++7
+// MSVC < 2015 (Visual C++ 14, _MSC_VER < 1900) didn't ship std::isnan /
+// std::isinf in <cmath>. CLAM added shims in namespace std. Modern MSVC
+// provides them properly, and re-defining them in namespace std now
+// produces 'symbol cannot be defined within namespace std' errors.
+#if defined(_MSC_VER) && _MSC_VER < 1900
 	namespace std
 	{
 		template <typename T>
@@ -383,16 +387,19 @@ inline float CLAM_exp(float x)
 			return _isnan(data) == 1;
 		}
 	}
-#endif // MSVC++ 7
+#endif
 
-#ifndef __USE_ISOC99
-#ifndef __APPLE__
+// Same story for round(): C++11 added std::round. CLAM's free-function
+// fallback now clashes with the standard one on modern MSVC. Keep only
+// for compilers that genuinely lack it (pre-C99 C runtimes and pre-2015
+// MSVC); otherwise the standard library provides it.
+#if !defined(__USE_ISOC99) && !defined(__APPLE__) && \
+    !(defined(_MSC_VER) && _MSC_VER >= 1900)
 inline double  round(double _X)
 	{return (floor(_X+0.5)); }
 inline float  round(float _X)
 	{return (floorf(_X+0.5f)); }
-#endif // __APPLE__
-#endif // __USE_ISOC99
+#endif
 
 
 /** Fast "pow" for converting a logarithmic value into linear value ( assumes a log

@@ -22,7 +22,7 @@
 #ifndef __AUDIOPLAYER__
 #define __AUDIOPLAYER__
 
-#include <pthread.h>
+#include <thread>
 
 #include "DataTypes.hxx"
 #include "Array.hxx"
@@ -37,14 +37,13 @@ namespace CLAM
 	{
 		Audio* mAudioReference;
 		SigSlot::Signalv0 mRequestStop;
-		pthread_t mThread;
+		std::thread mThread;
 		bool mCancel;
 		static AudioPlayer* sCurrentPlayer;
 		TTime  mT0;
 
-		void PlayingThreadSafe(  );
-		static void* sPlayingThreadSafe( void* thisobject );
-		
+		void PlayingThreadSafe();
+
 	public:
 		AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 );
 		virtual ~AudioPlayer();

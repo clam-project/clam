@@ -42,8 +42,6 @@ namespace CLAM
 struct SpecTypeFlags : public Flags<4>
 {
 public:
-	static tFlagValue sFlagValues[];
-	static tValue sDefault;
 	virtual Component * Species() const {
 		return new SpecTypeFlags();
 	}
@@ -52,6 +50,16 @@ public:
 		ePolar=1,
 		eMagPhase=2,
 		eMagPhaseBPF=3
+	};
+	// C++17 inline static so the table is provided in every TU that needs
+	// it, without requiring DLL export of a static data member (which
+	// CMake's WINDOWS_EXPORT_ALL_SYMBOLS does not handle).
+	static inline tFlagValue sFlagValues[] = {
+		{eComplex,     "Complex"},
+		{ePolar,       "Polar"},
+		{eMagPhase,    "MagPhase"},
+		{eMagPhaseBPF, "MagPhaseBPF"},
+		{0, nullptr}
 	};
 // Constructors
 	SpecTypeFlags () :

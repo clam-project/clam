@@ -17,9 +17,6 @@ public:
 	class EControlRepresentation : public Enum
 	{
 	public:
-
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
 		EControlRepresentation() : Enum(sEnumValues, sDefault) {}
 		EControlRepresentation(tValue v) : Enum(sEnumValues, v) {};
 		EControlRepresentation(std::string s) : Enum(sEnumValues, s) {};
@@ -29,22 +26,33 @@ public:
 			eVerticalSlider,
 			eHorizontalSlider,
 			eKnot,
-			eSpinBox		
-		}; 
-		
+			eSpinBox
+		};
+
+		// C++17 static inline so the table and default value are
+		// provided in every TU that needs them, without requiring DLL
+		// export of a static data member (which CMake's
+		// WINDOWS_EXPORT_ALL_SYMBOLS does not handle).
+		static inline tEnumValue sEnumValues[] = {
+			{ eUndetermined,      "Undetermined" },
+			{ eVerticalSlider,    "Vertical Slider" },
+			{ eHorizontalSlider,  "Horizontal Slider" },
+			{ eKnot,              "Knot" },
+			{ eSpinBox,           "Spin Box" },
+			{ 0, nullptr }
+		};
+		static inline tValue sDefault = eHorizontalSlider;
+
 		Component* Species() const
 		{
 			return new EControlRepresentation;
 		};
-		
+
 	};
 
 	class EMapping : public Enum
 	{
 	public:
-
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
 		EMapping() : Enum(sEnumValues, sDefault) {}
 		EMapping(tValue v) : Enum(sEnumValues, v) {};
 		EMapping(std::string s) : Enum(sEnumValues, s) {};
@@ -54,13 +62,23 @@ public:
 			eInverted,		///< Inverted linear relationship
 			eLog, 			///< More resolution in the low range
 			eReverseLog		///< More resolution in the upper range
-		}; 
-		
+		};
+
+		// See EControlRepresentation::sEnumValues for the rationale.
+		static inline tEnumValue sEnumValues[] = {
+			{ eLinear,     "Linear" },
+			{ eInverted,   "Inverted" },
+			{ eLog,        "Log" },
+			{ eReverseLog, "Reverse Log" },
+			{ 0, nullptr }
+		};
+		static inline tValue sDefault = eLinear;
+
 		Component* Species() const
 		{
 			return new EMapping;
 		};
-		
+
 	};
 
 	DYNAMIC_TYPE_USING_INTERFACE (OutControlSenderConfig, 6, ProcessingConfig);

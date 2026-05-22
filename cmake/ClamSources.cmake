@@ -132,8 +132,28 @@ function(clam_set_legacy_cxx target)
 		CXX_STANDARD 17
 		CXX_STANDARD_REQUIRED YES
 		CXX_EXTENSIONS YES
+		# CLAM has no __declspec(dllexport) markup. Without this, BUILD_SHARED_LIBS=ON
+		# on Windows produces a .dll but no .lib import library, so anything that
+		# links against it fails with LNK1181. CMake auto-generates exports for
+		# every public symbol when this is ON; no-op on non-Windows.
+		WINDOWS_EXPORT_ALL_SYMBOLS ON
 	)
 	if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 		target_compile_options(${target} PRIVATE -Wall)
+	elseif(MSVC)
+		# Two MSVC quirks both addressed by force-include (/FI):
+		#  - <ciso646>: CLAM uses the C++ alternative operator tokens
+		#    'and', 'or', 'not'. MSVC's default permissive mode does not
+		#    treat them as keywords; <ciso646> defines them as macros.
+		#  - <intrin.h>: the Windows 11 24H2 SDK (10.0.26100) declares
+		#    AVX2-using inline functions inside <wchar.h> that need
+		#    __m256i and the _mm256_* intrinsics already in scope.
+		#    Pre-including <intrin.h> brings those in before any STL
+		#    header pulls <wchar.h>.
+		target_compile_options(${target} PRIVATE /FIciso646 /FIintrin.h)
+		# MSVC's <cmath> hides M_PI / M_E / M_LN2 etc. behind
+		# _USE_MATH_DEFINES. CLAM uses M_PI in ~34 sites without
+		# defining the guard locally; set it project-wide.
+		target_compile_definitions(${target} PRIVATE _USE_MATH_DEFINES)
 	endif()
 endfunction()

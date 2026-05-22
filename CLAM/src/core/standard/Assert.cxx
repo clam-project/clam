@@ -115,8 +115,6 @@ void ExecuteAssertFailedHandler(const char* message, const char* filename, int l
 	CurrentAssertFailedHandler(message,filename,lineNumber);
 }
 
-bool ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
-
 ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename, int lineNumber)
 	: Err(message)
 {
