@@ -28,6 +28,42 @@ option(CLAM_WITH_PORTMIDI "Enable PortMidi MIDI backend" OFF)
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 
+if(BUILD_TESTING)
+	find_package(CppUnit CONFIG QUIET)
+	if(TARGET CppUnit::cppunit)
+		set(CLAM_CPPUNIT_TARGET CppUnit::cppunit)
+	elseif(TARGET CppUnit::CppUnit)
+		set(CLAM_CPPUNIT_TARGET CppUnit::CppUnit)
+	elseif(TARGET cppunit)
+		set(CLAM_CPPUNIT_TARGET cppunit)
+	elseif(WIN32)
+		# vcpkg's cppunit port ships only headers and the import library
+		# on Windows -- no CMake config package, no .pc file. Build a
+		# minimal IMPORTED target from find_path/find_library, with the
+		# debug variant resolved separately when present.
+		find_path(CPPUNIT_INCLUDE_DIR cppunit/TestCase.h REQUIRED)
+		find_library(CPPUNIT_LIBRARY_RELEASE NAMES cppunit REQUIRED)
+		find_library(CPPUNIT_LIBRARY_DEBUG   NAMES cppunitd)
+		add_library(CppUnit::cppunit UNKNOWN IMPORTED)
+		set_target_properties(CppUnit::cppunit PROPERTIES
+			INTERFACE_INCLUDE_DIRECTORIES "${CPPUNIT_INCLUDE_DIR}"
+			IMPORTED_LOCATION             "${CPPUNIT_LIBRARY_RELEASE}"
+		)
+		if(CPPUNIT_LIBRARY_DEBUG)
+			set_property(TARGET CppUnit::cppunit APPEND PROPERTY
+				IMPORTED_CONFIGURATIONS DEBUG
+			)
+			set_target_properties(CppUnit::cppunit PROPERTIES
+				IMPORTED_LOCATION_DEBUG "${CPPUNIT_LIBRARY_DEBUG}"
+			)
+		endif()
+		set(CLAM_CPPUNIT_TARGET CppUnit::cppunit)
+	else()
+		pkg_check_modules(CPPUNIT REQUIRED IMPORTED_TARGET cppunit)
+		set(CLAM_CPPUNIT_TARGET PkgConfig::CPPUNIT)
+	endif()
+endif()
+
 add_library(clam_config INTERFACE)
 add_library(CLAM::config ALIAS clam_config)
 
@@ -50,6 +86,12 @@ target_link_libraries(clam_config INTERFACE Threads::Threads)
 set(CLAM_CORE_PRIVATE_LIBS)
 set(CLAM_PROCESSING_PRIVATE_LIBS)
 set(CLAM_AUDIOIO_PRIVATE_LIBS)
+# Deps whose include dirs need to propagate publicly because they leak
+# through clam_audioio's public headers. On Linux / macOS pkg-config
+# returns a system or brew prefix that ends up on the default include
+# search path anyway, so the deps stay PRIVATE there. Only Windows + vcpkg
+# uses a sandboxed prefix that needs explicit propagation.
+set(CLAM_AUDIOIO_PUBLIC_LIBS)
 
 set(CLAM_CORE_BLACKLIST)
 if(CLAM_XML_BACKEND STREQUAL "xercesc")
@@ -94,13 +136,32 @@ set(CLAM_AUDIOIO_BLACKLIST "main\\.cxx")
 if(CLAM_WITH_SNDFILE)
 	pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 	target_compile_definitions(clam_config INTERFACE USE_SNDFILE=1)
-	list(APPEND CLAM_AUDIOIO_PRIVATE_LIBS PkgConfig::SNDFILE)
+	if(WIN32)
+		# AudioFileFormats.hxx (public clam_audioio header) #includes
+		# <sndfile.h>, so the include dir has to reach every consumer
+		# of clam_audioio. With vcpkg the header lives in a sandboxed
+		# prefix nothing else looks at -- propagate it publicly.
+		list(APPEND CLAM_AUDIOIO_PUBLIC_LIBS PkgConfig::SNDFILE)
+	else()
+		list(APPEND CLAM_AUDIOIO_PRIVATE_LIBS PkgConfig::SNDFILE)
+	endif()
 else()
 	list(APPEND CLAM_AUDIOIO_BLACKLIST "PCM" "AudioFileFormats")
 endif()
 
 if(CLAM_WITH_OGGVORBIS)
-	pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbisfile vorbisenc)
+	# Vorbis .pc files declare their inter-deps as Requires.private, which
+	# non-static pkg-config does not follow. On Linux GNU ld chases the
+	# DT_NEEDED entries on libvorbisfile.so / libvorbisenc.so and pulls
+	# the indirect deps (libvorbis, libogg) in anyway. macOS ld and the
+	# MSVC linker don't do that, so the link step would miss vorbis_* /
+	# ogg_* symbols. List the transitive deps explicitly on those
+	# platforms; Linux is left untouched.
+	if(APPLE OR WIN32)
+		pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbisfile vorbisenc vorbis ogg)
+	else()
+		pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbisfile vorbisenc)
+	endif()
 	target_compile_definitions(clam_config INTERFACE USE_OGGVORBIS=1 WITH_VORBIS=1)
 	list(APPEND CLAM_AUDIOIO_PRIVATE_LIBS PkgConfig::VORBIS)
 else()
@@ -186,9 +247,15 @@ set(CLAM_CORE_FOLDERS
 	src/Flow/Networks
 	src/Processing/Plugins
 	src/System
-	src/System/Threads
 	externals/CbLib
 )
+if(WIN32)
+	# src/Defines/Windows hosts CLAM_windows.h, a thin shim around
+	# <windows.h>. The header is only included from WIN32-guarded code
+	# (e.g. RunTimeLibraryLoader.cxx), so its directory is added to the
+	# include path only on Windows.
+	list(APPEND CLAM_CORE_FOLDERS src/Defines/Windows)
+endif()
 
 set(CLAM_PROCESSING_FOLDERS
 	src/Data/BasicProcessing
@@ -226,6 +293,7 @@ set(CLAM_AUDIOIO_FOLDERS
 
 if(CLAM_WITH_PORTMIDI)
 	list(APPEND CLAM_AUDIOIO_FOLDERS src/midiio/devices/PortMIDI)
+	target_compile_definitions(clam_config INTERFACE USE_PORTMIDI=1)
 endif()
 
 if(CLAM_WITH_ALSA AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -325,9 +393,16 @@ target_include_directories(clam_audioio
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/CLAM>"
 )
 target_link_libraries(clam_audioio
-	PUBLIC clam_core clam_processing
+	PUBLIC clam_core clam_processing ${CLAM_AUDIOIO_PUBLIC_LIBS}
 	PRIVATE ${CLAM_AUDIOIO_PRIVATE_LIBS}
 )
+
+if(BUILD_TESTING)
+	add_executable(clam_test_threading test/NonPortedTests/TestThreading.cxx)
+	clam_set_legacy_cxx(clam_test_threading)
+	target_link_libraries(clam_test_threading PRIVATE clam_core)
+	add_test(NAME clam_test_threading COMMAND clam_test_threading)
+endif()
 
 install(TARGETS clam_config clam_core clam_processing clam_audioio
 	EXPORT CLAMTargets

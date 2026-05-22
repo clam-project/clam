@@ -55,14 +55,7 @@ bool Controller::ConcreteConfigure(const ProcessingConfig& c)
 	if (!OutControls.Size())
 		OutControls.Resize(n,"Output",this);
 
-	OutValues.resize(n);
-
-	for (int k = 0; k < n ; k++ )
-	{
-		OutValues[k]=0.0;
-	}
-
-	// Buffer Queues initialization
+	OutValues.assign(n, 0.0);
 
 	BufferQueueInit( n );
 
@@ -72,15 +65,10 @@ bool Controller::ConcreteConfigure(const ProcessingConfig& c)
 
 void Controller::BufferQueueInit( int ncontrols )
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 
-	mDataQueues.resize(0);
-	mDataQueues.reserve(ncontrols);
-	for (int j = 0; j < ncontrols  ;j ++ )
-	{
-		mDataQueues.push_back( TQueue() );
-	}
-
+	mDataQueues.clear();
+	mDataQueues.resize(ncontrols);
 }
 
 const ProcessingConfig&  Controller::GetConfig() const 
@@ -91,7 +79,7 @@ const ProcessingConfig&  Controller::GetConfig() const
 
 void Controller::EnqueueControl(unsigned id, TControlData data)
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 	
 #ifdef HAVE_STANDARD_VECTOR_AT
 	mDataQueues.at(id).push(data);
@@ -105,7 +93,7 @@ TControlData Controller::LastDequeuedValue(unsigned id)
 {
 	TControlData val;
 
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 
 #ifdef HAVE_STANDARD_VECTOR_AT
 	val = OutValues.at(id);
@@ -118,7 +106,7 @@ TControlData Controller::LastDequeuedValue(unsigned id)
 
 bool Controller::Empty(unsigned id)
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 	
 #ifdef HAVE_STANDARD_VECTOR_AT
 	return mDataQueues.at(id).empty();
@@ -130,7 +118,7 @@ bool Controller::Empty(unsigned id)
 
 TControlData Controller::PopControl(unsigned id)
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 #ifdef HAVE_STANDARD_VECTOR_AT
 	TControlData ret=mDataQueues.at(id).front();
 #else

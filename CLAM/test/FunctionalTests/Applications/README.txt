@@ -1,2 +1,2 @@
-Functional tests of applications (use of façade classes is likely)
+Functional tests of applications (use of faÃ§ade classes is likely)
 note that functional processing tests goes to ../ProcessingTests directory

@@ -156,25 +156,25 @@ std::ostream & CLAM::operator << (std::ostream & os, const FlagsBase & f) {
 /**
 * Checks that the object is internally consistent.
 * It tests that: 
-* - the names array is not a NULL pointer (it still could be invalid)
-* - the names array is shorter than the number of flags plus one for the NULL name
-* - a NULL name is present at the end of the names array
+* - the names array is not a null pointer (it still could be invalid)
+* - the names array is shorter than the number of flags plus one for the null name
+* - a null name is present at the end of the names array
 * - the names array has no value replication
 * - the names array has no name replication
 * @todo TODO: Check blanks in names
 */
 
 bool FlagsBase::CheckInvariant() {
-	// Test that the names array is not a NULL pointer (it still could be invalid)
+	// Test that the names array is not a null pointer (it still could be invalid)
 	if (!mFlagValues) {
-		std::cerr << "Name definitions are a NULL pointer" << std::endl;
+		std::cerr << "Name definitions are a null pointer" << std::endl;
 		return false;
 	}
-	// Test that a NULL name is present at the end of the names array
+	// Test that a null name is present at the end of the names array
 	unsigned int top;
 	for (top=0; top<=GetNFlags() && mFlagValues[top].name; top++) {
 		if (top==GetNFlags() && mFlagValues[top].name) {
-			std::cerr << "There are more names than flags or there is no NULL name "
+			std::cerr << "There are more names than flags or there is no null name "
 				"at the end of the name array list" << std::endl;
 		return false;
 		}

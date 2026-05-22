@@ -33,8 +33,8 @@ class XmlStorageErr : public Err
 {
 	public:
 		XmlStorageErr(const std::string & error);
-		const char * what() const throw();
-		virtual ~XmlStorageErr() throw() {};
+		const char * what() const noexcept;
+		virtual ~XmlStorageErr() noexcept {};
 	private:
 		std::string _errors;
 };

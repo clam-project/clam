@@ -22,6 +22,7 @@
 #include "AudioMixer.hxx"
 #include "AudioBufferMixer.hxx"
 #include "ProcessingFactory.hxx"
+#include <vector>
 
 
 namespace CLAM
@@ -122,8 +123,8 @@ bool AudioBufferMixer::Do()
 
 	TData normConstant = (TData)1.0 /TData(numInPorts);
 	TData * output = so.GetBuffer().GetPtr();
-	TData * inputs[numInPorts];
-	TControlData controls[numInPorts];
+	std::vector<TData *> inputs(numInPorts);
+	std::vector<TControlData> controls(numInPorts);
 	for (unsigned int i = 0; i<numInPorts; i++)
 	{
 		inputs[i]=mInputPorts[i]->GetData().GetBuffer().GetPtr();

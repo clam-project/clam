@@ -52,11 +52,11 @@ namespace CLAM {
 
 	/* FFT possible execution states.
 	 */
-	typedef enum {
+	enum FFTState {
 		sComplex, // We just need to write the complex array.
 		sComplexSync, // We write the complex array and synchronize.
 		sOther // The complex array is not present.
-	} FFTState;
+	};
 
 	/** I/O Prototype state of the FFT object. */
 	FFTState mState;

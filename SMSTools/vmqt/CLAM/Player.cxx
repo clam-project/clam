@@ -46,9 +46,10 @@ namespace CLAM
 			if(IsStopped()) SetStopped(false);
 			if(IsPlaying()) Stop();
 			SetPlaying(true);
-			mThread.Start();
+			if (mThread.joinable()) mThread.join();
+			mThread = std::thread([this]{ thread_code(); });
 		}
-		
+
 		void Player::Stop()
 		{
 			if(IsPlaying())
@@ -56,8 +57,8 @@ namespace CLAM
 				SetPaused(false);
 				SetPlaying(false);
 				SetStopped(true);
-				mThread.Stop();
 			}
+			if (mThread.joinable()) mThread.join();
 		}
 		
 		void Player::Pause()
@@ -136,7 +137,7 @@ namespace CLAM
 
 		bool Player::IsRunning() const
 		{
-			return mThread.IsRunning();
+			return mThread.joinable();
 		}
     }
 }

@@ -508,7 +508,7 @@ void SpectralPeakArray::ToLinear()
 	const int nPeaks=GetnPeaks();
 	for (int i=0; i<nPeaks; i++)
 	{
-		if(mag[i]==0.0001) mag[i]=0;
+		if(mag[i]==TData(0.0001)) mag[i]=0;
 		mag[i]= log2lin(mag[i]);
 	}
 	SetScale(EScale::eLinear);

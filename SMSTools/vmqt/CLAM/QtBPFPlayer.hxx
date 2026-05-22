@@ -3,7 +3,7 @@
 
 #include <queue>
 #include <string>
-#include <CLAM/Thread.hxx>
+#include <thread>
 #include <CLAM/BPF.hxx>
 #include <CLAM/Melody.hxx>
 #include <CLAM/MIDIMelody.hxx>
@@ -106,7 +106,7 @@ namespace CLAM
 			void WhiteBackgroundCM();
 
 		private:
-			Thread mThread;
+			std::thread mThread;
 			bool   mThreadIsCancelled;
 			TData  mOwnedDuration;
 			bool   mPlaySimultaneously;

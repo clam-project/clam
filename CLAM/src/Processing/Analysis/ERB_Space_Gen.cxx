@@ -40,7 +40,7 @@ ERB_SpaceGen::ERB_SpaceGen(ERB_SpaceGenConfig& c)
 }
 
 
-ERB_SpaceGen::~ERB_SpaceGen() {}
+ERB_SpaceGen::~ERB_SpaceGen() = default;
 
 bool ERB_SpaceGen::ConcreteConfigure(const ProcessingConfig& c)
 {

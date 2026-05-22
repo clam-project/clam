@@ -25,7 +25,7 @@ namespace QtSMS
 		connect(mBrowseMorphSoundFile,    &QPushButton::clicked, this, &SMSConfigDlg::browseMorphSoundFile);
 	}
 
-	SMSConfigDlg::~SMSConfigDlg(){}
+	SMSConfigDlg::~SMSConfigDlg() = default;
 
 	void SMSConfigDlg::Apply()
 	{
@@ -242,7 +242,7 @@ namespace QtSMS
 	void SMSConfigDlg::FillComboBoxes()
 	{
 		
-		for(int i=0; CLAM::EWindowType::ValueTable()[i].name != NULL; i++)
+		for(int i=0; CLAM::EWindowType::ValueTable()[i].name != nullptr; i++)
 		{
 			const char* item =  CLAM::EWindowType::ValueTable()[i].name;
 			mAnalysisWindowTypeComboBox->addItem(item);

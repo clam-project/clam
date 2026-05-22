@@ -37,10 +37,10 @@ public:
 	ELoopPointUnits(tValue v) : Enum(ValueTable(), v) {};
 	ELoopPointUnits(std::string s) : Enum(ValueTable(), s) {};
 
-	typedef enum {
+	enum tEnum {
 		eMilliseconds,
 		eFrames,
-	} tEnum;
+	};
 
 	virtual Component* Species() const
 	{
@@ -51,7 +51,7 @@ public:
 		static tEnumValue sEnumValues[] = {
 			{eMilliseconds,"Milliseconds"},
 			{eFrames,"Frames"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sEnumValues;
 	}

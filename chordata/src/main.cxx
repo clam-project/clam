@@ -20,11 +20,6 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 
-#ifdef _MSVC_VER
-#include <CLAM/InitAudioIO.hxx>
-#include <CLAM/InitProcessing.hxx>
-#endif
-
 #ifndef I18N_PATH
 #define I18N_PATH "../"
 #endif

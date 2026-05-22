@@ -57,30 +57,30 @@ protected: \
 		static bool alreadyInitialized = false;\
 		static TAttr staticTypeDescTable[N+1];\
 		if (not alreadyInitialized) \
-			InformChainedAttr((AttributePosition<0>*)NULL, staticTypeDescTable, 0); \
+			InformChainedAttr((AttributePosition<0>*)nullptr, staticTypeDescTable, 0); \
 		return staticTypeDescTable; \
 	}\
 public: \
 	/** Returns the type id of attribute n */ \
 	const std::type_info & GetTypeId(unsigned n) const \
 	{ \
-		return GetChainedTypeId((AttributePosition<0>*)NULL,n); \
+		return GetChainedTypeId((AttributePosition<0>*)nullptr,n); \
 	} \
 	/** Visit all Dynamic Attributes */ \
 	template <typename Visitor> \
 	void VisitAll (Visitor & visitor) { \
-		VisitChainedAttr((AttributePosition<0>*)NULL, visitor); \
+		VisitChainedAttr((AttributePosition<0>*)nullptr, visitor); \
 	} \
 protected: \
 	/** Store all Dynamic Attributes */ \
 	virtual void StoreDynAttributes(CLAM::Storage & s) const { \
-		StoreChainedAttr((AttributePosition<0>*)NULL,s); \
+		StoreChainedAttr((AttributePosition<0>*)nullptr,s); \
 	} \
 	/** Load all Dynamic Attributes */ \
 	virtual void LoadDynAttributes(CLAM::Storage & s) { \
 		AddAll(); \
 		UpdateData(); \
-		LoadChainedAttr((AttributePosition<0>*)NULL,s); \
+		LoadChainedAttr((AttributePosition<0>*)nullptr,s); \
 		UpdateData(); \
 	} \
 private: \
@@ -109,29 +109,29 @@ private: \
 	/* \
 	template <unsigned int NAttrib, typename Visitor> \
 	void VisitChainedAttr (AttributePosition<NAttrib>*a, Visitor & visitor) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
+		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)nullptr, \
+		                (AttributePosition<NAttrib>*)nullptr); \
 	}*/\
 	/** Undefined link for the Inform method chain (Inform) */ \
 	template <unsigned int NAttrib> \
 	static void InformChainedAttr (AttributePosition<NAttrib>*a, TAttr * typeDescTable, unsigned offset) { \
 		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
+		CheckAttribute ((InboundsCheck*)nullptr, \
+		                (AttributePosition<NAttrib>*)nullptr); \
 	}\
 	/** Undefined link on the method chain (Store) */ \
 	template <unsigned int NAttrib> \
 	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) const { \
 		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
+		CheckAttribute ((InboundsCheck*)nullptr, \
+		                (AttributePosition<NAttrib>*)nullptr); \
 	}\
 	/** Undefined link on the method chain (Load) */ \
 	template <unsigned int NAttrib> \
 	void LoadChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
 		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
-		CheckAttribute ((InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
+		CheckAttribute ((InboundsCheck*)nullptr, \
+		                (AttributePosition<NAttrib>*)nullptr); \
 	}\
 private: \
 	/** Method chain terminator */ \
@@ -184,7 +184,7 @@ public: \
 #define __COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 private: \
 /** This declaration to detect compile-time-err of repeated attribute IDs(num), without having to relay in templates*/\
-	struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
+	[[maybe_unused]] struct {} CLAM_compile_time_error_Duplicated_Attribute_Index_##N;\
 	\
 ACCESS: \
 	inline TYPE& Get##NAME() const {\
@@ -229,25 +229,25 @@ private: \
 	template <typename Visitor> \
 	void VisitChainedAttr(AttributePosition<N>*, Visitor & visitor) { \
 		Visit##NAME(visitor); \
-		VisitChainedAttr((AttributePosition<(N)+1>*)NULL, visitor); \
+		VisitChainedAttr((AttributePosition<(N)+1>*)nullptr, visitor); \
 	} \
 	static void InformChainedAttr( \
 		AttributePosition<N>*, TAttr * typeDescTable, unsigned offset)\
 	{ \
 		InformAttr_<TYPE>(typeDescTable, N, #NAME, #TYPE);\
-		InformChainedAttr((AttributePosition<(N)+1>*)NULL, typeDescTable, offset+sizeof(TYPE)); \
+		InformChainedAttr((AttributePosition<(N)+1>*)nullptr, typeDescTable, offset+sizeof(TYPE)); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) const { \
 		Store##NAME(s); \
-		StoreChainedAttr((AttributePosition<(N)+1>*)NULL,s); \
+		StoreChainedAttr((AttributePosition<(N)+1>*)nullptr,s); \
 	} \
 	void LoadChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
 		Load##NAME(s); \
-		LoadChainedAttr((AttributePosition<(N)+1>*)NULL,s); \
+		LoadChainedAttr((AttributePosition<(N)+1>*)nullptr,s); \
 	} \
 	const std::type_info & GetChainedTypeId(AttributePosition<N>*, unsigned n) const { \
 		if (n==N) return typeid(TYPE); \
-		return GetChainedTypeId((AttributePosition<(N)+1>*)NULL,n); \
+		return GetChainedTypeId((AttributePosition<(N)+1>*)nullptr,n); \
 	} \
 
 
@@ -258,13 +258,13 @@ protected: \
 	{ \
 		if (not Has##NAME())  return; \
 		DynamicType::StoreAttribute( \
-			(CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, \
+			(CLAM::TypeInfo<TYPE >::StorableAsLeaf*)nullptr, \
 			s, Get##NAME(), #NAME); \
 	} \
 	bool Load##NAME(CLAM::Storage & s) { \
 		TYPE obj; \
 		if (!DynamicType::LoadAttribute( \
-			(CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, \
+			(CLAM::TypeInfo<TYPE >::StorableAsLeaf*)nullptr, \
 			s, obj, #NAME)) \
 		{ \
 			Remove##NAME(); \

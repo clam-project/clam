@@ -1,8 +1,3 @@
-#ifdef _MSVC_VER
-	#include <CLAM/InitAudioIO.hxx>
-	#include <CLAM/InitProcessing.hxx>
-#endif
-
 #include "PrototypeLoader.hxx"
 #include <QApplication>
 #include <iostream>
@@ -34,11 +29,6 @@ int usage(const std::string & program)
 
 int main( int argc, char *argv[] )
 {
-
-#ifdef _MSVC_VER
-	CLAM::ProcessingModule::init();
-	CLAM::AudioIOModule::init();
-#endif
 
 #ifdef USE_LADSPA
 	RunTimeLadspaLibraryLoader ladspaLoader;

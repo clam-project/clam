@@ -305,7 +305,7 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	//Automatically connect the ports to external jack ports
 
 	//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
-	const char ** portnames= jack_get_ports ( _jackClient , _jackOutPortAutoConnectList.c_str(), NULL, JackPortIsOutput);
+	const char ** portnames= jack_get_ports ( _jackClient , _jackOutPortAutoConnectList.c_str(), nullptr, JackPortIsOutput);
 	if (not portnames)
 	{
 		std::cout << " -WARNING: couldn't locate any JACK output port <"
@@ -326,7 +326,7 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	}
 
 	//CONNECT CLAM EXTERNSINKS TO JACK INPUT PORTS
-	portnames= jack_get_ports ( _jackClient , _jackInPortAutoConnectList.c_str(), NULL, JackPortIsInput);
+	portnames= jack_get_ports ( _jackClient , _jackInPortAutoConnectList.c_str(), nullptr, JackPortIsInput);
 	if ( not portnames)
 	{
 		std::cout << " -WARNING: couldn't locate any JACK input port <"

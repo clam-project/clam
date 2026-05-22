@@ -30,7 +30,7 @@ LoopingSDIFFileReader::~LoopingSDIFFileReader()
 bool LoopingSDIFFileReader::Configure(const SDIFInConfig& c)
 {
 	/* initialize random seed: */
-	srand ( time(NULL) );
+	srand ( time(nullptr) );
 	
 	return true;
 }
@@ -58,15 +58,8 @@ std::vector<SimpleLoopMetadata>& LoopingSDIFFileReader::GetListOfLoops()
 void LoopingSDIFFileReader::SetListOfLoops(std::vector<SimpleLoopMetadata>& argListOfLoops)
 {
 	listOfLoops.clear();
-	std::vector<SimpleLoopMetadata>::iterator theIterator;
-	for( theIterator = argListOfLoops.begin(); theIterator != argListOfLoops.end(); theIterator++)
-	{
-		SimpleLoopMetadata& aSimpleLoop = *theIterator;
-		listOfLoops.push_back(aSimpleLoop);
-		
-		//std::cout << "LoopingSDIFFileReader: received loop point <" << aSimpleLoop.GetStart();
-		//std::cout << ">, <" << aSimpleLoop.GetEnd() << ">" << std::endl;
-	}
+	for (const auto& simpleLoop : argListOfLoops)
+		listOfLoops.push_back(simpleLoop);
 }
 
 Frame* LoopingSDIFFileReader::ReadFrame()

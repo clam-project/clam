@@ -46,7 +46,7 @@ namespace MIDI
 		}
 		bool Ok(void)
 		{
-			return mFile!=NULL;
+			return mFile!=nullptr;
 		}
 		Byte GetByte(void)
 		{

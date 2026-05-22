@@ -114,35 +114,25 @@ namespace CLAM
 		}
 		void Insert(unsigned pos)
 		{
-			AttributesData::iterator it = _attributePools.begin();
-			AttributesData::iterator end = _attributePools.end();
-			for (unsigned i=0; it!=end; i++, it++)
-			{
-				it->Insert(pos);
-			}
+			for (auto & pool : _attributePools)
+				pool.Insert(pos);
 			_size++;
 		}
 		void Remove(unsigned pos)
 		{
-			AttributesData::iterator it = _attributePools.begin();
-			AttributesData::iterator end = _attributePools.end();
-			for (unsigned i=0; it!=end; i++, it++)
-			{
-				it->Remove(pos);
-			}
+			for (auto & pool : _attributePools)
+				pool.Remove(pos);
 			_size--;
 		}
 	private:
 		void Reallocate(unsigned newSize)
 		{
 			_size = newSize;
-			AttributesData::iterator it = _attributePools.begin();
-			AttributesData::iterator end = _attributePools.end();
-			for (unsigned i=0; it!=end; i++, it++)
+			for (auto & pool : _attributePools)
 			{
-				if (!it->GetData()) continue;
-				it->Deallocate();
-				it->Allocate(_size);
+				if (!pool.GetData()) continue;
+				pool.Deallocate();
+				pool.Allocate(_size);
 			}
 		}
 	public:

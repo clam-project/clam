@@ -880,8 +880,8 @@ private:
 private:
 	QColor clamTypeColor(const std::type_info & type) const
 	{
-		const char * colorstring = CLAM::ProcessingDataPlugin::colorFor(type).c_str();
-		QColor color(colorstring);
+		const std::string colorstring = CLAM::ProcessingDataPlugin::colorFor(type);
+		QColor color(colorstring.c_str());
 		if (color.isValid()) return color;
 		return colorPort();
 	}

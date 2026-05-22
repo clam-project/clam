@@ -43,7 +43,7 @@ OutPortBase & OutPortRegistry::Get(const std::string & name) const
 		"No out port named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 	
-	return *(OutPortBase*)NULL; // just to get rid of warnings
+	return *(OutPortBase*)nullptr; // just to get rid of warnings
 }
 
 bool OutPortRegistry::Has(const std::string& name) const

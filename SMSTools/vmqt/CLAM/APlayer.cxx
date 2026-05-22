@@ -29,17 +29,14 @@ namespace CLAM
     namespace VM
     {
 		APlayer::APlayer()
-			: mLeftChannel(0)
-			, mRightChannel(0)
+			: mLeftChannel(nullptr)
+			, mRightChannel(nullptr)
 			, mMuteLeft(false)
 			, mMuteRight(false)
 		{
-			mThread.SetThreadCode(makeMemberFunctor0((*this), APlayer, thread_code));
 		}
-		
-		APlayer::~APlayer()
-		{
-		}
+
+		APlayer::~APlayer() = default;
 		
 		void APlayer::SetData(std::vector<const Audio*> data, bool setTime)
 		{

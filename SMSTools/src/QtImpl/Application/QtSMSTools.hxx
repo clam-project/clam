@@ -1,7 +1,8 @@
 #ifndef __QTSMSTOOLS__
 #define __QTSMSTOOLS__
 
-#include <CLAM/Thread.hxx>
+#include <functional>
+#include <thread>
 #include "ui_QtSMSTools.h"
 #include <CLAM/Slotv0.hxx>
 #include <QMainWindow>
@@ -63,7 +64,7 @@ namespace QtSMS
 
 	private:
 		Engine*       mEngine;
-		CLAM::Thread  mThread;
+		std::thread   mThread;
 		QLabel*       mLeftSBLabel;
 		QLabel*       mRightSBLabel;
 		bool          mShowOriginalAudio;
@@ -81,7 +82,7 @@ namespace QtSMS
 		void SendAnalyzedDataToViewManager();
 		void SendTransformedDataToViewManager();
 		void SendSynthesizedDataToViewManager();
-		void LaunchMethodOnThread(CBL::Functor0 method);
+		void LaunchMethodOnThread(std::function<void()> method);
 		void OnAnalysisDataLoaded();
 
 		void NotImplemented();

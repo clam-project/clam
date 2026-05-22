@@ -43,14 +43,14 @@ namespace CLAM
 		AddAll();
 		UpdateData();
 		SetConcreteClassName("Unknown");
-		mpConcreteConfig=NULL;
+		mpConcreteConfig=nullptr;
 	}
 
 	void SMSTransformationChaineeConfig::CopyInit(const SMSTransformationChaineeConfig& originalConfig)
 	{
 		AddAll();
 		UpdateData();
-		mpConcreteConfig=NULL;
+		mpConcreteConfig=nullptr;
 		SetConcreteConfig(*(originalConfig.mpConcreteConfig));
 	}
 

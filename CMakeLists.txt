@@ -8,6 +8,7 @@ project(CLAMModernized
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(GNUInstallDirs)
+include(CTest)
 include(ClamSources)
 
 option(BUILD_SHARED_LIBS "Build shared libraries by default" ON)

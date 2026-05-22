@@ -37,12 +37,12 @@ public:
 	EPhaseGeneration(tValue v) : Enum(ValueTable(), v) {};
 	EPhaseGeneration(std::string s) : Enum(ValueTable(), s) {};
 
-	typedef enum {
+	enum tEnum {
 		eAlign,
 		eRandom,
 		eContinuation,
 		eNone
-	} tEnum;
+	};
 
 	virtual Component* Species() const
 	{
@@ -55,7 +55,7 @@ public:
 			{eRandom,"Random"},
 			{eContinuation,"Continuation"},
 			{eNone,"None"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sEnumValues;
 	}

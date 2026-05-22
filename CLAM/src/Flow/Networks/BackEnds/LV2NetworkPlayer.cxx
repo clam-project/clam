@@ -62,7 +62,7 @@ LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
 {
 	LV2_Descriptor * descriptor = new LV2_Descriptor;
 	descriptor->URI            = LV2Library::dupstr(uri.c_str());
-	descriptor->extension_data = NULL;
+	descriptor->extension_data = nullptr;
 	descriptor->instantiate    = ::Instantiate;
 	descriptor->connect_port   = ::ConnectTo;
 	descriptor->activate       = ::Activate;

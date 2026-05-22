@@ -11,20 +11,24 @@ clam_generate_version_sources(SMSTOOLS_VERSION_SOURCE SMSTOOLS_VERSION_INCLUDE_D
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Xml OpenGL OpenGLWidgets PrintSupport)
+if(WIN32)
+	# Qt6::OpenGL ships Qt's GL helper classes but does not transitively pull
+	# opengl32.lib on Windows; raw glBegin/glEnd/etc. in the vmqt renderers
+	# come up unresolved at link time. Linux libGL and the macOS OpenGL
+	# framework are picked up via the toolchain already. The
+	# generator-expression entry below pairs OpenGL::GL with Qt6::OpenGL so
+	# the two are visibly coupled: drop Qt6::OpenGL and OpenGL::GL goes too.
+	find_package(OpenGL REQUIRED)
+endif()
 set(CLAM_SMSTOOLS_QT_LIBRARIES
 	Qt6::Core
 	Qt6::Gui
 	Qt6::Widgets
 	Qt6::Xml
-	Qt6::OpenGL
+	Qt6::OpenGL $<$<PLATFORM_ID:Windows>:OpenGL::GL>
 	Qt6::OpenGLWidgets
 	Qt6::PrintSupport
 )
-
-find_library(CLAM_SMSTOOLS_GLU_LIBRARY NAMES GLU)
-if(NOT CLAM_SMSTOOLS_GLU_LIBRARY)
-	message(FATAL_ERROR "SMSTools OpenGL widgets require GLU but libGLU was not found")
-endif()
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -146,7 +150,6 @@ target_link_libraries(clam_smstools_vmqt
 	PUBLIC
 		clam_smstools_common
 		${CLAM_SMSTOOLS_QT_LIBRARIES}
-		"${CLAM_SMSTOOLS_GLU_LIBRARY}"
 )
 
 # ------------------------------------------------------------------------------

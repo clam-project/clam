@@ -41,7 +41,7 @@ namespace CLAM
 		if(mpMatrixBuffer)
 		{
 			delete mpMatrixBuffer;
-			mpMatrixBuffer=NULL;
+			mpMatrixBuffer=nullptr;
 		}
 	}
 

@@ -65,17 +65,17 @@ namespace CLAM {
 	{
 		mDevice = device;
 		////// NEW /////////
-		mHandleIn = NULL;
-		mHandleOut = NULL;
+		mHandleIn = nullptr;
+		mHandleOut = nullptr;
 	}
 
 	void PortMIDIDevice::OpenInput(int dev)
 	{
 		PmError err = Pm_OpenInput( &mHandleIn,  /** data stream */
 									dev,                       /** Input device */
-									NULL,                      /** device info */
+									nullptr,                      /** device info */
 									100,                       /** stream size */
-									NULL,
+									nullptr,
 									0 );
 
 		if (err)
@@ -90,10 +90,10 @@ namespace CLAM {
 	{
 		PmError err = Pm_OpenOutput(&mHandleOut,
 									dev,
-									NULL,
+									nullptr,
 									0,
-									NULL,
-									NULL,
+									nullptr,
+									nullptr,
 									0);
 		if (err)
 		{

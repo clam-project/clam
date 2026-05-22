@@ -52,10 +52,10 @@ namespace CLAM {
 
 		/* IFFT possible execution states.
 		*/
-		typedef enum {
+		enum IFFTState {
 			sComplex, // We just need to read the complex array.
 			sOther // The complex array is not present.
-		} IFFTState;
+		};
 
 		/** Execution state of the IFFT object. It includes I/O
 	    prototypes state */
