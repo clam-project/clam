@@ -277,7 +277,7 @@ def generate(env) :
 	import shutil
 	bld = Builder( action =Action( 
 		lambda target, source, env:
-			shutil.copy(str(source[0]), str(target[0])),
+			shutil.copy(str(source[0]), str(target[0])) and 0,
 			"== Build copying $SOURCE"))
 
 	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )

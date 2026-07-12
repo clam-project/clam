@@ -366,7 +366,7 @@ def create_custom_builders( env ) :
 	import shutil
 	bld = env.Builder( action =  Action( 
 		lambda target, source, env:
-			shutil.copy(str(source[0]), str(target[0])),
+			shutil.copy(str(source[0]), str(target[0])) and 0,
 			"== Build copying $SOURCE"))
 	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )	
 
