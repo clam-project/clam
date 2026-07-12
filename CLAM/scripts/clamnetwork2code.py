@@ -32,7 +32,7 @@ Bear in mind the following limitations:
 """
 
 import xml.sax
-import cStringIO
+import io
 import sys
 import re
 import os
@@ -155,7 +155,7 @@ if __name__=="__main__" and "--test" in sys.argv :
 		def parse(self, xmlContent, handler) :
 			saxparser = xml.sax.make_parser()
 			saxparser.setContentHandler(handler)
-			saxparser.parse(cStringIO.StringIO(xmlContent))
+			saxparser.parse(io.StringIO(xmlContent))
 			
 		def test_formatId1(self) :
 			n = NetworkHandler()
@@ -295,7 +295,7 @@ if __name__=="__main__" and "--test" in sys.argv :
 <network clamVersion="1.4.0" id="Unnamed">
 </network>
 """
-			datasource = cStringIO.StringIO(exampleNetwork)
+			datasource = io.StringIO(exampleNetwork)
 			saxparser.parse(datasource)
 
 			result= network.getCode()
@@ -337,7 +337,7 @@ public:
 <network clamVersion="1.4.0" id="Unnamed">
 </network>
 """
-			datasource = cStringIO.StringIO(exampleNetwork)
+			datasource = io.StringIO(exampleNetwork)
 			saxparser.parse(datasource)
 
 			result= network.getCode("MyClassName")
@@ -400,7 +400,7 @@ if __name__ == "__main__" :
 	saxparser = xml.sax.make_parser()
 	saxparser.setContentHandler(network)
 
-	datasource = cStringIO.StringIO(exampleNetwork)
+	datasource = io.StringIO(exampleNetwork)
 	saxparser.parse(datasource)
 
 	if len(args)>1 :

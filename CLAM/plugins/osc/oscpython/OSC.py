@@ -17,7 +17,7 @@ __revision__ = "$Revision$"
 # ======================================================================
 # imports
 
-import cStringIO, exceptions, math, socket, struct, time, types
+import io, math, socket, struct, time
 
 # ======================================================================
 # constants
@@ -42,7 +42,7 @@ class Value:
 class Int(Value):
     """32 bit integer value."""
     def __init__(self, value):
-        Value.__init__(self, long(value))
+        Value.__init__(self, int(value))
         
     def binary_value(self):
         return struct.pack('!l', self.value)
@@ -88,8 +88,8 @@ class Time(Value):
     def binary_value(self):
 	t = self.value
 	# FIXME: how to convert without overflows?
-	s = long(t)
-	f = long(math.fmod(t, 1.0)*FLOAT_TO_INT_SCALE)
+	s = int(t)
+	f = int(math.fmod(t, 1.0)*FLOAT_TO_INT_SCALE)
 	return struct.pack('!LL', s, f)
 
 # ======================================================================
@@ -110,7 +110,7 @@ class Packet:
     and its size.
     """
     def __init__(self, packets):
-        stream = cStringIO.StringIO()
+        stream = io.StringIO()
         self._write_contents(packets, stream)
         self._data = stream.getvalue()
 
@@ -156,9 +156,9 @@ class Packet:
 def _value(x):
     """Convert x(int, float or string) to an OSC object."""
     t = type(x)
-    if t == types.FloatType:
+    if t == float:
         return Float(x)
-    if t == types.IntType or t == types.LongType:
+    if t == int:
         return Int(x)
     # return string representation as default
     return String(str(x))
@@ -172,11 +172,11 @@ class Message(Packet):
     *args 	-- message argument list
     """
     def __init__(self, address, args=[]):
-	Packet.__init__(self, [String(address)] + map(lambda x: _value(x), args))
+	Packet.__init__(self, [String(address)] + list(map(lambda x: _value(x), args)))
 
     def _write_contents(self, args, stream):
-        t_stream = cStringIO.StringIO()	# tag stream
-        v_stream = cStringIO.StringIO()	# value stream
+        t_stream = io.StringIO()	# tag stream
+        v_stream = io.StringIO()	# value stream
 	# open signature string
 	t_stream.write(',')
 	# collect tags and arguments

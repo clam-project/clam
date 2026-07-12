@@ -5,7 +5,8 @@ from task import *
 from project import Project
 from client import Client
 from runner import Runner
-from commands import getoutput
+from subprocess import getoutput
+from functools import reduce
 
 def countLines( path ):
 	print(('loc for path:', path))

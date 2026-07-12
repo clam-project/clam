@@ -22,13 +22,13 @@ versions = {
  "chordata": "---",
  "pyclam": "---",
 }
-for package, _ in versions.iteritems():
+for package, _ in versions.items():
 	versions[package] = versionInfo.versionFromRemoteSvn(package)[1]
 
 print(versions)
 print("remoteSvnRevision: ", versionInfo.remoteSvnRevision())
 
-for package, version in versions.iteritems() : 
+for package, version in versions.items() : 
 	if package == "CLAM" :
 		sandbox = "CLAM-%s" % (version)
 		run("svn export http://clam-project.org/clam/trunk/CLAM %s"% sandbox)
@@ -48,7 +48,7 @@ for package, version in versions.iteritems() :
 	run("rm -rf %s/" % sandbox)
 
 print("Upload all tarballs found in local (*.tar.gz) ? [y/n]")
-if raw_input().strip() in ['y', 'Y', 'yes']:
+if input().strip() in ['y', 'Y', 'yes']:
 
 	if "~svn" in versions["CLAM"]: destDir = "src/svnsnapshots/"
 	else : destDir = "src/"
@@ -57,7 +57,7 @@ if raw_input().strip() in ['y', 'Y', 'yes']:
 	run("slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py")
 
 print("Remove created tarballs in local (rm *.tar.gz) ? [y/n]")
-if raw_input().strip() in ['y', 'Y', 'yes']:
+if input().strip() in ['y', 'Y', 'yes']:
 	run("rm *.tar.gz")
 
  

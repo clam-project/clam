@@ -135,7 +135,7 @@ class _Automoc(object):
         out_sources = source[:]
 
         for obj in source:
-            if isinstance(obj,basestring):  # big kludge!
+            if isinstance(obj,str):  # big kludge!
                 print("scons: qt4: '%s' MAYBE USING AN OLD SCONS VERSION AND NOT CONVERTED TO 'File'. Discarded." % str(obj))
                 continue
             if not obj.has_builder():

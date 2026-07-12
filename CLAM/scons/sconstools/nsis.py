@@ -22,7 +22,7 @@ def generate(env) :
 		contents = node.get_contents()
 		includes = nsisFiles_re.findall(contents)
 		includes = [ winToLocalReformat(include) for include in includes ]
-		return filter(lambda x: x.rfind('*')==-1, includes)
+		return list(filter(lambda x: x.rfind('*')==-1, includes))
 	nsisscanner = env.Scanner(name = 'nsisfile',
 		function = scanNsisContent,
 		argument = None,

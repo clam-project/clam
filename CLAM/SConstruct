@@ -3,6 +3,7 @@ EnsureSConsVersion(0, 96, 92)
 import sys
 import os
 import glob
+from functools import reduce
 
 sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *

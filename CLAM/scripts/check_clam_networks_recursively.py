@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 from diff_audio_files import diff_files
-import os, sys, string,  glob
-import cStringIO
+import os, sys,  glob
+import io
 import subprocess
 import getopt
 
@@ -31,7 +31,7 @@ def die(message, errorcode=-1) :
 
 
 def archSuffix() :
-	return string.strip(os.popen('uname -m').read())
+	return os.popen('uname -m').read().strip()
 
 def expectedArchName(base) :
 	suffix_arch = archSuffix()
@@ -91,7 +91,7 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 		
 		command="CheckClamNetwork %s"%(case)
 		phase("Test: %s"%(case))
-		output = cStringIO.StringIO()
+		output = io.StringIO()
 
 		try :
 			process = subprocess.Popen(command, shell=True, 

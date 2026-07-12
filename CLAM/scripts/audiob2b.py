@@ -1,5 +1,5 @@
 from diff_audio_files import diff_files
-import os, sys, string
+import os, sys
 import subprocess
 
 def run(command) :
@@ -23,7 +23,7 @@ def die(message, errorcode=-1) :
 
 
 def archSuffix() :
-	return string.strip(os.popen('uname -m').read())
+	return os.popen('uname -m').read().strip()
 
 def expectedArchName(base, extension='.wav') :
 	suffix_arch = archSuffix()

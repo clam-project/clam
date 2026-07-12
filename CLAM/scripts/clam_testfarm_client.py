@@ -12,7 +12,8 @@ from testfarm.v1.client import Client
 from testfarm.v1.runner import Runner
 from testfarm.svnsandbox import SvnSandbox
 from testfarm.utils import loadDictFile
-from commands import getoutput
+from subprocess import getoutput
+from functools import reduce
 
 def countLines( path ):
 	print('loc for path:', path)

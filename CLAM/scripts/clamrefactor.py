@@ -273,7 +273,7 @@ class ClamNetwork() :
 		for processing in self._processingsOfType(processingType) :
 			if processing.findall(name) : continue # Already present, don't add
 			parameterElement = ElementTree.Element(name) 
-			parameterElement.text = unicode(default)
+			parameterElement.text = str(default)
 			processing.append(parameterElement)
 			self._log("Adding configuration parameter %s.%s = %s" %(
 				processing.get("id"), name, default))

@@ -320,7 +320,7 @@ def SetupSpawn( env ):
 
 		sAttrs = win32security.SECURITY_ATTRIBUTES()
 		StartupInfo = win32process.STARTUPINFO()
-		newargs = string.join(map(escape, args[1:]), ' ')
+		newargs = ' '.join(map(escape, args[1:]))
 		cmdline = cmd + " " + newargs
 
 		# check for any special operating system commands

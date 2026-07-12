@@ -7,7 +7,7 @@ nSpeakers = int(sys.argv[1])
 print("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 """)
-for speaker in xrange(nSpeakers) :
+for speaker in range(nSpeakers) :
 	print("""
   <processing id="%02i" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
 	speaker+1, 400+64*(speaker%6), (speaker%6)*6+(speaker//6)*95 ))
@@ -75,7 +75,7 @@ print("""
   </port_connection>
 """% { 'nSpeakers': nSpeakers })
 
-for speaker in xrange(nSpeakers) :
+for speaker in range(nSpeakers) :
 	print("""
   <port_connection>
     <out>SndfilePlayer.out%(playerPort)s</out>

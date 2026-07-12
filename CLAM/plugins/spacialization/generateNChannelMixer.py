@@ -32,7 +32,7 @@ print("""
   </processing>
 """%dict(gain0=gain0, gain1=gain1))
 
-for i in xrange(nSpeakers) :
+for i in range(nSpeakers) :
 	print("""\
   <processing id="Input_%(i)02i_0" position="0,%(y1)s" size="128,108" type="AudioSource"/>
 
@@ -46,7 +46,7 @@ for i in xrange(nSpeakers) :
   <processing id="Ouput_%(i)02i" position="446,%(y1)s" size="128,111" type="AudioSink"/>
 """ % dict(i = i, y1=110+i*100, y2=120+(nSpeakers+i)*100))
 
-for i in xrange(nSpeakers) :
+for i in range(nSpeakers) :
 	print("""\
   <port_connection>
     <out>Input_%(i)02i_0.1</out>
@@ -64,7 +64,7 @@ for i in xrange(nSpeakers) :
   </port_connection>
 """%dict(i=i))
 
-for i in xrange(nSpeakers) :
+for i in range(nSpeakers) :
 	print("""\
   <control_connection>
     <out>Gain 0.out</out>

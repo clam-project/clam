@@ -131,7 +131,7 @@ class Parser:
 			match = re.compile(r'^fn=\((?P<id>\d+)\)').search(line)
 			if match  ==  None: continue
 			functionId = int(match.group('id'))
-			if symbolMap.has_key(functionId): return functionId
+			if functionId in symbolMap: return functionId
 			
 		return 0
 		

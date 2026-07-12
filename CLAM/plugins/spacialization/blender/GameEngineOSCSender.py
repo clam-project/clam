@@ -48,7 +48,7 @@ def getTypeOfObject(owner):
 #	print owner
 #	print owner.has_key('sound_type')
 
-	if not owner.has_key('sound_type'):
+	if 'sound_type' not in owner:
 		print("Warning: connected an object without sound_type attribute.")
 		return None
 	return owner.get('sound_type')
@@ -95,7 +95,7 @@ def main(controller):
 	pitch = -descention
 	rotation = (yaw,pitch,roll)
 
-	if object.has_key('osc_ports'):
+	if 'osc_ports' in object:
 		ports=object.get('osc_ports').split()
 	else:
 		ports=[7000]
@@ -103,7 +103,7 @@ def main(controller):
 
 	ipToSend=None
 
-	if object.has_key('osc_send_to_ip'):
+	if 'osc_send_to_ip' in object:
 		ipToSend=object.get('osc_send_to_ip')
 
 	for port in ports:
