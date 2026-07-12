@@ -237,7 +237,7 @@ def enable_modules( self, libs, path) :
 		self['ENV'] = dict(oldEnv)
 		return
 
-	raise "No CLAM support for your platform, sorry"
+	raise Exception("No CLAM support for your platform, sorry")
 
 
 def generate(env) :

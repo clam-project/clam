@@ -12,7 +12,7 @@ def _svnRevisionOf( whatToCheck, revisionOption="" ):
 		match = revisionLocator.match(line)
 		if not match: continue
 		return match.group('revision').strip()
-	raise "No svn revision found for "+ whatToCheck
+	raise Exception("No svn revision found for "+ whatToCheck)
 
 def _parseChangesFile( changesFile, product='CLAM' ) :
 	versionExtractor = re.compile(r'[0-9?]+-[0-9?]+-[0-9?]+ %s (?P<Major>[0-9]+)\.(?P<Minor>[0-9]+)\.(?P<Patch>[0-9]+)(?P<SVN>.*SVN[^0-9]*(?P<Revision>[0-9]+))?'%product)
