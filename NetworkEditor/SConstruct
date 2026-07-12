@@ -45,12 +45,12 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
 if env['enable_python'] :
 	env.AppendUnique(CPPDEFINES=[ "CLAM_USE_PYTHON" ])
-	env.ParseConfig('python-config --cflags')
-	env.ParseConfig('python-config --libs')
+	env.ParseConfig('python3-config --cflags')
+	env.ParseConfig('python3-config --libs')
 	# Those lines are for ipyclam console
 	env.AppendUnique(LIBS=['boost_python'])
 	env.ParseConfig('pkg-config --cflags --libs shiboken')
-	# g++ complaints about -Wstrict-prototypes added by python-config
+	# g++ complaints about -Wstrict-prototypes added by python3-config
 	if '-Wstrict-prototypes' in env['CCFLAGS'] :
 		env['CCFLAGS'].remove("-Wstrict-prototypes")
 

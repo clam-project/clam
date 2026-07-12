@@ -15,8 +15,8 @@ options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
-env.ParseConfig('python-config --cflags')
-env.ParseConfig('python-config --libs')
+env.ParseConfig('python3-config --cflags')
+env.ParseConfig('python3-config --libs')
 env.ParseConfig('pkg-config --cflags --libs pyside')
 
 if env['enable_clam'] :
@@ -32,7 +32,7 @@ env.AppendUnique(
 	LIBS=['boost_python']
 )
 
-# python-config adds a flag that is refused by g++
+# python3-config adds a flag that is refused by g++
 if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
