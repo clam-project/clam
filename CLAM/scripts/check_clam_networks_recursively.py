@@ -188,7 +188,7 @@ def main():
 		exit(0)
 
 	data_path= args1[0]
-#	print "Path: ", data_path
+#	print("Path: ", data_path)
 	
 	if len(args1) >1:
 		try:
@@ -202,7 +202,7 @@ def main():
 				for dir in args2:
 					subdirectories_excluded.insert(0, os.path.join(data_path, dir))
 			
-#	print "Excluded: ", subdirectories_excluded
+#	print("Excluded: ", subdirectories_excluded)
 
 	os.access( data_path, os.X_OK ) or die(
 		"Datapath at '%s' not available. "%data_path +

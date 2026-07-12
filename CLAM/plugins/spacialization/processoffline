@@ -3,13 +3,13 @@
 import os
 
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
+	print("\033[32m:: ", command, "\033[0m")
 	return os.system(command)
 	for line in os.popen(command) :
-		print line,
+		print(line, end=' ')
 		sys.stdout.flush()
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print("\033[31mXX ", command, "\033[0m")
 
 enable_surround = True
 enable_hrtf = True
@@ -47,9 +47,9 @@ for realization_name, db in examples:
 	run("mkdir -p %(outdir)s/stereo" % vars)
 	run("rm -f current_path.data && ln -s %(pathfile)s current_path.data" % vars)
 	for instrument, inputwav, dbsubdir in instruments :
-		print '%sL.wav'%instrument
-		print inputwav
-		print dbsubdir
+		print('%sL.wav'%instrument)
+		print(inputwav)
+		print(dbsubdir)
 		vars['lwav']='%sL.wav'%instrument
 		vars['rwav']='%sR.wav'%instrument
 		vars['slwav']='%sSL.wav'%instrument
@@ -57,7 +57,7 @@ for realization_name, db in examples:
 		vars['cwav']='%sC.wav'%instrument
 		vars['inputwav']=inputwav
 		vars['db']='%s/%s'%(db,dbsubdir)
-		print vars
+		print(vars)
 
 		# set the db corresponding to the instrument db
 		run("rm -f db && ln -s %(db)s db" % vars)

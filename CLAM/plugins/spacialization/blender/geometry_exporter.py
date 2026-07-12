@@ -49,8 +49,8 @@ def callbackExportButton(event,value):
 
 def callbackChangeFilename(event,value):
 	global FilenameToExport
-#	print "callbackChangeFilename!"
-#	print "event: %s - value: %s" % ( str(event),str(value) )
+#	print("callbackChangeFilename!")
+#	print("event: %s - value: %s" % ( str(event),str(value) ))
 	FilenameToExport=str(value)
 	return
 

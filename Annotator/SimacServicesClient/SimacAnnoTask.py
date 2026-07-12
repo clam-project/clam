@@ -94,7 +94,7 @@ def startProcess():
 		form.exitButton.setFocus()
 
 def quit():
-	#print "quit"
+	#print("quit")
 	app.quit()
 
 def createConnections():

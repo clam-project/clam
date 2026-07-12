@@ -217,7 +217,7 @@ def test(port):
     """Some example messages and bundles, sent to port."""
 
     Message("/http", ["www dot k-hornz dot de", 12, 3.41, "bulb"]).sendlocal(port)
-    # print Int(len(Message("/msg").get_packet())).binary_value()
+    # print(Int(len(Message("/msg").get_packet())).binary_value())
     Bundle(0.1, [Message("/fubar")]).sendlocal(port)
     Bundle(time(), [Message("/msg", [1.0, "+", 1, 61, "0"]), Message("/bang!")]).sendlocal(port)
 

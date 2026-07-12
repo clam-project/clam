@@ -198,7 +198,7 @@ def config_file_missing():
 	result = not reduce( func_and, map(os.path.exists, files) ) 
 
 #	if result == False:
-#		print "\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n"
+#		print("\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n")
 
 	return result
 

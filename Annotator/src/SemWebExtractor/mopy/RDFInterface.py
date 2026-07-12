@@ -97,7 +97,7 @@ def importRDFGraph(g, strict=True):
 			s_propURIs = [objs[s]._props[s_propname].propertyURI for s_propname in s_propnames]
 			s_propdict = dict(zip(s_propURIs, s_propnames))
 			
-			#print "Trying to find "+str(p)+" amongst : "+str(s_propURIs)
+			#print("Trying to find "+str(p)+" amongst : "+str(s_propURIs))
 			
 			if str(p) in s_propURIs:
 				# find object

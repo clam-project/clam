@@ -187,5 +187,5 @@ def initProperties(scene=Blender.Scene.GetCurrent()):
 				makeProperty(source,_sourcesWavPropertyId,fileName)
 			else:
 				makeProperty(source,_sourcesWavPropertyId,"nofilename.wav")
-#				print "Error: there are sources, but there is any available sound file. Aborting.."
+#				print("Error: there are sources, but there is any available sound file. Aborting..")
 #				return -1

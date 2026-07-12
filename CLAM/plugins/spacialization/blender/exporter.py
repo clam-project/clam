@@ -92,9 +92,9 @@ def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 	buffer=_geometryHeader
 	actors=[]
 	actors=Acoustic.getActors()
-#	print "---------- acoustic actors: %s" % list(actors)
+#	print("---------- acoustic actors: %s" % list(actors))
 #	for object in scene.objects:
-#	print "---------- acoustic objects: %s" % list(Acoustic.getAcousticObjects(scene))
+#	print("---------- acoustic objects: %s" % list(Acoustic.getAcousticObjects(scene)))
 	for object in Acoustic.getAcousticObjects(scene):
 		if skipOthersGeometries and Acoustic.getObjectSoundTypeGameProperty(object) != typeOfGeometry:
 			continue
@@ -212,7 +212,7 @@ def choreoExport (scene,normalize=True):
 		Blender.Draw.PupMenu('You have to select one listener and at least one source objects!')
 		return
 	allAcousticObjects=Acoustic.getAcousticObjects(scene)
-	# print list(allAcousticObjects)
+	# print(list(allAcousticObjects))
 	#TODO: refactor this (checked three times!)
 	if normalize==True:
 		normalizationOffset,normalizationScale=getNormalizationParameters(allAcousticObjects)

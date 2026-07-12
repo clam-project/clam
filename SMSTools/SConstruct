@@ -50,8 +50,8 @@ if crosscompiling :
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("SMSTools")
-print "Version: ", version
-print "Package version: ", fullVersion
+print("Version: ", version)
+print("Package version: ", fullVersion)
 versionInfo.generateVersionSources(os.path.join('src','SMSToolsVersion'), "SMSTools", version, fullVersion)
 
 # KLUDGE!!!!!!!!!!!!!!!!!!
@@ -128,7 +128,7 @@ if sys.platform == "win32" :
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 sources = unique(sources)
-print '\n'.join(sources)
+print('\n'.join(sources))
 """
 sources.append(os.path.join('src','Progress.cxx'))
 sources.append(os.path.join('src','SMSBase.cxx'))
@@ -142,7 +142,7 @@ sources.append(os.path.join('src','XMLSerializer.cxx'))
 
 for specificSources in mainSources.values() :
 	for specificSource in specificSources :
-		print "removing",specificSource
+		print("removing",specificSource)
 		sources.remove(specificSource)
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
@@ -150,7 +150,7 @@ if qrcfiles : sources += env.Qrc(source=qrcfiles)
 
 uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
-print uifiles
+print(uifiles)
 
 """
 sources += [ os.path.join( os.path.dirname(uiccpp),

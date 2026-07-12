@@ -64,7 +64,7 @@ class DataCollector:
 ##        return dbi.costMapToDB(testMap,testingDate,dbe)
         
 
-##print "We are Executing the callgrind collector :)"
+##print("We are Executing the callgrind collector :)")
 ##input = sys.argv[1]               
 ##inputFile=open(input,'r')
 ##dataCollector=DataCollector()

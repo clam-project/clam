@@ -49,7 +49,7 @@ class NetworkHandler(xml.sax.handler.ContentHandler) :
 
 	def network(self, clamVersion="1.4.1", id="Unnamed") :
 		self._result += "\t\tnetwork.SetName(\"" + id + "\");\n"
-#		print "Network:", id, "version", clamVersion
+#		print("Network:", id, "version", clamVersion)
 
 	def description(self) : pass
 
@@ -90,7 +90,7 @@ class NetworkHandler(xml.sax.handler.ContentHandler) :
 		self._connectionIn = None
 
 	def startElement(self, name, attrs) :
-#		print "Start:", name
+#		print("Start:", name)
 		self._currentPath.append(name)
 		if not self._processingName :
 			try : getattr(self,name)(**attrs)

@@ -45,8 +45,8 @@ listenerId="listener"
 sourceId="source"
 
 def getTypeOfObject(owner):
-#	print owner
-#	print 'sound_type' in owner
+#	print(owner)
+#	print('sound_type' in owner)
 
 	if 'sound_type' not in owner:
 		print("Warning: connected an object without sound_type attribute.")

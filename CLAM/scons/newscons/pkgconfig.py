@@ -2,7 +2,7 @@
 
 def _command_check(context, message, command) :
 	"Helper function to reduce command trying code"
-#	print "command:", command
+#	print("command:", command)
 	context.Message(message)
 	runok, output = context.TryAction(command)
 	context.Result(runok)

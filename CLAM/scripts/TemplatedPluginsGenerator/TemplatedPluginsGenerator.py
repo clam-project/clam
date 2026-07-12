@@ -62,7 +62,7 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 
 def copy_file( definitions_dict, filename ):
 	if os.path.isfile("templates/" + definitions_dict["template_name"] + "/" + filename):
-		#print "Copying " + filename + " file"
+		#print("Copying " + filename + " file")
 		shutil.copyfile( "templates/" + definitions_dict["template_name"] + "/" + filename, definitions_dict["output_dir"] + "/" + definitions_dict["plugin_name"] + "/" + filename )
 #copy_file()
 
@@ -125,7 +125,7 @@ def main(args):
 
 	try:
 		definitions_dict["year"] = sys.argv[5]
-		#print "Year: " + definitions_dict["year"]
+		#print("Year: " + definitions_dict["year"])
 		definitions_dict["year"] += " "
 	except:
 		definitions_dict["year"] = "" # default value

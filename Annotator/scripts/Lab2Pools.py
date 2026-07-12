@@ -42,7 +42,7 @@ def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAt
 	print('\t\t<AttributePool name="%s" size="%s">'%(segmentationAttribute, len(tokens)*2), end=' ', file=output)
 	for segment in tokens :
 		#In samples
-		#print >> output, int(round(float(segment[0])*sampleRate)), int(round(float(segment[1])*sampleRate)),
+		#print(int(round(float(segment[0])*sampleRate)), int(round(float(segment[1])*sampleRate)), file=output)
 		#In seconds
 		print(segment[0], segment[1], end=' ', file=output)
 	print('</AttributePool>', file=output)
