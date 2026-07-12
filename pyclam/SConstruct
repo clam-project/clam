@@ -18,10 +18,10 @@ avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option=='1
 python_version = "python%s.%s" % ( sys.version_info[0], sys.version_info[1] )
 
 if needs_configure and not avoid_configure :
-	print 'Configure phase...'
+	print('Configure phase...')
 	opts.Update(env)
 	opts.Save(options_filename, env)
-	print "Finished. Invoke 'scons' now."
+	print("Finished. Invoke 'scons' now.")
 	Exit(0)
 
 try:

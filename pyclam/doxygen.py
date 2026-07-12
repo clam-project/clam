@@ -28,7 +28,7 @@ class doxygen_doc_extractor:
 				line = self.source[lcount]
 				if not find_block_end:
 					try:
-						print line.rstrip()[-2:]
+						print(line.rstrip()[-2:])
 						if line.rstrip()[-2:] == "*/":
 							find_block_end = True
 					except:

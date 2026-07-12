@@ -28,7 +28,7 @@ from Tasker import Tasker, TaskerError
 ############################################ TASKER-MANAGEMENT FUNCTIONS
 
 def usage():
-	print( """
+	print("""
 	SimacServices Annotator Client
 
  Usage:
@@ -75,20 +75,20 @@ def TaskerDo( argv ):
 			modifiedlist = modifiedlist.split('\n')
 
 		if len( modifiedlist )==0:
-			print "\n - No descriptor pool modified. Exiting without uploading anything.\n"
+			print("\n - No descriptor pool modified. Exiting without uploading anything.\n")
 		else:
-			print "\n - The following descriptor pools will be uploaded:\n  -" + ( '\n  - ' ).join( modifiedlist )
+			print("\n - The following descriptor pools will be uploaded:\n  -" + ( '\n  - ' ).join( modifiedlist ))
 			answer = raw_input( "\n > Do you want to do it? (y/n)  " ) 
 			if answer.strip() == 'y':
 				if tasker.uploadChanges( taskfile, projectname, path ) == -1:
-					print "\n - Error uploading descriptors\n"
+					print("\n - Error uploading descriptors\n")
 				else:
-					print "\n - Descriptors uploaded OK\n"
+					print("\n - Descriptors uploaded OK\n")
 			else:
-				print "\n - No descriptor uploaded\n"
+				print("\n - No descriptor uploaded\n")
 		#tasker.clean()
 	except TaskerError, err:
-		print >> sys.stderr, err
+		print(err, file=sys.stderr)
 		sys.exit(-1)
 
 def TaskerProcesstask( argv ):
@@ -147,7 +147,7 @@ def main( argv ):
 		else:
 			usage()
 	except TaskerError, err:
-		print >> sys.stderr, err
+		print(err, file=sys.stderr)
 		sys.exit(-1)
 	sys.exit(0)
 

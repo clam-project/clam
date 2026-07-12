@@ -91,7 +91,7 @@ def test_sndfile( env, conf ) :
 	return True
 
 def test_oggvorbis( env, conf ) :
-	if not conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc']) :
+	if not conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc', 'vorbis', 'ogg']) :
 		return False
 	if not conf.CheckLibrarySample('libogg', 'c', None, libogg_test_code ) : return False
 	if not conf.CheckLibrarySample('libvorbis', 'c', None, libvorbis_test_code ) : return False

@@ -5,8 +5,8 @@ import sys
 schema = sys.argv[1]
 pools = sys.argv[2:]
 
-print "Schema:", schema
-print "pools:", pools
+print("Schema:", schema)
+print("pools:", pools)
 
 from xml.etree import ElementTree
 schemaDoc = ElementTree.parse(file(schema))
@@ -16,7 +16,7 @@ segmentationAttributes = [ (line.attrib['scope'], line.attrib['name'], (line.fin
 	if line.attrib['type'] == 'Segmentation'
 ]
 
-print segmentationAttributes
+print(segmentationAttributes)
 schemaDoc.write(sys.stdout,'utf8')
 
 for pool in pools:
@@ -37,4 +37,3 @@ for pool in pools:
 				segmentations.set("size", line2.attrib.pop("size"))
 				line2.append(segmentations)
 	poolDoc.write(sys.stdout, 'utf8')
-

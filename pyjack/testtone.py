@@ -16,7 +16,7 @@ jack.connect("testtone:out_1", "alsa_pcm:playback_1")
 
 N = jack.get_buffer_size()
 Sr = float(jack.get_sample_rate())
-print "Buffer Size:", N, "Sample Rate:", Sr
+print("Buffer Size:", N, "Sample Rate:", Sr)
 sec = 3.0
 
 input = numpy.zeros((1,N), 'f')

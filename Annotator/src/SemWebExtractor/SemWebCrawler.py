@@ -36,31 +36,31 @@ class SemWebCrawler:
 		return 1
 	
 	def _requestServer(self, url):
-		print url
+		print(url)
 		req = urllib2.Request(url)
 		time.sleep(3)
 		try:
 			fp=urllib2.urlopen(req)
 		except HTTPError, e:
-			print 'The server ',url,' couldn\'t fulfill the request.'
-			print 'Error code:',e.code
+			print('The server ',url,' couldn\'t fulfill the request.')
+			print('Error code:',e.code)
 			return ' '
 		except URLError,e:
-			print 'We failed to reach the server',url
-			print 'Reason:', e.reason
+			print('We failed to reach the server',url)
+			print('Reason:', e.reason)
 			return ' '
 		try:
 			s = fp.read()
 		except:
-			print 'read HTTP exception:',url
+			print('read HTTP exception:',url)
 			s=' '
 		fp.close()
 		return s
 
 
 	def _getTrackURL(self, url):
-		print '####################################Zitgist#######################################'
-		print 'Linking to the server of \'Zitgist\':'
+		print('####################################Zitgist#######################################')
+		print('Linking to the server of \'Zitgist\':')
 		s=self._requestServer(url)
 		pattern= re.compile("http://dbtune.org/jamendo/track/\d*")
 		pattern2=re.compile("(?<=http://dbtune.org/jamendo/track/)\d*")
@@ -76,8 +76,8 @@ class SemWebCrawler:
 
 	def _getRecordURL(self, trackUrl, trackUrl2, trackUrl3):
 		if (trackUrl!=' '):
-			print '#######################################DBTune####################################'
-			print 'Linking to the server of \'DBTune\':'
+			print('#######################################DBTune####################################')
+			print('Linking to the server of \'DBTune\':')
 			s=self._requestServer(trackUrl)
 			if (s!=' '):
 				pattern = re.compile("http://dbtune.org/jamendo/record/\d*")
@@ -94,15 +94,15 @@ class SemWebCrawler:
 				self._tempRecord('temp_1', title1)
 				self._tempRecord('temp_2', trackNumber)
 				print'Extracting \'Track Title\':..........  ..........'
-				print title1
+				print(title1)
 				print'Extracting \'Track No.\':..........  ..........'
-				print trackNumber
+				print(trackNumber)
 			else:
 				url = ' '
 				url2 = ' '
 
-			print '#######################################Jamendo###################################'
-			print 'Linking to the server of \'Jamendo\':'
+			print('#######################################Jamendo###################################')
+			print('Linking to the server of \'Jamendo\':')
 			s2=self._requestServer(trackUrl2)
 			if (s2!=' '):
 				lyric=[]
@@ -115,33 +115,33 @@ class SemWebCrawler:
 				self._tempRecord('temp_3', lyric)
 				self._tempRecord('temp_4', genre)
 				self._tempRecord('temp_5', albumRating)
-				print 'Extracting \'Lyric\':..........  ..........'
-				print lyric
-				print 'Extracting \'Genre\':..........  ..........'
-				print genre
-				print 'Extracting \'Album Rating\':..........  ..........'
-				print albumRating
+				print('Extracting \'Lyric\':..........  ..........')
+				print(lyric)
+				print('Extracting \'Genre\':..........  ..........')
+				print(genre)
+				print('Extracting \'Album Rating\':..........  ..........')
+				print(albumRating)
 		else:
 			url = ' '
 			url2 = ' '
 
 		if (trackUrl3!=' '):
-			print '######################################Musicbrainz#################################'
-			print 'Linking to the server of \'Musicbrainz\':'
+			print('######################################Musicbrainz#################################')
+			print('Linking to the server of \'Musicbrainz\':')
 			s3=self._requestServer(trackUrl3)
 			if (s3!=' '):
 				musicBrainzTagPattern = re.compile("(?<=<a href=\"/show/tag/\?tag=).*?(?=&show=track\">)")
 				musicBrainzTag = musicBrainzTagPattern.findall(s3)
 				self._tempRecord('temp_6', musicBrainzTag)
 				print'Extracting \'Musicbrainz tags\':..........  ..........'
-				print musicBrainzTag
+				print(musicBrainzTag)
 		return url,url2
 	
 
 	def _getArtistURL(self, recordUrl, recordUrl2):
 		if(recordUrl!=' '):
-			print '#######################################DBTune####################################'
-			print 'Linking to the server of \'DBTune\':'
+			print('#######################################DBTune####################################')
+			print('Linking to the server of \'DBTune\':')
 			s = self._requestServer(recordUrl)
 			if (s!=' '):
 				pattern= re.compile("http://dbtune.org/jamendo/artist/\d*")
@@ -163,23 +163,23 @@ class SemWebCrawler:
 				self._tempRecord('temp_10', trackListURI)
 				self._tempRecord('temp_11', tag)
 				print'Extracting \'record title\':..........  ..........'
-				print title
+				print(title)
 				print'Extracting \'record data\':..........  ..........'
-				print date
+				print(date)
 				print'Extracting \'record jpg url\':..........  ..........'
-				print coverjpg
+				print(coverjpg)
 				print'Extracting \'record tracklist url\':..........  ..........'
-				print trackListURI
+				print(trackListURI)
 				print'Extracting \'record tags\':..........  ..........'
-				print tag
+				print(tag)
 			else:
 				url = ' '
 		else:
 			url = ' '
 
 		if (recordUrl2!=' '):
-			print '#######################################Jamendo###################################'
-			print 'Linking to the server of \'Jamendo\':'
+			print('#######################################Jamendo###################################')
+			print('Linking to the server of \'Jamendo\':')
 			s2 = self._requestServer(recordUrl2)
 			if (s2!=' '):
 				trackListPattern = re.compile("(?<=<td class=\"title_tracks\">).*?(?=</td>)") #the regulation match to be refined
@@ -195,20 +195,20 @@ class SemWebCrawler:
 				self._tempRecord('temp_14',review)
 				self._tempRecord('temp_15',jamendoTag)
 				print'Extracting \'album tracklist title\':..........  ..........'
-				print trackList
+				print(trackList)
 				print'Extracting \'album description\':..........  ..........'
-				print albumDescription
+				print(albumDescription)
 				print'Extracting \'album review\'::..........  ..........'
-				print review
+				print(review)
 				print'Extracting \'jamendo tags\':..........  ..........'
-				print jamendoTag
+				print(jamendoTag)
 		return url
 
 
 	def _getArtistData(self, artistUrl):
 		if(artistUrl!=' '):
-			print '#######################################DBTune####################################'
-			print 'Linking to the server of \'DBTune\':'
+			print('#######################################DBTune####################################')
+			print('Linking to the server of \'DBTune\':')
 			s = self._requestServer(artistUrl)
 			if (s!=' '):
 				namePattern = re.compile("(?<=>).*(?=</foaf:name>)")
@@ -227,15 +227,15 @@ class SemWebCrawler:
 				self._tempRecord('temp_19',photo)
 				self._tempRecord('temp_20',recordList)
 				print'Extracting \'artist name\':..........  ..........'
-				print name
+				print(name)
 				print'Extracting \'artist location\':..........  ..........'
-				print location
+				print(location)
 				print'Extracting \'artist homepage\':..........  ..........'
-				print homepage
+				print(homepage)
 				print'Extracting \'artist photo url\':..........  ..........'
-				print photo
+				print(photo)
 				print'Extracting \'artist\'s work list \':..........  ..........'
-				print recordList
+				print(recordList)
 
 
 	def spider(self):
@@ -243,7 +243,7 @@ class SemWebCrawler:
 		#editoralData = []
 		(zitgisturi, trackUrl3, MBID) = ac.metadata(self.filename)
 		trackUrl3=trackUrl3+'.html'
-		print 'Getting web identification \'MBID\'..........',MBID
+		print('Getting web identification \'MBID\'..........',MBID)
 		startURL = sparqlFront+zitgisturi+sparqlEnd
 		(trackUrl,trackUrl2)=self._getTrackURL(startURL)
 		(recordUrl,recordUrl2)=self._getRecordURL(trackUrl,trackUrl2,trackUrl3)

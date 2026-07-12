@@ -47,11 +47,11 @@ class FileMetadataSource :
 			raise FileMetadataSource.InvalidSchemaException(self.schemaFile)
 
 	def QueryDescriptors(self, id, ignoreCache=False, computeIfNotCached=False, keepCache=True) :
-		print "Computing", self.extractor, "for", id
+		print("Computing", self.extractor, "for", id)
 		if not ignoreCache and False : # TODO: Use properly the ignoreCache flag
 			try :
 				result = Pool(file(self._poolPath(id)))
-				print "Using cached data"
+				print("Using cached data")
 				return result
 			except IOError, e : pass # Not found
 		path=id # TODO: This should take the file given an id, by now using the path as id
@@ -64,7 +64,7 @@ class FileMetadataSource :
 		if self.extractor :
 			import subprocess
 			command = "%s -f %s %s"%(self.extractor, self.poolSuffix, path)
-			print "$",command
+			print("$",command)
 			sys.stdout.flush()
 			subprocess.call(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
 			sys.stdout.flush()

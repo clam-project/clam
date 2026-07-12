@@ -47,9 +47,9 @@ class Aggregator :
 			target.TranslateChildScope(self.targetScope, self.targetAttribute, self.aggregator.scopeMappings[self.source])
 
 		def dump(self, file) :
-			print >> file, "copy", self.source, \
+			print("copy", self.source, \
 				(self.scope + "::" + self.attribute), \
-				(self.targetScope + "::" + self.targetAttribute)
+				(self.targetScope + "::" + self.targetAttribute), file=file)
 
 	def __init__(self, script) :
 		errors = ""

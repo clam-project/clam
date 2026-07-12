@@ -78,7 +78,7 @@ class PoolsTest(unittest.TestCase):
 		output = cStringIO.StringIO()
 		for node in nodes :
 			xml.dom.ext.Print(node, output)
-			print >> output
+			print(file=output)
 		return output.getvalue()
 
 

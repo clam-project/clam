@@ -20,12 +20,12 @@ import time
 import sys
 
 if len(sys.argv)==1: # No input file
-	print "No input file."
-	print "Usage: playfile.py <input file name>"
+	print("No input file.")
+	print("Usage: playfile.py <input file name>")
 	sys.exit(-1)
 elif len(sys.argv)>2: #Too many parameters
-	print "Too many parameters"
-	print "Usage: playfile.py <input file name>"
+	print("Too many parameters")
+	print("Usage: playfile.py <input file name>")
 	sys.exit(-1)
 
 
@@ -39,7 +39,7 @@ def main(args):
 	config.SetSourceFile( filename )
 	
 	if not network.ConfigureProcessing( reader, toProcessingConfig(config) ): #FIXME
-		print "Could not open the file"
+		print("Could not open the file")
 	
 	sink = network.AddProcessing( "AudioSink" )
 	

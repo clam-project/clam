@@ -64,24 +64,24 @@ def numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, comput
 def calculateRecall(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start,end) :
 	NumberCorrectChords = numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 	NumberTrueChords = numberOfChordTimeUnits(trueSegmentation, hop,start,end)
-	print 'number of correctly computed chords:',NumberCorrectChords,'	number of true chords:',NumberTrueChords	
+	print('number of correctly computed chords:',NumberCorrectChords,'	number of true chords:',NumberTrueChords)
 	recall = float(NumberCorrectChords)/float(NumberTrueChords)
-	print 'RECALL: ',recall
+	print('RECALL: ',recall)
 	return recall
 
 def calculatePrecision(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start,end) :
 	NumberCorrectChords = numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 	NumberComputedChords = numberOfChordTimeUnits(computedSegmentation, hop,start,end)
-	print 'number of correctly computed chords:',NumberCorrectChords,'	number of computed chords:',NumberComputedChords	
+	print('number of correctly computed chords:',NumberCorrectChords,'	number of computed chords:',NumberComputedChords)
 	precision = float(NumberCorrectChords)/float(NumberComputedChords)
-	print 'PRECISION: ',precision
+	print('PRECISION: ',precision)
 	return precision
 
 def displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end) :
-	print 'time:	segment_computed segment_true	chord_computed chord_true'
+	print('time:	segment_computed segment_true	chord_computed chord_true')
 	time = start
 	while time < end :
-		print 'time:',time,'   segment:',segmentAtTime(computedSegmentation, time),segmentAtTime(trueSegmentation,time),'   chord:',chordAtTime(computedSegmentation,computedChords,time),chordAtTime(trueSegmentation,trueChords,time)
+		print('time:',time,'   segment:',segmentAtTime(computedSegmentation, time),segmentAtTime(trueSegmentation,time),'   chord:',chordAtTime(computedSegmentation,computedChords,time),chordAtTime(trueSegmentation,trueChords,time))
 		time += hop
 
 
@@ -89,14 +89,14 @@ def displayAllChords(computedSegmentation, trueSegmentation, computedChords, tru
 if len(sys.argv) == 3 :
 	computedFile = sys.argv[1]
 	trueFile = sys.argv[2]
-	print 'File containing computed segmentation:    ', computedFile
-	print 'File containing ground truth segmentation:', trueFile
-	print
+	print('File containing computed segmentation:    ', computedFile)
+	print('File containing ground truth segmentation:', trueFile)
+	print()
 else :
-	print >> sys.stderr, "SegmentationError.py - computing precision and recall"
-	print >> sys.stderr, "Usage: ./Segmentation.py <computedFile> <trueFile>"
-	print >> sys.stderr, "<computedFile> - .chords file containing the computed segmentation to be evaluated"
-	print >> sys.stderr, "<trueFile> - .chords file containing the ground truth segmentation"
+	print("SegmentationError.py - computing precision and recall", file=sys.stderr)
+	print("Usage: ./Segmentation.py <computedFile> <trueFile>", file=sys.stderr)
+	print("<computedFile> - .chords file containing the computed segmentation to be evaluated", file=sys.stderr)
+	print("<trueFile> - .chords file containing the ground truth segmentation", file=sys.stderr)
 	sys.exit()
 
 computedPool = Pool(computedFile)
@@ -122,10 +122,10 @@ hop = 4096.0/44100.0
 start = hop/2.0
 end = start + max(computedSegmentation[len(computedSegmentation)-1],trueSegmentation[len(trueSegmentation)-1])
 
-print 'hop:',hop
-print 'start time:',start
-print 'end time:',end
-print
+print('hop:',hop)
+print('start time:',start)
+print('end time:',end)
+print()
 
 #displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 
