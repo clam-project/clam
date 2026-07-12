@@ -109,7 +109,7 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 	tries=0
 	successful_connections=0
 	max_tries = float(wait) / run_client_wait_time
-	for i in xrange(num_connections) :
+	for i in range(num_connections) :
 		connected=False
 		while connected == False and tries < max_tries:
 			connected = connect(sources[i], targets[i])
@@ -122,8 +122,8 @@ def bus_disconnect(source, target) :
 	source, sources, target, targets, num_connections = _get_ports_as_list(source, target)
 	print('Doing %i disconnections. Client "%s" has %i out ports and "%s" has %i in ports' % \
 		(num_connections,source,len(sources),target,len(targets)))
-
-	for i in xrange(num_connections) :
+ 
+	for i in range(num_connections) :
 			disconnect(sources[i], targets[i])
 	return num_connections
 

@@ -115,7 +115,7 @@ class ClamNetwork() :
 	def ensureVersion(self, versionString) :
 		'''Makes the next commands apply just if the network version
 		versionString'. Use 'any' to remove the restriction'''
-		if versionString.lower() is "any" : versionString = ''
+		if versionString.lower() == "any" : versionString = ''
 		self.ensuredVersion = versionString
 		
 	def upgrade(self, version) :

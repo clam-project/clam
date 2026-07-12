@@ -14,7 +14,7 @@ class PropertySet(set):
 		self.propertyURI = propertyURI
 		self.validTypes = validTypes
 		self.allowLits = allowLits
-		self.Lits = (str, unicode, int, float) # Any more ? 
+		self.Lits = (str, bytes, int, float) # Any more ?
 	#
 	# Set functions :
 	#	

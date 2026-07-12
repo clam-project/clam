@@ -101,7 +101,7 @@ programs = []
 for dir in targetDirs:
 	if os.path.normpath(dir) in blacklist: continue
 	# Filtering qdbus examples in windows. Temporary kludge until Qt4.4.
-	if (sys.platform is 'win32' or crosscompiling) and dir.startswith('qdbus') : continue
+	if (sys.platform == 'win32' or crosscompiling) and dir.startswith('qdbus') : continue
 
 	sources = scanFiles(dir,
 		accept=["*.cpp", "*.c"], # *.c needed for some 3rd party files on the examples
@@ -120,7 +120,7 @@ for dir in targetDirs:
 
 	# Those projects use header or outputs of other projects
 	if dir == 'tools/plugandpaint' :
-		if sys.platform is 'win32' or crosscompiling :
+		if sys.platform == 'win32' or crosscompiling :
 			sources.append('tools/plugandpaintplugins/basictools/basictools.lib')
 		else :
 			sources.append('tools/plugandpaintplugins/basictools/libbasictools.a')
@@ -162,7 +162,7 @@ for dir in targetDirs:
 
 for source in singleCppExtraBinaries :
 	# Filtering qdbus examples in windows. Temporary kludge until Qt4.4.
-	if (sys.platform is 'win32' or crosscompiling) and source.startswith('qdbus') : continue
+	if (sys.platform == 'win32' or crosscompiling) and source.startswith('qdbus') : continue
 	targetBin = os.path.splitext(source)[0]
 	print("Program:", os.path.splitext(source)[0])
 	additionalPaths = subdirsContaining(dir, ['*.h', '*.ui'])

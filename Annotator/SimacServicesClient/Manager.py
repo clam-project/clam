@@ -78,7 +78,7 @@ def TaskerDo( argv ):
 			print("\n - No descriptor pool modified. Exiting without uploading anything.\n")
 		else:
 			print("\n - The following descriptor pools will be uploaded:\n  -" + ( '\n  - ' ).join( modifiedlist ))
-			answer = raw_input( "\n > Do you want to do it? (y/n)  " ) 
+			answer = input( "\n > Do you want to do it? (y/n)  " ) 
 			if answer.strip() == 'y':
 				if tasker.uploadChanges( taskfile, projectname, path ) == -1:
 					print("\n - Error uploading descriptors\n")

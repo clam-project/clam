@@ -55,7 +55,7 @@ def bus_connect(source, target):
 	targets = target if type(target) == type([]) else getClientInputPorts(target)
 	num_connections = min(len(sources), len(targets))
 	print('Doing %i connections. Client has %i out ports and target has %i in ports' % (num_connections, len(sources), len(targets)))
-	for i in xrange(num_connections) :
+	for i in range(num_connections) :
 		print('connect', sources[i], targets[i])
 		connect(sources[i], targets[i])
 	return num_connections != 0

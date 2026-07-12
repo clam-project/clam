@@ -6,7 +6,7 @@ accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
 """
 
-class doxygen_doc_extractor:
+from functools import reduce
 	"""
 	Extracts Doxygen styled documentation from source or generates it from description.
 	"""
@@ -24,7 +24,7 @@ class doxygen_doc_extractor:
 
 			find_block_end = False
 			doc_lines = []
-			for lcount in xrange(declaration.location.line-2, -1, -1):
+			for lcount in range(declaration.location.line-2, -1, -1):
 				line = self.source[lcount]
 				if not find_block_end:
 					try:

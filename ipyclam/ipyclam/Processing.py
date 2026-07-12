@@ -56,7 +56,7 @@ class Processing(object):
 			raise AttributeError(name)
 
 	def __setattr__(self, name, value):
-		if name is 'type': raise AttributeError("Attribute 'type' is read only")
+		if name == 'type': raise AttributeError("Attribute 'type' is read only")
 		self.__setitem__(name, value)
 
 	def __dir__(self):
