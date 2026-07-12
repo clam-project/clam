@@ -10,7 +10,7 @@ import clamrefactor
 
 def generate_flanger_network(layoutfile):
 	channels = len([line for line in open(layoutfile) if line.strip()[0] != '#'])
-	print "num channels: ", channels
+	print("num channels: ", channels)
 	template_filename = "rotatingFlanger_template.clamnetwork"
 	filename = "rotatingFlanger_%i.clamnetwork" % channels
 	network = clamrefactor.ClamNetwork(open(template_filename))

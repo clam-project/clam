@@ -48,8 +48,8 @@ def callBackMaterialButtons(event,val):
 		Acoustic.setDiffusion(material,val)
 	return
 def callBackListener(event,val):
-	print "callBackListener"
-	print "event: %s\t-\tval: %s" % (event,val)
+	print("callBackListener")
+	print("event: %s\t-\tval: %s" % (event,val))
 	listeners=Acoustic.getListeners()
 	if val>0:
 		newListener=listeners[val-1]

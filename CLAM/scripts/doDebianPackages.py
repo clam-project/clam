@@ -52,18 +52,18 @@ aptconfiguration = "APT::Get::AllowUnauthenticated 1;"
 failedSteps = []
 
 def run(command) :
-	print "\033[32m:: ", command, " \033[0m"
+	print("\033[32m:: ", command, " \033[0m")
 	sys.stdout.flush()
 	retcode = os.system(command.encode("utf8"))
 	if retcode != 0 : failedSteps.append(command)
 	return retcode
 	for line in os.popen(command) :
-		print line,
+		print(line, end=' ')
 		sys.stdout.flush()
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print("\033[31mXX ", command, "\033[0m")
 def phase(desc) :
-	print "\033[33m== ", desc, "\033[0m"
+	print("\033[33m== ", desc, "\033[0m")
 
 phase( "Setting up the environment" )
 run ("echo 'Remember: run this as root, and configure proxy settings (both in the script and ~/.subversion/servers)'")
@@ -86,7 +86,7 @@ run ("chmod a+x hooks/*")
 
 phase( "Obtaining latest sources" )
 
-print repositories
+print(repositories)
 for package, srcpackage, version in repositories :
 	module = repositoryBase + package
 	modulePackaging = module + '/debian'
@@ -163,7 +163,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 				'proxyoption': proxyoption,
 		})
 		if ret<0 and srcpackage == "clam" :
-			print >> sys.stderr, "\033[31mCLAM LIBS COULD NOT BE COMPILED in", maindistro, distribution, "\033[0m"
+			print("\033[31mCLAM LIBS COULD NOT BE COMPILED in", maindistro, distribution, "\033[0m", file=sys.stderr)
 			break
 		# We need update the package for each package for interdependencies
 		run("cd %(resultdir)s; /usr/bin/dpkg-scanpackages . /dev/null > Packages; cd -" %{
@@ -194,7 +194,7 @@ if '--noupload' not in sys.argv :
 
 
 if failedSteps :
-	print "Those steps have failed:"
+	print("Those steps have failed:")
 	for step in failedSteps :
-		print step
+		print(step)
 

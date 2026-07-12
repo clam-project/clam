@@ -10,7 +10,7 @@ import clamrefactor
 
 def generate_3d_chorus_network(layoutfile):
 	channels = len([line for line in open(layoutfile) if line.strip()[0] != '#'])
-	print "num channels: ", channels
+	print("num channels: ", channels)
 	template_filename = "3d_chorus_template.clamnetwork"
 	filename = "3d_chorus_%i.clamnetwork" % channels
 	network = clamrefactor.ClamNetwork(open(template_filename))

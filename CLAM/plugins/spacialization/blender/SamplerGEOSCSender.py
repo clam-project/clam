@@ -50,7 +50,7 @@ for testpath in pathToOSCList:
 		configured=1
 		break
 if configured==0:
-	print "Can't found OSC.py. Aborting."
+	print("Can't found OSC.py. Aborting.")
 	
 def sendPlay(objectName,voice,value=1,loop=0,port=7000):
 	message="/SpatDIF/source/%s/sampler/%s/setLoop" % (objectName,voice)

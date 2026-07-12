@@ -11,22 +11,22 @@ RunFromCurrentDir=1
 RunFromBaseDir=2
 
 def run(command) :
-	print '\033[32m:: ', command, '\033[0m'
+	print('\033[32m:: ', command, '\033[0m')
 	errorCode = os.system(command)
 	if errorCode :
-		print "\n\nThe following command failed:"
-		print '\033[31m', command, '\033[0m'
+		print("\n\nThe following command failed:")
+		print('\033[31m', command, '\033[0m')
 		sys.exit()
 	return not errorCode
 
 def norun(command) :
-	print '\033[31mXX ', command, '\033[0m'
+	print('\033[31mXX ', command, '\033[0m')
 
 def phase(msg) :
-	print '\033[33m== ', msg, '\033[0m'
+	print('\033[33m== ', msg, '\033[0m')
 
 def die(message, errorcode=-1) :
-	print >> sys.stderr, message
+	print(message, file=sys.stderr)
 	sys.exit(errorcode)
 
 
@@ -64,13 +64,13 @@ def accept(datapath, back2BackCases, archSpecific=False, cases=[]) :
 			base = prefix(datapath, case, output)
 			badResult = badResultName(base)
 			if not os.access(badResult, os.R_OK) : continue
-			print "Accepting", badResult
+			print("Accepting", badResult)
 			if archSpecific :
 				os.rename(badResult, expectedArchName(base))
 			else :
 				os.rename(badResult, expectedName(base))
 	if remainingCases :
-		print "Warning: No such test cases:", ", ".join("'%s'"%case for case in remainingCases)
+		print("Warning: No such test cases:", ", ".join("'%s'"%case for case in remainingCases))
 
 def removeIfExists(filename) :
 	try: os.remove(filename)
@@ -103,7 +103,7 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 			output = process.returncode;
 			
 			if output:
-				print stdout_text
+				print(stdout_text)
 				failedCases.append((case, ["Command: %s"%(command)]))
 				continue
 
@@ -113,15 +113,15 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 			
 	os.chdir(myDirectory);
 	
-	print "Summary:"
-	print '\033[32m%i passed cases\033[0m'%(len(clamnetworks)-len(failedCases))
+	print("Summary:")
+	print('\033[32m%i passed cases\033[0m'%(len(clamnetworks)-len(failedCases)))
 
 	if not failedCases : return True
 
-	print '\033[31m%i failed cases!\033[0m'%len(failedCases)
+	print('\033[31m%i failed cases!\033[0m'%len(failedCases))
 	for case, msgs in failedCases :
 		for msg in msgs :
-			print " %s"%msg
+			print(" %s"%msg)
 	return False
 
 help ="""
@@ -167,7 +167,7 @@ def main():
 	try:
 		optlist1, args1 = getopt.getopt(args, "bchl",  ["basedir", "localdir", "help", "list"])
 	except getopt.error, msg:
-		print "[1] for help use --help"
+		print("[1] for help use --help")
 		sys.exit(2)
 
 	# process options
@@ -178,13 +178,13 @@ def main():
 		if o in ("-b", "--basedir"):	# Run directory network = path 
 			mode = RunFromBaseDir
 		if o in ("-h", "--help"):
-			print help
+			print(help)
 			sys.exit(0)
 		if o in ("-l", "--list"):
 			showList=1;
 
 	if len(args1) ==0:
-		print help
+		print(help)
 		exit(0)
 
 	data_path= args1[0]
@@ -194,7 +194,7 @@ def main():
 		try:
 			optlist2, args2 = getopt.getopt(args1[1:], "k",  ["blacklist"])
 		except getopt.error, msg:
-			print "[2] for help use --help"
+			print("[2] for help use --help")
 			sys.exit(2)
 		
 		for o, a in optlist2:
@@ -210,7 +210,7 @@ def main():
 
 	clam_networks=set();
 
-	print subdirectories_excluded
+	print(subdirectories_excluded)
 
 	for dir in recursiveDirs( data_path ):
 		valid=1;
@@ -223,7 +223,7 @@ def main():
 
 	if(showList==1):
 		for case in clam_networks :
-			print case
+			print(case)
 	else:
 		runCheckClamnetworksProgram(data_path, clam_networks,  mode)
 

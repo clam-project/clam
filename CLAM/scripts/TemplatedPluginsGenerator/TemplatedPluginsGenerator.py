@@ -27,7 +27,7 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 	plugin_name = definitions_dict["plugin_name"]
 	
 	if not os.path.isdir('templates'):
-		print "Error. There is not templates dir"
+		print("Error. There is not templates dir")
 		sys.exit(3)
 	try:
 		f = open( "templates/" + template_dir + "/" + filename , 'r' )
@@ -50,10 +50,10 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 		ext = ""
 	try:
 		f = open( definitions_dict["output_dir"]+"/" + plugin_name + "/" + new_file_name + ext, "w" )
-		print "Creating " + definitions_dict["output_dir"]+ "/" + plugin_name + "/" + new_file_name + ext + " file"
+		print("Creating " + definitions_dict["output_dir"]+ "/" + plugin_name + "/" + new_file_name + ext + " file")
 	except:
-		print definitions_dict["output_dir"] + "/" + plugin_name + "/" + plugin_name + ext
-		print "Output file write error."
+		print(definitions_dict["output_dir"] + "/" + plugin_name + "/" + plugin_name + ext)
+		print("Output file write error.")
 		sys.exit(2)
 	if (ext==".hxx" or ext==".cxx") and definitions_dict["license"]!="null":
 		f.write( definitions_dict['license_text'] + "\n\n" )
@@ -70,8 +70,8 @@ def make_license_text(definitions_dict):
 	try:
 		f = open( "licenses/" + definitions_dict["license"] + ".txt", 'r' )
 	except IOError:
-		print "License file read error."
-		print "License: " + plugin_dict["license"]
+		print("License file read error.")
+		print("License: " + plugin_dict["license"])
 		sys.exit(2)
 	license_text = f.read(); f.close()
 	if definitions_dict["copyright_holder"]!="":
@@ -106,7 +106,7 @@ def main(args):
 	"""
 
 	if len(sys.argv) < 3:
-		print "\nBad amount of input arguments\n", Usage, "\n"
+		print("\nBad amount of input arguments\n", Usage, "\n")
 		sys.exit(1)
 
 	definitions_dict = {}

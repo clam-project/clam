@@ -35,7 +35,7 @@ def make_base_processing_hxx_file(definitions_dict):
 		filename = "templates/%s/BaseProcessing.hxx"%(definitions_dict["template_name"])
 		f = open(filename, "w")
 	except:
-		print "Output file write error. File: "+filename
+		print("Output file write error. File: "+filename)
 		sys.exit(2)
 
 	f.write( "#ifndef _BaseProcessing_\n" )
@@ -150,7 +150,7 @@ def make_base_processing_cxx_file(definitions_dict):
 		filename = "templates/%s/BaseProcessing.cxx"%(definitions_dict["template_name"])
 		f = open(filename, "w")
 	except:
-		print "Output file write error. File: "+filename
+		print("Output file write error. File: "+filename)
 		sys.exit(2)
 	
 	f.write( """#include "BaseProcessing.hxx"
@@ -182,7 +182,7 @@ def make_sconstruct_file(definitions_dict):
 		filename = "templates/%s/SConstruct"%(definitions_dict["template_name"])
 		f = open(filename,"w")
 	except:
-		print "Output file write error. File: "+filename
+		print("Output file write error. File: "+filename)
 		sys.exit(2)
 
 	f.write("""#! /usr/bin/python
@@ -244,7 +244,7 @@ def make_readme_file(definitions_dict):
 		filename = "templates/%s/README"%(definitions_dict["template_name"])
 		f = open(filename,"w")
 	except:
-		print "Output file write error. File: "+filename
+		print("Output file write error. File: "+filename)
 		sys.exit(2)
 
 	f.write("""== Description ==
@@ -277,13 +277,13 @@ def main(args):
 	"""
 
 	if len(sys.argv) < 2:
-		print "\nBad amount of input arguments.\n", Usage, "\n"
+		print("\nBad amount of input arguments.\n", Usage, "\n")
 		sys.exit(1)
 
 	try:
 		f = open( "./" + sys.argv[1], 'r' )
 	except IOError:
-		print "Template file read error."
+		print("Template file read error.")
 		sys.exit(2)
 
 	definitions_dict = {}
@@ -309,7 +309,7 @@ def main(args):
 
 	if not os.path.isdir( "templates/" + definitions_dict["template_name"] ): os.mkdir( "templates/" + definitions_dict["template_name"] )
 
-	print "Creating " + definitions_dict["template_name"] + " template"
+	print("Creating " + definitions_dict["template_name"] + " template")
 	make_base_processing_hxx_file(definitions_dict)
 	make_base_processing_cxx_file(definitions_dict)
 	make_sconstruct_file(definitions_dict)

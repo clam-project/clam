@@ -82,26 +82,26 @@ else:
 
 databasePrefix = "carneltest"
 wavSourcePrefix = "wavs/CarnelTest"
-print "Usage: ", sys.argv[0], "wav-source-prefix database-prefix"
-print "Example: ", sys.argv[0], "wavs/CarnelShort carnelshort"
+print("Usage: ", sys.argv[0], "wav-source-prefix database-prefix")
+print("Example: ", sys.argv[0], "wavs/CarnelShort carnelshort")
 if len(sys.argv)==3:
 	wavSourcePrefix = sys.argv[1]
 	databasePrefix = sys.argv[2]
 databaseDir = databasePrefix+"Database"
-print "wavSourcePrefix:", wavSourcePrefix
-print "databaseDir:", databaseDir
+print("wavSourcePrefix:", wavSourcePrefix)
+print("databaseDir:", databaseDir)
 
 recordingAzimut = 0 #radians
 recordedFilesPattern = databasePrefix+"%s.dat"
 filepattern =  databaseDir+"/%s_emissor_%i-%i-%i_receptor_%i-%i-%i.dat"
 
-print "creating database dir: ", databaseDir
+print("creating database dir: ", databaseDir)
 os.system("mkdir -p %s" % databaseDir)
 for suffix in ("P","X","Y"):
 	os.system("sox %s%s.wav %s%s.dat"%(wavSourcePrefix,suffix,databasePrefix,suffix) )
 
 
-print "Loading recorded impulse responses..."
+print("Loading recorded impulse responses...")
 recordedComponents = dict( [ 
 	( suffix, numpy.array(readDatFile(recordedFilesPattern % suffix)) ) 
 		for suffix in ("P", "X", "Y") ] )
@@ -116,7 +116,7 @@ for xt in range(NX) :
 		distanceFactor = recordingDistance/distanceToSource
 		azimuthRotation = azimuthToSource - recordingAzimut
 		deltaSamples = int((distanceToSource - recordingDistance)*44100/340)
-		print distanceToSource, wayToSource, deltaSamples
+		print(distanceToSource, wayToSource, deltaSamples)
 		assert(deltaSamples >= -2000)
 
 		P,X,Y = [distanceFactor * component for component in 
@@ -127,12 +127,12 @@ for xt in range(NX) :
 			(X * math.cos(azimuthRotation) + Y * math.sin(azimuthRotation), 
 			-X * math.sin(azimuthRotation) + Y * math.cos(azimuthRotation))
 
-		print "Writing data...", xt, yt
+		print("Writing data...", xt, yt)
 		#continue
 		writeDatFile(filepattern % ("p", 0,0,0, xt,yt,0) , P)
 		writeDatFile(filepattern % ("vx", 0,0,0, xt,yt,0) , X)
 		writeDatFile(filepattern % ("vy", 0,0,0, xt,yt,0) , Y)
-	print
-print "\n== Normalize and convert to wav ==\n"
+	print()
+print("\n== Normalize and convert to wav ==\n")
 normalizeAndWav.processDir(databaseDir)
 

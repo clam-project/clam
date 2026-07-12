@@ -77,7 +77,7 @@ class ClamNetwork() :
 		method(*tokens[1:])
 
 	def _log(self, message) :
-		if self.verbose : print >> sys.stderr,message
+		if self.verbose : print(message, file=sys.stderr)
 		self.modified = True
 		self.log.append(message)
 	def _versionNotApplies(self) :
@@ -110,7 +110,7 @@ class ClamNetwork() :
 	def dump(self, file=sys.stdout) :
 		self.document.write(file)
 	def dumpLog(self, file=sys.stdout) :
-		print >> file, "\n".join(self.log)
+		print("\n".join(self.log), file=file)
 
 	def ensureVersion(self, versionString) :
 		'''Makes the next commands apply just if the network version
@@ -297,14 +297,14 @@ class ClamNetwork() :
 					processing.get("id"), name))
 
 	def noOp(self) :
-		if self.verbose : print "Dummy command"
+		if self.verbose : print("Dummy command")
 		pass
 
 	def help(self, command) :
 		help(getattr(self,command))
 
 	def commands(self) :
-		print "Available commands:", ", ".join(self._availableCommands())
+		print("Available commands:", ", ".join(self._availableCommands()))
 
 	def runScript(self, script) :
 		for line, command in enumerate(script.splitlines()) :
@@ -345,7 +345,7 @@ def test() :
 		network.runCommand(command)
 	try:
 		network.setConfig('NonExistingId', "Max", "2")
-	except: print "Exception caugth"
+	except: print("Exception caugth")
 	network.dump()
 	network.commands()
 	sys.exit(0)
@@ -380,13 +380,13 @@ if __name__ == "__main__" :
 		commands = open(options.scriptFile).readlines()
 
 	if not commands :
-		print >> sys.stderr, "No command specified, use either -c or -f options"
+		print("No command specified, use either -c or -f options", file=sys.stderr)
 	if not args :
-		print >> sys.stderr, "No file to be processed"
+		print("No file to be processed", file=sys.stderr)
 		
 
 	for filename in args :
-		print >> sys.stderr, "Processing", filename
+		print("Processing", filename, file=sys.stderr)
 		network = ClamNetwork(open(filename))
 		for command in commands :
 			if not command.strip() or command.strip()[0]=='#' :
@@ -396,10 +396,10 @@ if __name__ == "__main__" :
 		output = sys.stdout
 		if network.modified :
 			if options.apply :
-				print "Updating", filename
+				print("Updating", filename)
 				output = open(filename,"w")
 			network.dump(output)
-		print >> sys.stderr, "No changes applied."
+		print("No changes applied.", file=sys.stderr)
 
 
 

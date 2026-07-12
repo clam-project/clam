@@ -100,16 +100,16 @@ def loadDictFile(dictfile) :
 
 def die(message) :
 	""" Exits the program by prompting a message using the do-this-or-die idiom. """
-	print >> sys.stderr, "\033[31m%s\033[0m"%message
+	print("\033[31m%s\033[0m"%message, file=sys.stderr)
 	sys.exit(-1)
 
 def warning(message) :
 	""" Outputs a warning message. """
-	print >> sys.stderr, "\033[33m%s\033[0m"%message
+	print("\033[33m%s\033[0m"%message, file=sys.stderr)
 
 def stage(message) :
 	""" Outputs an stage message. """
-	print >> sys.stderr, "\033[35m=== %s === \033[0m"%message
+	print("\033[35m=== %s === \033[0m"%message, file=sys.stderr)
 
 class tee :
 	""" Output file decorator that duplicates the output to two files. """
@@ -139,7 +139,7 @@ class quotedFile :
 
 def run(command, message=None, log=sys.stdout, err=None) :
 	if not message : message = "Running: " + command
-	print "\033[32m== %s\033[0m"%(message)
+	print("\033[32m== %s\033[0m"%(message))
 	if err is None :
 		err = quotedFile(log, "\033[31m", "\033[0m")
 	process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -158,7 +158,7 @@ def run(command, message=None, log=sys.stdout, err=None) :
 
 def output(command, message=None) :
 	if message :
-		print "\033[32m== %s\033[0m"%(message)
+		print("\033[32m== %s\033[0m"%(message))
 	return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0] 
 
 def applyPatch(directory, patch, level=0) :
@@ -188,7 +188,7 @@ def extractSource(tarball) :
 		die("Unsuported compressed file extension: %s" % tarball)
 	extension, command = extractCommand(tarball)
 	basename = tarball[:-len(extension)]
-	print basename
+	print(basename)
 	run( 
 		command % dict(
 			sandbox=sandbox,
@@ -243,7 +243,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 	)
 	availableVersion = output(checkVersion, "Checking version for %s"%name).strip()
 	availableVersion or die("No online version found for the package\n Command used:\n%s" % checkVersion)
-	print "Found version: '%s'" % availableVersion
+	print("Found version: '%s'" % availableVersion)
 	if (pinnedVersion and pinnedVersion != availableVersion) :
 		warning("Package: Pinning to version %s, although version %s is available" % (pinnedVersion, availableVersion))
 	version = pinnedVersion if pinnedVersion else availableVersion
@@ -258,7 +258,7 @@ def buildPackage(name, uri, checkVersion, downloadUri, tarballName, buildCommand
 		tarball = tarballName % subst,
 		srcdir = ("%(sandbox)s/src/" + (srcdir or "%(name)s-%(version)s/")) % subst,
 	)
-	print "srcdir:", subst['srcdir']
+	print("srcdir:", subst['srcdir'])
 
 	if not skipDeploy :
 		if not checkout and not skipDownload :
@@ -1344,11 +1344,11 @@ if hasOption('--help') :
 	die(help)
 
 if hasOption('--sequence') :
-	print "Default build sequence: " + " ".join(order)
+	print("Default build sequence: " + " ".join(order))
 	sys.exit()
 
 if hasOption('--list') :
-	print "Available packages: " + " ". join(packageDatabase.keys())
+	print("Available packages: " + " ". join(packageDatabase.keys()))
 	sys.exit()
 
 fromPackage = parameterOption("--from")

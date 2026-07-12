@@ -9,7 +9,7 @@ from runner import Runner
 from commands import getoutput
 
 def countLines( path ):
-	print "loc for path:", path
+	print(("loc for path:", path))
 	lines =  getoutput("find %s -name '*.?xx' -exec wc -l {} \;" % path.strip() ).split("\n")
 	return reduce( lambda x,y: x+y , map( lambda x: int(x.split()[0]), lines) )
 
@@ -195,7 +195,7 @@ clam.add_subtask('Voice2MIDI packaging', [
 ] )
 
 forceRun = len(sys.argv)>1
-print "force Run: ", forceRun
+print(("force Run: ", forceRun))
 
 Runner( clam, 
 	continuous = False,

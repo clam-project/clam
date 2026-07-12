@@ -4,15 +4,15 @@ import sys
 
 nSpeakers = int(sys.argv[1])
 
-print """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+print("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
-"""
+""")
 for speaker in xrange(nSpeakers) :
-	print """
+	print("""
   <processing id="%02i" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
-	speaker+1, 400+64*(speaker%6), (speaker%6)*6+(speaker//6)*95 )
+	speaker+1, 400+64*(speaker%6), (speaker%6)*6+(speaker//6)*95 ))
 
-print """
+print("""
   <processing id="1" position="25,480" size="128,108" type="AudioSource"/>
 
   <processing id="2" position="130,498" size="128,108" type="AudioSource"/>
@@ -73,10 +73,10 @@ print """
     <out>SndfilePlayer.out0</out>
     <in>Oscilloscope.Input</in>
   </port_connection>
-"""% { 'nSpeakers': nSpeakers }
+"""% { 'nSpeakers': nSpeakers })
 
 for speaker in xrange(nSpeakers) :
-	print """
+	print("""
   <port_connection>
     <out>SndfilePlayer.out%(playerPort)s</out>
     <in>AudioAmplifier.Input Audio%(mixerPort)s</in>
@@ -89,12 +89,12 @@ for speaker in xrange(nSpeakers) :
 	'mixerPort': (" %i"%speaker) if speaker else '',
 	'playerPort': str(speaker),
 	'sourceNumber': "%02i"%(speaker+1),
-	}
+	})
 
-print """
+print("""
 
 </network>
-"""
+""")
 
 
 

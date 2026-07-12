@@ -44,17 +44,17 @@ class DataCollector:
         testingDate = datetime.date.today().strftime("%Y%m%d")
         
         testMap=self.parsing(inputFile)
-        print "Test Map:"
-        print testMap
-        print "  "
+        print("Test Map:")
+        print(testMap)
+        print("  ")
         
         costMap=self.buildCostMap(testMap)
-        print "Cost Map:"
-        print costMap
+        print("Cost Map:")
+        print(costMap)
         
         self.createYamlFile(costMap)
         yamlFile=open('YamlFile.yml','r')
-        print yamlFile.readlines()
+        print(yamlFile.readlines())
         yamlFile.close()
 
 
