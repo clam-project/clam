@@ -174,7 +174,7 @@ def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
 	env = context.env
 	crosscompiling = env.get('crossmingw')
-	if not env.has_key('PKG_CONFIG') :
+	if 'PKG_CONFIG' not in env :
 		env['PKG_CONFIG'] = 'pkg-config'
 	ret, _  = context.TryAction(env.Action('$PKG_CONFIG --help'))
 	if not ret : del env['PKG_CONFIG']

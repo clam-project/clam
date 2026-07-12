@@ -39,7 +39,7 @@ def CheckPkgConfigModule(context, module,
 	flags="--cflags --libs",
 	variables={}
 	) :
-	if not context.env.has_key("PKG_CONFIG") :
+	if "PKG_CONFIG" not in context.env :
 		raise PkgConfigNotDefined()
 	options = ""
 	message = ""

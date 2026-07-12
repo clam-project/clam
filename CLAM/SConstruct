@@ -52,7 +52,7 @@ def configure_clam(clam_env) :
 	if isWindowsPlatform :
 		clam_env.AppendUnique( CPPPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'include')] )
 		clam_env.AppendUnique( LIBPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'lib')] )
-		if os.environ.has_key('INCLUDE') :
+		if 'INCLUDE' in os.environ :
 			for include in os.environ['INCLUDE'].split(';') :
 				if not include : continue
 				print( 'adding include dir from windows config: ' + include )
@@ -223,7 +223,7 @@ if not clam_env['verbose']:
 	clam_env['LINKCOMSTR'] = '== Linking $TARGET'
 	clam_env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 
-crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
+crosscompiling = 'crossmingw' in clam_env and clam_env['crossmingw']
 if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
 

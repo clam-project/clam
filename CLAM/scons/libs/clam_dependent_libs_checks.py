@@ -10,7 +10,7 @@ def config_error(str) :
 	return False
 
 def setup_global_environment( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
 	if not conf.check_pkg_config( conf ) :
@@ -106,7 +106,7 @@ def test_mad( env, conf ) :
 	return True
 
 def test_id3lib( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 
 	libName = 'id3'
 	env.Append( LIBS=[libName] )
@@ -176,7 +176,7 @@ def test_portmidi( env, conf ) :
 	return True
 
 def setup_audioio_environment( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 
 	if env['with_sndfile'] :
 		if not test_sndfile( env, conf ) : return False
@@ -237,7 +237,7 @@ def setup_audioio_environment( env, conf ) :
 # from core.py
 
 def test_xml_backend( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 
 	if env['xmlbackend'] in ('both','xercesc') :
 		if not conf.CheckPkgConfigFile("xerces-c"):
@@ -259,7 +259,7 @@ def test_xml_backend( env, conf ) :
 	return True
 
 def test_ladspa ( env, conf ) :
-	if not env.has_key('with_ladspa') : return True
+	if 'with_ladspa' not in env : return True
 	if not env['with_ladspa'] : return True
 	if not conf.CheckCHeader( 'ladspa.h' ) :
 		return config_error( "ladspa SDK header was not found" )

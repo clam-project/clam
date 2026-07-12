@@ -71,7 +71,7 @@ def main() :
 		 
 	if option in ("-a", "--add") :
 		existingHeaders = shelve.open("header.db", writeback=True)
-		if existingHeaders.has_key(argument) :
+		if argument in existingHeaders :
 			print(argument, "already exists in the database ")
 			sys.exit(1)
 		existingHeaders[argument] = True
@@ -81,7 +81,7 @@ def main() :
 	
 	if option in ("-d", "--delete") :
 		existingHeaders = shelve.open("header.db", writeback=True)
-		if not existingHeaders.has_key(argument) :
+		if argument not in existingHeaders :
 			print(argument, "doesn't exist in the database ")
 			sys.exit(1)
 		del existingHeaders[argument]
