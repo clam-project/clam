@@ -185,7 +185,7 @@ def exportRDFGraph(mi):
 		for propName, propSet in s._props.iteritems():
 			for v in propSet:
 				if type(v) not in propSet.Lits and isBlind(v):
-					if not bnodes.has_key(v.URI):
+					if v.URI not in bnodes:
 						vnode = BNode()
 						bnodes[v.URI] = vnode
 					

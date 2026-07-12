@@ -41,7 +41,7 @@ class PropertySet(set):
 		self.add(v)
 
 def protector(self, item, value):
-	if (not self.__dict__.has_key("_initialised"))\
+	if ("_initialised" not in self.__dict__)\
 		   or self._initialised == False \
 	       or hasattr(self,item):
 		object.__setattr__(self,item,value)
