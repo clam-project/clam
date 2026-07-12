@@ -215,6 +215,10 @@ def setup_audioio_environment( env, conf ) :
 		if not test_portaudio( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
 
+	if env['with_lv2'] :
+		if not test_lv2( env, conf ) : return False
+		#env.Append( CPPFLAGS=['-DUSE_LV2=1'] ) # Not used
+
 	if sys.platform != 'linux' or crosscompiling :
 		if env['audio_backend'] == 'directx' :
 			env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )
@@ -232,6 +236,10 @@ def setup_audioio_environment( env, conf ) :
 
 	return True
 
+def test_lv2(env, conf) :
+	if not conf.CheckPkgConfigFile('lv2') :
+		return False
+	return True
 
 #---------------------------------------------------------------
 # from core.py
