@@ -107,7 +107,7 @@ def passCheckClamnetworks(datapath, clamnetworks, mode) :
 				failedCases.append((case, ["Command: %s"%(command)]))
 				continue
 
-		except OSError, e :
+		except OSError as e:
 			failedCases.append((case, ["Unable to run command: '%s'"%(command)]))
 			continue
 			
@@ -166,7 +166,7 @@ def main():
 	subdirectories_excluded=list()
 	try:
 		optlist1, args1 = getopt.getopt(args, "bchl",  ["basedir", "localdir", "help", "list"])
-	except getopt.error, msg:
+	except getopt.error as msg:
 		print("[1] for help use --help")
 		sys.exit(2)
 
@@ -193,7 +193,7 @@ def main():
 	if len(args1) >1:
 		try:
 			optlist2, args2 = getopt.getopt(args1[1:], "k",  ["blacklist"])
-		except getopt.error, msg:
+		except getopt.error as msg:
 			print("[2] for help use --help")
 			sys.exit(2)
 		

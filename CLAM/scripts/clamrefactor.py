@@ -311,7 +311,7 @@ class ClamNetwork() :
 			if not command.strip() or command.strip()[0]=='#' :
 				continue
 			try : self.runCommand(command)
-			except Exception, e:
+			except Exception as e:
 				raise ScriptException(line, e)
 
 def test() :

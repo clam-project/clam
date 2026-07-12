@@ -145,7 +145,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 	for (_, srcpackage, version) in repositories :
 		dscbase = srcpackage+"_"+version
 		dscfiles = glob.glob(dscbase + "*.dsc")
-		if not dscfiles: raise "No dsc file found for %s"%dscbase
+		if not dscfiles: raise Exception("No dsc file found for %s"%dscbase)
 		dscfile = dscfiles[-1]
 		ret = run( ("pbuilder build "+
 			" --buildplace . " +

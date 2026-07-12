@@ -83,7 +83,7 @@ def passB2BTests(datapath, back2BackCases) :
 			if commandError :
 				failedCases.append((case, ["Command failed with return code %i:\n'%s'"%(commandError,command)]))
 				continue
-		except OSError, e :
+		except OSError as e:
 			failedCases.append((case, ["Unable to run command: '%s'"%(command)]))
 			continue
 		failures = []
