@@ -9,7 +9,7 @@ print("Schema:", schema)
 print("pools:", pools)
 
 from xml.etree import ElementTree
-schemaDoc = ElementTree.parse(file(schema))
+schemaDoc = ElementTree.parse(open(schema))
 
 segmentationAttributes = [ (line.attrib['scope'], line.attrib['name'], (line.find('SegmentationPolicy')).text)
 	for line in schemaDoc.findall("//Attribute")
@@ -20,7 +20,7 @@ print(segmentationAttributes)
 schemaDoc.write(sys.stdout,'utf8')
 
 for pool in pools:
-	poolDoc = ElementTree.parse(file(pool))
+	poolDoc = ElementTree.parse(open(pool))
 	# locate the segmentation attributes
 	for scope, attribute, policy in segmentationAttributes:
 		for line in  poolDoc.findall("//ScopePool"):

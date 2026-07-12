@@ -9,7 +9,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQuerySchema(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
 		expected = cStringIO.StringIO()
-		Schema(file("testdata/FileSource1/schema.sc")).Dump(expected)
+		Schema(open("testdata/FileSource1/schema.sc")).Dump(expected)
 		result = cStringIO.StringIO()
 		source1.QuerySchema().Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
@@ -32,7 +32,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQueryDescriptors_existingSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
 		expected = cStringIO.StringIO()
-		Pool(file("testdata/FileSource1/id1.pool")).Dump(expected)
+		Pool(open("testdata/FileSource1/id1.pool")).Dump(expected)
 		result = cStringIO.StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
@@ -40,7 +40,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQueryDescriptors_differentSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
 		expected = cStringIO.StringIO()
-		Pool(file("testdata/FileSource1/id2.pool")).Dump(expected)
+		Pool(open("testdata/FileSource1/id2.pool")).Dump(expected)
 		result = cStringIO.StringIO()
 		source1.QueryDescriptors("id2").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
@@ -48,7 +48,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQueryDescriptors_differentSource(self) :
 		source1 = FileMetadataSource("testdata/FileSource2/")
 		expected = cStringIO.StringIO()
-		Pool(file("testdata/FileSource2/id1.pool")).Dump(expected)
+		Pool(open("testdata/FileSource2/id1.pool")).Dump(expected)
 		result = cStringIO.StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
