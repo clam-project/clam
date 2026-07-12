@@ -49,7 +49,7 @@ if env['enable_python'] :
 	env.ParseConfig('python3-config --libs')
 	# Those lines are for ipyclam console
 	env.AppendUnique(LIBS=['boost_python'])
-	env.ParseConfig('pkg-config --cflags --libs shiboken')
+	env.ParseConfig('pkg-config --cflags --libs shiboken6')
 	# g++ complaints about -Wstrict-prototypes added by python3-config
 	if '-Wstrict-prototypes' in env['CCFLAGS'] :
 		env['CCFLAGS'].remove("-Wstrict-prototypes")
