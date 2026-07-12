@@ -43,7 +43,7 @@ class FileMetadataSource :
 			os.system("%s -s %s"%(self.extractor, self.schemaFile))
 		try :
 			self.schema = Schema(file(self.schemaFile))
-		except IOError, e :
+		except IOError as e:
 			raise FileMetadataSource.InvalidSchemaException(self.schemaFile)
 
 	def QueryDescriptors(self, id, ignoreCache=False, computeIfNotCached=False, keepCache=True) :
@@ -53,7 +53,7 @@ class FileMetadataSource :
 				result = Pool(file(self._poolPath(id)))
 				print("Using cached data")
 				return result
-			except IOError, e : pass # Not found
+			except IOError as e: pass # Not found
 		path=id # TODO: This should take the file given an id, by now using the path as id
 		if self.path :
 			linkName = os.path.join(self.path, id)
@@ -70,7 +70,7 @@ class FileMetadataSource :
 			sys.stdout.flush()
 		try :
 			return Pool(file(self._poolPath(id)))
-		except IOError, e : pass # Not found
+		except IOError as e: pass # Not found
 		raise FileMetadataSource.SongNotFoundException(id)
 
 	def QuerySchema(self) :

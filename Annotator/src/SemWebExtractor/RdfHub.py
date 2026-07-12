@@ -33,12 +33,12 @@ class RdfHub :
 		try:
 			dbstore.open(cfgstr, False) # Try opening existing
 			debug("Opened existing MySQL DB")
-		except Exception, e:
+		except Exception as e:
 			pass
 			try:
 				dbstore.open(cfgstr, True) # Otherwise create new
 				debug("Created new MySQL DB")
-			except Exception, e:
+			except Exception as e:
 				error("Exception opening MySQL DB" + str(e))
 				sys.exit(1)
 		

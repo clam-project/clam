@@ -81,9 +81,9 @@ class AudioCollection :
 			mbz.available_as = af
 			mi.add(af); mi.add(mbz)
 			self.succeeded+=1
-		except MbzLookupException, e:
+		except MbzLookupException as e:
 			error(" - " + e.message)
-		except FileTypeException, e:
+		except FileTypeException as e:
 			error(" - " + e.message)
 		return mi
 
@@ -110,7 +110,7 @@ class AudioCollection :
 	# 			debug("Crawling from "+manifURI)
 	# 			self.rdf.crawl(manifURI,path)
 	# 			self.rdf.commit()
-	# 			#except Exception, e:
+	# 			#except Exception as e:
 	# 			#	error(" - " + str(e))
 	# 
 	# 

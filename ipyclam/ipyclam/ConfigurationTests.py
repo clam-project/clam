@@ -50,7 +50,7 @@ class ConfigurationTests(unittest.TestCase):
 		try:
 			c.WrongParam1 = "ParamValue"
 			self.fail("Exception expected")
-		except AttributeError, e:
+		except AttributeError as e:
 			self.assertEquals("WrongParam1", e.args[0])
 
 	def test_getAttr_wrongName(self):
@@ -58,7 +58,7 @@ class ConfigurationTests(unittest.TestCase):
 		try:
 			param = c.WrongParam1
 			self.fail("Exception expected")
-		except AttributeError, e:
+		except AttributeError as e:
 			self.assertEquals("WrongParam1", e.args[0])
 
 	def test_setAttr_wrongType(self):
@@ -66,7 +66,7 @@ class ConfigurationTests(unittest.TestCase):
 		try:
 			c.ConfigParam1 = 1
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals("str value expected, got int", e.args[0])
 
 	def test_getItem_wrongName(self):
@@ -74,7 +74,7 @@ class ConfigurationTests(unittest.TestCase):
 		try:
 			param = c["WrongParam1"]
 			self.fail("Exception expected")
-		except KeyError, e:
+		except KeyError as e:
 			self.assertEquals("WrongParam1", e.args[0])
 
 	def test_setitem_wrongName(self):
@@ -82,7 +82,7 @@ class ConfigurationTests(unittest.TestCase):
 		try:
 			c["WrongParam1"] = "value"
 			self.fail("Exception expected")
-		except KeyError, e:
+		except KeyError as e:
 			self.assertEquals("WrongParam1", e.args[0])
 
 	def test_setItem_wrongType(self):
@@ -90,7 +90,7 @@ class ConfigurationTests(unittest.TestCase):
 		try:
 			c["ConfigParam1"] = 1
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals("str value expected, got int", e.args[0])
 
 	def test_dirFunction(self):

@@ -214,7 +214,7 @@ class NetworkTests(object):
 		try:
 			net.code = "DummyPortSource"
 			self.fail("Exception expected")
-		except AssertionError, e:
+		except AssertionError as e:
 			self.assertEquals("Wrong processing name: code is a method", e.__str__())
 
 	def test_addProcessingWithName_types_AndFail(self):
@@ -222,7 +222,7 @@ class NetworkTests(object):
 		try:
 			net.types = "DummyPortSource"
 			self.fail("Exception expected")
-		except AssertionError, e:
+		except AssertionError as e:
 			self.assertEquals("Wrong processing name: types is a method", e.__str__())
 
 	def test_codeShowsDescription(self):

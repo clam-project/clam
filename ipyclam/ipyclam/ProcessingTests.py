@@ -24,7 +24,7 @@ class ProcessingTests(object):
 		try :
 			p.type="AnotherType"
 			self.fail("Exception expected")
-		except AttributeError, e :
+		except AttributeError as e :
 			self.assertEqual("Attribute 'type' is read only", e.args[0])
 
 	def test_name(self) :
@@ -205,7 +205,7 @@ class ProcessingTests(object):
 		multi2 = Processing("multi2", engine)
 		try :
 			multi1 > multi2._outports
-		except BadConnectorDirectionOrder, e:
+		except BadConnectorDirectionOrder as e:
 			self.assertEqual(e.message,
 				"Wrong connectors order: Output > Input")
 		else :
@@ -218,7 +218,7 @@ class ProcessingTests(object):
 
 		try :
 			multi1 > csource.OutControl1
-		except BadConnectorDirectionOrder, e:
+		except BadConnectorDirectionOrder as e:
 			self.assertEqual(e.message,
 				"Wrong connectors order: Output > Input")
 		else:
@@ -230,7 +230,7 @@ class ProcessingTests(object):
 
 		try :
 			proc1 > 34
-		except AssertionError, e :
+		except AssertionError as e :
 			self.assertEqual(e.message,
 				"Unexpected connection peer: 34")
 		else :
@@ -277,7 +277,7 @@ class ProcessingTests(object):
 		multi2 = Processing("multi2", engine)
 		try :
 			multi1 < multi2._inports
-		except BadConnectorDirectionOrder, e:
+		except BadConnectorDirectionOrder as e:
 			self.assertEqual(e.message,
 				"Wrong connectors order: Input < Output")
 		else :
@@ -290,7 +290,7 @@ class ProcessingTests(object):
 
 		try :
 			multi1 < multi2.InControl1
-		except BadConnectorDirectionOrder, e:
+		except BadConnectorDirectionOrder as e:
 			self.assertEqual(e.message,
 				"Wrong connectors order: Input < Output")
 		else:
@@ -302,7 +302,7 @@ class ProcessingTests(object):
 
 		try :
 			proc1 < 34
-		except AttributeError, e :
+		except AttributeError as e :
 			self.assertEqual(e.message,
 				"'int' object has no attribute 'connect'")
 		else :

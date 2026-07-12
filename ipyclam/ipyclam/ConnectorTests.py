@@ -145,7 +145,7 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(engine, "proc2", kind=Port, direction=Out, name="Outport1")
 		try:
 			port.connect(port2)
-		except SameConnectorDirection, e:
+		except SameConnectorDirection as e:
 			self.assertEquals("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", e.message)
 		else:
 			self.fail("Exception expected")
@@ -156,7 +156,7 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(engine, "proc2", kind=Control, direction=In, name="Incontrol1")
 		try:
 			port.connect(port2)
-		except DifferentConnectorKind, e:
+		except DifferentConnectorKind as e:
 			self.assertEqual(e.message,
 				"Unable to connect: "
 				"proc1.OutPort1 and proc2.Incontrol1 "
@@ -171,7 +171,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port.connect(port2)
 			self.fail("Exception expected")
-		except DifferentConnectorType, e:
+		except DifferentConnectorType as e:
 			self.assertEqual(e.message,
 				"Unable to connect: "
 				"proc1.OutControl1 and proc2.Incontrol3 "
@@ -200,7 +200,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port > port2
 			self.fail("Exception expected")
-		except ConnectionExists, e:
+		except ConnectionExists as e:
 			self.assertEquals("proc1.OutPort1 and proc2.Inport1 already connected", e.__str__())
 
 	def test_connectInputOutputWith__gt__OperatorAndFail(self) :
@@ -210,7 +210,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port2 > port
 			self.fail("Exception expected")
-		except BadConnectorDirectionOrder, e:
+		except BadConnectorDirectionOrder as e:
 			self.assertEquals("Wrong connectors order: Output > Input", e.__str__())
 
 	def test_connectWith__lt__Operator(self) :
@@ -230,7 +230,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port < port2
 			self.fail("Exception expected")
-		except BadConnectorDirectionOrder, e:
+		except BadConnectorDirectionOrder as e:
 			self.assertEquals("Wrong connectors order: Input < Output", e.__str__())
 
 	def test_disconnect_ports(self):

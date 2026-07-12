@@ -181,7 +181,7 @@ def main() :
 
 	try:
 		disconnect('system:capture_1','blah:playback_1')
-	except Exception,e:
+	except Exception as e:
 		print('Expected: ', e)
 		
 	kill_jack_client(metro) #TODO right way

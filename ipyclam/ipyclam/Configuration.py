@@ -26,13 +26,13 @@ class Configuration(object):
 	def __getattr__(self, name):
 		try:
 			return self.__getitem__(name)
-		except KeyError, e:
+		except KeyError as e:
 			raise AttributeError(e.args[0])
 
 	def __setattr__(self, name, value):
 		try:		
 			self.__setitem__(name, value)
-		except KeyError, e:
+		except KeyError as e:
 			raise AttributeError(e.args[0])
 	def __dir__(self):
 		return self._engine.keys()

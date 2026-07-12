@@ -87,7 +87,7 @@ def TaskerDo( argv ):
 			else:
 				print("\n - No descriptor uploaded\n")
 		#tasker.clean()
-	except TaskerError, err:
+	except TaskerError as err:
 		print(err, file=sys.stderr)
 		sys.exit(-1)
 
@@ -146,7 +146,7 @@ def main( argv ):
 			TaskerClean( argv )
 		else:
 			usage()
-	except TaskerError, err:
+	except TaskerError as err:
 		print(err, file=sys.stderr)
 		sys.exit(-1)
 	sys.exit(0)

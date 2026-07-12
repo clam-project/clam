@@ -42,7 +42,7 @@ class PUIDTrackLookup(MbzTrackLookup):
 		except (ws.ConnectionError, ws.ResponseError):
 			try:
 				trackresults = query.getTracks(track_filter)
-			except (ws.ConnectionError, ws.ResponseError, ws.WebServiceError), e:
+			except (ws.ConnectionError, ws.ResponseError, ws.WebServiceError) as e:
 				raise MbzLookupException("MBZ query failed."+str(e))
 		tracks = [tr.getTrack() for tr in trackresults]
 		self.track = self.choose(tracks)

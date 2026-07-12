@@ -27,7 +27,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			engine["WrongAttribute"]
 			self.fail("Exception expected")
-		except KeyError, e:
+		except KeyError as e:
 			self.assertEqual("WrongAttribute", e.args[0])
 
 	def test_getDefaultValue_whenInt(self):
@@ -66,7 +66,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			c["WrongParam"] = 24
 			self.fail("Exception expected")
-		except KeyError, e:
+		except KeyError as e:
 			self.assertEquals("WrongParam", e.args[0])
 
 	def test_set_wrongTypeForString(self):
@@ -74,7 +74,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			c["AString"] = 2
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals(
 				"While setting parameter 'AString', "
 				"cannot convert a Python value of type 'int' "
@@ -86,7 +86,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			engine["FirstInt"] = "WrongType"
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals(
 				"While setting parameter 'FirstInt', "
 				"cannot convert a Python value of type 'str' "
@@ -98,7 +98,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			engine["BoolAttribute"] = 2.15
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals(
 				"While setting parameter 'BoolAttribute', "
 				"cannot convert a Python value of type 'float' "
@@ -110,7 +110,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			engine["FloatAttribute"] = "Value"
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals(
 				"While setting parameter 'FloatAttribute', "
 				"cannot convert a Python value of type 'str' "

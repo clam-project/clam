@@ -41,11 +41,11 @@ class SemWebCrawler:
 		time.sleep(3)
 		try:
 			fp=urllib2.urlopen(req)
-		except HTTPError, e:
+		except HTTPError as e:
 			print('The server ',url,' couldn\'t fulfill the request.')
 			print('Error code:',e.code)
 			return ' '
-		except URLError,e:
+		except URLError as e:
 			print('We failed to reach the server',url)
 			print('Reason:', e.reason)
 			return ' '

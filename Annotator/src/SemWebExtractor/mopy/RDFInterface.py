@@ -68,7 +68,7 @@ def importRDFGraph(g, strict=True):
 		s_type = None
 		try:
 			s_type = g.objects(s, RDF.type).next()
-		except StopIteration, e:
+		except StopIteration as e:
 			if strict:
 				raise ImportException("NO TYPE SPECIFIED for "+ str(s)+" !")
 			else:
@@ -122,7 +122,7 @@ def importRDFGraph(g, strict=True):
 				# set object for property :
 				try:
 					getattr(objs[s], s_propdict[str(p)]).add(obj)
-				except TypeError, e:
+				except TypeError as e:
 					if strict:
 						raise ImportException("Exception when adding "+str(o)+" type "+str(type(obj))\
 						+" to "+str(s)+" type "+str(type(objs[s]))\

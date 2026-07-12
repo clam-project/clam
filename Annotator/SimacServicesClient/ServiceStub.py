@@ -48,7 +48,7 @@ class ServiceStub :
 			result= urllib2.urlopen(req).read()
 			return result
 		except:
-			raise "ERROR GETTING DATA FROM SERVICE"
+			raise Exception("ERROR GETTING DATA FROM SERVICE")
 
 
 class ContentLocator(ServiceStub) :

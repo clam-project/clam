@@ -55,7 +55,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSink","SameName")
 		try :
 			engine.addProcessing("DummyPortSource","SameName")
-		except NameAlreadyExists, e :
+		except NameAlreadyExists as e :
 			self.assertEqual(e.message,
 				"Name 'SameName' already exists")
 		else :
@@ -66,7 +66,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine = self.engine()
 		try :
 			engine.addProcessing("BadType","Name")
-		except BadProcessingType, e :
+		except BadProcessingType as e :
 			self.assertEqual(e.message,
 				"Type 'BadType' is not available")
 		else :
@@ -93,7 +93,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine = self.engine()
 		try :
 			engine.processingType("Missing")
-		except ProcessingNotFound, e :
+		except ProcessingNotFound as e :
 			self.assertEqual("Processing 'Missing' not found", e.message)
 		else:
 			self.fail("Failed assertion expected")
@@ -103,7 +103,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try :
 			engine.processingHasConnector(
 				'MissingProcessing', "Port", "In", "Inport1")
-		except ProcessingNotFound, e :
+		except ProcessingNotFound as e :
 			self.assertEqual(e.message,
 				"Processing 'MissingProcessing' not found")
 		else :
@@ -243,7 +243,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("Dummy6IOPorts", "proc")
 		try :
 			engine.connectorType("Missing", "Port", "In", "inport1")
-		except ProcessingNotFound, e:
+		except ProcessingNotFound as e:
 			self.assertEqual(e.message,
 				"Processing 'Missing' not found")
 		else:
@@ -254,7 +254,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("Dummy6IOPorts", "proc")
 		try :
 			engine.connectorType("proc", "Port", "In", "Missing")
-		except ConnectorNotFound, e:
+		except ConnectorNotFound as e:
 			self.assertEqual(e.message,
 				"In Port connector 'Missing' not found in processing 'proc'")
 		else:
@@ -315,7 +315,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
 		try:
 			engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
-		except AssertionError, e:
+		except AssertionError as e:
 			self.assertEquals("proc1.OutPort1 and proc2.InPort1 already connected", e.message)
 		else:
 			self.fail("Exception expected")
@@ -326,7 +326,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("OtherControlSink", "proc2")
 		try:
 			engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1")
-		except AssertionError, e:
+		except AssertionError as e:
 			self.assertEquals(e.message,
 				"proc1.OutControl1 and proc2.InControl1 have incompatible types")
 		else :
@@ -338,7 +338,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSink", "proc2")
 		try:
 			engine.connect("Port", "proc1", "Missing", "proc2", "InPort1")
-		except ConnectorNotFound, e:
+		except ConnectorNotFound as e:
 			self.assertEquals(e.message,
 				"Out Port connector 'Missing' not found in processing 'proc1'")
 		else:
@@ -350,7 +350,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSink", "proc2")
 		try:
 			engine.connect("Port", "proc1", "OutPort1", "proc2", "Missing")
-		except ConnectorNotFound, e:
+		except ConnectorNotFound as e:
 			self.assertEquals(e.message,
 				"In Port connector 'Missing' not found in processing 'proc2'")
 		else:
@@ -362,7 +362,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "proc1", "outport1", "Missing", "inport1")
 			self.fail("Exception expected")
-		except ProcessingNotFound, e:
+		except ProcessingNotFound as e:
 			self.assertEquals(e.message,
 				"Processing 'Missing' not found" )
 
@@ -371,7 +371,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("Dummy6IOPorts", "proc1")
 		try:
 			engine.connect("Port", "Missing", "outport1", "proc1", "inport1")
-		except ProcessingNotFound, e:
+		except ProcessingNotFound as e:
 			self.assertEquals(e.message,
 				"Processing 'Missing' not found" )
 		else :
@@ -507,7 +507,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine = self.engine()
 		try :
 			engine.deleteProcessing("Missing")
-		except ProcessingNotFound, e:
+		except ProcessingNotFound as e:
 			self.assertEquals(e.message,
 				"Processing 'Missing' not found")
 		else :
@@ -524,7 +524,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine = self.engine()
 		try:
 			engine.renameProcessing("missing", "proc2")
-		except ProcessingNotFound, e:
+		except ProcessingNotFound as e:
 			self.assertEquals(e.message,
 				"Processing 'missing' not found")
 		else:
@@ -536,7 +536,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSource","proc2")
 		try:
 			engine.renameProcessing("proc1", "proc2")
-		except NameAlreadyExists, e:
+		except NameAlreadyExists as e:
 			self.assertEquals(e.message,
 				"Name 'proc2' already exists")
 		else:

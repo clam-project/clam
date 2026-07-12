@@ -25,7 +25,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			c["ConfigParam1"] = 1
 			self.fail("Exception expected")
-		except TypeError, e:
+		except TypeError as e:
 			self.assertEquals("str value expected, got int", e.args[0])
 
 	def test_set_wrongName(self):
@@ -33,7 +33,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			c["WrongParam"] = "ParamValue"
 			self.fail("Exception expected")
-		except KeyError, e:
+		except KeyError as e:
 			self.assertEquals("WrongParam", e.args[0])
 
 	def test_get_wrongName(self):
@@ -41,7 +41,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		try:
 			value = c["WrongParam1"]
 			self.fail("Exception expected")
-		except KeyError, e:
+		except KeyError as e:
 			self.assertEquals("WrongParam1", e.args[0])
 
 	def test_check_nondefault_value(self):
@@ -77,7 +77,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		self.assertEqual('Param1', c["ConfigParam1"])
 		try :
 			c.hold()
-		except AssertionError, e:
+		except AssertionError as e:
 			self.assertEqual(e.message,
 				"Configuration is already held")
 		else:
@@ -87,7 +87,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
 		try :
 			c.discard()
-		except AssertionError, e:
+		except AssertionError as e:
 			self.assertEqual(e.message,
 				"Discarding a configuration requires to be held")
 		else:

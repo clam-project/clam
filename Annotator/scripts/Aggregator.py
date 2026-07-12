@@ -85,8 +85,8 @@ class Aggregator :
 
 	def run(self, target, sources) :
 		if len(sources) < self.requiredSources :
-			raise "The aggregation script requires %d sources but only %d provided"% \
-				(self.requiredSources,len(sources))
+			raise Exception("The aggregation script requires %d sources but only %d provided"% \
+				(self.requiredSources,len(sources)))
 		self.target = target
 		self.sources = sources
 		for copier in self.copiers :

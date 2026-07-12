@@ -139,11 +139,11 @@ class MbzTrackLookup :
 					tracks = query.getTracks(track_filter)
 					for track in tracks :
 						track_mapping.append(((track.score + artist.score)/2 ,track))
-		except ResponseError, e:
+		except ResponseError as e:
 			raise MbzLookupException('Musicbrainz response error')
-		except ConnectionError, e:
+		except ConnectionError as e:
 			raise MbzLookupException('Musicbrainz connection error')
-		except WebServiceError, e:
+		except WebServiceError as e:
 			raise MbzLookupException('Musicbrainz webservice error')
 			
 		track_mapping.sort()

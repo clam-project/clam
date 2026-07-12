@@ -27,7 +27,7 @@ class ProcessingTypesTests(unittest.TestCase):
 		try:
 			type.BadProcessingType
 			self.fail("Exception expected")
-		except AttributeError, e:
+		except AttributeError as e:
 			self.assertEqual(("BadProcessingType",), e.args)
 
 	def test_dir(self) :
