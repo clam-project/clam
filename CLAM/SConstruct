@@ -10,14 +10,14 @@ from clam_dependent_libs_checks import *
 
 # crosscompiling option is one option we should know on beforehand
 crosscompiling = False
-if sys.platform == 'linux2' :
+if sys.platform == 'linux' :
 	opts = Variables('options.cache',ARGUMENTS)
 	opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 	crosscompiling = Environment(options=opts)['crossmingw']
 	if crosscompiling : print("Warning: Crosscompiling mode")
 
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 def load_config_file_to_env( env, dir ):
@@ -130,7 +130,7 @@ def setup_build_options( env ) :
 	opts.Add( BoolVariable( 'checks', 'Postcondition checks enabled', 'yes' ))
 	opts.Add( BoolVariable( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
 	opts.Add( BoolVariable( 'double', 'CLAM TData type will be double instead of float','no'))
-	if sys.platform == "linux2" :
+	if sys.platform == 'linux' :
 		opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 
 	opts.Add( BoolVariable( 'verbose', 'Display commands', False) )

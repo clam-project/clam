@@ -11,7 +11,7 @@ AddOption(
 
 crosscompiling = GetOption('target') and 'mingw' in GetOption("target") or False
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 def die(message) :
@@ -45,7 +45,7 @@ print("order:", modules)
 # Collecting module variables
 variables = Variables(".options.cache", ARGUMENTS)
 
-#if sys.platform == "linux2" :
+#if sys.platform == "linux" :
 #	variables.Add( BoolVariable( 'crossmingw', '', 'no' ))
 variables.AddVariables(
 	BoolVariable(

@@ -456,7 +456,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False, useFrameWor
         try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
         except: pass
     debugSuffix = ''
-    if sys.platform in ["darwin", "linux2"] and not crosscompiling :
+    if sys.platform in ["darwin", "linux"] and not crosscompiling :
         if debug : debugSuffix = '_debug'
         for module in modules :
             if module not in pclessModules : continue

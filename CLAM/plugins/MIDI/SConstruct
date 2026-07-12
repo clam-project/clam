@@ -51,7 +51,7 @@ env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 if sys.platform == 'win32' or env['crossmingw'] :
 	env.Append( CPPDEFINES=['__WINDOWS_MM__'] )
 	env.Append( LIBS=['pthread', 'winmm'] )
-elif sys.platform=='linux2' :
+elif sys.platform == 'linux' :
 	env.Append( CPPDEFINES=['__LINUX_ALSASEQ__'] )
 	env.Append( LIBS=['pthread', 'asound'] )
 if sys.platform=='darwin' :

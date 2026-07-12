@@ -9,7 +9,7 @@ options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '
 options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathVariable('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
-if sys.platform=="linux2" :
+if sys.platform == 'linux' :
 	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
@@ -34,7 +34,7 @@ env.SConsignFile() # Single signature file
 
 crosscompiling = "crossmingw" in env and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
@@ -89,7 +89,7 @@ if sys.platform!='win32' :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['prefix'] + '/share/turnaround/example-data')
 
-if sys.platform=='linux2' :
+if sys.platform == 'linux' :
 	if env['release'] :
 		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 	else :

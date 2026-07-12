@@ -44,7 +44,7 @@ env.Append(CPPPATH=extraPaths)
 sources = dict.fromkeys(sources).keys() # eliminate repeated
 print(sources)
 
-if sys.platform=='linux2' :
+if sys.platform == 'linux' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )

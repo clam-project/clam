@@ -87,7 +87,7 @@ def ClamModule(env, moduleName, version,
 			env.Install(os.path.join(env['prefix'],'bin'), dll),
 		]
 		libraries = [lib, defFile]
-	elif sys.platform == 'linux2' :
+	elif sys.platform == 'linux' :
 		# * Lib name: the actual fully versioned name of the library.
 		# * Soname: is the name of a link that dependant executables will look
 		# for at runtime. It does not contain the bugfix version. This enables
@@ -160,7 +160,7 @@ def ClamQuietCompilation(env) :
 	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 def enable_modules( self, libs, path) :
-	if sys.platform in ['linux2','darwin'] : 
+	if sys.platform in ['linux','darwin'] : 
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 			(
 				path,
@@ -188,7 +188,7 @@ def generate(env) :
 		source_dir = os.path.dirname( str(source[0]) )
 		cwd = os.getcwd()
 		os.chdir( source_dir )
-		if sys.platform == 'linux2' :
+		if sys.platform == 'linux' :
 			os.system( "/sbin/ldconfig -n ." )
 		os.chdir(cwd)
 

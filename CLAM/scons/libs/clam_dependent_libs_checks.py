@@ -60,7 +60,7 @@ def setup_global_environment( env, conf ) :
 	if not conf.CheckLibrarySample('pthread', 'c', None, pthread_test_code ) : 
 		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
 
-	if sys.platform == 'linux2' :
+	if sys.platform == 'linux' :
 		env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
 	elif sys.platform == 'darwin' :
 		env.Append(LIBPATH=['/usr/local/lib','/usr/lib','/opt/local/lib'])
@@ -159,7 +159,7 @@ def test_portaudio( env, conf ) :
 	return True
 
 def test_portmidi( env, conf ) :
-	if sys.platform == 'linux2' :
+	if sys.platform == 'linux' :
 		print("Bypassing portmidi checks: using ALSA MIDI facilities")
 		return True
 	if not conf.CheckHeader( 'portmidi.h' ) :
@@ -196,7 +196,7 @@ def setup_audioio_environment( env, conf ) :
 		if not test_id3lib( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
 
-	if (sys.platform == 'linux2' and not crosscompiling) and env['with_alsa'] :
+	if (sys.platform == 'linux' and not crosscompiling) and env['with_alsa'] :
 		if not test_alsa_sdk( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_ALSA=1'] )
 
@@ -215,7 +215,7 @@ def setup_audioio_environment( env, conf ) :
 		if not test_portaudio( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
 
-	if not sys.platform == 'linux2' or crosscompiling :
+	if sys.platform != 'linux' or crosscompiling :
 		if env['audio_backend'] == 'directx' :
 			env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )
 

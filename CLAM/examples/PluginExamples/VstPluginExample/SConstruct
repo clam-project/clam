@@ -9,7 +9,7 @@ options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '
 options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
 options.Add(PathVariable('vstsdk_path', 'The path to vstsdk (root dir)', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
-if sys.platform=="linux2" :
+if sys.platform == 'linux' :
 	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
@@ -32,7 +32,7 @@ env.SConsignFile() # Single signature file
 
 crosscompiling = "crossmingw" in env and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']

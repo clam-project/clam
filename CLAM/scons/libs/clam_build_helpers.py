@@ -222,7 +222,7 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 		print("   Check the variable 'version' in the main SConstruct")
 		sys.exit(1)
 
-	if sys.platform == 'linux2' :
+	if sys.platform == 'linux' :
 		# Linker name: it a soft link without version numbers, to be specified
 		# to the linker when compiling binaries against the lib. Just needed
 		# for development of such binaries.
@@ -345,7 +345,7 @@ def create_custom_builders( env ) :
 		source_dir = os.path.dirname( str(source[0]) )
 		cwd = os.getcwd()
 		os.chdir( source_dir )
-		if sys.platform == 'linux2' :
+		if sys.platform == 'linux' :
 			os.system( "/sbin/ldconfig -n ." )
 		os.chdir(cwd)
 		return None
