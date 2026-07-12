@@ -23,7 +23,7 @@ import xml.xpath
 
 from xml.dom.ext.reader import Sax2
 import xml.dom.ext 
-from cStringIO import StringIO
+from io import StringIO
 
 class Schema :
 	class Exception :

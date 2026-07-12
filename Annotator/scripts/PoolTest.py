@@ -18,7 +18,7 @@
 
 
 from Pool import *
-import cStringIO
+from io import StringIO
 import unittest
 import xml.dom.ext
 
@@ -70,12 +70,12 @@ documentWithDifferentScopeSize ="""\
 
 class PoolsTest(unittest.TestCase):
 	def setUp(self):
-		self.pool = cStringIO.StringIO(document)
-		self.pool2 = cStringIO.StringIO(document2)
-		self.poolDifferentSize = cStringIO.StringIO(documentWithDifferentScopeSize)
+		self.pool = StringIO(document)
+		self.pool2 = StringIO(document2)
+		self.poolDifferentSize = StringIO(documentWithDifferentScopeSize)
 
 	def serializeXml(self, nodes) :
-		output = cStringIO.StringIO()
+		output = StringIO()
 		for node in nodes :
 			xml.dom.ext.Print(node, output)
 			print(file=output)
@@ -228,7 +228,7 @@ class PoolsTest(unittest.TestCase):
 
 	def testDefaultInit(self) :
 		pool = Pool()
-		file = cStringIO.StringIO()
+		file = StringIO()
 		pool.Dump(file)
 		self.assertEqual("<?xml version='1.0' encoding='UTF-8'?>\n<DescriptorsPool/>\n", file.getvalue())
 

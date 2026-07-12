@@ -18,7 +18,7 @@
 
 
 from Schema import *
-import cStringIO
+from io import StringIO
 import unittest
 import xml.dom.ext
 
@@ -62,11 +62,11 @@ document2 ="""\
 
 class SchemaTest(unittest.TestCase):
 	def setUp(self):
-		self.schema = cStringIO.StringIO(document)
-		self.schema2 = cStringIO.StringIO(document2)
+		self.schema = StringIO(document)
+		self.schema2 = StringIO(document2)
 
 	def serializeXml(self, nodes) :
-		output = cStringIO.StringIO()
+		output = StringIO()
 		for node in nodes :
 			xml.dom.ext.Print(node, output)
 			print(file=output)
@@ -125,7 +125,7 @@ class SchemaTest(unittest.TestCase):
 
 	def testDefaultInit(self) :
 		schema = Schema()
-		file = cStringIO.StringIO()
+		file = StringIO()
 		schema.Dump(file)
 		self.assertEqual("""\
 <?xml version='1.0' encoding='UTF-8'?>

@@ -1,4 +1,5 @@
 from FileMetadataSource import *
+from io import StringIO
 import unittest
 import os
 
@@ -8,9 +9,9 @@ class FileMetadataSourceTest(unittest.TestCase):
 
 	def testQuerySchema(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
-		expected = cStringIO.StringIO()
+		expected = StringIO()
 		Schema(open("testdata/FileSource1/schema.sc")).Dump(expected)
-		result = cStringIO.StringIO()
+		result = StringIO()
 		source1.QuerySchema().Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
 
@@ -31,25 +32,25 @@ class FileMetadataSourceTest(unittest.TestCase):
 
 	def testQueryDescriptors_existingSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
-		expected = cStringIO.StringIO()
+		expected = StringIO()
 		Pool(open("testdata/FileSource1/id1.pool")).Dump(expected)
-		result = cStringIO.StringIO()
+		result = StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
 
 	def testQueryDescriptors_differentSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
-		expected = cStringIO.StringIO()
+		expected = StringIO()
 		Pool(open("testdata/FileSource1/id2.pool")).Dump(expected)
-		result = cStringIO.StringIO()
+		result = StringIO()
 		source1.QueryDescriptors("id2").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
 
 	def testQueryDescriptors_differentSource(self) :
 		source1 = FileMetadataSource("testdata/FileSource2/")
-		expected = cStringIO.StringIO()
+		expected = StringIO()
 		Pool(open("testdata/FileSource2/id1.pool")).Dump(expected)
-		result = cStringIO.StringIO()
+		result = StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
 
@@ -59,9 +60,9 @@ class FileMetadataSourceTest(unittest.TestCase):
 		poolToInsert = Pool(open("testdata/FileSource1/id1.pool"))
 		source1.UpdateDescriptors("newId", poolToInsert)
 
-		expected = cStringIO.StringIO()
+		expected = StringIO()
 		poolToInsert.Dump(expected)
-		result = cStringIO.StringIO()
+		result = StringIO()
 		source1.QueryDescriptors("newId").Dump(result)
 		self.assertEquals(expected.getvalue(), result.getvalue())
 

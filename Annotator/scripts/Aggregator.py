@@ -18,7 +18,6 @@
 
 
 import re
-import cStringIO
 import sys
 
 class Aggregator :

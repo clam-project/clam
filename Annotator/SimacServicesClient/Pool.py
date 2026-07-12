@@ -21,7 +21,7 @@ from xml import xpath
 from xml.dom.ext.reader import Sax2
 import xml.dom.ext 
 import sys
-import cStringIO
+from io import StringIO
 
 class Pool :
 	class Exception :
@@ -34,7 +34,7 @@ class Pool :
 		# EP Constructor a partir d'un llistat de nodes, caldra crear manualment l'arrel
 		#  (per passar la llista, millor xpath per seleccionar attributs i tal)
 		if file is None:
-			file = cStringIO.StringIO("<DescriptorsPool/>")
+			file = StringIO("<DescriptorsPool/>")
 
 		self.doc = Sax2.Reader().fromStream(file)
 
