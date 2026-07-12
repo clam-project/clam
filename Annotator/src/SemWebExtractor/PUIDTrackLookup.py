@@ -54,7 +54,7 @@ class PUIDTrackLookup(MbzTrackLookup):
 			return None
 		elif len(tracks) == 1:
 			debug("Single track matching PUID found.")
-			if (self.md.has_key("artist")) and (tracks[0].getArtist().getName() <> self.md["artist"]):
+			if (self.md.has_key("artist")) and (tracks[0].getArtist().getName() != self.md["artist"]):
 				warning("Sanity check FAILS : MBZ artist name = "+tracks[0].getArtist().getName()+\
 						" MusicDNS artist name = "+self.md["artist"]+\
 						" local artist name = "+str(self.artist))
@@ -95,7 +95,7 @@ class PUIDTrackLookup(MbzTrackLookup):
 			debug(" no MusicDNS metadata, using local")
 			artist = self.artist
 			
-		if artist <> None:
+		if artist != None:
 			tracks = [t for t in tracks if t.getArtist().getName()==artist]
 			if len(tracks) == 0:
 				debug("None match artist.")
@@ -112,7 +112,7 @@ class PUIDTrackLookup(MbzTrackLookup):
 			debug(" no MusicDNS metadata, using local")
 			title = self.title
 			
-		if title <> None:
+		if title != None:
 			tracks = [t for t in tracks if t.getTitle()==title]
 			if len(tracks)==0:
 				debug("None match title.")
@@ -124,7 +124,7 @@ class PUIDTrackLookup(MbzTrackLookup):
 	def filterByRelease(self, tracks):
 		debug("Filtering by release...")
 		album = self.album
-		if album <> None:
+		if album != None:
 			tracks = [t for t in tracks if album in map(lambda x:x.getTitle(),t.getReleases())]
 			if len(tracks)==0:
 				debug("None match album.")
