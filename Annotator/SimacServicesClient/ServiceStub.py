@@ -17,8 +17,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-import urllib, urllib2
-import urlparse
+import urllib.request
+import urllib.parse
 import HttpFormPost
 
 Proxies = { 'http' : 'http://proxy.upf.edu:8080', 'ftp' : 'http://proxy.upf.edu:8080' }
@@ -33,19 +33,19 @@ class ServiceStub :
 		pass
 
 	def remoteCall(self, serviceName, **fields):
-		if urlparse.urlparse (self.serviceUrl)[1] in NoProxiesFor:
-			proxy_support = urllib2.ProxyHandler( {} )
+		if urllib.parse.urlparse(self.serviceUrl)[1] in NoProxiesFor:
+			proxy_support = urllib.request.ProxyHandler( {} )
 		else:
-			proxy_support = urllib2.ProxyHandler( Proxies )
+			proxy_support = urllib.request.ProxyHandler( Proxies )
 
-		opener = urllib2.build_opener( proxy_support )
-		urllib2.install_opener(opener)
+		opener = urllib.request.build_opener( proxy_support )
+		urllib.request.install_opener(opener)
 
 		try:
 			content_type, body = HttpFormPost.encode_multipart_formdata_dictionary(fields)
 			headers = { 'User-Agent': useragent, 'Content-Type': content_type }
-			req=urllib2.Request(self.serviceUrl+"/"+serviceName, body, headers)
-			result= urllib2.urlopen(req).read()
+			req=urllib.request.Request(self.serviceUrl+"/"+serviceName, body, headers)
+			result= urllib.request.urlopen(req).read()
 			return result
 		except:
 			raise Exception("ERROR GETTING DATA FROM SERVICE")

@@ -130,7 +130,7 @@ class RdfHub :
 						if contextName==None or graph.identifier == URIRef(contextName) \
 				)
 		try:
-			gen.next()
+			next(gen)
 		except:
 			return False
 		return True

@@ -2,13 +2,14 @@
 # Todo: the solution of temporary files is ugly!
 #       Boost.python should be considered later so that the data type conversion to C++ could be easier
 #       "Python Dictionary" should be perfect
-import urllib2
+import urllib.request
+from urllib.error import URLError, HTTPError
 import time
 import re
 import socket
 
 from AudioIDLink import *
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib.request import Request, urlopen
 
 sparqlFront='http://dbtune.org/jamendo/sparql/?query=describe%20%3C'
 sparqlEnd='%3E'
@@ -37,10 +38,10 @@ class SemWebCrawler:
 	
 	def _requestServer(self, url):
 		print(url)
-		req = urllib2.Request(url)
+		req = urllib.request.Request(url)
 		time.sleep(3)
 		try:
-			fp=urllib2.urlopen(req)
+			fp=urllib.request.urlopen(req)
 		except HTTPError as e:
 			print('The server ',url,' couldn\'t fulfill the request.')
 			print('Error code:',e.code)

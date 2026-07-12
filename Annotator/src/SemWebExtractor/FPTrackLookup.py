@@ -14,7 +14,7 @@ import logging
 from logging import log, error, warning, info, debug
 from time import asctime
 import re
-from urllib import quote as urlencode
+from urllib.parse import quote as urlencode
 
 from PUIDTrackLookup import *
 import mopy; from mopy import MusicInfo; from mopy.model import AudioFile, MusicArtist, Track, Signal

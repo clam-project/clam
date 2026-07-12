@@ -18,7 +18,7 @@ from ExternalSources import *
 from Id3Writer import *
 from logging import log, error, warning, info, debug
 from optparse import OptionParser
-from urllib import quote as urlencode
+from urllib.parse import quote as urlencode
 
 from mopy.MusicInfo import MusicInfo, isBlind
 from mopy.model import AudioFile, Track

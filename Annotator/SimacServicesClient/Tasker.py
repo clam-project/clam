@@ -19,7 +19,8 @@
 
 import os, sys
 import gzip
-import urlparse, urllib, urllib2
+import urllib.request
+import urllib.parse
 
 import xml.dom.ext
 from xml.dom.ext.reader.Sax2 import FromXmlStream
@@ -252,16 +253,16 @@ class Tasker:
 		for url in locations.splitlines():
 			try:
 				self.printfunction( u" - Trying '%s'" % url )
-				if urlparse.urlparse( url )[1] in ServiceStub.NoProxiesFor :
-					stream = urllib2.urlopen( url )
+				if urllib.parse.urlparse( url )[1] in ServiceStub.NoProxiesFor :
+					stream = urllib.request.urlopen( url )
 				else:
-					stream = urllib.urlopen( url,None,ServiceStub.Proxies )
+					stream = urllib.request.urlopen( url,None,ServiceStub.Proxies )
 
 				if stream.info().type not in [ "audio/mpeg", "application/ogg", "audio/x-wav" ]:
 					self.printfunction( u"     ( ERROR )\n" )
 					continue
 			
-				audiofilename = urllib.unquote( urlparse.urlparse( url )[2].split( '/' )[-1] )
+				audiofilename = urllib.parse.unquote( urllib.parse.urlparse( url )[2].split( '/' )[-1] )
 				if os.path.exists( savetopath+audiofilename ):
 					self.printfunction( u"     Already Downloaded ( OK )\n" )
 					return audiofilename

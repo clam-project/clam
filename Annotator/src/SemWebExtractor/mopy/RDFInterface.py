@@ -67,7 +67,7 @@ def importRDFGraph(g, strict=True):
 	for s in set(g.subjects()):
 		s_type = None
 		try:
-			s_type = g.objects(s, RDF.type).next()
+			s_type = next(g.objects(s, RDF.type))
 		except StopIteration as e:
 			if strict:
 				raise ImportException("NO TYPE SPECIFIED for "+ str(s)+" !")
@@ -170,7 +170,7 @@ def importRDFGraph(g, strict=True):
 def exportRDFGraph(mi):
 	g = ConjunctiveGraph()
 	bnodes = {}
-	for NSName, NSuriStr in mi.namespaceBindings.iteritems():
+	for NSName, NSuriStr in mi.namespaceBindings.items():
 		g.namespace_manager.bind(NSName, URIRef(NSuriStr))
 
 	modelAttrs = [model.__dict__[c] for c in model.__dict__.keys()]
@@ -182,7 +182,7 @@ def exportRDFGraph(mi):
 		if s.URI == None or isBlind(s):
 			snode = BNode()
 			bnodes[s.URI] = snode
-		for propName, propSet in s._props.iteritems():
+		for propName, propSet in s._props.items():
 			for v in propSet:
 				if type(v) not in propSet.Lits and isBlind(v):
 					if v.URI not in bnodes:
@@ -202,7 +202,7 @@ def exportRDFGraph(mi):
 
 		g.add((snode, RDF.type, URIRef(s.classURI)))
 
-		for propName, propSet in s._props.iteritems():
+		for propName, propSet in s._props.items():
 			for v in propSet:
 				if not hasattr(propSet, "propertyURI"):
 					raise ExportException("Property "+str(propName)+" on object "+str(s)+" has no propertyURI !")

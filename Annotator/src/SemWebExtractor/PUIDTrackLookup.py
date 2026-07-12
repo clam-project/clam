@@ -20,7 +20,7 @@ class PUIDTrackLookup(MbzTrackLookup):
 		# Extract metadata from MusicInfo obj
 		if mi!=None:
 			if hasattr(mi, "TrackIdx"):
-				track = mi.TrackIdx.values()[0]
+				track = next(iter(mi.TrackIdx.values()))
 				if len(track.title) > 0:
 					self.md["title"] = list(track.title)[0]
 				if len(track.creator) > 0:
