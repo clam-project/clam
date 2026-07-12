@@ -93,9 +93,9 @@ class SemWebCrawler:
 				trackNumber = trackNumberPattern.findall(s)
 				self._tempRecord('temp_1', title1)
 				self._tempRecord('temp_2', trackNumber)
-				print'Extracting \'Track Title\':..........  ..........'
+				print('Extracting \'Track Title\':..........  ..........')
 				print(title1)
-				print'Extracting \'Track No.\':..........  ..........'
+				print('Extracting \'Track No.\':..........  ..........')
 				print(trackNumber)
 			else:
 				url = ' '
@@ -133,7 +133,7 @@ class SemWebCrawler:
 				musicBrainzTagPattern = re.compile("(?<=<a href=\"/show/tag/\?tag=).*?(?=&show=track\">)")
 				musicBrainzTag = musicBrainzTagPattern.findall(s3)
 				self._tempRecord('temp_6', musicBrainzTag)
-				print'Extracting \'Musicbrainz tags\':..........  ..........'
+				print('Extracting \'Musicbrainz tags\':..........  ..........')
 				print(musicBrainzTag)
 		return url,url2
 	
@@ -162,15 +162,15 @@ class SemWebCrawler:
 				self._tempRecord('temp_9', coverjpg)
 				self._tempRecord('temp_10', trackListURI)
 				self._tempRecord('temp_11', tag)
-				print'Extracting \'record title\':..........  ..........'
+				print('Extracting \'record title\':..........  ..........')
 				print(title)
-				print'Extracting \'record data\':..........  ..........'
+				print('Extracting \'record data\':..........  ..........')
 				print(date)
-				print'Extracting \'record jpg url\':..........  ..........'
+				print('Extracting \'record jpg url\':..........  ..........')
 				print(coverjpg)
-				print'Extracting \'record tracklist url\':..........  ..........'
+				print('Extracting \'record tracklist url\':..........  ..........')
 				print(trackListURI)
-				print'Extracting \'record tags\':..........  ..........'
+				print('Extracting \'record tags\':..........  ..........')
 				print(tag)
 			else:
 				url = ' '
@@ -194,13 +194,13 @@ class SemWebCrawler:
 				self._tempRecord('temp_13',albumDescription)
 				self._tempRecord('temp_14',review)
 				self._tempRecord('temp_15',jamendoTag)
-				print'Extracting \'album tracklist title\':..........  ..........'
+				print('Extracting \'album tracklist title\':..........  ..........')
 				print(trackList)
-				print'Extracting \'album description\':..........  ..........'
+				print('Extracting \'album description\':..........  ..........')
 				print(albumDescription)
-				print'Extracting \'album review\'::..........  ..........'
+				print('Extracting \'album review\'::..........  ..........')
 				print(review)
-				print'Extracting \'jamendo tags\':..........  ..........'
+				print('Extracting \'jamendo tags\':..........  ..........')
 				print(jamendoTag)
 		return url
 
@@ -226,15 +226,15 @@ class SemWebCrawler:
 				self._tempRecord('temp_18',homepage)
 				self._tempRecord('temp_19',photo)
 				self._tempRecord('temp_20',recordList)
-				print'Extracting \'artist name\':..........  ..........'
+				print('Extracting \'artist name\':..........  ..........')
 				print(name)
-				print'Extracting \'artist location\':..........  ..........'
+				print('Extracting \'artist location\':..........  ..........')
 				print(location)
-				print'Extracting \'artist homepage\':..........  ..........'
+				print('Extracting \'artist homepage\':..........  ..........')
 				print(homepage)
-				print'Extracting \'artist photo url\':..........  ..........'
+				print('Extracting \'artist photo url\':..........  ..........')
 				print(photo)
-				print'Extracting \'artist\'s work list \':..........  ..........'
+				print('Extracting \'artist\'s work list \':..........  ..........')
 				print(recordList)
 
 

@@ -41,16 +41,16 @@ class MetadataSourceAggregator :
 		return scripts
 
 	def QueryDescriptors(self, id, descriptors) :
-		if self.verbose : print "++ Building aggregation script..."
+		if self.verbose : print("++ Building aggregation script...")
 		(aggregatorScript, sourceIds) = self._AggregatorScriptFor(descriptors)
 		aggregator = Aggregator(cStringIO.StringIO(aggregatorScript))
 		result = Pool()
 		sourcesPools = []
 		for sourceId in sourceIds :
-			if self.verbose : print "++ Querying descriptors from %s..."%sourceId
+			if self.verbose : print("++ Querying descriptors from %s..."%sourceId)
 			sourcePool = self.sources[sourceId].QueryDescriptors(id)
 			sourcesPools.append(sourcePool)
-		if self.verbose : print "++ Aggregating..."
+		if self.verbose : print("++ Aggregating...")
 		aggregator.run(result, sourcesPools)
 		return result
 
