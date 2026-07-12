@@ -211,7 +211,7 @@ class RdfHub :
 		for ng in namedGraphs:
 			try:
 				ng.remove(triple)
-			except MySQLdb.OperationalError, e:
+			except MySQLdb.OperationalError as e:
 				pass
 
 	def commit(self):

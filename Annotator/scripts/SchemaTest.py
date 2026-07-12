@@ -98,7 +98,7 @@ class SchemaTest(unittest.TestCase):
 		try :
 			schema1.InsertAttribute(schema2,'BadScope', 'BadAttribute', 'S1')
 			self.fail("Expected exception was not thrown")
-		except Schema.Exception, e:
+		except Schema.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::BadAttribute' not found",
 				e.what)
@@ -117,7 +117,7 @@ class SchemaTest(unittest.TestCase):
 		try :
 			schema2.RemoveAttribute('BadScope', 'BadAttribute')
 			self.fail("Expected exception was not thrown")
-		except Schema.Exception, e:
+		except Schema.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::BadAttribute' not found",
 				e.what)

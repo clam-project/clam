@@ -18,7 +18,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 		try :
 			source1 = FileMetadataSource("testdata/BadSource/")
 			self.fail("Should have thrown an exception")
-		except FileMetadataSource.InvalidSchemaException, e:
+		except FileMetadataSource.InvalidSchemaException as e:
 			self.assertEquals(str(e), "Schema file 'testdata/BadSource/schema.sc' not found.")
 
 	def testQueryDescriptors_nonExistingSong(self) :
@@ -26,7 +26,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 		try :
 			source1.QueryDescriptors('BadId').Dump()
 			self.fail("Should have thrown an exception")
-		except FileMetadataSource.SongNotFoundException, e :
+		except FileMetadataSource.SongNotFoundException as e :
 			self.assertEquals(str(e), "No descriptors found for song id 'BadId'.")
 
 	def testQueryDescriptors_existingSong(self) :

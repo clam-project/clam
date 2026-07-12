@@ -72,7 +72,7 @@ class AggregatorTest(unittest.TestCase):
 		try :
 			output = self.helperTestParser(input)
 			self.fail("Expected exception was not thrown")
-		except Aggregator.Exception, e:
+		except Aggregator.Exception as e:
 			self.assertEqual("Parser error at line 2\n"+ \
 				">cpy 2 scope1::attribute1 scope2::attribute2\n",e.what)
 
