@@ -451,7 +451,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False, useFrameWor
             self.AppendUnique(FRAMEWORKS=module)
         if 'QtOpenGL' in modules:
             self.AppendUnique(FRAMEWORKS='OpenGL')
-	return
+        return
     for module in modules :
         try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
         except: pass
@@ -466,7 +466,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False, useFrameWor
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
         pcmodules = [module+debugSuffix for module in modules if module not in pclessModules ]
         if 'QtOpenGL' in modules:
-			self.AppendUnique(LIBS='GL')
+            self.AppendUnique(LIBS='GL')
         if 'QtDBus' in pcmodules:
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtDBus")])
         if "QtAssistant" in pcmodules:
