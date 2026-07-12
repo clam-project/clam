@@ -13,7 +13,7 @@ def generate_flanger_network(layoutfile):
 	print "num channels: ", channels
 	template_filename = "rotatingFlanger_template.clamnetwork"
 	filename = "rotatingFlanger_%i.clamnetwork" % channels
-	network = clamrefactor.ClamNetwork(file(template_filename))
+	network = clamrefactor.ClamNetwork(open(template_filename))
 	network.setConfig("AudioBufferSink", "NSinks", str(channels))
 	network.setConfig("ProximityBasedAmplitudePanning", "SpeakerLayout", layoutfile)
 	# generate needed ports, processings and connections
@@ -24,7 +24,7 @@ def generate_flanger_network(layoutfile):
 		network.addConnection('control_connection', "ProximityBasedAmplitudePanning", "%02i"%i, "AudioBufferAmplifier_%i" % i, "Gain")
 		network.addConnection('port_connection', "RotatingFlanger", "OutputBuffer", "AudioBufferAmplifier_%i"%i, "Input Audio")
 		network.addConnection('port_connection', "AudioBufferAmplifier_%i"%i, "Audio Output", "AudioBufferSink", "%i"%(i+1))
-	network.dump(file(filename,"w"))
+	network.dump(open(filename,"w"))
 
 
 layoutfiles = ["/usr/local/share/clam/layouts/15.layout", "/usr/local/share/clam/layouts/22.layout"]

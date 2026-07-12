@@ -13,7 +13,7 @@ import cmath
 import normalizeAndWav
 
 def readDatFile(filename) :
-	wavefile = file(filename, "r")
+	wavefile = open(filename, "r")
 	return [ float(sample) for time, sample in [ line.split() for line in wavefile.readlines() if line[0]!=";"]]
 
 def writeDatFile(filename, samples) :
@@ -21,7 +21,7 @@ def writeDatFile(filename, samples) :
 	result += ["; Sample Rate 44100\n"]
 	result += ["; Channels 1\n"]
 	result += [ "%.11g %.11g\n"%(timeInSamples/44100., sample) for timeInSamples, sample in  zip( range(0, len(samples)), samples) ]
-	wavefile = file(filename, "w")
+	wavefile = open(filename, "w")
 	wavefile.writelines(result)
 
 def shiftSamples(audio, deltaSamples) :

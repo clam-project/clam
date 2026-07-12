@@ -72,13 +72,13 @@ run ("mkdir -p hooks")
 run ("mkdir -p aptcache")
 run ("mkdir -p apt.config/apt.conf.d")
 
-aptconf = file("apt.config/apt.conf.d/allow-unauthenticated",'w')
+aptconf = open("apt.config/apt.conf.d/allow-unauthenticated",'w')
 aptconf.write(aptconfiguration)
 aptconf.close()
 
 for (name, content) in hooks.items() :
 	phase( "Generating %s"%name )
-	hookfile = file("hooks/"+name,'w')
+	hookfile = open("hooks/"+name,'w')
 	hookfile.write(content)
 	hookfile.close()
 

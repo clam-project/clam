@@ -16,7 +16,7 @@ def _svnRevisionOf( whatToCheck, revisionOption="" ):
 
 def _parseChangesFile( changesFile, product='CLAM' ) :
 	versionExtractor = re.compile(r'[0-9?]+-[0-9?]+-[0-9?]+ %s (?P<Major>[0-9]+)\.(?P<Minor>[0-9]+)\.(?P<Patch>[0-9]+)(?P<SVN>.*SVN[^0-9]*(?P<Revision>[0-9]+))?'%product)
-	for line in file(changesFile) :
+	for line in open(changesFile) :
 		match = versionExtractor.match(line)
 		if match is None: continue
 		major, minor, patch, revision = [ match.group(tag) for tag in ('Major', 'Minor', 'Patch', 'Revision') ]
@@ -56,11 +56,11 @@ def versionFromRemoteSvn( product="CLAM", revisionOption="" ) :
 	
 def generateVersionSources(fileBase, namespace, versionString, fullVersionString=None) :
 	if not fullVersionString:  fullVersionString = versionString
-	header = file(fileBase+".hxx", "w")
+	header = open(fileBase+".hxx", "w")
 	header.write('namespace %s { const char * GetFullVersion(); }\n'%namespace)
 	header.write('namespace %s { const char * GetVersion(); }\n'%namespace)
 	header.close()
-	source = file(fileBase+".cxx", "w")
+	source = open(fileBase+".cxx", "w")
 	source.write('namespace %s { const char * GetFullVersion() {return "%s";} }\n'%(namespace,fullVersionString))
 	source.write('namespace %s { const char * GetVersion() {return "%s";} }\n'%(namespace,versionString))
 	source.close()

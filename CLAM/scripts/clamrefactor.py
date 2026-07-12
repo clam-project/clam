@@ -317,7 +317,7 @@ class ClamNetwork() :
 def test() :
 	import os.path
 	testInput = os.path.normpath(os.path.join(__file__,"..","../../NetworkEditor/example-data/FilePlayer.clamnetwork"))
-	network = ClamNetwork(file(testInput))
+	network = ClamNetwork(open(testInput))
 	commandFileContent =  [
 		'beVerbose',
 		'ensureVersion 1.3',
@@ -377,7 +377,7 @@ if __name__ == "__main__" :
 	if options.commands :
 		commands = options.commands
 	elif options.scriptFile :
-		commands = file(options.scriptFile).readlines()
+		commands = open(options.scriptFile).readlines()
 
 	if not commands :
 		print >> sys.stderr, "No command specified, use either -c or -f options"
@@ -387,7 +387,7 @@ if __name__ == "__main__" :
 
 	for filename in args :
 		print >> sys.stderr, "Processing", filename
-		network = ClamNetwork(file(filename))
+		network = ClamNetwork(open(filename))
 		for command in commands :
 			if not command.strip() or command.strip()[0]=='#' :
 				continue

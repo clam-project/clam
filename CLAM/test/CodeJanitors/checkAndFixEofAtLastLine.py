@@ -3,7 +3,7 @@ import sys, os, glob
 
 def endsWithEndOfLine(filename) :
 	try:
-		return len(file(filename).readlines().pop().strip())==0
+		return len(open(filename).readlines().pop().strip())==0
 	except :
 		print "Empty ", filename
 
@@ -22,7 +22,7 @@ if __name__=="__main__" :
 	for f in scanFiles("*xx", recursiveDirs('.')) : 
 		if endsWithEndOfLine(f) : continue
 		print f
-		content = file(f).read()
+		content = open(f).read()
 		fd=open(f,"w")
 		fd.write(content)
 		fd.write("\n")

@@ -141,7 +141,7 @@ Libs: -Lalibdir -lmytestmodulelib
 Cflags: -Iaincludedir
 """
 		def setUp(self) :
-			file("mytestmodule.pc","w").write(SConfPkgConfigTest.mytestmodule)
+			open("mytestmodule.pc","w").write(SConfPkgConfigTest.mytestmodule)
 			import os
 			import SCons.SConf
 			SCons.SConf.SetCacheMode("force") # Force the test to ignore cache
