@@ -1,8 +1,8 @@
-from Dummy_ConfigurationProxy import Dummy_ConfigurationProxy
+from .Dummy_ConfigurationProxy import Dummy_ConfigurationProxy
 
 import operator
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class Dummy_ConfigurationProxyTests(unittest.TestCase):
 

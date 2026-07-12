@@ -1,10 +1,10 @@
-from ProcessingTypes import ProcessingTypes
+from .ProcessingTypes import ProcessingTypes
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class ProcessingTypesTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
+		from . import Dummy_Engine
 		return Dummy_Engine.Dummy_Engine()
 
 	def fixture1(self):

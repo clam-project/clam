@@ -1,5 +1,5 @@
-import Connector
-import Processing
+from . import Connector
+from . import Processing
 
 def _hasDirection(connector) :
 	return hasattr(connector, "direction") and connector.direction is not None

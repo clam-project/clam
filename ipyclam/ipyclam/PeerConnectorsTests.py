@@ -1,11 +1,11 @@
-from PeerConnectors import PeerConnectors
-import Connector
+from .PeerConnectors import PeerConnectors
+from . import Connector
 
 import unittest
-import TestFixtures
+from . import TestFixtures
 class PeerConnectorsTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
+		from . import Dummy_Engine
 		return Dummy_Engine.Dummy_Engine()
 
 	def fixture1(self):

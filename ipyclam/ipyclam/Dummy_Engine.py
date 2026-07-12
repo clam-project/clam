@@ -1,4 +1,4 @@
-import Connector
+from . import Connector
 from collections import OrderedDict as odict
 
 _connectorKindNames = [
@@ -305,7 +305,7 @@ _dummyPrototypes = dict(
 	),
 )
 
-from Exceptions import *
+from .Exceptions import *
 
 class Dummy_Engine :
 

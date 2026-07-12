@@ -1,7 +1,7 @@
-from Network import Network
+from .Network import Network
 import operator
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class NetworkTests(object):
 
@@ -526,7 +526,7 @@ class NetworkTests(object):
 
 class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
+		from . import Dummy_Engine
 		return Dummy_Engine.Dummy_Engine()
 
 	@unittest.skip("Not working yet")

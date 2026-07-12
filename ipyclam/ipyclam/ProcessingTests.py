@@ -1,5 +1,5 @@
-from Processing import Processing
-from Connector import BadConnectorDirectionOrder
+from .Processing import Processing
+from .Connector import BadConnectorDirectionOrder
 
 import unittest
 class ProcessingTests(object):
@@ -481,7 +481,7 @@ class ProcessingTests(object):
 
 class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
+		from . import Dummy_Engine
 		return Dummy_Engine.Dummy_Engine()
 
 

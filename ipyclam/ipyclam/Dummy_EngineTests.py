@@ -1,5 +1,5 @@
-from Dummy_Engine import Dummy_Engine
-import Connector
+from .Dummy_Engine import Dummy_Engine
+from . import Connector
 
 import unittest
 

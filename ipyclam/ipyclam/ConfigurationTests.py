@@ -1,9 +1,9 @@
-from Configuration import Configuration
+from .Configuration import Configuration
 
 import operator
 import unittest
-import TestFixtures
-import Dummy_ConfigurationProxy
+from . import TestFixtures
+from . import Dummy_ConfigurationProxy
 
 class ConfigurationTests(unittest.TestCase):
 

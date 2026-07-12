@@ -1,7 +1,7 @@
-from Exceptions import BadConnectorDirectionOrder
-from Exceptions import SameConnectorDirection
-from Exceptions import DifferentConnectorKind
-from Exceptions import DifferentConnectorType
+from .Exceptions import BadConnectorDirectionOrder
+from .Exceptions import SameConnectorDirection
+from .Exceptions import DifferentConnectorKind
+from .Exceptions import DifferentConnectorType
 
 In = "In"
 Out = "Out"

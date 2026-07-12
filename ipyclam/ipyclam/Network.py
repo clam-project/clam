@@ -1,6 +1,6 @@
-import Processing
-import ProcessingTypes
-import Notifier_EngineDecorator
+from . import Processing
+from . import ProcessingTypes
+from . import Notifier_EngineDecorator
 
 class Network(object):
 	def __init__(self, engine=None):

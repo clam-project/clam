@@ -1,16 +1,16 @@
-from Connectors import Connectors
-import Connector # TODO: Review if this can be ignored
-from Exceptions import BadConnectorDirectionOrder
-from Exceptions import SameConnectorDirection
-from Exceptions import DifferentConnectorKind
-from Exceptions import DifferentConnectorType
+from .Connectors import Connectors
+from . import Connector # TODO: Review if this can be ignored
+from .Exceptions import BadConnectorDirectionOrder
+from .Exceptions import SameConnectorDirection
+from .Exceptions import DifferentConnectorKind
+from .Exceptions import DifferentConnectorType
 
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class ConnectorsTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
+		from . import Dummy_Engine
 		return Dummy_Engine.Dummy_Engine()
 
 	def fixture1(self):

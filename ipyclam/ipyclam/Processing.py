@@ -1,6 +1,6 @@
-import Connector
-import Configuration
-import Connectors
+from . import Connector
+from . import Configuration
+from . import Connectors
 
 class NotFound(Exception) : pass
 
