@@ -67,6 +67,6 @@ def generateVersionSources(fileBase, namespace, versionString, fullVersionString
 
 if __name__ == "__main__" :
 	import sys
-	print "%s %s"%versionFromRemoteSvn(sys.argv[1])
+	print("%s %s"%versionFromRemoteSvn(sys.argv[1]))
 
 

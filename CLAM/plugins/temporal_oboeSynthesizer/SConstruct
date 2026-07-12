@@ -42,7 +42,7 @@ extraPaths = [
 
 env.Append(CPPPATH=extraPaths)
 sources = dict.fromkeys(sources).keys() # eliminate repeated
-print sources
+print(sources)
 
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )

@@ -50,7 +50,7 @@ mainSources = {
 sourcePaths = ["."]
 sources = env.scanFiles('*.cxx', sourcePaths,
 	)
-print sources, mainSources.values()
+print(sources, list(mainSources.values()))
 headers = env.scanFiles('*.hxx', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 

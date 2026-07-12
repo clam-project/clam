@@ -10,7 +10,7 @@ TODO:
 
 def generate(env) :
 	"""Add Builders and construction variables for qt to an Environment."""
-	print "Loading nsis tool..."
+	print("Loading nsis tool...")
 
 	Builder = SCons.Builder.Builder
 

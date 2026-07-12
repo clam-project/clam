@@ -61,7 +61,7 @@ def CheckPkgConfigModule(context, module,
 	if variables :
 		variables_options = " ".join([
 			"--variable=%s='%s'"%item for item in variables.items()])
-		print variables
+		print(variables)
 	if runok and flags :
 		context.env.ParseConfig("$PKG_CONFIG '%s' %s"%(module,flags))
 	return runok

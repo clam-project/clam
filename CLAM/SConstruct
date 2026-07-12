@@ -14,7 +14,7 @@ if sys.platform == 'linux2' :
 	opts = Variables('options.cache',ARGUMENTS)
 	opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 	crosscompiling = Environment(options=opts)['crossmingw']
-	if crosscompiling : print "Warning: Crosscompiling mode"
+	if crosscompiling : print("Warning: Crosscompiling mode")
 
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
@@ -44,10 +44,10 @@ def save_config_file_from_env( env, dir ):
 	opts.Save(dir+'/flags.conf', env)
 
 def configure_clam(clam_env) :
-	print """\
+	print("""\
 ############################################
 ### CLAM GLOBAL DEPENDENCIES CHECKING    ###
-############################################"""
+############################################""")
 	# Sandbox setup
 	if isWindowsPlatform :
 		clam_env.AppendUnique( CPPPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'include')] )
@@ -69,10 +69,10 @@ def configure_clam(clam_env) :
 	clam_env = conf.Finish()
 
 def configure_core(clam_env) :
-	print """\
+	print("""\
 #########################################
 ### CLAM CORE DEPENDENCIES CHECKING   ###
-#########################################"""
+#########################################""")
 	core_env = clam_env.Clone()
 	conf = Configure( core_env, custom_tests = custom_check_routines )
 	if not setup_core_environment( core_env, conf ) :
@@ -82,10 +82,10 @@ def configure_core(clam_env) :
 	return core_env
 
 def configure_processing(core_env) :
-	print """\
+	print("""\
 ###############################################
 ### CLAM PROCESSING DEPENDENCIES CHECKING   ###
-###############################################"""
+###############################################""")
 	processing_env = core_env.Clone()
 	conf = Configure( processing_env, custom_check_routines )
 	if not setup_processing_environment( processing_env, conf ) :
@@ -94,10 +94,10 @@ def configure_processing(core_env) :
 	return processing_env
 
 def configure_audioio(processing_env) :
-	print """\
+	print("""\
 ############################################
 ### CLAM AUDIOIO DEPENDENCIES CHECKING   ###
-############################################"""
+############################################""")
 	audioio_env = processing_env.Clone()
 
 	conf = Configure( audioio_env, custom_check_routines )
@@ -177,15 +177,15 @@ configure : Configures clam libraries. This is a mandatory step
 
 def compose_install_dirnames( env ) :
 	install_dirs = InstallDirs(env)
-	print """\
+	print("""\
 #############################################
 ### INSTALL DIRECTORY INFORMATION         ###
-#############################################"""
-	print "Directory to install under:", install_dirs.prefix
-	print "\tLibrary files will be installed at:", install_dirs.lib
-	print "\tExecutable files will be installed at:", install_dirs.bin
-	print "\tInclude files will be installed at:", install_dirs.inc
-	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
+#############################################""")
+	print("Directory to install under:", install_dirs.prefix)
+	print("\tLibrary files will be installed at:", install_dirs.lib)
+	print("\tExecutable files will be installed at:", install_dirs.bin)
+	print("\tInclude files will be installed at:", install_dirs.inc)
+	print("\tDocumentation, data and examples will be installed at:", install_dirs.data)
 	return install_dirs
 
 
@@ -240,8 +240,8 @@ sys.path.append('scons/sconstools')
 import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("CLAM", "CHANGES")
 Export('version')
-print "Version: ", version
-print "Package version: ", fullVersion
+print("Version: ", version)
+print("Package version: ", fullVersion)
 
 
 versionInfo.generateVersionSources(os.path.join('src','Defines','CLAMVersion'), "CLAM", version, fullVersion)
@@ -267,9 +267,9 @@ needs_configure = ('configure' in COMMAND_LINE_TARGETS) or config_file_missing()
 avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option=='1' or avoid_configure_option=='yes' or '-c' in ARGUMENTS
 
 if needs_configure and not avoid_configure :
-	print 'Configure phase...'
+	print('Configure phase...')
 	configureModules(clam_env)
-	print "Finished. Invoke 'scons' now."
+	print("Finished. Invoke 'scons' now.")
 	Exit(0)
 
 
@@ -326,9 +326,9 @@ for script in [
 
 Default( all_alias )
 
-print """\
+print("""\
 ##############################################
 ### BUILDING CLAM LIBRARIES                ###
-##############################################"""
+##############################################""")
 
 

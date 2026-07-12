@@ -4,10 +4,10 @@ import os, glob
 import sys
 
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
+	print("\033[32m:: ", command, "\033[0m")
 	return os.system(command)
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print("\033[31mXX ", command, "\033[0m")
 
 
 def needsChange(binary, blacklist) :

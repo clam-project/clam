@@ -5,8 +5,8 @@ import sys
 # from __init__.py
 
 def config_error(str) :
-	print str
-	print 'Check the config.log file for details'
+	print(str)
+	print('Check the config.log file for details')
 	return False
 
 def setup_global_environment( env, conf ) :
@@ -14,7 +14,7 @@ def setup_global_environment( env, conf ) :
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
 	if not conf.check_pkg_config( conf ) :
-		print 'WARNING: pkg-config is not installed. Checks will be harder.'
+		print('WARNING: pkg-config is not installed. Checks will be harder.')
 		env['pkg_config_available'] = False
 	else :
 		env['pkg_config_available'] = True
@@ -42,13 +42,13 @@ def setup_global_environment( env, conf ) :
 		]) 
 
 	if env['release'] :
-		print 'COMPILING IN RELEASE MODE'
+		print('COMPILING IN RELEASE MODE')
 		env.AppendUnique( CCFLAGS='-g -O3 -fomit-frame-pointer -Wall'.split(' ') )
 		# Strip when in windows (in linux symbols are useful and striped by packagers)
 		if 'mingw32' in env['TOOLS'] : 
 			env.Append( LDFLAGS='-s'.split(' ') )
 	else :
-		print 'COMPILING IN DEBUG MODE'
+		print('COMPILING IN DEBUG MODE')
 		env.AppendUnique( CCFLAGS='-g -Wall'.split(' ') )
 		env.AppendUnique( CPPFLAGS = ['-D_DEBUG'] )
 
@@ -160,7 +160,7 @@ def test_portaudio( env, conf ) :
 
 def test_portmidi( env, conf ) :
 	if sys.platform == 'linux2' :
-		print "Bypassing portmidi checks: using ALSA MIDI facilities"
+		print("Bypassing portmidi checks: using ALSA MIDI facilities")
 		return True
 	if not conf.CheckHeader( 'portmidi.h' ) :
 		return config_error( "Could not find portmidi header 'portmidi.h'! Check your portmidi installation..." )
@@ -202,8 +202,8 @@ def setup_audioio_environment( env, conf ) :
 
 	if env['with_jack'] and not crosscompiling:
 		if not test_jack (env, conf):
-			print "Either install jack or disable jack support by issuing"
-			print "$scons with_jack=no"
+			print("Either install jack or disable jack support by issuing")
+			print("$scons with_jack=no")
 			return False
 		env.Append(CPPFLAGS=['-DUSE_JACK=1'])
 

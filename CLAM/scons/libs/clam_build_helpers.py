@@ -23,7 +23,7 @@ class _FileRetriever :
 	def is_blacklisted( self, filename ) :
 		for entry in self.blacklisted :
 			if entry.search(filename) is not None :
-				print "blacklisted", filename
+				print("blacklisted", filename)
 				return True
 		return False
 
@@ -137,7 +137,7 @@ def CheckLibrarySample(context, name, lang, lib, test_code, winlib=None ) :
 	elif lang == 'c++' :
 		test_code_extension = '.cxx'
 	else :
-		raise RuntimeError, "%s language is not supported for specifying test code"
+		raise RuntimeError("%s language is not supported for specifying test code")
 
 	context.Message('Checking that %s sample program compiles...'%name )
 	result = context.TryCompile( test_code, test_code_extension )
@@ -218,8 +218,8 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 	versionnumbers = tuple(version.split('.'))
 
 	if len(versionnumbers) != 3:
-		print " ERROR in buildtools.posix_lib_rules: version name does not follow CLAM standard "
-		print "   Check the variable 'version' in the main SConstruct"
+		print(" ERROR in buildtools.posix_lib_rules: version name does not follow CLAM standard ")
+		print("   Check the variable 'version' in the main SConstruct")
 		sys.exit(1)
 
 	if sys.platform == 'linux2' :
