@@ -84,8 +84,8 @@ if __name__ == "__main__":
 		sys.exit()
 
 	print(Lab2Plot( 
-			file(labfilename), 
-			file(labfilename+".pool","w"), 
+			open(labfilename), 
+			open(labfilename+".pool","w"), 
 			attributeName, 
 			filter, 
 			childScope, labelAttribute))

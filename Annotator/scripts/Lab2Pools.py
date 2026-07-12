@@ -107,14 +107,14 @@ if __name__ == "__main__":
 	if labFileList == '-' : 
 		labFileList = sys.stdin
 	else :
-		labFileList = file(labFileList)
+		labFileList = open(labFileList)
 
 	labelValues = [];
 	for labfilename in labFileList :
 		labfilename = labfilename.lstrip().rstrip()
 		values = Lab2Plot( 
-				file(labfilename), 
-				file(labfilename+".pool","w"), 
+				open(labfilename), 
+				open(labfilename+".pool","w"), 
 				segmentationAttribute, 
 				filter, 
 				childScope, labelAttribute)

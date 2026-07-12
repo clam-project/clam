@@ -72,7 +72,7 @@ class config :
 			print("Bad Configuration File!", file=sys.stderr)
 			sys.exit(-1)
 
-		execfile(options.ConfigurationFile)
+		exec(open(options.ConfigurationFile).read())
 
 provider = MetadataSourceAggregator(config.sources, config.map, verbose=config.verbose)
 

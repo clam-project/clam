@@ -56,7 +56,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testUpdateDescriptors_whenNoPreviousPoolExists(self):
 		source1 = FileMetadataSource("testdata/FileSource1/")
 
-		poolToInsert = Pool(file("testdata/FileSource1/id1.pool"))
+		poolToInsert = Pool(open("testdata/FileSource1/id1.pool"))
 		source1.UpdateDescriptors("newId", poolToInsert)
 
 		expected = cStringIO.StringIO()

@@ -42,7 +42,7 @@ class FileMetadataSource :
 		if extractor and not os.access(self.schemaFile, os.R_OK) :
 			os.system("%s -s %s"%(self.extractor, self.schemaFile))
 		try :
-			self.schema = Schema(file(self.schemaFile))
+			self.schema = Schema(open(self.schemaFile))
 		except IOError as e:
 			raise FileMetadataSource.InvalidSchemaException(self.schemaFile)
 
@@ -50,7 +50,7 @@ class FileMetadataSource :
 		print("Computing", self.extractor, "for", id)
 		if not ignoreCache and False : # TODO: Use properly the ignoreCache flag
 			try :
-				result = Pool(file(self._poolPath(id)))
+				result = Pool(open(self._poolPath(id)))
 				print("Using cached data")
 				return result
 			except IOError as e: pass # Not found
@@ -69,7 +69,7 @@ class FileMetadataSource :
 			subprocess.call(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
 			sys.stdout.flush()
 		try :
-			return Pool(file(self._poolPath(id)))
+			return Pool(open(self._poolPath(id)))
 		except IOError as e: pass # Not found
 		raise FileMetadataSource.SongNotFoundException(id)
 
@@ -80,7 +80,7 @@ class FileMetadataSource :
 		if str(id) not in self.idsToRecalculate:
 			self.idsToRecalculate.append(id)
 		# TODO: Merge when data already exists
-		pool.Dump(file(self._poolPath(id),"w"))
+		pool.Dump(open(self._poolPath(id),"w"))
 
 	def CheckMissingDescriptor(self, descriptor, idlist):
 		available = shelve.open( self.path + "/available.dict", writeback=True )
