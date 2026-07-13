@@ -1,9 +1,7 @@
 #include "shibokenunwrap.hxx"
-#include <shiboken/basewrapper.h>
-#include <shiboken/typeresolver.h>
-#include <shiboken/conversions.h>
+#include <shiboken6/basewrapper.h>
 #include <iostream>
-#include <QtCore/QObject>
+#include <QObject>
 
 static void * error(const std::string & msg)
 {
@@ -18,7 +16,7 @@ void * shibokenUnwrap(PyObject * pyobject)
 
 	SbkObject * sbkobject = (SbkObject *) pyobject;
 
-	PyTypeObject * type = Shiboken::SbkType<QObject>();
+	PyTypeObject * type = Py_TYPE(pyobject);
 
 	void * cppobject = Shiboken::Object::cppPointer(sbkobject, type);
 	if (not cppobject)
@@ -29,7 +27,8 @@ void * shibokenUnwrap(PyObject * pyobject)
 
 PyObject * shibokenWrap(QObject * qobject)
 {
-	return Shiboken::createWrapper(qobject, /*python owns*/ false);
+	return Shiboken::Object::newObject(
+		Shiboken::ObjectType::typeForTypeName("QWidget"), qobject, false, true);
 }
 
 
