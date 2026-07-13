@@ -98,18 +98,16 @@ public:
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
-#ifdef AFTER13RELEASE
-		_centralTab = new QTabWidget(this);
-		setCentralWidget(_centralTab);
-		_centralTab->setTabPosition(QTabWidget::South);
-#endif//AFTER13RELEASE
-//		QScrollArea * scroll = new QScrollArea(this);
+
+		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
-		ClamNetworkCanvas * scroll = _canvas;
-//		scroll->setWidget(_canvas);
+		scroll->setWidget(_canvas);
 
 #ifdef AFTER13RELEASE
+		_centralTab = new QTabWidget(this);
+		_centralTab->setTabPosition(QTabWidget::South);
 		_centralTab->addTab(scroll, "Network");
+		setCentralWidget(_centralTab);
 #else
 		setCentralWidget(scroll);
 #endif//AFTER13RELEASE
@@ -138,6 +136,8 @@ public:
 		_consoleDock->setWidget(console ? console : new QLabel(tr("<p>Python console not available</p>")));
 		if (console)
 			connect(console, SIGNAL(modelChanged()), this, SLOT(refreshCanvas()));
+		else
+			_consoleDock->setVisible(false);
 
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
@@ -436,6 +436,7 @@ public:
 				_networkPlayer = jackPlayer;
 #ifdef AFTER13RELEASE
 				_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
+				// TODO Add scroll
 				_centralTab->addTab(_jackCanvas, "Jack");
 #endif//AFTER13RELEASE
 			}
