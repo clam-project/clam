@@ -19,9 +19,9 @@ def recursiveDirs(env, root) :
 def moveIntermediateInto(env, subfolder) :
 	env['SHOBJPREFIX']       = os.path.join(subfolder,'')
 	env['OBJPREFIX']         = os.path.join(subfolder,'')
-	env['QT4_MOCHPREFIX']    = os.path.join(subfolder,'moc_')
-	env['QT4_UICDECLPREFIX'] = os.path.join(subfolder,'ui_')
-	env['QT4_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
+	env['QT6_MOCHPREFIX']    = os.path.join(subfolder,'moc_')
+	env['QT6_UICDECLPREFIX'] = os.path.join(subfolder,'ui_')
+	env['QT6_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
 
 def activateColorCommandLine(env) :
 	def print_cmd_line(commandline, target, source, env) :

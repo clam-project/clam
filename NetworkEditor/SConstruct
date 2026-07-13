@@ -8,7 +8,7 @@ options.Add(PathVariable('prefix', 'The prefix where the application will be ins
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
 options.Add(PathVariable('prefix_for_packaging', 'Install location when packaging. Use "." for same as prefix.', '.'))
 options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
-options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
+options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt6/plugins/designer)','/bin/designer'))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathVariable('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
 options.Add(BoolVariable('enable_python', 'Enables python dependant features, such as network version upgrade', 'true'))
@@ -45,17 +45,19 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
 if env['enable_python'] :
 	env.AppendUnique(CPPDEFINES=[ "CLAM_USE_PYTHON" ])
-	env.ParseConfig('python3-config --cflags')
-	env.ParseConfig('python3-config --libs')
+	env.ParseConfig('python3-config --cflags --embed')
+	env.ParseConfig('python3-config --libs --embed')
 	# Those lines are for ipyclam console
-	env.AppendUnique(LIBS=['boost_python'])
+	# TODO: Take the version from python
+	pyversion = f"{sys.version_info.major}{sys.version_info.minor}" 
+	env.AppendUnique(LIBS=[f'boost_python{pyversion}'])
 	env.ParseConfig('pkg-config --cflags --libs shiboken6')
 	# g++ complaints about -Wstrict-prototypes added by python3-config
 	if '-Wstrict-prototypes' in env['CCFLAGS'] :
 		env['CCFLAGS'].remove("-Wstrict-prototypes")
 
 
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
@@ -82,16 +84,18 @@ env.EnableClamModules([
 	'clam_processing',
 	], CLAMInstallDir)
 
-env.EnableQt4Modules([
+env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
 	'QtXml',
 	'QtSvg',
+	'QtSvgWidgets',
 	'QtUiTools',
 	'QtDesigner',
-	'QtWebKit',
-	'QtXmlPatterns',
+	'QtPrintSupport',
+	#'QtWebKit',
+	#'QtXmlPatterns',
 	],
 	debug=False,
 	crosscompiling=crosscompiling,
@@ -102,7 +106,7 @@ mainSources = {
 	'Prototyper' :        os.path.join('src','prototyper','main.cxx'),
 	'MonoOfflinePlayer' : os.path.join('src','MonoOfflinePlayerMain.cxx'),
 	'OfflinePlayer' :     os.path.join('src','OfflinePlayerMain.cxx'),
-	'CheckClamNetwork' :     os.path.join('src','CheckClamNetworkMain.cxx'),
+	'CheckClamNetwork' :  os.path.join('src','CheckClamNetworkMain.cxx'),
 }
 
 sourcePaths = [
@@ -131,7 +135,7 @@ sources = env.scanFiles('*.cxx', sourcePaths,
 qrcfiles = env.scanFiles("*.qrc", sourcePaths)
 
 uifiles = env.scanFiles("*.ui", sourcePaths)
-if uifiles: uiheaders = env.Uic4(source=uifiles)
+if uifiles: uiheaders = env.Uic6(source=uifiles)
 
 if isWindowsPlatform :
 	env.Append(LIBS=['glu32'])
@@ -180,7 +184,12 @@ if sys.platform != 'darwin':
 
 if isWindowsPlatform :
 	qtmonitorEnv.AppendUnique(LINKFLAGS=['-Wl,--export-all-symbols'])
-qtmonitorSources += qtmonitorEnv.Qrc(source=qrcfiles)
+# TODO: Consider moving this target derivation into qt6.py's Qrc6 wrapper
+qrc_targets = [os.path.join(
+	os.path.dirname(f),
+	qtmonitorEnv.subst('$QT6_QRCCXXPREFIX') + os.path.splitext(os.path.basename(f))[0] + qtmonitorEnv.subst('$QT6_QRCCXXSUFFIX'))
+	for f in qrcfiles]
+qtmonitorSources += qtmonitorEnv.Qrc6(qrc_targets, qrcfiles)
 qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 	moduleName='qtmonitors',
 	description='Qt widgets for the CLAM framework',
@@ -238,12 +247,14 @@ translatableSources+= env.scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
 if len(tsfiles) :
-	# Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
+	# Manual step: lupdate-qt6 *xx *ui -ts NetworkEditor_ca.ts
 	#tsNodes = env.Ts(target=tsfiles, source = translatableSources)
-	# TODO: move those settings to the qt4 tool
+	# TODO: move those settings to the qt6 tool
 	#env.Precious(tsNodes) # Do not remove it until really regenerated
 	#env.NoClean(tsNodes) # They are not just generated but also user edited
-	translations = env.Qm(source = tsfiles)
+	# TODO: Consider moving this target derivation into qt6.py's Qm6 wrapper
+	qm_targets = [os.path.splitext(f)[0] + '.qm' for f in tsfiles]
+	translations = env.Qm6(qm_targets, tsfiles)
 
 qtpluginsInstallationPath = env['qt_plugins_install_path']
 examples = []

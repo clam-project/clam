@@ -9,28 +9,27 @@ options.AddVariables(
 	BoolVariable('enable_jack', 'Compile JACK engine', 'yes'),
 	)
 
-toolChain = 'default' if sys.platform is not 'win32' else 'mingw'
+toolChain = 'default' if sys.platform != 'win32' else 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
-env.ParseConfig('python3-config --cflags')
-env.ParseConfig('python3-config --libs')
-env.ParseConfig('pkg-config --cflags --libs pyside')
+env.ParseConfig('python3-config --cflags --embed')
+env.ParseConfig('python3-config --libs --embed')
+env.ParseConfig('pkg-config --cflags --libs pyside6')
 
 if env['enable_clam'] :
 	env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
 	env.ParseConfig('pkg-config clam_qtmonitors --cflags --libs') # UI binding
 
-env.ParseConfig('pkg-config QtUiTools QtGui QtCore --cflags --libs') # UI binding
+env.ParseConfig('pkg-config Qt6UiTools Qt6Gui Qt6Core --cflags --libs') # UI binding
 
 if env['enable_jack'] :
 	env.ParseConfig('pkg-config --cflags --libs jack')
 
-env.AppendUnique(
-	LIBS=['boost_python']
-)
+pyversion = f"{sys.version_info.major}{sys.version_info.minor}" 
+env.AppendUnique(LIBS=[f'boost_python{pyversion}'])
 
 # python3-config adds a flag that is refused by g++
 if '-Wstrict-prototypes' in env['CCFLAGS'] :

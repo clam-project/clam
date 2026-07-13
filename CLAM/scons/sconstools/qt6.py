@@ -426,6 +426,22 @@ def _detect(env):
               "QT6DIR variable is not defined, using moc executable as a hint (QT6DIR=%s)" % QT6DIR)
           return QT6DIR
 
+    # Fallback: detect via pkg-config
+    try:
+        qtlibexecdir = subprocess.check_output(
+            ['pkg-config', '--variable=libexecdir', 'Qt6Core'],
+            stderr=subprocess.DEVNULL)
+        if isinstance(qtlibexecdir, bytes):
+            qtlibexecdir = qtlibexecdir.decode()
+        qtlibexecdir = qtlibexecdir.strip()
+        QT6DIR = os.path.dirname(qtlibexecdir)
+        SCons.Warnings.warn(
+            QtdirNotFound,
+            "QT6DIR detected via pkg-config (QT6DIR=%s)" % QT6DIR)
+        return QT6DIR
+    except Exception:
+        pass
+
     raise SCons.Errors.StopError(
         QtdirNotFound,
         "Could not detect Qt 6 installation")
@@ -470,13 +486,12 @@ __qrcscanner = SCons.Scanner.Scanner(name = 'qrcfile',
 # Emitters
 #
 def __qrc_path(head, prefix, tail, suffix):
-    if head:
-        if tail:
-            return os.path.join(head, "%s%s%s" % (prefix, tail, suffix))
-        else:
-            return "%s%s%s" % (prefix, head, suffix)
-    else:
+    if not head:
         return "%s%s%s" % (prefix, tail, suffix)
+    if not tail:
+        return "%s%s%s" % (prefix, head, suffix)
+    return os.path.join(head, "%s%s%s" % (prefix, tail, suffix))
+
 def __qrc_emitter(target, source, env):
     sourceBase, sourceExt = os.path.splitext(SCons.Util.to_String(source[0]))
     sHead = None
@@ -735,6 +750,13 @@ def generate(env):
     command_suffixes = ['-qt6', '6', '']
         
     def locateQt6Command(env, command, qtdir) :
+        try :
+            fullpath = env.backtick(
+                'pkg-config --variable=libexecdir Qt6Core').strip()
+            fullpath = os.path.join(fullpath, command)
+            if fullpath and os.access(fullpath, os.X_OK) :
+                    return fullpath
+        except OSError: pass
         triedPaths = []
         for suffix in suffixes :
             for subdir in ["bin", "libexec"]:
@@ -927,6 +949,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
         'QtScript',
         'QtScriptTools',
         'QtSvg',
+        'QtSvgWidgets',
         'QtUiTools',
         'QtXml',
         'QtXmlPatterns',
@@ -966,7 +989,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
         try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
         except: pass
     debugSuffix = ''
-    if sys.platform in [] and not crosscompiling :
+
+    if sys.platform in ["darwin", "linux", "linux2"] and not crosscompiling :
         if debug : debugSuffix = '_debug'
         for module in modules :
             if module not in pclessModules : continue
@@ -985,6 +1009,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
         self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
         self["QT6_MOCCPPPATH"] = self["CPPPATH"]
         return
+
     if sys.platform in ["win32", "darwin", "linux2", "linux"] or crosscompiling :
         if crosscompiling:
             transformedQtdir = transformToWinePath(self['QT6DIR'])

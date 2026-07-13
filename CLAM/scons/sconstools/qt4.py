@@ -44,7 +44,7 @@ import SCons.Scanner
 import SCons.Tool
 import SCons.Util
 
-class ToolQt4Warning(SCons.Warnings.Warning):
+class ToolQt4Warning(SCons.Warnings.SConsWarning):
     pass
 
 class GeneratedMocFileNotIncluded(ToolQt4Warning):
@@ -55,7 +55,7 @@ class QtdirNotFound(ToolQt4Warning):
 
 SCons.Warnings.enableWarningClass(ToolQt4Warning)
 
-qrcinclude_re = re.compile(r'<file>([^<]*)</file>', re.M)
+qrcinclude_re = re.compile(r'<file[^>]*>([^<]*)</file>', re.M)
 
 def transformToWinePath(path) :
     return os.popen('winepath -w "%s"'%path).read().strip().replace('\\','/')
