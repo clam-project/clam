@@ -24,7 +24,7 @@
 #ifndef PolarChromaPeaksPlugin_hxx
 #define PolarChromaPeaksPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class PolarChromaPeaksPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

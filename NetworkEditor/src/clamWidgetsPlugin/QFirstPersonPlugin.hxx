@@ -24,7 +24,7 @@
 #ifndef QFirstPersonPlugin_hxx
 #define QFirstPersonPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class QFirstPersonPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

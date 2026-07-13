@@ -24,7 +24,7 @@
 #ifndef VumeterPlugin_hxx
 #define VumeterPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class VumeterPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

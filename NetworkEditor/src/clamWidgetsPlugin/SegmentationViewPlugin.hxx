@@ -24,7 +24,7 @@
 #ifndef SegmentationViewPlugin_hxx
 #define SegmentationViewPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class SegmentationViewPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

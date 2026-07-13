@@ -24,7 +24,7 @@
 #ifndef SpectrogramPlugin_hxx
 #define SpectrogramPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class SpectrogramPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

@@ -24,7 +24,7 @@
 #ifndef ControlSurfaceWidgetPlugin_hxx
 #define ControlSurfaceWidgetPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class ControlSurfaceWidgetPlugin : public QObject,
                              public QDesignerCustomWidgetInterface
