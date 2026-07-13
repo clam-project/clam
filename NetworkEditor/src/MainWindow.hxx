@@ -256,15 +256,15 @@ public:
 	QString readNetworkVersion(const QString & networkFileName)
 	{
 		QFile networkFile(networkFileName);
-		if( !networkFile.exists() ) return QString();
+		if (!networkFile.exists()) return QString();
 		if (!networkFile.open(QIODevice::ReadOnly)) return QString();
 
 		QDomDocument document;
 		if (!document.setContent(&networkFile)) return QString();
 
 		QDomElement root = document.documentElement();
-		if (root.tagName() != "network") return QString();
-		return root.attribute("clamVersion").trimmed();
+		if (root.tagName() != "network") return QString("");
+		return root.attribute("clamVersion").trimmed() + "";
 	}
 	void load(const QString & filename)
 	{
