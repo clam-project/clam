@@ -72,7 +72,7 @@ print("Package version: ", fullVersion)
 versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", version, fullVersion)
 
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT4_UICDECLSUFFIX'] = '.h'
 env.moveIntermediateInto('generated')
 env.activateColorCommandLine()
 
