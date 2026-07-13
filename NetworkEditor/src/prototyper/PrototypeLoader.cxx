@@ -76,7 +76,7 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 	{
 		QString file = QFileDialog::getOpenFileName(0,
 			"Choose a Network to run",
-			QString::null,
+			QString(),
 			"CLAM Network files (*.clamnetwork)");
 		if (file.isEmpty()) return false;
 		_networkFile=file.toLocal8Bit().constData();
