@@ -11,7 +11,7 @@ Besides CLAM and its dependencies, NetworkEditor compilation depends on:
 
 	- Qt4
 	- boost-python (for ipyclam console and network auto-upgrade)
-	- shiboke (for ipyclam console and network auto-upgrade)n
+	- shiboken (for ipyclam console and network auto-upgrade)
 
 = Run-time dependencies =
 

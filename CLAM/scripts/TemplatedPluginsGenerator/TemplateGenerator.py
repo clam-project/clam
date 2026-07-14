@@ -202,7 +202,7 @@ def recursiveDirs(root) :
 
 options = Variables('options.cache', ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
-if sys.platform=='linux2' :
+if sys.platform=='linux' :
 	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 env = Environment(ENV=os.environ, options=options)
 options.Save('options.cache', env)
@@ -223,7 +223,7 @@ env.EnableClamModules([
 sourcePaths = recursiveDirs(".")
 sources = scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
-if sys.platform=='linux2' :
+if sys.platform=='linux' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),

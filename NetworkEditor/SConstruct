@@ -12,7 +12,7 @@ options.Add(('qt_plugins_install_path', 'Path component (without the install pre
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathVariable('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
 options.Add(BoolVariable('enable_python', 'Enables python dependant features, such as network version upgrade', 'true'))
-if sys.platform=="linux2" :
+if sys.platform=="linux" :
 	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
@@ -37,7 +37,7 @@ env.SConsignFile() # Single signature file
 
 crosscompiling = env.get("crossmingw")
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
