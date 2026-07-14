@@ -19,7 +19,7 @@
  *
  */
 
-#include <QtGui/QGridLayout>
+#include <QGridLayout>
 #include "vmRuler.hxx"
 #include "vmPlotCanvas.hxx"
 #include "vmSonogramBuilder.hxx"

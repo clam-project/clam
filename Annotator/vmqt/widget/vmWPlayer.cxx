@@ -19,8 +19,8 @@
  *
  */
 
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QPushButton>
+#include <QHBoxLayout>
+#include <QPushButton>
 #include "vmPlayer.hxx"
 #include "vmWPlayer.hxx"
 

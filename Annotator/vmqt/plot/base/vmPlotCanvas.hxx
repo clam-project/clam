@@ -22,11 +22,14 @@
 #ifndef __VMQT_PLOT2D_H__
 #define __VMQT_PLOT2D_H__
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QVector3D>
+#include <QMatrix4x4>
 #undef GetClassName
 #include <map>
 #include <list>
-#include <QtGui/QCursor>
+#include <QCursor>
 #include "vmDataTypes.hxx"
 
 namespace CLAM

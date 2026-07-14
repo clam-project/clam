@@ -19,11 +19,12 @@
  *
  */
 
-#include <QtGui/QResizeEvent>
+#include <QResizeEvent>
 #include "vmRenderer2D.hxx"
 #include "vmPlotCanvas.hxx"
-#include <QtCore/QTimer>
+#include <QTimer>
 #include <iostream>
+#include <QPainter>
 #include "vmRuler.hxx"
 #include "vmScrollGroup.hxx"
 #include <CLAM/RangeView.hxx>

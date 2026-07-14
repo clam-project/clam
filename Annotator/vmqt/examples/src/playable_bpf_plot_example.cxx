@@ -19,7 +19,7 @@
  *
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "Melody.hxx"
 #include "XMLStorage.hxx"
 #include "vmPlayableBPFPlot.hxx"

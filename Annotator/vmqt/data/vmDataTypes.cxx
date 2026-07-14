@@ -20,7 +20,7 @@
  */
 
 #include "vmDataTypes.hxx"
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

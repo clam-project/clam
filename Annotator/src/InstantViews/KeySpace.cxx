@@ -22,6 +22,7 @@
 #include "KeySpace.hxx"
 #include <cmath>
 #include <iostream>
+#include <QPainter>
 
 /// Returns dummy data source for unbinded widget
 static CLAM::VM::FloatArrayDataSource & getDummySource()

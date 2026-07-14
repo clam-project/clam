@@ -23,6 +23,7 @@
 #include <QPixmap>
 #include <QTimer>
 #include <iostream>
+#include <QPainter>
 #include <CLAM/Pool.hxx>
 
 CLAM::VM::FloatArrayDataSource & getDummySource()

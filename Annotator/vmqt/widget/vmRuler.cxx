@@ -19,10 +19,10 @@
  *
  */
 
-#include <QtGui/QResizeEvent>
+#include <QResizeEvent>
 #include "vmRuler.hxx"
 #include <CLAM/RulerTicks.hxx>
-#include <QtGui/QPainter>
+#include <QPainter>
 #include <iostream>
 
 namespace CLAM

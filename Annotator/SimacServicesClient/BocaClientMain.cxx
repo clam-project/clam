@@ -19,9 +19,9 @@
  *
  */
 
-#include <QtGui/QApplication>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 #include "BocaClientGui.hxx"
 #include <cstdlib>
 

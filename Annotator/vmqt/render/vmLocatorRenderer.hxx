@@ -23,7 +23,7 @@
 #define __VMQT_LOCATOR_RENDERER_H__
 
 #include "vmRenderer2D.hxx"
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

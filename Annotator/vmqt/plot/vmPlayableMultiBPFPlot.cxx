@@ -19,12 +19,12 @@
  *
  */
 
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QFrame>
-#include <QtGui/QComboBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFrame>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QPixmap>
 #include "vmPlotCanvas.hxx"
 #include "vmGrid.hxx"
 #include "vmBPFEditor.hxx"

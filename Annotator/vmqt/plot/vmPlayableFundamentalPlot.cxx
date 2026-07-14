@@ -19,11 +19,11 @@
  *
  */
 
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QFrame>
-#include <QtGui/QComboBox>
-#include <QtGui/QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFrame>
+#include <QComboBox>
+#include <QPixmap>
 #include "vmPlotCanvas.hxx"
 #include "vmLocatorRenderer.hxx"
 #include "vmWPlayer.hxx"

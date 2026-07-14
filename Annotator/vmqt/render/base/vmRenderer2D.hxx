@@ -22,9 +22,9 @@
 #ifndef __VMQT_RENDERER2D_H__
 #define __VMQT_RENDERER2D_H__
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
-#include <QtGui/QCursor>
+#include <QObject>
+#include <QString>
+#include <QCursor>
 #include "vmDataTypes.hxx"
 
 namespace CLAM

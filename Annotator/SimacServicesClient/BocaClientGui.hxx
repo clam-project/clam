@@ -20,12 +20,12 @@
  */
 #include <cstdlib>
 
-#include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
-#include <QtGui/QMessageBox>
-#include <QtCore/QFileInfo>
+#include <QApplication>
+#include <QFileDialog>
+#include <QTranslator>
+#include <QLocale>
+#include <QMessageBox>
+#include <QFileInfo>
 #include "ui_GUI.hxx"
 #include "BocaTaskRunner.hxx"
 
