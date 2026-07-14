@@ -54,7 +54,7 @@ int main( int argc, char ** argv )
 	const char * projectDir = (argc>3)? argv[3] : 0;
 
 	QCoreApplication::setOrganizationName("CLAM");
-	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
+	QCoreApplication::setOrganizationDomain("clam-project.org");
 	QCoreApplication::setApplicationName("Boca Client");
 	BocaClientGui w(taskFile, projectFile, projectDir);
 	w.show();
