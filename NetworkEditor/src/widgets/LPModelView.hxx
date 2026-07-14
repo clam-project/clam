@@ -25,7 +25,7 @@
 #include "FloatArrayDataSource.hxx"
 
 #include "BarGraph.hxx"
-#include <QtUiPlugin/QDesignerExportWidget>
+#include <QDesignerExportWidget>
 
 namespace CLAM
 {

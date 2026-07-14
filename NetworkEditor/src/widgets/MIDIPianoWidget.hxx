@@ -20,7 +20,7 @@
 
 #include <QWidget>
 #include <QPainter>
-#include <QtSvg/QSvgRenderer>
+#include <QSvgRenderer>
 
 #include <vector>
 

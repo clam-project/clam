@@ -1,12 +1,12 @@
 #include "PrototypeLoader.hxx"
-#include <QtUiTools/QUiLoader>
+#include <QUiLoader>
 #include <QPushButton>
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QLabel>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <QFile>
+#include <QTimer>
 #include <CLAM/XMLStorage.hxx>
 #include <fstream>
 #ifdef USE_JACK

@@ -24,7 +24,7 @@
 
 #include <QOpenGLWidget>
 #undef GetClassName
-#include <QtUiPlugin/QDesignerExportWidget>
+#include <QDesignerExportWidget>
 #include "FloatArrayDataSource.hxx"
 
 namespace CLAM {

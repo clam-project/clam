@@ -7,7 +7,7 @@
 #include "FloatArrayDataSource.hxx"
 #include <cmath>
 
-#include <QtUiPlugin/QDesignerExportWidget>
+#include <QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT SpectrumView : public QWidget
 {

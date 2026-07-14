@@ -20,7 +20,7 @@
  */
 
 #include "ProcessingTree.hxx" 
-#include <QtCore/QMimeData>
+#include <QMimeData>
 #include <QDrag>
 #include <QMouseEvent>
 #include <QHeaderView>

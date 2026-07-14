@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <CLAM/DataTypes.hxx>
-#include <QtUiPlugin/QDesignerExportWidget>
+#include <QDesignerExportWidget>
 #include <cmath>
 
 

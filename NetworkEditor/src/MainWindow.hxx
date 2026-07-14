@@ -7,9 +7,9 @@
 #include <QWhatsThis>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QtCore/QSettings>
-#include <QtCore/QStringList>
-#include <QtCore/QTimer>
+#include <QSettings>
+#include <QStringList>
+#include <QTimer>
 #include "ui_About.h"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
@@ -26,11 +26,11 @@
 #include "TaskRunner.hxx"
 
 #include <QSvgWidget>
-#include <QtCore/QProcess>
-#include <QtCore/QUrl>
+#include <QProcess>
+#include <QUrl>
 #include <QDesktopServices>
-#include <QtWidgets/QTextBrowser>
-#include <QtXml/QDomDocument>
+#include <QTextBrowser>
+#include <QDomDocument>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -40,14 +40,14 @@
 #endif
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
-#	include <QtCore/QDir>
+#	include <QDir>
 #endif
 
 #ifndef DATA_EXAMPLES_PATH
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 
 //#define AFTER13RELEASE

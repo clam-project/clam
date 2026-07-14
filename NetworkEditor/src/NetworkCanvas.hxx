@@ -15,13 +15,13 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QDialogButtonBox>
-#include <QtCore/QFile>
-#include <QtCore/QMimeData>
+#include <QFile>
+#include <QMimeData>
 #include <QMessageBox>
 #include <QAction>
 #include <QCompleter>
-#include <QtCore/QtGlobal>
-#include <QtCore/QTextStream>
+#include <QtGlobal>
+#include <QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
 #include "TextBox.hxx"
@@ -38,7 +38,7 @@
 #include <QPainter>
 #include <QPlainTextEdit>
 #include <QDesktopServices>
-#include <QtCore/QUrl>
+#include <QUrl>
 #include <QPageLayout>
 
 class NetworkCanvas : public QGraphicsView

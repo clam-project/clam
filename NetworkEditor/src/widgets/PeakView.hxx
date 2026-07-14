@@ -8,7 +8,7 @@
 #include <QPainter>
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>
-#include <QtUiPlugin/QDesignerExportWidget>
+#include <QDesignerExportWidget>
 
 
 class QDESIGNER_WIDGET_EXPORT PeakView : public QWidget

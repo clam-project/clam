@@ -24,7 +24,7 @@
 #include "PolarChromaPeaksPlugin.hxx"
 #include "PolarChromaPeaks.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 PolarChromaPeaksPlugin::PolarChromaPeaksPlugin(QObject *parent)
     : QObject(parent)

@@ -20,9 +20,9 @@
  */
 
 #include "Tonnetz.hxx"
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 #include <QPixmap>
-#include <QtCore/QTimer>
+#include <QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
 

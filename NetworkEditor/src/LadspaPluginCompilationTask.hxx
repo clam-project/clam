@@ -1,7 +1,7 @@
 #ifndef LadspaPluginCompilationTask_hxx
 #define LadspaPluginCompilationTask_hxx
 #include "MainWindow.hxx"
-#include <QtCore/QTemporaryFile>
+#include <QTemporaryFile>
 #include "ui_LadspaMetadataEditor.h"
 
 

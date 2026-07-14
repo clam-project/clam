@@ -1,4 +1,4 @@
-#include <QtCore/QTemporaryFile>
+#include <QTemporaryFile>
 #include "ui_LadspaMetadataEditor.h"
 #include "LadspaPluginCompilationTask.hxx"
 

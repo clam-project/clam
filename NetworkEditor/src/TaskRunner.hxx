@@ -24,8 +24,8 @@
 
 #include <QWidget>
 #include <QTextEdit>
-#include <QtCore/QProcess>
-//#include <QtCore/QTimer>
+#include <QProcess>
+//#include <QTimer>
 #include <QHBoxLayout>
 #include <QDockWidget>
 #include <QTextCursor>

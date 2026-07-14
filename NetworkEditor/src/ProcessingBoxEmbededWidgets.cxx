@@ -44,8 +44,8 @@
 #include <CLAM/ProcessingDataPlugin.hxx>
 
 #include <QSvgWidget>
-#include <QtSvg/QSvgRenderer>
-#include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
+#include <QSvgRenderer>
+#include <QFileInfo> // added to check if embbeded file exists as external without console error message
 
 
 namespace { static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> regPeakView("PeakView"); } 

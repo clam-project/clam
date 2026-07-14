@@ -1,6 +1,6 @@
-#include <QtDesigner/QDesignerContainerExtension>
+#include <QDesignerContainerExtension>
 #include <QtUiPlugin/customwidget.h>
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 #include "OscilloscopePlugin.hxx"
 #include "VumeterPlugin.hxx"
 #include "SpectrumViewPlugin.hxx"

@@ -9,7 +9,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QGraphicsProxyWidget>
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 #include "ui_DummyProcessingConfig.h"
 
 // ANY CLAM DEPENDENCY ON THIS FILE SHOULD BE DELEGATED TO THE CANVAS

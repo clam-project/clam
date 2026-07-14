@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <cmath>
 
-#include <QtUiPlugin/QDesignerExportWidget>
+#include <QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT Tunner : public QWidget
 {

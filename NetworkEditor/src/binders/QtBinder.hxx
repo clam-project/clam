@@ -2,7 +2,7 @@
 #define CLAM_QtBinder_hxx
 
 #include <QWidget>
-#include <QtCore/QVariant>
+#include <QVariant>
 
 namespace CLAM { class Network; }
 namespace CLAM { class QtBinder; }

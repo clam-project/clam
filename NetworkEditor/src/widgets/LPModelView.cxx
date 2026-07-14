@@ -23,7 +23,7 @@
 
 #include <QPixmap>
 #include <QPainter>
-#include <QtCore/QTimer>
+#include <QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
 #include <algorithm>

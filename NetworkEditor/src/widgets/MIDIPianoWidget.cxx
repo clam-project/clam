@@ -21,8 +21,8 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include <CLAM/CLAM_Math.hxx>
 #include <QMouseEvent>
-#include <QtCore/QPoint>
-#include <QtCore/QtGlobal>
+#include <QPoint>
+#include <QtGlobal>
 #include "EmbededWidgets.hxx"
 
 

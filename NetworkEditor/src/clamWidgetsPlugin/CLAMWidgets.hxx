@@ -1,6 +1,6 @@
-#include <QtDesigner/QDesignerContainerExtension>
+#include <QDesignerContainerExtension>
 #include <QtUiPlugin/customwidget.h>
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 class CLAMWidgets : public QObject,
 	public QDesignerCustomWidgetCollectionInterface

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/InControl.hxx>
-#include <QtCore/QObject>
+#include <QObject>
 
 
 class QtSlot2Control : public QObject

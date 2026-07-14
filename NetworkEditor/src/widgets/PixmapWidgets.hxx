@@ -5,9 +5,9 @@
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QtCore/QPoint>
-#include <QtCore/QTimer>
-#include <QtCore/QtGlobal>
+#include <QPoint>
+#include <QTimer>
+#include <QtGlobal>
 #include <iostream>
 #include <sstream>
 #include <iomanip>

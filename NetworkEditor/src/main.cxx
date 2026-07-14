@@ -20,8 +20,8 @@
  */
 
 #include <QApplication>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
+#include <QTranslator>
+#include <QLocale>
 
 #include "MainWindow.hxx"
 #ifdef USE_LADSPA

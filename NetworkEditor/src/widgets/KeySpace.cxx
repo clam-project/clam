@@ -20,7 +20,7 @@
  */
 
 #include "KeySpace.hxx"
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 #include <cmath>
 #include <iostream>
 

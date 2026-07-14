@@ -24,7 +24,7 @@
 #include "SegmentationViewPlugin.hxx"
 #include "SegmentationView.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 SegmentationViewPlugin::SegmentationViewPlugin(QObject *parent)
     : QObject(parent)

@@ -24,8 +24,8 @@
 *****************************************************************************/
 
 #include <cmath>
-#include <QtCore/QtGlobal>
-#include <QtCore/QTimer>
+#include <QtGlobal>
+#include <QTimer>
 #include <QToolTip>
 #include <QPainter>
 #include <QPixmap>

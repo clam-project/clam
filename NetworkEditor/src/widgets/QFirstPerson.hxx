@@ -5,7 +5,7 @@
 #undef GetClassName
 #include <QKeyEvent>
 #include <QMatrix4x4>
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 #include <iostream>
 #include <cmath>
 

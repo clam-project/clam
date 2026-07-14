@@ -4,8 +4,8 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QMouseEvent>
-#include <QtCore/QPoint>
-#include <QtCore/QtGlobal>
+#include <QPoint>
+#include <QtGlobal>
 #include "EmbededWidgets.hxx"
 
 static CLAM::EmbededWidgetCreator <ControlSurfaceWidget> reg("ControlSurface");

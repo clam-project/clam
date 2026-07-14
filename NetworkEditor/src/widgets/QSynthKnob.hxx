@@ -27,7 +27,7 @@
 #define __QSynthKnob_h
 
 #include <QDial>
-#include <QtCore/QMap>
+#include <QMap>
 #include <QMouseEvent>
 #include <QWheelEvent>
 
