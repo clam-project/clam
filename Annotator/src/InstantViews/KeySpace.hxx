@@ -22,9 +22,9 @@
 #ifndef KeySpace_hxx
 #define KeySpace_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QGLWidget>
 #undef GetClassName
-#include <QtUiPlugin/qdesignerexportwidget.h>
+#include <qdesignerexportwidget.h>
 #include "FloatArrayDataSource.hxx"
 
 namespace CLAM {

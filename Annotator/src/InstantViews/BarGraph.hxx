@@ -23,8 +23,8 @@
 #define BarGraph_hxx
 
 #include "FloatArrayDataSource.hxx"
-#include <QtUiPlugin/qdesignerexportwidget.h>
-#include <QtGui/QWidget>
+#include <qdesignerexportwidget.h>
+#include <QWidget>
 
 namespace CLAM
 {

@@ -28,8 +28,8 @@
 #include <string>
 #include <utility>
 #include <deque>
-#include <QtCore/Qt>
-#include <QtGui/QStatusBar>
+#include <Qt>
+#include <QStatusBar>
 
 //xamat
 

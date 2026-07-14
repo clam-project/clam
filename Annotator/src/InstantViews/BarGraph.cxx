@@ -21,8 +21,8 @@
 
 #include "BarGraph.hxx"
 
-#include <QtGui/QPainter>
-#include <QtCore/QTimer>
+#include <QPainter>
+#include <QTimer>
 #include <iostream>
 #include <algorithm>
 

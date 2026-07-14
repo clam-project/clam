@@ -23,15 +23,15 @@
 #include "Assert.hxx"
 
 #include <CLAM/XMLStorage.hxx>
-#include <QtGui/QSplitter>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QSpinBox>
-#include <QtGui/QLabel>
-#include <QtGui/QTextBrowser>
-#include <QtGui/QLineEdit>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QFrame>
+#include <QSplitter>
+#include <QTreeWidget>
+#include <QSpinBox>
+#include <QLabel>
+#include <QTextBrowser>
+#include <QLineEdit>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFrame>
 #include <iostream>
 
 AggregationEditor::AggregationEditor(QWidget *parent)

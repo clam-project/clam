@@ -1,12 +1,12 @@
 #ifndef SegmentationPane_hxx
 #define SegmentationPane_hxx
-#include <QtGui/QSplitter>
+#include <QSplitter>
 #include "Project.hxx"
 #include "vmAudioPlot.hxx"
 #include "DescriptorTableController.hxx"
-#include <QtGui/QTableWidget>
-#include <QtGui/QComboBox>
-#include <QtGui/QVBoxLayout>
+#include <QTableWidget>
+#include <QComboBox>
+#include <QVBoxLayout>
 #include <CLAM/UnsizedSegmentation.hxx>
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include <CLAM/ContiguousSegmentation.hxx>

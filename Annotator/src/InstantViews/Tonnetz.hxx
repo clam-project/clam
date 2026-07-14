@@ -22,14 +22,14 @@
 #ifndef Tonnetz_hxx
 #define Tonnetz_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
 #include <CLAM/PortMonitor.hxx>
 
 #include <vector>
 
-#include <QtUiPlugin/qdesignerexportwidget.h>
+#include <qdesignerexportwidget.h>
 
 namespace CLAM
 {

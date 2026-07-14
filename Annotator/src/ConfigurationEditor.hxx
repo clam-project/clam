@@ -23,7 +23,7 @@
 #define ConfigurationEditor_hxx
 
 #include "ui_ConfigurationEditor.hxx"
-#include <QtCore/QFile>
+#include <QFile>
 
 
 class ConfigurationEditor : public QDialog

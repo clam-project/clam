@@ -22,9 +22,9 @@
 #ifndef SchemaBrowser_hxx
 #define SchemaBrowser_hxx
 
-#include <QtCore/QVariant>
-#include <QtGui/QPixmap>
-#include <QtGui/QWidget>
+#include <QVariant>
+#include <QPixmap>
+#include <QWidget>
 
 #include <string>
 
