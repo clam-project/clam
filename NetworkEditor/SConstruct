@@ -139,14 +139,9 @@ uifiles = env.scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic6(source=uifiles)
 
 if isWindowsPlatform :
-	env.Append(LIBS=['glu32'])
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
 if isLinuxPlatform :
-	try:
-		env.ParseConfig("pkg-config --cflags --libs glu") #works on karmic and lucid
-	except:
-		env.AppendUnique(LIBS=['GLU']) #works on janunty (libglu1-mesa-dev doesnt have the pkg-config)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"${prefix}/share/networkeditor/example-data\\""')
 
 env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
