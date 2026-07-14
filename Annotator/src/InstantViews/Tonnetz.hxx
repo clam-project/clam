@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/qdesignerexportwidget.h>
 
 namespace CLAM
 {

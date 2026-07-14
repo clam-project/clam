@@ -27,7 +27,7 @@
 #include <vector>
 
 #include <QWidget>
-#include <QDesignerExportWidget>
+#include <QtUiPlugin/qdesignerexportwidget.h>
 
 namespace CLAM
 {

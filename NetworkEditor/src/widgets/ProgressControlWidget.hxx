@@ -4,7 +4,7 @@
 #include <CLAM/Processing.hxx>
 #include <QWidget>
 #include <QSlider>
-#include <QDesignerExportWidget>
+#include <QtUiPlugin/qdesignerexportwidget.h>
 
 class QDESIGNER_WIDGET_EXPORT ProgressControlWidget : public QSlider
 {
