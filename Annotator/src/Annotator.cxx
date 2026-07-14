@@ -26,7 +26,7 @@
 #include "AudioLoadThread.hxx"
 #include "SchemaBrowser.hxx"
 #include "TaskRunner.hxx"
-#include "ui_About.hxx"
+#include "ui_About.h"
 #include "ProjectEditor.hxx"
 
 #include <QSettings>
