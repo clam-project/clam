@@ -39,7 +39,6 @@ isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
-CLAMVmQtPath = 'vmqt'
 
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
@@ -88,13 +87,6 @@ sourcePaths = [
 	os.path.join('src','generated'),
 ]
 extraPaths = []
-extraPaths += recursiveDirs(CLAMVmQtPath+"/plot")
-extraPaths += recursiveDirs(CLAMVmQtPath+"/render")
-extraPaths += recursiveDirs(CLAMVmQtPath+"/data")
-extraPaths += recursiveDirs(CLAMVmQtPath+"/util")
-extraPaths += recursiveDirs(CLAMVmQtPath+"/player")
-extraPaths += recursiveDirs(CLAMVmQtPath+"/misc")
-extraPaths += recursiveDirs(CLAMVmQtPath+"/widget")
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
@@ -118,7 +110,6 @@ if isWindowsPlatform :
 	sources += env.RES(source=["resources/Chordata.rc"])
 
 env.Append(CPPPATH=includePaths)
-env.Append(LIBPATH=[CLAMVmQtPath])
 #env.Prepend(LIBS="clam_vmqt4")
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Chordata.app/Contents/Resources\\""')
