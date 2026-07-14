@@ -29,14 +29,6 @@
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
 #endif
 
-#ifndef I18N_PATH
-#ifdef WIN32
-#define I18N_PATH "../"
-#else
-#define I18N_PATH "/home/vokimon/CajitasDeArena/CLAM-Install/"
-#endif
-#endif
-
 void usage(const std::string & program)
 {
 	std::cout 

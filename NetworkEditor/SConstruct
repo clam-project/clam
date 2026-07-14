@@ -159,6 +159,10 @@ env.AppendUnique(CPPDEFINES=[
 	('CLAM_PREFIX', '"\\"%s\\""' % env['clam_prefix']),
 	])
 
+env.AppendUnique(CPPDEFINES=[
+	('I18N_PATH', '"\\"%s\\""' % env['clam_prefix']) if sys.platform != "win32" else "../",
+	])
+
 env.Depends("src/generated/NetworkUpgrader.o", [
 	"migrationScript",
 	clamRefactorLocation,
