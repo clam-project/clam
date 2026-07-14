@@ -27,6 +27,10 @@
  *      -> Activate an XML to get a fully functional network again.
  */
 
+#include <iostream>
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QString>
+#include <QApplication>
 #include "XMLStorage.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
@@ -40,10 +44,6 @@
 #include "AudioManager.hxx"
 
 #include "AudioFile.hxx"
-#include <iostream>
-#include <QtGui/QFileDialog>
-#include <QtCore/QString>
-#include <QApplication>
 
 int main( int argc, char** argv )
 {	
@@ -107,7 +107,7 @@ int main( int argc, char** argv )
 			QObject::tr("Please, specify the xml where network will be stored"),
 			QObject::tr("MyNetwork.clamnetwork"),
 			"*.clamnetwork");
-		if ( networkFileName == NULL )
+		if ( networkFileName.isNull() )
 		{
 			std::cout << "User cancelled" << std::endl;
 			exit(0);

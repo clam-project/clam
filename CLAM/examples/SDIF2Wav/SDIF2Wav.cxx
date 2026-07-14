@@ -105,12 +105,12 @@ int main(int argc,char** argv)
 
 		WAVEStore( wavoutput, AudioOutput );
 	}
-	catch(CLAM::Err error)
+	catch(CLAM::Err & error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination!\n" << std::endl;
 	}
-	catch (std::exception e)
+	catch (std::exception & e)
 	{
 		std::cout << e.what() << std::endl;
 	}

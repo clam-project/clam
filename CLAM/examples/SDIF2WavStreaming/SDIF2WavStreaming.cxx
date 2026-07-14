@@ -41,7 +41,6 @@ namespace CLAM
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
 		CLAM::SMSSynthesisConfig theConfig = dynamic_cast<const SMSSynthesisConfig&>(synthesis.GetConfig());
-		TSize synthFrameSize = theConfig.GetFrameSize();
 
 		// is this necessary?
 		//audioOutput.SetSize(sizeAudioFile);
@@ -82,7 +81,6 @@ namespace CLAM
 
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
-		unsigned int buffersize = 1024;
 		int samplerate = 44100;
 
 		AudioManager audioManager(samplerate,2048);
