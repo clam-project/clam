@@ -18,13 +18,13 @@
 
 #include "ChordataVersion.hxx"
 
-#include "ui_About.hxx"
-#include <QtGui/QFileDialog>
-#include <QtGui/QProgressDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QVBoxLayout>
-#include <QtCore/QSettings>
-#include <QtGui/QDesktopServices>
+#include "ui_About.h"
+#include <QFileDialog>
+#include <QProgressDialog>
+#include <QMessageBox>
+#include <QVBoxLayout>
+#include <QSettings>
+#include <QDesktopServices>
 
 #include <CLAM/CLAMVersion.hxx>
 #include <CLAM/TonalAnalysis.hxx>
@@ -219,9 +219,9 @@ void MainWindow::appendRecentFile(const QString & recentFile)
 void MainWindow::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, 
-			tr("Choose an audio file"), QString::null, 
+			tr("Choose an audio file"), QString(), 
 			tr("Audio files (*.wav *.ogg *.mp3)"));
-	if(qFileName == QString::null) return;
+	if(qFileName.isNull()) return;
 	appendRecentFile(qFileName);
 	loadAudioFile(qFileName.toLocal8Bit().constData());
 }
@@ -231,7 +231,7 @@ void MainWindow::recentFileOpen()
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (!action) return;
 	QString file = action->data().toString();
-	if (file == QString::null) return;
+	if (file.isNull()) return;
 	appendRecentFile(file);
 	loadAudioFile(file.toLocal8Bit().constData());
 }

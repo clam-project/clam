@@ -16,9 +16,9 @@
 
 #include "MainWindow.hxx"
 
-#include <QtGui/QApplication>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 #ifndef I18N_PATH
 #define I18N_PATH "../"
