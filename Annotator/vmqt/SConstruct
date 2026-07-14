@@ -1,7 +1,9 @@
-#!/usr/bin/python
-import os, sys, glob
+import os
+import sys
+import glob
 
-options = Variables('options.cache', ARGUMENTS)
+options_filename = 'options.cache'
+options = Variables(options_filename, ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolVariable('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
@@ -37,7 +39,7 @@ isDarwinPlatform = sys.platform=='darwin'
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if crosscompiling :
@@ -45,15 +47,17 @@ if crosscompiling :
 
 
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT6_UICDECLSUFFIX'] = '.h'
 env.moveIntermediateInto('generated')
 env.activateColorCommandLine()
 if not env['verbose']: env.ClamQuietCompilation()
 
-env.EnableQt4Modules([
+env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
+	'QtWidgets',
 	'QtOpenGL',
+	'QtOpenGLWidgets',
 	],
 	debug=False,
 	crosscompiling=crosscompiling,
@@ -81,19 +85,20 @@ extraPaths += [
 ]
 includePaths = libSourcePaths + extraPaths
 
-sources = scanFiles('*.cxx', libSourcePaths)
-sources += filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
-sources += filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
+sources = env.scanFiles('*.cxx', libSourcePaths,
+	patternblacklist=['moc_','qrc_'],
+	)
 
-uifiles = scanFiles("*.qt4.ui", libSourcePaths)
-if uifiles : uiheaders = env.Uic4(source=uifiles)
-
-qrcfiles = scanFiles("*.qrc", libSourcePaths)
+qrcfiles = env.scanFiles("*.qrc", libSourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
 
-sources = unique(sources)
+uifiles = env.scanFiles("*.qt6.ui", libSourcePaths)
+if uifiles : uiheaders = env.Uic6(source=uifiles)
+
 
 env.Append(CPPPATH=includePaths)
+
+env.ParseConfig('pkg-config gl --libs --cflags')
 
 examplesMainSources = [
 	"examples/src/audio_plot_example.cxx",
@@ -125,9 +130,9 @@ if sys.platform=='darwin' :
 exampleSources = scanFiles('*.cxx', ['examples/utils'])
 
 env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
-staticLibrary = env.StaticLibrary(target='clam_vmqt4', source=sources)
+staticLibrary = env.StaticLibrary(target='clam_vmqt6', source=sources)
 env.Append(LIBPATH='.')
-env.Prepend(LIBS='clam_vmqt4')
+env.Prepend(LIBS='clam_vmqt6')
 examples = []
 for main in examplesMainSources :
 	executable = 'examples/'+os.path.splitext(os.path.basename(main))[0]

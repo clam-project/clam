@@ -115,7 +115,7 @@ if isWindowsPlatform :
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
-env.Prepend(LIBS="clam_vmqt")
+env.Prepend(LIBS="clam_vmqt6")
 
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
