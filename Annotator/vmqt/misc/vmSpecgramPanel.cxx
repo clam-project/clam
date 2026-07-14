@@ -75,7 +75,7 @@ namespace CLAM
 			QFrame* leftGroup = new QFrame(this);
 			leftGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			QFontMetrics fm(font());
-			int width = fm.width("Frequency (Hz): 00000")+6;
+			int width = fm.horizontalAdvance("Frequency (Hz): 00000")+6;
 			leftGroup->setFixedSize(width,66);
 
 			QVBoxLayout* lfMainLayout = new QVBoxLayout(leftGroup);

@@ -159,7 +159,7 @@ namespace CLAM
 				double tickValue = _majorTicks.tickValue(i);
 				double tickPos = height()-_majorTicks.toPixel(tickValue);
 				lines << QLineF(axisPos-majorTickSize,tickPos,axisPos,tickPos);
-				int label_width = fontMetrics().width(QString::number(tickValue,'f',mShowFloats?2:0));
+				int label_width = fontMetrics().horizontalAdvance(QString::number(tickValue,'f',mShowFloats?2:0));
 				double x = std::max(0,width() - label_width-8);
 				double y = tickPos + mLabelHeight/4;
 				painter.drawText(
@@ -188,7 +188,7 @@ namespace CLAM
 				double tickValue = _majorTicks.tickValue(i);
 				double tickPos = height()-_majorTicks.toPixel(tickValue);
 				lines << QLineF(axisPos,tickPos,axisPos+majorTickSize,tickPos);
-				int label_width = fontMetrics().width(QString::number(tickValue,'f',mShowFloats?2:0));
+				int label_width = fontMetrics().horizontalAdvance(QString::number(tickValue,'f',mShowFloats?2:0));
 				painter.drawText(
 					QRectF(axisPos+majorTickSize, tickPos -3.*mLabelHeight/4, label_width, mLabelHeight),
 					GetLabel(tickValue));
@@ -263,14 +263,14 @@ namespace CLAM
 
 		int Ruler::GetMaxLabelWidth()
 		{
-			if(mScale==CLAM::VM::eLogScale) return fontMetrics().width("-00.0e+00");
+			if(mScale==CLAM::VM::eLogScale) return fontMetrics().horizontalAdvance("-00.0e+00");
 			// TODO: Should take the whole range (not just displayed) 
 			// so that the ruler does not change size when scrolling.
 			return std::max(
-				fontMetrics().width("-5000.00"),
+				fontMetrics().horizontalAdvance("-5000.00"),
 				std::max(
-					fontMetrics().width(GetLabel(mCurrentRange.min)),
-					fontMetrics().width(GetLabel(mCurrentRange.max)))
+					fontMetrics().horizontalAdvance(GetLabel(mCurrentRange.min)),
+					fontMetrics().horizontalAdvance(GetLabel(mCurrentRange.max)))
 				);
 		}
 

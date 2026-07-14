@@ -529,7 +529,7 @@ namespace CLAM
 			int x = mMousePos.first+2;
 			int y = mMousePos.second+2;
 
-			int w = font_metrics.width(mToolTip)+10;
+			int w = font_metrics.horizontalAdvance(mToolTip)+10;
 			int h = font_metrics.height()+10;
 
 			if(x+w > width()) x -= w;
