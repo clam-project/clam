@@ -35,8 +35,8 @@
 //#include <QtGui/QCheckBox>
 
 
-SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
-    : QWidget( parent, fl )
+SchemaBrowser::SchemaBrowser( QWidget* parent )
+    : QWidget( parent )
 	, scopeIcon(":/icons/images/xkill.png")
 	, attributeIcon(":/icons/images/label.png")
     , mSchema(0)
