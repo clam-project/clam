@@ -713,9 +713,9 @@ void Annotator::addSongsToProject()
 void Annotator::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, 
-			tr("Choose a project to work with"), QString::null, 
+			tr("Choose a project to work with"), QString(), 
 			tr("Annotator project file (*.pro)"));
-	if(qFileName == QString::null) return;
+	if(qFileName.isNull()) return;
 	loadProject(qFileName.toStdString());
 }
 

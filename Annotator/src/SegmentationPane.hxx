@@ -166,7 +166,7 @@ public slots:
 	}
 	void refreshSegmentation()
 	{
-		if (_segmentationSelection->currentText()==QString::null) return; // No segmentation
+		if (_segmentationSelection->currentText().isNull()) return; // No segmentation
 		if (!_audio) return;
 		CLAM::TData audioDuration = _audio->GetSize() / _audio->GetSampleRate();
 		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();
