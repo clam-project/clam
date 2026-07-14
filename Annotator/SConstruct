@@ -116,6 +116,8 @@ if isWindowsPlatform :
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
 env.Prepend(LIBS="clam_vmqt6")
+# transitive by vqmt but it is an static
+env.ParseConfig('pkg-config gl --libs --cflags')
 
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
