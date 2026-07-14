@@ -140,7 +140,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 void CLAM::VM::KeySpace::initializeGL()
 {
 	initializeOpenGLFunctions();
-	glClearColor(0,0,0,0); // rgba
+	glClearColor(0,0,0,1); // rgba
 	glShadeModel(GL_SMOOTH);
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable(GL_BLEND);

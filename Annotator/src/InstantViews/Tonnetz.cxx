@@ -88,7 +88,7 @@ void CLAM::VM::Tonnetz::initializeGL()
 {
 	initializeOpenGLFunctions();
 	glShadeModel(GL_FLAT);
-	glClearColor(0,0,0,0); // rgba
+	glClearColor(0,0,0,1); // rgba
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable (GL_LINE_SMOOTH);
