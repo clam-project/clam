@@ -85,7 +85,7 @@ namespace CLAM
 			p.translate(r.x(),r.y()+r.height());
 			p.rotate(-90.0);
 			p.drawText(0,0,r.height(),r.width(),Qt::AlignHCenter|Qt::AlignTop,mText);
-			p.resetMatrix();
+			p.resetTransform();
 		}
 
 		ScrollGroup::ScrollGroup(EOrientation ori, QWidget* parent)
