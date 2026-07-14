@@ -685,17 +685,23 @@ def Qm6(env, target, source=None, *args, **kw):
 
     return result
 
-def Qrc6(env, target, source=None, *args, **kw):
+def Qrc6(env, target=None, source=None, *args, **kw):
     """
     A pseudo-Builder wrapper around the RCC executable of Qt6.
         rcc [options] qrc-files -o out-file
     """
-    if not SCons.Util.is_List(target):
+    if target and not SCons.Util.is_List(target):
         target = [target]
+    if source and not SCons.Util.is_List(source):
+        source = [source]
+    # TODO: This is overkill, we could use __qrc_builder directly
+    if source and not target:
+        target = [os.path.join(
+            os.path.dirname(f),
+            env.subst('$QT6_QRCCXXPREFIX') + os.path.splitext(os.path.basename(f))[0] + env.subst('$QT6_QRCCXXSUFFIX'))
+            for f in source]
     if not source:
         source = target[:]
-    if not SCons.Util.is_List(source):
-        source = [source]
 
     result = []
     for t, s in zip(target, source):

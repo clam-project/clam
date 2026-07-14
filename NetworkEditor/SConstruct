@@ -71,8 +71,9 @@ print("Version: ", version)
 print("Package version: ", fullVersion)
 versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", version, fullVersion)
 
+
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT4_UICDECLSUFFIX'] = '.h'
+env['QT6_UICDECLSUFFIX'] = '.h'
 env.moveIntermediateInto('generated')
 env.activateColorCommandLine()
 
@@ -185,11 +186,7 @@ if sys.platform != 'darwin':
 if isWindowsPlatform :
 	qtmonitorEnv.AppendUnique(LINKFLAGS=['-Wl,--export-all-symbols'])
 # TODO: Consider moving this target derivation into qt6.py's Qrc6 wrapper
-qrc_targets = [os.path.join(
-	os.path.dirname(f),
-	qtmonitorEnv.subst('$QT6_QRCCXXPREFIX') + os.path.splitext(os.path.basename(f))[0] + qtmonitorEnv.subst('$QT6_QRCCXXSUFFIX'))
-	for f in qrcfiles]
-qtmonitorSources += qtmonitorEnv.Qrc6(qrc_targets, qrcfiles)
+qtmonitorSources += qtmonitorEnv.Qrc6(source=qrcfiles)
 qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 	moduleName='qtmonitors',
 	description='Qt widgets for the CLAM framework',
