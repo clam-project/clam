@@ -301,8 +301,6 @@ namespace CLAM
 				 for (j=F.GetNPoles()-1;j>i; j--)
 					if ( out.GetFreqMatrix()(j-1,f) > out.GetFreqMatrix()(j,f) )
 					{
-						TData tmp=out.GetFreqMatrix()(j-1,f);
-						tmp=out.GetFreqMatrix()(j,f);
 						std::swap( out.GetFreqMatrix()(j-1,f), out.GetFreqMatrix()(j,f));
 						std::swap( out.GetMagMatrix()(j-1,f), out.GetMagMatrix()(j,f));
 					}

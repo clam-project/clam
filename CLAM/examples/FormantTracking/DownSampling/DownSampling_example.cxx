@@ -67,7 +67,7 @@ class DownSamplingExample : public ProcessingComposite
 
 	const char* GetClassName() const {return "DownSamplingExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
+	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig& c);
 public:
 	DownSamplingExample(const DownSamplingExampleConfig &cfg);
@@ -75,7 +75,7 @@ public:
 	bool Do();
 };
 
-bool DownSamplingExample::ConcreteStart() throw(ErrProcessingObj)
+bool DownSamplingExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)

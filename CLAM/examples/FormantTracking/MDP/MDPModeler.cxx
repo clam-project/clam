@@ -38,7 +38,7 @@ namespace CLAM
 		Configure( cfg );
 	}
 
-	bool MDPModeler::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+	bool MDPModeler::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
 		mConfig = dynamic_cast< const MDPModelerConfig& > (cfg);
 
@@ -106,7 +106,7 @@ namespace CLAM
 		for ( unsigned p = ntrack-1; p < ncandidates-1; p++ )
 			{
 				std::swap( s[p] , s[p+1]);
-				for( unsigned j=0; j<mNCandidates; j++ )
+				for( TSize j=0; j<mNCandidates; j++ )
 				{
 					binState( nstates, j) = s[j];
 					if( s[j]==1 )
@@ -123,7 +123,6 @@ namespace CLAM
 
 	void MDPModeler::GenerateStates( const Candidates& candidates, MDP& mdp )
 	{
-		unsigned int f, ncand, s, nstates, cand;
 		bool accState;
 		Array< bool > c, o;
 
@@ -134,9 +133,10 @@ namespace CLAM
 
 		MatrixTmpl<bool> binState( mNStates, mNCandidates);
 
-		nstates = 1;
+		unsigned nstates = 1;
 
-		for( s = 0; s < mNToTrack; s++ ) // 1100
+        TSize s;
+		for(s = 0; s < mNToTrack; s++ ) // 1100
 		{
 			c[ s ] = 1;
 			binState( 0, s ) = 1;
@@ -150,9 +150,10 @@ namespace CLAM
 
 		Permute( mNToTrack, mNCandidates, mdp, binState, nstates, c );
 
-		for( f = 0; f < mNFrames; f++ )
+		for(TSize f = 0; f < mNFrames; f++ )
 		{
-			ncand = candidates.GetNCandPerFrame()[ f ];
+			TSize ncand = candidates.GetNCandPerFrame()[ f ];
+            TSize cand;
 			for( cand = 0; cand < ncand; cand++ )
 				c[cand]=1;
 			for(;cand<mNCandidates;cand++)
@@ -163,7 +164,6 @@ namespace CLAM
 				accState=true;
 				while( ( cand< mNCandidates) && ( accState ) )
 				{
-					bool tmp=binState( s, cand );
 					o[cand] = c[ cand ]||binState( s, cand );										
 					
 					if( o[cand]==c[cand] ) accState = true;
