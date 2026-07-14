@@ -667,17 +667,19 @@ def Ts6(env, target, source=None, *args, **kw):
 
     return result
 
-def Qm6(env, target, source=None, *args, **kw):
+def Qm6(env, target=None, source=None, *args, **kw):
     """
     A pseudo-Builder wrapper around the LRELEASE executable of Qt6.
         lrelease [options] ts-files [-qm qm-file]
     """
-    if not SCons.Util.is_List(target):
+    if target and not SCons.Util.is_List(target):
         target = [target]
+    if source and not SCons.Util.is_List(source):
+        source = [source]
     if not source:
         source = target[:]
-    if not SCons.Util.is_List(source):
-        source = [source]
+    if source and not target:
+        target = [os.path.splitext(f)[0] + '.qm' for f in source]
 
     result = []    
     for t in target:

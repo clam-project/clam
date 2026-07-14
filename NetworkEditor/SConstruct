@@ -185,7 +185,7 @@ if sys.platform != 'darwin':
 
 if isWindowsPlatform :
 	qtmonitorEnv.AppendUnique(LINKFLAGS=['-Wl,--export-all-symbols'])
-# TODO: Consider moving this target derivation into qt6.py's Qrc6 wrapper
+
 qtmonitorSources += qtmonitorEnv.Qrc6(source=qrcfiles)
 qtmonitorInstall, qtmonitorLocal = qtmonitorEnv.ClamModule(
 	moduleName='qtmonitors',
@@ -249,9 +249,7 @@ if len(tsfiles) :
 	# TODO: move those settings to the qt6 tool
 	#env.Precious(tsNodes) # Do not remove it until really regenerated
 	#env.NoClean(tsNodes) # They are not just generated but also user edited
-	# TODO: Consider moving this target derivation into qt6.py's Qm6 wrapper
-	qm_targets = [os.path.splitext(f)[0] + '.qm' for f in tsfiles]
-	translations = env.Qm6(qm_targets, tsfiles)
+	translations = env.Qm6(source=tsfiles)
 
 qtpluginsInstallationPath = env['qt_plugins_install_path']
 examples = []
