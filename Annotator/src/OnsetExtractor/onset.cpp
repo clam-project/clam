@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 	int context=0;
 	if (argc==3) context=atoi(argv[2]);
 
-	cerr << "Scanning input data..." << endl;
+	std::cerr << "Scanning input data..." << std::endl;
 
 	// Output from input_data_wav: the peaks vector, information
 	// about spectral bands, the spectrum grouped into bands and 
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 
 	// Change detection. Changes are stored in changesvector 
 
-	cerr << "Computing onsets..." << endl;
+	std::cerr << "Computing onsets..." << std::endl;
 	changesvector=(double*)malloc(sizeof(double)*(n_time));
 	computechanges(n_time,changesvector,outbandmatrix,info.maxbandsval,info.time_resolution,argv[1],context);
 	delete changesvector;

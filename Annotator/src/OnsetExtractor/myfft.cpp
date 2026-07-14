@@ -14,8 +14,6 @@
 #include "params.h"
 #include <iostream>
 
-using namespace std;
-
 static double *rdata = NULL, *idata = NULL;
 static fftw_plan rplan, iplan;
 static int last_fft_size = 0;

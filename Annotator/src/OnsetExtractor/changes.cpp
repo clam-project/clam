@@ -3,9 +3,9 @@
 #include <math.h>
 
 
-void selectpeaks(vector<double> &changesvect, int total_time) 
+void selectpeaks(std::vector<double> &changesvect, int total_time) 
 {
-	vector<double> tmpvector(total_time);
+	std::vector<double> tmpvector(total_time);
 
 	for (int i=0; i<total_time; i++)
 		tmpvector[i]=0;
@@ -20,13 +20,13 @@ void selectpeaks(vector<double> &changesvect, int total_time)
 }
 
 
-void applyderivative(vector<double> &onebandvector, int context) 
+void applyderivative(std::vector<double> &onebandvector, int context) 
 {
 	int ntime=onebandvector.size();
 
 	// Make derivative (context is considered if CONTEXT!=0)
 
-	vector<double> tmpvector(onebandvector);
+	std::vector<double> tmpvector(onebandvector);
 
 	// Standard derivative if no context is considered
 
@@ -54,7 +54,7 @@ void applyderivative(vector<double> &onebandvector, int context)
 
 }
 
-void processmatrix(Tmatrix bands, double maxbandsval, vector<double>&
+void processmatrix(Tmatrix bands, double maxbandsval, std::vector<double>&
 output, int context) 
 {
 	int nbands=bands[0].size();
@@ -68,7 +68,7 @@ output, int context)
 
 	// Compute relative difference function for each band in time
 
-	vector<double> onebandvector(ntime);
+	std::vector<double> onebandvector(ntime);
 	for (int i=0; i<nbands; i++) {
 
 		for (int j=0; j<ntime; j++) 
@@ -115,7 +115,7 @@ output, int context)
 }
 
 
-void applythreshold(vector<double> &vectchanges, double maxbandsval, int
+void applythreshold(std::vector<double> &vectchanges, double maxbandsval, int
 context)
 {
 	double threshold;
@@ -142,7 +142,7 @@ double maxbandsval, double timeres, char* filename, int context)
 	for (int i=0; i<total_time; i++) 
 		changesvect[i]=0;
 
-	vector<double> vectchanges;
+	std::vector<double> vectchanges;
 	processmatrix(bands,maxbandsval,vectchanges,context);
 
 	selectpeaks(vectchanges, total_time);

@@ -4,10 +4,6 @@
 #include <iostream>
 #include <vector>
 
-#define vectorbands vector<band>
-
-using namespace std;
-
 class band {
   public:
 	band();
@@ -32,11 +28,13 @@ class band {
 	int effectivesize;
 	double centerfreq;
 	double sumvalues;
-  	vector<double> values;
+  	std::vector<double> values;
 
 };
 
-ostream &operator<<(ostream &output, const band b);
+typedef std::vector<band> vectorbands;
+
+std::ostream &operator<<(std::ostream &output, const band b);
 
 void generatebands(double min_freq, double max_freq, vectorbands &spectralbands, double freq_resolution);
 void generatehalfbands(double min_freq, double max_freq, vectorbands &spectralbands, double freq_resolution);

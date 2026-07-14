@@ -12,8 +12,6 @@
 #include <map>
 //#include <set>
 
-using namespace std;
-
 /* Global variables (for efficiency) */
 
 pinfo info;
@@ -36,9 +34,9 @@ void error(int num, char *cad)
 {
      switch (num)
      {
- 	case 0: cerr << "Syntax: " << cad << " <filename.wav> [context]\nIf no context is specified, context=0\n";
+ 	case 0: std::cerr << "Syntax: " << cad << " <filename.wav> [context]\nIf no context is specified, context=0\n";
  	        break;
-	case 1: cerr << "Filename " << cad << " not found\n";
+	case 1: std::cerr << "Filename " << cad << " not found\n";
 		break;
      }
      exit(-1);
