@@ -35,7 +35,7 @@ namespace CLAM
 	{
 
 		PlotCanvas::PlotCanvas(QWidget* parent)
-			: QGLWidget(parent)
+			: QOpenGLWidget(parent)
 			, mBgColor(255,255,255,255)
 			, mToolTip("")
 			, mHZoomRef(0.0)
@@ -49,7 +49,6 @@ namespace CLAM
 		{
 			setFocusPolicy(Qt::StrongFocus);
 			setMouseTracking(true);
-			setAutoBufferSwap(false);
 			
 			mToolTipFont.setFamily("fixed");
 			mToolTipFont.setPointSize(8);
@@ -60,6 +59,11 @@ namespace CLAM
 		PlotCanvas::~PlotCanvas()
 		{
 			ClearRenderers();
+		}
+
+		void PlotCanvas::initializeGL()
+		{
+			initializeOpenGLFunctions();
 		}
 
 		bool PlotCanvas::AddRenderer(const QString& key, Renderer2D* renderer)
@@ -287,15 +291,14 @@ namespace CLAM
 			glOrtho(mView.left,mView.right,mView.bottom,mView.top,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glShadeModel(GL_FLAT);
-			qglClearColor(mBgColor);
+			glClearColor(mBgColor.redF(), mBgColor.greenF(), mBgColor.blueF(), mBgColor.alphaF());
 			glClear(GL_COLOR_BUFFER_BIT);
 			glEnable(GL_BLEND);
 			glEnable (GL_LINE_SMOOTH);
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 			DrawRenderers();
-			RenderToolTip(); 
-			swapBuffers();
+			RenderToolTip();
 			mUpdatePending=0;
 		}
 		
@@ -365,12 +368,12 @@ namespace CLAM
 				it->second->KeyReleaseEvent(e->key());
 		}
 
-		void PlotCanvas::enterEvent(QEvent* e)
+		void PlotCanvas::enterEvent(QEnterEvent* e)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(;it != mRenderers.end(); it++)
 				it->second->EnterEvent();
-			QGLWidget::enterEvent(e);
+			QOpenGLWidget::enterEvent(e);
 		}
 
 		void PlotCanvas::leaveEvent(QEvent* e)
@@ -378,7 +381,7 @@ namespace CLAM
 			Renderers::iterator it = mRenderers.begin();
 			for(;it != mRenderers.end(); it++)
 				it->second->LeaveEvent();
-			QGLWidget::leaveEvent(e);
+			QOpenGLWidget::leaveEvent(e);
 		}
 
 		void PlotCanvas::updateRenderers()
@@ -398,7 +401,7 @@ namespace CLAM
 		void PlotCanvas::needUpdate()
 		{
 			if (mUpdatePending++) return;
-			QTimer::singleShot(10, this, SLOT(updateGL()));
+			QTimer::singleShot(10, this, SLOT(update()));
 		}
 
 		void PlotCanvas::setToolTip(QString str)
@@ -465,7 +468,12 @@ namespace CLAM
 			glVertex2d(rect.left(),rect.top());
 			glEnd();
    
-			renderText(rect.left()+5,rect.top()+font_height+2,mToolTip,mToolTipFont);
+			{
+				QFontMetrics fm(mToolTipFont);
+				QPainter painter(this);
+				painter.setFont(mToolTipFont);
+				painter.drawText(rect.left()+5, rect.top()+font_height+2, mToolTip);
+			}
 
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
@@ -541,7 +549,7 @@ namespace CLAM
 		void PlotCanvas::SetBackgroundColor(const QColor& c)
 		{
 			mBgColor = c;
-			updateGL();
+			update();
 		}
 	}
 }

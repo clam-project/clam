@@ -24,7 +24,7 @@
 
 #include <vector>
 #include <QColor>
-#undef GetClassName
+#include <QWidget>
 #include <CLAM/RulerTicks.hxx>
 #include <vector>
 #include "vmDataTypes.hxx"

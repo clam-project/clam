@@ -79,7 +79,7 @@ static TKeyNode * getKeyNodes()
 static unsigned nKeyNodes=24;
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
-	: QGLWidget(parent)
+	: QOpenGLWidget(parent)
 	, _smooth(true)
 	, _nX(128)
 	, _nY(64)
@@ -139,6 +139,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 
 void CLAM::VM::KeySpace::initializeGL()
 {
+	initializeOpenGLFunctions();
 	glClearColor(0,0,0,0); // rgba
 	glShadeModel(GL_SMOOTH);
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -291,7 +292,19 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), font());
+		renderText3D(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), font());
 	}
+}
+
+void CLAM::VM::KeySpace::renderText3D(double x, double y, double z, const char* text, const QFont& font)
+{
+	QMatrix4x4 modelview;
+	QMatrix4x4 projection;
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
+	glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
+	QVector3D projected = QVector3D(x, y, z).project(modelview, projection, QRect(0, 0, width(), height()));
+	QPainter painter(this);
+	painter.setFont(font);
+	painter.drawText(projected.x(), projected.y(), QString::fromUtf8(text));
 }
 
