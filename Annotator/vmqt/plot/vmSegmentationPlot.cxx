@@ -132,7 +132,7 @@ namespace CLAM
 			mPlot->BringToFront("locator");
 
 			mLayout = new QGridLayout(this);
-			mLayout->setMargin(0);
+			mLayout->setContentsMargins(0, 0, 0, 0);
 			mLayout->setSpacing(0);
 			mLayout->addWidget(mXRuler,0,1);
 			mLayout->addWidget(mYRuler,1,0);

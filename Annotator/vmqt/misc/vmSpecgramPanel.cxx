@@ -62,7 +62,7 @@ namespace CLAM
 		void SpecgramPanel::InitSpecgramPanel()
 		{
 			QBoxLayout* layout = new QHBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(2);
 			layout->addWidget(GetLeftSide());
 			layout->addWidget(GetRightSide());
@@ -79,14 +79,14 @@ namespace CLAM
 			leftGroup->setFixedSize(width,66);
 
 			QVBoxLayout* lfMainLayout = new QVBoxLayout(leftGroup);
-			lfMainLayout->setMargin(3);
+			lfMainLayout->setContentsMargins(3, 3, 3, 3);
 			lfMainLayout->setSpacing(0);
 			QHBoxLayout* lfInnerTopLayout = new QHBoxLayout;
 			QHBoxLayout* lfInnerMiddleLayout = new QHBoxLayout;
 			QHBoxLayout* lfInnerBottomLayout = new QHBoxLayout;
-			lfInnerTopLayout->setMargin(0);
-			lfInnerMiddleLayout->setMargin(0);
-			lfInnerBottomLayout->setMargin(0);
+			lfInnerTopLayout->setContentsMargins(0, 0, 0, 0);
+			lfInnerMiddleLayout->setContentsMargins(0, 0, 0, 0);
+			lfInnerBottomLayout->setContentsMargins(0, 0, 0, 0);
 			lfInnerTopLayout->setSpacing(0);
 			lfInnerMiddleLayout->setSpacing(0);
 			lfInnerBottomLayout->setSpacing(0);
@@ -132,16 +132,16 @@ namespace CLAM
 			rightGroup->setFixedHeight(66);
 
 			QVBoxLayout* rfMainLayout = new QVBoxLayout(rightGroup);
-			rfMainLayout->setMargin(3);
+			rfMainLayout->setContentsMargins(3, 3, 3, 3);
 			rfMainLayout->setSpacing(0);
 			QHBoxLayout* rfInnerTopLayout = new QHBoxLayout;
-			rfInnerTopLayout->setMargin(0);
+			rfInnerTopLayout->setContentsMargins(0, 0, 0, 0);
 			rfInnerTopLayout->setSpacing(5);
 			QHBoxLayout* rfInnerMiddleLayout = new QHBoxLayout;
-			rfInnerMiddleLayout->setMargin(0);
+			rfInnerMiddleLayout->setContentsMargins(0, 0, 0, 0);
 			rfInnerMiddleLayout->setSpacing(0);
 			QHBoxLayout* rfInnerBottomLayout = new QHBoxLayout;
-			rfInnerBottomLayout->setMargin(0);
+			rfInnerBottomLayout->setContentsMargins(0, 0, 0, 0);
 			rfInnerBottomLayout->setSpacing(3);
 
 			mTotalSlices = new QLabel(rightGroup);

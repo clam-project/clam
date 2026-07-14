@@ -180,7 +180,7 @@ namespace CLAM
 			mSnapGrid->setFixedHeight(cheight);
 
 			QVBoxLayout* grid_settings_panel = new QVBoxLayout;
-			grid_settings_panel->setMargin(0);
+			grid_settings_panel->setContentsMargins(0, 0, 0, 0);
 			grid_settings_panel->setSpacing(0);
 			grid_settings_panel->addWidget(mShowGrid);
 			grid_settings_panel->addWidget(mSnapGrid);
@@ -191,7 +191,7 @@ namespace CLAM
 			panel_hole1->setFixedSize(10,20);
 
 			QHBoxLayout* play_panel = new QHBoxLayout;
-			play_panel->setMargin(0);
+			play_panel->setContentsMargins(0, 0, 0, 0);
 			play_panel->setSpacing(0);
 
 			play_panel->addWidget(mWPlayer);
@@ -208,7 +208,7 @@ namespace CLAM
 			bottom_hole->setFixedHeight(5);
 
 			QVBoxLayout* layout = new QVBoxLayout;
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(top_hole);
 			layout->addLayout(play_panel);

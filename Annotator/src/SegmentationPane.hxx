@@ -50,7 +50,7 @@ public:
 		QWidget * propertiesPane = new QWidget(this);
 		QVBoxLayout * propertiesPaneLayout = new QVBoxLayout(propertiesPane);
 		propertiesPaneLayout->setSpacing(6);
-		propertiesPaneLayout->setMargin(0);
+		propertiesPaneLayout->setContentsMargins(0, 0, 0, 0);
 		_segmentDescriptorsTable = new QTableWidget(propertiesPane);
 		_segmentDescriptorsTable->setMinimumSize(QSize(200, 0));
 		_segmentDescriptorsTable->setFocusPolicy(Qt::WheelFocus);

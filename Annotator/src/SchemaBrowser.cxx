@@ -43,7 +43,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
 {
 	setObjectName( "schemaBrowser" );
     schemaBrowserLayout = new QHBoxLayout( this ); 
-    schemaBrowserLayout->setMargin(11);
+    schemaBrowserLayout->setContentsMargins(11, 11, 11, 11);
 	schemaBrowserLayout->setSpacing(6);
 
     splitter1 = new QSplitter( this );
@@ -67,7 +67,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     attributeProperties->setFrameShape( QFrame::StyledPanel );
     attributeProperties->setFrameShadow( QFrame::Raised );
     attributePropertiesLayout = new QGridLayout( attributeProperties ); 
-	attributePropertiesLayout->setMargin(11);
+	attributePropertiesLayout->setContentsMargins(11, 11, 11, 11);
 	attributePropertiesLayout->setSpacing(6);
 
     minLabel = new QLabel( attributeProperties );

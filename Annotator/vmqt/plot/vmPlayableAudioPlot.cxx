@@ -94,7 +94,7 @@ namespace CLAM
 			mComboBox->setToolTip("Choose Color Schema");
 
 			QHBoxLayout* play_panel = new QHBoxLayout;
-			play_panel->setMargin(0);
+			play_panel->setContentsMargins(0, 0, 0, 0);
 			play_panel->setSpacing(0);
 
 			play_panel->addWidget(mWPlayer);
@@ -107,7 +107,7 @@ namespace CLAM
 			bottom_hole->setFixedHeight(5);
 
 			QVBoxLayout* layout = new QVBoxLayout;
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(top_hole);
 			layout->addLayout(play_panel);

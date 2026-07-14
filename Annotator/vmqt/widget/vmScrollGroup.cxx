@@ -182,7 +182,7 @@ namespace CLAM
 			mHlabel->setText("1:1");
 			
 			QHBoxLayout* layout = new QHBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(mScrollBar,1);
 			layout->addWidget(mHlabel);
@@ -211,7 +211,7 @@ namespace CLAM
 			mScrollBar->setFocusPolicy(Qt::NoFocus);
 
 			QVBoxLayout* layout = new QVBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(mZoutButton);
 			layout->addWidget(mZinButton);
