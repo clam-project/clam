@@ -39,7 +39,7 @@ class RichTextEditor: public QWidget
 		void textAlign(QAction *a);
 		void textColor();
 		void textStyle(int styleIndex);
-		void textFamily(const QString &f);
+		void textFamily(const QFont &f);
 		void textSize(const QString &p);
 		void currentCharFormatChanged(const QTextCharFormat &format);
 		void cursorPositionChanged();

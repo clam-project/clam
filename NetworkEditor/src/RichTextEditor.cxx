@@ -119,7 +119,7 @@ void RichTextEditor::setupTextActions()
 
 	_comboFont = new QFontComboBox(_toolBar);
 	_toolBar->addWidget(_comboFont);
-	connect(_comboFont, SIGNAL(activated(const QString &)),
+	connect(_comboFont, SIGNAL(currentFontChanged(const QFont &)),
 	        this, SLOT(textFamily(const QString &)));
 
 	_comboSize = new QComboBox(_toolBar);
@@ -248,10 +248,10 @@ void RichTextEditor::textStyle(int styleIndex)
 	}
 }
 
-void RichTextEditor::textFamily(const QString &f)
+void RichTextEditor::textFamily(const QFont &f)
 {
 	QTextCharFormat fmt;
-	fmt.setFontFamilies({f});
+	fmt.setFont({f});
 	mergeFormatOnWordOrSelection(fmt);
 }
 
