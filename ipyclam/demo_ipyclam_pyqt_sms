@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-from PyQt4 import QtGui, QtCore
-import ipyclam.ui.PyQt4 as ui
+from PyQt6 import QtGui, QtCore
+import ipyclam.ui.PyQt6 as ui
 import sys
 import ipyclam
 

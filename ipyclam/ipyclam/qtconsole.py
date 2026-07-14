@@ -9,7 +9,7 @@ Updated:   11-09-2012
 
 import atexit
 
-from PySide import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
 if "pyqtSignal" in vars(QtCore) :
     QtCore.Signal = QtCore.pyqtSignal

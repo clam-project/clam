@@ -1,5 +1,5 @@
-import Clam_ConfigurationProxy
-import DummyProcessings
+from . import Clam_ConfigurationProxy
+from . import DummyProcessings
 import unittest
 
 class Clam_ConfigurationProxyTests(unittest.TestCase):

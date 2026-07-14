@@ -109,14 +109,14 @@ class Processing(object):
 		assert False, "Unexpected connection peer: %s"%peer
 
 	def __gt__(self, peer) :
-		from Exceptions import BadConnectorDirectionOrder
+		from .Exceptions import BadConnectorDirectionOrder
 		if hasattr(peer, 'direction') and peer.direction == "Out" :
 			raise BadConnectorDirectionOrder(
 				"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
-		from Exceptions import BadConnectorDirectionOrder
+		from .Exceptions import BadConnectorDirectionOrder
 		if hasattr(peer, 'direction') and peer.direction == "In" :
 			raise BadConnectorDirectionOrder(
 				"Wrong connectors order: Input < Output")

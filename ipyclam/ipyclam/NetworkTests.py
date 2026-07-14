@@ -535,7 +535,7 @@ class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 
 class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 	def empty(self):
-		import Clam_Engine
+		from . import Clam_Engine
 		return Clam_Engine.Clam_Engine()
 
 	def test_connect_outportsToPort(self):

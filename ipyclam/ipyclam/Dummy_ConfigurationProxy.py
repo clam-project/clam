@@ -6,7 +6,7 @@ class Dummy_ConfigurationProxy(object):
 
 	def __getitem__(self, name):
 		if type(self._dict[name]) == dict:
-			import Configuration
+			from . import Configuration
 			return Configuration.Configuration(
 				Dummy_ConfigurationProxy(self._dict[name]) )
 		params = self._holded if self._holded else self._dict

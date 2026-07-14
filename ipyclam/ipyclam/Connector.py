@@ -54,7 +54,7 @@ class Connector(object):
 
 	@property
 	def host(self):
-		import Processing
+		from . import Processing
 		return Processing.Processing(
 			self.__dict__["host"],
 			self._engine,
@@ -62,7 +62,7 @@ class Connector(object):
 
 	@property
 	def peers(self):
-		from PeerConnectors import PeerConnectors
+		from .PeerConnectors import PeerConnectors
 		return PeerConnectors(self._engine, self._hostname(), self.kind, self.direction, self.name)
 
 	def __gt__(self, peer) :
@@ -125,14 +125,14 @@ class Connector(object):
 			return self._disconnectPattern(
 				(self.host.name, self.name, None, None))
 
-		import Processing
+		from . import Processing
 		if type(peer) == Processing.Processing:
 			return self._disconnectPattern((
 				self.host.name, self.name,
 				peer.name, None))
 
 		# TODO: Untested
-		import Connectors
+		from . import Connectors
 		if type(peer) == Connectors.Connectors :
 			return sum((
 				self._disconnectPattern((

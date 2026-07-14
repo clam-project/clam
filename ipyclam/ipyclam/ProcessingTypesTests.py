@@ -36,7 +36,7 @@ class ProcessingTypesTests(unittest.TestCase):
 
 class Clam_ProcessingTypesTests(ProcessingTypesTests):
 	def empty(self):
-		import Clam_Engine
+		from . import Clam_Engine
 		return Clam_Engine.Clam_Engine()
 
 if __name__ == "__main__":

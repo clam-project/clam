@@ -325,7 +325,7 @@ class Dummy_Engine :
 			raise ProcessingNotFound(name)
 
 	def processingConfig(self, name) :
-		import Dummy_ConfigurationProxy
+		from . import Dummy_ConfigurationProxy
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			self._processings[name]["config"])
 

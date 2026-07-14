@@ -98,7 +98,7 @@ class ConnectorsTests(unittest.TestCase):
 			self.fail("Exception expected")
 
 	def test_connect_to_processing(self) :
-		import Processing
+		from . import Processing
 		engine = self.connectivityFixture()
 		outports = Connectors(engine, "multi1", Connector.Port, Connector.Out)
 		processing = Processing.Processing("multi2", engine)
@@ -272,7 +272,7 @@ class ConnectorsTests(unittest.TestCase):
 
 class ConnectorsTests_Clam(ConnectorsTests):
 	def empty(self):
-		import Clam_Engine
+		from . import Clam_Engine
 		return Clam_Engine.Clam_Engine()
 
 	# CLAM inport connections are limited
