@@ -165,5 +165,5 @@ class Connector(object):
 			if match(pattern,connection)
 			))
 
-	def __div__(self, peer) :
+	def __truediv__(self, peer) :
 		return self.disconnect(peer)
