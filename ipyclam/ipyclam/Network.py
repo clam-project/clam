@@ -44,12 +44,7 @@ class Network(object):
 			Python keyword argument, otherwise return False.
 			"""
 			import keyword
-			import tokenize
-			import re
-			# Don't allow python reserved words as arg names
-			if k in keyword.kwlist:
-				return False
-			return re.match('^' + tokenize.Name + '$', k) is not None
+			return k.isidentifier() and k not in keyword.kwlist
 
 
 		def configCode(networkVar, fullConfig):
