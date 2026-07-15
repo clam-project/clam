@@ -18,7 +18,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 
 	def test_keys(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
-		self.assertEqual(["ConfigParam3", "ConfigParam2", "ConfigParam1"], c.keys() )
+		self.assertEqual(["ConfigParam1", "ConfigParam2", "ConfigParam3"], c.keys() )
 
 	def test_set_wrongType(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())

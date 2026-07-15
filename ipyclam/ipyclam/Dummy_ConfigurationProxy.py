@@ -22,7 +22,7 @@ class Dummy_ConfigurationProxy(object):
 		self._dict[name] = value
 
 	def keys(self):
-		return self._dict.keys()
+		return list(sorted(self._dict))
 
 	def nonDefault(self, attribute):
 		return not self._default[attribute] == self._dict[attribute]

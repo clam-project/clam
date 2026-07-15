@@ -108,9 +108,9 @@ class ConfigurationTests(unittest.TestCase):
 		c = Configuration(self.stringParametersConfig())
 		c['ConfigParam1'] = 'newvalue'
 		self.assertEqual(
-			"network.Processing1['ConfigParam3'] = 'Param3'\n"
-			"network.Processing1['ConfigParam2'] = 'Param2'\n"
 			"network.Processing1['ConfigParam1'] = 'newvalue'\n"
+			"network.Processing1['ConfigParam2'] = 'Param2'\n"
+			"network.Processing1['ConfigParam3'] = 'Param3'\n"
 			, c.code("Processing1", fullConfig = True))
 
 	def test_nestedconfigs(self):

@@ -46,7 +46,7 @@ class Configuration(object):
 					attribute,
 					self._engine[attribute].__repr__(),
 					)
-				for attribute in self._engine.keys()
+				for attribute in sorted(self._engine.keys())
 				if fullConfig or self._engine.nonDefault(attribute)
 			])
 		if code: code += "\n"
