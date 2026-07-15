@@ -58,13 +58,13 @@ env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 env["SHOBJPREFIX"] = "generated/"
 
 
-shibokenunwrap = env.SharedObject(source='shibokenunwrap.cxx')
-sipunwrap = env.SharedObject(source='sipunwrap.cxx')
+shibokenunwrap = env.SharedObject(source='src/shibokenunwrap.cxx')
+sipunwrap = env.SharedObject(source='src/sipunwrap.cxx')
 
 clamengine_module = env.SharedLibrary (
 	target='ipyclam/clam',
 	source=[
-		'Clam_Engine.cxx',
+		'src/Clam_Engine.cxx',
 		shibokenunwrap,
 		sipunwrap,
 		],
@@ -74,8 +74,8 @@ clamengine_module = env.SharedLibrary (
 clamengine_config_module = env.SharedLibrary (
 	target='ipyclam/Clam_ConfigurationProxy',
 	source=[
-		'Clam_ConfigurationProxy.cxx',
-		'ConfigurationProxy.cxx',
+		'src/Clam_ConfigurationProxy.cxx',
+		'src/ConfigurationProxy.cxx',
 		],
 	SHLIBPREFIX='',
 ) if env['enable_clam']  else []
@@ -83,7 +83,7 @@ clamengine_config_module = env.SharedLibrary (
 jackengine_module = env.SharedLibrary (
 	target='ipyclam/jack',
 	source=[
-		'Jack_Engine.cxx',
+		'src/Jack_Engine.cxx',
 		],
 	SHLIBPREFIX='',
 ) if env['enable_jack']  else []
@@ -91,7 +91,7 @@ jackengine_module = env.SharedLibrary (
 dummyProcessingsModule = env.SharedLibrary (
 	target='ipyclam/dummy/processing',
 	source=[
-		'DummyProcessings.cxx',
+		'src/DummyProcessings.cxx',
 		],
 	SHLIBPREFIX='',
 ) if env['enable_clam']  else []
@@ -99,7 +99,7 @@ dummyProcessingsModule = env.SharedLibrary (
 ui_pyside_module = env.SharedLibrary (
 	target='ipyclam/ui/PySide',
 	source=[
-		'PySideModule.cxx',
+		'src/PySideModule.cxx',
 		shibokenunwrap,
 		],
 	SHLIBPREFIX='',
@@ -116,7 +116,7 @@ ui_pyqt4_module = env.SharedLibrary (
 """
 program = env.Program(
 	target='ipyclam_console',
-	source='ipyclam_console.cxx',
+	source='src/ipyclam_console.cxx',
 )
 blacklist = [
 	"ipyclam/ProxyAPI.py",
