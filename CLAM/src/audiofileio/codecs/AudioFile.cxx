@@ -82,11 +82,6 @@ namespace CLAM
 			mActiveCodec = &AudioCodecs::OggVorbisCodec::Instantiate();		
 		}
 #endif		
-		else if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( location ) )
-		{
-			mCodec = EAudioFileCodec::ePCM;
-			mActiveCodec = &AudioCodecs::PCMCodec::Instantiate();
-		}
 #if USE_MAD == 1 && USE_ID3 == 1
 		else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( location ) )
 		{
@@ -94,6 +89,11 @@ namespace CLAM
 			mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
 		}
 #endif
+		else if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( location ) )
+		{
+			mCodec = EAudioFileCodec::ePCM;
+			mActiveCodec = &AudioCodecs::PCMCodec::Instantiate();
+		}
 		else
 			mCodec = EAudioFileCodec::eUnknown;		
 	}
