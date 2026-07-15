@@ -10,12 +10,12 @@
 #include <CLAM/qtmonitors/QtBinder.hxx>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include "ConfigurationProxy.hxx"
 #include "sipunwrap.hxx"
 #include "shibokenunwrap.hxx"
 #include <QtUiTools/QUiLoader>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QIcon>
 #include <QtCore/QFile>
 #include <QtCore/QDir>

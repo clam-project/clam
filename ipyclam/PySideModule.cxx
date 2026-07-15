@@ -3,8 +3,8 @@
 #include <QtCore/QStringList>
 #include "shibokenunwrap.hxx"
 #include <QtUiTools/QUiLoader>
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QWidget>
 #include <QtGui/QIcon>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
