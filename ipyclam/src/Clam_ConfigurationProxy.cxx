@@ -118,7 +118,7 @@ void copyConfig(ConfigurationProxy & config, ConfigurationProxy & configuration)
 		config._processing->Configure(configuration._processing->GetConfig());
 }
 
-BOOST_PYTHON_MODULE(Clam_ConfigurationProxy)
+BOOST_PYTHON_MODULE(configurationproxy)
 {
 	using namespace boost::python;
 

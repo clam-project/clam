@@ -10,7 +10,7 @@ from . import TestFixtures
 
 class ConnectorsTests(unittest.TestCase):
 	def empty(self):
-		from . import Dummy_Engine
+		from .dummy import Dummy_Engine
 		return Dummy_Engine()
 
 	def fixture1(self):
@@ -272,7 +272,7 @@ class ConnectorsTests(unittest.TestCase):
 
 class ConnectorsTests_Clam(ConnectorsTests):
 	def empty(self):
-		from . import Clam_Engine
+		from .clam import Clam_Engine
 		return Clam_Engine()
 
 	# CLAM inport connections are limited

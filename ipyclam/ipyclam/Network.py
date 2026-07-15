@@ -6,7 +6,7 @@ class Network(object):
 	def __init__(self, engine=None):
 		if engine is None :
 			try :
-				from . import Clam_Engine
+				from .clam import Clam_Engine
 				engine = Clam_Engine()
 			except ImportError: pass
 		self.__dict__['_engine'] = Notifier_EngineDecorator.Notifier_EngineDecorator(engine)

@@ -3,6 +3,8 @@
 //#include <CLAM/JACKNetworkPlayer.hxx>
 #include <boost/python.hpp>
 #include <iostream>
+#include <map>
+#include <stdexcept>
 #include <string>
 
 
@@ -26,7 +28,7 @@ public:
 	}
 	void setupClamEngine()
 	{
-		py::object proxy = py::import("ipyclam").attr("Clam_Engine")();
+		py::object proxy = py::import("ipyclam.clam").attr("Clam_Engine")();
 		setupNetwork(proxy);
 	}
 /*
@@ -39,18 +41,26 @@ public:
 */
 	void setupJackEngine()
 	{
-		py::object proxy = py::import("ipyclam").attr("Jack_Engine")();
+		py::object proxy = py::import("ipyclam.jack").attr("Jack_Engine")();
 		setupNetwork(proxy);
 	}
 	void setupDummyEngine()
 	{
-		py::object proxy = py::import("ipyclam").attr("Dummy_Engine")();
+		py::object proxy = py::import("ipyclam.dummy").attr("Dummy_Engine")();
 		setupNetwork(proxy);
 	}
 	void setupEngine(const std::string & engine)
 	{
+		static const std::map<std::string, std::string> engineModules = {
+			{"Clam_Engine", "ipyclam.clam"},
+			{"Jack_Engine", "ipyclam.jack"},
+			{"Dummy_Engine", "ipyclam.dummy"},
+		};
+		auto it = engineModules.find(engine);
+		if (it == engineModules.end())
+			throw std::runtime_error("Unknown engine: " + engine);
 		std::cout << "Engine: " << engine << std::endl;
-		py::object proxy = py::import("ipyclam").attr(engine.c_str())();
+		py::object proxy = py::import(it->second.c_str()).attr(engine.c_str())();
 		setupNetwork(proxy);
 	}
 private:

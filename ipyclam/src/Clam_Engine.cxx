@@ -596,13 +596,11 @@ void save(CLAM::Network & network, const std::string & filename)
 }
 
 
-BOOST_PYTHON_MODULE(clam)
+BOOST_PYTHON_MODULE(engine)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;
 	using namespace CLAM;
-
-	relative_import("Clam_ConfigurationProxy");
 
 	class_<Processing, boost::noncopyable>("Processing", no_init);
 

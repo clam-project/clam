@@ -1,12 +1,12 @@
 import unittest
-from . import Clam_Engine
+from .clam import Clam_Engine
 from . import TestFixtures
 from .Exceptions import NameAlreadyExists
 from .Exceptions import BadProcessingType
 from .Exceptions import ProcessingNotFound
 from .Exceptions import ConnectorNotFound
 
-from . import dummy.processing # 0 python content, loads dummy CLAM processings
+from .dummy import processing as dummy_processing
 
 class Clam_EngineTests(unittest.TestCase):
 
@@ -548,7 +548,7 @@ class Clam_EngineTests(unittest.TestCase):
 
 class Dummy_NetworkTest(Clam_EngineTests) :
 	def engine(self) :
-		from . import Dummy_Engine
+		from .dummy import Dummy_Engine
 		return Dummy_Engine()
 
 	def defaultDataType(self) :

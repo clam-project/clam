@@ -62,7 +62,7 @@ shibokenunwrap = env.SharedObject(source='src/shibokenunwrap.cxx')
 sipunwrap = env.SharedObject(source='src/sipunwrap.cxx')
 
 clamengine_module = env.SharedLibrary (
-	target='ipyclam/clam',
+	target='ipyclam/clam/engine',
 	source=[
 		'src/Clam_Engine.cxx',
 		shibokenunwrap,
@@ -72,7 +72,7 @@ clamengine_module = env.SharedLibrary (
 ) if env['enable_clam']  else []
 
 clamengine_config_module = env.SharedLibrary (
-	target='ipyclam/Clam_ConfigurationProxy',
+	target='ipyclam/clam/configurationproxy',
 	source=[
 		'src/Clam_ConfigurationProxy.cxx',
 		'src/ConfigurationProxy.cxx',
@@ -81,7 +81,7 @@ clamengine_config_module = env.SharedLibrary (
 ) if env['enable_clam']  else []
 
 jackengine_module = env.SharedLibrary (
-	target='ipyclam/jack',
+	target='ipyclam/jack/engine',
 	source=[
 		'src/Jack_Engine.cxx',
 		],
@@ -97,23 +97,23 @@ dummyProcessingsModule = env.SharedLibrary (
 ) if env['enable_clam']  else []
 
 ui_pyside_module = env.SharedLibrary (
-	target='ipyclam/ui/PySide',
+	target='ipyclam/clam/PySide',
 	source=[
 		'src/PySideModule.cxx',
 		shibokenunwrap,
 		],
 	SHLIBPREFIX='',
 )
-"""
-ui_pyqt4_module = env.SharedLibrary (
-	target='ipyclam/ui/PyQt4',
+
+ui_pyqt_module = env.SharedLibrary (
+	target='ipyclam/clam/PyQt',
 	source=[
-		'PyQt4Module.cxx',
+		'src/PyQtModule.cxx',
 		sipunwrap,
 		],
 	SHLIBPREFIX='',
 )
-"""
+
 program = env.Program(
 	target='ipyclam_console',
 	source='src/ipyclam_console.cxx',
@@ -129,30 +129,34 @@ python_modules = [
 	]
 
 dummy_modules = glob.glob('ipyclam/dummy/*.py')
+clam_modules = glob.glob('ipyclam/clam/*.py')
+jack_modules = glob.glob('ipyclam/jack/*.py')
 
-# TODO: Use distutils to get the paths given a prefix or a home schema
-mod_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
 lib_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
+clam_lib_dir = os.path.join(lib_dir, 'clam')
+jack_lib_dir = os.path.join(lib_dir, 'jack')
 dummy_lib_dir = os.path.join(lib_dir, 'dummy')
-uilib_dir = os.path.join(lib_dir, 'ui')
 bin_dir = os.path.join(env['prefix'], 'bin')
 
 install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( lib_dir,[
+		python_modules,
+	]),
+	( clam_lib_dir,[
 		clamengine_module,
 		clamengine_config_module,
+		ui_pyside_module,
+		ui_pyqt_module,
+		clam_modules,
+	]),
+	( jack_lib_dir,[
 		jackengine_module,
-		python_modules,
+		jack_modules,
 	]),
 	( dummy_lib_dir,[
 		dummyProcessingsModule,
 		dummy_modules,
-	]),
-	( uilib_dir, [
-		ui_pyside_module,
-		#ui_pyqt4_module,
-		'ipyclam/ui/__init__.py',
 	]),
 	( bin_dir,[
 		program,
@@ -169,7 +173,7 @@ Default(
 	clamengine_config_module,
 	dummyProcessingsModule,
 	ui_pyside_module,
-	#ui_pyqt4_module,
+	ui_pyqt_module,
 	program,
 )
 

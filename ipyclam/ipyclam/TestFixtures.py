@@ -1,4 +1,4 @@
-from . import Dummy_Engine
+from .dummy import Dummy_Engine
 
 def empty() :
 	return Dummy_Engine([], [], [])

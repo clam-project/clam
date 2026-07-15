@@ -526,7 +526,7 @@ class NetworkTests(object):
 
 class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 	def empty(self):
-		from . import Dummy_Engine
+		from .dummy import Dummy_Engine
 		return Dummy_Engine()
 
 	@unittest.skip("Not working yet")
@@ -535,7 +535,7 @@ class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 
 class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 	def empty(self):
-		from . import Clam_Engine
+		from .clam import Clam_Engine
 		return Clam_Engine()
 
 	def test_connect_outportsToPort(self):
