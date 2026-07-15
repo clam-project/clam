@@ -52,7 +52,7 @@ class ConnectorsTests(unittest.TestCase):
 
 	def test_dirFunction(self):
 		ports = Connectors(self.fixture1(), "proc1", Connector.Port, Connector.In)
-		self.assertEquals(['InPort1', 'InPort2', 'InPort3', 'InPort4'], dir(ports))
+		self.assertEqual(['InPort1', 'InPort2', 'InPort3', 'InPort4'], dir(ports))
 
 	def test_sliceable(self):
 		ports = Connectors(self.fixture1(), "proc1", Connector.Port, Connector.In)

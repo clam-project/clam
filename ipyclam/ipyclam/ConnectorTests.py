@@ -146,7 +146,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port.connect(port2)
 		except SameConnectorDirection as e:
-			self.assertEquals("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", e.message)
+			self.assertEqual("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", e.message)
 		else:
 			self.fail("Exception expected")
 
@@ -201,7 +201,7 @@ class ConnectorTests(unittest.TestCase):
 			port > port2
 			self.fail("Exception expected")
 		except ConnectionExists as e:
-			self.assertEquals("proc1.OutPort1 and proc2.Inport1 already connected", e.__str__())
+			self.assertEqual("proc1.OutPort1 and proc2.Inport1 already connected", e.__str__())
 
 	def test_connectInputOutputWith__gt__OperatorAndFail(self) :
 		engine = self.fixture1()
@@ -211,7 +211,7 @@ class ConnectorTests(unittest.TestCase):
 			port2 > port
 			self.fail("Exception expected")
 		except BadConnectorDirectionOrder as e:
-			self.assertEquals("Wrong connectors order: Output > Input", e.__str__())
+			self.assertEqual("Wrong connectors order: Output > Input", e.__str__())
 
 	def test_connectWith__lt__Operator(self) :
 		engine = self.fixture1()
@@ -231,7 +231,7 @@ class ConnectorTests(unittest.TestCase):
 			port < port2
 			self.fail("Exception expected")
 		except BadConnectorDirectionOrder as e:
-			self.assertEquals("Wrong connectors order: Input < Output", e.__str__())
+			self.assertEqual("Wrong connectors order: Input < Output", e.__str__())
 
 	def test_disconnect_ports(self):
 		engine = self.fixture1()

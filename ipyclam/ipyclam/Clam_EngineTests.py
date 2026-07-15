@@ -223,7 +223,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("DummyPortSource","proc1")
 		engine.addProcessing("DummyPortSink","proc2")
 		self.assertTrue(engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1"))
-		self.assertEquals([
+		self.assertEqual([
 			("proc2", "InPort1")
 			], engine.connectorPeers("proc1", "Port", "Out", "OutPort1"))
 
@@ -232,7 +232,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("DummyControlSource","proc1")
 		engine.addProcessing("DummyControlSink","proc2")
 		self.assertTrue(engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1"))
-		self.assertEquals([
+		self.assertEqual([
 			("proc2", "InControl1")
 			], engine.connectorPeers("proc1", "Control", "Out", "OutControl1"))
 
@@ -266,17 +266,17 @@ class Clam_EngineTests(unittest.TestCase):
 	def test_connectorType_forPorts(self) :
 		engine = self.engine()
 		engine.addProcessing("Dummy6IOPorts", "proc")
-		self.assertEquals(self.defaultDataType(),
+		self.assertEqual(self.defaultDataType(),
 			engine.connectorType("proc", "Port", "In", "inport1"))
-		self.assertEquals(self.defaultDataType(),
+		self.assertEqual(self.defaultDataType(),
 			engine.connectorType("proc", "Port", "Out", "outport1"))
 
 	def test_connectorType_forControls(self) :
 		engine = self.engine()
 		engine.addProcessing("Dummy6IOControls", "proc")
-		self.assertEquals(self.defaultDataType(),
+		self.assertEqual(self.defaultDataType(),
 			engine.connectorType("proc", "Control", "In", "incontrol1"))
-		self.assertEquals(self.defaultDataType(),
+		self.assertEqual(self.defaultDataType(),
 			engine.connectorType("proc", "Control", "Out", "outcontrol1"))
 
 	def test_connectionExists_onControls_whenItDoesnt(self):
@@ -316,7 +316,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
 		except AssertionError as e:
-			self.assertEquals("proc1.OutPort1 and proc2.InPort1 already connected", e.message)
+			self.assertEqual("proc1.OutPort1 and proc2.InPort1 already connected", e.message)
 		else:
 			self.fail("Exception expected")
 
@@ -327,7 +327,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.connect("Control", "proc1", "OutControl1", "proc2", "InControl1")
 		except AssertionError as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"proc1.OutControl1 and proc2.InControl1 have incompatible types")
 		else :
 			self.fail("Exception expected")
@@ -339,7 +339,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "proc1", "Missing", "proc2", "InPort1")
 		except ConnectorNotFound as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"Out Port connector 'Missing' not found in processing 'proc1'")
 		else:
 			self.fail("Exception expected")
@@ -351,7 +351,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "proc1", "OutPort1", "proc2", "Missing")
 		except ConnectorNotFound as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"In Port connector 'Missing' not found in processing 'proc2'")
 		else:
 			self.fail("Exception expected")
@@ -363,7 +363,7 @@ class Clam_EngineTests(unittest.TestCase):
 			engine.connect("Port", "proc1", "outport1", "Missing", "inport1")
 			self.fail("Exception expected")
 		except ProcessingNotFound as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"Processing 'Missing' not found" )
 
 	def test_connect_missingFromProcessing(self) :
@@ -372,7 +372,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.connect("Port", "Missing", "outport1", "proc1", "inport1")
 		except ProcessingNotFound as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"Processing 'Missing' not found" )
 		else :
 			self.fail("Exception expected")
@@ -445,29 +445,29 @@ class Clam_EngineTests(unittest.TestCase):
 	def test_connectorIndex_inport(self):
 		engine = self.engine()
 		engine.addProcessing("Dummy6IOPorts", "proc")
-		self.assertEquals(0, engine.connectorIndex("proc", "Port", "In", "inport1"))
-		self.assertEquals(1, engine.connectorIndex("proc", "Port", "In", "inport2"))
+		self.assertEqual(0, engine.connectorIndex("proc", "Port", "In", "inport1"))
+		self.assertEqual(1, engine.connectorIndex("proc", "Port", "In", "inport2"))
 
 	def test_connectorIndex_outport(self):
 		engine = self.engine()
 		engine.addProcessing("Dummy6IOPorts", "proc")
-		self.assertEquals(0, engine.connectorIndex("proc", "Port", "Out", "outport1"))
-		self.assertEquals(1, engine.connectorIndex("proc", "Port", "Out", "outport2"))
+		self.assertEqual(0, engine.connectorIndex("proc", "Port", "Out", "outport1"))
+		self.assertEqual(1, engine.connectorIndex("proc", "Port", "Out", "outport2"))
 
 	def test_connectorIndex_incontrol(self):
 		engine = self.engine()
 		engine.addProcessing("Dummy6IOControls", "proc")
-		self.assertEquals(0, engine.connectorIndex(
+		self.assertEqual(0, engine.connectorIndex(
 			"proc", "Control", "In", "incontrol1"))
-		self.assertEquals(1, engine.connectorIndex(
+		self.assertEqual(1, engine.connectorIndex(
 			"proc", "Control", "In", "incontrol2"))
 
 	def test_connectorIndex_outcontrol(self):
 		engine = self.engine()
 		engine.addProcessing("Dummy6IOControls", "proc")
-		self.assertEquals(0, engine.connectorIndex(
+		self.assertEqual(0, engine.connectorIndex(
 			"proc", "Control", "Out", "outcontrol1"))
-		self.assertEquals(1, engine.connectorIndex(
+		self.assertEqual(1, engine.connectorIndex(
 			"proc", "Control", "Out", "outcontrol2"))
 
 	def test_portConnections(self):
@@ -478,7 +478,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("Dummy6IOPorts", "proc4")
 		engine.connect("Port", "proc1", "OutPort1", "proc2", "InPort1")
 		engine.connect("Port", "proc3", "outport1", "proc4", "inport1")
-		self.assertEquals([
+		self.assertEqual([
 			('proc1', 'OutPort1', 'proc2', 'InPort1'),
 			('proc3', 'outport1', 'proc4', 'inport1')
 		], engine.portConnections())
@@ -491,7 +491,7 @@ class Clam_EngineTests(unittest.TestCase):
 		engine.addProcessing("Dummy6IOControls", "proc4")
 		engine.connect("Control", "proc1", "OutControl1", "proc2","InControl1")
 		engine.connect("Control", "proc3", "outcontrol1", "proc4","incontrol1")
-		self.assertEquals([
+		self.assertEqual([
 			('proc1', 'OutControl1', 'proc2', 'InControl1'),
 			('proc3', 'outcontrol1', 'proc4', 'incontrol1')
 		], engine.controlConnections())
@@ -508,7 +508,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try :
 			engine.deleteProcessing("Missing")
 		except ProcessingNotFound as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"Processing 'Missing' not found")
 		else :
 			self.fail("Assertion expected")
@@ -525,7 +525,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.renameProcessing("missing", "proc2")
 		except ProcessingNotFound as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"Processing 'missing' not found")
 		else:
 			self.fail("Exception expected")
@@ -537,7 +537,7 @@ class Clam_EngineTests(unittest.TestCase):
 		try:
 			engine.renameProcessing("proc1", "proc2")
 		except NameAlreadyExists as e:
-			self.assertEquals(e.message,
+			self.assertEqual(e.message,
 				"Name 'proc2' already exists")
 		else:
 			self.fail("Exception expected")

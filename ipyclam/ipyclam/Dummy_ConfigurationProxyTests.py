@@ -26,7 +26,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 			c["ConfigParam1"] = 1
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals("str value expected, got int", e.args[0])
+			self.assertEqual("str value expected, got int", e.args[0])
 
 	def test_set_wrongName(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
@@ -34,7 +34,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 			c["WrongParam"] = "ParamValue"
 			self.fail("Exception expected")
 		except KeyError as e:
-			self.assertEquals("WrongParam", e.args[0])
+			self.assertEqual("WrongParam", e.args[0])
 
 	def test_get_wrongName(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
@@ -42,7 +42,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 			value = c["WrongParam1"]
 			self.fail("Exception expected")
 		except KeyError as e:
-			self.assertEquals("WrongParam1", e.args[0])
+			self.assertEqual("WrongParam1", e.args[0])
 
 	def test_check_nondefault_value(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())
@@ -52,7 +52,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 
 	def test_nestedconfig(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithNestedConfigs())
-		self.assertEquals('defaultnested1', c["ConfigParam3"]["NestedParam1"])
+		self.assertEqual('defaultnested1', c["ConfigParam3"]["NestedParam1"])
 
 	def test_hold_apply(self):
 		c = Dummy_ConfigurationProxy(TestFixtures.dummyConfigWithStrings())

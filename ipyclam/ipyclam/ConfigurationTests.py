@@ -51,7 +51,7 @@ class ConfigurationTests(unittest.TestCase):
 			c.WrongParam1 = "ParamValue"
 			self.fail("Exception expected")
 		except AttributeError as e:
-			self.assertEquals("WrongParam1", e.args[0])
+			self.assertEqual("WrongParam1", e.args[0])
 
 	def test_getAttr_wrongName(self):
 		c = Configuration(self.stringParametersConfig())
@@ -59,7 +59,7 @@ class ConfigurationTests(unittest.TestCase):
 			param = c.WrongParam1
 			self.fail("Exception expected")
 		except AttributeError as e:
-			self.assertEquals("WrongParam1", e.args[0])
+			self.assertEqual("WrongParam1", e.args[0])
 
 	def test_setAttr_wrongType(self):
 		c = Configuration(self.stringParametersConfig())
@@ -67,7 +67,7 @@ class ConfigurationTests(unittest.TestCase):
 			c.ConfigParam1 = 1
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals("str value expected, got int", e.args[0])
+			self.assertEqual("str value expected, got int", e.args[0])
 
 	def test_getItem_wrongName(self):
 		c = Configuration(self.stringParametersConfig())
@@ -75,7 +75,7 @@ class ConfigurationTests(unittest.TestCase):
 			param = c["WrongParam1"]
 			self.fail("Exception expected")
 		except KeyError as e:
-			self.assertEquals("WrongParam1", e.args[0])
+			self.assertEqual("WrongParam1", e.args[0])
 
 	def test_setitem_wrongName(self):
 		c = Configuration(self.stringParametersConfig())
@@ -83,7 +83,7 @@ class ConfigurationTests(unittest.TestCase):
 			c["WrongParam1"] = "value"
 			self.fail("Exception expected")
 		except KeyError as e:
-			self.assertEquals("WrongParam1", e.args[0])
+			self.assertEqual("WrongParam1", e.args[0])
 
 	def test_setItem_wrongType(self):
 		c = Configuration(self.stringParametersConfig())
@@ -91,23 +91,23 @@ class ConfigurationTests(unittest.TestCase):
 			c["ConfigParam1"] = 1
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals("str value expected, got int", e.args[0])
+			self.assertEqual("str value expected, got int", e.args[0])
 
 	def test_dirFunction(self):
 		c = Configuration(self.stringParametersConfig())
-		self.assertEquals(["ConfigParam1", "ConfigParam2", "ConfigParam3"], dir(c))
+		self.assertEqual(["ConfigParam1", "ConfigParam2", "ConfigParam3"], dir(c))
 
 	def test_code_when_only_modified(self):
 		c = Configuration(self.stringParametersConfig())
 		c['ConfigParam1'] = 'newvalue'
-		self.assertEquals(
+		self.assertEqual(
 			"network.Processing1['ConfigParam1'] = 'newvalue'\n"
 			, c.code("Processing1"))
 
 	def test_code_full(self):
 		c = Configuration(self.stringParametersConfig())
 		c['ConfigParam1'] = 'newvalue'
-		self.assertEquals(
+		self.assertEqual(
 			"network.Processing1['ConfigParam3'] = 'Param3'\n"
 			"network.Processing1['ConfigParam2'] = 'Param2'\n"
 			"network.Processing1['ConfigParam1'] = 'newvalue'\n"
@@ -115,7 +115,7 @@ class ConfigurationTests(unittest.TestCase):
 
 	def test_nestedconfigs(self):
 		c = Configuration(self.nestedConfig())
-		self.assertEquals('defaultnested1', c.ConfigParam3.NestedParam1)
+		self.assertEqual('defaultnested1', c.ConfigParam3.NestedParam1)
 
 	def test_clone(self):
 		c = Configuration(self.stringParametersConfig())

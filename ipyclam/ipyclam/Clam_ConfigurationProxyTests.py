@@ -67,7 +67,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			c["WrongParam"] = 24
 			self.fail("Exception expected")
 		except KeyError as e:
-			self.assertEquals("WrongParam", e.args[0])
+			self.assertEqual("WrongParam", e.args[0])
 
 	def test_set_wrongTypeForString(self):
 		c = Clam_ConfigurationProxy.createConfigurationProxy("DummyProcessingWithStringConfiguration")
@@ -75,7 +75,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			c["AString"] = 2
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals(
+			self.assertEqual(
 				"While setting parameter 'AString', "
 				"cannot convert a Python value of type 'int' "
 				"into a C++ value of type 'string'."
@@ -87,7 +87,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			engine["FirstInt"] = "WrongType"
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals(
+			self.assertEqual(
 				"While setting parameter 'FirstInt', "
 				"cannot convert a Python value of type 'str' "
 				"into a C++ value of type 'int'."
@@ -99,7 +99,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			engine["BoolAttribute"] = 2.15
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals(
+			self.assertEqual(
 				"While setting parameter 'BoolAttribute', "
 				"cannot convert a Python value of type 'float' "
 				"into a C++ value of type 'bool'."
@@ -111,7 +111,7 @@ class Clam_ConfigurationProxyTests(unittest.TestCase):
 			engine["FloatAttribute"] = "Value"
 			self.fail("Exception expected")
 		except TypeError as e:
-			self.assertEquals(
+			self.assertEqual(
 				"While setting parameter 'FloatAttribute', "
 				"cannot convert a Python value of type 'str' "
 				"into a C++ value of type 'float'."
