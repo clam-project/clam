@@ -25,7 +25,7 @@ class Network(object):
 		return Processing.Processing(engine=self._engine, name=name)
 
 	def __dir__(self):
-		return self._engine.processingNames() + ["description"]
+		return self._engine.processingNames() + self.__dict__['methods'] + ["description"]
 
 	def __contains__(self, processingName) :
 		return self._engine.hasProcessing(processingName)

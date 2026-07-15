@@ -28,7 +28,7 @@ class NetworkTests(object):
 
 	def test_dirFunction(self) :
 		net = Network(self.fixture1())
-		self.assertEqual(["description", "proc1", "proc2"], dir(net))
+		self.assertEqual(["code", "description", "proc1", "proc2", "types", "xml"], dir(net))
 
 	def test_processingNames(self):
 		net = Network(self.fixture1())
