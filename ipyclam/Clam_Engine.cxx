@@ -596,7 +596,7 @@ void save(CLAM::Network & network, const std::string & filename)
 }
 
 
-BOOST_PYTHON_MODULE(Clam_Engine)
+BOOST_PYTHON_MODULE(clam)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;

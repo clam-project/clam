@@ -309,7 +309,7 @@ std::string getDescription(JackEngine & client)
 
 
 
-BOOST_PYTHON_MODULE(Jack_Engine)
+BOOST_PYTHON_MODULE(jack)
 {
 	// Keep 'using namespace' in the inner scope
 	using namespace boost::python;

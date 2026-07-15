@@ -5,7 +5,7 @@ from . import TestFixtures
 class ProcessingTypesTests(unittest.TestCase):
 	def empty(self):
 		from . import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		return Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -37,7 +37,7 @@ class ProcessingTypesTests(unittest.TestCase):
 class Clam_ProcessingTypesTests(ProcessingTypesTests):
 	def empty(self):
 		from . import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		return Clam_Engine()
 
 if __name__ == "__main__":
 	unittest.main()

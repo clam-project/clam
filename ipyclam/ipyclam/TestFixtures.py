@@ -1,7 +1,7 @@
 from . import Dummy_Engine
 
 def empty() :
-	return Dummy_Engine.Dummy_Engine([], [], [])
+	return Dummy_Engine([], [], [])
 
 
 def dummyConfigWithStrings() :

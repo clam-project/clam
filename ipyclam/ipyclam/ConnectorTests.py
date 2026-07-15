@@ -6,7 +6,7 @@ from . import TestFixtures
 class ConnectorTests(unittest.TestCase):
 	def empty(self):
 		from . import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		return Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -426,7 +426,7 @@ class ConnectorTests(unittest.TestCase):
 class Clam_ConnectorTests(ConnectorTests):
 	def empty(self):
 		from . import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		return Clam_Engine()
 
 if __name__ == '__main__':
 	unittest.main()

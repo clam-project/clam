@@ -6,12 +6,12 @@ from .Exceptions import BadProcessingType
 from .Exceptions import ProcessingNotFound
 from .Exceptions import ConnectorNotFound
 
-from . import DummyProcessings # 0 python content, loads dummy CLAM processings
+from . import dummy.processing # 0 python content, loads dummy CLAM processings
 
 class Clam_EngineTests(unittest.TestCase):
 
 	def engine(self) :
-		return Clam_Engine.Clam_Engine()
+		return Clam_Engine()
 
 	def test_availableTypes(self):
 		engine = self.engine()
@@ -549,7 +549,7 @@ class Clam_EngineTests(unittest.TestCase):
 class Dummy_NetworkTest(Clam_EngineTests) :
 	def engine(self) :
 		from . import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		return Dummy_Engine()
 
 	def defaultDataType(self) :
 		return "DataType"

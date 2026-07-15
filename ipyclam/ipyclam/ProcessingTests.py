@@ -482,13 +482,13 @@ class ProcessingTests(object):
 class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
 	def empty(self):
 		from . import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		return Dummy_Engine()
 
 
 class ProcessingTests_Clam(ProcessingTests, unittest.TestCase):
 	def empty(self):
 		from . import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		return Clam_Engine()
 
 	"Override because of CLAM inport connection limitation"
 	def test_connect_from_processing_to_port(self):

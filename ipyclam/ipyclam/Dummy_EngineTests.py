@@ -1,4 +1,4 @@
-from .Dummy_Engine import Dummy_Engine
+from .dummy import Dummy_Engine
 from . import Connector
 
 import unittest

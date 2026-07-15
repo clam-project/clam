@@ -1,4 +1,4 @@
-from . import Connector
+from .. import Connector
 from collections import OrderedDict as odict
 
 _connectorKindNames = [
@@ -305,7 +305,7 @@ _dummyPrototypes = dict(
 	),
 )
 
-from .Exceptions import *
+from ..Exceptions import *
 
 class Dummy_Engine :
 
@@ -325,7 +325,7 @@ class Dummy_Engine :
 			raise ProcessingNotFound(name)
 
 	def processingConfig(self, name) :
-		from . import Dummy_ConfigurationProxy
+		from .. import Dummy_ConfigurationProxy
 		return Dummy_ConfigurationProxy.Dummy_ConfigurationProxy(
 			self._processings[name]["config"])
 
@@ -413,7 +413,7 @@ class Dummy_Engine :
 		return self._controlConnections
 
 	def availableTypes(self) :
-		return self._types.keys()
+		return list(self._types)
 
 	def connectionExists(self, kind,
 			fromUnit, fromConnector,
@@ -454,4 +454,3 @@ class Dummy_Engine :
 		self._assertHasProcessing(proc)
 		if not self.processingHasConnector(proc, kind, direction, connector) :
 			raise ConnectorNotFound(proc, kind, direction, connector)
-

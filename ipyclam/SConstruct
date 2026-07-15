@@ -62,7 +62,7 @@ shibokenunwrap = env.SharedObject(source='shibokenunwrap.cxx')
 sipunwrap = env.SharedObject(source='sipunwrap.cxx')
 
 clamengine_module = env.SharedLibrary (
-	target='ipyclam/Clam_Engine',
+	target='ipyclam/clam',
 	source=[
 		'Clam_Engine.cxx',
 		shibokenunwrap,
@@ -81,7 +81,7 @@ clamengine_config_module = env.SharedLibrary (
 ) if env['enable_clam']  else []
 
 jackengine_module = env.SharedLibrary (
-	target='ipyclam/Jack_Engine',
+	target='ipyclam/jack',
 	source=[
 		'Jack_Engine.cxx',
 		],
@@ -89,7 +89,7 @@ jackengine_module = env.SharedLibrary (
 ) if env['enable_jack']  else []
 
 dummyProcessingsModule = env.SharedLibrary (
-	target='ipyclam/DummyProcessings',
+	target='ipyclam/dummy/processing',
 	source=[
 		'DummyProcessings.cxx',
 		],
@@ -128,9 +128,12 @@ python_modules = [
 	and "Test" not in source
 	]
 
+dummy_modules = glob.glob('ipyclam/dummy/*.py')
+
 # TODO: Use distutils to get the paths given a prefix or a home schema
 mod_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
 lib_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
+dummy_lib_dir = os.path.join(lib_dir, 'dummy')
 uilib_dir = os.path.join(lib_dir, 'ui')
 bin_dir = os.path.join(env['prefix'], 'bin')
 
@@ -141,6 +144,10 @@ install = [
 		clamengine_config_module,
 		jackengine_module,
 		python_modules,
+	]),
+	( dummy_lib_dir,[
+		dummyProcessingsModule,
+		dummy_modules,
 	]),
 	( uilib_dir, [
 		ui_pyside_module,

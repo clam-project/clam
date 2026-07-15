@@ -33,6 +33,6 @@ IPYCLAMTEST_REGISTER_PROCESSING(20, OtherControlSink);
 
 #include <boost/python.hpp>
 
-BOOST_PYTHON_MODULE(DummyProcessings)
+BOOST_PYTHON_MODULE(processing)
 {}
 

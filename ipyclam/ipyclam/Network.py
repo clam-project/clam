@@ -7,7 +7,7 @@ class Network(object):
 		if engine is None :
 			try :
 				from . import Clam_Engine
-				engine = Clam_Engine.Clam_Engine()
+				engine = Clam_Engine()
 			except ImportError: pass
 		self.__dict__['_engine'] = Notifier_EngineDecorator.Notifier_EngineDecorator(engine)
 		self.__dict__['methods'] = ["types", "code", "xml"]

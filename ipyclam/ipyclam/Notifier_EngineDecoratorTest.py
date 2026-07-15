@@ -46,7 +46,7 @@ from . import Network
 class Notifier_ConfigEngineDecoratorTest(unittest.TestCase) :
 	def setUp(self) :
 		self.reset()
-		self.net = Network.Network()
+		self.net = Network()
 		self.net._engine.setCallback(self.callback)
 
 	def callback(self) :
