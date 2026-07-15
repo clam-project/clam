@@ -78,7 +78,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		try :
 			c.hold()
 		except AssertionError as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Configuration is already held")
 		else:
 			self.fail("Should have failed an assertion")
@@ -88,7 +88,7 @@ class Dummy_ConfigurationProxyTests(unittest.TestCase):
 		try :
 			c.discard()
 		except AssertionError as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Discarding a configuration requires to be held")
 		else:
 			self.fail("Should have failed an assertion")

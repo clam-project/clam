@@ -206,7 +206,7 @@ class ProcessingTests(object):
 		try :
 			multi1 > multi2._outports
 		except BadConnectorDirectionOrder as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Wrong connectors order: Output > Input")
 		else :
 			self.fail("Exception expected")
@@ -219,7 +219,7 @@ class ProcessingTests(object):
 		try :
 			multi1 > csource.OutControl1
 		except BadConnectorDirectionOrder as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Wrong connectors order: Output > Input")
 		else:
 			self.fail("Exception expected")
@@ -231,7 +231,7 @@ class ProcessingTests(object):
 		try :
 			proc1 > 34
 		except AssertionError as e :
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Unexpected connection peer: 34")
 		else :
 			self.fail("Failed assertion expected")
@@ -278,7 +278,7 @@ class ProcessingTests(object):
 		try :
 			multi1 < multi2._inports
 		except BadConnectorDirectionOrder as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Wrong connectors order: Input < Output")
 		else :
 			self.fail("Exception expected")
@@ -291,7 +291,7 @@ class ProcessingTests(object):
 		try :
 			multi1 < multi2.InControl1
 		except BadConnectorDirectionOrder as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Wrong connectors order: Input < Output")
 		else:
 			self.fail("Exception expected")
@@ -303,7 +303,7 @@ class ProcessingTests(object):
 		try :
 			proc1 < 34
 		except AttributeError as e :
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"'int' object has no attribute 'connect'")
 		else :
 			self.fail("Failed assertion expected")

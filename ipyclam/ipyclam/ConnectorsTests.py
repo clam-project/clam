@@ -81,7 +81,7 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			inports > "whatever"
 		except BadConnectorDirectionOrder as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Wrong connectors order: Output > Input")
 		else :
 			self.fail("Exception expected")
@@ -92,7 +92,7 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outports < "whatever"
 		except BadConnectorDirectionOrder as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Wrong connectors order: Input < Output")
 		else :
 			self.fail("Exception expected")
@@ -132,7 +132,7 @@ class ConnectorsTests(unittest.TestCase):
 			outports > outports2
 			self.fail("Exception expected")
 		except SameConnectorDirection as e :
-			self.assertMultiLineEqual(e.message,
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.OutPort1 "
 				"have the same direction")
@@ -145,7 +145,7 @@ class ConnectorsTests(unittest.TestCase):
 			outports > incontrols
 			self.fail("Exception expected")
 		except DifferentConnectorKind as e :
-			self.assertMultiLineEqual(e.message,
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.InControl1 "
 				"are different kinds of connectors")
@@ -159,7 +159,7 @@ class ConnectorsTests(unittest.TestCase):
 			outcontrols > incontrols
 			self.fail("Exception expected")
 		except DifferentConnectorType as e :
-			self.assertMultiLineEqual(e.message,
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"csource.OutControl1 and othercsink.InControl1 "
 				"handle different data types")
@@ -185,7 +185,7 @@ class ConnectorsTests(unittest.TestCase):
 			outports > outport
 			self.fail("Exception expected")
 		except SameConnectorDirection as e :
-			self.assertMultiLineEqual(e.message,
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.OutPort2 "
 				"have the same direction")
@@ -198,7 +198,7 @@ class ConnectorsTests(unittest.TestCase):
 			outports > incontrol
 			self.fail("Exception expected")
 		except DifferentConnectorKind as e :
-			self.assertMultiLineEqual(e.message,
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.InControl2 "
 				"are different kinds of connectors")
@@ -212,7 +212,7 @@ class ConnectorsTests(unittest.TestCase):
 			outcontrols > incontrol
 			self.fail("Exception expected")
 		except DifferentConnectorType as e :
-			self.assertMultiLineEqual(e.message,
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"csource.OutControl1 and othercsink.InControl1 "
 				"handle different data types")

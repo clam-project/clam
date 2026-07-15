@@ -146,7 +146,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port.connect(port2)
 		except SameConnectorDirection as e:
-			self.assertEqual("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", e.message)
+			self.assertEqual("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", str(e))
 		else:
 			self.fail("Exception expected")
 
@@ -157,7 +157,7 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port.connect(port2)
 		except DifferentConnectorKind as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Unable to connect: "
 				"proc1.OutPort1 and proc2.Incontrol1 "
 				"are different kinds of connectors")
@@ -172,7 +172,7 @@ class ConnectorTests(unittest.TestCase):
 			port.connect(port2)
 			self.fail("Exception expected")
 		except DifferentConnectorType as e:
-			self.assertEqual(e.message,
+			self.assertEqual(str(e),
 				"Unable to connect: "
 				"proc1.OutControl1 and proc2.Incontrol3 "
 				"handle different data types")
