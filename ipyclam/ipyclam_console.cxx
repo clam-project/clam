@@ -65,26 +65,20 @@ public:
 		std::string shellBanner =
 			"Interactive Python console for CLAM ";// + std::string(CLAM::GetFullVersion()) + "\n";
 		std::string shellHeader = "Start by typing 'net.' and pressing the tab key";
-		std::string shellFarewell = "Bye";
 
 		// This needs to be defined for ipython
 		py::exec("sys.argv=['ipyclam']\n", _main_ns, _main_ns);
 
-		py::object configmodule = py::import("IPython.config.loader");
-		py::object configClass = configmodule.attr("Config");
-		py::object config = configClass();
-		config.attr("PromptManager").attr("in_template") = "ipyclam[\\#] > ";
+		_main_ns["__ipyclam_banner"] = shellBanner;
+		_main_ns["__ipyclam_header"] = shellHeader;
 
-		py::object shellmodule = py::import("IPython.frontend.terminal.embed");
-		py::dict shellConstructorArgs;
-		shellConstructorArgs["config"]=config;
-		shellConstructorArgs["exit_msg"] = shellFarewell;
-		shellConstructorArgs["banner1"] = shellBanner;
-
-		py::object shell = shellmodule.attr("InteractiveShellEmbed")
-			(*py::tuple(), **shellConstructorArgs);
-		py::dict shellCallArgs;
-		shell(shellHeader, _main_ns, py::object(), 0, py::object(), _main_ns );
+		py::exec(R"(
+from traitlets.config.loader import Config
+from IPython.terminal.embed import embed
+config = Config()
+config.TerminalInteractiveShell.prompt_in_template = 'ipyclam[\\#] > '
+embed(config=config, header=__ipyclam_header, user_ns=dict(globals()))
+)", _main_ns, _main_ns);
 	}
 };
 
