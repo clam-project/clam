@@ -29,10 +29,12 @@ py::object relative_import(py::str name)
 	char *n = py::extract<char *>(name);
 	if (py::scope() == py::object()) return py::import(name);
 	py::object globals = py::scope().attr("__dict__");
+	PyObject *noFromList = Py_None;
+	const int relativeImport = 1;
 
 	py::handle<> module(
 		PyImport_ImportModuleLevel(
-			n, globals.ptr(), globals.ptr(), 0, -1));
+			n, globals.ptr(), globals.ptr(), noFromList, relativeImport));
 	return py::object(module);
 }
 
