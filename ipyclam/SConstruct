@@ -1,19 +1,27 @@
-#!/usr/bin/python
 import os
 import sys
 import glob
 
-options = Variables('options.cache', ARGUMENTS)
-options.AddVariables(
-	BoolVariable('enable_clam', 'Compile CLAM engine', 'yes'),
-	BoolVariable('enable_jack', 'Compile JACK engine', 'yes'),
-	)
+options_filename = 'options.cache'
+options = Variables(options_filename, ARGUMENTS)
+options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
+options.Add(BoolVariable('enable_clam', 'Compile CLAM engine', 'yes'))
+options.Add(BoolVariable('enable_jack', 'Compile JACK engine', 'yes'))
+if sys.platform=="linux" :
+	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
-toolChain = 'default' if sys.platform != 'win32' else 'mingw'
-env = Environment(ENV=os.environ, tools=[toolChain], options=options)
-options.Save('options.cache', env)
+toolchain = 'default'
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
+options.Save(options_filename, env)
 Help(options.GenerateHelpText(env))
+
 env.SConsignFile() # Single signature file
+
+crosscompiling = env.get("crossmingw")
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
 
 env.ParseConfig('python3-config --cflags --embed')
 env.ParseConfig('python3-config --libs --embed')
@@ -23,7 +31,7 @@ if env['enable_clam'] :
 	env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
 	env.ParseConfig('pkg-config clam_qtmonitors --cflags --libs') # UI binding
 
-env.ParseConfig('pkg-config Qt6UiTools Qt6Gui Qt6Core --cflags --libs') # UI binding
+env.ParseConfig('pkg-config Qt6UiTools Qt6Gui Qt6Widgets Qt6Core --cflags --libs') # UI binding
 
 if env['enable_jack'] :
 	env.ParseConfig('pkg-config --cflags --libs jack')
@@ -51,14 +59,14 @@ env["SHOBJPREFIX"] = "generated/"
 
 
 shibokenunwrap = env.SharedObject(source='shibokenunwrap.cxx')
-#sipunwrap = env.SharedObject(source='sipunwrap.cxx')
+sipunwrap = env.SharedObject(source='sipunwrap.cxx')
 
 clamengine_module = env.SharedLibrary (
 	target='ipyclam/Clam_Engine',
 	source=[
 		'Clam_Engine.cxx',
 		shibokenunwrap,
-		#sipunwrap,
+		sipunwrap,
 		],
 	SHLIBPREFIX='',
 ) if env['enable_clam']  else []
@@ -121,11 +129,10 @@ python_modules = [
 	]
 
 # TODO: Use distutils to get the paths given a prefix or a home schema
-prefix = os.path.expanduser('~/local')
-mod_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
-lib_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
+mod_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
+lib_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
 uilib_dir = os.path.join(lib_dir, 'ui')
-bin_dir = os.path.join(prefix, 'bin')
+bin_dir = os.path.join(env['prefix'], 'bin')
 
 install = [
 	env.Install(targetDir, files) for targetDir, files in [
