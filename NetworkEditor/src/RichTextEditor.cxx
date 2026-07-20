@@ -120,7 +120,7 @@ void RichTextEditor::setupTextActions()
 	_comboFont = new QFontComboBox(_toolBar);
 	_toolBar->addWidget(_comboFont);
 	connect(_comboFont, SIGNAL(currentFontChanged(const QFont &)),
-	        this, SLOT(textFamily(const QString &)));
+	        this, SLOT(textFamily(const QFont &)));
 
 	_comboSize = new QComboBox(_toolBar);
 	_comboSize->setObjectName("comboSize");
@@ -131,7 +131,7 @@ void RichTextEditor::setupTextActions()
 	foreach(int size, db.standardSizes())
 	    _comboSize->addItem(QString::number(size));
 
-	connect(_comboSize, SIGNAL(activated(const QString &)),this, SLOT(textSize(const QString &)));
+	connect(_comboSize, SIGNAL(currentTextChanged(const QString &)),this, SLOT(textSize(const QString &)));
 	_comboSize->setCurrentIndex(_comboSize->findText(QString::number(QApplication::font().pointSize())));
 }
 
