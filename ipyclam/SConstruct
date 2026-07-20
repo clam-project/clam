@@ -138,6 +138,8 @@ jack_lib_dir = os.path.join(lib_dir, 'jack')
 dummy_lib_dir = os.path.join(lib_dir, 'dummy')
 bin_dir = os.path.join(env['prefix'], 'bin')
 
+# Let pyproject.toml install
+"""
 install = [
 	env.Install(targetDir, files) for targetDir, files in [
 	( lib_dir,[
@@ -164,8 +166,8 @@ install = [
 		"ipyclam_qtconsole",
 	]),
 ]]
-
 env.Alias('install', install)
+"""
 
 Default(
 	jackengine_module,

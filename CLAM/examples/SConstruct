@@ -1,9 +1,9 @@
-#!/usr/bin/python
 import os
-import glob
 import sys
+import glob
 
-options = Variables('options.cache', ARGUMENTS)
+options_filename = 'options.cache'
+options = Variables(options_filename, ARGUMENTS)
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(BoolVariable('crossmingw', 'Enables MinGW crosscompilation from linux', 'no') )
@@ -11,21 +11,20 @@ options.Add(BoolVariable('crossmingw', 'Enables MinGW crosscompilation from linu
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
-		files+=glob.glob(path+"/"+pattern)
+		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-def unique(list) :
-	return dict.fromkeys(list).keys()
-
-
+def unique(x) :
+	return list(set(x))
 
 toolchain = 'default'
-if sys.platform == "win32" : toolchain = 'mingw'
-env = Environment(tools=[toolchain], options=options)
-options.Save('options.cache', env)
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
+options.Save(options_filename, env)
+Help(options.GenerateHelpText(env))
 
 #TODO: This didn't work for dynamic linking
 
@@ -59,19 +58,22 @@ env['BUILDERS']['EmbededFile']=embededFileBuilder
 
 env.SConsignFile() # Single signature file
 
-crosscompiling=env['crossmingw']
+crosscompiling = env.get("crossmingw")
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 if crosscompiling :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 
 env.AppendUnique(ASFLAGS='-I. ')
 
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT6_UICDECLSUFFIX'] = '.h'
 env.moveIntermediateInto('generated')
 env.activateColorCommandLine()
 if not env['verbose']: env.ClamQuietCompilation()
@@ -82,9 +84,10 @@ env.EnableClamModules(libs=[
 	'clam_processing',
 	], path=CLAMInstallDir)
 
-env.EnableQt4Modules([
+env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
+	'QtWidgets',
 	'QtOpenGL',
 #	'QtSql',
 #	'QtNetwork',
@@ -124,7 +127,7 @@ singleSourceExamples = [
 	"FileInfo_example.cxx",
 	"FilePlayback_example.cxx",
 	"FundamentalDetect.cxx",
-	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies -> Qt4
+	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies -> Qt6
 	"Midi2XmlExample.cxx",
 	"MIDIFileReadWriteExample.cxx",
 	"MIDIIOExample.cxx",
@@ -185,14 +188,15 @@ for folder in directoryBasedLibraries :
 
 for main in singleSourceExamples :
 	executable = os.path.splitext(os.path.basename(main))[0]
-	examples += [ env.Program(target=executable, source = sources + [main] ) ]
+	examples += [ env.Program(target=executable, source = list(sources) + [main] ) ]
 
 for folder in directoryBasedExamples :
 	exampleSources = glob.glob(folder+"/*.cxx")
 	executable = os.path.basename(folder)+"Exe"
-	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
+	examples += [ env.Program(target=executable, source = list(sources) + exampleSources ) ]
 
-if not crosscompiling :
+# TODO: Migrate to an newer aubio
+if False and not crosscompiling :
 	# Still having problems crosscompiling aubio
 	tickEnv = env.Clone()
 	tickEnv.ParseConfig('pkg-config aubio --cflags --libs')

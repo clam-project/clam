@@ -938,6 +938,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
         'QtMultimediaWidgets',
         'QtNetwork',
         'QtPlatformSupport',
+        'QtOpenGLWidgets',
         'QtQml',
         'QtQmlDevTools',
         'QtQuick',

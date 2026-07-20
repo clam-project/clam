@@ -7,6 +7,7 @@ options = Variables(options_filename, ARGUMENTS)
 options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(BoolVariable('crossmingw', 'Enables MinGW crosscompilation from linux', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -17,8 +18,8 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-def unique(list) :
-	return dict.fromkeys(list).keys()
+def unique(x) :
+	return list(set(x))
 
 toolchain = 'default'
 if sys.platform == 'win32': toolchain = 'mingw'
@@ -36,14 +37,13 @@ isDarwinPlatform = sys.platform=='darwin'
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 if crosscompiling :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
-sys.path.append(clam_sconstoolspath)
 """
 import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("App")
@@ -77,6 +77,7 @@ env.EnableClamModules([
 env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
+	'QtWidgets',
 	'QtOpenGL',
 #	'QtSql',
 #	'QtNetwork',

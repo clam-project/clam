@@ -1,7 +1,5 @@
-#!/usr/bin/python
-EnsureSConsVersion(0, 96, 92)
-import sys
 import os
+import sys
 import glob
 from functools import reduce
 

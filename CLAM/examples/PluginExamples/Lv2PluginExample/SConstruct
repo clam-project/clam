@@ -16,12 +16,12 @@ bundlePath=os.path.expanduser(os.path.join("~/.lv2",bundlename))
 toolChain = 'default'
 if sys.platform == 'win32': toolChain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
-env.Tool("qt4", toolpath=["../../../scons/sconstools"])
-env.EnableQt4Modules("QtGui QtUiTools".split())
+env.Tool("qt6", toolpath=["../../../scons/sconstools"])
+env.EnableQt6Modules("QtGui QtWidgets QtUiTools".split())
 env.ParseConfig('pkg-config gtk+-2.0 --libs --cflags')
 #env.ParseConfig('pkg-config liblo --libs --cflags')
 env['SHOBJPREFIX']='generated/'
-env['QT4_MOCHPREFIX']='generated/'
+env['QT6_MOCHPREFIX']='generated/'
 
 options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins
 Help(options.GenerateHelpText(env))
@@ -47,7 +47,7 @@ networks = glob.glob("*.clamnetwork")
 env['CLAMLV2'] = os.path.join(env['clam_prefix'],'bin','clam_lv2_generator')
 env['CLAMLV2_BASEURI'] = "http://clam-project.org/examples/lv2"
 
-env.Uic4(glob.glob("*.ui"))
+env.Uic6(glob.glob("*.ui"))
 
 manifest = env.Command("manifest.ttl", networks,
 	"${CLAMLV2} --manifest "

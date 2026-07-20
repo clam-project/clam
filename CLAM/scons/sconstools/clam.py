@@ -153,11 +153,11 @@ def ClamQuietCompilation(env) :
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 	env['LDMODULECOMSTR'] = '== Linking plugin $TARGET'
-	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
-	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
-	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
-	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
-	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT6_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT6_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT6_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 def enable_modules( self, libs, path) :
 	if sys.platform in ['linux','darwin'] : 

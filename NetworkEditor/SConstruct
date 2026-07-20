@@ -1,9 +1,9 @@
-#!/usr/bin/python
 import os
-import glob
 import sys
+import glob
 
-options = Variables('options.cache', ARGUMENTS)
+options_filename = 'options.cache'
+options = Variables(options_filename, ARGUMENTS)
 options.Add(PathVariable('prefix', 'The prefix where the application will be installed', '/usr/local'))
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
 options.Add(PathVariable('prefix_for_packaging', 'Install location when packaging. Use "." for same as prefix.', '.'))
@@ -27,10 +27,10 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-toolchain='default'
+toolchain = 'default'
 if sys.platform == 'win32': toolchain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolchain], options=options)
-options.Save('options.cache', env)
+options.Save(options_filename, env)
 Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file

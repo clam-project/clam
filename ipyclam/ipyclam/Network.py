@@ -8,7 +8,11 @@ class Network(object):
 			try :
 				from .clam import Clam_Engine
 				engine = Clam_Engine()
-			except ImportError: pass
+			except ImportError:
+				print("CLAM not available using Dummy engine")
+				from .dummy import Dummy_Engine
+				engine = Dummy_Engine()
+
 		self.__dict__['_engine'] = Notifier_EngineDecorator.Notifier_EngineDecorator(engine)
 		self.__dict__['methods'] = ["types", "code", "xml"]
 
