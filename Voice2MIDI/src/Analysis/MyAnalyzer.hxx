@@ -87,7 +87,7 @@ private:
     Audio mWindow;
     Audio mAudioFrame;
 
-    bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+    bool ConcreteConfigure(const ProcessingConfig& c);
 
     void AttachChildren();
     bool ConfigureChildren();
