@@ -185,7 +185,7 @@ def make_sconstruct_file(definitions_dict):
 		print("Output file write error. File: "+filename)
 		sys.exit(2)
 
-	f.write("""#! /usr/bin/python
+	f.write("""#! /usr/bin/env python3
 
 import os, glob, sys
 
