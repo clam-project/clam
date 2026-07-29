@@ -1,15 +1,15 @@
 #include "SDIFDatabase.hxx"
-#include "SDIFInConfig.hxx"
+#include <CLAM/SDIFInConfig.hxx>
 #include <algorithm>
 #include "SimpleTransformer.hxx"
-#include "DataUtil.hxx"
+#include <CLAM/DataUtil.hxx>
 #include <limits.h>
 
 namespace CLAM
 {
 
 SDIFDatabase::SDIFDatabase() :
-	mMetadataReader(), mSimpleTransformer(), mThreadPool()
+	mMetadataReader(), mSimpleTransformer()
 {
 	sourceMetadata.AddAll();
 	sourceMetadata.UpdateData();
@@ -23,8 +23,6 @@ SDIFDatabase::SDIFDatabase() :
 
 SDIFDatabase::~SDIFDatabase()
 {
-	mThreadPool.EmptyPool();
-
 	if (isAnyProgramLoaded())
 		UnloadProgram();
 }
@@ -297,7 +295,7 @@ Frame* SDIFDatabase::SelectFrameForVoice(VoiceId id, float argPitch, float argAm
 	// give it a frame with which it can do so
 	//if ( !aSDIFFileReaderWithLoop->IsThreaded() )
 	//{
-	//	aSDIFFileReaderWithLoop->LoadFramesIntoBufferOnThread( mThreadPool.GetThreadFromPool() );
+	//	aSDIFFileReaderWithLoop->LoadFramesIntoBufferOnThread();
 	//}
 
 	// TODO how do you want to handle NULL frames?

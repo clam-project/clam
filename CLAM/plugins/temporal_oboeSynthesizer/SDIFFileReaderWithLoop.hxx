@@ -2,11 +2,11 @@
 #define _SDIFFileReaderWithLoop_
 
 #include "SDIFFileReaderWithBuffer.hxx"
-#include "SDIFInConfig.hxx"
-#include "Frame.hxx"
-#include "SpectralPeakArray.hxx"
-#include "Spectrum.hxx"
-#include "SimpleLoopMetadata.hxx"
+#include <CLAM/SDIFInConfig.hxx>
+#include <CLAM/Frame.hxx>
+#include <CLAM/SpectralPeakArray.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SimpleLoopMetadata.hxx>
 
 #define DEFAULT_NUMBER_OF_CROSSFADE_FRAMES 50.0  // 100 FRAME 0.5804989
 
