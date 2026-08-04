@@ -149,7 +149,7 @@ try{
 
 	fclose(pFile);
 	}
-	catch(Err err) {
+	catch(Err & err) {
 		err.Print();
 		return 1;
 	}

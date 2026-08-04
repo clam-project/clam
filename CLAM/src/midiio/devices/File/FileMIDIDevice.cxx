@@ -83,7 +83,7 @@ namespace CLAM {
 			try{
 				reader.Read(mSong);
 			}
-			catch(::MIDI::Reader::Error err)
+			catch(::MIDI::Reader::Error &err)
 			{
 				throw Err(err.mStr);
 			}

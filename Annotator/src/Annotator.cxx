@@ -592,7 +592,7 @@ void Annotator::loadProject(const std::string & projectName)
 	{
 		CLAM::XMLStorage::Restore(temporaryProject,projectName);
 	}
-	catch (CLAM::XmlStorageErr e)
+	catch (CLAM::XmlStorageErr &e)
 	{
 		QMessageBox::warning(this,tr("Error loading project file"),
 			constructFileError(projectName,e));
@@ -876,7 +876,7 @@ void Annotator::loadDescriptorPool()
 			return;
 		}
 	}
-	catch (CLAM::XmlStorageErr e)
+	catch (CLAM::XmlStorageErr &e)
 	{
 		QMessageBox::warning(this,tr("Error loading descriptors"), 
 			constructFileError(poolFile,e));

@@ -588,7 +588,7 @@ main()
 			sndpcm.WriteBuf(buf);
 		}
 	}
-	catch (SndPcmError e)
+	catch (SndPcmError &e)
 	{
 		printf(e.str);
 	}

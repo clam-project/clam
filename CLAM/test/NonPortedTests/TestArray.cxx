@@ -286,7 +286,7 @@ void hardcore_test()
 
 			std::cout << "." << std::endl;
 		}
-		catch ( CLAM::Err e )
+		catch ( CLAM::Err & e )
 		{
 			std::cout << " F(" << index << ") : "
 					  << e.what() << std::endl;
@@ -319,7 +319,7 @@ void hardcore_test()
 			myDynamicTypeArray.DeleteElem( chosen );
 			std::cout << "DT(" << chosen << ")S ";		
 		}
-		catch( CLAM::Err e )
+		catch( CLAM::Err &e )
 		{
 			std::cout << "F(" << chosen << ") ";
 		}
@@ -405,7 +405,7 @@ int main()
 					selfarray.DeleteElem(25);
 					std::cout << '.' << std::flush;
 				} 
-				catch (CLAM::Err e) {
+				catch (CLAM::Err &e) {
 					std::cout << 'S';
 				}
 			}
@@ -515,7 +515,7 @@ int main()
 				try {
 					newself.DeleteElem(0);
 				}
-				catch (CLAM::Err e) {
+				catch (CLAM::Err &e) {
 					std::cout << "S";
 					result = 1;
 				}
@@ -555,7 +555,7 @@ int main()
 		return 0;
 
 	}
-	catch(CLAM::Err e) {
+	catch(CLAM::Err &e) {
 		e.Print();
 		return 1;
 	}

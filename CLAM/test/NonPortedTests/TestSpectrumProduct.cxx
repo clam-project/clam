@@ -221,7 +221,7 @@ int main()
 			std::cerr << std::endl << "Failed." << std::endl;
 		return !res;
 	}
-	catch (CLAM::Err e) {
+	catch (CLAM::Err &e) {
 		e.Print();
 	}
 }

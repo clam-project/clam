@@ -112,7 +112,7 @@ namespace CLAMTest {
 				e.SetValueSafely("dros");
 				CLAM_ASSERT (false, "Exception not thrown, when setting an illegal string symbol");
 			} 
-			catch (IllegalValue e) {
+			catch (IllegalValue &e) {
 				// That's ok
 			}
 		}
@@ -123,7 +123,7 @@ namespace CLAMTest {
 				e.SetValueSafely(4);
 				CLAM_ASSERT (false, "Exception not thrown, when setting an illegal integer value");
 			} 
-			catch (IllegalValue e) {
+			catch (IllegalValue &e) {
 				// That's ok
 			}
 		}

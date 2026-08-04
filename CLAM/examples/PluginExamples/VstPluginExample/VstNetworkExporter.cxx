@@ -60,7 +60,7 @@ VstNetworkPlayer::VstNetworkPlayer (
 	{
 		XmlStorage::Restore( _network, xmlfile );
 	}
-	catch ( XmlStorageErr err)
+	catch ( XmlStorageErr &err)
 	{
 		std::cerr << "CLAM VST: Error while loading CLAM network based plugin '" << _effectName << "'." <<std::endl;
 		std::cerr << err.what() << std::endl;
@@ -235,7 +235,7 @@ int VstNetworkPlayer::GetNumberOfParameters( const std::string & networkXmlConte
 	{
 		XmlStorage::Restore( net, file );
 	}
-	catch ( XmlStorageErr err)
+	catch ( XmlStorageErr &err)
 	{
 		std::cerr << "VstNetworkPlayer WARNING: error loading embedded network. "
 			"Plugin not loaded" <<std::endl;
