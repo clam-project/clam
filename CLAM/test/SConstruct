@@ -48,7 +48,7 @@ env.EnableClamModules([
 	'clam_processing'
 	], env['clam_prefix'] )
 
-env.ParseConfig( 'pkg-config --cflags --libs cppunit xerces-c libxml++-2.6')
+env.ParseConfig( 'pkg-config --cflags --libs cppunit xerces-c libxml++-5.0')
 
 env.Append( CPPFLAGS = ['-DTEST_DATA_PATH="\\"%s\\""' % env['test_data_path'] ] )
 env.Append( CPPFLAGS = ['-DCLAM_MODULE="\\"tests\\""'] )
