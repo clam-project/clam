@@ -1,8 +1,8 @@
-#!/usr/bin/env python
-import os, glob, sys, subprocess
+import glob
+import os
+import sys
 
 moduleName='osc'
-libraryName='clam_'+moduleName
 version = "1.4.0"
 description = "Experimental OSC support for the CLAM framework"
 url = 'http://clam-project.org'
@@ -20,11 +20,12 @@ options.Add(BoolVariable('verbose', 'Display the full command line', 'no') )
 options.Add(PathVariable('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathVariable.PathAccept))
 options.Add(PathVariable('prefix_for_packaging', 'Install location when packaging. Use "." for same as prefix.', '.'))
 options.Add(PathVariable('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathVariable.PathAccept))
-if sys.platform == 'linux' :
-	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 toolChain = 'default'
+toolChain = 'mingw' if sys.platform == "win32" else 'default'
 if sys.platform == "win32": toolChain = 'mingw'
+
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
@@ -50,10 +51,8 @@ sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 
-if subprocess.call("pkg-config --atleast-version=0.26 liblo",shell=True)==0:
-	env.Append( LIBPATH=['/usr/local/lib'] )
-	env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 env.ParseConfig('pkg-config --cflags --libs liblo')
+env.Append( CPPDEFINES=['__MULTICAST_LIBLO__'] )
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
