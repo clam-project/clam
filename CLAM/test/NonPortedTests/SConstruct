@@ -92,8 +92,14 @@ if sys.platform == 'linux' :
 		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 #commonObjects = env.StaticLibrary(target="chordata", source=sources)
+print(sources)
 programs = [ env.Program(source = source)
-	for source in sources]
+	for source in sources
+    # TODO: Those files do not compile
+    if source not in [
+           "./TestError.cxx", # OutOfMemoryErr not anymore in CLAM
+        ]
+    ]
 
 example_data = [
 	#'example-data/Chords.pro'

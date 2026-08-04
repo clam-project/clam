@@ -191,7 +191,7 @@ public:
 				return;
 			}
 		}
-		CLAM_ASSERT(false, "Illegal literal for an Enum");
+		CLAM_ASSERT(false, s.c_str());//"Illegal literal for an Enum");
 	}
 	/*
 	 * Changes the value safely. 
