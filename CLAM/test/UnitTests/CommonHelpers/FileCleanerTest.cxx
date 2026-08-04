@@ -46,7 +46,7 @@ class FileCleanerTest : public CppUnit::TestFixture
 private:
 	bool exists(const std::string & filename)
 	{
-		return std::ifstream(filename.c_str());
+		return !!std::ifstream(filename.c_str());
 	}
 	std::string tempfilename()
 	{
