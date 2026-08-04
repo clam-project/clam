@@ -39,7 +39,7 @@ public:
 	DummyIsolated(unsigned portSize)
 		: _next(0)
 	{
-		SetExecState(Ready);
+		SetExecState(ExecState::Ready);
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig &c) { return true; }
 	const CLAM::ProcessingConfig & GetConfig() const
@@ -68,7 +68,7 @@ public:
 		_out.SetSize(portSize);
 		_out.SetHop(portSize);
 
-		SetExecState(Ready);
+		SetExecState(ExecState::Ready);
 
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig &c) { return true; }
@@ -109,7 +109,7 @@ public:
 		_out.SetSize(portSize);
 		_out.SetHop(portSize);
 
-		SetExecState(Ready);
+		SetExecState(ExecState::Ready);
 
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig &c)
