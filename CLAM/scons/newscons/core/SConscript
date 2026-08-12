@@ -37,7 +37,7 @@ def CustomTests() :
 	return {}
 
 def Configure(sconf) :
-	sconf.CheckPkgConfigModule("libxml++-2.6", minimum_version="2.6") or die(
+	sconf.CheckPkgConfigModule("libxml++-5.0", minimum_version="5.0") or die(
 		"libxml++ library required")
 	return
 	sconf.CheckPkgConfigModule("gl") or die(
