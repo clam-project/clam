@@ -186,7 +186,7 @@ Cflags: -Iaincludedir
 
 		def test_CheckPkgConfigProgram_minimum_whenUnder(self) :
 			self.config.CheckPkgConfigProgram()
-		  	self.assertEqual(
+			self.assertEqual(
 				1, self.config.CheckPkgConfigProgram(minimum_version="0.0"))
 
 		def test_CheckPkgConfigProgram_minimum_whenOver(self) :
