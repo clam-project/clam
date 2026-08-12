@@ -70,7 +70,7 @@ def sortModules(modules) :
 		raise Exception("Cyclic dependencies among modules '%s'"%("', '".join(
 			(str(mod) for mod in remaining) )))
 
-	remaining = modules.keys()
+	remaining = list(modules.keys())
 	for module, deps in modules.items() :
 		aliens = [ dep for dep in deps if dep not in remaining ]
 		if not aliens : continue
