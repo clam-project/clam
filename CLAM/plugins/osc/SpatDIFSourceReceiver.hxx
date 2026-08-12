@@ -94,7 +94,7 @@ public:
 	const std::vector<std::string> GetSourcesNames() const;
 
 	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
-			 void *data, void *user_data);
+			 lo_message msg, void *user_data);
 protected:
 
 	static std::string SplitPath(std::string input, unsigned tokenNumber)
