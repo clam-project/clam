@@ -11,37 +11,9 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 #undef slots
 #undef signals
 #include <boost/python.hpp>
-#include <shiboken6/basewrapper.h>
+#include "shibokenunwrap.hxx"
 
 namespace py=boost::python;
-
-static void * error(const std::string & msg)
-{
-	std::cerr << msg << std::endl;
-	return 0;
-}
-
-void * shibokenUnwrap(PyObject * pyobject)
-{
-	if (not Shiboken::Object::checkType(pyobject))
-		return error("Not a shiboken object");
-
-	SbkObject * sbkobject = (SbkObject *) pyobject;
-
-	PyTypeObject * type = Py_TYPE(pyobject);
-
-	void * cppobject = Shiboken::Object::cppPointer(sbkobject, type);
-	if (not cppobject)
-		return error("Not a QObject");
-
-	return cppobject;
-}
-
-PyObject * shibokenWrap(QObject * qobject)
-{
-	return Shiboken::Object::newObject(
-		Shiboken::ObjectType::typeForTypeName("QWidget"), qobject, false, true);
-}
 
 QWidget * GetIPyClamConsole(CLAM::Network & network)
 {
