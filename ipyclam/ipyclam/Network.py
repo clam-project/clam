@@ -3,6 +3,7 @@ from . import ProcessingTypes
 from . import Notifier_EngineDecorator
 
 class Network(object):
+
 	def __init__(self, engine=None):
 		if engine is None :
 			try :

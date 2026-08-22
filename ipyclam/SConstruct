@@ -23,13 +23,21 @@ isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
+if env['enable_clam'] :
+    CLAMInstallDir = env['prefix']
+    clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+    env.Tool('clam', toolpath=[clam_sconstoolspath])
+
+    env.EnableClamModules([
+        'clam_core',
+        'clam_processing',
+        'clam_audioio',
+        'clam_qtmonitors',
+    ], CLAMInstallDir)
+
 env.ParseConfig('python3-config --cflags --embed')
 env.ParseConfig('python3-config --libs --embed')
 env.ParseConfig('pkg-config --cflags --libs pyside6')
-
-if env['enable_clam'] :
-	env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
-	env.ParseConfig('pkg-config clam_qtmonitors --cflags --libs') # UI binding
 
 env.ParseConfig('pkg-config Qt6UiTools Qt6Gui Qt6Widgets Qt6Core --cflags --libs') # UI binding
 
