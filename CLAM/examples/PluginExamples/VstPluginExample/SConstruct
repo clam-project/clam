@@ -38,7 +38,7 @@ isDarwinPlatform = sys.platform=='darwin'
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
@@ -69,7 +69,7 @@ env.EnableClamModules([
 	'clam_processing',
 	], CLAMInstallDir)
 
-env.EnableQt4Modules([
+env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
