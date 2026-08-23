@@ -146,36 +146,14 @@ jack_lib_dir = os.path.join(lib_dir, 'jack')
 dummy_lib_dir = os.path.join(lib_dir, 'dummy')
 bin_dir = os.path.join(env['prefix'], 'bin')
 
-# Let pyproject.toml install
-"""
-install = [
-	env.Install(targetDir, files) for targetDir, files in [
-	( lib_dir,[
-		python_modules,
-	]),
-	( clam_lib_dir,[
-		clamengine_module,
-		clamengine_config_module,
-		ui_pyside_module,
-		ui_pyqt_module,
-		clam_modules,
-	]),
-	( jack_lib_dir,[
-		jackengine_module,
-		jack_modules,
-	]),
-	( dummy_lib_dir,[
-		dummyProcessingsModule,
-		dummy_modules,
-	]),
-	( bin_dir,[
-		program,
-		"ipyclam_console",
-		"ipyclam_qtconsole",
-	]),
-]]
-env.Alias('install', install)
-"""
+import subprocess
+def pip_install(target, source, env):
+	subprocess.run([sys.executable, '-m', 'pip', 'install', '-e', '.'], check=True)
+
+env.AlwaysBuild('install')
+env.Command('install', [], action=pip_install)
+env.Depends('install', [clamengine_module, clamengine_config_module,
+	dummyProcessingsModule, ui_pyside_module, ui_pyqt_module, program])
 
 Default(
 	jackengine_module,
