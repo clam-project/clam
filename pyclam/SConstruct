@@ -22,8 +22,6 @@ if needs_configure and not avoid_configure :
 	print('Configure phase...')
 	options.Update(env)
 	options.Save(options_filename, env)
-	print("Finished. Invoke 'scons' now.")
-	Exit(0)
 
 try:
 	env['CXX'] = env['ENV']['CC']
