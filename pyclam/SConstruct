@@ -6,7 +6,7 @@ options_filename = 'options.cache'
 options = Variables(options_filename,ARGUMENTS)
 #TODO: options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PackageOption('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
+options.Add(PackageVariable('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
 options.Add(BoolVariable('debug', 'Enables debug symbols', 'no'))
 options.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
 env = Environment(ENV=os.environ, options=options)
