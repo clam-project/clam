@@ -39,7 +39,7 @@ env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 # Sources and headers
-sourcePaths = env.recursiveDirs(".")
+sourcePaths = list(env.recursiveDirs("."))
 sources = env.scanFiles('*.cxx', sourcePaths) + env.scanFiles('*.c', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
