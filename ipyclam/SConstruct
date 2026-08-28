@@ -1,10 +1,24 @@
 import os
 import sys
 import glob
+import tomllib
+import enscons
+
+metadata = tomllib.loads(open("pyproject.toml", "rb").read().decode())["project"]
+tag = enscons.get_binary_tag()
+
+def _find_clam_prefix():
+    for p in [os.environ.get('CLAM_PREFIX', ''), '/usr/local', '/usr']:
+        if p and os.path.exists(os.path.join(p, 'share', 'clam', 'sconstools', 'clam.py')):
+            return p
+    return os.environ.get('CLAM_PREFIX', '') or '/usr/local'
+
+building_sdist = 'sdist' in sys.argv
 
 options_filename = 'options.cache'
 options = Variables(options_filename, ARGUMENTS)
-options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed',
+    _find_clam_prefix()))
 options.Add(BoolVariable('enable_clam', 'Compile CLAM engine', 'yes'))
 options.Add(BoolVariable('enable_jack', 'Compile JACK engine', 'yes'))
 if sys.platform=="linux" :
@@ -23,9 +37,13 @@ isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
-if env['enable_clam'] :
-    CLAMInstallDir = env['prefix']
+if env['enable_clam'] and not building_sdist :
+    CLAMInstallDir = env['clam_prefix']
     clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+    if not os.access(os.path.join(clam_sconstoolspath,"clam.py"), os.R_OK):
+        raise Exception(
+            "CLAM not installed at '%s'. Use clam_prefix=... or set CLAM_PREFIX."
+            % CLAMInstallDir)
     env.Tool('clam', toolpath=[clam_sconstoolspath])
 
     env.EnableClamModules([
@@ -44,7 +62,7 @@ env.ParseConfig('pkg-config Qt6UiTools Qt6Gui Qt6Widgets Qt6Core --cflags --libs
 if env['enable_jack'] :
 	env.ParseConfig('pkg-config --cflags --libs jack')
 
-pyversion = f"{sys.version_info.major}{sys.version_info.minor}" 
+pyversion = f"{sys.version_info.major}{sys.version_info.minor}"
 env.AppendUnique(LIBS=[f'boost_python{pyversion}'])
 
 # python3-config adds a flag that is refused by g++
@@ -126,42 +144,42 @@ program = env.Program(
 	target='ipyclam_console',
 	source='src/ipyclam_console.cxx',
 )
-blacklist = [
-	"ipyclam/ProxyAPI.py",
+
+env.Append(tools=["packaging"])
+env["PACKAGE_METADATA"] = metadata
+env["WHEEL_TAG"] = tag
+enscons.generate(env)
+
+py_modules = [
+	f for f in (
+		glob.glob('ipyclam/*.py')
+		+ glob.glob('ipyclam/clam/*.py')
+		+ glob.glob('ipyclam/jack/*.py')
+		+ glob.glob('ipyclam/dummy/*.py')
+	)
+	if "Test" not in f and "test" not in f
 ]
 
-python_modules = [
-	source for source in  glob.glob('ipyclam/*.py')
-	if source not in blacklist
-	and "Test" not in source
-	]
+all_so_modules = (
+	clamengine_module + clamengine_config_module
+	+ dummyProcessingsModule + ui_pyside_module + ui_pyqt_module
+	+ jackengine_module
+)
 
-dummy_modules = glob.glob('ipyclam/dummy/*.py')
-clam_modules = glob.glob('ipyclam/clam/*.py')
-jack_modules = glob.glob('ipyclam/jack/*.py')
+platlib = env.Whl("platlib", py_modules + all_so_modules, root=".")
+whl = env.WhlFile(source=platlib)
 
-lib_dir = os.path.join(env['prefix'], 'lib', 'python', 'ipyclam')
-clam_lib_dir = os.path.join(lib_dir, 'clam')
-jack_lib_dir = os.path.join(lib_dir, 'jack')
-dummy_lib_dir = os.path.join(lib_dir, 'dummy')
-bin_dir = os.path.join(env['prefix'], 'bin')
+sdist = env.SDist(source=[
+	"pyproject.toml",
+	"SConstruct",
+	"MANIFEST.in",
+	"README",
+] + glob.glob("src/*.cxx") + glob.glob("src/*.hxx") + py_modules)
+
+env.Default(whl)
 
 import subprocess
 def pip_install(target, source, env):
-	subprocess.run([sys.executable, '-m', 'pip', 'install', '-e', '.'], check=True)
+    subprocess.run([sys.executable, '-m', 'pip', 'install', '-e', '.'], check=True)
 
-env.AlwaysBuild('install')
-env.Command('install', [], action=pip_install)
-env.Depends('install', [clamengine_module, clamengine_config_module,
-	dummyProcessingsModule, ui_pyside_module, ui_pyqt_module, program])
-
-Default(
-	jackengine_module,
-	clamengine_module,
-	clamengine_config_module,
-	dummyProcessingsModule,
-	ui_pyside_module,
-	ui_pyqt_module,
-	program,
-)
-
+env.Command('install', all_so_modules + [program], action=pip_install)
