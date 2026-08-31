@@ -1,6 +1,6 @@
 #include "IPyClamConsole.hxx"
 
-#ifndef CLAM_USE_PYTHON
+#ifndef CLAM_NETWORKEDITOR_USE_PYTHON
 QWidget * GetIPyClamConsole(CLAM::Network & network)
 {
 	return 0; // Python disabled, no console
@@ -58,4 +58,4 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 
 
 
-#endif//CLAM_USE_PYTHON
+#endif//CLAM_NETWORKEDITOR_USE_PYTHON

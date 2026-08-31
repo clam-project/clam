@@ -1,3 +1,4 @@
+#ifdef CLAM_NETWORKEDITOR_USE_PYTHON
 // Copied from ipyclam/src/shibokenunwrap.cxx
 #include "shibokenunwrap.hxx"
 #include <shiboken6/basewrapper.h>
@@ -31,3 +32,4 @@ PyObject * shibokenWrap(QObject * qobject)
 	return Shiboken::Object::newObject(
 		Shiboken::ObjectType::typeForTypeName("QWidget"), qobject, false, true);
 }
+#endif

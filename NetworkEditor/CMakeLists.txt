@@ -101,6 +101,15 @@ target_link_libraries(clam_qtmonitors
 		PRIVATE
 			${CLAM_QT_LIBRARIES}
 	)
+if(CLAM_NETWORKEDITOR_USE_PYTHON)
+	target_compile_definitions(clam_qtmonitors PUBLIC CLAM_NETWORKEDITOR_USE_PYTHON)
+	target_include_directories(clam_qtmonitors PUBLIC
+		"$<BUILD_INTERFACE:${Python3_INCLUDE_DIRS}>"
+		"$<BUILD_INTERFACE:${shiboken6_INCLUDE_DIRS}>")
+	target_link_libraries(clam_qtmonitors PUBLIC
+		PkgConfig::Python3
+		PkgConfig::shiboken6)
+endif()
 
 install(TARGETS clam_qtmonitors
 	EXPORT CLAMTargets
@@ -114,6 +123,22 @@ install(FILES ${CLAM_QTMONITOR_HEADERS}
 )
 
 option(CLAM_NETWORKEDITOR_BUILD_APPS "Build NetworkEditor executable" ON)
+
+include(FindPkgConfig)
+pkg_check_modules(Python3 IMPORTED_TARGET python3-embed)
+pkg_check_modules(shiboken6 IMPORTED_TARGET shiboken6)
+set(CLAM_NETWORKEDITOR_HAVE_PYTHON
+	Python3_FOUND AND shiboken6_FOUND)
+option(CLAM_NETWORKEDITOR_USE_PYTHON "Enable Python scripting support" ${CLAM_NETWORKEDITOR_HAVE_PYTHON})
+if(CLAM_NETWORKEDITOR_USE_PYTHON)
+	if(NOT TARGET PkgConfig::Python3)
+		message(FATAL_ERROR "Python3 development files not found (python3-embed pkg-config)")
+	endif()
+	if(NOT TARGET PkgConfig::shiboken6)
+		message(FATAL_ERROR "shiboken6 not found (shiboken6 pkg-config)")
+	endif()
+endif()
+
 if(CLAM_NETWORKEDITOR_BUILD_APPS)
 	set(CLAM_NETWORKEDITOR_APP_DIRS
 		"${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -166,6 +191,15 @@ if(CLAM_NETWORKEDITOR_BUILD_APPS)
 			CLAM::qtmonitors
 			${CLAM_QT_LIBRARIES}
 	)
+	if(CLAM_NETWORKEDITOR_USE_PYTHON)
+		target_compile_definitions(NetworkEditor PRIVATE CLAM_NETWORKEDITOR_USE_PYTHON)
+		target_include_directories(NetworkEditor PRIVATE
+			"${Python3_INCLUDE_DIRS}"
+			"${shiboken6_INCLUDE_DIRS}")
+		target_link_libraries(NetworkEditor PRIVATE
+			PkgConfig::Python3
+			PkgConfig::shiboken6)
+	endif()
 	install(TARGETS NetworkEditor
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
 	)
