@@ -44,7 +44,7 @@ CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
 if env['enable_python'] :
-	env.AppendUnique(CPPDEFINES=[ "CLAM_NETWORK_EDITOR_USE_PYTHON" ])
+	env.AppendUnique(CPPDEFINES=[ "CLAM_NETWORKEDITOR_USE_PYTHON" ])
 	env.ParseConfig('python3-config --cflags --embed')
 	env.ParseConfig('python3-config --libs --embed')
 	# Those lines are for ipyclam console
