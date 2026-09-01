@@ -62,7 +62,7 @@ def WriteSceneAsChoreo (choreoFilename):
 		f=open(choreoFilename,'w')
 		f.write(bufferToWrite)
 		f.close()
-		print "Exported choreo file: %s" % choreoFilename
+		print("Exported choreo file: %s" % choreoFilename)
 	WriteChoreoNetwork(choreoFilename)
 
 # generate CLAM network with the choreo sequencer and monitors
@@ -106,7 +106,7 @@ def WriteChoreoNetwork(choreoFilename):
 	body=processings+connections
 	f.write(SceneExporter.Network % vars())
 	f.close()
-	print "Exported CLAM network: %s" % networkFilename
+	print("Exported CLAM network: %s" % networkFilename)
 
 def main():
 	Blender.Window.FileSelector(WriteSceneAsChoreo, "Export choreo sequencer file", Blender.sys.makename(ext=".choreo"))

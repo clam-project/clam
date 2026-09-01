@@ -93,13 +93,13 @@ public:
 		double b = y1 -y0 -a; // = -3*y0/2 + 2*y1 -y2/2;
 		double c = y0;
 
-		// From equating to zero the derivate of x*x*a + x*b + c	
+		// From equating to zero the derivate of x*x*a + x*b + c
 		double xmax = -b/(a*2);
 		// ymax = xmax*xmax*a + b*xmax + c =
 		//      = a*b*b/(4*a*a) -b*b/(2*a) + c =
 		//      = b*b/(4*a) -b*b/(2*a) + c =
 		//      = -b*b/(4*a) + c
-		double ymax = b*xmax/2 + y0;
+		double ymax = b*xmax/2 + c;
 
 		return std::make_pair(xmax, ymax);
 	}

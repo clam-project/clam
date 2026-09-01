@@ -22,6 +22,7 @@
 
 #include "NaiveFlowControl.hxx"
 #include "Processing.hxx"
+#include <algorithm>
 #include "OutPort.hxx"
 #include "InPort.hxx"
 #include "Network.hxx"
@@ -75,7 +76,8 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	std::string processingType = removed.GetClassName();
 	if ( processingType == "AudioSource" || processingType == "AudioBufferSource" )
 	{
-		mSources.remove( &removed );
+		auto _it = std::find(mSources.begin(), mSources.end(), &removed);
+		if (_it != mSources.end()) mSources.erase(_it);
 		return;
 	}
 	if (removed.GetNInPorts()==0 && removed.GetNOutPorts()==0) // port-less, for example ControlSource/Sink
@@ -92,15 +94,18 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	}
 	if (removed.GetNInPorts()==0 && removed.GetNOutPorts()!=0)
 	{
-		mGenerators.remove( &removed);
+		auto _it = std::find(mGenerators.begin(), mGenerators.end(), &removed);
+		if (_it != mGenerators.end()) mGenerators.erase(_it);
 		return;
 	}
 	if ( processingType == "AudioSink" || processingType == "AudioBufferSink" )
 	{
-		mSinks.remove( &removed );
+		auto _it = std::find(mSinks.begin(), mSinks.end(), &removed);
+		if (_it != mSinks.end()) mSinks.erase(_it);
 		return;
 	}
-	mNormalProcessings.remove ( &removed );
+	auto _it = std::find(mNormalProcessings.begin(), mNormalProcessings.end(), &removed);
+	if (_it != mNormalProcessings.end()) mNormalProcessings.erase(_it);
 }
 
 void NaiveFlowControl::Do()

@@ -377,7 +377,7 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 
 	for (int z=0;z<nDescriptors;z++)
 	{
-		segmentBoundaries.mArray[z].AddElem(std::pair<int,TData>(0,100));//very high value
+		segmentBoundaries.mArray[z].AddElem(std::pair<int,TData>(0,TData(100)));//very high value
 	}
 	for (int i=0; i<nFrames-4; i++)
 	{

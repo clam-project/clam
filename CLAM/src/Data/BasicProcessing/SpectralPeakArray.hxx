@@ -260,7 +260,7 @@ public:
 */
 	void ResetIndices();
 /** Additional interface for working with indices
-* resizes index array according to the current number of peaks and sets each ็
+* resizes index array according to the current number of peaks and sets each รง
 * index to -1 (which is usually interpreted as "no valid index"
 */
 	void InitIndices();

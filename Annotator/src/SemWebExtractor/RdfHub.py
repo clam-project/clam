@@ -33,12 +33,12 @@ class RdfHub :
 		try:
 			dbstore.open(cfgstr, False) # Try opening existing
 			debug("Opened existing MySQL DB")
-		except Exception, e:
+		except Exception as e:
 			pass
 			try:
 				dbstore.open(cfgstr, True) # Otherwise create new
 				debug("Created new MySQL DB")
-			except Exception, e:
+			except Exception as e:
 				error("Exception opening MySQL DB" + str(e))
 				sys.exit(1)
 		
@@ -130,7 +130,7 @@ class RdfHub :
 						if contextName==None or graph.identifier == URIRef(contextName) \
 				)
 		try:
-			gen.next()
+			next(gen)
 		except:
 			return False
 		return True
@@ -211,7 +211,7 @@ class RdfHub :
 		for ng in namedGraphs:
 			try:
 				ng.remove(triple)
-			except MySQLdb.OperationalError, e:
+			except MySQLdb.OperationalError as e:
 				pass
 
 	def commit(self):

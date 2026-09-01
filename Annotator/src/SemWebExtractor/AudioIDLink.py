@@ -18,7 +18,7 @@ from ExternalSources import *
 from Id3Writer import *
 from logging import log, error, warning, info, debug
 from optparse import OptionParser
-from urllib import quote as urlencode
+from urllib.parse import quote as urlencode
 
 from mopy.MusicInfo import MusicInfo, isBlind
 from mopy.model import AudioFile, Track
@@ -83,9 +83,9 @@ class AudioIDLink :
 			mbz.available_as = af    #to link the musicbrainz ID with the local album collection
 			mi.add(af); mi.add(mbz)
 			self.succeeded+=1
-		except MbzLookupException, e:
+		except MbzLookupException as e:
 			error(" - " + e.message)
-		except FileTypeException, e:
+		except FileTypeException as e:
 			error(" - " + e.message)
 		#return mi
 		return zitgisturi, mbzuri, mbid

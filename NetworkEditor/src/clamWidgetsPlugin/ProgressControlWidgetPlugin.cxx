@@ -24,7 +24,7 @@
 #include "ProgressControlWidgetPlugin.hxx"
 #include "ProgressControlWidget.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 ProgressControlWidgetPlugin::ProgressControlWidgetPlugin(QObject *parent)
 	: QObject(parent)

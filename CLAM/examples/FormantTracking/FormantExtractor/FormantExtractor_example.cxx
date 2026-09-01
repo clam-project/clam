@@ -68,7 +68,7 @@ class FormantExtrExample: public ProcessingComposite
 
 	const char* GetClassName() const {return "FormantExtrExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
+	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig& c);
 
 public:
@@ -78,7 +78,7 @@ public:
 	bool Do();
 };
 
-bool FormantExtrExample::ConcreteStart() throw(ErrProcessingObj)
+bool FormantExtrExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)
@@ -168,12 +168,10 @@ bool FormantExtrExample::Do()
 
 	for (unsigned int i=0; i<tf; i++)
 		{
-			for (unsigned int j=0; j<mConfig.GetNCandidates(); j++)
+			for (TSize j=0; j<mConfig.GetNCandidates(); j++)
 				{
-					std::cout.width(10L);
 					std::cout << "Amp: " << candidates.GetMagMatrix()(j,i) << " ";
 					std::cout << "Freq: " << candidates.GetFreqMatrix()(j,i) << " ";
-					std::cout.fill();
 				} 
 			std::cout << std::endl;
 		}
@@ -212,7 +210,7 @@ int main()
 
 	//	myApp.Stop();
 	}
-	catch( CLAM::Err e )
+	catch( CLAM::Err & e )
 	{
 		e.Print();
 	}

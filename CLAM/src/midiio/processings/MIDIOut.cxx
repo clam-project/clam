@@ -25,7 +25,7 @@
 namespace CLAM {
 
 bool MIDIOut::ConcreteConfigure(const ProcessingConfig& c)
-	throw(ErrProcessingObj)
+
 {
 	CopyAsConcreteConfig(mConfig, c);
   

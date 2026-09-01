@@ -54,33 +54,24 @@ bool Control2Data::ConcreteConfigure(const ProcessingConfig& c)
 }
 
 bool Control2Data::Do()
-{			
-	IdxList::iterator ListIt;				
-	Mutex::ScopedLock lock( mControl2DataDoMutex );
-		
+{
+	std::lock_guard<std::mutex> lock(mControl2DataDoMutex);
+
 	IdxList qs = GetQueues();
-	if (!qs.empty())  
-	{ 
-		for (ListIt=qs.begin();ListIt!=qs.end() ;ListIt++ )
-		{					
-			TControlData val = PopControl( (*ListIt) );
-			GenerateOutputData((*ListIt),val); 
-		}	
+	for (auto id : qs)
+	{
+		TControlData val = PopControl(id);
+		GenerateOutputData(id, val);
 	}
 	return !mStop.GetLastValue();
 }
 
 void Control2Data::BufferQueueInit( int ncontrols )
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 
-	mDataQueues.resize(0);
-	mDataQueues.reserve(ncontrols);
-	for (int j = 0; j < ncontrols  ;j ++ )
-	{
-		mDataQueues.push_back( TQueue() );
-	}
-
+	mDataQueues.clear();
+	mDataQueues.resize(ncontrols);
 }
 
 const ProcessingConfig&  Control2Data::GetConfig() const 
@@ -91,7 +82,7 @@ const ProcessingConfig&  Control2Data::GetConfig() const
 
 void Control2Data::EnqueueControl(unsigned id, TControlData data)
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 	
 #ifdef HAVE_STANDARD_VECTOR_AT
 	mDataQueues.at(id).push(data);
@@ -104,23 +95,19 @@ void Control2Data::EnqueueControl(unsigned id, TControlData data)
 Control2Data::IdxList Control2Data::GetQueues()
 {
 	IdxList modifiedQs;
-	std::vector<TQueue>::iterator it;
-
 	int k = 0;
-	for (it=mDataQueues.begin(); it != mDataQueues.end() ; it++ )
+	for (const auto& queue : mDataQueues)
 	{
-		if (!(*it).empty())
-		{
+		if (!queue.empty())
 			modifiedQs.push_back(k);
-		}
-		k++;
+		++k;
 	}
 	return modifiedQs;
 }
 
 bool Control2Data::Empty(unsigned id)
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 	
 #ifdef HAVE_STANDARD_VECTOR_AT
 	return mDataQueues.at(id).empty();
@@ -132,7 +119,7 @@ bool Control2Data::Empty(unsigned id)
 
 TControlData Control2Data::PopControl(unsigned id)
 {
-	Mutex::ScopedLock lock( mDataMutex );
+	std::lock_guard<std::mutex> lock(mDataMutex);
 #ifdef HAVE_STANDARD_VECTOR_AT
 	TControlData ret=mDataQueues.at(id).front();
 #else

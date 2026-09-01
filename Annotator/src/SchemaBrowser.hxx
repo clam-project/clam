@@ -22,9 +22,9 @@
 #ifndef SchemaBrowser_hxx
 #define SchemaBrowser_hxx
 
-#include <QtCore/QVariant>
-#include <QtGui/QPixmap>
-#include <QtGui/QWidget>
+#include <QVariant>
+#include <QPixmap>
+#include <QWidget>
 
 #include <string>
 
@@ -47,7 +47,7 @@ class SchemaBrowser : public QWidget
     Q_OBJECT
 
 public:
-	SchemaBrowser( QWidget* parent = 0, Qt::WFlags fl = 0 );
+	SchemaBrowser( QWidget* parent = nullptr );
 	~SchemaBrowser();
 	void setSchema(CLAM_Annotator::Schema & schema);
 	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidget* parent);

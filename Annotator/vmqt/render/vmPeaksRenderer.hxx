@@ -23,7 +23,7 @@
 #define __VMQT_PEAKS_RENDERER_H__
 #include "Array.hxx"
 #include "vmRenderer2D.hxx"
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

@@ -22,9 +22,9 @@
 #ifndef ProjectEditor_hxx
 #define ProjectEditor_hxx
 
-#include "ui_ProjectEditor.hxx"
+#include "ui_ProjectEditor.h"
 #include "Project.hxx"
-#include "ui_SourceEditor.hxx"
+#include "ui_SourceEditor.h"
 
 class GraphicConfigEditor;
 

@@ -33,7 +33,7 @@ namespace AudioCodecs
 	const TSize MpegAudioStream::mMaxDecodedBlockSize = 8192;
 
 	MpegAudioStream::MpegAudioStream( const AudioFile& file )
-		: mpHandle( NULL )
+		: mpHandle( nullptr )
 	{
 		mName = file.GetLocation();
 		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();

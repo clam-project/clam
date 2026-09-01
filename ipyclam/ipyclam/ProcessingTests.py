@@ -1,5 +1,5 @@
-from Processing import Processing
-from Connector import BadConnectorDirectionOrder
+from .Processing import Processing
+from .Connector import BadConnectorDirectionOrder
 
 import unittest
 class ProcessingTests(object):
@@ -24,7 +24,7 @@ class ProcessingTests(object):
 		try :
 			p.type="AnotherType"
 			self.fail("Exception expected")
-		except AttributeError, e :
+		except AttributeError as e :
 			self.assertEqual("Attribute 'type' is read only", e.args[0])
 
 	def test_name(self) :
@@ -205,8 +205,8 @@ class ProcessingTests(object):
 		multi2 = Processing("multi2", engine)
 		try :
 			multi1 > multi2._outports
-		except BadConnectorDirectionOrder, e:
-			self.assertEqual(e.message,
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual(str(e),
 				"Wrong connectors order: Output > Input")
 		else :
 			self.fail("Exception expected")
@@ -218,8 +218,8 @@ class ProcessingTests(object):
 
 		try :
 			multi1 > csource.OutControl1
-		except BadConnectorDirectionOrder, e:
-			self.assertEqual(e.message,
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual(str(e),
 				"Wrong connectors order: Output > Input")
 		else:
 			self.fail("Exception expected")
@@ -230,8 +230,8 @@ class ProcessingTests(object):
 
 		try :
 			proc1 > 34
-		except AssertionError, e :
-			self.assertEqual(e.message,
+		except AssertionError as e :
+			self.assertEqual(str(e),
 				"Unexpected connection peer: 34")
 		else :
 			self.fail("Failed assertion expected")
@@ -277,8 +277,8 @@ class ProcessingTests(object):
 		multi2 = Processing("multi2", engine)
 		try :
 			multi1 < multi2._inports
-		except BadConnectorDirectionOrder, e:
-			self.assertEqual(e.message,
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual(str(e),
 				"Wrong connectors order: Input < Output")
 		else :
 			self.fail("Exception expected")
@@ -290,8 +290,8 @@ class ProcessingTests(object):
 
 		try :
 			multi1 < multi2.InControl1
-		except BadConnectorDirectionOrder, e:
-			self.assertEqual(e.message,
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual(str(e),
 				"Wrong connectors order: Input < Output")
 		else:
 			self.fail("Exception expected")
@@ -302,8 +302,8 @@ class ProcessingTests(object):
 
 		try :
 			proc1 < 34
-		except AttributeError, e :
-			self.assertEqual(e.message,
+		except AttributeError as e :
+			self.assertEqual(str(e),
 				"'int' object has no attribute 'connect'")
 		else :
 			self.fail("Failed assertion expected")
@@ -481,14 +481,14 @@ class ProcessingTests(object):
 
 class ProcessingTests_Dummy(ProcessingTests, unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		from .dummy import Dummy_Engine
+		return Dummy_Engine()
 
 
 class ProcessingTests_Clam(ProcessingTests, unittest.TestCase):
 	def empty(self):
-		import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		from .clam import Clam_Engine
+		return Clam_Engine()
 
 	"Override because of CLAM inport connection limitation"
 	def test_connect_from_processing_to_port(self):

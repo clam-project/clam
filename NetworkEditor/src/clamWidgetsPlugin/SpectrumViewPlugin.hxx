@@ -24,7 +24,7 @@
 #ifndef SpectrumViewPlugin_hxx
 #define SpectrumViewPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class SpectrumViewPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

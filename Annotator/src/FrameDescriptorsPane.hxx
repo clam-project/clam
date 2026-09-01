@@ -1,8 +1,8 @@
 #ifndef FrameDescriptorsPane_hxx
 #define FrameDescriptorsPane_hxx
 
-#include <QtGui/QSplitter>
-#include <QtGui/QListWidget>
+#include <QSplitter>
+#include <QListWidget>
 #include "FrameDivision.hxx"
 #include "vmBPFPlot.hxx"
 #include "Project.hxx"

@@ -23,7 +23,7 @@ import xml.xpath
 
 from xml.dom.ext.reader import Sax2
 import xml.dom.ext 
-import cStringIO
+from io import StringIO
 
 class Pool :
 	class Exception :
@@ -34,7 +34,7 @@ class Pool :
 
 	def __init__(self, file=None) :
 		if file is None:
-			file = cStringIO.StringIO("<DescriptorsPool/>")
+			file = StringIO("<DescriptorsPool/>")
 		self.doc = Sax2.Reader().fromStream(file)
 
 	def Dump(self, file=sys.stdout):

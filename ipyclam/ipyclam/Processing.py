@@ -1,6 +1,6 @@
-import Connector
-import Configuration
-import Connectors
+from . import Connector
+from . import Configuration
+from . import Connectors
 
 class NotFound(Exception) : pass
 
@@ -56,7 +56,7 @@ class Processing(object):
 			raise AttributeError(name)
 
 	def __setattr__(self, name, value):
-		if name is 'type': raise AttributeError("Attribute 'type' is read only")
+		if name == 'type': raise AttributeError("Attribute 'type' is read only")
 		self.__setitem__(name, value)
 
 	def __dir__(self):
@@ -109,14 +109,14 @@ class Processing(object):
 		assert False, "Unexpected connection peer: %s"%peer
 
 	def __gt__(self, peer) :
-		from Exceptions import BadConnectorDirectionOrder
+		from .Exceptions import BadConnectorDirectionOrder
 		if hasattr(peer, 'direction') and peer.direction == "Out" :
 			raise BadConnectorDirectionOrder(
 				"Wrong connectors order: Output > Input")
 		return self.connect(peer)
 
 	def __lt__(self, peer) :
-		from Exceptions import BadConnectorDirectionOrder
+		from .Exceptions import BadConnectorDirectionOrder
 		if hasattr(peer, 'direction') and peer.direction == "In" :
 			raise BadConnectorDirectionOrder(
 				"Wrong connectors order: Input < Output")

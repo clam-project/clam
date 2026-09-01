@@ -1,5 +1,5 @@
 #include "SDIFFileReaderWithBuffer.hxx"
-#include "DataUtil.hxx"
+#include <CLAM/DataUtil.hxx>
 #include <limits.h>
 
 namespace CLAM
@@ -11,17 +11,17 @@ SDIFFileReaderWithBuffer::SDIFFileReaderWithBuffer(const SDIFInConfig& argSDIFIn
 	mFrameLoadChunkSize( DEFAULT_FRAME_LOAD_CHUNK_SIZE ),
 	mThreshholdForPreloading( DEFAULT_THRESHHOLD_FOR_PRELOADING ),
 	mThreshholdForPreloadingOnThread( DEFAULT_THRESHHOLD_FOR_PRELOADING_ON_THREAD ),
-	mReaderHasMoreFrames( true ),
-	dequeMutex(),
-	readSDIFMutex()
+	mReaderHasMoreFrames( true )
 {
-	mFunctor = makeMemberFunctor0( *this, SDIFFileReaderWithBuffer, Run );
+	mThreadFunc = [this]() { Run(); };
 
 	Configure(argSDIFInConfig);
 }
 
 SDIFFileReaderWithBuffer::~SDIFFileReaderWithBuffer()
 {
+	StopLoadingFramesIntoBufferOnThread();
+
 	for (unsigned int counter = 0; counter < frameBuffer.size(); counter++)
 	{
 		delete frameBuffer[counter];
@@ -82,9 +82,9 @@ Frame* SDIFFileReaderWithBuffer::GetFrame( int frameBufferPosition )
 
 	std::cout << "[SDIFFileReaderWithBuffer::GetFrame] frameBufferPosition==" << frameBufferPosition << " frameBuffer.size()="<< frameBuffer.size()<< std::endl;
 	
-	Mutex::ScopedLock lock( dequeMutex );
+	std::lock_guard<std::mutex> lock( dequeMutex );
 
-	std::cout << "[SDIFFileReaderWithBuffer::GetFrame] Mutex::ScopedLock lock( dequeMutex );" << std::endl;
+	std::cout << "[SDIFFileReaderWithBuffer::GetFrame] std::lock_guard lock( dequeMutex );" << std::endl;
 
 	Frame* requestedFrame = frameBuffer.at( frameBufferPosition );
 
@@ -108,7 +108,7 @@ Frame* SDIFFileReaderWithBuffer::ReadFrame()
 	}
 	else
 	{
-		Mutex::ScopedLock lock( dequeMutex );
+		std::lock_guard<std::mutex> lock( dequeMutex );
 		
 		std::cout << "Retrieving buffer pos: " << frameBufferPosition << ", size: " << frameBuffer.size() << std::endl;
 		Frame* nextFrame = frameBuffer.at(frameBufferPosition);
@@ -133,7 +133,7 @@ bool SDIFFileReaderWithBuffer::LoadFramesIntoBuffer(int argNumberOfBuffers)
 	// this object locks the mSDIFFileReader until the scopedlock goes
 	// out of scope and is garbage collected. its destructor frees the lock
 	{
-		Mutex::ScopedLock lock( readSDIFMutex );
+		std::lock_guard<std::mutex> lock( readSDIFMutex );
 		
 		// here's the loop where we read in the desired number of buffers
 		for (int counter = 0; counter < argNumberOfBuffers; counter++)
@@ -171,7 +171,7 @@ bool SDIFFileReaderWithBuffer::LoadFramesIntoBuffer(int argNumberOfBuffers)
 	}
 
 	// now let's copy the frames from the temporary buffer to the frameBuffer
-	Mutex::ScopedLock lock( dequeMutex );
+	std::lock_guard<std::mutex> lock( dequeMutex );
 	for (unsigned int counter = 0; counter < tempFrameBuffer.size(); counter++)
 	{
 		Frame* aFrame = tempFrameBuffer.at(counter);
@@ -187,25 +187,17 @@ bool SDIFFileReaderWithBuffer::LoadFramesIntoBuffer(int argNumberOfBuffers)
 
 int SDIFFileReaderWithBuffer::GetNumberOfFramesLoaded()
 {
-	Mutex::ScopedLock lock( dequeMutex );
+	std::lock_guard<std::mutex> lock( dequeMutex );
 	return frameBuffer.size();
 }
 
-void SDIFFileReaderWithBuffer::LoadFramesIntoBufferOnThread(Thread* argThread)
+void SDIFFileReaderWithBuffer::LoadFramesIntoBufferOnThread()
 {
-	CLAM_ASSERT(argThread != NULL, "Thread* given to SDIFFileReaderWithBuffer may not be null!");
-
-	mThreadPtr = argThread;
-	try // Note the exception handling
+	try
 	{
-		mThreadPtr->SetThreadCode( mFunctor );
-
-		mThreadPtr->Start();
-
-		//mThreadPtr->Stop();
-
+		mThread = std::make_unique<std::thread>(mThreadFunc);
 	}
-	catch( std::exception& e ) // Here we handle standard library exceptions
+	catch( std::exception& e )
 	{
 		std::cerr << e.what() << std::endl;
 		std::string msg("SDIFFileReaderWithBuffer: exception when starting thread. SDIFFile will be loaded on main thread.");
@@ -215,14 +207,15 @@ void SDIFFileReaderWithBuffer::LoadFramesIntoBufferOnThread(Thread* argThread)
 
 void SDIFFileReaderWithBuffer::StopLoadingFramesIntoBufferOnThread()
 {
-	try // Note the exception handling
+	try
 	{
-		if ( mThreadPtr != NULL)
+		if (mThread && mThread->joinable())
 		{
-			mThreadPtr = NULL;
+			mThread->join();
 		}
+		mThread.reset();
 	}
-	catch( std::exception& e ) // Here we handle standard library exceptions
+	catch( std::exception& e )
 	{
 		std::cerr << e.what() << std::endl;
 		std::string msg("SDIFFileReaderWithBuffer: exception when stopping thread.");
@@ -232,18 +225,15 @@ void SDIFFileReaderWithBuffer::StopLoadingFramesIntoBufferOnThread()
 
 bool SDIFFileReaderWithBuffer::IsThreaded()
 {
-	return mThreadPtr != NULL;
+	return mThread && mThread->joinable();
 }
 
 void SDIFFileReaderWithBuffer::Run()
 {
-	int iterationsSinceLastExecution = 0;
-	while ( mReaderHasMoreFrames && totalNumberOfFramesToLoad <= frameBuffer.size() )
+	while ( mReaderHasMoreFrames && frameBuffer.size() < totalNumberOfFramesToLoad )
 	{
-		//std::cout << "Thread <" << mThreadPtr << "> this <" << this << "> is loading buffers." << std::endl;
 		mReaderHasMoreFrames = LoadFramesIntoBuffer(mFrameLoadChunkSize);
-		iterationsSinceLastExecution = 0;
-		mThreadPtr->Yield();
+		std::this_thread::yield();
 	}
 }
 

@@ -20,11 +20,10 @@
 #ifndef _ControlPiano_
 #define _ControlPiano_
 
+#include <CLAM/MIDIMessage.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
-
-#include <CLAM/MIDIMessage.hxx>
 
 namespace CLAM
 {

@@ -14,7 +14,6 @@ BufferedSDIFFileReader::BufferedSDIFFileReader() :
 	readSDIFMutex(),
 	framePosition(1)
 {
-	mFunctor = makeMemberFunctor0( *this, BufferedSDIFFileReader, Run );
 }
 
 BufferedSDIFFileReader::BufferedSDIFFileReader(const SDIFInConfig& argSDIFInConfig) :
@@ -28,13 +27,13 @@ BufferedSDIFFileReader::BufferedSDIFFileReader(const SDIFInConfig& argSDIFInConf
 	readSDIFMutex(),
 	framePosition(1)
 {
-	mFunctor = makeMemberFunctor0( *this, BufferedSDIFFileReader, Run );
-
 	LoadFramesIntoBuffer( DEFAULT_INITIAL_NUMBER_OF_FRAMES_TO_BUFFER );
 }
 
 BufferedSDIFFileReader::~BufferedSDIFFileReader()
 {
+	if (mThread.joinable()) mThread.join();
+
 	for (int counter = 0; counter < pendingFrameBuffer.size(); counter++)
 	{
 		delete pendingFrameBuffer[counter];
@@ -75,7 +74,7 @@ Frame* BufferedSDIFFileReader::ReadFrame()
 	}
 	else
 	{
-		Mutex::ScopedLock lock( dequeMutex );
+		std::lock_guard<std::mutex> lock(dequeMutex);
 
 		Frame* nextFrame = pendingFrameBuffer.at(0);
 		pendingFrameBuffer.pop_front();
@@ -101,7 +100,7 @@ bool BufferedSDIFFileReader::LoadFramesIntoBuffer(int argNumberOfBuffers)
 		{
 			// this object locks the mSDIFFileReader until the scopedlock goes
 			// out of scope and is garbage collected. its destructor frees the lock
-			Mutex::ScopedLock lock( readSDIFMutex );
+			std::lock_guard<std::mutex> lock(readSDIFMutex);
 
 			if (framePosition == endLoopPosition.GetFramePosition())
 			{
@@ -130,7 +129,7 @@ bool BufferedSDIFFileReader::LoadFramesIntoBuffer(int argNumberOfBuffers)
 		{
 			aFrame->SetCenterTime(frameCenterTime);
 
-			Mutex::ScopedLock lock( dequeMutex );
+			std::lock_guard<std::mutex> lock(dequeMutex);
 
 			pendingFrameBuffer.push_back( aFrame );
 		}
@@ -144,88 +143,44 @@ bool BufferedSDIFFileReader::LoadFramesIntoBuffer(int argNumberOfBuffers)
 	return mReaderHasMoreFrames;
 }
 
-void BufferedSDIFFileReader::LoadFramesIntoBufferOnThread(Thread* argThread)
+void BufferedSDIFFileReader::LoadFramesIntoBufferOnThread()
 {
-	CLAM_ASSERT(argThread != NULL, "Thread* given to BufferedSDIFFileReader may not be null!");
-
-	mThreadPtr = argThread;
-	try // Note the exception handling
+	if (mThread.joinable()) mThread.join();
+	try
 	{
-		// TODO
-		// are vectors thread safe?
-		// the method LoadFramesIntoBuffer should check whether any more frames need to
-		// be loaded and if not it should yield or sleep
-		mThreadPtr->SetThreadCode( mFunctor );
-
-		mThreadPtr->Start();
-
-		//mThreadPtr->Stop();
-
+		mThread = std::thread([this]{ Run(); });
 	}
-	catch( std::exception& e ) // Here we handle standard library exceptions
+	catch( std::exception& e )
 	{
 		std::cerr << e.what() << std::endl;
-		// TODO. Do you really want to exit() here?
-		exit(-1);
+		std::cerr << "BufferedSDIFFileReader: exception when starting thread. SDIFFile will be loaded on main thread." << std::endl;
 	}
 }
 
 void BufferedSDIFFileReader::StopLoadingFramesIntoBufferOnThread()
 {
-	try // Note the exception handling
-	{
-		if ( mThreadPtr != NULL)
-		{
-			//mThreadPtr->ReturnThreadToPool();
-			mThreadPtr = NULL;
-		}
-	}
-	catch( std::exception& e ) // Here we handle standard library exceptions
-	{
-		std::cerr << e.what() << std::endl;
-		// TODO. Do you really want to exit() here?
-		exit(-1);
-	}
+	if (mThread.joinable()) mThread.join();
 }
 
 bool BufferedSDIFFileReader::IsThreaded()
 {
-	return mThreadPtr != NULL;
+	return mThread.joinable();
 }
 
 void BufferedSDIFFileReader::Run()
 {
-	int iterationsSinceLastExecution = 0;
 	while ( mReaderHasMoreFrames )
 	{
 		int numberOfFramesAboveThreshhold = pendingFrameBuffer.size() - mThreshholdForPreloadingOnThread;
-		//std::cout << "This <" << this << "> has " <<  pendingFrameBuffer.size() << " buffers." << std::endl;
 		if ( (mReaderHasMoreFrames == true) && (numberOfFramesAboveThreshhold <= 0) )
 		{
-			//std::cout << "Thread <" << mThreadPtr << "> this <" << this << "> is loading buffers." << std::endl;
 			mReaderHasMoreFrames = LoadFramesIntoBuffer(mFrameLoadChunkSize);
-			iterationsSinceLastExecution = 0;
-			mThreadPtr->Yield();
+			std::this_thread::yield();
 		}
 		else
 		{
-			// sleep for 5 milliseconds for each frame that is yet to be processed
-			// it would be better to sleep for the number of milliseconds used as the
-			// synthesis algorigthms hop size but we don't know what this is.
-			//int sleepTime = numberOfFramesAboveThreshhold * 256;
-			//std::cout << "Thread <" << mThreadPtr << "> <" << this << "> is sleeping." << std::endl;
 			int sleepTime = numberOfFramesAboveThreshhold * 5;
-			mThreadPtr->Sleep( sleepTime );
-			iterationsSinceLastExecution++;
-
-			double timeSinceLastExecution = sleepTime * iterationsSinceLastExecution;
-			if (timeSinceLastExecution > mMaximumThreadIdleTime)
-			{
-				//std::cout << "Thread <" << mThreadPtr << "> <" << this << "> is being killed." << std::endl;
-				//StopLoadingFramesIntoBufferOnThread();
-				mThreadPtr = NULL;
-				return;
-			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
 		}
 	}
 }

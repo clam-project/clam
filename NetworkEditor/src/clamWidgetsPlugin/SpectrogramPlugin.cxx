@@ -24,7 +24,7 @@
 #include "SpectrogramPlugin.hxx"
 #include "Spectrogram.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 SpectrogramPlugin::SpectrogramPlugin(QObject *parent)
     : QObject(parent)

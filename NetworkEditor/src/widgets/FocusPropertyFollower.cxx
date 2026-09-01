@@ -1,5 +1,5 @@
 #include "FocusPropertyFollower.hxx"
-#include <QtGui/QApplication>
+#include <QApplication>
 
 FocusPropertyFollower::FocusPropertyFollower(QWidget * parent)
 	: QLabel(parent)
@@ -7,7 +7,7 @@ FocusPropertyFollower::FocusPropertyFollower(QWidget * parent)
 	connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)),
 		this, SLOT(updateMessageOnFocus()));
 }
-FocusPropertyFollower::~FocusPropertyFollower() {}
+FocusPropertyFollower::~FocusPropertyFollower() = default;
 void FocusPropertyFollower::updateMessageOnFocus()
 {
 	QWidget * focused = QApplication::focusWidget();

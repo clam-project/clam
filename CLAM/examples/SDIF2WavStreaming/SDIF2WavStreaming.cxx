@@ -41,7 +41,6 @@ namespace CLAM
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
 		CLAM::SMSSynthesisConfig theConfig = dynamic_cast<const SMSSynthesisConfig&>(synthesis.GetConfig());
-		TSize synthFrameSize = theConfig.GetFrameSize();
 
 		// is this necessary?
 		//audioOutput.SetSize(sizeAudioFile);
@@ -82,7 +81,6 @@ namespace CLAM
 
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
-		unsigned int buffersize = 1024;
 		int samplerate = 44100;
 
 		AudioManager audioManager(samplerate,2048);
@@ -225,12 +223,12 @@ int main(int argc,char** argv)
 			Synthesize(SDIFLoader, Synthesis, audioWriter);
 /*
 	}
-	catch(CLAM::Err error)
+	catch(CLAM::Err &error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination!\n" << std::endl;
 	}
-	catch (std::exception e)
+	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
 	}

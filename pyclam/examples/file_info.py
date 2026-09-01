@@ -21,16 +21,16 @@ from clam import *
 import sys
 
 if len(sys.argv)==1: # No input file
-	print "No input file."
-	print "Usage: file_info.py <input file name>"
+	print("No input file.")
+	print("Usage: file_info.py <input file name>")
 	sys.exit(-1)
 elif len(sys.argv)>2: #Too many parameters
-	print "Too many parameters"
-	print "Usage: file_info.py <input file name>"
+	print("Too many parameters")
+	print("Usage: file_info.py <input file name>")
 	sys.exit(-1)
 	
 def error(msg):
-	print msg
+	print(msg)
 	return -1
 
 def main(args):
@@ -48,21 +48,21 @@ def main(args):
 
 	# So first, let's check that the input file is readable
 	if not file.IsReadable():
-		print "Error: file", file.GetLocation(), "cannot be opened "
-		print "or is encoded in an unrecognized format"
+		print("Error: file", file.GetLocation(), "cannot be opened ")
+		print("or is encoded in an unrecognized format")
 		sys.exit(-1)
 
 	# If it was readable now we can safely assume we can access its header
-	print "Filename:", toString( file.GetLocation() ) #FIXME: implicity convertible to string is not working
+	print("Filename:", toString( file.GetLocation() )) #FIXME: implicity convertible to string is not working
 	
 	# Now we print out the format it was encoded:
-	print "Format:", file.GetHeader().GetFormat()
+	print("Format:", file.GetHeader().GetFormat())
 	
 	# The number of channels in the file
-	print "Channels:", file.GetHeader().GetChannels()
+	print("Channels:", file.GetHeader().GetChannels())
 	
 	# Its sample rate
-	print "Sample Rate: ", file.GetHeader().GetSampleRate(), " Hz"
+	print("Sample Rate: ", file.GetHeader().GetSampleRate(), " Hz")
 
 	# And its length. However this is not so straight-forward since we provide
 	# file duration in *milliseconds*. This might not be the best way ( we know ) but
@@ -77,8 +77,8 @@ def main(args):
 	numberMinutes = numberMinutes - numberHours * 60.
 
 	#// and now we print it formatted:
-	print "Length (hh:mm:ss):", numberHours,":",numberMinutes,":",numberSeconds
-	#print "Length (hh:mm:ss):", ("%f:%f:%f")%(round(numberHours,2),round(numberMinutes,2),round(numberSeconds,2))
+	print("Length (hh:mm:ss):", numberHours,":",numberMinutes,":",numberSeconds)
+	#print("Length (hh:mm:ss):", ("%f:%f:%f")%(round(numberHours,2),round(numberMinutes,2),round(numberSeconds,2)))
 	
 	# Finally, we can also access textual meta-data, if it was present in the file, of course.
 	# AudioFile's textual meta-data is stored in an AudioTextDescriptors object, that we
@@ -97,17 +97,17 @@ def main(args):
 	#  Obviously, it will be strange that all (or any) of these attributes are available, so we must be
 	# careful before accessing each attribute:
 	if txtDesc.HasArtist():
-		print "Artist name: ", toString( txtDesc.GetArtist() ) #FIXME
+		print("Artist name: ", toString( txtDesc.GetArtist() )) #FIXME
 	if txtDesc.HasTitle():
-		print "Title/Songname: ", toString( txtDesc.GetTitle() ) #FIXME
+		print("Title/Songname: ", toString( txtDesc.GetTitle() )) #FIXME
 	if txtDesc.HasAlbum():
-		print "Album/Movie/Show name: ", toString( txtDesc.GetAlbum() ) #FIXME
+		print("Album/Movie/Show name: ", toString( txtDesc.GetAlbum() )) #FIXME
 	if txtDesc.HasTrackNumber():
-		print "Track number: ", toString( txtDesc.GetTrackNumber() ) #FIXME
+		print("Track number: ", toString( txtDesc.GetTrackNumber() )) #FIXME
 	if txtDesc.HasComposer():
-		print "Composer name: ", toString( txtDesc.GetComposer() ) #FIXME
+		print("Composer name: ", toString( txtDesc.GetComposer() )) #FIXME
 	if txtDesc.HasPerformer():
-		print "Performer name: ", toString( txtDesc.GetPerformer() ) #FIXME
+		print("Performer name: ", toString( txtDesc.GetPerformer() )) #FIXME
 	
 	#// And that's all friends!
 

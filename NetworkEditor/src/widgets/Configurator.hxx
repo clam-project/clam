@@ -1,12 +1,12 @@
 #ifndef Configurator_hxx
 #define Configurator_hxx
-#include <QtGui/QDialog>
-#include <QtGui/QFrame>
-#include <QtGui/QPushButton>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QDialogButtonBox>
+#include <QDialog>
+#include <QFrame>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QDialogButtonBox>
 #include "ConfiguratorPlugin.hxx"
 #include "FocusPropertyFollower.hxx"
 
@@ -26,7 +26,7 @@ public:
 	{
 		mLayout = new QVBoxLayout(this);
 		mLayout->setSpacing(3);
-		mLayout->setMargin(5);
+		mLayout->setContentsMargins(5, 5, 5, 5);
 		setMinimumWidth(400);
 		GenerateWidgets();
 		AddButtons();
@@ -34,7 +34,7 @@ public:
 private:
 	QWidget * GetWidget(const char * name) {
 		tWidgets::iterator found=mWidgets.find(name);
-		if (found==mWidgets.end()) return NULL;
+		if (found==mWidgets.end()) return nullptr;
 		return found->second;
 	}
 	void PushWidget(const char * name, QWidget * widget)
@@ -104,4 +104,3 @@ public slots:
 };
 
 #endif//Configurator_hxx
-

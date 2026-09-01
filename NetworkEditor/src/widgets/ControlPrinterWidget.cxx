@@ -1,8 +1,8 @@
 #include "ControlPrinterWidget.hxx"
 #include <CLAM/ControlPrinter.hxx>
 #include <CLAM/InControlBase.hxx>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QLabel>
+#include <QVBoxLayout>
+#include <QLabel>
 #include "EmbededWidgets.hxx"
 
 static CLAM::EmbededWidgetCreator <ControlPrinterWidget> reg1("ControlPrinter");

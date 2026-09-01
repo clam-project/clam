@@ -22,10 +22,10 @@
 #include <iostream>
 #include <cstdlib>
 #include "Err.hxx"
-#include "ErrDynamicType.hxx"
-#include "ErrProcessingObj.hxx"
-#include "ErrOpenFile.hxx"
-#include "ErrOutOfMemory.hxx"
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/ErrProcessingObj.hxx>
+#include <CLAM/ErrOpenFile.hxx>
+#include <CLAM/ErrOutOfMemory.hxx>
 
 using CLAM::Err;
 using CLAM::ErrDynamicType;

@@ -220,8 +220,8 @@ namespace CLAM
 		RtAAudioDevice(const std::string& name,int _device);
 		~RtAAudioDevice();
 		
-		void Start(void) throw(Err);
-		void Stop(void) throw(Err);
+		void Start(void);
+		void Stop(void);
 		void Tick(void);
 		void Read(Audio& audio,const int channelID);
 		void Write(const Audio& audio,const int channelID);
@@ -239,7 +239,7 @@ namespace CLAM
 
 	protected:
 
-		void EnumerateAvailableDevices() throw ( Err );
+		void EnumerateAvailableDevices();
 
 	public:
 

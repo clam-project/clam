@@ -24,7 +24,7 @@
 #include "MelSpectrumViewPlugin.hxx"
 #include "MelSpectrumView.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 MelSpectrumViewPlugin::MelSpectrumViewPlugin(QObject *parent)
     : QObject(parent)

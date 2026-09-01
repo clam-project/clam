@@ -78,7 +78,7 @@ private:
 			XmlWriteContext::CurrentContext();
 			CPPUNIT_FAIL("Assertion should have failed");
 		}
-		catch (CLAM::ErrAssertionFailed e)
+		catch (CLAM::ErrAssertionFailed &e)
 		{
 			CPPUNIT_ASSERT_EQUAL(
 				std::string("XML generation context not created"),
@@ -103,7 +103,7 @@ private:
 			XmlWriteContext::CurrentContext();
 			CPPUNIT_FAIL("Assertion should have failed");
 		}
-		catch (CLAM::ErrAssertionFailed e)
+		catch (CLAM::ErrAssertionFailed &e)
 		{
 			CPPUNIT_ASSERT_EQUAL(
 				std::string("XML generation context not created"),
@@ -119,7 +119,7 @@ private:
 			XmlWriteContext banglerContext(mTargetStream);
 			CPPUNIT_FAIL("Assertion should have failed");
 		}
-		catch (CLAM::ErrAssertionFailed e)
+		catch (CLAM::ErrAssertionFailed &e)
 		{
 			CPPUNIT_ASSERT_EQUAL(
 				std::string("An XML generation context is already defined"),

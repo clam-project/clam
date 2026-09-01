@@ -188,7 +188,6 @@ void OfflineNetworkPlayer::Start()
 
 	long iterationIndex = 0;
 	bool timeLimitedMode = _resultWavsTime > 0.001;
-	int fileIndex = 0;
 	while(true)
 	{
 		std::cout << "." << std::flush;
@@ -223,7 +222,6 @@ void OfflineNetworkPlayer::Start()
 				}
 			}
 			inAudioIndex += nChannels;
-			fileIndex ++;
 			delete[] bufferReader;
 		}
 

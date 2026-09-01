@@ -58,7 +58,9 @@ bool Deesser::Do(const Spectrum& in, Spectrum& out)
 	TData threshold = 	log2lin(mThresholdCtl.GetLastValue());
 	
 	int i;
-	TData maxMag = 0;
+	// maxMag is consumed only by the commented-out feedback path below; left
+	// declared so re-enabling that branch is a one-line change.
+	[[maybe_unused]] TData maxMag = 0;
 	for( i = lowCutoff; i<highCutoff; i++)
 	{
 		if(iMag[i]>threshold) oMag[i] = threshold;

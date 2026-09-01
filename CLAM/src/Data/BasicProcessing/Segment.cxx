@@ -34,7 +34,7 @@ namespace CLAM
 
 void Segment::DefaultInit()
 {
-	pParent=NULL;
+	pParent=nullptr;
 	mCurrentFrameIndex=0;
 	AddprHoldsData();
 	AddBeginTime();
@@ -208,10 +208,10 @@ void Segment::SetHoldsData(bool holdsData)
 
 		//Initializing some atributes
 		GetFramesSearch().Set(GetFramesArray());
-		if(pParent!=NULL)
+		if(pParent!=nullptr)
 		{
 			CopyDataFromParent();
-			pParent=NULL;
+			pParent=nullptr;
 		}
 	}
 	else

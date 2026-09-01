@@ -1,7 +1,7 @@
-from Network import Network
+from .Network import Network
 import operator
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class NetworkTests(object):
 
@@ -28,11 +28,11 @@ class NetworkTests(object):
 
 	def test_dirFunction(self) :
 		net = Network(self.fixture1())
-		self.assertEquals(["description", "proc1", "proc2"], dir(net))
+		self.assertEqual(["code", "description", "proc1", "proc2", "types", "xml"], dir(net))
 
 	def test_processingNames(self):
 		net = Network(self.fixture1())
-		self.assertEquals(["proc1", "proc2"], net.processingNames())
+		self.assertEqual(["proc1", "proc2"], net.processingNames())
 
 	def test_ProcessingAsAttributesGettingAndFailing(self):
 		net = Network(self.fixture1())
@@ -44,12 +44,12 @@ class NetworkTests(object):
 
 	def test_codeEmptyNetwork(self) :
 		net = Network(self.empty())
-		self.assertEquals("\n\n\n", net.code())
+		self.assertEqual("\n\n\n", net.code())
 
 	def test_addProcessing(self) :
 		net = Network(self.empty())
 		net.processing1 = "DummyPortSource"
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyPortSource'\n"
 			"\n"
 			"\n"
@@ -58,7 +58,7 @@ class NetworkTests(object):
 	def test_addProcessingAsItem(self) :
 		net = Network(self.empty())
 		net["processing1"] = "DummyPortSource"
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyPortSource'\n"
 			"\n"
 			"\n"
@@ -68,7 +68,7 @@ class NetworkTests(object):
 		net = Network(self.empty())
 		net.processing1 = "DummyPortSource"
 		net.processing2 = "DummyPortSource"
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyPortSource'\n"
 			"network.processing2 = 'DummyPortSource'\n"
 			"\n"
@@ -79,7 +79,7 @@ class NetworkTests(object):
 		net = Network(self.empty())
 		net.processing1 = "DummyPortSource"
 		net.processing2 = "DummyPortSink"
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyPortSource'\n"
 			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
@@ -91,7 +91,7 @@ class NetworkTests(object):
 		net.processing1 = "DummyPortSource"
 		net.processing2 = "DummyPortSink"
 		net.processing1.OutPort1 > net.processing2.InPort1
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyPortSource'\n"
 			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
@@ -103,7 +103,7 @@ class NetworkTests(object):
 		net.processing1 = "DummyControlSource"
 		net.processing2 = "DummyControlSink"
 		net.processing1.OutControl1 > net.processing2.InControl1
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyControlSource'\n"
 			"network.processing2 = 'DummyControlSink'\n"
 			"\n"
@@ -119,7 +119,7 @@ class NetworkTests(object):
 		net.processing4 = "DummyControlSink"
 		net.processing1.OutPort1 > net.processing2.InPort1
 		net.processing3.OutControl1 > net.processing4.InControl1
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'DummyPortSource'\n"
 			"network.processing2 = 'DummyPortSink'\n"
 			"network.processing3 = 'DummyControlSource'\n"
@@ -136,14 +136,14 @@ class NetworkTests(object):
 	def test_setDescription(self):
 		net = Network(self.empty())
 		net.description = "A description"
-		self.assertEquals("A description", net.description)
+		self.assertEqual("A description", net.description)
 
 	def test_changeNetworkVarForCode(self):
 		net = Network(self.empty())
 		net.processing1 = "DummyControlSource"
 		net.processing2 = "DummyControlSink"
 		net.processing1.OutControl1 > net.processing2.InControl1
-		self.assertEquals(
+		self.assertEqual(
 			"net.processing1 = 'DummyControlSource'\n"
 			"net.processing2 = 'DummyControlSink'\n"
 			"\n"
@@ -156,7 +156,7 @@ class NetworkTests(object):
 		net.processing1 = "DummyPortSource"
 		net.processing2 = "DummyPortSink"
 		del net.processing1
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
 			"\n"
@@ -167,7 +167,7 @@ class NetworkTests(object):
 		net["processing1"] = "DummyPortSource"
 		net["processing2"] = "DummyPortSink"
 		del net["processing1"]
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing2 = 'DummyPortSink'\n"
 			"\n"
 			"\n"
@@ -181,7 +181,7 @@ class NetworkTests(object):
 		net.processing4 = "ProcessingWithNameSpacedControls"
 		net.processing1["An outport"] > net.processing2["An inport"]
 		net.processing3["An outcontrol"] > net.processing4["An incontrol"]
-		self.assertEquals(
+		self.assertEqual(
 			"network.processing1 = 'ProcessingWithNameSpacedPorts'\n"
 			"network.processing2 = 'ProcessingWithNameSpacedPorts'\n"
 			"network.processing3 = 'ProcessingWithNameSpacedControls'\n"
@@ -194,7 +194,7 @@ class NetworkTests(object):
 	def test_code_whenNameHasUnderlines(self) :
 		net = Network(self.empty())
 		net.name_with_underlines = "DummyPortSource"
-		self.assertEquals(
+		self.assertEqual(
 			"network.name_with_underlines = 'DummyPortSource'\n"
 			"\n"
 			"\n"
@@ -203,7 +203,7 @@ class NetworkTests(object):
 	def test_code_whenNameIsAKeyword(self) :
 		net = Network(self.empty())
 		net["while"] = "DummyPortSource"
-		self.assertEquals(
+		self.assertEqual(
 			"network[\"while\"] = 'DummyPortSource'\n"
 			"\n"
 			"\n"
@@ -214,23 +214,23 @@ class NetworkTests(object):
 		try:
 			net.code = "DummyPortSource"
 			self.fail("Exception expected")
-		except AssertionError, e:
-			self.assertEquals("Wrong processing name: code is a method", e.__str__())
+		except AssertionError as e:
+			self.assertEqual("Wrong processing name: code is a method", e.__str__())
 
 	def test_addProcessingWithName_types_AndFail(self):
 		net = Network(self.empty())
 		try:
 			net.types = "DummyPortSource"
 			self.fail("Exception expected")
-		except AssertionError, e:
-			self.assertEquals("Wrong processing name: types is a method", e.__str__())
+		except AssertionError as e:
+			self.assertEqual("Wrong processing name: types is a method", e.__str__())
 
 	def test_codeShowsDescription(self):
 		net = Network(self.empty())
 		net.description = "A description"
 		net.proc1 = "DummyPortSink"
-		self.assertEquals("A description", net.description)
-		self.assertEquals(
+		self.assertEqual("A description", net.description)
+		self.assertEqual(
 			"network.description = 'A description'\n"
 			"network.proc1 = 'DummyPortSink'\n"
 			"\n"
@@ -242,7 +242,7 @@ class NetworkTests(object):
 		net.proc1 = "ProcessingWithNumericPorts"
 		net.proc2 = "ProcessingWithNumericPorts"
 		net.proc1["2"] > net.proc2["1"]
-		self.assertEquals(
+		self.assertEqual(
 			"network.proc1 = 'ProcessingWithNumericPorts'\n"
 			"network.proc2 = 'ProcessingWithNumericPorts'\n"
 			"\n"
@@ -475,7 +475,7 @@ class NetworkTests(object):
 		net.proc1 = "DummyProcessingWithStringConfiguration"
 		net.proc1.AString = 'newvalue'
 		net.proc2 = "DummyProcessingWithStringConfiguration"
-		self.assertEquals(
+		self.assertEqual(
 			"network.proc1 = 'DummyProcessingWithStringConfiguration'\n"
 			"network.proc2 = 'DummyProcessingWithStringConfiguration'\n"
 			"network.proc1['AString'] = 'newvalue'\n"
@@ -508,7 +508,7 @@ class NetworkTests(object):
 		net = Network(self.empty())
 		net.proc1 = "Dummy2IOPortsControls"
 		net.proc2 = "Dummy2IOPortsControls"
-		self.assertEquals(4, net.proc1 > net.proc2)
+		self.assertEqual(4, net.proc1 > net.proc2)
 		self.maxDiff = 1000
 		self.assertMultiLineEqual(
 			"network.proc1 = 'Dummy2IOPortsControls'\n"
@@ -526,8 +526,8 @@ class NetworkTests(object):
 
 class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		from .dummy import Dummy_Engine
+		return Dummy_Engine()
 
 	@unittest.skip("Not working yet")
 	def test_withClause_holdsConfiguration(self):
@@ -535,8 +535,8 @@ class NetworkTests_Dummy(NetworkTests, unittest.TestCase):
 
 class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 	def empty(self):
-		import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		from .clam import Clam_Engine
+		return Clam_Engine()
 
 	def test_connect_outportsToPort(self):
 		"CLAM limits inports connections"
@@ -584,15 +584,15 @@ class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 	def test_processingConfig(self):
 		net = Network(self.empty())
 		net.proc1 = "DummyProcessingWithCompleteConfiguration"
-		self.assertEquals(42, net.proc1.IntAttribute)
+		self.assertEqual(42, net.proc1.IntAttribute)
 
 	def test_set_config_attribute(self) :
 		net = Network(self.empty())
 		net.p = "AudioSource"
-		self.assertEquals(['1'], net.p._outports.__dir__() )
+		self.assertEqual(['1'], net.p._outports.__dir__() )
 		net.p.NSources = 2
-		self.assertEquals(['1', '2'], net.p._outports.__dir__() )
-		self.assertEquals(2, net.p.NSources)
+		self.assertEqual(['1', '2'], net.p._outports.__dir__() )
+		self.assertEqual(2, net.p.NSources)
 
 	def test_set_config_attribute_with_hold_apply(self) :
 		net = Network(self.empty())
@@ -600,19 +600,19 @@ class NetworkTests_Clam(NetworkTests, unittest.TestCase):
 		c = net.p._config
 		c.hold()
 		c.NSources = 2
-		self.assertEquals(1, net.p.NSources)
+		self.assertEqual(1, net.p.NSources)
 		c.apply()
-		self.assertEquals(2, net.p.NSources)
+		self.assertEqual(2, net.p.NSources)
 
 	def test_clone_and_apply(self) :
 		net = Network(self.empty())
 		net.p = "AudioSource"
 		c = net.p._config.clone()
 		c.NSources = 2
-		self.assertEquals(1, net.p.NSources)
-		self.assertEquals(2, c.NSources)
+		self.assertEqual(1, net.p.NSources)
+		self.assertEqual(2, c.NSources)
 		net.p._config = c
-		self.assertEquals(2, net.p.NSources)
+		self.assertEqual(2, net.p.NSources)
 
 
 if __name__ == '__main__':

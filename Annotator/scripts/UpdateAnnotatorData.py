@@ -5,22 +5,22 @@ import sys
 schema = sys.argv[1]
 pools = sys.argv[2:]
 
-print "Schema:", schema
-print "pools:", pools
+print("Schema:", schema)
+print("pools:", pools)
 
 from xml.etree import ElementTree
-schemaDoc = ElementTree.parse(file(schema))
+schemaDoc = ElementTree.parse(open(schema))
 
 segmentationAttributes = [ (line.attrib['scope'], line.attrib['name'], (line.find('SegmentationPolicy')).text)
 	for line in schemaDoc.findall("//Attribute")
 	if line.attrib['type'] == 'Segmentation'
 ]
 
-print segmentationAttributes
+print(segmentationAttributes)
 schemaDoc.write(sys.stdout,'utf8')
 
 for pool in pools:
-	poolDoc = ElementTree.parse(file(pool))
+	poolDoc = ElementTree.parse(open(pool))
 	# locate the segmentation attributes
 	for scope, attribute, policy in segmentationAttributes:
 		for line in  poolDoc.findall("//ScopePool"):
@@ -37,4 +37,3 @@ for pool in pools:
 				segmentations.set("size", line2.attrib.pop("size"))
 				line2.append(segmentations)
 	poolDoc.write(sys.stdout, 'utf8')
-

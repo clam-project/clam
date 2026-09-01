@@ -62,7 +62,7 @@ LV2_Descriptor * LV2NetworkPlayer::CreateLV2Descriptor(
 {
 	LV2_Descriptor * descriptor = new LV2_Descriptor;
 	descriptor->URI            = LV2Library::dupstr(uri.c_str());
-	descriptor->extension_data = NULL;
+	descriptor->extension_data = nullptr;
 	descriptor->instantiate    = ::Instantiate;
 	descriptor->connect_port   = ::ConnectTo;
 	descriptor->activate       = ::Activate;
@@ -83,7 +83,7 @@ LV2NetworkPlayer::LV2NetworkPlayer(const LV2_Descriptor * descriptor, double sam
 	{
 		CLAM::XmlStorage::Restore( _network, xmlfile);
 	}
-	catch ( CLAM::XmlStorageErr err)
+	catch (const CLAM::XmlStorageErr& err)
 	{
 		std::cerr << "CLAM LV2: Error while loading CLAM network based plugin '" << descriptor->URI<< "'." <<std::endl;
 		std::cerr << err.what() << std::endl;

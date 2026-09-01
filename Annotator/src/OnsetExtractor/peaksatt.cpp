@@ -28,12 +28,12 @@ peaksatt::peaksatt(const peaksatt &patt)
 		specpeaks.insert(*curr);
 }
 
-ostream &operator<<(ostream &output, peaksatt patt)
+std::ostream &operator<<(std::ostream &output, peaksatt patt)
 {
 	output << "t_ini=" << patt.tini << " ";
 	output << "t_end=" << patt.tend;
-	output << "\nSpectrum peaks=" << patt.specpeaks.size() << endl;
+	output << "\nSpectrum peaks=" << patt.specpeaks.size() << std::endl;
 	for (itermapa2 curr=(patt.specpeaks).begin(); curr!=(patt.specpeaks).end(); curr++)
-		output << curr->first << "= " << curr->second << endl;
+		output << curr->first << "= " << curr->second << std::endl;
 	return output;
 }

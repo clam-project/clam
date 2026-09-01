@@ -32,9 +32,9 @@
 
 using namespace CLAM;
 
-AudioPlayer* AudioPlayer::sCurrentPlayer = NULL;
+AudioPlayer* AudioPlayer::sCurrentPlayer = nullptr;
 
-AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 ) 
+AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 )
 	: mAudioReference( audio ), mT0( t0 )
 {
 	mCancel = false;
@@ -42,13 +42,13 @@ AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 )
 
 	mRequestStop.Connect( slot );
 
-	pthread_create( &mThread, 0, sPlayingThreadSafe, this );
+	mThread = std::thread([this]{ PlayingThreadSafe(); });
 }
 
-AudioPlayer::~AudioPlayer(  ) 
+AudioPlayer::~AudioPlayer()
 {
-	mCancel = true ;
-	pthread_join( mThread, 0 );
+	mCancel = true;
+	if (mThread.joinable()) mThread.join();
 	delete mAudioReference;
 }
 
@@ -93,19 +93,12 @@ void AudioPlayer::PlayingThreadSafe(  )
 		mRequestStop.Emit(  );
 }
 
-void* AudioPlayer::sPlayingThreadSafe(void* ptr)
-{
- 	((AudioPlayer*)ptr)->PlayingThreadSafe();
-
-	return NULL;
-}
-
-void AudioPlayer::StopFromGUIThread(  )
+void AudioPlayer::StopFromGUIThread()
 {
 	if( sCurrentPlayer )
 	{
 		delete sCurrentPlayer;
-		sCurrentPlayer = NULL;
+		sCurrentPlayer = nullptr;
 	}
 }
 

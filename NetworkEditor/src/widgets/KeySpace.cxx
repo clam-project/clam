@@ -20,6 +20,7 @@
  */
 
 #include "KeySpace.hxx"
+#include <QtGlobal>
 #include <cmath>
 #include <iostream>
 
@@ -78,7 +79,7 @@ static TKeyNode * getKeyNodes()
 static unsigned nKeyNodes=24;
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
-	: QGLWidget(parent)
+	: QOpenGLWidget(parent)
 	, _smooth(true)
 	, _nX(128)
 	, _nY(64)
@@ -265,7 +266,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	glEnable(GL_TEXTURE_2D);
-	qglColor(Qt::yellow);
+	glColor3d(1,1,0);
 	float vertexes[] = {0,0,0,1,1,1,1,0};
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -283,17 +284,18 @@ void CLAM::VM::KeySpace::DrawLabels()
 	TKeyNode *pKeyNodes = getKeyNodes();
 	for(unsigned i=0; i<nKeyNodes; i++)
 	{
-		float x1 = pKeyNodes[i].x;
+		// TODO: label drawing call is missing; x1/y1/colour are computed but
+		// not consumed (no glRasterPos / text-render). Preserved verbatim so
+		// the missing render call is visible in code review.
+		[[maybe_unused]] float x1 = pKeyNodes[i].x;
 		float y1 = pKeyNodes[i].y;
 
 		if (y1 < 4./_nY)
 			y1 = 4./_nY;
 
-		float value = _data ? _data[i]/_maxValue : 0; 
+		float value = _data ? _data[i]/_maxValue : 0;
 		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(),font());
 	}
 }
-

@@ -24,7 +24,7 @@
 #ifndef KeySpacePlugin_hxx
 #define KeySpacePlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class KeySpacePlugin : public QObject,
                              public QDesignerCustomWidgetInterface

@@ -22,11 +22,14 @@
 #ifndef __VMQT_PLOT2D_H__
 #define __VMQT_PLOT2D_H__
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QVector3D>
+#include <QMatrix4x4>
 #undef GetClassName
 #include <map>
 #include <list>
-#include <QtGui/QCursor>
+#include <QCursor>
 #include "vmDataTypes.hxx"
 
 namespace CLAM
@@ -44,7 +47,8 @@ namespace CLAM
 		 * 	and the content is drawn by a stack of interactive
 		 * 	layers, called Renderer2D's.
 		 */
-		class PlotCanvas : public QGLWidget
+		class PlotCanvas : public QOpenGLWidget,
+		                   protected QOpenGLFunctions
 		{
 			typedef std::map<QString, Renderer2D*> Renderers;
 			
@@ -104,7 +108,8 @@ namespace CLAM
 			void setYRangeController(ScrollGroup * controller) {mYRangeController=controller;}
 
 		protected:
-			void paintGL(); 
+			void initializeGL() override;
+			void paintGL() override;
 			void resizeEvent(QResizeEvent* e);
 			void mouseMoveEvent(QMouseEvent* e);
 			void mousePressEvent(QMouseEvent* e);
@@ -112,7 +117,7 @@ namespace CLAM
 			void mouseDoubleClickEvent(QMouseEvent* e);
 			void keyPressEvent(QKeyEvent * e);
 			void keyReleaseEvent(QKeyEvent * e);
-			void enterEvent(QEvent* e);
+			void enterEvent(QEnterEvent* e);
 			void leaveEvent(QEvent* e);
 
 

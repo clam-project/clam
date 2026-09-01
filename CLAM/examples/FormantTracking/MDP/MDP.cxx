@@ -32,9 +32,7 @@ namespace CLAM
 
 	bool MDP::SetAccStates( const unsigned int f, const unsigned int s )
 	{
-		unsigned int i;
-
-		for( i = 0; i < mNStatesPerFrame[f]; i++)
+		for(TSize i = 0; i < mNStatesPerFrame[f]; i++)
 			if( mAccStates(i,f) == s ) return true;
 
 		mAccStates( mNStatesPerFrame[f], f ) = s;
@@ -61,19 +59,17 @@ namespace CLAM
 
 	void MDP::AllocateMem( void )
 	{
-		unsigned int i,j;
-
 		CheckTypes();
 
 		mProbMatrix.Resize(GetNStates());
 		mProbMatrix.SetSize(GetNStates());
 		
-		for( i=0; i<GetNStates(); i++ )
+		for(TSize i=0; i<GetNStates(); i++ )
 		{
 			mProbMatrix[i].Resize(GetNStates());
 			mProbMatrix[i].SetSize(GetNStates());
 
-			for( j=0; j<GetNStates(); j++ )
+			for(TSize j=0; j<GetNStates(); j++ )
 			{
 				mProbMatrix[i][j].Resize(GetNFrames());
 				mProbMatrix[i][j].SetSize(GetNFrames());

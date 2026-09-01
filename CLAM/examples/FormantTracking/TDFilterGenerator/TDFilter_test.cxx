@@ -53,7 +53,7 @@ class TDFilterExample: public ProcessingComposite
 	void ConfigureFileIO();
 	const char* GetClassName() const {return "TDFilterExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
+	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig& c);
 public:
 	TDFilterExample(const TDFilterExampleConfig &cfg);
@@ -61,7 +61,7 @@ public:
 	bool Do() ;
 };
 
-bool TDFilterExample::ConcreteStart() throw(ErrProcessingObj)
+bool TDFilterExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)
@@ -230,7 +230,7 @@ int main()
 		myApp.Do();
 
 	}
-	catch( CLAM::Err err )
+	catch( CLAM::Err & err )
 	{
 		err.Print();
 	}

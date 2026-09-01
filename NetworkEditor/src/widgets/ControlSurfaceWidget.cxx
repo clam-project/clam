@@ -1,12 +1,19 @@
 #include "ControlSurfaceWidget.hxx"
-#include <QtGui/QLabel>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
+#include <QLabel>
+#include <QDoubleSpinBox>
+#include <QVBoxLayout>
+#include <QPainter>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QtGlobal>
 #include "EmbededWidgets.hxx"
 
 static CLAM::EmbededWidgetCreator <ControlSurfaceWidget> reg("ControlSurface");
+
+static QPoint mousePosition(const QMouseEvent * event)
+{
+	return event->position().toPoint();
+}
 
 
 ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing, QWidget * parent)
@@ -44,7 +51,7 @@ ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing, QWidge
 	}
 	QVBoxLayout * mainLayout= new QVBoxLayout;
 	setLayout(mainLayout);
-	mainLayout->setMargin(1);
+	mainLayout->setContentsMargins(1, 1, 1, 1);
 
 	_surface = new QLabel;
 	mainLayout->addWidget(_surface);
@@ -150,21 +157,24 @@ void ControlSurfaceWidget::paintEvent(QPaintEvent * event)
 	QPointF point(
 		pointSize/2+(_spinBoxX->value()-_minX)*xSize/(_maxX-_minX),
 		pointSize/2+(_maxY-_spinBoxY->value())*ySize/(_maxY-_minY));
-	painter.drawRoundRect(point.x()-pointSize/2, point.y()-pointSize/2,pointSize,pointSize,2,2);
+	painter.drawRoundedRect(point.x()-pointSize/2, point.y()-pointSize/2,pointSize,pointSize,2,2);
 }
 
 void ControlSurfaceWidget::mousePressEvent(QMouseEvent * event)
 {
-	if (event->y()>_spinBoxX->y()) return;
-	moveSurface(event->x(), event->y());
+	const QPoint position = mousePosition(event);
+	if (position.y()>_spinBoxX->y()) return;
+	moveSurface(position.x(), position.y());
 }
 void ControlSurfaceWidget::mouseMoveEvent(QMouseEvent * event)
 {
-	moveSurface(event->x(), event->y());
+	const QPoint position = mousePosition(event);
+	moveSurface(position.x(), position.y());
 }
 void ControlSurfaceWidget::mouseReleaseEvent(QMouseEvent * event)
 {
-	moveSurface(event->x(), event->y());
+	const QPoint position = mousePosition(event);
+	moveSurface(position.x(), position.y());
 }
 
 double ControlSurfaceWidget::mapX(int x) const
@@ -180,5 +190,3 @@ double ControlSurfaceWidget::mapY(int y) const
 	if (y>enabledHeight-pointSize/2) return _minY;
 	return _maxY-(y-pointSize/2)*(_maxY-_minY)/(enabledHeight-pointSize);
 }
-
-

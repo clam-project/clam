@@ -18,7 +18,7 @@
 
 
 from Schema import *
-import cStringIO
+from io import StringIO
 import unittest
 import xml.dom.ext
 
@@ -62,14 +62,14 @@ document2 ="""\
 
 class SchemaTest(unittest.TestCase):
 	def setUp(self):
-		self.schema = cStringIO.StringIO(document)
-		self.schema2 = cStringIO.StringIO(document2)
+		self.schema = StringIO(document)
+		self.schema2 = StringIO(document2)
 
 	def serializeXml(self, nodes) :
-		output = cStringIO.StringIO()
+		output = StringIO()
 		for node in nodes :
 			xml.dom.ext.Print(node, output)
-			print >> output
+			print(file=output)
 		return output.getvalue()
 
 	def testSelectAttribute(self) :
@@ -98,7 +98,7 @@ class SchemaTest(unittest.TestCase):
 		try :
 			schema1.InsertAttribute(schema2,'BadScope', 'BadAttribute', 'S1')
 			self.fail("Expected exception was not thrown")
-		except Schema.Exception, e:
+		except Schema.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::BadAttribute' not found",
 				e.what)
@@ -117,7 +117,7 @@ class SchemaTest(unittest.TestCase):
 		try :
 			schema2.RemoveAttribute('BadScope', 'BadAttribute')
 			self.fail("Expected exception was not thrown")
-		except Schema.Exception, e:
+		except Schema.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::BadAttribute' not found",
 				e.what)
@@ -125,7 +125,7 @@ class SchemaTest(unittest.TestCase):
 
 	def testDefaultInit(self) :
 		schema = Schema()
-		file = cStringIO.StringIO()
+		file = StringIO()
 		schema.Dump(file)
 		self.assertEqual("""\
 <?xml version='1.0' encoding='UTF-8'?>

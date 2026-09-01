@@ -90,9 +90,9 @@ public:
 		return *p;
 	}
 
-	/** Find a created AudioDevice, or NULL when not found 
+	/** Find a created AudioDevice, or nullptr when not found 
 	 *  @param name The name of the AudioDevice we want to get
-	 *  @return the AudioDevice if it exists, or NULL otherwise
+	 *  @return the AudioDevice if it exists, or nullptr otherwise
 	 */
 	AudioDevice* FindDevice(const std::string& name);
 
@@ -103,7 +103,7 @@ public:
 	AudioDevice* FindOrCreateDevice(const std::string& name);
 
 	/** This method starts the AudioManager object*/
-	void Start(void) throw(Err);
+	void Start(void);
 
 	/** Getter to obtain the sample rate of the AudioManager
 	 *  @return the sample rate

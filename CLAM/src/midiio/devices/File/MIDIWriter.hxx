@@ -26,7 +26,7 @@ namespace MIDI
 		int   mDivision;
 		
 		void WriteHeader();
-		void WriteVarLen(register unsigned long value);
+		void WriteVarLen(unsigned long value);
 		void Write32Bit(unsigned long data);
 		void Write16Bit(int data);
 		void WriteCh(char c);

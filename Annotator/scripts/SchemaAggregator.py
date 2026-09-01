@@ -26,12 +26,12 @@ import sys
 if sys.argv[1] == "-" :
 	script = sys.stdin
 else :
-	script = file(sys.argv[1])
+	script = open(sys.argv[1])
 sources = sys.argv[2:]
 
 target = Schema()
 aggregator = Aggregator(script)
-aggregator.run(target, [ Schema(file(source)) for source in sources ] )
+	aggregator.run(target, [ Schema(open(source)) for source in sources ] )
 
 target.Dump(sys.stdout)
 

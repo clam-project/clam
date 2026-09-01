@@ -35,7 +35,7 @@ private:
 public:
 	Search()
 	{
-		mpData = NULL;
+		mpData = nullptr;
 	}
 	Search(const U& array)
 	{

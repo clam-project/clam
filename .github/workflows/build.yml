@@ -1,0 +1,187 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ubuntu-build:
+    name: Ubuntu (Qt6 / C++17)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libcppunit-dev \
+            libxerces-c-dev \
+            libfftw3-dev \
+            libsndfile1-dev \
+            libvorbis-dev \
+            libmad0-dev \
+            libid3-3.8.3-dev \
+            lv2-dev \
+            libjack-jackd2-dev \
+            portaudio19-dev \
+            libasound2-dev \
+            libgl1-mesa-dev \
+            ladspa-sdk \
+            qt6-base-dev \
+            qt6-base-dev-tools \
+            libqt6opengl6-dev \
+            qt6-svg-dev \
+            qt6-tools-dev \
+            python3-dev \
+            libboost-python-dev
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCLAM_BUILD_LIBRARIES=ON
+          -DCLAM_BUILD_GUI_APPS=ON
+          -DCLAM_BUILD_SMSTOOLS=ON
+
+      - name: Build
+        run: cmake --build build -j $(nproc)
+
+      - name: List built binaries
+        run: |
+          find build -maxdepth 4 -type f -executable \
+            \( -name NetworkEditor -o -name SMSTools -o -name SMSBatch -o -name SMSConsole \) -print
+
+  macos-build:
+    name: macOS (Qt6 / C++17)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          brew update
+          brew install \
+            cmake \
+            ninja \
+            pkg-config \
+            cppunit \
+            xerces-c \
+            fftw \
+            libsndfile \
+            libvorbis \
+            mad \
+            id3lib \
+            lv2 \
+            jack \
+            portaudio \
+            qt@6
+          echo "$(brew --prefix qt@6)/bin" >> "$GITHUB_PATH"
+          {
+            echo "CMAKE_PREFIX_PATH=$(brew --prefix qt@6)"
+            echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:$(brew --prefix)/share/pkgconfig"
+          } >> "$GITHUB_ENV"
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCLAM_BUILD_LIBRARIES=ON
+          -DCLAM_BUILD_GUI_APPS=ON
+          -DCLAM_BUILD_SMSTOOLS=ON
+          -DCLAM_WITH_LADSPA=OFF
+          -DCLAM_WITH_ALSA=OFF
+
+      - name: Build
+        run: cmake --build build -j $(sysctl -n hw.ncpu)
+
+      - name: List built binaries
+        run: |
+          find build -maxdepth 4 -type f -perm +111 \
+            \( -name NetworkEditor -o -name SMSTools -o -name SMSBatch -o -name SMSConsole \) -print
+
+  windows-build:
+    name: Windows (Qt6 / C++17)
+    runs-on: windows-latest
+    if: false
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+      # Microsoft removed the 'x-gha' vcpkg backend; persist a files-backed
+      # binary cache via actions/cache below instead. Restoring this lops
+      # the per-run vcpkg work from ~15 min (build everything) down to ~1
+      # min (unpack archives).
+      VCPKG_BINARY_SOURCES: 'clear;files,${{ github.workspace }}\vcpkg-binary-cache,readwrite'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: f7f94113c3b629c01df3d49d5edebae6d598c78c
+
+      - name: Cache vcpkg binary archives
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg-binary-cache
+          # Key on the vcpkg commit + the dep list (the only inputs that
+          # change which archives need to exist). Anything else (CMakeLists,
+          # source code) doesn't affect the prebuilt deps.
+          key: vcpkg-${{ runner.os }}-x64-windows-f7f94113-xerces+fftw3+sndfile+vorbis+mad+cppunit+portaudio-v1
+          restore-keys: |
+            vcpkg-${{ runner.os }}-x64-windows-f7f94113-
+
+      - name: Install dependencies via vcpkg
+        run: |
+          vcpkg install --triplet=x64-windows `
+            xerces-c `
+            fftw3 `
+            libsndfile `
+            libvorbis `
+            libmad `
+            cppunit `
+            portaudio
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          # qtsvg ships in the base Windows archives (qtbase, qtdeclarative,
+          # qtsvg, qttools, qttranslations), not as an optional module --
+          # no need to request it via modules.
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+          -DCMAKE_BUILD_TYPE=Release
+          -DCLAM_BUILD_LIBRARIES=ON
+          -DCLAM_BUILD_GUI_APPS=ON
+          -DCLAM_BUILD_SMSTOOLS=ON
+          -DCLAM_WITH_LADSPA=OFF
+          -DCLAM_WITH_LV2=OFF
+          -DCLAM_WITH_JACK=OFF
+          -DCLAM_WITH_ALSA=OFF
+          -DCLAM_WITH_ID3=OFF
+
+      - name: Build
+        run: cmake --build build --config Release -- /maxcpucount
+
+      - name: List built binaries
+        run: |
+          Get-ChildItem -Recurse -Path build -Include NetworkEditor.exe,SMSTools.exe,SMSBatch.exe,SMSConsole.exe

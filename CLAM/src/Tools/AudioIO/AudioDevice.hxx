@@ -96,9 +96,9 @@ public:
 	virtual ~AudioDevice() { };
 	
 	/** This method must be called to begin the use of this Device. Must be implemented by any Device derived from this class*/
-	virtual void Start(void) throw(Err) = 0;
+	virtual void Start(void) = 0;
 	/** This method must be called to end the use of this Device. Must be implemented by any Device derived from this class*/
-	virtual void Stop(void) throw(Err) = 0;
+	virtual void Stop(void) = 0;
 	/** Reads the information given by this Device and passes data to an Audio chunk. Must be implemented by any Device derived from this class.
 	 *  @param audio Audio object where data will be stored.
 	 *  @param channelID Channel to read.

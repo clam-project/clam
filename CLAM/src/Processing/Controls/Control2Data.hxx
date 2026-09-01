@@ -28,8 +28,7 @@
 
 #include <vector>
 #include <queue>
-
-#include "Mutex.hxx"
+#include <mutex>
 
 namespace CLAM {
 
@@ -140,9 +139,9 @@ protected:
 	std::vector<TQueue> mDataQueues;
 	
 	/** Mutex object for ensuring multithread capabilities */
-	Mutex mDataMutex;
+	std::mutex mDataMutex;
 	/** Mutex object for ensuring multithread capabilities */
-	Mutex mControl2DataDoMutex;
+	std::mutex mControl2DataDoMutex;
 };
 //////////////////////////////////////////////////////////////////////////////////////////
 }; // namespace CLAM

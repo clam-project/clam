@@ -7,25 +7,25 @@ host = ""
 
 def deprecatedOscExample() : # by Xavier Oliver
 	if not (len(sys.argv)==1 or len(sys.argv)==2) :
-		print "usage: sendControlsOSC [host]\n"	
+		print("usage: sendControlsOSC [host]\n")	
 		sys.exit(1)
 
 	if len(sys.argv)==2 :
 		host = sys.argv[1]
-		print "using host:", host
+		print("using host:", host)
 	else:
 		host = ""
-		print "using local host"
+		print("using local host")
 
 	procname="-"
-	print ">Processing name?"
+	print(">Processing name?")
 	procname=sys.stdin.readline()
 
-	print ">Control name?"
+	print(">Control name?")
 	ctrlname=sys.stdin.readline()
 
 	while True:
-		print ">Control value?"
+		print(">Control value?")
 		value=float(sys.stdin.readline())
 
 		dest = "/"+procname[:-1]+"/"+ctrlname[:-1]
@@ -56,7 +56,7 @@ def exampleWalkInCircles() :
 		value1 = math.sin(delta)
 		value2 = math.cos(delta)
 		data = [value1, value2 ]
-		print data
+		print(data)
 		send("/azimut", data)
 		delta += increment
 		if delta > 2*math.pi :
@@ -68,7 +68,7 @@ def exampleRotatingAngleDegrees() :
 	increment = 360/100 # in degrees
 	timestep = 0.1 # seconds
 	while True:
-		print delta
+		print(delta)
 		send("/azimut", [delta, 0])
 		delta += increment
 		if delta >= 360 :

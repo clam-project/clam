@@ -35,7 +35,7 @@
 #include "GlobalEnums.hxx"
 #include <vector>
 #include <time.h>
-//#include "XMLTestHelper.hxx"
+#include "XMLTestHelper.hxx"
 
 using namespace CLAM;
 
@@ -149,7 +149,7 @@ try{
 
 	fclose(pFile);
 	}
-	catch(Err err) {
+	catch(Err & err) {
 		err.Print();
 		return 1;
 	}

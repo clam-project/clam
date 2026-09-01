@@ -79,11 +79,11 @@ public:
 	 * @param isXMLElement Tells whether the object is an
 	 * element or an attribute when the name is defined.
 	 */
-	XMLAdapter (t_adaptee & anAdaptee, const char * name=NULL, bool isXMLElement=false)
+	XMLAdapter (t_adaptee & anAdaptee, const char * name=nullptr, bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), mAdaptee(anAdaptee)
 	{
 	}
-	XMLAdapter (const t_adaptee & anAdaptee, const char * name=NULL, bool isXMLElement=false)
+	XMLAdapter (const t_adaptee & anAdaptee, const char * name=nullptr, bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T&>(anAdaptee))
 	{
 	}
@@ -106,7 +106,7 @@ public:
 	bool XMLContent(std::istream & str) 
 	{
 		str >> mAdaptee;
-		return str!=NULL;
+		return static_cast<bool>(str);
 	}
 // Testing
 public:
@@ -119,4 +119,3 @@ public:
 
 }
 #endif//_XMLAdapter_
-

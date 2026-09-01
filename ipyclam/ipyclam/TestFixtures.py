@@ -1,7 +1,7 @@
-import Dummy_Engine
+from .dummy import Dummy_Engine
 
 def empty() :
-	return Dummy_Engine.Dummy_Engine([], [], [])
+	return Dummy_Engine([], [], [])
 
 
 def dummyConfigWithStrings() :

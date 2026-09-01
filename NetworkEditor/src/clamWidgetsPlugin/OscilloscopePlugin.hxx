@@ -24,7 +24,7 @@
 #ifndef OscilloscopePlugin_hxx
 #define OscilloscopePlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class OscilloscopePlugin : public QObject,
                              public QDesignerCustomWidgetInterface

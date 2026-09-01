@@ -231,7 +231,7 @@ int main()
 		return res;
 
 	}
-	catch(Err e)
+	catch(Err & e)
 	{
 		e.Print();
 		return 1;

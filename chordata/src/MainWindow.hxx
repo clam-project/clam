@@ -17,7 +17,7 @@
 #ifndef TURNAROUND_HXX
 #define TURNAROUND_HXX
 
-#include "ui_MainWindow.hxx"
+#include "ui_MainWindow.h"
 
 #include <string>
 

@@ -20,8 +20,8 @@ FilenameToExport="geometry.data"
 
 def callBackListener(event,val):
 	global ListOfGeometriesToExport
-	print "callBackListener"
-	print "event: %s\t-\tval: %s" % (event,val)
+	print("callBackListener")
+	print("event: %s\t-\tval: %s" % (event,val))
 	ListOfGeometriesToExport=[]
 	if val==1 or val==2:
 		ListOfGeometriesToExport.append('geometry')
@@ -33,7 +33,7 @@ def callBackListener(event,val):
 
 def callbackExportButton(event,value):
 	global ListOfGeometriesToExport
-	print ListOfGeometriesToExport
+	print(ListOfGeometriesToExport)
 	scene=Blender.Scene.GetCurrent()
 	buffer=""
 	for typeOfGeometry in ListOfGeometriesToExport:
@@ -49,8 +49,8 @@ def callbackExportButton(event,value):
 
 def callbackChangeFilename(event,value):
 	global FilenameToExport
-#	print "callbackChangeFilename!"
-#	print "event: %s - value: %s" % ( str(event),str(value) )
+#	print("callbackChangeFilename!")
+#	print("event: %s - value: %s" % ( str(event),str(value) ))
 	FilenameToExport=str(value)
 	return
 

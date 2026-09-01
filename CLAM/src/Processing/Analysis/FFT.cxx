@@ -46,7 +46,7 @@ namespace Hidden
 		mSize(0),
 		mInput("Audio Input",this),
 		mOutput("Spectrum Output",this),
-		fftbuffer( NULL )
+		fftbuffer( nullptr )
 	{
 	};
 

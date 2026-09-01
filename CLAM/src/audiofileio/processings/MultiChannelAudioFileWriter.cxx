@@ -45,13 +45,13 @@ namespace Hidden
 	
 	
 	MultiChannelAudioFileWriter::MultiChannelAudioFileWriter()
-		: mNativeStream( NULL )
+		: mNativeStream( nullptr )
 	{
 		Configure(MultiChannelAudioFileWriterConfig());
 	}
 
 	MultiChannelAudioFileWriter::MultiChannelAudioFileWriter( const ProcessingConfig& cfg )
-		: mNativeStream( NULL )
+		: mNativeStream( nullptr )
 	{
 		Configure( cfg );
 	}
@@ -222,7 +222,7 @@ namespace Hidden
 		for ( unsigned i = 0; i < nChannels; i++ )
 		{
 			mChannelsToWrite[ i ] = i;
-			mSamplesMatrix[ i ] = NULL;
+			mSamplesMatrix[ i ] = nullptr;
 			std::stringstream sstr;
 			sstr << i;
 			
@@ -242,7 +242,7 @@ namespace Hidden
 
 	bool MultiChannelAudioFileWriter::ConcreteStart()
 	{
-		if (mNativeStream == NULL )
+		if (mNativeStream == nullptr )
 			mNativeStream = mAudioFile.GetStream();
 		mNativeStream->PrepareWriting();
 
@@ -253,7 +253,7 @@ namespace Hidden
 	{
 		mNativeStream->Dispose();
 		delete mNativeStream;
-		mNativeStream = NULL;
+		mNativeStream = nullptr;
 
 		return true;
 	}

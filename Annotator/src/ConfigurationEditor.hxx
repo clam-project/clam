@@ -22,8 +22,8 @@
 #ifndef ConfigurationEditor_hxx
 #define ConfigurationEditor_hxx
 
-#include "ui_ConfigurationEditor.hxx"
-#include <QtCore/QFile>
+#include "ui_ConfigurationEditor.h"
+#include <QFile>
 
 
 class ConfigurationEditor : public QDialog

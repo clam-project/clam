@@ -76,7 +76,7 @@ public:
 	typedef std::vector<MIDIDeviceList*>::const_iterator list_iterator;
 
 	/** Constructor of the class*/
-	MIDIManager() throw(Err);
+	MIDIManager();
 
 	/** Destructor of the class*/
 	~MIDIManager();
@@ -90,9 +90,9 @@ public:
 		return *p;
 	}
 
-	/** Find a created MIDIDevice, or NULL when not found
+	/** Find a created MIDIDevice, or nullptr when not found
 	 *  @param name The name of the MIDIDevice we want to get
-	 *  @return the MIDIDevice if it exists, or NULL otherwise
+	 *  @return the MIDIDevice if it exists, or nullptr otherwise
 	 */
 	MIDIDevice* FindDevice(const std::string& name);
 
@@ -103,10 +103,10 @@ public:
 	MIDIDevice* FindOrCreateDevice(const std::string& name);
 
 	/** This method starts the MIDIManager object*/
-	void Start(void) throw(Err);
+	void Start(void);
 
 	/** This method stops the MIDIManager object*/
-	void Stop(void) throw(Err);
+	void Stop(void);
 
 	/** Checks all devices searching data to read*/
 	void Check(void);

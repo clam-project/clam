@@ -1,9 +1,9 @@
 #include "AudioFileReaderQtBinder.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
-#include <QtGui/QFileDialog>
-#include <QtGui/QAbstractButton>
-#include <QtGui/QAction>
+#include <QFileDialog>
+#include <QAbstractButton>
+#include <QAction>
 
 static CLAM::AudioFileReaderQtBinder audioFileReaderBinder;
 

@@ -24,7 +24,7 @@
 #include "QFirstPersonPlugin.hxx"
 #include "QFirstPerson.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 QFirstPersonPlugin::QFirstPersonPlugin(QObject *parent)
     : QObject(parent)

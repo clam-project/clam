@@ -1,6 +1,7 @@
 #ifndef BaseOutControl_hxx
 #define BaseOutControl_hxx
 
+#include <algorithm>
 #include <string>
 #include <list>
 #include <typeinfo>
@@ -86,7 +87,11 @@ namespace CLAM {
 			CLAM_ASSERT(IsConnectedTo(in),
 				"Removing a control connection that doesn't exist."
 				"You can check that with IsConnectedTo to ensure that this condition is meet.");
-			mLinks.remove( &in );
+			// std::find + erase instead of list::remove: MSVC 14.44's STL
+			// has a regression where list::remove_if's _List_node_remove_op
+			// helper has a reference member it can't value-initialize.
+			auto _it = std::find(mLinks.begin(), mLinks.end(), &in);
+			if (_it != mLinks.end()) mLinks.erase(_it);
 			in.OutControlInterface_RemoveLink(*this);
 		}
 		Peers::iterator BeginInControlsConnected();

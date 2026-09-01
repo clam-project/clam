@@ -22,6 +22,7 @@
 
 #include "PushFlowControl.hxx"
 #include "Processing.hxx"
+#include <algorithm>
 #include "OutPort.hxx"
 #include "InPort.hxx"
 #include "Network.hxx"
@@ -46,7 +47,10 @@ void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	NetworkTopologyChanged();
 
 	if (removed.GetNInPorts() == 0) // if it's a generator
-		mGenerators.remove( &removed );
+	{
+		auto _it = std::find(mGenerators.begin(), mGenerators.end(), &removed);
+		if (_it != mGenerators.end()) mGenerators.erase(_it);
+	}
 }
 
 void PushFlowControl::Do()

@@ -265,7 +265,9 @@ public:
 		double maxCorrelation = 0;
 		double underMaxCorrelation = 0;
 		unsigned maxIndex = 0;
-		unsigned underMaxIndex = 0;
+		// underMaxIndex tracks the second-best correlation but is never read;
+		// preserved as an indicator of a probable "runner-up chord" feature.
+		[[maybe_unused]] unsigned underMaxIndex = 0;
 		for (unsigned i=0; i<correlation.size(); i++)
 		{
 			if (correlation[i]<underMaxCorrelation) continue;

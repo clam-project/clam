@@ -23,9 +23,9 @@
 #define __PLOTCONTROLLER__
 
 #include <vector>
-#include <qobject.h>
-#include <qstring.h>
-#include <qcursor.h>
+#include <QObject>
+#include <QString>
+#include <QCursor>
 #include <CLAM/GLView.hxx>
 #include <CLAM/VLineArrayRenderer.hxx>
 #include <CLAM/Dial.hxx>

@@ -27,7 +27,7 @@ namespace CLAM {
 	TopLevelProcessing::TopLevelProcessing()
 	{
 		mpParent=0;
-		SetExecState(Ready);
+		SetExecState(ExecState::Ready);
 	}
 
 

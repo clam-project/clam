@@ -9,7 +9,7 @@ options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', '
 options.Add(BoolVariable('release', 'Enabling compiler optimizations', 'no') )
 options.Add(PathVariable('vstsdk_path', 'The path to vstsdk (root dir)', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
-if sys.platform=="linux2" :
+if sys.platform == 'linux' :
 	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
@@ -30,15 +30,15 @@ Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
+crosscompiling = "crossmingw" in env and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
@@ -48,20 +48,20 @@ if crosscompiling :
 sys.path.append(clam_sconstoolspath)
 
 env['CXXFILESUFFIX'] = ['.cxx']
-env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
-env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
+env['QT6_UICDECLSUFFIX'] = '.h'
+env['QT6_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT6_UICDECLPREFIX'] = os.path.join('generated','uic_')
+env['QT6_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
 	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
-	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
-	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
-	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
-	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
-	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT6_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT6_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT6_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 env.EnableClamModules([
 	'clam_core',
@@ -69,7 +69,7 @@ env.EnableClamModules([
 	'clam_processing',
 	], CLAMInstallDir)
 
-env.EnableQt4Modules([
+env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',

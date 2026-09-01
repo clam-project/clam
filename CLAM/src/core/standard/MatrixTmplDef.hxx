@@ -41,7 +41,7 @@ namespace CLAM
 		if(mpMatrixBuffer)
 		{
 			delete mpMatrixBuffer;
-			mpMatrixBuffer=NULL;
+			mpMatrixBuffer=nullptr;
 		}
 	}
 
@@ -66,13 +66,13 @@ namespace CLAM
 	template <class T>
 	void MatrixTmpl<T>::Print() const
 	{
+		std::cout.fill(' ');
 		for (unsigned int i=0; i<mNumRows; i++)
 		{
 			for (unsigned int j=0; j<mNumColumns; j++)
 				{
 					std::cout.width(10L);
 					std::cout << (*this)(i,j) << " ";
-					std::cout.fill();
 				} 
 			std::cout << std::endl;
 		}
@@ -97,4 +97,3 @@ namespace CLAM
 
 
 #endif // _MatrixTmplDef_
-

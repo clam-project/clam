@@ -1,19 +1,20 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
 
-#include <QtGui/QWidget>
-#include <QtGui/QPainter>
-#include <QtGui/QStyleOption>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QInputDialog>
-#include <QtGui/QGraphicsSceneMouseEvent>
-#include <QtGui/QGraphicsSceneContextMenuEvent>
-#include <QtGui/QGraphicsProxyWidget>
-#include "ui_DummyProcessingConfig.hxx"
+#include <QWidget>
+#include <QPainter>
+#include <QStyleOption>
+#include <QMouseEvent>
+#include <QInputDialog>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QGraphicsProxyWidget>
+#include <QtGlobal>
+#include "ui_DummyProcessingConfig.h"
 
 // ANY CLAM DEPENDENCY ON THIS FILE SHOULD BE DELEGATED TO THE CANVAS
 
-static std::string processingBoxRegionName(ProcessingBox::Region region)
+[[maybe_unused]] static std::string processingBoxRegionName(ProcessingBox::Region region)
 {
 	switch(region)
 	{
@@ -30,7 +31,7 @@ static std::string processingBoxRegionName(ProcessingBox::Region region)
 	}
 }
 
-static std::string processingBoxAction(ProcessingBox::ActionMode action)
+[[maybe_unused]] static std::string processingBoxAction(ProcessingBox::ActionMode action)
 {
 	switch(action)
 	{
@@ -42,7 +43,7 @@ static std::string processingBoxAction(ProcessingBox::ActionMode action)
 	}
 }
 
-static std::string networkCanvasDragMode(NetworkCanvas::DragStatus dragMode)
+[[maybe_unused]] static std::string networkCanvasDragMode(NetworkCanvas::DragStatus dragMode)
 {
 	switch(dragMode)
 	{
@@ -203,7 +204,7 @@ void ProcessingBox::recomputeMinimumSizes()
 	if (minimumHeight<outportsHeight) minimumHeight = outportsHeight;
 	minimumHeight += 2*portOffset;
 
-	int minimumWidth = metrics.width(_name) + textHeight + margin;
+	int minimumWidth = metrics.horizontalAdvance(_name) + textHeight + margin;
 	if (_embeded && minimumWidth<_embeded->minimumWidth())
 		minimumWidth = _embeded->minimumWidth();
 	if (_embeded && minimumWidth<_embeded->minimumSizeHint().width())
@@ -374,26 +375,26 @@ ProcessingBox::Region ProcessingBox::getItemRegion(const QPoint & point) const
 
 	if (x<portWidth)
 	{
-		if (y<portOffset)                     return noRegion;
-		if (y>=portOffset+_nInports*portStep) return noRegion;
+		if (y<portOffset)                                                  return noRegion;
+		if (y>=portOffset+static_cast<int>(_nInports)*portStep)            return noRegion;
 		return inportsRegion;
 	}
 	if (x>_size.width()-portWidth)
 	{
-		if (y<portOffset)                      return noRegion;
-		if (y>=portOffset+_nOutports*portStep) return noRegion;
+		if (y<portOffset)                                                  return noRegion;
+		if (y>=portOffset+static_cast<int>(_nOutports)*portStep)           return noRegion;
 		return outportsRegion;
 	}
 	if (y>=0 && y<controlHeight)
 	{
-		if (x<controlOffset)                           return noRegion;
-		if (x>=controlOffset+_nIncontrols*controlStep) return noRegion;
+		if (x<controlOffset)                                               return noRegion;
+		if (x>=controlOffset+static_cast<int>(_nIncontrols)*controlStep)   return noRegion;
 		return incontrolsRegion;
 	}
 	if (y<=_size.height() && y>_size.height()-controlHeight)
 	{
-		if (x<controlOffset)                            return noRegion;
-		if (x>=controlOffset+_nOutcontrols*controlStep) return noRegion;
+		if (x<controlOffset)                                               return noRegion;
+		if (x>=controlOffset+static_cast<int>(_nOutcontrols)*controlStep)  return noRegion;
 		return outcontrolsRegion;
 	}
 	if (y<textHeight+portOffset)
@@ -460,7 +461,7 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	// move actions
 	if (region==nameRegion or region==bodyRegion or region==iconRegion)
 	{
-		if (region==bodyRegion and !event->modifiers() & Qt::ControlModifier)
+		if (region == bodyRegion and not controlPressed)
 		{
 			_canvas->clearSelections();
 			select();
@@ -786,4 +787,3 @@ bool ProcessingBox::configure()
 	recomputeMinimumSizes();
 	return true;
 }
-

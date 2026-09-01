@@ -18,9 +18,9 @@
 #ifndef _MIDIPianoWidget_
 #define _MIDIPianoWidget_
 
-#include <QtGui/QWidget>
-#include <QtGui/QPainter>
-#include <QtSvg/QSvgRenderer>
+#include <QWidget>
+#include <QPainter>
+#include <QSvgRenderer>
 
 #include <vector>
 
@@ -43,7 +43,7 @@ class MIDIPianoWidget: public QWidget
 	Q_OBJECT
 
 public:
-	MIDIPianoWidget(Processing *processing, QWidget * parent=NULL)
+	MIDIPianoWidget(Processing *processing, QWidget * parent=nullptr)
 		: QWidget(parent)
 		, _processing(processing)
 	{

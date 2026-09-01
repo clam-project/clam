@@ -22,7 +22,7 @@
 #ifndef __VMQT_PLAYER_H__
 #define __VMQT_PLAYER_H__
 
-#include <QtCore/QThread>
+#include <QThread>
 #include "vmDataTypes.hxx"
 
 namespace CLAM

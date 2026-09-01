@@ -245,8 +245,8 @@ namespace CLAM {
 		RtAAudioDevice(const std::string& name,int _device);
 		~RtAAudioDevice();
 		
-		void Start(void) throw(Err);
-		void Stop(void) throw(Err);
+		void Start(void);
+		void Stop(void);
 		void Tick(void);
 		void Read(Audio& audio,const int channelID);
 		void Write(const Audio& audio,const int channelID);
@@ -262,7 +262,7 @@ namespace CLAM {
 		mDevice = _device;
 	}
 
-	void RtAAudioDevice::Start(void) throw(Err)
+	void RtAAudioDevice::Start(void)
 	{
 		if (!mRtAudio)
 		{
@@ -358,7 +358,7 @@ namespace CLAM {
 		mStarted = false;
 	}
 
-	void RtAAudioDevice::Stop(void) throw(Err)
+	void RtAAudioDevice::Stop(void)
 	{
 		if (mRtAudio)
 		{
@@ -469,7 +469,7 @@ namespace CLAM {
 
 	protected:
 
-		void EnumerateAvailableDevices() throw ( Err );
+		void EnumerateAvailableDevices();
 
 	public:
 
@@ -506,9 +506,9 @@ namespace CLAM {
 	{
 	}
 
-	void RtAAudioDeviceList::EnumerateAvailableDevices() throw ( Err )
+	void RtAAudioDeviceList::EnumerateAvailableDevices()
 	{
-		RtAudio* instance = NULL;
+		RtAudio* instance = nullptr;
 		
 		try {
 				instance = new RtAudio();

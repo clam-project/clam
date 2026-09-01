@@ -64,7 +64,7 @@ class MusicInfo(object):
 										 +"\n Existing : "+str(existing)+"\nAdding : "+str(obj))
 			debug("Merging Existing : "+str(existing)+"\nAdding : "+str(obj))
 			for propName in keep._props.keys():
-				 if add._props.has_key(propName):
+				 if propName in add._props:
 					for v in add._props[propName]:
 						debug("Adding "+str(v).replace("\n","|")+" to "+str(keep).replace("\n","|")+" as "+propName)
 						keep._props[propName].add(v)
@@ -86,7 +86,7 @@ class MusicInfo(object):
 							propSet.add(keep)
 	
 	def haveURI(self, uri):
-		return self.MainIdx.has_key(uri)
+		return uri in self.MainIdx
 		
 	def findExistingBlindObj(self, o):
 		if not hasattr(o, "shortname"):

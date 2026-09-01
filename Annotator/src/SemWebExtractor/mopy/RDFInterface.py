@@ -67,8 +67,8 @@ def importRDFGraph(g, strict=True):
 	for s in set(g.subjects()):
 		s_type = None
 		try:
-			s_type = g.objects(s, RDF.type).next()
-		except StopIteration, e:
+			s_type = next(g.objects(s, RDF.type))
+		except StopIteration as e:
 			if strict:
 				raise ImportException("NO TYPE SPECIFIED for "+ str(s)+" !")
 			else:
@@ -97,7 +97,7 @@ def importRDFGraph(g, strict=True):
 			s_propURIs = [objs[s]._props[s_propname].propertyURI for s_propname in s_propnames]
 			s_propdict = dict(zip(s_propURIs, s_propnames))
 			
-			#print "Trying to find "+str(p)+" amongst : "+str(s_propURIs)
+			#print("Trying to find "+str(p)+" amongst : "+str(s_propURIs))
 			
 			if str(p) in s_propURIs:
 				# find object
@@ -122,7 +122,7 @@ def importRDFGraph(g, strict=True):
 				# set object for property :
 				try:
 					getattr(objs[s], s_propdict[str(p)]).add(obj)
-				except TypeError, e:
+				except TypeError as e:
 					if strict:
 						raise ImportException("Exception when adding "+str(o)+" type "+str(type(obj))\
 						+" to "+str(s)+" type "+str(type(objs[s]))\
@@ -170,7 +170,7 @@ def importRDFGraph(g, strict=True):
 def exportRDFGraph(mi):
 	g = ConjunctiveGraph()
 	bnodes = {}
-	for NSName, NSuriStr in mi.namespaceBindings.iteritems():
+	for NSName, NSuriStr in mi.namespaceBindings.items():
 		g.namespace_manager.bind(NSName, URIRef(NSuriStr))
 
 	modelAttrs = [model.__dict__[c] for c in model.__dict__.keys()]
@@ -182,10 +182,10 @@ def exportRDFGraph(mi):
 		if s.URI == None or isBlind(s):
 			snode = BNode()
 			bnodes[s.URI] = snode
-		for propName, propSet in s._props.iteritems():
+		for propName, propSet in s._props.items():
 			for v in propSet:
 				if type(v) not in propSet.Lits and isBlind(v):
-					if not bnodes.has_key(v.URI):
+					if v.URI not in bnodes:
 						vnode = BNode()
 						bnodes[v.URI] = vnode
 					
@@ -202,7 +202,7 @@ def exportRDFGraph(mi):
 
 		g.add((snode, RDF.type, URIRef(s.classURI)))
 
-		for propName, propSet in s._props.iteritems():
+		for propName, propSet in s._props.items():
 			for v in propSet:
 				if not hasattr(propSet, "propertyURI"):
 					raise ExportException("Property "+str(propName)+" on object "+str(s)+" has no propertyURI !")

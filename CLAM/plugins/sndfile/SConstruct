@@ -39,14 +39,14 @@ env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.EnableClamModules(clamDependencies, CLAMInstallDir)
 
 # Sources and headers
-sourcePaths = env.recursiveDirs(".")
+sourcePaths = list(env.recursiveDirs("."))
 sources = env.scanFiles('*.cxx', sourcePaths) + env.scanFiles('*.c', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 headers = env.scanFiles('*.hxx', sourcePaths) + env.scanFiles('*.h', sourcePaths)
 env.AppendUnique(CPPPATH=sourcePaths)
 if sys.platform == "win32" or env['crossmingw'] :
 	env.AppendUnique(LIBS=['pthread'])
-if not env.has_key("PKG_CONFIG") :
+if "PKG_CONFIG" not in env :
 	env['PKG_CONFIG'] = 'pkg-config'
 env.ParseConfig( "$PKG_CONFIG --cflags --libs sndfile" )
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )

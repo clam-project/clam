@@ -22,8 +22,8 @@
 #include "DescriptorTableController.hxx"
 #include "Project.hxx"
 #include "DescriptorTablePlugin.hxx"
-#include <QtGui/QTableWidget>
-#include <QtGui/QHeaderView>
+#include <QTableWidget>
+#include <QHeaderView>
 
 namespace CLAM_Annotator
 {

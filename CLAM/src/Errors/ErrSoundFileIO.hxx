@@ -29,43 +29,43 @@ namespace CLAM {
 	class ErrSoundFileIO : public ErrProcessingObj
 	{
 	public:
-		ErrSoundFileIO() throw();
-		ErrSoundFileIO( const char* msg ) throw();
-		ErrSoundFileIO( const ErrSoundFileIO& ) throw();
+		ErrSoundFileIO() noexcept;
+		ErrSoundFileIO( const char* msg ) noexcept;
+		ErrSoundFileIO( const ErrSoundFileIO& ) noexcept;
 
-		virtual ~ErrSoundFileIO() throw();
+		virtual ~ErrSoundFileIO() noexcept;
 	};
 
 	class UnavailableSoundFile : public ErrSoundFileIO
 	{
 	public:
-		UnavailableSoundFile() throw();
-		UnavailableSoundFile( const char* msg ) throw();
-		UnavailableSoundFile( const UnavailableSoundFile& ) throw();
+		UnavailableSoundFile() noexcept;
+		UnavailableSoundFile( const char* msg ) noexcept;
+		UnavailableSoundFile( const UnavailableSoundFile& ) noexcept;
 
-		virtual ~UnavailableSoundFile() throw();
+		virtual ~UnavailableSoundFile() noexcept;
 		
 	};
 
 	class UnsupportedSoundFileSampleEncoding : public ErrSoundFileIO
 	{
 	public:
-		UnsupportedSoundFileSampleEncoding() throw();
-		UnsupportedSoundFileSampleEncoding( const char* msg ) throw();
-		UnsupportedSoundFileSampleEncoding( const UnsupportedSoundFileSampleEncoding& ) throw();
+		UnsupportedSoundFileSampleEncoding() noexcept;
+		UnsupportedSoundFileSampleEncoding( const char* msg ) noexcept;
+		UnsupportedSoundFileSampleEncoding( const UnsupportedSoundFileSampleEncoding& ) noexcept;
 
-		virtual ~UnsupportedSoundFileSampleEncoding() throw();
+		virtual ~UnsupportedSoundFileSampleEncoding() noexcept;
 		
 	};
 	
 	class UnsupportedSoundFileFormat : public ErrSoundFileIO
 	{
 	public:
-		UnsupportedSoundFileFormat() throw();
-		UnsupportedSoundFileFormat( const char* msg ) throw();
-		UnsupportedSoundFileFormat( const UnsupportedSoundFileFormat& ) throw();
+		UnsupportedSoundFileFormat() noexcept;
+		UnsupportedSoundFileFormat( const char* msg ) noexcept;
+		UnsupportedSoundFileFormat( const UnsupportedSoundFileFormat& ) noexcept;
 
-		virtual ~UnsupportedSoundFileFormat() throw();
+		virtual ~UnsupportedSoundFileFormat() noexcept;
 
 	};
 

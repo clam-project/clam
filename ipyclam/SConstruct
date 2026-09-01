@@ -1,38 +1,71 @@
-#!/usr/bin/python
 import os
 import sys
 import glob
+import tomllib
+import enscons
 
-options = Variables('options.cache', ARGUMENTS)
-options.AddVariables(
-	BoolVariable('enable_clam', 'Compile CLAM engine', 'yes'),
-	BoolVariable('enable_jack', 'Compile JACK engine', 'yes'),
-	)
+metadata = tomllib.loads(open("pyproject.toml", "rb").read().decode())["project"]
+tag = enscons.get_binary_tag()
 
-toolChain = 'default' if sys.platform is not 'win32' else 'mingw'
-env = Environment(ENV=os.environ, tools=[toolChain], options=options)
-options.Save('options.cache', env)
+def _find_clam_prefix():
+    for p in [os.environ.get('CLAM_PREFIX', ''), '/usr/local', '/usr']:
+        if p and os.path.exists(os.path.join(p, 'share', 'clam', 'sconstools', 'clam.py')):
+            return p
+    return os.environ.get('CLAM_PREFIX', '') or '/usr/local'
+
+building_sdist = 'sdist' in sys.argv
+
+options_filename = 'options.cache'
+options = Variables(options_filename, ARGUMENTS)
+options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed',
+    _find_clam_prefix()))
+options.Add(BoolVariable('enable_clam', 'Compile CLAM engine', 'yes'))
+options.Add(BoolVariable('enable_jack', 'Compile JACK engine', 'yes'))
+if sys.platform=="linux" :
+	options.Add(BoolVariable('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
+toolchain = 'default'
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
+options.Save(options_filename, env)
 Help(options.GenerateHelpText(env))
+
 env.SConsignFile() # Single signature file
 
-env.ParseConfig('python-config --cflags')
-env.ParseConfig('python-config --libs')
-env.ParseConfig('pkg-config --cflags --libs pyside')
+crosscompiling = env.get("crossmingw")
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
 
-if env['enable_clam'] :
-	env.ParseConfig('pkg-config clam_core clam_processing clam_audioio --cflags --libs')
-	env.ParseConfig('pkg-config clam_qtmonitors --cflags --libs') # UI binding
+if env['enable_clam'] and not building_sdist :
+    CLAMInstallDir = env['clam_prefix']
+    clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+    if not os.access(os.path.join(clam_sconstoolspath,"clam.py"), os.R_OK):
+        raise Exception(
+            "CLAM not installed at '%s'. Use clam_prefix=... or set CLAM_PREFIX."
+            % CLAMInstallDir)
+    env.Tool('clam', toolpath=[clam_sconstoolspath])
 
-env.ParseConfig('pkg-config QtUiTools QtGui QtCore --cflags --libs') # UI binding
+    env.EnableClamModules([
+        'clam_core',
+        'clam_processing',
+        'clam_audioio',
+        'clam_qtmonitors',
+    ], CLAMInstallDir)
+
+env.ParseConfig('python3-config --cflags --embed')
+env.ParseConfig('python3-config --libs --embed')
+env.ParseConfig('pkg-config --cflags --libs pyside6')
+
+env.ParseConfig('pkg-config Qt6UiTools Qt6Gui Qt6Widgets Qt6Core --cflags --libs') # UI binding
 
 if env['enable_jack'] :
 	env.ParseConfig('pkg-config --cflags --libs jack')
 
-env.AppendUnique(
-	LIBS=['boost_python']
-)
+pyversion = f"{sys.version_info.major}{sys.version_info.minor}"
+env.AppendUnique(LIBS=[f'boost_python{pyversion}'])
 
-# python-config adds a flag that is refused by g++
+# python3-config adds a flag that is refused by g++
 if '-Wstrict-prototypes' in env['CCFLAGS'] :
 	env['CCFLAGS'].remove('-Wstrict-prototypes')
 
@@ -51,13 +84,13 @@ env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 env["SHOBJPREFIX"] = "generated/"
 
 
-shibokenunwrap = env.SharedObject(source='shibokenunwrap.cxx')
-sipunwrap = env.SharedObject(source='sipunwrap.cxx')
+shibokenunwrap = env.SharedObject(source='src/shibokenunwrap.cxx')
+sipunwrap = env.SharedObject(source='src/sipunwrap.cxx')
 
 clamengine_module = env.SharedLibrary (
-	target='ipyclam/Clam_Engine',
+	target='ipyclam/clam/engine',
 	source=[
-		'Clam_Engine.cxx',
+		'src/Clam_Engine.cxx',
 		shibokenunwrap,
 		sipunwrap,
 		],
@@ -65,43 +98,43 @@ clamengine_module = env.SharedLibrary (
 ) if env['enable_clam']  else []
 
 clamengine_config_module = env.SharedLibrary (
-	target='ipyclam/Clam_ConfigurationProxy',
+	target='ipyclam/clam/configurationproxy',
 	source=[
-		'Clam_ConfigurationProxy.cxx',
-		'ConfigurationProxy.cxx',
+		'src/Clam_ConfigurationProxy.cxx',
+		'src/ConfigurationProxy.cxx',
 		],
 	SHLIBPREFIX='',
 ) if env['enable_clam']  else []
 
 jackengine_module = env.SharedLibrary (
-	target='ipyclam/Jack_Engine',
+	target='ipyclam/jack/engine',
 	source=[
-		'Jack_Engine.cxx',
+		'src/Jack_Engine.cxx',
 		],
 	SHLIBPREFIX='',
 ) if env['enable_jack']  else []
 
 dummyProcessingsModule = env.SharedLibrary (
-	target='ipyclam/DummyProcessings',
+	target='ipyclam/dummy/processing',
 	source=[
-		'DummyProcessings.cxx',
+		'src/DummyProcessings.cxx',
 		],
 	SHLIBPREFIX='',
 ) if env['enable_clam']  else []
 
 ui_pyside_module = env.SharedLibrary (
-	target='ipyclam/ui/PySide',
+	target='ipyclam/clam/PySide',
 	source=[
-		'PySideModule.cxx',
+		'src/PySideModule.cxx',
 		shibokenunwrap,
 		],
 	SHLIBPREFIX='',
 )
 
-ui_pyqt4_module = env.SharedLibrary (
-	target='ipyclam/ui/PyQt4',
+ui_pyqt_module = env.SharedLibrary (
+	target='ipyclam/clam/PyQt',
 	source=[
-		'PyQt4Module.cxx',
+		'src/PyQtModule.cxx',
 		sipunwrap,
 		],
 	SHLIBPREFIX='',
@@ -109,54 +142,44 @@ ui_pyqt4_module = env.SharedLibrary (
 
 program = env.Program(
 	target='ipyclam_console',
-	source='ipyclam_console.cxx',
+	source='src/ipyclam_console.cxx',
 )
-blacklist = [
-	"ipyclam/ProxyAPI.py",
+
+env.Append(tools=["packaging"])
+env["PACKAGE_METADATA"] = metadata
+env["WHEEL_TAG"] = tag
+enscons.generate(env)
+
+py_modules = [
+	f for f in (
+		glob.glob('ipyclam/*.py')
+		+ glob.glob('ipyclam/clam/*.py')
+		+ glob.glob('ipyclam/jack/*.py')
+		+ glob.glob('ipyclam/dummy/*.py')
+	)
+	if "Test" not in f and "test" not in f
 ]
 
-python_modules = [
-	source for source in  glob.glob('ipyclam/*.py')
-	if source not in blacklist
-	and "Test" not in source
-	]
-
-# TODO: Use distutils to get the paths given a prefix or a home schema
-prefix = os.path.expanduser('~/local')
-mod_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
-lib_dir = os.path.join(prefix, 'lib', 'python', 'ipyclam')
-uilib_dir = os.path.join(lib_dir, 'ui')
-bin_dir = os.path.join(prefix, 'bin')
-
-install = [
-	env.Install(targetDir, files) for targetDir, files in [
-	( lib_dir,[
-		clamengine_module,
-		clamengine_config_module,
-		jackengine_module,
-		python_modules,
-	]),
-	( uilib_dir, [
-		ui_pyside_module,
-		ui_pyqt4_module,
-		'ipyclam/ui/__init__.py',
-	]),
-	( bin_dir,[
-		program,
-		"ipyclam_console",
-		"ipyclam_qtconsole",
-	]),
-]]
-
-env.Alias('install', install)
-
-Default(
-	jackengine_module,
-	clamengine_module,
-	clamengine_config_module,
-	dummyProcessingsModule,
-	ui_pyside_module,
-	ui_pyqt4_module,
-	program,
+all_so_modules = (
+	clamengine_module + clamengine_config_module
+	+ dummyProcessingsModule + ui_pyside_module + ui_pyqt_module
+	+ jackengine_module
 )
 
+platlib = env.Whl("platlib", py_modules + all_so_modules, root=".")
+whl = env.WhlFile(source=platlib)
+
+sdist = env.SDist(source=[
+	"pyproject.toml",
+	"SConstruct",
+	"MANIFEST.in",
+	"README",
+] + glob.glob("src/*.cxx") + glob.glob("src/*.hxx") + py_modules)
+
+env.Default(whl)
+
+import subprocess
+def pip_install(target, source, env):
+    subprocess.run([sys.executable, '-m', 'pip', 'install', '-e', '.'], check=True)
+
+env.Command('install', all_so_modules + [program], action=pip_install)

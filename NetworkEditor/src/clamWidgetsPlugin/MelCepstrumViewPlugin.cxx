@@ -24,7 +24,7 @@
 #include "MelCepstrumViewPlugin.hxx"
 #include "MelCepstrumView.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 MelCepstrumViewPlugin::MelCepstrumViewPlugin(QObject *parent)
     : QObject(parent)

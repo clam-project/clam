@@ -23,6 +23,7 @@
 #include "AudioCodecs_Stream.hxx"
 #include "AudioOutPort.hxx"
 #include "ProcessingFactory.hxx"
+#include <cstddef>
 
 
 namespace CLAM
@@ -42,14 +43,14 @@ namespace Hidden
 	
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader()
 		: mTimeOutput( "Current Time Position", this)
-		, mNativeStream( NULL )
+		, mNativeStream( nullptr )
 	{
 		Configure(MultiChannelAudioFileReaderConfig());
 	}
 
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader( const ProcessingConfig& cfg )
 		: mTimeOutput( "Current Time Position", this)
-		, mNativeStream( NULL )
+		, mNativeStream( nullptr )
 	{
 		Configure( cfg );
 	}
@@ -282,7 +283,7 @@ namespace Hidden
 				selectedChannels.GetPtr(),
 				selectedChannels.GetPtr()+selectedChannels.Size());
 
-			if ( mSelectedChannels.size() != mAudioFile.GetHeader().GetChannels() )
+			if ( mSelectedChannels.size() != static_cast<std::size_t>(mAudioFile.GetHeader().GetChannels()) )
 			{
 				return AddConfigErrorMessage(
 					"The configuration asked for more channels than the audio file has.");
@@ -325,7 +326,7 @@ namespace Hidden
 
 	bool MultiChannelAudioFileReader::ConcreteStart()
 	{
-		if (mNativeStream == NULL) 
+		if (mNativeStream == nullptr) 
 			mNativeStream = mAudioFile.GetStream();
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
@@ -339,7 +340,7 @@ namespace Hidden
 	{
 		mNativeStream->Dispose();
 		delete mNativeStream;
-		mNativeStream = NULL;
+		mNativeStream = nullptr;
 
 		return true;
 	}

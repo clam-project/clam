@@ -66,10 +66,10 @@ namespace CLAM {
 				break;
 		if (it == composite_end())
 			return; // Not found!
-		mObjects.remove(&obj);
+		mObjects.erase(it);
 	}
 
-	void ProcessingComposite::Insert(Processing& obj) throw(ErrProcessingObj)
+	void ProcessingComposite::Insert(Processing& obj)
 	{
 		iterator it;
 		for (it=mObjects.begin(); it!=mObjects.end(); it++)

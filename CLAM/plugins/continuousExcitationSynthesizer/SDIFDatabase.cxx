@@ -9,7 +9,7 @@ namespace CLAM
 {
 
 SDIFDatabase::SDIFDatabase() :
-	mMetadataReader(), mSimpleTransformer(), mThreadPool()
+	mMetadataReader(), mSimpleTransformer()
 {
 	sourceMetadata.AddAll();
 	sourceMetadata.UpdateData();
@@ -23,8 +23,6 @@ SDIFDatabase::SDIFDatabase() :
 
 SDIFDatabase::~SDIFDatabase()
 {
-	mThreadPool.EmptyPool();
-
 	if (isAnyProgramLoaded())
 		UnloadProgram();
 }
@@ -285,7 +283,7 @@ Frame* SDIFDatabase::SelectFrameForVoice(VoiceId id, float argPitch, float argAm
 	// give it a frame with which it can do so
 	//if ( !aLoopingSDIFFileReader->IsThreaded() )
 	//{
-	//	aLoopingSDIFFileReader->LoadFramesIntoBufferOnThread( mThreadPool.GetThreadFromPool() );
+	//	aLoopingSDIFFileReader->LoadFramesIntoBufferOnThread();
 	//}
 
 	// TODO how do you want to handle NULL frames?

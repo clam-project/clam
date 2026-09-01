@@ -1,7 +1,7 @@
 #ifndef __EDITTAGDIALOG__
 #define __EDITTAGDIALOG__
 
-#include <qdialog.h>
+#include <QDialog>
 
 class QLabel;
 class QLineEdit;

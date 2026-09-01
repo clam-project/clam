@@ -52,7 +52,7 @@ public:
 	 *  @throw A bad_cast exception if the arguments is not the expected configuration class
 	 */
 	bool ConcreteConfigure(const ProcessingConfig& c)
-	 throw(ErrProcessingObj);
+;
 
 	/** Getter for the configuration of the class
 	 *  @return The ProcessingConfig object attached to this Processing object

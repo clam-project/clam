@@ -26,23 +26,23 @@
 #include "AudioLoadThread.hxx"
 #include "SchemaBrowser.hxx"
 #include "TaskRunner.hxx"
-#include "ui_About.hxx"
+#include "ui_About.h"
 #include "ProjectEditor.hxx"
 
-#include <QtCore/QSettings>
-#include <QtCore/QTimer>
-#include <QtGui/QAction>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QTextBrowser>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QSplashScreen>
-#include <QtGui/QWhatsThis>
+#include <QSettings>
+#include <QTimer>
+#include <QAction>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QTextBrowser>
+#include <QCloseEvent>
+#include <QSplashScreen>
+#include <QWhatsThis>
 
 #if QT_VERSION >= 0x040200
-#include <QtGui/QDesktopServices>
+#include <QDesktopServices>
 #else
-#include <QtCore/QProcess>
+#include <QProcess>
 #endif
 
 #include <algorithm>
@@ -72,7 +72,7 @@
 #define RESOURCES_BASE "../resources"
 #endif
 
-#include <QtGui/QSplitter>
+#include <QSplitter>
 #include "SegmentationPane.hxx"
 #include "FrameDescriptorsPane.hxx"
 #include "Auralizer.hxx"
@@ -592,7 +592,7 @@ void Annotator::loadProject(const std::string & projectName)
 	{
 		CLAM::XMLStorage::Restore(temporaryProject,projectName);
 	}
-	catch (CLAM::XmlStorageErr e)
+	catch (CLAM::XmlStorageErr &e)
 	{
 		QMessageBox::warning(this,tr("Error loading project file"),
 			constructFileError(projectName,e));
@@ -713,9 +713,9 @@ void Annotator::addSongsToProject()
 void Annotator::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, 
-			tr("Choose a project to work with"), QString::null, 
+			tr("Choose a project to work with"), QString(), 
 			tr("Annotator project file (*.pro)"));
-	if(qFileName == QString::null) return;
+	if(qFileName.isNull()) return;
 	loadProject(qFileName.toStdString());
 }
 
@@ -876,7 +876,7 @@ void Annotator::loadDescriptorPool()
 			return;
 		}
 	}
-	catch (CLAM::XmlStorageErr e)
+	catch (CLAM::XmlStorageErr &e)
 	{
 		QMessageBox::warning(this,tr("Error loading descriptors"), 
 			constructFileError(poolFile,e));

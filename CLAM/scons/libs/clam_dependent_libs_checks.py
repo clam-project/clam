@@ -5,16 +5,16 @@ import sys
 # from __init__.py
 
 def config_error(str) :
-	print str
-	print 'Check the config.log file for details'
+	print(str)
+	print('Check the config.log file for details')
 	return False
 
 def setup_global_environment( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
 	if not conf.check_pkg_config( conf ) :
-		print 'WARNING: pkg-config is not installed. Checks will be harder.'
+		print('WARNING: pkg-config is not installed. Checks will be harder.')
 		env['pkg_config_available'] = False
 	else :
 		env['pkg_config_available'] = True
@@ -42,13 +42,13 @@ def setup_global_environment( env, conf ) :
 		]) 
 
 	if env['release'] :
-		print 'COMPILING IN RELEASE MODE'
+		print('COMPILING IN RELEASE MODE')
 		env.AppendUnique( CCFLAGS='-g -O3 -fomit-frame-pointer -Wall'.split(' ') )
 		# Strip when in windows (in linux symbols are useful and striped by packagers)
 		if 'mingw32' in env['TOOLS'] : 
 			env.Append( LDFLAGS='-s'.split(' ') )
 	else :
-		print 'COMPILING IN DEBUG MODE'
+		print('COMPILING IN DEBUG MODE')
 		env.AppendUnique( CCFLAGS='-g -Wall'.split(' ') )
 		env.AppendUnique( CPPFLAGS = ['-D_DEBUG'] )
 
@@ -60,7 +60,7 @@ def setup_global_environment( env, conf ) :
 	if not conf.CheckLibrarySample('pthread', 'c', None, pthread_test_code ) : 
 		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
 
-	if sys.platform == 'linux2' :
+	if sys.platform == 'linux' :
 		env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
 	elif sys.platform == 'darwin' :
 		env.Append(LIBPATH=['/usr/local/lib','/usr/lib','/opt/local/lib'])
@@ -91,7 +91,7 @@ def test_sndfile( env, conf ) :
 	return True
 
 def test_oggvorbis( env, conf ) :
-	if not conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc']) :
+	if not conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc', 'vorbis', 'ogg']) :
 		return False
 	if not conf.CheckLibrarySample('libogg', 'c', None, libogg_test_code ) : return False
 	if not conf.CheckLibrarySample('libvorbis', 'c', None, libvorbis_test_code ) : return False
@@ -106,7 +106,7 @@ def test_mad( env, conf ) :
 	return True
 
 def test_id3lib( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 
 	libName = 'id3'
 	env.Append( LIBS=[libName] )
@@ -159,8 +159,8 @@ def test_portaudio( env, conf ) :
 	return True
 
 def test_portmidi( env, conf ) :
-	if sys.platform == 'linux2' :
-		print "Bypassing portmidi checks: using ALSA MIDI facilities"
+	if sys.platform == 'linux' :
+		print("Bypassing portmidi checks: using ALSA MIDI facilities")
 		return True
 	if not conf.CheckHeader( 'portmidi.h' ) :
 		return config_error( "Could not find portmidi header 'portmidi.h'! Check your portmidi installation..." )
@@ -176,7 +176,7 @@ def test_portmidi( env, conf ) :
 	return True
 
 def setup_audioio_environment( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 
 	if env['with_sndfile'] :
 		if not test_sndfile( env, conf ) : return False
@@ -196,14 +196,14 @@ def setup_audioio_environment( env, conf ) :
 		if not test_id3lib( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
 
-	if (sys.platform == 'linux2' and not crosscompiling) and env['with_alsa'] :
+	if (sys.platform == 'linux' and not crosscompiling) and env['with_alsa'] :
 		if not test_alsa_sdk( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_ALSA=1'] )
 
 	if env['with_jack'] and not crosscompiling:
 		if not test_jack (env, conf):
-			print "Either install jack or disable jack support by issuing"
-			print "$scons with_jack=no"
+			print("Either install jack or disable jack support by issuing")
+			print("$scons with_jack=no")
 			return False
 		env.Append(CPPFLAGS=['-DUSE_JACK=1'])
 
@@ -215,7 +215,11 @@ def setup_audioio_environment( env, conf ) :
 		if not test_portaudio( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
 
-	if not sys.platform == 'linux2' or crosscompiling :
+	if env['with_lv2'] :
+		if not test_lv2( env, conf ) : return False
+		#env.Append( CPPFLAGS=['-DUSE_LV2=1'] ) # Not used
+
+	if sys.platform != 'linux' or crosscompiling :
 		if env['audio_backend'] == 'directx' :
 			env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )
 
@@ -232,12 +236,16 @@ def setup_audioio_environment( env, conf ) :
 
 	return True
 
+def test_lv2(env, conf) :
+	if not conf.CheckPkgConfigFile('lv2') :
+		return False
+	return True
 
 #---------------------------------------------------------------
 # from core.py
 
 def test_xml_backend( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling='crossmingw' in env and env['crossmingw']
 
 	if env['xmlbackend'] in ('both','xercesc') :
 		if not conf.CheckPkgConfigFile("xerces-c"):
@@ -259,7 +267,7 @@ def test_xml_backend( env, conf ) :
 	return True
 
 def test_ladspa ( env, conf ) :
-	if not env.has_key('with_ladspa') : return True
+	if 'with_ladspa' not in env : return True
 	if not env['with_ladspa'] : return True
 	if not conf.CheckCHeader( 'ladspa.h' ) :
 		return config_error( "ladspa SDK header was not found" )

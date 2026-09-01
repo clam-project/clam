@@ -23,15 +23,15 @@ import sys
 import re
 
 def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAttribute):
-	print >> output, '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>'
-	print >> output, '<DescriptorsPool>'
-	print >> output, '\t<ScopePool name="Song" size="1">'
+	print('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>', file=output)
+	print('<DescriptorsPool>', file=output)
+	print('\t<ScopePool name="Song" size="1">', file=output)
 	tokens = list()
 	labelFilter = re.compile(filter)
 	for line in labfile:
 		segment = line.split(" ",3)
 		if len(segment)!=3:
-			print >> sys.stderr, "Found a line with %s tokens, 3 expected"%len(segment)
+			print("Found a line with %s tokens, 3 expected"%len(segment), file=sys.stderr)
 			continue
 		segment[2]=segment[2].rstrip().lstrip()
 		if not labelFilter.match(segment[2]): continue
@@ -39,24 +39,24 @@ def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAt
 
 	sampleRate=44100
 
-	print >> output, '\t\t<AttributePool name="%s" size="%s">'%(segmentationAttribute, len(tokens)*2) ,
+	print('\t\t<AttributePool name="%s" size="%s">'%(segmentationAttribute, len(tokens)*2), end=' ', file=output)
 	for segment in tokens :
 		#In samples
-		#print >> output, int(round(float(segment[0])*sampleRate)), int(round(float(segment[1])*sampleRate)),
+		#print(int(round(float(segment[0])*sampleRate)), int(round(float(segment[1])*sampleRate)), file=output)
 		#In seconds
-		print >> output, segment[0], segment[1],
-	print >> output, '</AttributePool>'
-	print >> output, '\t</ScopePool>'
+		print(segment[0], segment[1], end=' ', file=output)
+	print('</AttributePool>', file=output)
+	print('\t</ScopePool>', file=output)
 
 	if childScope!=None:
-		print >> output, '\t<ScopePool name="%s" size="%s">' % (childScope, len(tokens))
-		print >> output, '\t\t<AttributePool name="%s">' % (labelAttribute)
+		print('\t<ScopePool name="%s" size="%s">' % (childScope, len(tokens)), file=output)
+		print('\t\t<AttributePool name="%s">' % (labelAttribute), file=output)
 
 		for segment in tokens :
-			print >> output, '\t\t\t<Enumerated>%s</Enumerated>' % ( segment[2] ) 
-		print >> output, '\t\t</AttributePool>'
-		print >> output, '\t</ScopePool>'
-	print >> output, '</DescriptorsPool>'
+			print('\t\t\t<Enumerated>%s</Enumerated>' % ( segment[2] ), file=output)
+		print('\t\t</AttributePool>', file=output)
+		print('\t</ScopePool>', file=output)
+	print('</DescriptorsPool>', file=output)
 	return dict.fromkeys([ segment[2] for segment in tokens ]).keys() # unique labels
 
 def generateSchema(mainScope, segmentationAttribute, childScope, labelAttribute, values):
@@ -93,34 +93,33 @@ if __name__ == "__main__":
 	elif len(sys.argv) == 6:
 		(labFileList,segmentationAttribute,filter,childScope,labelAttribute) = sys.argv[1:6]
 	else:
-		print >> sys.stderr, "Lab2Pools v1.0: Wavesurfer Lab file to CLAM Annotator pools converter"
-		print >> sys.stderr
-		print >> sys.stderr, "Usage: " + sys.argv[0] + " <labFile> <segmentationAttr> [<labelFilter>] [<childScope> <labelAttribute>]"
-		print >> sys.stderr
-		print >> sys.stderr, " <labFileList>       A list of annotation files from wave surfer ('-' means stdin)"
-		print >> sys.stderr, " <segmentationAttr>  Attribute name for the segmentation"
-		print >> sys.stderr, " <labelFilter>       A regular expresion to filter segments by label (default: all segments)"
-		print >> sys.stderr, " <childScope>        If defined the child scope that should contain the label attribute (by default it is discarded)"
-		print >> sys.stderr, " <labelAttribute>    The attribute that holds the label"
+		print("Lab2Pools v1.0: Wavesurfer Lab file to CLAM Annotator pools converter", file=sys.stderr)
+		print(file=sys.stderr)
+		print("Usage: " + sys.argv[0] + " <labFile> <segmentationAttr> [<labelFilter>] [<childScope> <labelAttribute>]", file=sys.stderr)
+		print(file=sys.stderr)
+		print(" <labFileList>       A list of annotation files from wave surfer ('-' means stdin)", file=sys.stderr)
+		print(" <segmentationAttr>  Attribute name for the segmentation", file=sys.stderr)
+		print(" <labelFilter>       A regular expresion to filter segments by label (default: all segments)", file=sys.stderr)
+		print(" <childScope>        If defined the child scope that should contain the label attribute (by default it is discarded)", file=sys.stderr)
+		print(" <labelAttribute>    The attribute that holds the label", file=sys.stderr)
 		sys.exit()
 
 	if labFileList == '-' : 
 		labFileList = sys.stdin
 	else :
-		labFileList = file(labFileList)
+		labFileList = open(labFileList)
 
 	labelValues = [];
 	for labfilename in labFileList :
 		labfilename = labfilename.lstrip().rstrip()
 		values = Lab2Plot( 
-				file(labfilename), 
-				file(labfilename+".pool","w"), 
+				open(labfilename), 
+				open(labfilename+".pool","w"), 
 				segmentationAttribute, 
 				filter, 
 				childScope, labelAttribute)
 		labelValues += values
 	labelValues = dict.fromkeys(labelValues).keys() # unique
 	labelValues.sort()
-	print generateSchema("Song", segmentationAttribute, childScope, labelAttribute, labelValues)
-
+	print(generateSchema("Song", segmentationAttribute, childScope, labelAttribute, labelValues))
 

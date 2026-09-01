@@ -23,27 +23,27 @@
 
 #include "Schema.hxx"
 
-#include <QtGui/QSplitter>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QSpinBox>
-#include <QtGui/QLabel>
-#include <QtGui/QTextBrowser>
-#include <QtGui/QLineEdit>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QFrame>
+#include <QSplitter>
+#include <QTreeWidget>
+#include <QSpinBox>
+#include <QLabel>
+#include <QTextBrowser>
+#include <QLineEdit>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFrame>
 //#include <QtGui/QCheckBox>
 
 
-SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
-    : QWidget( parent, fl )
+SchemaBrowser::SchemaBrowser( QWidget* parent )
+    : QWidget( parent )
 	, scopeIcon(":/icons/images/xkill.png")
 	, attributeIcon(":/icons/images/label.png")
     , mSchema(0)
 {
 	setObjectName( "schemaBrowser" );
     schemaBrowserLayout = new QHBoxLayout( this ); 
-    schemaBrowserLayout->setMargin(11);
+    schemaBrowserLayout->setContentsMargins(11, 11, 11, 11);
 	schemaBrowserLayout->setSpacing(6);
 
     splitter1 = new QSplitter( this );
@@ -67,7 +67,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     attributeProperties->setFrameShape( QFrame::StyledPanel );
     attributeProperties->setFrameShadow( QFrame::Raised );
     attributePropertiesLayout = new QGridLayout( attributeProperties ); 
-	attributePropertiesLayout->setMargin(11);
+	attributePropertiesLayout->setContentsMargins(11, 11, 11, 11);
 	attributePropertiesLayout->setSpacing(6);
 
     minLabel = new QLabel( attributeProperties );

@@ -51,7 +51,7 @@ namespace CLAM
 {
 
 SMSBase::SMSBase()
-	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
+	: mCurrentProgressIndicator( nullptr ), mCurrentWaitMessage( nullptr )
 {
 	mTransformation.AttachIn( mOriginalSegment );
 	mTransformation.AttachOut( mTransformedSegment );
@@ -65,13 +65,13 @@ void SMSBase::DestroyWaitMessage( )
 {
 	CLAM_DEBUG_ASSERT( 0!=mCurrentWaitMessage, "SMSBase destructor needs mCUrrentWaitMessage not null. (used by LoadConfig -Pau)");
 	delete mCurrentWaitMessage;
-	mCurrentWaitMessage = NULL;
+	mCurrentWaitMessage = nullptr;
 }
 
 void SMSBase::DestroyProgressIndicator( )
 {
 	delete mCurrentProgressIndicator;
-	mCurrentProgressIndicator = NULL;
+	mCurrentProgressIndicator = nullptr;
 }
 
 
@@ -570,7 +570,10 @@ in metadata extraction from an input sound.*/
 		(TData)2637.0, (TData)2793.8, (TData)2960.0, (TData)3136.0, (TData)3322.4, (TData)3520.0, (TData)3729.3, (TData)3951.1,
 		(TData)4186.0};
 
-	TData analysisFrameSize, smoothFiltSize, bandThreshold, minPeakDist, globalThreshold, difSize;
+	// These six belong to the "old segmentator" block below (assigned but
+	// never read by the current segmentator). Preserved as a reference for
+	// the previous tuning defaults.
+	[[maybe_unused]] TData analysisFrameSize, smoothFiltSize, bandThreshold, minPeakDist, globalThreshold, difSize;
 
 	Array<PitchNote> pitch(85); 
 	pitch.SetSize(85);
@@ -583,15 +586,12 @@ in metadata extraction from an input sound.*/
 	}
 	
 	
-	TData ePercentil, eThr, fPercentil, fThr, minLength;
-	bool useDefault=true;
-	if(useDefault) {
-		ePercentil = 50;
-		eThr = TData(0.0016);//0.0032;
-		fPercentil = 3;
-		fThr = 0;
-		minLength = 2;
-	}
+	TData ePercentil = 50;
+	TData eThr = TData(0.0016);//0.0032;
+	TData fPercentil = 3;
+	TData fThr = 0;
+	TData minLength = 2;
+	const bool useDefault=true;
 /*old segmentator*/
 	if(useDefault) {
 		// Default Parameters
@@ -804,7 +804,7 @@ void SMSBase::ConfigureSegmentSMSMorph()
 					tmpMorph->Configure(tmpMorphConfig);
 					tmpMorph->SetSegmentToMorph(mMorphSegment);
 				}
-				catch (Err e)
+				catch (const Err& e)
 				{
 					e.Print();
 				}
@@ -829,7 +829,7 @@ void SMSBase::TransformProcessing(void)
 	while(mTransformation.Do())
 	{
 		CLAM_ASSERT( mCurrentProgressIndicator, 
-				"SMSBase::TransformProcessing mCurrentProgressIndicator should't be NULL"
+				"SMSBase::TransformProcessing mCurrentProgressIndicator should't be null"
 				" Probably you din't call Transfrom()" );
 		mCurrentProgressIndicator->Update(float(i++));
 	}

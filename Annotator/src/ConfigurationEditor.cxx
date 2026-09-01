@@ -20,7 +20,7 @@
  */
 
 #include "ConfigurationEditor.hxx"
-#include <QtCore/QTextStream>
+#include <QTextStream>
 
 ConfigurationEditor::~ConfigurationEditor()
 {

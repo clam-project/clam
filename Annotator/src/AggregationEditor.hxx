@@ -25,9 +25,9 @@
 #include "Schema.hxx"
 #include "SchemaBrowser.hxx"
 #include "Project.hxx"
-#include <QtCore/QVariant>
-#include <QtGui/QPixmap>
-#include <QtGui/QTreeWidget>
+#include <QVariant>
+#include <QPixmap>
+#include <QTreeWidget>
 
 #include <string>
 

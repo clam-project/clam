@@ -63,7 +63,7 @@ class TDFilterGenExample : public ProcessingComposite {
 
 	const char* GetClassName() const {return "TDFilterGenExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
+	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig& c);
 public:
 	TDFilterGenExample(const TDFilterGenExampleConfig &cfg);
@@ -72,7 +72,7 @@ public:
 	bool Do( TDFilterKernel &F, DataArray& K, TData& E );
 };
 
-bool TDFilterGenExample::ConcreteStart() throw(ErrProcessingObj)
+bool TDFilterGenExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)
@@ -262,7 +262,7 @@ int main( int argc, char* argv[] )
 		CLAM::XMLStorage::Dump( myTDFilter.Poles(), "ComplexRoots", "CRoots.xml" );
 
 	}
-	catch( CLAM::Err err )
+	catch( CLAM::Err & err )
 	{
 		err.Print();
 	}

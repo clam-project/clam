@@ -82,7 +82,9 @@ void Dispatcher::Dispatch()
 		{
 			if ( ( (*it).mNote == mNote ) && ( (*it).mVelocity ) )
 			{
-				InstrStatus status = (*it);
+				// status is a dead local copy here; the mutation below targets
+				// (*it) directly. Kept for symmetry with the else branch.
+				[[maybe_unused]] InstrStatus status = (*it);
 				(*it).mVelocity = 0;
 				mValuesOut[ (*it).mId * mNInValues + 1]->SendControl( mVelocity );
 				return;

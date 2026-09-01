@@ -2,10 +2,10 @@
 #include <cstdlib>
 void generateorc(char *filename)
 {
-   ofstream fd(ORCFILE, ios::out | ios::trunc);
+   std::ofstream fd(ORCFILE, std::ios::out | std::ios::trunc);
 
    if (!fd.is_open()) {
-            cerr << "cannot open " << ORCFILE <<  endl;
+            std::cerr << "cannot open " << ORCFILE <<  std::endl;
             exit (-1);
    }
 
@@ -36,10 +36,10 @@ endin
 
 void generatesco(double *onsetsvect, int ntime, double time_res) 
 {
-   ofstream fd(SCOFILE, ios::out | ios::trunc);
+   std::ofstream fd(SCOFILE, std::ios::out | std::ios::trunc);
 
    if (!fd.is_open()) {
-            cerr << "cannot open " << SCOFILE <<  endl;
+            std::cerr << "cannot open " << SCOFILE <<  std::endl;
             exit (-1);
    }
 

@@ -53,14 +53,14 @@ namespace AudioCodecs
 
 	bool PCMCodec::IsReadable( std::string uri ) const
 	{
-		SNDFILE*   fileHandle = NULL;
+		SNDFILE*   fileHandle = nullptr;
 		SF_INFO   fileHeaderInfo;
 		// MRJ: Done as libsndfile doc says
 		fileHeaderInfo.format = 0;
 
 		fileHandle = sf_open( uri.c_str(), SFM_READ, &fileHeaderInfo );
 
-		if ( fileHandle != NULL )
+		if ( fileHandle != nullptr )
 		{
 			sf_close( fileHandle );
 			return true;
@@ -99,13 +99,13 @@ namespace AudioCodecs
 
 	void PCMCodec::RetrieveHeaderData( std::string uri, AudioFileHeader& hdr )
 	{
-		SNDFILE* fileHandle = NULL;
+		SNDFILE* fileHandle = nullptr;
 		SF_INFO  fileHeaderInfo;
 		fileHeaderInfo.format = 0;
 		
 		fileHandle = sf_open( uri.c_str(), SFM_READ, &fileHeaderInfo );
 		
-		if ( fileHandle != NULL )
+		if ( fileHandle != nullptr )
 		{
 			hdr.AddSampleRate();
 			hdr.AddSamples();

@@ -1,16 +1,16 @@
-#include "ui_MainWindow.hxx"
+#include "ui_MainWindow.h"
 #include "ClamNetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QScrollArea>
-#include <QtGui/QDockWidget>
-#include <QtGui/QWhatsThis>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtCore/QSettings>
-#include <QtCore/QStringList>
-#include <QtCore/QTimer>
-#include "ui_About.hxx"
+#include <QVBoxLayout>
+#include <QScrollArea>
+#include <QDockWidget>
+#include <QWhatsThis>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QSettings>
+#include <QStringList>
+#include <QTimer>
+#include "ui_About.h"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/NaiveFlowControl.hxx>
@@ -25,12 +25,12 @@
 // copied from Annotator:
 #include "TaskRunner.hxx"
 
-#if QT_VERSION >= 0x040400
-#include <QtWebKit/QWebView>
-#endif
-#include <QtSvg/QSvgWidget>
-#include <QtCore/QProcess>
-#include <QtGui/QDesktopServices>
+#include <QSvgWidget>
+#include <QProcess>
+#include <QUrl>
+#include <QDesktopServices>
+#include <QTextBrowser>
+#include <QDomDocument>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -40,15 +40,14 @@
 #endif
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
-#	include <QtCore/QDir>
+#	include <QDir>
 #endif
 
 #ifndef DATA_EXAMPLES_PATH
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
-#include <QtXmlPatterns/QXmlQuery>
-#include <QtCore/QStringList>
+#include <QStringList>
 
 
 //#define AFTER13RELEASE
@@ -99,18 +98,17 @@ public:
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
-#ifdef AFTER13RELEASE
-		_centralTab = new QTabWidget(this);
-		setCentralWidget(_centralTab);
-		_centralTab->setTabPosition(QTabWidget::South);
-#endif//AFTER13RELEASE
-//		QScrollArea * scroll = new QScrollArea(this);
+
+		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
-		ClamNetworkCanvas * scroll = _canvas;
-//		scroll->setWidget(_canvas);
+		scroll->setWidgetResizable(true);
+		scroll->setWidget(_canvas);
 
 #ifdef AFTER13RELEASE
+		_centralTab = new QTabWidget(this);
+		_centralTab->setTabPosition(QTabWidget::South);
 		_centralTab->addTab(scroll, "Network");
+		setCentralWidget(_centralTab);
 #else
 		setCentralWidget(scroll);
 #endif//AFTER13RELEASE
@@ -139,6 +137,8 @@ public:
 		_consoleDock->setWidget(console ? console : new QLabel(tr("<p>Python console not available</p>")));
 		if (console)
 			connect(console, SIGNAL(modelChanged()), this, SLOT(refreshCanvas()));
+		else
+			_consoleDock->setVisible(false);
 
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
@@ -203,11 +203,11 @@ public:
 		QMenu * toolBarOpenMenu = new QMenu(this);
 		ui.action_OpenToolbar->setMenu(toolBarOpenMenu);
 		int i=0;
-		for (QStringList::iterator it = _recentFiles.begin(); it!=_recentFiles.end(); it++)
+		for (const QString& recentFile : _recentFiles)
 		{
-			QString text = QString("&%1 %2").arg(++i).arg(*it);
-			QAction * recentFileAction = new QAction(text,this);
-			recentFileAction->setData(*it);
+			QString text = QString("&%1 %2").arg(++i).arg(recentFile);
+			QAction* recentFileAction = new QAction(text, this);
+			recentFileAction->setData(recentFile);
 			ui.menuOpen_recent->addAction(recentFileAction);
 			toolBarOpenMenu->addAction(recentFileAction);
 			connect(recentFileAction, SIGNAL(triggered()), this, SLOT(openRecentTriggered()));
@@ -232,14 +232,15 @@ public:
 		const bool goOn = true;
 		const bool abort = false;
 		if (! _canvas->isChanged()) return goOn;
-		int reply = QMessageBox::question(this, tr("Unsaved changes"),
+		const auto reply = QMessageBox::question(this, tr("Unsaved changes"),
 				tr("The network has been modified. Do you want to save it?"),
-			   	tr("Save"), tr("Discard"), tr("Abort"));
-		if (reply == 2) return abort;
-		if (reply == 1 ) return goOn;
-		
+				QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+				QMessageBox::Save);
+		if (reply == QMessageBox::Cancel) return abort;
+		if (reply == QMessageBox::Discard) return goOn;
+
 		on_action_Save_triggered();
-		return _canvas->isChanged()? abort : goOn;;
+		return _canvas->isChanged() ? abort : goOn;
 	}
 
 	int compareVersions(const QString & versio1, const QString & versio2)
@@ -256,23 +257,15 @@ public:
 	QString readNetworkVersion(const QString & networkFileName)
 	{
 		QFile networkFile(networkFileName);
-		if( !networkFile.exists() ) return QString();
-		networkFile.open(QIODevice::ReadOnly);
+		if (!networkFile.exists()) return QString();
+		if (!networkFile.open(QIODevice::ReadOnly)) return QString();
 
-		QXmlQuery query;
-		query.bindVariable("document", &networkFile);
-		query.setQuery("doc($document)/network/@clamVersion/string()");	
+		QDomDocument document;
+		if (!document.setContent(&networkFile)) return QString();
 
-		QString readClamVersion;
-#if QT_VERSION<0x040500
-		// TODO: Remove this code when Qt<4.5 are not supported anymore
-		QStringList queryResult;
-		query.evaluateTo(&queryResult);
-		readClamVersion = queryResult.join("");
-#else
-		query.evaluateTo(&readClamVersion);
-#endif
-		return readClamVersion.trimmed();
+		QDomElement root = document.documentElement();
+		if (root.tagName() != "network") return QString("");
+		return root.attribute("clamVersion").trimmed() + "";
 	}
 	void load(const QString & filename)
 	{
@@ -444,6 +437,7 @@ public:
 				_networkPlayer = jackPlayer;
 #ifdef AFTER13RELEASE
 				_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
+				// TODO Add scroll
 				_centralTab->addTab(_jackCanvas, "Jack");
 #endif//AFTER13RELEASE
 			}
@@ -524,16 +518,15 @@ public slots:
 
 	void browseUrlInternalFromProcessing(const QString & fileName)
 	{
-#if QT_VERSION >= 0x040400
 		QDockWidget * browser=new QDockWidget(this);
-		QWebView * view=new QWebView(browser);
+		QTextBrowser * view=new QTextBrowser(browser);
 		view->setContextMenuPolicy(Qt::NoContextMenu);
-		view->load(fileName);
+		view->setOpenExternalLinks(true);
+		view->setSource(QUrl::fromUserInput(fileName));
 		browser->setObjectName(tr("Internal Browser"));
 		browser->setWidget(view);
 		browser->setWindowTitle(tr("Browsing %1").arg(fileName));
 		addDockWidget(Qt::BottomDockWidgetArea,browser);
-#endif
 	}
 
 	void updateNetworkDescription()
@@ -569,7 +562,7 @@ public slots:
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://clam-project.org/wiki/Network_Editor_tutorial";
-		QDesktopServices::openUrl(helpUrl);
+		QDesktopServices::openUrl(QUrl::fromUserInput(helpUrl));
 	}
 	void on_action_About_triggered()
 	{
@@ -589,7 +582,7 @@ public slots:
 	{
 		if (!askUserSaveChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", "", networkFilter());
-		if (file==QString::null) return;
+		if (file.isEmpty()) return;
 		load(file);
 	}
 	void on_action_Open_example_triggered()
@@ -603,7 +596,7 @@ public slots:
 		examplesPath = DATA_EXAMPLES_PATH;
 #endif
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", examplesPath, networkFilter());
-		if (file==QString::null) return;
+		if (file.isEmpty()) return;
 		load(file);
 	}
 	void on_action_OpenToolbar_triggered()
@@ -615,7 +608,7 @@ public slots:
 		QAction *action = qobject_cast<QAction *>(sender());
 		if (!action) return;
 		QString file = action->data().toString();
-		if (file==QString::null) return;
+		if (file.isEmpty()) return;
 		if (!askUserSaveChanges()) return;
 		load(file);
 	}
@@ -631,7 +624,7 @@ public slots:
 		fileDialog.setFileMode(QFileDialog::AnyFile);
 //		fileDialog.setCaption("");
 		fileDialog.selectFile(_networkFile);
-		fileDialog.setFilter(networkFilter());
+		fileDialog.setNameFilter(networkFilter());
 		fileDialog.setDefaultSuffix("clamnetwork");
 		if (not fileDialog.exec()) return;
 		
@@ -751,4 +744,3 @@ private:
 	QTabWidget * _centralTab;
 #endif//AFTER13RELEASE
 };
-

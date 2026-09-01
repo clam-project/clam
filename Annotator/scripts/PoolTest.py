@@ -18,7 +18,7 @@
 
 
 from Pool import *
-import cStringIO
+from io import StringIO
 import unittest
 import xml.dom.ext
 
@@ -70,15 +70,15 @@ documentWithDifferentScopeSize ="""\
 
 class PoolsTest(unittest.TestCase):
 	def setUp(self):
-		self.pool = cStringIO.StringIO(document)
-		self.pool2 = cStringIO.StringIO(document2)
-		self.poolDifferentSize = cStringIO.StringIO(documentWithDifferentScopeSize)
+		self.pool = StringIO(document)
+		self.pool2 = StringIO(document2)
+		self.poolDifferentSize = StringIO(documentWithDifferentScopeSize)
 
 	def serializeXml(self, nodes) :
-		output = cStringIO.StringIO()
+		output = StringIO()
 		for node in nodes :
 			xml.dom.ext.Print(node, output)
-			print >> output
+			print(file=output)
 		return output.getvalue()
 
 
@@ -92,7 +92,7 @@ class PoolsTest(unittest.TestCase):
 		try :
 			scopeSize = pool.GetScopeSize('BadScope')
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual("Scope 'BadScope' not found",e.what)
 
 	def testSelectAttributes(self) :
@@ -129,7 +129,7 @@ class PoolsTest(unittest.TestCase):
 		try :
 			pool1.InsertAttribute(pool2,'BadScope', 'AdditionalAttribute', 'S1')
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::AdditionalAttribute' not found",
 				e.what)
@@ -141,7 +141,7 @@ class PoolsTest(unittest.TestCase):
 		try :
 			pool1.InsertAttribute(pool2,'S2', 'BadAttribute', 'S1')
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual(
 				"Attribute 'S2::BadAttribute' not found",
 				e.what)
@@ -153,7 +153,7 @@ class PoolsTest(unittest.TestCase):
 		try:
 			pool.InsertAttribute(poolDifferentSize,'S2', 'AdditionalAttribute', 'S1')
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual(
 				"Requested size for scope 'S1' was 3 but it is actually 1",
 				e.what)
@@ -169,7 +169,7 @@ class PoolsTest(unittest.TestCase):
 		try :
 			pool.AssureScopeWithPopulation("S1",3)
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual(
 				"Requested size for scope 'S1' was 3 but it is actually 1",
 				e.what)
@@ -210,7 +210,7 @@ class PoolsTest(unittest.TestCase):
 		try :
 			pool1.RemoveAttribute('BadScope', 'Simple')
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual(
 				"Scope 'BadScope' not found while removing 'BadScope::Simple'",
 				e.what)
@@ -221,14 +221,14 @@ class PoolsTest(unittest.TestCase):
 		try :
 			pool1.RemoveAttribute('S1', 'BadAttribute')
 			self.fail("Expected exception was not thrown")
-		except Pool.Exception, e:
+		except Pool.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadAttribute' not found while removing 'S1::BadAttribute'",
 				e.what)
 
 	def testDefaultInit(self) :
 		pool = Pool()
-		file = cStringIO.StringIO()
+		file = StringIO()
 		pool.Dump(file)
 		self.assertEqual("<?xml version='1.0' encoding='UTF-8'?>\n<DescriptorsPool/>\n", file.getvalue())
 

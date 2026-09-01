@@ -2,7 +2,7 @@
 
 def _command_check(context, message, command) :
 	"Helper function to reduce command trying code"
-#	print "command:", command
+#	print("command:", command)
 	context.Message(message)
 	runok, output = context.TryAction(command)
 	context.Result(runok)
@@ -39,7 +39,7 @@ def CheckPkgConfigModule(context, module,
 	flags="--cflags --libs",
 	variables={}
 	) :
-	if not context.env.has_key("PKG_CONFIG") :
+	if "PKG_CONFIG" not in context.env :
 		raise PkgConfigNotDefined()
 	options = ""
 	message = ""
@@ -61,7 +61,7 @@ def CheckPkgConfigModule(context, module,
 	if variables :
 		variables_options = " ".join([
 			"--variable=%s='%s'"%item for item in variables.items()])
-		print variables
+		print(variables)
 	if runok and flags :
 		context.env.ParseConfig("$PKG_CONFIG '%s' %s"%(module,flags))
 	return runok
@@ -141,7 +141,7 @@ Libs: -Lalibdir -lmytestmodulelib
 Cflags: -Iaincludedir
 """
 		def setUp(self) :
-			file("mytestmodule.pc","w").write(SConfPkgConfigTest.mytestmodule)
+			open("mytestmodule.pc","w").write(SConfPkgConfigTest.mytestmodule)
 			import os
 			import SCons.SConf
 			SCons.SConf.SetCacheMode("force") # Force the test to ignore cache
@@ -186,7 +186,7 @@ Cflags: -Iaincludedir
 
 		def test_CheckPkgConfigProgram_minimum_whenUnder(self) :
 			self.config.CheckPkgConfigProgram()
-		  	self.assertEqual(
+			self.assertEqual(
 				1, self.config.CheckPkgConfigProgram(minimum_version="0.0"))
 
 		def test_CheckPkgConfigProgram_minimum_whenOver(self) :

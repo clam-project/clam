@@ -1,4 +1,4 @@
-#include <qlabel.h>
+#include <QLabel>
 #include <CLAM/Factory.hxx>
 #include "Qt_Help_View.hxx"
 #include "SMSPitchDiscretizationConfigurator.hxx"

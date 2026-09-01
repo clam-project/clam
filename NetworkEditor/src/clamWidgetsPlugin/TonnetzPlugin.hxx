@@ -24,7 +24,7 @@
 #ifndef TonnetzPlugin_hxx
 #define TonnetzPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class TonnetzPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

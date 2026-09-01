@@ -1,8 +1,9 @@
 #ifndef __SEGMENTEDITOR__
 #define __SEGMENTEDITOR__
 
-#include <qobject.h>
-#include <qcursor.h>
+#include <QObject>
+#include <QCursor>
+#include <QKeyEvent>
 #include <CLAM/SegmentRenderer.hxx>
 
 namespace CLAM

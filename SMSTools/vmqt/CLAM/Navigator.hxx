@@ -1,7 +1,7 @@
 #ifndef __NAVIGATOR__
-#define __NAVEGATOR__
+#define __NAVIGATOR__
 
-#include <qwidget.h>
+#include <QWidget>
 
 class QPushButton;
 class QLCDNumber;

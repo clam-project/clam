@@ -82,7 +82,7 @@ const RtAudio::RTAUDIO_FORMAT RtAudio :: RTAUDIO_FLOAT64 = 32;
   #define MUTEX_LOCK(A)       EnterCriticalSection(A)
   #define MUTEX_UNLOCK(A)     LeaveCriticalSection(A)
 #else // pthread API
-  #define MUTEX_INITIALIZE(A) pthread_mutex_init(A, NULL)
+  #define MUTEX_INITIALIZE(A) pthread_mutex_init(A, nullptr)
   #define MUTEX_LOCK(A)       pthread_mutex_lock(A)
   #define MUTEX_UNLOCK(A)     pthread_mutex_unlock(A)
 #endif
@@ -170,7 +170,7 @@ int RtAudio :: openStream(int outputDevice, int outputChannels,
 
   // Allocate a new stream structure.
   RTAUDIO_STREAM *stream = (RTAUDIO_STREAM *) calloc(1, sizeof(RTAUDIO_STREAM));
-  if (stream == NULL) {
+  if (stream == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -339,7 +339,7 @@ void RtAudio :: setStreamCallback(int streamId, RTAUDIO_CALLBACK callback, void 
   info->object = (void *) this;
   info->streamId = streamId;
 
-  int err = pthread_create(&info->thread, NULL, callbackHandler, &stream->callbackInfo);
+  int err = pthread_create(&info->thread, nullptr, callbackHandler, &stream->callbackInfo);
 
   if (err) {
     info->usingCallback = false;
@@ -361,10 +361,10 @@ void RtAudio :: cancelStreamCallback(int streamId)
 
     stream->callbackInfo.usingCallback = false;
     pthread_cancel(stream->callbackInfo.thread);
-    pthread_join(stream->callbackInfo.thread, NULL);
+    pthread_join(stream->callbackInfo.thread, nullptr);
     stream->callbackInfo.thread = 0;
-    stream->callbackInfo.callback = NULL;
-    stream->callbackInfo.userData = NULL;
+    stream->callbackInfo.callback = nullptr;
+    stream->callbackInfo.userData = nullptr;
 
     MUTEX_UNLOCK(&stream->mutex);
   }
@@ -407,11 +407,11 @@ void RtAudio :: initialize(void)
 {
   OSStatus err = noErr;
   UInt32 dataSize;
-  AudioDeviceID	*deviceList = NULL;
+  AudioDeviceID	*deviceList = nullptr;
   nDevices = 0;
 
   // Find out how many audio devices there are, if any.
-  err = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &dataSize, NULL);
+  err = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &dataSize, nullptr);
   if (err != noErr) {
     sprintf(message, "RtAudio: OSX error getting device info!");
     error(RtError::SYSTEM_ERROR);
@@ -422,14 +422,14 @@ void RtAudio :: initialize(void)
 
   //  Allocate the RTAUDIO_DEVICE structures.
   devices = (RTAUDIO_DEVICE *) calloc(nDevices, sizeof(RTAUDIO_DEVICE));
-  if (devices == NULL) {
+  if (devices == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
 
   // Make space for the devices we are about to get.
   deviceList = (AudioDeviceID	*) malloc( dataSize );
-  if (deviceList == NULL) {
+  if (deviceList == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -556,10 +556,10 @@ void RtAudio :: probeDeviceInfo(RTAUDIO_DEVICE *info)
   AudioBufferList	*bufferList = nil;
   err = AudioDeviceGetPropertyInfo( info->id[0], 0, false,
                                     kAudioDevicePropertyStreamConfiguration,
-                                    &dataSize, NULL );
+                                    &dataSize, nullptr );
   if (err == noErr && dataSize > 0) {
     bufferList = (AudioBufferList *) malloc( dataSize );
-    if (bufferList == NULL) {
+    if (bufferList == nullptr) {
       sprintf(message, "RtAudio: memory allocation error!");
       error(RtError::DEBUG_WARNING);
       return;
@@ -597,10 +597,10 @@ void RtAudio :: probeDeviceInfo(RTAUDIO_DEVICE *info)
   bufferList = nil;
   err = AudioDeviceGetPropertyInfo( info->id[0], 0, true,
                                     kAudioDevicePropertyStreamConfiguration,
-                                    &dataSize, NULL );
+                                    &dataSize, nullptr );
   if (err == noErr && dataSize > 0) {
     bufferList = (AudioBufferList *) malloc( dataSize );
-    if (bufferList == NULL) {
+    if (bufferList == nullptr) {
       sprintf(message, "RtAudio: memory allocation error!");
       error(RtError::DEBUG_WARNING);
       return;
@@ -825,11 +825,11 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
   AudioBufferList	*bufferList = nil;
   err = AudioDeviceGetPropertyInfo( id, 0, isInput,
                                     kAudioDevicePropertyStreamConfiguration,
-                                    &dataSize, NULL );
+                                    &dataSize, nullptr );
 
   if (err == noErr && dataSize > 0) {
     bufferList = (AudioBufferList *) malloc( dataSize );
-    if (bufferList == NULL) {
+    if (bufferList == nullptr) {
       sprintf(message, "RtAudio: memory allocation error!");
       error(RtError::DEBUG_WARNING);
       return FAILURE;
@@ -909,7 +909,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
   // make this setting for the first channel.
   UInt32 theSize = (UInt32) bufferBytes;
   dataSize = sizeof( UInt32);
-  err = AudioDeviceSetProperty(id, NULL, 0, isInput,
+  err = AudioDeviceSetProperty(id, nullptr, 0, isInput,
                                kAudioDevicePropertyBufferSize,
                                dataSize, &theSize);
   if (err != noErr) {
@@ -951,7 +951,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     // Set the sample rate and data format id.
     description.mSampleRate = (double) sampleRate;
     description.mFormatID = kAudioFormatLinearPCM;
-    err = AudioDeviceSetProperty( id, NULL, iChannel, isInput,
+    err = AudioDeviceSetProperty( id, nullptr, iChannel, isInput,
                                   kAudioDevicePropertyStreamFormat,
                                   dataSize, &description );
     if (err != noErr) {
@@ -1009,7 +1009,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_bytes *= *bufferSize * formatBytes(stream->userFormat);
     if (stream->userBuffer) free(stream->userBuffer);
     stream->userBuffer = (char *) calloc(buffer_bytes, 1);
-    if (stream->userBuffer == NULL)
+    if (stream->userBuffer == nullptr)
       goto memory_error;
   }
 
@@ -1031,7 +1031,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
       buffer_bytes *= *bufferSize;
       if (stream->deviceBuffer) free(stream->deviceBuffer);
       stream->deviceBuffer = (char *) calloc(buffer_bytes, 1);
-      if (stream->deviceBuffer == NULL)
+      if (stream->deviceBuffer == nullptr)
         goto memory_error;
 
       // If not de-interleaving, we point stream->deviceBuffer to the
@@ -1092,9 +1092,9 @@ void RtAudio :: cancelStreamCallback(int streamId)
     MUTEX_LOCK(&stream->mutex);
 
     stream->callbackInfo.usingCallback = false;
-    stream->callbackInfo.userData = NULL;
+    stream->callbackInfo.userData = nullptr;
     stream->state = STREAM_STOPPED;
-    stream->callbackInfo.callback = NULL;
+    stream->callbackInfo.callback = nullptr;
 
     MUTEX_UNLOCK(&stream->mutex);
   }
@@ -1438,7 +1438,7 @@ void RtAudio :: initialize(void)
 
   //  Allocate the RTAUDIO_DEVICE structures.
   devices = (RTAUDIO_DEVICE *) calloc(nDevices, sizeof(RTAUDIO_DEVICE));
-  if (devices == NULL) {
+  if (devices == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -1486,7 +1486,7 @@ void RtAudio :: probeDeviceInfo(RTAUDIO_DEVICE *info)
     error(RtError::DEBUG_WARNING);
     return;
   }
-  unsigned int dev = (unsigned int) atoi( strtok(NULL, ",") );
+  unsigned int dev = (unsigned int) atoi( strtok(nullptr, ",") );
 
   // First try for playback
   stream = SND_PCM_STREAM_PLAYBACK;
@@ -1948,7 +1948,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
 
   /*
   // Install the software configuration
-  snd_pcm_sw_params_t *sw_params = NULL;
+  snd_pcm_sw_params_t *sw_params = nullptr;
   snd_pcm_sw_params_alloca(&sw_params);
   snd_pcm_sw_params_current(handle, sw_params);
   err = snd_pcm_sw_params(handle, sw_params);
@@ -1983,7 +1983,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_bytes *= *bufferSize * formatBytes(stream->userFormat);
     if (stream->userBuffer) free(stream->userBuffer);
     stream->userBuffer = (char *) calloc(buffer_bytes, 1);
-    if (stream->userBuffer == NULL)
+    if (stream->userBuffer == nullptr)
       goto memory_error;
   }
 
@@ -2005,7 +2005,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
       buffer_bytes *= *bufferSize;
       if (stream->deviceBuffer) free(stream->deviceBuffer);
       stream->deviceBuffer = (char *) calloc(buffer_bytes, 1);
-      if (stream->deviceBuffer == NULL)
+      if (stream->deviceBuffer == nullptr)
         goto memory_error;
     }
   }
@@ -2055,7 +2055,7 @@ void RtAudio :: closeStream(int streamId)
 
   if (stream->callbackInfo.usingCallback) {
     pthread_cancel(stream->callbackInfo.thread);
-    pthread_join(stream->callbackInfo.thread, NULL);
+    pthread_join(stream->callbackInfo.thread, nullptr);
   }
 
   if (stream->state == STREAM_RUNNING) {
@@ -2528,7 +2528,7 @@ void RtAudio :: initialize(void)
 
   //  Allocate the RTAUDIO_DEVICE structures.
   devices = (RTAUDIO_DEVICE *) calloc(nDevices, sizeof(RTAUDIO_DEVICE));
-  if (devices == NULL) {
+  if (devices == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -3094,7 +3094,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_bytes *= *bufferSize * formatBytes(stream->userFormat);
     if (stream->userBuffer) free(stream->userBuffer);
     stream->userBuffer = (char *) calloc(buffer_bytes, 1);
-    if (stream->userBuffer == NULL) {
+    if (stream->userBuffer == nullptr) {
       close(fd);
       sprintf(message, "RtAudio: OSS error allocating user buffer memory (%s).",
               name);
@@ -3120,7 +3120,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
       buffer_bytes *= *bufferSize;
       if (stream->deviceBuffer) free(stream->deviceBuffer);
       stream->deviceBuffer = (char *) calloc(buffer_bytes, 1);
-      if (stream->deviceBuffer == NULL) {
+      if (stream->deviceBuffer == nullptr) {
         close(fd);
         free(stream->userBuffer);
         sprintf(message, "RtAudio: OSS error allocating device buffer memory (%s).",
@@ -3167,7 +3167,7 @@ void RtAudio :: closeStream(int streamId)
 
   if (stream->callbackInfo.usingCallback) {
     pthread_cancel(stream->callbackInfo.thread);
-    pthread_join(stream->callbackInfo.thread, NULL);
+    pthread_join(stream->callbackInfo.thread, nullptr);
   }
 
   if (stream->state == STREAM_RUNNING) {
@@ -3460,7 +3460,7 @@ void RtAudio :: initialize(void)
 
   //  Allocate the RTAUDIO_DEVICE structures.
   devices = (RTAUDIO_DEVICE *) calloc(nDevices, sizeof(RTAUDIO_DEVICE));
-  if (devices == NULL) {
+  if (devices == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -3603,7 +3603,7 @@ void bufferSwitch(long index, ASIOBool processNow)
 {
   RtAudio *object = (RtAudio *) asioCallbackInfo->object;
   try {
-    object->callbackEvent( asioCallbackInfo->streamId, index, (void *)NULL, (void *)NULL );
+    object->callbackEvent( asioCallbackInfo->streamId, index, (void *)nullptr, (void *)nullptr );
   }
   catch (RtError &exception) {
     fprintf(stderr, "\nCallback handler error (%s)!\n\n", exception.getMessage());
@@ -3901,7 +3901,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
   asioCallbacks.bufferSwitch = &bufferSwitch;
   asioCallbacks.sampleRateDidChange = &sampleRateChanged;
   asioCallbacks.asioMessage = &asioMessages;
-  asioCallbacks.bufferSwitchTimeInfo = NULL;
+  asioCallbacks.bufferSwitchTimeInfo = nullptr;
   result = ASIOCreateBuffers( bufferInfos, nChannels, stream->bufferSize, &asioCallbacks);
   if ( result != ASE_OK ) {
     drivers.removeCurrentDriver();
@@ -3932,7 +3932,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_bytes *= *bufferSize * formatBytes(stream->userFormat);
     if (stream->userBuffer) free(stream->userBuffer);
     stream->userBuffer = (char *) calloc(buffer_bytes, 1);
-    if (stream->userBuffer == NULL)
+    if (stream->userBuffer == nullptr)
       goto memory_error;
   }
 
@@ -3954,7 +3954,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
       buffer_bytes *= *bufferSize;
       if (stream->deviceBuffer) free(stream->deviceBuffer);
       stream->deviceBuffer = (char *) calloc(buffer_bytes, 1);
-      if (stream->deviceBuffer == NULL)
+      if (stream->deviceBuffer == nullptr)
         goto memory_error;
     }
   }
@@ -4003,9 +4003,9 @@ void RtAudio :: cancelStreamCallback(int streamId)
     MUTEX_LOCK(&stream->mutex);
 
     stream->callbackInfo.usingCallback = false;
-    stream->callbackInfo.userData = NULL;
+    stream->callbackInfo.userData = nullptr;
     stream->state = STREAM_STOPPED;
-    stream->callbackInfo.callback = NULL;
+    stream->callbackInfo.callback = nullptr;
 
     MUTEX_UNLOCK(&stream->mutex);
   }
@@ -4367,7 +4367,7 @@ void RtAudio :: initialize(void)
 
   //  Allocate the RTAUDIO_DEVICE structures.
   devices = (RTAUDIO_DEVICE *) calloc(nDevices, sizeof(RTAUDIO_DEVICE));
-  if (devices == NULL) {
+  if (devices == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -4405,7 +4405,7 @@ void RtAudio :: probeDeviceInfo(RTAUDIO_DEVICE *info)
     goto playback_probe;
 
   LPDIRECTSOUNDCAPTURE  input;
-  result = DirectSoundCaptureCreate( dsinfo.id, &input, NULL );
+  result = DirectSoundCaptureCreate( dsinfo.id, &input, nullptr );
   if ( FAILED(result) ) {
     sprintf(message, "RtAudio: Could not create DirectSound capture object (%s): %s.",
             info->name, getErrorString(result));
@@ -4490,7 +4490,7 @@ void RtAudio :: probeDeviceInfo(RTAUDIO_DEVICE *info)
 
   LPDIRECTSOUND  output;
   DSCAPS out_caps;
-  result = DirectSoundCreate( dsinfo.id, &output, NULL );
+  result = DirectSoundCreate( dsinfo.id, &output, nullptr );
   if ( FAILED(result) ) {
     sprintf(message, "RtAudio: Could not create DirectSound playback object (%s): %s.",
             info->name, getErrorString(result));
@@ -4676,7 +4676,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     LPDIRECTSOUNDBUFFER buffer;
     DSBUFFERDESC bufferDescription;
     
-    result = DirectSoundCreate( id, &object, NULL );
+    result = DirectSoundCreate( id, &object, nullptr );
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Could not create DirectSound playback object (%s): %s.",
               devices[device].name, getErrorString(result));
@@ -4702,7 +4702,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     bufferDescription.dwSize = sizeof(DSBUFFERDESC);
     bufferDescription.dwFlags = DSBCAPS_PRIMARYBUFFER;
     // Obtain the primary buffer
-    result = object->CreateSoundBuffer(&bufferDescription, &buffer, NULL);
+    result = object->CreateSoundBuffer(&bufferDescription, &buffer, nullptr);
     if ( FAILED(result) ) {
       object->Release();
       sprintf(message, "RtAudio: Unable to access DS primary buffer (%s): %s.",
@@ -4733,12 +4733,12 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
 
     // Try to create the secondary DS buffer.  If that doesn't work,
     // try to use software mixing.  Otherwise, there's a problem.
-    result = object->CreateSoundBuffer(&bufferDescription, &buffer, NULL);
+    result = object->CreateSoundBuffer(&bufferDescription, &buffer, nullptr);
     if ( FAILED(result) ) {
       bufferDescription.dwFlags = ( DSBCAPS_STICKYFOCUS |
                                     DSBCAPS_GETCURRENTPOSITION2 |
                                     DSBCAPS_LOCSOFTWARE );  // Force software mixing
-      result = object->CreateSoundBuffer(&bufferDescription, &buffer, NULL);
+      result = object->CreateSoundBuffer(&bufferDescription, &buffer, nullptr);
       if ( FAILED(result) ) {
         object->Release();
         sprintf(message, "RtAudio: Unable to create secondary DS buffer (%s): %s.",
@@ -4755,7 +4755,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_size = dsbcaps.dwBufferBytes;
 
     // Lock the DS buffer
-    result = buffer->Lock(0, buffer_size, &audioPtr, &dataLen, NULL, NULL, 0);
+    result = buffer->Lock(0, buffer_size, &audioPtr, &dataLen, nullptr, nullptr, 0);
     if ( FAILED(result) ) {
       object->Release();
       sprintf(message, "RtAudio: Unable to lock DS buffer (%s): %s.",
@@ -4768,7 +4768,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     ZeroMemory(audioPtr, dataLen);
 
     // Unlock the DS buffer
-    result = buffer->Unlock(audioPtr, dataLen, NULL, 0);
+    result = buffer->Unlock(audioPtr, dataLen, nullptr, 0);
     if ( FAILED(result) ) {
       object->Release();
       sprintf(message, "RtAudio: Unable to unlock DS buffer(%s): %s.",
@@ -4807,7 +4807,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     LPDIRECTSOUNDCAPTUREBUFFER buffer;
     DSCBUFFERDESC bufferDescription;
 
-    result = DirectSoundCaptureCreate( id, &object, NULL );
+    result = DirectSoundCaptureCreate( id, &object, nullptr );
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Could not create DirectSound capture object (%s): %s.",
               devices[device].name, getErrorString(result));
@@ -4825,7 +4825,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     bufferDescription.lpwfxFormat = &waveFormat;
 
     // Create the capture buffer.
-    result = object->CreateCaptureBuffer(&bufferDescription, &buffer, NULL);
+    result = object->CreateCaptureBuffer(&bufferDescription, &buffer, nullptr);
     if ( FAILED(result) ) {
       object->Release();
       sprintf(message, "RtAudio: Unable to create DS capture buffer (%s): %s.",
@@ -4835,7 +4835,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     }
 
     // Lock the capture buffer
-    result = buffer->Lock(0, buffer_size, &audioPtr, &dataLen, NULL, NULL, 0);
+    result = buffer->Lock(0, buffer_size, &audioPtr, &dataLen, nullptr, nullptr, 0);
     if ( FAILED(result) ) {
       object->Release();
       sprintf(message, "RtAudio: Unable to lock DS capture buffer (%s): %s.",
@@ -4848,7 +4848,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     ZeroMemory(audioPtr, dataLen);
 
     // Unlock the buffer
-    result = buffer->Unlock(audioPtr, dataLen, NULL, 0);
+    result = buffer->Unlock(audioPtr, dataLen, nullptr, 0);
     if ( FAILED(result) ) {
       object->Release();
       sprintf(message, "RtAudio: Unable to unlock DS capture buffer (%s): %s.",
@@ -4890,7 +4890,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_bytes *= *bufferSize * formatBytes(stream->userFormat);
     if (stream->userBuffer) free(stream->userBuffer);
     stream->userBuffer = (char *) calloc(buffer_bytes, 1);
-    if (stream->userBuffer == NULL)
+    if (stream->userBuffer == nullptr)
       goto memory_error;
   }
 
@@ -4912,7 +4912,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
       buffer_bytes *= *bufferSize;
       if (stream->deviceBuffer) free(stream->deviceBuffer);
       stream->deviceBuffer = (char *) calloc(buffer_bytes, 1);
-      if (stream->deviceBuffer == NULL)
+      if (stream->deviceBuffer == nullptr)
         goto memory_error;
     }
   }
@@ -4935,20 +4935,20 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     LPDIRECTSOUNDBUFFER buffer = (LPDIRECTSOUNDBUFFER) stream->handle[0].buffer;
     if (buffer) {
       buffer->Release();
-      stream->handle[0].buffer = NULL;
+      stream->handle[0].buffer = nullptr;
     }
     object->Release();
-    stream->handle[0].object = NULL;
+    stream->handle[0].object = nullptr;
   }
   if (stream->handle[1].object) {
     LPDIRECTSOUNDCAPTURE object = (LPDIRECTSOUNDCAPTURE) stream->handle[1].object;
     LPDIRECTSOUNDCAPTUREBUFFER buffer = (LPDIRECTSOUNDCAPTUREBUFFER) stream->handle[1].buffer;
     if (buffer) {
       buffer->Release();
-      stream->handle[1].buffer = NULL;
+      stream->handle[1].buffer = nullptr;
     }
     object->Release();
-    stream->handle[1].object = NULL;
+    stream->handle[1].object = nullptr;
   }
   if (stream->userBuffer) {
     free(stream->userBuffer);
@@ -4975,8 +4975,8 @@ void RtAudio :: cancelStreamCallback(int streamId)
     WaitForSingleObject( (HANDLE)stream->callbackInfo.thread, INFINITE );
     CloseHandle( (HANDLE)stream->callbackInfo.thread );
     stream->callbackInfo.thread = 0;
-    stream->callbackInfo.callback = NULL;
-    stream->callbackInfo.userData = NULL;
+    stream->callbackInfo.callback = nullptr;
+    stream->callbackInfo.userData = nullptr;
 
     MUTEX_UNLOCK(&stream->mutex);
   }
@@ -5086,8 +5086,8 @@ void RtAudio :: stopStream(int streamId)
   // abortStream() case.
   HRESULT result;
   DWORD dsBufferSize;
-  LPVOID buffer1 = NULL;
-  LPVOID buffer2 = NULL;
+  LPVOID buffer1 = nullptr;
+  LPVOID buffer2 = nullptr;
   DWORD bufferSize1 = 0;
   DWORD bufferSize2 = 0;
   if (stream->mode == OUTPUT || stream->mode == DUPLEX) {
@@ -5142,7 +5142,7 @@ void RtAudio :: stopStream(int streamId)
 
       // Zero the free space
       ZeroMemory(buffer1, bufferSize1);
-      if (buffer2 != NULL) ZeroMemory(buffer2, bufferSize2);
+      if (buffer2 != nullptr) ZeroMemory(buffer2, bufferSize2);
 
       // Update our buffer offset and unlock sound buffer
       dsBuffer->Unlock (buffer1, bufferSize1, buffer2, bufferSize2);
@@ -5161,7 +5161,7 @@ void RtAudio :: stopStream(int streamId)
 
   if (stream->mode == INPUT || stream->mode == DUPLEX) {
     LPDIRECTSOUNDCAPTUREBUFFER buffer = (LPDIRECTSOUNDCAPTUREBUFFER) stream->handle[1].buffer;
-    buffer1 = NULL;
+    buffer1 = nullptr;
     bufferSize1 = 0;
 
     result = buffer->Stop();
@@ -5176,7 +5176,7 @@ void RtAudio :: stopStream(int streamId)
 
     // Lock the buffer and clear it so that if we start to play again,
     // we won't have old data playing.
-    result = buffer->Lock(0, dsBufferSize, &buffer1, &bufferSize1, NULL, NULL, 0);
+    result = buffer->Lock(0, dsBufferSize, &buffer1, &bufferSize1, nullptr, nullptr, 0);
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Unable to lock DS capture buffer (%s): %s.",
               devices[stream->device[1]].name, getErrorString(result));
@@ -5187,7 +5187,7 @@ void RtAudio :: stopStream(int streamId)
     ZeroMemory(buffer1, bufferSize1);
 
     // Unlock the DS buffer
-    result = buffer->Unlock(buffer1, bufferSize1, NULL, 0);
+    result = buffer->Unlock(buffer1, bufferSize1, nullptr, 0);
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Unable to unlock DS capture buffer (%s): %s.",
               devices[stream->device[1]].name, getErrorString(result));
@@ -5229,7 +5229,7 @@ void RtAudio :: abortStream(int streamId)
 
     // Lock the buffer and clear it so that if we start to play again,
     // we won't have old data playing.
-    result = buffer->Lock(0, dsBufferSize, &audioPtr, &dataLen, NULL, NULL, 0);
+    result = buffer->Lock(0, dsBufferSize, &audioPtr, &dataLen, nullptr, nullptr, 0);
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Unable to lock DS buffer (%s): %s.",
               devices[stream->device[0]].name, getErrorString(result));
@@ -5240,7 +5240,7 @@ void RtAudio :: abortStream(int streamId)
     ZeroMemory(audioPtr, dataLen);
 
     // Unlock the DS buffer
-    result = buffer->Unlock(audioPtr, dataLen, NULL, 0);
+    result = buffer->Unlock(audioPtr, dataLen, nullptr, 0);
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Unable to unlock DS buffer (%s): %s.",
               devices[stream->device[0]].name, getErrorString(result));
@@ -5253,7 +5253,7 @@ void RtAudio :: abortStream(int streamId)
 
   if (stream->mode == INPUT || stream->mode == DUPLEX) {
     LPDIRECTSOUNDCAPTUREBUFFER buffer = (LPDIRECTSOUNDCAPTUREBUFFER) stream->handle[1].buffer;
-    audioPtr = NULL;
+    audioPtr = nullptr;
     dataLen = 0;
 
     result = buffer->Stop();
@@ -5268,7 +5268,7 @@ void RtAudio :: abortStream(int streamId)
 
     // Lock the buffer and clear it so that if we start to play again,
     // we won't have old data playing.
-    result = buffer->Lock(0, dsBufferSize, &audioPtr, &dataLen, NULL, NULL, 0);
+    result = buffer->Lock(0, dsBufferSize, &audioPtr, &dataLen, nullptr, nullptr, 0);
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Unable to lock DS capture buffer (%s): %s.",
               devices[stream->device[1]].name, getErrorString(result));
@@ -5279,7 +5279,7 @@ void RtAudio :: abortStream(int streamId)
     ZeroMemory(audioPtr, dataLen);
 
     // Unlock the DS buffer
-    result = buffer->Unlock(audioPtr, dataLen, NULL, 0);
+    result = buffer->Unlock(audioPtr, dataLen, nullptr, 0);
     if ( FAILED(result) ) {
       sprintf(message, "RtAudio: Unable to unlock DS capture buffer (%s): %s.",
               devices[stream->device[1]].name, getErrorString(result));
@@ -5392,8 +5392,8 @@ void RtAudio :: tickStream(int streamId)
 
   HRESULT result;
   DWORD currentPos, safePos;
-  LPVOID buffer1 = NULL;
-  LPVOID buffer2 = NULL;
+  LPVOID buffer1 = nullptr;
+  LPVOID buffer2 = nullptr;
   DWORD bufferSize1 = 0;
   DWORD bufferSize2 = 0;
   char *buffer;
@@ -5467,7 +5467,7 @@ void RtAudio :: tickStream(int streamId)
 
     // Copy our buffer into the DS buffer
     CopyMemory(buffer1, buffer, bufferSize1);
-    if (buffer2 != NULL) CopyMemory(buffer2, buffer+bufferSize1, bufferSize2);
+    if (buffer2 != nullptr) CopyMemory(buffer2, buffer+bufferSize1, bufferSize2);
 
     // Update our buffer offset and unlock sound buffer
     dsBuffer->Unlock (buffer1, bufferSize1, buffer2, bufferSize2);
@@ -5539,7 +5539,7 @@ void RtAudio :: tickStream(int streamId)
 
     // Copy our buffer into the DS buffer
     CopyMemory(buffer, buffer1, bufferSize1);
-    if (buffer2 != NULL) CopyMemory(buffer+bufferSize1, buffer2, bufferSize2);
+    if (buffer2 != nullptr) CopyMemory(buffer+bufferSize1, buffer2, bufferSize2);
 
     // Update our buffer offset and unlock sound buffer
     nextReadPos = (nextReadPos + bufferSize1 + bufferSize2) % dsBufferSize;
@@ -5607,7 +5607,7 @@ void RtAudio :: setStreamCallback(int streamId, RTAUDIO_CALLBACK callback, void 
   info->streamId = streamId;
 
   unsigned thread_id;
-  info->thread = _beginthreadex(NULL, 0, &callbackHandler,
+  info->thread = _beginthreadex(nullptr, 0, &callbackHandler,
                                 &stream->callbackInfo, 0, &thread_id);
   if (info->thread == 0) {
     info->usingCallback = false;
@@ -5648,7 +5648,7 @@ static bool CALLBACK deviceInfoCallback(LPGUID lpguid,
     DSCCAPS               caps;
     LPDIRECTSOUNDCAPTURE  object;
 
-    hr = DirectSoundCaptureCreate(  lpguid, &object,   NULL );
+    hr = DirectSoundCaptureCreate(  lpguid, &object,   nullptr );
     if( hr != DS_OK ) return true;
 
     caps.dwSize = sizeof(caps);
@@ -5662,7 +5662,7 @@ static bool CALLBACK deviceInfoCallback(LPGUID lpguid,
   else {
     DSCAPS         caps;
     LPDIRECTSOUND  object;
-    hr = DirectSoundCreate(  lpguid, &object,   NULL );
+    hr = DirectSoundCreate(  lpguid, &object,   nullptr );
     if( hr != DS_OK ) return true;
 
     caps.dwSize = sizeof(caps);
@@ -5684,7 +5684,7 @@ static bool CALLBACK defaultDeviceCallback(LPGUID lpguid,
 {
   enum_info *info = ((enum_info *) lpContext);
 
-  if ( lpguid == NULL ) {
+  if ( lpguid == nullptr ) {
     strncpy(info->name, lpcstrDescription, 64);
     return false;
   }
@@ -5788,7 +5788,7 @@ void RtAudio :: initialize(void)
 
   //  Allocate the RTAUDIO_DEVICE structures.
   devices = (RTAUDIO_DEVICE *) calloc(nDevices, sizeof(RTAUDIO_DEVICE));
-  if (devices == NULL) {
+  if (devices == nullptr) {
     sprintf(message, "RtAudio: memory allocation error!");
     error(RtError::MEMORY_ERROR);
   }
@@ -6167,7 +6167,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
     buffer_bytes *= *bufferSize * formatBytes(stream->userFormat);
     if (stream->userBuffer) free(stream->userBuffer);
     stream->userBuffer = (char *) calloc(buffer_bytes, 1);
-    if (stream->userBuffer == NULL)
+    if (stream->userBuffer == nullptr)
       goto memory_error;
   }
 
@@ -6189,7 +6189,7 @@ bool RtAudio :: probeDeviceOpen(int device, RTAUDIO_STREAM *stream,
       buffer_bytes *= *bufferSize;
       if (stream->deviceBuffer) free(stream->deviceBuffer);
       stream->deviceBuffer = (char *) calloc(buffer_bytes, 1);
-      if (stream->deviceBuffer == NULL)
+      if (stream->deviceBuffer == nullptr)
         goto memory_error;
     }
   }
@@ -6241,7 +6241,7 @@ void RtAudio :: closeStream(int streamId)
 
   if (stream->callbackInfo.usingCallback) {
     pthread_cancel(stream->callbackInfo.thread);
-    pthread_join(stream->callbackInfo.thread, NULL);
+    pthread_join(stream->callbackInfo.thread, nullptr);
   }
 
   pthread_mutex_destroy(&stream->mutex);
@@ -7018,8 +7018,8 @@ void RtAudio :: convertStreamBuffer(RTAUDIO_STREAM *stream, STREAM_MODE mode)
 
 void RtAudio :: byteSwapBuffer(char *buffer, int samples, RTAUDIO_FORMAT format)
 {
-  register char val;
-  register char *ptr;
+  char val;
+  char *ptr;
 
   ptr = buffer;
   if (format == RTAUDIO_SINT16) {

@@ -4,22 +4,22 @@ import os, glob
 import sys
 
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
+	print("\033[32m:: ", command, "\033[0m")
 	return os.system(command)
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print("\033[31mXX ", command, "\033[0m")
 
 
 def needsChange(binary, blacklist) :
 	#with python2.5 we could just return all([not binary.startswith(blacksheep) for blacksheep in blacklist])
 	for blacksheep in blacklist :
 		if binary.startswith( blacksheep ) : 
-#			print "found blackseep", binary
+#			print("found blackseep", binary)
 			return False
 	return True
 
 def libDependencies(binary, visited, blacklist) :
-#	print "examining", binary
+#	print("examining", binary)
 	for line in os.popen("otool -L "+binary).readlines()[1:] :
 		entry = line.split()[0]
 		if entry in visited : continue
@@ -38,7 +38,7 @@ def addDependentLibsToBundle( bundle ) :
 	libsPath = []
 	for binary in binaries :
 		libDependencies(binary, libsPath, doNotChange)
-#	print libsPath
+#	print(libsPath)
 
 	libs = [ (os.path.basename(path), path) for path in libsPath ] 
 	run("mkdir -p %(bundle)s/Contents/Frameworks/" % locals() )

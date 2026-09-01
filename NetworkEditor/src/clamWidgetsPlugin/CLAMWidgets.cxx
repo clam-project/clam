@@ -1,6 +1,6 @@
-#include <QtDesigner/QDesignerContainerExtension>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
-#include <QtCore/QtPlugin>
+#include <QDesignerContainerExtension>
+#include <QtUiPlugin/customwidget.h>
+#include <QtPlugin>
 #include "OscilloscopePlugin.hxx"
 #include "VumeterPlugin.hxx"
 #include "SpectrumViewPlugin.hxx"
@@ -64,8 +64,5 @@ QList<QDesignerCustomWidgetInterface*> CLAMWidgets::customWidgets() const
 {
 	return _widgetPlugins;
 }
-
-Q_EXPORT_PLUGIN2(clamwidets, CLAMWidgets)
-
 
 

@@ -11,8 +11,8 @@ needs_configure = ('configure' in COMMAND_LINE_TARGETS) or not os.path.exists(op
 avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option=='1' or avoid_configure_option=='yes' or '-c' in ARGUMENTS
 
 if needs_configure and not avoid_configure :
-	print 'Configure phase...'
+	print('Configure phase...')
 	opts.Update(env)
 	opts.Save(options_filename, env)
-	print "Finished."
+	print("Finished.")
 	Exit(0)

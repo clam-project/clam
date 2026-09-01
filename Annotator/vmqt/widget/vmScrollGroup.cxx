@@ -19,14 +19,14 @@
  *
  */
 
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QFrame>
-#include <QtCore/QString>
-#include <QtGui/QPainter>
-#include <QtGui/QScrollBar>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QFrame>
+#include <QString>
+#include <QPainter>
+#include <QScrollBar>
+#include <QLabel>
+#include <QPushButton>
 #include "vmScrollGroup.hxx"
 #include "vmIconData.hxx"
 
@@ -85,7 +85,7 @@ namespace CLAM
 			p.translate(r.x(),r.y()+r.height());
 			p.rotate(-90.0);
 			p.drawText(0,0,r.height(),r.width(),Qt::AlignHCenter|Qt::AlignTop,mText);
-			p.resetMatrix();
+			p.resetTransform();
 		}
 
 		ScrollGroup::ScrollGroup(EOrientation ori, QWidget* parent)
@@ -182,7 +182,7 @@ namespace CLAM
 			mHlabel->setText("1:1");
 			
 			QHBoxLayout* layout = new QHBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(mScrollBar,1);
 			layout->addWidget(mHlabel);
@@ -211,7 +211,7 @@ namespace CLAM
 			mScrollBar->setFocusPolicy(Qt::NoFocus);
 
 			QVBoxLayout* layout = new QVBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(mZoutButton);
 			layout->addWidget(mZinButton);

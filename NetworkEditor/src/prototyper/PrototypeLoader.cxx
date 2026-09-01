@@ -1,12 +1,12 @@
 #include "PrototypeLoader.hxx"
-#include <QtUiTools/QUiLoader>
-#include <QtGui/QPushButton>
-#include <QtGui/QApplication>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QLabel>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <QUiLoader>
+#include <QPushButton>
+#include <QApplication>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QLabel>
+#include <QFile>
+#include <QTimer>
 #include <CLAM/XMLStorage.hxx>
 #include <fstream>
 #ifdef USE_JACK
@@ -76,7 +76,7 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 	{
 		QString file = QFileDialog::getOpenFileName(0,
 			"Choose a Network to run",
-			QString::null,
+			QString(),
 			"CLAM Network files (*.clamnetwork)");
 		if (file.isEmpty()) return false;
 		_networkFile=file.toLocal8Bit().constData();

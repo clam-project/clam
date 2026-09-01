@@ -204,7 +204,9 @@ namespace CLAM {
 		for(int i=0;i<mTrajectoryArray.Size();i++)
 		{
 			// Unused variable: const int id     = mTrajectoryArray[i].id;
-			int contAt = mTrajectoryArray[i].continuedAtId;
+			// contAt is set on every iteration but never read; preserved so
+			// the trajectory inspection remains debuggable if needed.
+			[[maybe_unused]] int contAt = mTrajectoryArray[i].continuedAtId;
 			// Unused variable: const int begPos = mTrajectoryArray[i].beginPos;
 			// Unused variable: const int lastfreq=int(mTrajectoryArray[i].finalFreq);
 			while(mTrajectoryArray[i].continuedAtId!=-1)

@@ -24,7 +24,7 @@
 #include <string>
 #include <list>
 #include <map>
-#include <QtCore/QString>
+#include <QString>
 #include "Tonnetz.hxx"
 #include <CLAM/DataTypes.hxx>
 

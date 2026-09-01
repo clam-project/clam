@@ -32,7 +32,7 @@ void RandomConfig::DefaultInit(void)
 	SetDelayFactor(DEFAULTDELAYFACTOR);
 	SetMinNote(36);
 	SetMaxNote(98);
-	srand( (unsigned)time( NULL ) );
+	srand( (unsigned)time( nullptr ) );
 }
 
 Random::Random()

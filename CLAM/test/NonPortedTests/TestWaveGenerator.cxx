@@ -241,7 +241,7 @@ int main()
 			return 1;
 		}
 	}
-	catch ( CLAM::Err e )
+	catch ( CLAM::Err & e )
 	{
 		e.Print();
 		std::cerr << "Abnormal Program termination" << std::endl;

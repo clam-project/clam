@@ -24,7 +24,7 @@
 #ifndef ChordRankingPlugin_hxx
 #define ChordRankingPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class ChordRankingPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

@@ -1,6 +1,8 @@
-#include <qframe.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QFrame>
+#include <QPushButton>
+#include <QToolTip>
+//Added by qt3to4:
+#include <QKeyEvent>
 #include <CLAM/Assert.hxx>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/HScrollGroup.hxx>
@@ -13,8 +15,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		MultiDisplayPlot::MultiDisplayPlot(QWidget* parent,  const char * name, WFlags f)
-			: QtPlot(parent,name,f)
+		MultiDisplayPlot::MultiDisplayPlot(QWidget* parent,  const char * name)
+			: QtPlot(parent,name)
 			, mMasterId(-1)
 			, mXRuler(0)
 			, mHScrollBar(0)
@@ -32,7 +34,7 @@ namespace CLAM
 
 		void MultiDisplayPlot::Label(const std::string& label)
 		{
-			setCaption(label.c_str());
+			setWindowTitle(label.c_str());
 		}
 
 		void MultiDisplayPlot::Geometry(int x,int y,int w,int h)
@@ -103,7 +105,7 @@ namespace CLAM
 		void MultiDisplayPlot::SetToggleColorOn(bool on)
 		{
 			if(!mToggleButton) return;
-			mToggleButton->setOn(on);
+			mToggleButton->setChecked(on);
 		}
 
 		void MultiDisplayPlot::SwitchDisplayColors(bool sw)
@@ -113,7 +115,7 @@ namespace CLAM
 
 		void MultiDisplayPlot::switchColors()
 		{
-			if(mToggleButton->isOn())
+			if(mToggleButton->isChecked())
 			{
 				DisplayBackgroundBlack();
 			}
@@ -255,9 +257,9 @@ namespace CLAM
 			mToggleButton->setFont(f);
 			mToggleButton->setFixedSize(25,25);
 			mToggleButton->setGeometry(0,8,25,25);
-			mToggleButton->setToggleButton(true);
+			mToggleButton->setCheckable(true);
 			mToggleButton->setText("CM");
-			QToolTip::add(mToggleButton,"switch display colors");
+			mToggleButton->setToolTip("switch display colors");
 			SwitchDisplayColors(false);
 
 			// connect

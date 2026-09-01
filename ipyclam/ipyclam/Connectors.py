@@ -1,5 +1,5 @@
-import Connector
-import Processing
+from . import Connector
+from . import Processing
 
 def _hasDirection(connector) :
 	return hasattr(connector, "direction") and connector.direction is not None
@@ -50,13 +50,13 @@ class Connectors(object):
 				self.direction,
 				index=index)
 	def __getattr__(self, name):
-		if not name in self._dict.keys():
+		if not name in self._dict:
 			raise AttributeError(name)
 		return self._dict[name]
 	def __len__(self):
 		return len(self._list)
 	def __dir__(self):
-		return self._dict.keys()
+		return list(sorted(self._dict))
 
 	def _completeAsPeerOf(self, peer, fallback= Connector.Out) :
 		"Turns connector set with no direction and kind into a determined one "

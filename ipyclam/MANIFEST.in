@@ -1,0 +1,8 @@
+global-exclude *.so
+exclude ipyclam_console
+include SConstruct pyproject.toml
+recursive-include src *.cxx *.hxx *.h
+include SMSTransposition.ui
+include ipyclam_qtconsole
+include demo_ipyclam_pyqt_sms
+include demo_ipyclam_pyside_sms

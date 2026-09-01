@@ -1,12 +1,46 @@
 #ifndef QFirstPerson_hxx
 #define QFirstPerson_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
 #undef GetClassName
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
+#include <QMatrix4x4>
+#include <QtGlobal>
 #include <iostream>
 #include <cmath>
-#include <GL/glu.h>
+
+namespace
+{
+	// Replacement for gluSphere(quadric, radius, slices, stacks): draws a
+	// lat/long parameterized sphere with outward normals using legacy
+	// fixed-function GL (matches the rest of this widget). Suitable for
+	// the small decorative spheres rendered here; not optimized.
+	inline void drawSphere(float radius, int slices, int stacks)
+	{
+		const float pi = static_cast<float>(M_PI);
+		for (int i = 0; i < stacks; ++i)
+		{
+			const float lat0 = pi * (-0.5f + static_cast<float>(i)   / stacks);
+			const float lat1 = pi * (-0.5f + static_cast<float>(i+1) / stacks);
+			const float z0  = std::sin(lat0);
+			const float zr0 = std::cos(lat0);
+			const float z1  = std::sin(lat1);
+			const float zr1 = std::cos(lat1);
+			glBegin(GL_QUAD_STRIP);
+			for (int j = 0; j <= slices; ++j)
+			{
+				const float lng = 2.0f * pi * static_cast<float>(j) / slices;
+				const float x = std::cos(lng);
+				const float y = std::sin(lng);
+				glNormal3f(x * zr0, y * zr0, z0);
+				glVertex3f(x * zr0 * radius, y * zr0 * radius, z0 * radius);
+				glNormal3f(x * zr1, y * zr1, z1);
+				glVertex3f(x * zr1 * radius, y * zr1 * radius, z1 * radius);
+			}
+			glEnd();
+		}
+	}
+}
 
 static float * vColor(const QColor & color)
 {
@@ -16,6 +50,11 @@ static float * vColor(const QColor & color)
 	vcolor[2]=color.blueF();
 	vcolor[3]=color.alphaF();
 	return vcolor;
+}
+
+static void setCurrentGLColor(const QColor & color)
+{
+	glColor4fv(vColor(color));
 }
 
 class Light
@@ -64,7 +103,7 @@ public:
 	}
 };
 
-class QFirstPerson : public QGLWidget
+class QFirstPerson : public QOpenGLWidget
 {
 	double _viewX;
 	double _viewY;
@@ -72,18 +111,16 @@ class QFirstPerson : public QGLWidget
 	double _viewElevation;
 	double _sourceX;
 	double _sourceY;
-	GLUquadric * _sphere;
 	Q_OBJECT
 public:
 	QFirstPerson(QWidget * parent=0)
-		: QGLWidget(parent)
+		: QOpenGLWidget(parent)
 		, _viewX(0)
 		, _viewY(-1)
 		, _viewRotation(0)
 		, _viewElevation(0)
 		, _sourceX(0)
 		, _sourceY(0)
-		, _sphere(0)
 	{
 	}
 	void initializeGL()
@@ -107,8 +144,9 @@ public:
 		std::cout << "resize" << std::endl;
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(90.0f, (GLfloat)width / (GLfloat)height, 0.01f, 1250.0f);
+		QMatrix4x4 projection;
+		projection.perspective(90.0f, static_cast<float>(width) / static_cast<float>(height), 0.01f, 1250.0f);
+		glLoadMatrixf(projection.constData());
 		glMatrixMode(GL_MODELVIEW);
 	}
 	void paintGL()
@@ -182,24 +220,19 @@ public:
 		roomWall(-1, 0);
 		roomWall(0, 1);
 		roomWall(1, 1.75);
-		qglColor(Qt::yellow);
+		setCurrentGLColor(Qt::yellow);
 		drawPlane(-1.75);
 		glColor4fv(vColor("#aaa"));
 		drawPlane(+1.75);
-		qglColor(QColor("#ffa"));
-		renderText(0., 1, 10.-1, "North (+Y)");
-		renderText(0., 1, -10.+1, "South (-Y)");
-		renderText(10.-1, 1, 0., "East (+X)");
-		renderText(-10.+1, 1, 0., "West (-X)");
+		setCurrentGLColor(QColor("#ffa"));
 		glPushMatrix();
 			glColor4fv(vColor("#b22"));
 			glTranslatef(_sourceX,0,_sourceY);
-			renderText(0., 1, 0., "Source");
 			glBegin(GL_LINES);
 				glVertex3f(0.,1.,0.);
 				glVertex3f(0.,0.,0.);
 			glEnd();
-			gluSphere(sphere(), 0.5f, 40, 20);
+			drawSphere(0.5f, 40, 20);
 		glPopMatrix();
 	}
 	void drawPlane(float height)
@@ -220,7 +253,7 @@ public:
 		glPushMatrix();
 		glColor4fv(vColor(color));
 		glTranslatef(position[0],position[1],position[2]);
-		renderText(0., 2, 0., label);
+		(void)label;
 		glMaterialfv(GL_FRONT, GL_EMISSION, vColor(color));
 		glBegin(GL_LINES);
 			glVertex3f(0.,0.,0.);
@@ -228,7 +261,7 @@ public:
 			glVertex3f(0.,2.,0.);
 			glVertex3f(0.,0.,0.);
 		glEnd();
-		gluSphere(sphere(), 0.2f, 40, 20);
+		drawSphere(0.2f, 40, 20);
 		glMaterialfv(GL_FRONT, GL_EMISSION, vColor("black"));
 		glPopMatrix();
 	}
@@ -246,8 +279,8 @@ public:
 				.arg(QString::number(_viewRotation,'d',0))
 				;
 		glColor4fv(vColor("black"));
-		renderText(10,20, receiverString);
-		renderText(10,40, emiterString);
+		(void)receiverString;
+		(void)emiterString;
 		glBegin(GL_LINES);
 		glVertex3f(0,.06,-.1);
 		glVertex3f(0,.02,-.1);
@@ -337,7 +370,7 @@ public:
 		while (_viewRotation>=360.f) _viewRotation-=360.f;
 		while (_viewRotation<0.f) _viewRotation+=360.f;
 		event->accept();
-		updateGL();
+		update();
 	}
 signals:
 	double posChanged(QPointF point);
@@ -345,11 +378,6 @@ signals:
 	double yPosChanged(double y);
 	double orientationChanged(double degrees);
 private:
-	GLUquadric * sphere()
-	{
-		if (!_sphere) _sphere = gluNewQuadric();
-		return _sphere;
-	}
 	void emitPositionChange()
 	{
 		emit posChanged(QPointF(_viewX, _viewY));

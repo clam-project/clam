@@ -1,9 +1,15 @@
-#include <qlayout.h>
-#include <qsplitter.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <QSplitter>
+#include <QFrame>
+#include <QLabel>
+#include <QComboBox>
+#include <QToolTip>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QHideEvent>
+#include <QVBoxLayout>
+#include <QBoxLayout>
+#include <QCloseEvent>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/TimeSegmentLabelsGroup.hxx>
@@ -20,8 +26,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		SMSTimeMultiDisplay::SMSTimeMultiDisplay(QWidget* parent, const char * name, WFlags f)
-			: MultiDisplayPlot(parent,name,f)
+		SMSTimeMultiDisplay::SMSTimeMultiDisplay(QWidget* parent, const char * name)
+			: MultiDisplayPlot(parent,name)
 			, mShowOnNewData(true)
 			, mHasMasterData(false)
 			, mHasAudioData(false)
@@ -60,7 +66,7 @@ namespace CLAM
 
 			QFont ref = mYRulers[0]->Font();
 			QFontMetrics fm(ref);       
-			int y_ruler_width = fm.width("X:-0.0e+00");
+			int y_ruler_width = fm.horizontalAdvance("X:-0.0e+00");
 			
 			SetYRulersWidth(y_ruler_width);
 			
@@ -93,15 +99,15 @@ namespace CLAM
 			CreateFrequencyDisplays();
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,5,3,1);
+			QGridLayout* innerLayout = new QGridLayout(this); this->layout()->setSpacing(1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
-			innerLayout->addMultiCellWidget(splitter,1,1,0,2);
+			innerLayout->addWidget(splitter, 1, 0, (1)-(1)+1, (2)-(0)+1);
 			innerLayout->addWidget(sleftHole,2,0);
 			innerLayout->addWidget(GetHScrollGroup(),2,1);
 			innerLayout->addWidget(srightHole,2,2);
-			innerLayout->addMultiCellLayout(CreateSpectrogramPanel(),3,3,0,2);
+			innerLayout->addLayout(CreateSpectrogramPanel(), 3, 0, 1, 3);
 			innerLayout->addWidget(leftHole,4,0);
 			innerLayout->addLayout(CreatePlayer(),4,1);
 			innerLayout->addWidget(rightHole,4,2);
@@ -520,7 +526,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::setCurrentPlayer(int id)
 		{
-			int dataId = GetPlayDataId(mCBPlayList->text(id));
+			int dataId = GetPlayDataId(mCBPlayList->itemText(id));
 			int playerId = (dataId == FUNDAMENTAL) ? FUND_PLAYER : AUDIO_PLAYER;
 			bool isAudioData = true;
 			mHasEnqueuedPlayListItem = false;
@@ -782,10 +788,10 @@ namespace CLAM
 		{
 			mAudioVScroll = new VScrollGroup(mAudioDisplaysContainer);
 
-			QBoxLayout* displayLayout = new QHBoxLayout(mAudioDisplaysContainer,0,1);
-			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
+			QBoxLayout* displayLayout = new QHBoxLayout(mAudioDisplaysContainer); mAudioDisplaysContainer->layout()->setContentsMargins(0, 0, 0, 0); mAudioDisplaysContainer->layout()->setSpacing(1);
+			QBoxLayout* rulersLayout = new QVBoxLayout; displayLayout->addLayout(rulersLayout);
+			QBoxLayout* surferLayout = new QVBoxLayout; displayLayout->addLayout(surferLayout);
+			QBoxLayout* scrollLayout = new QVBoxLayout; displayLayout->addLayout(scrollLayout); 
 			// add widgets
 			for(unsigned i=MASTER; i <= RESIDUAL; i++)
 			{
@@ -799,10 +805,10 @@ namespace CLAM
 		{
 			mFrequencyVScroll = new VScrollGroup(mFreqDisplaysContainer);
 
-			QBoxLayout* displayLayout = new QHBoxLayout(mFreqDisplaysContainer,0,1);
-			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
+			QBoxLayout* displayLayout = new QHBoxLayout(mFreqDisplaysContainer); mFreqDisplaysContainer->layout()->setContentsMargins(0, 0, 0, 0); mFreqDisplaysContainer->layout()->setSpacing(1);
+			QBoxLayout* rulersLayout = new QVBoxLayout; displayLayout->addLayout(rulersLayout);
+			QBoxLayout* surferLayout = new QVBoxLayout; displayLayout->addLayout(surferLayout);
+			QBoxLayout* scrollLayout = new QVBoxLayout; displayLayout->addLayout(scrollLayout); 
 			// add widgets
 			rulersLayout->addWidget(mYRulers[FUNDAMENTAL]);
 			rulersLayout->addWidget(mYRulers[SINTRACKS]);
@@ -821,14 +827,14 @@ namespace CLAM
 			leftGroup = new QFrame(this);
 			leftGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			QFontMetrics fm(font());
-			int width = fm.width("Frequency (Hz): 00000")+6;
+			int width = fm.horizontalAdvance("Frequency (Hz): 00000")+6;
 			leftGroup->setFixedSize(width,66);
 
 			QBoxLayout* lfMainLayout = new QVBoxLayout(leftGroup);
-			lfMainLayout->setMargin(3);
-			QBoxLayout* lfInnerTopLayout = new QHBoxLayout(lfMainLayout);
-			QBoxLayout* lfInnerMiddleLayout = new QHBoxLayout(lfMainLayout);
-			QBoxLayout* lfInnerBottomLayout = new QHBoxLayout(lfMainLayout);
+			lfMainLayout->setContentsMargins(3, 3, 3, 3);
+			QBoxLayout* lfInnerTopLayout = new QHBoxLayout; lfMainLayout->addLayout(lfInnerTopLayout);
+			QBoxLayout* lfInnerMiddleLayout = new QHBoxLayout; lfMainLayout->addLayout(lfInnerMiddleLayout);
+			QBoxLayout* lfInnerBottomLayout = new QHBoxLayout; lfMainLayout->addLayout(lfInnerBottomLayout);
 
 			freqTxtLabel = new QLabel(leftGroup);
 			freqTxtLabel->setText("Frequency (Hz): ");
@@ -863,11 +869,11 @@ namespace CLAM
 			rightGroup->setFixedHeight(66);
 
 			QBoxLayout* rfMainLayout = new QVBoxLayout(rightGroup);
-			rfMainLayout->setMargin(3);
-			QBoxLayout* rfInnerTopLayout = new QHBoxLayout(rfMainLayout);
+			rfMainLayout->setContentsMargins(3, 3, 3, 3);
+			QBoxLayout* rfInnerTopLayout = new QHBoxLayout; rfMainLayout->addLayout(rfInnerTopLayout);
 			rfInnerTopLayout->setSpacing(5);
-			QBoxLayout* rfInnerMiddleLayout = new QHBoxLayout(rfMainLayout);
-			QBoxLayout* rfInnerBottomLayout = new QHBoxLayout(rfMainLayout);
+			QBoxLayout* rfInnerMiddleLayout = new QHBoxLayout; rfMainLayout->addLayout(rfInnerMiddleLayout);
+			QBoxLayout* rfInnerBottomLayout = new QHBoxLayout; rfMainLayout->addLayout(rfInnerBottomLayout);
 			rfInnerBottomLayout->setSpacing(3);
 
 			mFFTSize = new QLabel(rightGroup);
@@ -918,11 +924,11 @@ namespace CLAM
 			mCBPlayList = new QComboBox(this);
 
 			QFontMetrics fm(mCBPlayList->font());
-			int cbox_width=fm.width("Synthesized Sinusoidal")+35;
+			int cbox_width=fm.horizontalAdvance("Synthesized Sinusoidal")+35;
 			mCBPlayList->setFixedWidth(cbox_width);
 
 			mCBPlayList->setDuplicatesEnabled(false);
-			QToolTip::add(mCBPlayList,"Play List");
+			mCBPlayList->setToolTip("Play List");
 			
 			mLabelsGroup = new TimeSegmentLabelsGroup(this);
 			mLabelsGroup->setMinimumSize(186,25);
@@ -1028,11 +1034,11 @@ namespace CLAM
 				((QtSMSPlayer*)mPlayer)->SetCurrentPlayer(AUDIO_PLAYER);
 			}
 			if(!mHasAudioData) mHasAudioData = true;
-			mCBPlayList->insertItem(mPlayList[id].c_str());
+			mCBPlayList->addItem(mPlayList[id].c_str());
 			if(flag)
 			{
-				mCBPlayList->setCurrentItem(0);
-				setCurrentPlayer(mCBPlayList->currentItem());
+				mCBPlayList->setCurrentIndex(0);
+				setCurrentPlayer(mCBPlayList->currentIndex());
 			}
 			
 		}
@@ -1046,11 +1052,11 @@ namespace CLAM
 				flag = true;
 				((QtSMSPlayer*)mPlayer)->SetCurrentPlayer(FUND_PLAYER);
 			}
-			mCBPlayList->insertItem(mPlayList[id].c_str());
+			mCBPlayList->addItem(mPlayList[id].c_str());
 			if(flag)
 			{
-				mCBPlayList->setCurrentItem(0);
-				setCurrentPlayer(mCBPlayList->currentItem());
+				mCBPlayList->setCurrentIndex(0);
+				setCurrentPlayer(mCBPlayList->currentIndex());
 			}
 		}
 
@@ -1061,18 +1067,18 @@ namespace CLAM
 			std::vector<std::string> tmpLst;
 			for(int i=0; i < mCBPlayList->count(); i++)
 			{
-				if(!mCBPlayList->text(i).compare(item)) continue;
-				tmpLst.push_back(mCBPlayList->text(i).ascii());
+				if(!mCBPlayList->itemText(i).compare(item)) continue;
+				tmpLst.push_back(mCBPlayList->itemText(i).toStdString());
 			}
 			mCBPlayList->clear();
 			for(unsigned i=0; i < tmpLst.size(); i++)
 			{
-				mCBPlayList->insertItem(tmpLst[i].c_str());
+				mCBPlayList->addItem(tmpLst[i].c_str());
 			}
-			if(mCBPlayList->count()) 
+			if(mCBPlayList->count())
 			{
-				mCBPlayList->setCurrentItem(0);
-				setCurrentPlayer(mCBPlayList->currentItem());
+				mCBPlayList->setCurrentIndex(0);
+				setCurrentPlayer(mCBPlayList->currentIndex());
 			}
 		}
 

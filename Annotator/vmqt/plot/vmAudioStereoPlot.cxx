@@ -19,7 +19,7 @@
  *
  */
 
-#include <QtGui/QGridLayout>
+#include <QGridLayout>
 #include "Assert.hxx"
 #include "vmRuler.hxx"
 #include "vmScrollGroup.hxx"
@@ -171,7 +171,7 @@ namespace CLAM
 
 			// layout
 			mLayout = new QGridLayout(this);
-			mLayout->setMargin(0);
+			mLayout->setContentsMargins(0, 0, 0, 0);
 			mLayout->setSpacing(1);
 			
 			mLayout->addWidget(mXRuler,0,1);

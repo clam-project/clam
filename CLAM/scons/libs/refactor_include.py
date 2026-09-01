@@ -23,13 +23,13 @@ def sources( folder ) :
 def process_folder( header_db, folder, mustRecurse ) :
 	count = 0
 	for fname in sources( folder ) :
-		print >> sys.stdout, "Updating file",fname
+		print("Updating file",fname)
 		count+=1
 		update_includes( header_db, fname )
-	print count, "files updated..."
+	print(count, "files updated...")
 
 def usage() :
-	print """
+	print("""
 This script processes inplace the input file/folder looking for CLAM includes and converts
 them to the 'library form'. For instance, if a source file happens to contain
 
@@ -66,47 +66,47 @@ def main() :
 			inputFname = argument
 		if option in ( "-l", "--list" ) : 
 			existingHeaders = shelve.open("header.db", "r")
-			print existingHeaders.keys()
+			print(existingHeaders.keys())
 			sys.exit(0)
 		 
 	if option in ("-a", "--add") :
 		existingHeaders = shelve.open("header.db", writeback=True)
-		if existingHeaders.has_key(argument) :
-			print argument, "already exists in the database "
+		if argument in existingHeaders :
+			print(argument, "already exists in the database ")
 			sys.exit(1)
 		existingHeaders[argument] = True
 		existingHeaders.close()
-		print argument, "successfully added"
+		print(argument, "successfully added")
 		sys.exit(0)
 	
 	if option in ("-d", "--delete") :
 		existingHeaders = shelve.open("header.db", writeback=True)
-		if not existingHeaders.has_key(argument) :
-			print argument, "doesn't exist in the database "
+		if argument not in existingHeaders :
+			print(argument, "doesn't exist in the database ")
 			sys.exit(1)
 		del existingHeaders[argument]
 		existingHeaders.close()
-		print argument, "successfully deleted"
+		print(argument, "successfully deleted")
 		sys.exit(0)
 		
 	if option in ( "-r", "--recurse" ) :
 		mustRecurse = True
 
 	if len(inputFname) == 0 :
-		print "No input was specified!!!"
+		print("No input was specified!!!")
 		usage()
 		sys.exit(2)
 
 	if not os.path.exists( inputFname ) :
-		print "Specified input %s is not a file or folder!!!"
+		print("Specified input %s is not a file or folder!!!")
 		usage()
 		sys.exit(2)
 
 	header_db = shelve.open( "header.db", "r" )
 
 	if len( header_db.keys() ) == 0 :
-		print "There is some problem with the CLAM Headers Database, either it has"
-		print "not been generated or it has got somehow corrupted. Rerun scons to regenerate it."
+		print("There is some problem with the CLAM Headers Database, either it has")
+		print("not been generated or it has got somehow corrupted. Rerun scons to regenerate it.")
 		sys.exit(2)
 
 	if os.path.isfile( inputFname ) :
@@ -119,5 +119,5 @@ def main() :
 if __name__ == "__main__" :
 	main()
 else :
-	print "This is an executable script!"
+	print("This is an executable script!")
 	sys.exit(2)

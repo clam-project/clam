@@ -1,4 +1,4 @@
-import Connector
+from . import Connector
 
 class PeerConnectors(object):
 	def __init__(self, engine, hostName, kind, direction, connectorName) :

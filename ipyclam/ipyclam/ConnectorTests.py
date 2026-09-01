@@ -1,12 +1,12 @@
-from Connector import *
+from .Connector import *
 
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class ConnectorTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		from .dummy import Dummy_Engine
+		return Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -145,8 +145,8 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(engine, "proc2", kind=Port, direction=Out, name="Outport1")
 		try:
 			port.connect(port2)
-		except SameConnectorDirection, e:
-			self.assertEquals("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", e.message)
+		except SameConnectorDirection as e:
+			self.assertEqual("Unable to connect: proc1.OutPort1 and proc2.Outport1 have the same direction", str(e))
 		else:
 			self.fail("Exception expected")
 
@@ -156,8 +156,8 @@ class ConnectorTests(unittest.TestCase):
 		port2 = Connector(engine, "proc2", kind=Control, direction=In, name="Incontrol1")
 		try:
 			port.connect(port2)
-		except DifferentConnectorKind, e:
-			self.assertEqual(e.message,
+		except DifferentConnectorKind as e:
+			self.assertEqual(str(e),
 				"Unable to connect: "
 				"proc1.OutPort1 and proc2.Incontrol1 "
 				"are different kinds of connectors")
@@ -171,8 +171,8 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port.connect(port2)
 			self.fail("Exception expected")
-		except DifferentConnectorType, e:
-			self.assertEqual(e.message,
+		except DifferentConnectorType as e:
+			self.assertEqual(str(e),
 				"Unable to connect: "
 				"proc1.OutControl1 and proc2.Incontrol3 "
 				"handle different data types")
@@ -200,8 +200,8 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port > port2
 			self.fail("Exception expected")
-		except ConnectionExists, e:
-			self.assertEquals("proc1.OutPort1 and proc2.Inport1 already connected", e.__str__())
+		except ConnectionExists as e:
+			self.assertEqual("proc1.OutPort1 and proc2.Inport1 already connected", e.__str__())
 
 	def test_connectInputOutputWith__gt__OperatorAndFail(self) :
 		engine = self.fixture1()
@@ -210,8 +210,8 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port2 > port
 			self.fail("Exception expected")
-		except BadConnectorDirectionOrder, e:
-			self.assertEquals("Wrong connectors order: Output > Input", e.__str__())
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual("Wrong connectors order: Output > Input", e.__str__())
 
 	def test_connectWith__lt__Operator(self) :
 		engine = self.fixture1()
@@ -230,8 +230,8 @@ class ConnectorTests(unittest.TestCase):
 		try:
 			port < port2
 			self.fail("Exception expected")
-		except BadConnectorDirectionOrder, e:
-			self.assertEquals("Wrong connectors order: Input < Output", e.__str__())
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual("Wrong connectors order: Input < Output", e.__str__())
 
 	def test_disconnect_ports(self):
 		engine = self.fixture1()
@@ -425,8 +425,8 @@ class ConnectorTests(unittest.TestCase):
 
 class Clam_ConnectorTests(ConnectorTests):
 	def empty(self):
-		import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		from .clam import Clam_Engine
+		return Clam_Engine()
 
 if __name__ == '__main__':
 	unittest.main()

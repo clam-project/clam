@@ -25,9 +25,9 @@
 
 using namespace CLAM;
 
-SerializationController::SerializationController(  ) { }
+SerializationController::SerializationController() = default;
 
-SerializationController::~SerializationController(  ) { }
+SerializationController::~SerializationController() = default;
 
 bool SerializationController::DoSerialization( enum eAction action, Segment& segment, const char* fileName )
 {

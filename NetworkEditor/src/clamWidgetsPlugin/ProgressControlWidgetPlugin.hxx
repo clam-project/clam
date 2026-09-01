@@ -24,7 +24,7 @@
 #ifndef ProgressControlWidgetPlugin_hxx
 #define ProgressControlWidgetPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class ProgressControlWidgetPlugin : public QObject,
                                     public QDesignerCustomWidgetInterface

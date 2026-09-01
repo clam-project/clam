@@ -19,9 +19,9 @@ def recursiveDirs(env, root) :
 def moveIntermediateInto(env, subfolder) :
 	env['SHOBJPREFIX']       = os.path.join(subfolder,'')
 	env['OBJPREFIX']         = os.path.join(subfolder,'')
-	env['QT4_MOCHPREFIX']    = os.path.join(subfolder,'moc_')
-	env['QT4_UICDECLPREFIX'] = os.path.join(subfolder,'ui_')
-	env['QT4_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
+	env['QT6_MOCHPREFIX']    = os.path.join(subfolder,'moc_')
+	env['QT6_UICDECLPREFIX'] = os.path.join(subfolder,'ui_')
+	env['QT6_QRCCXXPREFIX']  = os.path.join(subfolder,'qrc_')
 
 def activateColorCommandLine(env) :
 	def print_cmd_line(commandline, target, source, env) :
@@ -87,7 +87,7 @@ def ClamModule(env, moduleName, version,
 			env.Install(os.path.join(env['prefix'],'bin'), dll),
 		]
 		libraries = [lib, defFile]
-	elif sys.platform == 'linux2' :
+	elif sys.platform == 'linux' :
 		# * Lib name: the actual fully versioned name of the library.
 		# * Soname: is the name of a link that dependant executables will look
 		# for at runtime. It does not contain the bugfix version. This enables
@@ -153,14 +153,14 @@ def ClamQuietCompilation(env) :
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 	env['LDMODULECOMSTR'] = '== Linking plugin $TARGET'
-	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
-	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
-	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
-	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
-	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT6_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT6_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT6_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 def enable_modules( self, libs, path) :
-	if sys.platform in ['linux2','darwin'] : 
+	if sys.platform in ['linux','darwin'] : 
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 			(
 				path,
@@ -180,7 +180,7 @@ def enable_modules( self, libs, path) :
 		self['ENV'] = dict(oldEnv)
 		return
 
-	raise "No CLAM support for your platform, sorry"
+	raise Exception("No CLAM support for your platform, sorry")
 
 
 def generate(env) :
@@ -188,7 +188,7 @@ def generate(env) :
 		source_dir = os.path.dirname( str(source[0]) )
 		cwd = os.getcwd()
 		os.chdir( source_dir )
-		if sys.platform == 'linux2' :
+		if sys.platform == 'linux' :
 			os.system( "/sbin/ldconfig -n ." )
 		os.chdir(cwd)
 
@@ -207,7 +207,7 @@ def generate(env) :
 	import shutil
 	bld = Builder( action =Action( 
 		lambda target, source, env:
-			shutil.copy(str(source[0]), str(target[0])),
+			shutil.copy(str(source[0]), str(target[0])) and 0,
 			"== Build copying $SOURCE"))
 
 	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )
@@ -220,11 +220,11 @@ def generate(env) :
 	env.AddMethod(activateColorCommandLine)
 
 	if (
-		not env.has_key('prefix_for_packaging') or
+		'prefix_for_packaging' not in env or
 		not env['prefix_for_packaging']  or
 		env['prefix_for_packaging']=='.'
 	) :
-		if env.has_key('prefix') :
+		if 'prefix' in env :
 			env['prefix_for_packaging'] = env['prefix']
 
 def exists(env):

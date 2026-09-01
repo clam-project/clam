@@ -92,9 +92,9 @@ def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 	buffer=_geometryHeader
 	actors=[]
 	actors=Acoustic.getActors()
-#	print "---------- acoustic actors: %s" % list(actors)
+#	print("---------- acoustic actors: %s" % list(actors))
 #	for object in scene.objects:
-#	print "---------- acoustic objects: %s" % list(Acoustic.getAcousticObjects(scene))
+#	print("---------- acoustic objects: %s" % list(Acoustic.getAcousticObjects(scene)))
 	for object in Acoustic.getAcousticObjects(scene):
 		if skipOthersGeometries and Acoustic.getObjectSoundTypeGameProperty(object) != typeOfGeometry:
 			continue
@@ -102,27 +102,27 @@ def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 		impedance=None
 		diffusion=None
 		materialName=""
-		print "Reading object: %s" % object.name
+		print("Reading object: %s" % object.name)
 #		data=bpy.data.meshes[object.getData().name]
 		if type(object.getData())!=Blender.Types.NMeshType:
-			print "no mesh, skipping..."
+			print("no mesh, skipping...")
 			continue
 		if actors.count(object)!=0:
-			print "%s is an actor, skipping" % object.name
+			print("%s is an actor, skipping" % object.name)
 			continue
 		materials=Acoustic.getObjectMaterials(object)
 		if (materials==None or materials==[]): 
-			print "\tdoesn't contains acoustic materials,",
+			print("\tdoesn't contains acoustic materials,", end=' ')
 			if Acoustic.getObjectSoundTypeGameProperty(object) != typeOfGeometry:
-				print 'no game object property "sound_type"=="%s", skipping...' % typeOfGeometry
+				print('no game object property "sound_type"=="%s", skipping...' % typeOfGeometry)
 				continue #if doesnt have any acoustic (by name) material, doesnt export
-			print 'WARNING: setting material as "%s", with default acoustic properties (impedance: %s, diff.: %s)' % (_defaultMaterialName,str(_defaultImpedance),str(_defaultDiffusion))
+			print('WARNING: setting material as "%s", with default acoustic properties (impedance: %s, diff.: %s)' % (_defaultMaterialName,str(_defaultImpedance),str(_defaultDiffusion)))
 			impedance=_defaultImpedance
 			diffusion=_defaultDiffusion
 			materialName=_defaultMaterialName
 		BPyNMesh.ApplySizeAndRotation(object)
 		data=object.getData(False,True) # get mesh instead name or NMesh (name_only=False / mesh=True)
-		print "Exporting %s..."%object.name
+		print("Exporting %s..."%object.name)
 		bufferObject= "<%s>\n" % object.name
 		bufferObject+= "<VERTS>\n"
 		location=object.mat.translationPart()
@@ -133,7 +133,7 @@ def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 		if impedance==None and diffusion==None: # it doesn't have assigned the default material
 			# use first linked material with acoustic properties 
 			for material in materials:
-				print material.name
+				print(material.name)
 				impedance=Acoustic.getImpedance(material)
 				if (impedance==None):
 					continue
@@ -143,12 +143,12 @@ def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 				materialName=material.name
 				break
 		if (impedance==None) or (diffusion==None):
-			print "any material have acoustic parameters, skipping..."
+			print("any material have acoustic parameters, skipping...")
 			continue 
 		impedanceReal=impedance.real
 		impedanceImag=impedance.imag
 		if _convertToTriangles==True:
-			print "Converting mesh to triangles..."
+			print("Converting mesh to triangles...")
 			Blender.Mesh.Mode(3) # select faces
 			Blender.Window.EditMode(0) # non-edit mode!
 			data.quadToTriangle(0)
@@ -159,10 +159,10 @@ def geometryExport(scene,typeOfGeometry='geometry',skipOthersGeometries=False):
 				vertCount+=1
 				verts+="%s " % str(vert.index+1)
 			if vertCount>3:
-				print "WARNING!! Object %s have more than 3 verts (%i) per face!!!" % (object.name,vertCount)
+				print("WARNING!! Object %s have more than 3 verts (%i) per face!!!" % (object.name,vertCount))
 			bufferObject+=FaceLineTemplate % vars()
 		buffer+=bufferObject
-		print "Added Object: %s" % object.name
+		print("Added Object: %s" % object.name)
 	return buffer	
 
 def getNormalizationParameters(objects):
@@ -212,7 +212,7 @@ def choreoExport (scene,normalize=True):
 		Blender.Draw.PupMenu('You have to select one listener and at least one source objects!')
 		return
 	allAcousticObjects=Acoustic.getAcousticObjects(scene)
-	# print list(allAcousticObjects)
+	# print(list(allAcousticObjects))
 	#TODO: refactor this (checked three times!)
 	if normalize==True:
 		normalizationOffset,normalizationScale=getNormalizationParameters(allAcousticObjects)
@@ -252,27 +252,27 @@ def main():
 	buffer=geometryExport(scene)
 	file=open(_geometryDataFilename,'w')
 	geometryFilename="%s/%s" % (os.getcwd(),file.name)
-	print "Exporting geometry data file: %s..." % geometryFilename
+	print("Exporting geometry data file: %s..." % geometryFilename)
 	file.write(buffer)
 	file.close()
-	print "done!"
+	print("done!")
 
 	buffer=wavsExport(scene)
 	file=open(_wavsDataFilename,'w')
 	wavsFilename="%s/%s" % (os.getcwd(),file.name)
-	print "Exporting wavs data file: %s..." % wavsFilename
+	print("Exporting wavs data file: %s..." % wavsFilename)
 	file.write(buffer)
 	file.close()
-	print "done!"
+	print("done!")
 
 	buffer=choreoExport(scene,(_choreoHeader=="#ClamChoreoVersion 1.1\n"))
 	file=open(_choreoFilename,'w')
 	choreoFilename="%s/%s" % (os.getcwd(),file.name)
-	print "Exporting coreo sequence on file: %s..." % choreoFilename 
+	print("Exporting coreo sequence on file: %s..." % choreoFilename) 
 	file.write(_choreoHeader)
 	file.write(buffer)
 	file.close()
-	print "done!"
+	print("done!")
 
 	Blender.Draw.PupBlock('Export finished',['Data files sucessfully exported','Geometry file: %s' % geometryFilename, 'Wavs data file: %s' % wavsFilename, 'Choreo file: %s' % choreoFilename])
 

@@ -20,9 +20,9 @@
  */
 
 #include "ChordRanking.hxx"
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
-#include <QtCore/QTimer>
+#include <QPixmap>
+#include <QPainter>
+#include <QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
 #include <algorithm>
@@ -112,7 +112,6 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 	std::sort(indexes.begin(), indexes.end(), IndirectSorter(_data));
 
 	QPainter painter(this);
-	painter.setRenderHint(QPainter::NonCosmeticDefaultPen,false);
 	unsigned barSize = painter.fontMetrics().height();
 	const unsigned margin=2;
 	unsigned barOffset = barSize+margin;

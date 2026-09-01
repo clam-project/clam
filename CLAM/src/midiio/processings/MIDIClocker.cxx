@@ -27,7 +27,7 @@
 namespace CLAM {
 
 bool MIDIClocker::ConcreteConfigure(const ProcessingConfig& c)
-	throw(ErrProcessingObj)
+
 {
 	CopyAsConcreteConfig(mConfig, c);
 

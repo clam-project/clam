@@ -24,7 +24,7 @@
 #include "LPModelViewPlugin.hxx"
 #include "LPModelView.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 LPModelViewPlugin::LPModelViewPlugin(QObject *parent)
     : QObject(parent)

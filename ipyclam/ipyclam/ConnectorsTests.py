@@ -1,17 +1,17 @@
-from Connectors import Connectors
-import Connector # TODO: Review if this can be ignored
-from Exceptions import BadConnectorDirectionOrder
-from Exceptions import SameConnectorDirection
-from Exceptions import DifferentConnectorKind
-from Exceptions import DifferentConnectorType
+from .Connectors import Connectors
+from . import Connector # TODO: Review if this can be ignored
+from .Exceptions import BadConnectorDirectionOrder
+from .Exceptions import SameConnectorDirection
+from .Exceptions import DifferentConnectorKind
+from .Exceptions import DifferentConnectorType
 
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class ConnectorsTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		from .dummy import Dummy_Engine
+		return Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -52,7 +52,7 @@ class ConnectorsTests(unittest.TestCase):
 
 	def test_dirFunction(self):
 		ports = Connectors(self.fixture1(), "proc1", Connector.Port, Connector.In)
-		self.assertEquals(['InPort1', 'InPort2', 'InPort3', 'InPort4'], dir(ports))
+		self.assertEqual(['InPort1', 'InPort2', 'InPort3', 'InPort4'], dir(ports))
 
 	def test_sliceable(self):
 		ports = Connectors(self.fixture1(), "proc1", Connector.Port, Connector.In)
@@ -80,8 +80,8 @@ class ConnectorsTests(unittest.TestCase):
 		inports = Connectors(engine, "multi1", Connector.Port, Connector.In)
 		try :
 			inports > "whatever"
-		except BadConnectorDirectionOrder, e:
-			self.assertEqual(e.message,
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual(str(e),
 				"Wrong connectors order: Output > Input")
 		else :
 			self.fail("Exception expected")
@@ -91,14 +91,14 @@ class ConnectorsTests(unittest.TestCase):
 		outports = Connectors(engine, "multi1", Connector.Port, Connector.Out)
 		try :
 			outports < "whatever"
-		except BadConnectorDirectionOrder, e:
-			self.assertEqual(e.message,
+		except BadConnectorDirectionOrder as e:
+			self.assertEqual(str(e),
 				"Wrong connectors order: Input < Output")
 		else :
 			self.fail("Exception expected")
 
 	def test_connect_to_processing(self) :
-		import Processing
+		from . import Processing
 		engine = self.connectivityFixture()
 		outports = Connectors(engine, "multi1", Connector.Port, Connector.Out)
 		processing = Processing.Processing("multi2", engine)
@@ -131,8 +131,8 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outports > outports2
 			self.fail("Exception expected")
-		except SameConnectorDirection, e :
-			self.assertMultiLineEqual(e.message,
+		except SameConnectorDirection as e :
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.OutPort1 "
 				"have the same direction")
@@ -144,8 +144,8 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outports > incontrols
 			self.fail("Exception expected")
-		except DifferentConnectorKind, e :
-			self.assertMultiLineEqual(e.message,
+		except DifferentConnectorKind as e :
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.InControl1 "
 				"are different kinds of connectors")
@@ -158,8 +158,8 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outcontrols > incontrols
 			self.fail("Exception expected")
-		except DifferentConnectorType, e :
-			self.assertMultiLineEqual(e.message,
+		except DifferentConnectorType as e :
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"csource.OutControl1 and othercsink.InControl1 "
 				"handle different data types")
@@ -184,8 +184,8 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outports > outport
 			self.fail("Exception expected")
-		except SameConnectorDirection, e :
-			self.assertMultiLineEqual(e.message,
+		except SameConnectorDirection as e :
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.OutPort2 "
 				"have the same direction")
@@ -197,8 +197,8 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outports > incontrol
 			self.fail("Exception expected")
-		except DifferentConnectorKind, e :
-			self.assertMultiLineEqual(e.message,
+		except DifferentConnectorKind as e :
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"multi1.OutPort1 and multi2.InControl2 "
 				"are different kinds of connectors")
@@ -211,8 +211,8 @@ class ConnectorsTests(unittest.TestCase):
 		try :
 			outcontrols > incontrol
 			self.fail("Exception expected")
-		except DifferentConnectorType, e :
-			self.assertMultiLineEqual(e.message,
+		except DifferentConnectorType as e :
+			self.assertMultiLineEqual(str(e),
 				"Unable to connect: "
 				"csource.OutControl1 and othercsink.InControl1 "
 				"handle different data types")
@@ -272,8 +272,8 @@ class ConnectorsTests(unittest.TestCase):
 
 class ConnectorsTests_Clam(ConnectorsTests):
 	def empty(self):
-		import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		from .clam import Clam_Engine
+		return Clam_Engine()
 
 	# CLAM inport connections are limited
 	def test_connect_undefined_to_connector(self) :

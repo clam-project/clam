@@ -5,12 +5,12 @@ sys.path.append("../scons/sconstools/")
 import versionInfo 
 
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
+	print("\033[32m:: ", command, "\033[0m")
 	return os.system(command)
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print("\033[31mXX ", command, "\033[0m")
 def phase(desc) :
-	print "\033[33m== ", desc, "\033[0m"
+	print("\033[33m== ", desc, "\033[0m")
 
 
 versions = {
@@ -22,13 +22,13 @@ versions = {
  "chordata": "---",
  "pyclam": "---",
 }
-for package, _ in versions.iteritems():
+for package, _ in versions.items():
 	versions[package] = versionInfo.versionFromRemoteSvn(package)[1]
 
-print versions
-print "remoteSvnRevision: ", versionInfo.remoteSvnRevision()
+print(versions)
+print("remoteSvnRevision: ", versionInfo.remoteSvnRevision())
 
-for package, version in versions.iteritems() : 
+for package, version in versions.items() : 
 	if package == "CLAM" :
 		sandbox = "CLAM-%s" % (version)
 		run("svn export http://clam-project.org/clam/trunk/CLAM %s"% sandbox)
@@ -47,8 +47,8 @@ for package, version in versions.iteritems() :
 	run("tar czf %s %s " % (tarball, sandbox) )
 	run("rm -rf %s/" % sandbox)
 
-print "Upload all tarballs found in local (*.tar.gz) ? [y/n]"
-if raw_input().strip() in ['y', 'Y', 'yes']:
+print("Upload all tarballs found in local (*.tar.gz) ? [y/n]")
+if input().strip() in ['y', 'Y', 'yes']:
 
 	if "~svn" in versions["CLAM"]: destDir = "src/svnsnapshots/"
 	else : destDir = "src/"
@@ -56,8 +56,8 @@ if raw_input().strip() in ['y', 'Y', 'yes']:
 	phase("regenerating web download dirs")
 	run("slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py")
 
-print "Remove created tarballs in local (rm *.tar.gz) ? [y/n]"
-if raw_input().strip() in ['y', 'Y', 'yes']:
+print("Remove created tarballs in local (rm *.tar.gz) ? [y/n]")
+if input().strip() in ['y', 'Y', 'yes']:
 	run("rm *.tar.gz")
 
  

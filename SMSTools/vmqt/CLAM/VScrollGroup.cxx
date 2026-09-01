@@ -19,13 +19,17 @@
  *
  */
 
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <QPushButton>
+#include <QToolTip>
+#include <QIcon>
+#include <QPixmap>
+#include <QVBoxLayout>
 #include <CLAM/IconData.hxx>
 #include <CLAM/VZLabel.hxx>
 #include <CLAM/ScrollBar.hxx>
 #include <CLAM/VScrollGroup.hxx>
+#include <CLAM/PaletteHelpers.hxx>
 
 namespace CLAM
 {
@@ -34,7 +38,7 @@ namespace CLAM
 		VScrollGroup::VScrollGroup(QWidget* parent) 
 			: QWidget(parent)
 		{
-			setFocusPolicy(QWidget::NoFocus);
+			setFocusPolicy(Qt::NoFocus);
 			Init();
 		}
 		
@@ -51,31 +55,32 @@ namespace CLAM
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-			mZOut->setFocusPolicy(QWidget::NoFocus);
-			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
-			QToolTip::add(mZOut,"Zoom Out");
+			mZOut->setFocusPolicy(Qt::NoFocus);
+			mZOut->setIcon(QIcon(QPixmap((const char**)icon_zoomout)));
+			mZOut->setToolTip("Zoom Out");
 			layout->addWidget(mZOut,0);
 
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-			mZIn->setFocusPolicy(QWidget::NoFocus);
-			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
-			QToolTip::add(mZIn,"Zoom In");
+			mZIn->setFocusPolicy(Qt::NoFocus);
+			mZIn->setIcon(QIcon(QPixmap((const char**)icon_zoomin)));
+			mZIn->setToolTip("Zoom In");
 			layout->addWidget(mZIn,0);
 
 			mLabel = new VZLabel(this);
 			layout->addWidget(mLabel);
 
-			mScrollBar= new ScrollBar(QScrollBar::Vertical,this);
+			mScrollBar= new ScrollBar(Qt::Vertical,this);
 			mScrollBar->setFixedWidth(mScrollBar->sizeHint().width());
 			mScrollBar->setRange(0,0);
-			mScrollBar->setSteps(20,100);
+			mScrollBar->setSingleStep(20);
+			mScrollBar->setPageStep(100);
 			layout->addWidget(mScrollBar,1);
 
 			setFixedWidth(20);
 
-			setPaletteBackgroundColor(mZIn->paletteBackgroundColor());
+			CLAM::VM::setBgColor(this, mZIn->palette().color(mZIn->backgroundRole()));
 
 			// connections
 			connect(mZIn,SIGNAL(clicked()),this,SIGNAL(zoomIn()));
@@ -113,9 +118,9 @@ namespace CLAM
 
 		void VScrollGroup::setMaxScrollValue(int value)
 		{
-			if(value >= 0 && mScrollBar->maxValue() != value)
+			if(value >= 0 && mScrollBar->maximum() != value)
 			{
-				mScrollBar->setMaxValue(value);
+				mScrollBar->setMaximum(value);
 				emit maxScrollValue(value);
 			}
 		}
@@ -127,7 +132,7 @@ namespace CLAM
 
 		int VScrollGroup::GetMaxScrollValue() const
 		{
-			return mScrollBar->maxValue();
+			return mScrollBar->maximum();
 		}
 	}
 }

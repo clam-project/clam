@@ -19,8 +19,8 @@
  *
  */
 
-#include <QtGui/QPainter>
-#include <QtGui/QResizeEvent>
+#include <QPainter>
+#include <QResizeEvent>
 #include "vmColorScale.hxx"
 
 namespace CLAM

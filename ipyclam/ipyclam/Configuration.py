@@ -26,13 +26,13 @@ class Configuration(object):
 	def __getattr__(self, name):
 		try:
 			return self.__getitem__(name)
-		except KeyError, e:
+		except KeyError as e:
 			raise AttributeError(e.args[0])
 
 	def __setattr__(self, name, value):
 		try:		
 			self.__setitem__(name, value)
-		except KeyError, e:
+		except KeyError as e:
 			raise AttributeError(e.args[0])
 	def __dir__(self):
 		return self._engine.keys()
@@ -46,7 +46,7 @@ class Configuration(object):
 					attribute,
 					self._engine[attribute].__repr__(),
 					)
-				for attribute in self._engine.keys()
+				for attribute in sorted(self._engine.keys())
 				if fullConfig or self._engine.nonDefault(attribute)
 			])
 		if code: code += "\n"

@@ -46,7 +46,7 @@ namespace CLAM
 		Configure(c);
 	}
 
-	FundFreqDetect::~FundFreqDetect()	{}
+	FundFreqDetect::~FundFreqDetect() = default;
 
 	/* Configure the Processing Object according to the Config object */
 	bool FundFreqDetect::ConcreteConfigure(const ProcessingConfig& c)

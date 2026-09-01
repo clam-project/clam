@@ -32,7 +32,7 @@ void Vumeter::paintEvent(QPaintEvent * event)
 		if (i>7*nLeds/10) color=_color2;
 		if (i>=9*nLeds/10) color=_color3;
 		if (logEnergy<=ledStep*i && i!=peak)
-			painter.setBrush(color.dark());
+			painter.setBrush(color.darker());
 		else
 			painter.setBrush(color);
 		painter.drawRect(

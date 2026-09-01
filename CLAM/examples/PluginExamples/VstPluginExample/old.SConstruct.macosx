@@ -19,7 +19,7 @@ def install_plugin_message( target, source, env):
 	return "Installing plugin in default VST plugin directory ~/Library/Audio/Plug-Ins/VST"
 
 if sys.platform != 'darwin':
-	print "ERROR: you must build this example under Mac OS X"
+	print("ERROR: you must build this example under Mac OS X")
 	sys.exit(1)
 
 vst_env = Environment( tools=['default']) 

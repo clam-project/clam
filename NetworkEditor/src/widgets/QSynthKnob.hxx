@@ -26,10 +26,10 @@
 #ifndef __QSynthKnob_h
 #define __QSynthKnob_h
 
-#include <QtGui/QDial>
-#include <QtCore/QMap>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QWheelEvent>
+#include <QDial>
+#include <QMap>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 
 //-------------------------------------------------------------------------
