@@ -101,6 +101,7 @@ public:
 
 		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
+		scroll->setWidgetResizable(true);
 		scroll->setWidget(_canvas);
 
 #ifdef AFTER13RELEASE
