@@ -17,9 +17,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-from xml import xpath
-from xml.dom.ext.reader import Sax2
-import xml.dom.ext 
+from xml.etree import ElementTree as ET
+from copy import deepcopy
 import sys
 from io import StringIO
 
@@ -31,37 +30,32 @@ class Pool :
 			return self.what
 
 	def __init__(self, file=None, domnodelist=None) :
-		# EP Constructor a partir d'un llistat de nodes, caldra crear manualment l'arrel
-		#  (per passar la llista, millor xpath per seleccionar attributs i tal)
 		if file is None:
 			file = StringIO("<DescriptorsPool/>")
 
-		self.doc = Sax2.Reader().fromStream(file)
+		self.tree = ET.parse(file)
+		self.doc = self.tree.getroot()
 
 		if domnodelist is not None:
-			root = self.doc.getElementsByTagName("DescriptorsPool")[0]
 			for node in domnodelist:
-				cloned = self.doc.importNode(node, True)
-				root.appendChild(cloned)
+				cloned = deepcopy(node)
+				self.doc.append(cloned)
 
 	def Dump(self, file=sys.stdout):
-		xml.dom.ext.PrettyPrint(self.doc, file)
+		ET.indent(self.tree, space='\t')
+		self.tree.write(file, xml_declaration=True, encoding='unicode')
 		file.flush()
 
 	def GetScopeSize(self, scope) :
-		path = '//ScopePool[@name="%s"]/@size'%(scope)
-		nodes = xpath.Evaluate(path, self.doc.documentElement)
-		for node in nodes :
-			return int(node.nodeValue)
+		for node in self.doc.findall('.//ScopePool[@name="%s"]' % scope) :
+			return int(node.get('size'))
 		raise Pool.Exception("Scope '" + scope + "' not found")
 
 	def SelectAttributes(self, scope, name) :
-		path = '//ScopePool[@name="%s"]/AttributePool[@name="%s"]'%(scope,name)
-		return xpath.Evaluate(path, self.doc.documentElement)
+		return self.doc.findall('.//ScopePool[@name="%s"]/AttributePool[@name="%s"]' % (scope, name))
 
 	def SelectScope(self, scope) :
-		path = '//ScopePool[@name="%s"]'%(scope)
-		return xpath.Evaluate(path, self.doc.documentElement)
+		return self.doc.findall('.//ScopePool[@name="%s"]' % scope)
 
 	def RemoveAttribute(self, scope, name) :
 		location = self.SelectScope(scope)
@@ -72,7 +66,7 @@ class Pool :
 		if len(toRemove)!=1:
 			raise Pool.Exception("Attribute '"+name+"' not found while removing '"+ 
 				scope+"::"+name+"'")
-		location[0].removeChild(toRemove[0])
+		location[0].remove(toRemove[0])
 		
 
 	def InsertAttribute(self, source, scope, name, targetScope, targetName=None) :
@@ -88,23 +82,20 @@ class Pool :
 		self._InsertNode(nodesToMove, targetScope, targetName)
 
 	def _InsertNode(self, nodesToMove, scope, name = None) :
-		path = '//ScopePool[@name="%s"]'%(scope)
-		scopeNodes = xpath.Evaluate(path, self.doc.documentElement)
+		scopeNodes = self.doc.findall('.//ScopePool[@name="%s"]' % scope)
 		for scopeNode in scopeNodes :
 			for node in nodesToMove :
-				cloned = self.doc.importNode(node, True)
+				cloned = deepcopy(node)
 				if name != None :
-					cloned.setAttribute("name", name)
-				scopeNode.appendChild(cloned)
+					cloned.set("name", name)
+				scopeNode.append(cloned)
 				return
 		assert None, "Target scope not found"
 
 	def PopulateScope(self, scope, population) :
-		root = self.doc.documentElement
-		newScope = self.doc.createElement("ScopePool")
-		newScope.setAttribute("name",scope)
-		newScope.setAttribute("size",str(population))
-		self.doc.documentElement.appendChild(newScope)
+		newScope = ET.SubElement(self.doc, "ScopePool")
+		newScope.set("name", scope)
+		newScope.set("size", str(population))
 
 	def AssureScopeWithPopulation(self, scope, population) :
 		try :
@@ -119,13 +110,10 @@ class Pool :
 			" but it is actually " + str(actualSize))
 	def PresentAttributes(self) :
 		ids=[]
-		path = '//ScopePool/@name'
-		for scopeNode in \
-				xpath.Evaluate(path, self.doc.documentElement):
-			path = '//ScopePool[@name="%s"]/AttributePool/@name'%scopeNode.value
-			for attributeNode in \
-				xpath.Evaluate(path, self.doc.documentElement):
-				ids.append(str(scopeNode.value+"::"+attributeNode.value))
+		for scopeNode in self.doc.findall('.//ScopePool') :
+			scopeName = scopeNode.get('name')
+			for attributeNode in scopeNode.findall('AttributePool') :
+				ids.append(str(scopeName + "::" + attributeNode.get('name')))
 		return ids
 
 

@@ -20,17 +20,17 @@
 from Schema import *
 from io import StringIO
 import unittest
-import xml.dom.ext
+from xml.etree import ElementTree as ET
 
 def stringAttribute(scope,name) :
 	return """\
-<Attribute scope='%s' name='%s' type='String'/>
+<Attribute scope="%s" name="%s" type="String"/>
 """%(scope,name)
 
 def enumAttribute(scope, name, values) :
 	return """\
-<Attribute scope='%s' name='%s' type='Enum'>
-	<Values size='%d'>%s</Values>
+<Attribute scope="%s" name="%s" type="Enum">
+	<Values size="%d">%s</Values>
 </Attribute>
 """%(scope, name, len(values), " ".join(values))
 
@@ -66,18 +66,17 @@ class SchemaTest(unittest.TestCase):
 		self.schema2 = StringIO(document2)
 
 	def serializeXml(self, nodes) :
-		output = StringIO()
-		for node in nodes :
-			xml.dom.ext.Print(node, output)
-			print(file=output)
-		return output.getvalue()
+		return "\n".join([
+			ET.tostring(node, encoding='unicode')
+			for node in nodes
+		])
 
 	def testSelectAttribute(self) :
 		schema = Schema(self.schema)
 
 		nodes = schema.SelectAttribute('S1', 'StrA')
 
-		self.assertEquals(stringAttribute('S1', 'StrA'), self.serializeXml(nodes))
+		self.assertEqual(stringAttribute('S1', 'StrA'), self.serializeXml(nodes))
 
 
 	def testInserAttribute(self) :
@@ -88,7 +87,7 @@ class SchemaTest(unittest.TestCase):
 
 		result = schema1.SelectAttribute('S2', 'EnumY')
 		expect = schema2.SelectAttribute('S2', 'EnumY')
-		self.assertEquals(self.serializeXml(expect), self.serializeXml(result))
+		self.assertEqual(self.serializeXml(expect), self.serializeXml(result))
 
 
 	def testInserAttribute_withNonExistingSourceScope(self) :
@@ -128,9 +127,9 @@ class SchemaTest(unittest.TestCase):
 		file = StringIO()
 		schema.Dump(file)
 		self.assertEqual("""\
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <DescriptionScheme>
-  <Attributes/>
+	<Attributes />
 </DescriptionScheme>
 """,
 		file.getvalue())

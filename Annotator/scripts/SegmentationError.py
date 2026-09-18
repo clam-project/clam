@@ -21,13 +21,12 @@
 
 from Pool import *
 import sys
-from xml.dom.ext.reader import Sax2
 
 def extractAttribute(pool, scope, attribute) :	
-	return pool.SelectAttributes(scope,attribute)[0].firstChild.data.split()
+	return pool.SelectAttributes(scope,attribute)[0].text.split()
 
 def extractEnumAttribute(pool, scope, attribute) :	
-	return [e.firstChild.data for e in pool.SelectAttributes(scope,attribute)[0].childNodes if e.nodeType == e.ELEMENT_NODE  ]
+	return [e.text for e in pool.SelectAttributes(scope,attribute)[0]]
 
 def segmentAtTime(segmentation, time) :	
 	i = 0

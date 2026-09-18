@@ -22,8 +22,8 @@ import gzip
 import urllib.request
 import urllib.parse
 
-import xml.dom.ext
 from xml.dom.ext.reader.Sax2 import FromXmlStream
+from xml.etree import ElementTree as ET
 from xml.sax import saxutils
 
 from Pool import Pool
@@ -192,7 +192,7 @@ class Tasker:
 					#Extract desired attributes
 					for ( scope,name ) in modifydescriptors:
 						temppool.InsertAttribute( pool,scope,name,scope,name )
-					xml.dom.ext.PrettyPrint( temppool.doc.documentElement, uf )
+					uf.write(ET.tostring(temppool.doc, encoding='unicode'))
 					uf.write( "</Song>\n" )
 
 			uf.write( "</UploadPools>\n" )
