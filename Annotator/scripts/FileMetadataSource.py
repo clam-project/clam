@@ -4,22 +4,22 @@ from Aggregator import *
 import shelve
 import os
 
-
+_StandardException = Exception
 
 class FileMetadataSource :
-	class SongNotFoundException :
+	class SongNotFoundException(_StandardException) :
 		def __init__(self, id) :
 			self.id = id
 		def __str__(self) :
 			return "No descriptors found for song id '%s'." % self.id
 
-	class InvalidSchemaException :
+	class InvalidSchemaException(_StandardException) :
 		def __init__(self, path) :
 			self.path = path
 		def __str__(self) :
 			return "Schema file '%s' not found." % (self.path)
 
-	class InvalidExtractorPathException :
+	class InvalidExtractorPathException(_StandardException) :
 		def __init__(self, path) :
 			self.path = path
 		def __str__(self) :

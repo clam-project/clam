@@ -20,8 +20,10 @@
 import re
 import sys
 
+_StandardException = Exception
+
 class Aggregator :
-	class Exception :
+	class Exception(_StandardException) :
 		def __init__(self, message) :
 			self.what = message
 		def __str__(self) :

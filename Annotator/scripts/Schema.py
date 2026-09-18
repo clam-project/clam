@@ -25,8 +25,10 @@ from xml.dom.ext.reader import Sax2
 import xml.dom.ext 
 from io import StringIO
 
+_StandardException = Exception
+
 class Schema :
-	class Exception :
+	class Exception(_StandardException) :
 		def __init__(self, message) :
 			self.what = message
 		def __str__(self) :

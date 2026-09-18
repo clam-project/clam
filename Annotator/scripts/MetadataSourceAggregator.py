@@ -4,9 +4,11 @@ from Aggregator import *
 from Pool import *
 from Schema import *
 
+_StandardException = Exception
+
 class MetadataSourceAggregator :
 
-	class Exception :
+	class Exception(_StandardException) :
 		def __init__(self, message) :
 			self.what = message
 		def __str__(self) :
