@@ -88,7 +88,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider = MetadataSourceAggregator(sources, map)
 		schema = provider.QuerySchema([])
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes/>\n"+
 			"</DescriptionScheme>\n" +
@@ -98,7 +98,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider = MetadataSourceAggregator(sources, map)
 		schema = provider.QuerySchema(["Song::Artist"])
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes>\n"+
 			"    <Attribute scope='Song' name='Artist' type='String'/>\n"+
@@ -113,7 +113,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::DynamicComplexity",
 			])
 		self.assertEqual(
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes>\n"+
 			"    <Attribute scope='Song' name='DynamicComplexity' type='Float'>\n"+
@@ -135,7 +135,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::DynamicComplexity"
 			])
 		self.assertEqual(
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes>\n"+
 			"    <Attribute scope='Song' name='Artist' type='String'/>\n"+
@@ -154,7 +154,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider = MetadataSourceAggregator(sources, map)
 		descriptors = provider.QueryDescriptors('id1', [])
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool/>\n" +
 			"", self.dumpXml(descriptors))
 
@@ -162,7 +162,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider = MetadataSourceAggregator(sources, map)
 		descriptors = provider.QueryDescriptors('id1', ["Song::Artist"])
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
 			"    <AttributePool name='Artist'>Artist 1</AttributePool>\n"+
@@ -179,7 +179,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::DynamicComplexity",
 			])
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
 			"    <AttributePool name='Artist'>Artist 1</AttributePool>\n"+
@@ -214,7 +214,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 
 		descriptors = provider.QueryDescriptors('newId', [])
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool/>\n" +
 			"", self.dumpXml(descriptors))
 
@@ -225,7 +225,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider.UpdateDescriptors('newId', poolToCopy)
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
 			"    <AttributePool name='Artist'>Artist 1</AttributePool>\n"+
@@ -244,7 +244,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider.UpdateDescriptors('newId', poolToCopy)
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
 			"    <AttributePool name='Artist'>Artist 1</AttributePool>\n"+
@@ -277,7 +277,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			]
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
 			"    <AttributePool name='Artist'>Artist 2</AttributePool>\n"+
@@ -309,7 +309,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			]
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
 		self.assertEqual( 
-			"<?xml version='1.0' encoding='UTF-8'?>\n"+
+			"<?xml version='1.0' encoding='utf-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
 			"    <AttributePool name='Artist'>Artist 2</AttributePool>\n"+

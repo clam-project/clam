@@ -23,7 +23,7 @@ import sys
 import re
 
 def Lab2Plot(labfile, output, attributeName, filter, childScope, labelAttribute):
-	print('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>', file=output)
+	print('<?xml version="1.0" encoding="utf-8" standalone="no" ?>', file=output)
 	print('<DescriptorsPool>', file=output)
 	print('\t<ScopePool name="Song" size="1">', file=output)
 	tokens = list()

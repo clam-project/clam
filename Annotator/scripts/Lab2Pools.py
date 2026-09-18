@@ -23,7 +23,7 @@ import sys
 import re
 
 def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAttribute):
-	print('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>', file=output)
+	print('<?xml version="1.0" encoding="utf-8" standalone="no" ?>', file=output)
 	print('<DescriptorsPool>', file=output)
 	print('\t<ScopePool name="Song" size="1">', file=output)
 	tokens = list()
@@ -61,7 +61,7 @@ def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAt
 
 def generateSchema(mainScope, segmentationAttribute, childScope, labelAttribute, values):
 	result = ''
-	result += '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n'
+	result += '<?xml version="1.0" encoding="utf-8" standalone="no" ?>\n'
 	result += '<DescriptionScheme>\n'
 	result += '\t<Attributes>\n'
 	result += '\t\t<Attribute scope="%s" name="%s" type="Segmentation">\n' % (mainScope, segmentationAttribute)
