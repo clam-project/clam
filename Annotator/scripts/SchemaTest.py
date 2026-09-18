@@ -24,7 +24,7 @@ from xml.etree import ElementTree as ET
 
 def stringAttribute(scope,name) :
 	return """\
-<Attribute scope="%s" name="%s" type="String"/>
+<Attribute scope="%s" name="%s" type="String" />
 """%(scope,name)
 
 def enumAttribute(scope, name, values) :
@@ -130,8 +130,7 @@ class SchemaTest(unittest.TestCase):
 <?xml version='1.0' encoding='utf-8'?>
 <DescriptionScheme>
 	<Attributes />
-</DescriptionScheme>
-""",
+</DescriptionScheme>""",
 		file.getvalue())
 
 
