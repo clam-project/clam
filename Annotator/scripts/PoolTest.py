@@ -20,29 +20,30 @@
 from Pool import *
 from io import StringIO
 import unittest
-import xml.dom.ext
+from xml.etree import ElementTree as ET
 
 
 attributeS1Simple = """\
-<AttributePool name='Simple'>7.2</AttributePool>
+<AttributePool name="Simple">7.2</AttributePool>
 """
 attributeS1Artist = """\
-<AttributePool name='Artist'>
-	<Band size='2'>
+<AttributePool name="Artist">
+	<Band size="2">
 		<Component>Jerry Wilco</Component>
 		<Component>Josh Wilco</Component>
 	</Band>
 </AttributePool>
 """
+
 attributeS1MoreAttributes = """\
-<AttributePool name='AdditionalAttribute' lenght='9'>
+<AttributePool name="AdditionalAttribute" lenght="9">
 	286500 454356 617701 725474 846725 1081347 1278632 1416662 154943
 </AttributePool>
 """
 
 document ="""\
 <DescriptorsPool>
-<ScopePool name='S1' size='1'>\
+<ScopePool name="S1" size="1">\
 """ + attributeS1Artist + attributeS1Simple + \
 """\
 </ScopePool>
@@ -51,7 +52,7 @@ document ="""\
 
 document2 ="""\
 <DescriptorsPool>
-<ScopePool name='S2' size='1'>\
+<ScopePool name="S2" size="1">\
 """ + attributeS1MoreAttributes + \
 """\
 </ScopePool>
@@ -60,7 +61,7 @@ document2 ="""\
 
 documentWithDifferentScopeSize ="""\
 <DescriptorsPool>
-<ScopePool name='S2' size='3'>\
+<ScopePool name="S2" size="3">\
 """ + attributeS1MoreAttributes + \
 """\
 </ScopePool>
@@ -75,11 +76,10 @@ class PoolsTest(unittest.TestCase):
 		self.poolDifferentSize = StringIO(documentWithDifferentScopeSize)
 
 	def serializeXml(self, nodes) :
-		output = StringIO()
-		for node in nodes :
-			xml.dom.ext.Print(node, output)
-			print(file=output)
-		return output.getvalue()
+		return "\n".join([
+			ET.tostring(node, encoding='unicode')
+			for node in nodes
+		])
 
 
 	def testGetScopeSize(self) :
@@ -100,7 +100,7 @@ class PoolsTest(unittest.TestCase):
 
 		nodes = pool.SelectAttributes('S1', 'Artist')
 
-		self.assertEquals(attributeS1Artist, self.serializeXml(nodes))
+		self.assertEqual(attributeS1Artist, self.serializeXml(nodes))
 
 	def testInserAttributeAsNodes(self) :
 		pool1 = Pool(self.pool)
@@ -110,7 +110,7 @@ class PoolsTest(unittest.TestCase):
 		pool1._InsertNode(nodesToMove,'S1')
 
 		nodes = pool1.SelectAttributes('S1', 'AdditionalAttribute')
-		self.assertEquals(self.serializeXml(nodesToMove), self.serializeXml(nodes))
+		self.assertEqual(self.serializeXml(nodesToMove), self.serializeXml(nodes))
 
 	def testInserAttribute(self) :
 		pool1 = Pool(self.pool)
@@ -120,7 +120,7 @@ class PoolsTest(unittest.TestCase):
 
 		result = pool1.SelectAttributes('S1', 'AdditionalAttribute')
 		expect = pool2.SelectAttributes('S2', 'AdditionalAttribute')
-		self.assertEquals(self.serializeXml(expect), self.serializeXml(result))
+		self.assertEqual(self.serializeXml(expect), self.serializeXml(result))
 
 	def testInserAttribute_withNonExistingSourceScope(self) :
 		pool1 = Pool(self.pool)
@@ -194,7 +194,7 @@ class PoolsTest(unittest.TestCase):
 
 		result = pool1.SelectAttributes('NewScope', 'AdditionalAttribute')
 		expect = pool2.SelectAttributes('S2', 'AdditionalAttribute')
-		self.assertEquals(self.serializeXml(expect), self.serializeXml(result))
+		self.assertEqual(self.serializeXml(expect), self.serializeXml(result))
 
 	def testRemoveAttribute(self) :
 		pool1 = Pool(self.pool)
@@ -230,7 +230,7 @@ class PoolsTest(unittest.TestCase):
 		pool = Pool()
 		file = StringIO()
 		pool.Dump(file)
-		self.assertEqual("<?xml version='1.0' encoding='UTF-8'?>\n<DescriptorsPool/>\n", file.getvalue())
+		self.assertEqual("<?xml version='1.0' encoding='utf-8'?>\n<DescriptorsPool />", file.getvalue())
 
 
 
