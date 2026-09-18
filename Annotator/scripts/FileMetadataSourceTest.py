@@ -13,14 +13,14 @@ class FileMetadataSourceTest(unittest.TestCase):
 		Schema(open("testdata/FileSource1/schema.sc")).Dump(expected)
 		result = StringIO()
 		source1.QuerySchema().Dump(result)
-		self.assertEquals(expected.getvalue(), result.getvalue())
+		self.assertEqual(expected.getvalue(), result.getvalue())
 
 	def testQuerySchema_noSchemaInSource(self) :
 		try :
 			source1 = FileMetadataSource("testdata/BadSource/")
 			self.fail("Should have thrown an exception")
 		except FileMetadataSource.InvalidSchemaException as e:
-			self.assertEquals(str(e), "Schema file 'testdata/BadSource/schema.sc' not found.")
+			self.assertEqual(str(e), "Schema file 'testdata/BadSource/schema.sc' not found.")
 
 	def testQueryDescriptors_nonExistingSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
@@ -28,7 +28,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 			source1.QueryDescriptors('BadId').Dump()
 			self.fail("Should have thrown an exception")
 		except FileMetadataSource.SongNotFoundException as e :
-			self.assertEquals(str(e), "No descriptors found for song id 'BadId'.")
+			self.assertEqual(str(e), "No descriptors found for song id 'BadId'.")
 
 	def testQueryDescriptors_existingSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
@@ -36,7 +36,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 		Pool(open("testdata/FileSource1/id1.pool")).Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
-		self.assertEquals(expected.getvalue(), result.getvalue())
+		self.assertEqual(expected.getvalue(), result.getvalue())
 
 	def testQueryDescriptors_differentSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
@@ -44,7 +44,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 		Pool(open("testdata/FileSource1/id2.pool")).Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("id2").Dump(result)
-		self.assertEquals(expected.getvalue(), result.getvalue())
+		self.assertEqual(expected.getvalue(), result.getvalue())
 
 	def testQueryDescriptors_differentSource(self) :
 		source1 = FileMetadataSource("testdata/FileSource2/")
@@ -52,7 +52,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 		Pool(open("testdata/FileSource2/id1.pool")).Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
-		self.assertEquals(expected.getvalue(), result.getvalue())
+		self.assertEqual(expected.getvalue(), result.getvalue())
 
 	def testUpdateDescriptors_whenNoPreviousPoolExists(self):
 		source1 = FileMetadataSource("testdata/FileSource1/")
@@ -64,7 +64,7 @@ class FileMetadataSourceTest(unittest.TestCase):
 		poolToInsert.Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("newId").Dump(result)
-		self.assertEquals(expected.getvalue(), result.getvalue())
+		self.assertEqual(expected.getvalue(), result.getvalue())
 
 		os.remove('testdata/FileSource1/newId.pool')
 

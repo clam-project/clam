@@ -48,26 +48,26 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 	def testAggregatorScriptBuilding_partialFirstSource(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		(script, sourceIds) = provider._AggregatorScriptFor(["Song::Artist"])
-		self.assertEquals( 
+		self.assertEqual( 
 			"copy 1 File::Singer Song::Artist\n" +
 			"", script)
-		self.assertEquals(["source1"], sourceIds)
+		self.assertEqual(["source1"], sourceIds)
 
 	def testAggregatorScriptBuilding_partialSecondSource(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		(script, sourceIds) = provider._AggregatorScriptFor(["Song::DynamicComplexity"])
-		self.assertEquals( 
+		self.assertEqual( 
 			"copy 1 WaveFile::Complexity Song::DynamicComplexity\n" +
 			"", script)
-		self.assertEquals(["source2"], sourceIds)
+		self.assertEqual(["source2"], sourceIds)
 
 	def testAggregatorScriptBuilding_partialThirdSource(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		(script, sourceIds) = provider._AggregatorScriptFor(["Frame::Energy"])
-		self.assertEquals( 
+		self.assertEqual( 
 			"copy 1 Frame::SpectralEnergy Frame::Energy\n" +
 			"", script)
-		self.assertEquals(["source3"], sourceIds)
+		self.assertEqual(["source3"], sourceIds)
 
 	def testAggregatorScriptBuilding_severalSources(self) :
 		provider = MetadataSourceAggregator(sources, map)
@@ -77,17 +77,17 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::Title",
 			"Song::DynamicComplexity",
 			])
-		self.assertEquals( 
+		self.assertEqual( 
 			"copy 1 File::Singer Song::Artist\n" +
 			"copy 1 File::Name Song::Title\n" +
 			"copy 2 WaveFile::Complexity Song::DynamicComplexity\n" +
 			"", script)
-		self.assertEquals(["source1","source2"], sourceIds)
+		self.assertEqual(["source1","source2"], sourceIds)
 
 	def testQuerySchema_noDescriptor(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		schema = provider.QuerySchema([])
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes/>\n"+
@@ -97,7 +97,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 	def testQuerySchema_singleSource(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		schema = provider.QuerySchema(["Song::Artist"])
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes>\n"+
@@ -112,7 +112,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			[
 			"Song::DynamicComplexity",
 			])
-		self.assertEquals(
+		self.assertEqual(
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes>\n"+
@@ -134,7 +134,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::Title",
 			"Song::DynamicComplexity"
 			])
-		self.assertEquals(
+		self.assertEqual(
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptionScheme>\n"+
 			"  <Attributes>\n"+
@@ -153,7 +153,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 	def testQueryDescriptors_noDescriptor(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		descriptors = provider.QueryDescriptors('id1', [])
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool/>\n" +
 			"", self.dumpXml(descriptors))
@@ -161,7 +161,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 	def testQueryDescriptors_singleDescriptor(self) :
 		provider = MetadataSourceAggregator(sources, map)
 		descriptors = provider.QueryDescriptors('id1', ["Song::Artist"])
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
@@ -178,7 +178,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::Title",
 			"Song::DynamicComplexity",
 			])
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
@@ -197,7 +197,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::Title",
 			"Song::DynamicComplexity",
 			])
-		self.assertEquals( {
+		self.assertEqual( {
 			"source1":
 			"copy 1 Song::Artist File::Singer\n" +
 			"copy 1 Song::Title File::Name\n",
@@ -213,7 +213,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider.UpdateDescriptors('newId', descriptors)
 
 		descriptors = provider.QueryDescriptors('newId', [])
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool/>\n" +
 			"", self.dumpXml(descriptors))
@@ -224,7 +224,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		poolToCopy = provider.QueryDescriptors('id1', attributeIds)
 		provider.UpdateDescriptors('newId', poolToCopy)
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
@@ -243,7 +243,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		poolToCopy = provider.QueryDescriptors('id1', attributeIds)
 		provider.UpdateDescriptors('newId', poolToCopy)
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
@@ -276,7 +276,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::Title",
 			]
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
@@ -308,7 +308,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::Title",
 			]
 		descriptors = provider.QueryDescriptors('newId', attributeIds)
-		self.assertEquals( 
+		self.assertEqual( 
 			"<?xml version='1.0' encoding='UTF-8'?>\n"+
 			"<DescriptorsPool>\n" +
 			"  <ScopePool name='Song' size='1'>\n"+
@@ -328,7 +328,7 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 			"Song::DynamicComplexity",
 			"Frame::Energy",
 			]
-		self.assertEquals( expectedAttributeIds, attributeIds)
+		self.assertEqual( expectedAttributeIds, attributeIds)
 
 if __name__ == "__main__":
 	unittest.main()
