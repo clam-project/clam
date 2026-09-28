@@ -69,7 +69,8 @@ class FileMetadataSource :
 			subprocess.call(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
 			sys.stdout.flush()
 		try :
-			return Pool(open(self._poolPath(id)))
+			with open(self._poolPath(id)) as f:
+				return Pool(f)
 		except IOError as e: pass # Not found
 		raise FileMetadataSource.SongNotFoundException(id)
 
