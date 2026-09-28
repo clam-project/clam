@@ -42,12 +42,13 @@ class FileMetadataSource :
 		if extractor and not os.access(self.schemaFile, os.R_OK) :
 			os.system("%s -s %s"%(self.extractor, self.schemaFile))
 		try :
-			self.schema = Schema(open(self.schemaFile))
+			with open(self.schemaFile) as f :
+				self.schema = Schema(f)
 		except IOError as e:
 			raise FileMetadataSource.InvalidSchemaException(self.schemaFile)
 
 	def QueryDescriptors(self, id, ignoreCache=False, computeIfNotCached=False, keepCache=True) :
-		print("Computing", self.extractor, "for", id)
+		#print("Computing", self.extractor, "for", id)
 		if not ignoreCache and False : # TODO: Use properly the ignoreCache flag
 			try :
 				result = Pool(open(self._poolPath(id)))
@@ -81,7 +82,8 @@ class FileMetadataSource :
 		if str(id) not in self.idsToRecalculate:
 			self.idsToRecalculate.append(id)
 		# TODO: Merge when data already exists
-		pool.Dump(open(self._poolPath(id),"w"))
+		with open(self._poolPath(id), "w") as f:
+			pool.Dump(f)
 
 	def CheckMissingDescriptor(self, descriptor, idlist):
 		available = shelve.open( self.path + "/available.dict", writeback=True )

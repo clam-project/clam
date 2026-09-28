@@ -10,7 +10,8 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQuerySchema(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
 		expected = StringIO()
-		Schema(open("testdata/FileSource1/schema.sc")).Dump(expected)
+		with open("testdata/FileSource1/schema.sc") as f :
+			Schema(f).Dump(expected)
 		result = StringIO()
 		source1.QuerySchema().Dump(result)
 		self.assertEqual(expected.getvalue(), result.getvalue())
@@ -33,7 +34,8 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQueryDescriptors_existingSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
 		expected = StringIO()
-		Pool(open("testdata/FileSource1/id1.pool")).Dump(expected)
+		with open("testdata/FileSource1/id1.pool") as f :
+			Pool(f).Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
 		self.assertEqual(expected.getvalue(), result.getvalue())
@@ -41,7 +43,9 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQueryDescriptors_differentSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
 		expected = StringIO()
-		Pool(open("testdata/FileSource1/id2.pool")).Dump(expected)
+
+		with open("testdata/FileSource1/id2.pool") as f :
+			Pool(f).Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("id2").Dump(result)
 		self.assertEqual(expected.getvalue(), result.getvalue())
@@ -49,7 +53,8 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testQueryDescriptors_differentSource(self) :
 		source1 = FileMetadataSource("testdata/FileSource2/")
 		expected = StringIO()
-		Pool(open("testdata/FileSource2/id1.pool")).Dump(expected)
+		with open("testdata/FileSource2/id1.pool") as f :
+			Pool(f).Dump(expected)
 		result = StringIO()
 		source1.QueryDescriptors("id1").Dump(result)
 		self.assertEqual(expected.getvalue(), result.getvalue())
@@ -57,7 +62,8 @@ class FileMetadataSourceTest(unittest.TestCase):
 	def testUpdateDescriptors_whenNoPreviousPoolExists(self):
 		source1 = FileMetadataSource("testdata/FileSource1/")
 
-		poolToInsert = Pool(open("testdata/FileSource1/id1.pool"))
+		with open("testdata/FileSource1/id1.pool") as f :
+			poolToInsert = Pool(f)
 		source1.UpdateDescriptors("newId", poolToInsert)
 
 		expected = StringIO()
