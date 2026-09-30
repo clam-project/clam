@@ -4,8 +4,24 @@ import unittest
 import os
 
 class FileMetadataSourceTest(unittest.TestCase):
-	def setUp(self):
-		pass
+
+	def setUp(self) :
+		self.maxDiff = None
+
+	def tearDown(self):
+		self.safeRemove("FileSource1", "BadId")
+		self.safeRemove("FileSource1", "newId")
+		self.safeRemove("FileSource1", "id1")
+		self.safeRemove("FileSource1", "id2")
+		self.safeRemove("FileSource2", "id1")
+
+	def safeRemove(self, *args):
+		filename = os.path.join(*(["testdata"] + list(args)))
+		try:
+			print(filename)
+			os.remove(filename)
+		except FileNotFoundError:
+			pass
 
 	def testQuerySchema(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")

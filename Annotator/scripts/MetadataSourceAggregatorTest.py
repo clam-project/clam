@@ -28,23 +28,23 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 
 	def setUp(self) :
 		self.maxDiff = None
-		files=[
-			"testdata/FileSource1/newId.pool",
-			"testdata/FileSource2/newId.pool",
-			"testdata/FileSource3/newId.pool",
-		]
-		for file in files :
-			if os.access(file, os.F_OK) :
-				os.remove(file)
+
 	def tearDown(self):
-		files=[
-			"testdata/FileSource1/newId.pool",
-			"testdata/FileSource2/newId.pool",
-			"testdata/FileSource3/newId.pool",
-		]
-		for file in files :
-			if os.access(file, os.F_OK) :
-				os.remove(file)
+		self.safeRemove("FileSource1", "id1")
+		self.safeRemove("FileSource1", "id2")
+		self.safeRemove("FileSource1", "newId")
+		self.safeRemove("FileSource1", "newId.pool")
+		self.safeRemove("FileSource2", "id1")
+		self.safeRemove("FileSource2", "newId")
+		self.safeRemove("FileSource2", "newId.pool")
+
+	def safeRemove(self, *args):
+		filename = os.path.join(*(["testdata"] + list(args)))
+		try:
+			print(filename)
+			os.remove(filename)
+		except FileNotFoundError:
+			pass
 
 	def testAggregatorScriptBuilding_partialFirstSource(self) :
 		provider = MetadataSourceAggregator(sources, map)
@@ -212,7 +212,6 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 		provider = MetadataSourceAggregator(sources, map)
 		descriptors = provider.QueryDescriptors('id1', [])
 		provider.UpdateDescriptors('newId', descriptors)
-
 		descriptors = provider.QueryDescriptors('newId', [])
 		self.assertEqual("""\
 <?xml version='1.0' encoding='utf-8'?>
