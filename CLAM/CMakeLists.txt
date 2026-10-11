@@ -403,6 +403,8 @@ if(BUILD_TESTING)
 	clam_set_legacy_cxx(clam_test_threading)
 	target_link_libraries(clam_test_threading PRIVATE clam_core)
 	add_test(NAME clam_test_threading COMMAND clam_test_threading)
+	# The cppunit unit tests (CLAM/test/UnitTests)
+	add_subdirectory(test)
 endif()
 
 install(TARGETS clam_config clam_core clam_processing clam_audioio

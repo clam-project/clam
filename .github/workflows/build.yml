@@ -52,6 +52,9 @@ jobs:
       - name: Build
         run: cmake --build build -j $(nproc)
 
+      - name: Unit tests
+        run: ctest --test-dir build --output-on-failure
+
       - name: List built binaries
         run: |
           find build -maxdepth 4 -type f -executable \
