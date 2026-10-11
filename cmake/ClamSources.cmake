@@ -1,5 +1,17 @@
 include_guard(GLOBAL)
 
+# Write a generated file only when its content changes, so that re-running
+# CMake does not touch it and force everything that includes it to rebuild.
+function(clam_write_if_changed path content)
+	if(EXISTS "${path}")
+		file(READ "${path}" _old_content)
+		if(_old_content STREQUAL content)
+			return()
+		endif()
+	endif()
+	file(WRITE "${path}" "${content}")
+endfunction()
+
 function(clam_parse_version out_var product changes_file)
 	if(NOT EXISTS "${changes_file}")
 		message(FATAL_ERROR "Cannot parse ${product} version: missing ${changes_file}")
@@ -29,15 +41,17 @@ function(clam_generate_version_sources out_source out_include_dir)
 	set(_header "${_include_dir}/CLAM/${ARG_BASENAME}.hxx")
 	set(_source "${_gen_root}/${ARG_BASENAME}.cxx")
 
-	file(WRITE "${_header}"
+	string(CONCAT _header_content
 		"namespace ${ARG_NAMESPACE} { const char * GetFullVersion(); }\n"
 		"namespace ${ARG_NAMESPACE} { const char * GetVersion(); }\n"
 	)
-	file(WRITE "${_source}"
+	string(CONCAT _source_content
 		"#include <CLAM/${ARG_BASENAME}.hxx>\n"
 		"namespace ${ARG_NAMESPACE} { const char * GetFullVersion() { return \"${_clam_version}\"; } }\n"
 		"namespace ${ARG_NAMESPACE} { const char * GetVersion() { return \"${_clam_version}\"; } }\n"
 	)
+	clam_write_if_changed("${_header}" "${_header_content}")
+	clam_write_if_changed("${_source}" "${_source_content}")
 
 	set(${out_source} "${_source}" PARENT_SCOPE)
 	set(${out_include_dir} "${_include_dir}" PARENT_SCOPE)
@@ -76,10 +90,14 @@ function(clam_collect_module_files out_sources out_headers out_include_dirs)
 					continue()
 				endif()
 
+				# Match the blacklist against the file name and the path relative
+				# to BASE_DIR, never the absolute path: otherwise a checkout under
+				# e.g. ~/src/LV2/ would drop every file when CLAM_WITH_LV2 is OFF.
 				get_filename_component(_name "${_entry}" NAME)
+				file(RELATIVE_PATH _relative "${ARG_BASE_DIR}" "${_entry}")
 				set(_blacklisted FALSE)
 				foreach(_regex IN LISTS ARG_BLACKLIST)
-					if(_name MATCHES "${_regex}" OR _entry MATCHES "${_regex}")
+					if(_name MATCHES "${_regex}" OR _relative MATCHES "${_regex}")
 						set(_blacklisted TRUE)
 					endif()
 				endforeach()
@@ -118,9 +136,8 @@ function(clam_generate_flat_include_tree out_include_dir)
 	foreach(_header IN LISTS ARG_HEADERS)
 		get_filename_component(_name "${_header}" NAME)
 		file(TO_CMAKE_PATH "${_header}" _header_path)
-		file(WRITE "${_include_dir}/CLAM/${_name}"
-			"#pragma once\n"
-			"#include \"${_header_path}\"\n"
+		clam_write_if_changed("${_include_dir}/CLAM/${_name}"
+			"#pragma once\n#include \"${_header_path}\"\n"
 		)
 	endforeach()
 

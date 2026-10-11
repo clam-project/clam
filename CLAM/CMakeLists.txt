@@ -115,6 +115,8 @@ else()
 	list(APPEND CLAM_CORE_BLACKLIST "Ladspa.+" "RunTimeFaustLibraryLoader.+" "RunTimeLadspaLibraryLoader.*")
 endif()
 
+set(CLAM_PROCESSING_BLACKLIST "^Audio\\.hxx" "^Audio\\.cxx")
+
 if(CLAM_WITH_FFTW3)
 	pkg_check_modules(FFTW3 REQUIRED IMPORTED_TARGET fftw3)
 	target_compile_definitions(clam_config INTERFACE USE_FFTW3=1)
@@ -123,7 +125,6 @@ else()
 	list(APPEND CLAM_PROCESSING_BLACKLIST ".+fftw3.+")
 endif()
 
-set(CLAM_PROCESSING_BLACKLIST "^Audio\\.hxx" "^Audio\\.cxx")
 if(NOT CLAM_WITH_NR_FFT)
 	list(APPEND CLAM_PROCESSING_BLACKLIST ".*numrecipes.+" ".+numrec.+")
 endif()
