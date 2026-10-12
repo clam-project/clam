@@ -644,13 +644,13 @@ private:
 	}
 
 	/** Get order-th raw moment, order is smaller than init order*/
-	template<int order> U GetMoment(const O<order>*,StaticFalse&)
+	template<int order> U GetMoment(const O<order>*,StaticFalse)
 	{
 		return (*(dynamic_cast<Moment<order,abs,T,U>*> (mMoments[order-1])))(*mData);
 	}
 
 	/** Get order-th raw moment, order is greater than init order*/
-	template<int order> U GetMoment(const O<order>*,StaticTrue&)
+	template<int order> U GetMoment(const O<order>*,StaticTrue)
 	{
 		if(order>mMoments.Size())
 		{
@@ -682,7 +682,7 @@ private:
 	}
 
 	/** Get order-th central moment, order is smaller than init order*/
-	template<int order> U GetCentralMoment(const O<order>*,StaticFalse&)
+	template<int order> U GetCentralMoment(const O<order>*,StaticFalse)
 	{
 		CentralMoment<order,abs,T,U> & tmpMoment = GetCentralMomentFunctor<order>();
 
@@ -699,21 +699,19 @@ private:
 	}
 
 	/** Get order-th central moment, order is greater than init order*/
-	template<int order> U GetCentralMoment(const O<order>*,StaticTrue&)
+	template<int order> U GetCentralMoment(const O<order>*,StaticTrue)
 	{
 		if(order>mCentralMoments.Size())
 		{
 			const int previousSize=mCentralMoments.Size();
-			mCentralMoments.Resize(order+1);
-			mCentralMoments.SetSize(order+1);
+			mCentralMoments.Resize(order);
+			mCentralMoments.SetSize(order);
 			for(int i=previousSize; i<order; i++) mCentralMoments[i]=nullptr;
 		}
-		if(mCentralMoments[order-1]==nullptr)
-		{
-			mCentralMoments[order-1] = new CentralMoment<order,abs,T,U>;
-		}
-
-		return GetCentralMoment((const O<order>*)(0),StaticFalse());
+		// Compute it from the data: raw moments above initOrder may not be
+		// allocated (mMoments can be shorter than order) and CentralMoment
+		// only has the raw-moment formulas up to 5th order.
+		return GetCentralMomentFunctor<order>()(*mData);
 	}
 
 
@@ -732,13 +730,13 @@ private:
 	}
 
 	/** Get order-th center of gravity, order is smaller than init order*/
-	template<int order> U GetCenterOfGravity(const O<order>*,StaticFalse& orderIsGreater)
+	template<int order> U GetCenterOfGravity(const O<order>*,StaticFalse)
 	{
 		return (*dynamic_cast<CenterOfGravity<order,abs,T,U>*> (mCenterOfGravities[order-1]))(*mData);
 	}
 
 	/** Get order-th center of gravity, order is greater than init order*/
-	template<int order> U GetCenterOfGravity(const O<order>*,StaticTrue& orderIsGreater)
+	template<int order> U GetCenterOfGravity(const O<order>*,StaticTrue)
 	{
 		if(order>mCenterOfGravities.Size())
 		{
@@ -747,8 +745,9 @@ private:
 			mCenterOfGravities.SetSize(order);
 			for(int i=previousSize;i<order;i++) mCenterOfGravities[i]=nullptr;
 		}
-		// Real bug, not just a parens warning: original was `= NULL` (assignment),
-		// so the body never ran and the CenterOfGravity was never instantiated.
+		// This used to be `= NULL` (an assignment, so the slot was nulled and then
+		// dereferenced). It never ran: until the StaticBool tags were taken by
+		// value, this overload could not be instantiated at all.
 		if(mCenterOfGravities[order-1]==nullptr)
 		{
 			mCenterOfGravities[order-1]=new CenterOfGravity<order,abs,T,U>;

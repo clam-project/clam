@@ -162,12 +162,14 @@ void OfflineNetworkPlayer::Start()
 	//CLAM_ASSERT(_audioSources.size() == infiles.size(),
 	//		"The number of sources is greater than the intput files.");
 
-	std::vector<DataArray> inbuffers(inputChannelsCount);
+	// NetworkPlayer buffers are float, whatever TData is (CLAM_DOUBLE),
+	// as are the sndfile buffers they are copied from and to.
+	std::vector<Array<float> > inbuffers(inputChannelsCount);
 	for(unsigned i = 0; i < GetNSources(); ++i)
 	{
 		inbuffers[i].Resize( frameSize );
 		inbuffers[i].SetSize( frameSize );
-		const TData * data = &inbuffers[i][0];
+		const float * data = &inbuffers[i][0];
 		SetSourceBuffer(i, data, frameSize);
 	}
 
@@ -175,13 +177,13 @@ void OfflineNetworkPlayer::Start()
 	//CLAM_ASSERT(_audioSinks.size() == outfiles.size(),
 	//		"The number of sinks is greater than the output files ");
 
-	std::vector<DataArray> outbuffers(outputChannelsCount);
+	std::vector<Array<float> > outbuffers(outputChannelsCount);
 	for( unsigned i = 0; i < GetNSinks(); ++i)
 	{
 		outbuffers[i].Resize( frameSize );
 		outbuffers[i].SetSize( frameSize );
 
-		TData * data = &outbuffers[i][0];
+		float * data = &outbuffers[i][0];
 		SetSinkBuffer(i, data, frameSize);
 	}
 

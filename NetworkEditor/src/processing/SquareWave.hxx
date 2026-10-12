@@ -44,7 +44,7 @@ public:
 		amplitude,
 		modidx,
 		phase
-	} tEnum;
+	};
 	static tEnumValue * ValueTable() 
 	{
 		static tEnumValue sValueTable[] =

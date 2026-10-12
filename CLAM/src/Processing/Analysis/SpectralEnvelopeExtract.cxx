@@ -191,7 +191,7 @@ namespace CLAM {
 			TData currentMag=magBuffer[nPeaks-2];
 		
 		
-			while(currentMag<0.0000000001)
+			while(currentMag>0.0000000001)
 			{
 				currentMag*=CLAM_pow(0.06,(double)(currentFreq/lastFreq-1.0));
 				

@@ -58,11 +58,7 @@ namespace CLAM {
 
 	void TextFileMIDIDevice::ConcreteStart(void)
 	{
-		if (mOut) fclose(mOut);
-		if (mIn) fclose(mIn);
-
-		mIn = 0;
-		mOut = 0;
+		ConcreteStop();
 		
 		if (mInputs.size() && mOutputs.size() && mDevice!="-")
 		{
@@ -86,8 +82,9 @@ namespace CLAM {
 
 	void TextFileMIDIDevice::ConcreteStop(void)
 	{
-		if (mOut) fclose(mOut);
-		if (mIn) fclose(mOut);
+		// device "-" uses stdin/stdout, which are not ours to close
+		if (mOut && mOut!=stdout) fclose(mOut);
+		if (mIn && mIn!=stdin) fclose(mIn);
 		mOut = 0;
 		mIn = 0;
 	}

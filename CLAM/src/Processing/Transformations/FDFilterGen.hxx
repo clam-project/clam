@@ -54,7 +54,7 @@ public:
 		lowcutoff,
 		passbandslope,
 		stopbandslope
-	} tEnum;
+	};
 
 	static tEnumValue * ValueTable()
 	{

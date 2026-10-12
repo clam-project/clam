@@ -2,6 +2,7 @@
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
 #include <fstream>
+#include <algorithm>
 
 namespace CLAM
 {
@@ -33,6 +34,9 @@ void MonoOfflineNetworkPlayer::Start()
 	const int sampleRate = 48000; //TODO deduce from inputs.
 
 	std::vector<Audio> audioBuffers(_filenames.size());
+	// NetworkPlayer buffers are float, while Audio holds TData (double with
+	// CLAM_DOUBLE), so the network gets float copies of the audio buffers.
+	std::vector<std::vector<float> > networkBuffers(_filenames.size(), std::vector<float>(frameSize));
 	std::vector<MonoAudioFileReader*> readers;
 	MonoAudioFileReaderConfig readercfg;
 	unsigned fileIndex=0;
@@ -52,8 +56,7 @@ void MonoOfflineNetworkPlayer::Start()
 		readers.push_back(fileReader);
 		audioBuffers[fileIndex].SetSize( frameSize );
 
-		TData * buffer = &audioBuffers[fileIndex].GetBuffer()[0];
-		SetSourceBuffer(i, buffer, frameSize);
+		SetSourceBuffer(i, &networkBuffers[fileIndex][0], frameSize);
 		std::cout << " In " << SourceName(i) << ":" << _filenames[fileIndex] << std::endl;
 		fileIndex++;
 	}
@@ -75,8 +78,7 @@ void MonoOfflineNetworkPlayer::Start()
 		writers.push_back(fileWriter);
 		audioBuffers[fileIndex].SetSize( frameSize );
 
-		TData * buffer = &audioBuffers[fileIndex].GetBuffer()[0];
-		SetSinkBuffer(i, buffer, frameSize);
+		SetSinkBuffer(i, &networkBuffers[fileIndex][0], frameSize);
 		std::cout << " Out: " << SinkName(i) << ":" << _filenames[fileIndex] << std::endl;
 		fileIndex++;
 	}
@@ -93,12 +95,20 @@ void MonoOfflineNetworkPlayer::Start()
 		std::cout << "." << std::flush;
 		unsigned audioIndex =0;
 		bool someInputFinished=false;
-		for (unsigned i = 0; i<readers.size(); i++)
-			someInputFinished |= !readers[i]->Do(audioBuffers[audioIndex++]);
+		for (unsigned i = 0; i<readers.size(); i++, audioIndex++)
+		{
+			someInputFinished |= !readers[i]->Do(audioBuffers[audioIndex]);
+			const TData * samples = audioBuffers[audioIndex].GetBuffer().GetPtr();
+			std::copy(samples, samples+frameSize, networkBuffers[audioIndex].begin());
+		}
 		if (someInputFinished and not _enableLoopInputWavs ) break;
 		GetNetwork().Do();
-		for (unsigned i = 0; i<writers.size(); i++)
-			writers[i]->Do(audioBuffers[audioIndex++]);
+		for (unsigned i = 0; i<writers.size(); i++, audioIndex++)
+		{
+			const std::vector<float> & samples = networkBuffers[audioIndex];
+			std::copy(samples.begin(), samples.end(), audioBuffers[audioIndex].GetBuffer().GetPtr());
+			writers[i]->Do(audioBuffers[audioIndex]);
+		}
 		if (timeLimitedMode and float(iterationIndex*frameSize)/sampleRate > _resultWavsTime)
 		{
 			std::cout << "REACHED MAX TIME - finalizing"<< std::endl;

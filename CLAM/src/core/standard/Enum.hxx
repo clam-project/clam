@@ -99,8 +99,10 @@ public:
 
 // Attributes
 private:
-	// Default-initialise so the implicit move-assignment doesn't trip
-	// -Wmaybe-uninitialized when the source has never been valued.
+	// Default-initialised so an Enum never holds indeterminate values.
+	// (The -Wmaybe-uninitialized warnings on copied Enum subclasses came
+	// from subclasses declaring `enum {...} tEnum;`, an uninitialised data
+	// member, rather than a `typedef enum {...} tEnum;` type.)
 	const tEnumValue * mEnumValues = nullptr;
 	tValue mValue = 0;
 

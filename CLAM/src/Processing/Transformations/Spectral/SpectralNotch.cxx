@@ -61,8 +61,11 @@ bool SpectralNotch::Do(const Spectrum& in, Spectrum& out)
 		outMag[n] *= gain ;
 	}
 	//implement small rolloff to avoid Gibbs effect
-	outMag[leftLimit-1] *= (gain*0.5); 
-	outMag[rightLimit] *= (gain*0.5); 
+	//(only on the bins next to the notch that lie inside the spectrum)
+	if (leftLimit>0 && leftLimit<=spectrumSize)
+		outMag[leftLimit-1] *= (gain*0.5);
+	if (rightLimit>=0 && rightLimit<spectrumSize)
+		outMag[rightLimit] *= (gain*0.5);
 	return true;
 }
 

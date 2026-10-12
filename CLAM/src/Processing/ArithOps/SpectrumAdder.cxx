@@ -193,6 +193,7 @@ namespace CLAM {
 	bool SpectrumAdder::Do(void)
 	{
 		CLAM_ASSERT(false,"SpectrumAdder::Do(): Not implemented");
+		return false;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -285,12 +286,14 @@ namespace CLAM {
 			}
 		}
 		CLAM_ASSERT(false,"SpectrumAdder::SetPrototypes: Prototype inconsistency");
+		return false;
 	}
 
 
 	bool SpectrumAdder::SetPrototypes()
 	{
 		CLAM_ASSERT(false,"SpectrumAdder::SetPrototypes(): Not implemented");
+		return false;
 	}
 
 	bool SpectrumAdder::UnsetPrototypes()
