@@ -24,6 +24,13 @@ function(clam_parse_version out_var product changes_file)
 	set(${out_var} "${_version}" PARENT_SCOPE)
 endfunction()
 
+# SONAME version of the CLAM libraries: major.minor, as in the SCons build,
+# because CLAM breaks the ABI between minor releases.
+function(clam_abi_version out_var version)
+	string(REGEX MATCH "^[0-9]+\\.[0-9]+" _abi "${version}")
+	set(${out_var} "${_abi}" PARENT_SCOPE)
+endfunction()
+
 function(clam_generate_version_sources out_source out_include_dir)
 	set(options)
 	set(oneValueArgs NAMESPACE BASENAME PRODUCT CHANGES_FILE)

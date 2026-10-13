@@ -1,0 +1,21 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Threads)
+if(WIN32)
+	# On Windows (vcpkg) clam_audioio passes libsndfile's include directory
+	# on to its users, through this pkg-config target.
+	find_dependency(PkgConfig)
+	pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/CLAMTargets.cmake")
+
+# Installed when NetworkEditor's monitor widget library was built.
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CLAMQtMonitorsTargets.cmake")
+	find_dependency(OpenGL)
+	find_dependency(Qt6 COMPONENTS Core Gui Widgets Svg OpenGL OpenGLWidgets UiPlugin)
+	include("${CMAKE_CURRENT_LIST_DIR}/CLAMQtMonitorsTargets.cmake")
+endif()
+
+check_required_components(CLAM)

@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CLAM_PC_LIBDIR@
+includedir=@CLAM_PC_INCLUDEDIR@
+
+Name: clam_@CLAM_PC_MODULE@
+Description: C++ Framework for analysis, synthesis and transformation of music audio signals
+URL: http://clam-project.org
+Version: @CLAM_VERSION@
+Requires: @CLAM_PC_REQUIRES@
+Libs: -L${libdir} -lclam_@CLAM_PC_MODULE@
+Cflags: -I${includedir} -I${includedir}/CLAM@CLAM_PC_CFLAGS@

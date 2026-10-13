@@ -1,5 +1,5 @@
-if(NOT TARGET CLAM::core OR NOT TARGET CLAM::processing OR NOT TARGET CLAM::audioio)
-	message(FATAL_ERROR "SMSTools CMake currently expects CLAM_BUILD_LIBRARIES=ON so it can link the in-tree CLAM libraries.")
+if(NOT TARGET CLAM::core)
+	find_package(CLAM CONFIG REQUIRED)
 endif()
 
 clam_parse_version(SMSTOOLS_VERSION SMSTools "${CMAKE_CURRENT_SOURCE_DIR}/CHANGES")
@@ -200,9 +200,10 @@ target_include_directories(SMSTools
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/QtImpl/GUI/Dialogs/Configurator"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/QtImpl/GUI/Dialogs/ScoreEditor"
 )
+# Same location as the SCons build: the installed example data.
 target_compile_definitions(SMSTools
 	PRIVATE
-		DATA_EXAMPLES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/example-data"
+		DATA_EXAMPLES_PATH="${CMAKE_INSTALL_FULL_DATADIR}/smstools/example-data"
 )
 target_link_libraries(SMSTools
 	PRIVATE
@@ -213,4 +214,24 @@ target_link_libraries(SMSTools
 
 install(TARGETS SMSTools SMSBatch SMSConsole
 	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+)
+install(DIRECTORY example-data/
+	DESTINATION "${CMAKE_INSTALL_DATADIR}/smstools/example-data"
+	FILES_MATCHING
+		PATTERN "*.xml"
+		PATTERN "*.wav"
+		PATTERN "*.mp3"
+		PATTERN "*.ogg"
+)
+install(FILES resources/SMSTools.desktop
+	DESTINATION "${CMAKE_INSTALL_DATADIR}/applications"
+)
+install(FILES resources/SMSTools-icon.svg
+	DESTINATION "${CMAKE_INSTALL_DATADIR}/smstools"
+)
+install(FILES
+	resources/man/man1/SMSTools.1
+	resources/man/man1/SMSBatch.1
+	resources/man/man1/SMSConsole.1
+	DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
 )
