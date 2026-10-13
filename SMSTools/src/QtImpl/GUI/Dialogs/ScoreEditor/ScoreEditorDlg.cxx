@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <QLayout>
 #include <QListWidget>
+#include <QSignalBlocker>
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include "SMSConfigurator.hxx"
@@ -115,6 +116,9 @@ namespace QtSMS
 	void ScoreEditorDlg::onSelectTransformationInScore(int index)
 	{
 		HideAll();
+		// QListWidget also reports the current row becoming -1 (e.g. on clear()),
+		// which Q3ListBox::highlighted(int) never did
+		if(index < 0 || index >= int(mSMSConfiguratorList.size())) return;
 		mAvailableTransformationList->clearSelection();
 		mTabWidget->setCurrentWidget(mTabWidget->widget(1));
 		mSMSConfiguratorList[index]->GetParametersWidget()->show();
@@ -123,7 +127,9 @@ namespace QtSMS
 
 	void ScoreEditorDlg::addHighlightedToScore()
 	{
-		QString str = mAvailableTransformationList->currentItem()->text();
+		QListWidgetItem* current = mAvailableTransformationList->currentItem();
+		if(!current) return;
+		QString str = current->text();
 		mScoreTransformationList->addItem(str);
 		mSMSConfiguratorList.push_back(QtSMS::SMSConfiguratorFactory::GetInstance().Create(str.toStdString()));
 		QWidget* paramsWidget = mSMSConfiguratorList.back()->GetParametersWidget();
@@ -137,26 +143,23 @@ namespace QtSMS
 
 	void ScoreEditorDlg::removeHighlightedFromScore()
 	{
-		if(!mScoreTransformationList->count()) return;
 		int index = mScoreTransformationList->currentRow();
-		if(mScoreTransformationList->count()==1)
+		if(index < 0 || index >= int(mSMSConfiguratorList.size())) return;
 		{
-			mScoreTransformationList->clear();
-		}
-		else
-		{
+			// the current row changes while the item is removed, before the
+			// configurator list matches the items again
+			const QSignalBlocker blocker(mScoreTransformationList);
 			delete mScoreTransformationList->takeItem(index);
 		}
 		HideAll();
-		SMSConfiguratorList::iterator pos = std::find(mSMSConfiguratorList.begin(),
-													  mSMSConfiguratorList.end(),
-													  mSMSConfiguratorList[index]);
 		mTabPage1Layout->removeWidget(mSMSConfiguratorList[index]->GetParametersWidget());
 		delete mSMSConfiguratorList[index];
-		mSMSConfiguratorList.erase(pos);
+		mSMSConfiguratorList.erase(mSMSConfiguratorList.begin() + index);
 		if(mScoreTransformationList->count())
 		{
-			mScoreTransformationList->setCurrentRow(mScoreTransformationList->currentRow());
+			const int row = std::min(index, mScoreTransformationList->count()-1);
+			mScoreTransformationList->setCurrentRow(row);
+			onSelectTransformationInScore(row);
 		}
 		scoreChanged();
 	}
@@ -171,7 +174,7 @@ namespace QtSMS
 	void ScoreEditorDlg::moveHighlightedDown()
 	{
 		int source = mScoreTransformationList->currentRow();
-		if(source == mScoreTransformationList->count()-1) return;
+		if(source < 0 || source >= mScoreTransformationList->count()-1) return;
 		SwapTransformations(source,source+1);
 	}
 
@@ -209,7 +212,8 @@ namespace QtSMS
 		SMSConfigurator* cfg = mSMSConfiguratorList[source];
 		mSMSConfiguratorList[source]=mSMSConfiguratorList[dest];
 		mSMSConfiguratorList[dest]=cfg;
-		onSelectTransformationInScore(dest);
+		// keep the moved transformation selected, as Q3ListBox::changeItem did
+		mScoreTransformationList->setCurrentRow(dest);
 		scoreChanged();
 	}
 

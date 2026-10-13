@@ -38,6 +38,7 @@ namespace CLAM
 			void setText(const QString& text);
 
 		protected:
+			void paintEvent(QPaintEvent* e);
 			void drawContents(QPainter* p);
 
 		private:

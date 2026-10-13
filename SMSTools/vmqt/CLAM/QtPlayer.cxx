@@ -108,8 +108,11 @@ namespace CLAM
 			QPixmap iconStop((const char**)icon_stop);
 
 			mPlay->setIcon(QIcon(iconPlay));
+			mPlay->setIconSize(iconPlay.size());
 			mPause->setIcon(QIcon(iconPause));
+			mPause->setIconSize(iconPause.size());
 			mStop->setIcon(QIcon(iconStop));
+			mStop->setIconSize(iconStop.size());
 		}
 
 		void QtPlayer::BlackBackgroundCM()
@@ -126,8 +129,11 @@ namespace CLAM
 			QPixmap iconStop((const char**)icon_stop_cyan);
 
 			mPlay->setIcon(QIcon(iconPlay));
+			mPlay->setIconSize(iconPlay.size());
 			mPause->setIcon(QIcon(iconPause));
+			mPause->setIconSize(iconPause.size());
 			mStop->setIcon(QIcon(iconStop));
+			mStop->setIconSize(iconStop.size());
 		}
 
 		void QtPlayer::WhiteBackgroundCM()
@@ -144,8 +150,11 @@ namespace CLAM
 			QPixmap iconStop((const char**)icon_stop);
 
 			mPlay->setIcon(QIcon(iconPlay));
+			mPlay->setIconSize(iconPlay.size());
 			mPause->setIcon(QIcon(iconPause));
+			mPause->setIconSize(iconPause.size());
 			mStop->setIcon(QIcon(iconStop)); 
+			mStop->setIconSize(iconStop.size());
 		}
 
 		void QtPlayer::RemoveButton(int id)

@@ -20,6 +20,7 @@ namespace CLAM
 		QtBPFPlayer::QtBPFPlayer(QWidget* parent) 
 			: QtMultiPlayer(parent)
 			, mThreadIsCancelled(false)
+			, mThreadIsBusy(false)
 			, mOwnedDuration(TData(0.0))
 			, mPlaySimultaneously(false)
 		{
@@ -59,6 +60,7 @@ namespace CLAM
 			const TData lowest = GetMinY(bpf);
 			const TData highest = GetMaxY(bpf);
 			bool do_mapping = (lowest >= min_ref && highest <= max_ref) ? false : true;
+			std::lock_guard<std::mutex> lock(mQueueMutex);
 			mEnqueuedData.push(DataInfo(key,bpf,lowest,highest,do_mapping));
 		}
 
@@ -224,14 +226,15 @@ namespace CLAM
 
 		void QtBPFPlayer::BuildMelodies()
 		{
-			// disable widget: wait while building melodies
-			this->setEnabled(false);
-
-			// informative tooltip
-			this->setToolTip("Please wait: disabled while building a huge melody.");
-			
-			const BPF& currentBPF = mEnqueuedData.front().data;
-			const bool& mustDoMapping = mEnqueuedData.front().mapping;
+			// Runs on mThread. Work on a copy of the queue front: the GUI thread
+			// keeps enqueueing meanwhile.
+			DataInfo dataInfo;
+			{
+				std::lock_guard<std::mutex> lock(mQueueMutex);
+				dataInfo = mEnqueuedData.front();
+			}
+			const BPF& currentBPF = dataInfo.data;
+			const bool mustDoMapping = dataInfo.mapping;
 
 			Melody melody;
 			MIDIMelody midiMelody;
@@ -269,8 +272,8 @@ namespace CLAM
 
 				if(mustDoMapping)
 				{
-					const TData& minYValue = mEnqueuedData.front().min;
-					const TData& maxYValue = mEnqueuedData.front().max;
+					const TData& minYValue = dataInfo.min;
+					const TData& maxYValue = dataInfo.max;
 					pitch = (pitch-minYValue)*(max_ref-min_ref)/(maxYValue-minYValue)+min_ref;
 				}
 
@@ -300,20 +303,14 @@ namespace CLAM
 				midiMelody.SetNoteArray(midiNotes);
 				midiMelody.SetNumberOfNotes(midiNotes.Size()); 
 
-				const std::string& key = mEnqueuedData.front().key; // get current key
+				const std::string& key = dataInfo.key; // get current key
 				// set players' data
 				((MelodyPlayer*)mPlayers[MELODY_PLAYER])->AddData(key,melody,mOwnedDuration);
 				((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->AddData(key,midiMelody,mOwnedDuration);
 				// pop processed data
+				std::lock_guard<std::mutex> lock(mQueueMutex);
 				mEnqueuedData.pop();
 			}
-			// remove informative tooltip
-			this->setToolTip(QString());
-
-			// enable widget when the melodies are fully loaded
-			this->setEnabled(true);
-
-			CheckPendent();
 		}
 
 		void QtBPFPlayer::BuildPlayer()
@@ -370,8 +367,9 @@ namespace CLAM
 			// connections
 			connect(mPlayAudio,SIGNAL(clicked()),this,SLOT(uncheckMIDI()));
 			connect(mPlayMIDI,SIGNAL(clicked()),this,SLOT(uncheckAudio()));
-			connect(mMIDIDevicesCB,SIGNAL(highlighted(int)),this,SLOT(setMIDIDevice(int)));
-			connect(mMIDIInstrumentsCB,SIGNAL(highlighted(int)),this,SLOT(setMIDIProgram(int)));
+			// activated(), not highlighted(): since Qt4 the latter only reports popup hover
+			connect(mMIDIDevicesCB,&QComboBox::activated,this,&QtBPFPlayer::setMIDIDevice);
+			connect(mMIDIInstrumentsCB,&QComboBox::activated,this,&QtBPFPlayer::setMIDIProgram);
 		}
 
 		void QtBPFPlayer::LoadMIDIDevices()
@@ -424,7 +422,31 @@ namespace CLAM
 		void QtBPFPlayer::thread_code()
 		{
 			// is better buid the melodies on a second plane (maybe the player gets a huge bpf)
-			BuildMelodies();
+			// Builds every enqueued BPF, also the ones that arrive meanwhile, and
+			// finishes when the queue is empty or the player is cancelled.
+			for(;;)
+			{
+				{
+					std::lock_guard<std::mutex> lock(mQueueMutex);
+					if(mEnqueuedData.empty() || mThreadIsCancelled)
+					{
+						mThreadIsBusy = false;
+						break;
+					}
+				}
+				BuildMelodies();
+			}
+			// enable widget (and remove informative tooltip) when the melodies are
+			// fully loaded: ProcessIncomingBPF() disabled it from the GUI thread,
+			// and only the GUI thread may touch it again.
+			if(!mThreadIsCancelled)
+			{
+				QMetaObject::invokeMethod(this, [this]()
+				{
+					setToolTip(QString());
+					setEnabled(true);
+				}, Qt::QueuedConnection);
+			}
 		}
 
 		void QtBPFPlayer::StopThread()
@@ -441,14 +463,19 @@ namespace CLAM
 
 		void QtBPFPlayer::ProcessIncomingBPF()
 		{
-			if(mThread.joinable() || mThreadIsCancelled) return;
-			mThread = std::thread([this]{ thread_code(); });
-		}
-
-		void QtBPFPlayer::CheckPendent()
-		{
-			if(mEnqueuedData.empty() || mThreadIsCancelled) return;
-			if (mThread.joinable()) mThread.join();
+			if(mThreadIsCancelled) return;
+			{
+				std::lock_guard<std::mutex> lock(mQueueMutex);
+				// the running thread will pick the new data up
+				if(mThreadIsBusy) return;
+				mThreadIsBusy = true;
+			}
+			// a previous thread, already finished with its queue
+			if(mThread.joinable()) mThread.join();
+			// disable widget: wait while building melodies
+			this->setEnabled(false);
+			// informative tooltip
+			this->setToolTip("Please wait: disabled while building a huge melody.");
 			mThread = std::thread([this]{ thread_code(); });
 		}
 

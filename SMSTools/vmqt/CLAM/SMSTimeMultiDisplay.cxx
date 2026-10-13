@@ -99,7 +99,7 @@ namespace CLAM
 			CreateFrequencyDisplays();
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this); this->layout()->setSpacing(1);
+			QGridLayout* innerLayout = new QGridLayout(this); innerLayout->setContentsMargins(1, 1, 1, 1); innerLayout->setSpacing(1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
@@ -940,7 +940,10 @@ namespace CLAM
 			play_panel->addStretch();
 			play_panel->addWidget(mLabelsGroup);
 
-			connect(mCBPlayList,SIGNAL(highlighted(int)),this,SLOT(setCurrentPlayer(int)));
+			// Qt3 highlighted(int) meant "current item changed"; since Qt4 it only
+			// reports popup hover. activated() is user selection only, which is what
+			// we want: programmatic changes call setCurrentPlayer() themselves.
+			connect(mCBPlayList,&QComboBox::activated,this,&SMSTimeMultiDisplay::setCurrentPlayer);
 
 			return play_panel;
 

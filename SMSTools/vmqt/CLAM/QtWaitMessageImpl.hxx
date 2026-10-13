@@ -20,6 +20,8 @@ namespace CLAM
 
 			void LabelText(const std::string& label);
 		
+			void reject();
+
 		protected:
 			void closeEvent(QCloseEvent* e);
 

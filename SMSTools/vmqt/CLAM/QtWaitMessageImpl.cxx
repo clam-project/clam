@@ -35,9 +35,16 @@ namespace CLAM
 			mLabel->setText(label.c_str());
 		}
 
+		// Qt3 close events started out ignored; since Qt4 they are accepted by
+		// default, so the dialog must refuse them explicitly while the task runs.
 		void QtWaitMessageImpl::closeEvent(QCloseEvent* e)
 		{
-			/* empty body */
+			e->ignore();
+		}
+
+		// Keep Esc (QDialog::keyPressEvent -> reject()) from dismissing it too.
+		void QtWaitMessageImpl::reject()
+		{
 		}
 	}
 }

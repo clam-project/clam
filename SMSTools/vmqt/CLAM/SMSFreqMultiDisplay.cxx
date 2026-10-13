@@ -73,7 +73,7 @@ namespace CLAM
 			scrollLayout->addWidget(mVScrollBar);
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this); this->layout()->setSpacing(1);
+			QGridLayout* innerLayout = new QGridLayout(this); innerLayout->setContentsMargins(1, 1, 1, 1); innerLayout->setSpacing(1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);

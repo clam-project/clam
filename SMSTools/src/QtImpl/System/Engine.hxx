@@ -44,6 +44,7 @@ namespace QtSMS
 		bool HasValidAudioInput();
 		void RetrieveAudio(bool r);
 		void ConnectSlotAnalysisDataLoaded(SigSlot::Slotv0& slot);
+		void ConnectSlotMelodyExtracted(SigSlot::Slotv0& slot);
 
 	protected:
 		void Run(){ /* empty body */ }
@@ -66,6 +67,7 @@ namespace QtSMS
 		bool         mRetrieveAudio;
 
 		SigSlot::Signalv0 mAnalysisDataLoaded;
+		SigSlot::Signalv0 mMelodyExtracted;
 
 	    bool LoadInputSound();
 		bool LoadSound(const std::string& filename,CLAM::Segment& segment);

@@ -12,7 +12,7 @@
       <Amount>0</Amount>
     </Config>
     <Config>
-      <ConcreteClassName>SMSTimeStretch</ConcreteClassName>
+      <ConcreteClassName>SegmentSMSTimeStretch</ConcreteClassName>
       <Type></Type>
       <BPFAmount>
         <Interpolation>Linear</Interpolation>

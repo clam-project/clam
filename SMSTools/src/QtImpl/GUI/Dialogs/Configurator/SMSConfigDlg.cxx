@@ -155,7 +155,11 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseOutputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "Audio (*.wav *.ogg *.mp3)");
+		// a file to be written: may not exist yet. No mp3, CLAM cannot encode it.
+		QString filename = QFileDialog::getSaveFileName(this,
+			tr("Choose Output Sound file"),
+			mOutputSoundLineEdit->text(),
+			"Audio (*.wav *.ogg)");
 		if(filename.isEmpty()) return;
 		mOutputSoundLineEdit->setText(filename);
 	}
@@ -169,7 +173,10 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseOutputAnalysisFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(this, QString(), QString(), "(*.xml *.sdif)");
+		QString filename = QFileDialog::getSaveFileName(this,
+			tr("Choose Output Analysis file"),
+			mOutputAnalysisLineEdit->text(),
+			"(*.xml *.sdif)");
 		if(filename.isEmpty()) return;
 		mOutputAnalysisLineEdit->setText(filename);
 	}
@@ -188,6 +195,7 @@ namespace QtSMS
 		FillComboBoxes();
 
 		// file page
+		if(mConfig.HasName()) mCfgNameLineEdit->setText(mConfig.GetName().c_str());
 		mInputSoundLineEdit->setText(mConfig.GetInputSoundFile().c_str());
 		mOutputSoundLineEdit->setText(mConfig.GetOutputSoundFile().c_str());
 		mInputAnalysisLineEdit->setText(mConfig.GetInputAnalysisFile().c_str());

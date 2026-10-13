@@ -4,6 +4,28 @@
 #include "ViewManager.hxx"
 #include "Engine.hxx"
 #include "qmessagebox.h"
+#include <QApplication>
+#include <QMetaObject>
+
+namespace
+{
+	// The Do* methods run on a CLAM::Thread, whose start routine has no
+	// exception handler: report a failure on the GUI thread instead of
+	// letting the exception terminate the process.
+	template <typename F>
+	void RunReportingErrors(const QString& action, F&& fn)
+	{
+		QString error;
+		try { fn(); return; }
+		catch (const std::exception& e) { error = QString::fromUtf8(e.what()); }
+		catch (...) { error = QObject::tr("unknown error."); }
+		QMetaObject::invokeMethod(qApp, [action, error]() {
+			QtSMS::Engine::Instance()->DiscardTransientDialogs();
+			QMessageBox::critical(nullptr, "SMS Tools 2",
+				QObject::tr("%1 failed:\n%2").arg(action, error));
+		}, Qt::QueuedConnection);
+	}
+}
 
 namespace QtSMS
 {
@@ -216,42 +238,51 @@ namespace QtSMS
 
 	void Engine::DoLoadAnalysis()
 	{
-		bool ok = SMSBase::LoadAnalysis(mCurrentFileName);
-		if(ok)
-		{
-			if(mRetrieveAudio)
+		RunReportingErrors(QObject::tr("Load analysis"), [this]() {
+			bool ok = SMSBase::LoadAnalysis(mCurrentFileName);
+			if(ok)
 			{
-				LoadInputSound();
+				if(mRetrieveAudio)
+				{
+					LoadInputSound();
+				}
+				else
+				{
+					GetState().SetHasAudioIn(false);
+					GetState().SetHasAudioOut(false);
+					GetState().SetHasMelody(false);
+				}
+				mAnalysisDataLoaded.Emit();
 			}
 			else
 			{
-				GetState().SetHasAudioIn(false);
-				GetState().SetHasAudioOut(false);
-				GetState().SetHasMelody(false);
+				QMessageBox::critical(0, "SMS Tools 2","Unable to load analysis data.");
 			}
-			mAnalysisDataLoaded.Emit();
-		}
-		else
-		{
-			QMessageBox::critical(0, "SMS Tools 2","Unable to load analysis data.");
-		}
+		});
 	}
 
 	void Engine::DoStoreAnalysis()
 	{
-		SMSBase::StoreAnalysis(mCurrentFileName);
+		RunReportingErrors(QObject::tr("Store analysis"), [this]() {
+			SMSBase::StoreAnalysis(mCurrentFileName);
+		});
 	}
 
 	void Engine::DoStoreMelody()
 	{
-		CLAM::XMLStorage::Dump(GetMelody(),"Analyzed_Melody",mCurrentFileName);
+		RunReportingErrors(QObject::tr("Save extracted melody"), [this]() {
+			CLAM::XMLStorage::Dump(GetMelody(),"Analyzed_Melody",mCurrentFileName);
+		});
 	}
 
 	void Engine::DoMelodyExtraction()
 	{
-		mCurrentWaitMessage = CreateWaitMessage("Analyzing melody, please wait");
-		SMSBase::AnalyzeMelody();
-		DestroyWaitMessage();
+		RunReportingErrors(QObject::tr("Extract melody"), [this]() {
+			mCurrentWaitMessage = CreateWaitMessage("Analyzing melody, please wait");
+			SMSBase::AnalyzeMelody();
+			DestroyWaitMessage();
+			mMelodyExtracted.Emit();
+		});
 	}
 
 	void Engine::RetrieveAudio(bool r)
@@ -262,6 +293,11 @@ namespace QtSMS
 	void Engine::ConnectSlotAnalysisDataLoaded(SigSlot::Slotv0& slot)
 	{
 		mAnalysisDataLoaded.Connect(slot);
+	}
+
+	void Engine::ConnectSlotMelodyExtracted(SigSlot::Slotv0& slot)
+	{
+		mMelodyExtracted.Connect(slot);
 	}
 }
 

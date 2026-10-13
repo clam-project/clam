@@ -1,6 +1,8 @@
 #ifndef __QTBPFPLAYER__
 #define __QTBPFPLAYER__
 
+#include <atomic>
+#include <mutex>
 #include <queue>
 #include <string>
 #include <thread>
@@ -107,7 +109,9 @@ namespace CLAM
 
 		private:
 			std::thread mThread;
-			bool   mThreadIsCancelled;
+			std::atomic<bool> mThreadIsCancelled;
+			std::mutex mQueueMutex; // guards mEnqueuedData and mThreadIsBusy
+			bool   mThreadIsBusy;
 			TData  mOwnedDuration;
 			bool   mPlaySimultaneously;
 
@@ -129,7 +133,6 @@ namespace CLAM
 			void thread_code();
 
 			void ProcessIncomingBPF();
-			void CheckPendent();
 
 			TData GetMinY(const BPF& bpf);
 			TData GetMaxY(const BPF& bpf);

@@ -52,6 +52,14 @@ namespace CLAM
 			this->setText("");
 		}
 
+		// Qt4+ QFrame no longer calls a drawContents() virtual: do it here.
+		void VZLabel::paintEvent(QPaintEvent* e)
+		{
+			QFrame::paintEvent(e);
+			QPainter p(this);
+			drawContents(&p);
+		}
+
 		void VZLabel::drawContents(QPainter* p)
 		{
 			QRect r = rect();
