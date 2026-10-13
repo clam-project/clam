@@ -2,7 +2,7 @@
 #define __BPFEDITOR__
 
 #include <string>
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/Melody.hxx>
 #include <CLAM/MIDIMelody.hxx>
 #include <CLAM/MediaTime.hxx>
@@ -15,7 +15,7 @@ using SigSlot::Slotv1;
 class QLabel;
 class QFrame;
 class QBoxLayout;
-class QPopupMenu;
+class QMenu;
 
 namespace CLAM
 {
@@ -40,7 +40,7 @@ namespace CLAM
 			Q_OBJECT
 
 		public:
-			BPFEditor(int eFlags=CLAM::VM::AllowAll, QWidget* parent=0, const char* name=0, WFlags f=0);
+			BPFEditor(int eFlags=CLAM::VM::AllowAll, QWidget* parent=0, const char* name=0);
 			~BPFEditor();
 	    
 			void Label(const std::string& label);
@@ -163,8 +163,7 @@ namespace CLAM
 			bool mWhiteOverBlackScheme;
 			bool mUseFocusColors;
 
-			QPopupMenu*      mPopupMenu;
-			ListItemChooser* mChooseBPFDialog;
+			QMenu *      mPopupMenu;
 
 			Slotv1<TData> mSlotPlayingTimeReceived;
 			Slotv1<TData> mSlotStopPlayingReceived;

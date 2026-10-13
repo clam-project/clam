@@ -33,23 +33,23 @@ def callBackMaterialButtons(event,val):
 		return
 	material=Acoustic.getMaterials()[event&EventsMask]
 	if event&Events['impedance']:
-#		print "material: %s" % material
+#		print("material: %s" % material)
 		impedance=Acoustic.getImpedance(material)
 		if (event&Events['impedance_imaginary'])==Events['impedance_imaginary']:
 			Acoustic.setImpedance(material,complex(impedance.real,val))
-#			print "setting imag to %s" % val
+#			print("setting imag to %s" % val)
 			return
 		else:
 			Acoustic.setImpedance(material,complex(val,impedance.imag))
-#			print "setting real to %s" % val
+#			print("setting real to %s" % val)
 			return
 	else:
-#		print "setting diffusion to %s" % val
+#		print("setting diffusion to %s" % val)
 		Acoustic.setDiffusion(material,val)
 	return
 def callBackListener(event,val):
-	print "callBackListener"
-	print "event: %s\t-\tval: %s" % (event,val)
+	print("callBackListener")
+	print("event: %s\t-\tval: %s" % (event,val))
 	listeners=Acoustic.getListeners()
 	if val>0:
 		newListener=listeners[val-1]

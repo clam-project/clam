@@ -1,6 +1,9 @@
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qtimer.h>
+#include <QLayout>
+#include <QLabel>
+#include <QTimer>
+#include <QCloseEvent>
+#include <QBoxLayout>
+#include <QVBoxLayout>
 #include <CLAM/WaitMsgIndicator.hxx>
 #include <CLAM/QtWaitMessageImpl.hxx>
 
@@ -16,7 +19,7 @@ namespace CLAM
 			mIndicator->setFixedHeight(25);
 
 			QBoxLayout* layout = new QVBoxLayout(this);
-			layout->setMargin(15);
+			layout->setContentsMargins(15, 15, 15, 15);
 			layout->setSpacing(10);
 
 			layout->addWidget(mLabel);

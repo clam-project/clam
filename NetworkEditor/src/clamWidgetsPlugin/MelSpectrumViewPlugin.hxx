@@ -24,7 +24,7 @@
 #ifndef MelSpectrumViewPlugin_hxx
 #define MelSpectrumViewPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class MelSpectrumViewPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

@@ -44,7 +44,7 @@ OutControlBase& OutControlRegistry::Get(const std::string & name) const
 		"No out control named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
-	return *(OutControlBase*)NULL; // Just to get rid of warnings
+	return *(OutControlBase*)nullptr; // Just to get rid of warnings
 }
 
 bool OutControlRegistry::Has(const std::string& name) const

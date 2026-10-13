@@ -62,7 +62,7 @@ public:
 				{ amplitude, "amplitude" },
 				{ modidx, "modidx" },
 				{ phase, "phase" },
-				{ 0, NULL }
+				{ 0, nullptr }
 			};
 		return sEnumValues;
 	}

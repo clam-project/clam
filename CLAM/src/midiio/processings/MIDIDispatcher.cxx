@@ -136,7 +136,6 @@ void MIDIDispatcher::CreateControls()
 		mVoiceStatusList.push_back(status);
 	}
 
-	int k = 0;
 	for (int i = 0; i < mConfig.GetNumberOfVoices(); i++ )
 	{
 		for ( int j=0; j < mConfig.GetNumberOfInControls();j++)
@@ -146,7 +145,6 @@ void MIDIDispatcher::CreateControls()
 			mOutputControls.push_back( new FloatOutControl("a" + number.str(),this ) );
 //			GetOutControl(k).AddLink( mInstruments[i]->GetImConfig.GetInControl(j+1));
 //			LinkOutWithInControl( k , mInstruments[ i ], j+1);
-			k++;
 		}
 	}
 }

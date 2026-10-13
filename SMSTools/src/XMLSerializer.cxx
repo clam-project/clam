@@ -27,9 +27,9 @@
 
 using namespace CLAM;
 
-XMLSerializer::XMLSerializer(  ) {  }
+XMLSerializer::XMLSerializer() = default;
 
-XMLSerializer::~XMLSerializer(  ) {  }
+XMLSerializer::~XMLSerializer() = default;
 
 bool XMLSerializer::DoLoad( const char* fileName, Segment& segment )
 {

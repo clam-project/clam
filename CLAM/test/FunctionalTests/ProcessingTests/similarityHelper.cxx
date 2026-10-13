@@ -5,17 +5,17 @@
 
 namespace CLAMTest
 {
-	DataSizeMismatch::DataSizeMismatch() throw()
+	DataSizeMismatch::DataSizeMismatch()
 		: Err( )
 	{
 	}
 
-	DataSizeMismatch::DataSizeMismatch( const char* msg ) throw()
+	DataSizeMismatch::DataSizeMismatch( const char* msg )
 		: Err( msg )
 	{
 	}
 
-	DataSizeMismatch::~DataSizeMismatch() throw()
+	DataSizeMismatch::~DataSizeMismatch()
 	{
 	}
 
@@ -74,7 +74,7 @@ namespace CLAMTest
 	}
 
 	double evaluateSimilarity( const CLAM::DataArray& left,
-				   const CLAM::DataArray& right ) throw( DataSizeMismatch )
+				   const CLAM::DataArray& right )
 	{
 		double leftAverage = evaluateAverage( left );
 		double rightAverage = evaluateAverage( right );

@@ -24,6 +24,7 @@
 
 #include "ReadingRegion.hxx"
 #include "StreamImpl.hxx"
+#include <algorithm>
 
 namespace CLAM
 {
@@ -227,7 +228,8 @@ void WritingRegion< Token, DataStructure >::RemoveRegion( Region & region )
 {
 	CLAM_ASSERT( region.ProducerRegion()==this, "Region::RemoveRegion() - Trying to remove an unlinked region");
 
-	mReadingRegions.remove( &region );
+	auto _it = std::find(mReadingRegions.begin(), mReadingRegions.end(), &region);
+	if (_it != mReadingRegions.end()) mReadingRegions.erase(_it);
 	region.RemoveProducer();
 }
 

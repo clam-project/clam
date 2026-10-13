@@ -76,7 +76,7 @@ def startProcess():
 				u"No descriptor pool was modified. Nothing will be uploaded.",
 				QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton )
 			
-	except TaskerError, x:
+	except TaskerError as x:
 		title=str(x).split('\n')[0]
 		message=str(x).split('\n')[1:]
 		QtGui.QMessageBox.warning( None,
@@ -94,7 +94,7 @@ def startProcess():
 		form.exitButton.setFocus()
 
 def quit():
-	#print "quit"
+	#print("quit")
 	app.quit()
 
 def createConnections():

@@ -34,8 +34,8 @@ parser.add_option("-c","--configuration",
 
 
 if options.printSchema :
-	schemaFile = sys.stdout if options.printSchema == "-" else file(options.printSchema,'w')
-	print >> schemaFile, """<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+	schemaFile = sys.stdout if options.printSchema == "-" else open(options.printSchema,'w')
+	print("""<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
 <DescriptionScheme>
 
  <Uri>descriptionScheme:www.iua.upf.edu:clam:OnsetExtraction</Uri>
@@ -49,7 +49,7 @@ if options.printSchema :
 
 </DescriptionScheme>
 
-"""
+""", file=schemaFile)
 	sys.exit()
 
 if options.writeback :
@@ -78,9 +78,7 @@ for audiofile in args:
 	f=os.popen('./OnsetExtractorCore %s'%audiofile,'r')
 	onsets = [ str(float(onset)/2) for onset in f ]
 	target = open(audiofile+options.suffix,'w')
-	print >> target, dataTemplate%(len(onsets), " ".join(onsets))
+	print(dataTemplate%(len(onsets), " ".join(onsets)), file=target)
 	target.close()
-
-
 
 

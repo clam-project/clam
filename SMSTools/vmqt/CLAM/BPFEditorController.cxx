@@ -1,5 +1,5 @@
 #include <iostream>
-#include <qpixmap.h>
+#include <QPixmap>
 #include <CLAM/CLAMGL.hxx>
 #include <CLAM/IconData.hxx>
 #include <CLAM/BPFEditorController.hxx>

@@ -93,7 +93,7 @@ public:
 	{
 		Configure(cfg);
 	}
-	virtual ~TokenDelay<T>() {};
+	virtual ~TokenDelay() {};
 	
 	/**
 	* Concrete configuration change method. The generic  calls

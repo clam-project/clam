@@ -37,11 +37,11 @@ namespace CLAM {
 		TextFileMIDIDevice(const std::string& name,const std::string& device);
 		~TextFileMIDIDevice();
 
-		void ConcreteStart(void) throw(Err);
-		void ConcreteStop(void) throw(Err);
+		void ConcreteStart(void);
+		void ConcreteStop(void);
 
-		void Read(void) throw(Err);
-		void Write(unsigned char* msg,int size) throw(Err);
+		void Read(void);
+		void Write(unsigned char* msg,int size);
 
 		void SetClock(TControlData val) { mClock = val; }
 
@@ -56,7 +56,7 @@ namespace CLAM {
 		mClock = 0;
 	}
 
-	void TextFileMIDIDevice::ConcreteStart(void) throw(Err)
+	void TextFileMIDIDevice::ConcreteStart(void)
 	{
 		if (mOut) fclose(mOut);
 		if (mIn) fclose(mIn);
@@ -84,7 +84,7 @@ namespace CLAM {
 		}
 	}
 
-	void TextFileMIDIDevice::ConcreteStop(void) throw(Err)
+	void TextFileMIDIDevice::ConcreteStop(void)
 	{
 		if (mOut) fclose(mOut);
 		if (mIn) fclose(mOut);
@@ -92,7 +92,7 @@ namespace CLAM {
 		mIn = 0;
 	}
 
-	void TextFileMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
+	void TextFileMIDIDevice::Write(unsigned char* msg,int size)
 	{
 		printf("TextFileMIDIDevice::Write:");
 		printf("%f",mClock);
@@ -111,7 +111,7 @@ namespace CLAM {
 		fprintf(mOut,"\n");
 	}
 
-	void TextFileMIDIDevice::Read(void) throw(Err)
+	void TextFileMIDIDevice::Read(void)
 	{
 	}
 

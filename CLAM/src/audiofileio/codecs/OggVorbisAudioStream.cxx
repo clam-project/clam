@@ -43,7 +43,7 @@ namespace AudioCodecs
 	const unsigned OggVorbisAudioStream::mAnalysisWindowSize = 1024;
 	
 	OggVorbisAudioStream::OggVorbisAudioStream( const AudioFile& file )
-		: mFileHandle( NULL )
+		: mFileHandle( nullptr )
 		, mEncoding( false )
 	{
 		mName = file.GetLocation();
@@ -61,18 +61,18 @@ namespace AudioCodecs
 	void OggVorbisAudioStream::PrepareReading()
 	{
 		mFileHandle = fopen(mName.c_str(), "rb");
-		if (mFileHandle == NULL)
+		if (mFileHandle == nullptr)
 		{
 			std::string msgString = "Could not open ";
 			msgString += mName;
 			msgString +=" for reading!";
 			CLAM_ASSERT( false, msgString.c_str() );
 		}
-		int error = ov_open(mFileHandle, &mNativeFileParams, NULL, 0);
+		int error = ov_open(mFileHandle, &mNativeFileParams, nullptr, 0);
 		if ( error < 0 )
 		{
 			fclose( mFileHandle );
-			mFileHandle=NULL;
+			mFileHandle=nullptr;
 			std::string msgString = mName;
 			msgString += " is not a valid Ogg/Vorbis file!";
 			CLAM_ASSERT( false, msgString.c_str() );
@@ -96,7 +96,7 @@ namespace AudioCodecs
 	void OggVorbisAudioStream::PrepareWriting()
 	{
 		mFileHandle = fopen(mName.c_str(), "wb");
-		if ( mFileHandle==NULL )
+		if ( mFileHandle==nullptr )
 		{
 			std::string msgString = "Could not open ";
 			msgString += mName;
@@ -168,11 +168,11 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::Dispose()
 	{
-		if ( mFileHandle == NULL) return;
+		if ( mFileHandle == nullptr) return;
 		if ( not mEncoding )
 		{
 			ov_clear( &mNativeFileParams );
-			mFileHandle = NULL;
+			mFileHandle = nullptr;
 			return;
 		}
 		// Encoding dispose is more complex
@@ -196,7 +196,7 @@ namespace AudioCodecs
 		vorbis_info_clear( &mStreamInfo );
 
 		fclose( mFileHandle );
-		mFileHandle = NULL;
+		mFileHandle = nullptr;
 		mEncoding = false;
 	}
 
@@ -300,7 +300,7 @@ namespace AudioCodecs
 		while( vorbis_analysis_blockout( &mDSPState, &mVorbisBlock ) == 1 && !eos )
 		{
 			// we assume we want bitrate management
-			vorbis_analysis( &mVorbisBlock, NULL );
+			vorbis_analysis( &mVorbisBlock, nullptr );
 			vorbis_bitrate_addblock( &mVorbisBlock );
 
 			while( vorbis_bitrate_flushpacket( &mDSPState, &mOggPacket ) )

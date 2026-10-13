@@ -24,7 +24,7 @@
 #include "QSynthKnobPlugin.hxx"
 #include "QSynthKnob.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 QSynthKnobPlugin::QSynthKnobPlugin(QObject *parent)
     : QObject(parent)

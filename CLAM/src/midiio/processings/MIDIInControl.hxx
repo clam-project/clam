@@ -44,7 +44,7 @@ public:
 	const char * GetClassName() const {return "MIDIInControl";}
 
 	bool ConcreteConfigure(const ProcessingConfig& c)
-		throw(ErrProcessingObj);
+;
 
 private:
 	void Handle(unsigned char* msg,int size);

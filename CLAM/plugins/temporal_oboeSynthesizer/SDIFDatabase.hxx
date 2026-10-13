@@ -1,12 +1,11 @@
 #ifndef _SampleManager_
 #define _SampleManager_
 
-#include "SDIFFileReader.hxx"
+#include <CLAM/SDIFFileReader.hxx>
 #include "SampleMetadata.hxx"
 #include "DirectoryBasedMetadataReader.hxx"
 #include "SDIFFileReaderWithLoop.hxx"
 #include "SimpleTransformer.hxx"
-#include "ThreadPool.hxx"
 #include "ContinuousExcitationConstants.hxx"
 #include <string>
 #include <vector>
@@ -124,7 +123,6 @@ private:
 	// this is a map containing that sample that was played for a VoiceId
 	std::map<VoiceId, CLAM::SDIFFileReaderWithLoop*> previousSDIFReaderMap;
 	SimpleTransformer mSimpleTransformer;
-	ThreadPool mThreadPool;
 };
 
 } // end namespace CLAM

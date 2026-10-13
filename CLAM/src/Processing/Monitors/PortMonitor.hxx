@@ -3,7 +3,7 @@
 
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
-#include "Mutex.hxx"
+#include <mutex>
 
 // Temporary until concrete classes will be separated
 #include "SpectralPeakArray.hxx"
@@ -78,7 +78,7 @@ namespace CLAM
 	private:
 		PortType          mInput;
 		DataType          mData[2];
-		TryMutex          mSwitchMutex;
+		std::mutex        mSwitchMutex;
 		unsigned          mWhichDataToRead;
 		SigSlot::Signalv0 mSigStart;
 		SigSlot::Signalv0 mSigStop;
@@ -117,14 +117,14 @@ namespace CLAM
 	template <typename PortDataType, typename PortType>
 	const typename PortMonitor<PortDataType,PortType>::DataType & PortMonitor<PortDataType,PortType>::FreezeAndGetData()
 	{
-		Hidden::LockOps<TryMutex>::Lock(mSwitchMutex);
+		mSwitchMutex.lock();
 		return mData[mWhichDataToRead];
 	}
 
 	template <typename PortDataType, typename PortType>
 	void PortMonitor<PortDataType,PortType>::UnfreezeData()
 	{
-		Hidden::LockOps<TryMutex>::Unlock(mSwitchMutex);
+		mSwitchMutex.unlock();
 	}
 
 	template <typename PortDataType, typename PortType>
@@ -135,8 +135,10 @@ namespace CLAM
 		mData[whichDataToWrite] = mInput.GetData();
 		mSigNewData.Emit();
 		{
-			TryMutex::ScopedTryLock lock(mSwitchMutex,true);
-			if (lock.Locked())
+			// The old ScopedTryLock(..., true) path blocked here; now a frozen
+			// reader makes us skip publishing this buffer instead.
+			std::unique_lock<std::mutex> lock(mSwitchMutex, std::try_to_lock);
+			if (lock.owns_lock())
 				mWhichDataToRead = whichDataToWrite;
 		}
 		mInput.Consume();
@@ -195,4 +197,3 @@ namespace CLAM
 }
 
 #endif
-

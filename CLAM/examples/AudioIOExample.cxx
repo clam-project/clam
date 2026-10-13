@@ -169,15 +169,15 @@ class AudioIOExample : public ProcessingComposite {
 
 	const char* GetClassName() const {return "AudioIOExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	bool ConcreteStart();
+	bool ConcreteConfigure(const ProcessingConfig& c);
 public:
 	AudioIOExample(const AudioIOExampleConfig &cfg);
 	const ProcessingConfig& GetConfig() const {return mConfig;}
 	bool Do();
 };
 
-bool AudioIOExample::ConcreteStart() throw(ErrProcessingObj)
+bool AudioIOExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)
@@ -186,7 +186,7 @@ bool AudioIOExample::ConcreteStart() throw(ErrProcessingObj)
 	try {
 		AudioManager::Current().Start();
 	}
-	catch (Err) {
+	catch (Err & e) {
 		throw(ErrProcessingObj("Could not start AudioManager",this));
 	}
 	
@@ -256,7 +256,7 @@ bool AudioIOExample::ConfigureData()
 	return true;
 }
 
-bool AudioIOExample::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool AudioIOExample::ConcreteConfigure(const ProcessingConfig& c)
 {
 	try {
 		mConfig = dynamic_cast<const AudioIOExampleConfig&>(c);

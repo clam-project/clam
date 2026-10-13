@@ -29,11 +29,11 @@
 #include <CLAM/Filename.hxx>
 #include <CLAM/DescriptionScheme.hxx>
 #include <vector>
-#include <QtGui/QInputDialog>
+#include <QInputDialog>
 
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QProcess>
-#include <QtGui/QMessageBox>
+#include <QTemporaryFile>
+#include <QProcess>
+#include <QMessageBox>
 #include <CLAM/XMLStorage.hxx>
 
 class TaskRunner;

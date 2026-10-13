@@ -38,26 +38,26 @@ namespace CLAM {
 		ALSAMIDIDevice(const std::string& name,const std::string& device);
 		~ALSAMIDIDevice();
 
-		void ConcreteStart(void) throw(Err);
-		void ConcreteStop(void) throw(Err);
+		void ConcreteStart(void);
+		void ConcreteStop(void);
 
-		void Read(void) throw(Err);
-		void Write(unsigned char* msg,int size) throw(Err);
+		void Read(void);
+		void Write(unsigned char* msg,int size);
 	};
 
 	ALSAMIDIDevice::ALSAMIDIDevice(const std::string& name,const std::string& device): 
 		MIDIDevice(name)
 	{
-		mHandleIn = NULL;
-		mHandleOut = NULL;
-		mStatusIn = NULL;
+		mHandleIn = nullptr;
+		mHandleOut = nullptr;
+		mStatusIn = nullptr;
 		mDevice = device;
 	}
 
-	void ALSAMIDIDevice::ConcreteStart(void) throw(Err)
+	void ALSAMIDIDevice::ConcreteStart(void)
 	{
-			snd_rawmidi_t** handleInRef = NULL;
-			snd_rawmidi_t** handleOutRef = NULL;
+			snd_rawmidi_t** handleInRef = nullptr;
+			snd_rawmidi_t** handleOutRef = nullptr;
 			
 			if (mInputs.size()) handleInRef = &mHandleIn;
 			if (mOutputs.size()) handleOutRef = &mHandleOut;
@@ -74,7 +74,7 @@ namespace CLAM {
 
 	}
 
-	void ALSAMIDIDevice::ConcreteStop(void) throw(Err)
+	void ALSAMIDIDevice::ConcreteStop(void)
 	{
 		if (mHandleIn) {
 			snd_rawmidi_drain(mHandleIn); 
@@ -88,13 +88,13 @@ namespace CLAM {
 		}
 	}
 
-	void ALSAMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
+	void ALSAMIDIDevice::Write(unsigned char* msg,int size)
 	{
 		snd_rawmidi_write(mHandleOut,msg,size);
 		snd_rawmidi_drain(mHandleOut);
 	}
 
-	void ALSAMIDIDevice::Read(void) throw(Err)
+	void ALSAMIDIDevice::Read(void)
 	{
 		unsigned char ch;
 		size_t n;

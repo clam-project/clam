@@ -1,11 +1,11 @@
 #!/usr/bin/python
 import sys
 if len(sys.argv) < 3 :
-	print """
+	print("""
 This script launches a commandline just if it can adquire a given lock
 file. It can be used to avoid duplicated instances of an application.
 $ runOnce.py /path/to/the/lock/file.lock program arg1 arg2....
-"""
+""")
 	sys.exit(-1)
 
 import os
@@ -35,5 +35,5 @@ if lock.wasAdquired() :
 	del lock
 	sys.exit()
 
-print "Already running. Remove the file %s if you think it is not"%lockfile
+print("Already running. Remove the file %s if you think it is not"%lockfile)
 

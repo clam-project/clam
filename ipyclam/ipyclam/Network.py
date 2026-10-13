@@ -1,14 +1,19 @@
-import Processing
-import ProcessingTypes
-import Notifier_EngineDecorator
+from . import Processing
+from . import ProcessingTypes
+from . import Notifier_EngineDecorator
 
 class Network(object):
+
 	def __init__(self, engine=None):
 		if engine is None :
 			try :
-				import Clam_Engine
-				engine = Clam_Engine.Clam_Engine()
-			except ImportError: pass
+				from .clam import Clam_Engine
+				engine = Clam_Engine()
+			except ImportError:
+				print("CLAM not available using Dummy engine")
+				from .dummy import Dummy_Engine
+				engine = Dummy_Engine()
+
 		self.__dict__['_engine'] = Notifier_EngineDecorator.Notifier_EngineDecorator(engine)
 		self.__dict__['methods'] = ["types", "code", "xml"]
 
@@ -25,7 +30,7 @@ class Network(object):
 		return Processing.Processing(engine=self._engine, name=name)
 
 	def __dir__(self):
-		return self._engine.processingNames() + ["description"]
+		return self._engine.processingNames() + self.__dict__['methods'] + ["description"]
 
 	def __contains__(self, processingName) :
 		return self._engine.hasProcessing(processingName)
@@ -44,12 +49,7 @@ class Network(object):
 			Python keyword argument, otherwise return False.
 			"""
 			import keyword
-			import tokenize
-			import re
-			# Don't allow python reserved words as arg names
-			if k in keyword.kwlist:
-				return False
-			return re.match('^' + tokenize.Name + '$', k) is not None
+			return k.isidentifier() and k not in keyword.kwlist
 
 
 		def configCode(networkVar, fullConfig):

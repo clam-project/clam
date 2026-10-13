@@ -43,9 +43,9 @@
 #include <typeinfo>
 #include <CLAM/ProcessingDataPlugin.hxx>
 
-#include <QtSvg/QSvgWidget>
-#include <QtSvg/QSvgRenderer>
-#include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
+#include <QSvgWidget>
+#include <QSvgRenderer>
+#include <QFileInfo> // added to check if embbeded file exists as external without console error message
 
 
 namespace { static CLAM::EmbededMonitorCreator <PeakView, PeakViewMonitor> regPeakView("PeakView"); } 
@@ -95,9 +95,12 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 		}
 
 		QSvgWidget * widget = new QSvgWidget(this);
+		// Decorative SVG: let mouse events fall through to the ProcessingBox
+		// behind so the user can drag the box from any point of its body.
+		widget->setAttribute(Qt::WA_TransparentForMouseEvents);
 		QSvgRenderer *renderer = widget->renderer();
 		QString embeddedSvgQString = embeddedSvg.c_str();
-		if ( QFileInfo(embeddedSvgQString).exists() and renderer->load(embeddedSvgQString) ) 
+		if ( QFileInfo(embeddedSvgQString).exists() and renderer->load(embeddedSvgQString) )
 				return widget;
 		if ( renderer->load(tr(":/icons/images/%1").arg(embeddedSvg.c_str())) )
 				return widget;

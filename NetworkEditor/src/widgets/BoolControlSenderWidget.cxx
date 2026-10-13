@@ -1,6 +1,6 @@
 #include "BoolControlSenderWidget.hxx"
-#include <QtGui/QCheckBox>
-#include <QtGui/QHBoxLayout>
+#include <QCheckBox>
+#include <QHBoxLayout>
 #include "QSynthKnob.hxx"
 #include "EmbededWidgets.hxx"
 

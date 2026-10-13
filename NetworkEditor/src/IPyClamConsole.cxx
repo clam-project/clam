@@ -1,46 +1,19 @@
 #include "IPyClamConsole.hxx"
-#include <QtGui/QLabel>
 
-#ifndef CLAM_USE_PYTHON
+#ifndef CLAM_NETWORKEDITOR_USE_PYTHON
 QWidget * GetIPyClamConsole(CLAM::Network & network)
 {
 	return 0; // Python disabled, no console
 }
 #else
 
+#include <QHBoxLayout>
+#undef slots
+#undef signals
 #include <boost/python.hpp>
-#include <QtGui/QHBoxLayout>
-#include <shiboken/basewrapper.h>
-#include <shiboken/typeresolver.h>
-#include <shiboken/conversions.h>
+#include "shibokenunwrap.hxx"
 
 namespace py=boost::python;
-static void * error(const std::string & msg)
-{
-	std::cerr << msg << std::endl;
-	return 0;
-}
-
-void * shibokenUnwrap(PyObject * pyobject)
-{
-	if (not Shiboken::Object::checkType(pyobject))
-		return error("Not a shiboken object");
-
-	SbkObject * sbkobject = (SbkObject *) pyobject;
-
-	PyTypeObject * type = Shiboken::SbkType<QObject>();
-
-	void * cppobject = Shiboken::Object::cppPointer(sbkobject, type);
-	if (not cppobject)
-		return error("Not a QObject");
-
-	return cppobject;
-}
-
-PyObject * shibokenWrap(QObject * qobject)
-{
-	return Shiboken::createWrapper(qobject, /*python owns*/ false);
-}
 
 QWidget * GetIPyClamConsole(CLAM::Network & network)
 {
@@ -56,17 +29,19 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 		py::exec("sys.argv=['ipyclam']\n", _main_ns, _main_ns);
 		// Build an ipyclam network having the CLAM network as backend
 		py::object ipyclamModule = py::import("ipyclam");
+		py::import("ipyclam.clam.engine");
 		py::object engine = py::object(py::ptr(&network)); // The engine
 		py::object net = ipyclamModule.attr("Network")(engine); // The ipyclam network api
 		// Creating the IPython based console widget
 
 		py::object consoleModule = py::import("ipyclam.qtconsole");
-		py::object console = consoleModule.attr("IPythonConsoleQtWidget")();
-		py::object signal = console.attr("modelChanged").attr("emit");
-		net.attr("__dict__")["_engine"].attr("setCallback")(signal);
+		py::object console = consoleModule.attr("ConsoleWidget")();
+		console.attr("setNetwork")(net);
 
 		// Injecting the network into the namespace
-		console.attr("namespace_inject")("net", net);
+		py::dict ns;
+		ns["net"] = net;
+		console.attr("namespace_inject")(*boost::python::tuple(), **ns);
 
 		// Unwrapping the PySide based qt console to use it as a abstract QWidget
 		QWidget * consoleWidget = (QWidget*) shibokenUnwrap(console.ptr());
@@ -83,4 +58,4 @@ QWidget * GetIPyClamConsole(CLAM::Network & network)
 
 
 
-#endif//CLAM_USE_PYTHON
+#endif//CLAM_NETWORKEDITOR_USE_PYTHON

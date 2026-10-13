@@ -48,7 +48,7 @@ def substituteInlines(line, linenumber, filename) :
 	for compiledPattern, substitution in inlines :
 		line = compiledPattern.sub(substitution, line)
 	if testingMode and line!=original :
-		print "%s line %i:\nold: %snew: %s"%(filename, linenumber, original, line)
+		print(("%s line %i:\nold: %snew: %s"%(filename, linenumber, original, line)))
 	return line
 
 
@@ -59,7 +59,7 @@ for filename in filenames :
 		modified += [ substituteInlines(line, i, filename) ]
 	file.close()
 	if testingMode: continue
-	print "writing: "+filename
+	print(("writing: "+filename))
 	file = open(filename,"w")
 	file.writelines( modified )
 	file.close()

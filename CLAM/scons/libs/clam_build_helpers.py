@@ -23,7 +23,7 @@ class _FileRetriever :
 	def is_blacklisted( self, filename ) :
 		for entry in self.blacklisted :
 			if entry.search(filename) is not None :
-				print "blacklisted", filename
+				print("blacklisted", filename)
 				return True
 		return False
 
@@ -137,7 +137,7 @@ def CheckLibrarySample(context, name, lang, lib, test_code, winlib=None ) :
 	elif lang == 'c++' :
 		test_code_extension = '.cxx'
 	else :
-		raise RuntimeError, "%s language is not supported for specifying test code"
+		raise RuntimeError("%s language is not supported for specifying test code")
 
 	context.Message('Checking that %s sample program compiles...'%name )
 	result = context.TryCompile( test_code, test_code_extension )
@@ -174,7 +174,7 @@ def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
 	env = context.env
 	crosscompiling = env.get('crossmingw')
-	if not env.has_key('PKG_CONFIG') :
+	if 'PKG_CONFIG' not in env :
 		env['PKG_CONFIG'] = 'pkg-config'
 	ret, _  = context.TryAction(env.Action('$PKG_CONFIG --help'))
 	if not ret : del env['PKG_CONFIG']
@@ -218,11 +218,11 @@ def posix_lib_rules( name, version, headers, sources, pcfile, install_dirs, env,
 	versionnumbers = tuple(version.split('.'))
 
 	if len(versionnumbers) != 3:
-		print " ERROR in buildtools.posix_lib_rules: version name does not follow CLAM standard "
-		print "   Check the variable 'version' in the main SConstruct"
+		print(" ERROR in buildtools.posix_lib_rules: version name does not follow CLAM standard ")
+		print("   Check the variable 'version' in the main SConstruct")
 		sys.exit(1)
 
-	if sys.platform == 'linux2' :
+	if sys.platform == 'linux' :
 		# Linker name: it a soft link without version numbers, to be specified
 		# to the linker when compiling binaries against the lib. Just needed
 		# for development of such binaries.
@@ -320,7 +320,7 @@ def SetupSpawn( env ):
 
 		sAttrs = win32security.SECURITY_ATTRIBUTES()
 		StartupInfo = win32process.STARTUPINFO()
-		newargs = string.join(map(escape, args[1:]), ' ')
+		newargs = ' '.join(map(escape, args[1:]))
 		cmdline = cmd + " " + newargs
 
 		# check for any special operating system commands
@@ -345,7 +345,7 @@ def create_custom_builders( env ) :
 		source_dir = os.path.dirname( str(source[0]) )
 		cwd = os.getcwd()
 		os.chdir( source_dir )
-		if sys.platform == 'linux2' :
+		if sys.platform == 'linux' :
 			os.system( "/sbin/ldconfig -n ." )
 		os.chdir(cwd)
 		return None
@@ -366,7 +366,7 @@ def create_custom_builders( env ) :
 	import shutil
 	bld = env.Builder( action =  Action( 
 		lambda target, source, env:
-			shutil.copy(str(source[0]), str(target[0])),
+			shutil.copy(str(source[0]), str(target[0])) and 0,
 			"== Build copying $SOURCE"))
 	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )	
 

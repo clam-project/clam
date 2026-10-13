@@ -208,7 +208,7 @@ try{
 		throw Err("List is not empty, ERROR!");
 
 }
-catch(Err err) 
+catch(Err & err) 
 {
 	err.Print();
 }

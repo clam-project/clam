@@ -182,7 +182,7 @@ protected:
 	static int controls_handler(
 		const char *path, const char *types,
 		lo_arg **argv, int argc,
-		void *data, void *user_data);
+		lo_message msg, void *user_data);
 
 	// server management related structs, methods, and attributes
 	bool _registered;

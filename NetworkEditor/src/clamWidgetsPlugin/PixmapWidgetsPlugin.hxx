@@ -24,7 +24,7 @@
 #ifndef PixmapSliderPlugin_hxx
 #define PixmapSliderPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class PixmapSliderPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

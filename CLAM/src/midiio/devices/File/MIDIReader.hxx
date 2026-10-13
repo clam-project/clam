@@ -46,7 +46,7 @@ namespace MIDI
 		}
 		bool Ok(void)
 		{
-			return mFile!=NULL;
+			return mFile!=nullptr;
 		}
 		Byte GetByte(void)
 		{
@@ -106,7 +106,7 @@ namespace MIDI
 		{
 		public:
 			const char* mStr;
-			Error(const char* str):mStr(str) { printf(str); }
+			Error(const char* str) : mStr(str) { printf("%s", str); }
 		};
 
 		void Read(Song& s);

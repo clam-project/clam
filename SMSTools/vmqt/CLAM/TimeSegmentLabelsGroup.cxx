@@ -19,9 +19,13 @@
  *
  */
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <QLabel>
+#include <QToolTip>
+//Added by qt3to4:
+#include <QFrame>
+#include <QBoxLayout>
+#include <QHBoxLayout>
 #include <CLAM/TimeSegmentLabelsGroup.hxx>
 
 namespace CLAM
@@ -41,7 +45,7 @@ namespace CLAM
 		void TimeSegmentLabelsGroup::InitLabelsGroup()
 		{
 			QBoxLayout* layout = new QHBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			
 			QFont f("Sans",8);
@@ -54,7 +58,7 @@ namespace CLAM
 			mBeginTimeLab->setFont(f);
 			mBeginTimeLab->setText("00:00,000");
 			mBeginTimeLab->setAlignment(Qt::AlignCenter);
-			QToolTip::add(mBeginTimeLab,"Begin Time");
+			mBeginTimeLab->setToolTip("Begin Time");
 			layout->addWidget(mBeginTimeLab);
 
 			mEndTimeLab = new QLabel(this);
@@ -64,7 +68,7 @@ namespace CLAM
 			mEndTimeLab->setFont(f);
 			mEndTimeLab->setText("");
 			mEndTimeLab->setAlignment(Qt::AlignCenter);
-			QToolTip::add(mEndTimeLab,"End Time");
+			mEndTimeLab->setToolTip("End Time");
 			layout->addWidget(mEndTimeLab);
 
 			mDurTimeLab = new QLabel(this);
@@ -74,7 +78,7 @@ namespace CLAM
 			mDurTimeLab->setFont(f);
 			mDurTimeLab->setText("");
 			mDurTimeLab->setAlignment(Qt::AlignCenter);
-			QToolTip::add(mDurTimeLab,"Duration");
+			mDurTimeLab->setToolTip("Duration");
 			layout->addWidget(mDurTimeLab);
 		}
 
@@ -86,7 +90,7 @@ namespace CLAM
 			int min = sec/60;
 			sec %= 60;
 			int msec = tmp%1000;
-			s = s.sprintf("%02d:%02d,%03d",min,sec,msec);
+			s = QString::asprintf("%02d:%02d,%03d", min, sec, msec);
 			return s;
 		}
 				

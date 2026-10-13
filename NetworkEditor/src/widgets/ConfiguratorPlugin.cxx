@@ -34,7 +34,7 @@ ConfiguratorPlugin & ConfiguratorPlugin::GetPlugin(const CLAM::DynamicType & obj
 }
 
 #include <CLAM/TextBlock.hxx>
-#include <QtGui/QPlainTextEdit>
+#include <QPlainTextEdit>
 template <typename ConcreteString>
 class BlockConfiguratorPlugin : public ConfiguratorPlugin
 {
@@ -61,7 +61,7 @@ static BlockConfiguratorPlugin<CLAM::TextBlock> textBlockRegistrator;
 
 // TODO: It has more sense to use UTF-8 as internal representation but actual XML converts to local 8 bits
 #include <CLAM/Text.hxx>
-#include <QtGui/QLineEdit>
+#include <QLineEdit>
 template <typename ConcreteString>
 class StringConfiguratorPlugin : public ConfiguratorPlugin
 {
@@ -85,7 +85,7 @@ public:
 static StringConfiguratorPlugin<std::string> stringRegistrator;
 static StringConfiguratorPlugin<CLAM::Text> textRegistrator;
 
-#include <QtGui/QDoubleSpinBox>
+#include <QDoubleSpinBox>
 template <typename ConcreteFloat>
 class FloatConfiguratorPlugin : public ConfiguratorPlugin
 {
@@ -115,7 +115,7 @@ static FloatConfiguratorPlugin<double> doubleRegistrator;
 static FloatConfiguratorPlugin<long double> longDoubleRegistrator;
 
 
-#include <QtGui/QSpinBox>
+#include <QSpinBox>
 template <typename ConcreteInt>
 class IntConfiguratorPlugin : public ConfiguratorPlugin
 {
@@ -149,7 +149,7 @@ static IntConfiguratorPlugin<unsigned> unsignedRegistrator;
 
 
 
-#include <QtGui/QCheckBox>
+#include <QCheckBox>
 
 class BoolConfiguratorPlugin : public ConfiguratorPlugin
 {
@@ -176,7 +176,7 @@ static BoolConfiguratorPlugin boolRegistrator;
 
 
 
-#include <QtGui/QComboBox>
+#include <QComboBox>
 #include <CLAM/Enum.hxx>
 
 class EnumConfiguratorPlugin : public ConfiguratorPlugin
@@ -242,7 +242,7 @@ public:
 static DynamicTypeConfiguratorPlugin dtRegistrator;
 
 
-#include <QtGui/QGraphicsView>
+#include <QGraphicsView>
 #include <CLAM/BPF.hxx>
 
 class BPFConfiguratorPlugin : public ConfiguratorPlugin

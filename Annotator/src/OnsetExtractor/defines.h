@@ -6,35 +6,6 @@
 #include <set>
 #include <vector>
 
-using namespace std;
-
-#define mapa2 map<int, double, ltint>
-#define itermapa2 map<int, double, ltint>::iterator
-
-#define peaksvector vector<mapa2>
-#define iterpeaksvector vector<mapa2>::iterator
-
-#define myvector vector<spectralpattern>
-#define itermyvector vector<spectralpattern>::iterator
-
-#define peaksattvector vector<peaksatt>
-#define iterpeaksattvector vector<peaksatt>::iterator
-
-#define notepair pair<int,double>
-#define notesvector vector<notepair>
-
-#define vectorchords vector<chord>
-
-#define hashset set<int>
-typedef std::vector< std::vector<double> > Tmatrix;
-
-//#define mapa map<double, int, ltdoub>
-//#define itermapa map<double, int,ltdoub>::iterator
-//#define spset multiset<spectralpattern,ltsp> 
-//#define iterspset multiset<spectralpattern,ltsp>::iterator
-
-
-
 
 
 /*--------------------------------------------
@@ -76,6 +47,18 @@ struct ltdoub
 //  	return sp1.prob>sp2.prob;
 //  }
 //};
+
+typedef std::map<int, double, ltint> mapa2;
+typedef std::map<int, double, ltint>::iterator itermapa2;
+
+typedef std::vector<mapa2> peaksvector;
+typedef std::vector<mapa2>::iterator iterpeaksvector;
+
+typedef std::pair<int,double> notepair;
+typedef std::vector<notepair> notesvector;
+
+typedef std::set<int> hashset;
+typedef std::vector< std::vector<double> > Tmatrix;
 
 
 #endif

@@ -69,10 +69,10 @@ class config :
 	if options.ConfigurationFile is not None:
 
 		if not os.access(options.ConfigurationFile,os.R_OK) :
-			print >> sys.stderr, "Bad Configuration File!"
+			print("Bad Configuration File!", file=sys.stderr)
 			sys.exit(-1)
 
-		execfile(options.ConfigurationFile)
+		exec(open(options.ConfigurationFile).read())
 
 provider = MetadataSourceAggregator(config.sources, config.map, verbose=config.verbose)
 
@@ -89,7 +89,7 @@ if not args :
 #if options.writeback: sys.exit()
 
 for audiofile in args:
-	print "Processing %s..."%audiofile
+	print("Processing %s..."%audiofile)
 	target = open(audiofile+options.suffix,'w')
 	poolToCopy=provider.QueryDescriptors(audiofile, provider.AvailableDescriptors())
 	poolToCopy.Dump(target)

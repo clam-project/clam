@@ -26,7 +26,7 @@
 #include "Assert.hxx"
 #include "DataTypes.hxx"
 #include "vmDataTypes.hxx"
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

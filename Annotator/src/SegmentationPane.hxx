@@ -1,12 +1,12 @@
 #ifndef SegmentationPane_hxx
 #define SegmentationPane_hxx
-#include <QtGui/QSplitter>
+#include <QSplitter>
 #include "Project.hxx"
 #include "vmAudioPlot.hxx"
 #include "DescriptorTableController.hxx"
-#include <QtGui/QTableWidget>
-#include <QtGui/QComboBox>
-#include <QtGui/QVBoxLayout>
+#include <QTableWidget>
+#include <QComboBox>
+#include <QVBoxLayout>
 #include <CLAM/UnsizedSegmentation.hxx>
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include <CLAM/ContiguousSegmentation.hxx>
@@ -50,7 +50,7 @@ public:
 		QWidget * propertiesPane = new QWidget(this);
 		QVBoxLayout * propertiesPaneLayout = new QVBoxLayout(propertiesPane);
 		propertiesPaneLayout->setSpacing(6);
-		propertiesPaneLayout->setMargin(0);
+		propertiesPaneLayout->setContentsMargins(0, 0, 0, 0);
 		_segmentDescriptorsTable = new QTableWidget(propertiesPane);
 		_segmentDescriptorsTable->setMinimumSize(QSize(200, 0));
 		_segmentDescriptorsTable->setFocusPolicy(Qt::WheelFocus);
@@ -166,7 +166,7 @@ public slots:
 	}
 	void refreshSegmentation()
 	{
-		if (_segmentationSelection->currentText()==QString::null) return; // No segmentation
+		if (_segmentationSelection->currentText().isNull()) return; // No segmentation
 		if (!_audio) return;
 		CLAM::TData audioDuration = _audio->GetSize() / _audio->GetSampleRate();
 		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();

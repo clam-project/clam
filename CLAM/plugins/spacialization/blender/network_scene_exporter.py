@@ -121,7 +121,7 @@ def GenerateNetworkOSCReceiver(filename):
 	body=liblos+printers+connections
 	f.write(Network % vars())
 	f.close()
-	print "OSC receivers CLAM Network exported as %(filename)s" % vars()
+	print("OSC receivers CLAM Network exported as %(filename)s" % vars())
 
 # This lets you can import the script without running it
 if __name__ == '__main__':

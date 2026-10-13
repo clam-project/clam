@@ -19,10 +19,10 @@
  *
  */
 
-#include <QtGui/QLabel>
-#include <QtGui/QFrame>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
+#include <QLabel>
+#include <QFrame>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "vmColorScale.hxx"
 #include "vmSpecgramPanel.hxx"
 
@@ -62,7 +62,7 @@ namespace CLAM
 		void SpecgramPanel::InitSpecgramPanel()
 		{
 			QBoxLayout* layout = new QHBoxLayout(this);
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(2);
 			layout->addWidget(GetLeftSide());
 			layout->addWidget(GetRightSide());
@@ -75,18 +75,18 @@ namespace CLAM
 			QFrame* leftGroup = new QFrame(this);
 			leftGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			QFontMetrics fm(font());
-			int width = fm.width("Frequency (Hz): 00000")+6;
+			int width = fm.horizontalAdvance("Frequency (Hz): 00000")+6;
 			leftGroup->setFixedSize(width,66);
 
 			QVBoxLayout* lfMainLayout = new QVBoxLayout(leftGroup);
-			lfMainLayout->setMargin(3);
+			lfMainLayout->setContentsMargins(3, 3, 3, 3);
 			lfMainLayout->setSpacing(0);
 			QHBoxLayout* lfInnerTopLayout = new QHBoxLayout;
 			QHBoxLayout* lfInnerMiddleLayout = new QHBoxLayout;
 			QHBoxLayout* lfInnerBottomLayout = new QHBoxLayout;
-			lfInnerTopLayout->setMargin(0);
-			lfInnerMiddleLayout->setMargin(0);
-			lfInnerBottomLayout->setMargin(0);
+			lfInnerTopLayout->setContentsMargins(0, 0, 0, 0);
+			lfInnerMiddleLayout->setContentsMargins(0, 0, 0, 0);
+			lfInnerBottomLayout->setContentsMargins(0, 0, 0, 0);
 			lfInnerTopLayout->setSpacing(0);
 			lfInnerMiddleLayout->setSpacing(0);
 			lfInnerBottomLayout->setSpacing(0);
@@ -132,16 +132,16 @@ namespace CLAM
 			rightGroup->setFixedHeight(66);
 
 			QVBoxLayout* rfMainLayout = new QVBoxLayout(rightGroup);
-			rfMainLayout->setMargin(3);
+			rfMainLayout->setContentsMargins(3, 3, 3, 3);
 			rfMainLayout->setSpacing(0);
 			QHBoxLayout* rfInnerTopLayout = new QHBoxLayout;
-			rfInnerTopLayout->setMargin(0);
+			rfInnerTopLayout->setContentsMargins(0, 0, 0, 0);
 			rfInnerTopLayout->setSpacing(5);
 			QHBoxLayout* rfInnerMiddleLayout = new QHBoxLayout;
-			rfInnerMiddleLayout->setMargin(0);
+			rfInnerMiddleLayout->setContentsMargins(0, 0, 0, 0);
 			rfInnerMiddleLayout->setSpacing(0);
 			QHBoxLayout* rfInnerBottomLayout = new QHBoxLayout;
-			rfInnerBottomLayout->setMargin(0);
+			rfInnerBottomLayout->setContentsMargins(0, 0, 0, 0);
 			rfInnerBottomLayout->setSpacing(3);
 
 			mTotalSlices = new QLabel(rightGroup);

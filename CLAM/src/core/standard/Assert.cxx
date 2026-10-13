@@ -69,7 +69,7 @@ void DumpBacktrace(std::ostream & os)
 		return;
 	}
 
-	if ((bt_strings = backtrace_symbols(bt_array, num_entries)) == NULL) {
+	if ((bt_strings = backtrace_symbols(bt_array, num_entries)) == nullptr) {
 		os << " Unable to adquire symbols names for the backtrace" << std::endl;
 		return;
 	}
@@ -114,8 +114,6 @@ void ExecuteAssertFailedHandler(const char* message, const char* filename, int l
 {
 	CurrentAssertFailedHandler(message,filename,lineNumber);
 }
-
-bool ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 
 ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename, int lineNumber)
 	: Err(message)

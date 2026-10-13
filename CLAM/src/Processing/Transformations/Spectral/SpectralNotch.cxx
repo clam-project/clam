@@ -49,7 +49,9 @@ bool SpectralNotch::Do(const Spectrum& in, Spectrum& out)
 	int band = Round(mBandwidthCtl.GetLastValue()*spectralResolution);
 	TData gain = log2lin(mGainCtl.GetLastValue());
 	int n;
-	int harmonic = 1;
+	// TODO: harmonic looks like a leftover from a planned per-harmonic notch
+	// loop. The body below only notches a single band around centerFreq.
+	[[maybe_unused]] int harmonic = 1;
 	int leftLimit = centerFreq-band;
 	if(leftLimit<0) leftLimit = 0;
 	int rightLimit = centerFreq+band+1;

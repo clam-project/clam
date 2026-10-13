@@ -44,7 +44,7 @@ if env.get('with_portmidi') :
 # TODO: Are we even using those platform dependant?
 if crosscompiling or sys.platform == 'win32' :
 	pass
-elif sys.platform == 'linux2' :
+elif sys.platform == 'linux' :
 	if env.get('with_alsa') :
 		folders.append( 'src/midiio/devices/Linux' )
 		folders.append( 'src/Tools/AudioIO/Linux')

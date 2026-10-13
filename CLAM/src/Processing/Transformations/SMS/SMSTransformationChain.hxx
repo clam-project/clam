@@ -63,7 +63,7 @@ namespace CLAM {
 			mpChainInput(0),
 			mpChainOutput(0)
 			{
-				mpConfig=NULL;
+				mpConfig=nullptr;
 			}
 		/** Destructor. Deletes temporal ProcessingData and Configuration and any previously
 		 *	allocated Processing chainee. 
@@ -228,7 +228,7 @@ namespace CLAM {
 		}
 		
 		/** Returns first transformation in chain belonging to a given class
-		 * 	or NULL if not found
+		 * 	or nullptr if not found
 		 * */
 		SegmentTransformation* GetTransformation(const std::string& name)
 		{
@@ -236,7 +236,7 @@ namespace CLAM {
 			{
 				if(name == (*obj)->GetClassName()) return dynamic_cast<SegmentTransformation*>((*obj));;
 			}
-			return NULL;
+			return nullptr;
 		}
 		
 

@@ -1,12 +1,14 @@
-import cStringIO
+from io import StringIO
 from Pool import *
 from Aggregator import *
 from Pool import *
 from Schema import *
 
+_StandardException = Exception
+
 class MetadataSourceAggregator :
 
-	class Exception :
+	class Exception(_StandardException) :
 		def __init__(self, message) :
 			self.what = message
 		def __str__(self) :
@@ -41,22 +43,22 @@ class MetadataSourceAggregator :
 		return scripts
 
 	def QueryDescriptors(self, id, descriptors) :
-		if self.verbose : print "++ Building aggregation script..."
+		if self.verbose : print("++ Building aggregation script...")
 		(aggregatorScript, sourceIds) = self._AggregatorScriptFor(descriptors)
-		aggregator = Aggregator(cStringIO.StringIO(aggregatorScript))
+		aggregator = Aggregator(StringIO(aggregatorScript))
 		result = Pool()
 		sourcesPools = []
 		for sourceId in sourceIds :
-			if self.verbose : print "++ Querying descriptors from %s..."%sourceId
+			if self.verbose : print("++ Querying descriptors from %s..."%sourceId)
 			sourcePool = self.sources[sourceId].QueryDescriptors(id)
 			sourcesPools.append(sourcePool)
-		if self.verbose : print "++ Aggregating..."
+		if self.verbose : print("++ Aggregating...")
 		aggregator.run(result, sourcesPools)
 		return result
 
 	def QuerySchema(self, descriptors) :
 		(aggregatorScript, sourceIds) = self._AggregatorScriptFor(descriptors)
-		aggregator = Aggregator(cStringIO.StringIO(aggregatorScript))
+		aggregator = Aggregator(StringIO(aggregatorScript))
 		result = Schema()
 		aggregator.run(result, [
 			self.sources[sourceId].QuerySchema() 
@@ -70,7 +72,7 @@ class MetadataSourceAggregator :
 		scripts = self._DisgregatorScripts(descriptors)
 		for source, script in scripts.items() :
 			if script=="": continue
-			disgregator = Aggregator(cStringIO.StringIO(script))
+			disgregator = Aggregator(StringIO(script))
 			try :
 				result = self.sources[source].QueryDescriptors(id)
 			except: 

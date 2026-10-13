@@ -170,11 +170,12 @@ namespace CLAM
 	class Processing {
 	public:
 		/** Processing Object possible execution states. */
-		typedef enum {
-			Unconfigured=0,
+		enum class ExecState
+		{
+			Unconfigured = 0,
 			Ready,
-			Running
-		} ExecState;
+			Running,
+		};
 
 		typedef NullProcessingConfig Config;
 
@@ -305,8 +306,8 @@ namespace CLAM
 		ExecState GetExecState() const {return _execState;}
 	public:
 		std::string GetExecStateString() const;
-		bool IsConfigured() const { return _execState != Unconfigured; }
-		bool IsRunning() const { return _execState == Running; }
+		bool IsConfigured() const { return _execState != ExecState::Unconfigured; }
+		bool IsRunning() const { return _execState == ExecState::Running; }
 
 
 		void RegisterOutPort(OutPortBase* out);

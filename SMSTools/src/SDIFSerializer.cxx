@@ -54,7 +54,7 @@ bool SDIFSerializer::DoLoad( const char* fileName, Segment& segment )
 		mSDIFReader.Start(  );
 		while( mSDIFReader.Do(segment) ) {  }
 		mSDIFReader.Stop(  );
-	} catch (Err e)
+	} catch (const Err& e)
 	{
 		std::cout << e.what() << std::endl;
 	}
@@ -75,8 +75,7 @@ bool SDIFSerializer::DoStore( const char* fileName, Segment& segment )
 	cfg.SetFileName( fileName );
 	cfg.SetEnableResidual( true );
 
-	// Unused variable: 
-	bool configOk = mSDIFWriter.Configure( cfg );
+	[[maybe_unused]] bool configOk = mSDIFWriter.Configure( cfg );
 	CLAM_DEBUG_ASSERT(configOk, "Error storing temporal SDIF for Morph" );
 
 	mSDIFWriter.Start(  );

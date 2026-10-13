@@ -44,7 +44,7 @@ import SCons.Scanner
 import SCons.Tool
 import SCons.Util
 
-class ToolQt4Warning(SCons.Warnings.Warning):
+class ToolQt4Warning(SCons.Warnings.SConsWarning):
     pass
 
 class GeneratedMocFileNotIncluded(ToolQt4Warning):
@@ -55,7 +55,7 @@ class QtdirNotFound(ToolQt4Warning):
 
 SCons.Warnings.enableWarningClass(ToolQt4Warning)
 
-qrcinclude_re = re.compile(r'<file>([^<]*)</file>', re.M)
+qrcinclude_re = re.compile(r'<file[^>]*>([^<]*)</file>', re.M)
 
 def transformToWinePath(path) :
     return os.popen('winepath -w "%s"'%path).read().strip().replace('\\','/')
@@ -135,18 +135,18 @@ class _Automoc(object):
         out_sources = source[:]
 
         for obj in source:
-            if isinstance(obj,basestring):  # big kludge!
-                print "scons: qt4: '%s' MAYBE USING AN OLD SCONS VERSION AND NOT CONVERTED TO 'File'. Discarded." % str(obj)
+            if isinstance(obj,str):  # big kludge!
+                print("scons: qt4: '%s' MAYBE USING AN OLD SCONS VERSION AND NOT CONVERTED TO 'File'. Discarded." % str(obj))
                 continue
             if not obj.has_builder():
                 # binary obj file provided
                 if debug:
-                    print "scons: qt: '%s' seems to be a binary. Discarded." % str(obj)
+                    print("scons: qt: '%s' seems to be a binary. Discarded." % str(obj))
                 continue
             cpp = obj.sources[0]
             if not splitext(str(cpp))[1] in cxx_suffixes:
                 if debug:
-                    print "scons: qt: '%s' is no cxx file. Discarded." % str(cpp) 
+                    print("scons: qt: '%s' is no cxx file. Discarded." % str(cpp))
                 # c or fortran source
                 continue
             #cpp_contents = comment.sub('', cpp.get_contents())
@@ -161,12 +161,12 @@ class _Automoc(object):
                 h = find_file(hname, (cpp.get_dir(),), env.File)
                 if h:
                     if debug:
-                        print "scons: qt: Scanning '%s' (header of '%s')" % (str(h), str(cpp))
+                        print("scons: qt: Scanning '%s' (header of '%s')" % (str(h), str(cpp)))
                     #h_contents = comment.sub('', h.get_contents())
                     h_contents = h.get_contents()
                     break
             if not h and debug:
-                print "scons: qt: no header for '%s'." % (str(cpp))
+                print("scons: qt: no header for '%s'." % (str(cpp)))
             if h and q_object_search.search(h_contents):
                 # h file with the Q_OBJECT macro found -> add moc_cpp
                 moc_cpp = env.Moc4(h)
@@ -174,14 +174,14 @@ class _Automoc(object):
                 out_sources.append(moc_o)
                 #moc_cpp.target_scanner = SCons.Defaults.CScan
                 if debug:
-                    print "scons: qt: found Q_OBJECT macro in '%s', moc'ing to '%s'" % (str(h), str(moc_cpp))
+                    print("scons: qt: found Q_OBJECT macro in '%s', moc'ing to '%s'" % (str(h), str(moc_cpp)))
             if cpp and q_object_search.search(cpp_contents):
                 # cpp file with Q_OBJECT macro found -> add moc
                 # (to be included in cpp)
                 moc = env.Moc4(cpp)
                 env.Ignore(moc, moc)
                 if debug:
-                    print "scons: qt: found Q_OBJECT macro in '%s', moc'ing to '%s'" % (str(cpp), str(moc))
+                    print("scons: qt: found Q_OBJECT macro in '%s', moc'ing to '%s'" % (str(cpp), str(moc)))
                 #moc.source_scanner = SCons.Defaults.CScan
         # restore the original env attributes (FIXME)
         objBuilder.env = objBuilderEnv
@@ -447,16 +447,16 @@ def enable_modules(self, modules, debug=False, crosscompiling=False, useFrameWor
     }
     if useFrameWorks:
         for module in modules :
-            print 'Appening Frameworks: ',module
+            print('Appening Frameworks: ',module)
             self.AppendUnique(FRAMEWORKS=module)
         if 'QtOpenGL' in modules:
             self.AppendUnique(FRAMEWORKS='OpenGL')
-	return
+        return
     for module in modules :
         try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
         except: pass
     debugSuffix = ''
-    if sys.platform in ["darwin", "linux2"] and not crosscompiling :
+    if sys.platform in ["darwin", "linux"] and not crosscompiling :
         if debug : debugSuffix = '_debug'
         for module in modules :
             if module not in pclessModules : continue
@@ -466,7 +466,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False, useFrameWor
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
         pcmodules = [module+debugSuffix for module in modules if module not in pclessModules ]
         if 'QtOpenGL' in modules:
-			self.AppendUnique(LIBS='GL')
+            self.AppendUnique(LIBS='GL')
         if 'QtDBus' in pcmodules:
             self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtDBus")])
         if "QtAssistant" in pcmodules:

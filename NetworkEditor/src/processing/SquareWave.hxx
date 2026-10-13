@@ -52,7 +52,7 @@ public:
 			{ ESquareWaveControls::pitch, "pitch" },
 			{ ESquareWaveControls::amplitude, "amplitude" },
 			{ ESquareWaveControls::phase, "phase" },
-			{ 0, NULL }
+			{ 0, nullptr }
 		};
 		return sValueTable;
 	}

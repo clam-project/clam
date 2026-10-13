@@ -47,12 +47,12 @@ namespace CLAM {
 	
 	}
 
-std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue) {
+std::ostream & operator << (std::ostream & os, const Enum & e) {
 	os << e.GetString();
 	return os;
 }
 
-std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
+std::istream & operator >> (std::istream & os, Enum & e) {
 	std::string s;
 	os >> s;
 	e.SetValue(s);
@@ -60,4 +60,3 @@ std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
 }
 
 }
-

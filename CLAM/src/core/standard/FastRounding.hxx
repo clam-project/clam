@@ -28,7 +28,12 @@
 #include <float.h>
 #endif
 
-#if defined (_MSC_VER )
+// The MSVC-specific path below uses x87 inline assembly ( _asm { fld / fistp } )
+// which Microsoft only ever supported on 32-bit x86. MSVC x64 and ARM64 do
+// not allow __asm at all. Only take this path on 32-bit MSVC; on 64-bit MSVC
+// (and any other compiler) fall through to the portable implementation at
+// the bottom of the file.
+#if defined (_MSC_VER) && defined(_M_IX86)
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
    You must do so outside the loop that actually calls the loop */
 

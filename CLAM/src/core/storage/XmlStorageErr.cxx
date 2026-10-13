@@ -8,7 +8,7 @@ namespace CLAM
 	{
 		_errors = errors;
 	}
-	const char * XmlStorageErr::what() const throw()
+	const char * XmlStorageErr::what() const noexcept
 	{
 		return _errors.c_str();
 	}

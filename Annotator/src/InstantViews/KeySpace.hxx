@@ -22,15 +22,19 @@
 #ifndef KeySpace_hxx
 #define KeySpace_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QVector3D>
+#include <QMatrix4x4>
 #undef GetClassName
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 #include "FloatArrayDataSource.hxx"
 
 namespace CLAM {
 namespace VM {
 
-class QDESIGNER_WIDGET_EXPORT KeySpace : public QGLWidget
+class QDESIGNER_WIDGET_EXPORT KeySpace : public QOpenGLWidget,
+                                         protected QOpenGLFunctions
 {
 	Q_OBJECT
 	Q_PROPERTY(bool smooth READ smooth WRITE setSmooth)
@@ -39,10 +43,12 @@ class QDESIGNER_WIDGET_EXPORT KeySpace : public QGLWidget
 public:
 	KeySpace(QWidget * parent);
 
-	virtual void initializeGL();
-	virtual void resizeGL(int width, int height);
-	virtual void paintGL();
-	virtual void timerEvent(QTimerEvent * event);
+protected:
+	void initializeGL() override;
+	void resizeGL(int width, int height) override;
+	void paintGL() override;
+public:
+	void timerEvent(QTimerEvent * event);
 
 	bool smooth() const { return _smooth; }
 	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; initializeGL(); }
@@ -63,6 +69,7 @@ private:
 	void DrawTiles();
 	void DrawLabels();
 	void RecomputeWeights();
+	void renderText3D(double x, double y, double z, const char* text, const QFont& font);
 	double wdist(double x1,double x2)
 	{
 		if (x2 > x1+.5) return 1. - (x2-x1);

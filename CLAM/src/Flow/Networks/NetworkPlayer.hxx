@@ -42,7 +42,7 @@ protected:
 
 public:
 	NetworkPlayer()
-		: _network(NULL)
+		: _network(nullptr)
 		, _status(Stopped)
 	{
 	}
@@ -101,7 +101,7 @@ public:
 protected:
 	Network& GetNetwork()
 	{
-		CLAM_ASSERT( (_network!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
+		CLAM_ASSERT( (_network!=nullptr), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *_network;
 	}
 protected:

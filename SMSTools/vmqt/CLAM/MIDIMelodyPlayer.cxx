@@ -1,6 +1,6 @@
+#include <chrono>
 #include <iostream>
 #include <typeinfo>
-#include <CLAM/xtime.hxx>
 #include <CLAM/MIDIManager.hxx>
 #include <CLAM/MIDIIOConfig.hxx>
 #include <CLAM/MIDIOutControl.hxx>
@@ -20,8 +20,6 @@ namespace CLAM
 		{
 			InitTables();
 			HaveData(true);
-	    
-			mThread.SetThreadCode(makeMemberFunctor0((*this), MIDIMelodyPlayer, thread_code));
 		}
 		
 		MIDIMelodyPlayer::~MIDIMelodyPlayer()	
@@ -30,7 +28,7 @@ namespace CLAM
 
 		void MIDIMelodyPlayer::SetMIDIDevice(const std::string& device)
 		{
-			if(!mThread.IsRunning())
+			if(!mThread.joinable())
 			{
 				mMIDIDevice = "default:"+device;
 			}
@@ -177,12 +175,9 @@ namespace CLAM
 
 		unsigned MIDIMelodyPlayer::GetTime()
 		{
-			unsigned m1,m2;
-			xtime _t;
-			xtime_get(&_t,TIME_UTC);
-			m1 = _t.sec*MILLISECONDS_PER_SECOND;
-			m2 = _t.nsec/NANOSECONDS_PER_MILLISECOND;
-			return m1+m2;
+			using namespace std::chrono;
+			return static_cast<unsigned>(
+				duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count());
 		}
 
 		TIndex MIDIMelodyPlayer::GetNoteIndex(bool first)

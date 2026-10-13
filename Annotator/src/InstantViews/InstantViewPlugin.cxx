@@ -28,7 +28,7 @@
 
 #include <string>
 #include <map>
-#include <QtGui/QInputDialog>
+#include <QInputDialog>
 
 static InstantViewPlugin::PluginMap plugins;
 

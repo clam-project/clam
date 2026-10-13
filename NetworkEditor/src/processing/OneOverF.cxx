@@ -53,7 +53,7 @@ void OneOverFConfig::DefaultInit(void)
 	SetMinNote(36);
 	SetMaxNote(98);
 	SetDices(4); // 1..MAXDICES
-	srand( (unsigned)time( NULL ) );
+	srand( (unsigned)time( nullptr ) );
 }
 
 void OneOverF::ResetSeq()
@@ -106,7 +106,7 @@ bool OneOverF::Do()
 	    RandomMax = 1;
 	  for (int i=0;i<mDices;i++) // Bit check loop
 	    {
-	      if ( ((SeqIndex >> i) && 0x0001) != ((PrevSeqIndex >> i) && 0x0001) )
+	      if ( ((SeqIndex >> i) & 0x0001) != ((PrevSeqIndex >> i) & 0x0001) )
 	        Values[i] = rand() % RandomMax;
 	      OutValue += Values[i];
 	    }

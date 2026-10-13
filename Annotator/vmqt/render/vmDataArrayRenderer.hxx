@@ -25,7 +25,7 @@
 #include "Array.hxx"
 #include "vmRenderer2D.hxx"
 #include <vector>
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

@@ -33,7 +33,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "definitions.hpp"
+#include "mini/definitions.hpp"
 
 namespace CLAM
 {

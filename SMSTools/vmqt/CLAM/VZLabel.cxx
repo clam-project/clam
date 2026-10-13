@@ -19,8 +19,9 @@
  *
  */
 
-#include <qpainter.h>
-#include <qtooltip.h>
+#include <QPainter>
+#include <QToolTip>
+#include <QFrame>
 #include <CLAM/VZLabel.hxx>
 
 namespace CLAM
@@ -29,7 +30,7 @@ namespace CLAM
 	{
 		VZLabel::VZLabel(QWidget* parent) 
 			: QFrame(parent)
-			, mAlign(AlignCenter) 
+			, mAlign(Qt::AlignCenter) 
 		{
 			InitLabel();
 		} 
@@ -47,7 +48,7 @@ namespace CLAM
 			this->setMinimumSize(20,25);
 			this->setFixedWidth(20);
 			this->setMaximumHeight(70);
-			QToolTip::add(this,"Zoom Ratio");
+			this->setToolTip("Zoom Ratio");
 			this->setText("");
 		}
 
@@ -58,7 +59,7 @@ namespace CLAM
 			p->translate(r.x(),r.y()+r.height());
 			p->rotate(-90.0);
 			p->drawText(0,0,r.height(),r.width(),mAlign,mText);
-			p->resetXForm();
+			p->resetTransform();
 		}
 
 		void VZLabel::setText(const QString& text)

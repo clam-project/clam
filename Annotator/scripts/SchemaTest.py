@@ -18,19 +18,19 @@
 
 
 from Schema import *
-import cStringIO
+from io import StringIO
 import unittest
-import xml.dom.ext
+from xml.etree import ElementTree as ET
 
 def stringAttribute(scope,name) :
 	return """\
-<Attribute scope='%s' name='%s' type='String'/>
+<Attribute scope="%s" name="%s" type="String" />
 """%(scope,name)
 
 def enumAttribute(scope, name, values) :
 	return """\
-<Attribute scope='%s' name='%s' type='Enum'>
-	<Values size='%d'>%s</Values>
+<Attribute scope="%s" name="%s" type="Enum">
+	<Values size="%d">%s</Values>
 </Attribute>
 """%(scope, name, len(values), " ".join(values))
 
@@ -62,22 +62,21 @@ document2 ="""\
 
 class SchemaTest(unittest.TestCase):
 	def setUp(self):
-		self.schema = cStringIO.StringIO(document)
-		self.schema2 = cStringIO.StringIO(document2)
+		self.schema = StringIO(document)
+		self.schema2 = StringIO(document2)
 
 	def serializeXml(self, nodes) :
-		output = cStringIO.StringIO()
-		for node in nodes :
-			xml.dom.ext.Print(node, output)
-			print >> output
-		return output.getvalue()
+		return "\n".join([
+			ET.tostring(node, encoding='unicode')
+			for node in nodes
+		])
 
 	def testSelectAttribute(self) :
 		schema = Schema(self.schema)
 
 		nodes = schema.SelectAttribute('S1', 'StrA')
 
-		self.assertEquals(stringAttribute('S1', 'StrA'), self.serializeXml(nodes))
+		self.assertEqual(stringAttribute('S1', 'StrA'), self.serializeXml(nodes))
 
 
 	def testInserAttribute(self) :
@@ -88,7 +87,7 @@ class SchemaTest(unittest.TestCase):
 
 		result = schema1.SelectAttribute('S2', 'EnumY')
 		expect = schema2.SelectAttribute('S2', 'EnumY')
-		self.assertEquals(self.serializeXml(expect), self.serializeXml(result))
+		self.assertEqual(self.serializeXml(expect), self.serializeXml(result))
 
 
 	def testInserAttribute_withNonExistingSourceScope(self) :
@@ -98,7 +97,7 @@ class SchemaTest(unittest.TestCase):
 		try :
 			schema1.InsertAttribute(schema2,'BadScope', 'BadAttribute', 'S1')
 			self.fail("Expected exception was not thrown")
-		except Schema.Exception, e:
+		except Schema.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::BadAttribute' not found",
 				e.what)
@@ -117,7 +116,7 @@ class SchemaTest(unittest.TestCase):
 		try :
 			schema2.RemoveAttribute('BadScope', 'BadAttribute')
 			self.fail("Expected exception was not thrown")
-		except Schema.Exception, e:
+		except Schema.Exception as e:
 			self.assertEqual(
 				"Attribute 'BadScope::BadAttribute' not found",
 				e.what)
@@ -125,14 +124,13 @@ class SchemaTest(unittest.TestCase):
 
 	def testDefaultInit(self) :
 		schema = Schema()
-		file = cStringIO.StringIO()
+		file = StringIO()
 		schema.Dump(file)
 		self.assertEqual("""\
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <DescriptionScheme>
-  <Attributes/>
-</DescriptionScheme>
-""",
+	<Attributes />
+</DescriptionScheme>""",
 		file.getvalue())
 
 

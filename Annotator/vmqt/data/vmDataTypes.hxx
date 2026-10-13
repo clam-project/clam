@@ -21,7 +21,7 @@
 
 #ifndef __VMQT_DATA_TYPES_H__
 #define __VMQT_DATA_TYPES_H__
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

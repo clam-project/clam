@@ -2,7 +2,7 @@
 #define __QTSMSMORPHCONTROL__
 
 #include <vector>
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/BPF.hxx>
 
 class QCheckBox;

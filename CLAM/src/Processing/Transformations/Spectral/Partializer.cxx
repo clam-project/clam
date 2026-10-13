@@ -43,7 +43,9 @@ bool Partializer::Do(const Spectrum& in, Spectrum& out)
 		out = in; //TODO big cludge for streaming
 	}
 	DataArray& inMag = in.GetMagBuffer();
-	DataArray& outMag = out.GetMagBuffer();
+	// outMag is a direct alias for the output buffer but the body below
+	// writes to mMag and then SetMagBuffer()s it back. Likely vestigial.
+	[[maybe_unused]] DataArray& outMag = out.GetMagBuffer();
 	
 	int spectrumSize = in.GetSize();
 	mMag.Resize(spectrumSize);

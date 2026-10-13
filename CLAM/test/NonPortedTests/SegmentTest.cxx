@@ -155,7 +155,7 @@ try{
 
 
 }
-catch(Err error)
+catch(Err &error)
 {
 	error.Print();
 	std::cerr << "Abnormal Program Termination" << std::endl;

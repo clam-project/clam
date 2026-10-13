@@ -5,10 +5,11 @@ from task import *
 from project import Project
 from client import Client
 from runner import Runner
-from commands import getoutput
+from subprocess import getoutput
+from functools import reduce
 
 def countLines( path ):
-	print 'loc for path:', path
+	print(('loc for path:', path))
 	lines =  getoutput("find %s -name '*.?xx' -exec wc -l {} \;" % path.strip() ).split('\n')
 	return reduce( lambda x,y: x+y , map( lambda x: int(x.split()[0]), lines) )
 
@@ -200,7 +201,7 @@ clam.add_subtask('Voice2MIDI installation', [
 ] )
 
 forceRun = len(sys.argv)>1
-print "force Run: ", forceRun
+print(("force Run: ", forceRun))
 
 Runner( clam, 
 	continuous = False,

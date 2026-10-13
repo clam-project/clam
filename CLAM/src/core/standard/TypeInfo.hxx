@@ -24,6 +24,7 @@
 
 //class StaticTrue {};
 //class StaticFalse {};
+#include <typeinfo>
 #include "StaticBool.hxx"
 
 namespace CLAM {
@@ -82,5 +83,4 @@ namespace CLAM {
 
 
 #endif//_TYPEINFO_H_
-
 

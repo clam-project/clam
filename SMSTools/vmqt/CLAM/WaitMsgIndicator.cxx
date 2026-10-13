@@ -1,5 +1,8 @@
-#include <qtimer.h>
-#include <qpainter.h>
+#include <QTimer>
+#include <QPainter>
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <QFrame>
 #include <CLAM/Message.hxx>
 #include <CLAM/WaitMsgIndicator.hxx>
 

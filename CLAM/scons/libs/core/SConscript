@@ -45,7 +45,7 @@ elif env['xmlbackend'] == 'none' :
 	blacklist.append( 'Xerces.+' )
 	blacklist.append( 'LibXml.+' )
 
-if not env.has_key('with_ladspa') or env['with_ladspa'] == False :
+if 'with_ladspa' not in env or env['with_ladspa'] == False :
 	blacklist.append( 'Ladspa.+' )
 	blacklist.append( 'RunTimeFaustLibraryLoader.+' )
 	blacklist.append( 'RunTimeLadspaLibraryLoader.*' )

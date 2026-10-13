@@ -23,8 +23,8 @@
 #include "XMLStorage.hxx"
 #include "SegmentDescriptors.hxx"
 #include "DescriptorComputation.hxx"
-#include <QtGui/QFileDialog>
-#include <QtGui/QApplication>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QApplication>
 
 int main( int argc, char** argv )
 {
@@ -35,7 +35,7 @@ int main( int argc, char** argv )
 	QString file = QFileDialog::getOpenFileName(
 		0,
 		"Please select an XML analysis file",
-		QString::null,
+		QString(),
 		"*.xml");
 
 	if (file.isEmpty())
@@ -85,7 +85,7 @@ int main( int argc, char** argv )
 	QString outFilename = QFileDialog::getOpenFileName(
 		0,
 		"Please enter name of where you want your output descriptors to be stored",
-		QString::null,
+		QString(),
 		"*.xml");
 
 	if (file.isEmpty())

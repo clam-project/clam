@@ -17,32 +17,6 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, OutControlSender> reg = metadata;
 }
 	
-Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =
-	{
-		{ EControlRepresentation::eUndetermined, "Undetermined" },
-		{ EControlRepresentation::eVerticalSlider, "Vertical Slider" },
-		{ EControlRepresentation::eHorizontalSlider, "Horizontal Slider" },
-		{ EControlRepresentation::eKnot, "Knot" },
-		{ EControlRepresentation::eSpinBox, "Spin Box" },
-		{ 0, NULL }
-	};
-
-Enum::tEnumValue OutControlSenderConfig::EMapping::sEnumValues[] =
-	{
-		{ EMapping::eLinear, "Linear" },
-		{ EMapping::eInverted, "Inverted" },
-		{ EMapping::eLog, "Log" },
-		{ EMapping::eReverseLog, "Reverse Log" },
-		{ 0, NULL }
-	};
-
-
-Enum::tValue OutControlSenderConfig::EControlRepresentation::sDefault =
-	OutControlSenderConfig::EControlRepresentation::eHorizontalSlider;
-
-Enum::tValue OutControlSenderConfig::EMapping::sDefault =
-	OutControlSenderConfig::EMapping::eLinear;
-
 void OutControlSenderConfig::DefaultInit(void)
 {
 	AddAll();

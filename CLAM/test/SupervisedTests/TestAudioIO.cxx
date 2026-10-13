@@ -138,13 +138,13 @@ int main(int argc,char** argv)
 	try {
 		test_stereo_io();
 	}
-	catch(Err error)
+	catch(Err & error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
 		return -1;
 	}
-	catch (std::exception e)
+	catch (std::exception & e)
 	{
 		std::cout << e.what() << std::endl;
 		return -1;

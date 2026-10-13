@@ -98,4 +98,4 @@ def encode_multipart_formdata_dictionary( params):
 
 
 if __name__ == "__main__":
-	print post_multipart("localhost","/SimacServices/kk.py/Upload", 'simac-annotator-tasker', [], [('data','upload.xml', open('uploadfile.xml.gz','rb').read() )])
+	print(post_multipart("localhost","/SimacServices/kk.py/Upload", 'simac-annotator-tasker', [], [('data','upload.xml', open('uploadfile.xml.gz','rb').read() )]))

@@ -193,7 +193,7 @@
           </sizepolicy>
          </property>
          <property name="text" >
-          <string>&lt;p>The CLAM Team &amp;lt;clam@iua.upf.edu&amp;gt;:&lt;/p>
+          <string>&lt;p>The CLAM Team &amp;lt;clam-project.org&amp;gt;:&lt;/p>
 &lt;ul>
 &lt;li>Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li>
 &lt;li>David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li>

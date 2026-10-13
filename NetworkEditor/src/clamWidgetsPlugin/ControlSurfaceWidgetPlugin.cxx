@@ -24,7 +24,7 @@
 #include "ControlSurfaceWidgetPlugin.hxx"
 #include "ControlSurfaceWidget.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 ControlSurfaceWidgetPlugin::ControlSurfaceWidgetPlugin(QObject *parent)
     : QObject(parent)

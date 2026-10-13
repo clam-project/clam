@@ -3,17 +3,17 @@
 import sys
 
 if len(sys.argv)!=4 :
-	print >> sys.stderr, "Usage: %s <order> <choreo> <geometry>"%sys.argv[0]
-	print >> sys.stderr, """
+	print("Usage: %s <order> <choreo> <geometry>"%sys.argv[0], file=sys.stderr)
+	print("""
 Generates a network for a Hoa encoder from a given order 
 of ambisonics using room simulation and source-listener choreography.
-"""
+""", file=sys.stderr)
 	sys.exit()
 
 
 order = sys.argv[1]
 if order not in '0123':
-	print >> sys.stderr, "Order",order,"is not supported. It must be either 0, 1, 2 or 3."
+	print("Order",order,"is not supported. It must be either 0, 1, 2 or 3.", file=sys.stderr)
 	sys.exit(-1)
 order=int(order)
 channels="".join(['W','XYZ','RSTUV','KLMNOPQ'][0:order+1])
@@ -21,11 +21,11 @@ channels="".join(['W','XYZ','RSTUV','KLMNOPQ'][0:order+1])
 choreo = sys.argv[2]
 geometry = sys.argv[3]
 
-print """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+print("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
-"""
+""")
 
-print """
+print("""
   <processing id="AudioInput" position="31,332" size="128,108" type="AudioSource" />
 
   <processing id="AudioMixer" position="176,540" size="107,62" type="AudioMixer">
@@ -78,10 +78,10 @@ print """
 	order=order,
 	choreo=choreo,
 	geometry=geometry,
-	)
+	))
 
 for i, channel in enumerate(channels) :
-	print """\
+	print("""\
   <processing id="Convolution_%(channel)s_1" position="521,%(y1)s" size="127,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
@@ -129,8 +129,8 @@ for i, channel in enumerate(channels) :
 	channel=channel,
 	y1=80+i*100,
 	y2=124+i*100,
-	)
-print """
+	))
+print("""
   <port_connection>
     <out>AudioInput.1</out>
     <in>AudioMixer.Input 0</in>
@@ -155,9 +155,9 @@ print """
     <out>AudioWindowing.Output</out>
     <in>MyFFT.Audio Buffer</in>
   </port_connection>
-"""
+""")
 for channel in channels :
-	print """\
+	print("""\
 <!--
   <port_connection>
     <out>BFormatRotation.%(channel)s</out>
@@ -243,9 +243,9 @@ for channel in channels :
     <out>XFade %(channel)s.CrossFadedBuffer</out>
     <in>Oscilloscope %(channel)s.Input</in>
   </port_connection>
-"""%dict(channel=channel)
+"""%dict(channel=channel))
 
-print """\
+print("""\
   <control_connection>
     <out>ChoreoSequencer.listener X</out>
     <in>RoomImpulseResponseSimulator.listener X</in>
@@ -282,6 +282,6 @@ print """\
   </control_connection>
 
 </network>
-"""
+""")
 
 

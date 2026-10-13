@@ -23,6 +23,7 @@
 #define __OutPort_hxx__
 
 #include "WritingRegion.hxx"
+#include <algorithm>
 #include <typeinfo>
 #include <list>
 #include <string>
@@ -213,7 +214,10 @@ bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 
 	InPortPublisher<Token> *publisher = static_cast<InPortPublisher<Token> *>(&in);
 	
-	mVisuallyConnectedPorts.remove( &in );
+	{
+		auto _it = std::find(mVisuallyConnectedPorts.begin(), mVisuallyConnectedPorts.end(), &in);
+		if (_it != mVisuallyConnectedPorts.end()) mVisuallyConnectedPorts.erase(_it);
+	}
 	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
 	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
 	{
@@ -231,7 +235,8 @@ void OutPort<Token>::DisconnectFromConcreteIn(InPort<Token>& in)
 	if (IsVisuallyConnectedTo(in) )
 	{
 		// is directly connected
-		mVisuallyConnectedPorts.remove(&in);
+		auto _it = std::find(mVisuallyConnectedPorts.begin(), mVisuallyConnectedPorts.end(), &in);
+		if (_it != mVisuallyConnectedPorts.end()) mVisuallyConnectedPorts.erase(_it);
 	}
 	else // then IsPhysicallyConnected()
 	{

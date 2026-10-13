@@ -21,7 +21,7 @@
 
 from Tasker import Tasker, TaskerError 
 import unittest
-from cStringIO import StringIO
+from io import StringIO
 import os
 
 taskfile=StringIO("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>

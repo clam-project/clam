@@ -24,7 +24,7 @@
 #ifndef LPModelViewPlugin_hxx
 #define LPModelViewPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class LPModelViewPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

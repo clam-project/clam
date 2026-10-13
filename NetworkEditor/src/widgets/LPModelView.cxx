@@ -21,9 +21,9 @@
 
 #include "LPModelView.hxx"
 
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
-#include <QtCore/QTimer>
+#include <QPixmap>
+#include <QPainter>
+#include <QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
 #include <algorithm>

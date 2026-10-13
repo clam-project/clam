@@ -19,9 +19,9 @@
  *
  */
 
-#include <QtGui/QApplication>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
+#include <QApplication>
+#include <QInputDialog>
+#include <QMessageBox>
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include <CLAM/ContiguousSegmentation.hxx>
 #include <CLAM/UnsizedSegmentation.hxx>

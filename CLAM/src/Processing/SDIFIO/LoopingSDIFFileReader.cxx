@@ -1,5 +1,6 @@
 #include "LoopingSDIFFileReader.hxx"
 #include "DataUtil.hxx"
+#include <cstddef>
 #include <time.h>
 #include <vector>
 
@@ -29,7 +30,7 @@ LoopingSDIFFileReader::~LoopingSDIFFileReader()
 bool LoopingSDIFFileReader::Configure(const SDIFInConfig& c)
 {
 	/* initialize random seed: */
-	srand ( time(NULL) );
+	srand ( time(nullptr) );
 	
 	return true;
 }
@@ -57,15 +58,8 @@ std::vector<SimpleLoopMetadata>& LoopingSDIFFileReader::GetListOfLoops()
 void LoopingSDIFFileReader::SetListOfLoops(std::vector<SimpleLoopMetadata>& argListOfLoops)
 {
 	listOfLoops.clear();
-	std::vector<SimpleLoopMetadata>::iterator theIterator;
-	for( theIterator = argListOfLoops.begin(); theIterator != argListOfLoops.end(); theIterator++)
-	{
-		SimpleLoopMetadata& aSimpleLoop = *theIterator;
-		listOfLoops.push_back(aSimpleLoop);
-		
-		//std::cout << "LoopingSDIFFileReader: received loop point <" << aSimpleLoop.GetStart();
-		//std::cout << ">, <" << aSimpleLoop.GetEnd() << ">" << std::endl;
-	}
+	for (const auto& simpleLoop : argListOfLoops)
+		listOfLoops.push_back(simpleLoop);
 }
 
 Frame* LoopingSDIFFileReader::ReadFrame()
@@ -132,7 +126,7 @@ int LoopingSDIFFileReader::ChooseLoopRandomly(int argFrameBufferPosition, int ar
 	// so here we look for valid loops that pass these two tests.
 	std::deque<int> validLoopPositions;
 	std::deque<int>::iterator currentLoopIterator = validLoopPositions.end();
-	for (unsigned int counter = 0; counter < listOfLoops.size(); counter++)
+	for (auto counter = std::size_t{0}; counter < listOfLoops.size(); ++counter)
 	{
 		SimpleLoopMetadata& simpleLoop = listOfLoops.at(indexOfCurrentLoop);
 		
@@ -140,7 +134,7 @@ int LoopingSDIFFileReader::ChooseLoopRandomly(int argFrameBufferPosition, int ar
 			&& BufferedSDIFFileReader::GetNumberOfFramesLoaded() >= simpleLoop.GetEnd() )
 		{
 			validLoopPositions.push_back(counter);
-			if (counter == argIndexOfCurrentLoop)
+			if (counter == static_cast<std::size_t>(argIndexOfCurrentLoop))
 			{
 				currentLoopIterator = validLoopPositions.end();
 				currentLoopIterator--;

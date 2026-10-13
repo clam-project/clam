@@ -93,7 +93,7 @@ private:
     /* descriptors to store the energy */
     SegmentDescriptors mSegmentDescriptors;
 	
-    bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+    bool ConcreteConfigure(const ProcessingConfig& c);
   
     void AttachChildren();
     bool ConfigureChildren();

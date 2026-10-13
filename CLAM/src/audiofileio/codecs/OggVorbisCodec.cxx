@@ -71,7 +71,7 @@ namespace AudioCodecs
 			return false;
 		}
 
-		int retval = ov_open( fileHandle, &vorbisFile, NULL, 0 );
+		int retval = ov_open( fileHandle, &vorbisFile, nullptr, 0 );
 
 		if (  retval < 0 )		
 		{
@@ -111,10 +111,10 @@ namespace AudioCodecs
 		FILE*          fileHandle;
 		OggVorbis_File vorbisFile;
 		
-		if ( ( fileHandle = fopen( uri.c_str(), "rb" ) ) == NULL )
+		if ( ( fileHandle = fopen( uri.c_str(), "rb" ) ) == nullptr )
 		     return;
 
-		if ( ov_open( fileHandle, &vorbisFile, NULL, 0 ) < 0 )		
+		if ( ov_open( fileHandle, &vorbisFile, nullptr, 0 ) < 0 )		
 		{
 			fclose( fileHandle );			
 			return;
@@ -154,10 +154,10 @@ namespace AudioCodecs
 		FILE*          fileHandle;
 		OggVorbis_File vorbisFile;
 		
-		if ( ( fileHandle = fopen( uri.c_str(), "rb" ) ) == NULL )
+		if ( ( fileHandle = fopen( uri.c_str(), "rb" ) ) == nullptr )
 		     return;
 
-		if ( ov_open( fileHandle, &vorbisFile, NULL, 0 ) < 0 )		
+		if ( ov_open( fileHandle, &vorbisFile, nullptr, 0 ) < 0 )		
 		{
 			fclose( fileHandle );			
 			return;

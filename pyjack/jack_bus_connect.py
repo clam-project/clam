@@ -72,9 +72,9 @@ def _init(exitOnError=True) :
 	except jack.NotConnectedError:
 		messageToPrint="jackd not running"
 		if exitOnError:
-			print "ERROR:",messageToPrint
+			print("ERROR:",messageToPrint)
 			sys.exit()
-		print "WARNING:",messageToPrint
+		print("WARNING:",messageToPrint)
 		return False
 	return True
 
@@ -103,13 +103,13 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 	If the latter, all the available ports of the client will be used.
 	"""
 	source, sources, target, targets, num_connections = _get_ports_as_list(source, target)
-	print 'Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % \
-		(num_connections,source,len(sources),target,len(targets))
+	print('Doing %i connections. Client "%s" has %i out ports and "%s" has %i in ports' % \
+		(num_connections,source,len(sources),target,len(targets)))
 	
 	tries=0
 	successful_connections=0
 	max_tries = float(wait) / run_client_wait_time
-	for i in xrange(num_connections) :
+	for i in range(num_connections) :
 		connected=False
 		while connected == False and tries < max_tries:
 			connected = connect(sources[i], targets[i])
@@ -120,10 +120,10 @@ def bus_connect(source, target, wait=max_tries_in_seconds) :
 
 def bus_disconnect(source, target) :
 	source, sources, target, targets, num_connections = _get_ports_as_list(source, target)
-	print 'Doing %i disconnections. Client "%s" has %i out ports and "%s" has %i in ports' % \
-		(num_connections,source,len(sources),target,len(targets))
-
-	for i in xrange(num_connections) :
+	print('Doing %i disconnections. Client "%s" has %i out ports and "%s" has %i in ports' % \
+		(num_connections,source,len(sources),target,len(targets)))
+ 
+	for i in range(num_connections) :
 			disconnect(sources[i], targets[i])
 	return num_connections
 
@@ -141,7 +141,7 @@ def get_added_client(old_clients, new_clients) :
 	if len(l) == 0 :
 		return ""
 	if len(l) > 1 :
-		print 'WARNING: found more than one added client. Found ', len(l)
+		print('WARNING: found more than one added client. Found ', len(l))
 	return l[0]
 
 def run_jack_client(cmd, wait=max_tries_in_seconds, path=".", env=os.environ) :
@@ -153,10 +153,10 @@ def run_jack_client(cmd, wait=max_tries_in_seconds, path=".", env=os.environ) :
 	while new_client == "" and tries < max_tries:
 		time.sleep(run_client_wait_time * wait)
 		new_client = get_added_client(previous_clients, clients())
-		print "X",
+		print("X", end=' ')
 		tries += 1
 	if new_client == "" :
-		print "ERROR: a new client didn't show up in jackd after trying %s times." % max_tries
+		print("ERROR: a new client didn't show up in jackd after trying %s times." % max_tries)
 	return new_client, pid
 
 def kill_jack_client(cmd) :
@@ -181,12 +181,12 @@ def main() :
 
 	try:
 		disconnect('system:capture_1','blah:playback_1')
-	except Exception,e:
-		print 'Expected: ', e
+	except Exception as e:
+		print('Expected: ', e)
 		
 	kill_jack_client(metro) #TODO right way
 
-print "name:", __name__
+print("name:", __name__)
 if __name__=='__main__':
 	_init(True)
 	main()

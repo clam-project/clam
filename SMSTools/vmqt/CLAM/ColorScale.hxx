@@ -2,7 +2,7 @@
 #define __COLORSCALE__
 
 #include <vector>
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/VMColor.hxx>
 
 namespace CLAM

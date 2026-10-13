@@ -1,12 +1,12 @@
 #include "SDIFFileReaderWithLoop.hxx"
-#include "DataUtil.hxx"
+#include <CLAM/DataUtil.hxx>
 #include <time.h>
 #include <vector>
 
 #include <CLAM/SpecTypeFlags.hxx>
-#include "SpectrumConfig.hxx"
-#include "Spectrum.hxx"
-#include "SpectrumConversions.hxx"
+#include <CLAM/SpectrumConfig.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectrumConversions.hxx>
 
 namespace CLAM
 {

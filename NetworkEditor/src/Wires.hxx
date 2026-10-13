@@ -2,8 +2,8 @@
 #define Wires_hxx
 
 #include "ProcessingBox.hxx"
-#include <QtGui/QPainter>
-#include <QtGui/QPainterPath>
+#include <QPainter>
+#include <QPainterPath>
 #include <cmath>
 
 class Wire

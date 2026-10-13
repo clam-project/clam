@@ -72,7 +72,7 @@ for testpath in pathToOSCList:
 		configured = True
 		break
 if not configured:
-	print "Can't found OSC.py. Aborting."
+	print("Can't found OSC.py. Aborting.")
 	
 def sendObjectValue(objectId,typeName,typeValue,value,port):
 	message="/SpatDIF/%s/%i/%s" % (typeName,objectId,typeValue)

@@ -1,7 +1,9 @@
-#include <qlayout.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qwhatsthis.h>
+#include <QLayout>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <CLAM/BPFEditor.hxx>
 #include "Qt_SMS_BPF_Editor_Sync.hxx"
 
@@ -67,7 +69,7 @@ namespace QtSMS
 
 	void Qt_SMS_BPF_Editor_Sync::WhatsThis(const char* text)
 	{
-		QWhatsThis::add(mBPFEditor,text);
+		mBPFEditor->setWhatsThis(text);
 	}
 
 
@@ -165,8 +167,8 @@ namespace QtSMS
 		mSnapToGrid->setText("snap to grid");
 		mSyncToMaster->setChecked(false);
 		mSyncToMaster->setText("sync to master");
-		mColorScheme->insertItem("Background black");
-		mColorScheme->insertItem("Background white");
+		mColorScheme->addItem("Background black");
+		mColorScheme->addItem("Background white");
 
 		QBoxLayout* checkControls = new QVBoxLayout;
 		checkControls->addWidget(mShowGrid);

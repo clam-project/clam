@@ -366,7 +366,7 @@ bool SegmentSMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 	
 	try{
 		mSDIFReader.Start(  );}
-	catch (Err)
+	catch (const Err&)
 	{
 		return false;//wrong filename or non-existing sdif
 	}

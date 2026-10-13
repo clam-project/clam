@@ -6,7 +6,7 @@ class Dummy_ConfigurationProxy(object):
 
 	def __getitem__(self, name):
 		if type(self._dict[name]) == dict:
-			import Configuration
+			from . import Configuration
 			return Configuration.Configuration(
 				Dummy_ConfigurationProxy(self._dict[name]) )
 		params = self._holded if self._holded else self._dict
@@ -22,7 +22,7 @@ class Dummy_ConfigurationProxy(object):
 		self._dict[name] = value
 
 	def keys(self):
-		return self._dict.keys()
+		return list(sorted(self._dict))
 
 	def nonDefault(self, attribute):
 		return not self._default[attribute] == self._dict[attribute]

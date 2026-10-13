@@ -65,7 +65,7 @@ public:
 			{ lowcutoff, "lowcutoff" },
 			{ passbandslope, "passbandslope" },
 			{ stopbandslope, "stopbandslope" },
-			{ 0, NULL }
+			{ 0, nullptr }
 		};
 		return sEnumValues;
 	}
@@ -99,7 +99,7 @@ public:
 			{eHighPass,"High-pass"},
 			{eBandPass,"Band-pass"},
 			{eStopBand,"Stop-Band"},
-			{0,NULL}
+			{0,nullptr}
 		};
 		return sEnumValues;
 	}

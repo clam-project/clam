@@ -1,7 +1,6 @@
 #ifndef RunTimeFaustLibraryLoader_hxx
 #define RunTimeFaustLibraryLoader_hxx
 
-#include <dirent.h>
 #include "RunTimeLibraryLoader.hxx"
 #include "LadspaWrapperCreator.hxx"
 #include <ladspa.h>

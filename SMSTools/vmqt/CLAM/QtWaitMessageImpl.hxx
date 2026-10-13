@@ -2,7 +2,7 @@
 #define __QTWAITMESSAGEIMPL__
 
 #include <string>
-#include <qdialog.h>
+#include <QDialog>
 
 class QLabel;
 

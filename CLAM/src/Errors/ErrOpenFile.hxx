@@ -39,7 +39,7 @@ namespace CLAM {
 		// Constructor
 		ErrOpenFile(const char* filename);
 		// Destructor
-		virtual ~ErrOpenFile() throw() {} 
+		virtual ~ErrOpenFile() noexcept {} 
 	};
 
 }

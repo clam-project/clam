@@ -91,7 +91,7 @@ VoiceAnalyzer::VoiceAnalyzer(const VoiceAnalyzerConfig& cfg)
     Configure(cfg);
 }
 
-bool VoiceAnalyzer::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool VoiceAnalyzer::ConcreteConfigure(const ProcessingConfig& c)
 {
     mConfig=dynamic_cast<const VoiceAnalyzerConfig&> (c);
     ConfigureChildren();

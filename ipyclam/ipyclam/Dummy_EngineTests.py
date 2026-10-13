@@ -1,5 +1,5 @@
-from Dummy_Engine import Dummy_Engine
-import Connector
+from .dummy import Dummy_Engine
+from . import Connector
 
 import unittest
 
@@ -72,11 +72,11 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_type(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals("DummyPortSource", engine.processingType("Processing1"))
+		self.assertEqual("DummyPortSource", engine.processingType("Processing1"))
 
 	def test_inports(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 				"InPort1",
 				"InPort2",
 			], engine.processingConnectors(
@@ -84,7 +84,7 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_outports(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 				"OutPort1",
 				"OutPort2",
 			], engine.processingConnectors(
@@ -92,7 +92,7 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_incontrols(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 				"InControl1",
 				"InControl2",
 			], engine.processingConnectors(
@@ -100,7 +100,7 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_outcontrols(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 				"OutControl1",
 				"OutControl2",
 			], engine.processingConnectors(
@@ -108,39 +108,39 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_procensignType_secondProcessing(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals("DummyPortSink", engine.processingType("Processing2"))
+		self.assertEqual("DummyPortSink", engine.processingType("Processing2"))
 
 	def test_portConnectionsOut(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 				("Processing1", "OutPort1"),
 				("Processing1", "OutPort2")]
 				, engine.connectorPeers("Processing2", Connector.Port, Connector.In, "Inport2"))
 	
 	def test_portConnectionsIn(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 				("Processing2", "Inport2")]
 				, engine.connectorPeers("Processing1", Connector.Port, Connector.Out, "OutPort1"))
 
 	def test_connectorType(self) :
 		engine = Dummy_Engine(*self.definition())
 		type = engine.connectorType("Processing1", Connector.Port, Connector.In, "InPort1")
-		self.assertEquals("type1", type)
+		self.assertEqual("type1", type)
 
 	def test_connectorInfo(self) :
 		engine = Dummy_Engine(*self.definition())
 		index = engine.connectorIndex("Processing1", Connector.Port, Connector.In, "InPort1")
-		self.assertEquals(0, index)
+		self.assertEqual(0, index)
 
 	def test_processingsName(self) :
 		engine = Dummy_Engine(*self.definition())
 		listProcessings = [ processName for processName in engine.processingNames() ]
-		self.assertEquals(['Processing1', 'Processing2'], listProcessings)
+		self.assertEqual(['Processing1', 'Processing2'], listProcessings)
 
 	def test_portConnections(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 			("Processing1", "OutPort1", "Processing2", "Inport2"),
 			("Processing1", "OutPort2", "Processing2", "Inport2"),
 			("Processing2", "Outport2", "Processing1", "InPort2"),
@@ -148,7 +148,7 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_controlConnections(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals([
+		self.assertEqual([
 			("Processing1", "OutControl1", "Processing2", "Incontrol2"),
 			("Processing1", "OutControl2", "Processing2", "Incontrol2"),
 			("Processing2", "Outcontrol1", "Processing1", "InControl2"),
@@ -156,8 +156,8 @@ class Dummy_EngineTest(unittest.TestCase) :
 
 	def test_config(self) :
 		engine = Dummy_Engine(*self.definition())
-		self.assertEquals("default1", engine.processingConfig("Processing1")["ConfigParam1"] )
-		self.assertEquals("default2", engine.processingConfig("Processing1")["ConfigParam2"] )
+		self.assertEqual("default1", engine.processingConfig("Processing1")["ConfigParam1"] )
+		self.assertEqual("default2", engine.processingConfig("Processing1")["ConfigParam2"] )
 
 if __name__ == '__main__':
 	unittest.main()

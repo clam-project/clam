@@ -4,9 +4,9 @@
 #include "SDIFInConfig.hxx"
 #include "SDIFFileReader.hxx"
 #include "Frame.hxx"
-#include "Thread.hxx"
-#include "Mutex.hxx"
 #include <deque>
+#include <mutex>
+#include <thread>
 
 #define DEFAULT_INITIAL_NUMBER_OF_FRAMES_TO_BUFFER 10
 #define DEFAULT_FRAME_LOAD_CHUNK_SIZE 5
@@ -88,7 +88,7 @@ public:
 	* Use this method to give the instance a thread which it can use to load
 	* the SDIF file in the background.
 	*/
-	void LoadFramesIntoBufferOnThread(Thread* argThread);
+	void LoadFramesIntoBufferOnThread();
 
 	/**
 	* This method stops the thread given to this object. This should never (?)
@@ -135,17 +135,15 @@ private:
 	int mMaximumThreadIdleTime;
 	/// Whether there are more SDIF frames in the buffer.
 	bool mReaderHasMoreFrames;
-	/// The thread to be used to read frames.
-	Thread* mThreadPtr;
-	/// The wrapper object that the thread will use to call the Run method.
-	CBL::Functor0 mFunctor;
+	/// The thread that loads frames in the background.
+	std::thread mThread;
 	// This is used to prevent the main thread and the reader thread from trying
 	// to access the deque of frames simultaneously
-	Mutex dequeMutex;
+	std::mutex dequeMutex;
 	/// This is used to prevent the main thread and the reader thread from trying to
 	/// read the SDIF file at the same time.
 	// if mThreshholdForPreloadingOnThread > mThreshholdForPreloading.
-	Mutex readSDIFMutex;
+	std::mutex readSDIFMutex;
 	/// This keeps track of which frame number we're reading reading
 	int framePosition;
 	LoopPosition startLoopPosition;

@@ -134,11 +134,11 @@ int main(void)
 		proc2.Do();
 
 
-	}catch(std::out_of_range e)
+	}catch(std::out_of_range & e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	catch(Err e)
+	catch(Err & e)
 	{
 		e.Print();
 	}

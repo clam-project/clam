@@ -20,9 +20,10 @@
  */
 
 #include "Tonnetz.hxx"
-#include <QtGui/QPixmap>
-#include <QtCore/QTimer>
+#include <QPixmap>
+#include <QTimer>
 #include <iostream>
+#include <QPainter>
 #include <CLAM/Pool.hxx>
 
 CLAM::VM::FloatArrayDataSource & getDummySource()
@@ -48,7 +49,7 @@ CLAM::VM::Tonnetz::~Tonnetz()
 {
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
-	QGLWidget(parent)
+	QOpenGLWidget(parent)
 {
 	_data = 0;
 	_dataSource = 0;
@@ -85,8 +86,9 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 
 void CLAM::VM::Tonnetz::initializeGL()
 {
+	initializeOpenGLFunctions();
 	glShadeModel(GL_FLAT);
-	glClearColor(0,0,0,0); // rgba
+	glClearColor(0,0,0,1); // rgba
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable (GL_LINE_SMOOTH);
@@ -116,7 +118,6 @@ void CLAM::VM::Tonnetz::paintGL()
 	_data = _dataSource->frameData();
 	Draw();
 	_dataSource->release();
-	swapBuffers(); // TODO: This should not be needed
 	_updatePending=0;
 }
 void CLAM::VM::Tonnetz::Draw()
@@ -158,7 +159,7 @@ void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), _font);
+	renderText3D(posx, posy, .6, _dataSource->getLabel(bin).c_str(), _font);
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {
@@ -269,5 +270,17 @@ void CLAM::VM::Tonnetz::timerEvent(QTimerEvent *event)
 	if ( !_dataSource) return;
 	if ( !_dataSource->isEnabled()) return;
 	updateIfNeeded();
+}
+
+void CLAM::VM::Tonnetz::renderText3D(double x, double y, double z, const char* text, const QFont& font)
+{
+	QMatrix4x4 modelview;
+	QMatrix4x4 projection;
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
+	glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
+	QVector3D projected = QVector3D(x, y, z).project(modelview, projection, QRect(0, 0, width(), height()));
+	QPainter painter(this);
+	painter.setFont(font);
+	painter.drawText(projected.x(), projected.y(), QString::fromUtf8(text));
 }
 

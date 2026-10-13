@@ -85,10 +85,5 @@
 # define TWO_PI (PI*2.)
 #endif
 
-#ifndef NULL
-	#define NULL (0L)
-#endif
-
-
 #endif
 

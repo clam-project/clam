@@ -1,10 +1,10 @@
-#ifdef CLAM_USE_PYTHON
+#ifdef CLAM_NETWORKEDITOR_USE_PYTHON
 #include "Python.h"
 #endif
 
 #include "NetworkUpgrader.hxx"
 
-#ifdef CLAM_USE_PYTHON
+#ifdef CLAM_NETWORKEDITOR_USE_PYTHON
 
 #include <CLAM/EmbeddedFile.hxx>
 #include <CLAM/Assert.hxx>
@@ -110,7 +110,7 @@ const char * NetworkUpgrader::Impl::run(const std::string & filename)
 	}
 }
 
-#else // CLAM_USE_PYTHON not defined
+#else // CLAM_NETWORKEDITOR_USE_PYTHON not defined
 
 NetworkUpgrader::NetworkUpgrader()
 	: _impl(0)

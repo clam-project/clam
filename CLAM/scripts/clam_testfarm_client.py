@@ -12,10 +12,11 @@ from testfarm.v1.client import Client
 from testfarm.v1.runner import Runner
 from testfarm.svnsandbox import SvnSandbox
 from testfarm.utils import loadDictFile
-from commands import getoutput
+from subprocess import getoutput
+from functools import reduce
 
 def countLines( path ):
-	print 'loc for path:', path
+	print('loc for path:', path)
 	lines =  getoutput("find %s -name '*.?xx' -exec wc -l {} \;" % path.strip() ).split('\n')
 	return reduce( lambda x,y: x+y , map( lambda x: int(x.split()[0]), lines) )
 
@@ -43,7 +44,7 @@ try :
 	config['name'] # ensure that name is defined
 	config['description']
 except :
-	print >> sys.stderr, "ERROR: You should create ~/.config/testfarmrc with at least the name and description attributes of your client"
+	print("ERROR: You should create ~/.config/testfarmrc with at least the name and description attributes of your client", file=sys.stderr)
 	raise
 
 config['installPath'] = os.path.join(config['sandbox'],"local")
@@ -258,7 +259,7 @@ if slowTests :
 		] )
 
 forceRun = len(sys.argv)>1
-print "force Run: ", forceRun
+print("force Run: ", forceRun)
 
 Runner( clam, 
 	continuous = False,

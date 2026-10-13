@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
 		
 
 	}
-	catch(Err err) {
+	catch(Err &err) {
 		err.Print();
 	}
 

@@ -27,34 +27,34 @@
 namespace CLAM {
 
 /* invoking the default constructor */
-	Err::Err() throw()
+	Err::Err() noexcept
 	{
 		mMsg = 0;
 	}
 
 /* invoking the overloaded constructor */
-	Err::Err(const char* msg) throw()
+	Err::Err(const char* msg) noexcept
 	{
 		mMsg = new(std::nothrow) char[strlen(msg)+1];
 		if (!mMsg) return;
 		strncpy(mMsg,msg,strlen(msg)+1);
 	}
 
-	Err::Err(const Err& orig) throw()
+	Err::Err(const Err& orig) noexcept
 	{
 		mMsg = new(std::nothrow) char[strlen(orig.what())+1];
 		if (!mMsg) return;
 		strncpy(mMsg,orig.what(),strlen(orig.what())+1);
 	}
 
-	Err::~Err() throw()
+	Err::~Err() noexcept
 	{
 		if ( mMsg )
 			delete [] mMsg;
 	};
 
 /* specifying the header's member function */
-	void Err::Print(void) const throw()
+	void Err::Print(void) const noexcept
 	{
 		fprintf(stderr,"CLAM Error: ");
 		if (mMsg)
@@ -64,12 +64,12 @@ namespace CLAM {
 		fprintf(stderr,"\n");
 	}
 
-	void Err::Embed(const std::exception &e) throw()
+	void Err::Embed(const std::exception &e) noexcept
 	{
 		Embed(e.what());
 	}
 
-	void Err::Embed(const char* str) throw()
+	void Err::Embed(const char* str) noexcept
 	{
 		static const char* separation = "\n Nested error: ";
 		size_t msgLen = strlen(mMsg);

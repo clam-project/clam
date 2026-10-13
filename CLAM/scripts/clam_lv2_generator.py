@@ -28,7 +28,7 @@ import sys, os
 import getopt
 
 def die(msg) :
-	print >> sys.stderr, "Error:", msg
+	print("Error:", msg, file=sys.stderr)
 	sys.exit(-1)
 
 class AudioPort():
@@ -165,7 +165,7 @@ class ExporterHandler(ContentHandler):
 			try:
 				fileWithDoap = open(doapfile)
 			except IOError:
-			        print >>sys.stderr, 'cannot open', doapfile
+			        print('cannot open', doapfile, file=sys.stderr)
 				fileWithDoap = None
 			else:
 				doapDescription = fileWithDoap.read()

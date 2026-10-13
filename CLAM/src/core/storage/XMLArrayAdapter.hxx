@@ -83,13 +83,13 @@ public:
 	 * @param isXMLElement Tells whether the object is an
 	 * element or an attribute when the name is defined.
 	 */
-	XMLArrayAdapter (t_adaptee * anAdaptee, unsigned int nElements, const char * name=NULL, bool isXMLElement=false)
+	XMLArrayAdapter (t_adaptee * anAdaptee, unsigned int nElements, const char * name=nullptr, bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), mAdaptee(anAdaptee)
 	{
 		size = nElements;
 	}
 	XMLArrayAdapter (const t_adaptee * anAdaptee, unsigned int nElements, 
-			const char * name=NULL, bool isXMLElement=false)
+			const char * name=nullptr, bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T*>(anAdaptee))
 	{
 		size = nElements;

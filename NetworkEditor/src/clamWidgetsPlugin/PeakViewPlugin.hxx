@@ -24,7 +24,7 @@
 #ifndef PeakViewPlugin_hxx
 #define PeakViewPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class PeakViewPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

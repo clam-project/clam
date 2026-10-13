@@ -22,13 +22,13 @@
 #ifndef TaskRunner_hxx
 #define TaskRunner_hxx
 
-#include <QtGui/QWidget>
-#include <QtGui/QTextEdit>
-#include <QtCore/QProcess>
-#include <QtCore/QTimer>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QDockWidget>
-#include <QtGui/QTextCursor>
+#include <QWidget>
+#include <QTextEdit>
+#include <QProcess>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QDockWidget>
+#include <QTextCursor>
 #include <iostream>
 
 class BocaTaskRunner : public QTextEdit

@@ -20,13 +20,13 @@
  */
 #include <cstdlib>
 
-#include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
-#include <QtGui/QMessageBox>
-#include <QtCore/QFileInfo>
-#include "ui_GUI.hxx"
+#include <QApplication>
+#include <QFileDialog>
+#include <QTranslator>
+#include <QLocale>
+#include <QMessageBox>
+#include <QFileInfo>
+#include "ui_GUI.h"
 #include "BocaTaskRunner.hxx"
 
 #ifndef I18N_PATH

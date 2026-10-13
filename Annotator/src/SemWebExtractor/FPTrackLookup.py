@@ -14,7 +14,7 @@ import logging
 from logging import log, error, warning, info, debug
 from time import asctime
 import re
-from urllib import quote as urlencode
+from urllib.parse import quote as urlencode
 
 from PUIDTrackLookup import *
 import mopy; from mopy import MusicInfo; from mopy.model import AudioFile, MusicArtist, Track, Signal
@@ -118,7 +118,7 @@ class FPTrackLookup :
 			# 		for genre_node in genre_nodes:
 			# 			genres.append(genre_node.getElementsByTagName("name")[0].childNodes[0].wholeText)
 				
-		except Exception, e:
+		except Exception as e:
 			error("Failure while parsing results !")
 			debug("xml :\n"+"".join(res_xml))
 			error(str(e))
@@ -133,9 +133,9 @@ class FPTrackLookup :
 			if (mbzconvert.getURI().find("track") == -1):
 				error("Incomprehensible URI for track !")
 			signal.URI = mbzconvert.getURI().replace("track","signal")
-		except MbzLookupException, e:
+		except MbzLookupException as e:
 			error(" - " + e.message)
-		except FileTypeException, e:
+		except FileTypeException as e:
 			error(" - " + e.message)
 	
 		return mi

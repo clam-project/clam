@@ -17,16 +17,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import sys
-# Kludge: Ubuntu prefers the standard xml module which doesn't contain xpath
-sys.path.append('/usr/lib/python2.5/site-packages/oldxml')
-import xml.xpath
+from xml.etree import ElementTree as ET
+from copy import deepcopy
+from io import StringIO
 
-from xml.dom.ext.reader import Sax2
-import xml.dom.ext 
-from cStringIO import StringIO
+_StandardException = Exception
 
 class Schema :
-	class Exception :
+	class Exception(_StandardException) :
 		def __init__(self, message) :
 			self.what = message
 		def __str__(self) :
@@ -35,40 +33,40 @@ class Schema :
 	def __init__(self, file=None) :
 		if file is None:
 			file = StringIO("<DescriptionScheme><Attributes/></DescriptionScheme>")
-		self.doc = Sax2.Reader().fromStream(file);
+		self.tree = ET.parse(file)
+		self.doc = self.tree.getroot()
 
 	def Dump(self, file=sys.stdout):
-		xml.dom.ext.PrettyPrint(self.doc, file)
+		ET.indent(self.tree, space='\t')
+		self.tree.write(file, xml_declaration=True, encoding='unicode')
 		file.flush()
 
 	def SelectAttribute(self, scope, name) :
-		path = '//Attribute[@scope="%s" and @name="%s"]'%(scope,name)
-		return xml.xpath.Evaluate(path, self.doc.documentElement)
+		return self.doc.findall('.//Attribute[@scope="%s"][@name="%s"]' % (scope, name))
 
 	def InsertAttribute(self, source, scope, name, targetScope, targetName=None) :
 		nodesToMove = source.SelectAttribute(scope,name)
 		if len(nodesToMove)!=1 :
 			raise Schema.Exception("Attribute '"+scope+"::"+name+"' not found")
 		nodeToMove  = nodesToMove[0]
-		newAttribute = self.doc.importNode(nodeToMove,True)
-		newAttribute.setAttribute("scope", targetScope)
+		newAttribute = deepcopy(nodeToMove)
+		newAttribute.set("scope", targetScope)
 		if targetName != None : 
-			newAttribute.setAttribute("name", targetName)
-		xml.xpath.Evaluate("//Attributes", self.doc)[0].appendChild(newAttribute)
+			newAttribute.set("name", targetName)
+		self.doc.findall('.//Attributes')[0].append(newAttribute)
 
 	def RemoveAttribute(self, scope, name) :
 		nodesToRemove = self.SelectAttribute(scope,name)
 		if len(nodesToRemove)!=1 :
 			raise Schema.Exception("Attribute '"+scope+"::"+name+"' not found")
-		xml.xpath.Evaluate("//Attributes", self.doc)[0].removeChild(nodesToRemove[0])
+		self.doc.findall('.//Attributes')[0].remove(nodesToRemove[0])
 
 	# TODO: Test this method
 	def TranslateChildScope(self, scope, name, scopeMapping) :
 		attributes = self.SelectAttribute(scope,name)
-		childScopeElements = xml.xpath.Evaluate("ChildScope/text()", attributes[0])
-		for childScopeElement in childScopeElements :
+		for childScope in attributes[0].findall('ChildScope') :
 			try :
-				childScopeElement.data = scopeMapping[childScopeElement.data]
+				childScope.text = scopeMapping[childScope.text]
 			except KeyError:
 				# TODO: Remove the child scope as it doesn't exist in the new context
 				pass

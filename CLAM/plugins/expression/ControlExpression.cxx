@@ -21,7 +21,7 @@
 #include "ControlExpression.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
-#include "main.hpp"
+#include "mini/main.hpp"
 #include <vector>
 #include <cmath>
 

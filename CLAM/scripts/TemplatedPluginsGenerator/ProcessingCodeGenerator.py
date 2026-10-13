@@ -140,13 +140,13 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 
 		if not os.path.isdir( "templates/" + definitions_dict["template_name"] ): os.mkdir( "templates/" + definitions_dict["template_name"] )
 
-		print "Creating " + definitions_dict["template_name"] + " template"
+		print("Creating " + definitions_dict["template_name"] + " template")
 		TemplateGenerator.make_base_processing_hxx_file(definitions_dict)
 		TemplateGenerator.make_base_processing_cxx_file(definitions_dict)
 		TemplateGenerator.make_sconstruct_file(definitions_dict)
 		TemplateGenerator.make_readme_file(definitions_dict)
 
-		print "Creating " + definitions_dict["plugin_name"] + " plugin"
+		print("Creating " + definitions_dict["plugin_name"] + " plugin")
 		definitions_dict["output_dir"] = "../../plugins"
 		definitions_dict['license_text'] = TemplatedPluginsGenerator.make_license_text(definitions_dict)
 		standard_name = "BaseProcessing"
@@ -155,7 +155,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		TemplatedPluginsGenerator.make_file( definitions_dict, standard_name, "SConstruct", "SConstruct", True )
 		TemplatedPluginsGenerator.copy_file( definitions_dict, "README" )
 
-		print "Done"; self.statusBar.showMessage("Done")
+		print("Done"); self.statusBar.showMessage("Done")
 	#generate()
 
 #class MainWindow

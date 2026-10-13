@@ -1,7 +1,7 @@
 #ifndef EmbededWidgets_hxx
 #define EmbededWidgets_hxx
 #include <CLAM/Processing.hxx>
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <map>
 
 namespace CLAM

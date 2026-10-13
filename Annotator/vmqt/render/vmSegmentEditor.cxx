@@ -29,7 +29,7 @@
 #ifdef __SEGMENT_EDITOR__DEBUG__
 #include <iostream>
 #endif
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

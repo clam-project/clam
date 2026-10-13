@@ -1,8 +1,8 @@
 #ifndef LadspaPluginCompilationTask_hxx
 #define LadspaPluginCompilationTask_hxx
 #include "MainWindow.hxx"
-#include <QtCore/QTemporaryFile>
-#include "ui_LadspaMetadataEditor.hxx"
+#include <QTemporaryFile>
+#include "ui_LadspaMetadataEditor.h"
 
 
 //////////////////////
@@ -28,7 +28,7 @@ static const char * ladspaCxxTemplate =
 static const char * ladspaSconsTemplate =
 	"import os, glob, sys\n"
 	"libraryName='%1'\n"
-	"print 'Building', libraryName\n"
+	"print('Building', libraryName)\n"
 	"options = Options('options.cache', ARGUMENTS)\n"
 	"options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))\n"
 	"options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathOption.PathAccept))\n"

@@ -17,7 +17,7 @@ namespace CLAM
 		class InsertedOutOfBounds : public std::exception
 		{
 			public:
-			const char * what() const throw () { return "Segmentation point inserted out of limits";}
+			const char * what() const noexcept { return "Segmentation point inserted out of limits";}
 		};
 		typedef std::vector<double> TimePositions;
 	public:

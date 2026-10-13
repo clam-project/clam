@@ -20,7 +20,7 @@ class RdfFile(object):
 				self.filename = filename
 				self.mi = MusicInfo()
 				return True
-			except Exception, e:
+			except Exception as e:
 				error("Couldn't open file for writing : "+filename+"\nException info : "+str(e))
 		return False
 	

@@ -23,7 +23,7 @@
 #define Auralizer_hxx
 
 
-#include <QtCore/QThread>
+#include <QThread>
 #include <CLAM/BPF.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/Segmentation.hxx>
@@ -36,7 +36,7 @@
 #include <CLAM/SimpleOscillator.hxx>
 
 
-#include <QtCore/QThread>
+#include <QThread>
 #include "vmDataTypes.hxx"
 
 class AuralizationPlayer : public QThread

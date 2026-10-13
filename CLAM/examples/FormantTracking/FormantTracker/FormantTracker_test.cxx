@@ -79,7 +79,7 @@ class FormantTrackerExample: public ProcessingComposite
 
 	const char* GetClassName() const {return "FormantTrackerExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
+	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig& c);
 
 public:
@@ -90,7 +90,7 @@ public:
 	bool Do();
 };
 
-bool FormantTrackerExample::ConcreteStart() throw(ErrProcessingObj)
+bool FormantTrackerExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)
@@ -279,7 +279,7 @@ int main( int argc, char** argv )
 		myApp.Do();
 
 	}
-	catch( CLAM::Err e )
+	catch( CLAM::Err & e )
 	{
 		e.Print();
 	}

@@ -55,6 +55,12 @@ from SCons.Node import Node
 from SCons.Node.Python import Value
 from SCons.Util import is_String, is_Sequence, is_Dict
 
+def u(string_or_bytes):
+    """Ensure output is always a str, decoding bytes if needed."""
+    if isinstance(string_or_bytes, bytes):
+        return string_or_bytes.decode('utf-8')
+    return string_or_bytes
+
 def _do_subst(node, subs):
     """
     Fetch the node contents and replace all instances of the keys with
@@ -63,7 +69,7 @@ def _do_subst(node, subs):
     then all instances of %VERSION% in the file will be replaced with
     1.2345 and so forth.
     """
-    contents = node.get_contents()
+    contents = u(node.get_contents())
     if not subs: return contents
     for (k,v) in subs:
         contents = re.sub(k, v, contents)
@@ -77,14 +83,14 @@ def _action(target, source, env):
     elif is_String(linesep):
         pass
     elif isinstance(linesep, Value):
-        linesep = linesep.get_contents()
+        linesep = u(linesep.get_contents())
     else:
         raise SCons.Errors.UserError(
                            'unexpected type/class for LINESEPARATOR: %s'
                                          % repr(linesep), None)
 
     # create a dictionary to use for the substitutions
-    if not env.has_key('SUBST_DICT'):
+    if 'SUBST_DICT' not in env:
         subs = None    # no substitutions
     else:
         d = env['SUBST_DICT']
@@ -106,8 +112,8 @@ def _action(target, source, env):
 
     # write the file
     try:
-        fd = open(target[0].get_path(), "wb")
-    except (OSError,IOError), e:
+        fd = open(target[0].get_path(), "w")
+    except (OSError,IOError) as e:
         raise SCons.Errors.UserError("Can't write target file %s" % target[0])
     # separate lines by 'linesep' only if linesep is not empty
     lsep = None

@@ -1,7 +1,7 @@
 #ifndef __RULER__
 #define __RULER__
 
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/GlobalEnums.hxx>
 #include <CLAM/VMColor.hxx>
 

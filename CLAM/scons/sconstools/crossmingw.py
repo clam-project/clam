@@ -1,6 +1,5 @@
 import os
 import os.path
-import string
 
 import SCons.Action
 import SCons.Builder
@@ -45,7 +44,7 @@ def shlib_emitter(target, source, env):
   no_import_lib = env.get('no_import_lib', 0)
 
   if not dll:
-    raise SCons.Errors.UserError, "A shared library should have exactly one target with the suffix: %s" % env.subst("$SHLIBSUFFIX")
+    raise SCons.Errors.UserError("A shared library should have exactly one target with the suffix: %s" % env.subst("$SHLIBSUFFIX"))
 
   if not no_import_lib and \
      not env.FindIxes(target, 'LIBPREFIX', 'LIBSUFFIX'):
@@ -89,9 +88,9 @@ def generate(env):
     if not path:
       path = []
     if SCons.Util.is_String(path):
-      path = string.split(path, os.pathsep)
+      path = path.split(os.pathsep)
 
-    env['ENV']['PATH'] = string.join([dir] + path, os.pathsep)
+    env['ENV']['PATH'] = os.pathsep.join([dir] + path)
 
   # Most of mingw is the same as gcc and friends...
   gnu_tools = ['gcc', 'g++', 'gnulink', 'ar', 'gas']

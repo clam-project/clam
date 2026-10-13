@@ -56,7 +56,7 @@ bool CLAM::LibloSingleton::RemoveRegisteredPath(unsigned port, const std::string
 
 int CLAM::LibloSingleton::quit_handler(
 		const char *path, const char *types, lo_arg **argv, int argc,
-		 void *data, void *user_data)
+		 lo_message msg, void *user_data)
 {
 	printf("quiting\n\n");
 	fflush(stdout);
@@ -74,7 +74,7 @@ void CLAM::LibloSingleton::error(int num, const char *msg, const char *path)
  * message has not been fully handled and the server should try other methods */
 int CLAM::LibloSingleton::generic_handler(
 	const char *path, const char *types, lo_arg **argv,
-	int argc, void *data, void *user_data)
+	int argc, lo_message msg, void *user_data)
 {
 #if 0
 	int i;

@@ -36,8 +36,8 @@
 
 
 int test1() {
-	const unsigned spectrumSize=100;
-	const unsigned spectralRange=22050;
+	const int spectrumSize=100;
+	const int spectralRange=22050;
 
 	try
 	{
@@ -142,7 +142,7 @@ int test1() {
 
 	}
  
-	catch(CLAM::Err error)
+	catch(CLAM::Err & error)
 	{
 		error.Print();
 	}

@@ -19,16 +19,11 @@
  *
  */
 
-#include <QtGui/QApplication>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 #include "Annotator.hxx"
-
-#ifdef _MSVC_VER
-#include <CLAM/InitAudioIO.hxx>
-#include <CLAM/InitProcessing.hxx>
-#endif
 
 #ifndef I18N_PATH
 #ifdef WIN32
@@ -40,12 +35,6 @@
 
 int main( int argc, char ** argv )
 {
-
-#ifdef _MSVC_VER
-	CLAM::ProcessingModule::init();
-	CLAM::AudioIOModule::init();
-#endif
-	
 	QApplication app( argc, argv );
 
 	QString locale = QLocale::system().name();
@@ -59,7 +48,7 @@ int main( int argc, char ** argv )
 	app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");
-	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
+	QCoreApplication::setOrganizationDomain("clam-project.org");
 	QCoreApplication::setApplicationName("Music Annotator");
 	Annotator w(argc>1?argv[1]:"");
 	w.show();

@@ -27,7 +27,7 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 	plugin_name = definitions_dict["plugin_name"]
 	
 	if not os.path.isdir('templates'):
-		print "Error. There is not templates dir"
+		print("Error. There is not templates dir")
 		sys.exit(3)
 	try:
 		f = open( "templates/" + template_dir + "/" + filename , 'r' )
@@ -50,10 +50,10 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 		ext = ""
 	try:
 		f = open( definitions_dict["output_dir"]+"/" + plugin_name + "/" + new_file_name + ext, "w" )
-		print "Creating " + definitions_dict["output_dir"]+ "/" + plugin_name + "/" + new_file_name + ext + " file"
+		print("Creating " + definitions_dict["output_dir"]+ "/" + plugin_name + "/" + new_file_name + ext + " file")
 	except:
-		print definitions_dict["output_dir"] + "/" + plugin_name + "/" + plugin_name + ext
-		print "Output file write error."
+		print(definitions_dict["output_dir"] + "/" + plugin_name + "/" + plugin_name + ext)
+		print("Output file write error.")
 		sys.exit(2)
 	if (ext==".hxx" or ext==".cxx") and definitions_dict["license"]!="null":
 		f.write( definitions_dict['license_text'] + "\n\n" )
@@ -62,7 +62,7 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 
 def copy_file( definitions_dict, filename ):
 	if os.path.isfile("templates/" + definitions_dict["template_name"] + "/" + filename):
-		#print "Copying " + filename + " file"
+		#print("Copying " + filename + " file")
 		shutil.copyfile( "templates/" + definitions_dict["template_name"] + "/" + filename, definitions_dict["output_dir"] + "/" + definitions_dict["plugin_name"] + "/" + filename )
 #copy_file()
 
@@ -70,8 +70,8 @@ def make_license_text(definitions_dict):
 	try:
 		f = open( "licenses/" + definitions_dict["license"] + ".txt", 'r' )
 	except IOError:
-		print "License file read error."
-		print "License: " + plugin_dict["license"]
+		print("License file read error.")
+		print("License: " + plugin_dict["license"])
 		sys.exit(2)
 	license_text = f.read(); f.close()
 	if definitions_dict["copyright_holder"]!="":
@@ -106,7 +106,7 @@ def main(args):
 	"""
 
 	if len(sys.argv) < 3:
-		print "\nBad amount of input arguments\n", Usage, "\n"
+		print("\nBad amount of input arguments\n", Usage, "\n")
 		sys.exit(1)
 
 	definitions_dict = {}
@@ -125,7 +125,7 @@ def main(args):
 
 	try:
 		definitions_dict["year"] = sys.argv[5]
-		#print "Year: " + definitions_dict["year"]
+		#print("Year: " + definitions_dict["year"])
 		definitions_dict["year"] += " "
 	except:
 		definitions_dict["year"] = "" # default value

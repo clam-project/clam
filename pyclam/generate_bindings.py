@@ -27,7 +27,7 @@ from doxygen import doxygen_doc_extractor
 
 options_filename = 'options.cache'
 if not os.path.exists(options_filename):
-	print "\nError. Options file is missing. Run \'scons configure clam_prefix=CLAM_LIBRARY_PATH\' first.\n"
+	print("\nError. Options file is missing. Run \'scons configure clam_prefix=CLAM_LIBRARY_PATH\' first.\n")
 	exit(1)
 clam_path = "/usr/local/include"; plugins_path = ''
 for line in open(options_filename).readlines():
@@ -40,7 +40,7 @@ for line in open(options_filename).readlines():
 			if value=='True': plugins_path=clam_path
 			else: plugins_path=value[1:-2]
 	except:
-		print "Bad config line"
+		print("Bad config line")
 enablePlugins = True if plugins_path!='' else False
 
 
@@ -161,7 +161,7 @@ try:
 	#mb.class_('FFTConfig').exclude()
 	pass
 except:
-	print "Error excluding members functions or classes."
+	print("Error excluding members functions or classes.")
 
 # Register of manually exposed classes
 for classname in exported_manually_file_list:

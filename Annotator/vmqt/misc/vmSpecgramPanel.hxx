@@ -23,7 +23,7 @@
 #define __VMQT_SPECGRAM_PANEL_H__
 
 #include <vector>
-#include <QtGui/QWidget>
+#include <QWidget>
 #include "vmDataTypes.hxx"
 
 class QLabel;

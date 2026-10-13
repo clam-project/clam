@@ -2,23 +2,20 @@
 #define __MESSAGE__
 
 #include <string>
-#include <qmessagebox.h>
+#include <QMessageBox>
 
 namespace CLAM
 {
 	namespace VM
 	{
-		static void Message(QMessageBox::Icon icon,
-							const std::string& caption, 
+		[[maybe_unused]] static void Message(QMessageBox::Icon icon,
+							const std::string& caption,
 							const std::string& message)
 		{
-			QMessageBox message_box(caption.c_str(),
+			QMessageBox message_box(icon,
+									caption.c_str(),
 									message.c_str(),
-									icon,
-									QMessageBox::Ok,
-									QMessageBox::NoButton,
-									QMessageBox::NoButton); 
-
+									QMessageBox::Ok);
 			message_box.exec();
 		}
 	}

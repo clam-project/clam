@@ -32,7 +32,7 @@ void CLAMRemoteController::CreateStructure()
 	{
 		XmlStorage::Restore( mRemoteControlList, xmlfile);
 	}
-	catch ( XmlStorageErr err)
+	catch ( XmlStorageErr &err)
 	{
 		std::cerr << "CLAM::CLAMRemoteController WARNING: error opening configuration file <"
 			<< xmlfile << "> . Plugin not loaded" <<std::endl;

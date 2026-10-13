@@ -66,7 +66,7 @@ namespace CLAM {
 
 		// Composite interface.
 
-		void Insert(Processing& o) throw(ErrProcessingObj);
+		void Insert(Processing& o);
 
 		void Remove(Processing& o);
 

@@ -57,7 +57,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool TrackFinder::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+	bool TrackFinder::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
 		mConfig = dynamic_cast< const TrackFinderConfig& > (cfg);
 

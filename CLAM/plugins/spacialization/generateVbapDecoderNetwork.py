@@ -3,7 +3,7 @@
 import sys
 
 if len(sys.argv)!=4 :
-	print >> sys.stderr, "Usage: %s <layout_file> <triangulation_file> <choreo_file>"%sys.argv[0]
+	print("Usage: %s <layout_file> <triangulation_file> <choreo_file>"%sys.argv[0], file=sys.stderr)
 	sys.exit()
 
 
@@ -14,20 +14,20 @@ choreoFileName = sys.argv[3]
 speakers = [ label for label in [" ".join(line.split()[2:]) for line in open(layoutFileName).readlines() if line[0]!='#' ] if label ]
 nSpeakers = len(speakers)
 
-print >> sys.stderr, "Speakers:", nSpeakers
+print("Speakers:", nSpeakers, file=sys.stderr)
 
-print """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+print("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
-"""
+""")
 
 # TODO use the layout labels for the AudioSink
 for speaker, label in enumerate(speakers) :
-	print """
+	print("""
   <processing id="%s" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
-	"%02i"%(speaker+1), 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
+	"%02i"%(speaker+1), 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 ))
 #	speaker+1, label, 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
 
-print """
+print("""
   <processing id="1 Audio Input" position="0,305" size="128,108" type="AudioSource"/>
 
   <processing id="ChoreoSequencer_1" position="155,2" size="226,59" type="ChoreoSequencer">
@@ -78,10 +78,10 @@ print """
 	'layoutFile': layoutFileName,
 	'triangulationFile': triangulationFileName,
 	'choreo': choreoFileName,
-}
+})
 
 for i, label in enumerate(speakers) :
-	print """
+	print("""
   <port_connection>
     <out>Vbap3D.%(speakerLabel)s</out>
     <in>%(speakerLabel)s.1</in>
@@ -89,9 +89,9 @@ for i, label in enumerate(speakers) :
 """ % {
 	'speakerNumber' : i+1,
 	'speakerLabel' : "%02i"%(i+1), #label,
-}
+})
 
-print """
+print("""
   <control_connection>
     <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
     <in>Vbap3D.azimuth</in>
@@ -158,5 +158,5 @@ print """
   </control_connection>
 
 </network>
-"""
+""")
 

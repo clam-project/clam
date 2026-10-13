@@ -20,10 +20,10 @@
  */
 
 #include "ProjectEditor.hxx"
-#include <QtGui/QFileDialog>
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
-#include <QtCore/QString>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
+#include <QString>
 #include <iostream>
 
 ProjectEditor::~ProjectEditor()

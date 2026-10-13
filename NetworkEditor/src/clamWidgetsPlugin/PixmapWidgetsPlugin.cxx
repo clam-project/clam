@@ -24,7 +24,7 @@
 #include "PixmapWidgetsPlugin.hxx"
 #include "PixmapWidgets.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 PixmapSliderPlugin::PixmapSliderPlugin(QObject *parent)
     : QObject(parent)

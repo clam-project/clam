@@ -14,15 +14,15 @@ class PropertySet(set):
 		self.propertyURI = propertyURI
 		self.validTypes = validTypes
 		self.allowLits = allowLits
-		self.Lits = (str, unicode, int, float) # Any more ? 
+		self.Lits = (str, bytes, int, float) # Any more ?
 	#
 	# Set functions :
 	#	
 	def add(self, o):
 		# type check :
-		#print "type checking against : "+str(self.validTypes)
+		#print("type checking against : "+str(self.validTypes))
 		#if self.allowLits:
-		#	print "(lits allowed)"
+		#	print("(lits allowed)")
 		if not ((self.allowLits and isinstance(o, self.Lits))\
 				or (self.validTypes != None and isinstance(o, self.validTypes))\
 				):
@@ -33,7 +33,7 @@ class PropertySet(set):
 		set.add(self,o)
 	
 	def get(self):
-		#print "in custom get()"
+		#print("in custom get()")
 		return self
 
 	def set(self, v):
@@ -41,7 +41,7 @@ class PropertySet(set):
 		self.add(v)
 
 def protector(self, item, value):
-	if (not self.__dict__.has_key("_initialised"))\
+	if ("_initialised" not in self.__dict__)\
 		   or self._initialised == False \
 	       or hasattr(self,item):
 		object.__setattr__(self,item,value)

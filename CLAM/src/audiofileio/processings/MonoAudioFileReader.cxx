@@ -45,7 +45,7 @@ namespace Hidden
 		, mTimeOutput( "Current Time Position", this)
 		, mFramePositionOutput( "Current Frame Position", this)
 		, mProgressOutput( "Progress", this)
-		, mNativeStream( NULL )
+		, mNativeStream( nullptr )
 	{
 		Configure( cfg );
 		mSeekControl.SetBounds(0.,1.);
@@ -118,7 +118,7 @@ namespace Hidden
 	{
 		mNativeStream->Dispose();
 		delete mNativeStream;
-		mNativeStream = NULL;
+		mNativeStream = nullptr;
 
 		return true;
 	}

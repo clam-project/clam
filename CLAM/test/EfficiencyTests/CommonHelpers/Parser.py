@@ -83,24 +83,24 @@ class Parser:
 		return decimal+str(functionNumber);
 
 	def takeFunctionValues(self,stream):
-##		print 'taking function values'
+##		print('taking function values')
 		self._functionValues = []
 		for line in stream:
-##			print line        
+##			print(line)
 			if re.compile("([\*] |[\+-]?\d+ )+").search(line) == None:
 				return line
 			lineValues = re.compile("([\*]|[\+-]?\d+)").findall(line)
 			self._functionValues.append(lineValues)		
-##		print 'end taking values'
+##		print('end taking values')
 		return line
 	
 	def BuildTestedFunctionsMap(self,stream):
-##		print 'building tested function map'
+##		print('building tested function map')
 		functionNumber = 0
 		flag=0
 		testedFunctionsMap={}
 		for line in stream:
-##			print line        
+##			print(line)
 			match = re.compile(r'^cfn=\((?P<id>\d+)\)').search(line)
 			if match  ==  None: continue
 			
@@ -118,20 +118,20 @@ class Parser:
 		return None
 
 	def FindStartCounting(self,stream):
-##		print 'find start counting'
+##		print('find start counting')
 		for line in stream:
-##			print line        
+##			print(line)
 			if re.compile("cfn=\("+str(self._startCountingId)+"\)").search(line) != None: return 1
 		return 0
 	
 	
 	def FindTest(self,stream,symbolMap):
-##		print 'Finding test'
+##		print('Finding test')
 		for line in stream:
 			match = re.compile(r'^fn=\((?P<id>\d+)\)').search(line)
 			if match  ==  None: continue
 			functionId = int(match.group('id'))
-			if symbolMap.has_key(functionId): return functionId
+			if functionId in symbolMap: return functionId
 			
 		return 0
 		
@@ -139,13 +139,13 @@ class Parser:
 	def BuildTestMap(self,stream,symbolMap):
 		testedFunctionsMap = {}
 		TestMap = {}
-##		print self._startCountingId
-##		print self._stopCountingId        
+##		print(self._startCountingId)
+##		print(self._stopCountingId)
 
 		while 1:
 			functionId = self.FindTest(stream,symbolMap)
 			if functionId == 0: continue
-##			print functionId           
+##			print(functionId)
 			functionName = symbolMap[functionId]
 			del symbolMap[functionId]
 			if self.FindStartCounting(stream) == 0: break
@@ -160,9 +160,9 @@ class Parser:
 
 	def completeParsing(self,stream):
 		symbolMap=self.BuildSymbolMap(stream,"[^ ]+Test::test[^ ]+") 
-##		print symbolMap
+##		print(symbolMap)
 		stream.seek(0)
 		testMap=self.BuildTestMap(stream,symbolMap)
-##		print testMap
+##		print(testMap)
 		return testMap
 

@@ -1,8 +1,7 @@
-#!/usr/bin/python
-EnsureSConsVersion(0, 96, 92)
-import sys
 import os
+import sys
 import glob
+from functools import reduce
 
 sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *
@@ -10,14 +9,14 @@ from clam_dependent_libs_checks import *
 
 # crosscompiling option is one option we should know on beforehand
 crosscompiling = False
-if sys.platform == 'linux2' :
+if sys.platform == 'linux' :
 	opts = Variables('options.cache',ARGUMENTS)
 	opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 	crosscompiling = Environment(options=opts)['crossmingw']
-	if crosscompiling : print "Warning: Crosscompiling mode"
+	if crosscompiling : print("Warning: Crosscompiling mode")
 
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 def load_config_file_to_env( env, dir ):
@@ -44,15 +43,15 @@ def save_config_file_from_env( env, dir ):
 	opts.Save(dir+'/flags.conf', env)
 
 def configure_clam(clam_env) :
-	print """\
+	print("""\
 ############################################
 ### CLAM GLOBAL DEPENDENCIES CHECKING    ###
-############################################"""
+############################################""")
 	# Sandbox setup
 	if isWindowsPlatform :
 		clam_env.AppendUnique( CPPPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'include')] )
 		clam_env.AppendUnique( LIBPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'lib')] )
-		if os.environ.has_key('INCLUDE') :
+		if 'INCLUDE' in os.environ :
 			for include in os.environ['INCLUDE'].split(';') :
 				if not include : continue
 				print( 'adding include dir from windows config: ' + include )
@@ -69,10 +68,10 @@ def configure_clam(clam_env) :
 	clam_env = conf.Finish()
 
 def configure_core(clam_env) :
-	print """\
+	print("""\
 #########################################
 ### CLAM CORE DEPENDENCIES CHECKING   ###
-#########################################"""
+#########################################""")
 	core_env = clam_env.Clone()
 	conf = Configure( core_env, custom_tests = custom_check_routines )
 	if not setup_core_environment( core_env, conf ) :
@@ -82,10 +81,10 @@ def configure_core(clam_env) :
 	return core_env
 
 def configure_processing(core_env) :
-	print """\
+	print("""\
 ###############################################
 ### CLAM PROCESSING DEPENDENCIES CHECKING   ###
-###############################################"""
+###############################################""")
 	processing_env = core_env.Clone()
 	conf = Configure( processing_env, custom_check_routines )
 	if not setup_processing_environment( processing_env, conf ) :
@@ -94,10 +93,10 @@ def configure_processing(core_env) :
 	return processing_env
 
 def configure_audioio(processing_env) :
-	print """\
+	print("""\
 ############################################
 ### CLAM AUDIOIO DEPENDENCIES CHECKING   ###
-############################################"""
+############################################""")
 	audioio_env = processing_env.Clone()
 
 	conf = Configure( audioio_env, custom_check_routines )
@@ -130,7 +129,7 @@ def setup_build_options( env ) :
 	opts.Add( BoolVariable( 'checks', 'Postcondition checks enabled', 'yes' ))
 	opts.Add( BoolVariable( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
 	opts.Add( BoolVariable( 'double', 'CLAM TData type will be double instead of float','no'))
-	if sys.platform == "linux2" :
+	if sys.platform == 'linux' :
 		opts.Add( BoolVariable( 'crossmingw', '', 'no' ))
 
 	opts.Add( BoolVariable( 'verbose', 'Display commands', False) )
@@ -177,15 +176,15 @@ configure : Configures clam libraries. This is a mandatory step
 
 def compose_install_dirnames( env ) :
 	install_dirs = InstallDirs(env)
-	print """\
+	print("""\
 #############################################
 ### INSTALL DIRECTORY INFORMATION         ###
-#############################################"""
-	print "Directory to install under:", install_dirs.prefix
-	print "\tLibrary files will be installed at:", install_dirs.lib
-	print "\tExecutable files will be installed at:", install_dirs.bin
-	print "\tInclude files will be installed at:", install_dirs.inc
-	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
+#############################################""")
+	print("Directory to install under:", install_dirs.prefix)
+	print("\tLibrary files will be installed at:", install_dirs.lib)
+	print("\tExecutable files will be installed at:", install_dirs.bin)
+	print("\tInclude files will be installed at:", install_dirs.inc)
+	print("\tDocumentation, data and examples will be installed at:", install_dirs.data)
 	return install_dirs
 
 
@@ -197,7 +196,7 @@ def config_file_missing():
 	result = not reduce( func_and, map(os.path.exists, files) ) 
 
 #	if result == False:
-#		print "\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n"
+#		print("\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n")
 
 	return result
 
@@ -223,7 +222,7 @@ if not clam_env['verbose']:
 	clam_env['LINKCOMSTR'] = '== Linking $TARGET'
 	clam_env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 
-crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
+crosscompiling = 'crossmingw' in clam_env and clam_env['crossmingw']
 if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
 
@@ -240,8 +239,8 @@ sys.path.append('scons/sconstools')
 import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("CLAM", "CHANGES")
 Export('version')
-print "Version: ", version
-print "Package version: ", fullVersion
+print("Version: ", version)
+print("Package version: ", fullVersion)
 
 
 versionInfo.generateVersionSources(os.path.join('src','Defines','CLAMVersion'), "CLAM", version, fullVersion)
@@ -267,9 +266,9 @@ needs_configure = ('configure' in COMMAND_LINE_TARGETS) or config_file_missing()
 avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option=='1' or avoid_configure_option=='yes' or '-c' in ARGUMENTS
 
 if needs_configure and not avoid_configure :
-	print 'Configure phase...'
+	print('Configure phase...')
 	configureModules(clam_env)
-	print "Finished. Invoke 'scons' now."
+	print("Finished. Invoke 'scons' now.")
 	Exit(0)
 
 
@@ -326,9 +325,9 @@ for script in [
 
 Default( all_alias )
 
-print """\
+print("""\
 ##############################################
 ### BUILDING CLAM LIBRARIES                ###
-##############################################"""
+##############################################""")
 
 

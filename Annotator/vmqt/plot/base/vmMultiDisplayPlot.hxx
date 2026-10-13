@@ -20,7 +20,7 @@
  */
 
 #ifndef __VMQT_MULTIDISPLAY_PLOT_H__
-#define __VMQT_MULTIDISPLATPLOT_H__
+#define __VMQT_MULTIDISPLAY_PLOT_H__
 
 #include <vector>
 #include "vmWPlot.hxx"

@@ -1,4 +1,4 @@
-from Notifier_EngineDecorator import Notifier, Notifier_EngineDecorator, notified
+from .Notifier_EngineDecorator import Notifier, Notifier_EngineDecorator, notified
 import unittest
 
 
@@ -41,12 +41,12 @@ class NotifierTest(unittest.TestCase) :
 		self.assertEqual(result, "Setting param")
 		self.assertFalse(o._notified)
 
-import Network
+from . import Network
 
 class Notifier_ConfigEngineDecoratorTest(unittest.TestCase) :
 	def setUp(self) :
 		self.reset()
-		self.net = Network.Network()
+		self.net = Network()
 		self.net._engine.setCallback(self.callback)
 
 	def callback(self) :

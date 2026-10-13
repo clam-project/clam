@@ -22,7 +22,7 @@
 #ifndef __TIMESEGMENTLABELSGROUP__
 #define __TIMESEGMENTLABELSGROUP__
 
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/MediaTime.hxx>
 
 class QLabel;

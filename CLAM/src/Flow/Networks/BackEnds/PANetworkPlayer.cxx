@@ -5,7 +5,9 @@
 #include "AudioSink.hxx"
 #include "AudioSource.hxx"
 
-#include <pthread.h>
+#ifndef _WIN32
+#  include <pthread.h>
+#endif
 
 
 namespace CLAM
@@ -159,7 +161,7 @@ void PANetworkPlayer::Start()
 		inputParameters.channelCount = nInChannels;
 		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
 		inputParameters.suggestedLatency = info->defaultLowOutputLatency;
-		inputParameters.hostApiSpecificStreamInfo = NULL;
+		inputParameters.hostApiSpecificStreamInfo = nullptr;
 		inParams = &inputParameters;
 	}
 
@@ -185,7 +187,7 @@ void PANetworkPlayer::Start()
 		outputParameters.channelCount = nOutChannels;
 		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
 		outputParameters.suggestedLatency = info->defaultLowOutputLatency;
-		outputParameters.hostApiSpecificStreamInfo = NULL;
+		outputParameters.hostApiSpecificStreamInfo = nullptr;
 		outParams = &outputParameters;
 	}
 
@@ -257,15 +259,10 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 	if (mNeedsPriority)
 	{
 		mNeedsPriority = false;
-	#ifdef TODO__was_WIN32
-		BOOL res;
-		DWORD err;
-
-		res = SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS );
-		err = GetLastError();
-		res = SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_NORMAL );
-		err = GetLastError();
-	#else
+	#ifndef _WIN32
+		// Bump the PortAudio callback thread to round-robin scheduling.
+		// On Windows PortAudio already runs the callback on a high-priority
+		// thread it manages itself, so no equivalent is needed here.
 		struct sched_param sched_param;
 		int policy;
 

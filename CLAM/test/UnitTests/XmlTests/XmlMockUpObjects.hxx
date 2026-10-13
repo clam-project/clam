@@ -31,7 +31,7 @@ class XmlMockUpBasic : public BasicXMLable
 		{
 			_content="";
 			str >> _content;
-			return str!=NULL;
+			return bool(str);
 		
 		}
 		virtual std::string structureTrace(unsigned level)

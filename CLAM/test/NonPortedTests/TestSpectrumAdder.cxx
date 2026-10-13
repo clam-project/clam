@@ -232,7 +232,7 @@ int main()
 		}
 
 	}
-	catch (CLAM::Err e) {
+	catch (CLAM::Err &e) {
 		e.Print();
 	}
 }

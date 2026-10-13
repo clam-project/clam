@@ -254,7 +254,7 @@ namespace CLAM
 			int min = sec/60;
 			sec %= 60;
 			int msec = tmp%1000;
-			s = s.sprintf("%02d:%02d,%03d",min,sec,msec);
+			s = QString::asprintf("%02d:%02d,%03d", min, sec, msec);
 			return s;
 		}
 

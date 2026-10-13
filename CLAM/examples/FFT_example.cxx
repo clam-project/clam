@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 		// number arrays, etc. ), as well as useful data such as the spectral range.
 		// One of the various ways of obtaining a frequency domain representation of
 		// an audio signal is applying the Fourier Transform. This algebraic operation
-		// is performed by an algorithm with a computational cost of O( n · log( n ) ), known
+		// is performed by an algorithm with a computational cost of O( n Â· log( n ) ), known
 		// as FFT - Fast Fourier Transform. CLAM borrows the algorithm from FFTW, 
 		// a library implementing it in a very efficient way. We have encapsulated
 		// the FFTW library implementation of the FFTW algorithm inside a Processing object,
@@ -82,13 +82,13 @@ int main(int argc, char* argv[])
 		// To see all the available Spectrum supported in CLAM, let's set
 		// SpecTypeFlags object associated to myspectrum so all possible
 		// representations are used.
-		// We want the spectrum  as an array of cartesian ( a+b·i )
+		// We want the spectrum  as an array of cartesian ( a+bÂ·i )
 		// complex numbers
 		specFlags.bComplex=1;
 		// We also want the spectrum to be represented as a pair of floating-point
 		// values, the 'Magnitude buffer' and the 'Phase buffer'.
 		specFlags.bMagPhase = 1;
-		// We also want the spectrum represented as an array of polar numbers ( Mag·exp(Phase) )
+		// We also want the spectrum represented as an array of polar numbers ( MagÂ·exp(Phase) )
 		specFlags.bPolar = 1;
 		// Finally, we also want the spectrum represented as a pair of implicit functions
 		// ( BPFs ) synonym to the MagPhase representation

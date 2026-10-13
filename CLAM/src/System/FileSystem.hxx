@@ -24,7 +24,7 @@
 
 #include <string>
 #include <map>
-#include "Mutex.hxx"
+#include <mutex>
 
 namespace CLAM
 {
@@ -47,7 +47,7 @@ namespace CLAM
 		typedef std::map< std::string, bool  > FileStatusTable;
 
 		FileStatusTable  mLockedFiles;
-		Mutex            mFileLockingSemaphor;
+		std::mutex       mFileLockingSemaphor;
 	};
 
 }

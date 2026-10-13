@@ -20,8 +20,8 @@
  */
 
 #include <stdlib.h>
-#include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
+#include <QApplication>
+#include <QFileDialog>
 #include "vmAudioPlot.hxx"
 #include <CLAM/ContiguousSegmentation.hxx>
 #include "audio_file_utils.hxx"

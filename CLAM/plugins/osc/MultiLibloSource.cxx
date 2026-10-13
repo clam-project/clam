@@ -32,7 +32,7 @@ static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::MultiLibloSource>
 int CLAM::MultiLibloSource::controls_handler(
 	const char *path, const char *types, 
 	lo_arg **argv, int argc,
-	void *data, void *user_data)
+	lo_message msg, void *user_data)
 {
 	CLAM::MultiLibloSource & self = *((CLAM::MultiLibloSource*)user_data);
 	for (int i=0;i<argc;i++)

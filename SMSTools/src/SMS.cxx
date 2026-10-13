@@ -226,12 +226,12 @@ int main(int argc,char** argv)
 		SMSStdio example;
 		example.Run();
 	}
-	catch(Err error)
+	catch (const Err& error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
 	}
-	catch (std::exception e)
+	catch (const std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 	}

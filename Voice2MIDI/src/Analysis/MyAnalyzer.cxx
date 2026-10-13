@@ -98,7 +98,7 @@ MyAnalyzer::MyAnalyzer(const MyAnalyzerConfig& cfg)
     Configure(cfg);
 }
 
-bool MyAnalyzer::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool MyAnalyzer::ConcreteConfigure(const ProcessingConfig& c)
 {
     mConfig=dynamic_cast<const MyAnalyzerConfig&> (c);
     ConfigureChildren();

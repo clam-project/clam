@@ -19,7 +19,7 @@
  *
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "audio_file_utils.hxx"
 #include "analysis_utils.hxx"
 #include "vmPlayableFundamentalPlot.hxx"

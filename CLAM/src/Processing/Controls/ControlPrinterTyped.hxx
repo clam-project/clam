@@ -42,13 +42,13 @@ public:
 
 		virtual CLAM::Component * Species() const {return new EnumTypedTypes();}
 
-		typedef enum {
+		enum tEnum {
 				eString=0,
 				eFloat=1,
 				eDouble=2,
 				eInt=3,
 //				eMidi=4,
-		} tEnum;
+		};
 		static tEnumValue * ValueTable()
 		{
 				static tEnumValue sValueTable[] =
@@ -58,7 +58,7 @@ public:
 						{eDouble,"d"},
 						{eInt,"i"},
 //						{eMidi,"M"},
-						{0,NULL}
+						{0,nullptr}
 				};
 				return sValueTable;
 		}

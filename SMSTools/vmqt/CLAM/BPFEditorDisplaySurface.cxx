@@ -1,4 +1,10 @@
-#include <qtimer.h>
+#include <QTimer>
+#include <QResizeEvent>
+#include <QFocusEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QEvent>
+#include <QEnterEvent>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/BPFEditorController.hxx>
 #include <CLAM/BPFEditorDisplaySurface.hxx>
@@ -17,12 +23,12 @@ namespace CLAM
 			, mIsPlaying(false)
 		{
 			setMouseTracking(true);
-			setFocusPolicy(StrongFocus);
-			setAutoBufferSwap(false);
+			setFocusPolicy(Qt::StrongFocus);
 			SetBackgroundColor(0.0f,0.0f,0.0f);
 
 			mTimer = new QTimer(this);
-			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+			mTimer->setSingleShot(true);
+			connect(mTimer,SIGNAL(timeout()),this,SLOT(update()));
 		}
 
 		BPFEditorDisplaySurface::~BPFEditorDisplaySurface()
@@ -34,7 +40,7 @@ namespace CLAM
 		{
 			mController = controller;
 			
-			connect(mController,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
+			connect(mController,SIGNAL(requestRefresh()),this,SLOT(update()));
 			connect(mController,SIGNAL(viewChanged(GLView)),this,SLOT(updateView(GLView)));
 			connect(mController,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
 			connect(mController,SIGNAL(startPlaying()),this,SLOT(startTimer()));
@@ -47,7 +53,7 @@ namespace CLAM
 			mGreen = g;
 			mBlue = b;
 
-			updateGL();
+			update();
 		}
 
 		void BPFEditorDisplaySurface::updateView(GLView view)
@@ -76,80 +82,58 @@ namespace CLAM
 			glClearColor(GLfloat(mRed),GLfloat(mGreen),GLfloat(mBlue),1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
 			mController->Draw();
-			swapBuffers();
-			if(mIsPlaying && !mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
+			if(mIsPlaying && !mTimer->isActive()) mTimer->start(TIMER_INTERVAL);
+		}
+
+		std::pair<TData, TData> BPFEditorDisplaySurface::eventToViewCoords(QMouseEvent* e) const
+		{
+			const auto pos = e->position();
+			const auto xcoord = pos.x() * (mView.right - mView.left) / width() + mView.left;
+			const auto ycoord = (-pos.y() + height()) * (mView.top - mView.bottom) / height() + mView.bottom;
+			return { static_cast<TData>(xcoord), static_cast<TData>(ycoord) };
 		}
 
 		void BPFEditorDisplaySurface::mousePressEvent(QMouseEvent* e)
 		{
-			if(mController)
+			if (!mController) return;
+			if (e->button() == Qt::LeftButton)
 			{
-				if(e->button() == LeftButton)
-				{
-					mController->SetLeftButtonPressed(true);
-					double xcoord = double(e->x());
-					xcoord *= (mView.right-mView.left);
-					xcoord /= double(width());
-					xcoord += mView.left;
-					double ycoord = double(-e->y())+double(height());
-					ycoord *= (mView.top-mView.bottom);
-					ycoord /= double(height());
-					ycoord += mView.bottom;
-					mController->SetPoint(TData(xcoord),TData(ycoord));
-				}
-
-				if(e->button() == RightButton)
-				{
-					mController->SetRightButtonPressed(true);
-				}
+				mController->SetLeftButtonPressed(true);
+				const auto [x, y] = eventToViewCoords(e);
+				mController->SetPoint(x, y);
+			}
+			else if (e->button() == Qt::RightButton)
+			{
+				mController->SetRightButtonPressed(true);
 			}
 		}
 
 		void BPFEditorDisplaySurface::mouseReleaseEvent(QMouseEvent* e)
 		{
-			if(mController)
+			if (!mController) return;
+			if (e->button() == Qt::LeftButton)
 			{
-				if(e->button() == LeftButton)
-				{
-					mController->SetLeftButtonPressed(false);
-					double xcoord = double(e->x());
-					xcoord *= (mView.right-mView.left);
-					xcoord /= double(width());
-					xcoord += mView.left;
-					double ycoord = double(-e->y())+double(height());
-					ycoord *= (mView.top-mView.bottom);
-					ycoord /= double(height());
-					ycoord += mView.bottom;
-					mController->SetPoint(TData(xcoord),TData(ycoord));			
-				}
-
-				if(e->button() == RightButton)
-				{
-					mController->SetRightButtonPressed(false);
-				}
+				mController->SetLeftButtonPressed(false);
+				const auto [x, y] = eventToViewCoords(e);
+				mController->SetPoint(x, y);
+			}
+			else if (e->button() == Qt::RightButton)
+			{
+				mController->SetRightButtonPressed(false);
 			}
 		}
 
 		void BPFEditorDisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
-			if(mController)
-			{
-				double xcoord = double(e->x());
-				xcoord *= (mView.right-mView.left);
-				xcoord /= double(width());
-				xcoord += mView.left;
-				double ycoord = double(-e->y())+double(height());
-				ycoord *= (mView.top-mView.bottom);
-				ycoord /= double(height());
-				ycoord += mView.bottom;
-				mController->UpdatePoint(TData(xcoord),TData(ycoord));
-			}
+			if (!mController) return;
+			const auto [x, y] = eventToViewCoords(e);
+			mController->UpdatePoint(x, y);
 		}
 
 		void BPFEditorDisplaySurface::keyReleaseEvent(QKeyEvent * e)
 		{
 			if (!mController) return;
-			int step = (e->state() & ControlButton) ? 1:5;
+			int step = (e->modifiers() & Qt::ControlModifier) ? 1:5;
 			switch (e->key())
 			{
 				case Qt::Key_Up:
@@ -164,14 +148,14 @@ namespace CLAM
 				case Qt::Key_Left:
 					mController->MoveCurrentPointDelta(-step,0);
 					break;
-				case Qt::Key_Prior:
+				case Qt::Key_PageUp:
 					mController->ChooseCurrentPointByJumping(-1);
 					break;
-				case Qt::Key_Next:
+				case Qt::Key_PageDown:
 					mController->ChooseCurrentPointByJumping(1);
 					break;
 			}
-			QGLWidget::keyReleaseEvent(e);
+			QOpenGLWidget::keyReleaseEvent(e);
 		}
 
 		void BPFEditorDisplaySurface::resizeEvent(QResizeEvent *e)
@@ -182,23 +166,23 @@ namespace CLAM
 			if(mController) mController->DisplayDimensions(mWidth,mHeight);
 		}
 
-	    void BPFEditorDisplaySurface::startTimer()
+		void BPFEditorDisplaySurface::startTimer()
 		{
-		    mIsPlaying = true;
-			mTimer->start(1,true);
+			mIsPlaying = true;
+			mTimer->start(1);
 		}
 
 		void BPFEditorDisplaySurface::stopTimer()
 		{
 			mTimer->stop();
-			mTimer->start(1,true);
+			mTimer->start(1);
 			mIsPlaying = false;
 		}
 
-		void BPFEditorDisplaySurface::enterEvent(QEvent *e)
+		void BPFEditorDisplaySurface::enterEvent(QEnterEvent *e)
 		{
-		    mController->MouseOverDisplay(true);
-		    QWidget::enterEvent(e);
+			mController->MouseOverDisplay(true);
+			QWidget::enterEvent(e);
 		}
 
 		void BPFEditorDisplaySurface::leaveEvent(QEvent *e)

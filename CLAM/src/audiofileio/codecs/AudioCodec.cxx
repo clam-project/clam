@@ -42,7 +42,7 @@ namespace AudioCodecs
 		if ( filename.length() <= 0 )
 			return false;
 
-		FILE* fileHandle = NULL;
+		FILE* fileHandle = nullptr;
 
 		fileHandle = fopen( filename.c_str(), "rb" );
 		

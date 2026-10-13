@@ -22,37 +22,43 @@
 #ifndef Tonnetz_hxx
 #define Tonnetz_hxx
 
-#include <QtOpenGL/QGLWidget>
-#undef GetClassName
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QVector3D>
+#include <QMatrix4x4>
 #include "FloatArrayDataSource.hxx"
 #include <CLAM/PortMonitor.hxx>
 
 #include <vector>
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 namespace CLAM
 {
 namespace VM
 {
 
-	class QDESIGNER_WIDGET_EXPORT Tonnetz : public QGLWidget
+	class QDESIGNER_WIDGET_EXPORT Tonnetz : public QOpenGLWidget,
+	                                        protected QOpenGLFunctions
 	{
 		Q_OBJECT
 
 		public:
 			Tonnetz(QWidget * parent);
 			~Tonnetz();
-			virtual void initializeGL();
-			virtual void resizeGL(int width, int height);
-			virtual void paintGL();
-			virtual void timerEvent(QTimerEvent * event);
+		protected:
+			void initializeGL() override;
+			void resizeGL(int width, int height) override;
+			void paintGL() override;
+		public:
+			void timerEvent(QTimerEvent * event);
 		private:
 			unsigned BinAtPosition(int x, int y);
 			void Draw();
 			void DrawTile(int x, int y);
 			void DrawLabel(int x, int y);
 			void DrawChordsShapes();
+		void renderText3D(double x, double y, double z, const char* text, const QFont& font);
 		public:
 			void updateIfNeeded();
 			void setDataSource( FloatArrayDataSource & dataSource );

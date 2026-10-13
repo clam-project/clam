@@ -21,11 +21,11 @@
 
 #include "DescriptorTablePlugin.hxx"
 #include "SchemaAttribute.hxx"
-#include <QtGui/QTableWidget>
-#include <QtGui/QLineEdit>
-#include <QtGui/QComboBox>
-#include <QtGui/QSpinBox>
-#include <QtGui/QDoubleSpinBox>
+#include <QTableWidget>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <CLAM/Pool.hxx>
 
 namespace CLAM_Annotator

@@ -37,9 +37,9 @@
 #include <mad.h>
 #include <id3/tag.h>
 #include <cstdio>
+#include <filesystem>
 #include <iostream>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <system_error>
 
 namespace CLAM
 {
@@ -176,16 +176,14 @@ namespace AudioCodecs
 		if ( !handle ) // File doesn't exists / not readable
 			return;
 
-		struct stat fileStats;
-
-		if ( stat( uri.c_str(), &fileStats ) != 0 )
+		std::error_code ec;
+		const auto fileSize = std::filesystem::file_size(uri, ec);
+		if (ec)
 		{
-			// Error reading stats from file
 			fclose(handle);
 			return;
 		}
-
-		unsigned long fileLength = fileStats.st_size;
+		unsigned long fileLength = static_cast<unsigned long>(fileSize);
 		
 		if ( fseek( handle, -128, SEEK_END ) < 0 )
 		{

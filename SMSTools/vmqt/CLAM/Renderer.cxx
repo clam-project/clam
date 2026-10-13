@@ -38,12 +38,12 @@ namespace CLAM
 			, mHeight(0)
 			, mCounter(0)
 		{
-			mBits=NULL;
+			mBits=nullptr;
 		}
 
 		Renderer::~Renderer()
 		{
-			if(mBits!=NULL) free(mBits);
+			if(mBits!=nullptr) free(mBits);
 		}
 
 		void Renderer::SetHBounds(double left, double right)
@@ -96,10 +96,10 @@ namespace CLAM
 
 		void Renderer::ReadPixels()
 		{
-			if(mBits!=NULL) 
+			if(mBits!=nullptr) 
 			{
 				free(mBits);
-				mBits=NULL;
+				mBits=nullptr;
 			}
  
 			GLint viewport[4];
@@ -111,7 +111,7 @@ namespace CLAM
 			width   = (width + 3) & ~3;	   
 
 		    int bitsize = width * mHeight;	
-			if((mBits = calloc(bitsize, 1)) == NULL) return;  
+			if((mBits = calloc(bitsize, 1)) == nullptr) return;  
 			
 			glFinish();
 			glPixelStorei(GL_PACK_ALIGNMENT, 4);   
@@ -130,7 +130,7 @@ namespace CLAM
 
 		void Renderer::DrawPixels()
 		{
-			if(mBits==NULL) return;
+			if(mBits==nullptr) return;
 			
 			GLint viewport[4];
 			glGetIntegerv(GL_VIEWPORT, viewport);

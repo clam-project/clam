@@ -77,7 +77,7 @@ namespace CLAM {
 		
 		TData twoPiOverPeriod = TWO_PI/period;
 		TData oneOverTwo = 1./2.0;
-		for(unsigned i=0; i<sizeSpectrum; i++)
+		for (auto i = 0; i < sizeSpectrum; ++i)
 		{
 			//todo: this loop is very inefficient because of the sin and cos but there are ways of optimizing
 			//these kind of iterative sine computations

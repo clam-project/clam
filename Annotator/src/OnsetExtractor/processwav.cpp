@@ -177,7 +177,7 @@ void correctNaNValues(Float *val)
 {
 	for (int i=0; i<spectruminfo.winsize; i++)
 		if (isNaN(val[i])) {
-			cerr << "NaN Found: ERROR!!!!";
+			std::cerr << "NaN Found: ERROR!!!!";
 			val[i]=0.0;
 		}
 }
@@ -295,7 +295,7 @@ void computepeaksfromspectrum(mapa2 &orderedspectrumpeaks, double *spectrumvalue
 	   double spnext= spectrumvalues[i+1];  
 
 	   if (spcurr > kMINPEAKVALUE &&  spcurr > spprev && spcurr > spnext) {
-			orderedspectrumpeaks.insert(make_pair(i,spcurr));
+			orderedspectrumpeaks.insert(std::make_pair(i,spcurr));
 			if (spcurr > spectruminfo.maxampval)
 				spectruminfo.maxampval=spcurr;
 			// cout << "PEAK AT: " << i << "(" << (double)spectrumvalues[i] << ")\n";
@@ -309,7 +309,7 @@ void computepeaksfromspectrum(mapa2 &orderedspectrumpeaks, double *spectrumvalue
 		sinusoidalvalues[i] > sinusoidalvalues[i+1] &&
 		spcurr > kMINPEAKVALUE)
  		{
-			orderedspectrumpeaks.insert(make_pair(i,spcurr));
+			orderedspectrumpeaks.insert(std::make_pair(i,spcurr));
 			if (spcurr > spectruminfo.maxampval)
 				spectruminfo.maxampval=spcurr;
 
@@ -330,7 +330,7 @@ void memoryallocation() {
 }
 
 
-void computebands(double *fft, vectorbands& spectralbands, vector<double>& bandvalues, int
+void computebands(double *fft, vectorbands& spectralbands, std::vector<double>& bandvalues, int
 fftlen, double& maxbandval) 
 {
 	if (!bandvalues.empty()) bandvalues.clear();
@@ -411,7 +411,7 @@ int input_data_wav(char *name , peaksvector& peaks, vectorbands& spectralbands, 
 
 		outbandvalues.resize(n_time+1);
 		outbandvalues[n_time].resize(spectruminfo.numbands);
-		vector<double> bandval(spectruminfo.numbands);
+		std::vector<double> bandval(spectruminfo.numbands);
 		computebands(spectrum, spectralbands, bandval, spectruminfo.winsize / 2, spectruminfo.maxbandsval);
 		outbandvalues.push_back(bandval);
 

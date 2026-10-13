@@ -2,10 +2,10 @@
 import glob,os,re,sys
 
 def run(command) :
-	print "\033[32m%s\033[0m"%command
+	print("\033[32m%s\033[0m"%command)
 	result = os.system(command)
 	if result == 0 : return
-	print "\033[31mExecution failed\033[0m"
+	print("\033[31mExecution failed\033[0m")
 	sys.exit(-1)
 
 errorLevel=os.system("(cd .. ; scons && scons install)")

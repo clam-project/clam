@@ -30,7 +30,7 @@ static const char * metadata[] = {
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SpatDIFSourceReceiver> registrator(metadata);
 
 int CLAM::SpatDIFSourceReceiver::controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
-		 void *data, void *user_data)
+		 lo_message msg, void *user_data)
 {
 	CLAM::SpatDIFSourceReceiver & self = *((CLAM::SpatDIFSourceReceiver*)user_data);
 

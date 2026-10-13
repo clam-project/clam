@@ -109,10 +109,10 @@ protected:
 	void Stop(void);
 	
 	/** This function is executed to start the concrete use of the devices. Each implementation of MIDIDevice must define this method.*/
-	virtual void ConcreteStart(void) throw(Err) = 0;
+	virtual void ConcreteStart(void) = 0;
 
 	/** This function is executed to stop the concrete use of the devices. Each implementation of MIDIDevice must define this method.*/
-	virtual void ConcreteStop(void) throw(Err) = 0;
+	virtual void ConcreteStop(void) = 0;
 
 	/** Getter for the Info of Device Object attached to this MIDIDevice instantiation
 	 *  @param info TInfo object that method will modify with the values of Tinfo internal object
@@ -123,9 +123,9 @@ protected:
 
 	/** Reads the information given by this Device and passes data to an Audio chunk. Must be implemented by any Device derived from this class. Not implemented yet
 	 */
-	virtual void Read(void) throw(Err) = 0;
+	virtual void Read(void) = 0;
 
-	virtual void Write(unsigned char* msg,int size) throw(Err) = 0;
+	virtual void Write(unsigned char* msg,int size) = 0;
 
 protected:
 	bool Register(MIDIManager* mm,MIDIIn& in);

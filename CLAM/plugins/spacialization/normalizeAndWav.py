@@ -9,7 +9,7 @@ def loadSamples(filename):
 def maxsample(filename):
 	samples = loadSamples(filename)
 	largersample = max( [abs(sample) for sample in samples] )
-	print "local max:",largersample
+	print("local max:",largersample)
 	return largersample
 
 def convertDatToWav(filename, largersample):
@@ -19,34 +19,34 @@ def convertDatToWav(filename, largersample):
 	anticlippingFactor = .98
 	normalizedfile.writelines( ["%s\t%.20f\n"%(time/SampleRate, sample*anticlippingFactor/largersample) for time, sample in zip(range(0,len(samples)), samples) ] )
 	outputfile = os.path.splitext(filename)[0] + ".wav"
-	print "Generating", outputfile
+	print("Generating", outputfile)
 	os.system("sox temp.norm.dat %s" % (outputfile) )
 
 
 def processDir(dir):
 	datfiles = glob.glob( dir+"/*.dat")
 	datfiles.sort()
-	print "datfiles", datfiles
+	print("datfiles", datfiles)
 
 	# .data (text files) normalization to norm.dat
 	globalmaxSampler = 2.15820312
 	if True:
 		globalmaxSampler = max( map( maxsample, datfiles) )
-		print "max:", globalmaxSampler
+		print("max:", globalmaxSampler)
 
 	if True :
 		for filename in datfiles :
-			print "converting: ",filename
+			print("converting: ",filename)
 			convertDatToWav(filename, globalmaxSampler)
 
 def main():
 	import sys
 	if len(sys.argv)<=1 :
-		print "Error: pass the dir with *.dat as argument"
+		print("Error: pass the dir with *.dat as argument")
 		return
 		 
 	dir = sys.argv[1]
-	print "Normalizing and converting to wav this dir: ", dir
+	print("Normalizing and converting to wav this dir: ", dir)
 	processDir( dir )
 
 

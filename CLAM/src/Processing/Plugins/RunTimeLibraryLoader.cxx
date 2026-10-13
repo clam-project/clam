@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <dirent.h>
+#include <filesystem>
 #ifdef WIN32
 #	include "CLAM_windows.h"
 #else
@@ -21,23 +21,18 @@ static const char * debugEnvFlag = "CLAM_DEBUG_PLUGINS";
 void RunTimeLibraryLoader::ReLoad() 
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
-	std::list<std::string> usedLibraries=GetUsedLibraries();
-	std::list<std::string>::const_iterator itLibraries;
-	// iterate on used libraries
-	for (itLibraries=usedLibraries.begin();itLibraries!=usedLibraries.end();itLibraries++)
+	auto usedLibraries = GetUsedLibraries();
+	for (const auto& library : usedLibraries)
 	{
-		CLAM::ProcessingFactory::Keys keys;
-		keys=factory.GetKeys("library",(*itLibraries));
-		CLAM::ProcessingFactory::Keys::const_iterator itKeys;
-		// iterate on used creators of the library
-		for(itKeys=keys.begin();itKeys!=keys.end();itKeys++)
+		auto keys = factory.GetKeys("library", library);
+		for (const auto& key : keys)
 		{
-			factory.DeleteCreator(*itKeys);
+			factory.DeleteCreator(key);
 		}
 		if (needReleaseHandlerOnReload())
 		{
-			void * handle=GetLibraryHandler(*itLibraries);
-			ReleaseLibraryHandler(handle,(*itLibraries));
+			void* handle = GetLibraryHandler(library);
+			ReleaseLibraryHandler(handle, library);
 		}
 	}
 	Load();
@@ -48,13 +43,12 @@ std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 	std::list<std::string> usedLibraries;
-	CLAM::ProcessingFactory::Values librariesValues=factory.GetSetOfValues("library");
-	CLAM::ProcessingFactory::Values::const_iterator itLibraries;
-	for (itLibraries=librariesValues.begin();itLibraries!=librariesValues.end();itLibraries++)
+	auto librariesValues = factory.GetSetOfValues("library");
+	for (const auto& library : librariesValues)
 	{
-		const std::string & path=getPathFromFullFileName(*itLibraries); 
+		const std::string& path = getPathFromFullFileName(library);
 		if (IsOnPath(path))
-			usedLibraries.push_back(*itLibraries);
+			usedLibraries.push_back(library);
 	}
 	return usedLibraries;
 }
@@ -105,42 +99,41 @@ bool isDynamicLibrary(const std::string & file)
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path)
 {
+	std::error_code ec;
+	if (!std::filesystem::is_directory(path, ec)) return;
 
-	DIR* dir = opendir(path.c_str());
-	if (!dir) return;
-	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
-	while ( struct dirent * dirEntry = readdir(dir) )
+	auto& factory = CLAM::ProcessingFactory::GetInstance();
+	for (const auto& entry : std::filesystem::directory_iterator(path, ec))
 	{
-		std::string pluginFilename(dirEntry->d_name);
-		if(pluginFilename == "." || pluginFilename == ".." || not isDynamicLibrary(pluginFilename))
+		const std::string pluginFilename = entry.path().filename().string();
+		if (!isDynamicLibrary(pluginFilename))
 			continue;
 		if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Found file " << pluginFilename << std::endl;
-		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
+		const std::string pluginFullFilename = entry.path().string();
 
-		if (factory.isLibraryLoaded( pluginFullFilename ))
+		if (factory.isLibraryLoaded(pluginFullFilename))
 		{
 			if (getenv(debugEnvFlag))
 				std::cout << "RunTimeLibraryLoader: Already loaded, skiping..." << std::endl;
 			continue;
 		}
-		factory.setLibraryAsLoaded( pluginFullFilename );
+		factory.setLibraryAsLoaded(pluginFullFilename);
 
-		void * handle = FullyLoadLibrary(pluginFullFilename);
+		void* handle = FullyLoadLibrary(pluginFullFilename);
 
 		// TODO: throw exception and have catch in main()
-		if (handle == NULL)
+		if (handle == nullptr)
 		{
-			std::cout << "RunTimeLibraryLoader: Error loading: " << pluginFullFilename 
+			std::cout << "RunTimeLibraryLoader: Error loading: " << pluginFullFilename
 					  << " reason: " << LibraryLoadError()
 					  << std::endl;
 		}
 		else if (getenv(debugEnvFlag))
 			std::cout << "RunTimeLibraryLoader: Loaded" << std::endl;
 
-		SetupLibrary( handle, pluginFullFilename );
+		SetupLibrary(handle, pluginFullFilename);
 	}
-	closedir(dir);
 }
 
 
@@ -211,11 +204,11 @@ const std::string RunTimeLibraryLoader::LibraryLoadError()
 	LPVOID lpMsgBuf;
 	FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
+		nullptr,
 		GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) &lpMsgBuf,
-		0, NULL );
+		0, nullptr );
 	std::string message((char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 	return message;
@@ -282,25 +275,17 @@ const std::string RunTimeLibraryLoader::GetPaths() const
 const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const 
 {
 	std::string paths=GetPaths();
-	std::vector <std::string> environmentPaths = SplitPathVariable(paths);
-	for (unsigned i=0; i<environmentPaths.size(); i++)
+	std::vector<std::string> environmentPaths = SplitPathVariable(paths);
+	for (const auto& envPath : environmentPaths)
 	{
-		// get file name:
-		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1); 
-		// testDir= root_path + subpath:
-		std::string testDir = environmentPaths[i] + "/" + subpathAndName.substr(0, subpathAndName.size()-fileName.size());
-		// check if directory exists:
-		DIR* dir = opendir(testDir.c_str());
-		if (not dir) 
-			continue; // directory doesn't match, skip
-		closedir(dir);
-		// check if file exists:
-		std::fstream fin;
-		std::string completeFileName=testDir+fileName;
-		fin.open(completeFileName.c_str(),std::ios::in);
-		if (not fin.is_open()) 
-			continue; // file doesn't exist, skip
-		fin.close();
+		const std::string fileName = subpathAndName.substr(subpathAndName.rfind("/") + 1);
+		const std::string testDir = envPath + "/" + subpathAndName.substr(0, subpathAndName.size() - fileName.size());
+		std::error_code ec;
+		if (!std::filesystem::is_directory(testDir, ec))
+			continue;
+		const std::string completeFileName = testDir + fileName;
+		if (!std::filesystem::is_regular_file(completeFileName, ec))
+			continue;
 		return completeFileName;
 	}
 	return "";

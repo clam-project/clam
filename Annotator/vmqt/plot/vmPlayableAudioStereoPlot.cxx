@@ -19,12 +19,12 @@
  *
  */
 
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QFrame>
-#include <QtGui/QComboBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QPixmap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFrame>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QPixmap>
 #include "vmPlotCanvas.hxx"
 #include "vmLocatorRenderer.hxx"
 #include "vmWPlayer.hxx"
@@ -75,8 +75,8 @@ namespace CLAM
 		{
 			AudioStereoPlot::backgroundBlack();
 			QPalette mute_palette;
-			mute_palette.setBrush(QPalette::Background,Qt::white); // QTPORT  should be QPalette::Window
-			mute_palette.setBrush(QPalette::Foreground,Qt::white); // QTPORT  should be QPalette::WindowText
+			mute_palette.setBrush(QPalette::Window,Qt::white);
+			mute_palette.setBrush(QPalette::WindowText,Qt::white);
 			mute_palette.setBrush(QPalette::Button,Qt::white);
 			mute_palette.setBrush(QPalette::ButtonText,Qt::white);
 			mMuteChn0->setPalette(mute_palette);
@@ -145,7 +145,7 @@ namespace CLAM
 			mMuteChn1->setFixedHeight(cheight);
 
 			QVBoxLayout* mute_panel = new QVBoxLayout;
-			mute_panel->setMargin(0);
+			mute_panel->setContentsMargins(0, 0, 0, 0);
 			mute_panel->setSpacing(0);
 			mute_panel->addWidget(mMuteChn0);
 			mute_panel->addWidget(mMuteChn1);
@@ -154,7 +154,7 @@ namespace CLAM
 			panel_hole->setFixedSize(10,20);
 
 			QHBoxLayout* play_panel = new QHBoxLayout;
-			play_panel->setMargin(0);
+			play_panel->setContentsMargins(0, 0, 0, 0);
 			play_panel->setSpacing(0);
 
 			play_panel->addWidget(mWPlayer);
@@ -169,7 +169,7 @@ namespace CLAM
 			bottom_hole->setFixedHeight(5);
 		
 			QVBoxLayout* layout = new QVBoxLayout;
-			layout->setMargin(0);
+			layout->setContentsMargins(0, 0, 0, 0);
 			layout->setSpacing(0);
 			layout->addWidget(top_hole);
 			layout->addLayout(play_panel);

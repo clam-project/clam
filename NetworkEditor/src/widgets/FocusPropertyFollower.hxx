@@ -1,7 +1,7 @@
 #ifndef FocusPropertyFollower_hxx
 #define FocusPropertyFollower_hxx
 
-#include <QtGui/QLabel>
+#include <QLabel>
 
 class FocusPropertyFollower : public QLabel
 {

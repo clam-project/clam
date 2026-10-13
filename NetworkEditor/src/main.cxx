@@ -19,22 +19,14 @@
  *
  */
 
-#include <QtGui/QApplication>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 #include "MainWindow.hxx"
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
-#endif
-
-#ifndef I18N_PATH
-#ifdef WIN32
-#define I18N_PATH "../"
-#else
-#define I18N_PATH "/home/vokimon/CajitasDeArena/CLAM-Install/"
-#endif
 #endif
 
 void usage(const std::string & program)
@@ -123,12 +115,12 @@ int main( int argc, char ** argv )
 	QString locale = QLocale::system().name();
 
 	QTranslator qtTranslator;
-	qtTranslator.load("qt_"+ locale);
-	app.installTranslator(&qtTranslator);
+	if (qtTranslator.load("qt_"+ locale))
+		app.installTranslator(&qtTranslator);
 
 	QTranslator translator;
-	translator.load(I18N_PATH "share/networkeditor/i18n/NetworkEditor_"+ locale);
-	app.installTranslator(&translator);
+	if (translator.load(I18N_PATH "share/networkeditor/i18n/NetworkEditor_"+ locale))
+		app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");
 	QCoreApplication::setOrganizationDomain("clam-project.org");

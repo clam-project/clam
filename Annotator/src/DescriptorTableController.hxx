@@ -24,7 +24,7 @@
 
 #include <string>
 #include <vector>
-#include <QtGui/QItemDelegate>
+#include <QItemDelegate>
 
 class QTableWidget;
 

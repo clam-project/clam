@@ -32,7 +32,7 @@ using std::find ;
 namespace CLAM
 {
 
-MIDIManager::MIDIManager() throw(Err)
+MIDIManager::MIDIManager()
 :mStarted(false)
 {
 	_Current(true,this);
@@ -67,7 +67,7 @@ MIDIDevice* MIDIManager::FindDevice(const std::string& name)
 	return 0;
 }
 
-void MIDIManager::Start(void) throw(Err)
+void MIDIManager::Start(void)
 {
 	std::vector<MIDIDevice*>::iterator it;
 
@@ -99,7 +99,7 @@ void MIDIManager::Start(void) throw(Err)
 	mStarted = true;
 }
 
-void MIDIManager::Stop(void) throw(Err)
+void MIDIManager::Stop(void)
 {
 	std::vector<MIDIDevice*>::iterator it;
 

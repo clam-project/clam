@@ -23,80 +23,80 @@
 
 namespace CLAM
 {
-	ErrSoundFileIO::ErrSoundFileIO() throw()
+	ErrSoundFileIO::ErrSoundFileIO() noexcept
 		: ErrProcessingObj( )
 	{
 	}
 
-	ErrSoundFileIO::ErrSoundFileIO( const char* msg ) throw ()
+	ErrSoundFileIO::ErrSoundFileIO( const char* msg ) noexcept
 		: ErrProcessingObj( msg )
 	{
 	}
 
-	ErrSoundFileIO::ErrSoundFileIO( const ErrSoundFileIO& obj ) throw ()
+	ErrSoundFileIO::ErrSoundFileIO( const ErrSoundFileIO& obj ) noexcept
 		: ErrProcessingObj( obj )
 	{
 	}
 
-	ErrSoundFileIO::~ErrSoundFileIO() throw()
+	ErrSoundFileIO::~ErrSoundFileIO() noexcept
 	{
 	}
 
-	UnavailableSoundFile::UnavailableSoundFile() throw()
+	UnavailableSoundFile::UnavailableSoundFile() noexcept
 		: ErrSoundFileIO()
 	{
 	}
 
-	UnavailableSoundFile::UnavailableSoundFile( const char* msg ) throw ()
+	UnavailableSoundFile::UnavailableSoundFile( const char* msg ) noexcept
 		: ErrSoundFileIO( msg )
 	{
 	}
 
-	UnavailableSoundFile::UnavailableSoundFile( const UnavailableSoundFile& obj ) throw()
+	UnavailableSoundFile::UnavailableSoundFile( const UnavailableSoundFile& obj ) noexcept
 		: ErrSoundFileIO( obj )
 	{
 	}
 	
-	UnavailableSoundFile::~UnavailableSoundFile() throw()
+	UnavailableSoundFile::~UnavailableSoundFile() noexcept
 	{
 	}
 
-	UnsupportedSoundFileSampleEncoding::UnsupportedSoundFileSampleEncoding() throw()
+	UnsupportedSoundFileSampleEncoding::UnsupportedSoundFileSampleEncoding() noexcept
 		: ErrSoundFileIO()
 	{
 	}
 
-	UnsupportedSoundFileSampleEncoding::UnsupportedSoundFileSampleEncoding( const char* msg ) throw ()
+	UnsupportedSoundFileSampleEncoding::UnsupportedSoundFileSampleEncoding( const char* msg ) noexcept
 		: ErrSoundFileIO( msg )
 	{
 	}
 
-	UnsupportedSoundFileSampleEncoding::UnsupportedSoundFileSampleEncoding( const UnsupportedSoundFileSampleEncoding& obj ) throw()
+	UnsupportedSoundFileSampleEncoding::UnsupportedSoundFileSampleEncoding( const UnsupportedSoundFileSampleEncoding& obj ) noexcept
 		: ErrSoundFileIO( obj )
 	{
 	}
 	
-	UnsupportedSoundFileSampleEncoding::~UnsupportedSoundFileSampleEncoding() throw()
+	UnsupportedSoundFileSampleEncoding::~UnsupportedSoundFileSampleEncoding() noexcept
 	{
 	}
 
 
-	UnsupportedSoundFileFormat::UnsupportedSoundFileFormat() throw()
+	UnsupportedSoundFileFormat::UnsupportedSoundFileFormat() noexcept
 		: ErrSoundFileIO()
 	{
 	}
 
-	UnsupportedSoundFileFormat::UnsupportedSoundFileFormat( const char* msg ) throw ()
+	UnsupportedSoundFileFormat::UnsupportedSoundFileFormat( const char* msg ) noexcept
 		: ErrSoundFileIO( msg )
 	{
 	}
 
-	UnsupportedSoundFileFormat::UnsupportedSoundFileFormat( const UnsupportedSoundFileFormat& obj ) throw()
+	UnsupportedSoundFileFormat::UnsupportedSoundFileFormat( const UnsupportedSoundFileFormat& obj ) noexcept
 		: ErrSoundFileIO( obj )
 	{
 	}
 	
-	UnsupportedSoundFileFormat::~UnsupportedSoundFileFormat() throw()
+	UnsupportedSoundFileFormat::~UnsupportedSoundFileFormat() noexcept
 	{
 	}
 

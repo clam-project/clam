@@ -24,10 +24,10 @@
 #include "TaskRunner.hxx"
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
-#include <QtCore/QFileInfo>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#include <QFileInfo>
 
 namespace CLAM_Annotator
 {

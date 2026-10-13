@@ -98,7 +98,7 @@ namespace CLAM {
 		OutPort<Spectrum> mOut;
 
 		/** Possible configuration/prototype states */
-		typedef enum {
+		enum PrototypeState {
 			// Type states in with the same attribute is used for all
 			// of the inputs and the outputs (it may or may not be
 			// present; in the second case it will be added at Do(...)
@@ -110,10 +110,10 @@ namespace CLAM {
 
 			// State in which nothing is known about prototypes.
 			SOther
-		} PrototypeState;
+		};
 
 		/** Possible scale combinations */
-		typedef enum { Slin, Slog} ScaleState;
+		enum ScaleState { Slin, Slog};
 
 		/** Config/Prototype state */
 		PrototypeState mProtoState;

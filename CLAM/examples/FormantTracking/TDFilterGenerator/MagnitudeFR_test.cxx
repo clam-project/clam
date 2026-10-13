@@ -37,7 +37,7 @@ int main()
 		CLAM::XMLStorage::Dump( myKernel.GetFreqPoles(), "Frequencies", "Freqs.xml" );
 
 	}
-	catch( CLAM::Err err )
+	catch( CLAM::Err &err )
 	{
 		err.Print();
 	}

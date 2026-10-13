@@ -121,7 +121,7 @@ public:
 	 * the given name.
 	 * It throws an ErrFactory if the name isn't found in the registry.
 	 */
-	AbstractProduct* CreateSafe( const RegistryKey name ) throw (ErrFactory)
+	AbstractProduct* CreateSafe( const RegistryKey name )
 	{
 		return  _registry.GetCreatorSafe(name).Create();
 	}
@@ -142,7 +142,7 @@ public:
 		_registry.AddCreatorWarningRepetitions(name, creator);
 	}
 
-	void AddCreatorSafe(const RegistryKey name, Creator* creator) throw (ErrFactory)
+	void AddCreatorSafe(const RegistryKey name, Creator* creator)
 	{
 		_registry.AddCreatorSafe(name, creator);
 	}
@@ -238,7 +238,7 @@ public: // Inner classes. Public for better testing
 			return *res;
 		}
 
-		Creator& GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory) 
+		Creator& GetCreatorSafe( RegistryKey creatorId)
 		{
 			if ( _factoryEntries.begin() == _factoryEntries.end() )
 				throw ErrFactory("GetCreatorSafe invoked on an empty registry");
@@ -278,7 +278,7 @@ public: // Inner classes. Public for better testing
 			}
 		}
 
-		void AddCreatorSafe( RegistryKey creatorId, Creator* creator ) throw (ErrFactory) 
+		void AddCreatorSafe( RegistryKey creatorId, Creator* creator )
 		{
 			if( !CommonAddCreator( creatorId, creator ) ) 
 				throw ErrFactory("A repeated key was passed");
@@ -597,4 +597,3 @@ public:
 } // namespace
 
 #endif // _Factory_hxx_
-

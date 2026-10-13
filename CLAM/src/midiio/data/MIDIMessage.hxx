@@ -85,12 +85,14 @@ namespace MIDI
 			Byte mVal[4];
 		};
 	};
+
+	std::ostream& operator<< (std::ostream &os, const Message& m);
 }
-std::ostream& operator<< (std::ostream &os, const MIDI::Message& m);
+
+using MIDI::operator<<;
 
 namespace CLAM
 {
 	CLAM_TYPEINFOGROUP(BasicCTypeInfo, MIDI::Message);
 }
 #endif
-

@@ -22,8 +22,8 @@
 #ifndef __PLAYER__
 #define __PLAYER__
 
+#include <thread>
 #include <CLAM/MediaTime.hxx>
-#include <CLAM/Thread.hxx>
 #include <CLAM/Signalv1.hxx>
 #include <CLAM/Slotv1.hxx>
 
@@ -54,7 +54,7 @@ namespace CLAM
 			bool IsRunning() const;
 	
 		protected:
-			Thread mThread;
+			std::thread mThread;
 			MediaTime mTime;
 			Signalv1<TData> mSigPlayingTime;
 			Signalv1<TData> mSigStop;

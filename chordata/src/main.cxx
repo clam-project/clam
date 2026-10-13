@@ -16,14 +16,9 @@
 
 #include "MainWindow.hxx"
 
-#include <QtGui/QApplication>
-#include <QtCore/QTranslator>
-#include <QtCore/QLocale>
-
-#ifdef _MSVC_VER
-#include <CLAM/InitAudioIO.hxx>
-#include <CLAM/InitProcessing.hxx>
-#endif
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 #ifndef I18N_PATH
 #define I18N_PATH "../"
@@ -84,7 +79,7 @@ int main( int argc, char ** argv )
 	app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");
-	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
+	QCoreApplication::setOrganizationDomain("clam-project.org");
 	QCoreApplication::setApplicationName("Chordata");
 	MainWindow w;
 	w.show();

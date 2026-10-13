@@ -35,15 +35,6 @@ namespace CLAM
 		static ProcessingDataPlugin::Registrator<Spectrum> dataRegistrator("yellowgreen");
 	}
 }
-Flags<4>::tFlagValue SpecTypeFlags::sFlagValues[] = {
- 	{SpecTypeFlags::eComplex, "Complex"},
- 	{SpecTypeFlags::ePolar, "Polar"},
- 	{SpecTypeFlags::eMagPhase, "MagPhase"},
- 	{SpecTypeFlags::eMagPhaseBPF, "MagPhaseBPF"},
- 	{0,NULL}
-}; 
-
-
 ///////////////////////////////////////////////////////
 //
 // SpectrumConfig
@@ -827,10 +818,10 @@ void Spectrum::SetTypeSynchronize(const SpecTypeFlags& newFlags)
 	GetType(previousFlags );
 	SpecTypeFlags tmpFlags;
 	
-	tmpFlags.bComplex = previousFlags.bComplex | newFlags.bComplex;
-	tmpFlags.bPolar = previousFlags.bPolar | newFlags.bPolar;
-	tmpFlags.bMagPhase = previousFlags.bMagPhase | newFlags.bMagPhase;
-	tmpFlags.bMagPhaseBPF = previousFlags.bMagPhaseBPF | newFlags.bMagPhaseBPF;
+	tmpFlags.bComplex = previousFlags.bComplex || newFlags.bComplex;
+	tmpFlags.bPolar = previousFlags.bPolar || newFlags.bPolar;
+	tmpFlags.bMagPhase = previousFlags.bMagPhase || newFlags.bMagPhase;
+	tmpFlags.bMagPhaseBPF = previousFlags.bMagPhaseBPF || newFlags.bMagPhaseBPF;
 		
 	SetType(tmpFlags);
 	SynchronizeTo(previousFlags);

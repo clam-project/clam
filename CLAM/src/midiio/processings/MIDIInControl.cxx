@@ -56,7 +56,7 @@ MIDIInControl::MIDIInControl(const MIDIIOConfig &c):MIDIIn(false)
 
 
 bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
-	throw(ErrProcessingObj)
+
 {
 	if (not MIDIIn::ConcreteConfigure(c)) return false;
 

@@ -72,7 +72,7 @@ def main(development = True):
 	for base,page in docs :
 	#	base = 'doc/MusicAnnotator'
 	#	page = 'Music_Annotator_tutorial'
-		print base, page
+		print((base, page))
 		os.system("wget -q -c -H -k -nd -P'%s' -p 'http://clam-project.org/wiki/%s?printable=yes'"%(base,page))
 		os.rename(base+'/index.php?title=%s&printable=yes'%page, base+'/index.html')
 
@@ -93,15 +93,15 @@ def main(development = True):
 
 	for root, dirs, files in os.walk('.') :
 		if '.not-public' not in files: continue
-		print 'Prunning %s because not public'%root
+		print(('Prunning %s because not public'%root))
 		os.system('rm -rf "%s"'%root)
 
 	for prunable in blackList :
-		print "Removing '%s'..."%prunable
+		print(("Removing '%s'..."%prunable))
 		os.system('rm -rf "%s"'%prunable)
 
 
-print 'usage: ./buildSandbox.py tarball [version]'
+print('usage: ./buildSandbox.py tarball [version]')
 
 if len(sys.argv) ==  1:
 	main()

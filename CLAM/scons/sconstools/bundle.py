@@ -4,10 +4,10 @@ sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
 
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
+	print("\033[32m:: ", command, "\033[0m")
 	return os.system(command)
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print("\033[31mXX ", command, "\033[0m")
 
 
 
@@ -53,7 +53,7 @@ def bundleEmitter(target, source, env):
 	return target, source
 
 def generate(env) :
-	print "Loading Bundle tool"
+	print("Loading Bundle tool")
 	Builder = SCons.Builder.Builder
 	Action = SCons.Action.Action
 	bundleBuilder = Builder(

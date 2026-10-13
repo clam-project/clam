@@ -18,7 +18,7 @@ from ExternalSources import *
 from Id3Writer import *
 from logging import log, error, warning, info, debug
 from optparse import OptionParser
-from urllib import quote as urlencode
+from urllib.parse import quote as urlencode
 
 from mopy.MusicInfo import MusicInfo, isBlind
 from mopy.model import AudioFile, Track
@@ -81,9 +81,9 @@ class AudioCollection :
 			mbz.available_as = af
 			mi.add(af); mi.add(mbz)
 			self.succeeded+=1
-		except MbzLookupException, e:
+		except MbzLookupException as e:
 			error(" - " + e.message)
-		except FileTypeException, e:
+		except FileTypeException as e:
 			error(" - " + e.message)
 		return mi
 
@@ -92,7 +92,7 @@ class AudioCollection :
 		debug("Considering "+filename)
 		mi = lookup.fpFile(filename)
 		if hasattr(mi, "TrackIdx") and len(mi.TrackIdx) > 0:
-			if not isBlind(mi.TrackIdx.values()[0]):
+			if not isBlind(next(iter(mi.TrackIdx.values()))):
 				self.succeeded+=1
 		return mi
 
@@ -110,7 +110,7 @@ class AudioCollection :
 	# 			debug("Crawling from "+manifURI)
 	# 			self.rdf.crawl(manifURI,path)
 	# 			self.rdf.commit()
-	# 			#except Exception, e:
+	# 			#except Exception as e:
 	# 			#	error(" - " + str(e))
 	# 
 	# 

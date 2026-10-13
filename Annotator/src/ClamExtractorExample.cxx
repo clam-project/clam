@@ -228,7 +228,7 @@ int main(int argc, char ** argv)
 			std::cerr<< os.str() << std::endl;
 		}
 	}
-	std::cout<<"done!"<<std::cout;
+	std::cout<<"done!"<<std::endl;
 	return 0;
 }
 

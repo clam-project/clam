@@ -1,5 +1,6 @@
-#! /usr/bin/python
-import os, glob, sys
+import glob
+import os
+import sys
 
 moduleName='guitareffects'
 version = "1.4.0"
@@ -56,10 +57,12 @@ examples = [
 	'TestAll.clamnetwork',
 	'SimpleDistortionNetwork.clamnetwork',
 	]
-dirs = sum((
-	env.recursiveDirs(dir)
+
+sourcePaths = [
+    path
 	for libraryName, dir in libPaths
-	),[])
+    for path in env.recursiveDirs(dir)
+    ]
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
@@ -68,8 +71,8 @@ install, default = env.ClamModule(
 	version,
 	description = description,
 	url = url,
-	sources = env.scanFiles("*.cxx", dirs),
-	headers = env.scanFiles("*.hxx", dirs),
+	sources = env.scanFiles("*.cxx", sourcePaths),
+	headers = env.scanFiles("*.hxx", sourcePaths),
 	clamDependencies = clamDependencies,
 	otherDependencies = otherDependencies,
 	)

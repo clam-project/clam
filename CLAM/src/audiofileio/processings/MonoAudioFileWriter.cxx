@@ -42,14 +42,14 @@ namespace Hidden
 	
 	MonoAudioFileWriter::MonoAudioFileWriter()
 		: mInput( "Samples Write", this ),
-		  mOutStream( NULL )
+		  mOutStream( nullptr )
 	{
 		Configure( MonoAudioFileWriterConfig() );
 	}
 
 	MonoAudioFileWriter::MonoAudioFileWriter( const ProcessingConfig& cfg )
 		: mInput( "Samples Write", this ),
-		  mOutStream( NULL )
+		  mOutStream( nullptr )
 	{
 		Configure( cfg );
 	}
@@ -145,7 +145,7 @@ namespace Hidden
 	{
 		mOutStream->Dispose();
 		delete mOutStream;
-		mOutStream = NULL;
+		mOutStream = nullptr;
 
 		return true;
 	}

@@ -138,13 +138,17 @@ bool TonalAnalysis::Do()
 	
 	
 	std::vector<std::pair<TData,TData> > & chromaPeaks = _chromaPeaks.GetData();
-	chromaPeaks.resize(_implementation->peaks().size()); //TODO processing time resize!!!!
-	for (unsigned i = 0; i < _implementation->peaks().size(); i++)
-		chromaPeaks[i] = _implementation->peaks()[i];
+	const auto & implPeaks = _implementation->peaks();
+	chromaPeaks.resize(implPeaks.size()); //TODO processing time resize!!!!
+	for (unsigned i = 0; i < implPeaks.size(); i++)
+		chromaPeaks[i] = { static_cast<TData>(implPeaks[i].first),
+		                   static_cast<TData>(implPeaks[i].second) };
 	_chromaPeaks.Produce();
 
 	std::pair<TData,TData> & tunning = _tunning.GetData();
-	tunning = _implementation->instantTunning();
+	const auto implTunning = _implementation->instantTunning();
+	tunning = { static_cast<TData>(implTunning.first),
+	            static_cast<TData>(implTunning.second) };
 //	tunning.first=_implementation->tunning();
 //	tunning.second=_implementation->tunningStrength();
 	_tunning.Produce();

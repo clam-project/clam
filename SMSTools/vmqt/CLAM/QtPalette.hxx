@@ -22,7 +22,8 @@
 #ifndef __QTPALETTE__
 #define __QTPALETTE__
 
-#include <qglcolormap.h>
+#include <QColor>
+#include <vector>
 #include <CLAM/Assert.hxx>
 #include <CLAM/DataTypes.hxx>
 
@@ -30,6 +31,27 @@ namespace CLAM
 {
 	namespace VM
 	{
+		// QGLColormap was removed in Qt6; this preserves the small subset
+		// of API QtPalette uses (setEntry / entryColor by integer index).
+		class QGLColormap
+		{
+		public:
+			QGLColormap() : mEntries(256) {}
+			void setEntry(int idx, const QColor& c)
+			{
+				if (idx < 0) return;
+				if (size_t(idx) >= mEntries.size()) mEntries.resize(size_t(idx) + 1);
+				mEntries[size_t(idx)] = c;
+			}
+			QColor entryColor(int idx) const
+			{
+				if (idx < 0 || size_t(idx) >= mEntries.size()) return QColor();
+				return mEntries[size_t(idx)];
+			}
+		private:
+			std::vector<QColor> mEntries;
+		};
+
 		/** 
 		 * Class to convert values in the range 0-1 to a color scale.
 		 * The color scale can be adjusted, so weaker values can be

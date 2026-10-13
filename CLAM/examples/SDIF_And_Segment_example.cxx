@@ -23,8 +23,8 @@
 #include "Err.hxx"     // imports CLAM::Err exception class declaration
 //#include "Plots.hxx"   // imports various CLAM Visualization Module plots declarations
 //#include "SystemPlots.hxx" // imports CLAMVM::SystemPlots declaration
-#include <QtGui/QFileDialog> // imports Qt file choose dialog
-#include <QtGui/QApplication> // imports Qt application object
+#include <QtWidgets/QFileDialog> // imports Qt file choose dialog
+#include <QtWidgets/QApplication> // imports Qt application object
 #include <iostream>
 
 // CLAM supports two ways of representing an audio signal:
@@ -66,7 +66,7 @@ int main ( int argc, char** argv )
 		// of acquiring an SDIF file easier
 		QString filename = QFileDialog::getSaveFileName(0,
 			QObject::tr("Choose an sdif file"),
-			QString::null,
+			QString(),
 			QObject::tr("(*.sdif)")
 		);
 

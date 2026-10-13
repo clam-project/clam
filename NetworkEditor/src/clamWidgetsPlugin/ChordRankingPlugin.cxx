@@ -24,7 +24,7 @@
 #include "ChordRankingPlugin.hxx"
 #include "ChordRanking.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 ChordRankingPlugin::ChordRankingPlugin(QObject *parent)
     : QObject(parent)

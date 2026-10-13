@@ -1,11 +1,11 @@
-from ProcessingTypes import ProcessingTypes
+from .ProcessingTypes import ProcessingTypes
 import unittest
-import TestFixtures
+from . import TestFixtures
 
 class ProcessingTypesTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		from .dummy import Dummy_Engine
+		return Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -27,7 +27,7 @@ class ProcessingTypesTests(unittest.TestCase):
 		try:
 			type.BadProcessingType
 			self.fail("Exception expected")
-		except AttributeError, e:
+		except AttributeError as e:
 			self.assertEqual(("BadProcessingType",), e.args)
 
 	def test_dir(self) :
@@ -36,8 +36,8 @@ class ProcessingTypesTests(unittest.TestCase):
 
 class Clam_ProcessingTypesTests(ProcessingTypesTests):
 	def empty(self):
-		import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		from .clam import Clam_Engine
+		return Clam_Engine()
 
 if __name__ == "__main__":
 	unittest.main()

@@ -52,13 +52,13 @@ FindPolynomialRoots(
 	TData			*u,			/* Real component of each root */
 	TData			*v,			/* Imaginary component of each root */
 	TData			*conv,		/* Convergence constant associated with each root */
-	register long	n,			/* Degree of polynomial (order-1) */
+	long	n,			/* Degree of polynomial (order-1) */
 	long			maxiter,	/* Maximum number of iterations */
 	long			fig			/* The number of decimal figures to be computed */
 )
 {
 	int i;
-	register int j;
+	int j;
 	TData h[MAXN + 3], b[MAXN + 3], c[MAXN + 3], d[MAXN + 3], e[MAXN + 3];
 	/* [-2 : n] */
 	TData K, ps, qs, pt, qt, s, rev, r;

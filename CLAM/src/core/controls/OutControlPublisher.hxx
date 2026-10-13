@@ -18,13 +18,13 @@ namespace CLAM
 			OutControlPublisher() 
 				: FloatOutControl( "OutControlPublisher", 0 ) 
 			{
-				mPublished=NULL;
+				mPublished=nullptr;
 			} 
 
 			OutControlPublisher( const std::string& name, Processing* father )
 				: FloatOutControl( name, father ) 
 			{
-				mPublished=NULL;
+				mPublished=nullptr;
 			}
 
 			void PublishOutControl( FloatOutControl& out )

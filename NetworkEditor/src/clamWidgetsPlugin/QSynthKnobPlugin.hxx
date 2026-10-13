@@ -24,7 +24,7 @@
 #ifndef QSynthKnobPlugin_hxx
 #define QSynthKnobPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class QSynthKnobPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

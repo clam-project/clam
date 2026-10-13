@@ -23,7 +23,7 @@
 #define __VMQT_GRID_H__
 
 #include "vmRenderer2D.hxx"
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

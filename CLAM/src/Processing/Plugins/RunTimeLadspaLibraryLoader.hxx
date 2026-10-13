@@ -1,7 +1,6 @@
 #ifndef RunTimeLadspaLibraryLoader_hxx
 #define RunTimeLadspaLibraryLoader_hxx
 
-#include <dirent.h>
 //#include "RunTimeLibraryLoader.hxx"
 
 #include "ProcessingFactory.hxx" 

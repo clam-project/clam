@@ -22,7 +22,7 @@
 #ifndef __VZLABEL__
 #define __VZLABEL__
 
-#include <qframe.h>
+#include <QFrame>
 
 namespace CLAM
 {

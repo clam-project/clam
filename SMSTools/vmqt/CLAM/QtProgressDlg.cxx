@@ -1,4 +1,4 @@
-#include <qprogressdialog.h>
+#include <QProgressDialog>
 #include <CLAM/QtProgressDlg.hxx>
 
 namespace CLAM
@@ -21,7 +21,7 @@ namespace CLAM
 
 		void QtProgressDlg::Caption(const std::string& caption)
 		{
-			mProgressDlg->setCaption(caption.c_str());
+			mProgressDlg->setWindowTitle(caption.c_str());
 		}
 
 		void QtProgressDlg::LabelText(const std::string& label)
@@ -31,12 +31,12 @@ namespace CLAM
 
 		void QtProgressDlg::TotalSteps(int steps)
 		{
-			mProgressDlg->setTotalSteps(steps);
+			mProgressDlg->setMaximum(steps);
 		}
 
 		void QtProgressDlg::Update(int val)
 		{
-			mProgressDlg->setProgress(val);
+			mProgressDlg->setValue(val);
 		}
 
 		void QtProgressDlg::Show()

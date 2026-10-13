@@ -47,14 +47,14 @@ const float HUGE_ = 1.0e8;
 const float ROOT2	=		(1.4142135623730950488016887242096980785697f);		/* sqrt(2) */
 
 /** Efficient versions of common functions*/
-inline float CLAM_sin(register float x)
+inline float CLAM_sin(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) sin((double)x);
 #else
 	x *= ONE_OVER_PI;
-	register float accumulator, xPower, xSquared;
-	register long evenIntPart = ((long)(0.5f*x + 1024.5) - 1024)<<1;
+	float accumulator, xPower, xSquared;
+	long evenIntPart = ((long)(0.5f*x + 1024.5) - 1024)<<1;
 	x -= (float)evenIntPart;
 	xSquared = x*x;
 	accumulator = 3.14159265358979f*x;
@@ -70,15 +70,15 @@ inline float CLAM_sin(register float x)
 #endif
 }
 
-inline float CLAM_cos(register float x)
+inline float CLAM_cos(float x)
 	{
 #ifndef CLAM_OPTIMIZE
 	return (float) cos((double)x);
 #else
 	x *= ONE_OVER_PI;
-	register float accumulator, xPower, xSquared;
+	float accumulator, xPower, xSquared;
 	
-	register long evenIntPart = ((long)(0.5f*x + 1024.5f) - 1024)<<1;
+	long evenIntPart = ((long)(0.5f*x + 1024.5f) - 1024)<<1;
 	x -= (float)evenIntPart;
 	
 	xSquared = x*x;
@@ -95,12 +95,12 @@ inline float CLAM_cos(register float x)
 #endif
 	}
 
-inline float CLAM_atan(register float x)
+inline float CLAM_atan(float x)
 	{
 #ifndef CLAM_OPTIMIZE
 	return (float) atan((double)x);
 #else
-	register float accumulator, xPower, xSquared, offset;
+	float accumulator, xPower, xSquared, offset;
 	
 	offset = 0.0f;
 	
@@ -135,7 +135,7 @@ inline float CLAM_atan2(float Imag, float Real)
 	return (float) atan2((double)Imag, (double)Real);
 #else
 	if(Real==0 && Imag==0) return 0.f;
-	register float accumulator, xPower, xSquared, offset, x;
+	float accumulator, xPower, xSquared, offset, x;
 		
 	if (Imag > 0.0f)
 		{
@@ -189,15 +189,15 @@ inline float CLAM_atan2(float Imag, float Real)
 #endif
 }
 
-inline float	CLAM_exp2(register float x)
+inline float	CLAM_exp2(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) exp(LN2*(double)x);
 #else
 	if (x >= -127.0f)
 		{
-		register float accumulator, xPower;
-		register union {float f; long i;} xBits;
+		float accumulator, xPower;
+		union {float f; long i;} xBits;
 			
 		xBits.i = (long)(x + FLOAT_OFFSET) - LONG_OFFSET;		/* integer part */
 		x -= (float)(xBits.i);									/* fractional part */
@@ -222,17 +222,17 @@ inline float	CLAM_exp2(register float x)
 #endif
 }
 
-inline float	CLAM_log2(register float x)
+inline float	CLAM_log2(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) (ONE_OVER_LN2*log((double)x));
 #else
 	if (x > 5.877471754e-39f)
 		{
-		register float accumulator, xPower;
-		register long intPart;
+		float accumulator, xPower;
+		long intPart;
 		
-		register union {float f; long i;} xBits;
+		union {float f; long i;} xBits;
 		
 		xBits.f = x;
 		
@@ -272,16 +272,16 @@ inline float CLAM_pow(float x, float y)
 #endif
 }
 
-inline float CLAM_sqrt(register float x)
+inline float CLAM_sqrt(float x)
 	{
 #ifndef CLAM_OPTIMIZE
 	return (float) sqrt((double)x);
 #else
 	if (x > 5.877471754e-39f)
 		{
-		register float accumulator, xPower;
-		register long intPart;
-		register union {float f; long i;} xBits;
+		float accumulator, xPower;
+		long intPart;
+		union {float f; long i;} xBits;
 		
 		xBits.f = x;
 		
@@ -317,7 +317,7 @@ inline float CLAM_sqrt(register float x)
 #endif
 	}
 
-inline float CLAM_log(register float x)
+inline float CLAM_log(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) log((double)x);
@@ -326,7 +326,7 @@ inline float CLAM_log(register float x)
 #endif
 }
 
-inline float CLAM_log10(register float x)
+inline float CLAM_log10(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) log10((double)x);
@@ -335,7 +335,7 @@ inline float CLAM_log10(register float x)
 #endif
 }
 
-inline float CLAM_20log10(register float x)
+inline float CLAM_20log10(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) 20*log10((double)x);
@@ -344,7 +344,7 @@ inline float CLAM_20log10(register float x)
 #endif
 }
 
-inline float CLAM_exp(register float x)
+inline float CLAM_exp(float x)
 {
 #ifndef CLAM_OPTIMIZE
 	return (float) exp((double)x);
@@ -369,7 +369,11 @@ inline float CLAM_exp(register float x)
 	} // namespace std
 #endif // MSVC++ 6
 
-#if defined _MSC_VER // MSVC++7
+// MSVC < 2015 (Visual C++ 14, _MSC_VER < 1900) didn't ship std::isnan /
+// std::isinf in <cmath>. CLAM added shims in namespace std. Modern MSVC
+// provides them properly, and re-defining them in namespace std now
+// produces 'symbol cannot be defined within namespace std' errors.
+#if defined(_MSC_VER) && _MSC_VER < 1900
 	namespace std
 	{
 		template <typename T>
@@ -383,16 +387,19 @@ inline float CLAM_exp(register float x)
 			return _isnan(data) == 1;
 		}
 	}
-#endif // MSVC++ 7
+#endif
 
-#ifndef __USE_ISOC99
-#ifndef __APPLE__
+// Same story for round(): C++11 added std::round. CLAM's free-function
+// fallback now clashes with the standard one on modern MSVC. Keep only
+// for compilers that genuinely lack it (pre-C99 C runtimes and pre-2015
+// MSVC); otherwise the standard library provides it.
+#if !defined(__USE_ISOC99) && !defined(__APPLE__) && \
+    !(defined(_MSC_VER) && _MSC_VER >= 1900)
 inline double  round(double _X)
 	{return (floor(_X+0.5)); }
 inline float  round(float _X)
 	{return (floorf(_X+0.5f)); }
-#endif // __APPLE__
-#endif // __USE_ISOC99
+#endif
 
 
 /** Fast "pow" for converting a logarithmic value into linear value ( assumes a log

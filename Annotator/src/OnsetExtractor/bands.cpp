@@ -31,7 +31,7 @@ band::band(const band& bandcopy)
 band::band(int low, int center, int high, double center_freq) 
 {
 	if (low>high) {
-		cerr << "Error: high sample must be higher than low sample";
+		std::cerr << "Error: high sample must be higher than low sample";
 		exit(-1);
 	}
 	//....
@@ -69,7 +69,7 @@ band::band(int low, int center, int high, double center_freq)
 band::band(double low, double center, double high, double center_freq) 
 {
 	if (low>high) {
-		cerr << "Error: high sample must be higher than low sample";
+		std::cerr << "Error: high sample must be higher than low sample";
 		exit(-1);
 	}
 	//....
@@ -85,8 +85,6 @@ band::band(double low, double center, double high, double center_freq)
 
 	/* Generate triangular window */
 
-	int lenfirst= centersample-lowsample;
-	int lensecond= highsample-centersample; 
 	double doublelenfirst=center-low;
 	double doublelensecond=high-center;
 
@@ -94,10 +92,10 @@ band::band(double low, double center, double high, double center_freq)
 
 	int j;
 
-	cout << "BAND.\n";
-	cout << "doublelenfirst= " << doublelenfirst << "\ndoublelensecond= " << doublelensecond << endl;
-	cout << "lowsample= " << lowsample << "\ncentersample=" <<
-centersample << "\nhighsample=" << highsample << endl;
+	std::cout << "BAND.\n";
+	std::cout << "doublelenfirst= " << doublelenfirst << "\ndoublelensecond= " << doublelensecond << std::endl;
+	std::cout << "lowsample= " << lowsample << "\ncentersample=" <<
+centersample << "\nhighsample=" << highsample << std::endl;
 
 	for (j=lowsample; j<centersample; j++) {
 		values.push_back((j-low)/doublelenfirst);
@@ -113,7 +111,7 @@ centersample << "\nhighsample=" << highsample << endl;
 	for (int i=0; i<size; i++)  
 		sumvalues+=values[i];
 
-cout << *this;
+std::cout << *this;
 
 }
 
@@ -124,7 +122,6 @@ cout << *this;
 double band::applyband(double* fft, int fftlen)
 {
 	double val=0;
-	int j;
 	for (int i=0, j=lowsample; i<fftlen && j<=highsample ; i++, j++)
 		val+= fft[j] * values[i];
 	val/=60.0;
@@ -145,7 +142,6 @@ double band::applybanddB(double* fft, int fftlen)
 double band::applybandRMS(double *fft, int fftlen) 
 {
 	double val=0;
-	int j;
 	for (int i=0, j=lowsample; i<fftlen && j<=highsample ; i++, j++)
 		val+= pow(fft[j] * values[i]/60.0 , 2.0);
 
@@ -167,13 +163,13 @@ double band::applybanddBNorm(double* fft, int fftlen)
 }
 
 
-ostream &operator<<(ostream &output, const band b) {
-	output << "Centerfreq: " << b.centerfreq << endl;
-	output << "limits: " << b.lowsample << "..." << b.centersample << "..." << b.highsample << endl;
-	output << "Size: " << b.size << endl;
-	output << "Effective size: " << b.effectivesize << endl;
+std::ostream &operator<<(std::ostream &output, const band b) {
+	output << "Centerfreq: " << b.centerfreq << std::endl;
+	output << "limits: " << b.lowsample << "..." << b.centersample << "..." << b.highsample << std::endl;
+	output << "Size: " << b.size << std::endl;
+	output << "Effective size: " << b.effectivesize << std::endl;
 	for (int i=0; i<(int)b.values.size(); i++)
-		output << "values[" << i << "]= " << b.values[i] << endl;
+		output << "values[" << i << "]= " << b.values[i] << std::endl;
 
 	return output;
 }
@@ -226,9 +222,9 @@ void generatehalfbands(double min_freq, double max_freq, vectorbands
 	}
 
 //	for (int i=0; i<spectralbands.size(); i++) {
-//		cout << "BAND " << i << "=" << endl;
-//		cout << spectralbands[i];
-//		cout << endl;
+//		std::cout << "BAND " << i << "=" << std::endl;
+//		std::cout << spectralbands[i];
+//		std::cout << std::endl;
 //	}
 }
 

@@ -55,7 +55,7 @@ namespace CLAM
 			try {
 				mConfig = dynamic_cast<const BinaryAudioOpConfig&>(c);	    
 			}
-			catch (std::bad_cast)
+			catch (const std::bad_cast&)
 			{
 				CLAM_ASSERT(false,"Config should be a BynariaAudioOpConfig");
 			}

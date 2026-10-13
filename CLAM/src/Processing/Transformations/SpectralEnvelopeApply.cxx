@@ -33,7 +33,7 @@ namespace CLAM {
 		Configure(SpectralEnvelopeApplyConfig());
 	}
 
-	SpectralEnvelopeApply::SpectralEnvelopeApply(const SpectralEnvelopeApplyConfig &c = SpectralEnvelopeApplyConfig())
+	SpectralEnvelopeApply::SpectralEnvelopeApply(const SpectralEnvelopeApplyConfig &c)
 	{
 		Configure(c);
 	}

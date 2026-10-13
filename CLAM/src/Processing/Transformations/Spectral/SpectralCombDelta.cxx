@@ -43,7 +43,9 @@ bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)
 		out = in; //TODO big cludge for streaming
 	}
 	DataArray& inMag = in.GetMagBuffer();
-	DataArray& outMag = out.GetMagBuffer();
+	// Same pattern as Partializer::Do: outMag is the live output reference but
+	// the body below writes to mMag and SetMagBuffer()s it back. Likely vestigial.
+	[[maybe_unused]] DataArray& outMag = out.GetMagBuffer();
 	
 	int spectrumSize = in.GetSize();
 	mMag.Resize(spectrumSize);
@@ -79,7 +81,9 @@ bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)
 		out = in; //TODO big cludge for streaming
 	}
 	DataArray& inMag = in.GetMagBuffer();
-	DataArray& outMag = out.GetMagBuffer();
+	// Same pattern as Partializer::Do: outMag is the live output reference but
+	// the body below writes to mMag and SetMagBuffer()s it back. Likely vestigial.
+	[[maybe_unused]] DataArray& outMag = out.GetMagBuffer();
 	
 	int spectrumSize = in.GetSize();
 	mMag.Resize(spectrumSize);

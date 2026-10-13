@@ -13,8 +13,6 @@
 #include <vector>
 #include <stdlib.h>
 
-using namespace std;
-
 void open_wavfile(char* name);
 int get_samples(int len, int dr);
 int read_data(Float *input);

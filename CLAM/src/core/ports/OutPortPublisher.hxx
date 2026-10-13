@@ -23,6 +23,7 @@
 #define __OutPortPublisher_hxx__
 
 #include "OutPort.hxx"
+#include <algorithm>
 
 namespace CLAM
 {
@@ -101,7 +102,8 @@ public:
 		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::DisconnectFromIn() A published port is missing. "
 				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		mPublishedOutPort->DisconnectFromIn( in );
-		mVisuallyConnectedPorts.remove(&in);
+		auto _it = std::find(mVisuallyConnectedPorts.begin(), mVisuallyConnectedPorts.end(), &in);
+		if (_it != mVisuallyConnectedPorts.end()) mVisuallyConnectedPorts.erase(_it);
 	}
 	
 	bool IsConnectableTo(InPortBase & in)

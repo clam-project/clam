@@ -32,7 +32,7 @@ namespace CLAM
 SDIFFileReader::SDIFFileReader():
 	mPrevIndexArray(0), isFileOpen(false)
 {
-	mpFile=NULL;
+	mpFile=nullptr;
 	mLastCenterTime=-1;
 	Configure(SDIFInConfig());
 }
@@ -40,7 +40,7 @@ SDIFFileReader::SDIFFileReader():
 SDIFFileReader::SDIFFileReader(const SDIFInConfig& c):
 	mPrevIndexArray(0), isFileOpen(false)
 {
-	mpFile=NULL;
+	mpFile=nullptr;
 	mLastCenterTime=-1;
 
 	Configure(c);
@@ -48,7 +48,7 @@ SDIFFileReader::SDIFFileReader(const SDIFInConfig& c):
 
 SDIFFileReader::~SDIFFileReader()
 {
-	if (mpFile != NULL)
+	if (mpFile != nullptr)
 		mpFile->Close();
 	delete mpFile;
 }

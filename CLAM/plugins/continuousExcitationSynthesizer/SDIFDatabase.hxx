@@ -6,7 +6,6 @@
 #include "DirectoryBasedMetadataReader.hxx"
 #include <CLAM/LoopingSDIFFileReader.hxx>
 #include "SimpleTransformer.hxx"
-#include <CLAM/ThreadPool.hxx>
 #include "ContinuousExcitationConstants.hxx"
 #include <string>
 #include <vector>
@@ -124,7 +123,6 @@ private:
 	// this is a map containing that sample that was played for a VoiceId
 	std::map<VoiceId, CLAM::LoopingSDIFFileReader*> previousSDIFReaderMap;
 	SimpleTransformer mSimpleTransformer;
-	ThreadPool mThreadPool;
 };
 
 } // end namespace CLAM

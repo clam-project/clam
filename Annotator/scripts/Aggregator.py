@@ -18,11 +18,12 @@
 
 
 import re
-import cStringIO
 import sys
 
+_StandardException = Exception
+
 class Aggregator :
-	class Exception :
+	class Exception(_StandardException) :
 		def __init__(self, message) :
 			self.what = message
 		def __str__(self) :
@@ -47,9 +48,9 @@ class Aggregator :
 			target.TranslateChildScope(self.targetScope, self.targetAttribute, self.aggregator.scopeMappings[self.source])
 
 		def dump(self, file) :
-			print >> file, "copy", self.source, \
+			print("copy", self.source, \
 				(self.scope + "::" + self.attribute), \
-				(self.targetScope + "::" + self.targetAttribute)
+				(self.targetScope + "::" + self.targetAttribute), file=file)
 
 	def __init__(self, script) :
 		errors = ""
@@ -85,8 +86,8 @@ class Aggregator :
 
 	def run(self, target, sources) :
 		if len(sources) < self.requiredSources :
-			raise "The aggregation script requires %d sources but only %d provided"% \
-				(self.requiredSources,len(sources))
+			raise Exception("The aggregation script requires %d sources but only %d provided"% \
+				(self.requiredSources,len(sources)))
 		self.target = target
 		self.sources = sources
 		for copier in self.copiers :

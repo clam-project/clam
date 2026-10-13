@@ -23,9 +23,8 @@
 #define __VMQT_RULER_H__
 
 #include <vector>
-#include <QtGui/QColor>
-#include <QtOpenGL/QGLWidget>
-#undef GetClassName
+#include <QColor>
+#include <QWidget>
 #include <CLAM/RulerTicks.hxx>
 #include <vector>
 #include "vmDataTypes.hxx"

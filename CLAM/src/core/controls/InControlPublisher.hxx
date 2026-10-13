@@ -16,13 +16,13 @@ public:
 	InControlPublisher() 
 		: FloatInControl( "InControlPublisher", 0 ) 
 	{
-		_published=NULL;
+		_published=nullptr;
 	} 
 
 	InControlPublisher( const std::string& name, Processing* father )
 		: FloatInControl( name, father ) 
 	{
-		_published=NULL;
+		_published=nullptr;
 	}
 
 	void PublishInControl( FloatInControl& in )

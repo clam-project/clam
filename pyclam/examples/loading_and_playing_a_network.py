@@ -20,11 +20,11 @@ import sys
 import time
 
 if len(sys.argv)!=2:
-	print "needs a network filename."
+	print("needs a network filename.")
 	sys.exit(-1)
 
 def error(msg):
-	print msg
+	print(msg)
 	return -1
 
 def main(args):

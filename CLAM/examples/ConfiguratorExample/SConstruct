@@ -1,12 +1,13 @@
-#!/usr/bin/python
 import os
-import glob
 import sys
+import glob
 
-options = Variables('options.cache', ARGUMENTS)
+options_filename = 'options.cache'
+options = Variables(options_filename, ARGUMENTS)
 options.Add(PathVariable('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathVariable('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolVariable('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(BoolVariable('crossmingw', 'Enables MinGW crosscompilation from linux', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -17,53 +18,66 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-env = Environment(ENV=os.environ, tools=['default'], options=options)
-options.Save('options.cache', env)
+def unique(x) :
+	return list(set(x))
+
+toolchain = 'default'
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
+options.Save(options_filename, env)
 Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
+crosscompiling = env.get("crossmingw")
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
+
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('qt6', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
-sys.path.append(clam_sconstoolspath)
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 """
 import versionInfo
-version, fullVersion = versionInfo.versionFromLocalInfo("NetworkEditor")
-print "Version: ", version
-print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", version, fullVersion)
+version, fullVersion = versionInfo.versionFromLocalInfo("App")
+print("Version: ", version)
+print("Package version: ", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','AppVersion'), "App", version, fullVersion)
 """
 
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
-env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
+env['QT6_UICDECLSUFFIX'] = '.h'
+env['QT6_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT6_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT6_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
-	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
-	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
-	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
-	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
-	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT6_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT6_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT6_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT6_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	] , CLAMInstallDir)
+	], CLAMInstallDir)
 
-env.EnableQt4Modules([
+env.EnableQt6Modules([
 	'QtCore',
 	'QtGui',
+	'QtWidgets',
 	'QtOpenGL',
 #	'QtSql',
 #	'QtNetwork',
@@ -73,7 +87,9 @@ env.EnableQt4Modules([
 	'QtUiTools',
 #	'QtDesigner',
 #	'Qt3Support',
-	], debug=False)
+	],debug=False,
+	crosscompiling=crosscompiling,
+	)
 
 mainSources = {
 	'ConfiguratorExample' : os.path.join('.','main.cxx'),
@@ -87,17 +103,11 @@ extraPaths = [
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
 includePaths = sourcePaths + extraPaths
-blacklist = [
-]
 
-sources = scanFiles('*.cxx', sourcePaths)
-sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
-sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-sources = dict.fromkeys(sources).keys()
-for blacksheep in blacklist :
-	sources.remove(blacksheep)
-for mainSource in mainSources.values() :
-	sources.remove(mainSource)
+sources = env.scanFiles('*.cxx', sourcePaths,
+	blacklist = mainSources.values(),
+	patternblacklist=['moc_','qrc_'],
+	)
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
@@ -110,11 +120,11 @@ if sys.platform=="win32" :
 
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-if sys.platform=='linux2' :
+if sys.platform == 'linux' :
 	# TODO: This should not be hardcoded neither prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
-if sys.platform=='linux2' :
+if sys.platform == 'linux' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 testsources = scanFiles('*.cxx', ['test'])
@@ -154,7 +164,7 @@ translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  transla
 translations = []
 if len(tsfiles) : 
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
-	translations = env.Qm(source = tsfiles)
+	translations = env.Qm6(source = tsfiles)
 
 examples = []
 for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
@@ -190,7 +200,7 @@ if sys.platform=='win32' :
 		env.Install(
 			env['prefix']+"/bin", 
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
-			) for dll in 'Core', 'Gui', 'OpenGL']
+			) for dll in ('Core', 'Gui', 'OpenGL')]
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
 	externalsDllDir = os.environ['EXTERNALDLLDIR']

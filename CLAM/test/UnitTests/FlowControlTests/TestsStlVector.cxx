@@ -37,7 +37,7 @@ public:
 		vector.reserve(5);
 		try {
 			vector.at(1); // en canvi l'operator[] no fa comprovacions
-			CPPUNIT_FAIL("hauria d'haver llençat exception"); //funciona tant en debug com en release
+			CPPUNIT_FAIL("hauria d'haver llenÃ§at exception"); //funciona tant en debug com en release
 		} catch (std::exception&)
 		{
 		}

@@ -16,6 +16,9 @@ class peaksatt {
 	  int tend;
 };
 
-ostream &operator<<(ostream &output, peaksatt patt);
+std::ostream &operator<<(std::ostream &output, peaksatt patt);
+
+typedef std::vector<peaksatt> peaksattvector;
+typedef std::vector<peaksatt>::iterator iterpeaksattvector;
 
 #endif

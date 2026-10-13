@@ -24,15 +24,16 @@
 *****************************************************************************/
 
 #include <cmath>
-#include <QtCore/QTimer>
-#include <QtGui/QToolTip>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-#include <QtGui/QImage>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QColormap>
-#include <QtGui/QRadialGradient>
+#include <QtGlobal>
+#include <QTimer>
+#include <QToolTip>
+#include <QPainter>
+#include <QPixmap>
+#include <QImage>
+#include <QWheelEvent>
+#include <QMouseEvent>
+#include <QColormap>
+#include <QRadialGradient>
 
 #include "QSynthKnob.hxx"
 
@@ -104,9 +105,9 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	// The bright metering bit...
 
 	QConicalGradient meterShadow(xcenter,ycenter,-90);
-	meterShadow.setColorAt(0,meterColor.dark());
+	meterShadow.setColorAt(0,meterColor.darker());
 	meterShadow.setColorAt(0.5,meterColor);
-	meterShadow.setColorAt(1,meterColor.light().light());
+	meterShadow.setColorAt(1,meterColor.lighter().lighter());
 	paint.setBrush(meterShadow);
 	paint.setPen(Qt::transparent);
 	paint.drawPie(xcenter-meterWidth/2, ycenter-meterWidth/2,
@@ -134,9 +135,9 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 		xcenter-shineCenter,ycenter-shineCenter,
 		shineExtension,
 		xcenter-shineFocus,ycenter-shineFocus);
-	gradient.setColorAt(0.2,knobColor.light().light());
+	gradient.setColorAt(0.2,knobColor.lighter().lighter());
 	gradient.setColorAt(.5,knobColor);
-	gradient.setColorAt(1,knobColor.dark(150));
+	gradient.setColorAt(1,knobColor.darker(150));
 	QBrush knobBrush(gradient);
 	paint.setBrush(knobBrush);
 	paint.drawEllipse(xcenter-knobWidth/2, ycenter-knobWidth/2, knobWidth, knobWidth);
@@ -174,16 +175,16 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	if (!borderColor.isValid())
 		borderColor=knobColor;
 	QLinearGradient inShadow(xcenter-side/4,ycenter-side/4,xcenter+side/4,ycenter+side/4);
-	inShadow.setColorAt(0,borderColor.light().light());
-	inShadow.setColorAt(1,borderColor.dark());
+	inShadow.setColorAt(0,borderColor.lighter().lighter());
+	inShadow.setColorAt(1,borderColor.darker());
 	paint.setPen(QPen(QBrush(inShadow),knobBorderWidth*7/8));
 	paint.drawEllipse(xcenter-side/2+indent, ycenter-side/2+indent,
 		side-2*indent, side-2*indent);
 
 	// Scale shadow...
 	QLinearGradient outShadow(xcenter-side/3,ycenter-side/3,xcenter+side/3,ycenter+side/3);
-	outShadow.setColorAt(0,background.dark());
-	outShadow.setColorAt(1,background.light().light());
+	outShadow.setColorAt(0,background.darker());
+	outShadow.setColorAt(1,background.lighter().lighter());
 	paint.setPen(QPen(QBrush(outShadow),scaleShadowWidth));
 	paint.drawArc(xcenter-side/2+scaleShadowWidth/2, ycenter-side/2+scaleShadowWidth/2,
 		side-scaleShadowWidth, side-scaleShadowWidth, -45 * 16, 270 * 16);
@@ -199,11 +200,11 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	QColor c = m_pointerColor;
 	if (!c.isValid()) 
 		c= palette().dark().color();
-	pen.setColor(isEnabled() ? c.dark(130) : c);
+	pen.setColor(isEnabled() ? c.darker(130) : c);
 	pen.setWidth(pointerWidth+2);
 	paint.setPen(pen);
 	paint.drawLine(QLineF(xcenter, ycenter, x, y));
-	pen.setColor(isEnabled() ? c.light() : c);
+	pen.setColor(isEnabled() ? c.lighter() : c);
 	pen.setWidth(pointerWidth);
 	paint.setPen(pen);
 	paint.drawLine(QLineF(xcenter-1, ycenter-1, x-1, y-1));
@@ -263,7 +264,7 @@ void QSynthKnob::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_posMouse = pMouseEvent->pos();
 		m_lastDragValue = value();
 		emit sliderPressed();
-	} else if (pMouseEvent->button() == Qt::MidButton) {
+	} else if (pMouseEvent->button() == Qt::MiddleButton) {
 		// Reset to default value...
 		if (m_iDefaultValue < minimum() || m_iDefaultValue > maximum())
 			m_iDefaultValue = (maximum() + minimum()) / 2;
@@ -286,6 +287,9 @@ void QSynthKnob::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	int newValue = value();
 	switch (m_knobMode)
 	{
+		case QDialMode:
+			// already short-circuited above; included for switch completeness.
+			break;
 		case LinearMode:
 		{
 			newValue = m_lastDragValue + xdelta - ydelta;
@@ -325,7 +329,9 @@ void QSynthKnob::wheelEvent ( QWheelEvent *pWheelEvent )
 		QDial::wheelEvent(pWheelEvent);
 	} else {
 		int iValue = value();
-		if (pWheelEvent->delta() > 0)
+		const int delta =
+			pWheelEvent->angleDelta().y();
+		if (delta > 0)
 			iValue -= pageStep();
 		else
 			iValue += pageStep();
@@ -350,4 +356,3 @@ void QSynthKnob::sliderChange (SliderChange change)
 */
 
 // end of QSynthKnob.cpp
-

@@ -44,7 +44,7 @@ InPortBase& InPortRegistry::Get(const std::string & name) const
 		"No in port named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
-	return *(InPortBase*)NULL; // just to get rid of warnings
+	return *(InPortBase*)nullptr; // just to get rid of warnings
 }
 
 bool InPortRegistry::Has(const std::string& name) const

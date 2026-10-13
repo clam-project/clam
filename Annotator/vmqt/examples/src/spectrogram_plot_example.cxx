@@ -19,7 +19,7 @@
  *
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "wave_utils.hxx"
 #include "analysis_utils.hxx"
 #include "vmSpectrogramPlot.hxx"

@@ -324,11 +324,11 @@ void DynamicType::UpdateDataByShrinking()
 			else
 			{
 				// Overlap, need a temporary
-				char tmpData[size];
-				copy(tmpData, oldLocation);
+				std::vector<char> tmpData(size);
+				copy(tmpData.data(), oldLocation);
 				dest(oldLocation);
-				copy(newLocation, tmpData);
-				dest(tmpData);
+				copy(newLocation, tmpData.data());
+				dest(tmpData.data());
 			}
 			attrib.offs = offs;
 		}
@@ -579,8 +579,7 @@ void DynamicType::FullfilsInvariant() const
 	unsigned nAdded = 0;
 	unsigned nRemoved = 0;
 
-	bool usedblock[_allocatedDataSize];
-	for (unsigned j=0; j<_allocatedDataSize; j++) usedblock[j] = false;
+	std::vector<bool> usedblock(_allocatedDataSize, false);
 
 	for (unsigned i=0; i<_numAttr; i++)
 	{

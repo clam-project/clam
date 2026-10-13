@@ -19,8 +19,8 @@
  *
  */
 
-#include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
+#include <QApplication>
+#include <QFileDialog>
 #include "Melody.hxx"
 #include "XMLStorage.hxx"
 #include "vmBPFPlot.hxx"

@@ -45,7 +45,7 @@ InControlBase& InControlRegistry::Get(const std::string & name) const
 		"No in control named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
-	return *(InControlBase*)NULL; // just to get rid of warnings
+	return *(InControlBase*)nullptr; // just to get rid of warnings
 }
 
 bool InControlRegistry::Has(const std::string& name) const

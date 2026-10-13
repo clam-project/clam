@@ -90,7 +90,7 @@ namespace CLAM
 
 				void Kill()
 					{
-						mListPtr = NULL;
+						mListPtr = nullptr;
 					}
 
 				bool IsAlive( TIndex i)
@@ -100,7 +100,7 @@ namespace CLAM
 
 				void AssignList( SinusoidalTrack* new_list )
 					{								
-						CLAM_ASSERT( new_list!=NULL, "new_list is NULL!" );
+						CLAM_ASSERT( new_list!=nullptr, "new_list is null!" );
 						mListPtr = new_list;
 					}
 

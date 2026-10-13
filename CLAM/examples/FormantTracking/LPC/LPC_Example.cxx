@@ -65,7 +65,7 @@ class LPCExample : public ProcessingComposite {
 
 	const char* GetClassName() const {return "LPCExample";}
 
-	bool ConcreteStart() throw(ErrProcessingObj);
+	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig& c);
 public:
 	LPCExample(const LPCExampleConfig &cfg);
@@ -74,7 +74,7 @@ public:
 	bool Do( DataArray& A, DataArray& K, TData& E );
 };
 
-bool LPCExample::ConcreteStart() throw(ErrProcessingObj)
+bool LPCExample::ConcreteStart()
 {
 	iterator obj;
 	for (obj=composite_begin(); obj!=composite_end(); obj++)
@@ -83,7 +83,7 @@ bool LPCExample::ConcreteStart() throw(ErrProcessingObj)
 	try {
 		AudioManager::Current().Start();
 	}
-	catch (Err) {
+	catch (Err & e) {
 		throw(ErrProcessingObj("Could not start AudioManager",this));
 	}
 	
@@ -157,7 +157,7 @@ bool LPCExample::Do( DataArray& A, DataArray& K, TData& E )
 int main( int argc, char* argv[] )
 {
 	try{
-		int i , Size = 512;
+		int Size = 512;
 		int LPC_order = 11;
 		float SampleRate = 44100.0;
 
@@ -196,7 +196,7 @@ int main( int argc, char* argv[] )
 		CLAM::XMLStorage::Dump( K, "BCoefficients", "LPC_exampleB.xml" );
 
 	}
-	catch( CLAM::Err err )
+	catch( CLAM::Err & err )
 	{
 		err.Print();
 	}

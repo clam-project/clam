@@ -29,14 +29,9 @@ namespace CLAM
 {
 	namespace VM
 	{
-		FundPlayer::FundPlayer()
-		{
-			mThread.SetThreadCode(makeMemberFunctor0((*this), FundPlayer, thread_code));
-		}
-		
-		FundPlayer::~FundPlayer()
-		{
-		}
+		FundPlayer::FundPlayer() = default;
+
+		FundPlayer::~FundPlayer() = default;
 		
 		void FundPlayer::SetData(const Segment& segment)
 		{

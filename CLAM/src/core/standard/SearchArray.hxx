@@ -36,7 +36,7 @@ private:
 public:
 	SearchArray()
 	{
-		mpArray = NULL;
+		mpArray = nullptr;
 	}
 	SearchArray(const Array<T>& array)
 	{

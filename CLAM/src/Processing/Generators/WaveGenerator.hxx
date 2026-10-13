@@ -36,14 +36,14 @@ namespace CLAM {
 		EWaveType(tValue v) : Enum(ValueTable(), v) {};
 		EWaveType(std::string s) : Enum(ValueTable(), s) {};
 		
-		typedef enum {
+		enum tEnum {
 			eSine
-		} tEnum;
+		};
 		static tEnumValue * ValueTable()
 		{
 			static tEnumValue sEnumValues[] = {
 				{EWaveType::eSine,"SineWave"},
-				{0,NULL}
+				{0,nullptr}
 			};
 			return sEnumValues;
 		}

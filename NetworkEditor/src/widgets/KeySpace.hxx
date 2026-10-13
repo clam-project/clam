@@ -22,15 +22,15 @@
 #ifndef KeySpace_hxx
 #define KeySpace_hxx
 
-#include <QtOpenGL/QGLWidget>
+#include <QOpenGLWidget>
 #undef GetClassName
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/qdesignerexportwidget.h>
 #include "FloatArrayDataSource.hxx"
 
 namespace CLAM {
 namespace VM {
 
-class QDESIGNER_WIDGET_EXPORT KeySpace : public QGLWidget
+class QDESIGNER_WIDGET_EXPORT KeySpace : public QOpenGLWidget
 {
 	Q_OBJECT
 	Q_PROPERTY(bool smooth READ smooth WRITE setSmooth)

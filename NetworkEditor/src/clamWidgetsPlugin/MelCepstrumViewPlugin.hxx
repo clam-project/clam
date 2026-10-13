@@ -24,7 +24,7 @@
 #ifndef MelCepstrumViewPlugin_hxx
 #define MelCepstrumViewPlugin_hxx
 
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/customwidget.h>
 
 class MelCepstrumViewPlugin : public QObject,
                              public QDesignerCustomWidgetInterface

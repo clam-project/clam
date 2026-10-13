@@ -44,7 +44,7 @@ namespace CLAM {
 
 		ErrProcessingObj(const char* msg,const Processing *o);
 
-		~ErrProcessingObj() throw() {} 
+		~ErrProcessingObj() noexcept {} 
 
 	};
 

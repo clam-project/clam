@@ -34,8 +34,7 @@
 #include <string>
 #include <vector>
 #include <queue>
-
-#include "Mutex.hxx"
+#include <mutex>
 
 namespace CLAM {
 
@@ -86,24 +85,16 @@ public:
 	const char *GetClassName() const {return "Controller";}
 
 	bool Do()
-	{	
-		IdxList::iterator ListIt;		
+	{
+		std::lock_guard<std::mutex> lock(mControllerDoMutex);
 
-		Mutex::ScopedLock lock( mControllerDoMutex );
-		
 		IdxList qs = getQueues();
-		
-		if (!qs.empty())
-			{
-				for (ListIt=qs.begin();ListIt!=qs.end() ;ListIt++ )
-					{
-						TControlData val = PopControl( (*ListIt) );
-						OutControls[(*ListIt)].SendControl(val);
-						OutValues[(*ListIt)] = val;
-					}
-			}
-		
-		
+		for (auto id : qs)
+		{
+			TControlData val = PopControl(id);
+			OutControls[id].SendControl(val);
+			OutValues[id] = val;
+		}
 		return true;
 	}
 	
@@ -134,22 +125,17 @@ private:
 	IdxList getQueues()
 	{
 		IdxList modifiedQs;
-		std::vector<TQueue>::iterator it;
-
 		int k = 0;
-		for (it=mDataQueues.begin(); it != mDataQueues.end() ; it++ )
+		for (const auto& queue : mDataQueues)
 		{
-			if (!(*it).empty())
-			{
+			if (!queue.empty())
 				modifiedQs.push_back(k);
-			}
-			k++;
+			++k;
 		}
-		
 		return modifiedQs;
 	}
-	Mutex mDataMutex;
-	Mutex mControllerDoMutex;
+	std::mutex mDataMutex;
+	std::mutex mControllerDoMutex;
 };
 //////////////////////////////////////////////////////////////////////////////////////////
 }; // namespace CLAM

@@ -24,6 +24,7 @@
 
 #include "InPort.hxx"
 #include "TypeInfo.hxx"
+#include <algorithm>
 
 namespace CLAM
 {
@@ -69,7 +70,8 @@ public:
 	//why not pass InPortBase? still not needed to call from the "generic" interface
 	void UnPublishInPort( ProperInPort& in )
 	{
-		mPublishedInPortsList.remove(&in);
+		auto _it = std::find(mPublishedInPortsList.begin(), mPublishedInPortsList.end(), &in);
+		if (_it != mPublishedInPortsList.end()) mPublishedInPortsList.erase(_it);
 	}
 
 	void ConcretePublishInPort( ProperInPort & in )

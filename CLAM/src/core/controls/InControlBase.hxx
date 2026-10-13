@@ -1,6 +1,7 @@
 #ifndef InControlBase_hxx
 #define InControlBase_hxx
 
+#include <algorithm>
 #include <string>
 #include <list>
 #include <typeinfo>
@@ -93,7 +94,10 @@ namespace CLAM {
 		/// Implementation detail just to be used just from OutControlBase
 		void OutControlInterface_RemoveLink(OutControlBase & outControl)
 		{
-				mLinks.remove(&outControl);
+				// std::find + erase instead of list::remove: see
+				// OutControlBase.hxx for the MSVC 14.44 STL rationale.
+				auto _it = std::find(mLinks.begin(), mLinks.end(), &outControl);
+				if (_it != mLinks.end()) mLinks.erase(_it);
 		}
 		virtual const std::string GetLastValueAsString ()
 		{

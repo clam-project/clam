@@ -20,9 +20,11 @@
  */
 
 #include "ProcessingTree.hxx" 
-#include <QtGui/QMouseEvent>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
+#include <QMimeData>
+#include <QDrag>
+#include <QMouseEvent>
+#include <QHeaderView>
+#include <QLabel>
 #include <iostream>
 
 #include <CLAM/ProcessingFactory.hxx> 
@@ -65,54 +67,46 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 void ProcessingTree::RePopulateTree()
 {
 	_treeWidget->clear();
-	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-	CLAM::ProcessingFactory::Values categories = factory.GetSetOfValues("category");
-	CLAM::ProcessingFactory::Values::const_iterator itCategory;
+	auto& factory = CLAM::ProcessingFactory::GetInstance();
+	const auto categories = factory.GetSetOfValues("category");
 
-	for(itCategory = categories.begin(); itCategory != categories.end(); itCategory++)
+	for (const auto& category : categories)
 	{
-		CLAM::ProcessingFactory::Keys keys = factory.GetKeys("category", *itCategory);
-		//std::cout << "Category: " << *itCategory << std::endl;
-		if( keys.size() == 0 ) continue;
-		CLAM::ProcessingFactory::Keys::const_iterator itKey;
-		std::string category = *itCategory;
-		QTreeWidgetItem * categoryTree = new QTreeWidgetItem( _treeWidget, QStringList() << category.c_str());
-		for(itKey = keys.begin(); itKey != keys.end(); itKey++)
+		auto keys = factory.GetKeys("category", category);
+		if (keys.empty()) continue;
+		QTreeWidgetItem* categoryTree = new QTreeWidgetItem(_treeWidget, QStringList() << category.c_str());
+		for (const auto& key : keys)
 		{
-			std::string key = *itKey;
-
 			std::string description = key;
-			CLAM::ProcessingFactory::Values descriptionList=factory.GetValuesFromAttribute(key, "description");
-			if (! descriptionList.empty()) description=descriptionList.front();
+			auto descriptionList = factory.GetValuesFromAttribute(key, "description");
+			if (!descriptionList.empty()) description = descriptionList.front();
 
-			QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
-			
-			CLAM::ProcessingFactory::Values iconList=factory.GetValuesFromAttribute(key,"icon");
+			QTreeWidgetItem* item = new QTreeWidgetItem(categoryTree, QStringList() << description.c_str());
+
+			auto iconList = factory.GetValuesFromAttribute(key, "icon");
 			std::string iconPath = "processing.png";
-			if (! iconList.empty()) iconPath = iconList.front();
+			if (!iconList.empty()) iconPath = iconList.front();
 			item->setIcon(0, QIcon(QString(":/icons/images/%1").arg(iconPath.c_str())));
 
 			item->setText(1, key.c_str());
 
-			QString tooltipText=QString(tr("name: %1").arg(key.c_str()));
-			CLAM::ProcessingFactory::Pairs pairsFromKey=factory.GetPairsFromKey(key);
-			CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
-			for(itPairs = pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
+			QString tooltipText = QString(tr("name: %1").arg(key.c_str()));
+			for (const auto& pair : factory.GetPairsFromKey(key))
 			{
-				std::string attribute = itPairs->attribute;
-				std::string value = itPairs->value;
-				if(attribute!="icon" && value!=key && value!="")
+				const std::string& attribute = pair.attribute;
+				const std::string& value = pair.value;
+				if (attribute != "icon" && value != key && !value.empty())
 				{
-					tooltipText+=QString( tr("\n%1: %2")
+					tooltipText += QString(tr("\n%1: %2")
 						.arg(attribute.c_str())
-						.arg(value.c_str()) );
+						.arg(value.c_str()));
 				}
 			}
-			item->setToolTip(0,tooltipText);
+			item->setToolTip(0, tooltipText);
 		}
 	}
 	// actualize the search bar with the new populated tree
-	if(_searchEdit->text()!="")
+	if (!_searchEdit->text().isEmpty())
 		filterProcessings(_searchEdit->text());
 }
 
@@ -131,9 +125,9 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 	data->setText(className);
 	drag->setMimeData(data);
 	drag->setPixmap(QPixmap(":/icons/images/processing.png"));
-	Qt::DropAction dropAction = drag->start();
+	Qt::DropAction dropAction = drag->exec();
+	(void)dropAction;
 }
 
 
 } // namespace NetworkGUI
-

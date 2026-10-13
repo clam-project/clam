@@ -12,8 +12,10 @@ namespace CLAM
 		mData[whichDataToWrite] = mInput.GetAudio();
 		mSigNewData.Emit();
 		{
-			TryMutex::ScopedTryLock lock(mSwitchMutex,true);
-			if (lock.Locked())
+			// The old ScopedTryLock(..., true) path blocked here; now a frozen
+			// reader makes us skip publishing this buffer instead.
+			std::unique_lock<std::mutex> lock(mSwitchMutex, std::try_to_lock);
+			if (lock.owns_lock())
 				mWhichDataToRead = whichDataToWrite;
 		}
 		mInput.Consume();
@@ -94,4 +96,3 @@ namespace CLAM
 #endif
 	
 } // namespace CLAM
-

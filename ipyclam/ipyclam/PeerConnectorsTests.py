@@ -1,12 +1,12 @@
-from PeerConnectors import PeerConnectors
-import Connector
+from .PeerConnectors import PeerConnectors
+from . import Connector
 
 import unittest
-import TestFixtures
+from . import TestFixtures
 class PeerConnectorsTests(unittest.TestCase):
 	def empty(self):
-		import Dummy_Engine
-		return Dummy_Engine.Dummy_Engine()
+		from .dummy import Dummy_Engine
+		return Dummy_Engine()
 
 	def fixture1(self):
 		engine = self.empty()
@@ -32,8 +32,8 @@ class PeerConnectorsTests(unittest.TestCase):
 
 class Clam_PeerConnectorsTests(PeerConnectorsTests):
 	def empty(self):
-		import Clam_Engine
-		return Clam_Engine.Clam_Engine()
+		from .clam import Clam_Engine
+		return Clam_Engine()
 
 if __name__ == '__main__':
 	unittest.main()

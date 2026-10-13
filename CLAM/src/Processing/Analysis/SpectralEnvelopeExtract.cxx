@@ -53,7 +53,7 @@ namespace CLAM {
 		Configure(SpectralEnvelopeExtractConfig());
 	}
 
-	SpectralEnvelopeExtract::SpectralEnvelopeExtract(const SpectralEnvelopeExtractConfig &c = SpectralEnvelopeExtractConfig())
+	SpectralEnvelopeExtract::SpectralEnvelopeExtract(const SpectralEnvelopeExtractConfig &c)
 	{
 		Configure(c);
 	}

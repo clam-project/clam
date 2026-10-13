@@ -1,5 +1,9 @@
-#include <qlayout.h>
-#include <qframe.h>
+#include <QLayout>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QBoxLayout>
+#include <QGridLayout>
+#include <QVBoxLayout>
 #include <CLAM/Ruler.hxx>
 #include <CLAM/VScrollGroup.hxx>
 #include <CLAM/DisplaySurface.hxx>
@@ -10,8 +14,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		SMSFreqMultiDisplay::SMSFreqMultiDisplay(QWidget* parent, const char * name, WFlags f )
-			: MultiDisplayPlot(parent,name,f)
+		SMSFreqMultiDisplay::SMSFreqMultiDisplay(QWidget* parent, const char * name)
+			: MultiDisplayPlot(parent,name)
 			, mShowOnNewData(true)
 			, mHasMasterData(false)
 		{
@@ -33,7 +37,7 @@ namespace CLAM
 
 			QFont ref = mYRulers[0]->Font();
 			QFontMetrics fm(ref);       
-			int y_ruler_width = fm.width("X:-0.0e+00");
+			int y_ruler_width = fm.horizontalAdvance("X:-0.0e+00");
 			
 			SetYRulersWidth(y_ruler_width);
 			
@@ -57,9 +61,9 @@ namespace CLAM
 			mVScrollBar = new VScrollGroup(this);
 
 			QBoxLayout* displayLayout = new QHBoxLayout;
-			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
-			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
+			QBoxLayout* rulersLayout = new QVBoxLayout; displayLayout->addLayout(rulersLayout);
+			QBoxLayout* surferLayout = new QVBoxLayout; displayLayout->addLayout(surferLayout);
+			QBoxLayout* scrollLayout = new QVBoxLayout; displayLayout->addLayout(scrollLayout); 
 			// add widgets
 			for(unsigned i=0; i < mYRulers.size(); i++)
 			{
@@ -69,15 +73,15 @@ namespace CLAM
 			scrollLayout->addWidget(mVScrollBar);
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,4,3,1);
+			QGridLayout* innerLayout = new QGridLayout(this); this->layout()->setSpacing(1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
-			innerLayout->addMultiCellLayout(displayLayout,1,1,0,2);
+			innerLayout->addLayout(displayLayout, 1, 0, (1)-(1)+1, (2)-(0)+1);
 			innerLayout->addWidget(leftHole,2,0);
 			innerLayout->addWidget(GetHScrollGroup(),2,1);
 			innerLayout->addWidget(rightHole,2,2);
-			innerLayout->addMultiCellWidget(bottomHole,3,3,0,2);
+			innerLayout->addWidget(bottomHole, 3, 0, (3)-(3)+1, (2)-(0)+1);
 
 			// bind controllers to surfaces
 			CreateControllers();

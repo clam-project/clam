@@ -24,7 +24,7 @@
 #include "KeySpacePlugin.hxx"
 #include "KeySpace.hxx"
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
 KeySpacePlugin::KeySpacePlugin(QObject *parent)
     : QObject(parent)

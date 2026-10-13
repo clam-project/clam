@@ -1,5 +1,6 @@
-#!/usr/bin/env python
-import os, glob, sys
+import glob
+import os
+import sys
 
 moduleName='filterspkg'
 version = "1.4.0"

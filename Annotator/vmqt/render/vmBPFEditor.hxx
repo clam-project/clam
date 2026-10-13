@@ -24,7 +24,7 @@
 
 #include "BPF.hxx"
 #include "vmRenderer2D.hxx"
-#include <QtGui/QColor>
+#include <QColor>
 
 namespace CLAM
 {

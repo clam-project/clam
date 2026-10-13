@@ -22,14 +22,14 @@
 #ifndef ANNOTATOR_HXX
 #define ANNOTATOR_HXX
 
-#include "ui_Annotator.hxx"
+#include "ui_Annotator.h"
 #include "DescriptorTableController.hxx"
 
 #include <string>
 #include <utility>
 #include <deque>
-#include <QtCore/Qt>
-#include <QtGui/QStatusBar>
+#include <Qt>
+#include <QStatusBar>
 
 //xamat
 

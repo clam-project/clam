@@ -39,7 +39,7 @@ for path in paths :
 
 sources = [s for s in sources if "main.cpp" not in s]
 
-print "sources without main", sources
+print("sources without main", sources)
 
 Program("unittests", sources, CPPPATH=cpppath, CXXFLAGS=cppflags, LIBPATH=libpath)
 

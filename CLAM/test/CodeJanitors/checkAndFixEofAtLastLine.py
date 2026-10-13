@@ -3,9 +3,9 @@ import sys, os, glob
 
 def endsWithEndOfLine(filename) :
 	try:
-		return len(file(filename).readlines().pop().strip())==0
+		return len(open(filename).readlines().pop().strip())==0
 	except :
-		print "Empty ", filename
+		print("Empty ", filename)
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -18,11 +18,11 @@ def recursiveDirs(root) :
 
 
 if __name__=="__main__" :
-	print recursiveDirs(".")
+	print(recursiveDirs("."))
 	for f in scanFiles("*xx", recursiveDirs('.')) : 
 		if endsWithEndOfLine(f) : continue
-		print f
-		content = file(f).read()
+		print(f)
+		content = open(f).read()
 		fd=open(f,"w")
 		fd.write(content)
 		fd.write("\n")

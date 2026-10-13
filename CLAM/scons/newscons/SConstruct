@@ -11,15 +11,15 @@ AddOption(
 
 crosscompiling = GetOption('target') and 'mingw' in GetOption("target") or False
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isLinuxPlatform = sys.platform == 'linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 def die(message) :
-	print >> sys.stderr, message
+	print(message, file=sys.stderr)
 	sys.exit()
 
 def diffList(list1, list2) :
-	print list2.__class__.__name__
+	print(list2.__class__.__name__)
 	if isinstance(list2, list) : return [ item for item in list2 if item not in list1 ]
 	return list2
 
@@ -39,13 +39,13 @@ sconfs = dict([
 modules = clam.sortModules(dict(
 	( (name, module.Dependencies) for name, module in sconfs.items() )
 	))
-print "order:", modules
+print("order:", modules)
 
 
 # Collecting module variables
 variables = Variables(".options.cache", ARGUMENTS)
 
-#if sys.platform == "linux2" :
+#if sys.platform == "linux" :
 #	variables.Add( BoolVariable( 'crossmingw', '', 'no' ))
 variables.AddVariables(
 	BoolVariable(

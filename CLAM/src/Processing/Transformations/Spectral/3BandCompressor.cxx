@@ -55,7 +55,10 @@ bool ThreeBandCompressor::Do(const Spectrum& in, Spectrum& out)
 	TData midThreshold = 	log2lin(mMidThresholdCtl.GetLastValue());
 	TData highThreshold = 	log2lin(mHighThresholdCtl.GetLastValue());
 	
-	TData currentThreshold = lowThreshold;
+	// TODO: the three loops below each use their own threshold literal; a
+	// single-loop design would have used this rolling cursor. Preserved as a
+	// hint that the function may want to be folded into one loop.
+	[[maybe_unused]] TData currentThreshold = lowThreshold;
 	for(int i = 0; i<lowCutoff; i++)
 	{
 		if(iMag[i]>lowThreshold)

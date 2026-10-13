@@ -19,13 +19,9 @@ namespace CLAM
 		{
 			InitTables();
 			HaveData(true);
+		}
 
-			mThread.SetThreadCode(makeMemberFunctor0((*this), MelodyPlayer, thread_code));
-		}
-		
-		MelodyPlayer::~MelodyPlayer()
-		{
-		}
+		MelodyPlayer::~MelodyPlayer() = default;
 		
 		void MelodyPlayer::AddData(const std::string& key, const Melody& melody, const TData& dur)
 		{

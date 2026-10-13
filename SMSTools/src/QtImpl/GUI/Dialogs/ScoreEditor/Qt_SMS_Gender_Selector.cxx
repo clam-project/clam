@@ -1,21 +1,31 @@
-#include <qlayout.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
+#include <QLayout>
+#include <QGroupBox>
+#include <QButtonGroup>
+#include <QRadioButton>
 #include "Qt_SMS_Gender_Selector.hxx"
+#include <QGridLayout>
+#include <QBoxLayout>
+#include <QVBoxLayout>
 
 namespace QtSMS
 {
 	Qt_SMS_Gender_Selector::Qt_SMS_Gender_Selector(QWidget* parent)
 		: QWidget(parent)
 	{
-		QButtonGroup* buttonGroup = new QButtonGroup("Select",this);
-		buttonGroup->setRadioButtonExclusive(true);
-		buttonGroup->setFont(QFont("Sans",11));
+		QGroupBox* groupBox = new QGroupBox("Select", this);
+		groupBox->setFont(QFont("Sans",11));
 
-		QRadioButton* m2f = new QRadioButton(buttonGroup);
-		QRadioButton* f2m = new QRadioButton(buttonGroup);
+		QRadioButton* m2f = new QRadioButton(groupBox);
+		QRadioButton* f2m = new QRadioButton(groupBox);
 
-		QBoxLayout* innerLayout = new QVBoxLayout(buttonGroup,10,1);
+		QButtonGroup* buttonGroup = new QButtonGroup(this);
+		buttonGroup->setExclusive(true);
+		buttonGroup->addButton(m2f, 0);
+		buttonGroup->addButton(f2m, 1);
+
+		QBoxLayout* innerLayout = new QVBoxLayout(groupBox);
+		innerLayout->setContentsMargins(10, 10, 10, 10);
+		innerLayout->setSpacing(1);
 		innerLayout->addWidget(m2f);
 		innerLayout->addWidget(f2m);
 
@@ -25,10 +35,11 @@ namespace QtSMS
 		m2f->setChecked(true);
 
 		// layout
-		QGridLayout* layout = new QGridLayout(this,3,1,10);
-		layout->addWidget(buttonGroup,1,0);
+		QGridLayout* layout = new QGridLayout(this);
+		layout->setContentsMargins(10, 10, 10, 10);
+		layout->addWidget(groupBox, 1, 0);
 
-		connect(buttonGroup,SIGNAL(clicked(int)),this,SIGNAL(genderChanged(int)));
+		connect(buttonGroup, &QButtonGroup::idClicked, this, &Qt_SMS_Gender_Selector::genderChanged);
 	}
 
 	Qt_SMS_Gender_Selector::~Qt_SMS_Gender_Selector()

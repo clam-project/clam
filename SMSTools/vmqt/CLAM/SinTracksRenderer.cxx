@@ -58,7 +58,7 @@ namespace CLAM
 
 		void SinTracksRenderer::Render()
 		{
-			CLAM_ASSERT( mPalette!=NULL, "SinTracksRenderer::Render(): No palette was given!" );
+			CLAM_ASSERT( mPalette!=nullptr, "SinTracksRenderer::Render(): No palette was given!" );
 
 			if(!mReadPixels)
 			{

@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include "ControlSurface.hxx"
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class QLabel;
 class QDoubleSpinBox;

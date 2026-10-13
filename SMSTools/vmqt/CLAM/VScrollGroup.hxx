@@ -22,7 +22,7 @@
 #ifndef __VSCROLLGROUP__
 #define __VSCROLLGROUP__
 
-#include <qwidget.h>
+#include <QWidget>
 
 class QPushButton;
 

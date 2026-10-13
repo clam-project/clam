@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-from PyQt4 import QtGui, QtCore
-import ipyclam.ui.PyQt4 as ui
+import ipyclam.clam.PyQt as ui
 import sys
+from PyQt6 import QtGui, QtCore, QtSvgWidgets
 import ipyclam
 
 class ipyclam_controller(QtGui.QWidget):
@@ -82,15 +82,15 @@ class ipyclam_controller(QtGui.QWidget):
 
 	def play(self):
 		self._network.play()
-		print 'Playing...'
+		print('Playing...')
 
 	def pause(self):
 		self._network.pause()
-		print 'Paused'
+		print('Paused')
 
 	def stop(self):
 		self._network.stop()
-		print 'Stopped'
+		print('Stopped')
 
 	def setConfigProperty(self):
 		self.configButton = QtGui.QPushButton("Configure")

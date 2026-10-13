@@ -45,11 +45,11 @@ listenerId="listener"
 sourceId="source"
 
 def getTypeOfObject(owner):
-#	print owner
-#	print owner.has_key('sound_type')
+#	print(owner)
+#	print('sound_type' in owner)
 
-	if not owner.has_key('sound_type'):
-		print "Warning: connected an object without sound_type attribute."
+	if 'sound_type' not in owner:
+		print("Warning: connected an object without sound_type attribute.")
 		return None
 	return owner.get('sound_type')
 
@@ -64,11 +64,11 @@ for testpath in pathToOSCList:
 		configured=1
 		break
 if configured==0:
-	print "Can't found OSC.py. Aborting."
+	print("Can't found OSC.py. Aborting.")
 	
 def sendObjectValue(objectName,typeName,typeValue,value,port,ipToSend):
 	message="/SpatDIF/%s/%s/%s" % (typeName,objectName,typeValue)
-	print "sending ", value, " to path %s to port %i" % (message,port)
+	print("sending ", value, " to path %s to port %i" % (message,port))
 	if ipToSend:
 		Message(message,value).sendto(ipToSend,port)
 	else:
@@ -86,16 +86,16 @@ def main(controller):
 	ori=object.worldOrientation
 	orientation=Blender.Mathutils.Matrix(ori[0],ori[1],ori[2]).transpose()
 #	print Blender.Mathutils.Matrix(orientation[0],orientation[1],orientation[2]).transpose().toEuler()
-	print orientation.toEuler()
+	print(orientation.toEuler())
 	if object.isA('KX_Camera') and typeName=='listener': # if the listener is a camera, do a proper rotation acording to conventions: azimuth 0: seeing at x+
 		rotationMatrix=Blender.Mathutils.Euler(90,0,-90).toMatrix().invert()
 		orientation = rotationMatrix * orientation
-	print "new: ", orientation.toEuler()
+	print("new: ", orientation.toEuler())
 	roll, descention, yaw=orientation.toEuler()
 	pitch = -descention
 	rotation = (yaw,pitch,roll)
 
-	if object.has_key('osc_ports'):
+	if 'osc_ports' in object:
 		ports=object.get('osc_ports').split()
 	else:
 		ports=[7000]
@@ -103,7 +103,7 @@ def main(controller):
 
 	ipToSend=None
 
-	if object.has_key('osc_send_to_ip'):
+	if 'osc_send_to_ip' in object:
 		ipToSend=object.get('osc_send_to_ip')
 
 	for port in ports:

@@ -20,7 +20,7 @@ namespace CLAM
 
 		void QtWaitMessageDlg::Caption(const std::string& caption)
 		{
-			mWaitMessage->setCaption(caption.c_str());
+			mWaitMessage->setWindowTitle(caption.c_str());
 		}
 
 		void QtWaitMessageDlg::LabelText(const std::string& label)

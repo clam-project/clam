@@ -10,10 +10,10 @@ import clamrefactor
 
 def generate_3d_chorus_network(layoutfile):
 	channels = len([line for line in open(layoutfile) if line.strip()[0] != '#'])
-	print "num channels: ", channels
+	print("num channels: ", channels)
 	template_filename = "3d_chorus_template.clamnetwork"
 	filename = "3d_chorus_%i.clamnetwork" % channels
-	network = clamrefactor.ClamNetwork(file(template_filename))
+	network = clamrefactor.ClamNetwork(open(template_filename))
 	network.setConfig("AudioBufferSink", "NSinks", str(channels))
 	# generate needed ports, processings and connections
 	y_offset = 150
@@ -43,7 +43,7 @@ def generate_3d_chorus_network(layoutfile):
 		thisline=line.split(" ")		
 		network.setConfig("PhaseOffset_%i" %i, "Default", str(thisline[1]))
 	f.close()		
-	network.dump(file(filename,"w"))
+	network.dump(open(filename,"w"))
 
 
 layoutfiles = ["/usr/local/share/clam/layouts/15.layout", "/usr/local/share/clam/layouts/22.layout"]

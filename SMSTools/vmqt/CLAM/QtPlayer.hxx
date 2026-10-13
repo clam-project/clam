@@ -22,7 +22,7 @@
 #ifndef __QTPLAYER__
 #define __QTPLAYER__
 
-#include <qwidget.h>
+#include <QWidget>
 #include <CLAM/MediaTime.hxx>
 #include <CLAM/Slotv1.hxx>
 

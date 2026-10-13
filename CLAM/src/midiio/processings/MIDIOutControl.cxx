@@ -54,7 +54,7 @@ void MIDIOutControl::InitMembers(void)
 }
 
 bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
-	throw(ErrProcessingObj)
+
 {
 	bool ret = MIDIOut::ConcreteConfigure(c);
 	

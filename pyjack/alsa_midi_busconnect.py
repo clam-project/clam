@@ -25,7 +25,7 @@ def _getClientPorts(name,typeOfClient):
 	try:
 		index=[client['clientName'] for client in listOfClients].index(name)
 	except:
-		print "WARNING: trying to get ports of client %s, which doesn't exist. Returning an empty list." % name
+		print("WARNING: trying to get ports of client %s, which doesn't exist. Returning an empty list." % name)
 		return []
 	if index == -1:
 		return None
@@ -54,21 +54,21 @@ def bus_connect(source, target):
 	sources = source if type(source) == type([]) else getClientOutputPorts(source)
 	targets = target if type(target) == type([]) else getClientInputPorts(target)
 	num_connections = min(len(sources), len(targets))
-	print 'Doing %i connections. Client has %i out ports and target has %i in ports' % (num_connections, len(sources), len(targets))
-	for i in xrange(num_connections) :
-		print 'connect', sources[i], targets[i]
+	print('Doing %i connections. Client has %i out ports and target has %i in ports' % (num_connections, len(sources), len(targets)))
+	for i in range(num_connections) :
+		print('connect', sources[i], targets[i])
 		connect(sources[i], targets[i])
 	return num_connections != 0
 
 def main():
-	print "input clients: "
-	print getInputClients()
-	print "output ones: "
-	print getOutputClients()
-	print "Midi Through:"
-	print getClientInputPorts("Midi Through")
-	print "Midi Through outputs:"
-	print getClientOutputPorts("Midi Through")
+	print("input clients: ")
+	print(getInputClients())
+	print("output ones: ")
+	print(getOutputClients())
+	print("Midi Through:")
+	print(getClientInputPorts("Midi Through"))
+	print("Midi Through outputs:")
+	print(getClientOutputPorts("Midi Through"))
 	bus_connect("Midi Through","Midi Through")
 
 if __name__ == '__main__':
