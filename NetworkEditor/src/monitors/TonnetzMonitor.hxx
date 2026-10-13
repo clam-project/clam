@@ -52,13 +52,13 @@ private:
 			"F",
 			"F#",
 			};
-		return a[bin];
+		return bin < 12 ? a[bin] : "";
 	}
 	const CLAM::TData * frameData()
 	{
 		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
 		_size = pcp.size();
-		return &pcp[0];
+		return pcp.empty() ? nullptr : pcp.data();
 	}
 	void release()
 	{

@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/interfaces/prototyper">
+    <file>DefaultInterface.qml</file>
+  </qresource>
+</RCC>

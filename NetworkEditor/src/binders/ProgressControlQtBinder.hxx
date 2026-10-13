@@ -27,7 +27,7 @@ public:
 	bool bind(QObject * uiElement, CLAM::Network & network, QStringList & errors)
 	{
 		if (not isSubClassOf<ProgressControlWidget>(uiElement))
-			error(errors, QString(
+			return error(errors, QString(
 				"ProgressControlQtBinder: %1 expected a ProgressControlWidget bot got a %1")
 				.arg(uiElement->objectName())
 				.arg(uiElement->metaObject()->className())
@@ -35,7 +35,7 @@ public:
 		ProgressControlWidget * widget = qobject_cast<ProgressControlWidget*>(uiElement);
 
 		if (not widget->objectName().startsWith(_prefix))
-			error(errors, QString(
+			return error(errors, QString(
 				"ProgressControlQtBinder: '%1' does not starts with prefix '%2'")
 				.arg(widget->objectName())
 				.arg(_prefix)
@@ -45,7 +45,13 @@ public:
 			<< " to " << widget->metaObject()->className()
 			<< std::endl;
 
-		CLAM::Processing & receiver = network.GetProcessing(processingName);
+        if (missingProcessing(processingName, network, errors)) return false;
+        CLAM::Processing & receiver = network.GetProcessing(processingName);
+        if (!receiver.HasInControl("Current Time Position (%)") || !receiver.HasOutControl("Current Time Position"))
+            return error(errors, QString("Processing '%1' has no seek/progress controls").arg(processingName.c_str()));
+        if (receiver.GetInControl("Current Time Position (%)").GetTypeId() != typeid(float)
+            || receiver.GetOutControl("Current Time Position").GetTypeId() != typeid(float))
+            return error(errors, QString("Processing '%1' has incompatible seek/progress controls").arg(processingName.c_str()));
 
 		ProgressControl * sender = new ProgressControl;
 		std::string senderName = network.GetUnusedName("PrototyperProgressControl");

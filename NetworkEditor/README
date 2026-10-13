@@ -3,12 +3,13 @@
 The CLAM Network Editor is a tool for editing CLAM processing networks.
 Those processing networks can become the processing core of an application
 by using the CLAM::NetworkPlayer class in your program or by using
-the CLAM Prototyper to link the network to a Qt Designer interface.
+the CLAM Prototyper to link the network to a QML or legacy Qt Designer interface.
+See QML-WIDGETS.md for authoring and previewing QML components.
 
 = Extra dependencies =
 
 Besides CLAM and its dependencies, NetworkEditor compilation depends on
-Qt6 (qtbase with OpenGL, qtsvg, and qttools for Prototyper's UiTools and the
+Qt6 (qtbase with OpenGL, qtdeclarative with Qt Quick Controls, qtsvg, and qttools for Prototyper's UiTools and the
 Designer plugin) and OpenGL. It is built with CMake from the top-level directory
 with -DCLAM_BUILD_GUI_APPS=ON; see README.md at the root of the repository.
 
@@ -31,10 +32,15 @@ To use PortAudio instead of jack do the following:
 
 == Prototyper usage ==
 
- Usage: ./Prototyper <networkfile> [ <uifile> ] [-o] [-b <backend> [-b <backend> ...]]
+ Usage: ./Prototyper [<networkfile> [<interface.qml|interface.ui>]] [-o] [-b <backend> [-b <backend> ...]]
 Options:
  -o             Non interactive mode
- -b <backend>   Try backend (portaudio, alsa, jack).
+ -b <backend>   Try backend (jack, portaudio).
+ --start-paused  Wait for Play before processing audio.
+ -h, --help      Show usage.
+
+A same-named .qml is preferred over .ui. If neither exists, Prototyper uses
+its built-in QML playback interface.
 
 
 == Enable Faust ==
