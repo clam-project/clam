@@ -11,7 +11,7 @@ void Printbuffer(char* p, int size)
 {
 	std::cout << "\n\n\t0         1         2         3         4\n"
 	"\t01234567890123456789012345678901234567890123456789\n\t";
-	char notshowable = '·';
+	const char notshowable = '.';
 	for (int i=0; i<size; i++)
 	{
 		char foo = p[i];
