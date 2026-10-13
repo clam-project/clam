@@ -4,6 +4,7 @@ qt_add_qml_module(clam_qmlwidgets
     URI CLAM.Widgets
     VERSION 1.0
     RESOURCE_PREFIX /qt/qml
+    DEPENDENCIES QtQuick
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/CLAM/Widgets"
     DESIGNER_SUPPORTED
     SOURCES Monitor.hxx Monitor.cxx ControlBinding.hxx ControlBinding.cxx QmlBindings.hxx QmlBindings.cxx
