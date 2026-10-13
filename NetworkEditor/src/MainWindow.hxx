@@ -22,6 +22,7 @@
 #include "RichTextEditor.hxx"
 #include "NetworkUpgrader.hxx"
 #include "IPyClamConsole.hxx"
+#include "BackendConfigDialog.hxx"
 
 // copied from Annotator:
 #include "TaskRunner.hxx"
@@ -36,6 +37,9 @@
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
+#endif
+#ifdef USE_PIPEWIRE
+#include <CLAM/PipeWireNetworkPlayer.hxx>
 #endif
 #ifdef USE_PORTAUDIO
 #include <CLAM/PANetworkPlayer.hxx>
@@ -91,6 +95,7 @@ public:
 	MainWindow()
 		: _networkPlayer(0)
 		, _clientName("CLAM network player")
+		, _backendName("Auto")
 		, _descriptionPanel(0)
 		, _textDescriptionEdit(0)
 		, _processingTreeDock(0)
@@ -429,17 +434,66 @@ public:
 		_clientName=clientName;
 	}
 
-	void setBackend(QString &backend)
+	void setBackend(
+		QString & backend,
+		const QString & inputConnection = QString(),
+		const QString & outputConnection = QString(),
+		const QMap<QString, QString> & sourceConnections = QMap<QString, QString>(),
+		const QMap<QString, QString> & sinkConnections = QMap<QString, QString>())
 	{
+		const bool wasPlaying = _network.IsPlaying();
 		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
-		if (_networkPlayer) delete _networkPlayer;
+		QString backendError;
+		_backendInputConnection = inputConnection;
+		_backendOutputConnection = outputConnection;
+		_backendSourceConnections = sourceConnections;
+		_backendSinkConnections = sinkConnections;
+
+		_network.Stop();
+		// Network owns the player after SetPlayer(). Clear it through Network
+		// before constructing a replacement backend.
+		_network.SetPlayer(0);
 		_networkPlayer = 0;
+
+#ifdef USE_PIPEWIRE
+		if (backend=="PipeWire" || backend=="pipewire" || backend=="Auto")
+		{
+			CLAM::PipeWireNetworkPlayer *pipeWirePlayer =
+				new CLAM::PipeWireNetworkPlayer(_clientName);
+			pipeWirePlayer->SetInputTarget(inputConnection.toLocal8Bit().constData());
+			pipeWirePlayer->SetOutputTarget(outputConnection.toLocal8Bit().constData());
+			if (pipeWirePlayer->IsWorking())
+			{
+				backend = "PipeWire";
+				_networkPlayer = pipeWirePlayer;
+			}
+			else
+			{
+				backendError = QString::fromLocal8Bit(pipeWirePlayer->NonWorkingReason().c_str());
+				std::cerr << "PipeWire backend unavailable: "
+					<< pipeWirePlayer->NonWorkingReason() << std::endl;
+				delete pipeWirePlayer;
+			}
+		}
+#endif
 
 #ifdef USE_JACK
 		if (backend=="JACK" || backend=="Auto")
 		{
 			CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer(_clientName);
-			if ( jackPlayer->IsWorking() )
+			jackPlayer->SetAutoConnectPatterns(
+				inputConnection.toLocal8Bit().constData(),
+				outputConnection.toLocal8Bit().constData());
+			if (!sourceConnections.isEmpty() || !sinkConnections.isEmpty())
+			{
+				std::map<std::string, std::string> sources, sinks;
+				for (auto it = sourceConnections.cbegin(); it != sourceConnections.cend(); ++it)
+					sources[it.key().toLocal8Bit().constData()] = it.value().toLocal8Bit().constData();
+				for (auto it = sinkConnections.cbegin(); it != sinkConnections.cend(); ++it)
+					sinks[it.key().toLocal8Bit().constData()] = it.value().toLocal8Bit().constData();
+				jackPlayer->SetPortConnections(sources, sinks);
+			}
+			if (jackPlayer->IsWorking())
 			{
 				backend = "JACK";
 				backendLogo = ":/icons/images/jacklogo-mini.png";
@@ -458,7 +512,7 @@ public:
 #ifdef USE_PORTAUDIO
 		if (backend=="PortAudio" || backend=="Auto")
 		{
-			if (! _networkPlayer)
+			if (!_networkPlayer)
 			{
 				backend = "PortAudio";
 				backendLogo = ":/icons/images/portaudiologo-mini.png";
@@ -467,13 +521,24 @@ public:
 		}
 #endif
 
-		CLAM_ASSERT(_networkPlayer!=0, "Problem setting the backend.");
-		if (_networkPlayer==0) backend = "None";
-		_network.SetPlayer( _networkPlayer );
+		if (!_networkPlayer)
+		{
+			backend = "None";
+			_backendName = backend;
+			_network.SetPlayer(0);
+			_backendLabel->setToolTip(
+				tr("<p>Audio Backend: None</p><p>%1</p>").arg(backendError));
+			_backendLabel->setPixmap(QPixmap(backendLogo));
+			updatePlayStatusIndicator();
+			return;
+		}
 
+		_backendName = backend;
+		_network.SetPlayer(_networkPlayer);
 		_backendLabel->setToolTip(tr("<p>Audio Backend: %1</p>").arg(backend));
 		_backendLabel->setPixmap(QPixmap(backendLogo));
-
+		if (wasPlaying)
+			_network.Start();
 		updatePlayStatusIndicator();
 	}
 
@@ -493,6 +558,26 @@ public:
 	}
 
 public slots:
+	void on_action_Configure_backend_triggered()
+	{
+		_canvas->updateGeometriesOnXML();
+		BackendConfigDialog dialog(
+			_backendName,
+			_backendInputConnection,
+			_backendOutputConnection,
+			this,
+			backendChannelNames(true), backendChannelNames(false),
+			_backendSourceConnections, _backendSinkConnections);
+		if (dialog.exec() != QDialog::Accepted)
+			return;
+
+		QString backend = dialog.backend();
+		if (dialog.usesJackPortConnections())
+			setBackend(backend, QString(), QString(), dialog.sourceConnections(), dialog.sinkConnections());
+		else
+			setBackend(backend, dialog.inputConnection(), dialog.outputConnection());
+	}
+
 	void activateConsole(bool activated)
 	{
 		_consoleDock->setVisible(activated);
@@ -749,12 +834,37 @@ public slots:
 	void on_action_CompileAsLadspaPlugin_triggered();
 
 private:
+	QStringList backendChannelNames(bool source) const
+	{
+		// Use the same processing and channel order as NetworkPlayer's exported ports.
+		QStringList names;
+		const auto processings = _network.getOrderedProcessingsByAttribute(
+			source ? "port_source_type" : "port_sink_type");
+		for (CLAM::Processing * processing : processings)
+		{
+			const unsigned count = source ? processing->GetNOutPorts() : processing->GetNInPorts();
+			for (unsigned i = 0; i < count; ++i)
+			{
+				std::string name = _network.GetNetworkId(processing);
+				if (count > 1)
+					name += "_" + (source ? processing->GetOutPort(i).GetName() : processing->GetInPort(i).GetName());
+				names << QString::fromLocal8Bit(name.c_str());
+			}
+		}
+		return names;
+	}
+
 	ClamNetworkCanvas * _canvas;
 	NetworkCanvas * _jackCanvas;
 	QDialog * _aboutDialog;
 	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;
 	std::string _clientName;
+	QString _backendName;
+	QString _backendInputConnection;
+	QString _backendOutputConnection;
+	QMap<QString, QString> _backendSourceConnections;
+	QMap<QString, QString> _backendSinkConnections;
 	QString _networkFile;
 	QLabel * _backendLabel;
 	PlaybackIndicator * _playingLabel;

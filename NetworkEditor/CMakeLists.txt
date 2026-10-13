@@ -60,6 +60,16 @@ set(CLAM_NETWORKEDITOR_COMMON_INCLUDE_DIRS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/binders"
 )
 
+if(BUILD_TESTING AND CLAM_WITH_JACK)
+	add_executable(BackendConfigDialogTest test/BackendConfigDialogTest.cxx)
+	clam_set_legacy_cxx(BackendConfigDialogTest)
+	target_include_directories(BackendConfigDialogTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+	target_compile_definitions(BackendConfigDialogTest PRIVATE USE_JACK=1 USE_PIPEWIRE=1)
+	target_link_libraries(BackendConfigDialogTest PRIVATE Qt6::Widgets)
+	add_test(NAME networkeditor_backend_config COMMAND BackendConfigDialogTest)
+	set_tests_properties(networkeditor_backend_config PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+endif()
+
 set(CLAM_QTMONITOR_DIRS
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/widgets"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/monitors"

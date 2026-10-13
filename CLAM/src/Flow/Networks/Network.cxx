@@ -435,6 +435,7 @@ namespace CLAM
 	{
 		if (_player) delete _player;
 		_player = player;
+		if (!_player) return;
 		_player->SetNetworkBackLink(*(CLAM::Network*)this);
 		_player->Init();
 	}
@@ -1032,4 +1033,3 @@ namespace CLAM
 		_brokenConnections.clear();
 	}
 }
-

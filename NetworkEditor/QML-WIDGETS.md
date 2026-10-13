@@ -31,8 +31,8 @@ Designer plugin in the system Qt directory.
 
 `--start-paused` leaves the network stopped until Play is pressed. The
 normal startup starts audio after the interface binds successfully.
-`-o` requires a network file and runs without a GUI. `-b jack` and
-`-b portaudio` choose the backend; repeated `-b` options are tried in
+`-o` requires a network file and runs without a GUI. `-b pipewire`, `-b jack`
+and `-b portaudio` choose the backend; repeated `-b` options are tried in
 order. Without `-b`, the available backends are tried in that order.
 
 ## Authoring with QML tools

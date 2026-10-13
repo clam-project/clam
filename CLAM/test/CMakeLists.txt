@@ -1,6 +1,15 @@
 # Added from CLAM/CMakeLists.txt when BUILD_TESTING is on, which also finds
 # cppunit (CLAM_CPPUNIT_TARGET).
 
+if(CLAM_WITH_JACK)
+	pkg_check_modules(CLAM_TEST_JACK REQUIRED IMPORTED_TARGET jack)
+	add_executable(JackRoutingTest BackendTests/JackRoutingTest.cxx
+		"${CMAKE_CURRENT_SOURCE_DIR}/../src/Flow/Networks/BackEnds/JACKNetworkPlayer.cxx")
+	clam_set_legacy_cxx(JackRoutingTest)
+	target_link_libraries(JackRoutingTest PRIVATE CLAM::core CLAM::audioio PkgConfig::CLAM_TEST_JACK)
+	add_test(NAME clam_jack_routing COMMAND JackRoutingTest)
+endif()
+
 set(CLAM_UNIT_TEST_EXTRA_LIBS)
 if(CLAM_XML_BACKEND STREQUAL "xercesc")
 	# Some XML tests talk to the Xerces DOM directly.

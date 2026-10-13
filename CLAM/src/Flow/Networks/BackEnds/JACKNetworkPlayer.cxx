@@ -5,6 +5,8 @@
 #include "AudioSink.hxx"
 
 #include <iostream>
+#include <cerrno>
+#include <cstring>
 
 namespace CLAM
 {
@@ -35,6 +37,10 @@ JACKNetworkPlayer::JACKNetworkPlayer(const std::string & name)
 JACKNetworkPlayer::~JACKNetworkPlayer()
 {
 	Stop();
+	for (const auto & connection : _incomingJackConnections)
+		if (connection.outsideConnections) jack_free(connection.outsideConnections);
+	for (const auto & connection : _outgoingJackConnections)
+		if (connection.outsideConnections) jack_free(connection.outsideConnections);
 
 	if (not _jackClient) return;
 	bool error = jack_client_close (_jackClient);
@@ -202,10 +208,9 @@ void JACKNetworkPlayer::Start()
 		exit(1);
 	}
 
+	RestoreConnections();
 	if (_autoConnect)
 		AutoConnectPorts();
-	else
-		RestoreConnections();
 }
 void JACKNetworkPlayer::Init()
 {
@@ -274,6 +279,11 @@ void JACKNetworkPlayer::RestoreConnections()
 	for (JackConnections::iterator it=_incomingJackConnections.begin(); it!=_incomingJackConnections.end(); it++)
 	{
 		if (not it->outsideConnections) continue;
+		if (HasAutoConnection(it->processingName, true))
+		{
+			jack_free(it->outsideConnections);
+			continue;
+		}
 		for (unsigned i=0; it->outsideConnections[i]; i++)
 		{
 			bool error = jack_connect ( _jackClient, it->outsideConnections[i], it->processingName.c_str() );
@@ -281,13 +291,18 @@ void JACKNetworkPlayer::RestoreConnections()
 				std::cerr << "JACK WARNING: could not reconnect ports ( " <<
 					it->processingName << " , " << it->outsideConnections[i] << " )" <<std::endl;
 		}
-		free(it->outsideConnections);
+		jack_free(it->outsideConnections);
 	}
 	_incomingJackConnections.clear();
 
 	for (JackConnections::iterator it=_outgoingJackConnections.begin(); it!=_outgoingJackConnections.end(); it++)
 	{
 		if (not it->outsideConnections) continue;
+		if (HasAutoConnection(it->processingName, false))
+		{
+			jack_free(it->outsideConnections);
+			continue;
+		}
 		for (unsigned i=0; it->outsideConnections[i]; i++)
 		{
 			bool error = jack_connect ( _jackClient, it->processingName.c_str(), it->outsideConnections[i] );
@@ -295,56 +310,78 @@ void JACKNetworkPlayer::RestoreConnections()
 				std::cerr << "JACK WARNING: could not reconnect ports ( " <<
 					it->outsideConnections[i] << " , " << it->processingName << " )" <<std::endl;
 		}
-		free(it->outsideConnections);
+		jack_free(it->outsideConnections);
 	}
 	_outgoingJackConnections.clear();
 }
 
+bool JACKNetworkPlayer::HasAutoConnection(const std::string & localPortName, bool source) const
+{
+	const std::string & pattern = source ? _jackOutPortAutoConnectList : _jackInPortAutoConnectList;
+	if (!pattern.empty()) return true;
+	const auto & connections = source ? _sourceConnections : _sinkConnections;
+	const auto target = connections.find(localPortName.substr(localPortName.find(':') + 1));
+	return target != connections.end() && !target->second.empty();
+}
+
+void JACKNetworkPlayer::ConnectPorts(const JackPorts & ports, bool source)
+{
+	if (ports.empty()) return;
+	const unsigned long flags = source ? JackPortIsOutput : JackPortIsInput;
+	const std::string & pattern = source ? _jackOutPortAutoConnectList : _jackInPortAutoConnectList;
+	const auto & connections = source ? _sourceConnections : _sinkConnections;
+	std::vector<std::string> matches;
+	if (!pattern.empty())
+	{
+		const char ** names = jack_get_ports(_jackClient, pattern.c_str(), JACK_DEFAULT_AUDIO_TYPE, flags);
+		if (names)
+		{
+			for (unsigned i = 0; names[i]; ++i)
+			{
+				jack_port_t * external = jack_port_by_name(_jackClient, names[i]);
+				if (external && !jack_port_is_mine(_jackClient, external))
+					matches.push_back(names[i]);
+			}
+			jack_free(names);
+		}
+		if (matches.size() < ports.size())
+			std::cerr << "JACK WARNING: pattern <" << pattern << "> matched "
+				<< matches.size() << " audio ports for " << ports.size() << " channels" << std::endl;
+	}
+	for (unsigned i = 0; i < ports.size(); ++i)
+	{
+		std::string target;
+		if (!pattern.empty())
+		{
+			if (i >= matches.size()) continue;
+			target = matches[i];
+		}
+		else
+		{
+			const auto connection = connections.find(jack_port_short_name(ports[i]));
+			if (connection == connections.end() || connection->second.empty()) continue;
+			target = connection->second;
+		}
+		jack_port_t * external = jack_port_by_name(_jackClient, target.c_str());
+		if (!external || !(jack_port_flags(external) & flags) ||
+			std::strcmp(jack_port_type(external), JACK_DEFAULT_AUDIO_TYPE) != 0 ||
+			jack_port_is_mine(_jackClient, external))
+		{
+			std::cerr << "JACK WARNING: unavailable or incompatible audio port <" << target << ">" << std::endl;
+			continue;
+		}
+		const char * from = source ? target.c_str() : PortName(ports[i]);
+		const char * to = source ? PortName(ports[i]) : target.c_str();
+		const int error = jack_connect(_jackClient, from, to);
+		if (error && error != EEXIST)
+			std::cerr << "JACK WARNING: couldn't connect " << from << " -> " << to << std::endl;
+	}
+}
+
 void JACKNetworkPlayer::AutoConnectPorts()
 {
-	//Automatically connect the ports to external jack ports
-
-	//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
-	const char ** portnames= jack_get_ports ( _jackClient , _jackOutPortAutoConnectList.c_str(), nullptr, JackPortIsOutput);
-	if (not portnames)
-	{
-		std::cout << " -WARNING: couldn't locate any JACK output port <"
-			<< _jackOutPortAutoConnectList << ">"<<std::endl;
-	}
-	else
-	{
-		for (unsigned i=0; i<_sourceJackPorts.size() && portnames[i]; i++)
-		{
-			jack_port_t * port = _sourceJackPorts[i];
-			std::cout << "- Connecting " << portnames[i] << " -> "
-				<< PortName(port) << std::endl;
-
-			if ( jack_connect( _jackClient, portnames[i], PortName(port) ) !=0 )
-				std::cerr << " -WARNING: couldn't connect" << std::endl;
-		}
-		free(portnames);
-	}
-
-	//CONNECT CLAM EXTERNSINKS TO JACK INPUT PORTS
-	portnames= jack_get_ports ( _jackClient , _jackInPortAutoConnectList.c_str(), nullptr, JackPortIsInput);
-	if ( not portnames)
-	{
-		std::cout << " -WARNING: couldn't locate any JACK input port <"
-			<< _jackInPortAutoConnectList << ">"<<std::endl;
-	}
-	else 
-	{
-		for (unsigned i=0; i<_sinkJackPorts.size() && portnames[i]; i++)
-		{
-			const char * localPortName = PortName(_sinkJackPorts[i]);
-			std::cout << "- Connecting "<< localPortName
-				<< " -> " << portnames[i] << std::endl;
-
-			if ( jack_connect( _jackClient, localPortName, portnames[i]) != 0)
-				std::cerr << " -WARNING: couldn't connect" << std::endl;
-		}
-		free(portnames);
-	}
+	ConnectPorts(_sourceJackPorts, true);
+	ConnectPorts(_sinkJackPorts, false);
 }
 
 } //namespace CLAM

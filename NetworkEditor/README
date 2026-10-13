@@ -30,12 +30,16 @@ To use PortAudio instead of jack do the following:
   for example:
   $ JACK_NO_START_SERVER=1 ./NetworkEditor
 
+On Linux, PipeWire is available as the native `pipewire` backend when CLAM
+was built with `CLAM_WITH_PIPEWIRE=ON`. It connects to the default PipeWire
+source and sink. The Prototyper accepts `-b pipewire`.
+
 == Prototyper usage ==
 
  Usage: ./Prototyper [<networkfile> [<interface.qml|interface.ui>]] [-o] [-b <backend> [-b <backend> ...]]
 Options:
  -o             Non interactive mode
- -b <backend>   Try backend (jack, portaudio).
+ -b <backend>   Try backend (pipewire, jack, portaudio).
  --start-paused  Wait for Play before processing audio.
  -h, --help      Show usage.
 

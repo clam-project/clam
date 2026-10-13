@@ -18,7 +18,7 @@ information for this tree.
 | --- | --- |
 | `clam_core` | Core data types, flow control and networks, factories, XML storage, threading, LADSPA plugin host and network exporter |
 | `clam_processing` | Analysis, synthesis and transformation processings (spectral, SMS, tonal analysis, controls, MIDI, SDIF) |
-| `clam_audioio` | Audio file codecs (libsndfile, libvorbis, libmad, id3lib), MIDI devices, and the JACK, PortAudio and LV2 network back ends |
+| `clam_audioio` | Audio file codecs (libsndfile, libvorbis, libmad, id3lib), MIDI devices, and the PipeWire, JACK, PortAudio and LV2 network back ends |
 
 ### Applications (opt-in)
 
@@ -52,7 +52,7 @@ On Ubuntu 24.04 (the CI runner), `apt install` the following:
 ```
 build-essential cmake ninja-build pkg-config
 libxerces-c-dev libfftw3-dev libsndfile1-dev libvorbis-dev libmad0-dev
-libid3-3.8.3-dev lv2-dev libjack-jackd2-dev portaudio19-dev
+libid3-3.8.3-dev lv2-dev libjack-jackd2-dev libpipewire-0.3-dev portaudio19-dev
 libasound2-dev libgl1-mesa-dev ladspa-sdk
 qt6-base-dev qt6-base-dev-tools qt6-svg-dev qt6-tools-dev
 qt6-declarative-dev qt6-declarative-dev-tools
@@ -115,6 +115,14 @@ cd NetworkEditor && ../build/NetworkEditor/NetworkEditor example-data/tonalAnaly
 cd SMSTools && ../build/SMSTools/SMSTools
 ```
 
+In NetworkEditor, **Network → Audio Backend... → JACK** offers **Per-channel
+ports** routing. Choose a JACK audio output for each capture channel and a
+JACK audio input for each playback channel; channels can connect to different
+clients. **Manual / unconnected** leaves a channel available for external
+routing. Selections follow the named network ports and survive refreshing the
+port list. **Port-name patterns** retains pattern-based routing in JACK's
+port order; an empty field keeps that direction manual.
+
 Prototyper loads a same-named `.qml` interface automatically, then tries `.ui`
 and finally its built-in playback interface. For example:
 
@@ -126,7 +134,7 @@ cd NetworkEditor
 ../build/NetworkEditor/Prototyper example-data/FilePlayer.clamnetwork example-data/FilePlayer.ui
 ```
 
-Use `-b jack` or `-b portaudio` to select a backend; repeated
+Use `-b pipewire`, `-b jack` or `-b portaudio` to select a backend; repeated
 `-b` options try them in order. `--start-paused` waits for Play before
 processing audio. `-o` runs a network without an interface. See
 [`NetworkEditor/QML-WIDGETS.md`](NetworkEditor/QML-WIDGETS.md) for the component
@@ -168,7 +176,7 @@ installed programs find the libraries through a `$ORIGIN`-relative RPATH.
 | `CLAM_XML_BACKEND` | `xercesc` | `xercesc`, or `none` to build without XML support. |
 | `CLAM_WITH_FFTW3` / `CLAM_WITH_NR_FFT` | `ON` | FFT implementations. |
 | `CLAM_WITH_OGGVORBIS` / `CLAM_WITH_MAD` / `CLAM_WITH_ID3` | `ON` | Ogg Vorbis and MP3 codecs; MP3 (libmad) needs id3lib. |
-| `CLAM_WITH_JACK` / `CLAM_WITH_PORTAUDIO` / `CLAM_WITH_ALSA` | `ON` | Audio and MIDI back ends. |
+| `CLAM_WITH_JACK` / `CLAM_WITH_PIPEWIRE` / `CLAM_WITH_PORTAUDIO` / `CLAM_WITH_ALSA` | `ON` | Audio and MIDI back ends. PipeWire is Linux-only. |
 | `CLAM_WITH_LADSPA` / `CLAM_WITH_LV2` | `ON` | LADSPA host and exporter, LV2 back end. |
 | `CLAM_WITH_PORTMIDI` | `OFF` | PortMidi MIDI devices. |
 | `CLAM_WITH_CHECKS` | `ON` | `OFF` defines `CLAM_DISABLE_CHECKS`, which removes the runtime checks. |
