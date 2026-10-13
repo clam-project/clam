@@ -1,3 +1,7 @@
+NOTE: this tree is now built with CMake from the top-level directory; see
+README.md at the root of the repository. The SCons instructions below are
+kept for reference and no longer apply to this tree.
+
 This file explains how to compile and install the CLAM libraries and 
 applications from the source tarballs or a subversion checkous. 
 
