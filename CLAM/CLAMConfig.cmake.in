@@ -11,6 +11,9 @@ endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/CLAMTargets.cmake")
 
+# The network refactoring script NetworkEditor embeds, with Python support
+set(CLAM_REFACTOR_SCRIPT "@PACKAGE_CMAKE_INSTALL_DATADIR@/clam/clamrefactor.py")
+
 # Installed when NetworkEditor's monitor widget library was built.
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CLAMQtMonitorsTargets.cmake")
 	find_dependency(OpenGL)

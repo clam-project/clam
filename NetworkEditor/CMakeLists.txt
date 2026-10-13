@@ -27,22 +27,25 @@ find_package(Qt6 QUIET COMPONENTS LinguistTools)
 # not link the GL library on every platform (opengl32.lib on Windows).
 find_package(OpenGL REQUIRED)
 
-# Python scripting (the ipyclam console and the upgrade of networks saved by
-# older CLAM versions) needs the embeddable Python and shiboken6.
-include(FindPkgConfig)
-pkg_check_modules(Python3 IMPORTED_TARGET python3-embed)
-pkg_check_modules(shiboken6 IMPORTED_TARGET shiboken6)
-set(CLAM_NETWORKEDITOR_HAVE_PYTHON OFF)
-if(Python3_FOUND AND shiboken6_FOUND)
-	set(CLAM_NETWORKEDITOR_HAVE_PYTHON ON)
-endif()
-option(CLAM_NETWORKEDITOR_USE_PYTHON "Enable Python scripting support" ${CLAM_NETWORKEDITOR_HAVE_PYTHON})
+# Python scripting: the ipyclam console and the upgrade of networks saved by
+# older CLAM versions. NetworkEditor embeds Python (python3-embed) through
+# Boost.Python, and the console wraps the Qt objects with shiboken6. Off by
+# default: CI does not build it.
+option(CLAM_NETWORKEDITOR_USE_PYTHON
+	"Enable Python scripting support (needs python3-embed, Boost.Python and shiboken6)" OFF)
 if(CLAM_NETWORKEDITOR_USE_PYTHON)
-	if(NOT TARGET PkgConfig::Python3)
-		message(FATAL_ERROR "Python3 development files not found (python3-embed pkg-config)")
-	endif()
-	if(NOT TARGET PkgConfig::shiboken6)
-		message(FATAL_ERROR "shiboken6 not found (shiboken6 pkg-config)")
+	include(FindPkgConfig)
+	pkg_check_modules(Python3 REQUIRED IMPORTED_TARGET python3-embed)
+	pkg_check_modules(shiboken6 REQUIRED IMPORTED_TARGET shiboken6)
+	# The Boost.Python library is named after the Python version (python312)
+	string(REGEX MATCH "^[0-9]+\\.[0-9]+" _python_version "${Python3_VERSION}")
+	string(REPLACE "." "" _python_tag "${_python_version}")
+	find_package(Boost REQUIRED COMPONENTS "python${_python_tag}")
+	set(CLAM_NETWORKEDITOR_PYTHON_LIBRARIES
+		PkgConfig::Python3 PkgConfig::shiboken6 "Boost::python${_python_tag}")
+	# Set by the CLAM tree or by the installed CLAM package
+	if(NOT CLAM_REFACTOR_SCRIPT)
+		message(FATAL_ERROR "CLAM_REFACTOR_SCRIPT is not set: clamrefactor.py, which NetworkEditor embeds, was not found")
 	endif()
 endif()
 
@@ -202,8 +205,19 @@ if(CLAM_NETWORKEDITOR_BUILD_APPS)
 			Qt6::PrintSupport
 	)
 	if(CLAM_NETWORKEDITOR_USE_PYTHON)
-		target_compile_definitions(NetworkEditor PRIVATE CLAM_NETWORKEDITOR_USE_PYTHON)
-		target_link_libraries(NetworkEditor PRIVATE PkgConfig::Python3 PkgConfig::shiboken6)
+		# The network upgrader embeds the scripts at compile time (.incbin
+		# needs absolute paths) and must be rebuilt when they change.
+		set(_migration_script "${CMAKE_CURRENT_SOURCE_DIR}/migrationScript")
+		target_compile_definitions(NetworkEditor
+			PRIVATE
+				CLAM_NETWORKEDITOR_USE_PYTHON
+				NETWORKEDITOR_MIGRATION_SCRIPT="${_migration_script}"
+				CLAM_REFACTOR_SCRIPT="${CLAM_REFACTOR_SCRIPT}"
+		)
+		set_source_files_properties(src/NetworkUpgrader.cxx PROPERTIES
+			OBJECT_DEPENDS "${_migration_script};${CLAM_REFACTOR_SCRIPT}"
+		)
+		target_link_libraries(NetworkEditor PRIVATE ${CLAM_NETWORKEDITOR_PYTHON_LIBRARIES})
 	endif()
 
 	# Command line players and checker for networks. They link the monitors

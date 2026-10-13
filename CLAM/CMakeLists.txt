@@ -471,6 +471,7 @@ configure_package_config_file(
 	"${CMAKE_CURRENT_SOURCE_DIR}/CLAMConfig.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/CLAMConfig.cmake"
 	INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/CLAM"
+	PATH_VARS CMAKE_INSTALL_DATADIR
 )
 write_basic_package_version_file(
 	"${CMAKE_CURRENT_BINARY_DIR}/CLAMConfigVersion.cmake"
@@ -519,3 +520,19 @@ file(GLOB CLAM_SCONS_TOOLS "${CMAKE_CURRENT_SOURCE_DIR}/scons/sconstools/*.py")
 install(FILES ${CLAM_SCONS_TOOLS}
 	DESTINATION "${CMAKE_INSTALL_DATADIR}/clam/sconstools"
 )
+# The Python scripts, installed as the SCons build did: the script itself
+# under share/clam, a command without the suffix, and its man page.
+# NetworkEditor embeds clamrefactor.py to upgrade old networks.
+set(CLAM_REFACTOR_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/clamrefactor.py" PARENT_SCOPE)
+foreach(_script IN ITEMS clamrefactor clamnetwork2code clam_lv2_generator)
+	install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/scripts/${_script}.py"
+		DESTINATION "${CMAKE_INSTALL_DATADIR}/clam"
+	)
+	install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/${_script}.py"
+		DESTINATION "${CMAKE_INSTALL_BINDIR}"
+		RENAME "${_script}"
+	)
+	install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/scripts/${_script}.1"
+		DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+	)
+endforeach()
