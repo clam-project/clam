@@ -199,6 +199,10 @@ namespace CLAM
 		bool LoadAnalysis(const char* filename);
 		bool LoadAnalysis(const std::string& filename){return LoadAnalysis(filename.c_str());}
 
+		/** Destroys the wait message and progress indicator left behind
+		* by an operation that failed with an exception */
+		void DiscardTransientDialogs();
+
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
 		void StoreAnalysis(const char* filename);

@@ -116,6 +116,8 @@ private:
 	int m_iDefaultValue;
 	// just for more precission on the movement
 	double m_lastDragValue;
+	// Wheel delta not yet turned into a step
+	int m_iWheelDelta;
 };
 
 typedef QSynthKnob QSynthKnob;

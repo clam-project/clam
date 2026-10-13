@@ -52,6 +52,7 @@ QSynthKnob::QSynthKnob ( QWidget *pParent)
 	, m_bMousePressed(false)
 	, m_knobMode(LinearMode)
 	, m_iDefaultValue(-1)
+	, m_iWheelDelta(0)
 {
 }
 
@@ -328,13 +329,17 @@ void QSynthKnob::wheelEvent ( QWheelEvent *pWheelEvent )
 	if (m_knobMode==QDialMode) {
 		QDial::wheelEvent(pWheelEvent);
 	} else {
-		int iValue = value();
-		const int delta =
-			pWheelEvent->angleDelta().y();
-		if (delta > 0)
-			iValue -= pageStep();
-		else
-			iValue += pageStep();
+		// Qt6 delivers touchpads and high resolution wheels as many deltas
+		// below 120 (Qt4 always sent whole steps), so accumulate them.
+		const QPoint angle = pWheelEvent->angleDelta();
+		const int delta = angle.y() ? angle.y() : angle.x();
+		if (!delta) return;
+		if (m_iWheelDelta*delta < 0) m_iWheelDelta = 0; // direction changed
+		m_iWheelDelta += delta;
+		const int steps = m_iWheelDelta / 120;
+		if (!steps) return;
+		m_iWheelDelta -= steps*120;
+		int iValue = value() - steps*pageStep();
 		if (iValue > maximum())
 			iValue = maximum();
 		else

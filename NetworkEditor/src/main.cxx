@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
+#include <QLibraryInfo>
 
 #include "MainWindow.hxx"
 #ifdef USE_LADSPA
@@ -115,7 +116,7 @@ int main( int argc, char ** argv )
 	QString locale = QLocale::system().name();
 
 	QTranslator qtTranslator;
-	if (qtTranslator.load("qt_"+ locale))
+	if (qtTranslator.load("qt_"+ locale, QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
 		app.installTranslator(&qtTranslator);
 
 	QTranslator translator;

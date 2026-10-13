@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 _copyright = u"""\
@@ -108,7 +108,7 @@ class ClamNetwork() :
 	def beVerbose(self, shouldBe=True) :
 		self.verbose = shouldBe
 	def dump(self, file=sys.stdout) :
-		self.document.write(file)
+		self.document.write(file, encoding="unicode")
 	def dumpLog(self, file=sys.stdout) :
 		print("\n".join(self.log), file=file)
 
@@ -399,7 +399,8 @@ if __name__ == "__main__" :
 				print("Updating", filename)
 				output = open(filename,"w")
 			network.dump(output)
-		print("No changes applied.", file=sys.stderr)
+		else :
+			print("No changes applied.", file=sys.stderr)
 
 
 

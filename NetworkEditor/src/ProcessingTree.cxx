@@ -125,8 +125,8 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 	data->setText(className);
 	drag->setMimeData(data);
 	drag->setPixmap(QPixmap(":/icons/images/processing.png"));
-	Qt::DropAction dropAction = drag->exec();
-	(void)dropAction;
+	// Qt4's start() defaulted to CopyAction, exec() defaults to MoveAction
+	drag->exec(Qt::CopyAction);
 }
 
 

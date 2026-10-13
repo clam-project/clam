@@ -1,4 +1,3 @@
-#include <QTemporaryFile>
 #include "ui_LadspaMetadataEditor.h"
 #include "LadspaPluginCompilationTask.hxx"
 
@@ -23,11 +22,17 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 	if (!accepted) return;
 	settings.setValue("Ladspa/Maker", ui.ladspaMaker->text());
 	settings.setValue("ClamPrefix", ui.clamPrefix->location());
+	if (ui.ladspaLibrary->text().trimmed().isEmpty())
+	{
+		QMessageBox::critical(this, tr("Compile as LADSPA plugin"),
+			tr("<p><b>Error: no generated library file name was given.</b></p>\n"));
+		return;
+	}
 
 	LadspaPluginCompilationTask ladspaCompilation(this, _network);
 	if (ui.keepIntermediateFiles->isChecked())
 		ladspaCompilation.keepFiles();
-	ladspaCompilation.run(
+	const int result = ladspaCompilation.run(
 		ui.ladspaUniqueId->value(), 
 		ui.ladspaLabel->text(), 
 		ui.ladspaName->text(), 
@@ -36,6 +41,15 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 		ui.ladspaLibrary->text(),
 		ui.clamPrefix->location()
 		);
+	if (result != 0)
+	{
+		QMessageBox::critical(this, tr("Compile as LADSPA plugin"),
+			tr("<p><b>Error: the plugin compilation failed (exit code %1).</b></p>\n"
+				"<p>The plugin is built with <tt>cmake</tt>, which needs the CLAM development files "
+				"(<tt>lib/cmake/CLAM</tt>) installed under the given CLAM prefix.</p>\n").arg(result));
+		return;
+	}
+	statusBar()->showMessage(tr("LADSPA plugin written to %1").arg(ladspaCompilation.pluginPath()));
 }
 
 ////////////////////////////////////////////////////

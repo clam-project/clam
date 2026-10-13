@@ -200,7 +200,10 @@ bool BufferedSDIFFileReader::IsThreaded()
 
 void BufferedSDIFFileReader::Run()
 {
-	while ( mReaderHasMoreFrames && static_cast<std::size_t>(totalNumberOfFramesToLoad) <= frameBuffer.size() )
+	// Load in the background until totalNumberOfFramesToLoad frames are in the
+	// buffer (the comparison used to be inverted). GetNumberOfFramesLoaded()
+	// takes dequeMutex, which ReadFrame/LoadFramesIntoBuffer push under.
+	while ( mReaderHasMoreFrames && GetNumberOfFramesLoaded() < totalNumberOfFramesToLoad )
 	{
 		mReaderHasMoreFrames = LoadFramesIntoBuffer(mFrameLoadChunkSize);
 		std::this_thread::yield();

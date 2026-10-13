@@ -6,7 +6,7 @@ class CLAMWidgets : public QObject,
 	public QDesignerCustomWidgetCollectionInterface
 {
 	Q_OBJECT
-	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomCollectionInterface")
+	Q_PLUGIN_METADATA(IID QDesignerCustomWidgetCollectionInterface_iid)
 	Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
 public:
 	CLAMWidgets(QObject* parent=0);

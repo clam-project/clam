@@ -43,11 +43,11 @@ namespace CLAM
 			std::pair<TData, TData> eventToViewCoords(QMouseEvent* e) const;
 
 			void paintGL();
+			void resizeGL(int w, int h);
 			void mousePressEvent(QMouseEvent* e);
 			void mouseReleaseEvent(QMouseEvent* e);
 			void mouseMoveEvent(QMouseEvent* e);
 			void keyReleaseEvent(QKeyEvent * e);
-			void resizeEvent(QResizeEvent *e);
 			void enterEvent(QEnterEvent *e);
 			void leaveEvent(QEvent *e);
 			void focusInEvent(QFocusEvent* e);
@@ -61,7 +61,6 @@ namespace CLAM
 			BPFEditorController* mController;
 			int                  mWidth;
 			int                  mHeight;
-			volatile bool        mDoResize;
 			QTimer*              mTimer;
 			bool                 mIsPlaying;
 

@@ -43,10 +43,8 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	}
 	
 	int nBands = mNumBandsCtl.GetLastValue();
+	if (nBands < 1) nBands = 1; // it divides the spectrum size below
 	int nGainBands = 5; //it is one more than the actual gains
-	// TODO: firstBand looks like a leftover from a bin-domain pass that was
-	// replaced by the float-domain (fFirstBand) calculations below.
-	[[maybe_unused]] int firstBand = 5;
 	TData fFirstBand = 100;
 	
 	DataArray gains(4);
@@ -63,28 +61,20 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	mMagBuffer.Resize(spectrumSize);
 	mMagBuffer.SetSize(spectrumSize);
 	
-	// The bin-domain partner variables (bandFactor, fLastBandLimit, fCurrentOsc,
-	// gainBandFactor) below mirror an earlier design; only the float-domain
-	// versions actually feed the loop. Kept with [[maybe_unused]] until a
-	// decision is made on whether they should drive the loop instead.
-	[[maybe_unused]] TData bandFactor = pow(TData(spectrumSize),1./nBands);
 	TData fBandFactor = pow(TData(spectralRange),1./nBands);
 
 	TData fCurrentBandLimit = fFirstBand;
 	int currentBandLimit = Round(fFirstBand*spectralResolution);
 	int lastBandLimit = 0;
-	[[maybe_unused]] TData fLastBandLimit = 0.;
 
 	int freqShift = Round(mFreqShiftCtl.GetLastValue()*spectralResolution);
 
 	int currentOscBin = int(spectrumSize/nBands) + freqShift;
-	[[maybe_unused]] TData fCurrentOsc = spectralRange/nBands;
 
 	int currentGainIndex = 0;
 	TData fCurrentGainBandLimit = fCurrentBandLimit*2;
 	int currentGainBandLimit = Round(fCurrentGainBandLimit*spectralResolution);
 
-	[[maybe_unused]] TData gainBandFactor = pow(TData(spectrumSize/currentBandLimit),1./nGainBands);
 	TData fGainBandFactor = pow(TData(spectralRange/fCurrentGainBandLimit),1./nGainBands);
 	
 	TData bandEnergy =0;
@@ -95,7 +85,9 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 		if(i>currentBandLimit)
 		{
 			bandEnergy = sqrt(bandEnergy);
-			mMagBuffer[currentOscBin] = bandEnergy*gains[currentGainIndex];
+			// FreqShift can move the oscillator outside the spectrum
+			if (currentOscBin>=0 && currentOscBin<spectrumSize)
+				mMagBuffer[currentOscBin] = bandEnergy*gains[currentGainIndex];
 			lastBandLimit = currentBandLimit;
 			fCurrentBandLimit*=fBandFactor;
 			currentBandLimit = Round(fCurrentBandLimit*spectralResolution);

@@ -21,7 +21,6 @@
 
 #include <QTimer>
 #include <QToolTip>
-#include <QResizeEvent>
 #include <QFocusEvent>
 #include <QMouseEvent>
 #include <QEvent>
@@ -42,7 +41,6 @@ namespace CLAM
 			, mBlue(1.0)
 			, mWidth(0)
 			, mHeight(0)
-			, mDoResize(false)
 			, mTimer(0)
 			, mToolTip("")
 			, mMouseXPos(0)
@@ -93,11 +91,6 @@ namespace CLAM
 
 		void DisplaySurface::paintGL()
 		{
-			if(mDoResize)
-			{
-				glViewport(0, 0, mWidth, mHeight);
-				mDoResize = false;
-			}
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glOrtho(mView.left,mView.right,mView.bottom,mView.top,-1.0,1.0);
@@ -145,11 +138,12 @@ namespace CLAM
 			mView = v;
 		}
 
-		void DisplaySurface::resizeEvent(QResizeEvent *e)
+		// QOpenGLWidget::resizeEvent() must run to resize the FBO, and it sets a
+		// device-pixel-ratio-aware glViewport itself, so only track the size here.
+		void DisplaySurface::resizeGL(int w, int h)
 		{
-			mWidth = e->size().width();
-			mHeight = e->size().height();
-			mDoResize = true;
+			mWidth = w;
+			mHeight = h;
 			if(mController) mController->DisplayDimensions(mWidth,mHeight);
 		}
 
@@ -242,13 +236,17 @@ namespace CLAM
 			glVertex2f(rect.left(),rect.bottom());
 			glVertex2f(rect.left(),rect.top());
 			glEnd();
-			// Tooltip text was drawn by QGLWidget::renderText(); QOpenGLWidget
-			// has no equivalent. Skipping; would need a QPainter overlay path.
-			(void)font_height;
 
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
 			glMatrixMode(GL_MODELVIEW);
+
+			// QOpenGLWidget has no renderText(): draw the text with a QPainter,
+			// after all the raw GL calls of this frame.
+			QPainter painter(this);
+			painter.setFont(mToolTipFont);
+			painter.setPen(Qt::black);
+			painter.drawText(rect.left()+5,rect.top()+font_height+2,mToolTip);
 		}
 
 		QRect DisplaySurface::ToolTipRect()

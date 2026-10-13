@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 copyright = u"""\
@@ -53,7 +53,7 @@ class NetworkHandler(xml.sax.handler.ContentHandler) :
 
 	def description(self) : pass
 
-	def _formatId(self, id) : return re.sub('\W', '_',id.strip())
+	def _formatId(self, id) : return re.sub(r'\W', '_',id.strip())
 
 	def processing(self, id, type, position="(10,10)", size="(10,10)") :
 		formattedId = self._formatId(id)

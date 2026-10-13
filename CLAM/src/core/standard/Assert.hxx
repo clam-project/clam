@@ -64,7 +64,7 @@ namespace CLAM
 #endif
 
 
-#if ! defined(_DEBUG)
+#if ! defined(_DEBUG) && ! defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_USE_RELEASE_ASSERTS
 #endif
 
@@ -73,24 +73,24 @@ namespace CLAM
  * @def CLAM_DISABLE_TERMINATE_WARNING_BEGIN
  * @def CLAM_DISABLE_TERMINATE_WARNING_END
  *
- * CLAM_ASSERT throws on failure, and CLAM intentionally invokes it from
- * destructors so the application gets a chance to do an orderly shutdown.
- * Under C++17 destructors are implicitly noexcept(true), so any throw
- * inside one would call std::terminate; GCC and Clang then emit a static
- * warning (-Wterminate) at every such call site. The warning is correct in
- * the abstract but flags a design choice rather than a bug.
+ * CLAM_ASSERT throws on failure, and CLAM invokes it from destructors too.
+ * Since C++11 destructors are implicitly noexcept(true), so a failing assert
+ * inside one calls std::terminate (under C++03 the exception propagated), and
+ * GCC (-Wterminate) and Clang (-Wexceptions) warn at every such call site.
  *
  * These two macros wrap the throw site with a per-compiler diagnostic
- * suppression so the warning is silenced where the throw actually appears,
- * without changing behaviour and without touching every destructor.
+ * suppression so the warning is silenced where the throw actually appears.
+ * They do not change what happens at runtime.
  */
-/* -Wterminate is GCC-only. clang has no such warning, and complains
- * with -Wunknown-warning-option if asked to ignore it. MSVC has no
- * equivalent either. Only emit the pragma for real GCC. Note that
- * clang also defines __GNUC__, so the !defined(__clang__) guard is
- * required.
- */
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(__clang__)
+   /* Clang has no -Wterminate; its "will always call terminate" warning is
+      part of -Wexceptions. */
+#  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
+		_Pragma("clang diagnostic push") \
+		_Pragma("clang diagnostic ignored \"-Wexceptions\"")
+#  define CLAM_DISABLE_TERMINATE_WARNING_END \
+		_Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
 #  define CLAM_DISABLE_TERMINATE_WARNING_BEGIN \
 		_Pragma("GCC diagnostic push") \
 		_Pragma("GCC diagnostic ignored \"-Wterminate\"")

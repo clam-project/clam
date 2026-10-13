@@ -13,8 +13,17 @@
 #include <boost/python/stl_iterator.hpp>
 namespace py=boost::python;
 
-CLAM_EMBEDDED_FILE(migrationScript, "migrationScript")
-CLAM_EMBEDDED_FILE(clamrefactor, CLAM_PREFIX "/share/clam/clamrefactor.py")
+// The build system gives the absolute paths of the scripts to embed; the
+// defaults are the ones the SCons build relies on (its working directory
+// and the installed CLAM).
+#ifndef NETWORKEDITOR_MIGRATION_SCRIPT
+#define NETWORKEDITOR_MIGRATION_SCRIPT "migrationScript"
+#endif
+#ifndef CLAM_REFACTOR_SCRIPT
+#define CLAM_REFACTOR_SCRIPT CLAM_PREFIX "/share/clam/clamrefactor.py"
+#endif
+CLAM_EMBEDDED_FILE(migrationScript, NETWORKEDITOR_MIGRATION_SCRIPT)
+CLAM_EMBEDDED_FILE(clamrefactor, CLAM_REFACTOR_SCRIPT)
 
 class NetworkUpgrader::Impl
 {
@@ -53,28 +62,28 @@ const char * NetworkUpgrader::errorMessage() const
 
 const char * NetworkUpgrader::Impl::takePythonError(const std::string & context="")
 {
-	PyObject * pType=0;
-	PyObject * pValue=0;
-	PyObject * pTrace=0;
+	PyObject * pType=nullptr;
+	PyObject * pValue=nullptr;
+	PyObject * pTrace=nullptr;
 	PyErr_Fetch(&pType, &pValue, &pTrace);
+	PyErr_NormalizeException(&pType, &pValue, &pTrace);
 
 	_errorMessage = context;
-
-	py::object type(py::handle<>(py::allow_null(pType)));
-	_errorMessage += py::extract<std::string>(type.attr("__name__"));
-	_errorMessage += ": ";
-
-	_errorMessage += py::extract<std::string>(
-		py::object(py::handle<>(py::allow_null(pValue))));
-
-	if (pTrace)
+	try
 	{
-		_errorMessage += "\nTraceback:\n";
-		py::object trace(py::handle<>(py::allow_null(pTrace)));
-		py::object tb = py::import("traceback");
-		py::str tracebackstring = py::str("").join(
-				tb.attr("format_tb")(trace));
-		_errorMessage += py::extract<std::string>(tracebackstring);
+		// Any of the three may be null; a null handle is not a valid object
+		py::object type = pType ? py::object(py::handle<>(pType)) : py::object();
+		py::object value = pValue ? py::object(py::handle<>(pValue)) : py::object();
+		py::object trace = pTrace ? py::object(py::handle<>(pTrace)) : py::object();
+		py::object traceback = py::import("traceback");
+		py::str text = py::str("").join(
+			traceback.attr("format_exception")(type, value, trace));
+		_errorMessage += py::extract<std::string>(text);
+	}
+	catch (py::error_already_set &)
+	{
+		PyErr_Clear();
+		_errorMessage += "Python error (the traceback could not be formatted)";
 	}
 	std::cerr << _errorMessage << std::endl;
 	return 0;
@@ -87,7 +96,6 @@ const char * NetworkUpgrader::Impl::run(const std::string & filename)
 		if (not Py_IsInitialized()) Py_Initialize();
 		py::object _main = py::import("__main__");
 		py::object _main_ns = _main.attr("__dict__");
-		py::object builtin = py::import("__builtin__");
 		// Simulate that we have a working command line
 		py::exec("import sys" , _main_ns);
 		py::exec("sys.argv=['clamrefactor.py']\n", _main_ns);
@@ -99,7 +107,7 @@ const char * NetworkUpgrader::Impl::run(const std::string & filename)
 
 		py::object network = _main.attr("ClamNetwork")(filename);
 		network.attr("runScript")(std::string(migrationScript));
-		py::object stringio = py::import("StringIO").attr("StringIO")();
+		py::object stringio = py::import("io").attr("StringIO")();
 		network.attr("dump")(stringio);
 		_result = py::extract<std::string>(stringio.attr("getvalue")());
 		return _result.c_str();

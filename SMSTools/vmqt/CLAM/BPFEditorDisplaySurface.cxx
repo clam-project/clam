@@ -1,5 +1,4 @@
 #include <QTimer>
-#include <QResizeEvent>
 #include <QFocusEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -18,7 +17,6 @@ namespace CLAM
 			, mController(0)
 			, mWidth(0)
 			, mHeight(0)
-			, mDoResize(false)
 			, mTimer(0)
 			, mIsPlaying(false)
 		{
@@ -69,11 +67,6 @@ namespace CLAM
 		void BPFEditorDisplaySurface::paintGL()
 		{
 			if(!mController) return;
-			if(mDoResize)
-			{
-				glViewport(0,0,mWidth,mHeight);
-				mDoResize=false;
-			}
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glOrtho(mView.left,mView.right,mView.bottom,mView.top,-1.0,1.0);
@@ -158,11 +151,12 @@ namespace CLAM
 			QOpenGLWidget::keyReleaseEvent(e);
 		}
 
-		void BPFEditorDisplaySurface::resizeEvent(QResizeEvent *e)
+		// QOpenGLWidget::resizeEvent() must run to resize the FBO, and it sets a
+		// device-pixel-ratio-aware glViewport itself, so only track the size here.
+		void BPFEditorDisplaySurface::resizeGL(int w, int h)
 		{
-			mWidth = e->size().width();
-			mHeight = e->size().height();
-			mDoResize = true;
+			mWidth = w;
+			mHeight = h;
 			if(mController) mController->DisplayDimensions(mWidth,mHeight);
 		}
 

@@ -39,6 +39,7 @@
 #include <CLAM/Normalization.hxx>
 
 #include <fstream>
+#include <memory>
 #include <CLAM/XMLStorage.hxx>
 
 #include <CLAM/AudioIO.hxx>
@@ -72,6 +73,13 @@ void SMSBase::DestroyProgressIndicator( )
 {
 	delete mCurrentProgressIndicator;
 	mCurrentProgressIndicator = nullptr;
+}
+
+void SMSBase::DiscardTransientDialogs()
+{
+	delete mCurrentWaitMessage;
+	mCurrentWaitMessage = NULL;
+	DestroyProgressIndicator();
 }
 
 
@@ -195,12 +203,10 @@ bool SMSBase::HaveCompatibleConfig()
 
 void SMSBase::StoreConfig(const std::string& inputFileName)
 {
-	CLAMGUI::WaitMessage *wm;
-	wm = CreateWaitMessage("Storing configuration xml file, please wait.");
+	std::unique_ptr<CLAMGUI::WaitMessage> wm(
+		CreateWaitMessage("Storing configuration xml file, please wait."));
 	//Loading configuration
 	XMLStorage::Dump(mGlobalConfig,"SMSAnalysisSynthesisConfig",inputFileName);
-
-	delete wm;
 }
 
 
@@ -760,18 +766,17 @@ void SMSBase::StoreMelody(void)
 
 void SMSBase::LoadTransformationScore(const std::string& inputFileName)
 {
-	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading score xml file, please wait.");
+	std::unique_ptr<CLAMGUI::WaitMessage> wm(CreateWaitMessage("Loading score xml file, please wait."));
 	//Loading configuration
 	XMLStorage::Restore(mTransformationScore,inputFileName);
-	delete wm;
+	wm.reset();
 	GetState().SetHasTransformationScore(true);
 }
 
 void SMSBase::StoreTransformationScore( const std::string& outputFilename )
 {
-	CLAMGUI::WaitMessage* wm = CreateWaitMessage( "Storing transformation score" );
+	std::unique_ptr<CLAMGUI::WaitMessage> wm(CreateWaitMessage( "Storing transformation score" ));
 	XMLStorage::Dump( mTransformationScore, "SMS_Transformation_Score", outputFilename );
-	delete wm;
 }
 
 void SMSBase::Transform()

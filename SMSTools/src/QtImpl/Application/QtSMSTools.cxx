@@ -4,7 +4,9 @@
 #include <QLabel>
 #include <QStatusBar>
 #include <QApplication>
+#include <QCloseEvent>
 #include <QMessageBox>
+#include <QMetaObject>
 #include <QFrame>
 #include <QDesktopServices>
 #include <QUrl>
@@ -38,12 +40,14 @@ namespace
 		try { fn(); return true; }
 		catch (const std::exception& e)
 		{
+			QtSMS::Engine::Instance()->DiscardTransientDialogs();
 			QMessageBox::critical(parent, "SMS Tools 2",
 				QObject::tr("%1 failed:\n%2").arg(action, QString::fromUtf8(e.what())));
 			return false;
 		}
 		catch (...)
 		{
+			QtSMS::Engine::Instance()->DiscardTransientDialogs();
 			QMessageBox::critical(parent, "SMS Tools 2",
 				QObject::tr("%1 failed: unknown error.").arg(action));
 			return false;
@@ -68,9 +72,11 @@ namespace QtSMS
 	void QtSMSTools::InitSMSTools()
 	{
 		mSlotAnalysisDataLoaded.Wrap(this,&QtSMSTools::OnAnalysisDataLoaded);
+		mSlotMelodyExtracted.Wrap(this,&QtSMSTools::OnMelodyExtracted);
 
 		mEngine = Engine::Instance();
 		mEngine->ConnectSlotAnalysisDataLoaded(mSlotAnalysisDataLoaded);
+		mEngine->ConnectSlotMelodyExtracted(mSlotMelodyExtracted);
 		setCentralWidget(Engine::DisplayManager()->GetView(this));
 		InitStatusBar();
 		InitialState();
@@ -129,7 +135,11 @@ namespace QtSMS
 		bool loaded = false;
 		if (!guard(this, tr("Load configuration"), [&]() {
 				loaded = mEngine->LoadConfiguration(filename.toStdString());
-			})) return;
+			}))
+		{
+			UpdateState(); // LoadConfig() already reset the state
+			return;
+		}
 		if(!loaded)
 		{
 			QMessageBox::critical(this,"SMS Tools 2","Load configuration failed.");
@@ -166,7 +176,11 @@ namespace QtSMS
 		if (!guard(this, tr("Store configuration"), [&]() {
 				mEngine->StoreConfiguration(filename.toStdString());
 				mEngine->LoadConfiguration(filename.toStdString());
-			})) return;
+			}))
+		{
+			UpdateState();
+			return;
+		}
 		Engine::DisplayManager()->Flush(); // we have a new config
 		if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
 		{
@@ -291,8 +305,8 @@ namespace QtSMS
 
 	void QtSMSTools::melodyExtraction()
 	{
-		guard(this, tr("Extract melody"), [&]() { mEngine->ExtractMelody(); });
-		UpdateState();
+		// runs on a thread; OnMelodyExtracted() updates the menus when done
+		mEngine->ExtractMelody();
 	}
 
 	void QtSMSTools::doTransformation()
@@ -716,6 +730,20 @@ namespace QtSMS
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
 		LaunchMethodOnThread([this]{ SendAnalyzedDataToViewManager(); });
+	}
+
+	void QtSMSTools::OnMelodyExtracted()
+	{
+		// called from the extraction thread
+		QMetaObject::invokeMethod(this, [this]() { UpdateState(); }, Qt::QueuedConnection);
+	}
+
+	void QtSMSTools::closeEvent(QCloseEvent* event)
+	{
+		QMainWindow::closeEvent(event);
+		// Qt4's QApplication::setMainWidget() quit the application when this
+		// window closed, even with other top-level windows still open
+		if (event->isAccepted()) qApp->quit();
 	}
 
 	void QtSMSTools::NotImplemented()

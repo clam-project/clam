@@ -38,6 +38,7 @@ class QDESIGNER_WIDGET_EXPORT KeySpace : public QOpenGLWidget
 	Q_PROPERTY(int yPixels READ yPixels WRITE setYPixels)
 public:
 	KeySpace(QWidget * parent);
+	~KeySpace();
 
 	virtual void initializeGL();
 	virtual void resizeGL(int width, int height);
@@ -45,7 +46,7 @@ public:
 	virtual void timerEvent(QTimerEvent * event);
 
 	bool smooth() const { return _smooth; }
-	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; initializeGL(); }
+	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; update(); }
 	int xPixels() const { return _nX; }
 	void setXPixels(int xPixels) { if (xPixels>5) _nX=xPixels; } 
 	int yPixels() const { return _nY; }

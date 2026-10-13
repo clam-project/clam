@@ -63,6 +63,8 @@ SDIFOut::SDIFOut(const SDIFOutConfig& c)
 	
 SDIFOut::~SDIFOut()
 {
+	// mpFile is only created by ConcreteStart()
+	if (!mpFile) return;
 	mpFile->Close();
 	delete mpFile;
 }
@@ -91,7 +93,7 @@ bool SDIFOut::ConcreteStart()
 
 bool SDIFOut::ConcreteStop()
 {
-	mpFile->Close();
+	if (mpFile) mpFile->Close();
 
 	return true;
 }
@@ -158,19 +160,22 @@ bool SDIFOut::Do(const Frame& frame)
 
 		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("1STF",frame.GetResidualSpec().GetSize(),2);
 
-		//We have to convert residual spectrum to complex
+		//We have to convert residual spectrum to complex.
+		//Convert a copy: frame is const and the caller keeps using it
+		//(SMSTools transforms the stored analysis afterwards, in dB)
   		SpectrumConfig Scfg;
   		SpecTypeFlags sflags;
-		frame.GetResidualSpec().GetType(sflags);
+		Spectrum residual = frame.GetResidualSpec();
+		residual.GetType(sflags);
 		if(!sflags.bComplex )
 		{
 			sflags.bComplex = 1;
-  			frame.GetResidualSpec().SetTypeSynchronize(sflags);
+			residual.SetTypeSynchronize(sflags);
 		}
 		//SDIF only accepts linear data
-		frame.GetResidualSpec().ToLinear();
+		residual.ToLinear();
 
-		Array<Complex>& complexBuffer=frame.GetResidualSpec().GetComplexArray();
+		Array<Complex>& complexBuffer=residual.GetComplexArray();
 		for (int r=0;r<pMatrix->Rows();r++)	//Write in complex data
 		{
 			pMatrix->SetValue(r,0,complexBuffer[r].Real());
@@ -182,8 +187,8 @@ bool SDIFOut::Do(const Frame& frame)
 //If enabled, third frame will contain sinusoidal spectral peaks
 	if(mConfig.GetEnablePeakArray())
 	{
-		SpectralPeakArray& tmpPeakArray=frame.GetSpectralPeakArray();
-		//SDIF only accepts linear data
+		//SDIF only accepts linear data (converted on a copy, as above)
+		SpectralPeakArray tmpPeakArray=frame.GetSpectralPeakArray();
 		tmpPeakArray.ToLinear();
 
 		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime(),2);

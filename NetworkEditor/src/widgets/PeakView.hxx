@@ -55,10 +55,11 @@ public:
 		painter.scale(width()/spectralRange,height()/min);
 		painter.translate(10,0);
 		painter.drawLines(lines);
-		painter.setPen(QColor(0x77,0x77,0x77,0x77));
+		// Width 0: cosmetic pen, 1px whatever the scale (Qt4's QPen(QColor) default)
+		painter.setPen(QPen(QColor(0x77,0x77,0x77,0x77),0));
 		painter.drawLine(10,0,-10,0);
 		painter.drawLine(0,100,0,-100);
-		painter.setPen(_lineColor);
+		painter.setPen(QPen(_lineColor,0));
 		for (int i=0; i<size; i++)
 			lines 
 				<< QPointF(freq[i], min)

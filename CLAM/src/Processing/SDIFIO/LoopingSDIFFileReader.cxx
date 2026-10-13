@@ -124,32 +124,29 @@ int LoopingSDIFFileReader::ChooseLoopRandomly(int argFrameBufferPosition, int ar
 	// but if we've only loaded 2200 frames into memory, then actually only the middle
 	// loop is valid.
 	// so here we look for valid loops that pass these two tests.
+	// The loop we are already in is left out of the candidates, so that if
+	// any other loop is valid the algorithm does not choose the current one.
+	// (It used to be erased afterwards through an iterator that the later
+	// push_back calls had invalidated.)
 	std::deque<int> validLoopPositions;
-	std::deque<int>::iterator currentLoopIterator = validLoopPositions.end();
 	for (auto counter = std::size_t{0}; counter < listOfLoops.size(); ++counter)
 	{
-		SimpleLoopMetadata& simpleLoop = listOfLoops.at(indexOfCurrentLoop);
+		SimpleLoopMetadata& simpleLoop = listOfLoops.at(counter);
 		
 		if ( argFrameBufferPosition < simpleLoop.GetEnd() 
-			&& BufferedSDIFFileReader::GetNumberOfFramesLoaded() >= simpleLoop.GetEnd() )
+			&& BufferedSDIFFileReader::GetNumberOfFramesLoaded() >= simpleLoop.GetEnd() 
+			&& counter != static_cast<std::size_t>(argIndexOfCurrentLoop) )
 		{
 			validLoopPositions.push_back(counter);
-			if (counter == static_cast<std::size_t>(argIndexOfCurrentLoop))
-			{
-				currentLoopIterator = validLoopPositions.end();
-				currentLoopIterator--;
-			}
 		}
 	}
 	
-	// if we have a couple of loops to choose from, don't allow the algorithm to
-	// choose the loop we are already in. 
-	if (validLoopPositions.size() > 1 && currentLoopIterator != validLoopPositions.end())
-	{
-		validLoopPositions.erase(currentLoopIterator);
-	}
+	// no other loop to switch to: stay in the current one
+	if (validLoopPositions.empty())
+		return argIndexOfCurrentLoop;
 	
-	double randomNumber0To1 = (rand()*1.0) / RAND_MAX;
+	// in [0,1), so randomIndex is always a valid position
+	double randomNumber0To1 = rand() / (RAND_MAX + 1.0);
 	int randomIndex = floor( randomNumber0To1 * validLoopPositions.size() );
 	
 	return validLoopPositions.at(randomIndex);

@@ -5,10 +5,17 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ubuntu-build:
     name: Ubuntu (Qt6 / C++17)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
 
@@ -38,13 +45,17 @@ jobs:
             libqt6opengl6-dev \
             qt6-svg-dev \
             qt6-tools-dev \
+            qt6-l10n-tools \
             python3-dev \
-            libboost-python-dev
+            libboost-python-dev \
+            xvfb \
+            xauth
 
       - name: Configure
         run: >
           cmake -S . -B build -G Ninja
           -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/clam"
           -DCLAM_BUILD_LIBRARIES=ON
           -DCLAM_BUILD_GUI_APPS=ON
           -DCLAM_BUILD_SMSTOOLS=ON
@@ -52,10 +63,75 @@ jobs:
       - name: Build
         run: cmake --build build -j $(nproc)
 
+      - name: Unit tests
+        run: ctest --test-dir build --output-on-failure
+
       - name: List built binaries
         run: |
           find build -maxdepth 4 -type f -executable \
             \( -name NetworkEditor -o -name SMSTools -o -name SMSBatch -o -name SMSConsole \) -print
+
+      - name: Smoke tests
+        run: .github/scripts/smoke-tests.sh build
+
+      - name: Install
+        run: cmake --install build
+
+      - name: Build against the installed CLAM (CMake package)
+        run: |
+          cmake -S CLAM/test/InstallConsumer -B consumer -G Ninja -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/clam"
+          cmake --build consumer
+          consumer/clam_install_consumer
+          QT_QPA_PLATFORM=offscreen consumer/clam_qtmonitors_consumer
+
+      - name: Build against the installed CLAM (pkg-config)
+        run: |
+          export PKG_CONFIG_PATH="$RUNNER_TEMP/clam/lib/pkgconfig"
+          cmake -S CLAM/test/InstallConsumer -B consumer-pc -G Ninja -DUSE_PKG_CONFIG=ON
+          cmake --build consumer-pc
+          LD_LIBRARY_PATH="$RUNNER_TEMP/clam/lib" consumer-pc/clam_install_consumer
+
+  # The libraries alone with clang, the debug asserts on, and the optional
+  # dependencies off.
+  ubuntu-clang-minimal:
+    name: Ubuntu (clang, Debug, minimal dependencies)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libxerces-c-dev \
+            libsndfile1-dev \
+            libcppunit-dev
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_C_COMPILER=clang
+          -DCMAKE_CXX_COMPILER=clang++
+          -DCLAM_WITH_FFTW3=OFF
+          -DCLAM_WITH_OGGVORBIS=OFF
+          -DCLAM_WITH_MAD=OFF
+          -DCLAM_WITH_ID3=OFF
+          -DCLAM_WITH_LADSPA=OFF
+          -DCLAM_WITH_LV2=OFF
+          -DCLAM_WITH_JACK=OFF
+          -DCLAM_WITH_PORTAUDIO=OFF
+          -DCLAM_WITH_ALSA=OFF
+
+      - name: Build
+        run: cmake --build build -j $(nproc)
+
+      - name: Unit tests
+        run: ctest --test-dir build --output-on-failure
 
   macos-build:
     name: macOS (Qt6 / C++17)

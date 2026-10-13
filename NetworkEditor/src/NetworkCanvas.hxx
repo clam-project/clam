@@ -60,6 +60,7 @@ public:
 		: QGraphicsView(parent)
 		, _changed(false)
 		, _zoomFactor(1.)
+		, _wheelDelta(0)
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnection(0)
@@ -256,7 +257,7 @@ protected:
 	{
 		if (_dragStatus!=SelectionDrag) return;
 		painter.setBrush(_colorSelectBoxBody);
-		painter.setPen(_colorSelectBoxLine);
+		painter.setPen(QPen(_colorSelectBoxLine,0)); // cosmetic: 1px at any zoom, as in Qt4
 		painter.drawRect(QRect(_dragPoint, _selectionDragOrigin));
 	}
 	void drawTooltip(QPainter & painter)
@@ -284,7 +285,7 @@ protected:
 
 		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
 		painter.setBrush(_colorTooltipBody);
-		painter.setPen(_colorTooltipLine);
+		painter.setPen(QPen(_colorTooltipLine,0)); // cosmetic: 1px at any zoom, as in Qt4
 		painter.drawRect(tooltip);
 		painter.setPen(_colorTooltipText);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
@@ -1085,9 +1086,17 @@ public: // Event Handlers
 	{
 		const int deltaUnitsPerDegree = 8;
 		const int degreesPerStep = 15;
-		const int delta = event->angleDelta().y();
-		int steps = delta / (deltaUnitsPerDegree*degreesPerStep);
-		zoom(steps);
+		const int deltaPerStep = deltaUnitsPerDegree*degreesPerStep;
+		// Qt6 delivers touchpads and high resolution wheels as many deltas
+		// below one step (Qt4 always sent whole steps), so accumulate them.
+		const QPoint angle = event->angleDelta();
+		const int delta = angle.y() ? angle.y() : angle.x();
+		if (!delta) return;
+		if (_wheelDelta*delta < 0) _wheelDelta = 0; // direction changed
+		_wheelDelta += delta;
+		int steps = _wheelDelta / deltaPerStep;
+		_wheelDelta -= steps*deltaPerStep;
+		if (steps) zoom(steps);
 	}
 	bool event(QEvent * event)
 	{
@@ -1159,6 +1168,7 @@ protected:
 private:
 	bool _changed;
 	double _zoomFactor;
+	int _wheelDelta;
 	DragStatus _dragStatus;
 	ProcessingBox * _dragProcessing;
 	unsigned _dragConnection;

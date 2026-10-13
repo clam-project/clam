@@ -42,7 +42,8 @@ public:
 		QPainter painter(this);
 //		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(width(),height()/7.0);
-		painter.setPen(_lineColor);
+		// Width 0: cosmetic pen, 1px whatever the scale (Qt4's QPen(QColor) default)
+		painter.setPen(QPen(_lineColor,0));
 		QPolygonF _line;
 		for (int i=0; i<size; i++)
 		{

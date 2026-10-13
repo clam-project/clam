@@ -1027,10 +1027,12 @@ namespace CLAM
 				index = GetBPFIndex(key);
 				haveKey = true;
 			}
+			// Renderers keep a pointer: give them our own copies, never the
+			// caller's bpf (often a temporary).
 			if(haveKey)
 			{
 				mBPFs[index] = bpf;
-				mRenderers[index].SetData(bpf);
+				mRenderers[index].SetData(mBPFs[index]);
 			}
 			else
 			{
@@ -1039,7 +1041,11 @@ namespace CLAM
 				mBPFs.resize(currentSize+1);
 				mRenderers.resize(currentSize+1);
 				mBPFs[currentSize] = bpf;
-				mRenderers[currentSize].SetData(bpf);
+				// resize() may have reallocated mBPFs: re-point every renderer
+				for(unsigned i=0; i < mRenderers.size(); i++)
+				{
+					mRenderers[i].SetData(mBPFs[i]);
+				}
 			}
 		}
 

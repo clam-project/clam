@@ -1,83 +1,111 @@
 # CMake migration
 
-This repository now has a CMake build for the CLAM libraries and for the
-NetworkEditor Qt application (with its reusable monitor-widget library). The
-build targets C++17 and Qt6.
+This branch replaces the SCons builds of the CLAM libraries, NetworkEditor
+and SMSTools with one CMake build (CMake 3.22 or later), moves the code to
+C++17 and ports the GUI applications to Qt6. [`README.md`](README.md) has the
+build instructions and options; this file records what changed and what is
+left.
 
-## Configure and build (libraries only)
+## Build system
 
-```sh
-cmake -S . -B build/cmake -DCLAM_BUILD_GUI_APPS=OFF
-cmake --build build/cmake -j$(nproc)
-```
+- The top-level `CMakeLists.txt` builds the libraries (`CLAM/`) and,
+  optionally, `NetworkEditor/`, `SMSTools/` and the unit tests (`CLAM/test/`).
+- `cmake/ClamSources.cmake` collects the sources folder by folder with
+  blacklists, as the SCons scripts did, and generates the
+  `CLAMVersion`/`NetworkEditorVersion`/`SMSToolsVersion` sources from the
+  `CHANGES` files. Generated files are only rewritten when their content
+  changes, so reconfiguring does not trigger a rebuild.
+- The libraries are always shared, with the SCons SONAME scheme
+  (`libclam_core.so.1.4`). Their processings register themselves in factories
+  from static initializers, which a static link would drop.
+- `CLAM_WITH_*` options replace the SCons `with_*` options. Each one either
+  finds its dependency or stops with an error, and adds the same `USE_*`
+  definitions as before; public definitions reach consumers through the
+  exported targets and the pkg-config files.
+- Debug builds define `_DEBUG`, which turns on `CLAM_DEBUG_ASSERT`, as the
+  SCons debug builds did.
+- `BUILD_TESTING` (from CTest, on by default) builds the CppUnit unit tests
+  and the threading test and registers them with CTest.
+- Linux and macOS build in CI; the Windows build (MSVC, vcpkg) has a CI job
+  that is disabled.
 
-The default build creates shared libraries:
+## Install and packaging
 
-- `clam_core`
-- `clam_processing`
-- `clam_audioio`
+`cmake --install` installs what the SCons `install` targets did: libraries,
+headers (`include/CLAM`, `include/CLAM/qtmonitors`), applications, example
+data, desktop and MIME files, icons, man pages and translations. It also
+installs:
 
-All targets compile with `CXX_STANDARD 17`. The previous C++03/C++11 syntax in
-the public headers (notably dynamic exception specifications such as
-`throw (IllegalValue)`) has been removed so the libraries build cleanly under
-C++17.
+- a CMake package (`lib/cmake/CLAM`) with the targets `CLAM::core`,
+  `CLAM::processing`, `CLAM::audioio` and, when built, `CLAM::qtmonitors`;
+- `clam_core.pc`, `clam_processing.pc` and `clam_audioio.pc`;
+- the SCons tools in `share/clam/sconstools`, ported to Python 3 / SCons 4
+  (`qt6` replaces `qt4`), for SCons projects that build against CLAM;
+- the `clamrefactor`, `clamnetwork2code` and `clam_lv2_generator` scripts
+  (Python 3) under `share/clam`, as commands in `bin`, with their man pages.
 
-## NetworkEditor and Qt targets
+NetworkEditor's "Compile as LADSPA plugin" now generates a small CMake project
+that uses the installed CMake package, instead of a Python 2 SConstruct.
 
-The Qt-dependent code is disabled by default. Enabling it builds both the
-reusable monitor-widget library and the NetworkEditor application:
+## C++17
 
-```sh
-cmake -S . -B build/cmake-qt -DCLAM_BUILD_GUI_APPS=ON
-cmake --build build/cmake-qt -j$(nproc)
-```
+Dynamic exception specifications, `register`, `std::auto_ptr` and other
+constructs removed from C++17 are gone from the compiled sources. The
+libraries and applications build with GCC, clang and MSVC.
 
-Targets produced:
+The `CLAM::Thread`, `Mutex`, `Condition` and `Lock` classes
+(`CLAM/src/System/Threads`) are removed; their users, and programs built
+against CLAM, use `std::thread`, `std::mutex` and `std::condition_variable`.
 
-- `clam_qtmonitors` (library, public monitor/binder/widget classes)
-- `NetworkEditor` (executable, controlled by `CLAM_NETWORKEDITOR_BUILD_APPS`)
+## Qt6
 
-`cmake/ClamQtCompat.cmake` generates forwarding headers so the legacy
-`#include <QtGui/QWidget>`-style includes still resolve under Qt6, and maps
-`QGLWidget` users to `QOpenGLWidget`. Removed-API call sites such as
-`QWheelEvent::delta()` are rewritten to their Qt6 equivalents
-(`angleDelta().y()`, etc.).
+- Legacy includes such as `<QtGui/QWidget>` were rewritten to the Qt6 module
+  layout.
+- `QGLWidget` users now derive from `QOpenGLWidget`. The NetworkEditor
+  widgets name `QOpenGLWidget` directly; the SMSTools plot library
+  (`SMSTools/vmqt`) keeps a local `using QGLWidget = QOpenGLWidget;` alias.
+  Text that `QGLWidget::renderText()` drew (the KeySpace, Tonnetz and
+  QFirstPerson labels, the SMSTools plot tooltips) is now painted with
+  `QPainter` over the GL drawing.
+- GLU is no longer used: QFirstPerson draws its spheres with a small helper
+  and projects its label positions itself.
+- NetworkEditor reads the network version with `QDomDocument` instead of
+  `QXmlQuery`.
+- String-based connections to signals that Qt6 removed were moved to the
+  Qt6 signals, mostly with pointer-to-member `connect()`.
 
 ## SMSTools
 
-`SMSTools/` builds against Qt6 only and is opt-in:
+`main` had two SMSTools trees: `SMSTools/`, the original Qt3 application, and
+`SMSTools-qt4/`, its Qt4 port that still used Qt3Support. This branch removes
+the Qt3 application, moves `SMSTools-qt4/` to `SMSTools/` and ports it to
+Qt6: the `Q3*` widgets are replaced by their Qt6 equivalents, and the
+connections declared in the `.ui` files are made in the dialog constructors.
+SMSConsole and SMSBatch do not use Qt.
 
-```sh
-cmake -S . -B build/cmake-smstools -DCLAM_BUILD_SMSTOOLS=ON
-cmake --build build/cmake-smstools -j$(nproc)
-```
+## Status of the upstream components
 
-Targets produced:
+| Component | SCons on `main` | This branch |
+| --- | --- | --- |
+| `clam_core`, `clam_processing`, `clam_audioio` | built | built with CMake |
+| CLAM unit tests (`CLAM/test/UnitTests`) | built | built with CMake, run by CTest |
+| CLAM functional tests, doxygen target | built | not ported |
+| `clamrefactor`, `clamnetwork2code`, `clam_lv2_generator` scripts | installed (Python 2) | installed (Python 3) |
+| CLAM plugins (`CLAM/plugins`) and examples (`CLAM/examples`) | SCons, against an installed CLAM | not ported; they can use the installed pkg-config files and SCons tool |
+| NetworkEditor, `clam_qtmonitors` | built | built with CMake, Qt6 |
+| Prototyper, OfflinePlayer, MonoOfflinePlayer, CheckClamNetwork | built | built with CMake |
+| CLAMWidgets Qt Designer plugin | built | built with CMake |
+| NetworkEditor network upgrader and IPython console | built by default (Python 2, PySide 1) | opt-in (`CLAM_NETWORKEDITOR_USE_PYTHON`: Python 3, Boost.Python, shiboken6); the upgrader is ported and tested, the console is not built in CI. Without Python, networks from older CLAM versions are loaded without upgrading them |
+| NetworkEditor translations | built | built with CMake when Qt6 LinguistTools is found |
+| SMSTools, SMSConsole, SMSBatch | `SMSTools-qt4/` | `SMSTools/`, built with CMake, Qt6 |
+| Qt3 SMSTools (`SMSTools/` on `main`) | built | removed |
+| Annotator, Voice2MIDI, chordata | SCons, Qt4 / Qt3Support | not ported; they still use `QGLWidget`, Qt3Support and SCons |
+| pyclam, ipyclam, pyjack | SCons / Python 2 | SCons scripts updated to Python 3 and Qt6; not built by CMake |
 
-- `SMSConsole` (console batch tool, no Qt)
-- `SMSBatch` (directory-batch tool, no Qt)
-- `SMSTools` (Qt GUI application)
+## Known limitations
 
-The previous `SMSTools-qt4/` tree was the Qt3Support-era version; it has been
-replaced by `SMSTools/`. The port replaces all `Q3*` widgets with their modern
-equivalents, drops the Qt3 widget palette/font helpers in favour of `QPalette`,
-and rewires the dialogs' signal/slot connections in C++ rather than in the
-`.ui` files (Qt6 `uic` emits typed function pointers against the form's base
-class, which does not see the subclass slots).
-
-## Remaining work
-
-The following applications still rely on SCons and have not been ported to
-CMake:
-
-- `Annotator/`
-- `Voice2MIDI/`
-
-Known source-level blockers that any future CMake/Qt6 port of these will need
-to clear:
-
-- Remove remaining Qt3Support usage (`Q3*` classes) in `Voice2MIDI/`.
-- Review OpenGL widgets that still inherit from the compatibility-aliased
-  `QGLWidget`; paint and context behavior under `QOpenGLWidget` are close but
-  not identical, and a few widgets (e.g. `QFirstPerson`) may want a native
-  `QOpenGLWidget` port.
+- The macOS and Windows packaging of the SCons scripts (bundles, NSIS,
+  MinGW cross builds) has no CMake equivalent.
+- `CLAM_WITH_DOUBLE=ON` (double precision `TData`) needs `CLAM_WITH_LADSPA=OFF`,
+  because the LADSPA host and exporter only handle float samples. The
+  libraries compile with it, but CI does not build or test it.

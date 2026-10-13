@@ -30,6 +30,10 @@ class StatsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testMoment4 );
 	CPPUNIT_TEST( testMoment5 );
 	CPPUNIT_TEST( testMoment6 );
+	CPPUNIT_TEST( testCenterOfGravity1 );
+	CPPUNIT_TEST( testCenterOfGravity6 );
+	CPPUNIT_TEST( testCentralMoment6 );
+	CPPUNIT_TEST( testCentralMoment7_afterCentralMoment6 );
 	CPPUNIT_TEST( testSlope_withPrimesUp );
 	CPPUNIT_TEST( testSlope_withPrimesDown );
 	CPPUNIT_TEST( testSlope_withConstant );
@@ -240,6 +244,35 @@ private:
 		fillPrimesUp();
 		CLAM::Stats stats(&_array);
 		CPPUNIT_ASSERT_EQUAL( CLAM::TData(4104.75), stats.GetMoment((CLAM::O<6>*)0));
+	}
+	void testCenterOfGravity1()
+	{
+		fillPrimesUp();
+		CLAM::Stats stats(&_array);
+		assertDoublesEqual( CLAM::TData(2.090909), stats.GetCenterOfGravity((CLAM::O<1>*)0), .000001);
+	}
+	// Orders above the Stats initOrder (5) take the lazily allocating path
+	void testCenterOfGravity6()
+	{
+		fillPrimesUp();
+		CLAM::Stats stats(&_array);
+		// sum(i*x^6)/sum(x^6) = 48397/16419
+		assertDoublesEqual( CLAM::TData(2.947622), stats.GetCenterOfGravity((CLAM::O<6>*)0), .000001);
+		assertDoublesEqual( CLAM::TData(2.947622), stats.GetCenterOfGravity((CLAM::O<6>*)0), .000001);
+	}
+	void testCentralMoment6()
+	{
+		fillPrimesUp();
+		CLAM::Stats stats(&_array);
+		assertDoublesEqual( CLAM::TData(39.661865), stats.GetCentralMoment((CLAM::O<6>*)0), .00001);
+		assertDoublesEqual( CLAM::TData(39.661865), stats.GetCentralMoment((CLAM::O<6>*)0), .00001);
+	}
+	void testCentralMoment7_afterCentralMoment6()
+	{
+		fillPrimesUp();
+		CLAM::Stats stats(&_array);
+		assertDoublesEqual( CLAM::TData(39.661865), stats.GetCentralMoment((CLAM::O<6>*)0), .00001);
+		assertDoublesEqual( CLAM::TData(60.382690), stats.GetCentralMoment((CLAM::O<7>*)0), .00001);
 	}
 	void testSlope_withPrimesUp()
 	{

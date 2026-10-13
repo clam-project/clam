@@ -68,10 +68,10 @@ namespace CLAM
 
 		protected:
 			void paintGL(); 
+			void resizeGL(int w, int h);
 			void mousePressEvent(QMouseEvent* e);
 			void mouseReleaseEvent(QMouseEvent* e);
 			void mouseMoveEvent(QMouseEvent* e);
-			void resizeEvent(QResizeEvent *e);
 			void leaveEvent(QEvent* e);
 			void enterEvent(QEnterEvent* e);
 			void mouseDoubleClickEvent(QMouseEvent* e);
@@ -86,7 +86,6 @@ namespace CLAM
 			double          mBlue;
 			int             mWidth;
 			int             mHeight;
-			volatile bool   mDoResize;
 			QTimer*         mTimer;
 			QString         mToolTip;
 			QFont           mToolTipFont;

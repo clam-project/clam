@@ -28,7 +28,7 @@ void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 	if (isSelected())
 	{
 		QRectF rect=QGraphicsTextItem::boundingRect();
-		painter->setPen(_canvas->colorBoxFrameText());
+		painter->setPen(QPen(_canvas->colorBoxFrameText(),0)); // cosmetic: 1px at any zoom, as in Qt4
 		painter->setBrush(_canvas->palette().highlight());
 		painter->drawRect(0, 0, margin, margin);
 		painter->drawRect(0, rect.size().height(), margin, -margin);

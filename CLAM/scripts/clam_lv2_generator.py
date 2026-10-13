@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 _copyright = u"""\
@@ -91,7 +91,7 @@ class ControlPort(AudioPort):
 		) ]
 
 class ExporterHandler(ContentHandler):
- 	def __init__ (self):
+	def __init__ (self):
 		self.label = ""
 		self.audioAux = None	
 		self.inputAudio = []
@@ -165,7 +165,7 @@ class ExporterHandler(ContentHandler):
 			try:
 				fileWithDoap = open(doapfile)
 			except IOError:
-			        print('cannot open', doapfile, file=sys.stderr)
+				print('cannot open', doapfile, file=sys.stderr)
 				fileWithDoap = None
 			else:
 				doapDescription = fileWithDoap.read()

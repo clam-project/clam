@@ -76,15 +76,22 @@ namespace CLAM {
 
 	void ALSAMIDIDevice::ConcreteStop(void)
 	{
+		// Reset what we release: the destructor calls Stop() again, also
+		// after an explicit Stop() (e.g. MIDIManager::Stop()).
 		if (mHandleIn) {
 			snd_rawmidi_drain(mHandleIn); 
 			snd_rawmidi_close(mHandleIn);
-			snd_rawmidi_status_free(mStatusIn);
+			mHandleIn = nullptr;
 		}
-                
-                if(mHandleOut){
-		    snd_rawmidi_drain(mHandleOut);
-                    snd_rawmidi_close(mHandleOut);
+		if (mHandleOut) {
+			snd_rawmidi_drain(mHandleOut);
+			snd_rawmidi_close(mHandleOut);
+			mHandleOut = nullptr;
+		}
+		// ConcreteStart allocates it for output-only devices too
+		if (mStatusIn) {
+			snd_rawmidi_status_free(mStatusIn);
+			mStatusIn = nullptr;
 		}
 	}
 

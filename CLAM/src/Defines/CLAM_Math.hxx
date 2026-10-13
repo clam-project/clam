@@ -23,6 +23,7 @@
 #define __CLAM_MATH__
 
 #include <cmath>
+#include <cstdint>
 #include "DataTypes.hxx"
 #include "FastRounding.hxx"
 
@@ -197,7 +198,7 @@ inline float	CLAM_exp2(float x)
 	if (x >= -127.0f)
 		{
 		float accumulator, xPower;
-		union {float f; long i;} xBits;
+		union {float f; std::int32_t i;} xBits;	/* i as wide as f: long is 64-bit on LP64 */
 			
 		xBits.i = (long)(x + FLOAT_OFFSET) - LONG_OFFSET;		/* integer part */
 		x -= (float)(xBits.i);									/* fractional part */
@@ -232,7 +233,7 @@ inline float	CLAM_log2(float x)
 		float accumulator, xPower;
 		long intPart;
 		
-		union {float f; long i;} xBits;
+		union {float f; std::int32_t i;} xBits;	/* i as wide as f: long is 64-bit on LP64 */
 		
 		xBits.f = x;
 		
@@ -281,7 +282,7 @@ inline float CLAM_sqrt(float x)
 		{
 		float accumulator, xPower;
 		long intPart;
-		union {float f; long i;} xBits;
+		union {float f; std::int32_t i;} xBits;	/* i as wide as f: long is 64-bit on LP64 */
 		
 		xBits.f = x;
 		

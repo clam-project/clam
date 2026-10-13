@@ -20,6 +20,9 @@ namespace QtSMS
 		QtSMSTools();
 		~QtSMSTools();
 
+	protected:
+		void closeEvent(QCloseEvent* event) override;
+
 	private slots:
 		// menu File  
 		void loadConfiguration();
@@ -70,6 +73,7 @@ namespace QtSMS
 		bool          mShowOriginalAudio;
 
 		SigSlot::Slotv0 mSlotAnalysisDataLoaded;
+		SigSlot::Slotv0 mSlotMelodyExtracted;
 
 		void InitSMSTools();
 		void InitialState();
@@ -84,6 +88,7 @@ namespace QtSMS
 		void SendSynthesizedDataToViewManager();
 		void LaunchMethodOnThread(std::function<void()> method);
 		void OnAnalysisDataLoaded();
+		void OnMelodyExtracted();
 
 		void NotImplemented();
 	};

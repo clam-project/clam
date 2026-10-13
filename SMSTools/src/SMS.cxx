@@ -64,7 +64,8 @@ void SMSStdio::Run(void)
 		std::cout << "0. Finish" << "\n" << "\n";
 
 		int option;
-		std::cin>>option;
+		// Stop at the end of the input instead of printing the menu forever
+		if (!(std::cin>>option)) break;
 
 		switch(option)
 		{

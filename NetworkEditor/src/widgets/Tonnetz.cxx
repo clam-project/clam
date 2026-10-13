@@ -22,6 +22,7 @@
 #include "Tonnetz.hxx"
 #include <QtGlobal>
 #include <QPixmap>
+#include <QPainter>
 #include <QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
@@ -130,10 +131,13 @@ void CLAM::VM::Tonnetz::Draw()
 		for (int x = 0-y/2; x<10; x++)
 			DrawTile(x,y);
 	DrawChordsShapes();
-	glColor4f(1,1,.5,1);
+	// QOpenGLWidget has no renderText(): draw the labels with a QPainter
+	// over the GL drawing
+	QPainter painter(this);
+	painter.setPen(QColor::fromRgbF(1,1,.5));
 	for (int y = 0; y<4; y++)
 		for (int x = 0-y/2; x<10; x++)
-			DrawLabel(x,y);
+			DrawLabel(painter,x,y);
 }
 unsigned CLAM::VM::Tonnetz::BinAtPosition(int x, int y)
 {
@@ -148,16 +152,16 @@ unsigned CLAM::VM::Tonnetz::BinAtPosition(int x, int y)
 }
 
 
-void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
+void CLAM::VM::Tonnetz::DrawLabel(QPainter & painter, int x, int y)
 {
 	const double sin30 = .5;
 	const double cos30 = .8660254;
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	(void)posx;
-	(void)posy;
-	(void)bin;
+	// From the glOrtho(0,15,0,5) coordinates (y up) to pixels
+	painter.drawText(QPointF(posx/15*width(), height()-posy/5*height()),
+		QString::fromStdString(_dataSource->getLabel(bin)));
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {

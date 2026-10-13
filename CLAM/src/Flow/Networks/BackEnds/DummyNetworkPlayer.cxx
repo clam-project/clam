@@ -18,8 +18,9 @@ void DummyNetworkPlayer::Start()
 	CacheSourcesAndSinks();
 	const int frameSize = 512;
 
-	TData idata[frameSize];
-	TData odata[frameSize];
+	// NetworkPlayer buffers are float, whatever TData is (CLAM_DOUBLE)
+	float idata[frameSize];
+	float odata[frameSize];
 
 	for(int i=0;i<frameSize;i++)
 		idata[i]=sin(i);
