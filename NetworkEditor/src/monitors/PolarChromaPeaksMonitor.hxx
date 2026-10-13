@@ -27,11 +27,11 @@ class PolarChromaPeaksMonitor : public CLAM::PortMonitor<std::vector<std::pair<C
 			_pos[i] = _peaks[i].first;
 			_value[i] = _peaks[i].second;
 		}
-		return &_pos[0];
+		return _pos.empty() ? nullptr : _pos.data();
 	}
 	const CLAM::TData * magnitudeData()
 	{
-		return &_value[0];
+		return _value.empty() ? nullptr : _value.data();
 	}
 	unsigned nBins() const
 	{

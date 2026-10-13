@@ -63,7 +63,16 @@ namespace AudioCodecs
 		if ( fileHandle != nullptr )
 		{
 			sf_close( fileHandle );
-			return true;
+			// New libsndfile versions also decode MP3 and other formats that
+			// CLAM's PCM header enums cannot represent. Leave those files to
+			// their dedicated codecs instead of asserting in RetrieveHeaderData.
+			auto knownValue = [](const Enum::tEnumValue * values, int value) {
+				for (; values->name; ++values)
+					if (values->value == value) return true;
+				return false;
+			};
+			return knownValue(EAudioFileFormat::EnumValues(), fileHeaderInfo.format & SF_FORMAT_TYPEMASK)
+				&& knownValue(EAudioFileEncoding::EnumValues(), fileHeaderInfo.format & SF_FORMAT_SUBMASK);
 		}
 
 		// TODO: An exception should be thrown

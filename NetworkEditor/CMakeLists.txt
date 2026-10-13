@@ -14,7 +14,7 @@ clam_generate_version_sources(NETWORKEDITOR_VERSION_SOURCE NETWORKEDITOR_VERSION
 option(CLAM_NETWORKEDITOR_BUILD_APPS "Build NetworkEditor, Prototyper and the offline command line tools" ON)
 option(CLAM_NETWORKEDITOR_BUILD_DESIGNER_PLUGIN "Build the CLAMWidgets plugin for Qt Designer" ON)
 
-set(CLAM_NETWORKEDITOR_QT_COMPONENTS Core Gui Widgets Xml Svg SvgWidgets OpenGL OpenGLWidgets PrintSupport UiPlugin)
+set(CLAM_NETWORKEDITOR_QT_COMPONENTS Core Gui Widgets Xml Svg SvgWidgets OpenGL OpenGLWidgets PrintSupport UiPlugin Qml Quick QuickControls2)
 if(CLAM_NETWORKEDITOR_BUILD_APPS)
 	list(APPEND CLAM_NETWORKEDITOR_QT_COMPONENTS UiTools)
 endif()
@@ -140,6 +140,8 @@ install(FILES ${CLAM_QTMONITOR_HEADERS}
 
 set(CLAM_NETWORKEDITOR_DATADIR "${CMAKE_INSTALL_DATADIR}/networkeditor")
 
+add_subdirectory(src/qml/CLAM/Widgets)
+
 if(CLAM_NETWORKEDITOR_BUILD_APPS)
 	# Processings only NetworkEditor provides (some example networks use
 	# them). The command line tools get them too, as in the SCons build.
@@ -242,11 +244,12 @@ if(CLAM_NETWORKEDITOR_BUILD_APPS)
 		endif()
 	endforeach()
 
-	# Runs the Qt Designer .ui interfaces in example-data against a network.
+	# Runs QML and legacy Qt Designer interfaces against a network.
 	add_executable(Prototyper
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/prototyper/main.cxx"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/prototyper/PrototypeLoader.cxx"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/prototyper/PrototypeLoader.hxx"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/prototyper/interfaces.qrc"
 		${NETWORKEDITOR_VERSION_SOURCE}
 	)
 	clam_set_legacy_cxx(Prototyper)
@@ -256,7 +259,33 @@ if(CLAM_NETWORKEDITOR_BUILD_APPS)
 			"${NETWORKEDITOR_VERSION_INCLUDE_DIR}"
 			"${NETWORKEDITOR_VERSION_INCLUDE_DIR}/CLAM"
 	)
-	target_link_libraries(Prototyper PRIVATE CLAM::qtmonitors Qt6::UiTools)
+	target_link_libraries(Prototyper PRIVATE CLAM::qmlwidgets Qt6::UiTools)
+	target_compile_definitions(Prototyper PRIVATE CLAM_QML_INSTALL_DIR="${CMAKE_INSTALL_LIBDIR}/qt6/qml")
+	if(BUILD_TESTING)
+		add_executable(QmlWidgetsTest
+			test/QmlWidgetsTest.cxx
+			src/prototyper/PrototypeLoader.cxx
+			src/prototyper/PrototypeLoader.hxx
+			src/prototyper/interfaces.qrc
+		)
+		clam_set_legacy_cxx(QmlWidgetsTest)
+		target_include_directories(QmlWidgetsTest PRIVATE src/prototyper)
+		target_compile_definitions(QmlWidgetsTest PRIVATE
+			CLAM_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+			CLAM_QML_BUILD_DIR="${CMAKE_BINARY_DIR}/qml"
+			CLAM_QML_INSTALL_DIR="${CMAKE_INSTALL_LIBDIR}/qt6/qml"
+		)
+		target_link_libraries(QmlWidgetsTest PRIVATE CLAM::qmlwidgets Qt6::UiTools)
+		add_test(NAME networkeditor_qml_widgets COMMAND QmlWidgetsTest)
+		set_tests_properties(networkeditor_qml_widgets PROPERTIES
+			ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_QUICK_BACKEND=software"
+			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+			TIMEOUT 30
+		)
+		add_test(NAME prototyper_help COMMAND Prototyper --help)
+		add_test(NAME prototyper_unavailable_backend COMMAND Prototyper -o -b unavailable example.clamnetwork)
+		set_tests_properties(prototyper_unavailable_backend PROPERTIES WILL_FAIL TRUE TIMEOUT 10)
+	endif()
 
 	install(TARGETS NetworkEditor Prototyper ${CLAM_NETWORKEDITOR_TOOLS}
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -279,6 +308,7 @@ if(CLAM_NETWORKEDITOR_BUILD_APPS)
 		FILES_MATCHING
 			PATTERN "*.clamnetwork"
 			PATTERN "*.ui"
+			PATTERN "*.qml"
 			PATTERN "*.wav"
 			PATTERN "*.mp3"
 			PATTERN "*.ogg"

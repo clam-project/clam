@@ -21,4 +21,9 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CLAMQtMonitorsTargets.cmake")
 	include("${CMAKE_CURRENT_LIST_DIR}/CLAMQtMonitorsTargets.cmake")
 endif()
 
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CLAMQmlWidgetsTargets.cmake")
+	find_dependency(Qt6 COMPONENTS Qml Quick)
+	include("${CMAKE_CURRENT_LIST_DIR}/CLAMQmlWidgetsTargets.cmake")
+endif()
+
 check_required_components(CLAM)

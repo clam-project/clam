@@ -202,18 +202,11 @@ namespace CLAM { class ControlSourceQtBinder; }
 
 class CLAM::ControlSourceQtBinder : public CLAM::QtBinder
 {
-	std::list<ControlSourceSender *> _toDelete;
 	QString _prefix;
 public:
 	ControlSourceQtBinder()
 		: _prefix("ControlSource__")
 	{
-	}
-	~ControlSourceQtBinder()
-	{
-		for (std::list<ControlSourceSender *>::iterator it=_toDelete.begin();
-			it!=_toDelete.end(); it++)
-			delete *it;
 	}
 	bool handles(QObject * uiElement)
 	{
@@ -226,6 +219,7 @@ public:
 	{
 		std::string processingName=widget2NetworkName(_prefix,uiElement->objectName());
 		std::cout << "* Slider connected to ControlSource port " << processingName << std::endl;
+		if (missingProcessing(processingName, network, errors)) return false;
 		Processing & processing = network.GetProcessing(processingName);
 		ControlSource * source = dynamic_cast<ControlSource*> (&processing);
 		if (not source) return error(errors,
@@ -236,7 +230,6 @@ public:
 				);
 		ControlSourceSender * bind = new ControlSourceSender(source);
 		bind->setParent(uiElement);
-		_toDelete.push_back(bind);
 		QObject::connect(
 			uiElement, SIGNAL(valueChanged(int)),
 			bind, SLOT(send(int)));

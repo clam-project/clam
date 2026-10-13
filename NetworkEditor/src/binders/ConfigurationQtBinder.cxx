@@ -15,15 +15,16 @@ void ConfigurationLauncher::launch()
 		delete config;
 		return;
 	}
-	// TODO: Consider the pause case as well
 	bool wasPlaying = _network.IsPlaying();
+	bool wasPaused = _network.IsPaused();
 
-	if (wasPlaying) _network.Stop();
+	_network.Stop();
 	processing.Configure(*config);
 	delete config;
 	if (processing.IsConfigured())
 	{
-		if (wasPlaying) _network.Start();
+		if (wasPlaying || wasPaused) _network.Start();
+		if (wasPaused) _network.Pause();
 		return;
 	}
 	if (not processing.IsConfigured())

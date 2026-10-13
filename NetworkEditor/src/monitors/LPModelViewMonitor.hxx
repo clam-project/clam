@@ -49,7 +49,7 @@ private:
 		const CLAM::Array<CLAM::TData> & buffer = data.GetFilterCoefficients();
 //		const CLAM::Array<CLAM::TData> & buffer = data.GetReflectionCoefficients();
 		_size = buffer.Size();
-		return & buffer[0];
+		return _size ? &buffer[0] : nullptr;
 	}
 	void release()
 	{

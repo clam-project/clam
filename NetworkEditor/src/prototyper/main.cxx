@@ -1,6 +1,8 @@
 #include "PrototypeLoader.hxx"
 #include <QApplication>
 #include <iostream>
+#include <memory>
+#include <QFileInfo>
 
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
@@ -15,16 +17,17 @@
 #include <unistd.h>
 #endif
 
-int usage(const std::string & program)
+int usage(const std::string & program, int status = 1)
 {
 		std::cout << " Usage: " << program
-			<< " <networkfile> [ <uifile> ] [-o] [-b <backend> [-b <backend> ...]]\n"
+			<< " [<networkfile> [<interface.qml|interface.ui>]] [-o] [-b <backend> [-b <backend> ...]]\n"
 			<< "Options:\n"
 			<< " -o             Non interactive mode\n"
-			<< " -b <backend>   Try backend (portaudio, alsa, jack).\n"
+			<< " -b <backend>   Try backend (jack, portaudio).\n"
+			<< " -h, --help     Show this help.\n"
 			<< " --start-paused  Pause just at start.\n"
 			<< std::endl;
-		return -1;
+		return status;
 }
 
 int main( int argc, char *argv[] )
@@ -55,8 +58,9 @@ int main( int argc, char *argv[] )
 			optionArgument=none;
 			continue;
 		}
-		if (arg[0]=='-')
+		if (!arg.empty() && arg[0]=='-')
 		{
+			if (arg=="--help" || arg=="-h") return usage(argv[0], 0);
 			if (arg=="-b")
 			{
 				optionArgument=backend;
@@ -84,20 +88,23 @@ int main( int argc, char *argv[] )
 				uiFile = arg;
 			break;
 			default:
-				std::cerr << "Too much arguments." << std::endl;
+				std::cerr << "Too many arguments." << std::endl;
 				return usage(argv[0]);
 		}
 	}
-	QString undottedName = networkFile.c_str();
-	undottedName= undottedName.mid(undottedName.lastIndexOf("/")+1, -1);
-	undottedName.truncate(undottedName.indexOf("."));
-
-
-	// TODO: QScopedPointer is available only since 4.6 :-( karmic has 4.5
-//	QScopedPointer<QCoreApplication> app( isInteractive ? 
-	QCoreApplication * app( isInteractive ? 
-		new QApplication(argc,argv):
-		new QCoreApplication(argc,argv));
+    if (optionArgument != none) {
+        std::cerr << "Option -b requires a backend name.\n";
+        return usage(argv[0]);
+    }
+    if (!isInteractive && networkFile.empty()) {
+        std::cerr << "Noninteractive mode requires a network file.\n";
+        return usage(argv[0]);
+    }
+    const QString undottedName = networkFile.empty() ? QString("Prototyper")
+        : QFileInfo(QString::fromStdString(networkFile)).completeBaseName();
+    // Application outlives the loader, its windows, timers and network.
+    std::unique_ptr<QCoreApplication> app(isInteractive ?
+        static_cast<QCoreApplication *>(new QApplication(argc, argv)) : new QCoreApplication(argc, argv));
 	CLAM::PrototypeLoader prototype;
 	prototype.UseGUI(isInteractive);
 	if (! prototype.ChooseBackend( backends, undottedName.toLocal8Bit().constData() ) ) return -1;
@@ -105,17 +112,14 @@ int main( int argc, char *argv[] )
 	if (isInteractive)
 	{
 		if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
+		if (!prototype.ConnectUiWithNetwork()) return 1;
 		prototype.Show();
-		prototype.ConnectUiWithNetwork();
 	}
 	else
 		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
-	prototype.Start();
-	if (isInteractive && startPaused) prototype.Pause();
+	if (!startPaused) prototype.Start();
 	int result = app->exec();
 	prototype.Stop();
-	// TODO: To remove once QScopedPointer is widely available (error cases imply leaks)
-	delete app;
 	return result;
 }
 

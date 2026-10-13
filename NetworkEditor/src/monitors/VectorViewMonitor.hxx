@@ -48,7 +48,7 @@ private:
 		const std::vector<CLAM::TData> & data = FreezeAndGetData();
 		_size = data.size();
 //		if (!_size) return 0;
-		return & data[0];
+		return _size ? data.data() : nullptr;
 	}
 	void release()
 	{

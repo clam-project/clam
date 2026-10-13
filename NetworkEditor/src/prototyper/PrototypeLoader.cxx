@@ -18,6 +18,36 @@
 
 
 #include "QtBinder.hxx"
+#include "QmlBindings.hxx"
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQuickItem>
+#include <QQuickWindow>
+#include <QFileInfo>
+#include <QDir>
+#include <QDebug>
+#include "Oscilloscope.hxx"
+#include "Vumeter.hxx"
+#include "SpectrumView.hxx"
+#include "PeakView.hxx"
+#include "BufferOscilloscope.hxx"
+#include "VectorView.hxx"
+#include "HistogramView.hxx"
+#include "Tonnetz.hxx"
+#include "KeySpace.hxx"
+#include "Spectrogram.hxx"
+#include "PolarChromaPeaks.hxx"
+#include "ChordRanking.hxx"
+#include "LPModelView.hxx"
+#include "MelSpectrumView.hxx"
+#include "MelCepstrumView.hxx"
+#include "SegmentationView.hxx"
+#include "Tunner.hxx"
+#include "PixmapWidgets.hxx"
+#include "QSynthKnob.hxx"
+#include "QFirstPerson.hxx"
+#include "ControlSurfaceWidget.hxx"
+#include "ProgressControlWidget.hxx"
 
 namespace
 {
@@ -54,7 +84,7 @@ void PrototypeLoader::reportWarning(const QString & title, const QString & messa
 		QMessageBox::warning(_interface, title, message);
 		return;
 	}
-	std::cout << "ERROR! " << title.toLocal8Bit().data() << std::endl;
+	std::cerr << "WARNING! " << title.toLocal8Bit().data() << std::endl;
 	std::cout << message.toLocal8Bit().data() << std::endl;
 }
 
@@ -65,15 +95,20 @@ void PrototypeLoader::reportError(const QString & title, const QString & message
 		QMessageBox::critical(_interface, title, message);
 		return;
 	}
-	std::cout << "WARNING! " << title.toLocal8Bit().data() << std::endl;
+	std::cerr << "ERROR! " << title.toLocal8Bit().data() << std::endl;
 	std::cout << message.toLocal8Bit().data() << std::endl;
 }
 
 bool PrototypeLoader::LoadNetwork(std::string networkFile)
 {
 	_networkFile = networkFile;
-	if (_networkFile=="")
-	{
+	if (_networkFile.empty() && !_useGui)
+    {
+        reportError(tr("Error loading the network"), tr("Noninteractive mode requires a network file."));
+        return false;
+    }
+    if (_networkFile.empty())
+    {
 		QString file = QFileDialog::getOpenFileName(0,
 			"Choose a Network to run",
 			QString(),
@@ -85,13 +120,12 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 	try
    	{
 		CLAM::XMLStorage::Restore(_network, _networkFile);
-		_network.SetPlayer(_player);
 		return true;
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
 		errorMessage = FileExists(_networkFile) ?
-			tr("<p>An occurred while loading the network file %1.<p>"
+			tr("<p>An error occurred while loading the network file %1.<p>"
 				"<p><b>%2</b></p>").arg(_networkFile.c_str()).arg(e.what()) :
 			tr("<p>Network file '%1' not found.</p>").arg(_networkFile.c_str());
 	}
@@ -104,10 +138,26 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 
 PrototypeLoader::~PrototypeLoader()
 {
+    _network.Stop();
+    ClearInterface();
+}
+
+void PrototypeLoader::ClearInterface()
+{
+    // Stop audio before destroying control observers and monitor sources.
+    _network.Stop();
+    _playButton = _pauseButton = _stopButton = nullptr;
+    _qmlRoot = nullptr;
+    _qmlEngine.reset();
+    _qmlHostWindow.reset();
+    delete _interface;
+    _interface = nullptr;
 }
 void PrototypeLoader::Show()
 {
-	_interface->show();
+    if (_interface) _interface->show();
+    if (auto * window = qobject_cast<QQuickWindow *>(_qmlRoot)) window->show();
+    if (_qmlHostWindow) _qmlHostWindow->show();
 }
 
 
@@ -138,7 +188,6 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends, const std:
 	{
 		backends.push_back("jack");
 		backends.push_back("portaudio");
-		backends.push_back("alsa");
 	}
 	for (std::list<std::string>::iterator it = backends.begin();
 			it!=backends.end();
@@ -150,74 +199,138 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends, const std:
 			std::cerr << "Backend '" << *it << "' unavailable." << std::endl;
 			continue;
 		}
+		_network.SetPlayer(_player);
 		_backendName = *it;
 		std::cout << "Backend '" << *it << "' selected." << std::endl;
 		return true;
 	}
 	reportError(
-		tr("Error chosing a backend"),
+		tr("Error choosing a backend"),
 		tr("No audio backend was available."));
 	return false;
 }
 
+// Construct the legacy CLAM widgets directly. A build-tree Prototyper
+// should not depend on finding an installed Qt Designer plugin.
+class LegacyUiLoader : public QUiLoader
+{
+protected:
+    QWidget * createWidget(const QString & type, QWidget * parent, const QString & name) override
+    {
+        QWidget * widget = nullptr;
+#define CLAM_UI_WIDGET(className, Class) if (type == className) widget = new Class(parent); else
+        CLAM_UI_WIDGET("Oscilloscope", Oscilloscope)
+        CLAM_UI_WIDGET("Vumeter", Vumeter)
+        CLAM_UI_WIDGET("SpectrumView", SpectrumView)
+        CLAM_UI_WIDGET("PeakView", PeakView)
+        CLAM_UI_WIDGET("BufferOscilloscope", BufferOscilloscope)
+        CLAM_UI_WIDGET("CLAM::VM::VectorView", CLAM::VM::VectorView)
+        CLAM_UI_WIDGET("CLAM::VM::HistogramView", CLAM::VM::HistogramView)
+        CLAM_UI_WIDGET("CLAM::VM::Tonnetz", CLAM::VM::Tonnetz)
+        CLAM_UI_WIDGET("CLAM::VM::KeySpace", CLAM::VM::KeySpace)
+        CLAM_UI_WIDGET("CLAM::VM::Spectrogram", CLAM::VM::Spectrogram)
+        CLAM_UI_WIDGET("PolarChromaPeaks", PolarChromaPeaks)
+        CLAM_UI_WIDGET("CLAM::VM::ChordRanking", CLAM::VM::ChordRanking)
+        CLAM_UI_WIDGET("CLAM::VM::LPModelView", CLAM::VM::LPModelView)
+        CLAM_UI_WIDGET("CLAM::VM::MelSpectrumView", CLAM::VM::MelSpectrumView)
+        CLAM_UI_WIDGET("CLAM::VM::MelCepstrumView", CLAM::VM::MelCepstrumView)
+        CLAM_UI_WIDGET("SegmentationView", SegmentationView)
+        CLAM_UI_WIDGET("Tunner", Tunner)
+        CLAM_UI_WIDGET("QSynthKnob", QSynthKnob)
+        CLAM_UI_WIDGET("QFirstPerson", QFirstPerson)
+        CLAM_UI_WIDGET("QPixmapButton", QPixmapButton)
+        if (type == "QPixmapRange") widget = new QPixmapRange(":/pkwidgets/thinMixerSlider_", parent);
+        else if (type == "ControlSurfaceWidget") widget = new ControlSurfaceWidget(nullptr, parent);
+        else if (type == "ProgressControlWidget") widget = new ProgressControlWidget(nullptr, parent);
+        else widget = QUiLoader::createWidget(type, parent, name);
+#undef CLAM_UI_WIDGET
+        if (widget) widget->setObjectName(name);
+        return widget;
+    }
+};
+
 static QWidget * DoLoadInterface(const QString & uiFile)
 {
-	QFile file(uiFile);
-	file.open(QFile::ReadOnly);
-	QUiLoader loader;
-	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
-	QDir dir(QApplication::applicationDirPath());
-	loader.addPluginPath( QString(dir.absolutePath())+"/../plugins" ); //TODO do only for mac?
-
-	QStringList paths = loader.pluginPaths();
-	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
-	{
-		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
-	}
-	QWidget * userInterface = loader.load(&file, 0 );
-	if (userInterface)
-	{
-		if (userInterface->windowIcon().isNull())
-			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
-	}
-	file.close();
-	return userInterface;
+    QFile file(uiFile);
+    if (!file.open(QFile::ReadOnly)) return nullptr;
+    LegacyUiLoader loader;
+    QWidget * userInterface = loader.load(&file);
+    if (userInterface && userInterface->windowIcon().isNull())
+        userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
+    if (!userInterface) qWarning().noquote() << loader.errorString();
+    return userInterface;
 }
 
-QWidget * PrototypeLoader::LoadInterface(QString uiFile)
+bool PrototypeLoader::LoadInterface(QString uiFile)
 {
-	if (_interface) delete _interface;
-	if (uiFile.isEmpty())
-	{
-		uiFile = QString::fromLocal8Bit(_networkFile.c_str());
-		int pos = uiFile.lastIndexOf(".");
-		uiFile.truncate(pos); // if not found nothing happens
-		uiFile += ".ui";
-	}
-	_interface = DoLoadInterface(uiFile);
-	if (_interface) return _interface;
-
-	QString error = FileExists(uiFile.toLocal8Bit().constData()) ?
-		tr("Interface file '%1' had errors."):
-		tr("Interface file '%1' not found.") ;
-	reportWarning(
-		tr("Error loading the interface"),
-		tr("<p><b>%1</b></p>"
-			"<p>Using a default interface.</p>").arg(error.arg(uiFile)));
-
-	_interface = DoLoadInterface(":/interfaces/prototyper/DefaultInterface.ui");
-	CLAM_ASSERT(_interface, "Failed to open the default interface");
-	return _interface;
+    ClearInterface();
+    if (uiFile.isEmpty()) {
+        const QFileInfo network(QString::fromStdString(_networkFile));
+        const QString base = network.dir().filePath(network.completeBaseName());
+        // Prefer QML when both versions of an interface are present.
+        uiFile = QFileInfo::exists(base + ".qml") ? base + ".qml" : base + ".ui";
+        if (!QFileInfo::exists(uiFile)) uiFile = ":/interfaces/prototyper/DefaultInterface.qml";
+    }
+    if (uiFile.endsWith(".qml", Qt::CaseInsensitive)) {
+        _qmlEngine = std::make_unique<QQmlApplicationEngine>();
+        _qmlEngine->addImportPath("qrc:/qt/qml");
+        const QDir executable(QCoreApplication::applicationDirPath());
+        _qmlEngine->addImportPath(executable.filePath("../qml"));
+        _qmlEngine->addImportPath(executable.filePath("../" CLAM_QML_INSTALL_DIR));
+        _qmlEngine->rootContext()->setContextProperty("prototyper", this);
+        // Root windows become visible only after the network bindings succeed.
+        _qmlEngine->load(uiFile.startsWith(":/") ? QUrl("qrc" + uiFile)
+            : QUrl::fromLocalFile(QFileInfo(uiFile).absoluteFilePath()));
+        if (_qmlEngine->rootObjects().isEmpty()) {
+            reportError(tr("Error loading the QML interface"), tr("Could not load '%1'. See QML diagnostics on stderr.").arg(uiFile));
+            _qmlEngine.reset();
+            return false;
+        }
+        _qmlRoot = _qmlEngine->rootObjects().first();
+        if (auto * item = qobject_cast<QQuickItem *>(_qmlRoot)) {
+            _qmlHostWindow = std::make_unique<QQuickWindow>();
+            _qmlHostWindow->resize(qMax(1, int(item->width() > 0 ? item->width() : item->implicitWidth())),
+                qMax(1, int(item->height() > 0 ? item->height() : item->implicitHeight())));
+            item->setParentItem(_qmlHostWindow->contentItem());
+            auto resizeRoot = [this, item] {
+                item->setWidth(_qmlHostWindow->width());
+                item->setHeight(_qmlHostWindow->height());
+            };
+            connect(_qmlHostWindow.get(), &QQuickWindow::widthChanged, this, resizeRoot);
+            connect(_qmlHostWindow.get(), &QQuickWindow::heightChanged, this, resizeRoot);
+            resizeRoot();
+        } else if (!qobject_cast<QQuickWindow *>(_qmlRoot)) {
+            reportError(tr("Invalid QML root"), tr("Use a Window, ApplicationWindow or Item as the root."));
+            ClearInterface();
+            return false;
+        }
+        return true;
+    }
+    _interface = DoLoadInterface(uiFile);
+    if (_interface) return true;
+    reportError(tr("Error loading the interface"), tr("Could not load interface '%1'.").arg(uiFile));
+    return false;
 }
 
-void PrototypeLoader::ConnectUiWithNetwork()
+bool PrototypeLoader::ConnectUiWithNetwork()
 {
 	CLAM_ASSERT( _player, "Connecting interface without having chosen a backend");
 	
 	QStringList errors;
-	QtBinder::bindAllBinders(_interface, _network, errors);
-	if (not errors.empty())
-		reportError( QString("Interface Binding Errors"), errors.join("\n"));
+    if (_qmlRoot) {
+        if (!bindQmlInterface(_qmlRoot, _network, errors)) {
+            reportError(tr("Interface Binding Errors"), errors.join("\n"));
+            return false;
+        }
+        UpdatePlayStatus();
+        return true;
+    }
+    if (!_interface) return false;
+    QtBinder::bindAllBinders(_interface, _network, errors);
+	if (!errors.empty()) {
+        reportError(tr("Interface Binding Errors"), errors.join("\n"));
+        return false;
+    }
 		
 
 	_playButton = _interface->findChild<QPushButton*>("PlayButton");
@@ -239,6 +352,8 @@ void PrototypeLoader::ConnectUiWithNetwork()
 			.arg(_backendName.c_str())
 			.arg(backendIcon));
 	}
+    UpdatePlayStatus();
+    return true;
 }
 
 
@@ -303,8 +418,17 @@ void PrototypeLoader::periodicPlaybackStatusUpdate()
 	QTimer::singleShot(500, this, SLOT(periodicPlaybackStatusUpdate()));
 }
 
+QString PrototypeLoader::PlaybackStatus() const
+{
+    if (_network.IsPlaying()) return tr("Playing");
+    if (_network.IsPaused()) return tr("Paused");
+    return tr("Stopped");
+}
+
 void PrototypeLoader::UpdatePlayStatus()
 {
+    emit playbackChanged();
+	if (!_interface) return;
 	QLabel * playbackIndicator = _interface->findChild<QLabel*>("PlaybackIndicator");
 	if (playbackIndicator)
 	{

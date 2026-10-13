@@ -41,7 +41,7 @@ private:
 	std::string getLabel(unsigned bin) const
 	{
 		static std::vector<std::string> a = initBinLabelVector();
-		if (bin>a.size()) throw "Bad bin";
+		if (bin>=a.size()) return "";
 		return a[bin];
 	}
 	std::vector<std::string> initBinLabelVector() const
@@ -104,7 +104,7 @@ private:
 	{
 		const std::vector<CLAM::TData> & chords = FreezeAndGetData();
 		_size = chords.size();
-		return &chords[0];
+		return _size ? chords.data() : nullptr;
 	}
 	void release()
 	{

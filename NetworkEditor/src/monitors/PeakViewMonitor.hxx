@@ -16,6 +16,7 @@ class PeakViewMonitor : public CLAM::PortMonitor<CLAM::SpectralPeakArray>, publi
 	}
 	const CLAM::TData * positionData()
 	{
+		_size = 0;
 		_peaks = FreezeAndGetData();
 		UnfreezeData();
 		if ( !_peaks.HasFreqBuffer()) return 0;
@@ -28,7 +29,7 @@ class PeakViewMonitor : public CLAM::PortMonitor<CLAM::SpectralPeakArray>, publi
 	{
 		if ( !_peaks.HasMagBuffer()) return 0;
 		const CLAM::Array<CLAM::TData> & data = _peaks.GetMagBuffer();
-		return &data[0];
+		return _size && static_cast<unsigned>(data.Size()) >= _size ? &data[0] : nullptr;
 	}
 	unsigned nBins() const
 	{

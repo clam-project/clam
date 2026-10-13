@@ -25,7 +25,7 @@ information for this tree.
 | App | Build flag | Description |
 | --- | --- | --- |
 | **NetworkEditor** | `-DCLAM_BUILD_GUI_APPS=ON` | Qt6 visual editor for building audio processing networks. Networks can be compiled into LADSPA plugins (needs an installed CLAM, see below). |
-| **Prototyper** | `-DCLAM_BUILD_GUI_APPS=ON` | Runs a network with a Qt Designer `.ui` file as its interface. |
+| **Prototyper** | `-DCLAM_BUILD_GUI_APPS=ON` | Runs a network with a QML interface (`CLAM.Widgets`), or a legacy Qt Designer `.ui` file. |
 | **OfflinePlayer**, **MonoOfflinePlayer** | `-DCLAM_BUILD_GUI_APPS=ON` | Command line players that run a network over audio files. |
 | **CheckClamNetwork** | `-DCLAM_BUILD_GUI_APPS=ON` | Command line checker that loads a network and reports whether it can run. |
 | CLAMWidgets Designer plugin | `-DCLAM_BUILD_GUI_APPS=ON` | Makes the CLAM monitors available in Qt Designer. |
@@ -55,6 +55,9 @@ libxerces-c-dev libfftw3-dev libsndfile1-dev libvorbis-dev libmad0-dev
 libid3-3.8.3-dev lv2-dev libjack-jackd2-dev portaudio19-dev
 libasound2-dev libgl1-mesa-dev ladspa-sdk
 qt6-base-dev qt6-base-dev-tools qt6-svg-dev qt6-tools-dev
+qt6-declarative-dev qt6-declarative-dev-tools
+qml6-module-qtquick qml6-module-qtquick-controls qml6-module-qtquick-layouts
+qml6-module-qtquick-window qml6-module-qtquick-templates qml6-module-qtqml-workerscript
 ```
 
 Optional: `qt6-l10n-tools` (NetworkEditor translations), `libcppunit-dev`
@@ -112,6 +115,23 @@ cd NetworkEditor && ../build/NetworkEditor/NetworkEditor example-data/tonalAnaly
 cd SMSTools && ../build/SMSTools/SMSTools
 ```
 
+Prototyper loads a same-named `.qml` interface automatically, then tries `.ui`
+and finally its built-in playback interface. For example:
+
+```sh
+cd NetworkEditor
+../build/NetworkEditor/Prototyper example-data/FilePlayer.clamnetwork
+../build/NetworkEditor/Prototyper example-data/tonalAnalysis-file.clamnetwork --start-paused
+# Select an interface explicitly, including legacy interfaces:
+../build/NetworkEditor/Prototyper example-data/FilePlayer.clamnetwork example-data/FilePlayer.ui
+```
+
+Use `-b jack` or `-b portaudio` to select a backend; repeated
+`-b` options try them in order. `--start-paused` waits for Play before
+processing audio. `-o` runs a network without an interface. See
+[`NetworkEditor/QML-WIDGETS.md`](NetworkEditor/QML-WIDGETS.md) for the component
+catalog, binding properties and Qt Creator / QML preview workflow.
+
 SMSConsole and SMSBatch print a menu and read the choices from standard
 input, so they can also be scripted. For example, analyze and resynthesize
 the bundled Elvis example (the output files are written to `example-data/`):
@@ -167,7 +187,7 @@ An installed CLAM provides a CMake package:
 ```cmake
 find_package(CLAM CONFIG REQUIRED)
 target_link_libraries(myapp PRIVATE CLAM::processing CLAM::audioio)
-# CLAM::qtmonitors too, when CLAM was installed with the GUI apps
+# CLAM::qtmonitors and CLAM::qmlwidgets too, with the GUI apps
 ```
 
 and pkg-config files (`clam_core`, `clam_processing`, `clam_audioio`), plus
@@ -208,8 +228,10 @@ dispatch:
   analysis, transformation and synthesis of the bundled example,
   `CheckClamNetwork` on the example networks, and NetworkEditor and SMSTools
   started under Xvfb, failing on Qt signal/slot connection errors),
-  installs, and builds `CLAM/test/InstallConsumer` against the installed
-  CMake package and pkg-config files.
+  exercises Prototyper startup, legacy interfaces, every QML component and
+  live network bindings in CTest, installs, and builds
+  `CLAM/test/InstallConsumer` against the installed CMake package and
+  pkg-config files.
 - Ubuntu 24.04, clang, Debug, libraries and unit tests only, with the
   optional dependencies switched off.
 - macOS, Release, everything enabled (Homebrew packages, without LADSPA and

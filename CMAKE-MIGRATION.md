@@ -37,7 +37,8 @@ data, desktop and MIME files, icons, man pages and translations. It also
 installs:
 
 - a CMake package (`lib/cmake/CLAM`) with the targets `CLAM::core`,
-  `CLAM::processing`, `CLAM::audioio` and, when built, `CLAM::qtmonitors`;
+  `CLAM::processing`, `CLAM::audioio` and, when built, `CLAM::qtmonitors`
+  and `CLAM::qmlwidgets`;
 - `clam_core.pc`, `clam_processing.pc` and `clam_audioio.pc`;
 - the SCons tools in `share/clam/sconstools`, ported to Python 3 / SCons 4
   (`qt6` replaces `qt4`), for SCons projects that build against CLAM;
@@ -73,6 +74,30 @@ against CLAM, use `std::thread`, `std::mutex` and `std::condition_variable`.
   `QXmlQuery`.
 - String-based connections to signals that Qt6 removed were moved to the
   Qt6 signals, mostly with pointer-to-member `connect()`.
+
+## QML interfaces for Prototyper
+
+`CLAM.Widgets 1.0` provides Qt Quick versions of the legacy audio and tonal
+monitors, plus controls, a piano, an XY surface and playback helpers.
+`qt_add_qml_module` builds `clam_qmlwidgets`, a loadable QML plugin, `qmldir`
+and `.qmltypes` metadata for QML tooling. The module is available in
+`build/qml` and is installed under `<libdir>/qt6/qml/CLAM/Widgets`.
+
+Prototyper prefers a same-named `.qml` file, accepts an explicit `.qml` or
+`.ui` path, and supports both Window and Item roots. QML properties bind
+monitors and controls to network ports without mangling names. Legacy
+widgets are constructed directly by its UI loader, so build-tree `.ui`
+interfaces no longer require an installed Designer plugin. The constructor
+and status timer now tolerate a missing interface; shutdown stops audio and
+destroys interfaces before the network and QApplication.
+
+QML monitors reuse the CLAM monitor processings and snapshot frames on the
+GUI thread for painting in Qt Quick. These are native Quick components with
+new rendering and styling; old QWidget paint code, OpenGL contexts and
+pixmap skins are not embedded. Existing widgets remain available to
+NetworkEditor and Qt Designer. See
+[`NetworkEditor/QML-WIDGETS.md`](NetworkEditor/QML-WIDGETS.md) for migration
+mappings and examples.
 
 ## SMSTools
 

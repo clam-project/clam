@@ -62,7 +62,7 @@ private:
 			"f",
 			"f#",
 			};
-		return a[bin];
+		return bin < 24 ? a[bin] : "";
 	}
 	const CLAM::TData * frameData()
 	{

@@ -22,6 +22,7 @@
 #include <CLAM/PortMonitor.hxx>
 
 #include <vector>
+#include <algorithm>
 
 /**	\brief Histogram view
 *
@@ -59,7 +60,7 @@ private:
 			CLAM_ASSERT(fabs(inb[i])<=1., "Input audio is out of range (-1..1)");
 
 			//index calculation by integer division
-			unsigned int index = (inb[i]+1)*32768/(65536/_bins); // if bins=512 and maxValue=65536 => max index 65536/128 = 512 (number of bins)
+			unsigned int index = std::min(_bins - 1, static_cast<unsigned>((inb[i]+1)*_bins/2)); // if bins=512 and maxValue=65536 => max index 65536/128 = 512 (number of bins)
 			_data[ index ]++;
 		}
 
