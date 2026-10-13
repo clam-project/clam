@@ -2,6 +2,7 @@
 #define JACKNetworkPlayer_hxx
 
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 #include "NetworkPlayer.hxx"
@@ -40,6 +41,10 @@ private:
 
 	std::string _jackOutPortAutoConnectList;
 	std::string _jackInPortAutoConnectList;
+	std::map<std::string, std::string> _sourceConnections;
+	std::map<std::string, std::string> _sinkConnections;
+	bool HasAutoConnection(const std::string & localPortName, bool source) const;
+	void ConnectPorts(const JackPorts & ports, bool source);
 	
 	//JACK CODE
 	jack_client_t * _jackClient;
@@ -91,9 +96,24 @@ public:
 		const std::string & outputPattern,
 		const std::string & inputPattern)
 	{
+		// Patterns describe external JACK outputs (capture) and inputs (playback).
 		_jackOutPortAutoConnectList = outputPattern;
 		_jackInPortAutoConnectList = inputPattern;
+		_sourceConnections.clear();
+		_sinkConnections.clear();
 		_autoConnect = !outputPattern.empty() || !inputPattern.empty();
+	}
+	/// Map exported network port names to exact JACK port names. Empty targets
+	/// keep manual routing; missing external ports never shift other channels.
+	void SetPortConnections(
+		const std::map<std::string, std::string> & sourceConnections,
+		const std::map<std::string, std::string> & sinkConnections)
+	{
+		_jackOutPortAutoConnectList.clear();
+		_jackInPortAutoConnectList.clear();
+		_sourceConnections = sourceConnections;
+		_sinkConnections = sinkConnections;
+		_autoConnect = true;
 	}
 };
 } //namespace CLAM

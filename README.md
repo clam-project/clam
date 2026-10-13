@@ -115,6 +115,14 @@ cd NetworkEditor && ../build/NetworkEditor/NetworkEditor example-data/tonalAnaly
 cd SMSTools && ../build/SMSTools/SMSTools
 ```
 
+In NetworkEditor, **Network → Audio Backend... → JACK** offers **Per-channel
+ports** routing. Choose a JACK audio output for each capture channel and a
+JACK audio input for each playback channel; channels can connect to different
+clients. **Manual / unconnected** leaves a channel available for external
+routing. Selections follow the named network ports and survive refreshing the
+port list. **Port-name patterns** retains pattern-based routing in JACK's
+port order; an empty field keeps that direction manual.
+
 Prototyper loads a same-named `.qml` interface automatically, then tries `.ui`
 and finally its built-in playback interface. For example:
 
@@ -126,7 +134,7 @@ cd NetworkEditor
 ../build/NetworkEditor/Prototyper example-data/FilePlayer.clamnetwork example-data/FilePlayer.ui
 ```
 
-Use `-b jack` or `-b portaudio` to select a backend; repeated
+Use `-b pipewire`, `-b jack` or `-b portaudio` to select a backend; repeated
 `-b` options try them in order. `--start-paused` waits for Play before
 processing audio. `-o` runs a network without an interface. See
 [`NetworkEditor/QML-WIDGETS.md`](NetworkEditor/QML-WIDGETS.md) for the component

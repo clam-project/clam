@@ -437,13 +437,17 @@ public:
 	void setBackend(
 		QString & backend,
 		const QString & inputConnection = QString(),
-		const QString & outputConnection = QString())
+		const QString & outputConnection = QString(),
+		const QMap<QString, QString> & sourceConnections = QMap<QString, QString>(),
+		const QMap<QString, QString> & sinkConnections = QMap<QString, QString>())
 	{
 		const bool wasPlaying = _network.IsPlaying();
 		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
 		QString backendError;
 		_backendInputConnection = inputConnection;
 		_backendOutputConnection = outputConnection;
+		_backendSourceConnections = sourceConnections;
+		_backendSinkConnections = sinkConnections;
 
 		_network.Stop();
 		// Network owns the player after SetPlayer(). Clear it through Network
@@ -478,8 +482,17 @@ public:
 		{
 			CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer(_clientName);
 			jackPlayer->SetAutoConnectPatterns(
-				outputConnection.toLocal8Bit().constData(),
-				inputConnection.toLocal8Bit().constData());
+				inputConnection.toLocal8Bit().constData(),
+				outputConnection.toLocal8Bit().constData());
+			if (!sourceConnections.isEmpty() || !sinkConnections.isEmpty())
+			{
+				std::map<std::string, std::string> sources, sinks;
+				for (auto it = sourceConnections.cbegin(); it != sourceConnections.cend(); ++it)
+					sources[it.key().toLocal8Bit().constData()] = it.value().toLocal8Bit().constData();
+				for (auto it = sinkConnections.cbegin(); it != sinkConnections.cend(); ++it)
+					sinks[it.key().toLocal8Bit().constData()] = it.value().toLocal8Bit().constData();
+				jackPlayer->SetPortConnections(sources, sinks);
+			}
 			if (jackPlayer->IsWorking())
 			{
 				backend = "JACK";
@@ -547,16 +560,22 @@ public:
 public slots:
 	void on_action_Configure_backend_triggered()
 	{
+		_canvas->updateGeometriesOnXML();
 		BackendConfigDialog dialog(
 			_backendName,
 			_backendInputConnection,
 			_backendOutputConnection,
-			this);
+			this,
+			backendChannelNames(true), backendChannelNames(false),
+			_backendSourceConnections, _backendSinkConnections);
 		if (dialog.exec() != QDialog::Accepted)
 			return;
 
 		QString backend = dialog.backend();
-		setBackend(backend, dialog.inputConnection(), dialog.outputConnection());
+		if (dialog.usesJackPortConnections())
+			setBackend(backend, QString(), QString(), dialog.sourceConnections(), dialog.sinkConnections());
+		else
+			setBackend(backend, dialog.inputConnection(), dialog.outputConnection());
 	}
 
 	void activateConsole(bool activated)
@@ -815,6 +834,26 @@ public slots:
 	void on_action_CompileAsLadspaPlugin_triggered();
 
 private:
+	QStringList backendChannelNames(bool source) const
+	{
+		// Use the same processing and channel order as NetworkPlayer's exported ports.
+		QStringList names;
+		const auto processings = _network.getOrderedProcessingsByAttribute(
+			source ? "port_source_type" : "port_sink_type");
+		for (CLAM::Processing * processing : processings)
+		{
+			const unsigned count = source ? processing->GetNOutPorts() : processing->GetNInPorts();
+			for (unsigned i = 0; i < count; ++i)
+			{
+				std::string name = _network.GetNetworkId(processing);
+				if (count > 1)
+					name += "_" + (source ? processing->GetOutPort(i).GetName() : processing->GetInPort(i).GetName());
+				names << QString::fromLocal8Bit(name.c_str());
+			}
+		}
+		return names;
+	}
+
 	ClamNetworkCanvas * _canvas;
 	NetworkCanvas * _jackCanvas;
 	QDialog * _aboutDialog;
@@ -824,6 +863,8 @@ private:
 	QString _backendName;
 	QString _backendInputConnection;
 	QString _backendOutputConnection;
+	QMap<QString, QString> _backendSourceConnections;
+	QMap<QString, QString> _backendSinkConnections;
 	QString _networkFile;
 	QLabel * _backendLabel;
 	PlaybackIndicator * _playingLabel;
