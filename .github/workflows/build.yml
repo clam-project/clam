@@ -36,6 +36,7 @@ jobs:
             libid3-3.8.3-dev \
             lv2-dev \
             libjack-jackd2-dev \
+            libpipewire-0.3-dev \
             portaudio19-dev \
             libasound2-dev \
             libgl1-mesa-dev \
@@ -136,6 +137,7 @@ jobs:
           -DCLAM_WITH_LADSPA=OFF
           -DCLAM_WITH_LV2=OFF
           -DCLAM_WITH_JACK=OFF
+          -DCLAM_WITH_PIPEWIRE=OFF
           -DCLAM_WITH_PORTAUDIO=OFF
           -DCLAM_WITH_ALSA=OFF
 

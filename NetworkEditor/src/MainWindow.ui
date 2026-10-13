@@ -93,6 +93,8 @@
     <addaction name="action_Pause"/>
     <addaction name="action_Stop"/>
     <addaction name="separator"/>
+    <addaction name="action_Configure_backend"/>
+    <addaction name="separator"/>
     <addaction name="action_CompileAsLadspaPlugin"/>
    </widget>
    <widget class="QMenu" name="menu_Interface">
@@ -237,6 +239,14 @@
    </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="action_Configure_backend">
+   <property name="text">
+    <string>Audio &amp;Backend...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select and configure the audio backend and connections</string>
    </property>
   </action>
   <action name="action_Save_as">

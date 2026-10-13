@@ -87,8 +87,15 @@ public:
 	
 	
 	void AutoConnectPorts();
+	void SetAutoConnectPatterns(
+		const std::string & outputPattern,
+		const std::string & inputPattern)
+	{
+		_jackOutPortAutoConnectList = outputPattern;
+		_jackInPortAutoConnectList = inputPattern;
+		_autoConnect = !outputPattern.empty() || !inputPattern.empty();
+	}
 };
 } //namespace CLAM
 
 #endif
-

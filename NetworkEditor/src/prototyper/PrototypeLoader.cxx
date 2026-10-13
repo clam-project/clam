@@ -12,6 +12,9 @@
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
+#ifdef USE_PIPEWIRE
+#include <CLAM/PipeWireNetworkPlayer.hxx>
+#endif
 #ifdef USE_PORTAUDIO
 #include <CLAM/PANetworkPlayer.hxx>
 #endif
@@ -163,6 +166,15 @@ void PrototypeLoader::Show()
 
 CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend, const std::string & name)
 {	
+#ifdef USE_PIPEWIRE
+	if (backend=="pipewire")
+	{
+		CLAM::PipeWireNetworkPlayer * player = new CLAM::PipeWireNetworkPlayer(name);
+		if ( player->IsWorking()) return player;
+		delete player;
+		return 0;
+	}
+#endif
 #ifdef USE_JACK		
 	if (backend=="jack")
 	{
@@ -186,6 +198,7 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends, const std:
 	// If no backends specified, do the standard backend waterfall
 	if (backends.empty())
 	{
+		backends.push_back("pipewire");
 		backends.push_back("jack");
 		backends.push_back("portaudio");
 	}
@@ -446,4 +459,3 @@ void PrototypeLoader::UpdatePlayStatus()
 
 
 } //end namespace CLAM
-

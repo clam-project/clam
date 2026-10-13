@@ -23,7 +23,7 @@ int usage(const std::string & program, int status = 1)
 			<< " [<networkfile> [<interface.qml|interface.ui>]] [-o] [-b <backend> [-b <backend> ...]]\n"
 			<< "Options:\n"
 			<< " -o             Non interactive mode\n"
-			<< " -b <backend>   Try backend (jack, portaudio).\n"
+			<< " -b <backend>   Try backend (pipewire, jack, portaudio).\n"
 			<< " -h, --help     Show this help.\n"
 			<< " --start-paused  Pause just at start.\n"
 			<< std::endl;
@@ -122,4 +122,3 @@ int main( int argc, char *argv[] )
 	prototype.Stop();
 	return result;
 }
-

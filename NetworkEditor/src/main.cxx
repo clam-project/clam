@@ -36,7 +36,7 @@ void usage(const std::string & program)
 		<< " Usage: " << program
 		<< " <networkfile> [-b <backend>] [-p] [--help]\n"
 		<< "Options:\n"
-		<< " -b <backend>   The backend can be JACK, PortAudio or Auto.\n"
+		<< " -b <backend>   The backend can be PipeWire, JACK, PortAudio or Auto.\n"
 		<< " -p             Play the network inmediately using the network name for client name.\n"
 		<< " --help         This help.\n"
 		<< std::endl;
@@ -142,4 +142,3 @@ int main( int argc, char ** argv )
 
 	return app.exec();
 }
-
