@@ -50,6 +50,7 @@ CLAM::VM::Spectrogram::Spectrogram(QWidget * parent)
 	, _currentFrame(0)
 	, _smooth(false)
 	, _scrolling(true)
+	, _textureId(0)
 {
 	_data = 0;
 	_dataSource = 0;
@@ -99,6 +100,15 @@ CLAM::VM::Spectrogram::Spectrogram(QWidget * parent)
 	startTimer(50);
 }
 
+CLAM::VM::Spectrogram::~Spectrogram()
+{
+	if (!_textureId) return;
+	// QOpenGLWidget contexts share resources, so the texture outlives the widget
+	makeCurrent();
+	glDeleteTextures(1,&_textureId);
+	doneCurrent();
+}
+
 void CLAM::VM::Spectrogram::initializeGL()
 {
 	glClearColor(0,0,0,0); // rgba
@@ -106,7 +116,7 @@ void CLAM::VM::Spectrogram::initializeGL()
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
-	glGenTextures(1,&_textureId);
+	if (!_textureId) glGenTextures(1,&_textureId);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 }

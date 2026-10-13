@@ -10,6 +10,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QTimer>
+#include <algorithm>
 #include "ui_About.h"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
@@ -28,6 +29,7 @@
 #include <QSvgWidget>
 #include <QProcess>
 #include <QUrl>
+#include <QDir>
 #include <QDesktopServices>
 #include <QTextBrowser>
 #include <QDomDocument>
@@ -247,10 +249,13 @@ public:
 	{
 		QStringList list1 = versio1.split(".");
 		QStringList list2 = versio2.split(".");
-		for (int i=0; i<list1.size(); i++)
+		const int size = std::max(list1.size(), list2.size());
+		for (int i=0; i<size; i++)
 		{
-			if (list1[i].toInt()<list2[i].toInt()) return -1;
-			if (list1[i].toInt()>list2[i].toInt()) return +1;
+			const int part1 = i<list1.size() ? list1[i].toInt() : 0;
+			const int part2 = i<list2.size() ? list2[i].toInt() : 0;
+			if (part1<part2) return -1;
+			if (part1>part2) return +1;
 		}
 		return 0;
 	}
@@ -264,8 +269,10 @@ public:
 		if (!document.setContent(&networkFile)) return QString();
 
 		QDomElement root = document.documentElement();
-		if (root.tagName() != "network") return QString("");
-		return root.attribute("clamVersion").trimmed() + "";
+		if (root.tagName() != "network") return QString();
+		// A missing attribute (networks older than 1.4) must read as an
+		// empty, non-null version: a null string means "cannot read".
+		return root.attribute("clamVersion", QLatin1String("")).trimmed();
 	}
 	void load(const QString & filename)
 	{
@@ -285,7 +292,7 @@ public:
 				tr("Loading network"),
 				tr("This network was created with an older version, %1, of NetworkEditor.\n"
 					"It will be updated to version %2 when saved.")
-					.arg(networkVersion)
+					.arg(networkVersion.isEmpty() ? tr("unknown") : networkVersion)
 					.arg(CLAM::GetVersion()
 					),
 				QMessageBox::Ok);
@@ -295,11 +302,13 @@ public:
 				filename.toLocal8Bit().data());
 			if (not translatedNetwork)
 			{
+				// Without the (Python based) upgrader, try the network as it is.
 				QString error = upgrader.errorMessage();
 				QMessageBox::warning(this,
 					tr("Error upgrading the network"),
-					error,
+					tr("%1\nLoading the network without upgrading it.").arg(error),
 					QMessageBox::Ok);
+				loadFromFile(filename);
 				return;
 			}
 			loadFromString(translatedNetwork, filename);
@@ -518,13 +527,29 @@ public slots:
 
 	void browseUrlInternalFromProcessing(const QString & fileName)
 	{
+		// Paths, also relative ones, are local files; URLs are kept as they are
+		const QUrl url = QUrl::fromUserInput(fileName, QDir::currentPath(), QUrl::AssumeLocalFile);
+		const bool isSvg = url.isLocalFile() and url.path().endsWith(".svg", Qt::CaseInsensitive);
+		// Qt6 has no QWebView, and QTextBrowser can neither render SVG (the
+		// Faust diagrams) nor fetch remote URLs. The desktop browser can, and
+		// it also follows the links between the Faust diagrams.
+		if ((isSvg or not url.isLocalFile()) and QDesktopServices::openUrl(url))
+			return;
 		QDockWidget * browser=new QDockWidget(this);
-		QTextBrowser * view=new QTextBrowser(browser);
-		view->setContextMenuPolicy(Qt::NoContextMenu);
-		view->setOpenExternalLinks(true);
-		view->setSource(QUrl::fromUserInput(fileName));
+		if (isSvg)
+		{
+			// No external viewer: at least show the diagram
+			browser->setWidget(new QSvgWidget(url.toLocalFile(), browser));
+		}
+		else
+		{
+			QTextBrowser * view=new QTextBrowser(browser);
+			view->setContextMenuPolicy(Qt::NoContextMenu);
+			view->setOpenExternalLinks(true);
+			view->setSource(url);
+			browser->setWidget(view);
+		}
 		browser->setObjectName(tr("Internal Browser"));
-		browser->setWidget(view);
 		browser->setWindowTitle(tr("Browsing %1").arg(fileName));
 		addDockWidget(Qt::BottomDockWidgetArea,browser);
 	}

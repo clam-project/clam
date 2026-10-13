@@ -246,8 +246,10 @@ void ProcessingBox::paintBox(QPainter & painter)
 {
 	QColor boxBodyColor = _canvas->isOk(_processing)? _canvas->colorBoxBody() : _canvas->colorBoxErrorBody();
 	QColor boxFrameColor = _canvas->isOk(_processing)? _canvas->colorBoxFrame() : _canvas->colorBoxErrorFrame();
+	// Outlines use cosmetic (width 0) pens to stay 1px at any canvas zoom,
+	// as Qt4's QPen(QColor) did; since Qt5 that pen is 1 unit wide and scaled.
 	// Box
-	painter.setPen( _canvas->colorBoxFrameOutline());
+	painter.setPen(QPen(_canvas->colorBoxFrameOutline(),0));
 	painter.setBrush(boxFrameColor);
 	painter.drawRect(portWidth, controlHeight, _size.width()-2*portWidth, _size.height()-2*controlHeight);
 	painter.setBrush(boxBodyColor);
@@ -261,7 +263,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 	processingIcon.paint(&painter, iconRect);
 
 	// Ports
-	painter.setPen(_canvas->colorPortOutline());
+	painter.setPen(QPen(_canvas->colorPortOutline(),0));
 	for (unsigned i = 0; i<_nInports; i++)
 	{
 		painter.setBrush( _canvas->inportColor(_processing,i) );
@@ -273,7 +275,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 		drawConnector(painter, outportsRegion, i);
 	}
 	// Controls
-	painter.setPen(_canvas->colorControlOutline());
+	painter.setPen(QPen(_canvas->colorControlOutline(),0));
 	for (unsigned i = 0; i<_nIncontrols; i++)
 	{
 		painter.setBrush(_canvas->incontrolColor(_processing,i));
@@ -289,12 +291,12 @@ void ProcessingBox::paintBox(QPainter & painter)
 	if (_highLightRegion != noRegion)
 	{
 		painter.setBrush(_canvas->colorHighlightConnector(this, _highLightRegion, _highLightConnection));
-		painter.setPen(_canvas->colorPortOutline());
+		painter.setPen(QPen(_canvas->colorPortOutline(),0));
 		drawConnector(painter, _highLightRegion, _highLightConnection);
 	}
 
-	// Text
-	painter.setPen(_canvas->colorBoxFrameText());
+	// Text (and the selection handles below)
+	painter.setPen(QPen(_canvas->colorBoxFrameText(),0));
 	painter.drawText(QRect(controlOffset+textHeight, portOffset,
 			_size.width()-2*controlOffset, textHeight), _name);
 	//Selection
@@ -461,7 +463,8 @@ void ProcessingBox::mousePressEvent(QGraphicsSceneMouseEvent * event)
 	// move actions
 	if (region==nameRegion or region==bodyRegion or region==iconRegion)
 	{
-		if (region == bodyRegion and not controlPressed)
+		// Keep a multi-selection when pressing a selected box, so the group can be dragged
+		if (region == bodyRegion and not controlPressed and not isSelected())
 		{
 			_canvas->clearSelections();
 			select();

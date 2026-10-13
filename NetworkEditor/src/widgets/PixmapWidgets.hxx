@@ -217,6 +217,7 @@ class QPixmapRange : public QAbstractSlider
 public:
 	QPixmapRange(const char * basePath=":/pkwidgets/thinMixerSlider_", QWidget*parent=0)
 		: QAbstractSlider(parent)
+		, _wheelDelta(0)
 	{
 		setRange(0,127);
 		setValue(0);
@@ -283,12 +284,16 @@ public:
 	}
 	void wheelEvent(QWheelEvent * event)
 	{
-		const int delta =
-			event->angleDelta().y();
-		if (delta < 0 )
-			setValue(value() - pageStep());
-		else
-			setValue(value() + pageStep());
+		// Qt6 delivers touchpads and high resolution wheels as many deltas
+		// below 120 (Qt4 always sent whole steps), so accumulate them.
+		const QPoint angle = event->angleDelta();
+		const int delta = angle.y() ? angle.y() : angle.x();
+		if (!delta) return;
+		if (_wheelDelta*delta < 0) _wheelDelta = 0; // direction changed
+		_wheelDelta += delta;
+		const int steps = _wheelDelta / 120;
+		_wheelDelta -= steps*120;
+		if (steps) setValue(value() + steps*pageStep());
 	}
 private:
 	QString _basePath;
@@ -296,6 +301,7 @@ private:
 	int _lastX, _lastY;
 	bool _dragging;
 	int _nFrames;
+	int _wheelDelta;
 
 };
 

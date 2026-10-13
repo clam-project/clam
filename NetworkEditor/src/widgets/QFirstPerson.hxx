@@ -5,8 +5,10 @@
 #undef GetClassName
 #include <QKeyEvent>
 #include <QMatrix4x4>
+#include <QPainter>
 #include <QtGlobal>
 #include <iostream>
+#include <vector>
 #include <cmath>
 
 namespace
@@ -55,6 +57,26 @@ static float * vColor(const QColor & color)
 static void setCurrentGLColor(const QColor & color)
 {
 	glColor4fv(vColor(color));
+}
+
+// Replacement for gluProject(): maps object coordinates to GL window
+// coordinates using the given (column major) GL matrices and viewport.
+// Returns false when the point cannot be projected (w==0).
+static bool projectToWindow(double x, double y, double z,
+	const GLdouble * modelview, const GLdouble * projection, const GLint * viewport,
+	GLdouble & windowX, GLdouble & windowY, GLdouble & windowZ)
+{
+	double eye[4];
+	for (unsigned row=0; row<4; row++)
+		eye[row] = modelview[row]*x + modelview[4+row]*y + modelview[8+row]*z + modelview[12+row];
+	double clip[4];
+	for (unsigned row=0; row<4; row++)
+		clip[row] = projection[row]*eye[0] + projection[4+row]*eye[1] + projection[8+row]*eye[2] + projection[12+row]*eye[3];
+	if (clip[3]==0) return false;
+	windowX = viewport[0] + (clip[0]/clip[3] + 1) * viewport[2] / 2;
+	windowY = viewport[1] + (clip[1]/clip[3] + 1) * viewport[3] / 2;
+	windowZ = (clip[2]/clip[3] + 1) / 2;
+	return true;
 }
 
 class Light
@@ -111,6 +133,13 @@ class QFirstPerson : public QOpenGLWidget
 	double _viewElevation;
 	double _sourceX;
 	double _sourceY;
+	struct Label
+	{
+		QPointF position;
+		QString text;
+		QColor color;
+	};
+	std::vector<Label> _labels;
 	Q_OBJECT
 public:
 	QFirstPerson(QWidget * parent=0)
@@ -126,6 +155,14 @@ public:
 	void initializeGL()
 	{
 		std::cout << "init" << std::endl;
+		setUpGLState();
+	}
+	// Also called on every frame: the QPainter that draws the labels
+	// resets part of this state (blending, depth test) when it ends, and
+	// leaves its glyph texture bound, which would texture the whole scene.
+	void setUpGLState()
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glEnable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glShadeModel(GL_SMOOTH);
@@ -151,6 +188,8 @@ public:
 	}
 	void paintGL()
 	{
+		_labels.clear();
+		setUpGLState();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		glPushMatrix();
@@ -162,6 +201,40 @@ public:
 		glPopMatrix();
 		glDepthFunc(GL_NONE);
 		paintDecoration();
+		paintLabels();
+	}
+	// QOpenGLWidget has no renderText(): the labels are placed with the GL
+	// matrices current when they are added, and drawn with a QPainter
+	// after all the GL drawing of the frame.
+	void addLabel(double x, double y, double z, const QString & text, const QColor & color)
+	{
+		GLdouble modelview[16];
+		GLdouble projection[16];
+		GLint viewport[4];
+		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+		glGetDoublev(GL_PROJECTION_MATRIX, projection);
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		GLdouble windowX, windowY, windowZ;
+		if (!projectToWindow(x, y, z, modelview, projection, viewport, windowX, windowY, windowZ)) return;
+		if (windowZ<0 or windowZ>1) return; // behind the viewer or too far
+		// GL window coordinates are device pixels from the bottom left corner
+		addLabel(QPointF(
+				(windowX-viewport[0])*width()/viewport[2],
+				height()-(windowY-viewport[1])*height()/viewport[3]),
+			text, color);
+	}
+	void addLabel(const QPointF & position, const QString & text, const QColor & color)
+	{
+		_labels.push_back({position, text, color});
+	}
+	void paintLabels()
+	{
+		QPainter painter(this);
+		for (const Label & label : _labels)
+		{
+			painter.setPen(label.color);
+			painter.drawText(label.position, label.text);
+		}
 	}
 	virtual void placeLights()
 	{
@@ -225,9 +298,14 @@ public:
 		glColor4fv(vColor("#aaa"));
 		drawPlane(+1.75);
 		setCurrentGLColor(QColor("#ffa"));
+		addLabel(0., 1, 10.-1, "North (+Y)", QColor("#ffa"));
+		addLabel(0., 1, -10.+1, "South (-Y)", QColor("#ffa"));
+		addLabel(10.-1, 1, 0., "East (+X)", QColor("#ffa"));
+		addLabel(-10.+1, 1, 0., "West (-X)", QColor("#ffa"));
 		glPushMatrix();
 			glColor4fv(vColor("#b22"));
 			glTranslatef(_sourceX,0,_sourceY);
+			addLabel(0., 1, 0., "Source", QColor("#b22"));
 			glBegin(GL_LINES);
 				glVertex3f(0.,1.,0.);
 				glVertex3f(0.,0.,0.);
@@ -253,7 +331,7 @@ public:
 		glPushMatrix();
 		glColor4fv(vColor(color));
 		glTranslatef(position[0],position[1],position[2]);
-		(void)label;
+		addLabel(0., 2, 0., label, color);
 		glMaterialfv(GL_FRONT, GL_EMISSION, vColor(color));
 		glBegin(GL_LINES);
 			glVertex3f(0.,0.,0.);
@@ -270,17 +348,17 @@ public:
 		glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 		QString emiterString = tr("Emitter: %1, %2")
-				.arg(QString::number(_sourceX,'d',2))
-				.arg(QString::number(_sourceY,'d',2))
+				.arg(QString::number(_sourceX,'f',2))
+				.arg(QString::number(_sourceY,'f',2))
 				;
 		QString receiverString = tr("Receiver: %1, %2 angle %3")
-				.arg(QString::number(_viewX,'d',2))
-				.arg(QString::number(_viewY,'d',2))
-				.arg(QString::number(_viewRotation,'d',0))
+				.arg(QString::number(_viewX,'f',2))
+				.arg(QString::number(_viewY,'f',2))
+				.arg(QString::number(_viewRotation,'f',0))
 				;
 		glColor4fv(vColor("black"));
-		(void)receiverString;
-		(void)emiterString;
+		addLabel(QPointF(10,20), receiverString, Qt::black);
+		addLabel(QPointF(10,40), emiterString, Qt::black);
 		glBegin(GL_LINES);
 		glVertex3f(0,.06,-.1);
 		glVertex3f(0,.02,-.1);

@@ -96,8 +96,8 @@ namespace VM
 			void setLabels(const char ** labels)
 			{
 				_labels.clear();
-				for (const char * label = *labels; *label; label++)
-					_labels.push_back(label);
+				for (const char ** label = labels; *label; label++)
+					_labels.push_back(*label);
 			}
 	};
 }

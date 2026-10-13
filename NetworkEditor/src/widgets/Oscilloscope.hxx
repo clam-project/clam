@@ -36,11 +36,13 @@ public:
 		if ( !_dataSource) return;
 		QPainter painter(this);
 //		painter.setRenderHint(QPainter::Antialiasing);
-		painter.setPen(QColor(0x77,0x77,0x77,0x77));
+		// Width 0 pens are cosmetic (1px under the scale below). Qt4's
+		// QPen(QColor) was like that; since Qt5 it is 1 unit wide and scaled.
+		painter.setPen(QPen(QColor(0x77,0x77,0x77,0x77),0));
 		painter.translate(0,height()/2);
 		painter.scale(width(),-height()/2);
 		painter.drawLine(0,0,1,0);
-		painter.setPen(_lineColor);
+		painter.setPen(QPen(_lineColor,0));
 		const CLAM::TData * data = _dataSource->frameData();
 		if (!data)
 		{

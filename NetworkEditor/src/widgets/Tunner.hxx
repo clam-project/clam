@@ -57,7 +57,8 @@ public:
 		}
 		painter.restore();
 		painter.scale(width()/2.,-height());
-		painter.setPen(QColor(0x77,0x77,0x77,0x77));
+		// Width 0: cosmetic pen, 1px whatever the scale (Qt4's QPen(QColor) default)
+		painter.setPen(QPen(QColor(0x77,0x77,0x77,0x77),0));
 		painter.drawEllipse(-1,-1,2,2);
 		painter.drawEllipse(QRectF(-.5,-.5,1,1));
 		painter.drawLine(QLineF(0,10,0,0));
@@ -72,7 +73,7 @@ public:
 		if ( !mag) return;
 //		std::cout << *freq << " " << *mag << std::endl;
 		int size = _dataSource->nBins();
-		painter.setPen(_lineColor);
+		painter.setPen(QPen(_lineColor,0));
 		QVector<QPointF> lines;
 		for (int i=0; i<size; i++)
 		{

@@ -38,6 +38,7 @@ class QDESIGNER_WIDGET_EXPORT Spectrogram : public QOpenGLWidget
 	Q_PROPERTY(int nFrames READ nFrames WRITE setNFrames)
 public:
 	Spectrogram(QWidget * parent);
+	~Spectrogram();
 
 	virtual void initializeGL();
 	virtual void resizeGL(int width, int height);
@@ -45,9 +46,9 @@ public:
 	virtual void timerEvent(QTimerEvent * event);
 
 	bool smooth() const { return _smooth; }
-	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; initializeGL(); }
+	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; update(); }
 	bool scrolling() const { return _scrolling; }
-	void setScrolling(bool beScrolling=true) { _scrolling=beScrolling; initializeGL(); }
+	void setScrolling(bool beScrolling=true) { _scrolling=beScrolling; update(); }
 	int nFrames() const { return _nFrames; }
 	void setNFrames(int nFrames) { if (nFrames>=2) _nFrames=nFrames; } 
 

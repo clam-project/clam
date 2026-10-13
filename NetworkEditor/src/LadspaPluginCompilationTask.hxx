@@ -1,7 +1,9 @@
 #ifndef LadspaPluginCompilationTask_hxx
 #define LadspaPluginCompilationTask_hxx
 #include "MainWindow.hxx"
-#include <QTemporaryFile>
+#include <QFile>
+#include <QFileInfo>
+#include <QTemporaryDir>
 #include "ui_LadspaMetadataEditor.h"
 
 
@@ -25,49 +27,21 @@ static const char * ladspaCxxTemplate =
 	"	return library.pluginAt(index);\n"
 	"}\n";
 
-static const char * ladspaSconsTemplate =
-	"import os, glob, sys\n"
-	"libraryName='%1'\n"
-	"print('Building', libraryName)\n"
-	"options = Options('options.cache', ARGUMENTS)\n"
-	"options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))\n"
-	"options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathOption.PathAccept))\n"
-	"options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )\n"
-	"\n"
-	"toolChain = 'default'\n"
-	"if sys.platform == 'win32': toolChain = 'mingw'\n"
-	"env = Environment(ENV=os.environ, tools=[toolChain], options=options)\n"
-	"#options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins\n"
-	"Help(options.GenerateHelpText(env))\n"
-	"env.SConsignFile() # Single signature file\n"
-	"\n"
-	"CLAMInstallDir = env['clam_prefix']\n"
-	"InstallDir = env['prefix'] or env['clam_prefix']\n"
-	"clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')\n"
-	"if env['crossmingw'] :\n"
-	"	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])\n"
-	"env.Tool('clam', toolpath=[clam_sconstoolspath])\n"
-	"env.EnableClamModules([\n"
-	"	'clam_core',\n"
-	"	'clam_audioio',\n"
-	"	'clam_processing',\n"
-	"	] , CLAMInstallDir)\n"
-	"\n"
-	"sources = ['%2']\n"
-	"extraPaths = [\n"
-	"	CLAMInstallDir+'/include',\n"
-	"	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes\n"
-	"]\n"
-	"env.Append(CPPPATH=extraPaths)\n"
-	"\n"
-	"env.Append( CCFLAGS=['-g','-O3','-Wall'] )\n"
-	"libraries = [\n"
-	"	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),\n"
-	"	]\n"
-	"install = env.Install(os.path.join(InstallDir,'lib','ladspa'), libraries)\n"
-	"env.Alias('install', install)\n"
-	"env.Default(libraries)\n"
-	"\n";
+// The plugin is built with CMake against the CLAMConfig.cmake package
+// installed with the CLAM libraries.
+static const char * ladspaCMakeTemplate =
+	"cmake_minimum_required(VERSION 3.22)\n"
+	"project(ClamLadspaPlugin LANGUAGES CXX)\n"
+	"set(CMAKE_CXX_STANDARD 17)\n"
+	"set(CMAKE_CXX_STANDARD_REQUIRED ON)\n"
+	"find_package(CLAM CONFIG REQUIRED)\n"
+	"add_library(ladspa_plugin MODULE %1)\n"
+	"set_target_properties(ladspa_plugin PROPERTIES\n"
+	"	PREFIX \"\"\n"
+	"	OUTPUT_NAME %2\n"
+	"	LIBRARY_OUTPUT_DIRECTORY %3\n"
+	")\n"
+	"target_link_libraries(ladspa_plugin PRIVATE CLAM::core CLAM::processing CLAM::audioio)\n";
 
 class LadspaPluginCompilationTask : public QObject
 {
@@ -75,19 +49,19 @@ public:
 	LadspaPluginCompilationTask(QWidget * parent, CLAM::Network & network)
 		: QObject(parent)
 		, _network(network)
-		, networkFile("ladspa-XXXXXXXX.clamnetwork")
-		, cxxFile(    "ladspa-XXXXXXXX.cxx")
-		, sconsFile(  "ladspa-XXXXXXXX.scons")
 	{
 	}
 	~LadspaPluginCompilationTask() {}
 	void keepFiles()
 	{
-		cxxFile.setAutoRemove(false);
-		sconsFile.setAutoRemove(false);
-		networkFile.setAutoRemove(false);
+		_workDir.setAutoRemove(false);
 	}
-	void run(
+	/// The plugin file the last run() produced.
+	QString pluginPath() const { return _pluginPath; }
+	/// Returns the exit code of the failing cmake step (0 on success),
+	/// -2 if cmake could not be started, or -3 if the intermediate files
+	/// could not be written.
+	int run(
 		unsigned id, 
 		const QString & label, 
 		const QString & name, 
@@ -97,39 +71,59 @@ public:
 		const QString & clamPrefix
 		)
 	{
-		if (not networkFile.open()) return; // TODO: Error
+		if (not _workDir.isValid()) return -3;
+		std::cout << "LADSPA plugin sources in " << _workDir.path().toStdString() << std::endl;
+		const QString networkFile = _workDir.filePath("network.clamnetwork");
+		const QString cxxFile = _workDir.filePath("plugin.cxx");
+		const QString buildDir = _workDir.filePath("build");
+
 		std::ostringstream memoryBuffer;
 		CLAM::XMLStorage::Dump(_network, "network", memoryBuffer);
-		networkFile.write(memoryBuffer.str().c_str());
-		networkFile.flush();
+		if (not writeFile(networkFile, QByteArray::fromStdString(memoryBuffer.str()))) return -3;
 
-		if (not cxxFile.open()) return; // TODO: Error
 		QString pluginCode = QString(ladspaCxxTemplate)
-			.arg(networkFile.fileName()).arg(id)
+			.arg(networkFile).arg(id)
 			.arg(label).arg(name).arg(maker).arg(copyright);
 		std::cout << pluginCode.toStdString() << std::endl;
-		cxxFile.write(pluginCode.toUtf8());
-		cxxFile.flush();
+		if (not writeFile(cxxFile, pluginCode.toUtf8())) return -3;
 
-		if (not sconsFile.open()) return; // TODO: Error
-		sconsFile.write(QString(ladspaSconsTemplate)
-			.arg(libraryName)
-			.arg(cxxFile.fileName())
-			.toLocal8Bit());
-		sconsFile.flush();
-		QString command = QString("scons -f %1 clam_prefix=%2 prefix=%3")
-			.arg(sconsFile.fileName())
-			.arg(clamPrefix)
-			.arg("/usr/local/")
+		// A relative library name is relative to the working directory,
+		// as it was with the former SCons build.
+		const QFileInfo library(libraryName);
+		QString outputName = library.fileName();
+		if (outputName.endsWith(".so")) outputName.chop(3);
+		_pluginPath = library.absoluteDir().filePath(outputName + ".so");
+		const QString cmakeCode = QString(ladspaCMakeTemplate)
+			.arg(cmakeQuoted(cxxFile), cmakeQuoted(outputName), cmakeQuoted(library.absolutePath()));
+		if (not writeFile(_workDir.filePath("CMakeLists.txt"), cmakeCode.toUtf8())) return -3;
+
+		QStringList configure = QStringList()
+			<< "-S" << _workDir.path()
+			<< "-B" << buildDir
+			<< "-DCMAKE_BUILD_TYPE=Release"
 			;
-		std::cout << command.toStdString() << std::endl;
-		QProcess::execute(command);
+		if (not clamPrefix.isEmpty())
+			configure << "-DCMAKE_PREFIX_PATH=" + clamPrefix;
+		std::cout << "cmake " << configure.join(" ").toStdString() << std::endl;
+		const int configured = QProcess::execute("cmake", configure);
+		if (configured != 0) return configured;
+		return QProcess::execute("cmake", QStringList() << "--build" << buildDir);
 	}	
 private:
+	static bool writeFile(const QString & path, const QByteArray & content)
+	{
+		QFile file(path);
+		if (not file.open(QIODevice::WriteOnly)) return false;
+		return file.write(content) == content.size();
+	}
+	static QString cmakeQuoted(QString value)
+	{
+		value.replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$");
+		return "\"" + value + "\"";
+	}
 	CLAM::Network & _network;
-	QTemporaryFile networkFile;
-	QTemporaryFile cxxFile;
-	QTemporaryFile sconsFile;
+	QTemporaryDir _workDir;
+	QString _pluginPath;
 };
 
 

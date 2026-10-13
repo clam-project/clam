@@ -21,6 +21,7 @@
 
 #include "KeySpace.hxx"
 #include <QtGlobal>
+#include <QPainter>
 #include <cmath>
 #include <iostream>
 
@@ -83,6 +84,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	, _smooth(true)
 	, _nX(128)
 	, _nY(64)
+	, _textureId(0)
 {
 	_data = 0;
 	_dataSource = 0;
@@ -137,6 +139,15 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	startTimer(50);
 }
 
+CLAM::VM::KeySpace::~KeySpace()
+{
+	if (!_textureId) return;
+	// QOpenGLWidget contexts share resources, so the texture outlives the widget
+	makeCurrent();
+	glDeleteTextures(1,&_textureId);
+	doneCurrent();
+}
+
 void CLAM::VM::KeySpace::initializeGL()
 {
 	glClearColor(0,0,0,0); // rgba
@@ -145,7 +156,7 @@ void CLAM::VM::KeySpace::initializeGL()
 //	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glGenTextures(1,&_textureId);
+	if (!_textureId) glGenTextures(1,&_textureId);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 }
@@ -281,21 +292,23 @@ void CLAM::VM::KeySpace::DrawTiles()
 
 void CLAM::VM::KeySpace::DrawLabels()
 {
+	// QOpenGLWidget has no renderText(): draw the labels with a QPainter over
+	// the GL drawing, mapping the glOrtho(0,1,1,0) coordinates to pixels.
+	QPainter painter(this);
 	TKeyNode *pKeyNodes = getKeyNodes();
 	for(unsigned i=0; i<nKeyNodes; i++)
 	{
-		// TODO: label drawing call is missing; x1/y1/colour are computed but
-		// not consumed (no glRasterPos / text-render). Preserved verbatim so
-		// the missing render call is visible in code review.
-		[[maybe_unused]] float x1 = pKeyNodes[i].x;
+		float x1 = pKeyNodes[i].x;
 		float y1 = pKeyNodes[i].y;
 
 		if (y1 < 4./_nY)
 			y1 = 4./_nY;
 
 		float value = _data ? _data[i]/_maxValue : 0;
-		if (value>.6) glColor3d(.1,0,0);
-		else          glColor3d(1,1,1);
+		if (value>.6) painter.setPen(QColor::fromRgbF(.1,0,0));
+		else          painter.setPen(Qt::white);
 
+		painter.drawText(QPointF(x1*width(), (y1+.02)*height()),
+			QString::fromStdString(_dataSource->getLabel(i)));
 	}
 }

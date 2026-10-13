@@ -26,6 +26,8 @@
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
 
+class QPainter;
+
 #include <QtUiPlugin/qdesignerexportwidget.h>
 
 namespace CLAM
@@ -48,7 +50,7 @@ namespace VM
 			unsigned BinAtPosition(int x, int y);
 			void Draw();
 			void DrawTile(int x, int y);
-			void DrawLabel(int x, int y);
+			void DrawLabel(QPainter & painter, int x, int y);
 			void DrawChordsShapes();
 		public:
 			void updateIfNeeded();

@@ -127,8 +127,7 @@ void RichTextEditor::setupTextActions()
 	_toolBar->addWidget(_comboSize);
 	_comboSize->setEditable(true);
 
-	QFontDatabase db;
-	foreach(int size, db.standardSizes())
+	foreach(int size, QFontDatabase::standardSizes())
 	    _comboSize->addItem(QString::number(size));
 
 	connect(_comboSize, SIGNAL(currentTextChanged(const QString &)),this, SLOT(textSize(const QString &)));
